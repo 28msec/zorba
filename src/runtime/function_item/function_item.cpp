@@ -117,7 +117,7 @@ PlanIter_t FunctionItem::getImplementation(std::vector<PlanIter_t>& args) const
 }
    
     
-xqp_string FunctionItem::show() const
+zstring FunctionItem::show() const
 {
   std::ostringstream lRes;
   if (getFunctionName() != NULL) 
@@ -129,7 +129,7 @@ xqp_string FunctionItem::show() const
     lRes << "inline function";
   }
   lRes << " (" << theExpr->get_loc() << ")";
-  return lRes.str().c_str();
+  return lRes.str();
 }
   
 

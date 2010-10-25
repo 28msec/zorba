@@ -37,54 +37,65 @@
 
 
 namespace zorba {
-bool
-ZorbaJsonParseIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  xqp_string        error_log;
-  bool              parseOK = true;
-  store::Item_t     strItem;
 
-  ZorbaJsonParseIteratorState *state;
+
+bool ZorbaJsonParseIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
+{
+  bool parseOK = true;
+  store::Item_t strItem;
+  zstring strval;
+  zstring error_log;
+
+  ZorbaJsonParseIteratorState* state;
   DEFAULT_STACK_INIT(ZorbaJsonParseIteratorState, state, planState);
 
   if( state->theBaseUri.empty() )
-    state->theBaseUri = theSctx->get_base_uri().getp();
+    state->theBaseUri = theSctx->get_base_uri();
 
   while (consumeNext(strItem, theChildren[0].getp(), planState))
   {
-    if( strItem->getStringValue()->empty() )
+    strItem->getStringValue2(strval);
+
+    if ( strval.empty() )
+    {
       ZORBA_ERROR_LOC_PARAM(API0060_CONV_JSON_PARSE,
                             loc,
-                            strItem->show(),
+                            strItem->show().c_str(),
                             "The string representation of the value passed was empty.");
+    }
 
-    parseOK = JSON_parse( strItem->getStringValue()->c_str(),
-                          strItem->getStringValue()->bytes(),
-                          result,
-                          state->theBaseUri.getStore(),
-                          error_log);
+    parseOK = JSON_parse(strval.c_str(),
+                         strval.size(),
+                         result,
+                         state->theBaseUri,
+                         error_log);
 
-    if(parseOK && result &&
-       result->isNode() &&
-       result->getNodeKind () == store::StoreConsts::elementNode)
+    if (parseOK && result &&
+        result->isNode() &&
+        result->getNodeKind() == store::StoreConsts::elementNode)
     {
       STACK_PUSH (true, state);
     }
     else
-      ZORBA_ERROR_LOC_PARAM(API0060_CONV_JSON_PARSE,
-                            loc,
-                            strItem->getStringValue()->c_str(),
-                            error_log.c_str());
+    {
+      ZORBA_ERROR_LOC_PARAM(API0060_CONV_JSON_PARSE, loc,
+                            strval.c_str(), error_log.c_str());
+    }
   }
 
   STACK_END (state);
 }
 
-bool
-ZorbaJsonSerializeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+
+bool ZorbaJsonSerializeIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
 {
-  store::Item_t     elemItem;
-  xqpStringStore_t  str, error_log;
+  store::Item_t elemItem;
+  zstring str;
+  zstring error_log;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -93,11 +104,17 @@ ZorbaJsonSerializeIterator::nextImpl(store::Item_t& result, PlanState& planState
   {
     if( !elemItem->isNode() ||
        elemItem->getNodeKind () != store::StoreConsts::elementNode)
-      ZORBA_ERROR_LOC_PARAM(API0062_CONV_JSON_PARAM, loc, elemItem->getStringValue()->c_str() , "");
+    {
+      ZORBA_ERROR_LOC_PARAM(API0062_CONV_JSON_PARAM, loc,
+                            elemItem->getStringValue().c_str() , "");
+    }
     else
     {
       if( !JSON_serialize(elemItem, str, error_log) )
-        ZORBA_ERROR_LOC_PARAM(API0061_CONV_JSON_SERIALIZE, loc, elemItem->getStringValue()->c_str() , error_log);
+      {
+        ZORBA_ERROR_LOC_PARAM(API0061_CONV_JSON_SERIALIZE, loc,
+                              elemItem->getStringValue().c_str() , error_log);
+      }
       else
       {
         GENV_ITEMFACTORY->createString(result, str);
@@ -109,52 +126,66 @@ ZorbaJsonSerializeIterator::nextImpl(store::Item_t& result, PlanState& planState
   STACK_END (state);
 }
 
-//Json:ParseML
-bool
-ZorbaJsonParseMLIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  xqp_string        error_log;
-  bool              parseOK = true;
-  store::Item_t     strItem;
 
-  ZorbaJsonParseMLIteratorState *state;
+//Json:ParseML
+bool ZorbaJsonParseMLIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
+{
+  bool parseOK = true;
+  store::Item_t strItem;
+  zstring strval;
+  zstring error_log;
+
+  ZorbaJsonParseMLIteratorState* state;
   DEFAULT_STACK_INIT(ZorbaJsonParseMLIteratorState, state, planState);
 
   if( state->theBaseUri.empty() )
-    state->theBaseUri = theSctx->get_base_uri().getp();
+    state->theBaseUri = theSctx->get_base_uri();
 
   while (consumeNext(strItem, theChildren[0].getp(), planState))
   {
-    if( strItem->getStringValue()->empty() )
+    strItem->getStringValue2(strval);
+
+    if( strval.empty() )
+    {
       ZORBA_ERROR_LOC_PARAM(API0063_CONV_JSON_ML_PARSE,
                             loc,
-                            strItem->show(),
+                            strItem->show().c_str(),
                             "The string representation of the value passed was empty.");
+    }
 
-    parseOK = JSON_ML_parse(strItem->getStringValue()->c_str(),
-                            strItem->getStringValue()->bytes(),
+    parseOK = JSON_ML_parse(strval.c_str(),
+                            strval.size(),
                             result,
-                            state->theBaseUri.getStore(),
+                            state->theBaseUri.c_str(),
                             error_log);
     if(parseOK && result &&
        result->isNode() &&
        result->getNodeKind () == store::StoreConsts::elementNode)
+    {
       STACK_PUSH (true, state);
+    }
     else
+    {
       ZORBA_ERROR_LOC_PARAM(API0063_CONV_JSON_ML_PARSE,
                             loc,
-                            strItem->getStringValue()->c_str(),
+                            strval.c_str(),
                             error_log.c_str());
+    }
   }
 
   STACK_END (state);
 }
 
-bool
-ZorbaJsonSerializeMLIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+
+bool ZorbaJsonSerializeMLIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
 {
-  store::Item_t     elemItem;
-  xqpStringStore_t  str, error_log;
+  store::Item_t elemItem;
+  zstring str;
+  zstring error_log;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -163,17 +194,21 @@ ZorbaJsonSerializeMLIterator::nextImpl(store::Item_t& result, PlanState& planSta
   {
     if(!elemItem->isNode() ||
        elemItem->getNodeKind () != store::StoreConsts::elementNode)
+    {
       ZORBA_ERROR_LOC_PARAM(API0065_CONV_JSON_ML_PARAM,
                             loc,
-                            elemItem->getStringValue()->c_str(),
+                            elemItem->getStringValue().c_str(),
                             "");
+    }
     else
     {
       if( !JSON_ML_serialize(elemItem, str, error_log) )
+      {
         ZORBA_ERROR_LOC_PARAM(API0064_CONV_JSON_ML_SERIALIZE,
                               loc,
-                              elemItem->getStringValue()->c_str(),
-                              error_log);
+                              elemItem->getStringValue().c_str(),
+                              error_log.c_str());
+      }
       else
       {
         GENV_ITEMFACTORY->createString(result, str);
@@ -190,11 +225,12 @@ ZorbaJsonSerializeMLIterator::nextImpl(store::Item_t& result, PlanState& planSta
   CSV to XML convertor
 **************************************/
 
-bool   csv_read_line(unicode_codepoint_iterator *csv_it, //IN-OUT
-                     checked_vector<uint32_t> &separator_cp, //IN
-                     checked_vector<uint32_t> &quote_escape_cp, //IN
-                     checked_vector<uint32_t> &quote_char_cp, //IN
-                     checked_vector<xqpString>   &line)//OUT
+bool csv_read_line(
+    unicode_codepoint_iterator* csv_it, //IN-OUT
+    checked_vector<uint32_t>& separator_cp, //IN
+    checked_vector<uint32_t>& quote_escape_cp, //IN
+    checked_vector<uint32_t>& quote_char_cp, //IN
+    checked_vector<xqpString>& line)//OUT
 {
   line.clear();
   //read all fields until new line
@@ -271,13 +307,14 @@ xqpString compute_absolute_filename(
   xqpString abs_filename;
   //compute the absolute file name from csv file name and xq location
   const char* fnstring = csv_filename.c_str();
+
   if(strstr(fnstring, "://"))
   {
     //is an URI
-    xqpStringStore_t csv_store = csv_filename.getStore();
-    xqpStringStore_t tmp;
+    zstring csv_store = csv_filename.getStore()->str();
+    zstring tmp;
     URI::decode_file_URI(csv_store, tmp);
-    abs_filename = tmp.getp();
+    abs_filename = tmp.str();
   }
   else
   {
@@ -332,7 +369,7 @@ ZorbaCSV2XMLIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
                           loc,
                           "Missing param csv", "");
   }
-  state->csv = result->getStringValue().getp();
+  state->csv = result->getStringValue().str();
   state->csv_it = string_codepoints_iterator(state->csv.c_str());
   //read first_row_is_header
   if(!consumeNext(result, theChildren[1].getp(), planState))
@@ -344,14 +381,14 @@ ZorbaCSV2XMLIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   state->first_row_is_header = result->getBooleanValue();
   //read separator
   {
-    xqpString         separator;
+    xqpString separator;
     if(!consumeNext(result, theChildren[2].getp(), planState))
     {
       ZORBA_ERROR_LOC_PARAM(API0071_CONV_CSV2XML_PARAM,
                             loc,
                             "Missing param separator", "");
     }
-    separator = result->getStringValue().getp();
+    separator = result->getStringValue().str();
     state->separator_cp = separator.getCodepoints();
     if(state->separator_cp.size() < 1)
     {
@@ -362,26 +399,26 @@ ZorbaCSV2XMLIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   }
   //read quote_char
   {
-    xqpString         quote_char;
+    xqpString quote_char;
     if(!consumeNext(result, theChildren[3].getp(), planState))
     {
       ZORBA_ERROR_LOC_PARAM(API0071_CONV_CSV2XML_PARAM,
                             loc,
                             "Missing param quote_escape", "");
     }
-    quote_char = result->getStringValue().getp();
+    quote_char = result->getStringValue().str();
     state->quote_char_cp = quote_char.getCodepoints();
   }
   {
    //read quote_escape
-    xqpString         quote_escape;
+    xqpString quote_escape;
     if(!consumeNext(result, theChildren[4].getp(), planState))
     {
       ZORBA_ERROR_LOC_PARAM(API0071_CONV_CSV2XML_PARAM,
                             loc,
                             "Missing param quote_char", "");
     }
-    quote_escape = result->getStringValue().getp();
+    quote_escape = result->getStringValue().str();
     state->quote_escape_cp = quote_escape.getCodepoints();
   }
   //read row_node
@@ -399,7 +436,7 @@ ZorbaCSV2XMLIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
                           "Missing param default_column_node", "");
   }
 
-  state->baseUri = theSctx->get_base_uri().getp();
+  state->baseUri = theSctx->get_base_uri();
 
   if(state->first_row_is_header)
   {
@@ -416,9 +453,9 @@ ZorbaCSV2XMLIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
       store::Item_t   qn;
       GENV_ITEMFACTORY->createQName(qn, 
           state->default_column_node_name != NULL ? 
-                state->default_column_node_name->getNamespace()->c_str() : "",
+                state->default_column_node_name->getNamespace().c_str() : "",
           state->default_column_node_name != NULL ? 
-                state->default_column_node_name->getPrefix()->c_str() : "",
+                state->default_column_node_name->getPrefix().c_str() : "",
           (*line_it).c_str());
       state->header_qnames.push_back(qn);
     }
@@ -429,8 +466,8 @@ ZorbaCSV2XMLIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
                       state->quote_escape_cp, state->quote_char_cp, line))
   {
     {
-      store::Item_t   row_node_name_copy = state->row_node_name;
-      xqpStringStore_t    baseUri_copy = state->baseUri.getStore();
+      store::Item_t row_node_name_copy = state->row_node_name;
+      zstring baseUri_copy = state->baseUri;
       typeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
       GENV_ITEMFACTORY->createElementNode(result, rootNode.getp(), -1, 
                                           row_node_name_copy, typeName, 
@@ -438,7 +475,7 @@ ZorbaCSV2XMLIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
                                           baseUri_copy);
     }
     unsigned int i;
-    for(i=0;i<line.size();i++)
+    for(i = 0; i < line.size(); i++)
     {
       store::Item_t   fieldNode;
       store::Item_t   textNode;
@@ -451,7 +488,7 @@ ZorbaCSV2XMLIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
                               loc);
         }
         column_node_name = state->header_qnames[i];
-        xqpStringStore_t    baseUri_copy = state->baseUri.getStore();
+        zstring baseUri_copy = state->baseUri;
         typeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
         GENV_ITEMFACTORY->createElementNode(fieldNode, result.getp(), -1, 
                                             column_node_name, typeName, 
@@ -461,14 +498,15 @@ ZorbaCSV2XMLIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
       else
       {
         column_node_name = state->default_column_node_name;
-        xqpStringStore_t    baseUri_copy = state->baseUri.getStore();
+        zstring baseUri_copy = state->baseUri;
         typeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
         GENV_ITEMFACTORY->createElementNode(fieldNode, result.getp(), -1, 
                                             column_node_name, typeName, 
                                             false, false, ns_bindings, 
                                             baseUri_copy);
       }
-      xqpStringStore_t  texttext = line[i].getStore();
+
+      zstring texttext = line[i].getStore()->str();
       GENV_ITEMFACTORY->createTextNode(textNode, fieldNode, -1, texttext);
     }
     STACK_PUSH (true, state);
@@ -478,9 +516,10 @@ ZorbaCSV2XMLIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
 }
 
-bool
-ZorbaCSV2XMLFromFileIterator::nextImpl(store::Item_t& result, 
-                                       PlanState& planState) const
+
+bool ZorbaCSV2XMLFromFileIterator::nextImpl(
+    store::Item_t& result, 
+    PlanState& planState) const
 {
   store::Item_t   rootNode;
   store::Item_t   typeName;
@@ -499,10 +538,10 @@ ZorbaCSV2XMLFromFileIterator::nextImpl(store::Item_t& result,
                             loc,
                             "Missing param csv", "");
     }
-    csv_filename = result->getStringValue().getp();
+    csv_filename = result->getStringValue().str();
     //compute the absolute file name from csv file name and xq location
     xqpString   abs_filename;
-    abs_filename = compute_absolute_filename(csv_filename, loc.getFilename());
+    abs_filename = compute_absolute_filename(csv_filename, loc.getFilename().str());
     state->csv_stream.open(abs_filename.c_str(), 
                           std::ios_base::in | std::ios_base::binary);
     if(!state->csv_stream.is_open())
@@ -523,14 +562,14 @@ ZorbaCSV2XMLFromFileIterator::nextImpl(store::Item_t& result,
   state->first_row_is_header = result->getBooleanValue();
   //read separator
   {
-    xqpString         separator;
+    xqpString separator;
     if(!consumeNext(result, theChildren[2].getp(), planState))
     {
       ZORBA_ERROR_LOC_PARAM(API0071_CONV_CSV2XML_PARAM,
                             loc,
                             "Missing param separator", "");
     }
-    separator = result->getStringValue().getp();
+    separator = result->getStringValue().str();
     state->separator_cp = separator.getCodepoints();
     if(state->separator_cp.size() < 1)
     {
@@ -540,7 +579,7 @@ ZorbaCSV2XMLFromFileIterator::nextImpl(store::Item_t& result,
     }
   }
   {
-    xqpString         quote_char;
+    xqpString quote_char;
     //read quote_char
     if(!consumeNext(result, theChildren[3].getp(), planState))
     {
@@ -548,19 +587,19 @@ ZorbaCSV2XMLFromFileIterator::nextImpl(store::Item_t& result,
                             loc,
                             "Missing param quote_escape", "");
     }
-    quote_char = result->getStringValue().getp();
+    quote_char = result->getStringValue().str();
     state->quote_char_cp = quote_char.getCodepoints();
   }
   {
     //read quote_escape
-    xqpString         quote_escape;
+    xqpString quote_escape;
     if(!consumeNext(result, theChildren[4].getp(), planState))
     {
       ZORBA_ERROR_LOC_PARAM(API0071_CONV_CSV2XML_PARAM,
                             loc,
                             "Missing param quote_char", "");
     }
-    quote_escape = result->getStringValue().getp();
+    quote_escape = result->getStringValue().str();
     state->quote_escape_cp = quote_escape.getCodepoints();
   }
   //read row_node
@@ -578,7 +617,7 @@ ZorbaCSV2XMLFromFileIterator::nextImpl(store::Item_t& result,
                           "Missing param default_column_node", "");
   }
 
-  state->baseUri = theSctx->get_base_uri().getp();
+  state->baseUri = theSctx->get_base_uri();
 
   if(state->first_row_is_header)
   {
@@ -595,9 +634,9 @@ ZorbaCSV2XMLFromFileIterator::nextImpl(store::Item_t& result,
       store::Item_t   qn;
       GENV_ITEMFACTORY->createQName(qn, 
         state->default_column_node_name != NULL ? 
-            state->default_column_node_name->getNamespace()->c_str() : "", 
+            state->default_column_node_name->getNamespace().c_str() : "", 
         state->default_column_node_name != NULL ? 
-            state->default_column_node_name->getPrefix()->c_str() : "",
+            state->default_column_node_name->getPrefix().c_str() : "",
         (*line_it).c_str());
       state->header_qnames.push_back(qn);
     }
@@ -609,7 +648,7 @@ ZorbaCSV2XMLFromFileIterator::nextImpl(store::Item_t& result,
   {
     {
       store::Item_t   row_node_name_copy = state->row_node_name;
-      xqpStringStore_t    baseUri_copy = state->baseUri.getStore();
+      zstring baseUri_copy = state->baseUri;
       typeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
       GENV_ITEMFACTORY->createElementNode(result, rootNode.getp(), -1, 
                                           row_node_name_copy, typeName, 
@@ -630,7 +669,7 @@ ZorbaCSV2XMLFromFileIterator::nextImpl(store::Item_t& result,
                               loc);
         }
         column_node_name = state->header_qnames[i];
-        xqpStringStore_t    baseUri_copy = state->baseUri.getStore();
+        zstring baseUri_copy = state->baseUri;
         typeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
         GENV_ITEMFACTORY->createElementNode(fieldNode, result.getp(), -1, 
                                             column_node_name, typeName, 
@@ -640,14 +679,15 @@ ZorbaCSV2XMLFromFileIterator::nextImpl(store::Item_t& result,
       else
       {
         column_node_name = state->default_column_node_name;
-        xqpStringStore_t    baseUri_copy = state->baseUri.getStore();
+        zstring baseUri_copy = state->baseUri;
         typeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
         GENV_ITEMFACTORY->createElementNode(fieldNode, result.getp(), -1, 
                                             column_node_name, typeName, 
                                             false, false, ns_bindings, 
                                             baseUri_copy);
       }
-      xqpStringStore_t  texttext = line[i].getStore();
+
+      zstring texttext = line[i].getStore()->str();
       GENV_ITEMFACTORY->createTextNode(textNode, fieldNode, -1, texttext);
     }
     STACK_PUSH (true, state);
@@ -727,7 +767,7 @@ ZorbaTXT2XMLIterator::nextImpl(store::Item_t& result,
                           loc,
                           "Missing param csv", "");
   }
-  state->csv = result->getStringValue().getp();
+  state->csv = result->getStringValue().str();
   state->csv_it = string_codepoints_iterator(state->csv.c_str());
   //read first_row_is_header
   if(!consumeNext(result, theChildren[1].getp(), planState))
@@ -739,12 +779,12 @@ ZorbaTXT2XMLIterator::nextImpl(store::Item_t& result,
   state->first_row_is_header = result->getBooleanValue();
   //read columns positions
   {
-    xqpStringStore_t  strpos;
-    int         pos;
+    int pos;
     while(consumeNext(result, theChildren[2].getp(), planState))
     {
-      strpos = result->getStringValue();
-      sscanf(strpos->c_str(), "%d", &pos);
+      zstring strpos;
+      result->getStringValue2(strpos);
+      sscanf(strpos.c_str(), "%d", &pos);
       if(pos <= 0)
       {
         ZORBA_ERROR_LOC_PARAM(API0071_CONV_CSV2XML_PARAM,
@@ -776,7 +816,7 @@ ZorbaTXT2XMLIterator::nextImpl(store::Item_t& result,
                           "Missing param default_column_node", "");
   }
 
-  state->baseUri = theSctx->get_base_uri().getp();
+  state->baseUri = theSctx->get_base_uri();
 
   if(state->first_row_is_header)
   {
@@ -792,9 +832,9 @@ ZorbaTXT2XMLIterator::nextImpl(store::Item_t& result,
       store::Item_t   qn;
       GENV_ITEMFACTORY->createQName(qn, 
         state->default_column_node_name != NULL ? 
-            state->default_column_node_name->getNamespace()->c_str() : "", 
+            state->default_column_node_name->getNamespace().c_str() : "", 
         state->default_column_node_name != NULL ? 
-            state->default_column_node_name->getPrefix()->c_str() : "",
+            state->default_column_node_name->getPrefix().c_str() : "",
         (*line_it).c_str());
       state->header_qnames.push_back(qn);
     }
@@ -805,7 +845,7 @@ ZorbaTXT2XMLIterator::nextImpl(store::Item_t& result,
   {
     {
       store::Item_t   row_node_name_copy = state->row_node_name;
-      xqpStringStore_t    baseUri_copy = state->baseUri.getStore();
+      zstring baseUri_copy = state->baseUri;
       typeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
       GENV_ITEMFACTORY->createElementNode(result, rootNode.getp(), -1, 
                                           row_node_name_copy, typeName, 
@@ -826,7 +866,7 @@ ZorbaTXT2XMLIterator::nextImpl(store::Item_t& result,
                               loc);
         }
         column_node_name = state->header_qnames[i];
-        xqpStringStore_t    baseUri_copy = state->baseUri.getStore();
+        zstring baseUri_copy = state->baseUri;
         typeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
         GENV_ITEMFACTORY->createElementNode(fieldNode, result.getp(), -1, 
                                             column_node_name, typeName, 
@@ -836,14 +876,15 @@ ZorbaTXT2XMLIterator::nextImpl(store::Item_t& result,
       else
       {
         column_node_name = state->default_column_node_name;
-        xqpStringStore_t    baseUri_copy = state->baseUri.getStore();
+        zstring baseUri_copy = state->baseUri;
         typeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
         GENV_ITEMFACTORY->createElementNode(fieldNode, result.getp(), -1, 
                                             column_node_name, typeName, 
                                             false, false, ns_bindings, 
                                             baseUri_copy);
       }
-      xqpStringStore_t  texttext = line[i].getStore();
+
+      zstring texttext = line[i].getStore()->str();
       GENV_ITEMFACTORY->createTextNode(textNode, fieldNode, -1, texttext);
     }
     STACK_PUSH (true, state);
@@ -874,10 +915,10 @@ ZorbaTXT2XMLFromFileIterator::nextImpl(store::Item_t& result,
                             loc,
                             "Missing param csv", "");
     }
-    csv_filename = result->getStringValue().getp();
+    csv_filename = result->getStringValue().str();
     //compute the absolute file name from csv file name and xq location
-    xqpString   abs_filename;
-    abs_filename = compute_absolute_filename(csv_filename, loc.getFilename());
+    xqpString abs_filename;
+    abs_filename = compute_absolute_filename(csv_filename, loc.getFilename().str());
     state->csv_stream.open(abs_filename.c_str(), 
                           std::ios_base::in | std::ios_base::binary);
     if(!state->csv_stream.is_open())
@@ -888,6 +929,7 @@ ZorbaTXT2XMLFromFileIterator::nextImpl(store::Item_t& result,
     }
     state->csv_it = ifstream_codepoints_iterator(&state->csv_stream);
   }
+
   //read first_row_is_header
   if(!consumeNext(result, theChildren[1].getp(), planState))
   {
@@ -898,12 +940,12 @@ ZorbaTXT2XMLFromFileIterator::nextImpl(store::Item_t& result,
   state->first_row_is_header = result->getBooleanValue();
   //read columns positions
   {
-    xqpStringStore_t  strpos;
-    int         pos;
+    int pos;
     while(consumeNext(result, theChildren[2].getp(), planState))
     {
-      strpos = result->getStringValue();
-      sscanf(strpos->c_str(), "%d", &pos);
+      zstring strpos;
+      result->getStringValue2(strpos);
+      sscanf(strpos.c_str(), "%d", &pos);
       if(pos <= 0)
       {
         ZORBA_ERROR_LOC_PARAM(API0071_CONV_CSV2XML_PARAM,
@@ -935,7 +977,7 @@ ZorbaTXT2XMLFromFileIterator::nextImpl(store::Item_t& result,
                           "Missing param default_column_node", "");
   }
 
-  state->baseUri = theSctx->get_base_uri().getp();
+  state->baseUri = theSctx->get_base_uri();
 
   if(state->first_row_is_header)
   {
@@ -951,9 +993,9 @@ ZorbaTXT2XMLFromFileIterator::nextImpl(store::Item_t& result,
       store::Item_t   qn;
       GENV_ITEMFACTORY->createQName(qn, 
         state->default_column_node_name != NULL ? 
-            state->default_column_node_name->getNamespace()->c_str() : "",
+            state->default_column_node_name->getNamespace().c_str() : "",
         state->default_column_node_name != NULL ? 
-            state->default_column_node_name->getPrefix()->c_str() : "",
+            state->default_column_node_name->getPrefix().c_str() : "",
         (*line_it).c_str());
       state->header_qnames.push_back(qn);
     }
@@ -964,7 +1006,7 @@ ZorbaTXT2XMLFromFileIterator::nextImpl(store::Item_t& result,
   {
     {
       store::Item_t   row_node_name_copy = state->row_node_name;
-      xqpStringStore_t    baseUri_copy = state->baseUri.getStore();
+      zstring baseUri_copy = state->baseUri;
       typeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
       GENV_ITEMFACTORY->createElementNode(result, rootNode.getp(), -1, 
                                           row_node_name_copy, typeName, 
@@ -985,7 +1027,7 @@ ZorbaTXT2XMLFromFileIterator::nextImpl(store::Item_t& result,
                               loc);
         }
         column_node_name = state->header_qnames[i];
-        xqpStringStore_t    baseUri_copy = state->baseUri.getStore();
+        zstring baseUri_copy = state->baseUri;
         typeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
         GENV_ITEMFACTORY->createElementNode(fieldNode, result.getp(), 
                                             -1, column_node_name, typeName, 
@@ -995,14 +1037,15 @@ ZorbaTXT2XMLFromFileIterator::nextImpl(store::Item_t& result,
       else
       {
         column_node_name = state->default_column_node_name;
-        xqpStringStore_t    baseUri_copy = state->baseUri.getStore();
+        zstring baseUri_copy = state->baseUri;
         typeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
         GENV_ITEMFACTORY->createElementNode(fieldNode, result.getp(), -1, 
                                             column_node_name, typeName, 
                                             false, false, ns_bindings, 
                                             baseUri_copy);
       }
-      xqpStringStore_t  texttext = line[i].getStore();
+
+      zstring texttext = line[i].getStore()->str();
       GENV_ITEMFACTORY->createTextNode(textNode, fieldNode, -1, texttext);
     }
     STACK_PUSH (true, state);
@@ -1033,7 +1076,7 @@ void compile_all_xpaths(static_context *sctx,
       StaticContext_t     child_ctx = parent_sctx.createChildContext();
       Zorba_CompilerHints_t   hints;
       xQuery = engine->createQuery();
-      zorba::String   qString((*xpaths_it).getStore());
+      zorba::String   qString((*xpaths_it).getStore()->str());
       try{
         xQuery->compile(qString, child_ctx, hints);
       }catch(ZorbaException &e)
@@ -1048,12 +1091,14 @@ void compile_all_xpaths(static_context *sctx,
   }
 }
 
-bool csv_write_line(store::Item_t node, 
-                    checked_vector<zorba::XQuery_t> &compiled_xpaths,
-                    bool write_header, 
-                    checked_vector<xqpString>  &line,
-                    checked_vector<xqpString>  &header,
-                    const QueryLoc           &loc)
+
+bool csv_write_line(
+    store::Item_t node, 
+    checked_vector<zorba::XQuery_t>& compiled_xpaths,
+    bool write_header, 
+    checked_vector<xqpString>& line,
+    checked_vector<xqpString>& header,
+    const QueryLoc& loc)
 {
   line.clear();
   header.clear();
@@ -1066,7 +1111,9 @@ bool csv_write_line(store::Item_t node,
     zorba::Item     column_item;
     store::Item*    store_column;
     zorba::Iterator_t   result_it;
-    for(xQuery_it = compiled_xpaths.begin(); xQuery_it != compiled_xpaths.end(); xQuery_it++)
+    for(xQuery_it = compiled_xpaths.begin();
+        xQuery_it != compiled_xpaths.end();
+        xQuery_it++)
     {
       zorba::DynamicContext* dctx = (*xQuery_it)->getDynamicContext();
       dctx->setContextItem(node_item);
@@ -1078,18 +1125,19 @@ bool csv_write_line(store::Item_t node,
         store_column = Unmarshaller::getInternalItem(column_item);
         if(write_header)
         {
-          xqpStringStore_t    column_name;
-          store::NodeKind   column_kind = store_column->getNodeKind();
+          zstring column_name;
+          store::NodeKind column_kind = store_column->getNodeKind();
           if((column_kind == store::StoreConsts::elementNode) ||
             (column_kind == store::StoreConsts::attributeNode))
           {
-            store::Item_t       element_name = store_column->getNodeName();
+            store::Item_t element_name = store_column->getNodeName();
             column_name = element_name->getLocalName();
           }
-          header.push_back(xqpString(column_name));
+          header.push_back(xqpString(column_name.str()));
         }
-        xqpStringStore_t    column_value = store_column->getStringValue();
-        line.push_back(xqpString(column_value));
+        zstring column_value;
+        store_column->getStringValue2(column_value);
+        line.push_back(xqpString(column_value.str()));
         nr_elems++;
       }
       result_it->close();
@@ -1105,27 +1153,32 @@ bool csv_write_line(store::Item_t node,
     //iterate through all children of the node and get the string values
     store::Iterator_t   children = node->getChildren();
     store::Item_t       store_column;
+
     while(children->next(store_column))
     {
-      store::NodeKind   column_kind = store_column->getNodeKind();
+      store::NodeKind column_kind = store_column->getNodeKind();
       if(column_kind != store::StoreConsts::elementNode)
         continue;
       if(write_header)
       {
-        store::Item_t       element_name = store_column->getNodeName();
-        xqpStringStore_t    column_name = element_name->getLocalName();
-        header.push_back(xqpString(column_name));
+        store::Item_t element_name = store_column->getNodeName();
+        const zstring& column_name = element_name->getLocalName();
+        header.push_back(xqpString(column_name.str()));
       }
-      xqpStringStore_t    column_value = store_column->getStringValue();
-      line.push_back(xqpString(column_value));
+      zstring column_value;
+      store_column->getStringValue2(column_value);
+      line.push_back(xqpString(column_value.str()));
     }
   }
   return true;
 }
 
-xqpString csv_quote_field(xqpString &field, 
-                          xqpString &separator,
-                          xqpString &quote_char, xqpString &quote_escape)
+
+xqpString csv_quote_field(
+    xqpString &field, 
+    xqpString &separator,
+    xqpString &quote_char,
+    xqpString &quote_escape)
 {
   if((field.indexOf(separator) >= 0) || (field.indexOf(quote_char) >= 0) ||
      (field.indexOf("\n") >= 0) || (field.indexOf("\r") >= 0))
@@ -1261,11 +1314,11 @@ ZorbaXML2CSVIterator::nextImpl(store::Item_t& result,
     //read all parameters
     //read xpaths
     {
-      xqpStringStore_t  strxpath;
       while(consumeNext(result, theChildren[1].getp(), planState))
       {
-        strxpath = result->getStringValue();
-        xpaths.push_back(xqpString(strxpath));
+        zstring strxpath;
+        result->getStringValue2(strxpath);
+        xpaths.push_back(xqpString(strxpath.str()));
       }
     }
     //read first_row_is_header
@@ -1283,7 +1336,7 @@ ZorbaXML2CSVIterator::nextImpl(store::Item_t& result,
                             loc,
                             "Missing param separator", "");
     }
-    separator = result->getStringValue().getp();
+    separator = result->getStringValue().str();
     if(separator.empty())
     {
       ZORBA_ERROR_LOC_PARAM(API0073_CONV_XML2CSV_PARAM,
@@ -1297,7 +1350,7 @@ ZorbaXML2CSVIterator::nextImpl(store::Item_t& result,
                             loc,
                             "Missing param quote_escape", "");
     }
-    quote_char = result->getStringValue().getp();
+    quote_char = result->getStringValue().str();
     if(quote_char.empty())
       quote_char = "\"";
     //read quote_escape
@@ -1307,7 +1360,7 @@ ZorbaXML2CSVIterator::nextImpl(store::Item_t& result,
                             loc,
                             "Missing param quote_char", "");
     }
-    quote_escape = result->getStringValue().getp();
+    quote_escape = result->getStringValue().str();
     if(quote_escape.empty())
       quote_escape = quote_char + quote_char;
 
@@ -1339,7 +1392,7 @@ ZorbaXML2CSVIterator::nextImpl(store::Item_t& result,
     }
 
 
-    xqpStringStore_t    result_str_t = result_string.getStore();
+    zstring result_str_t = result_string.getStore()->str();
     GENV_ITEMFACTORY->createString(result, result_str_t);
   }
   STACK_PUSH (true, state);
@@ -1374,10 +1427,10 @@ ZorbaXML2CSVFILEIterator::nextImpl(store::Item_t& result,
                               loc,
                               "Missing param output file name", "");
       }
-      csv_filename = result->getStringValue().getp();
+      csv_filename = result->getStringValue().str();
       xqpString   abs_filename;
       //compute the absolute file name from csv file name and xq location
-      abs_filename = compute_absolute_filename(csv_filename, loc.getFilename());
+      abs_filename = compute_absolute_filename(csv_filename, loc.getFilename().str());
       output_stream.open(abs_filename.c_str(), 
               std::ios_base::out | std::ios_base::trunc | std::ios_base::binary);
       if(!output_stream.is_open())
@@ -1389,11 +1442,11 @@ ZorbaXML2CSVFILEIterator::nextImpl(store::Item_t& result,
     }
     //read xpaths
     {
-      xqpStringStore_t  strxpath;
       while(consumeNext(result, theChildren[2].getp(), planState))
       {
-        strxpath = result->getStringValue();
-        xpaths.push_back(xqpString(strxpath));
+        zstring strxpath;
+        result->getStringValue2(strxpath);
+        xpaths.push_back(xqpString(strxpath.str()));
       }
     }
     //read first_row_is_header
@@ -1411,7 +1464,7 @@ ZorbaXML2CSVFILEIterator::nextImpl(store::Item_t& result,
                             loc,
                             "Missing param separator", "");
     }
-    separator = result->getStringValue().getp();
+    separator = result->getStringValue().str();
     if(separator.empty())
     {
       ZORBA_ERROR_LOC_PARAM(API0073_CONV_XML2CSV_PARAM,
@@ -1425,7 +1478,7 @@ ZorbaXML2CSVFILEIterator::nextImpl(store::Item_t& result,
                             loc,
                             "Missing param quote_escape", "");
     }
-    quote_char = result->getStringValue().getp();
+    quote_char = result->getStringValue().str();
     if(quote_char.empty())
       quote_char = "\"";
     //read quote_escape
@@ -1435,7 +1488,8 @@ ZorbaXML2CSVFILEIterator::nextImpl(store::Item_t& result,
                             loc,
                             "Missing param quote_char", "");
     }
-    quote_escape = result->getStringValue().getp();
+
+    quote_escape = result->getStringValue().str();
     if(quote_escape.empty())
       quote_escape = quote_char + quote_char;
 
@@ -1456,10 +1510,13 @@ ZorbaXML2CSVFILEIterator::nextImpl(store::Item_t& result,
                             "Cannot transform node into csv line ", 
                             (line_index+1));
       }
+
       if((line_index == 0) && first_row_is_header)
+      {
         csv_write_line_to_file(header, 
-                                 separator, quote_char, quote_escape,
-                                 output_stream);
+                               separator, quote_char, quote_escape,
+                               output_stream);
+      }
       csv_write_line_to_file(line, 
                                separator, quote_char, quote_escape,
                                output_stream);
@@ -1474,9 +1531,9 @@ ZorbaXML2CSVFILEIterator::nextImpl(store::Item_t& result,
 
 }
 
-bool
-ZorbaXML2TXTIterator::nextImpl(store::Item_t& result, 
-                               PlanState& planState) const
+bool ZorbaXML2TXTIterator::nextImpl(
+    store::Item_t& result, 
+    PlanState& planState) const
 {
   ZorbaXML2TXTIteratorState *state;
   DEFAULT_STACK_INIT(ZorbaXML2TXTIteratorState, state, planState);
@@ -1491,11 +1548,11 @@ ZorbaXML2TXTIterator::nextImpl(store::Item_t& result,
 
     //read xpaths
     {
-      xqpStringStore_t  strxpath;
       while(consumeNext(result, theChildren[1].getp(), planState))
       {
-        strxpath = result->getStringValue();
-        xpaths.push_back(xqpString(strxpath));
+        zstring strxpath;
+        result->getStringValue2(strxpath);
+        xpaths.push_back(xqpString(strxpath.str()));
       }
     }
     //read first_row_is_header
@@ -1505,14 +1562,16 @@ ZorbaXML2TXTIterator::nextImpl(store::Item_t& result,
                             loc,
                             "Missing param first_row_is_header", "");
     }
+
     first_row_is_header = result->getBooleanValue();
+
     {
-      xqpStringStore_t  strpos;
-      int         pos;
+      int  pos;
       while(consumeNext(result, theChildren[3].getp(), planState))
       {
-        strpos = result->getStringValue();
-        sscanf(strpos->c_str(), "%d", &pos);
+        zstring strpos;
+        result->getStringValue2(strpos);
+        sscanf(strpos.c_str(), "%d", &pos);
         if(pos <= 0)
         {
           ZORBA_ERROR_LOC_PARAM(API0073_CONV_XML2CSV_PARAM,
@@ -1520,9 +1579,11 @@ ZorbaXML2TXTIterator::nextImpl(store::Item_t& result,
                                 "Field lengths must be positive integers ", 
                                 pos);
         }
+
         field_lengths.push_back((unsigned int)pos);
       }
-      if(field_lengths.size() < 1)
+
+      if (field_lengths.size() < 1)
       {
         ZORBA_ERROR_LOC_PARAM(API0073_CONV_XML2CSV_PARAM,
                               loc,
@@ -1557,7 +1618,7 @@ ZorbaXML2TXTIterator::nextImpl(store::Item_t& result,
     }
 
 
-    xqpStringStore_t    result_str_t = result_string.getStore();
+    zstring result_str_t = result_string.getStore()->str();
     GENV_ITEMFACTORY->createString(result, result_str_t);
   }
   STACK_PUSH (true, state);
@@ -1590,10 +1651,10 @@ ZorbaXML2TXTFILEIterator::nextImpl(store::Item_t& result,
                               loc,
                               "Missing param output file name", "");
       }
-      csv_filename = result->getStringValue().getp();
+      csv_filename = result->getStringValue().str();
       xqpString   abs_filename;
       //compute the absolute file name from csv file name and xq location
-      abs_filename = compute_absolute_filename(csv_filename, loc.getFilename());
+      abs_filename = compute_absolute_filename(csv_filename, loc.getFilename().str());
       output_stream.open(abs_filename.c_str(), 
             std::ios_base::out | std::ios_base::trunc | std::ios_base::binary);
       if(!output_stream.is_open())
@@ -1606,13 +1667,14 @@ ZorbaXML2TXTFILEIterator::nextImpl(store::Item_t& result,
 
     //read xpaths
     {
-      xqpStringStore_t  strxpath;
       while(consumeNext(result, theChildren[2].getp(), planState))
       {
-        strxpath = result->getStringValue();
-        xpaths.push_back(xqpString(strxpath));
+        zstring strxpath;
+        result->getStringValue2(strxpath);
+        xpaths.push_back(xqpString(strxpath.str()));
       }
     }
+
     //read first_row_is_header
     if(!consumeNext(result, theChildren[3].getp(), planState))
     {
@@ -1620,14 +1682,16 @@ ZorbaXML2TXTFILEIterator::nextImpl(store::Item_t& result,
                             loc,
                             "Missing param first_row_is_header", "");
     }
+
     first_row_is_header = result->getBooleanValue();
+
     {
-      xqpStringStore_t  strpos;
-      int         pos;
+      int pos;
       while(consumeNext(result, theChildren[4].getp(), planState))
       {
-        strpos = result->getStringValue();
-        sscanf(strpos->c_str(), "%d", &pos);
+        zstring strpos;
+        result->getStringValue2(strpos);
+        sscanf(strpos.c_str(), "%d", &pos);
         if(pos <= 0)
         {
           ZORBA_ERROR_LOC_PARAM(API0073_CONV_XML2CSV_PARAM,
@@ -1635,8 +1699,10 @@ ZorbaXML2TXTFILEIterator::nextImpl(store::Item_t& result,
                                 "Field lengths must be positive integers ", 
                                 pos);
         }
+
         field_lengths.push_back((unsigned int)pos);
       }
+
       if(field_lengths.size() < 1)
       {
         ZORBA_ERROR_LOC_PARAM(API0073_CONV_XML2CSV_PARAM,

@@ -52,7 +52,7 @@ NodeTypeInfo::~NodeTypeInfo()
   if (theChildFlags & XmlNode::IsTyped)
     theTextContent.setValue(NULL);
   else
-    theTextContent.setText(NULL); 
+    theTextContent.destroyText(); 
 }
 
 
@@ -79,7 +79,7 @@ NodeTypeInfo& NodeTypeInfo::operator=(const NodeTypeInfo& other)
   if (theChildFlags & XmlNode::IsTyped)
     theTextContent.setValue(NULL);
   else
-    theTextContent.setText(NULL);
+    theTextContent.destroyText();
 
   theChildFlags = other.theChildFlags;
   
@@ -101,14 +101,14 @@ void NodeTypeInfo::transfer(NodeTypeInfo& other)
   if (theChildFlags & XmlNode::IsTyped)
     theTextContent.setValue(NULL);
   else
-    theTextContent.setText(NULL);
+    theTextContent.destroyText();
   
   theChildFlags = other.theChildFlags;
 
   if (theChildFlags & XmlNode::IsTyped)
     theTextContent.setValue(other.theTextContent.releaseValue());
   else
-    theTextContent.setText(other.theTextContent.releaseText());
+    theTextContent.setText(other.theTextContent);
 }
 
 
@@ -244,8 +244,11 @@ void XmlNode::attach(
         // parent node.
         if (baseUriAttr)
         {
-          xqpStringStore_t absuri = parent->getBaseURI();
-          xqpStringStore_t reluri = baseUriAttr->getBaseURI();
+          zstring absuri;
+          zstring reluri;
+          parent->getBaseURI(absuri);
+          baseUriAttr->getBaseURI(reluri);
+
           elem->adjustBaseUriProperty(hiddenBaseUriAttr, absuri, reluri);
         }
         // else if N does not have an explicit base uri attribute, then N was the
@@ -346,7 +349,7 @@ void XmlNode::detach() throw()
     }
     case store::StoreConsts::textNode:
     {
-      reinterpret_cast<TextNode*>(this)->resetTyped();
+      reinterpret_cast<TextNode*>(this)->revertToTextContent();
 
       theParent->removeChild(this);
       theParent = NULL;
@@ -359,12 +362,11 @@ void XmlNode::detach() throw()
       // If the baseUri property of N is inherited from its ancestors, make a
       // local copy of it, before disconnecting N from its parent.
       bool localBaseUri;
-      xqpStringStore_t baseUri = getBaseURIInternal(localBaseUri);
-      if (!localBaseUri &&
-          baseUri != NULL &&
-          !baseUri->empty())
+      zstring baseUri;
+      getBaseURIInternal(baseUri, localBaseUri);
+      if (!localBaseUri && !baseUri.empty())
       {
-        xqpStringStore_t dummyUri;
+        zstring dummyUri;
         rootNode->addBaseUriProperty(baseUri, dummyUri);
       }
 
@@ -571,8 +573,8 @@ void XmlNode::removeType(UpdatePrimitive& upd)
       {
         TextNode* textChild = reinterpret_cast<TextNode*>(n->getChild(0));
 
-        xqpStringStore_t textValue;
-        textChild->getStringValue(textValue);
+        zstring textValue;
+        textChild->getStringValue2(textValue);
 
         tinfo.theChildFlags = textChild->theFlags;
         tinfo.theTextContent.setValue(textChild->theContent.releaseValue());
@@ -673,7 +675,7 @@ void XmlNode::restoreType(TypeUndoList& undoList)
         if (!textChild->isTyped())
         {
           textChild->theFlags = tinfo.theChildFlags;
-          textChild->setText(NULL);
+          textChild->destroyText();
           textChild->setValue(tinfo.theTextContent.releaseValue());
         }
         else
@@ -761,8 +763,8 @@ void InternalNode::deleteChild(UpdDelete& upd)
 
   removeChild(pos);
 
-  xqpStringStore_t newText(new xqpStringStore(t_lsib->getText()->str() +
-                                              t_rsib->getText()->str()));
+  zstring newText = t_lsib->getText();
+  newText += t_rsib->getText();
 
   t_lsib->setText(newText);
 }
@@ -850,8 +852,13 @@ void InternalNode::insertChildren(UpdInsertChildren& upd, ulong pos)
     TextNode* textNode1 = reinterpret_cast<TextNode*>(lsib);
     TextNode* textNode2 = reinterpret_cast<TextNode*>(firstNew);
 
-    xqpStringStore_t content1 = textNode1->getStringValue();
-    xqpStringStore_t content2 = content1->append(textNode2->getText());
+    zstring content1;
+    textNode1->getStringValue2(content1);
+
+    zstring content2;
+    content2.reserve(content1.size() + textNode2->getText().size());
+    content2 = content1;
+    content2 += textNode2->getText();
 
     textNode2->setText(content2);
 
@@ -866,9 +873,13 @@ void InternalNode::insertChildren(UpdInsertChildren& upd, ulong pos)
     TextNode* textNode1 = reinterpret_cast<TextNode*>(lastNew);
     TextNode* textNode2 = reinterpret_cast<TextNode*>(rsib);
 
-    xqpStringStore_t content2 = textNode2->getStringValue();
+    zstring content2;
+    textNode2->getStringValue2(content2);
 
-    xqpStringStore_t content1 = textNode1->getText()->append(content2);
+    zstring content1;
+    content1.reserve(textNode1->getText().size() + content2.size());
+    content1 = textNode1->getText();
+    content1 += content2;
 
     textNode1->setText(content1);
 
@@ -995,9 +1006,11 @@ void ElementNode::undoInsertAttributes(UpdInsertAttributes& upd)
   removeAttributes(pos, upd.theNumApplied);
 
   ulong numBindings = upd.theNewBindings.size();
-  for (ulong i = 0; i < numBindings; i++)
+  for (ulong i = 0; i < numBindings; ++i)
+  {
     removeLocalBinding(upd.theNewBindings[i]->getPrefix(),
                        upd.theNewBindings[i]->getNamespace());
+  }
 
   restoreType(upd.theTypeUndoList);
 }
@@ -1050,7 +1063,7 @@ void ElementNode::replaceAttribute(UpdReplaceAttribute& upd)
         if (getChild(i)->getNodeKind() == store::StoreConsts::elementNode)
         {
           static_cast<ElementNode*>(getChild(i))->
-            uninheritBinding(theNsContext, attr->theName->getPrefix());
+          uninheritBinding(theNsContext, attr->theName->getPrefix());
         }
       }  
     }
@@ -1144,7 +1157,12 @@ void InternalNode::replaceChild(UpdReplaceChild& upd)
     {
       TextNode* textNode1 = reinterpret_cast<TextNode*>(lsib);
       TextNode* textNode2 = reinterpret_cast<TextNode*>(firstNew);
-      xqpStringStore_t content = textNode1->getText()->append(textNode2->getText());
+
+      zstring content;
+      content.reserve(textNode1->getText().size() + textNode2->getText().size());
+      content = textNode1->getText();
+      content += textNode2->getText();
+
       textNode2->setText(content);
 
       upd.theLeftMergedNode = lsib;
@@ -1159,7 +1177,12 @@ void InternalNode::replaceChild(UpdReplaceChild& upd)
     {
       TextNode* textNode1 = reinterpret_cast<TextNode*>(lastNew);
       TextNode* textNode2 = reinterpret_cast<TextNode*>(rsib);
-      xqpStringStore_t content = textNode1->getText()->append(textNode2->getText());
+
+      zstring content;
+      content.reserve(textNode1->getText().size() + textNode2->getText().size());
+      content = textNode1->getText();
+      content += textNode2->getText();
+
       textNode1->setText(content);
       
       upd.theRightMergedNode = rsib;
@@ -1210,7 +1233,7 @@ void ElementNode::replaceContent(UpdReplaceElemContent& upd)
   upd.theOldChildren = theChildren.theNodes;
   theChildren.clear();
 
-  if (upd.theNewChild == NULL || upd.theNewChild->getStringValue()->empty())
+  if (upd.theNewChild == NULL || upd.theNewChild->getStringValue().empty())
     return;
 
   TextNode* newChild = TEXT_NODE(upd.theNewChild);
@@ -1267,7 +1290,7 @@ void ElementNode::replaceName(UpdRenameElem& upd)
   theName.transfer(upd.theNewName);
 
   if (upd.theNewBinding && 
-      (!upd.thePul->inheritNSBindings() ||  theName->getPrefix()->empty()))
+      (!upd.thePul->inheritNSBindings() ||  theName->getPrefix().empty()))
   {
     ulong numChildren = this->numChildren();
 
@@ -1302,8 +1325,8 @@ void ElementNode::restoreName(UpdRenameElem& upd)
 {
   if (upd.theNewBinding)
   {
-    xqpStringStore* prefix = theName->getPrefix();
-    xqpStringStore* ns = theName->getNamespace();
+    const zstring& prefix = theName->getPrefix();
+    const zstring& ns = theName->getNamespace();
 
     removeLocalBinding(prefix, ns);
   }
@@ -1394,7 +1417,8 @@ void AttributeNode::replaceName(UpdRenameAttr& upd)
   else
   {
     // We must convert the current typed value to an untyped one.
-    xqpStringStore_t strvalue = theTypedValue->getStringValue();
+    zstring strvalue;
+    theTypedValue->getStringValue2(strvalue);
     store::Item_t newValue;
     GET_STORE().getItemFactory()->createUntypedAtomic(newValue, strvalue);
 
@@ -1412,10 +1436,7 @@ void AttributeNode::restoreName(UpdRenameAttr& upd)
   {
     ElementNode* parent = reinterpret_cast<ElementNode*>(theParent);
 
-    xqpStringStore* prefix = theName->getPrefix();
-    xqpStringStore* ns = theName->getNamespace();
-
-    parent->removeLocalBinding(prefix, ns);
+    parent->removeLocalBinding(theName->getPrefix(), theName->getNamespace());
   }
 
   theName.transfer(upd.theOldName);
@@ -1445,7 +1466,7 @@ void TextNode::replaceValue(UpdReplaceTextValue& upd)
   else
   {
     upd.theIsTyped = false;
-    upd.theOldContent.setText(theContent.releaseText());
+    upd.theOldContent.setText(theContent);
   }
 
   setText(upd.theNewContent);
@@ -1462,8 +1483,7 @@ void TextNode::restoreValue(UpdReplaceTextValue& upd)
   }
   else
   {
-    setText(upd.theOldContent.getText());
-    upd.theOldContent.setText(NULL);
+    theContent.setText(upd.theOldContent);
 
     if (parent)
       parent->restoreType(upd.theTypeUndoList);
@@ -1476,14 +1496,14 @@ void TextNode::restoreValue(UpdReplaceTextValue& upd)
 ********************************************************************************/
 void PiNode::replaceValue(UpdReplacePiValue& upd)
 {
-  upd.theOldValue.transfer(theContent);
-  theContent.transfer(upd.theNewValue);
+  upd.theOldValue.take(theContent);
+  theContent.take(upd.theNewValue);
 }
 
 
 void PiNode::restoreValue(UpdReplacePiValue& upd)
 {
-  theContent.transfer(upd.theOldValue);
+  theContent.take(upd.theOldValue);
 }
 
 
@@ -1492,14 +1512,14 @@ void PiNode::restoreValue(UpdReplacePiValue& upd)
 ********************************************************************************/
 void PiNode::replaceName(UpdRenamePi& upd)
 {
-  upd.theOldName.transfer(theTarget);
-  theTarget.transfer(upd.theNewName);
+  upd.theOldName.take(theTarget);
+  theTarget.take(upd.theNewName);
 }
 
 
 void PiNode::restoreName(UpdRenamePi& upd)
 {
-  theTarget.transfer(upd.theOldName);
+  theTarget.take(upd.theOldName);
 }
 
 
@@ -1508,14 +1528,14 @@ void PiNode::restoreName(UpdRenamePi& upd)
 ********************************************************************************/
 void CommentNode::replaceValue(UpdReplaceCommentValue& upd)
 {
-  upd.theOldValue.transfer(theContent);
-  theContent.transfer(upd.theNewValue);
+  upd.theOldValue.take(theContent);
+  theContent.take(upd.theNewValue);
 }
 
 
 void CommentNode::restoreValue(UpdReplaceCommentValue& upd)
 {
-  theContent.transfer(upd.theOldValue);
+  theContent.take(upd.theOldValue);
 }
 
 

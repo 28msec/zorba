@@ -17,10 +17,11 @@
 #ifndef ZORBA_NO_XMLSCHEMA
 
 #include "types/schema/StrX.h"
-#include "types/typeimpl.h"
+//#include "types/typeimpl.h"
 #include "types/schema/ValidationEventHandler.h"
 #include "types/schema/schema.h"
 #include <xercesc/util/XMLString.hpp>
+
 //daniel: this is to make cygwin work; xerces defines WIN32 in case of cygwin, which is wrong
 #ifdef CYGWIN
 #undef WIN32
@@ -46,12 +47,20 @@ AttributeValidationInfo::AttributeValidationInfo(
   //          << StrX(localName) << "@" << StrX(uri) << " = " << StrX(value)
   //          << "  T: " << StrX(typeName) << "@" << StrX(typeURI) << "\n";
 
-  thePrefix    = new xqpStringStore(prefix == NULL ? "" : StrX(prefix).localForm());
-  theUri       = new xqpStringStore(uri == NULL ? "" : StrX(uri).localForm());
-  theLocalName = new xqpStringStore(localName == NULL ? "" : StrX(localName).localForm());
-  theValue     = new xqpStringStore(StrX(value).localForm());
-  theTypeURI   = new xqpStringStore(StrX(typeURI).localFormOrDefault(Schema::XSD_NAMESPACE));
-  theTypeName  = new xqpStringStore(StrX(typeName).localFormOrDefault("untypedAtomic"));
+  if (prefix)
+    thePrefix = StrX(prefix).localForm();
+
+  if (uri)
+    theUri = StrX(uri).localForm();
+
+  if (localName)
+    theLocalName = StrX(localName).localForm();
+
+  theValue = new xqpStringStore(StrX(value).localForm());
+
+  theTypeURI = StrX(typeURI).localFormOrDefault(Schema::XSD_NAMESPACE);
+
+  theTypeName = StrX(typeName).localFormOrDefault("untypedAtomic");
 }
 
 

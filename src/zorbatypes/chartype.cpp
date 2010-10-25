@@ -232,10 +232,11 @@ bool XQCharType::isCombiningChar(uint32_t cp)
 bool XQCharType::isExtender(uint32_t cp)
 {
 	unsigned int	i;
-	for(i=0;i<sizeof(extender_range)/sizeof(CodePointRange_t);i++)
+	for(i = 0 ; i < sizeof(extender_range)/sizeof(CodePointRange_t); ++i)
 	{
     if(cp < extender_range[i].left)
       return false;
+
 		if(cp <= extender_range[i].right)
 			return true;
 	}

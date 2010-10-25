@@ -19,26 +19,31 @@
 
 namespace zorba { namespace simplestore {
 
-    /***************************************************************************
-    ***************************************************************************/
-    UpdDelete*
-    PULPrimitiveFactory::createUpdDelete(CollectionPul* pul, store::Item_t& target)
-    {
-      return new UpdDelete(pul, target);
-    }
+
+/***************************************************************************
+
+***************************************************************************/
+UpdDelete*
+PULPrimitiveFactory::createUpdDelete(CollectionPul* pul, store::Item_t& target)
+{
+  return new UpdDelete(pul, target);
+}
+
     
-    /***************************************************************************
-    ***************************************************************************/
-    UpdInsertChildren*
-    PULPrimitiveFactory::createUpdInsertChildren(
-          CollectionPul* pul,
-          store::UpdateConsts::UpdPrimKind kind,
-          store::Item_t& target,
-          store::Item_t& sibling,
-          std::vector<store::Item_t>& children)
-    {
-      return new UpdInsertChildren(pul, kind, target, sibling, children);
-    }
+/***************************************************************************
+
+***************************************************************************/
+UpdInsertChildren*
+PULPrimitiveFactory::createUpdInsertChildren(
+    CollectionPul* pul,
+    store::UpdateConsts::UpdPrimKind kind,
+    store::Item_t& target,
+    store::Item_t& sibling,
+    std::vector<store::Item_t>& children)
+{
+  return new UpdInsertChildren(pul, kind, target, sibling, children);
+}
+
     
     /***************************************************************************
     ***************************************************************************/
@@ -97,114 +102,129 @@ namespace zorba { namespace simplestore {
       return new UpdRenameElem(pul, target, newName);
     }
     
-    /***************************************************************************
-    ***************************************************************************/
-    UpdReplaceAttrValue*
-    PULPrimitiveFactory::createUpdReplaceAttrValue(
-          CollectionPul* pul,
-          store::Item_t& target,
-          xqpStringStore_t& newValue)
-    {
-      return new UpdReplaceAttrValue(pul, target, newValue);
-    }
+
+/***************************************************************************
+
+***************************************************************************/
+UpdReplaceAttrValue* PULPrimitiveFactory::createUpdReplaceAttrValue(
+    CollectionPul* pul,
+    store::Item_t& target,
+    zstring& newValue)
+{
+  return new UpdReplaceAttrValue(pul, target, newValue);
+}
+
     
-    /***************************************************************************
-    ***************************************************************************/
-    UpdRenameAttr*
-    PULPrimitiveFactory::createUpdRenameAttr(
-          CollectionPul* pul,
-          store::Item_t& target,
-          store::Item_t& newName)
-    {
-      return new UpdRenameAttr(pul, target, newName);
-    }
+/***************************************************************************
+
+***************************************************************************/
+UpdRenameAttr* PULPrimitiveFactory::createUpdRenameAttr(
+    CollectionPul* pul,
+    store::Item_t& target,
+    store::Item_t& newName)
+{
+  return new UpdRenameAttr(pul, target, newName);
+}
     
-    /***************************************************************************
-    ***************************************************************************/
-    UpdReplaceTextValue*
-    PULPrimitiveFactory::createUpdReplaceTextValue(
-          CollectionPul* pul,
-          store::Item_t& target,
-          xqpStringStore_t& newValue)
-    {
-      return new UpdReplaceTextValue(pul, target, newValue);
-    }
+
+/***************************************************************************
+
+***************************************************************************/
+UpdReplaceTextValue* PULPrimitiveFactory::createUpdReplaceTextValue(
+    CollectionPul* pul,
+    store::Item_t& target,
+    zstring& newValue)
+{
+  return new UpdReplaceTextValue(pul, target, newValue);
+}
     
-    /***************************************************************************
-    ***************************************************************************/
-    UpdReplacePiValue*
-    PULPrimitiveFactory::createUpdReplacePiValue(
-          CollectionPul* pul,
-          store::Item_t& target,
-          xqpStringStore_t& newValue)
-    {
-      return new UpdReplacePiValue(pul, target, newValue);
-    }
+
+/***************************************************************************
+
+***************************************************************************/
+UpdReplacePiValue* PULPrimitiveFactory::createUpdReplacePiValue(
+    CollectionPul* pul,
+    store::Item_t& target,
+    zstring& newValue)
+{
+  return new UpdReplacePiValue(pul, target, newValue);
+}
     
-    /***************************************************************************
-    ***************************************************************************/
-    UpdRenamePi*
-    PULPrimitiveFactory::createUpdRenamePi(
-          CollectionPul* pul,
-          store::Item_t& target,
-          xqpStringStore_t& newName)
-    {
-      return new UpdRenamePi(pul, target, newName);
-    }
+
+/***************************************************************************
+
+***************************************************************************/
+UpdRenamePi*
+PULPrimitiveFactory::createUpdRenamePi(
+    CollectionPul* pul,
+    store::Item_t& target,
+    zstring& newName)
+{
+  return new UpdRenamePi(pul, target, newName);
+}
+
     
-    /***************************************************************************
-    ***************************************************************************/
-    UpdReplaceCommentValue*
-    PULPrimitiveFactory::createUpdReplaceCommentValue(
-          CollectionPul* pul,
-          store::Item_t& target,
-          xqpStringStore_t& newValue)
-    {
-      return new UpdReplaceCommentValue(pul, target, newValue);
-    }
+/***************************************************************************
+
+***************************************************************************/
+UpdReplaceCommentValue*
+PULPrimitiveFactory::createUpdReplaceCommentValue(
+    CollectionPul* pul,
+    store::Item_t& target,
+    zstring& newValue)
+{
+  return new UpdReplaceCommentValue(pul, target, newValue);
+}
     
-    /***************************************************************************
-    ***************************************************************************/
-    UpdSetElementType*
-    PULPrimitiveFactory::createUpdSetElementType(
-          PULImpl*       pul,
-          store::Item_t& target,
-          store::Item_t& typeName,
-          store::Item_t& typedValue,
-          bool           haveValue,
-          bool           haveEmptyValue,
-          bool           haveTypedValue,
-          bool           haveListValue,
-          bool           isInSubstitutionGroup)
-    {
-      return new UpdSetElementType(pul, target, typeName, typedValue,
-          haveValue, haveEmptyValue, haveTypedValue, haveListValue,
-          isInSubstitutionGroup);
-    }
+
+/***************************************************************************
+
+***************************************************************************/
+UpdSetElementType*
+PULPrimitiveFactory::createUpdSetElementType(
+    PULImpl*       pul,
+    store::Item_t& target,
+    store::Item_t& typeName,
+    store::Item_t& typedValue,
+    bool           haveValue,
+    bool           haveEmptyValue,
+    bool           haveTypedValue,
+    bool           haveListValue,
+    bool           isInSubstitutionGroup)
+{
+  return new UpdSetElementType(pul, target, typeName, typedValue,
+                               haveValue, haveEmptyValue, haveTypedValue, haveListValue,
+                               isInSubstitutionGroup);
+}
     
-    /***************************************************************************
-    ***************************************************************************/
-    UpdSetAttributeType*
-    PULPrimitiveFactory::createUpdSetAttributeType(
-          PULImpl*       pul,
-          store::Item_t& target,
-          store::Item_t& typeName,
-          store::Item_t& typedValue,
-          bool           haveListValue)
-    {
-      return new UpdSetAttributeType(pul, target, typeName, typedValue, haveListValue);
-    }
+
+/***************************************************************************
+
+***************************************************************************/
+UpdSetAttributeType*
+PULPrimitiveFactory::createUpdSetAttributeType(
+    PULImpl*       pul,
+    store::Item_t& target,
+    store::Item_t& typeName,
+    store::Item_t& typedValue,
+    bool           haveListValue)
+{
+  return new UpdSetAttributeType(pul, target, typeName, typedValue, haveListValue);
+}
     
-    /***************************************************************************
-    ***************************************************************************/
-    UpdPut*
-    PULPrimitiveFactory::createUpdPut(
-        PULImpl* pul,
-        store::Item_t& target,
-        store::Item_t& uri)
-    {
-      return new UpdPut(pul, target, uri);
-    }
+
+/***************************************************************************
+
+***************************************************************************/
+UpdPut*
+PULPrimitiveFactory::createUpdPut(
+    PULImpl* pul,
+    store::Item_t& target,
+    store::Item_t& uri)
+{
+  return new UpdPut(pul, target, uri);
+}
+
     
     /***************************************************************************
     ***************************************************************************/
@@ -215,6 +235,7 @@ namespace zorba { namespace simplestore {
     {
       return new UpdCreateCollection(pul, name);
     }
+
     
     /***************************************************************************
     ***************************************************************************/
@@ -225,6 +246,7 @@ namespace zorba { namespace simplestore {
     {
       return new UpdDeleteCollection(pul, name);
     }
+
     
     /***************************************************************************
     ***************************************************************************/
@@ -236,6 +258,7 @@ namespace zorba { namespace simplestore {
     {
       return new UpdInsertIntoCollection(pul, name, nodes);
     }
+
     
     /***************************************************************************
     ***************************************************************************/
@@ -247,6 +270,7 @@ namespace zorba { namespace simplestore {
     {
       return new UpdInsertFirstIntoCollection(pul, name, nodes);
     }
+
     
     /***************************************************************************
     ***************************************************************************/
@@ -258,6 +282,7 @@ namespace zorba { namespace simplestore {
     {
       return new UpdInsertLastIntoCollection(pul, name, nodes);
     }
+
     
     /***************************************************************************
     ***************************************************************************/
@@ -270,6 +295,7 @@ namespace zorba { namespace simplestore {
     {
       return new UpdInsertBeforeIntoCollection(pul, name, target, nodes);
     }
+
     
     /***************************************************************************
     ***************************************************************************/
@@ -282,6 +308,7 @@ namespace zorba { namespace simplestore {
     {
       return new UpdInsertAfterIntoCollection(pul, name, target, nodes);
     }
+
     
     /***************************************************************************
     ***************************************************************************/
@@ -294,6 +321,7 @@ namespace zorba { namespace simplestore {
     {
       return new UpdDeleteNodesFromCollection(pul, name, nodes, isLast);
     }
+
     
     /***************************************************************************
     ***************************************************************************/
@@ -306,6 +334,7 @@ namespace zorba { namespace simplestore {
     {
       return new UpdCreateIndex(pul, qname, spec, sourceIter);
     }
+
     
     /***************************************************************************
     ***************************************************************************/
@@ -314,6 +343,7 @@ namespace zorba { namespace simplestore {
     {
       return new UpdDeleteIndex(pul, qname);
     }
+
     
     /***************************************************************************
     ***************************************************************************/
@@ -325,6 +355,7 @@ namespace zorba { namespace simplestore {
     {
       return new UpdRefreshIndex(pul, qname, sourceIter);
     }
+
     
     /***************************************************************************
     ***************************************************************************/
@@ -337,6 +368,7 @@ namespace zorba { namespace simplestore {
       return new UpdActivateIC(pul, aQName, aCollectionName);
     }
     
+
     /***************************************************************************
     ***************************************************************************/
     UpdActivateForeignKeyIC*
@@ -349,14 +381,16 @@ namespace zorba { namespace simplestore {
       return new UpdActivateForeignKeyIC(pul, qQName, aFromCollectionName, aToCollectionName);
     }
     
-    /***************************************************************************
-    ***************************************************************************/
-    UpdDeActivateIC*
-    PULPrimitiveFactory::createUpdDeActivateIC(
-          PULImpl* pul,
-          const store::Item_t& qname)
-    {
-      return new UpdDeActivateIC(pul, qname);
-    }
+
+/***************************************************************************
+
+***************************************************************************/
+UpdDeActivateIC*
+PULPrimitiveFactory::createUpdDeActivateIC(
+    PULImpl* pul,
+    const store::Item_t& qname)
+{
+  return new UpdDeActivateIC(pul, qname);
+}
 
 } /* namespace simplestore */ } /* namespace zorba */

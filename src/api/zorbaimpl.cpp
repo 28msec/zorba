@@ -29,8 +29,8 @@
 
 #include "zorbautils/fatal.h"
 #include "zorbaerrors/errors.h"
-#include "errors/user_error.h"
 #include "zorbaerrors/error_manager.h"
+#include "errors/user_error.h"
 
 #include "system/globalenv.h"
 
@@ -247,10 +247,10 @@ void ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, error::ZorbaError& aErr
     Iterator_t lIter = new VectorIterator(lUserError->theErrorObject, aErrorHandler);
 
     UserException lUserException(aError.theErrorCode,
-                                 String(aError.theDescription.theStrStore),
-                                 String(aError.theFileName),
+                                 String(aError.theDescription.c_str()),
+                                 String(aError.theFileName.c_str()),
                                  aError.theLineNumber,
-                                 aError.theQueryFileName,
+                                 String(aError.theQueryFileName.c_str()),
                                  aError.theQueryLine,
                                  aError.theQueryColumn,
                                  aError.getStackTrace(),
@@ -260,10 +260,10 @@ void ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, error::ZorbaError& aErr
   else if (aError.isStaticError())
   {
     StaticException lStaticException(aError.theErrorCode,
-                                     String(aError.theDescription.theStrStore),
-                                     String(aError.theFileName),
+                                     String(aError.theDescription.c_str()),
+                                     String(aError.theFileName.c_str()),
                                      aError.theLineNumber,
-                                     aError.theQueryFileName,
+                                     String(aError.theQueryFileName.c_str()),
                                      aError.theQueryLine,
                                      aError.theQueryColumn,
                                      aError.getStackTrace());
@@ -272,10 +272,10 @@ void ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, error::ZorbaError& aErr
   else if (aError.isDynamicError())
   {
     DynamicException lDynamicException(aError.theErrorCode,
-                                       String(aError.theDescription.theStrStore),
-                                       String(aError.theFileName),
+                                       String(aError.theDescription.c_str()),
+                                       String(aError.theFileName.c_str()),
                                        aError.theLineNumber,
-                                       aError.theQueryFileName,
+                                       String(aError.theQueryFileName.c_str()),
                                        aError.theQueryLine,
                                        aError.theQueryColumn,
                                        aError.getStackTrace());
@@ -284,10 +284,10 @@ void ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, error::ZorbaError& aErr
   else if (aError.isTypeError())
   {
     TypeException lTypeException(aError.theErrorCode,
-                                 String(aError.theDescription.theStrStore),
-                                 String(aError.theFileName),
+                                 String(aError.theDescription.c_str()),
+                                 String(aError.theFileName.c_str()),
                                  aError.theLineNumber,
-                                 aError.theQueryFileName,
+                                 String(aError.theQueryFileName.c_str()),
                                  aError.theQueryLine,
                                  aError.theQueryColumn,
                                  aError.getStackTrace());
@@ -297,8 +297,8 @@ void ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, error::ZorbaError& aErr
   {
     SerializationException lSerException(
                             aError.theErrorCode,
-                            String(aError.theDescription.theStrStore),
-                            String(aError.theFileName),
+                            String(aError.theDescription.c_str()),
+                            String(aError.theFileName.c_str()),
                             aError.theLineNumber,
                             aError.getStackTrace());
     aErrorHandler->serializationError(lSerException);
@@ -306,24 +306,24 @@ void ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, error::ZorbaError& aErr
   else if (aError.isStoreError())
   {
     SystemException lSystemException(aError.theErrorCode,
-                                     String(aError.theDescription.theStrStore),
-                                     String(aError.theFileName),
+                                     String(aError.theDescription.c_str()),
+                                     String(aError.theFileName.c_str()),
                                      aError.theLineNumber);
     aErrorHandler->systemError(lSystemException);
   }
   else if (aError.isAPIError())
   {
     SystemException lSystemException(aError.theErrorCode,
-                                     String(aError.theDescription.theStrStore),
-                                     String(aError.theFileName),
+                                     String(aError.theDescription.c_str()),
+                                     String(aError.theFileName.c_str()),
                                      aError.theLineNumber);
     aErrorHandler->systemError(lSystemException);
   }
   else if (aError.isInternalError())
   {
     SystemException lSystemException(aError.theErrorCode,
-                                     String(aError.theDescription.theStrStore),
-                                     String(aError.theFileName),
+                                     String(aError.theDescription.c_str()),
+                                     String(aError.theFileName.c_str()),
                                      aError.theLineNumber,
                                      aError.getStackTrace());
     aErrorHandler->systemError(lSystemException);

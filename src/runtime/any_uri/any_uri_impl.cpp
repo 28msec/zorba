@@ -36,11 +36,11 @@ bool
 ResolveUriIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item;
-  xqpStringStore_t strRelative;
-  xqpStringStore_t strBase;
-  xqpStringStore_t strResult;
-  URI              baseURI;
-  URI              resolvedURI;
+  zstring strRelative;
+  zstring strBase;
+  zstring strResult;
+  URI baseURI;
+  URI resolvedURI;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -50,11 +50,16 @@ ResolveUriIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     strRelative = item->getStringValue();
 
     //If first param is an absolute URI reference, it is returned unchanged.
-    try{
-      resolvedURI = URI(&*strRelative);
-    } catch (error::ZorbaError&) {}
+    try
+    {
+      resolvedURI = URI(strRelative);
+    } 
+    catch (error::ZorbaError&)
+    {
+    }
 
-    if (resolvedURI.is_absolute()) {
+    if (resolvedURI.is_absolute()) 
+    {
       strResult = strRelative;
     }
     else 
@@ -65,7 +70,7 @@ ResolveUriIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         {
           // use base-uri from static context
           strBase = theSctx->get_base_uri();
-          if (strBase->empty()) 
+          if (strBase.empty()) 
           {
             ZORBA_ERROR_LOC_DESC(FONS0005, loc,
                                  "base-uri is not initialized in the static context");
@@ -80,17 +85,17 @@ ResolveUriIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         {
           ZORBA_ERROR_LOC_DESC(FORG0009, loc, "Can't treat empty-sequence as base-uri");
         }
-        baseURI = URI(&*strBase, true);
+        baseURI = URI(strBase, true);
       } 
       catch (error::ZorbaError& e) 
       {
         ZORBA_ERROR_LOC_DESC(FORG0002, loc,
-                             "String {" + strBase->str() +  "} is not a valid URI: " + e.theDescription);
+                             "String {" + strBase.str() +  "} is not a valid URI: " + e.theDescription);
       }
 
       try 
       {
-        resolvedURI = URI(baseURI, &*strRelative, true); // resolve with baseURI or return strRelative if it's a valid absolute URI
+        resolvedURI = URI(baseURI, strRelative, true); // resolve with baseURI or return strRelative if it's a valid absolute URI
         strResult = resolvedURI.toString();
       }
       catch (error::ZorbaError& e) 
@@ -98,10 +103,11 @@ ResolveUriIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         ZORBA_ERROR_LOC_DESC(FORG0002, loc, e.theDescription);
       }
     }
+
     STACK_PUSH(GENV_ITEMFACTORY->createString(result, strResult), state);
   } // else return empty sequence if the first argument is the empty sequence
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 } /* namespace zorba */

@@ -20,10 +20,11 @@
 #include <stack>
 
 #include "common/shared_types.h"
+#include "zorbatypes/zstring.h"
 
 namespace zorba {
-  typedef std::stack<std::string> Parameters;
-  typedef std::map<std::string, Parameters> FunctionIndex;
+  typedef std::stack<zstring> Parameters;
+  typedef std::map<zstring, Parameters> FunctionIndex;
   FunctionIndex print_parsetree_xquery(std::ostream&, const parsenode*);
 }//namespace
 #endif

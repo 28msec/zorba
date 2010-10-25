@@ -635,7 +635,7 @@ void WindowIterator::accept(PlanIterVisitor& v) const
 {
   v.beginVisit(*this);
 
-  v.beginVisitWindowVariable(theVarName->getStringValue()->str(), theVarRefs);
+  v.beginVisitWindowVariable(theVarName->getStringValue().str(), theVarRefs);
 
   theInputIter->accept(v);
 

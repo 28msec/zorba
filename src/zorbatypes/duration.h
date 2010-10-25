@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_DURATION_H
-#define ZORBA_DURATION_H
+#ifndef ZORBA_TYPES_DURATION_H
+#define ZORBA_TYPES_DURATION_H
 
 #include <zorba/config.h>
 #include "zorbatypes/zorbatypes_decl.h"
-#include "zorbatypes/xqpstring.h"
 #include "zorbatypes/representations.h"
 
 #include "zorbaserialization/class_serializer.h"
@@ -26,7 +25,13 @@
 namespace zorba
 {
 
+/*******************************************************************************
+  The lexical format of duration is : PnYn MnDTnH nMnS
 
+  See http://www.w3.org/TR/xmlschema-2/#duration for details.
+
+  Note: class Timezone (in timezone.h) is a subclass of Duration 
+********************************************************************************/
 class ZORBA_DLL_PUBLIC Duration : public ::zorba::serialization::SerializeBaseClass
 {
 public:
@@ -57,26 +62,33 @@ protected:
   FACET_TYPE facet;
 
   bool       is_negative;
-  int32_t    data[7];
+  long       data[7];
 
 public:
   /**
    * Returns 0 on success
    */
-  static int parseYearMonthDuration(const xqpStringStore_t& s, Duration& d);
+  static int parseDuration(
+        const char* str,
+        ulong strlen,
+        Duration& d);
+
+  /**
+   * Returns 0 on success
+   */
+  static int parseYearMonthDuration(
+        const char* str,
+        ulong strlen,
+        Duration& d);
   
   /**
    * Returns 0 on success
    */
   static int parseDayTimeDuration(
-        const xqpStringStore_t& s,
+        const char* str,
+        ulong strlen,
         Duration& d,
         bool dont_check_letter_p = false);
-
-  /**
-   * Returns 0 on success
-   */
-  static int parseDuration(const xqpStringStore_t& s, Duration& d);
 
   /**
    * Returns 0 on success
@@ -90,8 +102,6 @@ public:
 
 public:
   Duration();
-
-  virtual ~Duration() {}
   
   Duration(FACET_TYPE facet_type);
 
@@ -137,11 +147,13 @@ public:
         int seconds,
         int frac_seconds);
   
+  virtual ~Duration() {}
+
   bool operator==(const Duration& d) const;
       
   int compare(const Duration& d, bool ignore_sign = false) const;
       
-  xqpStringStore_t toString() const;
+  zstring toString() const;
       
   Duration* toDuration() const;
       
@@ -163,13 +175,13 @@ public:
 
   virtual bool isNegative() const;
 
-  virtual bool isZero() const;
+  bool isZero() const;
 
-  virtual long getYears() const;
+  long getYears() const;
       
-  virtual long getMonths() const;
+  long getMonths() const;
       
-  virtual long getDays() const;
+  long getDays() const;
       
   virtual long getHours() const;
       

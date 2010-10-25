@@ -18,6 +18,7 @@
 #include "zorbatypes/decimal.h"
 #include "zorbatypes/integer.h"
 #include "zorbatypes/numconversions.h"
+#include "zorbaserialization/zorba_class_serializer.h"
 
 #ifndef ZORBA_NO_BIGNUMBERS
 #define IS_ZERO(mapm_obj)                 (mapm_obj.sign() == 0)
@@ -241,9 +242,9 @@ Decimal Decimal::parseInteger(const Integer& aInteger)
 Decimal Decimal::parseLongLong(int64_t aLong) 
 {
 #ifndef ZORBA_NO_BIGNUMBERS
-  xqpStringStore_t lStrRep = NumConversions::longToStr(aLong);
+  zstring lStrRep = NumConversions::longToStr(aLong);
   Decimal lDecimal;
-  lDecimal.theDecimal = lStrRep->c_str();
+  lDecimal.theDecimal = lStrRep.c_str();
   return lDecimal;
 #else
   Decimal lDecimal;
@@ -256,9 +257,9 @@ Decimal Decimal::parseLongLong(int64_t aLong)
 Decimal Decimal::parseULongLong(uint64_t aULong) 
 {
 #ifndef ZORBA_NO_BIGNUMBERS
-  xqpStringStore_t lStrRep = NumConversions::ulongToStr(aULong);
+  zstring lStrRep = NumConversions::ulongToStr(aULong);
   Decimal lDecimal;
-  lDecimal.theDecimal = lStrRep->c_str();
+  lDecimal.theDecimal = lStrRep.c_str();
   return lDecimal;
 #else
   Decimal lDecimal;
@@ -279,9 +280,9 @@ Decimal Decimal::parseInt(int32_t aInt)
 Decimal Decimal::parseUInt(uint32_t aUInt) 
 {
 #ifndef ZORBA_NO_BIGNUMBERS
-  xqpStringStore_t lStrRep = NumConversions::uintToStr(aUInt);
+  zstring lStrRep = NumConversions::uintToStr(aUInt);
   Decimal lDecimal;
-  lDecimal.theDecimal = lStrRep->c_str();
+  lDecimal.theDecimal = lStrRep.c_str();
   return lDecimal;
 #else
   Decimal lDecimal;
@@ -376,7 +377,7 @@ MAPM Decimal::roundHalfToEven(MAPM aValue, int aPrecision)
 #endif
 
 
-xqpStringStore_t Decimal::decimalToString(MAPM theValue, int precision) 
+zstring Decimal::decimalToString(MAPM theValue, int precision) 
 {
   bool do_reduce = false;
 #ifndef ZORBA_NO_BIGNUMBERS
@@ -434,7 +435,7 @@ xqpStringStore_t Decimal::decimalToString(MAPM theValue, int precision)
   if(do_reduce)
     Decimal::reduceFloatingPointString(lBuffer);
 
-  return new xqpStringStore(lBuffer);
+  return lBuffer;
 }
 
 /*
@@ -841,13 +842,13 @@ uint32_t Decimal::hash() const
 }
 
 
-xqpStringStore_t Decimal::toString() const 
+zstring Decimal::toString() const 
 {
   return decimalToString(theDecimal);
 }
 
 
-xqpStringStore_t Decimal::toIntegerString() const 
+zstring Decimal::toIntegerString() const 
 {
 #ifndef ZORBA_NO_BIGNUMBERS
   char lBuffer[1024];
@@ -856,21 +857,21 @@ xqpStringStore_t Decimal::toIntegerString() const
   char lBuffer[124];
   sprintf(lBuffer, "%d", (int)theDecimal);
 #endif
-  return new xqpStringStore(lBuffer);
+  return lBuffer;
 }
 
 
 int Decimal::getValueAsInt() const
 {
-  xqpStringStore_t strtemp = toIntegerString();
-  return atoi(strtemp->c_str());
+  zstring strtemp = toIntegerString();
+  return atoi(strtemp.c_str());
 }
 
 
 
 std::ostream& operator<<(std::ostream& os, const Decimal& aDecimal) 
 {
-  os << aDecimal.toString()->str();
+  os << aDecimal.toString();
   return os;
 }
 

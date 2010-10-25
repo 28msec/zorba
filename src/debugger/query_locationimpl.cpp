@@ -13,7 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#include <sstream>
+
 #include "debugger/query_locationimpl.h"
+
+using namespace std;
 
 namespace zorba {
 
@@ -21,7 +26,7 @@ QueryLocationImpl::QueryLocationImpl( const QueryLoc & aLocation ): theLocation(
 
 String QueryLocationImpl::getFileName() const
 {
-  return String( theLocation.getFilename() );
+  return String( theLocation.getFilename().c_str() );
 }
 
 unsigned int QueryLocationImpl::getLineBegin() const
@@ -46,17 +51,17 @@ unsigned int QueryLocationImpl::getColumnEnd() const
 
 String QueryLocationImpl::toString() const
 {
-  std::stringstream lString;
+  stringstream lString;
   lString << theLocation; 
   return String(lString.str()); 
 }
 
-std::ostream& operator<< (std::ostream& aOstr, const QueryLocation& aQueryLoc){
+ostream& operator<< (ostream& aOstr, const QueryLocation& aQueryLoc){
   aOstr << aQueryLoc.toString();
   return aOstr;
 }
 
-std::ostream& operator<< (std::ostream& aOstr, const QueryLocation* aQueryLoc){
+ostream& operator<< (ostream& aOstr, const QueryLocation* aQueryLoc){
   aOstr << aQueryLoc->toString();
   return aOstr;
 }

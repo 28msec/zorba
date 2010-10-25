@@ -561,7 +561,8 @@ bool XercesParseUtils::parseXSString(
   // optimization posible since there is no pattern to be checked
   xqpStringStore_t textValue2 = textValue->normalizeSpace();
   store::ItemFactory* factory = GENV_ITEMFACTORY;
-  return factory->createString(result, textValue2);
+  zstring tmp = textValue2->str();
+  return factory->createString(result, tmp);
 }
 
 bool XercesParseUtils::parseXSNormalizedString(
@@ -571,7 +572,8 @@ bool XercesParseUtils::parseXSNormalizedString(
   // optimization posible since there is no pattern to be checked
   xqpStringStore_t textValue2 = textValue->normalizeSpace();
   store::ItemFactory* factory = GENV_ITEMFACTORY;
-  return factory->createNormalizedString(result, textValue2);
+  zstring tmp = textValue2->str();
+  return factory->createNormalizedString(result, tmp);
 }
 
 
@@ -595,9 +597,9 @@ bool XercesParseUtils::parseXSToken(
 
   if ( status==XSValue::st_NoActVal )
   {
-
     store::ItemFactory* factory = GENV_ITEMFACTORY;
-    return factory->createToken(result, textValue2);
+    zstring tmp = textValue2->str();
+    return factory->createToken(result, tmp);
   }
   else
   {
@@ -624,9 +626,9 @@ bool XercesParseUtils::parseXSNMToken(
 
   if ( status==XSValue::st_NoActVal )
   {
-
     store::ItemFactory* factory = GENV_ITEMFACTORY;
-    return factory->createNMTOKEN(result, textValue2);
+    zstring tmp = textValue2->str();
+    return factory->createNMTOKEN(result, tmp);
   }
   else
   {
@@ -655,7 +657,8 @@ bool XercesParseUtils::parseXSName(
   {
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
-    return factory->createName(result, textValue2);
+    zstring tmp = textValue2->str();
+    return factory->createName(result, tmp);
   }
   else
   {
@@ -682,9 +685,9 @@ bool XercesParseUtils::parseXSNCName(
 
   if ( status==XSValue::st_NoActVal )
   {
-
     store::ItemFactory* factory = GENV_ITEMFACTORY;
-    return factory->createNCName(result, textValue2);
+    zstring tmp = textValue2->str();
+    return factory->createNCName(result, tmp);
   }
   else
   {
@@ -713,7 +716,8 @@ bool XercesParseUtils::parseXSID(
   {
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
-    return factory->createID(result, textValue2);
+    zstring tmp = textValue2->str();
+    return factory->createID(result, tmp);
   }
   else
   {
@@ -741,7 +745,8 @@ bool XercesParseUtils::parseXSIDRef(
   {
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
-    return factory->createIDREF(result, textValue2);
+    zstring tmp = textValue2->str();
+    return factory->createIDREF(result, tmp);
   }
   else
   {
@@ -769,7 +774,8 @@ bool XercesParseUtils::parseXSEntity(
   {
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
-    return factory->createENTITY(result, textValue2);
+    zstring tmp = textValue2->str();
+    return factory->createENTITY(result, tmp);
   }
   else
   {
@@ -795,9 +801,9 @@ bool XercesParseUtils::parseXSNotation(
 
   if ( status==XSValue::st_NoActVal )
   {
-
     store::ItemFactory* factory = GENV_ITEMFACTORY;
-    return factory->createNOTATION(result, textValue2);
+    zstring tmp = textValue2->str();
+    return factory->createNOTATION(result, tmp);
   }
   else
   {
@@ -845,7 +851,7 @@ bool XercesParseUtils::parseXSDateTime(
     xqpStringStore_t textValue2 = textValue->normalizeSpace();
 
     // Warning: parsing code is not using Xerces
-    if (0 == DateTime::parseDateTime(textValue2.getp(), dt))  
+    if (0 == DateTime::parseDateTime(textValue2->c_str(), textValue2->bytes(), dt))  
     {
       return factory->createDateTime(result, &dt);
     }
@@ -888,7 +894,7 @@ bool XercesParseUtils::parseXSDate(
     xqpStringStore_t textValue2 = textValue->normalizeSpace();
 
     // Warning: parsing code is not using Xerces
-    if (0 == DateTime::parseDate(textValue2.getp(), d))  
+    if (0 == DateTime::parseDate(textValue2->c_str(), textValue2->bytes(), d))  
     {
       return factory->createDate(result, &d);
     }
@@ -936,7 +942,7 @@ bool XercesParseUtils::parseXSTime(
     xqpStringStore_t textValue2 = textValue->normalizeSpace();
 
     // Warning: parsing code is not using Xerces
-    if (0 == DateTime::parseTime(textValue2.getp(), t))
+    if (0 == DateTime::parseTime(textValue2->c_str(), textValue2->bytes(), t))
     {
       return factory->createTime(result, &t);
     }
@@ -974,7 +980,7 @@ bool XercesParseUtils::parseXSGYearMonth(
     xqpStringStore_t textValue2 = textValue->normalizeSpace();
 
     // Warning: parsing code is not using Xerces
-    if (DateTime::parseGYearMonth(textValue2.getp(), tValue))
+    if (DateTime::parseGYearMonth(textValue2->c_str(), textValue2->bytes(), tValue))
     {
       return factory->createGYearMonth(result, &tValue);
     }
@@ -1011,7 +1017,7 @@ bool XercesParseUtils::parseXSGYear(
     xqpStringStore_t textValue2 = textValue->normalizeSpace();
 
     // Warning: parsing code is not using Xerces
-    if (DateTime::parseGYear(textValue2.getp(), tValue))
+    if (DateTime::parseGYear(textValue2->c_str(), textValue2->bytes(), tValue))
     {
       return factory->createGYear(result, &tValue);
     }
@@ -1048,7 +1054,7 @@ bool XercesParseUtils::parseXSGMonthDay(
     xqpStringStore_t textValue2 = textValue->normalizeSpace();
 
     // Warning: parsing code is not using Xerces
-    if (DateTime::parseGMonthDay(textValue2.getp(), tValue))
+    if (DateTime::parseGMonthDay(textValue2->c_str(), textValue2->bytes(), tValue))
     {
       return factory->createGMonthDay(result, &tValue);
     }
@@ -1084,7 +1090,7 @@ bool XercesParseUtils::parseXSGDay(
     xqpStringStore_t textValue2 = textValue->normalizeSpace();
 
     // Warning: parsing code is not using Xerces
-    if (DateTime::parseGDay(textValue2.getp(), tValue))
+    if (DateTime::parseGDay(textValue2->c_str(), textValue2->bytes(), tValue))
     {
       return factory->createGDay(result, &tValue);
     }
@@ -1120,7 +1126,7 @@ bool XercesParseUtils::parseXSGMonth(
     xqpStringStore_t textValue2 = textValue->normalizeSpace();
 
     // Warning: parsing code is not using Xerces
-    if (DateTime::parseGMonth(textValue2.getp(), tValue))
+    if (DateTime::parseGMonth(textValue2->c_str(), textValue2->bytes(), tValue))
     {
       return factory->createGMonth(result, &tValue);
     }
@@ -1162,7 +1168,7 @@ bool XercesParseUtils::parseXSDuration(
     xqpStringStore_t textValue2 = textValue->normalizeSpace();
 
     // Warning: parsing code is not using Xerces
-    if (0 == Duration::parseDuration(textValue2.getp(), tValue))
+    if (0 == Duration::parseDuration(textValue2->c_str(), textValue2->bytes(), tValue))
       return factory->createDuration(result, &tValue);
   }
 
@@ -1178,7 +1184,7 @@ bool XercesParseUtils::parseXSYearMonthDuration(
 {
   Duration d;
 
-  if (0 == Duration::parseYearMonthDuration(textValue.getp(), d))
+  if (0 == Duration::parseYearMonthDuration(textValue->c_str(), textValue->bytes(), d))
   {
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     return factory->createYearMonthDuration(result, &d);
@@ -1196,7 +1202,7 @@ bool XercesParseUtils::parseXSDayTimeDuration(
 {
   Duration d;
 
-  if (0 == Duration::parseDayTimeDuration(textValue.getp(), d))
+  if (0 == Duration::parseDayTimeDuration(textValue->c_str(), textValue->bytes(), d))
   {
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     return factory->createDayTimeDuration(result, &d);
@@ -1214,7 +1220,8 @@ bool XercesParseUtils::parseXSAnyAtomicType(
 {
   xqpStringStore_t textValue2 = textValue;
   store::ItemFactory* factory = GENV_ITEMFACTORY;
-  return factory->createUntypedAtomic(result, textValue2);
+  zstring tmp = textValue2->str();
+  return factory->createUntypedAtomic(result, tmp);
 }
 
 
@@ -1224,7 +1231,8 @@ bool XercesParseUtils::parseXSUntypedAtomic(
 {
   xqpStringStore_t textValue2 = textValue;
   store::ItemFactory* factory = GENV_ITEMFACTORY;
-  return factory->createUntypedAtomic(result, textValue2);
+  zstring tmp = textValue2->str();
+  return factory->createUntypedAtomic(result, tmp);
 }
 
 
@@ -1305,7 +1313,7 @@ bool XercesParseUtils::parseXSAnyUri(
   {
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
-    xqpStringStore_t textValue2 = textValue->normalizeSpace();
+    zstring textValue2 = textValue->normalizeSpace()->c_str();
     return factory->createAnyURI(result, textValue2);
   }
   else
@@ -1336,21 +1344,21 @@ bool XercesParseUtils::parseXSQName(
     xqpStringStore_t textValue2 = textValue->normalizeSpace();
     
     // todo: get the right namespace from the current context
-    xqpStringStore_t lNamespace = new xqpStringStore("");
-    xqpStringStore_t lPrefix;
-    xqpStringStore_t lLocal;
+    zstring lNamespace;
+    zstring lPrefix;
+    zstring lLocal;
 
     int32_t lIndex = textValue2->bytePositionOf(":");
     
     if (lIndex == 0) 
     {
       ZORBA_ERROR_DESC( XQDY0074, 
-        "String '" + textValue->str() + "' cannot be cast to QName");
+                        "String '" + textValue->str() + "' cannot be cast to QName");
     }
     else if ( lIndex > 0 )
     {
-      lPrefix = textValue2->byteSubstr(0, lIndex);
-      lLocal = textValue2->byteSubstr(lIndex + 1, textValue2->bytes());
+      lPrefix = textValue2->byteSubstr(0, lIndex)->str();
+      lLocal = textValue2->byteSubstr(lIndex + 1, textValue2->bytes())->str();
     } 
     
     return factory->createQName(result, lNamespace, lPrefix, lLocal);

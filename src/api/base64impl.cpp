@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <sstream> 
 #include <zorba/base64.h>
 
 #include <zorba/config.h>
@@ -21,35 +22,39 @@
 
 #include "zorbatypes/binary.h"
 
-namespace zorba { namespace encoding {
+using namespace std;
+
+namespace zorba {
+namespace encoding {
 
 String Base64::encode(const String& aString) 
 {
-  std::stringstream lStream;
+  stringstream lStream;
   lStream << aString;
   return encode(lStream);
 }
 
 
-String Base64::encode(std::istream& aStream) 
+String Base64::encode(istream& aStream) 
 {
-  return zorba::Base64::encode(aStream).getp();
+  return zorba::Base64::encode(aStream).str();
 }
-String
-Base64::decode(const String& aString) {
-  std::stringstream lStream;
+
+
+String Base64::decode(const String& aString)
+{
+  stringstream lStream;
   lStream << aString;
   return decode(lStream);
 }
 
 
-String
-Base64::decode(std::istream& aStream) {
-  return zorba::Base64::decode(aStream).getp();
+String Base64::decode(std::istream& aStream)
+{
+  return zorba::Base64::decode(aStream).str();
 }
 
 
 } /* end namespace encoding */
-
 } /* end namespace zorba */
-
+/* vim:set et sw=2 ts=2: */

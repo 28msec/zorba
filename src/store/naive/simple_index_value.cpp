@@ -145,7 +145,7 @@ bool ValueHashIndex::remove(const store::IndexKey* key, store::Item_t& value)
   if (key->size() != theNumColumns)
   {
     ZORBA_ERROR_PARAM(STR0004_INDEX_PARTIAL_KEY_REMOVE,
-                      theQname->getStringValue()->c_str(), key->toString());
+                      theQname->getStringValue().c_str(), key->toString());
   }
 
   IndexMap::iterator pos = theMap.get(key);
@@ -192,7 +192,7 @@ void ProbeHashValueIndexIterator::init(const store::IndexCondition_t& cond)
   if (cond->getKind() != store::IndexCondition::POINT_VALUE)
   {
     ZORBA_ERROR_PARAM(STR0007_INDEX_UNSUPPORTED_PROBE_CONDITION,
-                      theIndex->getName()->getStringValue()->c_str(), 
+                      theIndex->getName()->getStringValue().c_str(), 
                       cond->getKindString());
   }
 
@@ -203,7 +203,7 @@ void ProbeHashValueIndexIterator::init(const store::IndexCondition_t& cond)
   if (key->size() != theIndex->getNumColumns())
   {
     ZORBA_ERROR_PARAM(STR0005_INDEX_PARTIAL_KEY_PROBE,
-                      theIndex->getName()->getStringValue()->c_str(),
+                      theIndex->getName()->getStringValue().c_str(),
                       key->toString());
   }
 
@@ -320,7 +320,7 @@ bool STLMapIndex::insert(
   if (key->size() != theNumColumns)
   {
     ZORBA_ERROR_PARAM(STR0003_INDEX_PARTIAL_KEY_INSERT,
-                      theQname->getStringValue()->c_str(), key->toString());
+                      theQname->getStringValue().c_str(), key->toString());
   }
 
   SYNC_CODE(AutoMutex lock((isThreadSafe() ? &theMapMutex : NULL));)
@@ -331,12 +331,12 @@ bool STLMapIndex::insert(
   for (ulong i = 0; i < theNumColumns; i++)
   {
     if (key[i] != NULL)
-      std::cout << key[i]->getStringValue()->c_str() << ", ";
+      std::cout << key[i]->getStringValue() << ", ";
     else
       std::cout << "NULL, ";
   }
 
-  std::cout << "), " << value->getStringValue()->c_str() << "]" << std::endl;
+  std::cout << "), " << value->getStringValue() << "]" << std::endl;
 #endif
 
   // TODO: optimize this using the lower_bound() method.
@@ -347,7 +347,7 @@ bool STLMapIndex::insert(
     if (isUnique())
     {
       ZORBA_ERROR_PARAM(XDDY0024_INDEX_UNIQUE_VIOLATION,
-                        theQname->getStringValue(), "");
+                        theQname->getStringValue().c_str(), "");
     }
 
     pos->second->transfer_back(value);
@@ -372,7 +372,7 @@ bool STLMapIndex::remove(const store::IndexKey* key, store::Item_t& value)
   if (key->size() != theNumColumns)
   {
     ZORBA_ERROR_PARAM(STR0004_INDEX_PARTIAL_KEY_REMOVE,
-                      theQname->getStringValue()->c_str(), "");
+                      theQname->getStringValue().c_str(), "");
   }
 
   SYNC_CODE(AutoMutex lock((isThreadSafe() ? &theMapMutex : NULL));)
@@ -421,7 +421,7 @@ void ProbeTreeValueIndexIterator::init(const store::IndexCondition_t& cond)
       cond->getKind() != store::IndexCondition::POINT_VALUE)
   {
     ZORBA_ERROR_PARAM(STR0007_INDEX_UNSUPPORTED_PROBE_CONDITION,
-                      theIndex->getName()->getStringValue()->c_str(), 
+                      theIndex->getName()->getStringValue().c_str(), 
                       cond->getKindString());
   }
 
@@ -450,7 +450,7 @@ void ProbeTreeValueIndexIterator::initExact()
   if (key.size() != theIndex->theNumColumns)
   {
     ZORBA_ERROR_PARAM(STR0005_INDEX_PARTIAL_KEY_PROBE,
-                      theIndex->getName()->getStringValue()->c_str(), 
+                      theIndex->getName()->getStringValue().c_str(), 
                       key.toString());
   }
 
@@ -485,7 +485,7 @@ void ProbeTreeValueIndexIterator::initBox()
   if (numRanges > theIndex->getNumColumns())
   {
     ZORBA_ERROR_PARAM(STR0006_INDEX_INVALID_BOX_PROBE, 
-                      theIndex->getName()->getStringValue()->c_str(),
+                      theIndex->getName()->getStringValue().c_str(),
                       "The box condition has more columns than the index");
   }
 
@@ -570,7 +570,7 @@ void ProbeTreeValueIndexIterator::initBox()
           (comp == 0 && (!flags[i].theLowerBoundIncl || !flags[i].theUpperBoundIncl)))
       { 
         ZORBA_ERROR_PARAM(STR0006_INDEX_INVALID_BOX_PROBE, 
-                          theIndex->getName()->getStringValue()->c_str(),
+                          theIndex->getName()->getStringValue().c_str(),
                           theBoxCond->toString());
       }
     }

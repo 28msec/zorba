@@ -26,6 +26,7 @@
 #include "compiler/parsetree/parsenodes.h"
 #include "runtime/base/plan_iterator.h"
 #include "zorbatypes/rchandle.h"
+#include "zorbatypes/zstring.h"
 #include "zorbautils/locale.h"
 
 namespace zorba {
@@ -120,17 +121,17 @@ public:
   ftextension_option(
     QueryLoc const&,
     rchandle<QName>,
-    std::string const &val
+    zstring const &val
   );
 
   ft_visit_result::type accept( ftnode_visitor& );
   rchandle<QName> get_qname() const { return qname_; }
-  std::string const& get_val() const { return val_; }
+  zstring const& get_val() const { return val_; }
   std::ostream& put( std::ostream& ) const;
 
 private:
   rchandle<QName> qname_;
-  std::string val_;
+  zstring val_;
 };
 typedef rchandle<ftextension_option> ftextension_option_t;
 
@@ -143,7 +144,7 @@ public:
 
   ftlanguage_option(
     QueryLoc const&,
-    std::string const &language
+    zstring const &language
   );
 
   ft_visit_result::type accept( ftnode_visitor& );
@@ -183,17 +184,17 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(ftstop_words,ftnode)
   void serialize( serialization::Archiver& );
 
-  typedef std::list<std::string> list_t;
+  typedef std::list<zstring> list_t;
 
   ftstop_words(
     QueryLoc const&,
-    std::string const &uri,
+    zstring const &uri,
     list_t const&,
     ft_stop_words_unex::type = ft_stop_words_unex::union_
   );
 
   ft_visit_result::type accept( ftnode_visitor& );
-  std::string const& get_uri() const { return uri_; }
+  zstring const& get_uri() const { return uri_; }
   list_t const& get_list() const { return list_; }
   ft_stop_words_unex::type get_mode() const { return mode_; }
   std::ostream& put( std::ostream& ) const;
@@ -203,7 +204,7 @@ public:
   }
 
 private:
-  std::string uri_;
+  zstring uri_;
   list_t list_;
   ft_stop_words_unex::type mode_;
 };
@@ -250,21 +251,21 @@ public:
 
   ftthesaurus_id(
     QueryLoc const&,
-    std::string const &uri,
-    std::string const &relationship,
+    zstring const &uri,
+    zstring const &relationship,
     ftrange *levels
   );
   ~ftthesaurus_id();
 
   ft_visit_result::type accept( ftnode_visitor& );
-  std::string const& get_uri() const { return uri_; }
-  std::string const& get_relationship() const { return relationship_; }
+  zstring const& get_uri() const { return uri_; }
+  zstring const& get_relationship() const { return relationship_; }
   ftrange const* get_levels() const { return levels_; }
   std::ostream& put( std::ostream& ) const;
 
 private:
-  std::string uri_;
-  std::string relationship_;
+  zstring uri_;
+  zstring relationship_;
   ftrange *levels_;
 };
 

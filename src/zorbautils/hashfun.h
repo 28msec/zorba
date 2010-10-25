@@ -269,3 +269,9 @@ class  hashfun
 
 } /* namespace zorba */
 #endif /* ZORBA_HASHFUN_H */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

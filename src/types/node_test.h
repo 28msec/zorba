@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_NODE_TEST_H
-#define ZORBA_NODE_TEST_H
+#ifndef ZORBA_TYPES_NODE_TEST_H
+#define ZORBA_TYPES_NODE_TEST_H
 
 #include <zorba/store_consts.h>
 
 #include "zorbatypes/rchandle.h"
-#include "zorbatypes/xqpstring.h"
 
 #include "store/api/item.h"
 
@@ -30,30 +29,17 @@ class TypeManager;
 
 class NodeNameTest : virtual public SimpleRCObject
 {
-public:
-  typedef enum 
-  {
-    CONSTANT,
-    CONSTANT_WILDCARD,
-    WILDCARD_CONSTANT,
-    WILDCARD
-  } wildcard_kind_t;
-
 private:
-  xqpStringStore_t         m_uri;
-  xqpStringStore_t         m_local;
+  zstring  m_uri;
+  zstring  m_local;
 
 public:
   SERIALIZABLE_CLASS(NodeNameTest)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(NodeNameTest, SimpleRCObject)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    //serialize_baseclass(ar, (SimpleRCObject*)this);
-    ar & m_uri;
-    ar & m_local;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
+
 public:
-  NodeNameTest(const xqpStringStore_t& uri, const xqpStringStore_t& local);
+  NodeNameTest(const zstring& uri, const zstring& local);
 
   NodeNameTest(const store::Item_t& qname);
 
@@ -63,9 +49,7 @@ public:
 
   bool matches(const store::Item* qname) const;
 
-  bool matches(
-        const xqpStringStore* lname,
-        const xqpStringStore* ns) const;
+  bool matches(const zstring& lname,  const zstring& ns) const;
 };
 
 

@@ -298,7 +298,7 @@ public:
 
   void addReplaceValue(
         store::Item_t& target,
-        xqpStringStore_t& newValue);
+        zstring& newValue);
 
   void addRename(
         store::Item_t& target,

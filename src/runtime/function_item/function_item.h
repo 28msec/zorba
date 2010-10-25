@@ -83,7 +83,7 @@ public:
 
   PlanIter_t getImplementation(std::vector<PlanIter_t>& args) const;
 
-  xqp_string show() const;
+  zstring show() const;
 
   bool isNode() const     { return false; }
   bool isAtomic() const   { return false; }

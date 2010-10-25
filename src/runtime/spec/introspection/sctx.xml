@@ -120,7 +120,7 @@
     </zorba:function>
 
     <zorba:state generateReset="false" generateDestructor="false">
-      <zorba:member type="std::vector&lt;std::pair&lt;xqpStringStore_t, xqpStringStore_t&gt; &gt;" name="theBindings"
+      <zorba:member type="store::NsBindings" name="theBindings"
                     brief="vector of namespace bindings"/>
       <zorba:member type="ulong" name="thePosition" brief="current position"/>
     </zorba:state>

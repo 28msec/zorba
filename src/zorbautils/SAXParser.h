@@ -27,23 +27,26 @@
 #include <vector>
 
 namespace zorba {
-	class ZORBA_DLL_PUBLIC SAXParser {
-	public:
-		SAXParser(store::ItemFactory &factory, 
-			xqpStringStore_t& baseUri, 
-			xqpStringStore_t& docUri, 
-			error::ErrorManager* errorManager);
 
-    virtual ~SAXParser();
 
-	public:
-		bool parseDocument(store::Item_t& result, std::istream& stream);
-	public:
-		static void	startDocument(void * ctx);
+class ZORBA_DLL_PUBLIC SAXParser 
+{
+ public:
+  SAXParser(store::ItemFactory &factory, 
+            const zstring& baseUri, 
+            const zstring& docUri, 
+            error::ErrorManager* errorManager);
 
-		static void endDocument(void * ctx);
+  virtual ~SAXParser();
 
-		static void startElement(
+ public:
+  bool parseDocument(store::Item_t& result, std::istream& stream);
+ public:
+  static void	startDocument(void * ctx);
+
+  static void endDocument(void * ctx);
+
+  static void startElement(
 			void * ctx, 
 			const xmlChar * localname, 
 			const xmlChar * prefix, 
@@ -54,47 +57,50 @@ namespace zorba {
 			int nb_defaulted, 
 			const xmlChar ** attributes);
 
-		static void endElement(
+  static void endElement(
 			void * ctx, 
 			const xmlChar * localname, 
 			const xmlChar * prefix, 
 			const xmlChar * URI);
 
-		static void characters(
+  static void characters(
 			void * ctx,
 			const xmlChar * ch,
 			int len);
 
-		static void	cdataBlock(
+  static void	cdataBlock(
 			void * ctx, 
 			const xmlChar * ch, 
 			int len);
 
-		static void comment(
+  static void comment(
 			void * ctx, 
 			const xmlChar * ch);
 
-		static void	processingInstruction(
+  static void	processingInstruction(
 			void * ctx, 
 			const xmlChar * target, 
 			const xmlChar * data);
 
-		static void error(void * ctx, const char * msg, ... );
+  static void error(void * ctx, const char * msg, ... );
 
-		static void warning(void * ctx, const char * msg, ... );
+  static void warning(void * ctx, const char * msg, ... );
 
-	protected:
-    void createTextNodeFromBuffer();
-		xmlSAXHandler theHandler;
-		store::Item_t theResult;
-		store::ItemFactory& theFactory;
-		xqpStringStore_t& theBaseUri;
-		xqpStringStore_t& theDocUri;
-		bool theSucceeded;
-		std::vector<store::Item_t> theStack;
-		error::ErrorManager* theErrorManager;
-    std::ostringstream* m_stream;
-	};
+ protected:
+  void createTextNodeFromBuffer();
+
+  xmlSAXHandler theHandler;
+  store::Item_t theResult;
+  store::ItemFactory& theFactory;
+  const zstring& theBaseUri;
+  const zstring& theDocUri;
+  bool theSucceeded;
+  std::vector<store::Item_t> theStack;
+  error::ErrorManager* theErrorManager;
+  std::ostringstream* m_stream;
+};
+
+
 }
 
 #endif

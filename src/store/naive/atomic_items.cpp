@@ -39,6 +39,9 @@
 #include "store/naive/store_defs.h"
 #include "store/naive/item_iterator.h"
 
+#include "util/ascii_util.h"
+#include "util/string_util.h"
+#include "util/utf8_util.h"
 
 #define CREATE_XS_TYPE(aType) \
   GET_STORE().getItemFactory()->createQName(SimpleStore::XS_URI, "xs", aType);
@@ -86,7 +89,7 @@ bool AtomicItem::castToLong(store::Item_t& result) const
   case XS_UNTYPED_ATOMIC:
   {
     const UntypedAtomicItem* item = static_cast<const UntypedAtomicItem*>(this);
-    if (NumConversions::strToLong(item->theValue->c_str(), longValue))
+    if (NumConversions::strToLong(item->theValue.c_str(), longValue))
       GET_FACTORY().createLong(result, longValue);
 
     break;
@@ -288,7 +291,8 @@ bool UntypedAtomicItem::castToUri(store::Item_t& result) const
   try
   {
     URI uriVal(theValue);
-    return GET_FACTORY().createAnyURI(result, uriVal.toString()->c_str());
+    zstring tmp = uriVal.toString();
+    return GET_FACTORY().createAnyURI(result, tmp);
   }
   catch (error::ZorbaError& e)
   {
@@ -301,69 +305,69 @@ bool UntypedAtomicItem::castToUri(store::Item_t& result) const
 
 bool UntypedAtomicItem::castToString(store::Item_t& result) const
 {
-  xqpStringStore_t tmp(theValue);
+  zstring tmp = theValue;
   return GET_FACTORY().createString(result, tmp);
 }
 
 
 bool UntypedAtomicItem::castToDateTime(store::Item_t& result) const
 {
-  return GET_FACTORY().createDateTime(result, theValue);
+   return GET_FACTORY().createDateTime(result, theValue.c_str(), theValue.size());
 }
 
 
 bool UntypedAtomicItem::castToDate(store::Item_t& result) const
 {
-  return GET_FACTORY().createDate(result, theValue);
+  return GET_FACTORY().createDate(result, theValue.c_str(), theValue.size());
 }
 
 
 bool UntypedAtomicItem::castToTime(store::Item_t& result) const
 {
-  return GET_FACTORY().createTime(result, theValue);
+  return GET_FACTORY().createTime(result, theValue.c_str(), theValue.size());
 }
 
 
 bool UntypedAtomicItem::castToGYear(store::Item_t& result) const
 {
-  return GET_FACTORY().createGYear(result, theValue);
+  return GET_FACTORY().createGYear(result, theValue.c_str(), theValue.size());
 }
 
 
 bool UntypedAtomicItem::castToGYearMonth(store::Item_t& result) const
 {
-  return GET_FACTORY().createGYearMonth(result, theValue);
+  return GET_FACTORY().createGYearMonth(result, theValue.c_str(), theValue.size());
 }
 
 
 bool UntypedAtomicItem::castToGMonthDay(store::Item_t& result) const
 {
-  return GET_FACTORY().createGMonthDay(result, theValue);
+  return GET_FACTORY().createGMonthDay(result, theValue.c_str(), theValue.size());
 }
 
 
 bool UntypedAtomicItem::castToGMonth(store::Item_t& result) const
 {
-  return GET_FACTORY().createGMonth(result, theValue);
+  return GET_FACTORY().createGMonth(result, theValue.c_str(), theValue.size());
 }
 
 
 bool UntypedAtomicItem::castToGDay(store::Item_t& result) const
 {
-  return GET_FACTORY().createGDay(result, theValue);
+  return GET_FACTORY().createGDay(result, theValue.c_str(), theValue.size());
 }
 
 
 bool UntypedAtomicItem::castToDuration(store::Item_t& result) const
 {
-  return GET_FACTORY().createDuration(result, theValue);
+  return GET_FACTORY().createDuration(result, theValue.c_str(), theValue.size());
 }
 
 
 bool UntypedAtomicItem::castToDouble(store::Item_t& result) const
 {
   xqp_double doubleValue;
-  if (NumConversions::strToDouble(theValue->c_str(), doubleValue))
+  if (NumConversions::strToDouble(theValue.c_str(), doubleValue))
   {
     return GET_FACTORY().createDouble(result, doubleValue);
   }
@@ -378,7 +382,7 @@ bool UntypedAtomicItem::castToDouble(store::Item_t& result) const
 bool UntypedAtomicItem::castToDecimal(store::Item_t& result) const
 {
   xqp_decimal decValue;
-  if (NumConversions::strToDecimal(theValue->c_str(), decValue))
+  if (NumConversions::strToDecimal(theValue.c_str(), decValue))
   {
     return GET_FACTORY().createDecimal(result, decValue);
   }
@@ -393,7 +397,7 @@ bool UntypedAtomicItem::castToDecimal(store::Item_t& result) const
 bool UntypedAtomicItem::castToInteger(store::Item_t& result) const
 {
   xqp_integer intValue;
-  if (NumConversions::strToInteger(theValue->c_str(), intValue))
+  if (NumConversions::strToInteger(theValue.c_str(), intValue))
   {
     return GET_FACTORY().createInteger(result, intValue);
   }
@@ -437,14 +441,15 @@ bool UntypedAtomicItem::castToBase64Binary(store::Item_t& result) const
 
 bool UntypedAtomicItem::castToBoolean(store::Item_t& result) const
 {
-  xqpStringStore_t str = theValue->trim(" \t\r\n", 4);
+  zstring str;
+  ascii::trim_whitespace(theValue, &str);
   bool value = true;
 
-  if (str->byteEqual("false", 5) || str->byteEqual("0", 1))
+  if (zorba::equals(str, "false", 5) || zorba::equals(str, "0", 1))
   {
     value = false;
   }
-  else if (!str->byteEqual("true", 4) && !str->byteEqual("1", 1))
+  else if (!zorba::equals(str, "true", 4) && !zorba::equals(str, "1", 1))
   {
     result = NULL;
     return false;
@@ -462,22 +467,25 @@ store::Item* UntypedAtomicItem::getType() const
 
 uint32_t UntypedAtomicItem::hash(long timezone, const XQPCollator* aCollation) const
 {
-  return theValue->hash();
+  return utf8::hash(theValue);
 }
 
 
 store::Item_t UntypedAtomicItem::getEBV() const
 {
-  bool b = ! ( theValue->str() == "" );
+  bool b = ! ( theValue == "" );
   store::Item_t bVal;
   CREATE_BOOLITEM(bVal, b);
   return bVal;
 }
 
 
-xqp_string UntypedAtomicItem::show() const
+zstring UntypedAtomicItem::show() const
 {
-  return "xs:untypedAtomic(" + theValue->str() + ")";
+  zstring res("xs:untypedAtomic(");
+  res += theValue;
+  res += ")";
+  return res;
 }
 
 
@@ -485,21 +493,11 @@ xqp_string UntypedAtomicItem::show() const
   class QNameItemImpl
 ********************************************************************************/
 
-xqpStringStore_t QNameItem::theEmptyPrefix(new xqpStringStore(""));
-
-
 QNameItem::~QNameItem() 
 {
   if (isValid())
   {
-    if (isNormalized())
-    {
-      unsetLocal();
-    }
-    else
-    {
-      unsetNormalized();
-    }
+    assert(theLocal.empty() || theNormQName == NULL);
   }
 }
 
@@ -510,46 +508,10 @@ void QNameItem::free()
 }
 
 
-void QNameItem::setLocal(xqpStringStore* local)  
-{
-  assert(theUnion.theLocal == NULL);
-
-  theUnion.theLocal = local;
-  local->addReference(NULL SYNC_PARAM2(local->getRCLock()));
-}
-
-
-void QNameItem::unsetLocal()  
-{
-  assert(theUnion.theLocal != NULL && isNormalized());
-
-  theUnion.theLocal->removeReference(NULL SYNC_PARAM2(theUnion.theLocal->getRCLock()));
-  theUnion.theLocal = NULL;
-}
-
-
-void QNameItem::setNormalized(QNameItem* qn)  
-{
-  assert(theUnion.theNormQN == NULL);
-
-  theUnion.theNormQN = qn;
-  qn->addReference(NULL SYNC_PARAM2(qn->getRCLock()));
-}
-
-
-void QNameItem::unsetNormalized()  
-{
-  assert(theUnion.theNormQN != NULL && !isNormalized());
-
-  theUnion.theNormQN->removeReference(NULL SYNC_PARAM2(theUnion.theNormQN->getRCLock()));
-  theUnion.theNormQN = NULL;
-}
-
-
 uint32_t QNameItem::hash(long timezone, const XQPCollator* aCollation) const
 {
   const void* tmp = getNormalized();
-  return hashfun::h32(tmp, FNV_32_INIT);
+  return hashfun::h32(&tmp, sizeof(void*), FNV_32_INIT);
 }
 
 
@@ -559,60 +521,64 @@ store::Item* QNameItem::getType() const
 }
 
 
-store::Item_t QNameItem::getEBV( ) const
+store::Item_t QNameItem::getEBV() const
 {
   ZORBA_ERROR_DESC(FORG0006, "Effective Boolean Value is not defined for QName!");
   return NULL;
 }
 
 
-xqpStringStore_t QNameItem::getStringValue( ) const
+zstring QNameItem::getStringValue() const
 {
-  if (thePrefix->empty()) 
+  if (thePrefix.empty()) 
   {
     return getLocalName();
   }
   else 
   {
-    return new xqpStringStore(thePrefix->str() + ":" + getLocalName()->str());
+    return (thePrefix + ":" + getLocalName());
   }
 }
 
 
-void QNameItem::getStringValue(xqpStringStore_t& strval) const
+void QNameItem::getStringValue2(zstring& val) const
 {
-  if (thePrefix->empty()) 
+  if (thePrefix.empty()) 
   {
-    strval = getLocalName();
+    val = getLocalName();
   }
   else 
   {
-    strval = new xqpStringStore(thePrefix->str() + ":" + getLocalName()->str());
+    val.reserve(thePrefix.size() + getLocalName().size() + 1);
+    val = thePrefix;
+    val += ":";
+    val += getLocalName();
   }
 }
 
 
-void QNameItem::getStringValue(std::string& buf) const
+void QNameItem::appendStringValue(zstring& buf) const
 {
-  if (thePrefix->empty()) 
+  if (thePrefix.empty()) 
   {
-    buf += getLocalName()->str();
+    buf += getLocalName();
   }
   else 
   {
-    buf += thePrefix->str();
+    buf.reserve(buf.size() + thePrefix.size() + getLocalName().size() + 1);
+    buf += thePrefix;
     buf += ":";
-    buf += getLocalName()->str();
+    buf += getLocalName();
   }
 }
 
 
 bool QNameItem::isIdQName() const
 {
-  if (getLocalName()->byteEqual("id", 2))
+  if (zorba::equals(getLocalName(), "id", 2))
   {
-    if (getPrefix()->byteEqual("xml", 3) ||
-        theNamespace->byteEqual(SimpleStore::XML_URI, SimpleStore::XML_URI_LEN))
+    if (zorba::equals(getPrefix(), "xml", 3) ||
+        zorba::equals(theNamespace, SimpleStore::XML_URI, SimpleStore::XML_URI_LEN))
       return true;
   }
 
@@ -622,10 +588,10 @@ bool QNameItem::isIdQName() const
 
 bool QNameItem::isBaseUri() const
 {
-  if (getLocalName()->byteEqual("base", 4))
+  if (zorba::equals(getLocalName(), "base", 4))
   {
-    if (getPrefix()->byteEqual("xml", 3) ||
-        getNamespace()->byteEqual(SimpleStore::XML_URI, SimpleStore::XML_URI_LEN))
+    if (zorba::equals(getPrefix(), "xml", 3) ||
+        zorba::equals(getNamespace(), SimpleStore::XML_URI, SimpleStore::XML_URI_LEN))
       return true;
   }
 
@@ -633,39 +599,49 @@ bool QNameItem::isBaseUri() const
 }
 
 
-xqp_string QNameItem::show() const
+zstring QNameItem::show() const
 {
-  return "xs:QName(" + getNamespace()->str() + "," + getPrefix()->str() + "," +
-                       getLocalName()->str() + ")";
+  zstring res("xs:QName(");
+  res += getNamespace();
+  res += ",";
+  res += getPrefix();
+  res += ",";
+  res += getLocalName();
+  res += ")";
+  return res;
 }
 
 
 /*******************************************************************************
   class AnyUriItem
 ********************************************************************************/
-store::Item* AnyUriItemImpl::getType() const
+store::Item* AnyUriItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_ANY_URI];
 }
 
-uint32_t AnyUriItemImpl::hash(long timezone, const XQPCollator* aCollation) const
+
+uint32_t AnyUriItem::hash(long timezone, const XQPCollator* aCollation) const
 {
-  return theValue->hash();
+  return hashfun::h32(theValue.data(), theValue.size());
 }
 
 
-store::Item_t AnyUriItemImpl::getEBV() const
+store::Item_t AnyUriItem::getEBV() const
 {
-  bool b = ! (theValue->str() == "");
+  bool b = ! (theValue == "");
   store::Item_t bVal;
   CREATE_BOOLITEM(bVal, b);
   return bVal;
 }
 
 
-xqp_string AnyUriItemImpl::show() const
+zstring AnyUriItem::show() const
 {
-  return "xs:anyURI(" + theValue->str() + ")";
+  zstring res("xs:anyURI(");
+  res += theValue;
+  res += ")";
+  return res;
 }
 
 
@@ -680,10 +656,7 @@ store::Item* StringItem::getType() const
 
 uint32_t StringItem::hash(long timezone, const XQPCollator* aCollation) const
 {
-  if (aCollation == NULL || aCollation->doMemCmp())
-    return xqpStringStore::hash(theValue->c_str());
-
-  return theValue->hash(aCollation);
+  return utf8::hash(theValue, aCollation);
 }
 
 
@@ -693,9 +666,9 @@ bool StringItem::equals(
     const XQPCollator* aCollation) const
 {
   if (aCollation == NULL || aCollation->doMemCmp())
-    return theValue->byteEqual(other->getString());
+    return theValue == other->getString();
 
-  return (theValue->compare(other->getString(), aCollation) == 0);
+  return (utf8::compare(theValue, other->getString(), aCollation) == 0);
 }
   
 
@@ -705,24 +678,27 @@ long StringItem::compare(
     const XQPCollator* aCollation) const
 {
   if (aCollation == NULL || aCollation->doMemCmp())
-    return theValue->byteCompare(other->getString());
+    return norm_3way( theValue.compare(other->getString()) );
 
-  return theValue->compare(other->getString(), aCollation);
+  return utf8::compare(theValue, other->getString(), aCollation);
 }
 
 
 store::Item_t StringItem::getEBV() const
 {
-  bool b = ! ( theValue->str() == "" );
+  bool b = ! ( theValue == "" );
   store::Item_t bVal;
   CREATE_BOOLITEM(bVal, b);
   return bVal;
 }
 
 
-xqp_string StringItem::show() const
+zstring StringItem::show() const
 {
-  return "xs:string(" + theValue->str() + ")";
+  zstring res("xs:string(");
+  res += theValue;
+  res += ")";
+  return res;
 }
 
 #ifndef ZORBA_NO_FULL_TEXT
@@ -736,27 +712,30 @@ void AtomicItemTokenizer::operator()( char const *utf8_s, int utf8_len,
 }
 
 
-FTTokenIterator_t
-StringItem::getDocumentTokens( locale::iso639_1::type lang) const 
+FTTokenIterator_t StringItem::getDocumentTokens(locale::iso639_1::type lang) const 
 {
   auto_ptr<Tokenizer> tokenizer( Tokenizer::create() );
-  NaiveFTTokenIterator::FTTokens *tokens = new NaiveFTTokenIterator::FTTokens;
-  AtomicItemTokenizer atomic_tokenizer( *tokenizer, lang, *tokens );
-  xqpStringStore const *const xText = getStringValue();
-  atomic_tokenizer.tokenize( xText->c_str(), xText->size() );
-  return FTTokenIterator_t( new NaiveFTTokenIterator( tokens ) );
+
+  NaiveFTTokenIterator::FTTokens* tokens = new NaiveFTTokenIterator::FTTokens;
+
+  AtomicItemTokenizer atomic_tokenizer(*tokenizer, lang, *tokens);
+  atomic_tokenizer.tokenize(theValue.c_str(), theValue.size());
+
+  return FTTokenIterator_t(new NaiveFTTokenIterator(tokens));
 }
 
 
-FTTokenIterator_t
-StringItem::getQueryTokens( locale::iso639_1::type lang,
-                                 bool wildcards ) const 
+FTTokenIterator_t StringItem::getQueryTokens(
+     locale::iso639_1::type lang,
+     bool wildcards) const 
 {
   auto_ptr<Tokenizer> tokenizer( Tokenizer::create( wildcards ) );
-  NaiveFTTokenIterator::FTTokens *tokens = new NaiveFTTokenIterator::FTTokens;
+
+  NaiveFTTokenIterator::FTTokens* tokens = new NaiveFTTokenIterator::FTTokens;
+
   AtomicItemTokenizer atomic_tokenizer( *tokenizer, lang, *tokens );
-  xqpStringStore const *const xText = getStringValue();
-  atomic_tokenizer.tokenize( xText->c_str(), xText->size() );
+  atomic_tokenizer.tokenize( theValue.c_str(), theValue.size() );
+
   return FTTokenIterator_t( new NaiveFTTokenIterator( tokens ) );
 }
 
@@ -770,9 +749,13 @@ store::Item* NormalizedStringItemImpl::getType() const
   return GET_STORE().theSchemaTypeNames[XS_NORMALIZED_STRING];
 }
 
-xqp_string NormalizedStringItemImpl::show() const
+
+zstring NormalizedStringItemImpl::show() const
 {
-  return "xs:NormalizedString(" + theValue->str() + ")";
+  zstring res("xs:NormalizedString(");
+  res += theValue;
+  res += ")";
+  return res;
 }
 
 
@@ -785,14 +768,12 @@ store::Item* TokenItemImpl::getType() const
 }
 
 
-uint32_t TokenItemImpl::hash(long timezone, const XQPCollator* aCollation) const
+zstring TokenItemImpl::show() const
 {
-  return theValue->hash();
-}
-
-xqp_string TokenItemImpl::show() const
-{
-  return "xs:TOKEN(" + theValue->str() + ")";
+  zstring res("xs:TOKEN(");
+  res += theValue;
+  res += ")";
+  return res;
 }
 
 
@@ -805,10 +786,14 @@ store::Item* LanguageItemImpl::getType() const
 }
 
 
-xqp_string LanguageItemImpl::show() const
+zstring LanguageItemImpl::show() const
 {
-  return "xs:LANGUAGE(" + theValue->str() + ")";
+  zstring res("xs:LANGUAGE(");
+  res += theValue;
+  res += ")";
+  return res;
 }
+
 
 /*******************************************************************************
   class NMTOKENItemImpl
@@ -819,10 +804,14 @@ store::Item* NMTOKENItemImpl::getType() const
 }
 
 
-xqp_string NMTOKENItemImpl::show() const
+zstring NMTOKENItemImpl::show() const
 {
-  return "xs:NMTOKEN(" + theValue->str() + ")";
+  zstring res("xs:NMTOKEN(");
+  res += theValue;
+  res += ")";
+  return res;
 }
+
 
 /*******************************************************************************
   class NameItemImpl
@@ -833,9 +822,12 @@ store::Item* NameItemImpl::getType() const
 }
 
 
-xqp_string NameItemImpl::show() const
+zstring NameItemImpl::show() const
 {
-  return "xs:NAME(" + theValue->str() + ")";
+  zstring res("xs:NAME(");
+  res += theValue;
+  res += ")";
+  return res;
 }
 
 
@@ -848,9 +840,12 @@ store::Item* NCNameItemImpl::getType() const
 }
 
 
-xqp_string NCNameItemImpl::show() const
+zstring NCNameItemImpl::show() const
 {
-  return "xs:NCName(" + theValue->str() + ")";
+  zstring res("xs:NCName(");
+  res += theValue;
+  res += ")";
+  return res;
 }
 
 
@@ -862,9 +857,13 @@ store::Item* IDItemImpl::getType() const
   return GET_STORE().theSchemaTypeNames[XS_ID];
 }
 
-xqp_string IDItemImpl::show() const
+
+zstring IDItemImpl::show() const
 {
-  return "xs:ID(" + theValue->str() + ")";
+  zstring res("xs:ID(");
+  res += theValue;
+  res += ")";
+  return res;
 }
 
 
@@ -876,9 +875,13 @@ store::Item* IDREFItemImpl::getType() const
   return GET_STORE().theSchemaTypeNames[XS_IDREF];
 }
 
-xqp_string IDREFItemImpl::show() const
+
+zstring IDREFItemImpl::show() const
 {
-  return "xs:IDREF(" + theValue->str() + ")";
+  zstring res("xs:IDREF(");
+  res += theValue;
+  res += ")";
+  return res;
 }
 
 
@@ -890,29 +893,32 @@ store::Item* ENTITYItemImpl::getType() const
   return GET_STORE().theSchemaTypeNames[XS_ENTITY];
 }
 
-xqp_string ENTITYItemImpl::show() const
+zstring ENTITYItemImpl::show() const
 {
-  return "xs:ENTITY(" + theValue->str() + ")";
+  zstring res("xs:ENTITY(");
+  res += theValue;
+  res += ")";
+  return res;
 }
 
 
 /*******************************************************************************
   class DateTimeItem
 ********************************************************************************/
-xqpStringStore_t DateTimeItem::getStringValue() const
+zstring DateTimeItem::getStringValue() const
 {
-  return theValue.toString().getStore();
+  return theValue.toString();
 }
 
 
-void DateTimeItem::getStringValue(xqpStringStore_t& strval) const
+void DateTimeItem::getStringValue2(zstring& val) const
 {
-  strval = theValue.toString().getStore();
+  val = theValue.toString();
 }
 
-void DateTimeItem::getStringValue(std::string& buf) const
+void DateTimeItem::appendStringValue(zstring& buf) const
 {
-  buf += theValue.toString().c_str();
+  buf += theValue.toString();
 }
 
 
@@ -1037,7 +1043,7 @@ store::Item_t DateTimeItem::getEBV() const
 }
 
 
-xqp_string DateTimeItem::show() const
+zstring DateTimeItem::show() const
 {
   return theValue.toString();
 }
@@ -1064,21 +1070,21 @@ const xqp_yearMonthDuration& DurationItem::getYearMonthDurationValue() const
 }
 
 
-xqpStringStore_t DurationItem::getStringValue() const
+zstring DurationItem::getStringValue() const
 {
   return theValue.toString();
 }
 
 
-void DurationItem::getStringValue(xqpStringStore_t& strval) const
+void DurationItem::getStringValue2(zstring& val) const
 {
-  strval = theValue.toString();
+  val = theValue.toString();
 }
 
 
-void DurationItem::getStringValue(std::string& buf) const
+void DurationItem::appendStringValue(zstring& buf) const
 {
-  buf += theValue.toString()->c_str();
+  buf += theValue.toString();
 }
 
 
@@ -1112,9 +1118,9 @@ store::Item_t DurationItem::getEBV() const
 }
 
 
-xqp_string DurationItem::show() const
+zstring DurationItem::show() const
 {
-  return theValue.toString().getp();
+  return theValue.toString();
 }
 
 
@@ -1145,24 +1151,30 @@ store::Item_t DoubleItem::getEBV() const
 }
 
 
-xqpStringStore_t DoubleItem::getStringValue() const
+zstring DoubleItem::getStringValue() const
 {
   return NumConversions::doubleToStr(theValue);
 }
 
-void DoubleItem::getStringValue(xqpStringStore_t& strval) const
+
+void DoubleItem::getStringValue2(zstring& val) const
 {
-  strval = NumConversions::doubleToStr(theValue);
+  val = NumConversions::doubleToStr(theValue);
 }
 
-void DoubleItem::getStringValue(std::string& buf) const
+
+void DoubleItem::appendStringValue(zstring& buf) const
 {
-  buf += NumConversions::doubleToStr(theValue)->c_str();
+  buf += NumConversions::doubleToStr(theValue);
 }
 
-xqp_string DoubleItem::show() const
+
+zstring DoubleItem::show() const
 {
-  return "xs:double(" + getStringValue()->str() + ")";
+  zstring res("xs:double(");
+  appendStringValue(res);
+  res += ")";
+  return res;
 }
 
 
@@ -1207,35 +1219,44 @@ store::Item_t FloatItem::getEBV() const
   return bVal;
 }
 
-xqpStringStore_t FloatItem::getStringValue() const
+zstring FloatItem::getStringValue() const
 {
   return NumConversions::floatToStr(theValue);
 }
 
-void FloatItem::getStringValue(xqpStringStore_t& strval) const
+
+void FloatItem::getStringValue2(zstring& val) const
 {
-  strval = NumConversions::floatToStr(theValue);
+  val = NumConversions::floatToStr(theValue);
 }
 
-void FloatItem::getStringValue(std::string& buf) const
+
+void FloatItem::appendStringValue(zstring& buf) const
 {
-  buf += NumConversions::floatToStr(theValue)->c_str();
+  buf += NumConversions::floatToStr(theValue);
 }
 
-xqp_string FloatItem::show() const
+
+zstring FloatItem::show() const
 {
-  return "xs:float(" + getStringValue()->str() + ")";
+  zstring res("xs:float(");
+  appendStringValue(res);
+  res += ")";
+  return res;
 }
+
 
 bool FloatItem::isNaN() const 
 {
   return theValue.isNaN();
 }
 
+
 bool FloatItem::isPosOrNegInf() const 
 {
   return theValue.isPosInf() || theValue.isNegInf();
 }
+
 
 uint32_t FloatItem::hash(long timezone, const XQPCollator* aCollation) const
 {
@@ -1261,19 +1282,21 @@ store::Item_t DecimalItem::getEBV() const
   return bVal;
 }
 
-xqpStringStore_t DecimalItem::getStringValue() const
+zstring DecimalItem::getStringValue() const
 {
   return NumConversions::decimalToStr(theValue);
 }
 
-void DecimalItem::getStringValue(xqpStringStore_t& strval) const
+
+void DecimalItem::getStringValue2(zstring& val) const
 {
-  strval = NumConversions::decimalToStr(theValue);
+  val = NumConversions::decimalToStr(theValue);
 }
 
-void DecimalItem::getStringValue(std::string& buf) const
+
+void DecimalItem::appendStringValue(zstring& buf) const
 {
-  buf += NumConversions::decimalToStr(theValue)->c_str();
+  buf += NumConversions::decimalToStr(theValue);
 }
 
 
@@ -1283,9 +1306,12 @@ bool DecimalItem::isNaN() const
 }
 
 
-xqp_string DecimalItem::show() const
+zstring DecimalItem::show() const
 {
-  return "xs:decimal(" + getStringValue()->str() + ")";
+  zstring res("xs:decimal(");
+  appendStringValue(res);
+  res +=  ")";
+  return res;
 }
 
 
@@ -1326,26 +1352,30 @@ store::Item_t IntegerItem::getEBV() const
 }
 
 
-xqpStringStore_t IntegerItem::getStringValue() const
+zstring IntegerItem::getStringValue() const
 {
   return NumConversions::integerToStr(theValue);
 }
 
 
-void IntegerItem::getStringValue(xqpStringStore_t& strval) const
+void IntegerItem::getStringValue2(zstring& val) const
 {
-  strval = NumConversions::integerToStr(theValue);
+  val = NumConversions::integerToStr(theValue);
 }
 
 
-void IntegerItem::getStringValue(std::string& buf) const
+void IntegerItem::appendStringValue(zstring& buf) const
 {
-  buf += NumConversions::integerToStr(theValue)->c_str();
+  buf += NumConversions::integerToStr(theValue);
 }
 
-xqp_string IntegerItem::show() const
+
+zstring IntegerItem::show() const
 {
-  return "xs:integer(" + getStringValue()->str() + ")";
+  zstring res("xs:integer(");
+  appendStringValue(res);
+  res += ")";
+  return res;
 }
 
 
@@ -1357,9 +1387,12 @@ store::Item* NonPositiveIntegerItem::getType() const
   return GET_STORE().theSchemaTypeNames[XS_NON_POSITIVE_INTEGER];
 }
 
-xqp_string NonPositiveIntegerItem::show() const 
+zstring NonPositiveIntegerItem::show() const 
 {
-  return "xs:nonPositiveInteger(" + getStringValue()->str() + ")";
+  zstring res("xs:nonPositiveInteger(");
+  appendStringValue(res);
+  res += ")";
+  return res;
 }
 
   
@@ -1371,9 +1404,13 @@ store::Item* NegativeIntegerItem::getType() const
   return GET_STORE().theSchemaTypeNames[XS_NEGATIVE_INTEGER];
 }
 
-xqp_string NegativeIntegerItem::show() const 
+
+zstring NegativeIntegerItem::show() const 
 {
-  return "xs:negativeInteger(" + getStringValue()->str() + ")";
+  zstring res("xs:negativeInteger(");
+  appendStringValue(res);
+  res += ")";
+  return res;
 }
 
 
@@ -1385,9 +1422,13 @@ store::Item* NonNegativeIntegerItem::getType() const
   return GET_STORE().theSchemaTypeNames[XS_NON_NEGATIVE_INTEGER];
 }
 
-xqp_string NonNegativeIntegerItem::show() const 
+
+zstring NonNegativeIntegerItem::show() const 
 {
-  return "xs:nonNegativeInteger(" + getStringValue()->str() + ")";
+  zstring res("xs:nonNegativeInteger(");
+  appendStringValue(res);
+  res += ")";
+  return res;
 }
 
 
@@ -1400,9 +1441,12 @@ store::Item* PositiveIntegerItem::getType() const
 }
 
 
-xqp_string PositiveIntegerItem::show() const 
+zstring PositiveIntegerItem::show() const 
 {
-  return "xs:positiveInteger(" + getStringValue()->str() + ")";
+  zstring res("xs:positiveInteger(");
+  appendStringValue(res);
+  res += ")";
+  return res;
 }
 
 
@@ -1436,27 +1480,30 @@ store::Item_t LongItem::getEBV() const
 }
 
 
-xqpStringStore_t LongItem::getStringValue() const 
+zstring LongItem::getStringValue() const 
 {
   return NumConversions::longToStr(theValue);
 }
 
 
-void LongItem::getStringValue(xqpStringStore_t& strval) const
+void LongItem::getStringValue2(zstring& val) const
 {
-  strval = NumConversions::longToStr(theValue);
+  val = NumConversions::longToStr(theValue);
 }
 
 
-void LongItem::getStringValue(std::string& buf) const
+void LongItem::appendStringValue(zstring& buf) const
 {
-  buf +=  NumConversions::longToStr(theValue)->c_str();
+  buf += NumConversions::longToStr(theValue);
 }
 
 
-xqp_string LongItem::show() const 
+zstring LongItem::show() const 
 {
-  return "xs:long(" + getStringValue()->str() + ")";
+  zstring res("xs:long(");
+  appendStringValue(res);
+  res += ")";
+  return res;
 }
 
 
@@ -1489,27 +1536,30 @@ store::Item_t IntItem::getEBV() const
   return bVal;
 }
 
-xqpStringStore_t IntItem::getStringValue() const
+zstring IntItem::getStringValue() const
 {
   return NumConversions::intToStr(theValue);
 }
 
 
-void IntItem::getStringValue(xqpStringStore_t& strval) const
+void IntItem::getStringValue2(zstring& val) const
 {
-  strval = NumConversions::intToStr(theValue);
+  val = NumConversions::intToStr(theValue);
 }
 
 
-void IntItem::getStringValue(std::string& buf) const
+void IntItem::appendStringValue(zstring& buf) const
 {
-  buf += NumConversions::intToStr(theValue)->c_str();
+  buf += NumConversions::intToStr(theValue);
 }
 
 
-xqp_string IntItem::show() const
+zstring IntItem::show() const
 {
-  return "xs:int(" + getStringValue()->str() + ")";
+  zstring res("xs:int(");
+  appendStringValue(res);
+  res += ")";
+  return res;
 }
 
 
@@ -1543,27 +1593,30 @@ store::Item_t ShortItem::getEBV() const
 }
 
 
-xqpStringStore_t ShortItem::getStringValue() const 
+zstring ShortItem::getStringValue() const 
 {
   return NumConversions::shortToStr(theValue);
 }
 
 
-void ShortItem::getStringValue(xqpStringStore_t& strval) const
+void ShortItem::getStringValue2(zstring& val) const
 {
-  strval = NumConversions::shortToStr(theValue);
+  val = NumConversions::shortToStr(theValue);
 }
 
 
-void ShortItem::getStringValue(std::string& buf) const
+void ShortItem::appendStringValue(zstring& buf) const
 {
-  buf += NumConversions::shortToStr(theValue)->c_str();
+  buf += NumConversions::shortToStr(theValue);
 }
 
 
-xqp_string ShortItem::show() const 
+zstring ShortItem::show() const 
 {
-  return "xs:short(" + getStringValue()->str() + ")";
+  zstring res("xs:short(");
+  appendStringValue(res);
+  res += ")";
+  return res;
 }
 
 
@@ -1597,27 +1650,30 @@ store::Item_t ByteItem::getEBV() const
 }
 
 
-xqpStringStore_t ByteItem::getStringValue() const 
+zstring ByteItem::getStringValue() const 
 {
   return NumConversions::byteToStr(theValue);
 }
 
 
-void ByteItem::getStringValue(xqpStringStore_t& strval) const
+void ByteItem::getStringValue2(zstring& val) const
 {
-  strval = NumConversions::byteToStr(theValue);
+  val = NumConversions::byteToStr(theValue);
 }
 
 
-void ByteItem::getStringValue(std::string& buf) const
+void ByteItem::appendStringValue(zstring& buf) const
 {
-  buf += NumConversions::byteToStr(theValue)->c_str();
+  buf += NumConversions::byteToStr(theValue);
 }
 
 
-xqp_string ByteItem::show() const 
+zstring ByteItem::show() const 
 {
-  return "xs:byte(" + getStringValue()->str() + ")";
+  zstring res("xs:byte(");
+  appendStringValue(res);
+  res += ")";
+  return res;
 }
 
 
@@ -1657,27 +1713,30 @@ store::Item_t UnsignedLongItem::getEBV() const
 }
 
 
-xqpStringStore_t UnsignedLongItem::getStringValue() const 
+zstring UnsignedLongItem::getStringValue() const 
 {
   return NumConversions::ulongToStr(theValue);
 }
 
 
-void UnsignedLongItem::getStringValue(xqpStringStore_t& strval) const
+void UnsignedLongItem::getStringValue2(zstring& val) const
 {
-  strval = NumConversions::ulongToStr(theValue);
+  val = NumConversions::ulongToStr(theValue);
 }
 
 
-void UnsignedLongItem::getStringValue(std::string& buf) const
+void UnsignedLongItem::appendStringValue(zstring& buf) const
 {
-  buf += NumConversions::ulongToStr(theValue)->c_str();
+  buf += NumConversions::ulongToStr(theValue);
 }
 
 
-xqp_string UnsignedLongItem::show() const 
+zstring UnsignedLongItem::show() const 
 {
-  return "xs:unsignedLong(" + getStringValue()->str() + ")";
+  zstring res("xs:unsignedLong(");
+  appendStringValue(res);
+  res += ")";
+  return res;
 }
 
 
@@ -1717,27 +1776,30 @@ store::Item_t UnsignedIntItem::getEBV() const
 }
 
 
-xqpStringStore_t UnsignedIntItem::getStringValue() const 
+zstring UnsignedIntItem::getStringValue() const 
 {
   return NumConversions::uintToStr(theValue);
 }
 
 
-void UnsignedIntItem::getStringValue(xqpStringStore_t& strval) const
+void UnsignedIntItem::getStringValue2(zstring& val) const
 {
-  strval = NumConversions::uintToStr(theValue);
+  val = NumConversions::uintToStr(theValue);
 }
 
 
-void UnsignedIntItem::getStringValue(std::string& buf) const
+void UnsignedIntItem::appendStringValue(zstring& buf) const
 {
-  buf += NumConversions::uintToStr(theValue)->c_str();
+  buf += NumConversions::uintToStr(theValue);
 }
 
 
-xqp_string UnsignedIntItem::show() const 
+zstring UnsignedIntItem::show() const 
 {
-  return "xs:unsignedInt(" + getStringValue()->str() + ")";
+  zstring res("xs:unsignedInt(");
+  appendStringValue(res);
+  res += ")";
+  return res;
 }
 
 
@@ -1777,27 +1839,30 @@ store::Item_t UnsignedShortItem::getEBV() const
 }
 
 
-xqpStringStore_t UnsignedShortItem::getStringValue() const 
+zstring UnsignedShortItem::getStringValue() const 
 {
   return NumConversions::ushortToStr(theValue);
 }
 
 
-void UnsignedShortItem::getStringValue(xqpStringStore_t& strval) const
+void UnsignedShortItem::getStringValue2(zstring& val) const
 {
-  strval = NumConversions::ushortToStr(theValue);
+  val = NumConversions::ushortToStr(theValue);
 }
 
 
-void UnsignedShortItem::getStringValue(std::string& buf) const
+void UnsignedShortItem::appendStringValue(zstring& buf) const
 {
-  buf += NumConversions::ushortToStr(theValue)->c_str();
+  buf += NumConversions::ushortToStr(theValue);
 }
 
 
-xqp_string UnsignedShortItem::show() const 
+zstring UnsignedShortItem::show() const 
 {
-  return "xs:unsignedShort(" + getStringValue()->str() + ")";
+  zstring res("xs:unsignedShort(");
+  appendStringValue(res);
+  res += ")";
+  return res;
 }
 
 
@@ -1837,27 +1902,30 @@ store::Item_t UnsignedByteItem::getEBV() const
 }
 
 
-xqpStringStore_t UnsignedByteItem::getStringValue() const 
+zstring UnsignedByteItem::getStringValue() const 
 {
   return NumConversions::ubyteToStr(theValue);
 }
 
 
-void UnsignedByteItem::getStringValue(xqpStringStore_t& strval) const
+void UnsignedByteItem::getStringValue2(zstring& val) const
 {
-  strval = NumConversions::ubyteToStr(theValue);
+  val = NumConversions::ubyteToStr(theValue);
 }
 
 
-void UnsignedByteItem::getStringValue(std::string& buf) const
+void UnsignedByteItem::appendStringValue(zstring& buf) const
 {
-  buf += NumConversions::ubyteToStr(theValue)->c_str();
+  buf += NumConversions::ubyteToStr(theValue);
 }
 
 
-xqp_string UnsignedByteItem::show() const 
+zstring UnsignedByteItem::show() const 
 {
-  return "xs:unsignedByte(" + getStringValue()->str() + ")";
+  zstring res("xs:unsignedByte(");
+  appendStringValue(res);
+  res += ")";
+  return res;
 }
 
 
@@ -1869,33 +1937,38 @@ store::Item* BooleanItem::getType() const
   return GET_STORE().theSchemaTypeNames[XS_BOOLEAN];
 }
 
-uint32_t BooleanItem::hash ( long timezone, const XQPCollator* aCollation ) const
+
+uint32_t BooleanItem::hash(long timezone, const XQPCollator* aCollation) const
 {
-  return theValue?0:1;
+  return theValue ? 0 : 1;
 }
+
 
 store::Item_t BooleanItem::getEBV() const
 {
   return this->getAtomizationValue();
 }
 
-xqpStringStore_t BooleanItem::getStringValue() const
+
+zstring BooleanItem::getStringValue() const
 {
   if (theValue)
-    return new xqpStringStore("true");
+    return "true";
   else
-    return new xqpStringStore("false");
+    return "false";
 }
 
-void BooleanItem::getStringValue(xqpStringStore_t& strval) const
+
+void BooleanItem::getStringValue2(zstring& val) const
 {
   if (theValue)
-    strval = new xqpStringStore("true");
+    val = "true";
   else
-    strval = new xqpStringStore("false");
+    val = "false";
 }
 
-void BooleanItem::getStringValue(std::string& buf) const
+
+void BooleanItem::appendStringValue(zstring& buf) const
 {
   if (theValue)
     buf += "true";
@@ -1903,9 +1976,13 @@ void BooleanItem::getStringValue(std::string& buf) const
     buf += "false";
 }
 
-xqp_string BooleanItem::show() const
+
+zstring BooleanItem::show() const
 {
-  return "xs:boolean(" + getStringValue()->str() + ")";
+  zstring res("xs:boolean(");
+  appendStringValue(res);
+  res += ")";
+  return res;
 }
 
 
@@ -1920,35 +1997,38 @@ store::Item* Base64BinaryItem::getType() const
 }
 
 
-xqpStringStore_t Base64BinaryItem::getStringValue() const 
+zstring Base64BinaryItem::getStringValue() const 
 {
   return theValue.str();
 }
 
 
-void Base64BinaryItem::getStringValue(xqpStringStore_t& strval) const
+void Base64BinaryItem::getStringValue2(zstring& val) const
 {
-  strval = theValue.str();
+  val = theValue.str();
 }
 
 
-void Base64BinaryItem::getStringValue(std::string& buf) const
+void Base64BinaryItem::appendStringValue(zstring& buf) const
 {
-  buf += theValue.str()->c_str();
+  buf += theValue.str();
 }
 
 
-xqp_string Base64BinaryItem::show() const 
+zstring Base64BinaryItem::show() const 
 {
-  return "xs:base64Binary(" + getStringValue()->str() + ")";
+  zstring res("xs:base64Binary(");
+  appendStringValue(res);
+  res += ")";
+  return res;
 }
 
 
-uint32_t
-Base64BinaryItem::hash(long timezone, const XQPCollator* aCollation) const
+uint32_t Base64BinaryItem::hash(long timezone, const XQPCollator* aCollation) const
 {
   return theValue.hash();
 }
+
 
 /*******************************************************************************
   class HexBinaryItem
@@ -1959,28 +2039,34 @@ store::Item* HexBinaryItem::getType() const
 }
 
 
-xqpStringStore_t HexBinaryItem::getStringValue() const 
+zstring HexBinaryItem::getStringValue() const 
 {
   return theValue.str();
 }
 
-void HexBinaryItem::getStringValue(xqpStringStore_t& strval) const
+
+void HexBinaryItem::getStringValue2(zstring& val) const
 {
-  strval = theValue.str();
+  val = theValue.str();
 }
 
-void HexBinaryItem::getStringValue(std::string& buf) const
+
+void HexBinaryItem::appendStringValue(zstring& buf) const
 {
-  buf += theValue.str()->c_str();
+  buf += theValue.str();
 }
 
-xqp_string HexBinaryItem::show() const 
+
+zstring HexBinaryItem::show() const 
 {
-  return "xs:hexBinary(" + getStringValue()->str() + ")";
+  zstring res("xs:hexBinary(");
+  appendStringValue(res);
+  res += ")";
+  return res;
 }
 
-uint32_t
-HexBinaryItem::hash(long timezone, const XQPCollator* aCollation) const
+
+uint32_t HexBinaryItem::hash(long timezone, const XQPCollator* aCollation) const
 {
   return theValue.hash();
 }
@@ -1999,7 +2085,7 @@ ErrorItemNaive::~ErrorItemNaive()
 }
 
 
-xqp_string ErrorItemNaive::show() const
+zstring ErrorItemNaive::show() const
 {
   return theError->toString();
 }

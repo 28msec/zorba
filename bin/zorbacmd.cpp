@@ -500,7 +500,8 @@ compileAndExecute(
   }
 
   // default is false
-  if (properties.libModule()) {
+  if (properties.libModule()) 
+  {
     lHints.lib_module = true;
   }
 
@@ -509,18 +510,18 @@ compileAndExecute(
 
   zorba::XQuery_t query;
 
-  for (ulong i = 0; i < lNumExecutions; ++i) {
-
-    // only perform compilation and create dynamic context one time
-    // if no timing is needed
-    if (doTiming || i == 0) {
-
+  for (ulong i = 0; i < lNumExecutions; ++i) 
+  {
+    // Perform compilation and create dynamic context only once, unless timing is needed
+    if (doTiming || i == 0) 
+    {
       // go back to the beginning of the stream
       qfile.clear();
       qfile.seekg(0);
       assert (qfile.tellg() >= 0);
 
-      if (doTiming) {
+      if (doTiming) 
+      {
         // start the total timer
         timing.startTimer(TimingInfo::TOTAL_TIMER, i);
       }
@@ -528,23 +529,32 @@ compileAndExecute(
       //
       // Compile the query
       //
-      try {
-        query = zorbaInstance->createQuery();
-        query->setFileName(qfilepath);
-
-        if (doTiming) {
+      try 
+      {
+        if (doTiming) 
+        {
           // start the compilation timer
           timing.startTimer(TimingInfo::COMP_TIMER, i);
         }
+
+        query = zorbaInstance->createQuery();
+        query->setFileName(qfilepath);
+
         query->compile(qfile, staticContext, lHints);
-        if (doTiming) {
+
+        if (doTiming) 
+        {
           // stop the compilation timer
           timing.stopTimer(TimingInfo::COMP_TIMER, i);
         }
-      } catch (zorba::QueryException& qe) {
+      }
+      catch (zorba::QueryException& qe) 
+      {
         ErrorPrinter::print(qe, std::cerr, properties.printErrorsAsXml(), lIndent);
         return 11;
-      } catch (zorba::ZorbaException& ze) {
+      }
+      catch (zorba::ZorbaException& ze) 
+      {
         std::cerr << ze << std::endl;
         return 12;
       }
@@ -553,36 +563,51 @@ compileAndExecute(
       // Create and populate the dynamic context
       //
       zorba::DynamicContext* lDynamicContext = query->getDynamicContext();
-      try {
-        if ( ! populateDynamicContext(zorbaInstance, lDynamicContext, properties) ) {
+      try
+      {
+        if ( ! populateDynamicContext(zorbaInstance, lDynamicContext, properties) )
+        {
           properties.printHelp(std::cout);
           return 21;
         }
-      } catch (zorba::QueryException& qe) {
+      }
+      catch (zorba::QueryException& qe)
+      {
         ErrorPrinter::print(qe, std::cerr, properties.printErrorsAsXml(), lIndent);
         return 22;
-      } catch (zorba::ZorbaException& ze) {
+      }
+      catch (zorba::ZorbaException& ze)
+      {
         std::cerr << ze << std::endl;
         return 23;
       }
-    }
+    } // if (doTiming || i == 0) 
 
     // libModule assumes compileOnly even if compileOnly is false
-    if ( ! properties.compileOnly() && ! properties.libModule() ) {
+    if ( ! properties.compileOnly() && ! properties.libModule() ) 
+    {
       //
       // Run the query
       //
-      try {
-        if (doTiming) {
+      try 
+      {
+        if (doTiming) 
+        {
           // start the execution timer
           timing.startTimer(TimingInfo::EXEC_TIMER, i);
         }
-        if (properties.noSerializer()) {
+
+        if (properties.noSerializer())
+        {
           query->executeSAX();
-        } else {
+        }
+        else
+        {
           query->execute(outputStream, &lSerOptions);
         }
-        if (doTiming) {
+
+        if (doTiming)
+        {
           // stop the execution timer
           timing.stopTimer(TimingInfo::EXEC_TIMER, i);
         }
@@ -591,17 +616,22 @@ compileAndExecute(
           timing.loadTime += query->getDocLoadingTime();
           timing.loadClock += query->getDocLoadingUserTime();
         }
-      } catch (zorba::QueryException& qe) {
+      }
+      catch (zorba::QueryException& qe)
+      {
         ErrorPrinter::print(qe, std::cerr, properties.printErrorsAsXml(), lIndent);
         return 31;
-      } catch (zorba::ZorbaException& ze) {
+      }
+      catch (zorba::ZorbaException& ze)
+      {
         std::cerr << ze << std::endl;
         return 32;
       }
     }
 
     // only delete the docs from the store if timing is needed
-    if (doTiming) {
+    if (doTiming)
+    {
       //
       // Delete all loaded docs from the store
       //

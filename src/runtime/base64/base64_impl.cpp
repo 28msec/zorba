@@ -28,9 +28,9 @@ namespace zorba {
 
 bool Base64DecodeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t        lItem;
-  Base64               lDecodedData;
-  xqpStringStore_t     lResultString;
+  store::Item_t lItem;
+  Base64 lDecodedData;
+  zstring lResultString;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -38,7 +38,7 @@ bool Base64DecodeIterator::nextImpl(store::Item_t& result, PlanState& planState)
   if (consumeNext(lItem, theChildren[0].getp(), planState))
   {
     lDecodedData = lItem->getBase64BinaryValue();
-    lResultString = lDecodedData.decode();
+    lResultString = lDecodedData.decode().str();
     GENV_ITEMFACTORY->createString(result, lResultString);
     STACK_PUSH (true, state);
   }
@@ -51,14 +51,14 @@ bool Base64EncodeIterator::nextImpl(store::Item_t& result, PlanState& planState)
 {
   store::Item_t lItem;
   Base64        lBase64;
-  xqpStringStore* lTmpString;
+  zstring       lTmpString;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(lItem, theChildren[0].getp(), planState)) 
   {
-    lTmpString = lItem->getStringValueP();
+    lItem->getStringValue2(lTmpString);
     Base64::encode(lTmpString, lBase64);
     if (GENV_ITEMFACTORY->createBase64Binary(result, lBase64)) 
     {

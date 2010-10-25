@@ -17,45 +17,45 @@
 #define ZORBA_SIMPLE_STORE_STRING_POOL
 
 #include "common/common.h"
-#include "zorbatypes/xqpstring.h"
+#include "zorbatypes/zstring.h"
 
 #include "zorbautils/hashset.h"
+#include "zorbautils/hashfun.h"
 
 
 namespace zorba { namespace simplestore {
 
 
- class StringPoolCompareFunction
- {
- public:
-   static bool equal(const xqpStringStore_t& s1, const xqpStringStore_t& s2)
-   {
-     return s1->byteEqual(s2);
-   }
+class StringPoolCompareFunction
+{
+public:
+  static bool equal(const zstring& s1, const zstring& s2)
+  {
+    return s1 == s2;
+  }
 
-   static uint32_t hash(const xqpStringStore_t& s)
-   {
-     return s->hash();
-   }
- };
+  static uint32_t hash(const zstring& s)
+  {
+    return hashfun::h32(s.data(), s.size(), FNV_32_INIT);
+  }
+};
 
 
 /*******************************************************************************
-  A hash-based set container of string rchandles, where equality is based on
-  string value.
+  A hash-based set container of zstrings.
 
   It is used to implement a pool of URI strings.
 ********************************************************************************/
-class StringPool : public HashSet<xqpStringStore_t, StringPoolCompareFunction>
+class StringPool : public HashSet<zstring, StringPoolCompareFunction>
 {
 public:
  StringPool(ulong size) 
     :
-    HashSet<xqpStringStore_t, StringPoolCompareFunction>(size, true) {}
+    HashSet<zstring, StringPoolCompareFunction>(size, true) {}
 
   ~StringPool();
 
-  bool insertc(const char* str, xqpStringStore_t& outStr);
+  bool insertc(const char* str, zstring& outStr);
 
 protected:
   void garbageCollect();
@@ -66,3 +66,9 @@ protected:
 } // namespace zorba
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

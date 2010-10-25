@@ -28,6 +28,7 @@
 
 #include "common/common.h"
 #include "compiler/parser/query_loc.h"
+#include "zorbatypes/xqpstring.h"
 
 #include "api/serialization/serializer.h"
 #include "debugger/debugger_common.h"

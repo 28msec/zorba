@@ -91,24 +91,7 @@ Item_t Item::getEBV() const
 }
 
 
-Item_t Item::getAtomizationValue() const
-{
-  ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-                        __FUNCTION__, getType()->getStringValue());
-  return 0;
-}
-
-
-xqpStringStore_t Item::getStringValue() const
-{
-  ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
-                        "String value not defined for items of type "
-                        << getType()->getStringValue(), "");
-  return 0;
-}
-
-
-void Item::getStringValue(xqpStringStore_t& strval) const
+zstring Item::getStringValue() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
                         "String value not defined for items of type "
@@ -116,7 +99,7 @@ void Item::getStringValue(xqpStringStore_t& strval) const
 }
 
 
-void Item::getStringValue(std::string& buf) const 
+void Item::getStringValue2(zstring& val) const 
 {
   ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
                         "String value not defined for items of type "
@@ -124,19 +107,14 @@ void Item::getStringValue(std::string& buf) const
 }
 
 
-
-/**
- * Helper method with is used to return a StringValue of an store::Item
- * by pointer instead of rchandle
- */
-xqpStringStore* Item::getStringValueP() const 
+void Item::appendStringValue(zstring& buf) const 
 {
-  XQUERY_ERROR code = STR0040_TYPE_ERROR;
-  ZORBA_ERROR_PARAM_OSS(code,
-                        "getStringValueP() not defined for items of type "
+  ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
+                        "String value not defined for items of type "
                         << getType()->getStringValue(), "");
-  return 0;
 }
+
+
 
 #ifndef ZORBA_NO_FULL_TEXT
 
@@ -162,48 +140,44 @@ FTTokenIterator_t Item::getQueryTokens( locale::iso639_1::type, bool ) const
 /** 
  * Accessor for xs:qname
  */
-xqpStringStore* Item::getNamespace() const
+const zstring& Item::getNamespace() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
                         "Item::getNamespace() not defined for items of type "
                         << getType()->getStringValue(), "");
-  return 0;
 }
 
 
 /** 
  * Accessor for xs:qname
  */
-xqpStringStore* Item::getPrefix() const
+const zstring& Item::getPrefix() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
                         "Item::getPrefix() not defined for items of type "
                         << getType()->getStringValue(), "");
-  return 0;
 }
 
 
 /** 
  * Accessor for xs:qname
  */
-xqpStringStore* Item::getLocalName() const
+const zstring& Item::getLocalName() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
                         "Item::getLocalName() not defined for items of type "
                         << getType()->getStringValue(), "");
-  return 0;
 }
 
 
 /**
  * Accessor for xs:untypedAtomic and xs:string and its subtypes
  */
-xqpStringStore* Item::getString() const
+const zstring& Item::getString() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
                         "Item::getString() not defined for items of type "
                         << getType()->getStringValue(), "");
-  return NULL;
 }
 
 
@@ -531,18 +505,6 @@ const xqp_yearMonthDuration& Item::getYearMonthDurationValue() const
   return *(new xqp_yearMonthDuration);
 }
 
-/** 
- * Accessor for xs:ENTITIES, xs:IDREFS, xs:NMTOKENS
- */
-std::vector<xqp_string> Item::getStringVectorValue() const
-{
-  ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
-                        "Item::getStringVectorValue() not defined for items of type "
-                        << getType()->getStringValue(), "");
-
-  return std::vector<xqp_string>();
-}
-
 
 /** 
  * Accessor for xs:hexBinary
@@ -603,19 +565,17 @@ bool Item::isRecursive() const
 }
 
 
-xqpStringStore* Item::getDocumentURI() const
+void Item::getDocumentURI(zstring& uri) const
 {
   ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
-  return 0;
 }
 
 
-xqpStringStore_t Item::getBaseURI() const
+void Item::getBaseURI(zstring& uri) const
 {
   ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
-  return 0;
 }
 
 
@@ -715,31 +675,28 @@ bool Item::isInSubstitutionGroup() const
 }
 
 
-xqpStringStore* Item::getUnparsedEntityPublicId() const
+void Item::getUnparsedEntityPublicId(zstring& val) const
 {
   ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
-  return 0;
 }
 
 
-xqpStringStore* Item::getUnparsedEntitySystemId() const
+void Item::getUnparsedEntitySystemId(zstring& val) const
 {
   ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
-  return 0;
 }
 
 
-xqpStringStore* Item::getTarget() const
+const zstring& Item::getTarget() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
-  return 0;
 }
 
 
-xqp_string Item::show() const
+zstring Item::show() const
 {
   return  std::string ( typeid ( *this ).name() ) + ": 'show' not implemented!";
 }

@@ -167,7 +167,7 @@ class XQueryImpl : public XQuery , public ::zorba::serialization::SerializeBaseC
  protected:
 
   // static stuff
-  xqpStringStore_t                   theFileName;
+  zstring                            theFileName;
 
   static_context_t                   theStaticContext;
 

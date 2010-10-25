@@ -26,8 +26,8 @@ END_SERIALIZABLE_CLASS_VERSIONS(NodeNameTest)
 
 
 NodeNameTest::NodeNameTest(
-    const xqpStringStore_t& uri,
-    const xqpStringStore_t& local)
+    const zstring& uri,
+    const zstring& local)
   :
   m_uri(uri),
   m_local(local)
@@ -43,15 +43,18 @@ NodeNameTest::NodeNameTest(const store::Item_t& qname)
 }
 
 
+void NodeNameTest::serialize(::zorba::serialization::Archiver& ar)
+{
+  //serialize_baseclass(ar, (SimpleRCObject*)this);
+  ar & m_uri;
+  ar & m_local;
+}
+
+
 bool NodeNameTest::operator==(const NodeNameTest& other) const
 {
-  if (m_uri == other.m_uri ||
-      (m_uri != NULL && other.m_uri != NULL &&  other.m_uri->byteEqual(m_uri)))
-  {
-    if (m_local == other.m_local ||
-        (m_local != NULL && other.m_local != NULL &&  other.m_local->byteEqual(m_local)))
-      return true;
-  }
+  if (other.m_uri == m_uri && other.m_local == m_local)
+    return true;
 
   return false;
 }
@@ -59,27 +62,25 @@ bool NodeNameTest::operator==(const NodeNameTest& other) const
 
 bool NodeNameTest::is_subname_of(const NodeNameTest& other) const
 {
-  return ((other.m_uri == NULL || other.m_uri->byteEqual(m_uri))
+  return ((other.m_uri.empty() || other.m_uri == m_uri)
           &&
-          (other.m_local == NULL || other.m_local->byteEqual(m_local)));
+          (other.m_local.empty() || other.m_local == m_local));
 }
 
 
 bool NodeNameTest::matches(const store::Item* qname) const
 {
-  return ((m_uri == NULL || m_uri->byteEqual(qname->getNamespace()))
+  return ((m_uri.empty() || m_uri == qname->getNamespace())
           &&
-          (m_local == NULL || m_local->byteEqual(qname->getLocalName())));
+          (m_local.empty() || m_local == qname->getLocalName()));
 }
 
 
-bool NodeNameTest::matches(
-    const xqpStringStore* lname,
-    const xqpStringStore* ns) const
+bool NodeNameTest::matches(const zstring& lname, const zstring& ns) const
 {
-  return ((m_uri == NULL || m_uri->byteEqual(ns))
+  return ((m_uri.empty() || m_uri == ns)
           &&
-          (m_local == NULL || m_local->byteEqual(lname)));
+          (m_local.empty() || m_local == lname));
 }
 
 }

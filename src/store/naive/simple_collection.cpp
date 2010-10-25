@@ -81,10 +81,11 @@ store::Item_t SimpleCollection::loadDocument(
 {
   error::ErrorManager lErrorManager;
   store::LoadProperties lLoadProperties;
-  std::auto_ptr<XmlLoader> loader(GET_STORE().
-      getXmlLoader(&lErrorManager, lLoadProperties));
-  xqpStringStore_t docUri;
-  xqpStringStore_t baseUri;
+
+  std::auto_ptr<XmlLoader> loader(GET_STORE().getXmlLoader(&lErrorManager,
+                                                           lLoadProperties));
+  zstring docUri;
+  zstring baseUri;
 
   store::Item_t root = loader->loadXml(baseUri, docUri, stream);
 

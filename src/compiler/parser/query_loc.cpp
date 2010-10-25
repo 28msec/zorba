@@ -15,8 +15,12 @@
  */
 
 #include <ostream>
+#include <sstream>
 
 #include "compiler/parser/query_loc.h"
+
+#include "zorbaserialization/template_serializer.h"
+
 
 namespace zorba 
 {
@@ -51,7 +55,7 @@ QueryLoc::QueryLoc(const QueryLoc& aQueryLoc)
 }
 
 
-void QueryLoc::serialize(::zorba::serialization::Archiver &ar)
+void QueryLoc::serialize(::zorba::serialization::Archiver& ar)
 {
   ar & theFilename;
   ar & theLineBegin;
@@ -60,17 +64,12 @@ void QueryLoc::serialize(::zorba::serialization::Archiver &ar)
   ar & theColumnEnd;
 }
 
-void QueryLoc::setFilename(xqpString aFilename)
-{
-  theFilename = aFilename;
-}
 
 std::ostream& operator<<(std::ostream& aOstr, const QueryLoc& aQueryLoc) 
 {
   if ( !aQueryLoc.getFilename().empty() ) 
   {
-    std::string lStr = aQueryLoc.getFilename();
-    aOstr << lStr << ":";
+    aOstr << aQueryLoc.getFilename() << ":";
   }
 
   aOstr << aQueryLoc.getLineBegin() << "."
@@ -83,18 +82,18 @@ std::ostream& operator<<(std::ostream& aOstr, const QueryLoc& aQueryLoc)
 bool QueryLoc::equals(const QueryLoc& loc) const
 {
   std::stringstream lFile;
-  lFile << theFilename;
+  lFile << theFilename.c_str();
   std::string lFile1(lFile.str());
   std::string lFile2;
   std::string::iterator it;
 
-  for(it = lFile1.begin(); it != lFile1.end(); ++it)
+  for (it = lFile1.begin(); it != lFile1.end(); ++it)
   {
-    if(*it == '\\')
+    if (*it == '\\')
     {
       lFile2.append(1, *it);
       ++it;
-      if(*it == '\\')
+      if (*it == '\\')
       {
         continue;
       }
@@ -103,10 +102,10 @@ bool QueryLoc::equals(const QueryLoc& loc) const
   }
 
   return (loc.getFilename() == lFile2 &&
-          theColumnBegin==loc.getColumnBegin() &&
-          theColumnEnd==loc.getColumnEnd() &&
-          theLineBegin==loc.getLineBegin() &&
-          theLineEnd==loc.getLineEnd());
+          theColumnBegin == loc.getColumnBegin() &&
+          theColumnEnd == loc.getColumnEnd() &&
+          theLineBegin == loc.getLineBegin() &&
+          theLineEnd == loc.getLineEnd());
 }
 
 

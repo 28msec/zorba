@@ -38,8 +38,8 @@ bool FnPutIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t node;
   store::Item_t uriItem;
-  xqpStringStore_t uriString;
-  xqpStringStore_t resolvedUriString;
+  zstring uriString;
+  zstring resolvedUriString;
   URI lTargetUri;
   store::Item_t resolvedUriItem;
   std::auto_ptr<store::PUL> pul;
@@ -59,7 +59,7 @@ bool FnPutIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   try 
   {
-    lTargetUri = URI(resolvedUriString.getp());
+    lTargetUri = URI(resolvedUriString);
   }
   catch (error::ZorbaError& e)
   {

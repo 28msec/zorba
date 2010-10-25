@@ -87,7 +87,7 @@ public:
         const store::Item_t& aURI,
         static_context* aStaticContext,
         std::vector<store::Item_t>& aAtList,
-        xqpStringStore* aFileUri = 0);
+        zstring& aFileUri);
 
 protected:
   friend class StaticContextImpl;

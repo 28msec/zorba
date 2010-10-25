@@ -303,5 +303,22 @@ EXPECTED_FAILURE(test/rbkt/zorba/paths/path25 3069853)
 EXPECTED_FAILURE(test/rbkt/zorba/HigherOrder/hof-101 3071699)
 
 EXPECTED_FAILURE(test/rbkt/zorba/gflwor/gflwor_ex6 3081418)
+
+EXPECTED_FAILURE(test/rbkt/zorba/security/hmac-sha1 3095147)
+
+EXPECTED_FAILURE(test/rbkt/zorba/image/manipulation_1 3095147)
+EXPECTED_FAILURE(test/rbkt/zorba/image/manipulation_2 3095147)
+EXPECTED_FAILURE(test/rbkt/zorba/image/manipulation_3 3095147)
+EXPECTED_FAILURE(test/rbkt/zorba/image/manipulation_4 3095147)
+EXPECTED_FAILURE(test/rbkt/zorba/image/manipulation_5 3095147)
+EXPECTED_FAILURE(test/rbkt/zorba/image/paint_1 3095147)
+EXPECTED_FAILURE(test/rbkt/zorba/image/paint_2 3095147)
+EXPECTED_FAILURE(test/rbkt/zorba/image/paint_3 3095147)
+EXPECTED_FAILURE(test/rbkt/zorba/image/paint_4 3095147)
+EXPECTED_FAILURE(test/rbkt/zorba/image/paint_5 3095147)
+EXPECTED_FAILURE(test/rbkt/zorba/image/paint_6 3095147)
+EXPECTED_FAILURE(test/rbkt/zorba/image/animation 3095147)
+EXPECTED_FAILURE(test/rbkt/zorba/image/basic 3095147)
+
 # --------------------------------------------------------------------------
 # vim:set et sw=2 ts=2:

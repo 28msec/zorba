@@ -44,16 +44,19 @@ AnnotationImpl::AnnotationImpl(const AnnotationInternal* annotation)
     theLiteralList.push_back(new AnnotationLiteral(annotation->getLiteral(i)));
 }
 
+
 Item AnnotationImpl::getQName() const
 {
   Item lQName(theQName);
   return lQName;
 }
 
+
 unsigned int AnnotationImpl::getLiteralsCount() const
 {
   return theLiteralList.size();
 }
+
 
 Item AnnotationImpl::getLiteral(unsigned int i) const
 {
@@ -63,6 +66,7 @@ Item AnnotationImpl::getLiteral(unsigned int i) const
   Item lItem(theLiteralList[i]->getLiteral());
   return lItem;
 }
+
 
 /*******************************************************************************
 
@@ -77,7 +81,7 @@ AnnotationLiteral::AnnotationLiteral(const StringLiteral* stringLiteral)
 {
   ZORBA_ASSERT(stringLiteral != NULL);
 
-  xqpStringStore_t temp = new xqpStringStore(stringLiteral->get_strval());
+  zstring temp = stringLiteral->get_strval();
   GENV_ITEMFACTORY->createString(theLiteral, temp);
 }
 
@@ -118,9 +122,9 @@ void AnnotationLiteral::serialize(::zorba::serialization::Archiver& ar)
 AnnotationInternal::AnnotationInternal(const AnnotationParsenode* annotation)
 {
   GENV_ITEMFACTORY->createQName(theQName,
-    "",
-    annotation->get_qname()->get_prefix()->c_str(),
-    annotation->get_qname()->get_localname()->c_str());
+                                zstring(),
+                                annotation->get_qname()->get_prefix(),
+                                annotation->get_qname()->get_localname());
 
   if (annotation->get_literals() != NULL)
   {

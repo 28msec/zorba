@@ -21,8 +21,8 @@
 
 zorba::SAXParser::SAXParser(
     store::ItemFactory &factory, 
-    xqpStringStore_t& baseUri, 
-    xqpStringStore_t& docUri, 
+    const zstring& baseUri, 
+    const zstring& docUri, 
     error::ErrorManager* errorManager)
   :
   theFactory(factory),
@@ -77,7 +77,11 @@ bool zorba::SAXParser::parseDocument(store::Item_t& result, std::istream& stream
 void zorba::SAXParser::startDocument( void * ctx )
 {
 	SAXParser &lParser = *(static_cast<SAXParser*>(ctx));
-	lParser.theFactory.createDocumentNode(lParser.theResult, lParser.theBaseUri, lParser.theDocUri);
+
+  zstring baseuri = lParser.theBaseUri;
+  zstring docuri = lParser.theDocUri;
+
+	lParser.theFactory.createDocumentNode(lParser.theResult, baseuri, docuri);
 	lParser.theStack.push_back(lParser.theResult);
 }
 
@@ -114,16 +118,16 @@ void zorba::SAXParser::startElement(
 	store::NsBindings bindings;
 	for (int i = 0 ; i < nb_namespaces; i++) 
   {
-		xqpStringStore_t pre =
-    new xqpStringStore(reinterpret_cast<const char*>(namespaces[i]));
+		zstring pre(reinterpret_cast<const char*>(namespaces[i]));
 
-		xqpStringStore_t uri =
-    new xqpStringStore(reinterpret_cast<const char*>(namespaces[++i]));
+		zstring uri(reinterpret_cast<const char*>(namespaces[++i]));
 
-		bindings.push_back(std::pair<xqpStringStore_t, xqpStringStore_t>(pre, uri));
+		bindings.push_back(std::pair<zstring, zstring>(pre, uri));
 	}
 	store::Item_t typeName;
-	factory.createElementNode(result, parent, -1, nodeName, typeName, false, false, bindings, lParser.theBaseUri);
+  zstring baseuri = lParser.theBaseUri;
+
+	factory.createElementNode(result, parent, -1, nodeName, typeName, false, false, bindings, baseuri);
   unsigned int index = 0;
   for (int indexAttribute = 0;
     indexAttribute < nb_attributes;
@@ -136,9 +140,11 @@ void zorba::SAXParser::startElement(
         reinterpret_cast<const char*>(attributes[index+2]),
         reinterpret_cast<const char*>(attributes[index+1]),
         reinterpret_cast<const char*>(attributes[index]));
-      std::string aValue(reinterpret_cast<const char*>(attributes[index+3]), reinterpret_cast<const char*>(attributes[index+4]));
-      xqpStringStore_t aValueStore = new xqpStringStore(aValue);
-      factory.createUntypedAtomic(aTypedValue, aValueStore);
+
+      zstring aValue(reinterpret_cast<const char*>(attributes[index+3]), reinterpret_cast<const char*>(attributes[index+4]));
+
+      factory.createUntypedAtomic(aTypedValue, aValue);
+
       factory.createAttributeNode(res, result.getp(), indexAttribute, anAttrName, typeName, aTypedValue);
   }
 	lParser.theStack.push_back(result);
@@ -173,29 +179,33 @@ void zorba::SAXParser::cdataBlock( void * ctx, const xmlChar * ch, int len )
   store::Item_t result;
   std::ostringstream os;
   os.write(reinterpret_cast<const char*>(ch), len);
-  std::string s = os.str();
-  xqpStringStore_t c = new xqpStringStore(s);
-  lParser.theFactory.createTextNode(result, lParser.theStack.back().getp(), -1, c);
+  zstring s(os.str());
+  lParser.theFactory.createTextNode(result, lParser.theStack.back().getp(), -1, s);
 }
+
 
 void zorba::SAXParser::comment( void * ctx, const xmlChar * ch )
 {
 	SAXParser& lParser = *(static_cast<SAXParser*>(ctx));
   lParser.createTextNodeFromBuffer();
 	store::Item_t result;
-	xqpStringStore_t data = new xqpStringStore(reinterpret_cast<const char*>(ch));
+	zstring data(reinterpret_cast<const char*>(ch));
 	lParser.theFactory.createCommentNode(result, lParser.theStack.back(), -1, data);
 }
 
 
-void zorba::SAXParser::processingInstruction( void * ctx, const xmlChar * target, const xmlChar * content )
+void zorba::SAXParser::processingInstruction( 
+    void * ctx, 
+    const xmlChar * target,
+    const xmlChar * content )
 {
 	SAXParser& lParser = *(static_cast<SAXParser*>(ctx));
   lParser.createTextNodeFromBuffer();
 	store::Item_t result;
-	xqpStringStore_t data = new xqpStringStore(std::string(reinterpret_cast<const char*>(content)));
-	xqpStringStore_t t = new xqpStringStore(reinterpret_cast<const char*>(target));
-	lParser.theFactory.createPiNode(result, lParser.theStack.back(), -1, t, data, lParser.theBaseUri);
+	zstring data(reinterpret_cast<const char*>(content));
+	zstring t = reinterpret_cast<const char*>(target);
+  zstring baseuri = lParser.theBaseUri;
+	lParser.theFactory.createPiNode(result, lParser.theStack.back(), -1, t, data, baseuri);
 }
 
 
@@ -211,6 +221,7 @@ void zorba::SAXParser::error( void * ctx, const char * msg, ... )
                             STR0021_LOADER_PARSING_ERROR, buf);
 }
 
+
 void zorba::SAXParser::warning( void * ctx, const char * msg, ... )
 {
 	char buf[1024];
@@ -222,12 +233,12 @@ void zorba::SAXParser::warning( void * ctx, const char * msg, ... )
 	std::cerr << buf << std::endl;
 }
 
+
 void zorba::SAXParser::createTextNodeFromBuffer()
 {
   store::Item_t result;
-  std::string s = m_stream->str();
-  xqpStringStore_t c = new xqpStringStore(s);
-  theFactory.createTextNode(result, theStack.back().getp(), -1, c);
+  zstring s(m_stream->str());
+  theFactory.createTextNode(result, theStack.back().getp(), -1, s);
   delete m_stream;
   m_stream = new std::ostringstream();
 }

@@ -30,9 +30,9 @@ namespace zorba
 class FloatCommons 
 {
  public:
-  static const xqpStringStore_t& get_INF_POS_STR();
-  static const xqpStringStore_t& get_INF_NEG_STR();
-  static const xqpStringStore_t& get_NOT_A_NUM_STR();
+  static const zstring& get_INF_POS_STR();
+  static const zstring& get_INF_NEG_STR();
+  static const zstring& get_NOT_A_NUM_STR();
 
   static Double parseFloat(const Float&);
    
@@ -309,9 +309,9 @@ public:
 
   void modf(FloatImpl<FloatType>& out_fraction, FloatImpl<FloatType>& out_integer) const;
 
-  xqpStringStore_t toIntegerString() const;
+  zstring toIntegerString() const;
   
-  xqpStringStore_t toString(bool no_scientific_mode = false) const;
+  zstring toString(bool no_scientific_mode = false) const;
 };
 
 

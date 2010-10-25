@@ -192,9 +192,10 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     {
       try
       {
-        xqpStringStore_t strValue;
-        lItem->getStringValue(strValue);
-        valid = GenericCast::castToAtomic(result, strValue, theCastType, tm);
+        zstring strval;
+        lItem->getStringValue2(strval);
+
+        valid = GenericCast::castToAtomic(result, strval, theCastType, tm);
       }
       catch (error::ZorbaError &e)
       {

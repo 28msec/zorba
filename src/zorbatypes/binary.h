@@ -19,9 +19,10 @@
 #include <vector>
 #include <stdio.h>
 #include <zorba/config.h>
-#include "zorbatypes/xqpstring.h"
 
+#include "zorbaserialization/archiver.h"
 #include "zorbaserialization/class_serializer.h"
+#include "zorbatypes/zstring.h"
 
 namespace zorba {
 
@@ -39,9 +40,9 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  static bool parseString(const xqpStringStore_t& aString, Base64& aBase64) 
+  static bool parseString(const zstring& aString, Base64& aBase64) 
   {
-    return parseString(aString->c_str(), aString->bytes(), aBase64);
+    return parseString(aString.c_str(), aString.size(), aBase64);
   }
 
   static bool parseString(const char* aString, size_t aLength, Base64& aBase64);
@@ -54,15 +55,15 @@ public:
 
   static void encode(const std::vector<char>&, std::vector<char>&);
 
-  static xqpStringStore_t encode(std::istream& aStream);
+  static zstring encode(std::istream& aStream);
 
   static void encode(std::istream& aStream, Base64& aResult);
 
-  static void encode(const xqpStringStore* aString, Base64&);
+  static void encode(const zstring& aString, Base64&);
 
   static void decode(const std::vector<char>&, std::vector<char>&);
 
-  static xqpStringStore_t decode(std::istream& aStream);
+  static zstring decode(std::istream& aStream);
 
 public:
   Base64(const Base64& aBase64) 
@@ -84,9 +85,9 @@ public:
 
   bool equal(const Base64& aBase64) const;
 
-  xqpStringStore_t str() const;
+  zstring str() const;
 
-  xqpStringStore_t decode() const;
+  zstring decode() const;
 
   void decode(std::vector<char>&);
 
@@ -113,9 +114,9 @@ private:
   static size_t DECODE_OUTPUT;
 
 public:
-  static bool parseString(const xqpStringStore_t& aString, Base16& aBase16) 
+  static bool parseString(const zstring& aString, Base16& aBase16) 
   {
-    return parseString(aString->c_str(), aString->bytes(), aBase16);
+    return parseString(aString.c_str(), aString.size(), aBase16);
   }
 
   static bool parseString(const char* aString, size_t aLength, Base16& aBase16);
@@ -149,7 +150,7 @@ public:
 
   bool equal(const Base16& aBase16) const;
 
-  xqpStringStore_t str() const;
+  zstring str() const;
 
   uint32_t hash() const;
 

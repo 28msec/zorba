@@ -42,35 +42,44 @@ IdentTypes::kind_t TypeIdentifier::getKind() const
 
 IdentTypes::quantifier_t TypeIdentifier::getQuantifier() const
 {
-    return m_quantifier;
+  return m_quantifier;
 }
+
 
 const String& TypeIdentifier::getUri() const
 {
-    return m_uri;
+  return m_uri;
 }
+
 
 bool TypeIdentifier::isUriWildcard() const
 {
-    return m_uriWildcard;
+  return m_uriWildcard;
 }
+
 
 const String& TypeIdentifier::getLocalName() const
 {
-    return m_localName;
+  return m_localName;
 }
+
 
 bool TypeIdentifier::isLocalNameWildcard() const
 {
-    return m_localNameWildcard;
+  return m_localNameWildcard;
 }
+
 
 TypeIdentifier_t TypeIdentifier::getContentType() const
 {
-    return m_contentType;
+  return m_contentType;
 }
 
-TypeIdentifier_t TypeIdentifier::createNamedType(const String& uri, const String& localName, IdentTypes::quantifier_t quantifier)
+
+TypeIdentifier_t TypeIdentifier::createNamedType(
+    const String& uri,
+    const String& localName,
+    IdentTypes::quantifier_t quantifier)
 {
     TypeIdentifier_t ti(new TypeIdentifier());
     ti->m_kind = IdentTypes::NAMED_TYPE;

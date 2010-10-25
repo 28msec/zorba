@@ -16,9 +16,9 @@
 #include <iostream>
 
 #include <zorbatypes/URI.h>
-#include <zorbautils/strutil.h>
 #include <zorba/static_context_consts.h>
 
+#include "util/ascii_util.h"
 #include "testdriverconfig.h"
 #include "testdriver_common.h"
 #include "specification.h"
@@ -67,11 +67,11 @@ void slurp_file (
     std::string rbkt_src_uri= zorba::URI::encode_file_URI(rbkt_src_dir);
 
 #ifdef ZORBA_TEST_XQUERYX
-    zorba::str_replace_all(rbkt_src_uri, "%3A", ":");
+    zorba::ascii::replace_all(rbkt_src_uri, "%3A", ":");
 #endif
-    zorba::str_replace_all(sstr, "$RBKT_SRC_DIR", rbkt_src_uri);
+    zorba::ascii::replace_all(sstr, "$RBKT_SRC_DIR", rbkt_src_uri);
 #ifdef MY_D_WIN32
-    zorba::str_replace_all(sstr,
+    zorba::ascii::replace_all(sstr,
                            "w3c_testsuite/Queries/w3c_testsuite",
                            "w3c_testsuite/Queries");
 #endif
@@ -80,7 +80,7 @@ void slurp_file (
   if(sstr.find("$RBKT_BINARY_DIR",0) != std::string::npos)
   {
     std::string rbkt_bin_uri = zorba::URI::encode_file_URI(rbkt_bin_dir);
-    zorba::str_replace_all(sstr, "$RBKT_BINARY_DIR", rbkt_bin_uri);
+    zorba::ascii::replace_all(sstr, "$RBKT_BINARY_DIR", rbkt_bin_uri);
   }
 
   result.swap (sstr);
@@ -302,9 +302,9 @@ void createDynamicContext(
   if (spec.hasInputQuery())
   {
     std::string inputqueryfile = spec.getInputQueryFile ();
-    zorba::str_replace_all(inputqueryfile, "$RBKT_SRC_DIR", driverCtx.theRbktSourceDir);
+    zorba::ascii::replace_all(inputqueryfile, "$RBKT_SRC_DIR", driverCtx.theRbktSourceDir);
 #ifdef MY_D_WIN32
-    zorba::str_replace_all(inputqueryfile, "rbkt/Queries/w3c_testsuite/", "w3c_testsuite/Queries/");
+    zorba::ascii::replace_all(inputqueryfile, "rbkt/Queries/w3c_testsuite/", "w3c_testsuite/Queries/");
 #endif
 
     std::ifstream inputquery ( inputqueryfile.c_str() );
@@ -362,11 +362,11 @@ void set_var(
     std::string val,
     bool enableDtd)
 {
-  zorba::str_replace_all(val, "$RBKT_SRC_DIR", driverCtx.theRbktSourceDir);
-  zorba::str_replace_all(val, "$RBKT_BINARY_DIR", driverCtx.theRbktBinaryDir);
+  zorba::ascii::replace_all(val, "$RBKT_SRC_DIR", driverCtx.theRbktSourceDir);
+  zorba::ascii::replace_all(val, "$RBKT_BINARY_DIR", driverCtx.theRbktBinaryDir);
 #ifdef MY_D_WIN32
-  zorba::str_replace_all(val, "rbkt/Queries/w3c_testsuite/", "w3c_testsuite/Queries/");
-  //zorba::str_replace_all(val, "/", "\\");
+  zorba::ascii::replace_all(val, "rbkt/Queries/w3c_testsuite/", "w3c_testsuite/Queries/");
+  //zorba::ascii::replace_all(val, "/", "\\");
 #endif
   //std::cout << "Setting variable " << name << " to value '" << val <<"'" << std::endl;
   if (!inlineFile)

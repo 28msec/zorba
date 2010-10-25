@@ -19,6 +19,7 @@
 #include <zorba/api_shared_types.h>
 #include "store/api/iterator.h"
 #include "common/shared_types.h"
+#include "zorbatypes/zstring.h"
 
 namespace zorba {
 
@@ -27,7 +28,7 @@ class ZORBA_DLL_PUBLIC Unmarshaller
 public:
   static store::Item* getInternalItem(const Item& aItem);
 
-  static xqpStringStore* getInternalString(const String& aString);
+  static zstring& getInternalString(const String& aString);
 
   static static_context* getInternalStaticContext(const StaticContext_t& aContext);
 

@@ -40,9 +40,14 @@ class XmlDataManagerImpl : public XmlDataManager
 private:
   friend struct Loki::CreateUsingNew<XmlDataManagerImpl>;
 
-  XmlDataManagerImpl();
+ protected:
+  store::Store           * theStore;
 
-  virtual ~XmlDataManagerImpl();
+  ErrorHandler           * theErrorHandler;
+
+  bool                     theUserErrorHandler;
+
+  SYNC_CODE(Latch          theLatch;)
 
 public:
   void registerErrorHandler(ErrorHandler* aErrorHandler);
@@ -53,13 +58,15 @@ public:
 
   Item loadDocument(const String& uri, std::istream& stream, bool eplaceDoc);
 
-  Item loadDocument(const String& local_file_uri,
-    const XmlDataManager::LoadProperties& aLoadProperties,
-    bool replaceDoc);
+  Item loadDocument(
+        const String& local_file_uri,
+        const XmlDataManager::LoadProperties& aLoadProperties,
+        bool replaceDoc);
 
-  Item loadDocument(const String& uri, std::istream& stream,
-    const XmlDataManager::LoadProperties& aLoadProperties,
-    bool replaceDoc);
+  Item loadDocument(
+        const String& uri, std::istream& stream,
+        const XmlDataManager::LoadProperties& aLoadProperties,
+        bool replaceDoc);
 
   Item loadDocumentFromUri(const String& aUri, bool replaceDoc);
 
@@ -85,16 +92,11 @@ public:
 
   bool deleteCollection(const String& uri, ErrorHandler* aErrorHandler);
 
- protected:
-  store::Store           * theStore;
+private:
+  XmlDataManagerImpl();
 
-  ErrorHandler           * theErrorHandler;
-
-  bool                     theUserErrorHandler;
-
-  SYNC_CODE(Latch          theLatch;)
-
-}; /* class XmlDataManagerImpl */
+  virtual ~XmlDataManagerImpl();
+};
 
 
 typedef

@@ -21,15 +21,18 @@
 #include <zorba/config.h>
 
 #include "zorbautils/fatal.h"
-#include "zorbautils/strutil.h"
+#include "zorbautils/string_glue.h"
 #include "zorbatypes/URI.h"
 #include "zorbatypes/numconversions.h"
 #include "zorbaerrors/error_manager.h"
 
 #include "common/common.h"
 
+#include "util/ascii_util.h"
 #include "util/stl_util.h"
+#include "util/string_util.h"
 #include "util/tracer.h"
+#include "util/utf8_util.h"
 
 #include "types/node_test.h"
 #include "types/casting.h"
@@ -46,7 +49,6 @@
 #include "compiler/api/compilercb.h"
 #include "compiler/api/compiler_api.h"
 #include "compiler/codegen/plan_visitor.h"
-#include "compiler/parser/util.h"
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/parser/parse_constants.h"
 #include "compiler/parsetree/parsenode_visitor.h"
@@ -985,8 +987,8 @@ protected:
   ModulesInfo                        * theModulesInfo;
   set<string>                          theModulesStack;
   set<string>                          theImportedModules;
-  xqpStringStore_t                     theModuleNamespace;
-  xqpStringStore_t                     theModulePrefix;
+  zstring                              theModuleNamespace;
+  zstring                              theModulePrefix;
   set<string>                          theBuiltInModules;
 
   set<string>                          theImportedSchemas;
@@ -1048,7 +1050,7 @@ protected:
   stack<bool>                          theIsWSBoundaryStack;
   stack<const DirElemContent*>         thePossibleWSContentStack;
 
-  set<string>                          xquery_fns_def_dot;
+  set<zstring>                         xquery_fns_def_dot;
 
   function                           * op_concatenate;
   function                           * op_enclosed;
@@ -1138,9 +1140,6 @@ TranslatorImpl(
     theLastIdxVarName = new QName(loc, "$$last-idx");
 
     theEmptyString = new xqpStringStore("");
-
-    theModuleNamespace = theEmptyString;
-    theModulePrefix = theEmptyString;
 
     theRootTranslator = this;
   }
@@ -1419,10 +1418,10 @@ void expand_function_qname(
     const QueryLoc& loc) const
 {
   theSctx->expand_qname(qnameItem,
-                       theSctx->default_function_ns(),
-                       qname->get_prefix(),
-                       qname->get_localname(),
-                       loc);
+                        theSctx->default_function_ns(),
+                        qname->get_prefix(),
+                        qname->get_localname(),
+                        loc);
 }
 
 
@@ -1437,10 +1436,10 @@ void expand_elem_qname(
     const QueryLoc& loc) const
 {
   theSctx->expand_qname(qnameItem,
-                       theSctx->default_elem_type_ns(),
-                       qname->get_prefix(),
-                       qname->get_localname(),
-                       loc);
+                        theSctx->default_elem_type_ns(),
+                        qname->get_prefix(),
+                        qname->get_localname(),
+                        loc);
 }
 
 
@@ -1453,10 +1452,10 @@ void expand_no_default_qname(
     const QueryLoc& loc) const
 {
   theSctx->expand_qname(qnameItem,
-                       getEmptyString(),
-                       qname->get_prefix(),
-                       qname->get_localname(),
-                       loc);
+                        zstring(),
+                        qname->get_prefix(),
+                        qname->get_localname(),
+                        loc);
 }
 
 
@@ -1697,7 +1696,7 @@ void normalize_fo(fo_expr* foExpr)
     {
       ZORBA_ERROR_LOC_PARAM(XDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
                             foExpr->get_loc(),
-                            qname->getStringValue()->c_str(), "");
+                            qname->getStringValue().c_str(), "");
     }
     else
     {
@@ -2054,7 +2053,7 @@ void wrap_in_debugger_expr(expr_t& aExpr)
                                                          aExpr,
                                                          thePrologVars));
 
-    lLocation.theFileName = aExpr->get_loc().getFilename();
+    lLocation.theFileName = aExpr->get_loc().getFilename().str();
     lLocation.theLineNumber = aExpr->get_loc().getLineno();
     lLocation.theQueryLocation = aExpr->get_loc();
     theCCB->theDebuggerCommons->theLocationMap.insert(
@@ -2072,7 +2071,7 @@ void wrap_in_debugger_expr(expr_t& aExpr)
          ++lIter)
     {
       store::Item* lVarname = (*lIter)->get_name();
-      if (lVarname->getStringValue()->str() == "$$dot")
+      if (lVarname->getStringValue() == "$$dot")
       {
         continue;
       }
@@ -2275,11 +2274,9 @@ void declare_var(const global_binding& b, std::vector<expr_t>& stmts)
 
   const QueryLoc& loc = var->get_loc();
 
-  xqpStringStore dot (".");
-
   expr_t qnameExpr = new const_expr(theRootSctx,
                                     loc,
-                                    var->get_name()->getStringValue()->equals(&dot) ?
+                                    var->get_name()->getStringValue() == "." ?
                                     "." : dynamic_context::var_key(&*var).c_str());
 
   expr_t declExpr = new fo_expr(theRootSctx, loc, var_decl, qnameExpr->clone());
@@ -2365,10 +2362,10 @@ void end_visit(const Module& v, void* /*visit_state*/)
 void* begin_visit(const VersionDecl& v)
 {
   TRACE_VISIT();
-  if (! xqp_string(v.get_encoding()).matches ("^[A-Za-z]([A-Za-z0-9._]|[-])*$", ""))
+  if (! xqp_string(v.get_encoding().str()).matches ("^[A-Za-z]([A-Za-z0-9._]|[-])*$", ""))
     ZORBA_ERROR_LOC (XQST0087, loc);
 
-  std::string versionStr = v.get_version();
+  std::string versionStr = v.get_version().str();
 
   StaticContextConsts::xquery_version_t version;
 
@@ -2470,18 +2467,21 @@ void end_visit(const ModuleDecl& v, void* /*visit_state*/)
   theModulePrefix = v.get_prefix();
   theModuleNamespace = v.get_target_namespace();
 
-  if (theModuleNamespace->empty())
+  if (theModuleNamespace.empty())
     ZORBA_ERROR_LOC(XQST0088, loc);
 
-  if (*theModulePrefix == "xml" || *theModulePrefix == "xmlns")
+  if (theModulePrefix == "xml" || theModulePrefix == "xmlns")
     ZORBA_ERROR_LOC(XQST0070, loc);
 
   theSctx->bind_ns(theModulePrefix, theModuleNamespace, loc);
 
+  zstring uri;
+  bool found = theSctx->get_entity_retrieval_uri(uri);
+  ZORBA_ASSERT(found);
+
   static_context_t lTmpCtx;
-  bool found = theModulesInfo->mod_sctx_map.get(theSctx->get_entity_retrieval_uri()->str(),
-                                                lTmpCtx);
-  ZORBA_ASSERT (found);
+  found = theModulesInfo->mod_sctx_map.get(uri.str(), lTmpCtx);
+  ZORBA_ASSERT(found);
 
   export_sctx = lTmpCtx.getp();
 }
@@ -2668,8 +2668,7 @@ void* begin_visit(DefaultCollationDecl const& v)
 {
   TRACE_VISIT();
 
-  string uri = v.get_collation();
-  theSctx->set_default_collation(uri, loc);
+  theSctx->set_default_collation(v.get_collation().str(), loc);
   return NULL;
 }
 
@@ -2690,7 +2689,7 @@ void* begin_visit(const BaseURIDecl& v)
 
   try
   {
-    xqpStringStore_t uri = new xqpStringStore(v.get_base_uri());
+    zstring uri(v.get_base_uri());
     theSctx->set_base_uri(uri);
   }
   catch (error::ZorbaError&)
@@ -2733,10 +2732,10 @@ void* begin_visit(const NamespaceDecl& v)
 {
   TRACE_VISIT();
 
-  xqpStringStore_t pre = v.get_prefix();
-  xqpStringStore_t uri = v.get_uri();
+  zstring pre = v.get_prefix();
+  zstring uri = v.get_uri();
 
-  if (*pre == "xml" || *pre == "xmlns" || *uri == XML_NS || *uri == XMLNS_NS)
+  if (pre == "xml" || pre == "xmlns" || uri == XML_NS || uri == XMLNS_NS)
     ZORBA_ERROR_LOC(XQST0070, loc);
 
   theSctx->bind_ns(pre, uri, loc);
@@ -2792,34 +2791,34 @@ void* begin_visit(const SchemaImport& v)
 #ifndef ZORBA_NO_XMLSCHEMA
 
   const SchemaPrefix* prefix = v.get_prefix();
-  xqpStringStore_t targetNS = v.get_uri();
+  zstring targetNS = v.get_uri();
 
-  if (! theImportedSchemas.insert(targetNS->str()).second)
+  if (! theImportedSchemas.insert(targetNS.str()).second)
     ZORBA_ERROR_LOC(XQST0058, loc);
 
   if (prefix != NULL)
   {
-    if (!prefix->get_default_bit() && targetNS->empty())
+    if (!prefix->get_default_bit() && targetNS.empty())
     {
       ZORBA_ERROR_LOC_PARAM(XQST0057, loc,
                             "(no target namespace uri specified)",
-                            targetNS->c_str());
+                            targetNS.c_str());
     }
 
-    xqpStringStore_t pfx = prefix->get_prefix();
+    zstring pfx = prefix->get_prefix();
 
-    if (*pfx == "xml" || *pfx == "xmlns")
+    if (pfx == "xml" || pfx == "xmlns")
       ZORBA_ERROR_LOC(XQST0070, loc);
 
     if (prefix->get_default_bit())
       theSctx->set_default_elem_type_ns(targetNS, loc);
 
-    if (! pfx->empty())
+    if (! pfx.empty())
       theSctx->bind_ns(pfx, targetNS, loc, XQST0033);
   }
 
   store::Item_t targetNSItem = NULL;
-  xqpStringStore_t tmp = targetNS;
+  zstring tmp = targetNS;
   ITEM_FACTORY->createAnyURI(targetNSItem, tmp);
   ZORBA_ASSERT(targetNSItem != NULL);
 
@@ -2832,7 +2831,7 @@ void* begin_visit(const SchemaImport& v)
     {
       // If current uri is relative, turn it to an absolute one, using the
       // base uri from the sctx.
-      xqpStringStore_t at = theSctx->resolve_relative_uri((*atlist)[i].getp());
+      zstring at = theSctx->resolve_relative_uri((*atlist)[i]);
 
       store::Item_t atUriItem;
       ITEM_FACTORY->createAnyURI(atUriItem, at);
@@ -2846,7 +2845,11 @@ void* begin_visit(const SchemaImport& v)
   try
   {
     std::string lSchemaUri;
-    lSchemaUri = lSchemaResolver->resolve(targetNSItem, theSctx, atUriItemList);
+    zstring schemaFile;
+    lSchemaUri = lSchemaResolver->resolve(targetNSItem,
+                                          theSctx,
+                                          atUriItemList,
+                                          schemaFile);
 
     TypeManager* tm = theSctx->get_typemanager();
 
@@ -2857,7 +2860,7 @@ void* begin_visit(const SchemaImport& v)
 
     // Make Xerxes load and parse the xsd file and create a Xerces
     // representaton of it.
-    schema_p->registerXSD(targetNSItem->getStringValue()->c_str(),
+    schema_p->registerXSD(targetNSItem->getStringValue().c_str(),
                           lSchemaUri,
                           loc);
   }
@@ -2925,31 +2928,33 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  xqpStringStore_t pfx = v.get_prefix();
-  xqpStringStore_t targetNS = v.get_uri();
+  zstring targetNS = v.get_uri();
+  zstring pfx;
+
+  if (!v.get_prefix().empty())
+    pfx = v.get_prefix();
 
   // The namespace prefix specified in a module import must not be xml or xmlns
   // [err:XQST0070]
-  if (pfx != NULL && (*pfx == "xml" || *pfx == "xmlns"))
+  if (!pfx.empty() && (pfx == "xml" || pfx == "xmlns"))
     ZORBA_ERROR_LOC(XQST0070, loc);
 
   // The first URILiteral in a module import must be of nonzero length [err:XQST0088]
-  if (targetNS->empty())
+  if (targetNS.empty())
     ZORBA_ERROR_LOC(XQST0088, loc);
 
   // It is a static error [err:XQST0047] if more than one module import in a
   // Prolog specifies the same target namespace
-  if (! theImportedModules.insert(targetNS->str()).second)
+  if (! theImportedModules.insert(targetNS.str()).second)
     ZORBA_ERROR_LOC(XQST0047, loc);
 
   // The namespace prefix specified in a module import must not be the same as
   // any namespace prefix bound in the same module by another module import,
   // a schema import, a namespace declaration, or a module declaration with a
   // different target namespace [err:XQST0033].
-  if (pfx != NULL &&
-      ! pfx->empty() &&
-      ! (pfx->byteEqual(theModulePrefix) &&
-         targetNS->byteEqual(theModuleNamespace)) )
+  if (! pfx.empty() &&
+      ! (pfx == theModulePrefix &&
+         targetNS == theModuleNamespace))
   {
     theSctx->bind_ns(pfx, targetNS, loc, XQST0033);
   }
@@ -2958,7 +2963,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 
   // Handle pre-defined modules
   if (atlist == NULL &&
-      theBuiltInModules.find(targetNS->str()) != theBuiltInModules.end())
+      theBuiltInModules.find(targetNS.str()) != theBuiltInModules.end())
   {
     return;
   }
@@ -2976,13 +2981,13 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
   vector<std::string> compURIs;
   if (atlist == NULL || atlist->size() == 0)
   {
-    standardModuleResolver->resolveTargetNamespace(targetNS->str(), *theSctx, compURIs);
+    standardModuleResolver->resolveTargetNamespace(targetNS.str(), *theSctx, compURIs);
   }
   else
   {
     for (ulong i = 0; i < atlist->size(); ++i)
     {
-      compURIs.push_back(theSctx->resolve_relative_uri((*atlist)[i])->str());
+      compURIs.push_back(theSctx->resolve_relative_uri((*atlist)[i]).str());
     }
   }
 
@@ -3010,8 +3015,8 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
     // same as what we are trying to import now.
     if (theModulesInfo->mod_ns_map.get(compURI, importedNS))
     {
-      if (importedNS != targetNS->str())
-        ZORBA_ERROR_LOC_PARAM(XQST0059, loc, compURI, targetNS->c_str());
+      if (importedNS != targetNS)
+        ZORBA_ERROR_LOC_PARAM(XQST0059, loc, compURI, targetNS.c_str());
 
       bool found = theModulesInfo->mod_sctx_map.get(compURI, importedSctx);
       ZORBA_ASSERT(found);
@@ -3025,7 +3030,6 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       // TODO: we have to find a way to tell user defined resolvers when their
       // input stream can be freed. The current solution might leed to problems
       // on Windows.
-      xqpStringStore_t compURI2 = new xqpStringStore(compURI);
       std::string compURL;
       auto_ptr<istream> modfile;
 
@@ -3040,7 +3044,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 
       if (modfile.get() == NULL || ! *modfile)
       {
-        ZORBA_ERROR_LOC_PARAM(XQST0059, loc, compURI, targetNS->c_str());
+        ZORBA_ERROR_LOC_PARAM(XQST0059, loc, compURI, targetNS.c_str());
       }
 
       // Get the parent of the query root sctx. This is the user-specified sctx
@@ -3056,15 +3060,16 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       else
         moduleRootSctx = independentSctx->create_child_context();
 
-      if (*targetNS == "http://www.zorba-xquery.com/modules/file")
+      if (targetNS == "http://www.zorba-xquery.com/modules/file")
       {
         // We want the baseURI property of the module sctx to be the full
         // pathname of the query file.
-        moduleRootSctx->set_encapsulating_entity_uri(
-                        theCCB->theRootSctx->get_entity_retrieval_uri());
+        zstring uri;
+        if (theCCB->theRootSctx->get_entity_retrieval_uri(uri))
+          moduleRootSctx->set_encapsulating_entity_uri(uri);
       }
-      moduleRootSctx->set_entity_retrieval_uri(compURI2);
-      moduleRootSctx->set_module_namespace(targetNS->str());
+      moduleRootSctx->set_entity_retrieval_uri(compURI);
+      moduleRootSctx->set_module_namespace(targetNS);
       moduleRootSctx->set_typemanager(new TypeManagerImpl(&GENV_TYPESYSTEM));
       short moduleRootSctxId = theCCB->theSctxMap->size() + 1;
       (*theCCB->theSctxMap)[moduleRootSctxId] = moduleRootSctx;
@@ -3074,7 +3079,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       // translation of the imported module is done, this sctx will be merged
       // with the sctx of the importing module.
       importedSctx = independentSctx->create_child_context();
-      importedSctx->set_module_namespace(targetNS->str());
+      importedSctx->set_module_namespace(targetNS);
 
       // Register the imported_sctx in theModulesInfo->mod_sctx_map so that it is
       // accessible by both the importing and the imported modules.
@@ -3082,14 +3087,14 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 
       // Parse the imported module
       XQueryCompiler xqc(theCCB);
-      xqpStringStore_t fileURL;
+      zstring fileURL;
       if (compURL.size() != 0)
       {
-        fileURL = new xqpStringStore(compURL);
+        fileURL = compURL;
       }
       else
       {
-        fileURL = new xqpStringStore(compURI);
+        fileURL = compURI;
       }
 
       rchandle<parsenode> ast = xqc.parse(*modfile, fileURL);
@@ -3100,15 +3105,15 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       // Also make sure that the imported module is a library module
       LibraryModule* mod_ast = dynamic_cast<LibraryModule *>(&*ast);
       if (mod_ast == NULL)
-        ZORBA_ERROR_LOC_PARAM(XQST0059, loc, compURI, targetNS->c_str());
+        ZORBA_ERROR_LOC_PARAM(XQST0059, loc, compURI, targetNS.c_str());
 
-      importedNS = mod_ast->get_decl()->get_target_namespace()->str();
+      importedNS = mod_ast->get_decl()->get_target_namespace().str();
 
       if (importedNS.empty())
         ZORBA_ERROR_LOC(XQST0088, loc);
 
-      if (importedNS != targetNS->str())
-        ZORBA_ERROR_LOC_PARAM(XQST0059, loc, compURI, targetNS->c_str());
+      if (importedNS != targetNS)
+        ZORBA_ERROR_LOC_PARAM(XQST0059, loc, compURI, targetNS.c_str());
 
       // translate the imported module
       translate_aux(theRootTranslator,
@@ -3218,21 +3223,21 @@ void* begin_visit(const VFO_DeclList& v)
     store::Item_t qnameItem;
     expand_function_qname(qnameItem, fname, fname->get_location());
 
-    const xqpStringStore* ns = qnameItem->getNamespace();
+    const zstring& ns = qnameItem->getNamespace();
 
     // function must be declared in a non-NULL namespace
-    if(ns->empty())
+    if(ns.empty())
       ZORBA_ERROR_LOC (XQST0060, loc);
 
     // Function must not be in any of the reserved namespaces
-    if (*ns == XQUERY_FN_NS || *ns == XML_NS || *ns == XML_SCHEMA_NS || *ns == XSI_NS)
+    if (ns == XQUERY_FN_NS || ns == XML_NS || ns == XML_SCHEMA_NS || ns == XSI_NS)
     {
       ZORBA_ERROR_LOC_PARAM(XQST0045, func_decl->get_location(),
-                            qnameItem->getLocalName()->str(), "");
+                            qnameItem->getLocalName().str(), "");
     }
 
     // In a module, all exports must be inside the target ns
-    if (! theModuleNamespace->empty() && *ns != *theModuleNamespace)
+    if (! theModuleNamespace.empty() && ns != theModuleNamespace)
       ZORBA_ERROR_LOC(XQST0048, loc);
 
     // Create the function object.
@@ -3277,8 +3282,8 @@ void* begin_visit(const VFO_DeclList& v)
           ZORBA_ERROR_LOC_DESC_OSS(XQP0028_FUNCTION_IMPL_NOT_FOUND,
               loc,
               "The signature of the (registered) function ("
-              << qnameItem->getNamespace()->str()
-              << ":" << qnameItem->getLocalName()->str()
+              << qnameItem->getNamespace()
+              << ":" << qnameItem->getLocalName()
               << ") does not match the signature of the function that is "
               << "declared in the module.");
         }
@@ -3312,8 +3317,8 @@ void* begin_visit(const VFO_DeclList& v)
       {
         ZORBA_ERROR_LOC_PARAM(XQP0028_FUNCTION_IMPL_NOT_FOUND,
                               loc,
-                              qnameItem->getNamespace()->str(),
-                              qnameItem->getLocalName()->str());
+                              qnameItem->getNamespace().str(),
+                              qnameItem->getLocalName().str());
       }
 
       ZORBA_ASSERT(ef != NULL);
@@ -3369,11 +3374,11 @@ void* begin_visit(const OptionDecl& v)
   TRACE_VISIT();
 
   store::Item_t qnameItem;
-  xqpStringStore_t value = new xqpStringStore(v.get_val());
+  xqpStringStore_t value = new xqpStringStore(v.get_val().str());
 
   expand_no_default_qname(qnameItem, v.get_qname(), loc);
 
-  if (qnameItem->getPrefix()->empty())
+  if (qnameItem->getPrefix().empty())
   {
     ZORBA_ERROR_LOC(XPST0081, loc);
   }
@@ -3464,8 +3469,8 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
   if (v.is_global())
   {
     // All vars declared in a module must be in the same namespace as the module
-    if (! theModuleNamespace->empty() &&
-        *ve->get_name()->getNamespace() != *theModuleNamespace)
+    if (! theModuleNamespace.empty() &&
+        ve->get_name()->getNamespace() != theModuleNamespace)
     {
       ZORBA_ERROR_LOC(XQST0048, loc);
     }
@@ -3527,18 +3532,18 @@ void* begin_visit(const AnnotationListParsenode& v)
 
   for (unsigned int i=0; i<v.size(); i++)
   {
-    if (v[i]->get_qname()->get_localname()->equals(xqpString("public").theStrStore)
+    if (v[i]->get_qname()->get_localname() == "public"
         ||
-        v[i]->get_qname()->get_localname()->equals(xqpString("private").theStrStore))
+        v[i]->get_qname()->get_localname() == "private")
     {
       if (have_public_or_private)
         ZORBA_ERROR_LOC(XQST0106, loc);
 
       have_public_or_private = true;
     }
-    else if (v[i]->get_qname()->get_localname()->equals(xqpString("deterministic").theStrStore)
+    else if (v[i]->get_qname()->get_localname() == "deterministic"
              ||
-             v[i]->get_qname()->get_localname()->equals(xqpString("nondeterministic").theStrStore))
+             v[i]->get_qname()->get_localname() == "nondeterministic")
     {
       if (have_determ_or_nondeterm)
         ZORBA_ERROR_LOC(XQST0106, loc);
@@ -3763,7 +3768,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
     }
 
     if (theCCB->theConfig.translate_cb != NULL)
-      theCCB->theConfig.translate_cb(&*body, v.get_name()->get_qname());
+      theCCB->theConfig.translate_cb(&*body, v.get_name()->get_qname().str());
 
     udf->setBody(body);
     udf->setArgVars(args);
@@ -3901,7 +3906,7 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
   store::Item_t lExpandedQName;
   expand_function_qname(lExpandedQName, lName, lName->get_location());
 
-  if (*lExpandedQName->getNamespace() != *theModuleNamespace)
+  if (lExpandedQName->getNamespace() != theModuleNamespace)
   {
     ZORBA_ERROR_LOC_PARAM(XDST0007_COLLECTION_DECL_IN_FOREIGN_MODULE, loc,
                           lName->get_qname(), "");
@@ -4022,7 +4027,7 @@ void* begin_visit(const AST_IndexDecl& v)
   store::Item_t qnameItem;
   expand_function_qname(qnameItem, qname, qname->get_location());
 
-  if (*qnameItem->getNamespace() != *theModuleNamespace)
+  if (qnameItem->getNamespace() != theModuleNamespace)
   {
     ZORBA_ERROR_LOC_PARAM(XDST0036_INDEX_DECL_IN_FOREIGN_MODULE, loc,
                           qname->get_qname(), "");
@@ -4093,7 +4098,7 @@ void* begin_visit(const IndexKeyList& v)
                              domainExpr);
   }
 
-  std::string msg = "domain expr for index " + index->getName()->getStringValue()->str();
+  std::string msg = "domain expr for index " + index->getName()->getStringValue().str();
 
   if (theCCB->theConfig.translate_cb != NULL)
     theCCB->theConfig.translate_cb(domainExpr.getp(), msg);
@@ -4212,7 +4217,7 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
 
     if (collationSpec != NULL)
     {
-      collationUri = collationSpec->get_uri();
+      collationUri = collationSpec->get_uri().str();
 
       if (! theSctx->is_known_collation(collationUri))
         ZORBA_ERROR_LOC(XQST0076, keySpec->get_location());
@@ -4227,7 +4232,7 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
     keyModifiers[i].theCollation = collationUri;
 
     std::ostringstream msg;
-    msg << "key expr " << i << " for index " << index->getName()->getStringValue()->str();
+    msg << "key expr " << i << " for index " << index->getName()->getStringValue();
 
     if (theCCB->theConfig.translate_cb != NULL)
       theCCB->theConfig.translate_cb(keyExpr.getp(), msg.str());
@@ -4322,10 +4327,10 @@ void* begin_visit(const IntegrityConstraintDecl& v)
 
     // "example:coll1"
     expr_t qnameStrExpr = new const_expr(theRootSctx, loc,
-                                         ic.getCollName()->get_qname());
+                                         ic.getCollName()->get_qname().str());
 
-    const xqpStringStore_t& prefixStr = ic.getCollName()->get_prefix();
-    xqpStringStore_t uriStr;
+    zstring prefixStr = ic.getCollName()->get_prefix();
+    zstring uriStr;
     theSctx->lookup_ns(uriStr, prefixStr, loc);
 
     expr_t uriStrExpr = new const_expr(theRootSctx, loc, uriStr);
@@ -4395,10 +4400,10 @@ void* begin_visit(const IntegrityConstraintDecl& v)
     // "org:employees"
     expr_t qnameStrExpr = new const_expr(theRootSctx,
                                          loc,
-                                         ic.getCollName()->get_qname());
+                                         ic.getCollName()->get_qname().str());
 
-    const xqpStringStore_t& prefixStr = ic.getCollName()->get_prefix();
-    xqpStringStore_t uriStr;
+    zstring prefixStr = ic.getCollName()->get_prefix();
+    zstring uriStr;
     theSctx->lookup_ns(uriStr, prefixStr, loc);
 
     expr_t uriStrExpr = new const_expr(theRootSctx, loc, uriStr);
@@ -4485,10 +4490,10 @@ void* begin_visit(const IntegrityConstraintDecl& v)
 
     // "org:transactions"
     expr_t qnameStrExpr = new const_expr(theRootSctx, loc,
-                                         ic.getCollName()->get_qname());
+                                         ic.getCollName()->get_qname().str());
 
-    const xqpStringStore_t& prefixStr = ic.getCollName()->get_prefix();
-    xqpStringStore_t uriStr;
+    zstring prefixStr = ic.getCollName()->get_prefix();
+    zstring uriStr;
     theSctx->lookup_ns(uriStr, prefixStr, loc);
 
     expr_t uriStrExpr = new const_expr(theRootSctx, loc, uriStr);
@@ -4557,9 +4562,9 @@ void* begin_visit(const IntegrityConstraintDecl& v)
     // TO part
     // "org:employees"
     expr_t toQnameStrExpr = new const_expr(theRootSctx, loc,
-                                           ic.getToCollName()->get_qname());
-    const xqpStringStore_t& toPrefixStr = ic.getToCollName()->get_prefix();
-    xqpStringStore_t toUriStr;
+                                           ic.getToCollName()->get_qname().str());
+    zstring toPrefixStr = ic.getToCollName()->get_prefix();
+    zstring toUriStr;
     theSctx->lookup_ns(toUriStr, toPrefixStr, loc);
 
     expr_t toUriStrExpr = new const_expr(theRootSctx, loc, toUriStr);
@@ -4596,13 +4601,13 @@ void* begin_visit(const IntegrityConstraintDecl& v)
     // FROM part
     // "org:transactions"
     expr_t fromQnameStrExpr = new const_expr(theRootSctx, loc,
-                                             ic.getFromCollName()->get_qname());
+                                             ic.getFromCollName()->get_qname().str());
 
-    const xqpStringStore_t& fromPrefixStr = ic.getFromCollName()->get_prefix();
-    xqpStringStore_t fromUriStr;
+    zstring fromPrefixStr = ic.getFromCollName()->get_prefix();
+    zstring fromUriStr;
     theSctx->lookup_ns(fromUriStr, fromPrefixStr, loc);
 
-    expr_t fromUriStrExpr = new const_expr(theRootSctx, loc, fromUriStr );
+    expr_t fromUriStrExpr = new const_expr(theRootSctx, loc, fromUriStr);
 
     // fn:QName("org-uri", "org:transactions")
     fo_expr_t fromQnameExpr = new fo_expr(theRootSctx, loc,
@@ -4883,11 +4888,11 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
   pop_scope();
 
 
-  std::string msg = "entry-creator expr for integrity constraint " +
-    qname->get_localname()->str();
+  zstring msg = "entry-creator expr for integrity constraint " +
+    qname->get_localname();
 
   if (theCCB->theConfig.optimize_cb != NULL)
-    theCCB->theConfig.optimize_cb(body.getp(), msg);
+    theCCB->theConfig.optimize_cb(body.getp(), msg.str());
 
   PlanIter_t icIter = codegen("integrity constraint", body, theCCB);
 
@@ -4898,7 +4903,7 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
   store::Item_t qnameItem;
   expand_function_qname(qnameItem, qname, qname->get_location());
 
-  if (*qnameItem->getNamespace() != *theModuleNamespace)
+  if (qnameItem->getNamespace() != theModuleNamespace)
   {
     ZORBA_ERROR_LOC_PARAM(XDST0048_IC_DECL_IN_FOREIGN_MODULE, loc,
                           qname->get_qname(), "");
@@ -5867,7 +5872,7 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
     input_var = pop_nodestack_var();
 
     if (groupSpec.group_coll_spec() != NULL)
-      collations.push_back(groupSpec.group_coll_spec()->get_uri());
+      collations.push_back(groupSpec.group_coll_spec()->get_uri().str());
     else
       collations.push_back ("");
 
@@ -6000,7 +6005,7 @@ void end_visit(const OrderByClause& v, void* /*visit_state*/)
 
     if (mod && mod->get_collation_spec() != NULL)
     {
-      collationUri = mod->get_collation_spec()->get_uri();
+      collationUri = mod->get_collation_spec()->get_uri().str();
 
       if (! theSctx->is_known_collation(collationUri))
         ZORBA_ERROR_LOC(XQST0076, loc);
@@ -7248,14 +7253,14 @@ void end_visit (const ValidateExpr& v, void* /*visit_state*/)
   store::Item_t qname;
   if (v.get_type_name() != NULL)
   {
-    const xqpStringStore_t& prefix = v.get_type_name()->get_prefix();
-    xqpStringStore_t ns;
+    const zstring& prefix = v.get_type_name()->get_prefix();
+    zstring ns;
     ns_ctx->findBinding(prefix, ns);
 
     GENV_ITEMFACTORY->createQName(qname,
-                                  ns->c_str(),
-                                  prefix->c_str(),
-                                  v.get_type_name()->get_localname()->c_str());
+                                  ns.c_str(),
+                                  prefix.c_str(),
+                                  v.get_type_name()->get_localname().c_str());
   }
 
   push_nodestack(new validate_expr(theRootSctx,
@@ -7314,7 +7319,7 @@ void end_visit(const Pragma& v, void* /*visit_state*/)
   TRACE_VISIT_OUT();
 
   // may raise XPST0081
-  xqpStringStore_t ns;
+  zstring ns;
   theSctx->lookup_ns(ns, v.get_name()->get_prefix(), loc);
 }
 
@@ -8163,27 +8168,27 @@ void end_visit(const NameTest& v, void* /*visit_state*/)
       case ParseConstants::wild_elem:
       {
         matchExpr->setWildKind(match_name_wild);
-        matchExpr->setWildName(wildcard->getPrefix());
+        matchExpr->setWildName(to_xqpStringStore_t(wildcard->getPrefix()));
 
-        xqpStringStore_t localname = new xqpStringStore(":wildcard");
+        zstring localname(":wildcard");
 
         store::Item_t qnItem;
 
         if (axisExpr->getAxis() == axis_kind_attribute)
         {
           theSctx->expand_qname(qnItem,
-                               getEmptyString(),
-                               wildcard->getPrefix(),
-                               localname,
-                               wildcard->get_location());
+                                zstring(),
+                                wildcard->getPrefix(),
+                                localname,
+                                wildcard->get_location());
         }
         else
         {
           theSctx->expand_qname(qnItem,
-                               theSctx->default_elem_type_ns(),
-                               wildcard->getPrefix(),
-                               localname,
-                               wildcard->get_location());
+                                theSctx->default_elem_type_ns(),
+                                wildcard->getPrefix(),
+                                localname,
+                                wildcard->get_location());
         }
 
         matchExpr->setQName(qnItem);
@@ -8193,7 +8198,7 @@ void end_visit(const NameTest& v, void* /*visit_state*/)
       case ParseConstants::wild_prefix:
       {
         matchExpr->setWildKind(match_prefix_wild);
-        matchExpr->setWildName(wildcard->getLocalName());
+        matchExpr->setWildName(to_xqpStringStore_t(wildcard->getLocalName().str()));
         break;
       }
       }
@@ -8220,13 +8225,13 @@ void end_visit(const NameTest& v, void* /*visit_state*/)
       switch (wildcard->getKind())
       {
         case ParseConstants::wild_all:
-          cc->add_nametest_h(new NodeNameTest(NULL, NULL));
+          cc->add_nametest_h(new NodeNameTest(zstring(), zstring()));
           break;
         case ParseConstants::wild_elem:
-          cc->add_nametest_h(new NodeNameTest(NULL, wildcard->getPrefix()));
+          cc->add_nametest_h(new NodeNameTest(zstring(), wildcard->getPrefix()));
           break;
         case ParseConstants::wild_prefix:
-          cc->add_nametest_h(new NodeNameTest(wildcard->getLocalName(), NULL));
+          cc->add_nametest_h(new NodeNameTest(wildcard->getLocalName(), zstring()));
           break;
       }
     }
@@ -8508,7 +8513,7 @@ void end_visit(const StringLiteral& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  push_nodestack(new const_expr(theRootSctx, loc,v.get_strval()));
+  push_nodestack(new const_expr(theRootSctx, loc,v.get_strval().str()));
 }
 
 
@@ -8541,11 +8546,11 @@ void end_visit(const VarRef& v, void* /*visit_state*/)
       if (declaredType->get_manager() == tm)
         err = XPTY0004;
 
-      if (theModuleNamespace->empty())
+      if (theModuleNamespace.empty())
       {
         ZORBA_ERROR_LOC_DESC_OSS(err, loc,
                                  "The variable "
-                                 << ve->get_name()->getStringValue()->c_str()
+                                 << ve->get_name()->getStringValue()
                                  << " has type " << declaredType->toString()
                                  << ", which is not among the in-scope types"
                                  << " of the main module.");
@@ -8554,11 +8559,11 @@ void end_visit(const VarRef& v, void* /*visit_state*/)
       {
         ZORBA_ERROR_LOC_DESC_OSS(err, loc,
                                  "The variable "
-                                 << ve->get_name()->getStringValue()->c_str()
+                                 << ve->get_name()->getStringValue()
                                  << " has type " << declaredType->toString()
                                  << ", which is not among the in-scope types"
                                  << " of module "
-                                 << theModuleNamespace->c_str());
+                                 << theModuleNamespace);
       }
     }
 
@@ -8698,11 +8703,11 @@ void* begin_visit(const FunctionCall& v)
 
     if (!TypeOps::is_in_scope(tm, *retType))
     {
-      if (theModuleNamespace->empty())
+      if (theModuleNamespace.empty())
       {
         ZORBA_ERROR_LOC_DESC_OSS(XQST0036, loc,
                                  "The function "
-                                 << f->getName()->getStringValue()->c_str()
+                                 << f->getName()->getStringValue()
                                  << " has type " << retType->toString()
                                  << ", which is not among the in-scope types"
                                  << " of the main module.");
@@ -8711,11 +8716,11 @@ void* begin_visit(const FunctionCall& v)
       {
         ZORBA_ERROR_LOC_DESC_OSS(XQST0036, loc,
                                  "The function "
-                                 << f->getName()->getStringValue()->c_str()
+                                 << f->getName()->getStringValue()
                                  << " has type " << retType->toString()
                                  << ", which is not among the in-scope types"
                                  << " of module "
-                                 << theModuleNamespace->c_str());
+                                 << theModuleNamespace);
       }
     }
 
@@ -8726,11 +8731,11 @@ void* begin_visit(const FunctionCall& v)
       xqtref_t type = sign[i];
       if (!TypeOps::is_in_scope(tm, *type))
       {
-        if (theModuleNamespace->empty())
+        if (theModuleNamespace.empty())
         {
           ZORBA_ERROR_LOC_DESC_OSS(XQST0036, loc,
                                    "The function "
-                                   << f->getName()->getStringValue()->c_str()
+                                   << f->getName()->getStringValue()
                                    << " has type " << type->toString()
                                    << ", which is not among the in-scope types"
                                    << " of the main module.");
@@ -8739,11 +8744,11 @@ void* begin_visit(const FunctionCall& v)
         {
           ZORBA_ERROR_LOC_DESC_OSS(XQST0036, loc,
                                    "The function "
-                                   << f->getName()->getStringValue()->c_str()
+                                   << f->getName()->getStringValue()
                                    << " has type " << type->toString()
                                    << ", which is not among the in-scope types"
                                    << " of module "
-                                   << theModuleNamespace->c_str());
+                                   << theModuleNamespace);
         }
       }
     }
@@ -8775,17 +8780,17 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
   ulong numArgs = arguments.size();
 
   rchandle<QName> qname = v.get_fname();
-  const xqpStringStore_t& localName = qname->get_localname();
+  const zstring& localName = qname->get_localname();
 
   store::Item_t qnameItem;
   expand_function_qname(qnameItem, qname, loc);
 
-  const xqpStringStore* fn_ns = qnameItem->getNamespace();
+  const zstring& fn_ns = qnameItem->getNamespace();
 
   // Some special processing is required for certain "fn" functions
-  if (fn_ns->byteEqual(XQUERY_FN_NS, strlen(XQUERY_FN_NS)))
+  if (fn_ns == XQUERY_FN_NS)
   {
-    if (*localName == "subsequence" && (numArgs == 2 || numArgs == 3))
+    if (localName == "subsequence" && (numArgs == 2 || numArgs == 3))
     {
       function* f = NULL;
 
@@ -8824,17 +8829,17 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       push_nodestack(foExpr.getp());
       return;
     }
-    else if (*localName == "position" && numArgs == 0)
+    else if (localName == "position" && numArgs == 0)
     {
       push_nodestack(lookup_ctx_var(DOT_POS_VARNAME, loc).getp());
       return;
     }
-    else if (*localName == "last" && numArgs == 0)
+    else if (localName == "last" && numArgs == 0)
     {
       push_nodestack(lookup_ctx_var(LAST_IDX_VARNAME, loc).getp());
       return;
     }
-    else if (*localName == "number")
+    else if (localName == "number")
     {
       switch (numArgs)
       {
@@ -8871,17 +8876,17 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       return;
     }
     else if (numArgs == 0 &&
-             xquery_fns_def_dot.find(localName->str()) != xquery_fns_def_dot.end())
+             xquery_fns_def_dot.find(localName) != xquery_fns_def_dot.end())
     {
       arguments.push_back(DOT_REF);
     }
-    else if (*localName == "static-base-uri")
+    else if (localName == "static-base-uri")
     {
       if (numArgs != 0)
         ZORBA_ERROR_LOC_PARAM(XPST0017, loc, "fn:static-base-uri", numArgs);
 
-      xqpStringStore_t baseuri = theSctx->get_base_uri();
-      if (baseuri == NULL || baseuri->empty())
+      zstring baseuri = theSctx->get_base_uri();
+      if (baseuri.empty())
         push_nodestack(create_seq(loc));
       else
         push_nodestack(new cast_expr(theRootSctx,
@@ -8890,7 +8895,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
                                      GENV_TYPESYSTEM.ANY_URI_TYPE_ONE));
       return;
     }
-    else if (*localName == "id" || *localName == "element-with-id")
+    else if (localName == "id" || localName == "element-with-id")
     {
       if (numArgs == 1)
       {
@@ -8906,7 +8911,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
       fo_expr_t normExpr;
       fo_expr_t tokenExpr;
-      rchandle<const_expr> constExpr = new const_expr(theRootSctx, loc, xqpString(" "));
+      zstring space(" ");
+      rchandle<const_expr> constExpr = new const_expr(theRootSctx, loc, space);
 
       normExpr = new fo_expr(theRootSctx,
                              loc,
@@ -8927,30 +8933,30 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
       arguments[1] = flworExpr;
     }
-    else if (numArgs == 1 && *localName == "idref")
+    else if (numArgs == 1 && localName == "idref")
     {
       arguments.insert(arguments.begin(), DOT_REF);
     }
-    else if (numArgs == 1 && *localName == "lang")
+    else if (numArgs == 1 && localName == "lang")
     {
       arguments.insert(arguments.begin(), DOT_REF);
     }
-    else if (numArgs == 1 && *localName == "resolve-uri")
+    else if (numArgs == 1 && localName == "resolve-uri")
     {
-      xqpStringStore_t baseUri = theSctx->get_base_uri();
+      zstring baseUri = theSctx->get_base_uri();
       arguments.insert(arguments.begin(), new const_expr(theRootSctx, loc, baseUri));
     }
-    else if (numArgs == 1 && *localName == "parse")
+    else if (numArgs == 1 && localName == "parse")
     {
-      xqpStringStore_t baseUri = theSctx->get_base_uri();
+      zstring baseUri = theSctx->get_base_uri();
       arguments.insert(arguments.begin(), new const_expr(theRootSctx, loc, baseUri));
     }
-    else if (*localName == "concat")
+    else if (localName == "concat")
     {
       if (numArgs < 2)
         ZORBA_ERROR_LOC_PARAM (XPST0017, loc, "concat", to_string(numArgs));
     }
-    else if (*localName == "doc")
+    else if (localName == "doc")
     {
       if (numArgs > 0)
       {
@@ -8961,13 +8967,13 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         {
           const_expr* const_uri = reinterpret_cast<const_expr*>(doc_uri.getp());
           const store::Item* uri_value = const_uri->get_val();
-          xqpStringStore_t uri_string = uri_value->getStringValue();
+          zstring uri_string = uri_value->getStringValue();
 
           try
           {
-            if(uri_string->bytePositionOf(":/", 3, 0) >= 0)
+            if (uri_string.find(":/", 0, 3) != zstring::npos)
             {
-              URI docURI(uri_string.getp(), true);//with validate
+              URI docURI(uri_string, true);//with validate
             }
           }
           catch(error::ZorbaError &e)
@@ -8980,9 +8986,9 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
   }
 
   //  Some special processing is required for certain "zorba" functions
-  else if (fn_ns->byteEqual(ZORBA_OP_NS, strlen(ZORBA_OP_NS)))
+  else if (fn_ns == ZORBA_OP_NS)
   {
-    if (*localName == "inline-xml" && numArgs == 1)
+    if (localName == "inline-xml" && numArgs == 1)
     {
       push_nodestack(new eval_expr(theRootSctx,
                                    loc,
@@ -9436,7 +9442,7 @@ void* begin_visit(const DirAttributeList& v)
     {
       const DirAttr* attr = v[i];
       const QName* qname = attr->get_name().getp();
-      bool isPrefix = qname->get_qname() == "xmlns" || *qname->get_prefix() == "xmlns";
+      bool isPrefix = qname->get_qname() == "xmlns" || qname->get_prefix() == "xmlns";
 
       if ((isPrefix && visitType == 0) || (! isPrefix && visitType == 1))
         attr->accept(*this);
@@ -9522,47 +9528,47 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
 
   QName* qname = v.get_name().getp();
 
-  if (qname->get_qname() == "xmlns" || *qname->get_prefix() == "xmlns")
+  if (qname->get_qname() == "xmlns" || qname->get_prefix() == "xmlns")
   {
-    xqpStringStore_t prefix = getEmptyString();
+    zstring prefix;
 
     if (qname->get_qname() != "xmlns")
     {
       prefix = qname->get_localname();
-      if (prefix->byteEqual("xmlns", 5))
-        ZORBA_ERROR_LOC (XQST0070, loc);
+      if (equals(prefix, "xmlns", 5))
+        ZORBA_ERROR_LOC(XQST0070, loc);
     }
 
     const_expr* constValueExpr = valueExpr.dyn_cast<const_expr>().getp();
     if (constValueExpr != NULL)
     {
-      xqpStringStore_t uri = constValueExpr->get_val()->getStringValue();
+      zstring uri;
+      constValueExpr->get_val()->getStringValue2(uri);
 
-      if ((prefix->byteEqual("xml", 3) && !uri->byteEqual(XML_NS, strlen(XML_NS))) ||
-          (uri->byteEqual(XML_NS, strlen(XML_NS)) && !prefix->byteEqual("xml", 3)) ||
-          (prefix->byteEqual("xmlns", 5) && !uri->byteEqual(XMLNS_NS, strlen(XMLNS_NS))) ||
-          (uri->byteEqual(XMLNS_NS, strlen(XML_NS)) && !prefix->byteEqual("xmlns", 5)))
+      if ((equals(prefix, "xml", 3) && !equals(uri, XML_NS, strlen(XML_NS))) ||
+          (equals(uri, XML_NS, strlen(XML_NS)) && !equals(prefix, "xml", 3)) ||
+          (equals(prefix, "xmlns", 5) && !equals(uri, XMLNS_NS, strlen(XMLNS_NS))) ||
+          (equals(uri, XMLNS_NS, strlen(XML_NS)) && !equals(prefix, "xmlns", 5)))
         ZORBA_ERROR_LOC (XQST0070, loc);
 
       theSctx->bind_ns(prefix, uri, loc, XQST0071);
       ns_ctx->bind_ns(prefix, uri);
 
-      if (prefix->empty())
+      if (prefix.empty())
         theSctx->set_default_elem_type_ns(uri, loc);
     }
     else if (valueExpr == NULL)
     {
-      if (prefix->byteEqual("xml", 3))
+      if (equals(prefix, "xml", 3))
         ZORBA_ERROR_LOC(XQST0070, loc);
 
       // unbind the prefix
-      xqpStringStore_t empty1 = getEmptyString();
-      xqpStringStore_t empty2 = getEmptyString();
-      theSctx->bind_ns(prefix, empty1, loc, XQST0071);
-      ns_ctx->bind_ns(prefix, empty2);
+      zstring empty;
+      theSctx->bind_ns(prefix, empty, loc, XQST0071);
+      ns_ctx->bind_ns(prefix, empty);
 
-      if (prefix->empty())
-        theSctx->set_default_elem_type_ns(empty1, loc);
+      if (prefix.empty())
+        theSctx->set_default_elem_type_ns(empty, loc);
     }
     else
     {
@@ -9656,7 +9662,7 @@ void end_visit (const DirElemContent& v, void* /*visit_state*/) {
   else if (v.get_common_content() != NULL) {
   } else {
     if (!v.isStripped()) {
-      expr_t content = new const_expr (theRootSctx, loc, v.get_elem_content());
+      expr_t content = new const_expr (theRootSctx, loc, v.get_elem_content().str());
       push_nodestack (new text_expr(theRootSctx, loc,
                                     text_expr::text_constructor,
                                     content));
@@ -9700,7 +9706,7 @@ void check_boundary_whitespace(const DirElemContent& v) {
     } else {
       bool lCouldBe = false;
       if (lPrevIsBoundary) {
-        xqpString content = v.get_elem_content();
+        xqpString content = v.get_elem_content().str();
         // Filtering out of whitespaces
         if (content.trim(" \n\r\t", 4).empty()) {
           lCouldBe = true;
@@ -9739,7 +9745,7 @@ void *begin_visit (const CDataSection& v) {
 
 void end_visit (const CDataSection& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-  std::string lCDATA_content = v.get_cdata_content ();
+  std::string lCDATA_content = v.get_cdata_content().str();
   // Skip empty CDATA sections
   if(!lCDATA_content.empty())
   {
@@ -9843,7 +9849,7 @@ void *begin_visit (const QuoteAttrValueContent& v)
 void end_visit (const QuoteAttrValueContent& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
-  attr_val_content (loc, v.get_common_content(), v.get_quot_atcontent());
+  attr_val_content (loc, v.get_common_content(), v.get_quot_atcontent().str());
 }
 
 
@@ -9856,7 +9862,7 @@ void *begin_visit (const AposAttrValueContent& v)
 void end_visit (const AposAttrValueContent& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
-  attr_val_content (loc, v.get_common_content(), v.get_apos_atcontent());
+  attr_val_content (loc, v.get_common_content(), v.get_apos_atcontent().str());
 }
 
 
@@ -9881,14 +9887,14 @@ void end_visit (const CommonContent& v, void* /*visit_state*/)
   case ParseConstants::cont_charref:
   {
     string content;
-    string charrefs = v.get_ref();
+    string charrefs = v.get_ref().str();
 
     const char* curRef = charrefs.c_str();
     const char* end = curRef + charrefs.size();
 
     while (curRef < end)
     {
-      int d = decode_entity(curRef, &content);
+      int d = utf8::parse_xml_entity(curRef, &content);
       if (d<0)
         ZORBA_ERROR_LOC(XQST0090, loc);
       else
@@ -9931,41 +9937,48 @@ void end_visit (const CommonContent& v, void* /*visit_state*/)
 }
 
 
-void *begin_visit (const DirCommentConstructor& v)
+void* begin_visit(const DirCommentConstructor& v)
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   return no_state;
 }
 
-void end_visit (const DirCommentConstructor& v, void* /*visit_state*/)
+void end_visit(const DirCommentConstructor& v, void* /*visit_state*/)
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 
-  xqpString str = v.get_comment();
+  xqpString str = v.get_comment().str();
   expr_t content = new const_expr (theRootSctx, loc, str);
   push_nodestack (new text_expr(theRootSctx, loc,
                                 text_expr::comment_constructor,
                                 content));
 }
 
-void *begin_visit (const DirPIConstructor& v) {
-  TRACE_VISIT ();
+
+void* begin_visit(const DirPIConstructor& v) 
+{
+  TRACE_VISIT();
   return no_state;
 }
 
-void end_visit (const DirPIConstructor& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-  xqp_string target_str = v.get_pi_target ();
-  if (target_str.uppercase () == "XML")
+void end_visit(const DirPIConstructor& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT();
+
+  xqp_string target_str = v.get_pi_target().str();
+
+  if (target_str.uppercase() == "XML")
     ZORBA_ERROR_LOC ( XPST0003, loc);
-  expr_t
-    target = new const_expr (theRootSctx, loc, target_str),
-    content = new const_expr (theRootSctx, loc, v.get_pi_content ());
-  push_nodestack (new pi_expr (theRootSctx, loc, target,  content));
+
+  expr_t target = new const_expr(theRootSctx, loc, target_str);
+  expr_t content = new const_expr(theRootSctx, loc, v.get_pi_content().str());
+
+  push_nodestack(new pi_expr(theRootSctx, loc, target,  content));
 }
 
 
-void *begin_visit (const CompDocConstructor& v) {
+void *begin_visit (const CompDocConstructor& v) 
+{
   TRACE_VISIT ();
   return no_state;
 }
@@ -10128,7 +10141,7 @@ void end_visit(const CompPIConstructor& v, void* /*visit_state*/)
 
   expr_t e = (v.get_target_expr () != NULL ?
               new pi_expr(theRootSctx, loc, target, content) :
-              new pi_expr(theRootSctx, loc, new const_expr(theRootSctx, loc, v.get_target()), content));
+              new pi_expr(theRootSctx, loc, new const_expr(theRootSctx, loc, v.get_target().str()), content));
 
   push_nodestack (e);
 }
@@ -10423,7 +10436,7 @@ void end_visit (const ElementTest& v, void* /*visit_state*/)
     if (contentType == NULL)
     {
       ZORBA_ERROR_LOC_PARAM(XPST0008, loc, "element type",
-                            typeNameItem->getStringValue()->c_str());
+                            typeNameItem->getStringValue().c_str());
     }
   }
 
@@ -10542,12 +10555,12 @@ void end_visit(const AttributeTest& v, void* /*visit_state*/)
     if (contentType == NULL)
     {
       ZORBA_ERROR_LOC_PARAM(XPST0008, loc, "attribute type",
-                            typeNameItem->getStringValue()->c_str());
+                            typeNameItem->getStringValue().c_str());
     }
   }
 
   // if the top of the stack is an axis step expr, add a node test expr to it.
-  axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
+  axis_step_expr* axisExpr = peek_nodestk_or_null().dyn_cast<axis_step_expr> ();
   if (axisExpr != NULL)
   {
     rchandle<match_expr> match = new match_expr(theRootSctx, loc);
@@ -10685,19 +10698,19 @@ void end_visit(const PITest& v, void* /*visit_state*/)
   TRACE_VISIT_OUT();
 
   axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
-  string target = v.get_target();
+  string target = v.get_target().str();
 
   store::Item_t qname = NULL;
   if (target != "")
   {
-    xqpStringStore_t lNormalizedTarget = new xqpStringStore(target);
-
     // bugfix for XQuery 1.1 (fixes test K2-NameTest-22)
     // see W3C bug http://www.w3.org/Bugs/Public/show_bug.cgi?id=6559
     // processing-instruction( N ) matches any processing-instruction node
     // whose PITarget is equal to fn:normalize-space(N). If fn:normalize-space(N)
     // is not in the lexical space of NCName, a type error is raised [err:XPTY0004]
-    lNormalizedTarget = lNormalizedTarget->normalizeSpace();
+
+    zstring lNormalizedTarget;
+    ascii::normalize_whitespace( target, &lNormalizedTarget );
 
     if (!GenericCast::instance()->castableToNCName(lNormalizedTarget))
     {
@@ -10706,7 +10719,7 @@ void end_visit(const PITest& v, void* /*visit_state*/)
     }
 
     // bugfix (see above); pass normalized string instead of original target
-    GENV_ITEMFACTORY->createQName(qname, NULL, NULL, lNormalizedTarget->c_str());
+    GENV_ITEMFACTORY->createQName(qname, NULL, NULL, lNormalizedTarget.c_str());
   }
 
   if (axisExpr != NULL)

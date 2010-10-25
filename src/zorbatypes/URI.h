@@ -40,29 +40,19 @@ public:
 
   static bool is_reservered_or_unreserved_char(uint32_t c);
 
-  static void decode_file_URI(
-        const xqpStringStore_t& uri,
-        xqpStringStore_t& filepath);
+  static void decode_file_URI(const zstring& uri, zstring& filepath);
 
-  static void encode_file_URI(
-        const xqpStringStore_t& filepath,
-        xqpStringStore_t& uri);
+  static void encode_file_URI(const zstring& filepath, zstring& uri);
 
   static std::string encode_file_URI(const std::string& filepath);
 
-  static bool is_well_formed_address(const xqpStringStore* addr);
+  static bool is_well_formed_address(const char* addr, ulong length);
 
-  static bool is_well_formed_ipv6_reference(const xqpStringStore* addr, ulong length);
+  static bool is_well_formed_ipv6_reference(const char* addr, ulong length);
 
-  static bool is_well_formed_ipv4_address(const xqpStringStore* addr, ulong length);
+  static bool is_well_formed_ipv4_address(const char* addr, ulong length);
 
-  static long scanHexSequence(
-      const xqpStringStore* addr,
-      long index,
-      long end,
-      long& counter);
-
-  static long find_any(const xqpStringStore* str, const std::string& patterns);
+  static long scanHexSequence(const char* addr, long idx, long end, long& counter);
 
 protected:
   enum States 
@@ -78,32 +68,32 @@ protected:
   };
 
   // keep track whether particular components of a uri are defined or undefined
-  mutable uint32_t           theState;
+  mutable uint32_t theState;
 
   // the uri text is composed out of the components below it's mutable because
   // get_uri_text is const
-  mutable xqpStringStore_t  theURIText;      // encoded
-  mutable xqpStringStore_t  theASCIIURIText; // decoded
-  mutable xqpStringStore_t  thePathNotation; 
+  mutable zstring  theURIText;      // encoded
+  mutable zstring  theASCIIURIText; // decoded
+  mutable zstring  thePathNotation; 
 
   // The uri components (UserInfo, RegBasedAuthority, Path, QueryString, and
   // Fragment are always encoded)
-  xqpStringStore_t          theScheme;
-  xqpStringStore_t          theHost;
-  uint32_t                  thePort;
-  xqpStringStore_t          theUserInfo;
-  xqpStringStore_t          theRegBasedAuthority;
-  xqpStringStore_t          thePath;
-  xqpStringStore_t          theQueryString;
-  xqpStringStore_t          theFragment;
+  zstring          theScheme;
+  zstring          theHost;
+  uint32_t         thePort;
+  zstring          theUserInfo;
+  zstring          theRegBasedAuthority;
+  zstring          thePath;
+  zstring          theQueryString;
+  zstring          theFragment;
 
   // true if the constructed URI is valid
-  bool                      valid;
+  bool             valid;
 
 public:
-  URI(const xqpStringStore* uri, bool validate = true);
+  URI(const zstring& uri, bool validate = true);
 
-  URI(const URI& base_uri, const xqpStringStore* uri, bool validate = true);
+  URI(const URI& base_uri, const zstring& uri, bool validate = true);
 
   URI (const URI& full_uri, const URI& base_uri);
 
@@ -116,56 +106,56 @@ public:
   bool is_absolute() const;
 
   // get the full uri as text
-  const xqpStringStore_t& toString() const;
+  const zstring& toString() const;
 
-  const xqpStringStore_t& toASCIIString() const;
+  const zstring& toASCIIString() const;
 
-  const xqpStringStore_t& toPathNotation() const;
+  const zstring& toPathNotation() const;
 
   // getters and setters for each component
   bool is_valid() const;
 
-  const xqpStringStore_t& get_scheme() const;
+  const zstring& get_scheme() const;
 
-  void set_scheme(const xqpStringStore* new_scheme);
+  void set_scheme(const zstring& new_scheme);
 
-  const xqpStringStore_t& get_host() const;
+  const zstring& get_host() const;
 
-  void set_host(const xqpStringStore* new_host);
+  void set_host(const zstring& new_host);
 
   int get_port() const;
 
   void set_port(int new_port);
 
-  void get_user_info(xqpStringStore_t& result) const;
+  void get_user_info(zstring& result) const;
 
-  const xqpStringStore_t& get_encoded_user_info() const;
+  const zstring& get_encoded_user_info() const;
 
-  void set_user_info(const xqpStringStore* new_user_info);
+  void set_user_info(const zstring& new_user_info);
 
-  void get_reg_based_authority(xqpStringStore_t& result) const;
+  void get_reg_based_authority(zstring& result) const;
 
-  const xqpStringStore_t& get_encoded_reg_based_authority() const;
+  const zstring& get_encoded_reg_based_authority() const;
 
-  void set_reg_based_authority(const xqpStringStore* new_authority);
+  void set_reg_based_authority(const zstring& new_authority);
 
-  void get_path(xqpStringStore_t& result) const;
+  void get_path(zstring& result) const;
 
-  const xqpStringStore_t& get_encoded_path() const;
+  const zstring& get_encoded_path() const;
 
-  void set_path(const xqpStringStore* new_path);
+  void set_path(const zstring& new_path);
 
-  void get_query(xqpStringStore_t& result) const;
+  void get_query(zstring& result) const;
 
-  const xqpStringStore_t& get_encoded_query() const;
+  const zstring& get_encoded_query() const;
 
-  void set_query(const xqpStringStore* new_query_string);
+  void set_query(const zstring& new_query_string);
 
-  void get_fragment(xqpStringStore_t& result) const;
+  void get_fragment(zstring& result) const;
 
-  const xqpStringStore_t& get_encoded_fragment() const;
+  const zstring& get_encoded_fragment() const;
 
-  void set_fragment(const xqpStringStore* new_fragment);
+  void set_fragment(const zstring& new_fragment);
 
 protected:
   void build_full_text() const;
@@ -176,20 +166,20 @@ protected:
 
   void initialize(const URI& toCopy);
 
-  void initialize(const xqpStringStore* uri, bool have_base = false);
+  void initialize(const zstring& uri, bool have_base = false);
 
-  void initializeScheme(const xqpStringStore* uri);
+  void initializeScheme(const zstring& uri);
 
-  void initializeAuthority(const xqpStringStore* uri);
+  void initializeAuthority(const zstring& uri);
 
-  void initializePath(const xqpStringStore* uri);
+  void initializePath(const zstring& uri);
 
-  bool is_conformant_scheme_name(const xqpStringStore* scheme);
+  bool is_conformant_scheme_name(const zstring& scheme);
 
   bool is_valid_server_based_authority(
-    const xqpStringStore* host,
+    const zstring& host,
     const int port,
-    const xqpStringStore* user_info,
+    const zstring& user_info,
     bool user_info_found);
 
   void resolve(const URI* base_uri);
@@ -210,13 +200,13 @@ inline bool URI::is_valid() const
 }
 
 
-inline const xqpStringStore_t& URI::get_scheme() const 
+inline const zstring& URI::get_scheme() const 
 {
   return theScheme;
 }
 
 
-inline const xqpStringStore_t& URI::get_host() const
+inline const zstring& URI::get_host() const
 {
   return theHost;
 }
@@ -228,61 +218,31 @@ inline int URI::get_port() const
 }
 
 
-inline void URI::get_user_info(xqpStringStore_t& result) const
-{
-  theUserInfo->decodeFromUri(result);
-}
-
-
-inline const xqpStringStore_t& URI::get_encoded_user_info() const
+inline const zstring& URI::get_encoded_user_info() const
 {
   return theUserInfo;
 }
 
 
-inline void URI::get_reg_based_authority(xqpStringStore_t& result) const
-{
-  theRegBasedAuthority->decodeFromUri(result);
-}
-
-
-inline const xqpStringStore_t& URI::get_encoded_reg_based_authority() const
+inline const zstring& URI::get_encoded_reg_based_authority() const
 {
   return theRegBasedAuthority;
 }
 
 
-inline void URI::get_path(xqpStringStore_t& result) const
-{
-  return thePath->decodeFromUri(result);
-}
-
-
-inline const xqpStringStore_t& URI::get_encoded_path() const
+inline const zstring& URI::get_encoded_path() const
 {
   return thePath;
 }
 
 
-inline void URI::get_query(xqpStringStore_t& result) const
-{
-  return theQueryString->decodeFromUri(result);
-}
-
-
-inline const xqpStringStore_t& URI::get_encoded_query() const
+inline const zstring& URI::get_encoded_query() const
 {
   return theQueryString;
 }
 
 
-inline void URI::get_fragment(xqpStringStore_t& result) const
-{
-  return theFragment->decodeFromUri(result);
-}
-
-
-inline const xqpStringStore_t& URI::get_encoded_fragment() const
+inline const zstring& URI::get_encoded_fragment() const
 {
   return theFragment;
 }

@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef TRANSCODER_H
-#define TRANSCODER_H
+#ifndef ZORBA_TRANSCODER_H
+#define ZORBA_TRANSCODER_H
 
 #include <ostream>
 
 #include <zorba/config.h>
 #include "zorbatypes/rchandle.h"
+#include "zorbatypes/zstring.h"
+
 
 struct UConverter;
 typedef struct UConverter UConverter;
@@ -35,34 +37,57 @@ namespace zorba
 
 class ZORBA_DLL_PUBLIC transcoder : public SimpleRCObject
 {
+protected:
+  std::ostream  & os;
+
+  bool            utf16;
+
+#ifndef ZORBA_NO_UNICODE
+  UConverter    * conv;
+  char            buffer[10];
+  int             chars_in_buffer;
+  int             chars_expected;
+#endif
+
 public:
-  transcoder(std::ostream& output_stream);
+  transcoder(std::ostream& output_stream, bool in_utf16);
 
-  virtual ~transcoder() { } ;
+  ~transcoder();
 
-  /**
-   * Output a byte to the stream without transcoding it.
-   *
-   * @param ch the byte to be output
-   */
-  void verbatim(const char ch);
-
-  virtual transcoder& operator<<(const char* str)
+  transcoder& write(const char* str, std::streamsize n)
   {
-    os << str;
-    return *this;
+    if (utf16)
+    {
+      return write_utf16(str, n);
+    }
+    else
+    {
+      os.write(str, n);
+      return *this;
+    }
   }
 
-  virtual transcoder& operator<<(const char ch)
+  transcoder& operator<<(const zstring& str)
   {
-    os << ch;
-    return *this;
+    return write(str.c_str(), str.size());
   }
 
-  virtual transcoder& flush()
+  transcoder& operator<<(const char* str)
   {
-    os.flush();
-    return *this;
+    return write(str, strlen(str));
+  }
+
+  transcoder& operator<<(const char ch)
+  {
+    if (utf16)
+    {
+      return write_utf16_char(ch);
+    }
+    else
+    {
+      os << ch;
+      return *this;
+    }
   }
 
   // Support for manipulators (e.g. tr << flush)
@@ -71,40 +96,36 @@ public:
     return pf(*this);
   }
 
-protected:
-  std::ostream& os;
-};
-
-#ifndef ZORBA_NO_UNICODE
-class ZORBA_DLL_PUBLIC utf8_to_utf16_transcoder : public transcoder
-{
-public:
-  utf8_to_utf16_transcoder(std::ostream& output_stream);
-
-  virtual ~utf8_to_utf16_transcoder();
-
-  virtual utf8_to_utf16_transcoder& operator<<(const char* str);
-  virtual utf8_to_utf16_transcoder& operator<<(const char ch);
-  utf8_to_utf16_transcoder& operator<<(utf8_to_utf16_transcoder& (*pf)(utf8_to_utf16_transcoder&))
+  /**
+   * Output a byte to the stream without transcoding it.
+   *
+   * @param ch the byte to be output
+   */
+  void verbatim(const char ch)
   {
-    return pf(*this);
+    os << ch;
   }
 
-protected:
-  UConverter *conv;
-  char buffer[10];
-  int chars_in_buffer;
-  int chars_expected;
+  transcoder& flush()
+  {
+    os.flush();
+    return *this;
+  }
+
+private:
+  transcoder& write_utf16(const char* str, ulong n);
+
+  transcoder& write_utf16_char(const char ch);
 };
-
-// Flush manipulator (e.g. tr << flush)
-template<class T> T& flush(T& tr)
-{
-  return tr.flush();
-}
-
-#endif//#ifndef ZORBA_NO_UNICODE
 
 
 } /* namespace zorba */
+
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
+ /* vim:set et sw=2 ts=2: */

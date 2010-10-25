@@ -24,10 +24,6 @@
 namespace zorba 
 {
 
-namespace store 
-{
-  typedef std::vector<std::pair<xqpStringStore_t, xqpStringStore_t> > NsBindings;
-}
 
 namespace simplestore 
 {
@@ -68,9 +64,9 @@ public:
   virtual DocumentNode* createDocumentNode();
 
   virtual DocumentNode* createDocumentNode(
-        XmlTree*          tree,
-        const xqpStringStore_t& baseUri,
-        const xqpStringStore_t& docUri);
+        XmlTree* tree,
+        zstring& baseUri,
+        zstring& docUri);
 
   virtual ElementNode* createElementNode(
         store::Item_t&  nodeName,
@@ -87,54 +83,53 @@ public:
         bool                        haveEmptyValue,
         bool                        isInSubstGroup,
         const store::NsBindings*    localBindings,
-        xqpStringStore_t&           baseUri);
+        zstring&                    baseUri);
 
   virtual AttributeNode* createAttributeNode(
         store::Item_t&  qname);
 
   virtual AttributeNode* createAttributeNode(
-        XmlTree*                    tree,
-        ElementNode*                parent,
-        long                        pos,
-        store::Item_t&              attrName,
-        store::Item_t&              typeName,
-        store::Item_t&              typedValue,
-        bool                        isListValue,
-        bool                        hidden);
+        XmlTree*         tree,
+        ElementNode*     parent,
+        long             pos,
+        store::Item_t&   attrName,
+        store::Item_t&   typeName,
+        store::Item_t&   typedValue,
+        bool             isListValue,
+        bool             hidden);
+
+  virtual TextNode* createTextNode(zstring& content);
 
   virtual TextNode* createTextNode(
-        xqpStringStore_t& content);
+        XmlTree*       tree,
+        InternalNode*  parent,
+        long           pos,
+        zstring&       content);
 
   virtual TextNode* createTextNode(
         InternalNode*     parent,
         store::Item_t&    content,
         bool              isListValue);
 
-  virtual TextNode* createTextNode(
-        XmlTree*          tree,
-        InternalNode*     parent,
-        long              pos,
-        xqpStringStore_t& content);
+  virtual PiNode* createPiNode(
+        zstring& target,
+        zstring& content);
 
   virtual PiNode* createPiNode(
-        xqpStringStore_t& target,
-        xqpStringStore_t& content);
-
-  virtual PiNode* createPiNode(
-        XmlTree*          tree,
-        InternalNode*     parent,
-        long              pos,
-        xqpStringStore_t& target,
-        xqpStringStore_t& content);
+        XmlTree*      tree,
+        InternalNode* parent,
+        long          pos,
+        zstring&      target,
+        zstring&      content);
 
   virtual CommentNode* createCommentNode(
-        xqpStringStore_t& content);
+        zstring& content);
 
   virtual CommentNode* createCommentNode(
-        XmlTree*          tree,
-        InternalNode*     parent,
-        long              pos,
-        xqpStringStore_t& content);
+        XmlTree*      tree,
+        InternalNode* parent,
+        long          pos,
+        zstring&      content);
 }; /* class NodeFactory */
 
 

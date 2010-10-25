@@ -303,7 +303,9 @@ return
                  local:includes($file_doc),
                  'namespace zorba{',
                  local:process-file($file_doc, $name, $mappings_doc),
-                 '}'),
+                 '}',
+                 $gen:newline
+                ),
                 string-join(($gen:newline, $gen:newline),'
 ')
     );

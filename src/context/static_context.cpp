@@ -22,7 +22,7 @@
 
 #include "zorbaserialization/serialization_engine.h"
 
-#include "zorbautils/strutil.h"
+#include "util/string_util.h"
 #include "zorbautils/hashmap_strh.h"
 #define ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
 #include "zorbautils/hashmap_itemp.h"
@@ -105,6 +105,13 @@ void BaseUriInfo::serialize(::zorba::serialization::Archiver& ar)
   ar & theEncapsulatingEntityUri;
 
   ar & theBaseUri;
+
+  ar & theHavePrologBaseUri;
+  ar & theHaveApplicationBaseUri;
+  ar & theHaveEntityRetrievalUri;
+  ar & theHaveEncapsulatingEntityUri;
+
+  ar & theHaveBaseUri;
 }
 
 
@@ -170,7 +177,7 @@ void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
   {
     // serialize out: the uri of the module that is used in this plan
 
-    xqpStringStore_t lURI = Unmarshaller::getInternalString(module->getURI());
+    zstring lURI = Unmarshaller::getInternalString(module->getURI());
 	  ar.set_is_temp_field(true);
     ar.dont_allow_delay();
     ar & lURI;
@@ -183,9 +190,9 @@ void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
     // serialize in: load the serialized uri of the module and
     //               get the externalmodule from the user's
     //               registered serialization callback
-    xqpStringStore_t lURIStore = 0;
+    zstring lURI;
 	  ar.set_is_temp_field(true);
-    ar & lURIStore;
+    ar & lURI;
 	  ar.set_is_temp_field(false);
     ar & dyn_loaded_module;
     ar & sctx;
@@ -195,14 +202,14 @@ void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
       StandardModuleURIResolver* moduleResolver = GENV.getModuleURIResolver();
 
       ZORBA_ASSERT(sctx);
-      module = moduleResolver->getExternalModule(lURIStore, *sctx);
+      module = moduleResolver->getExternalModule(lURI, *sctx);
 
       // no way to get the module
       if (!module)
       {
         ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
                              "Couldn't load pre-compiled query because"
-                             << " the external module " << lURIStore
+                             << " the external module " << lURI
                              << " is not available to be loaded from a"
                              << " dynamic library.");
       }
@@ -215,18 +222,18 @@ void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
       {
         ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
                              "Couldn't load pre-compiled query because"
-                             << " the external module " << lURIStore
+                             << " the external module " << lURI
                              << " is required but no SerializationCallback is"
                              << " given for retrieving that module.");
       }
 
       // the life-cycle of the module is managed by the user
-      module = lCallback->getExternalModule(lURIStore.getp());
+      module = lCallback->getExternalModule(lURI.str());
       if (!module)
       {
         ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
                              "Couldn't load pre-compiled query because"
-                             << " the external module " << lURIStore
+                             << " the external module " << lURI
                              << " is not available using the registered"
                              << " SerializationCallback");
       }
@@ -247,6 +254,8 @@ static_context::static_context()
   theColResolver(0),
   theExternalModulesMap(NULL),
   theNamespaceBindings(NULL),
+  theHaveDefaultElementNamespace(false),
+  theHaveDefaultFunctionNamespace(false),
   theVariablesMap(NULL),
   theFunctionMap(NULL),
   theFunctionArityMap(NULL),
@@ -291,6 +300,8 @@ static_context::static_context(static_context* parent)
   theColResolver(0),
   theExternalModulesMap(NULL),
   theNamespaceBindings(NULL),
+  theHaveDefaultElementNamespace(false),
+  theHaveDefaultFunctionNamespace(false),
   theVariablesMap(NULL),
   theFunctionMap(NULL),
   theFunctionArityMap(NULL),
@@ -337,6 +348,8 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   theColResolver(0),
   theExternalModulesMap(NULL),
   theNamespaceBindings(NULL),
+  theHaveDefaultElementNamespace(false),
+  theHaveDefaultFunctionNamespace(false),
   theVariablesMap(NULL),
   theFunctionMap(NULL),
   theFunctionArityMap(NULL),
@@ -654,7 +667,9 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
 
   ar & theNamespaceBindings;
   ar & theDefaultElementNamespace;
+  ar & theHaveDefaultElementNamespace;
   ar & theDefaultFunctionNamespace;
+  ar & theHaveDefaultFunctionNamespace;
 
   ar & theCtxItemType;
 
@@ -785,37 +800,39 @@ std::ostream* static_context::get_trace_stream() const
 /***************************************************************************//**
 
 ********************************************************************************/
-xqpStringStore_t static_context::get_implementation_baseuri() const
+zstring static_context::get_implementation_baseuri() const
 {
-  return reinterpret_cast<root_static_context*>(&GENV_ROOT_STATIC_CONTEXT)->theImplementationBaseUri;
+  return reinterpret_cast<root_static_context*>(&GENV_ROOT_STATIC_CONTEXT)->
+         theImplementationBaseUri;
 }
 
 
 /***************************************************************************//**
 
 ********************************************************************************/
-xqpStringStore_t static_context::get_encapsulating_entity_uri() const
+bool static_context::get_encapsulating_entity_uri(zstring& res) const
 {
   const static_context* sctx = this;
   while (sctx != NULL)
   {
     if (sctx->theBaseUriInfo != NULL &&
-        sctx->theBaseUriInfo->theEncapsulatingEntityUri != NULL)
+        sctx->theBaseUriInfo->theHaveEncapsulatingEntityUri)
     {
-      return sctx->theBaseUriInfo->theEncapsulatingEntityUri;
+      res = sctx->theBaseUriInfo->theEncapsulatingEntityUri;
+      return true;
     }
 
     sctx = sctx->theParent;
   }
 
-  return NULL;
+  return false;
 }
 
 
 /***************************************************************************//**
 
 ********************************************************************************/
-void static_context::set_encapsulating_entity_uri(const xqpStringStore_t& uri)
+void static_context::set_encapsulating_entity_uri(const zstring& uri)
 {
   if (theBaseUriInfo == NULL)
   {
@@ -823,6 +840,7 @@ void static_context::set_encapsulating_entity_uri(const xqpStringStore_t& uri)
   }
 
   theBaseUriInfo->theEncapsulatingEntityUri = uri;
+  theBaseUriInfo->theHaveEncapsulatingEntityUri = true;
 
   compute_base_uri();
 }
@@ -831,28 +849,29 @@ void static_context::set_encapsulating_entity_uri(const xqpStringStore_t& uri)
 /***************************************************************************//**
 
 ********************************************************************************/
-xqpStringStore_t static_context::get_entity_retrieval_uri() const
+bool static_context::get_entity_retrieval_uri(zstring& res) const
 {
   const static_context* sctx = this;
   while (sctx != NULL)
   {
     if (sctx->theBaseUriInfo != NULL &&
-        sctx->theBaseUriInfo->theEntityRetrievalUri != NULL)
+        sctx->theBaseUriInfo->theHaveEntityRetrievalUri)
     {
-      return sctx->theBaseUriInfo->theEntityRetrievalUri;
+      res = sctx->theBaseUriInfo->theEntityRetrievalUri;
+      return true;
     }
 
     sctx = sctx->theParent;
   }
 
-  return NULL;
+  return false;
 }
 
 
 /***************************************************************************//**
 
 ********************************************************************************/
-void static_context::set_entity_retrieval_uri(const xqpStringStore_t& uri)
+void static_context::set_entity_retrieval_uri(const zstring& uri)
 {
   if (theBaseUriInfo == NULL)
   {
@@ -860,6 +879,7 @@ void static_context::set_entity_retrieval_uri(const xqpStringStore_t& uri)
   }
 
   theBaseUriInfo->theEntityRetrievalUri = uri;
+  theBaseUriInfo->theHaveEntityRetrievalUri = true;
 
   compute_base_uri();
 }
@@ -868,13 +888,13 @@ void static_context::set_entity_retrieval_uri(const xqpStringStore_t& uri)
 /***************************************************************************//**
 
 ********************************************************************************/
-xqpStringStore_t static_context::get_base_uri() const
+zstring static_context::get_base_uri() const
 {
   const static_context* sctx = this;
   while (sctx != NULL)
   {
     if (sctx->theBaseUriInfo != NULL &&
-        sctx->theBaseUriInfo->theBaseUri != NULL)
+        sctx->theBaseUriInfo->theHaveBaseUri)
     {
       return sctx->theBaseUriInfo->theBaseUri;
     }
@@ -883,14 +903,13 @@ xqpStringStore_t static_context::get_base_uri() const
   }
 
   ZORBA_ASSERT(false);
-  return NULL;
 }
 
 
 /***************************************************************************//**
 
 ********************************************************************************/
-void static_context::set_base_uri(const xqpStringStore_t& uri, bool from_prolog)
+void static_context::set_base_uri(const zstring& uri, bool from_prolog)
 {
   if (theBaseUriInfo == NULL)
   {
@@ -899,17 +918,19 @@ void static_context::set_base_uri(const xqpStringStore_t& uri, bool from_prolog)
 
   if (from_prolog)
   {
-    if (theBaseUriInfo->thePrologBaseUri != NULL)
+    if (theBaseUriInfo->theHavePrologBaseUri)
     {
       ZORBA_ERROR(XQST0032);
     }
 
     theBaseUriInfo->thePrologBaseUri = uri;
+    theBaseUriInfo->theHavePrologBaseUri = true;
   }
   else
   {
     // overwite existing value of application baseuri, if any
     theBaseUriInfo->theApplicationBaseUri = uri;
+    theBaseUriInfo->theHaveApplicationBaseUri = true;
   }
 
   compute_base_uri();
@@ -935,34 +956,39 @@ void static_context::compute_base_uri()
     theBaseUriInfo = new BaseUriInfo;
   }
 
-  xqpStringStore_t userBaseUri;
-  xqpStringStore_t encapsulatingUri;
-  xqpStringStore_t entityUri;
+  bool found;
+
+  bool foundUserBaseUri = false;
+  zstring userBaseUri;
+  zstring encapsulatingUri;
+  zstring entityUri;
 
   const static_context* sctx = this;
 
   while (sctx != NULL)
   {
     if (sctx->theBaseUriInfo != NULL &&
-        sctx->theBaseUriInfo->thePrologBaseUri != NULL)
+        sctx->theBaseUriInfo->theHavePrologBaseUri)
     {
       userBaseUri = sctx->theBaseUriInfo->thePrologBaseUri;
+      foundUserBaseUri = true;
       break;
     }
 
     sctx = sctx->theParent;
   }
 
-  if (userBaseUri == NULL)
+  if (!foundUserBaseUri)
   {
     sctx = this;
 
     while (sctx != NULL)
     {
       if (sctx->theBaseUriInfo != NULL &&
-          sctx->theBaseUriInfo->theApplicationBaseUri != NULL)
+          sctx->theBaseUriInfo->theHaveApplicationBaseUri)
       {
         userBaseUri = sctx->theBaseUriInfo->theApplicationBaseUri;
+        foundUserBaseUri = true;
         break;
       }
 
@@ -970,7 +996,7 @@ void static_context::compute_base_uri()
     }
   }
 
-  if (userBaseUri != NULL)
+  if (foundUserBaseUri)
   {
     try
     {
@@ -978,6 +1004,7 @@ void static_context::compute_base_uri()
       if (lCheckValid.is_absolute())
       {
         theBaseUriInfo->theBaseUri = lCheckValid.toString();
+        theBaseUriInfo->theHaveBaseUri = true;
         return; // valid (absolute) uri
       }
     }
@@ -987,45 +1014,51 @@ void static_context::compute_base_uri()
     }
 
     /// is relative, needs to be resolved
-    encapsulatingUri = get_encapsulating_entity_uri();
-    if (encapsulatingUri != NULL)
+    found = get_encapsulating_entity_uri(encapsulatingUri);
+    if (found)
     {
       URI base(encapsulatingUri);
       URI resolvedURI(base, userBaseUri);
       theBaseUriInfo->theBaseUri = resolvedURI.toString();
+      theBaseUriInfo->theHaveBaseUri = true;
       return;
     }
 
-    entityUri = get_entity_retrieval_uri();
-    if (entityUri != NULL)
+    found = get_entity_retrieval_uri(entityUri);
+    if (found)
     {
       URI base(entityUri);
       URI resolvedURI(base, userBaseUri);
       theBaseUriInfo->theBaseUri = resolvedURI.toString();
+      theBaseUriInfo->theHaveBaseUri = true;
       return;
     }
 
     URI base(get_implementation_baseuri());
     URI resolvedURI(base, userBaseUri);
     theBaseUriInfo->theBaseUri = resolvedURI.toString();
+    theBaseUriInfo->theHaveBaseUri = true;
     return;
   }
 
-  encapsulatingUri = get_encapsulating_entity_uri();
-  if (encapsulatingUri != NULL)
+  found = get_encapsulating_entity_uri(encapsulatingUri);
+  if (found)
   {
     theBaseUriInfo->theBaseUri = encapsulatingUri;
+    theBaseUriInfo->theHaveBaseUri = true;
     return;
   }
 
-  entityUri = get_entity_retrieval_uri();
-  if (entityUri != NULL)
+  found = get_entity_retrieval_uri(entityUri);
+  if (found)
   {
     theBaseUriInfo->theBaseUri = entityUri;
+    theBaseUriInfo->theHaveBaseUri = true;
     return;
   }
 
   theBaseUriInfo->theBaseUri = get_implementation_baseuri();
+  theBaseUriInfo->theHaveBaseUri = true;
   return;
 }
 
@@ -1033,8 +1066,8 @@ void static_context::compute_base_uri()
 /***************************************************************************//**
 
 ********************************************************************************/
-xqpStringStore_t static_context::resolve_relative_uri(
-    const xqpStringStore_t& uri,
+zstring static_context::resolve_relative_uri(
+    const zstring& uri,
     bool validate)
 {
   URI base(get_base_uri());
@@ -1304,9 +1337,9 @@ TypeManager* static_context::get_local_typemanager() const
 /***************************************************************************//**
   Get the default namespace for element and type qnames.
 ********************************************************************************/
-const xqpStringStore_t& static_context::default_elem_type_ns() const
+const zstring& static_context::default_elem_type_ns() const
 {
-  if (theDefaultElementNamespace != NULL || theParent == NULL)
+  if (theHaveDefaultElementNamespace || theParent == NULL)
   {
     return theDefaultElementNamespace;
   }
@@ -1321,14 +1354,13 @@ const xqpStringStore_t& static_context::default_elem_type_ns() const
   Set the default namespace for element and type qnames to the given namespace.
 ********************************************************************************/
 void static_context::set_default_elem_type_ns(
-    const xqpStringStore_t& ns,
+    const zstring& ns,
     const QueryLoc& loc)
 {
-  assert(ns != NULL);
-
-  if (theDefaultElementNamespace == NULL)
+  if (!theHaveDefaultElementNamespace)
   {
     theDefaultElementNamespace = ns;
+    theHaveDefaultElementNamespace = true;
   }
   else
   {
@@ -1340,9 +1372,9 @@ void static_context::set_default_elem_type_ns(
 /***************************************************************************//**
   Get the default namespace for function qnames.
 ********************************************************************************/
-const xqpStringStore_t& static_context::default_function_ns() const
+const zstring& static_context::default_function_ns() const
 {
-  if (theDefaultFunctionNamespace != NULL || theParent == NULL)
+  if (theHaveDefaultFunctionNamespace || theParent == NULL)
   {
     return theDefaultFunctionNamespace;
   }
@@ -1357,18 +1389,17 @@ const xqpStringStore_t& static_context::default_function_ns() const
  Set the default namespace for function qnames to the given namespace.
 ********************************************************************************/
 void static_context::set_default_function_ns(
-   const xqpStringStore_t& ns,
+   const zstring& ns,
    const QueryLoc& loc)
 {
-  assert(ns != NULL);
-
-  if (theDefaultFunctionNamespace == NULL)
+  if (!theHaveDefaultFunctionNamespace)
   {
     theDefaultFunctionNamespace = ns;
+    theHaveDefaultFunctionNamespace = true;
   }
   else
   {
-      ZORBA_ERROR_LOC(XQST0066, loc);
+    ZORBA_ERROR_LOC(XQST0066, loc);
   }
 }
 
@@ -1378,14 +1409,11 @@ void static_context::set_default_function_ns(
   "this". If there is already in "this" a binding for the prefix, raise error.
 ********************************************************************************/
 void static_context::bind_ns(
-    xqpStringStore_t& prefix,
-    xqpStringStore_t& ns,
+    zstring& prefix,
+    zstring& ns,
     const QueryLoc& loc,
     const XQUERY_ERROR& err)
 {
-  assert(prefix != NULL);
-  assert(ns != NULL);
-
   if (theNamespaceBindings == NULL)
   {
     theNamespaceBindings = new NamespaceBindings(16, false);
@@ -1406,13 +1434,11 @@ void static_context::bind_ns(
   associated namespace uri.
 ********************************************************************************/
 bool static_context::lookup_ns(
-    xqpStringStore_t& ns,
-    const xqpStringStore_t& prefix,
+    zstring& ns,
+    const zstring& prefix,
     const QueryLoc& loc,
     const XQUERY_ERROR& err) const
 {
-  assert(prefix != NULL);
-
   if (theNamespaceBindings == NULL || !theNamespaceBindings->get(prefix, ns))
   {
     if (theParent != NULL)
@@ -1428,7 +1454,7 @@ bool static_context::lookup_ns(
       return false;
     }
   }
-  else if (!prefix->empty() && ns->empty())
+  else if (!prefix.empty() && ns.empty())
   {
     if (err != MAX_ZORBA_ERROR_CODE)
     {
@@ -1450,29 +1476,18 @@ bool static_context::lookup_ns(
 ********************************************************************************/
 void static_context::expand_qname(
     store::Item_t& qname,
-    const xqpStringStore_t& default_ns,
-    const xqpStringStore_t& prefix,
-    const xqpStringStore_t& local,
+    const zstring& default_ns,
+    const zstring& prefix,
+    const zstring& local,
     const QueryLoc& loc) const
 {
-  assert(prefix != NULL);
-  assert(local != NULL);
-
-  if (prefix->empty())
+  if (prefix.empty())
   {
-    if (default_ns == NULL)
-    {
-      xqpStringStore_t def_ns = new xqpStringStore("");
-      ITEM_FACTORY->createQName(qname, def_ns, prefix, local);
-    }
-    else
-    {
-      ITEM_FACTORY->createQName(qname, default_ns, prefix, local);
-    }
+    ITEM_FACTORY->createQName(qname, default_ns, prefix, local);
   }
   else
   {
-    xqpStringStore_t ns;
+    zstring ns;
     lookup_ns(ns, prefix, loc);
     ITEM_FACTORY->createQName(qname, ns, prefix, local);
   }
@@ -1482,8 +1497,7 @@ void static_context::expand_qname(
 /***************************************************************************//**
 
 ********************************************************************************/
-void static_context::get_namespace_bindings(
-    std::vector<std::pair<xqpStringStore_t, xqpStringStore_t> >& bindings) const
+void static_context::get_namespace_bindings(store::NsBindings& bindings) const
 {
   const static_context* sctx = this;
 
@@ -1491,19 +1505,20 @@ void static_context::get_namespace_bindings(
   {
     if (sctx->theNamespaceBindings != NULL)
     {
-      for (NamespaceBindings::iterator ite = sctx->theNamespaceBindings->begin();
-           ite != sctx->theNamespaceBindings->end();
-           ++ite)
+      NamespaceBindings::iterator ite = sctx->theNamespaceBindings->begin();
+      NamespaceBindings::iterator end = sctx->theNamespaceBindings->end();
+
+      for (; ite != end; ++ite)
       {
-        std::pair<xqpStringStore_t, xqpStringStore_t> binding = (*ite);
+        std::pair<zstring, zstring> binding = (*ite);
 
         // Ignore duplicates
-        xqpStringStore* prefix = binding.first.getp();
+        const zstring& prefix = binding.first;
         ulong numBindings = bindings.size();
         bool found = 0;
         for (unsigned int i = 0; i < numBindings; ++i)
         {
-          if (bindings[i].first->byteEqual(prefix))
+          if (bindings[i].first == prefix)
           {
             found = 1;
             break;
@@ -1575,7 +1590,7 @@ var_expr* static_context::lookup_var(
 
   if (err != MAX_ZORBA_ERROR_CODE)
   {
-    ZORBA_ERROR_LOC_PARAM(err, loc, qname->getStringValue()->c_str(), "");
+    ZORBA_ERROR_LOC_PARAM(err, loc, qname->getStringValue().c_str(), "");
   }
 
   return NULL;
@@ -1618,9 +1633,9 @@ void static_context::getVariables(std::vector<std::string>& aResult) const
         else
         {
           store::Item_t lQname = lExpr->get_type()->get_qname();
-          lType = lQname->getLocalName()->c_str();
+          lType = lQname->getLocalName().str();
           lType += ":";
-          lType += lQname->getNamespace()->c_str();
+          lType += lQname->getNamespace().str();
         }
 
         if (lExpr->is_sequential())
@@ -1630,11 +1645,11 @@ void static_context::getVariables(std::vector<std::string>& aResult) const
 
         aResult.push_back(lType);
 
-        std::string varName = lExpr->get_name()->getLocalName()->str();
-        if (! lExpr->get_name()->getNamespace()->empty())
+        std::string varName = lExpr->get_name()->getLocalName().str();
+        if (! lExpr->get_name()->getNamespace().empty())
         {
           varName += ":";
-          varName += lExpr->get_name()->getNamespace()->str();
+          varName += lExpr->get_name()->getNamespace().str();
         }
         aResult.push_back(varName);
       }
@@ -2033,7 +2048,7 @@ void static_context::bind_external_module(
     theExternalModulesMap = new ExternalModuleMap(8, false);
   }
 
-  xqpStringStore_t uri = Unmarshaller::getInternalString(aModule->getURI());
+  zstring uri = Unmarshaller::getInternalString(aModule->getURI());
   ctx_module_t modinfo;
   modinfo.module = aModule;
   modinfo.dyn_loaded_module = aDynamicallyLoaded;
@@ -2043,8 +2058,7 @@ void static_context::bind_external_module(
   {
     ZORBA_ERROR_DESC_OSS(API0019_FUNCTION_ALREADY_REGISTERED,
                          "The external module with URI "
-                         << Unmarshaller::getInternalString(aModule->getURI())->str()
-                         << " is already registered");
+                         << uri << " is already registered");
   }
 }
 
@@ -2054,8 +2068,8 @@ void static_context::bind_external_module(
   URI and local name.
 ********************************************************************************/
 StatelessExternalFunction* static_context::lookup_external_function(
-    const xqpStringStore_t& aURI,
-    const xqpStringStore_t& aLocalName)
+    const zstring& aURI,
+    const zstring& aLocalName)
 {
   // get the module for the given namespace
   bool found = false;
@@ -2097,7 +2111,7 @@ StatelessExternalFunction* static_context::lookup_external_function(
 
   // get the function from this module.
   // return 0 if not found
-  return lModule->getExternalFunction(aLocalName.getp());
+  return lModule->getExternalFunction(aLocalName.str());
 }
 
 
@@ -2554,8 +2568,7 @@ void static_context::add_collation(const std::string& uri, const QueryLoc& loc)
   if (is_known_collation(uri))
     return;
 
-  xqpStringStore_t tmp = new xqpStringStore(uri);
-  std::string resolvedURI = resolve_relative_uri(tmp)->str();
+  std::string resolvedURI = resolve_relative_uri(uri).str();
 
   XQPCollator* collator = CollationFactory::createCollator(resolvedURI);
 
@@ -2579,8 +2592,7 @@ void static_context::add_collation(const std::string& uri, const QueryLoc& loc)
 ********************************************************************************/
 bool static_context::is_known_collation(const std::string& uri)
 {
-  xqpStringStore_t tmp = new xqpStringStore(uri);
-  std::string resolvedURI = resolve_relative_uri(tmp)->str();
+  std::string resolvedURI = resolve_relative_uri(uri).str();
 
   const static_context* sctx = this;
 
@@ -2606,8 +2618,7 @@ XQPCollator* static_context::get_collator(
      const std::string& uri,
      const QueryLoc& loc)
 {
-  xqpStringStore_t tmp = new xqpStringStore(uri);
-  std::string resolvedURI = resolve_relative_uri(tmp)->str();
+  std::string resolvedURI = resolve_relative_uri(uri).str();
 
   const static_context* sctx = this;
 
@@ -2644,10 +2655,9 @@ void static_context::set_default_collation(
     ZORBA_ERROR_LOC(XQST0038, loc);
   }
 
-  xqpStringStore_t tmp = new xqpStringStore(uri);
-  xqpStringStore_t resolvedUri = resolve_relative_uri(tmp);
+  zstring resolvedUri = resolve_relative_uri(uri);
 
-  theDefaultCollation = new std::string(resolvedUri->c_str());
+  theDefaultCollation = new std::string(resolvedUri.c_str());
 }
 
 
@@ -3311,7 +3321,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
       if (!theICMap->insert(pair.first, pair.second))
       {
         ZORBA_ERROR_LOC_PARAM(XDST0041_IC_IS_ALREADY_DECLARED, loc,
-                              pair.first->getStringValue()->c_str(), "");
+                              pair.first->getStringValue().c_str(), "");
       }
     }
   }

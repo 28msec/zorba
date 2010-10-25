@@ -495,7 +495,7 @@ void ProbeHashGeneralIndexIterator::init(const store::IndexCondition_t& cond)
       theProbeKind != store::IndexCondition::POINT_GENERAL)
   {
     ZORBA_ERROR_PARAM(STR0007_INDEX_UNSUPPORTED_PROBE_CONDITION,
-                      theIndex->getName()->getStringValue()->c_str(), 
+                      theIndex->getName()->getStringValue().c_str(), 
                       cond->getKindString());
   }
 
@@ -506,7 +506,7 @@ void ProbeHashGeneralIndexIterator::init(const store::IndexCondition_t& cond)
   if (key->size() != theIndex->getNumColumns())
   {
     ZORBA_ERROR_PARAM(STR0005_INDEX_PARTIAL_KEY_PROBE,
-                      theIndex->getName()->getStringValue()->c_str(),
+                      theIndex->getName()->getStringValue().c_str(),
                       key->toString());
   }
 
@@ -547,7 +547,8 @@ void ProbeHashGeneralIndexIterator::init(const store::IndexCondition_t& cond)
       if (theIndex->theMaps[XS_STRING] != NULL)
       {
         store::Item_t castItem;
-        xqpStringStore_t tmp = keyItem->getStringValue();
+        zstring tmp;
+        keyItem->getStringValue2(tmp);
         GET_FACTORY().createString(castItem, tmp);
 
         PROBE_MAP(XS_STRING);
@@ -609,7 +610,8 @@ void ProbeHashGeneralIndexIterator::init(const store::IndexCondition_t& cond)
       if (theIndex->theMaps[XS_ANY_URI])
       {
         store::Item_t castItem;
-        xqpStringStore_t tmp = keyItem->getStringValue();
+        zstring tmp;
+        keyItem->getStringValue2(tmp);
         GET_FACTORY().createAnyURI(castItem, tmp);
 
         PROBE_MAP(XS_ANY_URI);
@@ -913,7 +915,7 @@ bool ProbeHashGeneralIndexIterator::next(store::Item_t& result)
         {
           ZORBA_ERROR_DESC_OSS(XPTY0004,
                                "During a value probe on index "
-                               << theIndex->getName()->getStringValue()->c_str()
+                               << theIndex->getName()->getStringValue()
                                << " a node was found that has more than one key values");
         }
 

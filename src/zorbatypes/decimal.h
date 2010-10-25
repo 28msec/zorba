@@ -24,7 +24,7 @@
 #else
 #include <math.h>
 #endif
-#include "zorbatypes/xqpstring.h"
+
 #include "zorbatypes/zorbatypes_decl.h"
 #include "zorbaserialization/class_serializer.h"
 
@@ -75,7 +75,7 @@ public:
 #endif
 
 private:
-  static xqpStringStore_t decimalToString(
+  static zstring decimalToString(
         MAPM,
         int precision = ZORBA_FLOAT_POINT_PRECISION);
 
@@ -207,9 +207,9 @@ public:
 
   uint32_t hash() const;
 
-  xqpStringStore_t toString() const;
+  zstring toString() const;
 
-  xqpStringStore_t toIntegerString() const;
+  zstring toIntegerString() const;
 
   bool isInteger() const
   {

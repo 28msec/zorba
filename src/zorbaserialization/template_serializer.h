@@ -23,6 +23,7 @@
 #include <sstream>
 #include <stdio.h>
 
+#include "zorbatypes/zstring.h"
 #include "zorbaserialization/class_serializer.h"
 #include "zorbaserialization/archiver.h"
 
@@ -41,6 +42,33 @@ namespace serialization
     ::zorba::serialization::report_error(code, lOStringStream.str(),    \
                  __FILE__, __LINE__);                                   \
   }while(0);
+
+template<class RepType>
+void operator&(Archiver &ar, zorba::rstring<RepType> &obj)
+{
+  if(ar.is_serializing_out())
+  {
+    ar.add_simple_field("rstring", obj.c_str(), &obj, ARCHIVE_FIELD_NORMAL);
+  }
+  else
+  {
+    char  *type;
+    std::string value;
+    int   id;
+    int   version;
+    bool  is_simple;
+    bool  is_class;
+    enum  ArchiveFieldTreat field_treat;
+    int   referencing;
+    bool  retval;
+    retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
+    if(!retval && ar.get_read_optional_field())
+      return;
+    ar.check_simple_field(retval, type, "rstring", is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
+    obj = value;
+    ar.register_reference(id, field_treat, &obj);
+  }
+}
 
 template<typename T>
 void operator&(Archiver &ar, std::list<T> &obj)

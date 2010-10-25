@@ -37,13 +37,10 @@ typedef rchandle<namespace_context> NamespaceContext_t;
 
 class namespace_context : public SimpleRCObject 
 {
-public:
-  typedef std::vector<std::pair<xqpStringStore_t, xqpStringStore_t> > bindings_t;
-
 private:
   static_context              * m_sctx;
   rchandle<namespace_context>   m_parent;
-  bindings_t                    m_bindings;
+  store::NsBindings             m_bindings;
 
 public:
   SERIALIZABLE_CLASS(namespace_context)
@@ -66,13 +63,13 @@ public:
 
   static_context* get_context() const { return m_sctx; }
   
-  void bind_ns(const xqpStringStore_t& prefix, const xqpStringStore_t& ns);
+  void bind_ns(const zstring& prefix, const zstring& ns);
 
-  bool findBinding(const xqpStringStore_t& aPrefix, xqpStringStore_t& aNamespace);
-
-  const bindings_t& getLocalBindings() const { return m_bindings; }
+  const store::NsBindings& getLocalBindings() const { return m_bindings; }
 
   void getAllBindings(store::NsBindings& bindings) const;
+
+  bool findBinding(const zstring& aPrefix, zstring& aNamespace);
 };
 
 }

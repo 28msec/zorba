@@ -137,7 +137,7 @@ public:
    * @return Item the atomization value of the Item.
    * @throw ZorbaException if an error occured.
    */
-  Item
+  Iterator_t
   getAtomizationValue() const;
 
   /** \brief Get the string value of the Item.

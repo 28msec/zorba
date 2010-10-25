@@ -18,7 +18,6 @@
 #include "zorbaerrors/Assert.h"
 #include "zorbaerrors/error_manager.h"
 #include "zorbatypes/zorbatypes_decl.h"
-#include "zorbatypes/xqpstring.h"
 
 #include "system/globalenv.h"
 

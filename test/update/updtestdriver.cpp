@@ -36,7 +36,7 @@
 #include <zorba/util/file.h>
 #include <zorba/static_context_consts.h>
 
-#include <zorbautils/strutil.h>
+#include "util/ascii_util.h"
 
 #include <zorba/store_manager.h>
 
@@ -85,7 +85,7 @@ Zorba_CompilerHints getCompilerHints()
 void
 set_var (bool inlineFile, std::string name, std::string val, zorba::DynamicContext* dctx)
 {
-  zorba::str_replace_all(val, "$UPDATE_SRC_DIR", zorba::UPDATE_SRC_DIR);
+  zorba::ascii::replace_all(val, "$UPDATE_SRC_DIR", zorba::UPDATE_SRC_DIR);
 
   zorba::ItemFactory* lFactory = zorba::Zorba::getInstance(NULL)->getItemFactory();
 

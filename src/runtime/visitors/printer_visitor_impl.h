@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #define DECLARE_VISITOR(class)          \
   void beginVisit ( const class& a );   \
   void endVisit   ( const class& );
@@ -109,13 +110,13 @@
 
     void beginVisitFlworLetVariable(
         bool materialize,
-        const xqpStringStore_t varName,
+        const zstring& varName,
         const std::vector<PlanIter_t>& varRefs);
 
     void endVisitFlworLetVariable();
 
     void beginVisitFlworForVariable(
-        const xqpStringStore_t varName,
+        const zstring& varName,
         const std::vector<PlanIter_t>& varRefs,
         const std::vector<PlanIter_t>& posRefs);
 
@@ -266,11 +267,6 @@
   DECLARE_VISITOR (ZorbaTDocIterator);
 #endif  // ZORBA_WITH_TIDY
 #ifdef ZORBA_WITH_REST
-  DECLARE_VISITOR (ZorbaRestGetIterator);
-  DECLARE_VISITOR (ZorbaRestPostIterator);
-  DECLARE_VISITOR (ZorbaRestPutIterator);
-  DECLARE_VISITOR (ZorbaRestDeleteIterator);
-  DECLARE_VISITOR (ZorbaRestHeadIterator);
 #endif
 
 #ifdef ZORBA_WITH_FOP

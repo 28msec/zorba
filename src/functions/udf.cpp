@@ -248,7 +248,7 @@ PlanIter_t user_function::getPlan(CompilerCB* ccb)
     //lName may be null of inlined functions
     thePlan = zorba::codegen((lName == 0 ?
                               "inline function" :
-                              lName->getStringValue()->c_str()),
+                              lName->getStringValue().c_str()),
                              &*theBodyExpr,
                              ccb,
                              &param_map);

@@ -48,7 +48,7 @@ declare function local:create-class() as xs:string
   $gen:indent,'if (a->getDocTestKind() != match_no_test)',$gen:newline,
   gen:indent(2),'thePrinter.addAttribute("doc_test_kind", toString(a->getDocTestKind()));',$gen:newline,$gen:newline,
   $gen:indent,'if (a->getQName() != 0)',$gen:newline,
-  gen:indent(2),'thePrinter.addAttribute("qname", a->getQName()->show());',$gen:newline,
+  gen:indent(2),'thePrinter.addAttribute("qname", a->getQName()->show().str());',$gen:newline,
   $gen:indent,'else',$gen:newline,
   gen:indent(2),'thePrinter.addAttribute("qname","*");',$gen:newline,$gen:newline,
   $gen:indent,'if (a->getType() != 0)',$gen:newline,
@@ -80,7 +80,7 @@ declare function local:create-includes($files) as xs:string
     $gen:newline, $gen:newline,
     '#include "system/properties.h"',
     $gen:newline, $gen:newline,
-    '#include "zorbautils/strutil.h"',
+    '#include "util/string_util.h"',
     $gen:newline, $gen:newline,
     string-join(
       for $i in tokenize($files, ',') 

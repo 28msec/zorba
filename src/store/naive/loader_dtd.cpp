@@ -127,8 +127,8 @@ void DtdXmlLoader::setRoot(XmlNode* root)
 ********************************************************************************/
 void DtdXmlLoader::abortload()
 {
-  theBaseUri = NULL;
-  theDocUri = NULL;
+  theBaseUri.~zstring();
+  theDocUri.~zstring();
 
   if (theTree != NULL)
   {
@@ -182,8 +182,8 @@ void DtdXmlLoader::abortload()
 ********************************************************************************/
 void DtdXmlLoader::reset()
 {
-  theBaseUri = NULL;
-  theDocUri = NULL;
+  theBaseUri.~zstring();
+  theDocUri.~zstring();
 
   theTree = NULL;
   theOrdPath.init();
@@ -240,8 +240,8 @@ long DtdXmlLoader::readPacket(std::istream& stream, char* buf, long size)
 
 ********************************************************************************/
 store::Item_t DtdXmlLoader::loadXml(
-    const xqpStringStore_t& baseUri,
-    const xqpStringStore_t& docUri,
+    const zstring& baseUri,
+    const zstring& docUri,
     std::istream& stream)
 {
   //  xmlParserCtxtPtr ctxt = NULL;
@@ -249,19 +249,19 @@ store::Item_t DtdXmlLoader::loadXml(
 
   xmlSubstituteEntitiesDefault(1);
 
-  if (docUri == NULL)
+  if (docUri.empty())
   {
     std::ostringstream uristream;
     uristream << "zorba://internalDocumentURI-" << theTree->getId();
 
-    theDocUri = new xqpStringStore(uristream.str().c_str());
-    thePathStack.push(PathStepInfo(NULL, NULL));
+    theDocUri = uristream.str();
   }
   else
   {
     theDocUri = docUri;
-    thePathStack.push(PathStepInfo(NULL, baseUri.getp()));
   }
+
+  thePathStack.push(PathStepInfo(NULL, baseUri));
 
   theTree->setDocUri(theDocUri);
   theTree->setBaseUri(baseUri);
@@ -301,7 +301,7 @@ store::Item_t DtdXmlLoader::loadXml(
                                    this,
                                    theBuffer,
                                    numChars,
-                                   docUri.getp() ? docUri->c_str() : NULL);
+                                   docUri.c_str());
 
     if (ctxt == NULL)
     {
@@ -377,11 +377,11 @@ store::Item_t DtdXmlLoader::loadXml(
   }
   else if (!ok )
   {
-    if (theDocUri != NULL)
+    if (!theDocUri.empty())
     {
       ZORBA_ERROR_PARAM_CONTINUE_OSS(theErrorManager,
                                      STR0021_LOADER_PARSING_ERROR,
-                                     "The document with URI " << *theDocUri
+                                     "The document with URI " << theDocUri
                                      <<" is not well formed", "");
     }
     else
@@ -697,7 +697,7 @@ void DtdXmlLoader::startElement(
   QNamePool& qnpool = store.getQNamePool();
   zorba::Stack<XmlNode*>& nodeStack = loader.theNodeStack;
   zorba::Stack<PathStepInfo>& pathStack = loader.thePathStack;
-  xqpStringStore_t baseUri;
+  zstring baseUri;
 
   try
   {
@@ -799,10 +799,10 @@ void DtdXmlLoader::startElement(
       if (prefix == NULL)
         prefix = "";
 
-      xqpStringStore_t pooledNs;
+      zstring pooledNs;
       store.getNamespacePool().insertc(nsuri, pooledNs);
 
-      bindings[i].first = new xqpStringStore(prefix);
+      bindings[i].first = prefix;
       bindings[i].second = pooledNs;
 
       LOADER_TRACE1("namespace decl: [" << prefix  << ":" << nsuri << "]");
@@ -836,9 +836,9 @@ void DtdXmlLoader::startElement(
       store::Item_t qname = qnpool.insert(uri, prefix, lname);
       AttributeNode* attrNode = nfactory.createAttributeNode(qname);
 
-      xmlChar *val = xmlGetProp(node, attr->name);
+      xmlChar* val = xmlGetProp(node, attr->name);
       const char* valu = reinterpret_cast<const char*>(val);
-      xqpStringStore_t value = new xqpStringStore(valu);
+      zstring value(valu);
 
       store::Item_t typeName;
 
@@ -905,7 +905,8 @@ void DtdXmlLoader::startElement(
       if (attrNode->isBaseUri())
       {
         baseUri = pathStack.top().theBaseUri;
-        xqpStringStore_t localUri = attrNode->theTypedValue->getStringValue();
+        zstring localUri;
+        attrNode->theTypedValue->getStringValue2(localUri);
         if (baseUri == NULL)
         {
           elemNode->addBaseUriProperty(localUri, baseUri);
@@ -915,7 +916,7 @@ void DtdXmlLoader::startElement(
           elemNode->addBaseUriProperty(baseUri, localUri);
         }
 
-        baseUri = elemNode->getBaseURI();
+        elemNode->getBaseURI(baseUri);
       }
 
       loader.theOrdPath.nextChild();
@@ -925,7 +926,7 @@ void DtdXmlLoader::startElement(
       LOADER_TRACE2("Attribute: node = " << attrNode << " name ["
                     << (prefix != NULL ? prefix : "") << ":" << lname << " ("
                     << (uri != NULL ? uri : "NULL") << ")]" << " value = "
-                    << attrNode->theTypedValue->getStringValue()->c_str()
+                    << attrNode->theTypedValue->getStringValue()
                     << std::endl << " ordpath = "
                     << attrNode->getOrdPath().show() << std::endl);
 
@@ -936,7 +937,7 @@ void DtdXmlLoader::startElement(
 
     nodeStack.push((XmlNode*)elemNode);
     nodeStack.push(NULL);
-    pathStack.push(PathStepInfo(elemNode, baseUri.getp()));
+    pathStack.push(PathStepInfo(elemNode, baseUri));
   }
   catch (error::ZorbaError& e)
   {
@@ -1020,7 +1021,12 @@ void  DtdXmlLoader::endElement(
       {
         TextNode* textSibling = reinterpret_cast<TextNode*>(prevChild);
         TextNode* textChild = reinterpret_cast<TextNode*>(currChild);
-        xqpStringStore_t content2 = textSibling->getText()->append(textChild->getText());
+
+        zstring content2;
+        content2.reserve(textSibling->getText().size() + textChild->getText().size());
+        content2 = textSibling->getText();
+        content2 += textChild->getText();
+
         textSibling->setText(content2);
         delete currChild;
       }
@@ -1091,7 +1097,7 @@ void DtdXmlLoader::characters(void * ctx, const xmlChar * ch, int len)
   try
   {
     const char* charp = reinterpret_cast<const char*>(ch);
-    xqpStringStore_t content(new xqpStringStore(charp, len));
+    zstring content(charp, len);
 
     XmlNode* textNode = GET_STORE().getNodeFactory().createTextNode(content);
 
@@ -1139,7 +1145,7 @@ void DtdXmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
     // If a doc contains an element like <cdata><![CDATA[ <> ]]></cdata>,
     // libxml returns the string " <> ".
     const char* charp = reinterpret_cast<const char*>(ch);
-    xqpStringStore_t content(new xqpStringStore(charp, len));
+    zstring content(charp, len);
 
     XmlNode* cdataNode = GET_STORE().getNodeFactory().createTextNode(content);
 
@@ -1187,11 +1193,13 @@ void DtdXmlLoader::processingInstruction(
   try
   {
     // bugfix: handling PIs with no data (i.e. data being NULL)
-    xqpStringStore_t content = new xqpStringStore(data?reinterpret_cast<const char*>(data):"");
-    xqpStringStore_t target = new xqpStringStore(reinterpret_cast<const char*>(targetp));
+    zstring content;
+    if (data)
+      content = reinterpret_cast<const char*>(data);
 
-    XmlNode* piNode
-      = GET_STORE().getNodeFactory().createPiNode(target, content);
+    zstring target = reinterpret_cast<const char*>(targetp);
+
+    XmlNode* piNode = GET_STORE().getNodeFactory().createPiNode(target, content);
 
     if (loader.theNodeStack.empty())
       loader.setRoot(piNode);
@@ -1234,10 +1242,9 @@ void DtdXmlLoader::comment(void * ctx, const xmlChar * ch)
   try
   {
     const char* charp = reinterpret_cast<const char*>(ch);
-    xqpStringStore_t content(new xqpStringStore(charp));
+    zstring content(charp);
 
-    XmlNode* commentNode =
-        GET_STORE().getNodeFactory().createCommentNode(content);
+    XmlNode* commentNode = GET_STORE().getNodeFactory().createCommentNode(content);
 
     if (loader.theNodeStack.empty())
       loader.setRoot(commentNode);
@@ -1342,64 +1349,6 @@ void DtdXmlLoader::entityDecl(
 {
   DtdXmlLoader& loader = *(static_cast<DtdXmlLoader *>( ctx ));
   ZORBA_LOADER_CHECK_ERROR(loader);
-
-/*  if(type == XML_INTERNAL_PARAMETER_ENTITY)
-  {
-    xmlAddDtdEntity(loader.ctxt->myDoc,
-                    name, type, publicId, systemId, content);
-  }
-*/
-  /*
-  if(type != XML_EXTERNAL_GENERAL_PARSED_ENTITY)
-  {
-    ZORBA_ERROR_PARAM_CONTINUE_OSS(loader.theErrorManager,
-                              STR0020_LOADER_IO_ERROR,
-                              "Cannot process entity  ", name);
-  }
-  */
-/*
-  URI   doc_uri(loader.theDocUri, false);//dont validate uri, is already valid
-  xqpString   sysId((char*)systemId);
-  URI   entity_uri(doc_uri, sysId.getStore());
-  xqpStringStore_t  entity_uri_string = entity_uri.toString();
-  xqpStringStore_t  entity_path;
-  entity_uri.get_path(entity_path);
-
-  char *entity_content = NULL;
-  FILE *fentity = NULL;
-  fentity = fopen(entity_path->c_str(), "rb");
-  fseek(fentity, 0, SEEK_END);
-  long long entity_size = _ftelli64(fentity);
-  entity_content = (char*)malloc(entity_size + 1);
-  fseek(fentity, 0, SEEK_SET);
-  fread(entity_content, entity_size, 1, fentity);
-  entity_content[entity_size] = 0;
-  fclose(fentity);
-*/
-  /*
-  xmlEntityPtr  new_entity;
-  new_entity = xmlNewEntity(NULL, name, type, publicId, systemId, content);//(const xmlChar*)entity_content);
-  //new_entity->URI = (const xmlChar*)xmlMemStrdup(entity_uri_string->c_str());
-  new_entity->URI = xmlBuildURI(systemId, (const xmlChar*)loader.theDocUri->c_str());
-  const char    *char_name = strdup((const char*)name);
-  loader.entity_hash.insert(char_name, new_entity);
-  */
-/*
-  std::ifstream  fentity(entity_path->c_str());
-  loader.loadXml(entity_uri_string, fentity);
-*/
-/*  //XmlNodePtr  entitylst;
-  int retval;
-  if((retval=xmlParseCtxtExternalEntity(loader.ctxt,
-    (xmlChar*)"file:///C:/xquery_development/XQTS_current/cat/AbbrAxes.xml",//(xmlChar*)entity_uri_string->c_str(),
-                              systemId,
-                              NULL)) != 0)
-  {
-    ZORBA_ERROR_PARAM_CONTINUE_OSS(loader.theErrorManager,
-                              STR0020_LOADER_IO_ERROR,
-                              "Cannot load entity  ", name);
-  }
-*/
 }
 
 #undef ZORBA_ERROR_DESC_CONTINUE

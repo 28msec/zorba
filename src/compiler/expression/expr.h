@@ -23,7 +23,6 @@
 
 #include "zorbautils/checked_vector.h"
 
-#include "zorbatypes/xqpstring.h"
 #include "zorbatypes/representations.h"
 
 #include "zorbaerrors/errors.h"
@@ -790,7 +789,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  const_expr(static_context* sctx, const QueryLoc&, xqpStringStore_t& sval);
+  const_expr(static_context* sctx, const QueryLoc&, zstring& sval);
 
   const_expr(static_context* sctx, const QueryLoc&, const std::string& sval);
 

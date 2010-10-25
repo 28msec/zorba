@@ -750,11 +750,11 @@ void general_var_codegen(const var_expr& var)
   case var_expr::prolog_var:
   case var_expr::local_var:
   {
-    xqpString varname = var.get_name()->getStringValue().getp();
+    zstring varname = var.get_name()->getStringValue();
     if (varname == DOT_VAR)
     {
       store::Item_t qname;
-      xqpStringStore_t dot = new xqpStringStore(".");
+      zstring dot(".");
       ITEM_FACTORY->createString(qname, dot);
       PlanIter_t varnameIter = new SingletonIterator(sctx, qloc, qname);
       push_itstack(new CtxVarIterator(sctx, qloc, varnameIter));

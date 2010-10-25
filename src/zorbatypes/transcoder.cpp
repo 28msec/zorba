@@ -15,6 +15,7 @@
  */
 #include "zorbatypes/transcoder.h"
 #include "zorbaerrors/Assert.h"
+
 #ifndef ZORBA_NO_UNICODE
 #include "zorbatypes/libicu.h"
 #endif
@@ -38,53 +39,38 @@ int get_utf8_length(char ch)
 }
 
 
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  Default transcoder (transparent)                                           //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
-
-transcoder::transcoder(std::ostream& output_stream)
+transcoder::transcoder(std::ostream& output_stream, bool in_utf16)
   :
-  os(output_stream)
+  os(output_stream),
+  utf16(in_utf16)
 {
-}
-
-void
-transcoder::verbatim(const char ch)
-{
-  os << ch;
-}
-
-
+  if (utf16)
+  {
 #ifndef ZORBA_NO_UNICODE
-
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  UTF-8 to UTF-16 transcoder                                                 //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
-
-utf8_to_utf16_transcoder::utf8_to_utf16_transcoder(std::ostream& output_stream)
-  :
-  transcoder(output_stream)
-{
-  UErrorCode status = U_ZERO_ERROR;
-  conv = ucnv_open("utf-8", &status);
-  ZORBA_ASSERT(U_SUCCESS(status));
-  chars_in_buffer = 0;
-  chars_expected = 1;
+    UErrorCode status = U_ZERO_ERROR;
+    conv = ucnv_open("utf-8", &status);
+    ZORBA_ASSERT(U_SUCCESS(status));
+    chars_in_buffer = 0;
+    chars_expected = 1;
+#else
+    ZORBA_ASSERT(false);
+#endif
+  }
 }
 
-utf8_to_utf16_transcoder::~utf8_to_utf16_transcoder()
+
+transcoder::~transcoder()
 {
-  ucnv_close(conv);
+#ifndef ZORBA_NO_UNICODE
+  if (utf16)
+    ucnv_close(conv);
+#endif
 }
 
-utf8_to_utf16_transcoder& utf8_to_utf16_transcoder::operator<<(const char* str)
-{
-  ulong len = strlen(str);
 
+transcoder& transcoder::write_utf16(const char* str, ulong len)
+{
+#ifndef ZORBA_NO_UNICODE
   UChar temp;
   UErrorCode status = U_ZERO_ERROR;
   int target_size = ucnv_toUChars(conv, &temp, 1, str, len, &status);
@@ -103,10 +89,13 @@ utf8_to_utf16_transcoder& utf8_to_utf16_transcoder::operator<<(const char* str)
     os << target2[i];
 
   return *this;
+#endif
 }
 
-utf8_to_utf16_transcoder& utf8_to_utf16_transcoder::operator<<(const char ch)
+
+transcoder& transcoder::write_utf16_char(const char ch)
 {
+#ifndef ZORBA_NO_UNICODE
   int done = 0;
   buffer[chars_in_buffer++] = ch;
 
@@ -142,8 +131,8 @@ utf8_to_utf16_transcoder& utf8_to_utf16_transcoder::operator<<(const char ch)
   }
   
   return *this;
+#endif
 }
 
-#endif//#ifndef ZORBA_NO_UNICODE
 
 } /* namespace zorba */

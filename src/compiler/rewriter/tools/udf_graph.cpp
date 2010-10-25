@@ -224,7 +224,7 @@ void UDFGraph::optimizeUDFs(CompilerCB* ccb, UDFNode* node, ulong visit)
   {
     if (udf->getName())
     {
-      ccb->theConfig.optimize_cb(body, udf->getName()->getStringValue()->c_str());
+      ccb->theConfig.optimize_cb(body, udf->getName()->getStringValue().c_str());
     }
     else
     {

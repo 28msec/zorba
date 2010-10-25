@@ -19,6 +19,7 @@
 #include "store/api/pul.h"
 #include "store/api/update_consts.h"
 #include "store/api/item.h"
+#include "store/api/iterator.h"
 #include "store/api/collection.h"
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
@@ -501,29 +502,86 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
   {
     lPul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-    xqpStringStore_t content;
+    zstring content;
+    store::Item_t typedVal;
+    store::Iterator_t typedIter;
+    bool haveContent = false;
 
     if (consumeNext(lWith, theChild1, aPlanState))
     {
-      content = (lWith->isAtomic() ?
-                 lWith->getStringValue() : 
-                 lWith->getAtomizationValue()->getStringValue());
-                   
-      std::string buf;
+      haveContent = true;
+
+      if (lWith->isAtomic())
+      {
+        lWith->getStringValue2(content);
+      }
+      else
+      {
+        lWith->getTypedValue(typedVal, typedIter);
+
+        if (typedIter == NULL)
+        {
+          typedVal->getStringValue2(content);
+        }
+        else
+        {
+          typedIter->open();
+
+          if (typedIter->next(typedVal))
+          {
+            typedVal->getStringValue2(content);
+
+            while (typedIter->next(typedVal))
+            {
+              content += " ";
+              typedVal->appendStringValue(content);
+            }
+          }
+
+          typedIter->close();
+        }
+      }
+      
       while (consumeNext(lWith, theChild1, aPlanState))
       {
-        buf += " ";
-        buf += (lWith->isAtomic() ?
-                lWith->getStringValue()->c_str() :
-                lWith->getAtomizationValue()->getStringValue()->str());
+        content += " ";
+
+        if (lWith->isAtomic())
+        {
+          lWith->appendStringValue(content);
+        }
+        else
+        {
+          lWith->getTypedValue(typedVal, typedIter);
+
+          if (typedIter == NULL)
+          {
+            typedVal->appendStringValue(content);
+          }
+          else
+          {
+            typedIter->open();
+
+            if (typedIter->next(typedVal))
+            {
+              typedVal->appendStringValue(content);
+
+              while (typedIter->next(typedVal))
+              {
+                content += " ";
+                typedVal->appendStringValue(content);
+              }
+            }
+
+            typedIter->close();
+          }
+        }
       }
-      if (!buf.empty())
-        content = content->append(buf.c_str());
     }
 
     if (lTargetKind == store::StoreConsts::elementNode)
     {
-      if (content != NULL)
+      if (haveContent)
         GENV_ITEMFACTORY->createTextNode(lWith, NULL, 0, content);
       else
         lWith = NULL;
@@ -534,23 +592,20 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
     }
     else
     {
-      if (content == NULL)
-        content = new xqpStringStore("");
-
       if (lTargetKind == store::StoreConsts::commentNode &&
-          (content->bytePositionOf("--") >= 0 || content->byteEndsWith("-", 1)))
+          (content.find("--") != zstring::npos || ascii::ends_with(content, "-", 1)))
       {
         ZORBA_ERROR_LOC(XQDY0072, loc);
       }
       else if (lTargetKind == store::StoreConsts::piNode &&
-               content->bytePositionOf("?>") >= 0)
+               content.find("?>") != zstring::npos)
       {
         ZORBA_ERROR_LOC(XQDY0026, loc);
       }
 
       areNodeModifiersViolated(theSctx, lTarget, loc);
 
-      if (content->empty() && lTargetKind == store::StoreConsts::textNode)
+      if (content.empty() && lTargetKind == store::StoreConsts::textNode)
       {
         store::Item_t temp = lTarget;
         lPul->addReplaceValue(temp, content);

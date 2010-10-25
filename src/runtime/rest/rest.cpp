@@ -165,16 +165,18 @@ const char* CurlStreamBuffer::getErrorBuffer() const
 
 bool createTypeHelper(store::Item_t& result, xqpString type_name)
 {
-  xqpString xs_ns = "http://www.w3.org/2001/XMLSchema";
-  xqpString xs_pre = "xs";
-  return GENV_ITEMFACTORY->createQName(result, xs_ns.theStrStore, xs_pre.theStrStore, type_name.theStrStore);
+  return GENV_ITEMFACTORY->createQName(result,
+                                       "http://www.w3.org/2001/XMLSchema",
+                                       "xs",
+                                       type_name.theStrStore->c_str());
 }
 
 bool createQNameHelper(store::Item_t& result, xqpString name) 
 {
-  xqpString ns = ZORBA_REST_FN_NS;
-  xqpString pre = "zorba-rest";
-  return GENV_ITEMFACTORY->createQName(result, ns.getStore(), pre.getStore(), name.getStore());
+  return GENV_ITEMFACTORY->createQName(result,
+                                       ZORBA_REST_FN_NS,
+                                       "zorba-rest",
+                                       name.getStore()->c_str());
 }
     
 bool createNodeHelper(store::Item_t parent,
@@ -185,9 +187,10 @@ bool createNodeHelper(store::Item_t parent,
 {
   store::Item_t qname, temp_result, type_qname;
   store::NsBindings bindings;
-  xqpStringStore_t baseUri = sctx->get_base_uri();
+  zstring baseUri = sctx->get_base_uri();
   createQNameHelper(qname, name);
   createTypeHelper(type_qname, "untyped");
+
   bool status = GENV_ITEMFACTORY->createElementNode(
       temp_result,
       parent,
@@ -205,13 +208,24 @@ bool createNodeHelper(store::Item_t parent,
   return status;
 }
 
-bool createAttributeHelper(store::Item_t parent, xqpString name, xqpString value, store::Item_t* result = NULL)
+
+bool createAttributeHelper(
+    store::Item_t parent,
+    xqpString name,
+    xqpString value,
+    store::Item_t* result = NULL)
 {
   store::Item_t qname, temp_result, str_item;
-  createQNameHelper(qname, name);
   store::Item_t type_qname;
+
+  createQNameHelper(qname, name);
+
   createTypeHelper(type_qname, "string");
-  GENV_ITEMFACTORY->createString(str_item, value.theStrStore);
+
+  zstring tmp = value.theStrStore->str();
+
+  GENV_ITEMFACTORY->createString(str_item, tmp);
+
   GENV_ITEMFACTORY->createAttributeNode(
       temp_result,
       parent, 
@@ -270,18 +284,20 @@ int processReply(const QueryLoc& aLoc,
                  const char* tidyUserOpt,
                  bool ignore_payload = false) 
 {
-  int reply_code;
+  long reply_code;
   xqpString content_type;
   store::Item_t payload, error_node, headers_node, text_code, status_code;
   store::Item_t doc = NULL;
-  xqpStringStore_t baseUri = sctx->get_base_uri();
+  zstring baseUri = sctx->get_base_uri();
+  store::LoadProperties loadProps;
+  loadProps.setStoreDocument(false);
 
   createNodeHelper(NULL, planState, sctx, "result", &result); 
   createNodeHelper(result, planState, sctx, "status-code", &status_code);
   if (headers.size() == 0)
   { 
     // No headers -- create error message node
-    xqpStringStore_t temp = new xqpStringStore(theStreamBuffer->getErrorBuffer());
+    zstring temp = theStreamBuffer->getErrorBuffer();
     createNodeHelper(result, planState, sctx, "error-message", &error_node);
     GENV_ITEMFACTORY->createTextNode(text_code, error_node, -1, temp);
   }
@@ -297,7 +313,8 @@ int processReply(const QueryLoc& aLoc,
   }
   else
   {
-    if (parse_int_const_position<int>(headers.operator[](0), 9, reply_code, 1))
+    ulong pos = 9;
+    if (parse_long(headers[0].c_str(), headers[0].size(), pos, reply_code, 1))
     {
 	  // No status code in the reply. Put a -1 in there.
       reply_code = -1; 
@@ -315,8 +332,8 @@ int processReply(const QueryLoc& aLoc,
         createAttributeHelper(header, "name", name_string);
         
         string temp = headers.operator[](i).substr(pos+2);
-        xqpString value_string = temp;
-        GENV_ITEMFACTORY->createTextNode(header_value, header, -1, value_string.theStrStore);
+        zstring value_string = temp;
+        GENV_ITEMFACTORY->createTextNode(header_value, header, -1, value_string);
 
         // extract content-type
         if (name_string.lowercase() == "content-type")
@@ -329,7 +346,7 @@ int processReply(const QueryLoc& aLoc,
     }
   }
 
-  xqpStringStore_t temp = NumConversions::intToStr(reply_code);
+  zstring temp = NumConversions::intToStr(reply_code);
   GENV_ITEMFACTORY->createTextNode(text_code, status_code, -1, temp);
 
   // Always add payload to response (not only in case of a successful request)
@@ -371,7 +388,10 @@ int processReply(const QueryLoc& aLoc,
         std::istream is(theStreamBuffer);
         try 
         {
-          temp = GENV_STORE.loadDocument(baseUri, lUriString.theStrStore, is, false);
+          temp = GENV_STORE.loadDocument(baseUri,
+                                         lUriString.theStrStore->c_str(),
+                                         is,
+                                         loadProps);
         }
         catch(error::ZorbaError& lError) 
         {
@@ -402,7 +422,10 @@ int processReply(const QueryLoc& aLoc,
 #else
         std::istream is(theStreamBuffer);
 #endif
-        temp = GENV_STORE.loadDocument(baseUri, lUriString.theStrStore, is, false);
+        temp = GENV_STORE.loadDocument(baseUri,
+                                       lUriString.theStrStore->c_str(),
+                                       is,
+                                       loadProps);
       }
         
       if (temp != NULL)
@@ -426,14 +449,18 @@ int processReply(const QueryLoc& aLoc,
     {
       store::Item_t temp;
       std::istream is(theStreamBuffer);
-      temp = GENV_STORE.loadDocument(baseUri, lUriString.theStrStore, is, false);
+      temp = GENV_STORE.loadDocument(baseUri,
+                                     lUriString.theStrStore->c_str(),
+                                     is,
+                                     loadProps);
       if (temp != NULL)
       {
         store::Iterator_t doc_children = temp->getChildren();
         doc_children->open();
         CopyMode copyMode;
         copyMode.theDoCopy = false;
-        while (doc_children->next(doc)) {
+        while (doc_children->next(doc))
+        {
           doc->copy(payload, -1, copyMode);
         }
       }
@@ -450,8 +477,8 @@ int processReply(const QueryLoc& aLoc,
       store::Item_t temp_item;
       stringstream str;
       str << theStreamBuffer;
-      xqpString temp = str.str();
-      GENV_ITEMFACTORY->createTextNode(temp_item, payload, -1, temp.theStrStore);
+      zstring temp(str.str());
+      GENV_ITEMFACTORY->createTextNode(temp_item, payload, -1, temp);
     }
     break;
     
@@ -460,7 +487,7 @@ int processReply(const QueryLoc& aLoc,
       store::Item_t temp_item;
       xqp_base64Binary base64;
       std::istream is(theStreamBuffer);
-      xqpStringStore_t temp = Base64::encode(is);
+      zstring temp(Base64::encode(is)->str());
       GENV_ITEMFACTORY->createTextNode(temp_item, payload, -1, temp);
     }
     break;
@@ -563,12 +590,17 @@ void processHeader(store::Item_t& headers, curl_slist** headers_list)
   if (child == NULL)
   {
     // HTTP header without a value 
-    xqpString temp = xqpString(name->getStringValue()) + xqpString(": ");
+    zstring temp;
+    name->getStringValue(temp);
+    temp += ": ";
     *headers_list = curl_slist_append(*headers_list , temp.c_str());
   }
   else if (child->getNodeKind() == store::StoreConsts::textNode)
   {
-    xqpString temp = xqpString(name->getStringValue()) + xqpString(": ") + child->getStringValue().getp();
+    zstring temp;
+    name->getStringValue(temp);
+    temp += ": ";
+    child->getStringValue(temp);
     *headers_list = curl_slist_append(*headers_list , temp.c_str());
   }
   else 
@@ -579,11 +611,13 @@ void processHeader(store::Item_t& headers, curl_slist** headers_list)
 
 // Returns all the children of a node as a concatenated string (text nodes + serialized 
 // element nodes) in the children_string out-paramter, and sets the has_element_child flag
-static void getSerializedChildren(store::Item_t node, xqpString& children_string, bool& has_element_child)
+static void getSerializedChildren(
+    store::Item_t node,
+    zstring& children_string,
+    bool& has_element_child)
 {
   store::Iterator_t it;
   store::Item_t lChild;
-  children_string = "";
   has_element_child = false;
   
   it = node->getChildren();
@@ -592,7 +626,7 @@ static void getSerializedChildren(store::Item_t node, xqpString& children_string
   {
     if (lChild->getNodeKind() == store::StoreConsts::textNode)
     {
-      children_string += xqpString(lChild->getStringValue());
+      lChild->getStringValue(children_string);
     }
     else if (lChild->getNodeKind() == store::StoreConsts::elementNode)
     {
@@ -608,7 +642,7 @@ static void getSerializedChildren(store::Item_t node, xqpString& children_string
       intern::SerializableWrapper lWrapper(&lSequence);
       ser.serialize(&lWrapper, ss);
 
-      children_string += ss.str().c_str();        
+      children_string += ss.str();      
       has_element_child = true;
     }
 	// ignore other nodes
@@ -633,7 +667,7 @@ static xqpString buildKeyValuePair(Item_t& payload_data)
   it->open();
   while (it->next(child) && child)
   {
-    if ((xqpString("name") == child->getNodeName()->getLocalName()))
+    if ("name" == child->getNodeName()->getLocalName())
       name = child;
   }
 
@@ -644,19 +678,24 @@ static xqpString buildKeyValuePair(Item_t& payload_data)
     return result;
   }
 
-  xqpStringStore_t tmp;
-  name->getStringValue()->encodeForUri(tmp);
+  zstring strval;
+  zstring tmp;
+  name->getStringValue(strval);
+  ascii::uri_encode(strval, &tmp);
 
-  result = result + xqpString(tmp);
+  result = result + xqpString(tmp.str());
 
   it = payload_data->getChildren();
+
   it->open();
   it->next(child);
 
   if (child && (child->getNodeKind() == store::StoreConsts::textNode))
   {
-    child->getStringValue()->encodeForUri(tmp);
-    result += "=" + xqpString(tmp);
+    child->getStringValue(strval);
+    ascii::uri_encode(strval, &tmp);
+
+    result += "=" + xqpString(tmp.str());
   }
 
   return result;
@@ -673,22 +712,31 @@ static xqpString buildChildrenURL(Item_t& payload_data)
   it = payload_data->getChildren();
   it->open();
   while (it->next(child))
+  {
     if (child && (child->getNodeKind() == store::StoreConsts::elementNode))
     {
       if (result.bytes() > 0)
         result += "&";
       result += buildKeyValuePair(child);
     }
-    
+  }
+ 
   return result;
 }
 
-typedef enum {
+
+typedef enum 
+{
   PAYLOAD_TYPE_MULTIPART_FORMDATA,
   PAYLOAD_TYPE_URLENCODED
 } PAYLOAD_TYPE;
 
-static PAYLOAD_TYPE processPayload(Item_t& payload_data, struct curl_httppost** first, struct curl_httppost** last, xqpString& constructedURL)
+
+static PAYLOAD_TYPE processPayload(
+    Item_t& payload_data, 
+    struct curl_httppost** first, 
+    struct curl_httppost** last, 
+    xqpString& constructedURL)
 {
   store::Iterator_t it;
   store::Item_t child, name, filename, content_type;
@@ -704,21 +752,20 @@ static PAYLOAD_TYPE processPayload(Item_t& payload_data, struct curl_httppost** 
   it->open();
   while (it->next(child) && child)
   {
-    if (xqpString("name") == child->getNodeName()->getLocalName())
+    if ("name" == child->getNodeName()->getLocalName())
       name = child;
 
-    if (xqpString("filename") == child->getNodeName()->getLocalName())
+    if ("filename" == child->getNodeName()->getLocalName())
       filename = child;
 
-    if (xqpString("content-type") == child->getNodeName()->getLocalName())
+    if ("content-type" == child->getNodeName()->getLocalName())
       content_type = child;
   }
 
-  if (xqpString("payload") == payload_data->getNodeName()->getLocalName())
+  if ("payload" == payload_data->getNodeName()->getLocalName())
   {
-    if (content_type.getp() != NULL
-        &&
-        xqpString("application/x-www-form-urlencoded") == content_type->getStringValue()->c_str())
+    if (content_type.getp() != NULL &&
+        "application/x-www-form-urlencoded" == content_type->getStringValue())
     {
       constructedURL = buildChildrenURL(payload_data);
       return PAYLOAD_TYPE_URLENCODED;
@@ -745,25 +792,25 @@ static PAYLOAD_TYPE processPayload(Item_t& payload_data, struct curl_httppost** 
   {
     if (content_type != NULL)
       curl_formadd(first, last,
-                CURLFORM_COPYNAME, name->getStringValue()->c_str(),
-                CURLFORM_FILE, filename->getStringValue()->c_str(),
-                CURLFORM_CONTENTTYPE, content_type->getStringValue()->c_str(),
+                CURLFORM_COPYNAME, name->getStringValue().c_str(),
+                CURLFORM_FILE, filename->getStringValue().c_str(),
+                CURLFORM_CONTENTTYPE, content_type->getStringValue().c_str(),
                 CURLFORM_END);
     else curl_formadd(first, last,
-                CURLFORM_COPYNAME, name->getStringValue()->c_str(),
-                CURLFORM_FILE, filename->getStringValue()->c_str(),
+                CURLFORM_COPYNAME, name->getStringValue().c_str(),
+                CURLFORM_FILE, filename->getStringValue().c_str(),
                 CURLFORM_END);
   }
   else
   {
-    xqpString payload_string;
+    zstring payload_string;
     bool has_element_child;
     getSerializedChildren(payload_data, payload_string, has_element_child);
 
     if (has_element_child)
     {
       curl_formadd(first, last,
-                  CURLFORM_COPYNAME, name->getStringValue()->c_str(),
+                  CURLFORM_COPYNAME, name->getStringValue().c_str(),
                   CURLFORM_COPYCONTENTS, payload_string.c_str(),
                   CURLFORM_CONTENTTYPE, "text/html",
                   CURLFORM_END);
@@ -771,7 +818,7 @@ static PAYLOAD_TYPE processPayload(Item_t& payload_data, struct curl_httppost** 
     else
     {
       curl_formadd(first, last,
-                  CURLFORM_COPYNAME, name->getStringValue()->c_str(),
+                  CURLFORM_COPYNAME, name->getStringValue().c_str(),
                   CURLFORM_COPYCONTENTS, payload_string.c_str(),
                   CURLFORM_END);
     }
@@ -780,7 +827,12 @@ static PAYLOAD_TYPE processPayload(Item_t& payload_data, struct curl_httppost** 
   return PAYLOAD_TYPE_MULTIPART_FORMDATA;
 }
 
-static bool processSinglePayload(Item_t& payload_data, CURL* EasyHandle, curl_slist **headers_list, std::auto_ptr<char>& buffer)
+
+static bool processSinglePayload(
+    Item_t& payload_data,
+    CURL* EasyHandle, 
+    curl_slist **headers_list,
+    std::auto_ptr<char>& buffer)
 {
   store::Iterator_t it;
   store::Item_t child, name, filename, content_type;
@@ -788,34 +840,31 @@ static bool processSinglePayload(Item_t& payload_data, CURL* EasyHandle, curl_sl
   if (payload_data->getNodeKind() != store::StoreConsts::elementNode)
     return false;
 
-  if (xqpString("payload") != payload_data->getNodeName()->getLocalName())
+  if ("payload" != payload_data->getNodeName()->getLocalName())
     return false;
 
   it = payload_data->getAttributes();
   it->open();
   while (it->next(child) && child)
   {
-    if (xqpString("name") == child->getNodeName()->getLocalName())
+    if ("name" == child->getNodeName()->getLocalName())
       name = child;
 
-    if (xqpString("filename") == child->getNodeName()->getLocalName())
+    if ("filename" == child->getNodeName()->getLocalName())
       filename = child;
 
-    if (xqpString("content-type") == child->getNodeName()->getLocalName())
+    if ("content-type" == child->getNodeName()->getLocalName())
       content_type = child;
   }
 
-  if (content_type.getp() != NULL
-      &&
-      (xqpString("multipart/form-data") == content_type->getStringValue().getp()
-      ||
-      xqpString("application/x-www-form-urlencoded") == content_type->getStringValue()->c_str()))
+  if (content_type.getp() != NULL &&
+      ("multipart/form-data" == content_type->getStringValue() ||
+       "application/x-www-form-urlencoded" == content_type->getStringValue()))
     return false;
 
   if (filename.getp() != NULL)
   {
-    xqpString test = filename->getStringValue()->c_str();
-    ifstream ifs(filename->getStringValue()->c_str());
+    ifstream ifs(filename->getStringValue().c_str());
     
     if (!ifs)
     {
@@ -840,14 +889,14 @@ static bool processSinglePayload(Item_t& payload_data, CURL* EasyHandle, curl_sl
   }
   else
   {
-    xqpString payload_string;
+    zstring payload_string;
     bool has_element_child;
     getSerializedChildren(payload_data, payload_string, has_element_child);
 
-    buffer = std::auto_ptr<char>(new char[payload_string.bytes()]);
-    memcpy(buffer.get(), payload_string.c_str(), payload_string.bytes());
+    buffer = std::auto_ptr<char>(new char[payload_string.size()]);
+    memcpy(buffer.get(), payload_string.c_str(), payload_string.size());
 
-    curl_easy_setopt(EasyHandle, CURLOPT_POSTFIELDSIZE , payload_string.bytes());
+    curl_easy_setopt(EasyHandle, CURLOPT_POSTFIELDSIZE , payload_string.size());
     curl_easy_setopt(EasyHandle, CURLOPT_POSTFIELDS, buffer.get());
     curl_easy_setopt(EasyHandle, CURLOPT_POST, 1);
 
@@ -862,10 +911,11 @@ static bool processSinglePayload(Item_t& payload_data, CURL* EasyHandle, curl_sl
 
   if (content_type.getp() != NULL)
     *headers_list = curl_slist_append(*headers_list,
-                                       (xqpString("Content-Type: ") + xqpString(content_type->getStringValue())).c_str());
+                                      ("Content-Type: " + content_type->getStringValue()).c_str());
   
   return true;
 }
+
 
 static xqpString processGetPayload(Item_t& payload_data, xqpString& Uri)
 {
@@ -879,7 +929,7 @@ static xqpString processGetPayload(Item_t& payload_data, xqpString& Uri)
     return Uri; 
   }
 
-  if (xqpString("payload") == payload_data->getNodeName()->getLocalName())
+  if ("payload" == payload_data->getNodeName()->getLocalName())
   {
     if (Uri.indexOf("?") == -1)
       Uri += "?";
@@ -914,7 +964,7 @@ bool ZorbaRestHeadIterator::nextImpl(store::Item_t& result, PlanState& planState
     ZORBA_ERROR_DESC(XQP0020_INVALID_URI, "No URI given to the REST head() function.");
   }
 
-  Uri = lUri->getStringValue()->str();
+  Uri = lUri->getStringValue().str();
 
   if (theChildren.size() > index)
     while (CONSUME(payload_data, index))
@@ -949,7 +999,7 @@ bool ZorbaRestHeadIterator::nextImpl(store::Item_t& result, PlanState& planState
                code,
                *state->headers,
                state->theStreamBuffer.getp(),
-               (tidyUserOpt!=NULL)?tidyUserOpt->getStringValue()->c_str():NULL, true);
+               (tidyUserOpt != NULL) ? tidyUserOpt->getStringValue().c_str():NULL, true);
 
   curl_slist_free_all(headers_list);
   cleanupConnection(state);
@@ -982,7 +1032,7 @@ bool ZorbaRestGetIterator::nextImpl(store::Item_t& result, PlanState& planState)
     ZORBA_ERROR_DESC(XQP0020_INVALID_URI, "No URI given to the REST get() function.");
   }
 
-  Uri = lUri->getStringValue()->str();
+  Uri = lUri->getStringValue().str();
 
 #ifdef ZORBA_WITH_TIDY
   if(isGetTidy())
@@ -1025,8 +1075,8 @@ bool ZorbaRestGetIterator::nextImpl(store::Item_t& result, PlanState& planState)
                code,
                *state->headers,
                state->theStreamBuffer.getp(),
-               (tidyUserOpt!=NULL)?tidyUserOpt->getStringValue()->c_str():
-               (isGetTidy())?emptyString.c_str():NULL);
+               (tidyUserOpt!=NULL)?tidyUserOpt->getStringValue().c_str():
+               (isGetTidy()) ? emptyString.c_str() : NULL);
 
   curl_slist_free_all(headers_list);
   cleanupConnection(state);
@@ -1059,7 +1109,7 @@ bool ZorbaRestPostIterator::nextImpl(store::Item_t& result, PlanState& planState
   {
     ZORBA_ERROR_DESC(XQP0020_INVALID_URI, "No URI given to the REST post() function.");
   }
-  Uri = lUri->getStringValue()->str();
+  Uri = lUri->getStringValue().str();
 
 #ifdef ZORBA_WITH_TIDY
   if(isPostTidy())
@@ -1125,7 +1175,7 @@ bool ZorbaRestPostIterator::nextImpl(store::Item_t& result, PlanState& planState
       code,
       *state->headers,
       state->theStreamBuffer.getp(),
-      (tidyUserOpt!=NULL)?tidyUserOpt->getStringValue()->c_str():
+      (tidyUserOpt != NULL) ? tidyUserOpt->getStringValue().c_str():
       (isPostTidy())?emptyString.c_str():NULL);
 
   curl_formfree(first);
@@ -1159,7 +1209,7 @@ bool ZorbaRestPutIterator::nextImpl(store::Item_t& result, PlanState& planState)
   {
     ZORBA_ERROR_DESC(XQP0020_INVALID_URI, "No URI given to the REST put() function.");
   }
-  Uri = lUri->getStringValue()->str();
+  Uri = lUri->getStringValue().str();
 
   if (theChildren.size() > 1)
   {
@@ -1243,7 +1293,7 @@ bool ZorbaRestDeleteIterator::nextImpl(store::Item_t& result, PlanState& planSta
     ZORBA_ERROR_DESC(XQP0020_INVALID_URI, "No URI given to the REST delete() function.");;
   }
 
-  Uri = lUri->getStringValue()->str();
+  Uri = lUri->getStringValue().str();
 
   if (theChildren.size() > 1)
     while (CONSUME(payload_data, 1))

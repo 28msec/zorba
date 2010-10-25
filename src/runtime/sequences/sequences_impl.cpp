@@ -82,7 +82,7 @@ static XQPCollator* getCollator(
 
   xqtref_t lCollationItemType = sctx->get_typemanager()->create_value_type(lCollationItem);
 
-  return sctx->get_collator(lCollationItem->getStringValue()->str(), loc);
+  return sctx->get_collator(lCollationItem->getStringValue().str(), loc);
 }
 
 
@@ -474,12 +474,14 @@ bool FnSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState
   state->theIsChildReset = false;
 
   CONSUME(startPosItem, 1);
-  startPos = startPosItem->getDoubleValue().round().getNumber() - 1;
+  startPos = 
+  static_cast<xqp_long>(startPosItem->getDoubleValue().round().getNumber()) - 1;
 
   if (theChildren.size() == 3)
   {
     CONSUME(lengthItem, 2);
-    state->theRemaining = lengthItem->getDoubleValue().round().getNumber();
+    state->theRemaining = 
+    static_cast<xqp_long>(lengthItem->getDoubleValue().round().getNumber());
   }
 
   if (startPos < 0)
@@ -978,13 +980,20 @@ static bool DeepEqual(
       }
       case store::StoreConsts::textNode:     /* deliberate fall-through */
       case store::StoreConsts::commentNode:
-        return (0 == item1->getStringValue()->compare(item2->getStringValue(), collator));
+        return (0 == utf8::compare(item1->getStringValue(),
+                                   item2->getStringValue(),
+                                   collator));
         break;
 
       case store::StoreConsts::piNode:
-        if (0 != item1->getNodeName()->getStringValue()->compare(item2->getNodeName()->getStringValue(), collator))
+        if (0 != utf8::compare(item1->getNodeName()->getStringValue(),
+                               item2->getNodeName()->getStringValue(),
+                               collator))
           return false;
-        return (0 == item1->getStringValue()->compare(item2->getStringValue(), collator));
+
+        return (0 == utf8::compare(item1->getStringValue(),
+                                   item2->getStringValue(),
+                                   collator));
         break;
     }
 
@@ -994,8 +1003,9 @@ static bool DeepEqual(
 }
 
 
-bool
-FnDeepEqualIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool FnDeepEqualIterator::nextImpl(
+    store::Item_t& result, 
+    PlanState& planState) const
 {
   PlanIteratorState* state;
   store::Item_t arg1, arg2;
@@ -1636,11 +1646,11 @@ static void fillTime (
 
 bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t     uriItem;
-  xqpStringStore_t  uriString;
-  xqpStringStore_t  resolvedURIString;
-  store::Item_t     resolvedURIItem;
-  zorba::DateTime   t0;
+  store::Item_t uriItem;
+  zstring uriString;
+  zstring resolvedURIString;
+  store::Item_t resolvedURIItem;
+  zorba::DateTime t0;
   zorbatm::timeinfo t0user;
 
   PlanIteratorState* state;
@@ -1648,7 +1658,7 @@ bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   if (consumeNext(uriItem, theChildren[0].getp(), planState))
   {
-    uriString = uriItem->getStringValue();
+    uriItem->getStringValue2(uriString);
 
     try
     {
@@ -1749,9 +1759,9 @@ bool FnDocAvailableIterator::nextImpl(store::Item_t& result, PlanState& planStat
 bool UtilsParseIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Store& lStore = GENV.getStore();
-  xqpStringStore_t docString;
-  xqpStringStore_t baseUri = theSctx->get_base_uri();
-  xqpStringStore_t docUri = new xqpStringStore("");
+  zstring docString;
+  zstring baseUri = theSctx->get_base_uri();
+  zstring docUri;
   std::auto_ptr<std::istringstream> iss;
 
   PlanIteratorState* state;
@@ -1759,12 +1769,14 @@ bool UtilsParseIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 
   consumeNext(result, theChildren[0].getp(), planState);
 
-  docString = result->getStringValue();
-  iss.reset(new std::istringstream(docString->c_str()));
+  result->getStringValue2(docString);
+  iss.reset(new std::istringstream(docString.c_str()));
 
   try 
   {
-    result = lStore.loadDocument(baseUri, docUri, *iss, false);
+    store::LoadProperties loadProps;
+    loadProps.setStoreDocument(false);
+    result = lStore.loadDocument(baseUri, docUri, *iss, loadProps);
   }
   catch (error::ZorbaError& e)
   {
@@ -1775,16 +1787,17 @@ bool UtilsParseIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   STACK_END (state);
 }
 
+
 /*******************************************************************************
   fn:parse function defined in XQuery 1.1 Functions & Operators
 ********************************************************************************/
 bool FnParseIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Store& lStore = GENV.getStore();
-  xqpStringStore_t docString;
-  xqpStringStore_t baseUri;
-  URI              lValidatedBaseUri;
-  xqpStringStore_t docUri = new xqpStringStore("");
+  zstring docString;
+  zstring baseUri;
+  URI lValidatedBaseUri;
+  zstring docUri;
   std::auto_ptr<std::istringstream> iss;
 
   PlanIteratorState* state;
@@ -1792,8 +1805,8 @@ bool FnParseIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
   consumeNext (result, theChildren [0].getp (), planState);
 
-  docString = result->getStringValue();
-  iss.reset (new std::istringstream (docString->c_str()));
+  result->getStringValue2(docString);
+  iss.reset (new std::istringstream(docString.c_str()));
 
   // optional base URI argument
   if (theChildren.size() == 2)
@@ -1803,7 +1816,7 @@ bool FnParseIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
     try 
     {
-      lValidatedBaseUri = URI(result->getStringValueP());
+      lValidatedBaseUri = URI(result->getStringValue());
     }
     catch (error::ZorbaError& e)
     {
@@ -1817,7 +1830,8 @@ bool FnParseIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
       ZORBA_ERROR_LOC_DESC(FODC0007, loc,
           "Base URI passed as second argument to fn:parse is not an absolute URI.");
     }
-    baseUri = result->getStringValue();
+
+    result->getStringValue2(baseUri);
   }
   else
   {
@@ -1826,7 +1840,9 @@ bool FnParseIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
   try 
   {
-    result = lStore.loadDocument(baseUri, docUri, *iss, false);
+    store::LoadProperties loadProps;
+    loadProps.setStoreDocument(false);
+    result = lStore.loadDocument(baseUri, docUri, *iss, loadProps);
   }
   catch (error::ZorbaError& e)
   {

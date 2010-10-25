@@ -33,7 +33,7 @@
 
 #include <zorbatypes/URI.h>
 
-#include <zorbautils/strutil.h>
+#include "util/ascii_util.h"
 
 #include <zorba/store_manager.h>
 
@@ -391,7 +391,7 @@ void* thread_main(void* param)
          ++iter) 
     {
       std::string tmp = *iter;
-      zorba::str_replace_all(tmp, "$RBKT_SRC_DIR", rbkt_src_dir);
+      zorba::ascii::replace_all(tmp, "$RBKT_SRC_DIR", rbkt_src_dir);
       fs::path refFilePath(tmp);
       refFileSpecified = true;
       refFilePaths.push_back(refFilePath);

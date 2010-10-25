@@ -20,8 +20,13 @@
 #include <vector>
 
 #include <zorba/config.h>
+
 #include "common/common.h"
+
 #include "zorbautils/fatal.h"
+
+#include "zorbatypes/zstring.h"
+
 
 namespace zorba { namespace simplestore {
 
@@ -181,7 +186,7 @@ public:
 
   std::string serialize() const;
 
-  std::string show() const;
+  zstring show() const;
 
 protected:
 

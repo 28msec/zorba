@@ -19,16 +19,17 @@
 #include "zorbamisc/config/platform.h"
 
 #include "zorbatypes/rchandle.h"
+#include "zorbatypes/zstring.h"
 
 
 namespace zorba 
 { 
 
-class xqpStringStore;
-
-
 namespace store 
 {
+
+typedef std::vector<std::pair<zstring, zstring> > NsBindings;
+
 
 class CopyMode;
 

@@ -21,10 +21,10 @@
 #include "zorbatypes/xqpstring.h"
 
 #ifndef ZORBA_NO_UNICODE
+#include "util/unicode_util.h"
 #include "zorbatypes/utf8.h"
 #include "zorbatypes/numconversions.h"
 #include "zorbatypes/collation_manager.h"
-#include "zorbautils/unicode_util.h"
 
 #include <cstdio>
 #include <stdio.h>
@@ -766,7 +766,7 @@ xqpStringStore_t xqpStringStore::uppercase() const
 
   for(i = 0; i < len; ++i)
   {
-    cp = toUpper(UTF8Decode(c));
+    cp = unicode::to_upper(UTF8Decode(c));
     memset(seq, 0, sizeof(seq));
     UTF8Encode(cp, seq);
     newStr->theString += seq;
@@ -793,7 +793,7 @@ xqpStringStore_t xqpStringStore::lowercase() const
 
   for(i = 0; i < len; ++i)
   {
-    cp = toLower(UTF8Decode(c));
+    cp = unicode::to_lower(UTF8Decode(c));
     memset(seq, 0, sizeof(seq));
     UTF8Encode(cp, seq);
     newStr->theString += seq;
@@ -1097,7 +1097,7 @@ xqpStringStore_t xqpStringStore::formatAsXML() const
     {
       newStr->theString += '&';
       newStr->theString += '#';
-      newStr->theString +=  Integer::parseInt(cp).toString()->c_str();
+      newStr->theString +=  Integer::parseInt(cp).toString().c_str();
       newStr->theString += ';';
     }
   }
@@ -1216,18 +1216,27 @@ const char SAFE[256] =
 {
   /*      0 1 2 3  4 5 6 7  8 9 A B  C D E F */
   /* 0 */ 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
+
   /* 1 */ 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
+
   /* 2 */ 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,1,1,0,
+
   /* 3 */ 1,1,1,1, 1,1,1,1, 1,1,0,0, 0,0,0,0,
 
   /* 4 */ 0,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1,
+
   /* 5 */ 1,1,1,1, 1,1,1,1, 1,1,1,0, 0,0,0,1,
+
   /* 6 */ 0,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1,
+
   /* 7 */ 1,1,1,1, 1,1,1,1, 1,1,1,0, 0,0,1,0,
 
   /* 8 */ 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
+
   /* 9 */ 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
+
   /* A */ 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
+
   /* B */ 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
 
   /* C */ 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
@@ -1739,15 +1748,16 @@ xqpString xqpString::translate(xqpString mapString, xqpString transString) const
 
 
 
-bool
-xqpString::matches(const xqpString& pattern, xqpString flags) const
+bool xqpString::matches(const xqpString& pattern, xqpString flags) const
 {
-  UErrorCode    status = U_ZERO_ERROR;
-  UnicodeString uspattern = getUnicodeString (pattern.getStore()),
-    us = getUnicodeString (this->getStore());
+  UErrorCode status = U_ZERO_ERROR;
+  UnicodeString uspattern = getUnicodeString (pattern.getStore());
+  UnicodeString us = getUnicodeString(this->getStore());
 
-  RegexMatcher matcher (uspattern, parse_regex_flags (flags.c_str ()), status);
-  if (U_FAILURE(status)) {
+  RegexMatcher matcher(uspattern, parse_regex_flags (flags.c_str ()), status);
+
+  if (U_FAILURE(status)) 
+  {
     throw zorbatypesException(pattern.c_str(), ZorbatypesError::FORX0002);
     return false;
   }
@@ -1757,32 +1767,34 @@ xqpString::matches(const xqpString& pattern, xqpString flags) const
 }
 
 
-xqpString
-xqpString::replace(xqpString pattern, xqpString replacement, xqpString flags)
+xqpString xqpString::replace(xqpString pattern, xqpString replacement, xqpString flags)
 {
-    UErrorCode status = U_ZERO_ERROR;
-    UnicodeString uspattern = getUnicodeString (pattern.getStore()),
-    us = getUnicodeString (this->getStore());
+  UErrorCode status = U_ZERO_ERROR;
+  UnicodeString uspattern = getUnicodeString (pattern.getStore());
+  UnicodeString us = getUnicodeString (this->getStore());
 
-    RegexMatcher matcher (uspattern, us, parse_regex_flags (flags.c_str ()), status);
-    if (U_FAILURE(status)) {
-      throw zorbatypesException(pattern.c_str(), ZorbatypesError::FORX0002);
-      return "";
-    }
+  RegexMatcher matcher (uspattern, us, parse_regex_flags (flags.c_str ()), status);
+  if (U_FAILURE(status)) 
+  {
+    throw zorbatypesException(pattern.c_str(), ZorbatypesError::FORX0002);
+    return "";
+  }
 
-    //if((replacement.indexOf("$") != -1 && !replacement.matches("\\$[0-9]",""))||
-    //    (replacement.indexOf("\\") != -1 && !replacement.matches("\\$[0-9]","")))
-    //{
-    //  throw zorbatypesException("", ZorbatypesError::FORX0004);
-    //  return "";
-    //}
+  //if((replacement.indexOf("$") != -1 && !replacement.matches("\\$[0-9]",""))||
+  //    (replacement.indexOf("\\") != -1 && !replacement.matches("\\$[0-9]","")))
+  //{
+  //  throw zorbatypesException("", ZorbatypesError::FORX0004);
+  //  return "";
+  //}
 
-    UnicodeString result = matcher.replaceAll (getUnicodeString(replacement.getStore()), status);
-    if (U_FAILURE(status)) {
-      return "";
-      // TODO: error
-    }
-    return getXqpString(result).getp();
+  UnicodeString result = matcher.replaceAll(getUnicodeString(replacement.getStore()),
+                                            status);
+  if (U_FAILURE(status)) 
+  {
+    return "";
+    // TODO: error
+  }
+  return getXqpString(result).getp();
 }
 
 

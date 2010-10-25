@@ -18,10 +18,10 @@
 #define ZORBA_RUNTIME_FULL_TEXT_FT_STOP_WORD_SET_H
 
 #include <set>
-#include <string>
 
 #include "compiler/expression/ftnode.h"
 #include "zorbautils/locale.h"
+#include "zorbatypes/zstring.h"
 
 namespace zorba {
 
@@ -35,12 +35,12 @@ public:
   static ft_stop_words_set const* construct( ftstop_word_option const&,
                                              locale::iso639_1::type );
 
-  bool contains( std::string const &word ) const {
+  bool contains( zstring const &word ) const {
     return word_set_->find( word ) != word_set_->end();
   }
 
 private:
-  typedef std::set<std::string> set_t;
+  typedef std::set<zstring> set_t;
 
   set_t const *const word_set_;
   bool const delete_;

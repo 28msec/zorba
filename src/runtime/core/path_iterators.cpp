@@ -187,7 +187,7 @@ bool AxisIteratorHelper::nameOrKindTest(
     case match_no_wild:
     {
       if (theQName->equals(node->getNodeName()))
-	return true;
+        return true;
 
       return false;
     }
@@ -197,15 +197,15 @@ bool AxisIteratorHelper::nameOrKindTest(
     }
     case match_prefix_wild:
     {
-      if (theQName->getLocalName()->equals(node->getNodeName()->getLocalName()))
-	return true;
+      if (theQName->getLocalName() == node->getNodeName()->getLocalName())
+        return true;
 
       return false;
     }
     case match_name_wild:
     {
-      if (theQName->getNamespace()->equals(node->getNodeName()->getNamespace()))
-	return true;
+      if (theQName->getNamespace() == node->getNodeName()->getNamespace())
+        return true;
 
       return false;
     }
@@ -334,7 +334,7 @@ doctest2:
       return false;
 
     if (theQName != NULL &&
-        !theQName->getLocalName()->equals(node->getTarget()))
+        theQName->getLocalName() != node->getTarget())
       return false;
 
     return true;

@@ -17,6 +17,8 @@
 #include "zorbatypes/decimal.h"
 #include "zorbatypes/floatimpl.h"
 #include "zorbatypes/numconversions.h"
+#include "zorbaserialization/zorba_class_serializer.h"
+
 #include <stdlib.h>
 
 #ifndef ZORBA_NO_BIGNUMBERS
@@ -255,8 +257,8 @@ Integer Integer::parseDecimal(const Decimal& aDecimal)
 Integer Integer::parseLong(int64_t aLong) 
 {
 #ifndef ZORBA_NO_BIGNUMBERS
-  xqpStringStore_t lStrRep = NumConversions::longToStr(aLong);
-  MAPM lMAPM = lStrRep->c_str();
+  zstring lStrRep = NumConversions::longToStr(aLong);
+  MAPM lMAPM = lStrRep.c_str();
   return Integer(lMAPM);
 #else
   return Integer((IMAPM)aLong);
@@ -267,8 +269,8 @@ Integer Integer::parseLong(int64_t aLong)
 Integer Integer::parseULong(uint64_t aULong) 
 {
 #ifndef ZORBA_NO_BIGNUMBERS
-  xqpStringStore_t lStrRep = NumConversions::ulongToStr(aULong);
-  MAPM lMAPM = lStrRep->c_str();
+  zstring lStrRep = NumConversions::ulongToStr(aULong);
+  MAPM lMAPM = lStrRep.c_str();
   return Integer(lMAPM);
 #else
   return Integer((IMAPM)aULong);
@@ -287,8 +289,8 @@ Integer Integer::parseInt(int32_t aInt)
 Integer Integer::parseUInt(uint32_t aUInt) 
 {
 #ifndef ZORBA_NO_BIGNUMBERS
-  xqpStringStore_t lStrRep = NumConversions::uintToStr(aUInt);
-  MAPM lMAPM = lStrRep->c_str();
+  zstring lStrRep = NumConversions::uintToStr(aUInt);
+  MAPM lMAPM = lStrRep.c_str();
   return Integer(lMAPM);
 #else
   return Integer((IMAPM)aUInt);
@@ -299,8 +301,8 @@ Integer Integer::parseUInt(uint32_t aUInt)
 Integer Integer::parseSizeT(size_t aSizeT) 
 {
 #ifndef ZORBA_NO_BIGNUMBERS
-  xqpStringStore_t lStrRep = NumConversions::sizetToStr(aSizeT);
-  MAPM lNumber = lStrRep->c_str();
+  zstring lStrRep = NumConversions::sizetToStr(aSizeT);
+  MAPM lNumber = lStrRep.c_str();
   return Integer(lNumber);
 #else
   return Integer((IMAPM)aSizeT);
@@ -552,18 +554,18 @@ bool Integer::operator>=(const Double& aDouble) const
 }
 
 
-xqpStringStore_t Integer::toString() const 
+zstring Integer::toString() const 
 {
 #ifndef ZORBA_NO_BIGNUMBERS
   char* lBuffer = new char[theInteger.exponent()+3];
   theInteger.toIntegerString(lBuffer);
-  xqpStringStore* lResult = new xqpStringStore(lBuffer);
+  zstring lResult(lBuffer);
   delete[] lBuffer;
   return lResult;
 #else
   char lBuffer[124];
   sprintf(lBuffer, "%d", theInteger);
-  return new xqpStringStore(lBuffer);
+  return lBuffer;
 #endif
 }
 
@@ -622,7 +624,7 @@ uint32_t Integer::hash() const
 
 std::ostream& operator<<(std::ostream& os, const Integer& aInteger) 
 {
-  os << aInteger.toString()->str();
+  os << aInteger.toString();
   return os;
 }
 

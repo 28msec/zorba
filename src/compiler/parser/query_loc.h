@@ -16,9 +16,9 @@
 #ifndef ZORBA_QUERY_LOC_H
 #define ZORBA_QUERY_LOC_H
 
-#include <string>
-
-#include "zorbatypes/xqpstring.h"
+#include "zorbatypes/zstring.h"
+#include "zorbaserialization/archiver.h"
+#include "zorbaserialization/class_serializer.h"
 
 namespace zorba {
 
@@ -37,7 +37,7 @@ public:
   static QueryLoc null;
 
 private:
-  xqpString    theFilename;
+  zstring      theFilename;
   unsigned int theLineBegin;
   unsigned int theColumnBegin;
   unsigned int theLineEnd;
@@ -56,9 +56,15 @@ public:
   virtual ~QueryLoc() {}
 
 public:
-  const xqpString& getFilename() const { return theFilename; }
+  const zstring& getFilename() const { return theFilename; }
  
-  void setFilename(xqpString aFilename);
+  void setFilename(zstring const &aFilename) {
+    theFilename = aFilename;
+  }
+
+  void setFilename(char const *aFilename) {
+    theFilename = aFilename;
+  }
 
   unsigned int getLineBegin() const { return theLineBegin; }  
    
@@ -77,10 +83,6 @@ public:
   void setColumnEnd(unsigned int aColumnEnd) { theColumnEnd = aColumnEnd; }
 
   unsigned int getLineno() const { return getLineBegin(); }
- 
-  //void setFunctionName(std::string aName) { theFunctionName = aName; }
-
-  //std::string getFunctionName() const { return theFunctionName; }
  
   bool equals(const QueryLoc& loc) const;
 
@@ -101,3 +103,4 @@ std::ostream& operator<< (std::ostream& aOstr, const QueryLoc& aQueryLoc);
 } // namespace zorba
 
 #endif
+/* vim:set et sw=2 ts=2: */

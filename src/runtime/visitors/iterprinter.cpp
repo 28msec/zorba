@@ -16,7 +16,7 @@
 #include <iostream>
 
 #include "runtime/visitors/iterprinter.h"
-#include <zorbautils/strutil.h>
+#include "util/ascii_util.h"
 
 namespace zorba {
 
@@ -135,10 +135,10 @@ void DOTIterPrinter::addAttribute(const std::string& aName, const std::string& a
   std::string mvalue = aValue;
 
   if(aValue.find('"') != std::string::npos)
-    zorba::str_replace_all(mvalue, "\"", "\\\"");
+    ascii::replace_all(mvalue, "\"", "\\\"");
 
   if(aValue.find("\n") != std::string::npos)
-    zorba::str_replace_all(mvalue, "\n", " \\n ");
+    ascii::replace_all(mvalue, "\n", " \\n ");
 
   theOStream << "\\n" << aName << "=" << mvalue;
 }

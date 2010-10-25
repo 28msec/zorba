@@ -26,10 +26,11 @@
 #include <zorba/error.h>
 
 #include "util/stl_util.h"
+#include "util/unicode_util.h"
+#include "util/utf8_util.h"
 #include "zorbaerrors/error_manager.h"
 #include "zorbautils/icu_tokenizer.h"
 #include "zorbautils/mutex.h"
-#include "zorbautils/unicode_util.h"
 
 using namespace std;
 U_NAMESPACE_USE
@@ -177,7 +178,7 @@ ICU_Tokenizer::ICU_Tokenizer( bool wildcards ) : wildcards_( wildcards ) {
 
 #define IF_GOT_BACKSLASH_APPEND_AND_GOTO(GOTO)  \
   if ( !got_backslash ) ; else {                \
-    t.append( utf8_buf.get(), utf8_len );       \
+    t.append( utf8_buf, utf8_len );             \
     got_backslash = false;                      \
     goto GOTO;                                  \
   }
@@ -190,23 +191,25 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, int utf8_len,
                               void *payload ) {
   ICU_Iterators &iters = get_iterators_for( lang );
 
-  int32_t utf16_len;
-  auto_vec<UChar> const utf16_buf(
-    utf8_to_utf16( utf8_s, utf8_len, &utf16_len )
-  );
+  unicode::char_type *utf16_buf;
+  unicode::size_type utf16_len;
+  if ( !unicode::to_string( utf8_s, utf8_len, &utf16_buf, &utf16_len ) ) {
+    // TODO
+  }
+  auto_vec<unicode::char_type> const auto_utf16_buf( utf16_buf );
 
   //
   // ICU bizarrely treats newline and carriage-return as sentence terminators
   // so convert all non-space whitespace characters to space characters.
   //
-  UChar *c = utf16_buf.get();
+  unicode::char_type *c = utf16_buf;
   for ( int i = 0; i < utf16_len; ++i, ++c ) {
     if ( u_isspace( *c ) )
       *c = L' ';
   }
 
   // This UnicodeString wraps the existing buffer: no copy is made.
-  UnicodeString const utf16_s( false, utf16_buf.get(), utf16_len );
+  UnicodeString const utf16_s( false, utf16_buf, utf16_len );
 
   iters.word_->setText( utf16_s );
   int32_t word_start = iters.word_->first(), word_end = iters.word_->next();
@@ -226,11 +229,16 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, int utf8_len,
   bool in_brace = false;
 
   while ( word_end != BreakIterator::DONE ) {
-    int32_t const utf16_len = word_end - word_start;
-    int32_t utf8_len;
-    auto_vec<char> const utf8_buf(
-      utf16_to_utf8( utf16_buf.get() + word_start, utf16_len, &utf8_len )
-    );
+    unicode::char_type const *const word = utf16_buf + word_start;
+    unicode::size_type const word_len = word_end - word_start;
+
+    utf8::storage_type *utf8_buf;
+    utf8::size_type utf8_len;
+    if ( !utf8::to_string( word, word_len, &utf8_buf, &utf8_len ) ) {
+      // TODO
+    }
+    auto_vec<utf8::storage_type> const auto_utf8_buf( utf8_buf );
+
     int32_t const rule_status = iters.word_->getRuleStatus();
 
     //
@@ -240,7 +248,7 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, int utf8_len,
     bool is_junk = false;
 
 #   if DEBUG_TOKENIZER
-    cout << "GOT: \"" << string( utf8_buf.get(), utf8_len ) << "\" ";
+    cout << "GOT: \"" << string( utf8_buf, utf8_len ) << "\" ";
 #   endif
 
     if ( IS_WORD_BREAK( NONE, rule_status ) ) {
@@ -302,8 +310,8 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, int utf8_len,
         //
         // Validate that the token matches the regex "[0-9]+,[0-9]+".
         //
-        char const *c = utf8_buf.get();
-        int i;
+        utf8::storage_type const *c = utf8_buf;
+        utf8::size_type i;
         for ( i = 0; i < utf8_len; ++i, ++c ) {
           if ( i && *c == ',' )
             break;
@@ -338,9 +346,9 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, int utf8_len,
 set_token:
     if ( !is_junk ) {
       if ( in_wild || got_backslash )
-        t.append( utf8_buf.get(), utf8_len );
+        t.append( utf8_buf, utf8_len );
       else
-        t.set( utf8_buf.get(), utf8_len, token_no_++, sent_no_, para_no_ );
+        t.set( utf8_buf, utf8_len, token_no_++, sent_no_, para_no_ );
     }
 
 next:

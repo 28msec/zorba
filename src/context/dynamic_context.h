@@ -106,8 +106,8 @@ public:
 
   static xqpString expand_varname(
         static_context* sctx,
-        const xqpStringStore_t& ns,
-        const xqpStringStore_t& localname);
+        const zstring& ns,
+        const zstring& localname);
 
 public:
   dynamic_context(dynamic_context* parent = NULL);

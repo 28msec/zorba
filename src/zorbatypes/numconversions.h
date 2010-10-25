@@ -67,33 +67,33 @@ public:
     Numeric to String Conversions
   ******************************************************************************/
 
-  static xqpStringStore_t doubleToStr(xqp_double aDouble);
+  static zstring doubleToStr(xqp_double aDouble);
 
-  static xqpStringStore_t floatToStr(xqp_float aFloat);
+  static zstring floatToStr(xqp_float aFloat);
 
-  static xqpStringStore_t decimalToStr(xqp_decimal aDecimal);
+  static zstring decimalToStr(xqp_decimal aDecimal);
 
-  static xqpStringStore_t integerToStr(xqp_integer aInteger);
+  static zstring integerToStr(xqp_integer aInteger);
 
-  static xqpStringStore_t uintegerToStr(xqp_uinteger aUInteger);
+  static zstring uintegerToStr(xqp_uinteger aUInteger);
 
-  static xqpStringStore_t longToStr(xqp_long aLong);
+  static zstring longToStr(xqp_long aLong);
 
-  static xqpStringStore_t ulongToStr(xqp_ulong aULong);
+  static zstring ulongToStr(xqp_ulong aULong);
 
-  static xqpStringStore_t intToStr(xqp_int aInt);
+  static zstring intToStr(xqp_int aInt);
 
-  static xqpStringStore_t uintToStr(xqp_uint aUInt);
+  static zstring uintToStr(xqp_uint aUInt);
 
-  static xqpStringStore_t shortToStr(xqp_short aShort);
+  static zstring shortToStr(xqp_short aShort);
 
-  static xqpStringStore_t ushortToStr(xqp_ushort aUShort);
+  static zstring ushortToStr(xqp_ushort aUShort);
 
-  static xqpStringStore_t byteToStr(xqp_byte aByte);
+  static zstring byteToStr(xqp_byte aByte);
 
-  static xqpStringStore_t ubyteToStr(xqp_ubyte aUByte);
+  static zstring ubyteToStr(xqp_ubyte aUByte);
 
-  static xqpStringStore_t sizetToStr(size_t);
+  static zstring sizetToStr(size_t);
 
 
   /*****************************************************************************

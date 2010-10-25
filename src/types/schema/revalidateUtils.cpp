@@ -241,7 +241,8 @@ void processElement(
   ZORBA_ASSERT(element->getNodeKind() == store::StoreConsts::elementNode);
 
   store::Item_t nodeName = element->getNodeName();
-  xqpStringStore_t baseUri = element->getBaseURI();
+  zstring baseUri;
+  element->getBaseURI(baseUri);
 
   //cout << " vup    - processElement: " << nodeName->getLocalName()->c_str()
   //    << " @ " << nodeName->getNamespace()->c_str() << "\n"; cout.flush();
@@ -402,12 +403,15 @@ void processAttributes(
     //cout << " vup        - processATT2: " << att->theLocalName << " T: " << att->theTypeName << "\n";
 
     store::Item_t attQName;
-    GENV_ITEMFACTORY->createQName(attQName, att->theUri, att->thePrefix, att->theLocalName);
+    GENV_ITEMFACTORY->createQName(attQName,
+                                  att->theUri,
+                                  att->thePrefix,
+                                  att->theLocalName);
 
     store::Item_t attrib = findAttributeItem(parent, attQName);
 
-    std::string typePrefix;
-    if ( std::strcmp(Schema::XSD_NAMESPACE, att->theTypeURI->c_str() )==0 ) // hack around typeManager bug for comparing QNames
+    zstring typePrefix;
+    if ( att->theTypeURI == Schema::XSD_NAMESPACE) // hack around typeManager bug for comparing QNames
       typePrefix = "xs";
     else
       typePrefix = "";
@@ -415,7 +419,7 @@ void processAttributes(
     store::Item_t typeQName;
     GENV_ITEMFACTORY->createQName(typeQName,
                                   att->theTypeURI,
-                                  new xqpStringStore(typePrefix),
+                                  typePrefix,
                                   att->theTypeName);
 
     std::vector<store::Item_t> typedValues;
@@ -500,17 +504,19 @@ int processChildren(
       {
         //cout << " vup        - pC text: '" << child->getStringValue()->normalizeSpace()->str() << "'\n"; cout.flush();
 
-        xqpStringStore_t childStringValue;
-        child->getStringValue(childStringValue);
+        zstring childStringValue;
+        child->getStringValue2(childStringValue);
+
         schemaValidator.text(childStringValue);
 
         store::Item_t typeQName = schemaValidator.getTypeQName();
+        xqpStringStore_t tmp = new xqpStringStore(childStringValue.c_str());
 
         processTextValue(pul,
                          typeManager,
                          nsCtx,
                          typeQName,
-                         childStringValue,
+                         tmp,
                          child,
                          typedValues );
       }
@@ -600,14 +606,16 @@ void processTextValue (
       // else isAtomic
     }
 
-    bool isResult = GenericCast::castToAtomic(result, textValue, type.getp(),
+    zstring tmp(textValue->str());
+    bool isResult = GenericCast::castToAtomic(result, tmp, type.getp(),
                                               typeManager, &nsCtx);
     if ( isResult )
       resultList.push_back(result);
   }
   else
   {
-    if ( GENV_ITEMFACTORY->createUntypedAtomic( result, textValue) )
+    zstring tmp = textValue->str();
+    if ( GENV_ITEMFACTORY->createUntypedAtomic( result, tmp) )
       resultList.push_back(result);
   }
 }

@@ -14,15 +14,6 @@
  * limitations under the License.
  */
 
-
-#ifdef _WIN32
-  // Include the NOMINMAX definition before windwows.h is included,
-  // so that min and max macros are not defined, and std::max and std::min
-  // uses do not generate errors on Windows.
-#define NOMINMAX
-#endif
-
-
 #include <fstream>
 #include "system/properties.h"
 #include "compiler/parser/xquery_driver.h"
@@ -43,7 +34,7 @@
 #include "compiler/api/compilercb.h"
 #include "context/static_context.h"
 #include "zorbaerrors/error_manager.h"
-#include "compiler/parser/util.h"
+#include "util/utf8_util.h"
 
 namespace zorba
 {
@@ -127,7 +118,7 @@ ZorbaParserError* xquery_driver::invalidCharRef(const char* _message, const loca
   temp = temp.substr(temp.find("&"));
 
   // while (temp.size()>0 && xqpStringStore::starts_with_ref(temp.c_str()))
-  while (temp.size()>0 && decode_entity(temp.c_str(), &out) != -1)
+  while (temp.size()>0 && utf8::parse_xml_entity(temp.c_str(), &out) != -1)
   {
     temp = temp.substr(temp.find(";") + 1);
     if (temp.find("&") != std::string::npos)
@@ -162,11 +153,12 @@ ZorbaParserError* xquery_driver::parserErr(const std::string& _message, const Qu
 }
 
 
-bool xquery_driver::parse_stream(std::istream& in, const xqpString& aFilename)
+bool xquery_driver::parse_stream(std::istream& in, const zstring& aFilename)
 {
   int ch[3];
 
   theFilename = aFilename;
+  theFilename2 = theFilename.str();
 
   // process the UTF16 Byte Order Mark = \xEF\xBB\xBF
   if (in.peek() == 0xEF)
@@ -204,22 +196,26 @@ bool xquery_driver::parse_stream(std::istream& in, const xqpString& aFilename)
   return (parser.parse() == 0);
 }
 
-bool xquery_driver::parse_file(const xqpString& aFilename)
+bool xquery_driver::parse_file(const zstring& aFilename)
 {
   std::ifstream in(aFilename.c_str());
   return parse_stream(in, aFilename);
 }
 
-bool xquery_driver::parse_string(const xqpString& input)
+bool xquery_driver::parse_string(const zstring& input)
 {
-  std::istringstream iss(input);
+  std::istringstream iss(input.str());
   return parse_stream(iss);
 }
 
 void xquery_driver::set_expr(parsenode* e_p)
 {
   if (theCompilerCB->theConfig.parse_cb != NULL)
-    theCompilerCB->theConfig.parse_cb(e_p, theCompilerCB->theRootSctx->get_entity_retrieval_uri()->str());
+  {
+    zstring uri;
+    theCompilerCB->theRootSctx->get_entity_retrieval_uri(uri);
+    theCompilerCB->theConfig.parse_cb(e_p, uri.str());
+  }
   expr_p = e_p;
 }
 

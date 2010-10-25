@@ -39,6 +39,7 @@
 #include <vector>
 
 #include "compiler/parsetree/parsenodes.h"
+#include "zorbatypes/zstring.h"
 
 #ifdef __GNUC__
     // disable a warning in location.hh which comes with bison
@@ -52,8 +53,8 @@
 #  pragma GCC diagnostic warning "-Wparentheses"
 #endif
 
-typedef std::list<std::string> string_list_t;
-typedef std::pair<std::string,std::string> string_pair_t;
+typedef std::list<zorba::zstring> string_list_t;
+typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 
 
@@ -69,13 +70,6 @@ typedef std::pair<std::string,std::string> string_pair_t;
 */
 
 %{
-
-#ifdef WIN32
-  // Include the NOMINMAX definition before windwows.h is included,
-  // so that min and max macros are not defined, and std::max and std::min
-  // uses do not generate errors on Windows.
-#define NOMINMAX
-#endif
 
 #include "common/common.h"
 
@@ -129,7 +123,7 @@ using namespace zorba;
 %locations
 %initial-action
 {
-    @$.begin.filename = @$.end.filename = &(driver.theFilename.getStore()->str());
+    @$.begin.filename = @$.end.filename = &(driver.theFilename2);
 };
 
 
@@ -1046,7 +1040,7 @@ UnrecognizedToken
           if ($1 != NULL) {
             error(@$, $1->msg);
           } else
-            error(@$, std::string("syntax error, unexpected character"));
+            error(@$, string("syntax error, unexpected character"));
           YYERROR;
         }
     ;
@@ -1094,8 +1088,7 @@ ModuleWithoutBOM
 VersionDecl
     :   XQUERY VERSION STRING_LITERAL SEMI
         {
-            std::string encoding = "utf-8";
-            $$ = new VersionDecl( LOC(@$), SYMTAB($3), encoding );
+            $$ = new VersionDecl( LOC(@$), SYMTAB($3), "utf-8" );
         }
     |   XQUERY VERSION STRING_LITERAL ENCODING STRING_LITERAL SEMI
         {
@@ -1296,7 +1289,7 @@ DecimalFormatParam
     :   DecimalFormatParamName EQUALS StringLiteral
         {
             StringLiteral *sl = static_cast<StringLiteral*>($3);
-            $$ = new string_pair_t( $1, sl->get_strval() );
+            $$ = new string_pair_t( $1, sl->get_strval().str() );
             delete sl;
         }
     ;
@@ -2048,7 +2041,7 @@ BlockDecls
     :   BlockDecls BlockVarDeclList SEMI
         {
             VFO_DeclList *vfo = dynamic_cast<VFO_DeclList*>($1);
-            std::auto_ptr<VFO_DeclList> vfo2( dynamic_cast<VFO_DeclList*>($2) );
+            auto_ptr<VFO_DeclList> vfo2( dynamic_cast<VFO_DeclList*>($2) );
             if ( !$1 )
                 vfo = new VFO_DeclList( LOC(@$) );
             vfo->push_back( *vfo2.get() );
@@ -2086,6 +2079,7 @@ BlockVarDecl:
   | DOLLAR QNAME TypeDeclaration
     {
       VarDecl* vd = new VarDecl(LOC(@$), static_cast<QName*>($2), dynamic_cast<SequenceType*>($3), NULL, NULL);
+
       vd->set_global(false);
       $$ = vd;
     }
@@ -2360,7 +2354,7 @@ Expr
         }
     |   ConcatExpr ApplyExpr
         {
-            std::auto_ptr<BlockBody> blk( dynamic_cast<BlockBody*>($2) );
+            auto_ptr<BlockBody> blk( dynamic_cast<BlockBody*>($2) );
             BlockBody *blk2 = new BlockBody( LOC(@$) );
             blk2->add( $1 );
 
@@ -4387,9 +4381,7 @@ QuoteAttrContentList
     :   ESCAPE_QUOTE
         {
             QuoteAttrContentList *qacl = new QuoteAttrContentList( LOC(@$) );
-            qacl->push_back(
-                new QuoteAttrValueContent( LOC(@$),std::string("\"") )
-            );
+            qacl->push_back( new QuoteAttrValueContent( LOC(@$), "\"" ) );
             $$ = qacl;
         }
     |   QuoteAttrValueContent
@@ -4403,9 +4395,7 @@ QuoteAttrContentList
             QuoteAttrContentList *qacl =
                 dynamic_cast<QuoteAttrContentList*>($1);
             if ( qacl )
-                qacl->push_back(
-                    new QuoteAttrValueContent( LOC(@$),std::string("\"") )
-                );
+                qacl->push_back( new QuoteAttrValueContent( LOC(@$), "\"" ) );
             $$ = $1;
         }
     |   QuoteAttrContentList QuoteAttrValueContent
@@ -6205,9 +6195,9 @@ NCNAME
     :   NCNAME_SVAL
     |   QNAME
         {
-          std::auto_ptr<QName> lQName( static_cast<QName*>($1) );
-          std::string tmp = lQName->get_qname();
-          if ( tmp.find (':') != std::string::npos ) {
+          auto_ptr<QName> lQName( static_cast<QName*>($1) );
+          zstring const &tmp = lQName->get_qname();
+          if ( tmp.find (':') != string::npos ) {
             error(@1, "A NCName is expected, found a QName");
             YYERROR;
           }
@@ -6453,14 +6443,14 @@ const char *the_tumbling = "tumbling", *the_sliding = "sliding",
 /*
  *  The error member function registers the errors to the driver.
  */
-void xquery_parser::error(zorba::xquery_parser::location_type const& loc, std::string const& msg)
+void xquery_parser::error(zorba::xquery_parser::location_type const& loc, string const& msg)
 {
   if (driver.parserError != NULL)
     driver.set_expr(new ParseErrorNode(driver.parserError->loc, XPST0003, driver.parserError->msg));
   else
   {
     // remove the double quoting "''" from every token description
-    std::string message = msg;
+    string message = msg;
     int pos;
     while ((pos = message.find("\"'")) != -1 || (pos = message.find("'\"")) != -1)
       message.replace(pos, 2, "\"");

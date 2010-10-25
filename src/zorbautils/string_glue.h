@@ -14,32 +14,34 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_FULL_TEXT_ICU_WILDCARD_MATCHER_H
-#define ZORBA_FULL_TEXT_ICU_WILDCARD_MATCHER_H
+#ifndef ZORBA_STRING_GLUE_H
+#define ZORBA_STRING_GLUE_H
 
-#include <memory>
-#include <unicode/regex.h>
+#include "zorbatypes/xqpstring.h"
 
-#include "runtime/full_text/ft_wildcard.h"
+//
+// This is a temporary file to be used only during the xqpStringStore to
+// zstring transition.
+//
 
 namespace zorba {
 
-class icu_wildcard : public ft_wildcard {
-public:
-  icu_wildcard() { }
+template<class StringType> inline
+xqpString to_xqpString( StringType const &s ) {
+  return xqpString( s.c_str() );
+}
 
-  void compile( std::string const &xquery_pattern );
-  bool matches( std::string const &string ) const;
+template<class StringType> inline
+xqpStringStore to_xqpStringStore( StringType const &s ) {
+  return xqpStringStore( s.data(), s.size() );
+}
 
-private:
-  typedef std::auto_ptr<U_NAMESPACE_QUALIFIER RegexMatcher> RegexMatcher_ptr;
-  RegexMatcher_ptr matcher_;
+template<class StringType> inline
+xqpStringStore_t to_xqpStringStore_t( StringType const &s ) {
+  return xqpStringStore_t( new xqpStringStore( s.data(), s.size() ) );
+}
 
-  // forbid these
-  icu_wildcard( icu_wildcard const& );
-  icu_wildcard& operator=( icu_wildcard const& );
-};
+} // namespace
 
-} // namespace zorba
-#endif  /* ZORBA_FULL_TEXT_ICU_WILDCARD_MATCHER_H */
+#endif
 /* vim:set et sw=2 ts=2: */

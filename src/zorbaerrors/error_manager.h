@@ -22,6 +22,7 @@
 #include <zorba/config.h>
 #include <zorba/error.h>
 #include "zorbaerrors/errors.h"
+#include "zorbatypes/zstring.h"
 
 namespace zorba { namespace error {
 
@@ -74,7 +75,7 @@ public:
   static ZorbaError
   createException(
         XQUERY_ERROR        aErrorCode,
-        const xqpString&    aDescription,
+        const zstring&      aDescription,
         const std::string&  aFileName,
         int                 aLineNumber,
         unsigned int        aQueryLine,
@@ -102,7 +103,7 @@ public:
   void
   addError(
         XQUERY_ERROR        aErrorCode,
-        const xqpString&    aDescription,
+        const zstring&      aDescription,
         const std::string&  aFileName,
         int                 aLineNumber,
         unsigned int        aQueryLine = 0,
@@ -123,7 +124,7 @@ public:
   void
   addWarning(
         ZorbaWarning::WarningCode aWarningCode,
-        const xqpString&          aDescription,
+        const zstring&            aDescription,
         const std::string&        aFileName,
         int                       aLineNumber,
         unsigned int              aQueryLine = 0,
@@ -155,7 +156,7 @@ public:
     throw error::ErrorManager::createException(code, __FILE__, __LINE__, \
                                                (loc).getLineBegin(),    \
                                                (loc).getColumnBegin(),  \
-                                               (loc).getFilename());    \
+                                               (loc).getFilename().str());    \
   } while (0 )
 
 
@@ -184,7 +185,7 @@ public:
                                                __FILE__, __LINE__,      \
                                                (loc).getLineBegin(),    \
                                                (loc).getColumnBegin(),  \
-                                               (loc).getFilename());    \
+                                               (loc).getFilename().str());    \
   } while (0) 
 
 #define ZORBA_ERROR_LOC_DESC(code, loc, desc) \
@@ -220,7 +221,7 @@ public:
                                                __FILE__, __LINE__,      \
                                                (loc).getLineBegin(),    \
                                                (loc).getColumnBegin(),  \
-                                               (loc).getFilename());    \
+                                               (loc).getFilename().str());    \
   } while (0) 
 
 
@@ -272,7 +273,7 @@ public:
                             __FILE__, __LINE__,                         \
                             (loc).getLineBegin(),                       \
                             (loc).getColumnBegin(),                     \
-                            (loc).getFilename());                       \
+                            (loc).getFilename().str());                       \
   } while (0) 
 
 
@@ -294,7 +295,7 @@ public:
     manager->addWarning(ZorbaWarning::code, desc, __FILE__, __LINE__,   \
                         (loc).getLineBegin(),                           \
                         (loc).getColumnBegin(),                         \
-                        (loc).getFilename());                           \
+                        (loc).getFilename().str());                           \
   } while (0) 
 
 

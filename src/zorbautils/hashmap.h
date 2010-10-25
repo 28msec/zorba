@@ -82,9 +82,21 @@ public:
     theNext = 0;
   }
 
-  bool isFree() const  { return theIsFree; }
-  void setFree()       { theIsFree = true; }
-  void unsetFree()     { theIsFree = false; }
+  bool isFree() const
+  {
+    return theIsFree;
+  }
+
+  void setFree()
+  {
+    theItem.~T();
+    theIsFree = true;
+  }
+
+  void unsetFree()
+  {
+    theIsFree = false;
+  }
 
   void setNext(HASHENTRY* nextEntry) 
   {

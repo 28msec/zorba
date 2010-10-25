@@ -13,490 +13,245 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include <zorba/zorbastring.h>
 
-#include "zorbatypes/xqpstring.h"
 #include "api/unmarshaller.h"
+#include "util/ascii_util.h"
+#include "util/static_assert.h"
+#include "util/string_util.h"
+#include "util/utf8_util.h"
+#include "zorbatypes/zorbatypesError.h"
+#include "zorbatypes/zstring.h"
+
+using namespace std;
 
 namespace zorba {
 
+/**
+ * The string type we're actually using.
+ */
+typedef zstring string_type;
 
-String::String()
-{
-  m_string = new xqpStringStore("");
-  RCHelper::addReference(m_string);
+#define STRING_OF(STRING_OBJ)                                             \
+  (const_cast<string_type*>(                                              \
+    reinterpret_cast<string_type const*>( &(STRING_OBJ).string_storage_ ) \
+  ))
+
+#define THIS_STRING STRING_OF( *this )
+
+void String::size_check() {
+  ZORBA_STATIC_ASSERT( sizeof( string_type ) <= sizeof( string_storage_type ) );
 }
 
-
-String::String(xqpStringStore* other)
-  :
-  m_string(other)
-{
-  if (m_string != NULL) 
-  {
-    RCHelper::addReference(m_string);
-  }
+String::String() {
+  new( THIS_STRING ) string_type;
 }
 
-
-String::String(const String& other)
-  :
-  m_string(other.m_string)
-{
-  if (m_string != NULL) 
-  {
-    RCHelper::addReference(m_string);
-  }
+String::String( String const &s ) {
+  new( THIS_STRING ) string_type( *STRING_OF( s ) );
 }
 
-
-String::String(const char* string)
-{
-  m_string = new xqpStringStore(string);
-  RCHelper::addReference(m_string);
+String::String( char const *s ) {
+  new( THIS_STRING ) string_type( s );
 }
 
-
-String::String(const std::string& string)
-{
-  m_string = new xqpStringStore(string);
-  RCHelper::addReference(m_string);
+String::String( string const &s ) {
+  new( THIS_STRING ) string_type( s );
 }
 
-
-String::~String()
-{
-  if (m_string != NULL) 
-  {
-    RCHelper::removeReference(m_string);
-  }
+String::~String() {
+  THIS_STRING->~string_type();
 }
 
-
-const char* String::c_str() const
-{
-  return m_string->c_str();
+char const* String::c_str() const {
+  return THIS_STRING->c_str();
 }
 
-
-const String& String::operator=(const String& rhs)
-{
-  if (m_string != rhs.m_string) 
-  {
-    if (m_string != NULL) 
-    {
-      RCHelper::removeReference(m_string);
-    }
-    m_string = rhs.m_string;
-    if (m_string != NULL) 
-    {
-      RCHelper::addReference(m_string);
-    }
-  }
+String const& String::operator=( String const &rhs ) {
+  *THIS_STRING = *STRING_OF( rhs );
   return *this;
 }
 
-
-const String& String::operator=(xqpStringStore* rhs)
-{
-  if (m_string != rhs) 
-  {
-    if (m_string != NULL) 
-    {
-      RCHelper::removeReference(m_string);
-    }
-
-    m_string = rhs;
-
-    if (m_string != NULL) 
-    {
-      RCHelper::addReference(m_string);
-    }
-  }
-  return *this;
+size_t String::length() const {
+  return utf8::length( THIS_STRING->c_str() );
 }
-
-
-size_t String::length() const
-{
-  return m_string->numChars();
-}
-
  
-size_t String::bytes() const
-{
-  return m_string->bytes();
+size_t String::bytes() const {
+  return THIS_STRING->length();
+}
+
+size_t String::nr_of_chars() const {
+	return THIS_STRING->length();
+}
+
+bool String::empty() const {
+  return THIS_STRING->empty();
+}
+
+int String::compare( String const &s ) const {
+  return THIS_STRING->compare( *STRING_OF( s ) );
+}
+
+bool String::equals( String const &s ) const {
+  return *THIS_STRING == *STRING_OF( s );
+}
+
+bool String::byteEqual( char const *s, unsigned s_n ) const {
+  return zorba::equals( *THIS_STRING, s, s_n );
+}
+
+bool String::operator==( String const &s ) const {
+  return *THIS_STRING == *STRING_OF( s );
+}
+
+bool String::operator<( String const &s ) const {
+  return *THIS_STRING < *STRING_OF( s );
+}
+
+bool String::operator<=( String const &s ) const {
+  return *THIS_STRING <= *STRING_OF( s );
+}
+
+bool String::operator>( String const &s ) const {
+  return *THIS_STRING > *STRING_OF( s );
 }
 
 
-size_t String::nr_of_chars() const
-{
-	return m_string->str().size();
+bool String::operator>=( String const &s ) const {
+  return *THIS_STRING >= *STRING_OF( s );
 }
 
-
-bool String::empty()  const
-{
-  return m_string->empty();
+char String::charAt( unsigned i ) const {
+  return THIS_STRING->at( i );
 }
 
-
-int String::compare(const String& string) const
-{
-  return m_string->compare(string.m_string);
+int String::indexOf( char const *pattern ) const {
+  return THIS_STRING->find( pattern );
 }
 
-
-bool String::equals(const String& aString) const
-{
-  return m_string->equals(aString.m_string);
+int String::lastIndexOf( char const *pattern ) const {
+  string_type::size_type const pos = THIS_STRING->rfind( pattern );
+  return pos == string_type::npos ? -1 : pos;
 }
 
-
-bool String::byteEqual(const char* aString, unsigned int aBytes) const
-{
-  return m_string->byteEqual( aString, aBytes );
+bool String::endsWith( char const *pattern ) const {
+  return utf8::ends_with( *THIS_STRING, pattern );
 }
 
-
-bool String::operator==(const String& str) const
-{
-  return equals(str);
+bool String::startsWith( char const *pattern ) const {
+  return utf8::begins_with( *THIS_STRING, pattern );
 }
 
-
-bool String::operator!=(const String& str) const
-{
-  return !equals(str);
+String String::substring( unsigned pos ) const {
+  return String( THIS_STRING->substr( pos ).c_str() );
 }
 
-bool
-String::operator<(const String& str) const
-{
-  return compare(str) < 0;
+String String::substring( unsigned pos, unsigned n ) const {
+  return String( THIS_STRING->substr( pos, n ).c_str() );
 }
 
-
-bool String::operator<=(const String& str) const
-{
-  return compare(str) <= 0;
+String String::append( char const *s ) const {
+  String result( *this );
+  STRING_OF( result )->append( s );
+  return result;
 }
 
-
-bool String::operator>(const String& str) const
-{
-  return compare(str) > 0;
+String String::append( String const &s ) const {
+  String result( *this );
+  STRING_OF( result )->append( *STRING_OF( s ) );
+  return result;
 }
 
-
-bool String::operator>=(const String& str) const
-{
-  return compare(str) >= 0;
-}
-
-
-char String::charAt(unsigned aIndex) const
-{
-  return m_string->byteAt( aIndex );
-}
-
-
-int String::indexOf(const char* pattern) const
-{
-  return m_string->bytePositionOf(pattern, strlen(pattern), 0);
-}
-
-
-int String::lastIndexOf(const char* pattern) const
-{
-  return m_string->byteLastPositionOf(pattern, strlen(pattern));
-}
-
-
-bool String::endsWith(const char* pattern) const
-{
-  return m_string->byteEndsWith(pattern, strlen(pattern));
-}
-
-
-bool String::startsWith(const char* pattern) const
-{
-  return m_string->byteStartsWith(pattern, strlen(pattern));
-}
-
-
-String String::substring(unsigned aIndex) const
-{
-  return String(m_string->substr( aIndex ));
-}
-
-
-String String::substring(unsigned int aIndex, unsigned int aLength) const
-{
-  return String(m_string->byteSubstr(aIndex, aLength));
-}
-
-
-String String::append(const char* suffix) const
-{
-  return String(m_string->append( suffix ));
-}
-
-
-String String::append(const String& suffix) const
-{
-  return String(m_string->append( suffix.c_str() ));
-}
-
-
-zorba::String String::operator+(const String& str) const
-{
-  return append(str);
-}
-
-
-zorba::String String::operator+(const char* str) const
-{
-  return append(str);
-}
-
-
-zorba::String& String::operator+=(const String& str)
-{
-  xqpStringStore_t tmp = m_string->append(str.m_string);
-
-  if (m_string != NULL) 
-  {
-    RCHelper::removeReference(m_string);
-  }
-
-  m_string = tmp.release();
+String& String::operator+=( String const &s ) {
+  THIS_STRING->append( *STRING_OF( s ) );
   return *this;
 }
 
-
-zorba::String& String::operator+=(const char* str)
-{
-  xqpStringStore_t tmp = m_string->append(str);
-
-  if (m_string != NULL) 
-  {
-    RCHelper::removeReference(m_string);
-  }
-
-  m_string = tmp.release();
+String& String::operator+=( char const *s ) {
+  THIS_STRING->append( s );
   return *this;
 }
 
-
-const String& String::uppercase()
-{
-  xqpStringStore_t res = m_string->uppercase();
-  if (m_string != res) {
-    if (m_string != NULL) {
-      RCHelper::removeReference(m_string);
-    }
-    m_string = res;
-    if (m_string != NULL) {
-      RCHelper::addReference(m_string);
-    }
-  }
+String& String::uppercase() {
+  utf8::to_upper( *THIS_STRING );
   return *this;
 }
 
-
-const String& String::lowercase()
-{
-  xqpStringStore_t res = m_string->lowercase();
-  if (m_string != res) {
-    if (m_string != NULL) {
-      RCHelper::removeReference(m_string);
-    }
-    m_string = res;
-    if (m_string != NULL) {
-      RCHelper::addReference(m_string);
-    }
-  }
+String& String::lowercase() {
+  utf8::to_lower( *THIS_STRING );
   return *this;
 }
 
-
-const String& String::normalizeSpace()
-{
-  xqpStringStore_t res = m_string->normalizeSpace();
-  if (m_string != res) {
-    if (m_string != NULL) {
-      RCHelper::removeReference(m_string);
-    }
-    m_string = res;
-    if (m_string != NULL) {
-      RCHelper::addReference(m_string);
-    }
-  }
+String& String::normalizeSpace() {
+  ascii::normalize_whitespace( *THIS_STRING );
   return *this;
 }
 
-
-const String& String::trim(const String aChars)
-{
-  xqpStringStore_t res = m_string->trim(aChars.c_str(), aChars.length());
-  if (m_string != res) {
-    if (m_string != NULL) {
-      RCHelper::removeReference(m_string);
-    }
-    m_string = res;
-    if (m_string != NULL) {
-      RCHelper::addReference(m_string);
-    }
-  }
+String& String::trim( String const &aChars ) {
+  ascii::trim( *THIS_STRING, STRING_OF( aChars )->c_str() );
   return *this;
 }
 
-
-const String& String::trim(const char* aChars, int aLength)
-{
-  xqpStringStore_t res = m_string->trim(aChars, aLength);
-  if (m_string != res) {
-    if (m_string != NULL) {
-      RCHelper::removeReference(m_string);
-    }
-    m_string = res;
-    if (m_string != NULL) {
-      RCHelper::addReference(m_string);
-    }
-  }
+String& String::trim(const char* aChars, int /* not used */ ) {
+  ascii::trim( *THIS_STRING, aChars );
   return *this;
 }
 
-
-const String& String::trim()
-{
-  xqpStringStore_t res = m_string->trim();
-  if (m_string != res) {
-    if (m_string != NULL) {
-      RCHelper::removeReference(m_string);
-    }
-    m_string = res;
-    if (m_string != NULL) {
-      RCHelper::addReference(m_string);
-    }
-  }
+String& String::trim() {
+  ascii::trim_whitespace( *THIS_STRING );
   return *this;
 }
 
-
-const String& String::formatAsXML()
-{
-  xqpStringStore_t res = m_string->formatAsXML();
-  if (m_string != res) {
-    if (m_string != NULL) {
-      RCHelper::removeReference(m_string);
-    }
-    m_string = res;
-    if (m_string != NULL) {
-      RCHelper::addReference(m_string);
-    }
-  }
+String& String::formatAsXML() {
+  string_type temp;
+  ascii::to_xml( *THIS_STRING, &temp );
+  *THIS_STRING = temp;
   return *this;
 }
 
-
-const String& String::escapeHtmlUri()
-{
-  xqpStringStore_t res = m_string->escapeHtmlUri();
-  if (m_string != res) 
-  {
-    if (m_string != NULL) 
-    {
-      RCHelper::removeReference(m_string);
-    }
-    m_string = res;
-    if (m_string != NULL) 
-    {
-      RCHelper::addReference(m_string);
-    }
-  }
+String& String::escapeHtmlUri() {
+  utf8::to_html_uri( *THIS_STRING );
   return *this;
 }
 
-
-const String& String::iriToUri()
-{
-  xqpStringStore_t res = m_string->iriToUri();
-  if (m_string != res) 
-  {
-    if (m_string != NULL) 
-    {
-      RCHelper::removeReference(m_string);
-    }
-    m_string = res;
-    if (m_string != NULL) 
-    {
-      RCHelper::addReference(m_string);
-    }
-  }
+String& String::iriToUri() {
+  utf8::iri_to_uri( *THIS_STRING );
   return *this;
 }
 
-
-const String& String::encodeForUri()
-{
-  xqpStringStore_t res;
-  m_string->encodeForUri(res);
-  if (m_string != res) 
-  {
-    if (m_string != NULL)
-    {
-      RCHelper::removeReference(m_string);
-    }
-    m_string = res;
-    if (m_string != NULL)
-    {
-      RCHelper::addReference(m_string);
-    }
-  }
+String& String::encodeForUri() {
+  ascii::uri_encode( *THIS_STRING );
   return *this;
 }
 
-
-const String& String::decodeFromUri()
-{
-  xqpStringStore_t res;
-  m_string->decodeFromUri(res);
-  if (m_string != res) 
-  {
-    if (m_string != NULL) 
-    {
-      RCHelper::removeReference(m_string);
-    }
-    m_string = res;
-    if (m_string != NULL) 
-    {
-      RCHelper::addReference(m_string);
-    }
-  }
+String& String::decodeFromUri() {
+  ascii::uri_decode( *THIS_STRING );
   return *this;
 }
 
-String String::tokenize(String pattern,
-                        String flags,
-                        int32_t *startPos,
-                        bool *hasMatched) const
-{
-  xqpString lStr(m_string);
-  xqpString lXqpRes =
-      lStr.tokenize(xqpString(Unmarshaller::getInternalString(pattern)),
-                    xqpString(Unmarshaller::getInternalString(flags)),
-                    startPos, hasMatched);
-  String lRes(lXqpRes.getStore());
-  return lRes;
+String String::tokenize( String const &pattern, String const &flags,
+                         int32_t *pos, bool *got_token ) const {
+  unicode::regex re;
+  char const *const c_pattern = STRING_OF( pattern )->c_str();
+
+  if ( !re.compile( c_pattern, STRING_OF( flags )->c_str() ) )
+    throw zorbatypesException( c_pattern, ZorbatypesError::FORX0002 );
+
+  unicode::string u_token;
+  *got_token = re.next_token( *THIS_STRING, pos, &u_token );
+  if ( *got_token ) {
+    string token;
+    utf8::to_string( u_token, &token );
+    return String( token );
+  }
+  return String();
 }
 
 
-std::ostream& operator <<(std::ostream& os, const String& str)
-{
-  return os << *Unmarshaller::getInternalString(str);
+ostream& operator<<( ostream &os, String const &s ) {
+  return os << *STRING_OF( s );
 }
 
-
-}
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

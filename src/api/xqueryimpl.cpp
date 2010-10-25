@@ -27,9 +27,10 @@
 
 #include <zorbatypes/URI.h>
 
-#include "zorbautils/lock.h"
-#include "zorbaerrors/errors.h"
 #include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/errors.h"
+#include "zorbatypes/zstring.h"
+#include "zorbautils/lock.h"
 
 #include "system/globalenv.h"
 
@@ -130,8 +131,6 @@ XQueryImpl::XQueryImpl()
   theIsDebugMode(false),
   theProfileName("xquery_profile.out")
 {
-  theFileName = new xqpStringStore("");
-
   // TODO ideally, we will have to move the error handler into the error manager
   //      however, this is not possible yet because not all components of the system
   //      have a control block available.
@@ -203,8 +202,6 @@ void XQueryImpl::serialize(::zorba::serialization::Archiver& ar)
 void XQueryImpl::setFileName(const String& aFileName)
 {
   theFileName = Unmarshaller::getInternalString(aFileName);
-  if (theFileName == NULL)
-    theFileName = new xqpStringStore("");
 }
 
 
@@ -213,7 +210,7 @@ void XQueryImpl::setFileName(const String& aFileName)
 ********************************************************************************/
 String XQueryImpl::getFileName()
 {
-  return String(theFileName);
+  return String(theFileName.c_str());
 }
 
 
@@ -363,8 +360,7 @@ void XQueryImpl::compile(const String& aQuery, const Zorba_CompilerHints_t& aHin
     checkNotClosed();
     checkNotCompiled();
 
-    xqpString lQuery = Unmarshaller::getInternalString(aQuery);
-    std::istringstream lQueryStream(lQuery);
+    std::istringstream lQueryStream(aQuery.c_str());
 
     doCompile(lQueryStream, aHints);
   }
@@ -404,14 +400,13 @@ void XQueryImpl::compile(
     checkNotCompiled();
 
     theStaticContext = Unmarshaller::getInternalStaticContext(aStaticContext);
-    xqpString lQuery = Unmarshaller::getInternalString(aQuery);
 
     // if the static context results from loadProlog, we need all the contexts
     // that were created when compiling the query
     theSctxMap = static_cast<StaticContextImpl*>(aStaticContext.get())->theSctxMap;
     theCompilerCB->theSctxMap = &theSctxMap;
 
-    std::istringstream lQueryStream(lQuery);
+    std::istringstream lQueryStream(aQuery.c_str());
 
     doCompile(lQueryStream, aHints);
   }
@@ -474,7 +469,7 @@ void XQueryImpl::doCompile(
       theStaticContext = theStaticContext->create_child_context();
   }
 
-  xqpStringStore_t url;
+  zstring url;
   URI::encode_file_URI(theFileName, url);
 
   theStaticContext->set_entity_retrieval_uri(url);
@@ -533,8 +528,9 @@ void XQueryImpl::loadProlog(
 
     theStaticContext = Unmarshaller::getInternalStaticContext(aStaticContext);
 
-    xqpString lQuery = Unmarshaller::getInternalString(aQuery);
-    std::istringstream lQueryStream(lQuery + "()");
+    zstring lQuery = Unmarshaller::getInternalString(aQuery);
+    lQuery += "()";
+    std::istringstream lQueryStream(lQuery.c_str());
 
     theCompilerCB->setLoadPrologQuery();
 
@@ -565,7 +561,7 @@ void XQueryImpl::parse(std::istream& aQuery)
       theStaticContext = theStaticContext->create_child_context();
     }
 
-    xqpStringStore_t url;
+    zstring url;
     URI::encode_file_URI(theFileName, url);
 
     theStaticContext->set_entity_retrieval_uri(url);

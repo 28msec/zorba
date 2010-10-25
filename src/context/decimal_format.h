@@ -17,7 +17,9 @@
 #define ZORBA_DECIMAL_FORMAT_H
 
 #include <vector>
+
 #include "common/shared_types.h"
+#include "zorbatypes/zstring.h"
 #include "zorbaserialization/serialization_engine.h"
 
 namespace zorba 
@@ -26,7 +28,7 @@ namespace zorba
 class DecimalFormat : public SimpleRCObject
 {
 public:
-  typedef std::vector<std::pair<std::string, std::string> > param_vector_type;
+  typedef std::vector<std::pair<zstring,zstring> > param_vector_type;
 
 protected:
   bool              theIsDefault;
@@ -67,3 +69,4 @@ typedef rchandle<DecimalFormat> DecimalFormat_t;
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */

@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 SET(UTIL_SRCS
+    ascii_util.cpp
     dynamic_bitset.cpp
     fx/mmfile.cpp
     fx/fxcharheap.cpp
@@ -19,6 +20,8 @@ SET(UTIL_SRCS
     dir.cpp
     indent.cpp
     XmlWhitespace.cpp
+    unicode_util.cpp
+    utf8_util.cpp
     uuid/sysdep.cpp
     uuid/uuid.cpp)
 

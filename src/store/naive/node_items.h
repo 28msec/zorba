@@ -46,6 +46,8 @@
 #include "zorbautils/fatal.h"
 #include "zorbautils/tokenizer.h"
 
+#include "zorbatypes/zstring.h"
+
 
 namespace zorba 
 { 
@@ -162,6 +164,16 @@ class XmlTree
 {
   friend class XmlNode;
 
+  // make sure that only created by the factory
+  friend class NodeFactory;
+
+#ifndef ZORBA_NO_FULL_TEXT
+public:
+  typedef NaiveFTTokenIterator::FTTokens FTTokens;
+
+  typedef FTTokens::size_type FTTokenIndex_t;
+#endif
+
 protected:
   mutable long              theRefCount;
   SYNC_CODE(mutable RCLock  theRCLock;)
@@ -169,8 +181,8 @@ protected:
   ulong                     theId;
   ulong                     thePos;
 
-  xqpStringStore_t          theDocUri;
-  xqpStringStore_t          theBaseUri;
+  zstring                   theDocUri;
+  zstring                   theBaseUri;
 
   SimpleCollection        * theCollection;
 
@@ -181,20 +193,16 @@ protected:
   bool                      theIsValidated;
   bool                      theIsRecursive;
 
-  // make sure that only created by the factory
-  friend class NodeFactory;
+#ifndef ZORBA_NO_FULL_TEXT
+  FTTokens                  theTokens;
+#endif
+
+protected:
   XmlTree(XmlNode* root, ulong id);
 
 #ifndef ZORBA_NO_FULL_TEXT
-public:
-  typedef NaiveFTTokenIterator::FTTokens FTTokens;
-  typedef FTTokens::size_type FTTokenIndex_t;
-
-protected:
-  FTTokens                  theTokens;
-
   FTTokens& getTokens() { return theTokens; }
-#endif /* ZORBA_NO_FULL_TEXT */
+#endif
 
 public:
   XmlTree();
@@ -205,8 +213,6 @@ public:
 
   long getRefCount() const { return theRefCount; }
   long& getRefCount()      { return theRefCount; }
-  void addReference()      { ++theRefCount; }
-  void removeReference()   { --theRefCount; }
 
   SYNC_CODE(RCLock& getRCLock() const { return theRCLock; })
 
@@ -214,13 +220,13 @@ public:
 
   ulong getId() const { return theId; }
 
-  xqpStringStore* getDocUri() const { return theDocUri.getp(); }
+  const zstring& getDocUri() const { return theDocUri; }
 
-  void setDocUri(const xqpStringStore_t& uri) { theDocUri = uri; }
+  void setDocUri(const zstring& uri) { theDocUri = uri; }
 
-  xqpStringStore* getBaseUri() const { return theBaseUri.getp(); }
+  const zstring& getBaseUri() const { return theBaseUri; }
 
-  void setBaseUri(const xqpStringStore_t& uri) { theBaseUri = uri; }
+  void setBaseUri(const zstring& uri) { theBaseUri = uri; }
 
   ulong getCollectionId() const;
 
@@ -254,7 +260,8 @@ public:
 /**
  * An <code>XmlNodeTokenizer</code> is-a Tokenizer::Callback TODO
  */
-class XmlNodeTokenizer : public Tokenizer::Callback {
+class XmlNodeTokenizer : public Tokenizer::Callback 
+{
 public:
   typedef XmlTree::FTTokens FTTokens;
 
@@ -272,25 +279,15 @@ public:
   void beginTokenization( XmlNode& );
   void endTokenization( XmlNode& );
 
-  void inc_para() {
-    tokenizer_.inc_para();
-  }
+  void inc_para() { tokenizer_.inc_para(); }
 
-  void push_element( ElementNode *element ) {
-    element_stack_.push( element );
-  }
+  void push_element( ElementNode *element ) { element_stack_.push( element ); }
 
-  void pop_element() {
-    element_stack_.pop();
-  }
+  void pop_element() { element_stack_.pop(); }
 
-  void push_lang( locale::iso639_1::type lang ) {
-    lang_stack_.push( lang );
-  }
+  void push_lang( locale::iso639_1::type lang ) { lang_stack_.push( lang ); }
 
-  void pop_lang() {
-    lang_stack_.pop();
-  }
+  void pop_lang() { lang_stack_.pop(); }
 
   void tokenize( char const *utf8_s, int len );
 
@@ -312,6 +309,7 @@ private:
   lang_stack_t lang_stack_;
 };
 #endif /* ZORBA_NO_FULL_TEXT */
+
 
 /******************************************************************************
 
@@ -372,6 +370,12 @@ protected:
   InternalNode    * theParent;
   uint32_t          theFlags;
 
+#ifndef ZORBA_NO_FULL_TEXT
+  mutable XmlTree::FTTokenIndex_t theBeginTokenIndex;
+  mutable XmlTree::FTTokenIndex_t theEndTokenIndex;
+#endif
+
+protected:
   XmlNode(store::StoreConsts::NodeKind nodeKind)
     :
     Item(),
@@ -399,9 +403,6 @@ protected:
   }
 
 #ifndef ZORBA_NO_FULL_TEXT
-  mutable XmlTree::FTTokenIndex_t theBeginTokenIndex;
-  mutable XmlTree::FTTokenIndex_t theEndTokenIndex;
-
   friend class XmlNodeTokenizer;
 
   void initTokens() 
@@ -447,12 +448,9 @@ public:
     return reinterpret_cast<const store::Collection*>(getTree()->getCollection()); 
   }
 
-  virtual xqpStringStore* getDocumentURI() const { return 0; }
-
-  xqpStringStore_t getBaseURI() const
+  void getDocumentURI(zstring& uri) const 
   {
-    bool local = false;
-    return getBaseURIInternal(local);
+    ;
   }
 
   store::Item* getParent() const 
@@ -473,6 +471,12 @@ public:
         const XQPCollator* aCollation = 0) const;
 
   inline long compare2(const XmlNode* other) const;
+
+  void getBaseURI(zstring& uri) const
+  {
+    bool local = false;
+    getBaseURIInternal(uri, local);
+  }
 
   store::Item_t getEBV() const;
 
@@ -527,13 +531,13 @@ public:
 
   GuideNode* getDataGuide() const   { return getTree()->getDataGuide(); }
 
-  xqpStringStore* getBaseUri() const { return getTree()->getBaseUri(); }
+  const zstring& getBaseUri() const { return getTree()->getBaseUri(); }
 
-  void setBaseUri(const xqpStringStore_t& uri) { getTree()->setBaseUri(uri); }
+  void setBaseUri(const zstring& uri) { getTree()->setBaseUri(uri); }
 
-  xqpStringStore* getDocUri() const { return getTree()->getDocUri(); }
+  const zstring& getDocUri() const { return getTree()->getDocUri(); }
 
-  void setDocUri(const xqpStringStore_t& uri) { getTree()->setDocUri(uri); }
+  void setDocUri(const zstring& uri) { getTree()->setDocUri(uri); }
 
   virtual XmlNode* copyInternal(
         InternalNode*          rootParent,
@@ -559,7 +563,7 @@ public:
 #endif /* ZORBA_NO_FULL_TEXT */
 
 protected:
-  virtual xqpStringStore_t getBaseURIInternal(bool& local) const;
+  virtual void getBaseURIInternal(zstring& uri, bool& local) const;
 
   void attach(InternalNode* parent, long pos);
 
@@ -660,9 +664,9 @@ class DocumentNode : public InternalNode
 
 protected:
   DocumentNode(
-        XmlTree*                tree,
-        const xqpStringStore_t& baseUri,
-        const xqpStringStore_t& docUri);
+        XmlTree* tree,
+        zstring& baseUri,
+        zstring& docUri);
 
   DocumentNode();
 
@@ -673,22 +677,25 @@ public:
 
   store::Item* getType() const; 
 
-  xqpStringStore* getDocumentURI() const { return getDocUri(); }
+  void getDocumentURI(zstring& uri) const { uri = getDocUri(); }
 
   store::Iterator_t getChildren() const;
 
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
+
   store::Item_t getAtomizationValue() const;
 
-  xqpStringStore_t getStringValue() const;
-  void getStringValue(xqpStringStore_t& strval) const;
-  void getStringValue(std::string& buf) const;
+  zstring getStringValue() const;
+
+  void getStringValue2(zstring& val) const;
+
+  void appendStringValue(zstring& buf) const;
 
   store::Item* getNodeName() const { return NULL; }
 
   bool isRecursive() const { return getTree()->isRecursive(); }
 
-  xqp_string show() const;
+  zstring show() const;
 
   //
   // SimpleStore Methods
@@ -704,7 +711,7 @@ public:
   void finalizeNode() { theChildren.compact(); }
 
 protected:
-  xqpStringStore_t getBaseURIInternal(bool& local) const;
+  void getBaseURIInternal(zstring& uri, bool& local) const;
 };
 
 
@@ -734,16 +741,16 @@ protected:
         ulong          numAttributes);
 
   ElementNode(
-        XmlTree*                    tree,
-        InternalNode*               parent,
-        long                        pos,
-        store::Item_t&              nodeName,
-        store::Item_t&              typeName,
-        bool                        haveTypedValue,
-        bool                        haveEmptyValue,
-        bool                        isInSubstGroup,
-        const store::NsBindings*    localBindings,
-        xqpStringStore_t&           baseUri);
+        XmlTree*                  tree,
+        InternalNode*             parent,
+        long                      pos,
+        store::Item_t&            nodeName,
+        store::Item_t&            typeName,
+        bool                      haveTypedValue,
+        bool                      haveEmptyValue,
+        bool                      isInSubstGroup,
+        const store::NsBindings*  localBindings,
+        zstring&                  baseUri);
 
   ElementNode() {}
 
@@ -751,7 +758,6 @@ public:
   //
   // Item methods
   //
-
   store::Item* getNodeName() const { return theName.getp(); }
 
   store::Item* getType() const;
@@ -764,9 +770,11 @@ public:
 
   bool isIdRefs() const;
 
-  xqpStringStore_t getStringValue() const;
-  void getStringValue(xqpStringStore_t& strval) const;
-  void getStringValue(std::string& buf) const;
+  zstring getStringValue() const;
+
+  void getStringValue2(zstring& val) const;
+
+  void appendStringValue(zstring& buf) const;
 
   store::Item_t getNilled() const;
 
@@ -780,7 +788,7 @@ public:
 
   bool isInSubstitutionGroup() const { return (theFlags & IsInSubstGroup) != 0; }
 
-  xqp_string show() const;
+  zstring show() const;
 
   //
   // SimpleStore Methods
@@ -826,11 +834,13 @@ public:
 
   void setNsContext(NsBindingsContext* ctx);
 
-  xqpStringStore* findBinding(const xqpStringStore* prefix) const;
+  bool findBinding(const zstring& prefix, zstring& nsuri) const;
 
   const store::NsBindings& getLocalBindings() const;
-  void addLocalBinding(xqpStringStore* prefix, xqpStringStore* ns);
-  void removeLocalBinding(xqpStringStore* prefix, xqpStringStore* ns);
+
+  void addLocalBinding(const zstring& prefix, const zstring& ns);
+
+  void removeLocalBinding(const zstring& prefix, const zstring& ns);
 
   bool addBindingForQName(
         store::Item_t& qname,
@@ -845,7 +855,7 @@ public:
 
   void uninheritBinding(
         NsBindingsContext* rootNSCtx,
-        const xqpStringStore_t& prefix);
+        const zstring& prefix);
 
   void checkUniqueAttr(const store::Item* attrName) const;
 
@@ -881,16 +891,14 @@ public:
 #endif /* ZORBA_NO_FULL_TEXT */
 
 protected:
-  xqpStringStore_t getBaseURIInternal(bool& local) const;
+  void getBaseURIInternal(zstring& uri, bool& local) const;
 
-  void addBaseUriProperty(
-        xqpStringStore_t& absUri,
-        xqpStringStore_t& relUri);
+  void addBaseUriProperty(zstring& absUri, zstring& relUri);
 
   void adjustBaseUriProperty(
-        AttributeNode*    attr,
-        xqpStringStore_t& absUri,
-        xqpStringStore_t& relUri);
+        AttributeNode* attr,
+        zstring& absUri,
+        zstring& relUri);
 
 private:
   //disable default copy constructor
@@ -941,9 +949,11 @@ public:
   void setTypedValue(store::Item_t& val);
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
 
-  xqpStringStore_t getStringValue() const;
-  void getStringValue(xqpStringStore_t& strval) const;
-  void getStringValue(std::string& buf) const;
+  zstring getStringValue() const;
+
+  void getStringValue2(zstring& val) const;
+
+  void appendStringValue(zstring& buf) const;
 
   store::Item_t getAtomizationValue() const;
 
@@ -951,7 +961,7 @@ public:
 
   bool isIdRefs() const;
 
-  xqp_string show() const;
+  zstring show() const;
 
   //
   // SimpleStore Methods
@@ -1012,18 +1022,18 @@ protected:
   TextNodeContent theContent;
 
 protected:
-  TextNode(xqpStringStore_t& content);
+  TextNode(zstring& content);
 
   TextNode(
-        XmlTree*          tree,
-        InternalNode*     parent,
-        long              pos,
-        xqpStringStore_t& content);
+        XmlTree*      tree,
+        InternalNode* parent,
+        long          pos,
+        zstring&      content);
 
   TextNode(
-        InternalNode*     parent,
-        store::Item_t&    content,
-        bool              isListValue);
+        InternalNode*  parent,
+        store::Item_t& content,
+        bool           isListValue);
 
   TextNode() {}
 
@@ -1036,7 +1046,7 @@ public:
     }
     else
     {
-      theContent.setText(NULL);
+      theContent.destroyText();
     }
   }
 
@@ -1047,15 +1057,18 @@ public:
   store::Item* getType() const;
 
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
+
   store::Item_t getAtomizationValue() const;
 
-  xqpStringStore_t getStringValue() const;
-  void getStringValue(xqpStringStore_t& strval) const;
-  void getStringValue(std::string& buf) const;
+  zstring getStringValue() const;
+
+  void getStringValue2(zstring& val) const;
+
+  void appendStringValue(zstring& buf) const;
 
   store::Item* getNodeName() const { return NULL; }
 
-  xqp_string show() const;
+  zstring show() const;
 
   //
   // SimpleStore Methods
@@ -1069,11 +1082,15 @@ public:
         const store::CopyMode& copymode) const;
 
   bool isTyped() const;
-  void setTyped(store::Item_t& value);
-  void resetTyped();
+
+  void setTypedValue(store::Item_t& value);
+
+  void revertToTextContent();
 
   bool haveListValue() const { return (theFlags & HaveListValue) != 0; }
+
   void resetHaveListValue()  { theFlags &= ~HaveListValue; }
+
   void setHaveListValue()    { theFlags |= HaveListValue; }
 
   bool isIdInternal() const;
@@ -1085,15 +1102,17 @@ public:
   void restoreValue(UpdReplaceTextValue& upd);
 
 protected:
-  xqpStringStore* getText() const      { return theContent.getText(); }
+  const zstring& getText() const { return theContent.getText(); }
 
-  void setText(xqpStringStore_t& text) { theContent.setText(text); }
-  void setText(xqpStringStore* text)   { theContent.setText(text); }
+  void setText(zstring& text) { theContent.setText(text); }
 
-  store::Item* getValue() const        { return theContent.getValue(); }
+  void destroyText() { theContent.destroyText(); }
 
-  void setValue(store::Item_t& val)    { theContent.setValue(val); }
-  void setValue(store::Item* val)      { theContent.setValue(val); }
+  store::Item* getValue() const { return theContent.getValue(); }
+
+  void setValue(store::Item_t& val) { theContent.setValue(val); }
+
+  void setValue(store::Item* val) { theContent.setValue(val); }
 
 #ifndef ZORBA_NO_FULL_TEXT
   void tokenize( XmlNodeTokenizer& );
@@ -1112,20 +1131,20 @@ class PiNode : public XmlNode
   friend class NodeFactory;
 
 protected:
-  xqpStringStore_t theTarget;
-  xqpStringStore_t theContent;
+  zstring        theTarget;
+  zstring        theContent;
 
-  store::Item_t    theName;
+  store::Item_t  theName;
 
 protected:
-  PiNode(xqpStringStore_t& target, xqpStringStore_t& content);
+  PiNode(zstring& target, zstring& content);
 
   PiNode(
-        XmlTree*          tree,
-        InternalNode*     parent,
-        long              pos,
-        xqpStringStore_t& target,
-        xqpStringStore_t& content);
+        XmlTree*       tree,
+        InternalNode*  parent,
+        long           pos,
+        zstring&       target,
+        zstring&       content);
 
   PiNode() {}
 
@@ -1140,22 +1159,27 @@ public:
   store::Item* getType() const;
 
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
+
   store::Item_t getAtomizationValue() const;
 
-  xqpStringStore_t getStringValue() const    { return theContent; }
-  xqpStringStore* getStringValueP() const    { return theContent.getp(); }
-  void getStringValue(xqpStringStore_t& strval) const { strval = theContent; }
-  void getStringValue(std::string& buf) const { buf += theContent->str(); }
+  zstring getStringValue() const { return theContent; }
 
-  store::Item* getNodeName() const           { return theName.getp(); }
-  xqpStringStore* getTarget() const          { return theTarget.getp(); }
+  void getStringValue2(zstring& val) const { val = theContent; }
 
-  xqp_string show() const;
+  void appendStringValue(zstring& buf) const { buf += theContent; }
+
+  store::Item* getNodeName() const { return theName.getp(); }
+
+  const zstring& getTarget() const { return theTarget; }
+
+  zstring show() const;
 
   void replaceValue(UpdReplacePiValue& upd);
+
   void restoreValue(UpdReplacePiValue& upd);
 
   void replaceName(UpdRenamePi& upd);
+
   void restoreName(UpdRenamePi& upd);
 };
 
@@ -1171,16 +1195,16 @@ class CommentNode : public XmlNode
   friend class NodeFactory;
 
 protected:
-  xqpStringStore_t theContent;
+  zstring theContent;
 
 protected:
-  CommentNode(xqpStringStore_t& content);
+  CommentNode(zstring& content);
 
   CommentNode(
-        XmlTree*          tree,
-        InternalNode*     parent,
-        long              pos,
-        xqpStringStore_t& content);
+        XmlTree*      tree,
+        InternalNode* parent,
+        long          pos,
+        zstring&      content);
 
   CommentNode() {}
 
@@ -1195,18 +1219,21 @@ public:
   store::Item* getType() const;
 
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
+
   store::Item_t getAtomizationValue() const;
 
-  xqpStringStore_t getStringValue() const   { return theContent; }
-  xqpStringStore* getStringValueP() const   { return theContent.getp(); }
-  void getStringValue(xqpStringStore_t& strval) const { strval = theContent; }
-  void getStringValue(std::string& buf) const { buf += theContent->str(); }
+  zstring getStringValue() const { return theContent; }
+
+  void getStringValue2(zstring& val) const { val = theContent; }
+
+  void appendStringValue(zstring& buf) const { buf += theContent; }
 
   store::Item* getNodeName() const { return NULL; }
 
-  xqp_string show() const;
+  zstring show() const;
 
   void replaceValue(UpdReplaceCommentValue& upd);
+
   void restoreValue(UpdReplaceCommentValue& upd);
 };
 

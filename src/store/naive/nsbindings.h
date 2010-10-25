@@ -54,13 +54,13 @@ public:
 
   const NsBindingsContext* getParent() const   { return theParent.getp(); }
 
-  xqpStringStore* findBinding(const xqpStringStore* prefix) const;
+  bool findBinding(const zstring& prefix, zstring& nsuri) const;
 
-  void addBinding(xqpStringStore* prefix, xqpStringStore* ns, bool soft = false);
+  void addBinding(const zstring& prefix, const zstring& ns, bool soft = false);
 
-  void updateBinding(xqpStringStore* prefix, xqpStringStore* ns);
+  void updateBinding(const zstring& prefix, const zstring& ns);
 
-  void removeBinding(xqpStringStore* prefix, xqpStringStore* ns);
+  void removeBinding(const zstring& prefix, const zstring& ns);
 };
 
 

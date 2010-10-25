@@ -52,6 +52,9 @@ END_SERIALIZABLE_CLASS_VERSIONS(RCObject)
 SERIALIZABLE_CLASS_VERSIONS(SimpleRCObject)
 END_SERIALIZABLE_CLASS_VERSIONS(SimpleRCObject)
 
+SERIALIZABLE_CLASS_VERSIONS(store::Iterator)
+END_SERIALIZABLE_CLASS_VERSIONS(store::Iterator)
+
 //SERIALIZABLE_TEMPLATE_VERSIONS(rchandle)
 ////CLASS_VERSION(2, ZORBA_VERSION_0_9_5, BACKWARD_COMPATIBLE, "add a new version just for test")
 //END_SERIALIZABLE_TEMPLATE_VERSIONS(rchandle)
@@ -137,33 +140,45 @@ SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_ItemPointerHashMap, seriali
 
 
 // HashMapStrHandle
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_HashEntry<xqpStringStore_t, xqpStringStore_t>, 9)
-
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_HashEntry<xqpStringStore_t, xqtref_t>, 10)
-
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_HashEntry<xqpStringStore_t, static_context::ctx_module_t>, 11)
-
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<xqpStringStore_t, xqpStringStore_t, HashMapStrHandleCmp>,9)
-
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<xqpStringStore_t, xqtref_t, HashMapStrHandleCmp>, 10)
-
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<xqpStringStore_t, static_context::ctx_module_t, HashMapStrHandleCmp>, 11)
-
 SERIALIZABLE_CLASS_VERSIONS(HashMapStrHandleCmp)
 END_SERIALIZABLE_CLASS_VERSIONS(HashMapStrHandleCmp)
 
 SERIALIZABLE_TEMPLATE_VERSIONS(serializable_HashMapStrHandle)
 END_SERIALIZABLE_TEMPLATE_VERSIONS(serializable_HashMapStrHandle)
 
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_HashEntry<xqpStringStore_t, xqpStringStore_t>, 9)
+
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_HashEntry<xqpStringStore_t, xqtref_t>, 10)
+
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<xqpStringStore_t, xqpStringStore_t, HashMapStrHandleCmp>,9)
+
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<xqpStringStore_t, xqtref_t, HashMapStrHandleCmp>, 10)
+
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_HashMapStrHandle, serializable_HashMapStrHandle<xqpStringStore_t>, 1)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_HashMapStrHandle, serializable_HashMapStrHandle<xqtref_t>, 2)
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_HashMapStrHandle, serializable_HashMapStrHandle<static_context::ctx_module_t>, 3)
-SERIALIZABLE_CLASS_VERSIONS(store::Iterator)
-END_SERIALIZABLE_CLASS_VERSIONS(store::Iterator)
 
 
+// HashMapZString
+SERIALIZABLE_CLASS_VERSIONS(HashMapZStringCmp)
+END_SERIALIZABLE_CLASS_VERSIONS(HashMapZStringCmp)
+
+SERIALIZABLE_TEMPLATE_VERSIONS(serializable_HashMapZString)
+END_SERIALIZABLE_TEMPLATE_VERSIONS(serializable_HashMapZString)
+
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_HashEntry<zstring, static_context::ctx_module_t>, 11)
+
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<zstring, static_context::ctx_module_t, HashMapZStringCmp>, 11)
+
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_HashMapZString, serializable_HashMapZString<static_context::ctx_module_t>, 1)
+
+
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_HashEntry<zstring, zstring>, 12)
+
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<zstring, zstring, HashMapZStringCmp>,12)
+
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_HashMapZString, serializable_HashMapZString<zstring>, 2)
 
 
 /*SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(Batcher, Batcher<ElementIterator>)

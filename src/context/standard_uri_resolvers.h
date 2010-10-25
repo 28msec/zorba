@@ -74,13 +74,12 @@ public:
         const store::Item_t& aURI,
         static_context* aStaticContext,
         std::vector<store::Item_t>& aAtList,
-        xqpStringStore* aFileUri = 0);
+        zstring& aFileUri);
 
 protected:
-  static std::string checkSchemaPath(
+  static zstring checkSchemaPath(
         const std::vector<std::string>& aSchemaPath,
-        const store::Item_t& aUri,
-        xqpStringStore* aResultFile);
+        const store::Item_t& aUri);
 };
 
 
@@ -103,14 +102,14 @@ public:
         std::string& url);
 
   virtual ExternalModule* getExternalModule(
-        const xqpStringStore_t& aFileUri,
+        const zstring& aFileUri,
         static_context& sctx);
 
 protected:
   static std::istream* checkModulePath(
         const std::vector<std::string>& aModulePaths,
         const std::string& uri,
-        std::string& url);
+        zstring& url);
 
   static std::string computeLibraryName(const URI& aURI);
 };

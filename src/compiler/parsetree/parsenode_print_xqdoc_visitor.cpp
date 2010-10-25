@@ -37,205 +37,222 @@ namespace zorba {
 class ParseNodePrintXQDocVisitor : public parsenode_visitor
 {
 private:
-  string getFileName(const string& aFileName)
+
+string getFileName(const string& aFileName)
+{
+  string::size_type lIndex = aFileName.find_last_of("/\\");
+  if (lIndex == string::npos) 
   {
-    string::size_type lIndex = aFileName.find_last_of("/\\");
-    if (lIndex == string::npos) {
-      return aFileName;
-    } else {
-      return aFileName.substr(lIndex+1);
-    }
+    return aFileName;
   }
-
-  void print_comment(store::Item_t& result, const XQDocComment* aComment)
+  else
   {
-    if (aComment == 0) {
-      return;
-    }
-    list<XQDocAnnotation> lAnnotations = aComment->getAnnotations();
-    list<XQDocAnnotation>::const_iterator lIt;
-
-    if (!aComment->getDescription().empty() ||
-        lAnnotations.begin() != lAnnotations.end() ||
-        aComment->hasVersion() ||
-        aComment->hasReturn() ||
-        aComment->isDeprecated()) {
-
-      list<XQDocAnnotation> lAuthorAnn;
-      list<XQDocAnnotation> lParamAnn;
-      list<XQDocAnnotation> lErrorAnn;
-      list<XQDocAnnotation> lSeeAnn;
-      list<XQDocAnnotation> lSinceAnn;
-      list<XQDocAnnotation> lLibraryAnn;
-
-      for (lIt = lAnnotations.begin(); lIt != lAnnotations.end(); ++lIt) {
-        const XQDocAnnotation lAnnotation = *lIt;
-        if (lAnnotation.getName() == "param") {
-          lParamAnn.push_back(lAnnotation);
-        } else if (lAnnotation.getName() == "error") {
-          lErrorAnn.push_back(lAnnotation);
-        } else if (lAnnotation.getName() == "see") {
-          lSeeAnn.push_back(lAnnotation);
-        } else if (lAnnotation.getName() == "author") {
-          lAuthorAnn.push_back(lAnnotation);
-        } else if (lAnnotation.getName() == "since") {
-          lSinceAnn.push_back(lAnnotation);
-        } else if (lAnnotation.getName() == "library") {
-          lLibraryAnn.push_back(lAnnotation);
-        }
-      }
-
-      store::Item_t lCommentQName, lCommentElem;
-
-      theFactory->createQName(lCommentQName, theXQDocNS, theXQDocPrefix, "comment");
-
-      store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-      theFactory->createElementNode(
-          lCommentElem, result, -1, lCommentQName, lTypeName,
-          true, false, theNSBindings, theBaseURI);
-
-      // description
-      if (!aComment->getDescription().empty()) {
-        printCommentFragment(lCommentElem, aComment->getDescription(), "description");
-      }
-
-      // author
-      for (lIt = lAuthorAnn.begin(); lIt != lAuthorAnn.end(); ++lIt) {
-        const XQDocAnnotation lAnnotation = *lIt;
-        printCommentFragment(lCommentElem, lAnnotation.getValue(), "author");
-      }
-
-      // version
-      if (aComment->hasVersion()) {
-        printCommentFragment(lCommentElem, aComment->getVersion(), "version");
-      }
-
-      // param
-      for (lIt = lParamAnn.begin(); lIt != lParamAnn.end(); ++lIt) {
-        const XQDocAnnotation lAnnotation = *lIt;
-        printCommentFragment(lCommentElem, lAnnotation.getValue(), "param");
-      }
-
-      // return
-      if (aComment->hasReturn()) {
-        printCommentFragment(lCommentElem, aComment->getReturn(), "return");
-      }
-
-      // error
-      for (lIt = lErrorAnn.begin(); lIt != lErrorAnn.end(); ++lIt) {
-        const XQDocAnnotation lAnnotation = *lIt;
-        printCommentFragment(lCommentElem, lAnnotation.getValue(), "error");
-      }
-
-      // deprecated
-      if (aComment->isDeprecated()) {
-        printCommentFragment(lCommentElem, aComment->getDeprecatedComment(), "deprecated");
-      }
-
-      // see
-      for (lIt = lSeeAnn.begin(); lIt != lSeeAnn.end(); ++lIt) {
-        const XQDocAnnotation lAnnotation = *lIt;
-        printCommentFragment(lCommentElem, lAnnotation.getValue(), "see");
-      }
-
-      // since
-      for (lIt = lSinceAnn.begin(); lIt != lSinceAnn.end(); ++lIt) {
-        const XQDocAnnotation lAnnotation = *lIt;
-        printCommentFragment(lCommentElem, lAnnotation.getValue(), "since");
-      }
-
-      // library
-      for (lIt = lLibraryAnn.begin(); lIt != lLibraryAnn.end(); ++lIt) {
-        const XQDocAnnotation lAnnotation = *lIt;
-        printCommentFragment(lCommentElem, lAnnotation.getValue(), "library");
-      }
-    }
+    return aFileName.substr(lIndex+1);
   }
+}
 
-  void printCommentFragment(store::Item_t& aParent, std::string aString, std::string aTag)
-  {
-    store::Item_t lQName, lElem, lText;
+
+void print_comment(store::Item_t& result, const XQDocComment* aComment)
+{
+  if (aComment == 0) {
+    return;
+  }
+  list<XQDocAnnotation> lAnnotations = aComment->getAnnotations();
+  list<XQDocAnnotation>::const_iterator lIt;
+    
+  if (!aComment->getDescription().empty() ||
+      lAnnotations.begin() != lAnnotations.end() ||
+      aComment->hasVersion() ||
+      aComment->hasReturn() ||
+      aComment->isDeprecated()) {
+    
+    list<XQDocAnnotation> lAuthorAnn;
+    list<XQDocAnnotation> lParamAnn;
+    list<XQDocAnnotation> lErrorAnn;
+    list<XQDocAnnotation> lSeeAnn;
+    list<XQDocAnnotation> lSinceAnn;
+    list<XQDocAnnotation> lLibraryAnn;
+
+    for (lIt = lAnnotations.begin(); lIt != lAnnotations.end(); ++lIt) {
+      const XQDocAnnotation lAnnotation = *lIt;
+      if (lAnnotation.getName() == "param") {
+        lParamAnn.push_back(lAnnotation);
+      } else if (lAnnotation.getName() == "error") {
+        lErrorAnn.push_back(lAnnotation);
+      } else if (lAnnotation.getName() == "see") {
+        lSeeAnn.push_back(lAnnotation);
+      } else if (lAnnotation.getName() == "author") {
+        lAuthorAnn.push_back(lAnnotation);
+      } else if (lAnnotation.getName() == "since") {
+        lSinceAnn.push_back(lAnnotation);
+      } else if (lAnnotation.getName() == "library") {
+        lLibraryAnn.push_back(lAnnotation);
+      }
+    }
+
+    store::Item_t lCommentQName, lCommentElem;
+
+    theFactory->createQName(lCommentQName, theXQDocNS, theXQDocPrefix, "comment");
 
     store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-    theFactory->createQName(lQName, theXQDocNS, theXQDocPrefix, aTag.c_str());
     theFactory->createElementNode(
-        lElem, aParent, -1, lQName, lTypeName,
-        true, false, theNSBindings, theBaseURI);
+                                  lCommentElem, result, -1, lCommentQName, lTypeName,
+                                  true, false, theNSBindings, theBaseURI);
+    
+    // description
+    if (!aComment->getDescription().empty()) {
+      printCommentFragment(lCommentElem, aComment->getDescription().str(), "description");
+    }
 
-    // parse the contents of the description in order
-    // to be able to get proper XHTML tags
-    // Therefore, we have to insert an artificial root tag
-    // which is removed afterwards.
-    std::ostringstream os;
-    os << "<root>" << aString << "</root>";
-    std::istringstream is(os.str());
+    // author
+    for (lIt = lAuthorAnn.begin(); lIt != lAuthorAnn.end(); ++lIt) {
+      const XQDocAnnotation lAnnotation = *lIt;
+      printCommentFragment(lCommentElem, lAnnotation.getValue().str(), "author");
+    }
 
-    try {
-      store::Item_t lContent = GENV_STORE.loadDocument(theBaseURI, theBaseURI, is, false);
-      store::Iterator_t lIter = lContent->getChildren();
-      store::Item_t lRootElem;
-      lIter->open();
-      if (lIter->next(lRootElem)) {
-        store::Iterator_t lIter2 = lRootElem->getChildren();
-        lIter2->open();
-        size_t i = 0;
-        store::Item_t lTmp;
-        while (lIter2->next(lTmp)) {
-          store::CopyMode lMode;
-          // insert every element into the that that we create
-          lTmp->copy(lElem, i++, lMode);
-        }
-      }
+    // version
+    if (aComment->hasVersion()) {
+      printCommentFragment(lCommentElem, aComment->getVersion().str(), "version");
+    }
 
-    } catch (error::ZorbaError& e) {
-      ZORBA_ERROR_DESC_OSS(XQD0001_DOCUMENT_NOT_VALID,
-        "The xqdoc documentation contains an error that doesn't allow the document to be parsed as XML. "
-        << e.theDescription << " '" << aString << "'");
+    // param
+    for (lIt = lParamAnn.begin(); lIt != lParamAnn.end(); ++lIt) {
+      const XQDocAnnotation lAnnotation = *lIt;
+      printCommentFragment(lCommentElem, lAnnotation.getValue().str(), "param");
+    }
+
+    // return
+    if (aComment->hasReturn()) {
+      printCommentFragment(lCommentElem, aComment->getReturn().str(), "return");
+    }
+
+    // error
+    for (lIt = lErrorAnn.begin(); lIt != lErrorAnn.end(); ++lIt) {
+      const XQDocAnnotation lAnnotation = *lIt;
+      printCommentFragment(lCommentElem, lAnnotation.getValue().str(), "error");
+    }
+
+    // deprecated
+    if (aComment->isDeprecated()) {
+      printCommentFragment(lCommentElem, aComment->getDeprecatedComment().str(), "deprecated");
+    }
+    
+    // see
+    for (lIt = lSeeAnn.begin(); lIt != lSeeAnn.end(); ++lIt) {
+      const XQDocAnnotation lAnnotation = *lIt;
+      printCommentFragment(lCommentElem, lAnnotation.getValue().str(), "see");
+    }
+    
+    // since
+    for (lIt = lSinceAnn.begin(); lIt != lSinceAnn.end(); ++lIt) {
+      const XQDocAnnotation lAnnotation = *lIt;
+      printCommentFragment(lCommentElem, lAnnotation.getValue().str(), "since");
+    }
+    
+    // library
+    for (lIt = lLibraryAnn.begin(); lIt != lLibraryAnn.end(); ++lIt) {
+      const XQDocAnnotation lAnnotation = *lIt;
+      printCommentFragment(lCommentElem, lAnnotation.getValue().str(), "library");
     }
   }
+}
 
+
+void printCommentFragment(store::Item_t& aParent, string aString, string aTag)
+{
+  store::Item_t lQName, lElem, lText;
+
+  store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  theFactory->createQName(lQName, theXQDocNS, theXQDocPrefix, aTag.c_str());
+  theFactory->createElementNode(lElem, aParent, -1, lQName, lTypeName,
+                                true, false, theNSBindings, theBaseURI);
+
+  // parse the contents of the description in order
+  // to be able to get proper XHTML tags
+  // Therefore, we have to insert an artificial root tag
+  // which is removed afterwards.
+  ostringstream os;
+  os << "<root>" << aString << "</root>";
+  istringstream is(os.str());
+  
+  try 
+  {
+    store::LoadProperties loadProperties;
+    loadProperties.setStoreDocument(false);
+    store::Item_t lContent = GENV_STORE.loadDocument(theBaseURI,
+                                                     theBaseURI,
+                                                     is,
+                                                     loadProperties);
+    store::Iterator_t lIter = lContent->getChildren();
+    store::Item_t lRootElem;
+    lIter->open();
+    if (lIter->next(lRootElem)) 
+    {
+      store::Iterator_t lIter2 = lRootElem->getChildren();
+      lIter2->open();
+      size_t i = 0;
+      store::Item_t lTmp;
+      while (lIter2->next(lTmp))
+      {
+        store::CopyMode lMode;
+        // insert every element into the that that we create
+        lTmp->copy(lElem, i++, lMode);
+      }
+    }
+  }
+  catch (error::ZorbaError& e)
+  {
+    ZORBA_ERROR_DESC_OSS(XQD0001_DOCUMENT_NOT_VALID,
+                         "The xqdoc documentation contains an error that doesn't allow the document to be parsed as XML. "
+                         << e.theDescription << " '" << aString << "'");
+  }
+}
+
+  
 protected:
-  store::Item_t&      theResult;
+  store::Item_t&       theResult;
 
-  store::Item_t       theModule;
-  store::Item_t       theImports;
-  store::Item_t       theVariables;
-  store::Item_t       theFunctions;
+  store::Item_t        theModule;
+  store::Item_t        theImports;
+  store::Item_t        theVariables;
+  store::Item_t        theFunctions;
 
   // set of functions being invoked in the function
   // whoes declaration is currently being processed
-  std::map<std::string, store::Item_t>  theInvokedFunc;
+  map<string, store::Item_t>  theInvokedFunc;
 
   // prefix -> uri
-  std::map<std::string, xqpStringStore_t> theNamespaces;
+  map<zstring, zstring> theNamespaces;
 
-  const char*         theXQDocNS;
-  const char*         theXQDocPrefix;
+  const char*          theXQDocNS;
+  const char*          theXQDocPrefix;
 
-  xqpStringStore_t    theFileName;
-  xqpStringStore_t    theBaseURI;
-  xqpStringStore_t    theVersion;
-  store::NsBindings   theNSBindings;
+  zstring              theFileName;
+  zstring              theBaseURI;
+  zstring              theVersion;
+  store::NsBindings    theNSBindings;
 
-  store::ItemFactory* theFactory;
+  store::ItemFactory * theFactory;
 
-  string        theQuery;
+  string               theQuery;
 
 public:
 
-ParseNodePrintXQDocVisitor(store::Item_t &aResult, const string& aFileName)
-  : theResult(aResult),
-    theXQDocNS("http://www.xqdoc.org/1.0"),
-    theXQDocPrefix("xqdoc"),
-    theFileName(new xqpStringStore(getFileName(aFileName))),
-    theBaseURI(new xqpStringStore("http://www.xqdoc.org/1.0")),
-    theVersion(new xqpStringStore("1.0")),
-    theFactory(GENV_ITEMFACTORY)
+ParseNodePrintXQDocVisitor(store::Item_t& aResult, const string& aFileName)
+  :
+  theResult(aResult),
+  theXQDocNS("http://www.xqdoc.org/1.0"),
+  theXQDocPrefix("xqdoc"),
+  theFileName(getFileName(aFileName)),
+  theBaseURI("http://www.xqdoc.org/1.0"),
+  theVersion("1.0"),
+  theFactory(GENV_ITEMFACTORY)
 {
-  theNamespaces["fn"] = new xqpStringStore("http://www.w3.org/2005/xpath-functions");
-  theNamespaces[""] = new xqpStringStore("http://www.w3.org/2005/xpath-functions");
-  theNamespaces["xs"] = new xqpStringStore("http://www.w3.org/2001/XMLSchema");;
+  theNamespaces["fn"] = "http://www.w3.org/2005/xpath-functions";
+  theNamespaces[""] = "http://www.w3.org/2005/xpath-functions";
+  theNamespaces["xs"] = "http://www.w3.org/2001/XMLSchema";
 }
+
 
 void print(const parsenode* p, const store::Item_t& aDateTime)
 {
@@ -299,11 +316,12 @@ void print(const parsenode* p, const store::Item_t& aDateTime)
       lVersionElem, lControlElem, -1, lVersionQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
 
-  xqpStringStore_t lDate = aDateTime->getStringValue();
+  zstring lDate;
+  aDateTime->getStringValue2(lDate);
+
   theFactory->createTextNode(lDateText, lDateElem.getp(), -1, lDate);
 
   theFactory->createTextNode(lVersionText, lVersionElem, -1, theVersion);
-
 
   p->accept(*this);
 
@@ -342,8 +360,9 @@ void end_visit(const DefaultNamespaceDecl& n, void* /*visit_state*/)
 // TODO: main module
 XQDOC_NO_BEGIN_END_TAG (MainModule)
 
-void *begin_visit(const ModuleDecl& n) {
-  theNamespaces[n.get_prefix()->c_str()] = n.get_target_namespace();
+void *begin_visit(const ModuleDecl& n) 
+{
+  theNamespaces[n.get_prefix()] = n.get_target_namespace();
   return no_state;
 }
 
@@ -358,7 +377,7 @@ void end_visit(const ModuleDecl& n, void* /*visit_state*/)
   theFactory->createQName(lTypeQName, "", "", "type");
 
   store::Item_t lAttrValue;
-  xqpStringStore_t lAttrString(new xqpStringStore("library"));
+  zstring lAttrString("library");
   theFactory->createString(lAttrValue, lAttrString);
 
   store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
@@ -370,13 +389,13 @@ void end_visit(const ModuleDecl& n, void* /*visit_state*/)
       lURIElem, theModule, -1, lURIQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
 
-  xqpStringStore_t lTargetNS = n.get_target_namespace();
+  zstring lTargetNS = n.get_target_namespace();
   theFactory->createTextNode(lURIText, lURIElem.getp(), -1, lTargetNS);
 
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-  theFactory->createElementNode(
-      lNameElem, theModule, -1, lNameQName, lTypeName,
-      true, false, theNSBindings, theBaseURI);
+  theFactory->createElementNode(lNameElem, theModule, -1, lNameQName, lTypeName,
+                                true, false, theNSBindings, theBaseURI);
+
   theFactory->createTextNode(lNameText, lNameElem, -1, theFileName);
 
   print_comment(theModule, n.getComment());
@@ -408,10 +427,12 @@ void end_visit(const FunctionDecl& n, void* /*visit_state*/)
       true, false, theNSBindings, theBaseURI);
 
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-  std::ostringstream lAttr;
+  ostringstream lAttr;
   lAttr << (n.get_param_count());
-  xqpStringStore_t lAttrString(new xqpStringStore(lAttr.str().c_str()));
+
+  zstring lAttrString(lAttr.str().c_str());
   theFactory->createString(lArityValue, lAttrString);
+
   theFactory->createAttributeNode(
       lArityQName, lNameElem, -1, lArityQName, lTypeName, lArityValue);
 
@@ -420,10 +441,10 @@ void end_visit(const FunctionDecl& n, void* /*visit_state*/)
       lSigElem, lFuncElem, -1, lSigQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
 
-  xqpStringStore_t lNameString = n.get_name()->get_localname();
+  zstring lNameString = n.get_name()->get_localname();
   theFactory->createTextNode(lNameText, lNameElem, -1, lNameString);
 
-  std::ostringstream lSig;
+  ostringstream lSig;
 
   FunctionDecl lFunctionDeclClone(n.get_location(), n.get_name(),
       n.get_paramlist(),
@@ -434,14 +455,14 @@ void end_visit(const FunctionDecl& n, void* /*visit_state*/)
 
   FunctionIndex lIndex = print_parsetree_xquery(lSig, &lFunctionDeclClone);
 
-  xqpStringStore_t lSigString = new xqpStringStore(lSig.str());
+  zstring lSigString = lSig.str();
   theFactory->createTextNode(lSigText, lSigElem, -1, lSigString);
 
   // add all invoked function elements as children to the end of the current
   // function element. After this, clear the set of invoked functions
   // to be prepared for the next function declaration
   size_t i = 3;
-  for (std::map<std::string, store::Item_t>::const_iterator lIter = theInvokedFunc.begin();
+  for (map<string, store::Item_t>::const_iterator lIter = theInvokedFunc.begin();
        lIter != theInvokedFunc.end(); ++lIter) {
     store::CopyMode lCopyMode;
     (*lIter).second->copy(lFuncElem.getp(), i++, lCopyMode);
@@ -474,10 +495,11 @@ void end_visit(const FunctionCall& n, void*)
       lUriElem, lInvokedElem, -1, lUriQName, lTypeName,
       false, false, theNSBindings, theBaseURI);
 
-  std::string lPrefix = lFuncName->get_prefix()->c_str();
+  zstring lPrefix = lFuncName->get_prefix();
 
-  xqpStringStore_t lNS = theNamespaces[lPrefix];
-  if (!lNS) {
+  map<zstring, zstring>::iterator ite = theNamespaces.find(lPrefix);
+  if (ite == theNamespaces.end()) 
+  {
     ZORBA_ERROR_DESC_OSS(XQD0000_PREFIX_NOT_DECLARED,
        "Could not generate the xqDoc documentation because the namespace for prefix '"
        << lPrefix << "' is not declared when calling function '" << lFuncName->get_localname()
@@ -485,9 +507,11 @@ void end_visit(const FunctionCall& n, void*)
     );
   }
 
-  xqpStringStore_t lLocalNameString = lFuncName->get_localname();
+  zstring lNS = ite->second;
 
-  std::ostringstream lKey;
+  zstring lLocalNameString = lFuncName->get_localname();
+
+  ostringstream lKey;
   lKey << lNS << lLocalNameString
              << "#" << (n.get_arg_list()?n.get_arg_list()->size():0);
 
@@ -499,10 +523,12 @@ void end_visit(const FunctionCall& n, void*)
       false, false, theNSBindings, theBaseURI);
 
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-  std::ostringstream lAttr;
+  ostringstream lAttr;
   lAttr << (n.get_arg_list()?n.get_arg_list()->size():0);
-  xqpStringStore_t lAttrString(new xqpStringStore(lAttr.str().c_str()));
+
+  zstring lAttrString(lAttr.str().c_str());
   theFactory->createString(lAttrValue, lAttrString);
+
   theFactory->createAttributeNode(
       lArityQName, lNameElem, -1, lArityQName, lTypeName, lAttrValue);
 
@@ -532,7 +558,8 @@ void end_visit(const VarDecl& n, void*)
       lUriElem, lVariableElem, -1, lUriQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
 
-  xqpStringStore_t lUriString(new xqpStringStore(n.get_name()->get_localname()->c_str()));
+  zstring lUriString(n.get_name()->get_localname());
+
   theFactory->createTextNode(lUriText, lUriElem, -1, lUriString);
 
   print_comment(lVariableElem, n.getComment());
@@ -560,13 +587,14 @@ void end_visit(const ModuleImport& n, void*)
       lUriElem, lImportElem, -1, lUriQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
 
-  xqpStringStore_t lUriString(new xqpStringStore(n.get_uri()->c_str()));
+  zstring lUriString(n.get_uri());
+
   theFactory->createTextNode(lUriText, lUriElem, -1, lUriString);
 
   theFactory->createQName(lTypeQName, "", "", "isSchema");
 
   store::Item_t lAttrValue;
-  xqpStringStore_t lAttrString(new xqpStringStore("false"));
+  zstring lAttrString("false");
   theFactory->createString(lAttrValue, lAttrString);
 
   theFactory->createAttributeNode(
@@ -576,7 +604,7 @@ void end_visit(const ModuleImport& n, void*)
 
   // collect prefix -> uri mappings for properly
   // reporting function invocations (see FunctionCall)
-  theNamespaces[n.get_prefix()->c_str()] = n.get_uri();
+  theNamespaces[n.get_prefix()] = n.get_uri();
 }
 
 // SchemaImport can also bind prefixes which may be used
@@ -601,13 +629,13 @@ void end_visit(const SchemaImport& n, void*)
       lUriElem, lImportElem, -1, lUriQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
 
-  xqpStringStore_t lUriString(new xqpStringStore(n.get_uri()->c_str()));
+  zstring lUriString = n.get_uri();
   theFactory->createTextNode(lUriText, lUriElem, -1, lUriString);
 
   theFactory->createQName(lTypeQName, "", "", "isSchema");
 
   store::Item_t lAttrValue;
-  xqpStringStore_t lAttrString(new xqpStringStore("true"));
+  zstring lAttrString("true");
   theFactory->createString(lAttrValue, lAttrString);
 
   theFactory->createAttributeNode(
@@ -617,12 +645,12 @@ void end_visit(const SchemaImport& n, void*)
 
   // collect prefix -> uri mappings for properly
   // reporting function invocations (see FunctionCall)
-  xqpStringStore_t lURI = n.get_uri();
-  xqpStringStore_t lPrefix;
-  if (!n.get_prefix()->get_default_bit()) {
+  zstring lPrefix;
+  if (!n.get_prefix()->get_default_bit()) 
+  {
     lPrefix = n.get_prefix()->get_prefix();
   }
-  theNamespaces[lPrefix->c_str()] = lURI;
+  theNamespaces[lPrefix] = n.get_uri();
 }
 
 XQDOC_NO_BEGIN_END_TAG (AdditiveExpr)

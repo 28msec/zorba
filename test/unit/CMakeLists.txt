@@ -52,6 +52,8 @@ IF(WIN32)
     uri_file_decoding_test.cpp
     ext_in_opt.cpp
     collection.cpp
+    string_instantiate.cpp
+    string_test.cpp
   )
 ELSE(WIN32)
   CREATE_TEST_SOURCELIST(UnitTests
@@ -66,6 +68,8 @@ ELSE(WIN32)
     uri_file_decoding_test.cpp
     ext_in_opt.cpp
     collection.cpp
+    string_instantiate.cpp
+    string_test.cpp
   # multithread_simple.cpp
   # multithread_stress_test.cpp
  )

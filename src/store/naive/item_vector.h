@@ -21,10 +21,11 @@
 
 namespace zorba { namespace simplestore {
 
-/**
- * ItemVector is just internal to the store and implements a list/sequence of Items.
- * It doesn't have a type assignet to it, the type is on the ellement or attribute parent node.
- */
+/***************************************************************************//**
+  ItemVector is just internal to the store and implements a list/sequence of 
+  Items. It doesn't have a type assignet to it, the type is on the ellement
+  or attribute parent node.
+********************************************************************************/
 class ItemVector : public store::Item
 {
 private:
@@ -45,9 +46,11 @@ public:
   bool isError() const    { return false; }
   bool isFunction() const { return false; }
   
-  xqpStringStore_t getStringValue() const;
-  void getStringValue(xqpStringStore_t& strval) const;
-  void getStringValue(std::string& buf) const;
+  zstring getStringValue() const;
+
+  void getStringValue2(zstring& val) const;
+
+  void appendStringValue(zstring& buf) const;
 
   ulong size() const { return theItems.size(); }
 
@@ -59,7 +62,7 @@ public:
 
   store::Item* getItem(ulong pos) const { return theItems[pos].getp(); }
 	
-  xqp_string show() const;
+  zstring show() const;
 };
 
 } // namespace simplestore

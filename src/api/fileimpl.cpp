@@ -26,8 +26,9 @@
 #include <zorbaerrors/errors.h>
 #include <zorbaerrors/error_manager.h>
 
-#include <zorbautils/strutil.h>
-
+#ifdef WIN32
+#include <util/ascii_util.h>
+#endif
 #include <util/dir.h>
 
 #include "zorbaimpl.h"
@@ -108,7 +109,7 @@ FileImpl::getFileUri() const
   ZORBA_TRY
     lPath = theInternalFile->get_path();
 #ifdef WIN32
-    str_replace_all(lPath, "\\", "/");
+    ascii::replace_all( lPath, '\\', '/' );
 #endif
 
     std::stringstream lEncodedResult;

@@ -46,7 +46,7 @@ namespace zorba {
 class ZorbaJsonParseIteratorState : public PlanIteratorState
 {
 public:
-  xqp_string theBaseUri; //the base URI
+  zstring theBaseUri; //the base URI
 
   ZorbaJsonParseIteratorState();
 
@@ -127,7 +127,7 @@ public:
 class ZorbaJsonParseMLIteratorState : public PlanIteratorState
 {
 public:
-  xqp_string theBaseUri; //the base URI
+  zstring theBaseUri; //the base URI
 
   ZorbaJsonParseMLIteratorState();
 
@@ -216,7 +216,7 @@ public:
   checked_vector <uint32_t> quote_escape_cp; //quote escape codepoints
   store::Item_t row_node_name; //qname of the row element
   store::Item_t default_column_node_name; //default qname of the column element
-  xqp_string baseUri; //keep the base uri from static context
+  zstring baseUri; //keep the base uri from static context
   checked_vector <store::Item_t> header_qnames; //names of headers
 
   ZorbaCSV2XMLIteratorState();
@@ -270,7 +270,7 @@ public:
   checked_vector<unsigned int> columns_positions; //separator codepoint
   store::Item_t row_node_name; //qname of the row element
   store::Item_t default_column_node_name; //default qname of the column element
-  xqp_string baseUri; //keep the base uri from static context
+  zstring baseUri; //keep the base uri from static context
   checked_vector <store::Item_t> header_qnames; //names of headers
 
   ZorbaTXT2XMLIteratorState();
@@ -326,7 +326,7 @@ public:
   checked_vector <uint32_t> quote_escape_cp; //quote escape codepoints
   store::Item_t row_node_name; //qname of the row element
   store::Item_t default_column_node_name; //default qname of the column element
-  xqp_string baseUri; //keep the base uri from static context
+  zstring baseUri; //keep the base uri from static context
   checked_vector <store::Item_t> header_qnames; //names of headers
 
   ZorbaCSV2XMLFromFileIteratorState();
@@ -380,7 +380,7 @@ public:
   checked_vector<unsigned int> columns_positions; //separator codepoint
   store::Item_t row_node_name; //qname of the row element
   store::Item_t default_column_node_name; //default qname of the column element
-  xqp_string baseUri; //keep the base uri from static context
+  zstring baseUri; //keep the base uri from static context
   checked_vector <store::Item_t> header_qnames; //names of headers
 
   ZorbaTXT2XMLFromFileIteratorState();

@@ -115,7 +115,7 @@ bool PlanIterator::consumeNext(
     std::cout << "next (" << iter << " = " << typeid (*iter).name()
               << ") -> "
               << "status: " << status << " -> "
-              << ((status && result != NULL) ? result->show() : xqp_string("null"))
+              << ((status && result != NULL) ? result->show().c_str() : "null")
               << std::endl;
   }
   return status;

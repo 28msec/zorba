@@ -29,6 +29,7 @@
 #include <zorba/error.h>
 
 #include "zorbamisc/config/platform.h"
+//#include "zorbatypes/zstring.h"
 
 
 namespace zorba
@@ -407,6 +408,8 @@ if(ar.is_serializing_out() && !ar.is_serialize_base_class())    \
   
   void operator&(Archiver &ar, std::string* &obj);
   
+  //void operator&(Archiver &ar, zstring &obj);
+
   void operator&(Archiver &ar, char* &obj);//like char *p=strdup("io");
 
 //  template<class T>

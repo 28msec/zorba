@@ -30,6 +30,7 @@
 #include "store/api/store.h"
 
 #include "store/util/hashmap_stringp.h"
+#include "store/util/hashmap_stringbuf.h"
 
 #include "zorbautils/mutex.h"
 #include "zorbautils/lock.h"
@@ -64,8 +65,8 @@ class PULPrimitiveFactory;
 
 typedef rchandle<XmlNode> XmlNode_t;
 
-typedef store::StringHashMap<XmlNode_t> DocumentSet;
-typedef store::StringHashMap<store::Collection_t> UriCollectionSet;
+typedef store::StringBufHashMap<XmlNode_t> DocumentSet;
+typedef store::StringBufHashMap<store::Collection_t> UriCollectionSet;
 typedef ItemPointerHashMap<store::Index_t> IndexSet;
 typedef ItemPointerHashMap<store::IC_t> ICSet;
 
@@ -114,8 +115,8 @@ protected:
   static const ulong NAMESPACE_POOL_SIZE;
 
 public:
-  xqpStringStore_t              theEmptyNs;
-  xqpStringStore_t              theXmlSchemaNs;
+  zstring                       theEmptyNs;
+  zstring                       theXmlSchemaNs;
 
   std::vector<store::Item_t>    theSchemaTypeNames;
   std::map<store::Item*, SchemaTypeCode> theSchemaTypeCodes;
@@ -186,11 +187,11 @@ public:
 
   ulong createTreeId();
 
-  store::Collection_t createUriCollection(const xqpStringStore_t& uri);
+  store::Collection_t createUriCollection(const zstring& uri);
 
-  store::Collection_t getUriCollection(const xqpStringStore_t& uri);
+  store::Collection_t getUriCollection(const zstring& uri);
 
-  void deleteUriCollection(const xqpStringStore_t& uri);
+  void deleteUriCollection(const zstring& uri);
 
   store::Collection_t createCollection(store::Item_t& aName);
 
@@ -238,34 +239,34 @@ public:
   store::IC* getIC(const store::Item* icQName);
 
   store::Item_t loadDocument(
-        const xqpStringStore_t& baseUri,
-        const xqpStringStore_t& docUri,
+        const zstring& baseUri,
+        const zstring& docUri,
         std::istream& stream,
         bool storeDocument);
 
   store::Item_t loadDocument(
-        const xqpStringStore_t& baseUri,
-        const xqpStringStore_t& docUri,
+        const zstring& baseUri,
+        const zstring& docUri,
         std::istream* stream,
         bool storeDocument);
 
   store::Item_t loadDocument(
-        const xqpStringStore_t& baseUri,
-        const xqpStringStore_t& docUri,
+        const zstring& baseUri,
+        const zstring& docUri,
         std::istream& stream,
         const store::LoadProperties& loadProperties);
 
   store::Item_t loadDocument(
-        const xqpStringStore_t& baseUri,
-        const xqpStringStore_t& docUri,
+        const zstring& baseUri,
+        const zstring& docUri,
         std::istream* stream,
         const store::LoadProperties& loadProperties);
 
-  void addNode(const xqpStringStore_t& uri, const store::Item_t& node);
+  void addNode(const zstring& uri, const store::Item_t& node);
 
-  store::Item_t getDocument(const xqpStringStore_t& uri);
+  store::Item_t getDocument(const zstring& uri);
 
-  void deleteDocument(const xqpStringStore_t& uri);
+  void deleteDocument(const zstring& uri);
 
   void deleteAllDocuments();
 
@@ -307,8 +308,8 @@ public:
 
   store::Item_t importMSDOM(
         IXMLDOMNode* domNode,
-        xqpStringStore_t docUri,
-        xqpStringStore_t baseUri);
+        const zstring& docUri,
+        const zstring& baseUri);
 #endif
 
 protected:
@@ -320,12 +321,11 @@ protected:
 
   void initTypeNames();
 
-  // function to create the node and item factory
-  // those functions are called from init and
-  // shutdown, respectively.
-  // Having this functionality factorized allows
-  // other to derive from the SimpleStore and
-  // provide their own factories
+  // Functions to create/destory the node and item factories. These functions
+  // are called from init and shutdown, respectively. Having this functionality
+  // factorized allows others to derive from the SimpleStore and provide their
+  // own factories.
+
   virtual NodeFactory* createNodeFactory() const;
 
   virtual void destroyNodeFactory(NodeFactory*) const;

@@ -36,6 +36,12 @@
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
 
+#include "zorbautils/string_util.h"
+
+#include "util/utf8_util.h"
+#include "util/utf8_string.h"
+#include "util/string_util.h"
+
 
 using namespace std;
 
@@ -53,8 +59,7 @@ bool
 CodepointsToStringIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
 {
   store::Item_t item;
-  xqpStringStore_t resStr;
-  std::string buf;
+  zstring resStr;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -63,11 +68,10 @@ CodepointsToStringIterator::nextImpl(store::Item_t& result, PlanState& planState
   {
     if (consumeNext(item, theChildren [0].getp(), planState ))
     {
-      item = item->getAtomizationValue();
       {
-        xqpStringStore_t lUtf8Code = item->getIntegerValue().toString();
+        zstring lUtf8Code = item->getIntegerValue().toString();
         xqp_uint lCode;
-        if (NumConversions::strToUInt(lUtf8Code->c_str(), lCode)) 
+        if (NumConversions::strToUInt(lUtf8Code.c_str(), lCode)) 
         {
           char seq[5] = {0,0,0,0,0};
           try
@@ -79,7 +83,7 @@ CodepointsToStringIterator::nextImpl(store::Item_t& result, PlanState& planState
             ZORBA_ERROR_LOC_DESC(error::DecodeZorbatypesError(ex.ErrorCode()),
                                  loc, lUtf8Code);
           }
-          buf += seq;
+          resStr += seq;
         }
         else
         {
@@ -89,7 +93,6 @@ CodepointsToStringIterator::nextImpl(store::Item_t& result, PlanState& planState
     }
     else
     {
-      resStr = new xqpStringStore(buf);
       STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state );
       break;
     }
@@ -105,20 +108,25 @@ CodepointsToStringIterator::nextImpl(store::Item_t& result, PlanState& planState
  *  fn:string-to-codepoints($arg as xs:string?) as xs:integer*
  *_______________________________________________________________________
  */
-bool
-StringToCodepointsIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
-  // TODO Optimization for large strings: large strings mean that a large integer vector should be store in the state that is not good.
+bool StringToCodepointsIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const 
+{
+  // TODO Optimization for large strings: large strings mean that a large
+  // integer vector should be stored in the state that is not good.
   store::Item_t item;
-  xqpStringStore_t inputStr;
+  zstring inputStr;
 
   StringToCodepointsIteratorState* state;
   DEFAULT_STACK_INIT(StringToCodepointsIteratorState, state, planState);
 
-  if (consumeNext(item, theChildren [0].getp(), planState )) {
-    inputStr = item->getStringValue();
-    if(!inputStr->empty())
+  if (consumeNext(item, theChildren [0].getp(), planState )) 
+  {
+    item->getStringValue2(inputStr);
+
+    if (!inputStr.empty())
     {
-      state->theResult = inputStr->getCodepoints();
+      utf8::to_codepoints(inputStr, &state->theResult);
   
       while (state->theIterator < state->theResult.size())
       {
@@ -126,6 +134,7 @@ StringToCodepointsIterator::nextImpl(store::Item_t& result, PlanState& planState
           result,
           Integer::parseInt(state->theResult[state->theIterator]) 
         );
+
         STACK_PUSH(true, state );
         state->theIterator = state->theIterator + 1;
       }
@@ -134,22 +143,22 @@ StringToCodepointsIterator::nextImpl(store::Item_t& result, PlanState& planState
   STACK_END (state);
 }
 
-void
-StringToCodepointsIteratorState::init(PlanState& planState)
+
+void StringToCodepointsIteratorState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);
   theIterator = 0;
   theResult.clear();
 }
 
-void
-StringToCodepointsIteratorState::reset(PlanState& planState)
+
+void StringToCodepointsIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
   theIterator = 0;
   theResult.clear();
 }
-/* end class StringToCodepointsIterator */
+
 
 /**
   *______________________________________________________________________
@@ -162,11 +171,14 @@ StringToCodepointsIteratorState::reset(PlanState& planState)
   *            $comparand2 as xs:string?,
   *            $collation  as xs:string) as xs:integer?
   *_______________________________________________________________________*/
-bool
-CompareStrIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
+bool CompareStrIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const 
+{
   store::Item_t n0;
   store::Item_t n1;
   store::Item_t n2;
+  int res;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -175,34 +187,30 @@ CompareStrIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
   {
     if (consumeNext(n1, theChildren[1].getp(), planState ))
     {
-      n0 = n0->getAtomizationValue();
-      n1 = n1->getAtomizationValue();
+      XQPCollator* coll;
 
-      if(theChildren.size() == 3)
+      if (theChildren.size() == 3)
       {
-        if (consumeNext(n2, theChildren[2].getp(), planState ))
-          n2 = n2->getAtomizationValue();
-          XQPCollator* coll = 0;
-          coll = theSctx->get_collator(n2->getStringValue()->str(), loc);
-          GENV_ITEMFACTORY->createInteger(
-                  result,
-                  Integer::parseInt((xqp_int)n0->getStringValue()->compare(n1->getStringValue(), coll)));
+        consumeNext(n2, theChildren[2].getp(), planState);
+
+        coll = theSctx->get_collator(n2->getStringValue().str(), loc);
       }
-      else 
+      else
       {
-        XQPCollator* coll = 0;
         coll = theSctx->get_default_collator(loc);
-        GENV_ITEMFACTORY->createInteger(
-                result,
-                Integer::parseInt((xqp_int)n0->getStringValue()->compare(n1->getStringValue(), coll)));
       }
-      STACK_PUSH(true, state );
+
+      res = utf8::compare(n0->getStringValue(), n1->getStringValue(), coll);
+
+      GENV_ITEMFACTORY->createInteger(result, Integer::parseInt(res));
+
+      STACK_PUSH(true, state);
     }
   }
 
   STACK_END (state);
 }
-/* end class CompareStrIterator */
+
 
 /**
   *______________________________________________________________________
@@ -212,28 +220,28 @@ CompareStrIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
   *  fn:codepoint-equal($comparand1 as xs:string?,
   *                     $comparand2 as xs:string?) as xs:boolean?
   *_______________________________________________________________________*/
-/* begin class CodepointEqualIterator */
-bool
-CodepointEqualIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
-    store::Item_t item0;
-    store::Item_t item1;
+bool CodepointEqualIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const 
+{
+  store::Item_t item0;
+  store::Item_t item1;
 
-    PlanIteratorState* state;
-    DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-    if (consumeNext(item0, theChildren [0].getp(), planState )) {
-      if (consumeNext(item1, theChildren [1].getp(), planState )) {
-        item0 = item0->getAtomizationValue();
-        item1 = item1->getAtomizationValue();
-        GENV_ITEMFACTORY->createBoolean(
-                  result,
-                  item0->getStringValue()->equals(item1->getStringValue()));
-        STACK_PUSH(true, state );
-      }
+  if (consumeNext(item0, theChildren [0].getp(), planState )) 
+  {
+    if (consumeNext(item1, theChildren [1].getp(), planState )) 
+    {
+      GENV_ITEMFACTORY->createBoolean(result,
+                                      item0->getStringValue() == item1->getStringValue());
+      STACK_PUSH(true, state);
     }
-    STACK_END (state);
+  }
+  STACK_END(state);
 }
-/* end class CodepointEqualIterator */
+
 
 /**
   *______________________________________________________________________
@@ -244,12 +252,13 @@ CodepointEqualIterator::nextImpl(store::Item_t& result, PlanState& planState) co
   *           $arg2    as xs:anyAtomicType?,
   *           ...                          ) as xs:string
   *_______________________________________________________________________*/
-/* begin class ConcatStrIterator */
-bool
-ConcatStrIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
+bool ConcatStrIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const 
+{
   store::Item_t lItem;
   std::stringstream lResStream;
-  xqpStringStore_t tmp;
+  zstring tmp;
 
   checked_vector<PlanIter_t>::const_iterator iter = theChildren.begin();
   checked_vector<PlanIter_t>::const_iterator end  = theChildren.end();
@@ -261,18 +270,18 @@ ConcatStrIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   {
     if (consumeNext(lItem, *iter, planState))
     {
-      lResStream << lItem->getStringValue()->str();
+      lResStream << lItem->getStringValue();
 
-      if  (consumeNext(lItem, *iter, planState))
+      if (consumeNext(lItem, *iter, planState))
       {
-        ZORBA_ERROR_LOC_DESC( XPTY0004, loc,
+        ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
           "A sequence with more than one item is not allowed as argument to fn:concat");
-          break;
+        break;
       }
     }
   }
 
-  tmp = new xqpStringStore(lResStream.str());
+  tmp = lResStream.str();
   STACK_PUSH(GENV_ITEMFACTORY->createString(result, tmp), state);
 
   STACK_END (state);
@@ -287,13 +296,13 @@ ConcatStrIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   * fn:string-join($arg1 as xs:string*,
   *                $arg2 as xs:string) as xs:string
   *_______________________________________________________________________*/
-bool
-StringJoinIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool StringJoinIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
 {
   store::Item_t item;
-  std::string buf;
-  xqpStringStore_t resStr;
-  xqpStringStore_t separator;
+  zstring resStr;
+  zstring separator;
   bool lFirst;
 
   PlanIteratorState* state;
@@ -301,19 +310,18 @@ StringJoinIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   consumeNext(item, theChildren[1].getp(), planState);
 
-  separator = item->getStringValue();
+  item->getStringValue2(separator);
 
-  if(separator->empty())
+  if (separator.empty())
   {
     while(true)
     {
       if (consumeNext(item, theChildren[0].getp(), planState))
       {
-        buf += item->getStringValue()->str();
+        item->appendStringValue(resStr);
       }
       else
       {
-        resStr = new xqpStringStore(buf);
         GENV_ITEMFACTORY->createString(result, resStr);
         STACK_PUSH(true, state);
         break;
@@ -330,17 +338,17 @@ StringJoinIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       {
         if (!lFirst)
         {
-          buf += separator->str();
+          resStr += separator;
+          item->appendStringValue(resStr);
         }
         else
         {
+          item->getStringValue2(resStr);
           lFirst = false;
         }
-        buf += item->getStringValue()->str();
       }
       else
       {
-        resStr = new xqpStringStore(buf);
         GENV_ITEMFACTORY->createString(result, resStr);
         STACK_PUSH(true, state);
         break;
@@ -350,7 +358,7 @@ StringJoinIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   STACK_END (state);
 }
-/* end class StringJoinIterator */
+
 
 /**
   *______________________________________________________________________
@@ -363,88 +371,139 @@ StringJoinIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   *             $startingLoc  as xs:double,
   *             $length       as xs:double)   as xs:string
   *_______________________________________________________________________*/
-/* begin class SubstringIterator */
-bool
-SubstringIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool SubstringIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
 {
   store::Item_t stringItem;
   store::Item_t startItem;
   store::Item_t lenItem;
-  xqpString stringVal;
-  xqpStringStore_t resStr;
-  xqp_int tmpStart;
-  xqp_int tmpLen;
+  zstring strval;
+  zstring resStr;
+  xqp_double start;
+  xqp_double len;
+  xqp_int istart;
+  xqp_int ilen;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(stringItem, theChildren[0].getp(), planState ))
   {
-    stringItem = stringItem->getAtomizationValue();
+    stringItem->getStringValue2(strval);
 
-    if (!stringItem->getStringValue()->empty())
+    if (!strval.empty())
     {
-      stringVal = stringItem->getStringValue().getp();
-
-      bool startExists = consumeNext(startItem, theChildren[1], planState );
+      bool startExists = consumeNext(startItem, theChildren[1], planState);
 
       ZORBA_ASSERT(startExists);
 
       // note: The first character of a string is located at position 1,
       // not position 0.
-      startItem = startItem->getAtomizationValue();
 
-      if(!startItem->getDoubleValue().isNaN())
+      start = startItem->getDoubleValue();
+
+      if (!start.isNaN())
       {
-        tmpStart = stringVal.length();
-
-        if (startItem->getDoubleValue().isFinite())
+        if (start.isFinite())
         {
           xqp_int lInt;
-          if (NumConversions::doubleToInt(startItem->getDoubleValue().round(), lInt))
-            tmpStart = lInt;
-        }
-
-        if( theChildren.size() == 2 )
-        {
-          resStr = new xqpStringStore(stringVal.substr(tmpStart-1));
+          if (NumConversions::doubleToInt(start.round(), lInt))
+          {
+            istart = lInt;
+          }
+          else
+          {
+            istart = utf8_string<zstring>(strval).length();
+          }
         }
         else
         {
-          //theChildren.size() ==3
-          bool lenItemExists = consumeNext(lenItem, theChildren[2], planState );
+          istart = utf8_string<zstring>(strval).length();
+        }
+
+        if( theChildren.size() == 2)
+        {
+          if (istart <= 0)
+          {
+            resStr = strval;
+          }
+          else
+          {
+            try
+            {
+              resStr = utf8_string<zstring>(strval).substr(istart-1);
+            }
+            catch (...)
+            {
+              zstring::size_type numChars = utf8_string<zstring>(strval).length();
+              if (static_cast<zstring::size_type>(istart) > numChars)
+              {
+                // result is the empty string
+              }
+              else
+              {
+                throw;
+              }
+            }
+          }
+        }
+        else
+        {
+          bool lenItemExists = consumeNext(lenItem, theChildren[2], planState);
 
           ZORBA_ASSERT(lenItemExists);
-
-          lenItem = lenItem->getAtomizationValue();
-
-          tmpLen = stringVal.length() - tmpStart + 1;
           
-          if(!lenItem->getDoubleValue().isNaN())
+          len = lenItem->getDoubleValue();
+
+          if (!len.isNaN())
           {
-            if (lenItem->getDoubleValue().isFinite())
+            if (len.isFinite())
             {
               xqp_int lInt;
-              if(NumConversions::doubleToInt(lenItem->getDoubleValue().round(), lInt))
-                tmpLen = lInt;
-            }
-                
-            if( !(startItem->getDoubleValue() + lenItem->getDoubleValue()).isNaN())
-            {
-              if(tmpLen >= 0)
+              if (NumConversions::doubleToInt(len.round(), lInt))
               {
-                if(tmpStart <= 0)
+                ilen = lInt;
+              }
+              else
+              {
+                ilen = utf8_string<zstring>(strval).length() - istart + 1;
+              }
+            }
+            else
+            {
+              ilen = utf8_string<zstring>(strval).length() - istart + 1;
+            }
+    
+            if( !(start + len).isNaN())
+            {
+              if (ilen >= 0)
+              {
+                if (istart <= 0)
                 {
-                  if((tmpLen+tmpStart-1) >= 0)
-                    resStr = stringVal.substr(0,  tmpStart-1 + tmpLen).getStore();
-                //  else
-                //    ZORBA_ERROR_ALERT();
+                  if ((ilen + istart - 1) >= 0)
+                    resStr = utf8_string<zstring>(strval).substr(0,  istart - 1 + ilen);
                 }
                 else
-                  resStr = stringVal.substr(tmpStart-1, tmpLen).getStore();
+                {
+                  try
+                  {
+                    resStr = utf8_string<zstring>(strval).substr(istart-1, ilen);
+                  }
+                  catch (...)
+                  {
+                    zstring::size_type numChars = utf8_string<zstring>(strval).length();
+                    if (static_cast<zstring::size_type>(istart) > numChars)
+                    {
+                      // result is the empty string
+                    }
+                    else
+                    {
+                      throw;
+                    }
+                  }
+                }
               }
-              //else
-              //  ZORBA_ERROR_ALERT();
             }
           }
         }
@@ -452,14 +511,11 @@ SubstringIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     } // non empty string arg
   } // non NULL string arg
 
-  if (resStr == NULL)
-    resStr = new xqpStringStore("");
-
-  STACK_PUSH( GENV_ITEMFACTORY->createString(result, resStr), state );
+  STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state);
 
   STACK_END (state);
 }
-/* end class SubstringIterator */
+
 
 /**
   *______________________________________________________________________
@@ -469,32 +525,33 @@ SubstringIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   *fn:string-length()                   as xs:integer
   *fn:string-length($arg as xs:string?) as xs:integer
   *_______________________________________________________________________*/
-/* begin class StringLengthIterator */
-bool
-StringLengthIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
+bool StringLengthIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
+{
   store::Item_t item;
+  zstring strval;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(item, theChildren [0].getp(), planState))
   {
-    item = item->getAtomizationValue();
+    item->getStringValue2(strval);
+
     STACK_PUSH(GENV_ITEMFACTORY->createInteger(
                             result,
-                            Integer::parseSizeT(item->getStringValue()->numChars())),
-                            state);
+                            Integer::parseSizeT(utf8_string<zstring>(strval).length())),
+               state);
   }
   else
   {
-    STACK_PUSH(GENV_ITEMFACTORY->createInteger(
-                            result,
-                            Integer::parseInt((xqp_int)0)),
-                            state);
+    STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, Integer::parseInt(0)),
+               state);
   }
-  STACK_END (state);
+  STACK_END(state);
 }
-/* end class StringLengthIterator */
+
 
 /**
   *______________________________________________________________________
@@ -504,30 +561,29 @@ StringLengthIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   *fn:normalize-space()                   as xs:string
   *fn:normalize-space($arg as xs:string?) as xs:string
   *_______________________________________________________________________*/
-/* begin class NormalizeSpaceIterator */
-bool
-NormalizeSpaceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool NormalizeSpaceIterator::nextImpl(
+    store::Item_t& result, 
+    PlanState& planState) const
 {
   store::Item_t item;
-  xqpStringStore_t resStr;
+  zstring resStr;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(item, theChildren [0].getp(), planState))
   {
-    item = item->getAtomizationValue();
-    resStr = item->getStringValue()->normalizeSpace();
+    item->getStringValue2(resStr);
+    ascii::normalize_whitespace(resStr);
     STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state);
   }
   else
   {
-    resStr = new xqpStringStore("");
     STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state);
   }
   STACK_END (state);
 }
-/* end class NormalizeSpaceIterator */
+
 
 /**
   *______________________________________________________________________
@@ -538,13 +594,16 @@ NormalizeSpaceIterator::nextImpl(store::Item_t& result, PlanState& planState) co
   *fn:normalize-unicode($arg as xs:string?,
   *                     $normalizationForm as xs:string) as xs:string
   *_______________________________________________________________________*/
-bool
-NormalizeUnicodeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool NormalizeUnicodeIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
 {
   store::Item_t item0;
   store::Item_t item1;
-  xqpStringStore_t tempStr = new xqpStringStore("NFC");
-  xqpStringStore_t resStr;
+  zstring normForm;
+  zstring resStr;
+  unicode::normalization::type normType;
+  bool success;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -553,39 +612,61 @@ NormalizeUnicodeIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   {
     if(theChildren.size() == 2)
     {
-      if (consumeNext(item1, theChildren[1].getp(), planState ))
-      {
-        item1 = item1->getAtomizationValue();
-        tempStr = item1->getStringValue()->uppercase()->trim();
-      }
-    }
+      if (!consumeNext(item1, theChildren[1].getp(), planState ))
+        ZORBA_ASSERT(false);
 
-    if(tempStr->empty() ||
-       tempStr->byteEqual("NFC", 3) ||
-       tempStr->byteEqual("NFKC", 4) ||
-       tempStr->byteEqual("NFD", 3) ||
-       tempStr->byteEqual("NFKD", 4))
-    {
-      resStr = item0->getStringValue();
-#ifndef ZORBA_NO_UNICODE
-      resStr = resStr->normalize(tempStr);
-#endif//#ifndef ZORBA_NO_UNICODE
-      STACK_PUSH( GENV_ITEMFACTORY->createString(result, resStr), state );
+      item1->getStringValue2(normForm);
+      ascii::trim_whitespace(normForm);
+      zstring tmp(normForm);
+      utf8::to_upper(tmp, &normForm);
     }
     else
     {
-      ZORBA_ERROR_LOC_DESC(FOCH0003, loc, "Unsupported normalization form.");
+      normForm = "NFC";
     }
+
+    if(normForm.empty())
+    {
+      normType = unicode::normalization::none;
+    }
+    else if (equals(normForm, "NFC", 3))
+    {
+      normType = unicode::normalization::NFC;
+    }
+    else if (equals(normForm, "NFKC", 4))
+    {
+      normType = unicode::normalization::NFKC;
+    }
+    else if (equals(normForm, "NFD", 3))
+    {
+      normType = unicode::normalization::NFD;
+    }
+    else if (equals(normForm, "NFKD", 4))
+    {
+      normType = unicode::normalization::NFKD;
+    }
+    else
+    {
+      ZORBA_ERROR_LOC_DESC_OSS(FOCH0003, loc,
+                               "Unsupported normalization form : " << normForm);
+    }
+
+    item0->getStringValue2(resStr);
+#ifndef ZORBA_NO_UNICODE
+    success = utf8::normalize(resStr, normType, &resStr);
+    ZORBA_ASSERT(success);
+#endif//#ifndef ZORBA_NO_UNICODE
+    STACK_PUSH( GENV_ITEMFACTORY->createString(result, resStr), state );
   }
   else
   {
     // must push empty string due to return type of function
-    resStr = new xqpStringStore("");
     STACK_PUSH( GENV_ITEMFACTORY->createString(result, resStr), state);
   }
   
   STACK_END (state);
 }
+
 
 /**
   *______________________________________________________________________
@@ -594,30 +675,32 @@ NormalizeUnicodeIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   *
   *fn:upper-case($arg as xs:string?) as xs:string
   *_______________________________________________________________________*/
-/* begin class UpperCaseIterator */
-bool
-UpperCaseIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool UpperCaseIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
 {
   store::Item_t item;
-  xqpStringStore_t resStr;
+  zstring resStr;
+  zstring strval;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(item, theChildren [0].getp(), planState))
   {
-    item = item->getAtomizationValue();
-    resStr = item->getStringValue()->uppercase();
+    item->getStringValue2(strval);
+
+    utf8::to_upper(strval, &resStr);
+
     STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state);
   }
   else
   {
-    resStr = new xqpStringStore("");
     STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state);
   }
   STACK_END (state);
 }
-/* end class UpperCaseIterator */
+
 
 /**
   *______________________________________________________________________
@@ -626,30 +709,32 @@ UpperCaseIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   *
   *fn:lower-case($arg as xs:string?) as xs:string
   *_______________________________________________________________________*/
-/* begin class LowerCaseIterator */
-bool
-LowerCaseIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
+bool LowerCaseIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const 
 {
   store::Item_t item;
-  xqpStringStore_t resStr;
+  zstring resStr;
+  zstring strval;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(item, theChildren [0].getp(), planState))
   {
-    item = item->getAtomizationValue();
-    resStr = item->getStringValue()->lowercase();
+    item->getStringValue2(strval);
+
+    utf8::to_lower(strval, &resStr);
+
     STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state);
   }
   else
   {
-    resStr = new xqpStringStore("");
     STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state);
   }
   STACK_END (state);
 }
-/* end class LowerCaseIterator */
+
 
 /**
   *______________________________________________________________________
@@ -660,16 +745,16 @@ LowerCaseIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   *             $mapString    as xs:string,
   *             $transString  as xs:string) as xs:string
   *_______________________________________________________________________*/
-/* begin class TranslateIterator */
-bool
-TranslateIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool TranslateIterator::nextImpl(
+    store::Item_t& result, 
+    PlanState& planState) const
 {
   store::Item_t itemArg, item0, item1;
   bool res = false;
   xqpString strvalarg;
   xqpString strval0;
   xqpString strval1;
-  xqpStringStore_t resStr;
+  zstring resStr;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -680,15 +765,13 @@ TranslateIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     {
       if (consumeNext(item1, theChildren[2].getp(), planState ))
       {
-        item0 = item0->getAtomizationValue();
-        item1 = item1->getAtomizationValue();
+        strval0 = item0->getStringValue().str();
+        strval1 = item1->getStringValue().str();
 
-        strval0 = item0->getStringValue().getp();
-        strval1 = item1->getStringValue().getp();
+        strvalarg = itemArg->getStringValue().str();
 
-        strvalarg = itemArg->getStringValue().getp();
+        resStr = strvalarg.translate(strval0, strval1).getStore()->str();
 
-        resStr = strvalarg.translate(strval0, strval1).getStore();
         res = GENV_ITEMFACTORY->createString(result, resStr);
       }
     }
@@ -696,7 +779,6 @@ TranslateIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   
   if (!res)
   {
-    resStr = new xqpStringStore("");
     res = GENV_ITEMFACTORY->createString(result, resStr);
   }
 
@@ -712,28 +794,27 @@ TranslateIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   *
   *fn:encode-for-uri($uri-part as xs:string?) as xs:string
   *_______________________________________________________________________*/
-
-bool
-EncodeForUriIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
+bool EncodeForUriIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const 
 {
   store::Item_t item;
-  xqpStringStore_t resStr;
+  zstring resStr;
+  zstring strval;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(item, theChildren [0].getp(), planState)) 
   {
-    item->getStringValue()->encodeForUri(resStr);
-  }
-  else 
-  {
-    resStr = new xqpStringStore("");
+    item->getStringValue2(strval);
+    ascii::uri_encode(strval, &resStr, true);
   }
 
   STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state);
   STACK_END (state);
 }
+
 
 /**
   *______________________________________________________________________
@@ -742,25 +823,30 @@ EncodeForUriIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   *
   *fn:iri-to-uri($iri as xs:string?) as xs:string
   *_______________________________________________________________________*/
-
-bool
-IriToUriIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
+bool IriToUriIterator::nextImpl(
+    store::Item_t& result, 
+    PlanState& planState) const 
 {
   store::Item_t item;
-  xqpStringStore_t resStr;
+  zstring resStr;
+  zstring strval;
+  xqpStringStore_t tmp;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(item, theChildren [0].getp(), planState))
   {
-    item = item->getAtomizationValue();
-    resStr = item->getStringValue()->iriToUri();
+    item->getStringValue2(strval);
+
+    tmp = new xqpStringStore(strval.str());
+
+    resStr = tmp->iriToUri()->str();
+
     STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state);
   }
   else
   {
-    resStr = new xqpStringStore("");
     STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state);
   }
   STACK_END (state);
@@ -774,25 +860,30 @@ IriToUriIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   *
   *fn:escape-html-uri($uri as xs:string?) as xs:string
   *_______________________________________________________________________*/
-
-bool
-EscapeHtmlUriIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
+bool EscapeHtmlUriIterator::nextImpl(
+    store::Item_t& result, 
+    PlanState& planState) const 
 {
   store::Item_t item;
-  xqpStringStore_t resStr;
+  zstring resStr;
+  zstring strval;
+  xqpStringStore_t tmp;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(item, theChildren [0].getp(), planState))
   {
-    item = item->getAtomizationValue();
-    resStr = item->getStringValue()->escapeHtmlUri();
+    item->getStringValue2(strval);
+
+    tmp = new xqpStringStore(strval.str());
+
+    resStr = tmp->escapeHtmlUri()->str();
+
     STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state);
   }
   else
   {
-    resStr = new xqpStringStore("");
     STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state);
   }
   STACK_END (state);
@@ -810,68 +901,55 @@ EscapeHtmlUriIterator::nextImpl(store::Item_t& result, PlanState& planState) con
   *             $arg2       as xs:string?,
   *             $collation  as xs:string) as xs:boolean
   *_______________________________________________________________________*/
-bool
-ContainsIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
+bool ContainsIterator::nextImpl(
+    store::Item_t& result, 
+    PlanState& planState) const 
+{
   store::Item_t item0;
   store::Item_t item1;
   store::Item_t itemColl;
   bool resBool = false;
-  xqpStringStore_t arg1;
-  xqpStringStore_t arg2;
+  zstring arg1;
+  zstring arg2;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if(theChildren.size() == 2 || theChildren.size()==3)
+  if (consumeNext(item0, theChildren[0].getp(), planState ))
   {
-    if (consumeNext(item0, theChildren[0].getp(), planState ))
-    {
-      item0 = item0->getAtomizationValue();
-      arg1 = item0->getStringValue();
-    }
-    else
-    {
-      arg1 = new xqpStringStore("");
-    }
-
-    if (consumeNext(item1, theChildren[1].getp(), planState ))
-    {
-      item1 = item1->getAtomizationValue();
-      arg2 = item1->getStringValue();
-    }
-    else
-    {
-      arg2 = new xqpStringStore("");
-    }
-    
-    if( arg2->empty())
-    {
-      STACK_PUSH( GENV_ITEMFACTORY->createBoolean(result, true), state );
-    }
-    else if ( arg1->empty())
-    {
-      STACK_PUSH( GENV_ITEMFACTORY->createBoolean(result, false), state );
-    }
-    else
-    {
-      if( theChildren.size() == 2 )
-      {
-        resBool = (arg1->positionOf(arg2, NULL) != -1);
-      }
-      else
-      {
-        //theChildren.size() ==3
-        if (consumeNext(itemColl, theChildren[2].getp(), planState ))
-        {
-          itemColl = itemColl->getAtomizationValue();
-          XQPCollator* coll = 0;
-          coll = theSctx->get_collator(itemColl->getStringValue()->str(), loc);
-          resBool = (arg1->positionOf(arg2, coll) != -1);
-        }
-      }
-      STACK_PUSH( GENV_ITEMFACTORY->createBoolean(result, resBool), state );
-    }
+    item0->getStringValue2(arg1);
   }
+
+  if (consumeNext(item1, theChildren[1].getp(), planState ))
+  {
+    item1->getStringValue2(arg2);
+  }
+    
+  if (arg2.empty())
+  {
+    STACK_PUSH( GENV_ITEMFACTORY->createBoolean(result, true), state );
+  }
+  else if (arg1.empty())
+  {
+    STACK_PUSH( GENV_ITEMFACTORY->createBoolean(result, false), state );
+  }
+  else
+  {
+    if (theChildren.size() == 2)
+    {
+      resBool = (arg1.find(arg2) != zstring::npos);
+    }
+    else
+    {
+      if (consumeNext(itemColl, theChildren[2].getp(), planState ))
+      {
+        XQPCollator* coll = theSctx->get_collator(itemColl->getStringValue().str(), loc);
+        resBool = (zorba::find(arg1, arg2, coll) != zstring::npos);
+      }
+    }
+    STACK_PUSH( GENV_ITEMFACTORY->createBoolean(result, resBool), state );
+  }
+  
   STACK_END (state);
 }
 /*end class ContainsIterator*/
@@ -887,62 +965,52 @@ ContainsIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   *               $arg2       as xs:string?,
   *               $collation  as xs:string) as xs:boolean
   *_______________________________________________________________________*/
-bool
-StartsWithIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
+bool StartsWithIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const 
+{
   store::Item_t item0;
   store::Item_t item1;
   store::Item_t itemColl;
   bool resBool = false;
-  xqpStringStore_t arg1;
-  xqpStringStore_t arg2;
+  zstring arg1;
+  zstring arg2;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if(theChildren.size() == 2 || theChildren.size()==3)
+  if (theChildren.size() == 2 || theChildren.size()==3)
   {
     if (consumeNext(item0, theChildren[0].getp(), planState ))
     {
-      item0 = item0->getAtomizationValue();
-      arg1 = item0->getStringValue();
-    }
-    else
-    {
-      arg1 = new xqpStringStore("");
+      item0->getStringValue2(arg1);
     }
 
     if (consumeNext(item1, theChildren[1].getp(), planState ))
     {
-      item1 = item1->getAtomizationValue();
-      arg2 = item1->getStringValue();
-    }
-    else
-    {
-      arg2 = new xqpStringStore("");
+      item1->getStringValue2(arg2);
     }
 
-    if(arg2->empty())
+    if (arg2.empty())
     {
       STACK_PUSH( GENV_ITEMFACTORY->createBoolean(result, true), state );
     }
-    else if (arg2->empty())
+    else if (arg1.empty())
     {
       STACK_PUSH( GENV_ITEMFACTORY->createBoolean(result, false), state );
     }
     else
     {
-      if( theChildren.size() == 2 )
+      if (theChildren.size() == 2)
       {
-        resBool = (arg1->positionOf(arg2, NULL) == 0);
+        resBool = (arg1.find(arg2) == 0);
       }
       else
-      { //theChildren.size() ==3
+      {
         if (consumeNext(itemColl, theChildren[2].getp(), planState ))
         {
-          itemColl = itemColl->getAtomizationValue();
-          XQPCollator* coll = 0;
-          coll = theSctx->get_collator(itemColl->getStringValue()->str(), loc);
-          resBool = (arg1->positionOf(arg2, coll) == 0);
+          XQPCollator* coll = theSctx->get_collator(itemColl->getStringValue().str(), loc);
+          resBool = (zorba::find(arg1, arg2, coll) == 0);
         }
       }
       STACK_PUSH( GENV_ITEMFACTORY->createBoolean(result, resBool), state );
@@ -963,70 +1031,59 @@ StartsWithIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
   *             $arg2       as xs:string?,
   *             $collation  as xs:string)   as xs:boolean
   *_______________________________________________________________________*/
-bool
-EndsWithIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
+bool EndsWithIterator::nextImpl(
+    store::Item_t& result, 
+    PlanState& planState) const 
+{
   store::Item_t item0;
   store::Item_t item1;
   store::Item_t itemColl;
   bool resBool = false;
-  xqpStringStore_t arg1;
-  xqpStringStore_t arg2;
+  zstring arg1;
+  zstring arg2;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if(theChildren.size() == 2 || theChildren.size()==3)
+  if (consumeNext(item0, theChildren[0].getp(), planState ))
   {
-    if (consumeNext(item0, theChildren[0].getp(), planState ))
-    {
-      item0 = item0->getAtomizationValue();
-      arg1 = item0->getStringValue();
-    }
-    else
-    {
-      arg1 = new xqpStringStore("");
-    }
-
-    if (consumeNext(item1, theChildren[1].getp(), planState ))
-    {
-      item1 = item1->getAtomizationValue();
-      arg2 = item1->getStringValue();
-    }
-    else
-    {
-      arg2 = new xqpStringStore("");
-    }
-
-    if(arg2->empty())
-    {
-      STACK_PUSH( GENV_ITEMFACTORY->createBoolean(result, true), state );
-    }
-    else if (arg1->empty())
-    {
-      STACK_PUSH( GENV_ITEMFACTORY->createBoolean(result, false), state );
-    }
-    else
-    {
-      if( theChildren.size() == 2 )
-      {
-        resBool = (arg1->endsWith(arg2, NULL));
-      }
-      else
-      { //theChildren.size() ==3
-        if (consumeNext(itemColl, theChildren[2].getp(), planState ))
-        {
-          itemColl = itemColl->getAtomizationValue();
-          XQPCollator* coll = 0;
-          coll = theSctx->get_collator(itemColl->getStringValue()->str(), loc);
-          resBool = arg1->endsWith(arg2, coll);
-        }
-      }
-      STACK_PUSH( GENV_ITEMFACTORY->createBoolean(result, resBool), state );
-    }
+    item0->getStringValue2(arg1);
   }
+  
+  if (consumeNext(item1, theChildren[1].getp(), planState ))
+  {
+    item1->getStringValue2(arg2);
+  }
+
+  if (arg2.empty())
+  {
+    STACK_PUSH( GENV_ITEMFACTORY->createBoolean(result, true), state );
+  }
+  else if (arg1.empty())
+  {
+    STACK_PUSH( GENV_ITEMFACTORY->createBoolean(result, false), state );
+  }
+  else
+  {
+    if (theChildren.size() == 2)
+    {
+      resBool = utf8::ends_with(arg1, arg2);
+    }
+    else
+    {
+      if (consumeNext(itemColl, theChildren[2].getp(), planState ))
+      {
+        XQPCollator* coll = theSctx->get_collator(itemColl->getStringValue().str(), loc);
+
+        resBool = zorba::ends_with(arg1, arg2, coll);
+      }
+    }
+    STACK_PUSH( GENV_ITEMFACTORY->createBoolean(result, resBool), state );
+  }
+  
   STACK_END (state);
 }
-/*end class EndsWithIterator*/
+
 
 /**
   *______________________________________________________________________
@@ -1039,15 +1096,17 @@ EndsWithIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   *                     $arg2       as xs:string?,
   *                     $collation  as xs:string)   as xs:string
   *_______________________________________________________________________*/
-bool
-SubstringBeforeIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
+bool SubstringBeforeIterator::nextImpl(
+    store::Item_t& result, 
+    PlanState& planState) const 
+{
   store::Item_t item0;
   store::Item_t item1;
   store::Item_t itemColl;
-  xqp_int index = -1;
-  xqpStringStore_t arg1;
-  xqpStringStore_t arg2;
-  xqpStringStore_t resStr;
+  ulong index = zstring::npos;
+  zstring arg1;
+  zstring arg2;
+  zstring resStr;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -1056,58 +1115,43 @@ SubstringBeforeIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   {
     if (consumeNext(item0, theChildren[0].getp(), planState ))
     {
-      item0 = item0->getAtomizationValue();
-      arg1 = item0->getStringValue();
-    }
-    else
-    {
-      arg1 = new xqpStringStore("");
+      item0->getStringValue2(arg1);
     }
 
     if (consumeNext(item1, theChildren[1].getp(), planState ))
     {
-      item1 = item1->getAtomizationValue();
-      arg2 = item1->getStringValue();
-    }
-    else
-    {
-      arg2 = new xqpStringStore("");
+      item1->getStringValue2(arg2);
     }
 
-    if( arg1->empty() || arg2->empty())
+    if (arg1.empty() || arg2.empty())
     {
-      resStr = new xqpStringStore("");
       STACK_PUSH( GENV_ITEMFACTORY->createString(result, resStr), state );
     }
     else
     {
-      if( theChildren.size() == 2 )
+      if (theChildren.size() == 2)
       {
-        index = arg1->positionOf(arg2, NULL);
+        index = arg1.find(arg2);
       }
       else
       {
-        //theChildren.size() ==3
         if (consumeNext(itemColl, theChildren[2].getp(), planState ))
         {
-          itemColl = itemColl->getAtomizationValue();
           XQPCollator* coll = 0;
-          coll = theSctx->get_collator(itemColl->getStringValue()->str(), loc);
-          index = arg1->positionOf(arg2, coll);
+          coll = theSctx->get_collator(itemColl->getStringValue().str(), loc);
+          index = zorba::find(arg1, arg2, coll);
         }
       }
 
-      if(index != -1)
-        resStr = new xqpStringStore(arg1->str().substr(0, index));
-      else
-        resStr = new xqpStringStore("");
+      if (index != zstring::npos)
+        resStr = arg1.substr(0, index);
 
       STACK_PUSH( GENV_ITEMFACTORY->createString(result, resStr), state );
     }
   }
   STACK_END (state);
 }
-/*end class SubstringBeforeIterator*/
+
 
 /**
   *______________________________________________________________________
@@ -1120,77 +1164,69 @@ SubstringBeforeIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   *                   $arg2       as xs:string?,
   *                   $collation  as xs:string)   as xs:string
   *_______________________________________________________________________*/
-bool
-SubstringAfterIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
+bool SubstringAfterIterator::nextImpl(
+    store::Item_t& result, 
+    PlanState& planState) const 
+{
   store::Item_t item0;
   store::Item_t item1;
   store::Item_t itemColl;
-  xqp_int startPos = -1;
-  xqpStringStore_t arg1;
-  xqpStringStore_t arg2;
-  xqpStringStore_t resStr;
+  ulong startPos = zstring::npos;
+  zstring arg1;
+  zstring arg2;
+  zstring resStr;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if(theChildren.size() == 2 || theChildren.size()==3)
+  if (theChildren.size() == 2 || theChildren.size() == 3)
   {
     if (consumeNext(item0, theChildren[0].getp(), planState ))
     {
-      item0 = item0->getAtomizationValue();
-      arg1 = item0->getStringValue();
-    }
-    else
-    {
-      arg1 = new xqpStringStore("");
+      item0->getStringValue2(arg1);
     }
 
     if (consumeNext(item1, theChildren[1].getp(), planState ))
     {
-      item1 = item1->getAtomizationValue();
-      arg2 = item1->getStringValue();
-    }
-    else
-    {
-      arg2 = new xqpStringStore("");
+      item1->getStringValue2(arg2);
     }
 
-    if( arg1->empty()  || arg2->empty())
-      STACK_PUSH( GENV_ITEMFACTORY->createString(result, arg1), state );
+    if (arg1.empty())
+    {
+      STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state);
+    }
+    else if (arg2.empty())
+    {
+      resStr = arg1;
+      STACK_PUSH( GENV_ITEMFACTORY->createString(result, resStr), state );
+    }
     else
     {
-      if( theChildren.size() == 2 )
+      if (theChildren.size() == 2)
       {
-        startPos = arg1->positionOf(arg2, NULL);
+        startPos = arg1.find(arg2);
       }
       else
       {
-        //theChildren.size() ==3
-        if (consumeNext(itemColl, theChildren[2].getp(), planState ))
+        if (consumeNext(itemColl, theChildren[2].getp(), planState))
         {
-          itemColl = itemColl->getAtomizationValue();
-          XQPCollator* coll = 0;
-          coll = theSctx->get_collator(itemColl->getStringValue()->str(), loc);
-          startPos = arg1->positionOf( arg2, coll );
+          XQPCollator* coll = theSctx->get_collator(itemColl->getStringValue().str(), loc);
+          startPos = zorba::find(arg1, arg2, coll);
         }
       }
 
-      if(startPos != -1)
+      if (startPos != zstring::npos)
       {
-        startPos += arg2->bytes();
-        resStr = new xqpStringStore(arg1->str().substr(startPos,
-                                                       arg1->bytes() - startPos));
+        startPos += arg2.size();
+        resStr = arg1.substr(startPos, arg1.size() - startPos);
       }
-      else
-      {
-        resStr = new xqpStringStore("");
-      }
-      STACK_PUSH( GENV_ITEMFACTORY->createString(result, resStr), state );
+
+      STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state);
     }
   }
   STACK_END (state);
 }
-/*end class SubstringAfterIterator*/
+
 
 /**
   *______________________________________________________________________
@@ -1203,13 +1239,13 @@ SubstringAfterIterator::nextImpl(store::Item_t& result, PlanState& planState) co
   *           $pattern as xs:string,
   *           $flags   as xs:string) as xs:boolean
   *_______________________________________________________________________*/
- /*begin class FnMatchesIterator*/
-bool
-FnMatchesIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool FnMatchesIterator::nextImpl(
+    store::Item_t& result, 
+    PlanState& planState) const
 {
-  xqp_string input;
-  xqp_string pattern;
-  xqp_string flags;
+  zstring input;
+  zstring pattern;
+  zstring flags;
   store::Item_t item;
   bool res = false;
   
@@ -1217,31 +1253,36 @@ FnMatchesIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(item, theChildren[0].getp(), planState))
-    input = item->getStringValue().getp();
+    item->getStringValue2(input);
 
   if (!consumeNext(item, theChildren[1].getp(), planState))
     ZORBA_ASSERT (false);
 
-  pattern = item->getStringValue().getp();
+  item->getStringValue2(pattern);
 
   if(theChildren.size() == 3) 
   {
     if (!consumeNext(item, theChildren[2].getp(), planState))
       ZORBA_ASSERT (false);
-    flags = item->getStringValue().getp();
+
+    item->getStringValue2(flags);
   }
-  try {
-    res = input.matches(pattern, flags);
+
+  try 
+  {
+    res = zorba::match_part(input, pattern, flags.c_str());
   }
-  catch(zorbatypesException& ex) {
-    ZORBA_ERROR_LOC_PARAM(error::DecodeZorbatypesError(ex.ErrorCode()), loc, ex.what(), "");
+  catch(zorbatypesException& ex) 
+  {
+    ZORBA_ERROR_LOC_PARAM(error::DecodeZorbatypesError(ex.ErrorCode()),
+                          loc, ex.what(), "");
   }
 
   STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, res), state); 
   
-  STACK_END (state);
+  STACK_END(state);
 }
-/*end class FnMatchesIterator*/
+
 
 /**
   *______________________________________________________________________
@@ -1256,12 +1297,15 @@ FnMatchesIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   *           $replacement as xs:string,
   *           $flags       as xs:string) as xs:string
   *_______________________________________________________________________*/
- /*begin class FnReplaceIterator*/
-bool
-FnReplaceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool FnReplaceIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
 {
-  xqp_string input, pattern, replacement, flags;
-  xqpStringStore_t resStr;
+  zstring input;
+  zstring flags;
+  zstring pattern;
+  zstring replacement;
+  zstring resStr;
   store::Item_t item;
   bool tmp;
   
@@ -1269,45 +1313,55 @@ FnReplaceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(item, theChildren[0].getp(), planState))
-    input = item->getStringValue().getp();
+    item->getStringValue2(input);
 
   if (!consumeNext(item, theChildren[1].getp(), planState))
     ZORBA_ASSERT (false);
-  pattern = item->getStringValue().getp();
+
+  item->getStringValue2(pattern);
 
   if (!consumeNext(item, theChildren[2].getp(), planState))
     ZORBA_ASSERT (false);
-  replacement = item->getStringValue().getp();
 
-  if(theChildren.size() == 4) {
+  item->getStringValue2(replacement);
+
+  if(theChildren.size() == 4) 
+  {
     if (!consumeNext(item, theChildren[3].getp(), planState))
       ZORBA_ASSERT (false);
-    flags = item->getStringValue().getp();
+
+    item->getStringValue2(flags);
   }
 
-  try {
-    tmp = xqp_string().matches(pattern, flags);
+  try 
+  {
+    tmp = zorba::match_part(zstring(), pattern, flags.c_str());
   }
-  catch(zorbatypesException& ex) {
-    ZORBA_ERROR_LOC_PARAM(error::DecodeZorbatypesError(ex.ErrorCode()), loc, ex.what(), "");
+  catch(zorbatypesException& ex) 
+  {
+    ZORBA_ERROR_LOC_PARAM(error::DecodeZorbatypesError(ex.ErrorCode()),
+                          loc, ex.what(), "");
   }
   
-  if(tmp)
+  if (tmp)
     ZORBA_ERROR_LOC_DESC(FORX0003, loc,
                          "Regular expression matches zero-length string.");
 
-  try {
-    resStr = input.replace(pattern, replacement, flags).getStore();
+  try 
+  {
+    utf8::replace_all(input, pattern, flags.c_str(), replacement, &resStr);
   }
-  catch(zorbatypesException& ex) {
-    ZORBA_ERROR_LOC_PARAM(error::DecodeZorbatypesError(ex.ErrorCode()), loc, ex.what(), "");
+  catch(zorbatypesException& ex) 
+  {
+    ZORBA_ERROR_LOC_PARAM(error::DecodeZorbatypesError(ex.ErrorCode()),
+                          loc, ex.what(), "");
   }
   
   STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state);
   
   STACK_END (state);
 }
-/*end class FnReplaceIterator*/
+
 
 /**
  *______________________________________________________________________
@@ -1321,8 +1375,7 @@ FnReplaceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
  *            $flags    as xs:string) as xs:string*
  *_______________________________________________________________________
  */
-void
-FnTokenizeIteratorState::reset(PlanState& planState)
+void FnTokenizeIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
   theString = xqp_string();
@@ -1332,34 +1385,49 @@ FnTokenizeIteratorState::reset(PlanState& planState)
   theFlags = xqp_string();
 }
 
-bool
-FnTokenizeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+
+bool FnTokenizeIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
 {
-  xqpStringStore_t token;
+  zstring token;
   store::Item_t item;
   bool tmp;
+  zstring strval;
 
   FnTokenizeIteratorState* state;
   DEFAULT_STACK_INIT(FnTokenizeIteratorState, state, planState);
 
   if (consumeNext(item, theChildren[0].getp(), planState))
-    state->theString = item->getStringValue().getp();
+  {
+    item->getStringValue2(strval);
+    state->theString = strval.str();
+  }
 
   if (!consumeNext(item, theChildren[1].getp(), planState))
-    ZORBA_ASSERT (false);
-  state->thePattern = item->getStringValue().getp();
+    ZORBA_ASSERT(false);
 
-  if(theChildren.size() == 3) {
+  item->getStringValue2(strval);
+  state->thePattern = strval.str();
+
+  if(theChildren.size() == 3) 
+  {
     if (!consumeNext(item, theChildren[2].getp(), planState))
       ZORBA_ASSERT (false);
-    state->theFlags = item->getStringValue().getp();
+
+    item->getStringValue2(strval);
+
+    state->theFlags = strval.str();
   }
 
-  try{
+  try
+  {
     tmp = xqp_string().matches(state->thePattern, state->theFlags);
   }
-  catch(zorbatypesException& ex){
-    ZORBA_ERROR_LOC_PARAM(error::DecodeZorbatypesError(ex.ErrorCode()), loc, ex.what(), "");
+  catch(zorbatypesException& ex)
+  {
+    ZORBA_ERROR_LOC_PARAM(error::DecodeZorbatypesError(ex.ErrorCode()),
+                          loc, ex.what(), "");
   }
 
   if(tmp)
@@ -1368,25 +1436,31 @@ FnTokenizeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   while ((xqp_uint)state->start_pos < state->theString.length ())
   {
-    try {
+    try 
+    {
       token = state->theString.tokenize(state->thePattern,
                                         state->theFlags,
                                         &state->start_pos,
-                                        &state->hasmatched).getStore();
+                                        &state->hasmatched).getStore()->str();
     }
-    catch(zorbatypesException& ex) {
-      ZORBA_ERROR_LOC_PARAM(error::DecodeZorbatypesError(ex.ErrorCode()), loc, ex.what(), "");
+    catch(zorbatypesException& ex) 
+    {
+      ZORBA_ERROR_LOC_PARAM(error::DecodeZorbatypesError(ex.ErrorCode()),
+                            loc, ex.what(), "");
     }
 
     STACK_PUSH(GENV_ITEMFACTORY->createString(result, token), state);
   }
+
   if(state->hasmatched)
   {
     //the last token is empty (is after the last match)
-    token = new xqpStringStore;
+    token.clear();
     STACK_PUSH(GENV_ITEMFACTORY->createString(result, token), state);
   }
   STACK_END(state);
 }
-/*end class FnTokenizeIterator*/
+
+
 } /* namespace zorba */
+/* vim:set et sw=2 ts=2: */

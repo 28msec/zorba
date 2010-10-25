@@ -67,3 +67,6 @@ void populate_context_xqdoc(static_context* sctx)
 
 
 }
+
+
+

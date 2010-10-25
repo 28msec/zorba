@@ -173,44 +173,6 @@ public:
    * @param baseUri The base uri of the document to load.
    * @param docUri The uri of the document to load. This uri can be used to refer
    *        to the document in the store.
-   * @return rchandle to the newly created document or NULL if a document with
-   *         the given uri exists already.
-   * @deprecated Use loadDocument method with LoadProperties
-   */
-  virtual Item_t loadDocument(
-         const xqpStringStore_t& baseUri,
-         const xqpStringStore_t& docUri,
-         std::istream& stream,
-         bool storeDocument = true) = 0;
-
-  /**
-   * Load a document to the store. The document is loaded from an input stream.
-   * Do the lazy loading of document. The stream will be freed by Zorba when finished.
-   *
-   * @param baseUri The base uri of the document to load.
-   * @param docUri The uri of the document to load. This uri can be used to refer
-   *        to the document in the store.
-   * @param stream User heap allocated stream. This will be freed by Zorba when
-   *        finishing loading doc.
-   * @param storeDocument The optional parameter storeDocument specifies whether
-   *        the document should be kept in the store (i.e. added to the set of
-   *        documents)
-   * @return rchandle to the newly created document or NULL if a document with
-   *         the given uri exists already.
-   * @deprecated Use loadDocument method with LoadProperties
-   */
-  virtual Item_t loadDocument(
-        const xqpStringStore_t& baseUri,
-        const xqpStringStore_t& docUri,
-        std::istream* stream,
-        bool storeDocument = true) = 0;
-
-  /**
-   * Load a document to the store. The document is loaded from an input stream.
-   *
-   * @param baseUri The base uri of the document to load.
-   * @param docUri The uri of the document to load. This uri can be used to refer
-   *        to the document in the store.
    * @param stream User heap allocated stream. This will NOT be freed by Zorba when
    *        finishing loading doc.
    * @param loadProperties Properties on how to do the document loading
@@ -218,8 +180,8 @@ public:
    *         the given uri exists already.
    */
   virtual Item_t loadDocument(
-         const xqpStringStore_t& baseUri,
-         const xqpStringStore_t& docUri,
+         const zstring& baseUri,
+         const zstring& docUri,
          std::istream& stream,
          const LoadProperties& loadProperties) = 0;
 
@@ -238,8 +200,8 @@ public:
    * @deprecate
    */
   virtual Item_t loadDocument(
-        const xqpStringStore_t& baseUri,
-        const xqpStringStore_t& docUri,
+        const zstring& baseUri,
+        const zstring& docUri,
         std::istream* stream,
         const LoadProperties& loadProperties) = 0;
 
@@ -249,21 +211,21 @@ public:
    *
    * @param uri The uri of the document to access.
    */
-  virtual Item_t getDocument(const xqpStringStore_t& uri) = 0;
+  virtual Item_t getDocument(const zstring& uri) = 0;
 
   /**
    * Delete the document with the given uri.
    *
    * @param uri The uri of the document to delete.
    */
-  virtual void deleteDocument(const xqpStringStore_t& uri) = 0;
+  virtual void deleteDocument(const zstring& uri) = 0;
 		
   /**
    * Delete all the documents in the store
    */
   virtual void deleteAllDocuments() = 0;
 
-  virtual void addNode(const xqpStringStore_t& uri, const Item_t& node) = 0;
+  virtual void addNode(const zstring& uri, const Item_t& node) = 0;
 
   /* ------------------------ Collection Management ---------------------------*/
 
@@ -275,7 +237,8 @@ public:
    *         with the given uri exists already.
    */
   virtual Collection_t createCollection(Item_t& name) = 0;
-  virtual Collection_t createUriCollection(const xqpStringStore_t& uri) = 0;
+
+  virtual Collection_t createUriCollection(const zstring& uri) = 0;
 
   /** Returns an XDM instance which is saved in the store 
    * (corresponds to the opening of a connection to a database)
@@ -285,14 +248,16 @@ public:
    *         does not exist
    */
   virtual Collection_t getCollection(const Item* name) = 0;
-  virtual Collection_t getUriCollection(const xqpStringStore_t& uri) = 0;
+
+  virtual Collection_t getUriCollection(const zstring& uri) = 0;
 		
   /** Deletes a collection.
    *
    * @param QName to identify the collection to delete.
    */
   virtual void deleteCollection(const Item* name) = 0;
-  virtual void deleteUriCollection(const xqpStringStore_t& uri) = 0;
+
+  virtual void deleteUriCollection(const zstring& uri) = 0;
 
   /** 
    * Returns an iterator that lists the names of all the available collections.

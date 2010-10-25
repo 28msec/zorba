@@ -35,6 +35,7 @@ class StoreIteratorImpl : public Iterator
 protected:
   store::Iterator_t theIterator; 
   ErrorHandler*     theErrorHandler;
+  bool              theOwnErrorHandler;
   bool              theIsOpen;     
   bool              theHaveLock;
     

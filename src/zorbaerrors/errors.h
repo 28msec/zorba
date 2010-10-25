@@ -26,7 +26,7 @@
 #include <zorba/exception.h>
 
 #include "zorbamisc/ns_consts.h"
-#include "zorbatypes/xqpstring.h"
+#include "zorbatypes/zstring.h"
 #include "compiler/parser/query_loc.h"
 #include "store/api/item.h"
 
@@ -46,15 +46,15 @@ public:
   //typedef std::pair<store::Item_t, QueryLoc> StackEntry_t;
   typedef std::pair<QueryLoc, std::pair<store::Item_t, unsigned int> > StackEntry_t;
   typedef std::vector<StackEntry_t> StackTrace_t;
-  xqpString             theLocalName;
-  xqpString             thePrefix;
-  xqpString             theNamespace;
+  zstring               theLocalName;
+  zstring               thePrefix;
+  zstring               theNamespace;
   XQUERY_ERROR          theErrorCode;
-  xqpString             theDescription;
+  zstring               theDescription;
   unsigned int          theQueryLine;
   unsigned int          theQueryColumn;
-  std::string           theQueryFileName; // the name of the file where the error occured
-  std::string           theFileName; // source file
+  zstring               theQueryFileName; // the name of the file where the error occured
+  zstring               theFileName; // source file
   int                   theLineNumber; // line number in the source file
   bool                  theDebug;
   StackTrace_t theStackTrace;
@@ -70,7 +70,7 @@ public:
 public:
   ZorbaError(
         XQUERY_ERROR&       aErrorCode,
-        const xqpString&    aDescription,
+        const zstring&      aDescription,
         unsigned int        aQueryLine,
         unsigned int        aQueryColumn,
         const std::string&  aQueryFileName,
@@ -78,10 +78,10 @@ public:
         int                 aLineNumber);
 
   ZorbaError(
-        const xqpString&    aErrLocalName,
-        const xqpString&    aErrPrefix,
-        const xqpString&    aErrNamespace,
-        const xqpString&    aDescription,
+        const zstring&      aErrLocalName,
+        const zstring&      aErrPrefix,
+        const zstring&      aErrNamespace,
+        const zstring&      aDescription,
         unsigned int        aQueryLine,
         unsigned int        aQueryColumn,
         const std::string&  aQueryFileName,
@@ -99,15 +99,25 @@ public:
   void setQueryLocation(
         unsigned int line,
         unsigned int column,
+        const char *filename);
+
+  void setQueryLocation(
+        unsigned int line,
+        unsigned int column,
+        const zstring& filename);
+
+  void setQueryLocation(
+        unsigned int line,
+        unsigned int column,
         const std::string& filename);
 
   bool hasQueryLocation();
 
-  const xqpString& localName() const;
+  const zstring& localName() const;
 
-  const xqpString& ns() const;
+  const zstring& ns() const;
 
-  const xqpString& prefix() const;
+  const zstring& prefix() const;
 
   virtual bool isXPathStaticError() const;
 
@@ -161,17 +171,17 @@ public:
 
 protected:
   WarningCode   theCode;          
-  xqpString     theDescription;   
+  zstring       theDescription;   
   unsigned int  theQueryLine;
   unsigned int  theQueryColumn;
-  std::string   theQueryFileName;
-  std::string   theFileName;      
+  zstring       theQueryFileName;
+  zstring       theFileName;      
   int           theLineNumber;  
 
 public:
   ZorbaWarning(
         WarningCode        aWarningCode,
-        const xqpString&   aDescription,
+        const zstring&     aDescription,
         unsigned int       aQueryLine,
         unsigned int       aQueryColumn,
         const std::string& aQueryFileName,

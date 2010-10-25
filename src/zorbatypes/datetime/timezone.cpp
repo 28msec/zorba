@@ -19,6 +19,7 @@
 #include <zorbatypes/timezone.h>
 #include "zorbatypes/datetime/parse.h"
 #include "zorbautils/hashfun.h"
+#include "util/ascii_util.h"
 
 
 namespace zorba
@@ -30,52 +31,61 @@ END_SERIALIZABLE_CLASS_VERSIONS(TimeZone)
 TimeZone::TimeZone(short hours) : Duration(DAYTIMEDURATION_FACET)
 {
   timezone_not_set = false;
+
   if (hours < 0)
     is_negative = true;
+
   data[HOUR_DATA] = abs<long>(hours);
 }
 
-void TimeZone::serialize(::zorba::serialization::Archiver &ar)
+
+void TimeZone::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (Duration*)this);
   ar & timezone_not_set;
 }
 
-int TimeZone::parseTimeZone(const xqpString& s, TimeZone& tz)
+
+int TimeZone::parseTimeZone(const char* str, ulong strlen, TimeZone& tz)
 {
-  std::string ss = s.getStore()->str();
-  unsigned int position = 0;
+  ascii::size_type pos = 0;
   
+  ascii::skip_whitespace(str, strlen, &pos);
+
   // A time zone is of form: (('+' | '-') hh ':' mm) | 'Z'
 
-  if (ss.size() == 1 && ss[position] == 'Z')
+  if (str[pos] == 'Z')
   {
-    // '+00:00', '-00:00', and 'Z' all represent the same zero-length duration timezone, UTC; 'Z' is its canonical representation.
+    ++pos;
+    ascii::skip_whitespace(str, strlen, &pos);
+
+    if (pos != strlen)
+      return 1;
+
+    // '+00:00', '-00:00', and 'Z' all represent the same zero-length duration
+    // timezone, UTC; 'Z' is its canonical representation.
     tz = TimeZone(0);
   }
   else
   {
-    if (ss.size() != 6)
-      return 1;
-    
     tz = TimeZone(0);
     
-    if (ss[position] == '-')
+    if (str[pos] == '-')
       tz.is_negative = true;
-    else if (ss[position] == '+')
+    else if (str[pos] == '+')
       /* do nothing */ ;
     else
       return 1;
 
-    position++;
+    ++pos;
 
-    if ( parse_int(ss, position, tz.data[HOUR_DATA], 2, 2) )
+    if ( parse_long(str, strlen, pos, tz.data[HOUR_DATA], 2, 2) )
       return 1;
 
-    if (ss[position++] != ':')
+    if (str[pos++] != ':')
       return 1;
     
-    if ( parse_int(ss, position, tz.data[MINUTE_DATA], 2, 2) )
+    if ( parse_long(str, strlen, pos, tz.data[MINUTE_DATA], 2, 2) )
       return 1;
 
     // minutes must be between 00..59
@@ -85,10 +95,16 @@ int TimeZone::parseTimeZone(const xqpString& s, TimeZone& tz)
     // hours must be between -14 .. 14
     if (tz.data[HOUR_DATA]*60 + tz.data[MINUTE_DATA] > 14*60)
       return 1;
+
+    ascii::skip_whitespace(str, strlen, &pos);
+
+    if (pos != strlen)
+      return 1;
   }
   
   return 0;
 }
+
 
 int TimeZone::createTimeZone(int hours, int minutes, int seconds, TimeZone& tz)
 {
@@ -99,81 +115,94 @@ int TimeZone::createTimeZone(int hours, int minutes, int seconds, TimeZone& tz)
   return 0;
 }
 
+
 bool TimeZone::operator<(const TimeZone& t) const
 {
   return (compare(t) == -1);
 }
+
 
 bool TimeZone::operator==(const TimeZone& t) const
 {
   return (compare(t) == 0);
 }
 
-xqpString TimeZone::toString() const
+
+zstring TimeZone::toString() const
 {
-  xqpString result;
+  zstring result;
   
   if (timeZoneNotSet())
-    return xqpString("");
+    return result;
 
   if (data[HOUR_DATA] == 0 && data[MINUTE_DATA] == 0)
-    return xqpString("Z");
+    return "Z";
 
   if (isNegative())
-    result += "-";
+    result.append("-", 1);
   else
-    result += "+";
+    result.append("+", 1);
 
-  result += to_string(data[HOUR_DATA], 2);
-  result += ":";
-  result += to_string(data[MINUTE_DATA], 2);
+  result.append(to_string(data[HOUR_DATA], 2));
+  result.append(":", 1);
+  result.append(to_string(data[MINUTE_DATA], 2));
     
   return result;
 }
+
 
 int TimeZone::compare(const TimeZone& t) const
 {
   return Duration::compare(t);
 }
 
-bool TimeZone::isNegative() const
-{
-  return Duration::isNegative();
-}
 
 bool TimeZone::timeZoneNotSet() const
 {
   return timezone_not_set;
 }
 
+
+bool TimeZone::isNegative() const
+{
+  return Duration::isNegative();
+}
+
+
 long TimeZone::getHours() const
 {
   return Duration::getHours();
 }
+
 
 long TimeZone::getMinutes() const
 {
   return Duration::getMinutes();
 }
 
+
 xqp_decimal TimeZone::getSeconds() const
 {
   return Duration::getSeconds();
 }
+
 
 long TimeZone::getIntSeconds() const
 {
   return Duration::getIntSeconds();
 }
 
+
 long TimeZone::getFractionalSeconds() const
 {
   return Duration::getFractionalSeconds();
 }
 
+
 uint32_t TimeZone::hash(int implicit_timezone_seconds) const
 {
   return hashfun::h32<uint32_t>(timeZoneNotSet() ? (uint32_t)-1 : Duration::hash(), 0);
 }
+
 
 } // namespace zorba

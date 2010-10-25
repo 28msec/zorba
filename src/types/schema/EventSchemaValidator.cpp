@@ -90,9 +90,9 @@ void EventSchemaValidator::startElem(store::Item_t elemName)
 {
   //cout << "  sv SElem: " << elemName->getLocalName()->c_str() << "\n";
 
-  XMLChArray prefix(elemName->getPrefix()->c_str());
-  XMLChArray uri(elemName->getNamespace()->c_str());
-  XMLChArray localname(elemName->getLocalName()->c_str());
+  XMLChArray prefix(elemName->getPrefix());
+  XMLChArray uri(elemName->getNamespace());
+  XMLChArray localname(elemName->getLocalName());
   theSchemaValidatorFilter->startElementEvent(prefix, uri, localname);
 }
 
@@ -101,24 +101,24 @@ void EventSchemaValidator::endElem(store::Item_t elemName)
 {
   //cout << "  sv EElem: " << elemName->getLocalName()->c_str() << "\n";
 
-  XMLChArray prefix(elemName->getPrefix()->c_str());
-  XMLChArray uri(elemName->getNamespace()->c_str());
-  XMLChArray localname(elemName->getLocalName()->c_str());
+  XMLChArray prefix(elemName->getPrefix());
+  XMLChArray uri(elemName->getNamespace());
+  XMLChArray localname(elemName->getLocalName());
   XMLCh *typeURI = NULL;
   XMLCh *typeName = NULL;
   theSchemaValidatorFilter->endElementEvent(prefix, uri, localname, typeURI, typeName);
 }
 
 
-void EventSchemaValidator::attr(store::Item_t attrName, xqpStringStore_t textValue)
+void EventSchemaValidator::attr(store::Item_t attrName, const zstring& textValue)
 {
   //cout << "  sv   Attr: " << attrName->getPrefix()->c_str() << ":"
   //     << attrName->getLocalName()->c_str() << " = '" << textValue->c_str() << "'\n";
 
-  XMLChArray prefix(attrName->getPrefix()->c_str());
-  XMLChArray uri(attrName->getNamespace()->c_str());
-  XMLChArray localname(attrName->getLocalName()->c_str());
-  XMLChArray value(textValue->c_str());
+  XMLChArray prefix(attrName->getPrefix());
+  XMLChArray uri(attrName->getNamespace());
+  XMLChArray localname(attrName->getLocalName());
+  XMLChArray value(textValue);
   XMLCh *typeURI = NULL;
   XMLCh *typeName = NULL;
   theSchemaValidatorFilter->attributeEvent(prefix, uri, localname, value, typeURI, typeName);
@@ -132,22 +132,22 @@ void EventSchemaValidator::endAttrs()
 }
 
 
-void EventSchemaValidator::text(xqpStringStore_t textValue)
+void EventSchemaValidator::text(const zstring& textValue)
 {
   //cout << "  sv   Text: '" << textValue->c_str() << "'\n";
 
-  XMLChArray value(textValue->c_str());
+  XMLChArray value(textValue);
   theSchemaValidatorFilter->textEvent(value);
   //_validationEventHandler.resetAttList();
 }
 
 
-void EventSchemaValidator::ns(xqpStringStore_t prefix, xqpStringStore_t uri)
+void EventSchemaValidator::ns(const zstring& prefix, const zstring& uri)
 {
   //cout << "     Ns  : " << prefix->c_str() << " = '" << uri->c_str() << "'\n";
 
-  XMLChArray prefixVal(prefix->c_str());
-  XMLChArray uriVal(uri->c_str());
+  XMLChArray prefixVal(prefix.c_str());
+  XMLChArray uriVal(uri.c_str());
   theSchemaValidatorFilter->namespaceEvent(prefixVal, uriVal);
 }
 
@@ -217,8 +217,8 @@ store::Item_t EventSchemaValidator::getSubstitutedElemQName()
 
 void EventSchemaValidator::startType(store::Item_t typeQName)
 {
-  XMLChArray uri(typeQName->getNamespace()->c_str());
-  XMLChArray localname(typeQName->getLocalName()->c_str());
+  XMLChArray uri(typeQName->getNamespace());
+  XMLChArray localname(typeQName->getLocalName());
 
   //cout << "   SType: " << typeQName->getLocalName()->c_str() << " @ "
   //     << typeQName->getNamespace()->c_str() << "\n";

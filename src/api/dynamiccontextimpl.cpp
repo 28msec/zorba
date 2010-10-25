@@ -44,6 +44,7 @@
 #include "store/api/temp_seq.h"
 
 #include "zorbaerrors/Assert.h"
+#include "zorbautils/string_glue.h"
 
 
 namespace zorba {
@@ -94,8 +95,9 @@ bool DynamicContextImpl::setVariable(
     store::Item_t lItem(Unmarshaller::getInternalItem(aItem));
     ZorbaImpl::checkItem(lItem);
 
-    xqpStringStore_t lString = Unmarshaller::getInternalString(aQName);
-    xqpString lExpandedName = theCtx->expand_varname(theStaticContext, lString);
+    zstring const &lString = Unmarshaller::getInternalString(aQName);
+    xqpStringStore_t temp( to_xqpStringStore_t( lString ) );
+    xqpString lExpandedName = theCtx->expand_varname(theStaticContext, temp);
 
     // add it to the internal context
     theCtx->add_variable(lExpandedName, lItem);
@@ -124,8 +126,9 @@ bool DynamicContextImpl::setVariable(
 
     store::Iterator_t lRes = Unmarshaller::getInternalIterator(lIter);
 
-    xqpStringStore_t lString = Unmarshaller::getInternalString(aQName);
-    xqpString lExpandedName = theCtx->expand_varname(theStaticContext, lString);
+    zstring const &lString = Unmarshaller::getInternalString(aQName);
+    xqpStringStore_t temp( to_xqpStringStore_t( lString ) );
+    xqpString lExpandedName = theCtx->expand_varname(theStaticContext, temp);
 
     theCtx->add_variable(lExpandedName, lRes);
 
@@ -154,8 +157,9 @@ bool DynamicContextImpl::setVariable(
 
     store::Iterator_t lRes = Unmarshaller::getInternalIterator(lIter);
 
-    xqpStringStore_t lNamespace = Unmarshaller::getInternalString(aNamespace);
-    xqpStringStore_t lLocalname = Unmarshaller::getInternalString(aLocalname);
+    zstring lNamespace = Unmarshaller::getInternalString(aNamespace).str();
+    zstring lLocalname = Unmarshaller::getInternalString(aLocalname).str();
+
     xqpString lExpandedName = theCtx->expand_varname(theStaticContext,
                                                      lNamespace,
                                                      lLocalname);
@@ -180,8 +184,9 @@ bool DynamicContextImpl::getVariable(
 {
   ZORBA_DCTX_TRY
   {
-    xqpStringStore_t lNamespace = Unmarshaller::getInternalString(aNamespace);
-    xqpStringStore_t lLocalname = Unmarshaller::getInternalString(aLocalname);
+    zstring lNamespace = Unmarshaller::getInternalString(aNamespace).str();
+    zstring lLocalname = Unmarshaller::getInternalString(aLocalname).str();
+
     xqpString lExpandedName = theCtx->expand_varname(theStaticContext,
                                                      lNamespace,
                                                      lLocalname);
@@ -253,9 +258,11 @@ bool DynamicContextImpl::setVariableAsDocument(
     InternalDocumentURIResolver* uriResolver;
     uriResolver = theStaticContext->get_document_uri_resolver();
 
-    xqpStringStore_t docUri = Unmarshaller::getInternalString(aDocUri);
+    zstring docUri = Unmarshaller::getInternalString(aDocUri);
+
+    zstring tmpDocUri(docUri);
     store::Item_t docUriItem;
-    factory->createAnyURI(docUriItem, docUri);
+    factory->createAnyURI(docUriItem, tmpDocUri);
 
     store::Item_t docItem;
     docItem = uriResolver->resolve(docUriItem, theStaticContext, true, false, replaceDoc);
@@ -286,8 +293,8 @@ bool DynamicContextImpl::setVariableAsDocument(
   {
     checkNoIterators();
 
-    xqpStringStore_t docUri = Unmarshaller::getInternalString(aDocUri);
-    xqpStringStore_t baseUri = theStaticContext->get_base_uri();
+    zstring const &docUri = Unmarshaller::getInternalString(aDocUri);
+    zstring baseUri = theStaticContext->get_base_uri();
 
     if (replaceDoc)
       GENV_STORE.deleteDocument(docUri);
@@ -366,8 +373,8 @@ bool DynamicContextImpl::setContextItemAsDocument(
   {
     checkNoIterators();
 
-    xqpStringStore_t docUri = Unmarshaller::getInternalString(aDocURI);
-    xqpStringStore_t baseUri = theStaticContext->get_base_uri();
+    zstring const &docUri = Unmarshaller::getInternalString(aDocURI);
+    zstring const &baseUri = theStaticContext->get_base_uri();
 
     store::LoadProperties lLoadProperties;
     lLoadProperties.setEnableDtd(aLoadProperties.getEnableDtd());
@@ -402,13 +409,14 @@ bool DynamicContextImpl::setContextItemAsDocument(
   {
     checkNoIterators();
 
-    xqpStringStore_t docUri = Unmarshaller::getInternalString(aDocURI);
+    zstring docUri = Unmarshaller::getInternalString(aDocURI);
 
     InternalDocumentURIResolver* uri_resolver;
     uri_resolver = theStaticContext->get_document_uri_resolver();
 
     store::Item_t uriItem;
-    GENV_ITEMFACTORY->createAnyURI(uriItem, docUri);
+    zstring tmpDocUri(docUri);
+    GENV_ITEMFACTORY->createAnyURI(uriItem, tmpDocUri);
 
     store::Item_t docItem;
     docItem = uri_resolver->resolve(uriItem, theStaticContext, true, false, aReplaceDoc);
@@ -611,7 +619,7 @@ bool DynamicContextImpl::getExternalFunctionParam(
 ********************************************************************************/
 void DynamicContextImpl::validateIfNecesary(
     store::Item_t& docItem,
-    xqpStringStore_t& docUri,
+    const zstring& docUri,
     store::Item_t& docUriItem,
     const XmlDataManager::LoadProperties& aLoadProperties)
 {
@@ -645,7 +653,7 @@ void DynamicContextImpl::validateIfNecesary(
         GENV_STORE.deleteDocument(docUri);
         docItem = validatedNode;
         docItem->markValidated();
-        GENV_STORE.addNode(docUri.getp(), docItem);
+        GENV_STORE.addNode(docUri, docItem);
       }
     }
   }
@@ -665,8 +673,8 @@ void DynamicContextImpl::validateIfNecesary(
 ********************************************************************************/
 void DynamicContextImpl::validateIfNecesary(
     store::Item_t& docItem,
-    xqpStringStore_t& docUri,
-    xqpStringStore_t& baseUri,
+    const zstring& docUri,
+    const zstring& baseUri,
     std::auto_ptr<std::istream> aInStream,
     const XmlDataManager::LoadProperties& aLoadProperties)
 {
@@ -699,7 +707,7 @@ void DynamicContextImpl::validateIfNecesary(
         GENV_STORE.deleteDocument(docUri);
         docItem = validatedNode;
         docItem->markValidated();
-        GENV_STORE.addNode(docUri.getp(), docItem);
+        GENV_STORE.addNode(docUri, docItem);
       }
     }
   }

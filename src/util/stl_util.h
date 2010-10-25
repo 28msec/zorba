@@ -26,6 +26,8 @@
 
 namespace zorba {
 
+///////////////////////////////////////////////////////////////////////////////
+
 /**
  * A less-verbose way to iterate over a constant sequence.
  */
@@ -37,6 +39,8 @@ namespace zorba {
  */
 #define MUTATE_EACH(TYPE,IT,SEQ) \
   for ( TYPE::iterator IT = (SEQ).begin(); IT != (SEQ).end(); ++IT )
+
+///////////////////////////////////////////////////////////////////////////////
 
 /**
  * An auto_vec<T> is like the standard auto_ptr<T> but works where T is a
@@ -96,17 +100,57 @@ public:
     return p_[i];
   }
 
-  operator bool() const {
+  operator bool() const throw() {
     return !!p_;
   }
 
-  bool operator!() const {
+  bool operator!() const throw() {
     return !p_;
   }
 
 private:
   element_type *p_;
 };
+
+///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * A version of std::back_insert_iterator that's suitable as a base-class (the
+ * standard one is not).
+ *
+ * @tparam ContainerType The type of the container to insert into.
+ * @tparam DerivedType The type of the class deriving from this.
+ */
+template<class ContainerType,class DerivedType>
+class back_insert_iterator_base :
+  public std::iterator<std::output_iterator_tag,void,void,void,void> {
+public:
+  typedef ContainerType container_type;
+
+  DerivedType& operator*() {
+    return *static_cast<DerivedType*>( this );
+  }
+
+  DerivedType& operator++() {
+    return *static_cast<DerivedType*>( this );
+  }
+
+  DerivedType& operator++(int) {
+    return *static_cast<DerivedType*>( this );
+  }
+
+protected:
+  back_insert_iterator_base( ContainerType &c ) : container( &c ) {
+  }
+
+  /**
+   * A pointer is used (rather than a reference) so this class can be copy
+   * constructed.
+   */
+  ContainerType *container;
+};
+
+///////////////////////////////////////////////////////////////////////////////
 
 /**
  * A less-verbose way to determine whether the given set<T> contains a
@@ -170,6 +214,8 @@ typename SequenceType::value_type pop_front( SequenceType &seq ) {
   seq.pop_front();
   return value;
 }
+
+///////////////////////////////////////////////////////////////////////////////
 
 template<typename T> class stack_generator {
   std::stack<T> &stk;

@@ -25,6 +25,7 @@
 #include "store/naive/node_items.h"
 #include "store/api/collection.h"
 #include "zorbatypes/datetime.h"
+#include "util/string_util.h"
 
 
 namespace zorba { namespace simplestore {
@@ -70,7 +71,7 @@ QNamePool::~QNamePool()
 
       // Make sure that the associated normalized QN will not be destroyed here
       if (!qn->isNormalized())
-        qn->detachNormalized();
+        qn->detachNormQName();
 
       if (theHashSet.theHashTab[i].theItem->isOverflow())
         delete theHashSet.theHashTab[i].theItem;
@@ -121,8 +122,8 @@ void QNamePool::remove(QNameItem* qn)
 
   Note: The given namespace, prefix, and local name pointers may point to heap 
   or stack allocated strings. If a qname is inserted, then the strings are 
-  copied internally into xqpStringStore objects. So, it's always the caller
-  who is resposnible for freeing the given strings.
+  copied internally into zstring objects. So, it's always the caller who is
+  resposnible for freeing the given strings.
 ********************************************************************************/
 store::Item_t QNamePool::insert(
     const char* ns,
@@ -142,7 +143,7 @@ store::Item_t QNamePool::insert(
   if (pre == NULL) pre = "";
   ZORBA_FATAL(ln != NULL && *ln != '\0', "");
 
-  xqpStringStore_t pooledNs;
+  zstring pooledNs;
   theNamespacePool->insertc(ns, pooledNs);
 
   ulong hval = hashfun::h32(pre, hashfun::h32(ln, hashfun::h32(ns)));
@@ -154,7 +155,7 @@ retry:
     haveLock = true;)
 
     QNHashEntry* entry = hashFind(ns, pre, ln,
-                                  pooledNs->bytes(), strlen(pre), strlen(ln),
+                                  pooledNs.size(), strlen(pre), strlen(ln),
                                   hval);
     if (entry == 0)
     {
@@ -162,9 +163,9 @@ retry:
       {
         qn = cacheInsert(normVictim);
 
-        qn->theNamespace.transfer(pooledNs);
-        qn->thePrefix = QNameItem::theEmptyPrefix;
-        qn->setLocal(new xqpStringStore(ln));
+        qn->theNamespace = pooledNs;
+        qn->thePrefix.clear();
+        qn->setLocalName(zstring(ln));
       }
       else
       {
@@ -183,8 +184,8 @@ retry:
         qn = cacheInsert(normVictim);
 
         qn->theNamespace = normQName->theNamespace;
-        qn->thePrefix = new xqpStringStore(pre);
-        qn->setNormalized(normQName);
+        qn->thePrefix = pre;
+        qn->setNormQName(normQName);
       }
 
       bool found;
@@ -224,10 +225,10 @@ retry:
   rchandle to it. Otherwise, return an rchandle to the existing qname. 
 ********************************************************************************/
 store::Item_t QNamePool::insert(
-    const xqpStringStore_t& ns,
-    const xqpStringStore_t& pre,
-    const xqpStringStore_t& ln,
-    bool                    sync)
+    const zstring& ns,
+    const zstring& pre,
+    const zstring& ln,
+    bool sync)
 {
   QNameItem* qn = NULL;
   QNameItem* normVictim = NULL;
@@ -235,22 +236,22 @@ store::Item_t QNamePool::insert(
   store::Item_t normItem;
   QNameItem* normQName = NULL;
 
-  bool normalized = pre->empty();
+  bool normalized = pre.empty();
 
-  xqpStringStore_t pooledNs;
+  zstring pooledNs;
   theNamespacePool->insert(ns, pooledNs);
 
-  ulong hval = hashfun::h32(pre->c_str(),
-                            hashfun::h32(ln->c_str(),
-                                         hashfun::h32(ns->c_str())));
+  ulong hval = hashfun::h32(pre.c_str(),
+                            hashfun::h32(ln.c_str(),
+                                         hashfun::h32(ns.c_str())));
   try
   {
 retry:
     SYNC_CODE(theHashSet.theMutex.lock();\
     haveLock = true;)
 
-    QNHashEntry* entry = hashFind(ns->c_str(), pre->c_str(), ln->c_str(),
-                                  ns->bytes(), pre->bytes(), ln->bytes(),
+    QNHashEntry* entry = hashFind(ns.c_str(), pre.c_str(), ln.c_str(),
+                                  ns.size(), pre.size(), ln.size(),
                                   hval);
     if (entry == 0)
     {
@@ -258,9 +259,9 @@ retry:
       {
         qn = cacheInsert(normVictim);
 
-        qn->theNamespace.transfer(pooledNs);
-        qn->thePrefix = QNameItem::theEmptyPrefix;
-        qn->setLocal(ln.getp());
+        qn->theNamespace = pooledNs;
+        qn->thePrefix.clear();
+        qn->setLocalName(ln);
       }
       else
       {
@@ -269,10 +270,7 @@ retry:
           SYNC_CODE(theHashSet.theMutex.unlock();\
           haveLock = false;)
 
-          normItem = insert(pooledNs,
-                            QNameItem::theEmptyPrefix,
-                            ln,
-                            false);
+          normItem = insert(pooledNs, zstring(), ln, false);
 
           normQName = reinterpret_cast<QNameItem*>(normItem.getp());
 
@@ -283,7 +281,7 @@ retry:
       
         qn->theNamespace = normQName->theNamespace;
         qn->thePrefix = pre;
-        qn->setNormalized(normQName);
+        qn->setNormQName(normQName);
       }
 
       bool found;
@@ -336,26 +334,27 @@ QNameItem* QNamePool::cacheInsert(QNameItem*& normVictim)
 
     if (qn->isValid())
     {
-      ulong hval = hashfun::h32(qn->getPrefix()->c_str(),
-                                hashfun::h32(qn->getLocalName()->c_str(),
-                                             hashfun::h32(qn->getNamespace()->c_str())));
+      ulong hval = hashfun::h32(qn->getPrefix().c_str(),
+                                hashfun::h32(qn->getLocalName().c_str(),
+                                             hashfun::h32(qn->getNamespace().c_str())));
       theHashSet.removeNoSync(qn, hval);
 
       if (!qn->isNormalized())
       {
-        // Save the pointer to the associated normalized qname and then set
-        // that pointer to null. This way (a) we can decerement the ref
-        // counter of the normalized qname after releasing theHashSet.theMutex
-        // (otherwise, we would run into a self-deadlock if the normalized
-        // qname needs to be freed),and (b) removeReference is not called
+        // Let NQ be the associated normalized qname. Here, wave the pointer
+        // to NQ and then set that pointer to null, without decrementing NQ's
+        // ref count of the. This way (a) we can decerement NQ's ref counter
+        // *after* releasing theHashSet.theMutex (otherwise, we would run into
+        // a self-deadlock if NQ must be be freed because it is not referenced
+        // from anywhere else), and (b) removeReference is not called
         // when we overwite the pointer with the new local name.
-        normVictim = qn->detachNormalized();
+        normVictim = qn->detachNormQName();
       }
       else
       {
-        // Unset qn->theLocal so that the assertion in setNormalized() (which is
+        // Unset qn->theLocal so that the assertion in setNormQName() (which is
         // invoked later by the caller of this method) will not trigger.
-        qn->unsetLocal();
+        qn->unsetLocalName();
       }
     }
 
@@ -418,9 +417,9 @@ QNamePool::QNHashEntry* QNamePool::hashFind(
   {
     QNameItem* qn = entry->theItem;
 
-    if (qn->getLocalName()->byteEqual(ln, lnlen) &&
-        qn->getNamespace()->byteEqual(ns, nslen) &&
-        qn->getPrefix()->byteEqual(pre, prelen))
+    if (equals(qn->getLocalName(), ln, lnlen) &&
+        equals(qn->getNamespace(), ns, nslen) &&
+        equals(qn->getPrefix(), pre, prelen))
       return entry;
 
     entry = entry->getNext();

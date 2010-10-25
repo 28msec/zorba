@@ -160,7 +160,7 @@ protected:
   InternalNode   * theParent;
   ulong            thePos;
   store::Item_t    theRightSibling;
-  xqpStringStore_t theLeftContent;
+  zstring          theLeftContent;
 
 protected:
   UpdDelete(CollectionPul* pul, store::Item_t& target)
@@ -445,18 +445,18 @@ class UpdReplaceAttrValue : public UpdatePrimitive
   friend class PULPrimitiveFactory;
 
 protected:
-  xqpStringStore_t theNewValue;
+  zstring         theNewValue;
 
   store::Item_t   theOldValue;
 
   UpdReplaceAttrValue(
         CollectionPul* pul,
         store::Item_t& target,
-        xqpStringStore_t& newValue)
+        zstring& newValue)
     :
     UpdatePrimitive(pul, target)
   {
-    theNewValue.transfer(newValue);
+    theNewValue.take(newValue);
   }
 
 public:
@@ -526,7 +526,7 @@ class UpdReplaceTextValue : public UpdatePrimitive
   friend class PULPrimitiveFactory;
 
 protected:
-  xqpStringStore_t   theNewContent;
+  zstring            theNewContent;
 
   store::Item_t      theOldNode;
   ulong              theOldPos;
@@ -536,12 +536,12 @@ protected:
   UpdReplaceTextValue(
         CollectionPul* pul,
         store::Item_t& target,
-        xqpStringStore_t& newValue) 
+        zstring& newValue) 
     :
     UpdatePrimitive(pul, target),
     theIsTyped(false)
   {
-    theNewContent.transfer(newValue);
+    theNewContent.take(newValue);
   }
 
 public:
@@ -567,17 +567,17 @@ class UpdReplacePiValue : public UpdatePrimitive
   friend class PULPrimitiveFactory;
 
 protected:
-  xqpStringStore_t   theNewValue;
-  xqpStringStore_t   theOldValue;
+  zstring   theNewValue;
+  zstring   theOldValue;
 
   UpdReplacePiValue(
         CollectionPul* pul,
         store::Item_t& target,
-        xqpStringStore_t& newValue)
+        zstring& newValue)
     :
     UpdatePrimitive(pul, target)
   {
-    theNewValue.transfer(newValue);
+    theNewValue.take(newValue);
   }
 
 public:
@@ -601,17 +601,17 @@ class UpdRenamePi : public UpdatePrimitive
   friend class PULPrimitiveFactory;
 
 protected:
-  xqpStringStore_t   theNewName;
-  xqpStringStore_t   theOldName;
+  zstring   theNewName;
+  zstring   theOldName;
 
   UpdRenamePi(
         CollectionPul* pul,
         store::Item_t& target,
-        xqpStringStore_t& newName) 
+        zstring& newName) 
     :
     UpdatePrimitive(pul, target)
   {
-    theNewName.transfer(newName);
+    theNewName.take(newName);
   }
 
 public:
@@ -635,17 +635,17 @@ class UpdReplaceCommentValue : public UpdatePrimitive
   friend class PULPrimitiveFactory;
 
 protected:
-  xqpStringStore_t   theNewValue;
-  xqpStringStore_t   theOldValue;
+  zstring   theNewValue;
+  zstring   theOldValue;
 
   UpdReplaceCommentValue(
         CollectionPul* pul,
         store::Item_t& target,
-        xqpStringStore_t& newValue)
+        zstring& newValue)
     :
     UpdatePrimitive(pul, target)
   {
-    theNewValue.transfer(newValue);
+    theNewValue.take(newValue);
   }
 
 public:

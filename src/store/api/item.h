@@ -21,7 +21,6 @@
 #include <zorba/config.h>
 #include <zorba/store_consts.h>
 
-#include "zorbatypes/xqpstring.h"
 #include "zorbatypes/representations.h"
 
 #ifndef ZORBA_NO_FULL_TEXT
@@ -44,8 +43,6 @@ class serializer;
 
 namespace store
 {
-
-typedef std::vector<std::pair<xqpStringStore_t, xqpStringStore_t> > NsBindings;
 
 typedef StoreConsts::NodeKind NodeKind;
 
@@ -195,35 +192,24 @@ public:
   getEBV( ) const;
 
   /**
-   *  Carries out Atomization on the item. Although atomization can be carried
-   *  out in a generic way, atomization is pushed down to the item level for
-   *  performance reasons. Atomization is defined in the XQuery data model
-   *  specification (Section 2.6.4).
+   *  @return string value of the item as defined in XQuery data model
+   *          specification (Section 2.6.5).
+   */
+  virtual zstring 
+  getStringValue() const;
+
+  virtual void
+  getStringValue2(zstring& result) const;
+
+  /**
+   *  Append the string value of this item to the given string.
    *
-   *  @return  result of atomization
+   * @param buf The string at the end of which the string value of this item
+   *            will be appended.
    */
-  virtual Item_t 
-  getAtomizationValue( ) const;
-
-  /**
-   *  @return  string value of the item as defined in XQuery data model
-   *           specification (Section 2.6.5).
-   */
-  virtual xqpStringStore_t 
-  getStringValue( ) const;
-
   virtual void
-  getStringValue(xqpStringStore_t& strval) const;
+  appendStringValue(zstring& buf) const;
 
-  virtual void
-  getStringValue(std::string& buf) const;
-
-  /**
-   * Helper method with is used to return a StringValue of an Item
-   * by pointer instead of rchandle
-   */
-  virtual xqpStringStore*
-  getStringValueP() const;
 
   /**
    * Get the typed value of an item. If the item is an atomic item, its typed
@@ -241,7 +227,7 @@ public:
 
   /** Method to print to content of the Item
    */
-  virtual xqp_string
+  virtual zstring
   show() const;
 
   /* -------------------  Methods for AtomicValues ------------------------------ */
@@ -266,7 +252,7 @@ public:
 
   /** Accessor for xs:string and its subtypes
    */
-  virtual xqpStringStore* getString() const;
+  virtual const zstring& getString() const;
 
   /** Accessor for xs:base64Binary
    */
@@ -402,12 +388,6 @@ public:
   getYearMonthDurationValue() const;
 
 
-  /** Accessor for xs:ENTITIES, xs:IDREFS, xs:NMTOKENS
-   */
-  virtual std::vector<xqp_string>
-  getStringVectorValue() const;
-
-
   /** Accessor for xs:hexBinary
    */
   virtual xqp_hexBinary
@@ -462,15 +442,15 @@ public:
   /** Accessor for document node
    *  @return  uri?
    */
-  virtual xqpStringStore*
-  getDocumentURI() const;
+  virtual void
+  getDocumentURI(zstring& uri) const;
 
   /** Accessor for document node, element node, attribute node,
    * processing instruction node, comment node, text node
    *  @return  uri?
    */
-  virtual xqpStringStore_t
-  getBaseURI() const;
+  virtual void
+  getBaseURI(zstring& uri) const;
 
   /** Accessor for element node
    *  @return  attribute*
@@ -549,38 +529,38 @@ public:
   /** Accessor for xs:qname, namespace node
    * @return namespace uri
    */
-  virtual xqpStringStore*
+  virtual const zstring&
   getNamespace() const;
 
   /** Accessor for xs:qname, namespace node
    * @return namespace prefix
    */
-  virtual xqpStringStore*
+  virtual const zstring&
   getPrefix() const;
 
   /** Accessor for xs:qname
    * @return namespace local name
    */
-  virtual xqpStringStore*
+  virtual const zstring&
   getLocalName() const;
 
   /** Accessor for document node
    * @return unparsed entity public id
    */
-  virtual xqpStringStore*
-  getUnparsedEntityPublicId() const;
+  virtual void
+  getUnparsedEntityPublicId(zstring& val) const;
 
   /** Accessor for document node
    * @return unparsed entity system id
    */
-  virtual xqpStringStore*
-  getUnparsedEntitySystemId() const;
+  virtual void
+  getUnparsedEntitySystemId(zstring& val) const;
 
   /**
    *  Accessor for processing instruction node
    * @return target of the PI
    */
-  virtual xqpStringStore*
+  virtual const zstring&
   getTarget() const;
 
   /**

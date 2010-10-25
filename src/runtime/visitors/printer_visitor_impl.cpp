@@ -17,6 +17,7 @@
 #include "runtime/visitors/printer_visitor.h"
 
 #include "types/typeops.h"
+
 #include "system/properties.h"
 
 #include "runtime/core/item_iterator.h"
@@ -48,20 +49,22 @@
 #include "runtime/debug/zorba_debug_iterator.h"
 #include "runtime/indexing/index_ddl.h"
 #include "runtime/function_item/dynamic_fncall_iterator.h"
-#include "debugger/zorba_debugger_commons.h"
 #include "runtime/util/UtilImpl.h"
+#include "runtime/visitors/iterprinter.h"
+#include "runtime/update/update.h"
+
+#include "debugger/zorba_debugger_commons.h"
+
 #include "context/static_context.h"
 #include "context/namespace_context.h"
 
 #ifdef ZORBA_WITH_REST
-#include "runtime/rest/rest.h"
 #endif
 #ifdef ZORBA_WITH_FOP
 #include "runtime/fop/FopImpl.h"
 #endif // ZORBA_WITH_FOP
 
-#include "runtime/visitors/iterprinter.h"
-#include "runtime/update/update.h"
+
 
 namespace zorba{
 
@@ -97,7 +100,7 @@ namespace zorba{
 void PrinterVisitor::beginVisit(const SingletonIterator& a)
 {
   thePrinter.startBeginVisit("SingletonIterator", ++theId);
-  thePrinter.addAttribute("value", a.getValue()->show());
+  thePrinter.addAttribute("value", a.getValue()->show().str());
   printCommons( &a, theId );
   thePrinter.endBeginVisit(theId);
 }
@@ -657,7 +660,7 @@ void PrinterVisitor::endVisit ( const FnMinMaxIterator& )
 void PrinterVisitor::beginVisit(const ForVarIterator& a)
 {
   thePrinter.startBeginVisit("ForVarIterator", ++theId);
-  thePrinter.addAttribute("varname", a.getVarName()->getStringValue()->c_str());
+  thePrinter.addAttribute("varname", a.getVarName()->getStringValue().c_str());
   printCommons( &a, theId );
   thePrinter.endBeginVisit(theId);
 }
@@ -672,7 +675,7 @@ void PrinterVisitor::beginVisit(const LetVarIterator& a)
 {
   thePrinter.startBeginVisit("LetVarIterator", ++theId);
 
-  thePrinter.addAttribute("varname", a.getVarName()->getStringValue()->c_str());
+  thePrinter.addAttribute("varname", a.getVarName()->getStringValue().c_str());
 
   if (a.getTargetPos() > 0)
     thePrinter.addAttribute("targetPos", a.getTargetPos());
@@ -704,12 +707,12 @@ void PrinterVisitor::endVisitFlworWhereClause(const PlanIterator& )
 
 void PrinterVisitor::beginVisitFlworLetVariable(
     bool materialize,
-    const xqpStringStore_t varName,
+    const zstring& varName,
     const std::vector<PlanIter_t>& varRefs)
 {
   thePrinter.startBeginVisit("LetVariable", ++theId);
 
-  thePrinter.addAttribute("name", varName->str());
+  thePrinter.addAttribute("name", varName.str());
 
   thePrinter.addAttribute("materialize", materialize ? "true" : "false");
 
@@ -738,13 +741,13 @@ void PrinterVisitor::endVisitFlworLetVariable()
 
 
 void PrinterVisitor::beginVisitFlworForVariable(
-    const xqpStringStore_t varName,
+    const zstring& varName,
     const std::vector<PlanIter_t>& varRefs,
     const std::vector<PlanIter_t>& posRefs)
 {
   thePrinter.startBeginVisit("ForVariable", ++theId);
 
-  thePrinter.addAttribute("name", varName->str());
+  thePrinter.addAttribute("name", varName.str());
 
   std::ostringstream str;
 
@@ -909,7 +912,7 @@ void PrinterVisitor::beginVisitOrderByForVariable(
   std::ostringstream str1;
   std::ostringstream str2;
 
-  str1 << inputVar->getVarName()->getStringValue()->str() << " : " <<
+  str1 << inputVar->getVarName()->getStringValue() << " : " <<
       inputVar.getp();
 
   ulong numRefs = varRefs.size();
@@ -944,8 +947,7 @@ void PrinterVisitor::beginVisitOrderByLetVariable(
   std::ostringstream str1;
   std::ostringstream str2;
 
-  str1 << inputVar->getVarName()->getStringValue()->str() << " : " <<
-      inputVar.getp();
+  str1 << inputVar->getVarName()->getStringValue() << " : " << inputVar.getp();
 
   ulong numRefs = varRefs.size();
   for (ulong i = 0; i < numRefs; i++)
@@ -1101,7 +1103,7 @@ void PrinterVisitor::endVisit(const FTContainsIterator&) {
 
 void PrinterVisitor::beginVisit(const flwor::OuterForIterator& a) {
   thePrinter.startBeginVisit("flwor::OuterForIterator", ++theId);
-  thePrinter.addAttribute("varname", a.getVarName()->getStringValue()->c_str());
+  thePrinter.addAttribute("varname", a.getVarName()->getStringValue().str());
   printCommons(  &a, theId );
   thePrinter.endBeginVisit(theId);
 }
@@ -1137,11 +1139,6 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
   PRINTER_VISITOR_DEFINITION(ZorbaTDocIterator);
 #endif  // ZORBA_WITH_TIDY
 #ifdef ZORBA_WITH_REST
-  PRINTER_VISITOR_DEFINITION(ZorbaRestGetIterator);
-  PRINTER_VISITOR_DEFINITION(ZorbaRestPostIterator);
-  PRINTER_VISITOR_DEFINITION(ZorbaRestPutIterator);
-  PRINTER_VISITOR_DEFINITION(ZorbaRestDeleteIterator);
-  PRINTER_VISITOR_DEFINITION(ZorbaRestHeadIterator);
 #endif
 
 #ifdef ZORBA_WITH_FOP
@@ -1161,8 +1158,7 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
     thePrinter.startBeginVisit("AttributeIterator", ++theId);
     if (a.getQName() != NULL)
     {
-      xqpStringStore_t qname = a.getQName()->show().getStore();
-      thePrinter.addAttribute("qname", qname->str());
+      thePrinter.addAttribute("qname", a.getQName()->show().str());
     }
     printCommons(&a, theId);
     thePrinter.endBeginVisit(theId);
@@ -1241,7 +1237,7 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
   void PrinterVisitor::beginVisit(const CreateInternalIndexIterator& a)
   {
     thePrinter.startBeginVisit("CreateInternalIndexIterator", ++theId);
-    thePrinter.addAttribute("name", a.getName()->show());
+    thePrinter.addAttribute("name", a.getName()->show().str());
     printCommons( &a, theId );
     thePrinter.endBeginVisit(theId);
   }

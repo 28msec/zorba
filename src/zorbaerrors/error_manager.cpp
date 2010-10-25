@@ -112,7 +112,7 @@ ErrorManager::createException(
 ZorbaError
 ErrorManager::createException(
     XQUERY_ERROR        aErrorCode,
-    const xqpString&    aDescription,
+    const zstring&      aDescription,
     const std::string&  aFileName,
     int                 aLineNumber,
     unsigned int        aQueryLine,
@@ -131,7 +131,7 @@ ErrorManager::createException(
 void
 ErrorManager::addError(
     XQUERY_ERROR        aErrorCode,
-    const xqpString&    aDescription,
+    const zstring&      aDescription,
     const std::string&  aFileName,
     int                 aLineNumber,
     unsigned int        aQueryLine,
@@ -169,7 +169,7 @@ ErrorManager::addError(
 void
 ErrorManager::addWarning(
     ZorbaWarning::WarningCode aWarningCode,
-    const xqpString&          aDescription,
+    const zstring&            aDescription,
     const std::string&        aFileName,
     int                       aLineNumber,
     unsigned int              aQueryLine,

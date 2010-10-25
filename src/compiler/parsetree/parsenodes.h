@@ -16,13 +16,13 @@
 #ifndef ZORBA_PARSENODES_H
 #define ZORBA_PARSENODES_H
 
+#include <cassert>
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
 #include <string>
 #include <typeinfo>
 #include <vector>
-#include <cassert>
 
 #include "compiler/parser/ft_types.h"
 #include "compiler/parsetree/parsenode_base.h"
@@ -31,10 +31,12 @@
 
 #include "zorbatypes/rchandle.h"
 #include "zorbatypes/representations.h"
-#include "zorbautils/strutil.h"
+#include "zorbatypes/zstring.h"
 
 #include "context/static_context_consts.h"
 #include "context/dynamic_context.h"
+
+#include "util/string_util.h"
 
 namespace zorba {
 
@@ -316,19 +318,19 @@ public:
 class VersionDecl : public parsenode
 {
 protected:
-  std::string version;
-  std::string encoding;
+  zstring version;
+  zstring encoding;
 
   friend class ParseNodePrintXMLVisitor;
 
 public:
   VersionDecl(
     const QueryLoc&,
-    std::string const& version,
-    std::string const& encoding);
+    zstring const& version,
+    zstring const& encoding);
 
-  std::string get_version() const { return version; }
-  std::string get_encoding() const { return encoding; }
+  zstring const& get_version() const { return version; }
+  zstring const& get_encoding() const { return encoding; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -390,18 +392,18 @@ public:
 class ModuleDecl : public XQDocumentable
 {
 protected:
-  xqpStringStore_t thePrefix;
-  xqpStringStore_t theTargetNamespace;
+  zstring const thePrefix;
+  zstring const theTargetNamespace;
 
 public:
   ModuleDecl(
     const QueryLoc&,
-    std::string const& prefix,
-    std::string const& target_namespace);
+    zstring const& prefix,
+    zstring const& target_namespace);
 
-  const xqpStringStore_t& get_prefix() const { return thePrefix; }
+  const zstring& get_prefix() const { return thePrefix; }
 
-  const xqpStringStore_t& get_target_namespace() const { return theTargetNamespace; }
+  const zstring& get_target_namespace() const { return theTargetNamespace; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -586,7 +588,7 @@ public:
 class DecimalFormatNode : public parsenode
 {
 public:
-  typedef std::vector<std::pair<std::string,std::string> > param_list_t;
+  typedef std::vector<std::pair<zstring,zstring> > param_list_t;
 
   bool is_default;
   rchandle<QName> format_name;
@@ -624,14 +626,14 @@ public:
 class DefaultCollationDecl : public parsenode
 {
 protected:
-  std::string collation;
+  zstring collation;
 
 public:
   DefaultCollationDecl(
     const QueryLoc&,
-    std::string const&  collation);
+    zstring const&  collation);
 
-  std::string get_collation() const { return collation; }
+  zstring const& get_collation() const { return collation; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -643,14 +645,14 @@ public:
 class BaseURIDecl : public parsenode
 {
 protected:
-  std::string base_uri;
+  zstring const base_uri;
 
 public:
   BaseURIDecl(
     const QueryLoc&,
-    std::string const& base_uri);
+    zstring const& base_uri);
 
-  const std::string& get_base_uri() const { return base_uri; }
+  const zstring& get_base_uri() const { return base_uri; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -682,18 +684,18 @@ public:
 class NamespaceDecl : public parsenode
 {
 protected:
-  xqpStringStore_t thePrefix;
-  xqpStringStore_t theUri;
+  zstring const thePrefix;
+  zstring const theUri;
 
 public:
   NamespaceDecl(
     const QueryLoc&,
-    const std::string& prefix,
-    const std::string& uri);
+    const zstring& prefix,
+    const zstring& uri);
 
-  const xqpStringStore_t& get_prefix() const { return thePrefix; }
+  const zstring& get_prefix() const { return thePrefix; }
 
-  const xqpStringStore_t& get_uri() const { return theUri; }
+  const zstring& get_uri() const { return theUri; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -706,18 +708,18 @@ public:
 class DefaultNamespaceDecl : public parsenode
 {
 protected:
-  enum ParseConstants::default_namespace_mode_t theMode;
-  xqpStringStore_t theUri;
+  ParseConstants::default_namespace_mode_t theMode;
+  zstring const theUri;
 
 public:
   DefaultNamespaceDecl(
     const QueryLoc&,
     enum ParseConstants::default_namespace_mode_t mode,
-    const std::string& uri);
+    const zstring& uri);
 
-  enum ParseConstants::default_namespace_mode_t get_mode() const { return theMode; }
+  ParseConstants::default_namespace_mode_t get_mode() const { return theMode; }
 
-  const xqpStringStore_t& get_default_namespace() const { return theUri; }
+  const zstring& get_default_namespace() const { return theUri; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -736,19 +738,19 @@ class SchemaImport : public XQDocumentable
 {
 protected:
   rchandle<SchemaPrefix>   thePrefix;
-  xqpStringStore_t         theUri;
+  zstring const            theUri;
   rchandle<URILiteralList> theAtList;
 
 public:
   SchemaImport(
     const QueryLoc&,
     rchandle<SchemaPrefix>,
-    std::string const& uri,
+    zstring const& uri,
     rchandle<URILiteralList>);
 
   const SchemaPrefix* get_prefix() const { return thePrefix; }
 
-  const xqpStringStore_t& get_uri() const { return theUri; }
+  const zstring& get_uri() const { return theUri; }
 
   const URILiteralList* get_at_list() const { return theAtList; }
 
@@ -762,17 +764,17 @@ public:
 class URILiteralList : public parsenode
 {
 protected:
-  std::vector<xqpStringStore_t> theUris;
+  std::vector<zstring> theUris;
 
 public:
   URILiteralList(const QueryLoc&);
 
-  void push_back(const std::string& uri)
+  void push_back(const zstring& uri)
   {
-    theUris.push_back(new xqpStringStore(uri));
+    theUris.push_back(uri);
   }
 
-  const xqpStringStore_t& operator[](int i) const { return theUris[i]; }
+  const zstring& operator[](int i) const { return theUris[i]; }
 
   ulong size() const { return theUris.size(); }
 
@@ -786,15 +788,15 @@ public:
 class SchemaPrefix : public parsenode
 {
 protected:
-  xqpStringStore_t thePrefix;
-  bool             theIsDefault;
+  zstring const thePrefix;
+  bool const    theIsDefault;
 
 public:
   SchemaPrefix(const QueryLoc& loc, bool isDefault);
 
-  SchemaPrefix(const QueryLoc& loc, const std::string& prefix);
+  SchemaPrefix(const QueryLoc& loc, const zstring& prefix);
 
-  const xqpStringStore_t& get_prefix() const { return thePrefix; }
+  const zstring& get_prefix() const { return thePrefix; }
 
   bool get_default_bit() const { return theIsDefault; }
 
@@ -809,25 +811,25 @@ public:
 class ModuleImport : public XQDocumentable
 {
 protected:
-  xqpStringStore_t         thePrefix;
-  xqpStringStore_t         theUri;
+  zstring const            thePrefix;
+  zstring const            theUri;
   rchandle<URILiteralList> theAtList;
 
 public:
   ModuleImport(
     const QueryLoc&,
-    const std::string& uri,
+    const zstring& uri,
     rchandle<URILiteralList> atlist);
 
   ModuleImport(
     const QueryLoc&,
-    const std::string& prefix,
-    const std::string& uri,
+    const zstring& prefix,
+    const zstring& uri,
     rchandle<URILiteralList> atlist);
 
-  const xqpStringStore_t& get_prefix() const { return thePrefix; }
+  const zstring& get_prefix() const { return thePrefix; }
 
-  const xqpStringStore_t& get_uri() const { return theUri; }
+  const zstring& get_uri() const { return theUri; }
 
   const URILiteralList* get_at_list() const { return theAtList; }
 
@@ -924,17 +926,17 @@ class OptionDecl : public parsenode
 {
 protected:
   rchandle<QName> qname_h;
-  std::string val;
+  zstring const val;
 
 public:
   OptionDecl(
     const QueryLoc&,
     rchandle<QName>,
-    std::string const&);
+    zstring const&);
 
   rchandle<QName> get_qname() const { return qname_h; }
 
-  std::string const& get_val() const { return val; }
+  zstring const& get_val() const { return val; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -2148,15 +2150,15 @@ class FTScoreVar : public parsenode
 public:
   FTScoreVar(
     QueryLoc const&,
-    std::string const &varname
+    zstring const &varname
   );
 
-  std::string const& get_varname() const { return varname_; }
+  zstring const& get_varname() const { return varname_; }
 
   void accept( parsenode_visitor& ) const;
 
 private:
-  std::string const varname_;
+  zstring const varname_;
 };
 
 
@@ -2249,12 +2251,12 @@ public:
 class GroupCollationSpec : public parsenode
 {
 protected:
-  std::string uri;
+  zstring const uri;
 
 public:
-  GroupCollationSpec(const QueryLoc&, std::string const& uri);
+  GroupCollationSpec(const QueryLoc&, zstring const& uri);
 
-  std::string get_uri() const { return uri; }
+  zstring const& get_uri() const { return uri; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -2404,12 +2406,12 @@ public:
 class OrderCollationSpec : public parsenode
 {
 protected:
-  std::string uri;
+  zstring uri;
 
 public:
-  OrderCollationSpec(const QueryLoc&, std::string const& uri);
+  OrderCollationSpec(const QueryLoc&, zstring const& uri);
 
-  std::string get_uri() const { return uri; }
+  zstring const& get_uri() const { return uri; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -3386,7 +3388,7 @@ protected:
 public:
   ValidateExpr(
     const QueryLoc&,
-    std::string const& _valmode,
+    zstring const& _valmode,
     rchandle<exprnode>);
 
   ValidateExpr(
@@ -3450,16 +3452,16 @@ class Pragma : public parsenode
 {
 protected:
   rchandle<QName> name_h;
-  std::string pragma_lit;
+  zstring const pragma_lit;
 
 public:
   Pragma(
     const QueryLoc&,
     rchandle<QName>,
-    std::string pragma_lit);
+    zstring pragma_lit);
 
   rchandle<QName> get_name() const { return name_h; }
-  std::string get_pragma_lit() const { return pragma_lit; }
+  zstring const& get_pragma_lit() const { return pragma_lit; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -3761,22 +3763,22 @@ public:
 class Wildcard : public parsenode
 {
 protected:
-  enum ParseConstants::wildcard_t theKind;
-  xqpStringStore_t                thePrefix;
-  xqpStringStore_t                theLocalName;
+  ParseConstants::wildcard_t theKind;
+  zstring const              thePrefix;
+  zstring const              theLocalName;
 
 public:
   Wildcard(
     const QueryLoc& loc_,
-    const std::string& prefix,
-    const std::string& lname,
+    const zstring& prefix,
+    const zstring& lname,
     enum ParseConstants::wildcard_t type);
 
-  enum ParseConstants::wildcard_t getKind() const { return theKind; }
+  ParseConstants::wildcard_t getKind() const { return theKind; }
 
-  const xqpStringStore_t& getPrefix() const { return thePrefix; }
+  const zstring& getPrefix() const { return thePrefix; }
 
-  const xqpStringStore_t& getLocalName() const { return theLocalName; }
+  const zstring& getLocalName() const { return theLocalName; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -3903,14 +3905,14 @@ public:
 class StringLiteral : public exprnode
 {
 protected:
-  std::string strval;
+  zstring const strval;
 
 public:
   StringLiteral(
     const QueryLoc&,
-    std::string const&);
+    zstring const&);
 
-  std::string get_strval() const { return strval; }
+  zstring const& get_strval() const { return strval; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -4381,19 +4383,19 @@ public:
 class QuoteAttrValueContent : public parsenode
 {
 protected:
-  std::string quot_atcontent;
+  zstring quot_atcontent;
   rchandle<CommonContent> common_content_h;
 
 public:
   QuoteAttrValueContent(
     const QueryLoc&,
-    std::string quot_atcontent);
+    zstring quot_atcontent);
 
   QuoteAttrValueContent(
     const QueryLoc&,
     rchandle<CommonContent>);
 
-  std::string get_quot_atcontent() const { return quot_atcontent; }
+  zstring const& get_quot_atcontent() const { return quot_atcontent; }
 
   rchandle<CommonContent> get_common_content() const { return common_content_h; }
 
@@ -4411,19 +4413,19 @@ public:
 class AposAttrValueContent : public parsenode
 {
 protected:
-  std::string apos_atcontent;
+  zstring apos_atcontent;
   rchandle<CommonContent> common_content_h;
 
 public:
   AposAttrValueContent(
     const QueryLoc&,
-    std::string apos_atcontent);
+    zstring apos_atcontent);
 
   AposAttrValueContent(
     const QueryLoc&,
     rchandle<CommonContent>);
 
-  std::string get_apos_atcontent() const { return apos_atcontent; }
+  zstring const& get_apos_atcontent() const { return apos_atcontent; }
 
   rchandle<CommonContent> get_common_content() const { return common_content_h; }
 
@@ -4468,7 +4470,7 @@ class DirElemContent : public exprnode
 {
 protected:
   rchandle<exprnode> direct_cons_h;
-  std::string elem_content;
+  zstring elem_content;
   rchandle<CDataSection> cdata_h;
   rchandle<CommonContent> common_content_h;
   mutable bool theIsStripped;
@@ -4480,7 +4482,7 @@ public:
 
   DirElemContent(
     const QueryLoc&,
-    std::string elem_content);
+    zstring elem_content);
 
   DirElemContent(
     const QueryLoc&,
@@ -4492,7 +4494,7 @@ public:
 
   rchandle<exprnode> get_direct_cons() const { return direct_cons_h; }
 
-  std::string get_elem_content() const { return elem_content; }
+  zstring const& get_elem_content() const { return elem_content; }
 
   rchandle<CDataSection> get_cdata() const { return cdata_h; }
 
@@ -4517,14 +4519,14 @@ class CommonContent : public exprnode
 {
 protected:
   enum ParseConstants::common_content_t type;
-  std::string ref;
+  zstring ref;
   rchandle<EnclosedExpr> expr_h;
 
 public:
   CommonContent(
     const QueryLoc&,
     ParseConstants::common_content_t,
-    std::string ref);
+    zstring const& ref);
 
   CommonContent(
     const QueryLoc&,
@@ -4536,7 +4538,7 @@ public:
 
   enum ParseConstants::common_content_t get_type() const { return type; }
 
-  const std::string& get_ref() const { return ref; }
+  const zstring& get_ref() const { return ref; }
 
   rchandle<EnclosedExpr> get_expr() const { return expr_h; }
 
@@ -4552,14 +4554,14 @@ public:
 class CDataSection : public exprnode
 {
 protected:
-  std::string cdata_content;
+  zstring const cdata_content;
 
 public:
   CDataSection(
     const QueryLoc&,
-    std::string cdata_content);
+    zstring const& cdata_content);
 
-  std::string get_cdata_content() const { return cdata_content; }
+  zstring const& get_cdata_content() const { return cdata_content; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -4573,14 +4575,14 @@ public:
 class DirCommentConstructor : public exprnode
 {
 protected:
-  std::string comment;
+  zstring const comment;
 
 public:
   DirCommentConstructor(
     const QueryLoc&,
-    std::string const& comment);
+    zstring const& comment);
 
-  std::string get_comment() const { return comment; }
+  zstring const& get_comment() const { return comment; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -4594,22 +4596,22 @@ public:
 class DirPIConstructor : public exprnode
 {
 protected:
-  std::string pi_target;
-  std::string pi_content;
+  zstring const pi_target;
+  zstring const pi_content;
 
 public:
   DirPIConstructor(
     const QueryLoc&,
-    std::string const& pi_target);
+    zstring const& pi_target);
 
   DirPIConstructor(
     const QueryLoc&,
-    std::string const& pi_target,
-    std::string const& pi_content);
+    zstring const& pi_target,
+    zstring const& pi_content);
 
-  std::string get_pi_target() const { return pi_target; }
+  zstring const& get_pi_target() const { return pi_target; }
 
-  std::string get_pi_content() const { return pi_content; }
+  zstring const& get_pi_content() const { return pi_content; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -4738,14 +4740,14 @@ public:
 class CompPIConstructor : public exprnode
 {
 protected:
-  std::string target;
+  zstring target;
   rchandle<exprnode> target_expr_h;
   rchandle<exprnode> content_expr_h;
 
 public:
   CompPIConstructor(
     const QueryLoc&,
-    std::string target,
+    zstring const &target,
     rchandle<exprnode>);
 
   CompPIConstructor(
@@ -4753,7 +4755,7 @@ public:
     rchandle<exprnode>,
     rchandle<exprnode>);
 
-  std::string get_target() const { return target; }
+  zstring const& get_target() const { return target; }
 
   rchandle<exprnode> get_target_expr() const { return target_expr_h; }
 
@@ -5024,14 +5026,14 @@ public:
 class PITest : public parsenode
 {
 protected:
-  std::string target;
+  zstring const target;
 
 public:
   PITest(
     const QueryLoc&,
-    std::string target);
+    zstring const& target);
 
-  std::string get_target() const { return target; }
+  zstring const& get_target() const { return target; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -5295,18 +5297,18 @@ public:
 class QName : public exprnode
 {
 protected:
-  std::string       theQName;
-  xqpStringStore_t  thePrefix;
-  xqpStringStore_t  theLocalName;
+  zstring const theQName;
+  zstring       thePrefix;
+  zstring       theLocalName;
 
 public:
-  QName(const QueryLoc&, const std::string& qname);
+  QName(const QueryLoc&, const zstring& qname);
 
-  const std::string& get_qname() const { return theQName; }
+  const zstring& get_qname() const { return theQName; }
 
-  const xqpStringStore_t& get_localname() const { return theLocalName; }
+  const zstring& get_localname() const { return theLocalName; }
 
-  const xqpStringStore_t& get_prefix() const { return thePrefix; }
+  const zstring& get_prefix() const { return thePrefix; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -6267,17 +6269,17 @@ public:
   FTExtensionOption(
     QueryLoc const&,
     QName*,
-    std::string const &value
+    zstring const &value
   );
 
   rchandle<QName> get_qname() const { return qname_; }
-  std::string const& get_val() const { return value_; }
+  zstring const& get_val() const { return value_; }
 
   void accept( parsenode_visitor& ) const;
 
 private:
   rchandle<QName> qname_;
-  std::string const value_;
+  zstring const value_;
 };
 
 
@@ -6285,15 +6287,15 @@ class FTLanguageOption : public FTMatchOption {
 public:
   FTLanguageOption(
     QueryLoc const&,
-    std::string const &language
+    zstring const &language
   );
 
-  std::string const& get_language() const { return language_; }
+  zstring const& get_language() const { return language_; }
 
   void accept( parsenode_visitor& ) const;
 
 private:
-  std::string const language_;
+  zstring const language_;
 };
 
 
@@ -6344,21 +6346,21 @@ class FTThesaurusID : public parsenode {
 public:
   FTThesaurusID(
     QueryLoc const&,
-    std::string const &uri,
-    std::string const &relationship,
+    zstring const &uri,
+    zstring const &relationship,
     FTRange const* = NULL
   );
   ~FTThesaurusID();
 
-  std::string const& get_uri() const { return uri_; }
-  std::string const& get_relationship() const { return relationship_; }
+  zstring const& get_uri() const { return uri_; }
+  zstring const& get_relationship() const { return relationship_; }
   FTRange const* get_levels() const { return levels_; }
 
   void accept( parsenode_visitor& ) const;
 
 private:
-  std::string const uri_;
-  std::string const relationship_;
+  zstring const uri_;
+  zstring const relationship_;
   FTRange const *const levels_;
 };
 
@@ -6392,21 +6394,21 @@ private:
 
 class FTStopWords : public parsenode {
 public:
-  typedef std::list<std::string> list_t;
+  typedef std::list<zstring> list_t;
 
   FTStopWords(
     QueryLoc const&,
-    std::string const &uri,
+    zstring const &uri,
     list_t*
   );
 
-  std::string const& get_uri() const { return uri_; }
+  zstring const& get_uri() const { return uri_; }
   list_t const& get_stop_words() const { return stop_words_; }
 
   void accept( parsenode_visitor& ) const;
 
 private:
-  std::string const uri_;
+  zstring const uri_;
   list_t stop_words_;
 };
 

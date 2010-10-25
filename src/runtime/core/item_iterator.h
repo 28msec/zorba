@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_ITEM_ITERATOR_H
-#define ZORBA_ITEM_ITERATOR_H
+#ifndef ZORBA_RUNTIME_ITEM_ITERATOR_H
+#define ZORBA_RUNTIME_ITEM_ITERATOR_H
 
 #include "common/shared_types.h"
 

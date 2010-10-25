@@ -67,14 +67,17 @@ bool
 ReadLineIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   PlanIteratorState *state;
-  xqpStringStore_t xstr;
+  zstring zstr;
   char str [512];
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
   std::cin.getline (str, sizeof (str));
-  xstr = new xqpStringStore (str);
-  GENV_ITEMFACTORY->createString (result, xstr);
-  STACK_PUSH (true, state);
-  STACK_END (state);
+
+  zstr = str;
+  GENV_ITEMFACTORY->createString(result, zstr);
+
+  STACK_PUSH(true, state);
+  STACK_END(state);
 }
 
 //Debug iterators:print
@@ -87,7 +90,7 @@ bool PrintIterator::nextImpl (store::Item_t& result, PlanState& planState) const
   std::ostringstream os;
   serializer* lSerializer = NULL;
   store::Item_t item;
-  xqpStringStore_t resString;
+  zstring resString;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -120,8 +123,10 @@ bool PrintIterator::nextImpl (store::Item_t& result, PlanState& planState) const
       }
     }
   }
-  if (!thePrintToConsole) {
-    resString = new xqpStringStore(os.str());
+
+  if (!thePrintToConsole) 
+  {
+    resString = os.str();
     STACK_PUSH(GENV_ITEMFACTORY->createString(result, resString) , state);
   }
   STACK_END (state);

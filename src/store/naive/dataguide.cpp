@@ -206,10 +206,10 @@ std::string ElementGuideNode::show(ulong depth) const
   if (theName != NULL)
   {
     if (numChildren > 0)
-      str <<  "<" << *theName->getStringValue() << " unique=" << theIsUnique
+      str <<  "<" << theName->getStringValue() << " unique=" << theIsUnique
           << ">" << std::endl;
     else
-      str <<  "<" << *theName->getStringValue() << " unique=" << theIsUnique
+      str <<  "<" << theName->getStringValue() << " unique=" << theIsUnique
           << "/>" << std::endl;
   }
   else
@@ -233,7 +233,7 @@ std::string ElementGuideNode::show(ulong depth) const
         std::string indent(depth, ' ');
         str << indent;
       }
-      str << "</" << *theName->getStringValue() << ">" << std::endl;
+      str << "</" << theName->getStringValue() << ">" << std::endl;
     }
   }
   else

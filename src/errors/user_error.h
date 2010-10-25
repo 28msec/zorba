@@ -20,8 +20,8 @@
 #include <vector>
 
 #include "zorbaerrors/errors.h"
-
 #include "common/shared_types.h"
+#include "zorbatypes/zstring.h"
 
 namespace zorba { namespace error {
 
@@ -37,7 +37,7 @@ public:
 public:
   ZorbaUserError(
         const ::zorba::store::Item_t& aErrorQName,
-        const xqpString& aDescription,
+        const zstring& aDescription,
         const QueryLoc& aLocation,
         const std::string& aFileName,
         int aLineNumber,

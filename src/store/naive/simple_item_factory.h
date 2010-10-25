@@ -58,26 +58,27 @@ public:
         store::Item_t& typeName);
 
   bool createQName(
-        store::Item_t&          result,
-        const xqpStringStore_t& ns,
-        const xqpStringStore_t& pre,
-        const xqpStringStore_t& local);
+        store::Item_t& result,
+        const zstring& ns,
+        const zstring& pre,
+        const zstring& local);
 
   bool createQName(
         store::Item_t& result,
-        const char*    ns,
-        const char*    pre,
-        const char*    ln);
+        const char*  ns,
+        const char*  pre,
+        const char*  ln);
 
-  bool createNCName(store::Item_t& result, xqpStringStore_t& value);
+  bool createNCName(store::Item_t& result, zstring& value);
 
 
-  bool createAnyURI(store::Item_t& result, xqpStringStore_t& value);
+  bool createAnyURI(store::Item_t& result, zstring& value);
+
   bool createAnyURI(store::Item_t& result, const char* value);
 
-  bool createUntypedAtomic(store::Item_t& result, xqpStringStore_t& value);
+  bool createUntypedAtomic(store::Item_t& result, zstring& value);
 
-  bool createString(store::Item_t& result, xqpStringStore_t& value);
+  bool createString(store::Item_t& result, zstring& value);
 
   bool createBase64Binary(store::Item_t& result, xqp_base64Binary value);
 
@@ -124,7 +125,7 @@ public:
 
   bool createDateTime(store::Item_t& result, short year , short month, short day, short hour, short minute, double second, short timeZone_hours);
 
-  bool createDateTime(store::Item_t& result, const xqpStringStore_t& value);
+  bool createDateTime(store::Item_t& result, const char* str, ulong strlen);
 
   bool createDateTime(store::Item_t& result, const store::Item_t&, const store::Item_t&);
 
@@ -132,11 +133,11 @@ public:
 
   bool createDate(store::Item_t& result, short year, short month, short day);
 
-  bool createDate(store::Item_t& result, const xqpStringStore_t& value);
+  bool createDate(store::Item_t& result, const char* str, ulong strlen);
 
   bool createTime(store::Item_t& result, const xqp_time* value);
 
-  bool createTime(store::Item_t& result, const xqpStringStore_t& value);
+  bool createTime(store::Item_t& result, const char* str, ulong strlen);
 
   bool createTime(store::Item_t& result, short hour, short minute, double second );
 
@@ -144,37 +145,37 @@ public:
 
   bool createGDay(store::Item_t& result, const xqp_gDay* value);
 
-  bool createGDay(store::Item_t& result, const xqpStringStore_t& value);
+  bool createGDay(store::Item_t& result, const char* str, ulong strlen);
 
   bool createGDay(store::Item_t& result, short day);
 
   bool createGMonth(store::Item_t& result, const xqp_gMonth* value);
 
-  bool createGMonth(store::Item_t& result, const xqpStringStore_t& value);
+  bool createGMonth(store::Item_t& result, const char* str, ulong strlen);
 
   bool createGMonth(store::Item_t& result, short month);
 
   bool createGMonthDay (store::Item_t& result, const xqp_gMonthDay* value);
 
-  bool createGMonthDay (store::Item_t& result,  const xqpStringStore_t& value);
+  bool createGMonthDay (store::Item_t& result,  const char* str, ulong strlen);
 
   bool createGMonthDay (store::Item_t& result,  short month, short day);
 
   bool createGYear (store::Item_t& result, const xqp_gYear* value);
 
-  bool createGYear (store::Item_t& result,  const xqpStringStore_t& value);
+  bool createGYear (store::Item_t& result,  const char* str, ulong strlen);
 
   bool createGYear (store::Item_t& result,  short year);
 
   bool createGYearMonth (store::Item_t& result, const xqp_gYearMonth* value);
 
-  bool createGYearMonth (store::Item_t& result,  const xqpStringStore_t& value);
+  bool createGYearMonth (store::Item_t& result,  const char* str, ulong strlen);
 
   bool createGYearMonth (store::Item_t& result,  short year, short month);
 
   bool createDuration(store::Item_t& result, xqp_duration* value);
 
-  bool createDuration(store::Item_t& result, const xqpStringStore_t& value);
+  bool createDuration(store::Item_t& result, const char* str, ulong strlen);
 
   bool createDuration(store::Item_t& result, short years, short months, short days, short hours, short minutes, double seconds);
 
@@ -182,39 +183,39 @@ public:
 
   bool createDayTimeDuration(store::Item_t& result, xqp_dayTimeDuration* value );
 
-  bool createENTITIES(store::Item_t& result, xqpStringStore_t& value);
+  bool createENTITIES(store::Item_t& result, zstring& value);
 
-  bool createENTITY(store::Item_t& result, xqpStringStore_t& value);
+  bool createENTITY(store::Item_t& result, zstring& value);
 
 
   bool createHexBinary (store::Item_t& result,  xqp_hexBinary value );
 
-  bool createID (store::Item_t& result, xqpStringStore_t& value );
+  bool createID (store::Item_t& result, zstring& value );
 
-  bool createIDREF (store::Item_t& result,  xqpStringStore_t& value );
+  bool createIDREF (store::Item_t& result,  zstring& value );
 
-  bool createIDREFS (store::Item_t& result,  xqpStringStore_t& value );
+  bool createIDREFS (store::Item_t& result,  zstring& value );
 
-  bool createLanguage (store::Item_t& result,  xqpStringStore_t& value );
+  bool createLanguage (store::Item_t& result,  zstring& value );
 
-  bool createNMTOKEN (store::Item_t& result,  xqpStringStore_t& value );
+  bool createNMTOKEN (store::Item_t& result,  zstring& value );
 
-  bool createNMTOKENS (store::Item_t& result,  xqpStringStore_t& value );
+  bool createNMTOKENS (store::Item_t& result,  zstring& value );
 
-  bool createNOTATION (store::Item_t& result,  xqpStringStore_t& value );
+  bool createNOTATION (store::Item_t& result,  zstring& value );
 
-  bool createName (store::Item_t& result,  xqpStringStore_t& value );
+  bool createName (store::Item_t& result,  zstring& value );
 
-  bool createNormalizedString(store::Item_t& result, xqpStringStore_t& value );
+  bool createNormalizedString(store::Item_t& result, zstring& value );
 
-  bool createToken(store::Item_t& result, xqpStringStore_t& value);
+  bool createToken(store::Item_t& result, zstring& value);
 
 
 
   bool createDocumentNode(
-        store::Item_t&    result,
-        xqpStringStore_t& baseUri,
-        xqpStringStore_t& docUri);
+        store::Item_t& result,
+        zstring& baseUri,
+        zstring& docUri);
 
   bool createElementNode(
         store::Item_t&              result,
@@ -225,7 +226,7 @@ public:
         bool                        haveTypedValue,
         bool                        haveEmptyValue,
         const store::NsBindings&    localBindings,
-        xqpStringStore_t&           baseURI,
+        zstring&                    baseURI,
         bool                        isInSubstitutionGroup = false);
 
   bool createAttributeNode(
@@ -248,7 +249,7 @@ public:
         store::Item_t&    result,
         store::Item*      parent,
         long              pos,
-        xqpStringStore_t& content);
+        zstring&          content);
 
   bool createTextNode(
         store::Item_t&    result,
@@ -261,18 +262,18 @@ public:
         std::vector<store::Item_t>& content);
 
   bool createPiNode (
-        store::Item_t&    result,
-        store::Item*      parent,
-        long              pos,
-        xqpStringStore_t& target,
-        xqpStringStore_t& content,
-        xqpStringStore_t& baseUri);
+        store::Item_t& result,
+        store::Item*   parent,
+        long           pos,
+        zstring&       target,
+        zstring&       content,
+        zstring&       baseUri);
 
   bool createCommentNode (
-        store::Item_t&    result,
-        store::Item*      parent,
-        long              pos,
-        xqpStringStore_t& content);
+        store::Item_t& result,
+        store::Item*   parent,
+        long           pos,
+        zstring&       content);
 
 
   store::PUL* createPendingUpdateList();
@@ -306,8 +307,8 @@ public:
 
 private:
   void splitToAtomicTextValues(
-          const xqpStringStore_t& textValue,
-          std::vector<xqp_string>& atomicTextValues);
+          zstring& textValue,
+          std::vector<zstring>& atomicTextValues);
 };
 
 } // namespace simplestore

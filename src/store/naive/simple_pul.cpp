@@ -498,7 +498,7 @@ void PULImpl::addReplaceContent(
 /*******************************************************************************
 
 ********************************************************************************/
-void PULImpl::addReplaceValue(store::Item_t& target, xqpStringStore_t& newValue)
+void PULImpl::addReplaceValue(store::Item_t& target, zstring& newValue)
 {
   CollectionPul* pul = getCollectionPul(target.getp());
 
@@ -512,8 +512,10 @@ void PULImpl::addReplaceValue(store::Item_t& target, xqpStringStore_t& newValue)
   switch (targetKind)
   {
   case store::StoreConsts::attributeNode:
+  {
     upd = GET_STORE().getPULFactory().createUpdReplaceAttrValue(pul, target, newValue);
     break;
+  }
   case store::StoreConsts::textNode:
     upd = GET_STORE().getPULFactory().createUpdReplaceTextValue(pul, target, newValue);
     break;
@@ -589,7 +591,8 @@ void PULImpl::addRename(store::Item_t& target, store::Item_t& newName)
   }
   case store::StoreConsts::piNode:
   {
-    xqpStringStore_t tmp = newName->getStringValue();
+    zstring tmp;
+    newName->getStringValue2(tmp);
     upd = GET_STORE().getPULFactory().createUpdRenamePi(pul, target, tmp);
     break;
   }

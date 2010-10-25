@@ -51,28 +51,30 @@ ZorbaTidyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item, itemOpt;
   xqp_string xmlString, diag;
-  xqpStringStore_t docUri = new xqpStringStore("");
-  xqpStringStore_t baseUri = theSctx->get_base_uri();
-  xqpStringStore_t options;
+  zstring docUri;
+  zstring baseUri = theSctx->get_base_uri();
+  zstring options;
   std::istringstream is(std::istringstream::in);
+  store::LoadProperties loadProps;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(item, theChildren[0].getp(), planState))
   {
-    if((theChildren.size() > 1) &&
-      consumeNext(itemOpt, theChildren[1].getp(), planState))
-      options = itemOpt->getStringValue();
+    if ((theChildren.size() > 1) &&
+        consumeNext(itemOpt, theChildren[1].getp(), planState))
+      itemOpt->getStringValue2(options);
 
-    if( tidy(item->getStringValue()->c_str(),
+    if( tidy(item->getStringValue().c_str(),
              xmlString,
              diag,
-             (theChildren.size() > 1?options->c_str():NULL)) >= 0)
+             (theChildren.size() > 1 ? options.c_str() : NULL)) >= 0)
     {
       //if tidy returns a value >0 a warning should be raised
       is.str(xmlString);
-      result = GENV_STORE.loadDocument(baseUri, docUri, is, false);
+      loadProps.setStoreDocument(false);
+      result = GENV_STORE.loadDocument(baseUri, docUri, is, loadProps);
       STACK_PUSH(result != NULL, state);
     }
     else
@@ -90,8 +92,8 @@ bool
 ZorbaTDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t uriItem, itemOpt;
-  xqpStringStore_t uriString;
-  xqpStringStore_t resolvedURIString;
+  zstring uriString;
+  zstring resolvedURIString;
   store::Item_t resolvedURIItem;
 
   PlanIteratorState* state;
@@ -99,7 +101,7 @@ ZorbaTDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   if (consumeNext(uriItem, theChildren[0].getp(), planState)) 
   {
-    uriString = uriItem->getStringValue();
+    uriItem->getStringValue2(uriString);
 
     if(theChildren.size() > 1)
       consumeNext(itemOpt, theChildren[1].getp(), planState);
@@ -129,13 +131,15 @@ ZorbaTDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       {
         ZORBA_ERROR_LOC_DESC(FODC0005, loc, e.theDescription);
       }
+
       try
       {
-        result = theSctx->get_document_uri_resolver()->resolve(resolvedURIItem,
-                                                               theSctx,
-                                                               false,
-                                                               true,
-                                                               (theChildren.size() > 1 ? itemOpt : NULL));
+        result = theSctx->get_document_uri_resolver()->
+                 resolve(resolvedURIItem,
+                         theSctx,
+                         false,
+                         true,
+                         (theChildren.size() > 1 ? itemOpt : NULL));
       }
       catch (error::ZorbaError& e)
       {

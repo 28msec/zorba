@@ -176,7 +176,7 @@ void ForLetClause::accept(PlanIterVisitor& v) const
 /***************************************************************************//**
 
 ********************************************************************************/
-xqpStringStore_t ForLetClause::getVarName() const
+zstring ForLetClause::getVarName() const
 {
   return theVarName;
 }

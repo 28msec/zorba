@@ -39,7 +39,6 @@ class CopyMode;
 class PUL;
 class TupleField;
 
-typedef std::vector<std::pair<xqpStringStore_t, xqpStringStore_t> > NsBindings;
 
 class ItemFactory
 {
@@ -57,46 +56,126 @@ public:
         store::Item_t& typeName) = 0;
 
   /**
+   * @param value string value of the untyped atomic
+   */
+  virtual bool createUntypedAtomic(Item_t& result, zstring& value) = 0;
+
+  /**
    * @param namespace namespace of the qname
    * @param prefix prefix of the qname
    * @param localName local name of the qname
    */
   virtual bool createQName(
-        Item_t&                 result,
-        const xqpStringStore_t& nameSpace,
-        const xqpStringStore_t& prefix,
-        const xqpStringStore_t& localName) = 0;
+        Item_t& result,
+        const zstring& nameSpace,
+        const zstring& prefix,
+        const zstring& localName) = 0;
 
   virtual bool createQName(
-        Item_t&     result,
+        Item_t& result,
         const char* ns,
         const char* pre,
         const char* ln) = 0;
-
-  /**
-   * Specification: [http://www.w3.org/TR/xmlschema-2/#NCName]
-   * @param value string representation of the value
-   */
-  virtual bool createNCName(Item_t& result, xqpStringStore_t& value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#anyURI]
    * @param value parsed value
    * TODO where is the value parsed and checked?
    */
-  virtual bool createAnyURI(Item_t& result, xqpStringStore_t& value) = 0;
-  virtual bool createAnyURI(Item_t& result, const char* value) = 0;
+  virtual bool createAnyURI(Item_t& result, zstring& value) = 0;
 
-  /**
-   * @param value string value of the untyped atomic
-   */
-  virtual bool createUntypedAtomic(Item_t& result, xqpStringStore_t& value) = 0;
+  virtual bool createAnyURI(Item_t& result, const char* value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#string]
    * @param value string representation of the value
    */
-  virtual bool createString(Item_t& result, xqpStringStore_t& value) = 0;
+  virtual bool createString(Item_t& result, zstring& value) = 0;
+
+  /**
+   * Specification: [http://www.w3.org/TR/xmlschema-2/#normalizedString]
+   * @param value string representation of the value
+   */
+  virtual bool createNormalizedString(Item_t& result, zstring& value ) = 0;
+
+  /**
+   * Specification: [http://www.w3.org/TR/xmlschema-2/#token]
+   * @param value string representation of the value
+   */
+  virtual bool createToken(Item_t& result, zstring& value) = 0;
+
+  /**
+   * Specification: [http://www.w3.org/TR/xmlschema-2/#NMTOKEN]
+   * @param value string representation of the value
+   */
+  virtual bool createNMTOKEN(Item_t& result, zstring& value ) = 0;
+
+  /**
+   * Specification: [http://www.w3.org/TR/xmlschema-2/#NMTOKENS]
+   * @param value string representation of the value
+   */
+  virtual bool createNMTOKENS(Item_t& result, zstring& value ) = 0;
+
+  /**
+   * Specification: [http://www.w3.org/TR/xmlschema-2/#language]
+   * @param value string representation of the value
+   */
+  virtual bool createLanguage(Item_t& result, zstring& value ) = 0;
+
+  /**
+   * Specification: [http://www.w3.org/TR/xmlschema-2/#Name]
+   * @param value string representation of the value
+   */
+  virtual bool createName(Item_t& result, zstring& value) = 0;
+
+  /**
+   * Specification: [http://www.w3.org/TR/xmlschema-2/#NCName]
+   * @param value string representation of the value
+   */
+  virtual bool createNCName(Item_t& result, zstring& value) = 0;
+
+  /**
+   * Specification: [http://www.w3.org/TR/xmlschema-2/#ID]
+   * @param value string representation of the value
+   */
+  virtual bool createID(Item_t& result, zstring& value) = 0;
+
+  /**
+   * Specification: [http://www.w3.org/TR/xmlschema-2/#IDREF]
+   * @param value string representation of the value
+   */
+  virtual bool createIDREF(Item_t& result, zstring& value) = 0;
+
+  /**
+   * Specification: [http://www.w3.org/TR/xmlschema-2/#IDREFS]
+   * @param value string representation of the value
+   */
+  virtual bool createIDREFS(Item_t& result, zstring& value) = 0;
+
+  /**
+   * Specification: [http://www.w3.org/TR/xmlschema-2/#ENTITY]
+   * @param value string representation of the value
+   */
+  virtual bool createENTITY(Item_t& result, zstring& value) = 0;
+
+  /**
+   * Specification: [http://www.w3.org/TR/xmlschema-2/#ENTITIES]
+   * @param value string representation of the value
+   */
+  virtual bool createENTITIES(Item_t& result, zstring& value) = 0;
+
+  /**
+   * Specification: [http://www.w3.org/TR/xmlschema-2/#NOTATION]
+   * @param value string representation of the value
+   */
+  virtual bool createNOTATION(Item_t& result, zstring& value) = 0;
+
+
+  /**
+   * Specification: [http://www.w3.org/TR/xmlschema-2/#hexBinary]
+   * @param value
+   */
+  virtual bool createHexBinary(Item_t& result, xqp_hexBinary value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#base64Binary]
@@ -246,7 +325,7 @@ public:
    * Specification: [http://www.w3.org/TR/xmlschema-2/#dateTime]
    * @param value string representation of the value
    */
-  virtual bool createDateTime(Item_t& result, const xqpStringStore_t& value) = 0;
+  virtual bool createDateTime(Item_t& result, const char* str, ulong strlen) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xpath-functions/] Section 5.2
@@ -270,7 +349,7 @@ public:
    * Specification: [http://www.w3.org/TR/xmlschema-2/#date]
    * @param value string representation of the value
    */
-  virtual bool createDate(Item_t& result, const xqpStringStore_t& value) = 0;
+  virtual bool createDate(Item_t& result, const char* str, ulong strlen) = 0;
 
   /**
    *
@@ -281,7 +360,7 @@ public:
    * Specification: [http://www.w3.org/TR/xmlschema-2/#time]
    * @param value string representation of the value
    */
-  virtual bool createTime(Item_t& result, const xqpStringStore_t& value) = 0;
+  virtual bool createTime(Item_t& result, const char* str, ulong strlen) = 0;
 
   /**
    * @param hour
@@ -309,7 +388,7 @@ public:
    * Specification: [http://www.w3.org/TR/xmlschema-2/#gDay]
    * @param value string representation of the value
    */
-  virtual bool createGDay(Item_t& result, const xqpStringStore_t& value) = 0;
+  virtual bool createGDay(Item_t& result, const char* str, ulong strlen) = 0;
 
   /**
    * @param day
@@ -322,7 +401,7 @@ public:
    * Specification: [http://www.w3.org/TR/xmlschema-2/#gMonth]
    * @param value string representation of the value
    */
-  virtual bool createGMonth(Item_t& result, const xqpStringStore_t& value) = 0;
+  virtual bool createGMonth(Item_t& result, const char* str, ulong strlen) = 0;
 
   /**
    * @param month
@@ -335,7 +414,7 @@ public:
    * Specification: [http://www.w3.org/TR/xmlschema-2/#gMonthDay]
    * @param value string representation of the value
    */
-  virtual bool createGMonthDay(Item_t& result, const xqpStringStore_t& value) = 0;
+  virtual bool createGMonthDay(Item_t& result, const char* str, ulong strlen) = 0;
 
   /**
    * @param month
@@ -349,7 +428,7 @@ public:
    * Specification: [http://www.w3.org/TR/xmlschema-2/#gYear]
    * @param value string representation of the value
    */
-  virtual bool createGYear(Item_t& result, const xqpStringStore_t& value) = 0;
+  virtual bool createGYear(Item_t& result, const char* str, ulong strlen) = 0;
 
   /**
    * @param year
@@ -362,7 +441,7 @@ public:
    * Specification: [http://www.w3.org/TR/xmlschema-2/#gYearMonth]
    * @param value string representation of the value
    */
-  virtual bool createGYearMonth(Item_t& result, const xqpStringStore_t& value) = 0;
+  virtual bool createGYearMonth(Item_t& result, const char* str, ulong strlen) = 0;
 
   /**
    * @param year
@@ -380,7 +459,7 @@ public:
    * Specification: [http://www.w3.org/TR/xmlschema-2/#duration]
    * @param value string representation of the value
    */
-  virtual bool createDuration(Item_t& result, const xqpStringStore_t& value) = 0;
+  virtual bool createDuration(Item_t& result, const char* str, ulong strlen) = 0;
 
   /**
    * @param years
@@ -399,86 +478,6 @@ public:
         double seconds) = 0;
 
   /**
-   * Specification: [http://www.w3.org/TR/xmlschema-2/#ENTITIES]
-   * @param value string representation of the value
-   */
-  virtual bool createENTITIES(Item_t& result, xqpStringStore_t& value) = 0;
-
-  /**
-   * Specification: [http://www.w3.org/TR/xmlschema-2/#ENTITY]
-   * @param value string representation of the value
-   */
-  virtual bool createENTITY(Item_t& result, xqpStringStore_t& value) = 0;
-
-  /**
-   * Specification: [http://www.w3.org/TR/xmlschema-2/#hexBinary]
-   * @param value
-   */
-  virtual bool createHexBinary ( Item_t& result, xqp_hexBinary value ) = 0;
-
-  /**
-   * Specification: [http://www.w3.org/TR/xmlschema-2/#ID]
-   * @param value string representation of the value
-   */
-  virtual bool createID(Item_t& result, xqpStringStore_t& value ) = 0;
-
-  /**
-   * Specification: [http://www.w3.org/TR/xmlschema-2/#IDREF]
-   * @param value string representation of the value
-   */
-  virtual bool createIDREF(Item_t& result, xqpStringStore_t& value ) = 0;
-
-  /**
-   * Specification: [http://www.w3.org/TR/xmlschema-2/#IDREFS]
-   * @param value string representation of the value
-   */
-  virtual bool createIDREFS(Item_t& result, xqpStringStore_t& value ) = 0;
-
-  /**
-   * Specification: [http://www.w3.org/TR/xmlschema-2/#language]
-   * @param value string representation of the value
-   */
-  virtual bool createLanguage(Item_t& result, xqpStringStore_t& value ) = 0;
-
-  /**
-   * Specification: [http://www.w3.org/TR/xmlschema-2/#NMTOKEN]
-   * @param value string representation of the value
-   */
-  virtual bool createNMTOKEN(Item_t& result, xqpStringStore_t& value ) = 0;
-
-  /**
-   * Specification: [http://www.w3.org/TR/xmlschema-2/#NMTOKENS]
-   * @param value string representation of the value
-   */
-  virtual bool createNMTOKENS(Item_t& result, xqpStringStore_t& value ) = 0;
-
-  /**
-   * Specification: [http://www.w3.org/TR/xmlschema-2/#NOTATION]
-   * @param value string representation of the value
-   */
-  virtual bool createNOTATION (Item_t& result, xqpStringStore_t& value ) = 0;
-
-  /**
-   * Specification: [http://www.w3.org/TR/xmlschema-2/#Name]
-   * @param value string representation of the value
-   */
-  virtual bool createName (Item_t& result, xqpStringStore_t& value ) = 0;
-
-
-  /**
-   * Specification: [http://www.w3.org/TR/xmlschema-2/#normalizedString]
-   * @param value string representation of the value
-   */
-  virtual bool createNormalizedString (Item_t& result, xqpStringStore_t& value ) = 0;
-
-  /**
-   * Specification: [http://www.w3.org/TR/xmlschema-2/#token]
-   * @param value string representation of the value
-   */
-  virtual bool createToken(Item_t& result, xqpStringStore_t& value) = 0;
-
-
-  /**
    * Create a new document node N and make it the root (and single node) of
    * a new XML tree.
    *
@@ -489,9 +488,9 @@ public:
    *                      exceptions)
    */
   virtual bool createDocumentNode(
-        Item_t&           result,
-        xqpStringStore_t& baseUri,
-        xqpStringStore_t& docUri) = 0;
+        store::Item_t& result,
+        zstring& baseUri,
+        zstring& docUri) = 0;
 
   /**
    * Create a new element node N and place it at a given position among the
@@ -529,7 +528,7 @@ public:
         bool                haveTypedValue,
         bool                haveEmptyValue,
         const NsBindings&   localBindings,
-        xqpStringStore_t&   baseURI,
+        zstring&            baseURI,
         bool                isInSubstitutionGroup = false) = 0;
 
   /**
@@ -581,15 +580,15 @@ public:
    * @return        Always true (if any errors occur, the method throws exceptions)
    */
   virtual bool createTextNode(
-        Item_t&           result,
-        Item*             parent,
-        long              pos,
-        xqpStringStore_t& content) = 0;
+        Item_t&  result,
+        Item*    parent,
+        long     pos,
+        zstring& content) = 0;
 
   virtual bool createTextNode(
-        Item_t&           result,
-        Item*             parent,
-        Item_t&           content) = 0;
+        Item_t&  result,
+        Item*    parent,
+        Item_t&  content) = 0;
 
   virtual bool createTextNode(
         Item_t&              result,
@@ -612,12 +611,12 @@ public:
    * @return        Always true (if any errors occur, the method throws exceptions)
    */
   virtual bool createPiNode (
-        Item_t&           result,
-        Item*             parent,
-        long              pos,
-        xqpStringStore_t& target,
-        xqpStringStore_t& content,
-        xqpStringStore_t& baseUri) = 0;
+        Item_t&  result,
+        Item*    parent,
+        long     pos,
+        zstring& target,
+        zstring& content,
+        zstring& baseUri) = 0;
 
   /**
    * Create a new comment node N and place it at a given position among the
@@ -633,10 +632,10 @@ public:
    * @return        Always true (if any errors occur, the method throws exceptions)
    */
   virtual bool createCommentNode (
-        Item_t&           result,
-        Item*             parent,
-        long              pos,
-        xqpStringStore_t& content) = 0;
+        Item_t&  result,
+        Item*    parent,
+        long     pos,
+        zstring& content) = 0;
 
 
   /**

@@ -55,9 +55,9 @@ DocumentNode* NodeFactory::createDocumentNode()
 
 
 DocumentNode* NodeFactory::createDocumentNode(
-    XmlTree*          tree,
-    const xqpStringStore_t& baseUri,
-    const xqpStringStore_t& docUri)
+    XmlTree* tree,
+    zstring& baseUri,
+    zstring& docUri)
 {
   return new DocumentNode(tree, baseUri, docUri);
 }
@@ -82,7 +82,7 @@ ElementNode* NodeFactory::createElementNode(
     bool                        haveEmptyValue,
     bool                        isInSubstGroup,
     const store::NsBindings*    localBindings,
-    xqpStringStore_t&           baseUri)
+    zstring&                    baseUri)
 {
   return new ElementNode(tree, parent, pos, nodeName, typeName,
                          haveTypedValue, haveEmptyValue, isInSubstGroup,
@@ -112,10 +112,19 @@ AttributeNode* NodeFactory::createAttributeNode(
 }
   
   
-TextNode* NodeFactory::createTextNode(
-    xqpStringStore_t& content)
+TextNode* NodeFactory::createTextNode(zstring& content)
 {
   return new TextNode(content);
+}
+
+
+TextNode* NodeFactory::createTextNode(
+    XmlTree*          tree,
+    InternalNode*     parent,
+    long              pos,
+    zstring&          content)
+{
+  return new TextNode(tree, parent, pos, content);
 }
 
 
@@ -126,49 +135,39 @@ TextNode* NodeFactory::createTextNode(
 {
   return new TextNode(parent, content, isListValue);
 }
-  
-  
-TextNode* NodeFactory::createTextNode(
-    XmlTree*          tree,
-    InternalNode*     parent,
-    long              pos,
-    xqpStringStore_t& content)
-{
-  return new TextNode(tree, parent, pos, content);
-}
 
 
 PiNode* NodeFactory::createPiNode(
-    xqpStringStore_t& target,
-    xqpStringStore_t& content)
+    zstring& target,
+    zstring& content)
 {
   return new PiNode(target, content);
 }
   
   
 PiNode* NodeFactory::createPiNode(
-    XmlTree*          tree,
-    InternalNode*     parent,
-    long              pos,
-    xqpStringStore_t& target,
-    xqpStringStore_t& content)
+    XmlTree*      tree,
+    InternalNode* parent,
+    long          pos,
+    zstring&      target,
+    zstring&      content)
 {
   return new PiNode(tree, parent, pos, target, content);
 }
   
   
 CommentNode* NodeFactory::createCommentNode(
-    xqpStringStore_t& content)
+    zstring& content)
 {
   return new CommentNode(content);
 }
 
 
 CommentNode* NodeFactory::createCommentNode(
-    XmlTree*          tree,
-    InternalNode*     parent,
-    long              pos,
-    xqpStringStore_t& content)
+    XmlTree*      tree,
+    InternalNode* parent,
+    long          pos,
+    zstring&      content)
 {
   return new CommentNode(tree, parent, pos, content);
 }

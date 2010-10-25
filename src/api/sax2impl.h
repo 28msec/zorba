@@ -19,7 +19,6 @@
 #include <zorba/sax2.h>
 #include <zorba/item.h>
 
-#include "zorbatypes/representations.h"
 #include "store/api/item.h"
 
 namespace zorba{
@@ -28,15 +27,16 @@ class SAX2AttributesImpl: public SAX2_Attributes
 {
   typedef struct
   {
-    xqp_string    uri;
-    xqp_string    localname;
-    xqp_string    qname;
-    xqp_string    value;
-    xqp_string    type;
-  }SAX2_XmlAttribute;
-  //list of pairs localname/prefix/URI/valueBegin/valueEnd
-  std::vector<SAX2_XmlAttribute>   attrs;
-  //bool  own_data;
+    zstring    uri;
+    zstring    localname;
+    zstring    qname;
+    zstring    value;
+    zstring    type;
+  }
+  SAX2_XmlAttribute;
+
+  std::vector<SAX2_XmlAttribute> attrs;
+
 public:
   SAX2AttributesImpl( store::Item *item);
   SAX2AttributesImpl( SAX2AttributesImpl * orig);

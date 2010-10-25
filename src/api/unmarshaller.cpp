@@ -77,9 +77,14 @@ store::Item* Unmarshaller::getInternalItem(const Item& aItem)
 }
 
 
-xqpStringStore* Unmarshaller::getInternalString(const String& aString)
+#define THE_STRING(STRING_OBJ)                                        \
+  (const_cast<zstring*>(                                              \
+    reinterpret_cast<zstring const*>( &(STRING_OBJ).string_storage_ ) \
+  ))
+
+zstring& Unmarshaller::getInternalString(const String& aString)
 {
-  return aString.m_string;
+  return *THE_STRING( aString );
 }
 
 

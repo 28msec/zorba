@@ -20,11 +20,11 @@
 #include "zorbaerrors/Assert.h"
 #include "zorbaerrors/error_manager.h"
 #include "zorbatypes/zorbatypes_decl.h"
-#include "zorbatypes/xqpstring.h"
 
 #include "system/globalenv.h"
 
 #include "util/tracer.h"
+#include "util/utf8_string.h"
 
 #include "types/casting.h"
 #include "types/typeconstants.h"
@@ -400,53 +400,52 @@ class FormatNumberInfo
 public:
   QueryLoc loc;
   // Separators
-  xqpStringStore_t decimal_separator;
-  xqpStringStore_t grouping_separator;
-  xqpStringStore_t percent;
-  xqpStringStore_t per_mille;
-  xqpStringStore_t zero_digit;
-  xqpStringStore_t digit_sign;
-  xqpStringStore_t pattern_separator;
-  xqpStringStore_t infinity;
-  xqpStringStore_t NaN;
-  xqpStringStore_t minus;
+  zstring decimal_separator;
+  zstring grouping_separator;
+  zstring percent;
+  zstring per_mille;
+  zstring zero_digit;
+  zstring digit_sign;
+  zstring pattern_separator;
+  zstring infinity;
+  zstring NaN;
+  zstring minus;
 
   class PartInfo
   {
   public:
-    xqpStringStore_t str;
+    zstring str;
     std::vector<int> grouping_pos;
     int N;
     int minimum_size;
     int maximum_size;
-    PartInfo() : str(new xqpStringStore()), N(-1), minimum_size(0), maximum_size(0) {};
+    PartInfo() :  N(-1), minimum_size(0), maximum_size(0) {};
   };
 
   class SubPictureInfo
   {
   public:
-    xqpStringStore_t str;
-    xqpStringStore_t prefix;
-    xqpStringStore_t suffix;
+    zstring str;
+    zstring prefix;
+    zstring suffix;
     PartInfo integer_part;
     PartInfo fractional_part;
-    SubPictureInfo() : str(new xqpStringStore()), prefix(new xqpStringStore()), suffix(new xqpStringStore()) {};
+    SubPictureInfo() { }
   } pos_subpicture, neg_subpicture;
   
-  FormatNumberInfo()
+  FormatNumberInfo() :
+    decimal_separator( "." ),
+    grouping_separator( "," ),
+    percent( "%" ),
+    zero_digit( "0" ),
+    digit_sign( "#" ),
+    pattern_separator( ";" ),
+    infinity( "Infinity" ),
+    NaN( "NaN" ),
+    minus( "-" )
   {
-    decimal_separator = new xqpStringStore(".");
-    grouping_separator = new xqpStringStore(",");
-    percent = new xqpStringStore("%");
-    xqpString temp;
-    temp = (uint32_t)0x2030;    
-    per_mille = temp.theStrStore;
-    zero_digit = new xqpStringStore("0");
-    digit_sign = new xqpStringStore("#");
-    pattern_separator = new xqpStringStore(";");
-    infinity = new xqpStringStore("Infinity");
-    NaN = new xqpStringStore("NaN");
-    minus = new xqpStringStore("-");
+    utf8_string<zstring> u_per_mille( per_mille );
+    u_per_mille = 0x2030;    
   }
 
   void readFormat(const DecimalFormat_t& df_t)
@@ -459,38 +458,38 @@ public:
     for ( DecimalFormat::param_vector_type::const_iterator it = params->begin(); it != params->end(); it++)
     {
       if (it->first == decimal_separator_param)
-        decimal_separator = new xqpStringStore(it->second);
+        decimal_separator = it->second.c_str();
       else if (it->first == grouping_separator_param)
-        grouping_separator = new xqpStringStore(it->second);
+        grouping_separator = it->second.c_str();
       else if (it->first == infinity_param)
-        infinity = new xqpStringStore(it->second);
+        infinity = it->second.c_str();
       else if (it->first == minus_sign_param)
-        minus = new xqpStringStore(it->second);
+        minus = it->second.c_str();
       else if (it->first == nan_param)
-        NaN = new xqpStringStore(it->second);
+        NaN = it->second.c_str();
       else if (it->first == percent_param)
-        percent = new xqpStringStore(it->second);
+        percent = it->second.c_str();
       else if (it->first == per_mille_param)
-        per_mille = new xqpStringStore(it->second);
+        per_mille = it->second.c_str();
       else if (it->first == zero_digit_param)
-        zero_digit = new xqpStringStore(it->second);
+        zero_digit = it->second.c_str();
       else if (it->first == digit_param)
-        digit_sign = new xqpStringStore(it->second);
+        digit_sign = it->second.c_str();
       else if (it->first == pattern_separator_param)
-        pattern_separator = new xqpStringStore(it->second);
+        pattern_separator = it->second.c_str();
     }
   }
 };
 
 
 // returns an error if there are two or more instances of the given pattern in the string
-static void errorIfTwoOrMore(xqpStringStore& part, const char* sep, QueryLoc& loc)
+static void errorIfTwoOrMore(zstring const& part, const char* sep, QueryLoc& loc)
 {
-  long pos = part.bytePositionOf(sep);
+  zstring::size_type const pos = part.find(sep);
 
-  if (pos != -1)
+  if (pos != zstring::npos)
   {
-    if (part.bytePositionOf(sep, strlen(sep), pos+1) != -1)
+    if (part.find(sep, strlen(sep), pos+1) != zstring::npos)
       ZORBA_ERROR_LOC(XTDE1310, loc);
   }
 }
@@ -501,21 +500,21 @@ static void parsePart(
     FormatNumberInfo::PartInfo& part,
     bool fractional = false)
 {
-  xqpStringStore& str = *part.str;
-  if (str.size() == 0)
+  zstring& str = part.str;
+  if (str.empty())
     return;
 
-  errorIfTwoOrMore(str, info.percent->c_str(), info.loc);
-  errorIfTwoOrMore(str, info.per_mille->c_str(), info.loc);
+  errorIfTwoOrMore(str, info.percent.c_str(), info.loc);
+  errorIfTwoOrMore(str, info.per_mille.c_str(), info.loc);
 
-  if (str.bytePositionOf(info.percent->c_str()) != -1 &&
-      str.bytePositionOf(info.per_mille->c_str()) != -1)
+  if (str.find(info.percent.c_str()) != zstring::npos &&
+      str.find(info.per_mille.c_str()) != zstring::npos)
   {
     ZORBA_ERROR_LOC(XTDE1310, info.loc);
   }
 
-  if (str.bytePositionOf(info.digit_sign->c_str()) == -1 &&
-      str.bytePositionOf(info.zero_digit->c_str()) == -1)
+  if (str.find(info.digit_sign.c_str()) == zstring::npos &&
+      str.find(info.zero_digit.c_str()) == zstring::npos)
   {
     ZORBA_ERROR_LOC(XTDE1310, info.loc);
   }
@@ -523,26 +522,26 @@ static void parsePart(
   // get grouping separators
   int digit_signs = 0;
   int zero_signs = 0;
-  int start = fractional? 0 : str.numChars()-1;
-  int end = fractional? str.numChars() : -1;
+  int start = fractional? 0 : str.size()-1;
+  int end = fractional? str.size() : -1;
   int delta = fractional? 1 : -1;  
   int first_digit_sign = -1;
   int last_zero_sign = -1;
   while (start != end)
   {
-    xqpStringStore::char_type ch = str.charAt(start);
-    if (*info.digit_sign == ch)
+    zstring::value_type ch = str[start];
+    if (info.digit_sign[0] == ch)
     {
       if (first_digit_sign == -1)
         first_digit_sign = start;
       digit_signs++;
     }
-    else if (*info.zero_digit == ch)
+    else if (info.zero_digit[0] == ch)
     {
       last_zero_sign = start;
       zero_signs++;
     }
-    else if (*info.grouping_separator == ch)
+    else if (info.grouping_separator[0] == ch)
       part.grouping_pos.push_back(digit_signs+zero_signs);
     start += delta;
   }
@@ -571,7 +570,7 @@ static void parsePart(
   part.minimum_size = zero_signs;
   if (!fractional &&
       zero_signs == 0 &&
-      str.bytePositionOf(info.decimal_separator->c_str()) == -1)
+      str.find(info.decimal_separator.c_str()) == zstring::npos)
   {
     part.minimum_size = 1;
   }
@@ -586,75 +585,77 @@ static void parseSubpicture(
     FormatNumberInfo& info)
 {
   int chars;
-  xqpStringStore& str = *sub_picture.str;
-  if (str.size() == 0)
+  zstring& str = sub_picture.str;
+  if (str.empty())
     return;
 
-  errorIfTwoOrMore(str, info.decimal_separator->c_str(), info.loc);
-  int pos = str.bytePositionOf(info.decimal_separator->c_str());
-  if (pos != -1)
+  errorIfTwoOrMore(str, info.decimal_separator.c_str(), info.loc);
+  zstring::size_type pos = str.find(info.decimal_separator.c_str());
+  if (pos != zstring::npos)
   {
-    sub_picture.integer_part.str = str.byteSubstr(0, pos);
-    sub_picture.fractional_part.str = str.byteSubstr(pos+1, str.size()-pos);
+    sub_picture.integer_part.str = str.substr(0, pos);
+    sub_picture.fractional_part.str = str.substr(pos+1, str.size()-pos);
   }
   else
-    sub_picture.integer_part.str = &str;
+    sub_picture.integer_part.str = str;
 
   parsePart(info, sub_picture.integer_part);
   parsePart(info, sub_picture.fractional_part, true);
 
   // prefix
-  xqpStringStore_t temp = sub_picture.integer_part.str;
-  chars = temp->numChars();
+  zstring temp = sub_picture.integer_part.str;
+  chars = temp.size();
   for (int i = 0; i < chars; i++)
   {
-    xqpStringStore::char_type ch = temp->charAt(i);
-    if (*info.decimal_separator == ch || *info.grouping_separator == ch || *info.zero_digit == ch 
-      || *info.digit_sign == ch || *info.pattern_separator == ch || i == chars-1)
+    zstring::value_type ch = temp[i];
+    if (info.decimal_separator[0] == ch || info.grouping_separator[0] == ch || info.zero_digit[0] == ch 
+      || info.digit_sign[0] == ch || info.pattern_separator[0] == ch || i == chars-1)
     {
-      sub_picture.prefix = temp->byteSubstr(0, i);
+      sub_picture.prefix = temp.substr(0, i);
       break;
     }
   }
   // suffix
   temp = sub_picture.fractional_part.str;
-  chars = temp->numChars();
+  chars = temp.size();
   for (int i=chars-1; i >= 0; i--)
   {
-    xqpStringStore::char_type ch = temp->charAt(i);
-    if (*info.decimal_separator == ch || *info.grouping_separator == ch || *info.zero_digit == ch 
-      || *info.digit_sign == ch || *info.pattern_separator == ch || i == 0)
+    zstring::value_type ch = temp[i];
+    if (info.decimal_separator[0] == ch || info.grouping_separator[0] == ch || info.zero_digit[0] == ch 
+      || info.digit_sign[0] == ch || info.pattern_separator[0] == ch || i == 0)
     {
-      sub_picture.suffix = temp->byteSubstr(i+1, chars-i-1);
+      sub_picture.suffix = temp.substr(i+1, chars-i-1);
       break;
     }
   }
 }
 
-static void parsePicture(xqpStringStore& picture, FormatNumberInfo& info)
-{
-  errorIfTwoOrMore(picture, info.pattern_separator->c_str(), info.loc);
 
-  int pos = picture.bytePositionOf(info.pattern_separator->c_str());
-  if (pos != -1)
+static void parsePicture(zstring& picture, FormatNumberInfo& info)
+{
+  errorIfTwoOrMore(picture, info.pattern_separator.c_str(), info.loc);
+
+  zstring::size_type pos = picture.find(info.pattern_separator.c_str());
+  if (pos != zstring::npos)
   {
-    info.pos_subpicture.str = picture.byteSubstr(0, pos);
-    info.neg_subpicture.str = picture.byteSubstr(pos+1, picture.size() - pos);
+    info.pos_subpicture.str = picture.substr(0, pos);
+    info.neg_subpicture.str = picture.substr(pos+1, picture.size() - pos);
   }
   else 
-    info.pos_subpicture.str = &picture;
+    info.pos_subpicture.str = picture;
 
   parseSubpicture(info.pos_subpicture, info);
-  if (info.neg_subpicture.str->size() == 0)
+  if (info.neg_subpicture.str.empty())
   {
     info.neg_subpicture = info.pos_subpicture;
-    xqpStringStore_t temp(info.minus);
-    temp->append_in_place(info.pos_subpicture.prefix);
+    zstring temp(info.minus);
+    temp.append(info.pos_subpicture.prefix);
     info.neg_subpicture.prefix = temp;
   }
   else
     parseSubpicture(info.neg_subpicture, info);
 }
+
 
 static bool isAllowedType(store::Item* type_qname)
 {
@@ -682,27 +683,29 @@ static bool isAllowedType(store::Item* type_qname)
 }
 
 // returns n zeros "0". n can be 0 and then the function will return ""
-static xqpStringStore_t createZeros(int n)
+static zstring createZeros(int n)
 {
-  xqpStringStore_t result = new xqpStringStore("");
-  for (int i=0; i<n; i++)
-    result->append_in_place("0");
+  zstring result;
+  result.append(n, '0');
   return result;
 }
 
 
 static void formatGroupings(
-    xqpStringStore_t& result,
-    xqpStringStore_t& str,
+    zstring& result,
+    const zstring& str,
     FormatNumberInfo::PartInfo& part,
     FormatNumberInfo& info)
 {
   unsigned int grouping_index = 0;
-  result = new xqpStringStore();
-  int len = str->numChars();
-  for (int i = len-1; i >= 0; i--)
+
+  result.clear();
+
+  long len = str.size();
+
+  for (long i = len-1; i >= 0; i--)
   {
-    xqpStringStore::char_type ch = str->charAt(i);
+    char ch = str[i];
 
     if (((grouping_index < part.grouping_pos.size()
         &&
@@ -716,30 +719,30 @@ static void formatGroupings(
       &&
       ch != '-')
     {
-      result->append_in_place(info.grouping_separator);
+      result.append(info.grouping_separator);
       if (grouping_index < part.grouping_pos.size())
         grouping_index++;
       while (grouping_index < part.grouping_pos.size()
           &&
           part.grouping_pos[grouping_index] == part.grouping_pos[grouping_index-1])
       {
-        result->append_in_place(info.grouping_separator);
+        result.append(info.grouping_separator);
         grouping_index++;
       }
     }
 
     if (ch == '0')
-      result->append_in_place(info.zero_digit);
+      result.append(info.zero_digit);
     else if (ch == '-')
       ; // skip the '-' sign
     else
-      result->append_in_place(ch);
+      result.push_back(ch);
   }
 }
 
 
 static void formatNumber(
-    xqpStringStore& resultString,
+    zstring& resultString,
     store::Item_t& number,
     FormatNumberInfo& info,
     const TypeManager* tm)
@@ -748,7 +751,7 @@ static void formatNumber(
 
   if (number->isNaN())
   {
-    resultString.append_in_place(info.NaN);
+    resultString.append(info.NaN);
     return;
   }
 
@@ -769,63 +772,78 @@ static void formatNumber(
 
   if (doubleItem->isPosOrNegInf())
   {
-    resultString.append_in_place(sub_picture.prefix);
-    resultString.append_in_place(info.infinity);
-    resultString.append_in_place(sub_picture.suffix);
+    resultString.append(sub_picture.prefix);
+    resultString.append(info.infinity);
+    resultString.append(sub_picture.suffix);
     return;
   }
 
   xqp_double adjusted = doubleItem->getDoubleValue();
-  if (sub_picture.str->bytePositionOf(info.percent->c_str()) != -1)
+
+  if (sub_picture.str.find(info.percent) != zstring::npos)
     adjusted = adjusted * Double::parseInt(100);
-  else if (sub_picture.str->bytePositionOf(info.per_mille->c_str()) != -1)
+  else if (sub_picture.str.find(info.per_mille) != zstring::npos)
     adjusted = adjusted * Double::parseInt(1000);
 
   adjusted = adjusted.roundHalfToEven(Integer::parseInt(sub_picture.fractional_part.maximum_size));
-  xqpStringStore_t converted = adjusted.toString(true);
+
+  zstring converted = adjusted.toString(true);
   
   // process min sizes
-  xqpStringStore_t integer_part, fractional_part;
-  int pos = converted->bytePositionOf(".");
-  if (pos == -1)
+  zstring integer_part;
+  zstring fractional_part;
+  ulong pos = converted.find(".", 0, 1);
+  if (pos == zstring::npos)
   {
     integer_part = converted;
-    fractional_part = new xqpStringStore("");
   }
   else
   {
-    integer_part = converted->byteSubstr(0, pos);
-    fractional_part = converted->byteSubstr(pos+1, converted->numChars() - pos + 1);
+    integer_part = converted.substr(0, pos);
+    fractional_part = converted.substr(pos+1, converted.size() - pos + 1);
   }
 
   // Add zeros
-  xqpStringStore_t temp = createZeros(sub_picture.integer_part.minimum_size - integer_part->numChars());
-  temp->append_in_place(integer_part);
+  zstring temp = createZeros(sub_picture.integer_part.minimum_size - integer_part.size());
+  temp.append(integer_part);
   integer_part = temp;  
-  fractional_part->append_in_place(createZeros(sub_picture.fractional_part.minimum_size - fractional_part->numChars()));
+  fractional_part.append(createZeros(sub_picture.fractional_part.minimum_size - fractional_part.size()));
 
   // groupings
-  xqpStringStore_t integer_part_result, fractional_part_result;
+  zstring integer_part_result;
+  zstring fractional_part_result;
   formatGroupings(integer_part_result, integer_part, sub_picture.integer_part, info);
-  integer_part_result = integer_part_result->reverse();
-  fractional_part = fractional_part->reverse();
-  formatGroupings(fractional_part_result, fractional_part, sub_picture.fractional_part, info);
 
-  resultString.append_in_place(sub_picture.prefix);
-  resultString.append_in_place(integer_part_result);
-  if (fractional_part->numChars() != 0)
+  zstring tmp;
+  ascii::reverse(integer_part_result, &tmp);
+  integer_part_result.swap(tmp);
+
+  tmp.clear();
+  ascii::reverse(fractional_part, &tmp);
+  fractional_part.swap(tmp);
+
+  formatGroupings(fractional_part_result,
+                  fractional_part,
+                  sub_picture.fractional_part,
+                  info);
+
+  resultString.append(sub_picture.prefix);
+  resultString.append(integer_part_result);
+  if (fractional_part.size() != 0)
   {
-    resultString.append_in_place(info.decimal_separator);
-    resultString.append_in_place(fractional_part_result);
+    resultString.append(info.decimal_separator);
+    resultString.append(fractional_part_result);
   }
-  resultString.append_in_place(sub_picture.suffix);
+  resultString.append(sub_picture.suffix);
 }
 
 
 bool
 FormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  xqpStringStore_t resultString, pictureString;
+  zstring resultString;
+  zstring pictureString;
+  zstring tmp;
   store::Item_t numberItem, pictureItem, formatName;
   FormatNumberInfo info;
   DecimalFormat_t df_t;
@@ -839,7 +857,7 @@ FormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   if (!consumeNext(result, theChildren[0].getp(), planState ))
   {
     // Got void, returning void
-      STACK_PUSH(false, state);
+    STACK_PUSH(false, state);
   }
   else
   {
@@ -858,11 +876,11 @@ FormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     info.readFormat(df_t);
 
     pictureString = pictureItem->getStringValue();
-    resultString = new xqpStringStore();
-    parsePicture(*pictureString, info);
-    formatNumber(*resultString, result, info, theSctx->get_typemanager());
+    parsePicture(pictureString, info);
+    formatNumber(resultString, result, info, theSctx->get_typemanager());
 
-    STACK_PUSH (GENV_ITEMFACTORY->createString(result, resultString), state);
+    tmp = resultString;
+    STACK_PUSH (GENV_ITEMFACTORY->createString(result, tmp), state);
   }
   STACK_END (state);
 }

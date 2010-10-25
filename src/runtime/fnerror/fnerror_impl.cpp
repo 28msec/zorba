@@ -28,6 +28,7 @@
 #include "store/api/item_factory.h"
 
 #include "system/globalenv.h"
+#include "zorbatypes/zstring.h"
 
 namespace zorba 
 {
@@ -42,8 +43,7 @@ ErrorIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   store::Item_t lTmpQName;
   store::Item_t lTmpErrorObject;
   store::Item_t lTmpDescr;
-  xqp_string ns;
-  xqp_string description;
+  zstring description;
   std::vector<store::Item_t> lErrorObject; 
 
   PlanIteratorState *state;
@@ -55,7 +55,7 @@ ErrorIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   }
   if (theChildren.size () >= 2) {
     consumeNext(lTmpDescr, theChildren[1].getp(), planState);
-    description = lTmpDescr->getStringValue ().getp();
+    description = lTmpDescr->getStringValue().str();
   }
   if (theChildren.size() == 3) {
     while (consumeNext(lTmpErrorObject, theChildren[2].getp(), planState)) {

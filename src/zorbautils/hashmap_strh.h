@@ -22,6 +22,7 @@
 
 #include "zorbatypes/xqpstring.h"
 
+
 namespace zorba
 {
 

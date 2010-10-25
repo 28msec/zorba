@@ -22,6 +22,8 @@
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
 
+#include "util/string_util.h"
+
 using namespace std;
 
 namespace zorba {
@@ -61,9 +63,9 @@ bool NodeByReferenceIterator::nextImpl(store::Item_t& result, PlanState& planSta
 bool FnLocalNameIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t inNode;
-  xqpStringStore_t strRes;
+  zstring strRes;
 
-  PlanIteratorState *state;
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(inNode, theChildren[0], planState))
@@ -72,7 +74,7 @@ bool FnLocalNameIterator::nextImpl(store::Item_t& result, PlanState& planState) 
        inNode->getNodeKind() == store::StoreConsts::commentNode ||
        inNode->getNodeKind() == store::StoreConsts::textNode)
     {
-      strRes = new xqpStringStore("");
+      ;
     }
     else if(inNode->getNodeKind() == store::StoreConsts::piNode)
     {
@@ -87,7 +89,6 @@ bool FnLocalNameIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   }
   else
   {
-    strRes = new xqpStringStore("");
     STACK_PUSH(GENV_ITEMFACTORY->createString(result, strRes), state);
   }
 
@@ -99,23 +100,26 @@ bool FnLocalNameIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 //---------------------
 bool FnNamespaceUriIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t     inNode;
-  xqpStringStore_t  uriStr;
+  store::Item_t inNode;
+  zstring  uriStr;
 
-  PlanIteratorState *state;
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (consumeNext(inNode, theChildren[0].getp(), planState)) {
+  if (consumeNext(inNode, theChildren[0].getp(), planState)) 
+  {
     if(inNode->getNodeKind() == store::StoreConsts::elementNode ||
-       inNode->getNodeKind() == store::StoreConsts::attributeNode) {
+       inNode->getNodeKind() == store::StoreConsts::attributeNode) 
+    {
       uriStr = inNode->getNodeName()->getNamespace();
-      STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(result, uriStr), state);
-       }
-       else
-         STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(result, ""), state);
+    }
+
+    STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(result, uriStr), state);
   }
   else
-    STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(result, ""), state);
+  {
+    STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(result, uriStr), state);
+  }
 
   STACK_END (state);
 }
@@ -127,29 +131,33 @@ bool FnLangIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   store::Item_t     item, node, attr;
   store::Item*      attrName;
   store::Iterator_t theAttributes;
-  bool              found = false;
-  bool              searchParent = true;
-  xqpStringStore_t  reqLang;
+  bool found = false;
+  bool searchParent = true;
+  zstring reqLang;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if(consumeNext(item, theChildren[0].getp(), planState))
   {
-    reqLang = item->getStringValue().getp();
+    item->getStringValue2(reqLang);
 
-    if (consumeNext(node, theChildren[1].getp(), planState)) {
+    if (consumeNext(node, theChildren[1].getp(), planState)) 
+    {
 
       for(;
         NULL != node && node->getNodeKind () == store::StoreConsts::elementNode && ! found && searchParent;
         node = node->getParent())
       {
-        for ((theAttributes = node->getAttributes())->open ();
-             ! found && theAttributes->next(attr); ) {
+        for ((theAttributes = node->getAttributes())->open();
+             ! found && theAttributes->next(attr); )
+        {
           attrName = attr->getNodeName();
-          searchParent = !(attrName->getLocalName()->byteEqual("lang", 4) && attrName->getNamespace()->byteEqual(XML_NS, strlen(XML_NS)));
+
+          searchParent = !(equals(attrName->getLocalName(), "lang", 4) &&
+                           equals(attrName->getNamespace(), XML_NS, strlen(XML_NS)));
           found = (!searchParent &&
-                   xqp_string(attr->getStringValue()).matches(xqp_string("^" + reqLang->str() + "(-|$)"), "i"));
+                   xqp_string(attr->getStringValue().str()).matches(xqp_string("^" + reqLang.str() + "(-|$)"), "i"));
         }
         theAttributes->close();
       }

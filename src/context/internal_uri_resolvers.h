@@ -71,7 +71,7 @@ public:
         const store::Item_t& aURI,
         static_context* aStaticContext,
         std::vector<store::Item_t>& aAtList,
-        xqpStringStore* aFileUri = 0) = 0;
+        zstring& aFileUri) = 0;
 };
 
 
@@ -94,7 +94,7 @@ public:
         std::string& url) = 0;
 #if 0
   virtual ExternalModule* getExternalModule(
-        const std::string& aFileUri,
+        const zstring& aFileUri,
         static_context& sctx)
   {
     return NULL;

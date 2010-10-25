@@ -59,16 +59,16 @@ protected:
   public:
     static bool equal(const QNameItem* t1, const QNameItem* t2)
     {
-      return (t1->getLocalName()->byteEqual(t2->getLocalName()) &&
-              t1->getNamespace()->byteEqual(t2->getNamespace()) &&
-              t1->getPrefix()->byteEqual(t2->getPrefix()));
+      return (t1->getLocalName() == t2->getLocalName() &&
+              t1->getNamespace() == t2->getNamespace() &&
+              t1->getPrefix() == t2->getPrefix());
     }
 
     static uint32_t hash(const QNameItem* t)
     {
-      return  hashfun::h32(t->getPrefix()->c_str(),
-                           hashfun::h32(t->getLocalName()->c_str(),
-                                        hashfun::h32(t->getNamespace()->c_str())));
+      return  hashfun::h32(t->getPrefix().c_str(),
+                           hashfun::h32(t->getLocalName().c_str(),
+                                        hashfun::h32(t->getNamespace().c_str())));
     }
   };
 
@@ -89,7 +89,7 @@ protected:
  typedef HashEntry<QNameItem*, DummyHashValue> QNHashEntry;
 
 public:
-  static const ulong MAX_CACHE_SIZE = 65536;
+  static const ulong MAX_CACHE_SIZE = 32768;
 
 protected:
   QNameItem         * theCache;
@@ -113,9 +113,9 @@ public:
         bool        sync = true);
 
   store::Item_t insert(
-        const xqpStringStore_t& ns,
-        const xqpStringStore_t& pre,
-        const xqpStringStore_t& ln,
+        const zstring& ns,
+        const zstring& pre,
+        const zstring& ln,
         bool                    sync = true);
 
   void remove(QNameItem* qn);

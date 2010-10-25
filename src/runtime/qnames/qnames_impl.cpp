@@ -39,124 +39,132 @@ ResolveQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 {
   store::Item_t itemQName;
   store::Item_t itemElem;
-  xqpStringStore_t qname;
-  xqpStringStore_t resNs;
-  xqpStringStore_t resPre;
-  xqpStringStore_t resLocal;
-  long index = -1;
-  std::vector<std::pair<xqpStringStore_t, xqpStringStore_t> > NamespaceBindings;
-  std::vector<std::pair<xqpStringStore_t, xqpStringStore_t> > ::const_iterator iter;
+  zstring qname;
+  zstring resNs;
+  zstring resPre;
+  zstring resLocal;
+  ulong index;
+  store::NsBindings NamespaceBindings;
+  store::NsBindings::const_iterator iter;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(itemQName, theChild0.getp(), planState )) 
   {
-    itemQName = itemQName->getAtomizationValue();
+    itemQName->getStringValue2(qname);
 
-    qname = itemQName->getStringValue()->trim();
-    index = qname->bytePositionOf(":", 1, 0);
+    ascii::trim_whitespace(qname);
 
-    if(-1 != index) 
+    index = qname.find(":", 0, 1);
+
+    if (index != zstring::npos) 
     {
-      resPre = new xqpStringStore(qname->str().substr(0, index));
-      resLocal = new xqpStringStore(qname->str().substr(index+1, qname->bytes() - index));
+      resPre = qname.substr(0, index);
+      resLocal = qname.substr(index+1, qname.size() - index);
 
       // must check for FOCA0002 first
-      if (!GENV_GCAST.castableToNCName (resPre) || ! GENV_GCAST.castableToNCName (resLocal))
+      if (!GENV_GCAST.castableToNCName(resPre) || ! GENV_GCAST.castableToNCName(resLocal))
         ZORBA_ERROR_LOC (FOCA0002, loc);
     } 
     else
     {
-      resNs = new xqpStringStore("");
-      resPre = new xqpStringStore("");
       resLocal = qname;
-      if (! GENV_GCAST.castableToNCName (resLocal))
+
+      if (! GENV_GCAST.castableToNCName(resLocal))
         ZORBA_ERROR_LOC (FOCA0002, loc);
     }
       
     if (consumeNext(itemElem, theChild1, planState )) 
     {
       itemElem->getNamespaceBindings(NamespaceBindings);
+
+      bool found = false;
+
       for (iter = NamespaceBindings.begin();
            iter != NamespaceBindings.end();
            ++iter)
       {
-        if ((*iter).first->byteEqual(resPre)) 
+        if ((*iter).first == resPre)
         {
           resNs = (*iter).second;
+          found = true;
           break;
         }
       }
-      if (resNs == NULL)
-        ZORBA_ERROR_LOC (FONS0004, loc);
+
+      if (!found && !resPre.empty())
+        ZORBA_ERROR_LOC(FONS0004, loc);
     }
     
     GENV_ITEMFACTORY->createQName(result, resNs, resPre, resLocal);
 
-    STACK_PUSH(true, state );
+    STACK_PUSH(true, state);
   }
-  STACK_END (state);
+
+  STACK_END(state);
 }
 
 
 //11.1.2 fn:QName
-bool
-QNameIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool QNameIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t itemURI;
   store::Item_t itemQName;
-  xqpStringStore_t qname;
-  xqpStringStore_t resNs;
-  xqpStringStore_t resPre;
-  xqpStringStore_t resLocal;
-  int32_t index = -1;
+  zstring qname;
+  zstring resNs;
+  zstring resPre;
+  zstring resLocal;
+  ulong index;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(itemURI, theChild0.getp(), planState )) 
   {
-    itemURI = itemURI->getAtomizationValue();
-    resNs = itemURI->getStringValue()->trim();
-  }
-  else
-  {
-    resNs = new xqpStringStore("");
+    itemURI->getStringValue2(resNs);
+
+    ascii::trim_whitespace(resNs);
   }
 
   consumeNext(itemQName, theChild1.getp(), planState );
-  itemQName = itemQName->getAtomizationValue();
-  qname = itemQName->getStringValue()->trim();
+
+  itemQName->getStringValue2(qname);
   
-  index = qname->bytePositionOf(":", 1, 0);
+  ascii::trim_whitespace(qname);
 
-  if( -1 != index ) 
+  index = qname.find(":", 0, 1);
+
+  if (index != zstring::npos) 
   {
-    if (resNs->empty ())
-      ZORBA_ERROR_LOC (FOCA0002, loc);
+    if (resNs.empty())
+      ZORBA_ERROR_LOC(FOCA0002, loc);
 
-    resPre = new xqpStringStore(qname->str().substr(0, index));
-    resLocal = new xqpStringStore(qname->str().substr(index+1, qname->bytes() - index));
+    resPre = qname.substr(0, index);
+    resLocal = qname.substr(index+1, qname.size() - index);
   } 
   else
   {
-    resPre = new xqpStringStore("");
     resLocal = qname;
   }
   
-  if ((index != -1 && ! GENV_GCAST.castableToNCName (resPre))
-      || ! GENV_GCAST.castableToNCName (resLocal))
-    ZORBA_ERROR_LOC (FOCA0002, loc);
+  if ((index != zstring::npos && ! GENV_GCAST.castableToNCName(resPre)) ||
+      ! GENV_GCAST.castableToNCName(resLocal))
+  {
+    ZORBA_ERROR_LOC(FOCA0002, loc);
+  }
 
   GENV_ITEMFACTORY->createQName(result, resNs, resPre, resLocal);
-  STACK_PUSH(true, state );
-  STACK_END (state);
+
+  STACK_PUSH(true, state);
+  STACK_END(state);
 }
 
+
 //11.2.1 op:QName-equal
-bool
-QNameEqualIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool QNameEqualIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
 {
   store::Item_t arg1;
   store::Item_t arg2;
@@ -168,19 +176,17 @@ QNameEqualIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     if (consumeNext(arg2, theChild1.getp(), planState ))
     {
-      arg1 = arg1->getAtomizationValue();
-      arg2 = arg2->getAtomizationValue();
-
-      if(arg1->getLocalName()->equals(arg2->getLocalName()))
+      if(arg1->getLocalName() == arg2->getLocalName())
       {
-        if((arg1->getNamespace()->empty() && arg2->getNamespace()->empty()) ||
-           (arg1->getNamespace()->equals(arg2->getNamespace())))
+        if (arg1->getNamespace() == arg2->getNamespace())
           GENV_ITEMFACTORY->createBoolean(result, true);
         else
           GENV_ITEMFACTORY->createBoolean(result, false);
       }
       else
+      {
         GENV_ITEMFACTORY->createBoolean(result, false);
+      }
 
       STACK_PUSH(true, state );
     }
@@ -190,37 +196,39 @@ QNameEqualIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
 
 //11.2.2 fn:prefix-from-QName
-bool
-PrefixFromQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool PrefixFromQNameIterator::nextImpl(
+    store::Item_t& result, 
+    PlanState& planState) const
 {
   store::Item_t item;
-  xqpStringStore* pre;
-  xqpStringStore_t preh;
+  zstring tmp;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(item, theChild.getp(), planState))
   {
-    pre = item->getPrefix();
-    if(!pre->empty())
+    if(!item->getPrefix().empty())
     {
-      preh = pre;
-      STACK_PUSH( GENV_ITEMFACTORY->createNCName(result, preh), state );
+      tmp = item->getPrefix();
+      STACK_PUSH( GENV_ITEMFACTORY->createNCName(result, tmp), state );
     }
   }
   STACK_END (state);
 }
 
+
 //11.2.3 fn:local-name-from-QName
-bool
-LocalNameFromQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
+bool LocalNameFromQNameIterator::nextImpl(
+    store::Item_t& result, 
+    PlanState& planState) const 
 {
   store::Item_t item;
-  xqpStringStore_t localName;
+  zstring localName;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
   if (consumeNext(item, theChild.getp(), planState))
   {
     localName = item->getLocalName();
@@ -229,12 +237,14 @@ LocalNameFromQNameIterator::nextImpl(store::Item_t& result, PlanState& planState
   STACK_END (state);
 }
 
+
 //11.2.4 fn:namespace-uri-from-QName
-bool
-NamespaceUriFromQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
+bool NamespaceUriFromQNameIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const 
 {
   store::Item_t item;
-  xqpStringStore_t ns;
+  zstring ns;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -247,43 +257,59 @@ NamespaceUriFromQNameIterator::nextImpl(store::Item_t& result, PlanState& planSt
   STACK_END (state);
 }
 
+
 //11.2.5 fn:namespace-uri-for-prefix
-bool
-NamespaceUriForPrefixIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool NamespaceUriForPrefixIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
 {
   store::Item_t itemPrefix, itemElem;
-  xqpStringStore_t resNs;
-  std::vector<std::pair<xqpStringStore_t, xqpStringStore_t> > NamespaceBindings;
-  std::vector<std::pair<xqpStringStore_t, xqpStringStore_t> > ::const_iterator iter;
+  zstring resNs;
+  bool found = false;
+  store::NsBindings NamespaceBindings;
+  store::NsBindings::const_iterator iter;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (!consumeNext(itemPrefix, theChildren[0].getp(), planState ))
+  {
     resNs = theSctx->default_elem_type_ns();
+    found = true;
+  }
   else 
   {
     if (!consumeNext(itemElem, theChildren[1].getp(), planState ))
-      resNs = theSctx->default_elem_type_ns();
+    {
+      ZORBA_ASSERT(false);
+    }
     else 
     {
       itemElem->getNamespaceBindings(NamespaceBindings);
-      for (
-            iter = NamespaceBindings.begin();
-            iter != NamespaceBindings.end();
-            ++iter
-          )
+
+      for (iter = NamespaceBindings.begin();
+           iter != NamespaceBindings.end();
+           ++iter)
       {
-        if( (*iter).first->byteEqual(itemPrefix->getStringValue()->trim())) {
+        zstring pre;
+        itemPrefix->getStringValue2(pre);
+
+        ascii::trim_whitespace(pre);
+
+        if ((*iter).first == pre)
+        {
           resNs = (*iter).second;
+          found = true;
           break;
         }
       }
     }
   }
 
-  if( resNs != NULL )
+  if (found)
+  {
     STACK_PUSH( GENV_ITEMFACTORY->createString(result, resNs), state );
+  }
 
   STACK_END (state);
 }
@@ -307,7 +333,7 @@ bool
 InScopePrefixesIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t itemElem;
-  xqpStringStore_t ncname = new xqpStringStore ("xml");
+  zstring ncname("xml");
 
   InScopePrefixesIteratorState* state;
   DEFAULT_STACK_INIT(InScopePrefixesIteratorState, state, planState);
@@ -319,7 +345,7 @@ InScopePrefixesIterator::nextImpl(store::Item_t& result, PlanState& planState) c
     itemElem->getNamespaceBindings(state->theBindings);
     while (state->theCurrentPos < state->theBindings.size())
     {
-      if (!state->theBindings[state->theCurrentPos].second->empty())
+      if (!state->theBindings[state->theCurrentPos].second.empty())
       {
         ncname = state->theBindings[state->theCurrentPos].first;
         STACK_PUSH(GENV_ITEMFACTORY->createNCName(result, ncname), state);

@@ -27,24 +27,30 @@ namespace zorba
 // SAX2 Attributes
 SAX2AttributesImpl::SAX2AttributesImpl(store::Item *item)
 {
-  store::Iterator_t    attr_it;
-  SAX2_XmlAttribute   a;
-  store::Item_t      item_qname;
+  store::Iterator_t attr_it;
+  store::Item_t item_qname;
+
   attr_it = item->getAttributes();
+
   if(attr_it == NULL)
     return;
+
   attr_it->open();
+
   store::Item_t child;
   attr_it->next(child);
-  while (child!= NULL)
+
+  while (child != NULL)
   {		
+    SAX2_XmlAttribute a;
+
     //emit_node(&*child, depth);
     item_qname = child->getNodeName();
-    a.uri = item_qname->getNamespace();
+    a.uri = item_qname->getNamespace().str();
     a.localname = item_qname->getLocalName();
-    a.qname = item_qname->getStringValue().getp();
-    a.value = child->getStringValue().getp();
-    a.type = child->getType()->getStringValue().getp();
+    item_qname->getStringValue2(a.qname);
+    child->getStringValue2(a.value);
+    child->getType()->getStringValue2(a.type);
     attrs.push_back(a);
 
     attr_it->next(child);
@@ -53,14 +59,17 @@ SAX2AttributesImpl::SAX2AttributesImpl(store::Item *item)
   attr_it->close();
 }
 
+
 SAX2AttributesImpl::SAX2AttributesImpl(  SAX2AttributesImpl * orig )
 {
   attrs = orig->attrs;
 }
 
+
 SAX2AttributesImpl::~SAX2AttributesImpl()
 {
 }
+
 
 //x2
 unsigned int SAX2AttributesImpl::getLength() const
@@ -68,39 +77,46 @@ unsigned int SAX2AttributesImpl::getLength() const
   return attrs.size();
 }
 
+
 const String SAX2AttributesImpl::getURI(const unsigned int index) const
 {
-  return &*(attrs[index].uri).theStrStore;
+  return attrs[index].uri.str();
 }
+
 
 const String SAX2AttributesImpl::getLocalName(const unsigned int index) const
 {
-  return &*(attrs[index].localname).theStrStore;
+  return attrs[index].localname.str();
 }
+
 
 const String SAX2AttributesImpl::getQName(const unsigned int index) const
 {
-  return &*(attrs[index].qname).theStrStore;
+  return attrs[index].qname.str();
 }
+
 
 const String SAX2AttributesImpl::getType(const unsigned int index) const
 {
-  return &*(attrs[index].type).theStrStore;
+  return attrs[index].type.str();
 }
+
 
 const String SAX2AttributesImpl::getValue(const unsigned int index) const
 {
-  return &*(attrs[index].value).theStrStore;
+  return attrs[index].value.str();
 }
+
 
 int SAX2AttributesImpl::getIndex(const String &  uri, const String & localPart ) const
 {
   unsigned int  i;
   unsigned int  size = attrs.size();
-  for(i=0;i<size;i++)
+
+  for(i = 0; i < size; i++)
   {
-    String lAttrURI(attrs[i].uri);
-    String lLocalName(attrs[i].localname);
+    String lAttrURI(attrs[i].uri.str());
+    String lLocalName(attrs[i].localname.str());
     if((lAttrURI == uri) && (localPart == lLocalName))
       return i;
   }
@@ -108,80 +124,95 @@ int SAX2AttributesImpl::getIndex(const String &  uri, const String & localPart )
   return -1;
 }
 
+
 int SAX2AttributesImpl::getIndex(const String & qName ) const
 {
   unsigned int  i;
   unsigned int  size = attrs.size();
-  for(i=0;i<size;i++)
+
+  for(i = 0; i < size; i++)
   {
-    String lQName( attrs[i].qname );
-    if( qName == lQName )
+    String lQName( attrs[i].qname.str() );
+    if(qName == lQName)
       return i;
   }
 
   return -1;
 }
 
-const String SAX2AttributesImpl::getType(const String & uri, const String & localPart ) const
+
+const String SAX2AttributesImpl::getType(
+    const String & uri,
+    const String & localPart) const
 {
   unsigned int  i;
   unsigned int  size = attrs.size();
-  for(i=0;i<size;i++)
+
+  for(i = 0; i < size; i++)
   {
-    String lattruri(attrs[i].uri);
-    String llocalname(attrs[i].localname);
+    String lattruri(attrs[i].uri.str());
+    String llocalname(attrs[i].localname.str());
+
     if((uri == lattruri) && (localPart == llocalname))
     {
-      String lType(attrs[i].type);
+      String lType(attrs[i].type.str());
       return lType;
     }
   }
   return "";
 }
+
 
 const String SAX2AttributesImpl::getType(const String & qName) const
 {
   unsigned int  i;
   unsigned int  size = attrs.size();
-  for(i=0;i<size;i++)
+
+  for(i = 0; i < size; i++)
   {
-    String lQName( attrs[i].qname );
+    String lQName(attrs[i].qname.str());
     if(qName == lQName)
     {
-      String lType( attrs[i].type ); 
+      String lType(attrs[i].type.str()); 
       return lType;
     }
   }
   return "";
 }
 
-const String SAX2AttributesImpl::getValue(const String & uri, const String & localPart ) const
+
+const String SAX2AttributesImpl::getValue(
+    const String & uri,
+    const String & localPart ) const
 {
   unsigned int  i;
   unsigned int  size = attrs.size();
-  for(i=0;i<size;i++)
+
+  for(i = 0;i < size; i++)
   {
-    String lattruri(attrs[i].uri);
-    String llocalname(attrs[i].localname);
+    String lattruri(attrs[i].uri.str());
+    String llocalname(attrs[i].localname.str());
     if((uri == lattruri) && (localPart == llocalname))
     {
-      String lvalue(attrs[i].value);
+      String lvalue(attrs[i].value.str());
       return lvalue;
     }
   }
   return "";
 }
 
+
 const String SAX2AttributesImpl::getValue(const String & qName) const
 {
   unsigned int  i;
   unsigned int  size = attrs.size();
-  for(i=0;i<size;i++)
+
+  for(i = 0; i < size; i++)
   {
-    String lQName( attrs[i].qname );
+    String lQName(attrs[i].qname.str());
     if(qName == lQName)
     {
-      String lValue( attrs[i].value ); 
+      String lValue(attrs[i].value.str()); 
       return lValue;
     }
   }

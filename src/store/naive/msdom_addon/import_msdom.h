@@ -38,18 +38,19 @@ class ImportMSDOM
   XmlTree   *xmlTree;
   XmlNode   *rootNode;
   std::stack<XmlNode*>    elem_stack;
-  xqpStringStore_t  theDocUri;
-  xqpStringStore_t  theBaseUri;
+  zstring  theDocUri;
+  zstring  theBaseUri;
 
 public:
   ImportMSDOM( store::ItemFactory *factory);
+
   ~ImportMSDOM();
 
   static char *fromBSTR(BSTR inbstr);
 
-  rchandle<XmlNode>   importMSDOM(IXMLDOMNode* domNode,
-                              xqpStringStore_t docUri,
-                              xqpStringStore_t baseUri);
+  rchandle<XmlNode> importMSDOM(IXMLDOMNode* domNode,
+                                const zstring& docUri,
+                                const zstring& baseUri);
 protected:
   bool import_node(IXMLDOMNode *domNode);
   void import_document(IXMLDOMDocument *dom_doc, IXMLDOMDocumentFragment *dom_frag);
@@ -67,6 +68,7 @@ class CMyBSTR
   BSTR  internal_bstr;
 public:
   CMyBSTR(const char* str);
+
   ~CMyBSTR();
 
   operator BSTR();

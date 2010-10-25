@@ -62,7 +62,6 @@ using namespace zorba;
 GlobalEnvironment * GlobalEnvironment::m_globalEnv = 0;
 
 
-
 void GlobalEnvironment::init(store::Store* store)
 {
   // initialize Xerces-C lib

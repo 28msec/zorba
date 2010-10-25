@@ -185,13 +185,13 @@ protected:
   void checkNoIterators();
 
   void validateIfNecesary(store::Item_t& docItem,
-                          xqpStringStore_t& docUri,
+                          const zstring& docUri,
                           store::Item_t& docUriItem,
                           const XmlDataManager::LoadProperties& aLoadProperties);
 
   void validateIfNecesary(store::Item_t& docItem,
-                          xqpStringStore_t& docUri,
-                          xqpStringStore_t& baseUri,
+                          const zstring& docUri,
+                          const zstring& baseUri,
                           std::auto_ptr<std::istream> aInStream,
                           const XmlDataManager::LoadProperties& aLoadProperties);
 };

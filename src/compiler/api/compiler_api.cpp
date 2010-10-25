@@ -93,7 +93,7 @@ XQueryCompiler::~XQueryCompiler()
 ********************************************************************************/
 void XQueryCompiler::parseOnly(
     std::istream& aXQuery,
-    const xqpStringStore_t& aFileName)
+    const zstring& aFileName)
 {
   parsenode_t pn = parse(aXQuery, aFileName);
 }
@@ -124,23 +124,21 @@ PlanIter_t XQueryCompiler::compile(parsenode_t ast)
 
 ********************************************************************************/
 void XQueryCompiler::xqdoc(
-    std::istream&           aXQuery,
-    const xqpStringStore_t& aFileName,
-    store::Item_t&          aResult,
-    const store::Item_t&    aDateTime)
+    std::istream&         aXQuery,
+    const zstring&        aFileName,
+    store::Item_t&        aResult,
+    const store::Item_t&  aDateTime)
 {
   parsenode_t lAST = parse(aXQuery, aFileName);
 
-  print_parsetree_xqdoc(aResult, lAST.getp(), aFileName->c_str(), aDateTime);
+  print_parsetree_xqdoc(aResult, lAST.getp(), aFileName.c_str(), aDateTime);
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-PlanIter_t XQueryCompiler::compile(
-    std::istream& aXQuery,
-    const xqpStringStore_t& aFileName)
+PlanIter_t XQueryCompiler::compile(std::istream& aXQuery, const zstring& aFileName)
 {
   parsenode_t lAST = parse(aXQuery, aFileName);
 
@@ -155,9 +153,7 @@ PlanIter_t XQueryCompiler::compile(
 /*******************************************************************************
 
 ********************************************************************************/
-parsenode_t XQueryCompiler::parse(
-    std::istream& aXQuery,
-    const xqpStringStore_t& aFileName)
+parsenode_t XQueryCompiler::parse(std::istream& aXQuery, const zstring& aFileName)
 {
   // TODO: move these out
   if (Properties::instance()->printAst())
@@ -168,7 +164,7 @@ parsenode_t XQueryCompiler::parse(
   std::istream* xquery_stream = &aXQuery;
 
 #ifdef ZORBA_XQUERYX
-  char  *converted_xquery_str = NULL;
+  char* converted_xquery_str = NULL;
   std::string   xquery_str;
   bool  is_xqueryx = false;
   {
@@ -205,7 +201,7 @@ parsenode_t XQueryCompiler::parse(
 #endif
 
   xquery_driver lDriver(&*theCompilerCB);
-  lDriver.parse_stream(*xquery_stream, aFileName.getp());
+  lDriver.parse_stream(*xquery_stream, aFileName);
 
 #ifdef ZORBA_XQUERYX
   delete xquery_stream;
@@ -286,7 +282,7 @@ expr_t XQueryCompiler::optimize(expr_t lExpr)
 parsenode_t XQueryCompiler::createMainModule(
     parsenode_t aLibraryModule,
     std::istream& aXQuery,
-    const xqpStringStore_t& aFileName)
+    const zstring& aFileName)
 {
   //get the namespace from the LibraryModule
   LibraryModule* mod_ast = dynamic_cast<LibraryModule *>(&*aLibraryModule);
@@ -298,17 +294,17 @@ parsenode_t XQueryCompiler::createMainModule(
 
   }
 
-  const xqpStringStore_t& lib_namespace = mod_ast->get_decl()->get_target_namespace();
+  const zstring& lib_namespace = mod_ast->get_decl()->get_target_namespace();
 
   // bugfix for #2934414
   // Check the library module's URI for validity. Raise an error with the
   // location of the module declaration if the URI is not a valid absolute URI.
   try
   {
-    URI lURI(lib_namespace.getp());
+    URI lURI(lib_namespace);
     if(!lURI.is_absolute())
     {
-      xqpStringStore_t lURIstr = lURI.toString();
+      zstring lURIstr = lURI.toString();
       
       ZORBA_ERROR_LOC_DESC(XQST0046,
                            mod_ast->get_decl()->get_location(),
@@ -324,14 +320,14 @@ parsenode_t XQueryCompiler::createMainModule(
 
   // create a dummy main module
   std::stringstream lDocStream;
-  lDocStream << "import module namespace m = '" << lib_namespace->c_str() << "'; 1";
+  lDocStream << "import module namespace m = '" << lib_namespace.c_str() << "'; 1";
 
   aXQuery.clear();
   aXQuery.seekg(0);
 
   theResolver = new StandardLibraryModuleURIResolver(aXQuery,
-                                                     lib_namespace->str(),
-                                                     aFileName->c_str());
+                                                     lib_namespace.str(),
+                                                     aFileName.str());
 
   theCompilerCB->theRootSctx->add_module_uri_resolver(theResolver);
 

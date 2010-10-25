@@ -216,7 +216,7 @@ for_clause* var_expr::get_for_clause() const
 ********************************************************************************/
 bool var_expr::is_context_item() const
 {
-  return *theName->getLocalName() == ".";
+  return theName->getLocalName() == ".";
 }
 
 

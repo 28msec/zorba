@@ -46,8 +46,9 @@ namespace zorba
  *
  * fn:years-from-duration($arg as xs:duration?) as xs:integer?
  *_______________________________________________________________________*/
-bool
-YearsFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool YearsFromDurationIterator::nextImpl(
+    store::Item_t& result, 
+    PlanState& planState) const
 {
   store::Item_t itemArg;
   int32_t lYears;
@@ -57,13 +58,11 @@ YearsFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
   if (consumeNext(itemArg, theChildren[0].getp(), planState))
   {
-    itemArg = itemArg->getAtomizationValue();
     lYears = itemArg->getDurationValue().getYears();
-    STACK_PUSH( GENV_ITEMFACTORY->createInteger(
-      result,
-      Integer::parseInt(lYears)), 
-      state 
-    );
+
+    STACK_PUSH(GENV_ITEMFACTORY->createInteger(result,
+                                               Integer::parseInt(lYears)), 
+               state);
   }
   STACK_END (state);
 }
@@ -76,8 +75,9 @@ YearsFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planState)
  *
  * fn:months-from-duration($arg as xs:duration?) as xs:integer?
  *_______________________________________________________________________*/
-bool
-MonthsFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool MonthsFromDurationIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
 {
   store::Item_t itemArg;
 
@@ -86,14 +86,13 @@ MonthsFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planState
 
   if (consumeNext(itemArg, theChildren[0].getp(), planState))
   {
-    itemArg = itemArg->getAtomizationValue();
-    STACK_PUSH( GENV_ITEMFACTORY->createInteger(
-      result,
-      Integer::parseInt(itemArg->getDurationValue().getMonths())),
-      state 
-    );
+    GENV_ITEMFACTORY->
+    createInteger(result,
+                  Integer::parseInt(itemArg->getDurationValue().getMonths()));
+
+    STACK_PUSH(true, state);
   }
-  STACK_END (state);
+  STACK_END(state);
 }
 
 
@@ -104,8 +103,9 @@ MonthsFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planState
  *
  * fn:days-from-duration($arg as xs:duration?) as xs:integer?
  *_______________________________________________________________________*/
-bool
-DaysFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool DaysFromDurationIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
 {
   store::Item_t itemArg;
 
@@ -114,14 +114,13 @@ DaysFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 
   if (consumeNext(itemArg, theChildren[0].getp(), planState))
   {
-    itemArg = itemArg->getAtomizationValue();
-    STACK_PUSH( GENV_ITEMFACTORY->createInteger(
-      result,
-      Integer::parseInt(itemArg->getDurationValue().getDays())),
-      state 
-    );
+    GENV_ITEMFACTORY->
+    createInteger(result,
+                  Integer::parseInt(itemArg->getDurationValue().getDays()));
+
+    STACK_PUSH(true, state);
   }
-  STACK_END (state);
+  STACK_END(state);
 }
 
 
@@ -132,8 +131,9 @@ DaysFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planState) 
  *
  * fn:hours-from-duration($arg as xs:duration?) as xs:integer?
  *_______________________________________________________________________*/
-bool
-HoursFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool HoursFromDurationIterator::nextImpl(
+    store::Item_t& result, 
+    PlanState& planState) const
 {
   store::Item_t itemArg;
 
@@ -142,14 +142,13 @@ HoursFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
   if (consumeNext(itemArg, theChildren[0].getp(), planState))
   {
-    itemArg = itemArg->getAtomizationValue();
-    STACK_PUSH( GENV_ITEMFACTORY->createInteger(
-      result,
-      Integer::parseInt(itemArg->getDurationValue().getHours())),
-      state 
-    );
+    GENV_ITEMFACTORY->
+    createInteger(result,
+                  Integer::parseInt(itemArg->getDurationValue().getHours()));
+
+    STACK_PUSH(true, state);
   }
-  STACK_END (state);
+  STACK_END(state);
 }
 
 
@@ -160,8 +159,9 @@ HoursFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planState)
  *
  * fn:minutes-from-duration($arg as xs:duration?) as xs:integer?
  *_______________________________________________________________________*/
-bool
-MinutesFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool MinutesFromDurationIterator::nextImpl(
+    store::Item_t& result, 
+    PlanState& planState) const
 {
   store::Item_t itemArg;
 
@@ -170,7 +170,6 @@ MinutesFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planStat
 
   if (consumeNext(itemArg, theChildren[0].getp(), planState))
   {
-    itemArg = itemArg->getAtomizationValue();
     STACK_PUSH( GENV_ITEMFACTORY->createInteger(
       result,
       Integer::parseInt(itemArg->getDurationValue().getMinutes())),
@@ -188,8 +187,9 @@ MinutesFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planStat
  *
  * fn:seconds-from-duration($arg as xs:duration?) as xs:decimal?
  *_______________________________________________________________________*/
-bool
-SecondsFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool SecondsFromDurationIterator::nextImpl(
+    store::Item_t& result, 
+    PlanState& planState) const
 {
   store::Item_t itemArg;
   xqp_decimal lDecimal;
@@ -199,7 +199,6 @@ SecondsFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planStat
 
   if (consumeNext(itemArg, theChildren[0].getp(), planState))
   {
-    itemArg = itemArg->getAtomizationValue();
     lDecimal = itemArg->getDurationValue().getSeconds();
     STACK_PUSH( GENV_ITEMFACTORY->createDecimal(result, lDecimal), state );
   }
@@ -214,8 +213,9 @@ SecondsFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planStat
  *
  * fn:year-from-dateTime($arg as xs:dateTime?) as xs:integer?
  *_______________________________________________________________________*/
-bool
-YearFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool YearFromDatetimeIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
 {
   store::Item_t itemArg;
 
@@ -224,7 +224,6 @@ YearFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 
   if (consumeNext(itemArg, theChildren[0].getp(), planState))
   {
-    itemArg = itemArg->getAtomizationValue();
     STACK_PUSH(
         GENV_ITEMFACTORY->createInteger(
           result,
@@ -241,8 +240,9 @@ YearFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState) 
  *
  * fn:month-from-dateTime($arg as xs:dateTime?) as xs:integer?
  *_______________________________________________________________________*/
-bool
-MonthFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool MonthFromDatetimeIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
 {
   store::Item_t itemArg;
 
@@ -251,7 +251,6 @@ MonthFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
   if (consumeNext(itemArg, theChildren[0].getp(), planState))
   {
-    itemArg = itemArg->getAtomizationValue();
     STACK_PUSH( GENV_ITEMFACTORY->createInteger(
       result,
       Integer::parseInt(itemArg->getDateTimeValue().getMonth())), 
@@ -269,8 +268,9 @@ MonthFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState)
  *
  * fn:day-from-dateTime($arg as xs:dateTime?) as xs:integer?
  *_______________________________________________________________________*/
-bool
-DayFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool DayFromDatetimeIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
 {
   store::Item_t itemArg;
 
@@ -279,7 +279,6 @@ DayFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 
   if (consumeNext(itemArg, theChildren[0].getp(), planState))
   {
-    itemArg = itemArg->getAtomizationValue();
     STACK_PUSH( GENV_ITEMFACTORY->createInteger(
       result,
       Integer::parseInt(itemArg->getDateTimeValue().getDay())), 
@@ -297,8 +296,9 @@ DayFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState) c
  *
  * fn:hours-from-dateTime($arg as xs:dateTime?) as xs:integer?
  *_______________________________________________________________________*/
-bool
-HoursFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool HoursFromDatetimeIterator::nextImpl(
+    store::Item_t& result, 
+    PlanState& planState) const
 {
   store::Item_t itemArg;
 
@@ -307,7 +307,6 @@ HoursFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
   if (consumeNext(itemArg, theChildren[0].getp(), planState))
   {
-    itemArg = itemArg->getAtomizationValue();
     STACK_PUSH( GENV_ITEMFACTORY->createInteger(
       result,
       Integer::parseInt(itemArg->getDateTimeValue().getHours())), 
@@ -325,8 +324,9 @@ HoursFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState)
  *
  * fn:minutes-from-dateTime($arg as xs:dateTime?) as xs:integer?
  *_______________________________________________________________________*/
-bool
-MinutesFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool MinutesFromDatetimeIterator::nextImpl(
+    store::Item_t& result, 
+    PlanState& planState) const
 {
   store::Item_t itemArg;
 
@@ -335,7 +335,6 @@ MinutesFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planStat
 
   if (consumeNext(itemArg, theChildren[0].getp(), planState))
   {
-    itemArg = itemArg->getAtomizationValue();
     STACK_PUSH( GENV_ITEMFACTORY->createInteger(
       result,
       Integer::parseInt(itemArg->getDateTimeValue().getMinutes())), 
@@ -353,8 +352,9 @@ MinutesFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planStat
  *
  * fn:seconds-from-dateTime($arg as xs:dateTime?) as xs:decimal?
  *_______________________________________________________________________*/
-bool
-SecondsFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool SecondsFromDatetimeIterator::nextImpl(
+    store::Item_t& result, 
+    PlanState& planState) const
 {
   store::Item_t itemArg;
   xqp_decimal lDecimal;
@@ -364,7 +364,6 @@ SecondsFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planStat
 
   if (consumeNext(itemArg, theChildren[0].getp(), planState))
   {
-    itemArg = itemArg->getAtomizationValue();
     lDecimal = itemArg->getDateTimeValue().getSeconds();
     STACK_PUSH( GENV_ITEMFACTORY->createDecimal(result, lDecimal), state );
   }
@@ -379,8 +378,9 @@ SecondsFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planStat
  *
  * fn:timezone-from-dateTime($arg as xs:dateTime?) as xs:dayTimeDuration?
  *_______________________________________________________________________*/
-bool
-TimezoneFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool TimezoneFromDatetimeIterator::nextImpl(
+    store::Item_t& result, 
+    PlanState& planState) const
 {
   store::Item_t itemArg;
   xqp_dayTimeDuration tmpDuration;
@@ -390,7 +390,6 @@ TimezoneFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planSta
 
   if (consumeNext(itemArg, theChildren[0].getp(), planState))
   {
-    itemArg = itemArg->getAtomizationValue();
     if (0 == Duration::fromTimezone(itemArg->getDateTimeValue().getTimezone(), tmpDuration))
       STACK_PUSH( GENV_ITEMFACTORY->createDayTimeDuration(result, &tmpDuration), state );
   }
@@ -405,8 +404,9 @@ TimezoneFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planSta
  *
  * fn:year-from-date($arg as xs:date?) as xs:integer?
  *_______________________________________________________________________*/
-bool
-YearFromDateIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool YearFromDateIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
 {
   store::Item_t itemArg;
 
@@ -415,7 +415,6 @@ YearFromDateIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
   if (consumeNext(itemArg, theChildren[0].getp(), planState))
   {
-    itemArg = itemArg->getAtomizationValue();
     STACK_PUSH( GENV_ITEMFACTORY->createInteger(
       result,
       Integer::parseInt(itemArg->getDateValue().getYear())), 
@@ -433,8 +432,9 @@ YearFromDateIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
  *
  * fn:month-from-date($arg as xs:date?) as xs:integer?
  *_______________________________________________________________________*/
-bool
-MonthFromDateIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool MonthFromDateIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
 {
   store::Item_t itemArg;
 
@@ -443,7 +443,6 @@ MonthFromDateIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 
   if (consumeNext(itemArg, theChildren[0].getp(), planState))
   {
-    itemArg = itemArg->getAtomizationValue();
     STACK_PUSH( GENV_ITEMFACTORY->createInteger(
       result,
       Integer::parseInt(itemArg->getDateValue().getMonth())), 
@@ -461,8 +460,9 @@ MonthFromDateIterator::nextImpl(store::Item_t& result, PlanState& planState) con
  *
  * fn:day-from-date($arg as xs:date?) as xs:integer?
  *_______________________________________________________________________*/
-bool
-DayFromDateIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool DayFromDateIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
 {
   store::Item_t itemArg;
 
@@ -471,7 +471,6 @@ DayFromDateIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   if (consumeNext(itemArg, theChildren[0].getp(), planState))
   {
-    itemArg = itemArg->getAtomizationValue();
     STACK_PUSH( GENV_ITEMFACTORY->createInteger(
       result,
       Integer::parseInt(itemArg->getDateValue().getDay())), 
@@ -489,8 +488,9 @@ DayFromDateIterator::nextImpl(store::Item_t& result, PlanState& planState) const
  *
  * fn:timezone-from-date($arg as xs:date?) as xs:dayTimeDuration?
  *_______________________________________________________________________*/
-bool
-TimezoneFromDateIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool TimezoneFromDateIterator::nextImpl(
+    store::Item_t& result, 
+    PlanState& planState) const
 {
   store::Item_t itemArg;
   xqp_dayTimeDuration tmpDuration;
@@ -500,7 +500,6 @@ TimezoneFromDateIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 
   if (consumeNext(itemArg, theChildren[0].getp(), planState))
   {
-    itemArg = itemArg->getAtomizationValue();
     if (0 == Duration::fromTimezone(itemArg->getDateValue().getTimezone(), tmpDuration))
       STACK_PUSH( GENV_ITEMFACTORY->createDayTimeDuration(result, &tmpDuration), state );
   }
@@ -515,8 +514,9 @@ TimezoneFromDateIterator::nextImpl(store::Item_t& result, PlanState& planState) 
  *
  * fn:hours-from-time($arg as xs:time?) as xs:integer?
  *_______________________________________________________________________*/
-bool
-HoursFromTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool HoursFromTimeIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
 {
   store::Item_t itemArg;
 
@@ -525,7 +525,6 @@ HoursFromTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 
   if (consumeNext(itemArg, theChildren[0].getp(), planState))
   {
-    itemArg = itemArg->getAtomizationValue();
     STACK_PUSH( GENV_ITEMFACTORY->createInteger(
       result,
       Integer::parseInt(itemArg->getTimeValue().getHours())), 
@@ -543,8 +542,9 @@ HoursFromTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) con
  *
  * fn:minutes-from-time($arg as xs:time?) as xs:integer?
  *_______________________________________________________________________*/
-bool
-MinutesFromTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool MinutesFromTimeIterator::nextImpl(
+    store::Item_t& result, 
+    PlanState& planState) const
 {
   store::Item_t itemArg;
 
@@ -553,7 +553,6 @@ MinutesFromTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 
   if (consumeNext(itemArg, theChildren[0].getp(), planState))
   {
-    itemArg = itemArg->getAtomizationValue();
     STACK_PUSH( GENV_ITEMFACTORY->createInteger(
       result,
       Integer::parseInt(itemArg->getTimeValue().getMinutes())), 
@@ -572,8 +571,9 @@ MinutesFromTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) c
  *
  * fn:seconds-from-time($arg as xs:time?) as xs:decimal?
  *_______________________________________________________________________*/
-bool
-SecondsFromTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool SecondsFromTimeIterator::nextImpl(
+    store::Item_t& result, 
+    PlanState& planState) const
 {
   store::Item_t itemArg;
   xqp_decimal lDecimal;
@@ -583,7 +583,6 @@ SecondsFromTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 
   if (consumeNext(itemArg, theChildren[0].getp(), planState))
   {
-    itemArg = itemArg->getAtomizationValue();
     lDecimal = itemArg->getTimeValue().getSeconds();
     STACK_PUSH( GENV_ITEMFACTORY->createDecimal(result, lDecimal), state );
   }
@@ -598,8 +597,9 @@ SecondsFromTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) c
  *
  * fn:timezone-from-time($arg as xs:time?) as xs:dayTimeDuration?
  *_______________________________________________________________________*/
-bool
-TimezoneFromTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool TimezoneFromTimeIterator::nextImpl(
+    store::Item_t& result, 
+    PlanState& planState) const
 {
   store::Item_t itemArg;
   xqp_dayTimeDuration tmpDuration;
@@ -610,15 +610,16 @@ TimezoneFromTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   if (consumeNext(itemArg, theChildren[0].getp(), planState))
   if ( itemArg != NULL )
   {
-    itemArg = itemArg->getAtomizationValue();
     if (0 == Duration::fromTimezone(itemArg->getTimeValue().getTimezone(), tmpDuration))
       STACK_PUSH( GENV_ITEMFACTORY->createDayTimeDuration(result, &tmpDuration), state );
   }
   STACK_END (state);
 }
 
-bool
-TimestampIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+
+bool TimestampIterator::nextImpl(
+    store::Item_t& result, 
+    PlanState& planState) const
 {
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);

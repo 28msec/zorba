@@ -16,14 +16,6 @@
 %{ /* _*_ C++ _*_ */
 
 
-#ifdef WIN32
-  // Include the NOMINMAX definition before windwows.h is included,
-  // so that min and max macros are not defined, and std::max and std::min
-  // uses do not generate errors on Windows.
-#define NOMINMAX
-#endif
-
-
 #if defined (WIN32)
 #pragma warning(disable: 4786)
 #endif

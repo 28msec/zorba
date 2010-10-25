@@ -984,8 +984,8 @@ type_ident_ref_t TypeOps::get_type_identifier(
   {
     const AtomicXQType& at = static_cast<const AtomicXQType&>(type);
     store::Item* qname = rtm.m_atomic_typecode_qname_map[at.get_type_code()];
-    return TypeIdentifier::createNamedType(qname->getNamespace(),
-                                           qname->getLocalName(),
+    return TypeIdentifier::createNamedType(qname->getNamespace().c_str(),
+                                           qname->getLocalName().c_str(),
                                            q);
   }
   case XQType::NODE_TYPE_KIND:
@@ -1017,8 +1017,8 @@ type_ident_ref_t TypeOps::get_type_identifier(
 
     case store::StoreConsts::elementNode:
     {
-      String uri(nodeName->getNamespace());
-      String local(nodeName->getLocalName());
+      String uri(nodeName->getNamespace().c_str());
+      String local(nodeName->getLocalName().c_str());
 
       return TypeIdentifier::createElementType(uri,
                                                nodeName == NULL,
@@ -1029,8 +1029,8 @@ type_ident_ref_t TypeOps::get_type_identifier(
     }  
     case store::StoreConsts::attributeNode:
     {
-      String uri(nodeName->getNamespace());
-      String local(nodeName->getLocalName());
+      String uri(nodeName->getNamespace().c_str());
+      String local(nodeName->getLocalName().c_str());
 
       return TypeIdentifier::createAttributeType(uri,
                                                  nodeName == NULL,
@@ -1046,21 +1046,21 @@ type_ident_ref_t TypeOps::get_type_identifier(
     }
   }
   case XQType::ANY_TYPE_KIND:
-    return TypeIdentifier::createNamedType(&*rtm.XS_ANY_TYPE_QNAME->getNamespace(),
-                                           &*rtm.XS_ANY_TYPE_QNAME->getLocalName(),
+    return TypeIdentifier::createNamedType(&*rtm.XS_ANY_TYPE_QNAME->getNamespace().c_str(),
+                                           &*rtm.XS_ANY_TYPE_QNAME->getLocalName().c_str(),
                                            q);
 
   case XQType::ITEM_KIND:
     return TypeIdentifier::createItemType(q);
 
   case XQType::ANY_SIMPLE_TYPE_KIND:
-    return TypeIdentifier::createNamedType(&*rtm.XS_ANY_SIMPLE_TYPE_QNAME->getNamespace(),
-                                           &*rtm.XS_ANY_SIMPLE_TYPE_QNAME->getLocalName(),
+    return TypeIdentifier::createNamedType(&*rtm.XS_ANY_SIMPLE_TYPE_QNAME->getNamespace().c_str(),
+                                           &*rtm.XS_ANY_SIMPLE_TYPE_QNAME->getLocalName().c_str(),
                                            q);
 
   case XQType::UNTYPED_KIND:
-    return TypeIdentifier::createNamedType(&*rtm.XS_UNTYPED_QNAME->getNamespace(),
-                                           &*rtm.XS_UNTYPED_QNAME->getLocalName(),
+    return TypeIdentifier::createNamedType(&*rtm.XS_UNTYPED_QNAME->getNamespace().c_str(),
+                                           &*rtm.XS_UNTYPED_QNAME->getLocalName().c_str(),
                                            q);
     
   case XQType::EMPTY_KIND:

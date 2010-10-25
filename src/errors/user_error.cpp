@@ -24,19 +24,19 @@ namespace zorba { namespace error {
 
 ZorbaUserError::ZorbaUserError(
     const ::zorba::store::Item_t&        aErrQName,
-    const xqpString&                     aDescription,
+    const zstring&                       aDescription,
     const QueryLoc&                      aLocation,
     const std::string&                   aFileName,
     int                                  aLineNumber,
     std::vector< ::zorba::store::Item_t> aErrorObject)
   :
-  ZorbaError(aErrQName->getLocalName(),
-             aErrQName->getPrefix(),
-             aErrQName->getNamespace(),
+  ZorbaError(aErrQName->getLocalName().str(),
+             aErrQName->getPrefix().str(),
+             aErrQName->getNamespace().str(),
              aDescription,
              aLocation.getLineBegin(),
              aLocation.getColumnBegin(),
-             aLocation.getFilename(),
+             aLocation.getFilename().str(),
              aFileName,
              aLineNumber),
   theErrorObject(aErrorObject)

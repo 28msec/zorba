@@ -27,6 +27,7 @@
 #include "api/zorbaimpl.h"
 #include "api/serialization/serializer.h"
 #include "api/storeiteratorimpl.h"
+#include "api/iterator_singleton.h"
 
 #include "store/api/item.h"
 #include "store/api/store.h"
@@ -37,7 +38,7 @@ namespace zorba {
 
 #define ITEM_TRY try {
 #define ITEM_CATCH } catch ( ::zorba::error::ZorbaError & e) {  \
-  throw SystemException(e.theErrorCode, String(e.theDescription.theStrStore), "", 0, e.getStackTrace()); \
+  throw SystemException(e.theErrorCode, String(e.theDescription.c_str()), "", 0, e.getStackTrace()); \
   } catch (std::exception& e) { \
     throw SystemException(XQP0019_INTERNAL_ERROR, e.what(), "", 0); \
   } catch (...) { \
@@ -140,16 +141,6 @@ Item::isAtomic() const
   return false;
 }
 
-#if 0
-bool
-Item::isNumeric() const
-{
-  ITEM_TRY
-    return m_item->isNumeric();
-  ITEM_CATCH
-  return false;
-}
-#endif
 
 bool 
 Item::isNull() const
@@ -174,16 +165,28 @@ Item Item::getType() const
 }
 
 
-Item Item::getAtomizationValue() const
+Iterator_t Item::getAtomizationValue() const
 {
   ITEM_TRY
 
     SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
-    return &*m_item->getAtomizationValue();
+    store::Item_t typedVal;
+    store::Iterator_t typedIter;
+
+    m_item->getTypedValue(typedVal, typedIter);
+
+    if (typedIter == NULL)
+    {
+      return new API_SingletonIterator(typedVal, NULL);
+    }
+    else
+    {
+      return new StoreIteratorImpl(typedIter, NULL);
+    }
 
   ITEM_CATCH
-  return Item();
+  return NULL;
 }
 
 
@@ -193,7 +196,7 @@ String Item::getStringValue() const
 
     SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
-    return m_item->getStringValue().getp();
+    return m_item->getStringValue().str();
 
   ITEM_CATCH
   return String((const char*)0);
@@ -270,7 +273,7 @@ String Item::getPrefix() const
 
     SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
-    return m_item->getPrefix();
+    return m_item->getPrefix().str();
 
   ITEM_CATCH
   return "";
@@ -283,7 +286,7 @@ String Item::getLocalName() const
 
     SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
-    return m_item->getLocalName();
+    return m_item->getLocalName().str();
 
   ITEM_CATCH
   return "";
@@ -296,7 +299,7 @@ String Item::getNamespace() const
 
     SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
-    return m_item->getNamespace();
+    return m_item->getNamespace().str();
 
   ITEM_CATCH
   return "";

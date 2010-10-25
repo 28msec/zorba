@@ -76,12 +76,6 @@ inline void throwError(XQUERY_ERROR aErrorCode, const ErrorInfo& aInfo)
 };
 
 
-inline xqpStringStore_t doTrim(const xqpStringStore* aStr)
-{
-  return aStr->trim(" \t\r\n", 4);
-};
-
-
 /*******************************************************************************
   Identity casting functions: target type is the same as the source one, so no
   casting is actually done.
@@ -90,7 +84,7 @@ inline xqpStringStore_t doTrim(const xqpStringStore* aStr)
 inline bool type##_##type(          \
     store::Item_t& result,          \
     const store::Item* aItem,       \
-    xqpStringStore_t& strval,       \
+    zstring& strval,                \
     store::ItemFactory*,            \
     namespace_context *nsCtx,       \
     const ErrorInfo& aErrorInfo)    \
@@ -126,16 +120,27 @@ SAME_S_AND_T(NOT)
 #undef SAME_S_AND_T
 
 
-inline bool str_uA(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context* nsCtx, const ErrorInfo& aErrorInfo)
+#define T1_TO_T2(type1, type2)      \
+inline bool type1##_##type2(        \
+    store::Item_t& result,          \
+    const store::Item* aItem,       \
+    zstring& strval,                \
+    store::ItemFactory* aFactory,   \
+    namespace_context* nsCtx,       \
+    const ErrorInfo& aErrorInfo)    \
+
+
+
+T1_TO_T2(str, uA)
 {
   return aFactory->createUntypedAtomic(result, strval);
 }
 
 
-inline bool str_flt(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context* nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(str, flt)
 {
   xqp_float n;
-  if (Float::parseString(strval->c_str(), n))
+  if (Float::parseString(strval.c_str(), n))
     return aFactory->createFloat(result, n);
 
   throwError(FORG0001, aErrorInfo);
@@ -143,10 +148,10 @@ inline bool str_flt(store::Item_t& result, const store::Item* aItem, xqpStringSt
 }
 
 
-inline bool str_dbl(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context* nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(str, dbl)
 {
   xqp_double n;
-  if (Double::parseString(strval->c_str(), n))
+  if (Double::parseString(strval.c_str(), n))
     return aFactory->createDouble(result, n);
 
   throwError(FORG0001, aErrorInfo);
@@ -154,10 +159,10 @@ inline bool str_dbl(store::Item_t& result, const store::Item* aItem, xqpStringSt
 }
 
 
-inline bool str_dec(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context* nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(str, dec)
 {
   xqp_decimal n;
-  if (NumConversions::strToDecimal(strval->c_str(), n))
+  if (NumConversions::strToDecimal(strval.c_str(), n))
     return aFactory->createDecimal(result, n);
 
   throwError(FORG0001, aErrorInfo);
@@ -165,10 +170,10 @@ inline bool str_dec(store::Item_t& result, const store::Item* aItem, xqpStringSt
 }
 
 
-inline bool str_int(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context* nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(str, int)
 {
   xqp_integer n;
-  if (NumConversions::strToInteger(strval->c_str(), n))
+  if (NumConversions::strToInteger(strval.c_str(), n))
     return aFactory->createInteger(result, n);
 
   throwError(FORG0001, aErrorInfo);
@@ -176,10 +181,10 @@ inline bool str_int(store::Item_t& result, const store::Item* aItem, xqpStringSt
 }
 
 
-inline bool str_dur(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context* nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(str, dur)
 {
   Duration d;
-  if (0 == Duration::parseDuration(doTrim(strval).getp(), d))
+  if (0 == Duration::parseDuration(strval.c_str(), strval.size(), d))
     return aFactory->createDuration(result, &d);
 
   throwError(FORG0001, aErrorInfo);
@@ -187,10 +192,10 @@ inline bool str_dur(store::Item_t& result, const store::Item* aItem, xqpStringSt
 }
 
 
-inline bool str_yMD(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(str, yMD)
 {
   Duration d;
-  if (0 == Duration::parseYearMonthDuration(doTrim(strval).getp(), d))
+  if (0 == Duration::parseYearMonthDuration(strval.c_str(), strval.size(), d))
     return aFactory->createYearMonthDuration(result, &d);
 
   throwError(FORG0001, aErrorInfo);
@@ -198,10 +203,11 @@ inline bool str_yMD(store::Item_t& result, const store::Item* aItem, xqpStringSt
 }
 
 
-inline bool str_dTD(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(str, dTD)
 {
   Duration d;
-  if (0 == Duration::parseDayTimeDuration(doTrim(strval).getp(), d))
+
+  if (0 == Duration::parseDayTimeDuration(strval.c_str(), strval.size(), d))
     return aFactory->createDayTimeDuration(result, &d);
 
   throwError(FORG0001, aErrorInfo);
@@ -209,10 +215,10 @@ inline bool str_dTD(store::Item_t& result, const store::Item* aItem, xqpStringSt
 }
 
 
-inline bool str_dT(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(str, dT)
 {
   xqp_dateTime dt;
-  if (0 == DateTime::parseDateTime(doTrim(strval).getp(), dt))
+  if (0 == DateTime::parseDateTime(strval.c_str(), strval.size(), dt))
     return aFactory->createDateTime(result, &dt);
 
   throwError(FORG0001, aErrorInfo);
@@ -220,10 +226,10 @@ inline bool str_dT(store::Item_t& result, const store::Item* aItem, xqpStringSto
 }
 
 
-inline bool str_tim(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(str, tim)
 {
   xqp_time t;
-  if (0 == DateTime::parseTime(doTrim(strval).getp(), t))
+  if (0 == DateTime::parseTime(strval.c_str(), strval.size(), t))
     return aFactory->createTime(result, &t);
 
   throwError(FORG0001, aErrorInfo);
@@ -231,10 +237,10 @@ inline bool str_tim(store::Item_t& result, const store::Item* aItem, xqpStringSt
 }
 
 
-inline bool str_dat(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(str, dat)
 {
   xqp_date d;
-  if (0 == DateTime::parseDate(doTrim(strval).getp(), d))
+  if (0 == DateTime::parseDate(strval.c_str(), strval.size(), d))
     return aFactory->createDate(result, &d);
 
   throwError(FORG0001, aErrorInfo);
@@ -242,10 +248,10 @@ inline bool str_dat(store::Item_t& result, const store::Item* aItem, xqpStringSt
 }
 
 
-inline bool str_gYM(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval,store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(str, gYM)
 {
   xqp_gYearMonth ym;
-  if (0 == DateTime::parseGYearMonth(doTrim(strval).getp(), ym))
+  if (0 == DateTime::parseGYearMonth(strval.c_str(), strval.size(), ym))
     return aFactory->createGYearMonth(result, &ym);
 
   throwError(FORG0001, aErrorInfo);
@@ -253,10 +259,10 @@ inline bool str_gYM(store::Item_t& result, const store::Item* aItem, xqpStringSt
 }
 
 
-inline bool str_gYr(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(str, gYr)
 {
   xqp_gYear y;
-  if (0 == DateTime::parseGYear(doTrim(strval).getp(), y))
+  if (0 == DateTime::parseGYear(strval.c_str(), strval.size(), y))
     return aFactory->createGYear(result, &y);
 
   throwError(FORG0001, aErrorInfo);
@@ -264,10 +270,10 @@ inline bool str_gYr(store::Item_t& result, const store::Item* aItem, xqpStringSt
 }
 
 
-inline bool str_gMD(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(str, gMD)
 {
   xqp_gMonthDay md;
-  if (0 == DateTime::parseGMonthDay(doTrim(strval).getp(), md))
+  if (0 == DateTime::parseGMonthDay(strval.c_str(), strval.size(), md))
     return aFactory->createGMonthDay(result, &md);
 
   throwError(FORG0001, aErrorInfo);
@@ -275,10 +281,10 @@ inline bool str_gMD(store::Item_t& result, const store::Item* aItem, xqpStringSt
 }
 
 
-inline bool str_gDay(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(str, gDay)
 {
   xqp_gDay d;
-  if (0 == DateTime::parseGDay(doTrim(strval).getp(), d))
+  if (0 == DateTime::parseGDay(strval.c_str(), strval.size(), d))
     return aFactory->createGDay(result, &d);
 
   throwError(FORG0001, aErrorInfo);
@@ -286,10 +292,10 @@ inline bool str_gDay(store::Item_t& result, const store::Item* aItem, xqpStringS
 }
 
 
-inline bool str_gMon(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(str, gMon)
 {
   xqp_gMonth m;
-  if (0 == DateTime::parseGMonth(doTrim(strval).getp(), m))
+  if (0 == DateTime::parseGMonth(strval.c_str(), strval.size(), m))
     return aFactory->createGMonth(result, &m);
 
   throwError(FORG0001, aErrorInfo);
@@ -297,45 +303,81 @@ inline bool str_gMon(store::Item_t& result, const store::Item* aItem, xqpStringS
 }
 
 
-inline bool str_bool(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(str, bool)
 {
   bool lRetValue = true;
-  xqpStringStore_t lString = doTrim(strval);
+  const char* str = strval.c_str();
+  zstring::size_type len = strval.size();
+  zstring::size_type pos = 0;
 
-  if (lString->byteEqual("false", 5) || lString->byteEqual("0", 1))
+  ascii::skip_whitespace(str, len, &pos);
+
+  str += pos;
+
+  if (strncmp(str, "false", 5) == 0)
+  {
     lRetValue = false;
-  else if (!lString->byteEqual("true", 4) && !lString->byteEqual("1", 1))
+    str += 5;
+  }
+  else if (strncmp(str, "0", 1) == 0)
+  {
+    lRetValue = false;
+    str += 1;
+  }
+  else if (strncmp(str, "true", 4) == 0)
+  {
+    lRetValue = true;
+    str += 4;
+  }
+  else if (strncmp(str, "1", 1) == 0)
+  {
+    lRetValue = true;
+    str += 1;
+  }
+  else
+  {
+    throwError(FORG0001, aErrorInfo);
+  }
+
+  pos = str - strval.c_str();
+  ascii::skip_whitespace(strval.c_str(), len, &pos);
+
+  if (pos != len)
     throwError(FORG0001, aErrorInfo);
 
   return aFactory->createBoolean(result, lRetValue);
 }
 
-inline bool str_b64(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(str, b64)
 {
   xqp_base64Binary n;
-  if (xqp_base64Binary::parseString(doTrim(strval).getp(), n))
+  if (xqp_base64Binary::parseString(strval, n))
     return aFactory->createBase64Binary(result, n);
 
   throwError(FORG0001, aErrorInfo);
   return false;
 }
 
-inline bool str_hxB(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(str, hxB)
 {
   xqp_hexBinary n;
-  if (xqp_hexBinary::parseString(doTrim(strval).getp(), n))
+  if (xqp_hexBinary::parseString(strval, n))
     return aFactory->createHexBinary(result, n);
 
   throwError(FORG0001, aErrorInfo);
   return false;
 }
 
-inline bool str_aURI(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(str, aURI)
 {
   try
   {
     URI uriVal(strval);
-    return aFactory->createAnyURI(result, uriVal.toString()->c_str());
+    zstring resolvedUri = uriVal.toString();
+    return aFactory->createAnyURI(result, resolvedUri);
   }
   catch (error::ZorbaError& e)
   {
@@ -345,213 +387,242 @@ inline bool str_aURI(store::Item_t& result, const store::Item* aItem, xqpStringS
 }
 
 
-inline bool str_QN(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(str, QN)
 {
-  xqpStringStore_t str = doTrim(strval);
-  int32_t idx = str->bytePositionOf(":");
-  int32_t lidx = str->byteLastPositionOf(":", 1);
+  ascii::trim_whitespace(strval);
+
+  ulong idx = strval.find(":");
+  ulong lidx = strval.rfind(":", strval.size(), 1);
+
   if (idx != lidx)
     throwError(FORG0001, aErrorInfo);
 
-  xqpStringStore_t lUri;
-  xqpStringStore_t lPrefix;
+  zstring nsuri;
+  zstring prefix;
+  zstring local;
 
-  if (idx < 0)
+  if (idx == zstring::npos)
   {
-    lPrefix = new xqpStringStore("");
     if (nsCtx)
-      nsCtx->findBinding(lPrefix, lUri);
+    {
+      nsCtx->findBinding(prefix, nsuri);
+    }
+
+    local = strval;
   }
   else
   {
-    lPrefix = str->byteSubstr(0, idx);
+    prefix = strval.substr(0, idx);
 
-    if (!GenericCast::instance()->castableToNCName(lPrefix))
+    if (!GenericCast::instance()->castableToNCName(prefix))
       throwError(FORG0001, aErrorInfo);
 
-    if (nsCtx && !nsCtx->findBinding(lPrefix, lUri))
-      throwError(FONS0004, aErrorInfo);
+    if (nsCtx)
+    {
+      if (!nsCtx->findBinding(prefix, nsuri))
+      {
+        throwError(FONS0004, aErrorInfo);
+      }
+    }
+
+    local = strval.substr(idx + 1);
   }
 
-  xqpStringStore_t lLocal = str->substr(idx + 1);
-
-  if (!GenericCast::instance()->castableToNCName(lLocal))
+  if (!GenericCast::instance()->castableToNCName(local))
     throwError(FORG0001, aErrorInfo);
 
-  if (lUri == NULL)
-    lUri = new xqpStringStore("");
-
-  return aFactory->createQName(result,
-                               lUri,
-                               lPrefix,
-                               lLocal);
+  return aFactory->createQName(result, nsuri, prefix, local);
 }
 
 
-inline bool str_NOT(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(str, NOT)
 {
-  xqpStringStore_t strval2 = doTrim(strval);
-  return aFactory->createNOTATION(result, strval2);
+  ascii::trim_whitespace(strval);
+  return aFactory->createNOTATION(result, strval);
 }
 
-inline bool uA_str(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(uA, str)
 {
-  xqpStringStore_t strval2;
-  aItem->getStringValue(strval2);
+  zstring strval2;
+  aItem->getStringValue2(strval2);
   return aFactory->createString(result, strval2);
 }
 
-inline bool uA_flt(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(uA, flt)
 {
-  xqpStringStore_t strval2;
-  aItem->getStringValue(strval2);
+  zstring strval2;
+  aItem->getStringValue2(strval2);
   return str_flt(result, aItem, strval2, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool uA_dbl(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(uA, dbl)
 {
-  xqpStringStore_t strval2;
-  aItem->getStringValue(strval2);
+  zstring strval2;
+  aItem->getStringValue2(strval2);
   return str_dbl(result, aItem, strval2, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool uA_dec(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(uA, dec)
 {
-  xqpStringStore_t strval2;
-  aItem->getStringValue(strval2);
+  zstring strval2;
+  aItem->getStringValue2(strval2);
   return str_dec(result, aItem, strval2, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool uA_int(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(uA, int)
 {
-  xqpStringStore_t strval2;
-  aItem->getStringValue(strval2);
+  zstring strval2;
+  aItem->getStringValue2(strval2);
   return str_int(result, aItem, strval2, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool uA_dur(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(uA, dur)
 {
-  xqpStringStore_t strval2;
-  aItem->getStringValue(strval2);
+  zstring strval2;
+  aItem->getStringValue2(strval2);
   return str_dur(result, aItem, strval2, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool uA_yMD(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(uA, yMD)
 {
-  xqpStringStore_t strval2;
-  aItem->getStringValue(strval2);
+  zstring strval2;
+  aItem->getStringValue2(strval2);
   return str_yMD(result, aItem, strval2, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool uA_dTD(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(uA, dTD)
 {
-  xqpStringStore_t strval2;
-  aItem->getStringValue(strval2);
+  zstring strval2;
+  aItem->getStringValue2(strval2);
   return str_dTD(result, aItem, strval2, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool uA_dT(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(uA, dT)
 {
-  xqpStringStore_t strval2;
-  aItem->getStringValue(strval2);
+  zstring strval2;
+  aItem->getStringValue2(strval2);
   return str_dT(result, aItem, strval2, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool uA_tim(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(uA, tim)
 {
-  xqpStringStore_t strval2;
-  aItem->getStringValue(strval2);
+  zstring strval2;
+  aItem->getStringValue2(strval2);
   return str_tim(result, aItem, strval2, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool uA_dat(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(uA, dat)
 {
-  xqpStringStore_t strval2;
-  aItem->getStringValue(strval2);
+  zstring strval2;
+  aItem->getStringValue2(strval2);
   return str_dat(result, aItem, strval2, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool uA_gYM(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(uA, gYM)
 {
-  xqpStringStore_t strval2;
-  aItem->getStringValue(strval2);
+  zstring strval2;
+  aItem->getStringValue2(strval2);
   return str_gYM(result, aItem, strval2, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool uA_gYr(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(uA, gYr)
 {
-  xqpStringStore_t strval2;
-  aItem->getStringValue(strval2);
+  zstring strval2;
+  aItem->getStringValue2(strval2);
   return str_gYr(result, aItem, strval2, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool uA_gMD(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(uA, gMD)
 {
-  xqpStringStore_t strval2;
-  aItem->getStringValue(strval2);
+  zstring strval2;
+  aItem->getStringValue2(strval2);
   return str_gMD(result, aItem, strval2, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool uA_gDay(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(uA, gDay)
 {
-  xqpStringStore_t strval2;
-  aItem->getStringValue(strval2);
+  zstring strval2;
+  aItem->getStringValue2(strval2);
   return str_gDay(result, aItem, strval2, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool uA_gMon(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(uA, gMon)
 {
-  xqpStringStore_t strval2;
-  aItem->getStringValue(strval2);
+  zstring strval2;
+  aItem->getStringValue2(strval2);
   return str_gMon(result, aItem, strval2, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool uA_bool(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(uA, bool)
 {
-  xqpStringStore_t strval2;
-  aItem->getStringValue(strval2);
+  zstring strval2;
+  aItem->getStringValue2(strval2);
   return str_bool(result, aItem, strval2, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool uA_b64(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(uA, b64)
 {
-  xqpStringStore_t strval2;
-  aItem->getStringValue(strval2);
+  zstring strval2;
+  aItem->getStringValue2(strval2);
   return str_b64(result, aItem, strval2, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool uA_hxB(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(uA, hxB)
 {
-  xqpStringStore_t strval2;
-  aItem->getStringValue(strval2);
+  zstring strval2;
+  aItem->getStringValue2(strval2);
   return str_hxB(result, aItem, strval2, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool uA_aURI(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(uA, aURI)
 {
-  xqpStringStore_t strval2;
-  aItem->getStringValue(strval2);
+  zstring strval2;
+  aItem->getStringValue2(strval2);
   return str_aURI(result, aItem, strval2, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool flt_uA(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(flt, uA)
 {
-  xqpStringStore_t strval2;
-  aItem->getStringValue(strval2);
+  zstring strval2;
+  aItem->getStringValue2(strval2);
   return str_uA(result, aItem, strval2, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool flt_str(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(flt, str)
 {
   return uA_str(result, aItem, strval, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool flt_dbl(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(flt, dbl)
 {
   return aFactory->createDouble(result, FloatCommons::parseFloat(aItem->getFloatValue()));
 }
 
-inline bool flt_dec(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(flt, dec)
 {
   xqp_decimal n;
   if (xqp_decimal::parseFloat(aItem->getFloatValue(), n))
@@ -561,7 +632,8 @@ inline bool flt_dec(store::Item_t& result, const store::Item* aItem, xqpStringSt
   return false;
 }
 
-inline bool flt_int(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(flt, int)
 {
   xqp_integer n;
   if (xqp_integer::parseFloat(aItem->getFloatValue(), n))
@@ -571,30 +643,36 @@ inline bool flt_int(store::Item_t& result, const store::Item* aItem, xqpStringSt
   return false;
 }
 
-inline bool flt_bool(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(flt, bool)
 {
   result = aItem->getEBV();
   return true;
 }
 
-inline bool dbl_uA(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(dbl, uA)
 {
-  xqpStringStore_t strval2;
-  aItem->getStringValue(strval2);
-  return str_uA(result, aItem,strval2, aFactory, nsCtx, aErrorInfo);
+  zstring strval2;
+  aItem->getStringValue2(strval2);
+  return str_uA(result, aItem, strval2, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool dbl_str(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(dbl, str)
 {
   return uA_str(result, aItem, strval, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool dbl_flt(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(dbl, flt)
 {
-  return aFactory->createFloat(result, FloatCommons::parseDouble(aItem->getDoubleValue()));
+  return aFactory->createFloat(result,
+                               FloatCommons::parseDouble(aItem->getDoubleValue()));
 }
 
-inline bool dbl_dec(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(dbl, dec)
 {
   xqp_decimal n;
   if (xqp_decimal::parseDouble(aItem->getDoubleValue(), n))
@@ -604,7 +682,8 @@ inline bool dbl_dec(store::Item_t& result, const store::Item* aItem, xqpStringSt
   return false;
 }
 
-inline bool dbl_int(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(dbl, int)
 {
   xqp_integer n;
   if (xqp_integer::parseDouble(aItem->getDoubleValue(), n))
@@ -614,164 +693,203 @@ inline bool dbl_int(store::Item_t& result, const store::Item* aItem, xqpStringSt
   return false;
 }
 
-inline bool dbl_bool(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(dbl, bool)
 {
   result = aItem->getEBV();
   return true;
 }
 
-inline bool dec_uA(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(dec, uA)
 {
-  xqpStringStore_t strval2;
-  aItem->getStringValue(strval2);
+  zstring strval2;
+  aItem->getStringValue2(strval2);
   return str_uA(result, aItem, strval2, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool dec_str(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(dec, str)
 {
   return uA_str(result, aItem, strval, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool dec_flt(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(dec, flt)
 {
-  return aFactory->createFloat(result, xqp_float::parseDecimal(aItem->getDecimalValue()));
+  return aFactory->createFloat(result,
+                               xqp_float::parseDecimal(aItem->getDecimalValue()));
 }
 
-inline bool dec_dbl(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(dec, dbl)
 {
-  return aFactory->createDouble(result, xqp_double::parseDecimal(aItem->getDecimalValue()));
+  return aFactory->createDouble(result, 
+                                xqp_double::parseDecimal(aItem->getDecimalValue()));
 }
 
-inline bool dec_int(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(dec, int)
 {
-  return aFactory->createInteger(result, xqp_integer::parseDecimal(aItem->getDecimalValue()));
+  return aFactory->createInteger(result, 
+                                 xqp_integer::parseDecimal(aItem->getDecimalValue()));
 }
 
-inline bool dec_bool(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(dec, bool)
 {
   result = aItem->getEBV();
   return true;
 }
 
-inline bool int_uA(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(int, uA)
 {
-  xqpStringStore_t strval2;
-  aItem->getStringValue(strval2);
+  zstring strval2;
+  aItem->getStringValue2(strval2);
   return str_uA(result, aItem, strval2, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool int_str(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(int, str)
 {
   return uA_str(result, aItem, strval, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool int_flt(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(int, flt)
 {
-  return aFactory->createFloat(result, xqp_float::parseInteger(aItem->getIntegerValue()));
+  return aFactory->createFloat(result,
+                               xqp_float::parseInteger(aItem->getIntegerValue()));
 }
 
-inline bool int_dbl(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(int, dbl)
 {
-  return aFactory->createDouble(result, xqp_double::parseInteger(aItem->getIntegerValue()));
+  return aFactory->createDouble(result, 
+                                xqp_double::parseInteger(aItem->getIntegerValue()));
 }
 
-inline bool int_dec(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(int, dec)
 {
-  return aFactory->createDecimal(result, xqp_decimal::parseInteger(aItem->getIntegerValue()));
+  return aFactory->createDecimal(result, 
+                                 xqp_decimal::parseInteger(aItem->getIntegerValue()));
 }
 
-inline bool int_bool(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(int, bool)
 {
   result = aItem->getEBV();
   return true;
 }
 
-inline bool dur_uA(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(dur, uA)
 {
-  xqpStringStore_t strval2;
-  aItem->getStringValue(strval2);
+  zstring strval2;
+  aItem->getStringValue2(strval2);
   return str_uA(result, aItem, strval2, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool dur_str(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(dur, str)
 {
   return uA_str(result, aItem, strval, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool dur_yMD(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(dur, yMD)
 {
-  std::auto_ptr<Duration> dur = std::auto_ptr<Duration>(aItem->getDurationValue().toYearMonthDuration());
+  std::auto_ptr<Duration> dur = 
+  std::auto_ptr<Duration>(aItem->getDurationValue().toYearMonthDuration());
   return aFactory->createYearMonthDuration(result, dur.get());
 }
 
-inline bool dur_dTD(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(dur, dTD)
 {
-  std::auto_ptr<Duration> dur = std::auto_ptr<Duration>(aItem->getDurationValue().toDayTimeDuration());
+  std::auto_ptr<Duration> dur = 
+  std::auto_ptr<Duration>(aItem->getDurationValue().toDayTimeDuration());
   return aFactory->createDayTimeDuration(result, dur.get());
 }
 
-inline bool yMD_uA(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(yMD, uA)
 {
-  xqpStringStore_t strval2;
-  aItem->getStringValue(strval2);
+  zstring strval2;
+  aItem->getStringValue2(strval2);
   return str_uA(result, aItem, strval2, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool yMD_str(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(yMD, str)
 {
   return uA_str(result, aItem, strval, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool yMD_dur(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(yMD, dur)
 {
-  std::auto_ptr<Duration> dur = std::auto_ptr<Duration>(aItem->getYearMonthDurationValue().toDuration());
+  std::auto_ptr<Duration> dur = 
+  std::auto_ptr<Duration>(aItem->getYearMonthDurationValue().toDuration());
   return aFactory->createDuration(result, dur.get());
 }
 
-inline bool yMD_dTD(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(yMD, dTD)
 {
-  std::auto_ptr<Duration> dur = std::auto_ptr<Duration>(aItem->getYearMonthDurationValue().toDayTimeDuration());
+  std::auto_ptr<Duration> dur = 
+  std::auto_ptr<Duration>(aItem->getYearMonthDurationValue().toDayTimeDuration());
   return aFactory->createDayTimeDuration(result, dur.get());
 }
 
-inline bool dTD_uA(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(dTD, uA)
 {
-  xqpStringStore_t strval2;
-  aItem->getStringValue(strval2);
+  zstring strval2;
+  aItem->getStringValue2(strval2);
   return str_uA(result, aItem, strval2, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool dTD_str(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(dTD, str)
 {
   return uA_str(result, aItem, strval, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool dTD_dur(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(dTD, dur)
 {
-  std::auto_ptr<Duration> dur = std::auto_ptr<Duration>(aItem->getDayTimeDurationValue().toDuration());
+  std::auto_ptr<Duration> dur = 
+  std::auto_ptr<Duration>(aItem->getDayTimeDurationValue().toDuration());
   return aFactory->createDuration(result, dur.get());
 }
 
-inline bool dTD_yMD(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(dTD, yMD)
 {
-  std::auto_ptr<Duration> dur = std::auto_ptr<Duration>(aItem->getDayTimeDurationValue().toYearMonthDuration());
+  std::auto_ptr<Duration> dur = 
+  std::auto_ptr<Duration>(aItem->getDayTimeDurationValue().toYearMonthDuration());
   return aFactory->createYearMonthDuration(result, dur.get());
 }
 
-inline bool dT_uA(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(dT, uA)
 {
-  xqpStringStore_t strval2;
-  aItem->getStringValue(strval2);
+  zstring strval2;
+  aItem->getStringValue2(strval2);
   return str_uA(result, aItem, strval2, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool dT_str(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(dT, str)
 {
   return uA_str(result, aItem, strval, aFactory, nsCtx, aErrorInfo);
 }
 
 
-inline bool dT_tim(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(dT, tim)
 {
   DateTime dt;
   aItem->getDateTimeValue().createWithNewFacet(DateTime::TIME_FACET, dt);
@@ -779,7 +897,7 @@ inline bool dT_tim(store::Item_t& result, const store::Item* aItem, xqpStringSto
 }
 
 
-inline bool dT_dat(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(dT, dat)
 {
   DateTime dt;
   aItem->getDateTimeValue().createWithNewFacet(DateTime::DATE_FACET, dt);
@@ -787,7 +905,7 @@ inline bool dT_dat(store::Item_t& result, const store::Item* aItem, xqpStringSto
 }
 
 
-inline bool dT_gYM(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(dT, gYM)
 {
   DateTime dt;
   aItem->getDateTimeValue().createWithNewFacet(DateTime::GYEARMONTH_FACET, dt);
@@ -795,7 +913,7 @@ inline bool dT_gYM(store::Item_t& result, const store::Item* aItem, xqpStringSto
 }
 
 
-inline bool dT_gYr(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(dT, gYr)
 {
   DateTime dt;
   aItem->getDateTimeValue().createWithNewFacet(DateTime::GYEAR_FACET, dt);
@@ -803,7 +921,7 @@ inline bool dT_gYr(store::Item_t& result, const store::Item* aItem, xqpStringSto
 }
 
 
-inline bool dT_gMD(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(dT, gMD)
 {
   DateTime dt;
   aItem->getDateTimeValue().createWithNewFacet(DateTime::GMONTHDAY_FACET, dt);
@@ -811,7 +929,7 @@ inline bool dT_gMD(store::Item_t& result, const store::Item* aItem, xqpStringSto
 }
 
 
-inline bool dT_gDay(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(dT, gDay)
 {
   DateTime dt;
   aItem->getDateTimeValue().createWithNewFacet(DateTime::GDAY_FACET, dt);
@@ -819,7 +937,7 @@ inline bool dT_gDay(store::Item_t& result, const store::Item* aItem, xqpStringSt
 }
 
 
-inline bool dT_gMon(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(dT, gMon)
 {
   DateTime dt;
   aItem->getDateTimeValue().createWithNewFacet(DateTime::GMONTH_FACET, dt);
@@ -827,35 +945,35 @@ inline bool dT_gMon(store::Item_t& result, const store::Item* aItem, xqpStringSt
 }
 
 
-inline bool tim_uA(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(tim, uA)
 {
-  xqpStringStore_t strval2;
-  aItem->getStringValue(strval2);
+  zstring strval2;
+  aItem->getStringValue2(strval2);
   return str_uA(result, aItem, strval2, aFactory, nsCtx, aErrorInfo);
 }
 
 
-inline bool tim_str(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(tim, str)
 {
   return uA_str(result, aItem, strval, aFactory, nsCtx, aErrorInfo);
 }
 
 
-inline bool dat_uA(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(dat, uA)
 {
-  xqpStringStore_t strval2;
-  aItem->getStringValue(strval2);
+  zstring strval2;
+  aItem->getStringValue2(strval2);
   return str_uA(result, aItem, strval2, aFactory, nsCtx, aErrorInfo);
 }
 
 
-inline bool dat_str(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(dat, str)
 {
   return uA_str(result, aItem, strval, aFactory, nsCtx, aErrorInfo);
 }
 
 
-inline bool dat_dT(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(dat, dT)
 {
   DateTime dt;
   aItem->getDateValue().createWithNewFacet(DateTime::DATETIME_FACET, dt);
@@ -863,7 +981,7 @@ inline bool dat_dT(store::Item_t& result, const store::Item* aItem, xqpStringSto
 }
 
 
-inline bool dat_gYM(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(dat, gYM)
 {
   DateTime dt;
   aItem->getDateValue().createWithNewFacet(DateTime::GYEARMONTH_FACET, dt);
@@ -871,7 +989,7 @@ inline bool dat_gYM(store::Item_t& result, const store::Item* aItem, xqpStringSt
 }
 
 
-inline bool dat_gYr(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(dat, gYr)
 {
   DateTime dt;
   aItem->getDateValue().createWithNewFacet(DateTime::GYEAR_FACET, dt);
@@ -879,7 +997,7 @@ inline bool dat_gYr(store::Item_t& result, const store::Item* aItem, xqpStringSt
 }
 
 
-inline bool dat_gMD(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(dat, gMD)
 {
   DateTime dt;
   aItem->getDateValue().createWithNewFacet(DateTime::GMONTHDAY_FACET, dt);
@@ -887,7 +1005,7 @@ inline bool dat_gMD(store::Item_t& result, const store::Item* aItem, xqpStringSt
 }
 
 
-inline bool dat_gDay(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(dat, gDay)
 {
   DateTime dt;
   aItem->getDateValue().createWithNewFacet(DateTime::GDAY_FACET, dt);
@@ -895,7 +1013,7 @@ inline bool dat_gDay(store::Item_t& result, const store::Item* aItem, xqpStringS
 }
 
 
-inline bool dat_gMon(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(dat, gMon)
 {
   DateTime dt;
   aItem->getDateValue().createWithNewFacet(DateTime::GMONTH_FACET, dt);
@@ -903,90 +1021,91 @@ inline bool dat_gMon(store::Item_t& result, const store::Item* aItem, xqpStringS
 }
 
 
-inline bool gYM_uA(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(gYM, uA)
 {
-  xqpStringStore_t strval2;
-  aItem->getStringValue(strval2);
+  zstring strval2;
+  aItem->getStringValue2(strval2);
   return str_uA(result, aItem, strval2, aFactory, nsCtx, aErrorInfo);
 }
 
 
-inline bool gYM_str(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(gYM, str)
 {
   return uA_str(result, aItem, strval, aFactory, nsCtx, aErrorInfo);
 }
 
 
-inline bool gYr_uA(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(gYr, uA)
 {
-  xqpStringStore_t strval2;
-  aItem->getStringValue(strval2);
+  zstring strval2;
+  aItem->getStringValue2(strval2);
   return str_uA(result, aItem, strval2, aFactory, nsCtx, aErrorInfo);
 }
 
 
-inline bool gYr_str(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(gYr, str)
 {
   return uA_str(result, aItem, strval, aFactory, nsCtx, aErrorInfo);
 }
 
 
-inline bool gMD_uA(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(gMD, uA)
 {
-  xqpStringStore_t strval2;
-  aItem->getStringValue(strval2);
+  zstring strval2;
+  aItem->getStringValue2(strval2);
   return str_uA(result, aItem, strval2, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool gMD_str(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(gMD, str)
 {
   return uA_str(result, aItem, strval, aFactory, nsCtx, aErrorInfo);
 }
 
 
-inline bool gDay_uA(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(gDay, uA)
 {
-  xqpStringStore_t strval2;
-  aItem->getStringValue(strval2);
+  zstring strval2;
+  aItem->getStringValue2(strval2);
   return str_uA(result, aItem, strval2, aFactory, nsCtx, aErrorInfo);
 }
 
 
-inline bool gDay_str(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(gDay, str)
 {
   return uA_str(result, aItem, strval, aFactory, nsCtx, aErrorInfo);
 }
 
 
-inline bool gMon_uA(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(gMon, uA)
 {
-  xqpStringStore_t strval2;
-  aItem->getStringValue(strval2);
+  zstring strval2;
+  aItem->getStringValue2(strval2);
   return str_uA(result, aItem, strval2, aFactory, nsCtx, aErrorInfo);
 }
 
 
-inline bool gMon_str(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(gMon, str)
 {
   return uA_str(result, aItem, strval, aFactory, nsCtx, aErrorInfo);
 }
 
 
-inline bool bool_uA(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(bool, uA)
 {
-  xqpStringStore_t strval2;
-  aItem->getStringValue(strval2);
+  zstring strval2;
+  aItem->getStringValue2(strval2);
   return str_uA(result, aItem, strval2, aFactory, nsCtx, aErrorInfo);
 }
 
 
-inline bool bool_str(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(bool, str)
 {
   return uA_str(result, aItem, strval, aFactory, nsCtx, aErrorInfo);
 }
 
 
-inline bool bool_flt(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(bool, flt)
 {
   if (aItem->getBooleanValue())
     return aFactory->createFloat(result, xqp_float::parseInt(1));
@@ -995,7 +1114,7 @@ inline bool bool_flt(store::Item_t& result, const store::Item* aItem, xqpStringS
 }
 
 
-inline bool bool_dbl(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+T1_TO_T2(bool, dbl)
 {
   if (aItem->getBooleanValue())
     return aFactory->createDouble(result, xqp_double::parseInt(1));
@@ -1003,7 +1122,8 @@ inline bool bool_dbl(store::Item_t& result, const store::Item* aItem, xqpStringS
     return aFactory->createDouble(result, xqp_double::zero());
 }
 
-inline bool bool_dec(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(bool, dec)
 {
   if (aItem->getBooleanValue())
     return aFactory->createDecimal(result, xqp_decimal::parseInt(1));
@@ -1011,7 +1131,8 @@ inline bool bool_dec(store::Item_t& result, const store::Item* aItem, xqpStringS
     return aFactory->createDecimal(result, xqp_decimal::zero());
 }
 
-inline bool bool_int(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(bool, int)
 {
   if (aItem->getBooleanValue())
     return aFactory->createInteger(result, xqp_integer::parseInt(1));
@@ -1019,72 +1140,85 @@ inline bool bool_int(store::Item_t& result, const store::Item* aItem, xqpStringS
     return aFactory->createInteger(result, xqp_integer::zero());
 }
 
-inline bool b64_uA(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(b64, uA)
 {
-  xqpStringStore_t strval2;
-  aItem->getStringValue(strval2);
+  zstring strval2;
+  aItem->getStringValue2(strval2);
   return str_uA(result, aItem, strval2, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool b64_str(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(b64, str)
 {
   return uA_str(result, aItem, strval, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool b64_hxB(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(b64, hxB)
 {
   return aFactory->createHexBinary(result, xqp_hexBinary(aItem->getBase64BinaryValue()));
 }
 
-inline bool hxB_uA(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(hxB, uA)
 {
-  xqpStringStore_t strval2;
-  aItem->getStringValue(strval2);
+  zstring strval2;
+  aItem->getStringValue2(strval2);
   return str_uA(result, aItem, strval2, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool hxB_str(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(hxB, str)
 {
   return uA_str(result, aItem, strval, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool hxB_b64(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(hxB, b64)
 {
-  return aFactory->createBase64Binary(result, xqp_base64Binary(aItem->getHexBinaryValue()));
+  return aFactory->createBase64Binary(result,
+                                      xqp_base64Binary(aItem->getHexBinaryValue()));
 }
 
-inline bool aURI_uA(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(aURI, uA)
 {
-  xqpStringStore_t strval2;
-  aItem->getStringValue(strval2);
+  zstring strval2;
+  aItem->getStringValue2(strval2);
   return str_uA(result, aItem, strval2, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool aURI_str(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(aURI, str)
 {
   return uA_str(result, aItem, strval, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool QN_uA(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(QN, uA)
 {
-  xqpStringStore_t strval2;
-  aItem->getStringValue(strval2);
+  zstring strval2;
+  aItem->getStringValue2(strval2);
   return str_uA(result, aItem, strval2, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool QN_str(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(QN, str)
 {
   return uA_str(result, aItem, strval, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool NOT_uA(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(NOT, uA)
 {
-  xqpStringStore_t strval2;
-  aItem->getStringValue(strval2);
+  zstring strval2;
+  aItem->getStringValue2(strval2);
   return str_uA(result, aItem, strval2, aFactory, nsCtx, aErrorInfo);
 }
 
-inline bool NOT_str(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
+
+T1_TO_T2(NOT, str)
 {
   return uA_str(result, aItem, strval, aFactory, nsCtx, aErrorInfo);
 }
@@ -1101,57 +1235,78 @@ bool str_down(
     store::ItemFactory* aFactory,
     const ErrorInfo& aErrorInfo)
 {
-  xqpStringStore_t lString;
-  aItem->getStringValue(lString);
+  zstring strval;
+  aItem->getStringValue2(strval);
 
   switch(aTargetAtomicType)
   {
   case TypeConstants::XS_NORMALIZED_STRING:
-    if (GenericCast::instance()->castableToNormalizedString(lString))
-      return aFactory->createNormalizedString(result, lString);
+  {
+    if (GenericCast::instance()->castableToNormalizedString(strval))
+      return aFactory->createNormalizedString(result, strval);
     break;
+  }
   case TypeConstants::XS_TOKEN:
-    if (GenericCast::instance()->castableToToken(lString))
-      return aFactory->createToken(result, lString);
+  {
+    if (GenericCast::instance()->castableToToken(strval))
+      return aFactory->createToken(result, strval);
     break;
+  }
   case TypeConstants::XS_LANGUAGE:
-    if (GenericCast::instance()->castableToLanguage(lString))
-      return aFactory->createLanguage(result, lString);
+  {
+    if (GenericCast::instance()->castableToLanguage(strval))
+      return aFactory->createLanguage(result, strval);
     break;
+  }
   case TypeConstants::XS_NMTOKEN:
+  {
+    ascii::trim_whitespace(strval);
+
+    if (GenericCast::instance()->castableToNMToken(strval))
     {
-      xqpStringStore_t lTrimStr = doTrim(lString);
-      if (GenericCast::instance()->castableToNMToken(lTrimStr))
-        return aFactory->createNMTOKEN(result, lTrimStr);
-      break;
+      return aFactory->createNMTOKEN(result, strval);
     }
+    break;
+  }
   case TypeConstants::XS_NAME:
   {
-    xqpStringStore_t lTrimStr = doTrim(lString);
-    if (GenericCast::instance()->castableToName(lTrimStr))
-      return aFactory->createName(result, lTrimStr);
+    ascii::trim_whitespace(strval);
+
+    if (GenericCast::instance()->castableToName(strval))
+    {
+      return aFactory->createName(result, strval);
+    }
     break;
   }
   case TypeConstants::XS_NCNAME:
   {
-    xqpStringStore_t lNormStr = lString->normalizeSpace();
-    lNormStr = doTrim(lNormStr);
-    if (GenericCast::instance()->castableToNCName(lNormStr))
-      return aFactory->createNCName(result, lNormStr);
+    ascii::normalize_whitespace(strval);
+    ascii::trim_whitespace(strval);
+
+    if (GenericCast::instance()->castableToNCName(strval))
+    {
+      return aFactory->createNCName(result, strval);
+    }
     break;
   }
   case TypeConstants::XS_ID:
-    if (GenericCast::instance()->castableToNCName(lString))
-      return aFactory->createID(result, lString);
+  {
+    if (GenericCast::instance()->castableToNCName(strval))
+      return aFactory->createID(result, strval);
     break;
+  }
   case TypeConstants::XS_IDREF:
-    if (GenericCast::instance()->castableToNCName(lString))
-      return aFactory->createIDREF(result, lString);
+  {
+    if (GenericCast::instance()->castableToNCName(strval))
+      return aFactory->createIDREF(result, strval);
     break;
+  }
   case TypeConstants::XS_ENTITY:
-    if (GenericCast::instance()->castableToNCName(lString))
-      return aFactory->createENTITY(result, lString);
+  {
+    if (GenericCast::instance()->castableToNCName(strval))
+      return aFactory->createENTITY(result, strval);
     break;
+  }
   default:
     ZORBA_ASSERT(false);
   }
@@ -1191,36 +1346,36 @@ bool int_down(
   case TypeConstants::XS_LONG:
   {
     xqp_long n;
-    xqpStringStore_t lString;
-    aItem->getStringValue(lString);
-    if (NumConversions::strToLong(lString->c_str(), n))
+    zstring lString;
+    aItem->getStringValue2(lString);
+    if (NumConversions::strToLong(lString.c_str(), n))
       return aFactory->createLong(result, n);
     break;
   }
   case TypeConstants::XS_INT:
   {
     xqp_int n;
-    xqpStringStore_t lString;
-    aItem->getStringValue(lString);
-    if (NumConversions::strToInt(lString->c_str(), n))
+    zstring lString;
+    aItem->getStringValue2(lString);
+    if (NumConversions::strToInt(lString.c_str(), n))
       return aFactory->createInt(result, n);
     break;
   }
   case TypeConstants::XS_SHORT:
   {
     xqp_short n;
-    xqpStringStore_t lString;
-    aItem->getStringValue(lString);
-    if (NumConversions::strToShort(lString->c_str(), n))
+    zstring lString;
+    aItem->getStringValue2(lString);
+    if (NumConversions::strToShort(lString.c_str(), n))
       return aFactory->createShort(result, n);
     break;
   }
   case TypeConstants::XS_BYTE:
   {
     xqp_byte n;
-    xqpStringStore_t lString;
-    aItem->getStringValue(lString);
-    if (NumConversions::strToByte(lString->c_str(), n))
+    zstring lString;
+    aItem->getStringValue2(lString);
+    if (NumConversions::strToByte(lString.c_str(), n))
       return aFactory->createByte(result, n);
     break;
   }
@@ -1234,36 +1389,36 @@ bool int_down(
   case TypeConstants::XS_UNSIGNED_LONG:
   {
     xqp_ulong n;
-    xqpStringStore_t lString;
-    aItem->getStringValue(lString);
-    if (NumConversions::strToULong(lString->c_str(), n))
+    zstring lString;
+    aItem->getStringValue2(lString);
+    if (NumConversions::strToULong(lString.c_str(), n))
       return aFactory->createUnsignedLong(result, n);
     break;
   }
   case TypeConstants::XS_UNSIGNED_INT:
   {
     xqp_uint n;
-    xqpStringStore_t lString;
-    aItem->getStringValue(lString);
-    if (NumConversions::strToUInt(lString->c_str(), n))
+    zstring lString;
+    aItem->getStringValue2(lString);
+    if (NumConversions::strToUInt(lString.c_str(), n))
       return aFactory->createUnsignedInt(result, n);
     break;
   }
   case TypeConstants::XS_UNSIGNED_SHORT:
   {
     xqp_ushort n;
-    xqpStringStore_t lString;
-    aItem->getStringValue(lString);
-    if (NumConversions::strToUShort(lString->c_str(), n))
+    zstring lString;
+    aItem->getStringValue2(lString);
+    if (NumConversions::strToUShort(lString.c_str(), n))
       return aFactory->createUnsignedShort(result, n);
     break;
   }
   case TypeConstants::XS_UNSIGNED_BYTE:
   {
     xqp_ubyte n;
-    xqpStringStore_t lString;
-    aItem->getStringValue(lString);
-    if (NumConversions::strToUByte(lString->c_str(), n))
+    zstring lString;
+    aItem->getStringValue2(lString);
+    if (NumConversions::strToUByte(lString.c_str(), n))
       return aFactory->createUnsignedByte(result, n);
     break;
   }
@@ -1450,7 +1605,7 @@ GenericCast* GenericCast::instance()
 ********************************************************************************/
 bool GenericCast::castToAtomic(
     store::Item_t& result,
-    xqpStringStore_t& aStr,
+    zstring& str,
     const XQType* aTargetType,
     const TypeManager* tm,
     namespace_context* aNsCtx)
@@ -1458,9 +1613,9 @@ bool GenericCast::castToAtomic(
   RootTypeManager& rtm = GENV_TYPESYSTEM;
   store::ItemFactory* lFactory = GENV_ITEMFACTORY;
 
-  const XQType* lSourceType = rtm.STRING_TYPE_ONE.getp();
+  const XQType* sourceType = rtm.STRING_TYPE_ONE.getp();
 
-  ErrorInfo lErrorInfo = {&*lSourceType, aTargetType};
+  ErrorInfo lErrorInfo = {&*sourceType, aTargetType};
 
   if (!TypeOps::is_atomic(tm, *aTargetType))
     throwError(XPST0051, lErrorInfo);
@@ -1469,7 +1624,10 @@ bool GenericCast::castToAtomic(
   if (aTargetType->type_kind() == XQType::USER_DEFINED_KIND)
   {
     store::Item_t baseItem;
-    bool success = tm->getSchema()->parseUserAtomicTypes(aStr,
+
+    xqpStringStore_t tmp = new xqpStringStore(str.str());
+
+    bool success = tm->getSchema()->parseUserAtomicTypes(tmp,
                                                          aTargetType,
                                                          baseItem);
     if (success)
@@ -1486,39 +1644,39 @@ bool GenericCast::castToAtomic(
 #endif
 
   store::Item_t lItem;
-  ATOMIC_CODE_T lSourceTypeCode = TypeConstants::XS_STRING;
-  ATOMIC_CODE_T lTargetTypeCode = TypeOps::get_atomic_type_code(*aTargetType);
+  ATOMIC_CODE_T sourceTypeCode = TypeConstants::XS_STRING;
+  ATOMIC_CODE_T targetTypeCode = TypeOps::get_atomic_type_code(*aTargetType);
   bool valid = true;
 
-  if (theMapping[lSourceTypeCode] == theMapping[lTargetTypeCode])
+  if (theMapping[sourceTypeCode] == theMapping[targetTypeCode])
   {
-    lFactory->createString(result, aStr);
+    lFactory->createString(result, str);
   }
   else
   {
-    CastFunc lCastFunc = theCastMatrix[theMapping[lSourceTypeCode]]
-                                    [theMapping[lTargetTypeCode]];
+    CastFunc lCastFunc = theCastMatrix[theMapping[sourceTypeCode]]
+                                      [theMapping[targetTypeCode]];
     if (lCastFunc == 0)
       throwError(XPTY0004, lErrorInfo);
 
     valid = (*lCastFunc)(result,
                          lItem,
-                         aStr,
+                         str,
                          lFactory,
                          aNsCtx,
                          lErrorInfo);
   }
 
-  DownCastFunc lDownCastFunc = theDownCastMatrix[theMapping[lTargetTypeCode]];
+  DownCastFunc lDownCastFunc = theDownCastMatrix[theMapping[targetTypeCode]];
 
   if (lDownCastFunc != 0 &&
-      lTargetTypeCode != TypeConstants::XS_STRING &&
-      lTargetTypeCode != TypeConstants::XS_INTEGER)
+      targetTypeCode != TypeConstants::XS_STRING &&
+      targetTypeCode != TypeConstants::XS_INTEGER)
   {
     valid = (*lDownCastFunc)(result,
                              &*result,
                              rtm,
-                             lTargetTypeCode,
+                             targetTypeCode,
                              lFactory,
                              lErrorInfo);
   }
@@ -1569,7 +1727,7 @@ bool GenericCast::castToAtomic(
   }
 #endif // ZORBA_NO_XMLSCHEMA
 
-  xqpStringStore_t lSourceString;
+  zstring sourceString;
   ATOMIC_CODE_T lSourceTypeCode;
   ATOMIC_CODE_T lTargetTypeCode = TypeOps::get_atomic_type_code(*aTargetType);
 
@@ -1586,7 +1744,9 @@ bool GenericCast::castToAtomic(
   }
 
   if (theMapping[lSourceTypeCode] == theMapping[TypeConstants::XS_STRING])
-    aItem->getStringValue(lSourceString);
+  {
+    aItem->getStringValue2(sourceString);
+  }
 
   if (lSourceTypeCode == TypeConstants::XS_NOTATION ||
       lTargetTypeCode == TypeConstants::XS_NOTATION)
@@ -1609,7 +1769,7 @@ bool GenericCast::castToAtomic(
 
   bool valid = (*lCastFunc)(result,
                             aItem,
-                            lSourceString,
+                            sourceString,
                             lFactory,
                             aNCtx,
                             lErrorInfo);
@@ -1666,11 +1826,13 @@ void castToUserDefinedType(
   {
   case UserDefinedXQType::ATOMIC_TYPE:
   {
-    xqpStringStore_t strValue;
-    aItem->getStringValue(strValue);
+    zstring strValue1;
+    aItem->getStringValue2(strValue1);
+
+    xqpStringStore_t strValue = new xqpStringStore(strValue1.c_str());
+
     store::Item_t baseItem;
-    bool hasResult = schema->parseUserAtomicTypes(strValue, aTargetType,
-                                                  baseItem);
+    bool hasResult = schema->parseUserAtomicTypes(strValue, aTargetType, baseItem);
 
     if ( hasResult )
     {
@@ -1697,14 +1859,16 @@ void castToUserDefinedType(
 
 ********************************************************************************/
 bool GenericCast::castToSimple(
-    xqpStringStore_t& aStr,
+    zstring& str,
     const xqtref_t& aTargetType,
     std::vector<store::Item_t>& aResultList,
     const TypeManager* tm)
 {
   //std::cout << "-castToSimple: " << aStr.c_str() << " tgtType: " << aTargetType->get_qname()->getLocalName()->c_str() << " @ " << aTargetType->get_qname()->getNamespace()->c_str() << "\n";
 
-  return tm->getSchema()->parseUserSimpleTypes(aStr, aTargetType, aResultList);
+  xqpStringStore_t tmp = new xqpStringStore(str.str());
+
+  return tm->getSchema()->parseUserSimpleTypes(tmp, aTargetType, aResultList);
 }
 
 
@@ -1744,40 +1908,48 @@ bool GenericCast::castToQName(
 
   ErrorInfo errorInfo = { sourceType.getp(), rtm.QNAME_TYPE_ONE.getp() };
 
-  xqpStringStore_t strval = doTrim(item->getStringValue());
+  zstring strval;
+  item->getStringValue2(strval);
+  ascii::trim_whitespace(strval);
 
-  int32_t idx = strval->bytePositionOf(":");
-  int32_t lidx = strval->byteLastPositionOf(":", 1);
+  ulong idx = strval.find(":");
+  ulong lidx = strval.rfind(":", strval.size(), 1);
   if (idx != lidx)
     throwError(FORG0001, errorInfo);
 
-  xqpStringStore_t nsuri;
-  xqpStringStore_t prefix;
+  zstring prefix;
+  zstring nsuri;
+  zstring local;
 
-  if (idx < 0)
+  if (idx == zstring::npos)
   {
-    prefix = new xqpStringStore("");
     if (nsCtx && !isAttrName)
+    {
       nsCtx->findBinding(prefix, nsuri);
+    }
+
+    local = strval;
   }
   else
   {
-    prefix = strval->byteSubstr(0, idx);
+    prefix = strval.substr(0, idx);
 
     if (!GenericCast::instance()->castableToNCName(prefix))
       throwError(FORG0001, errorInfo);
 
-    if (nsCtx && !nsCtx->findBinding(prefix, nsuri))
-      throwError(FONS0004, errorInfo);
+    if (nsCtx)
+    {
+      if (!nsCtx->findBinding(prefix, nsuri))
+      {
+        throwError(FONS0004, errorInfo);
+      }
+    }
+
+    local = strval.substr(idx + 1);
   }
 
-  xqpStringStore_t local = strval->substr(idx + 1);
-
-  if (!GenericCast::instance()->castableToNCName(local))
+  if (!GenericCast::instance()->castableToNCName(local.c_str()))
     throwError(FORG0001, errorInfo);
-
-  if (nsuri == NULL)
-    nsuri = new xqpStringStore("");
 
   return GENV_ITEMFACTORY->createQName(result, nsuri, prefix, local);
 }
@@ -1790,22 +1962,24 @@ bool GenericCast::castToQName(
   NameChar			  ::= Letter | Digit | '.' | '-' | '_' | ':' | CombiningChar |
                       Extender
 ********************************************************************************/
-bool GenericCast::castableToNCName(const xqpStringStore* str) const
+bool GenericCast::castableToNCName(const zstring& str)
 {
-	uint32_t	cp;
+	std::vector<uint32_t> cps;
 
-	std::vector<uint32_t> cps = str->getCodepoints();
-	std::vector<uint32_t>::size_type	i, cps_size = cps.size();
+  utf8::to_codepoints(str, &cps);
 
-	if(cps_size == 0)
+	std::vector<uint32_t>::size_type i;
+  std::vector<uint32_t>::size_type cps_size = cps.size();
+
+	if (cps_size == 0)
 		return false;
 
-	cp = cps[0];
+	uint32_t cp = cps[0];
 
 	if(!XQCharType::isLetter(cp) && (cp != '_'))
 		return false;
 
-	for(i=1;i<cps_size;i++)
+	for (i = 1; i < cps_size; i++)
 	{
 		cp = cps[i];
 
@@ -1819,20 +1993,24 @@ bool GenericCast::castableToNCName(const xqpStringStore* str) const
 }
 
 
-bool GenericCast::castableToNormalizedString(const xqpStringStore *str) const
+/*******************************************************************************
+
+********************************************************************************/
+bool GenericCast::castableToNormalizedString(const zstring& str)
 {
-  uint32_t cp;
-  std::vector<uint32_t> cps = str->getCodepoints();
-  std::vector<uint32_t>::size_type i, sz = cps.size();
+  char ch;
+  zstring::size_type  sz = str.size();
 
-  if (sz == 0) {
+  if (sz == 0)
     return true;
-  }
 
-  for(i = 0; i < sz; ++i) {
-    cp = cps[i];
-    /* do not contain the carriage return (#xD), line feed (#xA) nor tab (#x9) characters */
-    if (cp == '\r' || cp == '\n' || cp == '\t') {
+  for (zstring::size_type i = 0; i < sz; ++i) 
+  {
+    ch = str[i];
+    // do not contain the carriage return (#xD), line feed (#xA) nor tab (#x9)
+    // characters
+    if (ch == '\r' || ch == '\n' || ch == '\t') 
+    {
       return false;
     }
   }
@@ -1841,34 +2019,44 @@ bool GenericCast::castableToNormalizedString(const xqpStringStore *str) const
 }
 
 
-bool GenericCast::castableToToken(const xqpStringStore *str) const
-{
-  uint32_t cp;
-  std::vector<uint32_t> cps = str->getCodepoints();
-  std::vector<uint32_t>::size_type i, sz = cps.size();
+/*******************************************************************************
 
-  if (sz == 0) {
+********************************************************************************/
+bool GenericCast::castableToToken(const zstring& str)
+{
+  char ch;
+  zstring::size_type sz = str.size();
+
+  if (sz == 0)
     return true;
-  }
 
   bool spaceSeen = false;
-  for(i = 0; i < sz; ++i) {
-    cp = cps[i];
-    /* do not contain the carriage return (#xD), line feed (#xA) nor tab (#x9) characters */
-    if (cp == '\r' || cp == '\n' || cp == '\t') {
+
+  for (zstring::size_type i = 0; i < sz; ++i) 
+  {
+    ch = str[i];
+
+    // do not contain the carriage return (#xD), line feed (#xA) nor tab (#x9)
+    // characters */
+    if (ch == '\r' || ch == '\n' || ch == '\t') 
+    {
       return false;
     }
-    if (cp == ' ') {
+
+    if (ch == ' ') 
+    {
       /* two consecutive spaces not allowed. */
-      if (spaceSeen) {
+      if (spaceSeen)
         return false;
-      }
+
       /* no leading or trailing spaces */
-      if (i == 0 || i == sz - 1) {
+      if (i == 0 || i == sz - 1)
         return false;
-      }
+
       spaceSeen = true;
-    } else {
+    }
+    else 
+    {
       spaceSeen = false;
     }
   }
@@ -1877,61 +2065,88 @@ bool GenericCast::castableToToken(const xqpStringStore *str) const
 }
 
 
-bool GenericCast::castableToLanguage(const xqpStringStore *str) const
-{
-  uint32_t cp;
-  std::vector<uint32_t> cps = str->getCodepoints();
-  std::vector<uint32_t>::size_type i, sz = cps.size();
+/*******************************************************************************
 
-  if (sz == 0) {
+********************************************************************************/
+bool GenericCast::castableToLanguage(const zstring& str)
+{
+  char ch;
+  zstring::size_type i = 0;
+  zstring::size_type sz = str.size();
+
+  if (sz == 0)
     return false;
-  }
+ 
   /* automation for [a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})* */
   bool firstBlock = true;
   i = 0;
   uint32_t blkIdx = 0;
-  while(i < sz) {
-    cp = cps[i];
-    if (cp == '-') {
-      if (blkIdx == 0) {
+
+  while (i < sz) 
+  {
+    ch = str[i];
+
+    if (ch == '-') 
+    {
+      if (blkIdx == 0) 
+      {
         return false;
       }
+
       blkIdx = 0;
       firstBlock = false;
       ++i;
       continue;
     }
-    if (blkIdx >= 8) {
+
+    if (blkIdx >= 8) 
+    {
       return false;
     }
-    if (!((cp >= 'A' && cp <= 'Z') || (cp >= 'a' && cp <= 'z'))) {
-      if (firstBlock) {
+
+    if (!((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z'))) 
+    {
+      if (firstBlock) 
+      {
         return false;
       }
-      if (!(cp >= '0' && cp <= '9')) {
+      if (!(ch >= '0' && ch <= '9')) 
+      {
         return false;
       }
     }
+
     ++i;
     ++blkIdx;
   }
-  if (blkIdx == 0) {
+
+  if (blkIdx == 0) 
+  {
     return false;
   }
+
   return true;
 }
 
-bool GenericCast::castableToNMToken(const xqpStringStore *str)
+
+/*******************************************************************************
+
+********************************************************************************/
+bool GenericCast::castableToNMToken(const zstring& str)
 {
   uint32_t cp;
-  std::vector<uint32_t> cps = str->getCodepoints();
-  std::vector<uint32_t>::size_type i, sz = cps.size();
+  std::vector<uint32_t> cps;
 
-  if (sz == 0) {
+  utf8::to_codepoints(str, &cps);
+  
+  std::vector<uint32_t>::size_type i;
+  std::vector<uint32_t>::size_type sz = cps.size();
+
+  if (sz == 0)
     return false;
-  }
 
-  for(i = 0; i < sz; ++i) {
+  for (i = 0; i < sz; ++i)
+  {
     cp = cps[i];
     if (!(XQCharType::isLetter(cp)
       || XQCharType::isDigit(cp)
@@ -1940,7 +2155,8 @@ bool GenericCast::castableToNMToken(const xqpStringStore *str)
       || cp == '.'
       || cp == '-'
       || cp == '_'
-      || cp == ':')) {
+      || cp == ':'))
+    {
       return false;
     }
   }
@@ -1948,16 +2164,22 @@ bool GenericCast::castableToNMToken(const xqpStringStore *str)
   return true;
 }
 
-bool GenericCast::castableToName(const xqpStringStore *str)
+
+/*******************************************************************************
+
+********************************************************************************/
+bool GenericCast::castableToName(const zstring& str)
 {
   uint32_t cp;
-  std::vector<uint32_t> cps = str->getCodepoints();
-  std::vector<uint32_t>::size_type i, sz = cps.size();
+  std::vector<uint32_t> cps;
+
+  utf8::to_codepoints(str, &cps);
+
+  std::vector<uint32_t>::size_type i;
+  std::vector<uint32_t>::size_type sz = cps.size();
 
   if (sz == 0)
-  {
     return false;
-  }
 
   for (i = 0; i < sz; ++i)
   {
@@ -1983,6 +2205,7 @@ bool GenericCast::castableToName(const xqpStringStore *str)
   return true;
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -1997,57 +2220,103 @@ bool GenericCast::isCastable(
     const UserDefinedXQType* udt = static_cast<const UserDefinedXQType*>(aTargetType);
     if (!udt->isComplex())
     {
+      xqpStringStore_t tmp = new xqpStringStore(aItem->getStringValue().str());
+
       return tm->getSchema()->
-             isCastableUserSimpleTypes(aItem->getStringValue(),
+             isCastableUserSimpleTypes(tmp,
                                        udt->getBaseType().getp());
     }
   }
 #endif // ZORBA_NO_XMLSCHEMA
 
-    xqtref_t lSourceType = tm->create_named_type(aItem->getType(),
-                                                TypeConstants::QUANT_ONE,
-                                                QueryLoc::null,
-                                                XPTY0004);
+  xqtref_t lSourceType = tm->create_named_type(aItem->getType(),
+                                               TypeConstants::QUANT_ONE,
+                                               QueryLoc::null,
+                                               XPTY0004);
 
-    TypeConstants::castable_t lIsCastable = TypeOps::castability(*lSourceType,
-                                                                 *aTargetType);
-    switch(lIsCastable)
-    {
-    case TypeConstants::NOT_CASTABLE:
-      return false;
-      break;
-    case TypeConstants::CASTABLE:
-      return true;
-      break;
-    case TypeConstants::MAYBE_CASTABLE:
-    {
-      try
-      {
-        store::Item_t temp = aItem;
-        return castToAtomic(temp, temp, aTargetType, tm);
-      }
-      catch (error::ZorbaError&)
-      {
-        return false;
-      }
-    }
-    break;
-    }
-
+  TypeConstants::castable_t lIsCastable = TypeOps::castability(*lSourceType,
+                                                               *aTargetType);
+  switch(lIsCastable)
+  {
+  case TypeConstants::NOT_CASTABLE:
     return false;
+    break;
+  case TypeConstants::CASTABLE:
+    return true;
+    break;
+  case TypeConstants::MAYBE_CASTABLE:
+  {
+    try
+    {
+      store::Item_t temp = aItem;
+      return castToAtomic(temp, temp, aTargetType, tm);
+    }
+    catch (error::ZorbaError&)
+    {
+      return false;
+    }
+  }
+  break;
+  }
+  
+  return false;
 }
+
 
 /*******************************************************************************
 
 ********************************************************************************/
 bool GenericCast::isCastable(
-    xqpStringStore_t& aStr,
+    const zstring& str,
     const XQType* aTargetType,
     const TypeManager* tm)
 {
-  store::Item_t lItem;
-  GENV_ITEMFACTORY->createString(lItem, aStr);
-  return isCastable(lItem, aTargetType, tm);
+#ifndef ZORBA_NO_XMLSCHEMA
+  if (aTargetType->type_kind() == XQType::USER_DEFINED_KIND )
+  {
+    const UserDefinedXQType* udt = static_cast<const UserDefinedXQType*>(aTargetType);
+    if (!udt->isComplex())
+    {
+      xqpStringStore_t tmp = new xqpStringStore(str.str());
+
+      return tm->getSchema()->
+             isCastableUserSimpleTypes(tmp,
+                                       udt->getBaseType().getp());
+    }
+  }
+#endif // ZORBA_NO_XMLSCHEMA
+
+  RootTypeManager& rtm = GENV_TYPESYSTEM;
+
+  xqtref_t lSourceType = rtm.STRING_TYPE_ONE;
+
+  TypeConstants::castable_t lIsCastable = TypeOps::castability(*lSourceType,
+                                                               *aTargetType);
+  switch(lIsCastable)
+  {
+  case TypeConstants::NOT_CASTABLE:
+    return false;
+    break;
+  case TypeConstants::CASTABLE:
+    return true;
+    break;
+  case TypeConstants::MAYBE_CASTABLE:
+  {
+    try
+    {
+      store::Item_t dummy;
+      zstring copyStr = str;
+      return castToAtomic(dummy, copyStr, aTargetType, tm, NULL);
+    }
+    catch (error::ZorbaError&)
+    {
+      return false;
+    }
+  }
+  break;
+  }
+  
+  return false;
 }
 
 

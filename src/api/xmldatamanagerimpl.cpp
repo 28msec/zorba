@@ -100,8 +100,9 @@ Item XmlDataManagerImpl::parseDocument(std::istream& aStream)
   ErrorHandler* aErrorHandler = 0;
   ZORBA_DM_TRY
   {
-    xqpStringStore_t lTmp(new xqpStringStore(""));
-    return &*theStore->loadDocument(lTmp, lTmp, aStream, false);
+    store::LoadProperties loadProperties;
+    loadProperties.setStoreDocument(false);
+    return &*theStore->loadDocument("", "", aStream, loadProperties);
   }
   ZORBA_DM_CATCH
   return Item();
@@ -138,11 +139,11 @@ Item XmlDataManagerImpl::loadDocument(
 
   ZORBA_DM_TRY
   {
-    xqpStringStore* lString = Unmarshaller::getInternalString(aLocalFileUri);
+    zstring fileUri = Unmarshaller::getInternalString(aLocalFileUri);
 
-    std::ifstream lFileIn(lString->c_str());
+    std::ifstream fileStream(fileUri.c_str());
 
-    return loadDocument(aLocalFileUri, lFileIn, aLoadProperties, aReplaceDoc);
+    return loadDocument(aLocalFileUri, fileStream, aLoadProperties, aReplaceDoc);
   }
   ZORBA_DM_CATCH
   return Item();
@@ -161,20 +162,20 @@ Item XmlDataManagerImpl::loadDocument(
 
   ZORBA_DM_TRY
   {
-    xqpStringStore_t lString = Unmarshaller::getInternalString(uri);
-
-    if (aReplaceDoc)
-      theStore->deleteDocument(lString);
-
     if ( ! stream.good() )
     {
       ZORBA_ERROR_DESC(API0015_CANNOT_OPEN_FILE, "cannot read from stream");
     }
 
+    zstring docUri = Unmarshaller::getInternalString(uri);
+
+    if (aReplaceDoc)
+      theStore->deleteDocument(docUri);
+
     store::LoadProperties loadProps;
     loadProps.setEnableDtd( aLoadProperties.getEnableDtd() );
 
-    return &*theStore->loadDocument(lString, lString, stream, loadProps);
+    return &*theStore->loadDocument(docUri, docUri, stream, loadProps);
   }
   ZORBA_DM_CATCH
   return Item();
@@ -191,17 +192,17 @@ Item XmlDataManagerImpl::loadDocumentFromUri(
 
   ZORBA_DM_TRY
   {
-    InternalDocumentURIResolver   *uri_resolver;
+    InternalDocumentURIResolver* uri_resolver;
     uri_resolver = GENV_ROOT_STATIC_CONTEXT.get_document_uri_resolver();
 
-    xqpStringStore_t str_uri = Unmarshaller::getInternalString(aUri);
+    zstring docUri = Unmarshaller::getInternalString(aUri);
 
-    zorba::store::ItemFactory    *item_factory = GENV_ITEMFACTORY;
-    store::Item_t   uriItem;
+    zorba::store::ItemFactory* item_factory = GENV_ITEMFACTORY;
+    store::Item_t uriItem;
 
-    item_factory->createAnyURI(uriItem, str_uri);
+    item_factory->createAnyURI(uriItem, docUri);
 
-    store::Item_t   docItem;
+    store::Item_t docItem;
     docItem = uri_resolver->resolve(uriItem,
                                     &GENV_ROOT_STATIC_CONTEXT,
                                     true,
@@ -230,8 +231,8 @@ Item XmlDataManagerImpl::getDocument(const String& uri, ErrorHandler* aErrorHand
 
   ZORBA_DM_TRY
   {
-    xqpStringStore_t lUri = Unmarshaller::getInternalString(uri);
-    return &*theStore->getDocument(lUri);
+    zstring docUri = Unmarshaller::getInternalString(uri);
+    return &*theStore->getDocument(docUri);
   }
   ZORBA_DM_CATCH
   return Item();
@@ -250,8 +251,8 @@ bool XmlDataManagerImpl::deleteDocument(const String& uri, ErrorHandler* aErrorH
 
   ZORBA_DM_TRY
   {
-    xqpStringStore_t lUri = Unmarshaller::getInternalString(uri);
-    theStore->deleteDocument(lUri);
+    zstring docUri = Unmarshaller::getInternalString(uri);
+    theStore->deleteDocument(docUri);
     return true;
   }
   ZORBA_DM_CATCH
@@ -287,8 +288,8 @@ Collection_t XmlDataManagerImpl::createCollection(
 
   ZORBA_DM_TRY
   {
-    xqpStringStore_t lUri = Unmarshaller::getInternalString(uri);
-    return Collection_t(new CollectionImpl(theStore->createUriCollection(lUri),
+    zstring colUri = Unmarshaller::getInternalString(uri);
+    return Collection_t(new CollectionImpl(theStore->createUriCollection(colUri),
                                            aErrorHandler));
   }
   ZORBA_DM_CATCH
@@ -310,8 +311,8 @@ Collection_t XmlDataManagerImpl::getCollection(
 
   ZORBA_DM_TRY
   {
-    xqpStringStore* lUri = Unmarshaller::getInternalString(uri);
-    store::Collection_t lColl = theStore->getUriCollection(lUri);
+    zstring colUri = Unmarshaller::getInternalString(uri);
+    store::Collection_t lColl = theStore->getUriCollection(colUri);
     if (lColl)
       return Collection_t(new CollectionImpl(lColl, aErrorHandler));
     else
@@ -336,8 +337,8 @@ bool XmlDataManagerImpl::deleteCollection(
 
   ZORBA_DM_TRY
   {
-    xqpStringStore* lUri = Unmarshaller::getInternalString(uri);
-    theStore->deleteUriCollection(lUri);
+    zstring colUri = Unmarshaller::getInternalString(uri);
+    theStore->deleteUriCollection(colUri);
     return true;
   }
   ZORBA_DM_CATCH

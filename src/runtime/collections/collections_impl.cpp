@@ -109,9 +109,9 @@ void FnCollectionIteratorState::reset(PlanState& planState)
 
 bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t       lURI, resolvedURIItem;
+  store::Item_t lURI, resolvedURIItem;
   store::Collection_t coll;
-  xqpStringStore_t    resolvedURIString, tt;
+  zstring resolvedURIString;
 
   FnCollectionIteratorState *state;
   DEFAULT_STACK_INIT(FnCollectionIteratorState, state, planState);
@@ -121,8 +121,7 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
   {
     try 
     {
-      tt = lURI->getStringValue();
-      resolvedURIString = theSctx->resolve_relative_uri(lURI->getStringValueP());
+      resolvedURIString = theSctx->resolve_relative_uri(lURI->getStringValue());
 
       GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
     }
@@ -146,7 +145,7 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
   if (coll == 0) 
   {
     ZORBA_ERROR_LOC_PARAM(FODC0004, loc,
-                          resolvedURIItem->getStringValue()->c_str(), "");
+                          resolvedURIItem->getStringValue().c_str(), "");
   }
 
   /** return the nodes of the collection */
@@ -466,17 +465,17 @@ bool ZorbaInsertNodesIterator::nextImpl(
   {
   case StaticContextConsts::decl_const:
     ZORBA_ERROR_LOC_PARAM(XDDY0004_COLLECTION_CONST_UPDATE, loc, 
-                          collectionName->getStringValue()->c_str(), "");
+                          collectionName->getStringValue().c_str(), "");
     break;
 
   case StaticContextConsts::decl_append_only:
     ZORBA_ERROR_LOC_PARAM(XDDY0005_COLLECTION_APPEND_BAD_INSERT, loc, 
-                          collectionName->getStringValue()->c_str(), "");
+                          collectionName->getStringValue().c_str(), "");
     break;
 
   case StaticContextConsts::decl_queue:
     ZORBA_ERROR_LOC_PARAM(XDDY0006_COLLECTION_QUEUE_BAD_INSERT, loc, 
-                          collectionName->getStringValue()->c_str(), "");
+                          collectionName->getStringValue().c_str(), "");
     break;
 
   case StaticContextConsts::decl_mutable:
@@ -660,7 +659,7 @@ bool ZorbaInsertNodesLastIterator::nextImpl(
   {
   case StaticContextConsts::decl_const:
     ZORBA_ERROR_LOC_PARAM(XDDY0004_COLLECTION_CONST_UPDATE, loc, 
-                          collectionName->getStringValue()->c_str(), "");
+                          collectionName->getStringValue().c_str(), "");
     break;
 
   case StaticContextConsts::decl_append_only:
@@ -755,17 +754,17 @@ bool ZorbaInsertNodesBeforeIterator::nextImpl(
   {
   case StaticContextConsts::decl_const:
     ZORBA_ERROR_LOC_PARAM(XDDY0004_COLLECTION_CONST_UPDATE, loc, 
-                          collectionName->getStringValue()->c_str(), "");
+                          collectionName->getStringValue().c_str(), "");
     break;
 
   case StaticContextConsts::decl_append_only:
     ZORBA_ERROR_LOC_PARAM(XDDY0005_COLLECTION_APPEND_BAD_INSERT, loc, 
-                          collectionName->getStringValue()->c_str(), "");
+                          collectionName->getStringValue().c_str(), "");
     break;
 
   case StaticContextConsts::decl_queue:
     ZORBA_ERROR_LOC_PARAM(XDDY0006_COLLECTION_QUEUE_BAD_INSERT, loc, 
-                          collectionName->getStringValue()->c_str(), "");
+                          collectionName->getStringValue().c_str(), "");
     break;
 
   case StaticContextConsts::decl_mutable:
@@ -871,17 +870,17 @@ bool ZorbaInsertNodesAfterIterator::nextImpl(
   {
   case StaticContextConsts::decl_const:
     ZORBA_ERROR_LOC_PARAM(XDDY0004_COLLECTION_CONST_UPDATE, loc, 
-                          collectionName->getStringValue()->c_str(), "");
+                          collectionName->getStringValue().c_str(), "");
     break;
 
   case StaticContextConsts::decl_append_only:
     ZORBA_ERROR_LOC_PARAM(XDDY0005_COLLECTION_APPEND_BAD_INSERT, loc, 
-                          collectionName->getStringValue()->c_str(), "");
+                          collectionName->getStringValue().c_str(), "");
     break;
 
   case StaticContextConsts::decl_queue:
     ZORBA_ERROR_LOC_PARAM(XDDY0006_COLLECTION_QUEUE_BAD_INSERT, loc, 
-                          collectionName->getStringValue()->c_str(), "");
+                          collectionName->getStringValue().c_str(), "");
     break;
 
   case StaticContextConsts::decl_mutable:
@@ -966,17 +965,17 @@ bool ZorbaDeleteNodesIterator::nextImpl(
   {
   case StaticContextConsts::decl_const:
     ZORBA_ERROR_LOC_PARAM(XDDY0004_COLLECTION_CONST_UPDATE, loc, 
-                          collectionName->getStringValue()->c_str(), "");
+                          collectionName->getStringValue().c_str(), "");
     break;
 
   case StaticContextConsts::decl_append_only:
     ZORBA_ERROR_LOC_PARAM(XDDY0007_COLLECTION_APPEND_BAD_DELETE, loc, 
-                          collectionName->getStringValue()->c_str(), "");
+                          collectionName->getStringValue().c_str(), "");
     break;
 
   case StaticContextConsts::decl_queue:
     ZORBA_ERROR_LOC_PARAM(XDDY0009_COLLECTION_QUEUE_BAD_DELETE, loc, 
-                          collectionName->getStringValue()->c_str(), "");
+                          collectionName->getStringValue().c_str(), "");
     break;
 
   case StaticContextConsts::decl_mutable:
@@ -1053,12 +1052,12 @@ bool ZorbaDeleteNodesFirstIterator::nextImpl(
   {
   case StaticContextConsts::decl_const:
     ZORBA_ERROR_LOC_PARAM(XDDY0004_COLLECTION_CONST_UPDATE, loc, 
-                          collectionName->getStringValue()->c_str(), "");
+                          collectionName->getStringValue().c_str(), "");
     break;
 
   case StaticContextConsts::decl_append_only:
     ZORBA_ERROR_LOC_PARAM(XDDY0007_COLLECTION_APPEND_BAD_DELETE, loc, 
-                          collectionName->getStringValue()->c_str(), "");
+                          collectionName->getStringValue().c_str(), "");
     break;
 
   case StaticContextConsts::decl_queue:
@@ -1073,7 +1072,7 @@ bool ZorbaDeleteNodesFirstIterator::nextImpl(
   if (collectionSize < numNodes)
   {
     ZORBA_ERROR_LOC_PARAM(XDDY0011_COLLECTION_NODE_NOT_FOUND, loc,
-                          collectionName->getStringValue()->c_str(), "");
+                          collectionName->getStringValue().c_str(), "");
   }
 
   // create the pul and add the primitive
@@ -1131,17 +1130,17 @@ bool ZorbaDeleteNodesLastIterator::nextImpl(
   {
   case StaticContextConsts::decl_const:
     ZORBA_ERROR_LOC_PARAM(XDDY0004_COLLECTION_CONST_UPDATE, loc, 
-                          collectionName->getStringValue()->c_str(), "");
+                          collectionName->getStringValue().c_str(), "");
     break;
 
   case StaticContextConsts::decl_append_only:
     ZORBA_ERROR_LOC_PARAM(XDDY0007_COLLECTION_APPEND_BAD_DELETE, loc, 
-                          collectionName->getStringValue()->c_str(), "");
+                          collectionName->getStringValue().c_str(), "");
     break;
 
   case StaticContextConsts::decl_queue:
     ZORBA_ERROR_LOC_PARAM(XDDY0008_COLLECTION_QUEUE_BAD_DELETE, loc, 
-                          collectionName->getStringValue()->c_str(), "");
+                          collectionName->getStringValue().c_str(), "");
     break;
 
   case StaticContextConsts::decl_mutable:
@@ -1155,7 +1154,7 @@ bool ZorbaDeleteNodesLastIterator::nextImpl(
   if (collectionSize < numNodes) 
   {
     ZORBA_ERROR_LOC_PARAM(XDDY0011_COLLECTION_NODE_NOT_FOUND, loc,
-                          collectionName->getStringValue()->c_str(), "");
+                          collectionName->getStringValue().c_str(), "");
   }
 
   // create the pul and add the primitive

@@ -484,9 +484,9 @@ void operator&(Archiver &ar, float &obj)
     //+char  strtemp[100];
     //+sprintf(strtemp, "%.7e", (double)obj);
     FloatImpl<float> zorba_float(obj);
-    xqpStringStore_t float_str = zorba_float.toString();
+    zstring float_str = zorba_float.toString();
 
-    ar.add_simple_field("float", float_str->c_str(), &obj, ARCHIVE_FIELD_NORMAL);
+    ar.add_simple_field("float", float_str.c_str(), &obj, ARCHIVE_FIELD_NORMAL);
   }
   else
   {
@@ -519,9 +519,9 @@ void operator&(Archiver &ar, double &obj)
     //+char  strtemp[100];
     //+sprintf(strtemp, "%.16e", obj);
     FloatImpl<double>    zorba_double(obj);
-    xqpStringStore_t   double_str = zorba_double.toString();
+    zstring   double_str = zorba_double.toString();
 
-    ar.add_simple_field("double", double_str->c_str(), &obj, ARCHIVE_FIELD_NORMAL);
+    ar.add_simple_field("double", double_str.c_str(), &obj, ARCHIVE_FIELD_NORMAL);
   }
   else
   {
@@ -611,6 +611,37 @@ void operator&(Archiver &ar, std::string &obj)
     ar.register_reference(id, field_treat, &obj);
   }
 }
+
+
+#if 0
+void operator&(Archiver &ar, zstring &obj)
+{
+  if(ar.is_serializing_out())
+  {
+    ar.add_simple_field("string", obj.c_str(), &obj, ARCHIVE_FIELD_NORMAL);
+  }
+  else
+  {
+    char  *type;
+    std::string value;
+    int   id;
+    int   version;
+    bool  is_simple;
+    bool  is_class;
+    enum  ArchiveFieldTreat field_treat;
+    int   referencing;
+    bool  retval;
+    retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
+    if(!retval && ar.get_read_optional_field())
+      return;
+    ar.check_simple_field(retval, type, "string", is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
+    obj = value;
+
+    ar.register_reference(id, field_treat, &obj);
+  }
+}
+#endif
+
 
 void operator&(Archiver &ar, std::string* &obj)
 {

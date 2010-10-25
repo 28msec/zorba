@@ -60,22 +60,28 @@ public:
   virtual ~EventSchemaValidator();
 
   void startDoc();
+
   void endDoc();
 
   void startElem(store::Item_t elemName);
+
   void endElem(store::Item_t elemName);
 
   // Must be called only after all ns() have been send if any otherwise only after startElem()
-  void attr(store::Item_t attrName, xqpStringStore_t textValue);
+  void attr(store::Item_t attrName, const zstring& textValue);
+
   void endAttrs();
-  void text(xqpStringStore_t textValue);
+
+  void text(const zstring& textValue);
     
   // Must be called only after startElem()
-  void ns(xqpStringStore_t prefix, xqpStringStore_t uri);
+  void ns(const zstring& prefix, const zstring& uri);
 
   // Must be called only after all attr() have been sent
   store::Item_t getTypeQName();
+
   xqtref_t      getType();
+
   store::Item_t getSubstitutedElemQName();
     
   // Must be called only after all attr() have been sent and after getTypeQName() has been called
@@ -92,6 +98,7 @@ public:
 
   // for validating content of a schema type
   void startType(store::Item_t typeName);
+
   void endType();
 };
 

@@ -63,20 +63,22 @@ namespace zorba
 static inline xqp_string qname_to_string(store::Item_t qname) 
 {
   xqp_string result;
-  xqp_string pfx = qname->getPrefix (), ns = qname->getNamespace();
-  if (! ns.empty ())
-    result += pfx + "[=" + qname->getNamespace()->str() + "]:";
-  result += qname->getLocalName()->str();
+  zstring pfx = qname->getPrefix();
+  zstring ns = qname->getNamespace();
+  if (! ns.empty())
+    result += pfx.str() + "[=" + ns.str() + "]:";
+  result += qname->getLocalName().str();
   return result;
 }
 
 
-static inline ostream& put_qname(store::Item_t qname, ostream &os) 
+static inline ostream& put_qname(store::Item_t qname, ostream& os) 
 {
-  xqp_string pfx = qname->getPrefix (), ns = qname->getNamespace();
-  if (! ns.empty ())
-    os << pfx << "[=" << qname->getNamespace()->str() << "]:";
-  os << qname->getLocalName()->str();
+  zstring pfx = qname->getPrefix();
+  zstring ns = qname->getNamespace();
+  if (! ns.empty())
+    os << pfx << "[=" << qname->getNamespace() << "]:";
+  os << qname->getLocalName();
   return os;
 }
 
@@ -640,12 +642,12 @@ ostream& const_expr::put(ostream& os) const
   os << indent << "const_expr" << expr_addr(this) << " [ ";
   if (theValue->isFunction())
   {
-    os << "functrion item [ " << theValue->show().c_str() << " ]";
+    os << "functrion item [ " << theValue->show() << " ]";
   }
   else
   {
-    os << get_val()->getType()->getStringValue()->c_str()
-       << " [ " << theValue->getStringValue() << " ]";
+    os << get_val()->getType()->getStringValue()
+       << " [ " << theValue->show() << " ]";
   }
   os << " ]\n";
   return os;

@@ -167,8 +167,7 @@ ft_wildcard const& FTToken::wildcard( int selector ) const {
     qt_.wildcard_ = NULL;
   }
   if ( !qt_.wildcard_ ) {
-    qt_.wildcard_ = ft_wildcard::create();
-    qt_.wildcard_->compile( value( selector ) );
+    qt_.wildcard_ = new ft_wildcard( value( selector ) );
     qt_.selector_ = selector;
   }
   return *qt_.wildcard_;

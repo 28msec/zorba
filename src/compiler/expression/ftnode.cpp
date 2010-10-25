@@ -360,7 +360,7 @@ void ftextension_selection::serialize( serialization::Archiver &ar ) {
 ftextension_option::ftextension_option(
   QueryLoc const &loc,
   rchandle<QName> qname,
-  string const &val
+  zstring const &val
 ) :
   ftmatch_option( loc ),
   qname_( qname ),
@@ -388,15 +388,15 @@ void ftextension_option::serialize( serialization::Archiver &ar ) {
 
 ftlanguage_option::ftlanguage_option(
   QueryLoc const &loc,
-  string const &lang
+  zstring const &lang
 ) :
   ftmatch_option( loc )
 {
-  xqpStringStore const xlang( lang );   // stupid hack
-  if ( !GenericCast::instance()->castableToLanguage( &xlang ) )
-    ZORBA_ERROR_LOC_PARAM( XPTY0004, loc, lang, NULL );
+  zstring const xlang( lang );   // stupid hack
+  if ( !GenericCast::instance()->castableToLanguage( xlang ) )
+    ZORBA_ERROR_LOC_PARAM( XPTY0004, loc, lang, "" );
   if ( !(lang_ = locale::find_lang( lang.c_str() )) )
-    ZORBA_ERROR_LOC_PARAM( FTST0009, loc, lang, NULL );
+    ZORBA_ERROR_LOC_PARAM( FTST0009, loc, lang, "" );
 }
 
 void ftlanguage_option::serialize( serialization::Archiver &ar ) {
@@ -729,7 +729,7 @@ void ftstem_option::serialize( serialization::Archiver &ar ) {
 
 ftstop_words::ftstop_words(
   QueryLoc const &loc,
-  std::string const &uri,
+  zstring const &uri,
   list_t const &stop_word_list,
   ft_stop_words_unex::type mode
 ) :
@@ -739,7 +739,7 @@ ftstop_words::ftstop_words(
   mode_( mode )
 {
   if ( !uri_.empty() )
-    ZORBA_ERROR_LOC_PARAM( FTST0008, loc, uri_, NULL );
+    ZORBA_ERROR_LOC_PARAM( FTST0008, loc, uri_, "" );
 }
 
 ft_visit_result::type ftstop_words::accept( ftnode_visitor &v ) {
@@ -816,8 +816,8 @@ void ftstop_word_option::serialize( serialization::Archiver &ar ) {
 
 ftthesaurus_id::ftthesaurus_id(
   QueryLoc const &loc,
-  std::string const &uri,
-  std::string const &relationship,
+  zstring const &uri,
+  zstring const &relationship,
   ftrange *levels
 ) :
   ftnode( loc ),

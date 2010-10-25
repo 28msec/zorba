@@ -430,8 +430,8 @@ std::ostream& NodeXQType::serialize_ostream(std::ostream& os) const
 
   if (m_node_name != NULL)
   {
-    os << "nametest=[uri: " << m_node_name->getNamespace()->c_str()
-       << ", local: " << m_node_name->getLocalName()->c_str() << "]";
+    os << "nametest=[uri: " << m_node_name->getNamespace()
+       << ", local: " << m_node_name->getLocalName() << "]";
   }
 
   if (content_type != NULL)
@@ -733,8 +733,8 @@ std::ostream& UserDefinedXQType::serialize_ostream(std::ostream& os) const
 
   return os << "[UserDefinedXQType " << " "
             << TypeOps::decode_quantifier (get_quantifier()) << " "
-            << m_qname->getLocalName()->str() << "@"
-            << m_qname->getNamespace()->str() << " "
+            << m_qname->getLocalName() << "@"
+            << m_qname->getNamespace() << " "
             << info.str()
             << " base:"
             << ( m_baseType ? TypeOps::toString(*m_baseType) : "NULL" )

@@ -17,6 +17,7 @@
 #define ZORBA_ZORBATYPES_DECL_H
 
 #include "zorbatypes/rchandle.h"
+#include "zorbatypes/zstring.h"
 
 namespace zorba 
 {

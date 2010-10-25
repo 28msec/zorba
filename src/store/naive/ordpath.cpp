@@ -1371,7 +1371,7 @@ std::string OrdPath::serialize() const
 /*******************************************************************************
 
 ********************************************************************************/
-std::string OrdPath::show() const
+zstring OrdPath::show() const
 {
   std::stringstream str;
 
@@ -1408,7 +1408,7 @@ std::string OrdPath::show() const
       str << ".";
   }
 
-  return str.str().c_str();
+  return str.str();
 }
 
 

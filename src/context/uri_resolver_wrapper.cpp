@@ -54,7 +54,7 @@ static void handle_resolver_error(URIResolverResult* aResolverResult)
   zorba::String lErrorDescription = aResolverResult->getErrorDescription();
   if (lErrorDescription.length() != 0) 
   {
-    ZORBA_ERROR_DESC(lError, *Unmarshaller::getInternalString(lErrorDescription));
+    ZORBA_ERROR_DESC(lError, Unmarshaller::getInternalString(lErrorDescription));
   }
   else
   {
@@ -159,7 +159,7 @@ std::string SchemaURIResolverWrapper::resolve(
     const store::Item_t& aURI,
     static_context* aStaticContext,
     std::vector<store::Item_t>& aAtList,
-    xqpStringStore* aFileUri)
+    zstring& aFileUri)
 {
   StaticContextImpl  lOuterStaticContext(aStaticContext, 0);
   Item               lURIItem(aURI.getp());
@@ -176,9 +176,12 @@ std::string SchemaURIResolverWrapper::resolve(
     theSchemaResolver->resolve(lURIItem,
                                &lOuterStaticContext, lAtList);
 
-  if (lResult->getError() == URIResolverResult::UR_NOERROR) {
-    return Unmarshaller::getInternalString(lResult->getSchema())->c_str();
-  } else {
+  if (lResult->getError() == URIResolverResult::UR_NOERROR) 
+  {
+    return Unmarshaller::getInternalString(lResult->getSchema()).c_str();
+  }
+  else
+  {
     // handle errors
     handle_resolver_error(lResult.get());
   }

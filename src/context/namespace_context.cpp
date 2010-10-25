@@ -33,7 +33,7 @@ namespace_context::namespace_context(static_context *sctx, store::NsBindings& bi
   :
   m_sctx(sctx)
 {
-  for (unsigned long i = 0; i < bindings.size(); i++)
+  for (unsigned long i = 0; i < bindings.size(); ++i)
   {
     bind_ns(bindings[i].first, bindings[i].second);
   }    
@@ -56,10 +56,10 @@ void namespace_context::serialize(::zorba::serialization::Archiver& ar)
 
 ********************************************************************************/
 void namespace_context::bind_ns(
-    const xqpStringStore_t& prefix,
-    const xqpStringStore_t& ns)
+    const zstring& prefix,
+    const zstring& ns)
 {
-  m_bindings.push_back(std::pair<xqpStringStore_t, xqpStringStore_t>(prefix, ns));
+  m_bindings.push_back(std::pair<zstring, zstring>(prefix, ns));
 }
 
 
@@ -67,19 +67,19 @@ void namespace_context::bind_ns(
 
 ********************************************************************************/
 bool namespace_context::findBinding(
-    const xqpStringStore_t& aPrefix,
-    xqpStringStore_t& aNamespace)
+    const zstring& aPrefix,
+    zstring& aNamespace)
 {
-  bindings_t::const_iterator lIter = m_bindings.begin();
-  bindings_t::const_iterator lEnd = m_bindings.end();
+  store::NsBindings::const_iterator lIter = m_bindings.begin();
+  store::NsBindings::const_iterator lEnd = m_bindings.end();
   for (; lIter != lEnd ; ++lIter)
   {
-    if ( (*lIter).first->byteEqual(aPrefix.getp()))
+    if ((*lIter).first == aPrefix)
     {
-      if ((*lIter).second->empty())
+      if ((*lIter).second.empty())
       {
         // namespace is undeclared
-        aNamespace = new xqpStringStore("");
+        //aNamespace.clear();
         return false;
       }
       aNamespace = (*lIter).second;
@@ -96,11 +96,11 @@ bool namespace_context::findBinding(
     QueryLoc loc;
     bool found = m_sctx->lookup_ns(aNamespace, aPrefix, loc, MAX_ZORBA_ERROR_CODE);
 
-    if (!found && aPrefix->empty())
+    if (!found && aPrefix.empty())
     {
       aNamespace = m_sctx->default_elem_type_ns();
 
-      if (!aNamespace->empty())
+      if (!aNamespace.empty())
         found = true;
     }
 
@@ -131,7 +131,7 @@ void namespace_context::getAllBindings(store::NsBindings& bindings) const
       ulong j;
       for (j = 0; j < currSize; ++j)
       {
-        if (bindings[j].first->byteEqual(parentBindings[i].first.getp()))
+        if (bindings[j].first == parentBindings[i].first)
           break;
       }
 

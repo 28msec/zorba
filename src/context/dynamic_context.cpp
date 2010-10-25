@@ -43,8 +43,8 @@
 #include "runtime/api/plan_wrapper.h"
 #include "runtime/base/plan_iterator.h"
 
-#include "zorbautils/strutil.h"
 #include "zorbautils/hashmap_itemp.h"
+#include "util/string_util.h"
 
 #include "zorbaerrors/Assert.h"
 
@@ -64,7 +64,7 @@ std::string dynamic_context::var_key(const void* var)
 
   const var_expr* ve = static_cast<const var_expr*>(var);
 
-  return to_string(ve->get_unique_id()) + ":" + ve->get_name()->getStringValue()->str();
+  return to_string(ve->get_unique_id()) + ":" + ve->get_name()->getStringValue().str();
 }
 
 
@@ -82,14 +82,12 @@ xqp_string dynamic_context::expand_varname(
     return (const char*)NULL;
   }
 
-  xqpStringStore_t default_ns = new xqpStringStore("");
-
   rchandle<QName> qname = new QName(QueryLoc::null, qnameStr->str());
   store::Item_t qnameItem;
   sctx->expand_qname(qnameItem,
-                     default_ns,
-                     qname->get_prefix(),
-                     qname->get_localname(),
+                     zstring(),
+                     qname->get_prefix().str(),
+                     qname->get_localname().str(),
                      QueryLoc::null);
 
   void* var = static_cast<void*>(sctx->lookup_var(qnameItem,
@@ -104,8 +102,8 @@ xqp_string dynamic_context::expand_varname(
 ********************************************************************************/
 xqp_string dynamic_context::expand_varname(
     static_context* sctx,
-    const xqpStringStore_t& ns,
-    const xqpStringStore_t& localname)
+    const zstring& ns,
+    const zstring& localname)
 {
   if(!sctx)
   {
@@ -114,10 +112,8 @@ xqp_string dynamic_context::expand_varname(
     return (const char*)NULL;
   }
 
-  xqpStringStore_t pfx = new xqpStringStore("");
-
   store::Item_t qname;
-  GENV_ITEMFACTORY->createQName(qname, ns, pfx, localname);
+  GENV_ITEMFACTORY->createQName(qname, ns, zstring(), localname);
 
   var_expr* var = sctx->lookup_var(qname, QueryLoc::null, MAX_ZORBA_ERROR_CODE);
   return var_key(var);
@@ -431,7 +427,7 @@ bool dynamic_context::get_variable(
 {
   var_item = NULL;
   var_seq = NULL;
-  return lookup_var_value("var:" + varname->getStringValue()->str(),
+  return lookup_var_value("var:" + varname->getStringValue().str(),
                           loc,
                           var_item,
                           var_seq);
@@ -483,7 +479,7 @@ bool dynamic_context::lookup_var_value(
 ********************************************************************************/
 bool dynamic_context::exists_variable(const store::Item_t& varname)
 {
-  return exists_variable("var:" + varname->getStringValue()->str());
+  return exists_variable("var:" + varname->getStringValue().str());
 }
 
 

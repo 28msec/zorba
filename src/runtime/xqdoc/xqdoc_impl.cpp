@@ -42,10 +42,11 @@ namespace zorba {
 bool
 XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  xqpStringStore_t lURI;
-  xqpString lFileName;
+  zstring lURI;
+  zstring lFileName;
   store::Item_t lItem;
   store::Item_t lURIItem = 0;
+  zstring strval;
   std::string uriStr;
   std::string fileUrl;
   std::auto_ptr<std::istream> lFile;
@@ -69,13 +70,15 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   // retrieve the URI of the module to generate xqdoc for
   if(consumeNext(lItem, theChildren[0].getp(), planState))
   {
-    lFileName = xqpString(lItem->getStringValue());
+    lFileName = lItem->getStringValue().str();
   }
 
   // resolve the uri in the surrounding static context and use
   // the URI resolver to retrieve the module
   lSctx = theSctx;
-  lURI = lSctx->resolve_relative_uri(lItem->getStringValue());
+  lItem->getStringValue2(strval);
+  lURI = lSctx->resolve_relative_uri(strval);
+
   if (!GENV_ITEMFACTORY->createAnyURI(lURIItem, lURI))
       ZORBA_ERROR_LOC_DESC_OSS(XQST0046, loc, "URI is not valid " << lURI);
 
@@ -83,19 +86,22 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   // we get the ownership of the input stream
   // TODO: we have to find a way to tell user defined resolvers when their input stream
   // can be freed. The current solution might leed to problems on Windows.
-  uriStr = lURIItem->getStringValue()->str();
+  uriStr = lURIItem->getStringValue().str();
   lFile.reset(lModuleResolver->resolve(uriStr, *lSctx, fileUrl));
 
   // now, do the real work
   if(lFile.get() && lFile->good())
   {
-    try {
+    try 
+    {
       // retrieve the xqdoc elements 
       lCompiler.xqdoc(*lFile.get(),
-                      lFileName.theStrStore,
+                      lFileName,
                       result,
                       planState.dctx()->get_current_date_time());
-    } catch (error::ZorbaError& e) {
+    }
+    catch (error::ZorbaError& e)
+    {
       ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
     }
 
@@ -108,14 +114,16 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END(state);
 }
 
+
 /*******************************************************************************
+
 ********************************************************************************/
 bool
 XQDocContentIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   short sctxid;
   store::Item_t lItem;
-  xqpStringStore_t lFileName(new xqpStringStore(""));
+  zstring lFileName;
 
   // setup a new CompilerCB and a new XQueryCompiler 
   CompilerCB lCompilerCB(*planState.theCompilerCB);
@@ -133,15 +141,18 @@ XQDocContentIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   // retrieve the URI of the module to generate xqdoc for
   consumeNext(lItem, theChildren[0].getp(), planState);
 
-  try {
-    std::istringstream is(lItem->getStringValue()->c_str());
+  try 
+  {
+    std::istringstream is(lItem->getStringValue().c_str());
 
     // retrieve the xqdoc elements
     lCompiler.xqdoc(is,
                     lFileName,
                     result,
                     planState.dctx()->get_current_date_time());
-  } catch (error::ZorbaError& e) {
+  }
+  catch (error::ZorbaError& e) 
+  {
     ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
   }
 

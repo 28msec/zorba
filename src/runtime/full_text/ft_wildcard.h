@@ -17,7 +17,8 @@
 #ifndef ZORBA_FULL_TEXT_FT_WILDCARD_MATCHER_H
 #define ZORBA_FULL_TEXT_FT_WILDCARD_MATCHER_H
 
-#include <string>
+#include "util/unicode_util.h"
+#include "zorbatypes/zstring.h"
 
 namespace zorba {
 
@@ -25,29 +26,35 @@ namespace zorba {
 
 class ft_wildcard {
 public:
-  virtual ~ft_wildcard();
+  ft_wildcard( zstring const &xquery_pattern );
 
-  static ft_wildcard* create();
+  bool matches( zstring const &string ) const {
+    return regex_.match_whole( string );
+  }
 
-  virtual void compile( std::string const &xquery_pattern ) = 0;
-  virtual bool matches( std::string const &string ) const = 0;
+private:
+  mutable unicode::regex regex_;
+
+  // forbid these
+  ft_wildcard( ft_wildcard const& );
+  ft_wildcard& operator=( ft_wildcard const& );
 };
 
 ///////////////////////////////////////////////////////////////////////////////
 
-inline bool operator==( ft_wildcard const &m, std::string const &s ) {
+inline bool operator==( ft_wildcard const &m, zstring const &s ) {
   return m.matches( s );
 }
 
-inline bool operator==( std::string const &s, ft_wildcard const &m ) {
+inline bool operator==( zstring const &s, ft_wildcard const &m ) {
   return m == s;
 }
 
-inline bool operator!=( ft_wildcard const &m, std::string const &s ) {
+inline bool operator!=( ft_wildcard const &m, zstring const &s ) {
   return !( m == s );
 }
 
-inline bool operator!=( std::string const &s, ft_wildcard const &m ) {
+inline bool operator!=( zstring const &s, ft_wildcard const &m ) {
   return !( s == m );
 }
 

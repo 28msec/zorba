@@ -78,7 +78,7 @@ NsBindingsContext::~NsBindingsContext()
 /*******************************************************************************
 
 ********************************************************************************/
-xqpStringStore* NsBindingsContext::findBinding(const xqpStringStore* prefix) const
+bool NsBindingsContext::findBinding(const zstring& prefix, zstring& uri) const
 {
   const NsBindingsContext* currentContext = this;
 
@@ -89,14 +89,17 @@ xqpStringStore* NsBindingsContext::findBinding(const xqpStringStore* prefix) con
 
     for (ulong i = 0; i < numBindings; ++i)
     {
-      if (bindings[i].first->byteEqual(prefix))
-        return bindings[i].second.getp();
+      if (bindings[i].first == prefix)
+      {
+        uri = bindings[i].second;
+        return true;
+      }
     }
 
     currentContext = currentContext->getParent();
   }
 
-  return NULL;
+  return false;
 }
 
 
@@ -108,27 +111,25 @@ xqpStringStore* NsBindingsContext::findBinding(const xqpStringStore* prefix) con
   a noop if soft is true, else it triggers a fatal assertion. 
 ********************************************************************************/
 void NsBindingsContext::addBinding(
-    xqpStringStore* prefix,
-    xqpStringStore* ns,
+    const zstring& prefix,
+    const zstring& ns,
     bool soft)
 {
-  assert(ns != NULL);
-
   ulong numBindings = theBindings.size();
 
   for (ulong i = 0; i < numBindings; ++i)
   {
-    if (theBindings[i].first->byteEqual(prefix))
+    if (theBindings[i].first == prefix)
     {
-      if (!soft && !theBindings[i].second->byteEqual(ns))
+      if (!soft && theBindings[i].second != ns)
       {
-        ZORBA_FATAL(theBindings[i].second->byteEqual(ns), "");
+        ZORBA_FATAL(theBindings[i].second == ns, "");
       }
       return;
     }
   }
 
-  theBindings.push_back(std::pair<xqpStringStore_t, xqpStringStore_t>(prefix, ns));
+  theBindings.push_back(std::pair<zstring, zstring>(prefix, ns));
 }
 
 
@@ -137,41 +138,35 @@ void NsBindingsContext::addBinding(
   "this", replace the associated ns uri with the given uri. Else, add a binding
   for the given prefix and ns uri to the local bindings.
 ********************************************************************************/
-void NsBindingsContext::updateBinding(
-    xqpStringStore* prefix,
-    xqpStringStore* ns)
+void NsBindingsContext::updateBinding(const zstring& prefix, const zstring& ns)
 {
-  assert(ns != NULL);
-
   ulong numBindings = theBindings.size();
 
   for (ulong i = 0; i < numBindings; ++i)
   {
-    if (theBindings[i].first->byteEqual(prefix))
+    if (theBindings[i].first == prefix)
     {
       theBindings[i].second = ns;
       return;
     }
   }
 
-  theBindings.push_back(std::pair<xqpStringStore_t, xqpStringStore_t>(prefix, ns));
+  theBindings.push_back(std::pair<zstring, zstring>(prefix, ns));
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void NsBindingsContext::removeBinding(
-    xqpStringStore* prefix,
-    xqpStringStore* ns)
+void NsBindingsContext::removeBinding(const zstring& prefix, const zstring& ns)
 {
   ulong numBindings = theBindings.size();
 
   for (ulong i = 0; i < numBindings; i++)
   {
-    if (theBindings[i].first->byteEqual(prefix))
+    if (theBindings[i].first == prefix)
     {
-      ZORBA_FATAL(theBindings[i].second->byteEqual(ns), "");
+      ZORBA_FATAL(theBindings[i].second == ns, "");
 
       theBindings.erase(theBindings.begin() + i);
       return;

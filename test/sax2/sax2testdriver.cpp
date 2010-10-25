@@ -33,8 +33,6 @@
 #include <zorba/error_handler.h>
 #include <zorba/exception.h>
 
-#include <zorbautils/strutil.h>
-
 #include <zorba/store_manager.h>
 
 using namespace zorba;

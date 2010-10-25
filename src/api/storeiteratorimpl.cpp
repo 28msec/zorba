@@ -76,9 +76,15 @@ StoreIteratorImpl::StoreIteratorImpl(
   :
   theIterator(aIter),
   theErrorHandler(aErrorHandler),
+  theOwnErrorHandler(false),
   theIsOpen(false),
   theHaveLock(false)
 {
+  if (theErrorHandler == NULL)
+  {
+    theErrorHandler = new DefaultErrorHandler();
+    theOwnErrorHandler = true;
+  }
 }
 
 
@@ -97,6 +103,9 @@ StoreIteratorImpl::~StoreIteratorImpl()
     SYNC_CODE(
     if (theHaveLock)
       GENV_STORE.getGlobalLock().unlock();)
+
+    if (theOwnErrorHandler)
+      delete theErrorHandler;
   }
   STORE_ITERATOR_CATCH
 }

@@ -175,12 +175,19 @@ public:
   // -2 means width modifiers are not specified
   // -1 means '*'
   // >=0 means explicitly specified width
-  int min_width_modifier;
-  int max_width_modifier;
+  long min_width_modifier;
+  long max_width_modifier;
 
-  Modifier() : presentation_modifier(new xqpStringStore()), second_modifier(new xqpStringStore()),min_width_modifier(-2), max_width_modifier(-2)
-	{};
+  Modifier()
+    :
+    presentation_modifier(new xqpStringStore()),
+    second_modifier(new xqpStringStore()),
+    min_width_modifier(-2),
+    max_width_modifier(-2)
+	{
+  };
 };
+
 
 static void format_number(xqpStringStore_t& str, long number, Modifier& modifier)
 {
@@ -192,13 +199,13 @@ static void format_number(xqpStringStore_t& str, long number, Modifier& modifier
 
   if (modifier.presentation_modifier->bytes() > 0 && modifier.presentation_modifier->byteAt(0) == '0')
   {
-    temp.append_in_place(NumConversions::longToStr(number)->c_str());
+    temp.append_in_place(NumConversions::longToStr(number).c_str());
     while (temp.bytes() < modifier.presentation_modifier->bytes())
       temp = "0" + temp;
   }
   else // "1" or fallback
   {
-    temp.append_in_place(NumConversions::longToStr(number)->c_str());
+    temp.append_in_place(NumConversions::longToStr(number).c_str());
   }
 
   if (modifier.second_modifier->byteEqual("o", 1))
@@ -308,7 +315,7 @@ static void output_day_of_week(
 
 static void parse_presentation_modifier(
     xqpStringStore_t& str,
-    unsigned int& position,
+    ascii::size_type& position,
     xqpStringStore_t& result)
 {
   result = new xqpStringStore("");
@@ -358,7 +365,7 @@ static void parse_presentation_modifier(
 
 static void parse_second_modifier(
     xqpStringStore_t& str,
-    unsigned int& position,
+    ascii::size_type& position,
     xqpStringStore_t& result)
 {
   result = new xqpStringStore("");
@@ -383,9 +390,9 @@ static void parse_second_modifier(
 // >=0 means explicitly specified width
 static void parse_width_modifier(
     xqpStringStore_t& str,
-    unsigned int& position,
-    int& min_width,
-    int& max_width)
+    ascii::size_type& position,
+    long& min_width,
+    long& max_width)
 {
   min_width = -2;
   max_width = -2;
@@ -407,7 +414,7 @@ static void parse_width_modifier(
   }
   else
   {
-    if (parse_int(*str, position, min_width, -1, -1, 1))
+    if (parse_long(str->c_str(), str->bytes(), position, min_width, -1, -1, 1))
       min_width = -3;
   }
 
@@ -422,7 +429,7 @@ static void parse_width_modifier(
   }
   else
   {
-    if (parse_int(*str, position, max_width, -1, -1, 1))
+    if (parse_long(str->c_str(), str->bytes(), position, max_width, -1, -1, 1))
       min_width = -3;
   }
 }
@@ -472,11 +479,13 @@ static int get_data_type(char component)
 }
 
 
-bool
-FnFormatDateTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool FnFormatDateTimeIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
 {
   bool variable_marker;
   xqpStringStore_t pictureString, resultString;
+  zstring tmp;
   store::Item_t dateTimeItem, picture;
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -492,10 +501,10 @@ FnFormatDateTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   else
   {
   	consumeNext(picture, theChildren[1].getp(), planState);
-    pictureString = picture->getStringValue();
+    pictureString = new xqpStringStore(picture->getStringValue().str());
     resultString = new xqpStringStore("");
     variable_marker = false;
-    for (unsigned int i=0; i<pictureString->bytes(); i++)
+    for (ascii::size_type i = 0; i < pictureString->bytes(); i++)
     {
       if (variable_marker)
       {
@@ -523,8 +532,13 @@ FnFormatDateTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) 
           continue;
 
         parse_presentation_modifier(pictureString, i, modifier.presentation_modifier);
+
         parse_second_modifier(pictureString, i, modifier.second_modifier);
-        parse_width_modifier(pictureString, i, modifier.min_width_modifier, modifier.max_width_modifier);
+
+        parse_width_modifier(pictureString,
+                             i,
+                             modifier.min_width_modifier,
+                             modifier.max_width_modifier);
 
         // min_width_modifier is -3, there was an error in the picture
         if (modifier.min_width_modifier == -3)
@@ -588,8 +602,9 @@ FnFormatDateTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) 
           // deliberate fall-through
         case 'z': // timezone as a time offset using GMT, for example GMT+1
           {
-		        xqpString temp = "gmt" + dateTimeItem->getDateTimeValue().getTimezone().toString();
-            format_string(resultString, *temp.theStrStore, modifier);
+		        zstring temp = "gmt";
+            temp += dateTimeItem->getDateTimeValue().getTimezone().toString();
+            format_string(resultString, temp.c_str(), modifier);
 		      }
           break;
         case 'C': // calendar: the name or abbreviation of a calendar name
@@ -624,7 +639,8 @@ FnFormatDateTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) 
       }
     }
 
-  	STACK_PUSH(GENV_ITEMFACTORY->createString(result, resultString), state);
+    tmp = resultString->str();
+  	STACK_PUSH(GENV_ITEMFACTORY->createString(result, tmp), state);
   }
 
   STACK_END (state);

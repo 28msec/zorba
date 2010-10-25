@@ -392,7 +392,7 @@ StatelessExtFunctionCallIterator::StatelessExtFunctionCallIterator(
     std::vector<PlanIter_t>& args,
     const StatelessExternalFunction* function,
     bool isUpdating,
-    const xqpStringStore_t& ns,
+    const zstring& ns,
     static_context* moduleSctx)
   :
   NaryBaseIterator<StatelessExtFunctionCallIterator,
@@ -422,7 +422,7 @@ void StatelessExtFunctionCallIterator::serialize(serialization::Archiver& ar)
   {
     // serialize out: serialize prefix and localname of the function
     ar & theNamespace;
-    xqpStringStore_t lTmp;
+    zstring lTmp;
     lTmp = Unmarshaller::getInternalString(theFunction->getLocalName());
     ar.set_is_temp_field(true);
     ar & lTmp;
@@ -433,15 +433,15 @@ void StatelessExtFunctionCallIterator::serialize(serialization::Archiver& ar)
     // serializing in: get the function from the static context
     //                 using the serialized prefix/uri and localname
     ar & theNamespace;
-    xqpStringStore_t lLocalname;
+    zstring lLocalname;
     ar.set_is_temp_field(true);
     ar & lLocalname;
     ar.set_is_temp_field(false);
-    if(theNamespace)
+
+    if (!theNamespace.empty())
     {
       QueryLoc loc;
-      theFunction = theSctx->lookup_external_function(theNamespace,
-                                                      lLocalname.getp());
+      theFunction = theSctx->lookup_external_function(theNamespace, lLocalname);
       if (!theFunction)
       {
         ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
@@ -541,7 +541,7 @@ bool StatelessExtFunctionCallIterator::nextImpl(
                                                e.getFileLineNumber(),
                                                loc.getLineBegin(),
                                                loc.getColumnBegin(),
-                                               loc.getFilename());
+                                               loc.getFilename().str());
   }
   while (true)
   {
@@ -565,7 +565,7 @@ bool StatelessExtFunctionCallIterator::nextImpl(
                                                  e.getFileLineNumber(),
                                                  loc.getLineBegin(),
                                                  loc.getColumnBegin(),
-                                                 loc.getFilename());
+                                                 loc.getFilename().str());
     }
 
     result = Unmarshaller::getInternalItem(lOutsideItem);

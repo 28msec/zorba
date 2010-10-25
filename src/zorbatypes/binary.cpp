@@ -13,12 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include <cassert>
 #include <cctype>
 #include <zorba/error.h>
+#include <string>
+
 #include "zorbatypes/binary.h"
 #include "zorbaerrors/error_manager.h"
 #include "util/XmlWhitespace.h"
+#include "util/ascii_util.h"
+#include "util/stl_util.h"
+
+using namespace std;
 
 namespace zorba 
 {
@@ -30,7 +37,7 @@ SERIALIZABLE_CLASS_VERSIONS(Base16)
 END_SERIALIZABLE_CLASS_VERSIONS(Base16)
 
 
-static const std::string base64_chars = 
+static const string base64_chars = 
              "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
              "abcdefghijklmnopqrstuvwxyz"
              "0123456789+/";
@@ -61,7 +68,7 @@ bool Base64::parseString(
     const char* aString,
     size_t aLength,
     Base64& aBase64, 
-    std::string& lErrorMessage)
+    string& lErrorMessage)
 {
   aBase64.theData.clear();
   try 
@@ -70,36 +77,25 @@ bool Base64::parseString(
   }
   catch (error::ZorbaError& e) 
   {
-    lErrorMessage = e.theDescription;
+    lErrorMessage = e.theDescription.str();
     return false;
   }
   return true;
 }
 
 
-void Base64::encode(const xqpStringStore* aString, Base64& aResult)
+void Base64::encode(const zstring& aString, Base64& aResult)
 {
-  std::vector<char> source;
-  source.resize(aString->bytes());
-  
-  const char* lTmp = aString->c_str();
-  const char* lRun = lTmp;
-  ulong numBytes = aString->bytes();
-  for (ulong i = 0; i < numBytes; ++i) 
-  {
-    source[i] = (*lRun);
-    ++lRun;
-  }
+  vector<char> source;
+  source.reserve(aString.size());
+
+  FOR_EACH( zstring, i, aString )
+    source.push_back( *i );
 
 #if 0
-  for (std::vector<char>::iterator lIter = source.begin();
-       lIter != source.end();
-       ++lIter) 
-  {
-    std::cout << (*lIter);
-  }
-
-  std::cout << std::endl;
+  FOR_EACH( vector<char>, i, source )
+    cout << *i;
+  cout << endl;
 #endif
 
   aResult.theData.clear();
@@ -107,9 +103,9 @@ void Base64::encode(const xqpStringStore* aString, Base64& aResult)
 }
 
 
-void Base64::encode(std::istream& aStream, Base64& aResult)
+void Base64::encode(istream& aStream, Base64& aResult)
 {
-  std::vector<char> source, result;
+  vector<char> source, result;
 
   char lC;
   while (aStream.good()) {
@@ -125,13 +121,10 @@ void Base64::encode(std::istream& aStream, Base64& aResult)
 }
 
 
-xqpStringStore_t Base64::encode(std::istream& aStream)
+zstring Base64::encode(istream& aStream)
 {
-  std::vector<char> source;
-  std::vector<char> dest;
-
-  xqpStringStore_t result = new xqpStringStore("");
-  std::string& str = result->str();
+  vector<char> source;
+  vector<char> dest;
 
   char buf[1024];
   while (!aStream.eof()) 
@@ -142,21 +135,19 @@ xqpStringStore_t Base64::encode(std::istream& aStream)
 
   encode(source, dest);
 
-  str.resize(dest.size());
+  zstring result;
+  result.reserve(dest.size());
 
-  for (unsigned int i = 0; i < dest.size(); ++i)
-    str[i] = dest[i];
-
+  FOR_EACH( vector<char>, i, dest )
+    result.push_back( *i );
+  
   return result;
 }
 
-xqpStringStore_t Base64::decode(std::istream& aStream)
+zstring Base64::decode(istream& aStream)
 {
-  std::vector<char> source;
-  std::vector<char> dest;
-
-  xqpStringStore_t result = new xqpStringStore("");
-  std::string& str = result->str();
+  vector<char> source;
+  vector<char> dest;
 
   char buf[1024];
   while (!aStream.eof()) 
@@ -167,16 +158,17 @@ xqpStringStore_t Base64::decode(std::istream& aStream)
 
   decode(source, dest);
 
-  str.resize(dest.size());
+  zstring result;
+  result.reserve(dest.size());
 
-  for (unsigned int i = 0; i < dest.size(); ++i)
-    str[i] = dest[i];
+  FOR_EACH( vector<char>, i, dest )
+    result.push_back( *i );
 
   return result;
 }
 
 
-void Base64::encode(const std::vector<char>& aSource, std::vector<char>& aResult)
+void Base64::encode(const vector<char>& aSource, vector<char>& aResult)
 {
   size_t in_len = aSource.size();
   size_t lCurPos = 0;
@@ -221,7 +213,7 @@ void Base64::encode(const std::vector<char>& aSource, std::vector<char>& aResult
 }
 
 
-void Base64::decode(const std::vector<char>& aSource, std::vector<char>& aResult)
+void Base64::decode(const vector<char>& aSource, vector<char>& aResult)
 {
   size_t in_len = aSource.size();
   int i = 0;
@@ -263,7 +255,7 @@ void Base64::decode(const std::vector<char>& aSource, std::vector<char>& aResult
 
 Base64::Base64(const Base16& aBase16)
 {
-  std::vector<char> lOrig;
+  vector<char> lOrig;
   Base16::decode(aBase16.getData(), lOrig);
   Base64::encode(lOrig, theData);
 }
@@ -275,11 +267,15 @@ void Base64::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-void Base64::insertData(const char* aCharStar, size_t len)
+void Base64::insertData(const char* str, size_t len)
 {
-  for (size_t i = 0; i < len; ++i)
+  ascii::size_type pos = 0;
+
+  ascii::skip_whitespace(str, len, &pos);
+
+  for (size_t i = pos; i < len; ++i)
   {
-    char lChar = aCharStar[i];
+    char lChar = str[i];
 
     if (lChar == ' ')
     {
@@ -293,12 +289,12 @@ void Base64::insertData(const char* aCharStar, size_t len)
     {
       theData.push_back(lChar);
     }
-    else if (lChar == '=' && i > 0 && i == (len-2) && aCharStar[i+1] == '=' )
+    else if (lChar == '=' && i > 0 && i == (len-2) && str[i+1] == '=' )
     {
-      if (aCharStar[i-1] == 'A' ||
-          aCharStar[i-1] == 'Q' ||
-          aCharStar[i-1] == 'g' ||
-          aCharStar[i-1] == 'w')
+      if (str[i-1] == 'A' ||
+          str[i-1] == 'Q' ||
+          str[i-1] == 'g' ||
+          str[i-1] == 'w')
       {
         theData.push_back('=');
         theData.push_back('=');
@@ -311,7 +307,7 @@ void Base64::insertData(const char* aCharStar, size_t len)
     }
     else if (lChar == '=' && i > 0 && i == (len-1))
     {
-      switch(aCharStar[i-1]) 
+      switch(str[i-1]) 
       {
       case 'A': case 'E': case 'I': case 'M': case 'Q': case 'U': case 'Y':
       case 'c': case 'g': case 'k': case 'o': case 's': case 'w': case '0':
@@ -328,8 +324,8 @@ void Base64::insertData(const char* aCharStar, size_t len)
     }
     else
     {
-      std::stringstream lStream;
-      lStream << "invalid character '" << aCharStar[i] << "' in Base64 value";
+      stringstream lStream;
+      lStream << "invalid character '" << str[i] << "' in Base64 value";
       ZORBA_ERROR_DESC(FORG0001, lStream.str());
     }
   }
@@ -346,9 +342,9 @@ bool Base64::equal(const Base64& aBase64) const
   if (size() != aBase64.size())
     return false;
 
-  std::vector<char>::const_iterator lIter0 = theData.begin();
-  std::vector<char>::const_iterator lEnd0 = theData.end();
-  std::vector<char>::const_iterator lIter1 = aBase64.theData.begin();
+  vector<char>::const_iterator lIter0 = theData.begin();
+  vector<char>::const_iterator lEnd0 = theData.end();
+  vector<char>::const_iterator lIter1 = aBase64.theData.begin();
 
   for (; lIter0 != lEnd0 ; )
   {
@@ -360,31 +356,31 @@ bool Base64::equal(const Base64& aBase64) const
 }
 
 
-xqpStringStore_t Base64::str() const 
+zstring Base64::str() const 
 {
-  std::stringstream lStream;
+  stringstream lStream;
   lStream << *this;
-  return new xqpStringStore(lStream.str());
+  return zstring(lStream.str());
 }
 
 
-xqpStringStore_t Base64::decode() const
+zstring Base64::decode() const
 {
-  std::vector<char> lDecodedData;
+  vector<char> lDecodedData;
 
   Base64::decode(theData, lDecodedData);
 
-  xqpStringStore_t result = new xqpStringStore(lDecodedData.size());
-  std::string& str = result->str();
+  zstring result;
+  result.reserve( lDecodedData.size() );
 
-  for (unsigned int i = 0; i < lDecodedData.size(); ++i)
-    str[i] = lDecodedData[i];
+  FOR_EACH( vector<char>, i, lDecodedData )
+    result.push_back( *i );
 
   return result;
 }
 
 
-void Base64::decode(std::vector<char>& aResult)
+void Base64::decode(vector<char>& aResult)
 {
   Base64::decode(theData, aResult);
 }
@@ -393,8 +389,8 @@ void Base64::decode(std::vector<char>& aResult)
 uint32_t Base64::hash() const
 {
   uint32_t lHash = 0;
-  std::vector<char>::const_iterator lIter = theData.begin();
-  std::vector<char>::const_iterator lEnd = theData.end();
+  vector<char>::const_iterator lIter = theData.begin();
+  vector<char>::const_iterator lEnd = theData.end();
   for(;lIter!=lEnd;++lIter)
   {
     uint32_t lDiff = 65535-*lIter;
@@ -409,10 +405,10 @@ uint32_t Base64::hash() const
 }
 
 
-std::ostream& operator<<(std::ostream& os, const Base64& aBase64)
+ostream& operator<<(ostream& os, const Base64& aBase64)
 {
-  std::vector<char>::const_iterator lIter = aBase64.getData().begin();
-  std::vector<char>::const_iterator lEnd = aBase64.getData().end();
+  vector<char>::const_iterator lIter = aBase64.getData().begin();
+  vector<char>::const_iterator lEnd = aBase64.getData().end();
   for( ; lIter != lEnd ; ++lIter)
   {
     os << *lIter;
@@ -450,7 +446,7 @@ size_t Base16::DECODE_OUTPUT = 1;
 
 Base16::Base16(const Base64& aBase64) : ::zorba::serialization::SerializeBaseClass()
 {
-  std::vector<char> lOrig;
+  vector<char> lOrig;
   Base64::decode(aBase64.getData(), lOrig);
   Base16::encode(lOrig, theData);
 }
@@ -476,25 +472,38 @@ bool Base16::parseString(const char* aString, size_t aLength, Base16& aBase16)
   return true;
 }
 
-void Base16::insertData(const char* aCharStar, size_t len)
-{
 
-  if (len % 2 != 0) {
-    ZORBA_ERROR_DESC(FORG0001, "A hexBinary value must contain an even number of characters");
+void Base16::insertData(const char* str, size_t len)
+{
+  zstring_b wrap;
+  wrap.wrap_memory(str, len);
+
+  ascii::trim_whitespace(wrap);
+
+  len = wrap.size();
+  str = wrap.data();
+
+  if (len % 2 != 0) 
+  {
+    ZORBA_ERROR_DESC(FORG0001,
+                     "A hexBinary value must contain an even number of characters");
   }
 
   for (size_t i = 0; i < len; ++i)
   {
-    char lChar = aCharStar[i];
+    char lChar = str[i];
     if ((lChar >= 65 && lChar <= 70)  // A-F
      || (lChar >= 48 && lChar <= 57))  // 0-9
     {
       theData.push_back(lChar);
-    } else if (lChar >= 97 && lChar <= 102) // a-f
+    }
+    else if (lChar >= 97 && lChar <= 102) // a-f
     {
       theData.push_back(lChar-32);
-    } else {
-      std::stringstream lStream;
+    }
+    else
+    {
+      stringstream lStream;
       lStream << "Invalid hexadecimal digit";
       ZORBA_ERROR_DESC(FORG0001, lStream.str());
     }
@@ -507,9 +516,9 @@ bool Base16::equal(const Base16& aBase16) const
   if (size() != aBase16.size())
     return false;
 
-  std::vector<char>::const_iterator lIter0 = theData.begin();
-  std::vector<char>::const_iterator lEnd0 = theData.end();
-  std::vector<char>::const_iterator lIter1 = aBase16.theData.begin();
+  vector<char>::const_iterator lIter0 = theData.begin();
+  vector<char>::const_iterator lEnd0 = theData.end();
+  vector<char>::const_iterator lIter1 = aBase16.theData.begin();
 
   for (; lIter0 != lEnd0 ; )
   {
@@ -521,15 +530,15 @@ bool Base16::equal(const Base16& aBase16) const
 }
 
 
-xqpStringStore_t Base16::str() const 
+zstring Base16::str() const 
 {
-  std::stringstream lStream;
+  stringstream lStream;
   lStream << *this;
-  return new xqpStringStore(lStream.str());
+  return zstring(lStream.str());
 }
 
 
-void Base16::encode(const std::vector<char>& aSource, std::vector<char>& aResult)
+void Base16::encode(const vector<char>& aSource, vector<char>& aResult)
 {
   size_t lSrcPos = 0;
   size_t lSrcSize = aSource.size();
@@ -547,7 +556,7 @@ void Base16::encode(const std::vector<char>& aSource, std::vector<char>& aResult
 }
 
 
-void Base16::decode(const std::vector<char>& aSource, std::vector<char>& aResult)
+void Base16::decode(const vector<char>& aSource, vector<char>& aResult)
 {
   size_t lSrcSize = aSource.size();
   size_t lSrcPos = 0;
@@ -581,8 +590,8 @@ void Base16::decode(const std::vector<char>& aSource, std::vector<char>& aResult
 uint32_t Base16::hash() const
 {
   uint32_t lHash = 0;
-  std::vector<char>::const_iterator lIter = theData.begin();
-  std::vector<char>::const_iterator lEnd = theData.end();
+  vector<char>::const_iterator lIter = theData.begin();
+  vector<char>::const_iterator lEnd = theData.end();
   for(;lIter!=lEnd;++lIter)
   {
     uint32_t lDiff = 65535-*lIter;
@@ -597,10 +606,10 @@ uint32_t Base16::hash() const
 }
 
 
-std::ostream& operator<<(std::ostream& os, const Base16& aBase16)
+ostream& operator<<(ostream& os, const Base16& aBase16)
 {
-  std::vector<char>::const_iterator lIter = aBase16.getData().begin();
-  std::vector<char>::const_iterator lEnd = aBase16.getData().end();
+  vector<char>::const_iterator lIter = aBase16.getData().begin();
+  vector<char>::const_iterator lEnd = aBase16.getData().end();
   for( ; lIter != lEnd ; ++lIter)
   {
     os << *lIter;
@@ -610,3 +619,4 @@ std::ostream& operator<<(std::ostream& os, const Base16& aBase16)
 
 
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

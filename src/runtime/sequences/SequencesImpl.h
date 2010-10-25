@@ -109,9 +109,9 @@ public:
 class FnIdIteratorState : public DescendantAxisState
 {
 public:
-  bool                                theIsInitialized;
-  std::vector<xqpStringStore_t>       theIds;
-  store::Item_t                       theDocNode;
+  bool                     theIsInitialized;
+  std::vector<zstring>     theIds;
+  store::Item_t            theDocNode;
 
   rchandle<store::AttributesIterator> theAttrsIte;
 
@@ -129,7 +129,7 @@ class FnElementWithIdIteratorState : public DescendantAxisState
 {
 public:
   bool                                theIsInitialized;
-  std::vector<xqpStringStore_t>       theIds;
+  std::vector<zstring>                theIds;
   store::Item_t                       theDocNode;
 
   rchandle<store::AttributesIterator> theAttrsIte;
@@ -148,7 +148,7 @@ class FnIdRefIteratorState : public DescendantAxisState
 {
 public:
   bool                                theIsInitialized;
-  std::vector<xqpStringStore_t>       theIds;
+  std::vector<zstring>                theIds;
   store::Item_t                       theDocNode;
 
   rchandle<store::AttributesIterator> theAttrsIte;

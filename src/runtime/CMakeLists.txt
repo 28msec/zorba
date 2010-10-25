@@ -103,6 +103,7 @@ LIST(APPEND RUNTIME_SRCS
     core/gflwor/for_iterator.cpp
     core/gflwor/let_iterator.cpp
     core/gflwor/where_iterator.cpp
+    core/gflwor/comp_function.cpp
     core/gflwor/count_iterator.cpp
     core/gflwor/groupby_iterator.cpp
     core/gflwor/tuplesource_iterator.cpp
@@ -132,8 +133,8 @@ ENDIF (NOT ZORBA_NO_FULL_TEXT)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS debug)
 
 IF (ZORBA_WITH_REST)
-  SET(RUNTIME_SRCS ${RUNTIME_SRCS} rest/rest.cpp)
-  HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS rest)
+#  SET(RUNTIME_SRCS ${RUNTIME_SRCS} rest/rest.cpp)
+#  HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS rest)
 ENDIF (ZORBA_WITH_REST)
 
 IF (ZORBA_WITH_FOP)

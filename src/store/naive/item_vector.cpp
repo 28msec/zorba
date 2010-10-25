@@ -32,55 +32,81 @@ ItemVector::ItemVector(std::vector<store::Item_t>& items)
 }
 
 
-xqpStringStore_t ItemVector::getStringValue() const
+zstring ItemVector::getStringValue() const
 {
-  std::ostringstream ostr;
   ulong numItems = theItems.size();
 
-  if (numItems > 0)
+  if (numItems == 1)
   {
-    ostr << theItems[0]->getStringValue()->c_str();
+    return theItems[0]->getStringValue();
+  }
+  else if (numItems > 0)
+  {
+    zstring val;
+
+    theItems[0]->appendStringValue(val);
 
     for (ulong i = 1; i < numItems; ++i)
     {
-      ostr << " " << theItems[i]->getStringValue()->c_str();
+      val += " ";
+      theItems[i]->appendStringValue(val);
     }
+
+    return val;
   }
 
-  return new xqpStringStore(ostr.str());
+  return zstring();
 }
 
 
-void ItemVector::getStringValue(xqpStringStore_t& strval) const
+void ItemVector::getStringValue2(zstring& val) const
 {
-  strval = new xqpStringStore("");
-  getStringValue(strval->str());
+  ulong numItems = theItems.size();
+
+  if (numItems == 1)
+  {
+    theItems[0]->getStringValue2(val);
+    return;
+  }
+  else if (numItems > 0)
+  {
+    theItems[0]->appendStringValue(val);
+
+    for (ulong i = 1; i < numItems; ++i)
+    {
+      val += " ";
+      theItems[i]->appendStringValue(val);
+    }
+  }
 }
 
 
-void ItemVector::getStringValue(std::string& buf) const
+void ItemVector::appendStringValue(zstring& buf) const
 {
   ulong numItems = theItems.size();
 
   if (numItems > 0)
   {
-    theItems[0]->getStringValue(buf);
+    theItems[0]->appendStringValue(buf);
 
-    for (ulong i = 1; i < numItems; i++)
+    for (ulong i = 1; i < numItems; ++i)
     {
       buf += " ";
-      theItems[i]->getStringValue(buf);
+      theItems[i]->appendStringValue(buf);
     }
   }
 }
 
-xqp_string ItemVector::show() const
+
+zstring ItemVector::show() const
 {
-	std::string res = "ItemVector size:";
-	res += size() + " [";
-	for ( ulong i=0; i<size(); i++)
-		res += getItem(i)->show() + ", ";
-	return res + "]"; 
+  std::ostringstream res;
+  res << "ItemVector size: " << size() + " [";
+	for ( ulong i = 0; i < size(); i++)
+		res << getItem(i)->show() << ", ";
+	res << "]";
+
+  return res.str();
 }
 
 

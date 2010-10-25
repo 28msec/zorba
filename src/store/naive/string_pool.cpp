@@ -15,6 +15,7 @@
  */
 
 #include "zorbautils/fatal.h"
+#include "util/string_util.h"
 #include "store/naive/string_pool.h"
 
 namespace zorba { namespace simplestore {
@@ -24,14 +25,13 @@ namespace zorba { namespace simplestore {
 ********************************************************************************/
 StringPool::~StringPool() 
 {
-	ulong count = 0;
+  ulong count = 0;
   ulong n = theHashTab.size();
   for (ulong i = 0; i < n; i++)
   {
-    if (theHashTab[i].theItem != NULL &&
-        theHashTab[i].theItem->getRefCount() != 1)
+    if (theHashTab[i].theItem.is_shared())
     {
-      std::cout << "i = " << i << " String " << theHashTab[i].theItem->c_str()
+      std::cout << "i = " << i << " String " << theHashTab[i].theItem
                 << " is still in the pool" << std::endl;
       //delete theHashTab[i].theString.getp();
       count++;
@@ -47,23 +47,23 @@ StringPool::~StringPool()
   and place the copy in the pool. Return true if the string was already in the
   pool, and false otherwise. Also return an rchandle to the string copy.
 ********************************************************************************/
-bool StringPool::insertc(const char* str, xqpStringStore_t& outStr)
+bool StringPool::insertc(const char* str, zstring& outStr)
 {
   bool found = false;
 
   ulong len = strlen(str);
-  ulong hval = xqpStringStore::hash(str) % theHashTabSize;
+  ulong hval = hashfun::h32(str, len, FNV_32_INIT) % theHashTabSize;
 
   {
     SYNC_CODE(AutoMutex lock(&theMutex);)
 
-    HashEntry<xqpStringStore_t, DummyHashValue>* entry = &theHashTab[hval];
+    HashEntry<zstring, DummyHashValue>* entry = &theHashTab[hval];
 
     if (!entry->isFree())
     {
       while (entry != NULL)
       {
-        if (entry->theItem->byteEqual(str, len))
+        if (equals(entry->theItem, str, len))
         {
           found = true;
           break;
@@ -79,7 +79,7 @@ bool StringPool::insertc(const char* str, xqpStringStore_t& outStr)
     }
   }
 
-  xqpStringStore_t tmp(new xqpStringStore(str));
+  zstring tmp(str, len);
   insert(tmp, outStr);
 
   return true;
@@ -92,13 +92,13 @@ bool StringPool::insertc(const char* str, xqpStringStore_t& outStr)
 ********************************************************************************/
 void StringPool::garbageCollect()
 {
-  HashEntry<xqpStringStore_t, DummyHashValue>* entry;
+  HashEntry<zstring, DummyHashValue>* entry;
 
-  HashEntry<xqpStringStore_t, DummyHashValue>* freeList = NULL;
+  HashEntry<zstring, DummyHashValue>* freeList = NULL;
 
   ulong size = theHashTabSize;
 
-  for (ulong i = 0; i < size; i++)
+  for (ulong i = 0; i < size; ++i)
   {
     entry = &theHashTab[i];
 
@@ -110,21 +110,19 @@ void StringPool::garbageCollect()
     }
 
     // Handle the 1st hash entry of the current hash bucket
-    while(entry->theItem->getRefCount() == 1)
+    while (!entry->theItem.is_shared())
     {
       if (entry->theNext == 0)
       {
-        entry->theItem = NULL;
         entry->setFree();
         theNumEntries--;
         break;
       }
       else
       {
-        HashEntry<xqpStringStore_t, DummyHashValue>* nextEntry = entry->getNext();
+        HashEntry<zstring, DummyHashValue>* nextEntry = entry->getNext();
         *entry = *nextEntry;
         entry->setNext(nextEntry->getNext());
-        nextEntry->theItem = NULL;
         nextEntry->setFree();
         nextEntry->setNext(freeList);
         freeList = nextEntry;
@@ -133,15 +131,14 @@ void StringPool::garbageCollect()
     }
 
     // Handle the overflow entries of the current hash bucket.
-    HashEntry<xqpStringStore_t, DummyHashValue>* prevEntry = entry;
+    HashEntry<zstring, DummyHashValue>* prevEntry = entry;
     entry = entry->getNext();
 
     while (entry != NULL)
     {
-      if (entry->theItem->getRefCount() == 1)
+      if (!entry->theItem.is_shared())
       {
         prevEntry->setNext(entry->getNext());
-        entry->theItem = NULL;
         entry->setFree();
         entry->setNext(freeList);
         freeList = entry;

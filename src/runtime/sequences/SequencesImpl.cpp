@@ -94,7 +94,7 @@ static XQPCollator* getCollator(
 
   xqtref_t lCollationItemType = sctx->get_typemanager()->create_value_type(lCollationItem);
 
-  return sctx->get_collator(lCollationItem->getStringValue()->str(), loc);
+  return sctx->get_collator(lCollationItem->getStringValue().str(), loc);
 }
 
 
@@ -350,7 +350,7 @@ bool FnIdIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     {
       for (i = 0; i < state->theIds.size(); ++i)
       {
-        if (child->getStringValue()->equals(state->theIds[i]))
+        if (child->getStringValue() == state->theIds[i])
         {
           result = child;
           STACK_PUSH(true, state);
@@ -373,7 +373,7 @@ bool FnIdIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         {
           for (i = 0; i < state->theIds.size(); ++i)
           {
-            if (attr->getStringValue()->equals(state->theIds[i]))
+            if (attr->getStringValue() == state->theIds[i])
             {
               result = child;
               STACK_PUSH(true, state);
@@ -427,7 +427,7 @@ bool FnElementWithIdIterator::nextImpl(store::Item_t& result, PlanState& planSta
   bool           isMatchingId;
   ulong i;
 
-  FnElementWithIdIteratorState *state;
+  FnElementWithIdIteratorState* state;
   DEFAULT_STACK_INIT(FnElementWithIdIteratorState, state, planState);
 
   if (!state->theIsInitialized)
@@ -483,10 +483,11 @@ bool FnElementWithIdIterator::nextImpl(store::Item_t& result, PlanState& planSta
     {
       for (i = 0; i < state->theIds.size(); ++i)
       {
-        if (child->getStringValue()->equals(state->theIds[i]))
+        if (child->getStringValue() == state->theIds[i])
         {
           result = child->getParent();
-          if(result) {
+          if(result) 
+          {
             STACK_PUSH(true, state);
             isMatchingId = true;
           }
@@ -508,7 +509,7 @@ bool FnElementWithIdIterator::nextImpl(store::Item_t& result, PlanState& planSta
         {
           for (i = 0; i < state->theIds.size(); ++i)
           {
-            if (attr->getStringValue()->equals(state->theIds[i]))
+            if (attr->getStringValue() == state->theIds[i])
             {
               result = child;
               STACK_PUSH(true, state);
@@ -530,6 +531,7 @@ bool FnElementWithIdIterator::nextImpl(store::Item_t& result, PlanState& planSta
 
   STACK_END (state);
 }
+
 
 /*******************************************************************************
   14.5.4 fn:idref
@@ -628,7 +630,7 @@ bool FnIdRefIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
       {
         if (typedValue != NULL)
         {
-          if (typedValue->getStringValue()->equals(state->theIds[i]))
+          if (typedValue->getStringValue() == state->theIds[i])
           {
             result = child;
             STACK_PUSH(true, state);
@@ -642,7 +644,7 @@ bool FnIdRefIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
           while(typedValueIte->next(typedValue))
           {
-            if (typedValue->getStringValue()->equals(state->theIds[i]))
+            if (typedValue->getStringValue() == state->theIds[i])
             {
               isMatchingId = true;
               result = child;
@@ -679,7 +681,7 @@ bool FnIdRefIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
         {
           if (typedValue != NULL)
           {
-            if (typedValue->getStringValue()->equals(state->theIds[i]))
+            if (typedValue->getStringValue() == state->theIds[i])
             {
               result = attr;
               STACK_PUSH(true, state);
@@ -693,7 +695,7 @@ bool FnIdRefIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
             while(typedValueIte->next(typedValue))
             {
-              if (typedValue->getStringValue()->equals(state->theIds[i]))
+              if (typedValue->getStringValue() == state->theIds[i])
               {
                 isMatchingId = true;
                 result = attr;

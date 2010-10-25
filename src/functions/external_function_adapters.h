@@ -40,7 +40,7 @@ class external_function : public function
 protected:
   QueryLoc                    theLoc;
   static_context            * theModuleSctx;
-  xqpStringStore_t            theNamespace;
+  zstring                     theNamespace;
   expr_script_kind_t          theScriptingKind;
   StatelessExternalFunction * theImpl;
 
@@ -53,7 +53,7 @@ public:
   external_function(
         const QueryLoc& loc,
         static_context* modSctx,
-        const xqpStringStore_t& ns,
+        const zstring& ns,
         const signature& sig,
         expr_script_kind_t scriptingType,
         bool deterministic,

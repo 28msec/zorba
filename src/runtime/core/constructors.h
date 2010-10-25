@@ -114,7 +114,7 @@ UNARY_ITER(DocumentContentIterator);
 class ElementIteratorState : public PlanIteratorState 
 {
 public:
-  xqpStringStore_t baseUri;
+  zstring baseUri;
 
   void init(PlanState&);
   void reset(PlanState&);

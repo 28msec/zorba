@@ -36,6 +36,7 @@
 #include "compiler/parser/query_loc.h"
 
 #include "functions/signature.h"
+#include "util/string_util.h"
 
 #ifdef ZORBA_XBROWSER
 #include "DOMQName.h"
@@ -215,13 +216,13 @@ xqtref_t TypeManagerImpl::create_named_atomic_type(
 
   // If the type name is an XML Schema builtin type, then it cannot be an atomic
   // type (because, otherwise it would have been found above). So we return NULL.
-  if (qname->getNamespace()->byteEqual(XML_SCHEMA_NS, strlen(XML_SCHEMA_NS)))
+  if (equals(qname->getNamespace(), XML_SCHEMA_NS, strlen(XML_SCHEMA_NS)))
   {
     if (err != MAX_ZORBA_ERROR_CODE)
     {
       ZORBA_ERROR_LOC_DESC_OSS(err, loc,
                                "A type with qname "
-                               << qname->getStringValue()->c_str()
+                               << qname->getStringValue()
                                << " is not in the in-scope schema definitions");
     }
     else
@@ -243,7 +244,7 @@ xqtref_t TypeManagerImpl::create_named_atomic_type(
       {
         ZORBA_ERROR_LOC_DESC_OSS(err, loc,
                                  "A type with qname "
-                                 << qname->getStringValue()->c_str()
+                                 << qname->getStringValue()
                                  << " is not in the in-scope schema definitions");
       }
       else
@@ -266,7 +267,7 @@ xqtref_t TypeManagerImpl::create_named_atomic_type(
   {
     ZORBA_ERROR_LOC_DESC_OSS(err, loc,
                              "A type with qname "
-                             << qname->getStringValue()->c_str()
+                             << qname->getStringValue()
                              << " is not in the in-scope schema definitions");
   }
   else
@@ -328,7 +329,7 @@ xqtref_t TypeManagerImpl::create_named_type(
         {
           ZORBA_ERROR_LOC_DESC_OSS(err, loc,
                                    "A type with qname "
-                                   << qname->getStringValue()->c_str()
+                                   << qname->getStringValue()
                                    << " is not in the in-scope schema definitions");
         }
         else
@@ -347,7 +348,7 @@ xqtref_t TypeManagerImpl::create_named_type(
     {
       ZORBA_ERROR_LOC_DESC_OSS(err, loc,
                                "A type with qname " 
-                               << qname->getStringValue()->c_str()
+                               << qname->getStringValue()
                                << " is not in the in-scope schema definitions");
     }
     else
@@ -723,7 +724,7 @@ xqtref_t TypeManagerImpl::create_schema_element_type(
   if (m_schema == NULL)
   {
     ZORBA_ERROR_LOC_PARAM(XPST0008, loc, "schema-element", 
-                          elemName->getStringValue()->c_str());
+                          elemName->getStringValue().c_str());
   }
 
   xqtref_t contentType = 
@@ -749,7 +750,7 @@ void TypeManagerImpl::get_schema_element_typename(
   if (m_schema == NULL)
   {
     ZORBA_ERROR_LOC_PARAM(XPST0008, loc, "schema-element", 
-                          elemName->getStringValue()->c_str());
+                          elemName->getStringValue().c_str());
   }
 
   m_schema->getTypeNameFromElementName(elemName, typeName, loc);
@@ -770,7 +771,7 @@ xqtref_t TypeManagerImpl::create_schema_attribute_type(
   if (m_schema == NULL)
   {
     ZORBA_ERROR_LOC_PARAM(XPST0008, loc, "schema-attribute", 
-                          attrName->getStringValue()->c_str());
+                          attrName->getStringValue().c_str());
   }
 
   xqtref_t contentType = 
@@ -797,7 +798,7 @@ void TypeManagerImpl::get_schema_attribute_typename(
   if (m_schema == NULL)
   {
     ZORBA_ERROR_LOC_PARAM(XPST0008, loc, "schema-attribute", 
-                          attrName->getStringValue()->c_str());
+                          attrName->getStringValue().c_str());
   }
 
   m_schema->getTypeNameFromAttributeName(attrName, typeName, loc);

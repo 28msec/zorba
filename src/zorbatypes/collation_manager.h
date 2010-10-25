@@ -52,6 +52,8 @@ class XQPCollator
   bool doMemCmp() const { return theDoMemCmp; }
 
   const std::string& getURI();
+
+  void* getCollator() const { return theCollator; }
 };
 
 

@@ -142,8 +142,6 @@ bool Validator::realValidationValue(
 
 #ifndef ZORBA_NO_XMLSCHEMA
 
-  xqpStringStore_t baseUri = sctx->get_base_uri();
-
   EventSchemaValidator schemaValidator =
     EventSchemaValidator(typeManager,
                          schema->getGrammarPool(),
@@ -185,8 +183,11 @@ bool Validator::realValidationValue(
         }
       }
 
-      xqpStringStore_t docBaseUri = sourceNode->getBaseURI();
-      xqpStringStore_t docUri = sourceNode->getDocumentURI();
+      zstring docBaseUri;
+      zstring docUri;
+      sourceNode->getBaseURI(docBaseUri);
+      sourceNode->getDocumentURI(docUri);
+
       store::Item_t newDoc;
       GENV_ITEMFACTORY->createDocumentNode(newDoc, docBaseUri, docUri);
 
@@ -284,7 +285,8 @@ store::Item_t Validator::processElement(
 
 
   store::Item_t nodeName = element->getNodeName();
-  xqpStringStore_t baseUri = element->getBaseURI();
+  zstring baseUri;
+  element->getBaseURI(baseUri);
 
   schemaValidator.startElem(nodeName);
 
@@ -391,10 +393,10 @@ void Validator::processAttributes(
                                   att->thePrefix,
                                   att->theLocalName);
 
-    std::string typePrefix;
+    zstring typePrefix;
 
     // hack around typeManager bug for comparing QNames
-    if ( std::strcmp(Schema::XSD_NAMESPACE, att->theTypeURI->c_str())==0)
+    if (att->theTypeURI == Schema::XSD_NAMESPACE)
       typePrefix = "xs";
     else
       typePrefix = "";
@@ -402,7 +404,7 @@ void Validator::processAttributes(
     store::Item_t typeQName;
     GENV_ITEMFACTORY->createQName(typeQName,
                                   att->theTypeURI,
-                                  new xqpStringStore(typePrefix),
+                                  typePrefix,
                                   att->theTypeName);
 
     store::NsBindings bindings;
@@ -470,7 +472,8 @@ void Validator::processChildren(
 
       case store::StoreConsts::textNode:
       {
-        xqpStringStore_t childStringValue = child->getStringValue();
+        zstring childStringValue;
+        child->getStringValue2(childStringValue);
         schemaValidator.text(childStringValue);
 
         store::Item_t typeQName = schemaValidator.getTypeQName();
@@ -478,8 +481,8 @@ void Validator::processChildren(
         store::Item_t validatedTextNode;
 
         TypeIdentifier_t typeIdentifier =
-          TypeIdentifier::createNamedType(typeQName->getNamespace(),
-                                          typeQName->getLocalName() );
+          TypeIdentifier::createNamedType(typeQName->getNamespace().c_str(),
+                                          typeQName->getLocalName().c_str());
 
         //xqType is NULL, create_type can't find it
         xqtref_t xqType = typeManager->create_type(*typeIdentifier);
@@ -488,7 +491,7 @@ void Validator::processChildren(
         if ( typeQName.getp() && xqType.getp() )
         {
           cout << "     - text: '" << childStringValue << "' T: " <<
-            typeQName->getLocalName()->c_str() << "\n"; cout.flush();
+            typeQName->getLocalName() << "\n"; cout.flush();
           cout << "        xqT: " << xqType->toString() << "  content_kind: " <<
             xqType->content_kind() << " tKind:" << xqType->type_kind() << " \n";
           cout.flush();
@@ -506,12 +509,13 @@ void Validator::processChildren(
           store::NsBindings nsBindings;
           parent->getNamespaceBindings(nsBindings);
           std::vector<store::Item_t> typedValues;
+          xqpStringStore_t tmp = new xqpStringStore(childStringValue.str());
           processTextValue(sctx,
                            typeManager,
                            nsBindings,
                            typeQName,
-                           childStringValue,
-                           typedValues );
+                           tmp,
+                           typedValues);
 
           if ( typedValues.size()==1 ) // hack around serialization bug
             GENV_ITEMFACTORY->createTextNode(validatedTextNode, parent,
@@ -529,11 +533,11 @@ void Validator::processChildren(
 
           // XQ XP Datamodel Spec: http://www.w3.org/TR/xpath-datamodel/
           // section 6.7.4 Construction from a PSVI
-          childStringValue = new xqpStringStore("");
+          zstring empty;
           GENV_ITEMFACTORY->createTextNode(validatedTextNode,
                                            parent,
                                            childIndex,
-                                           childStringValue);
+                                           empty);
         }
         else
           //if ( xqType!=NULL &&
@@ -553,9 +557,12 @@ void Validator::processChildren(
       {
         //cout << "     - pi: " << child->getStringValue() << "\n";cout.flush();
         store::Item_t piNode;
-        xqpStringStore_t piTarget = child->getTarget();
-        xqpStringStore_t childStringValue = child->getStringValue();
-        xqpStringStore_t childBaseUri = child->getBaseURI();
+        zstring piTarget =child->getTarget();
+        zstring childStringValue;
+        child->getStringValue2(childStringValue);
+        zstring childBaseUri;
+        child->getBaseURI(childBaseUri);
+
         GENV_ITEMFACTORY->createPiNode(piNode, parent, -1, piTarget,
                                        childStringValue, childBaseUri);
       }
@@ -566,7 +573,8 @@ void Validator::processChildren(
         //cout << "     - comment: " << child->getStringValue() <<
         //"\n"; cout.flush();
         store::Item_t commentNode;
-        xqpStringStore_t childStringValue = child->getStringValue();
+        zstring childStringValue;
+        child->getStringValue2(childStringValue);
         GENV_ITEMFACTORY->createCommentNode(commentNode, parent, -1,
                                             childStringValue);
       }
@@ -642,15 +650,15 @@ void Validator::processTextValue (
         {
           // textValue must be in the form of URI:LOCAL
           int32_t colonIndex = textValue->bytePositionOf(":");
-          xqpStringStore_t prefix = textValue->byteSubstr(0, colonIndex);
-          xqpStringStore_t local = textValue->byteSubstr(colonIndex+1,
-                                                         textValue->size());
-          xqpStringStore_t uri;
+          zstring prefix = textValue->byteSubstr(0, colonIndex)->str();
+          zstring local = textValue->byteSubstr(colonIndex+1,
+                                                textValue->size())->str();
+          zstring uri;
 
           if ( nsCtx.findBinding(prefix, uri) )
-            textValue = uri->append(":")->append(local);
+            textValue = new xqpStringStore(uri.append(":").append(local).str());
           else
-            ZORBA_ERROR_DESC_OSS(FORG0001, "Prefix '" << prefix->str() <<
+            ZORBA_ERROR_DESC_OSS(FORG0001, "Prefix '" << prefix <<
                                  "' not found in current namespace context.");
         }
 
@@ -668,7 +676,8 @@ void Validator::processTextValue (
           // if complex type with simple content parse text by the base
           // type which has to be simple
           xqtref_t baseType = udt.getBaseType();
-          bool res = GenericCast::castToSimple(textValue, baseType.getp(),
+          zstring tmp(textValue->str());
+          bool res = GenericCast::castToSimple(tmp, baseType.getp(),
                                                resultList, typeManager);
 
           // if this assert fails it means the validator and zorba casting code
@@ -676,14 +685,18 @@ void Validator::processTextValue (
           ZORBA_ASSERT(res);
         }
         catch(error::ZorbaError& ze)
-        {} // do nothing here, the validator will throw the right error at end elemet event call
+        {
+          // do nothing here, the validator will throw the right error at end
+          // elemet event call
+        } 
       }
     }
     else if (type->type_kind() == XQType::ATOMIC_TYPE_KIND)
     {
       try
       {
-        bool res = GenericCast::castToAtomic(result, textValue, type.getp(),
+        zstring tmp(textValue->str());
+        bool res = GenericCast::castToAtomic(result, tmp, type.getp(),
                                              typeManager, &nsCtx);
         ZORBA_ASSERT(res);
         resultList.push_back(result);
@@ -693,13 +706,15 @@ void Validator::processTextValue (
     }
     else
     {
-      if ( GENV_ITEMFACTORY->createUntypedAtomic( result, textValue) )
+      zstring tmp = textValue->str();
+      if ( GENV_ITEMFACTORY->createUntypedAtomic( result, tmp) )
         resultList.push_back(result);
     }
   }
   else
   {
-    if ( GENV_ITEMFACTORY->createUntypedAtomic( result, textValue) )
+    zstring tmp = textValue->str();
+    if ( GENV_ITEMFACTORY->createUntypedAtomic( result, tmp) )
       resultList.push_back(result);
   }
 }

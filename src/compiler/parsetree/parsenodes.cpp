@@ -95,8 +95,8 @@ void Module::accept( parsenode_visitor &v ) const
 ********************************************************************************/
 VersionDecl::VersionDecl(
     const QueryLoc& loc_,
-    std::string const& _version,
-    std::string const& _encoding)
+    zstring const& _version,
+    zstring const& _encoding)
   :
   parsenode(loc_),
   version(_version),
@@ -170,12 +170,12 @@ void LibraryModule::accept( parsenode_visitor &v ) const
 ********************************************************************************/
 ModuleDecl::ModuleDecl(
     const QueryLoc& loc,
-    std::string const& prefix,
-    std::string const& target_namespace)
+    zstring const& prefix,
+    zstring const& target_namespace)
   :
   XQDocumentable(loc),
-  thePrefix(new xqpStringStore(prefix)),
-  theTargetNamespace(new xqpStringStore(target_namespace))
+  thePrefix(prefix),
+  theTargetNamespace(target_namespace)
 {
 }
 
@@ -407,7 +407,7 @@ void DecimalFormatNode::accept( parsenode_visitor &v ) const
 ********************************************************************************/
 DefaultCollationDecl::DefaultCollationDecl(
     const QueryLoc& loc_,
-    std::string const&  _collation)
+    zstring const&  _collation)
   :
   parsenode(loc_),
   collation(_collation)
@@ -427,7 +427,7 @@ void DefaultCollationDecl::accept( parsenode_visitor &v ) const
 ********************************************************************************/
 BaseURIDecl::BaseURIDecl(
     const QueryLoc& loc_,
-    std::string const& _base_uri)
+    zstring const& _base_uri)
   :
   parsenode(loc_),
   base_uri(_base_uri)
@@ -468,12 +468,12 @@ void ConstructionDecl::accept( parsenode_visitor &v ) const
 ********************************************************************************/
 NamespaceDecl::NamespaceDecl(
     const QueryLoc& loc,
-    const std::string& prefix,
-    const std::string& uri)
+    const zstring& prefix,
+    const zstring& uri)
   :
   parsenode(loc),
-  thePrefix(new xqpStringStore(prefix)),
-  theUri(new xqpStringStore(uri))
+  thePrefix(prefix),
+  theUri(uri)
 {
 }
 
@@ -492,11 +492,11 @@ void NamespaceDecl::accept( parsenode_visitor &v ) const
 DefaultNamespaceDecl::DefaultNamespaceDecl(
     const QueryLoc& loc,
     enum ParseConstants::default_namespace_mode_t mode,
-    const std::string& uri)
+    const zstring& uri)
   :
   parsenode(loc),
   theMode(mode),
-  theUri(new xqpStringStore(uri))
+  theUri(uri)
 {
 }
 
@@ -515,12 +515,12 @@ void DefaultNamespaceDecl::accept( parsenode_visitor &v ) const
 SchemaImport::SchemaImport(
     const QueryLoc& loc,
     rchandle<SchemaPrefix> prefix,
-    const std::string& uri,
+    const zstring& uri,
     rchandle<URILiteralList> at_list)
   :
   XQDocumentable(loc),
   thePrefix(prefix),
-  theUri(new xqpStringStore(uri)),
+  theUri(uri),
   theAtList(at_list)
 {
 }
@@ -566,7 +566,7 @@ SchemaPrefix::SchemaPrefix(
     bool isDefault)
   :
   parsenode(loc),
-  thePrefix(new xqpStringStore("")),
+  thePrefix(""),
   theIsDefault(isDefault)
 {
 }
@@ -574,10 +574,10 @@ SchemaPrefix::SchemaPrefix(
 
 SchemaPrefix::SchemaPrefix(
     const QueryLoc& loc,
-    const std::string& prefix)
+    const zstring& prefix)
   :
   parsenode(loc),
-  thePrefix(new xqpStringStore(prefix)),
+  thePrefix(prefix),
   theIsDefault(false)
 {
 }
@@ -596,11 +596,11 @@ void SchemaPrefix::accept( parsenode_visitor &v ) const
 ********************************************************************************/
 ModuleImport::ModuleImport(
     const QueryLoc& loc,
-    const std::string& uri,
+    const zstring& uri,
     rchandle<URILiteralList> atlist)
   :
   XQDocumentable(loc),
-  theUri(new xqpStringStore(uri)),
+  theUri(uri),
   theAtList(atlist)
 {
 }
@@ -608,13 +608,13 @@ ModuleImport::ModuleImport(
 
 ModuleImport::ModuleImport(
     const QueryLoc& loc,
-    const std::string& prefix,
-    const std::string& uri,
+    const zstring& prefix,
+    const zstring& uri,
     rchandle<URILiteralList> atlist)
   :
   XQDocumentable(loc),
-  thePrefix(new xqpStringStore(prefix)),
-  theUri(new xqpStringStore(uri)),
+  thePrefix(prefix),
+  theUri(uri),
   theAtList(atlist)
 {
 }
@@ -661,7 +661,7 @@ void VFO_DeclList::accept( parsenode_visitor &v ) const
 OptionDecl::OptionDecl(
     const QueryLoc& loc_,
     rchandle<QName> _qname_h,
-    std::string const& _val)
+    zstring const& _val)
   :
   parsenode(loc_),
   qname_h(_qname_h),
@@ -680,9 +680,10 @@ void OptionDecl::accept( parsenode_visitor &v ) const
 /*******************************************************************************
   [27] Annotation ::= "%" EQName  ("(" Literal  ("," Literal)* ")")?
 ********************************************************************************/
-AnnotationParsenode::AnnotationParsenode(const QueryLoc& loc_,
-                       QName* qname,
-                       AnnotationLiteralListParsenode* literal_list)
+AnnotationParsenode::AnnotationParsenode(
+    const QueryLoc& loc_,
+    QName* qname,
+    AnnotationLiteralListParsenode* literal_list)
   :
   parsenode(loc_),
   qname_h(qname),
@@ -697,8 +698,9 @@ void AnnotationParsenode::accept( parsenode_visitor &v ) const
 }
 
 
-AnnotationListParsenode::AnnotationListParsenode(const QueryLoc& loc_,
-                               AnnotationParsenode* annotation)
+AnnotationListParsenode::AnnotationListParsenode(
+    const QueryLoc& loc_,
+    AnnotationParsenode* annotation)
   :
   parsenode(loc_)
 {
@@ -708,7 +710,7 @@ AnnotationListParsenode::AnnotationListParsenode(const QueryLoc& loc_,
 bool AnnotationListParsenode::has_deterministic() const
 {
   for (unsigned int i=0; i<annotations_hv.size(); i++)
-    if (annotations_hv[i]->get_qname()->get_localname()->equals(xqpString("deterministic").theStrStore))
+    if (annotations_hv[i]->get_qname()->get_localname() == "deterministic")
       return true;
 
   return false;
@@ -717,7 +719,7 @@ bool AnnotationListParsenode::has_deterministic() const
 bool AnnotationListParsenode::has_nondeterministic() const
 {
   for (unsigned int i=0; i<annotations_hv.size(); i++)
-    if (annotations_hv[i]->get_qname()->get_localname()->equals(xqpString("nondeterministic").theStrStore))
+    if (annotations_hv[i]->get_qname()->get_localname() == "nondeterministic")
       return true;
 
   return false;
@@ -730,8 +732,9 @@ void AnnotationListParsenode::accept( parsenode_visitor &v ) const
 }
 
 
-AnnotationLiteralListParsenode::AnnotationLiteralListParsenode(const QueryLoc& loc_,
-                                         exprnode* literal)
+AnnotationLiteralListParsenode::AnnotationLiteralListParsenode(
+    const QueryLoc& loc_,
+    exprnode* literal)
   :
   parsenode(loc_)
 {
@@ -1778,7 +1781,7 @@ void VarGetsDecl::accept( parsenode_visitor &v ) const
 
 FTScoreVar::FTScoreVar(
   QueryLoc const &loc,
-  std::string const &varname
+  zstring const &varname
 ) :
   parsenode( loc ),
   varname_( varname )
@@ -1870,7 +1873,7 @@ void GroupSpec::accept( parsenode_visitor &v ) const
 
 GroupCollationSpec::GroupCollationSpec (
   const QueryLoc& loc_,
-  const std::string& _uri)
+  const zstring& _uri)
 :
   parsenode(loc_),
   uri(_uri)
@@ -2021,7 +2024,7 @@ void OrderEmptySpec::accept( parsenode_visitor &v ) const
 // ------------------------
 OrderCollationSpec::OrderCollationSpec(
   const QueryLoc& loc_,
-  std::string const& _uri)
+  zstring const& _uri)
 :
   parsenode(loc_),
   uri(_uri)
@@ -2804,7 +2807,7 @@ void NodeComp::accept( parsenode_visitor &v ) const
 // -----------------
 ValidateExpr::ValidateExpr(
   const QueryLoc& loc_,
-  std::string const& _valmode,
+  zstring const& _valmode,
   rchandle<exprnode> _expr_h)
 :
   exprnode(loc_),
@@ -2893,7 +2896,7 @@ void PragmaList::accept( parsenode_visitor &v ) const
 Pragma::Pragma(
   const QueryLoc& loc_,
   rchandle<QName> _name_h,
-  std::string _pragma_lit)
+  zstring _pragma_lit)
 :
   parsenode(loc_),
   name_h(_name_h),
@@ -3246,14 +3249,14 @@ void NameTest::accept( parsenode_visitor &v ) const
 ********************************************************************************/
 Wildcard::Wildcard(
   const QueryLoc& loc,
-  const std::string& prefix,
-  const std::string& lname,
+  const zstring& prefix,
+  const zstring& lname,
   enum ParseConstants::wildcard_t kind)
   :
   parsenode(loc),
   theKind(kind),
-  thePrefix(new xqpStringStore(prefix)),
-  theLocalName(new xqpStringStore(lname))
+  thePrefix(prefix),
+  theLocalName(lname)
 {
 }
 
@@ -3720,7 +3723,7 @@ void AposAttrContentList::accept( parsenode_visitor &v ) const
 // -------------------------
 QuoteAttrValueContent::QuoteAttrValueContent(
   const QueryLoc& loc_,
-  std::string _quot_atcontent)
+  zstring _quot_atcontent)
 :
   parsenode(loc_),
   quot_atcontent(_quot_atcontent),
@@ -3751,7 +3754,7 @@ void QuoteAttrValueContent::accept( parsenode_visitor &v ) const
 // --------------------------
 AposAttrValueContent::AposAttrValueContent(
   const QueryLoc& loc_,
-  std::string _apos_atcontent)
+  zstring _apos_atcontent)
 :
   parsenode(loc_),
   apos_atcontent(_apos_atcontent),
@@ -3790,7 +3793,7 @@ DirElemContent::DirElemContent(
 
 DirElemContent::DirElemContent(
   const QueryLoc& loc_,
-  std::string _elem_content)
+  zstring _elem_content)
 :
   exprnode(loc_),
   elem_content(_elem_content)
@@ -3833,7 +3836,7 @@ void DirElemContent::accept( parsenode_visitor &v ) const
 CommonContent::CommonContent(
   const QueryLoc& loc_,
   enum ParseConstants::common_content_t _type,
-  std::string _ref)
+  zstring const &_ref)
 :
   exprnode(loc_),
   type(_type),
@@ -3876,7 +3879,7 @@ void CommonContent::accept( parsenode_visitor &v ) const
 // ---------------------------
 DirCommentConstructor::DirCommentConstructor(
   const QueryLoc& loc_,
-  std::string const& _comment)
+  zstring const& _comment)
 :
   exprnode(loc_),
   comment(_comment)
@@ -3901,7 +3904,7 @@ void DirCommentConstructor::accept( parsenode_visitor &v ) const
 // ----------------------
 DirPIConstructor::DirPIConstructor(
   const QueryLoc& loc_,
-  std::string const& _pi_target)
+  zstring const& _pi_target)
 :
   exprnode(loc_),
   pi_target(_pi_target),
@@ -3910,8 +3913,8 @@ DirPIConstructor::DirPIConstructor(
 
 DirPIConstructor::DirPIConstructor(
   const QueryLoc& loc_,
-  std::string const& _pi_target,
-  std::string const& _pi_content)
+  zstring const& _pi_target,
+  zstring const& _pi_content)
 :
   exprnode(loc_),
   pi_target(_pi_target),
@@ -3937,7 +3940,7 @@ void DirPIConstructor::accept( parsenode_visitor &v ) const
 // ------------------
 CDataSection::CDataSection(
   const QueryLoc& loc_,
-  std::string _cdata_content)
+  zstring const& _cdata_content)
 :
   exprnode(loc_),
   cdata_content(_cdata_content)
@@ -4071,7 +4074,7 @@ void CompCommentConstructor::accept( parsenode_visitor &v ) const
 // -----------------------
 CompPIConstructor::CompPIConstructor(
   const QueryLoc& loc_,
-  std::string _target,
+  zstring const& _target,
   rchandle<exprnode> _content_expr_h)
 :
   exprnode(loc_),
@@ -4311,7 +4314,7 @@ void CommentTest::accept( parsenode_visitor &v ) const
 
 PITest::PITest(
   const QueryLoc& loc_,
-  std::string _target)
+  zstring const& _target)
 :
   parsenode(loc_),
   target(_target)
@@ -4472,7 +4475,7 @@ void TypeName::accept( parsenode_visitor &v ) const
 // -------------------
 StringLiteral::StringLiteral(
   const QueryLoc& loc_,
-  string const& _strval)
+  zstring const& _strval)
 :
   exprnode(loc_),
   strval(_strval)
@@ -4512,22 +4515,22 @@ void StringLiteral::accept( parsenode_visitor &v ) const
 // -----------
 QName::QName(
   const QueryLoc& loc,
-  const std::string& qname)
+  const zstring& qname)
   :
   exprnode(loc),
   theQName(qname)
 {
-  std::string::size_type n = qname.find(':');
+  zstring::size_type n = qname.find(':');
 
-  if (n == std::string::npos)
+  if (n == zstring::npos)
   {
-    theLocalName = new xqpStringStore(qname);
-    thePrefix = new xqpStringStore("");
+    theLocalName = qname;
+    thePrefix = "";
   }
   else
   {
-    theLocalName = new xqpStringStore(qname.substr(n+1));
-    thePrefix = new xqpStringStore(qname.substr(0, n));
+    theLocalName = qname.substr(n+1);
+    thePrefix = qname.substr(0, n);
   }
 }
 
@@ -5155,8 +5158,8 @@ void FTThesaurusOption::accept( parsenode_visitor &v ) const
 
 FTThesaurusID::FTThesaurusID(
   QueryLoc const &loc,
-  std::string const &uri,
-  std::string const &relationship,
+  zstring const &uri,
+  zstring const &relationship,
   FTRange const *levels
 ) :
   parsenode( loc ),
@@ -5210,7 +5213,7 @@ void FTStopWordOption::accept( parsenode_visitor &v ) const
 
 FTStopWords::FTStopWords(
   QueryLoc const &loc,
-  std::string const &uri,
+  zstring const &uri,
   list_t *stop_words
 ) :
   parsenode( loc ),
@@ -5254,7 +5257,7 @@ void FTStopWordsInclExcl::accept( parsenode_visitor &v ) const {
 
 FTLanguageOption::FTLanguageOption(
   QueryLoc const &loc,
-  std::string const &language
+  zstring const &language
 ) :
   FTMatchOption( loc ),
   language_( language )
@@ -5372,7 +5375,7 @@ void FTDistance::accept( parsenode_visitor &v ) const
 FTExtensionOption::FTExtensionOption(
   const QueryLoc &loc,
   QName *qname,
-  std::string const &value
+  zstring const &value
 ) :
   FTMatchOption( loc ),
   qname_( qname ),

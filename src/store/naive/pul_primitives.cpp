@@ -165,7 +165,10 @@ UpdInsertChildren::UpdInsertChildren(
       TextNode* node1 = reinterpret_cast<TextNode*>(theNewChildren[i-1].getp());
       TextNode* node2 = reinterpret_cast<TextNode*>(children[i].getp());
 
-      xqpStringStore_t newText = node1->getText()->append(node2->getText());
+      zstring newText;
+      newText.reserve(node1->getText().size() + node2->getText().size());
+      newText = node1->getText();
+      newText += node2->getText();
       node1->setText(newText);
     }
     else
@@ -415,12 +418,13 @@ void UpdSetElementType::apply()
 
   target->theTypeName.transfer(theTypeName);
 
-  if(target->haveTypedTypedValue())
+  if (target->haveTypedTypedValue())
   {
     TextNode* textChild = reinterpret_cast<TextNode*>(target->getChild(0));
 
-    xqpStringStore_t textValue;
-    textChild->getStringValue(textValue);
+    zstring textValue;
+    textChild->getStringValue2(textValue);
+
     textChild->setValue(NULL);
 
     textChild->theFlags &= ~XmlNode::IsTyped;
@@ -436,12 +440,12 @@ void UpdSetElementType::apply()
 
     if (theHaveTypedValue)
     {
-	  ZORBA_FATAL(target->numChildren() == 1, "");
+      ZORBA_FATAL(target->numChildren() == 1, "");
       ZORBA_FATAL(target->getChild(0)->getNodeKind() == store::StoreConsts::textNode, "");
 
       TextNode* textChild = reinterpret_cast<TextNode*>(target->getChild(0));
 
-      textChild->setTyped(theTypedValue);
+      textChild->setTypedValue(theTypedValue);
       if (theHaveListValue)
         textChild->setHaveListValue();
     }
@@ -522,7 +526,7 @@ UpdReplaceTextValue::~UpdReplaceTextValue()
   if (theIsTyped)
     theOldContent.setValue(NULL);
   else
-    theOldContent.setText(NULL);
+    theOldContent.destroyText();
 }
 
 
@@ -636,7 +640,9 @@ void UpdPut::apply()
     if (e.theErrorCode == API0020_DOCUMENT_ALREADY_EXISTS)
     {
       theOldDocument = store->getDocument(theTargetUri->getStringValue());
+
       store->deleteDocument(theTargetUri->getStringValue());
+
       store->addNode(theTargetUri->getStringValue(), theTarget);
     }
     else
@@ -654,6 +660,7 @@ void UpdPut::undo()
   SimpleStore* store = &GET_STORE();
 
   store->deleteDocument(theTargetUri->getStringValue());
+
   store->addNode(theTargetUri->getStringValue(), theOldDocument);
 }
 
@@ -1041,7 +1048,7 @@ void UpdCreateIndex::apply()
     if (e.theErrorCode == STR0045_DUPLICATE_NODE_ERROR)
     {
       ZORBA_ERROR_PARAM(XDDY0028_INDEX_DOMAIN_HAS_DUPLICATE_NODES, 
-                        theQName->getStringValue()->c_str(), "");
+                        theQName->getStringValue().c_str(), "");
     }
 
     throw e;
@@ -1080,7 +1087,7 @@ void UpdDeleteIndex::apply()
   if ((theIndex = store->getIndex(theQName)) == NULL)
   {
     ZORBA_ERROR_PARAM(STR0002_INDEX_DOES_NOT_EXIST,
-                      theQName->getStringValue()->c_str(), "");
+                      theQName->getStringValue().c_str(), "");
   }
 
   store->deleteIndex(theQName);
@@ -1120,19 +1127,19 @@ UpdRefreshIndex::~UpdRefreshIndex()
 }
 
 
-void UpdRefreshIndex::apply()                                                                                   
-{                                                                                                               
-  SimpleStore& store = GET_STORE();                                                                             
-                                                                                                                
-  if ((theIndex = store.getIndex(theQName)) == NULL)                                                            
-  {                                                                                                             
-    ZORBA_ERROR_PARAM(STR0002_INDEX_DOES_NOT_EXIST,                                                             
-                      theQName->getStringValue()->c_str(), "");                                                 
-  }                                                                                                             
-                                                                                                                
-  store.refreshIndex(theQName, theIndex->getSpecification(), theSourceIter);                                    
-                                                                                                                
-  theIsApplied = true;                                                                                          
+void UpdRefreshIndex::apply()
+{
+  SimpleStore& store = GET_STORE();
+
+  if ((theIndex = store.getIndex(theQName)) == NULL)
+  {
+    ZORBA_ERROR_PARAM(STR0002_INDEX_DOES_NOT_EXIST,
+                      theQName->getStringValue().c_str(), "");
+  }
+
+  store.refreshIndex(theQName, theIndex->getSpecification(), theSourceIter);
+
+  theIsApplied = true;
 }  
 
 

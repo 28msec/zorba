@@ -36,12 +36,12 @@ namespace zorba
 class AttributeValidationInfo
 {
 public:
-  xqpStringStore_t thePrefix;
-  xqpStringStore_t theUri;
-  xqpStringStore_t theLocalName;
+  zstring thePrefix;
+  zstring theUri;
+  zstring theLocalName;
   xqpStringStore_t theValue;
-  xqpStringStore_t theTypeURI;
-  xqpStringStore_t theTypeName;
+  zstring theTypeURI;
+  zstring theTypeName;
 
 public:
   AttributeValidationInfo(

@@ -20,6 +20,7 @@
 
 #include "util/uuid/sysdep.h"
 #include "util/uuid/uuid.h"
+#include "zorbatypes/xqpstring.h"
 
 namespace zorba {
 

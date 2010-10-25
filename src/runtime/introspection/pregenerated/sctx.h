@@ -212,7 +212,7 @@ public:
 class StaticNamespacesIteratorState : public PlanIteratorState
 {
 public:
-  std::vector<std::pair<xqpStringStore_t, xqpStringStore_t> > theBindings; //vector of namespace bindings
+  store::NsBindings theBindings; //vector of namespace bindings
   ulong thePosition; //current position
 
   StaticNamespacesIteratorState();

@@ -43,8 +43,7 @@
   </zorba:function>
 
   <zorba:state generateInit="true" generateReset="true">
-    <zorba:member type="xqp_string" name="theBaseUri" defaultValue="xqp_string()"
-                  brief="the base URI"/>
+    <zorba:member type="zstring" name="theBaseUri" brief="the base URI"/>
   </zorba:state>
 </zorba:iterator>
   
@@ -83,8 +82,7 @@
   </zorba:function>
 
   <zorba:state generateInit="true" generateReset="true">
-    <zorba:member type="xqp_string" name="theBaseUri" defaultValue="xqp_string()"
-      brief="the base URI"/>
+    <zorba:member type="zstring" name="theBaseUri" brief="the base URI"/>
   </zorba:state>
 </zorba:iterator>
   
@@ -155,7 +153,7 @@
       <zorba:member type="store::Item_t" 
                     name="default_column_node_name"
                     brief="default qname of the column element"/>
-      <zorba:member type="xqp_string" 
+      <zorba:member type="zstring" 
                     name="baseUri"
                     brief="keep the base uri from static context"/>
       <zorba:member type="checked_vector &lt;store::Item_t&gt;" 
@@ -205,7 +203,7 @@
       <zorba:member type="store::Item_t"
                     name="default_column_node_name"
                     brief="default qname of the column element"/>
-      <zorba:member type="xqp_string"
+      <zorba:member type="zstring"
                     name="baseUri"
                     brief="keep the base uri from static context"/>
       <zorba:member type="checked_vector &lt;store::Item_t&gt;"
@@ -264,7 +262,7 @@
     <zorba:member type="store::Item_t" 
                   name="default_column_node_name"
                   brief="default qname of the column element"/>
-    <zorba:member type="xqp_string" 
+    <zorba:member type="zstring" 
                   name="baseUri"
                   brief="keep the base uri from static context"/>
     <zorba:member type="checked_vector &lt;store::Item_t&gt;" 
@@ -314,7 +312,7 @@
       <zorba:member type="store::Item_t"
                     name="default_column_node_name"
                     brief="default qname of the column element"/>
-      <zorba:member type="xqp_string"
+      <zorba:member type="zstring"
                     name="baseUri"
                     brief="keep the base uri from static context"/>
       <zorba:member type="checked_vector &lt;store::Item_t&gt;"

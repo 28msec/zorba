@@ -311,7 +311,7 @@ void IndexDecl::analyzeExprInternal(
     if (!func->isDeterministic())
     {
       ZORBA_ERROR_LOC_PARAM(XDST0028_INDEX_NOT_DETERMINISTIC, e->get_loc(),
-                            theName->getStringValue()->c_str(), "");
+                            theName->getStringValue().c_str(), "");
     }
 
     if (func->isSource())
@@ -330,13 +330,13 @@ void IndexDecl::analyzeExprInternal(
         else
         {
           ZORBA_ERROR_LOC_PARAM(XDST0030_INDEX_NON_CONST_DATA_SOURCE, e->get_loc(),
-                                theName->getStringValue()->c_str(), "");
+                                theName->getStringValue().c_str(), "");
         }
       }
       else
       {
         ZORBA_ERROR_LOC_PARAM(XDST0029_INDEX_INVALID_DATA_SOURCE, e->get_loc(),
-                              theName->getStringValue()->c_str(), "");
+                              theName->getStringValue().c_str(), "");
       }
     }
     else if (func->getKind() == FunctionConsts::OP_VAR_DECLARE_1)
@@ -361,14 +361,14 @@ void IndexDecl::analyzeExprInternal(
     if (e == dotVar)
     {
       ZORBA_ERROR_LOC_PARAM(XDST0032_INDEX_REFERENCES_CTX_ITEM, e->get_loc(),
-                            theName->getStringValue()->c_str(), "");
+                            theName->getStringValue().c_str(), "");
     }
 
     if (e != getDomainVariable() &&
         std::find(varExprs.begin(), varExprs.end(), e) == varExprs.end())
     {
       ZORBA_ERROR_LOC_PARAM(XDST0031_INDEX_HAS_FREE_VARS, e->get_loc(),
-                            theName->getStringValue()->c_str(), "");
+                            theName->getStringValue().c_str(), "");
     }
   }
 
@@ -469,10 +469,12 @@ expr* IndexDecl::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
 
   theBuildExpr = flworExpr;
 
-  std::string msg = "build expr for index " + theName->getStringValue()->str();
-
   if (ccb->theConfig.optimize_cb != NULL)
+  {
+    std::string msg = "build expr for index " + theName->getStringValue().str();
+
     ccb->theConfig.optimize_cb(theBuildExpr.getp(), msg);
+  }
 
   return theBuildExpr.getp();
 }
@@ -593,10 +595,12 @@ DocIndexer* IndexDecl::getDocIndexer(CompilerCB* ccb, const QueryLoc& loc)
   flworExpr->set_return_expr(returnExpr.getp());
   flworExpr->add_clause(fc);
 
-  std::string msg = "entry-creator expr for index " + theName->getStringValue()->str();
-
   if (ccb->theConfig.optimize_cb != NULL)
+  {
+    std::string msg = "entry-creator expr for index " + theName->getStringValue().str();
+
     ccb->theConfig.optimize_cb(flworExpr.getp(), msg);
+  }
 
   theDocIndexerExpr = flworExpr;
 
@@ -618,7 +622,7 @@ std::string IndexDecl::toString()
 {
   std::ostringstream os;
 
-  os << "Index : " << theName->getStringValue()->c_str() << std::endl;
+  os << "Index : " << theName->getStringValue() << std::endl;
 
   os << "Domain Expr : " << std::endl;
 

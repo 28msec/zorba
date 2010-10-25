@@ -26,7 +26,6 @@
 #include "store/naive/naive_ft_token_iterator.h"
 #endif /* ZORBA_NO_FULL_TEXT */
 
-#include "zorbatypes/xqpstring.h"
 #include "zorbatypes/representations.h"
 #include "zorbatypes/datetime.h"
 #include "zorbautils/tokenizer.h"
@@ -41,6 +40,8 @@ namespace simplestore
 {
 
 class AtomicItemTokenizer;
+class QNameItem;
+typedef rchandle<QNameItem> QNameItem_t;
 
 
 /*****************************************************************************
@@ -146,16 +147,13 @@ public:
 
   store::Item_t getEBV() const { return theBaseItem->getEBV(); }
 
-  xqpStringStore_t getStringValue() const { return theBaseItem->getStringValue(); }
+  zstring getStringValue() const { return theBaseItem->getStringValue(); }
 
-  void getStringValue(xqpStringStore_t& strval) const
-  {
-    theBaseItem->getStringValue(strval);
-  }
+  void getStringValue2(zstring& val) const { theBaseItem->getStringValue2(val); }
 
-  void getStringValue(std::string& buf) const { theBaseItem->getStringValue(buf); }
+  void appendStringValue(zstring& buf) const { theBaseItem->appendStringValue(buf); }
 
-  xqpStringStore* getString() const { return theBaseItem->getString(); }
+  const zstring& getString() const { return theBaseItem->getString(); }
 
   xqp_base64Binary getBase64BinaryValue() const { return theBaseItem->getBase64BinaryValue(); }
 
@@ -248,12 +246,7 @@ public:
     return theBaseItem->getYearMonthDurationValue();
   }
 
-  std::vector<xqp_string> getStringVectorValue() const
-  {
-    return theBaseItem->getStringVectorValue();
-  }
-
-  xqp_string show() const { return "UserTypedAtomicItemImpl [" +theBaseItem->show() + "]"; }
+  zstring show() const { return "UserTypedAtomicItem [" + theBaseItem->show() + "]"; }
 };
 
 
@@ -266,10 +259,10 @@ class UntypedAtomicItem : public AtomicItem
   friend class AtomicItem;
 
 protected:
-  xqpStringStore_t theValue;
+  zstring theValue;
 
 protected:
-  UntypedAtomicItem(xqpStringStore_t& value) { theValue.transfer(value); }
+  UntypedAtomicItem(zstring& value) { theValue.take(value); }
 
   UntypedAtomicItem() {}
 
@@ -319,19 +312,20 @@ public:
         long timezone = 0,
         const XQPCollator* aCollation = 0) const
   {
-    return theValue->byteEqual(other->getString());
+    return theValue == other->getString();
   }
 
   store::Item_t getEBV( ) const;
 
-  xqpStringStore_t getStringValue() const { return theValue; }
-  xqpStringStore* getStringValueP() const { return theValue.getp(); }
-  void getStringValue(xqpStringStore_t& strval) const { strval = theValue; }
-  void getStringValue(std::string& buf) const { buf += theValue->str(); }
+  zstring getStringValue() const { return theValue; }
 
-  xqpStringStore* getString() const { return theValue.getp(); }
+  void getStringValue2(zstring& val) const { val = theValue; }
 
-  xqp_string show() const;
+  void appendStringValue(zstring& buf) const { buf += theValue; }
+
+  const zstring& getString() const { return theValue; }
+
+  zstring show() const;
 };
 
 
@@ -343,59 +337,24 @@ class QNameItem : public AtomicItem
   friend class QNamePool;
 
 protected:
-  static xqpStringStore_t theEmptyPrefix;
 
-  xqpStringStore_t    theNamespace;
-  xqpStringStore_t    thePrefix;
+  zstring      theNamespace;
+  zstring      thePrefix;
+  zstring      theLocal;
 
-  union
-  {
-    xqpStringStore  * theLocal;
-    QNameItem       * theNormQN;
-  }                   theUnion;
+  QNameItem_t  theNormQName;
 
-  uint16_t            thePosition;
-  uint16_t            theNextFree;
-  uint16_t            thePrevFree;
-
-protected:
-  QNameItem()
-    :
-    thePosition(0),
-    theNextFree(0),
-    thePrevFree(0)
-  {
-    theUnion.theLocal = NULL;
-  }
-
-  void free();
-
-  bool isValid() const { return theUnion.theLocal != NULL; }
-
-  bool isInCache() const { return thePosition != 0; }
-
-  bool isOverflow() const { return thePosition == 0; }
-
-  bool isNormalized() const { return thePrefix->empty(); }
-
-  QNameItem* detachNormalized()
-  {
-    assert(!isNormalized());
-    QNameItem* qn = theUnion.theNormQN;
-    theUnion.theNormQN = NULL;
-    return qn;
-  }
-
-  void setNormalized(QNameItem* qn);
-
-  void unsetNormalized();
-
-  void setLocal(xqpStringStore* local);
-
-  void unsetLocal();
+  uint16_t     thePosition;
+  uint16_t     theNextFree;
+  uint16_t     thePrevFree;
 
 public:
-  virtual ~QNameItem();
+  ~QNameItem();
+
+  QNameItem* getNormalized() const
+  {
+    return (isNormalized() ? const_cast<QNameItem*>(this) : theNormQName.getp());
+  }
 
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
 
@@ -407,11 +366,11 @@ public:
     return (getNormalized() == static_cast<const QNameItem*>(item)->getNormalized());
   }
 
-  xqpStringStore* getNamespace() const { return theNamespace.getp(); }
+  const zstring& getNamespace() const { return theNamespace; }
 
-  xqpStringStore* getPrefix() const    { return thePrefix.getp(); }
+  const zstring& getPrefix() const { return thePrefix; }
 
-  xqpStringStore* getLocalName() const { return getNormalized()->theUnion.theLocal; }
+  const zstring& getLocalName() const { return getNormalized()->theLocal; }
 
   SchemaTypeCode getTypeCode() const { return XS_QNAME; }
 
@@ -419,39 +378,84 @@ public:
 
   store::Item_t getEBV() const;
 
-  xqpStringStore_t getStringValue() const;
-  void getStringValue(xqpStringStore_t& strval) const;
-  void getStringValue(std::string& buf) const;
+  zstring getStringValue() const;
+
+  void getStringValue2(zstring& val) const;
+
+  void appendStringValue(zstring& buf) const;
 
   bool isIdQName() const;
 
   bool isBaseUri() const;
 
-  QNameItem* getNormalized() const
+  zstring show() const;
+
+protected:
+  QNameItem() : thePosition(0), theNextFree(0), thePrevFree(0)
   {
-    return (isNormalized() ?
-            const_cast<QNameItem*>(this) :
-            theUnion.theNormQN);
   }
 
-  xqp_string show() const;
+  void free();
+
+  bool isValid() const { return !theLocal.empty() || theNormQName != NULL; }
+
+  bool isInCache() const { return thePosition != 0; }
+
+  bool isOverflow() const { return thePosition == 0; }
+
+  bool isNormalized() const { return thePrefix.empty(); }
+
+  void setNormQName(QNameItem* qn)
+  {
+    assert(theLocal.empty() && theNormQName == NULL && !isNormalized());
+
+    theNormQName = qn;
+  }
+
+  void unsetNormQName()
+  {
+    assert(theLocal.empty() && theNormQName != NULL && !isNormalized());
+
+    theNormQName = NULL;
+  }
+
+  QNameItem* detachNormQName()
+  {
+    assert(theLocal.empty() && theNormQName != NULL && !isNormalized());
+
+    return theNormQName.release();
+  }
+
+  void setLocalName(const zstring& local)
+  {
+    assert(theLocal.empty() && theNormQName == NULL && isNormalized());
+
+    theLocal = local;
+  }
+
+  void unsetLocalName() 
+  {
+    assert(!theLocal.empty() && theNormQName == NULL && isNormalized());
+
+    theLocal.clear();
+  }
 };
 
 
 /*******************************************************************************
   class AnyUriItem
 ********************************************************************************/
-class AnyUriItemImpl : public AtomicItem
+class AnyUriItem : public AtomicItem
 {
-protected:
-  xqpStringStore_t theValue;
-
-protected:
-  // make sure that only created by the factory
   friend class BasicItemFactory;
-  AnyUriItemImpl(xqpStringStore_t& value) { theValue.transfer(value); }
 
-  AnyUriItemImpl() {}
+protected:
+  zstring theValue;
+
+protected:
+  AnyUriItem(zstring& value) { theValue.take(value); }
+
+  AnyUriItem() {}
 
 public:
   SchemaTypeCode getTypeCode() const { return XS_ANY_URI; }
@@ -465,7 +469,7 @@ public:
         long timezone = 0,
         const XQPCollator* aCollation = 0) const
   {
-    return item->getString()->byteEqual(theValue.getp());
+    return item->getString() == theValue;
   }
 
   long compare(
@@ -473,20 +477,20 @@ public:
         long timezone = 0,
         const XQPCollator* aCollation = 0) const
   {
-    xqpStringStore* otherStr = other->getString();
-    return theValue->byteCompare(otherStr->c_str(), otherStr->bytes());
+    return theValue.compare(other->getString());
   }
 
-  store::Item_t getEBV( ) const;
+  store::Item_t getEBV() const;
 
-  xqpStringStore_t getStringValue() const { return theValue.getp(); }
-  xqpStringStore* getStringValueP() const  { return theValue.getp(); }
-  void getStringValue(xqpStringStore_t& strval) const { strval = theValue; }
-  void getStringValue(std::string& buf) const { buf += theValue->str(); }
+  zstring getStringValue() const { return theValue; }
 
-  xqpStringStore* getString() const { return theValue.getp(); }
+  void getStringValue2(zstring& val) const { val = theValue; }
 
-  xqp_string show() const;
+  void appendStringValue(zstring& buf) const { buf += theValue; }
+
+  const zstring& getString() const { return theValue; }
+
+  zstring show() const;
 };
 
 
@@ -500,10 +504,10 @@ class StringItem : public AtomicItem
   friend class AtomicItemTokenizer;
 
 protected:
-  xqpStringStore_t theValue;
+  zstring theValue;
 
 protected:
-  StringItem(xqpStringStore_t& value) { theValue.transfer(value); }
+  StringItem(zstring& value) { theValue.take(value); }
 
   StringItem() {}
 
@@ -525,16 +529,17 @@ public:
         long timezone = 0,
         const XQPCollator* aCollation = 0) const;
 
-  store::Item_t getEBV( ) const;
+  store::Item_t getEBV() const;
 
-  xqpStringStore_t getStringValue() const { return theValue; }
-  xqpStringStore* getStringValueP() const { return theValue.getp(); }
-  void getStringValue(xqpStringStore_t& strval) const { strval = theValue; }
-  void getStringValue(std::string& buf) const { buf += theValue->str(); }
+  zstring getStringValue() const { return theValue; }
 
-  xqpStringStore* getString() const { return theValue.getp(); }
+  void getStringValue2(zstring& val) const { val = theValue; }
 
-  virtual xqp_string show() const;
+  void appendStringValue(zstring& buf) const { buf += theValue; }
+
+  const zstring& getString() const { return theValue; }
+
+  virtual zstring show() const;
 
 #ifndef ZORBA_NO_FULL_TEXT
   FTTokenIterator_t
@@ -587,14 +592,14 @@ class NormalizedStringItemImpl : public StringItem
   friend class BasicItemFactory;
 
 protected:
-  NormalizedStringItemImpl(xqpStringStore_t& value) : StringItem(value) {}
+  NormalizedStringItemImpl(zstring& value) : StringItem(value) {}
 
 public:
   virtual SchemaTypeCode getTypeCode() const { return XS_NORMALIZED_STRING; }
 
   virtual store::Item* getType() const;
 
-  virtual xqp_string show() const;
+  virtual zstring show() const;
 };
 
 
@@ -606,15 +611,13 @@ class TokenItemImpl : public NormalizedStringItemImpl
   friend class BasicItemFactory;
 
 public:
-  TokenItemImpl(xqpStringStore_t& value) : NormalizedStringItemImpl(value) {}
+  TokenItemImpl(zstring& value) : NormalizedStringItemImpl(value) {}
 
   virtual SchemaTypeCode getTypeCode() const { return XS_TOKEN; }
 
   virtual store::Item* getType() const;
 
-  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
-
-  virtual xqp_string show() const;
+  virtual zstring show() const;
 };
 
 
@@ -626,14 +629,14 @@ class NMTOKENItemImpl : public TokenItemImpl
   friend class BasicItemFactory;
 
 protected:
-  NMTOKENItemImpl(xqpStringStore_t& value) : TokenItemImpl(value) {}
+  NMTOKENItemImpl(zstring& value) : TokenItemImpl(value) {}
 
 public:
   virtual SchemaTypeCode getTypeCode() const { return XS_NMTOKEN; }
 
   virtual store::Item* getType() const;
 
-  virtual xqp_string show() const;
+  virtual zstring show() const;
 };
 
 
@@ -645,14 +648,14 @@ class LanguageItemImpl : public TokenItemImpl
   friend class BasicItemFactory;
 
 protected:
-  LanguageItemImpl(xqpStringStore_t& value) : TokenItemImpl(value) {}
+  LanguageItemImpl(zstring& value) : TokenItemImpl(value) {}
 
 public:
   virtual SchemaTypeCode getTypeCode() const { return XS_LANGUAGE; }
 
   virtual store::Item* getType() const;
 
-  virtual xqp_string show() const;
+  virtual zstring show() const;
 };
 
 
@@ -664,14 +667,14 @@ class NameItemImpl : public TokenItemImpl
   friend class BasicItemFactory;
 
 protected:
-  NameItemImpl(xqpStringStore_t& value) : TokenItemImpl(value) {}
+  NameItemImpl(zstring& value) : TokenItemImpl(value) {}
 
 public:
   virtual SchemaTypeCode getTypeCode() const { return XS_NAME; }
 
   virtual store::Item* getType() const;
 
-  virtual xqp_string show() const;
+  virtual zstring show() const;
 };
 
 
@@ -683,14 +686,14 @@ class NCNameItemImpl : public NameItemImpl
   friend class BasicItemFactory;
 
 protected:
-  NCNameItemImpl(xqpStringStore_t& value) : NameItemImpl(value) {}
+  NCNameItemImpl(zstring& value) : NameItemImpl(value) {}
 
 public:
   virtual SchemaTypeCode getTypeCode() const { return XS_NCNAME; }
 
   virtual store::Item* getType() const;
 
-  virtual xqp_string show() const;
+  virtual zstring show() const;
 };
 
 
@@ -702,14 +705,14 @@ class IDItemImpl : public NCNameItemImpl
   friend class BasicItemFactory;
 
 protected:
-  IDItemImpl(xqpStringStore_t& value) : NCNameItemImpl(value) { }
+  IDItemImpl(zstring& value) : NCNameItemImpl(value) { }
 
 public:
   SchemaTypeCode getTypeCode() const { return XS_ID; }
 
   store::Item* getType() const;
 
-  virtual xqp_string show() const;
+  virtual zstring show() const;
 };
 
 /*******************************************************************************
@@ -720,14 +723,14 @@ class IDREFItemImpl : public NCNameItemImpl
   friend class BasicItemFactory;
 
 protected:
-  IDREFItemImpl(xqpStringStore_t& value) : NCNameItemImpl(value) { }
+  IDREFItemImpl(zstring& value) : NCNameItemImpl(value) { }
 
 public:
   SchemaTypeCode getTypeCode() const { return XS_IDREF; }
 
   store::Item* getType() const;
 
-  virtual xqp_string show() const;
+  virtual zstring show() const;
 };
 
 /*******************************************************************************
@@ -738,14 +741,14 @@ class ENTITYItemImpl : public NCNameItemImpl
   friend class BasicItemFactory;
 
 protected:
-  ENTITYItemImpl(xqpStringStore_t& value) : NCNameItemImpl(value) { }
+  ENTITYItemImpl(zstring& value) : NCNameItemImpl(value) { }
 
 public:
   SchemaTypeCode getTypeCode() const { return XS_ENTITY; }
 
   store::Item* getType() const;
 
-  virtual xqp_string show() const;
+  virtual zstring show() const;
 };
 
 
@@ -799,11 +802,13 @@ public:
 
   store::Item_t getEBV() const;
 
-  xqpStringStore_t getStringValue() const;
-  void getStringValue(xqpStringStore_t& strval) const;
-  void getStringValue(std::string& buf) const;
+  zstring getStringValue() const;
 
-  xqp_string show() const;
+  void getStringValue2(zstring& val) const;
+
+  void appendStringValue(zstring& buf) const;
+
+  zstring show() const;
 };
 
 
@@ -857,11 +862,13 @@ public:
 
   store::Item_t getEBV() const;
 
-  xqpStringStore_t getStringValue() const;
-  void getStringValue(xqpStringStore_t& strval) const;
-  void getStringValue(std::string& buf) const;
+  zstring getStringValue() const;
 
-  xqp_string show() const;
+  void getStringValue2(zstring& val) const;
+
+  void appendStringValue(zstring& buf) const;
+
+  zstring show() const;
 };
 
 
@@ -913,11 +920,13 @@ public:
 
 	store::Item_t getEBV( ) const;
 
-  xqpStringStore_t getStringValue() const;
-  void getStringValue(xqpStringStore_t& strval) const;
-  void getStringValue(std::string& buf) const;
+  zstring getStringValue() const;
 
-  xqp_string show() const;
+  void getStringValue2(zstring& val) const;
+
+  void appendStringValue(zstring& buf) const;
+
+  zstring show() const;
 };
 
 
@@ -972,11 +981,13 @@ public:
 
   store::Item_t getEBV() const;
 
-  xqpStringStore_t getStringValue() const;
-  void getStringValue(xqpStringStore_t& strval) const;
-  void getStringValue(std::string& buf) const;
+  zstring getStringValue() const;
 
-  xqp_string show() const;
+  void getStringValue2(zstring& val) const;
+
+  void appendStringValue(zstring& buf) const;
+
+  zstring show() const;
 };
 
 
@@ -1047,13 +1058,15 @@ public:
 
   store::Item_t getEBV() const;
 
-  xqpStringStore_t getStringValue() const;
-  void getStringValue(xqpStringStore_t& strval) const;
-  void getStringValue(std::string& buf) const;
+  zstring getStringValue() const;
+
+  void getStringValue2(zstring& val) const;
+
+  void appendStringValue(zstring& buf) const;
 
   bool isNaN() const;
 
-  xqp_string show() const;
+  zstring show() const;
 };
 
 
@@ -1121,13 +1134,15 @@ public:
 
   store::Item_t getEBV( ) const;
 
-  xqpStringStore_t getStringValue() const;
-  void getStringValue(xqpStringStore_t& strval) const;
-  void getStringValue(std::string& buf) const;
+  zstring getStringValue() const;
+
+  void getStringValue2(zstring& val) const;
+
+  void appendStringValue(zstring& buf) const;
 
   bool isNaN() const { return false; }
 
-  virtual xqp_string show() const;
+  virtual zstring show() const;
 };
 
 
@@ -1148,7 +1163,7 @@ public:
 
   store::Item* getType() const;
 
-  xqp_string show() const;
+  zstring show() const;
 };
 
 
@@ -1169,7 +1184,7 @@ public:
 
   store::Item* getType() const;
 
-  xqp_string show() const;
+  zstring show() const;
 };
 
 
@@ -1194,7 +1209,7 @@ public:
 
   store::Item* getType() const;
 
-  xqp_string show() const;
+  zstring show() const;
 };
 
 
@@ -1217,7 +1232,7 @@ public:
 
   store::Item* getType() const;
 
-  xqp_string show() const;
+  zstring show() const;
 };
 
 
@@ -1287,13 +1302,15 @@ public:
 
   store::Item_t getEBV( ) const;
 
-  xqpStringStore_t getStringValue() const;
-  void getStringValue(xqpStringStore_t& strval) const;
-  void getStringValue(std::string& buf) const;
+  zstring getStringValue() const;
+
+  void getStringValue2(zstring& val) const;
+
+  void appendStringValue(zstring& buf) const;
 
   bool isNaN() const { return false; }
 
-  xqp_string show() const;
+  zstring show() const;
 };
 
 
@@ -1367,11 +1384,13 @@ public:
 
   store::Item_t getEBV() const;
 
-  xqpStringStore_t getStringValue() const;
-  void getStringValue(xqpStringStore_t& strval) const;
-  void getStringValue(std::string& buf) const;
+  zstring getStringValue() const;
 
-  xqp_string show() const;
+  void getStringValue2(zstring& val) const;
+
+  void appendStringValue(zstring& buf) const;
+
+  zstring show() const;
 };
 
 
@@ -1445,11 +1464,13 @@ public:
 
   store::Item_t getEBV( ) const;
 
-  xqpStringStore_t getStringValue() const;
-  void getStringValue(xqpStringStore_t& strval) const;
-  void getStringValue(std::string& buf) const;
+  zstring getStringValue() const;
 
-  xqp_string show() const;
+  void getStringValue2(zstring& val) const;
+
+  void appendStringValue(zstring& buf) const;
+
+  zstring show() const;
 
   bool isNaN() const { return false; }
 };
@@ -1527,13 +1548,15 @@ public:
 
   store::Item_t getEBV( ) const;
 
-  xqpStringStore_t getStringValue() const;
-  void getStringValue(xqpStringStore_t& strval) const;
-  void getStringValue(std::string& buf) const;
+  zstring getStringValue() const;
+
+  void getStringValue2(zstring& val) const;
+
+  void appendStringValue(zstring& buf) const;
 
   bool isNaN() const { return false; }
 
-  xqp_string show() const;
+  zstring show() const;
 };
 
 
@@ -1607,11 +1630,13 @@ protected:
 
   store::Item_t getEBV( ) const;
 
-  xqpStringStore_t getStringValue() const;
-  void getStringValue(xqpStringStore_t& strval) const;
-  void getStringValue(std::string& buf) const;
+  zstring getStringValue() const;
 
-  xqp_string show() const;
+  void getStringValue2(zstring& val) const;
+
+  void appendStringValue(zstring& buf) const;
+
+  zstring show() const;
 };
 
 
@@ -1696,11 +1721,13 @@ public:
 
   store::Item_t getEBV( ) const;
 
-  xqpStringStore_t getStringValue() const;
-  void getStringValue(xqpStringStore_t& strval) const;
-  void getStringValue(std::string& buf) const;
+  zstring getStringValue() const;
 
-  xqp_string show() const;
+  void getStringValue2(zstring& val) const;
+
+  void appendStringValue(zstring& buf) const;
+
+  zstring show() const;
 };
 
 
@@ -1787,11 +1814,13 @@ public:
 
   store::Item_t getEBV( ) const;
 
-  xqpStringStore_t getStringValue() const;
-  void getStringValue(xqpStringStore_t& strval) const;
-  void getStringValue(std::string& buf) const;
+  zstring getStringValue() const;
 
-  xqp_string show() const;
+  void getStringValue2(zstring& val) const;
+
+  void appendStringValue(zstring& buf) const;
+
+  zstring show() const;
 };
 
 
@@ -1880,11 +1909,13 @@ public:
 
   store::Item_t getEBV() const;
 
-  xqpStringStore_t getStringValue() const;
-  void getStringValue(xqpStringStore_t& strval) const;
-  void getStringValue(std::string& buf) const;
+  zstring getStringValue() const;
 
-  xqp_string show() const;
+  void getStringValue2(zstring& val) const;
+
+  void appendStringValue(zstring& buf) const;
+
+  zstring show() const;
 };
 
 
@@ -1932,11 +1963,13 @@ public:
 
   store::Item_t getEBV( ) const;
 
-  xqpStringStore_t getStringValue() const;
-  void getStringValue(xqpStringStore_t& strval) const;
-  void getStringValue(std::string& buf) const;
+  zstring getStringValue() const;
 
-  xqp_string show() const;
+  void getStringValue2(zstring& val) const;
+
+  void appendStringValue(zstring& buf) const;
+
+  zstring show() const;
 };
 
 
@@ -1972,11 +2005,13 @@ public:
     return theValue.equal(other->getBase64BinaryValue());
   }
 
-  xqpStringStore_t getStringValue() const;
-  void getStringValue(xqpStringStore_t& strval) const;
-  void getStringValue(std::string& buf) const;
+  zstring getStringValue() const;
 
-  xqp_string show() const;
+  void getStringValue2(zstring& val) const;
+
+  void appendStringValue(zstring& buf) const;
+
+  zstring show() const;
 };
 
 
@@ -2012,11 +2047,13 @@ public:
     return theValue.equal(other->getHexBinaryValue());
   }
 
-  xqpStringStore_t getStringValue() const;
-  void getStringValue(xqpStringStore_t& strval) const;
-  void getStringValue(std::string& buf) const;
+  zstring getStringValue() const;
 
-  xqp_string show() const;
+  void getStringValue2(zstring& val) const;
+
+  void appendStringValue(zstring& buf) const;
+
+  zstring show() const;
 };
 
 
@@ -2055,7 +2092,7 @@ public:
 
   SchemaTypeCode getTypeCode() const { return ZXSE_ERROR; }
 
-  xqp_string show() const;
+  zstring show() const;
 
 protected:
   // Disable copy

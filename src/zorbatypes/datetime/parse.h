@@ -13,93 +13,67 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef XQP_PRASE_H
-#define XQP_PRASE_H
+#ifndef ZORBA_DATETIME_UTILS_H
+#define ZORBA_DATETIME_UTILS_H
 
 #include <string>
 #include <zorba/config.h>
+
 #include "zorbatypes/numconversions.h"
+
+#include "util/ascii_util.h"
 
 namespace zorba
 {
 
-ZORBA_DLL_PUBLIC void skip_whitespace(std::string& s, unsigned int& position);
+
+/*******************************************************************************
+  Parses an integer number. Will parse digits starting with the given position
+  stopping at first non-digit character and updating the position. If min_digits
+  and/or max_digits values are greater than 0, the number of parsed characters
+  must obey these conditions, or the function will return an error.
+ 
+  @param str The source string to parse
+  @param str_len the length of the input string
+  @param position The position to start parsing from
+  @param result Contains the result of the parsing
+  @param min_digits Minimum number of digits
+  @param max_digits Maximum number od digits
+  @param delta Where to start parsing, the first digit being pointed by position+delta
+  @return Returns 1 on an error, 0 on success
+********************************************************************************/
+int parse_long(
+    const char* str,
+    ulong str_len,
+    ascii::size_type& position,
+    long& result,
+    long min_digits = -1,
+    long max_digits = -1,
+    long delta = 0);
 
 
-/**
- * Parses an integer number. Will parse digits starting with the given position stopping
- * at first non-digit character and updating the position. If min_digits and/or max_digits values
- * are greater than 0, the number of parsed characters must obey these conditions, or the function
- * will return an error.
- *
- * @param s The source string to parse
- * @param position The position to start parsing from
- * @param result Contains the result of the parsing
- * @param min_digits Minimum number of digits
- * @param max_digits Maximum number od digits
- * @param delta Where to start parsing, the first digit being pointed by position+delta
- * @return Returns 1 on an error, 0 on success
- */
-template <typename T, typename S> 
-int parse_int(
-    S& s,
-    unsigned int& position,
-    T& result,
-    int min_digits = -1,
-    int max_digits = -1,
-	int delta = 0)
+/*******************************************************************************
+  Parses the fractional part of double number, not including the decimal dot.
+
+  @param s
+  @param position
+  @param result
+  @return
+********************************************************************************/
+ZORBA_DLL_PUBLIC inline double parse_frac(
+    const char* str,
+    ulong strlen,
+    ascii::size_type& position,
+    double& result)
 {
-  int digits = 0;
-  if (s[position+delta] < '0' || s[position+delta] > '9')
-    return 1;
-
-  result = 0;
-  while (position+delta < s.size() && s[position+delta] >= '0' && s[position+delta] <= '9')
-  {
-    result = 10*result + s[position+delta] - '0';
-    position++;
-    digits++;
-  }
-
-  if (min_digits >= 0 && digits < min_digits)
-    return 1;
-
-  if (max_digits >= 0 && digits > max_digits)
-    return 1;
-
-  return 0;
-}
-
-template <typename T> 
-int parse_int_const_position(
-    std::string& s,
-    int position,
-    T& result,
-    int min_digits = -1,
-    int max_digits = -1)
-{
-  unsigned int pos = position;
-  return parse_int<T>(s, pos, result, min_digits, max_digits);
-}
-
-
-/**
- * Parses the fractional part of double number, not including the decimal dot.
- * @param s 
- * @param position 
- * @param result 
- * @return 
- */
-ZORBA_DLL_PUBLIC inline double parse_frac(std::string& s, unsigned int& position, double& result)
-{
-  if (s[position] < '0' || s[position] > '9')
+  if (str[position] < '0' || str[position] > '9')
     return 1;
 
   double temp = 0.1;
   result = 0;
-  while (position < s.size() && s[position] >= '0' && s[position] <= '9')
+  while (position < strlen && str[position] >= '0' && str[position] <= '9')
   {
-    result += temp * (s[position] - '0');
+    result += temp * (str[position] - '0');
     temp /= 10;
     position++;
   }
@@ -111,7 +85,7 @@ ZORBA_DLL_PUBLIC inline double parse_frac(std::string& s, unsigned int& position
 ZORBA_DLL_PUBLIC inline std::string to_string(int value, int min_digits = 0)
 {
   std::string zeros = "";
-  std::string temp = NumConversions::longToStr(value)->str();
+  const std::string& temp = NumConversions::longToStr(value).str();
   
   for (int i=temp.size(); i<min_digits; i++)
     zeros += '0';
@@ -119,12 +93,14 @@ ZORBA_DLL_PUBLIC inline std::string to_string(int value, int min_digits = 0)
   return zeros + temp;
 }
 
+
 /**
  * Returns the number of leap years between 1 AD and the given year.
  * @param year 
  * @return 
  */
 ZORBA_DLL_PUBLIC int leap_years_count(int year);
+
 
 template <typename T>
 T quotient(T a, T b)
@@ -135,6 +111,7 @@ T quotient(T a, T b)
     return (a+1) / b - 1;
 }
 
+
 template <typename T> 
 T modulo(T a, T b)
 {
@@ -144,6 +121,7 @@ T modulo(T a, T b)
 
   return a;
 }
+
 
 template <typename T> 
 int floor(T a)
@@ -156,6 +134,7 @@ int floor(T a)
     return (int)(a-1);
 }
 
+
 template <typename T> 
 T abs(T value)
 {
@@ -164,6 +143,7 @@ T abs(T value)
   else
     return value;
 }
+
 
 /**
  * Rounds to the nearest integer
@@ -176,15 +156,19 @@ ZORBA_DLL_PUBLIC inline int round(double value)
     return int(value-0.5);
 }
 
+
 ZORBA_DLL_PUBLIC inline double frac(double value)
 {
   return value - floor<double>(value);
 }
 
+
 ZORBA_DLL_PUBLIC bool is_digit(char ch);
+
 
 ZORBA_DLL_PUBLIC bool are_digits(std::string& s, unsigned int& position, int count);
     
+
 // Returns the last day of the given year and month. E.g. for 1980 and 2 it
 // will return 29. Returns 0 on an error
 ZORBA_DLL_PUBLIC int get_last_day(int year, int month);

@@ -27,69 +27,61 @@ namespace zorba
 
 class ZORBA_DLL_PUBLIC TimeZone : protected Duration
 {
+protected:
+  bool timezone_not_set;
+
 public:
-  virtual ~TimeZone() { };
+  /**
+   *  Returns 0 on success.
+   */
+  static int parseTimeZone(const char* str, ulong strlen, TimeZone& tz);
+
+  /**
+   *  Returns 0 on success.
+   */
+  static int createTimeZone(int hours, int minutes, int seconds, TimeZone& tz);
+
+public:
+  ~TimeZone() { };
 
   TimeZone() : timezone_not_set(true) { };
   
   TimeZone(short hours);
 
-  /**
-   *  Returns 0 on success.
-   */
-  static int
-  parseTimeZone(const xqpString& s, TimeZone& tz);
-
-  /**
-   *  Returns 0 on success.
-   */
-  static int
-  createTimeZone(int hours, int minutes, int seconds, TimeZone& tz);
-
-  bool
-  operator<(const TimeZone& t) const;
-      
-  bool
-  operator==(const TimeZone& t) const;
-      
-  int
-  compare(const TimeZone& t) const;
-
-  xqpString
-  toString() const;
-
-  virtual bool
-  isNegative() const;
-
-  virtual long
-  getHours() const;
-
-  virtual long
-  getMinutes() const;
-
-  virtual xqp_decimal
-  getSeconds() const;
-
-  virtual long
-  getIntSeconds() const;
-
-  virtual long
-  getFractionalSeconds() const;
-
-  uint32_t 
-  hash(int implicit_timezone_seconds) const;
-
-  bool
-  timeZoneNotSet() const;
-
-protected:
-  bool timezone_not_set;
-  
-public:
   SERIALIZABLE_CLASS(TimeZone)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(TimeZone, Duration)
-  void serialize(::zorba::serialization::Archiver &ar);
+  void serialize(::zorba::serialization::Archiver& ar);
+
+  bool operator<(const TimeZone& t) const;
+      
+  bool operator==(const TimeZone& t) const;
+      
+  int compare(const TimeZone& t) const;
+
+  zstring toString() const;
+
+  bool isNegative() const;
+
+  long getHours() const;
+
+  long getMinutes() const;
+
+  xqp_decimal getSeconds() const;
+
+  long getIntSeconds() const;
+
+  long getFractionalSeconds() const;
+
+  uint32_t hash(int implicit_timezone_seconds) const;
+
+  bool timeZoneNotSet() const;
 };
 
 } /* namespace zorba */
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

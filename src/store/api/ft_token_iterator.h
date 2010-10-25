@@ -98,4 +98,9 @@ typedef rchandle<FTTokenIterator> FTTokenIterator_t;
 
 } // namespace zorba
 #endif  /* ZORBA_FT_TOKEN_ITERATOR_H */
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
 /* vim:set et sw=2 ts=2: */

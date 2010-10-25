@@ -36,65 +36,48 @@ class TextNodeContent
 private:
   union
   {
-    xqpStringStore  * text;
-    store::Item     * value;
+    void          * text;
+    store::Item   * value;
   }
   theContent;
 
 public:
   TextNodeContent() 
   {
-    theContent.text = NULL;
+    theContent.value = NULL;
   }
 
   ~TextNodeContent()
   {
-    assert(theContent.text == NULL);
+    assert(theContent.value == NULL);
   }
 
-  xqpStringStore* getText() const
+  const zstring& getText() const
   {
-    return theContent.text;
+    return *reinterpret_cast<const zstring*>(this);
   }
 
-  xqpStringStore* releaseText()
+  void setText(zstring& text)
   {
-    xqpStringStore* tmp = theContent.text;
+    reinterpret_cast<zstring*>(this)->take(text);
+  }
+
+  void setText(TextNodeContent& other)
+  {
+    reinterpret_cast<zstring*>(this)->
+    take(*reinterpret_cast<zstring*>(&other));
+  }
+
+  void copyText(const zstring& text)
+  {
+    *reinterpret_cast<zstring*>(this) = text;
+  }
+
+  void destroyText()
+  {
+    (*reinterpret_cast<zstring*>(this)).~zstring();
     theContent.text = NULL;
-    return tmp; 
   }
-
-  void setText(xqpStringStore_t& text)
-  {
-    if (theContent.text != NULL)
-      theContent.text->removeReference(NULL
-                                       SYNC_PARAM2(theContent.text->getRCLock()));
-
-    theContent.text = text.release();
-  }
-
-  void setText(xqpStringStore* text)
-  {
-    if (theContent.text != NULL)
-      theContent.text->removeReference(NULL
-                                       SYNC_PARAM2(theContent.text->getRCLock()));
-
-    theContent.text = text;
-  }
-
-  void copyText(xqpStringStore* text)
-  {
-    if (theContent.text != NULL)
-      theContent.text->removeReference(NULL
-                                       SYNC_PARAM2(theContent.text->getRCLock()));
-
-    theContent.text = text;
-
-    if (text)
-      theContent.text->addReference(NULL
-                                    SYNC_PARAM2(theContent.text->getRCLock()));
-  }
-
 
   store::Item* getValue() const
   {
@@ -140,6 +123,10 @@ public:
       theContent.value->addReference(NULL
                                      SYNC_PARAM2(theContent.value->getRCLock()));
   }
+
+private:
+  TextNodeContent(const TextNodeContent& other);
+  TextNodeContent& operator=(const TextNodeContent& other);
 };
 
 

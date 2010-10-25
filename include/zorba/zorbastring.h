@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #ifndef ZORBA_STRING_API_H
 #define ZORBA_STRING_API_H
 
@@ -21,8 +22,6 @@
 #include <zorba/config.h>
 
 namespace zorba {
-
-class xqpStringStore;
 
 /** \brief The Zorba String class.
  *
@@ -40,25 +39,27 @@ public:
 
   /** \brief Copy constructor
    */
-  String(const String& other);
+  String( String const &s );
 
+#if 0
   /** \brief Constructor that is used to construct Items in the Zorba engine itself.
    *
    * This constructor is for internal use only.
    */
   String(xqpStringStore* aString);
+#endif
 
   /** \brief Constructor to construct a String from a const char*.
    *
    * @param aString the const char* to construct the String from.
    */
-  String(const char* aString);
+  String( char const *s );
 
   /** \brief Constructor to construct a String from a std::string.
    *
-   * @param aString the std::string to construct the String from.
+   * @param s the std::string to construct the String from.
    */
-  String(const std::string& aString);
+  String( std::string const &s );
 
   /** \brief Destructor
    */
@@ -69,12 +70,14 @@ public:
   const String& 
   operator =(const String& other);
 
+#if 0
   /** \brief Assingment operator that is used in the Zorba engine itself.
    *
    * This operator is for internal use only.
    */
   const String&
   operator =(xqpStringStore *other);
+#endif
 
   /** \brief Returns a non-modifiable standard C character array version of the string.
    *
@@ -135,7 +138,9 @@ public:
   operator==(const String& str) const;
 
   bool
-  operator!=(const String& str) const;
+  operator!=(const String& str) const {
+    return !(*this == str);
+  }
 
   bool
   operator<(const String& str) const;
@@ -150,10 +155,14 @@ public:
   operator>=(const String& str) const;
 
   String
-  operator+(const String& str) const;
+  operator+(const String& str) const {
+    return append( str );
+  }
 
   String
-  operator+(const char* str) const;
+  operator+(const char* str) const {
+    return append( str );
+  }
   
   String&
   operator+=(const String& str);
@@ -165,7 +174,7 @@ public:
    *
    */  
   bool
-  byteEqual(const char* aString, unsigned int aBytes) const;
+  byteEqual( char const *s, unsigned s_n ) const;
 
   /** \brief Locate in "this" the first occurrence of the "pattern" substring.
    *
@@ -201,7 +210,7 @@ public:
    * @return The substring of "this" starting at index "aIndex".
    */  
   String
-  substring(unsigned int aIndex) const;
+  substring( unsigned pos ) const;
 
   /** \brief Returns a new zorba::String containing the substring of "this"
    *         starting at a certain index and a certain length.
@@ -210,7 +219,7 @@ public:
    *         having the length "aLength".
    */  
   String
-  substring(unsigned int aIndex, unsigned int aLength) const;
+  substring( unsigned pos, unsigned n ) const;
 
   /** \brief Returns the character in "this" at certain position.
    *
@@ -240,14 +249,14 @@ public:
    *
    * @return String the String convert to uppercase.
    */  
-  const String&
+  String&
   uppercase();
 
   /** \brief Convert to lowercase.
    *
    * @return String the String convert to lowercase.
    */  
-  const String&
+  String&
   lowercase();
 
   /** \brief Returns the value of "this" with whitespace normalized by stripping leading 
@@ -257,49 +266,49 @@ public:
    * @note whitespace = " \t\r\n" meaning (\#x20) (\#x9) (\#xD) (\#xA).
    * @return String the whitespace normalized String.
    */  
-  const String&
+  String&
   normalizeSpace();
 
   /** \brief Removes leading and trailing characters from this string.
    *
    * @param chars A string containing the characters to be trimmed.
    */  
-  const String&
-  trim(const String chars);
+  String&
+  trim(String const &chars);
 
   /** \brief Removes leading and trailing characters from this string.
    *
    * @param chars An array containing the characters to be trimmed.
    * @param lengthOfChars The length of the chars array.
    */  
-  const String&
+  String&
   trim(const char* chars, int lengthOfChars);
 
   /** \brief Removes leading and trailing whitespace.
    *
    * @note whitespace is any of the following: ' ', '\n', '\r', '\t'
    */  
-  const String&
+  String&
   trim();
 
   /** \brief Escape all characters except US-ASCII coded character set.
    *
    */
-  const String&
+  String&
   formatAsXML();
 
   /** \brief Escape all characters except printable characters of the US-ASCII coded character set, 
    *         specifically the octets ranging from 32 to 126 (decimal).
    *
    */
-  const String&
+  String&
   escapeHtmlUri();
 
   /** \brief Converts an String containing an IRI into a URI.
    *         see Section 3.1 [http://www.ietf.org/rfc/rfc3987.txt]
    *
    */
-  const String&
+  String&
   iriToUri();
 
   /** \brief Encodes reserved characters in an String that is intended to be used in the 
@@ -307,31 +316,34 @@ public:
    *         see Section 2 [http://www.ietf.org/rfc/rfc3986.txt]
    *
    */
-  const String&
+  String&
   encodeForUri();
 
   /** \brief Decodes the encoded characters from this String.
    *         see Section 2 [http://www.ietf.org/rfc/rfc3986.txt]
    *
    */
-  const String&
+  String&
   decodeFromUri();
 
   /** \brief tokenizes a String
     */
-  String tokenize(String pattern,
-                  String flags,
-                  int32_t* startPos,
-                  bool* hasMatched) const;
+  String tokenize( String const &pattern, String const &flags,
+                   int32_t* startPos, bool* hasMatched ) const;
+
+  friend ZORBA_DLL_PUBLIC
+  std::ostream& operator<<( std::ostream& os, String const& );
 
 private:
-  friend class Unmarshaller;
-  xqpStringStore *m_string;
-};
+  typedef struct { void *p; } string_storage_type;
+  string_storage_type string_storage_;
 
-ZORBA_DLL_PUBLIC
-std::ostream& operator <<(std::ostream& os, const String& str);
+  static void size_check();
+
+  friend class Unmarshaller;
+};
 
 } // namespace zorba
 
-#endif
+#endif /* ZORBA_STRING_API_H */
+/* vim:set et sw=2 ts=2: */

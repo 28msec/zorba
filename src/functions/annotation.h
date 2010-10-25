@@ -57,6 +57,7 @@ public:
   virtual ~AnnotationImpl() {};
 };
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -66,10 +67,12 @@ friend class AnnotationInternal;
 friend class AnnotationImpl;
 
 protected:
-  store::Item_t                               theLiteral;
+  store::Item_t  theLiteral;
 
   AnnotationLiteral(const AnnotationLiteral* literal);
+
   AnnotationLiteral(const StringLiteral* stringLiteral);
+
   AnnotationLiteral(const NumericLiteral* numericLiteral);
 
 public:
@@ -79,6 +82,7 @@ public:
 
 public:
   store::Item_t getLiteral() const;
+
   virtual ~AnnotationLiteral() {};
 };
 
@@ -94,7 +98,7 @@ protected:
   store::Item_t                               theQName;
   std::vector<rchandle<AnnotationLiteral> >   theLiteralList;
 
-  AnnotationInternal(const AnnotationParsenode* annotation);      // used by AnnotationList
+  AnnotationInternal(const AnnotationParsenode* annotation); // used by AnnotationList
 
 public:
   SERIALIZABLE_CLASS(AnnotationInternal);
@@ -103,7 +107,9 @@ public:
 
 public:
   const store::Item* getQName() const;
+
   unsigned int getLiteralsCount() const;
+
   const AnnotationLiteral* getLiteral(unsigned int index) const;
 
   virtual ~AnnotationInternal() { };
@@ -128,6 +134,7 @@ public:
   AnnotationList(const AnnotationListParsenode* annotations);
 
   unsigned int size() const { return theAnnotationList.size(); }
+
   const AnnotationInternal* getAnnotation(unsigned int index) const;
 
 	virtual ~AnnotationList() {}

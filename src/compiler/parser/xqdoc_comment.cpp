@@ -14,33 +14,55 @@
  * limitations under the License.
  */
 
+#include <sstream>
+
 #include "xqdoc_comment.h"
+#include "util/ascii_util.h"
 
-#include <cctype>
-#include <algorithm>
-#include <string>
-
-#include <zorba/zorbastring.h>
+using namespace std;
 
 namespace zorba {
 
-XQDocComment::XQDocComment(const std::string& aComment)
+XQDocType XQDocAnnotation::map_type( zstring const &name ) {
+  if (name == "author")
+    return TYPE_AUTHOR;
+  if (name == "version")
+    return TYPE_VERSION;
+  if (name == "param")
+    return TYPE_PARAM;
+  if (name == "return")
+    return TYPE_RETURN;
+  if (name == "error")
+    return TYPE_ERROR;
+  if (name == "deprecated")
+    return TYPE_DEPRECATED;
+  if (name == "see")
+    return TYPE_SEE;
+  if (name == "since")
+    return TYPE_SINCE;
+  if (name == "library")
+    return TYPE_LIBRARY;
+  return TYPE_UNKNOWN;
+}
+
+
+XQDocComment::XQDocComment(const zstring& aComment)
   : theDeprecated(false)
 { 
   bool lDescriptionState = true;
 
-  std::string lLine;
-  std::string lAnntotation;
-  std::stringstream lComment;
+  zstring lLine;
+  zstring lAnntotation;
+  stringstream lComment;
   
   // because the parser already digests the "(:~" token, in case the first line
   // already contains text, we prefix it with ":" such that all the lines will
   // be treated the same
   lComment << ":" << aComment;
 
-  std::ostringstream lDesc;
+  ostringstream lDesc;
 
-  while(std::getline(lComment, lLine, '\n'))
+  while(getline(lComment, lLine, '\n'))
   {
     // remove the leading and trailing whitespaces, and the leading ':'
     if (!startsWithColon(lLine) || lLine.empty()) {
@@ -50,16 +72,16 @@ XQDocComment::XQDocComment(const std::string& aComment)
     }
 
     // if the line contains an annotation, than we finish the description
-    String lTmp = lLine;
-    lTmp.trim(" \t");
-    if (lTmp.charAt(0) == '@') {
+    zstring lTmp;
+    ascii::trim_whitespace( lLine, &lTmp );
+    if ( !lTmp.empty() && lTmp[0] == '@' ) {
       lDescriptionState = false;
       if (!lAnntotation.empty()) {
         parseAnnotation(lAnntotation);
       }
-      lAnntotation = lTmp.c_str();
+      lAnntotation = lTmp;
     } else if (lDescriptionState) {
-      lDesc << lLine << std::endl;
+      lDesc << lLine << endl;
     } else {
       lAnntotation += " " + lLine;
     }
@@ -72,41 +94,34 @@ XQDocComment::XQDocComment(const std::string& aComment)
 }
 
 bool
-XQDocComment::startsWithColon(std::string& aLine)
+XQDocComment::startsWithColon(zstring& aLine)
 {
-  String lResult(aLine);
-  lResult.trim(" \t");
+  zstring temp;
+  ascii::trim_whitespace( aLine, &temp );
 
-  if (lResult.charAt(0) == ':') {
-    lResult = lResult.substring(1);
-    //lResult.trim(" \t");
-    aLine = std::string(lResult.c_str());
-  } else {
-    return false;
+  if ( !temp.empty() && temp[0] == ':' ) {
+    aLine = temp.substr(1);
+    return true;
   }
-
-  return true;
+  return false;
 }
 
 void
-XQDocComment::parseAnnotation(const std::string& aLine)
+XQDocComment::parseAnnotation(const zstring& aLine)
 {
   size_t lIndex;
-  std::string lName, lValue = "";
+  zstring lName, lValue = "";
   lIndex = aLine.find(' ');
 
-  if (lIndex == std::string::npos) {
+  if (lIndex == zstring::npos) {
     lName = aLine.substr(1);
   } else {
     lName = aLine.substr(1, lIndex - 1);
     lValue = aLine.substr(lIndex + 1);
   }
 
-  transform(lName.begin(), lName.end(), lName.begin(), ::tolower);
-
-  String lNormValue(lValue);
-  lNormValue.normalizeSpace();
-  lValue = std::string(lNormValue.c_str());
+  ascii::to_lower( lName );
+  ascii::normalize_whitespace( lValue );
 
   if ("version" == lName) {
     theVersion = lValue;
@@ -122,4 +137,5 @@ XQDocComment::parseAnnotation(const std::string& aLine)
   }
 }
 
-}//end of namespace
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

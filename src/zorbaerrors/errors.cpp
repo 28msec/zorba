@@ -19,6 +19,7 @@
 #include "zorbaerrors/errors.h"
 #include "zorbaerrors/error_messages.h"
 #include "debugger/query_locationimpl.h"
+#include "util/string_util.h"
 
 namespace zorba { namespace error {
 
@@ -35,7 +36,7 @@ std::string ZorbaError::toString(const XQUERY_ERROR& code)
 
 ZorbaError::ZorbaError(
     XQUERY_ERROR&       aErrorCode,
-    const xqpString&    aDescription,
+    const zstring&      aDescription,
     unsigned int        aQueryLine,
     unsigned int        aQueryColumn,
     const std::string&  aQueryFileName,
@@ -60,10 +61,10 @@ ZorbaError::ZorbaError(
 
 
 ZorbaError::ZorbaError(
-    const xqpString&    aErrLocalName,
-    const xqpString&    aErrPrefix,
-    const xqpString&    aErrNamespace,
-    const xqpString&    aDescription,
+    const zstring&      aErrLocalName,
+    const zstring&      aErrPrefix,
+    const zstring&      aErrNamespace,
+    const zstring&      aDescription,
     unsigned int        aQueryLine,
     unsigned int        aQueryColumn,
     const std::string&  aQueryFileName,
@@ -82,8 +83,8 @@ ZorbaError::ZorbaError(
   theDebug(false)
 {
   // compute err code from qname
-  if (aErrNamespace.getStore()->byteEqual(XQUERY_ERR_NS, strlen(XQUERY_ERR_NS)))
-    theErrorCode = ErrorMessages::getErrorCodeForName(aErrLocalName.getStore()->c_str());
+  if ( ZSTREQ( aErrNamespace, XQUERY_ERR_NS ) )
+    theErrorCode = ErrorMessages::getErrorCodeForName(aErrLocalName.c_str());
   else
     theErrorCode = XQP0021_USER_ERROR;
 
@@ -143,7 +144,27 @@ void ZorbaError::serialize(::zorba::serialization::Archiver& ar)
 void ZorbaError::setQueryLocation(
     unsigned int line,
     unsigned int column,
+    const char *filename)
+{
+  theQueryLine = line;
+  theQueryColumn = column;
+  theQueryFileName = filename;
+}
+
+void ZorbaError::setQueryLocation(
+    unsigned int line,
+    unsigned int column,
     const std::string& filename)
+{
+  theQueryLine = line;
+  theQueryColumn = column;
+  theQueryFileName = filename;
+}
+
+void ZorbaError::setQueryLocation(
+    unsigned int line,
+    unsigned int column,
+    const zstring& filename)
 {
   theQueryLine = line;
   theQueryColumn = column;
@@ -169,19 +190,19 @@ std::string ZorbaError::toString()
 }
 
 
-const xqpString& ZorbaError::localName() const
+const zstring& ZorbaError::localName() const
 {
   return theLocalName;
 }
 
 
-const xqpString& ZorbaError::ns() const
+const zstring& ZorbaError::ns() const
 {
   return theNamespace;
 }
 
 
-const xqpString&
+const zstring&
 ZorbaError::prefix() const
 {
   return thePrefix;
@@ -329,7 +350,7 @@ QueryException::StackTrace_t ZorbaError::getStackTrace() const
 
 ZorbaWarning::ZorbaWarning(
     WarningCode        aWarningCode,
-    const xqpString&   aDescription,
+    const zstring&     aDescription,
     unsigned int       aQueryLine,
     unsigned int       aQueryColumn,
     const std::string& aQueryFileName,

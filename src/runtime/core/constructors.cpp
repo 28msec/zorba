@@ -37,6 +37,9 @@
 #include "store/api/item_factory.h"
 #include "store/api/copymode.h"
 
+#include "util/ascii_util.h"
+#include "util/string_util.h"
+#include "util/utf8_util.h"
 
 using namespace std;
 
@@ -93,8 +96,8 @@ bool DocumentIterator::nextImpl(store::Item_t& result, PlanState& planState) con
   // Note: baseUri has to be rchandle because if createDocumentNode throws
   // an exception, we don't know if the exception was thrown before or after
   // the ownership of the uri was transfered to the doc node.
-  xqpStringStore_t baseUri = theSctx->get_base_uri();
-  xqpStringStore_t docUri;
+  zstring baseUri = theSctx->get_base_uri();
+  zstring docUri;
 
   std::stack<store::Item*>& path = planState.theNodeConstuctionPath;
   store::CopyMode copymode;
@@ -121,7 +124,7 @@ bool DocumentIterator::nextImpl(store::Item_t& result, PlanState& planState) con
       {
         // Skip text node with zero-length value
         if (child->getNodeKind() == store::StoreConsts::textNode && 
-            child->getStringValue()->empty())
+            child->getStringValue().empty())
         {
           continue;
         }
@@ -184,13 +187,12 @@ UNARY_ACCEPT(DocumentContentIterator);
 ********************************************************************************/
 void ElementIteratorState::init(PlanState&)
 {
-  baseUri = 0;
 }
 
 
 void ElementIteratorState::reset(PlanState&)
 {
-  baseUri = 0;
+  baseUri.clear();
 }
 
 
@@ -295,12 +297,13 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   store::Item_t nodeName;
   store::Item_t typeName;
   store::Item_t nullValue;
-  xqpStringStore_t content;
+  zstring content;
 
   std::stack<store::Item*>& path = planState.theNodeConstuctionPath;
   store::Item_t attr;
   store::Item_t child;
   store::CopyMode copymode;
+  zstring baseuri;
 
   ElementIteratorState* state;
   DEFAULT_STACK_INIT(ElementIteratorState, state, planState);
@@ -310,7 +313,7 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   // well formed qname. 
   consumeNext(nodeName, theQNameIter, planState);
 
-  if (nodeName->getLocalName()->empty())
+  if (nodeName->getLocalName().empty())
   {
     ZORBA_ERROR_LOC_DESC(XQDY0074, loc,
                      "Element name must not have an empty local part.");
@@ -334,7 +337,7 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     // an explicit base-uri attribute, then the base-uri added here will be
     // replaced with the explicit one.
     state->baseUri = theSctx->get_base_uri();
-    if (state->baseUri->empty())
+    if (state->baseUri.empty())
       ZORBA_ERROR_LOC(XPST0001, loc);
 
     store::NsBindings bindings;
@@ -364,6 +367,7 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
                                         theLocalBindings->getLocalBindings(),
                                         state->baseUri);
   }
+
   path.push(result);
 
   // Compute the attributes and children of the element node
@@ -391,7 +395,7 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
       {
         if (!child->isNode())
         {
-          content = child->getStringValue();
+          child->getStringValue2(content);
           factory->createTextNode(child, result, -1, content);
         }
 
@@ -408,7 +412,7 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
       {
         if (!child->isNode())
         {
-          content = child->getStringValue();
+          child->getStringValue2(content);
           factory->createTextNode(child, result, -1, content);
         }
 
@@ -419,7 +423,7 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
         // Skip text node with zero-length value
         if (child->getNodeKind() == store::StoreConsts::textNode && 
-            child->getStringValue()->empty())
+            child->getStringValue().empty())
         {
           ;
         }
@@ -502,39 +506,39 @@ AttributeIterator::AttributeIterator(
 {
   if (theQName != NULL)
   {
-    if (theQName->getLocalName()->empty())
+    if (theQName->getLocalName().empty())
     {
       ZORBA_ERROR_LOC_DESC(XQDY0074, loc,
                            "Attribute name must not have an empty local part.");
     }
 
-    if (theQName->getNamespace()->byteEqual("http://www.w3.org/2000/xmlns/", 29) ||
-        (theQName->getNamespace()->empty() &&
-         theQName->getLocalName()->byteEqual("xmlns", 5)))
+    if (equals(theQName->getNamespace(), "http://www.w3.org/2000/xmlns/", 29) ||
+        (theQName->getNamespace().empty() &&
+         equals(theQName->getLocalName(), "xmlns", 5)))
     {
       ZORBA_ERROR_LOC(XQDY0044, loc);
     }
 
-    if ((theQName->getNamespace()->byteEqual("http://www.w3.org/XML/1998/namespace", 36) &&
-         !theQName->getPrefix()->empty() &&
-         !theQName->getPrefix()->byteEqual("xml", 3)) ||
-        (theQName->getPrefix()->byteEqual("xml", 3) &&
-         !theQName->getNamespace()->byteEqual("http://www.w3.org/XML/1998/namespace", 36)))
+    if ((equals(theQName->getNamespace(), "http://www.w3.org/XML/1998/namespace", 36) &&
+         !theQName->getPrefix().empty() &&
+         !equals(theQName->getPrefix(), "xml", 3)) ||
+        (equals(theQName->getPrefix(), "xml", 3) &&
+         !equals(theQName->getNamespace(), "http://www.w3.org/XML/1998/namespace", 36)))
     {
       ZORBA_ERROR_LOC(XQDY0044, loc);
     }
 
-    if ((theQName->getNamespace()->byteEqual("http://www.w3.org/2000/xmlns/", 29) &&
-         !theQName->getPrefix()->empty() &&
-         !theQName->getPrefix()->byteEqual("xmlns", 5)) ||
-        (theQName->getPrefix()->byteEqual("xmlns", 5) &&
-         !theQName->getNamespace()->byteEqual("http://www.w3.org/2000/xmlns/", 29)))
+    if ((equals(theQName->getNamespace(), "http://www.w3.org/2000/xmlns/", 29) &&
+         !theQName->getPrefix().empty() &&
+         !equals(theQName->getPrefix(), "xmlns", 5)) ||
+        (equals(theQName->getPrefix(), "xmlns", 5) &&
+         !equals(theQName->getNamespace(), "http://www.w3.org/2000/xmlns/", 29)))
     {
       ZORBA_ERROR_LOC(XQDY0044, loc);
     }
 
-    if (theQName->getPrefix()->byteEqual("xml", 3) &&
-        theQName->getLocalName()->byteEqual("id", 2))
+    if (equals(theQName->getPrefix(), "xml", 3) &&
+        equals(theQName->getLocalName(), "id", 2))
       theIsId = true;
   }
 }
@@ -556,7 +560,7 @@ bool AttributeIterator::nextImpl(store::Item_t& result, PlanState& planState) co
   store::Item_t qname;
   store::Item_t typeName = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
   store::Item_t valueItem;
-  xqpStringStore_t lexicalValue;
+  zstring lexicalValue;
   store::Item_t typedValue;
   store::Item* parent;
   bool isId = theIsId;
@@ -572,21 +576,21 @@ bool AttributeIterator::nextImpl(store::Item_t& result, PlanState& planState) co
     // around the name expression.
     consumeNext(qname, theChild0, planState);
 
-    if (qname->getPrefix()->byteEqual("xml", 3) &&
-        qname->getLocalName()->byteEqual("id", 2))
+    if (equals(qname->getPrefix(), "xml", 3) &&
+        equals(qname->getLocalName(), "id", 2))
     {
       isId = true;
     }
 
-    if (qname->getLocalName()->empty())
+    if (qname->getLocalName().empty())
     {
       ZORBA_ERROR_LOC_DESC(XQDY0074, loc,
                            "Attribute name must not have an empty local part.");
     }
 
-    if (qname->getNamespace()->byteEqual("http://www.w3.org/2000/xmlns/", 29) ||
-        (qname->getNamespace()->empty() &&
-         qname->getLocalName()->byteEqual("xmlns", 5)))
+    if (equals(qname->getNamespace(), "http://www.w3.org/2000/xmlns/", 29) ||
+        (qname->getNamespace().empty() &&
+         equals(qname->getLocalName(), "xmlns", 5)))
     {
       ZORBA_ERROR_LOC(XQDY0044, loc);
     }
@@ -599,25 +603,18 @@ bool AttributeIterator::nextImpl(store::Item_t& result, PlanState& planState) co
   // Compute lexical value of the attribute.
   if (consumeNext(valueItem, theChild1, planState))
   {
-    lexicalValue = valueItem->getStringValue();
+    valueItem->getStringValue2(lexicalValue);
 
-    std::string buf;
     while (consumeNext(valueItem, theChild1, planState))
     {
-      buf += valueItem->getStringValue()->str();
+      valueItem->appendStringValue(lexicalValue);
     }
-    if (!buf.empty())
-      lexicalValue = lexicalValue->append(buf.c_str());
-  }
-  else
-  {
-    lexicalValue = new xqpStringStore("");
   }
   
   // normalize value of xml:id
   if (theIsId)
   {
-    lexicalValue = lexicalValue->normalizeSpace();
+    ascii::normalize_whitespace(lexicalValue);
   }
 
   GENV_ITEMFACTORY->createUntypedAtomic(typedValue, lexicalValue);
@@ -658,10 +655,11 @@ TextIterator::TextIterator(
 
 bool TextIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  xqpStringStore_t content;
+  zstring content;
+  bool haveContent = false;
   store::Item_t valueItem;
-  std::string buf;
-
+  store::Item_t typedVal;
+  store::Iterator_t typedIter;
   store::Item* parent;
   std::stack<store::Item*>& path = planState.theNodeConstuctionPath;
 
@@ -672,21 +670,73 @@ bool TextIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   // node should be constructed.
   if (consumeNext(valueItem, theChild, planState))
   {
-    // ????
-    content = (valueItem->isAtomic() ?
-               valueItem->getStringValue() :
-               valueItem->getAtomizationValue()->getStringValue());
+    haveContent = true;
+
+    if (valueItem->isAtomic())
+    {
+      valueItem->getStringValue2(content);
+    }
+    else
+    {
+      valueItem->getTypedValue(typedVal, typedIter);
+
+      if (typedIter == NULL)
+      {
+        typedVal->getStringValue2(content);
+      }
+      else
+      {
+        typedIter->open();
+
+        if (typedIter->next(typedVal))
+        {
+          typedVal->appendStringValue(content);
+
+          while (typedIter->next(typedVal))
+          {
+            content += " ";
+            typedVal->appendStringValue(content);
+          }
+        }
+
+        typedIter->close();
+      }
+    }
 
     while (consumeNext(valueItem, theChild, planState))
     {
-      buf += " ";
-      buf += (valueItem->isAtomic() ?
-              valueItem->getStringValue()->c_str() :
-              valueItem->getAtomizationValue()->getStringValue()->str());
+      content += " ";
+      
+      if (valueItem->isAtomic())
+      {
+        valueItem->appendStringValue(content);
+      }
+      else
+      {
+        valueItem->getTypedValue(typedVal, typedIter);
+        
+        if (typedIter == NULL)
+        {
+          typedVal->appendStringValue(content);
+        }
+        else
+        {
+          typedIter->open();
+          
+          while (typedIter->next(typedVal))
+          {
+            content += " ";
+            typedVal->appendStringValue(content);
+          } 
+          
+          typedIter->close();
+        }
+      }
     }
-    if (!buf.empty())
-      content = content->append(buf.c_str());
+  }
 
+  if (haveContent)
+  {
     ZORBA_FATAL(theIsRoot || !path.empty(), "");
 
     parent = (theIsRoot ? NULL : path.top());
@@ -727,11 +777,11 @@ bool PiIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t lItem;
   store::Item_t temp;
-  xqpStringStore_t content;
-  xqpStringStore_t target;
-  xqpStringStore_t baseUri;
-  std::string buf;
+  zstring content;
+  zstring target;
+  zstring baseUri;
   bool lFirst;
+  xqpStringStore_t tmp;
 
   store::Item* parent;
   std::stack<store::Item*>& path = planState.theNodeConstuctionPath;
@@ -757,29 +807,41 @@ bool PiIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     ZORBA_ERROR_LOC(XPTY0004, loc);
 
   // TODO: check if lItem is string, raise XPTY0004 if not
-  target = lItem->getStringValue();
+  lItem->getStringValue2(target);
 
-  if (target->empty())
+  if (target.empty())
+  {
     ZORBA_ERROR_LOC(XQDY0041, loc);
-  else if (target->uppercase()->byteEqual("XML", 3)) 
-    ZORBA_ERROR_LOC(XQDY0064, loc);
+  }
+  else if (target.size() == 3)
+  {
+    zstring upper;
+    utf8::to_upper(target, &upper);
+
+    if (equals(upper, "XML", 3)) 
+      ZORBA_ERROR_LOC(XQDY0064, loc);
+  }
 
   // Compute the content of the pi node  
   for (lFirst = true;
-       consumeNext (lItem, theChild1.getp(), planState);
+       consumeNext(lItem, theChild1.getp(), planState);
        lFirst = false)
   {
-    if (! lFirst) buf += " ";
+    if (! lFirst)
+      content += " ";
 
-    xqpStringStore_t strvalue = lItem->getStringValue();
-    if (strvalue->bytePositionOf("?>", 2, 0) >= 0)
+    zstring strvalue;
+    lItem->getStringValue2(strvalue);
+
+    if (strvalue.find("?>", 0, 2) != zstring::npos)
       ZORBA_ERROR_LOC(XQDY0026, loc);
 
-    buf += strvalue->str();
+    content += strvalue;
   }
 
-  content = new xqpStringStore(buf); 
-  content = content->trimL(" \n\r\t", 4);
+  tmp = new xqpStringStore(content.str());
+  tmp = tmp->trimL(" \n\r\t", 4);
+  content = tmp->str();
 
   // Create the pi node
   ZORBA_FATAL(theIsRoot || !path.empty(), "");
@@ -814,8 +876,7 @@ CommentIterator::CommentIterator(
 bool CommentIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t lItem;
-  std::string buf;
-  xqpStringStore_t content;
+  zstring content;
   bool lFirst;
   store::Item* parent;
   std::stack<store::Item*>& path = planState.theNodeConstuctionPath;
@@ -830,17 +891,15 @@ bool CommentIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
       break;
     
     if (!lFirst)
-      buf += " ";
+      content += " ";
 
-    buf += lItem->getStringValue()->str();
+    lItem->appendStringValue(content);
     lFirst = false;
   }
 
-  content = new xqpStringStore(buf);
-
-  if (!content->empty())
+  if (!content.empty())
   {
-    if (content->byteAt(content->bytes()-1) == '-' || content->bytePositionOf("--") >= 0)
+    if (content[content.size()-1] == '-' || content.find("--") != zstring::npos)
       ZORBA_ERROR_LOC(XQDY0072, loc);
   }
 
@@ -953,15 +1012,94 @@ void EnclosedIterator::setTextContent()
 bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::ItemFactory* factory = GENV_ITEMFACTORY;
-  xqpStringStore_t strval;
-  std::string buf;
+  zstring strval;
   std::stack<store::Item*>& path = planState.theNodeConstuctionPath;
+  bool haveContent = false;
 
   EnclosedIteratorState* state;
   DEFAULT_STACK_INIT(EnclosedIteratorState, state, planState);
 
   if (theAttrContent || theTextContent)
   {
+#if 1
+    if (consumeNext(result, theChild, planState))
+    {
+      haveContent = true;
+
+      if (result->isNode())
+      {
+        store::Item_t typedValue;
+        store::Iterator_t typedIter;
+        result->getTypedValue(typedValue, typedIter);
+        
+        if (typedIter == NULL)
+        {
+          typedValue->getStringValue2(strval);
+        }
+        else
+        {
+          if (typedIter->next(typedValue))
+          {
+            typedValue->appendStringValue(strval);
+          }
+
+          while (typedIter->next(typedValue))
+          {
+            strval += " ";
+            typedValue->appendStringValue(strval);
+          }
+        }
+      }
+      else
+      {
+        result->getStringValue2(strval);
+      }
+
+      while (consumeNext(result, theChild, planState))
+      {
+        strval += " ";
+
+        if (result->isNode())
+        {
+          store::Item_t typedValue;
+          store::Iterator_t typedIter;
+          result->getTypedValue(typedValue, typedIter);
+        
+          if (typedIter == NULL)
+          {
+            typedValue->appendStringValue(strval);
+          }
+          else
+          {
+            if (typedIter->next(typedValue))
+            {
+              typedValue->appendStringValue(strval);
+            }
+            
+            while (typedIter->next(typedValue))
+            {
+              strval += " ";
+              typedValue->appendStringValue(strval);
+            }
+          }
+        }
+        else
+        {
+          result->appendStringValue(strval);
+        }
+      }
+    }
+
+    if (theTextContent && !haveContent)
+    {
+      STACK_PUSH(false, state);
+    }
+    else
+    {
+      factory->createString(result, strval);
+      STACK_PUSH(true, state);
+    }
+#else
     while ( true )
     {
       if (!consumeNext(result, theChild, planState))
@@ -975,39 +1113,39 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 
         if (typedIter == NULL)
         {
-          typedValue->getStringValue(buf);
-          buf += " ";
+          typedValue->appendStringValue(strval);
+          strval += " ";
         }
         else
         {
           while (typedIter->next(typedValue))
           {
-            typedValue->getStringValue(buf);
-            buf += " ";
+            typedValue->appendStringValue(strval);
+            strval += " ";
           }
         }
       }
       else
       {
-        result->getStringValue(buf);
-        buf += " ";
+        result->appendStringValue(strval);
+        strval += " ";
       }
     }
 
-    if (buf.empty() && theTextContent)
+    if (strval.empty() && theTextContent)
     {
       STACK_PUSH(false, state);
     }
     else
     {
       // Erase the last space added in the above loop
-      if (!buf.empty())
-        buf.resize(buf.size() - 1);
+      if (!strval.empty())
+        strval.resize(strval.size() - 1);
 
-      strval = new xqpStringStore(buf);
       factory->createString(result, strval);
       STACK_PUSH(true, state);
     }
+#endif
   }
   else
   {
@@ -1044,10 +1182,9 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
         }
         else
         {
-          strval = result->getStringValue();
+          result->getStringValue2(strval);
 
           {
-            std::string buf;
             while(true) 
             {
               bool status = consumeNext(state->theContextItem, theChild, planState);
@@ -1056,18 +1193,16 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
                 state->theContextItem = NULL;
                 break;
               }
+
               if (!state->theContextItem->isAtomic())
                 break;
 
-              buf += " ";
-              buf += state->theContextItem->getStringValue()->str();
+              strval += " ";
+              state->theContextItem->appendStringValue(strval);
             }
-
-            if (!buf.empty())
-              strval = strval->append(buf.c_str());
           }
 
-          if (!strval->empty())
+          if (!strval.empty())
           {
             STACK_PUSH(factory->createTextNode(result,
                                                (path.empty() ? NULL : path.top()),
@@ -1124,7 +1259,6 @@ NameCastIterator::~NameCastIterator()
 bool NameCastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   xqtref_t lItemType;
-  xqpStringStore_t strval;
   store::Item_t temp;
   bool valid = false;
 

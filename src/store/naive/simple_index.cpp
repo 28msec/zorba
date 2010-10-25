@@ -98,7 +98,7 @@ long IndexCompareFunction::compare(
 #ifndef WIN32
   ulong size = std::min(key1->size(),  key2->size());
 #else
-  ulong size = min(key1->size(),  key2->size());
+  ulong size = std::min(key1->size(),  key2->size());
 #endif
 
   for (ulong i = 0; i < size; i++)
@@ -416,9 +416,9 @@ std::ostream& operator<<(std::ostream& os, const IndexBoxCondition& cond)
     else 
     {
       if (cond.theRangeFlags[i].theLowerBoundIncl)
-        os << "[" << cond.theLowerBounds[i]->getStringValue()->c_str();
+        os << "[" << cond.theLowerBounds[i]->getStringValue();
       else
-        os << "(" << cond.theLowerBounds[i]->getStringValue()->c_str();
+        os << "(" << cond.theLowerBounds[i]->getStringValue();
     }
     
     os << ", ";
@@ -431,9 +431,9 @@ std::ostream& operator<<(std::ostream& os, const IndexBoxCondition& cond)
     else 
     {
       if (cond.theRangeFlags[i].theUpperBoundIncl)
-        os << cond.theUpperBounds[i]->getStringValue()->c_str() << "] ";
+        os << cond.theUpperBounds[i]->getStringValue() << "] ";
       else
-        os << cond.theUpperBounds[i]->getStringValue()->c_str() << ") ";
+        os << cond.theUpperBounds[i]->getStringValue() << ") ";
     }
   }
 

@@ -124,7 +124,7 @@ class PULPrimitiveFactory
   createUpdReplaceAttrValue(
         CollectionPul* pul,
         store::Item_t& target,
-        xqpStringStore_t& newValue);
+        zstring& newValue);
   
   /***************************************************************************
    ***************************************************************************/
@@ -140,7 +140,7 @@ class PULPrimitiveFactory
   createUpdReplaceTextValue(
         CollectionPul* pul,
         store::Item_t& target,
-        xqpStringStore_t& newValue); 
+        zstring& newValue); 
   
   /***************************************************************************
    ***************************************************************************/
@@ -148,7 +148,7 @@ class PULPrimitiveFactory
   createUpdReplacePiValue(
         CollectionPul* pul,
         store::Item_t& target,
-        xqpStringStore_t& newValue);
+        zstring& newValue);
   
   /***************************************************************************
    ***************************************************************************/
@@ -156,7 +156,7 @@ class PULPrimitiveFactory
   createUpdRenamePi(
         CollectionPul* pul,
         store::Item_t& target,
-        xqpStringStore_t& newName); 
+        zstring& newName); 
     
   /***************************************************************************
    ***************************************************************************/
@@ -164,7 +164,7 @@ class PULPrimitiveFactory
   createUpdReplaceCommentValue(
         CollectionPul* pul,
         store::Item_t& target,
-        xqpStringStore_t& newValue);
+        zstring& newValue);
   
   /***************************************************************************
    ***************************************************************************/

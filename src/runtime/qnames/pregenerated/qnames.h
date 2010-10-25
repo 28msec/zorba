@@ -279,7 +279,7 @@ public:
 class InScopePrefixesIteratorState : public PlanIteratorState
 {
 public:
-  std::vector<std::pair<xqpStringStore_t, xqpStringStore_t> > theBindings; //
+  store::NsBindings theBindings; //
   unsigned long theCurrentPos; //
 
   InScopePrefixesIteratorState();

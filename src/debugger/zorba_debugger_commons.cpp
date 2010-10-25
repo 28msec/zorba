@@ -128,12 +128,12 @@ bool ZorbaDebuggerCommons::addBreakpoint(DebugLocation_t& aLocation,
   lIter = theLocationMap.find(aLocation);
   // if the location could not be found, try it again with the encoded file uri.
   if (lIter == theLocationMap.end()) {
-    xqpStringStore_t filename = new xqpStringStore(aLocation.theFileName);
-    xqpStringStore_t url;
+    zstring filename = aLocation.theFileName;
+    zstring url;
     URI::encode_file_URI(filename, url);
-    aLocation.theFileName = url->str();
+    aLocation.theFileName = url.str();
     lIter = theLocationMap.find(aLocation);
-    aLocation.theFileName = filename->str();
+    aLocation.theFileName = filename.str();
   }
   if (lIter != theLocationMap.end()) {
     aLocation.theQueryLocation = lIter->first.theQueryLocation;
@@ -166,7 +166,7 @@ bool ZorbaDebuggerCommons::hasToBreakAt( const QueryLoc& aLocation ) const
     return false;
   }
   DebugLocation_t lLocation;
-  lLocation.theFileName = aLocation.getFilename();
+  lLocation.theFileName = aLocation.getFilename().c_str();
   lLocation.theLineNumber = aLocation.getLineno();
   lLocation.theQueryLocation = aLocation;
   std::map<DebugLocation_t, bool, DebugLocation>::const_iterator lIter;
@@ -285,9 +285,9 @@ ZorbaDebuggerCommons::eval(const xqpString& aExpr,
                            Zorba_SerializerOptions& aSerOpts)
 {
   theExecEval = true;
-  xqpStringStore_t lStore = aExpr.getStore();
+  zstring lStore = aExpr.getStore()->str();
   GlobalEnvironment::getInstance().getItemFactory()->createString(theEvalItem,
-    lStore);
+                                                                  lStore);
   std::list<std::pair<xqpString, xqpString> > lRes =
     theCurrentIterator->eval(thePlanState, &aSerOpts);
   theExecEval = false;
@@ -312,15 +312,18 @@ std::string ZorbaDebuggerCommons::getFilepathOfURI(const std::string& aUri) cons
 {
   std::map<std::string, std::string>::const_iterator lIter;
   lIter = theUriFileMappingMap.find(aUri);
-  xqpStringStore_t lString;
-  if (lIter == theUriFileMappingMap.end()) {
-    lString = new xqpStringStore(aUri);
-  } else {
-    lString = new xqpStringStore(lIter->second);
+  zstring lString;
+  if (lIter == theUriFileMappingMap.end()) 
+  {
+    lString = aUri;
   }
-  xqpStringStore_t lRes;
+  else 
+  {
+    lString = lIter->second;
+  }
+  zstring lRes;
   URI::decode_file_URI(lString, lRes);
-  return lRes->str();
+  return lRes.str();
 }
 
 void ZorbaDebuggerCommons::clearBreakpoint( unsigned int aId )

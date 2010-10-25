@@ -121,6 +121,10 @@ void SimpleStore::init()
 {
   SYNC_CODE(AutoLock lock(getGlobalLock(), Lock::WRITE);)
 
+  //zorba::zstring zstr("foo");
+  //zorba::zstring_p pstr;
+  //zorba::zstring_b bstr;
+
   if (theNumUsers == 0)
   {
     // This initializes the libxml2 library and checks potential ABI mismatches
@@ -304,8 +308,8 @@ void SimpleStore::shutdown(bool soft)
 
     if (theNamespacePool != NULL)
     {
-      theEmptyNs = NULL;
-      theXmlSchemaNs = NULL;
+      theEmptyNs.~zstring();
+      theXmlSchemaNs.~zstring();
 
       delete theNamespacePool;
       theNamespacePool = NULL;
@@ -482,7 +486,7 @@ store::Index_t SimpleStore::createIndex(
   if (!spec.theIsTemp && theIndices.get(qname.getp(), index))
   {
     ZORBA_ERROR_PARAM(STR0001_INDEX_ALREADY_EXISTS,
-                      qname->getStringValue()->c_str(), "");
+                      qname->getStringValue().c_str(), "");
   }
 
   if (spec.theIsGeneral && spec.theIsSorted)
@@ -701,7 +705,7 @@ store::Index_t SimpleStore::refreshIndex(
   if (!theIndices.get(non_const_items, index))
   {
     ZORBA_ERROR_PARAM(STR0002_INDEX_DOES_NOT_EXIST,
-                      qname->getStringValue()->c_str(), "");
+                      qname->getStringValue().c_str(), "");
   }
 
   deleteIndex(qname);
@@ -790,7 +794,7 @@ store::IC_t SimpleStore::activateIC(
   if (theICs.get(qname, ic))
   {
     ZORBA_ERROR_PARAM(STR0015_IC_ALREADY_EXISTS,
-                      qname->getStringValue()->c_str(), "");
+                      qname->getStringValue().c_str(), "");
   }
 
   ic = new ICCollectionImpl(icQName, collectionQName);
@@ -818,7 +822,7 @@ store::IC_t SimpleStore::activateForeignKeyIC(
   if (theICs.get(qname, ic))
   {
     ZORBA_ERROR_PARAM(STR0015_IC_ALREADY_EXISTS,
-                      qname->getStringValue()->c_str(), "");
+                      qname->getStringValue().c_str(), "");
   }
 
   ic = new ICForeignKeyImpl(qname, fromCollectionQName, toCollectionQName);
@@ -839,7 +843,7 @@ SimpleStore::deactivateIC(const store::Item_t& icQName)
   if (!theICs.get(icQName.getp(), ic))
   {
     ZORBA_ERROR_PARAM(STR0016_IC_DOES_NOT_EXIST,
-                      icQName->getStringValue()->c_str(), "");
+                      icQName->getStringValue().c_str(), "");
   }
 
   theICs.remove(icQName.getp());
@@ -866,23 +870,25 @@ store::IC* SimpleStore::getIC(const store::Item* icQName)
 /*******************************************************************************
 
 ********************************************************************************/
-store::Collection_t SimpleStore::createUriCollection(const xqpStringStore_t& uri)
+store::Collection_t SimpleStore::createUriCollection(const zstring& uri)
 {
-  if (uri == NULL)
+  if (uri.empty())
     return NULL;
 
   store::Item_t uriItem;
-  xqpStringStore_t tmpuri(uri.getp());
+  zstring tmpuri(uri);
   theItemFactory->createAnyURI(uriItem, tmpuri);
 
   store::Collection_t collection(new SimpleCollection(uriItem));
 
-  const xqpStringStore* urip = collection->getName()->getStringValueP();
-  bool inserted = theUriCollections.insert(urip, collection);
+  zstring_b urib;
+  urib.wrap_memory(uri.data(), uri.size());
+
+  bool inserted = theUriCollections.insert(urib, collection);
 
   if (!inserted)
   {
-    ZORBA_ERROR_PARAM(STR0008_COLLECTION_ALREADY_EXISTS, uri->c_str(), "");
+    ZORBA_ERROR_PARAM(STR0008_COLLECTION_ALREADY_EXISTS, uri.c_str(), "");
     return 0;
   }
 
@@ -890,29 +896,36 @@ store::Collection_t SimpleStore::createUriCollection(const xqpStringStore_t& uri
 }
 
 
-store::Collection_t SimpleStore::getUriCollection(const xqpStringStore_t& uri)
+store::Collection_t SimpleStore::getUriCollection(const zstring& uri)
 {
-  if (uri == NULL)
+  if (uri.empty())
     return NULL;
 
   store::Collection_t collection;
-  if (theUriCollections.get(uri, collection))
+
+  zstring_b urib;
+  urib.wrap_memory(uri.data(), uri.size());
+
+  if (theUriCollections.get(urib, collection))
     return collection.getp();
   else
     return NULL;
 }
 
 
-void SimpleStore::deleteUriCollection(const xqpStringStore_t& uri)
+void SimpleStore::deleteUriCollection(const zstring& uri)
 {
-  if (uri == NULL)
+  if (uri.empty())
     return;
 
-  bool deleted = theUriCollections.remove(uri);
+  zstring_b urib;
+  urib.wrap_memory(uri.data(), uri.size());
+
+  bool deleted = theUriCollections.remove(urib);
 
   if (!deleted)
   {
-    ZORBA_ERROR_PARAM(STR0009_COLLECTION_NOT_FOUND, uri->c_str(), "");
+    ZORBA_ERROR_PARAM(STR0009_COLLECTION_NOT_FOUND, uri.c_str(), "");
   }
 }
 
@@ -1005,49 +1018,18 @@ store::Iterator_t SimpleStore::listCollectionNames()
 
 ********************************************************************************/
 store::Item_t SimpleStore::loadDocument(
-    const xqpStringStore_t& baseUri,
-    const xqpStringStore_t& docUri,
-    std::istream& stream,
-    bool storeDocument)
-{
-  store::LoadProperties lLoadProperties;
-  lLoadProperties.setStoreDocument(storeDocument);
-  return loadDocument(baseUri, docUri, stream, lLoadProperties);
-}
-
-
-/*******************************************************************************
-  For lazy loading...
-  Param stream is a heap pointer to an input stream. This is to be deallocated
-  by Zorba.
-********************************************************************************/
-store::Item_t SimpleStore::loadDocument(
-    const xqpStringStore_t& baseUri,
-    const xqpStringStore_t& docUri,
-    std::istream* stream,
-    bool storeDocument)
-{
-  store::LoadProperties lLoadProperties;
-  lLoadProperties.setStoreDocument(storeDocument);
-  return loadDocument(baseUri, docUri, stream, lLoadProperties);
-}
-
-/*******************************************************************************
-
-********************************************************************************/
-store::Item_t SimpleStore::loadDocument(
-    const xqpStringStore_t& baseUri,
-    const xqpStringStore_t& docUri,
+    const zstring& baseUri,
+    const zstring& docUri,
     std::istream& stream,
     const store::LoadProperties& loadProperties)
 {
-  if (docUri == NULL)
-    return NULL;
+  zstring_b urib;
 
-  const xqpStringStore* urip = docUri.getp();
+  if (!docUri.empty())
+    urib.wrap_memory(docUri.data(), docUri.size());
 
   XmlNode_t root;
-  bool found = theDocuments.get(urip, root);
+  bool found = theDocuments.get(urib, root);
 
   if (found)
   {
@@ -1058,6 +1040,7 @@ store::Item_t SimpleStore::loadDocument(
   std::auto_ptr<XmlLoader> loader(getXmlLoader(&lErrorManager, loadProperties));
 
   root = loader->loadXml(baseUri, docUri, stream);
+
   if (lErrorManager.hasErrors())
   {
     ZORBA_ERROR_PARAM(lErrorManager.getErrors().front().theErrorCode,
@@ -1065,7 +1048,7 @@ store::Item_t SimpleStore::loadDocument(
   }
 
   if (root != NULL && loadProperties.getStoreDocument())
-    theDocuments.insert(urip, root);
+    theDocuments.insert(urib, root);
 
   return root.getp();
 }
@@ -1077,8 +1060,8 @@ store::Item_t SimpleStore::loadDocument(
   by Zorba.
 ********************************************************************************/
 store::Item_t SimpleStore::loadDocument(
-    const xqpStringStore_t& baseUri,
-    const xqpStringStore_t& docUri,
+    const zstring& baseUri,
+    const zstring& docUri,
     std::istream* stream,
     const store::LoadProperties& loadProperties)
 {
@@ -1103,17 +1086,21 @@ store::Item_t SimpleStore::loadDocument(
   already associated to another node, the method raises an error. If the given
   uri is already associated to the given node, this method is a noop.
 ********************************************************************************/
-void SimpleStore::addNode(const xqpStringStore_t& uri, const store::Item_t& node)
+void SimpleStore::addNode(const zstring& uri, const store::Item_t& node)
 {
-  ZORBA_ASSERT(uri != NULL);
+  ZORBA_ASSERT(!uri.empty());
 
-  if(node == NULL || !node->isNode())
+  if (node == NULL || !node->isNode())
   {
-    ZORBA_ERROR_PARAM(API0021_ITEM_TO_LOAD_IS_NOT_NODE, uri, "");
+    ZORBA_ERROR_PARAM(API0021_ITEM_TO_LOAD_IS_NOT_NODE, uri.c_str(), "");
   }
 
   XmlNode_t root = reinterpret_cast<XmlNode*>(node.getp());
-  bool inserted = theDocuments.insert(uri, root);
+
+  zstring_b urib;
+  urib.wrap_memory(uri.data(), uri.size());
+
+  bool inserted = theDocuments.insert(urib, root);
 
   if (!inserted && node.getp() != root.getp())
   {
@@ -1132,13 +1119,18 @@ void SimpleStore::addNode(const xqpStringStore_t& uri, const store::Item_t& node
   Return an rchandle to the root node of the document corresponding to the given
   URI, or NULL if there is no document with that URI.
 ********************************************************************************/
-store::Item_t SimpleStore::getDocument(const xqpStringStore_t& uri)
+store::Item_t SimpleStore::getDocument(const zstring& docUri)
 {
-  if (uri == NULL)
+  if (docUri.empty())
     return NULL;
 
+  zstring_b urib;
+  urib.wrap_memory(docUri.data(), docUri.size());
+
   XmlNode_t root;
-  bool found = theDocuments.get(uri, root);
+
+  bool found = theDocuments.get(urib, root);
+
   if (found)
     return root.getp();
 
@@ -1150,12 +1142,15 @@ store::Item_t SimpleStore::getDocument(const xqpStringStore_t& uri)
   Delete the document with the given URI. If there is no document with that
   URI, this method is a NOOP.
 ********************************************************************************/
-void SimpleStore::deleteDocument(const xqpStringStore_t& uri)
+void SimpleStore::deleteDocument(const zstring& docUri)
 {
-  if (uri == NULL)
+  if (docUri.empty())
     return;
 
-  theDocuments.remove(uri);
+  zstring_b urib;
+  urib.wrap_memory(docUri.data(), docUri.size());
+
+  theDocuments.remove(urib);
 }
 
 
@@ -1261,7 +1256,7 @@ bool SimpleStore::getReference(store::Item_t& result, const store::Item* node)
            << n->getOrdPath().serialize();
   }
 
-  xqpStringStore_t str(new xqpStringStore(stream.str()));
+  zstring str(stream.str());
 
   return theItemFactory->createAnyURI(result, str);
 }
@@ -1275,12 +1270,12 @@ bool SimpleStore::getReference(store::Item_t& result, const store::Item* node)
 ********************************************************************************/
 bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* uri)
 {
-  xqpStringStore* str = uri->getStringValueP();
+  const zstring& str = uri->getString();
 
   ulong prefixlen = strlen("zorba://node_reference/");
 
-  if (strncmp(str->c_str(), "zorba://node_reference/", prefixlen))
-    ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str->c_str(), "");
+  if (strncmp(str.c_str(), "zorba://node_reference/", prefixlen))
+    ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str, "");
 
   const char* start;
   long tmp = 0;
@@ -1288,18 +1283,18 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
   //
   // Decode collection id
   //
-  start = str->c_str() + prefixlen;
+  start = str.c_str() + prefixlen;
   char* next = const_cast<char*>(start);
 
   tmp = strtol(start, &next, 10);
 
   if (tmp < 0 || tmp == LONG_MAX)
-    ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str->c_str(), "");
+    ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str, "");
 
   start = next;
 
   if (*start != '/')
-    ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str->c_str(), "");
+    ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str, "");
 
   ++start;
 
@@ -1311,12 +1306,12 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
   tmp = strtol(start, &next, 10);
 
   if (tmp <= 0 || tmp == LONG_MAX)
-    ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str->c_str(), "");
+    ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str, "");
 
   start = next;
 
   if (*start != '/')
-    ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str->c_str(), "");
+    ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str, "");
 
   ++start;
 
@@ -1328,12 +1323,12 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
   tmp = strtol(start, &next, 10);
 
   if (tmp <= 0 || tmp == LONG_MAX)
-    ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str->c_str(), "");
+    ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str, "");
 
   start = next;
 
   if (*start != '/')
-    ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str->c_str(), "");
+    ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str, "");
 
   ++start;
 
@@ -1351,11 +1346,11 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
   else if (*start == 'c')
     attributeNode = false;
   else
-    ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str->c_str(), "");
+    ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str, "");
 
   ++start;
   if (*start != '/')
-    ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str->c_str(), "");
+    ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str, "");
 
   ++start;
 
@@ -1525,14 +1520,17 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
 
 ********************************************************************************/
 bool SimpleStore::getPathInfo(
-    const store::Item*               docUri,
+    const store::Item*               docUriItem,
     std::vector<const store::Item*>& contextPath,
     std::vector<const store::Item*>& relativePath,
     bool                             isAttrPath,
     bool&                            found,
     bool&                            unique)
 {
-  rchandle<XmlNode> docRoot = BASE_NODE(getDocument(docUri->getStringValue()));
+  zstring docUri;
+  docUriItem->getStringValue2(docUri);
+
+  rchandle<XmlNode> docRoot = BASE_NODE(getDocument(docUri));
 
   if (docRoot == NULL)
     return false;
@@ -1614,7 +1612,7 @@ IXMLDOMNode*   SimpleStore::exportItemAsMSDOM(store::Item_t it)
 {
   if(it == NULL)
     return NULL;
-  XmlNode *xml_node = dynamic_cast<XmlNode*>(it.getp());
+  XmlNode* xml_node = dynamic_cast<XmlNode*>(it.getp());
   if(xml_node)
     return xml_node->GetDOMNode();
   else
@@ -1631,14 +1629,14 @@ IXMLDOMNode*   SimpleStore::exportItemAsMSDOM(store::Item_t it)
 *******************************************************************************/
 store::Item_t  SimpleStore::importMSDOM(
     IXMLDOMNode* domNode,
-    xqpStringStore_t docUri,
-    xqpStringStore_t baseUri)
+    const zstring& docUri,
+    const zstring& baseUri)
 {
   ImportMSDOM   importer(theItemFactory);
 
   XmlNode_t root_node = importer.importMSDOM(domNode, docUri, baseUri);
-  const xqpStringStore* urip = docUri.getp();
-  theDocuments.insert(urip, root_node);
+
+  theDocuments.insert(docUri, root_node);
 
   return root_node.getp();
 }

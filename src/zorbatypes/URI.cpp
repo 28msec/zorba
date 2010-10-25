@@ -13,13 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 #include "representations.h"
 
 #include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/Assert.h"
+
 #include <zorba/util/path.h>
 
 #include "URI.h"
+
+#include "util/ascii_util.h"
+#include "util/utf8_util.h"
+#include "util/string_util.h"
+#include "zorbautils/string_util.h"
+
 
 using namespace std;
 
@@ -42,7 +49,7 @@ namespace zorba {
 ********************************************************************************/
 bool URI::is_hex(uint32_t c)
 {
-  return (is_digit(c) || (c >= 'a'&& c <= 'f') || (c >= 'A'&& c <= 'F'));
+  return (is_digit(c) || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F'));
 }
 
 
@@ -119,29 +126,27 @@ bool URI::is_reservered_or_unreserved_char(uint32_t c)
   The decode_file_URI() method takes a file URI and converts it to a filepath
   in the native OS foramt.
 ********************************************************************************/
-void URI::decode_file_URI(
-    const xqpStringStore_t& uri,
-    xqpStringStore_t& filepath)
+void URI::decode_file_URI(const zstring& uri, zstring& filepath)
 {
   // TODO: file://localhost/
 #ifdef WIN32
-  if ((uri->byteCompare(0, 8, "file:///") == 0) && 
-      ((uri->byteCompare(9, 1, ":") == 0) || (uri->byteCompare(9, 4, "%3A/") == 0))) 
+  if (uri.compare(0, 8, "file:///") == 0 && 
+      ((uri.compare(9, 1, ":") == 0) || (uri.compare(9, 4, "%3A/") == 0))) 
   {
-    xqpStringStore_t tmp = new xqpStringStore(uri->c_str() + 8);
-    tmp->decodeFromUri(filepath);
+    zstring tmp(uri.c_str() + 8);
+    ascii::uri_decode(filepath);
   }
   else
 #endif
-    if (uri->byteCompare(0, 8, "file:///") == 0) 
+    if (uri.compare(0, 8, "file:///") == 0) 
     {
-      xqpStringStore_t tmp = new xqpStringStore(uri->c_str() + 7);
-      tmp->decodeFromUri(filepath);
+      zstring tmp(uri.c_str() + 7);
+      ascii::uri_decode(tmp, &filepath);
     }
-    else if (uri->byteCompare(0, 17, "file://localhost/") == 0)
+    else if (uri.compare(0, 17, "file://localhost/") == 0)
     {
-      xqpStringStore_t tmp = new xqpStringStore(uri->c_str() + 16);
-      tmp->decodeFromUri(filepath);
+      zstring tmp(uri.c_str() + 16);
+      ascii::uri_decode(tmp, &filepath);
     }
     else
     {
@@ -156,36 +161,32 @@ void URI::decode_file_URI(
 
   Assumes input is absolute path.
 ********************************************************************************/
-void URI::encode_file_URI(
-    const xqpStringStore_t& filepath,
-    xqpStringStore_t& uri)
+void URI::encode_file_URI(const zstring& filepath, zstring& uri)
 {
-  if (filepath->bytePositionOf("://") != -1)
+  if (filepath.find("://", 0, 3) != zstring::npos)
   {
     uri = filepath;
     return;
   }
 
 #ifdef WIN32
-  uri = new xqpStringStore("file:///");
+  uri = "file:///";
 
-  xqpStringStore_t tmp1;
-  xqpStringStore_t pattern = new xqpStringStore("\\\\");
-  xqpStringStore_t replacement = new xqpStringStore("/");
-  filepath->replace(tmp1, pattern, replacement, "");
+  zstring tmp1( filepath );
+  ascii::replace_all( tmp1, "\\", "/" );
 
-  xqpStringStore_t tmp2;
-  tmp1->encodeForUri(tmp2, "/", 1);
+  zstring tmp2;
+  ascii::uri_encode(tmp1, &tmp2, false);
 
-  uri->append_in_place(tmp2);
+  uri.append(tmp2);
 
 #else
-  uri = new xqpStringStore("file:///");
+  uri = "file:///";
 
-  xqpStringStore_t tmp;
-  filepath->encodeForUri(tmp, "/", 1);
+  zstring tmp;
+  ascii::uri_encode(filepath, &tmp, false);
 
-  uri->append_in_place(tmp);
+  uri.append(tmp);
 #endif
 }
 
@@ -197,55 +198,52 @@ void URI::encode_file_URI(
 ********************************************************************************/
 std::string URI::encode_file_URI(const std::string& filepath)
 {
-  xqpStringStore_t filepath2 = new xqpStringStore(filepath);
-  xqpStringStore_t uri;
-
-  encode_file_URI(filepath2, uri);
-
-  return uri->str();
+  zstring uri;
+  encode_file_URI(filepath, uri);
+  return uri.str();
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-bool URI::is_well_formed_address(const xqpStringStore* addr)
+bool URI::is_well_formed_address(const char* addr, ulong addrLen)
 {
-  if (addr->empty()) 
+  if (addrLen == 0) 
   {
     return false;
   }
 
-  const std::string& addrStr = addr->str();
+  char c = addr[0];
 
-  ulong addrLen = addr->bytes();
-
-  if (addr->bytePositionOf("[") == 0) 
+  if (c == '[') 
   {
     return is_well_formed_ipv6_reference(addr, addrLen);
   }
 
-  char c = addrStr.at(0);
-
-  if ( c == '.' || c == '-' || addrStr.at(addrLen-1) == '-') 
+  if ( c == '.' || c == '-' || addr[addrLen-1] == '-') 
   {
     return false;
   }
 
-  long lLastPeriodPos = addr->byteLastPositionOf(".", 1);
+  zstring_b wrap;
+  wrap.wrap_memory(addr, addrLen);
 
-  if ( lLastPeriodPos >= 0 && (ulong)lLastPeriodPos + 1 == addrLen ) 
+  ulong lLastPeriodPos = wrap.rfind(".");
+
+  if ( lLastPeriodPos != zstring::npos && lLastPeriodPos + 1 == addrLen ) 
   {
-    xqpStringStore_t lTmp = addr->byteSubstr(0, lLastPeriodPos);
-    lLastPeriodPos = lTmp->byteLastPositionOf(".", 1);
+    zstring_b wrap2;
+    wrap2.wrap_memory(addr, lLastPeriodPos);
+    lLastPeriodPos = wrap2.rfind(".");
 
-    if ( is_digit(addrStr.at(lLastPeriodPos + 1)) )
+    if ( lLastPeriodPos != zstring::npos && is_digit(addr[lLastPeriodPos + 1]) )
     {
       return false;
     }
   }
 
-  if ( lLastPeriodPos >= 0 && is_digit(addrStr.at(lLastPeriodPos + 1)) ) 
+  if ( lLastPeriodPos != zstring::npos && is_digit(addr[lLastPeriodPos + 1]) ) 
   {
     return is_well_formed_ipv4_address(addr, addrLen);
   }
@@ -256,16 +254,16 @@ bool URI::is_well_formed_address(const xqpStringStore* addr)
       return false;
     }
 
-    uint32_t lLabelCharCount = 0;
+    ulong lLabelCharCount = 0;
 
     for (ulong i = 0; i < addrLen; ++i) 
     {
-      char c1 = addrStr.at(i);
+      char c1 = addr[i];
 
       if ( c1 == '.' ) 
       {
-        if ( ( i > 0  &&  ! is_alphanum(addrStr.at(i-1))) ||
-             ( i + 1 < addrLen  && ! is_alphanum(addrStr.at(i+1))) ) 
+        if ( ( i > 0  &&  ! is_alphanum(addr[i-1])) ||
+             ( i + 1 < addrLen  && ! is_alphanum(addr[i+1])) ) 
         {
           return false;
         }
@@ -291,20 +289,18 @@ bool URI::is_well_formed_address(const xqpStringStore* addr)
 /*******************************************************************************
 
 ********************************************************************************/
-bool URI::is_well_formed_ipv4_address(const xqpStringStore* addr, ulong length)
+bool URI::is_well_formed_ipv4_address(const char* addr, ulong length)
 {
   ulong numDots = 0;
   ulong numDigits = 0;
 
-  const std::string& addrStr = addr->str();
-
   for (ulong i = 0; i < length; ++i)
   {
-    char c = addrStr.at(i);
+    char c = addr[i];
 
     if (c == '.') 
     {
-      if ( (i == 0) || (i+1 == length) || ! is_digit(addrStr.at(i+1)) )
+      if ( (i == 0) || (i+1 == length) || ! is_digit(addr[i+1]) )
         return false;
     }
     else if ( ! is_digit(c) )
@@ -317,9 +313,9 @@ bool URI::is_well_formed_ipv4_address(const xqpStringStore* addr, ulong length)
     }
     else if (numDigits == 3)
     {
-      char lFirst  = addrStr.at(i-2);
-      char lSecond = addrStr.at(i-1);
-      char lLast   = addrStr.at(i);
+      char lFirst  = addr[i-2];
+      char lSecond = addr[i-1];
+      char lLast   = addr[i];
 
       if ( !(lFirst < '2' ||
              (lFirst == '2' && (lSecond < '5' || (lSecond == '5' && lLast <= '5'))))) 
@@ -334,15 +330,13 @@ bool URI::is_well_formed_ipv4_address(const xqpStringStore* addr, ulong length)
 /*******************************************************************************
 
 ********************************************************************************/
-bool URI::is_well_formed_ipv6_reference(const xqpStringStore* addr, ulong length)
+bool URI::is_well_formed_ipv6_reference(const char* addr, ulong length)
 {
   long lIndex = 1;
   long lEnd = length-1;
 
-  const std::string& addrStr = addr->str();
-
   // Check if string is a potential match for IPv6reference.
-  if (!(length > 2 && addrStr.at(0) == '[' && addrStr.at(lEnd) == ']')) 
+  if (!(length > 2 && addr[0] == '[' && addr[lEnd] == ']')) 
   {
     return false;
   }
@@ -362,9 +356,9 @@ bool URI::is_well_formed_ipv6_reference(const xqpStringStore* addr, ulong length
     return (lCounter == 8);
   }
   
-  if (lIndex+1 < lEnd && addrStr.at(lIndex) == ':') 
+  if (lIndex+1 < lEnd && addr[lIndex] == ':') 
   {
-    if (addrStr.at(lIndex+1) == ':') 
+    if (addr[lIndex+1] == ':') 
     {
       // '::' represents at least one 16-bit group of zeros.
       if (++lCounter > 8) 
@@ -388,8 +382,7 @@ bool URI::is_well_formed_ipv6_reference(const xqpStringStore* addr, ulong length
     { 
       if (lCounter == 6)
       {
-        xqpStringStore_t lTmp = addr->byteSubstr(lIndex+1, lEnd - lIndex -1);
-        return is_well_formed_ipv4_address(lTmp.getp(), lEnd - lIndex - 1);
+        return is_well_formed_ipv4_address(addr + lIndex+1, lEnd - lIndex - 1);
       }
       else
       {
@@ -421,9 +414,8 @@ bool URI::is_well_formed_ipv6_reference(const xqpStringStore* addr, ulong length
   // The address ends in an IPv4 address, or it is invalid. 
   // scanHexSequence has already made sure that we have the right number of bits. 
   int shiftCount = (lCounter > prevCount) ? lIndex+1 : lIndex;
-  xqpStringStore_t lTmp = addr->byteSubstr(shiftCount, lEnd - shiftCount);
 
-  return is_well_formed_ipv4_address(lTmp.getp(), lEnd - shiftCount);
+  return is_well_formed_ipv4_address(addr + shiftCount, lEnd - shiftCount);
 }
 
 
@@ -431,7 +423,7 @@ bool URI::is_well_formed_ipv6_reference(const xqpStringStore* addr, ulong length
   For use with isWellFormedIPv6Reference only.
 ********************************************************************************/
 long URI::scanHexSequence(
-    const xqpStringStore* addr,
+    const char* addr,
     long index,
     long end,
     long& counter) 
@@ -445,7 +437,7 @@ long URI::scanHexSequence(
   // hex4   = 1*4HEXDIG
   for (; index < end; ++index) 
   {
-    c = addr->str().at(index);
+    c = addr[index];
 
     if ( c == ':' ) 
     {
@@ -456,7 +448,7 @@ long URI::scanHexSequence(
       }
 
       // This could be '::'.
-      if (lNumDigits == 0 || ((index+1 < end) && addr->str().at(index+1) == ':'))
+      if (lNumDigits == 0 || ((index+1 < end) && addr[index+1] == ':'))
       {
         return index;
       }
@@ -492,46 +484,24 @@ long URI::scanHexSequence(
 
 
 /*******************************************************************************
-  Helper: Check whether any of the chars in the second argument is contained in
-  the string that is passed as first argument.
-********************************************************************************/
-long URI::find_any(const xqpStringStore* str, const std::string& patterns) 
-{
-  ulong lLength = str->bytes();
-
-  for (ulong i = 0; i < lLength; ++i) 
-  {
-    char s = str->str().at(i);
- 
-    for (ulong j = 0; j < patterns.length(); ++j) 
-    {
-      char p = patterns.at(j); 
-      if (s == p)
-        return i;
-    }
-  }
-
-  return -1; 
-}
-
-
-/*******************************************************************************
   construct a uri
 ********************************************************************************/
-URI::URI(const xqpStringStore* uri, bool validate)
+URI::URI(const zstring& uri, bool validate)
   : 
   theState(0),
   thePort(0),
   valid(validate)
 {
   initialize(uri);
+
+  //std::cout << "empty rep 2 = " << std::hex << theScheme.empty_rep() << std::endl;
 }
 
 
 /*******************************************************************************
   construct a uri and eventually resolve with the given base uri
 ********************************************************************************/
-URI::URI(const URI& base_uri, const xqpStringStore* uri, bool validate)
+URI::URI(const URI& base_uri, const zstring& uri, bool validate)
   :
   theState(0),
   thePort(0),
@@ -574,17 +544,6 @@ URI::URI()
   thePort(0),
   valid(true)
 {
-  xqpStringStore_t empty = new xqpStringStore("");
-  theURIText = empty;
-  theASCIIURIText = empty;
-  thePathNotation = empty;
-  theScheme = empty;
-  theHost = empty;
-  theUserInfo = empty;
-  theRegBasedAuthority = empty;
-  thePath = empty;
-  theQueryString = empty;
-  theFragment = empty;
 }
 
 
@@ -618,37 +577,39 @@ void URI::initialize(const URI& to_copy)
   Initialize this uri based on a base-uri (i.e. uri resolving) and a (relative)
   uri given as string
 ********************************************************************************/
-void URI::initialize(const xqpStringStore* uri, bool have_base)
+void URI::initialize(const zstring& uri, bool have_base)
 {
-  xqpStringStore_t empty = new xqpStringStore("");
-  theURIText = empty;
-  theASCIIURIText = empty;
-  thePathNotation = empty;
-  theScheme = empty;
-  theHost = empty;
-  theUserInfo = empty;
-  theRegBasedAuthority = empty;
-  thePath = empty;
-  theQueryString = empty;
-  theFragment = empty;
+  theURIText.clear();
+  theASCIIURIText.clear();
+  thePathNotation.clear();
+  theScheme.clear();
+  theHost.clear();
+  theUserInfo.clear();
+  theRegBasedAuthority.clear();
+  thePath.clear();
+  theQueryString.clear();
+  theFragment.clear();
 
   // first, we need to normalize the spaces in the uri
   // and only work with the normalized version from this point on
-  xqpStringStore_t lTrimmedURI = (uri->normalizeSpace())->trim();
-  ulong lTrimmedURILength = lTrimmedURI->bytes();
+  zstring lTrimmedURI;
+  ascii::normalize_whitespace(uri, &lTrimmedURI);
+  ascii::trim_whitespace(lTrimmedURI);
+
+  ulong lTrimmedURILength = lTrimmedURI.size();
 
   // index of the current processing state used in this function
   ulong lIndex = 0;
 
-  long lColonIdx    = lTrimmedURI->bytePositionOf(":");
-  long lSlashIdx    = lTrimmedURI->bytePositionOf("/");
-  long lQueryIdx    = lTrimmedURI->bytePositionOf("?");
-  long lFragmentIdx = lTrimmedURI->bytePositionOf("#");
+  ulong lColonIdx    = lTrimmedURI.find(":");
+  ulong lSlashIdx    = lTrimmedURI.find("/");
+  ulong lQueryIdx    = lTrimmedURI.find("?");
+  ulong lFragmentIdx = lTrimmedURI.find("#");
 
 #ifdef WIN32
   // on WIN32 we might have a drive specification ("C:")
   // and we don't want to consider this as scheme
-  char lLetter = lTrimmedURI->c_str()[0];
+  char lLetter = lTrimmedURI[0];
   bool lIsDrive = false;
   if (lColonIdx == 1 &&
      ((lLetter >= 65 && 90 >= lLetter) || (lLetter >= 97 && 122 >= lLetter)))
@@ -661,18 +622,18 @@ void URI::initialize(const xqpStringStore* uri, bool have_base)
    * Scheme
    * must be before `/', '?' or '#'.  
    */
-  if ((lColonIdx <= 0) ||
+  if ((lColonIdx == 0 || lColonIdx == zstring::npos) ||
 #ifdef WIN32
       // avoid interpreting the drive as a scheme
       lIsDrive ||
 #endif
-      (lColonIdx > lSlashIdx && lSlashIdx != -1) ||
-      (lColonIdx > lQueryIdx && lQueryIdx != -1) ||
-      (lColonIdx > lFragmentIdx && lFragmentIdx != -1)) 
+      (lColonIdx > lSlashIdx && lSlashIdx != zstring::npos) ||
+      (lColonIdx > lQueryIdx && lQueryIdx != zstring::npos) ||
+      (lColonIdx > lFragmentIdx && lFragmentIdx != zstring::npos)) 
   {
     // A standalone base is a valid URI
     if (valid &&
-        (lColonIdx == 0 || (!have_base && lFragmentIdx > 0)) &&
+        (lColonIdx == 0 || (!have_base && lFragmentIdx != zstring::npos)) &&
         lTrimmedURILength > 0)
     {
        ZORBA_ERROR_DESC_OSS(XQST0046,
@@ -683,16 +644,14 @@ void URI::initialize(const xqpStringStore* uri, bool have_base)
   {
     initializeScheme(lTrimmedURI);
 
-    lIndex = theScheme->bytes() + 1;
+    lIndex = theScheme.size() + 1;
   }
 
   /**
    * Authority
    * two slashes means generic URI syntax, so we get the authority
    */
-  xqpStringStore_t lAuthUri = lTrimmedURI->byteSubstr(lIndex, lTrimmedURILength - lIndex);
-
-  if (lAuthUri->byteSubstr(0, 2)->byteEqual("//", 2)) 
+  if (lTrimmedURI.compare(lIndex, 2, "//") == 0) 
   {
     lIndex += 2;
     if (lIndex >= lTrimmedURILength)
@@ -710,7 +669,7 @@ void URI::initialize(const xqpStringStore* uri, bool have_base)
       char c;
       while (lIndex < lTrimmedURILength) 
       {
-        c = lTrimmedURI->str().at(lIndex);
+        c = lTrimmedURI[lIndex];
 
         if (c == '/' || c == '?' || c == '#')
           break;
@@ -722,18 +681,18 @@ void URI::initialize(const xqpStringStore* uri, bool have_base)
       // host to empty string
       if (lIndex > lStartPos) 
       {
-        lAuthUri = lTrimmedURI->byteSubstr(lStartPos, lIndex - lStartPos);
+        zstring lAuthUri = lTrimmedURI.substr(lStartPos, lIndex - lStartPos);
 
         // For "file" scheme only allow "localhost" as authority.
         // This makes this implementation the same with the file module.
         // If this functionality is changed, please make the same changes
         // in the file module.
-        if (theScheme->byteEqual("file", 4) &&
-            !lAuthUri->byteEqual("localhost", 9)) 
+        if (equals(theScheme, "file", 4) &&
+            !equals(lAuthUri, "localhost", 9)) 
         {
           ZORBA_ERROR_DESC_OSS(XQST0046,
                                "Invalid authority value for the \"file\" scheme: \""
-                               << lAuthUri->c_str()
+                               << lAuthUri
                                << "\". The only accepted values are empty string"
                                << " (file:///) and \"localhost\" (file://localhost/).");
         }
@@ -742,15 +701,14 @@ void URI::initialize(const xqpStringStore* uri, bool have_base)
       }
       else 
       {
-        xqpStringStore_t empty = new xqpStringStore("");
-        set_host(empty);
+        set_host(zstring());
       }
     }
     // do not allow constructs like: file:D:/myFile or http:myFile
   }
-  else if (theScheme->byteEqual("file", 4) ||
-           theScheme->byteEqual("http", 4) ||
-           theScheme->byteEqual("https", 5)) 
+  else if (equals(theScheme, "file", 4) ||
+           equals(theScheme, "http", 4) ||
+           equals(theScheme, "https", 5)) 
   {
     if (valid)
     {
@@ -766,7 +724,7 @@ void URI::initialize(const xqpStringStore* uri, bool have_base)
   /**
    * Path
    */
-  xqpStringStore_t lPathUri = lTrimmedURI->byteSubstr(lIndex, lTrimmedURILength - lIndex);
+  zstring lPathUri = lTrimmedURI.substr(lIndex, lTrimmedURILength - lIndex);
 
   initializePath(lPathUri);
 }
@@ -775,17 +733,17 @@ void URI::initialize(const xqpStringStore* uri, bool have_base)
 /*******************************************************************************
    scheme = alpha *( alpha | digit | "+" | "-" | "." )
 ********************************************************************************/
-void URI::initializeScheme(const xqpStringStore* uri)
+void URI::initializeScheme(const zstring& uri)
 {
-  long lSchemeSeparatorIdx = find_any(uri, ":/?#");
+  ulong lSchemeSeparatorIdx = uri.find_first_of(":/?#", 0,4 );
   
-  if ( valid && lSchemeSeparatorIdx == -1 ) 
+  if ( valid && lSchemeSeparatorIdx == zstring::npos ) 
   {
     ZORBA_ERROR_DESC_OSS(XQST0046, "URI \"" << uri << "\" doesn't have an URI scheme");
   }
   else
   {
-    set_scheme(uri->byteSubstr(0, lSchemeSeparatorIdx).getp());
+    set_scheme(uri.substr(0, lSchemeSeparatorIdx));
   }
 }
 
@@ -808,21 +766,21 @@ void URI::initializeScheme(const xqpStringStore* uri)
   IPv4address   = 1*digit "." 1*digit "." 1*digit "." 1*digit
   port          = *digit
 ********************************************************************************/
-void URI::initializeAuthority(const xqpStringStore* uri)
+void URI::initializeAuthority(const zstring& uri)
 {
-  long lIndex = 0;
+  ulong lIndex = 0;
   ulong lStart = 0;
-  ulong lEnd = uri->bytes();
+  ulong lEnd = uri.size();
 
-  xqpStringStore_t lUserInfo;
+  zstring lUserInfo;
   bool lUserInfoFound;
 
 
-  lIndex = uri->bytePositionOf("@");
+  lIndex = uri.find("@");
 
-  if ( lIndex != -1 ) 
+  if ( lIndex != zstring::npos ) 
   {
-    lUserInfo = uri->byteSubstr(0, lIndex);
+    lUserInfo = uri.substr(0, lIndex);
     ++lIndex;
     lStart += lIndex;
     lUserInfoFound = true;
@@ -837,27 +795,30 @@ void URI::initializeAuthority(const xqpStringStore* uri)
   // host is everything up to ':', or up to 
   // and including ']' if followed by ':'.
   //
-  xqpStringStore_t lHost;
-  xqpStringStore_t lTmp; // used for substrings starting at lStart
-  if ( lStart < lEnd && uri->str().at(lStart) == '[' ) 
+  zstring lHost;
+  zstring_b lTmp; // used for substrings starting at lStart
+
+  lTmp.wrap_memory(uri.c_str() + lStart, lEnd - lStart);
+
+  if ( lStart < lEnd && uri[lStart] == '[' ) 
   {
-    lTmp = uri->byteSubstr(lStart, lEnd - lStart);
-    lIndex = lTmp->bytePositionOf("]");
-    if ( lIndex != -1 ) 
+     lIndex = lTmp.find("]");
+
+    if ( lIndex != zstring::npos ) 
     { 
-      lIndex = ( ((lStart + lIndex + 1 ) < lEnd) &&
-                 (uri->str().at(lStart + lIndex + 1)) == ':') ? lIndex + 1 : -1;
+      lIndex = ((lStart + lIndex + 1)  < lEnd && uri[lStart + lIndex + 1] == ':' ?
+                lIndex + 1 : zstring::npos);
     }
   }
   else
   {
-    lTmp = uri->byteSubstr(lStart, lEnd - lStart);
-    lIndex = lTmp->bytePositionOf(":");
+    lIndex = lTmp.find(":");
   }
 
-  if ( lIndex != -1 ) 
+  if ( lIndex != zstring::npos ) 
   {
-    lHost = lTmp->byteSubstr(0, lIndex);
+    lHost = lTmp.substr(0, lIndex);
+
     ++lIndex; // skip the colon
     lStart += lIndex;
     //if(lStart >= lEnd)
@@ -868,23 +829,23 @@ void URI::initializeAuthority(const xqpStringStore* uri)
   }
   else
   {
-    lHost = lTmp->byteSubstr(0, lEnd - lStart);
+    lHost = lTmp.substr(0, lEnd - lStart);
     lStart = lEnd;
   }
 
-  lTmp = uri->byteSubstr(lStart, lEnd - lStart);
+  lTmp.wrap_memory(uri.c_str() + lStart, lEnd - lStart);
   int lPort = -1;
 
-  if ( ( ! lHost->empty() ) && ( lIndex != -1 ) && ( lStart < lEnd ) ) 
+  if ( ( ! lHost.empty() ) && ( lIndex != zstring::npos ) && ( lStart < lEnd ) ) 
   {
-    xqpStringStore_t lPortString = lTmp->byteSubstr(0, lEnd - lStart);
+    zstring lPortString = lTmp.substr(0, lEnd - lStart);
 
-    if ( !lPortString->empty() )
+    if ( !lPortString.empty() )
     {
-      lPort = atoi(lPortString->c_str());
+      lPort = atoi(lPortString.c_str());
     }
   }
-  else if ( lStart >= lEnd && lIndex != -1 ) 
+  else if ( lStart >= lEnd && lIndex != zstring::npos ) 
   {
     lPort = -2;
   }
@@ -896,12 +857,15 @@ void URI::initializeAuthority(const xqpStringStore* uri)
   {
     theHost = lHost;
     set_state(Host);
+
     if (lPort != -1)
     {
       thePort = lPort;
       set_state(Port);
     }
-    if (lUserInfoFound) {
+
+    if (lUserInfoFound)
+    {
       set_user_info(lUserInfo);
     }
 
@@ -915,12 +879,12 @@ void URI::initializeAuthority(const xqpStringStore* uri)
 
 ********************************************************************************/
 bool URI::is_valid_server_based_authority(
-    const xqpStringStore* host,
+    const zstring& host,
     const int port,
-    const xqpStringStore* user_info,
+    const zstring& user_info,
     bool user_info_found)
 {
-  if ( !is_well_formed_address(host) )  
+  if ( !is_well_formed_address(host.c_str(), host.size()) )  
   {
     return false;
   }
@@ -958,16 +922,17 @@ bool URI::is_valid_server_based_authority(
   pchar         = unreserved | escaped |
                   ":" | "@" | "&" | "=" | "+" | "$" | ","
 ********************************************************************************/
-void URI::initializePath(const xqpStringStore* uri)
+void URI::initializePath(const zstring& uri)
 {
-  checked_vector<uint32_t> lCodepoints = uri->getCodepoints();
+  checked_vector<uint32_t> lCodepoints;
+  utf8::to_codepoints(uri, &lCodepoints);
 
   ulong lIndex = 0;
   ulong lStart = 0;
   ulong lEnd = lCodepoints.size();
   uint32_t lCp = 0;
 
-  if(uri->empty())
+  if (uri.empty())
   {
     thePath = uri;
     set_state(Path);
@@ -994,25 +959,30 @@ void URI::initializePath(const xqpStringStore* uri)
           if ( lIndex + 2 >= lEnd )
           {
             ZORBA_ERROR_DESC_OSS(XQST0046,
-                           "Invalid hex sequence in URI \"" << uri->c_str() << "\" .");
+                                 "Invalid hex sequence in URI \"" << uri << "\" .");
           }
           uint32_t lHex1 = lCodepoints[++lIndex];
           uint32_t lHex2 = lCodepoints[++lIndex];
           if(!is_hex(lHex1) || !is_hex(lHex2))
           {
             ZORBA_ERROR_DESC_OSS(XQST0046,
-                           "Invalid hex sequence in URI \"" << uri->c_str() << "\" : \"%" << char(lHex1) << char(lHex2) << "\".");
+                                 "Invalid hex sequence in URI \"" << uri
+                                 << "\" : \"%" << char(lHex1) << char(lHex2) << "\".");
           }
         }
         else if (!is_unreserved_char(lCp) && !is_path_character(lCp) && valid)
         {
-         ZORBA_ERROR_DESC_OSS(XQST0046, "Invalid char with codepoint '" << lCp << "' in URI path " << uri->str());
+          ZORBA_ERROR_DESC_OSS(XQST0046,
+                               "Invalid char with codepoint '" << lCp
+                               << "' in URI path " << uri);
         }
         ++lIndex;
       }
     #ifdef WIN32
-      if (theScheme->byteEqual("file", 4) && (lCodepoints[lStart] == '/') && (lEnd > (lStart+2)) &&
-        ((lCodepoints[lStart+2] == ':') || !uri->byteCompare(lStart+2, 4, "%3A/")))//jump over first '/' of path
+      if (equals(theScheme, "file", 4) &&
+          (lCodepoints[lStart] == '/') &&
+          (lEnd > (lStart+2)) &&
+          ((lCodepoints[lStart+2] == ':') || !uri.compare(lStart+2, 4, "%3A/")))//jump over first '/' of path
         lStart++;
     #endif
     }
@@ -1030,7 +1000,9 @@ void URI::initializePath(const xqpStringStore* uri)
         }
         else if (!is_reservered_or_unreserved_char(lCp) && valid)
         {
-         ZORBA_ERROR_DESC_OSS(XQST0046, "Invalid char with codepoint '" << lCp << "' in URI path " << uri->str());
+         ZORBA_ERROR_DESC_OSS(XQST0046,
+                              "Invalid char with codepoint '" << lCp
+                              << "' in URI path " << uri);
         }
         ++lIndex;
       }
@@ -1038,7 +1010,9 @@ void URI::initializePath(const xqpStringStore* uri)
 
   } // lStart < lEnd
 
-  thePath = new xqpStringStore(lCodepoints, lStart, lIndex - lStart);
+
+  xqpStringStore_t tmp = new xqpStringStore(lCodepoints, lStart, lIndex - lStart);
+  thePath = tmp->str();
 
   set_state(Path);
 
@@ -1058,7 +1032,8 @@ void URI::initializePath(const xqpStringStore* uri)
     } /* lIndex < lEnd */
 
 
-    theQueryString = new xqpStringStore(lCodepoints, lStart, lIndex - lStart);
+    tmp = new xqpStringStore(lCodepoints, lStart, lIndex - lStart);
+    theQueryString = tmp->str();
 
     set_state(QueryString);
   }
@@ -1078,7 +1053,8 @@ void URI::initializePath(const xqpStringStore* uri)
 
     if ( lIndex > lStart)
     {
-      theFragment = new xqpStringStore(lCodepoints, lStart, lIndex - lStart);
+      tmp = new xqpStringStore(lCodepoints, lStart, lIndex - lStart);
+      theFragment = tmp->str();
 
       set_state(Fragment);
     }
@@ -1091,13 +1067,150 @@ void URI::initializePath(const xqpStringStore* uri)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
+void URI::set_scheme(const zstring& new_scheme)
+{
+  if ( new_scheme.empty() ) 
+  {
+    ZORBA_ERROR_DESC_OSS(XQST0046, "URI scheme is empty");  
+  }
+
+  if ( ! is_conformant_scheme_name(new_scheme) ) 
+  {
+    ZORBA_ERROR_DESC_OSS(XQST0046, "URI contains a scheme \"" 
+                         << new_scheme
+                         << "\" that is not a conformant URI scheme");
+  }
+
+  theScheme = new_scheme;
+  set_state(Scheme);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void URI::set_host(const zstring& new_host)
+{
+  theHost = new_host;
+  set_state(Host);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void URI::set_port(int new_port)
+{
+  thePort = new_port;
+  set_state(Port);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void URI::set_user_info(const zstring& new_user_info)
+{
+  ascii::uri_encode(new_user_info, &theUserInfo, false);
+
+  set_state(UserInfo);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void URI::set_reg_based_authority(const zstring& new_authority)
+{
+  if ( new_authority.empty() ) 
+  {
+    return;
+  } 
+
+  // TODO check valid registry based authority
+
+  theRegBasedAuthority = new_authority;
+  set_state(RegBasedAuthority);
+
+  unset_state(Host);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void URI::set_path(const zstring& new_path)
+{
+  if (new_path.empty()) 
+  {
+    thePath = new_path;
+    unset_state(Path);
+    theQueryString = new_path;
+    unset_state(QueryString);
+    theFragment = new_path;
+    unset_state(Fragment);
+  }
+  else
+  {
+    initializePath(new_path);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void URI::get_user_info(zstring& result) const
+{
+  ascii::uri_decode(theUserInfo, &result);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void URI::get_reg_based_authority(zstring& result) const
+{
+  ascii::uri_decode(theRegBasedAuthority, &result);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void URI::get_path(zstring& result) const
+{
+  ascii::uri_decode(thePath, &result);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void URI::get_query(zstring& result) const
+{
+  ascii::uri_decode(theQueryString, &result);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void URI::get_fragment(zstring& result) const
+{
+  ascii::uri_decode(theFragment, &result);
+}
+
 
 /*******************************************************************************
 
 ********************************************************************************/
 bool URI::is_absolute() const
 {
-  return is_set(Scheme) && !theScheme->empty();
+  return is_set(Scheme) && !theScheme.empty();
 }
 
 
@@ -1112,32 +1225,32 @@ void URI::resolve(const URI* base_uri)
     return;
   }
 
-  if ( base_uri == 0 && toString()->empty() ) 
+  if ( base_uri == 0 && toString().empty() ) 
   {
     ZORBA_ERROR_DESC_OSS(XQST0046, "No base URI given and URILiteral is of zero length");
   }
 
-  if ( toString()->empty() ) 
+  if ( toString().empty() ) 
   {
     // just copy the base uri 
     initialize(*base_uri);
   }
 
-  long lIndex = 0;
+  ulong lIndex = 0;
 
   // If the path component is empty and the scheme, authority, and
   // query components are undefined, then it is a reference to the
   // current document and we are done.  Otherwise, the reference URI's
   // query and fragment components are defined as found (or not found)
   // within the URI reference and not inherited from the base URI.
-  if ( ((!is_set(Path)) || (thePath->empty())) &&
+  if ( ((!is_set(Path)) || (thePath.empty())) &&
        (!is_set(Scheme) && (!is_set(Host)) && (!is_set(RegBasedAuthority)) )) 
   {
     set_scheme(base_uri->get_scheme());
 
     if (base_uri->is_set(UserInfo)) 
     {
-      xqpStringStore_t userInfo;
+      zstring userInfo;
       base_uri->get_user_info(userInfo);
       set_user_info(userInfo);
     }
@@ -1154,7 +1267,7 @@ void URI::resolve(const URI* base_uri)
 
     if (base_uri->is_set(RegBasedAuthority)) 
     {
-      xqpStringStore_t auth;
+      zstring auth;
       base_uri->get_reg_based_authority(auth);
       set_reg_based_authority(auth);
     }
@@ -1162,11 +1275,12 @@ void URI::resolve(const URI* base_uri)
     if (base_uri->is_set(Path)) 
     {
       // I think this is a bug in xerces because it doesn't remove the last segment
-      xqpStringStore_t path;
+      zstring path;
       base_uri->get_path(path);
-      long last_slash = path->byteLastPositionOf("/", 1);
-      if ( last_slash != -1 )
-        thePath = path->byteSubstr(0, last_slash+1);
+
+      ulong last_slash = path.rfind("/");
+      if ( last_slash != zstring::npos )
+        thePath = path.substr(0, last_slash+1);
       else 
         thePath = path;
 
@@ -1180,7 +1294,7 @@ void URI::resolve(const URI* base_uri)
         set_state(QueryString);
     }
 
-    theURIText = new xqpStringStore(""); // force rebuild in get_uri_text
+    theURIText.clear(); // force rebuild in get_uri_text
 
     return;
   }
@@ -1191,7 +1305,7 @@ void URI::resolve(const URI* base_uri)
   // scheme is inherited from the base URI's scheme component.
   if ( is_set(Scheme) ) 
   {
-    theURIText = new xqpStringStore(""); // force rebuild in get_uri_text
+    theURIText.clear(); // force rebuild in get_uri_text
     return;
   }
 
@@ -1230,50 +1344,48 @@ void URI::resolve(const URI* base_uri)
   }
   else
   {
-    theURIText = new xqpStringStore(""); // force rebuild in toString
-    theASCIIURIText = new xqpStringStore("");
+    theURIText.clear(); // force rebuild in toString
+    theASCIIURIText.clear();
     return;
   }
 
 
   // If the path component begins with a slash character ("/"), then
   // the reference is an absolute-path and we skip to step 7.
-  if ( (is_set(Path)) && (thePath->bytePositionOf("/") == 0) ) 
+  if ( (is_set(Path)) && (thePath[0] =='/') ) 
   {
-    theURIText = new xqpStringStore(""); // force rebuild in get_uri_text
-    theASCIIURIText = new xqpStringStore("");
+    theURIText.clear(); // force rebuild in get_uri_text
+    theASCIIURIText.clear();
     return;
   }
 
-  xqpStringStore_t base_path = base_uri->get_encoded_path();
-  xqpStringStore_t path;
+  zstring base_path = base_uri->get_encoded_path();
+  zstring path;
 
   if ( base_uri->is_set(Path) ) 
   {
-    long last_slash = base_path->byteLastPositionOf("/", 1);
-    if ( last_slash != -1 )
-      path = base_path->byteSubstr(0, last_slash+1);
+    ulong last_slash = base_path.rfind("/");
+    if ( last_slash != zstring::npos )
+      path = base_path.substr(0, last_slash+1);
 //  else
 //    path = "/";
 
   }
 
   // 6b - append the relative URI path
-  if(path != NULL)
-    path->append_in_place(thePath);
-  else
-    path = thePath;
+  path.append(thePath);
 
   // 6c - remove all "./" where "." is a complete path segment
-  xqpStringStore_t pattern = new xqpStringStore("/\\./");
-  xqpStringStore_t replacement = new xqpStringStore("/");
-  path->replace(path, pattern, replacement, "");
+  zstring pattern("/\\./");
+  zstring replacement("/");
+  bool ok = utf8::replace_all(path, pattern, "", replacement, &path);
+  ZORBA_ASSERT(ok);
 
   // 6d If the buffer string ends with "." as a complete path segment,
   //  that "." is removed.
-  if (path->byteEndsWith("/.", 2)) 
+  if (ascii::ends_with(path, "/.", 2)) 
   {
-    path = path->byteSubstr(0, path->bytes() - 1);
+    path = path.substr(0, path.size() - 1);
   }
 
   // 6e All occurrences of "<segment>/../", where <segment> is a
@@ -1281,33 +1393,38 @@ void URI::resolve(const URI* base_uri)
   // buffer string.  Removal of these path segments is performed
   // iteratively, removing the leftmost matching pattern on each
   // iteration, until no matching pattern remains.
-  lIndex = -1;
-  long segIndex = -1;
-  long offset = 1;
+  ulong segIndex;
+  ulong offset = 1;
 
-  xqpStringStore_t tmp_path = path->byteSubstr(1, path->bytes() - 1 );
-  xqpStringStore_t tmp1, tmp2;
-  while ((lIndex = tmp_path->bytePositionOf("/../")) != -1) 
+  zstring_b tmp_path;
+  tmp_path.wrap_memory(const_cast<char*>(path.c_str() + 1), path.size() - 1);
+  zstring_b tmp1;
+  zstring_b tmp2;
+
+  while ((lIndex = tmp_path.find("/../")) != zstring::npos) 
   {
     // Undo offset
     lIndex += offset;
     
     // Find start of <segment> within substring ending at found point.
-    tmp1 = path->byteSubstr(0, lIndex - 1);
-    segIndex = tmp1->byteLastPositionOf("/", 1);
+    tmp1.wrap_memory(path.c_str(), lIndex - 1);
+
+    segIndex = tmp1.rfind("/");
 
     // Ensure <segment> exists and != ".."
-    if (segIndex != -1 &&
-        (path->str().at(segIndex+1) != '.' ||
-         path->str().at(segIndex+2) != '.' ||
+    if (segIndex != zstring::npos &&
+        (path[segIndex+1] != '.' ||
+         path[segIndex+2] != '.' ||
          segIndex + 3 != lIndex)) 
     { 
-      tmp1 = path->byteSubstr(0, segIndex);
-      tmp2 = path->byteSubstr(lIndex+3, path->bytes() - lIndex - 3);
+      tmp1.wrap_memory(path.c_str(), segIndex);
+      tmp2.wrap_memory(path.c_str() + lIndex + 3, path.size() - lIndex - 3);
 
-      path = new xqpStringStore("");
-      path->append_in_place(tmp1);
-      path->append_in_place(tmp2);
+      zstring tmp;
+      tmp.reserve(tmp1.size() + tmp2.size());
+      tmp += tmp1;
+      tmp += tmp2;
+      path.swap(tmp);
 
       offset = (segIndex == 0 ? 1 : segIndex);
     }
@@ -1316,31 +1433,31 @@ void URI::resolve(const URI* base_uri)
       offset += 4;
     }
 
-    tmp_path = path->byteSubstr(offset, path->bytes() - offset);
+    tmp_path.wrap_memory(path.c_str() + offset, path.size() - offset);
   } // while
 
   // 6f) If the buffer string ends with "<segment>/..", where <segment>
   // is a complete path segment not equal to "..", that
   // "<segment>/.." is removed.
-  if (path->byteEndsWith("/..", 3)) 
+  if (ascii::ends_with(path, "/..", 3))
   {
     // Find start of <segment> within substring ending at found point.
-    lIndex = path->bytes() - 3;
-    tmp1 = path->byteSubstr(0, lIndex - 1);
-    segIndex = tmp1->byteLastPositionOf("/", 1);
+    lIndex = path.size() - 3;
+    tmp1.wrap_memory(path.c_str(), lIndex - 1);
+    segIndex = tmp1.rfind("/");
 
-    if (segIndex != -1 &&
-        (path->str().at(segIndex+1) != '.' ||
-         path->str().at(segIndex+2) != '.' ||
+    if (segIndex != zstring::npos &&
+        (path[segIndex+1] != '.' ||
+         path[segIndex+2] != '.' ||
          segIndex + 3 != lIndex))
     {
-      path = path->byteSubstr(0, segIndex+1);
+      path = path.substr(0, segIndex+1);
     }
   }
   
   thePath = path;
-  theURIText = new xqpStringStore(""); // force rebuild in get_uri_text
-  theASCIIURIText = new xqpStringStore("");
+  theURIText.clear(); // force rebuild in get_uri_text
+  theASCIIURIText.clear();
 }
 
 
@@ -1349,36 +1466,36 @@ void URI::resolve(const URI* base_uri)
 ********************************************************************************/
 void URI::relativize(const URI* base_uri)
 {
-  if ( base_uri == 0 || base_uri->toString()->size() == 0)
+  if ( base_uri == 0 || base_uri->toString().size() == 0)
     return;
 
   // if the scheme of the base_uri and the current uri are not identical,
   // we return the current uri
-  if ( base_uri->get_scheme()->compare(get_scheme()) != 0 ) 
+  if ( base_uri->get_scheme().compare(get_scheme()) != 0 ) 
   {
     return;
   }
 
   // if the authority of the base_uri and the current uri are not identical,
   // we return the current uri
-  xqpStringStore_t auth;
-  xqpStringStore_t base_auth;
+  zstring auth;
+  zstring base_auth;
   get_reg_based_authority(auth);
   base_uri->get_reg_based_authority(base_auth);
 
-  if ( base_auth->compare(auth, NULL) != 0 ) 
+  if ( base_auth != auth ) 
   {
     return;
   }
 
   // if the path of the current uri is not a substring of the path of the base_uri,
   // we return the current uri
-  xqpStringStore_t path;
-  xqpStringStore_t base_path;
+  zstring path;
+  zstring base_path;
   get_path(path);
   base_uri->get_path(base_path);
 
-  if ( path->positionOf(base_path, NULL) != 0 ) 
+  if ( path.find(base_path) != 0 ) 
   {
     return;
   }
@@ -1387,19 +1504,18 @@ void URI::relativize(const URI* base_uri)
   // fragment components taken from the given URI and with a path component
   // computed by removing this URI's 
   // path from the beginning of the given URI's path.
-  xqpStringStore_t lNewPath = path->substr(base_path->bytes());
-  xqpStringStore_t empty = new xqpStringStore("");
+  zstring lNewPath = path.substr(base_path.size());
   set_path(lNewPath);
   // unset remaining stuff
-  theScheme = empty;
+  theScheme.clear();
   unset_state(Scheme);
-  theRegBasedAuthority = empty;
+  theRegBasedAuthority.clear();
   unset_state(RegBasedAuthority);
-  theUserInfo = empty;
+  theUserInfo.clear();
   unset_state(UserInfo);
   thePort = 0;
   unset_state(Port);
-  theHost = empty;
+  theHost.clear();
   unset_state(Host);
 }
 
@@ -1407,39 +1523,17 @@ void URI::relativize(const URI* base_uri)
 /*******************************************************************************
 
 ********************************************************************************/
-void URI::set_scheme(const xqpStringStore* new_scheme)
+bool URI::is_conformant_scheme_name(const zstring& scheme)
 {
-  if ( new_scheme->empty() ) 
-  {
-    ZORBA_ERROR_DESC_OSS(XQST0046, "URI scheme is empty");  
-  }
-
-  if ( ! is_conformant_scheme_name(new_scheme) ) 
-  {
-    ZORBA_ERROR_DESC_OSS(XQST0046, "URI contains a scheme \"" 
-                         << new_scheme->c_str()
-                         << "\" that is not a conformant URI scheme");
-  }
-
-  theScheme = new_scheme;
-  set_state(Scheme);
-}
-
-
-
-/*******************************************************************************
-
-********************************************************************************/
-bool URI::is_conformant_scheme_name(const xqpStringStore* scheme)
-{
+#if 0
   // start with a-zA-Z
-  if ( ! scheme->matches("[a-zA-Z]", 8, "" ) )
+  if ( ! zorba::matches(scheme, "[a-zA-Z]", "" ) )
     return false;
-  
+#endif
 
-  for (ulong i = 0; i < scheme->bytes(); ++i) 
+  for (ulong i = 0; i < scheme.size(); ++i) 
   {
-    char c = scheme->str().at(i);
+    char c = scheme[i];
 
     if ( ! is_alpha(c) && c != '+' && c != '-' && c != '.')
     {
@@ -1453,82 +1547,9 @@ bool URI::is_conformant_scheme_name(const xqpStringStore* scheme)
 /*******************************************************************************
 
 ********************************************************************************/
-void URI::set_user_info(const xqpStringStore* new_user_info)
+const zstring& URI::toString() const
 {
-  new_user_info->encodeForUri(theUserInfo, "/", 1);
-
-  set_state(UserInfo);
-}
-
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void URI::set_host(const xqpStringStore* new_host)
-{
-  theHost = new_host;
-  set_state(Host);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void URI::set_port(int new_port)
-{
-  thePort = new_port;
-  set_state(Port);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void URI::set_reg_based_authority(const xqpStringStore* new_authority)
-{
-  if ( new_authority->empty() ) 
-  {
-    return;
-  } 
-
-  // TODO check valid registry based authority
-
-  theRegBasedAuthority = new_authority;
-  set_state(RegBasedAuthority);
-
-  unset_state(Host);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void URI::set_path(const xqpStringStore* new_path)
-{
-  if (new_path->empty()) 
-  {
-    xqpStringStore_t empty = new xqpStringStore("");
-    thePath = empty;
-    unset_state(Path);
-    theQueryString = empty;
-    unset_state(QueryString);
-    theFragment = empty;
-    unset_state(Fragment);
-  }
-  else
-  {
-    initializePath(new_path);
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-const xqpStringStore_t& URI::toString() const
-{
-  if (theURIText->empty()) 
+  if (theURIText.empty()) 
   {
     build_full_text();
   }
@@ -1539,9 +1560,9 @@ const xqpStringStore_t& URI::toString() const
 /*******************************************************************************
 
 ********************************************************************************/
-const xqpStringStore_t& URI::toPathNotation() const
+const zstring& URI::toPathNotation() const
 {
-  if (thePathNotation->empty()) 
+  if (thePathNotation.empty()) 
   {
     build_path_notation();
   }
@@ -1552,9 +1573,9 @@ const xqpStringStore_t& URI::toPathNotation() const
 /*******************************************************************************
 
 ********************************************************************************/
-const xqpStringStore_t& URI::toASCIIString() const
+const zstring& URI::toASCIIString() const
 {
-  if (theASCIIURIText->empty()) 
+  if (theASCIIURIText.empty()) 
   {
     build_ascii_full_text();
   }
@@ -1572,11 +1593,11 @@ void URI::build_path_notation() const
   std::string lToTokenize;
   if (is_set(Host)) 
   {
-    lToTokenize = theHost->c_str();
+    lToTokenize = theHost.str();
   }
   else
   {
-    lToTokenize = theRegBasedAuthority->c_str();
+    lToTokenize = theRegBasedAuthority.str();
   }
 
   std::string::size_type lastPos = 
@@ -1603,12 +1624,12 @@ void URI::build_path_notation() const
 
   if (is_set(Path)) 
   {
-    if(!thePath->empty() && (thePath->charAt(0) != '/')&& (thePath->charAt(0) != '\\'))
+    if(!thePath.empty() && (thePath[0] != '/') && (thePath[0] != '\\'))
       lPathNotation << "/";
     lPathNotation << thePath;
   } 
 
-  thePathNotation = new xqpStringStore(lPathNotation.str().c_str());
+  thePathNotation = lPathNotation.str();
 }
 
 
@@ -1621,7 +1642,7 @@ void URI::build_full_text() const
   
   // Scheme
   if ( is_set(Scheme) )
-    lURI << theScheme->c_str() << ":";
+    lURI << theScheme << ":";
 
   // Authority
   if ( is_set(Host) || is_set(RegBasedAuthority) ) 
@@ -1630,7 +1651,7 @@ void URI::build_full_text() const
     if ( is_set(Host) ) 
     {
       if ( is_set(UserInfo) )
-        lURI << theUserInfo->c_str() << "@";
+        lURI << theUserInfo << "@";
 
       lURI << theHost;
 
@@ -1639,26 +1660,26 @@ void URI::build_full_text() const
     }
     else
     {
-      lURI << theRegBasedAuthority->c_str();
+      lURI << theRegBasedAuthority;
     }
   }
 
   if ( is_set(Path) )
   {
   #ifdef WIN32
-    if(theScheme->byteEqual("file", 4) && !thePath->empty() && (thePath->charAt(0) != '/'))
+    if(equals(theScheme, "file", 4) && !thePath.empty() && (thePath[0] != '/'))
         lURI << "/";
   #endif
-    lURI << thePath->c_str();
+    lURI << thePath;
   }
 
   if ( is_set(QueryString) )
-    lURI << "?" << theQueryString->c_str();
+    lURI << "?" << theQueryString;
 
   if ( is_set(Fragment) )
-    lURI << "#" << theFragment->c_str();
+    lURI << "#" << theFragment;
 
-  theURIText = new xqpStringStore(lURI.str().c_str());
+  theURIText = lURI.str();
 }
 
 
@@ -1671,7 +1692,7 @@ void URI::build_ascii_full_text() const
   
   // Scheme
   if ( is_set(Scheme) )
-    lURI << theScheme->c_str() << ":";
+    lURI << theScheme << ":";
 
   // Authority
   if ( is_set(Host) || is_set(RegBasedAuthority) ) 
@@ -1681,35 +1702,35 @@ void URI::build_ascii_full_text() const
     if ( is_set(Host) ) 
     {
       if ( is_set(UserInfo) )
-        lURI << theUserInfo->c_str() << "@";
+        lURI << theUserInfo << "@";
 
-      lURI << theHost->c_str();
+      lURI << theHost;
 
       if ( is_set(Port) )
         lURI << ":" << thePort;
     }
     else 
     {
-      lURI << theRegBasedAuthority->c_str();
+      lURI << theRegBasedAuthority;
     }
   }
 
   if ( is_set(Path) )
   {
   #ifdef WIN32
-    if(theScheme->byteEqual("file", 4) && !thePath->empty() && (thePath->charAt(0) != '/'))
+    if(equals(theScheme, "file", 4) && !thePath.empty() && (thePath[0] != '/'))
         lURI << "/";
   #endif
-    lURI << thePath->c_str();
+    lURI << thePath;
   }
 
   if ( is_set(QueryString) )
-    lURI << "?" << theQueryString->c_str();
+    lURI << "?" << theQueryString;
 
   if ( is_set(Fragment) )
-    lURI << "#" << theFragment->c_str();
+    lURI << "#" << theFragment;
 
-  theASCIIURIText = new xqpStringStore(lURI.str().c_str());
+  theASCIIURIText = lURI.str();
 }
 
 };

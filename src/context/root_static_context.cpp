@@ -51,7 +51,7 @@ void root_static_context::init()
 {
   QueryLoc loc;
 
-  theImplementationBaseUri = new xqpStringStore("http://www.zorba-xquery.com/");
+  theImplementationBaseUri = "http://www.zorba-xquery.com/";
   compute_base_uri();
 
   // default xquery version is 1.1
@@ -61,16 +61,14 @@ void root_static_context::init()
   const char** p = default_ns_initializers;
   for (; *p != NULL; p += 2)
   {
-    xqpStringStore_t pfx = new xqpStringStore(p[0]);
-    xqpStringStore_t ns = new xqpStringStore(p[1]);
+    zstring pfx(p[0]);
+    zstring ns (p[1]);
     bind_ns(pfx, ns, loc);
   }
 
-  xqpStringStore_t elem_ns = new xqpStringStore("");
-  set_default_elem_type_ns(elem_ns, loc);		
+  set_default_elem_type_ns(zstring(), loc);		
 
-  xqpStringStore_t fn_ns = new xqpStringStore(XQUERY_FN_NS);
-  set_default_function_ns(fn_ns, loc);
+  set_default_function_ns(XQUERY_FN_NS, loc);
 
   set_context_item_type(GENV_TYPESYSTEM.ITEM_TYPE_ONE);
 

@@ -23,7 +23,6 @@
 #include "zorbatypes/m_apm.h"
 #endif
 
-#include "zorbatypes/xqpstring.h"
 #include "zorbatypes/zorbatypes_decl.h"
 
 #include "zorbaserialization/class_serializer.h"
@@ -241,7 +240,7 @@ public:
       
   bool operator>=(const Double&) const;
 
-  xqpStringStore_t toString() const;
+  zstring toString() const;
 
   uint32_t hash() const;
 

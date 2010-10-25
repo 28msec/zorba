@@ -32,13 +32,13 @@ namespace zorba {
 
 static PlanIter_t compile(
     CompilerCB* ccb,
-    xqp_string query,
+    zstring query,
     checked_vector<store::Item_t> varnames,
     checked_vector<xqtref_t> vartypes)
 {
   XQueryCompiler compiler(ccb);
-  std::istringstream os(query);
-  xqpStringStore_t dummyname = new xqpStringStore("");
+  std::istringstream os(query.str());
+  zstring dummyname;
   parsenode_t ast = compiler.parse(os, dummyname);
   QueryLoc loc;
 
@@ -63,7 +63,7 @@ static PlanIter_t compile(
   for (int i = (int) varnames.size() - 1; i >= 0; i--)
   {
     vfo->push_front(new VarDecl(loc,
-                                new QName(loc, varnames[i]->getStringValue()->str()),
+                                new QName(loc, varnames[i]->getStringValue().str()),
                                 NULL,
                                 NULL,
                                 NULL,
@@ -105,7 +105,7 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     state->dctx.reset(new dynamic_context(planState.dctx()));
 
     state->eval_plan.reset(new PlanWrapper(compile(state->ccb.get(),
-                                                   &*item->getStringValue(),
+                                                   item->getStringValue(),
                                                    varnames,
                                                    vartypes),
                                            state->ccb.get(),

@@ -542,12 +542,13 @@ void* begin_visit(const ModuleDecl& n)
 }
 DEFAULT_END_VISIT (ModuleDecl)
 
+
 void* begin_visit(const ModuleImport& n)
 {
   os << "import module ";
-  if(!n.get_prefix()->empty())
+  if(!n.get_prefix().empty())
   {
-    os << "namespace " << n.get_prefix()->c_str() << "=";
+    os << "namespace " << n.get_prefix() << '=';
   }
   os << n.get_uri();
   if(n.get_at_list())
@@ -557,6 +558,7 @@ void* begin_visit(const ModuleImport& n)
   return 0;
 }
 DEFAULT_END_VISIT (ModuleImport)
+
 
 void* begin_visit(const NameTest& n)
 {

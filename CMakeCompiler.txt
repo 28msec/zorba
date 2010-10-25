@@ -16,23 +16,38 @@
 # Let's use the highest warning level.
 #-----------------------------------------------------------------------------
 IF(CMAKE_BUILD_TOOL MATCHES "(msdev|devenv|nmake)")
-#  # Use the highest warning level for visual studio.
-#  IF(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
-#    STRING(REGEX REPLACE "/W[0-4]" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-#  ELSE(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
-#    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
-#  ENDIF(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
-#  IF(CMAKE_C_FLAGS MATCHES "/W[0-4]")
-#    STRING(REGEX REPLACE "/W[0-4]" "/W4" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
-#  ELSE(CMAKE_C_FLAGS MATCHES "/W[0-4]")
-#    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /W4")
-#  ENDIF(CMAKE_C_FLAGS MATCHES "/W[0-4]")
+  # Use only the second highest warning level for the Visual Studio
+  # compiler: /W3. This is because /W4 is too strict and generates too many
+  # warnings. This would make much of the code non-portable or too many
+  # ifdef pragma expressions would be necessary.
+  # See: http://digipen1.xmmg.com:8181/dpweb/docs/CompilingWarningLevel4.html
 
-# Disable deprecation warnings for standard C functions in VS2005 and later
-#IF(CMAKE_COMPILER_2005)
-   ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE)
-#ENDIF(CMAKE_COMPILER_2005)
+  # for C++
+  IF(CMAKE_CXX_FLAGS MATCHES "/W[0-2]")
+    STRING(REGEX REPLACE "/W[0-2]" "/W3" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+  ELSE(CMAKE_CXX_FLAGS MATCHES "/W[0-2]")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W3")
+  ENDIF(CMAKE_CXX_FLAGS MATCHES "/W[0-2]")
+  # and for C
+  IF(CMAKE_C_FLAGS MATCHES "/W[0-2]")
+    STRING(REGEX REPLACE "/W[0-2]" "/W3" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
+  ELSE(CMAKE_C_FLAGS MATCHES "/W[0-2]")
+    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /W3")
+  ENDIF(CMAKE_C_FLAGS MATCHES "/W[0-2]")
+  MESSAGE(STATUS "Increased the warning level to level 3: /W3. New flags:")
+  MESSAGE(STATUS "CMAKE_C_FLAGS:            ${CMAKE_C_FLAGS}")
+  MESSAGE(STATUS "CMAKE_CXX_FLAGS:          ${CMAKE_CXX_FLAGS}")
 
+  # For the same reasons mentioned above, disable deprecation warnings for standard C functions
+  ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE)
+
+  IF(NOT CMAKE_CXX_FLAGS MATCHES "/DNOMINMAX")
+    # avoid the min/max name clash between std versions and the
+    # ones defined in Windef.h on Windows. Disable the latter.
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /DNOMINMAX")
+    MESSAGE(STATUS "Added /DNOMINMAX compiler flag to CMAKE_CXX_FLAGS. New flags:")
+    MESSAGE(STATUS "CMAKE_CXX_FLAGS:          ${CMAKE_CXX_FLAGS}")
+  ENDIF(NOT CMAKE_CXX_FLAGS MATCHES "/DNOMINMAX")
 ENDIF(CMAKE_BUILD_TOOL MATCHES "(msdev|devenv|nmake)")
 
 SET(ZORBA_GNUCOMPILER_VERSION)

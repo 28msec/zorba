@@ -48,7 +48,7 @@ std::ostream& operator<<(std::ostream& os, const ItemVector& key)
     if (key.theItems[i] == NULL)
       os << "NULL";
     else
-      os << key.theItems[i]->getStringValue()->c_str();
+      os << key.theItems[i]->getStringValue();
   }
 
   os << "]";

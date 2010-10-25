@@ -17,35 +17,38 @@
 #ifndef ZORBA_UTIL_CONVERTERS_JSON_H
 #define ZORBA_UTIL_CONVERTERS_JSON_H
 
-#include "zorbatypes/representations.h"
-
 #include "store/api/item.h"
-#include "store/api/item_factory.h"
 
 namespace zorba {
 
-  //Json parse and serialize: http://www.json.org/
-  bool JSON_parse(const char* aJsonString,
-                  const unsigned int aLength,
-                  store::Item_t& aElement,
-                  xqpStringStore_t aBaseUri,
-                  xqp_string& aErrorLog);
-
-  bool JSON_serialize(const store::Item* aElement,
-                      xqpStringStore_t& aJsonString,
-                      xqpStringStore_t& aErrorLog);
+//Json parse and serialize: http://www.json.org/
+bool JSON_parse(
+    const char* aJsonString,
+    const unsigned int aLength,
+    store::Item_t& aElement,
+    const zstring& aBaseUri,
+    zstring& aErrorLog);
 
 
-  //Json ML parse and serialize: http://jsonml.org/
-  bool JSON_ML_parse( const char* aJsonString,
-                      const unsigned int aLength,
-                      store::Item_t& aElement,
-                      xqpStringStore_t aBaseUri,
-                      xqp_string& aErrorLog);
+bool JSON_serialize(
+    const store::Item* aElement,
+    zstring& aJsonString,
+    zstring& aErrorLog);
+ 
 
-  bool JSON_ML_serialize( const store::Item* aElement,
-                          xqpStringStore_t& aJsonString,
-                          xqpStringStore_t& aErrorLog);
+//Json ML parse and serialize: http://jsonml.org/
+bool JSON_ML_parse(
+    const char* aJsonString,
+    const unsigned int aLength,
+    store::Item_t& aElement,
+    const zstring& aBaseUri,
+    zstring& aErrorLog);
+ 
+ 
+bool JSON_ML_serialize(
+    const store::Item* aElement,
+    zstring& aJsonString,
+    zstring& aErrorLog);
 
 }/*namespace zorba*/
 

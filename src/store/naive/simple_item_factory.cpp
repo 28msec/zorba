@@ -18,7 +18,8 @@
 
 #include "zorbaerrors/error_manager.h"
 #include "zorbaerrors/Assert.h"
-#include "zorbatypes/datetime.h"
+
+//#include "zorbatypes/datetime.h"
 
 #include "store/naive/store_defs.h"
 #include "store/naive/simple_store.h"
@@ -31,9 +32,12 @@
 #include "store/naive/qname_pool.h"
 #include "store/naive/string_pool.h"
 #include "store/naive/node_factory.h"
-#include "runtime/function_item/function_item.h"
+
+#include "util/ascii_util.h"
+
 
 namespace zorba { namespace simplestore {
+
 
 BasicItemFactory::BasicItemFactory(UriPool* uriPool, QNamePool* qnPool)
   :
@@ -61,10 +65,10 @@ bool BasicItemFactory::createUserTypedAtomicItem(
 
 
 bool BasicItemFactory::createQName(
-    store::Item_t&          result,
-    const xqpStringStore_t& ns,
-    const xqpStringStore_t& pre,
-    const xqpStringStore_t& local)
+    store::Item_t& result,
+    const zstring& ns,
+    const zstring& pre,
+    const zstring& local)
 {
   result = theQNamePool->insert(ns, pre, local);
   return true;
@@ -83,76 +87,71 @@ bool BasicItemFactory::createQName(
 
 
 
-bool BasicItemFactory::createAnyURI(store::Item_t& result, xqpStringStore_t& value)
+bool BasicItemFactory::createAnyURI(store::Item_t& result, zstring& value)
 {
-  xqpStringStore_t str = value;
-  theUriPool->insert(str, str);
-  result =  new AnyUriItemImpl(str);
+  zstring str = value;
+  theUriPool->insert(str);
+  result =  new AnyUriItem(str);
   return true;
 }
 
 
 bool BasicItemFactory::createAnyURI(store::Item_t& result, const char* value)
 {
-  xqpStringStore_t str;
+  zstring str;
   theUriPool->insertc(value, str);
-  result = new AnyUriItemImpl(str);
+  result = new AnyUriItem(str);
   return true;
 }
 
 
-bool BasicItemFactory::createString(store::Item_t& result, xqpStringStore_t& value)
+bool BasicItemFactory::createString(store::Item_t& result, zstring& value)
 {
   result = new StringItem(value);
   return true;
 }
 
 
-bool BasicItemFactory::createNormalizedString(
-    store::Item_t&    result,
-    xqpStringStore_t& value)
+bool BasicItemFactory::createNormalizedString(store::Item_t& result, zstring& value)
 {
   result = new NormalizedStringItemImpl(value);
   return true;
 }
 
 
-bool BasicItemFactory::createToken(store::Item_t& result, xqpStringStore_t& value )
+bool BasicItemFactory::createToken(store::Item_t& result, zstring& value )
 {
   result = new TokenItemImpl(value);
   return true;
 }
 
 
-bool BasicItemFactory::createLanguage(store::Item_t& result, xqpStringStore_t& value )
+bool BasicItemFactory::createLanguage(store::Item_t& result, zstring& value )
 {
   result = new LanguageItemImpl(value);
   return true;
 }
 
 
-bool BasicItemFactory::createNMTOKEN(store::Item_t& result, xqpStringStore_t& value )
+bool BasicItemFactory::createNMTOKEN(store::Item_t& result, zstring& value )
 {
   result = new NMTOKENItemImpl(value);
   return true;
 }
 
 
-bool BasicItemFactory::createNMTOKENS(
-    store::Item_t& result,
-    xqpStringStore_t& value )
+bool BasicItemFactory::createNMTOKENS(store::Item_t& result, zstring& value )
 {
   // split value string into tokens
-  std::vector<xqp_string> atomicTextValues;
+  std::vector<zstring> atomicTextValues;
   splitToAtomicTextValues(value, atomicTextValues);
 
   //create VectorItem with all tokens
   std::vector<store::Item_t> typedValues;
   for ( unsigned int i = 0; i < atomicTextValues.size() ; i++)
   {
-    xqpStringStore_t tmp = atomicTextValues[i].getStore();
     store::Item_t resultItem;
-    if ( createNMTOKENS(resultItem, tmp) )
+    if ( createNMTOKENS(resultItem, atomicTextValues[i]) )
     {
       typedValues.push_back(resultItem.getp());
     }
@@ -163,47 +162,46 @@ bool BasicItemFactory::createNMTOKENS(
 }
 
 
-bool BasicItemFactory::createName(store::Item_t& result, xqpStringStore_t& value )
+bool BasicItemFactory::createName(store::Item_t& result, zstring& value )
 {
   result = new NameItemImpl(value);
   return true;
 }
 
 
-bool BasicItemFactory::createNCName(store::Item_t& result, xqpStringStore_t& value )
+bool BasicItemFactory::createNCName(store::Item_t& result, zstring& value )
 {
   result = new NCNameItemImpl(value);
   return true;
 }
 
 
-bool BasicItemFactory::createID(store::Item_t& result, xqpStringStore_t& value )
+bool BasicItemFactory::createID(store::Item_t& result, zstring& value )
 {
   result = new IDItemImpl(value);
   return true;
 }
 
 
-bool BasicItemFactory::createIDREF(store::Item_t& result, xqpStringStore_t& value)
+bool BasicItemFactory::createIDREF(store::Item_t& result, zstring& value)
 {
   result = new IDREFItemImpl(value);
   return true;
 }
 
 
-bool BasicItemFactory::createIDREFS(store::Item_t& result, xqpStringStore_t& value )
+bool BasicItemFactory::createIDREFS(store::Item_t& result, zstring& value )
 {
   // split value string into tokens
-  std::vector<xqp_string> atomicTextValues;
+  std::vector<zstring> atomicTextValues;
   splitToAtomicTextValues(value, atomicTextValues);
 
   //create VectorItem with all tokens
   std::vector<store::Item_t> typedValues;
   for ( unsigned int i = 0; i < atomicTextValues.size() ; i++)
   {
-    xqpStringStore_t tmp = atomicTextValues[i].getStore();
     store::Item_t resultItem;
-    if ( createIDREF(resultItem, tmp) )
+    if ( createIDREF(resultItem, atomicTextValues[i]) )
     {
       typedValues.push_back(resultItem.getp());
     }
@@ -213,25 +211,26 @@ bool BasicItemFactory::createIDREFS(store::Item_t& result, xqpStringStore_t& val
   return true;
 }
 
-bool BasicItemFactory::createENTITY(store::Item_t& result, xqpStringStore_t& value )
+
+bool BasicItemFactory::createENTITY(store::Item_t& result, zstring& value )
 {
   result = new ENTITYItemImpl(value);
   return true;
 }
 
-bool BasicItemFactory::createENTITIES(store::Item_t& result, xqpStringStore_t& value)
+
+bool BasicItemFactory::createENTITIES(store::Item_t& result, zstring& value)
 {
   // split value string into tokens
-  std::vector<xqp_string> atomicTextValues;
+  std::vector<zstring> atomicTextValues;
   splitToAtomicTextValues(value, atomicTextValues);
 
   //create VectorItem with all tokens
   std::vector<store::Item_t> typedValues;
   for ( unsigned int i = 0; i < atomicTextValues.size() ; i++)
   {
-    xqpStringStore_t tmp = atomicTextValues[i].getStore();
     store::Item_t resultItem;
-    if ( createENTITY(resultItem, tmp) )
+    if ( createENTITY(resultItem, atomicTextValues[i]) )
     {
       typedValues.push_back(resultItem.getp());
     }
@@ -242,7 +241,7 @@ bool BasicItemFactory::createENTITIES(store::Item_t& result, xqpStringStore_t& v
 }
 
 
-bool BasicItemFactory::createUntypedAtomic(store::Item_t& result, xqpStringStore_t& value)
+bool BasicItemFactory::createUntypedAtomic(store::Item_t& result, zstring& value)
 {
   result = new UntypedAtomicItem(value);
   return true;
@@ -456,11 +455,12 @@ bool BasicItemFactory::createDateTime(
 
 bool BasicItemFactory::createDateTime(
     store::Item_t& result,
-    const xqpStringStore_t& value)
+    const char* str,
+    ulong strlen)
 {
   DateTime dt;
 
-  if (DateTime::parseDateTime(value, dt) == 0)
+  if (DateTime::parseDateTime(str, strlen, dt) == 0)
   {
     result = new DateTimeItem(&dt);
     return true;
@@ -522,11 +522,14 @@ bool BasicItemFactory::createDate(
 }
 
 
-bool BasicItemFactory::createDate(store::Item_t& result,  const xqpStringStore_t& value)
+bool BasicItemFactory::createDate(
+    store::Item_t& result,
+    const char* str,
+    ulong strlen)
 {
   DateTime dt;
 
-  if (DateTime::parseDate(value, dt) == 0)
+  if (DateTime::parseDate(str, strlen, dt) == 0)
   {
     result = new DateTimeItem(&dt);
     return true;
@@ -546,11 +549,14 @@ bool BasicItemFactory::createTime(store::Item_t& result, const xqp_time* value)
 }
 
 
-bool BasicItemFactory::createTime(store::Item_t& result, const xqpStringStore_t& value)
+bool BasicItemFactory::createTime(
+    store::Item_t& result,
+    const char* str,
+    ulong strlen)
 {
   DateTime dt;
 
-  if( DateTime::parseTime(value, dt) == 0)
+  if( DateTime::parseTime(str, strlen, dt) == 0)
   {
     result = new DateTimeItem(&dt);
     return true;
@@ -615,11 +621,14 @@ bool BasicItemFactory::createGDay(store::Item_t& result, const xqp_gDay* value)
 }
 
 
-bool BasicItemFactory::createGDay(store::Item_t& result,  const xqpStringStore_t& value)
+bool BasicItemFactory::createGDay(
+    store::Item_t& result,
+    const char* str,
+    ulong strlen)
 {
   DateTime dt;
 
-  if (DateTime::parseGDay(value, dt) == 0)
+  if (DateTime::parseGDay(str, strlen, dt) == 0)
   {
     result = new DateTimeItem(&dt);
     return true;
@@ -656,11 +665,14 @@ bool BasicItemFactory::createGMonth(store::Item_t& result, const xqp_gMonth* val
 }
 
 
-bool BasicItemFactory::createGMonth(store::Item_t& result, const xqpStringStore_t& value)
+bool BasicItemFactory::createGMonth(
+    store::Item_t& result,
+    const char* str,
+    ulong strlen)
 {
   DateTime dt;
 
-  if (DateTime::parseGMonth(value, dt) == 0)
+  if (DateTime::parseGMonth(str, strlen, dt) == 0)
   {
     result = new DateTimeItem(&dt);
     return true;
@@ -701,11 +713,12 @@ bool BasicItemFactory::createGMonthDay(
 
 bool BasicItemFactory::createGMonthDay(
     store::Item_t& result,
-    const xqpStringStore_t& value)
+    const char* str,
+    ulong strlen)
 {
   DateTime dt;
 
-  if (DateTime::parseGMonthDay(value, dt) == 0)
+  if (DateTime::parseGMonthDay(str, strlen, dt) == 0)
   {
     result = new DateTimeItem(&dt);
     return true;
@@ -718,7 +731,7 @@ bool BasicItemFactory::createGMonthDay(
 }
 
 
-bool BasicItemFactory::createGMonthDay(store::Item_t& result,  short month, short day)
+bool BasicItemFactory::createGMonthDay(store::Item_t& result, short month, short day)
 {
   DateTime dt;
 
@@ -740,11 +753,14 @@ bool BasicItemFactory::createGYear(store::Item_t& result, const xqp_gYear* value
 }
 
 
-bool BasicItemFactory::createGYear(store::Item_t& result,  const xqpStringStore_t& value)
+bool BasicItemFactory::createGYear(
+    store::Item_t& result,
+    const char* str,
+    ulong strlen)
 {
   DateTime dt;
 
-  if (DateTime::parseGYear(value, dt) == 0)
+  if (DateTime::parseGYear(str, strlen, dt) == 0)
   {
     result = new DateTimeItem(&dt);
     return true;
@@ -785,11 +801,12 @@ bool BasicItemFactory::createGYearMonth(
 
 bool BasicItemFactory::createGYearMonth(
     store::Item_t& result,
-    const xqpStringStore_t& value)
+    const char* str,
+    ulong strlen)
 {
   DateTime dt;
 
-  if (DateTime::parseGYearMonth(value, dt) == 0)
+  if (DateTime::parseGYearMonth(str, strlen, dt) == 0)
   {
     result = new DateTimeItem(&dt);
     return true;
@@ -833,10 +850,11 @@ bool BasicItemFactory::createDuration(
 
 bool BasicItemFactory::createDuration(
     store::Item_t& result,
-    const xqpStringStore_t& value)
+    const char* str,
+    ulong strlen)
 {
   Duration d;
-  if (Duration::parseDuration(value, d) == 0)
+  if (Duration::parseDuration(str, strlen, d) == 0)
   {
     result = new DurationItem(&d);
     return true;
@@ -894,9 +912,7 @@ bool BasicItemFactory::createHexBinary(store::Item_t& result,  xqp_hexBinary val
 }
 
 
-bool BasicItemFactory::createNOTATION(
-    store::Item_t& result,
-    xqpStringStore_t& /*value*/ )
+bool BasicItemFactory::createNOTATION(store::Item_t& result, zstring& /*value*/ )
 {
   result = NULL;
   return false;
@@ -913,9 +929,9 @@ bool BasicItemFactory::createNOTATION(
   docUri        : The document-uri property of N. It may be NULL.
 ********************************************************************************/
 bool BasicItemFactory::createDocumentNode(
-    store::Item_t&    result,
-    xqpStringStore_t& baseUri,
-    xqpStringStore_t& docUri)
+    store::Item_t& result,
+    zstring& baseUri,
+    zstring& docUri)
 {
   XmlTree* xmlTree = NULL;
   DocumentNode* n = NULL;
@@ -983,7 +999,7 @@ bool BasicItemFactory::createElementNode(
     bool                        haveTypedValue,
     bool                        haveEmptyValue,
     const store::NsBindings&    localBindings,
-    xqpStringStore_t&           baseUri,
+    zstring&                    baseUri,
     bool                        isInSubstitutionGroup)
 {
   XmlTree* xmlTree = NULL;
@@ -1167,10 +1183,10 @@ bool BasicItemFactory::createAttributeNode(
   content       : The content property of N.
 ********************************************************************************/
 bool BasicItemFactory::createTextNode(
-    store::Item_t&    result,
-    store::Item*      parent,
-    long              pos,
-    xqpStringStore_t& content)
+    store::Item_t&  result,
+    store::Item*    parent,
+    long            pos,
+    zstring&        content)
 {
   XmlTree* xmlTree = NULL;
   TextNode* n = NULL;
@@ -1200,7 +1216,11 @@ bool BasicItemFactory::createTextNode(
 
         ZORBA_ASSERT(!textSibling->isTyped());
 
-        xqpStringStore_t content2 = textSibling->getText()->append(content);
+        zstring content2;
+        content2.reserve(textSibling->getText().size() + content.size());
+        content2 = textSibling->getText();
+        content2 += content;
+
         textSibling->setText(content2);
 
         result = lsib;
@@ -1212,7 +1232,9 @@ bool BasicItemFactory::createTextNode(
 
         ZORBA_ASSERT(!textSibling->isTyped());
 
-        xqpStringStore_t content2 = content->append(textSibling->getText());
+        zstring content2;
+        content2.take(content);
+        content2 += textSibling->getText();
         textSibling->setText(content2);
 
         result = rsib;
@@ -1238,6 +1260,9 @@ bool BasicItemFactory::createTextNode(
 /*******************************************************************************
   Create a new text node N to store the typed value of a given element node P
   (the parent of N) that has simple type or complex type with simple content.
+
+  The typed value of P consists of a single atomic value.
+
   P is not allowed to have any other text or element children.
 
   parent        : The parent P of the new text node; must not be NULL.
@@ -1257,6 +1282,17 @@ bool BasicItemFactory::createTextNode(
 }
 
 
+/*******************************************************************************
+  Create a new text node N to store the typed value of a given element node P
+  (the parent of N) that has simple type or complex type with simple content.
+
+  The typed value of P is a list of atomic values.
+
+  P is not allowed to have any other text or element children.
+
+  parent        : The parent P of the new text node; must not be NULL.
+  content       : The typed value of P.
+********************************************************************************/
 bool BasicItemFactory::createTextNode(
     store::Item_t&              result,
     store::Item*                parent,
@@ -1285,12 +1321,12 @@ bool BasicItemFactory::createTextNode(
   baseUri       : The base-uri property of N.
 ********************************************************************************/
 bool BasicItemFactory::createPiNode(
-    store::Item_t&    result,
-    store::Item*      parent,
-    long              pos,
-    xqpStringStore_t& target,
-    xqpStringStore_t& content,
-    xqpStringStore_t& baseUri)
+    store::Item_t& result,
+    store::Item*   parent,
+    long           pos,
+    zstring&       target,
+    zstring&       content,
+    zstring&       baseUri)
 {
   XmlTree* xmlTree = NULL;
   PiNode* n = NULL;
@@ -1331,10 +1367,10 @@ bool BasicItemFactory::createPiNode(
   content       : The content property of N.
 ********************************************************************************/
 bool BasicItemFactory::createCommentNode(
-    store::Item_t&    result,
-    store::Item*      parent,
-    long              pos,
-    xqpStringStore_t& content)
+    store::Item_t& result,
+    store::Item*   parent,
+    long           pos,
+    zstring&       content)
 {
   XmlTree* xmlTree = NULL;
   CommentNode* n = NULL;
@@ -1407,35 +1443,35 @@ bool BasicItemFactory::createTuple(
 
 ********************************************************************************/
 bool BasicItemFactory::createError(
-          store::Item_t& result,
-          error::ZorbaError* inError)
+    store::Item_t& result,
+    error::ZorbaError* inError)
 {
   result = new ErrorItemNaive(inError);
   return true;
 }
 
+
 void BasicItemFactory::splitToAtomicTextValues(
-          const xqpStringStore_t& textValue,
-          std::vector<xqp_string>& atomicTextValues)
+    zstring& textValue,
+    std::vector<zstring>& atomicTextValues)
 {
-  xqp_string normalizedTextValue(textValue->normalizeSpace());
-  checked_vector<uint32_t> codes = normalizedTextValue.getCodepoints();
+  ascii::normalize_whitespace(textValue);
 
-  xqpString::size_type start = 0;
-  xqpString::size_type i = 0;
+  zstring::size_type start = 0;
+  zstring::size_type i = 0;
 
-  while (i < codes.size())
+  while (i < textValue.size())
   {
-    if ( xqpStringStore::is_whitespace(codes[i]) )
+    if (isspace(textValue[i]))
     {
-      atomicTextValues.push_back(normalizedTextValue.substr(start, i - start));
+      atomicTextValues.push_back(textValue.substr(start, i - start));
       start = i+1;
     }
     i++;
   }
 
   if ( start < (i-1) )
-    atomicTextValues.push_back(normalizedTextValue.substr(start, i-start));
+    atomicTextValues.push_back(textValue.substr(start, i-start));
 }
 
 } // namespace simplestore

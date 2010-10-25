@@ -59,4 +59,9 @@ private:
 
 } // namespace zorba
 #endif  /* ZORBA_NAIVE_FT_TOKEN_ITERATOR_H */
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
 /* vim:set et sw=2 ts=2: */

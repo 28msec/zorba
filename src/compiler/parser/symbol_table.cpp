@@ -17,9 +17,9 @@
 
 #include "compiler/parser/symbol_table.h"
 #include "util/fx/fxcharheap.h"
-#include "compiler/parser/util.h"
 
 #include "util/XmlWhitespace.h"
+#include "util/utf8_util.h"
 
 #include <cstdlib>
 #include <string>
@@ -81,7 +81,7 @@ static bool decode_string (const char *yytext, uint32_t yyleng, string *result) 
   for (i = 1; i + 1 < yyleng; i++) {
     char ch = yytext [i];
     if (ch == '&') {
-      int d = decode_entity (yytext + i + 1, result);
+      int d = utf8::parse_xml_entity (yytext + i + 1, result);
       if (d < 0) return false;
       i += d;
     } else {
@@ -178,9 +178,9 @@ off_t symbol_table::put_varname(char const* text, uint32_t length)
 off_t symbol_table::put_entityref(char const* text, uint32_t length)
 {
   string result;
-  if (decode_entity (text + 1, &result) < 0)
+  if (utf8::parse_xml_entity (text + 1, &result) < 0)
     return -1;
-	return heap.put(result.c_str(), 0, result.size ());
+  return heap.put(result.c_str(), 0, result.size ());
 }
 
 off_t symbol_table::put_charref(char const* text, uint32_t length)

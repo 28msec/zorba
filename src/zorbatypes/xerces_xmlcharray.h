@@ -27,7 +27,7 @@
 
 
 #include <zorba/config.h>
-#include <zorbatypes/xqpstring.h>
+#include <zorbatypes/zstring.h>
 
 XERCES_CPP_NAMESPACE_USE
 
@@ -36,37 +36,43 @@ namespace zorba
 
 class XMLChArray 
 {
-
-  XMLCh *buf;
+private:
+  XMLCh * buf;
     
  public:
-  XMLChArray (XMLCh *buf_) : buf(buf_) {}
+  XMLChArray(XMLCh* buf_) : buf(buf_) {}
     
-  XMLChArray (const char* str) : 
-    buf(XMLString::transcode(str)) {}
-
-  XMLChArray (const xqpStringStore* str) : 
-    buf(XMLString::transcode(str->c_str())) {}
-    
-  XMLCh *get () { return buf; }
-  const XMLCh *get () const { return buf; }
-
-  operator XMLCh* () { return get (); }
-  operator const XMLCh* () const { return get (); }
-
-  friend std::ostream& operator<<(std::ostream& out, 
-                                  const XMLChArray& xmlChArray)
+  XMLChArray(const zstring& str) 
+    :
+    buf(XMLString::transcode(str.c_str()))
   {
-      out << XMLString::transcode(xmlChArray.get ());
-      return out;
   }
 
- 
-  ~XMLChArray () { XMLString::release (&buf); }
+  ~XMLChArray() { XMLString::release(&buf); }
 
+  XMLCh* get() { return buf; }
+
+  const XMLCh* get () const { return buf; }
+
+  operator XMLCh* () { return get(); }
+
+  operator const XMLCh* () const { return get(); }
+
+  friend std::ostream& operator<<(std::ostream& out, const XMLChArray& xmlChArray)
+  {
+    out << XMLString::transcode(xmlChArray.get());
+    return out;
+  }
 };
 
 }
 
 #endif // ifndef ZORBA_NO_XMLSCHEMA
 #endif // ifndef ZORBA_XERCES_XMLCHARRAY_H
+
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

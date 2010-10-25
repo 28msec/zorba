@@ -161,8 +161,7 @@
   </zorba:function>
 
   <zorba:state generateInit="false" generateReset="false">
-    <zorba:member type="std::vector&lt;std::pair&lt;xqpStringStore_t, xqpStringStore_t&gt; &gt;" name="theBindings"
-                  brief=""/>
+    <zorba:member type="store::NsBindings" name="theBindings" brief=""/>
     <zorba:member type="unsigned long" name="theCurrentPos" brief=""/>
   </zorba:state>
     

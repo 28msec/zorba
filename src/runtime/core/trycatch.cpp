@@ -157,9 +157,10 @@ TryCatchIterator::matchedCatch(
     const CatchClause& cc = *lIter;
     const std::vector<NodeNameTest_t>& nts = cc.node_names;
     std::vector<NodeNameTest_t>::const_iterator i;
-    for(i = nts.begin(); i != nts.end(); ++i) {
+    for(i = nts.begin(); i != nts.end(); ++i) 
+    {
       const NodeNameTest& nt = **i;
-      if (nt.matches(e.theLocalName.getStore(), e.theNamespace.getStore()))
+      if (nt.matches(e.theLocalName.c_str(), e.theNamespace.c_str()))
       {
         state->theCatchIterator = cc.catch_expr;
         bindErrorVars(e, &cc, planState);
@@ -169,6 +170,7 @@ TryCatchIterator::matchedCatch(
   }
   return false;
 }
+
 
 void
 TryCatchIterator::bindErrorVars(
@@ -185,7 +187,8 @@ TryCatchIterator::bindErrorVars(
 
   std::vector<LetVarIter_t>::const_iterator lErrorCodeVarIter = clause->errorcode_var.begin();
   std::vector<LetVarIter_t>::const_iterator lErrorCodeVarIterEnd = clause->errorcode_var.end();
-  for ( ; lErrorCodeVarIter != lErrorCodeVarIterEnd; lErrorCodeVarIter++ ) {
+  for ( ; lErrorCodeVarIter != lErrorCodeVarIterEnd; lErrorCodeVarIter++ ) 
+  {
     store::Iterator_t lErrorCodeIter = new ItemIterator(lErrorCodeItem);
     lErrorCodeIter->open();
     state->theErrorIters.push_back(lErrorCodeIter);
@@ -194,15 +197,19 @@ TryCatchIterator::bindErrorVars(
   
   std::vector<LetVarIter_t>::const_iterator lErrorDescVarIter = clause->errordesc_var.begin();
   std::vector<LetVarIter_t>::const_iterator lErrorDescVarIterEnd = clause->errordesc_var.end();
-  for ( ; lErrorDescVarIter != lErrorDescVarIterEnd; lErrorDescVarIter++ ) {
+  for ( ; lErrorDescVarIter != lErrorDescVarIterEnd; lErrorDescVarIter++ ) 
+  {
     // bind the description or the empty sequence
     store::Iterator_t lErrorDescIter;
-    if (!e.theDescription.empty()) {
-      xqpStringStore_t errDescr = e.theDescription.getStore();
+    if (!e.theDescription.empty()) 
+    {
+      zstring errDescr = e.theDescription;
       store::Item_t errDescItem;
       GENV_ITEMFACTORY->createString(errDescItem, errDescr);
       lErrorDescIter = new ItemIterator(errDescItem);
-    } else {
+    } 
+    else
+    {
       lErrorDescIter = new ItemIterator();
     }
     lErrorDescIter->open();

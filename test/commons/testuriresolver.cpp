@@ -18,7 +18,7 @@
 
 #include <zorba/zorba.h>
 #include <zorba/zorbastring.h>
-#include <zorbautils/strutil.h>
+#include "util/ascii_util.h"
 #include <cassert>
 
 #include <iostream>
@@ -338,7 +338,7 @@ std_string_tokenize(
   while (std::string::npos != pos || std::string::npos != lastPos) {   
     // Found a token, add it to the vector.
     aTokens.push_back(aStr.substr(lastPos, pos - lastPos));
-    zorba::str_replace_all(aTokens.back(), "$RBKT_SRC_DIR", rbkt_src);
+    zorba::ascii::replace_all(aTokens.back(), "$RBKT_SRC_DIR", rbkt_src);
 
     lastPos = aStr.find_first_not_of(aDelims, pos);
     pos = aStr.find_first_of(aDelims, lastPos);

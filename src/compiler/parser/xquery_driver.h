@@ -51,7 +51,8 @@ class ZORBA_DLL_PUBLIC xquery_driver
 public:
   std::stringstream theDocComment;
   std::string theMainModuleDocComment;
-  xqpString theFilename;
+  zstring theFilename;
+  std::string theFilename2;
   symbol_table symtab;
   rchandle<parsenode> expr_p;
   CompilerCB* theCompilerCB;
@@ -59,13 +60,17 @@ public:
   class xquery_scanner* lexer;
 
   xquery_driver(CompilerCB* aCompilerCB, uint32_t initial_heapsize = 1024);
+
   virtual ~xquery_driver();
 
-  bool parse_stream(std::istream& in, const xqpString& aFilename = "");
-  bool parse_string(const xqpString& input);
-  bool parse_file(const xqpString& aFilename);
+  bool parse_stream(std::istream& in, const zstring& aFilename = "");
+
+  bool parse_string(const zstring& input);
+
+  bool parse_file(const zstring& aFilename);
 
 	void set_expr(parsenode* e_p);
+
 	parsenode* get_expr() { return expr_p; }
 
   QueryLoc createQueryLoc(const location& aLoc);

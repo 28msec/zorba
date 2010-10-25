@@ -82,7 +82,7 @@ class ForLetClause : public ::zorba::serialization::SerializeBaseClass
 protected:
   enum ForLetType { FOR, LET };
 
-  xqpStringStore_t           theVarName;
+  zstring                    theVarName;
   ForLetType                 theType;
   PlanIter_t                 theInput;
   std::vector<PlanIter_t>    theVarRefs;
@@ -119,7 +119,7 @@ public:
           
   void accept (PlanIterVisitor&) const;
 
-  xqpStringStore_t getVarName() const;
+  zstring getVarName() const;
 
   bool lazyEval() const { return theDoLazyEval; }
 };

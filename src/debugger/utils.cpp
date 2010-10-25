@@ -20,7 +20,7 @@ namespace zorba { namespace debugger {
   zorba::xqpString queryLocToJSON( const QueryLoc& aLoc )
   {
     std::stringstream lJSONString;
-    std::string lTmp( aLoc.getFilename() );
+    std::string lTmp( aLoc.getFilename().c_str() );
     std::string lFileName;
     std::string::iterator it;
     for(it=lTmp.begin(); it!=lTmp.end(); it++)

@@ -53,7 +53,7 @@ ActivateICIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   if ((vic = theSctx->lookup_ic(qname)) == NULL)
   {
     ZORBA_ERROR_LOC_PARAM(XDDY0031_IC_IS_NOT_DECLARED, loc,
-                          qname->getStringValue()->c_str(), "");
+                          qname->getStringValue().c_str(), "");
   }
 
   // already activated => noop
@@ -106,13 +106,13 @@ DeactivateICIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   if (theSctx->lookup_ic(qname) == NULL)
   {
     ZORBA_ERROR_LOC_PARAM(XDDY0031_IC_IS_NOT_DECLARED, loc,
-                          qname->getStringValue()->c_str(), "");
+                          qname->getStringValue().c_str(), "");
   }
 
   if (GENV_STORE.getIC(qname) == NULL)
   {
     ZORBA_ERROR_LOC_PARAM(XDDY0032_IC_IS_NOT_ACTIVATED, loc,
-                          qname->getStringValue()->c_str(), "");
+                          qname->getStringValue().c_str(), "");
   }
   else
   {
@@ -146,7 +146,7 @@ CheckICIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     if ( vic == NULL)
     {
       ZORBA_ERROR_LOC_PARAM(XDDY0031_IC_IS_NOT_DECLARED, loc,
-                            qname->getStringValue()->c_str(), "");
+                            qname->getStringValue().c_str(), "");
     }        
     
     // run iterator

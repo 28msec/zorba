@@ -96,7 +96,7 @@ public:
 
   virtual void addReplaceValue(
         Item_t& target,
-        xqpStringStore_t& newValue) = 0;
+        zstring& newValue) = 0;
 
   virtual void addRename(
         Item_t& target,

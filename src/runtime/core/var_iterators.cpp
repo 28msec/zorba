@@ -31,6 +31,7 @@
 #include "store/api/item_factory.h"
 #include "store/api/temp_seq.h"
 
+#include "util/string_util.h"
 
 namespace zorba
 {
@@ -68,7 +69,7 @@ bool CtxVarDeclIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 
   CONSUME (varName, 0);
 
-  planState.theDynamicContext->declare_variable(varName->getStringValue()->str());
+  planState.theDynamicContext->declare_variable(varName->getStringValue().str());
 
   STACK_END (state);
 }
@@ -87,13 +88,16 @@ bool CtxVarAssignIterator::nextImpl(store::Item_t& result, PlanState& planState)
 {
   store::Item_t varName;
   store::Item_t item;
+  zstring varNameStr;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   CONSUME(varName, 0);
 
-	if(varName->getStringValue()->byteEqual(".", 1)) 
+  varName->getStringValue2(varNameStr);
+
+	if (equals(varNameStr, ".", 1)) 
   {
     if (! CONSUME (item, 1))
 			ZORBA_ERROR_LOC_DESC( XPTY0004, loc, "context item must be a single item");
@@ -108,7 +112,7 @@ bool CtxVarAssignIterator::nextImpl(store::Item_t& result, PlanState& planState)
     if (! CONSUME (item, 1))
 			ZORBA_ERROR_LOC_DESC(XPTY0004, loc, "variable value must be a single item");
 
-    planState.theDynamicContext->set_variable(varName->getStringValue()->str(), item);
+    planState.theDynamicContext->set_variable(varNameStr.str(), item);
 
     if (CONSUME (item, 1))
       ZORBA_ERROR_LOC_DESC( XPTY0004, loc, "variable value must be a single item");
@@ -116,7 +120,7 @@ bool CtxVarAssignIterator::nextImpl(store::Item_t& result, PlanState& planState)
   else
   {
     store::Iterator_t planIter = new PlanIteratorWrapper(theChildren[1], planState);
-    planState.theDynamicContext->set_variable(varName->getStringValue()->str(), planIter);
+    planState.theDynamicContext->set_variable(varNameStr.str(), planIter);
   }
 
   STACK_END (state);
@@ -144,7 +148,7 @@ bool CtxVarExistsIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
   CONSUME(varName, 0);
 
-	if(varName->getStringValue()->byteEqual(".", 1)) 
+	if(equals(varName->getStringValue(), ".", 1)) 
   {
     STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, dctx->context_item() != NULL),
                state);
@@ -302,7 +306,7 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   consumeNext(varName, theChild, planState);
 
   // looking for context item?
-	if(varName->getStringValue()->byteEqual(".", 1)) 
+	if(equals(varName->getStringValue(), ".", 1)) 
   {  
     result = planState.theDynamicContext->context_item();
 		if(result == NULL)
@@ -346,7 +350,7 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
     else
     {
-      std::string var_key = varName->getStringValue()->str();
+      std::string var_key = varName->getStringValue().str();
 			ZORBA_ERROR_LOC_PARAM(XPDY0002, loc, var_key.substr(var_key.find(":") + 1), "");
     }
   } // if (theTargetPosIter != NULL && theTargetLenIter == NULL)
@@ -404,7 +408,7 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
     else
     {
-      std::string var_key = varName->getStringValue()->str();
+      std::string var_key = varName->getStringValue().str();
 			ZORBA_ERROR_LOC_PARAM(XPDY0002, loc, var_key.substr(var_key.find(":") + 1), "");
     }
   } // if (theTargetPosIter != NULL && theTargetLenIter != NULL)
@@ -434,7 +438,7 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
     else
     {
-      std::string var_key = varName->getStringValue()->str();
+      std::string var_key = varName->getStringValue().str();
 			ZORBA_ERROR_LOC_PARAM(XPDY0002, loc, var_key.substr(var_key.find(":") + 1), "");
     }
 	}

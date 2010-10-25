@@ -22,7 +22,7 @@ SET(ZORBAUTILS_SRCS
     locale.cpp
     lock.cpp
     runnable.cpp
-    unicode_util.cpp)
+    string_util.cpp)
 
 IF (ZORBA_WITH_LIBXML2_SAX)
   SET(ZORBAUTILS_SRCS ${ZORBAUTILS_SRCS} SAXParser.cpp)

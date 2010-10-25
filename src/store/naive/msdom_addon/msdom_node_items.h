@@ -87,13 +87,13 @@ class TextNodeContent
 private:
   union
   {
-    xqpStringStore  * text;
+    void            * text;
     store::Item     * value;
   }
   theContent;
 
 public:
-  IXMLDOMText     *theDOMText;
+  IXMLDOMText     * theDOMText;
 
 public:
   TextNodeContent() 
@@ -107,18 +107,9 @@ public:
     assert(theContent.text == NULL);
   }
 
-  xqpStringStore* getText() const;
+  const zstring& getText() const;
 
-  xqpStringStore* transferText()
-  {
-    xqpStringStore* tmp = theContent.text;
-    theContent.text = NULL;
-    return tmp; 
-  }
-
-  void setText(xqpStringStore_t& text, bool update_DOM = true);
-  void setText(xqpStringStore* text, bool update_DOM = true);
-
+  void setText(zstring& text, bool update_DOM = true);
 
   store::Item* getValue() const
   {
@@ -133,6 +124,7 @@ public:
   }
 
   void setValue(store::Item_t& val, bool update_DOM = true);
+
   void setValue(store::Item* val, bool update_DOM = true);
 };
 
@@ -322,7 +314,7 @@ public:
     return getBaseURIInternal(local);
   }
 
-  virtual xqpStringStore* getDocumentURI() const { return 0; }
+  virtual void getDocumentURI(zstring& uri) const { }
 
   virtual store::Item_t getNilled() const { return 0; }
 
@@ -340,25 +332,23 @@ public:
                   long                  pos,
                   store::StoreConsts::NodeKind nodeKind);
 
-/*-
-  void setParent(XmlNode* p)        
-  {
-    theParent = p; 
-    IXMLDOMNode   *parentDOM = p->GetDOMNode();
-    IXMLDOMNode   *thisDOM = GetDOMNode();
-    ...
-  }
-*/
-  IXMLDOMNode   *GetDOMNode2() {return GetDOMNode();}
-  virtual IXMLDOMNode   *GetDOMNode() = 0;
-  virtual IXMLDOMAttribute   *GetDOMAttribute() {return NULL;}
-  virtual IXMLDOMElement   *GetDOMElement() {return NULL;}
+  IXMLDOMNode* GetDOMNode2() {return GetDOMNode();}
+
+  virtual IXMLDOMNode* GetDOMNode() = 0;
+
+  virtual IXMLDOMAttribute* GetDOMAttribute() {return NULL;}
+
+  virtual IXMLDOMElement* GetDOMElement() {return NULL;}
 
   void setTree(const XmlTree* t, XmlNode*  parent);
-  XmlTree* getTree() const          { return (XmlTree*)theTreeRCPtr; }
-  ulong getTreeId() const           { return getTree()->getId(); }
+
+  XmlTree* getTree() const { return (XmlTree*)theTreeRCPtr; }
+
+  ulong getTreeId() const { return getTree()->getId(); }
+
   const OrdPath& getOrdPath() const { return theOrdPath; }
-  OrdPath& getOrdPath()             { return theOrdPath; }
+
+  OrdPath& getOrdPath() { return theOrdPath; }
 
   void setId(XmlTree* tree, const OrdPathStack* op);
 
@@ -375,18 +365,23 @@ public:
   void deleteTree() throw();
 
   void setToUntyped();
+
   void removeType(UpdatePrimitive& upd);
+
   void restoreType(TypeUndoList& undoList);
 
   void removeChildren(ulong pos, ulong numChildren);
 
   void insertChildren(UpdInsertChildren& upd, ulong pos);
+
   void undoInsertChildren(UpdInsertChildren& upd);
   
   void insertSiblingsBefore(UpdInsertChildren& upd);
+
   void insertSiblingsAfter(UpdInsertChildren& upd);
 
   void replaceChild(UpdReplaceChild& upd);
+
   void restoreChild(UpdReplaceChild& upd);
 
   virtual XmlNode* copy2(
@@ -396,21 +391,29 @@ public:
         const store::CopyMode& copyMode) const = 0;
 
   virtual ulong numAttributes() const          { return 0; }
+
   virtual AttributeNode* getAttr(ulong i) const{ NODE_STOP; return NULL; }
+
   virtual NodeVector& attributes()             { NODE_STOP; return dummyVector; }
+
   virtual const NodeVector& attributes() const { NODE_STOP; return dummyVector; }
 
   virtual ulong numChildren() const            { return 0; }
+
   virtual XmlNode* getChild(ulong i) const     { NODE_STOP; return NULL; }
+
   virtual NodeVector& children()               { NODE_STOP; return dummyVector; }
+
   virtual const NodeVector& children() const   { NODE_STOP; return dummyVector; }
 
   virtual NsBindingsContext* getNsContext() const   { NODE_STOP; return NULL; }
+
   virtual void setNsContext(NsBindingsContext* ctx) { NODE_STOP; }
 
   virtual bool haveLocalBindings() const { NODE_STOP; return false; }
 
   virtual bool isId() const              { NODE_STOP; return false; }
+
   virtual bool isIdRefs() const          { NODE_STOP; return false; }
 
 protected:
@@ -423,10 +426,10 @@ protected:
   void removeAttr(ulong pos);
   bool removeAttr(XmlNode* attr);
 
-
-  store::Item_t QNameFromDOM() const;
   void add_attribute(AttributeNode *attr, ulong pos, bool shared);
   void add_child(XmlNode *child, ulong pos, bool shared);
+
+  store::Item_t QNameFromDOM() const;
 };
 
 
@@ -436,23 +439,20 @@ protected:
 class DocumentNode : public XmlNode
 {
 protected:
-  xqpStringStore_t    theBaseUri;
-  xqpStringStore_t    theDocUri;
+  zstring    theBaseUri;
+  zstring    theDocUri;
 
   IXMLDOMDocument         * theDOMdoc;
   IXMLDOMDocumentFragment * theDOMfragment;
 
 public:
-/*  DocumentNode(
-        xqpStringStore_t& baseUri,
-        xqpStringStore_t& docUri);
-*/
+
   DocumentNode(
-        XmlTree*          tree,
-        xqpStringStore_t& baseUri,
-        xqpStringStore_t& docUri,
-        IXMLDOMDocument *dom_doc = NULL,
-        IXMLDOMDocumentFragment * dom_fragment = NULL);
+        XmlTree* tree,
+        zstring& baseUri,
+        zstring& docUri,
+        IXMLDOMDocument* dom_doc = NULL,
+        IXMLDOMDocumentFragment* dom_fragment = NULL);
 
   virtual ~DocumentNode();
 
@@ -467,44 +467,37 @@ public:
 
   store::Item* getType() const; 
 
-  xqpStringStore* getDocumentURI() const { return theDocUri.getp(); }
+  void getDocumentURI(zstring& uri) const { uri = getDocUri(); }
 
   store::Iterator_t getChildren() const;
 
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
   store::Item_t getAtomizationValue() const;
-  xqpStringStore_t getStringValue() const;
+  zstring getStringValue() const;
 
-  xqp_string show() const;
+  zstring show() const;
 
   //
   // SimpleStore Methods
   // 
 
   XmlNode* copy2(
-        XmlNode*        rootParent,
-        XmlNode*        parent,
-        long            pos,
+        XmlNode* rootParent,
+        XmlNode* parent,
+        long pos,
         const store::CopyMode& copyMode) const;
 
-  NsBindingsContext* getNsContext() const                { return NULL; }
+  NsBindingsContext* getNsContext() const { return NULL; }
+
   xqpStringStore* findBinding(xqpStringStore* pre) const { return NULL; }
 
-  virtual IXMLDOMNode    *GetDOMNode() { if(theDOMfragment) return theDOMfragment; else return theDOMdoc; }
-/*  virtual IXMLDOMElement *GetDOMElement()
+  virtual IXMLDOMNode* GetDOMNode() 
   {
-    if(!theDOMdoc)
-      return NULL;
-    IXMLDOMElement   *dom_element = NULL;
-    if(SUCCEEDED(theDOMdoc->QueryInterface(IID_IXMLDOMElement, (void**)&dom_element)))
-    {
-      dom_element->Release();
-      return dom_element;
-    }
+    if(theDOMfragment)
+      return theDOMfragment;
     else
-      return NULL;
+      return theDOMdoc; 
   }
-*/
 
 protected:
   xqpStringStore_t getBaseURIInternal(bool& local) const;
@@ -516,29 +509,27 @@ protected:
 ********************************************************************************/
 class DocumentTreeNode : public DocumentNode
 {
-  
-
 private:
   LoadedNodeVector theChildren;
 
 public:
-/*  DocumentTreeNode(
-        xqpStringStore_t& baseUri,
-        xqpStringStore_t& docUri);
-*/
+
   DocumentTreeNode(
-        XmlTree*          tree,
-        xqpStringStore_t& baseUri,
-        xqpStringStore_t& docUri,
-        IXMLDOMDocument *dom_doc = NULL,
-        IXMLDOMDocumentFragment * dom_fragment = NULL);
+        XmlTree* tree,
+        zstring& baseUri,
+        zstring& docUri,
+        IXMLDOMDocument* dom_doc = NULL,
+        IXMLDOMDocumentFragment* dom_fragment = NULL);
 
-  ulong numChildren() const          { return theChildren.size(); }
-  NodeVector& children()             { return theChildren; }
+  ulong numChildren() const { return theChildren.size(); }
+
+  NodeVector& children() { return theChildren; }
+
   const NodeVector& children() const { return theChildren; }
-  XmlNode* getChild(ulong i) const   { return theChildren.get(i); }
 
-  void finalizeNode()                { theChildren.compact(); }
+  XmlNode* getChild(ulong i) const { return theChildren.get(i); }
+
+  void finalizeNode() { theChildren.compact(); }
 };
 
 
@@ -552,9 +543,9 @@ protected:
 
 public:
   DocumentDagNode(
-        XmlTree*          tree,
-        xqpStringStore_t& baseUri,
-        xqpStringStore_t& docUri);
+        XmlTree*   tree,
+        zstring&   baseUri,
+        zstring&   docUri);
         
   ulong numChildren() const          { return theChildren.size(); }
   NodeVector& children()             { return theChildren; }
@@ -616,7 +607,7 @@ public:
 
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
   store::Item_t getAtomizationValue() const;
-  xqpStringStore_t getStringValue() const;
+  zstring getStringValue() const;
   store::Item_t getNilled() const;
 
   store::Iterator_t getAttributes() const;
@@ -895,7 +886,7 @@ public:
   void setTypedValue(store::Item_t& val);
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
 
-  xqpStringStore_t getStringValue() const;
+  zstring getStringValue() const;
   store::Item_t getAtomizationValue() const;
 
   xqp_string show() const;
@@ -943,7 +934,7 @@ public:
         XmlTree*          tree,
         XmlNode*          parent,
         long              pos,
-        xqpStringStore_t& content,
+        zstring&          content,
         IXMLDOMText       *dom_text = NULL);
 
   TextNode(
@@ -971,7 +962,7 @@ public:
 
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
   store::Item_t getAtomizationValue() const;
-  xqpStringStore_t getStringValue() const;
+  zstring getStringValue() const;
 			
   xqp_string show() const;
 
@@ -1003,11 +994,11 @@ class PiNode : public XmlNode
  protected:
   IXMLDOMProcessingInstruction    *theDOMpi;
 #ifdef ZORBA_MSDOM_IN_NATIVE_STORE_CACHING
-  xqpStringStore_t theTarget;
-  xqpStringStore_t theContent;
+  zstring theTarget;
+  zstring theContent;
 #else
-  xqpStringStore_t  temp_xqpTarget;
-  xqpStringStore_t  temp_xqpString;
+  zstring  temp_xqpTarget;
+  zstring  temp_xqpString;
 #endif
 
 public:
@@ -1015,8 +1006,8 @@ public:
         XmlTree*          tree,
         XmlNode*          parent,
         long              pos,
-        xqpStringStore_t& target,
-        xqpStringStore_t& content,
+        zstring&          target,
+        zstring&          content,
         IXMLDOMProcessingInstruction    *theDOMpi = NULL);
 
   virtual ~PiNode();
@@ -1036,8 +1027,7 @@ public:
 
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
   store::Item_t getAtomizationValue() const;
-  xqpStringStore_t getStringValue() const;
-  xqpStringStore* getStringValueP() const    { return theContent.getp();}
+  zstring getStringValue() const;
 
   xqpStringStore* getTarget() const          { return theTarget.getp(); }
 
@@ -1094,8 +1084,7 @@ public:
 
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
   store::Item_t getAtomizationValue() const;
-  xqpStringStore_t getStringValue() const;
-  xqpStringStore* getStringValueP() const;
+  zstring getStringValue() const;
 
   xqp_string show() const;
 

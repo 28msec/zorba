@@ -49,8 +49,7 @@
 
 #include <zorba/config.h>
 
-#include <zorbautils/strutil.h>
-
+#include "util/ascii_util.h"
 #include "zorbaerrors/error_manager.h"
 
 
@@ -85,7 +84,7 @@ filesystem_path::filesystem_path (const string &path_, int flags)
   : path (path_)
 {
   if ((flags & CONVERT_SLASHES) != 0)
-    str_replace_all (path, "/", get_path_separator ());
+    ascii::replace_all (path, "/", get_path_separator ());
   canonicalize ();
   if ((flags & RESOLVE) != 0)
     resolve_relative ();

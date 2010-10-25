@@ -74,19 +74,19 @@ std::string ValueIC::toString()
 {
   std::ostringstream os;
 
-  os << "IC : " << theName->getStringValue()->c_str() << " " << 
+  os << "IC : " << theName->getStringValue() << " " << 
     (theICKind==store::IC::ic_collection) << " ";
   
   switch( theICKind )
   {
   case store::IC::ic_collection:
-    os << "Coll: " << theCollectionName->getStringValue()->c_str();
+    os << "Coll: " << theCollectionName->getStringValue();
     break;
   
   case store::IC::ic_foreignkey:
-    os << "ToColl: " << theToCollectionName->getStringValue()->c_str() << 
-      " FromColl: " << theFromCollectionName->getStringValue()->c_str() ;
-      }
+    os << "ToColl: " << theToCollectionName->getStringValue() << 
+      " FromColl: " << theFromCollectionName->getStringValue();
+  }
 
   os << std::endl;
   

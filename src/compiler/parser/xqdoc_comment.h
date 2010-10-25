@@ -16,9 +16,9 @@
 #ifndef ZORBA_XQDOC_COMMENT_H
 #define ZORBA_XQDOC_COMMENT_H
 
-#include <string>
-#include <sstream>
 #include <list>
+
+#include "zorbatypes/zstring.h"
 
 namespace zorba {
 
@@ -44,44 +44,25 @@ namespace zorba {
 
     private:
 
-      const std::string theName;
-      const std::string theValue;
-      XQDocType         theType;   
+      const zstring   theName;
+      const zstring   theValue;
+      const XQDocType theType;   
    
-      XQDocAnnotation(std::string& aName, std::string& aValue)
+      XQDocAnnotation(zstring const &aName, zstring const &aValue)
         : theName(aName),
-          theValue(aValue)
+          theValue(aValue),
+          theType(map_type(aName))
       {
-        if(theName == "author") {
-          theType = TYPE_AUTHOR;
-        } else if(theName == "version") {
-          theType = TYPE_VERSION;
-        } else if(theName == "param") {
-          theType = TYPE_PARAM;
-        } else if(theName == "return") {
-          theType = TYPE_RETURN;
-        } else if(theName == "error") {
-          theType = TYPE_ERROR;
-        } else if(theName == "deprecated") {
-          theType = TYPE_DEPRECATED;
-        } else if(theName == "see") {
-          theType = TYPE_SEE;
-        } else if(theName == "since") {
-          theType = TYPE_SINCE;
-        } else if(theName == "library") {
-          theType = TYPE_LIBRARY;
-        } else {
-          theType = TYPE_UNKNOWN;
-        }
       }
 
+      static XQDocType map_type( zstring const &name );
 
     public:
 
-      const std::string&
+      const zstring&
       getName() const { return theName; }
 
-      const std::string&
+      const zstring&
       getValue() const { return theValue; }
 
       XQDocType
@@ -94,27 +75,27 @@ namespace zorba {
 
     private:
 
-      std::string                 theDescription;
+      zstring                     theDescription;
       std::list<XQDocAnnotation>  theAnnotations;
-      std::string                 theVersion;
-      std::string                 theReturn;
+      zstring                     theVersion;
+      zstring                     theReturn;
       bool                        theDeprecated;
-      std::string                 theDeprecatedComment;
+      zstring                     theDeprecatedComment;
 
       bool
-      startsWithColon(std::string& line);
+      startsWithColon(zstring& line);
 
       bool
-      isAnAnnotationLine(const std::string& aLine);
+      isAnAnnotationLine(const zstring& aLine);
 
       void
-      parseAnnotation(const std::string& aLine);
+      parseAnnotation(const zstring& aLine);
 
-      XQDocComment(const std::string& aComment);
+      XQDocComment(const zstring& aComment);
     
     public:
 
-      const std::string
+      const zstring&
       getDescription() const { return theDescription; }
 
       const std::list<XQDocAnnotation>&
@@ -123,22 +104,23 @@ namespace zorba {
       bool
       hasVersion() const { return !theVersion.empty(); }
 
-      const std::string&
+      const zstring&
       getVersion() const { return theVersion; }
 
       bool
       hasReturn() const { return !theReturn.empty(); }
 
-      const std::string&
+      const zstring&
       getReturn() const { return theReturn; }
 
       bool
       isDeprecated() const { return theDeprecated; }
 
-      const std::string&
+      const zstring&
       getDeprecatedComment() const { return theDeprecatedComment; }
 
   };
 
 }//end of namespace
 #endif
+/* vim:set et sw=2 ts=2: */

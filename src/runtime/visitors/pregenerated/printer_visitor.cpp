@@ -31,7 +31,7 @@
 
 #include "system/properties.h"
 
-#include "zorbautils/strutil.h"
+#include "util/string_util.h"
 
 #include "runtime/accessors/accessors.h"
 #include "runtime/any_uri/any_uri.h"
@@ -88,7 +88,7 @@ void PrinterVisitor::printNameOrKindTest(const AxisIteratorHelper* a) {
     thePrinter.addAttribute("doc_test_kind", toString(a->getDocTestKind()));
 
   if (a->getQName() != 0)
-    thePrinter.addAttribute("qname", a->getQName()->show());
+    thePrinter.addAttribute("qname", a->getQName()->show().str());
   else
     thePrinter.addAttribute("qname","*");
 

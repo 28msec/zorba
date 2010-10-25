@@ -81,6 +81,9 @@ class ZorbaImpl : public Zorba
 
   void shutdown() { shutdownInternal(true); }
 
+  int runUriTest() const;
+  int runDebuggerProtocolTest() const;
+
   XQuery_t createQuery(ErrorHandler* aErrorHandler = 0);
 
   XQuery_t compileQuery(

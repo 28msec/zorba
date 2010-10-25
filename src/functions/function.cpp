@@ -22,6 +22,7 @@
 #include "functions/function_impl.h"
 
 #include "util/hashmap32.h"
+#include "util/string_util.h"
 
 #include "types/typeops.h"
 
@@ -48,7 +49,7 @@ function::function(const signature& sig)
   const store::Item* lName = getName();
   //lName may be null for inlined functions
   if(lName != 0 &&
-     getName()->getNamespace()->byteEqual(XQUERY_FN_NS, sizeof(XQUERY_FN_NS)-1))
+     equals(getName()->getNamespace(), XQUERY_FN_NS, sizeof(XQUERY_FN_NS)-1))
   {
     setFlag(FunctionConsts::hasFnNamespace);
   }
@@ -77,14 +78,14 @@ function::function(const signature& sig, FunctionConsts::FunctionKind kind)
   theKind(kind),
   theFlags(0)
 {
-  if (getName()->getNamespace()->byteEqual(XQUERY_FN_NS, sizeof(XQUERY_FN_NS)-1))
+  if (equals(getName()->getNamespace(), XQUERY_FN_NS, sizeof(XQUERY_FN_NS)-1))
     setFlag(FunctionConsts::hasFnNamespace);
+
+  setDeterministic(true);
 
   zorba::serialization::Archiver& ar =
   *::zorba::serialization::ClassSerializer::getInstance()->
   getArchiverForHardcodedObjects();
-
-  setDeterministic(true);
 
   if(ar.is_loading_hardcoded_objects())
   {

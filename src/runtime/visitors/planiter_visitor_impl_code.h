@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
   PLAN_ITER_VISITOR (FnBooleanIterator);
 
   PLAN_ITER_VISITOR (LogicIterator);
@@ -219,13 +220,13 @@
 
   virtual void beginVisitFlworLetVariable(
         bool,
-        const xqpStringStore_t,
+        const zstring&,
         const std::vector<PlanIter_t>&) = 0;
 
   virtual void endVisitFlworLetVariable() = 0;
 
   virtual void beginVisitFlworForVariable(
-       const xqpStringStore_t,
+       const zstring&,
        const std::vector<PlanIter_t>&,
        const std::vector<PlanIter_t>&) = 0;
 
@@ -332,11 +333,6 @@
   PLAN_ITER_VISITOR ( DebuggerSingletonIterator );
 
 #ifdef ZORBA_WITH_REST
-  PLAN_ITER_VISITOR(ZorbaRestGetIterator);
-  PLAN_ITER_VISITOR(ZorbaRestPostIterator);
-  PLAN_ITER_VISITOR(ZorbaRestPutIterator);
-  PLAN_ITER_VISITOR(ZorbaRestDeleteIterator);
-  PLAN_ITER_VISITOR(ZorbaRestHeadIterator);
 #endif
 
   PLAN_ITER_VISITOR(HoistIterator);

@@ -989,7 +989,7 @@ expr_t wrapper_expr::clone(substitution_t& subst) const
 /***************************************************************************//**
 
 ********************************************************************************/
-const_expr::const_expr(static_context* sctx, const QueryLoc& loc, xqpStringStore_t& v)
+const_expr::const_expr(static_context* sctx, const QueryLoc& loc, zstring& v)
   :
   expr(sctx, loc, const_expr_kind)
 {
@@ -1002,7 +1002,7 @@ const_expr::const_expr(static_context* sctx, const QueryLoc& loc, const std::str
   :
   expr(sctx, loc, const_expr_kind)
 {
-  xqpStringStore_t tmp = new xqpStringStore(v);
+  zstring tmp(v);
   GENV_ITEMFACTORY->createString(theValue, tmp); 
   theScriptingKind = SIMPLE_EXPR;
 }
@@ -1012,7 +1012,7 @@ const_expr::const_expr(static_context* sctx, const QueryLoc& loc, const char* v)
   :
   expr(sctx, loc, const_expr_kind)
 {
-  xqpStringStore_t tmp = new xqpStringStore(v);
+  zstring tmp(v);
   GENV_ITEMFACTORY->createString(theValue, tmp); 
   theScriptingKind = SIMPLE_EXPR;
 }

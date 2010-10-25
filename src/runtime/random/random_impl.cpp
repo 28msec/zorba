@@ -47,7 +47,7 @@ bool
 PseudoRandomIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t    item;
-  xqpStringStore_t seed;
+  zstring seed;
   xqp_uint         seedInt;
 
   PlanIteratorState* state;
@@ -57,7 +57,7 @@ PseudoRandomIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
       consumeNext(item, theChildren[0].getp(), planState))
   {
     seed = item->getIntegerValue().toString();
-    NumConversions::strToUInt(seed->c_str(), seedInt);
+    NumConversions::strToUInt(seed.c_str(), seedInt);
     std::srand((unsigned int)seedInt);
   }
   else
@@ -75,7 +75,7 @@ bool
 RandomIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t    item;
-  xqpStringStore_t seed;
+  zstring seed;
   xqp_uint         seedInt;
 
   PlanIteratorState* state;
@@ -85,7 +85,7 @@ RandomIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       consumeNext(item, theChildren[0].getp(), planState))
   {
     seed = item->getIntegerValue().toString();
-    NumConversions::strToUInt(seed->c_str(), seedInt);
+    NumConversions::strToUInt(seed.c_str(), seedInt);
     std::srand((unsigned int)seedInt);
   }
   else
@@ -93,7 +93,7 @@ RandomIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     std::srand((unsigned int)(time(NULL)));
   }
 
-  GENV_ITEMFACTORY->createInteger(result, Integer::parseInt (std::rand()));
+  GENV_ITEMFACTORY->createInteger(result, Integer::parseInt(std::rand()));
   STACK_PUSH (true, state);
 
   STACK_END (state);
@@ -102,19 +102,20 @@ RandomIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 bool
 UuidIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t     item;
-  uuid_t            u;
-  memset(&u, 0, sizeof(uuid_t));
-  xqpStringStore_t  uuidStr;
+  store::Item_t item;
+  uuid_t  u;
+  zstring uuidStr;
 
-  uuid_create(&u);
-  uuidStr = new xqpStringStore(uuidToString(u));
-
-  PlanIteratorState *state;
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
+  memset(&u, 0, sizeof(uuid_t));
+
+  uuid_create(&u);
+  uuidStr = uuidToString(u);
+
   GENV_ITEMFACTORY->createString(result, uuidStr);
-  STACK_PUSH (true, state);
+  STACK_PUSH(true, state);
 
   STACK_END (state);
 }

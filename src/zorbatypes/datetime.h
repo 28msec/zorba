@@ -22,6 +22,9 @@
 
 #include "zorbaserialization/class_serializer.h"
 
+#include "util/ascii_util.h"
+
+
 namespace zorba
 {
 
@@ -72,7 +75,7 @@ public:
 protected:
   FACET_TYPE facet;
 
-  int        data[7];
+  long       data[7];
       
   TimeZone   the_time_zone;
 
@@ -190,42 +193,42 @@ public:
   /**
    *  Returns 0 on success
    */
-  static int parseDateTime(const xqpStringStore_t& s, DateTime& dt);
+  static int parseDateTime(const char* str, ulong strlen, DateTime& dt);
       
   /**
    *  Returns 0 on success
    */
-  static int parseDate(const xqpStringStore_t& s, DateTime& dt);
+  static int parseDate(const char* str, ulong strlen, DateTime& dt);
       
   /**
    *  Returns 0 on success
    */
-  static int parseTime(const xqpStringStore_t& s, DateTime& dt);
+  static int parseTime(const char* str, ulong strlen, DateTime& dt);
       
   /**
    *  Returns 0 on success
    */
-  static int parseGYearMonth(const xqpStringStore_t& s, DateTime& dt);
+  static int parseGYearMonth(const char* str, ulong strlen, DateTime& dt);
 
   /**
    *  Returns 0 on success
    */
-  static int parseGYear(const xqpStringStore_t& s, DateTime& dt);
+  static int parseGYear(const char* str, ulong strlen, DateTime& dt);
 
   /**
    *  Returns 0 on success
    */
-  static int parseGMonth(const xqpStringStore_t& s, DateTime& dt);
+  static int parseGMonth(const char* str, ulong strlen, DateTime& dt);
 
   /**
    *  Returns 0 on success
    */
-  static int parseGMonthDay(const xqpStringStore_t& s, DateTime& dt);
+  static int parseGMonthDay(const char* str, ulong strlen, DateTime& dt);
 
   /**
    *  Returns 0 on success
    */
-  static int parseGDay(const xqpStringStore_t& s, DateTime& dt);
+  static int parseGDay(const char* str, ulong strlen, DateTime& dt);
 
   static int getDayOfWeek(int year, int month, int day);
 
@@ -239,19 +242,21 @@ public:
 
 protected:
   static int parse_date(
-        std::string& ss,
-        unsigned int& position,
-        int& year,
-        int& month,
-        int& day);
+        const char* str,
+        ulong strlen,
+        ascii::size_type& position,
+        long& year,
+        long& month,
+        long& day);
 
   static int parse_time(
-        std::string& ss,
-        unsigned int& position,
-        int& hour,
-        int& minute,
-        int& seconds,
-        int& frac_seconds);
+        const char* str,
+        ulong strlen,
+        ascii::size_type& position,
+        long& hour,
+        long& minute,
+        long& seconds,
+        long& frac_seconds);
 
 public:
   SERIALIZABLE_CLASS(DateTime)
@@ -273,7 +278,7 @@ public:
    */
   int createWithNewFacet(FACET_TYPE new_facet, DateTime& dt) const;
 
-  xqpString toString() const;
+  zstring toString() const;
       
   DateTime* getDate() const;
 

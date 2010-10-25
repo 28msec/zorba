@@ -25,6 +25,7 @@
 
 
 using namespace zorba;
+using namespace std;
 
 
 int
@@ -32,13 +33,13 @@ debug_iter_serialization(int argc, char* argv[])
 {
   void* lStore = zorba::StoreManager::getStore();
   Zorba* lZorba = Zorba::getInstance(lStore);
-  std::stringstream lResult;
+  stringstream lResult;
 
   try {
-     std::stringstream lIn;
+     stringstream lIn;
      lIn << "for $x in (1,2,3)"
          << "return $x";
-     std::ostringstream lOut;
+     ostringstream lOut;
 
      {
        XQuery_t lQuery = lZorba->createQuery();
@@ -50,7 +51,7 @@ debug_iter_serialization(int argc, char* argv[])
 
 
      {
-       std::istringstream lIn(lOut.str());
+       istringstream lIn(lOut.str());
        XQuery_t lQuery = lZorba->createQuery();
        lQuery->loadExecutionPlan(lIn);
        Zorba_SerializerOptions_t lSerOptions;
@@ -58,11 +59,11 @@ debug_iter_serialization(int argc, char* argv[])
        lQuery->execute(lResult, &lSerOptions);
      }
   } catch (ZorbaException& e) {
-    std::cerr << e << std::endl;
+    cerr << e << endl;
     return 1;
   }
 
-  std::string lTmp = lResult.str();
+  string lTmp = lResult.str();
   if (lTmp != "1 2 3")
     return 2;
 
@@ -70,4 +71,4 @@ debug_iter_serialization(int argc, char* argv[])
   zorba::StoreManager::shutdownStore(lStore);
   return 0;
 }
-
+/* vim:set et sw=2 ts=2: */

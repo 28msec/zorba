@@ -28,7 +28,7 @@ END_SERIALIZABLE_CLASS_VERSIONS(external_function)
 external_function::external_function(
     const QueryLoc& loc,
     static_context* modSctx,
-    const xqpStringStore_t& ns,
+    const zstring& ns,
     const signature& sig,
     expr_script_kind_t scriptingType,
     bool deterministic,
@@ -55,7 +55,7 @@ void external_function::serialize(::zorba::serialization::Archiver& ar)
   SERIALIZE_ENUM(expr_script_kind_t, theScriptingKind);
 
   // also serialize the localname of the function
-  xqpStringStore_t lLocalName;
+  zstring lLocalName;
   if (ar.is_serializing_out()) 
   {
     ZORBA_ASSERT(theImpl);

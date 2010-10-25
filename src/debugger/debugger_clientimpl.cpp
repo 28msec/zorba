@@ -30,6 +30,7 @@
 #include "api/unmarshaller.h"
 
 #include "zorbatypes/xqpstring.h"
+#include "util/ascii_util.h"
 
 #include "debugger/query_locationimpl.h"
 #include "debugger/utils.h"
@@ -312,11 +313,13 @@ ZorbaDebuggerClientImpl::stepOut()
 bool
 ZorbaDebuggerClientImpl::addBreakpoint(const String& anExpr)
 {
-  xqpString lExpr = Unmarshaller::getInternalString(anExpr);
+  zstring const &lExpr = Unmarshaller::getInternalString( anExpr );
   SetMessage lMessage;
   theLastId++;
-  lMessage.addExpr(theLastId, lExpr);
-  theBreakpoints.insert(std::make_pair(theLastId, lExpr));
+  xqpString temp( lExpr.c_str() );
+  lMessage.addExpr( theLastId, temp );
+  theBreakpoints.insert( std::make_pair( theLastId, anExpr ) );
+
   std::auto_ptr<ReplyMessage> lReply(send((&lMessage))); 
   return true;
 }
@@ -338,7 +341,7 @@ ZorbaDebuggerClientImpl::addBreakpoint(const unsigned int aLineNo)
 QueryLocation_t
 ZorbaDebuggerClientImpl::addBreakpoint(const String& aFileName, const unsigned int aLineNo)
 {
-  xqpString lFilename = Unmarshaller::getInternalString(aFileName);
+  zstring const &lFilename = Unmarshaller::getInternalString(aFileName);
   QueryLoc loc;
   loc.setFilename(lFilename);
   loc.setLineBegin(aLineNo);
@@ -454,9 +457,10 @@ ZorbaDebuggerClientImpl::getLocation() const
 bool
 ZorbaDebuggerClientImpl::eval(String& anExpr) const
 {
-  xqpString lExpr = Unmarshaller::getInternalString(anExpr);
-  xqpString expr = lExpr.replace("\"", "&quot;", "");
-  EvalMessage lMessage(expr);
+  zstring lExpr = Unmarshaller::getInternalString( anExpr );
+  ascii::replace_all( lExpr, "\"", "&quot;" );
+  xqpString temp( lExpr.c_str() );
+  EvalMessage lMessage( temp );
   std::auto_ptr<ReplyMessage> lReply(send((&lMessage)));
   return true;
 }
@@ -478,7 +482,7 @@ ZorbaDebuggerClientImpl::getAllVariables(bool data) const
       std::list<std::pair<xqpString, xqpString> > d = it->second;
       std::list<std::pair<String, String> > data;
       for (std::list<std::pair<xqpString, xqpString> >::iterator iter = d.begin(); iter != d.end(); iter++) {
-        data.push_back(std::pair<String, String>(String(iter->first.getStore()), String(iter->second.getStore())));
+        data.push_back(std::pair<String, String>(String(iter->first.getStore()->c_str()), String(iter->second.getStore()->c_str())));
       }
       Variable lVariable(lName, lType, data);
       lVariables.push_back(lVariable);
@@ -504,7 +508,7 @@ ZorbaDebuggerClientImpl::getLocalVariables(bool data) const
       std::list<std::pair<xqpString, xqpString> > d = it->second;
       std::list<std::pair<String, String> > data;
       for (std::list<std::pair<xqpString, xqpString> >::iterator iter = d.begin(); iter != d.end(); iter++) {
-        data.push_back(std::pair<String, String>(String(iter->first.getStore()), String(iter->second.getStore())));
+        data.push_back(std::pair<String, String>(String(iter->first.getStore()->c_str()), String(iter->second.getStore()->c_str())));
       }
       Variable lVariable(lName, lType, data);
       lVariables.push_back(lVariable);
@@ -533,7 +537,7 @@ ZorbaDebuggerClientImpl::getGlobalVariables(bool data) const
       std::list<std::pair<xqpString, xqpString> > d = it->second;
       std::list<std::pair<String, String> > data;
       for (std::list<std::pair<xqpString, xqpString> >::iterator iter = d.begin(); iter != d.end(); iter++) {
-        data.push_back(std::pair<String, String>(String(iter->first.getStore()), String(iter->second.getStore())));
+        data.push_back(std::pair<String, String>(String(iter->first.getStore()->c_str()), String(iter->second.getStore()->c_str())));
       }
       Variable lVariable(lName, lType, data);
       lVariables.push_back(lVariable);

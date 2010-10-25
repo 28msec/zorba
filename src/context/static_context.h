@@ -32,6 +32,9 @@
 #include "context/decimal_format.h"
 #include "context/internal_uri_resolvers.h"
 
+#include "zorbautils/hashmap_strh.h"
+#include "zorbautils/hashmap_zstring.h"
+
 #include "common/shared_types.h"
 
 
@@ -80,12 +83,18 @@ typedef rchandle<StaticallyKnownCollection> StaticallyKnownCollection_t;
 ********************************************************************************/
 struct BaseUriInfo : public ::zorba::serialization::SerializeBaseClass
 {
-  xqpStringStore_t thePrologBaseUri;
-  xqpStringStore_t theApplicationBaseUri;
-  xqpStringStore_t theEntityRetrievalUri;
-  xqpStringStore_t theEncapsulatingEntityUri;
+  zstring thePrologBaseUri;
+  zstring theApplicationBaseUri;
+  zstring theEntityRetrievalUri;
+  zstring theEncapsulatingEntityUri;
 
-  xqpStringStore_t theBaseUri;
+  zstring theBaseUri;
+
+  bool    theHavePrologBaseUri;
+  bool    theHaveApplicationBaseUri;
+  bool    theHaveEntityRetrievalUri;
+  bool    theHaveEncapsulatingEntityUri;
+  bool    theHaveBaseUri;
 
 public:
   SERIALIZABLE_CLASS(BaseUriInfo)
@@ -93,7 +102,15 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  BaseUriInfo() {}
+  BaseUriInfo()
+    :
+    theHavePrologBaseUri(false),
+    theHaveApplicationBaseUri(false),
+    theHaveEntityRetrievalUri(false),
+    theHaveEncapsulatingEntityUri(false),
+    theHaveBaseUri(false)
+  {
+  }
 };
 
 
@@ -391,7 +408,7 @@ class static_context : public SimpleRCObject
 
   typedef serializable_ItemPointerHashMap<PrologOption> OptionMap;
 
-  typedef serializable_HashMapStrHandle<xqpStringStore_t> NamespaceBindings;
+  typedef serializable_HashMapZString<zstring> NamespaceBindings;
 
   typedef serializable_HashMapStrHandle<xqtref_t> DocumentMap;
 
@@ -418,7 +435,7 @@ public:
     virtual ~ctx_module_t() {}
   };
 
-  typedef serializable_HashMapStrHandle<ctx_module_t> ExternalModuleMap;
+  typedef serializable_HashMapZString<ctx_module_t> ExternalModuleMap;
 
 protected:
   static_context                        * theParent;
@@ -446,8 +463,12 @@ protected:
   rchandle<TypeManager>                   theTypemgr;
 
   NamespaceBindings                     * theNamespaceBindings;
-  xqpStringStore_t                        theDefaultElementNamespace;
-  xqpStringStore_t                        theDefaultFunctionNamespace;
+
+  zstring                                 theDefaultElementNamespace;
+  bool                                    theHaveDefaultElementNamespace;
+
+  zstring                                 theDefaultFunctionNamespace;
+  bool                                    theHaveDefaultFunctionNamespace;
 
   xqtref_t                                theCtxItemType;
 
@@ -530,32 +551,30 @@ public:
 
   std::ostream* get_trace_stream() const;
 
-  void set_module_namespace(std::string& ns) { theModuleNamespace = ns; }
+  void set_module_namespace(const zstring& ns) { theModuleNamespace = ns.str(); }
 
   const std::string& get_module_namespace() const { return theModuleNamespace; }
 
   //
   // Base uri
   //
-  xqpStringStore_t get_implementation_baseuri() const;
+  zstring get_implementation_baseuri() const;
 
-  xqpStringStore_t get_encapsulating_entity_uri() const;
+  bool get_encapsulating_entity_uri(zstring& res) const;
 
-  void set_encapsulating_entity_uri(const xqpStringStore_t& uri);
+  void set_encapsulating_entity_uri(const zstring& uri);
 
-  xqpStringStore_t get_entity_retrieval_uri() const;
+  bool get_entity_retrieval_uri(zstring& res) const;
 
-  void set_entity_retrieval_uri(const xqpStringStore_t& uri);
+  void set_entity_retrieval_uri(const zstring& uri);
 
-  xqpStringStore_t get_base_uri() const;
+  zstring get_base_uri() const;
 
-  void set_base_uri(const xqpStringStore_t& uri, bool from_prolog = true);
+  void set_base_uri(const zstring& uri, bool from_prolog = true);
 
   void compute_base_uri();
 
-  xqpStringStore_t resolve_relative_uri(
-        const xqpStringStore_t& uri,
-        bool validate = true);
+  zstring resolve_relative_uri(const zstring& uri, bool validate = true);
 
   //
   // URI Resolution
@@ -606,35 +625,34 @@ public:
   //
   // Namespace Bindings
   //
-  const xqpStringStore_t& default_elem_type_ns() const;
+  const zstring& default_elem_type_ns() const;
 
-  void set_default_elem_type_ns(const xqpStringStore_t& ns, const QueryLoc& loc);
+  void set_default_elem_type_ns(const zstring& ns, const QueryLoc& loc);
 
-  const xqpStringStore_t& default_function_ns() const;
+  const zstring& default_function_ns() const;
 
-  void set_default_function_ns(const xqpStringStore_t& ns, const QueryLoc& loc);
+  void set_default_function_ns(const zstring& ns, const QueryLoc& loc);
 
   void bind_ns(
-        xqpStringStore_t& prefix,
-        xqpStringStore_t& ns,
+        zstring& prefix,
+        zstring& ns,
         const QueryLoc& loc,
         const XQUERY_ERROR& err = XQST0033);
 
   bool lookup_ns(
-        xqpStringStore_t& ns,
-        const xqpStringStore_t& prefix,
+        zstring& ns,
+        const zstring& prefix,
         const QueryLoc& loc,
         const XQUERY_ERROR& err = XPST0081) const;
 
   void expand_qname(
         store::Item_t& qname,
-        const xqpStringStore_t& default_ns,
-        const xqpStringStore_t& pfx,
-        const xqpStringStore_t& local,
+        const zstring& default_ns,
+        const zstring& pfx,
+        const zstring& local,
         const QueryLoc& loc) const;
 
-  void get_namespace_bindings(
-        std::vector<std::pair<xqpStringStore_t, xqpStringStore_t> >& bindings) const;
+  void get_namespace_bindings(store::NsBindings& bindings) const;
 
   //
   // Variables
@@ -678,8 +696,8 @@ public:
         bool aDynamicallyLoaded = false);
 
   StatelessExternalFunction* lookup_external_function(
-        const xqpStringStore_t& prefix,
-        const xqpStringStore_t& local);
+        const zstring& prefix,
+        const zstring& local);
 
 
   //

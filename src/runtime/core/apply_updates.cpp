@@ -95,7 +95,7 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       if (zorbaIndex == NULL)
       {
         ZORBA_ERROR_LOC_PARAM(XDDY0021_INDEX_IS_NOT_DECLARED, loc,
-                              indexes[i]->getName()->getStringValue()->c_str(), "");
+                              indexes[i]->getName()->getStringValue().c_str(), "");
       }
 
       if (zorbaIndex->getMaintenanceMode() == IndexDecl::DOC_MAP)

@@ -87,23 +87,23 @@ template<>  HashCharPtrObjPtrLimited<FloatImpl<double>>  FloatImpl<double>::pars
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-const xqpStringStore_t& FloatCommons::get_INF_POS_STR()
+const zstring& FloatCommons::get_INF_POS_STR()
 {
-  static const xqpStringStore_t INF_POS_STR = new xqpStringStore("INF");
+  static const zstring INF_POS_STR("INF");
   return INF_POS_STR;
 }
 
 
-const xqpStringStore_t& FloatCommons::get_INF_NEG_STR()
+const zstring& FloatCommons::get_INF_NEG_STR()
 {
-  static const xqpStringStore_t INF_NEG_STR = new xqpStringStore("-INF");
+  static const zstring INF_NEG_STR("-INF");
   return INF_NEG_STR;
 }
 
 
-const xqpStringStore_t& FloatCommons::get_NOT_A_NUM_STR()
+const zstring& FloatCommons::get_NOT_A_NUM_STR()
 {
-  static const xqpStringStore_t NOT_A_NUM_STR = new xqpStringStore("NaN");
+  static const zstring NOT_A_NUM_STR("NaN");
   return NOT_A_NUM_STR;
 }
 
@@ -433,8 +433,8 @@ template <typename FloatType>
 FloatImpl<FloatType> FloatImpl<FloatType>::parseDecimal(const Decimal& aDecimal)
 {
   FloatImpl<FloatType> lFloat;
-  xqpStringStore_t decimal_string = aDecimal.toString();
-  parseString(decimal_string->c_str(), lFloat);
+  zstring decimal_string = aDecimal.toString();
+  parseString(decimal_string.c_str(), lFloat);
   return lFloat;
 }
 
@@ -443,8 +443,8 @@ template <typename FloatType>
 FloatImpl<FloatType> FloatImpl<FloatType>::parseInteger(const Integer& aInteger)
 {
   FloatImpl<FloatType> lFloat;
-  xqpStringStore_t integer_string = aInteger.toString();
-  parseString(integer_string->c_str(), lFloat);
+  zstring integer_string = aInteger.toString();
+  parseString(integer_string.c_str(), lFloat);
   return lFloat;
 }
 
@@ -873,7 +873,7 @@ bool FloatImpl<FloatType>::operator>=(const FloatImpl& aFloatImpl) const
 
 
 template <typename FloatType>
-xqpStringStore_t FloatImpl<FloatType>::toIntegerString() const 
+zstring FloatImpl<FloatType>::toIntegerString() const 
 {
   if (isNaN()) 
   {
@@ -889,22 +889,22 @@ xqpStringStore_t FloatImpl<FloatType>::toIntegerString() const
   }
   else if (isPosZero()) 
   {
-    return new xqpStringStore("0");
+    return "0";
   }
   else if (isNegZero()) 
   {
-    return new xqpStringStore("-0");
+    return "-0";
   }
 
   char lBuffer[174];
   sprintf(lBuffer, "%d", (int)theFloating);
 
-  return new xqpStringStore(lBuffer);
+  return lBuffer;
 }
 
 
 template <typename FloatType>
-xqpStringStore_t FloatImpl<FloatType>::toString(bool no_scientific_format) const 
+zstring FloatImpl<FloatType>::toString(bool no_scientific_format) const 
 {
   if (isNaN()) 
   {
@@ -920,11 +920,11 @@ xqpStringStore_t FloatImpl<FloatType>::toString(bool no_scientific_format) const
   }
   else if (isPosZero()) 
   {
-    return new xqpStringStore("0");
+    return "0";
   }
   else if (isNegZero()) 
   {
-    return new xqpStringStore("-0");
+    return "-0";
   }
 
   FloatType absVal = fabs(theFloating);
@@ -946,11 +946,10 @@ xqpStringStore_t FloatImpl<FloatType>::toString(bool no_scientific_format) const
     stream.setf(std::ios::fixed);
     stream << theFloating;
 
-    xqpStringStore* result = new xqpStringStore(stream.str());
+    zstring result(stream.str());
 
     // remove non-significant trailing 0's
-    std::string& str = result->str();
-    long i = str.size() - 1;
+    long i = result.size() - 1;
     while (str[i] == '0')
       --i;
 
@@ -964,11 +963,11 @@ xqpStringStore_t FloatImpl<FloatType>::toString(bool no_scientific_format) const
       {
         if (j == i)
         {
-          str.resize(i);
+          result.resize(i);
         }
         else
         {
-          str.resize(i+1);
+          result.resize(i+1);
         }
       }
     }
@@ -1026,7 +1025,7 @@ xqpStringStore_t FloatImpl<FloatType>::toString(bool no_scientific_format) const
     }
 
     Decimal::reduceFloatingPointString(lBuffer);
-    return new xqpStringStore(lBuffer);
+    return lBuffer;
   }
 }
 

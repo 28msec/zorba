@@ -38,7 +38,7 @@
 #include <zorba/util/file.h>
 
 #include <zorbatypes/URI.h>
-#include <zorbautils/strutil.h>
+#include "util/ascii_util.h"
 
 #include <zorba/store_manager.h>
 
@@ -235,7 +235,7 @@ main(int argc, char** argv)
          ++lIter) 
     {
       std::string lTmp = *lIter;
-      zorba::str_replace_all(lTmp, "$RBKT_SRC_DIR", rbkt_src_dir);
+      zorba::ascii::replace_all(lTmp, "$RBKT_SRC_DIR", rbkt_src_dir);
       zorba::file lRefFile(lTmp, path_flags);
       if (lRefFile.exists()) 
       {

@@ -47,8 +47,8 @@ public:
     return lStream.str();
   }
   
-  Item 	getAtomizationValue () const
-  { return Item(theItem.getAtomizationValue()); }
+  Iterator 	getAtomizationValue () const
+  { return Iterator(theItem.getAtomizationValue()); }
   
   Iterator getAttributes () const
   { return Iterator(theItem.getAttributes()); }
@@ -167,7 +167,7 @@ public:
   static Item createEmptyItem();
   std::string getStringValue() const;
   std::string serialize() const;
-  Item 	getAtomizationValue () const;
+  Iterator 	getAtomizationValue () const;
   Iterator 	getAttributes () const;
   bool 	getBooleanValue () const;
   Iterator 	getChildren () const;

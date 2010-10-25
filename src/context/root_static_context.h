@@ -29,7 +29,7 @@ protected:
   static const char* theBuiltInModulePaths[];
 
 protected:
-  xqpStringStore_t theImplementationBaseUri;
+  zstring theImplementationBaseUri;
 
 private:
   root_static_context();

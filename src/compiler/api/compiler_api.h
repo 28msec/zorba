@@ -30,30 +30,30 @@ class XQueryCompiler
 {
 public:
 
-  CompilerCB* theCompilerCB;
+  CompilerCB  * theCompilerCB;
 
 private:
   // only needed for compile-checking library modules
-  StandardLibraryModuleURIResolver* theResolver;
+  StandardLibraryModuleURIResolver  * theResolver;
 
 public:
   XQueryCompiler(CompilerCB* aCompilerCB);
     
   virtual ~XQueryCompiler();
 
-  void parseOnly(std::istream& aXQuery, const xqpStringStore_t& aFileName);
+  void parseOnly(std::istream& aXQuery, const zstring& aFileName);
 
   void xqdoc(
         std::istream& aXQuery,
-        const xqpStringStore_t& aFileName,
+        const zstring& aFileName,
         store::Item_t& aResult,
         const store::Item_t& aDateTime);
 
-  parsenode_t parse(std::istream& aXQuery, const xqpStringStore_t& aFileName);
+  parsenode_t parse(std::istream& aXQuery, const zstring& aFileName);
 
   PlanIter_t compile(parsenode_t ast);
 
-  PlanIter_t compile(std::istream& aXQuery, const xqpStringStore_t& aFileName);
+  PlanIter_t compile(std::istream& aXQuery, const zstring& aFileName);
 
 protected:
   expr_t normalize(parsenode_t ast);
@@ -64,7 +64,7 @@ private:
   parsenode_t createMainModule(
         parsenode_t aLibraryModule,
         std::istream& aXQuery,
-        const xqpStringStore_t& aFileName);
+        const zstring& aFileName);
 };
 
 
