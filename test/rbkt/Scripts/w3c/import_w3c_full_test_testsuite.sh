@@ -8,13 +8,13 @@ die() {
   echo '<builddir> is the directory Zorba has been built in'
   echo '           (default: <zorba_repository>/build)'
   echo '<xqtsurl> is the URL where the XQTS archived version can be found'
-  echo '          (default: http://dev.w3.org/2006/xquery-test-suite/PublicPagesStagingArea/XQTS_current.zip)'
+  echo '          (default: http://dev.w3.org/2007/xpath-full-text-10-test-suite/XQFTTS_1_0_3.zip)'
   echo '          (you can use for instance http://www.w3.org/XML/Query/test-suite/XQTS_1_0_2.zip)'
   exit 1
 }
 
 WORK=/tmp
-XQTSURL=http://dev.w3.org/2007/xpath-full-text-10-test-suite/XQFTTS_1.0.2.zip
+XQTSURL=http://dev.w3.org/2007/xpath-full-text-10-test-suite/XQFTTS_1_0_3.zip
 
 while [ $# -gt 1 ]
 do
