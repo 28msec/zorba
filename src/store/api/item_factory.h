@@ -170,6 +170,11 @@ public:
    */
   virtual bool createNOTATION(Item_t& result, zstring& value) = 0;
 
+  /**
+   * Specification: [http://www.w3.org/TR/xmlschema-2/#NOTATION]
+   * @param qname the QName representation of the value
+   */
+  virtual bool createNOTATION(Item_t& result, Item_t& qname) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#hexBinary]

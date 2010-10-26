@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -75,7 +75,7 @@ void AtomicItem::getTypedValue(store::Item_t& val, store::Iterator_t& iter) cons
 
 
 /*******************************************************************************
-  For numeric items or the untyped item: convert this item to a long item, 
+  For numeric items or the untyped item: convert this item to a long item,
   if possible, i.e., if the conversion is going to be lossless.
 ********************************************************************************/
 bool AtomicItem::castToLong(store::Item_t& result) const
@@ -493,7 +493,7 @@ zstring UntypedAtomicItem::show() const
   class QNameItemImpl
 ********************************************************************************/
 
-QNameItem::~QNameItem() 
+QNameItem::~QNameItem()
 {
   if (isValid())
   {
@@ -530,11 +530,11 @@ store::Item_t QNameItem::getEBV() const
 
 zstring QNameItem::getStringValue() const
 {
-  if (thePrefix.empty()) 
+  if (thePrefix.empty())
   {
     return getLocalName();
   }
-  else 
+  else
   {
     return (thePrefix + ":" + getLocalName());
   }
@@ -543,11 +543,11 @@ zstring QNameItem::getStringValue() const
 
 void QNameItem::getStringValue2(zstring& val) const
 {
-  if (thePrefix.empty()) 
+  if (thePrefix.empty())
   {
     val = getLocalName();
   }
-  else 
+  else
   {
     val.reserve(thePrefix.size() + getLocalName().size() + 1);
     val = thePrefix;
@@ -559,11 +559,11 @@ void QNameItem::getStringValue2(zstring& val) const
 
 void QNameItem::appendStringValue(zstring& buf) const
 {
-  if (thePrefix.empty()) 
+  if (thePrefix.empty())
   {
     buf += getLocalName();
   }
-  else 
+  else
   {
     buf.reserve(buf.size() + thePrefix.size() + getLocalName().size() + 1);
     buf += thePrefix;
@@ -609,6 +609,72 @@ zstring QNameItem::show() const
   res += getLocalName();
   res += ")";
   return res;
+}
+
+
+/*******************************************************************************
+  class NotationItem
+********************************************************************************/
+
+NotationItem::NotationItem(const zstring& nameSpace,
+                           const zstring& prefix,
+                           const zstring& localName)
+{
+  store::Item_t temp;
+  GET_FACTORY().createQName(temp, nameSpace, prefix, localName);
+  theQName = static_cast<QNameItem*>(temp.getp());
+}
+
+
+NotationItem::NotationItem(store::Item* qname)
+{
+  theQName = qname;
+}
+
+
+bool NotationItem::equals(const store::Item* item,
+                          long timezone,
+                          const XQPCollator* aCollation) const
+{
+  return (theQName->getNormalized() == static_cast<const NotationItem*>(item)->theQName->getNormalized());
+}
+
+
+store::Item* NotationItem::getType() const
+{
+  return GET_STORE().theSchemaTypeNames[XS_NOTATION];
+}
+
+
+zstring NotationItem::getStringValue() const
+{
+  return theQName->getStringValue();
+}
+
+
+void NotationItem::getStringValue2(zstring& val) const
+{
+  theQName->getStringValue2(val);
+}
+
+
+void NotationItem::appendStringValue(zstring& buf) const
+{
+  theQName->appendStringValue(buf);
+}
+
+
+zstring NotationItem::show() const
+{
+  zstring res("xs:NOTATION(");
+  res += theQName->getStringValue();
+  res += ")";
+  return res;
+}
+
+
+NotationItem::~NotationItem()
+{
 }
 
 
@@ -670,7 +736,7 @@ bool StringItem::equals(
 
   return (utf8::compare(theValue, other->getString(), aCollation) == 0);
 }
-  
+
 
 long StringItem::compare(
     const Item* other,
@@ -705,14 +771,14 @@ zstring StringItem::show() const
 
 void AtomicItemTokenizer::operator()( char const *utf8_s, int utf8_len,
                                       int token_no, int sent_no, int para_no,
-                                      void* ) 
+                                      void* )
 {
   FTToken t( utf8_s, utf8_len, token_no, sent_no, lang_ );
   tokens_.push_back( t );
 }
 
 
-FTTokenIterator_t StringItem::getDocumentTokens(locale::iso639_1::type lang) const 
+FTTokenIterator_t StringItem::getDocumentTokens(locale::iso639_1::type lang) const
 {
   auto_ptr<Tokenizer> tokenizer( Tokenizer::create() );
 
@@ -727,7 +793,7 @@ FTTokenIterator_t StringItem::getDocumentTokens(locale::iso639_1::type lang) con
 
 FTTokenIterator_t StringItem::getQueryTokens(
      locale::iso639_1::type lang,
-     bool wildcards) const 
+     bool wildcards) const
 {
   auto_ptr<Tokenizer> tokenizer( Tokenizer::create( wildcards ) );
 
@@ -922,28 +988,28 @@ void DateTimeItem::appendStringValue(zstring& buf) const
 }
 
 
-SchemaTypeCode DateTimeItem::getTypeCode() const 
+SchemaTypeCode DateTimeItem::getTypeCode() const
 {
   switch (theValue.getFacet())
   {
   case DateTime::GYEARMONTH_FACET:
     return XS_GYEAR_MONTH;
-    
+
   case DateTime::GYEAR_FACET:
     return XS_GYEAR;
-    
+
   case DateTime::GMONTH_FACET:
     return XS_GMONTH;
 
   case DateTime::GMONTHDAY_FACET:
     return XS_GMONTH_DAY;
-    
+
   case DateTime::GDAY_FACET:
     return XS_GDAY;
 
   case DateTime::DATE_FACET:
     return XS_DATE;
-      
+
   case DateTime::TIME_FACET:
     return XS_TIME;
 
@@ -967,7 +1033,7 @@ bool DateTimeItem::equals(
     long timezone,
     const XQPCollator* coll) const
 {
-  try 
+  try
   {
     return 0 == theValue.compare(&aItem->getDateTimeValue(), timezone);
   }
@@ -984,7 +1050,7 @@ long DateTimeItem::compare(
     long timezone,
     const XQPCollator* aCollation) const
 {
-  try 
+  try
   {
     return theValue.compare(&other->getDateTimeValue(), timezone);
   }
@@ -1009,19 +1075,19 @@ store::Item_t DateTimeItem::getEBV() const
     case DateTime::DATE_FACET:
       ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for xs:Date!");
       break;
-      
+
     case DateTime::TIME_FACET:
       ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for xs:Time!");
       break;
-    
+
     case DateTime::GYEARMONTH_FACET:
       ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for xs:GYearMonth!");
       break;
-    
+
     case DateTime::GYEAR_FACET:
       ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for xs:GYear!");
       break;
-    
+
     case DateTime::GMONTH_FACET:
       ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for xs:GMonth!");
       break;
@@ -1029,7 +1095,7 @@ store::Item_t DateTimeItem::getEBV() const
     case DateTime::GMONTHDAY_FACET:
       ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for xs:GMonthDay!");
       break;
-    
+
     case DateTime::GDAY_FACET:
       ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for xs:GDay!");
       break;
@@ -1137,7 +1203,7 @@ store::Item* DoubleItem::getType() const
 store::Item_t DoubleItem::getEBV() const
 {
   bool b;
-  if (theValue.isNaN()) 
+  if (theValue.isNaN())
   {
     b = false;
   }
@@ -1178,13 +1244,13 @@ zstring DoubleItem::show() const
 }
 
 
-bool DoubleItem::isNaN() const 
+bool DoubleItem::isNaN() const
 {
   return theValue.isNaN();
 }
 
 
-bool DoubleItem::isPosOrNegInf() const 
+bool DoubleItem::isPosOrNegInf() const
 {
   return theValue.isPosInf() || theValue.isNegInf();
 }
@@ -1196,7 +1262,7 @@ DoubleItem::hash(long timezone, const XQPCollator* aCollation) const
   return theValue.hash();
 }
 
-  
+
 /*******************************************************************************
   class FloatItem
 ********************************************************************************/
@@ -1246,13 +1312,13 @@ zstring FloatItem::show() const
 }
 
 
-bool FloatItem::isNaN() const 
+bool FloatItem::isNaN() const
 {
   return theValue.isNaN();
 }
 
 
-bool FloatItem::isPosOrNegInf() const 
+bool FloatItem::isPosOrNegInf() const
 {
   return theValue.isPosInf() || theValue.isNegInf();
 }
@@ -1300,7 +1366,7 @@ void DecimalItem::appendStringValue(zstring& buf) const
 }
 
 
-bool DecimalItem::isNaN() const 
+bool DecimalItem::isNaN() const
 {
   return theValue != theValue;
 }
@@ -1382,12 +1448,12 @@ zstring IntegerItem::show() const
 /*******************************************************************************
   class NonPositiveIntegerItem
 ********************************************************************************/
-store::Item* NonPositiveIntegerItem::getType() const 
+store::Item* NonPositiveIntegerItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_NON_POSITIVE_INTEGER];
 }
 
-zstring NonPositiveIntegerItem::show() const 
+zstring NonPositiveIntegerItem::show() const
 {
   zstring res("xs:nonPositiveInteger(");
   appendStringValue(res);
@@ -1395,17 +1461,17 @@ zstring NonPositiveIntegerItem::show() const
   return res;
 }
 
-  
+
 /*******************************************************************************
   class NegativeIntegerItem
 ********************************************************************************/
-store::Item* NegativeIntegerItem::getType() const 
+store::Item* NegativeIntegerItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_NEGATIVE_INTEGER];
 }
 
 
-zstring NegativeIntegerItem::show() const 
+zstring NegativeIntegerItem::show() const
 {
   zstring res("xs:negativeInteger(");
   appendStringValue(res);
@@ -1417,13 +1483,13 @@ zstring NegativeIntegerItem::show() const
 /*******************************************************************************
   class NonNegativeINtegerItem
 ********************************************************************************/
-store::Item* NonNegativeIntegerItem::getType() const 
+store::Item* NonNegativeIntegerItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_NON_NEGATIVE_INTEGER];
 }
 
 
-zstring NonNegativeIntegerItem::show() const 
+zstring NonNegativeIntegerItem::show() const
 {
   zstring res("xs:nonNegativeInteger(");
   appendStringValue(res);
@@ -1435,13 +1501,13 @@ zstring NonNegativeIntegerItem::show() const
 /*******************************************************************************
   class PositiveIntegerItem
 ********************************************************************************/
-store::Item* PositiveIntegerItem::getType() const 
+store::Item* PositiveIntegerItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_POSITIVE_INTEGER];
 }
 
 
-zstring PositiveIntegerItem::show() const 
+zstring PositiveIntegerItem::show() const
 {
   zstring res("xs:positiveInteger(");
   appendStringValue(res);
@@ -1453,25 +1519,25 @@ zstring PositiveIntegerItem::show() const
 /*******************************************************************************
   class LongItem
 ********************************************************************************/
-xqp_decimal LongItem::getDecimalValue() const 
+xqp_decimal LongItem::getDecimalValue() const
 {
   return Decimal::parseLongLong(theValue);
 }
 
 
-xqp_integer LongItem::getIntegerValue() const 
+xqp_integer LongItem::getIntegerValue() const
 {
   return Integer::parseLong(theValue);
 }
 
 
-store::Item* LongItem::getType() const 
+store::Item* LongItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_LONG];
 }
 
 
-store::Item_t LongItem::getEBV() const 
+store::Item_t LongItem::getEBV() const
 {
   bool b = (theValue != 0);
   store::Item_t bVal;
@@ -1480,7 +1546,7 @@ store::Item_t LongItem::getEBV() const
 }
 
 
-zstring LongItem::getStringValue() const 
+zstring LongItem::getStringValue() const
 {
   return NumConversions::longToStr(theValue);
 }
@@ -1498,7 +1564,7 @@ void LongItem::appendStringValue(zstring& buf) const
 }
 
 
-zstring LongItem::show() const 
+zstring LongItem::show() const
 {
   zstring res("xs:long(");
   appendStringValue(res);
@@ -1566,25 +1632,25 @@ zstring IntItem::show() const
 /*******************************************************************************
   class ShortItem
 ********************************************************************************/
-xqp_decimal ShortItem::getDecimalValue() const 
+xqp_decimal ShortItem::getDecimalValue() const
 {
   return Decimal::parseInt((int32_t)theValue);
 }
 
 
-xqp_integer ShortItem::getIntegerValue() const 
+xqp_integer ShortItem::getIntegerValue() const
 {
-  return Integer::parseInt((int32_t)theValue); 
+  return Integer::parseInt((int32_t)theValue);
 }
 
 
-store::Item* ShortItem::getType() const 
+store::Item* ShortItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_SHORT];
 }
 
 
-store::Item_t ShortItem::getEBV() const 
+store::Item_t ShortItem::getEBV() const
 {
   bool b = (theValue != 0);
   store::Item_t bVal;
@@ -1593,7 +1659,7 @@ store::Item_t ShortItem::getEBV() const
 }
 
 
-zstring ShortItem::getStringValue() const 
+zstring ShortItem::getStringValue() const
 {
   return NumConversions::shortToStr(theValue);
 }
@@ -1611,7 +1677,7 @@ void ShortItem::appendStringValue(zstring& buf) const
 }
 
 
-zstring ShortItem::show() const 
+zstring ShortItem::show() const
 {
   zstring res("xs:short(");
   appendStringValue(res);
@@ -1623,25 +1689,25 @@ zstring ShortItem::show() const
 /*******************************************************************************
   class ByteItem
 ********************************************************************************/
-xqp_decimal ByteItem::getDecimalValue() const 
+xqp_decimal ByteItem::getDecimalValue() const
 {
   return Decimal::parseInt((int32_t)theValue);
 }
 
 
-xqp_integer ByteItem::getIntegerValue() const 
+xqp_integer ByteItem::getIntegerValue() const
 {
-  return Integer::parseInt((int32_t)theValue); 
+  return Integer::parseInt((int32_t)theValue);
 }
 
 
-store::Item* ByteItem::getType() const 
+store::Item* ByteItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_BYTE];
 }
 
 
-store::Item_t ByteItem::getEBV() const 
+store::Item_t ByteItem::getEBV() const
 {
   bool b = (theValue != 0);
   store::Item_t bVal;
@@ -1650,7 +1716,7 @@ store::Item_t ByteItem::getEBV() const
 }
 
 
-zstring ByteItem::getStringValue() const 
+zstring ByteItem::getStringValue() const
 {
   return NumConversions::byteToStr(theValue);
 }
@@ -1668,7 +1734,7 @@ void ByteItem::appendStringValue(zstring& buf) const
 }
 
 
-zstring ByteItem::show() const 
+zstring ByteItem::show() const
 {
   zstring res("xs:byte(");
   appendStringValue(res);
@@ -1680,31 +1746,31 @@ zstring ByteItem::show() const
 /*******************************************************************************
   class UnsignedLongItem
 ********************************************************************************/
-xqp_decimal UnsignedLongItem::getDecimalValue() const 
+xqp_decimal UnsignedLongItem::getDecimalValue() const
 {
   return Decimal::parseULongLong(theValue);
 }
 
 
-xqp_integer UnsignedLongItem::getIntegerValue() const 
+xqp_integer UnsignedLongItem::getIntegerValue() const
 {
   return Integer::parseULong(theValue);
 }
 
 
-xqp_uinteger UnsignedLongItem::getUnsignedIntegerValue() const 
+xqp_uinteger UnsignedLongItem::getUnsignedIntegerValue() const
 {
   return Integer::parseULong(theValue);
 }
 
 
-store::Item* UnsignedLongItem::getType() const 
+store::Item* UnsignedLongItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_UNSIGNED_LONG];
 }
 
 
-store::Item_t UnsignedLongItem::getEBV() const 
+store::Item_t UnsignedLongItem::getEBV() const
 {
   bool b = (theValue != 0);
   store::Item_t bVal;
@@ -1713,7 +1779,7 @@ store::Item_t UnsignedLongItem::getEBV() const
 }
 
 
-zstring UnsignedLongItem::getStringValue() const 
+zstring UnsignedLongItem::getStringValue() const
 {
   return NumConversions::ulongToStr(theValue);
 }
@@ -1731,7 +1797,7 @@ void UnsignedLongItem::appendStringValue(zstring& buf) const
 }
 
 
-zstring UnsignedLongItem::show() const 
+zstring UnsignedLongItem::show() const
 {
   zstring res("xs:unsignedLong(");
   appendStringValue(res);
@@ -1743,31 +1809,31 @@ zstring UnsignedLongItem::show() const
 /*******************************************************************************
   class UnsignedIntItem
 ********************************************************************************/
-xqp_decimal UnsignedIntItem::getDecimalValue() const 
+xqp_decimal UnsignedIntItem::getDecimalValue() const
 {
   return Decimal::parseUInt(theValue);
 }
 
 
-xqp_integer UnsignedIntItem::getIntegerValue() const 
+xqp_integer UnsignedIntItem::getIntegerValue() const
 {
   return Integer::parseInt(theValue);
 }
 
 
-xqp_uinteger UnsignedIntItem::getUnsignedIntegerValue() const 
+xqp_uinteger UnsignedIntItem::getUnsignedIntegerValue() const
 {
   return Integer::parseInt(theValue);
 }
 
 
-store::Item* UnsignedIntItem::getType() const 
+store::Item* UnsignedIntItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_UNSIGNED_INT];
 }
 
 
-store::Item_t UnsignedIntItem::getEBV() const 
+store::Item_t UnsignedIntItem::getEBV() const
 {
   bool b = (theValue != 0);
   store::Item_t bVal;
@@ -1776,7 +1842,7 @@ store::Item_t UnsignedIntItem::getEBV() const
 }
 
 
-zstring UnsignedIntItem::getStringValue() const 
+zstring UnsignedIntItem::getStringValue() const
 {
   return NumConversions::uintToStr(theValue);
 }
@@ -1794,7 +1860,7 @@ void UnsignedIntItem::appendStringValue(zstring& buf) const
 }
 
 
-zstring UnsignedIntItem::show() const 
+zstring UnsignedIntItem::show() const
 {
   zstring res("xs:unsignedInt(");
   appendStringValue(res);
@@ -1806,31 +1872,31 @@ zstring UnsignedIntItem::show() const
 /*******************************************************************************
   class UnsignedShortItem
 ********************************************************************************/
-xqp_decimal UnsignedShortItem::getDecimalValue() const 
+xqp_decimal UnsignedShortItem::getDecimalValue() const
 {
   return Decimal::parseInt((uint32_t)theValue);
 }
 
 
-xqp_integer UnsignedShortItem::getIntegerValue() const 
+xqp_integer UnsignedShortItem::getIntegerValue() const
 {
   return Integer::parseInt((uint32_t)theValue);
 }
 
 
-xqp_uinteger UnsignedShortItem::getUnsignedIntegerValue() const 
+xqp_uinteger UnsignedShortItem::getUnsignedIntegerValue() const
 {
   return Integer::parseInt((uint32_t)theValue);
 }
 
 
-store::Item* UnsignedShortItem::getType() const 
+store::Item* UnsignedShortItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_UNSIGNED_SHORT];
 }
 
 
-store::Item_t UnsignedShortItem::getEBV() const 
+store::Item_t UnsignedShortItem::getEBV() const
 {
   bool b = (theValue != 0);
   store::Item_t bVal;
@@ -1839,7 +1905,7 @@ store::Item_t UnsignedShortItem::getEBV() const
 }
 
 
-zstring UnsignedShortItem::getStringValue() const 
+zstring UnsignedShortItem::getStringValue() const
 {
   return NumConversions::ushortToStr(theValue);
 }
@@ -1857,7 +1923,7 @@ void UnsignedShortItem::appendStringValue(zstring& buf) const
 }
 
 
-zstring UnsignedShortItem::show() const 
+zstring UnsignedShortItem::show() const
 {
   zstring res("xs:unsignedShort(");
   appendStringValue(res);
@@ -1869,31 +1935,31 @@ zstring UnsignedShortItem::show() const
 /*******************************************************************************
   class UnsignedByteItem
 ********************************************************************************/
-xqp_decimal UnsignedByteItem::getDecimalValue() const 
+xqp_decimal UnsignedByteItem::getDecimalValue() const
 {
   return Decimal::parseUInt((uint32_t)theValue);
 }
 
 
-xqp_integer UnsignedByteItem::getIntegerValue() const 
+xqp_integer UnsignedByteItem::getIntegerValue() const
 {
   return Integer::parseInt((uint32_t)theValue);
 }
 
 
-xqp_uinteger UnsignedByteItem::getUnsignedIntegerValue() const 
+xqp_uinteger UnsignedByteItem::getUnsignedIntegerValue() const
 {
   return Integer::parseInt(theValue);
 }
 
 
-store::Item* UnsignedByteItem::getType() const 
+store::Item* UnsignedByteItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_UNSIGNED_BYTE];
 }
 
 
-store::Item_t UnsignedByteItem::getEBV() const 
+store::Item_t UnsignedByteItem::getEBV() const
 {
   bool b = (theValue != 0);
   store::Item_t bVal;
@@ -1902,7 +1968,7 @@ store::Item_t UnsignedByteItem::getEBV() const
 }
 
 
-zstring UnsignedByteItem::getStringValue() const 
+zstring UnsignedByteItem::getStringValue() const
 {
   return NumConversions::ubyteToStr(theValue);
 }
@@ -1920,7 +1986,7 @@ void UnsignedByteItem::appendStringValue(zstring& buf) const
 }
 
 
-zstring UnsignedByteItem::show() const 
+zstring UnsignedByteItem::show() const
 {
   zstring res("xs:unsignedByte(");
   appendStringValue(res);
@@ -1991,13 +2057,13 @@ zstring BooleanItem::show() const
 /*******************************************************************************
   class Base64BinaryItem
 ********************************************************************************/
-store::Item* Base64BinaryItem::getType() const 
+store::Item* Base64BinaryItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_BASE64BINARY];
 }
 
 
-zstring Base64BinaryItem::getStringValue() const 
+zstring Base64BinaryItem::getStringValue() const
 {
   return theValue.str();
 }
@@ -2015,7 +2081,7 @@ void Base64BinaryItem::appendStringValue(zstring& buf) const
 }
 
 
-zstring Base64BinaryItem::show() const 
+zstring Base64BinaryItem::show() const
 {
   zstring res("xs:base64Binary(");
   appendStringValue(res);
@@ -2033,13 +2099,13 @@ uint32_t Base64BinaryItem::hash(long timezone, const XQPCollator* aCollation) co
 /*******************************************************************************
   class HexBinaryItem
 ********************************************************************************/
-store::Item* HexBinaryItem::getType() const 
+store::Item* HexBinaryItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_HEXBINARY];
 }
 
 
-zstring HexBinaryItem::getStringValue() const 
+zstring HexBinaryItem::getStringValue() const
 {
   return theValue.str();
 }
@@ -2057,7 +2123,7 @@ void HexBinaryItem::appendStringValue(zstring& buf) const
 }
 
 
-zstring HexBinaryItem::show() const 
+zstring HexBinaryItem::show() const
 {
   zstring res("xs:hexBinary(");
   appendStringValue(res);

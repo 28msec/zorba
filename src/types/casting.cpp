@@ -438,7 +438,26 @@ T1_TO_T2(str, QN)
 T1_TO_T2(str, NOT)
 {
   ascii::trim_whitespace(strval);
-  return aFactory->createNOTATION(result, strval);
+
+  zstring uri;
+  zstring prefix;
+  zstring local;
+
+  ulong pos = strval.rfind(":", strval.size(), 1);
+  if (pos != zstring::npos)
+  {
+    prefix = strval.substr(0, pos);
+    local = strval.substr(pos+1, strval.size());
+  }
+  else
+    local = strval;
+
+  if (!nsCtx->findBinding(prefix, uri))
+    ZORBA_ERROR_DESC_OSS(FORG0001, "Prefix '" << prefix << "' not found in current namespace context.");
+
+  store::Item_t qname;
+  aFactory->createQName(qname, uri, prefix, local);
+  return aFactory->createNOTATION(result, qname);
 }
 
 
@@ -724,14 +743,14 @@ T1_TO_T2(dec, flt)
 
 T1_TO_T2(dec, dbl)
 {
-  return aFactory->createDouble(result, 
+  return aFactory->createDouble(result,
                                 xqp_double::parseDecimal(aItem->getDecimalValue()));
 }
 
 
 T1_TO_T2(dec, int)
 {
-  return aFactory->createInteger(result, 
+  return aFactory->createInteger(result,
                                  xqp_integer::parseDecimal(aItem->getDecimalValue()));
 }
 
@@ -766,14 +785,14 @@ T1_TO_T2(int, flt)
 
 T1_TO_T2(int, dbl)
 {
-  return aFactory->createDouble(result, 
+  return aFactory->createDouble(result,
                                 xqp_double::parseInteger(aItem->getIntegerValue()));
 }
 
 
 T1_TO_T2(int, dec)
 {
-  return aFactory->createDecimal(result, 
+  return aFactory->createDecimal(result,
                                  xqp_decimal::parseInteger(aItem->getIntegerValue()));
 }
 
@@ -801,7 +820,7 @@ T1_TO_T2(dur, str)
 
 T1_TO_T2(dur, yMD)
 {
-  std::auto_ptr<Duration> dur = 
+  std::auto_ptr<Duration> dur =
   std::auto_ptr<Duration>(aItem->getDurationValue().toYearMonthDuration());
   return aFactory->createYearMonthDuration(result, dur.get());
 }
@@ -809,7 +828,7 @@ T1_TO_T2(dur, yMD)
 
 T1_TO_T2(dur, dTD)
 {
-  std::auto_ptr<Duration> dur = 
+  std::auto_ptr<Duration> dur =
   std::auto_ptr<Duration>(aItem->getDurationValue().toDayTimeDuration());
   return aFactory->createDayTimeDuration(result, dur.get());
 }
@@ -831,7 +850,7 @@ T1_TO_T2(yMD, str)
 
 T1_TO_T2(yMD, dur)
 {
-  std::auto_ptr<Duration> dur = 
+  std::auto_ptr<Duration> dur =
   std::auto_ptr<Duration>(aItem->getYearMonthDurationValue().toDuration());
   return aFactory->createDuration(result, dur.get());
 }
@@ -839,7 +858,7 @@ T1_TO_T2(yMD, dur)
 
 T1_TO_T2(yMD, dTD)
 {
-  std::auto_ptr<Duration> dur = 
+  std::auto_ptr<Duration> dur =
   std::auto_ptr<Duration>(aItem->getYearMonthDurationValue().toDayTimeDuration());
   return aFactory->createDayTimeDuration(result, dur.get());
 }
@@ -861,7 +880,7 @@ T1_TO_T2(dTD, str)
 
 T1_TO_T2(dTD, dur)
 {
-  std::auto_ptr<Duration> dur = 
+  std::auto_ptr<Duration> dur =
   std::auto_ptr<Duration>(aItem->getDayTimeDurationValue().toDuration());
   return aFactory->createDuration(result, dur.get());
 }
@@ -869,7 +888,7 @@ T1_TO_T2(dTD, dur)
 
 T1_TO_T2(dTD, yMD)
 {
-  std::auto_ptr<Duration> dur = 
+  std::auto_ptr<Duration> dur =
   std::auto_ptr<Duration>(aItem->getDayTimeDurationValue().toYearMonthDuration());
   return aFactory->createYearMonthDuration(result, dur.get());
 }
@@ -1629,7 +1648,9 @@ bool GenericCast::castToAtomic(
 
     bool success = tm->getSchema()->parseUserAtomicTypes(tmp,
                                                          aTargetType,
-                                                         baseItem);
+                                                         baseItem,
+                                                         tm,
+                                                         aNsCtx);
     if (success)
     {
       const UserDefinedXQType* udt = static_cast<const UserDefinedXQType*>(aTargetType);
@@ -2004,12 +2025,12 @@ bool GenericCast::castableToNormalizedString(const zstring& str)
   if (sz == 0)
     return true;
 
-  for (zstring::size_type i = 0; i < sz; ++i) 
+  for (zstring::size_type i = 0; i < sz; ++i)
   {
     ch = str[i];
     // do not contain the carriage return (#xD), line feed (#xA) nor tab (#x9)
     // characters
-    if (ch == '\r' || ch == '\n' || ch == '\t') 
+    if (ch == '\r' || ch == '\n' || ch == '\t')
     {
       return false;
     }
@@ -2032,18 +2053,18 @@ bool GenericCast::castableToToken(const zstring& str)
 
   bool spaceSeen = false;
 
-  for (zstring::size_type i = 0; i < sz; ++i) 
+  for (zstring::size_type i = 0; i < sz; ++i)
   {
     ch = str[i];
 
     // do not contain the carriage return (#xD), line feed (#xA) nor tab (#x9)
     // characters */
-    if (ch == '\r' || ch == '\n' || ch == '\t') 
+    if (ch == '\r' || ch == '\n' || ch == '\t')
     {
       return false;
     }
 
-    if (ch == ' ') 
+    if (ch == ' ')
     {
       /* two consecutive spaces not allowed. */
       if (spaceSeen)
@@ -2055,7 +2076,7 @@ bool GenericCast::castableToToken(const zstring& str)
 
       spaceSeen = true;
     }
-    else 
+    else
     {
       spaceSeen = false;
     }
@@ -2076,19 +2097,19 @@ bool GenericCast::castableToLanguage(const zstring& str)
 
   if (sz == 0)
     return false;
- 
+
   /* automation for [a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})* */
   bool firstBlock = true;
   i = 0;
   uint32_t blkIdx = 0;
 
-  while (i < sz) 
+  while (i < sz)
   {
     ch = str[i];
 
-    if (ch == '-') 
+    if (ch == '-')
     {
-      if (blkIdx == 0) 
+      if (blkIdx == 0)
       {
         return false;
       }
@@ -2099,18 +2120,18 @@ bool GenericCast::castableToLanguage(const zstring& str)
       continue;
     }
 
-    if (blkIdx >= 8) 
+    if (blkIdx >= 8)
     {
       return false;
     }
 
-    if (!((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z'))) 
+    if (!((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z')))
     {
-      if (firstBlock) 
+      if (firstBlock)
       {
         return false;
       }
-      if (!(ch >= '0' && ch <= '9')) 
+      if (!(ch >= '0' && ch <= '9'))
       {
         return false;
       }
@@ -2120,7 +2141,7 @@ bool GenericCast::castableToLanguage(const zstring& str)
     ++blkIdx;
   }
 
-  if (blkIdx == 0) 
+  if (blkIdx == 0)
   {
     return false;
   }
@@ -2138,7 +2159,7 @@ bool GenericCast::castableToNMToken(const zstring& str)
   std::vector<uint32_t> cps;
 
   utf8::to_codepoints(str, &cps);
-  
+
   std::vector<uint32_t>::size_type i;
   std::vector<uint32_t>::size_type sz = cps.size();
 
@@ -2258,7 +2279,7 @@ bool GenericCast::isCastable(
   }
   break;
   }
-  
+
   return false;
 }
 
@@ -2315,7 +2336,7 @@ bool GenericCast::isCastable(
   }
   break;
   }
-  
+
   return false;
 }
 

@@ -204,6 +204,8 @@ public:
 
   bool createNOTATION (store::Item_t& result,  zstring& value );
 
+  bool createNOTATION (store::Item_t& result,  store::Item_t& qname );
+
   bool createName (store::Item_t& result,  zstring& value );
 
   bool createNormalizedString(store::Item_t& result, zstring& value );

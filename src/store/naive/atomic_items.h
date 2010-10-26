@@ -433,12 +433,49 @@ protected:
     theLocal = local;
   }
 
-  void unsetLocalName() 
+  void unsetLocalName()
   {
     assert(!theLocal.empty() && theNormQName == NULL && isNormalized());
 
     theLocal.clear();
   }
+};
+
+
+/*******************************************************************************
+  class NotationItem
+********************************************************************************/
+class NotationItem : public AtomicItem
+{
+protected:
+  QNameItem_t       theQName;
+
+protected:
+  friend class BasicItemFactory;
+  NotationItem(const zstring& nameSpace,
+               const zstring& prefix,
+               const zstring& localName);
+
+  NotationItem(store::Item* qname);
+
+public:
+  virtual ~NotationItem();
+
+  store::Item* getType() const;
+
+  bool equals(const store::Item* item,
+              long timezone = 0,
+              const XQPCollator* aCollation = 0) const;
+
+  zstring getStringValue() const;
+
+  void getStringValue2(zstring& val) const;
+
+  void appendStringValue(zstring& buf) const;
+
+  zstring show() const;
+
+  virtual SchemaTypeCode getTypeCode() const { return XS_NOTATION; }
 };
 
 

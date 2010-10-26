@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,6 +22,7 @@
 #include "types/typeops.h"
 
 #include "context/static_context.h"
+#include "context/namespace_context.h"
 
 #include "runtime/core/sequencetypes.h"
 #include "runtime/util/iterator_impl.h"
@@ -64,11 +65,11 @@ InstanceOfIterator::InstanceOfIterator(
   :
   UnaryBaseIterator<InstanceOfIterator, PlanIteratorState>(sctx, loc, aTreatExpr),
   theSequenceType (aSequenceType)
-{ 
+{
 }
 
 
-InstanceOfIterator::~InstanceOfIterator() 
+InstanceOfIterator::~InstanceOfIterator()
 {
 }
 
@@ -85,7 +86,7 @@ bool InstanceOfIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-  
+
   lQuantifier = TypeOps::quantifier(*theSequenceType);
 
   if (consumeNext(lTreatItem, theChild.getp(), planState))
@@ -134,12 +135,12 @@ bool InstanceOfIterator::nextImpl(store::Item_t& result, PlanState& planState) c
       lResult = true;
     }
   }
-    
+
   STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, lResult), state);
   STACK_END (state);
 }
 
-  
+
 UNARY_ACCEPT(InstanceOfIterator);
 
 
@@ -170,7 +171,7 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   bool valid = false;
 
   const TypeManager* tm = theSctx->get_typemanager();
-  
+
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
@@ -181,7 +182,7 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     if (theQuantifier == TypeConstants::QUANT_ONE)
     {
-      ZORBA_ERROR_LOC_DESC(XPTY0004, loc, 
+      ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
                            "Empty sequences cannot be cast to a type with quantifier ONE."
       );
     }
@@ -195,7 +196,8 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         zstring strval;
         lItem->getStringValue2(strval);
 
-        valid = GenericCast::castToAtomic(result, strval, theCastType, tm);
+        namespace_context tmp_ctx(theSctx);
+        valid = GenericCast::castToAtomic(result, strval, theCastType, tm, &tmp_ctx);
       }
       catch (error::ZorbaError &e)
       {
@@ -208,7 +210,7 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       {
         valid = GenericCast::castToAtomic(result, lItem, theCastType, tm);
       }
-      catch (error::ZorbaError &e) 
+      catch (error::ZorbaError &e)
       {
         ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
       }
@@ -217,11 +219,11 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     //--
     if (consumeNext(lItem, theChild.getp(), planState))
     {
-      ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, loc, 
+      ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, loc,
                                "Sequence with more than one item cannot be cast"
                                << " to a type with quantifier ONE or QUESTION.");
     }
-    
+
     STACK_PUSH(valid, state);
   }
 
@@ -254,7 +256,7 @@ CastableIterator::~CastableIterator()
 }
 
 
-bool CastableIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
+bool CastableIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   bool lBool;
   store::Item_t lItem;
@@ -264,7 +266,7 @@ bool CastableIterator::nextImpl(store::Item_t& result, PlanState& planState) con
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (!consumeNext(lItem, theChild.getp(), planState)) 
+  if (!consumeNext(lItem, theChild.getp(), planState))
   {
     if (theQuantifier == TypeConstants::QUANT_PLUS ||
         theQuantifier == TypeConstants::QUANT_ONE)
@@ -279,12 +281,12 @@ bool CastableIterator::nextImpl(store::Item_t& result, PlanState& planState) con
   else
   {
     lBool = GenericCast::isCastable(lItem, theCastType, tm);
-    if (lBool) 
+    if (lBool)
     {
-      if (consumeNext(lItem, theChild.getp(), planState)) 
+      if (consumeNext(lItem, theChild.getp(), planState))
       {
         if (theQuantifier == TypeConstants::QUANT_ONE ||
-            theQuantifier == TypeConstants::QUANT_QUESTION) 
+            theQuantifier == TypeConstants::QUANT_QUESTION)
         {
           lBool = false;
         }
@@ -329,7 +331,7 @@ PromoteIterator::~PromoteIterator()
 }
 
 
-bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
+bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t lItem;
   store::Item_t temp;
@@ -339,21 +341,21 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (!consumeNext(lItem, theChild.getp(), planState)) 
+  if (!consumeNext(lItem, theChild.getp(), planState))
   {
     if (theQuantifier == TypeConstants::QUANT_PLUS ||
-        theQuantifier == TypeConstants::QUANT_ONE) 
+        theQuantifier == TypeConstants::QUANT_ONE)
     {
-      ZORBA_ERROR_LOC_DESC(XPTY0004, loc,  
+      ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
       "Empty sequence cannot be promoted to a type with quantifier \"one\" or \"plus\".");
     }
-  } 
+  }
   else if (theQuantifier == TypeConstants::QUANT_QUESTION ||
-           theQuantifier == TypeConstants::QUANT_ONE) 
+           theQuantifier == TypeConstants::QUANT_ONE)
   {
-    if(consumeNext(temp, theChild.getp(), planState)) 
+    if(consumeNext(temp, theChild.getp(), planState))
     {
-      ZORBA_ERROR_LOC_DESC(XPTY0004, loc,  
+      ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
       "Type promotion not possible on sequence with more than one item");
     }
 
@@ -362,7 +364,7 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
       if (! GenericCast::promote(result, lItem, thePromoteType, tm))
       {
         ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, loc,
-                                 "Type promotion not possible: " 
+                                 "Type promotion not possible: "
                                  << tm->create_value_type(lItem)->toString()
                                  << " -> " << thePromoteType->toString() );
       }
@@ -376,12 +378,12 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   }
   else
   {
-    do 
+    do
     {
       if (! GenericCast::promote(result, lItem, thePromoteType, tm))
       {
         ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, loc,
-                                 "Type promotion not possible: " 
+                                 "Type promotion not possible: "
                                  << tm->create_value_type(lItem)->toString()
                                  << " -> " << thePromoteType->toString());
       }
@@ -430,44 +432,44 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (!consumeNext(result, theChild.getp(), planState)) 
+  if (!consumeNext(result, theChild.getp(), planState))
   {
     if (theQuantifier == TypeConstants::QUANT_PLUS ||
-        theQuantifier == TypeConstants::QUANT_ONE) 
+        theQuantifier == TypeConstants::QUANT_ONE)
     {
-      ZORBA_ERROR_LOC_DESC(theErrorCode, loc,  
+      ZORBA_ERROR_LOC_DESC(theErrorCode, loc,
       "Cannot treat empty sequence as <type>+ or <type>.");
     }
   }
   else if (theQuantifier == TypeConstants::QUANT_QUESTION ||
-           theQuantifier == TypeConstants::QUANT_ONE) 
+           theQuantifier == TypeConstants::QUANT_ONE)
   {
     if (consumeNext(temp, theChild.getp(), planState))
     {
-      ZORBA_ERROR_LOC_DESC(theErrorCode, loc, 
+      ZORBA_ERROR_LOC_DESC(theErrorCode, loc,
       "Cannot treat sequence with more than one item as <type>? or <type>.");
     }
 
-    if (check_prime && !TypeOps::is_treatable(tm, result, *theTreatType)) 
+    if (check_prime && !TypeOps::is_treatable(tm, result, *theTreatType))
     {
       ZORBA_ERROR_LOC_DESC_OSS(theErrorCode, loc,
                                "Cannot treat "
                                << TypeOps::toString(*tm->create_value_type(result))
                                << " as " << TypeOps::toString(*theTreatType));
     }
-    else 
+    else
     {
       STACK_PUSH(true, state);
     }
   }
-  else 
+  else
   {
-    do 
+    do
     {
-      if (check_prime && !TypeOps::is_treatable(tm, result, *theTreatType)) 
+      if (check_prime && !TypeOps::is_treatable(tm, result, *theTreatType))
       {
         ZORBA_ERROR_LOC_DESC_OSS(theErrorCode, loc,
-                                 "Cannot treat " 
+                                 "Cannot treat "
                                  << TypeOps::toString(*tm->create_value_type(result))
                                  << " as " << TypeOps::toString(*theTreatType));
       }
@@ -490,24 +492,24 @@ UNARY_ACCEPT(TreatIterator);
 ********************************************************************************/
 bool EitherNodesOrAtomicsIterator::nextImpl(
     store::Item_t& result,
-    PlanState& planState) const 
+    PlanState& planState) const
 {
   EitherNodesOrAtomicsIteratorState* lState;
   DEFAULT_STACK_INIT(EitherNodesOrAtomicsIteratorState, lState, planState);
 
-  if (CONSUME (result, 0)) 
+  if (CONSUME (result, 0))
   {
     lState->atomics = result->isAtomic ();
     STACK_PUSH (true, lState);
-    
-    while (CONSUME (result, 0)) 
+
+    while (CONSUME (result, 0))
     {
       if (lState->atomics != result->isAtomic ())
         ZORBA_ERROR_LOC (XPTY0018, loc);
       STACK_PUSH (true, lState);
     }
   }
-  
+
   STACK_END (lState);
 }
 

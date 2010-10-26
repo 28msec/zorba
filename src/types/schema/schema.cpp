@@ -16,6 +16,7 @@
 #include <string>
 
 #include "compiler/parser/query_loc.h"
+#include "context/namespace_context.h"
 
 #include "zorbamisc/ns_consts.h"
 #include "zorbaerrors/Assert.h"
@@ -1339,7 +1340,7 @@ void Schema::addTypeToCache(xqtref_t itemXQType)
   key += ns;
   key += " ";
   key += TypeOps::decode_quantifier(itemXQType->get_quantifier());
-  
+
   xqtref_t res;
   if( !theUdTypesCache->get(key.str(), res) )
   {
@@ -1434,7 +1435,9 @@ bool Schema::parseUserSimpleTypes(
 bool Schema::parseUserAtomicTypes(
     xqpStringStore_t& textValue,
     const xqtref_t& aTargetType,
-    store::Item_t& result)
+    store::Item_t& result,
+    const TypeManager* typeManager,
+    namespace_context* aNCtx)
 {
   TRACE("parsing '" << *textValue << "' to " << aTargetType->toString());
 
@@ -1485,7 +1488,7 @@ bool Schema::parseUserAtomicTypes(
 
             xsiTypeDV = fGrammarResolver->
               getDatatypeValidator(baseUriStr, baseLocalPart);
-            
+
             tmpXQType = NULL;
             if (baseXQType->type_kind() == XQType::USER_DEFINED_KIND)
             {
@@ -1504,9 +1507,32 @@ bool Schema::parseUserAtomicTypes(
         wasError = true;
       }
 
-      XMLChArray xchTextValue(textValue->str());
+      // workaround for validating xs:NOTATION with Xerces
+      if (typeManager != NULL
+          &&
+          udXQType->isSubTypeOf(typeManager, *GENV_TYPESYSTEM.NOTATION_TYPE_ONE))
+      {
+        // textValue must be in the form of URI:LOCAL
+        int32_t colonIndex = textValue->bytePositionOf(":");
+        zstring prefix = textValue->byteSubstr(0, colonIndex)->str();
+        zstring local = textValue->byteSubstr(colonIndex+1, textValue->size())->str();
+        zstring uri;
 
-      xsiTypeDV->validate(xchTextValue.get());
+        if (aNCtx != NULL && aNCtx->findBinding(prefix, uri))
+        {
+          xqpStringStore_t validateValue = new xqpStringStore(uri.append(":").append(local).str());
+          XMLChArray xchTextValue(validateValue->str());
+          xsiTypeDV->validate(xchTextValue.get());
+        }
+        else
+          ZORBA_ERROR_DESC_OSS(FORG0001, "Prefix '" << prefix <<
+              "' not found in current namespace context.");
+      }
+      else
+      {
+        XMLChArray xchTextValue(textValue->str());
+        xsiTypeDV->validate(xchTextValue.get());
+      }
     }
     else
     {
@@ -1559,10 +1585,10 @@ bool Schema::parseUserAtomicTypes(
   // create a UserTypedAtomicItem with the built-in value
   store::Item_t baseItem;
   zstring tmp(textValue->str());
-  if (GenericCast::castToAtomic(baseItem, tmp, baseType, theTypeManager))
+  if (GenericCast::castToAtomic(baseItem, tmp, baseType, theTypeManager, aNCtx))
   {
     store::Item_t tTypeQName = udXQType->get_qname();
-		
+
     //TRACE("factory '" << baseItem->getStringValue() << "' type " << tTypeQName->getStringValue() << "  base:" << baseType->toString());
     return GENV_ITEMFACTORY->
         createUserTypedAtomicItem(result, baseItem, tTypeQName);

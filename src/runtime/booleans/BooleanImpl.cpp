@@ -729,6 +729,8 @@ long CompareIterator::equal(
       // different branches under of the type-inheritance subtree rooted at
       // xs::duration (i.e. one is xs:yearMonthDuration and the other is
       // xs:dayTimeDuration).
+      // The same case happens when there are two types derived from xs:NOTATION.
+      //
       if (TypeOps::is_subtype(tm, *type0, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE) &&
           TypeOps::is_subtype(tm, *type1, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE))
       {
@@ -738,6 +740,11 @@ long CompareIterator::equal(
                TypeOps::is_subtype(tm, *type1, *GENV_TYPESYSTEM.DURATION_TYPE_ONE))
       {
         return (aItem0->getDurationValue() == aItem1->getDurationValue() ? 1 : 0);
+      }
+      else if (TypeOps::is_subtype(tm, *type0, *GENV_TYPESYSTEM.NOTATION_TYPE_ONE) &&
+               TypeOps::is_subtype(tm, *type1, *GENV_TYPESYSTEM.NOTATION_TYPE_ONE))
+      {
+        return aItem0->equals(aItem1);
       }
       else
       {

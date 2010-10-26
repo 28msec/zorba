@@ -912,13 +912,33 @@ bool BasicItemFactory::createHexBinary(store::Item_t& result,  xqp_hexBinary val
 }
 
 
-bool BasicItemFactory::createNOTATION(store::Item_t& result, zstring& /*value*/ )
+bool BasicItemFactory::createNOTATION(store::Item_t& result, zstring& str)
 {
-  result = NULL;
-  return false;
+  zstring nsuri;
+  zstring prefix;
+  zstring local;
+
+  ascii::trim_whitespace(str);
+  ulong pos = str.rfind(":", str.size(), 1);
+
+  if (pos != zstring::npos)
+  {
+    nsuri = str.substr(0, pos);
+    local = str.substr(pos+1, str.size());
+  }
+  else
+    local = str;
+
+  result = new NotationItem(nsuri, prefix, local);
+  return true;
 }
 
 
+bool BasicItemFactory::createNOTATION(store::Item_t& result, store::Item_t& qname)
+{
+  result = new NotationItem(qname);
+  return true;
+}
 
 
 /*******************************************************************************

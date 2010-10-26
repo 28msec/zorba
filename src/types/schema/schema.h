@@ -67,7 +67,7 @@ public:
   XERCES_CPP_NAMESPACE::InputSource* resolveEntity(
         const XMLCh* const publicId,
         const XMLCh* const systemId);
-};        
+};
 #endif // ZORBA_NO_XMLSCHEMA
 
 
@@ -110,7 +110,7 @@ public:
 
 #ifndef ZORBA_NO_XMLSCHEMA
 
-  XERCES_CPP_NAMESPACE::XMLGrammarPool* getGrammarPool() const 
+  XERCES_CPP_NAMESPACE::XMLGrammarPool* getGrammarPool() const
   {
     return theGrammarPool;
   }
@@ -162,7 +162,9 @@ public:
   bool parseUserAtomicTypes(
         xqpStringStore_t& textValue,
         const xqtref_t& aTargetType,
-        store::Item_t& result);
+        store::Item_t& result,
+        const TypeManager* typeManager = 0,
+        namespace_context* aNCtx = 0);   // the type manager and the namespace context are needed for parsing the xs:NOTATION items
 
     // user defined list types
   bool parseUserListTypes(

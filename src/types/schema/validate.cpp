@@ -618,8 +618,8 @@ void Validator::processTextValue (
     xqpStringStore_t& textValue,
     std::vector<store::Item_t>& resultList)
 {
-  xqtref_t type = typeManager->
-                  create_named_type(typeQName.getp(), TypeConstants::QUANT_ONE);
+  xqtref_t type = typeManager->create_named_type(typeQName.getp(), TypeConstants::QUANT_ONE);
+
   //cout << "     - processTextValue: " << typeQName->getPrefix()->str()
   //     << ":" << typeQName->getLocalName()->str() << "@"
   //     << typeQName->getNamespace()->str() ; cout.flush();
@@ -634,8 +634,7 @@ void Validator::processTextValue (
   {
     if ( type->type_kind() == XQType::USER_DEFINED_KIND )
     {
-      const UserDefinedXQType udt =
-        static_cast<const UserDefinedXQType&>(*type);
+      const UserDefinedXQType udt = static_cast<const UserDefinedXQType&>(*type);
 
       if ( udt.isList() || udt.isUnion() )
       {
@@ -644,26 +643,8 @@ void Validator::processTextValue (
       }
       else if (udt.isAtomic())
       {
-        // workaround for validating NOTATION with Xerces
-        xqtref_t notationType = GENV_TYPESYSTEM.NOTATION_TYPE_ONE;
-        if ( udt.isSubTypeOf(typeManager, *notationType.getp()) )
-        {
-          // textValue must be in the form of URI:LOCAL
-          int32_t colonIndex = textValue->bytePositionOf(":");
-          zstring prefix = textValue->byteSubstr(0, colonIndex)->str();
-          zstring local = textValue->byteSubstr(colonIndex+1,
-                                                textValue->size())->str();
-          zstring uri;
-
-          if ( nsCtx.findBinding(prefix, uri) )
-            textValue = new xqpStringStore(uri.append(":").append(local).str());
-          else
-            ZORBA_ERROR_DESC_OSS(FORG0001, "Prefix '" << prefix <<
-                                 "' not found in current namespace context.");
-        }
-
         bool res = typeManager->getSchema()->
-          parseUserAtomicTypes(textValue, type.getp(), result);
+          parseUserAtomicTypes(textValue, type.getp(), result, typeManager, &nsCtx);
 
         ZORBA_ASSERT(res);
         resultList.push_back(result);
@@ -688,7 +669,7 @@ void Validator::processTextValue (
         {
           // do nothing here, the validator will throw the right error at end
           // elemet event call
-        } 
+        }
       }
     }
     else if (type->type_kind() == XQType::ATOMIC_TYPE_KIND)
