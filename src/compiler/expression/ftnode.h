@@ -259,13 +259,13 @@ public:
 
   ft_visit_result::type accept( ftnode_visitor& );
   zstring const& get_uri() const { return uri_; }
-  zstring const& get_relationship() const { return relationship_; }
+  ft_thesaurus_rel::type get_relationship() const { return relationship_; }
   ftrange const* get_levels() const { return levels_; }
   std::ostream& put( std::ostream& ) const;
 
 private:
   zstring uri_;
-  zstring relationship_;
+  ft_thesaurus_rel::type relationship_;
   ftrange *levels_;
 };
 

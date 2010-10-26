@@ -24,14 +24,16 @@ namespace zorba {
       "any_word",
       "all",
       "all words",
-      "phrase"
+      "phrase",
+      0
     };
   }
 
   namespace ft_big_unit {
     char const *const string_of[] = {
       "sentence",
-      "paragraph"
+      "paragraph",
+      0
     };
   }
 
@@ -40,7 +42,8 @@ namespace zorba {
       "insensitive",
       "sensitive",
       "lower",
-      "upper"
+      "upper",
+      0
     };
   }
 
@@ -48,14 +51,16 @@ namespace zorba {
     char const *const string_of[] = {
       "at start",
       "at end",
-      "entire"
+      "entire",
+      0
     };
   };
 
   namespace ft_diacritics_mode {
     char const *const string_of[] = {
       "insensitive",
-      "sensitive"
+      "sensitive",
+      0
     };
   }
 
@@ -64,21 +69,24 @@ namespace zorba {
       "exactly",
       "at least",
       "at most",
-      "from to"
+      "from to",
+      0
     };
   }
 
   namespace ft_scope {
     char const *const string_of[] = {
       "same",
-      "different"
+      "different",
+      0
     };
   }
 
   namespace ft_stem_mode {
     char const *const string_of[] = {
       "without",
-      "with"
+      "with",
+      0
     };
   }
 
@@ -86,19 +94,22 @@ namespace zorba {
     char const *const string_of[] = {
       "without",
       "with",
-      "with default"
+      "with default",
+      0
     };
   }
 
   namespace ft_stop_words_unex {
     char const *const string_of[] = {
       "union",
-      "except"
+      "except",
+      0
     };
   }
 
   namespace ft_thesaurus_rel {
     char const *const string_of[] = {
+      "unspecified",
       "USE",
       "UF",
       "BT",
@@ -108,7 +119,8 @@ namespace zorba {
       "BTP",
       "NTP",
       "TT",
-      "RT"
+      "RT",
+      0
     };
   };
 
@@ -116,14 +128,16 @@ namespace zorba {
     char const *const string_of[] = {
       "words",
       "sentences",
-      "paragraphs"
+      "paragraphs",
+      0
     };
   }
 
   namespace ft_wild_card_mode {
     char const *const string_of[] = {
       "no wildcards",
-      "wildcards"
+      "wildcards",
+      0
     };
   }
 

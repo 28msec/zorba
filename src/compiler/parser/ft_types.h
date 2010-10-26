@@ -115,6 +115,7 @@ namespace zorba {
 
   namespace ft_thesaurus_rel {
     enum type {
+      unspecified,
       USE,  // preferred term
       UF,   // nonpreferred term
       BT,   // broader term

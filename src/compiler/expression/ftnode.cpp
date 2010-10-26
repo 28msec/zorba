@@ -821,9 +821,17 @@ ftthesaurus_id::ftthesaurus_id(
 ) :
   ftnode( loc ),
   uri_( uri ),
-  relationship_( relationship ),
   levels_( levels )
 {
+  char const *const *ps = ft_thesaurus_rel::string_of;
+  for ( int i = 0; *ps; ++ps, ++i ) {
+    if ( relationship == *ps ) {
+      relationship_ = static_cast<ft_thesaurus_rel::type>( i );
+      break;
+    }
+  }
+  if ( !*ps )
+    relationship_ = ft_thesaurus_rel::unspecified;
 }
 
 ftthesaurus_id::~ftthesaurus_id() {
@@ -839,7 +847,7 @@ ft_visit_result::type ftthesaurus_id::accept( ftnode_visitor &v ) {
 ostream& ftthesaurus_id::put( ostream &o ) const {
   BEGIN_PUT( o, ftthesaurus_id );
   PUT_ATTR( o, uri, uri_ );
-  PUT_ATTR( o, relationship, relationship_ );
+  PUT_ENUM( o, ft_thesaurus_rel, relationship );
   INDENT_PUT( o );
   PUT_NODE( o, levels_ );
   OUTDENT_END_PUT( o );
@@ -848,7 +856,7 @@ ostream& ftthesaurus_id::put( ostream &o ) const {
 void ftthesaurus_id::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (ftnode*)this );
   ar & uri_;
-  ar & relationship_;
+  SERIALIZE_ENUM(ft_thesaurus_rel::type,relationship_);
   ar & levels_;
 }
 
