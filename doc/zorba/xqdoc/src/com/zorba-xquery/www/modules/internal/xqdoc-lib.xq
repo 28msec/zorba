@@ -20,8 +20,6 @@ declare variable $doc2html:examplePath as xs:string* := (
     'test/update/ExpectedTestResults'
 );
 
-declare variable $doc2html:table := <ul/>;
-
 declare variable $doc2html:stepBacks as xs:string := "../../../../../../../../../../../../../../../../../../../../";
 
 (:~
@@ -134,8 +132,8 @@ declare sequential function doc2html:generateXQDocXhtml(
       let $moduleDoc := $xqdoc/xqdoc:module
       let $moduleName := $moduleDoc/xqdoc:name
       let $moduleUri := $moduleDoc/xqdoc:uri
-      let $menu := <ul class="treeview" id="documentation"><span class="leftMenu"><strong>{string($leftMenu/@title)}</strong></span></ul> 
-      let $menu := doc2html:createLeftMenu($menu, $moduleUri, $leftMenu)
+      let $menu := <ul id="documentation"><span class="leftMenu"><strong><a href="index.html">{string($leftMenu/@title)}</a></strong></span></ul> 
+      let $menu := doc2html:createModuleTable($leftMenu, $menu, $moduleUri)
       let $xhtml := xqdg:doc($xqdoc, $menu, $doc2html:indexCollector)
       return block {
         file:mkdirs($xhtmlFileDir, false());
@@ -187,101 +185,6 @@ declare sequential function doc2html:collectModule ($module, $relativeFileName a
         insert node <module uri="{$moduleUri/text()}" file="{$relativeFileName}" /> as last into $collector;
     ();
 };    
-
-(:~
- : This function returns the left menu needed in the index.html and also all the XHTML module pages.
- :
- :)
-declare sequential function doc2html:createLeftMenu($menu, $moduleUri, $categories)
-{
-  for $cat1 in $categories/category
-  let $last1 := if(fn:exists($cat1/@last)) then fn:boolean(fn:data($cat1/@last)) else fn:false()
-  return block {
-    doc2html:createCategory($menu, $moduleUri, $cat1, $last1);
-    for $cat2 in $cat1/category
-    let $last2 := if(fn:exists($cat2/@last)) then fn:boolean(fn:data($cat2/@last)) else fn:false()
-    let $menu2 := $menu/li[fn:last()]/ul
-    return block {
-      doc2html:createCategory($menu2, $moduleUri, $cat2, $last2);
-      for $cat3 in $cat2/category
-      let $last3 := if(fn:exists($cat3/@last)) then fn:boolean(fn:data($cat3/@last)) else fn:false()
-      let $menu3 := $menu/li[fn:last()]/ul/li[fn:last()]/ul
-      return block {
-        doc2html:createCategory($menu3, $moduleUri, $cat3, $last3);
-      };
-    };
-  };
-  
-  $menu;
-  
-};
-
-
-(:~
- : This is a helper function used to add a category and the modules belonging to it to a node in the menu
- :
- : @param $menu the node in the menu where the new category will be added as the last node
- : @param $moduleUri the name of this module will be highlighted in red as this is the current selected item in the menu
- : @param $category the node in the $leftMenu variable that will be added to the $menu
- : @param $last bool indicating if this is the last item in the $menu node needed in order to set the treeview control
- :)
-declare sequential function doc2html:createCategory($menu, $moduleUri, $category, $last as xs:boolean)
-{
-  block {
-  if($last) then
-    insert nodes <li class='expandable lastExpandable'><div class='hitarea expandable-hitarea'>{' '}</div>
-    <span class='leftMenu'>{data($category/@name)}</span>
-    <ul style='display: none;'>
-    {
-     for $module in $doc2html:indexCollector/module
-      order by fn:data($module/@uri)
-      return block {
-        if(fn:starts-with(fn:string($module/@uri),data($category/@uri))
-           and fn:not(fn:contains (fn:substring-after(data($module/@uri),fn:concat(data($category/@uri),'/')),'/'))
-           and fn:not($module/@uri = $moduleUri)) then
-          <li><a href="{$module/@file}">{fn:substring-after(data($module/@uri),fn:concat(data($category/@uri),'/'))}</a></li>
-        else if(fn:starts-with(fn:string($module/@uri),data($category/@uri))
-                and fn:not(fn:contains (fn:substring-after(data($module/@uri),fn:concat(data($category/@uri),'/')),'/'))
-                and ($module/@uri = $moduleUri)) then
-          <li><span class="leftmenu_active">{fn:substring-after(data($module/@uri),fn:concat(data($category/@uri),'/'))}</span></li>
-        else ()
-        };      
-    }    
-    </ul></li>
-    as last into $menu
-  else
-    insert nodes <li class='expandable'><div class="hitarea expandable-hitarea">{' '}</div>
-    <span class='leftMenu'>{data($category/@name)}</span>
-    <ul style='display: none;'>
-    {
-      for $module in $doc2html:indexCollector/module
-      order by fn:data($module/@uri)
-      return block {
-        if(fn:starts-with(fn:string($module/@uri),data($category/@uri))
-           and fn:not(fn:contains (fn:substring-after(data($module/@uri),fn:concat(data($category/@uri),'/')),'/'))
-           and fn:not($module/@uri = $moduleUri)) then
-          <li><a href="{$module/@file}">{fn:substring-after(data($module/@uri),fn:concat(data($category/@uri),'/'))}</a></li>
-        else if(fn:starts-with(fn:string($module/@uri),data($category/@uri))
-                and fn:not(fn:contains (fn:substring-after(data($module/@uri),fn:concat(data($category/@uri),'/')),'/'))
-                and ($module/@uri = $moduleUri)) then
-          <li><span class="leftmenu_active">{fn:substring-after(data($module/@uri),fn:concat(data($category/@uri),'/'))}</span></li>
-        else ()
-        };      
-    }    
-    </ul></li>
-    as last into $menu
-    };
-   
-   for $module in $category/module
-   let $link :=
-     if($module/@uri = $moduleUri) then 
-       <li><span class="leftmenu_active">{string($module/@name)}</span></li>
-     else 
-       <li><a href="{$doc2html:indexCollector/module[@uri=$module/@uri]/@file}">{string($module/@name)}</a></li>
-   return insert node $link as last into $menu//li[@class="expandable" and .//span/text()=$category/@name]/ul;
-    
-   $menu;
-};
 
 declare sequential function doc2html:getFilePath (
   $filename as xs:string, $modulesPath as xs:string
@@ -356,26 +259,26 @@ declare sequential function doc2html:configure-xhtml (
   $xhtml;
 };
 
-declare sequential function doc2html:createModuleTable($leftMenu as element(menu)) {
+declare sequential function doc2html:createModuleTable($leftMenu as element(menu), $root, $moduleUri) { 
   for $cat1 in $leftMenu/category
   return block {
-    doc2html:createModuleHelper($doc2html:table, $cat1);
+    doc2html:createModuleHelper($root, $cat1, $moduleUri);
     for $cat2 in $cat1/category
-    let $table2 := $doc2html:table/li[fn:last()]/ul
+    let $table2 := $root/li[fn:last()]/ul
     return block {
-      doc2html:createModuleHelper($table2, $cat2);
+      doc2html:createModuleHelper($table2, $cat2, $moduleUri);
       for $cat3 in $cat2/category
-      let $table3 := $doc2html:table/li[fn:last()]/ul/li[fn:last()]/ul
+      let $table3 := $root/li[fn:last()]/ul/li[fn:last()]/ul
       return block {
-        doc2html:createModuleHelper($table3, $cat3);
+        doc2html:createModuleHelper($table3, $cat3, $moduleUri);
       };
     };
   };
   
-  $doc2html:table;
+  $root;
 };
 
-declare sequential function doc2html:createModuleHelper($table, $category)
+declare sequential function doc2html:createModuleHelper($table, $category, $moduleUri)
 {
   block {
     insert nodes <li>{data($category/@name)}
@@ -386,14 +289,17 @@ declare sequential function doc2html:createModuleHelper($table, $category)
       return
         if(fn:starts-with(fn:string($module/@uri),data($category/@uri))
            and fn:not(fn:contains (fn:substring-after(data($module/@uri),fn:concat(data($category/@uri),'/')),'/'))) then
-          <li><a href="{$module/@file}">{fn:substring-after(data($module/@uri),fn:concat(data($category/@uri),'/'))}</a></li>
+          if(fn:string($module/@uri) = $moduleUri) then
+            <li><span class="leftmenu_active">{fn:substring-after(data($module/@uri),fn:concat(data($category/@uri),'/'))}</span></li>
+          else 
+            <li><a href="{$module/@file}">{fn:substring-after(data($module/@uri),fn:concat(data($category/@uri),'/'))}</a></li>
         else ()
     }    
     </ul></li>
     as last into $table
-    };
+  };
 
-   $table;
+  $table;
 };
 
 (:~
@@ -425,21 +331,21 @@ declare sequential function doc2html:main(
   $indexHtmlPath as xs:string
 ) {
   let $leftMenu :=
-  <menu title="XQuery Libraries">
+  <menu title="XQuery Modules">
   <category name="http://expath.org/ns" uri="http://expath.org/ns" />
-  <category name="http://www.zorba-xquery.com/modules" uri="http://www.zorba-xquery.com/modules">
+  <category name="http://www.zorba-xquery.com/modules" uri="http://www.zorba-xquery.com/modules" >
     <category name="email" uri="http://www.zorba-xquery.com/modules/email" />
     <category name="excel" uri="http://www.zorba-xquery.com/modules/excel" />
     <category name="image" uri="http://www.zorba-xquery.com/modules/image" />
     <category name="introspection" uri="http://www.zorba-xquery.com/modules/introspection" />
     <category name="security" uri="http://www.zorba-xquery.com/modules/security" />
     <category name="oauth" uri="http://www.zorba-xquery.com/modules/oauth" />
-    <category name="webservices" uri="http://www.zorba-xquery.com/modules/webservices" last="true">
+    <category name="webservices" uri="http://www.zorba-xquery.com/modules/webservices" >
       <category name="google" uri="http://www.zorba-xquery.com/modules/webservices/google" />
-      <category name="yahoo" uri="http://www.zorba-xquery.com/modules/webservices/yahoo" last="true" />
+      <category name="yahoo" uri="http://www.zorba-xquery.com/modules/webservices/yahoo" />
     </category>
   </category>
-  <category name="http://www.w3.org/2005" uri="http://www.w3.org/2005" last="true"/>
+  <category name="http://www.w3.org/2005" uri="http://www.w3.org/2005" />
   </menu>
   let $menu :=
   <ul class="treeview" id="documentation">
@@ -482,9 +388,14 @@ declare sequential function doc2html:main(
     error()
   ;
   
-  let $menu := doc2html:createLeftMenu($menu, "index.html", $leftMenu)
-  let $modules := doc2html:createModuleTable($leftMenu)
-  let $doc := doc2html:generateIndexHtml($indexHtmlPath, $menu, $modules)
+  let $left := <ul id="documentation">
+                <span class="leftMenu"><strong><a href="index.html">{string($leftMenu/@title)}</a></strong>
+                </span>
+               </ul>
+  let $index1 := doc2html:createModuleTable($leftMenu, $left, "index.html")
+  let $right := <ul />
+  let $index2 := doc2html:createModuleTable($leftMenu, $right, "index.html")
+  let $doc := doc2html:generateIndexHtml($indexHtmlPath, $index1, $index2)
   return doc2html:configure-xhtml($doc/*:html, 0, $modulePath)
   ;
  

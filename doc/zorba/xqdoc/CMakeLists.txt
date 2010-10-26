@@ -39,8 +39,6 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/styles/jquery.treeview.css
                ${CMAKE_CURRENT_BINARY_DIR}/xhtml/css/jquery.treeview.css COPYONLY)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/styles/main.css
                ${CMAKE_CURRENT_BINARY_DIR}/xhtml/css/main.css COPYONLY)
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/styles/screen.css
-               ${CMAKE_CURRENT_BINARY_DIR}/xhtml/css/screen.css COPYONLY)
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/images/S.gif
                ${CMAKE_CURRENT_BINARY_DIR}/xhtml/images/S.gif COPYONLY)
