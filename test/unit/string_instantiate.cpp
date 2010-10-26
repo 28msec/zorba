@@ -29,10 +29,10 @@ using namespace zorba;
 template<class StringType>
 static void instantiate_common() {
   typename StringType::allocator_type a;
-  typename StringType::value_type c;
-  typename StringType::pointer cs;
-  typename StringType::const_pointer csc;
-  typename StringType::iterator i;
+  typename StringType::value_type c = 0;
+  typename StringType::pointer cs = 0;
+  typename StringType::const_pointer csc = 0;
+  typename StringType::iterator i = 0;
   typename StringType::std_string ss;
 
   StringType s1, s2;
@@ -262,11 +262,11 @@ static void instantiate_common() {
 template<class StringType>
 static void instantiate_not_buf() {
   typename StringType::allocator_type a;
-  typename StringType::pointer cs;
-  typename StringType::const_pointer csc;
+  typename StringType::pointer cs = 0;
+  typename StringType::const_pointer csc = 0;
   typename StringType::std_string ss;
-  typename StringType::value_type c;
-  typename StringType::iterator i;
+  typename StringType::value_type c = 0;
+  typename StringType::iterator i = 0;
 
   StringType s1;
 
@@ -289,9 +289,9 @@ static void instantiate_utf8_string() {
   typedef utf8_string<StringType> ustring;
 
   StringType s;
-  typename ustring::storage_type b;
-  typename ustring::value_type c;
-  typename ustring::storage_pointer cs;
+  typename ustring::storage_type b = 0;
+  typename ustring::value_type c = 0;
+  typename ustring::storage_pointer cs = 0;
   typename ustring::const_storage_pointer csc;
   typename ustring::iterator i;
   typename ustring::std_string ss;
