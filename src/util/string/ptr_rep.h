@@ -311,13 +311,14 @@ private:
    * @param a The allocator to use.
    */
   void dispose_data_only( allocator_type &a ) {
-    if ( data() )
+    if ( data() ) {
       if ( dispose_data_using_delete_ )
         delete[] data();
       else
         a.deallocate(
           reinterpret_cast<char*>( data() ), data_size( this->capacity() )
         );
+    }
   }
 
   /**

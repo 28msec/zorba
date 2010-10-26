@@ -4141,7 +4141,7 @@ void OrdPathStack::compressComp(ulong comp, int32_t value)
   {
     // push 1111 1111 0 into the ordpath
     unsigned char byte = 0xFF;
-    byte = byte >> 8 - theBitsAvailable;
+    byte = byte >> (8 - theBitsAvailable);
 
     theBuffer[theByteIndex] |= byte;
     ++theByteIndex;
