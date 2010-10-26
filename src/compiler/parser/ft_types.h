@@ -113,6 +113,22 @@ namespace zorba {
     extern char const *const string_of[];
   }
 
+  namespace ft_thesaurus_rel {
+    enum type {
+      USE,  // preferred term
+      UF,   // nonpreferred term
+      BT,   // broader term
+      NT,   // narrower term
+      BTG,  // broadter term generic
+      NTG,  // narrower term generic
+      BTP,  // broader term partitive
+      NTP,  // narrower term partitive
+      TT,   // top term
+      RT    // related term
+    };
+    extern char const *const string_of[];
+  }
+
   namespace ft_unit {
     enum type {
       words,

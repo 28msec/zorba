@@ -14,103 +14,116 @@
  * limitations under the License.
  */
 
-#include "compiler/parser/ft_types.h"
-
-#define ENUM_STR(E) #E
+#include "ft_types.h"
 
 namespace zorba {
 
   namespace ft_anyall_mode {
     char const *const string_of[] = {
-      ENUM_STR( any ),
-      ENUM_STR( any_word ),
-      ENUM_STR( all ),
-      ENUM_STR( all_words ),
-      ENUM_STR( phrase )
+      "any",
+      "any_word",
+      "all",
+      "all words",
+      "phrase"
     };
   }
 
   namespace ft_big_unit {
     char const *const string_of[] = {
-      ENUM_STR( sentence ),
-      ENUM_STR( paragraph )
+      "sentence",
+      "paragraph"
     };
   }
 
   namespace ft_case_mode {
     char const *const string_of[] = {
-      ENUM_STR( insensitive ),
-      ENUM_STR( sensitive ),
-      ENUM_STR( lower ),
-      ENUM_STR( upper )
+      "insensitive",
+      "sensitive",
+      "lower",
+      "upper"
     };
   }
 
   namespace ft_content_mode {
     char const *const string_of[] = {
-      ENUM_STR( at_start ),
-      ENUM_STR( at_end ),
-      ENUM_STR( entire )
+      "at start",
+      "at end",
+      "entire"
     };
   };
 
   namespace ft_diacritics_mode {
     char const *const string_of[] = {
-      ENUM_STR( insensitive ),
-      ENUM_STR( sensitive )
+      "insensitive",
+      "sensitive"
     };
   }
 
   namespace ft_range_mode {
     char const *const string_of[] = {
-      ENUM_STR( exactly ),
-      ENUM_STR( at_least ),
-      ENUM_STR( at_most ),
-      ENUM_STR( from_to )
+      "exactly",
+      "at least",
+      "at most",
+      "from to"
     };
   }
 
   namespace ft_scope {
     char const *const string_of[] = {
-      ENUM_STR( same ),
-      ENUM_STR( different )
+      "same",
+      "different"
     };
   }
 
   namespace ft_stem_mode {
     char const *const string_of[] = {
-      ENUM_STR( without ),
-      ENUM_STR( with )
+      "without",
+      "with"
     };
   }
 
   namespace ft_stop_words_mode {
     char const *const string_of[] = {
-      ENUM_STR( without ),
-      ENUM_STR( with ),
-      ENUM_STR( with_default )
+      "without",
+      "with",
+      "with default"
     };
   }
 
   namespace ft_stop_words_unex {
     char const *const string_of[] = {
-      ENUM_STR( union_ ),
-      ENUM_STR( except )
+      "union",
+      "except"
     };
   }
 
+  namespace ft_thesaurus_rel {
+    char const *const string_of[] = {
+      "USE",
+      "UF",
+      "BT",
+      "NT",
+      "BTG",
+      "NTG",
+      "BTP",
+      "NTP",
+      "TT",
+      "RT"
+    };
+  };
+
   namespace ft_unit {
     char const *const string_of[] = {
-      ENUM_STR( words ),
-      ENUM_STR( sentences ),
-      ENUM_STR( paragraphs )
+      "words",
+      "sentences",
+      "paragraphs"
     };
   }
 
   namespace ft_wild_card_mode {
     char const *const string_of[] = {
-      ENUM_STR( no_wildcards ),
-      ENUM_STR( wildcards ),
+      "no wildcards",
+      "wildcards"
     };
   }
 
