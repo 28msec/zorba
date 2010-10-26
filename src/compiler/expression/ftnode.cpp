@@ -392,8 +392,7 @@ ftlanguage_option::ftlanguage_option(
 ) :
   ftmatch_option( loc )
 {
-  zstring const xlang( lang );   // stupid hack
-  if ( !GenericCast::instance()->castableToLanguage( xlang ) )
+  if ( !GenericCast::instance()->castableToLanguage( lang ) )
     ZORBA_ERROR_LOC_PARAM( XPTY0004, loc, lang, "" );
   if ( !(lang_ = locale::find_lang( lang.c_str() )) )
     ZORBA_ERROR_LOC_PARAM( FTST0009, loc, lang, "" );
