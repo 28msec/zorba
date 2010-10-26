@@ -4,7 +4,7 @@ import module namespace util = "http://www.zorba-xquery.com/zorba/util-functions
 
 declare namespace xqdoc = "http://www.xqdoc.org/1.0";
 
-declare function xhtml:doc($xqdoc, $menu, $indexCollector)
+declare function xhtml:doc($xqdoc, $menu, $indexCollector, $schemasCollector)
 {
 <html>
   <head>
@@ -35,7 +35,7 @@ declare function xhtml:doc($xqdoc, $menu, $indexCollector)
     <div id="leftMenu">
     {$menu}
     </div>
-    <div id="rightcontent">{xhtml:body($xqdoc, $indexCollector)}
+    <div id="rightcontent">{xhtml:body($xqdoc, $indexCollector, $schemasCollector)}
     </div>
   </div>
   </body>
@@ -50,13 +50,13 @@ declare function xhtml:header($xqdoc)
     </head>
 };
 
-declare function xhtml:body($xqdoc, $indexCollector)
+declare function xhtml:body($xqdoc, $indexCollector, $schemasCollector)
 {
     <body>
         <h1>{xhtml:module-uri($xqdoc)}</h1>
         {            
             xhtml:module-description($xqdoc/xqdoc:module),
-            xhtml:module-dependencies($xqdoc, $indexCollector),
+            xhtml:module-dependencies($xqdoc, $indexCollector, $schemasCollector),
             xhtml:module-external-specifications($xqdoc/xqdoc:module),
             xhtml:module-variables($xqdoc/xqdoc:variables),
             xhtml:module-function-summary($xqdoc/xqdoc:functions),
@@ -164,16 +164,16 @@ declare function xhtml:description($comment) {
      }</p>
 };
 
-declare function xhtml:module-dependencies($xqdoc, $indexCollector) {
+declare function xhtml:module-dependencies($xqdoc, $indexCollector, $schemasCollector) {
   if (fn:count($xqdoc/xqdoc:imports/xqdoc:import) > 0 or
       fn:count($xqdoc/xqdoc:module/xqdoc:comment/xqdoc:*[(local-name(.) = ("library"))]) > 0) then
     (<div class="section"><span class="section" id="module_dependencies">Module Dependencies</span></div>,
-    xhtml:imports($xqdoc, $indexCollector))
+    xhtml:imports($xqdoc, $indexCollector, $schemasCollector))
   else
     ()
 };
 
-declare function xhtml:imports($xqdoc, $indexCollector) {
+declare function xhtml:imports($xqdoc, $indexCollector, $schemasCollector) {
   (
   if (fn:count($xqdoc/xqdoc:imports/xqdoc:import//xqdoc:uri[@isSchema = "false"]) > 0) then
     <p>Imported modules:<ul>
@@ -183,7 +183,7 @@ declare function xhtml:imports($xqdoc, $indexCollector) {
         if (exists($indexCollector/module[@uri=$import/text()])) then
           <li><a href="{$indexCollector/module[@uri=$import/text()]/@file}">{string($import/text())}</a></li>
         else
-          <li>{string($import/text())}</li>
+          <li>{string($import/text())}</li>          
     }
     </ul></p>
   else (),
@@ -192,7 +192,10 @@ declare function xhtml:imports($xqdoc, $indexCollector) {
     {
       for $import in $xqdoc/xqdoc:imports/xqdoc:import//xqdoc:uri[@isSchema = "true"]
       return
-          <li>{string($import/text())}</li>
+        if (exists($schemasCollector/module[@uri=$import/text()])) then
+          <li><a href="{$schemasCollector/module[@uri=$import/text()]/@file}" target="_blank">{string($import/text())}</a></li>
+        else
+          <li>{string($import/text())}</li>  
     }
     </ul></p>
   else (),

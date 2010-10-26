@@ -7,6 +7,7 @@ import module namespace xqdg = "http://www.zorba-xquery.com/modules/internal/xqd
 
 import schema namespace xqdoc = "http://www.xqdoc.org/1.0";
 
+
 declare copy-namespaces preserve, inherit;
 
 (:~
@@ -134,7 +135,7 @@ declare sequential function doc2html:generateXQDocXhtml(
       let $moduleUri := $moduleDoc/xqdoc:uri
       let $menu := <ul id="documentation"><span class="leftMenu"><strong><a href="index.html">{string($leftMenu/@title)}</a></strong></span></ul> 
       let $menu := doc2html:createModuleTable($leftMenu, $menu, $moduleUri)
-      let $xhtml := xqdg:doc($xqdoc, $menu, $doc2html:indexCollector)
+      let $xhtml := xqdg:doc($xqdoc, $menu, $doc2html:indexCollector, $doc2html:schemasCollector)
       return block {
         file:mkdirs($xhtmlFileDir, false());
 
@@ -151,6 +152,26 @@ FAILED: ", $xhtmlFilePath)
     }
 };
 
+declare sequential function doc2html:gatherSchemas(
+  $modulesPath as xs:string) as xs:string* {
+  
+  for $filedirs in tokenize($modulesPath, ";")
+  for $file in file:files($filedirs, "\.xsd$", fn:true())
+  let $xsdFilePath := concat($modulesPath, file:path-separator(), $file)
+  return
+    try {
+      let $xqdoc := file:read-xml($xsdFilePath)
+      let $xsdUri := $xqdoc/xs:schema/@targetNamespace
+      return block {
+          doc2html:collectModule($xsdUri, $xsdFilePath, $doc2html:schemasCollector);
+          concat("
+  SUCCESS: ", $xsdUri, " (", $xsdFilePath, ")");
+        }
+      } catch * ($error_code) {
+        concat("
+  FAILED: ", $xsdFilePath)
+      }  
+};
 (:~
  : This function gathers the names of the XQDoc XHTML pages for all the XQDoc XML
  : documents found in $xqdocXmlPath. The hierarchy is preserved. 
@@ -168,7 +189,7 @@ declare sequential function doc2html:gatherModules(
       let $moduleDoc := $xqdoc/xqdoc:module
       let $moduleUri := $moduleDoc/xqdoc:uri
       return block {
-        doc2html:collectModule($moduleDoc, $xhtmlRelativeFilePath, $doc2html:indexCollector);
+        doc2html:collectModule($moduleUri/text(), $xhtmlRelativeFilePath, $doc2html:indexCollector);
         concat("
 SUCCESS: ", $moduleUri, " (", $xmlFilePath, ")");
       }
@@ -178,12 +199,8 @@ FAILED: ", $xmlFilePath)
     }  
 };
 
-declare sequential function doc2html:collectModule ($module, $relativeFileName as xs:string, $collector) {
-    let $moduleName := $module/xqdoc:name,
-        $moduleUri := $module/xqdoc:uri
-    return
-        insert node <module uri="{$moduleUri/text()}" file="{$relativeFileName}" /> as last into $collector;
-    ();
+declare sequential function doc2html:collectModule ($moduleUri as xs:string, $relativeFileName as xs:string, $collector) {
+  insert node <module uri="{$moduleUri}" file="{$relativeFileName}" /> as last into $collector;
 };    
 
 declare sequential function doc2html:getFilePath (
@@ -363,6 +380,7 @@ declare sequential function doc2html:main(
 ) {
   declare $xqdocXmlPath   as xs:string := fn:concat($xqdocBuildPath, file:path-separator(), "xml");
   declare $xqdocXhtmlPath as xs:string := fn:concat($xqdocBuildPath, file:path-separator(), "xhtml");
+  declare $xqdocSchemasPath as xs:string := fn:concat($xqdocBuildPath, file:path-separator(), "schemas");
   
   (: generate the XQDoc XML for all the modules :)
   if (file:mkdirs($xqdocXmlPath, false())) then
@@ -382,6 +400,7 @@ declare sequential function doc2html:main(
   (
     doc2html:clearFolder($xqdocXhtmlPath,"xqdoc\.html$"),
     doc2html:gatherModules($xqdocXmlPath),
+    doc2html:gatherSchemas($xqdocSchemasPath),
     doc2html:generateXQDocXhtml($indexHtmlPath, $xqdocXmlPath, $xqdocXhtmlPath, $leftMenu, $modulePath)
   )
   else
