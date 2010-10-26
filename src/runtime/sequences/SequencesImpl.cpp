@@ -32,6 +32,7 @@
 
 #include "compiler/api/compilercb.h"
 
+#include "runtime/sequences/pregenerated/sequences.h"
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/core/arithmetic_impl.h"
 #include "runtime/util/iterator_impl.h"
@@ -58,22 +59,7 @@ namespace zorba {
 SERIALIZABLE_CLASS_VERSIONS(FnMinMaxIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(FnMinMaxIterator)
 
-SERIALIZABLE_CLASS_VERSIONS(FnIdIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(FnIdIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(FnElementWithIdIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(FnElementWithIdIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(FnIdRefIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(FnIdRefIterator)
-
 NARY_ACCEPT(FnMinMaxIterator);
-
-NARY_ACCEPT(FnIdIterator);
-
-NARY_ACCEPT(FnElementWithIdIterator);
-
-NARY_ACCEPT(FnIdRefIterator);
 
 static XQPCollator* getCollator(
     static_context* sctx,
@@ -284,7 +270,6 @@ void FnIdIteratorState::reset(PlanState& planState)
   theDocNode = NULL;
 }
 
-
 bool FnIdIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t  id;
@@ -416,7 +401,6 @@ void FnElementWithIdIteratorState::reset(PlanState& planState)
   theIds.clear();
   theDocNode = NULL;
 }
-
 
 bool FnElementWithIdIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -553,7 +537,6 @@ void FnIdRefIteratorState::reset(PlanState& planState)
   theIds.clear();
   theDocNode = NULL;
 }
-
 
 bool FnIdRefIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {

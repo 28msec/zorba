@@ -1305,6 +1305,156 @@ public:
 };
 
 
+/**
+ * fn:id
+ * Author: Zorba Team
+ */
+class FnIdIteratorState : public DescendantAxisState
+{
+public:
+  bool theIsInitialized; //
+  std::vector<zstring> theIds; //
+  store::Item_t theDocNode; //
+  rchandle<store::AttributesIterator> theAttrsIte; //
+
+  FnIdIteratorState();
+
+  ~FnIdIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class FnIdIterator : public NaryBaseIterator<FnIdIterator, FnIdIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(FnIdIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnIdIterator,
+    NaryBaseIterator<FnIdIterator, FnIdIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnIdIterator, FnIdIteratorState>*)this);
+  }
+
+  FnIdIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<FnIdIterator, FnIdIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~FnIdIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * fn:element-with-id
+ * Author: Zorba Team
+ */
+class FnElementWithIdIteratorState : public DescendantAxisState
+{
+public:
+  bool theIsInitialized; //
+  std::vector<zstring> theIds; //
+  store::Item_t theDocNode; //
+  rchandle<store::AttributesIterator> theAttrsIte; //
+
+  FnElementWithIdIteratorState();
+
+  ~FnElementWithIdIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class FnElementWithIdIterator : public NaryBaseIterator<FnElementWithIdIterator, FnElementWithIdIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(FnElementWithIdIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnElementWithIdIterator,
+    NaryBaseIterator<FnElementWithIdIterator, FnElementWithIdIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnElementWithIdIterator, FnElementWithIdIteratorState>*)this);
+  }
+
+  FnElementWithIdIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<FnElementWithIdIterator, FnElementWithIdIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~FnElementWithIdIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * fn:idref
+ * Author: Zorba Team
+ */
+class FnIdRefIteratorState : public DescendantAxisState
+{
+public:
+  bool theIsInitialized; //
+  std::vector<zstring> theIds; //
+  store::Item_t theDocNode; //
+  rchandle<store::AttributesIterator> theAttrsIte; //
+
+  FnIdRefIteratorState();
+
+  ~FnIdRefIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class FnIdRefIterator : public NaryBaseIterator<FnIdRefIterator, FnIdRefIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(FnIdRefIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnIdRefIterator,
+    NaryBaseIterator<FnIdRefIterator, FnIdRefIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnIdRefIterator, FnIdRefIteratorState>*)this);
+  }
+
+  FnIdRefIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<FnIdRefIterator, FnIdRefIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~FnIdRefIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
 }
 #endif
 /*

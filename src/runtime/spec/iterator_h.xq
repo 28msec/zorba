@@ -16,8 +16,7 @@ declare function local:process-iterator($iter) as xs:string
 {
   (: name of the state or PlanIteratorState if no explicit state is required :)
   let $stateName as xs:string := 
-    if(exists($iter/zorba:state))
-    then
+    if(exists($iter/zorba:state)) then
       concat($iter/@name, 'State')
     else
       'PlanIteratorState'
@@ -42,7 +41,10 @@ declare function local:process-iterator($iter) as xs:string
     (: generate an explicit state if required :)
     if (exists($iter/zorba:state))
     then
-      local:process-state($iter/zorba:state, $stateName)
+      if(exists($iter/zorba:state/@baseClassName)) then
+        local:process-state($iter/zorba:state, $stateName, string($iter/zorba:state/@baseClassName))
+      else
+        local:process-state($iter/zorba:state, $stateName, 'PlanIteratorState')
     else (),
 
     (: generate the iterator declaration :)
@@ -56,9 +58,9 @@ declare function local:process-iterator($iter) as xs:string
   ) (: concat :)
 };
 
-declare function local:process-state($state, $stateName as xs:string) as xs:string
+declare function local:process-state($state, $stateName as xs:string, $baseClassName as xs:string) as xs:string
 {
-  string-join(('class ',$stateName,' : public PlanIteratorState',$gen:newline, '{', $gen:newline,
+  string-join(('class ',$stateName,' : public ',$baseClassName,$gen:newline, '{', $gen:newline,
   if(exists($state//zorba:member)) then 'public:' else (),
   string-join(($gen:newline,for $member in $state//zorba:member return 
   string-join(($gen:indent,string($member/@type),' ',string($member/@name),'; //',string($member/@brief),$gen:newline),''))

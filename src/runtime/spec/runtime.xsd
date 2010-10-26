@@ -141,6 +141,7 @@
         </xs:complexType>
       </xs:element>
     </xs:sequence>
+    <xs:attribute name="baseClassName" type="xs:string" default="PlanIteratorState"/>
     <xs:attribute name="generateInit" type="xs:string" default="true"/>
     <xs:attribute name="generateReset" type="xs:string" default="true"/>
     <xs:attribute name="generateDestructor" type="xs:boolean" default="true"/>

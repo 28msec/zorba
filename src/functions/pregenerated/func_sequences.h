@@ -512,6 +512,84 @@ public:
 };
 
 
+//fn:id
+class fn_id : public function
+{
+public:
+  fn_id(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
+  {
+    theKind = (sig.paramCount() == 1 ?
+                FunctionConsts::FN_ID_1 :
+                FunctionConsts::FN_ID_2);
+  
+  }
+
+  FunctionConsts::AnnotationValue producesDistinctNodes() const 
+  {
+    return FunctionConsts::YES;
+  }
+
+  FunctionConsts::AnnotationValue producesSortedNodes() const 
+  {
+    return FunctionConsts::YES;
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn:element-with-id
+class fn_element_with_id : public function
+{
+public:
+  fn_element_with_id(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
+  {
+    theKind = (sig.paramCount() == 1 ?
+                FunctionConsts::FN_ELEMENT_WITH_ID_1 :
+                FunctionConsts::FN_ELEMENT_WITH_ID_2);
+  
+  }
+
+  FunctionConsts::AnnotationValue producesDistinctNodes() const 
+  {
+    return FunctionConsts::YES;
+  }
+
+  FunctionConsts::AnnotationValue producesSortedNodes() const 
+  {
+    return FunctionConsts::YES;
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn:idref
+class fn_idref : public function
+{
+public:
+  fn_idref(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
+  {
+    theKind = (sig.paramCount() == 1 ?
+                FunctionConsts::FN_IDREF_1 :
+                FunctionConsts::FN_IDREF_2);
+  
+  }
+
+  FunctionConsts::AnnotationValue producesDistinctNodes() const 
+  {
+    return FunctionConsts::YES;
+  }
+
+  FunctionConsts::AnnotationValue producesSortedNodes() const 
+  {
+    return FunctionConsts::YES;
+  }
+
+  CODEGEN_DECL();
+};
+
+
 } //namespace zorba
 
 

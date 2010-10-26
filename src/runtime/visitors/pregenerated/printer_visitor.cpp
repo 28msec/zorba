@@ -2823,6 +2823,48 @@ void PrinterVisitor::endVisit ( const FnParseIterator& ) {
 // </FnParseIterator>
 
 
+// <FnIdIterator>
+void PrinterVisitor::beginVisit ( const FnIdIterator& a) {
+  thePrinter.startBeginVisit("FnIdIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnIdIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnIdIterator>
+
+
+// <FnElementWithIdIterator>
+void PrinterVisitor::beginVisit ( const FnElementWithIdIterator& a) {
+  thePrinter.startBeginVisit("FnElementWithIdIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnElementWithIdIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnElementWithIdIterator>
+
+
+// <FnIdRefIterator>
+void PrinterVisitor::beginVisit ( const FnIdRefIterator& a) {
+  thePrinter.startBeginVisit("FnIdRefIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnIdRefIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnIdRefIterator>
+
+
 // <CodepointsToStringIterator>
 void PrinterVisitor::beginVisit ( const CodepointsToStringIterator& a) {
   thePrinter.startBeginVisit("CodepointsToStringIterator", ++theId);

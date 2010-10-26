@@ -417,6 +417,12 @@ namespace zorba{
 
     class FnParseIterator;
 
+    class FnIdIterator;
+
+    class FnElementWithIdIterator;
+
+    class FnIdRefIterator;
+
     class CodepointsToStringIterator;
 
     class StringToCodepointsIterator;
@@ -1061,6 +1067,15 @@ public:
 
     virtual void beginVisit ( const FnParseIterator& ) = 0;
     virtual void endVisit   ( const FnParseIterator& ) = 0;
+
+    virtual void beginVisit ( const FnIdIterator& ) = 0;
+    virtual void endVisit   ( const FnIdIterator& ) = 0;
+
+    virtual void beginVisit ( const FnElementWithIdIterator& ) = 0;
+    virtual void endVisit   ( const FnElementWithIdIterator& ) = 0;
+
+    virtual void beginVisit ( const FnIdRefIterator& ) = 0;
+    virtual void endVisit   ( const FnIdRefIterator& ) = 0;
 
     virtual void beginVisit ( const CodepointsToStringIterator& ) = 0;
     virtual void endVisit   ( const CodepointsToStringIterator& ) = 0;

@@ -902,4 +902,118 @@
 
 </zorba:iterator>
 
+<!--
+/*******************************************************************************
+  14.5.2 fn:id
+********************************************************************************/
+-->
+<zorba:iterator name="FnIdIterator">
+
+  <zorba:description author="Zorba Team">fn:id</zorba:description>
+
+  <zorba:function>
+
+    <zorba:signature localname="id" prefix="fn">
+      <zorba:param>xs:string*</zorba:param>
+      <zorba:output>element()*</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="id" prefix="fn">
+      <zorba:param>xs:string*</zorba:param>
+      <zorba:param>node()</zorba:param>
+      <zorba:output>element()*</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:producesDistinctNodes returnValue="YES"/>
+      <zorba:producesSortedNodes returnValue="YES"/>
+    </zorba:methods>
+
+  </zorba:function>
+
+  <zorba:state baseClassName="DescendantAxisState" generateInit="false" generateReset="false">
+    <zorba:member type="bool" name="theIsInitialized"/>
+    <zorba:member type="std::vector&lt;zstring&gt;" name="theIds"/>
+    <zorba:member type="store::Item_t" name="theDocNode"/>
+    <zorba:member type="rchandle&lt;store::AttributesIterator&gt;" name="theAttrsIte"/>
+  </zorba:state>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+  14.5.3 fn:element-with-id
+********************************************************************************/
+-->
+<zorba:iterator name="FnElementWithIdIterator">
+
+  <zorba:description author="Zorba Team">fn:element-with-id</zorba:description>
+
+  <zorba:function>
+
+    <zorba:signature localname="element-with-id" prefix="fn">
+      <zorba:param>xs:string*</zorba:param>
+      <zorba:output>element()*</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="element-with-id" prefix="fn">
+      <zorba:param>xs:string*</zorba:param>
+      <zorba:param>node()</zorba:param>
+      <zorba:output>element()*</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:producesDistinctNodes returnValue="YES"/>
+      <zorba:producesSortedNodes returnValue="YES"/>
+    </zorba:methods>
+
+  </zorba:function>
+
+  <zorba:state baseClassName="DescendantAxisState" generateInit="false" generateReset="false">
+    <zorba:member type="bool" name="theIsInitialized"/>
+    <zorba:member type="std::vector&lt;zstring&gt;" name="theIds"/>
+    <zorba:member type="store::Item_t" name="theDocNode"/>
+    <zorba:member type="rchandle&lt;store::AttributesIterator&gt;" name="theAttrsIte"/>
+  </zorba:state>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+  14.5.4 fn:idref
+********************************************************************************/
+-->
+<zorba:iterator name="FnIdRefIterator">
+
+  <zorba:description author="Zorba Team">fn:idref</zorba:description>
+
+  <zorba:function>
+
+    <zorba:signature localname="idref" prefix="fn">
+      <zorba:param>xs:string*</zorba:param>
+      <zorba:output>node()*</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="idref" prefix="fn">
+      <zorba:param>xs:string*</zorba:param>
+      <zorba:param>node()</zorba:param>
+      <zorba:output>node()*</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:producesDistinctNodes returnValue="YES"/>
+      <zorba:producesSortedNodes returnValue="YES"/>
+    </zorba:methods>
+
+  </zorba:function>
+
+  <zorba:state baseClassName="DescendantAxisState" generateInit="false" generateReset="false">
+    <zorba:member type="bool" name="theIsInitialized"/>
+    <zorba:member type="std::vector&lt;zstring&gt;" name="theIds"/>
+    <zorba:member type="store::Item_t" name="theDocNode"/>
+    <zorba:member type="rchandle&lt;store::AttributesIterator&gt;" name="theAttrsIte"/>
+  </zorba:state>
+
+</zorba:iterator>
+
 </zorba:iterators>

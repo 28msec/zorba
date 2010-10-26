@@ -52,12 +52,18 @@ declare function local:process-iterator($iter) as xs:string
       (: generate the state's init and reset functions if requested :)
       if (fn:not($iter/zorba:state/@generateInit) or $iter/zorba:state/@generateInit eq "true")
       then
-        local:generate-init($iter) 
+        if(exists($iter/zorba:state/@baseClassName)) then
+          local:generate-init($iter,string($iter/zorba:state/@baseClassName))
+        else
+          local:generate-init($iter,'PlanIteratorState')
       else (),
 
       if (fn:not($iter/zorba:state/@generateReset) or $iter/zorba:state/@generateReset eq "true")
       then
-        local:generate-reset($iter)
+        if(exists($iter/zorba:state/@baseClassName)) then
+          local:generate-reset($iter,string($iter/zorba:state/@baseClassName))
+        else
+          local:generate-reset($iter,'PlanIteratorState')
       else ()
       )
     else (),
@@ -99,18 +105,18 @@ declare function local:generate-destructor($iter) as xs:string
   fn:concat($iter/@name, "::~", $iter/@name, "() {}", $gen:newline, $gen:newline)
 };
 
-declare function local:generate-reset($iter) as xs:string
+declare function local:generate-reset($iter, $baseClassName as xs:string) as xs:string
 {
   string-join(($gen:newline,'void ',string($iter/@name),'State::reset(PlanState&amp; planState) {',$gen:newline,
-  $gen:indent,'PlanIteratorState::reset(planState);',$gen:newline,
+  $gen:indent,$baseClassName,'::reset(planState);',$gen:newline,
   local:generate-init-values($iter/zorba:state),'}',$gen:newline
   ),'')
 };
 
-declare function local:generate-init($iter) as xs:string
+declare function local:generate-init($iter, $baseClassName as xs:string) as xs:string
 {
   string-join(($gen:newline,'void ',string($iter/@name),'State::init(PlanState&amp; planState) {',$gen:newline,
-  $gen:indent,'PlanIteratorState::init(planState);',$gen:newline,
+  $gen:indent,$baseClassName,'::init(planState);',$gen:newline,
   local:generate-init-values($iter/zorba:state),'}',$gen:newline
   ),'')
 };
