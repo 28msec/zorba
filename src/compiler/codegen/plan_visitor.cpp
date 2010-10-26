@@ -2627,7 +2627,17 @@ void end_visit(elem_expr& v)
   theEnclosedContextStack.pop();
   expr* e = pop_stack(theConstructorsStack);
   ZORBA_ASSERT(e == &v);
-  if (theConstructorsStack.empty() || is_enclosed_expr(theConstructorsStack.top()))
+
+  // Handling of the special case where the QName expression of a direct element constructor
+  // has in itself a direct constructor. In that case the QName expression should have
+  // isRoot set to true.
+  elem_expr* top_elem_expr = NULL;
+  if (!theConstructorsStack.empty())
+    top_elem_expr = dynamic_cast<elem_expr*>(theConstructorsStack.top());
+
+  if (theConstructorsStack.empty() || is_enclosed_expr(theConstructorsStack.top())
+      ||
+      (top_elem_expr != NULL && top_elem_expr->getQNameExpr()->contains_expr(e)))
   {
     isRoot = true;
   }
