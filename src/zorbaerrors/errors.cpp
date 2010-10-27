@@ -151,26 +151,6 @@ void ZorbaError::setQueryLocation(
   theQueryFileName = filename;
 }
 
-void ZorbaError::setQueryLocation(
-    unsigned int line,
-    unsigned int column,
-    const std::string& filename)
-{
-  theQueryLine = line;
-  theQueryColumn = column;
-  theQueryFileName = filename;
-}
-
-void ZorbaError::setQueryLocation(
-    unsigned int line,
-    unsigned int column,
-    const zstring& filename)
-{
-  theQueryLine = line;
-  theQueryColumn = column;
-  theQueryFileName = filename;
-}
-
 
 bool ZorbaError::hasQueryLocation()
 {

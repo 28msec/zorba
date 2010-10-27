@@ -101,15 +101,15 @@ public:
         unsigned int column,
         const char *filename);
 
+  template<class StringType>
   void setQueryLocation(
         unsigned int line,
         unsigned int column,
-        const zstring& filename);
-
-  void setQueryLocation(
-        unsigned int line,
-        unsigned int column,
-        const std::string& filename);
+        const StringType& filename) {
+    theQueryLine = line;
+    theQueryColumn = column;
+    theQueryFileName = filename;
+  }
 
   bool hasQueryLocation();
 
