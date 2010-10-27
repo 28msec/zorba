@@ -60,6 +60,12 @@ String::String( string const &s ) {
   new( THIS_STRING ) string_type( s );
 }
 
+String::String( zstring_ptr p ) {
+  new( THIS_STRING ) string_type(
+    *reinterpret_cast<string_type const*>( p.v )
+  );
+}
+
 String::~String() {
   THIS_STRING->~string_type();
 }
@@ -68,8 +74,13 @@ char const* String::c_str() const {
   return THIS_STRING->c_str();
 }
 
-String const& String::operator=( String const &rhs ) {
-  *THIS_STRING = *STRING_OF( rhs );
+String& String::operator=( String const &s ) {
+  *THIS_STRING = *STRING_OF( s );
+  return *this;
+}
+
+String& String::operator=( zstring_ptr p ) {
+  *THIS_STRING = *reinterpret_cast<string_type const*>( p.v );
   return *this;
 }
 

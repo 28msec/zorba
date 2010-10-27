@@ -482,7 +482,12 @@ ZorbaDebuggerClientImpl::getAllVariables(bool data) const
       std::list<std::pair<xqpString, xqpString> > d = it->second;
       std::list<std::pair<String, String> > data;
       for (std::list<std::pair<xqpString, xqpString> >::iterator iter = d.begin(); iter != d.end(); iter++) {
-        data.push_back(std::pair<String, String>(String(iter->first.getStore()->c_str()), String(iter->second.getStore()->c_str())));
+        data.push_back(
+          std::pair<String,String>(
+            String(iter->first.getStore()->c_str()),
+            String(iter->second.getStore()->c_str())
+          )
+        );
       }
       Variable lVariable(lName, lType, data);
       lVariables.push_back(lVariable);
@@ -508,7 +513,12 @@ ZorbaDebuggerClientImpl::getLocalVariables(bool data) const
       std::list<std::pair<xqpString, xqpString> > d = it->second;
       std::list<std::pair<String, String> > data;
       for (std::list<std::pair<xqpString, xqpString> >::iterator iter = d.begin(); iter != d.end(); iter++) {
-        data.push_back(std::pair<String, String>(String(iter->first.getStore()->c_str()), String(iter->second.getStore()->c_str())));
+        data.push_back(
+          std::pair<String,String>(
+            String(iter->first.getStore()->c_str()),
+            String(iter->second.getStore()->c_str())
+          )
+        );
       }
       Variable lVariable(lName, lType, data);
       lVariables.push_back(lVariable);
@@ -537,7 +547,11 @@ ZorbaDebuggerClientImpl::getGlobalVariables(bool data) const
       std::list<std::pair<xqpString, xqpString> > d = it->second;
       std::list<std::pair<String, String> > data;
       for (std::list<std::pair<xqpString, xqpString> >::iterator iter = d.begin(); iter != d.end(); iter++) {
-        data.push_back(std::pair<String, String>(String(iter->first.getStore()->c_str()), String(iter->second.getStore()->c_str())));
+        data.push_back(
+          std::pair<String,String>(
+            String(iter->first.getStore()->c_str()),
+            String(iter->second.getStore()->c_str()))
+        );
       }
       Variable lVariable(lName, lType, data);
       lVariables.push_back(lVariable);
@@ -582,3 +596,4 @@ ZorbaDebuggerClientImpl::listSource(
 }
 
 } //end of namespace
+/* vim:set et sw=2 ts=2: */

@@ -23,6 +23,8 @@
 
 namespace zorba {
 
+class Unmarshaller;
+
 /** \brief The Zorba String class.
  *
  * The interface of this class is similar to that of std::string. However, it contains Unicode 
@@ -40,14 +42,6 @@ public:
   /** \brief Copy constructor
    */
   String( String const &s );
-
-#if 0
-  /** \brief Constructor that is used to construct Items in the Zorba engine itself.
-   *
-   * This constructor is for internal use only.
-   */
-  String(xqpStringStore* aString);
-#endif
 
   /** \brief Constructor to construct a String from a const char*.
    *
@@ -67,17 +61,8 @@ public:
 
   /** \brief Assignment operator
    */
-  const String& 
-  operator =(const String& other);
-
-#if 0
-  /** \brief Assingment operator that is used in the Zorba engine itself.
-   *
-   * This operator is for internal use only.
-   */
-  const String&
-  operator =(xqpStringStore *other);
-#endif
+  String& 
+  operator=(const String& other);
 
   /** \brief Returns a non-modifiable standard C character array version of the string.
    *
@@ -335,8 +320,16 @@ public:
   std::ostream& operator<<( std::ostream& os, String const& );
 
 private:
-  typedef struct { void *p; } string_storage_type;
+
+  // Using a struct guarantees correct struct/class alignment.
+  struct string_storage_type { void *v; };
   string_storage_type string_storage_;
+
+  // Using a struct prevents void* ambiguity with char*.
+  struct zstring_ptr { void const *v; };
+
+  String( zstring_ptr );
+  String& operator=( zstring_ptr );
 
   static void size_check();
 

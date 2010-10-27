@@ -17,6 +17,8 @@
 #define ZORBA_UNMARSHALLER_H
 
 #include <zorba/api_shared_types.h>
+#include <zorba/zorbastring.h>
+
 #include "store/api/iterator.h"
 #include "common/shared_types.h"
 #include "zorbatypes/zstring.h"
@@ -30,6 +32,11 @@ public:
 
   static zstring& getInternalString(const String& aString);
 
+  static String newString( zstring const &s ) {
+    String::zstring_ptr const p = { &s };
+    return String( p );
+  }
+
   static static_context* getInternalStaticContext(const StaticContext_t& aContext);
 
   static dynamic_context* getInternalDynamicContext(DynamicContext* aContext);
@@ -39,7 +46,7 @@ public:
   static store::Collection_t getInternalCollection(const Collection_t& aCollection);
 };
 
-}
+} // namespace
 
 #endif /* ZORBA_UNMARSHALLER_H */
 
@@ -48,3 +55,4 @@ public:
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */

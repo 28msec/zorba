@@ -1117,7 +1117,7 @@ StaticContextImpl::getOption(const Item& aQName, String& aOptionValue) const
     xqpStringStore_t lOption;
     if (theCtx->lookup_option(lQName, lOption))
     {
-      aOptionValue = String(lOption->str());
+      aOptionValue = lOption->str();
       return true;
     }
     else

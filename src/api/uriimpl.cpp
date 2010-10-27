@@ -13,7 +13,7 @@ String URIHelper::decodeFileURI(const String& uri)
   zstring lURI = Unmarshaller::getInternalString(uri);
   zstring lFileURI;
   URI::decode_file_URI(lURI, lFileURI);
-  return String(lFileURI.str());
+  return Unmarshaller::newString(lFileURI);
 }
 
 String URIHelper::encodeFileURI(const String &fileUri)
@@ -21,7 +21,7 @@ String URIHelper::encodeFileURI(const String &fileUri)
   zstring lFileUri = Unmarshaller::getInternalString(fileUri);
   zstring lUri;
   URI::encode_file_URI(lFileUri, lUri);
-  return String(lUri.str());
+  return Unmarshaller::newString(lUri);
 }
 
 } //namespace zorba

@@ -16,6 +16,7 @@
 
 #include <sstream>
 
+#include "api/unmarshaller.h"
 #include "debugger/query_locationimpl.h"
 
 using namespace std;
@@ -26,7 +27,7 @@ QueryLocationImpl::QueryLocationImpl( const QueryLoc & aLocation ): theLocation(
 
 String QueryLocationImpl::getFileName() const
 {
-  return String( theLocation.getFilename().c_str() );
+  return Unmarshaller::newString( theLocation.getFilename() );
 }
 
 unsigned int QueryLocationImpl::getLineBegin() const

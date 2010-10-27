@@ -87,7 +87,6 @@ zstring& Unmarshaller::getInternalString(const String& aString)
   return *THE_STRING( aString );
 }
 
-
 static_context* Unmarshaller::getInternalStaticContext(const StaticContext_t& aCtx)
 {
   return static_cast<StaticContextImpl*>(aCtx.get())->theCtx;

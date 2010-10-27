@@ -210,7 +210,7 @@ void XQueryImpl::setFileName(const String& aFileName)
 ********************************************************************************/
 String XQueryImpl::getFileName()
 {
-  return String(theFileName.c_str());
+  return Unmarshaller::newString(theFileName);
 }
 
 
