@@ -157,16 +157,25 @@ div#sitecontainer {
 div#main{
     padding: 5px;
 }
+
 div#centeredcontent{
     padding: 10px 20px;
     margin-left: 200px;
     margin-right: 200px;
 }
+
+div#allignright{
+    text-align:right;
+    padding: 0px;
+    margin: 0px;
+}
+
 div#searchbox {
   text-align: right;
   padding:5px 20px;
   z-index: 500;
 }
+
 div#rightcontent{
     border-left: 1px solid #808080;
     left:300px;
@@ -174,19 +183,40 @@ div#rightcontent{
     position:absolute;
     z-index: 490;
 }
-div#leftcontent{
-    padding: 10px 20px;
-    margin-right: 270px; /* width of the right menu plus padding */
+
+div.section {
+    background-color: #B93333;
+    color: #FFFFFF;
+    margin-top: 24px;
+    margin-bottom: 12px;
+    padding-left: 10px;
+    font-size: 16pt;
+    font-weight: bold;
+}
+
+div.subsection {
+    font-size: 13pt;
+    font-weight: bold;
+    margin-top: 6px;
+}
+
+div.subsubsection {
+    font-size: 11pt;
+    margin-bottom: 6px;
+    margin-top: 6px;
+    font-weight: bold;
 }
 
 pre {
     margin-bottom: 0;
 }
+
 pre.signature {
     border: 1px solid #CCCCCC;
     background-color: #f5f5f5;
     padding: 10px;
 }
+
 pre.fragment {
     border: 1px solid #CCCCCC;
     background-color: #f5f5f5;
@@ -199,26 +229,4 @@ pre.fragment {
     padding-top: 4px;
     padding-bottom: 4px;
 font-size: 100%;
-}
-
-div.section {
-    background-color: /*#AF0A1B*/#B93333;
-    color: #FFFFFF;
-    margin-top: 24px;
-    margin-bottom: 12px;
-    padding-left: 10px;
-    font-size: 16pt;
-    font-weight: bold;
-}
-div.subsection {
-    font-size: 13pt;
-    font-weight: bold;
-    margin-top: 6px;
-}
-
-div.subsubsection {
-    font-size: 11pt;
-    margin-bottom: 6px;
-    margin-top: 6px;
-    font-weight: bold;
 }

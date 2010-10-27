@@ -318,6 +318,7 @@ declare function xhtml:module-functions($functions) {
             xhtml:return($comment),
             xhtml:errors($comment),
             xhtml:annotations($comment),
+            <div id="allignright"><a href="#function_summary" title="Back to 'Function Summary'">'Function Summary'</a></div>,  
             <hr />)                
          )
     else ()
