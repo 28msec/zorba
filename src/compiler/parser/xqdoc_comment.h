@@ -35,6 +35,7 @@ namespace zorba {
     TYPE_SEE,
     TYPE_SINCE,
     TYPE_LIBRARY,
+    TYPE_EXAMPLE,
     TYPE_UNKNOWN
   };
 

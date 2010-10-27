@@ -107,8 +107,40 @@ declare function xhtml:errors($comment) {
         ) else ()
 };
 
+declare function xhtml:annotations-see($comment) {
+  let $see := $comment/xqdoc:*[local-name(.) = ("see")]
+  return
+    if (count($see) = 0) then ()
+    else
+(: **********************************************************     :)
+(: this hack should be replaced with links everywhere in text     :)
+(: replace the @see nodes that start with http:// with HTML a tag :)
+    (<div class="subsubsection">See:</div>,<ul>
+    {for $annotation in $see
+    return
+      if(fn:count($annotation/node()) eq 1 
+         and fn:starts-with(fn:lower-case($annotation/node()), "http://")) then
+        <li class="none">{<a href="{$annotation/node()}" target="_blank">{$annotation/node()}</a>}</li>
+    else
+        <li class="none">{$annotation/node()}</li>}</ul>
+    )
+(: **********************************************************     :)
+};
+
+declare function xhtml:annotations-example($comment) {
+  let $example := $comment/xqdoc:*[local-name(.) = ("example")]
+  return
+    if (count($example) = 0) then ()
+    else
+    (<div class="subsubsection">Examples:</div>,<ul>
+    {for $annotation in $example
+    return
+        <li class="none">{$annotation/node()}</li>}</ul>
+    )
+};
+
 declare function xhtml:annotations($comment) {
-  let $annotations := $comment/xqdoc:*[not((local-name(.) = ("description", "param", "return", "error", "deprecated")))]
+  let $annotations := $comment/xqdoc:*[not((local-name(.) = ("description", "param", "return", "error", "deprecated", "see", "example")))]
   return
     for $annotation in $annotations
     let $annName := local-name($annotation)
@@ -117,17 +149,7 @@ declare function xhtml:annotations($comment) {
       <div class="subsubsection">{
         concat(upper-case(substring($annName, 1, 1)), substring($annName, 2), ":")
       }</div>,    
-(: **********************************************************     :)
-(: this hack should be replaced with links everywhere in text     :)
-(: replace the @see nodes that start with http:// with HTML a tag :)
-      if(($annName = "see") 
-          and fn:count($annotation/node()) eq 1 
-          and fn:starts-with(fn:lower-case($annotation/node()), "http://") 
-         ) then
-        <p class="annotationText">{<a href="{$annotation/node()}" target="_blank">{$annotation/node()}</a>}</p>
-(: **********************************************************     :)
-    else
-        <p class="annotationText">{$annotation/node()}</p>
+      <p class="annotationText">{$annotation/node()}</p>
     )
 };
 
@@ -318,6 +340,8 @@ declare function xhtml:module-functions($functions) {
             xhtml:return($comment),
             xhtml:errors($comment),
             xhtml:annotations($comment),
+            xhtml:annotations-see($comment),
+            xhtml:annotations-example($comment),
             <div id="allignright"><a href="#function_summary" title="Back to 'Function Summary'">'Function Summary'</a></div>,  
             <hr />)                
          )

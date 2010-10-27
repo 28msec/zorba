@@ -42,6 +42,8 @@ XQDocType XQDocAnnotation::map_type( zstring const &name ) {
     return TYPE_SINCE;
   if (name == "library")
     return TYPE_LIBRARY;
+  if (name == "example")
+    return TYPE_LIBRARY;
   return TYPE_UNKNOWN;
 }
 
@@ -130,8 +132,9 @@ XQDocComment::parseAnnotation(const zstring& aLine)
   } else if("deprecated" == lName) {
     theDeprecated = true;
     theDeprecatedComment = lValue;
-  } else if("author" == lName || "since" == lName ||
-      "see" == lName || "param" == lName || "error" == lName || "library" == lName) {
+  } else if("author" == lName || "since" == lName || "see" == lName
+            || "param" == lName || "error" == lName || "library" == lName
+            || "example" == lName) {
     XQDocAnnotation lAnnotation(lName, lValue);
     theAnnotations.push_back(lAnnotation);
   }

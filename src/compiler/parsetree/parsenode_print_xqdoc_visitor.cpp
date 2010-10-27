@@ -72,6 +72,7 @@ void print_comment(store::Item_t& result, const XQDocComment* aComment)
     list<XQDocAnnotation> lSeeAnn;
     list<XQDocAnnotation> lSinceAnn;
     list<XQDocAnnotation> lLibraryAnn;
+    list<XQDocAnnotation> lExampleAnn;
 
     for (lIt = lAnnotations.begin(); lIt != lAnnotations.end(); ++lIt) {
       const XQDocAnnotation lAnnotation = *lIt;
@@ -87,6 +88,8 @@ void print_comment(store::Item_t& result, const XQDocComment* aComment)
         lSinceAnn.push_back(lAnnotation);
       } else if (lAnnotation.getName() == "library") {
         lLibraryAnn.push_back(lAnnotation);
+      } else if (lAnnotation.getName() == "example") {
+        lExampleAnn.push_back(lAnnotation);
       }
     }
 
@@ -153,6 +156,12 @@ void print_comment(store::Item_t& result, const XQDocComment* aComment)
     for (lIt = lLibraryAnn.begin(); lIt != lLibraryAnn.end(); ++lIt) {
       const XQDocAnnotation lAnnotation = *lIt;
       printCommentFragment(lCommentElem, lAnnotation.getValue().str(), "library");
+    }
+
+    // example
+    for (lIt = lExampleAnn.begin(); lIt != lExampleAnn.end(); ++lIt) {
+      const XQDocAnnotation lAnnotation = *lIt;
+      printCommentFragment(lCommentElem, lAnnotation.getValue().str(), "example");
     }
   }
 }

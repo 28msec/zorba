@@ -40,6 +40,12 @@ FOREACH (XSD_SCHEMA ${XSD_SCHEMAS})
                  ${CMAKE_CURRENT_BINARY_DIR}/schemas COPYONLY)
 ENDFOREACH(XSD_SCHEMA)
 
+#create the ${CMAKE_CURRENT_BINARY_DIR}/examples folder
+IF (NOT EXISTS "${CMAKE_CURRENT_BINARY_DIR}/examples")
+  FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/examples)
+  MESSAGE(STATUS "created directory ${CMAKE_CURRENT_BINARY_DIR}/examples")
+ENDIF (NOT EXISTS "${CMAKE_CURRENT_BINARY_DIR}/examples")
+
 # use the index.html template for the documentation
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/templates/index.html.in
                ${CMAKE_CURRENT_BINARY_DIR}/templates/index.html)

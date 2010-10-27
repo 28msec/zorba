@@ -329,10 +329,15 @@ declare function http:read(
  :
  : @see documentation of <a href="#read-3">read</a>
  :      with three parameters.
+ : @see documentation of <a href="#read-1">read</a>
+ :      with one parameter.
  :
  : @param $request see parameter $request of <a href="#read-3">read</a> with three parameters
  : @param $href see parameter $href of <a href="#read-3">read</a> with three parameters
  : @return see return of <a href="#read-3">read</a> with three parameters
+ : @example http1-read.xq
+ : @example http1.xq
+ : @example http2-read-base64.xq
  :)
 declare function http:read(
   $request as element(https:request)?,
