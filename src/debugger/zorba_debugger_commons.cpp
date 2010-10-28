@@ -288,17 +288,10 @@ ZorbaDebuggerCommons::eval(const zstring& aExpr,
   zstring lStore = aExpr;
   GlobalEnvironment::getInstance().getItemFactory()->createString(theEvalItem,
                                                                   lStore);
-  std::list<std::pair<xqpString, xqpString> > temp =
+  std::list<std::pair<zstring, zstring> > lRes =
     theCurrentIterator->eval(thePlanState, &aSerOpts);
 
   theExecEval = false;
-
-  std::list<std::pair<zstring, zstring> > lRes;
-  for ( std::list<std::pair<xqpString, xqpString> >::const_iterator
-        i = temp.begin(); i != temp.end(); ++i ) {
-    lRes.push_back( std::make_pair( i->first.c_str(), i->second.c_str() ) );
-  }
-
   return lRes;
 }
 

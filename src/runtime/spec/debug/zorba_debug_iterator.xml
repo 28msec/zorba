@@ -37,7 +37,7 @@
     <zorba:method return="const ZorbaDebugIterator*" name="getOverIterator" const="true"/>
     <zorba:method return="QueryLoc" name="getQueryLocation" const="true"/>
 
-    <zorba:method return="std::list&lt;std::pair&lt;xqpString, xqpString&gt; &gt;"
+    <zorba:method return="std::list&lt;std::pair&lt;zstring, zstring&gt; &gt;"
                   name="eval" const="true">
       <zorba:param type="PlanState*" name="aState"/>
       <zorba:param type="Zorba_SerializerOptions*" name="aSerOptions"/>

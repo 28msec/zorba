@@ -147,13 +147,13 @@ const ZorbaDebugIterator* ZorbaDebugIterator::getOverIterator() const
 }
 
 
-std::list<std::pair<xqpString, xqpString> >
+std::list<std::pair<zstring, zstring> >
     ZorbaDebugIterator::eval(
     PlanState*                aPlanState,
     Zorba_SerializerOptions*  aSerOptions) const
 {
   theChildren[1]->reset(*aPlanState);
-  std::list<std::pair<xqpString, xqpString> > lResult;
+  std::list<std::pair<zstring, zstring> > lResult;
   store::Item_t lRes;
   serializer ser(NULL);
   SerializerImpl::setSerializationParameters(ser, *aSerOptions);
@@ -168,8 +168,8 @@ std::list<std::pair<xqpString, xqpString> >
     ser.serialize(&lWrapper, lResStream);
 
     // build the result pair and append it to the list
-    xqpString lTypeStr(lRes->getType()->getStringValue().str());
-    std::pair<xqpString, xqpString> lPair(lResStream.str(), lTypeStr);
+    zstring lTypeStr(lRes->getType()->getStringValue().str());
+    std::pair<zstring, zstring> lPair(lResStream.str(), lTypeStr);
     lResult.push_back(lPair);
   }
   return lResult;

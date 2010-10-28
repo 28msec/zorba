@@ -107,7 +107,7 @@ public:
   const ZorbaDebugIterator* getParent() const;
   const ZorbaDebugIterator* getOverIterator() const;
   QueryLoc getQueryLocation() const;
-  std::list<std::pair<xqpString, xqpString> > eval(PlanState* aState, Zorba_SerializerOptions* aSerOptions) const;
+  std::list<std::pair<zstring, zstring> > eval(PlanState* aState, Zorba_SerializerOptions* aSerOptions) const;
   void checkBreak(PlanState* aState) const;
   void setParent(ZorbaDebugIterator* aParent);
   void addChild(ZorbaDebugIterator* aChild);
