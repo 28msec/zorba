@@ -2283,12 +2283,13 @@ code_point to_upper( code_point c ) {
 
 bool normalize( string const &in, normalization::type n, string *out ) {
   UErrorCode status = U_ZERO_ERROR;
-  UNormalizationMode icu_mode = UNORM_NONE; // init here to suppress warning
+  UNormalizationMode icu_mode;
   switch ( n ) {
     case normalization::NFC : icu_mode = UNORM_NFC ; break;
     case normalization::NFD : icu_mode = UNORM_NFD ; break;
     case normalization::NFKC: icu_mode = UNORM_NFKC; break;
     case normalization::NFKD: icu_mode = UNORM_NFKD; break;
+    default                 : icu_mode = UNORM_NONE; break;
   }
   Normalizer::normalize( in, icu_mode, 0, *out, status );
   return U_SUCCESS( status );
