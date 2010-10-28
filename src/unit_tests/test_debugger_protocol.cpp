@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include <string>
 
 #include <zorba/unit_tests.h>
 
 #include "debugger/message_factory.h"
-
+#include "util/stl_util.h"
 
 namespace zorba
 {
@@ -102,7 +103,7 @@ bool TestDebuggerSerialization::testReplyMessage()
   if(!lResult) return false;
   const char * lBinary = "\0\0\0\xb\0\0\0\1\200\0\xb";
   Length length;
-  ZorbaArrayAutoPointer<Byte> lBmsg(msg.serialize(length));
+  auto_vec<Byte> lBmsg(msg.serialize(length));
   return msgcmp( lBmsg.get(), lBinary, length );
 }
 
@@ -116,7 +117,7 @@ bool TestDebuggerSerialization::testReplyMessageOk()
   test_packet<ReplyMessage>( &msg );
   const char * lBinary = "\0\0\0\xb\0\0\0\1\200\0\0";
   Length length;
-  ZorbaArrayAutoPointer<Byte> lBmsg(msg.serialize(length));
+  auto_vec<Byte> lBmsg(msg.serialize(length));
   return msgcmp( lBmsg.get(), lBinary, length );
 }
 
@@ -129,7 +130,7 @@ bool TestDebuggerSerialization::testRunMessage()
   if(!lResult) return false;
   const char * lBinary =  "\0\0\0\xb\0\0\0\1\0\xf1\1";
   Length length;
-  ZorbaArrayAutoPointer<Byte> lBmsg(msg.serialize(length));
+  auto_vec<Byte> lBmsg(msg.serialize(length));
   return msgcmp( lBmsg.get(), lBinary, length );
 }
 
@@ -142,7 +143,7 @@ bool TestDebuggerSerialization::testSuspendMessage()
   if(!lResult) return false;
   const char * lBinary =  "\0\0\0\xb\0\0\0\2\0\xf1\2"; 
   Length length;
-  ZorbaArrayAutoPointer<Byte> lBmsg(msg.serialize(length));
+  auto_vec<Byte> lBmsg(msg.serialize(length));
   return msgcmp( lBmsg.get(), lBinary, length );
 }
 
@@ -155,7 +156,7 @@ bool TestDebuggerSerialization::testResumeMessage()
   if(!lResult) return false;
   const char * lBinary =  "\0\0\0\xb\0\0\0\3\0\xf1\3"; 
   Length length;
-  ZorbaArrayAutoPointer<Byte> lBmsg(msg.serialize(length));
+  auto_vec<Byte> lBmsg(msg.serialize(length));
   return msgcmp( lBmsg.get(), lBinary, length );
 }
 
@@ -168,11 +169,11 @@ bool TestDebuggerSerialization::testTerminateMessage()
   if(!lResult) return false;
   const char * lBinary =  "\0\0\0\xb\0\0\0\4\0\xf1\4"; 
   Length length;
-  ZorbaArrayAutoPointer<Byte> lBmsg(msg.serialize(length));
+  auto_vec<Byte> lBmsg(msg.serialize(length));
   return msgcmp(lBmsg.get(), lBinary, length);
 }
   
-	
+  
 bool TestDebuggerSerialization::testStepIntoMessage()
 {
   std::cerr << "Test step into message" << std::endl;
@@ -181,11 +182,11 @@ bool TestDebuggerSerialization::testStepIntoMessage()
   if (!lResult) return false;
   const char* lBinary =  "\0\0\0\x19\0\0\0\5\0\xf1\5{\"stepType\":1}"; 
   Length length;
-  ZorbaArrayAutoPointer<Byte> lBmsg(msg.serialize(length));
+  auto_vec<Byte> lBmsg(msg.serialize(length));
   return msgcmp( lBmsg.get(), lBinary, length );
 }
 
-	
+  
 bool TestDebuggerSerialization::testStepOutMessage()
 {
   std::cerr << "Test step out message" << std::endl;
@@ -194,11 +195,11 @@ bool TestDebuggerSerialization::testStepOutMessage()
   if (!lResult) return false;
   const char* lBinary =  "\0\0\0\x19\0\0\0\6\0\xf1\5{\"stepType\":2}";
   Length length;
-  ZorbaArrayAutoPointer<Byte> lBmsg(msg.serialize(length));
+  auto_vec<Byte> lBmsg(msg.serialize(length));
   return msgcmp( lBmsg.get(), lBinary, length );
 }
 
-	
+  
 bool TestDebuggerSerialization::testStepOverMessage()
 {
   std::cerr << "Test step over message" << std::endl;
@@ -207,11 +208,11 @@ bool TestDebuggerSerialization::testStepOverMessage()
   if (!lResult) return false;
   const char* lBinary =  "\0\0\0\x19\0\0\0\7\0\xf1\5{\"stepType\":3}";
   Length length;
-  ZorbaArrayAutoPointer<Byte> lBmsg(msg.serialize( length ));
+  auto_vec<Byte> lBmsg(msg.serialize( length ));
   return msgcmp( lBmsg.get(), lBinary, length );
 }
   
-	
+  
 bool TestDebuggerSerialization::testStartedEvent()
 {
   std::cerr << "Test started event message" << std::endl;
@@ -220,11 +221,11 @@ bool TestDebuggerSerialization::testStartedEvent()
   if(!lResult) return false;
   const char * lBinary = "\0\0\0\xb\0\0\0\x8\0\xf8\1";
   Length length;
-  ZorbaArrayAutoPointer<Byte> lBmsg(msg.serialize(length));
+  auto_vec<Byte> lBmsg(msg.serialize(length));
   return msgcmp( lBmsg.get(), lBinary, length );
 }
 
-	
+  
 bool TestDebuggerSerialization::testTerminatedEvent()
 {
   std::cerr << "Test terminated event message" << std::endl;
@@ -233,11 +234,11 @@ bool TestDebuggerSerialization::testTerminatedEvent()
   if(!lResult) return false;
   const char * lBinary = "\0\0\0\xb\0\0\0\x9\0\xf8\2";
   Length length;
-  ZorbaArrayAutoPointer<Byte> lBmsg(msg.serialize(length));
+  auto_vec<Byte> lBmsg(msg.serialize(length));
   return msgcmp( lBmsg.get(), lBinary, length );
 }
 
-	
+  
 bool TestDebuggerSerialization::testSuspendedEvent()
 {
   std::cerr << "Test suspended event message" << std::endl;
@@ -254,15 +255,15 @@ bool TestDebuggerSerialization::testSuspendedEvent()
   if(!lResult) return false;
 
   Length length;
-  ZorbaArrayAutoPointer<Byte> lBmsg(msg.serialize(length));
-  ZorbaArrayAutoPointer<char> lBinary(new char[length]);
+  auto_vec<Byte> lBmsg(msg.serialize(length));
+  auto_vec<char> lBinary(new char[length]);
   memcpy( lBinary.get(), "\0\0\0\x070\0\0\0\xa\0\xf8\3", MESSAGE_HEADER_SIZE );
   const char * lJSONString = "{\"cause\":1,\"location\":{\"fileName\":\"data.xq\",\"lineBegin\":1,\"columnBegin\":1,\"lineEnd\":1,\"columnEnd\":1}}";
   memcpy( lBinary.get() + MESSAGE_HEADER_SIZE, lJSONString, length - MESSAGE_HEADER_SIZE );
   return  msgcmp( lBmsg.get(), lBinary.get(), length );
 }
 
-	
+  
 bool TestDebuggerSerialization::testResumedEvent()
 {
   std::cerr << "Test resumed event message" << std::endl;
@@ -271,11 +272,11 @@ bool TestDebuggerSerialization::testResumedEvent()
   if(!lResult) return false;
   const char * lBinary = "\0\0\0\xb\0\0\0\xb\0\xf8\4";
   Length length;
-  ZorbaArrayAutoPointer<Byte> lBmsg(msg.serialize(length));
+  auto_vec<Byte> lBmsg(msg.serialize(length));
   return msgcmp( lBmsg.get(), lBinary, length );
 }
 
-	
+  
 bool TestDebuggerSerialization::testClearMessage()
 {
   std::cerr << "Test clear message" << std::endl;
@@ -289,7 +290,7 @@ bool TestDebuggerSerialization::testClearMessage()
   return true;
 }
 
-	
+  
 bool TestDebuggerSerialization::testSetMessage()
 {
   std::cerr << "Test set message" << std::endl;
@@ -308,7 +309,7 @@ bool TestDebuggerSerialization::testSetMessage()
   return true;
 }
   
-	
+  
 bool TestDebuggerSerialization::testEvalMessage()
 {
   std::cerr << "Test eval message" << std::endl;
@@ -367,45 +368,45 @@ bool TestDebuggerSerialization::testVariableMessage()
 
 int UnitTester::runDebuggerProtocolTest()
 {
-	bool lResult;
-	zorba::TestDebuggerSerialization * test = new zorba::TestDebuggerSerialization();
-	lResult = test->testReplyMessage();
-	if(!lResult) return 1;
-	lResult = test->testReplyMessageOk();
-	if(!lResult) return 1;
-	lResult = test->testRunMessage();
-	if(!lResult) return 1;
-	lResult = test->testSuspendMessage();
-	if(!lResult) return 1;
-	lResult = test->testResumeMessage();
-	if(!lResult) return 1;
-	lResult = test->testTerminateMessage();
-	if(!lResult) return 1;
-	lResult = test->testStepIntoMessage();
-	if(!lResult) return 1;
-	lResult = test->testStepOutMessage();
-	if(!lResult) return 1;
-	lResult = test->testStepOverMessage();
-	if(!lResult) return 1;
-	lResult = test->testStartedEvent();
-	if(!lResult) return 1;
-	lResult = test->testTerminatedEvent();
-	if(!lResult) return 1;
-	lResult = test->testSuspendedEvent();
-	if(!lResult) return 1;
-	lResult = test->testResumedEvent();
-	if(!lResult) return 1;
-	lResult = test->testClearMessage();
-	if(!lResult) return 1;
-	lResult = test->testSetMessage();
-	if(!lResult) return 1;
-	lResult = test->testEvalMessage();
-	if(!lResult) return 1;
-	lResult = test->testVariableMessage();
-	if(!lResult) return 1;
-	delete test;
-	return 0;
+  bool lResult;
+  zorba::TestDebuggerSerialization * test = new zorba::TestDebuggerSerialization();
+  lResult = test->testReplyMessage();
+  if(!lResult) return 1;
+  lResult = test->testReplyMessageOk();
+  if(!lResult) return 1;
+  lResult = test->testRunMessage();
+  if(!lResult) return 1;
+  lResult = test->testSuspendMessage();
+  if(!lResult) return 1;
+  lResult = test->testResumeMessage();
+  if(!lResult) return 1;
+  lResult = test->testTerminateMessage();
+  if(!lResult) return 1;
+  lResult = test->testStepIntoMessage();
+  if(!lResult) return 1;
+  lResult = test->testStepOutMessage();
+  if(!lResult) return 1;
+  lResult = test->testStepOverMessage();
+  if(!lResult) return 1;
+  lResult = test->testStartedEvent();
+  if(!lResult) return 1;
+  lResult = test->testTerminatedEvent();
+  if(!lResult) return 1;
+  lResult = test->testSuspendedEvent();
+  if(!lResult) return 1;
+  lResult = test->testResumedEvent();
+  if(!lResult) return 1;
+  lResult = test->testClearMessage();
+  if(!lResult) return 1;
+  lResult = test->testSetMessage();
+  if(!lResult) return 1;
+  lResult = test->testEvalMessage();
+  if(!lResult) return 1;
+  lResult = test->testVariableMessage();
+  if(!lResult) return 1;
+  delete test;
+  return 0;
 }
 
-
-}
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

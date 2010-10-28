@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "debugger_communication.h"
 #include "synchronous_logger.h"
 #include "utils.h"
 #include "message_factory.h"
+#include "util/stl_util.h"
 
 #include <zorbaerrors/Assert.h>
 #include <memory>
@@ -57,7 +59,7 @@ m_commandSocket(0), m_eventSocket(0)
 
 void zorba::DebuggerCommunicator::handshake()
 {
-	ZorbaArrayAutoPointer<Byte> msg(new Byte[11]);
+	auto_vec<Byte> msg(new Byte[11]);
 	try
 	{
 		m_commandSocket->recv( msg.get(), 11 );
@@ -70,7 +72,7 @@ void zorba::DebuggerCommunicator::handshake()
 
 zorba::AbstractCommandMessage* zorba::DebuggerCommunicator::handleTCPClient()
 {
-  ZorbaArrayAutoPointer<Byte> lByteMessage;
+  auto_vec<Byte> lByteMessage;
   std::auto_ptr<AbstractMessage> lMessage;
   try
   {
@@ -101,7 +103,7 @@ zorba::AbstractCommandMessage* zorba::DebuggerCommunicator::handleTCPClient()
 void zorba::DebuggerCommunicator::sendEvent( AbstractCommandMessage* aMessage )
 {
 	Length length;
-	ZorbaArrayAutoPointer<Byte> lMessage(aMessage->serialize(length));
+	auto_vec<Byte> lMessage(aMessage->serialize(length));
 	try
 	{
 #ifndef NDEBUG
@@ -143,7 +145,7 @@ zorba::DebuggerCommunicator::~DebuggerCommunicator()
 void zorba::DebuggerCommunicator::sendReplyMessage( AbstractCommandMessage* aMessage )
 {
 	Length length;
-	ZorbaArrayAutoPointer<Byte> lByteMessage;
+	auto_vec<Byte> lByteMessage;
 	std::auto_ptr<ReplyMessage> lReply(aMessage->getReplyMessage());
 	lByteMessage.reset(lReply->serialize( length ));
 	m_commandSocket->send( lByteMessage.get(), length );

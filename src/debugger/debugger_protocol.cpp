@@ -15,6 +15,7 @@
  */
 
 #include "debugger/debugger_protocol.h"
+#include "util/stl_util.h"
 
 #include <iomanip>
 #include <list>
@@ -200,7 +201,7 @@ ReplyMessage::ReplyMessage( Byte * aMessage, const unsigned int aLength ):  Abst
   memcpy( theReplyContent, lmsg, SIZE_OF_REPLY_CONTENT );
   if ( aLength - MESSAGE_HEADER_SIZE > 0 )
   {
-    ZorbaArrayAutoPointer<char> lData(new char[ aLength - MESSAGE_HEADER_SIZE + 1 ]);
+    auto_vec<char> lData(new char[ aLength - MESSAGE_HEADER_SIZE + 1 ]);
     memset(lData.get(), '\0', aLength - MESSAGE_HEADER_SIZE + 1);
     memcpy(lData.get(), aMessage + MESSAGE_HEADER_SIZE, aLength - MESSAGE_HEADER_SIZE );
     theData = xqpString(lData.get());
@@ -419,7 +420,7 @@ StepMessage::~StepMessage(){}
 
 Byte* StepMessage::serialize(Length& aLength) const
 {
-  ZorbaArrayAutoPointer<Byte> lHeader(AbstractCommandMessage::serialize(aLength));
+  auto_vec<Byte> lHeader(AbstractCommandMessage::serialize(aLength));
   std::string lJSONString = getData();
   Byte* lMsg = new Byte[getLength() + 1];
   memset(lMsg, '\0', getLength() + 1);
@@ -500,7 +501,7 @@ SetMessage::~SetMessage(){}
 
 Byte * SetMessage::serialize( Length & aLength ) const
 {
-  ZorbaArrayAutoPointer<Byte> lHeader(AbstractCommandMessage::serialize(aLength));
+  auto_vec<Byte> lHeader(AbstractCommandMessage::serialize(aLength));
   std::string lJSONString = getData();
   Byte * lMsg = new Byte[ getLength() + 1 ];
   memset(lMsg, '\0', getLength()+1);
@@ -564,7 +565,7 @@ ClearMessage::~ClearMessage(){}
 
 Byte * ClearMessage::serialize( Length & aLength ) const
 {
-  ZorbaArrayAutoPointer<Byte> lHeader(AbstractCommandMessage::serialize(aLength));
+  auto_vec<Byte> lHeader(AbstractCommandMessage::serialize(aLength));
   std::string lJSONString = getData();
   Byte * lMsg = new Byte[ getLength() + 1 ];
   memset(lMsg, '\0', getLength()+1);
@@ -656,7 +657,7 @@ SuspendedEvent::~SuspendedEvent(){}
 
 Byte * SuspendedEvent::serialize( Length & aLength ) const
 {
-  ZorbaArrayAutoPointer<Byte> lHeader(AbstractCommandMessage::serialize(aLength));
+  auto_vec<Byte> lHeader(AbstractCommandMessage::serialize(aLength));
   std::string lJSONString = getData();
   Byte * lMsg = new Byte[ getLength() + 1 ];
   memset(lMsg, '\0', getLength()+1);
@@ -821,7 +822,7 @@ xqpString EvaluatedEvent::getError() const
 
 Byte * EvaluatedEvent::serialize( Length &aLength ) const
 {
-  ZorbaArrayAutoPointer<Byte> lHeader(AbstractCommandMessage::serialize(aLength));
+  auto_vec<Byte> lHeader(AbstractCommandMessage::serialize(aLength));
   xqpString lJSONString = getData();
   Byte * lMsg = new Byte[ getLength() + 1 ];
   memset(lMsg, '0', getLength()+1);
@@ -916,7 +917,7 @@ xqpString EvalMessage::getData() const
 
 Byte * EvalMessage::serialize( Length & aLength ) const
 {
-  ZorbaArrayAutoPointer<Byte> lHeader(AbstractCommandMessage::serialize(aLength));
+  auto_vec<Byte> lHeader(AbstractCommandMessage::serialize(aLength));
   xqpString lJSONString = getData();
   Byte * lMsg = new Byte[ getLength() + 1 ];
   memset(lMsg, '0', getLength()+1);
@@ -1023,7 +1024,7 @@ xqpString FrameReply::getData() const
 
 Byte* FrameReply::serialize(Length& aLength) const
 {
-  ZorbaArrayAutoPointer<Byte> lHeader(ReplyMessage::serialize(aLength));
+  auto_vec<Byte> lHeader(ReplyMessage::serialize(aLength));
   xqpString lJSON = getData();
   const char* s = lJSON.c_str();
   unsigned int l = lJSON.length();
@@ -1098,7 +1099,7 @@ xqpString SetReply::getData() const
 
 Byte* SetReply::serialize(Length& aLength) const
 {
-  ZorbaArrayAutoPointer<Byte> lHeader(ReplyMessage::serialize( aLength ));
+  auto_vec<Byte> lHeader(ReplyMessage::serialize( aLength ));
   xqpString lJSONString = getData();
   const char * s = lJSONString.c_str();
   unsigned int l = lJSONString.length();
@@ -1307,7 +1308,7 @@ xqpString VariableReply::getData() const
 
 Byte * VariableReply::serialize( Length & aLength ) const
 {
-  ZorbaArrayAutoPointer<Byte> lHeader(ReplyMessage::serialize( aLength ));
+  auto_vec<Byte> lHeader(ReplyMessage::serialize( aLength ));
   xqpString lJSONString = getData();
   const char * s = lJSONString.c_str();
   unsigned int l = lJSONString.length();
@@ -1463,7 +1464,7 @@ ListCommand::~ListCommand()
 
 Byte* ListCommand::serialize( Length& aLength ) const
 {
-  ZorbaArrayAutoPointer<Byte> lHeader(
+  auto_vec<Byte> lHeader(
     AbstractCommandMessage::serialize(aLength));
   std::string lJSONString = getData();
   Byte* lMsg = new Byte[getLength() + 1];
@@ -1544,7 +1545,7 @@ ListReply::~ListReply() {}
 
 Byte* ListReply::serialize( Length &aLength ) const
 {
-  ZorbaArrayAutoPointer<Byte> lHeader(ReplyMessage::serialize( aLength ));
+  auto_vec<Byte> lHeader(ReplyMessage::serialize( aLength ));
   xqpString lJSONString = getData();
   const char * s = lJSONString.c_str();
   unsigned int l = lJSONString.length();

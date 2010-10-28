@@ -39,47 +39,6 @@ namespace zorba
     void operator()(T x){ delete x; }
   };
 
-  template<class T>
-  class ZorbaArrayAutoPointer
-  {
-    private:
-      T* thePtr;
-  
-    public:
-      ZorbaArrayAutoPointer(): thePtr(0){}
-      explicit ZorbaArrayAutoPointer(T *aPtr): thePtr(aPtr){}
-  
-      ~ZorbaArrayAutoPointer()
-      {
-        delete[] thePtr;
-      }
-  
-      void reset(T *aPtr)
-      {
-        T* lPtr = thePtr;
-        thePtr = aPtr;
-        if(thePtr != 0)
-        {
-          delete[] lPtr;
-        }
-      }
-  
-      T* get() const
-      {
-        return thePtr;
-      }
-
-      T* release()
-      {
-        T* lPtr = thePtr;
-        thePtr = 0;
-        return lPtr;
-      }
-
-      T operator[](unsigned int anIndex) const
-      {
-        return thePtr[anIndex];
-      }
-  };
-}//end of namespace
+} // namespace zorba
 #endif
+/* vim:set et sw=2 ts=2: */

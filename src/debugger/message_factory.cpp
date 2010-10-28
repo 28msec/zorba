@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "message_factory.h"
+#include "util/stl_util.h"
 
 namespace zorba {
 
@@ -126,7 +128,7 @@ namespace zorba {
 
 AbstractMessage* MessageFactory::buildMessage(TCPSocket * aSocket)
 {
-  ZorbaArrayAutoPointer<Byte> lBody(new Byte[MESSAGE_HEADER_SIZE]);
+  auto_vec<Byte> lBody(new Byte[MESSAGE_HEADER_SIZE]);
   memset(lBody.get(), '\0', MESSAGE_HEADER_SIZE);
   AbstractMessage* lMessage = 0;
   try {
@@ -154,7 +156,7 @@ AbstractMessage* MessageFactory::buildMessage(TCPSocket * aSocket)
           lBody[3] << 24;
     }
     // allocate memory for the whole packet
-    ZorbaArrayAutoPointer<Byte> lPacket(new Byte[length + 1]);
+    auto_vec<Byte> lPacket(new Byte[length + 1]);
     memset(lPacket.get(), '\0', length + 1);
     memcpy(lPacket.get(), lBody.get(), MESSAGE_HEADER_SIZE);
 

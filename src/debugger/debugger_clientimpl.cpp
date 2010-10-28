@@ -31,6 +31,7 @@
 
 #include "zorbatypes/xqpstring.h"
 #include "util/ascii_util.h"
+#include "util/stl_util.h"
 
 #include "debugger/query_locationimpl.h"
 #include "debugger/utils.h"
@@ -108,7 +109,7 @@ bool
 ZorbaDebuggerClientImpl::handshake()
 {
   bool result = false;
-  ZorbaArrayAutoPointer<char> msg(new char[ 12 ]);
+  auto_vec<char> msg(new char[ 12 ]);
   memset(msg.get(), '\0', 12);
   try {
     theRequestSocket->send("XQHandshake", 11);
@@ -223,7 +224,7 @@ ZorbaDebuggerClientImpl::send(AbstractCommandMessage* aMessage) const
 {
   //Connect the client
   Length length;
-  ZorbaArrayAutoPointer<Byte> lMessage(aMessage->serialize(length));
+  auto_vec<Byte> lMessage(aMessage->serialize(length));
   try {
     //send the command
     theRequestSocket->send(lMessage.get(), length);
