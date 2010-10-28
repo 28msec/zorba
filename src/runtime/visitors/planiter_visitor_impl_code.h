@@ -326,9 +326,6 @@
 
   PLAN_ITER_VISITOR ( DebuggerSingletonIterator );
 
-#ifdef ZORBA_WITH_REST
-#endif
-
   PLAN_ITER_VISITOR(HoistIterator);
   PLAN_ITER_VISITOR(UnhoistIterator);
 

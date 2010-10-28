@@ -28,7 +28,6 @@
 
 #define ZORBA_OP_NS                 "http://www.zorba-xquery.com/zorba/internal-functions"
 
-#define ZORBA_REST_FN_NS            "http://www.zorba-xquery.com/zorba/rest-functions"
 #define ZORBA_MATH_FN_NS            "http://www.zorba-xquery.com/modules/math"
 #define ZORBA_NODEREF_FN_NS         "http://www.zorba-xquery.com/zorba/node-ref-functions"
 #define ZORBA_INDEX_FN_NS           "http://www.zorba-xquery.com/zorba/index-functions"

@@ -152,14 +152,6 @@
   class ZorbaDebugIterator;
   class DebuggerSingletonIterator;
 
-#ifdef ZORBA_WITH_REST
-  class ZorbaRestGetIterator;
-  class ZorbaRestPostIterator;
-  class ZorbaRestPutIterator;
-  class ZorbaRestDeleteIterator;
-  class ZorbaRestHeadIterator;
-#endif
-
   class HoistIterator;
   class UnhoistIterator;
 

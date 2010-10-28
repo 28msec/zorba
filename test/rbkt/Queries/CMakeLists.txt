@@ -306,6 +306,9 @@ EXPECTED_FAILURE(test/rbkt/zorba/gflwor/gflwor_ex6 3081418)
 
 EXPECTED_FAILURE(test/rbkt/zorba/security/hmac-sha1 3095147)
 
+IF (ImageMagick_Magick++_FOUND AND 
+    ImageMagick_MagickCore_FOUND AND
+    ImageMagick_MagickWand_FOUND)
 EXPECTED_FAILURE(test/rbkt/zorba/image/manipulation_1 3095147)
 EXPECTED_FAILURE(test/rbkt/zorba/image/manipulation_2 3095147)
 EXPECTED_FAILURE(test/rbkt/zorba/image/manipulation_3 3095147)
@@ -319,6 +322,9 @@ EXPECTED_FAILURE(test/rbkt/zorba/image/paint_5 3095147)
 EXPECTED_FAILURE(test/rbkt/zorba/image/paint_6 3095147)
 EXPECTED_FAILURE(test/rbkt/zorba/image/animation 3095147)
 EXPECTED_FAILURE(test/rbkt/zorba/image/basic 3095147)
+ENDIF (ImageMagick_Magick++_FOUND AND
+       ImageMagick_MagickCore_FOUND AND
+       ImageMagick_MagickWand_FOUND)
 
 # --------------------------------------------------------------------------
 # vim:set et sw=2 ts=2:

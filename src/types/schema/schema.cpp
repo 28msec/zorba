@@ -1436,7 +1436,6 @@ bool Schema::parseUserAtomicTypes(
     xqpStringStore_t& textValue,
     const xqtref_t& aTargetType,
     store::Item_t& result,
-    const TypeManager* typeManager,
     namespace_context* aNCtx)
 {
   TRACE("parsing '" << *textValue << "' to " << aTargetType->toString());
@@ -1508,9 +1507,9 @@ bool Schema::parseUserAtomicTypes(
       }
 
       // workaround for validating xs:NOTATION with Xerces
-      if (typeManager != NULL
+      if (theTypeManager != NULL
           &&
-          udXQType->isSubTypeOf(typeManager, *GENV_TYPESYSTEM.NOTATION_TYPE_ONE))
+          udXQType->isSubTypeOf(theTypeManager, *GENV_TYPESYSTEM.NOTATION_TYPE_ONE))
       {
         // textValue must be in the form of URI:LOCAL
         int32_t colonIndex = textValue->bytePositionOf(":");

@@ -1123,7 +1123,6 @@ TranslatorImpl(
   assert(var_decl != NULL && var_set != NULL && var_get != NULL && var_exists != NULL);
 
   theBuiltInModules.insert (ZORBA_OP_NS);
-  theBuiltInModules.insert (ZORBA_REST_FN_NS);
   theBuiltInModules.insert (ZORBA_MATH_FN_NS);
   theBuiltInModules.insert (ZORBA_NODEREF_FN_NS);
   theBuiltInModules.insert (ZORBA_ALEXIS_FN_NS);

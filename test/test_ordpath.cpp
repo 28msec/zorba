@@ -23,7 +23,7 @@
 bool verbose = false;
 
 
-void parseDeweyString(const std::string& deweyStr, std::vector<long>& dewey)
+void parseDeweyString(const std::string& deweyStr, std::vector<int32_t>& dewey)
 {
   const char* p1 = deweyStr.c_str();
 
@@ -41,7 +41,7 @@ void parseDeweyString(const std::string& deweyStr, std::vector<long>& dewey)
       continue;
     }
 
-    long comp = atoi(p1);
+    int32_t comp = atoi(p1);
     dewey.push_back(comp);
 
     if (*p1 == '-')
@@ -65,12 +65,13 @@ int main(int argc, char * argv[])
 {
   std::vector<std::string> deweyStrVector;
   std::string deweyStr;
-  std::vector<long> dewey1;
-  std::vector<long> dewey2;
-  std::vector<long> deweyParent;
+  std::string ordpathStr;
+  std::vector<int32_t> dewey1;
+  std::vector<int32_t> dewey2;
+  std::vector<int32_t> deweyParent;
 
-  bool verbose = false;
   bool compress = false;
+  bool decompress = false;
   bool insert = false;
   bool compare = false;
 
@@ -86,6 +87,13 @@ int main(int argc, char * argv[])
       compress = true;
       argv++;
       deweyStr = *argv;
+    }
+    else if (strcmp (*argv, "--decompress") == 0)
+    {
+      // provide ordpath as string of hex digits having an even number of digits.
+      decompress = true;
+      argv++;
+      ordpathStr = *argv;
     }
     else if (strcmp (*argv, "--insert") == 0)
     {
@@ -131,6 +139,16 @@ int main(int argc, char * argv[])
 
     std::cout << "ordpath = " << path.show() << std::endl;
   }
+
+  if (decompress)
+  {
+    const unsigned char* p = reinterpret_cast<const unsigned char*>(ordpathStr.c_str());
+
+    zorba::simplestore::OrdPath path(p, ordpathStr.size());
+
+    std::cout << "ordpath = " << path.show() << std::endl;
+  }
+
 
   if (insert)
   {

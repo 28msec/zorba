@@ -163,8 +163,7 @@ public:
         xqpStringStore_t& textValue,
         const xqtref_t& aTargetType,
         store::Item_t& result,
-        const TypeManager* typeManager = 0,
-        namespace_context* aNCtx = 0);   // the type manager and the namespace context are needed for parsing the xs:NOTATION items
+        namespace_context* aNCtx = 0);   // the namespace context is needed for parsing the xs:NOTATION items
 
     // user defined list types
   bool parseUserListTypes(
@@ -217,12 +216,18 @@ private:
 
   void checkForAnonymousTypes(const TypeManager* typeManager);
 
-  void checkForAnonymousTypesInType(const TypeManager* typeManager,
-      XERCES_CPP_NAMESPACE::XSTypeDefinition* typeDef);
-  void checkForAnonymousTypesInParticle(const TypeManager* typeManager,
-      XERCES_CPP_NAMESPACE::XSParticle *xsParticle);
-  void addAnonymousTypeToCache(const TypeManager* typeManager,
-      XERCES_CPP_NAMESPACE::XSTypeDefinition* typeDef);
+  void checkForAnonymousTypesInType(
+        const TypeManager* typeManager,
+        XERCES_CPP_NAMESPACE::XSTypeDefinition* typeDef);
+
+  void checkForAnonymousTypesInParticle(
+        const TypeManager* typeManager,
+        XERCES_CPP_NAMESPACE::XSParticle *xsParticle);
+
+  void addAnonymousTypeToCache(
+        const TypeManager* typeManager,
+        XERCES_CPP_NAMESPACE::XSTypeDefinition* typeDef);
+
   void addTypeToCache(xqtref_t itemXQType);
 #endif // ZORBA_NO_XMLSCHEMA
 };

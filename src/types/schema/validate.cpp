@@ -618,7 +618,8 @@ void Validator::processTextValue (
     xqpStringStore_t& textValue,
     std::vector<store::Item_t>& resultList)
 {
-  xqtref_t type = typeManager->create_named_type(typeQName.getp(), TypeConstants::QUANT_ONE);
+  xqtref_t type = typeManager->create_named_type(typeQName.getp(),
+                                                 TypeConstants::QUANT_ONE);
 
   //cout << "     - processTextValue: " << typeQName->getPrefix()->str()
   //     << ":" << typeQName->getLocalName()->str() << "@"
@@ -638,13 +639,12 @@ void Validator::processTextValue (
 
       if ( udt.isList() || udt.isUnion() )
       {
-        typeManager->getSchema()->
-          parseUserSimpleTypes(textValue, type, resultList);
+        typeManager->getSchema()->parseUserSimpleTypes(textValue, type, resultList);
       }
       else if (udt.isAtomic())
       {
         bool res = typeManager->getSchema()->
-          parseUserAtomicTypes(textValue, type.getp(), result, typeManager, &nsCtx);
+          parseUserAtomicTypes(textValue, type.getp(), result, &nsCtx);
 
         ZORBA_ASSERT(res);
         resultList.push_back(result);

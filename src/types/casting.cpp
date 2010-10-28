@@ -1649,7 +1649,6 @@ bool GenericCast::castToAtomic(
     bool success = tm->getSchema()->parseUserAtomicTypes(tmp,
                                                          aTargetType,
                                                          baseItem,
-                                                         tm,
                                                          aNsCtx);
     if (success)
     {

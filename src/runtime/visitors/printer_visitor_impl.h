@@ -263,8 +263,6 @@
   DECLARE_VISITOR (ZorbaTidyIterator);
   DECLARE_VISITOR (ZorbaTDocIterator);
 #endif  // ZORBA_WITH_TIDY
-#ifdef ZORBA_WITH_REST
-#endif
 
 #ifdef ZORBA_WITH_FOP
   DECLARE_VISITOR (ZorbaFopIterator);
