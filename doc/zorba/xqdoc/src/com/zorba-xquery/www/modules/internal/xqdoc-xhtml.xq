@@ -264,7 +264,9 @@ declare function xhtml:module-variables($variables)
     if($variables/xqdoc:variable) then
         (<div class="section"><span class="section" id="variables">Variables</span></div>,
         for $variable in $variables/xqdoc:variable
-        return (<div class="subsection">{$variable/xqdoc:uri}</div>,
+        let $varName := $variable/xqdoc:uri/text()
+        order by $varName
+        return (<div class="subsection">{$variable/xqdoc:uri/text()}</div>,
                 xhtml:description($variable/xqdoc:comment),
                 xhtml:annotations($variable/xqdoc:comment))
         )
@@ -309,6 +311,20 @@ declare function xhtml:module-function-summary($functions)
         <p>No functions declared.</p>
 };
 
+declare function xhtml:module-function-link($name as xs:string, $signature) {
+
+let $lcSignature := fn:lower-case($signature)
+return
+  if(contains($lcSignature, 'updating')) then
+    concat('updating ',$name)
+  else if(contains($lcSignature, 'sequential')) then
+    concat('sequential ',$name)
+  else if(contains($lcSignature, 'nondeterministic')) then
+    concat('nondeterministic ',$name)
+  else 
+    $name
+};
+
 declare function xhtml:module-functions($functions) {
     if(count($functions/xqdoc:function)) then (
         <div class="section"><span class="section" id="functions">Functions</span></div>,
@@ -318,12 +334,13 @@ declare function xhtml:module-functions($functions) {
             $param-number := count(tokenize($signature, "\$")) - 1,
             $comment := $function/xqdoc:comment,
             $isDeprecated := fn:exists($comment/xqdoc:deprecated)
+        order by $name, $param-number
         return (
             <div class="subsection" id="{$name}-{$param-number}">{
                 if ($isDeprecated) then
-                    <del>{$name}</del>
+                    <del>{xhtml:module-function-link($name, $signature)}</del>
                 else
-                    $name
+                    xhtml:module-function-link($name, $signature)
             }</div>,
             if ($isDeprecated) then
                 <p><span class="deprecated">Deprecated</span>{

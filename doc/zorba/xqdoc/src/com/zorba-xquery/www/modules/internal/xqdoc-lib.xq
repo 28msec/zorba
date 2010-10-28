@@ -273,6 +273,33 @@ declare sequential function doc2html:configure-xhtml (
     else ();
   };
   
+  (: replace the function names description with images+name of the functions :) 
+  let $xquSpec := "http://www.w3.org/TR/xquery-update-10/",
+      $xqsSpec := "http://www.w3.org/TR/xquery-sx-10/#dt-sequential-function",
+      $xq11Spec := "http://www.w3.org/TR/xquery-11/#FunctionDeclns"
+  let $pathToIndex := doc2html:get-path-to-index($stepsFromIndex)
+  let $imagesPath := concat($pathToIndex, "images/")
+  for $func in $xhtml//*:div
+  where $func/@class eq "subsection"
+  let $funcName := $func/text()
+  return block {
+    if (starts-with($funcName, "updating")) then
+      replace node $func/text() with
+        (<a href="{$xquSpec}" title="updating" target="_blank"><img src="{concat($imagesPath, "U.gif")}" /></a>,
+        text {substring-after($funcName, "updating")})
+        
+    else if (starts-with($funcName, "sequential")) then
+      replace node $func/text() with
+        (<a href="{$xqsSpec}" title="sequential" target="_blank"><img src="{concat($imagesPath, "S.gif")}" /></a>,
+        text {substring-after($funcName, "sequential")})
+        
+    else if (starts-with($funcName, "nondeterministic")) then
+      replace node $func/text() with
+        (<a href="{$xq11Spec}" title="nondeterministic" target="_blank"><img src="{concat($imagesPath, "N.gif")}" /></a>,
+        text {substring-after($funcName, "nondeterministic")})
+    else ();
+  };
+  
   $xhtml;
 };
 
