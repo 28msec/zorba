@@ -24,6 +24,7 @@
 
 #include "debugger/debugger_common.h"
 #include "zorbaserialization/serialization_engine.h"
+#include "zorbatypes/zstring.h"
 
 struct Zorba_SerializerOptions;
 typedef struct Zorba_SerializerOptions Zorba_SerializerOptions_t;
@@ -195,8 +196,8 @@ namespace zorba {
     *
     * @returns the result of the expression in the current context.
     */
-    std::list<std::pair<zorba::xqpString, zorba::xqpString> > 
-      eval(const xqpString& aExpr, Zorba_SerializerOptions& aSerOpts);
+    std::list<std::pair<zstring, zstring> > 
+      eval(const zstring& aExpr, Zorba_SerializerOptions& aSerOpts);
   public: //Queries
     /**
     * Adds a breakpoint and then sets theLocation from aLocation

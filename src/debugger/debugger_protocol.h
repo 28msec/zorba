@@ -28,12 +28,12 @@
 
 #include "common/common.h"
 #include "compiler/parser/query_loc.h"
-#include "zorbatypes/xqpstring.h"
+#include "zorbatypes/zstring.h"
 
 #include "api/serialization/serializer.h"
 #include "debugger/debugger_common.h"
 
-namespace zorba{
+namespace zorba {
 
 /* Type definition of fields */
 typedef unsigned char Byte;
@@ -253,7 +253,7 @@ class ZORBA_DLL_PUBLIC ReplyMessage: public AbstractMessage
 
     ReplyContent * theReplyContent;
 
-    xqpString theData;
+    zstring theData;
 
   public:
     ReplyMessage( const Id aId, const ErrorCode aErrorCode );
@@ -276,12 +276,12 @@ class ZORBA_DLL_PUBLIC ReplyMessage: public AbstractMessage
       theReplyContent->theErrorCode = uint_swap(aErrorCode);
     }
 
-    xqpString getData() const
+    zstring const& getData() const
     {
       return theData;
     }
 
-    void setData( xqpString lData )
+    void setData( zstring const &lData )
     {
       setLength( MESSAGE_HEADER_SIZE + lData.length() );
       theData = lData;
@@ -473,7 +473,7 @@ class ZORBA_DLL_PUBLIC StepMessage: public AbstractCommandMessage
 class ZORBA_DLL_PUBLIC SetMessage: public AbstractCommandMessage
 {
   protected:
-    std::map<unsigned int, xqpString> theExprs;
+    std::map<unsigned int, zstring> theExprs;
     std::map<unsigned int, QueryLoc> theLocations;
     std::string getData() const;
 
@@ -483,13 +483,13 @@ class ZORBA_DLL_PUBLIC SetMessage: public AbstractCommandMessage
 
     SetMessage( Byte * aMessage, const unsigned int aLength );
 
-    void addExpr( unsigned int anId, xqpString &anExpr )
+    void addExpr( unsigned int anId, zstring &anExpr )
     {
       theExprs.insert( std::make_pair( anId,  anExpr ) );
       setLength( MESSAGE_HEADER_SIZE + getData().length() );
     }
 
-    std::map<unsigned int, xqpString> getExprs()
+    std::map<unsigned int, zstring> getExprs()
     {
       return theExprs;
     }
@@ -610,14 +610,14 @@ class ZORBA_DLL_PUBLIC ResumedEvent: public AbstractCommandMessage
 class ZORBA_DLL_PUBLIC EvaluatedEvent: public AbstractCommandMessage
 {
   protected:
-    xqpString theExpr;
-    xqpString theError;
-    std::list< std::pair<xqpString, xqpString> > theValuesAndTypes;
+    zstring theExpr;
+    zstring theError;
+    std::list< std::pair<zstring, zstring> > theValuesAndTypes;
  
   public:
-    EvaluatedEvent( int aId, xqpString anExpr, std::list<std::pair<xqpString, xqpString> > valuesAndTypes );
+    EvaluatedEvent( int aId, zstring const &anExpr, std::list<std::pair<zstring, zstring> > valuesAndTypes );
 
-    EvaluatedEvent(  int aId, xqpString anExpr, xqpString anError );
+    EvaluatedEvent(  int aId, zstring const &anExpr, zstring const &anError );
 
     EvaluatedEvent( Byte * aMessage, const unsigned int aLength );
 
@@ -625,16 +625,16 @@ class ZORBA_DLL_PUBLIC EvaluatedEvent: public AbstractCommandMessage
 
     virtual Byte * serialize( Length & aLength ) const;
     
-    xqpString getExpr() const;
+    zstring const& getExpr() const;
 
-    std::list<std::pair<xqpString, xqpString> > getValuesAndTypes() const;
+    std::list<std::pair<zstring, zstring> > getValuesAndTypes() const;
 
-    xqpString getError() const;
+    zstring const& getError() const;
 
     void setId(Id aId);
 
   public: // this method is only public for testing purposes
-    xqpString getData() const;
+    zstring getData() const;
 };
 
 /**
@@ -643,11 +643,11 @@ class ZORBA_DLL_PUBLIC EvaluatedEvent: public AbstractCommandMessage
 class ZORBA_DLL_PUBLIC EvalMessage: public AbstractCommandMessage
 {
   protected:
-    xqpString theExpr;
-    xqpString getData() const;
+    zstring theExpr;
+    zstring getData() const;
 
   public:
-    EvalMessage( xqpString anExpr );
+    EvalMessage( zstring const &anExpr );
 
     EvalMessage( Byte * aMessage, const unsigned int aLength );
 
@@ -655,7 +655,7 @@ class ZORBA_DLL_PUBLIC EvalMessage: public AbstractCommandMessage
 
     virtual Byte * serialize( Length & aLength ) const;
 
-    xqpString getExpr() const;
+    zstring getExpr() const;
 };
 
 class ZORBA_DLL_PUBLIC ListCommand : public AbstractCommandMessage
@@ -696,7 +696,7 @@ class ZORBA_DLL_PUBLIC FrameReply: public ReplyMessage
 {
   protected:
     std::stack< std::pair<std::string, QueryLoc> > theStack;
-    xqpString getData() const;
+    zstring getData() const;
 
   public:
     FrameReply(const Id anId, const ErrorCode aErrorCode,
@@ -748,7 +748,7 @@ public:
   virtual Byte* serialize(Length &aLength) const;
   virtual ReplyMessage * getReplyMessage();
   std::string getString() const;
-  void setString(std::string aString);
+  void setString(std::string const &aString);
 };
 
 /**
@@ -758,7 +758,7 @@ class ZORBA_DLL_PUBLIC SetReply: public ReplyMessage
 {
   private:
     std::map<unsigned int, QueryLoc> theBreakpoints;
-    xqpString getData() const;
+    zstring getData() const;
 
   public:
     SetReply(const Id anId, const ErrorCode aErrorCode);
@@ -786,14 +786,14 @@ class ZORBA_DLL_PUBLIC SetReply: public ReplyMessage
 class ZORBA_DLL_PUBLIC VariableReply: public ReplyMessage
 {
   protected:
-    std::map<xqpString, xqpString> theGlobals;
-    std::map<xqpString, xqpString> theLocals;
+    std::map<zstring, zstring> theGlobals;
+    std::map<zstring, zstring> theLocals;
 
-    std::vector<std::list<std::pair<xqpString, xqpString> > > theGlobalData;
-    std::vector<std::list<std::pair<xqpString, xqpString> > > theLocalData;
+    std::vector<std::list<std::pair<zstring, zstring> > > theGlobalData;
+    std::vector<std::list<std::pair<zstring, zstring> > > theLocalData;
     bool theContainsData;
 
-    xqpString getData() const;
+    zstring getData() const;
 
   public:
     VariableReply( const Id anId, const ErrorCode aErrorCode, bool containsData = false );
@@ -811,17 +811,19 @@ class ZORBA_DLL_PUBLIC VariableReply: public ReplyMessage
       return lReply;
     }
 
-    std::map<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpString> > > getVariables() const; 
+    std::map<std::pair<zstring, zstring>, std::list<std::pair<zstring, zstring> > > getVariables() const; 
 
-    std::map<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpString> > > getLocalVariables() const;
+    std::map<std::pair<zstring, zstring>, std::list<std::pair<zstring, zstring> > > getLocalVariables() const;
 
-    std::map<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpString> > > getGlobalVariables() const;
+    std::map<std::pair<zstring, zstring>, std::list<std::pair<zstring, zstring> > > getGlobalVariables() const;
 
-    void addGlobal( xqpString aVariable, xqpString aType );
-    void addGlobal( xqpString aVariable, xqpString aType, std::list<std::pair<xqpString, xqpString> > val);
+    void addGlobal( zstring const &aVariable, zstring const &aType );
+    void addGlobal( zstring const &aVariable, zstring const &aType, std::list<std::pair<zstring, zstring> > val);
     
-    void addLocal( xqpString aVariable, xqpString aType );
-    void addLocal( xqpString aVariable, xqpString aType, std::list<std::pair<xqpString, xqpString> > val);
+    void addLocal( zstring const &aVariable, zstring const &aType );
+    void addLocal( zstring const &aVariable, zstring const &aType, std::list<std::pair<zstring, zstring> > val);
 };
-}//end of namespace
+
+} // namespace zorba
 #endif
+/* vim:set et sw=2 ts=2: */

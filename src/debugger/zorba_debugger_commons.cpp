@@ -280,17 +280,25 @@ void ZorbaDebuggerCommons::setDebugIteratorState( ZorbaDebugIteratorState* aStat
   ZORBA_ASSERT(theDebugIteratorState == aState);
 }
 
-std::list<std::pair<xqpString, xqpString> > 
-ZorbaDebuggerCommons::eval(const xqpString& aExpr,
+std::list<std::pair<zstring, zstring> > 
+ZorbaDebuggerCommons::eval(const zstring& aExpr,
                            Zorba_SerializerOptions& aSerOpts)
 {
   theExecEval = true;
-  zstring lStore = aExpr.getStore()->str();
+  zstring lStore = aExpr;
   GlobalEnvironment::getInstance().getItemFactory()->createString(theEvalItem,
                                                                   lStore);
-  std::list<std::pair<xqpString, xqpString> > lRes =
+  std::list<std::pair<xqpString, xqpString> > temp =
     theCurrentIterator->eval(thePlanState, &aSerOpts);
+
   theExecEval = false;
+
+  std::list<std::pair<zstring, zstring> > lRes;
+  for ( std::list<std::pair<xqpString, xqpString> >::const_iterator
+        i = temp.begin(); i != temp.end(); ++i ) {
+    lRes.push_back( std::make_pair( i->first.c_str(), i->second.c_str() ) );
+  }
+
   return lRes;
 }
 
@@ -396,4 +404,5 @@ bool DebuggerSingletonIterator::nextImpl( store::Item_t& result,
   STACK_END (state);
 }
 
-} //namespace zorba
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

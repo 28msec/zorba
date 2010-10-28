@@ -18,8 +18,9 @@
 #define ZORBA_DEBUGGER_UTILS_H
 
 #include <functional>
-#include <zorbatypes/xqpstring.h>
-#include <compiler/parser/query_loc.h>
+
+#include "compiler/parser/query_loc.h"
+#include "zorbatypes/zstring.h"
 
 // Forward declaration
 namespace json {
@@ -29,7 +30,7 @@ namespace json {
 namespace zorba
 {
   namespace debugger {
-    xqpString queryLocToJSON(const QueryLoc& aLoc);
+    zstring queryLocToJSON(const QueryLoc& aLoc);
     QueryLoc fromJSONToQueryLoc(json::value *obj);
   }
 

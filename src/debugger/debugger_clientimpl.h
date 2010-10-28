@@ -27,8 +27,6 @@
 #include "zorbautils/thread.h"
 #include "zorbautils/lock.h"
 
-#include "zorbatypes/xqpstring.h"
-
 #include "debugger/debugger_common.h"
 #include "debugger/debugger_protocol.h"
 

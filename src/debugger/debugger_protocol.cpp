@@ -31,6 +31,7 @@
 
 #include "zorbautils/lock.h"
 #include "debugger/utils.h"
+#include "util/ascii_util.h"
 
 using namespace std;
 
@@ -204,7 +205,7 @@ ReplyMessage::ReplyMessage( Byte * aMessage, const unsigned int aLength ):  Abst
     auto_vec<char> lData(new char[ aLength - MESSAGE_HEADER_SIZE + 1 ]);
     memset(lData.get(), '\0', aLength - MESSAGE_HEADER_SIZE + 1);
     memcpy(lData.get(), aMessage + MESSAGE_HEADER_SIZE, aLength - MESSAGE_HEADER_SIZE );
-    theData = xqpString(lData.get());
+    theData = lData.get();
   }
   checkIntegrity();
 }
@@ -486,7 +487,7 @@ SetMessage::SetMessage( Byte * aMessage, const unsigned int aLength ):
         {
           throw MessageFormatException("Invalid JSON format for Set breakpoint message.");
         }
-        theExprs.insert( std::make_pair((unsigned int)(getValue(*it, "id")->getinteger()),  xqpString( expr ) ) );
+        theExprs.insert( std::make_pair((unsigned int)(getValue(*it, "id")->getinteger()),  zstring( expr ) ) );
       } else {
         throw MessageFormatException("Invalid JSON format for Set breakpoint message.");
       }
@@ -528,7 +529,7 @@ std::string SetMessage::getData() const
       << debugger::queryLocToJSON(it->second) << "}";
   }
 
-  std::map<unsigned int, xqpString>::const_iterator it2;
+  std::map<unsigned int, zstring>::const_iterator it2;
   for( it2 = theExprs.begin(); it2 != theExprs.end(); it2++ )
   {
     lJSONString << ",{\"id\":" << it2->first << ",\"expr\":\"" << it2->second << "\"}";
@@ -706,7 +707,7 @@ ResumedEvent::~ResumedEvent(){}
 /**
  * Evaluated Engine Event
  */
-EvaluatedEvent::EvaluatedEvent( int aId, xqpString anExpr, xqpString anError ):
+EvaluatedEvent::EvaluatedEvent( int aId, zstring const &anExpr, zstring const &anError ):
   AbstractCommandMessage( ENGINE_EVENT, EVALUATED ), theExpr( anExpr ), theError( anError )
 {
   setId(aId);
@@ -716,25 +717,28 @@ EvaluatedEvent::EvaluatedEvent( int aId, xqpString anExpr, xqpString anError ):
   checkIntegrity();
 }
 
-EvaluatedEvent::EvaluatedEvent( int aId, xqpString anExpr, list<pair<xqpString, xqpString> > valuesAndTypes ):
+EvaluatedEvent::EvaluatedEvent( int aId, zstring const &anExpr, list<pair<zstring, zstring> > valuesAndTypes ):
   AbstractCommandMessage( ENGINE_EVENT, EVALUATED ), theExpr( anExpr ), theValuesAndTypes(valuesAndTypes)
 {
   setId(aId);
 
-  list<pair<xqpString, xqpString> > lValues;
-  list<pair<xqpString, xqpString> >::iterator it;
+  list<pair<zstring, zstring> > lValues;
+  list<pair<zstring, zstring> >::iterator it;
   for(it=theValuesAndTypes.begin(); it!=theValuesAndTypes.end(); it++)
   {
-    xqpString lFirst(it->first);
-    xqpString lSecond(it->second);
-    lFirst = lFirst.replace("\"", "\\\\\"", "");
-    lFirst = lFirst.replace("\\n", "\\\\n", "");
-    lFirst = lFirst.replace("\\r", "\\\\r", "");
-    lFirst = lFirst.replace("\\t", "\\\\t", "");
-    lSecond = lSecond.replace("\"", "\\\\\"", "");
-    lSecond = lSecond.replace("\\n", "\\\\n", "");
-    lSecond = lSecond.replace("\\r", "\\\\r", "");
-    lSecond = lSecond.replace("\\t", "\\\\t", "");
+    zstring lFirst(it->first);
+    zstring lSecond(it->second);
+
+    ascii::replace_all( lFirst, "\"", "\\\"" );
+    ascii::replace_all( lFirst, "\\n", "\\\\n" );
+    ascii::replace_all( lFirst, "\\r", "\\\\r" );
+    ascii::replace_all( lFirst, "\\t", "\\\\t" );
+
+    ascii::replace_all( lSecond, "\"", "\\\"" );
+    ascii::replace_all( lSecond, "\\n", "\\\\n" );
+    ascii::replace_all( lSecond, "\\r", "\\\\r" );
+    ascii::replace_all( lSecond, "\\t", "\\\\t" );
+
     lValues.push_back(std::make_pair(lFirst, lSecond));
   }
   theValuesAndTypes = lValues;
@@ -805,17 +809,17 @@ EvaluatedEvent::EvaluatedEvent( Byte* aMessage, const unsigned int aLength ):
 
 EvaluatedEvent::~EvaluatedEvent(){}
 
-xqpString EvaluatedEvent::getExpr() const
+zstring const& EvaluatedEvent::getExpr() const
 {
   return theExpr;
 }
 
-list<pair<xqpString, xqpString> > EvaluatedEvent::getValuesAndTypes() const
+list<pair<zstring, zstring> > EvaluatedEvent::getValuesAndTypes() const
 {
   return theValuesAndTypes;
 }
 
-xqpString EvaluatedEvent::getError() const
+zstring const& EvaluatedEvent::getError() const
 {
   return theError;
 }
@@ -823,7 +827,7 @@ xqpString EvaluatedEvent::getError() const
 Byte * EvaluatedEvent::serialize( Length &aLength ) const
 {
   auto_vec<Byte> lHeader(AbstractCommandMessage::serialize(aLength));
-  xqpString lJSONString = getData();
+  zstring lJSONString = getData();
   Byte * lMsg = new Byte[ getLength() + 1 ];
   memset(lMsg, '0', getLength()+1);
   memcpy( lMsg, lHeader.get(), MESSAGE_HEADER_SIZE );
@@ -834,24 +838,28 @@ Byte * EvaluatedEvent::serialize( Length &aLength ) const
   return lMsg; 
 }
 
-xqpString EvaluatedEvent::getData() const
+zstring EvaluatedEvent::getData() const
 {
-  xqpString lExpr = theExpr;
-  lExpr = lExpr.replace("\"", "\\\\\"", "");
-  lExpr = lExpr.replace("\\n", "\\\\n", "");
-  lExpr = lExpr.replace("\\r", "\\\\r", "");
-  lExpr = lExpr.replace("\\t", "\\\\t", "");
-  xqpString lErr = theError;
-  lErr = lErr.replace("\"", "\\\\\"", "");
-  lErr = lErr.replace("\\n", "\\\\n", "");
-  lErr = lErr.replace("\\r", "\\\\r", "");
-  lErr = lErr.replace("\\t", "\\\\t", "");
+  zstring lExpr = theExpr;
+
+  ascii::replace_all( lExpr, "\"", "\\\"" );
+  ascii::replace_all( lExpr, "\\n", "\\\\n" );
+  ascii::replace_all( lExpr, "\\r", "\\\\r" );
+  ascii::replace_all( lExpr, "\\t", "\\\\t" );
+
+  zstring lErr = theError;
+
+  ascii::replace_all( lErr, "\"", "\\\"" );
+  ascii::replace_all( lErr, "\\n", "\\\\n" );
+  ascii::replace_all( lErr, "\\r", "\\\\r" );
+  ascii::replace_all( lErr, "\\t", "\\\\t" );
+
   std::stringstream lJSONString;
   lJSONString << "{";
   lJSONString << "\"id\":\"" << uint_swap(theHeaderContent->theId) << "\",";
   lJSONString << "\"expr\":\"" << lExpr << "\",";
   lJSONString << "\"results\":[";
-  list<pair<xqpString, xqpString> >::const_iterator it = theValuesAndTypes.begin();
+  list<pair<zstring, zstring> >::const_iterator it = theValuesAndTypes.begin();
   for(; it != theValuesAndTypes.end(); it++ )
   {
     if ( it != theValuesAndTypes.begin() )
@@ -863,7 +871,7 @@ xqpString EvaluatedEvent::getData() const
   lJSONString << "],";
   lJSONString << "\"error\":\"" << lErr << "\"";
   lJSONString << "}";
-  xqpString lData( lJSONString.str() );
+  zstring lData( lJSONString.str() );
   return lData;
 }
 
@@ -875,7 +883,7 @@ void EvaluatedEvent::setId(Id aId)
 /**
  * Eval Message
  */
-EvalMessage::EvalMessage( xqpString anExpr ):
+EvalMessage::EvalMessage( zstring const &anExpr ):
   AbstractCommandMessage( DYNAMIC, EVAL ), theExpr( anExpr )
 {
     unsigned int l = MESSAGE_HEADER_SIZE + getData().length();
@@ -894,7 +902,7 @@ EvalMessage::EvalMessage( Byte * aMessage, const unsigned int aLength ):
     std::string lString( lWString->begin()+1, lWString->end()-1 );
     delete lWString;
     theExpr = lString;
-    theExpr = theExpr.replace("\\\\\"", "\"", "");
+    ascii::replace_all( theExpr, "\\\"", "\"" );
   } else {
     throw MessageFormatException("Invalid JSON format for eval command message.");
   }
@@ -903,22 +911,22 @@ EvalMessage::EvalMessage( Byte * aMessage, const unsigned int aLength ):
 
 EvalMessage::~EvalMessage(){}
 
-xqpString EvalMessage::getData() const
+zstring EvalMessage::getData() const
 {
-  xqpString lExpr = theExpr;
-  lExpr = lExpr.replace("\"", "\\\\\"", "");
+  zstring lExpr = theExpr;
+  ascii::replace_all( lExpr, "\"", "\\\"" );
   std::stringstream lJSONString;
   lJSONString << "{";
   lJSONString << "\"expr\":\"" << lExpr << "\"";
   lJSONString << "}";
-  xqpString lReturnString( lJSONString.str() );
+  zstring lReturnString( lJSONString.str() );
   return lReturnString;
 }
 
 Byte * EvalMessage::serialize( Length & aLength ) const
 {
   auto_vec<Byte> lHeader(AbstractCommandMessage::serialize(aLength));
-  xqpString lJSONString = getData();
+  zstring lJSONString = getData();
   Byte * lMsg = new Byte[ getLength() + 1 ];
   memset(lMsg, '0', getLength()+1);
   memcpy( lMsg, lHeader.get(), MESSAGE_HEADER_SIZE );
@@ -929,7 +937,7 @@ Byte * EvalMessage::serialize( Length & aLength ) const
   return lMsg; 
 }
 
-xqpString EvalMessage::getExpr() const
+zstring EvalMessage::getExpr() const
 {
   return theExpr;
 }
@@ -1002,7 +1010,7 @@ FrameReply::FrameReply(Byte* aMessage, const unsigned int aLength)
   }
 }
 
-xqpString FrameReply::getData() const
+zstring FrameReply::getData() const
 {
   std::stringstream lJSONString;
   lJSONString << "{\"frame\":[";
@@ -1025,7 +1033,7 @@ xqpString FrameReply::getData() const
 Byte* FrameReply::serialize(Length& aLength) const
 {
   auto_vec<Byte> lHeader(ReplyMessage::serialize(aLength));
-  xqpString lJSON = getData();
+  zstring lJSON = getData();
   const char* s = lJSON.c_str();
   unsigned int l = lJSON.length();
   Byte* lMsg = new Byte[MESSAGE_HEADER_SIZE + l + 1];
@@ -1079,7 +1087,7 @@ SetReply::SetReply(Byte* aMessage, const unsigned int aLength): ReplyMessage(aMe
 
 SetReply::~SetReply(){}
 
-xqpString SetReply::getData() const
+zstring SetReply::getData() const
 {
   std::stringstream lJSONString;
   lJSONString << "{\"breakpoints\":[";
@@ -1100,7 +1108,7 @@ xqpString SetReply::getData() const
 Byte* SetReply::serialize(Length& aLength) const
 {
   auto_vec<Byte> lHeader(ReplyMessage::serialize( aLength ));
-  xqpString lJSONString = getData();
+  zstring lJSONString = getData();
   const char * s = lJSONString.c_str();
   unsigned int l = lJSONString.length();
   Byte * lMsg = new Byte[ MESSAGE_HEADER_SIZE + l + 1 ];
@@ -1166,7 +1174,7 @@ VariableReply::VariableReply( Byte * aMessage, const unsigned int aLength ):
         throw MessageFormatException("Invalid JSON format for variable message.");
       }
       if (theContainsData){
-        std::list<std::pair<xqpString, xqpString> > data;
+        std::list<std::pair<zstring, zstring> > data;
         json::array_list_t* dList = Value->getarraylist();
         for (json::array_list_t::iterator iter = dList->begin(); iter != dList->end(); iter++) {
           json::value* v = getValue(*iter, "value");
@@ -1180,7 +1188,7 @@ VariableReply::VariableReply( Byte * aMessage, const unsigned int aLength ):
           std::string sT(lT->begin() + 1, lT->end() - 1);
           delete lV;
           delete lT;
-          data.push_back(std::pair<xqpString, xqpString>(sV, sT));
+          data.push_back(std::pair<zstring, zstring>(sV, sT));
         }
         addGlobal(name, type, data);
       } else {
@@ -1219,7 +1227,7 @@ VariableReply::VariableReply( Byte * aMessage, const unsigned int aLength ):
         throw MessageFormatException("Invalid JSON format for variable message.");
       }
       if (theContainsData){
-        std::list<std::pair<xqpString, xqpString> > data;
+        std::list<std::pair<zstring, zstring> > data;
         json::array_list_t* dList = Value->getarraylist();
         for (json::array_list_t::iterator iter = dList->begin(); iter != dList->end(); iter++) {
           json::value* v = getValue(*iter, "value");
@@ -1233,7 +1241,7 @@ VariableReply::VariableReply( Byte * aMessage, const unsigned int aLength ):
           std::string sT(lT->begin() + 1, lT->end() - 1);
           delete lV;
           delete lT;
-          data.push_back(std::pair<xqpString, xqpString>(sV, sT));
+          data.push_back(std::pair<zstring, zstring>(sV, sT));
         }
         addLocal(name, type, data);
       } else {
@@ -1247,12 +1255,12 @@ VariableReply::VariableReply( Byte * aMessage, const unsigned int aLength ):
 
 VariableReply::~VariableReply(){}
 
-xqpString VariableReply::getData() const
+zstring VariableReply::getData() const
 {
   std::stringstream lJSONString;
   lJSONString << "{";
   lJSONString << "\"globals\":[";
-  std::map<xqpString, xqpString>::const_iterator it = theGlobals.begin();
+  std::map<zstring, zstring>::const_iterator it = theGlobals.begin();
   long pos = 0;
   for(; it != theGlobals.end(); it++ )
   {
@@ -1261,8 +1269,8 @@ xqpString VariableReply::getData() const
       lJSONString << ',';
     }
     if (theContainsData) {
-      xqpString vString;
-      for (std::list<std::pair<xqpString, xqpString> >::const_iterator iter = theGlobalData[pos].begin(); 
+      zstring vString;
+      for (std::list<std::pair<zstring, zstring> >::const_iterator iter = theGlobalData[pos].begin(); 
         iter != theGlobalData[pos].end(); it++) {
           if (iter != theGlobalData[pos].begin()) {
             vString += ",";
@@ -1277,7 +1285,7 @@ xqpString VariableReply::getData() const
     ++pos;
   }
   lJSONString << "],\"locals\":[";
-  std::map<xqpString, xqpString>::const_iterator lIter;
+  std::map<zstring, zstring>::const_iterator lIter;
   pos = 0;
   for( lIter = theLocals.begin(); lIter != theLocals.end(); ++lIter )
   {
@@ -1286,8 +1294,8 @@ xqpString VariableReply::getData() const
       lJSONString << ',';
     }
     if (theContainsData) {
-      xqpString vString;
-      for (std::list<std::pair<xqpString, xqpString> >::const_iterator iter = theLocalData[pos].begin(); 
+      zstring vString;
+      for (std::list<std::pair<zstring, zstring> >::const_iterator iter = theLocalData[pos].begin(); 
         iter != theLocalData[pos].end(); iter++) {
           if (iter != theLocalData[pos].begin()) {
             vString += ",";
@@ -1302,14 +1310,14 @@ xqpString VariableReply::getData() const
     ++pos;
   }
   lJSONString << "]}";
-  xqpString lReturnString( lJSONString.str() );
+  zstring lReturnString( lJSONString.str() );
   return lReturnString;
 }
 
 Byte * VariableReply::serialize( Length & aLength ) const
 {
   auto_vec<Byte> lHeader(ReplyMessage::serialize( aLength ));
-  xqpString lJSONString = getData();
+  zstring lJSONString = getData();
   const char * s = lJSONString.c_str();
   unsigned int l = lJSONString.length();
   Byte * lMsg = new Byte[ MESSAGE_HEADER_SIZE + l + 1 ];
@@ -1320,84 +1328,84 @@ Byte * VariableReply::serialize( Length & aLength ) const
   return lMsg; 
 }
 
-std::map<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpString> > > VariableReply::getVariables() const
+std::map<std::pair<zstring, zstring>, std::list<std::pair<zstring, zstring> > > VariableReply::getVariables() const
 {
-  std::map<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpString> > > lVariables;
+  std::map<std::pair<zstring, zstring>, std::list<std::pair<zstring, zstring> > > lVariables;
   unsigned int pos = 0;
-  for (std::map<xqpString, xqpString>::const_iterator it = theGlobals.begin(); it != theGlobals.end(); it++) {
-    std::pair<xqpString, xqpString> p = *it;
-    std::list<std::pair<xqpString, xqpString> > l;
+  for (std::map<zstring, zstring>::const_iterator it = theGlobals.begin(); it != theGlobals.end(); it++) {
+    std::pair<zstring, zstring> p = *it;
+    std::list<std::pair<zstring, zstring> > l;
     if (theContainsData) {
       l = theGlobalData[pos];
     }
-    lVariables.insert(std::pair<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpString> > >(p, l));
+    lVariables.insert(std::pair<std::pair<zstring, zstring>, std::list<std::pair<zstring, zstring> > >(p, l));
     ++pos;
   }
   pos = 0;
-  for (std::map<xqpString, xqpString>::const_iterator it = theLocals.begin(); it != theLocals.end(); it++) {
-    std::pair<xqpString, xqpString> p = *it;
-    std::list<std::pair<xqpString, xqpString> > l;
+  for (std::map<zstring, zstring>::const_iterator it = theLocals.begin(); it != theLocals.end(); it++) {
+    std::pair<zstring, zstring> p = *it;
+    std::list<std::pair<zstring, zstring> > l;
     if (theContainsData) {
       l = theLocalData[pos];
     }
-    lVariables.insert(std::pair<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpString> > >(p, l));
+    lVariables.insert(std::pair<std::pair<zstring, zstring>, std::list<std::pair<zstring, zstring> > >(p, l));
     ++pos;
   }
   return lVariables;
 }
 
-std::map<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpString> > > VariableReply::getLocalVariables() const
+std::map<std::pair<zstring, zstring>, std::list<std::pair<zstring, zstring> > > VariableReply::getLocalVariables() const
 {
-  std::map<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpString> > > lVariables;
+  std::map<std::pair<zstring, zstring>, std::list<std::pair<zstring, zstring> > > lVariables;
   unsigned int pos = 0;
-  for (std::map<xqpString, xqpString>::const_iterator it = theLocals.begin(); it != theLocals.end(); it++) {
-    std::pair<xqpString, xqpString> p = *it;
-    std::list<std::pair<xqpString, xqpString> > l;
+  for (std::map<zstring, zstring>::const_iterator it = theLocals.begin(); it != theLocals.end(); it++) {
+    std::pair<zstring, zstring> p = *it;
+    std::list<std::pair<zstring, zstring> > l;
     if (theContainsData) {
       l = theGlobalData[pos];
     }
-    lVariables.insert(std::pair<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpString> > >(p, l));
+    lVariables.insert(std::pair<std::pair<zstring, zstring>, std::list<std::pair<zstring, zstring> > >(p, l));
     ++pos;
   }
   return lVariables;
 }
 
-std::map<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpString> > > VariableReply::getGlobalVariables() const
+std::map<std::pair<zstring, zstring>, std::list<std::pair<zstring, zstring> > > VariableReply::getGlobalVariables() const
 {
-  std::map<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpString> > > lVariables;
+  std::map<std::pair<zstring, zstring>, std::list<std::pair<zstring, zstring> > > lVariables;
   unsigned int pos = 0;
-  for (std::map<xqpString, xqpString>::const_iterator it = theGlobals.begin(); it != theGlobals.end(); it++) {
-    std::pair<xqpString, xqpString> p = *it;
-    std::list<std::pair<xqpString, xqpString> > l;
+  for (std::map<zstring, zstring>::const_iterator it = theGlobals.begin(); it != theGlobals.end(); it++) {
+    std::pair<zstring, zstring> p = *it;
+    std::list<std::pair<zstring, zstring> > l;
     if (theContainsData) {
       l = theGlobalData[pos];
     }
-    lVariables.insert(std::pair<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpString> > >(p, l));
+    lVariables.insert(std::pair<std::pair<zstring, zstring>, std::list<std::pair<zstring, zstring> > >(p, l));
     ++pos;
   }
   return lVariables;
 }
 
-void VariableReply::addGlobal( xqpString aVariable, xqpString aType )
+void VariableReply::addGlobal( zstring const &aVariable, zstring const &aType )
 {
   theGlobals.insert( std::make_pair( aVariable, aType ) );
   setLength( MESSAGE_HEADER_SIZE + getData().length() );
 }
 
-void VariableReply::addGlobal( xqpString aVariable, xqpString aType, std::list<std::pair<xqpString, xqpString> > val )
+void VariableReply::addGlobal( zstring const &aVariable, zstring const &aType, std::list<std::pair<zstring, zstring> > val )
 {
   theGlobals.insert( std::make_pair( aVariable, aType ) );
   theGlobalData.push_back(val);
   setLength( MESSAGE_HEADER_SIZE + getData().length() );
 }
 
-void VariableReply::addLocal( xqpString aVariable, xqpString aType )
+void VariableReply::addLocal( zstring const &aVariable, zstring const &aType )
 {
   theLocals.insert( std::make_pair( aVariable, aType ) );
   setLength( MESSAGE_HEADER_SIZE + getData().length() );
 }
 
-void VariableReply::addLocal( xqpString aVariable, xqpString aType, std::list<std::pair<xqpString, xqpString> > val )
+void VariableReply::addLocal( zstring const &aVariable, zstring const &aType, std::list<std::pair<zstring, zstring> > val )
 {
   theLocals.insert( std::make_pair( aVariable, aType ) );
   theLocalData.push_back(val);
@@ -1546,7 +1554,7 @@ ListReply::~ListReply() {}
 Byte* ListReply::serialize( Length &aLength ) const
 {
   auto_vec<Byte> lHeader(ReplyMessage::serialize( aLength ));
-  xqpString lJSONString = getData();
+  zstring lJSONString = getData();
   const char * s = lJSONString.c_str();
   unsigned int l = lJSONString.length();
   Byte * lMsg = new Byte[ MESSAGE_HEADER_SIZE + l + 1 ];
@@ -1586,9 +1594,10 @@ std::string ListReply::getString() const
   return theString;
 }
 
-void ListReply::setString( std::string aString )
+void ListReply::setString( std::string const &aString )
 {
   theString = aString;
 }
-}//end of namespace
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */
 

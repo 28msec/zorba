@@ -19,6 +19,7 @@
 #include <zorba/unit_tests.h>
 
 #include "debugger/message_factory.h"
+#include "zorbatypes/zstring.h"
 #include "util/stl_util.h"
 
 namespace zorba
@@ -302,7 +303,7 @@ bool TestDebuggerSerialization::testSetMessage()
   loc.setColumnEnd( 1 );
   SetMessage msg;
   msg.addLocation( 1, loc );
-  xqpString lExpr("$i=1");
+  zstring lExpr("$i=1");
   msg.addExpr( 2, lExpr);
   bool lResult = test_packet<SetMessage>( &msg );
   if(!lResult) return false;
@@ -323,18 +324,18 @@ bool TestDebuggerSerialization::testEvalMessage()
 bool TestDebuggerSerialization::testEvalEvent()
 {
   std::cerr << "Test eval event" << std::endl;
-  std::list<std::pair<xqpString, xqpString> > lList;
+  std::list<std::pair<zstring, zstring> > lList;
   EvaluatedEvent evt(0, "()", lList);
   evt.setId(5);
   bool lResult = test_packet<EvaluatedEvent>(&evt);
   if (!lResult) return false;
-  std::string lData = evt.getData();
-  std::string::size_type lPos = lData.find("id");
-  if (lPos == std::string::npos) {
+  zstring lData = evt.getData();
+  zstring::size_type lPos = lData.find("id");
+  if (lPos == zstring::npos) {
     return false;
   }
   lPos = lData.find("5", lPos);
-  if (lPos == std::string::npos) {
+  if (lPos == zstring::npos) {
     return false;
   }
   if (evt.getId() != 5) {

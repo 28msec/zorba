@@ -13,11 +13,14 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+
+#include <sstream>
+
 #include <json/value.h>
 #include "utils.h"
 
 namespace zorba { namespace debugger {
-  zorba::xqpString queryLocToJSON( const QueryLoc& aLoc )
+  zstring queryLocToJSON( const QueryLoc& aLoc )
   {
     std::stringstream lJSONString;
     std::string lTmp( aLoc.getFilename().c_str() );

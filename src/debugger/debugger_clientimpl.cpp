@@ -29,7 +29,6 @@
 
 #include "api/unmarshaller.h"
 
-#include "zorbatypes/xqpstring.h"
 #include "util/ascii_util.h"
 #include "util/stl_util.h"
 
@@ -165,19 +164,19 @@ listenEvents(void* aClient)
         break;
       } else if ((lEvaluatedEvent = dynamic_cast<EvaluatedEvent*>(lMessage.get()))) {
         if (lClient->theEventHandler) {
-          String lExpr(lEvaluatedEvent->getExpr());
-          String lError(lEvaluatedEvent->getError());
+          String lExpr(lEvaluatedEvent->getExpr().c_str());
+          String lError(lEvaluatedEvent->getError().c_str());
           if (lError.length() > 0) {
             lClient->theEventHandler->evaluated(lExpr, lError);
           } else {
             list< pair<String, String> > lValuesAndTypes;
-            list< pair<xqpString, xqpString> > lMap = lEvaluatedEvent->getValuesAndTypes();
-            list< pair<xqpString, xqpString> >::const_iterator it;
+            list< pair<zstring, zstring> > lMap = lEvaluatedEvent->getValuesAndTypes();
+            list< pair<zstring, zstring> >::const_iterator it;
             for (it=lMap.begin(); it!=lMap.end(); ++it) {
-              xqpString test(it->first);
-              xqpString filter = test.replace("&quot;", "\"", "");
-              String lResult(filter);
-              String lType(it->second);
+              zstring temp(it->first);
+              ascii::replace_all( temp, "&quot;", "\"" );
+              String lResult(temp.c_str());
+              String lType(it->second.c_str());
               lValuesAndTypes.push_back(std::make_pair(lResult, lType));
             }
             lClient->theEventHandler->evaluated(lExpr, lValuesAndTypes);
@@ -317,7 +316,7 @@ ZorbaDebuggerClientImpl::addBreakpoint(const String& anExpr)
   zstring const &lExpr = Unmarshaller::getInternalString( anExpr );
   SetMessage lMessage;
   theLastId++;
-  xqpString temp( lExpr.c_str() );
+  zstring temp( lExpr.c_str() );
   lMessage.addExpr( theLastId, temp );
   theBreakpoints.insert( std::make_pair( theLastId, anExpr ) );
 
@@ -460,7 +459,7 @@ ZorbaDebuggerClientImpl::eval(String& anExpr) const
 {
   zstring lExpr = Unmarshaller::getInternalString( anExpr );
   ascii::replace_all( lExpr, "\"", "&quot;" );
-  xqpString temp( lExpr.c_str() );
+  zstring temp( lExpr.c_str() );
   EvalMessage lMessage( temp );
   std::auto_ptr<ReplyMessage> lReply(send((&lMessage)));
   return true;
@@ -474,19 +473,19 @@ ZorbaDebuggerClientImpl::getAllVariables(bool data) const
   std::auto_ptr<ReplyMessage> lReply(send((&lMessage)));
   VariableReply* lVariableReply = dynamic_cast<VariableReply*>(lReply.get());
   if (lVariableReply) {
-    std::map<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpString> > > variables = 
+    std::map<std::pair<zstring, zstring>, std::list<std::pair<zstring, zstring> > > variables = 
       lVariableReply->getVariables();
-    std::map<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpString> > >::iterator it;
+    std::map<std::pair<zstring, zstring>, std::list<std::pair<zstring, zstring> > >::iterator it;
     for (it = variables.begin(); it != variables.end(); ++it) {
-      String lName(it->first.first);
-      String lType(it->first.second);
-      std::list<std::pair<xqpString, xqpString> > d = it->second;
+      String lName(it->first.first.c_str());
+      String lType(it->first.second.c_str());
+      std::list<std::pair<zstring, zstring> > d = it->second;
       std::list<std::pair<String, String> > data;
-      for (std::list<std::pair<xqpString, xqpString> >::iterator iter = d.begin(); iter != d.end(); iter++) {
+      for (std::list<std::pair<zstring, zstring> >::iterator iter = d.begin(); iter != d.end(); iter++) {
         data.push_back(
           std::pair<String,String>(
-            String(iter->first.getStore()->c_str()),
-            String(iter->second.getStore()->c_str())
+            String(iter->first.c_str()),
+            String(iter->second.c_str())
           )
         );
       }
@@ -505,19 +504,19 @@ ZorbaDebuggerClientImpl::getLocalVariables(bool data) const
   std::auto_ptr<ReplyMessage> lReply(send((&lMessage)));
   VariableReply* lVariableReply = dynamic_cast<VariableReply*>(lReply.get());
   if (lVariableReply) {
-    std::map<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpString> > > variables = 
+    std::map<std::pair<zstring, zstring>, std::list<std::pair<zstring, zstring> > > variables = 
       lVariableReply->getLocalVariables();
-    std::map<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpString> > >::iterator it;
+    std::map<std::pair<zstring, zstring>, std::list<std::pair<zstring, zstring> > >::iterator it;
     for (it = variables.begin(); it != variables.end(); ++it) {
-      String lName(it->first.first);
-      String lType(it->first.second);
-      std::list<std::pair<xqpString, xqpString> > d = it->second;
+      String lName(it->first.first.c_str());
+      String lType(it->first.second.c_str());
+      std::list<std::pair<zstring, zstring> > d = it->second;
       std::list<std::pair<String, String> > data;
-      for (std::list<std::pair<xqpString, xqpString> >::iterator iter = d.begin(); iter != d.end(); iter++) {
+      for (std::list<std::pair<zstring, zstring> >::iterator iter = d.begin(); iter != d.end(); iter++) {
         data.push_back(
           std::pair<String,String>(
-            String(iter->first.getStore()->c_str()),
-            String(iter->second.getStore()->c_str())
+            String(iter->first.c_str()),
+            String(iter->second.c_str())
           )
         );
       }
@@ -539,19 +538,19 @@ ZorbaDebuggerClientImpl::getGlobalVariables(bool data) const
   std::auto_ptr<ReplyMessage> lReply(send((&lMessage)));
   VariableReply* lVariableReply = dynamic_cast<VariableReply*>(lReply.get());
   if (lVariableReply) {
-    std::map<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpString> > > variables = 
+    std::map<std::pair<zstring, zstring>, std::list<std::pair<zstring, zstring> > > variables = 
       lVariableReply->getGlobalVariables();
-    std::map<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpString> > >::iterator it;
+    std::map<std::pair<zstring, zstring>, std::list<std::pair<zstring, zstring> > >::iterator it;
     for (it = variables.begin(); it != variables.end(); ++it) {
-      String lName(it->first.first);
-      String lType(it->first.second);
-      std::list<std::pair<xqpString, xqpString> > d = it->second;
+      String lName(it->first.first.c_str());
+      String lType(it->first.second.c_str());
+      std::list<std::pair<zstring, zstring> > d = it->second;
       std::list<std::pair<String, String> > data;
-      for (std::list<std::pair<xqpString, xqpString> >::iterator iter = d.begin(); iter != d.end(); iter++) {
+      for (std::list<std::pair<zstring, zstring> >::iterator iter = d.begin(); iter != d.end(); iter++) {
         data.push_back(
           std::pair<String,String>(
-            String(iter->first.getStore()->c_str()),
-            String(iter->second.getStore()->c_str()))
+            String(iter->first.c_str()),
+            String(iter->second.c_str()))
         );
       }
       Variable lVariable(lName, lType, data);

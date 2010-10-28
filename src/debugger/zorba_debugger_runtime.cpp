@@ -52,7 +52,7 @@ namespace zorba {
   public:
     EvalCommand(ZorbaDebuggerCommons* aCommons, 
       DebuggerCommunicator* aCommunicator,
-      const xqpString& aEvalString,
+      const zstring& aEvalString,
       Zorba_SerializerOptions& aSerOpts,
       Id aId)
       : 
@@ -104,7 +104,7 @@ namespace zorba {
   private:
     ZorbaDebuggerCommons*     theCommons;
     DebuggerCommunicator*     theCommunicator;
-    xqpString                 theEvalString;
+    zstring                   theEvalString;
     Zorba_SerializerOptions&  theSerOpts;
     Id                        theId;
   };
@@ -465,7 +465,7 @@ void ZorbaDebuggerRuntime::setNotSendTerminateEvent()
 void ZorbaDebuggerRuntime::evalCommand()
 {
   ZORBA_ASSERT(dynamic_cast<EvalMessage*>(theCurrentMessage));
-  xqpString lExpr = static_cast<EvalMessage*>(theCurrentMessage)->getExpr();
+  zstring const &lExpr = static_cast<EvalMessage*>(theCurrentMessage)->getExpr();
   // This command will care itself about garbage collection - so don't delete
   // it in this method!
   EvalCommand* lCommand = new EvalCommand(
