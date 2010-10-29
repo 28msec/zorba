@@ -53,8 +53,6 @@ typedef std::size_t size_type;
  */
 size_type const npos = static_cast<size_type>( -1 );
 
-ZORBA_DLL_PUBLIC extern char const char_length_table[];
-
 
 ////////// functions //////////////////////////////////////////////////////////
 
@@ -88,7 +86,14 @@ size_type byte_pos( storage_type const *s, size_type s_size,
  * character.
  * @return Return a number in the range [1,6] or 0 for an invalid byte.
  */
+#ifdef WIN32
+ZORBA_DLL_PUBLIC extern char const char_length_table[];		// Microsoft VS2005 doesn't like externs imported directly inside functions
+#endif
+
 inline size_type char_length( storage_type lead ) {
+#ifndef WIN32
+  ZORBA_DLL_PUBLIC extern char const char_length_table[];
+#endif
   return char_length_table[ static_cast<unsigned>( lead ) & 0xFF ];
 }
 
