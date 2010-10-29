@@ -188,11 +188,14 @@ declare sequential function doc2html:gatherModules(
       let $xqdoc := doc2html:removeInternalFunctionality(file:read-xml($xmlFilePath)/xqdoc:xqdoc)
       let $moduleDoc := $xqdoc/xqdoc:module
       let $moduleUri := $moduleDoc/xqdoc:uri
-      return block {
-        doc2html:collectModule($moduleUri/text(), $xhtmlRelativeFilePath, $doc2html:indexCollector);
-        concat("
+      return if($moduleDoc/@type = "library") then 
+        block {
+          doc2html:collectModule($moduleUri/text(), $xhtmlRelativeFilePath, $doc2html:indexCollector);
+          concat("
 SUCCESS: ", $moduleUri, " (", $xmlFilePath, ")");
-      }
+        }
+       else concat("
+Ignore main module: ", $xmlFilePath) 
     } catch * ($error_code) {
       concat("
 FAILED: ", $xmlFilePath)
