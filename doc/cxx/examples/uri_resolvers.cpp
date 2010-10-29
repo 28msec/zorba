@@ -280,7 +280,8 @@ resolver_example_3(Zorba* aZorba)
 
     std::stringstream lSerializedQuery;
     lQuery->saveExecutionPlan(lSerializedQuery,
-        ZORBA_USE_BINARY_ARCHIVE, SAVE_UNUSED_FUNCTIONS);
+                              ZORBA_USE_BINARY_ARCHIVE,
+                              SAVE_UNUSED_FUNCTIONS);
 
     URIResolverSerializationCallback lCallback; 
     XQuery_t lQuery2 = aZorba->createQuery();

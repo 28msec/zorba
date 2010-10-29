@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- #include "runtime/eval/eval.h"
-
 #include <sstream>
 
+#include "runtime/eval/eval.h"
+
+#include "runtime/visitors/planiter_visitor.h"
 #include "runtime/api/plan_iterator_wrapper.h"
+#include "runtime/api/plan_wrapper.h"
 #include "runtime/util/iterator_impl.h"
 
 #include "compiler/parsetree/parsenodes.h"
@@ -27,8 +29,15 @@
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
 
+#include "types/typeimpl.h"
+
 
 namespace zorba {
+
+
+SERIALIZABLE_CLASS_VERSIONS(EvalIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(EvalIterator)
+
 
 static PlanIter_t compile(
     CompilerCB* ccb,
@@ -36,11 +45,14 @@ static PlanIter_t compile(
     checked_vector<store::Item_t> varnames,
     checked_vector<xqtref_t> vartypes)
 {
+  QueryLoc loc;
   XQueryCompiler compiler(ccb);
-  std::istringstream os(query.str());
+  std::stringstream os;
+
+  os.write(query.data(), query.size());
+
   zstring dummyname;
   parsenode_t ast = compiler.parse(os, dummyname);
-  QueryLoc loc;
 
   rchandle<MainModule> mm = ast.dyn_cast<MainModule>();
   if (mm == NULL)
@@ -60,7 +72,7 @@ static PlanIter_t compile(
     prolog->set_vfo_list(vfo);
   }
 
-  for (int i = (int) varnames.size() - 1; i >= 0; i--)
+  for (int i = (int) varnames.size() - 1; i >= 0; --i)
   {
     vfo->push_front(new VarDecl(loc,
                                 new QName(loc, varnames[i]->getStringValue().str()),
@@ -73,6 +85,38 @@ static PlanIter_t compile(
 
   return compiler.compile(ast);
 }
+
+
+EvalIteratorState::EvalIteratorState() 
+{
+}
+
+
+EvalIteratorState::~EvalIteratorState() 
+{
+}
+
+
+EvalIterator::EvalIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children,
+    checked_vector<store::Item_t> aVarNames,
+    checked_vector<std::string> aVarKeys,
+    checked_vector<xqtref_t> aVarTypes)
+  : 
+  NaryBaseIterator<EvalIterator, EvalIteratorState>(sctx, loc, children),
+  varnames(aVarNames),
+  var_keys(aVarKeys),
+  vartypes(aVarTypes)
+{
+}
+
+
+EvalIterator::~EvalIterator() 
+{
+}
+
 
 void EvalIterator::serialize(::zorba::serialization::Archiver& ar)
 {
@@ -89,7 +133,6 @@ void EvalIterator::serialize(::zorba::serialization::Archiver& ar)
 bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item;
-  short sctxid;
   EvalIteratorState* state;
 
   DEFAULT_STACK_INIT(EvalIteratorState, state, planState);
@@ -100,22 +143,26 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     // set up eval state's ccb
     state->ccb.reset(new CompilerCB(*planState.theCompilerCB));
     state->ccb->theRootSctx = getStaticContext()->create_child_context();
-    sctxid = state->ccb->theSctxMap->size() + 1;
-    (*planState.theCompilerCB->theSctxMap)[sctxid] = state->ccb->theRootSctx;
+    (planState.theCompilerCB->theSctxMap)[1] = state->ccb->theRootSctx;
+
     state->dctx.reset(new dynamic_context(planState.dctx()));
 
-    state->eval_plan.reset(new PlanWrapper(compile(state->ccb.get(),
-                                                   item->getStringValue(),
-                                                   varnames,
-                                                   vartypes),
-                                           state->ccb.get(),
-                                           state->dctx.get(),
-                                           planState.theQuery, // HACK/TODO: use the right query (static or dynamic context)
-                                           planState.theStackDepth + 1));
+    state->thePlan = compile(state->ccb.get(),
+                             item->getStringValue(),
+                             varnames,
+                             vartypes);
 
-    state->eval_plan->checkDepth(loc);
+    state->thePlanWrapper = new PlanWrapper(state->thePlan,
+                                            state->ccb.get(),
+                                            state->dctx.get(),
+                                            planState.theQuery, // HACK/TODO: use the right query (static or dynamic context)
+                                            planState.theStackDepth + 1);
 
-    for (unsigned i = 0; i < theChildren.size() - 1; i++)
+    state->thePlanWrapper->checkDepth(loc);
+
+    state->thePlanWrapper->open();
+
+    for (unsigned i = 0; i < theChildren.size() - 1; ++i)
     {
       store::Iterator_t lIter = new PlanIteratorWrapper(theChildren[i + 1], planState);
       // TODO: is saving an open iterator efficient?
@@ -125,13 +172,18 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
   }
 
-  while (state->eval_plan->next(result))
+  while (state->thePlanWrapper->next(result))
   {
     STACK_PUSH(true, state);
   }
 
-  state->eval_plan.reset(NULL);
+  state->thePlanWrapper = NULL;
 
   STACK_END(state);
 }
+
+
+NARY_ACCEPT(EvalIterator);
+
+
 }

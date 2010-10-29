@@ -174,6 +174,8 @@ DEF_ERR_CODE(API0008_NOT_AN_UPDATE_XQUERY, API0008,
 DEF_ERR_CODE(API0009_XQUERY_NOT_COMPILED_IN_DEBUG_MODE, API0009,
 "Query has not been compiled in debug mode")
 
+DEF_ERR_CODE(API0010_XQUERY_HAS_ITERATOR_ALREADY, API0010, "Cannot get more than one result iterator on a query")
+
 DEF_ERR_CODE(API0040_ITERATOR_IS_NOT_OPEN, API0040,
 "Cannot perform operation on iterator because it has not been opened")
 

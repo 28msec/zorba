@@ -29,7 +29,7 @@ namespace zorba {
 
 ********************************************************************************/
 PlanWrapper::PlanWrapper(
-    const PlanIter_t& aIter,
+    PlanIterator* aIter,
     CompilerCB* aCompilerCB,
     dynamic_context* aDynamicContext,
     XQueryImpl* query,
@@ -125,7 +125,7 @@ bool PlanWrapper::next(store::Item_t& result)
 {
   ZORBA_ASSERT(theIsOpen);
 
-  return PlanIterator::consumeNext(result, theIterator.getp(), *thePlanState);
+  return PlanIterator::consumeNext(result, theIterator, *thePlanState);
 }
 
 

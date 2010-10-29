@@ -323,12 +323,14 @@ private:
 
   // Using a struct guarantees correct struct/class alignment.
   struct string_storage_type { void *v; };
+
   string_storage_type string_storage_;
 
   // Using a struct prevents void* ambiguity with char*.
   struct zstring_ptr { void const *v; };
 
   String( zstring_ptr );
+
   String& operator=( zstring_ptr );
 
   static void size_check();

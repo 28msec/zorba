@@ -24,9 +24,6 @@
 
 #include "store/api/item_factory.h"
 
-#include "zorbatypes/xqpstring.h"
-#include "zorbaerrors/error_manager.h"
-
 #include "api/unmarshaller.h"
 #include "api/zorbaimpl.h"
 #include "api/functionimpl.h"
@@ -35,17 +32,25 @@
 #include "context/static_context.h"
 #include "context/static_context_consts.h"
 #include "context/uri_resolver_wrapper.h"
+
+#include "compiler/parser/query_loc.h"
+#include "compiler/api/compilercb.h"
+
 #include "functions/function.h"
 
 #include "system/globalenv.h"
 
 #include "types/casting.h"
 #include "types/typeops.h"
+
+#include "zorbatypes/xqpstring.h"
+
+#include "zorbaerrors/error_manager.h"
+
 #include "zorbautils/string_glue.h"
 
 #include "runtime/util/flowctl_exception.h"
 
-#include "compiler/parser/query_loc.h"
 
 namespace zorba {
 
@@ -1163,7 +1168,7 @@ void StaticContextImpl::loadProlog(
   // Copy theSctxMap of the internal query into "this". When "this" is then passed
   // as an input to a user query Q, theSctxMap of Q will be initialized as a copy
   // of this->theSctxMap.
-  theSctxMap = impl.theSctxMap;
+  theSctxMap = impl.theCompilerCB->theSctxMap;
 }
 
 

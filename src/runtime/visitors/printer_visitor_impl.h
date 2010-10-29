@@ -280,3 +280,5 @@
   DECLARE_VISITOR(DeleteIndexIterator);
 
   DECLARE_VISITOR(DynamicFnCallIterator);
+
+  DECLARE_VISITOR(EvalIterator);

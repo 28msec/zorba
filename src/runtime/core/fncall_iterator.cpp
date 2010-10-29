@@ -507,30 +507,21 @@ bool StatelessExtFunctionCallIterator::nextImpl(
 
       // The planState.theQuery maybe null, e.g. in the case of constant-folding
       // of global variable expressions
-      // ZORBA_ASSERT(planState.theQuery); 
 
       StaticContextImpl theSctxWrapper(theModuleSctx,
                                        (planState.theQuery == NULL? 
                                         NULL :
-                                        planState.theQuery->getRegisteredErrorHandler()));
+                                        planState.theQuery->getRegisteredErrorHandlerNoSync()));
 
-      if (planState.theQuery != NULL)
-      {
-        state->theResult = lNonePureFct->evaluate(state->m_extArgs,
-                                                  &theSctxWrapper,
-                                                  planState.theQuery->getDynamicContext());
-      }
-      else
-      {
-        DynamicContextImpl theDctxWrapper(NULL,
-                                          planState.theDynamicContext,
-                                          theModuleSctx);
-        state->theResult = lNonePureFct->evaluate(state->m_extArgs,
-                                                  &theSctxWrapper,
-                                                  &theDctxWrapper);
-      }
+      DynamicContextImpl theDctxWrapper(NULL,
+                                        planState.theDynamicContext,
+                                        theModuleSctx);
+
+      state->theResult = lNonePureFct->evaluate(state->m_extArgs,
+                                                &theSctxWrapper,
+                                                &theDctxWrapper);
     } // if (!theFunction->isContextual())
-  } // try
+  }
   catch(const ZorbaException& e)
   {
     // take all information from the exception raised in

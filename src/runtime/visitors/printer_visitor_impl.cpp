@@ -52,6 +52,7 @@
 #include "runtime/util/UtilImpl.h"
 #include "runtime/visitors/iterprinter.h"
 #include "runtime/update/update.h"
+#include "runtime/eval/eval.h"
 
 #include "debugger/zorba_debugger_commons.h"
 
@@ -1252,4 +1253,6 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
   PRINTER_VISITOR_DEFINITION(ProbeIndexRangeGeneralIterator);
 
   PRINTER_VISITOR_DEFINITION(DynamicFnCallIterator);
+
+  PRINTER_VISITOR_DEFINITION(EvalIterator);
 }

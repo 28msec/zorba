@@ -257,9 +257,6 @@ namespace zorba {
     void beginVisit( const TimestampIterator& );
     void endVisit  ( const TimestampIterator& );
 
-    void beginVisit( const EvalIterator& );
-    void endVisit  ( const EvalIterator& );
-
     void beginVisit( const ErrorIterator& );
     void endVisit  ( const ErrorIterator& );
 

@@ -46,11 +46,20 @@ class dynamic_context;
   like separation of code and execution, or garabage collection, and it
   provides a simple interface that the application can use.
 
-  theDynamicContext : Most of the time this is NULL. It is non-NULL if a NULL
-                      dctx is given to the constructor of "this", in which case
-                      the constructor will allocate a dctx and store a pointer
-                      to it in theDynamicContext, so that it will be deallocated
-                      by the destructor of "this".
+  - theIterator :
+  Pointer to the root iterator of the plan to be executed by this PlanWrapper.
+  NOTE: theIterator MUST be a RAW pointer, NOT an rchandle. This is because
+  several PlanWrappers (created from different clones of the same query) may
+  be accessing the same plan iterator, but PlanIterator does not do sunchronized
+  ref counting. It is the responsibility of the user a plan wrapper to do
+  memory management for the actual plan (the plan wrapper does not assume
+  ownership of the plan).
+
+  - theDynamicContext : 
+  Most of the time this is NULL. It is non-NULL if a NULL dctx is given to the
+  constructor of "this", in which case the constructor will allocate a dctx and
+  store a pointer to it in theDynamicContext, so that it will be deallocated by
+  the destructor of "this".
 ********************************************************************************/
 class PlanWrapper : public store::Iterator, public intern::Serializable
 {
@@ -59,27 +68,28 @@ class PlanWrapper : public store::Iterator, public intern::Serializable
 
 protected:
 
-  PlanIter_t        theIterator;
-  dynamic_context * theDynamicContext;
+  PlanIterator       * theIterator;
 
-  PlanState       * thePlanState;
+  dynamic_context    * theDynamicContext;
 
-  bool		          theIsOpen;
+  PlanState          * thePlanState;
 
-  Timeout         * theTimeout;
-  Mutex             theTimeoutMutex;
+  bool		             theIsOpen;
+
+  Timeout            * theTimeout;
+  Mutex                theTimeoutMutex;
 
 public:
 
   PlanWrapper(
-        const PlanIter_t& iter,
+        PlanIterator*     iter,
         CompilerCB*       ccb,
         dynamic_context*  dynamicContext,
         XQueryImpl*       query,
         uint32_t          stackDepth = 0,
         long              timeout = -1);
 
-  virtual ~PlanWrapper();
+  ~PlanWrapper();
 
   void open();
 

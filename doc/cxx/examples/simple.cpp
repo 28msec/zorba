@@ -162,7 +162,7 @@ bool
 example_10( Zorba * aZorba )
 {
   Iterator_t lIterator1;
-  Iterator_t lIterator2;
+  Iterator_t lIterator3;
 
   XQuery_t lQuery1 = aZorba->compileQuery("declare variable $i external; 1 to $i");
   XQuery_t lQuery2 = lQuery1->clone();
@@ -174,7 +174,22 @@ example_10( Zorba * aZorba )
     lDynContext1 = lQuery1->getDynamicContext();
     lDynContext1->setVariable("i", aZorba->getItemFactory()->createInteger(5));
 
-    lIterator1 = lQuery1->iterator();  
+    lIterator1 = lQuery1->iterator();
+
+    // make sure that we cannot have more than one result iterators on a query
+    bool checkOk = false;
+    try
+    {
+      lIterator3 = lQuery1->iterator();  
+    }
+    catch (...)
+    {
+      checkOk = true;
+    }
+
+    if (!checkOk)
+      return false;
+
     lIterator1->open();
 
     Item lItem;
@@ -183,7 +198,7 @@ example_10( Zorba * aZorba )
       DynamicContext* lDynContext2 = lQuery2->getDynamicContext();
       lDynContext2->setVariable("i", lItem);
 
-      lIterator2 = lQuery2->iterator();
+      Iterator_t lIterator2 = lQuery2->iterator();
     
       lIterator2->open();
       while ( lIterator2->next(lItem) ) 
@@ -228,6 +243,7 @@ example_11( Zorba * aZorba )
   return true;
 }
 
+
 bool
 example_12(Zorba* aZorba)
 {
@@ -266,6 +282,7 @@ example_12(Zorba* aZorba)
 
 	return true;
 }
+
 
 
 bool

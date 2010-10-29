@@ -38,6 +38,7 @@
 namespace zorba {
 
 /*******************************************************************************
+
 ********************************************************************************/
 bool
 XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
@@ -51,17 +52,13 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   std::string fileUrl;
   std::auto_ptr<std::istream> lFile;
   static_context* lSctx;
-  short sctxid;
   StandardModuleURIResolver* lModuleResolver = 0;
 
   // setup a new CompilerCB and a new XQueryCompiler 
   CompilerCB lCompilerCB(*planState.theCompilerCB);
   lCompilerCB.theRootSctx = GENV.getRootStaticContext().create_child_context();
-  sctxid = planState.theCompilerCB->theSctxMap->size() + 1;
-  (*planState.theCompilerCB->theSctxMap)[sctxid] = lCompilerCB.theRootSctx; 
+  (planState.theCompilerCB->theSctxMap)[1] = lCompilerCB.theRootSctx; 
 
-  // the XQueryCompiler's constructor destroys the existing type manager 
-  // in the static context. Hence, we create a new one
   XQueryCompiler lCompiler(&lCompilerCB);
 
   PlanIteratorState* state;
@@ -83,6 +80,7 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       ZORBA_ERROR_LOC_DESC_OSS(XQST0046, loc, "URI is not valid " << lURI);
 
   lModuleResolver = GENV.getModuleURIResolver();
+
   // we get the ownership of the input stream
   // TODO: we have to find a way to tell user defined resolvers when their input stream
   // can be freed. The current solution might leed to problems on Windows.
@@ -90,7 +88,7 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   lFile.reset(lModuleResolver->resolve(uriStr, *lSctx, fileUrl));
 
   // now, do the real work
-  if(lFile.get() && lFile->good())
+  if (lFile.get() && lFile->good())
   {
     try 
     {
@@ -111,6 +109,7 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     ZORBA_ERROR_LOC_DESC_OSS(XQST0046, loc, "No module could be found at " << lURI);
   }
+
   STACK_END(state);
 }
 
@@ -121,15 +120,13 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 bool
 XQDocContentIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  short sctxid;
   store::Item_t lItem;
   zstring lFileName;
 
   // setup a new CompilerCB and a new XQueryCompiler 
   CompilerCB lCompilerCB(*planState.theCompilerCB);
   lCompilerCB.theRootSctx = GENV.getRootStaticContext().create_child_context();
-  sctxid = planState.theCompilerCB->theSctxMap->size() + 1;
-  (*planState.theCompilerCB->theSctxMap)[sctxid] = lCompilerCB.theRootSctx; 
+  (planState.theCompilerCB->theSctxMap)[1] = lCompilerCB.theRootSctx; 
 
   // the XQueryCompiler's constructor destroys the existing type manager 
   // in the static context. Hence, we create a new one

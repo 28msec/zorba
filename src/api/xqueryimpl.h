@@ -16,7 +16,6 @@
 #ifndef ZORBA_API_XQUERY_IMPL
 #define ZORBA_API_XQUERY_IMPL
 
-#include <map>
 #include <iostream>
 #include <zorba/xquery.h>
 #include <zorba/sax2.h>
@@ -26,8 +25,6 @@
 #include "zorbautils/mutex.h"
 
 #include "common/shared_types.h"
-
-#include "zorbatypes/xqpstring.h"
 
 #include "zorbaserialization/class_serializer.h"
 
@@ -49,7 +46,9 @@ class CompilerCB;
 /*******************************************************************************
 
   - theFileName :
-  The filename of the query.
+  The filename of the file containing the query. It is taken into account when
+  computing the base uri property of the static context. It may be an empty
+  string, if query does not come from a file.
 
   - theStaticContext :
   rchandle to the root sctx obj for this xquery. This sctx may be (a) a child
@@ -58,7 +57,7 @@ class CompilerCB;
   child of the root sctx of the other XQuery obj, or (d) if this XQuery obj
   is one that is created internally by StaticContextImpl::loadProlog(), the
   sctx that was created by the application. In cases (a), (b), and (c), the
-  root sctx of the query is created by the query itself.
+  root sctx of the query is created by the xquery obj itself.
 
   - theStaticContextWrapper :
   Pointer to a StaticContextImpl obj that wraps theStaticContext and which is
@@ -66,38 +65,26 @@ class CompilerCB;
   getStaticContext() method). The pointer is cached, so that it is returned
   if the application askes for the static context again.
 
-  - theSctxMap :
-  A query-level map that stores the sctx objs that need to be kept around for
-  the whole duration of a query (including runtime). In non-DEBUGGER mode,
-  the map stores only for root sctx of each module. In DEBUGGER mode, it
-  stores all the sctxs created by each module. Each sctx stored in this map
-  has an associated numeric id, and theSctxMap actually maps these numeric
-  ids to their associated sctx objs. The map is modified by the methods
-  TranslatorImpl::end_visit(ModuleImport) and TranslatorImpl::push_scope().
-
   - theCompilerCB :
+  A CompilerCB obj provides some additional context that is needed during the
+  compilation and execution of a query. See src/compiler/api/compilercb.h for
+  deetails. Each xquery obj has its own associated CompilerCB obj, which is
+  created by the constructor of the xquery obj.
 
-  - thePlan :
-  Provides access to the root iterator of the plan iterator tree.
-  Note: The root iterator is made accessible via a PlanProxy obj. This is for
-  thread safe operation, because the plan is shared among cloned queries. If a
-  direct rchandle to the root iterator was used, then PlanIterator would have
-  to be made a synchronized RCObject, which is too much overhead given that
-  we only need the synchronization during cloning and closing of a query.
-
-  - theIsClosed :
-  Set to true when the query has been closed. Used to check that after closing
-  a query, no operations can be performed on that query anymore.
+  - thePlanProxy :
+  An rchandle to a PlanProxy obj that provides thread-safe access to the root
+  iterator of the plan iterator tree. A PlanProxy obj is needed for thread
+  safety, because the plan is shared among cloned queries, but the PlanIterator
+  class does not do thread-safe ref counting. All clones share the same 
+  PlanProxy obj, which is a sunchronized RCObject. This way, no ref count
+  ops are performed on the plan root, except when the plan proxy itself is
+  destroyed, which can be done by a single therad only.
 
   - theDynamicContext :
-  The dynamic context for this query. Always belongs to the query.
+  The dynamic context for this query. Always belongs to the query. It is created
+  by the XQueryImpl constructor.
 
   - theDynamicContextWrapper :
-
-  - theExecuting :
-  Set to true while the query is being executed. It is used that a second
-  execution of the same XQuery obj cannot be start while a previous execution
-  is still going on.
 
   - theResultIterator :
   There is an 0:1 relationship between ResultIterator and XQuery objs. This
@@ -106,6 +93,15 @@ class CompilerCB;
   and (b) a ptr in this ResultIterator pointing back to the associated
   XQuery. This way we can guarantee that no ResultIterator exists when its
   associated XQuery is closed (see ~ResultIterator() and XQuery::close()).
+
+  - theIsClosed :
+  Set to true when the query has been closed. Used to check that after closing
+  a query, no operations can be performed on that query anymore.
+
+  - theExecuting :
+  Set to true while the query is being executed. It is used to make sure that
+  a second execution of the same XQuery obj cannot be started while a previous
+  execution is still going on.
 
   - theErrorManager :
   Each query has its own ErrorManager. The ErrorManager provides static methods
@@ -129,11 +125,14 @@ class CompilerCB;
   - theSAX2Handler :
   sax content handler that provide event-based xml parser
 
+  - theIsDebugMode :
+
+  - theProfileName :
+
 ********************************************************************************/
 class XQueryImpl : public XQuery , public ::zorba::serialization::SerializeBaseClass
 {
   friend class ResultIteratorImpl;
-  friend class ZorbaImpl; // only ZorbaImpl is allowed to create us
   friend class StaticContextImpl;  // StaticContextImpl::loadProlog() needs this
   friend class DynamicContextImpl;
   friend class CompilerCB;
@@ -145,9 +144,9 @@ class XQueryImpl : public XQuery , public ::zorba::serialization::SerializeBaseC
   class PlanProxy : public RCObject
   {
   public:
-    rchandle<SimpleRCObject>  theRootIter;
-
     SYNC_CODE(mutable RCLock  theRCLock;)
+
+    rchandle<SimpleRCObject>  theRootIter;
 
   public:
     SERIALIZABLE_CLASS(PlanProxy)
@@ -166,6 +165,8 @@ class XQueryImpl : public XQuery , public ::zorba::serialization::SerializeBaseC
 
  protected:
 
+  SYNC_CODE(mutable Mutex            theMutex;)
+
   // static stuff
   zstring                            theFileName;
 
@@ -173,11 +174,9 @@ class XQueryImpl : public XQuery , public ::zorba::serialization::SerializeBaseC
 
   mutable StaticContextImpl        * theStaticContextWrapper;
 
-  std::map<short, static_context_t>  theSctxMap;
-
   CompilerCB                       * theCompilerCB;
 
-  PlanProxy_t                        thePlan;
+  PlanProxy_t                        thePlanProxy;
 
   // dynamic stuff
   dynamic_context                  * theDynamicContext;
@@ -197,8 +196,6 @@ class XQueryImpl : public XQuery , public ::zorba::serialization::SerializeBaseC
 
   SAX2_ContentHandler              * theSAX2Handler;
 
-  SYNC_CODE(mutable Mutex            theCloningMutex;)
-
   double                             theDocLoadingUserTime;
   long                               theDocLoadingTime;
 
@@ -212,7 +209,9 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  virtual ~XQueryImpl();
+  XQueryImpl();
+
+  ~XQueryImpl();
 
   void setFileName(const String&);
 
@@ -220,7 +219,7 @@ public:
 
   void setTimeout(long aTimeout /* = -1 */);
 
-  virtual double getDocLoadingUserTime() const;
+  double getDocLoadingUserTime() const;
 
   long getDocLoadingTime() const;
 
@@ -235,6 +234,8 @@ public:
   void registerErrorHandler(ErrorHandler*);
 
   ErrorHandler* getRegisteredErrorHandler();
+
+  ErrorHandler* getRegisteredErrorHandlerNoSync();
 
   void resetErrorHandler();
 
@@ -331,8 +332,6 @@ public:
   XQuery_t clone() const;
 
 protected:
-
-  XQueryImpl();
 
   void doCompile(
         std::istream&,

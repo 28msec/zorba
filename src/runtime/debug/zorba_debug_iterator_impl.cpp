@@ -30,6 +30,7 @@
 #include "runtime/visitors/planiter_visitor.h"
 #include "runtime/core/item_iterator.h"
 #include "runtime/api/plan_iterator_wrapper.h"
+
 #include "api/serialization/serializer.h"
 #include "api/serialization/serializable_wrapper.h"
 #include "api/serializerimpl.h"
@@ -62,8 +63,6 @@ bool ZorbaDebugIterator::nextImpl(
     store::Item_t&  result,
     PlanState&      planState) const
 {
-  PlanWrapper_t   lWrapper = 0;
-  
   ZorbaDebugIteratorState* lState = 0;
   DEFAULT_STACK_INIT(ZorbaDebugIteratorState, lState, planState);
 

@@ -44,7 +44,6 @@
 #include "runtime/debug/debug.h"
 #include "runtime/debug/zorba_debug_iterator.h"
 #include "runtime/durations_dates_times/durations_dates_times.h"
-#include "runtime/eval/eval.h"
 #include "runtime/fnerror/fnerror.h"
 #include "runtime/fnput/fnput.h"
 #include "runtime/function_item/function_item_iter.h"
@@ -1084,20 +1083,6 @@ void PrinterVisitor::endVisit ( const TimestampIterator& ) {
   thePrinter.endEndVisit();
 }
 // </TimestampIterator>
-
-
-// <EvalIterator>
-void PrinterVisitor::beginVisit ( const EvalIterator& a) {
-  thePrinter.startBeginVisit("EvalIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const EvalIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </EvalIterator>
 
 
 // <ErrorIterator>

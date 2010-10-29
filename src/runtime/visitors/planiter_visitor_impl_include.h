@@ -134,26 +134,26 @@
   class ZorbaFopIterator;
 #endif
 
-  namespace flwor
-  {
-    class FLWORIterator;
-    class TupleStreamIterator;
-    class TupleSourceIterator;
-    class ForIterator;
-    class OuterForIterator;
-    class LetIterator;
-    class WhereIterator;
-    class CountIterator;
-    class GroupByIterator;
-    class OrderByIterator;
-    class WindowIterator;
-  }
+namespace flwor
+{
+  class FLWORIterator;
+  class TupleStreamIterator;
+  class TupleSourceIterator;
+  class ForIterator;
+  class OuterForIterator;
+  class LetIterator;
+  class WhereIterator;
+  class CountIterator;
+  class GroupByIterator;
+  class OrderByIterator;
+  class WindowIterator;
+}
 
-  class ZorbaDebugIterator;
-  class DebuggerSingletonIterator;
+class ZorbaDebugIterator;
+class DebuggerSingletonIterator;
 
-  class HoistIterator;
-  class UnhoistIterator;
+class HoistIterator;
+class UnhoistIterator;
 
 class ProbeIndexPointValueIterator;
 class ProbeIndexPointGeneralIterator;
@@ -168,8 +168,10 @@ class DeleteIndexIterator;
 
 class DynamicFnCallIterator;
 
+class EvalIterator;
 
- #define PLAN_ITER_VISITOR(class)                \
-  virtual void beginVisit ( const class& ) = 0;  \
-  virtual void endVisit ( const class& ) = 0
+
+#define PLAN_ITER_VISITOR(class)                \
+virtual void beginVisit ( const class& ) = 0;  \
+virtual void endVisit ( const class& ) = 0
 

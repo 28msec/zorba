@@ -255,8 +255,7 @@ void printEndTimeInfo( Timer &lTimer, std::vector<ulong> &lTimes, unsigned lNumb
 int parseCode( int status, std::string &lQueryFileString )
 {
   error::ErrorManager* errormgr = NULL;
-  std::map<short, static_context_t> lSctxMap;
-  CompilerCB aCompilerCB(lSctxMap, errormgr);
+  CompilerCB aCompilerCB(errormgr);
   xquery_driver lDriver(&aCompilerCB);
 
   if (!status) {

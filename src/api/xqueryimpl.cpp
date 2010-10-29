@@ -97,13 +97,18 @@ SERIALIZABLE_CLASS_VERSIONS(XQueryImpl)
 END_SERIALIZABLE_CLASS_VERSIONS(XQueryImpl)
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void XQueryImpl::PlanProxy::serialize(::zorba::serialization::Archiver& ar)
 {
   ar & theRootIter;
 }
 
 
+/*******************************************************************************
 
+********************************************************************************/
 XQueryImpl::PlanProxy::PlanProxy(PlanIter_t& root)
   :
   theRootIter(root.getp())
@@ -118,7 +123,6 @@ XQueryImpl::XQueryImpl()
   :
   theStaticContext(0),
   theStaticContextWrapper(0),
-  thePlan(),
   theDynamicContext(0),
   theDynamicContextWrapper(0),
   theResultIterator(NULL),
@@ -140,7 +144,7 @@ XQueryImpl::XQueryImpl()
   theErrorHandler = new DefaultErrorHandler();
   theErrorManager = new error::ErrorManager();
 
-  theCompilerCB = new CompilerCB(theSctxMap, theErrorManager);
+  theCompilerCB = new CompilerCB(theErrorManager);
 
   theDynamicContext = new dynamic_context();
 }
@@ -151,21 +155,18 @@ XQueryImpl::XQueryImpl()
 ********************************************************************************/
 XQueryImpl::~XQueryImpl()
 {
-  // only release resouces if not already released
-  // be careful with having non-pointers/rchandles as members in xqueryimpl
-  if (!theIsClosed)
-    close();
+  close();
 }
 
 
 /*******************************************************************************
-
+  Always called while holding theMutex
 ********************************************************************************/
 void XQueryImpl::serialize(::zorba::serialization::Archiver& ar)
 {
   // static stuff
   ar & theFileName;
-  if(!ar.is_serializing_out())
+  if (!ar.is_serializing_out())
   {
     delete theCompilerCB;
     //ar.xquery_impl = this;
@@ -176,10 +177,9 @@ void XQueryImpl::serialize(::zorba::serialization::Archiver& ar)
   }
 
   ar & theCompilerCB;
-  ar & theSctxMap;
-  ar & thePlan;
+  ar & thePlanProxy;
   ar & theStaticContext;
-  if(!ar.is_serializing_out())
+  if (!ar.is_serializing_out())
   {
     theDynamicContextWrapper = NULL;
     theStaticContextWrapper = NULL;
@@ -201,6 +201,8 @@ void XQueryImpl::serialize(::zorba::serialization::Archiver& ar)
 ********************************************************************************/
 void XQueryImpl::setFileName(const String& aFileName)
 {
+  SYNC_CODE(AutoMutex lock(&theMutex);)
+
   theFileName = Unmarshaller::getInternalString(aFileName);
 }
 
@@ -210,6 +212,8 @@ void XQueryImpl::setFileName(const String& aFileName)
 ********************************************************************************/
 String XQueryImpl::getFileName()
 {
+  SYNC_CODE(AutoMutex lock(&theMutex);)
+
   return Unmarshaller::newString(theFileName);
 }
 
@@ -219,6 +223,8 @@ String XQueryImpl::getFileName()
 ********************************************************************************/
 void XQueryImpl::setTimeout(long aTimeout /* = -1 */)
 {
+  SYNC_CODE(AutoMutex lock(&theMutex);)
+
   theCompilerCB->theTimeout = aTimeout;
 }
 
@@ -228,12 +234,16 @@ void XQueryImpl::setTimeout(long aTimeout /* = -1 */)
 ********************************************************************************/
 double XQueryImpl::getDocLoadingUserTime() const
 {
+  SYNC_CODE(AutoMutex lock(&theMutex);)
+
   return theDocLoadingUserTime;
 }
 
 
 long XQueryImpl::getDocLoadingTime() const
 {
+  SYNC_CODE(AutoMutex lock(&theMutex);)
+
   return theDocLoadingTime;
 }
 
@@ -243,6 +253,8 @@ long XQueryImpl::getDocLoadingTime() const
 ********************************************************************************/
 void XQueryImpl::setDebugMode( bool aDebugMode )
 {
+  SYNC_CODE(AutoMutex lock(&theMutex);)
+
   //check if the query is not compiled already
   checkNotCompiled();
   theIsDebugMode = aDebugMode;
@@ -251,6 +263,8 @@ void XQueryImpl::setDebugMode( bool aDebugMode )
 
 bool XQueryImpl::isDebugMode() const
 {
+  SYNC_CODE(AutoMutex lock(&theMutex);)
+
   return theIsDebugMode;
 }
 
@@ -260,6 +274,8 @@ bool XQueryImpl::isDebugMode() const
 ********************************************************************************/
 void XQueryImpl::setProfileName(std::string aProfileName)
 {
+  SYNC_CODE(AutoMutex lock(&theMutex);)
+
   checkIsDebugMode();
   theProfileName = aProfileName;
 }
@@ -267,6 +283,8 @@ void XQueryImpl::setProfileName(std::string aProfileName)
 
 std::string XQueryImpl::getProfileName() const
 {
+  SYNC_CODE(AutoMutex lock(&theMutex);)
+
   return theProfileName;
 }
 
@@ -276,10 +294,10 @@ std::string XQueryImpl::getProfileName() const
 ********************************************************************************/
 void XQueryImpl::registerErrorHandler(ErrorHandler* aErrorHandler)
 {
+  SYNC_CODE(AutoMutex lock(&theMutex);)
+
   try
   {
-    SYNC_CODE(AutoMutex lock(&theCloningMutex);)
-
     checkNotClosed();
     checkNotExecuting();
 
@@ -303,10 +321,29 @@ ErrorHandler* XQueryImpl::getRegisteredErrorHandler()
 {
   ErrorHandler* result = NULL;
 
+  SYNC_CODE(AutoMutex lock(&theMutex);)
+
   try
   {
-    SYNC_CODE(AutoMutex lock(&theCloningMutex);)
+    checkNotClosed();
 
+    if (theUserErrorHandler)
+      result = theErrorHandler;
+  }
+  QUERY_CATCH
+  return result;
+}
+
+
+/*******************************************************************************
+  Returns NULL if no user ErrorHandler is registered
+********************************************************************************/
+ErrorHandler* XQueryImpl::getRegisteredErrorHandlerNoSync()
+{
+  ErrorHandler* result = NULL;
+
+  try
+  {
     checkNotClosed();
 
     if (theUserErrorHandler)
@@ -322,14 +359,15 @@ ErrorHandler* XQueryImpl::getRegisteredErrorHandler()
 ********************************************************************************/
 void XQueryImpl::resetErrorHandler()
 {
+  SYNC_CODE(AutoMutex lock(&theMutex);)
+
   try
   {
-    SYNC_CODE(AutoMutex lock(&theCloningMutex);)
-
     checkNotClosed();
     checkNotExecuting();
 
     assert (theErrorHandler);
+
     if ( ! theUserErrorHandler )
       return;
 
@@ -355,6 +393,8 @@ void XQueryImpl::compile(const String& aQuery)
 ********************************************************************************/
 void XQueryImpl::compile(const String& aQuery, const Zorba_CompilerHints_t& aHints)
 {
+  SYNC_CODE(AutoMutex lock(&theMutex);)
+
   try
   {
     checkNotClosed();
@@ -375,6 +415,8 @@ void XQueryImpl::compile(
     std::istream& aQuery,
     const Zorba_CompilerHints_t& aHints)
 {
+  SYNC_CODE(AutoMutex lock(&theMutex);)
+
   try
   {
     checkNotClosed();
@@ -394,17 +436,21 @@ void XQueryImpl::compile(
     const StaticContext_t& aStaticContext,
     const Zorba_CompilerHints_t& aHints)
 {
+  SYNC_CODE(AutoMutex lock(&theMutex);)
+
   try
   {
     checkNotClosed();
     checkNotCompiled();
 
     theStaticContext = Unmarshaller::getInternalStaticContext(aStaticContext);
+    // Note: unless this is a load-prolog query, the doCompile method invoked
+    // below will create a child sctx and set theStaticContext to that child.
 
-    // if the static context results from loadProlog, we need all the contexts
+    // If the static context results from loadProlog, we need all the contexts
     // that were created when compiling the query
-    theSctxMap = static_cast<StaticContextImpl*>(aStaticContext.get())->theSctxMap;
-    theCompilerCB->theSctxMap = &theSctxMap;
+    theCompilerCB->theSctxMap =
+    static_cast<StaticContextImpl*>(aStaticContext.get())->theSctxMap;
 
     std::istringstream lQueryStream(aQuery.c_str());
 
@@ -422,6 +468,8 @@ void XQueryImpl::compile(
     const StaticContext_t& aStaticContext,
     const Zorba_CompilerHints_t& aHints)
 {
+  SYNC_CODE(AutoMutex lock(&theMutex);)
+
   try
   {
     checkNotClosed();
@@ -431,8 +479,8 @@ void XQueryImpl::compile(
 
     // if the static context results from loadProlog, we need all the context
     // that were created when compiling the query
-    theSctxMap = static_cast<StaticContextImpl*>(aStaticContext.get())->theSctxMap;
-    theCompilerCB->theSctxMap = &theSctxMap;
+    theCompilerCB->theSctxMap = 
+    static_cast<StaticContextImpl*>(aStaticContext.get())->theSctxMap;
 
     doCompile(aQuery, aHints);
   }
@@ -441,16 +489,13 @@ void XQueryImpl::compile(
 
 
 /*******************************************************************************
-
+  Always called while holding theMutex
 ********************************************************************************/
 void XQueryImpl::doCompile(
     std::istream& aQuery,
     const Zorba_CompilerHints_t& aHints,
     bool fork_sctx)
 {
-  checkNotClosed();
-  checkNotCompiled();
-
   if ( ! theStaticContext )
   {
     // no context given => use the default one (i.e. a child of the root static context)
@@ -475,8 +520,8 @@ void XQueryImpl::doCompile(
   theStaticContext->set_entity_retrieval_uri(url);
 
   theCompilerCB->theRootSctx = theStaticContext;
-  const short sctxid = theCompilerCB->theSctxMap->size() + 1;
-  (*theCompilerCB->theSctxMap)[sctxid] = theStaticContext;
+  const short sctxid = theCompilerCB->theSctxMap.size() + 1;
+  (theCompilerCB->theSctxMap)[sctxid] = theStaticContext;
 
   // Set the compiler config.
   // If lib_module is set to true the query will be considered a library module
@@ -505,9 +550,7 @@ void XQueryImpl::doCompile(
   // let's compile
   PlanIter_t planRoot = lCompiler.compile(aQuery, theFileName);
 
-  SYNC_CODE(AutoMutex lock(&theCloningMutex);)
-
-  thePlan = new PlanProxy(planRoot);
+  thePlanProxy = new PlanProxy(planRoot);
 }
 
 
@@ -521,6 +564,8 @@ void XQueryImpl::loadProlog(
     const StaticContext_t& aStaticContext,
     const Zorba_CompilerHints_t& aHints)
 {
+  SYNC_CODE(AutoMutex lock(&theMutex);)
+
   try
   {
     checkNotClosed();
@@ -545,6 +590,8 @@ void XQueryImpl::loadProlog(
 ********************************************************************************/
 void XQueryImpl::parse(std::istream& aQuery)
 {
+  SYNC_CODE(AutoMutex lock(&theMutex);)
+
   try
   {
     checkNotClosed();
@@ -582,10 +629,10 @@ void XQueryImpl::parse(std::istream& aQuery)
 ********************************************************************************/
 XQuery_t XQueryImpl::clone() const
 {
+  SYNC_CODE(AutoMutex lock(&theMutex);)
+
   try
   {
-    SYNC_CODE(AutoMutex lock(&theCloningMutex);)
-
     checkNotClosed();
     checkCompiled();
 
@@ -593,17 +640,19 @@ XQuery_t XQueryImpl::clone() const
 
     XQueryImpl* clone = static_cast<XQueryImpl*>(lXQuery.get());
 
-    clone->registerErrorHandler(theErrorHandler);
-    clone->thePlan = thePlan;
     clone->theFileName = theFileName;
 
-    clone->theStaticContext = theStaticContext->create_child_context();
+    if (theUserErrorHandler)
+      clone->registerErrorHandler(theErrorHandler);
 
+    clone->theStaticContext = theStaticContext->create_child_context();
     clone->theCompilerCB->theRootSctx = clone->theStaticContext;
     clone->theCompilerCB->theSctxMap = theCompilerCB->theSctxMap;
 
-    const short sctxid = clone->theCompilerCB->theSctxMap->size() + 1;
-    (*clone->theCompilerCB->theSctxMap)[sctxid] = theStaticContext;
+    const short sctxid = clone->theCompilerCB->theSctxMap.size() + 1;
+    (clone->theCompilerCB->theSctxMap)[sctxid] = theStaticContext;
+
+    clone->thePlanProxy = thePlanProxy;
 
     return lXQuery;
   }
@@ -617,6 +666,8 @@ XQuery_t XQueryImpl::clone() const
 ********************************************************************************/
 const StaticContext* XQueryImpl::getStaticContext() const
 {
+  SYNC_CODE(AutoMutex lock(&theMutex);)
+
   try
   {
     checkNotClosed();
@@ -638,6 +689,8 @@ const StaticContext* XQueryImpl::getStaticContext() const
 ********************************************************************************/
 bool XQueryImpl::isUpdating() const
 {
+  SYNC_CODE(AutoMutex lock(&theMutex);)
+
   try
   {
     checkNotClosed();
@@ -658,12 +711,12 @@ bool XQueryImpl::saveExecutionPlan(
     Zorba_binary_plan_format_t archive_format,
     Zorba_save_plan_options_t save_options)
 {
+  SYNC_CODE(AutoMutex lock(&theMutex);)
+
   try
   {
     checkNotClosed();
     checkCompiled();
-
-    theCompilerCB->theIsSerializingOut = true;
 
     if (archive_format == ZORBA_USE_XML_ARCHIVE)
     {
@@ -686,27 +739,22 @@ bool XQueryImpl::saveExecutionPlan(
       bin_ar.serialize_out();
     }
 
-    theCompilerCB->theIsSerializingOut = false;
     return true;
   }
   catch (error::ZorbaError& e)
   {                           
-    theCompilerCB->theIsSerializingOut = false;
     ZorbaImpl::notifyError(theErrorHandler, e);
   }                           
   catch (FlowCtlException&)   
   {
-    theCompilerCB->theIsSerializingOut = false;
     ZorbaImpl::notifyError(theErrorHandler, "User interrupt");
   }                           
   catch (std::exception& e)   
   {
-    theCompilerCB->theIsSerializingOut = false;
     ZorbaImpl::notifyError(theErrorHandler, e.what());
   }                           
   catch (...)                 
   {
-    theCompilerCB->theIsSerializingOut = false;
     ZorbaImpl::notifyError(theErrorHandler);   
   }           
 
@@ -719,6 +767,8 @@ bool XQueryImpl::saveExecutionPlan(
 ********************************************************************************/
 bool XQueryImpl::loadExecutionPlan(std::istream& is, SerializationCallback* aCallback)
 {
+  SYNC_CODE(AutoMutex lock(&theMutex);)
+
   try
   {
     checkNotClosed();
@@ -759,6 +809,8 @@ bool XQueryImpl::loadExecutionPlan(std::istream& is, SerializationCallback* aCal
 ********************************************************************************/
 DynamicContext* XQueryImpl::getDynamicContext() const
 {
+  SYNC_CODE(AutoMutex lock(&theMutex);)
+
   try
   {
     checkNotClosed();
@@ -779,6 +831,8 @@ DynamicContext* XQueryImpl::getDynamicContext() const
 ********************************************************************************/
 void XQueryImpl::registerSAXHandler(SAX2_ContentHandler * aSAXHandler)
 {
+  SYNC_CODE(AutoMutex lock(&theMutex);)
+
   theSAX2Handler = aSAXHandler;
 }
 
@@ -798,13 +852,15 @@ void XQueryImpl::executeSAX(SAX2_ContentHandler * aSAXHandler)
 ********************************************************************************/
 void XQueryImpl::executeSAX()
 {
+  SYNC_CODE(AutoMutex lock(&theMutex);)
+
   try
   {
     checkNotClosed();
     checkCompiled();
     checkNotExecuting();
 
-    if (isUpdating())
+    if (theCompilerCB->isUpdating())
     {
       ZORBA_ERROR_DESC(API0007_CANNOT_SERIALIZE_PUL,
                        "Can't perform SAX serialization with an updating query.");
@@ -859,6 +915,8 @@ void XQueryImpl::execute(
     std::ostream& os,
     const Zorba_SerializerOptions_t* opt)
 {
+  SYNC_CODE(AutoMutex lock(&theMutex);)
+
   try
   {
     checkNotClosed();
@@ -903,6 +961,8 @@ void XQueryImpl::execute(
     void* aCallbackData,
     const Zorba_SerializerOptions_t* aSerOptions /*= NULL*/)
 {
+  SYNC_CODE(AutoMutex lock(&theMutex);)
+
   try
   {
     checkNotClosed();
@@ -943,13 +1003,15 @@ void XQueryImpl::execute(
 ********************************************************************************/
 void XQueryImpl::execute()
 {
+  SYNC_CODE(AutoMutex lock(&theMutex);)
+
   try
   {
     checkNotClosed();
     checkCompiled();
     checkNotExecuting();
 
-    if (!isUpdating())
+    if (!theCompilerCB->isUpdating())
     {
       ZORBA_ERROR_DESC(API0008_NOT_AN_UPDATE_XQUERY,
                        "Cannot execute a non-updating query.");
@@ -993,11 +1055,18 @@ void XQueryImpl::execute()
 ********************************************************************************/
 Iterator_t XQueryImpl::iterator()
 {
+  SYNC_CODE(AutoMutex lock(&theMutex);)
+
   try
   {
     checkNotClosed();
     checkCompiled();
     checkNotExecuting();
+
+    if (theResultIterator)
+    {
+      ZORBA_ERROR(API0010_XQUERY_HAS_ITERATOR_ALREADY);
+    }
 
     PlanWrapper_t lPlan = generateWrapper();
 
@@ -1010,25 +1079,25 @@ Iterator_t XQueryImpl::iterator()
 
 
 /*******************************************************************************
-  Called from ResultIteratorImpl::closeInternal() or from ResultIteratorImpl
-  destructor.
+  Called only from ~ResultIteratorImpl()
 ********************************************************************************/
 void XQueryImpl::removeResultIterator(const ResultIteratorImpl* iter)
 {
+  SYNC_CODE(AutoMutex lock(&theMutex);)
+
+  assert(theResultIterator == iter);
+
   try
   {
-    if (theResultIterator == iter)
-    {
-      theResultIterator = NULL;
-      theExecuting = false;
-    }
+    theResultIterator = NULL;
+    theExecuting = false;
   }
   QUERY_CATCH
 }
 
 
 /*******************************************************************************
-
+  Always called while holding theMutex
 ********************************************************************************/
 void XQueryImpl::serialize(
     std::ostream& os,
@@ -1048,7 +1117,7 @@ void XQueryImpl::serialize(
 
 
 /*******************************************************************************
-
+  Always called while holding theMutex
 ********************************************************************************/
 void XQueryImpl::serialize(
     std::ostream& os,
@@ -1071,12 +1140,12 @@ void XQueryImpl::serialize(
 
 
 /*******************************************************************************
-
+  Always called while holding theMutex
 ********************************************************************************/
 PlanWrapper_t XQueryImpl::generateWrapper()
 {
   PlanWrapper_t lPlan = new PlanWrapper(
-      static_cast<PlanIterator*>(thePlan->theRootIter.getp()),
+      static_cast<PlanIterator*>(thePlanProxy->theRootIter.getp()),
       theCompilerCB,
       theDynamicContext,
       this,
@@ -1138,6 +1207,8 @@ void XQueryImpl::debug(
     unsigned short aCommandPort /*= 8000*/,
     unsigned short anEventPort /*= 9000*/)
 {
+  SYNC_CODE(AutoMutex lock(&theMutex);)
+
   try
   {
     //check if the query is compiled and not closed
@@ -1164,14 +1235,14 @@ void XQueryImpl::debug(
 
 
 /*******************************************************************************
-
+  May be called explicitly by the application or from ~XQueryImpl().
 ********************************************************************************/
 void XQueryImpl::close()
 {
+  SYNC_CODE(AutoMutex lock(&theMutex);)
+
   try
   {
-    SYNC_CODE(AutoMutex lock(&theCloningMutex);)
-
     if (theIsClosed)
       return;
  
@@ -1183,9 +1254,10 @@ void XQueryImpl::close()
 
     theExecuting = false;
 
-    thePlan = 0;
-
-    theSctxMap.clear();
+    if (thePlanProxy)
+    {
+      thePlanProxy = NULL;
+    }
 
     delete theErrorManager;
 
@@ -1200,8 +1272,12 @@ void XQueryImpl::close()
 
     theStaticContext = NULL;
 
-    delete theCompilerCB->theDebuggerCommons;
-    delete theCompilerCB;
+    // theCompilerCB may be NULL if an error occured while serializing "this" in.
+    if (theCompilerCB)
+    {
+      delete theCompilerCB->theDebuggerCommons;
+      delete theCompilerCB;
+    }
 
     theIsClosed = true;
   }
@@ -1210,66 +1286,74 @@ void XQueryImpl::close()
 
 
 /*******************************************************************************
-
+  Always called while holding theMutex
 ********************************************************************************/
 void XQueryImpl::checkIsDebugMode() const
 {
-  if ( ! isDebugMode() ) 
+  if (!theIsDebugMode) 
   {
-    ZORBA_ERROR_DESC(API0009_XQUERY_NOT_COMPILED_IN_DEBUG_MODE,
-                     "Can't perform the operation because the debug mode is not set to true");
+    ZORBA_ERROR_DESC_OSS(API0009_XQUERY_NOT_COMPILED_IN_DEBUG_MODE,
+                         "Can't perform the operation because the debug mode "
+                         << "is not set to true");
   }
 }
 
 
 /*******************************************************************************
-  check whether the query is open, and if not, fire an error
+  check whether the query is open, and if not, fire an error.
+  Always called while holding theMutex
 ********************************************************************************/
 void XQueryImpl::checkNotClosed() const
 {
   if (theIsClosed)
   {
-    ZORBA_ERROR_DESC(API0006_XQUERY_ALREADY_CLOSED,
-                     "Can't perform the operation because the query is already closed");
+    ZORBA_ERROR_DESC_OSS(API0006_XQUERY_ALREADY_CLOSED,
+                         "Can't perform the operation because the query is "
+                         << "already closed");
   }
 }
 
 
 /*******************************************************************************
-  Check whether the query has been compiled successfully; if not, fire an error
+  Check whether the query has been compiled successfully; if not, fire an error.
+  Always called while holding theMutex
 ********************************************************************************/
 void XQueryImpl::checkCompiled() const
 {
-  if ( ! thePlan )
+  if ( ! thePlanProxy )
   {
-    ZORBA_ERROR_DESC(API0003_XQUERY_NOT_COMPILED,
-                     "Can't perform the operation because the query is not compiled");
+    ZORBA_ERROR_DESC_OSS(API0003_XQUERY_NOT_COMPILED,
+                         "Can't perform the operation because the query is "
+                         << "not compiled");
   }
 }
 
 
 /*******************************************************************************
-  Check whether the query has not been compiled, and if not, fire an error
+  Check whether the query has not been compiled, and if not, fire an error.
+  Always called while holding theMutex
 ********************************************************************************/
 void XQueryImpl::checkNotCompiled() const
 {
-  if ( thePlan )
+  if ( thePlanProxy )
   {
-    ZORBA_ERROR_DESC(API0004_XQUERY_ALREADY_COMPILED,
-                     "Can't perform the operation because the query has already been compiled");
+    ZORBA_ERROR_DESC_OSS(API0004_XQUERY_ALREADY_COMPILED,
+                         "Can't perform the operation because the query has "
+                         << "already been compiled");
   }
 }
 
 
 /*******************************************************************************
-
+  Always called while holding theMutex
 ********************************************************************************/
 void XQueryImpl::checkNotExecuting() const
 {
   if ( theExecuting )
   {
-    ZORBA_ERROR_DESC(API0005_XQUERY_ALREADY_EXECUTING,
-                     "Can't perform the operation because the query is executing already.");
+    ZORBA_ERROR_DESC_OSS(API0005_XQUERY_ALREADY_EXECUTING,
+                         "Can't perform the operation because the query is "
+                         << "executing already.");
   }
 }
 
@@ -1279,6 +1363,8 @@ void XQueryImpl::checkNotExecuting() const
 ********************************************************************************/
 void XQueryImpl::printPlan(std::ostream& aStream, bool aDotFormat) const
 {
+  SYNC_CODE(AutoMutex lock(&theMutex);)
+
   try
   {
     checkNotClosed();
@@ -1290,20 +1376,26 @@ void XQueryImpl::printPlan(std::ostream& aStream, bool aDotFormat) const
     else
       lPrinter.reset(new XMLIterPrinter(aStream));
     print_iter_plan(*(lPrinter.get()),
-                    static_cast<PlanIterator*>(thePlan->theRootIter.getp()));
+                    static_cast<PlanIterator*>(thePlanProxy->theRootIter.getp()));
   }
   QUERY_CATCH
 }
 
 
-std::ostream& operator<< (std::ostream& os, const XQuery_t& aQuery)
+/*******************************************************************************
+
+********************************************************************************/
+std::ostream& operator<<(std::ostream& os, const XQuery_t& aQuery)
 {
   aQuery->execute(os);
   return os;
 }
 
 
-std::ostream& operator<< (std::ostream& os, XQuery* aQuery)
+/*******************************************************************************
+
+********************************************************************************/
+std::ostream& operator<<(std::ostream& os, XQuery* aQuery)
 {
   XQueryImpl* lQuery = dynamic_cast<XQueryImpl*>(aQuery);
   ZORBA_ASSERT (lQuery != NULL);

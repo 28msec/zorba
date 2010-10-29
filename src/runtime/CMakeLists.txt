@@ -124,6 +124,7 @@ LIST(APPEND RUNTIME_SRCS
     util/flowctl_exception.cpp
     function_item/function_item.cpp
     function_item/dynamic_fncall_iterator.cpp
+    eval/eval.cpp
 )
 
 IF (NOT ZORBA_NO_FULL_TEXT)

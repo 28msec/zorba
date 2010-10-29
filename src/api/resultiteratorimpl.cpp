@@ -223,7 +223,7 @@ void ResultIteratorImpl::close()
 
 
 /*******************************************************************************
-
+  Called only from the XQueryImpl::close() method
 ********************************************************************************/
 void ResultIteratorImpl::closeInternal()
 {
@@ -242,11 +242,8 @@ void ResultIteratorImpl::closeInternal()
     theHaveLock = false;
   })
 
-  if (theQuery)
-  {
-    theQuery->removeResultIterator(this);
-    theQuery = NULL;
-  }
+  assert(theQuery);
+  theQuery = NULL;
 }
 
 

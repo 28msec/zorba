@@ -1351,8 +1351,8 @@ void push_scope()
     // this allows the debugger to introspect (during runtime)
     // all variables in scope
     theSctxIdStack.push(sctxid());
-    theCurrSctxId = theCCB->theSctxMap->size() + 1;
-    (*theCCB->theSctxMap)[sctxid()] = theSctx;
+    theCurrSctxId = theCCB->theSctxMap.size() + 1;
+    (theCCB->theSctxMap)[sctxid()] = theSctx;
   }
   else
   {
@@ -1375,7 +1375,7 @@ void pop_scope()
   if (theCCB->theDebuggerCommons != NULL)
   {
     theCurrSctxId = theSctxIdStack.top();
-    theSctx = (*theCCB->theSctxMap)[sctxid()];
+    theSctx = (theCCB->theSctxMap)[sctxid()];
     theSctxIdStack.pop();
   }
   else
@@ -3070,8 +3070,8 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       moduleRootSctx->set_entity_retrieval_uri(compURI);
       moduleRootSctx->set_module_namespace(targetNS);
       moduleRootSctx->set_typemanager(new TypeManagerImpl(&GENV_TYPESYSTEM));
-      short moduleRootSctxId = theCCB->theSctxMap->size() + 1;
-      (*theCCB->theSctxMap)[moduleRootSctxId] = moduleRootSctx;
+      short moduleRootSctxId = theCCB->theSctxMap.size() + 1;
+      (theCCB->theSctxMap)[moduleRootSctxId] = moduleRootSctx;
 
       // Create an sctx where the imported module is going to register all the
       // variable and function declarations that appear in its prolog. After the
@@ -4894,9 +4894,6 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
     theCCB->theConfig.optimize_cb(body.getp(), msg.str());
 
   PlanIter_t icIter = codegen("integrity constraint", body, theCCB);
-
-  //store::Iterator_t icPlanWrapper =
-  //  new PlanWrapper(icIter, theCCB, NULL /*dctx*/, NULL);
 
   // Update static context
   store::Item_t qnameItem;
@@ -12105,7 +12102,7 @@ expr_t translate(const parsenode& root, CompilerCB* ccb)
   return translate_aux(NULL,
                        root,
                        ccb->theRootSctx,
-                       ccb->theSctxMap->size(),
+                       ccb->theSctxMap.size(),
                        &minfo,
                        mod_stack,
                        false);

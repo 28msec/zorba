@@ -168,8 +168,6 @@ namespace zorba{
 
     class TimestampIterator;
 
-    class EvalIterator;
-
     class ErrorIterator;
 
     class FnPutIterator;
@@ -694,9 +692,6 @@ public:
 
     virtual void beginVisit ( const TimestampIterator& ) = 0;
     virtual void endVisit   ( const TimestampIterator& ) = 0;
-
-    virtual void beginVisit ( const EvalIterator& ) = 0;
-    virtual void endVisit   ( const EvalIterator& ) = 0;
 
     virtual void beginVisit ( const ErrorIterator& ) = 0;
     virtual void endVisit   ( const ErrorIterator& ) = 0;

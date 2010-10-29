@@ -30,7 +30,6 @@ namespace zorba {
 class ZorbaDebuggerCommons;
 class static_context;
 
-// exported for unit testing only
 
 /*******************************************************************************
   There is one CompilerCB per query plus one CompilerCB per invocation of an
@@ -45,8 +44,13 @@ class static_context;
   CompilerCBs share the query's ErrorManager.
 
   - theSctxMap :
-  A reference to the query-level map that maps sctx numeric ids to sctx objs.
-  (see src/api/xqueryimpl.h). The eval CompilerCBs share the query's sctx map.
+  A query-level (or eval-level) map that stores the sctx objs that need to be
+  kept around for the whole duration of a query (including runtime). In non-
+  DEBUGGER mode, the map stores only for root sctx of each module. In DEBUGGER
+  mode, it stores all the sctxs created by each module. Each sctx stored in 
+  this map has an associated numeric id, and theSctxMap actually maps these
+  numeric ids to their associated sctx objs. The map is modified by the methods
+  TranslatorImpl::end_visit(ModuleImport) and TranslatorImpl::push_scope().
 
   - theRootSctx :
   The root static ctx for the query or for one of the query's eval exprs. For
@@ -64,6 +68,8 @@ class static_context;
   - theIsUpdating :
   Set to true if the root expr of the query or eval expr is an updating expr. 
 
+  - theTimeout :
+
   - theTempIndexCounter :
   A counter used to create unique names for temporary (query-specific) indexes
   created to perform hashjoins (see rewriter/rules/index_join_rule.cpp).
@@ -73,6 +79,14 @@ class static_context;
   module, zorba will wrap it in a dummy main module and compile/execute that
   dummy module (see  XQueryCompiler::createMainModule() method). This flag is
   a copy of the lib_module flag in Zorba_CompilerHints_t.
+
+  - theConfig.parse_cb :
+  Pointer to the function to call to print the AST that results from parsing
+  the query.
+
+  - theConfig.translate_cb :
+  Pointer to the function to call to print the expr tree that results from
+  translating the query AST.
 ********************************************************************************/
 class ZORBA_DLL_PUBLIC CompilerCB : public zorba::serialization::SerializeBaseClass
 {
@@ -87,6 +101,7 @@ public:
     } opt_level_t;
     
     typedef void (* expr_callback) (const expr *, const std::string& name);
+
     typedef void (* ast_callback) (const parsenode *, const std::string& name);
 
     bool           force_gflwor;
@@ -94,7 +109,6 @@ public:
     bool           lib_module;
     ast_callback   parse_cb;
     expr_callback  translate_cb;
-    expr_callback  normalize_cb;
     expr_callback  optimize_cb;
     bool           print_item_flow;  // TODO: move to RuntimeCB
 
@@ -112,7 +126,7 @@ public:
 public:  
   error::ErrorManager               * theErrorManager;
 
-  std::map<short, static_context_t> * theSctxMap;
+  std::map<short, static_context_t>   theSctxMap;
 
   static_context                    * theRootSctx;
 
@@ -122,13 +136,11 @@ public:
 
   bool                                theIsUpdating;
 
-  bool                                theIsSerializingOut;
-
-  config                              theConfig;
-
   long                                theTimeout;
 
   ulong                               theTempIndexCounter;
+
+  config                              theConfig;
 
 public:
   SERIALIZABLE_CLASS(CompilerCB);
@@ -136,14 +148,11 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  CompilerCB(
-        std::map<short, static_context_t>&,
-        error::ErrorManager*,
-        long timeout = -1);
+  CompilerCB(error::ErrorManager*, long timeout = -1);
 
   CompilerCB(const CompilerCB& ccb);
 
-  virtual ~CompilerCB();
+  ~CompilerCB();
 
   bool isLoadPrologQuery() const { return theIsLoadProlog; }
 
@@ -153,7 +162,7 @@ public:
 
   bool isUpdating() const { return theIsUpdating; }
 
-  static_context* getStaticContext(short c);
+  static_context* getStaticContext(short id);
 };
 
 

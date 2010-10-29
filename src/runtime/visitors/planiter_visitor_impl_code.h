@@ -341,3 +341,5 @@
   PLAN_ITER_VISITOR(DeleteIndexIterator);
 
   PLAN_ITER_VISITOR(DynamicFnCallIterator);
+
+  PLAN_ITER_VISITOR(EvalIterator);

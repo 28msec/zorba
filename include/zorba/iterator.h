@@ -31,6 +31,9 @@ namespace zorba {
  * method changes the state from non-open to open, and the close() method
  * changes the state from open to not-open.
  *
+ * Iterator is not a thread-safe class, i.e., none of its methods should ever
+ * be called by two or more threads in parallel.
+ *
  * Note: This class is reference counted. When writing multi-threaded clients,
  * it is the responibility of the client code to synchronize assignments to the
  * SmartPtr holding this object.

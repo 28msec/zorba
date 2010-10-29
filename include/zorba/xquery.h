@@ -26,481 +26,506 @@
 
 namespace zorba {
 
-  typedef Zorba_SerializerOptions_t* (*itemHandler)(void* aUserData);
+typedef Zorba_SerializerOptions_t* (*itemHandler)(void* aUserData);
 
-  /** \brief This class is the representation of an %XQuery in the %Zorba engine.
-   *
-   * To compile and execute an XQuery, an instance of this class must be created. 
-   * This is done by using either the createQuery or compileQuery methods of the
-   * Zorba class. These methods return an instance of XQuery_t, which is a 
-   * reference counted smart pointer to a dynamically allocated XQuery object. After receiving
-   * an XQuery_t, an application can make multiple copies of it.
-   * Hence, each XQuery object can have multiple owners, potentially in different
-   * threads. The XQuery object is deleted when all XQuery_t objects that point 
-   * to it are destroyed.
-   *
-   * Although an XQuery instance may be accessible from multiple threads, the
-   * instance is not thread safe, i.e.\ its methods should not be invoked in 
-   * parallel by multiple threads. The only exception to this rule is the clone()
-   * method. Cloning is the way to execute the same query from multiple threads.
-   * Cloning can be done only after the query has been compiled. The clone() 
-   * method creates and returns a new XQuery object that shares the same 
-   * execution plan as the original XQuery object. After clone() returns, the
-   * calling thread can invoke the various execution methods on the XQuery clone. 
-   *
-   * The file \link simple.cpp \endlink contains some basic examples the demonstrate
-   * the use of this class.
-   *
-   * Note: This class is reference counted. When writing multi-threaded clients,
-   * it is the responibility of the client code to synchronize assignments to the
-   * SmartPtr holding this object.
+/** 
+ * \brief This class is the representation of an %XQuery in the %Zorba engine.
+ *
+ * To compile and execute an XQuery, an instance of this class must be created. 
+ * This is done by using either the createQuery or compileQuery methods of the
+ * Zorba class. These methods return an instance of XQuery_t, which is a 
+ * reference counted smart pointer to a dynamically allocated XQuery object.
+ * After receiving an XQuery_t, an application can make multiple copies of it.
+ * Hence, an XQuery object can have multiple users, potentially in different
+ * threads. The XQuery object is deleted when all XQuery_t objects that point 
+ * to it are destroyed.
+ *
+ * The file \link simple.cpp \endlink contains some basic examples the demonstrate
+ * the use of this class.
+ *
+ * Note: This class is reference counted. When writing multi-threaded clients,
+ * it is the responibility of the client code to synchronize assignments to the
+ * SmartPtr holding this object.
+ */
+class ZORBA_DLL_PUBLIC XQuery : public SmartObject
+{
+ public:
+  /** 
+   * \brief Destructor that destroys this XQuery object. 
+   * 
+   * The destructor is called automatically when there are no more XQuery_t
+   * smart pointers pointing to this XQuery instance.
    */
-  class ZORBA_DLL_PUBLIC XQuery : public SmartObject
-  {
-    public:
-      /** \brief Destructor that destroys this XQuery object. 
-       * 
-       * The destructor is called automatically when there are no more XQuery_t
-       * smart pointers pointing to this XQuery instance.
-       */
-      virtual ~XQuery() {}
+  virtual ~XQuery() {}
 
-      /** \brief Register an ErrorHandler to which errors during compilation or
-       *         execution/serialization are reported.
-       *
-       * If no ErrorHandler has been set using this function or when creating/compiling
-       * the query using the Zorba object (i.e.\ createQuery or compileQuery),
-       * then subclasses of the ZorbaException class are thrown to report errors.
-       *
-       *  @param aErrorHandler ErrorHandler to which errors are reported. The
-       *         caller retains ownership over the ErrorHandler passed as
-       *         parameter.
-       *  @throw SystemException if the query has been closed.
-       *  @see close()
-       */
-      virtual void
-      registerErrorHandler(ErrorHandler* aErrorHandler) = 0;
+  /** 
+   * \brief Set the filename of a query.
+   *
+   * This (after URI-encoding) becomes the encapsulating entity's
+   * retrieval URI (in RFC 3986 terms).
+   */
+  virtual void
+  setFileName(const String&) = 0;
+  
+  /** 
+   * \brief Register an ErrorHandler to which errors during compilation or
+   * execution/serialization are reported.
+   *
+   * If no ErrorHandler has been set via this function, the default error
+   * handling mechanism is to throw instances of the ZorbaException class.
+   *
+   * @param aErrorHandler ErrorHandler to which errors are reported. The
+   *        caller retains ownership over the ErrorHandler passed as
+   *        parameter.
+   * @throw SystemException if the query has been closed.
+   * @see close()
+   */
+  virtual void
+  registerErrorHandler(ErrorHandler* aErrorHandler) = 0;
+  
+  /** 
+   * \brief Reset the error handling mechanism back to the default,
+   * i.e.\ behave as if no ErrorHandler had been set.
+   *   
+   *  @throw SystemException if the query has been closed already.
+   *  @see registerErrorHandler(ErrorHandler*)
+   */
+  virtual void
+  resetErrorHandler() = 0;
+  
+  /**
+   * \brief Set a timeout, after which the execution of the query will be
+   * aborted.
+   *
+   * @param aTimeout is an optional argument, which declares, that the
+   *        execution of a query will be aborted after aTimeout number of
+   *        seconds. If aTimeout is set to -1 (default), the query will
+   *        never abort.
+   */
+  virtual void
+  setTimeout(long aTimeout = -1) = 0;
+  
+  /**
+   * \brief Execute the query and write the result to the given output stream.
+   *        The query only has a result if it's a non-updating query.
+   *
+   * @param aOutStream the output stream on which the result is written.
+   * @param aSerOptions an optional set of serialization options.
+   * @throw ZorbaException if an error occurs (e.g. the query is closed or
+   *        has not been compiled)
+   */
+  virtual void
+  execute(std::ostream& aOutStream,
+          const Zorba_SerializerOptions_t* aSerOptions = NULL) = 0;
+  
+  /**
+   * \brief Execute the query and write the result to the given output stream.
+   * A handler function gets called before the serialization of each item.
+   *
+   * @param aOutStream the output stream on which the result is written.
+   * @param aCallbackFunction a call back function which is called every time,
+   *        before the serialization of an item.
+   * @param aCallbackData data which is passed to the call back function.
+   * @throw ZorbaException if an error occurs (e.g. the query is closed or
+   *        has not been compiled)
+   */
+  virtual void
+  execute(std::ostream& aOutStream,
+          itemHandler aCallbackFunction,
+          void* aCallbackData,
+          const Zorba_SerializerOptions_t* aSerOptions = NULL) = 0;
+  
+  /**
+   * \brief Execute the (updating) query. The query can be executed with this
+   * function only if it is an updating query.
+   *
+   * @see isUpdating
+   * @throw ZorbaException if an error occurs (e.g. the query is closed or has
+   *        not been compiled or is not updating)
+   */
+  virtual void
+  execute() = 0;
+  
+  /**
+   * \brief Get an iterator for the result of the query. Allows an application
+   * to lazily execute the query, retrieving the result one item at a time.
+   *
+   * @return Iterator iterator over the result sequence.
+   * @throw ZorbaException if an error occurs (e.g. the query is closed or has
+   *        not been compiled).
+   */
+  virtual Iterator_t
+  iterator() = 0;
+  
+  /**
+   * \brief Register a SAX2_ContentHandler for retrieving the serialized 
+   *         query result as SAX events when executeSAX() is called.
+   *
+   * @param aContentHandler the content handler on which SAX callbacks are called.
+   */
+  virtual void
+  registerSAXHandler( SAX2_ContentHandler* aContentHandler ) = 0;
+  
+  /**
+   * \brief Serialize the query result as SAX events and call the callbacks
+   *        of the SAX2_ContentHandler that is given as input
+   *
+   * @param aContentHandler the content handler on which SAX callbacks are called.
+   */
+  virtual void
+  executeSAX( SAX2_ContentHandler* aContentHandler) = 0;
+  
+  /** 
+   * \brief Serialize the query result as SAX events and call the callbacks
+   *        of the SAX2_ContentHandler that has been set using registerSAXHandler.
+   *
+   * @throw ZorbaException if an error occurs (e.g. no SAX2_ContentHandler has
+   *        been registered).
+   */
+  virtual void
+  executeSAX() = 0;
 
-      /** \brief Reset the error handling mechanism to throwing exceptions,
-       * i.e.\ behave as if no ErrorHandler had been set.
-       *   
-       *  @throw SystemException if the query has been closed already.
-       *  @see registerErrorHandler(ErrorHandler*)
-       */
-      virtual void
-      resetErrorHandler() = 0;
+  /** 
+   * \brief Get the dynamic context of this query.
+   *
+   * This function returns the dynamic context that belongs to this query and
+   * is used during query execution. The context can be used, for example, to
+   * set values of external variables, the default collation, or the current
+   * datetime. It is only available if the query has been compiled, otherwise
+   * an error is reported. Moreover, the context must not be modified during the
+   * execution of a query (i.e. if a Iterator is opened). The lifetime of the
+   * context returned by this function is restricted by the lifetime of the
+   * according query object.
+   *
+   * @throw SystemException if the query has not been compiled or is closed.
+   * @return DynamicContext of this query.
+   */
+  virtual DynamicContext*
+  getDynamicContext() const = 0;
 
-      /**
-       * @brief Set a timeout, after which the execution of the query will be
-       *  aborted.
-       *
-       * @param aTimeout is an optional argument, which declares, that the
-       *  execution of a query will be aborted after aTimeout number of seconds.
-       *  If aTimeout is set to -1 (default), the query will never abort.
-       */
-      virtual void
-      setTimeout(long aTimeout = -1) = 0;
+  /** 
+   * \brief Get the static context of this query.
+   *
+   * This function returns the static context that belongs to this query. The
+   * static context is only available if the query has been compiled, otherwise
+   * an error is reported. The context has all the components and values that 
+   * were set in the static context that was passed when creating the query and
+   * those that were set in the prolog of the query. Note that after compilation
+   * of the query the static context is a read only structure. Moreover, the
+   * lifetime of the context returned by this function is restricted by the
+   * lifetime of the corresponding query object.
+   *
+   * @throw SystemException if the query has not been compiled or is closed.
+   * @return StaticContext of this query.
+   */
+  virtual const StaticContext*
+  getStaticContext() const = 0;
+  
+  /** 
+   * \brief Parse the given query String.
+   *
+   * @param aQuery the query file to parse.
+   * @throw ZorbaException if an error occurs while parsing the query.
+   */
+  virtual void
+  parse(std::istream& aQuery) = 0;
+  
+  /** 
+   * \brief Compile a query given as a String.
+   *
+   * @param aQuery the query String to compile.
+   * @throw ZorbaException if the query has been closed, is already compiled, or
+   *        an error occurs while compiling the query.
+   */
+  virtual void
+  compile(const String& aQuery) = 0;
+  
+  /** 
+   * \brief Compile a query given as a String, using the given compiler hints.
+   *
+   * @param aQuery the query String to compile.
+   * @param aHints hints passed to the query compiler.
+   * @throw ZorbaException if the query has been closed, is already compiled, or
+   *        an error occurs while compiling the query.
+   */
+  virtual void 
+  compile(const String& aQuery, const Zorba_CompilerHints_t& aHints) = 0;
+  
+  /** 
+   * \brief Compile a query given as an input stream, using the given compiler hints.
+   *
+   * @param aQuery the query input stream.
+   * @param aHints hints passed to the query compiler.
+   * @throw ZorbaException if the query has been closed, is already compiled, or
+   *        an error occurs while compiling the query.
+   */
+  virtual void 
+  compile(std::istream& aQuery, const Zorba_CompilerHints_t& aHints) = 0;
+  
+  /** 
+   * \brief Compile a query given as a String, using a given static context and  
+   *         compiler hints.
+   *
+   * @param aQuery the query String to compile.
+   * @param aStaticContext the static context.
+   * @param aHints hints passed to the query compiler.
+   * @throw ZorbaException if the query has been closed, is already compiled, or
+   *        an error occurs while compiling the query.
+   */
+  virtual void 
+  compile(const String& aQuery,
+          const StaticContext_t& aStaticContext, 
+          const Zorba_CompilerHints_t& aHints) = 0;
+  
+  /** 
+   * \brief Compile a query given as an input stream, using a given static
+   * context and compiler hints.
+   *
+   * @param aQuery the query input stream.
+   * @param aStaticContext the static context.
+   * @param aHints hints passed to the query compiler.
+   * @throw ZorbaException if the query has been closed, is already compiled, or
+   *        an error occurs while compiling the query.
+   */
+  virtual void 
+  compile(std::istream& aQuery,
+          const StaticContext_t& aStaticContext, 
+          const Zorba_CompilerHints_t& aHints) = 0;
+  
+  /** 
+   * \brief Print the execution plan of this query to the given output stream.
+   *
+   * @param aStream the output stream to which the execution plan is printed
+   * @param aDotFormat specifies the format of the printed execution plan. 
+   *        If this is true, then the execution plan is printed in the DOT
+   *        format. If this is false, the plan is printed as XML.
+   * @throw ZorbaException if the query has been closed or is not compiled.
+   */
+  virtual void
+  printPlan(std::ostream& aStream, bool aDotFormat = false) const = 0;
+   
+  /** 
+   * \brief Check if this query is an updating query.
+   *
+   * @return true if the query is an updating query, false otherwise.
+   * @throw SystemException if the query is not compiled or has been closed.
+   * @see close()
+   * @see compile(...)
+   */
+  virtual bool
+  isUpdating() const = 0;
+  
+  /** \brief Save the compiled execution plan.
+   *
+   * After compiling an XQuery program you can save the execution plan in some
+   * persistent storage. The execution plan is saved in a platform-independent
+   * format. You can later load this execution plan into a different XQuery
+   * object (potentially  on a different machine) and execute it like it was 
+   * compiled in place.
+   *
+   * @param os The output stream into which the execution plan is saved.
+   * @param archive_format Specify which output format to use. Possible values
+   *        are ZORBA_USE_BINARY_ARCHIVE and ZORBA_USE_XML_ARCHIVE. The binary
+   *        format is much smaller than XML format, but is not human readable.
+   * @param save_options Specify some options to the plan serializer.
+   *    <dl>Current possible values are: 
+   *    <dt>DONT_SAVE_UNUSED_FUNCTIONS (default)</dt> 
+   *      <dd>to eliminate unused functions and reduce plan size</dd>
+   *    <dt>SAVE_UNUSED_FUNCTIONS</dt>
+   *      <dd>to save everything, as if the xquery contains an eval instruction.
+   *       This is usefull if you intend to use StaticContext::containsFunction 
+   *       or StaticContext::findFunctions.</dd></dl>
+   * @return true if success.
+   * @throw ZorbaException if the query has not been compiled or there are
+   *        problems serializing the execution plan.
+   */
+  virtual bool
+  saveExecutionPlan(std::ostream &os, 
+                    Zorba_binary_plan_format_t archive_format = ZORBA_USE_BINARY_ARCHIVE,
+                    Zorba_save_plan_options_t save_options = DONT_SAVE_UNUSED_FUNCTIONS) = 0;
+  
+  /** 
+   * \brief Load execution plan.
+   *
+   * The serialized execution plan contains a general version for the entire
+   * archive and specific versions for each class. Zorba does not quarantee
+   * that it can load execution plans saved with previous versions of Zorba.
+   * In most cases there will be no problems, but the complete backward
+   * compatibility cannot be quaranteed.
+   *
+   * The engine automatically detects the format of the input, either XML or binary.
+   *
+   * @param is Reference to std::istream.
+   * @param aCallback optional callback handler (see SerializationCallback)
+   *        that is used to retrieve information that has not been serialized
+   *        (e.g. external modules).
+   * @return true if success.
+   * @throw ZorbaException if there are problems loading the execution plan.
+   */
+  virtual bool
+  loadExecutionPlan(std::istream& is, SerializationCallback* aCallback = 0) = 0;
+  
+  /** 
+   * \brief Close the query and release all of its aquired ressources.
+   *
+   * While a query is compiled and/or active, it holds on to a number of
+   * resources. Before Zorba can be safely shutdown, all resources must
+   * be released. For queries this can be done by calling close. However,
+   * if close is not called explicitly, it will be automatically called by
+   * the XQuery object's destructor, when the last smart pointer pointing
+   * this XQuery object is destroyed. 
+   *
+   * Note: After an XQuery object is closed, calling close() again on the
+   * same object is a noop. However, calling any method other than close()
+   * on a closed XQuery object is prohibited (an error will be raised).
+   *
+   * Note: if an iterator has been created to retreive the result of an
+   * XQuery object (@see iterator()), that itrator will be closed when 
+   * the query is closed, and the association between XQuery object and
+   * Iterator object will be destroyed.
+   */
+  virtual void
+  close() = 0;
 
-      /** \brief Execute the query and write the result to the given output stream.
-       *         The query only has a result if it's a non-updating query.
-       *
-       * @param aOutStream the output stream on which the result is written.
-       * @param aSerOptions an optional set of serialization options.
-       * @see   isUpdating
-       * @throw ZorbaException if an error occurs (e.g. the query is closed or has not been compiled)
-       */
-      virtual void
-      execute(std::ostream& aOutStream,
-              const Zorba_SerializerOptions_t* aSerOptions = NULL) = 0;
+  /** 
+   * \brief Check if this query object has already been closed.
+   *
+   * @return true if the query has been closed already or false otherwise.
+   */
+  virtual bool
+  isClosed() const = 0;
 
-      /**
-       * \brief Execute the query and write the result to the given output stream.
-       *        A handler function gets called before the serialization of each
-       *        item.
-       *
-       * @param aOutStream the output stream on which the result is written.
-       * @param aCallbackFunction a call back function which is called every time,
-       *        before the serialization of an item.
-       * @param aCallbackData data which is passed to the call back function.
-       * @see isUpdating
-       * @throw ZorbaException if an error occurs (e.g. the query is closed or
-       *        has not been compiled)
-       */
-      virtual void
-      execute(std::ostream& aOutStream,
-              itemHandler aCallbackFunction,
-              void* aCallbackData,
-              const Zorba_SerializerOptions_t* aSerOptions = NULL) = 0;
+  /** 
+   * \brief Clone this query object in order to execute the query in another
+   * thread.
+   *
+   * Although two or more threads may invoke one of the execute methods on the
+   * same XQuery object, these invocations are serialized internally. For true
+   * parallel excetution of a query by multiple threads, the XQuery object needs
+   * to be cloned, using this method. However, note that if an ErrorHandler has
+   * been provided by the user (see registerErrorHandler()), this ErrorHandler
+   * will also be used in the cloned query, and as a result, the user should
+   * provide a thread-safe ErrorHandler. Alternatively, a new ErrorHandler can
+   * be registered in the cloned query by using registerErrorHandler again.
+   * Or, the cloned query can be reset to use the default ErrorHandler (which 
+   * just throws exceptions) by calling resetErrorHandler.
+   *
+   * This function also clones the StaticContext and DynamicContext of the
+   * XQuery object. In the DynamicContext of the cloned query different 
+   * variable values can be used, e.g. set different external variable
+   * values. For an example of cloning a query and setting different values
+   * in the dynamic context see example_10 in file \link simple.cpp \endlink.
+   *
+   * @return The cloned XQuery object.
+   * @throw SystemException if the query has not been compiled or is closed.
+   */
+  virtual XQuery_t
+  clone() const = 0;
 
-      /** \brief Execute the (updating) query. The query can only be execute
-       *         with this function if it is an updating query.
-       *
-       * @see   isUpdating
-       * @throw ZorbaException if an error occurs (e.g. the query is closed or has not been compiled
-                or is not updating)
-       */
-      virtual void
-      execute() = 0;
-
-      /** \brief Get an iterator for the result of the query.
-        *
-        * @return Iterator iterator over the result sequence.
-        * @throw ZorbaException if an error occurs (e.g. the query is closed or has not been compiled).
-        */
-      virtual Iterator_t
-      iterator() = 0;
-
-      /** \brief Get the dynamic context of this query.
-       *
-       * This function returns the dynamic context that belongs to this query and
-       * is used during query execution.
-       * The context can be used, for example, to set values of external variables,
-       * the default collation, or the current datetime.
-       * It is only available if the query has been compiled, otherwise
-       * an error is reported. Moreover, the context must not be modified during the
-       * execution of a query (i.e. if a Iterator is opened).
-       * The lifetime of the context returned by this function is restricted
-       * by the lifetime of the according query object.
-       *
-       * @throw SystemException if the query has not been compiled or is closed.
-       * @return DynamicContext of this query.
-       */
-      virtual DynamicContext*
-      getDynamicContext() const = 0;
-
-      /** \brief Get the static context of this query.
-       *
-       * This function returns the static context that belongs to this query.
-       * The static context is only available if the query has been compiled, otherwise
-       * an error is reported.
-       * The context has all the components and values that have been set by the either
-       * the static context that was passed when creating the query and and those that
-       * were set in the prolog of the query.
-       * Note that after compilation of the query the static context is a read only structure.
-       * Moreover, the lifetime of the context returned by this function is restricted
-       * by the lifetime of the according query object.
-       *
-       * @throw SystemException if the query has not been compiled or is closed.
-       * @return StaticContext of this query.
-       */
-      virtual const StaticContext*
-      getStaticContext() const = 0;
-
-      /** \brief Parse the given query String.
-       *
-       * @param aQuery the query file to parse.
-       * @throw ZorbaException if an error occurs while parsing the query.
-       */
-      virtual void
-      parse(std::istream& aQuery) = 0;
-
-      /** \brief Compile the give query String.
-       *
-       * @param aQuery the query String to compile.
-       * @throw ZorbaException if the query has been closed, is already compiled, or
-       *        an error occurs while compiling the query.
-       */
-      virtual void
-      compile(const String& aQuery) = 0;
-
-      /** \brief Compile the given query String with the given compiler hints.
-       *
-       * @param aQuery the query String to compile.
-       * @param aHints hints passed to the query compiler.
-       * @throw ZorbaException if the query has been closed, is already compiled, or
-       *        an error occurs while compiling the query.
-       */
-      virtual void 
-      compile(const String& aQuery, const Zorba_CompilerHints_t& aHints) = 0;
-      
-      /** \brief Compile the query given as an input stream with the given compiler hints.
-       *
-       * @param aQuery the query input stream.
-       * @param aHints hints passed to the query compiler.
-       * @throw ZorbaException if the query has been closed, is already compiled, or
-       *        an error occurs while compiling the query.
-       */
-      virtual void 
-      compile(std::istream& aQuery, const Zorba_CompilerHints_t& aHints) = 0;
-      
-      /** \brief Compile the give query String with the given static context and the 
-       *         given compiler hints.
-       *
-       * @param aQuery the query String to compile.
-       * @param aStaticContext the static context.
-       * @param aHints hints passed to the query compiler.
-       * @throw ZorbaException if the query has been closed, is already compiled, or
-       *        an error occurs while compiling the query.
-       */
-      virtual void 
-      compile(const String& aQuery, const StaticContext_t& aStaticContext, 
-              const Zorba_CompilerHints_t& aHints) = 0;
-      
-      /** \brief Compile the query given as an input stream with the given static context and the 
-       *         given compiler hints.
-       *
-       * @param aQuery the query input stream.
-       * @param aStaticContext the static context.
-       * @param aHints hints passed to the query compiler.
-       * @throw ZorbaException if the query has been closed, is already compiled, or
-       *        an error occurs while compiling the query.
-       */
-      virtual void 
-      compile(std::istream& aQuery, const StaticContext_t& aStaticContext, 
-              const Zorba_CompilerHints_t& aHints) = 0;
-
-      /** \brief Print the execution plan of this query to the given output stream.
-       *
-       * @param aStream the output stream to which the execution plan is printed
-       * @param aDotFormat specifies the format of the printed execution plan. If this is true, then
-       *        the execution plan is printed in the DOT format. If this is false, the plan is printed
-       *        as XML.
-       * @throw ZorbaException if the query has been closed or is not compiled.
-       */
-      virtual void
-      printPlan( std::ostream& aStream, bool aDotFormat = false ) const = 0;
-
-      /** \brief Set the filename of a query.
-       *
-       * This (after URI-encoding) becomes the encapsulating entity's
-       * retrieval URI (in RFC 3986 terms).
-       */
-      virtual void
-      setFileName( const String& ) = 0;
-
-      /** \brief Register a SAX2_ContentHandler for retrieving the serialized 
-       *         query result as SAX events when executeSAX() is called.
-       *
-       * @param aContentHandler the content handler on which SAX callbacks are called.
-       */
-      virtual void
-      registerSAXHandler( SAX2_ContentHandler* aContentHandler ) = 0;
-
-      /** \brief Register a SAX2_ContentHandler for retrieving the serialized 
-       *         query result as SAX.
-       *         The query only has a result if it's a non-updating query.
-       * 
-       * @param aContentHandler the content handler on which SAX callbacks are called.
-       */
-      virtual void
-      executeSAX( SAX2_ContentHandler* aContentHandler) = 0;
-
-      /** \brief Serialize the query result as SAX events and call the callbacks
-       *         of the SAX2_ContentHandler that has been set using registerSAXHandler.
-       *
-       * @throw ZorbaException if an error occurs (e.g. no SAX2_ContentHandler has been registered).
-       */
-      virtual void
-      executeSAX() = 0;
-
-      virtual double
-      getDocLoadingUserTime() const = 0;
-
-      virtual long
-      getDocLoadingTime() const = 0;
-
-      /** \brief Close the query and release all aquired ressources.
-       *
-       * While a query is compiled and/or active, it holds on to a couple of
-       * ressources. Before Zorba can be safely shutdown, all ressources must
-       * be released. For queries this can be done by calling close. However,
-       * if close is not called explicitly, it will be automatically called by
-       * the XQuery object's destructor, when the last smart pointer pointing
-       * this XQuery object is destroyed. 
-
-       * Note: After an XQuery object is closed, calling close() again on the
-       * same object is a noop. However, calling any method other than close()
-       * on a closed XQuery object is prohibited (an error will be raised).
-       *
-       * Note: if an iterator has been created to retreive the result of an
-       * XQuery object (@see iterator()), that itrator will be closed when 
-       * the query is closed, and the association between XQuery object and
-       * Iterator object will be destroyed.
-       */
-      virtual void
-      close() = 0;
-
-      /** \brief Check if this query object has already been closed.
-       *
-       * This function checks if this query object has already been closed (@see close()).
-       * Closing an XQuery object is necessary in order to free all ressources of Zorba
-       * or the current store.
-       * Usually, closing a query explicitly is not necessary since the destructor takes
-       * care of releasing all ressources properly.
-       *
-       * @return true if the query has been closed already or false otherwise.
-       */
-      virtual bool
-      isClosed() const = 0;
-
-      /** \brief Clone this query object for executing it in another thread.
-       *
-       * A query object is not thread safe, i.e. it can't be executed in several
-       * threads. In order to execute it in another thread it needs to be cloned
-       * with this function. However, please note that if an ErrorHandler has
-       * been provided by the user (see registerErrorHandler()), this ErrorHandler
-       * will also be used in the cloned query, and as a result, the user should
-       * provide a thread-safe ErrorHandler. Alternatively, a new ErrorHandler
-       * can be registered in the cloned query by using registerErrorHandler 
-       * again. Or, the cloned query can be reset to use the default ErrorHandler
-       * (which just throws exceptions) by calling resetErrorHandler.
-       *
-       * This function also clones the StaticContext and DynamicContext of the
-       * XQuery object. In the DynamicContext of the cloned query different 
-       * variable values can be used, e.g. set different external variable
-       * values. For an example of cloning a query and setting different values
-       * in the dynamic context see example_10 in file \link simple.cpp \endlink.
-       *
-       * @return The cloned XQuery object.
-       * @throw SystemException if the query has not been compiled or is closed.
-       */
-      virtual XQuery_t
-      clone() const = 0;
-
-      /** \brief Check if this query is an updating query.
-       *
-       * @return true if the query is an updating query, false otherwise.
-       * @throw SystemException if the query is not compiled or has been closed.
-       * @see close()
-       * @see compile(...)
-       */
-      virtual bool
-      isUpdating() const = 0;
-
-      /** \brief Save the compiled execution plan.
-       *
-       * After compiling an XQuery code you can save the execution plan in a persistent storage.
-       * The execution plan is saved in a platform independent format.
-       * You can later load this execution plan into a different XQuery object (potentially 
-       * on a different machine) and execute it like it was compiled in place.
-       *
-       * @param os Reference to std::ostream.
-       * @param archive_format Specify which output format to use, either XML or binary.
-       *    Possible values are ZORBA_USE_BINARY_ARCHIVE and ZORBA_USE_XML_ARCHIVE.
-       *    The binary format is much smaller than XML format, but is not human readable.
-       * @param save_options Specify some options to the plan serializer.
-       *    <dl>Current possible values are: 
-       *    <dt>DONT_SAVE_UNUSED_FUNCTIONS (default)</dt> 
-       *      <dd>to eliminate unused functions and reduce plan size</dd>
-       *    <dt>SAVE_UNUSED_FUNCTIONS</dt>
-       *      <dd>to save everything, as if the xquery contains an eval instruction.
-       *       This is usefull if you intend to use StaticContext::containsFunction 
-       *       or StaticContext::findFunctions.</dd></dl>
-       * 
-       * @return true if success.
-       * @throw ZorbaException if the query has not been compiled or there are problems serializing
-       *  the execution plan.
-       */
-      virtual bool
-      saveExecutionPlan(std::ostream &os, 
-                        Zorba_binary_plan_format_t archive_format = ZORBA_USE_BINARY_ARCHIVE,
-                        Zorba_save_plan_options_t save_options = DONT_SAVE_UNUSED_FUNCTIONS) = 0;
-
-      /** \brief Load execution plan.
-       *
-       Loads a saved execution plan.
-       The serialized execution plan contains a general version for the entire archive and
-       specific versions for each class. Zorba does not quarantee that it can load execution plans
-       saved with previous versions of Zorba. In general case there will be no problems, but the
-       complete backward compatibility cannot be quaranteed.
-       The engine automatically detects the format of the input, either XML or binary.
-       *
-       * @param is Reference to std::istream.
-       * @param aCallback optional callback handler (see SerializationCallback)
-       *                  that is used to retrieve  information that has not
-       *                  been serialized (e.g. external modules).
-       *
-       * @return true if success.
-       * @throw ZorbaException if there are problems loading the execution plan.
-       */
-      virtual bool
-      loadExecutionPlan(std::istream &is, SerializationCallback* aCallback = 0) = 0;
-      
-      /** \brief Enable/disable debug mode on the query
-       *
-       */
-      virtual void
-      setDebugMode( bool aDebugMode ) = 0;
-
-      /** \brief Check if the debug mode is activated.
-       *
-       * @return true if the debug mode is enabled, false otherwise.
-       */
-      virtual bool
-      isDebugMode() const = 0;
-
-      /** \brief Set the filename of the profile
-       *
-       * This file will contain the output of Zorba profiler.
-       */
-      virtual void
-      setProfileName( std::string aProfileName ) = 0;
-
-      /** \brief Get the filename of the profile
-       *
-       * This file will contain the output of Zorba profiler.
-       */
-      virtual std::string
-      getProfileName() const = 0;
-
-      /** \brief Run the query with the debugger server.
-       *
-       * This method run the query with the debugger server.
-       * This method is blocking up until a debugger client connects to the
-       * server and decided to end the server. In order to call this method, the
-       * query has to be compiled.
-       *
-       * @param aCommandPort the port used to received commands from the client.
-       * @param anEventPort the port used to send events to the client.
-       */
-      virtual void
-      debug( unsigned short aCommandPort = 8000, unsigned short anEventPort = 9000 ) = 0;
-      
-      /** \brief Run the query with the debugger server.
-       *
-       * This method run the query with the debugger server.
-       * This method is blocking up until a debugger client connects to the
-       * server and decided to end the server. In order to call this method, the
-       * query has to be compiled.
-       * You can specify an output stream and serialization options that can be used
-       * by the serializer.
-       *
-       * @param aOutStream the output stream on which the result is written.
-       * @param aSerOptions an optinal set of serialization options.
-       * @param aCommandPort the port used to received commands from the client.
-       * @param anEventPort the port used to send events to the client.
-       *
-       * @throw ZorbaException if an error occurs (e.g. the query is closed or has not been compiled)
-       *
-       */
-      virtual void
-      debug(std::ostream& aOutStream,
-            Zorba_SerializerOptions& aSerOptions,
-            unsigned short aCommandPort = 8000,
-            unsigned short anEventPort = 9000) = 0;
-
-      virtual void
-        debug(std::ostream& aOutStream,
+  /**
+   * \brief Enable/disable debug mode on the query
+   */
+  virtual void
+  setDebugMode(bool aDebugMode) = 0;
+  
+  /**
+   * \brief Check if the debug mode is activated.
+   *
+   * @return true if the debug mode is enabled, false otherwise.
+   */
+  virtual bool
+  isDebugMode() const = 0;
+  
+  /** 
+   * \brief Set the filename of the profile
+   *
+   * This file will contain the output of Zorba profiler.
+   */
+  virtual void
+  setProfileName( std::string aProfileName ) = 0;
+  
+  /**
+   * \brief Get the filename of the profile
+   *
+   * This file will contain the output of Zorba profiler.
+   */
+  virtual std::string
+  getProfileName() const = 0;
+  
+  /**
+   * \brief Run the query with the debugger server.
+   *
+   * This method runs the query with the debugger server.
+   * This method is blocking up until a debugger client connects to the
+   * server and decided to end the server. In order to call this method, the
+   * query has to be compiled.
+   *
+   * @param aCommandPort the port used to received commands from the client.
+   * @param anEventPort the port used to send events to the client.
+   */
+  virtual void
+  debug(unsigned short aCommandPort = 8000, unsigned short anEventPort = 9000) = 0;
+  
+  /** 
+   * \brief Run the query with the debugger server.
+   *
+   * This method runs the query with the debugger server.
+   * This method is blocking up until a debugger client connects to the
+   * server and decided to end the server. In order to call this method, the
+   * query has to be compiled.
+   * You can specify an output stream and serialization options that can be used
+   * by the serializer.
+   *
+   * @param aOutStream the output stream on which the result is written.
+   * @param aSerOptions an optinal set of serialization options.
+   * @param aCommandPort the port used to received commands from the client.
+   * @param anEventPort the port used to send events to the client.
+   *
+   * @throw ZorbaException if an error occurs (e.g. the query is closed or has
+   *        not been compiled)
+   */
+  virtual void
+  debug(std::ostream& aOutStream,
+        Zorba_SerializerOptions& aSerOptions,
+        unsigned short aCommandPort = 8000,
+        unsigned short anEventPort = 9000) = 0;
+  
+  virtual void
+  debug(std::ostream& aOutStream,
         Zorba_SerializerOptions& aSerOptions,
         const std::string& aHost,
         unsigned short aCommandPort = 8000,
         unsigned short anEventPort = 9000) = 0;
-
-      virtual void
-        debug(std::ostream& aOutStream,
+  
+  virtual void
+  debug(std::ostream& aOutStream,
         itemHandler aCallbackFunction,
         void* aCallbackData,
         Zorba_SerializerOptions& aSerOptions,
         const std::string& aHost,
         unsigned short aCommandPort = 8000,
         unsigned short anEventPort = 9000) = 0;
-  };
 
-  // xml serialization of the query (equiv to calling serialize(os) 
-  ZORBA_DLL_PUBLIC
-  std::ostream& operator<< (std::ostream& os, const XQuery_t& aQuery); 
-  ZORBA_DLL_PUBLIC
-  std::ostream& operator<< (std::ostream& os, XQuery* aQuery); 
+  /**
+   *
+   */
+  virtual double
+  getDocLoadingUserTime() const = 0;
+  
+  /**
+   *
+   */
+  virtual long
+  getDocLoadingTime() const = 0;
+};
+  
+
+// xml serialization of the query (equiv to calling serialize(os) 
+ZORBA_DLL_PUBLIC
+std::ostream& operator<< (std::ostream& os, const XQuery_t& aQuery); 
+
+ZORBA_DLL_PUBLIC
+std::ostream& operator<< (std::ostream& os, XQuery* aQuery); 
 
 
 } /* namespace zorba */

@@ -46,25 +46,25 @@ static void print_expr_tree_##phase(const expr* e, const std::string& name) \
 
 
 DEF_PRINT_EXPR_TREE(translation);
-DEF_PRINT_EXPR_TREE(normalization);
 DEF_PRINT_EXPR_TREE(optimization);
 
 
+/*******************************************************************************
+
+********************************************************************************/
 CompilerCB::config::config()
   :
   opt_level(O1),
   lib_module(false),
   parse_cb(NULL)
 {
-  translate_cb = normalize_cb = optimize_cb = NULL;
+  translate_cb = optimize_cb = NULL;
+
   // TODO: move these out
   print_item_flow = Properties::instance()->printItemFlow();
 
   if (Properties::instance()->printTranslated())
     translate_cb = print_expr_tree_translation;
-
-  if (Properties::instance()->printNormalized())
-    normalize_cb = print_expr_tree_normalization;
 
   if (Properties::instance()->printOptimized())
     optimize_cb = print_expr_tree_optimization;
@@ -73,16 +73,21 @@ CompilerCB::config::config()
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 CompilerCB::config::config(::zorba::serialization::Archiver& ar) 
   :
   parse_cb(NULL),
   translate_cb(NULL),
-  normalize_cb(NULL),
   optimize_cb(NULL)
 {
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void CompilerCB::config::serialize(::zorba::serialization::Archiver& ar)
 {
   ar & force_gflwor;
@@ -92,13 +97,12 @@ void CompilerCB::config::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-CompilerCB::CompilerCB(
-    std::map<short, static_context_t>& sctx_map,
-    error::ErrorManager* errmgr,
-    long timeout)
+/*******************************************************************************
+
+********************************************************************************/
+CompilerCB::CompilerCB(error::ErrorManager* errmgr, long timeout)
   :
   theErrorManager(errmgr),
-  theSctxMap(&sctx_map),
   theRootSctx(0),
   theDebuggerCommons(0),
   theIsLoadProlog(false),
@@ -109,36 +113,47 @@ CompilerCB::CompilerCB(
 }
 
 
+/*******************************************************************************
+  Used by the eval iterator to create a new ccb as a copy of the ccb of the
+  enclosing query. 
+*******************************************************************************/
 CompilerCB::CompilerCB(const CompilerCB& cb)
   :
   zorba::serialization::SerializeBaseClass(cb),
   theErrorManager(cb.theErrorManager),
-  theSctxMap(cb.theSctxMap),
   theRootSctx(NULL),
   theDebuggerCommons(cb.theDebuggerCommons),
   theIsLoadProlog(false),
   theIsUpdating(false),
-  theIsSerializingOut(false),
-  theConfig(cb.theConfig),
   theTimeout(cb.theTimeout),
-  theTempIndexCounter(0)
+  theTempIndexCounter(0),
+  theConfig(cb.theConfig)
 {
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 CompilerCB::CompilerCB(::zorba::serialization::Archiver& ar)
   :
   ::zorba::serialization::SerializeBaseClass(),
-  theDebuggerCommons(NULL),
-  theIsSerializingOut(false)
+  theDebuggerCommons(NULL)
 {
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 CompilerCB::~CompilerCB() 
 {
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void CompilerCB::serialize(::zorba::serialization::Archiver& ar)
 {
   ar & theIsLoadProlog;
@@ -157,11 +172,15 @@ void CompilerCB::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
+
+/*******************************************************************************
+
+********************************************************************************/
 static_context* CompilerCB::getStaticContext(short c)
 {
   std::map<short, static_context_t>::iterator lIter;
-  lIter = theSctxMap->find(c);
-  assert(lIter != theSctxMap->end());
+  lIter = theSctxMap.find(c);
+  assert(lIter != theSctxMap.end());
   return lIter->second.getp();
 }
 
