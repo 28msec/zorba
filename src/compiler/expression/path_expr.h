@@ -20,6 +20,7 @@
 #include "compiler/expression/expr_base.h"
 
 #include "zorbaserialization/class_serializer.h"
+#include "zorbatypes/zstring.h"
 
 
 namespace zorba 
@@ -169,7 +170,7 @@ protected:
   match_test_t      theDocTestKind;
 
   match_wild_t      theWildKind;
-  xqpStringStore_t  theWildName;
+  zstring           theWildName;
 
   store::Item_t     theQName;
   store::Item_t     theTypeName;
@@ -195,9 +196,10 @@ public:
 
   void setWildKind(enum match_wild_t v) { theWildKind = v; }
 
-  const xqpStringStore_t& getWildName() const { return theWildName; }
+  const zstring& getWildName() const { return theWildName; }
 
-  void setWildName(const xqpStringStore_t& v) { theWildName = v; } 
+  template<class StringType>
+  void setWildName(const StringType& v) { theWildName = v; } 
 
   store::Item* getQName() const { return theQName.getp(); }
 

@@ -2529,7 +2529,7 @@ bool begin_visit (match_expr& v)
     }
     else if (wildKind == match_prefix_wild)
     {
-      iFactory.createQName(qname, "", "wildcard", v.getWildName()->c_str());
+      iFactory.createQName(qname, "", "wildcard", v.getWildName().c_str());
 
       axisItep->setQName(qname);
     }

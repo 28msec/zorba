@@ -8167,7 +8167,7 @@ void end_visit(const NameTest& v, void* /*visit_state*/)
       case ParseConstants::wild_elem:
       {
         matchExpr->setWildKind(match_name_wild);
-        matchExpr->setWildName(to_xqpStringStore_t(wildcard->getPrefix()));
+        matchExpr->setWildName(wildcard->getPrefix());
 
         zstring localname(":wildcard");
 
@@ -8197,7 +8197,7 @@ void end_visit(const NameTest& v, void* /*visit_state*/)
       case ParseConstants::wild_prefix:
       {
         matchExpr->setWildKind(match_prefix_wild);
-        matchExpr->setWildName(to_xqpStringStore_t(wildcard->getLocalName().str()));
+        matchExpr->setWildName(wildcard->getLocalName());
         break;
       }
       }
