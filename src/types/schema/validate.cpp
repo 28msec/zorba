@@ -665,7 +665,7 @@ void Validator::processTextValue (
           // don't follow the same rules
           ZORBA_ASSERT(res);
         }
-        catch(error::ZorbaError& ze)
+        catch(error::ZorbaError&)
         {
           // do nothing here, the validator will throw the right error at end
           // elemet event call
@@ -682,8 +682,10 @@ void Validator::processTextValue (
         ZORBA_ASSERT(res);
         resultList.push_back(result);
       }
-      catch(error::ZorbaError& ze)
-      {} // do nothing here, the validator will throw the right error at end elemet event call
+      catch(error::ZorbaError&)
+      {
+        // do nothing here, the validator will throw the right error at end elemet event call
+      } 
     }
     else
     {

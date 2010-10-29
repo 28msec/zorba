@@ -767,11 +767,11 @@ void DtdXmlLoader::startElement(
 
     // Check for recursiveness, i.e., whether this node is a descendant of
     // another noide with the same name
-    for (long i = pathStack.size() - 1; i >= 1; --i)
+    for (long j = pathStack.size() - 1; j >= 1; --j)
     {
-      if (pathStack[i].theNode->theName->equals(elemNode->theName))
+      if (pathStack[j].theNode->theName->equals(elemNode->theName))
       {
-        pathStack[i].theNode->setRecursive();
+        pathStack[j].theNode->setRecursive();
         break;
       }
     }

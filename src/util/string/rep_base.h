@@ -17,6 +17,10 @@
 #ifndef ZORBA_RSTRING_REP_BASE_H
 #define ZORBA_RSTRING_REP_BASE_H
 
+#ifdef WIN32
+#pragma warning( disable : 4996)
+#endif
+
 #include <memory>                       /* for allocator */
 #include <string>                       /* for char_traits */
 
@@ -251,6 +255,11 @@ protected:
 
 } // namespace rstring_classes
 } // namespace zorba
+
+#ifdef WIN32
+#pragma warning( disable : 4996)
+#endif
+
 
 #endif /* ZORBA_RSTRING_REP_BASE_H */
 /*
