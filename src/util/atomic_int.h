@@ -50,7 +50,7 @@
 #elif defined( _WIN32 )
 # include <windows.h>
 # include <intrin.h>                    /* for _ReadBarrier() */
-#pragma intrinsic(_ReadBarrier)
+# pragma intrinsic(_ReadBarrier)
 #else
 # error "Unsupported operating system for atomic operations"
 #endif
