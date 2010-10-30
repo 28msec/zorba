@@ -48,13 +48,13 @@ namespace zorba {
 #define DOUT Properties::instance()->debug_out()
 #define TRACE_FULL_TEXT Properties::instance()->traceFulltext()
 
-#define BEGIN_APPLY(NAME)             \
-  if ( !TRACE_FULL_TEXT ) ; else      \
+#define BEGIN_APPLY(NAME)                               \
+  if ( !TRACE_FULL_TEXT ) ; else                        \
   DOUT << '\n' << indent <<  #NAME "()\n" << inc_indent
 
-#define PUT_ALL_MATCHES(ARG)                        \
-  if ( !TRACE_FULL_TEXT ) ; else                    \
-  DOUT << indent << "ARG " #ARG "\n"                \
+#define PUT_ALL_MATCHES(ARG)                \
+  if ( !TRACE_FULL_TEXT ) ; else            \
+  DOUT << indent << "ARG " #ARG "\n"        \
        << inc_indent << (ARG) << dec_indent
 
 #define PUT_ARG(ARG)                                  \
