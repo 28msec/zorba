@@ -20,6 +20,7 @@
 #include "compiler/expression/ftnode.h"
 #include "compiler/expression/ftnode_visitor.h"
 #include "types/casting.h"
+#include "util/ascii_util.h"
 #include "util/indent.h"
 #include "util/stl_util.h"
 #include "zorbaerrors/error_manager.h"
@@ -821,9 +822,9 @@ ftthesaurus_id::ftthesaurus_id(
 ) :
   ftnode( loc ),
   uri_( uri ),
-  relationship_( relationship ),
   levels_( levels )
 {
+  ascii::to_lower( relationship, &relationship_ );
 }
 
 ftthesaurus_id::~ftthesaurus_id() {
