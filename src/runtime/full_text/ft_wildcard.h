@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_FULL_TEXT_FT_WILDCARD_MATCHER_H
-#define ZORBA_FULL_TEXT_FT_WILDCARD_MATCHER_H
+#ifndef ZORBA_FULL_TEXT_FT_WILDCARD_H
+#define ZORBA_FULL_TEXT_FT_WILDCARD_H
 
 #include "util/unicode_util.h"
 #include "zorbatypes/zstring.h"
@@ -61,5 +61,5 @@ inline bool operator!=( zstring const &s, ft_wildcard const &m ) {
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
-#endif  /* ZORBA_FULL_TEXT_FT_WILDCARD_MATCHER_H */
+#endif  /* ZORBA_FULL_TEXT_FT_WILDCARD_H */
 /* vim:set et sw=2 ts=2: */
