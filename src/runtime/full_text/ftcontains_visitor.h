@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_FULL_TEXT_EVAL_VISITOR_H
-#define ZORBA_FULL_TEXT_EVAL_VISITOR_H
+#ifndef ZORBA_FULL_TEXT_FTCONTAINS_VISITOR_H
+#define ZORBA_FULL_TEXT_FTCONTAINS_VISITOR_H
 
 #include <stack>
 
@@ -96,5 +96,5 @@ private:
 };
 
 } // namespace zorba
-#endif  /* ZORBA_FULL_TEXT_EVAL_VISITOR_H */
+#endif  /* ZORBA_FULL_TEXT_FTCONTAINS_VISITOR_H */
 /* vim:set et sw=2 ts=2: */
