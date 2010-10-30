@@ -107,23 +107,6 @@ namespace zorba {
     };
   }
 
-  namespace ft_thesaurus_rel {
-    char const *const string_of[] = {
-      "unspecified",
-      "USE",
-      "UF",
-      "BT",
-      "NT",
-      "BTG",
-      "NTG",
-      "BTP",
-      "NTP",
-      "TT",
-      "RT",
-      0
-    };
-  };
-
   namespace ft_unit {
     char const *const string_of[] = {
       "words",
