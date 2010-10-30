@@ -20,8 +20,8 @@
 #include <set>
 
 #include "compiler/expression/ftnode.h"
-#include "zorbautils/locale.h"
 #include "zorbatypes/zstring.h"
+#include "zorbautils/locale.h"
 
 namespace zorba {
 
