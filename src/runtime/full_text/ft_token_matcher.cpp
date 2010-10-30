@@ -52,7 +52,7 @@ inline ft_stop_words_set const* get_stop_words( ftmatch_options const &options,
 ///////////////////////////////////////////////////////////////////////////////
 
 ft_token_matcher::ft_token_matcher( ftmatch_options const &options ) :
-  options_( options ),
+  case_option_( options.get_case_option() ),
   diacritics_insensitive_( get_diacritics_insensitive( options ) ),
   lang_( get_lang_from( &options ) ),
   stemming_( get_stemming( options ) ),
@@ -84,8 +84,8 @@ bool ft_token_matcher::match( FTToken const &dt, FTToken const &qt ) const {
       return true;
   }
 
-  if ( ftcase_option const *const c = options_.get_case_option() ) {
-    switch ( c->get_mode() ) {
+  if ( case_option_ ) {
+    switch ( case_option_->get_mode() ) {
       case ft_case_mode::insensitive:
         dt_selector |= FTToken::lower;
         qt_selector |= FTToken::lower;
@@ -102,10 +102,6 @@ bool ft_token_matcher::match( FTToken const &dt, FTToken const &qt ) const {
     }
   }
 
-  if ( ftextension_option const *const e = options_.get_extension_option() ) {
-    // TODO
-  }
-
   if ( stemming_ ) {
     dt_selector |= FTToken::stem;
     qt_selector |= FTToken::stem;
@@ -114,12 +110,6 @@ bool ft_token_matcher::match( FTToken const &dt, FTToken const &qt ) const {
   if ( diacritics_insensitive_ ) {
     dt_selector |= FTToken::ascii;
     qt_selector |= FTToken::ascii;
-  }
-
-  if ( ftthesaurus_option const *const t = options_.get_thesaurus_option() ) {
-    if ( !t->no_thesaurus() ) {
-      // TODO
-    }
   }
 
   if ( wildcards_ ) {

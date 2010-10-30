@@ -30,7 +30,7 @@ public:
   ~ft_token_matcher();
 
   /**
-   * Test whether the 2 given tokens match given the match options.
+   * Tests whether the 2 given tokens match given the match options.
    *
    * @param dt The document token.
    * @param qt The query token.
@@ -38,7 +38,7 @@ public:
   bool match( FTToken const &dt, FTToken const &qt ) const;
 
 private:
-  ftmatch_options const &options_;
+  ftcase_option const *const case_option_;
   bool const diacritics_insensitive_;
   locale::iso639_1::type const lang_;
   bool const stemming_;
