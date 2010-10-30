@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-#include "runtime/full_text/ft_stop_words_set.h"
 #include "util/stl_util.h"
+
+#include "ft_stop_words_set.h"
 
 using namespace std;
 using namespace zorba::locale;

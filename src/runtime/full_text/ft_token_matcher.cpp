@@ -17,11 +17,12 @@
 #include <cctype>
 
 #include "compiler/expression/ftnode.h"
-#include "runtime/full_text/ft_stop_words_set.h"
-#include "runtime/full_text/ft_token_matcher.h"
-#include "runtime/full_text/ft_util.h"
-#include "runtime/full_text/ft_wildcard.h"
 #include "util/stl_util.h"
+
+#include "ft_stop_words_set.h"
+#include "ft_token_matcher.h"
+#include "ft_util.h"
+#include "ft_wildcard.h"
 
 using namespace std;
 using namespace zorba::locale;

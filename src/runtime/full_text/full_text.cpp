@@ -15,8 +15,9 @@
  */
  
 #include "runtime/visitors/planiter_visitor.h"
-#include "runtime/full_text/full_text.h"
 #include "system/globalenv.h"
+
+#include "full_text.h"
 
 /******************************************************************************
  *                                                                            *

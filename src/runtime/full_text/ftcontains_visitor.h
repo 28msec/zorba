@@ -22,8 +22,9 @@
 #include "compiler/expression/ftnode_visitor.h"
 #include "context/static_context.h"
 #include "runtime/base/plan_iterator.h"
-#include "runtime/full_text/apply.h"    /* for ft_int */
-#include "runtime/full_text/ft_match.h"
+
+#include "apply.h"                      /* for ft_int */
+#include "ft_match.h"
 
 namespace zorba {
 

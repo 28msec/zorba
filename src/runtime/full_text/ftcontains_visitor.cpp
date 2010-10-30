@@ -20,12 +20,13 @@
 #include "compiler/expression/ft_expr.h"
 #include "compiler/expression/ftnode.h"
 #include "compiler/parser/query_loc.h"
-#include "runtime/full_text/ft_util.h"
-#include "runtime/full_text/ftcontains_visitor.h"
 #include "util/indent.h"
 #include "util/stl_util.h"
 #include "zorbaerrors/error_manager.h"
 #include "zorbatypes/numconversions.h"
+
+#include "ft_util.h"
+#include "ftcontains_visitor.h"
 
 #ifndef NDEBUG
 #include "system/properties.h"

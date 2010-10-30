@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-#include "runtime/full_text/ft_query_item_seq.h"
 #include "util/stl_util.h"
 #include "zorbaerrors/Assert.h"
+
+#include "ft_query_item_seq.h"
 
 namespace zorba {
 

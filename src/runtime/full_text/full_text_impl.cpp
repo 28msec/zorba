@@ -15,9 +15,6 @@
  */
 
 #include "common/common.h"
-#include "runtime/full_text/ft_util.h"
-#include "runtime/full_text/ftcontains_visitor.h"
-#include "runtime/full_text/full_text.h"
 #include "store/api/ft_token_iterator.h"
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
@@ -25,6 +22,10 @@
 #include "util/stl_util.h"
 #include "zorbatypes/utf8.h"
 #include "zorbautils/locale.h"
+
+#include "ft_util.h"
+#include "ftcontains_visitor.h"
+#include "full_text.h"
 
 using namespace std;
 

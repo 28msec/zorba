@@ -20,7 +20,7 @@
 #include <algorithm>
 #include <list>
 
-#include "runtime/full_text/ft_token_span.h"
+#include "ft_token_span.h"
 
 namespace zorba {
 

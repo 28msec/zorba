@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "runtime/full_text/utf8_chars.h"
+#include "utf8_chars.h"
 
 namespace zorba {
 

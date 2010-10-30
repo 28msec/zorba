@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-#include "runtime/full_text/ft_single_token_iterator.h"
 #include "util/stl_util.h"
 #include "zorbaerrors/Assert.h"
+
+#include "ft_single_token_iterator.h"
 
 namespace zorba {
 

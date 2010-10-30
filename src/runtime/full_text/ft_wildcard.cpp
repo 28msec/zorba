@@ -22,9 +22,10 @@
 
 #if !STANDALONE_TEST
 # include <zorba/error.h>
-# include "runtime/full_text/ft_wildcard.h"
 # include "util/stl_util.h"
 # include "zorbaerrors/error_manager.h"
+
+# include "ft_wildcard.h"
 
 using namespace std;
 

@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-#include "runtime/full_text/ft_match.h"
 #include "util/indent.h"
 #include "util/omanip.h"
 #include "util/stl_util.h"
+
+#include "ft_match.h"
 
 using namespace std;
 

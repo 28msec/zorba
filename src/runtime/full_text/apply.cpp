@@ -20,15 +20,16 @@
 
 #include <zorba/error.h>
 
-#include "runtime/full_text/apply.h"
-#include "runtime/full_text/ft_single_token_iterator.h"
-#include "runtime/full_text/ft_stop_words_set.h"
-#include "runtime/full_text/ft_token_matcher.h"
-#include "runtime/full_text/ft_token_span.h"
 #include "system/properties.h"
 #include "util/indent.h"
 #include "util/stl_util.h"
 #include "zorbaerrors/error_manager.h"
+
+#include "apply.h"
+#include "ft_single_token_iterator.h"
+#include "ft_stop_words_set.h"
+#include "ft_token_matcher.h"
+#include "ft_token_span.h"
 
 #ifdef WIN32
 // Windows annoyingly defines these as macros.

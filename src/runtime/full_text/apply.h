@@ -21,9 +21,10 @@
 
 #include "compiler/expression/ftnode.h"
 #include "compiler/parser/ft_types.h"
-#include "runtime/full_text/ft_match.h"
-#include "runtime/full_text/ft_query_item_seq.h"
 #include "zorbatypes/representations.h"
+
+#include "ft_match.h"
+#include "ft_query_item_seq.h"
 
 namespace zorba {
 
