@@ -134,15 +134,15 @@ static ft_token_span::start_end_ptr get_sep_for( ft_unit::type unit ) {
 /**
  * Returns whether the given value is a valid max value.
  */
-template<typename T> inline bool is_max_valid( T n ) {
-  return n != numeric_limits<T>::min();
+template<typename IntType> inline bool is_max_valid( IntType n ) {
+  return n != numeric_limits<IntType>::min();
 }
 
 /**
  * Computes max(N) from the given sequence of struct objects having an IntType
  * member.
  */
-template<typename SequenceType,typename IntType>
+template<class SequenceType,typename IntType>
 IntType max( SequenceType &seq, IntType SequenceType::value_type::*ip ) {
   IntType result = numeric_limits<IntType>::min();
   FOR_EACH( typename SequenceType, i, seq ) {
@@ -157,7 +157,7 @@ IntType max( SequenceType &seq, IntType SequenceType::value_type::*ip ) {
  * Computes max(N) from the given sequence of ft_token_spans where N is
  * specified by the pointers-to-members.
  */
-template<typename FTTokenSpanSequenceType>
+template<class FTTokenSpanSequenceType>
 ft_token_span::int_t max( FTTokenSpanSequenceType &seq,
                           ft_token_span::start_end_ptr sep,
                           ft_token_span::int_ptr ip ) {
@@ -187,7 +187,7 @@ ft_token_span::int_t max( FTTokenSpanSequenceType &seq,
  * Computes min(N) from the given sequence of ft_token_spans where N is
  * specified by the pointers-to-members.
  */
-template<typename FTTokenSpanSequenceType>
+template<class FTTokenSpanSequenceType>
 ft_token_span::int_t min( FTTokenSpanSequenceType &seq,
                           ft_token_span::start_end_ptr sep,
                           ft_token_span::int_ptr ip ) {
@@ -267,7 +267,7 @@ static void join_includes( ft_match::includes_t const &includes,
 
 ////////// Token matching /////////////////////////////////////////////////////
 
-#define DEBUG_FT_IS_DECENDANT 0
+#define DEBUG_FT_IS_DESCENDANT 0
 #define DEBUG_FT_MATCH_TOKENS 0
 
 #if DEBUG_FT_MATCH_TOKENS
@@ -286,23 +286,23 @@ static void dump( char const *label, FTTokenIterator &it ) {
  */
 static bool is_decendant( store::Item const *i, store::Item const *j ) {
   store::Item const *const j_name = j->getNodeName();
-# if DEBUG_FT_IS_DECENDANT
+# if DEBUG_FT_IS_DESCENDANT
   cout << "----------------" << endl;
   cout << "is_descendant_of: " << j->show() << endl;
 # endif
   while ( i ) {
-#   if DEBUG_FT_IS_DECENDANT
+#   if DEBUG_FT_IS_DESCENDANT
     cout << "i=" << i->show() << endl;
 #   endif
     if ( i->getNodeName()->equals( j_name ) ) {
-#     if DEBUG_FT_IS_DECENDANT
+#     if DEBUG_FT_IS_DESCENDANT
       cout << "--> MATCH" << endl;
 #     endif
       return true;
     }
     i = i->getParent();
   }
-# if DEBUG_FT_IS_DECENDANT
+# if DEBUG_FT_IS_DESCENDANT
   cout << "--> NO MATCH" << endl;
 # endif
   return false;
