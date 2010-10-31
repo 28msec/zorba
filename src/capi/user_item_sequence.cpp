@@ -13,6 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#include <map>
+
 #include "capi/error.h"
 #include "capi/csequence.h"
 #include "capi/user_item_sequence.h"
