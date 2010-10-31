@@ -24,6 +24,7 @@
 #include "store/api/item_factory.h"
 
 #include "util/uuid/uuid.h"
+#include "zorbatypes/xqpstring.h"
 
 namespace zorba {
 

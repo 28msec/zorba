@@ -15,6 +15,7 @@
 <zorba:header>
     <zorba:include form="Quoted">zorbautils/checked_vector.h</zorba:include>
     <zorba:include form="Quoted">zorbatypes/representations.h</zorba:include>
+    <zorba:include form="Quoted">zorbatypes/xqpstring.h</zorba:include>
 </zorba:header>
 
 <!--

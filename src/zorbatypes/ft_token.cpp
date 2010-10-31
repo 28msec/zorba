@@ -18,9 +18,12 @@
 
 #include "runtime/full_text/ft_wildcard.h"
 #include "util/stl_util.h"
+#include "util/unicode_util.h"
+#include "util/utf8_util.h"
 #include "zorbaerrors/Assert.h"
-#include "zorbatypes/ft_token.h"
 #include "zorbautils/stemmer.h"
+
+#include "ft_token.h"
 
 using namespace std;
 using namespace zorba::locale;
@@ -33,14 +36,14 @@ FTToken::FTToken( char const *utf8_s, int len,
                   int_t pos, int_t sent, int_t para,
                   store::Item const *item,
                   iso639_1::type lang ) :
-  value_( new string_t( utf8_s, len ) )
+  value_( utf8_s, len )
 {
   init( pos, sent, para, item, lang );
 }
 
 FTToken::FTToken( char const *utf8_s, int len, int_t pos, int_t sent,
                   iso639_1::type lang ) :
-  value_( new string_t( utf8_s, len ) )
+  value_( utf8_s, len )
 {
   init( pos, sent, QueryTokenMagicValue, NULL, lang );
 }
@@ -92,19 +95,17 @@ void FTToken::init( int_t pos, int_t sent, int_t para, store::Item const *item,
   mod_values_ = NULL;
 }
 
-void FTToken::strip_diacritics( string_t const &ts, string_t &result ) {
-  static xqpStringStore const mode( "NFKD" );
-  string_t const ts_normalized( *ts.normalize( &mode ) );
+void FTToken::strip_diacritics( string_t const &s, string_t *result ) {
+  string_t n;
+  utf8::normalize( s, unicode::normalization::NFKD, &n );
 
-  string const &from = ts_normalized.str();
-  string &to = result.str();
-  to.clear();
-  to.reserve( from.length() );
+  result->clear();
+  result->reserve( n.size() );
 
-  FOR_EACH( string, i, from ) {
+  FOR_EACH( string_t, i, n ) {
     char const c = *i;
     if ( isascii( c ) )
-      to.push_back( c );
+      result->push_back( c );
   }
 }
 
@@ -127,37 +128,35 @@ FTToken::string_t const& FTToken::valueImpl( int selector,
   if ( !mod_values_ )
     mod_values_ = new mod_values_t( 6 );
 
-  string_rc &string_ref = (*mod_values_)[ index ];
-  if ( !string_ref.getp() ) {
+  string_t &mod_value_ref = (*mod_values_)[ index ];
+  if ( mod_value_ref.empty() ) {
     switch ( selector ) {
       case ascii:
-        string_ref = new string_t;
-        strip_diacritics( *value_, *string_ref );
+        strip_diacritics( value_, &mod_value_ref );
         break;
       case lower:
-        string_ref = value_->lowercase();
+        utf8::to_lower( value_, &mod_value_ref );
         break;
       case upper:
-        string_ref = value_->uppercase();
+        utf8::to_upper( value_, &mod_value_ref );
         break;
       case stem: {
         iso639_1::type const stem_lang = lang_ ? lang_ : alt_lang;
-        if ( Stemmer const *const stemmer = Stemmer::get( stem_lang ) ) {
-          string_ref = new string_t;
-          stemmer->stem( valueImpl( lower ).str(), string_ref->str() );
-        } else
+        if ( Stemmer const *const stemmer = Stemmer::get( stem_lang ) )
+          stemmer->stem( valueImpl( lower ).str(), &mod_value_ref );
+        else
           ZORBA_ASSERT( false );
         break;
       }
       case ascii | lower:
-        string_ref = valueImpl( ascii ).lowercase();
+        utf8::to_lower( valueImpl( ascii ), &mod_value_ref );
         break;
       case ascii | upper:
-        string_ref = valueImpl( ascii ).uppercase();
+        utf8::to_upper( valueImpl( ascii ), &mod_value_ref );
         break;
     }
   }
-  return *string_ref;
+  return mod_value_ref;
 }
 
 ft_wildcard const& FTToken::wildcard( int selector ) const {

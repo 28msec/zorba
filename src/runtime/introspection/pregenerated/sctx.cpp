@@ -28,6 +28,7 @@
 
 #include "store/api/iterator.h"
 #include "compiler/expression/var_expr.h"
+#include "zorbatypes/xqpstring.h"
 
 namespace zorba {
 

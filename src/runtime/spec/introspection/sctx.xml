@@ -13,6 +13,7 @@
 <zorba:source>
     <zorba:include  form="Quoted">store/api/iterator.h</zorba:include>
     <zorba:include  form="Quoted">compiler/expression/var_expr.h</zorba:include>
+    <zorba:include  form="Quoted">zorbatypes/xqpstring.h</zorba:include>
 </zorba:source>
 
 <!--

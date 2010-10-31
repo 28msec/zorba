@@ -33,6 +33,7 @@
 #include "store/api/iterator_factory.h"
 #include "fstream"
 #include "zorbatypes/codepoint_iterator.h"
+#include "zorbatypes/xqpstring.h"
 #include "zorbautils/checked_vector.h"
 #include "zorba/xquery.h"
 

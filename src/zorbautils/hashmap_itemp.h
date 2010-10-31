@@ -19,6 +19,7 @@
 #include "zorbautils/hashfun.h"
 #include "zorbautils/hashmap.h"
 
+#include "zorbaserialization/serialization_engine.h"
 #include "zorbatypes/collation_manager.h"
 
 #include "store/api/item.h"

@@ -21,6 +21,7 @@
 #include "zorbatypes/rchandle.h"
 
 #include "store/api/item.h"
+#include "zorbaserialization/serialization_engine.h"
 
 namespace zorba {
 

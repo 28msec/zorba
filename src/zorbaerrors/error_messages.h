@@ -20,6 +20,8 @@
 #include <zorba/error.h>
 #include "zorbatypes/zorbatypesError.h"
 
+#include "errors.h"
+
 namespace zorba {  namespace error {
 
 XQUERY_ERROR

@@ -20,6 +20,7 @@
 
 #include "zorbamisc/ns_consts.h"
 #include "zorbaerrors/Assert.h"
+#include "zorbatypes/xqpstring.h"
 
 #include "types/typeimpl.h"
 #include "types/root_typemanager.h"

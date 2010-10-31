@@ -26,6 +26,7 @@
 #include "util/utf8_util.h"
 #include "util/string_util.h"
 #include "zorbautils/string_util.h"
+#include "zorbatypes/xqpstring.h"
 
 
 using namespace std;

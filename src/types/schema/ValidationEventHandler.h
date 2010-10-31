@@ -28,6 +28,7 @@
 #include <list>
 #include "store/api/item.h"
 #include "common/shared_types.h"
+#include "zorbatypes/xqpstring.h"
 
 
 namespace zorba

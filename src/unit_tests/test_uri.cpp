@@ -17,6 +17,7 @@
 #include <zorba/unit_tests.h>
 
 #include "zorbatypes/URI.h"
+#include "zorbatypes/xqpstring.h"
 
 #include "zorbaerrors/errors.h"
 

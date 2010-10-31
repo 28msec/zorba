@@ -10,8 +10,9 @@
   <zorba:include form="Quoted">store/api/iterator_factory.h</zorba:include>
   <zorba:include form="Quoted">fstream</zorba:include>
   <zorba:include form="Quoted">zorbatypes/codepoint_iterator.h</zorba:include>
-	<zorba:include form="Quoted">zorbautils/checked_vector.h</zorba:include>
-	<zorba:include form="Quoted">zorba/xquery.h</zorba:include>
+  <zorba:include form="Quoted">zorbatypes/xqpstring.h</zorba:include>
+  <zorba:include form="Quoted">zorbautils/checked_vector.h</zorba:include>
+  <zorba:include form="Quoted">zorba/xquery.h</zorba:include>
 </zorba:header>
 
 <zorba:source>
@@ -344,10 +345,10 @@
       </zorba:signature>
     </zorba:function>
 
- 		<zorba:state generateInit="true" generateReset="true">
-			<zorba:member type="checked_vector&lt;XQuery_t&gt;" name="compiled_xpaths"
-										brief="the list of compiled xpaths"/>
-		</zorba:state>
+    <zorba:state generateInit="true" generateReset="true">
+      <zorba:member type="checked_vector&lt;XQuery_t&gt;" name="compiled_xpaths"
+                    brief="the list of compiled xpaths"/>
+    </zorba:state>
  </zorba:iterator>
 
 <!--
@@ -373,10 +374,10 @@
       </zorba:signature>
     </zorba:function>
 
-		<zorba:state generateInit="true" generateReset="true">
-			<zorba:member type="checked_vector&lt;XQuery_t&gt;" name="compiled_xpaths"
-										brief="the list of compiled xpaths"/>
-		</zorba:state>
+    <zorba:state generateInit="true" generateReset="true">
+      <zorba:member type="checked_vector&lt;XQuery_t&gt;" name="compiled_xpaths"
+                    brief="the list of compiled xpaths"/>
+    </zorba:state>
   </zorba:iterator>
 
 <!--
@@ -399,10 +400,10 @@
       </zorba:signature>
     </zorba:function>
 
-		<zorba:state generateInit="true" generateReset="true">
-			<zorba:member type="checked_vector&lt;XQuery_t&gt;" name="compiled_xpaths"
-										brief="the list of compiled xpaths"/>
-		</zorba:state>
+    <zorba:state generateInit="true" generateReset="true">
+      <zorba:member type="checked_vector&lt;XQuery_t&gt;" name="compiled_xpaths"
+                    brief="the list of compiled xpaths"/>
+    </zorba:state>
   </zorba:iterator>
 
 <!--
@@ -426,10 +427,10 @@
       </zorba:signature>
     </zorba:function>
 
-		<zorba:state generateInit="true" generateReset="true">
-			<zorba:member type="checked_vector&lt;XQuery_t&gt;" name="compiled_xpaths"
-										brief="the list of compiled xpaths"/>
-		</zorba:state>
-	</zorba:iterator>
+    <zorba:state generateInit="true" generateReset="true">
+      <zorba:member type="checked_vector&lt;XQuery_t&gt;" name="compiled_xpaths"
+                    brief="the list of compiled xpaths"/>
+    </zorba:state>
+  </zorba:iterator>
 
 </zorba:iterators>

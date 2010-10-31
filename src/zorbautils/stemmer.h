@@ -17,11 +17,11 @@
 #ifndef ZORBA_STEMMER_H
 #define ZORBA_STEMMER_H
 
-#include <string>
+#include "zorbatypes/zstring.h"
 
-#include "zorbautils/locale.h"
-#include "zorbautils/mutex.h"
-#include "zorbautils/stemmer/include/libstemmer.h"
+#include "locale.h"
+#include "mutex.h"
+#include "stemmer/include/libstemmer.h"
 
 namespace zorba {
 
@@ -31,7 +31,7 @@ public:
 
   static Stemmer const* get( locale::iso639_1::type );
 
-  void stem( std::string const &word, std::string &result ) const;
+  void stem( zstring const &word, zstring *result ) const;
 
 private:
   sb_stemmer *const stemmer_;

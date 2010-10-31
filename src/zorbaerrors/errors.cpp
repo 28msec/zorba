@@ -16,10 +16,11 @@
 
 #include <zorba/error.h>
 
-#include "zorbaerrors/errors.h"
-#include "zorbaerrors/error_messages.h"
 #include "debugger/query_locationimpl.h"
 #include "util/string_util.h"
+#include "zorbaerrors/error_messages.h"
+#include "zorbaerrors/errors.h"
+#include "zorbaserialization/serialization_engine.h"
 
 namespace zorba { namespace error {
 

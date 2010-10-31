@@ -18,11 +18,9 @@
 #define ZORBA_FT_TOKEN_H
 
 #include <iostream>
-#include <string>
 #include <vector>
 
-#include "zorbatypes/rchandle.h"
-#include "zorbatypes/xqpstring.h"
+#include "zorbatypes/zstring.h"
 #include "zorbautils/locale.h"
 
 namespace zorba {
@@ -45,6 +43,11 @@ public:
    * The integral type used for token, paragraph, and sentence numbers.
    */
   typedef unsigned int_t;
+
+  /**
+   * The string type used for the token string.
+   */
+  typedef zstring string_t;
 
   /**
    * Constructs an FTToken for a token from an XML document.
@@ -163,12 +166,12 @@ public:
    *                  have a language.
    * @return Returns said value.
    */
-  std::string const&
+  zstring const&
   value( int selector = original,
          locale::iso639_1::type alt_lang = locale::iso639_1::unknown ) const {
     if ( selector == original )         // optimize this case
-      return value_->str();
-    return valueImpl( selector, alt_lang ).str();
+      return value_;
+    return valueImpl( selector, alt_lang );
   }
 
   /**
@@ -180,9 +183,7 @@ public:
   ft_wildcard const& wildcard( int selector = original ) const;
 
 private:
-  typedef xqpStringStore string_t;
-  typedef rchandle<string_t> string_rc;
-  typedef std::vector<string_rc> mod_values_t;
+  typedef std::vector<string_t> mod_values_t;
 
   /**
    * The smallest possible type to store a Selectors value.
@@ -191,7 +192,7 @@ private:
 
   static int_t const QueryTokenMagicValue = static_cast<int_t>( ~0 );
 
-  string_rc value_;                     ///< original value
+  string_t value_;                      ///< original value
   locale::iso639_1::type lang_;         ///< language (if any)
   int_t pos_;                           ///< position number
   int_t sent_;                          ///< sentence number
@@ -243,7 +244,7 @@ private:
   }
 
   static void fix_selector( int *selector );
-  static void strip_diacritics( string_t const&, string_t &result );
+  static void strip_diacritics( string_t const&, string_t *result );
 
   void copy( FTToken const& );
   void free();

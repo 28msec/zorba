@@ -49,7 +49,7 @@ Stemmer const* Stemmer::get( iso639_1::type lang ) {
   return ptr.get();
 }
 
-void Stemmer::stem( string const &word, string &result ) const {
+void Stemmer::stem( zstring const &word, zstring *result ) const {
   //
   // We need a mutex since the libstemmer library is not thread-safe.
   //
@@ -59,7 +59,7 @@ void Stemmer::stem( string const &word, string &result ) const {
     stemmer_, reinterpret_cast<sb_symbol const*>( word.c_str() ), word.length()
   );
   ZORBA_FATAL( sb_word, "out of memory" );
-  result = reinterpret_cast<char const*>( sb_word );
+  *result = reinterpret_cast<char const*>( sb_word );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -23,6 +23,7 @@
 #include "store/api/store.h"
 
 #include "util/string_util.h"
+#include "zorbatypes/xqpstring.h"
 
 using namespace std;
 
