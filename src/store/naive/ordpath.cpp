@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 #include <cassert>
+
+// define the __STDC_LIMIT_MACROS macro for the INT32_MAX/INT32_MIN macros
+#define __STDC_LIMIT_MACROS
+#include <stdint.h>
 
 #include "zorbautils/hashfun.h"
 #include "zorbaerrors/error_manager.h"
@@ -37,7 +41,7 @@ namespace zorba { namespace simplestore {
 /*******************************************************************************
   Masks used during decompression
 ********************************************************************************/
-const unsigned char OrdPath::theByteMasks[8][2] = 
+const unsigned char OrdPath::theByteMasks[8][2] =
 {
   { 0xff, 0x00 },  // 0
   { 0x7f, 0x80 },  // 1
@@ -53,7 +57,7 @@ const unsigned char OrdPath::theByteMasks[8][2] =
 /*******************************************************************************
   Masks ussed during compression
 ********************************************************************************/
-const uint32_t OrdPath::theValueMasks[9] = 
+const uint32_t OrdPath::theValueMasks[9] =
 {
   0x00000000,
   0x80000000,  // 1 -> 1000-0000
@@ -68,13 +72,13 @@ const uint32_t OrdPath::theValueMasks[9] =
 
 
 /*******************************************************************************
-  This array gives the total number of bits needed for the encoding of 
+  This array gives the total number of bits needed for the encoding of
   components with values between 0 and DEFAULT_FAN_OUT - 1.
 ********************************************************************************/
-const unsigned char OrdPath::thePosV2LMap[DEFAULT_FAN_OUT] = 
+const unsigned char OrdPath::thePosV2LMap[DEFAULT_FAN_OUT] =
 {
   /* 0 */        3,
-  /* 1 */        2,               
+  /* 1 */        2,
   /* 2 - 3 */    3, 3,
   /* 4 - 7 */    5, 5, 5, 5,
   /* 8 - 23 */   8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
@@ -83,15 +87,15 @@ const unsigned char OrdPath::thePosV2LMap[DEFAULT_FAN_OUT] =
 
 
 /*******************************************************************************
-  This array gives the total number of bits needed for the encoding of 
+  This array gives the total number of bits needed for the encoding of
   id components with values between -(DEFAULT_FAN_OUT - 1) and 0.
 ********************************************************************************/
-const unsigned char OrdPath::theNegV2LMap[DEFAULT_FAN_OUT] = 
+const unsigned char OrdPath::theNegV2LMap[DEFAULT_FAN_OUT] =
 {
-  /*   0      */    3, 
+  /*   0      */    3,
   /*  -1,   -4 */   6, 6, 6, 6,
-  /*  -5,  -20 */   9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 
-  /* -21, -276 */   14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14 
+  /*  -5,  -20 */   9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
+  /* -21, -276 */   14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14
 };
 
 
@@ -99,7 +103,7 @@ const unsigned char OrdPath::theNegV2LMap[DEFAULT_FAN_OUT] =
   This array maps each component value between 0 and DEFAULT_FAN_OUT - 1 to its
   encoded version.
 ********************************************************************************/
-const uint16_t OrdPath::thePosV2EVMap[DEFAULT_FAN_OUT] = 
+const uint16_t OrdPath::thePosV2EVMap[DEFAULT_FAN_OUT] =
 {
   0x2000,  // 0   = 001             -> 0010-0000-0000-0000
 
@@ -109,7 +113,7 @@ const uint16_t OrdPath::thePosV2EVMap[DEFAULT_FAN_OUT] =
   0xA000,  // 3   = 10,1            -> 1010-0000-0000-0000
 
   0xC000,  // 4   = 110,00          -> 1100-0000-0000-0000
-  0xC800,  // 5   = 110,01          -> 1100-1000-0000-0000 
+  0xC800,  // 5   = 110,01          -> 1100-1000-0000-0000
   0xD000,  // 6   = 110,10          -> 1101-0000-0000-0000
   0xD800,  // 7   = 110,11          -> 1101-1000-0000-0000
 
@@ -145,7 +149,7 @@ const uint16_t OrdPath::thePosV2EVMap[DEFAULT_FAN_OUT] =
   This array maps each component value between 0 and DEFAULT_FAN_OUT - 1 to its
   encoded version.
 ********************************************************************************/
-const uint16_t OrdPath::theNegV2EVMap[DEFAULT_FAN_OUT] = 
+const uint16_t OrdPath::theNegV2EVMap[DEFAULT_FAN_OUT] =
 {
   0x2000,  //  0   = 001               -> 0010-0000-0000-0000
 
@@ -154,7 +158,7 @@ const uint16_t OrdPath::theNegV2EVMap[DEFAULT_FAN_OUT] =
   0x1400,  // -3   = 0001,01           -> 0001-0100-0000-0000
   0x1000,  // -4   = 0001,00           -> 0001-0000-0000-0000
 
-  0x0F80,  // -5   = 00001,1111        -> 0000-1111-1000-0000 
+  0x0F80,  // -5   = 00001,1111        -> 0000-1111-1000-0000
   0x0F00,  // -6   = 00001,1110        -> 0000-1111-0000-0000
   0x0E80,  // -7   = 00001,1101        -> 0000-1110-1000-0000
   0x0E00,  // -8   = 00001,1100        -> 0000-1110-0000-0000
@@ -212,7 +216,7 @@ OrdPath::OrdPath(const unsigned char* str, ulong strLen)
   {
     buf = theBuffer.local;
     isLocal = true;
-  } 
+  }
   else
   {
     setRemoteBuffer(new unsigned char[byteLen + 1]);
@@ -230,7 +234,7 @@ OrdPath::OrdPath(const unsigned char* str, ulong strLen)
     while (1)
     {
       char ch = *start;
-      
+
       if (ch >= '0' && ch <= '9')
         buf[i] = ch - 48;
       else if (ch >= 'a' && ch <= 'f')
@@ -243,7 +247,7 @@ OrdPath::OrdPath(const unsigned char* str, ulong strLen)
       buf[i] <<= 4;
       start++;
       ch = *start;
-      
+
       if (ch >= '0' && ch <= '9')
         buf[i] |= ch - 48;
       else if (ch >= 'a' && ch <= 'f')
@@ -252,11 +256,11 @@ OrdPath::OrdPath(const unsigned char* str, ulong strLen)
         break;
       else
         ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str, "");
-      
+
       start++;
       i++;
     }
-    
+
     if (isLocal)
       markLocal();
   }
@@ -316,7 +320,7 @@ OrdPath& OrdPath::operator=(const OrdPathStack& ops)
 {
   ulong len = ops.getByteLength();
 
-  if (len > MAX_EMBEDDED_BYTE_LEN || 
+  if (len > MAX_EMBEDDED_BYTE_LEN ||
       (len == MAX_EMBEDDED_BYTE_LEN && ops.theBitsAvailable == 0))
   {
     initRemote(len);
@@ -392,7 +396,7 @@ ulong OrdPath::getRemoteBitLength(ulong& byteLen) const
 ********************************************************************************/
 uint32_t OrdPath::hash() const
 {
-  return (isLocal() ? 
+  return (isLocal() ?
           hashfun::h32(getLocalData(), getLocalByteLength(), FNV_32_INIT) :
           hashfun::h32(getRemoteData(), getRemoteByteLength(), FNV_32_INIT));
 }
@@ -536,7 +540,7 @@ OrdPath::RelativePosition OrdPath::getRelativePosition(const OrdPath& other) con
           }
           ch >>= 1;
 
-          if (*data1 == (*data2 & ~ch)) 
+          if (*data1 == (*data2 & ~ch))
             return DESCENDANT;
         }
 
@@ -570,7 +574,7 @@ OrdPath::RelativePosition OrdPath::getRelativePosition(const OrdPath& other) con
           }
           ch >>= 1;
 
-          if (*data1 == (*data2 & ~ch)) 
+          if (*data1 == (*data2 & ~ch))
             return DESCENDANT;
         }
 
@@ -588,7 +592,7 @@ OrdPath::RelativePosition OrdPath::getRelativePosition(const OrdPath& other) con
           }
           ch >>= 1;
 
-          if ((*data1 & ~ch) == *data2) 
+          if ((*data1 & ~ch) == *data2)
             return ANCESTOR;
         }
 
@@ -723,7 +727,7 @@ void OrdPath::insertBeforeOrAfter(
   {
     if ( newcomp < -INT32_MAX + 2)
     {
-      ZORBA_ERROR_DESC(STR0030_NODEID_ERROR, 
+      ZORBA_ERROR_DESC(STR0030_NODEID_ERROR,
                        "A nodeid component is too large to be encoded");
     }
 
@@ -733,7 +737,7 @@ void OrdPath::insertBeforeOrAfter(
   {
     if ( newcomp > INT32_MAX - 2)
     {
-      ZORBA_ERROR_DESC(STR0030_NODEID_ERROR, 
+      ZORBA_ERROR_DESC(STR0030_NODEID_ERROR,
                        "A nodeid component is too large to be encoded");
     }
 
@@ -781,7 +785,7 @@ void OrdPath::insertBeforeOrAfter(
   Create an ordpath that is at the same level and in between the two given
   ordpaths (sib1 and sib2). For efficiency, the parent ordpath of sib1 and sib2
   is also given.
-  
+
   Note: This is a static method.
 ********************************************************************************/
 void OrdPath::insertInto(
@@ -871,7 +875,7 @@ void OrdPath::insertInto(
     {
       if (newcomp1 < -INT32_MAX + 1)
       {
-        ZORBA_ERROR_DESC(STR0030_NODEID_ERROR, 
+        ZORBA_ERROR_DESC(STR0030_NODEID_ERROR,
                          "A nodeid component is too large to be encoded");
       }
 
@@ -881,7 +885,7 @@ void OrdPath::insertInto(
     {
       if (newcomp1 < -INT32_MAX + 2)
       {
-        ZORBA_ERROR_DESC(STR0030_NODEID_ERROR, 
+        ZORBA_ERROR_DESC(STR0030_NODEID_ERROR,
                          "A nodeid component is too large to be encoded");
       }
 
@@ -903,9 +907,9 @@ void OrdPath::insertInto(
     {
       if (newcomp1 > INT32_MAX - 1)
       {
-        ZORBA_ERROR_DESC(STR0030_NODEID_ERROR, 
+        ZORBA_ERROR_DESC(STR0030_NODEID_ERROR,
                          "A nodeid component is too large to be encoded");
-      } 
+      }
 
       newcomp1 += 1;
     }
@@ -913,7 +917,7 @@ void OrdPath::insertInto(
     {
       if (newcomp1 > INT32_MAX - 2)
       {
-        ZORBA_ERROR_DESC(STR0030_NODEID_ERROR, 
+        ZORBA_ERROR_DESC(STR0030_NODEID_ERROR,
                          "A nodeid component is too large to be encoded");
       }
 
@@ -1088,7 +1092,7 @@ void OrdPath::appendComp(int32_t value)
   else if (isLocal || (bytesNeeded > byteLen))
   {
     // The ordpath is local but will become remote after the append, or
-    // the ordpath is remote already but is buffer must be extended to 
+    // the ordpath is remote already but is buffer must be extended to
     // acommodate the append.
     unsigned char* newbuf = new unsigned char[bytesNeeded + 1];
     memset(newbuf, 0, bytesNeeded+1);
@@ -1414,7 +1418,7 @@ zstring OrdPath::show() const
 
 /*******************************************************************************
   Decompress all the components that appear after a given starting offset
-  within the ordpath data buffer (it is assumed that startOffset points to 
+  within the ordpath data buffer (it is assumed that startOffset points to
   the start of some component).
 ********************************************************************************/
 void OrdPath::decompress(
@@ -1494,7 +1498,7 @@ void OrdPath::decodeByte(
     int32_t*       deweyid,
     ulong*         compOffsets,
     ulong&         numComps)
-{ 
+{
   compOffsets[numComps] = bitLen;
 
   switch (byte)
@@ -1512,7 +1516,7 @@ void OrdPath::decodeByte(
     {
       extractValue(data, bitLen, byteIndex, bitIndex, 20, -1118484, deweyid[numComps]);
     }
-    ++numComps;    
+    ++numComps;
     break;
   }
   case 1:    // 0000 0001   00000001,...            (24/8,16)
@@ -1624,14 +1628,14 @@ void OrdPath::decodeByte(
 
   case 16:   // 0001 0000   0001,00 + 00...       (6/4,2)
   {
-    deweyid[numComps] = -4;    
+    deweyid[numComps] = -4;
     ADVANCE(bitLen, byteIndex, bitIndex, 6);
     numComps += 1;
     break;
   }
   case 17:   // 0001 0001   0001,00 + 01 +        (6/4,2 + 2/2,0)
   {
-    deweyid[numComps] = -4; 
+    deweyid[numComps] = -4;
     deweyid[numComps+1] = 1;
     compOffsets[numComps+1] = bitLen + 6;
     ADVANCE(bitLen, byteIndex, bitIndex, 8);
@@ -1641,7 +1645,7 @@ void OrdPath::decodeByte(
   case 18:   // 0001 0010   0001,00 + 10, ...     (6/4,2 + 3/2,1)
   {
     compOffsets[numComps+1] = bitLen + 6;
-    deweyid[numComps] = -4; 
+    deweyid[numComps] = -4;
     ADVANCE(bitLen, byteIndex, bitIndex, 8);
     extractValue(data, bitLen, byteIndex, bitIndex, 1, 2, deweyid[numComps+1]);
     numComps += 2;
@@ -1656,7 +1660,7 @@ void OrdPath::decodeByte(
   }
   case 20:   // 0001 0100   0001,01 + 00...       (6/4,2)
   {
-    deweyid[numComps] = -3; 
+    deweyid[numComps] = -3;
     ADVANCE(bitLen, byteIndex, bitIndex, 6);
     numComps += 1;
     break;
@@ -1664,8 +1668,8 @@ void OrdPath::decodeByte(
   case 21:   // 0001 0101   0001,01 + 01 +        (6/4,2 + 2/2,0)
   {
     compOffsets[numComps+1] = bitLen + 6;
-    deweyid[numComps] = -3; 
-    deweyid[numComps+1] = 1;    
+    deweyid[numComps] = -3;
+    deweyid[numComps+1] = 1;
     ADVANCE(bitLen, byteIndex, bitIndex, 8);
     numComps += 2;
     break;
@@ -1673,7 +1677,7 @@ void OrdPath::decodeByte(
   case 22:   // 0001 0110   0001,01 + 10, ...     (6/4,2 + 3/2,1)
   {
     compOffsets[numComps+1] = bitLen + 6;
-    deweyid[numComps] = -3;    
+    deweyid[numComps] = -3;
     ADVANCE(bitLen, byteIndex, bitIndex, 8);
     extractValue(data, bitLen, byteIndex, bitIndex, 1, 2, deweyid[numComps+1]);
     numComps += 2;
@@ -1681,14 +1685,14 @@ void OrdPath::decodeByte(
   }
   case 23:   // 0001 0111   0001,01 + 11...       (6/4,2)
   {
-    deweyid[numComps] = -3;    
+    deweyid[numComps] = -3;
     ADVANCE(bitLen, byteIndex, bitIndex, 6);
     numComps += 1;
     break;
   }
   case 24:   // 0001 1000   0001,10 + 00...       (6/4,2)
   {
-    deweyid[numComps] = -2;    
+    deweyid[numComps] = -2;
     ADVANCE(bitLen, byteIndex, bitIndex, 6);
     numComps += 1;
     break;
@@ -1696,8 +1700,8 @@ void OrdPath::decodeByte(
   case 25:   // 0001 1001   0001,10 + 01 +        (6/4,2 + 2/2,0)
   {
     compOffsets[numComps+1] = bitLen + 6;
-    deweyid[numComps] = -2; 
-    deweyid[numComps+1] = 1;    
+    deweyid[numComps] = -2;
+    deweyid[numComps+1] = 1;
     ADVANCE(bitLen, byteIndex, bitIndex, 8);
     numComps += 2;
     break;
@@ -1705,7 +1709,7 @@ void OrdPath::decodeByte(
   case 26:   // 0001 1010   0001,10 + 10, ...     (6/4,2 + 3/2,1)
   {
     compOffsets[numComps+1] = bitLen + 6;
-    deweyid[numComps] = -2;    
+    deweyid[numComps] = -2;
     ADVANCE(bitLen, byteIndex, bitIndex, 8);
     extractValue(data, bitLen, byteIndex, bitIndex, 1, 2, deweyid[numComps+1]);
     numComps += 2;
@@ -1713,14 +1717,14 @@ void OrdPath::decodeByte(
   }
   case 27:   // 0001 1011   0001,10 + 11 ...      (6/4,2)
   {
-    deweyid[numComps] = -2;    
+    deweyid[numComps] = -2;
     ADVANCE(bitLen, byteIndex, bitIndex, 6);
     numComps += 1;
     break;
   }
   case 28:   // 0001 1100   0001,11 + 00 ...        (6/4,2)
   {
-    deweyid[numComps] = -1;    
+    deweyid[numComps] = -1;
     ADVANCE(bitLen, byteIndex, bitIndex, 6);
     numComps += 1;
     break;
@@ -1728,8 +1732,8 @@ void OrdPath::decodeByte(
   case 29:   // 0001 1101   0001,11 + 01 +          (6/4,2 + 2/2,0)
   {
     compOffsets[numComps+1] = bitLen + 6;
-    deweyid[numComps] = -1; 
-    deweyid[numComps+1] = 1;    
+    deweyid[numComps] = -1;
+    deweyid[numComps+1] = 1;
     ADVANCE(bitLen, byteIndex, bitIndex, 8);
     numComps += 2;
     break;
@@ -1737,7 +1741,7 @@ void OrdPath::decodeByte(
   case 30:   // 0001 1110   0001,11 + 10, ...       (6/4,2 + 3/2,1)
   {
     compOffsets[numComps+1] = bitLen + 6;
-    deweyid[numComps] = -1;    
+    deweyid[numComps] = -1;
     ADVANCE(bitLen, byteIndex, bitIndex, 8);
     extractValue(data, bitLen, byteIndex, bitIndex, 1, 2, deweyid[numComps+1]);
     numComps += 2;
@@ -1745,16 +1749,16 @@ void OrdPath::decodeByte(
   }
   case 31:   // 0001 1111   0001,11 + 11 ...        (6/4,2)
   {
-    deweyid[numComps] = -2;    
+    deweyid[numComps] = -2;
     ADVANCE(bitLen, byteIndex, bitIndex, 6);
     numComps += 1;
     break;
   }
-  
+
 
   case 32:   // 0010 0000   001 + 00000 ...         (3/3,0)
   {
-    deweyid[numComps] = 0;    
+    deweyid[numComps] = 0;
     ADVANCE(bitLen, byteIndex, bitIndex, 3);
     numComps += 1;
     break;
@@ -1762,7 +1766,7 @@ void OrdPath::decodeByte(
   case 33:   // 0010 0001   001 + 00001, ...        (3/3,0 + 9/5,4)
   {
     compOffsets[numComps+1] = bitLen + 3;
-    deweyid[numComps] = 0;    
+    deweyid[numComps] = 0;
     ADVANCE(bitLen, byteIndex, bitIndex, 8);
     extractValue(data, bitLen, byteIndex, bitIndex, 4, -20, deweyid[numComps+1]);
     numComps += 2;
@@ -1771,7 +1775,7 @@ void OrdPath::decodeByte(
   case 34:   // 0010 0010   001 + 0001,0...         (3/3,0 + 6/4,2)
   {
     compOffsets[numComps+1] = bitLen + 3;
-    deweyid[numComps] = 0;    
+    deweyid[numComps] = 0;
     ADVANCE(bitLen, byteIndex, bitIndex, 7);
     extractValue(data, bitLen, byteIndex, bitIndex, 2, -4, deweyid[numComps+1]);
     numComps += 2;
@@ -2129,7 +2133,7 @@ void OrdPath::decodeByte(
     numComps += 2;
     break;
   }
-  
+
   case 72:   // 0100 1000   01 + 001 + 000 ...      (2/2,0 + 3/3,0)
   {
     compOffsets[numComps+1] = bitLen + 2;
@@ -2861,7 +2865,7 @@ void OrdPath::decodeByte(
     deweyid[numComps] = 2;
     deweyid[numComps + 1] = 1;
     ADVANCE(bitLen, byteIndex, bitIndex, 8);
-    extractValue(data, bitLen, byteIndex, bitIndex, 2, 4, deweyid[numComps + 2]);    
+    extractValue(data, bitLen, byteIndex, bitIndex, 2, 4, deweyid[numComps + 2]);
     numComps += 3;
     break;
   }
@@ -3955,7 +3959,7 @@ ulong OrdPathStack::getByteLength() const
 
 
 /*******************************************************************************
-  
+
 ********************************************************************************/
 void OrdPathStack::pushChild()
 {
@@ -4005,7 +4009,7 @@ void OrdPathStack::popChild()
 
   if (theDeweyId[theNumComps - 1] > INT32_MAX - 2)
   {
-    ZORBA_ERROR_DESC(STR0030_NODEID_ERROR, 
+    ZORBA_ERROR_DESC(STR0030_NODEID_ERROR,
                      "A nodeid component is too large to be encoded");
   }
 
@@ -4038,7 +4042,7 @@ void OrdPathStack::nextChild()
 
   if (theDeweyId[theNumComps - 1] > INT32_MAX - 2)
   {
-    ZORBA_ERROR_DESC(STR0030_NODEID_ERROR, 
+    ZORBA_ERROR_DESC(STR0030_NODEID_ERROR,
                      "A nodeid component is too large to be encoded");
   }
 
