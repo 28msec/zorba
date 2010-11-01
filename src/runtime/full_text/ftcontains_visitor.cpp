@@ -92,12 +92,12 @@ inline ftmatch_options const* ftcontains_visitor::pop_options() {
 
 #define GET_OPTION(O) get_##O##_option()
 
-#define REPLACE_OPTION(O)                                     \
-  if ( newer->GET_OPTION(O) || !older->GET_OPTION(O) ) ; else \
-    newer->set_##O##_option( older->GET_OPTION(O) )
+#define REPLACE_OPTION(O)                                                     \
+  if ( newer_options->GET_OPTION(O) || !older_options->GET_OPTION(O) ) ; else \
+    newer_options->set_##O##_option( older_options->GET_OPTION(O) )
 
-static void replace_match_options( ftmatch_options const *older,
-                                   ftmatch_options *newer ) {
+static void replace_match_options( ftmatch_options const *older_options,
+                                   ftmatch_options *newer_options ) {
   REPLACE_OPTION( case );
   REPLACE_OPTION( diacritics );
   REPLACE_OPTION( extension );
@@ -355,16 +355,16 @@ void V::end_visit( ftor& ) {
 ft_visit_result::type V::begin_visit( ftprimary_with_options &pwo ) {
   BEGIN_VISIT( ftprimary_with_options );
 
-  ftmatch_options const *const older = options_stack_.empty() ?
+  ftmatch_options const *const older_options = options_stack_.empty() ?
     static_ctx_.get_match_options() : top_options();
-  ftmatch_options *const newer =
+  ftmatch_options *const newer_options =
     new ftmatch_options( *pwo.get_match_options() );
 
-  if ( older )
-    replace_match_options( older, newer );
-  newer->set_missing_defaults();
+  if ( older_options )
+    replace_match_options( older_options, newer_options );
+  newer_options->set_missing_defaults();
 
-  PUSH_OPTIONS( newer );
+  PUSH_OPTIONS( newer_options );
   return ft_visit_result::proceed;
 }
 void V::end_visit( ftprimary_with_options& ) {
