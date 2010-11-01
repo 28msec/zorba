@@ -140,8 +140,9 @@ dynamic_context::dynamic_context(dynamic_context* parent)
     _ftime_s( &timebuffer );
     struct ::tm gmtm;
     localtime_s(&gmtm, &timebuffer.time); //thread safe localtime on Windows
+    lTimeShift = -timebuffer.timezone*60;
     if (gmtm.tm_isdst != 0)
-      lTimeShift = -timebuffer.timezone*60 + 3600;
+      lTimeShift += 3600;
 #else
     struct timeb timebuffer;
     ftime( &timebuffer );
