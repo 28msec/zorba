@@ -14,7 +14,7 @@
 
 SET(FULLTEXT_SRCS
     ft_match.cpp
-    ft_query_item_seq.cpp
+    ft_query_item.cpp
     ft_single_token_iterator.cpp
     ft_stop_words_set.cpp
     ft_wildcard.cpp

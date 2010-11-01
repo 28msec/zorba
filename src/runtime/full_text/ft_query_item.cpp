@@ -17,7 +17,7 @@
 #include "util/stl_util.h"
 #include "zorbaerrors/Assert.h"
 
-#include "ft_query_item_seq.h"
+#include "ft_query_item.h"
 
 namespace zorba {
 

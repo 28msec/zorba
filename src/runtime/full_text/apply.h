@@ -24,7 +24,7 @@
 #include "zorbatypes/representations.h"
 
 #include "ft_match.h"
-#include "ft_query_item_seq.h"
+#include "ft_query_item.h"
 
 namespace zorba {
 

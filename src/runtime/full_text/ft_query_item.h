@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_FULL_TEXT_QUERY_ITEM_SEQ_H
-#define ZORBA_FULL_TEXT_QUERY_ITEM_SEQ_H
+#ifndef ZORBA_FT_QUERY_ITEM_H
+#define ZORBA_FT_QUERY_ITEM_H
 
 #include <list>
 
@@ -74,5 +74,5 @@ private:
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
-#endif  /* ZORBA_FULL_TEXT_QUERY_ITEM_SEQ_H */
+#endif  /* ZORBA_FT_QUERY_ITEM_H */
 /* vim:set et sw=2 ts=2: */
