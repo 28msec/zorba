@@ -17,7 +17,8 @@
 #include <algorithm>
 #include <cstdlib>
 #include <cwchar>
-#include <functional>
+#include <functional>                   /* for binary_function */
+#include <utility>                      /* for pair */
 
 #include <unicode/normlzr.h>
 #include <unicode/ustring.h>
