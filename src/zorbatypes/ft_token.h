@@ -34,7 +34,7 @@ namespace store {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * An FTToken is a full-text token from either an XML document or a query.
+ * An %FTToken is a full-text token from either an XML document or a query.
  */
 class FTToken {
 public:
@@ -50,7 +50,7 @@ public:
   typedef zstring string_t;
 
   /**
-   * Constructs an FTToken for a token from an XML document.
+   * Constructs an %FTToken for a token from an XML document.
    *
    * @param utf8_s    The token string encoded in UTF-8.  It need not be
    *                  null-terminated.
@@ -66,7 +66,7 @@ public:
            locale::iso639_1::type lang = locale::iso639_1::unknown );
 
   /**
-   * Constructs an FTToken for a token from a query.
+   * Constructs an %FTToken for a token from a query.
    *
    * @param utf8_s    The token string encoded in UTF-8.  It need not be
    *                  null-terminated.
@@ -79,16 +79,27 @@ public:
            locale::iso639_1::type lang = locale::iso639_1::unknown );
 
   /**
+   * Constructs an %FTToken for a token from a query.
+   *
+   * @param utf8_s    The token string encoded in UTF-8.
+   * @param pos_no    The position number.  Position numbers start at 0.
+   * @param sent_no   The sentence number.  Sentence numbers start at 1.
+   * @param lang      The language of the token string.
+   */
+  FTToken( string_t const &utf8_s, int_t pos_no, int_t sent_no,
+           locale::iso639_1::type lang = locale::iso639_1::unknown );
+
+  /**
    * Copy constructor.
    *
-   * @param from  The FTToken to copy from.
+   * @param from The %FTToken to copy from.
    */
   FTToken( FTToken const &from ) {
     copy( from );
   }
 
   /**
-   * Destroys and FTToken.
+   * Destroys and %FTToken.
    */
   ~FTToken() {
     free();
@@ -96,13 +107,16 @@ public:
 
   /**
    * Assignment operator.
+   *
+   * @param from The %FTToken to copy from.
+   * @return Returns \c *this.
    */
   FTToken& operator=( FTToken const &from );
 
   /**
    * Gets the Item this token came from.
    *
-   * @return Returns said Item or <code>NULL</code> for query tokens.
+   * @return Returns said Item or \c NULL for query tokens.
    */
   store::Item const* item() const {
     return is_query_token() ? NULL : dt_.item_;
@@ -257,10 +271,10 @@ private:
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * Inserts a text representation of an FTToken into an ostream.
+ * Inserts a text representation of an %FTToken into an ostream.
  *
  * @param o The ostream to insert into.
- * @param t The FTToken to insert.
+ * @param t The %FTToken to insert.
  * @return Returns the given ostream.
  */
 std::ostream& operator<<( std::ostream &o, FTToken const &t );

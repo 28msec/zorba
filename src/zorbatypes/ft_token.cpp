@@ -48,6 +48,13 @@ FTToken::FTToken( char const *utf8_s, int len, int_t pos, int_t sent,
   init( pos, sent, QueryTokenMagicValue, NULL, lang );
 }
 
+FTToken::FTToken( string_t const &utf8_s, int_t pos, int_t sent,
+                  iso639_1::type lang ) :
+  value_( utf8_s )
+{
+  init( pos, sent, QueryTokenMagicValue, NULL, lang );
+}
+
 FTToken& FTToken::operator=( FTToken const &from ) {
   if ( &from != this ) {
     free();
