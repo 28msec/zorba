@@ -318,11 +318,6 @@ void V::end_visit( ftmild_not &mn ) {
       PUSH_MATCHES( result.release() );
     }
     catch ( error::ZorbaError &e ) {
-      //
-      // Since apply_ftmild_not() can throw a ZorbaError and we don't pass it
-      // the QueryLoc, set it here after the fact.  (We don't pass it the
-      // QueryLoc so we don't "pollute" the API.)
-      //
       set_error_query_loc( e, mn.get_loc() );
       throw;
     }
@@ -403,11 +398,6 @@ void V::end_visit( ftwords &w ) {
         query_items.push_back( qi );
     }
     catch ( error::ZorbaError &e ) {
-      //
-      // Since getQueryTokens() can throw a ZorbaError and we don't pass it the
-      // QueryLoc, set it here after the fact.  (We don't pass it the QueryLoc
-      // so we don't "pollute" the API.)
-      //
       set_error_query_loc( e, w.get_loc() );
       throw;
     }
@@ -415,10 +405,15 @@ void V::end_visit( ftwords &w ) {
 
   if ( !query_items.empty() ) {
     auto_ptr<ft_all_matches> result( new ft_all_matches );
-    apply_ftwords(
-      *search_ctx_.getp(), query_items, ++query_pos_, ignore_item_,
-      w.get_mode(), options, *result
-    );
+    try {
+      apply_ftwords(
+        query_items, ++query_pos_, ignore_item_, w.get_mode(), options, *result
+      );
+    }
+    catch ( error::ZorbaError &e ) {
+      set_error_query_loc( e, w.get_loc() );
+      throw;
+    }
     PUSH_MATCHES( result.release() );
   }
   END_VISIT( ftwords );
@@ -436,11 +431,6 @@ void V::end_visit( ftwords_times &wt ) {
       PUSH_MATCHES( result.release() );
     }
     catch ( error::ZorbaError &e ) {
-      //
-      // Since apply_fttimes() can throw a ZorbaError and we don't pass it the
-      // QueryLoc, set it here after the fact.  (We don't pass it the QueryLoc
-      // so we don't "pollute" the API.)
-      //
       set_error_query_loc( e, wt.get_loc() );
       throw;
     }

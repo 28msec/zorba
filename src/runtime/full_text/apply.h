@@ -21,18 +21,12 @@
 
 #include "compiler/expression/ftnode.h"
 #include "compiler/parser/ft_types.h"
-#include "zorbatypes/representations.h"
 
 #include "ft_match.h"
 #include "ft_query_item.h"
+#include "ft_util.h"
 
 namespace zorba {
-
-/**
- * The integer type used in full-text, e.g., "at least N", "at most N",
- * "exactly N", "window N", etc.
- */
-typedef xqp_uint ft_int;
 
 void apply_ftand( ft_all_matches const&, ft_all_matches const&,
                   ft_all_matches &result );
@@ -61,11 +55,6 @@ void apply_ftunary_not( ft_all_matches& );
 
 void apply_ftwindow( ft_all_matches const&, ft_int window_size, ft_unit::type,
                      ft_all_matches &result );
-
-void apply_ftwords( FTTokenIterator &search_ctx, FTQueryItemSeq&,
-                    FTToken::int_t query_pos, store::Item const *ignore_item,
-                    ft_anyall_mode::type, ftmatch_options const&,
-                    ft_all_matches &result );
 
 } // namespace zorba
 #endif  /* ZORBA_FULL_TEXT_APPLY_H */

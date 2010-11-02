@@ -18,9 +18,28 @@
 #define ZORBA_FULL_TEXT_UTIL_H
 
 #include "compiler/expression/ftnode.h"
+#include "zorbatypes/representations.h"
 #include "zorbautils/locale.h"
 
+#include "ft_match.h"
+
 namespace zorba {
+
+////////// Typedefs ///////////////////////////////////////////////////////////
+
+/**
+ * A binary argument apply function.
+ */
+typedef void (*apply_binary_fn)( ft_all_matches const&, ft_all_matches const&,
+                                 ft_all_matches& );
+
+/**
+ * The integer type used in full-text, e.g., "at least N", "at most N",
+ * "exactly N", "window N", etc.
+ */
+typedef xqp_uint ft_int;
+
+////////// Functions //////////////////////////////////////////////////////////
 
 /**
  * Gets the language from the given ftmatch_options, if any.

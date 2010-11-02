@@ -17,6 +17,8 @@ SET(FULLTEXT_SRCS
     ft_query_item.cpp
     ft_single_token_iterator.cpp
     ft_stop_words_set.cpp
+    ft_thesaurus.cpp
+    ft_token_seq_iterator.cpp
     ft_wildcard.cpp
     ft_token_matcher.cpp
     apply.cpp
@@ -35,6 +37,7 @@ SET(FULLTEXT_SRCS
     stop_words/stop_words_no.cpp
     stop_words/stop_words_pt.cpp
     stop_words/stop_words_sv.cpp
+    thesauri/wordnet.cpp
     )
 
 # vim:set et sw=4 ts=4:

@@ -25,8 +25,11 @@
 
 #include "apply.h"                      /* for ft_int */
 #include "ft_match.h"
+#include "ft_util.h"
 
 namespace zorba {
+
+class ft_token_matcher;
 
 class ftcontains_visitor : public ftnode_visitor {
 public:
@@ -85,6 +88,34 @@ private:
   void push_options( ftmatch_options const* );
   ftmatch_options const* pop_options();
   ftmatch_options const* top_options() const;
+
+  void apply_ftwords( FTQueryItemSeq&, FTToken::int_t, store::Item const*,
+                      ft_anyall_mode::type, ftmatch_options const&,
+                      ft_all_matches& );
+
+  void apply_ftwords_all( FTQueryItemSeq&, FTToken::int_t, store::Item const*,
+                          ftmatch_options const&, ft_token_matcher const&,
+                          ft_all_matches& );
+
+  void apply_ftwords_any( FTQueryItemSeq&, FTToken::int_t, store::Item const*,
+                          ftmatch_options const&, ft_token_matcher const&,
+                          ft_all_matches& );
+
+  void apply_ftwords_phrase( FTQueryItemSeq&, FTToken::int_t,
+                             store::Item const*, ftmatch_options const&,
+                             ft_token_matcher const&, ft_all_matches& );
+
+  void apply_ftwords_xxx_word( FTQueryItemSeq&, FTToken::int_t,
+                               store::Item const*, ftmatch_options const&,
+                               ft_token_matcher const&, apply_binary_fn,
+                               ft_all_matches& );
+
+  void apply_query_tokens_as_phrase( FTTokenIterator&, FTToken::int_t,
+                                     store::Item const*, ftmatch_options const&,
+                                     ft_token_matcher const&, ft_all_matches& );
+
+  void apply_thesaurus_option( ftthesaurus_option const*, FTTokenIterator&,
+                               FTQueryItemSeq&, bool = true );
 
   void eval_ftrange( ftrange const&, ft_int *at_least, ft_int *at_most );
   ft_int get_int( PlanIter_t );
