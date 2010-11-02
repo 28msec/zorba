@@ -41,6 +41,7 @@ IF(WIN32)
   CREATE_TEST_SOURCELIST(UnitTests
     UnitTests.cpp
     uri.cpp
+    userdefined_uri_resolver.cpp
     multiple_runs.cpp
     runnable.cpp
     plan_serializer.cpp
@@ -59,6 +60,7 @@ ELSE(WIN32)
   CREATE_TEST_SOURCELIST(UnitTests
     UnitTests.cpp
     uri.cpp
+    userdefined_uri_resolver.cpp
     plan_serializer.cpp
     call_stack.cpp
     external_function.cpp
@@ -92,5 +94,6 @@ FOREACH (test ${TestsToRun})
 ENDFOREACH(test)
 
 EXPECTED_FAILURE(test/unit/uri_file_decoding_test 123)
+EXPECTED_FAILURE(test/unit/userdefined_uri_resolver 3085804)
 
 ADD_SUBDIRECTORY(debugger)
