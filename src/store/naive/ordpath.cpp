@@ -15,9 +15,18 @@
  */
 #include <cassert>
 
-// define the __STDC_LIMIT_MACROS macro for the INT32_MAX/INT32_MIN macros
+#ifdef WIN32
+  #ifndef INT32_MAX
+    #define INT32_MAX _I32_MAX
+  #endif
+  #ifndef INT32_MIN
+    #define INT32_MIN _I32_MIN
+  #endif
+#else
+// define the __STDC_LIMIT_MACROS macro for the INT32_MAX/INT32_MIN macros on Linux
 #define __STDC_LIMIT_MACROS
 #include <stdint.h>
+#endif
 
 #include "zorbautils/hashfun.h"
 #include "zorbaerrors/error_manager.h"

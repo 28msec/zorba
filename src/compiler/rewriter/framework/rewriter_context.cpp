@@ -17,6 +17,7 @@
 #include "compiler/rewriter/framework/rewriter_context.h"
 #include "compiler/expression/expr_base.h"
 #include "compiler/api/compilercb.h"
+#include "context/static_context.h"
 #include "system/globalenv.h"
 #include "store/api/item_factory.h"
 

@@ -15,6 +15,9 @@
  */
 #include "compiler/rewriter/framework/sequential_rewriter.h"
 
+#include "context/static_context.h"
+
+
 namespace zorba {
 
 

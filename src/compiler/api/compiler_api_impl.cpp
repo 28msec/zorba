@@ -17,6 +17,8 @@
 #include "compiler/api/compilercb.h"
 #include "compiler/rewriter/rewriters/default_optimizer.h"
 
+#include "context/static_context.h"
+
 namespace zorba {
 
 XQueryCompilerSubsystemImpl::XQueryCompilerSubsystemImpl()

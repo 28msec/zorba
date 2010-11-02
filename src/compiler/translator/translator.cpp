@@ -9540,6 +9540,7 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
 
   QName* qname = v.get_name().getp();
 
+  
   if (qname->get_qname() == "xmlns" || qname->get_prefix() == "xmlns")
   {
     zstring prefix;
@@ -9552,6 +9553,12 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
     }
 
     const_expr* constValueExpr = valueExpr.dyn_cast<const_expr>().getp();
+    
+
+    // std::cout << "--> DirAttr: theName: " << v.get_name()->get_qname().c_str() << std::endl;
+    // std::cout << "--> Value expr: " << std::endl;
+    // valueExpr->put(std::cout) << std::endl;
+
     if (constValueExpr != NULL)
     {
       zstring uri;

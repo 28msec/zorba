@@ -40,6 +40,7 @@
 
 #include "compiler/parsetree/parsenodes.h"
 #include "zorbatypes/zstring.h"
+#include "context/static_context.h"
 
 #ifdef __GNUC__
     // disable a warning in location.hh which comes with bison

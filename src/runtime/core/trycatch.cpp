@@ -19,6 +19,8 @@
 
 #include "compiler/api/compilercb.h"
 
+#include "context/static_context.h"
+
 #include "runtime/core/trycatch.h"
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "runtime/visitors/planiter_visitor.h"

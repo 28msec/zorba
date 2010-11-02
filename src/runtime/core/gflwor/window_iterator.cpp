@@ -18,6 +18,8 @@
 
 #include "compiler/api/compilercb.h"
 
+#include "context/static_context.h"
+
 #include "runtime/core/gflwor/window_iterator.h"
 #include "runtime/core/gflwor/common.h"
 #include "runtime/core/var_iterators.h"

@@ -18,6 +18,8 @@
 #include "compiler/rewriter/rules/rule_base.h"
 #include "compiler/rewriter/framework/rewriter_context.h"
 
+#include "context/static_context.h"
+
 #include "system/properties.h"
 
 namespace zorba 

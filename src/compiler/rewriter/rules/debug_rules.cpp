@@ -16,6 +16,8 @@
 #include <iostream>
 #include "compiler/rewriter/rules/ruleset.h"
 
+#include "context/static_context.h"
+
 namespace zorba {
 
 RULE_REWRITE_PRE(EchoNodes)
