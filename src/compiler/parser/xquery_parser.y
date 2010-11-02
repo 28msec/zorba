@@ -3963,25 +3963,23 @@ Wildcard :
 
 // [80]
 FilterExpr
-    :   PrimaryExpr
-        {
-            $$ = $1;
-        }
-    |   FilterExpr PredicateList
-        {
-            $$ = new FilterExpr(
-                LOC(@$), $1, dynamic_cast<PredicateList*>($2)
-            );
-        }
-    |   FilterExpr LPAR RPAR
-        {
-            $$ = new DynamicFunctionInvocation(LOC (@$), $1);
-        }
-    |   FilterExpr LPAR ArgList RPAR
-        {
-            $$ = new DynamicFunctionInvocation(LOC (@$), $1, dynamic_cast<ArgList*>($3));
-        }
-    ;
+  :  PrimaryExpr
+     {
+       $$ = $1;
+     }
+  |  FilterExpr PredicateList
+     {
+       $$ = new FilterExpr(LOC(@$), $1, dynamic_cast<PredicateList*>($2));
+     }
+  |  FilterExpr LPAR RPAR
+     {
+       $$ = new DynamicFunctionInvocation(LOC (@$), $1);
+     }
+  |  FilterExpr LPAR ArgList RPAR
+     {
+       $$ = new DynamicFunctionInvocation(LOC (@$), $1, dynamic_cast<ArgList*>($3));
+     }
+;
 
 // [81]
 PredicateList

@@ -150,7 +150,7 @@ ostream& var_expr::put(ostream& os) const
 #if VERBOSE
   if (theDeclaredType != NULL) 
   {
-    os << " type=" << theDeclaredType->toString ();
+    os << " type=" << theDeclaredType->toString();
   }
 #endif
 
@@ -181,7 +181,7 @@ ostream& for_clause::put(ostream& os) const
     put_qname(thePosVarExpr->get_name(), os);
     os << expr_addr(thePosVarExpr.getp());
   }
-  os << endl << indent << "[\n";
+  os << endl << dec_indent << indent << "[\n" << inc_indent;
 
   theDomainExpr->put(os);
 #endif
@@ -550,20 +550,25 @@ ostream& axis_step_expr::put(ostream& os) const
 {
   switch (theAxis)
   {
-  case axis_kind_self:                os << "self::"; break;
-  case axis_kind_child:               os << "child::"; break;
-  case axis_kind_parent:              os << "parent::"; break;
-  case axis_kind_descendant:          os << "descendant::"; break;
-  case axis_kind_descendant_or_self:  os << "descendant-or-self::"; break;
-  case axis_kind_ancestor:            os << "ancestor::"; break;
-  case axis_kind_ancestor_or_self:    os << "ancestor-or-self::"; break;
-  case axis_kind_following_sibling:   os << "following-sibling::"; break;
-  case axis_kind_following:           os << "following::"; break;
-  case axis_kind_preceding_sibling:   os << "preceding-sibling::"; break;
-  case axis_kind_preceding:           os << "preceding::"; break;
-  case axis_kind_attribute:           os << "attribute::"; break;
+  case axis_kind_self:                os << "self"; break;
+  case axis_kind_child:               os << "child"; break;
+  case axis_kind_parent:              os << "parent"; break;
+  case axis_kind_descendant:          os << "descendant"; break;
+  case axis_kind_descendant_or_self:  os << "descendant-or-self"; break;
+  case axis_kind_ancestor:            os << "ancestor"; break;
+  case axis_kind_ancestor_or_self:    os << "ancestor-or-self"; break;
+  case axis_kind_following_sibling:   os << "following-sibling"; break;
+  case axis_kind_following:           os << "following"; break;
+  case axis_kind_preceding_sibling:   os << "preceding-sibling"; break;
+  case axis_kind_preceding:           os << "preceding"; break;
+  case axis_kind_attribute:           os << "attribute"; break;
   default: os << "??";
   }
+
+  if (theReverseOrder)
+    os << "_reverse";
+
+  os << "::";
 
   if (theNodeTest != NULL) 
   {

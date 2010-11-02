@@ -377,36 +377,16 @@ DEFAULT_END_VISIT (ForClause)
 
 DEFAULT_VISIT (FLWORClauseList) //@checked
 
+
 void* begin_visit(const ForwardAxis& n)
 {
-  switch(n.get_axis())
-  {
-    case ParseConstants::axis_child:
-      os << "child";
-      break;
-    case ParseConstants::axis_descendant:
-      os << "descendant";
-      break;
-    case ParseConstants::axis_attribute:
-      os << "attribute";
-      break;
-    case ParseConstants::axis_self:
-      os << "self";
-      break;
-    case ParseConstants::axis_descendant_or_self:
-      os << "descendant-or-self";
-      break;
-    case ParseConstants::axis_following_sibling:
-      os << "following-sibling";
-      break;
-    case ParseConstants::axis_following:
-      os << "following";
-      break;
-  }
+  os << ParseConstants::decode_axis_kind(n.get_axis());
   os << "::";
   return no_state;
 }
+
 DEFAULT_END_VISIT (ForwardAxis)
+
 
 DEFAULT_VISIT (ForwardStep)//@checked
 
@@ -415,7 +395,8 @@ void* begin_visit(const FunctionDecl& n)
 {
   Parameters lParameters;
   os << "declare ";
-  switch(n.get_kind()) {
+  switch(n.get_kind()) 
+  {
   case ParseConstants::fn_update:
   case ParseConstants::fn_extern_update:
     os << "updating ";
@@ -841,30 +822,15 @@ DEFAULT_END_VISIT (ParamList)
 
     DEFAULT_VISIT (QuoteAttrContentList)
 
-    void* begin_visit(const ReverseAxis& n)
-    {
-      switch(n.get_axis())
-      {
-        case ParseConstants::axis_parent:
-          os << "parent";
-          break;
-        case ParseConstants::axis_ancestor:
-          os << "ancestor";
-          break;
-        case ParseConstants::axis_preceding_sibling:
-          os << "preceding-sibling";
-          break;
-        case ParseConstants::axis_preceding:
-          os << "preceding";
-          break;
-        case ParseConstants::axis_ancestor_or_self:
-          os << "ancestor-or-self";
-          break;
-      }
-      os << "::";
-      return no_state;
-    }
-    DEFAULT_END_VISIT (ReverseAxis);
+
+void* begin_visit(const ReverseAxis& n)
+{
+  os << ParseConstants::decode_axis_kind(n.get_axis());
+  os << "::";
+  return no_state;
+}
+DEFAULT_END_VISIT (ReverseAxis);
+
 
     DEFAULT_VISIT (ReverseStep)
     DEFAULT_VISIT (SIND_DeclList)

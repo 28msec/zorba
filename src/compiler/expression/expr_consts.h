@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_EXPR_CONSTS_H
-#define ZORBA_EXPR_CONSTS_H
+#ifndef ZORBA_COMPILER_EXPR_CONSTS_H
+#define ZORBA_COMPILER_EXPR_CONSTS_H
 
 namespace zorba 
 {

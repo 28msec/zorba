@@ -134,7 +134,7 @@ void *begin_visit(const ForwardAxis &n)
     INDENT;
 
     os << "<ForwardAxis" << IDS;
-    os << " axis='" << ParseConstants::decode_fwd_axis (n.get_axis ()) << "'";
+    os << " axis='" << ParseConstants::decode_axis_kind(n.get_axis()) << "'";
     os << ">";
 
     INDENT_INC; NL;
@@ -145,7 +145,7 @@ void *begin_visit(const FunctionDecl &n)
 {
     INDENT;
 
-    os << "<FunctionDecl name='" << n.get_name ()->get_qname () << "'" << IDS;
+    os << "<FunctionDecl name='" << n.get_name()->get_qname() << "'" << IDS;
 
     os << ">";
 

@@ -3040,10 +3040,20 @@ AxisStep::AxisStep(
   forward_step_h(NULL),
   reverse_step_h(_reverse_step_h),
   predicate_list_h(_predicate_list_h)
-{}
+{
+}
 
 
-void AxisStep::accept( parsenode_visitor &v ) const
+enum ParseConstants::axis_kind_t AxisStep::get_axis_kind() const
+{
+  if (forward_step_h)
+    return forward_step_h->get_axis_kind();
+
+  return reverse_step_h->get_axis_kind();
+}
+
+
+void AxisStep::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
 
@@ -3064,36 +3074,47 @@ void AxisStep::accept( parsenode_visitor &v ) const
 
 ********************************************************************************/
 ForwardStep::ForwardStep(
-    const QueryLoc& loc_,
-    rchandle<ForwardAxis> _forward_axis_h,
-    rchandle<parsenode> _node_test_h)
+    const QueryLoc& loc,
+    rchandle<ForwardAxis> forward_axis,
+    rchandle<parsenode> node_test)
   :
-  parsenode(loc_),
-  forward_axis_h(_forward_axis_h),
-  node_test_h(_node_test_h),
-  abbrev_step_h(NULL)
+  parsenode(loc),
+  theForwardAxis(forward_axis),
+  node_test_h(node_test),
+  theAbbrevStep(NULL)
 {
 }
 
 
 ForwardStep::ForwardStep(
-    const QueryLoc& loc_,
-    rchandle<AbbrevForwardStep> _abbrev_step_h)
+    const QueryLoc& loc,
+    rchandle<AbbrevForwardStep> abbrev_step)
   :
-  parsenode(loc_),
-  forward_axis_h(NULL),
+  parsenode(loc),
+  theForwardAxis(NULL),
   node_test_h(NULL),
-  abbrev_step_h(_abbrev_step_h)
+  theAbbrevStep(abbrev_step)
 {
 }
 
 
-void ForwardStep::accept( parsenode_visitor &v ) const
+enum ParseConstants::axis_kind_t ForwardStep::get_axis_kind() const
+{
+  if (theForwardAxis)
+    return theForwardAxis->get_axis();
+
+  return (theAbbrevStep->get_attr_bit() ?
+          ParseConstants::axis_attribute : 
+          ParseConstants::axis_child);
+}
+
+
+void ForwardStep::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
-  if (forward_axis_h!=NULL) forward_axis_h->accept(v);
-  if (node_test_h!=NULL) node_test_h->accept(v);
-  if (abbrev_step_h!=NULL) abbrev_step_h->accept(v);
+  if (theForwardAxis != NULL) theForwardAxis->accept(v);
+  if (node_test_h != NULL) node_test_h->accept(v);
+  if (theAbbrevStep != NULL) theAbbrevStep->accept(v);
   END_VISITOR();
 }
 
@@ -3105,7 +3126,7 @@ void ForwardStep::accept( parsenode_visitor &v ) const
 ********************************************************************************/
 ForwardAxis::ForwardAxis(
     const QueryLoc& loc_,
-    enum ParseConstants::forward_axis_t _axis)
+    enum ParseConstants::axis_kind_t _axis)
   :
   parsenode(loc_),
   axis(_axis)
@@ -3166,7 +3187,13 @@ ReverseStep::ReverseStep(
 }
 
 
-void ReverseStep::accept( parsenode_visitor &v ) const
+enum ParseConstants::axis_kind_t ReverseStep::get_axis_kind() const
+{
+  return axis_h->get_axis();
+}
+
+
+void ReverseStep::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
   if (axis_h!=NULL) axis_h->accept(v);
@@ -3182,13 +3209,11 @@ void ReverseStep::accept( parsenode_visitor &v ) const
 ********************************************************************************/
 ReverseAxis::ReverseAxis(
     const QueryLoc& loc_,
-    enum ParseConstants::reverse_axis_t _axis)
+    enum ParseConstants::axis_kind_t _axis)
   :
   parsenode(loc_),
   axis(_axis)
 {}
-
-
 
 
 void ReverseAxis::accept( parsenode_visitor &v ) const

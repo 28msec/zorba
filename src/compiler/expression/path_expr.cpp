@@ -105,7 +105,8 @@ expr_t relpath_expr::clone(substitution_t& subst) const
 ********************************************************************************/
 axis_step_expr::axis_step_expr(static_context* sctx, const QueryLoc& loc)
   :
-  expr(sctx, loc, axis_step_expr_kind)
+  expr(sctx, loc, axis_step_expr_kind),
+  theReverseOrder(false)
 {
   compute_scripting_kind();
 }
@@ -115,6 +116,7 @@ void axis_step_expr::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (expr*)this);
   SERIALIZE_ENUM(axis_kind_t, theAxis);
+  ar & theReverseOrder;
   ar & theNodeTest;
 }
 
@@ -140,6 +142,7 @@ expr_t axis_step_expr::clone(substitution_t& subst) const
   axis_step_expr* ae = new axis_step_expr(theSctx, get_loc());
   ae->setAxis(getAxis());
   ae->setTest(getTest());
+  ae->theReverseOrder = theReverseOrder;
   return ae;
 }
 

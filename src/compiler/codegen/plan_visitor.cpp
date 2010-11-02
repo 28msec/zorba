@@ -2436,12 +2436,18 @@ bool begin_visit (axis_step_expr& v)
   }
   case axis_kind_ancestor:
   {
-    axisIte = new AncestorAxisIterator(sctx, qloc, input);
+    if (v.use_reverse_order())
+      axisIte = new AncestorReverseAxisIterator(sctx, qloc, input);
+    else
+      axisIte = new AncestorAxisIterator(sctx, qloc, input);
     break;
   }
   case axis_kind_ancestor_or_self:
   {
-    axisIte = new AncestorSelfAxisIterator(sctx, qloc, input);
+    if (v.use_reverse_order())
+      axisIte = new AncestorSelfReverseAxisIterator(sctx, qloc, input);
+    else
+      axisIte = new AncestorSelfAxisIterator(sctx, qloc, input);
     break;
   }
   case axis_kind_following_sibling:
@@ -2456,12 +2462,18 @@ bool begin_visit (axis_step_expr& v)
   }
   case axis_kind_preceding_sibling:
   {
-    axisIte = new LSiblingAxisIterator(sctx, qloc, input);
+    if (v.use_reverse_order())
+      axisIte = new LSiblingReverseAxisIterator(sctx, qloc, input);
+    else
+      axisIte = new LSiblingAxisIterator(sctx, qloc, input);
     break;
   }
   case axis_kind_preceding:
   {
-    axisIte = new PrecedingAxisIterator(sctx, qloc, input);
+    if (v.use_reverse_order())
+      axisIte = new PrecedingReverseAxisIterator(sctx, qloc, input);
+    else
+      axisIte = new PrecedingAxisIterator(sctx, qloc, input);
     break;
   }
   case axis_kind_attribute:

@@ -72,6 +72,8 @@ public:
         ;
       }
     }
+
+    theCurrentPos = theInitPos;
   }
 
 
@@ -90,6 +92,8 @@ public:
         ;
       }
     }
+
+    theCurrentPos = theInitPos;
   }
 
 
@@ -163,6 +167,8 @@ public:
         ;
       }
     }
+
+    theCurrentPos = theInitPos;
   }
 
 
@@ -181,6 +187,8 @@ public:
         ;
       }
     }
+
+    theCurrentPos = theInitPos;
   }
 
 

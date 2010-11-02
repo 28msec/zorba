@@ -13,21 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_PARSE_CONSTANTS_H
-#define ZORBA_PARSE_CONSTANTS_H
+#ifndef ZORBA_COMPILER_PARSE_CONSTANTS_H
+#define ZORBA_COMPILER_PARSE_CONSTANTS_H
 
 #include <assert.h>
 
 namespace zorba {
+
 class ParseConstants
 {
   public:
-    enum default_namespace_mode_t {
+    enum default_namespace_mode_t 
+    {
       ns_element_default,
       ns_function_default
     };
 
-    enum function_type_t {
+    enum function_type_t 
+    {
       fn_extern,
       fn_read,
       fn_update,
@@ -36,34 +39,40 @@ class ParseConstants
       fn_extern_sequential
     };
 
-    enum dir_spec_t {
+    enum dir_spec_t 
+    {
       dir_ascending,
       dir_descending
     };
 
-    enum quantification_mode_t {
+    enum quantification_mode_t 
+    {
       quant_some,
       quant_every
     };
 
-    enum add_op_t {
+    enum add_op_t 
+    {
       op_plus,
       op_minus
     };
 
-    enum mult_op_t {
+    enum mult_op_t 
+    {
       op_mul,
       op_div,
       op_idiv,
       op_mod
     };
 
-    enum intex_op_t {
+    enum intex_op_t 
+    {
       op_intersect,
       op_except	
     };
 
-    enum gencomp_t {
+    enum gencomp_t 
+    {
       op_eq,
       op_ne,
       op_lt,
@@ -72,7 +81,8 @@ class ParseConstants
       op_ge
     };
 
-    enum valcomp_t {
+    enum valcomp_t 
+    {
       op_val_eq,
       op_val_ne,
       op_val_lt,
@@ -81,42 +91,44 @@ class ParseConstants
       op_val_ge
     };
 
-    enum nodecomp_t {
+    enum nodecomp_t 
+    {
       op_is,
       op_precedes,
       op_follows	
     };
 
-    enum validation_mode_t {
+    enum validation_mode_t 
+    {
       val_strict,
       val_lax,
       val_typename
     };
 
-    enum pathtype_t {
+    enum pathtype_t 
+    {
       path_leading_lone_slash,
       path_leading_slash,
       path_leading_slashslash,
       path_relative
     };
 
-    enum steptype_t {
+    enum steptype_t 
+    {
       st_step,
       st_slash,
       st_slashslash	
     };
 
-    enum forward_axis_t {
+    enum axis_kind_t
+    {
       axis_child,
       axis_descendant,
       axis_attribute,
       axis_self,
       axis_descendant_or_self,
       axis_following_sibling,
-      axis_following
-    };
-
-    enum reverse_axis_t {
+      axis_following,
       axis_parent,
       axis_ancestor,
       axis_preceding_sibling,
@@ -124,19 +136,22 @@ class ParseConstants
       axis_ancestor_or_self
     };
 
-    enum wildcard_t {
+    enum wildcard_t 
+    {
       wild_all,
       wild_elem,
       wild_prefix
     };
 
-    enum numeric_type_t {
+    enum numeric_type_t 
+    {
       num_integer,
       num_decimal,
       num_double
     };
 
-    enum common_content_t {
+    enum common_content_t 
+    {
       cont_entity,
       cont_charref,
       cont_escape_lbrace,
@@ -144,7 +159,8 @@ class ParseConstants
       cont_expr
     };
 
-    enum occurrence_t {
+    enum occurrence_t 
+    {
       occurs_never,
       occurs_exactly_one,
       occurs_optionally,
@@ -153,8 +169,10 @@ class ParseConstants
     };
 
 
-  static const char *decode_numeric_type (enum numeric_type_t t) {
-    switch (t) {
+  static const char* decode_numeric_type (enum numeric_type_t t) 
+  {
+    switch (t) 
+    {
     case num_integer: return "integer";
     case num_decimal: return "decimal";
     case num_double:  return "double";
@@ -162,8 +180,10 @@ class ParseConstants
     }
   }
 
-  static const char *decode_fwd_axis (forward_axis_t a) {
-    switch (a) {
+  static const char* decode_axis_kind(axis_kind_t a)
+  {
+    switch (a)
+    {
     case axis_child: return "child";
     case axis_descendant: return "descendant";
     case axis_attribute: return "attr";
@@ -171,6 +191,11 @@ class ParseConstants
     case axis_descendant_or_self: return "descendant-or-self";
     case axis_following_sibling: return "following-sibling";
     case axis_following: return "following";
+    case axis_parent: return "parent";
+    case axis_ancestor: return "ancestor";
+    case axis_preceding_sibling: return "preceding_sibling";
+    case axis_preceding: return "preceding";
+    case axis_ancestor_or_self: return "ancestor_or_self";
     default: assert (false); return "?";
     }
   }

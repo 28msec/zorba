@@ -405,6 +405,8 @@ void serializer::emitter::emit_node(const store::Item* item, int depth)
   if (item->getNodeKind() == store::StoreConsts::documentNode)
   {
     emit_node_children(item, depth);
+
+    previous_item = PREVIOUS_ITEM_WAS_NODE;
   }
   else if (item->getNodeKind() == store::StoreConsts::elementNode)
   {
@@ -482,13 +484,17 @@ void serializer::emitter::emit_node(const store::Item* item, int depth)
       // ignore whitespace text nodes when doing indentation
       previous_item = PREVIOUS_ITEM_WAS_TEXT;
     }
+    else
+    {
+      previous_item = PREVIOUS_ITEM_WAS_NODE;
+    }
   }
   else if (item->getNodeKind() == store::StoreConsts::commentNode)
   {
     tr << "<!--" << item->getStringValue() << "-->";
     previous_item = PREVIOUS_ITEM_WAS_NODE;
   }
-  else if (item->getNodeKind() == store::StoreConsts::piNode )
+  else if (item->getNodeKind() == store::StoreConsts::piNode)
   {
     tr << "<?" << item->getTarget() << " " << item->getStringValue() << "?>";
 

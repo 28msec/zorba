@@ -108,6 +108,7 @@ class axis_step_expr : public expr
 
 protected:
   axis_kind_t             theAxis;
+  bool                    theReverseOrder;
   expr_t                  theNodeTest;
 
 public:
@@ -124,6 +125,10 @@ public:
   axis_kind_t getAxis() const { return theAxis; }
 
   void setAxis(axis_kind_t v) { theAxis = v; }
+
+  void set_reverse_order() { theReverseOrder = true; }
+
+  bool use_reverse_order() const { return theReverseOrder; }
 
   bool is_reverse_axis() const { return is_reverse_axis(getAxis()); }
 

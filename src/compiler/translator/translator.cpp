@@ -7658,16 +7658,16 @@ void* begin_visit(const RelativePathExpr& v)
     push_nodestack(pathExpr);
   }
 
-  // Else, step-i is an axis step with predicates or a filter expr, and
-  // is not the very 1st step in the path expr. In this case, pathExpr becomes
-  // the input to a new flwor expr that will compute, once for each node in
-  // pathExpr, the next step in the path. In particular, the following expr
-  // is pushed to the stack:
+  // Else, step-i is an axis step with predicates or a filter expr, and is not
+  // the very 1st step in the path expr. In this case, pathExpr becomes the
+  // input to a new flwor expr that will compute, once for each node in pathExpr,
+  // the next step in the path. In particular, the following expr is pushed to
+  // the stack:
   //
   // [ for $$dot at $$pos in node_distinc_sort_asc(pathExpr) ]
   else
   {
-    expr_t inputExpr = wrap_in_dos_and_dupelim(pathExpr, false);
+    expr_t inputExpr = wrap_in_dos_and_dupelim(pathExpr, true);
     rchandle<flwor_expr> flworExpr = wrap_expr_in_flwor(inputExpr, false);
     push_nodestack(flworExpr.getp());
   }
@@ -7744,7 +7744,22 @@ void intermediate_visit(const RelativePathExpr& rpe, void* /*visit_state*/)
     pop_scope();
 
     pathExpr = new relpath_expr(theRootSctx, loc);
-    pathExpr->add_back(flworExpr);
+
+    expr_t sourceExpr = flworExpr;
+
+    // If step-i was a reverse axis with predicates, we must reorder the
+    // result of flworExpr because it is going to be produced in reverse
+    // doc order.
+    AxisStep* axisStep = dynamic_cast<AxisStep*>(rpe.get_step_expr().getp());
+    if (axisStep != NULL && axisStep->get_reverse_step() != NULL)
+    {
+      sourceExpr = wrap_in_dos_and_dupelim(sourceExpr, true);
+    }
+
+    if (axisStep == NULL)
+      theNodeSortStack.top().theHaveFilterSteps = true;
+
+    pathExpr->add_back(sourceExpr);
   }
 
   // Convert // to /descendant-or-self::node()/
@@ -7787,9 +7802,9 @@ void intermediate_visit(const RelativePathExpr& rpe, void* /*visit_state*/)
 }
 
 
-void end_visit (const RelativePathExpr& v, void* /*visit_state*/)
+void end_visit(const RelativePathExpr& v, void* /*visit_state*/)
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 
   const RelativePathExpr& rpe = v;
   rchandle<exprnode> child2 = rpe.get_relpath_expr();
@@ -7804,13 +7819,13 @@ void end_visit (const RelativePathExpr& v, void* /*visit_state*/)
   expr_t stepExpr = pop_nodestack();
   expr_t curExpr = pop_nodestack();
 
+  axis_step_expr* axisExpr = stepExpr.dyn_cast<axis_step_expr>();
   relpath_expr* pathExpr = curExpr.dyn_cast<relpath_expr>();
   flwor_expr* flworExpr = curExpr.dyn_cast<flwor_expr>();
 
   // If curExpr is a path expr, step-(i+1) was an axis step with no predicates.
   if (pathExpr != NULL)
   {
-    axis_step_expr* axisExpr = stepExpr.dyn_cast<axis_step_expr>();
     ZORBA_ASSERT(axisExpr != NULL);
 
     pathExpr->add_back(stepExpr);
@@ -7820,6 +7835,9 @@ void end_visit (const RelativePathExpr& v, void* /*visit_state*/)
   {
     ZORBA_ASSERT(flworExpr != NULL);
     ZORBA_ASSERT(stepExpr != NULL);
+
+    if (child2.dyn_cast<AxisStep>() == NULL)
+      theNodeSortStack.top().theHaveFilterSteps = true;
 
     flworExpr->set_return_expr(stepExpr);
     pop_scope();
@@ -7839,7 +7857,7 @@ void end_visit (const RelativePathExpr& v, void* /*visit_state*/)
 ********************************************************************************/
 void* begin_visit(const AxisStep& v)
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
 
   rchandle<axis_step_expr> ase = new axis_step_expr(theRootSctx, loc);
   push_nodestack(ase.getp());
@@ -7850,11 +7868,12 @@ void* begin_visit(const AxisStep& v)
 }
 
 
+/*******************************************************************************
+  This method is called from AxisStep::accept() after the step itself is
+  translated, but before the associated predicate list (if any) is translated.
+********************************************************************************/
 void post_axis_visit(const AxisStep& v, void* /*visit_state*/)
 {
-  // This method is called from AxisStep::accept() after the step itself is
-  // translated, but before the associated predicate list (if any) is translated.
-
   expr_t e = pop_nodestack();
   rchandle<axis_step_expr> axisExpr = e.dyn_cast<axis_step_expr>();
   ZORBA_ASSERT(axisExpr != NULL);
@@ -7882,21 +7901,17 @@ void post_axis_visit(const AxisStep& v, void* /*visit_state*/)
   // it is of the form:
   //
   // [ for $$dot at $$pos in node_distinc_sort_asc(pathExpr-(i-1)) ]
-  //
+  // 
   // Here, we add a let clause to the flworExpr:
-  //
-  // If the axis is a forward one:
   //
   // [ for $$dot at $$pos in node_distinc_sort_asc(pathExpr-(i-1))
   //   let $$predInput := $$dot/axis::test ]
   //
-  // Else, if it is a reverse axis:
-  //
-  // [ for $$dot at $$pos in node_distinc_sort_asc(pathExpr-(i-1))
-  //   let $$predInput := node_distinct_sort_desc($$dot/axis::test) ]
+  // Furthermore, if it is a reverse axis, we set theReverseOrder flag of the
+  // axist_step_expr to true
   //
   // The $$predInput var will compute and store for each $$dot, the input seq for
-  // the preds the follow the axis step.
+  // the preds that follow the axis step.
   //
   // The flworExpr as well as the $$predInput varExpr are pushed to the nodestack.
   const for_clause* fcOuterDot = reinterpret_cast<const for_clause*>((*flworExpr)[0]);
@@ -7906,12 +7921,9 @@ void post_axis_visit(const AxisStep& v, void* /*visit_state*/)
 
   expr_t predInputExpr = predPathExpr;
 
-  if (axisKind == axis_kind_ancestor ||
-      axisKind == axis_kind_ancestor_or_self ||
-      axisKind == axis_kind_preceding_sibling ||
-      axisKind == axis_kind_preceding)
+  if (axisExpr->is_reverse_axis())
   {
-    predInputExpr = wrap_in_dos_and_dupelim(predInputExpr, false, true);
+    axisExpr->set_reverse_order();
   }
 
   rchandle<let_clause> lcPredInput = wrap_in_letclause(predInputExpr.getp());
@@ -7923,7 +7935,7 @@ void post_axis_visit(const AxisStep& v, void* /*visit_state*/)
 }
 
 
-void end_visit (const AxisStep& v, void* /*visit_state*/)
+void end_visit(const AxisStep& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 }
@@ -8003,16 +8015,16 @@ void end_visit (const ReverseStep& v, void* /*visit_state*/)
 /*******************************************************************************
 
 ********************************************************************************/
-void *begin_visit (const ForwardAxis& v)
+void* begin_visit(const ForwardAxis& v)
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   return no_state;
 }
 
 
-void end_visit (const ForwardAxis& v, void* /*visit_state*/)
+void end_visit(const ForwardAxis& v, void* /*visit_state*/)
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 
   rchandle<axis_step_expr> ase = expect_axis_step_top ();
 
@@ -8053,6 +8065,8 @@ void end_visit (const ForwardAxis& v, void* /*visit_state*/)
     ase->setAxis(axis_kind_following);
     break;
   }
+  default:
+    ZORBA_ASSERT(false);
   }
 }
 
@@ -8060,16 +8074,16 @@ void end_visit (const ForwardAxis& v, void* /*visit_state*/)
 /*******************************************************************************
 
 ********************************************************************************/
-void *begin_visit (const ReverseAxis& v)
+void* begin_visit(const ReverseAxis& v)
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   return no_state;
 }
 
 
-void end_visit (const ReverseAxis& v, void* /*visit_state*/)
+void end_visit(const ReverseAxis& v, void* /*visit_state*/)
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 
   rchandle<axis_step_expr> ase = expect_axis_step_top ();
 
@@ -8100,6 +8114,8 @@ void end_visit (const ReverseAxis& v, void* /*visit_state*/)
     ase->setAxis(axis_kind_ancestor_or_self);
     break;
   }
+  default:
+    ZORBA_ASSERT(false);
   }
 }
 
@@ -8312,7 +8328,7 @@ void post_primary_visit(const FilterExpr& v, void* /*visit_state*/)
 }
 
 
-void end_visit (const FilterExpr& v, void* /*visit_state*/)
+void end_visit(const FilterExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 }
@@ -8322,16 +8338,16 @@ void end_visit (const FilterExpr& v, void* /*visit_state*/)
   [105] PredicateList ::= Predicate*
   [106] Predicate ::= "[" Expr "]"
 ********************************************************************************/
-void *begin_visit (const PredicateList& v)
+void* begin_visit(const PredicateList& v)
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   return no_state;
 }
 
 
-void end_visit (const PredicateList& v, void* /*visit_state*/)
+void end_visit(const PredicateList& v, void* /*visit_state*/)
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 

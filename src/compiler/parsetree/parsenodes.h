@@ -3593,8 +3593,12 @@ public:
     rchandle<PredicateList>);
 
   rchandle<ForwardStep> get_forward_step() const { return forward_step_h; }
+
   rchandle<ReverseStep> get_reverse_step() const { return reverse_step_h; }
+
   rchandle<PredicateList> get_predicate_list() const { return predicate_list_h; }
+
+  enum ParseConstants::axis_kind_t get_axis_kind() const;
 
   virtual void accept(parsenode_visitor&) const;
 };
@@ -3606,23 +3610,27 @@ public:
 class ForwardStep : public parsenode
 {
 protected:
-  rchandle<ForwardAxis> forward_axis_h;
+  rchandle<ForwardAxis> theForwardAxis;
   rchandle<parsenode> node_test_h;
-  rchandle<AbbrevForwardStep> abbrev_step_h;
+  rchandle<AbbrevForwardStep> theAbbrevStep;
 
 public:
   ForwardStep(
-    const QueryLoc&,
-    rchandle<ForwardAxis>,
-    rchandle<parsenode> node_test_h);
+    const QueryLoc& loc,
+    rchandle<ForwardAxis> axis,
+    rchandle<parsenode> node_test);
 
   ForwardStep(
     const QueryLoc&,
     rchandle<AbbrevForwardStep>);
 
-  rchandle<ForwardAxis> get_forward_axis() const { return forward_axis_h; }
+  rchandle<ForwardAxis> get_forward_axis() const { return theForwardAxis; }
+
   rchandle<parsenode> get_node_test() const { return node_test_h; }
-  rchandle<AbbrevForwardStep> get_abbrev_step() const { return abbrev_step_h; }
+
+  rchandle<AbbrevForwardStep> get_abbrev_step() const { return theAbbrevStep; }
+
+  enum ParseConstants::axis_kind_t get_axis_kind() const;
 
   void accept(parsenode_visitor&) const;
 };
@@ -3640,14 +3648,14 @@ public:
 class ForwardAxis : public parsenode
 {
 protected:
-  enum ParseConstants::forward_axis_t axis;
+  enum ParseConstants::axis_kind_t axis;
 
 public:
   ForwardAxis(
     const QueryLoc&,
-    enum ParseConstants::forward_axis_t);
+    enum ParseConstants::axis_kind_t);
 
-  enum ParseConstants::forward_axis_t get_axis() const { return axis; }
+  enum ParseConstants::axis_kind_t get_axis() const { return axis; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -3692,6 +3700,9 @@ public:
     rchandle<parsenode>);
 
   rchandle<ReverseAxis> get_axis() const { return axis_h; }
+
+  enum ParseConstants::axis_kind_t get_axis_kind() const;
+
   rchandle<parsenode> get_node_test() const { return node_test_h; }
 
   void accept(parsenode_visitor&) const;
@@ -3708,14 +3719,14 @@ public:
 class ReverseAxis : public parsenode
 {
 protected:
-  enum ParseConstants::reverse_axis_t axis;
+  enum ParseConstants::axis_kind_t axis;
 
 public:
   ReverseAxis(
     const QueryLoc&,
-    enum ParseConstants::reverse_axis_t);
+    enum ParseConstants::axis_kind_t);
 
-  enum ParseConstants::reverse_axis_t get_axis() const { return axis; }
+  enum ParseConstants::axis_kind_t get_axis() const { return axis; }
 
   void accept(parsenode_visitor&) const;
 };

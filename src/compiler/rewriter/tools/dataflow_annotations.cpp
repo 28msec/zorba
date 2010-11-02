@@ -455,7 +455,7 @@ void DataflowAnnotationsComputer::compute_relpath_expr(relpath_expr* e)
     ulong num_following_axes = 0;
     bool reverse_axes = false;
 
-    for(ulong i = 1; i < num_steps; ++i) 
+    for (ulong i = 1; i < num_steps; ++i) 
     {
       axis_step_expr* ase = dynamic_cast<axis_step_expr *>((*e)[i].getp());
       assert(ase != NULL);

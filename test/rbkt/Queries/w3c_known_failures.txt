@@ -1,9 +1,3 @@
-test/rbkt/w3c_testsuite/XQuery/Optional/FullAxis/ancestor-or-selfAxis/K2-ancestor-or-selfAxis-9
-test/rbkt/w3c_testsuite/XQuery/Optional/FullAxis/ancestor-or-selfAxis/K2-ancestor-or-selfAxis-5
-test/rbkt/w3c_testsuite/XQuery/Optional/FullAxis/ancestor-or-selfAxis/K2-ancestor-or-selfAxis-6
-test/rbkt/w3c_testsuite/XQuery/Optional/FullAxis/followingAxis/K2-followingAxis-4
-test/rbkt/w3c_testsuite/XQuery/Optional/FullAxis/ancestorAxis/K2-ancestorAxis-9
-test/rbkt/w3c_testsuite/XQuery/Optional/FullAxis/ancestorAxis/K2-ancestorAxis-21
 test/rbkt/w3c_testsuite/XQuery/Optional/FullAxis/following-siblingAxis/following-sibling-attr
 test/rbkt/w3c_testsuite/XQuery/Optional/FullAxis/preceding-siblingAxis/preceding-sibling-attr
 test/rbkt/w3c_testsuite/XQuery/Optional/FullAxis/precedingAxis/K2-precedingAxis-8
@@ -124,10 +118,7 @@ test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/PrologExpr/VariableProlog/ExternalVa
 test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/PrologExpr/BaseURIProlog/K2-BaseURIProlog-5
 test/rbkt/w3c_testsuite/XQuery/PathExpr/Steps/Steps-leading-lone-slash-14
 test/rbkt/w3c_testsuite/XQuery/PathExpr/Steps/Steps-leading-lone-slash-11
-test/rbkt/w3c_testsuite/XQuery/PathExpr/Steps/K2-Steps-16
 test/rbkt/w3c_testsuite/XQuery/PathExpr/Steps/Steps-leading-lone-slash-13
-test/rbkt/w3c_testsuite/XQuery/PathExpr/Steps/K2-Steps-20
-test/rbkt/w3c_testsuite/XQuery/PathExpr/Steps/K2-Steps-15
 test/rbkt/w3c_testsuite/XQuery/PathExpr/Steps/Steps-leading-lone-slash-12
 test/rbkt/w3c_testsuite/XQuery/StaticTyping/STFLWORExpr/ST-PITest-02
 test/rbkt/w3c_testsuite/XQuery/StaticTyping/STFLWORExpr/ST-WhereExpr001
