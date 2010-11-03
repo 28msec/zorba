@@ -3689,77 +3689,89 @@ Pragma
 
 // [67]
 PathExpr
-    :   LeadingSlash
-        {
-            $$ = new PathExpr(LOC(@$), ParseConstants::path_leading_lone_slash, NULL);
-        }
-    |   LeadingSlash RelativePathExpr
-        {
-            $$ = new PathExpr(
-                LOC(@$), ParseConstants::path_leading_slash, $2
-            );
-        }
-    |   SLASH_SLASH RelativePathExpr
-        {
-            $$ = new PathExpr(
-                LOC(@$), ParseConstants::path_leading_slashslash, $2
-            );
-        }
-    |   RelativePathExpr        /* gn: leading-lone-slashXQ */
-        {
-            RelativePathExpr *rpe = dynamic_cast<RelativePathExpr*>($1);
-            $$ = !rpe ?
-                $1 : new PathExpr( LOC(@$), ParseConstants::path_relative, $1 );
-        }
-    ;
+  : 
+    LeadingSlash
+    {
+      $$ = new PathExpr(LOC(@$), ParseConstants::path_leading_lone_slash, NULL);
+    }
+  | LeadingSlash RelativePathExpr
+    {
+      RelativePathExpr* rpe;
+
+      rpe = new RelativePathExpr(LOC(@$), ParseConstants::st_slash, NULL, $2);
+
+      $$ = new PathExpr(LOC(@$),
+                        ParseConstants::path_leading_slash,
+                        rpe);
+    }
+  | SLASH_SLASH RelativePathExpr
+    {
+      RelativePathExpr* rpe;
+
+      rpe = new RelativePathExpr(LOC(@$), ParseConstants::st_slashslash, NULL, $2);
+
+      $$ = new PathExpr(LOC(@$),
+                        ParseConstants::path_leading_slashslash,
+                        rpe);
+    }
+  | RelativePathExpr        /* gn: leading-lone-slashXQ */
+    {
+      RelativePathExpr* rpe = dynamic_cast<RelativePathExpr*>($1);
+      $$ = (!rpe ?
+            $1 :
+            new PathExpr( LOC(@$), ParseConstants::path_relative, $1));
+    }
+;
+
 
 // Leading slash promotion
 // -----------------------
 LeadingSlash
-    :   SLASH
-        {
-            $$ = NULL;
-        }
-    ;
+  : 
+    SLASH
+    {
+      $$ = NULL;
+    }
+;
+
 
 // [68]
 RelativePathExpr
-    :   StepExpr %prec STEP_REDUCE
-        {
-            AxisStep *as = dynamic_cast<AxisStep*>($1);
-            $$ = as ?
-                new RelativePathExpr(
-                    LOC(@$), ParseConstants::st_slash,
-                    new ContextItemExpr( LOC(@$), true ), $1
-                )
+  :
+    StepExpr %prec STEP_REDUCE
+    {
+      AxisStep* as = dynamic_cast<AxisStep*>($1);
+      $$ = (as ?
+            new RelativePathExpr(LOC(@$), 
+                                 ParseConstants::st_slash,
+                                 new ContextItemExpr( LOC(@$), true ), $1)
             :
-                $1;
-        }
-    |   StepExpr SLASH RelativePathExpr
-        {
-            $$ = new RelativePathExpr(
-                LOC(@$), ParseConstants::st_slash, $1, $3
-            );
-        }
-    |   StepExpr SLASH_SLASH RelativePathExpr
-        {
-            $$ = new RelativePathExpr(
-                LOC(@$), ParseConstants::st_slashslash, $1, $3
-            );
-        }
-    ;
+            $1);
+    }
+  | StepExpr SLASH RelativePathExpr
+    {
+      $$ = new RelativePathExpr(LOC(@$), ParseConstants::st_slash, $1, $3);
+    }
+  | StepExpr SLASH_SLASH RelativePathExpr
+    {
+      $$ = new RelativePathExpr(LOC(@$), ParseConstants::st_slashslash, $1, $3);
+    }
+;
+
 
 // [69]
 StepExpr
-    :   AxisStep
-        {
-            $$ = $1;
-        }
-    |   FilterExpr
-        {
-            $$ = $1;
-        }
-    ;
+  :
+    AxisStep
+    {
+      $$ = $1;
+    }
+  | FilterExpr
+    {
+      $$ = $1;
+    }
+;
+
 
 // [70]
 AxisStep

@@ -18,7 +18,6 @@ test/rbkt/w3c_testsuite/XQuery/Expressions/Construct/ComputeCon/ComputeConCommen
 test/rbkt/w3c_testsuite/XQuery/Expressions/Construct/ComputeCon/ComputeConComment/Constr-compcomment-dash-4
 test/rbkt/w3c_testsuite/XQuery/Expressions/exprSeqTypes/SeqExprCast/CastFOCA0003-1
 test/rbkt/w3c_testsuite/XQuery/Expressions/exprSeqTypes/SeqExprCast/CastFOCA0001-1
-test/rbkt/w3c_testsuite/XQuery/Expressions/PathExpr/PathExpressions/PathExpr-14
 test/rbkt/w3c_testsuite/XQuery/Construct/DirectConElem/DirectConElemNamespace/K2-DirectConElemNamespace-76
 test/rbkt/w3c_testsuite/XQuery/Construct/ComputeCon/ConDocNode/K2-ConDocNode-2
 test/rbkt/w3c_testsuite/XQuery/Construct/ComputeCon/ComputeConElem/comp-elem-bad-name-1
@@ -84,10 +83,6 @@ test/rbkt/w3c_testsuite/XQuery/SchemaValidation/ValidateExpression/validateexpr-
 test/rbkt/w3c_testsuite/XQuery/SchemaValidation/ValidateExpression/validateexpr-sc-8
 test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/PrologExpr/VariableProlog/ExternalVariablesWith/K2-ExternalVariablesWith-22
 test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/PrologExpr/BaseURIProlog/K2-BaseURIProlog-5
-test/rbkt/w3c_testsuite/XQuery/PathExpr/Steps/Steps-leading-lone-slash-14
-test/rbkt/w3c_testsuite/XQuery/PathExpr/Steps/Steps-leading-lone-slash-11
-test/rbkt/w3c_testsuite/XQuery/PathExpr/Steps/Steps-leading-lone-slash-13
-test/rbkt/w3c_testsuite/XQuery/PathExpr/Steps/Steps-leading-lone-slash-12
 test/rbkt/w3c_testsuite/XQuery/StaticTyping/STFLWORExpr/ST-PITest-02
 test/rbkt/w3c_testsuite/XQuery/StaticTyping/STFLWORExpr/ST-WhereExpr001
 test/rbkt/w3c_testsuite/XQuery/StaticTyping/STFLWORExpr/statictyping-24

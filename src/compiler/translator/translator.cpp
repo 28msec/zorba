@@ -7395,22 +7395,20 @@ void end_visit(const Pragma& v, void* /*visit_state*/)
 
   In case 1, the PathExpr node does not have any child node.
 
-  Cases 2 and 3 are treated as if the syntax tree was like this:
+  In cases 2 and 3 step1 is missing, i.e., the syntax tree is like this:
 
        PathExpr
            |
-         rpe0
+         rpe1
         /    \
-      step0  rpe1
+      NULL   rpe2
             /    \
-          step1  rpe2
+          step2  rpe3
                 /    \
-              step2  rpe3
-                    /    \
-                 step3  step4
+              step3  step4
 
-  where, the type of PathExpr is path_relative, rpe0 designates a "/", and
-  step0 is either
+  where, the type of PathExpr is path_relative and rpe1 designates a "/". In
+  these cases, the translator behaves as if step1 was either
   fn:root(./self::node()) in case 2, or
   fn:root(./self::node())/descendant-or-self::node() in case 3.
 
@@ -7467,20 +7465,17 @@ void* begin_visit(const PathExpr& v)
 
   ParseConstants::pathtype_t pe_type = pe.get_type();
 
-  expr_t result;
-  rchandle<relpath_expr> path_expr = NULL;
+  rchandle<relpath_expr> pathExpr = NULL;
 
   // Put a NULL in the stack to mark the beginning of a PathExp tree.
   push_nodestack(NULL);
 
   theNodeSortStack.push(NodeSortInfo());
 
-  // In cases 2, 3, and 4 create a new relpath_expr, which will be put to the nodestack.
+  // In cases 2, 3, and 4 create a new empty relpath_expr
   if (pe_type != ParseConstants::path_leading_lone_slash)
   {
-    path_expr = new relpath_expr(theRootSctx, loc);
-
-    result = path_expr.getp();
+    pathExpr = new relpath_expr(theRootSctx, loc);
   }
 
   // If path expr starts with / or // (cases 1, 2, or 3), create an expr
@@ -7488,11 +7483,9 @@ void* begin_visit(const PathExpr& v)
   //
   // In case 1, just push R to the nodestack.
   //
-  // In case 2, put relpath_expr(R) to the nodestact
+  // In case 2 and 3, put empty relpath_expr and R to the nodestact
   //
-  // In case 3, put relpath_expr(R, descendant-or-self::node()) to the nodestack
-  //
-  // In case 4, put relpath_expr() to the nodestack
+  // In case 4, put empty relpath_expr to the nodestack
 
   if (pe_type != ParseConstants::path_relative)
   {
@@ -7514,41 +7507,36 @@ void* begin_visit(const PathExpr& v)
 
     ctx_path_expr->add_back(&*ase);
 
-    fo_expr_t fo = new fo_expr(theRootSctx,
-                               loc,
-                               GET_BUILTIN_FUNCTION(FN_ROOT_1),
-                               ctx_path_expr.getp());
-    normalize_fo(fo);
+    fo_expr_t fnroot = new fo_expr(theRootSctx,
+                                   loc,
+                                   GET_BUILTIN_FUNCTION(FN_ROOT_1),
+                                   ctx_path_expr.getp());
+    normalize_fo(fnroot);
 
-    result = new treat_expr(theRootSctx,
-                            loc,
-                            fo.getp(),
-                            GENV_TYPESYSTEM.DOCUMENT_TYPE_ONE,
-                            XPDY0050);
-
-    if (path_expr != NULL)
+    if (pathExpr != NULL)
     {
-      path_expr->add_back(&*fo);
-      result = path_expr.getp();
+      // cases 2 or 3
+      push_nodestack(pathExpr.getp());
+      push_nodestack(fnroot.getp());
 
       theNodeSortStack.top().theNumSteps++;
     }
-
-    if (pe_type == ParseConstants::path_leading_slashslash)
+    else
     {
-      rchandle<axis_step_expr> ase = new axis_step_expr(theRootSctx, loc);
-      rchandle<match_expr> me = new match_expr(theRootSctx, loc);
-      me->setTestKind(match_anykind_test);
-      ase->setAxis(axis_kind_descendant_or_self);
-      ase->setTest(me);
-
-      path_expr->add_back(&*ase);
-
-      theNodeSortStack.top().theNumSteps++;
+      // case 1
+      expr_t result = new treat_expr(theRootSctx,
+                                     loc,
+                                     fnroot.getp(),
+                                     GENV_TYPESYSTEM.DOCUMENT_TYPE_ONE,
+                                     XPDY0050);
+      push_nodestack(result.getp());
     }
   }
-
-  push_nodestack(result.getp());
+  else
+  {
+    // case 4
+    push_nodestack(pathExpr.getp());
+  }
 
   return no_state;
 }
@@ -7603,21 +7591,24 @@ void end_visit(const PathExpr& v, void* /*visit_state*/)
 ********************************************************************************/
 void* begin_visit(const RelativePathExpr& v)
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
 
   const RelativePathExpr& rpe = v;
 
   rchandle<exprnode> step = rpe.get_step_expr();
-  ZORBA_ASSERT(step != NULL);
+
+  if (step == NULL)
+    return no_state;
+
   AxisStep* axisStep = step.dyn_cast<AxisStep>();
 
-  // Let rpe be the i-th rpe in the Path Tree. Then i > 0, and pathExpr represents
-  // the translation of step-0/step-1/.../step-(i-1)/.
+  // Let rpe be the i-th rpe in the Path Tree. Then pathExpr represents the
+  // translation of step-1/.../step-(i-1)/.
   expr_t e = pop_nodestack();
   relpath_expr* pathExpr = e.dyn_cast<relpath_expr>();
   ZORBA_ASSERT(pathExpr != NULL);
 
-  // If case 4 and i = 1, then there is no step0 and pathExpr is empty.
+  // If case 4 and i = 1, then pathExpr is empty.
   if (pathExpr->size() == 0)
   {
     // If the path expr is of the form "axis::test/...." or "axis::test[pred]/...."
