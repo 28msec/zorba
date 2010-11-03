@@ -197,27 +197,27 @@ declare function xhtml:module-dependencies($xqdoc, $indexCollector, $schemasColl
 
 declare function xhtml:imports($xqdoc, $indexCollector, $schemasCollector) {
   (
-  if (fn:count($xqdoc/xqdoc:imports/xqdoc:import//xqdoc:uri[@isSchema = "false"]) > 0) then
+  if (fn:count($xqdoc/xqdoc:imports//xqdoc:import[@type = "library"]) > 0) then
     <p>Imported modules:<ul>
     {
-      for $import in $xqdoc/xqdoc:imports/xqdoc:import//xqdoc:uri[@isSchema = "false"]
+      for $import in $xqdoc/xqdoc:imports//xqdoc:import[@type = "library"]
       return
-        if (exists($indexCollector/module[@uri=$import/text()])) then
-          <li><a href="{$indexCollector/module[@uri=$import/text()]/@file}">{string($import/text())}</a></li>
+        if (exists($indexCollector/module[@uri=$import/xqdoc:uri/text()])) then
+          <li><a href="{$indexCollector/module[@uri=$import/xqdoc:uri/text()]/@file}">{string($import/xqdoc:uri/text())}</a></li>
         else
-          <li>{string($import/text())}</li>          
+          <li>{string($import/xqdoc:uri/text())}</li>          
     }
     </ul></p>
   else (),
-  if (fn:count($xqdoc/xqdoc:imports/xqdoc:import//xqdoc:uri[@isSchema = "true"]) > 0) then
+  if (fn:count($xqdoc/xqdoc:imports//xqdoc:import[@type = "schema"]) > 0) then
     <p>Imported schemas:<ul>
     {
-      for $import in $xqdoc/xqdoc:imports/xqdoc:import//xqdoc:uri[@isSchema = "true"]
+      for $import in $xqdoc/xqdoc:imports//xqdoc:import[@type = "schema"]
       return
-        if (exists($schemasCollector/module[@uri=$import/text()])) then
-          <li><a href="{$schemasCollector/module[@uri=$import/text()]/@file}" target="_blank">{string($import/text())}</a></li>
+        if (exists($schemasCollector/module[@uri=$import/xqdoc:uri/text()])) then
+          <li><a href="{$schemasCollector/module[@uri=$import/xqdoc:uri/text()]/@file}" target="_blank">{string($import/xqdoc:uri/text())}</a></li>
         else
-          <li>{string($import/text())}</li>  
+          <li>{string($import/xqdoc:uri/text())}</li>  
     }
     </ul></p>
   else (),
@@ -282,7 +282,7 @@ declare function xhtml:module-function-summary($functions)
             for $function in $functions/xqdoc:function
             let $name := $function/xqdoc:name/text(),
                 $signature := $function/xqdoc:signature/text(),
-                $param-number := count(tokenize($signature, "\$")) - 1,
+                $param-number := $function/@arity,
                 $isDeprecated := fn:exists($function/xqdoc:comment/xqdoc:deprecated)
             order by $name, $param-number 
             return
@@ -308,7 +308,7 @@ declare function xhtml:module-function-summary($functions)
                     </tr>
         }</table>
     else
-        <p>No functions declared.</p>
+        <p>No <a href="http://www.w3.org/TR/xquery-11/#doc-xquery11-PrivateOption">public</a> functions declared.</p>
 };
 
 declare function xhtml:module-function-link($name as xs:string, $signature) {
@@ -331,7 +331,7 @@ declare function xhtml:module-functions($functions) {
         for $function in $functions/xqdoc:function
         let $name := $function/xqdoc:name/text(),
             $signature := $function/xqdoc:signature/text(),
-            $param-number := count(tokenize($signature, "\$")) - 1,
+            $param-number := $function/@arity,
             $comment := $function/xqdoc:comment,
             $isDeprecated := fn:exists($comment/xqdoc:deprecated)
         order by $name, $param-number

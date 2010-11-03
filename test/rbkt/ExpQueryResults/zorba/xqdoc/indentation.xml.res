@@ -5,8 +5,8 @@
   </xqdoc:control>
   <xqdoc:module/>
   <xqdoc:imports>
-    <xqdoc:import>
-      <xqdoc:uri isSchema="false">http://www.zorba-xquery.com/modules/xqdoc</xqdoc:uri>
+    <xqdoc:import type="library">
+      <xqdoc:uri>http://www.zorba-xquery.com/modules/xqdoc</xqdoc:uri>
     </xqdoc:import>
   </xqdoc:imports>
   <xqdoc:variables/>

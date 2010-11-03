@@ -216,7 +216,7 @@ declare function excel:choose(
  :  @return the value found
  :  @error XQP0021(errValue) if range_lookup=0 and the value cannot be found
  :)
-declare function excel:lookup_column(
+declare %private function excel:lookup_column(
   $lookup_value         as xs:anyAtomicType,
   $table_header         as xs:anyAtomicType*,
   $range_lookup         as xs:integer,

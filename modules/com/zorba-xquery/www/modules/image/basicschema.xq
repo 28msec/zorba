@@ -25,7 +25,7 @@ import schema namespace image = 'http://www.zorba-xquery.com/modules/image/image
  : @return The width of the passed image.
  : @error If the passed xs:base64Binary is not a valid image.
  :)
-declare function basic:width($image as xs:base64Binary) as xs:unsignedInt external;
+declare %private function basic:width($image as xs:base64Binary) as xs:unsignedInt external;
 
 (:~
  : Returns the height (in pixels) of the passed image.
@@ -34,7 +34,7 @@ declare function basic:width($image as xs:base64Binary) as xs:unsignedInt extern
  : @return The height of the passed image.
  : @error If the passed xs:base64Binary is not a valid image.
  :)
-declare function basic:height($image as xs:base64Binary) as xs:unsignedInt external;
+declare %private function basic:height($image as xs:base64Binary) as xs:unsignedInt external;
 
 
 (:~
@@ -46,7 +46,7 @@ declare function basic:height($image as xs:base64Binary) as xs:unsignedInt exter
  : @return A new image with the quality set accordingly. 
  : @error If the passed xs:base64Binary is not a valid image type.
  :)
-declare function basic:compress($image as xs:base64Binary, $quality as xs:unsignedInt) as xs:base64Binary external;    
+declare %private function basic:compress($image as xs:base64Binary, $quality as xs:unsignedInt) as xs:base64Binary external;    
 
 
 
@@ -59,7 +59,7 @@ declare function basic:compress($image as xs:base64Binary, $quality as xs:unsign
  : @return A new image with the same content as the passed image but with the specified file format.
  : @error If the passed xs:base64Binary is not a valid image type.
  :)
-declare function basic:convert($image as xs:base64Binary, $type as image:imageType) as xs:base64Binary external;
+declare %private function basic:convert($image as xs:base64Binary, $type as image:imageType) as xs:base64Binary external;
 
 
 
@@ -69,7 +69,7 @@ declare function basic:convert($image as xs:base64Binary, $type as image:imageTy
  : @param $image is the image for which the type is requested.
  : @return The type of the passed image (an imageType as defined in 'http://www.zorba-xquery.com/modules/image/image') or an empty sequence if the passed xs:base64Binary is not a valid image type.
  :)
-declare function basic:type($image as xs:base64Binary) as xs:string external; 
+declare %private function basic:type($image as xs:base64Binary) as xs:string external; 
  
 (:~
  : Creates a new and empty image with white background color and the specified format.
@@ -85,7 +85,7 @@ declare function basic:type($image as xs:base64Binary) as xs:string external;
  : @param $format is the format of the new image.
  : @return A new and empty image with the specified type.
  :)
-declare function basic:create($width as xs:unsignedInt, $height as xs:unsignedInt, $format as image:imageType) as xs:base64Binary external; 
+declare %private function basic:create($width as xs:unsignedInt, $height as xs:unsignedInt, $format as image:imageType) as xs:base64Binary external; 
 
 
 (:~
@@ -96,7 +96,7 @@ declare function basic:create($width as xs:unsignedInt, $height as xs:unsignedIn
  : @return True if the images are the same.
  : @error If either of the passed xs:base64Binary do not contain a valid image.
  :)
-declare function basic:equals($image as xs:base64Binary, $other as xs:base64Binary) as xs:boolean external;
+declare %private function basic:equals($image as xs:base64Binary, $other as xs:base64Binary) as xs:boolean external;
 
 
 
@@ -110,5 +110,5 @@ declare function basic:equals($image as xs:base64Binary, $other as xs:base64Bina
  : @return A string containing the content of the matched exif tag or an empty sequence if no such information was found.
  : @error If the passed xs:base64Binary is not a valid image type.
  :)
-declare function basic:exif($image as xs:base64Binary, $tag as xs:string) as xs:string? external;
+declare %private function basic:exif($image as xs:base64Binary, $tag as xs:string) as xs:string? external;
 

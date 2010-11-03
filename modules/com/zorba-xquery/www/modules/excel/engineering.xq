@@ -47,7 +47,7 @@ import module namespace excel-math="http://www.zorba-xquery.com/modules/excel/ma
  : @param   $arg the string.
  : @return  True if the passed $arg is a hexadecimal number, false otherwise.
  :)
-declare function excel-engineering:is-hex
+declare %private function excel-engineering:is-hex
     ($arg as xs:string) as xs:boolean {
 
   let $tmp := fn:upper-case($arg)
@@ -63,7 +63,7 @@ declare function excel-engineering:is-hex
  : @param   $arg the string
  : @return  True if the passed $arg is a octal number, false otherwise.
  :)
-declare function excel-engineering:is-oct
+declare %private function excel-engineering:is-oct
     ($arg as xs:string) as xs:boolean {
 
   let $octCP:=(48, 49, 50, 51, 52, 53, 54, 55)
@@ -78,7 +78,7 @@ declare function excel-engineering:is-oct
  : @param   $arg the string.
  : @return  True if the passed $arg is a binary number, false otherwise. 
  :)
-declare function excel-engineering:is-bin
+declare %private function excel-engineering:is-bin
     ($arg as xs:string) as xs:boolean {
 
   let $binCP:=(48, 49)
@@ -94,7 +94,7 @@ declare function excel-engineering:is-bin
  : @error   XQP0021(errValue) if provided value for $number is not numeric.
  : @return  A binary representation of a number.
  :)
-declare function excel-engineering:dec2hexUtil
+declare %private function excel-engineering:dec2hexUtil
     ($number as xs:anyAtomicType) as xs:string {
 
     if (fn:not(excel-math:is-a-number($number))) then
@@ -117,7 +117,7 @@ declare function excel-engineering:dec2hexUtil
  : @error   XQP0021(errValue) if provided value for $number is not numeric.
  : @return  An octal representation of a number.
  :)
-declare function excel-engineering:dec2octUtil
+declare %private function excel-engineering:dec2octUtil
     ($number as xs:anyAtomicType) as xs:string {
 
     if (fn:not(excel-math:is-a-number($number))) then
@@ -140,7 +140,7 @@ declare function excel-engineering:dec2octUtil
  : @error   XQP0021(errValue) if provided value for $number is not numeric.
  : @return  A binary representation of a number.
  :)
-declare function excel-engineering:dec2binUtil
+declare %private function excel-engineering:dec2binUtil
     ($arg as xs:anyAtomicType) as xs:string {
 
     if (fn:not(excel-math:is-a-number($arg))) then
@@ -163,7 +163,7 @@ declare function excel-engineering:dec2binUtil
  : @error   XQP0021(errValue) if provided $arg is not a hexadecimal representation of a number.
  : @return  A decimal representation of a number given it's hexadecimal representation.
  :)
-declare function excel-engineering:hex2decUtil
+declare %private function excel-engineering:hex2decUtil
     ($arg as xs:string) as xs:integer* {
 
     let $number := fn:upper-case($arg)
@@ -184,7 +184,7 @@ declare function excel-engineering:hex2decUtil
  : @error   XQP0021(errValue) if provided $arg is not an octal representation of a number.
  : @return  A decimal representation of a number given it's octal representation.
  :)
-declare function excel-engineering:oct2decUtil
+declare %private function excel-engineering:oct2decUtil
     ($arg as xs:string) as xs:integer {
 
     if (fn:not(excel-engineering:is-oct($arg))) then
@@ -202,7 +202,7 @@ declare function excel-engineering:oct2decUtil
  : @error   XQP0021(errValue) if provided $arg is not an binary representation of a number.
  : @return  A decimal representation of a number given it's binary representation.
  :)
-declare function excel-engineering:bin2decUtil
+declare %private function excel-engineering:bin2decUtil
     ($arg as xs:string) as xs:integer {
 
     if (fn:not(excel-engineering:is-bin($arg))) then

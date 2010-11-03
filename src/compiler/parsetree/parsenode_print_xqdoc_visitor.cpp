@@ -418,6 +418,9 @@ void end_visit(const FunctionDecl& n, void* /*visit_state*/)
   store::Item_t lFuncElem, lNameElem, lSigElem, lFuncText, lNameText, lSigText;
   store::Item_t lArityAttr, lArityValue;
 
+  if(n.is_private())
+    return;
+
   theFactory->createQName(lFuncQName, theXQDocNS, theXQDocPrefix, "function");
   theFactory->createQName(lNameQName, theXQDocNS, theXQDocPrefix, "name");
   theFactory->createQName(lSigQName, theXQDocNS, theXQDocPrefix, "signature");
@@ -443,7 +446,7 @@ void end_visit(const FunctionDecl& n, void* /*visit_state*/)
   theFactory->createString(lArityValue, lAttrString);
 
   theFactory->createAttributeNode(
-      lArityQName, lNameElem, -1, lArityQName, lTypeName, lArityValue);
+      lArityQName, lFuncElem, -1, lArityQName, lTypeName, lArityValue);
 
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
@@ -539,7 +542,7 @@ void end_visit(const FunctionCall& n, void*)
   theFactory->createString(lAttrValue, lAttrString);
 
   theFactory->createAttributeNode(
-      lArityQName, lNameElem, -1, lArityQName, lTypeName, lAttrValue);
+      lArityQName, lInvokedElem, -1, lArityQName, lTypeName, lAttrValue);
 
   theFactory->createTextNode(lNameText, lNameElem.getp(), -1, lLocalNameString);
 
@@ -600,14 +603,14 @@ void end_visit(const ModuleImport& n, void*)
 
   theFactory->createTextNode(lUriText, lUriElem, -1, lUriString);
 
-  theFactory->createQName(lTypeQName, "", "", "isSchema");
+  theFactory->createQName(lTypeQName, "", "", "type");
 
   store::Item_t lAttrValue;
-  zstring lAttrString("false");
+  zstring lAttrString("library");
   theFactory->createString(lAttrValue, lAttrString);
 
   theFactory->createAttributeNode(
-      lTypeAttr, lUriElem, -1, lTypeQName, lTypeName, lAttrValue);
+      lTypeAttr, lImportElem, -1, lTypeQName, lTypeName, lAttrValue);
 
   print_comment(lImportElem, n.getComment());
 
@@ -641,14 +644,14 @@ void end_visit(const SchemaImport& n, void*)
   zstring lUriString = n.get_uri();
   theFactory->createTextNode(lUriText, lUriElem, -1, lUriString);
 
-  theFactory->createQName(lTypeQName, "", "", "isSchema");
+  theFactory->createQName(lTypeQName, "", "", "type");
 
   store::Item_t lAttrValue;
-  zstring lAttrString("true");
+  zstring lAttrString("schema");
   theFactory->createString(lAttrValue, lAttrString);
 
   theFactory->createAttributeNode(
-      lTypeAttr, lUriElem, -1, lTypeQName, lTypeName, lAttrValue);
+      lTypeAttr, lImportElem, -1, lTypeQName, lTypeName, lAttrValue);
 
   print_comment(lImportElem, n.getComment());
 

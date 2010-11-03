@@ -150,7 +150,7 @@ declare function excel:even($number as xs:anyAtomicType) as xs:anyAtomicType
  : @param $intnum A positive integer.
  : @return The factorial of intnum.
 :)
-declare function excel:fact-integer($intnum as xs:integer) as xs:integer
+declare %private function excel:fact-integer($intnum as xs:integer) as xs:integer
 {
   if ($intnum = 1) then
     1
@@ -322,7 +322,7 @@ declare function excel:power(
  : @return The multiplication result as numeric type.
  : @error XQP0021(errValue) if parameters cannot be casted to numeric type.
  :)
-declare function excel:product-internal($numbers as xs:anyAtomicType*) as xs:anyAtomicType
+declare %private function excel:product-internal($numbers as xs:anyAtomicType*) as xs:anyAtomicType
 {
   if (fn:empty($numbers)) then
     1
@@ -559,7 +559,7 @@ declare function excel:trunc(
  : @return The sorted sequence as numeric types.
  : @error XQP0021(errValue) if parameters cannot be casted to numeric type.
  :)
-declare function excel:sort-numbers($numbers as xs:anyAtomicType*) as xs:anyAtomicType*
+declare %private function excel:sort-numbers($numbers as xs:anyAtomicType*) as xs:anyAtomicType*
 {
   let $sorted-numbers :=
     (
@@ -615,7 +615,7 @@ declare function excel:factdouble($number as xs:integer) as xs:integer
  : @param $numbers The sequence of positive integers.
  : @return The minimum value. If the sequence contains only zero values, then zero is returned.
  :)
-declare function excel:min-without-zero($numbers as xs:integer+) as xs:integer
+declare %private function excel:min-without-zero($numbers as xs:integer+) as xs:integer
 {
   if (fn:count($numbers) eq 1) then
     $numbers[1]
@@ -641,7 +641,7 @@ declare function excel:min-without-zero($numbers as xs:integer+) as xs:integer
  : @param $divident The divident to be tried.
  : @return true if the numbers divide exactly.
 :)
-declare function excel:try-exact-divide(
+declare %private function excel:try-exact-divide(
   $numbers as xs:integer*,
   $divident as xs:integer) as xs:boolean
 {
@@ -667,7 +667,7 @@ declare function excel:try-exact-divide(
  :        to min-nonzero/2.
  : @return The greatest common divisor if found, or 1 if not found.
  :)
-declare function excel:iterate-all-gcd(
+declare %private function excel:iterate-all-gcd(
   $numbers as xs:integer*, 
   $min-nonzero as xs:integer,
   $iteration as xs:integer) as xs:integer

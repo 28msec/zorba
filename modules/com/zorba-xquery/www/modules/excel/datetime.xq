@@ -43,7 +43,7 @@ import module namespace excel-text = "http://www.zorba-xquery.com/modules/excel/
  : @param $date the date.
  : @return the day of the week as a number, where from 0 (Sunday) to 6 (Saturday).
  :) 
-declare function excel-datetime:day-of-week 
+declare %private function excel-datetime:day-of-week 
   ( $date as xs:anyAtomicType? )  as xs:integer? {
        
   if (fn:empty($date))
@@ -58,7 +58,7 @@ declare function excel-datetime:day-of-week
  : @param $date the date.
  : @return true if the year part of the supplied $date is a leap year, false otherwise.
  :)  
-declare function excel-datetime:is-leap-year 
+declare %private function excel-datetime:is-leap-year 
   ( $date as xs:date )  as xs:boolean {
        
     let $year := fn:year-from-date($date)

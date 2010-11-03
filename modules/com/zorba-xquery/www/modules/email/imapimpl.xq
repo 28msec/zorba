@@ -19,7 +19,7 @@ import schema namespace email = 'http://www.zorba-xquery.com/modules/email/email
  : @error If the status can not be read for any reason.
  :
  :)
-declare %nondeterministic function imap:status($host-info as element(imaps:hostInfo), $mailbox as xs:string) as xs:string* external;
+declare %private %nondeterministic function imap:status($host-info as element(imaps:hostInfo), $mailbox as xs:string) as xs:string* external;
   
 (:~
  : For internal use only. 
@@ -30,7 +30,7 @@ declare %nondeterministic function imap:status($host-info as element(imaps:hostI
  : @error If it wasn't possible to create a connection to the IMAP server.
  : @error If the passed credentials were rejected by the IMAP server.
  :)
-declare sequential function imap:create($host-info as element(imaps:hostInfo), $mailbox-name as xs:string)  as xs:boolean external; 
+declare %private sequential function imap:create($host-info as element(imaps:hostInfo), $mailbox-name as xs:string)  as xs:boolean external; 
 
 (:~
  : Deletes a mailbox for the given user.
@@ -41,7 +41,7 @@ declare sequential function imap:create($host-info as element(imaps:hostInfo), $
  : @error If it wasn't possible to create a connection to the IMAP server.
  : @error If the passed credentials were rejected by the IMAP server.
  :)
-declare sequential function imap:delete($host-info as element(imaps:hostInfo), $mailbox-name as xs:string)  as xs:boolean external; 
+declare %private sequential function imap:delete($host-info as element(imaps:hostInfo), $mailbox-name as xs:string)  as xs:boolean external; 
 
 (:~
  : Renames a mailbox.
@@ -54,7 +54,7 @@ declare sequential function imap:delete($host-info as element(imaps:hostInfo), $
  : @error If the passed credentials were rejected by the IMAP server.
  : @error If there is no mailbox with with the specified name ($mailbox-old).
  :)
-declare sequential function imap:rename($host-info as element(imaps:hostInfo), $mailbox-old as xs:string, $mailbox-new as xs:string) as xs:boolean external; 
+declare %private sequential function imap:rename($host-info as element(imaps:hostInfo), $mailbox-old as xs:string, $mailbox-new as xs:string) as xs:boolean external; 
 
 (:~
  : Lists IMAP folders for the specified user on the host that match the pattern. 
@@ -67,7 +67,7 @@ declare sequential function imap:rename($host-info as element(imaps:hostInfo), $
  : @error If it wasn't possible to create a connection to the IMAP server.
  : @error If the passed credentials were rejected by the IMAP server.
  :)
-declare %nondeterministic function imap:list($host-info as element(imaps:hostInfo), $mailbox-ref as xs:string, $pattern as xs:string, $only-suscribed as xs:boolean) as xs:string* external;
+declare %private %nondeterministic function imap:list($host-info as element(imaps:hostInfo), $mailbox-ref as xs:string, $pattern as xs:string, $only-suscribed as xs:boolean) as xs:string* external;
 
 
 (:~
@@ -80,7 +80,7 @@ declare %nondeterministic function imap:list($host-info as element(imaps:hostInf
  : @error If the passed credentials were rejected by the IMAP server.
  : @error If the specified mailbox does not exist.
  :)
-declare sequential function imap:subscribe($host-info as element(imaps:hostInfo), $mailbox as xs:string) as xs:boolean external;
+declare %private sequential function imap:subscribe($host-info as element(imaps:hostInfo), $mailbox as xs:string) as xs:boolean external;
 
 
 (:~
@@ -93,7 +93,7 @@ declare sequential function imap:subscribe($host-info as element(imaps:hostInfo)
  : @error If the passed credentials were rejected by the IMAP server.
  : @error If the specified mailbox does not exist.
  :)
-declare sequential function imap:unsubscribe($host-info as element(imaps:hostInfo), $mailbox as xs:string) as xs:boolean external;
+declare %private sequential function imap:unsubscribe($host-info as element(imaps:hostInfo), $mailbox as xs:string) as xs:boolean external;
 
 
 (:~                                                                 
@@ -106,7 +106,7 @@ declare sequential function imap:unsubscribe($host-info as element(imaps:hostInf
  : @error If the passed credentials were rejected by the IMAP server.
  : @error If the specified mailbox does not exist.
  :)
-declare sequential function imap:expunge($host-info as element(imaps:hostInfo), $mailbox as xs:string) as xs:boolean external;
+declare %private sequential function imap:expunge($host-info as element(imaps:hostInfo), $mailbox as xs:string) as xs:boolean external;
 
 
 (:~
@@ -122,7 +122,7 @@ declare sequential function imap:expunge($host-info as element(imaps:hostInfo), 
  : @error If the specified mailbox does not exist.
  : @error If the syntax of the passed criteria is incorrect.  
  :)
-declare %nondeterministic function imap:search($host-info as element(imaps:hostInfo), $mailbox as xs:string, $criteria as xs:string, $uid as xs:boolean?) as xs:long* external;
+declare %private %nondeterministic function imap:search($host-info as element(imaps:hostInfo), $mailbox as xs:string, $criteria as xs:string, $uid as xs:boolean?) as xs:long* external;
 
 
 (:~
@@ -142,7 +142,7 @@ declare %nondeterministic function imap:search($host-info as element(imaps:hostI
  : @error If any of the specified mailbox does not exist.
  : @error If any of the passed message numbers don't exist.
  :)
-declare sequential function imap:copy($host-info as element(imaps:hostInfo), $mailbox-from as xs:string, $mailbox-to as xs:string, $messages as xs:long+, $uid as xs:boolean?, $copy as xs:boolean) as xs:boolean external; 
+declare %private sequential function imap:copy($host-info as element(imaps:hostInfo), $mailbox-from as xs:string, $mailbox-to as xs:string, $messages as xs:long+, $uid as xs:boolean?, $copy as xs:boolean) as xs:boolean external; 
 
 
 (:~
@@ -158,7 +158,7 @@ declare sequential function imap:copy($host-info as element(imaps:hostInfo), $ma
  : @error If any of the specified mailbox does not exist.
  : @error If any of the passed message number does not exist.
  :)
-declare %nondeterministic function imap:fetch-envelope($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long, $uid as xs:boolean?) as element(email:envelope) external; 
+declare %private %nondeterministic function imap:fetch-envelope($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long, $uid as xs:boolean?) as element(email:envelope) external; 
 
 (:~
  : Fetches a whole message.
@@ -173,7 +173,7 @@ declare %nondeterministic function imap:fetch-envelope($host-info as element(ima
  : @error If any of the specified mailbox does not exist.
  : @error If any of the passed message number does not exist.
  :)
-declare %nondeterministic function imap:fetch-message($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long, $uid as xs:boolean) as element() external; 
+declare %private %nondeterministic function imap:fetch-message($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long, $uid as xs:boolean) as element() external; 
 
 (:~
  : Fetches the subject for a message.
@@ -188,7 +188,7 @@ declare %nondeterministic function imap:fetch-message($host-info as element(imap
  : @error If any of the specified mailbox does not exist.
  : @error If any of the passed message number does not exist.
  :)  
-declare %nondeterministic function imap:fetch-subject($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long) as xs:string external;
+declare %private %nondeterministic function imap:fetch-subject($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long) as xs:string external;
 
 (:~
  : Fetches the 'from' string of a message.
@@ -204,7 +204,7 @@ declare %nondeterministic function imap:fetch-subject($host-info as element(imap
  : @error If any of the specified mailbox does not exist.
  : @error If any of the passed message number does not exist. 
  :)
-declare %nondeterministic function imap:fetch-from($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long) as xs:string external;
+declare %private %nondeterministic function imap:fetch-from($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long) as xs:string external;
 
 (:~
  : Fetches the unique identifier for a given message sequence number.
@@ -218,7 +218,7 @@ declare %nondeterministic function imap:fetch-from($host-info as element(imaps:h
  : @error If any of the specified mailbox does not exist.
  : @error If any of the passed message number does not exist.
  :)
-declare %nondeterministic function imap:fetch-uid($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long) as xs:long external;
+declare %private %nondeterministic function imap:fetch-uid($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long) as xs:long external;
 
 (:~
  : Fetches the message sequence number for a given unique identifier.
@@ -232,7 +232,7 @@ declare %nondeterministic function imap:fetch-uid($host-info as element(imaps:ho
  : @error If any of the specified mailbox does not exist.
  : @error If any of the passed message number does not exist. 
  :)
-declare %nondeterministic function imap:fetch-message-sequence-number($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long) as xs:long external;
+declare %private %nondeterministic function imap:fetch-message-sequence-number($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long) as xs:long external;
 
 
 (:~
@@ -248,7 +248,7 @@ declare %nondeterministic function imap:fetch-message-sequence-number($host-info
  : @error If any of the specified mailbox does not exist.                                                                                          
  : @error If the passed message number does not exist.                                                                                             
  :)                                                                                                                                                
-declare %nondeterministic function imap:fetch-flags($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long, $uid as xs:boolean?) as element(email:flags) external;
+declare %private %nondeterministic function imap:fetch-flags($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long, $uid as xs:boolean?) as element(email:flags) external;
 
 
 
@@ -267,5 +267,5 @@ declare %nondeterministic function imap:fetch-flags($host-info as element(imaps:
  : @error If any of the specified mailbox does not exist.
  : @error If the passed message number does not exist.
  :)
-declare sequential function imap:set-flags($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long, $flags as element(email:flags), $uid as xs:boolean?) as xs:boolean external; 
+declare %private sequential function imap:set-flags($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long, $flags as element(email:flags), $uid as xs:boolean?) as xs:boolean external; 
 

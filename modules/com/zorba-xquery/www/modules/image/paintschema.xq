@@ -34,7 +34,7 @@ import schema namespace image = 'http://www.zorba-xquery.com/modules/image/image
  : @return A new image with the specified stroked poly-kube painted.
  : @error If the passed xs:base64Binary is not a valid image type.
  :)
-declare function paint:draw-stroked-poly-line($image as xs:base64Binary, $x-values as xs:double+, $y-values as xs:double+, $stroke-length as xs:double, $gap-length as xs:double, $stroke-color as image:colorType?, $stroke-width as xs:double?, $anti-aliasing as xs:boolean?) as xs:base64Binary external; 
+declare %private function paint:draw-stroked-poly-line($image as xs:base64Binary, $x-values as xs:double+, $y-values as xs:double+, $stroke-length as xs:double, $gap-length as xs:double, $stroke-color as image:colorType?, $stroke-width as xs:double?, $anti-aliasing as xs:boolean?) as xs:base64Binary external; 
 
 
 
@@ -56,7 +56,7 @@ declare function paint:draw-stroked-poly-line($image as xs:base64Binary, $x-valu
  : @return A new image with the specified rectangle painted.
  : @error If the passed xs:base64Binary is not a valid image type.
  :)
-declare function paint:draw-rounded-rectangle($image as xs:base64Binary, $upper-left-x as xs:double, $upper-left-y as xs:double, $lower-right-x as xs:double, $lower-right-y as xs:double, $corner-width as xs:double, $corner-height as xs:double, $stroke-color as image:colorType?, $fill-color as image:colorType?, $stroke-width as xs:double?, $anti-aliasing as xs:boolean?) as xs:base64Binary external;
+declare %private function paint:draw-rounded-rectangle($image as xs:base64Binary, $upper-left-x as xs:double, $upper-left-y as xs:double, $lower-right-x as xs:double, $lower-right-y as xs:double, $corner-width as xs:double, $corner-height as xs:double, $stroke-color as image:colorType?, $fill-color as image:colorType?, $stroke-width as xs:double?, $anti-aliasing as xs:boolean?) as xs:base64Binary external;
  
 
 
@@ -77,7 +77,7 @@ declare function paint:draw-rounded-rectangle($image as xs:base64Binary, $upper-
  : @return A new image with the specified circle painted.
  : @error If the passed xs:base64Binary is not a valid image type.
  :)
-declare function paint:draw-arc($image as xs:base64Binary, $origin-x as xs:double, $origin-y as xs:double, $perimeter-x as xs:double, $perimeter-y as xs:double, $start-degrees as xs:double, $end-degrees as xs:double,  $stroke-color as image:colorType?, $fill-color as image:colorType?, $stroke-width as xs:double?, $anti-aliasing as xs:boolean?) as xs:base64Binary external;
+declare %private function paint:draw-arc($image as xs:base64Binary, $origin-x as xs:double, $origin-y as xs:double, $perimeter-x as xs:double, $perimeter-y as xs:double, $start-degrees as xs:double, $end-degrees as xs:double,  $stroke-color as image:colorType?, $fill-color as image:colorType?, $stroke-width as xs:double?, $anti-aliasing as xs:boolean?) as xs:base64Binary external;
 
 
 
@@ -98,7 +98,7 @@ declare function paint:draw-arc($image as xs:base64Binary, $origin-x as xs:doubl
  : @return A new image with the specified polygon painted.
  : @error If the passed xs:base64Binary is not a valid image type.
  :)
-declare function paint:draw-polygon($image as xs:base64Binary, $x-values as xs:double+, $y-values as xs:double+, $stroke-color as image:colorType?, $fill-color as image:colorType?, $stroke-width as xs:double?, $anti-aliasing as xs:boolean?) as xs:base64Binary external;
+declare %private function paint:draw-polygon($image as xs:base64Binary, $x-values as xs:double+, $y-values as xs:double+, $stroke-color as image:colorType?, $fill-color as image:colorType?, $stroke-width as xs:double?, $anti-aliasing as xs:boolean?) as xs:base64Binary external;
 
 
 
@@ -115,5 +115,5 @@ declare function paint:draw-polygon($image as xs:base64Binary, $x-values as xs:d
  : @return A new image with the specified text.
  : @error If the passed xs:base64Binary is not a valid image type.
  :)
-declare function paint:draw-text($image as xs:base64Binary, $text as xs:string, $x as xs:double, $y as xs:double, $font-family as xs:string, $font-size as xs:double?,  $text-color as image:colorType?) as xs:base64Binary external;
+declare %private function paint:draw-text($image as xs:base64Binary, $text as xs:string, $x as xs:double, $y as xs:double, $font-family as xs:string, $font-size as xs:double?,  $text-color as image:colorType?) as xs:base64Binary external;
 

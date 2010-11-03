@@ -45,7 +45,7 @@ import module namespace excel-err="http://www.zorba-xquery.com/modules/excel/err
  : @param $numbers The sequence of values.
  : @return The count of non-empty string values.
  :)
-declare function excel:count-non-empty($numbers as xs:anyAtomicType*) as xs:integer
+declare %private function excel:count-non-empty($numbers as xs:anyAtomicType*) as xs:integer
 {
   if (fn:empty($numbers)) then
     0
@@ -246,7 +246,7 @@ declare function excel:percentile( $numbers as xs:anyAtomicType*, $k_at as xs:an
  : @return The result of the formula.
  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type.
  :)
-declare function excel:sum_deviations(
+declare %private function excel:sum_deviations(
   $numbers as xs:anyAtomicType*,
   $average as xs:anyAtomicType) as xs:anyAtomicType
 {
@@ -280,7 +280,7 @@ declare function excel:avedev($numbers as xs:anyAtomicType+) as xs:anyAtomicType
  : @param $numbers A sequence of any values, any length.
  : @return The sum of numbers.
  :)
-declare function excel:add-all-cells($numbers as xs:anyAtomicType*) as xs:anyAtomicType
+declare %private function excel:add-all-cells($numbers as xs:anyAtomicType*) as xs:anyAtomicType
 {
   if (fn:empty($numbers)) then
     0
@@ -602,7 +602,7 @@ declare function excel:stdevp($numbers as xs:anyAtomicType+) as xs:anyAtomicType
  : @return The result as numeric type.
  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type.
  :)
-declare function excel:sumsq_deviations($numbers as xs:anyAtomicType*, $average as xs:anyAtomicType) as xs:anyAtomicType
+declare %private function excel:sumsq_deviations($numbers as xs:anyAtomicType*, $average as xs:anyAtomicType) as xs:anyAtomicType
 {
   if (fn:empty($numbers)) then
     0
@@ -763,7 +763,7 @@ declare function excel:subtotal($function_num as xs:integer, $numbers as xs:anyA
  : @error XQP0021(errNum) if any probability is not between 0 and 1.
  : @error XQP0021(errValue) if any parameter is not castable to numeric.
 :)
-declare function excel:sum_prob($prob_range as xs:anyAtomicType*) as xs:anyAtomicType
+declare %private function excel:sum_prob($prob_range as xs:anyAtomicType*) as xs:anyAtomicType
 {
   if (fn:empty($prob_range)) then
     0
@@ -790,7 +790,7 @@ declare function excel:sum_prob($prob_range as xs:anyAtomicType*) as xs:anyAtomi
  : @error XQP0021(errValue) if any parameter is not castable to numeric.
  : @error XQP0021(errNum) if x_range and prob_range do not have the same number of values.
  :)
-declare function excel:sum_prob_x(
+declare %private function excel:sum_prob_x(
   $x_range            as xs:anyAtomicType*,
   $prob_range         as xs:anyAtomicType*,
   $range_lower_limit  as xs:anyAtomicType,
@@ -883,7 +883,7 @@ declare function excel:prob($x_range as xs:anyAtomicType+,
  : @error XQP0021(errValues) if any parameter cannot be casted to numeric.
  : @error XQP0021(errNA) if there are different numbers of x's and y's.
  :)
-declare function excel:sum_x_y_deviations(
+declare %private function excel:sum_x_y_deviations(
   $x_numbers as xs:anyAtomicType*, 
   $x_average as xs:anyAtomicType,
   $y_numbers as xs:anyAtomicType*, 

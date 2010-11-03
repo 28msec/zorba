@@ -43,7 +43,7 @@ import module namespace excel-math="http://www.zorba-xquery.com/modules/excel/ma
  : @param   $arg2 the second sequence.
  : @return  The union of the values in two sequences in an implementation-defined order. It removes duplicates.
  :)
-declare function excel-text:value-union 
+declare %private function excel-text:value-union 
   ( $arg1 as xs:anyAtomicType* ,
     $arg2 as xs:anyAtomicType* )  as xs:anyAtomicType* {
 
@@ -57,7 +57,7 @@ declare function excel-text:value-union
  : @param   $arg2 the second sequence.
  : @return  The intersection of the values in two sequences in an implementation-defined order. It removes duplicates.
  :)
-declare function excel-text:value-intersect 
+declare %private function excel-text:value-intersect 
   ( $arg1 as xs:anyAtomicType* ,
     $arg2 as xs:anyAtomicType* )  as xs:anyAtomicType* {
 
@@ -71,7 +71,7 @@ declare function excel-text:value-intersect
  : @param   $arg2 the second sequence.
  : @return  The values in one sequence that do not appear in the second sequence in an implementation-defined order.
  :)
-declare function excel-text:value-except 
+declare %private function excel-text:value-except 
   ( $arg1 as xs:anyAtomicType* ,
     $arg2 as xs:anyAtomicType* )  as xs:anyAtomicType* {
 
@@ -84,7 +84,7 @@ declare function excel-text:value-except
  : @param   $arg the string.
  : @return  Reverses the order of characters in a string or zero-length string if the argument is the empty sequence.
  :)
-declare function excel-text:reverse-string 
+declare %private function excel-text:reverse-string 
   ( $arg        as xs:string? )  as xs:string {
 
    fn:codepoints-to-string(fn:reverse(fn:string-to-codepoints($arg)))
@@ -99,7 +99,7 @@ declare function excel-text:reverse-string
  : @return  $string appended with enough repetitions of $padChar to make its length $length.<br/>
  : The $string is trunctated if it's length is greater than $length.
  :)
-declare function excel-text:pad-string-to-length 
+declare %private function excel-text:pad-string-to-length 
   ( $string     as xs:string? ,
     $padChar    as xs:string ,
     $length     as xs:integer )  as xs:string {
@@ -117,7 +117,7 @@ declare function excel-text:pad-string-to-length
  : @error   XQP0021(errValue) if the length of the $toPad is greater than the desired length.
  : @return  $toPad appended with enough repetitions of $padChar to make its length $length, the characters are added before the string.
  :)
-declare function excel-text:pad-integer-to-length
+declare %private function excel-text:pad-integer-to-length
   ( $toPad      as xs:anyAtomicType?,
     $padChar    as xs:string ,
     $length     as xs:integer) as xs:string {
@@ -137,7 +137,7 @@ declare function excel-text:pad-integer-to-length
  : @return  An integer representing the first position of a substring that matches $pattern within $arg.<br />
  : If $arg does not match $pattern, the empty sequence is returned. 
  :)
-declare function excel-text:index-of-match-first 
+declare %private function excel-text:index-of-match-first 
   ( $arg        as xs:string? ,
     $pattern    as xs:string )  as xs:integer? {
 
@@ -155,7 +155,7 @@ declare function excel-text:index-of-match-first
  : @return  An integer representing the first position of a substring that matches $pattern using $flags within $arg.<br />
  : If $arg does not match $pattern, the empty sequence is returned. 
  :)
-declare function excel-text:index-of-match-first 
+declare %private function excel-text:index-of-match-first 
   ( $arg        as xs:string? ,
     $pattern    as xs:string,
     $flags      as xs:string )  as xs:integer? {
@@ -175,7 +175,7 @@ declare function excel-text:index-of-match-first
  : @return  An integer representing the $instance_num position of a substring that matches $pattern within $arg starting from $pos. <br />
  : If $arg does not match $pattern, the empty sequence is returned.
  :)
-declare function excel-text:index-of-match
+declare %private function excel-text:index-of-match
   ( $arg            as xs:string? ,
     $pattern        as xs:string,
     $pos            as xs:integer,
@@ -197,7 +197,7 @@ declare function excel-text:index-of-match
  : @param   $length the length of the group.
  : @return  Splits $text in groups of $length characters starting from right to left.
  :)
-declare function excel-text:tokenize-length
+declare %private function excel-text:tokenize-length
   ($text    as xs:string,
    $length  as xs:decimal) as xs:string* {
 

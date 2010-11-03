@@ -28,7 +28,7 @@ import schema namespace image = 'http://www.zorba-xquery.com/modules/image/image
  : @return A new image with the specified width and height.
  : @error If the passed xs:base64Binary is not a valid image type.
  :)
-declare function man:resize($image as xs:base64Binary, $width as xs:unsignedInt, $height as xs:unsignedInt) as xs:base64Binary external;
+declare %private function man:resize($image as xs:base64Binary, $width as xs:unsignedInt, $height as xs:unsignedInt) as xs:base64Binary external;
 
 
 
@@ -41,7 +41,7 @@ declare function man:resize($image as xs:base64Binary, $width as xs:unsignedInt,
  : @error If the passed xs:base64Binary is not a valid image type.
  : @error If the ratio is smaller or equal zero.
  :)
-declare function man:zoom($image as xs:base64Binary, $ratio as xs:double) as xs:base64Binary external;
+declare %private function man:zoom($image as xs:base64Binary, $ratio as xs:double) as xs:base64Binary external;
 
 
 
@@ -54,7 +54,7 @@ declare function man:zoom($image as xs:base64Binary, $ratio as xs:double) as xs:
  : @return A new image with the specified width and the height changed accordingly.
  : @error If the passed xs:base64Binary is not a valid image type.
  :)
-declare function man:zoom-by-width($image as xs:base64Binary, $width as xs:unsignedInt) as xs:base64Binary external;
+declare %private function man:zoom-by-width($image as xs:base64Binary, $width as xs:unsignedInt) as xs:base64Binary external;
 
 
 (:~
@@ -65,7 +65,7 @@ declare function man:zoom-by-width($image as xs:base64Binary, $width as xs:unsig
  : @return A new image with the specified width and the height changed accordingly.
  : @error If the passed xs:base64Binary is not a valid image type.
  :)
-declare function man:zoom-by-height($image as xs:base64Binary, $height as xs:unsignedInt) as xs:base64Binary external;
+declare %private function man:zoom-by-height($image as xs:base64Binary, $height as xs:unsignedInt) as xs:base64Binary external;
 
 
 (:~
@@ -81,7 +81,7 @@ declare function man:zoom-by-height($image as xs:base64Binary, $height as xs:uns
  : @return A new image containing the specified rectangle of the passed image.
  : @error If the passed xs:base64Binary is not a valid image.
  :)
-declare function man:sub-image($image as xs:base64Binary, $left-upper-x as xs:unsignedInt, $left-upper-y as xs:unsignedInt, 
+declare %private function man:sub-image($image as xs:base64Binary, $left-upper-x as xs:unsignedInt, $left-upper-y as xs:unsignedInt, 
                                 $width as xs:unsignedInt, $height as xs:unsignedInt) as xs:base64Binary external;
                                 
                                 
@@ -97,7 +97,7 @@ declare function man:sub-image($image as xs:base64Binary, $left-upper-x as xs:un
  : @return A new image which consisting of $image overlayed with $overlay-image.
  : @error If either of the passed xs:base64Binary's is not a valid image type.
  :)
-declare function man:overlay($image as xs:base64Binary, $overlay-image as xs:base64Binary, $overlay-upper-left-x as xs:unsignedInt,
+declare %private function man:overlay($image as xs:base64Binary, $overlay-image as xs:base64Binary, $overlay-upper-left-x as xs:unsignedInt,
                                 $overlay-upper-left-y as xs:unsignedInt, $operator as image:compositeOperatorType) as xs:base64Binary external; 
 
 
@@ -111,7 +111,7 @@ declare function man:overlay($image as xs:base64Binary, $overlay-image as xs:bas
  : @error The passed xs:base64Binary is not a valid image.
  : @error Faulty values for $upper-left-x and $upper-left-y.
  :)
-declare function man:chop($image as xs:base64Binary, $upper-left-x as xs:unsignedInt, $upper-left-y as xs:unsignedInt) as xs:base64Binary external;
+declare %private function man:chop($image as xs:base64Binary, $upper-left-x as xs:unsignedInt, $upper-left-y as xs:unsignedInt) as xs:base64Binary external;
 
 (:~
  : Returns a part of the passed image which is left of $lower-right-x and above $lower-right-y.
@@ -122,7 +122,7 @@ declare function man:chop($image as xs:base64Binary, $upper-left-x as xs:unsigne
  : @return A new image choped to the desired size.
  : @error If the passed xs:base64Binary is not a valid image.
  :)
-declare function man:crop($image as xs:base64Binary, $lower-right-x as xs:unsignedInt, $lower-right-y as xs:unsignedInt) as xs:base64Binary external;
+declare %private function man:crop($image as xs:base64Binary, $lower-right-x as xs:unsignedInt, $lower-right-y as xs:unsignedInt) as xs:base64Binary external;
 
 
 (:~
@@ -134,7 +134,7 @@ declare function man:crop($image as xs:base64Binary, $lower-right-x as xs:unsign
  : @return The passed image rotated by the specified angle.
  : @error If the passed xs:base64Binary is not a valid image.
  :)
-declare function man:rotate($image as xs:base64Binary, $angle as xs:int) as xs:base64Binary external;
+declare %private function man:rotate($image as xs:base64Binary, $angle as xs:int) as xs:base64Binary external;
 
 
 (:~
@@ -144,7 +144,7 @@ declare function man:rotate($image as xs:base64Binary, $angle as xs:int) as xs:b
  : @return A new image with all pixels set to the current background color.
  : @error The passed xs:base64Binary isn't a valid image.
  :)
-declare function man:erase($image as xs:base64Binary) as xs:base64Binary external;
+declare %private function man:erase($image as xs:base64Binary) as xs:base64Binary external;
 
 
 (:~
@@ -154,7 +154,7 @@ declare function man:erase($image as xs:base64Binary) as xs:base64Binary externa
  : @return A new image with which is the flopped version of the passed image.
  : @error If the passed xs:base64Binary is not a valid image.
  :)
-declare function man:flop($image as xs:base64Binary) as xs:base64Binary external;  
+declare %private function man:flop($image as xs:base64Binary) as xs:base64Binary external;  
   
 
 (:~
@@ -164,7 +164,7 @@ declare function man:flop($image as xs:base64Binary) as xs:base64Binary external
  : @return A new image with which is the flipped version of the passed image.
  : @error If the passed xs:base64Binary is not a valid image.
  :)
-declare function man:flip($image as xs:base64Binary) as xs:base64Binary external;                                
+declare %private function man:flip($image as xs:base64Binary) as xs:base64Binary external;                                
 
 (:~
  : Trims edges that are of the specified background color from the image.
@@ -172,7 +172,7 @@ declare function man:flip($image as xs:base64Binary) as xs:base64Binary external
  : @return A new image which is the trimmed image of the passed image.
  : @error If the passed xs:base64Binary is not a valid image.
  :)
-declare function man:trim($image as xs:base64Binary) as xs:base64Binary external;
+declare %private function man:trim($image as xs:base64Binary) as xs:base64Binary external;
 
 
 
@@ -185,7 +185,7 @@ declare function man:trim($image as xs:base64Binary) as xs:base64Binary external
  : @return a new image which is the passed image with added noise.
  : @error If the passed xs:base64Binary is not a valid image.
  :)
-declare function man:add-noise($image as xs:base64Binary, $noise-type as image:noiseType) as xs:base64Binary external;
+declare %private function man:add-noise($image as xs:base64Binary, $noise-type as image:noiseType) as xs:base64Binary external;
 
 
 (:~ 
@@ -197,7 +197,7 @@ declare function man:add-noise($image as xs:base64Binary, $noise-type as image:n
  : @return A blurred version of the passed image.
  : @error If the passed xs:base64Binary is not a valid image.
  :)
-declare function man:blur($image as xs:base64Binary, $radius as xs:int, $sigma as xs:int) as xs:base64Binary external;
+declare %private function man:blur($image as xs:base64Binary, $radius as xs:int, $sigma as xs:int) as xs:base64Binary external;
 
 
 (:~
@@ -207,7 +207,7 @@ declare function man:blur($image as xs:base64Binary, $radius as xs:int, $sigma a
  : @return A despecled version of the passed image.
  : @error If the passed xs:base64Binary is not a valid image.
  :)
-declare function man:despeckle($image as xs:base64Binary) as xs:base64Binary external;
+declare %private function man:despeckle($image as xs:base64Binary) as xs:base64Binary external;
 
 
 (:~
@@ -217,7 +217,7 @@ declare function man:despeckle($image as xs:base64Binary) as xs:base64Binary ext
  : @return A enhanced version of the passed image.
  : @error If the passed xs:base64Binary is not a valid image.
  :) 
-declare function man:enhance($image as xs:base64Binary) as xs:base64Binary external;
+declare %private function man:enhance($image as xs:base64Binary) as xs:base64Binary external;
 
 
 (:~
@@ -227,7 +227,7 @@ declare function man:enhance($image as xs:base64Binary) as xs:base64Binary exter
  : @return A equalized version of the passed image.
  : @error If the passed xs:base64Binary is not a valid image.
  :) 
-declare function man:equalize($image as xs:base64Binary) as xs:base64Binary external;
+declare %private function man:equalize($image as xs:base64Binary) as xs:base64Binary external;
 
 
 
@@ -241,7 +241,7 @@ declare function man:equalize($image as xs:base64Binary) as xs:base64Binary exte
  : @return A edged version of the passed image.
  : @error If the passed xs:base64Binary is not a valid image.
  :) 
-declare function man:edge($image as xs:base64Binary, $radius as xs:unsignedInt) as xs:base64Binary external;
+declare %private function man:edge($image as xs:base64Binary, $radius as xs:unsignedInt) as xs:base64Binary external;
  
  
 
@@ -255,7 +255,7 @@ declare function man:edge($image as xs:base64Binary, $radius as xs:unsignedInt) 
  : @return A charcoaled version of the passed image.
  : @error If the passed xs:base64Binary is not a valid image.
  :)
-declare function man:charcoal($image as xs:base64Binary, $radius as xs:double, $sigma as xs:double) as xs:base64Binary external; 
+declare %private function man:charcoal($image as xs:base64Binary, $radius as xs:double, $sigma as xs:double) as xs:base64Binary external; 
 
 (:~
  : Embosses an images (highlights edges with 3D effect).
@@ -266,7 +266,7 @@ declare function man:charcoal($image as xs:base64Binary, $radius as xs:double, $
  : @return A embossed version of the passed image.
  : @error If the passed xs:base64Binary is not a valid image.
  :) 
-declare function man:emboss($image as xs:base64Binary, $radius as xs:double, $sigma as xs:double) as xs:base64Binary external;
+declare %private function man:emboss($image as xs:base64Binary, $radius as xs:double, $sigma as xs:double) as xs:base64Binary external;
 
 (:~
  : Applies a solarize manect on the image (similar to manect seen when exposing a photographic film to light during the development process).
@@ -276,7 +276,7 @@ declare function man:emboss($image as xs:base64Binary, $radius as xs:double, $si
  : @return A solarized version of the passed image.
  : @error If the passed xs:base64Binary is not a valid image.
  :)
-declare function man:solarize($image as xs:base64Binary, $factor as xs:double) as xs:base64Binary external;
+declare %private function man:solarize($image as xs:base64Binary, $factor as xs:double) as xs:base64Binary external;
 
 (:~
  : Makes the two passed images appear as stereo image when viewed with red-blue glasses.
@@ -288,7 +288,7 @@ declare function man:solarize($image as xs:base64Binary, $factor as xs:double) a
  : @return A new image that is the stereo version of both passed images.
  : @error If either of the passed xs:base64Binary is not a valid image type.
  :)
-declare function man:stereo($left-image as xs:base64Binary, $right-image as xs:base64Binary) as xs:base64Binary external;
+declare %private function man:stereo($left-image as xs:base64Binary, $right-image as xs:base64Binary) as xs:base64Binary external;
 
 
 (:~
@@ -299,7 +299,7 @@ declare function man:stereo($left-image as xs:base64Binary, $right-image as xs:b
  : @return A version of the passed image with the specified color made transparent.
  : @error If the passed xs:base64Binary is not a valid image.
  :)
-declare function man:transparent($image as xs:base64Binary, $color as image:colorType) as xs:base64Binary external;
+declare %private function man:transparent($image as xs:base64Binary, $color as image:colorType) as xs:base64Binary external;
 
 
 
@@ -311,7 +311,7 @@ declare function man:transparent($image as xs:base64Binary, $color as image:colo
  : @return A swirled version of the passed image.
  : @error If the passed xs:base64Binary is not a valid image type.
  :)
-declare function man:swirl($image as xs:base64Binary, $degrees as xs:double) as xs:base64Binary external;
+declare %private function man:swirl($image as xs:base64Binary, $degrees as xs:double) as xs:base64Binary external;
 
 
 
@@ -323,7 +323,7 @@ declare function man:swirl($image as xs:base64Binary, $degrees as xs:double) as 
  : @return A version of the passed image with reduced noise.
  : @error If the passed xs:base64Binary is not a valid image type.
  :)
-declare function man:reduce-noise($image as xs:base64Binary, $order as xs:double) as xs:base64Binary external; 
+declare %private function man:reduce-noise($image as xs:base64Binary, $order as xs:double) as xs:base64Binary external; 
   
  
 (:~
@@ -334,7 +334,7 @@ declare function man:reduce-noise($image as xs:base64Binary, $order as xs:double
  : @return A new version of the passed image with the given contrast.
  : @error If the passed xs:base64Binary is not a valid image type.
  :)
-declare function man:contrast($image as xs:base64Binary, $sharpen as xs:double) as xs:base64Binary external;
+declare %private function man:contrast($image as xs:base64Binary, $sharpen as xs:double) as xs:base64Binary external;
 
 
 (:~
@@ -346,7 +346,7 @@ declare function man:contrast($image as xs:base64Binary, $sharpen as xs:double) 
  : @return A new, gamma correction version of the passed image.
  : @error If the passed xs:base64Binary is not a valid image type.
  :)
-declare function man:gamma($image as xs:base64Binary, $gamma-value as xs:double) as xs:base64Binary external;
+declare %private function man:gamma($image as xs:base64Binary, $gamma-value as xs:double) as xs:base64Binary external;
 
 (:~
  : Gamma corrects image for every color channel seperately.
@@ -359,7 +359,7 @@ declare function man:gamma($image as xs:base64Binary, $gamma-value as xs:double)
  : @return A new, gamma correction version of the passed image.
  : @error If the passed xs:base64Binary is not a valid image type.
  :)
-declare function man:gamma($image as xs:base64Binary, $gamma-red as xs:double, $gamma-green as xs:double, $gamma-blue as xs:double) as xs:base64Binary external;
+declare %private function man:gamma($image as xs:base64Binary, $gamma-red as xs:double, $gamma-green as xs:double, $gamma-blue as xs:double) as xs:base64Binary external;
 
     
 (:~
@@ -370,7 +370,7 @@ declare function man:gamma($image as xs:base64Binary, $gamma-red as xs:double, $
  : @return A imploded version of the passed image.
  : @error If the passed xs:base64Binary is not a valid image type.
  :)
-declare function man:implode($image as xs:base64Binary, $factor as xs:double) as xs:base64Binary external;
+declare %private function man:implode($image as xs:base64Binary, $factor as xs:double) as xs:base64Binary external;
 
 
 (:~
@@ -381,7 +381,7 @@ declare function man:implode($image as xs:base64Binary, $factor as xs:double) as
  : @return A oil painted version of the passed image.
  : @error If the passed xs:base64Binary is not a valid image type.
  :)
-declare function man:oil-paint($image as xs:base64Binary, $radius as xs:double) as xs:base64Binary external;      
+declare %private function man:oil-paint($image as xs:base64Binary, $radius as xs:double) as xs:base64Binary external;      
  
  
 (:~
@@ -392,6 +392,6 @@ declare function man:oil-paint($image as xs:base64Binary, $radius as xs:double) 
  : @return A version of $image with a digital watermark in form of $watermark.
  : @error If any of the passed xs:base64Binaries are not a valid image type.
  :)
-declare function man:watermark($image as xs:base64Binary, $watermark as xs:base64Binary) as xs:base64Binary external;  
+declare %private function man:watermark($image as xs:base64Binary, $watermark as xs:base64Binary) as xs:base64Binary external;  
 
 
