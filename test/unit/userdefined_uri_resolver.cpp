@@ -25,6 +25,73 @@
 
 using namespace zorba;
 
+class MySchemaURIResolverResult: public SchemaURIResolverResult
+{
+  public:
+    virtual String getSchema() const { return theSchema; }
+
+  protected:
+    friend class MySchemaURIResolver1;
+    friend class MySchemaURIResolver2;
+    String theSchema;
+};
+
+class MySchemaURIResolver1: public SchemaURIResolver
+{
+  public:
+    virtual ~MySchemaURIResolver1(){}
+
+    virtual std::auto_ptr<SchemaURIResolverResult>
+    resolve(
+      const Item& aURI,
+      StaticContext* aStaticContext,
+      std::vector<Item>& aLocationHints,
+      String* aFileURI
+    )
+    {
+      std::auto_ptr<MySchemaURIResolverResult> lResult(new MySchemaURIResolverResult());
+      if(aURI.getStringValue() == "http://www.zorba-xquery.com/schemas/helloworld2")
+      {
+        lResult->theSchema = "http://zorba-xquery.com/tutorials/helloworld.xsd";
+        lResult->setError(URIResolverResult::UR_NOERROR);
+      } else {
+        lResult->setError(URIResolverResult::UR_XQST0057);
+        std::stringstream lErrorStream;
+        lErrorStream << "Schema could not be found " << aURI.getStringValue();
+        lResult->setErrorDescription(lErrorStream.str());
+      }
+      return std::auto_ptr<SchemaURIResolverResult>(lResult.release());
+    };
+};
+
+class MySchemaURIResolver2: public SchemaURIResolver
+{
+  public:
+    virtual ~MySchemaURIResolver2(){}
+
+    virtual std::auto_ptr<SchemaURIResolverResult>
+    resolve(
+      const Item& aURI,
+      StaticContext* aStaticContext,
+      std::vector<Item>& aLocationHints,
+      String* aFileURI
+    )
+    {
+      std::auto_ptr<MySchemaURIResolverResult> lResult(new MySchemaURIResolverResult());
+      if(aURI.getStringValue() == "http://www.zorba-xquery.com/schemas/helloworld")
+      {
+        lResult->theSchema = "http://zorba-xquery.com/tutorials/helloworld.xsd";
+        lResult->setError(URIResolverResult::UR_NOERROR);
+      } else {
+        lResult->setError(URIResolverResult::UR_XQST0057);
+        std::stringstream lErrorStream;
+        lErrorStream << "Schema could not be found " << aURI.getStringValue();
+        lResult->setErrorDescription(lErrorStream.str());
+      }
+      return std::auto_ptr<SchemaURIResolverResult>(lResult.release());
+    };
+};
+
 class MyModuleURIResolverResult : public ModuleURIResolverResult
 {
   friend class MyModuleURIResolver1;
@@ -135,7 +202,7 @@ public:
   }
 };
 
-bool test_unresolved_uri(Zorba* aZorba)
+bool test_unresolved_module_uri(Zorba* aZorba)
 {
   StaticContext_t lContext = aZorba->createStaticContext();
 
@@ -155,12 +222,36 @@ bool test_unresolved_uri(Zorba* aZorba)
   return true;
 };
 
+bool test_unresolved_schema_uri(Zorba* aZorba)
+{
+  StaticContext_t lContext = aZorba->createStaticContext();
+
+  MySchemaURIResolver1 lResolver1;
+  MySchemaURIResolver2 lResolver2;
+
+  lContext->addSchemaURIResolver(&lResolver1);
+  lContext->addSchemaURIResolver(&lResolver2);
+
+  try {
+    XQuery_t lQuery = aZorba->compileQuery("import schema namespace lm='http://www.zorba-xquery.com/schemas/helloworld'; validate{ <p>Hello World!</p> }", lContext); 
+    std::cout << lQuery << std::endl;
+  } catch (ZorbaException& e) {
+    std::cerr << e.getDescription() << std::endl;
+    return false;
+  }
+
+  return true;
+};
+
 int userdefined_uri_resolver(int argc, char* argv[])
 {
   void* lStore = StoreManager::getStore();
   Zorba* lZorba = Zorba::getInstance(lStore); 
-  if(!test_unresolved_uri(lZorba)) {
+  if(!test_unresolved_module_uri(lZorba)) {
     return 1;
-  } 
+  } else
+  if(!test_unresolved_schema_uri(lZorba)) {
+    return 1;
+  }
   return 0;
 };
