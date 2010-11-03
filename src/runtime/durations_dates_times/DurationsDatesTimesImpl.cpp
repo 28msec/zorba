@@ -167,8 +167,8 @@ FnAdjustToTimeZoneIterator_2::nextImpl(store::Item_t& result, PlanState& planSta
 class Modifier
 {
 public:
-  xqpStringStore_t presentation_modifier;
-  xqpStringStore_t second_modifier;
+  zstring presentation_modifier;
+  zstring second_modifier;
 
   // for min_width and max_width
   // -3 means an error in the picture
@@ -180,8 +180,8 @@ public:
 
   Modifier()
     :
-    presentation_modifier(new xqpStringStore()),
-    second_modifier(new xqpStringStore()),
+    presentation_modifier(""),
+    second_modifier(""),
     min_width_modifier(-2),
     max_width_modifier(-2)
 	{
@@ -189,95 +189,110 @@ public:
 };
 
 
-static void format_number(xqpStringStore_t& str, long number, Modifier& modifier)
+static void format_number(zstring& str, long number, Modifier& modifier)
 {
   // Presentation modifier can be:
   // 'Ww', "Nn', 'W', 'w', 'N', 'n'
   // 'i', 'I', '1', '00...01'
   // the modifier will not be checked if it is supported or not
-  xqpString temp;
+  zstring temp;
 
-  if (modifier.presentation_modifier->bytes() > 0 && modifier.presentation_modifier->byteAt(0) == '0')
+  if (modifier.presentation_modifier.size() > 0 && modifier.presentation_modifier[0] == '0')
   {
-    temp.append_in_place(NumConversions::longToStr(number).c_str());
-    while (temp.bytes() < modifier.presentation_modifier->bytes())
+    temp.append(NumConversions::longToStr(number).c_str());
+    while (temp.size() < modifier.presentation_modifier.size())
       temp = "0" + temp;
   }
   else // "1" or fallback
   {
-    temp.append_in_place(NumConversions::longToStr(number).c_str());
+    temp.append(NumConversions::longToStr(number).c_str());
   }
 
-  if (modifier.second_modifier->byteEqual("o", 1))
+  if (modifier.second_modifier == "o")
   {
     if ((number % 10) == 1 && (number % 100) != 11)
-      temp.append_in_place("st");
+      temp.append("st");
     else if ((number % 10) == 2 && (number % 100) != 12)
-      temp.append_in_place("nd");
+      temp.append("nd");
     else if ((number % 10) == 3 && (number % 100) != 13)
-      temp.append_in_place("rd");
+      temp.append("rd");
     else
-      temp.append_in_place("th");
+      temp.append("th");
   }
 
   if (modifier.min_width_modifier >= 0)
-    while (temp.bytes() < (unsigned int)modifier.min_width_modifier)
+    while (temp.size() < (unsigned int)modifier.min_width_modifier)
 	  temp = "0" + temp;
 
-  str->append_in_place(temp.c_str());
+  str.append(temp.c_str());
 }
 
 
 static void format_string_width(
-    xqpStringStore_t& destination,
-    xqpStringStore_t& source,
+    zstring& destination,
+    zstring& source,
     Modifier& modifier)
 {
-  xqpStringStore temp = *source;
-  while (modifier.max_width_modifier > 0 && temp.bytes() < (unsigned int)modifier.max_width_modifier)
-	temp.append_in_place(" ");
-  destination->append_in_place(temp.c_str());
+  zstring temp = source;
+  while (modifier.max_width_modifier > 0 && temp.size() < (unsigned int)modifier.max_width_modifier)
+	temp.append(" ");
+  destination.append(temp.c_str());
 }
 
 
 static bool format_string(
-    xqpStringStore_t& destination,
-    xqpStringStore& source,
+    zstring& destination,
+    zstring& source,
     Modifier& modifier)
 {
-  xqpString temp;
-  if (modifier.presentation_modifier->bytes() == 0 ||
-      modifier.presentation_modifier->byteEqual("n", 1))
-    temp.append_in_place(source.lowercase());
-  else if (modifier.presentation_modifier->byteEqual("N", 1))
-    temp.append_in_place(source.uppercase());
-  else if (modifier.presentation_modifier->byteEqual("Nn", 2))
+  zstring temp;
+  if (modifier.presentation_modifier.size() == 0 ||
+      modifier.presentation_modifier == "n")
   {
-    temp.append_in_place(source.byteSubstr(0, 1)->uppercase());
-    temp.append_in_place(source.byteSubstr(1,source.size()-1)->lowercase());
+    zstring newcase = source;
+    ascii::to_lower(newcase);
+    temp.append(newcase);
+  }
+  else if (modifier.presentation_modifier == "N")
+  {
+    zstring newcase = source;
+    ascii::to_upper(newcase);
+    temp.append(newcase);
+  }
+  else if (modifier.presentation_modifier == "Nn")
+  {
+    zstring newcase;
+
+    newcase = source.substr(0, 1);
+    ascii::to_upper(newcase);
+    temp.append(newcase);
+
+    newcase = source.substr(1,source.size()-1);
+    ascii::to_lower(newcase);
+    temp.append(newcase);
   }
   else
     return false;
 
-  format_string_width(destination, temp.theStrStore, modifier);
+  format_string_width(destination, temp, modifier);
   return true;
 }
 
 
 static bool format_string(
-    xqpStringStore_t& destination,
+    zstring& destination,
     const char* source,
     Modifier& modifier)
 {
-  xqpStringStore temp(source);
+  zstring temp(source);
   return format_string(destination, temp, modifier);
 }
 
 
 static void format_component(
-    xqpStringStore_t& destination,
+    zstring& destination,
     long number,
-    xqpStringStore& source,
+    zstring& source,
     Modifier& modifier)
 {
   if (!format_string(destination, source, modifier))
@@ -286,98 +301,98 @@ static void format_component(
 
 
 static void output_month(
-    xqpStringStore_t& destination,
+    zstring& destination,
     long number,
     Modifier& modifier)
 {
   static const char* month[12]  = { "january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"};
-  xqpString temp(month[number-1]);
+  zstring temp(month[number-1]);
   if (modifier.max_width_modifier > 0 && (unsigned int)modifier.max_width_modifier < temp.size())
     temp = temp.substr(0, modifier.max_width_modifier);
 
-  format_component(destination, number, *temp.theStrStore, modifier);
+  format_component(destination, number, temp, modifier);
 }
 
 
 static void output_day_of_week(
-    xqpStringStore_t& destination,
+    zstring& destination,
     long number,
     Modifier& modifier)
 {
   static const char* day[7]  = { "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"};
-  xqpString temp(day[number]);
+  zstring temp(day[number]);
   if (modifier.max_width_modifier > 0 && (unsigned int)modifier.max_width_modifier < temp.size())
     temp = temp.substr(0, modifier.max_width_modifier);
 
-  format_component(destination, number, *temp.theStrStore, modifier);
+  format_component(destination, number, temp, modifier);
 }
 
 
 static void parse_presentation_modifier(
-    xqpStringStore_t& str,
+    zstring& str,
     ascii::size_type& position,
-    xqpStringStore_t& result)
+    zstring& result)
 {
-  result = new xqpStringStore("");
+  result = "";
 
-  if (position+1 >= str->bytes())
+  if (position+1 >= str.size())
     return;
 
-  xqpString modifier = xqpString("");
+  zstring modifier = "";
 
-  if (position+2 < str->bytes() &&
-      (str->byteSubstr(position+1, 2)->byteEqual("Ww", 2) ||
-       str->byteSubstr(position+1, 2)->byteEqual("Nn", 2)))
+  if (position+2 < str.size() &&
+      (str.substr(position+1, 2) == "Ww" ||
+       str.substr(position+1, 2) == "Nn", 2))
   {
-    modifier.append_in_place(str->byteSubstr(position+1, 2));
+    modifier.append(str.substr(position+1, 2));
     position += 2;
   }
-  else if (str->byteAt(position+1) == '1' || str->byteAt(position+1) == 'i' || str->byteAt(position+1) == 'I'
-           || str->byteAt(position+1) == 'a' || str->byteAt(position+1) == 'A'
-           || str->byteAt(position+1) == 'w' || str->byteAt(position+1) == 'W'
-           || str->byteAt(position+1) == 'n' || str->byteAt(position+1) == 'N' )
+  else if (str[position+1] == '1' || str[position+1] == 'i' || str[position+1] == 'I'
+           || str[position+1] == 'a' || str[position+1] == 'A'
+           || str[position+1] == 'w' || str[position+1] == 'W'
+           || str[position+1] == 'n' || str[position+1] == 'N' )
   {
-    modifier.append_in_place(str->byteAt(position+1));
+    modifier.append(str, position+1, 1);
     position++;
   }
-  else if (str->byteAt(position+1) == '0')
+  else if (str[position+1] == '0')
   {
     int start = position;
-    while (position+1 < str->bytes() && str->byteAt(position+1) == '0')
+    while (position+1 < str.size() && str[position+1] == '0')
     {
-      modifier.append_in_place(str->byteAt(position+1));
+      modifier.append(str, position+1, 1);
       position++;
     }
 
-    if (position+1 >= str->bytes() || str->byteAt(position+1) != '1')
+    if (position+1 >= str.size() || str[position+1] != '1')
     {
       position = start;
       return;
     }
 
-    modifier.append_in_place(str->byteAt(position+1));
+    modifier.append(str, position+1, 1);
     position++;
   }
 
-  result = modifier.theStrStore;
+  result = modifier;
 }
 
 
 static void parse_second_modifier(
-    xqpStringStore_t& str,
+    zstring& str,
     ascii::size_type& position,
-    xqpStringStore_t& result)
+    zstring& result)
 {
-  result = new xqpStringStore("");
+  result = "";
 
-  if (position+1 >= str->bytes())
+  if (position+1 >= str.size())
     return;
 
   position++;
-  if (str->byteAt(position) == 't')
-    result = new xqpStringStore("t");
-  else if (str->byteAt(position) == 'o')
-    result = new xqpStringStore("o");
+  if (str[position] == 't')
+    result = "t";
+  else if (str[position] == 'o')
+    result = "o";
   else
     position--;
 }
@@ -389,7 +404,7 @@ static void parse_second_modifier(
 // -1 means '*'
 // >=0 means explicitly specified width
 static void parse_width_modifier(
-    xqpStringStore_t& str,
+    zstring& str,
     ascii::size_type& position,
     long& min_width,
     long& max_width)
@@ -397,39 +412,39 @@ static void parse_width_modifier(
   min_width = -2;
   max_width = -2;
 
-  if (position+1 >= str->bytes() || str->byteAt(position+1) != ',')
+  if (position+1 >= str.size() || str[position+1] != ',')
     return;
 
   position++;
 
   // The min_width must be present if there is a comma symbol
   min_width = -3;
-  if (position+1 >= str->bytes())
+  if (position+1 >= str.size())
     return;
 
-  if (str->byteAt(position+1) == '*')
+  if (str[position+1] == '*')
   {
     min_width = -1;
     position++;
   }
   else
   {
-    if (parse_long(str->c_str(), str->bytes(), position, min_width, -1, -1, 1))
+    if (parse_long(str.c_str(), str.size(), position, min_width, -1, -1, 1))
       min_width = -3;
   }
 
-  if (position+1 >= str->bytes() || str->byteAt(position+1) != '-')
+  if (position+1 >= str.size() || str[position+1] != '-')
     return;
 
   position++;
-  if (str->byteAt(position+1) == '*')
+  if (str[position+1] == '*')
   {
     max_width = -1;
     position++;
   }
   else
   {
-    if (parse_long(str->c_str(), str->bytes(), position, max_width, -1, -1, 1))
+    if (parse_long(str.c_str(), str.size(), position, max_width, -1, -1, 1))
       min_width = -3;
   }
 }
@@ -484,8 +499,7 @@ bool FnFormatDateTimeIterator::nextImpl(
     PlanState& planState) const
 {
   bool variable_marker;
-  xqpStringStore_t pictureString, resultString;
-  zstring tmp;
+  zstring pictureString, resultString;
   store::Item_t dateTimeItem, picture;
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -501,22 +515,22 @@ bool FnFormatDateTimeIterator::nextImpl(
   else
   {
   	consumeNext(picture, theChildren[1].getp(), planState);
-    pictureString = new xqpStringStore(picture->getStringValue().str());
-    resultString = new xqpStringStore("");
+    pictureString = picture->getStringValue().str();
+    resultString = "";
     variable_marker = false;
-    for (ascii::size_type i = 0; i < pictureString->bytes(); i++)
+    for (ascii::size_type i = 0; i < pictureString.size(); i++)
     {
       if (variable_marker)
       {
         char component = 0;
         Modifier modifier;
 
-        switch (pictureString->byteAt(i))
+        switch (pictureString[i])
         {
         case 'Y': case 'M': case 'D': case 'd': case 'F': case 'W': case 'w':
         case 'H': case 'h': case 'P': case 'm': case 's': case 'f':
         case 'Z': case 'z': case 'C': case 'E':
-          component = pictureString->byteAt(i);
+          component = pictureString[i];
           break;
 
         case ']':
@@ -585,13 +599,13 @@ bool FnFormatDateTimeIterator::nextImpl(
           format_string(resultString, dateTimeItem->getDateTimeValue().getHours() >= 12 ? "pm" : "am", modifier);
           break;
         case 'm':
-          if (modifier.presentation_modifier->size() == 0)
-            modifier.presentation_modifier->append_in_place("01");
+          if (modifier.presentation_modifier.size() == 0)
+            modifier.presentation_modifier.append("01");
           format_number(resultString, dateTimeItem->getDateTimeValue().getMinutes(), modifier);
           break;
         case 's':
-          if (modifier.presentation_modifier->size() == 0)
-            modifier.presentation_modifier->append_in_place("01");
+          if (modifier.presentation_modifier.size() == 0)
+            modifier.presentation_modifier.append("01");
           format_number(resultString, dateTimeItem->getDateTimeValue().getIntSeconds(), modifier);
           break;
         case 'f': // fractional seconds
@@ -617,10 +631,10 @@ bool FnFormatDateTimeIterator::nextImpl(
       }
       else
       {
-        if (pictureString->byteAt(i) == '[')
+        if (pictureString[i] == '[')
         {
           // check for quoted "[["
-          if (i<pictureString->bytes()-1 && pictureString->byteAt(i+1) == '[')
+          if (i<pictureString.size()-1 && pictureString[i+1] == '[')
             i++;
           else
           {
@@ -628,19 +642,18 @@ bool FnFormatDateTimeIterator::nextImpl(
             continue;
           }
         }
-        else if (pictureString->byteAt(i) == ']')
+        else if (pictureString[i] == ']')
         {
           // check for quoted "]]"
-          if (i<pictureString->bytes()-1 && pictureString->byteAt(i+1) == ']')
+          if (i<pictureString.size()-1 && pictureString[i+1] == ']')
             i++;
         }
 
-        resultString->append_in_place(pictureString->byteAt(i));
+        resultString.append(pictureString, i, 1);
       }
     }
 
-    tmp = resultString->str();
-  	STACK_PUSH(GENV_ITEMFACTORY->createString(result, tmp), state);
+    STACK_PUSH(GENV_ITEMFACTORY->createString(result, resultString), state);
   }
 
   STACK_END (state);

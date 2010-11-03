@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,8 +20,8 @@
 
 #include "zorbatypes/datetime.h"
 
-#include "runtime/base/binarybase.h" // TODO remove after iterator refactoring
-#include "runtime/base/unarybase.h" // TODO remove after iterator refactoring
+#include "runtime/base/binarybase.h"
+#include "runtime/base/unarybase.h"
 #include "runtime/base/narybase.h"
 
 
@@ -37,12 +37,12 @@ class FnFormatDateTimeIterator : public NaryBaseIterator<FnFormatDateTimeIterato
 {
 private:
   DateTime::FACET_TYPE facet_type;
-    
+
 public:
   SERIALIZABLE_CLASS(FnFormatDateTimeIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(
-  FnFormatDateTimeIterator, 
+  FnFormatDateTimeIterator,
   NaryBaseIterator<FnFormatDateTimeIterator, PlanIteratorState >);
 
   void serialize(::zorba::serialization::Archiver &ar)
