@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data>
+  <condition year="1998" expression='if ($control = (1,2,3)) then $control else -999'/>
+  <condition year="1999" expression='if ($control = (1,2,3)) then $control else 1000'/>
+</data>

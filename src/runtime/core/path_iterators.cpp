@@ -1347,42 +1347,6 @@ bool PrecedingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState
         // C is an element node; traverse its subtree, unless we can skip it
         // based on the non-recursiveness of C and the node test associated
         // with this axis step.
-        if (nameOrKindTest(child, planState))
-        {
-          if (child->isRecursive() ||
-              theTestKind == match_anykind_test ||
-              (theTestKind == match_elem_test && theQName == NULL) ||
-              (theTestKind == match_name_test && theWildKind != match_no_wild))
-          {
-            state->push(child);
-          }
-          else
-          {
-            if (theTargetPos >= 0)
-            {
-              if (state->theCurrentPos++ == theTargetPos)
-              {
-                result = child;
-                STACK_PUSH(true, state);
-                getNextContextNode = true;
-                break;
-              }
-            }
-            else
-            {
-              result = child;
-              STACK_PUSH(true, state);
-            }
-
-            continue;
-          }
-        }
-        else
-        {
-          state->push(child);
-        }
-
-        // Do the descendant traversal
         desc = child;
 
         while (desc != NULL)

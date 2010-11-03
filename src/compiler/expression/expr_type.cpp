@@ -53,7 +53,7 @@ static xqtref_t create_axis_step_type(
     bool untyped);
 
 
-static xqtref_t axist_step_type(
+static xqtref_t axis_step_type(
     static_context* sctx,
     const axis_step_expr* axisStep,
     const NodeXQType* inputType);
@@ -277,9 +277,9 @@ void expr::compute_return_type(bool deep, bool* modified)
         {
           const axis_step_expr* axisStep = e->theSteps[i].cast<axis_step_expr>();
           
-          stepType = axist_step_type(theSctx,
-                                     axisStep,
-                                     reinterpret_cast<const NodeXQType*>(stepType.getp()));
+          stepType = axis_step_type(theSctx,
+                                    axisStep,
+                                    static_cast<const NodeXQType*>(stepType.getp()));
         }
 
         newType = stepType.getp();
@@ -703,7 +703,7 @@ void expr::compute_return_type(bool deep, bool* modified)
 /*******************************************************************************
 
 ********************************************************************************/
-static xqtref_t axist_step_type(
+static xqtref_t axis_step_type(
     static_context* sctx,
     const axis_step_expr* axisStep,
     const NodeXQType* inputType)
@@ -758,12 +758,14 @@ static xqtref_t axist_step_type(
         ! testSchemaType->equals(RTM.XS_UNTYPED_ATOMIC_QNAME))
     {
       RAISE_XPST0005(); 
+      //return RTM.EMPTY_TYPE;
     }
     else if ((testKind == match_elem_test || testKind == match_doc_test) &&
              testSchemaType != NULL &&
              ! testSchemaType->equals(RTM.XS_UNTYPED_QNAME))
     {
       RAISE_XPST0005(); 
+      //return RTM.EMPTY_TYPE;
     }
   }
 
@@ -775,6 +777,7 @@ static xqtref_t axist_step_type(
     if (inNodeKind == store::StoreConsts::documentNode)
     {
       RAISE_XPST0005();
+      //return RTM.EMPTY_TYPE;
     }
 
     // Only element or doc nodes are reachable via the parent axis.
@@ -783,6 +786,7 @@ static xqtref_t axist_step_type(
         testNodeKind != store::StoreConsts::anyNode)
     {
       RAISE_XPST0005();
+      //return RTM.EMPTY_TYPE;
     }
 
     // Doc nodes cannot be parents of attribute nodes
@@ -790,6 +794,7 @@ static xqtref_t axist_step_type(
         testNodeKind == store::StoreConsts::documentNode)
     {
       RAISE_XPST0005();
+      //return RTM.EMPTY_TYPE;
     }
 
     return create_axis_step_type(tm, testNodeKind, testNodeName, inQuant, false);
@@ -803,6 +808,7 @@ static xqtref_t axist_step_type(
     if (inNodeKind == store::StoreConsts::documentNode)
     {
       RAISE_XPST0005();
+      //return RTM.EMPTY_TYPE;
     }
 
     // Only element or doc nodes are reachable via the ancestor axis.
@@ -811,6 +817,7 @@ static xqtref_t axist_step_type(
         testNodeKind != store::StoreConsts::anyNode)
     {
       RAISE_XPST0005();
+      //return RTM.EMPTY_TYPE;
     }
 
     if (testNodeKind == store::StoreConsts::elementNode)
@@ -863,6 +870,7 @@ self:
         inNodeKind != testNodeKind)
     {
       RAISE_XPST0005();
+      //return RTM.EMPTY_TYPE;
     }
 
     if (testNodeName != NULL &&
@@ -870,6 +878,7 @@ self:
         !inNodeName->equals(testNodeName))
     {
       RAISE_XPST0005();
+      //return RTM.EMPTY_TYPE;
     }
 
     switch (inNodeKind)
@@ -967,12 +976,14 @@ self:
         inNodeKind == store::StoreConsts::commentNode)
     {
       RAISE_XPST0005();
+      //return RTM.EMPTY_TYPE;
     }
 
     if (testNodeKind == store::StoreConsts::documentNode ||
         testNodeKind == store::StoreConsts::attributeNode)
     {
       RAISE_XPST0005();
+      //return RTM.EMPTY_TYPE;
     }
 
     switch (testNodeKind)
@@ -1006,6 +1017,7 @@ self:
         inNodeKind != store::StoreConsts::anyNode)
     {
       RAISE_XPST0005();
+      //return RTM.EMPTY_TYPE;
     }
 
     // only attribute nodes are reachable via the attribute axis.
@@ -1015,6 +1027,7 @@ self:
         testKind != match_xs_attr_test)
     {
       RAISE_XPST0005();
+      //return RTM.EMPTY_TYPE;
     }
 
     if ((testKind == match_name_test && wildKind == match_no_wild) ||
@@ -1047,6 +1060,7 @@ self:
         testNodeKind == store::StoreConsts::documentNode)
     {
       RAISE_XPST0005();
+      //return RTM.EMPTY_TYPE;
     }
 
     if ((axisKind == axis_kind_following_sibling ||
@@ -1054,7 +1068,8 @@ self:
         (inNodeKind == store::StoreConsts::attributeNode ||
          testNodeKind == store::StoreConsts::attributeNode))
     {
-      RAISE_XPST0005();
+      //RAISE_XPST0005();
+      return RTM.EMPTY_TYPE;
     }
 
     switch (testNodeKind)

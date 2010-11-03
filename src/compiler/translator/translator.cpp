@@ -8276,7 +8276,7 @@ void end_visit(const Wildcard& v, void* /*visit_state*/)
 ********************************************************************************/
 void* begin_visit(const FilterExpr& v)
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
 
   return no_state;
 }
