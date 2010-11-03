@@ -7901,7 +7901,7 @@ void post_axis_visit(const AxisStep& v, void* /*visit_state*/)
   // it is of the form:
   //
   // [ for $$dot at $$pos in node_distinc_sort_asc(pathExpr-(i-1)) ]
-  // 
+  //
   // Here, we add a let clause to the flworExpr:
   //
   // [ for $$dot at $$pos in node_distinc_sort_asc(pathExpr-(i-1))
@@ -9540,10 +9540,12 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
 
   QName* qname = v.get_name().getp();
 
-  
+  // Namespace direct attribute
   if (qname->get_qname() == "xmlns" || qname->get_prefix() == "xmlns")
   {
     zstring prefix;
+    zstring uri;
+    bool have_uri = false;
 
     if (qname->get_qname() != "xmlns")
     {
@@ -9553,21 +9555,40 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
     }
 
     const_expr* constValueExpr = valueExpr.dyn_cast<const_expr>().getp();
-    
-
-    // std::cout << "--> DirAttr: theName: " << v.get_name()->get_qname().c_str() << std::endl;
-    // std::cout << "--> Value expr: " << std::endl;
-    // valueExpr->put(std::cout) << std::endl;
+    fo_expr* foExpr = valueExpr.dyn_cast<fo_expr>().getp();
+    if (foExpr != NULL && foExpr->get_func() != op_concatenate)
+      foExpr = NULL;
 
     if (constValueExpr != NULL)
     {
-      zstring uri;
       constValueExpr->get_val()->getStringValue2(uri);
+      have_uri = true;
+    }
+    else if (foExpr != NULL)
+    {
+      for (unsigned int i=0; i<foExpr->num_args(); i++)
+      {
+        const_expr* constValueExpr = dynamic_cast<const_expr*>(foExpr->get_arg(i));
+        if (constValueExpr != NULL)
+          constValueExpr->get_val()->appendStringValue(uri);
+        else
+        {
+          fo_expr* foExpr2 = dynamic_cast<fo_expr*>(foExpr->get_arg(i));
+          if (foExpr2 != NULL && foExpr2->get_func() == op_enclosed
+              &&
+              (qname->get_qname() == "xmlns" || qname->get_prefix() == "xmlns"))
+            ZORBA_ERROR_LOC(XQST0022, loc);
+        }
+      }
+      have_uri = true;
+    }
 
+    if (have_uri)
+    {
       if ((equals(prefix, "xml", 3) && !equals(uri, XML_NS, strlen(XML_NS))) ||
-          (equals(uri, XML_NS, strlen(XML_NS)) && !equals(prefix, "xml", 3)) ||
-          (equals(prefix, "xmlns", 5) && !equals(uri, XMLNS_NS, strlen(XMLNS_NS))) ||
-          (equals(uri, XMLNS_NS, strlen(XML_NS)) && !equals(prefix, "xmlns", 5)))
+           (equals(uri, XML_NS, strlen(XML_NS)) && !equals(prefix, "xml", 3)) ||
+           (equals(prefix, "xmlns", 5) && !equals(uri, XMLNS_NS, strlen(XMLNS_NS))) ||
+           (equals(uri, XMLNS_NS, strlen(XML_NS)) && !equals(prefix, "xmlns", 5)))
         ZORBA_ERROR_LOC (XQST0070, loc);
 
       theSctx->bind_ns(prefix, uri, loc, XQST0071);
@@ -9595,6 +9616,7 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
     }
   }
   else
+  // Plain direct attribute
   {
     store::Item_t qnameItem;
     expand_no_default_qname(qnameItem, qname, qname->get_location());
@@ -9974,13 +9996,13 @@ void end_visit(const DirCommentConstructor& v, void* /*visit_state*/)
 }
 
 
-void* begin_visit(const DirPIConstructor& v) 
+void* begin_visit(const DirPIConstructor& v)
 {
   TRACE_VISIT();
   return no_state;
 }
 
-void end_visit(const DirPIConstructor& v, void* /*visit_state*/) 
+void end_visit(const DirPIConstructor& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
@@ -9996,7 +10018,7 @@ void end_visit(const DirPIConstructor& v, void* /*visit_state*/)
 }
 
 
-void *begin_visit (const CompDocConstructor& v) 
+void *begin_visit (const CompDocConstructor& v)
 {
   TRACE_VISIT ();
   return no_state;
