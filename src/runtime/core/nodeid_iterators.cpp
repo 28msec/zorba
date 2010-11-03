@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,8 +17,6 @@
 
 #include "compiler/api/compilercb.h"
 
-#include "context/static_context.h"
-
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "runtime/core/nodeid_iterators.h"
 #include "runtime/visitors/planiter_visitor.h"
@@ -26,7 +24,13 @@
 #include "store/api/store.h"
 #include "store/api/item.h"
 
-namespace zorba 
+#ifdef WIN32
+// VS2005 requires this include to be able to compile the file
+#include "context/static_context.h"
+#endif
+
+
+namespace zorba
 {
 SERIALIZABLE_CLASS_VERSIONS(NodeDistinctIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(NodeDistinctIterator)
@@ -62,7 +66,7 @@ NodeDistinctIterator::NodeDistinctIterator(
     bool acceptAtomics,
     bool checkDistinct)
   :
-  UnaryBaseIterator<NodeDistinctIterator, NodeDistinctState>(sctx, loc, input), 
+  UnaryBaseIterator<NodeDistinctIterator, NodeDistinctState>(sctx, loc, input),
   theAcceptAtomics(acceptAtomics),
   theCheckDistinct(checkDistinct)
 {
@@ -73,7 +77,7 @@ void NodeDistinctIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
   (UnaryBaseIterator<NodeDistinctIterator, NodeDistinctState>*)this);
-  
+
   ar & theAcceptAtomics;
   ar & theCheckDistinct;
 }

@@ -16,10 +16,14 @@
 #include <sstream>
 #include "compiler/rewriter/framework/rewriter_context.h"
 #include "compiler/expression/expr_base.h"
-#include "compiler/api/compilercb.h"
-#include "context/static_context.h"
 #include "system/globalenv.h"
 #include "store/api/item_factory.h"
+
+#ifdef WIN32
+// VS2005 requires this include to be able to compile the file
+#include "context/static_context.h"
+#endif
+
 
 namespace zorba {
 

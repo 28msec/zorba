@@ -16,10 +16,6 @@
 
 #include "system/globalenv.h"
 
-#include "compiler/api/compilercb.h"
-
-#include "context/static_context.h"
-
 #include "runtime/core/gflwor/window_iterator.h"
 #include "runtime/core/gflwor/common.h"
 #include "runtime/core/var_iterators.h"
@@ -28,7 +24,11 @@
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 
-using namespace zorba;
+#ifdef WIN32
+// VS2005 requires this include to be able to compile the file
+#include "context/static_context.h"
+#endif
+
 
 namespace zorba
 {
@@ -162,9 +162,9 @@ void WindowVars::bindIntern(
     bindVariables(lItem, theCurVars, aPlanState);
   }
 
-  if (!thePrevVars.empty()) 
+  if (!thePrevVars.empty())
   {
-    if (aPosition > 1) 
+    if (aPosition > 1)
     {
       aInputSeq->getItem(aPosition - 1, lItem);
     }
@@ -182,7 +182,7 @@ void WindowVars::bindIntern(
     {
       aInputSeq->getItem(aPosition + 1, lItem);
     }
-    else 
+    else
     {
       lItem = 0;
     }
@@ -214,13 +214,13 @@ void WindowVars::bindExtern(
 {
   store::Item_t lItem;
 
-  if (!theCurOuterVars.empty()) 
+  if (!theCurOuterVars.empty())
   {
     aInputSeq->getItem(aPosition, lItem);
     bindVariables(lItem, theCurOuterVars, aPlanState);
   }
 
-  if (!thePrevOuterVars.empty()) 
+  if (!thePrevOuterVars.empty())
   {
     if (aPosition > 1)
     {
@@ -234,7 +234,7 @@ void WindowVars::bindExtern(
     bindVariables(lItem, thePrevOuterVars, aPlanState);
   }
 
-  if (!theNextOuterVars.empty()) 
+  if (!theNextOuterVars.empty())
   {
     if (aInputSeq->containsItem(aPosition + 1))
     {
@@ -248,7 +248,7 @@ void WindowVars::bindExtern(
     bindVariables(lItem, theNextOuterVars, aPlanState);
   }
 
-  if (!thePosOuterVars.empty()) 
+  if (!thePosOuterVars.empty())
   {
     GENV_ITEMFACTORY->createInteger ( lItem, Integer::parseInt ( aPosition ) );
     bindVariables ( lItem, thePosOuterVars, aPlanState );
@@ -434,7 +434,7 @@ uint32_t EndClause::getStateSizeOfSubtree() const
 void EndClause::accept(PlanIterVisitor& v) const
 {
   //TODO more output
-  if (theHasEndClause) 
+  if (theHasEndClause)
   {
     theWindowVars.accept(v);
     theEndClauseIter->accept(v);
@@ -723,7 +723,7 @@ void WindowIterator::doGarbageCollection(WindowState* lState) const
 {
   if (theMaxNeededHistory != MAX_HISTORY)
   {
-    if (lState->theOpenWindows.empty()) 
+    if (lState->theOpenWindows.empty())
     {
       if (lState->theCurInputPos > theMaxNeededHistory)
         lState->theDomainSeq->purgeUpTo(lState->theCurInputPos - theMaxNeededHistory);
@@ -885,7 +885,7 @@ bool WindowIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) con
             if (!lState->theOpenWindows.empty())
             {
               //In no case there should be more than 1 position inside
-              assert(lState->theOpenWindows.size() == 1); 
+              assert(lState->theOpenWindows.size() == 1);
 
               theStartClause.bindExtern(aPlanState,
                                         lState->theDomainSeq,
