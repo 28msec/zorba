@@ -19,6 +19,8 @@
 #include <string>
 #include <iostream>
 #include <zorba/config.h>
+#include <zorba/external_function_data.h>
+#include <zorba/zorbastring.h>
 
 namespace zorba {
 
@@ -26,13 +28,13 @@ namespace zorba {
 
     private:
       std::string path;
-
+    
       void
-      canonicalize ();
+        canonicalize ();
 
     protected:
       std::string
-      getPathString() const;
+        getPathString() const;
 
     public:
       typedef enum { CONVERT_SLASHES  = 1 << 0, 
@@ -40,6 +42,14 @@ namespace zorba {
       } flags_t;
 
     public:
+
+      /**
+       * \brief Utility method to resolve a relative or absolute path
+       * or file: URI to a canonical absolute path. QQQ more doc!
+       */
+      static String resolve_path(String in, String base = "")
+        throw (ZorbaException);
+
       // from current dir
       filesystem_path ();
 

@@ -19,7 +19,6 @@
 #include <fstream>
 #include <sstream>
 
-#include <zorba/util/file.h>
 #include <zorba/external_module.h>
 #include <zorba/module_import_checker.h>
 

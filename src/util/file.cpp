@@ -56,6 +56,126 @@
 using namespace std;
 namespace zorba {
 
+
+String
+filesystem_path::resolve_path
+(String aIn, String aBase)
+  throw (ZorbaException)
+{
+  static const std::string FILE_SCHEMA("file://");
+
+  String lFileArg = aIn;
+  std::stringstream lErrorMessage;
+
+  // ****************************************************
+  // if we have an absolute file URI
+  // e.g.: file://localhost/C:/my%20file.txt
+  if(lFileArg.startsWith(FILE_SCHEMA.c_str())) {
+    // make sure the URI is a valid one
+    // QQQ not sure how to replicate this without a static context
+    //aSctxCtx->resolve("", lFileArg);
+
+    // test if we have a valid URI
+    lFileArg = lFileArg.substring(FILE_SCHEMA.length());
+    int lIndex = lFileArg.indexOf("/");
+
+    if (lIndex > 0) { // if the file URI has a host
+                      // e.g.: file://localhost/C:/my%20file.txt
+      String lAuthorityString = lFileArg.substring(0, lIndex);
+      // only allow "localhost" as the authoriry
+      // This makes this implementation the same with the Zorba URI type.
+      // If this functionality is changed, please make the same changes
+      // in the Zorba URI type.
+      if (!lAuthorityString.compare("localhost") == 0 ) {
+        lErrorMessage << "Invalid host: \"" << lAuthorityString
+            << "\". Only \"localhost\" is allowed as host in a file URI.";
+        // QQQ I think it's weird that I need to include
+        // ExternalFunctionData to do this, but couldn't find an
+        // alternative.
+        throw ExternalFunctionData::createZorbaException
+          (XPTY0004, lErrorMessage.str(), __FILE__, __LINE__);
+      }
+    } else if (lIndex < 0) { // if the file URI doesn't have a path: file://abc
+      throw ExternalFunctionData::createZorbaException
+        (XPTY0004, "The file URI contains no path.", __FILE__, __LINE__);
+    }
+
+#ifdef WIN32
+    // remove the first '/' from path: /C:/my%20file.txt
+    ++lIndex;
+#endif
+
+    // remove the host from the URI
+    lFileArg = lFileArg.substring(lIndex);
+
+#ifdef WIN32
+    // test for a valid drive segment
+    String lDriveString;
+    int lNext = lFileArg.indexOf("/");
+    if (lNext >= 0) {
+      lDriveString = lFileArg.substring(0, lNext);
+    } else {
+      lDriveString = lFileArg.substring(0);
+    }
+    if(!isValidDriveSegment(lDriveString)) {
+      lErrorMessage << "Invalid drive specification: \""
+          << lDriveString << "\".";
+      throw ExternalFunctionData::createZorbaException
+        (XPTY0004, lErrorMessage.str(), __FILE__, __LINE__);
+    }
+#endif
+
+    // decode the resulting URL encoded path
+    // e.g.: C%3A/my%20file.txt, C:/my%20file.txt, /usr/my%20file.xml
+
+    lFileArg = lFileArg.decodeFromUri();
+  }
+  
+  // ****************************************************
+  // if we have a relative file URI
+  // e.g.: "/blub 1/file", "myfile"
+  else {
+
+    bool lAbsolutePath = false;
+
+    // check if we have an absolute path: /users, C:\test
+#ifdef WIN32
+    // the underlying Zorba implementation accepts both separators for WIN32
+    // so detect the first occurence of any of them
+    int lIndex = lFileArg.indexOf("\\");
+    int lIndexS = lFileArg.indexOf("/");
+    if (lIndex < 0) {
+      lIndex = lIndexS;
+    } else if (lIndexS >=0 ) {
+      lIndex = std::min(lIndex, lIndexS);
+    }
+
+    // test for a valid drive segment
+    String lDriveString;
+    if (lIndex >= 0) {
+      lDriveString = lFileArg.substring(0, lIndex);
+    } else {
+      lDriveString = lFileArg.substring(0);
+    }
+    lAbsolutePath = isValidDriveSegment(lDriveString);
+#else
+    // only check if the path starts with "/"
+    lAbsolutePath = (lFileArg.indexOf("/") == 0);
+#endif
+    // if a relative path, we have to resolve it against the base URI
+    if (!lAbsolutePath) {
+      // resolve the relative path against the current working directory
+      //lFileArg = aSctxCtx->resolve(aSctxCtx->getBaseURI(), lFileArg);
+      lFileArg = aBase + File::getPathSeparator() + lFileArg;
+    }
+
+    // no other encoding or decoding if already an absolute path
+    // simply return it
+  }
+
+  return lFileArg;
+}
+
 const char *
 filesystem_path::get_path_separator () {
 #ifdef WIN32

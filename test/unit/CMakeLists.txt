@@ -41,6 +41,7 @@ IF(WIN32)
   CREATE_TEST_SOURCELIST(UnitTests
     UnitTests.cpp
     uri.cpp
+    path_resolver.cpp
     userdefined_uri_resolver.cpp
     multiple_runs.cpp
     runnable.cpp
@@ -60,6 +61,7 @@ ELSE(WIN32)
   CREATE_TEST_SOURCELIST(UnitTests
     UnitTests.cpp
     uri.cpp
+    path_resolver.cpp
     userdefined_uri_resolver.cpp
     plan_serializer.cpp
     call_stack.cpp

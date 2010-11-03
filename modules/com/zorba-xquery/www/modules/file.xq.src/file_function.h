@@ -26,7 +26,6 @@ namespace zorba { namespace filemodule {
   class FileFunction : public NonePureStatelessExternalFunction
   {
     private:
-      static const std::string FILE_SCHEMA;
 
 #ifdef WIN32
       static bool
