@@ -642,6 +642,27 @@ void file::rename(std::string const& newpath) {
 #endif
 }
 
+#ifdef WIN32
+bool
+filesystem_path::isValidDriveSegment(
+    String& aString)
+{
+  aString = aString.uppercase();
+  // the drive segment has one of the forms: "C:", "C%3A"
+  if ((aString.length() != 2 && aString.length() != 4) ||
+      (aString.length() == 2 && !aString.endsWith(":")) ||
+      (aString.length() == 4 && !aString.endsWith("%3A"))) {
+    return false;
+  }
+
+  char lDrive = aString.charAt(0);
+  // the string is already upper case
+  if (lDrive < 65 || lDrive > 90) {
+    return false;
+  }
+  return true;
+}
+#endif
 
 } /* namespace zorba */
 

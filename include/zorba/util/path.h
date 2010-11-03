@@ -78,6 +78,9 @@ namespace zorba {
       filesystem_path branch_path () const;
 
       static const char *get_path_separator ();
+    #ifdef WIN32
+      static bool isValidDriveSegment( String& aString);
+    #endif
   };
 
   inline std::ostream &operator<< (std::ostream &os, const filesystem_path &p)
