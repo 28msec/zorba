@@ -14,49 +14,57 @@
  * limitations under the License.
  */
 
-#include "../ft_token_seq_iterator.h"
+#include <memory>                       /* for auto_ptr */
+
+#include "util/stl_util.h"
+
+#include "th_token_collector.h"
 #include "wordnet.h"
 
 using namespace std;
+using namespace zorba::locale;
 
 namespace zorba {
+
+///////////////////////////////////////////////////////////////////////////////
 
 wordnet::~wordnet() {
   // do nothing
 }
 
-void wordnet::lookup( FTTokenIterator &query_tokens,
-                      zstring const &relationship,
+void wordnet::lookup( zstring const &query_phrase, int pos_no, int sent_no,
+                      iso639_1::type lang, zstring const &relationship,
                       ft_int at_least, ft_int at_most,
                       FTQueryItemSeq &result ) const {
-  zstring query_phrase;
-  FTToken const *qt0;
-
-  FTTokenIterator::Mark_t const mark( query_tokens.pos() );
-  for ( FTToken const *qt; (qt = query_tokens.next()); ) {
-    if ( query_phrase.empty() )
-      qt0 = qt;
-    else
-      query_phrase += ' ';
-    query_phrase += qt->value();
-  }
-  query_tokens.pos( mark );
 
   // TODO: look-up query_phrase in thesaurus
+  list<char const*> synonyms;
+  if ( query_phrase == "wealthy" ) {
+    cout << "-> found phrase in thesaurus\n";
+    synonyms.push_back( "affluent" );
+    synonyms.push_back( "loaded" );
+    synonyms.push_back( "rich" );
+    synonyms.push_back( "wealthy" );
+    synonyms.push_back( "well off" );
+    synonyms.push_back( "well to do" );
+  }
 
-  for ( int i = 0; i < 1; ++i ) {
-    FTTokenSeqIterator::FTTokens thes_tokens;
-    // TODO: tokenize thesaurus results
-#if 0
-    for ( each_token_in_current_result ) {
-      FTToken const t( word, qt0->pos(), qt0->sent(), qt0->lang() );
-      thes_tokens.push_back( t );
-    }
-#endif
-    FTQueryItem const query_item( new FTTokenSeqIterator( thes_tokens ) );
+  auto_ptr<Tokenizer> tokenizer( Tokenizer::create() );
+
+  FOR_EACH( list<char const*>, synonym, synonyms ) {
+    FTTokenSeqIterator::FTTokens syn_tokens;
+    th_token_collector collector( pos_no, sent_no, lang, syn_tokens );
+
+    char const *const syn = *synonym;
+    int const syn_len = ::strlen( syn );
+
+    tokenizer->tokenize( syn, syn_len, lang_, collector );
+    FTQueryItem const query_item( new FTTokenSeqIterator( syn_tokens ) );
     result.push_back( query_item );
   }
 }
+
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

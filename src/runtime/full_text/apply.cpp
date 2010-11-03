@@ -267,6 +267,24 @@ static void join_includes( ft_match::includes_t const &includes,
   result.push_back( si );
 }
 
+/**
+ * Joins all the tokens from the given FTTokenIterator into a single string
+ * seperated by spaces.
+ */
+static FTToken const* to_string( FTTokenIterator &tokens, zstring *phrase ) {
+  FTToken const *t0 = NULL;
+  FTTokenIterator::Mark_t const mark( tokens.pos() );
+  for ( FTToken const *t; (t = tokens.next()); ) {
+    if ( phrase->empty() )
+      t0 = t;
+    else
+      *phrase += ' ';
+    *phrase += t->value();
+  }
+  tokens.pos( mark );
+  return t0;
+}
+
 ////////// Token matching /////////////////////////////////////////////////////
 
 #define DEBUG_FT_IS_DESCENDANT 0
@@ -896,17 +914,19 @@ apply_query_tokens_as_phrase( FTTokenIterator &query_tokens,
   BEGIN_APPLY( apply_query_tokens_as_phrase );
   PUT_ARG( query_pos );
 
-  if ( ftthesaurus_option const *const to = options.get_thesaurus_option() ) {
-    if ( !to->no_thesaurus() ) {
+  ftthesaurus_option const *const th_option = options.get_thesaurus_option();
+  if ( th_option && !th_option->no_thesaurus() ) {
+    zstring query_phrase;
+    if ( FTToken const *const qt0 = to_string( query_tokens, &query_phrase ) ) {
 #if 0
-      FTQueryItemSeq query_items;
-      apply_thesaurus_option( to, query_tokens, query_items );
+      FTQueryItemSeq synonyms;
+      apply_thesaurus_option( th_option, query_phrase, *qt0, synonyms );
 
       ftmatch_options options_no_thes( options );
       options_no_thes.set_thesaurus_option( NULL );
 
       apply_ftwords_any(
-        query_items, query_pos, ignore_item, options_no_thes, matcher, result
+        synonyms, query_pos, ignore_item, options_no_thes, matcher, result
       );
       return;
 #endif
@@ -1111,45 +1131,43 @@ apply_ftwords( FTQueryItemSeq &query_items, FTToken::int_t query_pos,
 
 ////////// ApplyThesaurusOption ///////////////////////////////////////////////
 
-inline void lookup_thesaurus( FTTokenIterator &query_tokens,
-                              zstring const &uri, locale::iso639_1::type lang,
-                              zstring const &relationship,
+static void lookup_thesaurus( zstring const &query_phrase, FTToken const &qt0,
+                              zstring const &uri, zstring const &relationship,
                               ft_int at_least, ft_int at_most,
                               FTQueryItemSeq &result ) {
-  if ( ft_thesaurus const *const thesaurus = ft_thesaurus::get( uri, lang ) )
-    thesaurus->lookup( query_tokens, relationship, at_least, at_most, result );
+  if ( ft_thesaurus const *const th = ft_thesaurus::get( uri, qt0.lang() ) )
+    th->lookup(
+      query_phrase, qt0.pos(), qt0.sent(), qt0.lang(), relationship,
+      at_least, at_most, result
+    );
   else
     ZORBA_ERROR( FTST0018 );
 }
 
 void ftcontains_visitor::
-apply_thesaurus_option( ftthesaurus_option const *t_option,
-                        FTTokenIterator &query_tokens,
-                        FTQueryItemSeq &result,
-                        bool check_static_ctx ) {
-  // TODO: do proper 'lang'
-  static locale::iso639_1::type const lang = locale::iso639_1::en;
-
-  if ( t_option->includes_default() ) {
+apply_thesaurus_option( ftthesaurus_option const *th_option,
+                        zstring const &query_phrase, FTToken const &qt0,
+                        FTQueryItemSeq &result, bool check_static_ctx ) {
+  if ( th_option->includes_default() ) {
     ftmatch_options const *const static_ctx_options =
       static_ctx_.get_match_options();
     if ( check_static_ctx && static_ctx_options ) {
-      ftthesaurus_option const *const static_ctx_t_option =
+      ftthesaurus_option const *const static_ctx_th_option =
         static_ctx_options->get_thesaurus_option();
-      if ( static_ctx_t_option && !static_ctx_t_option->no_thesaurus() )
+      if ( static_ctx_th_option && !static_ctx_th_option->no_thesaurus() )
         apply_thesaurus_option(
-          static_ctx_t_option, query_tokens, result, false
+          static_ctx_th_option, query_phrase, qt0, result, false
         );
     } else {
       lookup_thesaurus(
-        query_tokens, "default", lang, "", 0, numeric_limits<ft_int>::max(),
+        query_phrase, qt0, "default", "", 0, numeric_limits<ft_int>::max(),
         result
       );
     }
   }
 
   FOR_EACH( ftthesaurus_option::thesaurus_id_list_t, pptid,
-            t_option->get_thesaurus_id_list() ) {
+            th_option->get_thesaurus_id_list() ) {
     ftthesaurus_id const &tid = **pptid;
     ft_int at_least, at_most;
     if ( ftrange const *const levels = tid.get_levels() )
@@ -1157,7 +1175,7 @@ apply_thesaurus_option( ftthesaurus_option const *t_option,
     else
       at_least = 0, at_most = numeric_limits<ft_int>::max();
     lookup_thesaurus(
-      query_tokens, tid.get_uri(), lang, tid.get_relationship(),
+      query_phrase, qt0, tid.get_uri(), tid.get_relationship(),
       at_least, at_most, result
     );
   }

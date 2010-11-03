@@ -22,6 +22,7 @@
 #include "compiler/expression/ftnode_visitor.h"
 #include "context/static_context.h"
 #include "runtime/base/plan_iterator.h"
+#include "zorbatypes/zstring.h"
 
 #include "apply.h"                      /* for ft_int */
 #include "ft_match.h"
@@ -114,8 +115,8 @@ private:
                                      store::Item const*, ftmatch_options const&,
                                      ft_token_matcher const&, ft_all_matches& );
 
-  void apply_thesaurus_option( ftthesaurus_option const*, FTTokenIterator&,
-                               FTQueryItemSeq&, bool = true );
+  void apply_thesaurus_option( ftthesaurus_option const*, zstring const&,
+                               FTToken const&, FTQueryItemSeq&, bool = true );
 
   void eval_ftrange( ftrange const&, ft_int *at_least, ft_int *at_most );
   ft_int get_int( PlanIter_t );

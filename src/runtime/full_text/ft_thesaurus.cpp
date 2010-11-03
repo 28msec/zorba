@@ -92,7 +92,7 @@ ft_thesaurus const* ft_thesaurus::get( zstring const &uri,
           // TODO
           break;
         case thesaurus::wordnet:
-          th_impl = new wordnet;
+          th_impl = new wordnet( lang );
           break;
         case thesaurus::none:
           break;

@@ -14,32 +14,29 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_FULL_TEXT_WORDNET_H
-#define ZORBA_FULL_TEXT_WORDNET_H
+#include "th_token_collector.h"
 
-#include "../ft_thesaurus.h"
+using namespace std;
+using namespace zorba::locale;
 
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-class wordnet : public ft_thesaurus {
-public:
-  wordnet( locale::iso639_1::type lang ) : ft_thesaurus( lang ) { }
-  ~wordnet();
+th_token_collector::th_token_collector( int token_no, int sent_no,
+                                        iso639_1::type lang,
+                                        FTTokenSeqIterator::FTTokens &tokens ) :
+  tokens_( tokens ), token_no_( token_no ), sent_no_( sent_no ), lang_( lang )
+{
+}
 
-  void lookup( zstring const &query_tokens, int pos_no, int sent_no,
-               locale::iso639_1::type lang, zstring const &relationship,
-               ft_int at_least, ft_int at_most, FTQueryItemSeq &result ) const;
-
-private:
-  // forbid these
-  wordnet( wordnet const& );
-  wordnet& operator=( wordnet const& );
-};
+void th_token_collector::operator()( char const *utf8_s, int utf8_len, int, int,
+                                     int, void* ) {
+  FTToken const t( utf8_s, utf8_len, token_no_, sent_no_, lang_ );
+  tokens_.push_back( t );
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
-#endif  /* ZORBA_FULL_TEXT_WORDNET_H */
 /* vim:set et sw=2 ts=2: */

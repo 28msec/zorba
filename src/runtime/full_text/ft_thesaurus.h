@@ -33,19 +33,17 @@ class ft_thesaurus {
 public:
   virtual ~ft_thesaurus();
 
-  virtual void lookup( FTTokenIterator &query_tokens,
-                       zstring const &relationship,
+  virtual void lookup( zstring const &query_phrase, int pos_no, int sent_no,
+                       locale::iso639_1::type lang, zstring const &relationship,
                        ft_int at_least, ft_int at_most,
                        FTQueryItemSeq &result ) const = 0;
-
-  void lookup( FTTokenIterator &query_tokens, FTQueryItemSeq &result ) const {
-    lookup( query_tokens, "", 0, std::numeric_limits<ft_int>::max(), result );
-  }
 
   static ft_thesaurus const* get( zstring const &uri, locale::iso639_1::type );
 
 protected:
-  ft_thesaurus() { }
+  ft_thesaurus( locale::iso639_1::type lang ) : lang_( lang ) { }
+
+  locale::iso639_1::type const lang_;
 
 private:
   // forbid these
