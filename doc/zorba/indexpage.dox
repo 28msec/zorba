@@ -27,6 +27,7 @@
      </ul>
    <li> \ref eval to dynamically evaluate a string and execute it as a query.
    <li> \ref XQDDF (definition of collections, indexes, and integrity constraints)
+   <li> \ref uriresolvers
   </ul>
 
   <b> <a class="el" href="../xqdoc/xhtml/index.html">XQuery Modules</a></b>

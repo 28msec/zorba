@@ -1,0 +1,169 @@
+/** \page uriresolvers Zorba Module and Schema URI Resolving
+
+\section motivation Motivation
+
+When writing an XQuery application, developers often use location hints to import library modules and schemas. For example, the following code snippet imports a library module with target namespace "http://www.example.com/modules/utils".
+
+<pre>
+(: Evil import statement :)
+import module namespace utils = "http://www.example.com/modules/utils" at "/home/foo/xquery/utils.xq";
+</pre>
+
+In this import statement, the user specifies that the file containing the module is physically located at "/home/foo/xquery/utils.xq".
+
+However, having the physical location hard-coded isn't desirable for two reasons: First, the physical location of a module or schema may change during the development process. For example, the module is located in a different directory after the application has been deployed. Second, the user may want to package and distribute the application without having other developers to perform code refactoring in order to have location hints which are valid on their system.
+
+In order to remedy this situation, Zorba implements a mechanism that is called URI resolving. The goal of URI resolving is to map a (logical) target namespace (of a module or schema) to the (physical) location of the resource (e.g. a file) which provides the definition of the module or schema, respectively.
+
+In the following, we describe the process of URI resolving as implemented by Zorba and further explain various ways that enable the user to fine tune this process by making changes to the static context.
+
+\section overview Overview
+
+
+URI resolving in Zorba is implemented in a component that is called Standard URI Resolver. There exist two such resolvers: a standard URI resolver for modules and a standard URI resolver for schemas. However, in general both implement the same algorithm that is used to map (logical) target namespaces to the (physical) location of the files (or resources) that contain the modules or schemas with the corresponding target namespaces.
+
+Each of these standards URI resolvers implements the following three step algorithm.
+<ol>
+  <li>\ref automatic. Zorba tries to resolves the physical location of a library module or schema according to its target namespace. This approach is similar to the one used in Java (CLASSPATH).</li>
+  <li>\ref userdefined. Zorba allows the developer to provided user-defined URI resolvers in the host language (e.g. in C++). The standard resolver invokes each of the user-defined resolvers to check whether one can provide a module or schema with the requested target namespace. Registering such resolvers is done using the static context representation in the host language. The concept of having user-defined resolvers issimilar to user-defined class loaders in Java.</li>
+  <li>\ref literal. If neither the automatic resolving nor any of the user-defined resolvers provided the module or schema, Zorba tries to treat the target namespace as an URL in order to fetch the module or schema.</li>
+</ol>
+
+If during one of these step the module is resolved, the remaining steps are skipped. It is an error if no valid module or schema definition with the specified target namespace is found. The algorithm is depicted in the following figure.
+
+<img src="uri_resolver.png" alt="Zorba Standard URI resolver" />
+
+In the following sections, we describe each of the resolving steps in more detail.
+
+\section automatic Automatic URI Resolving
+
+
+Automatically resolving URIs is the most widely used way to map a target namespace to a physical URI. It is also the easiest to use. In order to automatically resolve URIs, Zorba uses a convention that defines a mapping between target namespaces and the physical location of a module or schema. This convention is very similar to the way Java resolves types.
+
+Consider a library module with the namespace http://www.example.com/modules/utils. First of all, this namespace will be rewritten by (1) reversing the domain and transforming it into a path notation (e.g. www.example.com => com/example/www), (2) appending the URI’s path, and (3) append the suffix .xq if it’s not already part of the target namespace. In the example, this yields the relative path: com/example/www/modules/utils.xq.
+
+Since the resulting path is a relative path, it needs to be resolved against an absolute base path. To do this, Zorba extends the static context with a component that is referred to as “module paths”. The module paths is an ordered set of absolute paths which are used during the automatic URI resolving process. Specifically, the standard URI resolver resolves the relative path resulting from rewriting the target namespace against each each module path in this set and checks if a physical resource exists. If so, this resource is returned to Zorba.
+
+For instance, if the set of module paths contains the two paths /home/foo/xquery and /usr/local/include/xquery, the automatic URI resolver will first check if  a resource exists at /home/foo/xquery/com/example/www/modules/utils.xq. If not, it will check if the resource exists at /usr/local/include/xquery/com/example/www/modules/utils.xq. 
+
+Please note that the order of the path in the set is important for the resolution. Also note, that despite its name, the module path component is used for both, module and schema resolution.
+
+\subsection automaticcli Configuring Module Paths using the Command-Line Interface
+
+
+The Zorba command-line interface allows the user to provide custom module paths using an environment variable with name ZORBA_MODULE_PATH or the “--module-path” parameter of the command-line interface. In both cases, the value is an ordered set of file-system paths separated by “:” on Unix or “;” on Windows platforms. Each of these path is automatically added to the module path component of the static context. This variable is the XQuery equivalent of the CLASSPATH environment variable in Java.  Please note that for convenience, the current working directory is always added to the module path component of the static context.
+
+Consider the following query which is executed in an environment with the value of the ZORBA_MODULE_PATH variable being set to /home/foo/xquery.
+
+<pre>
+import module namespace utils = “http://www.example.com/modules/utils”; 
+utils:foo()
+</pre>
+
+In this example, Zorba rewrites the target namespace to com/example/www/modules/utils.xq and resolve this relative path against the base directory /home/foo/xquery/. Accordingly, if the file /home/foo/xquery/com/example/www/modules/utils.xq exists, the corresponding resource is returned to Zorba. 
+
+Please note that if the set of module paths contains more than one path, the path are used for resolving in the order in which they are provided by the user until an existing resource is found.
+
+\subsection automaticapi Configuring Module Paths using the C++ API
+
+
+In addition to configuring module paths using the command-line interface, the module path component of the static context can also be modified using Zorba’s C++ API. Therefore, the StaticContext class provides the setModulePaths method. It is passed a vector of String values each being a path component that is used while resolving relative URIs during the resolution process. 
+
+For example, the following code snippet (1) creates a StaticContext object, (2) adds two module paths to the module path component of this static context, and (3) compiles and executes a query given the information that is present in this static context (passed as second parameter to the compileQuery method).
+
+<pre>
+// Create a new static context
+StaticContext_t staticCtx = zorba->createStaticContext();
+
+// Set the module paths
+std::vector<String> modulePaths(2);
+modulePaths[0] = "/home/foo/xquery/modules";
+modulePaths[1] = "/opt/share/xquery/modules";
+
+staticCtx->setModulePaths(modulePaths);
+
+// Compile a query using the static context created above
+XQuery_t query = zorba->compileQuery(
+    "import module namespace m='http://example.com/module'; m:foo()",
+    staticCtx);
+
+// execute the compiled query printing the result to standard out
+std::cout << query << std::endl;
+</pre>
+
+\section userdefined User-defined URI Resolvers
+
+If Zorba is unable to resolve a module or schema using the automatic URI resolving step as described in the previous section, it will try to resolve module or schema namespaces using user-defined URI resolvers. Such resolvers can be created and registered by the developer of a Zorba-based application written in a host language. In this section, we will explain how a user-defined module resolver can be provided using the <a href="../../cxx/html/index.html" target="_blank">C++ API of Zorba</a>.
+
+The Zorba C++ API defines two interfaces called <a href="../../cxx/html/classzorba_1_1ModuleURIResolver.html" target="_blank">ModuleURIResolver</a> and <a href="../../cxx/html/classzorba_1_1SchemaURIResolver.html" target="_blank">SchemaURIResolver</a> which developers can implement if they wish to provide a user-defined module or schema URI resolver, respectively. Once a user-defined URI resolvers is created, it can respectively be registered in the static context using the <a href="../../cxx/html/classzorba_1_1StaticContext.html#a3680cbeb71f56b9c787d3f67da72ece6" target="_blank">addModuleURIResolver()</a> or <a href="../../cxx/html/classzorba_1_1StaticContext.html#a227f93e5eafb253d0eb4f4b4761e9555" target="_blank">addSchemaURIResolver()</a> methods. Similarly to the module paths in the static context, multiple URI resolvers can be registered by the developer in a single static context. They are invoked in the order in which they have been registered.
+
+In the following C++ code snippet, an implementation of the ModuleURIResolver interface is registered in the static context in order to resolve the module http://www.zorba-xquery.com/mymodule. If you are interested in a concrete implementation of such a resolver, you take a look at one of the <a href="https://zorba.svn.sourceforge.net/svnroot/zorba/trunk/zorba/doc/cxx/examples/uri_resolvers.cpp" target="_blank">examples</a> provided with Zorba.
+
+<pre>
+//Create a new static context
+StaticContext_t staticCtx = zorba->createStaticContext();
+
+MyModuleURIResolver lResolver; // URI resolver implementation 
+
+// Register the module URI resolver inthe static context
+staticCtx->addModuleURIResolver(&lResolver);
+
+// Compile the query with the static context
+XQuery_t query = zorba->compileQuery(
+  "import module namespace m='http://example.com/module'; lm:foo()",
+  staticCtx);
+  
+std::cout << query << std::endl;
+</pre>
+
+\section literal Literal URI Resolving
+
+
+If Zorba is unable to find a module or schema using either the automatic URI resolving alogrithm or by invoking any of the registered user-defined URI resolvers, it tries to interpret the target namespace URI as an URL.  For instance, when importing a module with namespace URI file:///Users/foo/xquery/foo.xq, Zorba tries to fetch the definition of this module from the file at /Users/foo/xquery/foo.xq. 
+Similarly, namespace URIs having an http scheme (i.e. starting with http://), will be treated as URL by trying to fetch the resources pointed to by that URI.
+
+If no resource is available at the location specified by the target namespace, then the standard URI resolver raises an error.
+
+\section external External Modules/Functions
+
+
+In XQuery, a module can have external functions. External functions are implemented outside of the XQuery environment. Usually, the implementation of such functions is provided in a host language of the XQuery processor. In Zorba, external functions can be implemented using the C++ or C API. Examples showing the implementation of external functions can be found in some <a href="../../cxx/html/external_functions_8cpp-example.html" target="_blank">of the examples</a> that are shipped with Zorba.
+
+Once a function has been implemented it needs to be provided to Zorba by implementations of the <a href="../../cxx/html/classzorba_1_1ExternalModule.html" target="_blank">ExternalModule</a> interface. Instances of such implementations need to be registered in the static context. In principle, there exist two ways to register an external module.
+
+First, an external module can be registered in the host language using the static context method registerModule. Examples showing the details can be found in the <a href="../../zorba/html/index.html" target="_blank">Zorba documentation</a>.
+
+Second, an implementation of an external module can be packaged into a dynamic library (dll, so, or dylib). The dynamic library is loaded lazily when the module is imported for the first time and the corresponding external module is automatically registered in the static context. 
+Analogously to automatic URI resolving, the standard URI resolver computes the location of such a dynamic library. For example, consider the following module (located in the file foo.xq) with one external function.
+
+<pre>
+module namespace foo = "http://www.28msec.com/modules/foo";
+declare function foo:bar() external;
+</pre>
+
+In this example, Zorba will try to load (if the implementation is not already available in the static context) the implementation of the module from the dynamic library located in a file named foo.dylib on Mac OS X, foo.dll on Windows, or foo.so on Linux.
+
+\section disallowing Disallowing Certain Modules
+
+
+Sometimes, it might be required to forbid access to a certain module. For example, a user might disallow access to the file module because she doesn’t want XQuery developers to access files stored locally on the machine that is running Zorba. 
+
+Therefore, the static context also provides a mechanism for preventing developers from importing particular modules. This is done by registering an implementation of the ModuleImportChecker interface using the addModuleImportChecker method of the static context. In the following code snippet, we show how one can prevent developers from importing the file module for security reasons:
+
+<pre>
+class ModuleFileChecker : public zorba::ModuleImportChecker
+{
+public:
+  virtual bool 
+  checkModuleUri(const zorba::String& aModuleUri) const
+  {
+    if (aModuleUri == "http://www.zorba-xquery.com/modules/file")
+      return false;
+    return true;
+  }
+};
+
+StaticContext_t lStcxt = lZorba->createStaticContext();
+lStcxt->addModuleImportChecker(new ModuleFileChecker());
+</pre>
+*/

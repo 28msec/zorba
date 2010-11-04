@@ -32,6 +32,8 @@ IF (DOXYGEN_FOUND)
                   ${CMAKE_CURRENT_BINARY_DIR}/html/rtab_r.gif COPYONLY)
   CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/../style/rtab_l.gif
                   ${CMAKE_CURRENT_BINARY_DIR}/html/rtab_l.gif COPYONLY)
+  CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/uri_resolver.png
+                  ${CMAKE_CURRENT_BINARY_DIR}/html/uri_resolver.png COPYONLY)
 
 ENDIF (DOXYGEN_FOUND)
 
