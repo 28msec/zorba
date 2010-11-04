@@ -17,6 +17,8 @@
 #ifndef ZORBA_FULL_TEXT_WORDNET_H
 #define ZORBA_FULL_TEXT_WORDNET_H
 
+#include <list>
+
 #include "../ft_thesaurus.h"
 
 namespace zorba {
@@ -25,14 +27,18 @@ namespace zorba {
 
 class wordnet : public ft_thesaurus {
 public:
-  wordnet( locale::iso639_1::type lang ) : ft_thesaurus( lang ) { }
+  wordnet( zstring const &phrase, zstring const &relationship,
+           ft_int at_least, ft_int at_most );
   ~wordnet();
 
-  void lookup( zstring const &query_tokens, int pos_no, int sent_no,
-               locale::iso639_1::type lang, zstring const &relationship,
-               ft_int at_least, ft_int at_most, FTQueryItemSeq &result ) const;
+  bool next( zstring *synonym );
 
 private:
+  typedef std::list<char const*> synonym_list_t;
+
+  synonym_list_t synonyms_;
+  synonym_list_t::const_iterator i_;
+
   // forbid these
   wordnet( wordnet const& );
   wordnet& operator=( wordnet const& );

@@ -14,54 +14,39 @@
  * limitations under the License.
  */
 
-#include <memory>                       /* for auto_ptr */
-
-#include "util/stl_util.h"
-
-#include "th_token_collector.h"
 #include "wordnet.h"
 
 using namespace std;
-using namespace zorba::locale;
 
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+wordnet::wordnet( zstring const &phrase, zstring const &relationship,
+                  ft_int at_least, ft_int at_most ) {
+  if ( phrase == "wealthy" ) {
+    cout << "-> found phrase in thesaurus\n";
+    synonyms_.push_back( "affluent" );
+    synonyms_.push_back( "loaded" );
+    synonyms_.push_back( "rich" );
+    synonyms_.push_back( "wealthy" );
+    synonyms_.push_back( "well off" );
+    synonyms_.push_back( "well to do" );
+    i_ = synonyms_.begin();
+  }
+}
+
 wordnet::~wordnet() {
   // do nothing
 }
 
-void wordnet::lookup( zstring const &query_phrase, int pos_no, int sent_no,
-                      iso639_1::type lang, zstring const &relationship,
-                      ft_int at_least, ft_int at_most,
-                      FTQueryItemSeq &result ) const {
-
-  // TODO: look-up query_phrase in thesaurus
-  list<char const*> synonyms;
-  if ( query_phrase == "wealthy" ) {
-    cout << "-> found phrase in thesaurus\n";
-    synonyms.push_back( "affluent" );
-    synonyms.push_back( "loaded" );
-    synonyms.push_back( "rich" );
-    synonyms.push_back( "wealthy" );
-    synonyms.push_back( "well off" );
-    synonyms.push_back( "well to do" );
+bool wordnet::next( zstring *synonym ) {
+  if ( !synonyms_.empty() && i_ != synonyms_.end() ) {
+    synonym->assign( *i_ );
+    ++i_;
+    return true;
   }
-
-  auto_ptr<Tokenizer> tokenizer( Tokenizer::create() );
-
-  FOR_EACH( list<char const*>, synonym, synonyms ) {
-    FTTokenSeqIterator::FTTokens syn_tokens;
-    th_token_collector collector( pos_no, sent_no, lang, syn_tokens );
-
-    char const *const syn = *synonym;
-    int const syn_len = ::strlen( syn );
-
-    tokenizer->tokenize( syn, syn_len, lang_, collector );
-    FTQueryItem const query_item( new FTTokenSeqIterator( syn_tokens ) );
-    result.push_back( query_item );
-  }
+  return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

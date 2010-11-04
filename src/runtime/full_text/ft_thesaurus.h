@@ -33,17 +33,14 @@ class ft_thesaurus {
 public:
   virtual ~ft_thesaurus();
 
-  virtual void lookup( zstring const &query_phrase, int pos_no, int sent_no,
-                       locale::iso639_1::type lang, zstring const &relationship,
-                       ft_int at_least, ft_int at_most,
-                       FTQueryItemSeq &result ) const = 0;
+  static ft_thesaurus* get( zstring const &uri, zstring const &phrase,
+                            zstring const &relationship,
+                            ft_int at_least, ft_int at_most );
 
-  static ft_thesaurus const* get( zstring const &uri, locale::iso639_1::type );
+  virtual bool next( zstring *synonym ) = 0;
 
 protected:
-  ft_thesaurus( locale::iso639_1::type lang ) : lang_( lang ) { }
-
-  locale::iso639_1::type const lang_;
+  ft_thesaurus() { }
 
 private:
   // forbid these

@@ -18,6 +18,8 @@
 #include <functional>                   /* for binary_function */
 #include <utility>                      /* for pair */
 
+#include "util/ascii_util.h"
+
 #include "ft_thesaurus.h"
 #include "thesauri/wordnet.h"
 
@@ -52,7 +54,8 @@ namespace thesaurus {
 
   static table_entry const table[] = {
     //
-    // Entries MUST be sorted by URI.
+    // 1. Entries *must* be sorted by URI.
+    // 2. URIs *must* *not* have a trailing '/'.
     //
     { "default"                               , wordnet },
     { "http://icon.shef.ac.uk/Moby/mthes.html", moby    },
@@ -62,10 +65,9 @@ namespace thesaurus {
   static type get_type( zstring const &uri ) {
     static table_entry const *const table_end =
       table + sizeof( table ) / sizeof( table[0] );
-
     table_entry entry_to_find;
     entry_to_find.th_uri = uri.c_str();
-    pair<table_entry const *const,table_entry const *const> result =
+    pair<table_entry const*,table_entry const*> const result =
       ::equal_range( table, table_end, entry_to_find, less_table_entry() );
     return result.first == result.second ? none : result.first->th_type;
   }
@@ -78,29 +80,26 @@ ft_thesaurus::~ft_thesaurus() {
   // do nothing
 }
 
-// TODO: deal with 'lang'
+ft_thesaurus* ft_thesaurus::get( zstring const &uri, zstring const &phrase,
+                                 zstring const &relationship,
+                                 ft_int at_least, ft_int at_most ) {
+  zstring const uri_no_slash(
+    ascii::ends_with( uri, '/' ) ? uri.substr( 0, uri.size() - 1 ) : uri
+  );
 
-ft_thesaurus const* ft_thesaurus::get( zstring const &uri,
-                                       iso639_1::type lang ) {
-  if ( thesaurus::type const th_type = thesaurus::get_type( uri ) ) {
-    typedef map<thesaurus::type,ft_thesaurus const*> th_impl_map_t;
-    static th_impl_map_t th_impl_map;
-    ft_thesaurus const *&th_impl = th_impl_map[ th_type ];
-    if ( !th_impl ) {
-      switch ( th_type ) {
-        case thesaurus::moby:
-          // TODO
-          break;
-        case thesaurus::wordnet:
-          th_impl = new wordnet( lang );
-          break;
-        case thesaurus::none:
-          break;
-      }
+  if ( thesaurus::type const th_type = thesaurus::get_type( uri_no_slash ) ) {
+    switch ( th_type ) {
+      case thesaurus::moby:
+        // TODO
+        break;
+      case thesaurus::wordnet:
+        return new wordnet( phrase, relationship, at_least, at_most );
+        break;
+      case thesaurus::none:
+        break;
     }
-    return th_impl;
   }
-  return 0;
+  return NULL;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

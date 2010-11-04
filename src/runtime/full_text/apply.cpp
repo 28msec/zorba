@@ -15,6 +15,7 @@
  */
 
 #include <limits>
+#include <memory>                       /* for auto_ptr */
 #include <set>
 #include <vector>
 
@@ -24,12 +25,14 @@
 #include "util/indent.h"
 #include "util/stl_util.h"
 #include "zorbaerrors/error_manager.h"
+#include "zorbautils/tokenizer.h"
 
 #include "apply.h"
 #include "ft_single_token_iterator.h"
 #include "ft_stop_words_set.h"
 #include "ft_thesaurus.h"
 #include "ft_token_matcher.h"
+#include "ft_token_seq_iterator.h"
 #include "ft_token_span.h"
 #include "ftcontains_visitor.h"
 
@@ -40,6 +43,7 @@
 #endif
 
 using namespace std;
+using namespace zorba::locale;
 
 namespace zorba {
 
@@ -922,11 +926,11 @@ apply_query_tokens_as_phrase( FTTokenIterator &query_tokens,
       FTQueryItemSeq synonyms;
       apply_thesaurus_option( th_option, query_phrase, *qt0, synonyms );
 
-      ftmatch_options options_no_thes( options );
-      options_no_thes.set_thesaurus_option( NULL );
+      ftmatch_options options_no_thesaurus( options );
+      options_no_thesaurus.set_thesaurus_option( NULL );
 
       apply_ftwords_any(
-        synonyms, query_pos, ignore_item, options_no_thes, matcher, result
+        synonyms, query_pos, ignore_item, options_no_thesaurus, matcher, result
       );
       return;
 #endif
@@ -1131,17 +1135,49 @@ apply_ftwords( FTQueryItemSeq &query_items, FTToken::int_t query_pos,
 
 ////////// ApplyThesaurusOption ///////////////////////////////////////////////
 
-static void lookup_thesaurus( zstring const &query_phrase, FTToken const &qt0,
-                              zstring const &uri, zstring const &relationship,
+namespace {
+
+class thesaurus_callback : public Tokenizer::Callback {
+public:
+  thesaurus_callback( int token_no, int sent_no, iso639_1::type lang,
+                      FTTokenSeqIterator::FTTokens &tokens ) :
+    tokens_( tokens ), token_no_( token_no ), sent_no_( sent_no ), lang_( lang )
+  {
+  }
+
+  void operator()( char const *utf8_s, int utf8_len, int, int, int, void* ) {
+    FTToken const t( utf8_s, utf8_len, token_no_, sent_no_, lang_ );
+    tokens_.push_back( t );
+  }
+
+private:
+  FTTokenSeqIterator::FTTokens &tokens_;
+  int const token_no_, sent_no_;
+  iso639_1::type const lang_;
+};
+
+} // anonymous namespace
+
+static void lookup_thesaurus( zstring const &uri, zstring const &query_phrase,
+                              FTToken const &qt0, zstring const &relationship,
                               ft_int at_least, ft_int at_most,
                               FTQueryItemSeq &result ) {
-  if ( ft_thesaurus const *const th = ft_thesaurus::get( uri, qt0.lang() ) )
-    th->lookup(
-      query_phrase, qt0.pos(), qt0.sent(), qt0.lang(), relationship,
-      at_least, at_most, result
-    );
-  else
+  auto_ptr<ft_thesaurus> thesaurus(
+    ft_thesaurus::get( uri, query_phrase, relationship, at_least, at_most )
+  );
+  if ( !thesaurus.get() )
     ZORBA_ERROR( FTST0018 );
+
+  FTTokenSeqIterator::FTTokens synonyms;
+  thesaurus_callback cb( qt0.pos(), qt0.sent(), qt0.lang(), synonyms );
+  auto_ptr<Tokenizer> tokenizer( Tokenizer::create() );
+
+  for ( zstring synonym; thesaurus->next( &synonym ); ) {
+    synonyms.clear();
+    tokenizer->tokenize( synonym.c_str(), synonym.size(), qt0.lang(), cb );
+    FTQueryItem const query_item( new FTTokenSeqIterator( synonyms ) );
+    result.push_back( query_item );
+  }
 }
 
 void ftcontains_visitor::
@@ -1160,7 +1196,7 @@ apply_thesaurus_option( ftthesaurus_option const *th_option,
         );
     } else {
       lookup_thesaurus(
-        query_phrase, qt0, "default", "", 0, numeric_limits<ft_int>::max(),
+        "default", query_phrase, qt0, "", 0, numeric_limits<ft_int>::max(),
         result
       );
     }
@@ -1175,7 +1211,7 @@ apply_thesaurus_option( ftthesaurus_option const *th_option,
     else
       at_least = 0, at_most = numeric_limits<ft_int>::max();
     lookup_thesaurus(
-      query_phrase, qt0, tid.get_uri(), tid.get_relationship(),
+      tid.get_uri(), query_phrase, qt0, tid.get_relationship(),
       at_least, at_most, result
     );
   }

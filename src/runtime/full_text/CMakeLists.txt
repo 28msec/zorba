@@ -37,7 +37,6 @@ SET(FULLTEXT_SRCS
     stop_words/stop_words_no.cpp
     stop_words/stop_words_pt.cpp
     stop_words/stop_words_sv.cpp
-    thesauri/th_token_collector.cpp
     thesauri/wordnet.cpp
     )
 
