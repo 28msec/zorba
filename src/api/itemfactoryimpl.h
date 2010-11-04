@@ -58,6 +58,9 @@ namespace zorba {
       createBase64Binary(std::istream& aStream);
       
       virtual Item 
+      createBase64Binary(const unsigned char* aBinData, size_t aLength);
+
+      virtual Item 
       createBoolean(bool aValue);
     
       virtual Item 

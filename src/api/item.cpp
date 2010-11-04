@@ -375,6 +375,16 @@ Item::getAttributes() const
   return NULL;
 }
 
+Item
+Item::getParent() const
+{
+  ITEM_TRY
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
+    return &*m_item->getParent();
+  ITEM_CATCH
+  return Item();
+}
+
 bool
 Item::getNodeName(Item& aNodeName) const
 {

@@ -61,6 +61,10 @@ public:
 
   static void encode(const zstring& aString, Base64&);
 
+  static void encode(const unsigned char *aSource, 
+                    unsigned int in_len,
+                    Base64& aResult);
+
   static void decode(const std::vector<char>&, std::vector<char>&);
 
   static zstring decode(std::istream& aStream);
@@ -74,6 +78,8 @@ public:
   }
 
   explicit Base64(const Base16& aBase16);
+
+  Base64(const unsigned char *bin_data, unsigned int len);
 
   Base64() {}
 

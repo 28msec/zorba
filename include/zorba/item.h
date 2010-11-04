@@ -280,6 +280,16 @@ public:
   Iterator_t
   getAttributes() const;
 
+  /** \brief Get parent of this (node) Item.
+   *
+   * Note that this function is only available for node Items.
+   *
+   * @return element or document parent node of this node.
+   * @throw ZorbaException if an error occured, e.g. the Item is not of type node.
+   */
+  Item
+  getParent() const;
+
   /** \brief Get the name of this (node) Item.
    *
    * Note that this function is only available for node Items.

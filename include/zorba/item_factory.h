@@ -107,6 +107,16 @@ namespace zorba {
       virtual Item
       createBase64Binary(std::istream& aStream) = 0;
 
+      /** \brief Creates a Base64Binary Item
+       *         see [http://www.w3.org/TR/xmlschema-2/#base64Binary]
+       *
+       * @param aBinData the data in binary form. The data is copied from aBinData.
+       * @param aLength the length of the data
+       * @return the Base64Binary Item.
+       */
+      virtual Item 
+      createBase64Binary(const unsigned char* aBinData, size_t aLength) = 0;
+
       /** \brief Creates a Boolean Item
        *         see [http://www.w3.org/TR/xmlschema-2/#bool]
        *
