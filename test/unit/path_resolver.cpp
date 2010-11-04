@@ -54,7 +54,7 @@ String path_resolver_tests[][3] = {
  */
 int path_resolver(int argc, char* argv[]) {
   for (int i = 0; i < NUM_PATH_RESOLVER_TESTS; i++) {
-    String testcase[3] = path_resolver_tests[i];
+    String *testcase/*[3]*/ = path_resolver_tests[i];
     String res = filesystem_path::resolve_path(testcase[0], testcase[1]);
     if (res != testcase[2]) {
       cout << "Path resolver test " << i << " failed: expected '"
