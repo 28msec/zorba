@@ -1163,7 +1163,9 @@ static void lookup_thesaurus( zstring const &uri, zstring const &query_phrase,
                               ft_int at_least, ft_int at_most,
                               FTQueryItemSeq &result ) {
   auto_ptr<ft_thesaurus> thesaurus(
-    ft_thesaurus::get( uri, query_phrase, relationship, at_least, at_most )
+    ft_thesaurus::get(
+      uri, qt0.lang(), query_phrase, relationship, at_least, at_most
+    )
   );
   if ( !thesaurus.get() )
     ZORBA_ERROR( FTST0018 );

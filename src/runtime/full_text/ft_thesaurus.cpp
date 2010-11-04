@@ -80,7 +80,9 @@ ft_thesaurus::~ft_thesaurus() {
   // do nothing
 }
 
-ft_thesaurus* ft_thesaurus::get( zstring const &uri, zstring const &phrase,
+// TODO: do something with "lang"
+ft_thesaurus* ft_thesaurus::get( zstring const &uri, iso639_1::type lang,
+                                 zstring const &phrase,
                                  zstring const &relationship,
                                  ft_int at_least, ft_int at_most ) {
   zstring const uri_no_slash(

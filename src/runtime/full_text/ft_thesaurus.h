@@ -33,8 +33,8 @@ class ft_thesaurus {
 public:
   virtual ~ft_thesaurus();
 
-  static ft_thesaurus* get( zstring const &uri, zstring const &phrase,
-                            zstring const &relationship,
+  static ft_thesaurus* get( zstring const &uri, locale::iso639_1::type lang,
+                            zstring const &phrase, zstring const &relationship,
                             ft_int at_least, ft_int at_most );
 
   virtual bool next( zstring *synonym ) = 0;
