@@ -180,6 +180,19 @@ bool begins_with( StringType const &s, PrefixStringType const &ps ) {
  *
  * @tparam StringType The string type.
  * @param s The string to check.
+ * @param c The suffix character.
+ * @return Returns \c true only if \a s ends with \a c.
+ */
+template<class StringType> inline
+bool ends_with( StringType const &s, char c ) {
+  return ascii::ends_with( s, c );
+}
+
+/**
+ * Checks whether a string ends with a given suffix.
+ *
+ * @tparam StringType The string type.
+ * @param s The string to check.
  * @param ss The suffix string.
  * @param ss_len The length of the suffix string.
  * @return Returns \c true only if \a s ends with \a ss.
