@@ -7,7 +7,7 @@
  :)
 
 module namespace google = 'http://www.zorba-xquery.com/modules/webservices/google/youtube';
-import module namespace http = "http://expath.org/ns/http-client";
+import module namespace http = "http://www.zorba-xquery.com/modules/http-client";
 
 (:~
  : This function queries the youtube search api and returns the top 10 results for a search-string
@@ -19,7 +19,7 @@ declare function google:youtube-search-xml($developer-key as xs:string, $search-
 {
   let $video := fn:encode-for-uri($search-term)
   let $href := concat("http://gdata.youtube.com/feeds/api/videos?q=",$video,"&amp;max-results=10","&amp;key=",$developer-key)
-  return http:read($href)
+  return http:get($href)
 };
 
 (:~
@@ -43,7 +43,7 @@ declare function google:youtube-search($developer-key as xs:string,$search-term 
 declare function google:youtube-category-search-xml($category as xs:string)
 {
   let $href := concat("http://gdata.youtube.com/feeds/api/videos/-/", fn:encode-for-uri($category))
-  return http:read($href)
+  return http:get($href)
 };
 
 (:~

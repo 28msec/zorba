@@ -7,7 +7,7 @@
  :)
 
 module namespace google = 'http://www.zorba-xquery.com/modules/webservices/google/books';
-import module namespace http = "http://expath.org/ns/http-client";
+import module namespace http = "http://www.zorba-xquery.com/modules/http-client";
 (:~
  : Use err module functions for throwing errors.
  :)
@@ -30,7 +30,7 @@ declare function google:book-search-xml($book as xs:string, $start as xs:integer
     if(empty($max))
     then ""
     else concat("&amp;max-results=",$max))
-  return http:read($href)[2]
+  return http:get($href)[2]
 };
 
 (:~

@@ -7,7 +7,7 @@
  :)
 
 module namespace yahoo = 'http://www.zorba-xquery.com/modules/webservices/yahoo/geo';
-import module namespace http = "http://expath.org/ns/http-client";
+import module namespace http = "http://www.zorba-xquery.com/modules/http-client";
 
 (:~
  : Use shared module functions.
@@ -28,7 +28,7 @@ import module namespace err="http://www.zorba-xquery.com/modules/webservices/yah
 declare function yahoo:woeid-xml($location as xs:string)
 {
   let $x := fn:replace($location, " ", "%20")
-  return http:read(concat("http://where.yahooapis.com/v1/places.q(&apos;",$x,"&apos;)?appid=[",$shared:appid,"]"))
+  return http:get(concat("http://where.yahooapis.com/v1/places.q(&apos;",$x,"&apos;)?appid=[",$shared:appid,"]"))
 };
 
 (:~
@@ -73,7 +73,7 @@ declare function yahoo:longitude-latitude($location as xs:string) as xs:string?
  :)
 declare function yahoo:location-xml($location as xs:string, $flags as xs:string?)
 {
-  let $response := http:read(concat("http://where.yahooapis.com/geocode?location=",fn:encode-for-uri($location),"&amp;flags=",$flags))
+  let $response := http:get(concat("http://where.yahooapis.com/geocode?location=",fn:encode-for-uri($location),"&amp;flags=",$flags))
   return
     if($response//*:Found/data(.) eq "0")
     then error($err:YS002, concat("Location not found: ", $location))
@@ -91,7 +91,7 @@ declare function yahoo:location-xml($params as element()+)
 {
   let $parameters := shared:normalization($params,'=',"&amp;","")
   let $href := concat("http://where.yahooapis.com/geocode?",$parameters)
-  return http:read($href)
+  return http:get($href)
 };
 
 (:~
@@ -104,7 +104,7 @@ declare function yahoo:location-xml($params as element()+)
  :)
 declare function yahoo:geocode-xml($woeid as xs:string, $flags as xs:string?)
 {
-  let $response := http:read(concat("http://where.yahooapis.com/geocode?woeid=",fn:encode-for-uri($woeid),"&amp;flags=",$flags))
+  let $response := http:get(concat("http://where.yahooapis.com/geocode?woeid=",fn:encode-for-uri($woeid),"&amp;flags=",$flags))
   return
     if($response//*:Found/data(.) eq "0")
     then error($err:YS002, concat("Location not found for woeid: ", $woeid))

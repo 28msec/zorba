@@ -9,5 +9,5 @@ let $req := <h:request method="GET"
                password="blub"
                override-media-type="text/html"
                status-only="true"/>
-let $res := http:read($req, ())
+let $res := http:send-request($req, ())
 return fn:not(exists($res[1]//*:body))

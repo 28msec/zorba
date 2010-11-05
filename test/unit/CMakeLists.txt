@@ -36,6 +36,9 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/collection2.xq ${CMAKE_CURRENT_BINARY
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/collection1.xqlib ${CMAKE_CURRENT_BINARY_DIR}/collection1.xqlib)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/collection2.xqlib ${CMAKE_CURRENT_BINARY_DIR}/collection2.xqlib)
 
+#belongs to test main_sequential
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/main_sequential.xq ${CMAKE_CURRENT_BINARY_DIR}/main_sequential.xq)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/main_sequential.xqlib ${CMAKE_CURRENT_BINARY_DIR}/main_sequential.xqlib)
 
 IF(WIN32)
   CREATE_TEST_SOURCELIST(UnitTests
@@ -56,6 +59,7 @@ IF(WIN32)
     collection.cpp
     string_instantiate.cpp
     string_test.cpp
+    main_sequential.cpp
   )
 ELSE(WIN32)
   CREATE_TEST_SOURCELIST(UnitTests
@@ -74,6 +78,7 @@ ELSE(WIN32)
     collection.cpp
     string_instantiate.cpp
     string_test.cpp
+    main_sequential.cpp
   # multithread_simple.cpp
   # multithread_stress_test.cpp
  )

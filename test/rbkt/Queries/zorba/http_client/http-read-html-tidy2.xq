@@ -7,5 +7,5 @@ let $h := <h:request method="GET"
                send-authorization="true"
                username="zorba"
                password="blub"/>
-let $r := http:read($h, ())
+let $r := http:send-request($h)
 return <r>{($r//text()[starts-with(., "Fran")])[1]}</r>

@@ -7,7 +7,7 @@ let $req := <h:request method="GET"
                send-authorization="true"
                username="zorba"
                password="blub"/>
-let $res := http:read($req, ())[1]
+let $res := http:send-request($req, ())[1]
 return (exists($res//h:header[@name = 'Content-Type' and @value = 'image/png']),
         exists($res//h:body[@media-type = 'image/png']),
         exists($res//h:header[@name = 'Content-Length' and @value = '5577']))

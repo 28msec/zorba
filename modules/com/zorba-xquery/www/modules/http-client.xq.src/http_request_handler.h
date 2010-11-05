@@ -51,6 +51,7 @@ namespace zorba { namespace http_client {
     std::string theAuthMethod;
     std::vector<std::string> theHeaderStrings;
     std::string theContentType;
+    bool theIsHeadRequest;
 
   public: //Constructions
     HttpRequestHandler(CURL* aCurl,
@@ -100,6 +101,7 @@ namespace zorba { namespace http_client {
     virtual void end();
 
     bool isStatusOnly() const { return theStatusOnly; }
+    virtual bool isHeadRequest() const { return theIsHeadRequest; }
 
   private: //Helper functions
     void cleanUpBody();

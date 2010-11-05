@@ -118,7 +118,7 @@ namespace zorba { namespace http_client {
           theCurrentContentType.find("+xml") == theCurrentContentType.size()-4) {
         lItem = createXmlItem(lStream);
       } else if (theCurrentContentType.find("text/html") == 0) {
-        lItem = createHtmlItem(lStream);
+        lItem = createTextItem(lStream);
       } else if (theCurrentContentType.find("text/") == 0) {
         lItem = createTextItem(lStream);
       } else {
@@ -286,88 +286,5 @@ namespace zorba { namespace http_client {
   {
     XmlDataManager* lDM = Zorba::getInstance(0)->getXmlDataManager();
     return lDM->parseDocument(aStream);
-  }
-
-  static Bool setTidyOption(TidyDoc doc, const char* option, const char* value)
-  {
-    Bool ok;
-    TidyOptionId toID = tidyOptGetIdForName(option);
-    if(toID < N_TIDY_OPTIONS)
-      ok = tidyOptSetValue(doc, toID, value);
-    else
-      return no;
-    return ok;
-  }
-
-  static void checkOption(Bool ok)
-  {
-    if (ok != yes) {
-      ZorbaException e = ExternalFunctionData::createZorbaException(API0036_TIDY_ERROR,
-                                                 "Could not set Tidy option",
-                                                 __FILE__,
-                                                 __LINE__);
-			throw e;
-		}
-  }
-
-  static void checkRC(int rc, const char* errMsg)
-  {
-    if (rc > 1) {
-      ZorbaException e = ExternalFunctionData::createZorbaException(API0036_TIDY_ERROR,
-                                                 errMsg,
-                                                 __FILE__,
-                                                 __LINE__);
-			throw e;
-		}
-  }
-
-  zorba::Item HttpResponseParser::createHtmlItem( std::istream& aStream )
-  {
-    TidyReader lReader(&aStream);
-    TidyInputSource lInputSource = lReader.getInputSource();
-    Bool ok;
-    TidyBuffer output;
-    tidyBufInit(&output);
-    TidyBuffer errbuf;
-    tidyBufInit(&errbuf);
-    TidyDoc tDoc = tidyCreate();
-    int rc = -1;
-    ok = setTidyOption(tDoc, "output-xml", "yes");
-    checkOption(ok);
-    ok = setTidyOption(tDoc, "doctype", "omit");
-    checkOption(ok);
-    ok = setTidyOption(tDoc, "quote-nbsp", "no");
-    checkOption(ok);
-    ok = setTidyOption(tDoc, "char-encoding", "utf8");
-    checkOption(ok);
-    ok = setTidyOption(tDoc, "newline", "LF");
-    checkOption(ok);
-    ok = setTidyOption(tDoc, "tidy-mark", "no");
-    checkOption(ok);
-    rc = tidySetErrorBuffer(tDoc, &errbuf);
-    checkRC(rc, "Could not set error buffer");
-    rc = tidyParseSource(tDoc, &lInputSource);
-    checkRC(rc, "Could not parse the source");
-    rc = tidyCleanAndRepair(tDoc);
-    checkRC(rc, "Could not clean and repair");
-    rc = tidyRunDiagnostics(tDoc);
-    if ( rc > 1 )
-      rc = ( tidyOptSetBool(tDoc, TidyForceOutput, yes) ? rc : -1 );
-    // Tidy does not support streaming for output, it only supports
-    // something they call a "sink". Therefore we buffer it in a string.
-    rc = tidySaveBuffer(tDoc, &output);
-    checkRC(rc, "Could not save the buffer");
-    std::string lResult((char*) output.bp, output.size);
-    std::istringstream lStream(lResult);
-
-    tidyBufFree(&output);
-    tidyBufFree(&errbuf);
-    tidyRelease(tDoc);
-    XmlDataManager* lDM = Zorba::getInstance(0)->getXmlDataManager();
-    try {
-      return lDM->parseDocument(lStream);
-    } catch (ZorbaException&) {
-      return Zorba::getInstance(0)->getItemFactory()->createString(lResult);
-    }
   }
 }}

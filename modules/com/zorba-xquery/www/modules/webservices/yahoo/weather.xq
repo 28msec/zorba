@@ -17,7 +17,7 @@ import module namespace geo="http://www.zorba-xquery.com/modules/webservices/yah
  :)
 import module namespace shared="http://www.zorba-xquery.com/modules/webservices/yahoo/shared";
 
-import module namespace http = "http://expath.org/ns/http-client";
+import module namespace http = "http://www.zorba-xquery.com/modules/http-client";
 
 (:~
  : This function will return the xml response weather statement of a query $location
@@ -29,7 +29,7 @@ declare function yahoo:weather-xml($location as xs:string)
 {
   let $woeid := geo:woeid($location)
   let $href := fn:concat("http://weather.yahooapis.com/forecastrss?w=",$woeid, "&amp;u=f")
-  return http:read($href)
+  return http:get($href)
 };
 
 (:~
@@ -42,7 +42,7 @@ declare function yahoo:weather-params-xml($params as element()+)
 {
   let $parameters := shared:normalization($params,'=',"&amp;","")
   let $href := concat("http://weather.yahooapis.com/forecastrss?",$parameters)
-  return http:read($href)
+  return http:get($href)
 };
 
 (:~

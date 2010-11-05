@@ -8,7 +8,7 @@ let $req := <h:request method="GET"
                send-authorization="true"
                username="zorba"
                password="blub"/>
-let $res := http:read($req, ())
+let $res := http:send-request($req, ())
 return $res[2]
 
 

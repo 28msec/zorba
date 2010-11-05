@@ -7,7 +7,7 @@
  :)
 
 module namespace yahoo = 'http://www.zorba-xquery.com/modules/webservices/yahoo/maps';
-import module namespace http = "http://expath.org/ns/http-client";
+import module namespace http = "http://www.zorba-xquery.com/modules/http-client";
 
 (:~
  : Use shared module functions.
@@ -28,7 +28,7 @@ import module namespace err="http://www.zorba-xquery.com/modules/webservices/yah
 declare function yahoo:map-xml($location as xs:string)
 {
   let $newLocation := fn:replace($location, " ", "+")
-  return http:read(concat("http://local.yahooapis.com/MapsService/V1/mapImage?appid=",$shared:appid,"&amp;location=", $newLocation))
+  return http:get(concat("http://local.yahooapis.com/MapsService/V1/mapImage?appid=",$shared:appid,"&amp;location=", $newLocation))
 };
 
 (:~
@@ -41,7 +41,7 @@ declare function yahoo:map-params-xml($params as element()+)
 {
   let $parameters := shared:normalization($params,'=',"&amp;","")
   let $href := concat("http://local.yahooapis.com/MapsService/V1/mapImage?appid=",$shared:appid,"&amp;",$parameters)
-  return http:read($href)
+  return http:get($href)
 };
 
 (:~

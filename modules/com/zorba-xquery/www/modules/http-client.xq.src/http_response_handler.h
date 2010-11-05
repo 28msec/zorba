@@ -82,6 +82,7 @@ namespace http_client {
     virtual void beginMultipart(String aContentType, String aBoundary);
     virtual void endMultipart();
     virtual void end();
+    virtual bool isHeadRequest() const { return false; }
   };
 }} //namespace zorba, namespace http_client
 

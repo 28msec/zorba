@@ -7,7 +7,7 @@
  :)
 
 module namespace google = 'http://www.zorba-xquery.com/modules/webservices/google/maps';
-import module namespace http = "http://expath.org/ns/http-client";
+import module namespace http = "http://www.zorba-xquery.com/modules/http-client";
 
 (:~
  : Use err module functions for throwing errors.
@@ -32,7 +32,7 @@ declare function google:directions-xml($from as xs:string, $to as xs:string, $av
          then concat("&amp;avoid=",$avoid)
          else ""
   let $href := concat("http://maps.google.com/maps/api/directions/xml?origin=",$from,"&amp;destination=",$to,$avoid-me,"&amp;sensor=false")
-  let $response := http:read($href)
+  let $response := http:get($href)
   let $status := $response//*:status
   return
     if($status ne "OK")

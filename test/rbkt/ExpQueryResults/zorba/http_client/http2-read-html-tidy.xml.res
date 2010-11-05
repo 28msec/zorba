@@ -1,16 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 
 <style type="text/css">
 /**/
-/**/
-&amp;lt;!--
-.portalLink { font-weight: bold; margin-top: 8px; }
-.portalInfo { margin-bottom: 8px; }
-.portalViski { margin-top: 0px; margin-bottom: 15px; }
---&amp;gt;
-/**/
+ /**/ &amp;lt;!-- .portalLink { font-weight: bold; margin-top: 8px; } .portalInfo { margin-bottom: 8px; } .portalViski { margin-top: 0px; margin-bottom: 15px; } --&amp;gt; /**/ 
 /**/
 </style>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -18,315 +11,20 @@
 <meta name="keywords" content="vis,forum,bbs,discussion,bulletin board"/>
 <meta name="description" content="Dies ist das Diskussionsforum des VIS - des Vereins der Informatik Studierenden an der ETH Zuerich."/>
 <!-- CSS Stylesheet -->
-
 <style type="text/css" id="vbulletin_css">
 /**/
-/**/
-/**
-* vBulletin 3.8.5 CSS
-* Style: 'VIS-Look'; Style ID: 2
-*/
-body
-{
-        background: #FFFFFF;
-        color: #000000;
-        font: 10pt Arial, Helvetica, sans-serif;
-        margin: 0px 0px 0px 0px;
-        padding: 0px;
-}
-a:link, body_alink
-{
-        color: #22229C;
-}
-a:visited, body_avisited
-{
-        color: #22229C;
-}
-a:hover, a:active, body_ahover
-{
-        color: #FF4400;
-}
-.page
-{
-        background: #FFFFFF;
-        color: #000000;
-}
-td, th, p, li
-{
-        font: 10pt Arial, Helvetica, sans-serif;
-}
-.tborder
-{
-        background: #AAAAAA;
-        color: #000000;
-}
-.tcat
-{
-        background: #5A85B0 url(images/vislook/cellpic.png) repeat-x top left;
-        color: #FFFFFF;
-        font: bold 10pt Arial, Helvetica, sans-serif;
-}
-.tcat a:link, .tcat_alink
-{
-        color: #ffffff;
-        text-decoration: none;
-}
-.tcat a:visited, .tcat_avisited
-{
-        color: #ffffff;
-        text-decoration: none;
-}
-.tcat a:hover, .tcat a:active, .tcat_ahover
-{
-        color: #FFFF66;
-        text-decoration: underline;
-}
-.thead
-{
-        background: #5A85B0 url(images/vislook/cellpic.png) repeat-x top left;
-        color: #FFFFFF;
-        font: bold 11px Arial, Helvetica, sans-serif;
-}
-.thead a:link, .thead_alink
-{
-        color: #FFFFFF;
-}
-.thead a:visited, .thead_avisited
-{
-        color: #FFFFFF;
-}
-.thead a:hover, .thead a:active, .thead_ahover
-{
-        color: #FFFF00;
-}
-.tfoot
-{
-        background: #3E678E;
-        color: #FFFFFF;
-}
-.tfoot a:link, .tfoot_alink
-{
-        color: #FFFFFF;
-}
-.tfoot a:visited, .tfoot_avisited
-{
-        color: #FFFFFF;
-}
-.tfoot a:hover, .tfoot a:active, .tfoot_ahover
-{
-        color: #FFFF66;
-}
-.alt1, .alt1Active
-{
-        background: #F7F7F7;
-        color: #000000;
-}
-.alt2, .alt2Active
-{
-        background: #E7E7E7;
-        color: #000000;
-}
-.inlinemod
-{
-        background: #FFFFCC;
-        color: #000000;
-}
-.wysiwyg
-{
-        font: 10pt Arial, Helvetica, sans-serif;
-}
-textarea, .bginput
-{
-        font: 10pt verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
-}
-.bginput option, .bginput optgroup
-{
-        font-size: 10pt;
-        font-family: verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
-}
-.button
-{
-        font: 11px Arial, Helvetica, sans-serif;
-}
-select
-{
-        font: 11px Arial, Helvetica, sans-serif;
-}
-option, optgroup
-{
-        font-size: 11px;
-        font-family: Arial, Helvetica, sans-serif;
-}
-.smallfont
-{
-        font: 11px Arial, Helvetica, sans-serif;
-}
-.time
-{
-        color: #555555;
-}
-.navbar
-{
-        font: 11px Arial, Helvetica, sans-serif;
-}
-.highlight
-{
-        color: #FF0000;
-        font-weight: bold;
-}
-.fjsel
-{
-        background: #3E5C92;
-        color: #E0E0F6;
-}
-.fjdpth0
-{
-        background: #F7F7F7;
-        color: #000000;
-}
-.panel
-{
-        background: #EEEEEE;
-        color: #000000;
-        padding: 10px;
-        border: 1px solid #9C9C9C;
-}
-.panelsurround
-{
-        background: #C6D1DB;
-        color: #000000;
-}
-legend
-{
-        color: #22229C;
-        font: 11px tahoma, verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
-}
-.vbmenu_control
-{
-        background: #5A85B0 url(images/vislook/cellpic.png) repeat-x top left;
-        color: #FFFFFF;
-        font: bold 11px Arial, Helvetica, sans-serif;
-        padding: 3px 6px 3px 6px;
-        white-space: nowrap;
-}
-.vbmenu_control a:link, .vbmenu_control_alink
-{
-        color: #FFFFFF;
-        text-decoration: none;
-}
-.vbmenu_control a:visited, .vbmenu_control_avisited
-{
-        color: #FFFFFF;
-        text-decoration: none;
-}
-.vbmenu_control a:hover, .vbmenu_control a:active, .vbmenu_control_ahover
-{
-        color: #FFFFFF;
-        text-decoration: underline;
-}
-.vbmenu_popup
-{
-        background: #FFFFFF;
-        color: #000000;
-        border: 1px solid #0B198C;
-}
-.vbmenu_option
-{
-        background: #BBC7CE;
-        color: #000000;
-        font: 11px Arial, Helvetica, sans-serif;
-        white-space: nowrap;
-        cursor: pointer;
-}
-.vbmenu_option a:link, .vbmenu_option_alink
-{
-        color: #22229C;
-        text-decoration: none;
-}
-.vbmenu_option a:visited, .vbmenu_option_avisited
-{
-        color: #22229C;
-        text-decoration: none;
-}
-.vbmenu_option a:hover, .vbmenu_option a:active, .vbmenu_option_ahover
-{
-        color: #FFFFFF;
-        text-decoration: none;
-}
-.vbmenu_hilite
-{
-        background: #8A949E;
-        color: #FFFFFF;
-        font: 11px Arial, Helvetica, sans-serif;
-        white-space: nowrap;
-        cursor: pointer;
-}
-.vbmenu_hilite a:link, .vbmenu_hilite_alink
-{
-        color: #FFFFFF;
-        text-decoration: none;
-}
-.vbmenu_hilite a:visited, .vbmenu_hilite_avisited
-{
-        color: #FFFFFF;
-        text-decoration: none;
-}
-.vbmenu_hilite a:hover, .vbmenu_hilite a:active, .vbmenu_hilite_ahover
-{
-        color: #FFFFFF;
-        text-decoration: none;
-}
-/* ***** styling for 'big' usernames on postbit etc. ***** */
-.bigusername { font-size: 14pt; }
-
-/* ***** small padding on 'thead' elements ***** */
-td.thead, th.thead, div.thead { padding: 4px; }
-
-/* ***** basic styles for multi-page nav elements */
-.pagenav a { text-decoration: none; }
-.pagenav td { padding: 2px 4px 2px 4px; }
-
-/* ***** de-emphasized text */
-.shade, a.shade:link, a.shade:visited { color: #777777; text-decoration: none; }
-a.shade:active, a.shade:hover { color: #FF4400; text-decoration: underline; }
-.tcat .shade, .thead .shade, .tfoot .shade { color: #DDDDDD; }
-
-/* ***** define margin and font-size for elements inside panels ***** */
-.fieldset { margin-bottom: 6px; }
-.fieldset, .fieldset td, .fieldset p, .fieldset li { font-size: 11px; }
-
-/* ***** don't change the following ***** */
-form { margin: 0px; }
-label { cursor: default; }
-.normal { font-weight: normal; }
-.inlineimg { vertical-align: middle; }
-.underline { text-decoration: underline; }
-
-div.spoiler-hidden { background-color:#FFFFFF; color:#FFFFFF; border:1px solid #555555; padding:2px; }
-div.spoiler-visible { background-color:#FFFFFF; color:#000000; border:1px solid #555555; padding:2px; }
-div.spoiler-hidden img { visibility: hidden; }
-div.spoiler-visible img { visibility: visible; }
-.inlineimg { vertical-align: bottom; }
-/**/
+ /**/ /** * vBulletin 3.8.5 CSS * Style: 'VIS-Look'; Style ID: 2 */ body { background: #FFFFFF; color: #000000; font: 10pt Arial, Helvetica, sans-serif; margin: 0px 0px 0px 0px; padding: 0px; } a:link, body_alink { color: #22229C; } a:visited, body_avisited { color: #22229C; } a:hover, a:active, body_ahover { color: #FF4400; } .page { background: #FFFFFF; color: #000000; } td, th, p, li { font: 10pt Arial, Helvetica, sans-serif; } .tborder { background: #AAAAAA; color: #000000; } .tcat { background: #5A85B0 url(images/vislook/cellpic.png) repeat-x top left; color: #FFFFFF; font: bold 10pt Arial, Helvetica, sans-serif; } .tcat a:link, .tcat_alink { color: #ffffff; text-decoration: none; } .tcat a:visited, .tcat_avisited { color: #ffffff; text-decoration: none; } .tcat a:hover, .tcat a:active, .tcat_ahover { color: #FFFF66; text-decoration: underline; } .thead { background: #5A85B0 url(images/vislook/cellpic.png) repeat-x top left; color: #FFFFFF; font: bold 11px Arial, Helvetica, sans-serif; } .thead a:link, .thead_alink { color: #FFFFFF; } .thead a:visited, .thead_avisited { color: #FFFFFF; } .thead a:hover, .thead a:active, .thead_ahover { color: #FFFF00; } .tfoot { background: #3E678E; color: #FFFFFF; } .tfoot a:link, .tfoot_alink { color: #FFFFFF; } .tfoot a:visited, .tfoot_avisited { color: #FFFFFF; } .tfoot a:hover, .tfoot a:active, .tfoot_ahover { color: #FFFF66; } .alt1, .alt1Active { background: #F7F7F7; color: #000000; } .alt2, .alt2Active { background: #E7E7E7; color: #000000; } .inlinemod { background: #FFFFCC; color: #000000; } .wysiwyg { font: 10pt Arial, Helvetica, sans-serif; } textarea, .bginput { font: 10pt verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif; } .bginput option, .bginput optgroup { font-size: 10pt; font-family: verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif; } .button { font: 11px Arial, Helvetica, sans-serif; } select { font: 11px Arial, Helvetica, sans-serif; } option, optgroup { font-size: 11px; font-family: Arial, Helvetica, sans-serif; } .smallfont { font: 11px Arial, Helvetica, sans-serif; } .time { color: #555555; } .navbar { font: 11px Arial, Helvetica, sans-serif; } .highlight { color: #FF0000; font-weight: bold; } .fjsel { background: #3E5C92; color: #E0E0F6; } .fjdpth0 { background: #F7F7F7; color: #000000; } .panel { background: #EEEEEE; color: #000000; padding: 10px; border: 1px solid #9C9C9C; } .panelsurround { background: #C6D1DB; color: #000000; } legend { color: #22229C; font: 11px tahoma, verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif; } .vbmenu_control { background: #5A85B0 url(images/vislook/cellpic.png) repeat-x top left; color: #FFFFFF; font: bold 11px Arial, Helvetica, sans-serif; padding: 3px 6px 3px 6px; white-space: nowrap; } .vbmenu_control a:link, .vbmenu_control_alink { color: #FFFFFF; text-decoration: none; } .vbmenu_control a:visited, .vbmenu_control_avisited { color: #FFFFFF; text-decoration: none; } .vbmenu_control a:hover, .vbmenu_control a:active, .vbmenu_control_ahover { color: #FFFFFF; text-decoration: underline; } .vbmenu_popup { background: #FFFFFF; color: #000000; border: 1px solid #0B198C; } .vbmenu_option { background: #BBC7CE; color: #000000; font: 11px Arial, Helvetica, sans-serif; white-space: nowrap; cursor: pointer; } .vbmenu_option a:link, .vbmenu_option_alink { color: #22229C; text-decoration: none; } .vbmenu_option a:visited, .vbmenu_option_avisited { color: #22229C; text-decoration: none; } .vbmenu_option a:hover, .vbmenu_option a:active, .vbmenu_option_ahover { color: #FFFFFF; text-decoration: none; } .vbmenu_hilite { background: #8A949E; color: #FFFFFF; font: 11px Arial, Helvetica, sans-serif; white-space: nowrap; cursor: pointer; } .vbmenu_hilite a:link, .vbmenu_hilite_alink { color: #FFFFFF; text-decoration: none; } .vbmenu_hilite a:visited, .vbmenu_hilite_avisited { color: #FFFFFF; text-decoration: none; } .vbmenu_hilite a:hover, .vbmenu_hilite a:active, .vbmenu_hilite_ahover { color: #FFFFFF; text-decoration: none; } /* ***** styling for 'big' usernames on postbit etc. ***** */ .bigusername { font-size: 14pt; } /* ***** small padding on 'thead' elements ***** */ td.thead, th.thead, div.thead { padding: 4px; } /* ***** basic styles for multi-page nav elements */ .pagenav a { text-decoration: none; } .pagenav td { padding: 2px 4px 2px 4px; } /* ***** de-emphasized text */ .shade, a.shade:link, a.shade:visited { color: #777777; text-decoration: none; } a.shade:active, a.shade:hover { color: #FF4400; text-decoration: underline; } .tcat .shade, .thead .shade, .tfoot .shade { color: #DDDDDD; } /* ***** define margin and font-size for elements inside panels ***** */ .fieldset { margin-bottom: 6px; } .fieldset, .fieldset td, .fieldset p, .fieldset li { font-size: 11px; } /* ***** don't change the following ***** */ form { margin: 0px; } label { cursor: default; } .normal { font-weight: normal; } .inlineimg { vertical-align: middle; } .underline { text-decoration: underline; } div.spoiler-hidden { background-color:#FFFFFF; color:#FFFFFF; border:1px solid #555555; padding:2px; } div.spoiler-visible { background-color:#FFFFFF; color:#000000; border:1px solid #555555; padding:2px; } div.spoiler-hidden img { visibility: hidden; } div.spoiler-visible img { visibility: visible; } .inlineimg { vertical-align: bottom; } /**/ 
 /**/
 </style>
 <link rel="stylesheet" type="text/css" href="clientscript/vbulletin_important.css?v=385"/>
 <!-- / CSS Stylesheet -->
-
 <script type="text/javascript" src="clientscript/yui/yahoo-dom-event/yahoo-dom-event.js?v=385">
 </script>
 <script type="text/javascript" src="clientscript/yui/connection/connection-min.js?v=385">
 </script>
 <script type="text/javascript">
 //
-//
-&amp;lt;!--
-var SESSIONURL = "s=51176e0685fc06c8ae3be0491b4e2b2a&amp;amp;";
-var SECURITYTOKEN = "guest";
-var IMGDIR_MISC = "images/misc";
-var vb_disable_ajax = parseInt("0", 10);
-// --&amp;gt;
-//
+ // &amp;lt;!-- var SESSIONURL = "s=51176e0685fc06c8ae3be0491b4e2b2a&amp;amp;"; var SECURITYTOKEN = "guest"; var IMGDIR_MISC = "images/misc"; var vb_disable_ajax = parseInt("0", 10); // --&amp;gt; // 
 //
 </script>
 <script type="text/javascript" src="clientscript/vbulletin_global.js?v=385">
@@ -334,67 +32,26 @@ var vb_disable_ajax = parseInt("0", 10);
 <link rel="alternate" type="application/rss+xml" title="Inforum RSS Feed" href="external.php?type=RSS2"/>
 <script type="text/javascript">
 //
-//
-&amp;lt;!--
-function ie_load_pngs() {
-        var tmp = navigator.appVersion.match(/MSIE (\d+\.\d+)/);
-        if (tmp != null &amp;amp;&amp;amp; parseFloat(tmp[1]) &amp;gt;= 5.5) {
-                for (var i = 0, n = document.images.length; i &amp;lt; n; i++) {
-                        var img = document.images[i];
-                        if (img.complete &amp;amp;&amp;amp; img.src.match(/data\/public\/(avatars|pictures|signatures)\//i) != null) {
-                                img.style.width = img.width + "px";
-                                img.style.height = img.height + "px";
-                                img.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + img.src + "', sizingMethod='scale')";
-                                img.src = "clear.gif";
-                        }
-                }
-        }
-}
-if (navigator.platform == "Win32" &amp;amp;&amp;amp; navigator.appName == "Microsoft Internet Explorer" &amp;amp;&amp;amp; window.attachEvent &amp;amp;&amp;amp; navigator.userAgent.indexOf("Opera") == -1) {
-        window.attachEvent("onload", ie_load_pngs);
-}
-//--&amp;gt;
-//
+ // &amp;lt;!-- function ie_load_pngs() { var tmp = navigator.appVersion.match(/MSIE (\d+\.\d+)/); if (tmp != null &amp;amp;&amp;amp; parseFloat(tmp[1]) &amp;gt;= 5.5) { for (var i = 0, n = document.images.length; i &amp;lt; n; i++) { var img = document.images[i]; if (img.complete &amp;amp;&amp;amp; img.src.match(/data\/public\/(avatars|pictures|signatures)\//i) != null) { img.style.width = img.width + "px"; img.style.height = img.height + "px"; img.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + img.src + "', sizingMethod='scale')"; img.src = "clear.gif"; } } } } if (navigator.platform == "Win32" &amp;amp;&amp;amp; navigator.appName == "Microsoft Internet Explorer" &amp;amp;&amp;amp; window.attachEvent &amp;amp;&amp;amp; navigator.userAgent.indexOf("Opera") == -1) { window.attachEvent("onload", ie_load_pngs); } //--&amp;gt; // 
 //
 </script>
 <title>Inforum - Portal</title>
 
 <script type="text/javascript">
 //
-//
-&amp;lt;!--
-function changeMensa() {
-        document.getElementById(prevMensa + "_title").style.display = "none";
-        document.getElementById(prevMensa + "_menu").style.display = "none";
-        prevMensa = document.forms.mensaForm.mensa.value;
-        document.getElementById(prevMensa + "_title").style.display = "inline";
-        document.getElementById(prevMensa + "_menu").style.display = "block";
-}
-
-function who_viski(article) {
-        return openWindow(
-                'http://wiki.vis.ethz.ch/' + article + '&amp;amp;action=history',
-                800, 600
-        );
-}
-
-//--&amp;gt;
-//
+ // &amp;lt;!-- function changeMensa() { document.getElementById(prevMensa + "_title").style.display = "none"; document.getElementById(prevMensa + "_menu").style.display = "none"; prevMensa = document.forms.mensaForm.mensa.value; document.getElementById(prevMensa + "_title").style.display = "inline"; document.getElementById(prevMensa + "_menu").style.display = "block"; } function who_viski(article) { return openWindow( 'http://wiki.vis.ethz.ch/' + article + '&amp;amp;action=history', 800, 600 ); } //--&amp;gt; // 
 //
 </script>
 </head>
 <body>
-<!-- logo -->
-<a name="top" id="top"/>
+<!-- logo --><a name="top" id="top"/>
 <table border="0" width="95%" cellpadding="0" cellspacing="0" align="center">
 <tr>
 <td align="left"><a href="portal.php?s=51176e0685fc06c8ae3be0491b4e2b2a"><img src="images/vislook/vishead.jpg" border="0" alt="Inforum"/></a></td>
-<td align="right" id="header_right_cell"> </td>
+<td align="right" id="header_right_cell">Â </td>
 </tr>
 </table>
-<!-- /logo -->
-<!-- content table -->
-<!-- open content container -->
+<!-- /logo --><!-- content table --><!-- open content container -->
 <div align="center">
 <div class="page" style="width:95%; text-align:left">
 <div style="padding:0px 0px 0px 0px" align="left"><br/>
@@ -419,15 +76,14 @@ bleiben?</acronym></label></td>
 <tr>
 <td class="smallfont"><label for="navbar_password">Kennwort</label></td>
 <td><input type="password" class="bginput" style="font-size: 11px" name="vb_login_password" id="navbar_password" size="10" tabindex="102"/></td>
-<td><input type="submit" class="button" value="Anmelden" tabindex="104" title="Geben Sie zur Anmeldung Ihren Benutzernamen und Ihr Kennwort in die dafür vorgesehenen Textfelder ein oder klicken Sie auf die 'Registrieren'-Schaltfläche, um ein neues Benutzerkonto anzulegen." accesskey="s"/></td>
+<td><input type="submit" class="button" value="Anmelden" tabindex="104" title="Geben Sie zur Anmeldung Ihren Benutzernamen und Ihr Kennwort in die dafÃ¼r vorgesehenen Textfelder ein oder klicken Sie auf die 'Registrieren'-SchaltflÃ¤che, um ein neues Benutzerkonto anzulegen." accesskey="s"/></td>
 </tr>
 </table>
 <input type="hidden" name="s" value="51176e0685fc06c8ae3be0491b4e2b2a"/> <input type="hidden" name="securitytoken" value="guest"/> <input type="hidden" name="do" value="login"/> <input type="hidden" name="vb_login_md5password"/> <input type="hidden" name="vb_login_md5password_utf"/></form>
 <!-- / login form --></td>
 </tr>
 </table>
-<!-- / breadcrumb, login, pm info -->
-<!-- nav buttons bar -->
+<!-- / breadcrumb, login, pm info --><!-- nav buttons bar -->
 <div class="tborder" style="padding:1px; border-top-width:0px">
 <table cellpadding="0" cellspacing="0" border="0" width="100%" align="center">
 <tr align="center">
@@ -438,20 +94,19 @@ bleiben?</acronym></label></td>
 <td class="vbmenu_control"><a href="group.php?s=51176e0685fc06c8ae3be0491b4e2b2a&amp;">Interessengemeinschaften</a></td>
 <td class="vbmenu_control"><a href="calendar.php?s=51176e0685fc06c8ae3be0491b4e2b2a">Kalender</a></td>
 <td class="vbmenu_control"><a href="search.php?s=51176e0685fc06c8ae3be0491b4e2b2a" accesskey="4">Suchen</a></td>
-<td class="vbmenu_control"><a href="search.php?s=51176e0685fc06c8ae3be0491b4e2b2a&amp;do=getdaily" accesskey="2">Heutige Beiträge</a></td>
+<td class="vbmenu_control"><a href="search.php?s=51176e0685fc06c8ae3be0491b4e2b2a&amp;do=getdaily" accesskey="2">Heutige BeitrÃ¤ge</a></td>
 <td class="vbmenu_control"><a href="forumdisplay.php?s=51176e0685fc06c8ae3be0491b4e2b2a&amp;do=markread&amp;markreadhash=guest" rel="nofollow">Alle Foren als gelesen markieren</a></td>
 </tr>
 </table>
 </div>
-<!-- / nav buttons bar -->
-<br/>
+<!-- / nav buttons bar --><br/>
 <table cellpadding="0" cellspacing="0" width="100%">
 <tr valign="top">
 <td width="18%"><!--=== ForenListBox ===-->
 <table id="portalForums" class="tborder" cellspacing="1" cellpadding="4" width="100%">
 <tbody>
 <tr>
-<td class="thead" align="center">Forenübersicht</td>
+<td class="thead" align="center">ForenÃ¼bersicht</td>
 </tr>
 </tbody>
 <tbody>
@@ -467,9 +122,7 @@ VIS</a></div>
 </tr>
 </tbody>
 </table>
-<!--=== EndForenListBox ===-->
-<img src="clear.gif" width="2" height="12" alt=""/> 
-<!--=== ImportantLinksBox ===-->
+<!--=== EndForenListBox ===--><img src="clear.gif" width="2" height="12" alt=""/> <!--=== ImportantLinksBox ===-->
 <table id="portalLinks" class="tborder" cellspacing="1" cellpadding="4" width="100%">
 <tbody>
 <tr>
@@ -484,17 +137,13 @@ VIS</a></div>
 <div class="portalLink"><a href="showthread.php?t=2052">IRC
 Channel</a></div>
 <div class="smallfont portalInfo">Forum IRC Channel</div>
-<div class="portalLink"><a href="https://www.visit.ethz.ch/index.php?v=Job">Jobbörse</a></div>
+<div class="portalLink"><a href="https://www.visit.ethz.ch/index.php?v=Job">JobbÃ¶rse</a></div>
 <div class="smallfont portalInfo">Dienstleistung vom VIS</div>
-<!-- <div class="portalLink"><a 
-href="http://ethz.studentenbuecher.ch/">B&uuml;cherb&ouml;rse</a></div>
-<div class="smallfont portalInfo">Dienstleistung ohne VSETH</div> --></td>
+<!-- <div class="portalLink"><a href="http://ethz.studentenbuecher.ch/">B&uuml;cherb&ouml;rse</a></div> <div class="smallfont portalInfo">Dienstleistung ohne VSETH</div> --></td>
 </tr>
 </tbody>
 </table>
-<!--=== EndImportantLinksBox ===-->
-<img src="clear.gif" width="2" height="12" alt=""/> 
-<!--=== WhoIsOnlineBox ===-->
+<!--=== EndImportantLinksBox ===--><img src="clear.gif" width="2" height="12" alt=""/> <!--=== WhoIsOnlineBox ===-->
 <table id="portalUsers" class="tborder" cellspacing="1" cellpadding="4" width="100%">
 <tbody>
 <tr>
@@ -504,9 +153,9 @@ href="http://ethz.studentenbuecher.ch/">B&uuml;cherb&ouml;rse</a></div>
 <tbody>
 <tr>
 <td class="alt2" align="center">
-<div class="smallfont portalInfo">17 Mitglieder, 61 Gäste</div>
+<div class="smallfont portalInfo">17 Mitglieder, 61 GÃ¤ste</div>
 <div class="smallfont portalInfo"><a href="member.php?u=2238">-KraBaT^</a>, <a href="member.php?u=1477">daniela</a>, <a href="member.php?u=1174">Exception</a>, <a href="member.php?u=57">ga_thrawn</a>, <a href="member.php?u=1528">Hermi</a>, <a href="member.php?u=2185">Manesh</a>, <a href="member.php?u=2091">Namelezz</a>, <a href="member.php?u=1459">Oxim
-Oresi</a>, <a href="member.php?u=907">Perro</a>, <a href="member.php?u=36">Raistlin</a>, <a href="member.php?u=940">sanakan</a>, <a href="member.php?u=253">sässiphus</a>, <a href="member.php?u=1251">thom</a>, <a href="member.php?u=3639">thomask</a>, <a href="member.php?u=1501">tiradur</a>, <a href="member.php?u=1601">zarzu</a></div>
+Oresi</a>, <a href="member.php?u=907">Perro</a>, <a href="member.php?u=36">Raistlin</a>, <a href="member.php?u=940">sanakan</a>, <a href="member.php?u=253">sÃ¤ssiphus</a>, <a href="member.php?u=1251">thom</a>, <a href="member.php?u=3639">thomask</a>, <a href="member.php?u=1501">tiradur</a>, <a href="member.php?u=1601">zarzu</a></div>
 <div class="smallfont"><a href="online.php">Wer ist wo?</a></div>
 </td>
 </tr>
@@ -540,7 +189,7 @@ Oresi</a>, <a href="member.php?u=907">Perro</a>, <a href="member.php?u=36">Raist
 </tr>
 <tr>
 <td class="alt1" align="center"><img src="images/statusicon/thread_hot.gif" alt=""/></td>
-<td class="alt2" align="center"><img src="images/oldicons/mad.gif" alt="Böse"/></td>
+<td class="alt2" align="center"><img src="images/oldicons/mad.gif" alt="BÃ¶se"/></td>
 <td class="alt1">
 <div><a href="showthread.php?t=6055">Der Pranger</a></div>
 <div class="smallfont">Forum: <a href="forumdisplay.php?f=98">Dauerbrenner</a></div>
@@ -582,7 +231,7 @@ Oresi</a>, <a href="member.php?u=907">Perro</a>, <a href="member.php?u=36">Raist
 </tr>
 <tr>
 <td class="alt1" align="center"><img src="images/statusicon/thread.gif" alt=""/></td>
-<td class="alt2" align="center"><img src="images/oldicons/mad.gif" alt="Böse"/></td>
+<td class="alt2" align="center"><img src="images/oldicons/mad.gif" alt="BÃ¶se"/></td>
 <td class="alt1">
 <div><a href="showthread.php?t=13807">APIs fuer
 Mobile-GUIs</a></div>
@@ -599,7 +248,7 @@ Mobile-GUIs</a></div>
 <td class="alt1" align="center"><img src="images/statusicon/thread.gif" alt=""/></td>
 <td class="alt2" align="center"><img src="clear.gif" width="15" height="15" alt=""/></td>
 <td class="alt1">
-<div><a href="showthread.php?t=13808">Alte Prüfungen Parallel
+<div><a href="showthread.php?t=13808">Alte PrÃ¼fungen Parallel
 Programming</a></div>
 <div class="smallfont">Forum: <a href="forumdisplay.php?f=116">Parallele Programmierung</a></div>
 </td>
@@ -687,11 +336,11 @@ Potenzreihen</a></div>
 <td class="alt2" align="center"><img src="clear.gif" width="15" height="15" alt=""/></td>
 <td class="alt1">
 <div><a href="vis/wiki/go.php?namespace=1&amp;title=L%C3%B6sungsvorschlag_Diskrete_Mathematik_Sommer_2009">
-Lösungsvorschlag Diskrete Mathematik Sommer 2009</a></div>
-<div class="smallfont">VISki: Diskussion über <a href="vis/wiki/go.php?namespace=0&amp;title=L%C3%B6sungsvorschlag_Diskrete_Mathematik_Sommer_2009">
+LÃ¶sungsvorschlag Diskrete Mathematik Sommer 2009</a></div>
+<div class="smallfont">VISki: Diskussion Ã¼ber <a href="vis/wiki/go.php?namespace=0&amp;title=L%C3%B6sungsvorschlag_Diskrete_Mathematik_Sommer_2009">
 Artikel</a></div>
 </td>
-<td class="alt2" align="center"><a href="http://wiki.vis.ethz.ch/Diskussion:L%C3%B6sungsvorschlag_Diskrete_Mathematik_Sommer_2009&amp;action=history" onclick="who_viski('Diskussion:Lösungsvorschlag_Diskrete_Mathematik_Sommer_2009'); return(false)">
+<td class="alt2" align="center"><a href="http://wiki.vis.ethz.ch/Diskussion:L%C3%B6sungsvorschlag_Diskrete_Mathematik_Sommer_2009&amp;action=history" onclick="who_viski('Diskussion:LÃ¶sungsvorschlag_Diskrete_Mathematik_Sommer_2009'); return(false)">
 1</a></td>
 <td class="alt1" align="right">
 <div class="smallfont" style="white-space:nowrap">Gestern
@@ -777,12 +426,12 @@ Co.</a></div>
 <td class="alt2" align="center"><img src="clear.gif" width="15" height="15" alt=""/></td>
 <td class="alt1">
 <div><a href="vis/wiki/go.php?namespace=1&amp;title=L%C3%B6sungsvorschlag_Einf%C3%BChrung_in_die_Programmierung_Herbst_2009">
-Lösungsvorschlag Einführung in die Programmierung Herbst
+LÃ¶sungsvorschlag EinfÃ¼hrung in die Programmierung Herbst
 2009</a></div>
-<div class="smallfont">VISki: Diskussion über <a href="vis/wiki/go.php?namespace=0&amp;title=L%C3%B6sungsvorschlag_Einf%C3%BChrung_in_die_Programmierung_Herbst_2009">
+<div class="smallfont">VISki: Diskussion Ã¼ber <a href="vis/wiki/go.php?namespace=0&amp;title=L%C3%B6sungsvorschlag_Einf%C3%BChrung_in_die_Programmierung_Herbst_2009">
 Artikel</a></div>
 </td>
-<td class="alt2" align="center"><a href="http://wiki.vis.ethz.ch/Diskussion:L%C3%B6sungsvorschlag_Einf%C3%BChrung_in_die_Programmierung_Herbst_2009&amp;action=history" onclick="who_viski('Diskussion:Lösungsvorschlag_Einführung_in_die_Programmierung_Herbst_2009'); return(false)">
+<td class="alt2" align="center"><a href="http://wiki.vis.ethz.ch/Diskussion:L%C3%B6sungsvorschlag_Einf%C3%BChrung_in_die_Programmierung_Herbst_2009&amp;action=history" onclick="who_viski('Diskussion:LÃ¶sungsvorschlag_EinfÃ¼hrung_in_die_Programmierung_Herbst_2009'); return(false)">
 1</a></td>
 <td class="alt1" align="right">
 <div class="smallfont" style="white-space:nowrap">23.06.2010
@@ -796,7 +445,7 @@ Artikel</a></div>
 <td class="alt2" align="center"><img src="images/oldicons/question.gif" alt="Frage"/></td>
 <td class="alt1">
 <div><a href="showthread.php?t=13797">Inheritance</a></div>
-<div class="smallfont">Forum: <a href="forumdisplay.php?f=59">Einführung in die Programmierung</a></div>
+<div class="smallfont">Forum: <a href="forumdisplay.php?f=59">EinfÃ¼hrung in die Programmierung</a></div>
 </td>
 <td class="alt2" align="center"><a href="misc.php?do=whoposted&amp;t=13797" onclick="who(13797);return(false)">18</a></td>
 <td class="alt1" align="right">
@@ -835,7 +484,7 @@ Artikel</a></div>
 </tr>
 <tr>
 <td class="alt1" align="center"><img src="images/statusicon/thread.gif" alt=""/></td>
-<td class="alt2" align="center"><img src="images/oldicons/mad.gif" alt="Böse"/></td>
+<td class="alt2" align="center"><img src="images/oldicons/mad.gif" alt="BÃ¶se"/></td>
 <td class="alt1">
 <div><a href="showthread.php?t=13786">Fahrpruefung und
 Fuehrerschein</a></div>
@@ -880,7 +529,7 @@ Values and Standard Deviations</a></div>
 </tr>
 <tr>
 <td class="alt1" align="center"><img src="images/statusicon/thread_hot.gif" alt=""/></td>
-<td class="alt2" align="center"><img src="images/oldicons/smile.gif" alt="Lächeln"/></td>
+<td class="alt2" align="center"><img src="images/oldicons/smile.gif" alt="LÃ¤cheln"/></td>
 <td class="alt1">
 <div><a href="showthread.php?t=9959">Das Lied des Tages</a></div>
 <div class="smallfont">Forum: <a href="forumdisplay.php?f=98">Dauerbrenner</a></div>
@@ -924,9 +573,7 @@ Jassturnier</a></div>
 </tr>
 </tbody>
 </table>
-<!--=== EndEventBox ===-->
-<img src="clear.gif" width="2" height="12" alt=""/> 
-<!--=== MensaBox ===-->
+<!--=== EndEventBox ===--><img src="clear.gif" width="2" height="12" alt=""/> <!--=== MensaBox ===-->
 <table id="portalMenus" class="tborder" cellspacing="1" cellpadding="4" width="100%">
 <tbody>
 <tr>
@@ -949,106 +596,104 @@ Jassturnier</a></div>
 </select></div>
 </form>
 <div id="cab_menu" style="display:none">
-<div class="smallfont portalInfo"><i>11:30–13:30</i></div>
+<div class="smallfont portalInfo"><i>11:30â€“13:30</i></div>
 <div class="smallfont"><b>k.A.</b></div>
-<div class="smallfont portalInfo">–</div>
+<div class="smallfont portalInfo">â€“</div>
 <div class="smallfont"><a href="http://www.gastro.ethz.ch/meals/index">Mensa Startseite</a></div>
 </div>
 <div id="cla_menu" style="display:none">
-<div class="smallfont portalInfo"><i>11:00–14:00</i></div>
-<div class="smallfont"><b>Tagesmenü</b></div>
+<div class="smallfont portalInfo"><i>11:00â€“14:00</i></div>
+<div class="smallfont"><b>TagesmenÃ¼</b></div>
 <div class="smallfont portalInfo">Geschnetzeltes Schweinefleisch
 "Laos Kua Style", Nudeln, Karotten</div>
 <div class="smallfont"><b>Snack</b></div>
-<div class="smallfont portalInfo">Gebratenes Gemüse "Kerala Style"
+<div class="smallfont portalInfo">Gebratenes GemÃ¼se "Kerala Style"
 mit 1 Eier Omelette</div>
 <div class="smallfont"><a href="http://www.gastro.ethz.ch/meals/index">Mensa Startseite</a></div>
 </div>
 <div id="etz_menu" style="display:none">
-<div class="smallfont portalInfo"><i>11:15–13:30</i></div>
-<div class="smallfont"><b>Menü 1</b></div>
+<div class="smallfont portalInfo"><i>11:15â€“13:30</i></div>
+<div class="smallfont"><b>MenÃ¼ 1</b></div>
 <div class="smallfont portalInfo">liveEasy, Pouletragout mit
 Rucolarahmsauce, Nudeln, Thymian-Zucchetti</div>
-<div class="smallfont"><b>Menü Spezial</b></div>
+<div class="smallfont"><b>MenÃ¼ Spezial</b></div>
 <div class="smallfont portalInfo">Schweinskotelett, Senfsauce,
-Gebackene Ofenkartoffeln, Ofentomate, Tagesgemüse</div>
-<div class="smallfont"><b>Vegi-Menü</b></div>
-<div class="smallfont portalInfo">Gemüsewürfeli an Pilzsauce, im
-Blätterteigpastetli, Salat</div>
+Gebackene Ofenkartoffeln, Ofentomate, TagesgemÃ¼se</div>
+<div class="smallfont"><b>Vegi-MenÃ¼</b></div>
+<div class="smallfont portalInfo">GemÃ¼sewÃ¼rfeli an Pilzsauce, im
+BlÃ¤tterteigpastetli, Salat</div>
 <div class="smallfont"><a href="http://www.gastro.ethz.ch/meals/index">Mensa Startseite</a></div>
 </div>
 <div id="hph_menu" style="display:none">
-<div class="smallfont portalInfo"><i>11:15–13:30</i></div>
-<div class="smallfont"><b>Menü 1</b></div>
+<div class="smallfont portalInfo"><i>11:15â€“13:30</i></div>
+<div class="smallfont"><b>MenÃ¼ 1</b></div>
 <div class="smallfont portalInfo">Gebratenes Snapperfilet mit
 Kokos-Mango-Sauce, Basmatireis, Kefen</div>
-<div class="smallfont"><b>Menü Spezial</b></div>
+<div class="smallfont"><b>MenÃ¼ Spezial</b></div>
 <div class="smallfont portalInfo">Lammspiess mit provenzalischer
-Sauce, Griessgnocchi, Zwei Gemüse nach Wahl</div>
-<div class="smallfont"><b>Vegi-Menü</b></div>
+Sauce, Griessgnocchi, Zwei GemÃ¼se nach Wahl</div>
+<div class="smallfont"><b>Vegi-MenÃ¼</b></div>
 <div class="smallfont portalInfo">Aelpler Makkronen mit Kartoffeln
-und Käse, Röstzwiebeln, Salat</div>
+und KÃ¤se, RÃ¶stzwiebeln, Salat</div>
 <div class="smallfont"><a href="http://www.gastro.ethz.ch/meals/index">Mensa Startseite</a></div>
 </div>
 <div id="ifw_menu" style="display:none">
-<div class="smallfont portalInfo"><i>11:15–13:30</i></div>
-<div class="smallfont"><b>Menü</b></div>
+<div class="smallfont portalInfo"><i>11:15â€“13:30</i></div>
+<div class="smallfont"><b>MenÃ¼</b></div>
 <div class="smallfont portalInfo">liveEasy, Pouletragout mit
 Rucolarahmsauce, Nudeln, Thymian-Zucchetti</div>
 <div class="smallfont"><a href="http://www.gastro.ethz.ch/meals/index">Mensa Startseite</a></div>
 </div>
 <div id="mm_menu" style="display:none">
-<div class="smallfont portalInfo"><i>11:15–13:30</i></div>
-<div class="smallfont"><b>Menü 1</b></div>
+<div class="smallfont portalInfo"><i>11:15â€“13:30</i></div>
+<div class="smallfont"><b>MenÃ¼ 1</b></div>
 <div class="smallfont portalInfo">liveEasy, Pouletragout mit
 Rucolarahmsauce, Nudeln, Thymian-Zucchetti</div>
-<div class="smallfont"><b>Menü Spezial</b></div>
+<div class="smallfont"><b>MenÃ¼ Spezial</b></div>
 <div class="smallfont portalInfo">Schweinskotelett, Senfsauce,
-Gebackene Ofenkartoffeln, Ofentomate, Tagesgemüse</div>
-<div class="smallfont"><b>Vegi-Menü</b></div>
-<div class="smallfont portalInfo">Gemüsewürfeli an Pilzsauce, im
-Blätterteigpastetli, Salat</div>
-<div class="smallfont"><b>Bio-Menü</b></div>
+Gebackene Ofenkartoffeln, Ofentomate, TagesgemÃ¼se</div>
+<div class="smallfont"><b>Vegi-MenÃ¼</b></div>
+<div class="smallfont portalInfo">GemÃ¼sewÃ¼rfeli an Pilzsauce, im
+BlÃ¤tterteigpastetli, Salat</div>
+<div class="smallfont"><b>Bio-MenÃ¼</b></div>
 <div class="smallfont portalInfo">Risottokroketten auf mediterranem
-Gemüse, Salat</div>
+GemÃ¼se, Salat</div>
 <div class="smallfont"><b>Tagessuppe</b></div>
 <div class="smallfont portalInfo">Kochbananen-Currysuppe
-"Elfenbeinküste"</div>
+"ElfenbeinkÃ¼ste"</div>
 <div class="smallfont"><a href="http://www.gastro.ethz.ch/meals/index">Mensa Startseite</a></div>
 </div>
 <div id="uni_menu" style="display:none">
-<div class="smallfont portalInfo"><i>11:00–14:30</i></div>
-<div class="smallfont"><b>Menü 1</b></div>
+<div class="smallfont portalInfo"><i>11:00â€“14:30</i></div>
+<div class="smallfont"><b>MenÃ¼ 1</b></div>
 <div class="smallfont portalInfo">Gebackene Fischknusperli mit
-Sauce Rouille, Schnittlauchkartoffeln und Kräutertomate</div>
-<div class="smallfont"><b>Vegi-Menü</b></div>
+Sauce Rouille, Schnittlauchkartoffeln und KrÃ¤utertomate</div>
+<div class="smallfont"><b>Vegi-MenÃ¼</b></div>
 <div class="smallfont portalInfo">VEGI PLUS, Bami goreng mit
-Gemüse, Pilzen, Tofu und Curryei, Salat oder Apfelmus</div>
+GemÃ¼se, Pilzen, Tofu und Curryei, Salat oder Apfelmus</div>
 <div class="smallfont"><a href="http://www.zfv.ch/d/business.asp?kat=4">Mensa Startseite</a></div>
 </div>
 </td>
 </tr>
 </tbody>
 </table>
-<!--=== MensaBoxEnd ===-->
-<img src="clear.gif" width="2" height="12" alt=""/> 
-<!--=== ViskiBox ===-->
+<!--=== MensaBoxEnd ===--><img src="clear.gif" width="2" height="12" alt=""/> <!--=== ViskiBox ===-->
 <table id="portalViski" class="tborder" cellspacing="1" cellpadding="4" width="100%">
 <tbody>
 <tr>
-<td class="thead" align="center">VISki ‒ Letzte Änderungen</td>
+<td class="thead" align="center">VISki â€’ Letzte Ã„nderungen</td>
 </tr>
 </tbody>
 <tbody>
 <tr>
 <td class="alt2" align="center">
 <div class="smallfont portalViski"><b><a href="vis/wiki/go.php?namespace=0&amp;title=L%C3%B6sungsvorschlag_Einf%C3%BChrung_in_die_Programmierung_Herbst_2009">
-Lösungsvorschlag Einführung in die Programmierung Herbst
+LÃ¶sungsvorschlag EinfÃ¼hrung in die Programmierung Herbst
 2009</a></b><br/>
 23.06.2010 <span class="time">11:02</span> von <a href="member.php?u=3502">Limi</a> <a href="vis/wiki/go.php?namespace=0&amp;title=L%C3%B6sungsvorschlag_Einf%C3%BChrung_in_die_Programmierung_Herbst_2009&amp;mode=diff">
 <img src="images/buttons/lastpost.gif" class="inlineimg" alt="Vergleiche mit letzter Version" border="0"/></a><br/></div>
 <div class="smallfont portalViski"><b><a href="vis/wiki/go.php?namespace=0&amp;title=L%C3%B6sungsvorschlag_Datenstrukturen_und_Algorithmen_Fr%C3%BChling_2010">
-Lösungsvorschlag Datenstrukturen und Algorithmen Frühling
+LÃ¶sungsvorschlag Datenstrukturen und Algorithmen FrÃ¼hling
 2010</a></b><br/>
 20.06.2010 <span class="time">17:17</span> von <a href="member.php?u=3055">Simon the Sorcerer</a> <a href="vis/wiki/go.php?namespace=0&amp;title=L%C3%B6sungsvorschlag_Datenstrukturen_und_Algorithmen_Fr%C3%BChling_2010&amp;mode=diff">
 <img src="images/buttons/lastpost.gif" class="inlineimg" alt="Vergleiche mit letzter Version" border="0"/></a><br/></div>
@@ -1057,20 +702,16 @@ Semester</a></b><br/>
 17.06.2010 <span class="time">16:08</span> von <a href="member.php?u=3502">Limi</a> <a href="vis/wiki/go.php?namespace=0&amp;title=Portal:1._Semester&amp;mode=diff">
 <img src="images/buttons/lastpost.gif" class="inlineimg" alt="Vergleiche mit letzter Version" border="0"/></a><br/></div>
 <div class="smallfont"><a href="http://wiki.vis.ethz.ch/Spezial:Recentchanges">Alle letzten
-Änderungen</a></div>
+Ã„nderungen</a></div>
 <div class="smallfont"><a href="http://wiki.vis.ethz.ch/">VISki
 Startseite</a></div>
 </td>
 </tr>
 </tbody>
 </table>
-<!--=== ViskiBoxEnd ===-->
-<script type="text/javascript">
+<!--=== ViskiBoxEnd ===--><script type="text/javascript">
 //
-//
-prevMensa = document.forms.mensaForm.mensa.value;
-changeMensa();
-//
+ // prevMensa = document.forms.mensaForm.mensa.value; changeMensa(); // 
 //
 </script></td>
 </tr>
@@ -1081,13 +722,12 @@ Es ist jetzt <span class="time">11:48</span> Uhr.</div>
 <br/></div>
 </div>
 </div>
-<!-- / close content container -->
-<!-- /content area table -->
+<!-- / close content container --><!-- /content area table -->
 <form action="index.php" method="get" style="clear:left">
 <table cellpadding="6" cellspacing="0" border="0" width="95%" class="page" align="center">
 <tr>
 <td class="tfoot"><select name="styleid" onchange="switch_id(this, 'style')">
-<optgroup label="Style auswählen">
+<optgroup label="Style auswÃ¤hlen">
 <option value="1" class="">-- Standard-Style</option>
 <option value="2" class="" selected="selected">----
 VIS-Look</option>
@@ -1106,23 +746,17 @@ oben</a></strong></div>
 <br/>
 <div align="center">
 <div class="smallfont" align="center">
-<!-- Do not remove this copyright notice -->
-Powered by vBulletin® Version 3.8.5 (Deutsch)<br/>
-Copyright ©2000 - 2010, Jelsoft Enterprises Ltd. 
+<!-- Do not remove this copyright notice -->Powered by vBulletinÂ®
+Version 3.8.5 (Deutsch)<br/>
+Copyright Â©2000 - 2010, Jelsoft Enterprises Ltd. 
 <!-- Do not remove this copyright notice --></div>
 <div class="smallfont" align="center">
-<!-- Do not remove cronimage or your scheduled tasks will cease to function -->
-<!-- Do not remove cronimage or your scheduled tasks will cease to function --></div>
+<!-- Do not remove cronimage or your scheduled tasks will cease to function --><!-- Do not remove cronimage or your scheduled tasks will cease to function --></div>
 </div>
 </form>
 <script type="text/javascript">
 //
-//
-&amp;lt;!--
-        // Main vBulletin Javascript Initialization
-        vBulletin_init();
-//--&amp;gt;
-//
+ // &amp;lt;!-- // Main vBulletin Javascript Initialization vBulletin_init(); //--&amp;gt; // 
 //
 </script>
 <p align="center" class="smallfont">89.750 msec</p>

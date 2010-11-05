@@ -51,6 +51,8 @@ namespace http_client {
     virtual void beginMultipart(String aContentType, String aBoundary) = 0;
     virtual void endMultipart() = 0;
     virtual void end() = 0;
+  public: // status
+    virtual bool isHeadRequest() const = 0;
   };
 }
 }

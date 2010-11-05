@@ -304,6 +304,9 @@ EXPECTED_FAILURE(test/rbkt/zorba/gflwor/gflwor_ex6 3081418)
 
 EXPECTED_FAILURE(test/rbkt/zorba/security/hmac-sha1 3095147)
 
+EXPECTED_FAILURE(test/rbkt/zorba/http_client/http-read-html-tidy2 3103700)
+EXPECTED_FAILURE(test/rbkt/zorba/aleXis/q11 3103700)
+
 IF (ImageMagick_Magick++_FOUND AND 
     ImageMagick_MagickCore_FOUND AND
     ImageMagick_MagickWand_FOUND)

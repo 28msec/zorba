@@ -7,7 +7,7 @@
  :)
 
 module namespace yahoo = 'http://www.zorba-xquery.com/modules/webservices/yahoo/search';
-import module namespace http = "http://expath.org/ns/http-client";
+import module namespace http = "http://www.zorba-xquery.com/modules/http-client";
 
 (:~
  : Use shared module functions.
@@ -27,7 +27,7 @@ import module namespace err="http://www.zorba-xquery.com/modules/webservices/yah
  :)
 declare function yahoo:spelling-xml($word as xs:string)
 {
-  http:read(concat("http://search.yahooapis.com/WebSearchService/V1/spellingSuggestion?appid=",$shared:appid,"&amp;query=", $word))
+  http:get(concat("http://search.yahooapis.com/WebSearchService/V1/spellingSuggestion?appid=",$shared:appid,"&amp;query=", $word))
 };
 
 (:~

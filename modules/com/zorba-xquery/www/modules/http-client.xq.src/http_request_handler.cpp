@@ -34,7 +34,8 @@ namespace zorba { namespace http_client {
       theContent(aContent),
       theSerStream(NULL),
       thePost(NULL),
-      theLast(NULL)
+      theLast(NULL),
+      theIsHeadRequest(false)
   {
     theHeaderLists.push_back(NULL);
   }
@@ -80,6 +81,8 @@ namespace zorba { namespace http_client {
     aMethod.uppercase();
     const char* lStr = aMethod.c_str();
     theMethodString = lStr;
+    if (theMethodString == "HEAD")
+      theIsHeadRequest = true;
     curl_easy_setopt(theCurl, CURLOPT_CUSTOMREQUEST, theMethodString.c_str());
     if (href != "") {
       curl_easy_setopt(theCurl, CURLOPT_URL, href.c_str());

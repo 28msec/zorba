@@ -8,6 +8,6 @@ let $req := <h:request method="GET"
                username="zorba"
                password="blub"
                override-media-type="text/html"/>
-let $res := http:read($req, ())
+let $res := http:send-request($req, ())
 return $res[2]
 
