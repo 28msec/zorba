@@ -29,8 +29,11 @@ namespace encoding {
 
 String Base64::encode(const String& aString) 
 {
+  // string cannot be streamed into stringstream because it can contain characters like \0
   stringstream lStream;
-  lStream << aString;
+  for ( size_t i = 0; i < aString.nr_of_chars(); ++i) {
+    lStream << aString.c_str()[i];
+  }
   return encode(lStream);
 }
 

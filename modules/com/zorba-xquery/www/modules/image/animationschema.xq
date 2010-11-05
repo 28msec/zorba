@@ -19,7 +19,7 @@ module namespace anim = 'http://www.zorba-xquery.com/modules/image/animationsche
  : @return A new image that is an animated GIF composed out of the passed images.
  : @error If any of the passed xs:base64Binary is not a valid image type.
  :)
-declare %private function anim:create-animated-gif($images as xs:base64Binary+, $delay as xs:unsignedInt, $iterations as xs:unsignedInt) as xs:base64Binary external; 
+declare function anim:create-animated-gif($images as xs:base64Binary+, $delay as xs:unsignedInt, $iterations as xs:unsignedInt) as xs:base64Binary external; 
 
 
 (:~
@@ -33,7 +33,7 @@ declare %private function anim:create-animated-gif($images as xs:base64Binary+, 
  : @return A new image that is an animated GIF composed out of the passed images.
  : @error If any of the passed xs:base64Binary is not a valid image type.
  :)
-declare %private function anim:create-morphed-gif($images as xs:base64Binary+, $delay as xs:unsignedInt, $iterations as xs:unsignedInt, $number-of-added-frames as xs:unsignedInt) as xs:base64Binary external; 
+declare function anim:create-morphed-gif($images as xs:base64Binary+, $delay as xs:unsignedInt, $iterations as xs:unsignedInt, $number-of-added-frames as xs:unsignedInt) as xs:base64Binary external; 
 
 
 
