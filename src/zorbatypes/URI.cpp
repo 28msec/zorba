@@ -135,7 +135,7 @@ void URI::decode_file_URI(const zstring& uri, zstring& filepath)
       ((uri.compare(9, 1, ":") == 0) || (uri.compare(9, 4, "%3A/") == 0))) 
   {
     zstring tmp(uri.c_str() + 8);
-    ascii::uri_decode(filepath);
+    ascii::uri_decode(tmp, &filepath);
   }
   else
 #endif
