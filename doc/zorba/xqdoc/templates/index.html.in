@@ -45,7 +45,7 @@
       <div id="searchresults">
       </div>
       <div class="section">
-         <span class="section">XQuery Library Documentation</span>
+         <span class="section">XQuery Modules Documentation</span>
        </div>
        <center><h2><a href="http://www.zorba-xquery.com/" title="Zorba XQuery Processor">Zorba XQuery Processor @ZORBA_MAJOR_NUMBER@.@ZORBA_MINOR_NUMBER@</a></h2></center>
       <p>

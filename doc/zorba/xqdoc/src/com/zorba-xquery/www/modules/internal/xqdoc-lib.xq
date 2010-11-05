@@ -29,9 +29,28 @@ declare variable $doc2html:stepBacks as xs:string := "../../../../../../../../..
 declare variable $doc2html:indexCollector := <modules/>;
 
 (:~
- : This variable contains all the schemas imported bythe modules
+ : This variable contains all the schemas imported by the modules
  :)
 declare variable $doc2html:schemasCollector := <schemas/>;
+
+(:~
+ : This variable contains all the functions from all imported modules
+ :)
+declare variable $doc2html:functionsCollector := <functions/>;
+
+(:~
+ : This variable contains the links appearing in the first part of the left menu
+ : of every XHTML page
+ :)
+declare variable $doc2html:externalLinks :=   
+  <links>
+    <a href="http://www.zorba-xquery.com/index.php/tutorials/" 
+       title="Tutorials" target="_blank">Tutorials</a>
+    <a href="http://experimental.zorba-xquery.org/" 
+       title="Get started with XQuery using Zorba"
+       target="_blank">Experiment XQuery with Zorba</a>   
+  </links>;
+
 
 declare function doc2html:getFileName($moduleURI as xs:string) as xs:string
 {
@@ -65,7 +84,7 @@ declare sequential function doc2html:clearFolder($folderPath as xs:string, $patt
  : and writes the resulting XML documents in $targetPath. The hierarchy is preserved. 
  :
  : @param $modulePath where to search for modules recursively.
- : @param $targetPath where to generate the XQDoc XML documents.
+ : @param $xqdocXmlPath where to generate the XQDoc XML documents.
  : @return The function returns a string sequence with a status messge for each
  :         module processed.
  :)
@@ -115,7 +134,7 @@ declare sequential function doc2html:removeInternalFunctionality($xqdoc as node(
 declare sequential function doc2html:generateXQDocXhtml(
   $indexPath      as xs:string, $xqdocXmlPath   as xs:string,
   $xqdocXhtmlPath as xs:string, $leftMenu as element(menu),
-  $modulesPath    as xs:string
+  $modulesPath    as xs:string, $functionIndexPageName as xs:string
 ) as xs:string* {
   let $indexHtmlDoc := file:read-xml($indexPath)
   return
@@ -133,7 +152,15 @@ declare sequential function doc2html:generateXQDocXhtml(
       let $moduleDoc := $xqdoc/xqdoc:module
       let $moduleName := $moduleDoc/xqdoc:name
       let $moduleUri := $moduleDoc/xqdoc:uri
-      let $menu := <ul id="documentation"><span class="leftMenu"><strong><a href="index.html">{string($leftMenu/@title)}</a></strong></span></ul> 
+      let $menu := <ul id="documentation">
+      <span><a href="index.html">{string($leftMenu/@title)}</a></span>
+      <li><a href="{$functionIndexPageName}">Function Index</a></li>
+      {
+        for $link in $doc2html:externalLinks//a
+        return
+          <li>{$link}</li>
+      }      
+      </ul>
       let $menu := doc2html:createModuleTable($leftMenu, $menu, $moduleUri)
       let $xhtml := xqdg:doc($xqdoc, $menu, $doc2html:indexCollector, $doc2html:schemasCollector)
       return block {
@@ -150,6 +177,60 @@ SUCCESS: ", $moduleUri, " (", $xhtmlFilePath, ")");
       concat("
 FAILED: ", $xhtmlFilePath)
     }
+};
+
+(:~
+ : This function generates the XQDoc index function page and writes it to disk 
+ :)
+declare sequential function doc2html:generateFunctionIndexXhtml(
+  $indexFunctionLeft,
+  $xqdocXhtmlPath as xs:string,
+  $indexPageName as xs:string
+) as xs:string* {
+let $content :=<html>
+  <head>
+    <title>Indexed Library Module Functions</title>
+    <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+    <meta content="PRIVATE" http-equiv="CACHE-CONTROL" />
+    <meta content="-1" http-equiv="Expires" />
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
+    <link rel="stylesheet" href="css/jquery.treeview.css" />
+    <link rel="stylesheet" href="css/screen.css" />
+    <script src="lib/jquery.js" type="text/javascript"> </script>
+    <script src="lib/jquery.cookie.js" type="text/javascript"> </script>
+    <script src="lib/jquery.treeview.js" type="text/javascript"> </script>
+    <script type="text/javascript">
+      $(function() &#123;
+        $("#documentation").treeview(&#123;
+            animated: "fast",
+            collapsed: true,
+            unique: false,
+            persist: "cookie"
+        &#125;);
+      &#125;)
+    </script>
+  </head>
+  <body>
+  <div id="main">
+    <div id="leftMenu">
+    {$indexFunctionLeft}
+    </div>
+    <div id="rightcontent">
+    <div class="section">
+            <span id="module_description">Indexed Library Module Functions</span>
+    </div>
+    {doc2html:formatFunctions()}
+    </div>
+  </div>
+  </body>
+</html>
+return
+  try {
+    file:write(fn:concat($xqdocXhtmlPath, file:path-separator(), $indexPageName), $content, <s method="xhtml" indent="yes" />/@*);
+  } catch * ($error_code) {
+      concat("
+FAILED: ", fn:concat($xqdocXhtmlPath, file:path-separator()))
+  }  
 };
 
 declare sequential function doc2html:gatherSchemas(
@@ -172,6 +253,7 @@ declare sequential function doc2html:gatherSchemas(
   FAILED: ", $xsdFilePath)
       }  
 };
+
 (:~
  : This function gathers the names of the XQDoc XHTML pages for all the XQDoc XML
  : documents found in $xqdocXmlPath. The hierarchy is preserved. 
@@ -190,7 +272,9 @@ declare sequential function doc2html:gatherModules(
       let $moduleUri := $moduleDoc/xqdoc:uri
       return if($moduleDoc/@type = "library") then 
         block {
-          doc2html:collectModule($moduleUri/text(), $xhtmlRelativeFilePath, $doc2html:indexCollector);
+          doc2html:collectModule($moduleDoc, $xhtmlRelativeFilePath, $doc2html:indexCollector);
+          
+          doc2html:collectFunctions($xqdoc, $xhtmlRelativeFilePath, $doc2html:functionsCollector);
           concat("
 SUCCESS: ", $moduleUri, " (", $xmlFilePath, ")");
         }
@@ -202,9 +286,95 @@ FAILED: ", $xmlFilePath)
     }  
 };
 
-declare sequential function doc2html:collectModule ($moduleUri as xs:string, $relativeFileName as xs:string, $collector) {
-  insert node <module uri="{$moduleUri}" file="{$relativeFileName}" /> as last into $collector;
+declare sequential function doc2html:collectModule ($moduleDoc, $relativeFileName as xs:string, $collector) {
+insert node <module uri="{$moduleDoc/xqdoc:uri/text()}" file="{$relativeFileName}" /> as last into $collector;
+};
+
+declare sequential function doc2html:collectFunctions ($xqdoc, $relativeFileName as xs:string, $collector) {
+block {
+    insert nodes 
+      for $function in $xqdoc/xqdoc:functions/xqdoc:function
+        let $name := $function/xqdoc:name/text(),
+        $signature := $function/xqdoc:signature/text(),
+        $arity := $function/@arity,
+        $isDeprecated := fn:exists($function/xqdoc:comment/xqdoc:deprecated)
+        order by $name, $arity
+     return
+      <function moduleUri="{$xqdoc/xqdoc:module/xqdoc:uri/text()}" 
+                file="{$relativeFileName}" 
+                name="{$function/xqdoc:name/text()}" 
+                signature="{$function/xqdoc:signature/text()}"
+                arity="{$arity}"
+                isDeprecated="{fn:exists($function/xqdoc:comment/xqdoc:deprecated)}"/>
+    as last into $collector;
+    
+   };
+   
+   $collector;    
 };    
+
+declare function doc2html:formatFunctions(){
+<div id="level1"><span class="index">
+{
+  let $alphabet := ("A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z")
+  let $letters := distinct-values(
+                  for $function in $doc2html:functionsCollector//function 
+                  return upper-case(substring($function/@name,1,1)))
+  return
+    (for $letter in $alphabet
+    order by $letter
+    return
+      if(exists(index-of($letters,$letter))) then
+        <span class="link"><a href="#{$letter}">{$letter}</a></span>
+      else
+        <span>{upper-case($letter)}</span>,
+     
+    for $letter in $letters
+      order by $letter
+      return
+      ( <h2><a name="{$letter}">{$letter}</a></h2>,
+        <hr />,     
+        <table class="funclist">
+          {
+          for $func in $doc2html:functionsCollector//function
+          let $moduleUri := fn:data($func/@moduleUri),
+              $file := fn:data($func/@file),
+              $functionName := fn:data($func/@name),
+              $signature := fn:data($func/@signature),              
+              $arity := fn:data($func/@arity),
+              $isDeprecated := fn:data($func/@isDeprecated),
+              $isExternal := ends-with($signature, "external"),    
+              $paramsAndReturn :=
+                let $searchCrit := concat(":", $functionName)
+                return
+                  if ($isExternal)then 
+                    normalize-space(substring-before(substring-after($signature, $searchCrit), "external"))
+                  else normalize-space(substring-after($signature, $searchCrit))
+            where starts-with($functionName, lower-case($letter))
+            order by $functionName, $arity 
+            return
+              <tr>
+                <td><div class="link">
+                  <tt>{                    
+                    if ($isDeprecated = "true") then
+                      <del><a href="{$file}#{$functionName}-{$arity}">{$functionName}</a></del>
+                    else
+                      <a href="{$file}#{$functionName}-{$arity}">{$functionName}</a>
+                  }{$paramsAndReturn}<br /><span class="padding">Module Namespace: {$moduleUri}</span></tt></div>
+                </td>
+              </tr>
+          }
+        </table>,
+        
+        <div id="allignright">
+          <a href="#module_description" title="Back to the Index">'Index'</a>
+        </div>     
+     )
+     )
+}
+</span>
+</div>
+};
 
 declare sequential function doc2html:getFilePath (
   $filename as xs:string, $modulesPath as xs:string
@@ -325,6 +495,28 @@ declare sequential function doc2html:createModuleTable($leftMenu as element(menu
   $root;
 };
 
+declare function doc2html:createLeftMenu($leftMenu as element(menu), $isFunctionIndex as xs:boolean, $functionIndexPageName as xs:string) {
+  <ul id="documentation">
+    
+    {
+    (
+      if($isFunctionIndex) then
+        (
+        <span><a href="index.html">{string($leftMenu/@title)}</a></span>,    
+        <li><span class="leftmenu_active">Function Index</span></li>)
+      else
+        (<span class="leftmenu_active">{string($leftMenu/@title)}</span>,
+        
+      <li><a href="{$functionIndexPageName}">Function Index</a></li>),      
+      
+      for $link in $doc2html:externalLinks//a
+      return
+        <li>{$link}</li>
+    )
+    }
+   </ul>
+};
+
 declare sequential function doc2html:createModuleHelper($table, $category, $moduleUri)
 {
   block {
@@ -378,7 +570,7 @@ declare sequential function doc2html:main(
   $indexHtmlPath as xs:string
 ) {
   let $leftMenu :=
-  <menu title="XQuery Modules">
+  <menu title="XQuery Modules Documentation">
   <category name="http://expath.org/ns" uri="http://expath.org/ns" />
   <category name="http://www.zorba-xquery.com/modules" uri="http://www.zorba-xquery.com/modules" >
     <category name="email" uri="http://www.zorba-xquery.com/modules/email" />
@@ -396,8 +588,8 @@ declare sequential function doc2html:main(
   </menu>
   let $menu :=
   <ul class="treeview" id="documentation">
-    <span class="leftMenu">
-      <strong>{string($leftMenu/@title)}</strong>
+    <span class="link">
+      {string($leftMenu/@title)}
     </span>
   </ul>
   return doc2html:main($menu, $leftMenu, $modulePath, $xqdocBuildPath, $indexHtmlPath)
@@ -411,6 +603,7 @@ declare sequential function doc2html:main(
   declare $xqdocXmlPath   as xs:string := fn:concat($xqdocBuildPath, file:path-separator(), "xml");
   declare $xqdocXhtmlPath as xs:string := fn:concat($xqdocBuildPath, file:path-separator(), "xhtml");
   declare $xqdocSchemasPath as xs:string := fn:concat($xqdocBuildPath, file:path-separator(), "schemas");
+  declare $functionIndexPageName as xs:string := "function_index.html";
   
   (: generate the XQDoc XML for all the modules :)
   if (file:mkdirs($xqdocXmlPath, false())) then
@@ -422,7 +615,7 @@ declare sequential function doc2html:main(
     error()
   ;
   
-   
+    
   (: generate the XQDoc XHTML for all the modules :) 
   let $absoluteXhtmlDir := concat($xqdocBuildPath, "/xhtml")
   return
@@ -430,21 +623,25 @@ declare sequential function doc2html:main(
   (
     doc2html:clearFolder($xqdocXhtmlPath,"xqdoc\.html$"),
     doc2html:gatherModules($xqdocXmlPath),
-    doc2html:gatherSchemas($xqdocSchemasPath),
-    doc2html:generateXQDocXhtml($indexHtmlPath, $xqdocXmlPath, $xqdocXhtmlPath, $leftMenu, $modulePath)
+    doc2html:gatherSchemas($xqdocSchemasPath),    
+    doc2html:generateXQDocXhtml($indexHtmlPath, $xqdocXmlPath, $xqdocXhtmlPath, $leftMenu, $modulePath, $functionIndexPageName),
+    (
+      (: generate the left menu for the Function Index XHTML :)
+      let $leftFunction := doc2html:createLeftMenu($leftMenu, fn:true(), $functionIndexPageName)
+      let $indexFunctionLeft := doc2html:createModuleTable($leftMenu, $leftFunction, $functionIndexPageName)
+      return 
+        doc2html:generateFunctionIndexXhtml($indexFunctionLeft,$xqdocXhtmlPath,$functionIndexPageName)
+    )
   )
   else
     error()
-  ;
+  ;  
   
-  let $left := <ul id="documentation">
-                <span class="leftMenu"><strong><a href="index.html">{string($leftMenu/@title)}</a></strong>
-                </span>
-               </ul>
-  let $index1 := doc2html:createModuleTable($leftMenu, $left, "index.html")
+  let $left := doc2html:createLeftMenu($leftMenu, fn:false(), $functionIndexPageName)
+  let $indexLeft := doc2html:createModuleTable($leftMenu, $left, "index.html")
   let $right := <ul />
-  let $index2 := doc2html:createModuleTable($leftMenu, $right, "index.html")
-  let $doc := doc2html:generateIndexHtml($indexHtmlPath, $index1, $index2)
+  let $indexRight := doc2html:createModuleTable($leftMenu, $right, "index.html")
+  let $doc := doc2html:generateIndexHtml($indexHtmlPath, $indexLeft, $indexRight)
   return doc2html:configure-xhtml($doc/*:html, 0, $modulePath)
   ;
  

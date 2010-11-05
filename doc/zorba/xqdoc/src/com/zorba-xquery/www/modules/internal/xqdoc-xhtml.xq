@@ -12,7 +12,6 @@ declare function xhtml:doc($xqdoc, $menu, $indexCollector, $schemasCollector)
     <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
     <meta content="PRIVATE" http-equiv="CACHE-CONTROL" />
     <meta content="-1" http-equiv="Expires" />
-    <title>Zorba - XQuery API XQDoc Documentation</title>
     <link rel="stylesheet" type="text/css" href="css/main.css" />
     <link rel="stylesheet" href="css/jquery.treeview.css" />
     <link rel="stylesheet" href="css/screen.css" />
@@ -120,9 +119,9 @@ declare function xhtml:annotations-see($comment) {
     return
       if(fn:count($annotation/node()) eq 1 
          and fn:starts-with(fn:lower-case($annotation/node()), "http://")) then
-        <li class="none">{<a href="{$annotation/node()}" target="_blank">{$annotation/node()}</a>}</li>
+        <li>{<a href="{$annotation/node()}" target="_blank">{$annotation/node()}</a>}</li>
     else
-        <li class="none">{$annotation/node()}</li>}</ul>
+        <li>{$annotation/node()}</li>}</ul>
     )
 (: **********************************************************     :)
 };
@@ -135,7 +134,7 @@ declare function xhtml:annotations-example($comment) {
     (<div class="subsubsection">Examples:</div>,<ul>
     {for $annotation in $example
     return
-        <li class="none">{$annotation/node()}</li>}</ul>
+        <li>{$annotation/node()}</li>}</ul>
     )
 };
 
@@ -189,7 +188,7 @@ declare function xhtml:description($comment) {
 declare function xhtml:module-dependencies($xqdoc, $indexCollector, $schemasCollector) {
   if (fn:count($xqdoc/xqdoc:imports/xqdoc:import) > 0 or
       fn:count($xqdoc/xqdoc:module/xqdoc:comment/xqdoc:*[(local-name(.) = ("library"))]) > 0) then
-    (<div class="section"><span class="section" id="module_dependencies">Module Dependencies</span></div>,
+    (<div class="section"><span id="module_dependencies">Module Dependencies</span></div>,
     xhtml:imports($xqdoc, $indexCollector, $schemasCollector))
   else
     ()
@@ -234,14 +233,14 @@ declare function xhtml:imports($xqdoc, $indexCollector, $schemasCollector) {
 };
 
 declare function xhtml:module-description($module) {
-    (<div class="section"><span class="section" id="module_description">Module Description</span></div>,
+    (<div class="section"><span id="module_description">Module Description</span></div>,
      xhtml:description($module/xqdoc:comment),
      xhtml:annotationsModule($module/xqdoc:comment))
 };
 
 declare function xhtml:module-external-specifications($module) {
   if(fn:count($module/xqdoc:comment/xqdoc:*[(local-name(.) = ("see"))]) >0) then
-    (<div class="section"><span class="section" id="external_specifications">External Specifications</span></div>,
+    (<div class="section"><span id="external_specifications">External Specifications</span></div>,
     <p>For more details please check out these resources:<ul>
     {
       let $annotations := $module/xqdoc:comment/xqdoc:*[(local-name(.) = ("see"))]
@@ -262,7 +261,7 @@ declare function xhtml:module-external-specifications($module) {
 declare function xhtml:module-variables($variables)
 {
     if($variables/xqdoc:variable) then
-        (<div class="section"><span class="section" id="variables">Variables</span></div>,
+        (<div class="section"><span id="variables">Variables</span></div>,
         for $variable in $variables/xqdoc:variable
         let $varName := $variable/xqdoc:uri/text()
         order by $varName
@@ -276,7 +275,7 @@ declare function xhtml:module-variables($variables)
 
 declare function xhtml:module-function-summary($functions)
 {
-    <div class="section"><span class="section" id="function_summary">Function Summary</span></div>,
+    <div class="section"><span id="function_summary">Function Summary</span></div>,
     if(count($functions/xqdoc:function)) then
         <table class="funclist">{
             for $function in $functions/xqdoc:function
@@ -327,7 +326,7 @@ return
 
 declare function xhtml:module-functions($functions) {
     if(count($functions/xqdoc:function)) then (
-        <div class="section"><span class="section" id="functions">Functions</span></div>,
+        <div class="section"><span id="functions">Functions</span></div>,
         for $function in $functions/xqdoc:function
         let $name := $function/xqdoc:name/text(),
             $signature := $function/xqdoc:signature/text(),
