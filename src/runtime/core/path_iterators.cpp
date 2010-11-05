@@ -526,15 +526,13 @@ bool AncestorAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
     }
 
     state->theCurrentPos = 0;
+    state->theAncestors.clear();
 
     ancestor = state->theContextNode->getParent();
-
     while (ancestor != NULL)
     {
       if (nameOrKindTest(ancestor, planState))
-      {
         state->theAncestors.push_back(ancestor);
-      }
       ancestor = ancestor->getParent();
     }
 
@@ -987,7 +985,7 @@ bool ChildAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) co
     {
       if (!consumeNext(state->theContextNode, theChild.getp(), planState))
         return false;
-
+      
       if (!state->theContextNode->isNode())
       {
         ZORBA_ERROR_LOC_DESC(XPTY0020, loc,

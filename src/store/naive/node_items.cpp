@@ -2908,8 +2908,8 @@ void TextNode::appendStringValue(zstring& buf) const
 ********************************************************************************/
 zstring TextNode::show() const
 {
-  return "<text nid=\"" + theOrdPath.show() + "\">",
-                           getStringValue() + "</text>";
+  return "<text nid=\"" + theOrdPath.show() + "\">"
+    + getStringValue() + "</text>";
 }
 
 
