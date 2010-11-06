@@ -4,7 +4,6 @@
  : @author Daniel Thomas
  :)
 import module namespace basic = 'http://www.zorba-xquery.com/modules/image/basic';
-import module namespace basicschema = 'http://www.zorba-xquery.com/modules/image/basicschema';
 import module namespace file = 'http://www.zorba-xquery.com/modules/file';
 
 declare variable $local:image-dir := fn:concat(file:dir-of-base-uri(<a/>), "images/");
@@ -63,7 +62,7 @@ declare function local:test-create() as xs:boolean {
   let $ref-jpg := file:read(concat($local:image-dir, "blank.jpg"))
   let $ref-tiff := file:read(concat($local:image-dir, "blank.tiff"))
   let $ref-png := file:read(concat($local:image-dir, "blank.png"))
-  return (basicschema:equals($blank-gif, $ref-gif) and basicschema:equals($blank-png, $ref-png) and basicschema:equals($blank-jpg, $ref-jpg) and basicschema:equals($blank-tiff, $ref-tiff))
+  return (basic:equals($blank-gif, $ref-gif) and basic:equals($blank-png, $ref-png) and basic:equals($blank-jpg, $ref-jpg) and basic:equals($blank-tiff, $ref-tiff))
 };
 
 (:~
@@ -82,7 +81,7 @@ declare function local:test-convert() as xs:boolean {
     let $png-to-jpeg := basic:convert($local:png, "JPEG")
     let $png-to-tiff := basic:convert($local:png, "TIFF")
     let $png-to-gif := basic:convert($local:png, "GIF")
-    return (basicschema:equals($png-to-jpeg, $local:jpg) and basicschema:equals($png-to-tiff, $local:tiff) and basicschema:equals($png-to-gif, $local:gif))
+    return (basic:equals($png-to-jpeg, $local:jpg) and basic:equals($png-to-tiff, $local:tiff) and basic:equals($png-to-gif, $local:gif))
 };
 
 (:~
@@ -92,14 +91,14 @@ declare function local:test-compress() as xs:boolean {
     let $uncompressed := file:read(concat($local:image-dir, "uncompressed.jpg"))
     let $compressed := basic:compress($uncompressed, xs:unsignedInt(20))
     let $compressed-ref := file:read(concat($local:image-dir, "compressed.jpg")) 
-    return basicschema:equals($compressed, $compressed-ref)
+    return basic:equals($compressed, $compressed-ref)
 };
 
 (:~
- : @return true if the basicschema:equals function works.
+ : @return true if the basic:equals function works.
  :)
 declare function local:test-equals() as xs:boolean {
-  (basicschema:equals($local:gif, $local:gif) and (not (basicschema:equals($local:gif, file:read(concat($local:image-dir, "manipulation/gamma1Bird.gif"))))))
+  (basic:equals($local:gif, $local:gif) and (not (basic:equals($local:gif, file:read(concat($local:image-dir, "manipulation/gamma1Bird.gif"))))))
 };
 
 
@@ -143,7 +142,7 @@ declare sequential function local:main() as xs:string* {
   let $d := local:test-type()
   return
     if (fn:not($d)) then
-        exit returning local:error("Getting types of images failed")  
+        exit returning local:error("Getting format of images failed")  
     else ();
   (: ==================================================================== :)
   

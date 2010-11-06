@@ -71,7 +71,7 @@ ImapFunction::getHostUserPassword(const StatelessExternalFunction::Arguments_t& 
   aUserName = lChild.getStringValue().c_str();
   lChildren->next(lChild);
   aPassword = lChild.getStringValue().c_str();
-  
+  lChildren->close();  
 }
 
 String

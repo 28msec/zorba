@@ -26,6 +26,7 @@
 #include "c-client.h"
 #include <string>
 #include <vector>
+#include <list>
 
 namespace zorba
 {
@@ -222,27 +223,37 @@ namespace zorba
         theFlags.assign(6, 0);
       };
       ~ImapClient() {
-      // make sure that theMailstream is not open! 
-        if (theMailstream) {
-          mail_close(theMailstream);
-          theMailstream = NIL;
+        // make sure that theMailstream is not open! 
+        std::list<Host>::iterator allHostsIterator;
+        for (allHostsIterator = theHosts.begin(); allHostsIterator != theHosts.end(); allHostsIterator++) {
+          MAILSTREAM * lToClose = (*allHostsIterator).lMailStream;
+          if (lToClose) {
+            mail_close(lToClose);
+          }  
         }
-      
+ 
       };
+
+      struct Host {
+        MAILSTREAM * lMailStream;
+        std::string lHostNameWithMailbox;
+        std::string lUsername;
+        std::string lPassword;
+        bool lIsFullOpen;
+
+      };  
       
       ImapClient(ImapClient const&) {};
-      std::string theUserName;
-      std::string thePassword;
-     
+      std::list<Host> theHosts;
       // the current mailstream, in future versions this could be a mailstream pool ... 
-      MAILSTREAM* theMailstream;
       
       // the Host of the current mailstream
-      std::string theHost;
       
       // string containing error message
       std::string theErrorMessage;
-  
+      std::string theUserName;
+      std::string thePassword;
+
       // vars for status  
       unsigned long theMessages;
       unsigned long theRecent;

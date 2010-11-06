@@ -3,7 +3,7 @@
  : 
  : @author Daniel Thomas
  :)
-import module namespace basic = 'http://www.zorba-xquery.com/modules/image/basicschema';
+import module namespace basic = 'http://www.zorba-xquery.com/modules/image/basic';
 import module namespace file = 'http://www.zorba-xquery.com/modules/file';
 import module namespace paint = 'http://www.zorba-xquery.com/modules/image/paint';
 import schema namespace image = 'http://www.zorba-xquery.com/modules/image/image';

@@ -4,7 +4,7 @@
  : @author Daniel Thomas
  :)
 import module namespace file = 'http://www.zorba-xquery.com/modules/file';
-import module namespace basic = 'http://www.zorba-xquery.com/modules/image/basicschema';
+import module namespace basic = 'http://www.zorba-xquery.com/modules/image/basic';
 import module namespace ani = 'http://www.zorba-xquery.com/modules/image/animation';
 import schema namespace image = 'http://www.zorba-xquery.com/modules/image/image';
 

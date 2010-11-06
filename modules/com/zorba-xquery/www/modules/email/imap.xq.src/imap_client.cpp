@@ -52,28 +52,50 @@ namespace zorba { namespace emailmodule {
                             const std::string& aPassword,                                
                             const std::string& aMailbox,
                             const bool aFullOpen) {
+      std::string lHostAndMailbox = "{" + aHost + "}"; 
+
+      // check if there is a mailstream that is already open with the same parameters, if true then take it (this is the ideal case)
       
-      std::string lHostAndMailbox = "{" + aHost + "}" + aMailbox;
-      // check if theMailstream is open already and exaclty the same as the old one
-      if ((theMailstream) && 
-         (theUserName.compare(aUsername) == 0) && 
-         (thePassword.compare(aPassword) == 0) && 
-         (lHostAndMailbox.compare(theMailstream->original_mailbox) == 0) && 
-         ((aFullOpen ? NIL : T) == theMailstream->halfopen))  {
-         // do nothing, theMailstream will be returned at the end of the function
-      } else if ((theMailstream) && (theHost.compare(aHost) == 0)) {
-        // use old stream to same host, but open new
-        setUserName(aUsername);
-        setPassword(aPassword);
-        mail_open(theMailstream, const_cast<char*>(lHostAndMailbox.c_str()),  (aFullOpen ? NIL : OP_HALFOPEN));
-      } else {
-        // make a new mailstream according to the passed values
-        setUserName(aUsername);
-        setPassword(aPassword);
-        theHost = aHost;
-        theMailstream = mail_open(NIL, const_cast<char*>(lHostAndMailbox.c_str()), (aFullOpen ? NIL : OP_HALFOPEN));
+      int lNumberOfKnownHosts = theHosts.size();
+      std::list<Host>::iterator allHostsIterator;
+      for (allHostsIterator = theHosts.begin(); allHostsIterator != theHosts.end(); allHostsIterator++) {  
+        if (((*allHostsIterator).lMailStream) &&
+            ((*allHostsIterator).lUsername.compare(aUsername) == 0) &&
+            ((*allHostsIterator).lPassword.compare(aPassword) == 0) &&
+            ((*allHostsIterator).lHostNameWithMailbox.compare(lHostAndMailbox) == 0)) {
+          
+            // if we already have mailstream but it is not full open yet, then open it again, this time full
+          if ((*allHostsIterator).lIsFullOpen == false && aFullOpen == true) {
+            setUserName((*allHostsIterator).lUsername);
+            setPassword((*allHostsIterator).lPassword);
+            mail_open((*allHostsIterator).lMailStream, const_cast<char*>(lHostAndMailbox.c_str()), NIL);
+            (*allHostsIterator).lIsFullOpen = true;
+         
+          }
+          return (*allHostsIterator).lMailStream;
+        }
       }
-      return theMailstream;
+      // if we found an existing mailstream, then everything is ok, if not we have to make a new one
+      Host lNewHost;
+      lNewHost.lUsername = aUsername;
+      lNewHost.lPassword = aPassword;
+      lNewHost.lHostNameWithMailbox = lHostAndMailbox;
+      lNewHost.lIsFullOpen = aFullOpen;
+      // if we already have more then 7 open mailstreams, close the last one to make place 
+      if (lNumberOfKnownHosts == 7) { 
+        Host lToDelete = theHosts.back();
+        theHosts.pop_back();
+        mail_close(lToDelete.lMailStream);
+      } 
+      
+      setUserName(aUsername);
+      setPassword(aPassword);
+      
+      lNewHost.lMailStream = mail_open(NIL, const_cast<char*>(lHostAndMailbox.c_str()), (aFullOpen ? NIL : OP_HALFOPEN) );
+      theHosts.push_front(lNewHost); 
+      return lNewHost.lMailStream;
+     
+     
 
   }
 
@@ -85,7 +107,7 @@ namespace zorba { namespace emailmodule {
                       const std::string& aMailbox) 
   {
     #include "linkage.c"
-    std::string lHostAndMailbox = "{" + aHost + "}" + aMailbox;
+    std::string lHostAndMailbox = "{" + aHost + "}" ;
     MAILSTREAM* lSource = getMailStream(aHost, aUsername, aPassword, aMailbox, false);
     mail_status (lSource, const_cast<char*>(lHostAndMailbox.c_str()), SA_MESSAGES | SA_RECENT | SA_UNSEEN | SA_UIDNEXT | SA_UIDVALIDITY);
   }
@@ -792,12 +814,11 @@ namespace zorba { namespace emailmodule {
    */
   void mm_login (NETMBX *mb,char *user,char *pwd,long trial)
   {
-    const char* lUser = zorba::emailmodule::ImapClient::Instance().getUserName().c_str();
-    const char* lPassword = zorba::emailmodule::ImapClient::Instance().getPassword().c_str();
+    std::string lUser = zorba::emailmodule::ImapClient::Instance().getUserName().c_str();
+    std::string lPassword = zorba::emailmodule::ImapClient::Instance().getPassword().c_str();
 
-    strcpy(user, lUser);
-    strcpy(pwd, lPassword);
-
+    strcpy(user, const_cast<char*>(lUser.c_str()));
+    strcpy(pwd, const_cast<char*>(lPassword.c_str()));
   }
 
   /* Log a fatal error event

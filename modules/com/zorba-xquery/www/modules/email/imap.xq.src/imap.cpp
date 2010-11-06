@@ -64,9 +64,9 @@ StatusFunction::evaluate(
   std::stringstream lResult;
   lResult << lMessages << "," << lRecent << "," << lUnseen << "," << lUIDNext << "," << lUIDValidity;
      
-  
+  std::string lResultString = lResult.str(); 
   return ItemSequence_t(new SingletonItemSequence(
-      theModule->getItemFactory()->createString(lResult.str())));
+      theModule->getItemFactory()->createString(lResultString.c_str())));
 }
 
 //*****************************************************************************

@@ -131,3 +131,20 @@ declare function basic:exif($image as xs:base64Binary, $tag as xs:string) as xs:
   basicschema:exif($image, $tag)
 }; 
 
+(:~
+ : Compares two images for approximative equality.
+ :
+ : @param $image is the image we want to compare $other to.
+ : @param $other is the image we want to compare $image with.
+ : @return True if the images are the same.
+ : @error If either of the passed xs:base64Binary do not contain a valid image.
+ :)
+declare function basic:equals($image as xs:base64Binary, $other as xs:base64Binary) as xs:boolean {
+  basicschema:equals($image, $other)
+}; 
+
+
+
+
+
+
