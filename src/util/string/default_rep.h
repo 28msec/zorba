@@ -143,7 +143,11 @@ public:
    * @return Returns said %rep.
    */
   static rep* empty_rep() {
-    return reinterpret_cast<rep*>( &empty_rep_storage[0] );
+    //
+    // Go through void* to avoid string-aliasing warnings.
+    //
+    void *const p = reinterpret_cast<void*>( &empty_rep_storage[0] );
+    return reinterpret_cast<rep*>( p );
   }
 
   /**

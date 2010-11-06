@@ -164,7 +164,11 @@ public:
    * @return Returns said %ptr_rep.
    */
   static ptr_rep* empty_rep() {
-    return reinterpret_cast<ptr_rep*>( &empty_rep_storage[0] );
+    //
+    // Go through void* to avoid string-aliasing warnings.
+    //
+    void *const p = reinterpret_cast<void*>( &empty_rep_storage[0] );
+    return reinterpret_cast<ptr_rep*>( p );
   }
 
   // PTR_REP_RESERVE_ST_A_X
