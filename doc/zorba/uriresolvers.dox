@@ -24,9 +24,9 @@ URI resolving in Zorba is implemented in a component that is called Standard URI
 
 Each of these standards URI resolvers implements the following three step algorithm.
 <ol>
-  <li>\ref automatic. Zorba tries to resolves the physical location of a library module or schema according to its target namespace. This approach is similar to the one used in Java (CLASSPATH).</li>
-  <li>\ref userdefined. Zorba allows the developer to provided user-defined URI resolvers in the host language (e.g. in C++). The standard resolver invokes each of the user-defined resolvers to check whether one can provide a module or schema with the requested target namespace. Registering such resolvers is done using the static context representation in the host language. The concept of having user-defined resolvers issimilar to user-defined class loaders in Java.</li>
-  <li>\ref literal. If neither the automatic resolving nor any of the user-defined resolvers provided the module or schema, Zorba tries to treat the target namespace as an URL in order to fetch the module or schema.</li>
+  <li>\ref automatic. Zorba tries to resolves the physical location of a library module or schema according to its target namespace. This approach is similar to the one used in Java with its classpath mechanism.</li>
+  <li>\ref userdefined. Zorba allows the developer to provided user-defined URI resolvers in the host language (e.i. in C++). The standard resolver invokes each of the user-defined resolvers to check whether one can provide a module or schema with the requested target namespace. Registering such resolvers is done using the static context representation in the host language. The concept of having user-defined resolvers issimilar to user-defined class loaders in Java.</li>
+  <li>\ref literal. If neither the automatic resolving nor any of the user-defined resolvers provided the module or schema, Zorba tries to treat the target namespace as an URL in order to fetch the module or schema.</li> 
 </ol>
 
 If during one of these step the module is resolved, the remaining steps are skipped. It is an error if no valid module or schema definition with the specified target namespace is found. The algorithm is depicted in the following figure.
@@ -38,7 +38,7 @@ In the following sections, we describe each of the resolving steps in more detai
 \section automatic Automatic URI Resolving
 
 
-Automatically resolving URIs is the most widely used way to map a target namespace to a physical URI. It is also the easiest to use. In order to automatically resolve URIs, Zorba uses a convention that defines a mapping between target namespaces and the physical location of a module or schema. This convention is very similar to the way Java resolves types.
+Automatically resolving URIs is the most widely used way to map a target namespace to a physical URI. It is also the easiest to use. In order to automatically resolve URIs, Zorba uses a convention that defines a mapping between target namespaces and the physical location of a module or schema. This convention is very similar to the way Java automatically resolves types.
 
 Consider a library module with the namespace http://www.example.com/modules/utils. First of all, this namespace will be rewritten by (1) reversing the domain and transforming it into a path notation (e.g. www.example.com => com/example/www), (2) appending the URI’s path, and (3) append the suffix .xq if it’s not already part of the target namespace. In the example, this yields the relative path: com/example/www/modules/utils.xq.
 
@@ -60,7 +60,7 @@ import module namespace utils = “http://www.example.com/modules/utils”;
 utils:foo()
 </pre>
 
-In this example, Zorba rewrites the target namespace to com/example/www/modules/utils.xq and resolve this relative path against the base directory /home/foo/xquery/. Accordingly, if the file /home/foo/xquery/com/example/www/modules/utils.xq exists, the corresponding resource is returned to Zorba. 
+In this example, Zorba rewrites the target namespace to com/example/www/modules/utils.xq and resolves this relative path against the base directory /home/foo/xquery/. Hence, if the file /home/foo/xquery/com/example/www/modules/utils.xq exists, the corresponding resource is returned to Zorba. 
 
 Please note that if the set of module paths contains more than one path, the path are used for resolving in the order in which they are provided by the user until an existing resource is found.
 
@@ -119,7 +119,7 @@ std::cout << query << std::endl;
 \section literal Literal URI Resolving
 
 
-If Zorba is unable to find a module or schema using either the automatic URI resolving alogrithm or by invoking any of the registered user-defined URI resolvers, it tries to interpret the target namespace URI as an URL.  For instance, when importing a module with namespace URI file:///Users/foo/xquery/foo.xq, Zorba tries to fetch the definition of this module from the file at /Users/foo/xquery/foo.xq. 
+Literal URI resolving is the last step in the URI resolving process. If Zorba is unable to find a module or schema using either the automatic URI resolving alogrithm or by invoking any of the registered user-defined URI resolvers, it tries to interpret the target namespace URI as an URL.  For instance, when importing a module with namespace URI file:///Users/foo/xquery/foo.xq, Zorba tries to fetch the definition of this module from the file at /Users/foo/xquery/foo.xq. 
 Similarly, namespace URIs having an http scheme (i.e. starting with http://), will be treated as URL by trying to fetch the resources pointed to by that URI.
 
 If no resource is available at the location specified by the target namespace, then the standard URI resolver raises an error.
@@ -127,7 +127,7 @@ If no resource is available at the location specified by the target namespace, t
 \section external External Modules/Functions
 
 
-In XQuery, a module can have external functions. External functions are implemented outside of the XQuery environment. Usually, the implementation of such functions is provided in a host language of the XQuery processor. In Zorba, external functions can be implemented using the C++ or C API. Examples showing the implementation of external functions can be found in some <a href="../../cxx/html/external_functions_8cpp-example.html" target="_blank">of the examples</a> that are shipped with Zorba.
+In XQuery, a module can have external functions. External functions are implemented outside of the XQuery environment. In Zorba, external functions can be implemented using the C++ or C API. Examples showing the implementation of external functions can be found in some <a href="../../cxx/html/external_functions_8cpp-example.html" target="_blank">of the examples</a> that are shipped with Zorba.
 
 Once a function has been implemented it needs to be provided to Zorba by implementations of the <a href="../../cxx/html/classzorba_1_1ExternalModule.html" target="_blank">ExternalModule</a> interface. Instances of such implementations need to be registered in the static context. In principle, there exist two ways to register an external module.
 
