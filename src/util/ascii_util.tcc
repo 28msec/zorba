@@ -69,7 +69,7 @@ void normalize_whitespace( InputStringType const &in, OutputStringType *out ) {
   typename InputStringType::value_type c_prev = ' ';
   for ( ; i != j; ++i ) {
     typename InputStringType::value_type const c = *i;
-    bool const is_space = isspace( c );
+    bool const is_space = __isascii(c) && isspace( c );
     if ( !is_space || (is_space && !isspace( c_prev )) )
       out->push_back( is_space ? ' ' : c );
     c_prev = c;
