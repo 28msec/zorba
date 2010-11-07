@@ -57,6 +57,9 @@ GeoModule::getExternalFunction(String aLocalname) const
     else if (aLocalname.equals("geometry-type")) {
       lFunc = new SFGeometryTypeFunction(this);
     }
+    else if (aLocalname.equals("srid")) {
+      lFunc = new SFSridFunction(this);
+    }
     else if (aLocalname.equals("num-geometries")) {
       lFunc = new SFNumGeometriesFunction(this);
     }
@@ -78,12 +81,12 @@ GeoModule::getExternalFunction(String aLocalname) const
     else if (aLocalname.equals("is-simple")) {
       lFunc = new SFIsSimpleFunction(this);
     }
-    else if (aLocalname.equals("is-3D")) {
+    else if (aLocalname.equals("is-3d")) {
       lFunc = new SFIs3DFunction(this);
     }
-    //else if (aLocalname.equals("isMeasured")) {
-    //  lFunc = new SFIsMeasuredFunction(this);
-    //}
+    else if (aLocalname.equals("is-measured")) {
+      lFunc = new SFIsMeasuredFunction(this);
+    }
     else if (aLocalname.equals("boundary")) {
       lFunc = new SFBoundaryFunction(this);
     }
@@ -150,8 +153,8 @@ GeoModule::getExternalFunction(String aLocalname) const
     else if (aLocalname.equals("centroid")) {
       lFunc = new SFCentroidFunction(this);
     }
-    else if (aLocalname.equals("interior-point")) {
-      lFunc = new SFInteriorPointFunction(this);
+    else if (aLocalname.equals("point-on-surface")) {
+      lFunc = new SFPointOnSurfaceFunction(this);
     }
     else if (aLocalname.equals("x")) {
       lFunc = new SFXFunction(this);
@@ -161,6 +164,9 @@ GeoModule::getExternalFunction(String aLocalname) const
     }
     else if (aLocalname.equals("z")) {
       lFunc = new SFZFunction(this);
+    }
+    else if (aLocalname.equals("m")) {
+      lFunc = new SFMFunction(this);
     }
     else if (aLocalname.equals("start-point")) {
       lFunc = new SFStartPointFunction(this);
@@ -188,6 +194,15 @@ GeoModule::getExternalFunction(String aLocalname) const
     }
     else if (aLocalname.equals("interior-ring-n")) {
       lFunc = new SFInteriorRingNFunction(this);
+    }
+    else if (aLocalname.equals("num-patches")) {
+      lFunc = new SFNumPatchesFunction(this);
+    }
+    else if (aLocalname.equals("patch-n")) {
+      lFunc = new SFPatchNFunction(this);
+    }
+    else if (aLocalname.equals("bounding-polygons")) {
+      lFunc = new SFBoundingPolygonsFunction(this);
     }
   }
   return lFunc;

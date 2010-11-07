@@ -24,6 +24,10 @@ namespace geom{
 class GeometryFactory;
 class Geometry;
 class CoordinateSequence;
+class MultiLineString;
+class MultiPolygon;
+class LineString;
+class LinearRing;
 }}
 
 namespace zorba { namespace geomodule {
@@ -50,6 +54,7 @@ namespace zorba { namespace geomodule {
         GMLSF_LINEARRING,
         GMLSF_SURFACE,
         GMLSF_POLYGON,
+        //GMLSF_POLYGONPATCH,
         GMLSF_MULTIPOINT,
         GMLSF_MULTICURVE,
         GMLSF_MULTISURFACE,
@@ -63,6 +68,8 @@ namespace zorba { namespace geomodule {
         COUNT_CHILDREN,
         GET_NTH_CHILD,
         GET_EXTERIOR_RING,
+        GET_NUM_POINTS,
+        GET_NTH_POINT,
         GET_END_POINT
       };
     protected:
@@ -80,7 +87,24 @@ namespace zorba { namespace geomodule {
       void readPointPosCoordinates(zorba::Item &lItem, double *x, double *y, double *z, int &srs_dim) const;
       bool readPointPosCoordinates(zorba::Iterator_t children, double *x, double *y, double *z, int &srs_dim) const;
       void readPosListCoordinates(zorba::Item &lItem, geos::geom::CoordinateSequence *&cl, int &srs_dim) const;
-      int getCoordinateDimension(const geos::geom::Geometry *geos_geometry) const;
+      int  getCoordinateDimension(const geos::geom::Geometry *geos_geometry) const;
+      void getSrsName(zorba::Item lItem, zorba::Item &srs_uri) const;
+      bool isCurve(const geos::geom::MultiLineString *multiline) const;
+      bool isSurface(const geos::geom::MultiPolygon *multipolygon,
+                     bool *is_closed = NULL,
+                     geos::geom::LinearRing **exterior_boundary = NULL) const;
+      geos::geom::LineString *curveToLineString(const geos::geom::Geometry *geos_geometry) const;
+      bool isClosedCurve(const geos::geom::Geometry *geos_geometry) const;
+      bool isRingCurve(const geos::geom::Geometry *geos_geometry) const;
+      bool isSimpleCurve(const geos::geom::Geometry *geos_geometry) const;
+      
+      zorba::Item getBoundary(geos::geom::Geometry *geos_geometry, zorba::Item srs_uri) const;
+      void getMultiGeometryBoundary(geos::geom::Geometry *geos_geometry, 
+                                    std::vector<zorba::Item> *boundaries,
+                                    zorba::Item srs_uri) const;
+      void addNewLineIndentText(zorba::Item &parent, unsigned int indent) const;
+      void appendIndent(char *&strtemp2, unsigned int indent) const;
+      unsigned char hex_to_bin(char hex) const;
 
     public:
       GeoFunction(const GeoModule* module);
@@ -95,12 +119,16 @@ namespace zorba { namespace geomodule {
       geos::geom::Geometry  *buildGeosGeometryFromItem(zorba::Item &lItem, 
                                                       enum GeoFunction::gmlsf_types geometric_type,
                                                       int  srs_dim,
+                                                      zorba::Item *srs_uri = NULL,
                                                       enum GeoFunction::action_item what_action = BUILD_GEOS_GEOMETRY,
                                                       uint32_t *optional_child_index_or_count = NULL,
                                                       zorba::Item *result_item = NULL) const;
       zorba::Item getGMLItemFromGeosGeometry(zorba::Item &parent, 
                                               const geos::geom::Geometry *geos_geometry,
-                                              const char *tag_name = NULL) const;
+                                              const zorba::Item *srs_uri = NULL,
+                                              unsigned int indent = 0,
+                                              const char *tag_name = NULL,
+                                              bool dont_check_for_curve_surface = false) const;
   };
 
 
@@ -123,6 +151,7 @@ namespace zorba { namespace geomodule {
 DECLARE_GEOFUNCTION_CLASS(SFDimensionFunction, dimension)
 DECLARE_GEOFUNCTION_CLASS(SFCoordinateDimensionFunction, coordinate-dimension)
 DECLARE_GEOFUNCTION_CLASS(SFGeometryTypeFunction, geometry-type)
+DECLARE_GEOFUNCTION_CLASS(SFSridFunction, srid)
 DECLARE_GEOFUNCTION_CLASS(SFNumGeometriesFunction, num-geometries)
 DECLARE_GEOFUNCTION_CLASS(SFGeometryNFunction, geometry-n)
 DECLARE_GEOFUNCTION_CLASS(SFEnvelopeFunction, envelope)
@@ -130,7 +159,8 @@ DECLARE_GEOFUNCTION_CLASS(SFAsTextFunction, as-text)
 DECLARE_GEOFUNCTION_CLASS(SFAsBinaryFunction, as-binary)
 DECLARE_GEOFUNCTION_CLASS(SFIsEmptyFunction, is-empty)
 DECLARE_GEOFUNCTION_CLASS(SFIsSimpleFunction, is-simple)
-DECLARE_GEOFUNCTION_CLASS(SFIs3DFunction, is-3D)
+DECLARE_GEOFUNCTION_CLASS(SFIs3DFunction, is-3d)
+DECLARE_GEOFUNCTION_CLASS(SFIsMeasuredFunction, is-measured)
 DECLARE_GEOFUNCTION_CLASS(SFBoundaryFunction, boundary)
 DECLARE_GEOFUNCTION_CLASS(SFEqualsFunction, equals)
 DECLARE_GEOFUNCTION_CLASS(SFCoversFunction, covers)
@@ -153,11 +183,12 @@ DECLARE_GEOFUNCTION_CLASS(SFAreaFunction, area)
 DECLARE_GEOFUNCTION_CLASS(SFLengthFunction, length)
 DECLARE_GEOFUNCTION_CLASS(SFIsWithinDistanceFunction, is-within-distance)
 DECLARE_GEOFUNCTION_CLASS(SFCentroidFunction, centroid)
-DECLARE_GEOFUNCTION_CLASS(SFInteriorPointFunction, interior-point)
+DECLARE_GEOFUNCTION_CLASS(SFPointOnSurfaceFunction, point-on-surface)
 
 DECLARE_GEOFUNCTION_CLASS(SFXFunction, x)
 DECLARE_GEOFUNCTION_CLASS(SFYFunction, y)
 DECLARE_GEOFUNCTION_CLASS(SFZFunction, z)
+DECLARE_GEOFUNCTION_CLASS(SFMFunction, m)
 
 DECLARE_GEOFUNCTION_CLASS(SFStartPointFunction, start-point)
 DECLARE_GEOFUNCTION_CLASS(SFEndPointFunction, end-point)
@@ -169,6 +200,10 @@ DECLARE_GEOFUNCTION_CLASS(SFPointNFunction, point-n)
 DECLARE_GEOFUNCTION_CLASS(SFExteriorRingFunction, exterior-ring)
 DECLARE_GEOFUNCTION_CLASS(SFNumInteriorRingFunction, num-interior-ring)
 DECLARE_GEOFUNCTION_CLASS(SFInteriorRingNFunction, interior-ring-n)
+
+DECLARE_GEOFUNCTION_CLASS(SFNumPatchesFunction, num-patches)
+DECLARE_GEOFUNCTION_CLASS(SFPatchNFunction, patch-n)
+DECLARE_GEOFUNCTION_CLASS(SFBoundingPolygonsFunction, bounding-polygons)
 } /* namespace geomodule */
 } /* namespace zorba */
 

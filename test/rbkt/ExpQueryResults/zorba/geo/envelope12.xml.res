@@ -1,2 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<gml:Point xmlns:gml="http://www.opengis.net/gml"><gml:pos>1.000000 1.000000</gml:pos></gml:Point>
+<gml:Envelope xmlns:gml="http://www.opengis.net/gml">
+  <gml:lowerCorner>1.000000 1.000000</gml:lowerCorner>
+  <gml:upperCorner>1.000000 1.000000</gml:upperCorner>
+</gml:Envelope>

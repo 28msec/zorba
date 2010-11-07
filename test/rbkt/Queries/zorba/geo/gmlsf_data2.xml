@@ -47,7 +47,7 @@ xmlns="http://www.adv-online.de/namespaces/adv/gid/4.0"
 			</modellart>
 			<istTeilVon xlink:href="urn:adv:oid:DENIBKG1000000T6" />
 			<position>
-				<gml:Curve srsName="urn:adv:crs:DE_DHDN_3GK3_NI100">
+				<gml:Curve>
 					<gml:segments>
 						<gml:LineStringSegment>
 							<gml:pos>3577436.770 5804463.990</gml:pos>

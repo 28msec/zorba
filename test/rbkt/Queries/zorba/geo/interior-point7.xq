@@ -1,7 +1,7 @@
 import module namespace geo = "http://www.zorba-xquery.com/modules/geo";
 declare namespace gml="http://www.opengis.net/gml";
 
-geo:interior-point(<gml:LinearRing>
+geo:point-on-surface(<gml:LinearRing>
                 <gml:posList>
                 1 1 
                 20 1
