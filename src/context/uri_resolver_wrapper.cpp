@@ -180,16 +180,9 @@ std::string SchemaURIResolverWrapper::resolve(
   {
     return Unmarshaller::getInternalString(lResult->getSchema()).c_str();
   }
-  else
-  {
-    // handle errors
-    handle_resolver_error(lResult.get());
-  }
-  
-  // we either return a valid item or throw an error. hence, we should never get here
-  ZORBA_ASSERT(false);
-  return NULL;
+  return "";
 }
+
 
 
 
@@ -217,10 +210,6 @@ void ModuleURIResolverWrapper::resolveTargetNamespace(
   {
     result->getComponentURIs(compURIs);
   }
-  else
-  {
-    handle_resolver_error(result.get());
-  }
 }
 
 
@@ -239,15 +228,7 @@ std::istream* ModuleURIResolverWrapper::resolve(
     result->getModuleURL(url);
     return result->getModuleStream();
   }
-  else
-  {
-    // handle errors
-    handle_resolver_error(result.get());
-  }
-
-  // we either return a valid item or throw an error. hence, we should never get here
-  ZORBA_ASSERT(false);
-  return NULL;
+  return 0;
 }
 
 } /* namespace zorba */
