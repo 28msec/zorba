@@ -19,8 +19,6 @@
 
 #include "compiler/codegen/plan_visitor.h"
 #include "compiler/expression/expr.h"
-#include "compiler/semantic_annotations/tsv_annotation.h"
-#include "compiler/semantic_annotations/annotation_keys.h"
 #include "compiler/api/compiler_api.h"
 #include "compiler/api/compilercb.h"
 #include "compiler/rewriter/framework/rewriter_context.h"

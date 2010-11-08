@@ -28,7 +28,6 @@
 
 #include "common/shared_types.h"
 #include "functions/function_impl.h"
-#include "functions/single_seq_func.h"
 
 
 namespace zorba {
@@ -53,7 +52,9 @@ public:
         const TypeManager* tm,
         const std::vector<xqtref_t>& arg_types) const;
 
-  COMPUTE_ANNOTATION_DECL();
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong producer) const;
+
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong producer) const;
 
   CODEGEN_DECL();
 };
@@ -85,6 +86,10 @@ public:
   {
   }
 
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong producer) const;
+
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong producer) const;
+
   CODEGEN_DECL();
 };
 
@@ -98,6 +103,10 @@ public:
     function(sig, FunctionConsts::FN_EXISTS_1)
   {
   }
+
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong producer) const;
+
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong producer) const;
 
   CODEGEN_DECL();
 };
@@ -119,6 +128,10 @@ public:
         const TypeManager* tm,
         const std::vector<xqtref_t>& arg_types) const;
 
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong producer) const;
+
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong producer) const;
+
   CODEGEN_DECL();
 };
 
@@ -132,6 +145,10 @@ public:
     function(sig, FunctionConsts::FN_INSERT_BEFORE_3)
   {
   }
+
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong producer) const;
+
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong producer) const;
 
   CODEGEN_DECL();
 };
@@ -155,6 +172,10 @@ public:
 
   bool propagatesSortedNodes(ulong producer) const { return producer == 0; }
 
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong producer) const;
+
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong producer) const;
+
   CODEGEN_DECL();
 };
 
@@ -174,6 +195,10 @@ public:
         const std::vector<xqtref_t>& arg_types) const;
 
   bool propagatesDistinctNodes(ulong producer) const { return producer == 0; }
+
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong producer) const;
+
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong producer) const;
 
   CODEGEN_DECL();
 };
@@ -199,8 +224,6 @@ public:
 
   bool propagatesSortedNodes(ulong producer) const { return producer == 0; }
 
-  COMPUTE_ANNOTATION_DECL();
-
   CODEGEN_DECL();
 };
 
@@ -225,8 +248,6 @@ public:
 
   bool propagatesSortedNodes(ulong producer) const { return producer == 0; }
 
-  COMPUTE_ANNOTATION_DECL();
-
   CODEGEN_DECL();
 };
 
@@ -249,8 +270,6 @@ public:
 
   bool propagatesSortedNodes(ulong producer) const { return producer == 0; }
 
-  COMPUTE_ANNOTATION_DECL();
-
   CODEGEN_DECL();
 };
 
@@ -268,6 +287,8 @@ public:
   xqtref_t getReturnType(
         const TypeManager* tm,
         const std::vector<xqtref_t>& arg_types) const;
+
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong producer) const;
 
   CODEGEN_DECL();
 };
@@ -292,6 +313,10 @@ public:
   bool propagatesDistinctNodes(ulong producer) const { return producer == 0; }
 
   bool propagatesSortedNodes(ulong producer) const { return producer == 0; }
+
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong producer) const;
+
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong producer) const;
 
   CODEGEN_DECL();
 };
@@ -325,6 +350,8 @@ public:
   {
   }
 
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong producer) const;
+
   CODEGEN_DECL();
 };
 
@@ -338,6 +365,8 @@ public:
     function(sig, FunctionConsts::FN_AVG_1)
   {
   }
+
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong producer) const;
 
   CODEGEN_DECL();
 };
@@ -360,6 +389,8 @@ public:
   function* specialize( static_context* sctx,
                         const std::vector<xqtref_t>& argTypes) const;
 
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong producer) const;
+
   CODEGEN_DECL();
 };
 
@@ -375,6 +406,8 @@ public:
                 FunctionConsts::FN_SUM_DOUBLE_2);
   
   }
+
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong producer) const;
 
   CODEGEN_DECL();
 };
@@ -392,6 +425,8 @@ public:
   
   }
 
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong producer) const;
+
   CODEGEN_DECL();
 };
 
@@ -407,6 +442,8 @@ public:
                 FunctionConsts::FN_SUM_DECIMAL_2);
   
   }
+
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong producer) const;
 
   CODEGEN_DECL();
 };
@@ -424,6 +461,8 @@ public:
   
   }
 
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong producer) const;
+
   CODEGEN_DECL();
 };
 
@@ -437,6 +476,96 @@ public:
     function(sig, FunctionConsts::OP_TO_2)
   {
   }
+
+  CODEGEN_DECL();
+};
+
+
+//fn:id
+class fn_id : public function
+{
+public:
+  fn_id(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
+  {
+    theKind = (sig.paramCount() == 1 ?
+                FunctionConsts::FN_ID_1 :
+                FunctionConsts::FN_ID_2);
+  
+  }
+
+  FunctionConsts::AnnotationValue producesDistinctNodes() const 
+  {
+    return FunctionConsts::YES;
+  }
+
+  FunctionConsts::AnnotationValue producesSortedNodes() const 
+  {
+    return FunctionConsts::YES;
+  }
+
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong producer) const;
+
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong producer) const;
+
+  CODEGEN_DECL();
+};
+
+
+//fn:element-with-id
+class fn_element_with_id : public function
+{
+public:
+  fn_element_with_id(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
+  {
+    theKind = (sig.paramCount() == 1 ?
+                FunctionConsts::FN_ELEMENT_WITH_ID_1 :
+                FunctionConsts::FN_ELEMENT_WITH_ID_2);
+  
+  }
+
+  FunctionConsts::AnnotationValue producesDistinctNodes() const 
+  {
+    return FunctionConsts::YES;
+  }
+
+  FunctionConsts::AnnotationValue producesSortedNodes() const 
+  {
+    return FunctionConsts::YES;
+  }
+
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong producer) const;
+
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong producer) const;
+
+  CODEGEN_DECL();
+};
+
+
+//fn:idref
+class fn_idref : public function
+{
+public:
+  fn_idref(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
+  {
+    theKind = (sig.paramCount() == 1 ?
+                FunctionConsts::FN_IDREF_1 :
+                FunctionConsts::FN_IDREF_2);
+  
+  }
+
+  FunctionConsts::AnnotationValue producesDistinctNodes() const 
+  {
+    return FunctionConsts::YES;
+  }
+
+  FunctionConsts::AnnotationValue producesSortedNodes() const 
+  {
+    return FunctionConsts::YES;
+  }
+
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong producer) const;
+
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong producer) const;
 
   CODEGEN_DECL();
 };
@@ -507,84 +636,6 @@ public:
   bool accessesDynCtx() const { return true; }
 
   bool isSource() const { return true; }
-
-  CODEGEN_DECL();
-};
-
-
-//fn:id
-class fn_id : public function
-{
-public:
-  fn_id(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
-  {
-    theKind = (sig.paramCount() == 1 ?
-                FunctionConsts::FN_ID_1 :
-                FunctionConsts::FN_ID_2);
-  
-  }
-
-  FunctionConsts::AnnotationValue producesDistinctNodes() const 
-  {
-    return FunctionConsts::YES;
-  }
-
-  FunctionConsts::AnnotationValue producesSortedNodes() const 
-  {
-    return FunctionConsts::YES;
-  }
-
-  CODEGEN_DECL();
-};
-
-
-//fn:element-with-id
-class fn_element_with_id : public function
-{
-public:
-  fn_element_with_id(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
-  {
-    theKind = (sig.paramCount() == 1 ?
-                FunctionConsts::FN_ELEMENT_WITH_ID_1 :
-                FunctionConsts::FN_ELEMENT_WITH_ID_2);
-  
-  }
-
-  FunctionConsts::AnnotationValue producesDistinctNodes() const 
-  {
-    return FunctionConsts::YES;
-  }
-
-  FunctionConsts::AnnotationValue producesSortedNodes() const 
-  {
-    return FunctionConsts::YES;
-  }
-
-  CODEGEN_DECL();
-};
-
-
-//fn:idref
-class fn_idref : public function
-{
-public:
-  fn_idref(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
-  {
-    theKind = (sig.paramCount() == 1 ?
-                FunctionConsts::FN_IDREF_1 :
-                FunctionConsts::FN_IDREF_2);
-  
-  }
-
-  FunctionConsts::AnnotationValue producesDistinctNodes() const 
-  {
-    return FunctionConsts::YES;
-  }
-
-  FunctionConsts::AnnotationValue producesSortedNodes() const 
-  {
-    return FunctionConsts::YES;
-  }
 
   CODEGEN_DECL();
 };

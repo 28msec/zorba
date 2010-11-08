@@ -13,14 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "compiler/semantic_annotations/tsv_annotation.h"
 
 namespace zorba {
 
-AnnotationValue_t TSVAnnotationValue::TRUE_VAL = AnnotationValue_t(new TSVAnnotationValue(TSV_TRUE));
-
-AnnotationValue_t TSVAnnotationValue::FALSE_VAL = AnnotationValue_t(new TSVAnnotationValue(TSV_FALSE));
-
-AnnotationValue_t TSVAnnotationValue::MAYBE_VAL = AnnotationValue_t(new TSVAnnotationValue(TSV_MAYBE));
 
 }

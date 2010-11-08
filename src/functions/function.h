@@ -26,7 +26,6 @@
 
 #include "compiler/parser/parse_constants.h"
 #include "compiler/parser/query_loc.h"
-#include "compiler/semantic_annotations/annotation_keys.h"
 #include "compiler/expression/expr_consts.h"
 
 
@@ -36,6 +35,7 @@ namespace zorba
 
 class fo_expr;
 class CompilerCB;
+class expr;
 class AnnotationHolder;
 
 
@@ -132,21 +132,6 @@ public:
 
   virtual bool isUdf() const { return false; }
 
-  virtual expr_script_kind_t getUpdateType() const { return SIMPLE_EXPR; }
-
-  virtual xqtref_t getReturnType(
-        const TypeManager* tm,
-        const std::vector<xqtref_t>& argTypes) const;
-
-  virtual function* specialize(
-        static_context* sctx,
-        const std::vector<xqtref_t>& argTypes) const
-  {
-    return NULL;
-  }
-
-  virtual bool specializable() const { return false; }
-
   virtual bool isArithmeticFunction() const { return false; }
 
   virtual ArithmeticConsts::OperationKind arithmeticKind() const
@@ -167,9 +152,24 @@ public:
 
   virtual bool isNodeDistinctFunction() const { return false; }
 
-  virtual bool accessesDynCtx() const { return false; }
-
   virtual bool isSource() const { return false; }
+
+  virtual expr_script_kind_t getUpdateType() const { return SIMPLE_EXPR; }
+
+  virtual xqtref_t getReturnType(
+        const TypeManager* tm,
+        const std::vector<xqtref_t>& argTypes) const;
+
+  virtual function* specialize(
+        static_context* sctx,
+        const std::vector<xqtref_t>& argTypes) const
+  {
+    return NULL;
+  }
+
+  virtual bool specializable() const { return false; }
+
+  virtual bool accessesDynCtx() const { return false; }
 
   virtual bool isMap(ulong input) const;
 
@@ -181,12 +181,11 @@ public:
 
   virtual bool propagatesDistinctNodes(ulong input) const { return false; }
 
-	virtual bool validate_args(std::vector<PlanIter_t>& argv) const;
+  virtual BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const;
 
-  virtual void compute_annotation(
-        AnnotationHolder* foExpr,
-        std::vector<AnnotationHolder*>& args,
-        Annotations::Key) const;
+  virtual BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const;
+
+	virtual bool validate_args(std::vector<PlanIter_t>& argv) const;
 
   virtual PlanIter_t codegen(
         CompilerCB* cb,
@@ -195,8 +194,6 @@ public:
         std::vector<PlanIter_t>& argv,
         AnnotationHolder& ann) const = 0;
 };
-
-
 
 
 } /* namespace zorba */

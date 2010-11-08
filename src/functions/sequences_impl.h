@@ -17,7 +17,10 @@
 #define ZORBA_FUNCTIONS_SEQUENCES_IMPLH_H
 
 #include "common/shared_types.h"
+
 #include "functions/function_impl.h"
+
+#include "compiler/expression/fo_expr.h"
 
 namespace zorba {
 
@@ -25,7 +28,52 @@ void populate_context_sequences_impl(static_context* sctx);
 
 
 /*******************************************************************************
-  15.2.3 fn:exactly-one
+
+********************************************************************************/
+class fn_unordered : public function 
+{
+public:
+  fn_unordered(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_UNORDERED_1)
+  {
+  }
+
+  xqtref_t getReturnType(
+        const TypeManager* tm,
+        const std::vector<xqtref_t>& arg_types) const
+  {
+    return arg_types[0];
+  }
+
+  bool isMap(ulong input) const 
+  {
+    return true; 
+  }
+
+  FunctionConsts::AnnotationValue producesSortedNodes() const
+  {
+    return FunctionConsts::PRESERVE;
+  }
+
+  FunctionConsts::AnnotationValue producesDistinctNodes() const
+  {
+    return FunctionConsts::PRESERVE;
+  }
+
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const;
+
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const;
+
+  CODEGEN_DECL();
+};
+
+
+/*******************************************************************************
+  op:exactly-one-noraise($items as item()*)
+
+  Returns true or false depending on whether the input sequence contains
+  exactly one item or not.
 ********************************************************************************/
 class fn_exactly_one_noraise : public function
 {
@@ -44,10 +92,21 @@ public:
         const TypeManager* tm,
         const std::vector<xqtref_t>& arg_types) const;
 
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const 
+  {
+    return ANNOTATION_TRUE;
+  }
+
   CODEGEN_DECL();
 };
 
 
+/*******************************************************************************
+  15.2.3 fn:exactly-one($items as item()*)
+
+  If the input sequence contains exactly one item, that item is returned;
+  otherwise an error is raised.
+********************************************************************************/
 class fn_exactly_one : public fn_exactly_one_noraise
 {
 public:
@@ -55,6 +114,11 @@ public:
   {
     theRaiseError = true;
     theKind = FunctionConsts::FN_EXACTLY_ONE_1;
+  }
+
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const 
+  {
+    return ANNOTATION_TRUE;
   }
 };
 
@@ -71,15 +135,31 @@ public:
   {
   }
 
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const 
+  {
+    return ANNOTATION_TRUE;
+  }
+
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const 
+  {
+    return ANNOTATION_TRUE;
+  }
+
   CODEGEN_DECL();
 };
 
 
 /*******************************************************************************
   For intersect and except, it's always more efficient to sort the output
-  and use hash-join than to sort the inputs and use mergesort-join. Only if
+  and use hash-join than to sort the inputs and use mergesort-join. In this
+  case, these 2 function are implemented by the HashSemiJoinIterator. Only if
   the inputs happen to be sorted for a different reason will we use mergesort:
   for $x in path/expr1 for $y in path/expr2 return ($x, $y, ($x intersect $y))
+
+  The HashSemiJoinIterator build a hashmap with the 2nd operand, and probes
+  the hashmap with the items in the 1st operand. An item goes into the result
+  if a match in the hashmap is found/not found for fn:intersect/fn:except.
+  Therefore, the order of the first producer is retained.
 
   For now, codegen doesn't know whether the inputs are sorted or not.
   TODO: annotate expressions with USE_HASH / USE_MERGESORT properties
@@ -101,7 +181,23 @@ public:
 
   bool propagatesDistinctNodes(ulong producer) const
   {
-    return  producer == 0;
+    return producer == 0;
+  }
+
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const 
+  {
+    if (input == 0)
+      return fo->getIgnoresSortedNodes();
+
+    return ANNOTATION_TRUE;
+  }
+
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const 
+  {
+    if (input == 0)
+      return fo->getIgnoresDuplicateNodes();
+
+    return ANNOTATION_TRUE;
   }
 
   CODEGEN_DECL();
@@ -130,6 +226,22 @@ public:
     return  producer == 0;
   }
 
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const 
+  {
+    if (input == 0)
+      return fo->getIgnoresSortedNodes();
+
+    return ANNOTATION_TRUE;
+  }
+
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const 
+  {
+    if (input == 0)
+      return fo->getIgnoresDuplicateNodes();
+
+    return ANNOTATION_TRUE;
+  }
+
   CODEGEN_DECL();
 };
 
@@ -147,6 +259,16 @@ public:
                FunctionConsts::FN_MAX_2);
   }
 
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const 
+  {
+    return ANNOTATION_TRUE;
+  }
+
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const 
+  {
+    return ANNOTATION_TRUE;
+  }
+
   CODEGEN_DECL();
 };
 
@@ -162,6 +284,16 @@ public:
     theKind = (sig.paramCount() == 1 ?
                FunctionConsts::FN_MIN_1 :
                FunctionConsts::FN_MIN_2);
+  }
+
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const 
+  {
+    return ANNOTATION_TRUE;
+  }
+
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const 
+  {
+    return ANNOTATION_TRUE;
   }
 
   CODEGEN_DECL();

@@ -12,5 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 SET(SEMANTIC_ANNOTATIONS_SRCS
-    annotations.cpp
     annotation_holder.cpp)

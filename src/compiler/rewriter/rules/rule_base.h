@@ -16,8 +16,10 @@
 #ifndef ZORBA_COMPILER_REWRITER_RULE_H
 #define ZORBA_COMPILER_REWRITER_RULE_H
 
+#include <string>
+
 #include "common/shared_types.h"
-#include "compiler/api/compilercb.h"
+//#include "compiler/api/compilercb.h"
 
 
 namespace zorba {
@@ -103,7 +105,7 @@ protected:
 /*******************************************************************************
 
 ********************************************************************************/
-#define RULE(name)                                                  \
+#define PREPOST_RULE(name)                                          \
 class name : public PrePostRewriteRule                              \
 {                                                                   \
  public:                                                            \

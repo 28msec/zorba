@@ -24,12 +24,7 @@ namespace Annotations
 
 typedef enum 
 {
-  IGNORES_SORTED_NODES = 0,
-  IGNORES_DUP_NODES,
-  
   FREE_VARS,
-
-  LET_VAR_NODEID_ANALYSIS,
 
   MAX_ANNOTATION
 } Key;

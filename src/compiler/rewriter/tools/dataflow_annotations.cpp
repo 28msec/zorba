@@ -21,13 +21,12 @@
 #include "compiler/expression/expr_iter.h"
 
 #include "compiler/rewriter/tools/dataflow_annotations.h"
-#include "compiler/semantic_annotations/annotation_keys.h"
-#include "compiler/semantic_annotations/tsv_annotation.h"
+//#include "compiler/semantic_annotations/annotation_keys.h"
+//#include "compiler/semantic_annotations/tsv_annotation.h"
 
 #include "types/typeops.h"
 
-#include "context/static_context.h"
-#include "context/namespace_context.h"
+//#include "context/namespace_context.h"
 
 #include "functions/function.h"
 #include "functions/library.h"
@@ -39,13 +38,13 @@ namespace zorba
 {
 
 #define SORTED_NODES(e) \
-e->setProducesSortedNodes(expr::ANNOTATION_TRUE)
+e->setProducesSortedNodes(ANNOTATION_TRUE)
 
 #define PROPOGATE_SORTED_NODES(src, tgt) \
 tgt->setProducesSortedNodes(src->getProducesSortedNodes())
 
 #define DISTINCT_NODES(e) \
-e->setProducesDistinctNodes(expr::ANNOTATION_TRUE)
+e->setProducesDistinctNodes(ANNOTATION_TRUE)
 
 #define PROPOGATE_DISTINCT_NODES(src, tgt) \
 tgt->setProducesDistinctNodes(src->getProducesDistinctNodes())
@@ -58,109 +57,133 @@ void DataflowAnnotationsComputer::compute(expr* e)
 {
   switch(e->get_expr_kind()) 
   {
-    case sequential_expr_kind:
-      compute_sequential_expr(static_cast<sequential_expr *>(e));
-      break;
+  case sequential_expr_kind:
+    compute_sequential_expr(static_cast<sequential_expr *>(e));
+    break;
 
-    case wrapper_expr_kind:
-      compute_wrapper_expr(static_cast<wrapper_expr *>(e));
-      break;
+  case wrapper_expr_kind:
+    compute_wrapper_expr(static_cast<wrapper_expr *>(e));
+    break;
 
-    case var_expr_kind:
-      compute_var_expr(static_cast<var_expr *>(e));
-      break;
+  case function_trace_expr_kind:
+  {
+    default_walk(e);
+    function_trace_expr* fte = static_cast<function_trace_expr*>(e);
+    PROPOGATE_SORTED_NODES(fte->get_expr(), e);
+    PROPOGATE_DISTINCT_NODES(fte->get_expr(), e);
+    break;
+  }
 
-    case gflwor_expr_kind:
-    case flwor_expr_kind:
-      compute_flwor_expr(static_cast<flwor_expr *>(e));
-      break;
+  case var_expr_kind:
+    compute_var_expr(static_cast<var_expr *>(e));
+    break;
 
-    case trycatch_expr_kind:
-      compute_trycatch_expr(static_cast<trycatch_expr *>(e));
-      break;
+  case gflwor_expr_kind:
+  case flwor_expr_kind:
+    compute_flwor_expr(static_cast<flwor_expr *>(e));
+    break;
 
-    case promote_expr_kind:
-      compute_promote_expr(static_cast<promote_expr *>(e));
-      break;
+  case trycatch_expr_kind:
+    compute_trycatch_expr(static_cast<trycatch_expr *>(e));
+    break;
+    
+  case promote_expr_kind:
+    compute_promote_expr(static_cast<promote_expr *>(e));
+    break;
 
-    case if_expr_kind:
-      compute_if_expr(static_cast<if_expr *>(e));
-      break;
+  case if_expr_kind:
+    compute_if_expr(static_cast<if_expr *>(e));
+    break;
 
-    case fo_expr_kind:
-      compute_fo_expr(static_cast<fo_expr *>(e));
-      break;
+  case fo_expr_kind:
+    compute_fo_expr(static_cast<fo_expr *>(e));
+    break;
 
-    case instanceof_expr_kind:
-      compute_instanceof_expr(static_cast<instanceof_expr *>(e));
-      break;
+  case instanceof_expr_kind:
+    compute_instanceof_expr(static_cast<instanceof_expr *>(e));
+    break;
 
-    case treat_expr_kind:
-      compute_treat_expr(static_cast<treat_expr *>(e));
-      break;
+  case treat_expr_kind:
+    compute_treat_expr(static_cast<treat_expr *>(e));
+    break;
 
-    case castable_expr_kind:
-      compute_castable_expr(static_cast<castable_expr *>(e));
-      break;
+  case castable_expr_kind:
+    compute_castable_expr(static_cast<castable_expr *>(e));
+    break;
 
-    case cast_expr_kind:
-      compute_cast_expr(static_cast<cast_expr *>(e));
-      break;
+  case cast_expr_kind:
+    compute_cast_expr(static_cast<cast_expr *>(e));
+    break;
 
-    case name_cast_expr_kind:
-      compute_name_cast_expr(static_cast<name_cast_expr *>(e));
-      break;
+  case name_cast_expr_kind:
+    compute_name_cast_expr(static_cast<name_cast_expr *>(e));
+    break;
 
-    case validate_expr_kind:
-      compute_validate_expr(static_cast<validate_expr *>(e));
-      break;
+  case validate_expr_kind:
+    compute_validate_expr(static_cast<validate_expr *>(e));
+    break;
 
-    case extension_expr_kind:
-      compute_extension_expr(static_cast<extension_expr *>(e));
-      break;
+  case extension_expr_kind:
+    compute_extension_expr(static_cast<extension_expr *>(e));
+    break;
 
-    case relpath_expr_kind:
-      compute_relpath_expr(static_cast<relpath_expr *>(e));
-      break;
+  case relpath_expr_kind:
+    compute_relpath_expr(static_cast<relpath_expr *>(e));
+    break;
+    
+  case axis_step_expr_kind:
+    compute_axis_step_expr(static_cast<axis_step_expr *>(e));
+    break;
+    
+  case match_expr_kind:
+    compute_match_expr(static_cast<match_expr *>(e));
+    break;
 
-    case axis_step_expr_kind:
-      compute_axis_step_expr(static_cast<axis_step_expr *>(e));
-      break;
+  case const_expr_kind:
+    compute_const_expr(static_cast<const_expr *>(e));
+    break;
+    
+  case order_expr_kind:
+    compute_order_expr(static_cast<order_expr *>(e));
+    break;
 
-    case match_expr_kind:
-      compute_match_expr(static_cast<match_expr *>(e));
-      break;
-
-    case const_expr_kind:
-      compute_const_expr(static_cast<const_expr *>(e));
-      break;
-
-    case order_expr_kind:
-      compute_order_expr(static_cast<order_expr *>(e));
-      break;
-
-    case elem_expr_kind:
-      compute_elem_expr(static_cast<elem_expr *>(e));
-      break;
-
-    case doc_expr_kind:
-      compute_doc_expr(static_cast<doc_expr *>(e));
-      break;
-
-    case attr_expr_kind:
-      compute_attr_expr(static_cast<attr_expr *>(e));
-      break;
-
-    case text_expr_kind:
-      compute_text_expr(static_cast<text_expr *>(e));
-      break;
-
-    case pi_expr_kind:
-      compute_pi_expr(static_cast<pi_expr *>(e));
-      break;
-
-    default:
-      break;
+  case elem_expr_kind:
+    compute_elem_expr(static_cast<elem_expr *>(e));
+    break;
+    
+  case doc_expr_kind:
+    compute_doc_expr(static_cast<doc_expr *>(e));
+    break;
+    
+  case attr_expr_kind:
+    compute_attr_expr(static_cast<attr_expr *>(e));
+    break;
+    
+  case text_expr_kind:
+    compute_text_expr(static_cast<text_expr *>(e));
+    break;
+    
+  case pi_expr_kind:
+    compute_pi_expr(static_cast<pi_expr *>(e));
+    break;
+    
+  case dynamic_function_invocation_expr_kind: // TODO
+  case function_item_expr_kind: // TODO
+  case delete_expr_kind:        // TODO
+  case insert_expr_kind:        // TODO
+  case rename_expr_kind:        // TODO
+  case replace_expr_kind:       // TODO
+  case transform_expr_kind:     // TODO
+  case ft_expr_kind:            // TODO
+  case eval_expr_kind:          // TODO
+  case exit_expr_kind:          // TODO
+  case flowctl_expr_kind:       // TODO
+  case while_expr_kind:         // TODO
+  case debugger_expr_kind:      // TODO
+    break;
+    
+  default:
+    ZORBA_ASSERT(false);
   }
 }
 
@@ -311,11 +334,11 @@ void DataflowAnnotationsComputer::compute_fo_expr(fo_expr* e)
     }
     else if (sorted == FunctionConsts::NO)
     {
-      e->setProducesSortedNodes(expr::ANNOTATION_FALSE);
+      e->setProducesSortedNodes(ANNOTATION_FALSE);
     } 
     else 
     {
-      expr::BoolAnnotationValue sorted = expr::ANNOTATION_FALSE;
+      BoolAnnotationValue sorted = ANNOTATION_FALSE;
 
       for (ulong i = 0; i < nArgs; ++i) 
       {
@@ -337,11 +360,11 @@ void DataflowAnnotationsComputer::compute_fo_expr(fo_expr* e)
     }
     else if (distinct == FunctionConsts::NO) 
     {
-      e->setProducesDistinctNodes(expr::ANNOTATION_FALSE);
+      e->setProducesDistinctNodes(ANNOTATION_FALSE);
     }
     else
     {
-      expr::BoolAnnotationValue distinct = expr::ANNOTATION_FALSE;
+      BoolAnnotationValue distinct = ANNOTATION_FALSE;
 
       for (ulong i = 0; i < nArgs; ++i) 
       {
@@ -519,12 +542,12 @@ void DataflowAnnotationsComputer::compute_relpath_expr(relpath_expr* e)
         }
 
         e->setProducesSortedNodes((sorted ?
-                                   expr::ANNOTATION_TRUE :
-                                   expr::ANNOTATION_FALSE));
+                                   ANNOTATION_TRUE :
+                                   ANNOTATION_FALSE));
 
         e->setProducesDistinctNodes((distinct ?
-                                     expr::ANNOTATION_TRUE :
-                                     expr::ANNOTATION_FALSE));
+                                     ANNOTATION_TRUE :
+                                     ANNOTATION_FALSE));
       }
     }
   }

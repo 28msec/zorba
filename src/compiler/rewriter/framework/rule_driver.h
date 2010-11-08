@@ -63,7 +63,9 @@ class SingletonRuleMajorDriverBase : public RuleMajorDriver
 {
 public:
   SingletonRuleMajorDriverBase(rule_ptr_t rule)
-  { m_rules.push_back(rule); }
+  { 
+    m_rules.push_back(rule);
+  }
 };
 
 
@@ -71,8 +73,7 @@ template <class R>
 class SingletonRuleMajorDriver : public SingletonRuleMajorDriverBase 
 {
 public:
-  SingletonRuleMajorDriver()
-    : SingletonRuleMajorDriverBase(rule_ptr_t(new R)) {}
+  SingletonRuleMajorDriver() : SingletonRuleMajorDriverBase(rule_ptr_t(new R)) {}
 };
 
 
@@ -86,8 +87,7 @@ private:
   rule_ptr_t theRule;
 
 public:
-  RuleOnceDriverBase(rule_ptr_t rule)
-    : theRule(rule) { }
+  RuleOnceDriverBase(rule_ptr_t rule) : theRule(rule) { }
 
   bool rewrite(RewriterContext& rCtx);
 };
@@ -97,8 +97,7 @@ template <class R>
 class RuleOnceDriver : public RuleOnceDriverBase 
 {
 public:
-  RuleOnceDriver()
-    : RuleOnceDriverBase(rule_ptr_t(new R)) {}
+  RuleOnceDriver() : RuleOnceDriverBase(rule_ptr_t(new R)) {}
 };
 
 

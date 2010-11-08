@@ -22,42 +22,40 @@
 #include "compiler/rewriter/framework/rewriter_context.h"
 #include "compiler/rewriter/rules/rule_base.h"
 #include "compiler/semantic_annotations/annotation_keys.h"
-#include "compiler/semantic_annotations/tsv_annotation.h"
+
 
 namespace zorba 
 {
 
-RULE(EchoNodes);
+PREPOST_RULE(EchoNodes);
 
-RULE(PlanPrinter);
+PREPOST_RULE(PlanPrinter);
 
-RULE(MarkConsumerNodeProps);
+PREPOST_RULE(MarkProducerNodeProps);
 
-RULE(MarkProducerNodeProps);
+PREPOST_RULE(EliminateNodeOps);
 
-RULE(EliminateNodeOps);
+PREPOST_RULE(ReplaceExprWithConstantOneWhenPossible);
 
-RULE(ReplaceExprWithConstantOneWhenPossible);
+PREPOST_RULE(SpecializeOperations);
 
-RULE(SpecializeOperations);
+PREPOST_RULE(EliminateTypeEnforcingOperations);
 
-RULE(EliminateTypeEnforcingOperations);
+PREPOST_RULE(EliminateUnusedLetVars);
 
-RULE(EliminateUnusedLetVars);
+PREPOST_RULE(RefactorPredFLWOR);
 
-RULE(RefactorPredFLWOR);
+PREPOST_RULE(MergeFLWOR);
 
-RULE(MergeFLWOR);
+PREPOST_RULE(EliminateExtraneousPathSteps);
 
-RULE(EliminateExtraneousPathSteps);
+PREPOST_RULE(MarkFreeVars);
 
-RULE(MarkFreeVars);
+PREPOST_RULE(HoistExprsOutOfLoops);
 
-RULE(HoistExprsOutOfLoops);
+PREPOST_RULE(InlineFunctions);
 
-RULE(InlineFunctions);
-
-RULE(PartialEval);
+PREPOST_RULE(PartialEval);
 
 
 class FoldConst : public PrePostRewriteRule 
@@ -85,6 +83,19 @@ class MarkExprs : public RewriteRule
 {
 public:
   MarkExprs() : RewriteRule(RewriteRule::MarkExprs, "MarkExprs") {}
+
+  expr_t apply(RewriterContext& rCtx, expr* node, bool& modified);
+};
+
+
+class MarkConsumerNodeProps : public RewriteRule 
+{
+public:
+  MarkConsumerNodeProps() 
+    :
+    RewriteRule(RewriteRule::MarkConsumerNodeProps, "MarkConsumerNodeProps")
+  {
+  }
 
   expr_t apply(RewriterContext& rCtx, expr* node, bool& modified);
 };

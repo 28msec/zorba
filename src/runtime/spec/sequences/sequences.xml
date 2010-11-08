@@ -24,9 +24,6 @@
 </zorba:source>
   
 <zorba:codegen>
-  <zorba:h>
-    <zorba:include form="Quoted">functions/single_seq_func.h</zorba:include>
-  </zorba:h>
   <zorba:cpp>
     <zorba:include form="Quoted">system/globalenv.h</zorba:include>
     <zorba:include form="Quoted">types/typeops.h</zorba:include>
@@ -48,6 +45,7 @@
   </zorba:description>
 
   <zorba:function annIsUpdating="true">
+
     <zorba:signature localname="concatenate" prefix="op">
       <zorba:param>item()*</zorba:param>
       <zorba:param>true</zorba:param> <!-- variadic function -->
@@ -56,8 +54,10 @@
 
     <zorba:methods>
       <zorba:getReturnType/>
-      <zorba:compute_annotation/>
+      <zorba:ignoresSortedNodes/>
+      <zorba:ignoresDuplicateNodes/>
     </zorba:methods>
+
   </zorba:function>
 
   <zorba:state generateInit="use-default" generateReset="use-default">
@@ -77,50 +77,52 @@
 
 <!--
 /*******************************************************************************
-  15.1.3 fn:index-of
-  ******************************************************************************/
+  15.1.3 fn:index-of($seqParam as xs:anyAtomicType*,
+                     $srchParam as xs:anyAtomicType) as xs:integer*
+       
+         fn:index-of($seqParam as xs:anyAtomicType*,
+                     $srchParam as xs:anyAtomicType,
+                     $collation as xs:string) as xs:integer*
+********************************************************************************/
 -->
 <zorba:iterator name="FnIndexOfIterator">
     
-    <zorba:description author="Zorba Team">
-      Summary: Returns a sequence of positive integers giving the positions 
-      within the sequence $seqParam of items that are equal to $srchParam. 
+  <zorba:description author="Zorba Team">
+  Summary: Returns a sequence of positive integers giving the positions 
+  within the sequence $seqParam of items that are equal to $srchParam. 
       
-      The collation used by the invocation of this function is determined 
-      according to the rules in 7.3.1 Collations. The collation is used when 
-      string comparison is required. 
+  The collation used by the invocation of this function is determined 
+  according to the rules in 7.3.1 Collations. The collation is used when 
+  string comparison is required. 
       
-      The items in the sequence $seqParam are compared with $srchParam under 
-      the rules for the 'eq' operator. Values that cannot be compared, i.e. 
-      the 'eq' operator is not defined for their types, are considered to be 
-      distinct. If an item compares equal, then the position of that item in 
-      the sequence $seqParam is included in the result. 
+  The items in the sequence $seqParam are compared with $srchParam under 
+  the rules for the 'eq' operator. Values that cannot be compared, i.e. 
+  the 'eq' operator is not defined for their types, are considered to be 
+  distinct. If an item compares equal, then the position of that item in 
+  the sequence $seqParam is included in the result. 
       
-      If the value of $seqParam is the empty sequence, or if no item in 
-      $seqParam matches $srchParam, then the empty sequence is returned. 
+  If the value of $seqParam is the empty sequence, or if no item in 
+  $seqParam matches $srchParam, then the empty sequence is returned. 
       
-      The first item in a sequence is at position 1, not position 0.
-      The result sequence is in ascending numeric order.
-      fn:index-of($seqParam as xs:anyAtomicType*,
-                  $srchParam as xs:anyAtomicType) as xs:integer*
-      
-      fn:index-of($seqParam as xs:anyAtomicType*,
-                  $srchParam as xs:anyAtomicType,
-                  $collation as xs:string) as xs:integer*
-    </zorba:description>
+  The first item in a sequence is at position 1, not position 0.
+  The result sequence is in ascending numeric order.
+  </zorba:description>
     
   <zorba:function >
+
     <zorba:signature localname="index-of" prefix="fn">
       <zorba:param>xs:anyAtomicType*</zorba:param>
       <zorba:param>xs:anyAtomicType</zorba:param>
       <zorba:output>xs:integer*</zorba:output>
     </zorba:signature>
+
     <zorba:signature localname="index-of" prefix="fn">
       <zorba:param>xs:anyAtomicType*</zorba:param>
       <zorba:param>xs:anyAtomicType</zorba:param>
       <zorba:param>xs:string</zorba:param>
       <zorba:output>xs:integer*</zorba:output>
     </zorba:signature>
+
   </zorba:function>
 
   <zorba:state>
@@ -138,62 +140,81 @@
 
 <!--
 /*******************************************************************************
-  15.1.4 fn:empty
+  15.1.4 fn:empty($arg as item()*) as xs:boolean
 ********************************************************************************/
 -->
 <zorba:iterator name="FnEmptyIterator">
     
-    <zorba:description author="Zorba Team">
-      If the value of $arg is the empty sequence, the function returns true;
-      otherwise, the function returns false.
-    </zorba:description>
+  <zorba:description author="Zorba Team">
+  If the value of $arg is the empty sequence, the function returns true;
+  otherwise, the function returns false.
+  </zorba:description>
   
   <zorba:function>
+
     <zorba:signature localname="empty" prefix="fn">
       <zorba:param>item()*</zorba:param>
       <zorba:output>xs:boolean</zorba:output>
     </zorba:signature>
+
+    <zorba:methods>
+      <zorba:ignoresSortedNodes/> 
+      <zorba:ignoresDuplicateNodes/> 
+    </zorba:methods>
+
   </zorba:function>
 
 </zorba:iterator> 
 
 <!--
 /*******************************************************************************
-  15.1.5 fn:exists
+  15.1.5 fn:exists($arg as item()*) as xs:boolean
 ********************************************************************************/
 -->
 <zorba:iterator name="FnExistsIterator">
     
-    <zorba:description author="Zorba Team">
-      If the value of $arg is not the empty sequence, the function returns true; 
-      otherwise, the function returns false.
-    </zorba:description>
+  <zorba:description author="Zorba Team">
+  If the value of $arg is not the empty sequence, the function returns true; 
+  otherwise, the function returns false.
+  </zorba:description>
   
   <zorba:function >
     <zorba:signature localname="exists" prefix="fn">
       <zorba:param>item()*</zorba:param>
       <zorba:output>xs:boolean</zorba:output>
     </zorba:signature>
+
+    <zorba:methods>
+      <zorba:ignoresSortedNodes/> 
+      <zorba:ignoresDuplicateNodes/> 
+    </zorba:methods>
   </zorba:function>
 
 </zorba:iterator>
 
 <!--
 /*******************************************************************************
-  15.1.6 fn:distinct-values
+  15.1.6 fn:distinct-values($arg as xs:anyAtomicType*) as xs:anyAtomicType*
+
+         fn:distinct-values($arg as xs:anyAtomicType*,
+                            $collation as xs:string) as xs:anyAtomicType*
 ********************************************************************************/
 -->
 <zorba:iterator name="FnDistinctValuesIterator">
     
   <zorba:description author="Zorba Team">
   Returns the sequence that results from removing from arg all but one of a 
-  set of values that are eq to one other. The order in which the sequence of
-  values is returned is implementation dependent. Here, we return the first
-  item that is not a duplicate and throw away the remaining ones.
+  set of values that are eq to one other. Values of type xs:untypedAtomic are
+  compared as if they were of type xs:string. Values that cannot be compared,
+  i.e. the eq operator is not defined for their types, are considered to be
+  distinct. The order in which the sequence of values is returned is implementation
+  dependent. In zorba, we return the first item that is not a duplicate and
+  throw away the remaining ones.
   </zorba:description>
 
   <zorba:function>
-    <zorba:signature localname="distinct-values" prefix="fn">
+ 
+   <zorba:signature localname="distinct-values" prefix="fn">
       <zorba:param>xs:anyAtomicType*</zorba:param>
       <zorba:param>xs:string</zorba:param>
       <zorba:output>xs:anyAtomicType*</zorba:output>
@@ -206,6 +227,8 @@
 
     <zorba:methods>
       <zorba:getReturnType/>
+      <zorba:ignoresSortedNodes/>
+      <zorba:ignoresDuplicateNodes/> 
     </zorba:methods>
 
   </zorba:function>
@@ -225,24 +248,33 @@
 
 <!--
 /*******************************************************************************
-  15.1.7 fn:insert-before
+  15.1.7 fn:insert-before($target as item()*,
+                          $position as xs:integer,
+                          $inserts as item()*) as item()*
 ********************************************************************************/ 
 -->
 <zorba:iterator name="FnInsertBeforeIterator">
     
   <zorba:description author="Zorba Team">
-      Returns a new sequence constructed from the value of the first parameter with
-      the value of third parameter inserted at the position specified by the value
-      of the second parameter.
+  Returns a new sequence constructed from the value of the first parameter with
+  the value of third parameter inserted at the position specified by the value
+  of the second parameter.
   </zorba:description>
     
   <zorba:function>
+
     <zorba:signature localname="insert-before" prefix="fn">
       <zorba:param>item()*</zorba:param>
       <zorba:param>xs:integer</zorba:param>
       <zorba:param>item()*</zorba:param>
       <zorba:output>item()*</zorba:output>
     </zorba:signature>
+
+    <zorba:methods>
+      <zorba:ignoresSortedNodes/>
+      <zorba:ignoresDuplicateNodes/> 
+    </zorba:methods>
+
   </zorba:function>
 
   <zorba:state>
@@ -260,19 +292,20 @@
 
 <!--
 /*******************************************************************************
-  15.1.8 fn:remove
+  15.1.8 fn:remove($target as item()*, $position as xs:integer) as item()*
 ********************************************************************************/
 -->
 <zorba:iterator name="FnRemoveIterator">
     
   <zorba:description author="Zorba Team">
-    Returns a new sequence constructed from the value of aTarget with the item at
-    the position specified by the value of aPosition removed.
+  Returns a new sequence constructed from the value of aTarget with the item at
+  the position specified by the value of aPosition removed.
   </zorba:description>
   
   <zorba:function>
 
     <zorba:signature localname="remove" prefix="fn">
+
       <zorba:param>item()*</zorba:param>
       <zorba:param>xs:integer</zorba:param>
       <zorba:output>item()*</zorba:output>
@@ -281,7 +314,9 @@
     <zorba:methods>
       <zorba:getReturnType/>
       <zorba:propagatesDistinctNodes producer="0"/>
-      <zorba:propagatesSortedNodes producer="0"/>      
+      <zorba:propagatesSortedNodes producer="0"/>
+      <zorba:ignoresSortedNodes/>
+      <zorba:ignoresDuplicateNodes/>    
     </zorba:methods>
 
   </zorba:function>
@@ -301,13 +336,13 @@
 
 <!--
 /*******************************************************************************
-  15.1.9 fn:reverse
+  15.1.9 fn:reverse($arg as item()*) as item()*
 ********************************************************************************/
 -->
 <zorba:iterator name="FnReverseIterator">
     
   <zorba:description author="Zorba Team">
-    fn:reverse
+  fn:reverse
   </zorba:description>
   
   <zorba:function>
@@ -320,6 +355,8 @@
     <zorba:methods>
       <zorba:getReturnType/>
       <zorba:propagatesDistinctNodes producer="0"/>
+      <zorba:ignoresSortedNodes/>
+      <zorba:ignoresDuplicateNodes/> 
     </zorba:methods>
 
   </zorba:function>
@@ -333,14 +370,19 @@
 
 <!--
 /*******************************************************************************
-  15.1.10 fn:subsequence
+  15.1.10 fn:subsequence($sourceSeq as item()*,
+                         $startingLoc as xs:double) as item()*
+
+          fn:subsequence($sourceSeq as item()*,
+                         $startingLoc as xs:double,
+                         $length as xs:double) as item()*
 ********************************************************************************/
 -->
 <zorba:iterator name="FnSubsequenceIterator" 
                 generateResetImpl="true">
     
   <zorba:description author="Zorba Team">
-    fn:subsequence
+  fn:subsequence
   </zorba:description>
   
   <zorba:function generateCodegen="false">
@@ -362,7 +404,6 @@
       <zorba:getReturnType/>
       <zorba:propagatesDistinctNodes producer="0"/>
       <zorba:propagatesSortedNodes producer="0"/>
-      <zorba:compute_annotation/>
     </zorba:methods>
 
   </zorba:function>
@@ -409,7 +450,6 @@
       <zorba:getReturnType/>
       <zorba:propagatesDistinctNodes producer="0"/>
       <zorba:propagatesSortedNodes producer="0"/>
-      <zorba:compute_annotation/>
     </zorba:methods>
 
   </zorba:function>
@@ -427,7 +467,8 @@
 
 <!--
 /*******************************************************************************
-   zorbaop:sequence-point-access
+   zorbaop:sequence-point-access($sourceSeq as item()*,
+                                 $pos as xs:integer) as item()?
 ********************************************************************************/
 -->
 <zorba:iterator name="SequencePointAccessIterator"
@@ -449,7 +490,6 @@
       <zorba:getReturnType/>
       <zorba:propagatesDistinctNodes producer="0"/>
       <zorba:propagatesSortedNodes producer="0"/>      
-      <zorba:compute_annotation/>
     </zorba:methods>
 
   </zorba:function>
@@ -463,14 +503,23 @@
 
 <!--
 /*******************************************************************************
-  15.2.1 fn:zero-or-one
+  15.1.11 fn:unordered(($sourceSeq as item()*) as item()*
+
+  see in ../func_sequences_impl.h
+********************************************************************************/
+-->
+
+
+<!--
+/*******************************************************************************
+  15.2.1 fn:zero-or-one($arg as item()*) as item()?
 ********************************************************************************/
 -->
 <zorba:iterator name="FnZeroOrOneIterator">
     
-    <zorba:description author="Zorba Team">
-      fn:zero-or-one
-    </zorba:description>
+  <zorba:description author="Zorba Team">
+  Returns $arg if it contains zero or one items. Otherwise, raises err:FORG0003.
+  </zorba:description>
     
     <zorba:function generateCodegen="false">
       <zorba:signature localname="zero-or-one" prefix="fn">
@@ -480,6 +529,7 @@
 
     <zorba:methods>
       <zorba:getReturnType/>
+      <zorba:ignoresSortedNodes/>
     </zorba:methods>
 
    </zorba:function>
@@ -494,14 +544,14 @@
 
 <!--
 /*******************************************************************************
-  15.2.2 fn:one-or-more
+  15.2.2 fn:one-or-more($arg as item()*) as item()+
 ********************************************************************************/
 -->
 <zorba:iterator name="FnOneOrMoreIterator">
     
-    <zorba:description author="Zorba Team">
-      fn:one-or-more
-    </zorba:description>
+  <zorba:description author="Zorba Team">
+  Returns $arg if it contains one or more items. Otherwise, raises err:FORG0004.
+  </zorba:description>
   
   <zorba:function>
 
@@ -514,7 +564,9 @@
       <zorba:getReturnType/>
       <zorba:isMap producer="0"/>
       <zorba:propagatesDistinctNodes producer="0"/>
-      <zorba:propagatesSortedNodes producer="0"/>      
+      <zorba:propagatesSortedNodes producer="0"/>  
+      <zorba:ignoresSortedNodes/>
+      <zorba:ignoresDuplicateNodes/> 
     </zorba:methods>
 
   </zorba:function>
@@ -523,31 +575,43 @@
 
 <!--
 /*******************************************************************************
-  15.2.3 fn:exactly-one
+  15.2.3 fn:exactly-one($arg as item()*) as item()
 ********************************************************************************/
 -->
 <zorba:iterator name="FnExactlyOneIterator" generateCodegen="false">
     
-    <zorba:description author="Zorba Team">fn:exactly-one</zorba:description>
+  <zorba:description author="Zorba Team">
+  Returns $arg if it contains exactly one item. Otherwise, raises err:FORG0005.
+  </zorba:description>
     
-    <zorba:constructor>
-        <zorba:parameter type="bool" name="raiseError" defaultValue="true"/>
-        <zorba:parameter type="bool" name="doDistinct" defaultValue="false"/>
-    </zorba:constructor>
+  <zorba:constructor>
+      <zorba:parameter type="bool" name="raiseError" defaultValue="true"/>
+      <zorba:parameter type="bool" name="doDistinct" defaultValue="false"/>
+  </zorba:constructor>
     
-    <zorba:member type="bool" name="theRaiseError" brief=""/>
-    <zorba:member type="bool" name="theDoDistinct" brief=""/>
+  <zorba:member type="bool" name="theRaiseError" brief=""/>
+  <zorba:member type="bool" name="theDoDistinct" brief=""/>
   
 </zorba:iterator>
 
 <!--
 /*******************************************************************************
-  15.3.1 fn:deep-equal
+  15.3.1 fn:deep-equal($parameter1 as item()*,
+                       $parameter2 as item()*) as xs:boolean
+
+         fn:deep-equal($parameter1 as item()*,
+                       $parameter2 as item()*,
+                       $collation as string) as xs:boolean
 ********************************************************************************/
 -->
 <zorba:iterator name="FnDeepEqualIterator">
     
-  <zorba:description author="Zorba Team">fn:deep-equal</zorba:description>
+  <zorba:description author="Zorba Team">
+  This function assesses whether two sequences are deep-equal to each other. To
+  be deep-equal, they must contain items that are pairwise deep-equal; and for
+  two items to be deep-equal, they must either be atomic values that compare equal,
+  or nodes of the same kind, with the same name, whose children are deep-equal.
+  </zorba:description>
   
   <zorba:function>
 
@@ -574,55 +638,71 @@
 
 <!--
 /*******************************************************************************
-  15.3.2 op:union : implemented using concat and sort
+  15.3.2 op:union($parameter1 as node()*, $parameter2 as node()*) as node()*
+
+   union is implemented using concat and sort
 ********************************************************************************/
 -->
+
+<!--
+/*******************************************************************************
+  15.3.3 op:intersect($parameter1 as node()*, $parameter2 as node()*) as node()*
+
+  intersect is implemented by the HashSemiJoinIterator below
+********************************************************************************/
+-->
+
+<!--
+/*******************************************************************************
+  15.3.4 op:except($parameter1 as node()*, $parameter2 as node()*) as node()*
+
+  except is implemented by the HashSemiJoinIterator below
+********************************************************************************/
+-->
+
 <zorba:iterator name="HashSemiJoinIterator" 
                 generateCodegen="false">
     
-    <zorba:description author="Zorba Team">
-      op:union : implemented using concat and sort
-      op:intersect : implemented by the HashSemiJoinIterator below
-      op:except : implemented by the HashSemiJoinIterator below
-
-      Hashing semi/anti join iterator.
+  <zorba:description author="Zorba Team">
+  Hashing semi/anti join iterator.
       
-      First producer goes in the result if a match in the second producer is 
-      found/not found. The order of the first producer is retained. No duplicate
-      elimination is performed.
-    </zorba:description>
+  First producer goes in the result if a match in the second producer is 
+  found/not found. The order of the first producer is retained. No duplicate
+  elimination is performed.
+  </zorba:description>
 
-    <zorba:state generateInit="false" generateReset="false"
-                 generateConstructor="false" generateDestructor="false">
-        <zorba:member type="store::NodeHashSet*" name="theRightInput" brief=""/>
-    </zorba:state>
+  <zorba:state generateInit="false" generateReset="false"
+               generateConstructor="false" generateDestructor="false">
+    <zorba:member type="store::NodeHashSet*" name="theRightInput" brief=""/>
+  </zorba:state>
 
-    <zorba:constructor>
-      <zorba:parameter type="bool" name="antijoin" defaultValue="false"/>
-    </zorba:constructor>
+  <zorba:constructor>
+    <zorba:parameter type="bool" name="antijoin" defaultValue="false"/>
+  </zorba:constructor>
     
-    <zorba:member type="bool" name="theAntijoin" brief=""/>
+  <zorba:member type="bool" name="theAntijoin" brief=""/>
     
 </zorba:iterator>    
+
 
 <zorba:iterator name="SortSemiJoinIterator" 
                 generateCodegen="false">
     
-    <zorba:description author="Zorba Team">
-      Sortmerge based semijoin iterator.
+  <zorba:description author="Zorba Team">
+  Sortmerge based semijoin iterator.
 
-      First producer goes in the result if a match in the second producer is found.
-      Precondition: both inputs must be sorted.
-      Postcondition: the order of the first producer is retained.
+  First producer goes in the result if a match in the second producer is found.
+  Precondition: both inputs must be sorted.
+  Postcondition: the order of the first producer is retained.
       
-      If either of the inputs is guaranteed to contain no duplicates, then the
-      output will be duplicate-free. Otherwise the output may contain duplicates.
-    </zorba:description>
+  If either of the inputs is guaranteed to contain no duplicates, then the
+  output will be duplicate-free. Otherwise the output may contain duplicates.
+  </zorba:description>
 </zorba:iterator>
     
 <!--
 /*******************************************************************************
-  15.4.1 fn:count
+  15.4.1 fn:count($arg as item()*) as xs:integer
 ********************************************************************************/
 -->
 <zorba:iterator name="FnCountIterator">
@@ -634,13 +714,18 @@
       <zorba:param>item()*</zorba:param>
       <zorba:output>xs:integer</zorba:output>
     </zorba:signature>
+
+    <zorba:methods>
+      <zorba:ignoresSortedNodes/>
+    </zorba:methods>
+
   </zorba:function>
 
 </zorba:iterator>
     
 <!--
 /*******************************************************************************
-  15.4.2 fn:avg
+  15.4.2 fn:avg($arg as xs:anyAtomicType*) as xs:anyAtomicType?
 ********************************************************************************/
 -->
 <zorba:iterator name="FnAvgIterator">
@@ -654,20 +739,51 @@
       <zorba:param>xs:anyAtomicType*</zorba:param>
       <zorba:output>xs:anyAtomicType?</zorba:output>
     </zorba:signature>
+
+    <zorba:methods>
+      <zorba:ignoresSortedNodes/>
+    </zorba:methods>
   </zorba:function>
 
 </zorba:iterator>
-    
+
+
 <!--
 /*******************************************************************************
-  15.4.5 fn:sum
+  15.4.3 fn:max($arg as xs:anyAtomicType*) as xs:anyAtomicType?
+
+         fn:max($arg as xs:anyAtomicType*, 
+                $collation as string) as xs:anyAtomicType?
+********************************************************************************/
+-->
+
+
+<!--
+/*******************************************************************************
+  15.4.4 fn:min($arg as xs:anyAtomicType*) as xs:anyAtomicType?
+
+         fn:min($arg as xs:anyAtomicType*, 
+                $collation as string) as xs:anyAtomicType?
+********************************************************************************/
+-->
+
+
+<!--
+/*******************************************************************************
+  15.4.5 fn:sum($arg as xs:anyAtomicType*) as xs:anyAtomicType
+
+         fn:sum($arg as xs:anyAtomicType*,
+                $zero as xs:anyAtomicType?) as xs:anyAtomicType?
 ********************************************************************************/
 -->
 <zorba:iterator name="FnSumIterator">
   
-    <zorba:description author="Zorba Team">
-      fn:sum
-    </zorba:description>
+  <zorba:description author="Zorba Team">
+  Returns a value obtained by adding together the values in $arg. If $zero is 
+  not specified, then the value returned for an empty sequence is the xs:integer
+  value 0. If $zero is specified, then the value returned for an empty sequence
+  is $zero.
+  </zorba:description>
   
   <zorba:function specializable="true">
 
@@ -682,6 +798,10 @@
       <zorba:output>xs:anyAtomicType?</zorba:output>
     </zorba:signature>
 
+    <zorba:methods>
+      <zorba:ignoresSortedNodes/>
+    </zorba:methods>
+
   </zorba:function>
 
 </zorba:iterator>
@@ -694,15 +814,22 @@
     </zorba:description>
   
   <zorba:function>
+
     <zorba:signature localname="sum_double" prefix="fn">
       <zorba:param>xs:double*</zorba:param>
       <zorba:output>xs:double</zorba:output>
     </zorba:signature>
+
     <zorba:signature localname="sum_double" prefix="fn">
       <zorba:param>xs:double*</zorba:param>
       <zorba:param>xs:anyAtomicType?</zorba:param>
       <zorba:output>xs:anyAtomicType?</zorba:output>
     </zorba:signature>
+
+    <zorba:methods>
+      <zorba:ignoresSortedNodes/>
+    </zorba:methods>
+
   </zorba:function>
 
 </zorba:iterator>
@@ -715,15 +842,22 @@
     </zorba:description>
   
   <zorba:function >
+
     <zorba:signature localname="sum_float" prefix="fn">
       <zorba:param>xs:float*</zorba:param>
       <zorba:output>xs:float</zorba:output>
     </zorba:signature>
+
     <zorba:signature localname="sum_float" prefix="fn">
       <zorba:param>xs:float*</zorba:param>
       <zorba:param>xs:anyAtomicType?</zorba:param>
       <zorba:output>xs:anyAtomicType?</zorba:output>
     </zorba:signature>
+
+    <zorba:methods>
+      <zorba:ignoresSortedNodes/>
+    </zorba:methods>
+
   </zorba:function>
 
 </zorba:iterator>
@@ -736,15 +870,22 @@
     </zorba:description>
   
   <zorba:function >
+
     <zorba:signature localname="sum_decimal" prefix="fn">
       <zorba:param>xs:decimal*</zorba:param>
       <zorba:output>xs:decimal</zorba:output>
     </zorba:signature>
+
     <zorba:signature localname="sum_decimal" prefix="fn">
       <zorba:param>xs:decimal*</zorba:param>
       <zorba:param>xs:anyAtomicType?</zorba:param>
       <zorba:output>xs:anyAtomicType?</zorba:output>
     </zorba:signature>
+
+    <zorba:methods>
+      <zorba:ignoresSortedNodes/>
+    </zorba:methods>
+
   </zorba:function>
 
 </zorba:iterator>
@@ -757,22 +898,29 @@
     </zorba:description>
   
   <zorba:function >
+
     <zorba:signature localname="sum_integer" prefix="fn">
       <zorba:param>xs:integer*</zorba:param>
       <zorba:output>xs:integer</zorba:output>
     </zorba:signature>
+
     <zorba:signature localname="sum_integer" prefix="fn">
       <zorba:param>xs:integer*</zorba:param>
       <zorba:param>xs:anyAtomicType?</zorba:param>
       <zorba:output>xs:anyAtomicType?</zorba:output>
     </zorba:signature>
+
+    <zorba:methods>
+      <zorba:ignoresSortedNodes/>
+    </zorba:methods>
+
   </zorba:function>
 
 </zorba:iterator>
 
 <!--
 /*******************************************************************************
-  15.5.1 op:to
+  15.5.1 op:to($firstval as xs:integer, $lastval as xs:integer) as xs:integer*
 ********************************************************************************/
 -->
 <zorba:iterator name="OpToIterator">
@@ -803,7 +951,147 @@
 
 <!--
 /*******************************************************************************
-  15.5.4 fn:doc
+  14.5.2 fn:id($arg as xs:string*) as element()*
+
+         fn:id($arg as xs:string*, $node as node()) as element()*
+
+********************************************************************************/
+-->
+<zorba:iterator name="FnIdIterator">
+
+  <zorba:description author="Zorba Team">
+  Returns the sequence of element nodes that are in the target document and have
+  an ID value matching the value of one or more of the IDREF values supplied in 
+  $arg. The target document is the document containing $node, or the document
+  containing the context item (.) if the second argument is omitted.
+  </zorba:description>
+
+  <zorba:function>
+
+    <zorba:signature localname="id" prefix="fn">
+      <zorba:param>xs:string*</zorba:param>
+      <zorba:output>element()*</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="id" prefix="fn">
+      <zorba:param>xs:string*</zorba:param>
+      <zorba:param>node()</zorba:param>
+      <zorba:output>element()*</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:producesDistinctNodes returnValue="YES"/>
+      <zorba:producesSortedNodes returnValue="YES"/>
+      <zorba:ignoresSortedNodes/>
+      <zorba:ignoresDuplicateNodes/>
+    </zorba:methods>
+
+  </zorba:function>
+
+  <zorba:state baseClassName="DescendantAxisState" generateInit="false" generateReset="false">
+    <zorba:member type="bool" name="theIsInitialized"/>
+    <zorba:member type="std::vector&lt;zstring&gt;" name="theIds"/>
+    <zorba:member type="store::Item_t" name="theDocNode"/>
+    <zorba:member type="rchandle&lt;store::AttributesIterator&gt;" name="theAttrsIte"/>
+  </zorba:state>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+  14.5.3 fn:element-with-id($arg as xs:string*) as element()*
+
+         fn:element-with-id($arg as xs:string*, $node as node()) as element()*
+
+********************************************************************************/
+-->
+<zorba:iterator name="FnElementWithIdIterator">
+
+  <zorba:description author="Zorba Team">
+  The effect of this function is identical to fn:id in respect of elements that
+  have an attribute with the is-id property. However, it behaves differently in
+  respect of element nodes with the is-id property. Whereas the fn:id, for legacy
+  reasons, returns the element that has the is-id property, this function returns
+  the element identified by the ID, which is the parent of the element having the
+  is-id property.
+  </zorba:description>
+
+  <zorba:function>
+
+    <zorba:signature localname="element-with-id" prefix="fn">
+      <zorba:param>xs:string*</zorba:param>
+      <zorba:output>element()*</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="element-with-id" prefix="fn">
+      <zorba:param>xs:string*</zorba:param>
+      <zorba:param>node()</zorba:param>
+      <zorba:output>element()*</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:producesDistinctNodes returnValue="YES"/>
+      <zorba:producesSortedNodes returnValue="YES"/>
+      <zorba:ignoresSortedNodes/>
+      <zorba:ignoresDuplicateNodes/>
+    </zorba:methods>
+
+  </zorba:function>
+
+  <zorba:state baseClassName="DescendantAxisState" generateInit="false" generateReset="false">
+    <zorba:member type="bool" name="theIsInitialized"/>
+    <zorba:member type="std::vector&lt;zstring&gt;" name="theIds"/>
+    <zorba:member type="store::Item_t" name="theDocNode"/>
+    <zorba:member type="rchandle&lt;store::AttributesIterator&gt;" name="theAttrsIte"/>
+  </zorba:state>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+  14.5.4 fn:idref($arg as xs:string*) as node()*
+
+         fn:idref($arg as xs:string*, $node as node()) as node()*
+********************************************************************************/
+-->
+<zorba:iterator name="FnIdRefIterator">
+
+  <zorba:description author="Zorba Team">fn:idref</zorba:description>
+
+  <zorba:function>
+
+    <zorba:signature localname="idref" prefix="fn">
+      <zorba:param>xs:string*</zorba:param>
+      <zorba:output>node()*</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="idref" prefix="fn">
+      <zorba:param>xs:string*</zorba:param>
+      <zorba:param>node()</zorba:param>
+      <zorba:output>node()*</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:producesDistinctNodes returnValue="YES"/>
+      <zorba:producesSortedNodes returnValue="YES"/>
+      <zorba:ignoresSortedNodes/>
+      <zorba:ignoresDuplicateNodes/>
+    </zorba:methods>
+
+  </zorba:function>
+
+  <zorba:state baseClassName="DescendantAxisState" generateInit="false" generateReset="false">
+    <zorba:member type="bool" name="theIsInitialized"/>
+    <zorba:member type="std::vector&lt;zstring&gt;" name="theIds"/>
+    <zorba:member type="store::Item_t" name="theDocNode"/>
+    <zorba:member type="rchandle&lt;store::AttributesIterator&gt;" name="theAttrsIte"/>
+  </zorba:state>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+  15.5.5 fn:doc($uri as xs:string?) as document-node()?
 ********************************************************************************/
 -->
 <zorba:iterator name="FnDocIterator">
@@ -829,7 +1117,7 @@
 
 <!--
 /*******************************************************************************
-  15.5.5 fn:doc-available
+  15.5.6 fn:doc-available($uri as xs:string?) as xs:boolean
 ********************************************************************************/
 -->
 <zorba:iterator name="FnDocAvailableIterator">
@@ -899,120 +1187,6 @@
     </zorba:methods>
 
   </zorba:function>
-
-</zorba:iterator>
-
-<!--
-/*******************************************************************************
-  14.5.2 fn:id
-********************************************************************************/
--->
-<zorba:iterator name="FnIdIterator">
-
-  <zorba:description author="Zorba Team">fn:id</zorba:description>
-
-  <zorba:function>
-
-    <zorba:signature localname="id" prefix="fn">
-      <zorba:param>xs:string*</zorba:param>
-      <zorba:output>element()*</zorba:output>
-    </zorba:signature>
-
-    <zorba:signature localname="id" prefix="fn">
-      <zorba:param>xs:string*</zorba:param>
-      <zorba:param>node()</zorba:param>
-      <zorba:output>element()*</zorba:output>
-    </zorba:signature>
-
-    <zorba:methods>
-      <zorba:producesDistinctNodes returnValue="YES"/>
-      <zorba:producesSortedNodes returnValue="YES"/>
-    </zorba:methods>
-
-  </zorba:function>
-
-  <zorba:state baseClassName="DescendantAxisState" generateInit="false" generateReset="false">
-    <zorba:member type="bool" name="theIsInitialized"/>
-    <zorba:member type="std::vector&lt;zstring&gt;" name="theIds"/>
-    <zorba:member type="store::Item_t" name="theDocNode"/>
-    <zorba:member type="rchandle&lt;store::AttributesIterator&gt;" name="theAttrsIte"/>
-  </zorba:state>
-
-</zorba:iterator>
-
-<!--
-/*******************************************************************************
-  14.5.3 fn:element-with-id
-********************************************************************************/
--->
-<zorba:iterator name="FnElementWithIdIterator">
-
-  <zorba:description author="Zorba Team">fn:element-with-id</zorba:description>
-
-  <zorba:function>
-
-    <zorba:signature localname="element-with-id" prefix="fn">
-      <zorba:param>xs:string*</zorba:param>
-      <zorba:output>element()*</zorba:output>
-    </zorba:signature>
-
-    <zorba:signature localname="element-with-id" prefix="fn">
-      <zorba:param>xs:string*</zorba:param>
-      <zorba:param>node()</zorba:param>
-      <zorba:output>element()*</zorba:output>
-    </zorba:signature>
-
-    <zorba:methods>
-      <zorba:producesDistinctNodes returnValue="YES"/>
-      <zorba:producesSortedNodes returnValue="YES"/>
-    </zorba:methods>
-
-  </zorba:function>
-
-  <zorba:state baseClassName="DescendantAxisState" generateInit="false" generateReset="false">
-    <zorba:member type="bool" name="theIsInitialized"/>
-    <zorba:member type="std::vector&lt;zstring&gt;" name="theIds"/>
-    <zorba:member type="store::Item_t" name="theDocNode"/>
-    <zorba:member type="rchandle&lt;store::AttributesIterator&gt;" name="theAttrsIte"/>
-  </zorba:state>
-
-</zorba:iterator>
-
-<!--
-/*******************************************************************************
-  14.5.4 fn:idref
-********************************************************************************/
--->
-<zorba:iterator name="FnIdRefIterator">
-
-  <zorba:description author="Zorba Team">fn:idref</zorba:description>
-
-  <zorba:function>
-
-    <zorba:signature localname="idref" prefix="fn">
-      <zorba:param>xs:string*</zorba:param>
-      <zorba:output>node()*</zorba:output>
-    </zorba:signature>
-
-    <zorba:signature localname="idref" prefix="fn">
-      <zorba:param>xs:string*</zorba:param>
-      <zorba:param>node()</zorba:param>
-      <zorba:output>node()*</zorba:output>
-    </zorba:signature>
-
-    <zorba:methods>
-      <zorba:producesDistinctNodes returnValue="YES"/>
-      <zorba:producesSortedNodes returnValue="YES"/>
-    </zorba:methods>
-
-  </zorba:function>
-
-  <zorba:state baseClassName="DescendantAxisState" generateInit="false" generateReset="false">
-    <zorba:member type="bool" name="theIsInitialized"/>
-    <zorba:member type="std::vector&lt;zstring&gt;" name="theIds"/>
-    <zorba:member type="store::Item_t" name="theDocNode"/>
-    <zorba:member type="rchandle&lt;store::AttributesIterator&gt;" name="theAttrsIte"/>
-  </zorba:state>
 
 </zorba:iterator>
 

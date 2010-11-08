@@ -27,9 +27,6 @@
 #include "compiler/expression/fo_expr.h"
 #include "compiler/expression/path_expr.h"
 
-#include "compiler/semantic_annotations/annotation_keys.h"
-#include "compiler/semantic_annotations/tsv_annotation.h"
-
 #include "types/typeops.h"
 
 namespace zorba 
@@ -67,170 +64,161 @@ xqtref_t op_concatenate::getReturnType(
   }
 }
 
-
-void op_concatenate::compute_annotation(
-    AnnotationHolder *parent,
-    std::vector<AnnotationHolder *> &kids,
-    Annotations::Key k) const 
+  
+BoolAnnotationValue op_concatenate::ignoresSortedNodes(expr* fo, ulong input) const 
 {
-  switch (k) 
-  {
-    case Annotations::IGNORES_SORTED_NODES:
-    case Annotations::IGNORES_DUP_NODES:
-    {
-      for (std::vector<AnnotationHolder *>::iterator i = kids.begin();
-           i < kids.end();
-           ++i)
-        TSVAnnotationValue::update_annotation((*i), k, parent->get_annotation(k));
+  return fo->getIgnoresSortedNodes();
+}
 
-      break;
-    }
-    default: break;
-  }
+
+BoolAnnotationValue op_concatenate::ignoresDuplicateNodes(expr* fo, ulong input) const 
+{
+  return fo->getIgnoresDuplicateNodes();
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-function* fn_sum::specialize(
-   static_context* sctx,
-   const std::vector<xqtref_t>& argTypes) const
+BoolAnnotationValue fn_empty::ignoresSortedNodes(expr* fo, ulong input) const 
 {
-  RootTypeManager& rtm = GENV_TYPESYSTEM;
-  TypeManager* tm = sctx->get_typemanager();
+  return ANNOTATION_TRUE;
+}
 
-  xqtref_t argType = argTypes[0];
 
-  if (TypeOps::is_subtype(tm, *argType, *rtm.UNTYPED_ATOMIC_TYPE_STAR))
-  {
-    return (getArity() == 1 ?
-            GET_BUILTIN_FUNCTION(FN_SUM_DOUBLE_1) :
-            GET_BUILTIN_FUNCTION(FN_SUM_DOUBLE_2));
-  }
-  else if (TypeOps::is_subtype(tm, *argType, *rtm.DOUBLE_TYPE_STAR))
-  {
-    return (getArity() == 1 ?
-            GET_BUILTIN_FUNCTION(FN_SUM_DOUBLE_1) :
-            GET_BUILTIN_FUNCTION(FN_SUM_DOUBLE_2));
-  }
-  else if (TypeOps::is_subtype(tm, *argType, *rtm.FLOAT_TYPE_STAR))
-  {
-    return (getArity() == 1 ?
-            GET_BUILTIN_FUNCTION(FN_SUM_FLOAT_1) :
-            GET_BUILTIN_FUNCTION(FN_SUM_FLOAT_2));
-  }
-  else if (TypeOps::is_subtype(tm, *argType, *rtm.INTEGER_TYPE_STAR))
-  {
-    return (getArity() == 1 ?
-            GET_BUILTIN_FUNCTION(FN_SUM_INTEGER_1) :
-            GET_BUILTIN_FUNCTION(FN_SUM_INTEGER_2));
-  }
-  else if (TypeOps::is_subtype(tm, *argType, *rtm.DECIMAL_TYPE_STAR))
-  {
-    return (getArity() == 1 ?
-            GET_BUILTIN_FUNCTION(FN_SUM_DECIMAL_1) :
-            GET_BUILTIN_FUNCTION(FN_SUM_DECIMAL_2));
-  }
-  else
-  {
-    return NULL;
-  }
+BoolAnnotationValue fn_empty::ignoresDuplicateNodes(expr* fo, ulong input) const 
+{
+  return ANNOTATION_TRUE;
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t fn_one_or_more::getReturnType(
+BoolAnnotationValue fn_exists::ignoresSortedNodes(expr* fo, ulong input) const 
+{
+  return ANNOTATION_TRUE;
+}
+
+
+BoolAnnotationValue fn_exists::ignoresDuplicateNodes(expr* fo, ulong input) const 
+{
+  return ANNOTATION_TRUE;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+xqtref_t fn_distinct_values::getReturnType(
     const TypeManager* tm,
     const std::vector<xqtref_t>& arg_types) const
 {
-  return tm->create_type(*TypeOps::prime_type(tm, *arg_types[0]),
-                         TypeConstants::QUANT_PLUS);
+  return arg_types[0];
+}
+
+
+BoolAnnotationValue fn_distinct_values::ignoresSortedNodes(
+    expr* fo, 
+    ulong input) const 
+{
+  if (input == 0)
+    return fo->getIgnoresSortedNodes();
+
+  return ANNOTATION_FALSE;
+}
+
+
+BoolAnnotationValue fn_distinct_values::ignoresDuplicateNodes(
+    expr* fo,
+    ulong input) const 
+{
+  if (input == 0)
+    return ANNOTATION_TRUE;
+
+  return ANNOTATION_FALSE;
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t fn_exactly_one_noraise::getReturnType(
+BoolAnnotationValue fn_insert_before::ignoresSortedNodes(
+    expr* fo,
+    ulong input) const 
+{
+  if (input == 0 || input == 2)
+    return fo->getIgnoresSortedNodes();
+
+  return ANNOTATION_TRUE;
+}
+
+
+BoolAnnotationValue fn_insert_before::ignoresDuplicateNodes(
+    expr* fo,
+    ulong input) const 
+{
+  if (input == 0 || input == 2)
+    return fo->getIgnoresSortedNodes();
+
+  return ANNOTATION_FALSE;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+xqtref_t fn_remove::getReturnType(
     const TypeManager* tm,
     const std::vector<xqtref_t>& arg_types) const
 {
-  if (theRaiseError)
-    return TypeOps::prime_type(tm, *arg_types[0]);
-  else
-    return function::getReturnType(tm, arg_types);
+  return tm->create_type_x_quant(*arg_types[0], TypeConstants::QUANT_QUESTION);
 }
 
 
-PlanIter_t fn_exactly_one_noraise::codegen(
-    CompilerCB* aCb,
-    static_context* aSctx,
-    const QueryLoc& aLoc,
-    std::vector<PlanIter_t>& aArgs,
-    AnnotationHolder& aAnn) const
+BoolAnnotationValue fn_remove::ignoresSortedNodes(
+    expr* fo,
+    ulong input) const 
 {
-  return new FnExactlyOneIterator(aSctx,
-                                  aLoc,
-                                  aArgs,
-                                  theRaiseError,
-                                  testFlag(FunctionConsts::DoDistinct));
+  if (input == 0)
+    return ANNOTATION_FALSE;
+
+  return ANNOTATION_TRUE;
 }
 
 
-/*******************************************************************************
-
-********************************************************************************/
-PlanIter_t fn_union::codegen(
-    CompilerCB* /*cb*/,
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& argv,
-    AnnotationHolder &ann) const
+BoolAnnotationValue fn_remove::ignoresDuplicateNodes(
+    expr* fo,
+    ulong input) const 
 {
-  return new FnConcatIterator(sctx, loc, argv, false);
+  return ANNOTATION_FALSE;
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-PlanIter_t fn_intersect::codegen(
-    CompilerCB* /*cb*/,
-    static_context* sctx,
-    const QueryLoc& loc, 
-    std::vector<PlanIter_t>& argv,
-    AnnotationHolder &ann) const
+xqtref_t fn_reverse::getReturnType(
+    const TypeManager* tm,
+    const std::vector<xqtref_t>& arg_types) const
 {
-#if 0  // we can't access PRODUCES_* from the inputs, must rethink
-  bool distinct = ann.get_annotation (Annotations::IGNORES_DUP_NODES) != TSVAnnotationValue::TRUE_VAL;
-  bool sort = ann.get_annotation (Annotations::IGNORES_SORTED_NODES) != TSVAnnotationValue::TRUE_VAL;
-
-  std::vector<PlanIter_t> inputs;
-  for (std::vector<PlanIter_t>::iterator i = argv.begin ();
-       i != argv.end (); i++)
-    inputs.push_back (new NodeSortIterator (loc, *i, true, distinct, false));
-  return new SortSemiJoinIterator(loc, inputs);
-#endif
-
-  return new HashSemiJoinIterator(sctx, loc, argv);
+  return arg_types[0];
 }
 
 
-/*******************************************************************************
-
-********************************************************************************/
-PlanIter_t fn_except::codegen(
-    CompilerCB* /*cb*/,
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& argv,
-    AnnotationHolder& ann) const
+BoolAnnotationValue fn_reverse::ignoresSortedNodes(
+    expr* fo,
+    ulong input) const 
 {
-  // TODO: use SortAntiJoinIterator when available (trac ticket 254)
-  return new HashSemiJoinIterator(sctx, loc, argv, true);
+  return fo->getIgnoresSortedNodes();
+}
+
+
+BoolAnnotationValue fn_reverse::ignoresDuplicateNodes(
+    expr* fo,
+    ulong input) const 
+{
+  return fo->getIgnoresSortedNodes();
 }
 
 
@@ -242,23 +230,6 @@ xqtref_t fn_subsequence::getReturnType(
     const std::vector<xqtref_t>& arg_types) const
 {
   return tm->create_type_x_quant(*arg_types[0], TypeConstants::QUANT_QUESTION);
-}
-
-
-void fn_subsequence::compute_annotation(
-    AnnotationHolder* parent,
-    std::vector<AnnotationHolder *>& kids,
-    Annotations::Key k) const
-{
-  switch (k) 
-  {
-  case Annotations::IGNORES_SORTED_NODES:
-  case Annotations::IGNORES_DUP_NODES:
-    // don't use single_seq_fun default propagation rule
-    return;
-  default: 
-    ZORBA_ASSERT(false);
-  }
 }
 
 
@@ -316,23 +287,6 @@ xqtref_t fn_zorba_subsequence_int::getReturnType(
     const std::vector<xqtref_t>& arg_types) const
 {
   return tm->create_type_x_quant(*arg_types[0], TypeConstants::QUANT_QUESTION);
-}
-
-
-void fn_zorba_subsequence_int::compute_annotation(
-    AnnotationHolder* parent,
-    std::vector<AnnotationHolder *>& kids,
-    Annotations::Key k) const
-{
-  switch (k) 
-  {
-  case Annotations::IGNORES_SORTED_NODES:
-  case Annotations::IGNORES_DUP_NODES:
-    // don't use single_seq_fun default propagation rule
-    return;
-  default: 
-    ZORBA_ASSERT(false);
-  }
 }
 
 
@@ -419,23 +373,6 @@ xqtref_t fn_zorba_sequence_point_access::getReturnType(
 }
 
 
-void fn_zorba_sequence_point_access::compute_annotation(
-    AnnotationHolder* parent,
-    std::vector<AnnotationHolder *>& kids,
-    Annotations::Key k) const
-{
-  switch (k) 
-  {
-  case Annotations::IGNORES_SORTED_NODES:
-  case Annotations::IGNORES_DUP_NODES:
-    // don't use single_seq_fun default propagation rule
-    return;
-  default: 
-    ZORBA_ASSERT(false);
-  }
-}
-
-
 PlanIter_t fn_zorba_sequence_point_access::codegen(
     CompilerCB* /*cb*/,
     static_context* aSctx,
@@ -506,6 +443,32 @@ PlanIter_t fn_zorba_sequence_point_access::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
+BoolAnnotationValue fn_unordered::ignoresSortedNodes(expr* fo, ulong input) const
+{
+  return ANNOTATION_TRUE;
+}
+
+
+BoolAnnotationValue fn_unordered::ignoresDuplicateNodes(expr* fo, ulong input) const
+{
+  return fo->getIgnoresDuplicateNodes();
+}
+
+
+PlanIter_t fn_unordered::codegen(
+    CompilerCB* /*cb*/,
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    AnnotationHolder& ) const
+{
+  return argv[0];
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 xqtref_t fn_zero_or_one::getReturnType(
     const TypeManager* tm,
     const std::vector<xqtref_t>& arg_types) const
@@ -515,6 +478,13 @@ xqtref_t fn_zero_or_one::getReturnType(
   return tm->create_type(*TypeOps::prime_type(tm, *srcType),
                          TypeConstants::QUANT_QUESTION);
 }
+
+
+BoolAnnotationValue fn_zero_or_one::ignoresSortedNodes(expr* fo, ulong input) const 
+{
+  return ANNOTATION_TRUE;
+}
+
 
 PlanIter_t fn_zero_or_one::codegen(
     CompilerCB* /*cb*/,
@@ -533,33 +503,125 @@ PlanIter_t fn_zero_or_one::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t fn_distinct_values::getReturnType(
+xqtref_t fn_one_or_more::getReturnType(
     const TypeManager* tm,
     const std::vector<xqtref_t>& arg_types) const
 {
-  return arg_types[0];
+  return tm->create_type(*TypeOps::prime_type(tm, *arg_types[0]),
+                         TypeConstants::QUANT_PLUS);
+}
+
+
+BoolAnnotationValue fn_one_or_more::ignoresSortedNodes(expr* fo, ulong input) const 
+{
+  return fo->getIgnoresSortedNodes();
+}
+
+
+BoolAnnotationValue fn_one_or_more::ignoresDuplicateNodes(expr* fo, ulong input) const 
+{
+  return fo->getIgnoresDuplicateNodes();
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t fn_reverse::getReturnType(
+xqtref_t fn_exactly_one_noraise::getReturnType(
     const TypeManager* tm,
     const std::vector<xqtref_t>& arg_types) const
 {
-  return arg_types[0];
+  if (theRaiseError)
+    return TypeOps::prime_type(tm, *arg_types[0]);
+  else
+    return function::getReturnType(tm, arg_types);
+}
+
+
+PlanIter_t fn_exactly_one_noraise::codegen(
+    CompilerCB* aCb,
+    static_context* aSctx,
+    const QueryLoc& aLoc,
+    std::vector<PlanIter_t>& aArgs,
+    AnnotationHolder& aAnn) const
+{
+  return new FnExactlyOneIterator(aSctx,
+                                  aLoc,
+                                  aArgs,
+                                  theRaiseError,
+                                  testFlag(FunctionConsts::DoDistinct));
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t fn_remove::getReturnType(
-    const TypeManager* tm,
-    const std::vector<xqtref_t>& arg_types) const
+PlanIter_t fn_union::codegen(
+    CompilerCB* /*cb*/,
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    AnnotationHolder& ann) const
 {
-  return tm->create_type_x_quant(*arg_types[0], TypeConstants::QUANT_QUESTION);
+  return new FnConcatIterator(sctx, loc, argv, false);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t fn_intersect::codegen(
+    CompilerCB* /*cb*/,
+    static_context* sctx,
+    const QueryLoc& loc, 
+    std::vector<PlanIter_t>& argv,
+    AnnotationHolder& ann) const
+{
+#if 0  // we can't access PRODUCES_* from the inputs, must rethink
+  bool distinct = ann.get_annotation (Annotations::IGNORES_DUP_NODES) != TSVAnnotationValue::TRUE_VAL;
+  bool sort = ann.get_annotation (Annotations::IGNORES_SORTED_NODES) != TSVAnnotationValue::TRUE_VAL;
+
+  std::vector<PlanIter_t> inputs;
+  for (std::vector<PlanIter_t>::iterator i = argv.begin ();
+       i != argv.end (); i++)
+    inputs.push_back (new NodeSortIterator (loc, *i, true, distinct, false));
+  return new SortSemiJoinIterator(loc, inputs);
+#endif
+
+  return new HashSemiJoinIterator(sctx, loc, argv);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t fn_except::codegen(
+    CompilerCB* /*cb*/,
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    AnnotationHolder& ann) const
+{
+  // TODO: use SortAntiJoinIterator when available (trac ticket 254)
+  return new HashSemiJoinIterator(sctx, loc, argv, true);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+BoolAnnotationValue fn_count::ignoresSortedNodes(expr* fo, ulong input) const 
+{
+  return ANNOTATION_TRUE;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+BoolAnnotationValue fn_avg::ignoresSortedNodes(expr* fo, ulong input) const 
+{
+  return ANNOTATION_TRUE;
 }
 
 
@@ -590,8 +652,169 @@ PlanIter_t fn_min::codegen(
   return new FnMinMaxIterator(aSctx, aLoc, aArgs, FnMinMaxIterator::MIN);
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
+BoolAnnotationValue fn_sum::ignoresSortedNodes(expr* fo, ulong input) const 
+{
+  return ANNOTATION_TRUE;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+function* fn_sum::specialize(
+   static_context* sctx,
+   const std::vector<xqtref_t>& argTypes) const
+{
+  RootTypeManager& rtm = GENV_TYPESYSTEM;
+  TypeManager* tm = sctx->get_typemanager();
+
+  xqtref_t argType = argTypes[0];
+
+  if (TypeOps::is_subtype(tm, *argType, *rtm.UNTYPED_ATOMIC_TYPE_STAR))
+  {
+    return (getArity() == 1 ?
+            GET_BUILTIN_FUNCTION(FN_SUM_DOUBLE_1) :
+            GET_BUILTIN_FUNCTION(FN_SUM_DOUBLE_2));
+  }
+  else if (TypeOps::is_subtype(tm, *argType, *rtm.DOUBLE_TYPE_STAR))
+  {
+    return (getArity() == 1 ?
+            GET_BUILTIN_FUNCTION(FN_SUM_DOUBLE_1) :
+            GET_BUILTIN_FUNCTION(FN_SUM_DOUBLE_2));
+  }
+  else if (TypeOps::is_subtype(tm, *argType, *rtm.FLOAT_TYPE_STAR))
+  {
+    return (getArity() == 1 ?
+            GET_BUILTIN_FUNCTION(FN_SUM_FLOAT_1) :
+            GET_BUILTIN_FUNCTION(FN_SUM_FLOAT_2));
+  }
+  else if (TypeOps::is_subtype(tm, *argType, *rtm.INTEGER_TYPE_STAR))
+  {
+    return (getArity() == 1 ?
+            GET_BUILTIN_FUNCTION(FN_SUM_INTEGER_1) :
+            GET_BUILTIN_FUNCTION(FN_SUM_INTEGER_2));
+  }
+  else if (TypeOps::is_subtype(tm, *argType, *rtm.DECIMAL_TYPE_STAR))
+  {
+    return (getArity() == 1 ?
+            GET_BUILTIN_FUNCTION(FN_SUM_DECIMAL_1) :
+            GET_BUILTIN_FUNCTION(FN_SUM_DECIMAL_2));
+  }
+  else
+  {
+    return NULL;
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+BoolAnnotationValue fn_sum_double::ignoresSortedNodes(expr* fo, ulong input) const 
+{
+  return ANNOTATION_TRUE;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+BoolAnnotationValue fn_sum_float::ignoresSortedNodes(expr* fo, ulong input) const 
+{
+  return ANNOTATION_TRUE;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+BoolAnnotationValue fn_sum_decimal::ignoresSortedNodes(expr* fo, ulong input) const 
+{
+  return ANNOTATION_TRUE;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+BoolAnnotationValue fn_sum_integer::ignoresSortedNodes(expr* fo, ulong input) const 
+{
+  return ANNOTATION_TRUE;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+BoolAnnotationValue fn_id::ignoresSortedNodes(expr* fo, ulong input) const 
+{
+  return ANNOTATION_TRUE;
+}
+
+
+BoolAnnotationValue fn_id::ignoresDuplicateNodes(expr* fo, ulong input) const 
+{
+  if (input == 0)
+    return ANNOTATION_TRUE;
+
+  return ANNOTATION_FALSE;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+BoolAnnotationValue fn_element_with_id::ignoresSortedNodes(
+    expr* fo,
+    ulong input) const 
+{
+  return ANNOTATION_TRUE;
+}
+
+
+BoolAnnotationValue fn_element_with_id::ignoresDuplicateNodes(
+    expr* fo,
+    ulong input) const 
+{
+  if (input == 0)
+    return ANNOTATION_TRUE;
+
+  return ANNOTATION_FALSE;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+BoolAnnotationValue fn_idref::ignoresSortedNodes(expr* fo, ulong input) const 
+{
+  return ANNOTATION_TRUE;
+}
+
+
+BoolAnnotationValue fn_idref::ignoresDuplicateNodes(expr* fo, ulong input) const 
+{
+  if (input == 0)
+    return ANNOTATION_TRUE;
+
+  return ANNOTATION_FALSE;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void populate_context_sequences_impl(static_context* sctx)
 {
+  DECL(sctx, fn_unordered,
+       (createQName(XQUERY_OP_NS,"fn","unordered"),
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
   DECL(sctx, fn_exactly_one,
        (createQName(XQUERY_FN_NS,"fn","exactly-one"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 

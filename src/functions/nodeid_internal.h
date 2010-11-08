@@ -17,11 +17,8 @@
 #ifndef ZORBA_FUNCTIONS_NODEID_INTERNAL_H
 #define ZORBA_FUNCTIONS_NODEID_INTERNAL_H
 
-#include "functions/single_seq_func.h"
 #include "functions/function_impl.h"
 #include "functions/function_consts.h"
-
-#include "zorbautils/checked_vector.h"
 
 namespace zorba 
 {
@@ -73,10 +70,7 @@ public:
 
   bool isNodeDistinctFunction() const { return action()[DISTINCT]; }
 
-  virtual function* optimize(
-        static_context* sctx,
-        const expr* self,
-        expr* child) const;
+  virtual function* optimize(const expr* self, expr* child) const;
 
   xqtref_t getReturnType(
         const TypeManager* tm,
@@ -85,7 +79,9 @@ public:
     return arg_types[0]; 
   }
 
-  COMPUTE_ANNOTATION_DECL();
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const;
+
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const;
 
   CODEGEN_DECL();
 };

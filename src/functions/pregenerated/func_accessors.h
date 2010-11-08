@@ -28,7 +28,6 @@
 
 #include "common/shared_types.h"
 #include "functions/function_impl.h"
-#include "functions/single_seq_func.h"
 
 
 namespace zorba {

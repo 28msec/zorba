@@ -16,11 +16,33 @@
  
 #include "runtime/indexing/index_ddl.h"
 
+#include "compiler/expression/fo_expr.h"
+#include "compiler/expression/expr.h"
+
 #include "functions/func_index_ddl.h"
 
 
 namespace zorba
 {
+
+
+PlanIter_t op_create_internal_index::codegen(
+    CompilerCB* cb,
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    AnnotationHolder& ann) const
+{
+  fo_expr* fo = static_cast<fo_expr*>(&ann);
+
+  const const_expr* qnameExpr = static_cast<const const_expr*>(fo->get_arg(0));
+  const store::Item* qname = qnameExpr->get_val();
+
+  return new CreateInternalIndexIterator(sctx,
+                                         loc,
+                                         argv[1],
+                                         const_cast<store::Item*>(qname));
+}
 
 
 PlanIter_t fn_zorba_ddl_create_index::codegen(
@@ -124,6 +146,12 @@ PlanIter_t fn_zorba_ddl_probe_index_range_general::codegen(
 
 void populate_context_index_ddl(static_context* sctx)
 {
+  DECL(sctx, op_create_internal_index,
+      (createQName("http://www.w3.org/2005/xpath-functions","op","create-internal-index"),
+      GENV_TYPESYSTEM.QNAME_TYPE_ONE,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.EMPTY_TYPE));
+
   DECL(sctx, fn_zorba_ddl_create_index,
       (createQName("http://www.zorba-xquery.com/modules/xqddf","fn-zorba-ddl","create-index"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
@@ -134,14 +162,6 @@ void populate_context_index_ddl(static_context* sctx)
       (createQName("http://www.zorba-xquery.com/modules/xqddf","fn-zorba-ddl","delete-index"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       GENV_TYPESYSTEM.EMPTY_TYPE));
-
-
-  DECL(sctx, op_create_internal_index,
-      (createQName("http://www.w3.org/2005/xpath-functions","op","create-internal-index"),
-      GENV_TYPESYSTEM.QNAME_TYPE_ONE,
-      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-      GENV_TYPESYSTEM.EMPTY_TYPE));
-
 
   DECL(sctx, fn_zorba_ddl_refresh_index,
       (createQName("http://www.zorba-xquery.com/modules/xqddf","fn-zorba-ddl","refresh-index"),

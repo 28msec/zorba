@@ -2083,37 +2083,21 @@ void end_visit(fo_expr& v)
 
   if (func->validate_args(argv))
   {
-    if (func->getKind() == FunctionConsts::OP_CREATE_INTERNAL_INDEX_2)
+    PlanIter_t iter = func->codegen(theCCB, sctx, loc, argv, v);
+    ZORBA_ASSERT(iter != NULL);
+    push_itstack(iter);
+
+    if (is_enclosed_expr(&v))
     {
-      const const_expr* qnameExpr = static_cast<const const_expr*>(v.get_arg(0));
-      const store::Item* qname = qnameExpr->get_val();
+      expr* e = pop_stack(theConstructorsStack);
+      ZORBA_ASSERT(e == &v);
 
-      PlanIter_t buildIter = argv[1];
-
-      PlanIter_t iter = new CreateInternalIndexIterator(sctx,
-                                                        loc,
-                                                        buildIter,
-                                                        const_cast<store::Item*>(qname));
-      push_itstack(iter);
-    }
-    else
-    {
-      PlanIter_t iter = func->codegen(theCCB, sctx, loc, argv, v);
-      ZORBA_ASSERT(iter != NULL);
-      push_itstack(iter);
-
-      if (is_enclosed_expr(&v))
+      if (!theEnclosedContextStack.empty())
       {
-        expr* e = pop_stack(theConstructorsStack);
-        ZORBA_ASSERT(e == &v);
-
-        if (!theEnclosedContextStack.empty())
-        {
-          if (theEnclosedContextStack.top() == ATTRIBUTE_CONTENT)
-            dynamic_cast<EnclosedIterator*>(iter.getp())->setAttrContent();
-          else if (theEnclosedContextStack.top() == TEXT_CONTENT)
-            dynamic_cast<EnclosedIterator*>(iter.getp())->setTextContent();
-        }
+        if (theEnclosedContextStack.top() == ATTRIBUTE_CONTENT)
+          dynamic_cast<EnclosedIterator*>(iter.getp())->setAttrContent();
+        else if (theEnclosedContextStack.top() == TEXT_CONTENT)
+          dynamic_cast<EnclosedIterator*>(iter.getp())->setTextContent();
       }
     }
   }

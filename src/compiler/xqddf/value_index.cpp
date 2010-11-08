@@ -118,6 +118,9 @@ expr* IndexDecl::getDomainExpr() const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void IndexDecl::setDomainExpr(expr_t domainExpr)
 {
   if (theDomainClause == NULL)
@@ -130,12 +133,18 @@ void IndexDecl::setDomainExpr(expr_t domainExpr)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 var_expr* IndexDecl::getDomainVariable() const
 {
   return theDomainClause->get_var();
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void IndexDecl::setDomainVariable(var_expr_t domainVar)
 {
   if (theDomainClause == NULL)
@@ -148,12 +157,18 @@ void IndexDecl::setDomainVariable(var_expr_t domainVar)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 var_expr* IndexDecl::getDomainPositionVariable() const
 {
   return theDomainClause->get_pos_var();
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void IndexDecl::setDomainPositionVariable(var_expr_t domainPosVar)
 {
   theDomainClause->set_pos_var(domainPosVar);
@@ -169,6 +184,9 @@ const std::vector<expr_t>& IndexDecl::getKeyExpressions() const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void IndexDecl::setKeyExpressions(const std::vector<expr_t>& keyExprs)
 {
   theKeyExprs = keyExprs;
@@ -184,6 +202,9 @@ const std::vector<xqtref_t>& IndexDecl::getKeyTypes() const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void IndexDecl::setKeyTypes(const std::vector<xqtref_t>& keyTypes)
 {
   theKeyTypes = keyTypes;
@@ -199,6 +220,9 @@ const std::vector<OrderModifier>& IndexDecl::getOrderModifiers() const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void IndexDecl::setOrderModifiers(const std::vector<OrderModifier>& modifiers)
 {
   theOrderModifiers = modifiers;
@@ -618,6 +642,9 @@ DocIndexer* IndexDecl::getDocIndexer(CompilerCB* ccb, const QueryLoc& loc)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 std::string IndexDecl::toString()
 {
   std::ostringstream os;

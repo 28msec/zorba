@@ -20,7 +20,7 @@
 
 #include "common/shared_types.h"
 #include "functions/function.h"
-#include "functions/single_seq_func.h"
+#include "functions/function_impl.h"
 #include "functions/function_consts.h"
 
 

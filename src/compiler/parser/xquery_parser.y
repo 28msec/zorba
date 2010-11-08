@@ -3694,7 +3694,7 @@ Pragma
 
 // [67]
 PathExpr
-  :
+  : 
     LeadingSlash
     {
       $$ = new PathExpr(LOC(@$), ParseConstants::path_leading_lone_slash, NULL);
@@ -3732,7 +3732,7 @@ PathExpr
 // Leading slash promotion
 // -----------------------
 LeadingSlash
-  :
+  : 
     SLASH
     {
       $$ = NULL;
@@ -3747,7 +3747,7 @@ RelativePathExpr
     {
       AxisStep* as = dynamic_cast<AxisStep*>($1);
       $$ = (as ?
-            new RelativePathExpr(LOC(@$),
+            new RelativePathExpr(LOC(@$), 
                                  ParseConstants::st_slash,
                                  new ContextItemExpr( LOC(@$), true ), $1)
             :

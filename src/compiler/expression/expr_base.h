@@ -114,16 +114,6 @@ public:
 
   typedef substitution_t::iterator subst_iter_t;
 
-
-  typedef enum
-  {
-    ANNOTATION_UNKNOWN = 0,
-    ANNOTATION_FALSE,
-    ANNOTATION_TRUE,
-    ANNOTATION_TRUE_FIXED
-  } BoolAnnotationValue;
-
-
   typedef enum
   {
     PRODUCES_SORTED_NODES   = 0,
@@ -220,22 +210,35 @@ public:
   std::string toString() const;
 
 public:
+  // Annotation : produces-sorted-nodes
   BoolAnnotationValue getProducesSortedNodes() const;
 
   void setProducesSortedNodes(BoolAnnotationValue v);
 
+  bool producesSortedNodes() const;
+
+  // Annotation : produces-distinct-nodes
   BoolAnnotationValue getProducesDistinctNodes() const;
 
   void setProducesDistinctNodes(BoolAnnotationValue v);
 
+  bool producesDistinctNodes() const;
+
+  // Annotation : ignores-sorted-nodes
   BoolAnnotationValue getIgnoresSortedNodes() const;
 
   void setIgnoresSortedNodes(BoolAnnotationValue v);
 
+  bool ignoresSortedNodes() const;
+
+  // Annotation : ignores-duplicated-nodes
   BoolAnnotationValue getIgnoresDuplicateNodes() const;
 
   void setIgnoresDuplicateNodes(BoolAnnotationValue v);
 
+  bool ignoresDuplicateNodes() const;
+
+  // Annotation : non-discardable
   BoolAnnotationValue getNonDiscardable() const;
 
   bool isNonDiscardable() const;

@@ -471,10 +471,12 @@ bool expr::is_nondeterministic() const
   return false;
 }
 
-/*******************************************************************************
 
+/*******************************************************************************
+  Annotation : produces-sorted-nodes
+  Tells whether the expression produces nodes in document order or not.
 ********************************************************************************/
-expr::BoolAnnotationValue expr::getProducesSortedNodes() const
+BoolAnnotationValue expr::getProducesSortedNodes() const
 {
   return (BoolAnnotationValue)(theFlags1 & PRODUCES_SORTED_NODES_MASK);
 }
@@ -487,7 +489,17 @@ void expr::setProducesSortedNodes(BoolAnnotationValue v)
 }
 
 
-expr::BoolAnnotationValue expr::getProducesDistinctNodes() const
+bool expr::producesSortedNodes() const
+{
+  return (getProducesSortedNodes() == ANNOTATION_TRUE);
+}
+
+
+/*******************************************************************************
+  Annotation : produces-distinct-nodes
+  Tells whether the expression produces distinct nodes or not.
+********************************************************************************/
+BoolAnnotationValue expr::getProducesDistinctNodes() const
 {
   return (BoolAnnotationValue)
          ((theFlags1 & PRODUCES_DISTINCT_NODES_MASK) >> PRODUCES_DISTINCT_NODES);
@@ -501,7 +513,17 @@ void expr::setProducesDistinctNodes(BoolAnnotationValue v)
 }
 
 
-expr::BoolAnnotationValue expr::getIgnoresSortedNodes() const
+bool expr::producesDistinctNodes() const
+{
+  return (getProducesDistinctNodes() == ANNOTATION_TRUE);
+}
+
+
+/*******************************************************************************
+  Annotation : ignores-sorted-nodes
+  Tells whether the expression  needs to produce nodes in doc order or not.
+********************************************************************************/
+BoolAnnotationValue expr::getIgnoresSortedNodes() const
 {
   return (BoolAnnotationValue)
          ((theFlags1 & IGNORES_SORTED_NODES_MASK) >> IGNORES_SORTED_NODES);
@@ -515,7 +537,17 @@ void expr::setIgnoresSortedNodes(BoolAnnotationValue v)
 }
 
 
-expr::BoolAnnotationValue expr::getIgnoresDuplicateNodes() const
+bool expr::ignoresSortedNodes() const
+{
+  return (getIgnoresSortedNodes() == ANNOTATION_TRUE);
+}
+
+
+/*******************************************************************************
+  Annotation : ignores-duplicates-nodes
+  Tells whether the expression needs to produce distinct nodes or not.
+********************************************************************************/
+BoolAnnotationValue expr::getIgnoresDuplicateNodes() const
 {
   return (BoolAnnotationValue)
          ((theFlags1 & IGNORES_DUPLICATE_NODES_MASK) >> IGNORES_DUPLICATE_NODES);
@@ -529,7 +561,16 @@ void expr::setIgnoresDuplicateNodes(BoolAnnotationValue v)
 }
 
 
-expr::BoolAnnotationValue expr::getNonDiscardable() const
+bool expr::ignoresDuplicateNodes() const
+{
+  return (getIgnoresDuplicateNodes() == ANNOTATION_TRUE);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+BoolAnnotationValue expr::getNonDiscardable() const
 {
   return (BoolAnnotationValue)
          ((theFlags1 & NON_DISCARDABLE_MASK) >> NON_DISCARDABLE);
@@ -550,7 +591,7 @@ bool expr::isNonDiscardable() const
 }
 
 
-expr::BoolAnnotationValue expr::getUnfoldable() const
+BoolAnnotationValue expr::getUnfoldable() const
 {
   return (BoolAnnotationValue)
          ((theFlags1 & UNFOLDABLE_MASK) >> UNFOLDABLE);

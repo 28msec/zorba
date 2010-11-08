@@ -67,14 +67,12 @@ LIST(APPEND FUNCTIONS_SRCS
     durations_dates_times_impl.cpp
     sequences_impl.cpp
     fnerror_impl.cpp
-    index_ddl_impl.cpp
     Alexis.cpp
     arithmetic.cpp
     EnclosedExpr.cpp
     external_function_adapters.cpp
     VarDecl.cpp
     function.cpp
-    single_seq_func.cpp
     udf.cpp
     library.cpp
     Numerics.cpp

@@ -270,11 +270,18 @@ declare function local:add-methods($function) as xs:string*
                      '{ return producer == ', $meth/@producer, '; }',
                       $gen:newline),'')
 
-      else if (name($meth) eq 'zorba:compute_annotation')
+      else if (name($meth) eq 'zorba:ignoresSortedNodes')
       then
         string-join(($gen:newline, $gen:indent,
-                     'COMPUTE_ANNOTATION_DECL();', 
-                     $gen:newline), '') 
+                     'BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong producer) const;',
+                      $gen:newline),'')
+
+      else if (name($meth) eq 'zorba:ignoresDuplicateNodes')
+      then
+        string-join(($gen:newline, $gen:indent,
+                     'BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong producer) const;',
+                      $gen:newline),'')
+
       else
         ()
   else

@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "context/static_context.h"
-
 #include "compiler/rewriter/rules/ruleset.h"
 #include "compiler/rewriter/tools/expr_tools.h"
 #include "compiler/rewriter/tools/dataflow_annotations.h"
@@ -28,390 +26,387 @@
 
 #include "functions/nodeid_internal.h"
 
+#include "zorbaerrors/Assert.h"
+
 
 namespace zorba 
 {
 
 
 /*******************************************************************************
-
+  If the ignore-sorted-nodes annotation of the target expr is not set to false
+  already, set it to the value of the ignore-sorted-nodes annotations of the
+  source expr.
 ********************************************************************************/
-static void pushdown_ignore_props(expr* src, expr* target) 
+static void pushdown_ignores_sorted_nodes(expr* src, expr* target) 
 {
-  Annotations::Key k;
-
-  k = Annotations::IGNORES_SORTED_NODES;
-  TSVAnnotationValue::update_annotation(target, k, src->get_annotation(k));
-
-  k = Annotations::IGNORES_DUP_NODES;
-  TSVAnnotationValue::update_annotation(target, k, src->get_annotation(k));
+  if (target->getIgnoresSortedNodes() != ANNOTATION_FALSE)
+    target->setIgnoresSortedNodes(src->getIgnoresSortedNodes());
 }
 
 
 /*******************************************************************************
-  If the result of a FLWOR ignores node order, than the sources of all FOR
-  variables do too. This does not hold for dup nodes:
-  (let $a := <u><v>1</v></u> let $x := ($a, $a) for $y in $x return <a>{$y}</a>)//u
+  If the ignore-sorted-nodes annotation of the target expr is not set to false
+  already, set it to the given value.
 ********************************************************************************/
-static void mark_for_vars_ignoring_sort(flwor_expr* flwor) 
+static void set_ignores_sorted_nodes(expr* target, BoolAnnotationValue v) 
 {
-  Annotations::Key k = Annotations::IGNORES_SORTED_NODES;
-
-  AnnotationValue_t v = flwor->get_annotation(k);
-
-  for (flwor_expr::clause_list_t::const_iterator it = flwor->clause_begin();
-       it != flwor->clause_end();
-       ++it)
-  {
-    const flwor_clause& c = *(*it);
-
-    if (c.get_kind() != flwor_clause::for_clause)
-      continue;
-
-    const for_clause* fc = static_cast<const for_clause *>(&c);
-
-    const var_expr* pos_var = fc->get_pos_var();
-    assert(pos_var == NULL || pos_var->get_kind() == var_expr::pos_var); 
-
-    TSVAnnotationValue::update_annotation(fc->get_expr(),
-                                          k,
-                                          (pos_var == NULL ?
-                                           v : TSVAnnotationValue::FALSE_VAL));
-  }
+  if (target->getIgnoresSortedNodes() != ANNOTATION_FALSE)
+    target->setIgnoresSortedNodes(v);
 }
 
 
 /*******************************************************************************
-  Assume all LET var values could ignore sort order and duplicate nodes,
-  and allow expressions further down the tree to challenge this assumption.
+  If the ignore-duplicates-nodes annotation of the target expr is not set to
+  false already, set it to the value of the ignore-duplicate-nodes annotations
+  of the source expr.
 ********************************************************************************/
-static void init_let_vars_consumer_props(flwor_expr* flwor) 
+static void pushdown_ignores_duplicate_nodes(expr* src, expr* target) 
 {
-  for (flwor_expr::clause_list_t::const_iterator it = flwor->clause_begin();
-       it != flwor->clause_end();
-       ++it)
+  if (target->getIgnoresDuplicateNodes() != ANNOTATION_FALSE)
+    target->setIgnoresDuplicateNodes(src->getIgnoresDuplicateNodes());
+}
+
+
+/*******************************************************************************
+  If the ignore-duplicates-nodes annotation of the target expr is not set to
+  false already, set it to the given value.
+********************************************************************************/
+static void set_ignores_duplicate_nodes(expr* target, BoolAnnotationValue v) 
+{
+  if (target->getIgnoresDuplicateNodes() != ANNOTATION_FALSE)
+    target->setIgnoresDuplicateNodes(v);
+}
+
+
+/*******************************************************************************
+  Compute the ignores-sorted-nodes and ignores-duplicate-nodes annotations of
+  the current expr.
+
+  ignores-sorted-nodes : tells whether the expr needs to produce nodes in doc
+  order or not (because its consumers care about doc order or not).
+
+  ignores-duplicate-nodes : tells whether the expr needs to produce distinct
+  nodes or not (because its consumers care about duplicate nodes or not).
+
+  The rule works in a top-down fashion, first setting the annotations of an
+  expression e and then moving down to the children of e.
+********************************************************************************/
+expr_t MarkConsumerNodeProps::apply(RewriterContext& rCtx, expr* node, bool& modified)
+{
+  switch (node->get_expr_kind())
   {
-    const flwor_clause& c = *(*it);
+  case flwor_expr_kind: 
+  {
+    flwor_expr* flwor = static_cast<flwor_expr *> (node);
 
-    if (c.get_kind() != flwor_clause::let_clause)
-      continue;
+    // no need to do anything for the where expr or the orderby exprs because
+    // they don't produce nodes.
 
-    const forletwin_clause* lc = static_cast<const forletwin_clause *>(&c);
+    // The annotations for the return expr are the same as those of its
+    // containing flwor expr.
+    pushdown_ignores_sorted_nodes(node, flwor->get_return_expr());
+    pushdown_ignores_duplicate_nodes(node, flwor->get_return_expr());
+ 
+    // apply the rule recursively on the return expr
+    apply(rCtx, flwor->get_return_expr(), modified);
 
-    int todo = 0;
-    var_expr_t var = lc->get_var();
-    assert(var->get_kind() == var_expr::let_var);
-
-    for (int j = 0; j < 2; j++) 
+    // Process the clauses in reverse order so that by the time we reach the
+    // definition of a LET var, we know if the LET var sequence must be in
+    // doc order and/or without duplicates.
+    ulong i = flwor->num_clauses();
+    for (; i > 0; --i)
     {
-      Annotations::Key k = (j == 0 ?
-                             Annotations::IGNORES_SORTED_NODES :
-                             Annotations::IGNORES_DUP_NODES);
+      flwor_clause* clause = flwor->get_clause(i-1);
 
-      AnnotationValue_t v = var->get_annotation(k);
-
-      TSVAnnotationValue::update_annotation(lc->get_expr(), k, v);
-
-      if (v != TSVAnnotationValue::TRUE_VAL)
+      if (clause->get_kind() == flwor_clause::let_clause)
       {
-        var->put_annotation(k, TSVAnnotationValue::TRUE_VAL);
-        todo |= (1 << j);
+        let_clause* lc = static_cast<let_clause*>(clause);
+        expr* domainExpr = lc->get_expr();
+        var_expr* var = lc->get_var();
+
+        // The annotations for the domain expr are the same as those of its
+        // associated LET var.
+        domainExpr->setIgnoresSortedNodes(var->getIgnoresSortedNodes());
+        domainExpr->setIgnoresDuplicateNodes(var->getIgnoresDuplicateNodes());
+
+        // apply the rule recursively on the domainExpr
+        apply(rCtx, domainExpr, modified);
+      }
+      else if (clause->get_kind() == flwor_clause::for_clause)
+      {
+        for_clause* fc = static_cast<for_clause*>(clause);
+        expr* domainExpr = fc->get_expr();
+        var_expr* posVar = fc->get_pos_var();
+        assert(posVar == NULL || posVar->get_kind() == var_expr::pos_var); 
+
+        // If a flwor expr does not need to care about producing nodes in doc
+        // order, then the domain expr of a FOR variable does not need to care
+        // either, unless there is a POS variable associated with the FOR var.
+        // On the other hand, if the flwor does need to produce nodes in doc
+        // order, then we conservatively mark each FOR domain expr as needing
+        // to produce nodes in doc order as well.
+        // 
+        // Note: this property does not hold for dup nodes; for example:
+        // (let $a := <u><v>1</v></u>
+        //  let $x := ($a, $a)
+        //  for $y in $x return <a>{$y}</a>
+        // )//u
+        if (posVar == NULL)
+        {
+          domainExpr->setIgnoresSortedNodes(flwor->getIgnoresSortedNodes());
+        }
+        else
+        {
+          domainExpr->setIgnoresSortedNodes(ANNOTATION_FALSE);
+        }
+
+        // apply the rule recursively on the domainExpr
+        apply(rCtx, domainExpr, modified);
+      }
+      else if (clause->get_kind() == flwor_clause::where_clause)
+      {
+        // apply the rule recursively on the whereExpr
+        where_clause* wc = static_cast<where_clause*>(clause);
+        apply(rCtx, wc->get_expr(), modified);
+      }
+      else if (clause->get_kind() == flwor_clause::order_clause)
+      {
+        // apply the rule recursively on the orderby exprs
+        orderby_clause* oc = static_cast<orderby_clause*>(clause);
+
+        ulong numExprs = oc->num_columns();
+
+        for (ulong i = 0; i < numExprs; ++i)
+        {
+          apply(rCtx, oc->get_column_expr(i), modified);
+        }
       }
     }
 
-    if (todo != 0)
-      var->put_annotation(Annotations::LET_VAR_NODEID_ANALYSIS,
-                           AnnotationValue_t(new IntAnnotationValue(todo)));
+    return NULL;
   }
-}
 
-
-/*******************************************************************************
-  If no expression involving a LET var cares about sort order / dup nodes,
-  mark the domain expr accordingly.
-********************************************************************************/
-static bool analyze_let_vars_consumer_props (flwor_expr* flwor) 
-{
-  bool modified = false;
-
-  Annotations::Key analysisKey = Annotations::LET_VAR_NODEID_ANALYSIS;
-
-  for (flwor_expr::clause_list_t::const_iterator it = flwor->clause_begin();
-       it != flwor->clause_end();
-       ++it)
+  case if_expr_kind: 
   {
-    const flwor_clause& c = *(*it);
+    if_expr* ite = static_cast<if_expr *>(node);
+    pushdown_ignores_sorted_nodes(node, ite->get_then_expr());
+    pushdown_ignores_sorted_nodes(node, ite->get_else_expr());
+    pushdown_ignores_duplicate_nodes(node, ite->get_then_expr());
+    pushdown_ignores_duplicate_nodes(node, ite->get_else_expr());
+    break;
+  }
 
-    if (c.get_kind() != flwor_clause::let_clause)
-      continue;
+  case wrapper_expr_kind : 
+  {
+    wrapper_expr* we = static_cast<wrapper_expr *>(node);
+    pushdown_ignores_sorted_nodes(node, we->get_expr());
+    pushdown_ignores_duplicate_nodes(node, we->get_expr());
+    break;
+  }    
 
-    const forletwin_clause* lc = static_cast<const forletwin_clause *>(&c);
+  case function_trace_expr_kind :
+  {
+    function_trace_expr* fte = static_cast<function_trace_expr*>(node);
+    pushdown_ignores_sorted_nodes(node, fte->get_expr());
+    pushdown_ignores_duplicate_nodes(node, fte->get_expr());
+    break;
+  }
 
-    varref_t var = lc->get_var();
+  case relpath_expr_kind : 
+  {
+    expr_t arg = (*static_cast<relpath_expr *>(node))[0];
 
-    for (int j = 0; j < 2; j++) 
+    set_ignores_sorted_nodes(arg, ANNOTATION_TRUE);
+    set_ignores_duplicate_nodes(arg, ANNOTATION_TRUE);
+
+    break;
+  }
+
+  case cast_expr_kind :
+  case castable_expr_kind :
+  case instanceof_expr_kind :
+  {
+    cast_or_castable_base_expr* curExpr = static_cast<cast_or_castable_base_expr*>(node);
+
+    expr* arg = curExpr->get_input();
+
+    TypeManager* tm = curExpr->get_type_manager();
+    xqtref_t targetType = curExpr->get_target_type();
+    TypeConstants::quantifier_t q = TypeOps::quantifier(*targetType);
+
+    set_ignores_sorted_nodes(arg, ANNOTATION_TRUE);
+
+    if (TypeOps::is_empty(tm, *targetType)) 
     {
-      Annotations::Key k = (j == 0 ?
-                             Annotations::IGNORES_SORTED_NODES :
-                             Annotations::IGNORES_DUP_NODES);
-      
-      AnnotationValue_t analysisVal = var->get_annotation(analysisKey);
-
-      if (analysisVal != NULL &&
-          0 != ((1 << j) & static_cast<IntAnnotationValue*>(analysisVal.getp())->theValue))
-      {
-        AnnotationValue_t v = var->get_annotation(k);
-
-        TSVAnnotationValue::update_annotation(lc->get_expr(), k, v);
-
-        if (v.getp() == TSVAnnotationValue::TRUE_VAL.getp())
-          modified = true;
-      }
-
+      set_ignores_duplicate_nodes(arg, ANNOTATION_TRUE);
+    }
+    else if (q == TypeConstants::QUANT_STAR ||
+             (q == TypeConstants::QUANT_PLUS &&
+              TypeOps::type_min_cnt(tm, *arg->get_return_type()) >= 1))
+    {
+      set_ignores_duplicate_nodes(arg, ANNOTATION_TRUE);
+    }
+    else
+    {
+      set_ignores_duplicate_nodes(arg, ANNOTATION_FALSE);
     }
 
-    var->remove_annotation(analysisKey);
-  }
-    
-  return modified;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-static void mark_casts(const cast_or_castable_base_expr* node, expr* input)
-{
-  TypeManager* tm = node->get_type_manager();
-
-  xqtref_t target = node->get_target_type();
-
-  if (TypeOps::is_empty(node->get_type_manager(), *target)) 
-  {
-    TSVAnnotationValue::update_annotation(input,
-                                          Annotations::IGNORES_SORTED_NODES,
-                                          TSVAnnotationValue::TRUE_VAL);
-    TSVAnnotationValue::update_annotation(input,
-                                          Annotations::IGNORES_DUP_NODES,
-                                          TSVAnnotationValue::TRUE_VAL);
-    return;
+    break;
   }
 
-  bool is_cast = dynamic_cast<cast_base_expr *>(input) != NULL;
-
-  TypeConstants::quantifier_t q = TypeOps::quantifier(*target);
-
-  if (! is_cast ||
-      q == TypeConstants::QUANT_ONE ||
-      q == TypeConstants::QUANT_QUESTION) 
+  case promote_expr_kind :
+  case treat_expr_kind :
   {
-    TSVAnnotationValue::update_annotation(input,
-                                          Annotations::IGNORES_SORTED_NODES,
-                                          TSVAnnotationValue::TRUE_VAL);
+    cast_base_expr* curExpr = static_cast<cast_base_expr*>(node);
+
+    expr* arg = curExpr->get_input();
+
+    TypeManager* tm = curExpr->get_type_manager();
+    xqtref_t targetType = curExpr->get_target_type();
+    TypeConstants::quantifier_t q = TypeOps::quantifier(*targetType);
+
+    if (TypeOps::is_empty(tm, *targetType)) 
+    {
+      set_ignores_sorted_nodes(arg, ANNOTATION_TRUE);
+      set_ignores_duplicate_nodes(arg, ANNOTATION_TRUE);
+    }
+    else
+    {
+      if (q == TypeConstants::QUANT_ONE || q == TypeConstants::QUANT_QUESTION) 
+      {
+        set_ignores_sorted_nodes(arg, ANNOTATION_TRUE);
+      }
+      else
+      {
+        pushdown_ignores_sorted_nodes(curExpr, arg);
+      }
+
+      if (curExpr->getIgnoresDuplicateNodes() == ANNOTATION_TRUE &&
+          (q == TypeConstants::QUANT_STAR ||
+           (q == TypeConstants::QUANT_PLUS &&
+            TypeOps::type_min_cnt(tm, *arg->get_return_type()) >= 1)))
+      {
+        set_ignores_duplicate_nodes(arg, ANNOTATION_TRUE);
+      }
+      else
+      {
+        set_ignores_duplicate_nodes(arg, ANNOTATION_FALSE);
+      }
+    }
+
+    break;
   }
-  else if (is_cast) 
-  {
-    TSVAnnotationValue::update_annotation(input,
-                                          Annotations::IGNORES_SORTED_NODES,
-                                          TSVAnnotationValue::from_bool(node->get_annotation(Annotations::IGNORES_DUP_NODES).getp() == TSVAnnotationValue::TRUE_VAL.getp()));
-  }
 
-  bool ignores_dups = (q == TypeConstants::QUANT_STAR ||
-                       (q == TypeConstants::QUANT_PLUS &&
-                        TypeOps::type_min_cnt(tm, *input->get_return_type()) >= 1));
-
-  if (is_cast)
-  {
-    ignores_dups = (ignores_dups &&
-                    node->get_annotation(Annotations::IGNORES_DUP_NODES).getp() ==
-                    TSVAnnotationValue::TRUE_VAL.getp());
-  }
-
-  TSVAnnotationValue::update_annotation(input,
-                                        Annotations::IGNORES_DUP_NODES,
-                                        TSVAnnotationValue::from_bool (ignores_dups));
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-RULE_REWRITE_PRE(MarkConsumerNodeProps)
-{
-  switch (node->get_expr_kind()) 
-  {
-  case fo_expr_kind: 
+  case fo_expr_kind : 
   {
     fo_expr* fo = static_cast<fo_expr *>(node);
     function* f = fo->get_func();
 
     FunctionConsts::FunctionKind fkind = f->getKind();
 
-    if (fkind == FunctionConsts::FN_EMPTY_1 ||
-        fkind == FunctionConsts::FN_EXISTS_1 ||
-        fkind == FunctionConsts::FN_MAX_1 ||
-        fkind == FunctionConsts::FN_MAX_2 ||
-        fkind == FunctionConsts::FN_MIN_1 ||
-        fkind == FunctionConsts::FN_MIN_2 ||
-        fkind == FunctionConsts::FN_BOOLEAN_1)
+    ulong numArgs = fo->num_args();
+
+    for (ulong i = 0; i < numArgs; ++i)
     {
-      expr_t arg = fo->get_arg(0);
-      TSVAnnotationValue::update_annotation(arg,
-                                            Annotations::IGNORES_SORTED_NODES,
-                                            TSVAnnotationValue::TRUE_VAL);
-      TSVAnnotationValue::update_annotation(arg,
-                                            Annotations::IGNORES_DUP_NODES,
-                                            TSVAnnotationValue::TRUE_VAL);
+      expr* arg = fo->get_arg(i);
+
+      set_ignores_sorted_nodes(arg, f->ignoresSortedNodes(node, i));
+
+      set_ignores_duplicate_nodes(arg, f->ignoresDuplicateNodes(node, i));
     }
-    else if (fkind == FunctionConsts::FN_ZERO_OR_ONE_1 ||
-             fkind == FunctionConsts::FN_EXACTLY_ONE_1)
+    
+    if (fkind == FunctionConsts::FN_ZERO_OR_ONE_1 ||
+        fkind == FunctionConsts::FN_EXACTLY_ONE_1)
     {
       // If these functions are over a duplicate elimination function, the 
       // duplicate elimination is pulled up into the runtime iterators for
       // fn:zero-or-one or fn:exactly-one.
-      bool ignoresDups = false;
       expr_t arg = fo->get_arg(0);
 
       if (arg->get_expr_kind() == fo_expr_kind)
       {
         const fo_expr* fo = static_cast<fo_expr *>(arg.getp());
         const function* argFunc = fo->get_func();
-
+        
         if (argFunc->isNodeDistinctFunction())
         {
-          ignoresDups = true;
+          set_ignores_duplicate_nodes(arg, ANNOTATION_TRUE);
           f->setFlag(FunctionConsts::DoDistinct);
         }
       }
-
-      TSVAnnotationValue::update_annotation(arg,
-                                            Annotations::IGNORES_DUP_NODES,
-                                            TSVAnnotationValue::from_bool(ignoresDups));
-
-      TSVAnnotationValue::update_annotation(arg,
-                                            Annotations::IGNORES_SORTED_NODES,
-                                            TSVAnnotationValue::TRUE_VAL);
     }
-    else if (fkind == FunctionConsts::FN_UNORDERED_1 ||
-             fkind == FunctionConsts::FN_COUNT_1 ||
-             fkind == FunctionConsts::FN_SUM_1 ||
-             fkind == FunctionConsts::FN_SUM_2 ||
-             fkind == FunctionConsts::FN_AVG_1 ||
-             fkind == FunctionConsts::OP_EXACTLY_ONE_NORAISE_1)
+
+    break;
+  }
+
+  case attr_expr_kind :
+  case elem_expr_kind :
+  case pi_expr_kind :
+  case text_expr_kind :
+  case doc_expr_kind :
+  case axis_step_expr_kind :
+  case const_expr_kind :
+  case debugger_expr_kind :   // TODO
+  case delete_expr_kind :     // TODO
+  case eval_expr_kind :       // TODO
+  case exit_expr_kind :       // TODO
+  case extension_expr_kind :  // TODO
+  case flowctl_expr_kind :    // TODO
+  case ft_expr_kind :         // TODO
+  case gflwor_expr_kind :     // TODO
+  case insert_expr_kind :     // TODO
+  case match_expr_kind :
+  case name_cast_expr_kind :  // TODO
+  case order_expr_kind :      // TODO
+  case rename_expr_kind :     // TODO
+  case replace_expr_kind :    // TODO
+  case sequential_expr_kind : // TODO
+  case transform_expr_kind :  // TODO
+  case trycatch_expr_kind :   // TODO
+  case validate_expr_kind :   // TODO
+  case var_expr_kind :
+  case while_expr_kind :      // TODO
+  case dynamic_function_invocation_expr_kind : // TODO
+  case function_item_expr_kind : // TODO
+  {
+    ExprIterator iter(node);
+    while (!iter.done()) 
     {
-      expr_t arg = fo->get_arg(0);
-      TSVAnnotationValue::update_annotation(arg,
-                                            Annotations::IGNORES_SORTED_NODES,
-                                            TSVAnnotationValue::TRUE_VAL);
-      TSVAnnotationValue::update_annotation(arg,
-                                            Annotations::IGNORES_DUP_NODES,
-                                            TSVAnnotationValue::FALSE_VAL);
+      (*iter)->setIgnoresSortedNodes(ANNOTATION_FALSE);
+      (*iter)->setIgnoresDuplicateNodes(ANNOTATION_FALSE);
+
+      iter.next();
     }
-    else
-    {
-      std::vector <AnnotationHolder *> args;
-      ulong numArgs = fo->num_args();
-
-      for (ulong i = 0; i < numArgs; ++i)
-        args.push_back(static_cast<AnnotationHolder*>(fo->get_arg(i)));
-
-      f->compute_annotation(node, args, Annotations::IGNORES_DUP_NODES);
-      f->compute_annotation(node, args, Annotations::IGNORES_SORTED_NODES);
-    }
+    
     break;
   }
-
-  case if_expr_kind: 
-  {
-    if_expr* ite = static_cast<if_expr *>(node);
-    pushdown_ignore_props(node, ite->get_then_expr());
-    pushdown_ignore_props(node, ite->get_else_expr());
-    break;
-  }
-
-  case flwor_expr_kind: 
-  {
-    flwor_expr* flwor = static_cast<flwor_expr *> (node);
-    init_let_vars_consumer_props(flwor);
-    mark_for_vars_ignoring_sort(flwor);
-    pushdown_ignore_props(node, flwor->get_return_expr());
-    break;
-  }
-
-  case relpath_expr_kind: 
-  {
-    expr_t arg = (*static_cast<relpath_expr *>(node))[0];
-    TSVAnnotationValue::update_annotation(arg,
-                                          Annotations::IGNORES_SORTED_NODES,
-                                          TSVAnnotationValue::TRUE_VAL);
-    TSVAnnotationValue::update_annotation(arg,
-                                          Annotations::IGNORES_DUP_NODES,
-                                          TSVAnnotationValue::TRUE_VAL);
-    break;
-  }
-
-  case wrapper_expr_kind: 
-  {
-    wrapper_expr* we = static_cast<wrapper_expr *>(node);
-    pushdown_ignore_props(node, we->get_expr());
-    break;
-  }    
 
   default:
   {
-    cast_or_castable_base_expr* ce = dynamic_cast<cast_base_expr *> (node);
-    if (ce != NULL) 
-    {
-      expr* input = ce->get_input();
-      mark_casts(ce, input);
-      break;
-    }
-    else
-    {
-      ExprIterator iter(node);
-      while (!iter.done()) 
-      {
-        TSVAnnotationValue::update_annotation(*iter,
-                                              Annotations::IGNORES_SORTED_NODES,
-                                              TSVAnnotationValue::FALSE_VAL);
-        TSVAnnotationValue::update_annotation(*iter,
-                                              Annotations::IGNORES_DUP_NODES,
-                                              TSVAnnotationValue::FALSE_VAL);
-        iter.next();
-      }
-    }
-
-    break;
+    ZORBA_ASSERT(false);
   }
   }
 
-  return NULL;
-}
-
-
-RULE_REWRITE_POST(MarkConsumerNodeProps) 
-{
-  switch (node->get_expr_kind ()) 
+  ExprIterator iter(node);
+  while (!iter.done())
   {
-  case flwor_expr_kind:
-    return analyze_let_vars_consumer_props(static_cast<flwor_expr *>(node)) ? node : NULL;
-
-  default:
-    break;
+    apply(rCtx, *iter, modified);
+    iter.next();
   }
-
+ 
   return NULL;
 }
 
 
 /*******************************************************************************
-
+  
 ********************************************************************************/
 RULE_REWRITE_PRE(MarkProducerNodeProps)
 {
   if (rCtx.getRoot().getp() == node) 
   {
-    DataflowAnnotationsComputer computer(node->get_sctx());
+    DataflowAnnotationsComputer computer;
     computer.compute(node);
   }
   return NULL;
@@ -429,8 +424,6 @@ RULE_REWRITE_POST(MarkProducerNodeProps)
 ********************************************************************************/
 RULE_REWRITE_PRE(EliminateNodeOps)
 {
-  static_context* sctx = node->get_sctx();
-
   fo_expr* fo = dynamic_cast<fo_expr *>(node);
 
   if (fo != NULL) 
@@ -447,7 +440,7 @@ RULE_REWRITE_PRE(EliminateNodeOps)
     {
       expr* argExpr = fo->get_arg(0);
 
-      function* fmin = nsdf->optimize(sctx, node, argExpr);
+      function* fmin = nsdf->optimize(node, argExpr);
 
       if (fmin != f)
       {

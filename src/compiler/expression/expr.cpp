@@ -40,7 +40,6 @@
 #include "compiler/expression/var_expr.h"
 #include "compiler/expression/expr_utils.h"
 #include "compiler/expression/expr_visitor.h"
-#include "compiler/semantic_annotations/tsv_annotation.h"
 #include "compiler/semantic_annotations/annotation_keys.h"
 #include "compiler/parser/parse_constants.h"
 

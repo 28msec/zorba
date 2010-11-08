@@ -100,31 +100,25 @@ public:
 
 /**
  * 
- *      Summary: Returns a sequence of positive integers giving the positions 
- *      within the sequence $seqParam of items that are equal to $srchParam. 
+ *  Summary: Returns a sequence of positive integers giving the positions 
+ *  within the sequence $seqParam of items that are equal to $srchParam. 
  *      
- *      The collation used by the invocation of this function is determined 
- *      according to the rules in 7.3.1 Collations. The collation is used when 
- *      string comparison is required. 
+ *  The collation used by the invocation of this function is determined 
+ *  according to the rules in 7.3.1 Collations. The collation is used when 
+ *  string comparison is required. 
  *      
- *      The items in the sequence $seqParam are compared with $srchParam under 
- *      the rules for the 'eq' operator. Values that cannot be compared, i.e. 
- *      the 'eq' operator is not defined for their types, are considered to be 
- *      distinct. If an item compares equal, then the position of that item in 
- *      the sequence $seqParam is included in the result. 
+ *  The items in the sequence $seqParam are compared with $srchParam under 
+ *  the rules for the 'eq' operator. Values that cannot be compared, i.e. 
+ *  the 'eq' operator is not defined for their types, are considered to be 
+ *  distinct. If an item compares equal, then the position of that item in 
+ *  the sequence $seqParam is included in the result. 
  *      
- *      If the value of $seqParam is the empty sequence, or if no item in 
- *      $seqParam matches $srchParam, then the empty sequence is returned. 
+ *  If the value of $seqParam is the empty sequence, or if no item in 
+ *  $seqParam matches $srchParam, then the empty sequence is returned. 
  *      
- *      The first item in a sequence is at position 1, not position 0.
- *      The result sequence is in ascending numeric order.
- *      fn:index-of($seqParam as xs:anyAtomicType*,
- *                  $srchParam as xs:anyAtomicType) as xs:integer*
- *      
- *      fn:index-of($seqParam as xs:anyAtomicType*,
- *                  $srchParam as xs:anyAtomicType,
- *                  $collation as xs:string) as xs:integer*
- *    
+ *  The first item in a sequence is at position 1, not position 0.
+ *  The result sequence is in ascending numeric order.
+ *  
  * Author: Zorba Team
  */
 class FnIndexOfIteratorState : public PlanIteratorState
@@ -174,9 +168,9 @@ public:
 
 /**
  * 
- *      If the value of $arg is the empty sequence, the function returns true;
- *      otherwise, the function returns false.
- *    
+ *  If the value of $arg is the empty sequence, the function returns true;
+ *  otherwise, the function returns false.
+ *  
  * Author: Zorba Team
  */
 class FnEmptyIterator : public NaryBaseIterator<FnEmptyIterator, PlanIteratorState>
@@ -211,9 +205,9 @@ public:
 
 /**
  * 
- *      If the value of $arg is not the empty sequence, the function returns true; 
- *      otherwise, the function returns false.
- *    
+ *  If the value of $arg is not the empty sequence, the function returns true; 
+ *  otherwise, the function returns false.
+ *  
  * Author: Zorba Team
  */
 class FnExistsIterator : public NaryBaseIterator<FnExistsIterator, PlanIteratorState>
@@ -249,9 +243,12 @@ public:
 /**
  * 
  *  Returns the sequence that results from removing from arg all but one of a 
- *  set of values that are eq to one other. The order in which the sequence of
- *  values is returned is implementation dependent. Here, we return the first
- *  item that is not a duplicate and throw away the remaining ones.
+ *  set of values that are eq to one other. Values of type xs:untypedAtomic are
+ *  compared as if they were of type xs:string. Values that cannot be compared,
+ *  i.e. the eq operator is not defined for their types, are considered to be
+ *  distinct. The order in which the sequence of values is returned is implementation
+ *  dependent. In zorba, we return the first item that is not a duplicate and
+ *  throw away the remaining ones.
  *  
  * Author: Zorba Team
  */
@@ -301,9 +298,9 @@ public:
 
 /**
  * 
- *      Returns a new sequence constructed from the value of the first parameter with
- *      the value of third parameter inserted at the position specified by the value
- *      of the second parameter.
+ *  Returns a new sequence constructed from the value of the first parameter with
+ *  the value of third parameter inserted at the position specified by the value
+ *  of the second parameter.
  *  
  * Author: Zorba Team
  */
@@ -354,8 +351,8 @@ public:
 
 /**
  * 
- *    Returns a new sequence constructed from the value of aTarget with the item at
- *    the position specified by the value of aPosition removed.
+ *  Returns a new sequence constructed from the value of aTarget with the item at
+ *  the position specified by the value of aPosition removed.
  *  
  * Author: Zorba Team
  */
@@ -406,7 +403,7 @@ public:
 
 /**
  * 
- *    fn:reverse
+ *  fn:reverse
  *  
  * Author: Zorba Team
  */
@@ -455,7 +452,7 @@ public:
 
 /**
  * 
- *    fn:subsequence
+ *  fn:subsequence
  *  
  * Author: Zorba Team
  */
@@ -610,8 +607,8 @@ public:
 
 /**
  * 
- *      fn:zero-or-one
- *    
+ *  Returns $arg if it contains zero or one items. Otherwise, raises err:FORG0003.
+ *  
  * Author: Zorba Team
  */
 class FnZeroOrOneIterator : public NaryBaseIterator<FnZeroOrOneIterator, PlanIteratorState>
@@ -652,8 +649,8 @@ public:
 
 /**
  * 
- *      fn:one-or-more
- *    
+ *  Returns $arg if it contains one or more items. Otherwise, raises err:FORG0004.
+ *  
  * Author: Zorba Team
  */
 class FnOneOrMoreIterator : public NaryBaseIterator<FnOneOrMoreIterator, PlanIteratorState>
@@ -687,7 +684,9 @@ public:
 
 
 /**
- * fn:exactly-one
+ * 
+ *  Returns $arg if it contains exactly one item. Otherwise, raises err:FORG0005.
+ *  
  * Author: Zorba Team
  */
 class FnExactlyOneIterator : public NaryBaseIterator<FnExactlyOneIterator, PlanIteratorState>
@@ -731,7 +730,12 @@ public:
 
 
 /**
- * fn:deep-equal
+ * 
+ *  This function assesses whether two sequences are deep-equal to each other. To
+ *  be deep-equal, they must contain items that are pairwise deep-equal; and for
+ *  two items to be deep-equal, they must either be atomic values that compare equal,
+ *  or nodes of the same kind, with the same name, whose children are deep-equal.
+ *  
  * Author: Zorba Team
  */
 class FnDeepEqualIterator : public NaryBaseIterator<FnDeepEqualIterator, PlanIteratorState>
@@ -766,16 +770,12 @@ public:
 
 /**
  * 
- *      op:union : implemented using concat and sort
- *      op:intersect : implemented by the HashSemiJoinIterator below
- *      op:except : implemented by the HashSemiJoinIterator below
- *
- *      Hashing semi/anti join iterator.
+ *  Hashing semi/anti join iterator.
  *      
- *      First producer goes in the result if a match in the second producer is 
- *      found/not found. The order of the first producer is retained. No duplicate
- *      elimination is performed.
- *    
+ *  First producer goes in the result if a match in the second producer is 
+ *  found/not found. The order of the first producer is retained. No duplicate
+ *  elimination is performed.
+ *  
  * Author: Zorba Team
  */
 class HashSemiJoinIteratorState : public PlanIteratorState
@@ -829,15 +829,15 @@ public:
 
 /**
  * 
- *      Sortmerge based semijoin iterator.
+ *  Sortmerge based semijoin iterator.
  *
- *      First producer goes in the result if a match in the second producer is found.
- *      Precondition: both inputs must be sorted.
- *      Postcondition: the order of the first producer is retained.
+ *  First producer goes in the result if a match in the second producer is found.
+ *  Precondition: both inputs must be sorted.
+ *  Postcondition: the order of the first producer is retained.
  *      
- *      If either of the inputs is guaranteed to contain no duplicates, then the
- *      output will be duplicate-free. Otherwise the output may contain duplicates.
- *    
+ *  If either of the inputs is guaranteed to contain no duplicates, then the
+ *  output will be duplicate-free. Otherwise the output may contain duplicates.
+ *  
  * Author: Zorba Team
  */
 class SortSemiJoinIterator : public NaryBaseIterator<SortSemiJoinIterator, PlanIteratorState>
@@ -942,8 +942,11 @@ public:
 
 /**
  * 
- *      fn:sum
- *    
+ *  Returns a value obtained by adding together the values in $arg. If $zero is 
+ *  not specified, then the value returned for an empty sequence is the xs:integer
+ *  value 0. If $zero is specified, then the value returned for an empty sequence
+ *  is $zero.
+ *  
  * Author: Zorba Team
  */
 class FnSumIterator : public NaryBaseIterator<FnSumIterator, PlanIteratorState>
@@ -1170,6 +1173,168 @@ public:
 
 
 /**
+ * 
+ *  Returns the sequence of element nodes that are in the target document and have
+ *  an ID value matching the value of one or more of the IDREF values supplied in 
+ *  $arg. The target document is the document containing $node, or the document
+ *  containing the context item (.) if the second argument is omitted.
+ *  
+ * Author: Zorba Team
+ */
+class FnIdIteratorState : public DescendantAxisState
+{
+public:
+  bool theIsInitialized; //
+  std::vector<zstring> theIds; //
+  store::Item_t theDocNode; //
+  rchandle<store::AttributesIterator> theAttrsIte; //
+
+  FnIdIteratorState();
+
+  ~FnIdIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class FnIdIterator : public NaryBaseIterator<FnIdIterator, FnIdIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(FnIdIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnIdIterator,
+    NaryBaseIterator<FnIdIterator, FnIdIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnIdIterator, FnIdIteratorState>*)this);
+  }
+
+  FnIdIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<FnIdIterator, FnIdIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~FnIdIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *  The effect of this function is identical to fn:id in respect of elements that
+ *  have an attribute with the is-id property. However, it behaves differently in
+ *  respect of element nodes with the is-id property. Whereas the fn:id, for legacy
+ *  reasons, returns the element that has the is-id property, this function returns
+ *  the element identified by the ID, which is the parent of the element having the
+ *  is-id property.
+ *  
+ * Author: Zorba Team
+ */
+class FnElementWithIdIteratorState : public DescendantAxisState
+{
+public:
+  bool theIsInitialized; //
+  std::vector<zstring> theIds; //
+  store::Item_t theDocNode; //
+  rchandle<store::AttributesIterator> theAttrsIte; //
+
+  FnElementWithIdIteratorState();
+
+  ~FnElementWithIdIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class FnElementWithIdIterator : public NaryBaseIterator<FnElementWithIdIterator, FnElementWithIdIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(FnElementWithIdIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnElementWithIdIterator,
+    NaryBaseIterator<FnElementWithIdIterator, FnElementWithIdIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnElementWithIdIterator, FnElementWithIdIteratorState>*)this);
+  }
+
+  FnElementWithIdIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<FnElementWithIdIterator, FnElementWithIdIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~FnElementWithIdIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * fn:idref
+ * Author: Zorba Team
+ */
+class FnIdRefIteratorState : public DescendantAxisState
+{
+public:
+  bool theIsInitialized; //
+  std::vector<zstring> theIds; //
+  store::Item_t theDocNode; //
+  rchandle<store::AttributesIterator> theAttrsIte; //
+
+  FnIdRefIteratorState();
+
+  ~FnIdRefIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class FnIdRefIterator : public NaryBaseIterator<FnIdRefIterator, FnIdRefIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(FnIdRefIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnIdRefIterator,
+    NaryBaseIterator<FnIdRefIterator, FnIdRefIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnIdRefIterator, FnIdRefIteratorState>*)this);
+  }
+
+  FnIdRefIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<FnIdRefIterator, FnIdRefIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~FnIdRefIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
  * fn:doc
  * Author: Zorba Team
  */
@@ -1298,156 +1463,6 @@ public:
   {}
 
   virtual ~FnParseIterator();
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
-
-/**
- * fn:id
- * Author: Zorba Team
- */
-class FnIdIteratorState : public DescendantAxisState
-{
-public:
-  bool theIsInitialized; //
-  std::vector<zstring> theIds; //
-  store::Item_t theDocNode; //
-  rchandle<store::AttributesIterator> theAttrsIte; //
-
-  FnIdIteratorState();
-
-  ~FnIdIteratorState();
-
-  void init(PlanState&);
-  void reset(PlanState&);
-};
-
-class FnIdIterator : public NaryBaseIterator<FnIdIterator, FnIdIteratorState>
-{ 
-public:
-  SERIALIZABLE_CLASS(FnIdIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnIdIterator,
-    NaryBaseIterator<FnIdIterator, FnIdIteratorState>);
-
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnIdIterator, FnIdIteratorState>*)this);
-  }
-
-  FnIdIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& children)
-    : 
-    NaryBaseIterator<FnIdIterator, FnIdIteratorState>(sctx, loc, children)
-  {}
-
-  virtual ~FnIdIterator();
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
-
-/**
- * fn:element-with-id
- * Author: Zorba Team
- */
-class FnElementWithIdIteratorState : public DescendantAxisState
-{
-public:
-  bool theIsInitialized; //
-  std::vector<zstring> theIds; //
-  store::Item_t theDocNode; //
-  rchandle<store::AttributesIterator> theAttrsIte; //
-
-  FnElementWithIdIteratorState();
-
-  ~FnElementWithIdIteratorState();
-
-  void init(PlanState&);
-  void reset(PlanState&);
-};
-
-class FnElementWithIdIterator : public NaryBaseIterator<FnElementWithIdIterator, FnElementWithIdIteratorState>
-{ 
-public:
-  SERIALIZABLE_CLASS(FnElementWithIdIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnElementWithIdIterator,
-    NaryBaseIterator<FnElementWithIdIterator, FnElementWithIdIteratorState>);
-
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnElementWithIdIterator, FnElementWithIdIteratorState>*)this);
-  }
-
-  FnElementWithIdIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& children)
-    : 
-    NaryBaseIterator<FnElementWithIdIterator, FnElementWithIdIteratorState>(sctx, loc, children)
-  {}
-
-  virtual ~FnElementWithIdIterator();
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
-
-/**
- * fn:idref
- * Author: Zorba Team
- */
-class FnIdRefIteratorState : public DescendantAxisState
-{
-public:
-  bool theIsInitialized; //
-  std::vector<zstring> theIds; //
-  store::Item_t theDocNode; //
-  rchandle<store::AttributesIterator> theAttrsIte; //
-
-  FnIdRefIteratorState();
-
-  ~FnIdRefIteratorState();
-
-  void init(PlanState&);
-  void reset(PlanState&);
-};
-
-class FnIdRefIterator : public NaryBaseIterator<FnIdRefIterator, FnIdRefIteratorState>
-{ 
-public:
-  SERIALIZABLE_CLASS(FnIdRefIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnIdRefIterator,
-    NaryBaseIterator<FnIdRefIterator, FnIdRefIteratorState>);
-
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnIdRefIterator, FnIdRefIteratorState>*)this);
-  }
-
-  FnIdRefIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& children)
-    : 
-    NaryBaseIterator<FnIdRefIterator, FnIdRefIteratorState>(sctx, loc, children)
-  {}
-
-  virtual ~FnIdRefIterator();
 
   void accept(PlanIterVisitor& v) const;
 

@@ -29,9 +29,37 @@ namespace zorba
 void populate_context_index_ddl(static_context* sctx);
 
 
+/*******************************************************************************
+  op:create-internal-index($indexName as xs:QName, $items as item*)
+
+  The second param is bound to an exparession of the form :
+
+  for $dot at $pos in domain_expr
+  return index-entry-builder($$dot, key1_expr, ..., keyN_expr)
+********************************************************************************/
+class op_create_internal_index : public function
+{
+public:
+  op_create_internal_index(const signature& sig)
+    :
+    function(sig, FunctionConsts::OP_CREATE_INTERNAL_INDEX_2)
+  {
+  }
+
+  bool accessesDynCtx() const { return true; }
+
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const 
+  {
+    return ANNOTATION_TRUE;
+  }
+
+  CODEGEN_DECL();
+};
 
 
-//fn-zorba-ddl:create-index
+/*******************************************************************************
+  fn-zorba-ddl:create-index($indexName as xs:QName)
+********************************************************************************/
 class fn_zorba_ddl_create_index : public function
 {
 public:
@@ -49,7 +77,9 @@ public:
 };
 
 
-//fn-zorba-ddl:delete-index
+/*******************************************************************************
+  fn-zorba-ddl:delete-index($indexName as xs:QName)
+********************************************************************************/
 class fn_zorba_ddl_delete_index : public function
 {
 public:
@@ -67,23 +97,9 @@ public:
 };
 
 
-//op:create-internal-index
-class op_create_internal_index : public function
-{
-public:
-  op_create_internal_index(const signature& sig)
-    :
-    function(sig, FunctionConsts::OP_CREATE_INTERNAL_INDEX_2)
-  {
-  }
-
-  bool accessesDynCtx() const { return true; }
-
-  CODEGEN_DECL();
-};
-
-
-//fn-zorba-ddl:refresh-index
+/*******************************************************************************
+  fn-zorba-ddl:refresh-index($indexName as xs:QName)
+********************************************************************************/
 class fn_zorba_ddl_refresh_index : public function
 {
 public:
@@ -101,7 +117,12 @@ public:
 };
 
 
-//op:value-index-entry-builder
+/*******************************************************************************
+  op:value-index-entry-builder($node as node(), .....)
+
+  This is a variadic function. The 1st input is a domain node, and the rest of
+  the inputs are the key items that comprise the key tuple for that node
+********************************************************************************/
 class op_value_index_entry_builder : public function
 {
 public:
@@ -117,7 +138,9 @@ public:
 };
 
 
-//op:general-index-entry-builder
+/*******************************************************************************
+  op:general-index-entry-builder($node as node(), .....)
+********************************************************************************/
 class op_general_index_entry_builder : public function
 {
 public:
@@ -133,7 +156,9 @@ public:
 };
 
 
-//fn-zorba-ddl:probe-index-point-value
+/*******************************************************************************
+  fn-zorba-ddl:probe-index-point-value($indexName as xs:QName, ....)
+********************************************************************************/
 class fn_zorba_ddl_probe_index_point_value : public function
 {
 public:
@@ -154,7 +179,9 @@ public:
 };
 
 
-//fn-zorba-ddl:probe-index-point-general
+/*******************************************************************************
+  fn-zorba-ddl:probe-index-point-general($indexName as xs:QName, ....)
+********************************************************************************/
 class fn_zorba_ddl_probe_index_point_general : public function
 {
 public:
@@ -170,8 +197,9 @@ public:
 };
 
 
-
-//fn-zorba-ddl:probe-index-range-value
+/*******************************************************************************
+  fn-zorba-ddl:probe-index-range-value($indexName as xs:QName, ....)
+********************************************************************************/
 class fn_zorba_ddl_probe_index_range_value : public function
 {
 public:
@@ -192,7 +220,9 @@ public:
 };
 
 
-//fn-zorba-ddl:probe-index-range-general
+/*******************************************************************************
+  fn-zorba-ddl:probe-index-range-general($indexName as xs:QName, ....)
+********************************************************************************/
 class fn_zorba_ddl_probe_index_range_general : public function
 {
 public:

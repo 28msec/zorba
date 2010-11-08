@@ -217,6 +217,36 @@ PlanIter_t op_to::codegen(
   return new OpToIterator(sctx, loc, argv);
 }
 
+PlanIter_t fn_id::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new FnIdIterator(sctx, loc, argv);
+}
+
+PlanIter_t fn_element_with_id::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new FnElementWithIdIterator(sctx, loc, argv);
+}
+
+PlanIter_t fn_idref::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new FnIdRefIterator(sctx, loc, argv);
+}
+
 PlanIter_t fn_doc::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -255,36 +285,6 @@ PlanIter_t fn_parse::codegen(
   AnnotationHolder& ann) const
 {
   return new FnParseIterator(sctx, loc, argv);
-}
-
-PlanIter_t fn_id::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
-{
-  return new FnIdIterator(sctx, loc, argv);
-}
-
-PlanIter_t fn_element_with_id::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
-{
-  return new FnElementWithIdIterator(sctx, loc, argv);
-}
-
-PlanIter_t fn_idref::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
-{
-  return new FnIdRefIterator(sctx, loc, argv);
 }
 
 void populate_context_sequences(static_context* sctx)
@@ -505,6 +505,45 @@ void populate_context_sequences(static_context* sctx)
       GENV_TYPESYSTEM.INTEGER_TYPE_STAR));
 
 
+  DECL(sctx, fn_id,
+      (createQName("http://www.w3.org/2005/xpath-functions","fn","id"),
+      GENV_TYPESYSTEM.STRING_TYPE_STAR,
+      GENV_TYPESYSTEM.ELEMENT_TYPE_STAR));
+
+
+  DECL(sctx, fn_id,
+      (createQName("http://www.w3.org/2005/xpath-functions","fn","id"),
+      GENV_TYPESYSTEM.STRING_TYPE_STAR,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+      GENV_TYPESYSTEM.ELEMENT_TYPE_STAR));
+
+
+  DECL(sctx, fn_element_with_id,
+      (createQName("http://www.w3.org/2005/xpath-functions","fn","element-with-id"),
+      GENV_TYPESYSTEM.STRING_TYPE_STAR,
+      GENV_TYPESYSTEM.ELEMENT_TYPE_STAR));
+
+
+  DECL(sctx, fn_element_with_id,
+      (createQName("http://www.w3.org/2005/xpath-functions","fn","element-with-id"),
+      GENV_TYPESYSTEM.STRING_TYPE_STAR,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+      GENV_TYPESYSTEM.ELEMENT_TYPE_STAR));
+
+
+  DECL(sctx, fn_idref,
+      (createQName("http://www.w3.org/2005/xpath-functions","fn","idref"),
+      GENV_TYPESYSTEM.STRING_TYPE_STAR,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
+
+
+  DECL(sctx, fn_idref,
+      (createQName("http://www.w3.org/2005/xpath-functions","fn","idref"),
+      GENV_TYPESYSTEM.STRING_TYPE_STAR,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
+
+
   DECL(sctx, fn_doc,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","doc"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
@@ -534,45 +573,6 @@ void populate_context_sequences(static_context* sctx)
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.DOCUMENT_UNTYPED_TYPE_ONE));
-
-
-  DECL(sctx, fn_id,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","id"),
-      GENV_TYPESYSTEM.STRING_TYPE_STAR,
-      GENV_TYPESYSTEM.ELEMENT_TYPE_STAR));
-
-
-  DECL(sctx, fn_id,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","id"),
-      GENV_TYPESYSTEM.STRING_TYPE_STAR,
-      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
-      GENV_TYPESYSTEM.ELEMENT_TYPE_STAR));
-
-
-  DECL(sctx, fn_element_with_id,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","element-with-id"),
-      GENV_TYPESYSTEM.STRING_TYPE_STAR,
-      GENV_TYPESYSTEM.ELEMENT_TYPE_STAR));
-
-
-  DECL(sctx, fn_element_with_id,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","element-with-id"),
-      GENV_TYPESYSTEM.STRING_TYPE_STAR,
-      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
-      GENV_TYPESYSTEM.ELEMENT_TYPE_STAR));
-
-
-  DECL(sctx, fn_idref,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","idref"),
-      GENV_TYPESYSTEM.STRING_TYPE_STAR,
-      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
-
-
-  DECL(sctx, fn_idref,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","idref"),
-      GENV_TYPESYSTEM.STRING_TYPE_STAR,
-      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
-      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
 }
 

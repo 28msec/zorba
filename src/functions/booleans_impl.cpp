@@ -15,6 +15,8 @@
  */
 #include "system/globalenv.h"
 
+#include "compiler/expression/expr_base.h"
+
 #include "functions/booleans_impl.h"
 #include "functions/function_impl.h"
 #include "functions/library.h"
@@ -27,8 +29,6 @@
 
 #include "types/typeops.h"
 
-#include "compiler/semantic_annotations/annotation_keys.h"
-#include "compiler/semantic_annotations/tsv_annotation.h"
 
 namespace zorba
 {
@@ -58,7 +58,15 @@ public:
         static_context* sctx,
         const std::vector<xqtref_t>& argTypes) const;
 
-  COMPUTE_ANNOTATION_DECL();
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const
+  {
+    return ANNOTATION_TRUE;
+  }
+
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const 
+  {
+    return ANNOTATION_TRUE;
+  }
 
   virtual PlanIter_t codegen(
         CompilerCB* cb,
@@ -77,23 +85,6 @@ protected:
         std::vector<PlanIter_t>& ) const = 0;
 };
 
-
-void GenericOpComparison::compute_annotation(
-    AnnotationHolder *parent,
-    std::vector<AnnotationHolder *> &kids,
-    Annotations::Key k) const
-{
-  switch (k)
-  {
-  case Annotations::IGNORES_SORTED_NODES:
-  case Annotations::IGNORES_DUP_NODES:
-    for (std::vector<AnnotationHolder *>::iterator i = kids.begin(); i < kids.end(); i++)
-      TSVAnnotationValue::update_annotation ((*i), k, TSVAnnotationValue::TRUE_VAL);
-    break;
-  default:
-    ZORBA_ASSERT(false);
-  }
-}
 
 
 function* GenericOpComparison::specialize(
@@ -642,7 +633,9 @@ public:
 };
 
 
-
+/*******************************************************************************
+  fn:false
+********************************************************************************/
 class fn_false : public function
 {
 public:
@@ -662,10 +655,23 @@ public:
 };
 
 
+/*******************************************************************************
+  fn:not
+********************************************************************************/
 class fn_not : public function
 {
 public:
   fn_not(const signature& sig) : function(sig, FunctionConsts::FN_NOT_1) {}
+
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const 
+  {
+    return ANNOTATION_TRUE;
+  }
+
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const 
+  {
+    return ANNOTATION_TRUE;
+  }
 
   PlanIter_t codegen(
         CompilerCB* /*cb*/,
@@ -690,6 +696,16 @@ public:
   {
   }
 
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const
+  {
+    return ANNOTATION_TRUE;
+  }
+
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const 
+  {
+    return ANNOTATION_TRUE;
+  }
+
   PlanIter_t codegen(
         CompilerCB* /*cb*/,
         static_context* sctx,
@@ -701,6 +717,7 @@ public:
   }
 };
 
+
 /*******************************************************************************
   Atomic Values Equivalent comparing function
 
@@ -709,7 +726,9 @@ public:
 class op_atomic_values_equivalent : public function
 {
 public:
-  op_atomic_values_equivalent(const signature& sig) : function(sig, FunctionConsts::OP_ATOMIC_VALUES_EQUIVALENT_2)
+  op_atomic_values_equivalent(const signature& sig) 
+    :
+    function(sig, FunctionConsts::OP_ATOMIC_VALUES_EQUIVALENT_2)
   {
   }
 
@@ -720,10 +739,7 @@ public:
                     std::vector<PlanIter_t>& argv,
                     AnnotationHolder& ann) const
   {
-    return new AtomicValuesEquivalenceIterator(sctx,
-                               loc,
-                               argv[0],
-                               argv[1]);
+    return new AtomicValuesEquivalenceIterator(sctx, loc, argv[0], argv[1]);
   }
 };
 

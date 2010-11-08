@@ -17,9 +17,6 @@
 </zorba:source>
 
 <zorba:codegen>
-    <zorba:h>
-      <zorba:include form="Quoted">functions/single_seq_func.h</zorba:include>
-    </zorba:h>
 </zorba:codegen>
     
 <!--

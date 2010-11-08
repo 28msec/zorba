@@ -17,8 +17,6 @@
 #include "runtime/core/sequencetypes.h"
 
 #include "compiler/expression/expr_base.h"
-#include "compiler/semantic_annotations/annotation_keys.h"
-#include "compiler/semantic_annotations/tsv_annotation.h"
 
 #include "functions/nodeid_internal.h"
 #include "functions/function_impl.h"
@@ -28,11 +26,6 @@
 
 namespace zorba 
 {
-
-
-#define TSV_TRUE TSVAnnotationValue::TRUE_VAL
-#define TSV_TRUE_P TSVAnnotationValue::TRUE_VAL.getp()
-
 
 /*******************************************************************************
   Let f be "this" function, F be the fo expr representing a call to f, and E be
@@ -48,24 +41,16 @@ namespace zorba
 
   The "self" param is the fo expr F, and the "child" param is the E expr.
 ********************************************************************************/
-function* op_node_sort_distinct::optimize(
-    static_context* sctx,
-    const expr* self,
-    expr* child) const
+function* op_node_sort_distinct::optimize(const expr* self, expr* child) const
 {
-  TypeManager* tm = sctx->get_typemanager();
-
-  Annotations::Key ignoresSortedNodes = Annotations::IGNORES_SORTED_NODES;
-  Annotations::Key ignoresDupNodes = Annotations::IGNORES_DUP_NODES;
+  TypeManager* tm = self->get_sctx()->get_typemanager();
 
 #if 0
   cout << "optimize: self " << self << " child " << child
        << " self_ignores_sorted "
-       << (self != NULL && 
-           self->get_annotation(Annotations::IGNORES_SORTED_NODES) == TSV_TRUE)
+       << (self != NULL &&  self->ignoresSortedNodes())
        << " child_prod_sorted "
-       << (child != NULL &&
-           child->get_annotation(Annotations::PRODUCES_SORTED_NODES) == TSV_TRUE)
+       << (child != NULL && child->producesSortedNodes())
        << endl;
 #endif
 
@@ -95,23 +80,21 @@ function* op_node_sort_distinct::optimize(
   bool distinct = myActions[DISTINCT];
   if (distinct)
   {
-    if (self != NULL &&
-        self->get_annotation(ignoresDupNodes).getp() == TSV_TRUE_P)
+    if (self != NULL && self->ignoresDuplicateNodes())
       distinct = false;
 
-    if (child != NULL && child->getProducesDistinctNodes() == expr::ANNOTATION_TRUE)
+    if (child != NULL && child->producesDistinctNodes())
       distinct = false;
   }
 
   bool sort = (myActions[SORT_ASC] || myActions[SORT_DESC]);
   if (sort)
   {
-    if (self != NULL &&
-        self->get_annotation(ignoresSortedNodes).getp() == TSV_TRUE_P)
+    if (self != NULL && self->ignoresSortedNodes())
       sort = false;
 
     if (child != NULL &&
-        child->getProducesSortedNodes() == expr::ANNOTATION_TRUE &&
+        child->producesSortedNodes() &&
         myActions[SORT_ASC])
       sort = false;
   }
@@ -167,32 +150,43 @@ function* op_node_sort_distinct::optimize(
 /*******************************************************************************
 
 ********************************************************************************/
-void op_node_sort_distinct::compute_annotation(
-    AnnotationHolder* parent,
-    std::vector<AnnotationHolder *>& kids,
-    Annotations::Key k) const
+BoolAnnotationValue op_node_sort_distinct::ignoresSortedNodes(
+    expr* fo,
+    ulong input) const 
 {
   const bool* myActions = action();
 
-  switch (k) 
-  {
-  case Annotations::IGNORES_SORTED_NODES:
-  case Annotations::IGNORES_DUP_NODES: 
-  {
-    bool sort = (myActions[SORT_ASC]  || myActions[SORT_DESC]);
-    bool distinct = myActions[DISTINCT];
+  bool sort = (myActions[SORT_ASC]  || myActions[SORT_DESC]);
 
-    bool ignores = (parent->get_annotation(k).getp() == TSV_TRUE_P ||
-                    (k == Annotations::IGNORES_SORTED_NODES ? sort : distinct));
-
-    TSVAnnotationValue::update_annotation(kids[0],
-                                          k,
-                                          TSVAnnotationValue::from_bool(ignores));
-    break;
+  if (sort)
+  {
+    return ANNOTATION_TRUE;
   }
+  else
+  {
+    return fo->getIgnoresSortedNodes();
+  }
+}
 
-  default:
-    ZORBA_ASSERT(false);
+
+/*******************************************************************************
+
+********************************************************************************/
+BoolAnnotationValue op_node_sort_distinct::ignoresDuplicateNodes(
+    expr* fo, 
+    ulong input) const 
+{
+  const bool* myActions = action();
+
+  bool distinct = myActions[DISTINCT];
+
+  if (distinct)
+  {
+    return ANNOTATION_TRUE;
+  }
+  else
+  {
+    return fo->getIgnoresDuplicateNodes();
   }
 }
 
@@ -630,68 +624,8 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class fn_unordered : public single_seq_function 
-{
-public:
-  fn_unordered(const signature& sig)
-    :
-    single_seq_function(sig, FunctionConsts::FN_UNORDERED_1) {}
-
-  bool isMap(ulong input) const { return true; }
-
-  FunctionConsts::AnnotationValue producesSortedNodes() const
-  {
-    return FunctionConsts::PRESERVE;
-  }
-
-  FunctionConsts::AnnotationValue producesDistinctNodes() const
-  {
-    return FunctionConsts::PRESERVE;
-  }
-
-  COMPUTE_ANNOTATION_DECL();
-
-  PlanIter_t codegen(
-        CompilerCB* /*cb*/,
-        static_context* sctx,
-        const QueryLoc& loc,
-        std::vector<PlanIter_t>& argv,
-        AnnotationHolder& ) const
-  {
-    return argv[0];
-  }
-};
-
-
-void fn_unordered::compute_annotation(
-    AnnotationHolder* parent,
-    std::vector<AnnotationHolder *>& kids,
-    Annotations::Key k) const 
-{
-  switch (k)
-  {
-  case Annotations::IGNORES_SORTED_NODES:
-    TSVAnnotationValue::update_annotation(kids[theInput], k, TSVAnnotationValue::TRUE_VAL);
-    break;
-  case Annotations::IGNORES_DUP_NODES:
-    TSVAnnotationValue::update_annotation(kids[theInput], k, parent->get_annotation(k));
-    break;
-  default:
-    ZORBA_ASSERT(false);
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 void populateContext_DocOrder(static_context* sctx) 
 {
-  DECL(sctx, fn_unordered,
-       (createQName(XQUERY_OP_NS,"fn","unordered"),
-        GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-        GENV_TYPESYSTEM.ITEM_TYPE_STAR));
-  
   DECL(sctx, op_either_nodes_or_atomics,
        (createQName(ZORBA_OP_NS,"op","either-nodes-or-atomics"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,

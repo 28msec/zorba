@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_ZORBA_FUNCTIONS_FUNCTION_CONSTS
-#define ZORBA_ZORBA_FUNCTIONS_FUNCTION_CONSTS
+#ifndef ZORBA_FUNCTIONS_FUNCTION_CONSTS
+#define ZORBA_FUNCTIONS_FUNCTION_CONSTS
 
 namespace zorba
 {

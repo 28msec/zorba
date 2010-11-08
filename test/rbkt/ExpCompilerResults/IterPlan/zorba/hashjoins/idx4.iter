@@ -27,11 +27,9 @@ Iterator tree for main query:
       </HoistIterator>
     </ForVariable>
     <LetVariable name="parent" materialize="true">
-      <NodeSortIterator distinct="true" ascending="true">
-        <ParentAxisIterator test kind="match_name_test" qname="*" typename="*" nill allowed="0">
-          <LetVarIterator varname="e"/>
-        </ParentAxisIterator>
-      </NodeSortIterator>
+      <ParentAxisIterator test kind="match_name_test" qname="*" typename="*" nill allowed="0">
+        <LetVarIterator varname="e"/>
+      </ParentAxisIterator>
     </LetVariable>
     <ForVariable name="$$opt_temp_2">
       <HoistIterator>

@@ -323,8 +323,8 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
                               *rtm.ANY_NODE_TYPE_STAR))
       return false;
 
-    if (innerDomainExpr->getProducesDistinctNodes() != expr::ANNOTATION_TRUE &&
-        innerDomainExpr->getProducesDistinctNodes() != expr::ANNOTATION_TRUE_FIXED)
+    if (innerDomainExpr->getProducesDistinctNodes() != ANNOTATION_TRUE &&
+        innerDomainExpr->getProducesDistinctNodes() != ANNOTATION_TRUE_FIXED)
       return false;
   }
 

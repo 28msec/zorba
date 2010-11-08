@@ -73,6 +73,15 @@ enum expr_script_kind_t
 };
 
 
+enum BoolAnnotationValue
+{
+  ANNOTATION_UNKNOWN = 0,
+  ANNOTATION_FALSE,
+  ANNOTATION_TRUE,
+  ANNOTATION_TRUE_FIXED
+};
+
+
 class CompareConsts 
 {
 public:

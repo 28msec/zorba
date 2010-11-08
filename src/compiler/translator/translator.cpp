@@ -3999,7 +3999,7 @@ void end_visit(const NodeModifier& v, void* /*visit_state*/)
 
   IndexKeyList := IndexKeySpec+
 
-  IndexKeySpec := PathExpr AtomicType IndexKeyOrderModifier
+  IndexKeySpec := PathExpr (TypeDeclaration)? (OrderCollationSpec)?
 
   AtomicType := QName
 

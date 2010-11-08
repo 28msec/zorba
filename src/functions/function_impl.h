@@ -53,13 +53,6 @@
   } while(0)
 
 
-#define COMPUTE_ANNOTATION_DECL()                   \
-virtual void compute_annotation(                    \
-    AnnotationHolder* parent,                       \
-    std::vector<AnnotationHolder *>& kids,          \
-    Annotations::Key k) const;
-
-
 #define CODEGEN_DECL()                                    \
 PlanIter_t codegen(CompilerCB* cb,                        \
                    static_context* sctx,                  \

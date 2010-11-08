@@ -14,22 +14,19 @@
  * limitations under the License.
  */
 
+#include "compiler/expression/expr_base.h"
+
 #include "system/globalenv.h"
 
-#include "compiler/semantic_annotations/tsv_annotation.h"
-#include "compiler/semantic_annotations/annotation_keys.h"
-
 #include "functions/function_impl.h"
+
+#include "types/typeops.h"
 
 #include "util/hashmap32.h"
 #include "util/string_util.h"
 
-#include "types/typeops.h"
-
 #include "zorbaerrors/Assert.h"
 
-
-using namespace std;
 
 namespace zorba {
 
@@ -129,42 +126,6 @@ bool function::validate_args(std::vector<PlanIter_t>& argv) const
 }
 
 
-
-/*******************************************************************************
-  Propagate a property of this function down to its inputs.
-********************************************************************************/
-void function::compute_annotation(
-    AnnotationHolder* parent,
-    std::vector<AnnotationHolder *>& kids,
-    Annotations::Key k) const
-{
-  switch (k)
-  {
-  case Annotations::IGNORES_SORTED_NODES:
-  case Annotations::IGNORES_DUP_NODES:
-  {
-    for (unsigned src = 0; src < kids.size(); ++src)
-    {
-      if (kids[src] != NULL)
-      {
-        // Unless this method is redefined by a specific function, a function
-        // is considered as "potentially interested" in sorted and/or duplicate
-        // nodes. In this case, each of its input exprs must also be marked as
-        // "potentially interested", even if the input expr by itself is not
-        // interested.
-        TSVAnnotationValue::update_annotation(kids[src],
-                                              k,
-                                              TSVAnnotationValue::MAYBE_VAL);
-      }
-    }
-    break;
-  }
-  default:
-    ZORBA_ASSERT(false);
-  }
-}
-
-
 /*******************************************************************************
   Check whether this function is a map with respect to the given input
 ********************************************************************************/
@@ -218,6 +179,43 @@ FunctionConsts::AnnotationValue function::producesSortedNodes() const
   return FunctionConsts::PRESERVE;
 }
 
+
+/*******************************************************************************
+  Check whether this function cares whether the sequence bound to the given
+  input parameter is in document order or not. The decision may depend on 
+  whether the result of this function, at the point where it is called, must
+  be in doc order or not. 
+********************************************************************************/
+BoolAnnotationValue function::ignoresSortedNodes(expr* fo, ulong input) const 
+{
+  if (isVariadic() && input > 0)
+  {
+    return ANNOTATION_FALSE;
+  }
+
+  xqtref_t rt = theSignature[input];
+
+  TypeManager* tm = rt->get_manager();
+
+  if (TypeOps::type_max_cnt(tm, *rt) <= 1)
+  {
+    return ANNOTATION_TRUE;
+  }
+
+  return ANNOTATION_FALSE;
+}
+
+
+/*******************************************************************************
+  Check whether this function cares whether the sequence bound to the given
+  input parameter contains duplicate nodes or not. The decision may depend on
+  whether the result of this function, at the point where it is called, must 
+  contain distinct nodes or not.
+********************************************************************************/
+BoolAnnotationValue function::ignoresDuplicateNodes(expr* fo, ulong input) const
+{
+  return ANNOTATION_FALSE;
+}
 
 }
 

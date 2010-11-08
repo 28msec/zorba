@@ -100,8 +100,8 @@ static expr_t execute (
   }
   catch (error::ZorbaError& /*e*/)
   {
-    node->setUnfoldable(expr::ANNOTATION_TRUE_FIXED);
-    node->setNonDiscardable(expr::ANNOTATION_TRUE_FIXED);
+    node->setUnfoldable(ANNOTATION_TRUE_FIXED);
+    node->setNonDiscardable(ANNOTATION_TRUE_FIXED);
     return node;
     // TODO:
     // we had to disable folding of errors because the FnErrorIterator
@@ -121,8 +121,8 @@ static expr_t execute (
                                   GET_BUILTIN_FUNCTION(FN_ERROR_2),
                                   new const_expr(node->get_sctx_id(), loc, qname),
                                   new const_expr(node->get_sctx_id(), loc, e.theDescription));
-    err_expr->setUnfoldable(expr::ANNOTATION_TRUE_FIXED);
-    err_expr->setNonDiscardable(expr::ANNOTATION_TRUE_FIXED);
+    err_expr->setUnfoldable(ANNOTATION_TRUE_FIXED);
+    err_expr->setNonDiscardable(ANNOTATION_TRUE_FIXED);
     return err_expr;
 #endif
   }
@@ -145,12 +145,12 @@ static expr_t execute (
 ********************************************************************************/
 expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
 {
-  expr::BoolAnnotationValue saveNonDiscardable = node->getNonDiscardable();
-  expr::BoolAnnotationValue saveUnfoldable = node->getUnfoldable();
+  BoolAnnotationValue saveNonDiscardable = node->getNonDiscardable();
+  BoolAnnotationValue saveUnfoldable = node->getUnfoldable();
 
   // By default, an expr is discardable and foldable
-  expr::BoolAnnotationValue curNonDiscardable = expr::ANNOTATION_FALSE;
-  expr::BoolAnnotationValue curUnfoldable = expr::ANNOTATION_FALSE;
+  BoolAnnotationValue curNonDiscardable = ANNOTATION_FALSE;
+  BoolAnnotationValue curUnfoldable = ANNOTATION_FALSE;
 
   ExprConstIterator iter(node);
   while(!iter.done())
@@ -161,11 +161,11 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
 
     // If any of the children is nondiscardable, "this" is nondiscardable too.
     if (childExpr->isNonDiscardable())
-      curNonDiscardable = expr::ANNOTATION_TRUE;
+      curNonDiscardable = ANNOTATION_TRUE;
 
     // If any of the children is unfoldable, then "this" is unfoldable too.
     if (childExpr->isUnfoldable())
-      curUnfoldable = expr::ANNOTATION_TRUE;
+      curUnfoldable = ANNOTATION_TRUE;
 
     iter.next();
   }
@@ -185,7 +185,7 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
     if (f->getKind() == FunctionConsts::OP_VAR_ASSIGN_1 ||
         dynamic_cast<const fn_error*>(f) != NULL)
     {
-      curNonDiscardable = expr::ANNOTATION_TRUE_FIXED;
+      curNonDiscardable = ANNOTATION_TRUE_FIXED;
     }
 
     // Do not fold functions that always require access to the dynamic context,
@@ -196,7 +196,7 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
         maybe_needs_implicit_timezone(fo) ||
         !f->isDeterministic())
     {
-      curUnfoldable = expr::ANNOTATION_TRUE_FIXED;
+      curUnfoldable = ANNOTATION_TRUE_FIXED;
     }
 
     break;
@@ -207,7 +207,7 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
     var_expr::var_kind varKind = static_cast<var_expr *>(node)->get_kind();
 
     if (varKind == var_expr::prolog_var || varKind == var_expr::local_var)
-      curUnfoldable = expr::ANNOTATION_TRUE_FIXED;
+      curUnfoldable = ANNOTATION_TRUE_FIXED;
 
     break;
   }
@@ -227,7 +227,7 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
   case pi_expr_kind:
   case doc_expr_kind:
   {
-    curUnfoldable = expr::ANNOTATION_TRUE_FIXED;
+    curUnfoldable = ANNOTATION_TRUE_FIXED;
     break;
   }
 
@@ -235,7 +235,7 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
   case treat_expr_kind:
   case promote_expr_kind:
   {
-    curNonDiscardable = expr::ANNOTATION_TRUE_FIXED;
+    curNonDiscardable = ANNOTATION_TRUE_FIXED;
     break;
   }
 
@@ -246,14 +246,14 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
   }
 
   if (saveNonDiscardable != curNonDiscardable &&
-      saveNonDiscardable != expr::ANNOTATION_TRUE_FIXED)
+      saveNonDiscardable != ANNOTATION_TRUE_FIXED)
   {
     node->setNonDiscardable(curNonDiscardable);
     modified = true;
   }
 
   if (saveUnfoldable != curUnfoldable &&
-      saveUnfoldable != expr::ANNOTATION_TRUE_FIXED)
+      saveUnfoldable != ANNOTATION_TRUE_FIXED)
   {
     node->setUnfoldable(curUnfoldable);
     modified = true;

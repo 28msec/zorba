@@ -616,6 +616,15 @@ namespace zorba {
     void beginVisit( const OpToIterator& );
     void endVisit  ( const OpToIterator& );
 
+    void beginVisit( const FnIdIterator& );
+    void endVisit  ( const FnIdIterator& );
+
+    void beginVisit( const FnElementWithIdIterator& );
+    void endVisit  ( const FnElementWithIdIterator& );
+
+    void beginVisit( const FnIdRefIterator& );
+    void endVisit  ( const FnIdRefIterator& );
+
     void beginVisit( const FnDocIterator& );
     void endVisit  ( const FnDocIterator& );
 
@@ -627,15 +636,6 @@ namespace zorba {
 
     void beginVisit( const FnParseIterator& );
     void endVisit  ( const FnParseIterator& );
-
-    void beginVisit( const FnIdIterator& );
-    void endVisit  ( const FnIdIterator& );
-
-    void beginVisit( const FnElementWithIdIterator& );
-    void endVisit  ( const FnElementWithIdIterator& );
-
-    void beginVisit( const FnIdRefIterator& );
-    void endVisit  ( const FnIdRefIterator& );
 
     void beginVisit( const CodepointsToStringIterator& );
     void endVisit  ( const CodepointsToStringIterator& );

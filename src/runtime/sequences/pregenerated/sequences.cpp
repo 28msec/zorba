@@ -865,6 +865,102 @@ void OpToIteratorState::reset(PlanState& planState) {
 // </OpToIterator>
 
 
+// <FnIdIterator>
+const char* FnIdIterator::class_name_str = "FnIdIterator";
+FnIdIterator::class_factory<FnIdIterator>
+FnIdIterator::g_class_factory;
+
+const serialization::ClassVersion 
+FnIdIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int FnIdIterator::class_versions_count =
+sizeof(FnIdIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void FnIdIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+FnIdIterator::~FnIdIterator() {}
+
+FnIdIteratorState::FnIdIteratorState() {}
+
+FnIdIteratorState::~FnIdIteratorState() {}
+
+// </FnIdIterator>
+
+
+// <FnElementWithIdIterator>
+const char* FnElementWithIdIterator::class_name_str = "FnElementWithIdIterator";
+FnElementWithIdIterator::class_factory<FnElementWithIdIterator>
+FnElementWithIdIterator::g_class_factory;
+
+const serialization::ClassVersion 
+FnElementWithIdIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int FnElementWithIdIterator::class_versions_count =
+sizeof(FnElementWithIdIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void FnElementWithIdIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+FnElementWithIdIterator::~FnElementWithIdIterator() {}
+
+FnElementWithIdIteratorState::FnElementWithIdIteratorState() {}
+
+FnElementWithIdIteratorState::~FnElementWithIdIteratorState() {}
+
+// </FnElementWithIdIterator>
+
+
+// <FnIdRefIterator>
+const char* FnIdRefIterator::class_name_str = "FnIdRefIterator";
+FnIdRefIterator::class_factory<FnIdRefIterator>
+FnIdRefIterator::g_class_factory;
+
+const serialization::ClassVersion 
+FnIdRefIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int FnIdRefIterator::class_versions_count =
+sizeof(FnIdRefIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void FnIdRefIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+FnIdRefIterator::~FnIdRefIterator() {}
+
+FnIdRefIteratorState::FnIdRefIteratorState() {}
+
+FnIdRefIteratorState::~FnIdRefIteratorState() {}
+
+// </FnIdRefIterator>
+
+
 // <FnDocIterator>
 const char* FnDocIterator::class_name_str = "FnDocIterator";
 FnDocIterator::class_factory<FnDocIterator>
@@ -975,102 +1071,6 @@ void FnParseIterator::accept(PlanIterVisitor& v) const {
 FnParseIterator::~FnParseIterator() {}
 
 // </FnParseIterator>
-
-
-// <FnIdIterator>
-const char* FnIdIterator::class_name_str = "FnIdIterator";
-FnIdIterator::class_factory<FnIdIterator>
-FnIdIterator::g_class_factory;
-
-const serialization::ClassVersion 
-FnIdIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int FnIdIterator::class_versions_count =
-sizeof(FnIdIterator::class_versions)/sizeof(struct serialization::ClassVersion);
-
-void FnIdIterator::accept(PlanIterVisitor& v) const {
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-FnIdIterator::~FnIdIterator() {}
-
-FnIdIteratorState::FnIdIteratorState() {}
-
-FnIdIteratorState::~FnIdIteratorState() {}
-
-// </FnIdIterator>
-
-
-// <FnElementWithIdIterator>
-const char* FnElementWithIdIterator::class_name_str = "FnElementWithIdIterator";
-FnElementWithIdIterator::class_factory<FnElementWithIdIterator>
-FnElementWithIdIterator::g_class_factory;
-
-const serialization::ClassVersion 
-FnElementWithIdIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int FnElementWithIdIterator::class_versions_count =
-sizeof(FnElementWithIdIterator::class_versions)/sizeof(struct serialization::ClassVersion);
-
-void FnElementWithIdIterator::accept(PlanIterVisitor& v) const {
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-FnElementWithIdIterator::~FnElementWithIdIterator() {}
-
-FnElementWithIdIteratorState::FnElementWithIdIteratorState() {}
-
-FnElementWithIdIteratorState::~FnElementWithIdIteratorState() {}
-
-// </FnElementWithIdIterator>
-
-
-// <FnIdRefIterator>
-const char* FnIdRefIterator::class_name_str = "FnIdRefIterator";
-FnIdRefIterator::class_factory<FnIdRefIterator>
-FnIdRefIterator::g_class_factory;
-
-const serialization::ClassVersion 
-FnIdRefIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int FnIdRefIterator::class_versions_count =
-sizeof(FnIdRefIterator::class_versions)/sizeof(struct serialization::ClassVersion);
-
-void FnIdRefIterator::accept(PlanIterVisitor& v) const {
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-FnIdRefIterator::~FnIdRefIterator() {}
-
-FnIdRefIteratorState::FnIdRefIteratorState() {}
-
-FnIdRefIteratorState::~FnIdRefIteratorState() {}
-
-// </FnIdRefIterator>
 
 
 
