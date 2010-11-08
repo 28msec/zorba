@@ -2229,8 +2229,9 @@ operator>=( typename rstring<Rep>::const_pointer s1, rstring<Rep> const &s2 ) {
 #if 1 || (!defined( __INTEL_COMPLER ) && \
     defined( __GNUC__ ) && (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 < 40300))
 template<class Rep> inline std::ostream&
-operator<<( std::ostream &os, rstring<Rep> const &s ) {
-  return os << s.c_str();
+operator<<( std::ostream& os, rstring<Rep> const& s )
+{
+  return os.write(s.data(), s.size());
 }
 #else
 template<
@@ -2241,9 +2242,10 @@ template<
   template<class,class,class> class RepType
 >
 inline std::basic_ostream<CharType,TraitsType>&
-operator<<( std::basic_ostream<CharType,TraitsType> &os,
-            rstring< RepType<RefCountType,TraitsType,Allocator> > const &s ) {
-  return os << s.c_str();
+operator<<( std::basic_ostream<CharType,TraitsType>& os,
+            rstring< RepType<RefCountType,TraitsType,Allocator> > const& s ) 
+{
+  return os.write(s.data(), s.size());
 }
 #endif
 
@@ -2259,7 +2261,7 @@ operator<<( std::basic_ostream<CharType,TraitsType> &os,
  */
 template<typename CharType,class TraitsType,class Rep>
 std::basic_istream<CharType,TraitsType>&
-getline( std::basic_istream<CharType,TraitsType> &is, rstring<Rep> &s,
+getline( std::basic_istream<CharType,TraitsType>& is, rstring<Rep>& s,
          typename rstring<Rep>::value_type delim );
 
 /**

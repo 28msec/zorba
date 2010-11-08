@@ -53,17 +53,18 @@ public:
         Base64& aBase64,
         std::string& lErrorMessage);
 
-  static void encode(const std::vector<char>&, std::vector<char>&);
-
   static zstring encode(std::istream& aStream);
 
   static void encode(std::istream& aStream, Base64& aResult);
 
   static void encode(const zstring& aString, Base64&);
 
-  static void encode(const unsigned char *aSource, 
-                    unsigned int in_len,
-                    Base64& aResult);
+  static void encode(const std::vector<char>&, std::vector<char>&);
+
+  static void encode(
+        const unsigned char* aSource, 
+        unsigned int in_len,
+        Base64& aResult);
 
   static void decode(const std::vector<char>&, std::vector<char>&);
 

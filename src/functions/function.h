@@ -122,7 +122,7 @@ public:
 
   bool isSequential() const { return getUpdateType() == SEQUENTIAL_EXPR; }
 
-  void setAnnotations(AnnotationList_t annotations) { theAnnotationList = annotations; }
+  void setAnnotations(AnnotationList* annotations) { theAnnotationList = annotations; }
 
   const AnnotationList* getAnnotationList() const { return theAnnotationList.getp(); }
 

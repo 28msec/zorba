@@ -92,12 +92,6 @@ void Base64::encode(const zstring& aString, Base64& aResult)
   FOR_EACH( zstring, i, aString )
     source.push_back( *i );
 
-#if 0
-  FOR_EACH( vector<char>, i, source )
-    cout << *i;
-  cout << endl;
-#endif
-
   aResult.theData.clear();
   encode(source, aResult.theData);
 }
@@ -105,19 +99,20 @@ void Base64::encode(const zstring& aString, Base64& aResult)
 
 void Base64::encode(istream& aStream, Base64& aResult)
 {
-  vector<char> source, result;
+  vector<char> source;
 
   char lC;
-  while (aStream.good()) {
+  while (aStream.good()) 
+  {
     aStream.get(lC);
-    if (!aStream.good()) {
+    if (!aStream.good()) 
+    {
       break;
     }
     source.push_back(lC);
   }
 
-  encode(source, result);
-  aResult.theData = result;
+  encode(source, aResult.theData);
 }
 
 
@@ -134,29 +129,6 @@ zstring Base64::encode(istream& aStream)
   }
 
   encode(source, dest);
-
-  zstring result;
-  result.reserve(dest.size());
-
-  FOR_EACH( vector<char>, i, dest )
-    result.push_back( *i );
-
-  return result;
-}
-
-zstring Base64::decode(istream& aStream)
-{
-  vector<char> source;
-  vector<char> dest;
-
-  char buf[1024];
-  while (!aStream.eof()) 
-  {
-    aStream.read(buf, 1024);
-    source.insert(source.end(), buf, buf + aStream.gcount());
-  }
-
-  decode(source, dest);
 
   zstring result;
   result.reserve(dest.size());
@@ -212,9 +184,11 @@ void Base64::encode(const vector<char>& aSource, vector<char>& aResult)
   }  
 }
 
-void Base64::encode(const unsigned char *aSource, 
-                    unsigned int in_len,
-                    Base64& aResult)
+
+void Base64::encode(
+    const unsigned char* aSource, 
+    unsigned int in_len,
+    Base64& aResult)
 {
   size_t lCurPos = 0;
   int i = 0;
@@ -257,6 +231,31 @@ void Base64::encode(const unsigned char *aSource,
 
   }  
 }
+
+
+zstring Base64::decode(istream& aStream)
+{
+  vector<char> source;
+  vector<char> dest;
+
+  char buf[1024];
+  while (!aStream.eof()) 
+  {
+    aStream.read(buf, 1024);
+    source.insert(source.end(), buf, buf + aStream.gcount());
+  }
+
+  decode(source, dest);
+
+  zstring result;
+  result.reserve(dest.size());
+
+  FOR_EACH( vector<char>, i, dest )
+    result.push_back( *i );
+
+  return result;
+}
+
 
 void Base64::decode(const vector<char>& aSource, vector<char>& aResult)
 {

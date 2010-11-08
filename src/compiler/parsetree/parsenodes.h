@@ -1051,13 +1051,17 @@ protected:
   rchandle<AnnotationLiteralListParsenode> literal_list_h;
 
 public:
-  AnnotationParsenode(const QueryLoc& loc,
-             QName* qname,
-             AnnotationLiteralListParsenode* literal_list);
+  AnnotationParsenode(
+        const QueryLoc& loc,
+        QName* qname,
+        AnnotationLiteralListParsenode* literal_list);
 
   rchandle<QName> get_qname() const { return qname_h; }
 
-  rchandle<AnnotationLiteralListParsenode> get_literals() const { return literal_list_h; };
+  rchandle<AnnotationLiteralListParsenode> get_literals() const
+  {
+    return literal_list_h;
+  };
 
   void accept(parsenode_visitor&) const;
 };
@@ -1071,15 +1075,30 @@ protected:
 public:
   AnnotationListParsenode(const QueryLoc& loc, AnnotationParsenode* annotation);
 
-  void push_back(rchandle<AnnotationParsenode> annotation_h) { annotations_hv.push_back(annotation_h); }
+  void push_back(rchandle<AnnotationParsenode> annotation_h) 
+  {
+    annotations_hv.push_back(annotation_h);
+  }
 
-  rchandle<AnnotationParsenode> operator[](int i) const { return annotations_hv[i]; }
+  rchandle<AnnotationParsenode> operator[](int i) const
+  {
+    return annotations_hv[i]; 
+  }
 
-  std::vector<rchandle<AnnotationParsenode> >::const_iterator begin() const { return annotations_hv.begin(); }
+  std::vector<rchandle<AnnotationParsenode> >::const_iterator begin() const
+  {
+    return annotations_hv.begin();
+  }
 
-  std::vector<rchandle<AnnotationParsenode> >::const_iterator end() const { return annotations_hv.end(); }
+  std::vector<rchandle<AnnotationParsenode> >::const_iterator end() const 
+  {
+    return annotations_hv.end();
+  }
 
-  std::vector<rchandle<AnnotationParsenode> >::size_type size() const { return annotations_hv.size(); }
+  std::vector<rchandle<AnnotationParsenode> >::size_type size() const
+  {
+    return annotations_hv.size();
+  }
 
   bool has_deterministic() const;
 

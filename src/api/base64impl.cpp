@@ -22,23 +22,20 @@
 
 #include "zorbatypes/binary.h"
 
-using namespace std;
 
 namespace zorba {
 namespace encoding {
 
 String Base64::encode(const String& aString) 
 {
-  // string cannot be streamed into stringstream because it can contain characters like \0
-  stringstream lStream;
-  for ( size_t i = 0; i < aString.nr_of_chars(); ++i) {
-    lStream << aString.c_str()[i];
-  }
+  std::stringstream lStream;
+  lStream << aString;
+
   return encode(lStream);
 }
 
 
-String Base64::encode(istream& aStream) 
+String Base64::encode(std::istream& aStream) 
 {
   return zorba::Base64::encode(aStream).str();
 }
@@ -46,7 +43,7 @@ String Base64::encode(istream& aStream)
 
 String Base64::decode(const String& aString)
 {
-  stringstream lStream;
+  std::stringstream lStream;
   lStream << aString;
   return decode(lStream);
 }

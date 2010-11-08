@@ -14,19 +14,7 @@
  * limitations under the License.
  */
 #include <cassert>
-
-#ifdef WIN32
-  #ifndef INT32_MAX
-    #define INT32_MAX _I32_MAX
-  #endif
-  #ifndef INT32_MIN
-    #define INT32_MIN _I32_MIN
-  #endif
-#else
-// define the __STDC_LIMIT_MACROS macro for the INT32_MAX/INT32_MIN macros on Linux
-#define __STDC_LIMIT_MACROS
-#include <stdint.h>
-#endif
+#include <limits>
 
 #include "zorbautils/hashfun.h"
 #include "zorbaerrors/error_manager.h"
@@ -734,7 +722,7 @@ void OrdPath::insertBeforeOrAfter(
 
   if (before)
   {
-    if ( newcomp < -INT32_MAX + 2)
+    if ( newcomp < -std::numeric_limits<int32_t>::max() + 2)
     {
       ZORBA_ERROR_DESC(STR0030_NODEID_ERROR,
                        "A nodeid component is too large to be encoded");
@@ -744,7 +732,7 @@ void OrdPath::insertBeforeOrAfter(
   }
   else
   {
-    if ( newcomp > INT32_MAX - 2)
+    if ( newcomp > std::numeric_limits<int32_t>::max() - 2)
     {
       ZORBA_ERROR_DESC(STR0030_NODEID_ERROR,
                        "A nodeid component is too large to be encoded");
@@ -882,7 +870,7 @@ void OrdPath::insertInto(
 
     if (newcomp1 % 2 == 0)
     {
-      if (newcomp1 < -INT32_MAX + 1)
+      if (newcomp1 < -std::numeric_limits<int32_t>::max() + 1)
       {
         ZORBA_ERROR_DESC(STR0030_NODEID_ERROR,
                          "A nodeid component is too large to be encoded");
@@ -892,7 +880,7 @@ void OrdPath::insertInto(
     }
     else
     {
-      if (newcomp1 < -INT32_MAX + 2)
+      if (newcomp1 < -std::numeric_limits<int32_t>::max() + 2)
       {
         ZORBA_ERROR_DESC(STR0030_NODEID_ERROR,
                          "A nodeid component is too large to be encoded");
@@ -914,7 +902,7 @@ void OrdPath::insertInto(
 
     if (newcomp1 % 2 == 0)
     {
-      if (newcomp1 > INT32_MAX - 1)
+      if (newcomp1 > std::numeric_limits<int32_t>::max() - 1)
       {
         ZORBA_ERROR_DESC(STR0030_NODEID_ERROR,
                          "A nodeid component is too large to be encoded");
@@ -924,7 +912,7 @@ void OrdPath::insertInto(
     }
     else
     {
-      if (newcomp1 > INT32_MAX - 2)
+      if (newcomp1 > std::numeric_limits<int32_t>::max() - 2)
       {
         ZORBA_ERROR_DESC(STR0030_NODEID_ERROR,
                          "A nodeid component is too large to be encoded");
@@ -1220,7 +1208,7 @@ void OrdPath::bitsNeeded(
 
   if (value < 0)
   {
-    assert(value > INT32_MIN);
+    assert(value > std::numeric_limits<int32_t>::min());
     assert(value == -(-value));
 
     // value in [-31, -1] --> use pre-computed values
@@ -1275,7 +1263,7 @@ void OrdPath::bitsNeeded(
       // 10 bits for code + 32 bits for data
       bitsNeeded = 42;
 
-      value = INT32_MAX + value;
+      value = std::numeric_limits<int32_t>::max() + value;
 
       eval2 = 0x00400000;
       eval2 <<= 32;
@@ -1519,7 +1507,13 @@ void OrdPath::decodeByte(
     if (data[byteIndex] >> (7 - bitIndex) == 0)
     {
       ADVANCE(bitLen, byteIndex, bitIndex, 1);
-      extractValue(data, bitLen, byteIndex, bitIndex, 32, -INT32_MAX, deweyid[numComps]);
+      extractValue(data,
+                   bitLen,
+                   byteIndex,
+                   bitIndex,
+                   32,
+                   -std::numeric_limits<int32_t>::max(),
+                   deweyid[numComps]);
     }
     else
     {
@@ -4016,7 +4010,7 @@ void OrdPathStack::popChild()
 
   // Increment the last uncompressed component by 2 (if possible).
 
-  if (theDeweyId[theNumComps - 1] > INT32_MAX - 2)
+  if (theDeweyId[theNumComps - 1] > std::numeric_limits<int32_t>::max() - 2)
   {
     ZORBA_ERROR_DESC(STR0030_NODEID_ERROR,
                      "A nodeid component is too large to be encoded");
@@ -4049,7 +4043,7 @@ void OrdPathStack::nextChild()
 
   // Increment the last uncompressed component by 2 (if possible).
 
-  if (theDeweyId[theNumComps - 1] > INT32_MAX - 2)
+  if (theDeweyId[theNumComps - 1] > std::numeric_limits<int32_t>::max() - 2)
   {
     ZORBA_ERROR_DESC(STR0030_NODEID_ERROR,
                      "A nodeid component is too large to be encoded");

@@ -151,7 +151,7 @@ AnnotationInternal::AnnotationInternal(const AnnotationParsenode* annotation)
   {
     rchandle<AnnotationLiteral> literal_h = new AnnotationLiteral((AnnotationLiteral*)NULL);
     GENV_ITEMFACTORY->createBoolean(literal_h->theLiteral, true);
-    theLiteralList.push_back(literal_h.release());
+    theLiteralList.push_back(literal_h);
   }
 }
 
@@ -187,11 +187,14 @@ AnnotationList::AnnotationList(const AnnotationListParsenode* annotations)
 {
   if (annotations != NULL)
   {
-    for (unsigned int i=0; i<annotations->size(); i++)
-      if (annotations->operator[](i) != NULL)
-        theAnnotationList.push_back(new AnnotationInternal(annotations->operator[](i)));
+    for (unsigned int i = 0; i < annotations->size(); ++i)
+    {
+      if ((*annotations)[i] != NULL)
+        theAnnotationList.push_back(new AnnotationInternal((*annotations)[i]));
+    }
   }
 }
+
 
 const AnnotationInternal* AnnotationList::getAnnotation(unsigned int index) const
 {
@@ -200,6 +203,7 @@ const AnnotationInternal* AnnotationList::getAnnotation(unsigned int index) cons
   else
     return NULL;
 }
+
 
 void AnnotationList::serialize(::zorba::serialization::Archiver& ar)
 {
