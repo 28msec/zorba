@@ -55,11 +55,12 @@ declare function xhtml:body($xqdoc, $indexCollector, $schemasCollector, $xqSrcPa
         <h1>{xhtml:module-uri($xqdoc)}</h1>
         {            
             xhtml:module-description($xqdoc/xqdoc:module),
+            xhtml:module-resources($xqSrcPath, xhtml:module-uri($xqdoc)),
             xhtml:module-dependencies($xqdoc, $indexCollector, $schemasCollector),
             xhtml:module-external-specifications($xqdoc/xqdoc:module),
             xhtml:module-variables($xqdoc/xqdoc:variables),
             xhtml:module-function-summary($xqdoc/xqdoc:functions),
-            xhtml:module-functions($xqdoc/xqdoc:functions, $xqSrcPath, xhtml:module-uri($xqdoc))
+            xhtml:module-functions($xqdoc/xqdoc:functions)
         }
     </body>
 };
@@ -110,39 +111,22 @@ declare function xhtml:errors($comment) {
  : This function groups together all the @see annotations and adds one for the external functions
  : (module_uri.xq.src folder if it's the case)
  :)
-declare function xhtml:annotations-see(
-  $comment, 
-  $xqSrcPath as xs:string, 
-  $moduleUri as xs:string) {
-  
+declare function xhtml:annotations-see($comment) {
   let $see := $comment/xqdoc:*[local-name(.) = ("see")]
   return
-    if (count($see) = 0 and not(file:exists(fn:concat($xqSrcPath,file:path-separator(),"file.xq.src")))) then ()
+    if (count($see) = 0) then ()
     else
 (: **********************************************************     :)
 (: this hack should be replaced with links everywhere in text     :)
 (: replace the @see nodes that start with http:// with HTML a tag :)
     (<div class="subsubsection">See:</div>,<ul>
-    {(for $annotation in $see
+    {for $annotation in $see
     return
       if(fn:count($annotation/node()) eq 1 
          and fn:starts-with(fn:lower-case($annotation/node()), "http://")) then
         <li>{<a href="{$annotation/node()}" target="_blank">{$annotation/node()}</a>}</li>
     else
-        <li>{$annotation/node()}</li>,
-    
-    if(file:exists(fn:concat($xqSrcPath,file:path-separator(),"file.xq.src"))) then
-      <li>The implementation of the external functions can be found in the {
-      let $folder := concat(tokenize($moduleUri,"/")[last()],".xq.src")
-      let $path := concat(tokenize($xqSrcPath,file:path-separator())[last()],
-                                file:path-separator(), $folder,file:path-separator())
-      return
-        $path} folder.</li>
-    else
-    ()    
-    )
-    }
-    </ul>
+        <li>{$annotation/node()}</li>}</ul>
     )
 (: **********************************************************     :)
 };
@@ -173,7 +157,7 @@ declare function xhtml:annotations($comment) {
     )
 };
 
-declare function xhtml:annotationsModule($comment) {
+declare function xhtml:annotations-module($comment) {
   let $annotations := $comment/xqdoc:*[not((local-name(.) = ("description", "param", "return", "error", "deprecated", "see", "library")))]
   return
     for $annotation in $annotations
@@ -204,6 +188,20 @@ declare function xhtml:description($comment) {
         else
             "No description available."
      }</p>
+};
+
+declare function xhtml:module-resources($xqSrcPath as xs:string, $moduleUri as xs:string) {
+  let $folder := concat(tokenize($moduleUri,"/")[last()],".xq.src"),
+      $path := concat(tokenize($xqSrcPath,file:path-separator())[last()],
+                      file:path-separator(), $folder)
+  return
+    if(file:exists(fn:concat($xqSrcPath,file:path-separator(),$folder))) then
+      (<div class="section"><span id="module_resources">Module Resources</span></div>,
+       <ul>
+       <li>The implementation of the external functions can be found <a href="{$path}">here</a>.</li>
+       </ul>)
+    else
+      ()
 };
 
 declare function xhtml:module-dependencies($xqdoc, $indexCollector, $schemasCollector) {
@@ -256,7 +254,7 @@ declare function xhtml:imports($xqdoc, $indexCollector, $schemasCollector) {
 declare function xhtml:module-description($module) {
     (<div class="section"><span id="module_description">Module Description</span></div>,
      xhtml:description($module/xqdoc:comment),
-     xhtml:annotationsModule($module/xqdoc:comment))
+     xhtml:annotations-module($module/xqdoc:comment))
 };
 
 declare function xhtml:module-external-specifications($module) {
@@ -345,7 +343,7 @@ return
     $name
 };
 
-declare function xhtml:module-functions($functions, $xqSrcPath as xs:string, $moduleUri as xs:string) {
+declare function xhtml:module-functions($functions) {
     if(count($functions/xqdoc:function)) then (
       <div class="section"><span id="functions">Functions</span></div>,
       for $function in $functions/xqdoc:function
@@ -377,10 +375,7 @@ declare function xhtml:module-functions($functions, $xqSrcPath as xs:string, $mo
         xhtml:return($comment),
         xhtml:errors($comment),
         xhtml:annotations($comment),
-        if (ends-with($signature, " external")) then
-          xhtml:annotations-see($comment, $xqSrcPath, $moduleUri)
-        else
-          xhtml:annotations-see($comment, "", ""),
+        xhtml:annotations-see($comment),
         xhtml:annotations-example($comment),
         <div id="allignright"><a href="#function_summary" title="Back to 'Function Summary'">'Function Summary'</a></div>,  
         <hr />)                
