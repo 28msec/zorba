@@ -305,6 +305,7 @@ EXPECTED_FAILURE(test/rbkt/zorba/gflwor/gflwor_ex6 3081418)
 EXPECTED_FAILURE(test/rbkt/zorba/http_client/http-read-html-tidy2 3103700)
 EXPECTED_FAILURE(test/rbkt/zorba/aleXis/q11 3103700)
 
-
+EXPECTED_FAILURE(test/rbkt/zorba/file/files 3102373)
+EXPECTED_FAILURE(test/rbkt/zorba/file/copy 3104082)
 # --------------------------------------------------------------------------
 # vim:set et sw=2 ts=2:
