@@ -20,10 +20,8 @@ let $content := file:read-text(fn:concat(
                 concat('^(.*)', replace($delim, '(\.|\[|\]|\\|\||\-|\^|\$|\?|\*|\+|\{|\}|\(|\))','\\$1'),'.*'),
                 '$1')
        else '', "/gdata.xqlib"))
-let $xqdoc as schema-element(xqds:xqdoc) := 
-  validate lax {
+let $xqdoc := 
     xqd:xqdoc-content($content)
-  }
 return
   local:remove-date($xqdoc)
 

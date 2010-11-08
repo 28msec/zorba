@@ -30,6 +30,13 @@ declare variable $gdata:id := <id />;
 declare variable $gdata:authToken := <authSubToken />;
 
 (:~
+ : test xqdoc generation for a variable declaration
+ : whose initializer invokes a function
+ :)
+declare variable $gdata:blub := fn:current-dateTime();
+
+
+(:~
  : Google Login
  : @param account This parameter will be deleted by the test query.
  : @param password This description must have      

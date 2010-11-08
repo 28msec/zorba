@@ -260,6 +260,7 @@ ParseNodePrintXQDocVisitor(store::Item_t& aResult, const string& aFileName)
   theNamespaces["fn"] = "http://www.w3.org/2005/xpath-functions";
   theNamespaces[""] = "http://www.w3.org/2005/xpath-functions";
   theNamespaces["xs"] = "http://www.w3.org/2001/XMLSchema";
+  theNamespaces["local"] = "http://www.w3.org/2005/xquery-local-functions";
 }
 
 
@@ -366,11 +367,36 @@ void end_visit(const DefaultNamespaceDecl& n, void* /*visit_state*/)
     theNamespaces[""] = n.get_default_namespace();
 }
 
-// TODO: main module
-XQDOC_NO_BEGIN_END_TAG (MainModule)
-
-void *begin_visit(const ModuleDecl& n) 
+XQDOC_NO_BEGIN_TAG (MainModule)
+void end_visit(const MainModule& n, void* /*visit_state*/)
 {
+  store::Item_t lURIQName, lNameQName, lTypeQName;
+  store::Item_t lURIElem, lTypeAttr, lURIText;
+
+  theFactory->createQName(lTypeQName, "", "", "type");
+  theFactory->createQName(lURIQName, theXQDocNS, theXQDocPrefix, "uri");
+
+  // @type="main"
+  store::Item_t lAttrValue;
+  zstring lAttrString("main");
+  theFactory->createString(lAttrValue, lAttrString);
+
+  store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  theFactory->createAttributeNode(
+      lTypeAttr, theModule, -1, lTypeQName, lTypeName, lAttrValue);
+
+  // <uri>filename</uri>
+  lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  theFactory->createElementNode(
+      lURIElem, theModule, -1, lURIQName, lTypeName,
+      true, false, theNSBindings, theBaseURI);
+
+  theFactory->createTextNode(lURIText, lURIElem.getp(), -1, theFileName);
+
+  //print_comment(theModule, n.getComment());
+}
+
+void *begin_visit(const ModuleDecl& n) {
   theNamespaces[n.get_prefix()] = n.get_target_namespace();
   return no_state;
 }
@@ -486,6 +512,21 @@ XQDOC_NO_BEGIN_TAG (FunctionCall)
 
 void end_visit(const FunctionCall& n, void*)
 {
+  rchandle<QName> lFuncName = n.get_fname();
+
+  add_invoked_function(
+      lFuncName->get_localname(),
+      lFuncName->get_prefix(),
+      (n.get_arg_list()?n.get_arg_list()->size():0),
+      n.get_location());
+}
+
+void add_invoked_function (
+    const zstring& aLocalName,
+    const zstring& aPrefix,
+    size_t aArity,
+    const QueryLoc& aLocation)
+{
   store::Item_t lInvokedQName, lUriQName, lNameQName, lArityQName;
   store::Item_t lInvokedElem, lUriElem, lNameElem, lArityAttr;
   store::Item_t lUriText, lNameText, lAttrValue;
@@ -500,32 +541,25 @@ void end_visit(const FunctionCall& n, void*)
       lInvokedElem, NULL, -1, lInvokedQName, lTypeName,
       false, false, theNSBindings, theBaseURI);
 
-  rchandle<QName> lFuncName = n.get_fname();
-
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
       lUriElem, lInvokedElem, -1, lUriQName, lTypeName,
       false, false, theNSBindings, theBaseURI);
 
-  zstring lPrefix = lFuncName->get_prefix();
-
-  map<zstring, zstring>::iterator ite = theNamespaces.find(lPrefix);
+  map<zstring, zstring>::iterator ite = theNamespaces.find(aPrefix);
   if (ite == theNamespaces.end()) 
   {
     ZORBA_ERROR_DESC_OSS(XQD0000_PREFIX_NOT_DECLARED,
        "Could not generate the xqDoc documentation because the namespace for prefix '"
-       << lPrefix << "' is not declared when calling function '" << lFuncName->get_localname()
-       << "' from " << n.get_location() << "."
+       << aPrefix << "' is not declared when calling function '" << aLocalName
+       << "' from " << aLocation << "."
     );
   }
 
   zstring lNS = ite->second;
 
-  zstring lLocalNameString = lFuncName->get_localname();
-
   ostringstream lKey;
-  lKey << lNS << lLocalNameString
-             << "#" << (n.get_arg_list()?n.get_arg_list()->size():0);
+  lKey << lNS << aLocalName << "#" << aArity;
 
   theFactory->createTextNode(lUriText, lUriElem.getp(), -1, lNS);
 
@@ -536,7 +570,7 @@ void end_visit(const FunctionCall& n, void*)
 
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   ostringstream lAttr;
-  lAttr << (n.get_arg_list()?n.get_arg_list()->size():0);
+  lAttr << aArity;
 
   zstring lAttrString(lAttr.str().c_str());
   theFactory->createString(lAttrValue, lAttrString);
@@ -544,11 +578,13 @@ void end_visit(const FunctionCall& n, void*)
   theFactory->createAttributeNode(
       lArityQName, lInvokedElem, -1, lArityQName, lTypeName, lAttrValue);
 
-  theFactory->createTextNode(lNameText, lNameElem.getp(), -1, lLocalNameString);
+  zstring aLocalName2 = aLocalName;
+  theFactory->createTextNode(lNameText, lNameElem.getp(), -1, aLocalName2);
 
   // collect distinct invocation elements
   theInvokedFunc[lKey.str()] = lInvokedElem;
 }
+
 
 XQDOC_NO_BEGIN_TAG (VarDecl)
 
@@ -575,6 +611,17 @@ void end_visit(const VarDecl& n, void*)
   theFactory->createTextNode(lUriText, lUriElem, -1, lUriString);
 
   print_comment(lVariableElem, n.getComment());
+
+  // add all invoked function elements as children to the end of the current
+  // function element. After this, clear the set of invoked functions
+  // to be prepared for the next function declaration
+  size_t i = 3;
+  for (std::map<std::string, store::Item_t>::const_iterator lIter = theInvokedFunc.begin();
+       lIter != theInvokedFunc.end(); ++lIter) {
+    store::CopyMode lCopyMode;
+    (*lIter).second->copy(lVariableElem.getp(), i++, lCopyMode);
+  }
+  theInvokedFunc.clear();
 }
 
 XQDOC_NO_BEGIN_END_TAG (VarNameAndType)

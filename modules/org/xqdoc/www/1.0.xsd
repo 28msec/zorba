@@ -188,6 +188,10 @@
             <xsd:element name="uri" type="uri"/>
             <xsd:element name="type" type="type" minOccurs="0"/>
             <xsd:element name="comment" type="comment" minOccurs="0"/>
+            <xsd:choice minOccurs="0" maxOccurs="unbounded">
+              <xsd:element name="invoked" type="invoked" minOccurs="0" maxOccurs="unbounded"/>
+              <xsd:element name="ref-variable" type="invoked" minOccurs="0" maxOccurs="unbounded"/>
+            </xsd:choice>
           </xsd:sequence>
         </xsd:complexType>
       </xsd:element>

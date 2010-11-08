@@ -3,7 +3,9 @@
     <xqdoc:date/>
     <xqdoc:version>1.0</xqdoc:version>
   </xqdoc:control>
-  <xqdoc:module/>
+  <xqdoc:module type="main">
+    <xqdoc:uri>indentation.xq</xqdoc:uri>
+  </xqdoc:module>
   <xqdoc:imports>
     <xqdoc:import type="library">
       <xqdoc:uri>http://www.zorba-xquery.com/modules/xqdoc</xqdoc:uri>
