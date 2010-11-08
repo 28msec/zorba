@@ -51,7 +51,8 @@
  : XML representation. 
  : </p>
  :
- : @see <a href="http://xqdoc.org/" target="_blank">xqDoc project</a>
+ : @see <a href="http://xqdoc.org/" target="_blank">xqDoc specification</a>
+ : @see <a href="http://www.zorba-xquery.com/tutorials/xqdoc.html" target="_blank">xqDoc tutorial with Zorba</a>
  : @author Gabriel Petrovay
  :
  :)
