@@ -66,17 +66,13 @@ void normalize_whitespace( InputStringType const &in, OutputStringType *out ) {
   const_iterator i( in.begin() );
   const_iterator const j( in.end() );
   out->clear();
-  typename InputStringType::value_type c_prev = ' ';
+  bool was = true;
   for ( ; i != j; ++i ) {
     typename InputStringType::value_type const c = *i;
-#if WIN32
-    bool const is_space = __isascii(c) && isspace( c );
-#else
-    bool const is_space = isascii(c) && isspace( c );
-#endif
-    if ( !is_space || (is_space && !isspace( c_prev )) )
-      out->push_back( is_space ? ' ' : c );
-    c_prev = c;
+    bool const is = is_space( c );
+    if ( !is || (is && !was) )
+      out->push_back( is ? ' ' : c );
+    was = is;
   }
 
   typename OutputStringType::size_type pos = out->find_last_not_of( ' ' );

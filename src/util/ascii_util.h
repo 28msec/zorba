@@ -265,6 +265,23 @@ inline char* itoa( int n, char *buf ) {
 }
 
 /**
+ * Checks whether the given character is a whitespace character.  This function
+ * exists to make a proper function out of the standard isspace(3) that may be
+ * implemented as a macro.
+ *
+ * @param c The character to check.
+ * @return Returns \c true only if the character is a whitespace character.
+ */
+inline bool is_space( char c ) {
+#ifdef WIN32
+  // Windows' isspace() implementation crashes for non-ASCII characters.
+  return __isascii( c ) && isspace( c );
+#else
+  return isspace( c );
+#endif
+}
+
+/**
  * Checks whether an entire string is whitespace.
  *
  * @param s The NULL-terminated C string to check.
