@@ -1,10 +1,10 @@
 module namespace xhtml = "http://www.zorba-xquery.com/modules/internal/xqdoc-xhtml";
 
-import module namespace util = "http://www.zorba-xquery.com/zorba/util-functions";
-
 declare namespace xqdoc = "http://www.xqdoc.org/1.0";
 
-declare function xhtml:doc($xqdoc, $menu, $indexCollector, $schemasCollector)
+import module namespace file = "http://www.zorba-xquery.com/modules/file";
+
+declare function xhtml:doc($xqdoc, $menu, $indexCollector, $schemasCollector, $xqSrcPath as xs:string)
 {
 <html>
   <head>
@@ -34,7 +34,7 @@ declare function xhtml:doc($xqdoc, $menu, $indexCollector, $schemasCollector)
     <div id="leftMenu">
     {$menu}
     </div>
-    <div id="rightcontent">{xhtml:body($xqdoc, $indexCollector, $schemasCollector)}
+    <div id="rightcontent">{xhtml:body($xqdoc, $indexCollector, $schemasCollector, $xqSrcPath)}
     </div>
   </div>
   </body>
@@ -49,7 +49,7 @@ declare function xhtml:header($xqdoc)
     </head>
 };
 
-declare function xhtml:body($xqdoc, $indexCollector, $schemasCollector)
+declare function xhtml:body($xqdoc, $indexCollector, $schemasCollector, $xqSrcPath as xs:string)
 {
     <body>
         <h1>{xhtml:module-uri($xqdoc)}</h1>
@@ -59,7 +59,7 @@ declare function xhtml:body($xqdoc, $indexCollector, $schemasCollector)
             xhtml:module-external-specifications($xqdoc/xqdoc:module),
             xhtml:module-variables($xqdoc/xqdoc:variables),
             xhtml:module-function-summary($xqdoc/xqdoc:functions),
-            xhtml:module-functions($xqdoc/xqdoc:functions)
+            xhtml:module-functions($xqdoc/xqdoc:functions, $xqSrcPath, xhtml:module-uri($xqdoc))
         }
     </body>
 };
@@ -106,22 +106,43 @@ declare function xhtml:errors($comment) {
         ) else ()
 };
 
-declare function xhtml:annotations-see($comment) {
+(:~
+ : This function groups together all the @see annotations and adds one for the external functions
+ : (module_uri.xq.src folder if it's the case)
+ :)
+declare function xhtml:annotations-see(
+  $comment, 
+  $xqSrcPath as xs:string, 
+  $moduleUri as xs:string) {
+  
   let $see := $comment/xqdoc:*[local-name(.) = ("see")]
   return
-    if (count($see) = 0) then ()
+    if (count($see) = 0 and not(file:exists(fn:concat($xqSrcPath,file:path-separator(),"file.xq.src")))) then ()
     else
 (: **********************************************************     :)
 (: this hack should be replaced with links everywhere in text     :)
 (: replace the @see nodes that start with http:// with HTML a tag :)
     (<div class="subsubsection">See:</div>,<ul>
-    {for $annotation in $see
+    {(for $annotation in $see
     return
       if(fn:count($annotation/node()) eq 1 
          and fn:starts-with(fn:lower-case($annotation/node()), "http://")) then
         <li>{<a href="{$annotation/node()}" target="_blank">{$annotation/node()}</a>}</li>
     else
-        <li>{$annotation/node()}</li>}</ul>
+        <li>{$annotation/node()}</li>,
+    
+    if(file:exists(fn:concat($xqSrcPath,file:path-separator(),"file.xq.src"))) then
+      <li>The implementation of the external functions can be found in the {
+      let $folder := concat(tokenize($moduleUri,"/")[last()],".xq.src")
+      let $path := concat(tokenize($xqSrcPath,file:path-separator())[last()],
+                                file:path-separator(), $folder,file:path-separator())
+      return
+        $path} folder.</li>
+    else
+    ()    
+    )
+    }
+    </ul>
     )
 (: **********************************************************     :)
 };
@@ -275,39 +296,39 @@ declare function xhtml:module-variables($variables)
 
 declare function xhtml:module-function-summary($functions)
 {
-    <div class="section"><span id="function_summary">Function Summary</span></div>,
-    if(count($functions/xqdoc:function)) then
-        <table class="funclist">{
-            for $function in $functions/xqdoc:function
-            let $name := $function/xqdoc:name/text(),
-                $signature := $function/xqdoc:signature/text(),
-                $param-number := $function/@arity,
-                $isDeprecated := fn:exists($function/xqdoc:comment/xqdoc:deprecated)
-            order by $name, $param-number 
-            return
-                let $type := normalize-space(substring-after(substring-before($signature, "function"), "declare")),
-                    $isExternal := ends-with($signature, "external"),    
-                    $paramsAndReturn :=
-                        let $searchCrit := concat(":", $name)
-                        return
-                            if ($isExternal)
-                                then normalize-space(substring-before(substring-after($signature, $searchCrit), "external"))
-                                else normalize-space(substring-after($signature, $searchCrit))
-                return
-                    <tr>
-                        <td class="type">{$type}</td>
-                        <td>
-                            <tt>{
-                                if ($isDeprecated) then
-                                    <del><a href="#{$name}-{$param-number}">{$name}</a></del>
-                                else
-                                    <a href="#{$name}-{$param-number}">{$name}</a>
-                            }{$paramsAndReturn}</tt>
-                        </td>
-                    </tr>
-        }</table>
-    else
-        <p>No <a href="http://www.w3.org/TR/xquery-11/#doc-xquery11-PrivateOption">public</a> functions declared.</p>
+  <div class="section"><span id="function_summary">Function Summary</span></div>,
+  if(count($functions/xqdoc:function)) then
+    <table class="funclist">{
+      for $function in $functions/xqdoc:function
+      let $name := $function/xqdoc:name/text(),
+        $signature := $function/xqdoc:signature/text(),
+        $param-number := $function/@arity,
+        $isDeprecated := fn:exists($function/xqdoc:comment/xqdoc:deprecated)
+      order by $name, $param-number 
+      return
+        let $type := normalize-space(substring-after(substring-before($signature, "function"), "declare")),
+            $isExternal := ends-with($signature, "external"),    
+            $paramsAndReturn :=
+              let $searchCrit := concat(":", $name)
+              return
+                if ($isExternal)
+                  then normalize-space(substring-before(substring-after($signature, $searchCrit), "external"))
+                  else normalize-space(substring-after($signature, $searchCrit))
+        return
+          <tr>
+            <td class="type">{$type}</td>
+            <td>
+              <tt>{
+                if ($isDeprecated) then
+                  <del><a href="#{$name}-{$param-number}">{$name}</a></del>
+                else
+                  <a href="#{$name}-{$param-number}">{$name}</a>
+              }{$paramsAndReturn}</tt>
+            </td>
+          </tr>
+    }</table>
+  else
+      <p>No <a href="http://www.w3.org/TR/xquery-11/#doc-xquery11-PrivateOption">public</a> functions declared.</p>
 };
 
 declare function xhtml:module-function-link($name as xs:string, $signature) {
@@ -324,43 +345,46 @@ return
     $name
 };
 
-declare function xhtml:module-functions($functions) {
+declare function xhtml:module-functions($functions, $xqSrcPath as xs:string, $moduleUri as xs:string) {
     if(count($functions/xqdoc:function)) then (
-        <div class="section"><span id="functions">Functions</span></div>,
-        for $function in $functions/xqdoc:function
-        let $name := $function/xqdoc:name/text(),
-            $signature := $function/xqdoc:signature/text(),
-            $param-number := $function/@arity,
-            $comment := $function/xqdoc:comment,
-            $isDeprecated := fn:exists($comment/xqdoc:deprecated)
-        order by $name, $param-number
-        return (
-            <div class="subsection" id="{$name}-{$param-number}">{
-                if ($isDeprecated) then
-                    <del>{xhtml:module-function-link($name, $signature)}</del>
-                else
-                    xhtml:module-function-link($name, $signature)
-            }</div>,
-            if ($isDeprecated) then
-                <p><span class="deprecated">Deprecated</span>{
-                    if (exists($comment/xqdoc:deprecated/node())) then
-                        (" - ", $comment/xqdoc:deprecated/node())
-                    else
-                        ()
-                }</p>
+      <div class="section"><span id="functions">Functions</span></div>,
+      for $function in $functions/xqdoc:function
+      let $name := $function/xqdoc:name/text(),
+          $signature := $function/xqdoc:signature/text(),
+          $param-number := $function/@arity,
+          $comment := $function/xqdoc:comment,
+          $isDeprecated := fn:exists($comment/xqdoc:deprecated)
+      order by $name, $param-number
+      return (
+        <div class="subsection" id="{$name}-{$param-number}">{
+          if ($isDeprecated) then
+            <del>{xhtml:module-function-link($name, $signature)}</del>
+          else
+            xhtml:module-function-link($name, $signature)
+        }</div>,
+        if ($isDeprecated) then
+          <p><span class="deprecated">Deprecated</span>{
+            if (exists($comment/xqdoc:deprecated/node())) then
+              (" - ", $comment/xqdoc:deprecated/node())
             else
-                (),
-            <pre class="signature">{xhtml:split-function-signature($signature)}</pre>,
-            xhtml:description($comment),
-            xhtml:parameters($comment),
-            xhtml:return($comment),
-            xhtml:errors($comment),
-            xhtml:annotations($comment),
-            xhtml:annotations-see($comment),
-            xhtml:annotations-example($comment),
-            <div id="allignright"><a href="#function_summary" title="Back to 'Function Summary'">'Function Summary'</a></div>,  
-            <hr />)                
-         )
+              ()
+          }</p>
+        else
+          (),
+        <pre class="signature">{xhtml:split-function-signature($signature)}</pre>,
+        xhtml:description($comment),
+        xhtml:parameters($comment),
+        xhtml:return($comment),
+        xhtml:errors($comment),
+        xhtml:annotations($comment),
+        if (ends-with($signature, " external")) then
+          xhtml:annotations-see($comment, $xqSrcPath, $moduleUri)
+        else
+          xhtml:annotations-see($comment, "", ""),
+        xhtml:annotations-example($comment),
+        <div id="allignright"><a href="#function_summary" title="Back to 'Function Summary'">'Function Summary'</a></div>,  
+        <hr />)                
+       )
     else ()
 };
 
@@ -368,34 +392,34 @@ declare function xhtml:split-function-signature($signature as xs:string) {
     let $line1 := substring-before($signature, "(")
     let $rest := substring-after($signature, "(")
     let $params :=
-        (: if the function has parameter :)
-        if (matches($rest, "\$")) then
-            let $tmp := substring-before($rest, ") as ")
-            return 
-                (: if we don't have a return type specified :)
-                if ($tmp eq "") then
-                    (: en external function declaration :)
-                    if (ends-with($rest, ") external")) then
-                        substring-before($rest, ") external")
-                    (: no external function :)
-                    else
-                        $rest
-                (: the return type is specified :)
-                else
-                    $tmp
-        (: no parameters :)
-        else
-            ""
+      (: if the function has parameter :)
+      if (matches($rest, "\$")) then
+        let $tmp := substring-before($rest, ") as ")
+        return 
+          (: if we don't have a return type specified :)
+          if ($tmp eq "") then
+            (: en external function declaration :)
+            if (ends-with($rest, ") external")) then
+              substring-before($rest, ") external")
+            (: no external function :)
+            else
+              $rest
+          (: the return type is specified :)
+          else
+            $tmp
+      (: no parameters :)
+      else
+        ""
     let $after := substring-after($signature, concat($params, ")"))
     return (
-        concat($line1, " ("),
-        <br />,
-        for $param at $pos in tokenize($params, "\$")
-        where $pos > 1
-        return (
-            concat("            $", normalize-space($param)),
-            <br/>                    
-        ),
-        concat(")", $after)
-    )
+      concat($line1, " ("),
+      <br />,
+      for $param at $pos in tokenize($params, "\$")
+      where $pos > 1
+      return (
+        concat("            $", normalize-space($param)),
+        <br/>                    
+      ),
+      concat(")", $after)
+  )
 };

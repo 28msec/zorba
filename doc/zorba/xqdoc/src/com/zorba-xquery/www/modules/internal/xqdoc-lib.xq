@@ -133,7 +133,8 @@ declare sequential function doc2html:removeInternalFunctionality($xqdoc as node(
  :)
 declare sequential function doc2html:generateXQDocXhtml(
   $indexPath      as xs:string, $xqdocXmlPath   as xs:string,
-  $xqdocXhtmlPath as xs:string, $leftMenu as element(menu),
+  $xqdocXhtmlPath as xs:string, $xqSrcPath      as xs:string,
+  $leftMenu       as element(menu),
   $modulesPath    as xs:string, $functionIndexPageName as xs:string
 ) as xs:string* {
   let $indexHtmlDoc := file:read-xml($indexPath)
@@ -162,7 +163,7 @@ declare sequential function doc2html:generateXQDocXhtml(
       }      
       </ul>
       let $menu := doc2html:createModuleTable($leftMenu, $menu, $moduleUri)
-      let $xhtml := xqdg:doc($xqdoc, $menu, $doc2html:indexCollector, $doc2html:schemasCollector)
+      let $xhtml := xqdg:doc($xqdoc, $menu, $doc2html:indexCollector, $doc2html:schemasCollector, $xqSrcPath)
       return block {
         file:mkdirs($xhtmlFileDir, false());
 
@@ -234,17 +235,19 @@ FAILED: ", fn:concat($xqdocXhtmlPath, file:path-separator()))
 };
 
 declare sequential function doc2html:gatherSchemas(
-  $modulesPath as xs:string) as xs:string* {
+  $xqdocSchemasPath as xs:string) as xs:string* {
   
-  for $filedirs in tokenize($modulesPath, ";")
-  for $file in file:files($filedirs, "\.xsd$", fn:true())
-  let $xsdFilePath := concat($modulesPath, file:path-separator(), $file)
+  for $filedirs in $xqdocSchemasPath
+  for $file in file:files($filedirs, "\.xsd$", fn:false())
+  let $xsdFilePath := concat($xqdocSchemasPath, file:path-separator(), $file)
+  let $xqdRelFilePath := concat(tokenize($xqdocSchemasPath,file:path-separator())[last()],
+                                file:path-separator(), $file)
   return
     try {
       let $xqdoc := file:read-xml($xsdFilePath)
       let $xsdUri := $xqdoc/xs:schema/@targetNamespace
       return block {
-          doc2html:collectModule($xsdUri, $xsdFilePath, $doc2html:schemasCollector);
+          doc2html:collectModule($xsdUri, $xqdRelFilePath, $doc2html:schemasCollector);
           concat("
   SUCCESS: ", $xsdUri, " (", $xsdFilePath, ")");
         }
@@ -272,7 +275,7 @@ declare sequential function doc2html:gatherModules(
       let $moduleUri := $moduleDoc/xqdoc:uri
       return if($moduleDoc/@type = "library") then 
         block {
-          doc2html:collectModule($moduleDoc, $xhtmlRelativeFilePath, $doc2html:indexCollector);
+          doc2html:collectModule($moduleUri/text(), $xhtmlRelativeFilePath, $doc2html:indexCollector);
           
           doc2html:collectFunctions($xqdoc, $xhtmlRelativeFilePath, $doc2html:functionsCollector);
           concat("
@@ -286,8 +289,8 @@ FAILED: ", $xmlFilePath)
     }  
 };
 
-declare sequential function doc2html:collectModule ($moduleDoc, $relativeFileName as xs:string, $collector) {
-insert node <module uri="{$moduleDoc/xqdoc:uri/text()}" file="{$relativeFileName}" /> as last into $collector;
+declare sequential function doc2html:collectModule ($moduleDoc as xs:string, $relativeFileName as xs:string, $collector) {
+insert node <module uri="{$moduleDoc}" file="{$relativeFileName}" /> as last into $collector;
 };
 
 declare sequential function doc2html:collectFunctions ($xqdoc, $relativeFileName as xs:string, $collector) {
@@ -472,7 +475,7 @@ declare sequential function doc2html:configure-xhtml (
         text {substring-after($funcName, "nondeterministic")})
     else ();
   };
-  
+   
   $xhtml;
 };
 
@@ -565,6 +568,52 @@ declare sequential function doc2html:generateIndexHtml($indexPath as xs:string, 
     }
 };
 
+declare sequential function doc2html:copyXqSrcFolders(
+  $xqSrcPath as xs:string, 
+  $modulePath as xs:string,
+  $xqdocBuildPath as xs:string) {
+  (:Because file:files returns only the files and not the directories/folders( see opened SF bug #3102373
+    we search for the *.cpp and *.h files and create the *.xq.src folders containing them
+  :)
+  if (file:mkdirs($xqSrcPath, false())) then
+  (
+    doc2html:clearFolder($xqSrcPath,"\.cpp|\.h$"),
+    
+    (: gather all .cpp and .h files :)
+    let $files := file:files($modulePath, "\.cpp|\.h$", fn:true()),
+        $xqSrcFolders := distinct-values(
+    for $file in $files
+    order by $file
+    return
+      fn:tokenize($file, file:path-separator())[fn:count(fn:tokenize($file, file:path-separator()))-1]
+    )
+    
+    (: create the needed *.xq.src folders in xhtml/xq.src and copy all the .cpp and .h into them :)
+    for $xqSrcFolder in $xqSrcFolders
+    let $xqSrcFolderPath := fn:concat($xqSrcPath, file:path-separator(), $xqSrcFolder)
+    where fn:contains($xqSrcFolder,".xq.src")
+    return
+    (
+      file:mkdirs($xqSrcFolderPath, false()),
+      doc2html:clearFolder($xqSrcFolderPath,"\.cpp|\.h$"),
+      (: copy all the .cpp and .h :)
+      (
+        let $filesToCopy := 
+          for $file in $files order by $file
+          where fn:tokenize($file, file:path-separator())[fn:count(fn:tokenize($file, file:path-separator()))-1] = $xqSrcFolder 
+          return $file
+        for $file in $filesToCopy
+        let $fileSource := fn:concat($modulePath, file:path-separator(), $file)
+        return
+          file:copy($fileSource, $xqSrcFolderPath)       
+      )
+      
+    )
+  )
+  else
+    error()
+};
+
 declare sequential function doc2html:main(
   $modulePath as xs:string, $xqdocBuildPath as xs:string,
   $indexHtmlPath as xs:string
@@ -602,7 +651,8 @@ declare sequential function doc2html:main(
 ) {
   declare $xqdocXmlPath   as xs:string := fn:concat($xqdocBuildPath, file:path-separator(), "xml");
   declare $xqdocXhtmlPath as xs:string := fn:concat($xqdocBuildPath, file:path-separator(), "xhtml");
-  declare $xqdocSchemasPath as xs:string := fn:concat($xqdocBuildPath, file:path-separator(), "schemas");
+  declare $xqdocSchemasPath as xs:string := fn:concat($xqdocXhtmlPath, file:path-separator(), "schemas");
+  declare $xqSrcPath as xs:string := fn:concat($xqdocXhtmlPath, file:path-separator(), "xq.src");
   declare $functionIndexPageName as xs:string := "function_index.html";
   
   (: generate the XQDoc XML for all the modules :)
@@ -624,7 +674,7 @@ declare sequential function doc2html:main(
     doc2html:clearFolder($xqdocXhtmlPath,"xqdoc\.html$"),
     doc2html:gatherModules($xqdocXmlPath),
     doc2html:gatherSchemas($xqdocSchemasPath),    
-    doc2html:generateXQDocXhtml($indexHtmlPath, $xqdocXmlPath, $xqdocXhtmlPath, $leftMenu, $modulePath, $functionIndexPageName),
+    doc2html:generateXQDocXhtml($indexHtmlPath, $xqdocXmlPath, $xqdocXhtmlPath, $xqSrcPath, $leftMenu, $modulePath, $functionIndexPageName),
     (
       (: generate the left menu for the Function Index XHTML :)
       let $leftFunction := doc2html:createLeftMenu($leftMenu, fn:true(), $functionIndexPageName)
@@ -632,6 +682,11 @@ declare sequential function doc2html:main(
       return 
         doc2html:generateFunctionIndexXhtml($indexFunctionLeft,$xqdocXhtmlPath,$functionIndexPageName)
     )
+    (: gather and copy all the .xq.src folders under /xhtml/xq.src folder:)
+    (:commented out because file:copy does not work, see bug #3104082
+    ,
+    doc2html:copyXqSrcFolders($xqSrcPath, $modulePath, $xqdocBuildPath)
+    :)    
   )
   else
     error()
