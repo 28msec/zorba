@@ -158,6 +158,30 @@ table.funclist {
   border-width: 1px;
   border-collapse: collapse;
 }
+table.letter {
+  padding-top: 10px;
+  width: 100%;
+  border-style: none;
+  border-width: 0px;
+  border-spacing: 0;
+}
+
+table.letter td.left{
+  text-align: left;
+  border-style: none;
+  border-width: 0px;
+  border-spacing: 0;
+  padding: 0;
+}
+
+table.letter td.right{
+  text-align: right;
+  border-style: none;
+  border-width: 0px;
+  border-spacing: 0;
+  padding: 0;
+}
+
 table.parameter {
   border: none;
   border-collapse: collapse;
@@ -202,12 +226,6 @@ div#centeredcontent{
   padding: 10px 20px;
   margin-left: 200px;
   margin-right: 200px;
-}
-
-div#allignright{
-  text-align:right;
-  padding: 0px;
-  margin: 0px;
 }
 
 div#searchbox {

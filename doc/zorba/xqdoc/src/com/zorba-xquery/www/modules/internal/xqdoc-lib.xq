@@ -335,8 +335,13 @@ declare function doc2html:formatFunctions(){
     for $letter in $letters
       order by $letter
       return
-      ( <h2><a name="{$letter}">{$letter}</a></h2>,
-        <hr />,     
+      (<table class="letter">
+         <tr>
+           <td class="left"><h2><a name="{$letter}">{$letter}</a></h2></td>
+           <td class="right"><a href="#module_description" title="Up">Up</a></td>
+         </tr>
+       </table>,
+       <hr />,     
         <table class="funclist">
           {
           for $func in $doc2html:functionsCollector//function
@@ -367,11 +372,7 @@ declare function doc2html:formatFunctions(){
                 </td>
               </tr>
           }
-        </table>,
-        
-        <div id="allignright">
-          <a href="#module_description" title="Back to the Index">'Index'</a>
-        </div>     
+        </table>     
      )
      )
 }
