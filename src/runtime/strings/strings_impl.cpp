@@ -22,7 +22,6 @@
 
 #include "zorbatypes/zorbatypesError.h"
 #include "zorbatypes/numconversions.h"
-#include "zorbatypes/utf8.h"
 
 #include "system/globalenv.h"
 
@@ -73,17 +72,15 @@ CodepointsToStringIterator::nextImpl(store::Item_t& result, PlanState& planState
         xqp_uint lCode;
         if (NumConversions::strToUInt(lUtf8Code.c_str(), lCode)) 
         {
-          char seq[5] = {0,0,0,0,0};
           try
           {
-            UTF8Encode(lCode, seq);
+            utf8::encode( lCode, &resStr );
           }
           catch(zorbatypesException& ex)
           {
             ZORBA_ERROR_LOC_DESC(error::DecodeZorbatypesError(ex.ErrorCode()),
                                  loc, lUtf8Code);
           }
-          resStr += seq;
         }
         else
         {

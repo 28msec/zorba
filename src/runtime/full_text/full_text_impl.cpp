@@ -20,7 +20,6 @@
 #include "store/api/item_factory.h"
 #include "system/globalenv.h"
 #include "util/stl_util.h"
-#include "zorbatypes/utf8.h"
 #include "zorbautils/locale.h"
 
 #include "ft_util.h"

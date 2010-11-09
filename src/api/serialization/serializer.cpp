@@ -22,7 +22,6 @@
 #include "zorbatypes/numconversions.h"
 #include "zorbaerrors/error_manager.h"
 #include "zorbaerrors/Assert.h"
-#include "zorbatypes/utf8.h"
 
 #include "api/serialization/serializer.h"
 #include "api/serialization/serializable.h"
@@ -216,12 +215,12 @@ void serializer::emitter::expand_string(
     if (skip)
     {
       const unsigned char* temp = chars;
-      unsigned int cp = UTF8Decode(temp);
+      unicode::code_point cp = utf8::next_char(temp);
 
       if (cp >= 0x10000 && cp <= 0x10FFFF)
       {
         temp = chars;
-        lTranscoder << "&#" << NumConversions::uintToStr(UTF8Decode(temp))
+        lTranscoder << "&#" << NumConversions::uintToStr(utf8::next_char(temp))
                     << ";";
         chars += (skip-1);
         skip = 0;
@@ -1526,9 +1525,9 @@ void serializer::sax2_emitter::emit_node(const store::Item* item)
     }
   }
 //TODO: unimplemented error handling
-//	else
+//      else
   //{
-//		tr << "node of type: " << item->getNodeKind();
+//              tr << "node of type: " << item->getNodeKind();
   //SAX2_ParseException   saxx("Unknown node type", &theLocator);
   //if(error_handler)
   //  error_handler->fatalError(saxx);
@@ -2336,4 +2335,4 @@ void serializer::serialize(
 
 
 } // namespace zorba
-
+/* vim:set et sw=2 ts=2: */
