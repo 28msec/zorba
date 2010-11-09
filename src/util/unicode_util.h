@@ -21,6 +21,7 @@
 
 #ifndef ZORBA_NO_UNICODE
 
+#include <cctype>
 #include <cstring>
 #include <cwchar>
 #include <unicode/regex.h>
@@ -93,6 +94,21 @@ bool is_iprivate( code_point c );
  */
 ZORBA_DLL_PUBLIC
 bool is_invalid_in_iri( code_point c );
+
+/**
+ * Unicode version is isspace(3).
+ *
+ * @param c The code-point to check.
+ * @return Returns \c true only if \a c is a whitespace character.
+ */
+inline bool is_space( code_point c ) {
+  char ascii_c = static_cast<char>( c );
+#ifdef WIN32
+  // Windows' isspace() implementation crashes for non-ASCII characters.
+  ascii_c &= 0x7F;
+#endif
+  return ascii_c == c && isspace( ascii_c );
+}
 
 /**
  * Test whether the given character is a "ucschar".
