@@ -21,7 +21,7 @@ base64 decode
   <zorba:description author="Zorba Team">base64:decode</zorba:description>
 
   <zorba:function>
-    <zorba:signature localname="decode" prefix="base64">
+    <zorba:signature localname="decode" prefix="fn-zorba-base64">
       <zorba:param>xs:base64Binary</zorba:param>
       <zorba:output>xs:string</zorba:output>
     </zorba:signature>
@@ -39,7 +39,7 @@ base64 encode
   <zorba:description author="Zorba Team">base64:encode</zorba:description>
 
   <zorba:function>
-    <zorba:signature localname="encode" prefix="base64">
+    <zorba:signature localname="encode" prefix="fn-zorba-base64">
       <zorba:param>xs:string</zorba:param>
       <zorba:output>xs:base64Binary</zorba:output>
     </zorba:signature>

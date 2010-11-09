@@ -86,7 +86,7 @@
   
   <zorba:function>
 
-    <zorba:signature localname="print" prefix="op-zorba">
+    <zorba:signature localname="print" prefix="fn-zorba-util">
       <zorba:param>item()*</zorba:param>
       <zorba:output>empty-sequence()</zorba:output>
     </zorba:signature>

@@ -65,7 +65,7 @@ class fn_zorba_ddl_create_index : public function
 public:
   fn_zorba_ddl_create_index(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_DDL_CREATE_INDEX_1)
+    function(sig, FunctionConsts::FN_ZORBA_XQDDF_CREATE_INDEX_1)
   {
   }
 
@@ -85,7 +85,7 @@ class fn_zorba_ddl_delete_index : public function
 public:
   fn_zorba_ddl_delete_index(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_DDL_DELETE_INDEX_1)
+    function(sig, FunctionConsts::FN_ZORBA_XQDDF_DELETE_INDEX_1)
   {
   }
 
@@ -105,7 +105,7 @@ class fn_zorba_ddl_refresh_index : public function
 public:
   fn_zorba_ddl_refresh_index(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_DDL_REFRESH_INDEX_1)
+    function(sig, FunctionConsts::FN_ZORBA_XQDDF_REFRESH_INDEX_1)
   {
   }
 
@@ -164,7 +164,7 @@ class fn_zorba_ddl_probe_index_point_value : public function
 public:
   fn_zorba_ddl_probe_index_point_value(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_DDL_PROBE_INDEX_POINT_VALUE_N)
+    function(sig, FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_VALUE_N)
   {
   }
 
@@ -187,7 +187,7 @@ class fn_zorba_ddl_probe_index_point_general : public function
 public:
   fn_zorba_ddl_probe_index_point_general(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_DDL_PROBE_INDEX_POINT_GENERAL_N)
+    function(sig, FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_GENERAL_N)
   {
   }
 
@@ -205,7 +205,7 @@ class fn_zorba_ddl_probe_index_range_value : public function
 public:
   fn_zorba_ddl_probe_index_range_value(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_DDL_PROBE_INDEX_RANGE_VALUE_N)
+    function(sig, FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N)
   {
   }
 
@@ -228,7 +228,7 @@ class fn_zorba_ddl_probe_index_range_general : public function
 public:
   fn_zorba_ddl_probe_index_range_general(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_DDL_PROBE_INDEX_RANGE_GENERAL_N)
+    function(sig, FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_GENERAL_N)
   {
   }
 

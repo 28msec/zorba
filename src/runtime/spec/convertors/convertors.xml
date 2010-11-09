@@ -37,7 +37,7 @@
   <zorba:description author="Zorba Team">Parsing a sequence of valid JSON strings into a sequence of XDM elements.</zorba:description>
 
   <zorba:function>
-    <zorba:signature localname="parse" prefix="zorba-json">
+    <zorba:signature localname="parse" prefix="fn-zorba-json">
       <zorba:param>xs:string*</zorba:param>
       <zorba:output>node()*</zorba:output>
     </zorba:signature>
@@ -58,7 +58,7 @@
   <zorba:description author="Zorba Team">The serialize function takes a sequence of elements as parameter and transforms each element into a valid JSON string.</zorba:description>
   
   <zorba:function>
-    <zorba:signature localname="serialize" prefix="zorba-json">
+    <zorba:signature localname="serialize" prefix="fn-zorba-json">
       <zorba:param>node()*</zorba:param>
       <zorba:output>xs:string*</zorba:output>
     </zorba:signature>
@@ -76,7 +76,7 @@
   <zorba:description author="Zorba Team">Parsing a sequence of valid JsonML strings into a sequence of XDM elements.</zorba:description>
 
   <zorba:function>
-    <zorba:signature localname="parse-ml" prefix="zorba-json">
+    <zorba:signature localname="parse-ml" prefix="fn-zorba-json">
       <zorba:param>xs:string*</zorba:param>
       <zorba:output>node()*</zorba:output>
     </zorba:signature>
@@ -97,7 +97,7 @@
   <zorba:description author="Zorba Team">The serialize function takes a sequence of elements as parameter and transforms each element into a valid JsonML string.</zorba:description>
   
   <zorba:function>
-    <zorba:signature localname="serialize-ml" prefix="zorba-json">
+    <zorba:signature localname="serialize-ml" prefix="fn-zorba-json">
       <zorba:param>node()*</zorba:param>
       <zorba:output>xs:string*</zorba:output>
     </zorba:signature>
@@ -116,7 +116,7 @@
     <zorba:description author="Zorba Team">Parse a Comma Separated Values text and generate an XML.</zorba:description>
 
     <zorba:function>
-      <zorba:signature localname="csv-to-xml" prefix="zorba-csv">
+      <zorba:signature localname="csv-to-xml" prefix="fn-zorba-csv">
         <zorba:param>xs:string</zorba:param>      <!-- csv -->
         <zorba:param>xs:boolean</zorba:param>     <!-- first_row_is_header -->
         <zorba:param>xs:string</zorba:param>      <!-- separator -->
@@ -166,7 +166,7 @@
 
   <!--
 /*******************************************************************************
-  zorba-csv:txt-to-xml
+  fn-zorba-csv:txt-to-xml
 ********************************************************************************/
 -->
   <zorba:iterator name="ZorbaTXT2XMLIterator">
@@ -174,7 +174,7 @@
     <zorba:description author="Zorba Team">Parse a Column Separated Values text and generate an XML.</zorba:description>
   
     <zorba:function>
-      <zorba:signature localname="txt-to-xml" prefix="zorba-csv">
+      <zorba:signature localname="txt-to-xml" prefix="fn-zorba-csv">
         <zorba:param>xs:string</zorba:param>          <!-- csv  -->
         <zorba:param>xs:boolean</zorba:param>         <!-- first_row_is_header -->
         <zorba:param>xs:integer+</zorba:param>        <!-- columns_positions -->
@@ -216,7 +216,7 @@
 
 <!--
 /*******************************************************************************
-  zorba-csv:csv-file-to-xml from file
+  fn-zorba-csv:csv-file-to-xml from file
 ********************************************************************************/
 -->
 
@@ -225,7 +225,7 @@
   <zorba:description author="Zorba Team">Parse a Comma Separated Values text file and generate an XML.</zorba:description>
 
   <zorba:function>
-    <zorba:signature localname="csv-file-to-xml" prefix="zorba-csv">
+    <zorba:signature localname="csv-file-to-xml" prefix="fn-zorba-csv">
       <zorba:param>xs:string</zorba:param>      <!-- csv_file -->
       <zorba:param>xs:boolean</zorba:param>     <!-- first_row_is_header -->
       <zorba:param>xs:string</zorba:param>      <!-- separator -->
@@ -275,7 +275,7 @@
 
 <!--
 /*******************************************************************************
-  zorba-csv:txt-file-to-xml from file
+  fn-zorba-csv:txt-file-to-xml from file
 ********************************************************************************/
 -->
   <zorba:iterator name="ZorbaTXT2XMLFromFileIterator">
@@ -283,7 +283,7 @@
     <zorba:description author="Zorba Team">Parse a Column Separated Values text file and generate an XML.</zorba:description>
 
     <zorba:function>
-      <zorba:signature localname="txt-file-to-xml" prefix="zorba-csv">
+      <zorba:signature localname="txt-file-to-xml" prefix="fn-zorba-csv">
         <zorba:param>xs:string</zorba:param>      <!-- csv_file -->
         <zorba:param>xs:boolean</zorba:param>     <!-- first_row_is_header -->
         <zorba:param>xs:integer+</zorba:param>    <!-- columns_positions -->
@@ -325,7 +325,7 @@
 
   <!--
 /*******************************************************************************
-  zorba-csv:xml-to-csv export xml to csv string
+  fn-zorba-csv:xml-to-csv export xml to csv string
 ********************************************************************************/
 -->
 
@@ -334,7 +334,7 @@
     <zorba:description author="Zorba Team">Export XML to a Comma Separated Values text string.</zorba:description>
 
     <zorba:function>
-      <zorba:signature localname="xml-to-csv" prefix="zorba-csv">
+      <zorba:signature localname="xml-to-csv" prefix="fn-zorba-csv">
         <zorba:param>node()*</zorba:param>      <!-- xml -->
         <zorba:param>xs:string*</zorba:param>   <!-- xpaths -->
         <zorba:param>xs:boolean</zorba:param>   <!-- first_row_is_header -->
@@ -353,7 +353,7 @@
 
 <!--
 /*******************************************************************************
-  zorba-csv:xml-to-csv-file export xml to csv file
+  fn-zorba-csv:xml-to-csv-file export xml to csv file
 ********************************************************************************/
 -->
 
@@ -362,7 +362,7 @@
     <zorba:description author="Zorba Team">Export XML to a Comma Separated Values text file.</zorba:description>
 
     <zorba:function>
-      <zorba:signature localname="xml-to-csv-file" prefix="zorba-csv">
+      <zorba:signature localname="xml-to-csv-file" prefix="fn-zorba-csv">
         <zorba:param>node()*</zorba:param>      <!-- xml -->
         <zorba:param>xs:string</zorba:param>    <!-- output_file -->
         <zorba:param>xs:string*</zorba:param>   <!-- xpaths -->
@@ -382,7 +382,7 @@
 
 <!--
 /*******************************************************************************
-  zorba-csv:xml-to-txt export xml to txt string
+  fn-zorba-csv:xml-to-txt export xml to txt string
 ********************************************************************************/
 -->
 
@@ -391,7 +391,7 @@
     <zorba:description author="Zorba Team">Export XML to a Column Separated Values text string.</zorba:description>
 
     <zorba:function>
-      <zorba:signature localname="xml-to-txt" prefix="zorba-csv">
+      <zorba:signature localname="xml-to-txt" prefix="fn-zorba-csv">
         <zorba:param>node()*</zorba:param>      <!-- xml -->
         <zorba:param>xs:string*</zorba:param>   <!-- xpaths -->
         <zorba:param>xs:boolean</zorba:param>   <!-- first_row_is_header -->
@@ -408,7 +408,7 @@
 
 <!--
 /*******************************************************************************
-  zorba-csv:xml-to-txt-file export xml to txt file
+  fn-zorba-csv:xml-to-txt-file export xml to txt file
 ********************************************************************************/
 -->
 
@@ -417,7 +417,7 @@
     <zorba:description author="Zorba Team">Export XML to a Column Separated Values text file.</zorba:description>
 
     <zorba:function>
-      <zorba:signature localname="xml-to-txt-file" prefix="zorba-csv">
+      <zorba:signature localname="xml-to-txt-file" prefix="fn-zorba-csv">
         <zorba:param>node()*</zorba:param>      <!-- xml -->
         <zorba:param>xs:string</zorba:param>    <!-- output_file -->
         <zorba:param>xs:string*</zorba:param>   <!-- xpaths -->

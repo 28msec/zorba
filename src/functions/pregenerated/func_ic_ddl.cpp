@@ -30,7 +30,7 @@ namespace zorba{
 
 
 
-PlanIter_t fn_zorba_ddl_activate_integrity_constraint::codegen(
+PlanIter_t fn_zorba_xqddf_activate_integrity_constraint::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -40,7 +40,7 @@ PlanIter_t fn_zorba_ddl_activate_integrity_constraint::codegen(
   return new ActivateICIterator(sctx, loc, argv[0]);
 }
 
-PlanIter_t fn_zorba_ddl_deactivate_integrity_constraint::codegen(
+PlanIter_t fn_zorba_xqddf_deactivate_integrity_constraint::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -50,7 +50,7 @@ PlanIter_t fn_zorba_ddl_deactivate_integrity_constraint::codegen(
   return new DeactivateICIterator(sctx, loc, argv[0]);
 }
 
-PlanIter_t fn_zorba_ddl_check_integrity_constraint::codegen(
+PlanIter_t fn_zorba_xqddf_check_integrity_constraint::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -62,20 +62,20 @@ PlanIter_t fn_zorba_ddl_check_integrity_constraint::codegen(
 
 void populate_context_ic_ddl(static_context* sctx)
 {
-  DECL(sctx, fn_zorba_ddl_activate_integrity_constraint,
-      (createQName("http://www.zorba-xquery.com/modules/xqddf","fn-zorba-ddl","activate-integrity-constraint"),
+  DECL(sctx, fn_zorba_xqddf_activate_integrity_constraint,
+      (createQName("http://www.zorba-xquery.com/modules/xqddf","fn-zorba-xqddf","activate-integrity-constraint"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       GENV_TYPESYSTEM.EMPTY_TYPE));
 
 
-  DECL(sctx, fn_zorba_ddl_deactivate_integrity_constraint,
-      (createQName("http://www.zorba-xquery.com/modules/xqddf","fn-zorba-ddl","deactivate-integrity-constraint"),
+  DECL(sctx, fn_zorba_xqddf_deactivate_integrity_constraint,
+      (createQName("http://www.zorba-xquery.com/modules/xqddf","fn-zorba-xqddf","deactivate-integrity-constraint"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       GENV_TYPESYSTEM.EMPTY_TYPE));
 
 
-  DECL(sctx, fn_zorba_ddl_check_integrity_constraint,
-      (createQName("http://www.zorba-xquery.com/modules/xqddf","fn-zorba-ddl","check-integrity-constraint"),
+  DECL(sctx, fn_zorba_xqddf_check_integrity_constraint,
+      (createQName("http://www.zorba-xquery.com/modules/xqddf","fn-zorba-xqddf","check-integrity-constraint"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 

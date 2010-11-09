@@ -30,7 +30,7 @@ namespace zorba{
 
 
 
-PlanIter_t xqdoc_xqdoc::codegen(
+PlanIter_t fn_zorba_xqdoc_xqdoc::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -40,7 +40,7 @@ PlanIter_t xqdoc_xqdoc::codegen(
   return new XQDocIterator(sctx, loc, argv);
 }
 
-PlanIter_t xqdoc_xqdoc_content::codegen(
+PlanIter_t fn_zorba_xqdoc_xqdoc_content::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -52,14 +52,14 @@ PlanIter_t xqdoc_xqdoc_content::codegen(
 
 void populate_context_xqdoc(static_context* sctx)
 {
-  DECL(sctx, xqdoc_xqdoc,
-      (createQName("http://www.zorba-xquery.com/modules/xqdoc","xqdoc","xqdoc"),
+  DECL(sctx, fn_zorba_xqdoc_xqdoc,
+      (createQName("http://www.zorba-xquery.com/modules/xqdoc","fn-zorba-xqdoc","xqdoc"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.ELEMENT_TYPE_ONE));
 
 
-  DECL(sctx, xqdoc_xqdoc_content,
-      (createQName("http://www.zorba-xquery.com/modules/xqdoc","xqdoc","xqdoc-content"),
+  DECL(sctx, fn_zorba_xqdoc_xqdoc_content,
+      (createQName("http://www.zorba-xquery.com/modules/xqdoc","fn-zorba-xqdoc","xqdoc-content"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.ELEMENT_TYPE_ONE));
 

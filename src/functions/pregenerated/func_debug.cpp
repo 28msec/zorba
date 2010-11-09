@@ -41,7 +41,7 @@ PlanIter_t op_zorba_read_line::codegen(
   return new ReadLineIterator(sctx, loc, argv);
 }
 
-PlanIter_t op_zorba_print::codegen(
+PlanIter_t fn_zorba_util_print::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -65,8 +65,8 @@ void populate_context_debug(static_context* sctx)
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 
-  DECL(sctx, op_zorba_print,
-      (createQName("http://www.zorba-xquery.com/zorba/internal-functions","op-zorba","print"),
+  DECL(sctx, fn_zorba_util_print,
+      (createQName("http://www.zorba-xquery.com/zorba/util-functions","fn-zorba-util","print"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.EMPTY_TYPE));
 

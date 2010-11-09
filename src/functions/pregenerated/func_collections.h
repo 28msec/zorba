@@ -58,13 +58,13 @@ public:
 };
 
 
-//fn-zorba-ddl:collection
-class fn_zorba_ddl_collection : public function
+//fn-zorba-xqddf:collection
+class fn_zorba_xqddf_collection : public function
 {
 public:
-  fn_zorba_ddl_collection(const signature& sig)
+  fn_zorba_xqddf_collection(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_DDL_COLLECTION_1)
+    function(sig, FunctionConsts::FN_ZORBA_XQDDF_COLLECTION_1)
   {
   }
 
@@ -86,13 +86,13 @@ public:
 };
 
 
-//fn-zorba-ddl:index-of
-class fn_zorba_ddl_index_of : public function
+//fn-zorba-xqddf:index-of
+class fn_zorba_xqddf_index_of : public function
 {
 public:
-  fn_zorba_ddl_index_of(const signature& sig)
+  fn_zorba_xqddf_index_of(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_DDL_INDEX_OF_2)
+    function(sig, FunctionConsts::FN_ZORBA_XQDDF_INDEX_OF_2)
   {
   }
 
@@ -102,15 +102,15 @@ public:
 };
 
 
-//fn-zorba-ddl:create-collection
-class fn_zorba_ddl_create_collection : public function
+//fn-zorba-xqddf:create-collection
+class fn_zorba_xqddf_create_collection : public function
 {
 public:
-  fn_zorba_ddl_create_collection(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
+  fn_zorba_xqddf_create_collection(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
     theKind = (sig.paramCount() == 1 ?
-                FunctionConsts::FN_ZORBA_DDL_CREATE_COLLECTION_1 :
-                FunctionConsts::FN_ZORBA_DDL_CREATE_COLLECTION_2);
+                FunctionConsts::FN_ZORBA_XQDDF_CREATE_COLLECTION_1 :
+                FunctionConsts::FN_ZORBA_XQDDF_CREATE_COLLECTION_2);
   
   }
 
@@ -122,13 +122,13 @@ public:
 };
 
 
-//fn-zorba-ddl:delete-collection
-class fn_zorba_ddl_delete_collection : public function
+//fn-zorba-xqddf:delete-collection
+class fn_zorba_xqddf_delete_collection : public function
 {
 public:
-  fn_zorba_ddl_delete_collection(const signature& sig)
+  fn_zorba_xqddf_delete_collection(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_DDL_DELETE_COLLECTION_1)
+    function(sig, FunctionConsts::FN_ZORBA_XQDDF_DELETE_COLLECTION_1)
   {
   }
 
@@ -140,13 +140,13 @@ public:
 };
 
 
-//fn-zorba-ddl:insert-nodes
-class fn_zorba_ddl_insert_nodes : public function
+//fn-zorba-xqddf:insert-nodes
+class fn_zorba_xqddf_insert_nodes : public function
 {
 public:
-  fn_zorba_ddl_insert_nodes(const signature& sig)
+  fn_zorba_xqddf_insert_nodes(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_DDL_INSERT_NODES_2)
+    function(sig, FunctionConsts::FN_ZORBA_XQDDF_INSERT_NODES_2)
   {
   }
 
@@ -158,13 +158,13 @@ public:
 };
 
 
-//fn-zorba-ddl:insert-nodes-first
-class fn_zorba_ddl_insert_nodes_first : public function
+//fn-zorba-xqddf:insert-nodes-first
+class fn_zorba_xqddf_insert_nodes_first : public function
 {
 public:
-  fn_zorba_ddl_insert_nodes_first(const signature& sig)
+  fn_zorba_xqddf_insert_nodes_first(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_DDL_INSERT_NODES_FIRST_2)
+    function(sig, FunctionConsts::FN_ZORBA_XQDDF_INSERT_NODES_FIRST_2)
   {
   }
 
@@ -176,13 +176,13 @@ public:
 };
 
 
-//fn-zorba-ddl:insert-nodes-last
-class fn_zorba_ddl_insert_nodes_last : public function
+//fn-zorba-xqddf:insert-nodes-last
+class fn_zorba_xqddf_insert_nodes_last : public function
 {
 public:
-  fn_zorba_ddl_insert_nodes_last(const signature& sig)
+  fn_zorba_xqddf_insert_nodes_last(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_DDL_INSERT_NODES_LAST_2)
+    function(sig, FunctionConsts::FN_ZORBA_XQDDF_INSERT_NODES_LAST_2)
   {
   }
 
@@ -194,13 +194,13 @@ public:
 };
 
 
-//fn-zorba-ddl:insert-nodes-before
-class fn_zorba_ddl_insert_nodes_before : public function
+//fn-zorba-xqddf:insert-nodes-before
+class fn_zorba_xqddf_insert_nodes_before : public function
 {
 public:
-  fn_zorba_ddl_insert_nodes_before(const signature& sig)
+  fn_zorba_xqddf_insert_nodes_before(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_DDL_INSERT_NODES_BEFORE_3)
+    function(sig, FunctionConsts::FN_ZORBA_XQDDF_INSERT_NODES_BEFORE_3)
   {
   }
 
@@ -212,13 +212,13 @@ public:
 };
 
 
-//fn-zorba-ddl:insert-nodes-after
-class fn_zorba_ddl_insert_nodes_after : public function
+//fn-zorba-xqddf:insert-nodes-after
+class fn_zorba_xqddf_insert_nodes_after : public function
 {
 public:
-  fn_zorba_ddl_insert_nodes_after(const signature& sig)
+  fn_zorba_xqddf_insert_nodes_after(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_DDL_INSERT_NODES_AFTER_3)
+    function(sig, FunctionConsts::FN_ZORBA_XQDDF_INSERT_NODES_AFTER_3)
   {
   }
 
@@ -230,13 +230,13 @@ public:
 };
 
 
-//fn-zorba-ddl:delete-nodes
-class fn_zorba_ddl_delete_nodes : public function
+//fn-zorba-xqddf:delete-nodes
+class fn_zorba_xqddf_delete_nodes : public function
 {
 public:
-  fn_zorba_ddl_delete_nodes(const signature& sig)
+  fn_zorba_xqddf_delete_nodes(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_DDL_DELETE_NODES_2)
+    function(sig, FunctionConsts::FN_ZORBA_XQDDF_DELETE_NODES_2)
   {
   }
 
@@ -248,15 +248,15 @@ public:
 };
 
 
-//fn-zorba-ddl:delete-node-first
-class fn_zorba_ddl_delete_node_first : public function
+//fn-zorba-xqddf:delete-node-first
+class fn_zorba_xqddf_delete_node_first : public function
 {
 public:
-  fn_zorba_ddl_delete_node_first(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
+  fn_zorba_xqddf_delete_node_first(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
     theKind = (sig.paramCount() == 1 ?
-                FunctionConsts::FN_ZORBA_DDL_DELETE_NODE_FIRST_1 :
-                FunctionConsts::FN_ZORBA_DDL_DELETE_NODES_FIRST_2);
+                FunctionConsts::FN_ZORBA_XQDDF_DELETE_NODE_FIRST_1 :
+                FunctionConsts::FN_ZORBA_XQDDF_DELETE_NODES_FIRST_2);
   
   }
 
@@ -268,15 +268,15 @@ public:
 };
 
 
-//fn-zorba-ddl:delete-node-last
-class fn_zorba_ddl_delete_node_last : public function
+//fn-zorba-xqddf:delete-node-last
+class fn_zorba_xqddf_delete_node_last : public function
 {
 public:
-  fn_zorba_ddl_delete_node_last(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
+  fn_zorba_xqddf_delete_node_last(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
     theKind = (sig.paramCount() == 1 ?
-                FunctionConsts::FN_ZORBA_DDL_DELETE_NODE_LAST_1 :
-                FunctionConsts::FN_ZORBA_DDL_DELETE_NODES_LAST_2);
+                FunctionConsts::FN_ZORBA_XQDDF_DELETE_NODE_LAST_1 :
+                FunctionConsts::FN_ZORBA_XQDDF_DELETE_NODES_LAST_2);
   
   }
 

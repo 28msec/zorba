@@ -35,8 +35,8 @@ namespace zorba {
 
 /**
  * 
- *      Iterator to implement the zorba:node-reference function.
- *    
+ *  Iterator to implement the zorba:node-reference function.
+ *  
  * Author: Zorba Team
  */
 class NodeReferenceIterator : public NaryBaseIterator<NodeReferenceIterator, PlanIteratorState>

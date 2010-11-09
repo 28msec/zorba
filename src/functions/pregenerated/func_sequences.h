@@ -228,15 +228,15 @@ public:
 };
 
 
-//fn-zorba:subsequence-int
-class fn_zorba_subsequence_int : public function
+//op-zorba:subsequence-int
+class op_zorba_subsequence_int : public function
 {
 public:
-  fn_zorba_subsequence_int(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
+  op_zorba_subsequence_int(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
     theKind = (sig.paramCount() == 2 ?
-                FunctionConsts::FN_ZORBA_SUBSEQUENCE_INT_2 :
-                FunctionConsts::FN_ZORBA_SUBSEQUENCE_INT_3);
+                FunctionConsts::OP_ZORBA_SUBSEQUENCE_INT_2 :
+                FunctionConsts::OP_ZORBA_SUBSEQUENCE_INT_3);
   
   }
 
@@ -252,13 +252,13 @@ public:
 };
 
 
-//fn-zorba:sequence-point-access
-class fn_zorba_sequence_point_access : public function
+//op-zorba:sequence-point-access
+class op_zorba_sequence_point_access : public function
 {
 public:
-  fn_zorba_sequence_point_access(const signature& sig)
+  op_zorba_sequence_point_access(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_SEQUENCE_POINT_ACCESS_2)
+    function(sig, FunctionConsts::OP_ZORBA_SEQUENCE_POINT_ACCESS_2)
   {
   }
 

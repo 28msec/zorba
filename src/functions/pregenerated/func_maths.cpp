@@ -240,7 +240,7 @@ PlanIter_t fn_zorba_math_pi::codegen(
   return new PiNumberIterator(sctx, loc);
 }
 
-PlanIter_t fn_zorba_math_isInf::codegen(
+PlanIter_t fn_zorba_math_is_inf::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -250,7 +250,7 @@ PlanIter_t fn_zorba_math_isInf::codegen(
   return new IsInfIterator(sctx, loc, argv[0]);
 }
 
-PlanIter_t fn_zorba_math_isNaN::codegen(
+PlanIter_t fn_zorba_math_is_nan::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -340,7 +340,7 @@ void populate_context_maths(static_context* sctx)
       (createQName("http://www.zorba-xquery.com/modules/math","fn-zorba-math","atan2"),
       GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
       GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_PLUS));
+      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
 
 
   DECL(sctx, fn_zorba_math_cosh,
@@ -411,14 +411,14 @@ void populate_context_maths(static_context* sctx)
       GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
 
 
-  DECL(sctx, fn_zorba_math_isInf,
-      (createQName("http://www.zorba-xquery.com/modules/math","fn-zorba-math","isInf"),
+  DECL(sctx, fn_zorba_math_is_inf,
+      (createQName("http://www.zorba-xquery.com/modules/math","fn-zorba-math","is_inf"),
       GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 
-  DECL(sctx, fn_zorba_math_isNaN,
-      (createQName("http://www.zorba-xquery.com/modules/math","fn-zorba-math","isNaN"),
+  DECL(sctx, fn_zorba_math_is_nan,
+      (createQName("http://www.zorba-xquery.com/modules/math","fn-zorba-math","is_nan"),
       GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 

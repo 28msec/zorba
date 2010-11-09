@@ -11,7 +11,7 @@
 :)
 
 module namespace oauth-desktop = 'http://www.zorba-xquery.com/modules/oauth/desktop';
-import module namespace io = "http://www.zorba-xquery.com/zorba/internal-functions";
+import module namespace io = "http://www.zorba-xquery.com/zorba/util-functions";
 
 (:~
  : Resource Owner Authorization.

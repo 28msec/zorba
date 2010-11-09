@@ -3,33 +3,71 @@
 <zorba:mappings xmlns:zorba="http://www.zorba-xquery.com">
 
   <zorba:namespaces>
-    <zorba:namespace uri="http://www.w3.org/2005/xpath-functions" define="XQUERY_FN_NS" prefix="fn"/>
-    <zorba:namespace uri="http://www.w3.org/2005/xpath-functions" define="XQUERY_OP_NS" prefix="op"/>
-    <zorba:namespace uri="http://www.w3.org/2001/XMLSchema" define="XML_SCHEMA_NS" prefix="xs"/>  
-    <zorba:namespace uri="http://www.zorba-xquery.com/zorba/util-functions" define="ZORBA_ALEXIS_FN_NS" prefix="fn-zorba-util"/>
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/random" define="ZOBA_RANDOM_FN_NS" prefix="fn-zorba-random"/>
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/schema" define="ZORBA_SCHEMA_FN_NS" prefix="fn-zorba-schema"/>
-    <zorba:namespace uri="http://www.zorba-xquery.com/zorba/internal-functions" define="ZORBA_FN_NS" prefix="fn-zorba"/>
-    <zorba:namespace uri="http://www.zorba-xquery.com/zorba/rest-functions" define="ZORBA_REST_FN_NS" prefix="fn-zorba-rest"/>
-    <zorba:namespace uri="http://www.zorba-xquery.com/zorba/node-ref-functions" define="ZORBA_NODEREF_FN_NS" prefix="fn-zorba-ref2"/> 
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/node-reference" define="ZORBA_NODEREF_FN_NS" prefix="fn-zorba-ref"/> 
-    <zorba:namespace uri="http://www.zorba-xquery.com/zorba/internal-functions" define="ZORBA_OP_NS" prefix="op-zorba"/>
-    <!--  empty prefix
-      <zorba:namespace uri="http://www.zorba-xquery.com/zorba/index-functions" define="ZORBA_INDEX_FN_NS" prefix=""/> -->
-    <zorba:namespace uri="http://www.zorba-xquery.com/zorba/email-functions" define="ZORBA_EMAIL_FN_NS" prefix="fn-zorba-email"/>
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/json" define="ZORBA_JSON_FN_NS" prefix="zorba-json"/>
-    <zorba:namespace uri="http://www.zorba-xquery.com/zorba/fop-functions" define="ZORBA_FOP_FN_NS" prefix="fn-zorba-fop"/>
 
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/xqdoc" define="ZORBA_XQDOC_FN_NS" prefix="xqdoc"/>
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/math" define="ZORBA_MATH_FN_NS" prefix="fn-zorba-math"/>
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/base64" define="ZORBA_BASE64_FN_NS" prefix="base64"/>
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/introspection/dctx"
-                     define="ZORBA_INTROSPECT_DCTX_FN_NS" prefix="fn-zorba-introspect-dctx"/>
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/introspection/sctx"
-                     define="ZORBA_INTROSPECT_SCTX_FN_NS" prefix="fn-zorba-introspect-sctx"/>
+    <zorba:namespace uri="http://www.w3.org/2005/xpath-functions"
+                     define="XQUERY_FN_NS"
+                     prefix="fn"/>
+
+    <zorba:namespace uri="http://www.zorba-xquery.com/modules/math"
+                     define="ZORBA_MATH_FN_NS"
+                     prefix="fn-zorba-math"/>
+
+    <zorba:namespace uri="http://www.zorba-xquery.com/modules/base64"
+                     define="ZORBA_BASE64_FN_NS"
+                     prefix="fn-zorba-base64"/>
+
+    <zorba:namespace uri="http://www.zorba-xquery.com/modules/node-reference"
+                     define="ZORBA_NODEREF_FN_NS"
+                     prefix="fn-zorba-ref"/> 
+
     <zorba:namespace uri="http://www.zorba-xquery.com/modules/xqddf"
-                     define="ZORBA_COLLECTION_FN_NS" prefix="fn-zorba-ddl"/>
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/csv2xml" define="ZORBA_CSV" prefix="zorba-csv"/>
+                     define="ZORBA_XQDDF_FN_NS"
+                     prefix="fn-zorba-xqddf"/>
+
+    <zorba:namespace uri="http://www.zorba-xquery.com/modules/schema"
+                     define="ZORBA_SCHEMA_FN_NS"
+                     prefix="fn-zorba-schema"/>
+
+    <zorba:namespace uri="http://www.zorba-xquery.com/modules/json"
+                     define="ZORBA_JSON_FN_NS"
+                     prefix="fn-zorba-json"/>
+
+    <zorba:namespace uri="http://www.zorba-xquery.com/modules/csv2xml"
+                     define="ZORBA_CSV_FN_NS"
+                     prefix="fn-zorba-csv"/>
+
+    <zorba:namespace uri="http://www.zorba-xquery.com/modules/xqdoc" 
+                     define="ZORBA_XQDOC_FN_NS" 
+                     prefix="fn-zorba-xqdoc"/>
+
+    <zorba:namespace uri="http://www.zorba-xquery.com/modules/random" 
+                     define="ZOBA_RANDOM_FN_NS" 
+                     prefix="fn-zorba-random"/>
+
+    <zorba:namespace uri="http://www.zorba-xquery.com/modules/introspection/dctx"
+                     define="ZORBA_INTROSPECT_DCTX_FN_NS"
+                     prefix="fn-zorba-introspect-dctx"/>
+
+    <zorba:namespace uri="http://www.zorba-xquery.com/modules/introspection/sctx"
+                     define="ZORBA_INTROSPECT_SCTX_FN_NS" 
+                     prefix="fn-zorba-introspect-sctx"/>
+
+    <zorba:namespace uri="http://www.zorba-xquery.com/zorba/util-functions"
+                     define="ZORBA_UTIL_FN_NS"
+                     prefix="fn-zorba-util"/>
+
+    <zorba:namespace uri="http://www.zorba-xquery.com/xquery/internal-functions"
+                     define="XQUERY_OP_NS"
+                     prefix="op"/>
+
+    <zorba:namespace uri="http://www.zorba-xquery.com/zorba/internal-functions"
+                     define="ZORBA_OP_NS"
+                     prefix="op-zorba"/>
+
+    <zorba:namespace uri="http://www.w3.org/2001/XMLSchema"
+                     define="XML_SCHEMA_NS"
+                     prefix="xs"/>
+
   </zorba:namespaces>
 
   <zorba:types>

@@ -30,16 +30,6 @@ namespace zorba{
 
 
 
-PlanIter_t fn_zorba_ref2_node_reference::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
-{
-  return new NodeReferenceIterator(sctx, loc, argv);
-}
-
 PlanIter_t fn_zorba_ref_node_reference::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -48,16 +38,6 @@ PlanIter_t fn_zorba_ref_node_reference::codegen(
   AnnotationHolder& ann) const
 {
   return new NodeReferenceIterator(sctx, loc, argv);
-}
-
-PlanIter_t fn_zorba_ref2_node_by_reference::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
-{
-  return new NodeByReferenceIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_zorba_ref_node_by_reference::codegen(
@@ -102,22 +82,10 @@ PlanIter_t fn_lang::codegen(
 
 void populate_context_nodes(static_context* sctx)
 {
-  DECL(sctx, fn_zorba_ref2_node_reference,
-      (createQName("http://www.zorba-xquery.com/zorba/node-ref-functions","fn-zorba-ref2","node-reference"),
-      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
-      GENV_TYPESYSTEM.ANY_URI_TYPE_ONE));
-
-
   DECL(sctx, fn_zorba_ref_node_reference,
       (createQName("http://www.zorba-xquery.com/modules/node-reference","fn-zorba-ref","node-reference"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
       GENV_TYPESYSTEM.ANY_URI_TYPE_ONE));
-
-
-  DECL(sctx, fn_zorba_ref2_node_by_reference,
-      (createQName("http://www.zorba-xquery.com/zorba/node-ref-functions","fn-zorba-ref2","node-by-reference"),
-      GENV_TYPESYSTEM.ANY_URI_TYPE_ONE,
-      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE));
 
 
   DECL(sctx, fn_zorba_ref_node_by_reference,

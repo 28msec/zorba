@@ -726,7 +726,7 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
       is_subseq_pred(rCtx, flwor, whereExpr, posVar, posExpr) &&
       count_variable_uses(flwor, posVar, &rCtx, 2) <= 1)
   {
-    function* seq_point = GET_BUILTIN_FUNCTION(FN_ZORBA_SEQUENCE_POINT_ACCESS_2);
+    function* seq_point = GET_BUILTIN_FUNCTION(OP_ZORBA_SEQUENCE_POINT_ACCESS_2);
     expr* domainExpr = posVar->get_for_clause()->get_expr();
 
     std::vector<expr_t> args(2);

@@ -748,7 +748,7 @@ public:
 
 
 /**
- * math:isInf
+ * math:is_inf
  * Author: Zorba Team
  */
 class IsInfIterator : public UnaryBaseIterator<IsInfIterator, PlanIteratorState>
@@ -782,7 +782,7 @@ public:
 
 
 /**
- * math:isNaN
+ * math:is_nan
  * Author: Zorba Team
  */
 class IsNaNIterator : public UnaryBaseIterator<IsNaNIterator, PlanIteratorState>

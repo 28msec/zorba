@@ -185,7 +185,7 @@
     <zorba:signature localname="atan2" prefix="fn-zorba-math">
       <zorba:param>xs:double</zorba:param>
       <zorba:param>xs:double</zorba:param>
-      <zorba:output>xs:double+</zorba:output>
+      <zorba:output>xs:double</zorba:output>
     </zorba:signature>
   </zorba:function>
     
@@ -398,10 +398,10 @@
 -->
 <zorba:iterator name="IsInfIterator" arity="unary">
 
-  <zorba:description author="Zorba Team">math:isInf</zorba:description>
+  <zorba:description author="Zorba Team">math:is_inf</zorba:description>
   
   <zorba:function>
-    <zorba:signature localname="isInf" prefix="fn-zorba-math">
+    <zorba:signature localname="is_inf" prefix="fn-zorba-math">
       <zorba:param>xs:double</zorba:param>
       <zorba:output>xs:boolean</zorba:output>
     </zorba:signature>
@@ -416,10 +416,10 @@
 -->
 <zorba:iterator name="IsNaNIterator" arity="unary">
 
-  <zorba:description author="Zorba Team">math:isNaN</zorba:description>
+  <zorba:description author="Zorba Team">math:is_nan</zorba:description>
   
   <zorba:function>
-    <zorba:signature localname="isNaN" prefix="fn-zorba-math">
+    <zorba:signature localname="is_nan" prefix="fn-zorba-math">
       <zorba:param>xs:double</zorba:param>
       <zorba:output>xs:boolean</zorba:output>
     </zorba:signature>

@@ -489,7 +489,7 @@ void populate_context_durations_dates_times_impl(static_context *sctx)
 {
 // begin date time
 DECL(sctx, fn_datetime_ctor,
-     (createQName(XQUERY_OP_NS,"fn", "dateTime"),
+     (createQName(XQUERY_FN_NS,"fn", "dateTime"),
       GENV_TYPESYSTEM.DATE_TYPE_QUESTION,
       GENV_TYPESYSTEM.TIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION));

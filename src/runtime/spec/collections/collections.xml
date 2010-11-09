@@ -64,7 +64,7 @@
 
     <zorba:function>
 
-      <zorba:signature localname="collection" prefix="fn-zorba-ddl">
+      <zorba:signature localname="collection" prefix="fn-zorba-xqddf">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>node()*</zorba:output>
       </zorba:signature>
@@ -99,7 +99,7 @@
 
     <zorba:function>
 
-      <zorba:signature localname="index-of" prefix="fn-zorba-ddl">
+      <zorba:signature localname="index-of" prefix="fn-zorba-xqddf">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()</zorba:param>
         <zorba:output>xs:integer</zorba:output>
@@ -126,12 +126,12 @@
 
     <zorba:function> 
 
-      <zorba:signature localname="create-collection" prefix="fn-zorba-ddl">
+      <zorba:signature localname="create-collection" prefix="fn-zorba-xqddf">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="create-collection" prefix="fn-zorba-ddl">
+      <zorba:signature localname="create-collection" prefix="fn-zorba-xqddf">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()*</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
@@ -158,7 +158,7 @@
 
     <zorba:function>
 
-      <zorba:signature localname="delete-collection" prefix="fn-zorba-ddl">
+      <zorba:signature localname="delete-collection" prefix="fn-zorba-xqddf">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
@@ -184,7 +184,7 @@
 
     <zorba:function> 
 
-      <zorba:signature localname="insert-nodes" prefix="fn-zorba-ddl">
+      <zorba:signature localname="insert-nodes" prefix="fn-zorba-xqddf">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()*</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
@@ -211,7 +211,7 @@
 
     <zorba:function>
 
-      <zorba:signature localname="insert-nodes-first" prefix="fn-zorba-ddl">
+      <zorba:signature localname="insert-nodes-first" prefix="fn-zorba-xqddf">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()*</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
@@ -238,7 +238,7 @@
 
     <zorba:function>
 
-      <zorba:signature localname="insert-nodes-last" prefix="fn-zorba-ddl">
+      <zorba:signature localname="insert-nodes-last" prefix="fn-zorba-xqddf">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()*</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
@@ -265,7 +265,7 @@
 
     <zorba:function>
 
-      <zorba:signature localname="insert-nodes-before" prefix="fn-zorba-ddl">
+      <zorba:signature localname="insert-nodes-before" prefix="fn-zorba-xqddf">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()</zorba:param>
         <zorba:param>node()*</zorba:param>
@@ -293,7 +293,7 @@
 
     <zorba:function>
 
-      <zorba:signature localname="insert-nodes-after" prefix="fn-zorba-ddl">
+      <zorba:signature localname="insert-nodes-after" prefix="fn-zorba-xqddf">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()</zorba:param>
         <zorba:param>node()*</zorba:param>
@@ -321,7 +321,7 @@
 
     <zorba:function>
 
-      <zorba:signature localname="delete-nodes" prefix="fn-zorba-ddl">
+      <zorba:signature localname="delete-nodes" prefix="fn-zorba-xqddf">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()*</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
@@ -348,12 +348,12 @@
 
     <zorba:function>
 
-      <zorba:signature localname="delete-node-first" prefix="fn-zorba-ddl">
+      <zorba:signature localname="delete-node-first" prefix="fn-zorba-xqddf">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="delete-nodes-first" prefix="fn-zorba-ddl">
+      <zorba:signature localname="delete-nodes-first" prefix="fn-zorba-xqddf">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>xs:unsignedLong</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
@@ -380,12 +380,12 @@
 
     <zorba:function> 
 
-      <zorba:signature localname="delete-node-last" prefix="fn-zorba-ddl">
+      <zorba:signature localname="delete-node-last" prefix="fn-zorba-xqddf">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="delete-nodes-last" prefix="fn-zorba-ddl">
+      <zorba:signature localname="delete-nodes-last" prefix="fn-zorba-xqddf">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>xs:unsignedLong</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>

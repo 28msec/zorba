@@ -205,7 +205,7 @@ void fo_expr::compute_scripting_kind()
 
 expr_t fo_expr::clone(substitution_t& subst) const
 {
-  if (get_func()->getKind() == FunctionConsts::FN_ZORBA_DDL_COLLECTION_1)
+  if (get_func()->getKind() == FunctionConsts::FN_ZORBA_XQDDF_COLLECTION_1)
   {
     expr::subst_iter_t i = subst.find(this);
 

@@ -38,13 +38,13 @@ void populate_context_ic_ddl(static_context* sctx);
 
 
 
-//fn-zorba-ddl:activate-integrity-constraint
-class fn_zorba_ddl_activate_integrity_constraint : public function
+//fn-zorba-xqddf:activate-integrity-constraint
+class fn_zorba_xqddf_activate_integrity_constraint : public function
 {
 public:
-  fn_zorba_ddl_activate_integrity_constraint(const signature& sig)
+  fn_zorba_xqddf_activate_integrity_constraint(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_DDL_ACTIVATE_INTEGRITY_CONSTRAINT_1)
+    function(sig, FunctionConsts::FN_ZORBA_XQDDF_ACTIVATE_INTEGRITY_CONSTRAINT_1)
   {
   }
 
@@ -56,13 +56,13 @@ public:
 };
 
 
-//fn-zorba-ddl:deactivate-integrity-constraint
-class fn_zorba_ddl_deactivate_integrity_constraint : public function
+//fn-zorba-xqddf:deactivate-integrity-constraint
+class fn_zorba_xqddf_deactivate_integrity_constraint : public function
 {
 public:
-  fn_zorba_ddl_deactivate_integrity_constraint(const signature& sig)
+  fn_zorba_xqddf_deactivate_integrity_constraint(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_DDL_DEACTIVATE_INTEGRITY_CONSTRAINT_1)
+    function(sig, FunctionConsts::FN_ZORBA_XQDDF_DEACTIVATE_INTEGRITY_CONSTRAINT_1)
   {
   }
 
@@ -74,13 +74,13 @@ public:
 };
 
 
-//fn-zorba-ddl:check-integrity-constraint
-class fn_zorba_ddl_check_integrity_constraint : public function
+//fn-zorba-xqddf:check-integrity-constraint
+class fn_zorba_xqddf_check_integrity_constraint : public function
 {
 public:
-  fn_zorba_ddl_check_integrity_constraint(const signature& sig)
+  fn_zorba_xqddf_check_integrity_constraint(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_DDL_CHECK_INTEGRITY_CONSTRAINT_1)
+    function(sig, FunctionConsts::FN_ZORBA_XQDDF_CHECK_INTEGRITY_CONSTRAINT_1)
   {
   }
 

@@ -332,13 +332,13 @@ public:
 };
 
 
-//fn-zorba-math:isInf
-class fn_zorba_math_isInf : public function
+//fn-zorba-math:is_inf
+class fn_zorba_math_is_inf : public function
 {
 public:
-  fn_zorba_math_isInf(const signature& sig)
+  fn_zorba_math_is_inf(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_MATH_ISINF_1)
+    function(sig, FunctionConsts::FN_ZORBA_MATH_IS_INF_1)
   {
   }
 
@@ -346,13 +346,13 @@ public:
 };
 
 
-//fn-zorba-math:isNaN
-class fn_zorba_math_isNaN : public function
+//fn-zorba-math:is_nan
+class fn_zorba_math_is_nan : public function
 {
 public:
-  fn_zorba_math_isNaN(const signature& sig)
+  fn_zorba_math_is_nan(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_MATH_ISNAN_1)
+    function(sig, FunctionConsts::FN_ZORBA_MATH_IS_NAN_1)
   {
   }
 

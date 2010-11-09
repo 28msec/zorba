@@ -433,13 +433,13 @@
   
   <zorba:function generateCodegen="false">
 
-    <zorba:signature localname="subsequence-int" prefix="fn-zorba">
+    <zorba:signature localname="subsequence-int" prefix="op-zorba">
       <zorba:param>item()*</zorba:param>
       <zorba:param>xs:integer</zorba:param>
       <zorba:output>item()*</zorba:output>
     </zorba:signature>
 
-    <zorba:signature localname="subsequence-int" prefix="fn-zorba">
+    <zorba:signature localname="subsequence-int" prefix="op-zorba">
       <zorba:param>item()*</zorba:param>
       <zorba:param>xs:integer</zorba:param>
       <zorba:param>xs:integer</zorba:param>
@@ -480,7 +480,7 @@
   
   <zorba:function generateCodegen="false">
 
-    <zorba:signature localname="sequence-point-access" prefix="fn-zorba">
+    <zorba:signature localname="sequence-point-access" prefix="op-zorba">
       <zorba:param>item()*</zorba:param>
       <zorba:param>xs:integer</zorba:param>
       <zorba:output>item()?</zorba:output>

@@ -264,14 +264,14 @@ RULE_REWRITE_POST(SpecializeOperations)
         if (TypeOps::is_subtype(tm, *posType, *rtm.INTEGER_TYPE_ONE) &&
             TypeOps::is_subtype(tm, *lenType, *rtm.INTEGER_TYPE_ONE))
         {
-          fo->set_func(GET_BUILTIN_FUNCTION(FN_ZORBA_SUBSEQUENCE_INT_3));
+          fo->set_func(GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_3));
           fo->set_arg(1, posExpr);
           fo->set_arg(1, lenExpr);
         }
       }
       else if (TypeOps::is_subtype(tm, *posType, *rtm.INTEGER_TYPE_ONE))
       {
-        fo->set_func(GET_BUILTIN_FUNCTION(FN_ZORBA_SUBSEQUENCE_INT_2));
+        fo->set_func(GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_2));
         fo->set_arg(1, posExpr);
       }
     }

@@ -1241,8 +1241,8 @@ String
 StaticContextImpl::resolve(const String& aBaseUri, const String& aRelativeURI) const
 {
   // ?????
-  zstring lBaseUri = Unmarshaller::getInternalString(aBaseUri).str();
-  zstring lRelativeUri = Unmarshaller::getInternalString(aRelativeURI).str();
+  zstring lBaseUri = Unmarshaller::getInternalString(aBaseUri);
+  zstring lRelativeUri = Unmarshaller::getInternalString(aRelativeURI);
 
   zstring lResolved = theCtx->resolve_relative_uri(lRelativeUri, lBaseUri.empty());
 

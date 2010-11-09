@@ -85,9 +85,9 @@
 
 #include "debugger/zorba_debugger_commons.h"
 
-using namespace std;
 
 #define NODE_SORT_OPT
+#define SKIP_ZORBA_MODULES
 
 namespace zorba
 {
@@ -101,27 +101,27 @@ static expr_t translate_aux(
     static_context* rootSctx,
     short rootSctxId,
     ModulesInfo* minfo,
-    set<string> mod_stack,
+    std::set<std::string> mod_stack,
     bool isLibModule);
 
 #ifndef NDEBUG
 
-#define TRACE_VISIT()                                              \
-  const QueryLoc& loc = v.get_location(); (void)loc;               \
-                                                                   \
-  if (Properties::instance()->traceTranslator())                   \
-    cout << string(++print_depth, ' ') << TRACE << ", stk size "   \
-         << theNodeStack.size() << ", tstk size: " << theTypeStack.size()   \
-         << ", scope depth " << scope_depth << endl;
+#define TRACE_VISIT()                                                   \
+  const QueryLoc& loc = v.get_location(); (void)loc;                    \
+                                                                        \
+  if (Properties::instance()->traceTranslator())                        \
+    std::cout << std::string(++thePrintDepth, ' ') << TRACE << ", stk size "   \
+              << theNodeStack.size() << ", tstk size: " << theTypeStack.size() \
+              << ", scope depth " << theScopeDepth << std::endl;
 
 
-#define TRACE_VISIT_OUT()                                          \
-  const QueryLoc& loc = v.get_location(); (void)loc;               \
-                                                                   \
-  if (Properties::instance()->traceTranslator())                   \
-    cout << string(print_depth--, ' ') << TRACE << ", stk size: "  \
-         << theNodeStack.size() << ", tstk size: " << theTypeStack.size()   \
-         << ", scope depth " << scope_depth << endl;
+#define TRACE_VISIT_OUT()                                               \
+  const QueryLoc& loc = v.get_location(); (void)loc;                    \
+                                                                        \
+  if (Properties::instance()->traceTranslator())                        \
+    std::cout << std::string(thePrintDepth--, ' ') << TRACE << ", stk size: "  \
+              << theNodeStack.size() << ", tstk size: " << theTypeStack.size() \
+              << ", scope depth " << theScopeDepth << std::endl;
 
 #else
 
@@ -183,26 +183,17 @@ static inline void checkNonUpdating(const expr* lExpr)
 /*******************************************************************************
 
 ********************************************************************************/
-template<class T> T& peek_stack(stack<T> &stk)
+template<class T> T& peek_stack(std::stack<T> &stk)
 {
   ZORBA_ASSERT(! stk.empty());
   return stk.top();
 }
 
 
-template <typename T> T pop_stack(stack<T> &stk)
+template <typename T> T pop_stack(std::stack<T> &stk)
 {
   T x = peek_stack(stk);
   stk.pop();
-  return x;
-}
-
-
-template <typename T> T pop_stack(list<T> &stk)
-{
-  ZORBA_ASSERT (! stk.empty ());
-  T x =  stk.back ();
-  stk.pop_back ();
   return x;
 }
 
@@ -379,7 +370,7 @@ void PrologGraph::reportCycle(const QueryLoc& loc, const PrologGraphVertex* v)
 
 
 /*******************************************************************************
-  This method is part of the mechanism for detecting cycles in the dependency
+   This method is part of the mechanism for detecting cycles in the dependency
   graph among prolog variables. The method does not actually detect the cycles
   but re-orders the declarations of prolog vars (i.e., reorders theGlobalVars
   list) so that if var v2 depends on var v1, then v1 appears before v2 in the
@@ -737,9 +728,9 @@ class ModulesInfo
 public:
   CompilerCB                * theCCB;
   hashmap<static_context_t>   mod_sctx_map;
-  hashmap<string>             mod_ns_map;
+  hashmap<std::string>        mod_ns_map;
   checked_vector<expr_t>      init_exprs;
-  auto_ptr<static_context>    globals;
+  std::auto_ptr<static_context>    globals;
 
 public:
   ModulesInfo(CompilerCB* topCompilerCB)
@@ -766,64 +757,66 @@ public:
 
   theRTM :
   --------
-
   Reference to the root type manager (cached here for convenience).
 
   theCCB :
   --------
-
   The control block for the whole query. (see compiler/api/compilercb.h).
 
   theModulesInfo :
   ----------------
-
   Pointer to the unique ModulesInfo instance (see class ModulesInfo above).
 
-  theModulesStack      : A set containing the ns uris of all the modules in the
-                         chain of module imports from this module up to the main
-                         module. It is used to check that there are no cycles
-                         in a chain of module imports.
+  theModulesStack :
+  -----------------
+  A set containing the ns uris of all the modules in the chain of module imports
+  from this module up to the main module. It is used to check that there are no
+  cycles in a chain of module imports.
 
-  theImportedModules   : A set containing the ns uris for all the modules
-                         directly imported by this module. Used to check that
-                         the same module is not imported twice by this module.
+  theImportedModules :
+  --------------------
+  A set containing the target namespace uris of the modules directly imported
+  by this  module. Used to check that the same module is not imported twice by
+  this module.
 
-  theModuleNamespace   : If this translator is working on a library module,
-                         theModuleNamespace is the namespace uri of that module.
-  theModulePrefix      : If this translator is working on a library module,
-                         theModulePrefix is the prefix associated with the ns
-                         uri of that module.
+  theModuleNamespace :
+  --------------------
+  If this translator is working on a library module, theModuleNamespace is the
+  namespace uri of that module.
 
-  theBuiltInModules    : Set of ns uris for all internal pre-defined modules.
-                         If a module (i.e. a .xq file), containing external
-                         function declarations, is shipped with Zorba, this
-                         namespace must not be registered in this set.
+  theModulePrefix :
+  -----------------
+  If this translator is working on a library module, theModulePrefix is the
+  prefix associated with the ns uri of that module.
 
-  theImportedSchemas   : Set of ns uris for all schemas directly imported by
-                         this module. Used to check that the same schema is not
-                         imported twice by this module.
+  theBuiltInModules :
+  -------------------
+  Contains the target namespace of modules that consist exclussively of zorba
+  builtin functions. For each such module, we also report whether the module
+  has been imported by the current module or not.
+
+  theImportedSchemas :
+  --------------------
+   Set of ns uris for all schemas directly imported by this module. Used to
+  check that the same schema is not imported twice by this module.
 
   theCurrSctxId :
   ---------------
-
   The numeric id of the last sctx that was added to theSctxMap of the query
   (see api/xqueryimpl.h).
 
   theRootSctx :
   -------------
-
   The root sctx obj of the module that is being translated by this translator.
   Every time an expr is created, theRootSctx is stored in the expr obj, so that
- each expr will be executed in the appropriate sctx.
+  each expr will be executed in the appropriate sctx.
 
   theSctx :
   ---------
-
   The "current" static context node. It is initialized with theRootSctx.
 
   theSctxList :
   -------------
-
   A list of static contexts which need to be kept alive only during the
   translation of a module. It's managed in push_scope and pop_scope. In
   DEBUGGER mode, this list remains empty.
@@ -862,9 +855,16 @@ public:
                          translation is done, whereas certain exprs need to know
                          their ns_ctx in later compilation phases as well.
 
-  print_depth          : For pretty tracing
-  scope_depth          : Incremented/Decremented every time a scope is pushed/popped
-                         Used for some sanity checking only.
+  thePrintDepth :
+  ---------------
+
+   For pretty tracing
+
+  theScopeDepth :
+  ---------------
+
+  Incremented/Decremented every time a scope is pushed/popped. Used for some 
+  sanity checking only.
 
   theDotVar            : var_expr for the context item var of the main module
 
@@ -978,79 +978,79 @@ public:
 class TranslatorImpl : public parsenode_visitor
 {
 protected:
-  TranslatorImpl                     * theRootTranslator;
+  TranslatorImpl                       * theRootTranslator;
 
-  RootTypeManager                    & theRTM;
+  RootTypeManager                      & theRTM;
 
-  CompilerCB                         * theCCB;
+  CompilerCB                           * theCCB;
 
-  ModulesInfo                        * theModulesInfo;
-  set<string>                          theModulesStack;
-  set<string>                          theImportedModules;
-  zstring                              theModuleNamespace;
-  zstring                              theModulePrefix;
-  set<string>                          theBuiltInModules;
+  ModulesInfo                          * theModulesInfo;
+  std::set<std::string>                  theModulesStack;
+  std::set<std::string>                  theImportedModules;
+  zstring                                theModuleNamespace;
+  zstring                                theModulePrefix;
+  std::vector<std::pair<zstring, bool> > theBuiltInModules;
 
-  set<string>                          theImportedSchemas;
+  std::set<std::string>                  theImportedSchemas;
 
-  short                                theCurrSctxId;
+  short                                  theCurrSctxId;
 
-  static_context                     * theRootSctx;
+  static_context                       * theRootSctx;
 
-  static_context                     * theSctx;
+  static_context                       * theSctx;
 
-  std::vector<static_context_t>        theSctxList;
+  std::vector<static_context_t>          theSctxList;
 
-  stack<short>                         theSctxIdStack;
+  std::stack<short>                      theSctxIdStack;
 
-  static_context                     * export_sctx;
+  static_context                       * export_sctx;
 
-  rchandle<namespace_context>          ns_ctx;
+  rchandle<namespace_context>            ns_ctx;
 
-  ulong                                print_depth;
-  int                                  scope_depth;
+  ulong                                  thePrintDepth;
+  int                                    theScopeDepth;
 
-  var_expr_t                           theDotVar;
+  var_expr_t                             theDotVar;
 
-  xqtref_t                             ctx_item_type;
+  xqtref_t                               ctx_item_type;
 
-  list<global_binding>                 thePrologVars;
+  std::list<global_binding>              thePrologVars;
 
-  PrologGraph                          thePrologGraph;
-  PrologGraphVertex                    theCurrentPrologVFDecl;
+  PrologGraph                            thePrologGraph;
+  PrologGraphVertex                      theCurrentPrologVFDecl;
 
-  int                                  theTempVarCounter;
+  int                                    theTempVarCounter;
 
-  stack<expr_t>                        theNodeStack;
+  std::stack<expr_t>                     theNodeStack;
 
 #ifndef ZORBA_NO_FULL_TEXT
-  stack<ftnode*>                       theFTNodeStack;
+  std::stack<ftnode*>                    theFTNodeStack;
 #endif
 
-  stack<xqtref_t>                      theTypeStack;
+  std::stack<xqtref_t>                   theTypeStack;
 
-  std::vector<flwor_clause_t>          theFlworClausesStack;
+  std::vector<flwor_clause_t>            theFlworClausesStack;
 
-  std::vector<const parsenode*>        theTryStack;
+  std::vector<const parsenode*>          theTryStack;
 
-  stack<NodeSortInfo>                  theNodeSortStack;
+  std::stack<NodeSortInfo>               theNodeSortStack;
 
-  IndexDecl_t                          theIndexDecl;
-  bool                                 theIsInIndexDomain;
+  IndexDecl_t                            theIndexDecl;
+  bool                                   theIsInIndexDomain;
 
-  bool                                 hadBSpaceDecl;
-  bool                                 hadBUriDecl;
-  bool                                 hadConstrDecl;
-  bool                                 hadCopyNSDecl;
-  bool                                 hadDefNSDecl;
-  bool                                 hadEmptyOrdDecl;
-  bool                                 hadOrdModeDecl;
-  bool                                 hadRevalDecl;
+  bool                                   hadBSpaceDecl;
+  bool                                   hadBUriDecl;
+  bool                                   hadConstrDecl;
+  bool                                   hadCopyNSDecl;
+  bool                                   hadDefNSDecl;
+  bool                                   hadEmptyOrdDecl;
+  bool                                   hadOrdModeDecl;
+  bool                                   hadRevalDecl;
 
-  stack<bool>                          theIsWSBoundaryStack;
-  stack<const DirElemContent*>         thePossibleWSContentStack;
+  std::stack<bool>                       theIsWSBoundaryStack;
+  std::stack<const DirElemContent*>      thePossibleWSContentStack;
 
-  set<zstring>                         xquery_fns_def_dot;
+  std::set<zstring>                    xquery_fns_def_dot;
 
   function                           * op_concatenate;
   function                           * op_enclosed;
@@ -1063,8 +1063,6 @@ protected:
   rchandle<QName>                      theDotPosVarName;
   rchandle<QName>                      theLastIdxVarName;
 
-  xqpStringStore_t                     theEmptyString;
-
   std::vector<var_expr_t>              theScopedVars;
 
 public:
@@ -1074,7 +1072,7 @@ TranslatorImpl(
     static_context* rootSctx,
     short rootSctxId,
     ModulesInfo* minfo,
-    set<string> mod_stack,
+    std::set<std::string> mod_stack,
     bool isLibModule)
   :
   theRootTranslator(rootTranslator),
@@ -1087,8 +1085,8 @@ TranslatorImpl(
   theSctx(rootSctx),
   export_sctx(NULL),
   ns_ctx(new namespace_context(theSctx)),
-  print_depth(0),
-  scope_depth(0),
+  thePrintDepth(0),
+  theScopeDepth(0),
   thePrologGraph(rootSctx),
   theTempVarCounter(1),
   theIsInIndexDomain(false),
@@ -1122,12 +1120,22 @@ TranslatorImpl(
   var_exists = GET_BUILTIN_FUNCTION(OP_VAR_EXISTS_1);
   assert(var_decl != NULL && var_set != NULL && var_get != NULL && var_exists != NULL);
 
-  theBuiltInModules.insert (ZORBA_OP_NS);
-  theBuiltInModules.insert (ZORBA_MATH_FN_NS);
-  theBuiltInModules.insert (ZORBA_NODEREF_FN_NS);
-  theBuiltInModules.insert (ZORBA_ALEXIS_FN_NS);
-  theBuiltInModules.insert (ZORBA_JSON_FN_NS);
-  theBuiltInModules.insert (ZORBA_FOP_FN_NS);
+#ifdef SKIP_ZORBA_MODULES
+  theBuiltInModules.push_back(std::pair<zstring, bool>(ZORBA_MATH_FN_NS, false));
+  theBuiltInModules.push_back(std::pair<zstring, bool>(ZORBA_BASE64_FN_NS, false));
+  theBuiltInModules.push_back(std::pair<zstring, bool>(ZORBA_NODEREF_FN_NS, false));
+  theBuiltInModules.push_back(std::pair<zstring, bool>(ZORBA_XQDDF_FN_NS, false));
+  theBuiltInModules.push_back(std::pair<zstring, bool>(ZORBA_SCHEMA_FN_NS, false));
+  theBuiltInModules.push_back(std::pair<zstring, bool>(ZORBA_TIDY_FN_NS, false));
+  theBuiltInModules.push_back(std::pair<zstring, bool>(ZORBA_JSON_FN_NS, false));
+  theBuiltInModules.push_back(std::pair<zstring, bool>(ZORBA_CSV_FN_NS, false));
+  theBuiltInModules.push_back(std::pair<zstring, bool>(ZORBA_RANDOM_FN_NS, false));
+  theBuiltInModules.push_back(std::pair<zstring, bool>(ZORBA_INTROSPECT_DCTX_FN_NS, false));
+  theBuiltInModules.push_back(std::pair<zstring, bool>(ZORBA_INTROSPECT_SCTX_FN_NS, false));
+
+  theBuiltInModules.push_back(std::pair<zstring, bool>(ZORBA_UTIL_FN_NS, false));
+  theBuiltInModules.push_back(std::pair<zstring, bool>(ZORBA_FOP_FN_NS, false));
+#endif
 
   ctx_item_type = GENV_TYPESYSTEM.ITEM_TYPE_ONE;
 
@@ -1138,16 +1146,8 @@ TranslatorImpl(
     theDotPosVarName = new QName(loc, "$$pos");
     theLastIdxVarName = new QName(loc, "$$last-idx");
 
-    theEmptyString = new xqpStringStore("");
-
     theRootTranslator = this;
   }
-}
-
-
-const xqpStringStore_t& getEmptyString() const
-{
-  return theRootTranslator->theEmptyString;
 }
 
 
@@ -1188,11 +1188,11 @@ expr_t pop_nodestack(int n = 1)
 #ifndef NDEBUG
     if (Properties::instance()->traceTranslator())
     {
-      cout << "Popped from nodestack:\n";
+      std::cout << "Popped from nodestack:\n";
       if (e_h != NULL)
-        e_h->put(cout) << endl;
+        e_h->put(std::cout) << std::endl;
       else
-        cout << "NULL" << endl;
+        std::cout << "NULL" << std::endl;
     }
 #endif
   }
@@ -1250,11 +1250,11 @@ rchandle<axis_step_expr> expect_axis_step_top()
   rchandle<axis_step_expr> axisExpr = peek_nodestk_or_null().dyn_cast<axis_step_expr>();
   if (axisExpr == NULL)
   {
-    cout << "Expecting axis step on top of stack; ";
+    std::cout << "Expecting axis step on top of stack; ";
     if (theNodeStack.top() != NULL)
-      cout << "typeid(top()) = " << typeid(*theNodeStack.top()).name() << endl;
+      std::cout << "typeid(top()) = " << typeid(*theNodeStack.top()).name() << std::endl;
     else
-      cout << "top is null\n";
+      std::cout << "top is null\n";
     ZORBA_ASSERT (false);
   }
   return axisExpr;
@@ -1289,11 +1289,11 @@ ftnode* pop_ftstack(int count = 1)
 #ifndef NDEBUG
     if ( Properties::instance()->traceTranslator() )
     {
-      cout << "Popped from ftnode stack:\n";
+      std::cout << "Popped from ftnode stack:\n";
       if ( n )
-        cout << *n << endl;
+        std::cout << *n << std::endl;
       else
-        cout << "NULL" << endl;
+        std::cout << "NULL" << std::endl;
     }
 #endif
   }
@@ -1363,7 +1363,7 @@ void push_scope()
     // runtime seems to be overhead.
     theSctxList.push_back(theSctx);
   }
-  ++scope_depth;
+  ++theScopeDepth;
 }
 
 
@@ -1384,7 +1384,7 @@ void pop_scope()
     static_context* parent = (static_context *) theSctx->get_parent();
     theSctx = parent;
   }
-  --scope_depth;
+  --theScopeDepth;
 }
 
 
@@ -1683,7 +1683,7 @@ void normalize_fo(fo_expr* foExpr)
 
   const function* func = foExpr->get_func();
 
-  if (func->getKind() == FunctionConsts::FN_ZORBA_DDL_PROBE_INDEX_RANGE_VALUE_N &&
+  if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N &&
       (n == 0 || (n - 1) % 6 != 0))
   {
     const store::Item* qname = NULL;
@@ -1711,14 +1711,14 @@ void normalize_fo(fo_expr* foExpr)
 
     xqtref_t paramType;
 
-    if (func->getKind() == FunctionConsts::FN_ZORBA_DDL_PROBE_INDEX_POINT_VALUE_N)
+    if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_VALUE_N)
     {
       if (i == 0)
         paramType = sign[i];
       else
         paramType = theRTM.ANY_ATOMIC_TYPE_ONE;
     }
-    else if (func->getKind() == FunctionConsts::FN_ZORBA_DDL_PROBE_INDEX_RANGE_VALUE_N)
+    else if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N)
     {
       if (i == 0)
         paramType = sign[i];
@@ -2099,7 +2099,7 @@ void wrap_in_debugger_expr(expr_t& aExpr)
 ********************************************************************************/
 void collect_flwor_vars (
     const FLWORExpr& e,
-    set<const var_expr *>& vars,
+    std::set<const var_expr *>& vars,
     const FLWORClause* start,
     const FLWORClause* end,
     const QueryLoc& loc)
@@ -2206,7 +2206,7 @@ void collect_flwor_vars (
 ********************************************************************************/
 expr_t wrap_in_globalvar_assign(expr_t e)
 {
-  for (list<global_binding>::iterator i = thePrologVars.begin();
+  for (std::list<global_binding>::iterator i = thePrologVars.begin();
       i != thePrologVars.end();
       ++i)
   {
@@ -2361,7 +2361,7 @@ void end_visit(const Module& v, void* /*visit_state*/)
 void* begin_visit(const VersionDecl& v)
 {
   TRACE_VISIT();
-  if (! xqp_string(v.get_encoding().str()).matches ("^[A-Za-z]([A-Za-z0-9._]|[-])*$", ""))
+  if (! xqpString(v.get_encoding().str()).matches ("^[A-Za-z]([A-Za-z0-9._]|[-])*$", ""))
     ZORBA_ERROR_LOC (XQST0087, loc);
 
   std::string versionStr = v.get_version().str();
@@ -2468,6 +2468,12 @@ void end_visit(const ModuleDecl& v, void* /*visit_state*/)
 
   if (theModuleNamespace.empty())
     ZORBA_ERROR_LOC(XQST0088, loc);
+
+  if (theModuleNamespace == XQUERY_OP_NS || theModuleNamespace == ZORBA_OP_NS)
+  {
+    ZORBA_ERROR_LOC_PARAM(XQP0016_RESERVED_MODULE_TARGET_NAMESPACE, loc,
+                          theModuleNamespace.c_str(), "");
+  }
 
   if (theModulePrefix == "xml" || theModulePrefix == "xmlns")
     ZORBA_ERROR_LOC(XQST0070, loc);
@@ -2933,6 +2939,12 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
   if (!v.get_prefix().empty())
     pfx = v.get_prefix();
 
+  if (targetNS == XQUERY_OP_NS || targetNS == ZORBA_OP_NS)
+  {
+    ZORBA_ERROR_LOC_PARAM(XQP0016_RESERVED_MODULE_TARGET_NAMESPACE, loc,
+                          targetNS.c_str(), "");
+  }
+
   // The namespace prefix specified in a module import must not be xml or xmlns
   // [err:XQST0070]
   if (!pfx.empty() && (pfx == "xml" || pfx == "xmlns"))
@@ -2960,12 +2972,27 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 
   const URILiteralList* atlist = v.get_at_list();
 
-  // Handle pre-defined modules
-  if (atlist == NULL &&
-      theBuiltInModules.find(targetNS.str()) != theBuiltInModules.end())
+#ifdef SKIP_ZORBA_MODULES
+  // If the module is a "pre-defined" one (containing the decalrations of zorba
+  // builtin functions only), then we don't need to process it.
+  if (atlist == NULL)
   {
-    return;
+    for (ulong i = 0; i < theBuiltInModules.size(); ++i)
+    {
+      if (targetNS == theBuiltInModules[i].first)
+      {
+        theBuiltInModules[i].second = true;
+
+        // we cannot skip the sctx introspection module because if contains
+        // some non-external functions as well.
+        if (targetNS != ZORBA_INTROSPECT_SCTX_FN_NS)
+        {
+          return;
+        }
+      }
+    }
   }
+#endif
 
   InternalModuleURIResolver* standardModuleResolver = GENV.getModuleURIResolver();
 
@@ -2977,7 +3004,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
   // (sole) component URI. If there are "at" clauses, then any relative URIs that
   // are listed there are converted to absolute ones, using the base uri from the
   // sctx.
-  vector<std::string> compURIs;
+  std::vector<std::string> compURIs;
   if (atlist == NULL || atlist->size() == 0)
   {
     standardModuleResolver->resolveTargetNamespace(targetNS.str(), *theSctx, compURIs);
@@ -2992,7 +3019,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 
   // Take each of the URIs collected above and import the module's functions
   // and variables into the current static context.
-  for (vector<std::string>::const_iterator ite = compURIs.begin();
+  for (std::vector<std::string>::const_iterator ite = compURIs.begin();
        ite != compURIs.end();
        ++ite)
   {
@@ -3000,13 +3027,13 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
     const std::string& compURI = *ite;
 
     // Make sure that there are no cycles in a chain of module imports.
-    set<string> mod_stk1 = theModulesStack;
+    std::set<std::string> mod_stk1 = theModulesStack;
     if (! mod_stk1.insert(compURI).second)
       ZORBA_ERROR_LOC(XQST0093, loc);
 
     // importedNS is the target namespace of the imported module, as declared
     // inside the module itself.
-    string importedNS;
+    std::string importedNS;
     static_context_t importedSctx = NULL;
 
     // Check whether we have already imported a module component from the current
@@ -3030,7 +3057,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       // input stream can be freed. The current solution might leed to problems
       // on Windows.
       std::string compURL;
-      auto_ptr<istream> modfile;
+      std::auto_ptr<std::istream> modfile;
 
       try
       {
@@ -3166,7 +3193,7 @@ void* begin_visit(const VFO_DeclList& v)
   // happens when accept() is called on each individual FunctionDecl node in
   // the list.
 
-  for (vector<rchandle<parsenode> >::const_iterator it = v.begin();
+  for (std::vector<rchandle<parsenode> >::const_iterator it = v.begin();
        it != v.end();
        ++it)
   {
@@ -3186,9 +3213,9 @@ void* begin_visit(const VFO_DeclList& v)
 
     // Translate the type declarations for the args and the return value of the
     // udf and put the resulting types in the arg_types vector.
-    vector<xqtref_t> arg_types;
+    std::vector<xqtref_t> arg_types;
 
-    for (vector<rchandle<Param> >::const_iterator it = params->begin();
+    for (std::vector<rchandle<Param> >::const_iterator it = params->begin();
          it != params->end();
          ++it)
     {
@@ -3272,7 +3299,7 @@ void* begin_visit(const VFO_DeclList& v)
 
       if (f.getp() != 0)
       {
-        // in debug mode, we make sure that the types of the functions
+        // We make sure that the types of the functions
         // and the return type are equal to the one that is declared in
         // the module
         const signature& s = f->getSignature();
@@ -3686,7 +3713,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
   // return clause of the flwor to the body expr of the function, and then make
   // this flwor be the actual body of the function.
   ulong numParams = v.get_param_count();
-  vector<var_expr_t> args;
+  std::vector<var_expr_t> args;
   if (numParams > 0)
   {
     rchandle<flwor_expr> flwor = pop_nodestack().dyn_cast<flwor_expr>();
@@ -4340,7 +4367,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                                       uriStrExpr, qnameStrExpr);
 
     // dc:collection(xs:QName("example:coll1"))
-    function* fn_collection = GET_BUILTIN_FUNCTION(FN_ZORBA_DDL_COLLECTION_1);
+    function* fn_collection = GET_BUILTIN_FUNCTION(FN_ZORBA_XQDDF_COLLECTION_1);
     ZORBA_ASSERT(fn_collection != NULL);
     std::vector<expr_t> argColl;
     argColl.push_back(qnameExpr.getp());
@@ -4413,7 +4440,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                                       uriStrExpr, qnameStrExpr);
 
     // dc:collection(xs:QName("org:employees"))
-    function* fn_collection = GET_BUILTIN_FUNCTION(FN_ZORBA_DDL_COLLECTION_1);
+    function* fn_collection = GET_BUILTIN_FUNCTION(FN_ZORBA_XQDDF_COLLECTION_1);
     ZORBA_ASSERT(fn_collection != NULL);
     std::vector<expr_t> argColl;
     argColl.push_back(qnameExpr.getp());
@@ -4503,7 +4530,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                                       uriStrExpr, qnameStrExpr);
 
     // dc:collection(xs:QName("org:transactions"))
-    function* fn_collection = GET_BUILTIN_FUNCTION(FN_ZORBA_DDL_COLLECTION_1);
+    function* fn_collection = GET_BUILTIN_FUNCTION(FN_ZORBA_XQDDF_COLLECTION_1);
     ZORBA_ASSERT(fn_collection != NULL);
     std::vector<expr_t> argColl;
     argColl.push_back(qnameExpr.getp());
@@ -4574,7 +4601,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                                         toUriStrExpr, toQnameStrExpr);
 
     // dc:collection(xs:QName("org:employees"))
-    function* toFnCollection = GET_BUILTIN_FUNCTION(FN_ZORBA_DDL_COLLECTION_1);
+    function* toFnCollection = GET_BUILTIN_FUNCTION(FN_ZORBA_XQDDF_COLLECTION_1);
     ZORBA_ASSERT(toFnCollection != NULL);
     std::vector<expr_t> toArgColl;
     toArgColl.push_back(toQnameExpr.getp());
@@ -4614,7 +4641,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                                           fromUriStrExpr, fromQnameStrExpr);
 
     // dc:collection(xs:QName("org:transactions"))
-    function* fromFnCollection = GET_BUILTIN_FUNCTION(FN_ZORBA_DDL_COLLECTION_1);
+    function* fromFnCollection = GET_BUILTIN_FUNCTION(FN_ZORBA_XQDDF_COLLECTION_1);
     ZORBA_ASSERT(fromFnCollection != NULL);
     std::vector<expr_t> fromArgColl;
     fromArgColl.push_back(fromQnameExpr.getp());
@@ -4732,7 +4759,7 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
                                       GET_BUILTIN_FUNCTION(FN_EXISTS_1),
                                       uniKeyExpr.getp());
 
-      xqp_string commentStr("#trace fnExists");
+      xqpString commentStr("#trace fnExists");
       expr_t comentExpr = new const_expr(theRootSctx, loc, commentStr);
       fo_expr_t fnTraceExpr = new fo_expr(theRootSctx,
                                          loc,
@@ -5156,7 +5183,7 @@ void end_visit(const BlockBody& v, void* /*visit_state*/)
       var_expr_t ve = pop_nodestack().cast<var_expr> ();
       global_binding b(ve, val, false);
 
-      vector<expr_t> stmts1;
+      std::vector<expr_t> stmts1;
       declare_var(b, stmts1);
 
       reverse(stmts1.begin(), stmts1.end());
@@ -5796,9 +5823,9 @@ void* begin_visit(const GroupByClause& v)
   const FLWORExpr& flwor = *v.get_flwor ();
   const FLWORClauseList& clauses = *flwor.get_clause_list ();
 
-  set<const var_expr *> all_vars;
-  set<const var_expr *> group_vars;
-  set<const var_expr *> non_group_vars;
+  std::set<const var_expr *> all_vars;
+  std::set<const var_expr *> group_vars;
+  std::set<const var_expr *> non_group_vars;
 
   // Collect the var_exprs for all the vars that have been defined by all
   // clauses before this GroupByClause.
@@ -5824,7 +5851,7 @@ void* begin_visit(const GroupByClause& v)
 
   push_nodestack(NULL);
 
-  for (set<const var_expr *>::iterator i = non_group_vars.begin();
+  for (std::set<const var_expr *>::iterator i = non_group_vars.begin();
        i != non_group_vars.end();
        ++i)
   {
@@ -5854,7 +5881,7 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
   const GroupSpecList& groupSpecs = *v.get_spec_list();
   size_t numGroupSpecs = groupSpecs.size();
 
-  vector<string> collations;
+  std::vector<std::string> collations;
   group_clause::rebind_list_t grouping_rebind;
   group_clause::rebind_list_t nongrouping_rebind;
   var_expr_t input_var;
@@ -5877,8 +5904,8 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
                                      v.get_location(),
                                      static_cast<expr*>(input_var.getp()));
 
-    grouping_rebind.push_back(pair<wrapper_expr_t, var_expr_t>(input_wrapper,
-                                                               output_var));
+    grouping_rebind.push_back(std::pair<wrapper_expr_t, var_expr_t>(input_wrapper,
+                                                                    output_var));
   }
 
   reverse(collations.begin(), collations.end());
@@ -5893,8 +5920,8 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
                                      v.get_location(),
                                      static_cast<expr*>(input_var.getp()));
 
-    nongrouping_rebind.push_back(pair<wrapper_expr_t, var_expr_t>(input_wrapper,
-                                                                  output_var));
+    nongrouping_rebind.push_back(std::pair<wrapper_expr_t, var_expr_t>(input_wrapper,
+                                                                       output_var));
   }
 
   group_clause* clause = new group_clause(theRootSctx,
@@ -6371,7 +6398,7 @@ void* begin_visit(const SwitchExpr& v)
   expr_t retExpr = pop_nodestack();
 
   const SwitchCaseClauseList* clauses = v.get_clause_list();
-  for (vector<rchandle<SwitchCaseClause> >::const_reverse_iterator it = clauses->rbegin();
+  for (std::vector<rchandle<SwitchCaseClause> >::const_reverse_iterator it = clauses->rbegin();
        it != clauses->rend();
        ++it)
   {
@@ -6380,7 +6407,7 @@ void* begin_visit(const SwitchExpr& v)
     expr_t condExpr = NULL;
 
     const SwitchCaseOperandList* operands = switchCaseClause->get_operand_list();
-    for (vector<rchandle<exprnode> >::const_iterator it = operands->begin();
+    for (std::vector<rchandle<exprnode> >::const_iterator it = operands->begin();
          it != operands->end();
          ++it)
     {
@@ -6546,7 +6573,7 @@ void* begin_visit(const TypeswitchExpr& v)
   }
 
   const CaseClauseList* clauses = v.get_clause_list();
-  for (vector<rchandle<CaseClause> >::const_reverse_iterator it = clauses->rbegin();
+  for (std::vector<rchandle<CaseClause> >::const_reverse_iterator it = clauses->rbegin();
        it != clauses->rend();
        ++it)
   {
@@ -8790,6 +8817,12 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
   const zstring& fn_ns = qnameItem->getNamespace();
 
+  if (fn_ns == XQUERY_OP_NS || fn_ns == ZORBA_OP_NS)
+  {
+    ZORBA_ERROR_LOC_PARAM(XQP0016_RESERVED_MODULE_TARGET_NAMESPACE, loc,
+                          fn_ns.c_str(), "");
+  }
+ 
   // Some special processing is required for certain "fn" functions
   if (fn_ns == XQUERY_FN_NS)
   {
@@ -8805,7 +8838,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       {
         if (TypeOps::is_subtype(tm, *posType, *GENV_TYPESYSTEM.INTEGER_TYPE_STAR))
         {
-          f = GET_BUILTIN_FUNCTION(FN_ZORBA_SUBSEQUENCE_INT_2);
+          f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_2);
         }
         else
         {
@@ -8819,7 +8852,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         if (TypeOps::is_subtype(tm, *posType, *GENV_TYPESYSTEM.INTEGER_TYPE_STAR) &&
             TypeOps::is_subtype(tm, *lenType, *GENV_TYPESYSTEM.INTEGER_TYPE_STAR))
         {
-          f = GET_BUILTIN_FUNCTION(FN_ZORBA_SUBSEQUENCE_INT_3);
+          f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_3);
         }
         else
         {
@@ -9043,6 +9076,23 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         udf->setLeaf(false);
       }
     }
+#ifdef SKIP_ZORBA_MODULES
+    // It's not a udf. Check if it is a zorba builtin function, and if so,
+    // make sure that the module it belongs to has been imported.
+    else if (fn_ns != XQUERY_FN_NS)
+    {
+      for (ulong i = 0; i < theBuiltInModules.size(); ++i)
+      {
+        if (theBuiltInModules[i].first == fn_ns)
+        {
+          if (theBuiltInModules[i].second == false && fn_ns != theModuleNamespace)
+          {
+            ZORBA_ERROR_LOC_PARAM(XPST0017, loc, qname->get_qname(), to_string(numArgs));
+          }
+        }
+      }
+    }
+#endif
 
     std::reverse(arguments.begin(), arguments.end());
 
@@ -9050,8 +9100,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
     normalize_fo(foExpr);
 
-    if (f->getKind() == FunctionConsts::FN_ZORBA_DDL_PROBE_INDEX_RANGE_VALUE_N ||
-        f->getKind() == FunctionConsts::FN_ZORBA_DDL_PROBE_INDEX_POINT_VALUE_N)
+    if (f->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N ||
+        f->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_VALUE_N)
     {
       FunctionConsts::FunctionKind fkind = FunctionConsts::OP_SORT_NODES_ASC_1;
 
@@ -9060,8 +9110,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
                            BuiltinFunctionLibrary::getFunction(fkind),
                            foExpr);
     }
-    else if (f->getKind() == FunctionConsts::FN_ZORBA_DDL_PROBE_INDEX_POINT_GENERAL_N ||
-             f->getKind() == FunctionConsts::FN_ZORBA_DDL_PROBE_INDEX_RANGE_GENERAL_N)
+    else if (f->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_GENERAL_N ||
+             f->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_GENERAL_N)
     {
       FunctionConsts::FunctionKind fkind = FunctionConsts::OP_SORT_DISTINCT_NODES_ASC_1;
 
@@ -9323,11 +9373,11 @@ void end_visit(const InlineFunction& v, void* aState)
   }
 
   // Translate the type declarations for the function params
-  vector<xqtref_t> paramTypes;
+  std::vector<xqtref_t> paramTypes;
   rchandle<ParamList> params = v.getParamList();
   if(params != 0)
   {
-    vector<rchandle<Param> >::const_iterator lIt = params->begin();
+    std::vector<rchandle<Param> >::const_iterator lIt = params->begin();
     for(; lIt != params->end(); ++lIt)
     {
       const Param* param = lIt->getp();
@@ -9453,7 +9503,7 @@ void* begin_visit(const DirAttributeList& v)
   }
 
   unsigned long numAttrs = 0;
-  vector<rchandle<attr_expr> > attributes;
+  std::vector<rchandle<attr_expr> > attributes;
   while(true)
   {
     expr_t expr = pop_nodestack();
@@ -9479,7 +9529,7 @@ void* begin_visit(const DirAttributeList& v)
   else
   {
     std::vector<expr_t> args;
-    for (vector<rchandle<attr_expr> >::reverse_iterator it = attributes.rbegin();
+    for (std::vector<rchandle<attr_expr> >::reverse_iterator it = attributes.rbegin();
          it != attributes.rend();
          ++it)
     {
@@ -9707,8 +9757,10 @@ void end_visit (const DirElemContent& v, void* /*visit_state*/) {
  * Inserts an entry in theIsWSBoundaryStack and thePossibleWSContentStack to save
  * information during boundary whitespace checking.
  */
-void begin_check_boundary_whitespace() {
-  if (theSctx->boundary_space_mode() == StaticContextConsts::strip_space) {
+void begin_check_boundary_whitespace() 
+{
+  if (theSctx->boundary_space_mode() == StaticContextConsts::strip_space) 
+{
     theIsWSBoundaryStack.push(true);
     thePossibleWSContentStack.push(0);
   }
@@ -9719,7 +9771,8 @@ void begin_check_boundary_whitespace() {
  * only be checked during the next invocation), and if the items saved in thePossibleWSContentStack
  * is really boundary whitespace.
  */
-void check_boundary_whitespace(const DirElemContent& v) {
+void check_boundary_whitespace(const DirElemContent& v) 
+{
   v.setIsStripped(false);
   if (theSctx->boundary_space_mode() == StaticContextConsts::strip_space) {
     bool lPrevIsBoundary = pop_stack (theIsWSBoundaryStack);
@@ -9918,8 +9971,8 @@ void end_visit (const CommonContent& v, void* /*visit_state*/)
   }
   case ParseConstants::cont_charref:
   {
-    string content;
-    string charrefs = v.get_ref().str();
+    std::string content;
+    std::string charrefs = v.get_ref().str();
 
     const char* curRef = charrefs.c_str();
     const char* end = curRef + charrefs.size();
@@ -9944,7 +9997,7 @@ void end_visit (const CommonContent& v, void* /*visit_state*/)
     break;
   }
   case ParseConstants::cont_escape_lbrace:
-    {
+  {
     // we always create a text node here because if we are in an attribute, we atomice
     // the text node into its string value
     xqpString content("{");
@@ -9997,7 +10050,7 @@ void end_visit(const DirPIConstructor& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  xqp_string target_str = v.get_pi_target().str();
+  xqpString target_str = v.get_pi_target().str();
 
   if (target_str.uppercase() == "XML")
     ZORBA_ERROR_LOC ( XPST0003, loc);
@@ -10730,7 +10783,7 @@ void end_visit(const PITest& v, void* /*visit_state*/)
   TRACE_VISIT_OUT();
 
   axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
-  string target = v.get_target().str();
+  std::string target = v.get_target().str();
 
   store::Item_t qname = NULL;
   if (target != "")
@@ -12056,7 +12109,7 @@ expr_t result()
 {
   if (theNodeStack.size() != 1)
   {
-    cout << "Error: extra nodes on translator stack:\n";
+    std::cout << "Error: extra nodes on translator stack:\n";
     while (! theNodeStack.empty())
     {
       expr_t e_h = pop_nodestack();
@@ -12064,9 +12117,9 @@ expr_t result()
       if (! Properties::instance()->traceTranslator())
       {
         if (e_h != NULL)
-          e_h->put(cout) << endl;
+          e_h->put(std::cout) << std::endl;
         else
-          cout << "NULL" << endl;
+          std::cout << "NULL" << std::endl;
       }
 #endif
     }
@@ -12075,9 +12128,9 @@ expr_t result()
 
   ZORBA_ASSERT(theTypeStack.size() == 0);
 
-  if (scope_depth != 0)
+  if (theScopeDepth != 0)
   {
-    cout << "Error: scope depth " << scope_depth << endl;
+    std::cout << "Error: scope depth " << theScopeDepth << std::endl;
     ZORBA_ASSERT(false);
   }
 
@@ -12096,15 +12149,15 @@ expr_t translate_aux(
     static_context* rootSctx,
     short rootSctxId,
     ModulesInfo* minfo,
-    set<string> mod_stack,
+    std::set<std::string> mod_stack,
     bool isLibModule)
 {
-  auto_ptr<TranslatorImpl> t(new TranslatorImpl(rootTranslator,
-                                                rootSctx,
-                                                rootSctxId,
-                                                minfo,
-                                                mod_stack,
-                                                isLibModule));
+  std::auto_ptr<TranslatorImpl> t(new TranslatorImpl(rootTranslator,
+                                                     rootSctx,
+                                                     rootSctxId,
+                                                     minfo,
+                                                     mod_stack,
+                                                     isLibModule));
 
   root.accept(*t);
 
@@ -12124,7 +12177,7 @@ expr_t translate_aux(
 ********************************************************************************/
 expr_t translate(const parsenode& root, CompilerCB* ccb)
 {
-  set<string> mod_stack;
+  std::set<std::string> mod_stack;
 
   if (typeid(root) != typeid(MainModule))
   {

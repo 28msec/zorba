@@ -173,28 +173,24 @@ Atan2Iterator::nextImpl (store::Item_t& result, PlanState& planState) const
 {
   store::Item_t n0;
   store::Item_t n1;
+  xqp_double doub1;
+  xqp_double doub2;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (consumeNext(n0, this->theChild0.getp(), planState))
-  {
-    if (consumeNext(n1, this->theChild1.getp(), planState))
-    {
-      {
-        xqp_double doub1 = n0->getDoubleValue();
-        xqp_double doub2 = n1->getDoubleValue();
+  if (!consumeNext(n0, this->theChild0.getp(), planState))
+    ZORBA_ASSERT(false);
 
-        GENV_ITEMFACTORY->createDouble(result, doub1.atan2(doub2));
-      }
+  if (!consumeNext(n1, this->theChild1.getp(), planState))
+    ZORBA_ASSERT(false);
 
-      if (consumeNext(n0, this->theChild0.getp(), planState) ||
-          consumeNext(n1, this->theChild1.getp(), planState))
-        ZORBA_ERROR_DESC(XPTY0004,
-                         "Atan2 function has a sequence longer than one as an operand.");
-      STACK_PUSH(true, state);
-    }
-  }
+  doub1 = n0->getDoubleValue();
+  doub2 = n1->getDoubleValue();
+
+  GENV_ITEMFACTORY->createDouble(result, doub1.atan2(doub2));
+
+  STACK_PUSH(true, state);
 
   STACK_END(state);
 }

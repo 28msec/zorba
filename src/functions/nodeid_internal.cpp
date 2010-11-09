@@ -627,62 +627,62 @@ public:
 void populateContext_DocOrder(static_context* sctx) 
 {
   DECL(sctx, op_either_nodes_or_atomics,
-       (createQName(ZORBA_OP_NS,"op","either-nodes-or-atomics"),
+       (createQName(ZORBA_OP_NS,"","either-nodes-or-atomics"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
   DECL(sctx, op_distinct_nodes,
-       (createQName(ZORBA_OP_NS,"op","distinct-nodes"),
+       (createQName(ZORBA_OP_NS,"","distinct-nodes"),
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
   DECL(sctx, op_check_distinct_nodes,
-       (createQName(ZORBA_OP_NS,"op","check-distinct-nodes"),
+       (createQName(ZORBA_OP_NS,"","check-distinct-nodes"),
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
   
   DECL(sctx, op_distinct_nodes_or_atomics,
-       (createQName(ZORBA_OP_NS,"op","distinct-nodes-or-atomics"),
+       (createQName(ZORBA_OP_NS,"","distinct-nodes-or-atomics"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
   DECL(sctx, op_sort_nodes_ascending,
-       (createQName(ZORBA_OP_NS,"op","sort-nodes-asc"),
+       (createQName(ZORBA_OP_NS,"","sort-nodes-asc"),
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
   DECL(sctx, op_sort_nodes_asc_or_atomics,
-       (createQName(ZORBA_OP_NS,"op","sort-nodes-asc-or-atomics"),
+       (createQName(ZORBA_OP_NS,"","sort-nodes-asc-or-atomics"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
   DECL(sctx, op_sort_nodes_descending,
-       (createQName(ZORBA_OP_NS,"op","sort-nodes-desc"),
+       (createQName(ZORBA_OP_NS,"","sort-nodes-desc"),
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
   DECL(sctx, op_sort_nodes_desc_or_atomics,
-       (createQName(ZORBA_OP_NS,"op","sort-nodes-desc-or-atomics"),
+       (createQName(ZORBA_OP_NS,"","sort-nodes-desc-or-atomics"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
   DECL(sctx, op_sort_distinct_nodes_ascending,
-       (createQName(ZORBA_OP_NS,"op","sort-distinct-nodes-asc"),
+       (createQName(ZORBA_OP_NS,"","sort-distinct-nodes-asc"),
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
   DECL(sctx, op_sort_distinct_nodes_asc_or_atomics,
-       (createQName(ZORBA_OP_NS, "op", "sort-distinct-nodes-asc-or-atomics"),
+       (createQName(ZORBA_OP_NS, "", "sort-distinct-nodes-asc-or-atomics"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
   DECL(sctx, op_sort_distinct_nodes_descending,
-       (createQName(ZORBA_OP_NS, "op", "sort-distinct-nodes-desc"),
+       (createQName(ZORBA_OP_NS, "", "sort-distinct-nodes-desc"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
   DECL(sctx, op_sort_distinct_nodes_descending_or_atomics,
-       (createQName(ZORBA_OP_NS, "op", "sort-distinct-nodes-desc-or-atomics"),
+       (createQName(ZORBA_OP_NS, "", "sort-distinct-nodes-desc-or-atomics"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 }

@@ -38,13 +38,13 @@ void populate_context_xqdoc(static_context* sctx);
 
 
 
-//xqdoc:xqdoc
-class xqdoc_xqdoc : public function
+//fn-zorba-xqdoc:xqdoc
+class fn_zorba_xqdoc_xqdoc : public function
 {
 public:
-  xqdoc_xqdoc(const signature& sig)
+  fn_zorba_xqdoc_xqdoc(const signature& sig)
     :
-    function(sig, FunctionConsts::XQDOC_XQDOC_1)
+    function(sig, FunctionConsts::FN_ZORBA_XQDOC_XQDOC_1)
   {
   }
 
@@ -52,13 +52,13 @@ public:
 };
 
 
-//xqdoc:xqdoc-content
-class xqdoc_xqdoc_content : public function
+//fn-zorba-xqdoc:xqdoc-content
+class fn_zorba_xqdoc_xqdoc_content : public function
 {
 public:
-  xqdoc_xqdoc_content(const signature& sig)
+  fn_zorba_xqdoc_xqdoc_content(const signature& sig)
     :
-    function(sig, FunctionConsts::XQDOC_XQDOC_CONTENT_1)
+    function(sig, FunctionConsts::FN_ZORBA_XQDOC_XQDOC_CONTENT_1)
   {
   }
 

@@ -282,7 +282,7 @@ PlanIter_t fn_subsequence::codegen(
 /******************************************************************************
 
 *******************************************************************************/
-xqtref_t fn_zorba_subsequence_int::getReturnType(
+xqtref_t op_zorba_subsequence_int::getReturnType(
     const TypeManager* tm,
     const std::vector<xqtref_t>& arg_types) const
 {
@@ -290,7 +290,7 @@ xqtref_t fn_zorba_subsequence_int::getReturnType(
 }
 
 
-PlanIter_t fn_zorba_subsequence_int::codegen(
+PlanIter_t op_zorba_subsequence_int::codegen(
     CompilerCB* /*cb*/,
     static_context* aSctx,
     const QueryLoc& aLoc,
@@ -365,7 +365,7 @@ PlanIter_t fn_zorba_subsequence_int::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t fn_zorba_sequence_point_access::getReturnType(
+xqtref_t op_zorba_sequence_point_access::getReturnType(
     const TypeManager* tm,
     const std::vector<xqtref_t>& arg_types) const
 {
@@ -373,7 +373,7 @@ xqtref_t fn_zorba_sequence_point_access::getReturnType(
 }
 
 
-PlanIter_t fn_zorba_sequence_point_access::codegen(
+PlanIter_t op_zorba_sequence_point_access::codegen(
     CompilerCB* /*cb*/,
     static_context* aSctx,
     const QueryLoc& aLoc,
@@ -811,7 +811,7 @@ BoolAnnotationValue fn_idref::ignoresDuplicateNodes(expr* fo, ulong input) const
 void populate_context_sequences_impl(static_context* sctx)
 {
   DECL(sctx, fn_unordered,
-       (createQName(XQUERY_OP_NS,"fn","unordered"),
+       (createQName(XQUERY_FN_NS,"fn","unordered"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 

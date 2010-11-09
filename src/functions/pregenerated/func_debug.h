@@ -74,13 +74,13 @@ public:
 };
 
 
-//op-zorba:print
-class op_zorba_print : public function
+//fn-zorba-util:print
+class fn_zorba_util_print : public function
 {
 public:
-  op_zorba_print(const signature& sig)
+  fn_zorba_util_print(const signature& sig)
     :
-    function(sig, FunctionConsts::OP_ZORBA_PRINT_1)
+    function(sig, FunctionConsts::FN_ZORBA_UTIL_PRINT_1)
   {
   }
 
