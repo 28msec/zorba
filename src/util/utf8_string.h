@@ -352,7 +352,7 @@ public:
   /**
    * Checks whether the string is empty.
    *
-   * @return Returns <code>true</code> only if it is.
+   * @return Returns \c true only if it is.
    */
   bool empty() const {
     return s_->empty();
@@ -577,44 +577,44 @@ public:
 
   ////////// compare //////////////////////////////////////////////////////////
 
-  // UTF_STRING_COMPARE_U_X
+  // UTF8_STRING_COMPARE_U_X
   int compare( utf8_string const &s ) const;
 
-  // UTF_STRING_COMPARE_TU_X
+  // UTF8_STRING_COMPARE_TU_X
   template<class StringType2>
   int compare( utf8_string<StringType2> const &s ) const;
 
-  // UTF_STRING_COMPARE_S_X
+  // UTF8_STRING_COMPARE_S_X
   int compare( StringType const &s ) const;
 
-  // UTF_STRING_COMPARE_SS_X
+  // UTF8_STRING_COMPARE_SS_X
   int compare( std_string_arg const &s ) const;
 
-  // UTF_STRING_COMPARE_CSP_X
+  // UTF8_STRING_COMPARE_CSP_X
   int compare( const_storage_pointer s ) const;
 
-  // UTF_STRING_COMPARE_2ST_U_X
+  // UTF8_STRING_COMPARE_2ST_U_X
   int compare( size_type pos1, size_type n1, utf8_string const &s ) const;
 
-  // UTF_STRING_COMPARE_2ST_TU_X
+  // UTF8_STRING_COMPARE_2ST_TU_X
   template<class StringType2>
   int compare( size_type pos1, size_type n1,
                utf8_string<StringType2> const &s ) const;
 
-  // UTF_STRING_COMPARE_2ST_S_X
+  // UTF8_STRING_COMPARE_2ST_S_X
   int compare( size_type pos1, size_type n1, StringType const &s ) const;
 
-  // UTF_STRING_COMPARE_2ST_SS_X
+  // UTF8_STRING_COMPARE_2ST_SS_X
   int compare( size_type pos1, size_type n1, std_string_arg const &s ) const;
 
-  // UTF_STRING_COMPARE_2ST_CSP_X
+  // UTF8_STRING_COMPARE_2ST_CSP_X
   int compare( size_type pos1, size_type n1, const_storage_pointer s ) const;
 
-  // UTF_STRING_COMPARE_2ST_U_2ST_X
+  // UTF8_STRING_COMPARE_2ST_U_2ST_X
   int compare( size_type pos1, size_type n1, utf8_string const &s,
                size_type pos2, size_type n2 ) const;
 
-  // UTF_STRING_COMPARE_2ST_TU_2ST_X
+  // UTF8_STRING_COMPARE_2ST_TU_2ST_X
   template<class StringType2>
   int compare( size_type pos1, size_type n1, utf8_string<StringType2> const &s,
                size_type pos2, size_type n2 ) const;
@@ -1050,8 +1050,8 @@ public:
 
   /**
    * Resizes the string to the given number of bytes.
-   * If the number < size(), the string will be truncated;
-   * if the number > size(), the string will be extended
+   * If the number < \c size(), the string will be truncated;
+   * if the number > \c size(), the string will be extended
    * and the new elements will be set to \a c.
    *
    * @param n The number of bytes.
@@ -1062,12 +1062,12 @@ public:
   }
 
   /**
-   * Gets a \c std::string equivalent of this string.
+   * Gets a std::string equivalent of this string.
    * (There intentionally is no <code>operator std::string() const</code> since
-   * its convenience would mask the expense of creating a new \c std::string.)
+   * its convenience would mask the expense of creating a new std::string.)
    * This function is an extension to the std::string API.
    *
-   * @return Returns said \c std::string.
+   * @return Returns said std::string.
    */
   str_return_type str() const {
     return string_traits_type::str( *s_ );
@@ -1310,45 +1310,45 @@ utf8_string<StringType>::assign( InputIterator begin, InputIterator end ) {
   return *this;
 }
 
-// UTF_STRING_COMPARE_U_X
+// UTF8_STRING_COMPARE_U_X
 template<class StringType> inline int
 utf8_string<StringType>::compare( utf8_string const &s ) const {
   return compare( *s.s_ );
 }
 
-// UTF_STRING_COMPARE_TU_X
+// UTF8_STRING_COMPARE_TU_X
 template<class StringType>
 template<class StringType2> inline int
 utf8_string<StringType>::compare( utf8_string<StringType2> const &s ) const {
   return compare( s.get() );
 }
 
-// UTF_STRING_COMPARE_S_X
+// UTF8_STRING_COMPARE_S_X
 template<class StringType> inline int
 utf8_string<StringType>::compare( StringType const &s ) const {
   return s_->compare( s );
 }
 
-// UTF_STRING_COMPARE_SS_X
+// UTF8_STRING_COMPARE_SS_X
 template<class StringType> inline int
 utf8_string<StringType>::compare( std_string_arg const &s ) const {
   return s_->compare( s );
 }
 
-// UTF_STRING_COMPARE_CSP_X
+// UTF8_STRING_COMPARE_CSP_X
 template<class StringType> inline int
 utf8_string<StringType>::compare( const_storage_pointer s ) const {
   return s_->compare( s );
 }
 
-// UTF_STRING_COMPARE_2ST_U_X
+// UTF8_STRING_COMPARE_2ST_U_X
 template<class StringType> inline int
 utf8_string<StringType>::compare( size_type pos1, size_type n1,
                                   utf8_string const &s ) const {
   return compare( pos1, n1, *s.s_ );
 }
 
-// UTF_STRING_COMPARE_2ST_TU_X
+// UTF8_STRING_COMPARE_2ST_TU_X
 template<class StringType>
 template<class StringType2> inline int
 utf8_string<StringType>::compare( size_type pos1, size_type n1,
@@ -1356,7 +1356,7 @@ utf8_string<StringType>::compare( size_type pos1, size_type n1,
   return compare( pos1, n1, s.get() );
 }
 
-// UTF_STRING_COMPARE_2ST_S_X
+// UTF8_STRING_COMPARE_2ST_S_X
 template<class StringType> inline int
 utf8_string<StringType>::compare( size_type pos1, size_type n1,
                                   StringType const &s ) const {
@@ -1364,7 +1364,7 @@ utf8_string<StringType>::compare( size_type pos1, size_type n1,
   return s_->compare( b.byte_pos, b.byte_n, s );
 }
 
-// UTF_STRING_COMPARE_2ST_SS_X
+// UTF8_STRING_COMPARE_2ST_SS_X
 template<class StringType> inline int
 utf8_string<StringType>::compare( size_type pos1, size_type n1,
                                   std_string_arg const &s ) const {
@@ -1372,7 +1372,7 @@ utf8_string<StringType>::compare( size_type pos1, size_type n1,
   return s_->compare( b.byte_pos, b.byte_n, s );
 }
 
-// UTF_STRING_COMPARE_2ST_CSP_X
+// UTF8_STRING_COMPARE_2ST_CSP_X
 template<class StringType> inline int
 utf8_string<StringType>::compare( size_type pos1, size_type n1,
                                   const_storage_pointer s ) const {
@@ -1380,7 +1380,7 @@ utf8_string<StringType>::compare( size_type pos1, size_type n1,
   return s_->compare( b.byte_pos, b.byte_n, s );
 }
 
-// UTF_STRING_COMPARE_2ST_U_2ST_X
+// UTF8_STRING_COMPARE_2ST_U_2ST_X
 template<class StringType> inline int
 utf8_string<StringType>::compare( size_type pos1, size_type n1,
                                   utf8_string const &s, size_type pos2,
@@ -1388,7 +1388,7 @@ utf8_string<StringType>::compare( size_type pos1, size_type n1,
   return compare( pos1, n1, *s.s_, pos2, n2 );
 }
 
-  // UTF_STRING_COMPARE_2ST_TU_2ST_X
+  // UTF8_STRING_COMPARE_2ST_TU_2ST_X
 template<class StringType>
 template<class StringType2> inline int
 utf8_string<StringType>::compare( size_type pos1, size_type n1,
