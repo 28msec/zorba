@@ -172,7 +172,8 @@ public:
 
     String lErrorObjectString = "error object";
     Item lErrorObject = theModule->getItemFactory()->createString(lErrorObjectString);
-    error(lQName, "test error description", ItemSequence_t(new SingletonItemSequence(lErrorObject)));
+    ItemSequence_t tmp( new SingletonItemSequence(lErrorObject));
+    error(lQName, "test error description", tmp);
     return ItemSequence_t(0);
   }
 
