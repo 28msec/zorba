@@ -14,6 +14,13 @@
  * limitations under the License.
  */
 #include <zorba/external_function_data.h>
+#include "store/api/item.h"
+#include "store/api/item_factory.h"
+#include "errors/user_error.h"
+#include "system/globalenv.h"
+#include "zorbatypes/zstring.h"
+#include "api/unmarshaller.h"
+#include "zorbaerrors/Assert.h"
 
 namespace zorba {
   
@@ -28,5 +35,65 @@ ExternalFunctionData::createZorbaException(
                         ZorbaException::StackTrace_t());
 }
 
+store::Item_t
+getErrorQName(const Item& aQName)
+{
+  store::Item_t lErrorQName;
+  if (aQName.isNull()) {
+    static const char *lErrorNamespace = "http://www.w3.org/2005/xqt-errors";
+    GENV_ITEMFACTORY->createQName (lErrorQName, lErrorNamespace, "err", "FOER0000");
+  } else {
+    lErrorQName = Unmarshaller::getInternalItem(aQName);
+  }
+  ZORBA_ASSERT(lErrorQName != NULL);
+  return lErrorQName;
+}
+
+
+void
+ExternalFunctionData::error()
+{
+  Item lItem;
+  error(lItem);
+}
+
+void
+ExternalFunctionData::error(const Item& aQName)
+{
+  String lString;
+  error(aQName, lString);
+}
+
+void
+ExternalFunctionData::error(const Item& aQName, const String& aDescription)
+{
+  error(aQName, aDescription, std::auto_ptr<ItemSequence>(0));
+}
+
+void
+ExternalFunctionData::error(const Item& aQName, const String& aDescription, const ItemSequence_t& aErrorObject)
+{
+  store::Item_t lErrorQName = getErrorQName(aQName);
+
+  std::vector<store::Item_t> lErrorObject;
+
+  if (aErrorObject.get() != 0) {
+    Item lTmpItem;
+    while (aErrorObject->next(lTmpItem)) {
+      lErrorObject.push_back(Unmarshaller::getInternalItem(lTmpItem));
+    }
+ }
+
+  QueryLoc lDummyLoc;
+  error::ZorbaUserError lError(
+      lErrorQName,
+      Unmarshaller::getInternalString(aDescription),
+      lDummyLoc,
+      __FILE__,
+      __LINE__,
+      lErrorObject);
+
+  lError.raise();
+}
 
 } /* namespace zorba */

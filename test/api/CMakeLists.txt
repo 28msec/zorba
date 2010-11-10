@@ -30,25 +30,15 @@
 #CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/ext_in_opt.xqlib ${CMAKE_CURRENT_BINARY_DIR}/ext_in_opt.xqlib)
 #CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/ext_in_opt2.xqlib ${CMAKE_CURRENT_BINARY_DIR}/ext_in_opt2.xqlib)
 
-IF(WIN32)
-  CREATE_TEST_SOURCELIST(APITests
-    APITests.cpp
-    itemfactory.cpp
-    xmldatamanager.cpp
-    test_static_context.cpp
-    serializer.cpp
-    annotations.cpp
-  )
-ELSE(WIN32)
-  CREATE_TEST_SOURCELIST(APITests
-    APITests.cpp
-    itemfactory.cpp
-    xmldatamanager.cpp
-    test_static_context.cpp
-    serializer.cpp
-    annotations.cpp
- )
-ENDIF(WIN32)
+CREATE_TEST_SOURCELIST(APITests
+  APITests.cpp
+  itemfactory.cpp
+  xmldatamanager.cpp
+  test_static_context.cpp
+  serializer.cpp
+  annotations.cpp
+  external_function_errors.cpp
+)
 
 # add the executable
 ZORBA_GENERATE_STORE_SPECIFIC_EXES(APITests "${APITests}" "" "" "")
