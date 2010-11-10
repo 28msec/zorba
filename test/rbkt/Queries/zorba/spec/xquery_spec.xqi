@@ -1,0 +1,56 @@
+module namespace util = "http://www.zorba-xquery.com/util";
+
+import module namespace http = "http://expath.org/ns/http-client";
+import module namespace file = "http://www.zorba-xquery.com/modules/file";
+
+declare sequential function util:download-and-write-spec($specURI as xs:string, $docPath as xs:string) {
+  let $xhtml := http:send-request((), $specURI)[2]
+  return file:write($docPath, $xhtml, <s method="xml" indent="yes" />/@*)
+};
+
+declare sequential function util:create-spec-function-arity-sequence($docPath as xs:string)
+as xs:string* {
+
+  let $docSpec := file:read-xml($docPath)
+
+  let $functionsSpec :=
+    (for $x in $docSpec//*:div[@class="div3"]
+              [.//*:div[@class="exampleInner"]
+              //*:div[@class="proto"]
+              //*:code[@class="function"]
+              /text()[starts-with(.,"fn:")]]
+    order by xs:string($x/*:h4/*:a/@name) ascending
+    return
+      $x//*:div[@class="exampleInner"]//*:div[@class="proto"],
+
+    for $y in $docSpec//*:div[@class="div2"]
+              [./*:h3/*:a/@name[starts-with(.,"func-")]]
+              [.//*:div[@class="exampleInner"]
+              //*:div[@class="proto"]
+              //*:code[@class="function"]
+              /text()[starts-with(.,"fn:")]]
+    order by xs:string($y/*:h3/*:a/@name) ascending
+    return
+      $y//*:div[@class="exampleInner"]//*:div[@class="proto"],
+
+    for $z in $docSpec//*:div[@class="div1"]
+              [./*:h2/*:a/@name[starts-with(.,"func-")]]
+              [.//*:div[@class="exampleInner"]
+              //*:div[@class="proto"]
+              //*:code[@class="function"]
+              /text()[starts-with(.,"fn:")]]
+    order by xs:string($z/*:h2/*:a/@name) ascending
+    return
+      $z//*:div[@class="exampleInner"]//*:div[@class="proto"])
+
+  return
+    for $s in $functionsSpec
+    let $funcName := fn:substring-after($s//*:code[@class="function"]/text(),"fn:")
+    where (fn:not($funcName = "function-name") and
+           fn:not($funcName = "numeric-function") and
+           fn:not($funcName = "eg:distinct-nodes-stable") and
+           fn:not($funcName = "median"))
+    return
+        fn:concat($funcName, "#",
+        (fn:count(fn:tokenize(substring-after(xs:string(data($s)), "fn:"),"\$"))-1))
+};

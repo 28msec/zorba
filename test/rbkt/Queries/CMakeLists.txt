@@ -324,5 +324,8 @@ EXPECTED_FAILURE(test/rbkt/zorba/file/files 3102373)
 EXPECTED_FAILURE(test/rbkt/zorba/file/copy 3104082)
 
 EXPECTED_FAILURE(test/rbkt/zorba/introspection/introsp-function-names1 3097189)
+
+EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_1_0 3106633)
+EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_1_1 3106635)
 # --------------------------------------------------------------------------
 # vim:set et sw=2 ts=2:
