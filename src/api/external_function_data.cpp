@@ -67,7 +67,8 @@ ExternalFunctionData::error(const Item& aQName)
 void
 ExternalFunctionData::error(const Item& aQName, const String& aDescription)
 {
-  error(aQName, aDescription, std::auto_ptr<ItemSequence>(0));
+  ItemSequence_t lNullSeq;
+  error(aQName, aDescription, lNullSeq);
 }
 
 void
