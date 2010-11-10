@@ -276,8 +276,8 @@ InscopeVariablesIteratorState::~InscopeVariablesIteratorState()
 void InscopeVariablesIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
-  theVariables.clear();
   thePosition = 0;
+  theVariables.clear();
 }
 
 
@@ -585,8 +585,8 @@ FunctionNamesIteratorState::~FunctionNamesIteratorState()
 void FunctionNamesIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
-  theFunctions.clear();
   thePosition = 0;
+  theFunctions.clear();
 }
 
 
@@ -657,6 +657,7 @@ void FunctionArgumentsCountIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
   position = 0;
+  arities.clear();
 }
 
 

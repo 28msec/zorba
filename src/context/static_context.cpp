@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 #include <assert.h>
+#include <algorithm>
 
 #include <zorba/external_module.h>
 #include <zorba/serialization_callback.h>
@@ -1937,21 +1938,15 @@ void static_context::get_functions(
 
         if (!(*ite).second.theIsDisabled)
         {
-          std::vector<function*>::const_iterator ite2 = disabled.begin();
-          std::vector<function*>::const_iterator end2 = disabled.end();
-          for (; ite2 != end2; ++ite2)
+          if (std::find(disabled.begin(), disabled.end(), f) == disabled.end())
           {
-            if (f == *ite2)
-              break;
-          }
-
-          if (ite2 == end2)
+            // std::cout << "--> adding func: " << f->getName()->getStringValue() << ", params: " << f->getSignature().paramCount()
+            //    << " with addr: " << std::hex << f << std::endl;
             functions.push_back(f);
+          }
         }
         else
-        {
           disabled.push_back(f);
-        }
       }
     }
 
@@ -1971,21 +1966,15 @@ void static_context::get_functions(
 
           if (!(*fv)[i].theIsDisabled)
           {
-            std::vector<function*>::const_iterator ite2 = disabled.begin();
-            std::vector<function*>::const_iterator end2 = disabled.end();
-            for (; ite2 != end2; ++ite2)
+            if (std::find(disabled.begin(), disabled.end(), f) == disabled.end())
             {
-              if (f == *ite2)
-                break;
-            }
-
-            if (ite2 == end2)
+              // std::cout << "--> adding func: " << f->getName()->getStringValue() << ", params: " << f->getSignature().paramCount()
+              //    << " with addr: " << std::hex << f << std::endl;
               functions.push_back(f);
+            }
           }
           else
-          {
             disabled.push_back(f);
-          }
         }
       }
     }
