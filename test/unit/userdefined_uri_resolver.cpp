@@ -222,6 +222,28 @@ bool test_unresolved_module_uri(Zorba* aZorba)
   return true;
 };
 
+bool test_unresolved_module_uri2(Zorba* aZorba)
+{
+  StaticContext_t lContext = aZorba->createStaticContext();
+
+  MyModuleURIResolver1 lResolver1;
+  MyModuleURIResolver2 lResolver2;
+
+  lContext->addModuleURIResolver(&lResolver1);
+  lContext->addModuleURIResolver(&lResolver2);
+
+  try {
+    XQuery_t lQuery = aZorba->compileQuery("import module namespace lm='http://www.zorba-xquery.com/foobar3'; lm:foo()", lContext); 
+    std::cout << lQuery << std::endl;
+  } catch (ZorbaException& e) {
+    if(e.getErrorCode() == XQST0059) {
+      return true;
+    }
+    std::cerr << e.getDescription() << std::endl;
+  }
+  return false;
+};
+
 bool test_unresolved_schema_uri(Zorba* aZorba)
 {
   StaticContext_t lContext = aZorba->createStaticContext();
@@ -243,14 +265,40 @@ bool test_unresolved_schema_uri(Zorba* aZorba)
   return true;
 };
 
+bool test_unresolved_schema_uri2(Zorba* aZorba)
+{
+  StaticContext_t lContext = aZorba->createStaticContext();
+
+  MySchemaURIResolver1 lResolver1;
+  MySchemaURIResolver2 lResolver2;
+
+  lContext->addSchemaURIResolver(&lResolver1);
+  lContext->addSchemaURIResolver(&lResolver2);
+
+  try {
+    XQuery_t lQuery = aZorba->compileQuery("import schema namespace lm='http://www.zorba-xquery.com/schemas/helloworld3'; validate{ <p>Hello World!</p> }", lContext); 
+    std::cout << lQuery << std::endl;
+  } catch (ZorbaException& e) {
+    if(e.getErrorCode() == XQST0059) {
+      return true;
+    }
+    std::cerr << e.getDescription() << std::endl;
+  }
+
+  return false;
+};
+
 int userdefined_uri_resolver(int argc, char* argv[])
 {
   void* lStore = StoreManager::getStore();
   Zorba* lZorba = Zorba::getInstance(lStore); 
   if(!test_unresolved_module_uri(lZorba)) {
     return 1;
-  } else
-  if(!test_unresolved_schema_uri(lZorba)) {
+  } else if(!test_unresolved_module_uri2(lZorba)) {
+    return 1;
+  } else if(!test_unresolved_schema_uri(lZorba)) {
+    return 1;
+  } else if(!test_unresolved_schema_uri2(lZorba)) {
     return 1;
   }
   return 0;
