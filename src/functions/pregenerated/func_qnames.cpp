@@ -127,7 +127,7 @@ void populate_context_qnames(static_context* sctx)
 
 
   DECL(sctx, op_QName_equal,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn",":QName-equal"),
+      (createQName("http://www.zorba-xquery.com/xquery/internal-functions","op","QName-equal"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));

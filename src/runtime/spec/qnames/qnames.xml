@@ -62,13 +62,13 @@
   <zorba:description author="Zorba Team">op:QName-equal</zorba:description>
 
   <zorba:function>
-    <zorba:signature localname=":QName-equal" prefix="fn">
+    <zorba:signature localname="QName-equal" prefix="op">
       <zorba:param>xs:QName</zorba:param>
       <zorba:param>xs:QName</zorba:param>
       <zorba:output>xs:boolean</zorba:output>
     </zorba:signature>
   </zorba:function>
-    
+
 </zorba:iterator>
 
 <!--

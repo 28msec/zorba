@@ -72,7 +72,7 @@ class op_QName_equal : public function
 public:
   op_QName_equal(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_QNAME_EQUAL_2)
+    function(sig, FunctionConsts::OP_QNAME_EQUAL_2)
   {
   }
 

@@ -495,139 +495,139 @@ DECL(sctx, fn_datetime_ctor,
       GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION));
 
 DECL(sctx, op_ym_durations_add,
-     (createQName (XQUERY_FN_NS,"fn", "add-yearMonthDurations"),
+     (createQName (XQUERY_OP_NS,"op", "add-yearMonthDurations"),
       GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE));
 
 DECL(sctx, op_dt_durations_add,
-     (createQName (XQUERY_FN_NS,"fn", "add-dayTimeDurations"),
+     (createQName (XQUERY_OP_NS,"op", "add-dayTimeDurations"),
       GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE));
 
 DECL(sctx, op_ym_durations_subtract,
-     (createQName (XQUERY_FN_NS,"fn", "subtract-yearMonthDurations"),
+     (createQName (XQUERY_OP_NS,"op", "subtract-yearMonthDurations"),
       GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE));
 
 DECL(sctx, op_dt_durations_subtract,
-     (createQName (XQUERY_FN_NS,"fn", "subtract-dayTimeDurations"),
+     (createQName (XQUERY_OP_NS,"op", "subtract-dayTimeDurations"),
       GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE));
 
 DECL(sctx, op_ym_durations_multiply,
-     (createQName (XQUERY_FN_NS,"fn", "multiply-yearMonthDuration"),
+     (createQName (XQUERY_OP_NS,"op", "multiply-yearMonthDuration"),
       GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
       GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE));
 
 DECL(sctx, op_dt_durations_multiply,
-     (createQName (XQUERY_FN_NS,"fn", "multiply-dayTimeDuration"),
+     (createQName (XQUERY_OP_NS,"op", "multiply-dayTimeDuration"),
       GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
       GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE));
 
 DECL(sctx, op_ym_durations_divide,
-     (createQName (XQUERY_FN_NS,"fn", "divide-yearMonthDuration"),
+     (createQName (XQUERY_OP_NS,"op", "divide-yearMonthDuration"),
       GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
       GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE));
 
 DECL(sctx, op_dt_durations_divide,
-     (createQName (XQUERY_FN_NS,"fn", "divide-dayTimeDuration"),
+     (createQName (XQUERY_OP_NS,"op", "divide-dayTimeDuration"),
       GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
       GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE));
 
 DECL(sctx, op_divide_ymd_by_ymd,
-     (createQName (XQUERY_FN_NS,"fn", "divide-yearMonthDuration-by-yearMonthDuration"),
+     (createQName (XQUERY_OP_NS,"op", "divide-yearMonthDuration-by-yearMonthDuration"),
       GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
 
 DECL(sctx, op_divide_dtd_by_dtd,
-     (createQName (XQUERY_FN_NS,"fn", "divide-dayTimeDuration-by-dayTimeDuration"),
+     (createQName (XQUERY_OP_NS,"op", "divide-dayTimeDuration-by-dayTimeDuration"),
       GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
 
 DECL(sctx, op_sub_dt,
-     (createQName (XQUERY_FN_NS,"fn", "subtract-dateTimes"),
+     (createQName (XQUERY_OP_NS,"op", "subtract-dateTimes"),
       GENV_TYPESYSTEM.DATETIME_TYPE_ONE,
       GENV_TYPESYSTEM.DATETIME_TYPE_ONE,
       GENV_TYPESYSTEM.DT_DURATION_TYPE_QUESTION));
 
 DECL(sctx, op_sub_d,
-     (createQName (XQUERY_FN_NS,"fn", "subtract-dates"),
+     (createQName (XQUERY_OP_NS,"op", "subtract-dates"),
       GENV_TYPESYSTEM.DATE_TYPE_ONE,
       GENV_TYPESYSTEM.DATE_TYPE_ONE,
       GENV_TYPESYSTEM.DT_DURATION_TYPE_QUESTION));
 
 DECL(sctx, op_sub_t,
-     (createQName (XQUERY_FN_NS,"fn", "subtract-times"),
+     (createQName (XQUERY_OP_NS,"op", "subtract-times"),
       GENV_TYPESYSTEM.TIME_TYPE_ONE,
       GENV_TYPESYSTEM.TIME_TYPE_ONE,
       GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE));
 
 DECL(sctx, op_add_ymd_to_dt,
-     (createQName (XQUERY_FN_NS,"fn", "add-yearMonthDuration-to-dateTime"),
+     (createQName (XQUERY_OP_NS,"op", "add-yearMonthDuration-to-dateTime"),
       GENV_TYPESYSTEM.DATETIME_TYPE_ONE,
       GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.DATETIME_TYPE_ONE));
 
 DECL(sctx, op_add_dtd_to_dt,
-     (createQName (XQUERY_FN_NS,"fn", "add-dayTimeDuration-to-dateTime"),
+     (createQName (XQUERY_OP_NS,"op", "add-dayTimeDuration-to-dateTime"),
       GENV_TYPESYSTEM.DATETIME_TYPE_ONE,
       GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.DATETIME_TYPE_ONE));
 
 DECL(sctx, op_sub_ymd_from_dt,
-     (createQName (XQUERY_FN_NS,"fn", "subtract-yearMonthDuration-from-dateTime"),
+     (createQName (XQUERY_OP_NS,"op", "subtract-yearMonthDuration-from-dateTime"),
       GENV_TYPESYSTEM.DATETIME_TYPE_ONE,
       GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.DATETIME_TYPE_ONE));
 
 DECL(sctx, op_sub_dtd_from_dt,
-     (createQName (XQUERY_FN_NS,"fn", "subtract-dayTimeDuration-from-dateTime"),
+     (createQName (XQUERY_OP_NS,"op", "subtract-dayTimeDuration-from-dateTime"),
       GENV_TYPESYSTEM.DATETIME_TYPE_ONE,
       GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.DATETIME_TYPE_ONE));
 
 DECL(sctx, op_add_ymd_to_d,
-     (createQName (XQUERY_FN_NS,"fn", "add-yearMonthDuration-to-date"),
+     (createQName (XQUERY_OP_NS,"op", "add-yearMonthDuration-to-date"),
       GENV_TYPESYSTEM.DATE_TYPE_ONE,
       GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.DATE_TYPE_ONE));
 
 DECL(sctx, op_add_dtd_to_d,
-     (createQName (XQUERY_FN_NS,"fn", "add-dayTimeDuration-to-date"),
+     (createQName (XQUERY_OP_NS,"op", "add-dayTimeDuration-to-date"),
       GENV_TYPESYSTEM.DATE_TYPE_ONE,
       GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.DATE_TYPE_ONE));
 
 DECL(sctx, op_sub_ymd_from_d,
-     (createQName (XQUERY_FN_NS,"fn", "subtract-yearMonthDuration-from-date"),
+     (createQName (XQUERY_OP_NS,"op", "subtract-yearMonthDuration-from-date"),
       GENV_TYPESYSTEM.DATE_TYPE_ONE,
       GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.DATE_TYPE_ONE));
 
 DECL(sctx, op_sub_dtd_from_d,
-     (createQName (XQUERY_FN_NS,"fn", "subtract-dayTimeDuration-from-date"),
+     (createQName (XQUERY_OP_NS,"op", "subtract-dayTimeDuration-from-date"),
       GENV_TYPESYSTEM.DATE_TYPE_ONE,
       GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.DATE_TYPE_ONE));
 
 DECL(sctx, op_add_dtd_to_t,
-     (createQName (XQUERY_FN_NS,"fn", "add-dayTimeDuration-to-time"),
+     (createQName (XQUERY_OP_NS,"op", "add-dayTimeDuration-to-time"),
       GENV_TYPESYSTEM.TIME_TYPE_ONE,
       GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.TIME_TYPE_ONE));
 
 DECL(sctx, op_sub_dtd_from_t,
-     (createQName (XQUERY_FN_NS,"fn", "subtract-dayTimeDuration-from-time"),
+     (createQName (XQUERY_OP_NS,"op", "subtract-dayTimeDuration-from-time"),
       GENV_TYPESYSTEM.TIME_TYPE_ONE,
       GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE,
       GENV_TYPESYSTEM.TIME_TYPE_ONE));
@@ -705,7 +705,7 @@ DECL(sctx, fn_format_time_4,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION));
 
 DECL(sctx, fn_format_time_2,
-     (createQName (XQUERY_FN_NS, "fn", "format-TIME"),
+     (createQName (XQUERY_FN_NS, "fn", "format-time"),
       GENV_TYPESYSTEM.TIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION));
