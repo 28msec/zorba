@@ -52,5 +52,8 @@ as xs:string* {
            fn:not($funcName = "median"))
     return
         fn:concat($funcName, "#",
-        (fn:count(fn:tokenize(substring-after(xs:string(data($s)), "fn:"),"\$"))-1))
+        (if(fn:contains(substring-after(xs:string(data($s)), "fn:"),"...")) then
+          1000000 (:variadic function :)
+         else
+          fn:count(fn:tokenize(substring-after(xs:string(data($s)), "fn:"),"\$"))-1))
 };
