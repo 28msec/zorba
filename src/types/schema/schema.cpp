@@ -20,7 +20,6 @@
 
 #include "zorbamisc/ns_consts.h"
 #include "zorbaerrors/Assert.h"
-#include "zorbatypes/xqpstring.h"
 
 #include "types/typeimpl.h"
 #include "types/root_typemanager.h"
@@ -33,7 +32,7 @@
 #include "types/schema/XercesParseUtils.h"
 #include "system/globalenv.h"
 #include "store/api/item_factory.h"
-
+#include "util/utf8_util.h"
 #include "types/schema/xercesIncludes.h"
 
 #ifndef ZORBA_NO_XMLSCHEMA
@@ -69,13 +68,13 @@ bool Schema::theIsInitialized = false;
 
 #ifndef ZORBA_NO_XMLSCHEMA
 
-static void transcode(const XMLCh* const str, xqpStringStore_t& res)
+
+static void transcode(const XMLCh* const str, zstring& res)
 {
   char* trStr = XMLString::transcode(str);
-  res = new xqpStringStore(trStr);
+  res = zstring(trStr);
   XMLString::release(&trStr);
 }
-
 
 SchemaLocationEntityResolver::SchemaLocationEntityResolver(
     const XMLCh* logical_uri,
@@ -512,12 +511,12 @@ void Schema::getSubstitutionHeadForElement(
       const XMLCh* localName = substHead->getName();
       const XMLCh* nsuri = substHead->getNamespace();
 
-      xqpStringStore_t lLocal;
+      zstring lLocal;
       transcode(localName, lLocal);
-      xqpStringStore_t lNamespace;
+      zstring lNamespace;
       transcode(nsuri, lNamespace);
 
-      GENV_ITEMFACTORY->createQName(result, lNamespace->str(), zstring(), lLocal->str());
+      GENV_ITEMFACTORY->createQName(result, lNamespace, zstring(), lLocal);
     }
   }
 }
@@ -611,10 +610,10 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
   {
     // first check if it is a built-in type
     const XMLCh* uri = xsTypeDef->getNamespace();
-    xqpStringStore_t strUri;
+    zstring strUri;
     transcode(uri, strUri);
 
-    if ( XMLString::equals(strUri->c_str(), Schema::XSD_NAMESPACE) )
+    if ( XMLString::equals(strUri.c_str(), Schema::XSD_NAMESPACE) )
     {
       const XMLCh* local = xsTypeDef->getName();
 
@@ -627,11 +626,11 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
       XSSimpleTypeDefinition * xsSimpleTypeDef =
         (XSSimpleTypeDefinition *)xsTypeDef;
 
-      xqpStringStore_t lLocal;
+      zstring lLocal;
       transcode(xsTypeDef->getName(), lLocal);
 
       store::Item_t qname;
-      GENV_ITEMFACTORY->createQName(qname, strUri->str(), zstring(), lLocal->str());
+      GENV_ITEMFACTORY->createQName(qname, strUri, zstring(), lLocal);
       TRACE("createXQType " << qname->getStringValue() );
 
       switch ( xsSimpleTypeDef->getVariety() )
@@ -765,10 +764,10 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
 
     // first check if it is a built-in type
     const XMLCh* uri = xsTypeDef->getNamespace();
-    xqpStringStore_t strUri;
+    zstring strUri;
     transcode(uri, strUri);
 
-    if ( XMLString::equals(strUri->c_str (), Schema::XSD_NAMESPACE) )
+    if ( XMLString::equals(strUri.c_str(), Schema::XSD_NAMESPACE) )
     {
       const XMLCh* local = xsTypeDef->getName();
       // maybe there is a better way than comparing strings
@@ -801,11 +800,11 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
       xqtref_t baseXQType = createXQTypeFromTypeDefinition(typeManager,
                                                            baseTypeDef);
 
-      xqpStringStore_t lLocal;
+      zstring lLocal;
       transcode(xsTypeDef->getName(), lLocal);
 
       store::Item_t qname;
-      GENV_ITEMFACTORY->createQName(qname, strUri->str(), zstring(), lLocal->str());
+      GENV_ITEMFACTORY->createQName(qname, strUri, zstring(), lLocal);
 
       TRACE("udComplexType: " << StrX(xsTypeDef->getName()) << " @ " <<
             StrX(xsTypeDef->getNamespace()) );
@@ -857,12 +856,12 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
 
 
 xqtref_t Schema::createXQTypeFromTypeDefForBuiltinTypes(
-    const TypeManager* typeManager, xqpStringStore_t strUri,
+    const TypeManager* typeManager, zstring& strUri,
     const XMLCh* local)
 {
   xqtref_t result;
 
-  ZORBA_ASSERT( XMLString::equals(strUri->c_str(), Schema::XSD_NAMESPACE) );
+  ZORBA_ASSERT( XMLString::equals(strUri.c_str(), Schema::XSD_NAMESPACE) );
 
   // maybe there is a better way than comparing strings
   // but it seems Xerces doesn't have a code for built-in types
@@ -1256,13 +1255,13 @@ void Schema::addAnonymousTypeToCache(
     createXQTypeFromTypeDefinition(typeManager, baseTypeDef);
 
   const XMLCh* uri = xsTypeDef->getNamespace();
-  xqpStringStore_t strUri;
+  zstring strUri;
   transcode(uri, strUri);
-  xqpStringStore_t lLocal;
+  zstring lLocal;
   transcode(xsTypeDef->getName(), lLocal);
 
   store::Item_t qname;
-  GENV_ITEMFACTORY->createQName(qname, strUri->str(), zstring(), lLocal->str());
+  GENV_ITEMFACTORY->createQName(qname, strUri, zstring(), lLocal);
 
 
   switch( xsTypeDef->getTypeCategory() )
@@ -1358,7 +1357,7 @@ void Schema::addTypeToCache(xqtref_t itemXQType)
   The given type is assumed to be a simple type, i.e. Atomic, List or Union.
 ********************************************************************************/
 bool Schema::parseUserSimpleTypes(
-    xqpStringStore_t& textValue,
+    zstring& textValue,
     const xqtref_t& aTargetType,
     std::vector<store::Item_t>& resultList)
 {
@@ -1370,8 +1369,7 @@ bool Schema::parseUserSimpleTypes(
     // must be a built in type
     store::Item_t atomicResult;
     //todo add nsCtx
-    zstring tmp(textValue->str());
-    bool res = GenericCast::instance()->castToAtomic(atomicResult, tmp,
+    bool res = GenericCast::instance()->castToAtomic(atomicResult, textValue,
                                                      aTargetType, theTypeManager);
 
     if ( res == false )
@@ -1410,12 +1408,10 @@ bool Schema::parseUserSimpleTypes(
   break;
 
   case UserDefinedXQType::LIST_TYPE:
-
     return parseUserListTypes(textValue, aTargetType, resultList);
     break;
 
   case UserDefinedXQType::UNION_TYPE:
-
     return parseUserUnionTypes(textValue, aTargetType, resultList);
     break;
 
@@ -1434,7 +1430,7 @@ bool Schema::parseUserSimpleTypes(
   The given type is assumed to be a user-defined atomic type.
 ********************************************************************************/
 bool Schema::parseUserAtomicTypes(
-    xqpStringStore_t& textValue,
+    zstring& textValue,
     const xqtref_t& aTargetType,
     store::Item_t& result,
     namespace_context* aNCtx)
@@ -1513,15 +1509,14 @@ bool Schema::parseUserAtomicTypes(
           udXQType->isSubTypeOf(theTypeManager, *GENV_TYPESYSTEM.NOTATION_TYPE_ONE))
       {
         // textValue must be in the form of URI:LOCAL
-        int32_t colonIndex = textValue->bytePositionOf(":");
-        zstring prefix = textValue->byteSubstr(0, colonIndex)->str();
-        zstring local = textValue->byteSubstr(colonIndex+1, textValue->size())->str();
+        size_t colonIndex = textValue.find_first_of(":");
+        zstring prefix = textValue.substr(0, colonIndex).str();
+        zstring local = textValue.substr(colonIndex+1, textValue.size()).str();
         zstring uri;
 
         if (aNCtx != NULL && aNCtx->findBinding(prefix, uri))
         {
-          xqpStringStore_t validateValue = new xqpStringStore(uri.append(":").append(local).str());
-          XMLChArray xchTextValue(validateValue->str());
+          XMLChArray xchTextValue(uri.append(":").append(local).str());         
           xsiTypeDV->validate(xchTextValue.get());
         }
         else
@@ -1530,7 +1525,7 @@ bool Schema::parseUserAtomicTypes(
       }
       else
       {
-        XMLChArray xchTextValue(textValue->str());
+        XMLChArray xchTextValue(textValue.str());
         xsiTypeDV->validate(xchTextValue.get());
       }
     }
@@ -1540,7 +1535,6 @@ bool Schema::parseUserAtomicTypes(
                            "Uri '" << typeQName->getNamespace()
                            << "' not found in current schema context.");
       wasError = true;
-
     }
 
     if (wasError)
@@ -1548,14 +1542,14 @@ bool Schema::parseUserAtomicTypes(
   }
   catch (XMLException& idve)
   {
-    xqpStringStore_t msg;
+    zstring msg;
     transcode(idve.getMessage(), msg);
-
+    
     ZORBA_ERROR_DESC_OSS(FORG0001,
-                         "String '" << textValue->trim(" \n\r\t",4)->c_str() <<
+                         "String '" << textValue <<
                          "' cannot be cast to '" <<
                          TypeOps::toString( *aTargetType ) << "' : "
-                         << msg->c_str());
+                         << msg.c_str());
     return false;
   }
   catch(const OutOfMemoryException&)
@@ -1584,8 +1578,8 @@ bool Schema::parseUserAtomicTypes(
 
   // create a UserTypedAtomicItem with the built-in value
   store::Item_t baseItem;
-  zstring tmp(textValue->str());
-  if (GenericCast::castToAtomic(baseItem, tmp, baseType, theTypeManager, aNCtx))
+  
+  if (GenericCast::castToAtomic(baseItem, textValue, baseType, theTypeManager, aNCtx))
   {
     store::Item_t tTypeQName = udXQType->get_qname();
 
@@ -1599,10 +1593,11 @@ bool Schema::parseUserAtomicTypes(
 
 
 void splitToAtomicTextValues(
-    const xqpStringStore_t& textValue,
-    std::vector<xqp_string>& atomicTextValues)
+    const zstring& textValue,
+    std::vector<zstring>& atomicTextValues)
 {
-  xqp_string normalizedTextValue(textValue->normalizeSpace());
+  /*xqpStringStore_t tmp = new xqpStringStore(textValue.str());
+  xqp_string normalizedTextValue(tmp->normalizeSpace());
   checked_vector<uint32_t> codes = normalizedTextValue.getCodepoints();
 
   xqpString::size_type start = 0;
@@ -1612,6 +1607,34 @@ void splitToAtomicTextValues(
   {
     if ( xqpStringStore::is_whitespace(codes[i]) )
     {
+      zstring zstmp(normalizedTextValue.substr(start, i - start).c_str());
+      atomicTextValues.push_back(zstmp);
+      start = i+1;
+    }
+    i++;
+  }
+
+  if ( start < (i-1) )
+  {
+    zstring zstmp(normalizedTextValue.substr(start, i-start).c_str());
+    atomicTextValues.push_back(zstmp);
+  }*/
+
+/*
+  zstring normalizedTextValue;
+  utf8::normalize_whitespace(textValue, &normalizedTextValue);
+
+  utf8_string<zstring> const untv(normalizedTextValue);
+
+  size_t start = 0;
+  size_t i = 0;
+
+  for ( utf8_string<zstring>::const_iterator
+       it = untv.begin(); it != untv.end(); ++it ) 
+  {
+    unicode::code_point const cp = *it;
+    if ( unicode::is_space(cp) )
+    {
       atomicTextValues.push_back(normalizedTextValue.substr(start, i - start));
       start = i+1;
     }
@@ -1619,14 +1642,35 @@ void splitToAtomicTextValues(
   }
 
   if ( start < (i-1) )
+  {
     atomicTextValues.push_back(normalizedTextValue.substr(start, i-start));
+  }*/
+
+  zstring normalizedTextValue;
+  utf8::normalize_whitespace(textValue, &normalizedTextValue);
+
+  size_t start = 0;
+  size_t i = 0;
+
+  while ( std::string::npos != (i=normalizedTextValue.find_first_of(" \n\r\t", start)) ) 
+  {
+    atomicTextValues.push_back(normalizedTextValue.substr(start, i - start));
+    start = i+1;
+  }
+
+  size_t size = normalizedTextValue.size();
+
+  if ( start < size )
+  {
+    atomicTextValues.push_back(normalizedTextValue.substr(start, size));
+  }
 }
 
 
 
 // user list types
 bool Schema::parseUserListTypes(
-    const xqpStringStore_t& textValue,
+    const zstring& textValue,
     const xqtref_t& aTargetType,
     std::vector<store::Item_t> &resultList)
 {
@@ -1644,15 +1688,15 @@ bool Schema::parseUserListTypes(
   ZORBA_ASSERT( listItemType );
 
   //split text into atoms
-  std::vector<xqp_string> atomicTextValues;
+  std::vector<zstring> atomicTextValues;
   splitToAtomicTextValues(textValue, atomicTextValues);
 
   for ( unsigned int i = 0; i < atomicTextValues.size() ; i++)
   {
-    TRACE("trying parsing '" << *textValue << "' to " <<
+    TRACE("trying parsing '" << textValue << "' to " <<
         listItemType->toString());
-    xqpStringStore_t tmp = atomicTextValues[i].getStore();
-    bool res = parseUserSimpleTypes(tmp,
+
+    bool res = parseUserSimpleTypes(atomicTextValues[i],
                                     xqtref_t(listItemType),
                                     resultList);
     hasResult = hasResult && res;
@@ -1663,7 +1707,7 @@ bool Schema::parseUserListTypes(
 
 // user union types
 bool Schema::parseUserUnionTypes(
-    xqpStringStore_t& textValue,
+    zstring& textValue,
     const xqtref_t& aTargetType,
     std::vector<store::Item_t> &resultList)
 {
@@ -1693,7 +1737,7 @@ bool Schema::parseUserUnionTypes(
 
 // user defined simple types, i.e. Atomic, List or Union Types
 bool Schema::isCastableUserSimpleTypes(
-    const xqpStringStore_t& textValue,
+    const zstring& textValue,
     const xqtref_t& aTargetType)
 {
   //cout << "isCastableUserSimpleTypes: '" << textValue << "' to " <<
@@ -1703,8 +1747,8 @@ bool Schema::isCastableUserSimpleTypes(
   {
     // must be a built in type
     store::Item_t atomicResult;
-    zstring tmp(textValue->str());
-    return GenericCast::instance()->isCastable(tmp, aTargetType, theTypeManager);
+    
+    return GenericCast::instance()->isCastable(textValue, aTargetType, theTypeManager);
     //todo add nsCtx
   }
 
@@ -1743,19 +1787,18 @@ bool Schema::isCastableUserSimpleTypes(
 
 // user defined atomic types
 bool Schema::isCastableUserAtomicTypes(
-    const xqpStringStore_t& textValue,
+    const zstring& textValue,
     const xqtref_t& aTargetType)
 {
   //cout << "isCastableUserAtomicTypes: '" << textValue << "' to " <<
   //  aTargetType->toString() << endl; cout.flush();
-  zstring tmp = textValue->str();
-  return GenericCast::instance()->isCastable(tmp, aTargetType.getp(), theTypeManager);
+  return GenericCast::instance()->isCastable(textValue, aTargetType.getp(), theTypeManager);
 }
 
 
 // user defined list types
 bool Schema::isCastableUserListTypes(
-    const xqpStringStore_t& textValue,
+    const zstring& textValue,
     const xqtref_t& aTargetType)
 {
   //cout << "isCastableUserListTypes: '" << textValue << "' to " <<
@@ -1770,12 +1813,12 @@ bool Schema::isCastableUserListTypes(
   const XQType* listItemType = udXQType->getListItemType();
 
   //split text into atoms
-  std::vector<xqp_string> atomicTextValues;
+  std::vector<zstring> atomicTextValues;
   splitToAtomicTextValues(textValue, atomicTextValues);
 
   for ( unsigned int i = 0; i<atomicTextValues.size() ; i++ )
   {
-    bool res = isCastableUserSimpleTypes(atomicTextValues[i].getStore(),
+    bool res = isCastableUserSimpleTypes(atomicTextValues[i],
                                          xqtref_t(listItemType));
     hasResult = hasResult && res;
   }
@@ -1786,7 +1829,7 @@ bool Schema::isCastableUserListTypes(
 
 // user defined union types
 bool Schema::isCastableUserUnionTypes(
-    const xqpStringStore_t& textValue,
+    const zstring& textValue,
     const xqtref_t& aTargetType)
 {
     //cout << "isCastableUserUnionTypes: '" << textValue << "' to " <<

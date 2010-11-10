@@ -42,7 +42,6 @@
 #include "zorbaerrors/errors.h"
 #include "zorbaerrors/Assert.h"
 
-#include "zorbatypes/xqpstring.h"
 
 //using namespace std;
 
@@ -100,7 +99,7 @@ void processTextValue(
     TypeManager* typeManager,
     namespace_context& nsCtx,
     store::Item_t typeQName,
-    xqpStringStore_t& textValue,
+    zstring& textValue,
     store::Item_t& originalChild,
     std::vector<store::Item_t> &resultList);
 
@@ -309,7 +308,7 @@ void processElement(
 	  if ( newType->is_builtin() && newType->get_qname()->equals(GENV_TYPESYSTEM.STRING_TYPE_ONE->get_qname()) )
 	  {
 		/*store::Item_t result;
-		xqpStringStore_t emptyStr( new xqpStringStore(""));
+		zstring emptyStr = "";
 		GENV_ITEMFACTORY->createString( result, emptyStr);
 		typedValues.push_back(result);*/
 		tHasEmptyValue = true;
@@ -324,7 +323,7 @@ void processElement(
 		  tHasEmptyValue = true;
 		  tHasTypedValue = false;
 		  tHasValue = false;
-	      /*xqpStringStore_t emptyStr( new xqpStringStore(""));
+	      /*zstring emptyStr = "";
 
 			if ( udXQType.isList() || udXQType.isUnion() )
 			{
@@ -510,13 +509,12 @@ int processChildren(
         schemaValidator.text(childStringValue);
 
         store::Item_t typeQName = schemaValidator.getTypeQName();
-        xqpStringStore_t tmp = new xqpStringStore(childStringValue.c_str());
-
+        
         processTextValue(pul,
                          typeManager,
                          nsCtx,
                          typeQName,
-                         tmp,
+                         childStringValue,
                          child,
                          typedValues );
       }
@@ -563,7 +561,7 @@ void processTextValue (
     TypeManager* typeManager,
     namespace_context &nsCtx,
     store::Item_t typeQName,
-    xqpStringStore_t& textValue,
+    zstring& textValue,
     store::Item_t& originalChild,
     std::vector<store::Item_t>& resultList)
 {
@@ -582,6 +580,7 @@ void processTextValue (
     if ( type->type_kind() == XQType::USER_DEFINED_KIND )
     {
       const UserDefinedXQType udXQType = static_cast<const UserDefinedXQType&>(*type);
+      
       if ( udXQType.isList() || udXQType.isUnion() )
       {
         typeManager->getSchema()->parseUserSimpleTypes(textValue, type, resultList);
@@ -606,16 +605,14 @@ void processTextValue (
       // else isAtomic
     }
 
-    zstring tmp(textValue->str());
-    bool isResult = GenericCast::castToAtomic(result, tmp, type.getp(),
+    bool isResult = GenericCast::castToAtomic(result, textValue, type.getp(),
                                               typeManager, &nsCtx);
     if ( isResult )
       resultList.push_back(result);
   }
   else
   {
-    zstring tmp = textValue->str();
-    if ( GENV_ITEMFACTORY->createUntypedAtomic( result, tmp) )
+    if ( GENV_ITEMFACTORY->createUntypedAtomic( result, textValue) )
       resultList.push_back(result);
   }
 }

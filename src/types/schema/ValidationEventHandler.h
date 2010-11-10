@@ -28,7 +28,6 @@
 #include <list>
 #include "store/api/item.h"
 #include "common/shared_types.h"
-#include "zorbatypes/xqpstring.h"
 
 
 namespace zorba
@@ -40,7 +39,7 @@ public:
   zstring thePrefix;
   zstring theUri;
   zstring theLocalName;
-  xqpStringStore_t theValue;
+  zstring theValue;
   zstring theTypeURI;
   zstring theTypeName;
 
@@ -60,7 +59,7 @@ public:
 class TextValidationInfo
 {
 public:
-  xqpStringStore_t _value;
+  zstring _value;
 
 public:          
   TextValidationInfo(const XMLCh *chars, unsigned int length);

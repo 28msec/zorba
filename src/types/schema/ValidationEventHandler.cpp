@@ -56,7 +56,7 @@ AttributeValidationInfo::AttributeValidationInfo(
   if (localName)
     theLocalName = StrX(localName).localForm();
 
-  theValue = new xqpStringStore(StrX(value).localForm());
+  theValue = StrX(value).localForm();
 
   theTypeURI = StrX(typeURI).localFormOrDefault(Schema::XSD_NAMESPACE);
 
@@ -66,7 +66,7 @@ AttributeValidationInfo::AttributeValidationInfo(
 
 TextValidationInfo::TextValidationInfo(const XMLCh *chars, unsigned int length)
 {
-  _value = new xqpStringStore( StrX(chars, length).localForm() );
+  _value = StrX(chars, length).localForm();
 }
 
 

@@ -1644,9 +1644,7 @@ bool GenericCast::castToAtomic(
   {
     store::Item_t baseItem;
 
-    xqpStringStore_t tmp = new xqpStringStore(str.str());
-
-    bool success = tm->getSchema()->parseUserAtomicTypes(tmp,
+    bool success = tm->getSchema()->parseUserAtomicTypes(str,
                                                          aTargetType,
                                                          baseItem,
                                                          aNsCtx);
@@ -1846,10 +1844,8 @@ void castToUserDefinedType(
   {
   case UserDefinedXQType::ATOMIC_TYPE:
   {
-    zstring strValue1;
-    aItem->getStringValue2(strValue1);
-
-    xqpStringStore_t strValue = new xqpStringStore(strValue1.c_str());
+    zstring strValue;
+    aItem->getStringValue2(strValue);
 
     store::Item_t baseItem;
     bool hasResult = schema->parseUserAtomicTypes(strValue, aTargetType, baseItem);
@@ -1886,9 +1882,7 @@ bool GenericCast::castToSimple(
 {
   //std::cout << "-castToSimple: " << aStr.c_str() << " tgtType: " << aTargetType->get_qname()->getLocalName()->c_str() << " @ " << aTargetType->get_qname()->getNamespace()->c_str() << "\n";
 
-  xqpStringStore_t tmp = new xqpStringStore(str.str());
-
-  return tm->getSchema()->parseUserSimpleTypes(tmp, aTargetType, aResultList);
+  return tm->getSchema()->parseUserSimpleTypes(str, aTargetType, aResultList);
 }
 
 
@@ -2240,10 +2234,8 @@ bool GenericCast::isCastable(
     const UserDefinedXQType* udt = static_cast<const UserDefinedXQType*>(aTargetType);
     if (!udt->isComplex())
     {
-      xqpStringStore_t tmp = new xqpStringStore(aItem->getStringValue().str());
-
       return tm->getSchema()->
-             isCastableUserSimpleTypes(tmp,
+             isCastableUserSimpleTypes(aItem->getStringValue(),
                                        udt->getBaseType().getp());
     }
   }
@@ -2297,10 +2289,8 @@ bool GenericCast::isCastable(
     const UserDefinedXQType* udt = static_cast<const UserDefinedXQType*>(aTargetType);
     if (!udt->isComplex())
     {
-      xqpStringStore_t tmp = new xqpStringStore(str.str());
-
       return tm->getSchema()->
-             isCastableUserSimpleTypes(tmp,
+             isCastableUserSimpleTypes(str,
                                        udt->getBaseType().getp());
     }
   }

@@ -97,7 +97,6 @@ void ItemVector::appendStringValue(zstring& buf) const
   }
 }
 
-
 zstring ItemVector::show() const
 {
   std::ostringstream res;
@@ -108,7 +107,6 @@ zstring ItemVector::show() const
 
   return res.str();
 }
-
 
 } // namespace store
 } // namespace zorba

@@ -117,7 +117,7 @@ public:
 
   void registerXSD(
         const char* xsdFileName,
-        std::string& loaction,
+        std::string& location,
         const QueryLoc& loc);
 
   void getSubstitutionHeadForElement(
@@ -154,47 +154,47 @@ public:
 
     // user defined simple types, i.e. Atomic, List or Union Types
   bool parseUserSimpleTypes(
-        xqpStringStore_t& textValue,
+        zstring& textValue,
         const xqtref_t& aTargetType,
         std::vector<store::Item_t> &resultList);
 
     // user defined atomic types
   bool parseUserAtomicTypes(
-        xqpStringStore_t& textValue,
+        zstring& textValue,
         const xqtref_t& aTargetType,
         store::Item_t& result,
         namespace_context* aNCtx = 0);   // the namespace context is needed for parsing the xs:NOTATION items
 
     // user defined list types
   bool parseUserListTypes(
-        const xqpStringStore_t& textValue,
+        const zstring& textValue,
         const xqtref_t& aTargetType,
         std::vector<store::Item_t>& resultList);
 
     // user defined union types
   bool parseUserUnionTypes(
-        xqpStringStore_t& textValue,
+        zstring& textValue,
         const xqtref_t& aTargetType,
         std::vector<store::Item_t> &resultList);
 
     // user defined simple types, i.e. Atomic, List or Union Types
   bool isCastableUserSimpleTypes(
-        const xqpStringStore_t& textValue,
+        const zstring& textValue,
         const xqtref_t& aTargetType);
 
     // user defined atomic types
   bool isCastableUserAtomicTypes(
-        const xqpStringStore_t& textValue,
+        const zstring& textValue,
         const xqtref_t& aTargetType);
 
     // user defined list types
   bool isCastableUserListTypes(
-        const xqpStringStore_t& textValue,
+        const zstring& textValue,
         const xqtref_t& aTargetType);
 
     // user defined union types
   bool isCastableUserUnionTypes(
-        const xqpStringStore_t& textValue,
+        const zstring& textValue,
         const xqtref_t& aTargetType);
 
 private:
@@ -212,7 +212,7 @@ private:
 
   xqtref_t createXQTypeFromTypeDefForBuiltinTypes(
         const TypeManager* typeManager,
-        xqpStringStore_t strUri, const XMLCh* local);
+        zstring& strUri, const XMLCh* local);
 
   void checkForAnonymousTypes(const TypeManager* typeManager);
 

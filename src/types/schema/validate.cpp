@@ -33,7 +33,6 @@
 
 #include "zorbatypes/duration.h"
 #include "zorbatypes/datetime.h"
-#include "zorbatypes/xqpstring.h"
 
 #endif
 
@@ -509,12 +508,12 @@ void Validator::processChildren(
           store::NsBindings nsBindings;
           parent->getNamespaceBindings(nsBindings);
           std::vector<store::Item_t> typedValues;
-          xqpStringStore_t tmp = new xqpStringStore(childStringValue.str());
+          
           processTextValue(sctx,
                            typeManager,
                            nsBindings,
                            typeQName,
-                           tmp,
+                           childStringValue,
                            typedValues);
 
           if ( typedValues.size()==1 ) // hack around serialization bug
@@ -615,7 +614,7 @@ void Validator::processTextValue (
     TypeManager* typeManager,
     store::NsBindings& bindings,
     const store::Item_t& typeQName,
-    xqpStringStore_t& textValue,
+    zstring& textValue,
     std::vector<store::Item_t>& resultList)
 {
   xqtref_t type = typeManager->create_named_type(typeQName.getp(),
@@ -636,7 +635,7 @@ void Validator::processTextValue (
     if ( type->type_kind() == XQType::USER_DEFINED_KIND )
     {
       const UserDefinedXQType udt = static_cast<const UserDefinedXQType&>(*type);
-
+      
       if ( udt.isList() || udt.isUnion() )
       {
         typeManager->getSchema()->parseUserSimpleTypes(textValue, type, resultList);
@@ -657,8 +656,8 @@ void Validator::processTextValue (
           // if complex type with simple content parse text by the base
           // type which has to be simple
           xqtref_t baseType = udt.getBaseType();
-          zstring tmp(textValue->str());
-          bool res = GenericCast::castToSimple(tmp, baseType.getp(),
+          
+          bool res = GenericCast::castToSimple(textValue, baseType.getp(),
                                                resultList, typeManager);
 
           // if this assert fails it means the validator and zorba casting code
@@ -676,8 +675,7 @@ void Validator::processTextValue (
     {
       try
       {
-        zstring tmp(textValue->str());
-        bool res = GenericCast::castToAtomic(result, tmp, type.getp(),
+        bool res = GenericCast::castToAtomic(result, textValue, type.getp(),
                                              typeManager, &nsCtx);
         ZORBA_ASSERT(res);
         resultList.push_back(result);
@@ -689,15 +687,13 @@ void Validator::processTextValue (
     }
     else
     {
-      zstring tmp = textValue->str();
-      if ( GENV_ITEMFACTORY->createUntypedAtomic( result, tmp) )
+      if ( GENV_ITEMFACTORY->createUntypedAtomic( result, textValue) )
         resultList.push_back(result);
     }
   }
   else
   {
-    zstring tmp = textValue->str();
-    if ( GENV_ITEMFACTORY->createUntypedAtomic( result, tmp) )
+    if ( GENV_ITEMFACTORY->createUntypedAtomic( result, textValue) )
       resultList.push_back(result);
   }
 }

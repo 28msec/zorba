@@ -80,7 +80,7 @@ class Validator
         TypeManager* typeManager, 
         store::NsBindings& bindings,
         const store::Item_t& typeQName,
-        xqpStringStore_t& textValue, 
+        zstring& textValue, 
         std::vector<store::Item_t> &resultList);
 
 private:
