@@ -2114,7 +2114,7 @@ StatelessExternalFunction* static_context::lookup_external_function(
 /***************************************************************************//**
   This method may be called only on an application-created sctx.
 ********************************************************************************/
-void static_context::bind_document(xqpStringStore_t& uri, xqtref_t& type)
+void static_context::bind_document(const zstring& uri, xqtref_t& type)
 {
   if (theDocumentMap == NULL)
   {
@@ -2131,7 +2131,7 @@ void static_context::bind_document(xqpStringStore_t& uri, xqtref_t& type)
 /***************************************************************************//**
 
 ********************************************************************************/
-const XQType* static_context::lookup_document(const xqpStringStore_t& uri)
+const XQType* static_context::lookup_document(const zstring& uri)
 {
   xqtref_t type;
 
@@ -2147,7 +2147,7 @@ const XQType* static_context::lookup_document(const xqpStringStore_t& uri)
   return NULL;
 }
 
-void static_context::get_all_documents(std::vector<xqpStringStore_t>& documents)
+void static_context::get_all_documents(std::vector<zstring>& documents)
 {
   static_context* sctx = this;
   documents.clear();
@@ -2177,7 +2177,7 @@ void static_context::get_all_documents(std::vector<xqpStringStore_t>& documents)
 /***************************************************************************//**
   This method may be called only on an application-created sctx.
 ********************************************************************************/
-void static_context::bind_w3c_collection(xqpStringStore_t& uri, xqtref_t& type)
+void static_context::bind_w3c_collection(zstring& uri, xqtref_t& type)
 {
   if (theW3CCollectionMap == NULL)
   {
@@ -2194,7 +2194,7 @@ void static_context::bind_w3c_collection(xqpStringStore_t& uri, xqtref_t& type)
 /***************************************************************************//**
 
 ********************************************************************************/
-const XQType* static_context::lookup_w3c_collection(const xqpStringStore_t& uri)
+const XQType* static_context::lookup_w3c_collection(const zstring& uri)
 {
   xqtref_t type;
 
@@ -2718,7 +2718,7 @@ void static_context::get_collations(std::vector<std::string>& collations) const
 ********************************************************************************/
 void static_context::bind_option(
     const store::Item* qname,
-    const xqpStringStore* value)
+    const zstring& value)
 {
   if (theOptionMap == NULL)
   {
@@ -2741,7 +2741,7 @@ void static_context::bind_option(
 ********************************************************************************/
 bool static_context::lookup_option(
     const store::Item* qname,
-    xqpStringStore_t& value) const
+    zstring& value) const
 {
   store::Item* qname2 = const_cast<store::Item*>(qname);
   PrologOption option;

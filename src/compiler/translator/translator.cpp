@@ -3400,7 +3400,7 @@ void* begin_visit(const OptionDecl& v)
   TRACE_VISIT();
 
   store::Item_t qnameItem;
-  xqpStringStore_t value = new xqpStringStore(v.get_val().str());
+  zstring value = v.get_val().str();
 
   expand_no_default_qname(qnameItem, v.get_qname(), loc);
 

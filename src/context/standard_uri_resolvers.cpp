@@ -94,7 +94,7 @@ store::Item_t StandardDocumentURIResolver::resolve(
     {
 #ifdef ZORBA_WITH_TIDY
       std::stringstream out;
-      xqp_string diag;
+      zstring diag;
       int res = tidy(lInStream,
                      out,
                      diag,
@@ -139,7 +139,7 @@ store::Item_t StandardDocumentURIResolver::resolve(
     {
 #ifdef ZORBA_WITH_TIDY
       std::stringstream out;
-      xqp_string        diag;
+      zstring        diag;
       int res = tidy(iss, out, diag,
                      (NULL != tidyUserOpt ? tidyUserOpt->getStringValue().c_str(): NULL));
 

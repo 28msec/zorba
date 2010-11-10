@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -179,6 +179,15 @@ SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_Ha
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<zstring, zstring, HashMapZStringCmp>,12)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_HashMapZString, serializable_HashMapZString<zstring>, 2)
+
+
+// Definitions for the serializable_HashMapZString<xqtref_t> type
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_HashEntry<zstring, xqtref_t>, 13)
+
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_HashMapZString, serializable_HashMapZString<xqtref_t>, 3)
+
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<zstring, xqtref_t, HashMapZStringCmp>,13)
+
 
 
 /*SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(Batcher, Batcher<ElementIterator>)

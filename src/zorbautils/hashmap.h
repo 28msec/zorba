@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,8 +33,8 @@
 #include "zorbaserialization/serialization_engine.h"
 #endif
 
-namespace zorba 
-{ 
+namespace zorba
+{
 
 #ifdef ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
 #define HASHMAP    serializable_HashMap
@@ -48,7 +48,7 @@ namespace zorba
 /*******************************************************************************
 
 ********************************************************************************/
-template <class T, class V> 
+template <class T, class V>
 class HASHENTRY
 #ifdef ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
     : public ::zorba::serialization::SerializeBaseClass
@@ -76,8 +76,8 @@ public:
 #endif
   HASHENTRY() : theIsFree(true), theNext(0) { }
 
-  ~HASHENTRY() 
-  { 
+  ~HASHENTRY()
+  {
     theIsFree = true;
     theNext = 0;
   }
@@ -98,12 +98,12 @@ public:
     theIsFree = false;
   }
 
-  void setNext(HASHENTRY* nextEntry) 
+  void setNext(HASHENTRY* nextEntry)
   {
-    theNext = (nextEntry == NULL ? 0 : nextEntry - this); 
+    theNext = (nextEntry == NULL ? 0 : nextEntry - this);
   }
 
-  HASHENTRY* getNext()       
+  HASHENTRY* getNext()
   {
     return (theNext == 0 ? NULL : this + theNext);
   }
@@ -114,7 +114,7 @@ public:
 /*******************************************************************************
 
   This template class implements a hash-based map from items of type T to items
-  of type V. 
+  of type V.
 
   C is the template parameter that implements the hashing and equality functions.
 
@@ -127,21 +127,21 @@ public:
   theHashTab     : The hash table. The table is implemented as a vector of hash
                    entries and is devided in 2 areas: Each entry between 0 and
                    theHashTabSize - 1 is the head of a hash bucket. Each entry
-                   between theHashTabSize+1 and theHashTab.size()-1 is either 
-                   a "collision" entry (i.e., it belongs to a hash bucket with 
+                   between theHashTabSize+1 and theHashTab.size()-1 is either
+                   a "collision" entry (i.e., it belongs to a hash bucket with
                    more than one entries) or a "free" entry (i.e. it does not
                    currently belong to any bucket, but is available for
                    allocation as a collision entry when needed). Free entries
                    in the collision area are linked in a free list. Entry
                    theHashTab[theHashTabSize] is reserved as the head of this
                    free list.
-  theHashTabSize : The current number of hash buckets in theHashTab. 
+  theHashTabSize : The current number of hash buckets in theHashTab.
   theInitialSize : The initial number of hash buckets.
   theLoadFactor  : The max fraction of non-empty hash buckets after which the
                    hash table is doubled in size.
 
 ********************************************************************************/
-template <class T, class V, class C> 
+template <class T, class V, class C>
 class HASHMAP
 #ifdef ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
     : public ::zorba::serialization::SerializeBaseClass
@@ -158,7 +158,7 @@ public:
     ulong                                    thePos;
 
   protected:
-    iterator(const checked_vector<HASHENTRY<T, V> >* ht, ulong pos) 
+    iterator(const checked_vector<HASHENTRY<T, V> >* ht, ulong pos)
       :
       theHashTab(ht),
       thePos(pos)
@@ -171,9 +171,9 @@ public:
   public:
     iterator() : theHashTab(NULL), thePos(-1) {}
 
-    iterator& operator = (const iterator& it) 
+    iterator& operator = (const iterator& it)
     {
-      if(&it != this) 
+      if(&it != this)
       {
         theHashTab = it.theHashTab;
         thePos = it.thePos;
@@ -206,7 +206,7 @@ public:
     std::pair<T, V> operator*() const
     {
       ZORBA_FATAL(thePos < theHashTab->size(), "");
-      
+
       const HASHENTRY<T, V>& entry = (*theHashTab)[thePos];
 
       return std::pair<T, V>(entry.theItem, entry.theValue);
@@ -215,7 +215,7 @@ public:
     const T& getKey() const
     {
       ZORBA_FATAL(thePos < theHashTab->size(), "");
-      
+
       const HASHENTRY<T, V>& entry = (*theHashTab)[thePos];
 
       return entry.theItem;
@@ -224,7 +224,7 @@ public:
     const V& getValue() const
     {
       ZORBA_FATAL(thePos < theHashTab->size(), "");
-      
+
       const HASHENTRY<T, V>& entry = (*theHashTab)[thePos];
 
       return entry.theValue;
@@ -256,7 +256,7 @@ public:
 
   SERIALIZABLE_TEMPLATE_CLASS(serializable_HashMap)
 
-  serializable_HashMap(zorba::serialization::Archiver& ar) 
+  serializable_HashMap(zorba::serialization::Archiver& ar)
     :
     zorba::serialization::SerializeBaseClass()
   {
@@ -275,7 +275,7 @@ public:
     ar & sync;
     ar.set_is_temp_field(false);
     ar & theUseTransfer;
-    
+
     if(!ar.is_serializing_out())
     {
       //simulate constructor
@@ -284,7 +284,7 @@ public:
       theHashTab = computeTabSize(theHashTabSize);
       theLoadFactor = DEFAULT_LOAD_FACTOR;
       numCollisions = 0;
-      
+
       formatCollisionArea();
 
       SYNC_CODE(theMutexp = (sync ? &theMutex : NULL);)
@@ -342,7 +342,7 @@ public:
   depends on some parametrs (e.g. the collation or timezone). These parameters
   are provided as data members of the given comparison-function obj.
 ********************************************************************************/
-HASHMAP(const C& compFunction, ulong size, bool sync, bool useTransfer = false) 
+HASHMAP(const C& compFunction, ulong size, bool sync, bool useTransfer = false)
   :
   theNumEntries(0),
   theHashTabSize(size),
@@ -369,7 +369,7 @@ HASHMAP(const C& compFunction, ulong size, bool sync, bool useTransfer = false)
   theCompareFunction data member is initialized with the default constructor
   of the C class.
 ********************************************************************************/
-HASHMAP(ulong size, bool sync, bool useTransfer = false) 
+HASHMAP(ulong size, bool sync, bool useTransfer = false)
   :
   theNumEntries(0),
   theHashTabSize(size),
@@ -398,7 +398,7 @@ virtual ~HASHMAP()
 ********************************************************************************/
 bool empty() const
 {
-  return (theNumEntries == 0); 
+  return (theNumEntries == 0);
 }
 
 /*******************************************************************************
@@ -406,13 +406,13 @@ bool empty() const
 ********************************************************************************/
 ulong object_count() const
 {
-  return theNumEntries; 
+  return theNumEntries;
 }
 
 /*******************************************************************************
 
 ********************************************************************************/
-C get_compare_function() 
+C get_compare_function()
 {
   return theCompareFunction;
 }
@@ -429,7 +429,7 @@ ulong capacity() const
 /*******************************************************************************
 
 ********************************************************************************/
-void clear() 
+void clear()
 {
   SYNC_CODE(AutoMutex lock(theMutexp);)
 
@@ -553,7 +553,7 @@ bool get(const T& item, V& value)
   new (item, value) pair in the map; then return true. Otherwise, return false,
   as well as a copy of the value associated with the found item I.
 ********************************************************************************/
-bool insert(T& item, V& value)
+bool insert(const T& item, V& value)
 {
   bool found;
   ulong hval = hash(item);
@@ -603,7 +603,7 @@ bool update(const T& item, const V& value)
         found = true;
         break;
       }
-      
+
       entry = entry->getNext();
     }
   }
@@ -712,7 +712,7 @@ protected:
 ********************************************************************************/
 ulong computeTabSize(ulong size)
 {
-  return size + 32 + size/5; 
+  return size + 32 + size/5;
 }
 
 
@@ -887,7 +887,7 @@ retry:
 /*******************************************************************************
 
 ********************************************************************************/
-void extendCollisionArea() 
+void extendCollisionArea()
 {
   ulong oldSize = theHashTab.size();
   ulong numCollisionEntries = oldSize - theHashTabSize;
@@ -906,7 +906,7 @@ void extendCollisionArea()
 /*******************************************************************************
 
 ********************************************************************************/
-void formatCollisionArea(HASHENTRY<T, V>* firstentry = NULL) 
+void formatCollisionArea(HASHENTRY<T, V>* firstentry = NULL)
 {
   if (firstentry == NULL)
     firstentry = freelist();
@@ -935,7 +935,7 @@ void resizeHashTab(ulong newSize)
   theHashTabSize = newSize;
 
   formatCollisionArea();
- 
+
   numCollisions = 0;
 
   // Now rehash every entry
@@ -978,8 +978,8 @@ void resizeHashTab(ulong newSize)
 /*******************************************************************************
 
 ********************************************************************************/
-virtual void garbageCollect() 
-{ 
+virtual void garbageCollect()
+{
 }
 
 

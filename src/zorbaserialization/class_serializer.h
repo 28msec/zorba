@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,7 +29,6 @@
 #include <zorba/error.h>
 
 #include "zorbamisc/config/platform.h"
-//#include "zorbatypes/zstring.h"
 
 
 namespace zorba
@@ -54,7 +53,7 @@ class ClassFactoriesMap;
 /*******************************************************************************
 
 ********************************************************************************/
-struct ClassVersion 
+struct ClassVersion
 {
   int             class_version;
   unsigned long   zorba_version;
@@ -88,7 +87,7 @@ public:
 class class_deserializer
 {
 public:
-  virtual ~class_deserializer() 
+  virtual ~class_deserializer()
   {
   //  std::cout << "~class_deserializer" << std::endl;
   }
@@ -105,7 +104,7 @@ public:
 
   class_names : for each serializable class C, this vector stores the name of C
                 and the static class_deserializer obj associated with C.
-  class_names_count : 
+  class_names_count :
 ********************************************************************************/
 class ClassSerializer
 {
@@ -320,7 +319,7 @@ const int class_name::class_versions_count = sizeof(class_name::class_versions)/
 
 
 /*******************************************************************************
-  
+
 ********************************************************************************/
 
 #define SERIALIZABLE_CLASS_CONSTRUCTOR(class_name) \
@@ -360,7 +359,7 @@ class_name(::zorba::serialization::Archiver &ar)                      \
   templ3(ar)                                                          \
 {                                                                     \
 }
-  
+
 
 
 #ifndef NDEBUG
@@ -405,10 +404,10 @@ if(ar.is_serializing_out() && !ar.is_serialize_base_class())    \
   void operator&(Archiver &ar, bool &obj);
 
   void operator&(Archiver &ar, std::string &obj);
-  
+
   void operator&(Archiver &ar, std::string* &obj);
-  
-  //void operator&(Archiver &ar, zstring &obj);
+
+  // void operator&(Archiver &ar, zstring &obj);
 
   void operator&(Archiver &ar, char* &obj);//like char *p=strdup("io");
 
@@ -475,10 +474,10 @@ void serialize_array(Archiver &ar, unsigned char *obj, int len);//like char p[20
     if(!ar.is_serializing_out())                    \
      delete ptr;                                    \
     throw;                                          \
-  } 
+  }
 */
   void report_error(   XQUERY_ERROR        aErrorCode,
-                      const std::string&   aDesc, 
+                      const std::string&   aDesc,
                       const std::string&   aFileName,
                       int                 aLineNumber);
 

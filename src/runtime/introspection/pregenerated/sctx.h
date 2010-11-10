@@ -420,7 +420,7 @@ public:
 class StaticallyKnownDocumentsIteratorState : public PlanIteratorState
 {
 public:
-  std::vector<xqpStringStore_t> theDocuments; //vector of document URIs
+  std::vector < zstring > theDocuments; //vector of document URIs
   ulong thePosition; //current position
 
   StaticallyKnownDocumentsIteratorState();
@@ -506,7 +506,7 @@ public:
 class StaticallyKnownCollationsIteratorState : public PlanIteratorState
 {
 public:
-  std::vector<std::string> theCollations; //vector of collation uris
+  std::vector < std::string > theCollations; //vector of collation uris
   ulong thePosition; //current position
 
   StaticallyKnownCollationsIteratorState();
@@ -736,7 +736,7 @@ public:
 class FunctionNamesIteratorState : public PlanIteratorState
 {
 public:
-  std::vector<function*> theFunctions; //vector of functions
+  std::vector < function *> theFunctions; //vector of functions
   ulong thePosition; //current position
 
   FunctionNamesIteratorState();
@@ -786,7 +786,7 @@ public:
 class FunctionArgumentsCountIteratorState : public PlanIteratorState
 {
 public:
-  std::vector< int > arities; //vector of arities
+  std::vector < int > arities; //vector of arities
   unsigned int position; //current position
 
   FunctionArgumentsCountIteratorState();

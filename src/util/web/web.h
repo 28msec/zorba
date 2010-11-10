@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,16 +28,16 @@ namespace zorba
   int http_get(const char* url, std::iostream& result);
 #ifdef ZORBA_WITH_TIDY
   int tidy(const char* input,
-           xqp_string& result,
-           xqp_string& diagnostics,
+           zstring& result,
+           zstring& diagnostics,
            const char* userOpt) throw();
-  
+
   int tidy(const std::istream& stream,
            std::iostream& result,
-           xqp_string& diagnostics,
+           zstring& diagnostics,
            const char* userOpt);
 
 #endif
 }
 
-#endif 
+#endif

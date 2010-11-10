@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,7 +27,6 @@
 #include <fstream>
 
 #include "system/globalenv.h"
-#include "zorbatypes/xqpstring.h"
 
 namespace zorba
 {
@@ -165,8 +164,8 @@ Bool setUserOptions(TidyDoc& tdoc, const char* options, std::string& aOption)  t
 }
 
 int tidy(const char* input,
-         xqp_string& result,
-         xqp_string& diagnostics,
+         zstring& result,
+         zstring& diagnostics,
          const char* userOpt) throw()
 {
   TidyDoc     tdoc;
@@ -175,7 +174,7 @@ int tidy(const char* input,
   TidyBuffer  output, errbuf;
   tidyBufInit( &output );
   tidyBufInit( &errbuf );
-  xqpStringStore_t    buf, err;
+  zstring     buf, err;
   std::string option;
 
   tdoc = tidyCreate();
@@ -200,15 +199,15 @@ int tidy(const char* input,
       rc = tidySaveBuffer( tdoc, &output );          // Pretty Print
 
     if ( rc >= 0 ) {
-      result = new xqpStringStore((char*)output.bp, output.size);
+      result = zstring((char*)output.bp, output.size);
       if ( rc > 0 )
-        diagnostics = new xqpStringStore((char*)errbuf.bp, errbuf.size);
+        diagnostics = zstring((char*)errbuf.bp, errbuf.size);
     }
   }
   else
   {
     rc = -1;
-    diagnostics = new xqpStringStore("couldn't set the Tidy option <" + option + ">");
+    diagnostics = zstring("couldn't set the Tidy option <" + option + ">");
   }
 
   tidyBufFree( &output );
@@ -219,7 +218,7 @@ int tidy(const char* input,
 
 int tidy(const std::istream& stream,
          std::iostream& result,
-         xqp_string& diagnostics,
+         zstring& diagnostics,
          const char* userOpt)
 {
   int             rc = -1;
@@ -245,7 +244,7 @@ int tidy(const std::istream& stream,
 #endif
 
   inputBuf.size = size;
-  
+
   TidyBuffer output, errbuf;
   tidyBufInit( &output );
   tidyBufInit( &errbuf );
@@ -274,13 +273,13 @@ int tidy(const std::istream& stream,
     if ( rc >= 0 ) {
       result << output.bp;
       if ( rc > 0 )
-        diagnostics = new xqpStringStore((char*)errbuf.bp, errbuf.size);
+        diagnostics = zstring((char*)errbuf.bp, errbuf.size);
     }
   }
     else
   {
     rc = -1;
-    diagnostics = new xqpStringStore("couldn't set the Tidy option <" + option + ">");
+    diagnostics = zstring("couldn't set the Tidy option <" + option + ">");
   }
 
   tidyBufFree( &inputBuf );

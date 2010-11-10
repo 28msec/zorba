@@ -72,8 +72,8 @@ typedef rchandle<StaticallyKnownCollection> StaticallyKnownCollection_t;
 /*******************************************************************************
   Base Uri Computation
 
-  thePrologBaseUri is the one declared in the prolog. theApplicationBaseUri 
-  is set explicitly from the C++/C api. If both thePrologBaseUri and 
+  thePrologBaseUri is the one declared in the prolog. theApplicationBaseUri
+  is set explicitly from the C++/C api. If both thePrologBaseUri and
   theApplicationBaseUri are set, thePrologBaseUri hides theApplicationBaseUri.
 
   theEntityRetrievalUri is set by default to the full pathname of the file
@@ -144,7 +144,7 @@ public:
 struct PrologOption : public ::zorba::serialization::SerializeBaseClass
 {
   store::Item_t    theName;
-  xqpStringStore_t theValue;
+  zstring theValue;
 
 public:
   SERIALIZABLE_CLASS(PrologOption)
@@ -154,10 +154,10 @@ public:
 public:
   PrologOption() {}
 
-  PrologOption(const store::Item* name, const xqpStringStore* value)
+  PrologOption(const store::Item* name, const zstring& value)
     :
     theName(const_cast<store::Item*>(name)),
-    theValue(const_cast<xqpStringStore*>(value))
+    theValue(const_cast<zstring&>(value))
   {
   }
 };
@@ -410,9 +410,9 @@ class static_context : public SimpleRCObject
 
   typedef serializable_HashMapZString<zstring> NamespaceBindings;
 
-  typedef serializable_HashMapStrHandle<xqtref_t> DocumentMap;
+  typedef serializable_HashMapZString<xqtref_t> DocumentMap;
 
-  typedef serializable_HashMapStrHandle<xqtref_t> W3CCollectionMap;
+  typedef serializable_HashMapZString<xqtref_t> W3CCollectionMap;
 
   typedef std::map<std::string, XQPCollator*> CollationMap;
 
@@ -703,18 +703,18 @@ public:
   //
   // Documents
   //
-	void bind_document(xqpStringStore_t& uri, xqtref_t& t);
+	void bind_document(const zstring& uri, xqtref_t& t);
 
-  const XQType* lookup_document(const xqpStringStore_t& uri);
+  const XQType* lookup_document(const zstring& uri);
 
-  void get_all_documents(std::vector<xqpStringStore_t>& documents);
+  void get_all_documents(std::vector<zstring>& documents);
 
   //
   // W3C Collections
   //
-	void bind_w3c_collection(xqpStringStore_t& uri, xqtref_t& t);
+	void bind_w3c_collection(zstring& uri, xqtref_t& t);
 
-  const XQType* lookup_w3c_collection(const xqpStringStore_t& uri);
+  const XQType* lookup_w3c_collection(const zstring& uri);
 
 	void set_default_w3c_collection_type(xqtref_t& t);
 
@@ -770,9 +770,9 @@ public:
   //
   // Options
   //
-  void bind_option(const store::Item* qname, const xqpStringStore* option);
+  void bind_option(const store::Item* qname, const zstring& option);
 
-  bool lookup_option(const store::Item* qname, xqpStringStore_t& option) const;
+  bool lookup_option(const store::Item* qname, zstring& option) const;
 
 
   //

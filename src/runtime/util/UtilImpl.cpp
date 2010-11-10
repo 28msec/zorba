@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -50,7 +50,7 @@ bool
 ZorbaTidyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item, itemOpt;
-  xqp_string xmlString, diag;
+  zstring xmlString, diag;
   zstring docUri;
   zstring baseUri = theSctx->get_base_uri();
   zstring options;
@@ -72,7 +72,7 @@ ZorbaTidyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
              (theChildren.size() > 1 ? options.c_str() : NULL)) >= 0)
     {
       //if tidy returns a value >0 a warning should be raised
-      is.str(xmlString);
+      is.str(xmlString.c_str());
       loadProps.setStoreDocument(false);
       result = GENV_STORE.loadDocument(baseUri, docUri, is, loadProps);
       STACK_PUSH(result != NULL, state);
@@ -99,30 +99,30 @@ ZorbaTDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (consumeNext(uriItem, theChildren[0].getp(), planState)) 
+  if (consumeNext(uriItem, theChildren[0].getp(), planState))
   {
     uriItem->getStringValue2(uriString);
 
     if(theChildren.size() > 1)
       consumeNext(itemOpt, theChildren[1].getp(), planState);
 
-    try 
+    try
     {
       // maybe the document is stored with the uri that is given by the user
       result = GENV_STORE.getDocument(uriString);
     }
-    catch (error::ZorbaError& e) 
+    catch (error::ZorbaError& e)
     {
       ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
     }
 
-    if (result != NULL) 
+    if (result != NULL)
     {
       STACK_PUSH(true, state);
-    } 
+    }
     else
     {
-      try 
+      try
       {
         resolvedURIString = theSctx->resolve_relative_uri(uriString, false);
         GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);

@@ -13,7 +13,6 @@
 <zorba:source>
     <zorba:include  form="Quoted">store/api/iterator.h</zorba:include>
     <zorba:include  form="Quoted">compiler/expression/var_expr.h</zorba:include>
-    <zorba:include  form="Quoted">zorbatypes/xqpstring.h</zorba:include>
 </zorba:source>
 
 <!--
@@ -226,7 +225,7 @@
   </zorba:function>
 
   <zorba:state generateReset="false" generateDestructor="false">
-    <zorba:member type="std::vector&lt;xqpStringStore_t&gt;" name="theDocuments"
+    <zorba:member type="std::vector &lt; zstring &gt;" name="theDocuments"
                   brief="vector of document URIs"/>
     <zorba:member type="ulong" name="thePosition" brief="current position"/>
   </zorba:state>
@@ -271,7 +270,7 @@
   </zorba:function>
 
   <zorba:state generateReset="false" generateDestructor="false">
-    <zorba:member type="std::vector&lt;std::string&gt;" name="theCollations"
+    <zorba:member type="std::vector &lt; std::string &gt;" name="theCollations"
                   brief="vector of collation uris"/>
     <zorba:member type="ulong" name="thePosition" brief="current position"/>
   </zorba:state>
@@ -391,7 +390,7 @@
   </zorba:function>
 
   <zorba:state generateReset="false" generateDestructor="false">
-    <zorba:member type="std::vector&lt;function*&gt;" name="theFunctions"
+    <zorba:member type="std::vector &lt; function *&gt;" name="theFunctions"
                   brief="vector of functions"/>
     <zorba:member type="ulong" name="thePosition" brief="current position"/>
   </zorba:state>
@@ -417,7 +416,7 @@
   </zorba:function>
 
   <zorba:state generateReset="false" generateDestructor="false">
-    <zorba:member type="std::vector&lt; int &gt;" name="arities"
+    <zorba:member type="std::vector &lt; int &gt;" name="arities"
                   brief="vector of arities"/>
     <zorba:member type="unsigned int" name="position" brief="current position"/>
   </zorba:state>

@@ -4,7 +4,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -28,14 +28,14 @@
 namespace zorba {
 
 #ifdef WIN32
-static void displayError(std::string& aErrorMsg) 
+static void displayError(std::string& aErrorMsg)
 {
   LPVOID lpMsgBuf;
   LPVOID lpDisplayBuf;
   DWORD dw = GetLastError();
-  
+
   FormatMessage(
-                FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+                FORMAT_MESSAGE_ALLOCATE_BUFFER |
                 FORMAT_MESSAGE_FROM_SYSTEM |
                 FORMAT_MESSAGE_IGNORE_INSERTS,
                 NULL,
@@ -43,28 +43,28 @@ static void displayError(std::string& aErrorMsg)
                 MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
                 (LPTSTR) &lpMsgBuf,
                 0, NULL );
-  lpDisplayBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT, 
-                                    (lstrlen((LPCTSTR)lpMsgBuf) + 40) * sizeof(TCHAR)); 
-  StringCchPrintf((LPTSTR)lpDisplayBuf, 
+  lpDisplayBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT,
+                                    (lstrlen((LPCTSTR)lpMsgBuf) + 40) * sizeof(TCHAR));
+  StringCchPrintf((LPTSTR)lpDisplayBuf,
                   LocalSize(lpDisplayBuf) / sizeof(TCHAR),
-                  TEXT("Failed with error %d: %s"), dw, lpMsgBuf); 
-  
+                  TEXT("Failed with error %d: %s"), dw, lpMsgBuf);
+
   aErrorMsg = (LPCTSTR) lpDisplayBuf;
-  
+
   LocalFree(lpMsgBuf);
   LocalFree(lpDisplayBuf);
 }
 #endif // WIN32
 
 
-ExternalModule* DynamicLoader::getModule(const xqpString& aFile) const
+ExternalModule* DynamicLoader::getModule(const zstring& aFile) const
 {
   // function pointer to create a module
   ExternalModule* (*createModule)() = NULL;
-  
+
 #ifdef WIN32
   HMODULE handle = LoadLibrary(aFile.c_str());
-  if (handle == NULL) 
+  if (handle == NULL)
   {
     std::string lErrorMessage;
     displayError(lErrorMessage);
@@ -73,7 +73,7 @@ ExternalModule* DynamicLoader::getModule(const xqpString& aFile) const
                          << ". " << lErrorMessage);
   }
   createModule = (ExternalModule* (*)())GetProcAddress(handle, "createModule");
-  if (createModule == NULL) 
+  if (createModule == NULL)
   {
     std::string lErrorMessage;
     displayError(lErrorMessage);
@@ -83,15 +83,15 @@ ExternalModule* DynamicLoader::getModule(const xqpString& aFile) const
   }
 #else
   void* handle = dlopen(aFile.c_str(), RTLD_NOW);
-  if (!handle) 
+  if (!handle)
   {
     ZORBA_ERROR_DESC_OSS(API0015_CANNOT_OPEN_FILE,
                          "Cannot load the dynamic library file " << aFile
                          << ". " << dlerror());
   }
-  
+
   createModule = (ExternalModule* (*)()) dlsym(handle, "createModule");
-  if (createModule == NULL) 
+  if (createModule == NULL)
   {
     dlclose(handle);
     ZORBA_ERROR_DESC_OSS(API0015_CANNOT_OPEN_FILE,
@@ -99,19 +99,19 @@ ExternalModule* DynamicLoader::getModule(const xqpString& aFile) const
                          << " library" << aFile << ". " << dlerror());
   }
 #endif
-  if (theLibraries.find(handle) == theLibraries.end()) 
+  if (theLibraries.find(handle) == theLibraries.end())
   {
     theLibraries.insert(handle);
   }
-  
+
   return createModule();
 }
-  
-  
+
+
 DynamicLoader::~DynamicLoader()
 {
   for (LibrarySet_t::const_iterator lIter = theLibraries.begin();
-       lIter != theLibraries.end(); ++lIter) 
+       lIter != theLibraries.end(); ++lIter)
   {
 #ifdef WIN32
     FreeLibrary(*lIter);
@@ -120,6 +120,6 @@ DynamicLoader::~DynamicLoader()
 #endif
   }
 }
-  
+
 
 } /* namespace zorba */

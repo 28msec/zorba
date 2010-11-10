@@ -372,11 +372,9 @@ bool StaticallyKnownDocumentsIterator::nextImpl(
 
   theSctx->get_all_documents(state->theDocuments);
   state->thePosition = 0;
-
   while (state->thePosition < state->theDocuments.size())
   {
-    tmp = state->theDocuments[state->thePosition]->str();
-    STACK_PUSH(GENV_ITEMFACTORY->createString(aResult, tmp), state);
+    STACK_PUSH(GENV_ITEMFACTORY->createString(aResult, state->theDocuments[state->thePosition]), state);
     ++state->thePosition;
   }
 
@@ -394,16 +392,13 @@ bool StaticallyKnownDocumentTypeIterator::nextImpl(
   PlanIteratorState* state;
   store::Item_t lName;
   zstring temp_str;
-  xqpStringStore_t tmp;
   xqtref_t type;
 
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
 
   consumeNext(lName, theChildren[0].getp(), aPlanState);
 
-  tmp = new xqpStringStore(lName->getStringValue().str());
-
-  type = theSctx->lookup_document(tmp);
+  type = theSctx->lookup_document(lName->getStringValue());
 
   if (type.getp() == NULL)
   {
@@ -416,7 +411,7 @@ bool StaticallyKnownDocumentTypeIterator::nextImpl(
                                              type->get_qname()->getNamespace(),
                                              type->get_qname()->getPrefix(),
                                              type->get_qname()->getLocalName()),
-               state);
+                                             state);
   }
 
   STACK_END (state);
@@ -694,7 +689,7 @@ bool InScopeSchemaTypesIterator::nextImpl(
 {
 #ifndef ZORBA_NO_XMLSCHEMA
   XERCES_CPP_NAMESPACE_USE;
-  xqpString qname_ns;
+  zstring qname_ns;
   bool modelHasChanged;
   Schema* schema;
   XMLGrammarPool* grammarPool;
@@ -789,7 +784,7 @@ bool InScopeElementDeclarationsIterator::nextImpl(
 {
 #ifndef ZORBA_NO_XMLSCHEMA
   XERCES_CPP_NAMESPACE_USE;
-  xqpString qname_ns;
+  zstring qname_ns;
   bool modelHasChanged;
   Schema* schema;
   XMLGrammarPool* grammarPool;
@@ -880,7 +875,7 @@ bool InScopeAttributeDeclarationsIterator::nextImpl(
 
 #ifndef ZORBA_NO_XMLSCHEMA
   XERCES_CPP_NAMESPACE_USE;
-  xqpString qname_ns;
+  zstring qname_ns;
   bool modelHasChanged;
   Schema* schema;
   XMLGrammarPool* grammarPool;
@@ -963,7 +958,7 @@ bool InScopeElementGroupsIterator::nextImpl(
 
 #ifndef ZORBA_NO_XMLSCHEMA
   XERCES_CPP_NAMESPACE_USE;
-  xqpString qname_ns;
+  zstring qname_ns;
   bool modelHasChanged;
   Schema* schema;
   XMLGrammarPool* grammarPool;
@@ -1046,7 +1041,7 @@ bool InScopeAttributeGroupsIterator::nextImpl(
 
 #ifndef ZORBA_NO_XMLSCHEMA
   XERCES_CPP_NAMESPACE_USE;
-  xqpString qname_ns;
+  zstring qname_ns;
   bool modelHasChanged;
   Schema* schema;
   XMLGrammarPool* grammarPool;
@@ -1175,17 +1170,14 @@ OptionIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState)
 {
   PlanIteratorState *lState;
   store::Item_t      lName;
-  xqpStringStore_t   lValue;
-  zstring tmp;
+  zstring            lValue;
 
   DEFAULT_STACK_INIT(PlanIteratorState, lState, aPlanState);
 
   consumeNext(lName, theChildren[0].getp(), aPlanState);
-
   if (theSctx->lookup_option(lName.getp(), lValue))
   {
-    tmp = lValue->str();
-    GENV_ITEMFACTORY->createString(aResult, tmp);
+    GENV_ITEMFACTORY->createString(aResult, lValue);
     STACK_PUSH( true, lState );
   }
   else
