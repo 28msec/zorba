@@ -89,15 +89,28 @@ ENDIF(${cxqNO} STRGREATER "0")
 # Flag to remember whether we found the XQTS here or not
 SET(FOUND_XQTS 0)
 
+# QQQ It's ugly that we have to re-run FIND_PACKAGE here (and hence
+# have to re-check for ZORBA_SUPPRESS_XXX here). There should be some
+# way to do the lookup just once - ideally by moving those tests which
+# depend on module features into the modules themselves.
+
 # Check if libgeos is found in order to determine whether
 # we have to skip the geo module tests
-FIND_PACKAGE(Geos)
+IF(NOT ZORBA_SUPPRESS_GEOS)
+  FIND_PACKAGE(Geos)
+ENDIF (NOT ZORBA_SUPPRESS_GEOS)
 
-# Check if ImageMagick is found with all the 3 needed components: Magick++ MagickCore MagickWand
-# in order to determine whether we have to skip the image module tests
-FIND_PACKAGE(ImageMagick COMPONENTS Magick++ MagickCore MagickWand)
+# Check if ImageMagick is found with all the 3 needed components:
+# Magick++ MagickCore MagickWand in order to determine whether we have
+# to skip the image module tests
+IF(NOT ZORBA_SUPPRESS_IMAGEMAGICK)
+  FIND_PACKAGE(ImageMagick COMPONENTS Magick++ MagickCore MagickWand)
+ENDIF(NOT ZORBA_SUPPRESS_IMAGEMAGICK)
+
 # Check if the C-Client is installed (needed for imap module tests)
-FIND_PACKAGE(CClient)
+IF(NOT ZORBA_SUPPRESS_CCLIENT)
+  FIND_PACKAGE(CClient)
+ENDIF(NOT ZORBA_SUPPRESS_CCLIENT)
 
 
 FOREACH(TESTFILE ${TESTFILES})
@@ -302,7 +315,9 @@ EXPECTED_FAILURE(test/rbkt/zorba/HigherOrder/hof-101 3071699)
 
 EXPECTED_FAILURE(test/rbkt/zorba/gflwor/gflwor_ex6 3081418)
 
-EXPECTED_FAILURE(test/rbkt/zorba/http_client/http-read-html-tidy2 3103700)
+IF(CURL_FOUND AND LIBTIDY_FOUND)
+  EXPECTED_FAILURE(test/rbkt/zorba/http_client/http-read-html-tidy2 2958058)
+ENDIF(CURL_FOUND AND LIBTIDY_FOUND)
 EXPECTED_FAILURE(test/rbkt/zorba/aleXis/q11 3103700)
 
 EXPECTED_FAILURE(test/rbkt/zorba/file/files 3102373)
