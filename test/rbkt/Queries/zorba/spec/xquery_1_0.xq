@@ -11,17 +11,15 @@ declare variable $specURI  as xs:string := "http://www.w3.org/TR/xpath-functions
 
 declare sequential function local:create-zorba-function-arity-sequence()
 as xs:string* {
-  let $funcQnames as xs:QName* := sctx:function-names()
+  for $funcQname in sctx:function-names()
+  where (fn:namespace-uri-from-QName($funcQname) = "http://www.w3.org/2005/xpath-functions" and
+          fn:prefix-from-QName($funcQname) = "fn")
+  order by fn:local-name-from-QName($funcQname)
   return
-    for $funcQname in $funcQnames
-    where (fn:namespace-uri-from-QName($funcQname) = "http://www.w3.org/2005/xpath-functions" and
-           fn:prefix-from-QName($funcQname) = "fn")
-    order by fn:local-name-from-QName($funcQname)
+    for $arity in sctx:function-arguments-count($funcQname)
+    order by $arity
     return
-      for $arity in sctx:function-arguments-count($funcQname)
-      order by $arity
-      return
-        fn:concat(fn:local-name-from-QName($funcQname),"#", fn:string($arity))
+      fn:concat(fn:local-name-from-QName($funcQname),"#", fn:string($arity))
 };
 
 
