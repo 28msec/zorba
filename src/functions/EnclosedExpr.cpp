@@ -72,7 +72,7 @@ xqtref_t op_enclosed_expr::getReturnType(
 void populateContext_Constructors(static_context* sctx)
 {
 DECL(sctx, op_enclosed_expr,
-     (createQName(ZORBA_OP_NS, "op", "enclosed-expr"),
+     (createQName(ZORBA_OP_NS, "", "enclosed-expr"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 }

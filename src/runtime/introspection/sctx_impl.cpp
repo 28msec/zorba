@@ -595,7 +595,6 @@ bool FunctionNamesIterator::nextImpl(
     PlanState& aPlanState) const
 {
   FunctionNamesIteratorState* state;
-  store::Item_t temp;
 
   DEFAULT_STACK_INIT(FunctionNamesIteratorState, state, aPlanState);
 
@@ -603,13 +602,18 @@ bool FunctionNamesIterator::nextImpl(
   state->thePosition = 0;
   while (state->thePosition < state->theFunctions.size())
   {
-    temp = state->theFunctions[state->thePosition]->getName();
+    aResult = state->theFunctions[state->thePosition]->getName();
 
-    STACK_PUSH(GENV_ITEMFACTORY->createQName(aResult,
-                                             temp->getNamespace(),
-                                             temp->getPrefix(),
-                                             temp->getLocalName()),
-               state);
+    // Skip internal functions.
+    if (aResult->getNamespace() != XQUERY_OP_NS &&
+        aResult->getNamespace() != ZORBA_OP_NS)
+    {
+      STACK_PUSH(true, state);
+    }
+    else
+    {
+      //std::cout << "skipping function " << aResult->show() << std::endl;
+    }
     ++state->thePosition;
   }
 

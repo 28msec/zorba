@@ -748,37 +748,37 @@ void populateContext_Comparison(static_context* sctx)
 {
 // General Comparison;
 DECL(sctx, op_equal,
-     (createQName(XQUERY_OP_NS,"op", "equal"),
+     (createQName(ZORBA_OP_NS, "", "equal"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 DECL(sctx, op_not_equal,
-     (createQName(XQUERY_OP_NS,"op", "not-equal"),
+     (createQName(ZORBA_OP_NS, "", "not-equal"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 DECL(sctx, op_greater,
-     (createQName(XQUERY_OP_NS,"op", "greater"),
+     (createQName(ZORBA_OP_NS, "", "greater"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 DECL(sctx, op_greater_equal,
-     (createQName(XQUERY_OP_NS,"op", "greater-equal"),
+     (createQName(ZORBA_OP_NS, "", "greater-equal"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 DECL(sctx, op_less,
-     (createQName(XQUERY_OP_NS,"op", "less"),
+     (createQName(ZORBA_OP_NS, "", "less"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 DECL(sctx, op_less_equal,
-     (createQName(XQUERY_OP_NS,"op", "less-equal"),
+     (createQName(ZORBA_OP_NS, "", "less-equal"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
@@ -788,14 +788,14 @@ DECL(sctx, op_less_equal,
 
 #define DECL_TYPED_VAL( sctx, op, name, type, xqt )                     \
   DECL(sctx, op_value_##op##_##type,                                    \
-       (createQName (XQUERY_OP_NS, "op", "value-" name "-" #type),      \
+       (createQName (ZORBA_OP_NS, "", "value-" name "-" #type),      \
         GENV_TYPESYSTEM.xqt##_TYPE_QUESTION,                            \
         GENV_TYPESYSTEM.xqt##_TYPE_QUESTION,                            \
         GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION))
 
 #define DECL_ALL_VAL( sctx, op, name )                                  \
   DECL(sctx, op_value_##op,                                             \
-       (createQName (XQUERY_OP_NS, "op", "value-" name),                \
+       (createQName (ZORBA_OP_NS, "", "value-" name),                   \
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,                       \
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,                       \
         GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION));                        \

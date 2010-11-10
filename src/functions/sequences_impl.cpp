@@ -821,24 +821,24 @@ void populate_context_sequences_impl(static_context* sctx)
         GENV_TYPESYSTEM.ITEM_TYPE_ONE));
 
   DECL(sctx, fn_exactly_one_noraise,
-       (createQName(ZORBA_OP_NS,"op-zorba","exactly-one-noraise"),
+       (createQName(ZORBA_OP_NS,"","exactly-one-noraise"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
   DECL(sctx, fn_union,
-       (createQName(XQUERY_OP_NS,"op","union"),
+       (createQName(XQUERY_OP_NS,"","union"),
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
   DECL(sctx, fn_intersect,
-       (createQName(XQUERY_OP_NS,"op","intersect"),
+       (createQName(XQUERY_OP_NS,"","intersect"),
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
   DECL(sctx, fn_except,
-       (createQName(XQUERY_OP_NS,"op","except"),
+       (createQName(XQUERY_OP_NS,"","except"),
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));

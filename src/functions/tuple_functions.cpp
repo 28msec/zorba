@@ -42,13 +42,13 @@ public:
 void populateContext_Tuples(static_context* sctx)
 {
   DECL(sctx, zop_createtuple,
-       (createQName(ZORBA_OP_NS, "op-zorba", "create-tuple"),
+       (createQName(ZORBA_OP_NS, "", "create-tuple"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
         true,
         GENV_TYPESYSTEM.ITEM_TYPE_ONE));
 
   DECL(sctx, zop_gettuplefield,
-       (createQName(ZORBA_OP_NS, "op-zorba", "get-tuple-field"),
+       (createQName(ZORBA_OP_NS, "", "get-tuple-field"),
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));

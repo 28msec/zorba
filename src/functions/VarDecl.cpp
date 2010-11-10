@@ -154,20 +154,20 @@ public:
 void populateContext_VarDecl(static_context* sctx)
 {
 DECL(sctx, ctx_variable,
-     (createQName(ZORBA_OP_NS, "op-zorba", "ctxvar-ref"),
+     (createQName(ZORBA_OP_NS, "", "ctxvar-ref"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 DECL(sctx, ctx_var_declare,
-     (createQName(ZORBA_OP_NS, "op-zorba", "ctxvar-declare"),
+     (createQName(ZORBA_OP_NS, "", "ctxvar-declare"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.EMPTY_TYPE));
 DECL(sctx, ctx_var_assign,
-     (createQName(ZORBA_OP_NS, "op-zorba", "ctxvar-assign"),
+     (createQName(ZORBA_OP_NS, "", "ctxvar-assign"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.EMPTY_TYPE));
 DECL(sctx, ctx_var_exists,
-     (createQName(ZORBA_OP_NS, "op-zorba", "ctxvar-exists"),
+     (createQName(ZORBA_OP_NS, "", "ctxvar-exists"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 }
