@@ -38,13 +38,13 @@ void populate_context_random(static_context* sctx);
 
 
 
-//fn:numgen
-class fn_numgen : public function
+//op-zorba:numgen
+class op_zorba_numgen : public function
 {
 public:
-  fn_numgen(const signature& sig)
+  op_zorba_numgen(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_NUMGEN_0)
+    function(sig, FunctionConsts::OP_ZORBA_NUMGEN_0)
   {
   }
 

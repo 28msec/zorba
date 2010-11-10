@@ -677,32 +677,32 @@ function* fn_sum::specialize(
   if (TypeOps::is_subtype(tm, *argType, *rtm.UNTYPED_ATOMIC_TYPE_STAR))
   {
     return (getArity() == 1 ?
-            GET_BUILTIN_FUNCTION(FN_SUM_DOUBLE_1) :
-            GET_BUILTIN_FUNCTION(FN_SUM_DOUBLE_2));
+            GET_BUILTIN_FUNCTION(OP_SUM_DOUBLE_1) :
+            GET_BUILTIN_FUNCTION(OP_SUM_DOUBLE_2));
   }
   else if (TypeOps::is_subtype(tm, *argType, *rtm.DOUBLE_TYPE_STAR))
   {
     return (getArity() == 1 ?
-            GET_BUILTIN_FUNCTION(FN_SUM_DOUBLE_1) :
-            GET_BUILTIN_FUNCTION(FN_SUM_DOUBLE_2));
+            GET_BUILTIN_FUNCTION(OP_SUM_DOUBLE_1) :
+            GET_BUILTIN_FUNCTION(OP_SUM_DOUBLE_2));
   }
   else if (TypeOps::is_subtype(tm, *argType, *rtm.FLOAT_TYPE_STAR))
   {
     return (getArity() == 1 ?
-            GET_BUILTIN_FUNCTION(FN_SUM_FLOAT_1) :
-            GET_BUILTIN_FUNCTION(FN_SUM_FLOAT_2));
+            GET_BUILTIN_FUNCTION(OP_SUM_FLOAT_1) :
+            GET_BUILTIN_FUNCTION(OP_SUM_FLOAT_2));
   }
   else if (TypeOps::is_subtype(tm, *argType, *rtm.INTEGER_TYPE_STAR))
   {
     return (getArity() == 1 ?
-            GET_BUILTIN_FUNCTION(FN_SUM_INTEGER_1) :
-            GET_BUILTIN_FUNCTION(FN_SUM_INTEGER_2));
+            GET_BUILTIN_FUNCTION(OP_SUM_INTEGER_1) :
+            GET_BUILTIN_FUNCTION(OP_SUM_INTEGER_2));
   }
   else if (TypeOps::is_subtype(tm, *argType, *rtm.DECIMAL_TYPE_STAR))
   {
     return (getArity() == 1 ?
-            GET_BUILTIN_FUNCTION(FN_SUM_DECIMAL_1) :
-            GET_BUILTIN_FUNCTION(FN_SUM_DECIMAL_2));
+            GET_BUILTIN_FUNCTION(OP_SUM_DECIMAL_1) :
+            GET_BUILTIN_FUNCTION(OP_SUM_DECIMAL_2));
   }
   else
   {
@@ -714,7 +714,7 @@ function* fn_sum::specialize(
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue fn_sum_double::ignoresSortedNodes(expr* fo, ulong input) const 
+BoolAnnotationValue op_sum_double::ignoresSortedNodes(expr* fo, ulong input) const
 {
   return ANNOTATION_TRUE;
 }
@@ -723,7 +723,7 @@ BoolAnnotationValue fn_sum_double::ignoresSortedNodes(expr* fo, ulong input) con
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue fn_sum_float::ignoresSortedNodes(expr* fo, ulong input) const 
+BoolAnnotationValue op_sum_float::ignoresSortedNodes(expr* fo, ulong input) const
 {
   return ANNOTATION_TRUE;
 }
@@ -732,7 +732,7 @@ BoolAnnotationValue fn_sum_float::ignoresSortedNodes(expr* fo, ulong input) cons
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue fn_sum_decimal::ignoresSortedNodes(expr* fo, ulong input) const 
+BoolAnnotationValue op_sum_decimal::ignoresSortedNodes(expr* fo, ulong input) const
 {
   return ANNOTATION_TRUE;
 }
@@ -741,7 +741,7 @@ BoolAnnotationValue fn_sum_decimal::ignoresSortedNodes(expr* fo, ulong input) co
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue fn_sum_integer::ignoresSortedNodes(expr* fo, ulong input) const 
+BoolAnnotationValue op_sum_integer::ignoresSortedNodes(expr* fo, ulong input) const
 {
   return ANNOTATION_TRUE;
 }

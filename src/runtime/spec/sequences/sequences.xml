@@ -815,12 +815,12 @@
   
   <zorba:function>
 
-    <zorba:signature localname="sum_double" prefix="fn">
+    <zorba:signature localname="sum_double" prefix="op">
       <zorba:param>xs:double*</zorba:param>
       <zorba:output>xs:double</zorba:output>
     </zorba:signature>
 
-    <zorba:signature localname="sum_double" prefix="fn">
+    <zorba:signature localname="sum_double" prefix="op">
       <zorba:param>xs:double*</zorba:param>
       <zorba:param>xs:anyAtomicType?</zorba:param>
       <zorba:output>xs:anyAtomicType?</zorba:output>
@@ -843,12 +843,12 @@
   
   <zorba:function >
 
-    <zorba:signature localname="sum_float" prefix="fn">
+    <zorba:signature localname="sum_float" prefix="op">
       <zorba:param>xs:float*</zorba:param>
       <zorba:output>xs:float</zorba:output>
     </zorba:signature>
 
-    <zorba:signature localname="sum_float" prefix="fn">
+    <zorba:signature localname="sum_float" prefix="op">
       <zorba:param>xs:float*</zorba:param>
       <zorba:param>xs:anyAtomicType?</zorba:param>
       <zorba:output>xs:anyAtomicType?</zorba:output>
@@ -871,12 +871,12 @@
   
   <zorba:function >
 
-    <zorba:signature localname="sum_decimal" prefix="fn">
+    <zorba:signature localname="sum_decimal" prefix="op">
       <zorba:param>xs:decimal*</zorba:param>
       <zorba:output>xs:decimal</zorba:output>
     </zorba:signature>
 
-    <zorba:signature localname="sum_decimal" prefix="fn">
+    <zorba:signature localname="sum_decimal" prefix="op">
       <zorba:param>xs:decimal*</zorba:param>
       <zorba:param>xs:anyAtomicType?</zorba:param>
       <zorba:output>xs:anyAtomicType?</zorba:output>
@@ -899,12 +899,12 @@
   
   <zorba:function >
 
-    <zorba:signature localname="sum_integer" prefix="fn">
+    <zorba:signature localname="sum_integer" prefix="op">
       <zorba:param>xs:integer*</zorba:param>
       <zorba:output>xs:integer</zorba:output>
     </zorba:signature>
 
-    <zorba:signature localname="sum_integer" prefix="fn">
+    <zorba:signature localname="sum_integer" prefix="op">
       <zorba:param>xs:integer*</zorba:param>
       <zorba:param>xs:anyAtomicType?</zorba:param>
       <zorba:output>xs:anyAtomicType?</zorba:output>

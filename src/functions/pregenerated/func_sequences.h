@@ -395,15 +395,15 @@ public:
 };
 
 
-//fn:sum_double
-class fn_sum_double : public function
+//op:sum_double
+class op_sum_double : public function
 {
 public:
-  fn_sum_double(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
+  op_sum_double(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
     theKind = (sig.paramCount() == 1 ?
-                FunctionConsts::FN_SUM_DOUBLE_1 :
-                FunctionConsts::FN_SUM_DOUBLE_2);
+                FunctionConsts::OP_SUM_DOUBLE_1 :
+                FunctionConsts::OP_SUM_DOUBLE_2);
   
   }
 
@@ -413,15 +413,15 @@ public:
 };
 
 
-//fn:sum_float
-class fn_sum_float : public function
+//op:sum_float
+class op_sum_float : public function
 {
 public:
-  fn_sum_float(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
+  op_sum_float(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
     theKind = (sig.paramCount() == 1 ?
-                FunctionConsts::FN_SUM_FLOAT_1 :
-                FunctionConsts::FN_SUM_FLOAT_2);
+                FunctionConsts::OP_SUM_FLOAT_1 :
+                FunctionConsts::OP_SUM_FLOAT_2);
   
   }
 
@@ -431,15 +431,15 @@ public:
 };
 
 
-//fn:sum_decimal
-class fn_sum_decimal : public function
+//op:sum_decimal
+class op_sum_decimal : public function
 {
 public:
-  fn_sum_decimal(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
+  op_sum_decimal(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
     theKind = (sig.paramCount() == 1 ?
-                FunctionConsts::FN_SUM_DECIMAL_1 :
-                FunctionConsts::FN_SUM_DECIMAL_2);
+                FunctionConsts::OP_SUM_DECIMAL_1 :
+                FunctionConsts::OP_SUM_DECIMAL_2);
   
   }
 
@@ -449,15 +449,15 @@ public:
 };
 
 
-//fn:sum_integer
-class fn_sum_integer : public function
+//op:sum_integer
+class op_sum_integer : public function
 {
 public:
-  fn_sum_integer(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
+  op_sum_integer(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
     theKind = (sig.paramCount() == 1 ?
-                FunctionConsts::FN_SUM_INTEGER_1 :
-                FunctionConsts::FN_SUM_INTEGER_2);
+                FunctionConsts::OP_SUM_INTEGER_1 :
+                FunctionConsts::OP_SUM_INTEGER_2);
   
   }
 

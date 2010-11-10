@@ -167,7 +167,7 @@ PlanIter_t fn_sum::codegen(
   return new FnSumIterator(sctx, loc, argv);
 }
 
-PlanIter_t fn_sum_double::codegen(
+PlanIter_t op_sum_double::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -177,7 +177,7 @@ PlanIter_t fn_sum_double::codegen(
   return new FnSumDoubleIterator(sctx, loc, argv);
 }
 
-PlanIter_t fn_sum_float::codegen(
+PlanIter_t op_sum_float::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -187,7 +187,7 @@ PlanIter_t fn_sum_float::codegen(
   return new FnSumFloatIterator(sctx, loc, argv);
 }
 
-PlanIter_t fn_sum_decimal::codegen(
+PlanIter_t op_sum_decimal::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -197,7 +197,7 @@ PlanIter_t fn_sum_decimal::codegen(
   return new FnSumDecimalIterator(sctx, loc, argv);
 }
 
-PlanIter_t fn_sum_integer::codegen(
+PlanIter_t op_sum_integer::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -446,53 +446,53 @@ void populate_context_sequences(static_context* sctx)
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
 
-  DECL(sctx, fn_sum_double,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","sum_double"),
+  DECL(sctx, op_sum_double,
+      (createQName("http://www.zorba-xquery.com/xquery/internal-functions","op","sum_double"),
       GENV_TYPESYSTEM.DOUBLE_TYPE_STAR,
       GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
 
 
-  DECL(sctx, fn_sum_double,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","sum_double"),
+  DECL(sctx, op_sum_double,
+      (createQName("http://www.zorba-xquery.com/xquery/internal-functions","op","sum_double"),
       GENV_TYPESYSTEM.DOUBLE_TYPE_STAR,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
 
-  DECL(sctx, fn_sum_float,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","sum_float"),
+  DECL(sctx, op_sum_float,
+      (createQName("http://www.zorba-xquery.com/xquery/internal-functions","op","sum_float"),
       GENV_TYPESYSTEM.FLOAT_TYPE_STAR,
       GENV_TYPESYSTEM.FLOAT_TYPE_ONE));
 
 
-  DECL(sctx, fn_sum_float,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","sum_float"),
+  DECL(sctx, op_sum_float,
+      (createQName("http://www.zorba-xquery.com/xquery/internal-functions","op","sum_float"),
       GENV_TYPESYSTEM.FLOAT_TYPE_STAR,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
 
-  DECL(sctx, fn_sum_decimal,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","sum_decimal"),
+  DECL(sctx, op_sum_decimal,
+      (createQName("http://www.zorba-xquery.com/xquery/internal-functions","op","sum_decimal"),
       GENV_TYPESYSTEM.DECIMAL_TYPE_STAR,
       GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
 
 
-  DECL(sctx, fn_sum_decimal,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","sum_decimal"),
+  DECL(sctx, op_sum_decimal,
+      (createQName("http://www.zorba-xquery.com/xquery/internal-functions","op","sum_decimal"),
       GENV_TYPESYSTEM.DECIMAL_TYPE_STAR,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
 
-  DECL(sctx, fn_sum_integer,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","sum_integer"),
+  DECL(sctx, op_sum_integer,
+      (createQName("http://www.zorba-xquery.com/xquery/internal-functions","op","sum_integer"),
       GENV_TYPESYSTEM.INTEGER_TYPE_STAR,
       GENV_TYPESYSTEM.INTEGER_TYPE_ONE));
 
 
-  DECL(sctx, fn_sum_integer,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","sum_integer"),
+  DECL(sctx, op_sum_integer,
+      (createQName("http://www.zorba-xquery.com/xquery/internal-functions","op","sum_integer"),
       GENV_TYPESYSTEM.INTEGER_TYPE_STAR,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));

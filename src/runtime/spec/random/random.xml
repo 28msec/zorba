@@ -24,7 +24,7 @@ Helper Iterator to produce a defined amount of integer items for testing purpose
 </zorba:description>
 
   <zorba:function>
-    <zorba:signature localname="numgen" prefix="fn">
+    <zorba:signature localname="numgen" prefix="op-zorba">
       <zorba:output>xs:decimal</zorba:output>
     </zorba:signature>
   </zorba:function>

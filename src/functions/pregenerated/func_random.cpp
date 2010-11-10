@@ -30,7 +30,7 @@ namespace zorba{
 
 
 
-PlanIter_t fn_numgen::codegen(
+PlanIter_t op_zorba_numgen::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -72,8 +72,8 @@ PlanIter_t fn_zorba_util_uuid::codegen(
 
 void populate_context_random(static_context* sctx)
 {
-  DECL(sctx, fn_numgen,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","numgen"),
+  DECL(sctx, op_zorba_numgen,
+      (createQName("http://www.zorba-xquery.com/zorba/internal-functions","op-zorba","numgen"),
       GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
 
 
