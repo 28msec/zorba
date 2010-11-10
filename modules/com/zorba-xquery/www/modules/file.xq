@@ -117,17 +117,20 @@ declare function file:files(
   $recursive as xs:boolean
 ) as xs:string* {
   for $f in file:files($path)
-  let $full := fn:concat($path, "/", $f)
+  let $full := fn:concat($path, file:path-separator(), $f)
   let $is_directory := file:is-directory($full)
   let $result :=
-    if ($recursive and $is_directory)
-    then
-      for $child in file:files($full, $pattern, $recursive)
-      return fn:concat($f, file:path-separator(), $child)
-    else
+    (
       if (fn:matches($f, $pattern))
       then $f
       else ()
+      ,
+      if ($recursive and $is_directory)
+      then
+        for $child in file:files($full, $pattern, $recursive)
+        return fn:concat($f, file:path-separator(), $child)
+      else ()
+  )
   return $result
 };
 
