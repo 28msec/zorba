@@ -51,7 +51,7 @@ void slurp_file (
   assert (qfile);
 
   qfile.seekg (0, std::ios::end);
-  size_t len = qfile.tellg ();
+  unsigned int len = static_cast<unsigned int> (qfile.tellg ());
   qfile.seekg (0, std::ios::beg);
 
   char *str = new char [len];

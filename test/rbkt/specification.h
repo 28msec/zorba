@@ -192,8 +192,10 @@ public:
   {
     std::ifstream lFile(str.c_str(), std::ifstream::in);
     std::stringstream lContent;
-    while(lFile.good()){
-      lContent << (char)lFile.get();
+    char c = (char)lFile.get();
+    while(lFile.good()) {
+      lContent << c;
+      c = (char)lFile.get();
     }
     lFile.close();
 
