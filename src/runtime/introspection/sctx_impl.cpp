@@ -595,6 +595,7 @@ bool FunctionNamesIterator::nextImpl(
     PlanState& aPlanState) const
 {
   FunctionNamesIteratorState* state;
+  bool already_returned;
 
   DEFAULT_STACK_INIT(FunctionNamesIteratorState, state, aPlanState);
 
@@ -603,9 +604,20 @@ bool FunctionNamesIterator::nextImpl(
   while (state->thePosition < state->theFunctions.size())
   {
     aResult = state->theFunctions[state->thePosition]->getName();
+    already_returned = false;
+
+    for (unsigned int i=0; i<state->thePosition; i++)
+      if (state->theFunctions[state->thePosition]->getName()->equals(state->theFunctions[i]->getName()))
+      {
+        already_returned = true; // skip functions with the same name but different arities
+        break;
+      }
 
     // Skip internal functions.
-    if (aResult->getNamespace() != XQUERY_OP_NS &&
+    if (!already_returned
+        &&
+        aResult->getNamespace() != XQUERY_OP_NS
+        &&
         aResult->getNamespace() != ZORBA_OP_NS)
     {
       STACK_PUSH(true, state);
@@ -1170,7 +1182,7 @@ OptionIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState)
 
   consumeNext(lName, theChildren[0].getp(), aPlanState);
 
-  if (theSctx->lookup_option(lName.getp(), lValue)) 
+  if (theSctx->lookup_option(lName.getp(), lValue))
   {
     tmp = lValue->str();
     GENV_ITEMFACTORY->createString(aResult, tmp);
