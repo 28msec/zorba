@@ -87,7 +87,6 @@
 
 
 #define NODE_SORT_OPT
-#define SKIP_ZORBA_MODULES
 
 namespace zorba
 {
@@ -752,7 +751,6 @@ public:
 
   theRootTranslator :
   -------------------
-
   Pointer to the root translator (The root translator points to itself).
 
   theRTM :
@@ -789,12 +787,6 @@ public:
   If this translator is working on a library module, theModulePrefix is the
   prefix associated with the ns uri of that module.
 
-  theBuiltInModules :
-  -------------------
-  Contains the target namespace of modules that consist exclussively of zorba
-  builtin functions. For each such module, we also report whether the module
-  has been imported by the current module or not.
-
   theImportedSchemas :
   --------------------
    Set of ns uris for all schemas directly imported by this module. Used to
@@ -823,7 +815,6 @@ public:
 
   theSctxIdStack :
   ----------------
-
   In non-DEBUGGER mode, this stack remains empty.
 
   export_sctx          : In case this is a library module translator, export_sctx
@@ -857,12 +848,10 @@ public:
 
   thePrintDepth :
   ---------------
-
    For pretty tracing
 
   theScopeDepth :
   ---------------
-
   Incremented/Decremented every time a scope is pushed/popped. Used for some 
   sanity checking only.
 
@@ -870,7 +859,6 @@ public:
 
   thePrologVars :
   ---------------
-
   thePrologVars vector contains one entry for each var V declared in the prolog
   of this module. The entry maps the var_expr for V to the expr E that initializes
   V (E is NULL for vars without init expr). At the end of each module translation,
@@ -989,7 +977,6 @@ protected:
   std::set<std::string>                  theImportedModules;
   zstring                                theModuleNamespace;
   zstring                                theModulePrefix;
-  std::vector<std::pair<zstring, bool> > theBuiltInModules;
 
   std::set<std::string>                  theImportedSchemas;
 
@@ -1119,23 +1106,6 @@ TranslatorImpl(
   var_get = GET_BUILTIN_FUNCTION(OP_VAR_REF_1);
   var_exists = GET_BUILTIN_FUNCTION(OP_VAR_EXISTS_1);
   assert(var_decl != NULL && var_set != NULL && var_get != NULL && var_exists != NULL);
-
-#ifdef SKIP_ZORBA_MODULES
-  theBuiltInModules.push_back(std::pair<zstring, bool>(ZORBA_MATH_FN_NS, false));
-  theBuiltInModules.push_back(std::pair<zstring, bool>(ZORBA_BASE64_FN_NS, false));
-  theBuiltInModules.push_back(std::pair<zstring, bool>(ZORBA_NODEREF_FN_NS, false));
-  theBuiltInModules.push_back(std::pair<zstring, bool>(ZORBA_XQDDF_FN_NS, false));
-  theBuiltInModules.push_back(std::pair<zstring, bool>(ZORBA_SCHEMA_FN_NS, false));
-  theBuiltInModules.push_back(std::pair<zstring, bool>(ZORBA_TIDY_FN_NS, false));
-  theBuiltInModules.push_back(std::pair<zstring, bool>(ZORBA_JSON_FN_NS, false));
-  theBuiltInModules.push_back(std::pair<zstring, bool>(ZORBA_CSV_FN_NS, false));
-  theBuiltInModules.push_back(std::pair<zstring, bool>(ZORBA_RANDOM_FN_NS, false));
-  theBuiltInModules.push_back(std::pair<zstring, bool>(ZORBA_INTROSPECT_DCTX_FN_NS, false));
-  theBuiltInModules.push_back(std::pair<zstring, bool>(ZORBA_INTROSPECT_SCTX_FN_NS, false));
-
-  theBuiltInModules.push_back(std::pair<zstring, bool>(ZORBA_UTIL_FN_NS, false));
-  theBuiltInModules.push_back(std::pair<zstring, bool>(ZORBA_FOP_FN_NS, false));
-#endif
 
   ctx_item_type = GENV_TYPESYSTEM.ITEM_TYPE_ONE;
 
@@ -2469,7 +2439,7 @@ void end_visit(const ModuleDecl& v, void* /*visit_state*/)
   if (theModuleNamespace.empty())
     ZORBA_ERROR_LOC(XQST0088, loc);
 
-  if (theModuleNamespace == XQUERY_OP_NS || theModuleNamespace == ZORBA_OP_NS)
+  if (static_context::is_reserved_module(theModuleNamespace))
   {
     ZORBA_ERROR_LOC_PARAM(XQP0016_RESERVED_MODULE_TARGET_NAMESPACE, loc,
                           theModuleNamespace.c_str(), "");
@@ -2939,7 +2909,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
   if (!v.get_prefix().empty())
     pfx = v.get_prefix();
 
-  if (targetNS == XQUERY_OP_NS || targetNS == ZORBA_OP_NS)
+  if (static_context::is_reserved_module(targetNS))
   {
     ZORBA_ERROR_LOC_PARAM(XQP0016_RESERVED_MODULE_TARGET_NAMESPACE, loc,
                           targetNS.c_str(), "");
@@ -2972,27 +2942,21 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 
   const URILiteralList* atlist = v.get_at_list();
 
-#ifdef SKIP_ZORBA_MODULES
-  // If the module is a "pre-defined" one (containing the decalrations of zorba
-  // builtin functions only), then we don't need to process it.
-  if (atlist == NULL)
+  // If the imported module X is a "builtin" one (i.e., containing decalrations
+  // of zorba builtin functions only), then we don't need to process it. We just
+  // need to record in the root sctx of the importing module that X has been
+  // imported.
+  if (atlist == NULL && static_context::is_builtin_module(targetNS))
   {
-    for (ulong i = 0; i < theBuiltInModules.size(); ++i)
-    {
-      if (targetNS == theBuiltInModules[i].first)
-      {
-        theBuiltInModules[i].second = true;
+    theRootSctx->add_imported_builtin_module(targetNS);
 
-        // we cannot skip the sctx introspection module because if contains
-        // some non-external functions as well.
-        if (targetNS != ZORBA_INTROSPECT_SCTX_FN_NS)
-        {
-          return;
-        }
-      }
+    // we cannot skip the sctx introspection module because if contains
+    // some non-external functions as well.
+    if (targetNS != static_context::ZORBA_INTROSP_SCTX_FN_NS)
+    {
+      return;
     }
   }
-#endif
 
   InternalModuleURIResolver* standardModuleResolver = GENV.getModuleURIResolver();
 
@@ -8817,7 +8781,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
   const zstring& fn_ns = qnameItem->getNamespace();
 
-  if (fn_ns == XQUERY_OP_NS || fn_ns == ZORBA_OP_NS)
+  if (static_context::is_reserved_module(fn_ns))
   {
     ZORBA_ERROR_LOC_PARAM(XQP0016_RESERVED_MODULE_TARGET_NAMESPACE, loc,
                           fn_ns.c_str(), "");
@@ -9021,21 +8985,6 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     }
   }
 
-  //  Some special processing is required for certain "zorba" functions
-  else if (fn_ns == ZORBA_OP_NS)
-  {
-    if (localName == "inline-xml" && numArgs == 1)
-    {
-      push_nodestack(new eval_expr(theRootSctx,
-                                   loc,
-                                   create_cast_expr(loc,
-                                                    arguments[0],
-                                                    theRTM.STRING_TYPE_ONE,
-                                                    true)));
-      return;
-    }
-  }
-
   numArgs = arguments.size();  // recompute size
 
   // Check if this is a call to a builtin constructor function
@@ -9076,23 +9025,16 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         udf->setLeaf(false);
       }
     }
-#ifdef SKIP_ZORBA_MODULES
+
     // It's not a udf. Check if it is a zorba builtin function, and if so,
     // make sure that the module it belongs to has been imported.
-    else if (fn_ns != XQUERY_FN_NS)
+    else if (f->isBuiltin() && fn_ns != XQUERY_FN_NS && fn_ns != theModuleNamespace)
     {
-      for (ulong i = 0; i < theBuiltInModules.size(); ++i)
+      if (! theSctx->is_imported_builtin_module(fn_ns))
       {
-        if (theBuiltInModules[i].first == fn_ns)
-        {
-          if (theBuiltInModules[i].second == false && fn_ns != theModuleNamespace)
-          {
-            ZORBA_ERROR_LOC_PARAM(XPST0017, loc, qname->get_qname(), to_string(numArgs));
-          }
-        }
+        ZORBA_ERROR_LOC_PARAM(XPST0017, loc, qname->get_qname(), to_string(numArgs));
       }
     }
-#endif
 
     std::reverse(arguments.begin(), arguments.end());
 

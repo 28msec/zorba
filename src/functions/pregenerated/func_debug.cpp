@@ -61,7 +61,7 @@ void populate_context_debug(static_context* sctx)
 
 
   DECL(sctx, op_zorba_read_line,
-      (createQName("http://www.zorba-xquery.com/zorba/internal-functions","op-zorba","read-line"),
+      (createQName("http://www.zorba-xquery.com/internal/zorba-ops","op-zorba","read-line"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 

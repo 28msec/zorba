@@ -41,7 +41,7 @@
                      prefix="fn-zorba-xqdoc"/>
 
     <zorba:namespace uri="http://www.zorba-xquery.com/modules/random" 
-                     define="ZOBA_RANDOM_FN_NS" 
+                     define="ZORBA_RANDOM_FN_NS" 
                      prefix="fn-zorba-random"/>
 
     <zorba:namespace uri="http://www.zorba-xquery.com/modules/introspection/dctx"
@@ -56,11 +56,11 @@
                      define="ZORBA_UTIL_FN_NS"
                      prefix="fn-zorba-util"/>
 
-    <zorba:namespace uri="http://www.zorba-xquery.com/xquery/internal-functions"
+    <zorba:namespace uri="http://www.zorba-xquery.com/internal/xquery-ops"
                      define="XQUERY_OP_NS"
                      prefix="op"/>
 
-    <zorba:namespace uri="http://www.zorba-xquery.com/zorba/internal-functions"
+    <zorba:namespace uri="http://www.zorba-xquery.com/internal/zorba-ops"
                      define="ZORBA_OP_NS"
                      prefix="op-zorba"/>
 

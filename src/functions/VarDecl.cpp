@@ -153,23 +153,28 @@ public:
 
 void populateContext_VarDecl(static_context* sctx)
 {
-DECL(sctx, ctx_variable,
-     (createQName(ZORBA_OP_NS, "", "ctxvar-ref"),
-      GENV_TYPESYSTEM.STRING_TYPE_ONE,
-      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
-DECL(sctx, ctx_var_declare,
-     (createQName(ZORBA_OP_NS, "", "ctxvar-declare"),
-      GENV_TYPESYSTEM.STRING_TYPE_ONE,
-      GENV_TYPESYSTEM.EMPTY_TYPE));
-DECL(sctx, ctx_var_assign,
-     (createQName(ZORBA_OP_NS, "", "ctxvar-assign"),
-      GENV_TYPESYSTEM.STRING_TYPE_ONE,
-      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-      GENV_TYPESYSTEM.EMPTY_TYPE));
-DECL(sctx, ctx_var_exists,
-     (createQName(ZORBA_OP_NS, "", "ctxvar-exists"),
-      GENV_TYPESYSTEM.STRING_TYPE_ONE,
-      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+  const char* zorba_op_ns = static_context::ZORBA_OP_NS.c_str();
+
+  DECL(sctx, ctx_variable,
+       (createQName(zorba_op_ns, "", "ctxvar-ref"),
+        GENV_TYPESYSTEM.STRING_TYPE_ONE,
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
+  DECL(sctx, ctx_var_declare,
+       (createQName(zorba_op_ns, "", "ctxvar-declare"),
+        GENV_TYPESYSTEM.STRING_TYPE_ONE,
+        GENV_TYPESYSTEM.EMPTY_TYPE));
+
+  DECL(sctx, ctx_var_assign,
+       (createQName(zorba_op_ns, "", "ctxvar-assign"),
+        GENV_TYPESYSTEM.STRING_TYPE_ONE,
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+        GENV_TYPESYSTEM.EMPTY_TYPE));
+
+  DECL(sctx, ctx_var_exists,
+       (createQName(zorba_op_ns, "", "ctxvar-exists"),
+        GENV_TYPESYSTEM.STRING_TYPE_ONE,
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 }
 
 

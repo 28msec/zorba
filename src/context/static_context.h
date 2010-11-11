@@ -212,53 +212,51 @@ public:
 
   theParent :
   -----------
-
   Pointer to the parent sctx object in the sctx hierarchy.
 
   theTraceStream :
   ----------------
-
   Output stream that is used by the fn:trace function. std::cerr is the default
   if the user didn't provide one.
 
   theQueryExpr :
   --------------
-
   If this sctx is the root sctx for a mainModule, theQueryExpr is the result
   of the translation of that mainModule. It is used in implementing the
   loadProlog api.
 
   theModuleNamespace :
   --------------------
-
   If this is the root sctx of a library module, theModuleNamespace stores the
   target namespace URI of that module.
 
+  theImportedBuiltinModules :
+  ---------------------------
+  If this is the root sctx of a module, theImportedBuiltinModules stores the
+  namespaces of "builtin" modules that have been imported by this module. 
+  Builtin modules are modules that declare user-visible zorba builtin functions
+  (see also ns_consts.h)
+
   theBaseUriInfo :
   ----------------
-
   Stores various URIs that participate in the computation of the module's base
   URI, as described in the W3C spec.
 
   theDocResolver :
   ----------------
-
   URI resolver used for retrieving documents (used by fn:doc and fn:doc-available).
 
   theColResolver :
   ----------------
-
   URI resolver used for retrieving W3C collections (used by fn:collection).
 
   theSchemaResolvers :
   -------------------
-
   Vector of URI resolvers used for retrieving a schema given the schema's target
   namespace and an optional list of URLs that may store the schema.
 
   theModuleResolvers :
   -------------------
-
   Vector of URI resolvers used for retrieving (a) the URIs of the components of
   a module given the module's target namespece and then (b) a module component
   given its URI. Actually, the URI resolvers registered in this vector are used
@@ -268,7 +266,6 @@ public:
 
   theModulePaths :
   ----------------
-
   Vector of absolute directory pathnames for directories that contain module
   files and/or schema files and/or library files that contain the implementations
   of external functions. The Zorba root sctx stores a number of predefined paths.
@@ -282,24 +279,20 @@ public:
 
   theTypemgr :
   ------------
-
   If non NULL, then "this" is the root sctx of a module, and theTypemgr stores
   the schemas that are imported by the associated module (in-scope element
   declarations, in-scope attribute declarations and in-scope type declarations).
 
   theNamespaceBindings :
   ----------------------
-
   A hash map whose entries map qname prefixes to namespace URIs.
 
   theDefaultElementNamespace :
   ----------------------------
-
   The namespace URI to be used for element and type qnames whose prefix is empty.
 
   theDefaultFunctionNamespace :
   -----------------------------
-
   The namespace URI to be used for function qnames whose prefix is empty.
 
   theCtxItemType :
@@ -310,7 +303,6 @@ public:
 
   theFunctionMap :
   ----------------
-
   An entry of this hash map maps an expanded qname to the function object with
   that qname. The qname of a function does not fully identify the function; the
   arity is needed together with the qname for a full id. But, most functions
@@ -320,7 +312,6 @@ public:
 
   theFunctionArityMap :
   ---------------------
-
   An entry of this hash map maps an expanded qname to a vector of function
   objects with that qname. The function ojbects in this vector correspond to
   different versions of a function that all share the same qname but have
@@ -329,7 +320,6 @@ public:
 
   theCollectionMap :
   ------------------
-
   A hash mash map mapping XQDDF collection qnames to the objs storing the info
   from the declaration of the associated collections.
 
@@ -347,7 +337,6 @@ public:
 
   theIndexMap :
   -------------
-
   A hash mash map mapping XQDDF index qnames to the objs storing the info from
   the declaration of the associated index.
 
@@ -359,7 +348,6 @@ public:
 
   theICMap :
   ----------
-
   A hash mash map mapping XQDDF integrity constraint qnames to the objs storing
   the info from the declaration of the associated integrity constraint.
 
@@ -374,7 +362,6 @@ public:
 
   theDecimalFormats :
   -------------------
-
   Set of decimal formats. Each decimal format is identified by a qname.
   theDecimalFormats must not contain two decimal formats with the same qname.
   If an ancestor sctx contains a decimal format with the same qname as a
@@ -437,6 +424,38 @@ public:
 
   typedef serializable_HashMapZString<ctx_module_t> ExternalModuleMap;
 
+public:
+  static const zstring ZORBA_NS_PREFIX;
+
+  //
+  // Namespaces of external modules declaring zorba builtin functions
+  //
+  static const zstring ZORBA_MATH_FN_NS;
+  static const zstring ZORBA_BASE64_FN_NS;
+  static const zstring ZORBA_NODEREF_FN_NS;
+  static const zstring ZORBA_XQDDF_FN_NS;
+  static const zstring ZORBA_SCHEMA_FN_NS;
+  static const zstring ZORBA_TIDY_FN_NS;
+  static const zstring ZORBA_JSON_FN_NS;
+  static const zstring ZORBA_CSV_FN_NS;
+  static const zstring ZORBA_XQDOC_FN_NS;
+  static const zstring ZORBA_RANDOM_FN_NS;
+  static const zstring ZORBA_INTROSP_SCTX_FN_NS;
+  static const zstring ZORBA_INTROSP_DCTX_FN_NS;
+
+  //
+  // Namespaces of virtual modules declaring zorba builtin functions
+  //
+  static const zstring ZORBA_UTIL_FN_NS;
+  static const zstring ZORBA_FOP_FN_NS;
+
+  //
+  // Namespaces of virtual modules declaring internal builtin functions of
+  // XQUERY or zorba. Internal functions are not visible to xquery programs.
+  //
+  static const zstring XQUERY_OP_NS;
+  static const zstring ZORBA_OP_NS;
+
 protected:
   static_context                        * theParent;
 
@@ -445,6 +464,8 @@ protected:
   expr_t                                  theQueryExpr;
 
   std::string                             theModuleNamespace;
+
+  std::vector<zstring>                  * theImportedBuiltinModules;
 
   BaseUriInfo                           * theBaseUriInfo;
 
@@ -524,6 +545,11 @@ protected:
   std::vector<ModuleImportChecker*>          theModuleImportCheckers;
 
 public:
+  static bool is_builtin_module(const zstring& ns);
+
+  static bool is_reserved_module(const zstring& ns);
+
+public:
   SERIALIZABLE_CLASS(static_context);
 
   void serialize_resolvers(serialization::Archiver& ar);
@@ -554,6 +580,10 @@ public:
   void set_module_namespace(const zstring& ns) { theModuleNamespace = ns.str(); }
 
   const std::string& get_module_namespace() const { return theModuleNamespace; }
+
+  void add_imported_builtin_module(const zstring& ns);
+
+  bool is_imported_builtin_module(const zstring& ns);
 
   //
   // Base uri

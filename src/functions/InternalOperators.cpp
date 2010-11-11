@@ -86,13 +86,15 @@ public:
 
 void populateContext_Hoisting(static_context* sctx)
 {
+  const char* zorba_op_ns = static_context::ZORBA_OP_NS.c_str();
+
   DECL(sctx, zop_hoist,
-       (createQName(ZORBA_OP_NS, "", "hoist"),
+       (createQName(zorba_op_ns, "", "hoist"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
   DECL(sctx, zop_unhoist,
-       (createQName(ZORBA_OP_NS, "", "unhoist"),
+       (createQName(zorba_op_ns, "", "unhoist"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 }

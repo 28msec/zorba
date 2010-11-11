@@ -601,19 +601,17 @@ bool FunctionNamesIterator::nextImpl(
     aResult = state->theFunctions[state->thePosition]->getName();
     already_returned = false;
 
-    for (unsigned int i=0; i<state->thePosition; i++)
+    for (unsigned int i = 0; i < state->thePosition; ++i)
+    {
       if (state->theFunctions[state->thePosition]->getName()->equals(state->theFunctions[i]->getName()))
       {
-        already_returned = true; // skip functions with the same name but different arities
+        // skip functions with the same name but different arities
+        already_returned = true;
         break;
       }
+    }
 
-    // Skip internal functions.
-    if (!already_returned
-        &&
-        aResult->getNamespace() != XQUERY_OP_NS
-        &&
-        aResult->getNamespace() != ZORBA_OP_NS)
+    if (! already_returned)
     {
       STACK_PUSH(true, state);
     }

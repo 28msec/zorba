@@ -73,7 +73,7 @@ PlanIter_t fn_zorba_util_uuid::codegen(
 void populate_context_random(static_context* sctx)
 {
   DECL(sctx, op_zorba_numgen,
-      (createQName("http://www.zorba-xquery.com/zorba/internal-functions","op-zorba","numgen"),
+      (createQName("http://www.zorba-xquery.com/internal/zorba-ops","op-zorba","numgen"),
       GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
 
 

@@ -729,7 +729,7 @@ PlanIter_t op_double_unary_minus::codegen(
 ********************************************************************************/
 #define DECL_ARITH( sctx, op, type, xqt )                              \
 DECL(sctx, op_numeric_##op##_##type,                                   \
-     (createQName(ZORBA_OP_NS,"", "numeric-" #op "-" #type),           \
+     (createQName(zorba_op_ns,"", "numeric-" #op "-" #type),           \
       GENV_TYPESYSTEM.xqt##_TYPE_QUESTION,                             \
       GENV_TYPESYSTEM.xqt##_TYPE_QUESTION,                             \
       GENV_TYPESYSTEM.xqt##_TYPE_QUESTION))
@@ -737,7 +737,7 @@ DECL(sctx, op_numeric_##op##_##type,                                   \
 
 #define DECL_ALL_ARITH( sctx, op )                             \
 DECL(sctx, op_numeric_##op,                                    \
-     (createQName(XQUERY_OP_NS, "", "numeric-" #op),           \
+     (createQName(xquery_op_ns, "", "numeric-" #op),           \
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,                \
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,                \
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));              \
@@ -750,19 +750,22 @@ DECL_ARITH(sctx, op, integer, INTEGER)
 
 void populateContext_Numerics(static_context* sctx) 
 {
+  const char* xquery_op_ns = static_context::XQUERY_OP_NS.c_str();
+  const char* zorba_op_ns = static_context::ZORBA_OP_NS.c_str();
+
   DECL_ALL_ARITH (sctx, add);
   DECL_ALL_ARITH (sctx, subtract);
   DECL_ALL_ARITH (sctx, multiply);
   DECL_ALL_ARITH (sctx, divide);
 
   DECL(sctx, op_numeric_integer_divide,
-       (createQName(XQUERY_OP_NS, "", "numeric-integer-divide"),
+       (createQName(xquery_op_ns, "", "numeric-integer-divide"),
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
   DECL(sctx, op_numeric_mod,
-       (createQName(ZORBA_OP_NS, "", "numeric-mod"),
+       (createQName(zorba_op_ns, "", "numeric-mod"),
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
@@ -781,22 +784,22 @@ void populateContext_Numerics(static_context* sctx)
       Specification.
   */
   DECL(sctx, op_numeric_unary_minus,
-       (createQName(XQUERY_OP_NS, "", "unary-minus"),
+       (createQName(xquery_op_ns, "", "unary-minus"),
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
   DECL(sctx, op_double_unary_minus,
-       (createQName(ZORBA_OP_NS, "", "double-minus"),
+       (createQName(zorba_op_ns, "", "double-minus"),
         GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION,
         GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION));
 
   DECL(sctx, op_numeric_unary_plus,
-       (createQName(XQUERY_OP_NS, "", "unary-plus"),
+       (createQName(xquery_op_ns, "", "unary-plus"),
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
   DECL(sctx, op_double_unary_plus,
-       (createQName(ZORBA_OP_NS, "", "double-plus"),
+       (createQName(zorba_op_ns, "", "double-plus"),
         GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION,
         GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION));
 }

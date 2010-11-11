@@ -57,12 +57,14 @@ ExternalFunctionData::error()
   error(lItem);
 }
 
+
 void
 ExternalFunctionData::error(const Item& aQName)
 {
   String lString;
   error(aQName, lString);
 }
+
 
 void
 ExternalFunctionData::error(const Item& aQName, const String& aDescription)
@@ -71,8 +73,12 @@ ExternalFunctionData::error(const Item& aQName, const String& aDescription)
   error(aQName, aDescription, lNullSeq);
 }
 
+
 void
-ExternalFunctionData::error(const Item& aQName, const String& aDescription, const ItemSequence_t& aErrorObject)
+ExternalFunctionData::error(
+    const Item& aQName,
+    const String& aDescription,
+    const ItemSequence_t& aErrorObject)
 {
   store::Item_t lErrorQName = getErrorQName(aQName);
 
@@ -83,7 +89,7 @@ ExternalFunctionData::error(const Item& aQName, const String& aDescription, cons
     while (aErrorObject->next(lTmpItem)) {
       lErrorObject.push_back(Unmarshaller::getInternalItem(lTmpItem));
     }
- }
+  }
 
   QueryLoc lDummyLoc;
   error::ZorbaUserError lError(

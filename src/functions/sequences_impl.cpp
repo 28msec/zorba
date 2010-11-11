@@ -810,35 +810,38 @@ BoolAnnotationValue fn_idref::ignoresDuplicateNodes(expr* fo, ulong input) const
 ********************************************************************************/
 void populate_context_sequences_impl(static_context* sctx)
 {
+  const char* xquery_op_ns = static_context::XQUERY_OP_NS.c_str();
+  const char* zorba_op_ns = static_context::ZORBA_OP_NS.c_str();
+
   DECL(sctx, fn_unordered,
-       (createQName(XQUERY_FN_NS,"fn","unordered"),
+       (createQName(XQUERY_FN_NS, "fn", "unordered"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
   DECL(sctx, fn_exactly_one,
-       (createQName(XQUERY_FN_NS,"fn","exactly-one"),
+       (createQName(XQUERY_FN_NS, "fn", "exactly-one"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
         GENV_TYPESYSTEM.ITEM_TYPE_ONE));
 
   DECL(sctx, fn_exactly_one_noraise,
-       (createQName(ZORBA_OP_NS,"","exactly-one-noraise"),
+       (createQName(zorba_op_ns, "", "exactly-one-noraise"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
   DECL(sctx, fn_union,
-       (createQName(XQUERY_OP_NS,"","union"),
+       (createQName(xquery_op_ns,"","union"),
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
   DECL(sctx, fn_intersect,
-       (createQName(XQUERY_OP_NS,"","intersect"),
+       (createQName(xquery_op_ns,"","intersect"),
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
   DECL(sctx, fn_except,
-       (createQName(XQUERY_OP_NS,"","except"),
+       (createQName(xquery_op_ns,"","except"),
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));

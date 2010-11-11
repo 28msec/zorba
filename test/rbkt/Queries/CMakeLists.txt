@@ -322,8 +322,6 @@ EXPECTED_FAILURE(test/rbkt/zorba/aleXis/q11 3103700)
 
 EXPECTED_FAILURE(test/rbkt/zorba/file/copy 3104082)
 
-EXPECTED_FAILURE(test/rbkt/zorba/introspection/introsp-function-names1 3097189)
-
 EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_1_0 3106633)
 EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_1_1 3106635)
 # --------------------------------------------------------------------------

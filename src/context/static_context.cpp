@@ -244,12 +244,117 @@ void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
 
 
 /***************************************************************************//**
+  Target namespaces of zorba builtin modules 
+********************************************************************************/
+#define NS_PRE static_context::ZORBA_NS_PREFIX
+
+const zstring
+static_context::ZORBA_NS_PREFIX = "http://www.zorba-xquery.com/";
+
+const zstring
+static_context::ZORBA_MATH_FN_NS = NS_PRE + "modules/math";
+
+const zstring
+static_context::ZORBA_BASE64_FN_NS = NS_PRE + "modules/base64";
+
+const zstring
+static_context::ZORBA_NODEREF_FN_NS = NS_PRE + "modules/node-reference";
+
+const zstring 
+static_context::ZORBA_XQDDF_FN_NS = static_context::ZORBA_NS_PREFIX + "modules/xqddf";
+
+const zstring 
+static_context::ZORBA_SCHEMA_FN_NS = static_context::ZORBA_NS_PREFIX + "modules/schema";
+
+const zstring 
+static_context::ZORBA_TIDY_FN_NS = static_context::ZORBA_NS_PREFIX + "modules/tidy";
+
+const zstring 
+static_context::ZORBA_JSON_FN_NS = static_context::ZORBA_NS_PREFIX + "modules/json";
+
+const zstring 
+static_context::ZORBA_CSV_FN_NS = static_context::ZORBA_NS_PREFIX + "modules/csv2xml";
+
+const zstring 
+static_context::ZORBA_XQDOC_FN_NS = static_context::ZORBA_NS_PREFIX + "modules/xqdoc";
+
+const zstring 
+static_context::ZORBA_RANDOM_FN_NS = static_context::ZORBA_NS_PREFIX + "modules/random";
+
+const zstring 
+static_context::ZORBA_INTROSP_SCTX_FN_NS = static_context::ZORBA_NS_PREFIX + "modules/introspection/sctx";
+
+const zstring
+static_context::ZORBA_INTROSP_DCTX_FN_NS = NS_PRE + "modules/introspection/dctx";
+
+const zstring
+static_context::ZORBA_UTIL_FN_NS = NS_PRE + "zorba/util-functions";
+
+const zstring
+static_context::ZORBA_FOP_FN_NS = NS_PRE + "zorba/fop-functions";
+
+
+/***************************************************************************//**
+  Target namespaces of zorba reserved modules 
+********************************************************************************/
+const zstring
+static_context::XQUERY_OP_NS = ZORBA_NS_PREFIX + "internal/xquery-ops";
+
+const zstring
+static_context::ZORBA_OP_NS = ZORBA_NS_PREFIX + "internal/zorba-ops";
+
+
+/***************************************************************************//**
+  Static method to check if a given target namespace identifies a zorba
+  builtin module. 
+********************************************************************************/
+bool static_context::is_builtin_module(const zstring& ns)
+{
+  if (ns.compare(0, ZORBA_NS_PREFIX.size(), ZORBA_NS_PREFIX) == 0)
+  {
+    return (ns == ZORBA_MATH_FN_NS ||
+            ns == ZORBA_BASE64_FN_NS ||
+            ns == ZORBA_NODEREF_FN_NS ||
+            ns == ZORBA_XQDDF_FN_NS ||
+            ns == ZORBA_SCHEMA_FN_NS ||
+            ns == ZORBA_TIDY_FN_NS ||
+            ns == ZORBA_JSON_FN_NS ||
+            ns == ZORBA_CSV_FN_NS ||
+            ns == ZORBA_XQDOC_FN_NS ||
+            ns == ZORBA_RANDOM_FN_NS ||
+            ns == ZORBA_INTROSP_SCTX_FN_NS ||
+            ns == ZORBA_INTROSP_DCTX_FN_NS ||
+            ns == ZORBA_UTIL_FN_NS ||
+            ns == ZORBA_FOP_FN_NS);
+  }
+
+  return false;
+}
+
+
+/***************************************************************************//**
+  Static method to check if a given target namespace identifies a zorba
+  reserved module. 
+********************************************************************************/
+bool static_context::is_reserved_module(const zstring& ns)
+{
+  if (ns.compare(0, ZORBA_NS_PREFIX.size(), ZORBA_NS_PREFIX) == 0)
+  {
+    return (ns == ZORBA_OP_NS || ns == XQUERY_OP_NS);
+  }
+
+  return false;
+}
+
+
+/***************************************************************************//**
   Default Constructor.
 ********************************************************************************/
 static_context::static_context()
   :
   theParent(NULL),
   theTraceStream(NULL),
+  theImportedBuiltinModules(NULL),
   theBaseUriInfo(NULL),
   theDocResolver(0),
   theColResolver(0),
@@ -296,6 +401,7 @@ static_context::static_context(static_context* parent)
   :
   theParent(parent),
   theTraceStream(NULL),
+  theImportedBuiltinModules(NULL),
   theBaseUriInfo(NULL),
   theDocResolver(0),
   theColResolver(0),
@@ -344,6 +450,7 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   :
   SimpleRCObject(ar),
   theTraceStream(NULL),
+  theImportedBuiltinModules(NULL),
   theBaseUriInfo(NULL),
   theDocResolver(0),
   theColResolver(0),
@@ -388,6 +495,9 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
 ********************************************************************************/
 static_context::~static_context()
 {
+  if (theImportedBuiltinModules)
+    delete theImportedBuiltinModules;
+
   if (theExternalModulesMap)
   {
     ExternalModuleMap::iterator ite = theExternalModulesMap->begin();
@@ -655,6 +765,8 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   }
 
   ar & theModuleNamespace;
+  ar & theImportedBuiltinModules;
+
   ar & theBaseUriInfo;
 
   serialize_resolvers(ar);
@@ -788,6 +900,47 @@ std::ostream* static_context::get_trace_stream() const
   return (theParent == NULL ?
           &std::cerr :
           dynamic_cast<static_context*>(theParent)->get_trace_stream());
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+void static_context::add_imported_builtin_module(const zstring& ns)
+{
+  if (theImportedBuiltinModules == NULL)
+  {
+    theImportedBuiltinModules = new std::vector<zstring>;
+  }
+
+  theImportedBuiltinModules->push_back(ns);
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+bool static_context::is_imported_builtin_module(const zstring& ns)
+{
+  static_context* sctx = this;
+
+  while (sctx != NULL)
+  {
+    if (sctx->theImportedBuiltinModules)
+    {
+      std::vector<zstring>::const_iterator ite = sctx->theImportedBuiltinModules->begin();
+      std::vector<zstring>::const_iterator end = sctx->theImportedBuiltinModules->end();
+      for (; ite != end; ++ite)
+      {
+        if (*ite == ns)
+          return true;
+      }
+    }
+
+    sctx = sctx->theParent;
+  }
+
+  return false;
 }
 
 
@@ -1916,17 +2069,28 @@ function* static_context::lookup_fn(
 
 
 /***************************************************************************//**
-  Find all the functions in this sctx and its ancestors.
+  Find all the in-scope and non-disabled functions in this sctx and its ancestors.
 ********************************************************************************/
 void static_context::get_functions(
     std::vector<function *>& functions) const
 {
   std::vector<function*> disabled;
+  std::vector<zstring> importedBuiltinModules;
 
   const static_context* sctx = this;
 
   while (sctx != NULL)
   {
+    if (sctx->theImportedBuiltinModules)
+    {
+      std::vector<zstring>::const_iterator ite = sctx->theImportedBuiltinModules->begin();
+      std::vector<zstring>::const_iterator end = sctx->theImportedBuiltinModules->end();
+      for (; ite != end; ++ite)
+      {
+        importedBuiltinModules.push_back(*ite);
+      }
+    }
+
     if (sctx->theFunctionMap != NULL)
     {
       FunctionMap::iterator ite = sctx->theFunctionMap->begin();
@@ -1940,13 +2104,44 @@ void static_context::get_functions(
         {
           if (std::find(disabled.begin(), disabled.end(), f) == disabled.end())
           {
-            // std::cout << "--> adding func: " << f->getName()->getStringValue() << ", params: " << f->getSignature().paramCount()
-            //    << " with addr: " << std::hex << f << std::endl;
+            // std::cout << "--> adding func: " << f->getName()->getStringValue()
+            //           << ", params: " << f->getSignature().paramCount()
+            //           << " with addr: " << std::hex << f << std::endl;
+            if (f->isBuiltin())
+            {
+              assert(sctx->is_global_root_sctx());
+
+              const zstring& ns = f->getName()->getNamespace();
+
+              if (ns != XQUERY_FN_NS)
+              {
+                if (ns == XQUERY_OP_NS || ns == ZORBA_OP_NS)
+                  continue;
+
+                std::vector<zstring>::const_iterator ite = importedBuiltinModules.begin();
+                std::vector<zstring>::const_iterator end = importedBuiltinModules.end();
+                for (; ite != end; ++ite)
+                {
+                  if (ns == *ite)
+                    break;
+                }
+
+                if (ite == end)
+                  continue;
+              }
+            }
+            else
+            {
+              assert(!sctx->is_global_root_sctx());
+            }
+
             functions.push_back(f);
           }
         }
         else
+        {
           disabled.push_back(f);
+        }
       }
     }
 
@@ -1968,13 +2163,44 @@ void static_context::get_functions(
           {
             if (std::find(disabled.begin(), disabled.end(), f) == disabled.end())
             {
-              // std::cout << "--> adding func: " << f->getName()->getStringValue() << ", params: " << f->getSignature().paramCount()
-              //    << " with addr: " << std::hex << f << std::endl;
+              // std::cout << "--> adding func: " << f->getName()->getStringValue()
+              //           << ", params: " << f->getSignature().paramCount()
+              //           << " with addr: " << std::hex << f << std::endl;
+              if (f->isBuiltin())
+              {
+                assert(sctx->is_global_root_sctx());
+
+                const zstring& ns = f->getName()->getNamespace();
+
+                if (ns != XQUERY_FN_NS)
+                {
+                  if (ns == XQUERY_OP_NS || ns == ZORBA_OP_NS)
+                    continue;
+
+                  std::vector<zstring>::const_iterator ite = importedBuiltinModules.begin();
+                  std::vector<zstring>::const_iterator end = importedBuiltinModules.end();
+                  for (; ite != end; ++ite)
+                  {
+                    if (ns == *ite)
+                      break;
+                  }
+                  
+                  if (ite == end)
+                    continue;
+                }
+              }
+              else
+              {
+                assert(!sctx->is_global_root_sctx());
+              }
+
               functions.push_back(f);
             }
           }
           else
+          {
             disabled.push_back(f);
+          }
         }
       }
     }

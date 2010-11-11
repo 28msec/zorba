@@ -52,36 +52,39 @@ public:
 
 void populateContext_Alexis(static_context* sctx)
 {
+  const char* util_ns = static_context::ZORBA_UTIL_FN_NS.c_str();
+  const char* tidy_ns = static_context::ZORBA_TIDY_FN_NS.c_str();
+
 #ifdef ZORBA_WITH_TIDY
   DECL(sctx, zorba_tidy,
-       (createQName(ZORBA_UTIL_FN_NS, "fn-zorba-util", "tidy"),
+       (createQName(util_ns, "", "tidy"),
         GENV_TYPESYSTEM.STRING_TYPE_ONE,
         GENV_TYPESYSTEM.ITEM_TYPE_ONE));
 
   DECL(sctx, zorba_tidy,
-       (createQName(ZORBA_UTIL_FN_NS, "fn-zorba-util", "tidy"),
+       (createQName(util_ns, "", "tidy"),
         GENV_TYPESYSTEM.STRING_TYPE_ONE,
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
         GENV_TYPESYSTEM.ITEM_TYPE_ONE));
 
   DECL(sctx, zorba_tdoc,
-       (createQName(ZORBA_UTIL_FN_NS, "fn-zorba-util", "tdoc"),
+       (createQName(util_ns, "", "tdoc"),
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
         GENV_TYPESYSTEM.DOCUMENT_TYPE_QUESTION));
 
   DECL(sctx, zorba_tdoc,
-       (createQName(ZORBA_UTIL_FN_NS, "fn-zorba-util", "tdoc"),
+       (createQName(util_ns, "", "tdoc"),
         GENV_TYPESYSTEM.STRING_TYPE_ONE,
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
         GENV_TYPESYSTEM.DOCUMENT_TYPE_QUESTION));
 
   DECL(sctx, zorba_tidy,
-       (createQName(ZORBA_TIDY_FN_NS, "fn-zorba-tidy", "tidy"),
+       (createQName(tidy_ns, "", "tidy"),
         GENV_TYPESYSTEM.STRING_TYPE_ONE,
         GENV_TYPESYSTEM.DOCUMENT_TYPE_ONE));
 
   DECL(sctx, zorba_tidy,
-       (createQName(ZORBA_TIDY_FN_NS, "fn-zorba-tidy", "tidy"),
+       (createQName(tidy_ns, "", "tidy"),
         GENV_TYPESYSTEM.STRING_TYPE_ONE,
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
         GENV_TYPESYSTEM.DOCUMENT_TYPE_ONE));

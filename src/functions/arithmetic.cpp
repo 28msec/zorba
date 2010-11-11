@@ -284,41 +284,43 @@ public:
 ********************************************************************************/
 void populateContext_Arithmetics(static_context* sctx) 
 {
-DECL(sctx, op_add,
-     (createQName (XQUERY_OP_NS,"op", "add"),
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+  const char* xquery_op_ns = static_context::XQUERY_OP_NS.c_str();
 
-DECL(sctx, op_subtract,
-     (createQName (XQUERY_OP_NS,"op", "subtract"),
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+  DECL(sctx, op_add,
+       (createQName (xquery_op_ns, "", "add"),
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
-DECL(sctx, op_multiply,
-     (createQName (XQUERY_OP_NS,"op", "multiply"),
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+  DECL(sctx, op_subtract,
+       (createQName (xquery_op_ns, "", "subtract"),
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
-DECL(sctx, op_divide,
-     (createQName (XQUERY_OP_NS,"op", "divide"),
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+  DECL(sctx, op_multiply,
+       (createQName (xquery_op_ns, "", "multiply"),
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
-DECL(sctx, op_integer_divide,
-     (createQName (XQUERY_OP_NS,"op", "integer-divide"),
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+  DECL(sctx, op_divide,
+       (createQName (xquery_op_ns, "", "divide"),
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
-DECL(sctx, op_mod,
-     (createQName (XQUERY_OP_NS,"op", "mod"),
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+  DECL(sctx, op_integer_divide,
+       (createQName (xquery_op_ns, "", "integer-divide"),
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+
+  DECL(sctx, op_mod,
+       (createQName (xquery_op_ns, "", "mod"),
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 }
 
 
