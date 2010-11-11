@@ -286,7 +286,6 @@ bool InscopeVariablesIterator::nextImpl(
     PlanState& aPlanState) const
 {
   InscopeVariablesIteratorState* state;
-  store::Item_t temp;
   DEFAULT_STACK_INIT(InscopeVariablesIteratorState, state, aPlanState);
 
   theSctx->getVariables(state->theVariables);
@@ -294,13 +293,8 @@ bool InscopeVariablesIterator::nextImpl(
 
   while (state->thePosition < state->theVariables.size())
   {
-    // STACK_PUSH(state->theVariables[state->thePosition]->get_name(), state); // TODO: passing a QName directly will result in a segmentation fault
-    temp = state->theVariables[state->thePosition]->get_name();
-    STACK_PUSH(GENV_ITEMFACTORY->createQName(aResult,
-                                             temp->getNamespace(),
-                                             temp->getPrefix(),
-                                             temp->getLocalName()),
-               state);
+    aResult = state->theVariables[state->thePosition]->get_name();
+    STACK_PUSH(true, state);
     ++state->thePosition;
   }
 
@@ -341,7 +335,7 @@ bool XPath10CompatModeIterator::nextImpl(
   STACK_PUSH(GENV_ITEMFACTORY->createBoolean(aResult,
                                              theSctx->xpath_compatibility() == StaticContextConsts::xpath1_0_only), state);
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 
@@ -365,8 +359,6 @@ bool StaticallyKnownDocumentsIterator::nextImpl(
     store::Item_t& aResult,
     PlanState& aPlanState) const
 {
-  zstring tmp;
-
   StaticallyKnownDocumentsIteratorState* state;
   DEFAULT_STACK_INIT(StaticallyKnownDocumentsIteratorState, state, aPlanState);
 
@@ -378,7 +370,7 @@ bool StaticallyKnownDocumentsIterator::nextImpl(
     ++state->thePosition;
   }
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 
@@ -407,14 +399,11 @@ bool StaticallyKnownDocumentTypeIterator::nextImpl(
   }
   else
   {
-    STACK_PUSH(GENV_ITEMFACTORY->createQName(aResult,
-                                             type->get_qname()->getNamespace(),
-                                             type->get_qname()->getPrefix(),
-                                             type->get_qname()->getLocalName()),
-                                             state);
+    aResult = type->get_qname();
+    STACK_PUSH(true, state);
   }
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 
@@ -537,8 +526,8 @@ bool BoundarySpacePolicyIterator::nextImpl(
   else
     temp = "strip";
 
-  STACK_PUSH( GENV_ITEMFACTORY->createString(aResult, temp), state);
-  STACK_END (state);
+  STACK_PUSH(GENV_ITEMFACTORY->createString(aResult, temp), state);
+  STACK_END(state);
 }
 
 
@@ -615,10 +604,7 @@ bool FunctionNamesIterator::nextImpl(
     {
       STACK_PUSH(true, state);
     }
-    else
-    {
-      //std::cout << "skipping function " << aResult->show() << std::endl;
-    }
+
     ++state->thePosition;
   }
 
@@ -744,7 +730,7 @@ bool InScopeSchemaTypesIterator::nextImpl(
                                              qname_ns.c_str(),
                                              "",
                                              StrX(xsElement->getName()).localForm()),
-               state);
+                                             state);
   }
 
   STACK_END (state);
@@ -834,7 +820,7 @@ bool InScopeElementDeclarationsIterator::nextImpl(
                                              qname_ns.c_str(),
                                              "",
                                              StrX(xsElement->getName()).localForm()),
-               state);
+                                             state);
   }
 
   STACK_END (state);
@@ -1222,12 +1208,8 @@ FunctionAnnotationsIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanSt
          &&
          lState->thePosition < lState->theFunction->getAnnotationList()->size())
   {
-    temp = lState->theFunction->getAnnotationList()->getAnnotation(lState->thePosition)->getQName();
-    STACK_PUSH(GENV_ITEMFACTORY->createQName(aResult,
-                                             temp->getNamespace(),
-                                             temp->getPrefix(),
-                                             temp->getLocalName()),
-               lState);
+    aResult = lState->theFunction->getAnnotationList()->getAnnotation(lState->thePosition)->getQName();
+    STACK_PUSH(true, lState);
     ++lState->thePosition;
   }
 

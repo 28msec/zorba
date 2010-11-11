@@ -57,7 +57,6 @@ class TypeManager;
 class XQPCollator;
 
 template <class V> class serializable_ItemPointerHashMap;
-template <class V> class serializable_HashMapStrHandle;
 
 class IndexDecl;
 typedef rchandle<IndexDecl> IndexDecl_t;
