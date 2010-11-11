@@ -7,7 +7,7 @@
  : @library <a href="http://www.imagemagick.org/Magick++/">Magick++ C++ Library</a>
  :)
 module namespace anim = 'http://www.zorba-xquery.com/modules/image/animation';
-import module namespace animschema = 'http://www.zorba-xquery.com/modules/image/animationschema';
+
 
 
 
@@ -21,9 +21,7 @@ import module namespace animschema = 'http://www.zorba-xquery.com/modules/image/
  : @return A new image that is an animated GIF composed out of the passed images.
  : @error If any of the passed xs:base64Binary is not a valid image.
  :)
-declare function anim:create-animated-gif($images as xs:base64Binary+, $delay as xs:unsignedInt, $iterations as xs:unsignedInt) as xs:base64Binary {
-  animschema:create-animated-gif($images, $delay, $iterations)
-};
+declare function anim:create-animated-gif($images as xs:base64Binary+, $delay as xs:unsignedInt, $iterations as xs:unsignedInt) as xs:base64Binary external; 
 
 
 (:~
@@ -37,9 +35,5 @@ declare function anim:create-animated-gif($images as xs:base64Binary+, $delay as
  : @return A new image that is an animated GIF composed out of the passed images.
  : @error If any of the passed xs:base64Binary is not a valid image.
  :)
-declare function anim:create-morphed-gif($images as xs:base64Binary+, $delay as xs:unsignedInt, $iterations as xs:unsignedInt, $number-of-added-frames as xs:unsignedInt) as xs:base64Binary {
-  animschema:create-morphed-gif($images, $delay, $iterations, $number-of-added-frames)
-};
-
-
+declare function anim:create-morphed-gif($images as xs:base64Binary+, $delay as xs:unsignedInt, $iterations as xs:unsignedInt, $number-of-added-frames as xs:unsignedInt) as xs:base64Binary external; 
 
