@@ -83,7 +83,7 @@ class ConvertFunction : public zorba::imagemodule::ImageFunction
   {
     public:
       ConvertFunction(const ImageModule* aModule);
-      virtual String getLocalName() const { return "convert"; }
+      virtual String getLocalName() const { return "convert-impl"; }
 
       virtual ItemSequence_t
       evaluate(const StatelessExternalFunction::Arguments_t& args,
@@ -114,7 +114,7 @@ class CreateFunction : public zorba::imagemodule::ImageFunction
   {
     public:
       CreateFunction(const ImageModule* aModule);
-      virtual String getLocalName() const { return "create"; }
+      virtual String getLocalName() const { return "create-impl"; }
 
       virtual ItemSequence_t
       evaluate(const StatelessExternalFunction::Arguments_t& args,

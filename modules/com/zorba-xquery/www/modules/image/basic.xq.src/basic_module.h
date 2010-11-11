@@ -33,7 +33,7 @@ class BasicModule : public ImageModule
  
 
   virtual String
-  getURI() const { return "http://www.zorba-xquery.com/modules/image/basicschema"; }
+  getURI() const { return "http://www.zorba-xquery.com/modules/image/basic"; }
 
 };
 

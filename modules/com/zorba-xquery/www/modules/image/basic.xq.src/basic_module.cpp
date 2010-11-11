@@ -32,11 +32,11 @@ BasicModule::getExternalFunction(String aLocalname) const
       lFunc = new HeightFunction(this);
     } else if (aLocalname.equals("type")) {
       lFunc = new TypeFunction(this);
-    } else if (aLocalname.equals("convert")) {
+    } else if (aLocalname.equals("convert-impl")) {
       lFunc = new ConvertFunction(this);
     } else if (aLocalname.equals("compress")) {
       lFunc = new CompressFunction(this);
-    } else if (aLocalname.equals("create")) {
+    } else if (aLocalname.equals("create-impl")) {
       lFunc = new CreateFunction(this); 
     } else if (aLocalname.equals("equals")) {
       lFunc = new EqualsFunction(this);
