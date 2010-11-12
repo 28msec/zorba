@@ -211,8 +211,6 @@
   DECLARE_VISITOR (OpDoubleUnaryIterator)
   DECLARE_VISITOR (TextIterator)
   DECLARE_VISITOR (FnDateTimeConstructorIterator)
-  DECLARE_VISITOR (CreateTupleIterator)
-  DECLARE_VISITOR (GetTupleFieldIterator)
   DECLARE_VISITOR (TryCatchIterator)
   DECLARE_VISITOR (flwor::FLWORIterator)
   DECLARE_VISITOR (flwor::TupleStreamIterator)

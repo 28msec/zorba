@@ -37,7 +37,6 @@
 #include "runtime/core/gflwor/groupby_iterator.h"
 #include "runtime/core/gflwor/window_iterator.h"
 #include "runtime/core/flwor_iterator.h"
-#include "runtime/core/tuple_iterators.h"
 #include "runtime/core/trycatch.h"
 #include "runtime/core/apply_updates.h"
 #include "runtime/core/nodeid_iterators.h"
@@ -1180,8 +1179,6 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
   PRINTER_VISITOR_DEFINITION (OpDoubleUnaryIterator)
   PRINTER_VISITOR_DEFINITION (TextIterator)
   PRINTER_VISITOR_DEFINITION (FnDateTimeConstructorIterator)
-  PRINTER_VISITOR_DEFINITION (CreateTupleIterator)
-  PRINTER_VISITOR_DEFINITION (GetTupleFieldIterator)
   PRINTER_VISITOR_DEFINITION (TryCatchIterator)
   PRINTER_VISITOR_DEFINITION (flwor::FLWORIterator)
   PRINTER_VISITOR_DEFINITION (flwor::TupleStreamIterator)

@@ -182,10 +182,6 @@
 
   PLAN_ITER_VISITOR (TextIterator);
 
-  PLAN_ITER_VISITOR (CreateTupleIterator);
-
-  PLAN_ITER_VISITOR (GetTupleFieldIterator);
-
   PLAN_ITER_VISITOR (flwor::FLWORIterator);
 
   PLAN_ITER_VISITOR (flwor::TupleStreamIterator);

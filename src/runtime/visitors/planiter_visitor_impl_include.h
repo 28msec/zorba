@@ -120,8 +120,6 @@
   class RenameIterator;
   class TransformIterator;
   class ApplyIterator;
-  class CreateTupleIterator;
-  class GetTupleFieldIterator;
   class FTContainsIterator;
 
   class ZorbaSchemaTypeIterator;
