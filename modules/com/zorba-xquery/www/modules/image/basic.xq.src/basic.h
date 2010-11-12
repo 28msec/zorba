@@ -156,6 +156,20 @@ class ExifFunction : public zorba::imagemodule::ImageFunction
   };
 
 
+//*****************************************************************************
+
+class ConvertSVGFunction : public zorba::imagemodule::ImageFunction
+  {
+    public:
+      ConvertSVGFunction(const ImageModule* aModule);
+      virtual String getLocalName() const { return "convert-svg-impl"; }
+
+      virtual ItemSequence_t
+      evaluate(const StatelessExternalFunction::Arguments_t& args,
+               const StaticContext* aSctxCtx,
+               const DynamicContext* aDynCtx) const;
+
+  };
 
 
 

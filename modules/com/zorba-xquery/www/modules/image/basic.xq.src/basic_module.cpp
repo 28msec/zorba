@@ -42,7 +42,9 @@ BasicModule::getExternalFunction(String aLocalname) const
       lFunc = new EqualsFunction(this);
     } else if (aLocalname.equals("exif")) {
       lFunc = new ExifFunction(this);
-    }  
+    } else if (aLocalname.equals("convert-svg-impl")) {
+      lFunc = new ConvertSVGFunction(this);
+    } 
   }
   return lFunc;
 }

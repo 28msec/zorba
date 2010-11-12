@@ -50,7 +50,7 @@ CreateAnimatedGifFunction::evaluate(
   // the list of images which occure in the animation
   std::list<Magick::Image>  lImageList; 
   // the animated image
-  ImageFunction::getOneOrMoreImageArg(theModule, aArgs, 0, lImageList, lDelay, lIterations);
+  ImageFunction::getOneOrMoreImageArg(aDynCtx, aArgs, 0, lImageList, lDelay, lIterations);
 
   Magick::Blob lBlob;
   Magick::writeImages(lImageList.begin(), lImageList.end(),  &lBlob, true);
@@ -82,7 +82,7 @@ CreateMorphedGifFunction::evaluate(
   const unsigned int lAddedImages = ImageFunction::getOneUnsignedIntArg(aArgs, 3);
   // the list of images which occure in the animation
   std::list<Magick::Image>  lImageList;
-  ImageFunction::getOneOrMoreImageArg(theModule, aArgs, 0, lImageList, lDelay, lIterations);
+  ImageFunction::getOneOrMoreImageArg(aDynCtx, aArgs, 0, lImageList, lDelay, lIterations);
 
   // create morph effect for images
   Magick::morphImages(&lImageList, lImageList.begin(), lImageList.end(), lAddedImages);

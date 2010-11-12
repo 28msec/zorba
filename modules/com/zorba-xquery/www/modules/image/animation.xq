@@ -8,6 +8,10 @@
  :)
 module namespace anim = 'http://www.zorba-xquery.com/modules/image/animation';
 
+(:~
+ : Specifies the possible errors.
+ :)
+import module namespace error = 'http://www.zorba-xquery.com/modules/image/error';
 
 
 

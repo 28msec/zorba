@@ -42,7 +42,7 @@ DrawStrokedPolyLineFunction::evaluate(
   const DynamicContext*                         aDynCtx) const
 {
   Magick::Image lImage;
-  ImageFunction::getOneImageArg(theModule, aArgs, 0, lImage);
+  ImageFunction::getOneImageArg(aDynCtx, aArgs, 0, lImage);
   Magick::Blob lBlob;
   lImage.write(&lBlob); 
  
@@ -105,7 +105,7 @@ DrawRoundedRectangleFunction::evaluate(
 {
 
   Magick::Image lImage;
-  ImageFunction::getOneImageArg(theModule, aArgs, 0, lImage);
+  ImageFunction::getOneImageArg(aDynCtx, aArgs, 0, lImage);
   Magick::Blob lBlob;
   lImage.write(&lBlob);
   double lUpperLeftX = ImageFunction::getOneDoubleArg(aArgs, 1);
@@ -159,7 +159,7 @@ DrawArcFunction::evaluate(
 {
 
   Magick::Image lImage;
-  ImageFunction::getOneImageArg(theModule, aArgs, 0, lImage);
+  ImageFunction::getOneImageArg(aDynCtx, aArgs, 0, lImage);
   double lXCoordinate = ImageFunction::getOneDoubleArg(aArgs, 1);
   double lYCoordinate = ImageFunction::getOneDoubleArg(aArgs, 2);
   double lPerimeterX = ImageFunction::getOneDoubleArg(aArgs, 3);
@@ -187,7 +187,7 @@ DrawArcFunction::evaluate(
   lImage.strokeAntiAlias(lAntiAlias);
   lImage.draw(Magick::DrawableEllipse(lXCoordinate, lYCoordinate, lPerimeterX, lPerimeterY, lStartDegrees, lEndDegrees));
   
-  String lEncodedContent = ImageFunction::getEncodedStringFromImage(theModule, lImage);
+  String lEncodedContent = ImageFunction::getEncodedStringFromImage(aDynCtx, lImage);
   Item lItem = theModule->getItemFactory()->createBase64Binary(lEncodedContent.c_str(), lEncodedContent.bytes());
   ImageFunction::checkIfItemIsNull(lItem);
   return ItemSequence_t(new SingletonItemSequence(lItem));
@@ -207,7 +207,7 @@ DrawPolygonFunction::evaluate(
 {
   
   Magick::Image lImage;
-  ImageFunction::getOneImageArg(theModule, aArgs, 0, lImage);
+  ImageFunction::getOneImageArg(aDynCtx, aArgs, 0, lImage);
   Magick::Blob lBlob;
   lImage.write(&lBlob);
   Item lXItem;
@@ -267,7 +267,7 @@ DrawTextFunction::evaluate(
 {
 
   Magick::Image lImage;
-  ImageFunction::getOneImageArg(theModule, aArgs, 0, lImage);
+  ImageFunction::getOneImageArg(aDynCtx, aArgs, 0, lImage);
   Magick::Blob lBlob;
   lImage.write(&lBlob);
   String lText = ImageFunction::getOneStringArg(aArgs, 1);

@@ -49,14 +49,14 @@ ImageFunction::throwError(
 }
 
 void
-ImageFunction::throwImageError(const ImageModule* aModule, const char *aMessage) {
+ImageFunction::throwImageError(const DynamicContext* aDynamicContext, const char *aMessage) {
   std::stringstream lErrorMessage;
   // constuct error QName
   String lNamespace = "http://www.zorba-xquery.com/modules/image/error";
   String lLocalname = "err:IM001";
-  Item lQName = aModule->getItemFactory()->createQName(lNamespace, lLocalname);
-
-
+  Item lQName;
+  Iterator_t lDummyIterator;
+  aDynamicContext->getVariable(lNamespace, lLocalname, lQName, lDummyIterator); 
   // if we have zero length image, then tell the user so
   if (std::string(aMessage).find("zero-length") != std::string::npos) {
     lErrorMessage << "The passed xs:base64Binary seems to be empty.";
@@ -67,6 +67,14 @@ ImageFunction::throwImageError(const ImageModule* aModule, const char *aMessage)
   }
 }
 
+void 
+ImageFunction::throwErrorWithQName (const DynamicContext* aDynamicContext, const String& aLocalName, const String& aMessage) {
+   String lNamespace = "http://www.zorba-xquery.com/modules/image/error";
+   Item lQName;
+   Iterator_t lDummyIterator;
+   aDynamicContext->getVariable(lNamespace, aLocalName, lQName, lDummyIterator);
+   error(lQName, aMessage); 
+}
 
 void
 ImageFunction::checkIfItemIsNull(Item& aItem) {
@@ -233,12 +241,12 @@ ImageFunction::getEncodedStringFromBlob(Magick::Blob& aBlob) {
 }
 
 String
-ImageFunction::getEncodedStringFromImage(const ImageModule* aModule, Magick::Image& aImage) {
+ImageFunction::getEncodedStringFromImage(const DynamicContext* aDynamicContext, Magick::Image& aImage) {
   Magick::Blob lBlob;
   try {
     aImage.write(&lBlob);
   } catch (Magick::Exception& error) {
-    throwImageError(aModule, error.what());
+    throwImageError(aDynamicContext, error.what());
   }
   return getEncodedStringFromBlob(lBlob);
 }
@@ -248,18 +256,18 @@ ImageFunction::getEncodedStringFromImage(const ImageModule* aModule, Magick::Ima
 
 
 void
-ImageFunction::getOneImageArg(const ImageModule* aModule,
+ImageFunction::getOneImageArg(const DynamicContext* aDynamicContext,
                               const StatelessExternalFunction::Arguments_t& aArgs,
                               int aPos,
                               Magick::Image& aImage)
 {
   String lData;
   lData = getOneStringArg(aArgs, aPos);
-  getImageFromString(aModule, lData, aImage);
+  getImageFromString(aDynamicContext, lData, aImage);
 }
 
 void
-ImageFunction::getOneOrMoreImageArg( const ImageModule* aModule,
+ImageFunction::getOneOrMoreImageArg(const DynamicContext* aDynamicContext,
                                      const StatelessExternalFunction::Arguments_t& aArgs,
                                      int aPos,
                                      std::list<Magick::Image>& aImages,
@@ -274,21 +282,21 @@ ImageFunction::getOneOrMoreImageArg( const ImageModule* aModule,
   }
 
   Magick::Image lFirstImage;
-  ImageFunction::getImageFromString(aModule, lItem.getStringValue(), lFirstImage);
+  ImageFunction::getImageFromString(aDynamicContext, lItem.getStringValue(), lFirstImage);
   lFirstImage.animationDelay(aDelay);
   lFirstImage.animationIterations(aIterations);
   lFirstImage.gifDisposeMethod(3);
   aImages.push_back(lFirstImage);
   Magick::Image lTempImage;
   while (aArgs[aPos]->next(lItem)) {
-    getImageFromString(aModule, lItem.getStringValue(), lTempImage);
+    getImageFromString(aDynamicContext, lItem.getStringValue(), lTempImage);
     aImages.push_back(lTempImage);
   }
 
 }
 
 void
-ImageFunction::getImageFromString(const ImageModule* aModule, const String aString, Magick::Image& aImage) {
+ImageFunction::getImageFromString(const DynamicContext* aDynamicContext, const String aString, Magick::Image& aImage) {
 
   String lDecodedContent = zorba::encoding::Base64::decode(aString);
   Magick::Blob lBlob(lDecodedContent.c_str(), lDecodedContent.bytes());
@@ -297,7 +305,7 @@ ImageFunction::getImageFromString(const ImageModule* aModule, const String aStri
     aImage.read(lBlob);
 
   } catch (Magick::Exception &error)   {
-      throwImageError(aModule, error.what());
+      throwImageError(aDynamicContext, error.what());
   }
 }
 

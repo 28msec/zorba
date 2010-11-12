@@ -110,8 +110,11 @@ declare function local:test-exif() as xs:boolean {
    return ((basic:exif($exif, "ExifImageWidth") eq "20") and fn:empty(basic:exif($exif, "supercalifragilisticexpialidocious")))
 };
 
-
-
+declare function local:test-convert-svg() as xs:boolean {
+    let $svg-converted := basic:convert-svg(file:read(concat($local:image-dir, "test.svg")), "JPEG")
+    let $to-compare := file:read(concat($local:image-dir, "test.jpeg"))
+    return basic:equals($svg-converted, $to-compare)
+};
 
 declare sequential function local:main() as xs:string* {
 
@@ -174,7 +177,9 @@ declare sequential function local:main() as xs:string* {
     if (fn:not($h)) then
       exit returning local:error("Reading out exif information not working properly")
     else ();
-    
+ 
+
+   
 
   (: If all went well ... make sure the world knows! :)  
   "SUCCESS";

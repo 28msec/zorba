@@ -164,13 +164,13 @@ DrawText(const void* aBlob, long* aLength, std::string aText, double aX, double 
 }  
 
 
-char *
+std::string
 GetImageType(const void* aBlob, long* aLength) {
   MagickWandGenesis();                                                                                                           
   MagickWand * lMagickWand  = NewMagickWand(); 
   const size_t lLength = (size_t) *aLength;
   MagickReadImageBlob(lMagickWand, aBlob, lLength);
-  char * lResult = MagickGetImageFormat(lMagickWand);
+  std::string lResult = MagickGetImageFormat(lMagickWand);
   return lResult;
 }
 

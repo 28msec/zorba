@@ -11,6 +11,12 @@ module namespace man = 'http://www.zorba-xquery.com/modules/image/manipulation';
 
 
 (:~
+ : Specifies the possible errors.
+ :)
+import module namespace error = 'http://www.zorba-xquery.com/modules/image/error';
+
+
+(:~
  : Contains the definitions for color and noise types.
  :)
 import schema namespace image = 'http://www.zorba-xquery.com/modules/image/image';

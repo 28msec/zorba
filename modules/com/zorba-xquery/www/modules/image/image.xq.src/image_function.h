@@ -40,9 +40,13 @@ namespace zorba { namespace imagemodule {
        getURI() const;
 
     static void 
-    throwImageError(const ImageModule* aModule, 
-                        const char* aMessage);
+    throwImageError(const DynamicContext* aDynamicContext, 
+                    const char* aMessage);
 
+    static void
+    throwErrorWithQName (const DynamicContext* aDynamicContext, 
+                         const String& aLocalName, 
+                         const String& aMessage);
 
     static void
     throwError(
@@ -63,14 +67,14 @@ namespace zorba { namespace imagemodule {
 
       static void
           getOneImageArg(
-            const ImageModule* aModule,
+            const DynamicContext* aDynamicContext,
             const StatelessExternalFunction::Arguments_t& aArgs,
             int aPos,
             Magick::Image& aImage);
 
       static void
          getOneOrMoreImageArg(
-              const ImageModule* aModule,
+              const DynamicContext* aDynamicContext,
               const StatelessExternalFunction::Arguments_t& aArgs,
               int aPos,
               std::list<Magick::Image>& aImages,
@@ -106,9 +110,11 @@ namespace zorba { namespace imagemodule {
 
       static String getEncodedStringFromBlob(Magick::Blob& aBlob);
 
-      static String getEncodedStringFromImage(const ImageModule* aModule, Magick::Image& aImage);
+      static String getEncodedStringFromImage(const DynamicContext* aDynamicContext, 
+                                              Magick::Image& aImage);
 
-      static void getImageFromString(const ImageModule* aModule, const String aString, Magick::Image& aImage);
+      static void getImageFromString(const DynamicContext* aDynamicContext, 
+                                     const String aString, Magick::Image& aImage);
 
       static void checkIfItemIsNull(Item& aItem);
 

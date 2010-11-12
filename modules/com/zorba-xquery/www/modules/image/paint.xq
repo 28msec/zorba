@@ -11,6 +11,13 @@ module namespace paint = 'http://www.zorba-xquery.com/modules/image/paint';
 import module namespace paintschema = 'http://www.zorba-xquery.com/modules/image/paintschema';
 
 (:~
+ : Specifies the possible errors.
+ :)
+import module namespace error = 'http://www.zorba-xquery.com/modules/image/error';
+
+
+
+(:~
  : Contains the definitions of the possible image types.
  :)
 import schema namespace image = 'http://www.zorba-xquery.com/modules/image/image';

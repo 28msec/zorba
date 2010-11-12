@@ -129,6 +129,29 @@ declare function basic:exif($image as xs:base64Binary, $tag as xs:string) as xs:
  :)
 declare function basic:equals($image as xs:base64Binary, $other as xs:base64Binary) as xs:boolean external; 
 
+
+(:~
+ : Converts an SVG image to any supported image type.
+ : @param $image is the image we want to convert, it has to be of type SVG.
+ : @param $format is the new format for the SVG image.
+ : @error IM002 If the passed xs:base64Binary is not a valid SVG image.
+ : @return The passed SVG image converted to an other type.
+ :)
+declare function basic:convert-svg($image as xs:base64Binary, $type as xs:string) as xs:base64Binary {
+  basic:convert-svg-impl($image, image:imageType($type))
+};
+
+(:~
+ : Converts an SVG image to any supported image type.
+ : @param $image is the image we want to convert, it has to be of type SVG.
+ : @param $format is the new format for the SVG image.
+ : @error IM002 If the passed xs:base64Binary is not a valid SVG image.
+ : @return The passed SVG image converted to an other type.
+ :)
+declare function basic:convert-svg-impl($image as xs:base64Binary, $type as xs:string) as xs:base64Binary external;
+
+
+
 (:~
  : Creates a new and empty image with white background color and the specified format.
  : Allowed image formats are:
@@ -137,7 +160,6 @@ declare function basic:equals($image as xs:base64Binary, $other as xs:base64Bina
  : PNG
  : JPEG
  : TIFF
- : SVG
  : 
  : @param $width is the width of the new image.
  : @param $height is the height of the new image.

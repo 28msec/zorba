@@ -15,7 +15,7 @@ DrawRoundedRect(const void* aBlob, long *aLength, double aUpperLeftX, double aUp
 void *
 DrawText(const void* aBlob, long* aLength, std::string aText, double aX, double aY, std::string aFont, double aFontSize, std::string aColor); 
 
-char *
+std::string
 GetImageType(const void* aBlob, long* aLength);
 
 std::string
