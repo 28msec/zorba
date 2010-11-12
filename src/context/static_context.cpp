@@ -1252,7 +1252,7 @@ void static_context::set_document_uri_resolver(InternalDocumentURIResolver* aDoc
 /*******************************************************************************
 
 ********************************************************************************/
-InternalDocumentURIResolver* static_context::get_document_uri_resolver()
+InternalDocumentURIResolver* static_context::get_document_uri_resolver() const
 {
   if ( theDocResolver != 0 )
     return theDocResolver;
@@ -1278,7 +1278,7 @@ void static_context::set_collection_uri_resolver(
 /*******************************************************************************
 
 ********************************************************************************/
-InternalCollectionURIResolver* static_context::get_collection_uri_resolver()
+InternalCollectionURIResolver* static_context::get_collection_uri_resolver() const
 {
   if ( theColResolver != 0 )
     return theColResolver;
@@ -1303,7 +1303,7 @@ void static_context::add_schema_uri_resolver(
 
 ********************************************************************************/
 void static_context::get_schema_uri_resolvers(
-    std::vector<InternalSchemaURIResolver*>& aResolvers)
+    std::vector<InternalSchemaURIResolver*>& aResolvers) const
 {
   if (theParent != NULL)
   {
@@ -1860,9 +1860,9 @@ void static_context::set_context_item_type(xqtref_t& t)
 /***************************************************************************//**
 
 ********************************************************************************/
-const XQType* static_context::get_context_item_type()
+const XQType* static_context::get_context_item_type() const
 {
-  static_context* sctx = this;
+  const static_context* sctx = this;
   while (sctx != NULL)
   {
     if (theCtxItemType != NULL)

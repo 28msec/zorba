@@ -215,7 +215,7 @@ dynamic_context::~dynamic_context()
 /*******************************************************************************
 
 ********************************************************************************/
-store::Item_t dynamic_context::get_default_collection()
+store::Item_t dynamic_context::get_default_collection() const
 {
   return default_collection_uri;
 }
@@ -233,7 +233,7 @@ void dynamic_context::set_implicit_timezone(long tzone_seconds)
 }
 
 
-long dynamic_context::get_implicit_timezone()
+long dynamic_context::get_implicit_timezone() const
 {
   return theTimezone;
 }
@@ -245,13 +245,13 @@ void dynamic_context::set_current_date_time( const store::Item_t& aDateTimeItem 
 }
 
 
-store::Item_t dynamic_context::get_current_date_time()
+store::Item_t dynamic_context::get_current_date_time() const
 {
   return current_date_time_item;
 }
 
 
-store::Item_t dynamic_context::get_current_time_millis()
+store::Item_t dynamic_context::get_current_time_millis() const
 {
   return current_time_millis;
 }
@@ -272,7 +272,7 @@ store::Item_t dynamic_context::context_item() const
 }
 
 
-unsigned long dynamic_context::context_position()
+unsigned long dynamic_context::context_position() const
 {
   return ctxt_position;
 }

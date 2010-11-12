@@ -437,7 +437,7 @@ bool DynamicContextImpl::setContextItemAsDocument(
 /****************************************************************************//**
 
 ********************************************************************************/
-bool DynamicContextImpl::getContextItem(Item& aItem)
+bool DynamicContextImpl::getContextItem(Item& aItem) const
 {
   ZORBA_DCTX_TRY
   {
@@ -556,7 +556,7 @@ bool DynamicContextImpl::setDefaultCollection(const Item& aCollectionUri)
 /****************************************************************************//**
 
 ********************************************************************************/
-void DynamicContextImpl::checkNoIterators()
+void DynamicContextImpl::checkNoIterators() const
 {
   if (theQuery->theResultIterator &&
       theQuery->theResultIterator->isOpen())

@@ -153,7 +153,7 @@ public:
         bool aReplaceDoc);
 
   virtual bool
-  getContextItem(Item& aItem);
+  getContextItem(Item& aItem) const;
 
   virtual bool
   setCurrentDateTime( const Item& aDateTimeItem );
@@ -182,7 +182,7 @@ public:
   getExternalFunctionParam ( const String& aName, void*& ) const;
 
 protected:
-  void checkNoIterators();
+  void checkNoIterators() const;
 
   void validateIfNecesary(store::Item_t& docItem,
                           const zstring& docUri,

@@ -610,15 +610,15 @@ public:
   //
   void set_document_uri_resolver(InternalDocumentURIResolver*);
 
-  InternalDocumentURIResolver* get_document_uri_resolver();
+  InternalDocumentURIResolver* get_document_uri_resolver() const;
 
   void set_collection_uri_resolver(InternalCollectionURIResolver*);
 
-  InternalCollectionURIResolver* get_collection_uri_resolver();
+  InternalCollectionURIResolver* get_collection_uri_resolver() const;
 
   void add_schema_uri_resolver(InternalSchemaURIResolver*);
 
-  void get_schema_uri_resolvers(std::vector<InternalSchemaURIResolver*>& resolvers);
+  void get_schema_uri_resolvers(std::vector<InternalSchemaURIResolver*>& resolvers) const;
 
   void remove_schema_uri_resolver(InternalSchemaURIResolver*);
 
@@ -702,7 +702,7 @@ public:
 
 	void set_context_item_type(xqtref_t& t);
 
-	const XQType* get_context_item_type();
+	const XQType* get_context_item_type() const;
 
 
   //

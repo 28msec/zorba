@@ -278,7 +278,7 @@ class ZORBA_DLL_PUBLIC DynamicContext
    * @throw ZorbaException if an error occured (e.g. the given Iterator is not valid).
    */
   virtual bool
-  getContextItem( Item& aItem ) = 0;
+  getContextItem( Item& aItem ) const = 0;
 
   /** \brief Defines the value of the current date time that can be accessed by the
    *         fn:current-dateTime() function at the time the query is executed.

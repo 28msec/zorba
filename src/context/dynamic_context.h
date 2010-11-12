@@ -114,23 +114,23 @@ public:
 
   ~dynamic_context();
 
-  store::Item_t get_default_collection();
+  store::Item_t get_default_collection() const;
 
   void set_default_collection(const store::Item_t& default_collection_uri);
 
   void set_current_date_time(const store::Item_t&);
 
-  store::Item_t get_current_date_time();
+  store::Item_t get_current_date_time() const;
 
-  store::Item_t get_current_time_millis();
+  store::Item_t get_current_time_millis() const;
 
   void set_implicit_timezone(long tzone_seconds);
 
-  long get_implicit_timezone();
+  long get_implicit_timezone() const;
 
   store::Item_t context_item() const;
 
-  unsigned long context_position();
+  unsigned long context_position() const;
 
   xqtref_t context_item_type() const;
 
