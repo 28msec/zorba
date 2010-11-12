@@ -15,11 +15,6 @@
  */
 #include "compiler/rewriter/framework/sequential_rewriter.h"
 
-#ifdef WIN32
-// VS2005 requires this include to be able to compile the file
-#include "context/static_context.h"
-#endif
-
 
 namespace zorba {
 

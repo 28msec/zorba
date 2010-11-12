@@ -41,12 +41,6 @@
 #include "compiler/parsetree/parsenodes.h"
 #include "zorbatypes/zstring.h"
 
-#ifdef WIN32
-// VS2005 requires this include to be able to compile the file
-#include "context/static_context.h"
-#endif
-
-
 #ifdef __GNUC__
     // disable a warning in location.hh which comes with bison
     // position.hh:141: warning: suggest parentheses around && within ||

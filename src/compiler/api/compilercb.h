@@ -23,6 +23,12 @@
 
 #include "common/shared_types.h"
 
+#ifdef MSVC
+// The visual studio compiler is not able to compile the type rchandle<static_context>
+// without having the definition of static_context availble.
+# include "context/static_context.h"
+#endif
+
 #include "zorbaserialization/class_serializer.h"
 
 namespace zorba {

@@ -16,11 +16,6 @@
 #include <iostream>
 #include "compiler/rewriter/rules/ruleset.h"
 
-#ifdef WIN32
-// VS2005 requires this include to be able to compile the file
-#include "context/static_context.h"
-#endif
-
 
 namespace zorba {
 
