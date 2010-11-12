@@ -475,7 +475,7 @@ public:
   const_rchandle(::zorba::serialization::Archiver &ar) {}
 
   const_rchandle& operator= (const const_rchandle &rhs) {
-    assign (rhs);
+    this->assign (rhs);
     return *this;
   }
 

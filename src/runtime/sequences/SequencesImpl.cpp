@@ -121,7 +121,7 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   long timezone = planState.theDynamicContext->get_implicit_timezone();
   XQPCollator*  lCollator = 0;
-  bool  elems_in_seq = 0;
+  unsigned elems_in_seq = 0;
   result = NULL;
 
   try

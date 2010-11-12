@@ -76,7 +76,7 @@ construct( size_type n, value_type c, allocator_type const &a ) {
     return empty_rep();
   rep *const r = alloc( a, n );
   if ( n )
-    assign( r->data(), n, c );
+    base_type::assign( r->data(), n, c );
   r->set_length( n );
   return r;
 }

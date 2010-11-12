@@ -99,9 +99,9 @@ bool GenericArithIterator<Operation>::nextImpl(
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (consumeNext(n0, this->theChild0.getp(), planState))
+  if (this->consumeNext(n0, this->theChild0.getp(), planState))
   {
-    if (consumeNext(n1, this->theChild1.getp(), planState))
+    if (this->consumeNext(n1, this->theChild1.getp(), planState))
     {
       status = compute(result,
                        planState.theDynamicContext,
@@ -110,8 +110,8 @@ bool GenericArithIterator<Operation>::nextImpl(
                        n0,
                        n1);
     
-      if (consumeNext(n0, this->theChild0.getp(), planState) ||
-          consumeNext(n1, this->theChild1.getp(), planState))
+      if (this->consumeNext(n0, this->theChild0.getp(), planState) ||
+          this->consumeNext(n1, this->theChild1.getp(), planState))
       {
         ZORBA_ERROR_LOC_DESC(XPTY0004, this->loc, 
         "An operand of an arithmetic operation is a sequences with more than one item.");

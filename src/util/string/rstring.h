@@ -1233,7 +1233,7 @@ private: //////////////////////////////////////////////////////////////////////
 
   string_data data_;
 
-#ifdef _MSC_VER
+#if defined _MSC_VER || defined CLANG
 //
 // Microsoft's Visual Studio C++ compiler doesn't consider the operator+()
 // functions as friends even though they're declared as such.
@@ -1255,7 +1255,7 @@ public:
    */
   void append_safe( const_pointer s1, size_type n1,
                     const_pointer s2 = 0, size_type n2 = 0 );
-#ifdef _MSC_VER
+#if defined _MSC_VER || defined CLANG
 private:
 #endif
 

@@ -74,7 +74,7 @@ construct( size_type size, value_type c, allocator_type const &a ) {
     return empty_rep();
   ptr_rep *const r = alloc( a, size );
   if ( size )
-    assign( r->data(), size, c );
+    base_type::assign( r->data(), size, c );
   r->set_length( size );
   return r;
 }

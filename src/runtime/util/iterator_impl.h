@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 #define CONSUME( result, n ) \
-  consumeNext(result, this->theChildren[n].getp(), planState)
+  this->consumeNext(result, this->theChildren[n].getp(), planState)

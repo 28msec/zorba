@@ -31,6 +31,7 @@
 #endif
 #cmakedefine UNIX
 #cmakedefine MINGW
+#cmakedefine CLANG
 #cmakedefine APPLE
 #cmakedefine MSVC
 #cmakedefine MSVC60

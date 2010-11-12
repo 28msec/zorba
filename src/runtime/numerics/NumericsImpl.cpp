@@ -547,9 +547,9 @@ bool NumArithIterator<Operation>::nextImpl(
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (consumeNext(n0, this->theChild0.getp(), planState))
+  if (this->consumeNext(n0, this->theChild0.getp(), planState))
   {
-    if (consumeNext(n1, this->theChild1.getp(), planState))
+    if (this->consumeNext(n1, this->theChild1.getp(), planState))
     {
       res = compute(result,
                     planState.theDynamicContext,
@@ -558,8 +558,8 @@ bool NumArithIterator<Operation>::nextImpl(
                     n0,
                     n1);
       
-      if (consumeNext(n0, this->theChild0.getp(), planState) ||
-          consumeNext(n1, this->theChild1.getp(), planState))
+      if (this->consumeNext(n0, this->theChild0.getp(), planState) ||
+          this->consumeNext(n1, this->theChild1.getp(), planState))
         ZORBA_ERROR_DESC(XPTY0004,
                          "Arithmetic operation has a sequence longer than one as an operand.");
       STACK_PUSH(res, state);
@@ -733,9 +733,9 @@ bool SpecificNumArithIterator<Operation, Type>::nextImpl(
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (consumeNext( n0, this->theChild0.getp(), planState ))
+  if (this->consumeNext( n0, this->theChild0.getp(), planState ))
   {
-    if (consumeNext( n1, this->theChild1.getp(), planState ))
+    if (this->consumeNext( n1, this->theChild1.getp(), planState ))
     {
       res = compute(result,
                     planState.theDynamicContext,
@@ -744,8 +744,8 @@ bool SpecificNumArithIterator<Operation, Type>::nextImpl(
                     n0.getp(),
                     n1.getp());
       
-      if (consumeNext(n0, this->theChild0.getp(), planState) ||
-          consumeNext(n1, this->theChild1.getp(), planState))
+      if (this->consumeNext(n0, this->theChild0.getp(), planState) ||
+          this->consumeNext(n1, this->theChild1.getp(), planState))
         ZORBA_ERROR_DESC(XPTY0004,
                          "Arithmetic operation has a sequence longer than one as an operand.");
       STACK_PUSH ( res, state );

@@ -217,23 +217,6 @@ UTF8Distance (octet_iterator first, octet_iterator last)
 }
 
 
-template <typename octet_iterator>
-uint32_t next(octet_iterator& it, octet_iterator end)
-{
-  uint32_t cp = 0;
-  validate_next(it, end, &cp);
-  return cp;
-}
-  
-
-template <typename octet_iterator, typename distance_type>
-void advance (octet_iterator& it, distance_type n, octet_iterator end)
-{
-  for (distance_type i = 0; i < n; ++i)
-    next(it, end);
-}
-  
-
 enum utf_error 
 {
   OK,
@@ -354,6 +337,23 @@ utf_error validate_next(octet_iterator& it, octet_iterator end, uint32_t* code_p
   
   ++it;
   return OK;
+}
+  
+
+template <typename octet_iterator>
+uint32_t next(octet_iterator& it, octet_iterator end)
+{
+  uint32_t cp = 0;
+  validate_next(it, end, &cp);
+  return cp;
+}
+  
+
+template <typename octet_iterator, typename distance_type>
+void advance (octet_iterator& it, distance_type n, octet_iterator end)
+{
+  for (distance_type i = 0; i < n; ++i)
+    next(it, end);
 }
   
 #endif//#ifndef ZORBA_NO_UNICODE

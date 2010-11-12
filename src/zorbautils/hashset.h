@@ -95,7 +95,7 @@ bool insert(T& item)
   //assert(item != 0);
 
   HashEntry<T, DummyHashValue>* entry;
-  entry = hashInsert(item, hash(item), found);
+  entry = this->hashInsert(item, this->hash(item), found);
 
   if (!found)
   {
@@ -125,7 +125,7 @@ bool insert(T& item, T& outItem)
   //assert(item != 0);
 
   HashEntry<T, DummyHashValue>* entry;
-  entry = hashInsert(item, hash(item), found);
+  entry = this->hashInsert(item, this->hash(item), found);
   if (!found)
   {
     /*
@@ -160,7 +160,7 @@ bool insert(const T& item, T& outItem)
   //assert(item != 0);
 
   HashEntry<T, DummyHashValue>* entry;
-  entry = hashInsert(item, hash(item), found);
+  entry = this->hashInsert(item, this->hash(item), found);
   if (!found)
   {
     entry->theItem = item;
