@@ -1,0 +1,7 @@
+module namespace data = "http://www.28msec.com/WindyCityDBDemo/lib/data";
+
+import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
+
+declare collection data:users as node()*;
+declare variable $data:users as xs:QName := xs:QName("data:users");
+
