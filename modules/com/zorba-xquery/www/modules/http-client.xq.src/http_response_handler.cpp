@@ -25,6 +25,8 @@ namespace zorba { namespace http_client {
   // HttpResponseIterator
   //////////////////////////////////////////////////////////////////////////
 
+  const char* theNamespace = "http://expath.org/ns/http-client";
+
   HttpResponseIterator::HttpResponseIterator()
     : theIndex(0), theResponseSet(false)
   {
@@ -67,8 +69,7 @@ namespace zorba { namespace http_client {
     :
   theResult(new HttpResponseIterator()),
   theFactory(aFactory),
-  theIsInsideMultipart(false),
-  theNamespace("http://expath.org/ns/http-client")
+  theIsInsideMultipart(false)
   {
     String lXSNS = "http://www.w3.org/2001/XMLSchema";
     String lUntypedLocalName = "untyped";

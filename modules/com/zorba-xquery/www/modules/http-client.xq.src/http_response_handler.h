@@ -50,7 +50,6 @@ namespace http_client {
     Item theMultipart;
     ItemFactory* theFactory;
     bool theIsInsideMultipart;
-    String theNamespace;
     Item theUntypedQName;
   public:
     HttpResponseHandler(ItemFactory* aFactory);

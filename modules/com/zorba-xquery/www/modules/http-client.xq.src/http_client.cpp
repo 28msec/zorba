@@ -125,7 +125,7 @@ namespace zorba {
     ItemSequence_t
     general_evaluate(const StatelessExternalFunction::Arguments_t& args,
       const StaticContext* aStaticContext, const DynamicContext* aDynamicContext,
-      ItemFactory* aFactory)
+      ItemFactory* aFactory, const ExternalFunctionData* aFunctionData)
     {
       CURL* lCURL = curl_easy_init();
       CURLM* lCURLM = curl_multi_init();
@@ -161,10 +161,15 @@ namespace zorba {
           lHandler.get() == NULL ? false : (lHandler->isStatusOnly() || lHandler->isHeadRequest());
       HttpResponseParser lRespParser(lRespHandler, lCURL, lCURLM,
         lOverrideContentType.c_str(), lStatusOnly);
-      lRespParser.parse();
+      int lRetCode = lRespParser.parse();
 
       if (lHeaderList) {
         curl_slist_free_all(lHeaderList);
+      }
+
+      if (lRetCode) {
+        zorba::Item lError = aFactory->createQName("http://expath.org/ns/error", "HC001");
+        aFunctionData->error(lError, "Could not perform the request - got an error from curl");
       }
 
       return ItemSequence_t(lRespHandler.getResult());
@@ -174,7 +179,7 @@ namespace zorba {
     HttpSendFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
       const StaticContext* aStaticContext, const DynamicContext* aDynamicContext) const 
     {
-      return general_evaluate(args, aStaticContext, aDynamicContext, theFactory);
+      return general_evaluate(args, aStaticContext, aDynamicContext, theFactory, this);
     }
 
     HttpClientModule::~HttpClientModule()
