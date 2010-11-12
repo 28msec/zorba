@@ -135,8 +135,13 @@ namespace zorba { namespace http_client {
         theHandler.endBody();
       }
     }
-    if (!theInsideRead)
+    if (!theInsideRead) {
       theHandler.beginResponse(theStatus, theMessage);
+      for (std::vector<std::pair<std::string, std::string> >::iterator i = theHeaders.begin();
+          i != theHeaders.end(); ++i) {
+        theHandler.header(i->first, i->second);
+      }
+    }
     theHandler.endResponse();
     theHandler.end();
     return lCode;

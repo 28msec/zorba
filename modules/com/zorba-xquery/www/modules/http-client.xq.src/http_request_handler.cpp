@@ -81,8 +81,10 @@ namespace zorba { namespace http_client {
     aMethod.uppercase();
     const char* lStr = aMethod.c_str();
     theMethodString = lStr;
-    if (theMethodString == "HEAD")
+    if (theMethodString == "HEAD" || theMethodString == "OPTIONS") {
+      curl_easy_setopt(theCurl, CURLOPT_NOBODY, 1L);
       theIsHeadRequest = true;
+    }
     curl_easy_setopt(theCurl, CURLOPT_CUSTOMREQUEST, theMethodString.c_str());
     if (href != "") {
       curl_easy_setopt(theCurl, CURLOPT_URL, href.c_str());

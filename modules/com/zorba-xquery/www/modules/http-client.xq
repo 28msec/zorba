@@ -213,15 +213,16 @@ declare function http:head($href as xs:string) as item() {
  : This request ask for OPTIONS supported of the server.
  :
  : @param $href The URL where to send the request.
- : @return The first element of the result is the metadata (like
- :         headers, status etc), the next elements are the response
+ : @return A sequence of string with the allowed operations
  :)
-declare function http:options($href as xs:string) as item()+ {
-  http:http-nondeterministic-impl(
+declare function http:options($href as xs:string) as xs:string* {
+  let $resp := http:http-nondeterministic-impl(
     validate {
       <https:request method="OPTIONS" href="{$href}">
       </https:request>
-    }, (), ())
+    }, (), ())[1]
+  return
+    fn:tokenize(fn:data($resp/https:header[@name = "Allow"]/@value), ",")
 };
 
 
