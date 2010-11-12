@@ -186,7 +186,7 @@ class ZORBA_DLL_PUBLIC DynamicContext
   getVariable( const String& aNamespace,
                const String& aLocalname,
                Item& aItem,
-               Iterator_t& aIterator) = 0;
+               Iterator_t& aIterator) const = 0;
 
   /** \brief Defines the context item.
    *

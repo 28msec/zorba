@@ -124,7 +124,7 @@ public:
   virtual bool
   getVariable(
     const String& aNamespace, const String& aLocalname, Item& aItem,
-    Iterator_t& aIterator);
+    Iterator_t& aIterator) const;
 
   virtual bool
   setContextItem(const Item& aItem);

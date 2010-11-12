@@ -424,7 +424,7 @@ bool dynamic_context::get_variable(
     const store::Item_t& varname,
     const QueryLoc& loc,
     store::Item_t& var_item,
-    store::TempSeq_t& var_seq)
+    store::TempSeq_t& var_seq) const
 {
   var_item = NULL;
   var_seq = NULL;
@@ -439,7 +439,7 @@ bool dynamic_context::get_variable(
     const std::string& varname,
     const QueryLoc& loc,
     store::Item_t& var_item,
-    store::TempSeq_t& var_seq)
+    store::TempSeq_t& var_seq) const
 {
   var_item = NULL;
   var_seq = NULL;
@@ -451,7 +451,7 @@ bool dynamic_context::lookup_var_value(
     const std::string& key,
     const QueryLoc& loc,
     store::Item_t& var_item,
-    store::TempSeq_t& var_seq)
+    store::TempSeq_t& var_seq) const
 {
   dctx_value_t val;
 

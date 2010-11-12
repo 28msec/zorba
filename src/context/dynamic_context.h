@@ -152,13 +152,13 @@ public:
         const store::Item_t& varname,
         const QueryLoc& loc,
         store::Item_t& var_item,
-        store::TempSeq_t& var_seq);
+        store::TempSeq_t& var_seq) const;
 
   bool get_variable(
         const std::string& varname,
         const QueryLoc& loc,
         store::Item_t& var_item,
-        store::TempSeq_t& var_seq);
+        store::TempSeq_t& var_seq) const;
 
   bool exists_variable(const store::Item_t& varname);
 
@@ -218,7 +218,7 @@ protected:
         const std::string& key,
         const QueryLoc& loc,
         store::Item_t& var_item,
-        store::TempSeq_t& var_seq);
+        store::TempSeq_t& var_seq) const;
 };
 
 

@@ -180,7 +180,7 @@ bool DynamicContextImpl::getVariable(
   const String& aNamespace,
   const String& aLocalname,
   Item& aItem,
-  Iterator_t& aIterator)
+  Iterator_t& aIterator) const
 {
   ZORBA_DCTX_TRY
   {
