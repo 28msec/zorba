@@ -166,7 +166,7 @@ off_t symbol_table::put_uri(char const* text, uint32_t length)
   string result;
   if (! decode_string (text, length, &result)) 
     return -1;
-  result = xmlWhitespaceCollapse (result);
+  result = xmlWhitespaceCollapse(zstring(result)).str();
   return heap.put (result.c_str (), 0, result.length ());
 }
 

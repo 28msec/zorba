@@ -18,7 +18,6 @@
 
 #include <zorba/config.h>
 #include "zorbatypes/zorbatypes_decl.h"
-#include "zorbatypes/xqpstring.h"
 #include "zorbatypes/duration.h"
 
 

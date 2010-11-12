@@ -35,7 +35,6 @@ class   Collator
 class XQPCollator
 {
   friend class CollationFactory;
-  friend class xqpString;
   friend class xqpStringStore;
 
  protected:

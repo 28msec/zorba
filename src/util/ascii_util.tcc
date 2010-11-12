@@ -106,8 +106,7 @@ void trim( InputStringType const &in, char const *chars,
            OutputStringType *out ) {
   *out = in;
   typename OutputStringType::size_type pos = out->find_first_not_of( chars );
-  if ( pos != OutputStringType::npos )
-    out->erase( 0, pos );
+  out->erase( 0, pos );
   pos = out->find_last_not_of( chars );
   if ( pos != OutputStringType::npos && ++pos < out->size() )
     out->erase( pos );

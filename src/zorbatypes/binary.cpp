@@ -24,6 +24,7 @@
 #include "util/XmlWhitespace.h"
 #include "util/ascii_util.h"
 #include "util/stl_util.h"
+#include "zorbaserialization/template_serializer.h"
 
 using namespace std;
 

@@ -4723,7 +4723,7 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
                                       GET_BUILTIN_FUNCTION(FN_EXISTS_1),
                                       uniKeyExpr.getp());
 
-      xqpString commentStr("#trace fnExists");
+      zstring commentStr("#trace fnExists");
       expr_t comentExpr = new const_expr(theRootSctx, loc, commentStr);
       fo_expr_t fnTraceExpr = new fo_expr(theRootSctx,
                                          loc,
@@ -9733,9 +9733,11 @@ void check_boundary_whitespace(const DirElemContent& v)
     } else {
       bool lCouldBe = false;
       if (lPrevIsBoundary) {
-        xqpString content = v.get_elem_content().str();
+        zstring content = v.get_elem_content().str();
+        utf8::trim_whitespace(content);
+
         // Filtering out of whitespaces
-        if (content.trim(" \n\r\t", 4).empty()) {
+        if (content.empty()) {
           lCouldBe = true;
         }
       }
@@ -9853,7 +9855,7 @@ void end_visit (const AposAttrContentList& v, void* visit_state)
 }
 
 
-void attr_val_content (const QueryLoc& loc, const CommonContent *cc, xqpString content)
+void attr_val_content (const QueryLoc& loc, const CommonContent *cc, zstring content)
 {
   if (cc == NULL)
   {
@@ -9942,7 +9944,7 @@ void end_visit (const CommonContent& v, void* /*visit_state*/)
   {
     // we always create a text node here because if we are in an attribute, we atomice
     // the text node into its string value
-    xqpString content("{");
+    zstring content("{");
     expr_t lConstExpr = new const_expr(theRootSctx, loc, content);
     push_nodestack ( lConstExpr );
     break;
@@ -9951,7 +9953,7 @@ void end_visit (const CommonContent& v, void* /*visit_state*/)
   {
     // we always create a text node here because if we are in an attribute, we atomice
     // the text node into its string value
-    xqpString content("}");
+    zstring content("}");
     expr_t lConstExpr = new const_expr(theRootSctx, loc, content);
     push_nodestack ( lConstExpr );
     break;
@@ -9974,7 +9976,7 @@ void end_visit(const DirCommentConstructor& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  xqpString str = v.get_comment().str();
+  zstring str = v.get_comment().str();
   expr_t content = new const_expr (theRootSctx, loc, str);
   push_nodestack (new text_expr(theRootSctx, loc,
                                 text_expr::comment_constructor,
@@ -9992,9 +9994,11 @@ void end_visit(const DirPIConstructor& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  xqpString target_str = v.get_pi_target().str();
+  zstring target_str = v.get_pi_target().str();
+  zstring target_upper;
+  utf8::to_upper(target_str, &target_upper);
 
-  if (target_str.uppercase() == "XML")
+  if (target_upper == "XML")
     ZORBA_ERROR_LOC ( XPST0003, loc);
 
   expr_t target = new const_expr(theRootSctx, loc, target_str);

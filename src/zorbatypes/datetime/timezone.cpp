@@ -20,6 +20,7 @@
 #include "zorbatypes/datetime/parse.h"
 #include "zorbautils/hashfun.h"
 #include "util/ascii_util.h"
+#include "zorbaserialization/template_serializer.h"
 
 
 namespace zorba

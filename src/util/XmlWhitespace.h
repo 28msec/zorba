@@ -16,7 +16,7 @@
 #ifndef XMLWHITESPACE_H_
 #define XMLWHITESPACE_H_
 
-#include <zorbatypes/xqpstring.h>
+#include "zorbatypes/zstring.h"
 
 namespace zorba
 {
@@ -31,29 +31,29 @@ typedef enum {
 /*
  * doesn't change the string, returns the same str
  */ 
-xqpString xmlWhitespacePreserve(xqpString str);
+zstring xmlWhitespacePreserve(zstring str);
 
 /*
  * replace each \n, \r and \t with one space char
  */ 
-xqpString xmlWhitespaceReplace(xqpString str);
+zstring xmlWhitespaceReplace(zstring str);
 
 /*
  * same as xmlWhitespaceReplace(xqpString str) plus
  * it collapses multiple consecutive spaces to a single one, 
  * and leading and trailing spaces are removed
  */ 
-xqpString xmlWhitespaceCollapse(xqpString str);
+zstring xmlWhitespaceCollapse(zstring str);
 
 /*
  * Performs the specified action (preserve / replace / collapse)
  */ 
-xqpString xmlWhitespaceCollapse(xqpString str, XmlWhitespace_t wsct);
+zstring xmlWhitespaceCollapse(zstring str, XmlWhitespace_t wsct);
 
 /*
  * checks if is XML whitespace char
  */ 
 bool xmlWhitespaceChar(char c);
 
-} // end xqp namespace
+} // end zorba namespace
 #endif /*XMLWHITESPACE_H_*/

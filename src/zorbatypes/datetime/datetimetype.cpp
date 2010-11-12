@@ -32,8 +32,9 @@
 #include <zorbatypes/zorbatypes_decl.h>
 
 #include "zorbatypes/datetime/parse.h"
-
 #include "util/ascii_util.h"
+#include "zorbaserialization/template_serializer.h"
+
 
 
 namespace zorba

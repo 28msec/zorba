@@ -14,26 +14,38 @@
  * limitations under the License.
  */
 #include "XmlWhitespace.h"
+#include "util/ascii_util.h"
+
 
 namespace zorba
 {
 
-xqpString xmlWhitespacePreserve(xqpString v)
+zstring xmlWhitespacePreserve(zstring v)
 {
-    return v;
+  return v;
 }
 
-xqpString xmlWhitespaceReplace(xqpString v)
+zstring xmlWhitespaceReplace(zstring v)
 {
-    return v.translate(xqpString("\n\r\t"), xqpString("   "));
+  zstring tmp = v;
+  ascii::replace_all(v, "\n", " ");
+  ascii::replace_all(v, "\r", " ");
+  ascii::replace_all(v, "\t", " ");
+
+  std::cout << "--> replaced WS: [" << tmp << "] -> [" << v << "] " << std::endl;
+
+  return v;
 }
 
-xqpString xmlWhitespaceCollapse(xqpString v)
+zstring xmlWhitespaceCollapse(zstring v)
 {
-    return v.normalizeSpace();
+  zstring tmp = v;
+  ascii::normalize_whitespace(v);
+  std::cout << "--> colapsed WS: [" << tmp << "] -> [" << v << "] " << std::endl;
+  return v;
 }
 
-xqpString xmlWhitespaceCollapse(xqpString v, XmlWhitespace_t wsr)
+zstring xmlWhitespaceCollapse(zstring v, XmlWhitespace_t wsr)
 {
     switch( wsr )
     {
@@ -60,4 +72,5 @@ bool xmlWhitespaceChar(char c)
 {
 	return c == ' ' || c == '\n' || c == '\t' || c == '\r';
 }
-} // end xqp namespace
+
+} // end zorba namespace
