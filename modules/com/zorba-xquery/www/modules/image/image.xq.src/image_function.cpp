@@ -39,8 +39,6 @@ ImageFunction::getURI() const
 {
         return theModule->getURI();
 }
-
-
 void
 ImageFunction::throwError(
         const std::string aErrorMessage,
@@ -51,25 +49,31 @@ ImageFunction::throwError(
 }
 
 void
-ImageFunction::throwImageError(const char *aMessage) {
+ImageFunction::throwImageError(const ImageModule* aModule, const char *aMessage) {
   std::stringstream lErrorMessage;
+  // constuct error QName
+  String lNamespace = "http://www.zorba-xquery.com/modules/image/error";
+  String lLocalname = "err:IM001";
+  Item lQName = aModule->getItemFactory()->createQName(lNamespace, lLocalname);
+
+
+  // if we have zero length image, then tell the user so
   if (std::string(aMessage).find("zero-length") != std::string::npos) {
-    lErrorMessage << "Passed xs:base64Binary seems to be empty.";
-    throwError(lErrorMessage.str(), XPST0083);
+    lErrorMessage << "The passed xs:base64Binary seems to be empty.";
+    error(lQName, lErrorMessage.str());
   } else {
     lErrorMessage << "Error while processing xs:base64Binary. Possibly not a valid image type.";
-    throwError(lErrorMessage.str(), XPST0083);
-  }             
+    error(lQName, lErrorMessage.str());
+  }
 }
 
 
-void 
+void
 ImageFunction::checkIfItemIsNull(Item& aItem) {
   if (aItem.isNull()) {
     throw ExternalFunctionData::createZorbaException(XPST0083, "Error while building the base64binary item. ", __FILE__, __LINE__);
   }
 }
-
 String
 ImageFunction::getOneStringArg(
     const StatelessExternalFunction::Arguments_t& aArgs,
@@ -114,14 +118,11 @@ ImageFunction::getOneBoolArg(
   return lTmpBool;
 }
 
-
-
-
 void
 ImageFunction::getOneColorArg(
      const StatelessExternalFunction::Arguments_t& aArgs,
      int aPos,
-     Magick::ColorRGB& aColor) 
+     Magick::ColorRGB& aColor)
 {
   Item lItem;
   if (!aArgs[aPos]->next(lItem)) {
@@ -136,13 +137,13 @@ ImageFunction::getOneColorArg(
     throwError(lErrorMessage.str(), XPTY0004);
   }
   getColorFromString(lTmpString, aColor);
-}  
+}
 
 
 
-void ImageFunction::getColorFromString(
-      const String aColorString,
-      Magick::ColorRGB& aColor)
+void 
+ImageFunction::getColorFromString(const String aColorString,
+                                  Magick::ColorRGB& aColor)
 {
   int lRed = 0;
   int lGreen = 0;
@@ -150,10 +151,9 @@ void ImageFunction::getColorFromString(
   sscanf(aColorString.substring(1,2).c_str(), "%x", &lRed);
   sscanf(aColorString.substring(3,2).c_str(), "%x", &lGreen);
   sscanf(aColorString.substring(5,2).c_str(), "%x", &lBlue);
-  aColor = Magick::ColorRGB((double)lRed/(double)255.0, (double)lGreen/(double)255.0, (double)lBlue/(double)255.0);    
+  aColor = Magick::ColorRGB((double)lRed/(double)255.0, (double)lGreen/(double)255.0, (double)lBlue/(double)255.0);
 
-}  
-
+}
 
 int
 ImageFunction::getOneIntArg(
@@ -179,9 +179,8 @@ ImageFunction::getOneIntArg(
 }
 
 unsigned int
-ImageFunction::getOneUnsignedIntArg(
-    const StatelessExternalFunction::Arguments_t& aArgs,
-    int aPos)
+ImageFunction::getOneUnsignedIntArg(const StatelessExternalFunction::Arguments_t& aArgs,
+                                    int aPos)
 {
   Item lItem;
   if (!aArgs[aPos]->next(lItem)) {
@@ -200,8 +199,6 @@ ImageFunction::getOneUnsignedIntArg(
   return lTmpInt;
 
 }
-
-
 
 double
 ImageFunction::getOneDoubleArg(
@@ -226,7 +223,7 @@ ImageFunction::getOneDoubleArg(
 }
 
 
-String 
+String
 ImageFunction::getEncodedStringFromBlob(Magick::Blob& aBlob) {
 
     std::string lStringOfBlobContent((char *)aBlob.data(), aBlob.length());
@@ -235,37 +232,35 @@ ImageFunction::getEncodedStringFromBlob(Magick::Blob& aBlob) {
     return zorba::encoding::Base64::encode(lZorbaStringOfBlobContent);
 }
 
-
-
-
-String 
-ImageFunction::getEncodedStringFromImage(Magick::Image& aImage) {
+String
+ImageFunction::getEncodedStringFromImage(const ImageModule* aModule, Magick::Image& aImage) {
   Magick::Blob lBlob;
   try {
     aImage.write(&lBlob);
   } catch (Magick::Exception& error) {
-    throwImageError(error.what());
-  }   
+    throwImageError(aModule, error.what());
+  }
   return getEncodedStringFromBlob(lBlob);
-} 
+}
 
 
 
 
 
 void
-ImageFunction::getOneImageArg(const StatelessExternalFunction::Arguments_t& aArgs,
+ImageFunction::getOneImageArg(const ImageModule* aModule,
+                              const StatelessExternalFunction::Arguments_t& aArgs,
                               int aPos,
                               Magick::Image& aImage)
 {
   String lData;
   lData = getOneStringArg(aArgs, aPos);
-  getImageFromString(lData, aImage);
+  getImageFromString(aModule, lData, aImage);
 }
 
-
-void 
-ImageFunction::getOneOrMoreImageArg(const StatelessExternalFunction::Arguments_t& aArgs,
+void
+ImageFunction::getOneOrMoreImageArg( const ImageModule* aModule,
+                                     const StatelessExternalFunction::Arguments_t& aArgs,
                                      int aPos,
                                      std::list<Magick::Image>& aImages,
                                      const unsigned int aDelay,
@@ -279,23 +274,21 @@ ImageFunction::getOneOrMoreImageArg(const StatelessExternalFunction::Arguments_t
   }
 
   Magick::Image lFirstImage;
-  ImageFunction::getImageFromString(lItem.getStringValue(), lFirstImage);
+  ImageFunction::getImageFromString(aModule, lItem.getStringValue(), lFirstImage);
   lFirstImage.animationDelay(aDelay);
   lFirstImage.animationIterations(aIterations);
   lFirstImage.gifDisposeMethod(3);
   aImages.push_back(lFirstImage);
   Magick::Image lTempImage;
   while (aArgs[aPos]->next(lItem)) {
-    getImageFromString(lItem.getStringValue(), lTempImage);
+    getImageFromString(aModule, lItem.getStringValue(), lTempImage);
     aImages.push_back(lTempImage);
   }
 
-}  
-
-
+}
 
 void
-ImageFunction::getImageFromString(const String aString, Magick::Image& aImage) {
+ImageFunction::getImageFromString(const ImageModule* aModule, const String aString, Magick::Image& aImage) {
 
   String lDecodedContent = zorba::encoding::Base64::decode(aString);
   Magick::Blob lBlob(lDecodedContent.c_str(), lDecodedContent.bytes());
@@ -304,7 +297,7 @@ ImageFunction::getImageFromString(const String aString, Magick::Image& aImage) {
     aImage.read(lBlob);
 
   } catch (Magick::Exception &error)   {
-      throwImageError(error.what());
+      throwImageError(aModule, error.what());
   }
 }
 
@@ -329,9 +322,8 @@ ImageFunction::getAntiAliasingArg(
 }
 
 double
-ImageFunction::getStrokeWidthArg(
-    const StatelessExternalFunction::Arguments_t& aArgs,
-    int aPos)
+ImageFunction::getStrokeWidthArg(const StatelessExternalFunction::Arguments_t& aArgs,
+                                 int aPos)
 {
   Item lItem;
   if (!aArgs[aPos]->next(lItem)) {
@@ -351,4 +343,5 @@ ImageFunction::getStrokeWidthArg(
 
 } // imagemodule 
 } // zorba
+
 

@@ -39,58 +39,61 @@ namespace zorba { namespace imagemodule {
      virtual String 
        getURI() const;
 
-     static void throwImageError(const char* aMessage);   
-      
+    static void 
+    throwImageError(const ImageModule* aModule, 
+                        const char* aMessage);
 
-     static void
-        throwError(
+
+    static void
+    throwError(
           const std::string errorMessage,
           const XQUERY_ERROR& errorType);
 
-      static String
-        getOneStringArg(
+    static String
+    getOneStringArg(
           const StatelessExternalFunction::Arguments_t& args,
           int pos);
 
 
-      static bool
-        getOneBoolArg(
+    static bool
+    getOneBoolArg(
             const StatelessExternalFunction::Arguments_t& args,
             int pos);
 
 
-      static void 
+      static void
           getOneImageArg(
+            const ImageModule* aModule,
             const StatelessExternalFunction::Arguments_t& aArgs,
             int aPos,
             Magick::Image& aImage);
-      
+
       static void
          getOneOrMoreImageArg(
+              const ImageModule* aModule,
               const StatelessExternalFunction::Arguments_t& aArgs,
               int aPos,
               std::list<Magick::Image>& aImages,
               const unsigned int aDelay,
               const unsigned int aIterations);
 
-     static unsigned int 
+     static unsigned int
           getOneUnsignedIntArg(const StatelessExternalFunction::Arguments_t& aArgs,
           int aPos);
-
 
       static int getOneIntArg(
           const StatelessExternalFunction::Arguments_t& args,
           int pos);
-      
+
 
       static double  getOneDoubleArg(
           const StatelessExternalFunction::Arguments_t& args,
           int pos);
-        
+
       static double  getOneOrNullDoubleArg (
           const StatelessExternalFunction::Arguments_t& args,
-          int pos); 
-      
+          int pos);
+
 
       static void getOneColorArg(
            const StatelessExternalFunction::Arguments_t& aArgs,
@@ -102,12 +105,12 @@ namespace zorba { namespace imagemodule {
           Magick::ColorRGB& aColor);
 
       static String getEncodedStringFromBlob(Magick::Blob& aBlob);
-    
-      static String getEncodedStringFromImage(Magick::Image& aImage);
 
-      static void getImageFromString(const String aString, Magick::Image& aImage);
-      
-      static void checkIfItemIsNull(Item& aItem); 
+      static String getEncodedStringFromImage(const ImageModule* aModule, Magick::Image& aImage);
+
+      static void getImageFromString(const ImageModule* aModule, const String aString, Magick::Image& aImage);
+
+      static void checkIfItemIsNull(Item& aItem);
 
       static bool getAntiAliasingArg(
           const StatelessExternalFunction::Arguments_t& aArgs,
@@ -117,9 +120,8 @@ namespace zorba { namespace imagemodule {
           const StatelessExternalFunction::Arguments_t& aArgs,
           int aPos);
 
-  }; 
-
-
+  };
 } /* namespace imagemodule*/ } /* namespace zorba */
 
 #endif // ZORBA_IMAGEMODULE_IMAGE_FUNCTION_H
+                                               

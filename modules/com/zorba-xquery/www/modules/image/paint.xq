@@ -31,7 +31,7 @@ import schema namespace image = 'http://www.zorba-xquery.com/modules/image/image
   : @param $stroke-width is the width of the line that should be painted (default is 1).
   : @param $anti-aliasing defines if anti-aliasing should be used (default is false).
   : @return A new image with the line painted as specified.
-  : @error If the passed xs:base64Binary is not a valid image.
+  : @error IM001 If the passed xs:base64Binary is not a valid image.
   : @error If the passed color string  is not a valid color.
   :)
 declare function paint:draw-line($image as xs:base64Binary, $start-x as xs:double, $start-y as xs:double, $end-x as xs:double, $end-y as xs:double, $stroke-color as xs:string?, $stroke-width as xs:double?, $anti-aliasing as xs:boolean?) as xs:base64Binary {
@@ -54,7 +54,7 @@ declare function paint:draw-line($image as xs:base64Binary, $start-x as xs:doubl
  : @param $stroke-width is the width of the line that should be painted (default is 1, equal or smaller than 1 will result in the thinnest possible line drawn).
  : @param $anti-aliasing defines if anti-aliasing should be used (default is false).
  : @return A new image with the specified poly-line painted.
- : @error If the passed xs:base64Binary is not a valid image.
+ : @error IM001 If the passed xs:base64Binary is not a valid image. 
  : @error If the passed color string  is not a valid color.
  :)
 declare function paint:draw-poly-line($image as xs:base64Binary, $x-values as xs:double+, $y-values as xs:double+, $stroke-color as xs:string?,  $stroke-width as xs:double?, $anti-aliasing as xs:boolean?)  as xs:base64Binary {
@@ -80,7 +80,7 @@ declare function paint:draw-poly-line($image as xs:base64Binary, $x-values as xs
  : @param $stroke-width is the width of the line that should be painted (default is 1, equal or smaller than 1 will result in the thinnest possible line drawn).
  : @param $anti-aliasing defines if anti-aliasing should be used (default is false).
  : @return A new image with the specified stroked poly-kube painted.
- : @error If the passed xs:base64Binary is not a valid image.
+ : @error IM001 If the passed xs:base64Binary is not a valid image.
  : @error If the passed color string  is not a valid color.
  :)
 declare function paint:draw-stroked-poly-line($image as xs:base64Binary, $x-values as xs:double+, $y-values as xs:double+, $stroke-length as xs:double, $gap-length as xs:double, $stroke-color as xs:string?, $stroke-width as xs:double?, $anti-aliasing as xs:boolean?) as xs:base64Binary {
@@ -104,7 +104,7 @@ declare function paint:draw-stroked-poly-line($image as xs:base64Binary, $x-valu
  : @param $stroke-width is the width of the outer lines of the rectangle that should be painted (default is 1, equal or smaller than 1 will result in the thinnest possible line drawn).
  : @param $anti-aliasing defines if anti-aliasing should be used (default is false).
  : @return A new image with the specified rectangle painted.
- : @error If the passed xs:base64Binary is not a valid image type.
+ : @error IM001 If the passed xs:base64Binary is not a valid image.
  : @error If any of the passed color strings are not valid colors.
  :)
 declare function paint:draw-rectangle($image as xs:base64Binary, $upper-left-x as xs:double, $upper-left-y as xs:double, $lower-right-x as xs:double, $lower-right-y as xs:double, $stroke-color as xs:string?, $fill-color as xs:string?, $stroke-width as xs:double?, $anti-aliasing as xs:boolean?) as xs:base64Binary {
@@ -129,7 +129,7 @@ declare function paint:draw-rectangle($image as xs:base64Binary, $upper-left-x a
  : @param $stroke-width is the width of the outer lines of the rectangle that should be painted (default is 1, equal or smaller than 1 will result in the thinnest possible line drawn).
  : @param $anti-aliasing defines if anti-aliasing should be used (default is false).
  : @return A new image with the specified rectangle painted.
- : @error If the passed xs:base64Binary is not a valid image type.
+ : @error IM001 If the passed xs:base64Binary is not a valid image.
  : @error If any of the passed color strings are not valid colors.
  :)
 declare function paint:draw-rounded-rectangle($image as xs:base64Binary, $upper-left-x as xs:double, $upper-left-y as xs:double, $lower-right-x as xs:double, $lower-right-y as xs:double, $corner-width as xs:double, $corner-height as xs:double, $stroke-color as xs:string?, $fill-color as xs:string?, $stroke-width as xs:double?, $anti-aliasing as xs:boolean?) as xs:base64Binary {
@@ -151,7 +151,7 @@ declare function paint:draw-rounded-rectangle($image as xs:base64Binary, $upper-
  : @param $stroke-width is the width of the outer lines of the circle that should be painted (default is 1, equal or smaller than 1 will result in the thinnest possible line drawn).
  : @param $anti-aliasing defines if anti-aliasing should be used (default is false). 
  : @return A new image with the specified circle painted.
- : @error If the passed xs:base64Binary is not a valid image type.
+ : @error IM001 If the passed xs:base64Binary is not a valid image.
  : @error If any of the passed color strings are not valid colors.
  :)
 declare function paint:draw-circle($image as xs:base64Binary, $origin-x as xs:double, $origin-y as xs:double, $perimeter as xs:double,  $stroke-color as xs:string?, $fill-color as xs:string?, $stroke-width as xs:double?, $anti-aliasing as xs:boolean?) as xs:base64Binary {
@@ -176,7 +176,7 @@ declare function paint:draw-circle($image as xs:base64Binary, $origin-x as xs:do
  : @param $stroke-width is the width of the outer lines of the ellipse that should be painted (default is 1, equal or smaller than 1 will result in the thinnest possible line drawn).
  : @param $anti-aliasing defines if anti-aliasing should be used (default is false). 
  : @return A new image with the specified circle painted.
- : @error If the passed xs:base64Binary is not a valid image type.
+ : @error IM001 If the passed xs:base64Binary is not a valid image.
  : @error If any of the passed color strings are not valid colors.
  :)
 declare function paint:draw-ellipse($image as xs:base64Binary, $origin-x as xs:double, $origin-y as xs:double, $perimeter-x as xs:double, $perimeter-y as xs:double,  $stroke-color as xs:string?, $fill-color as xs:string?, $stroke-width as xs:double?, $anti-aliasing as xs:boolean?) as xs:base64Binary {
@@ -198,7 +198,7 @@ declare function paint:draw-ellipse($image as xs:base64Binary, $origin-x as xs:d
  : @param $stroke-width is the width of the outer lines of the arc that should be painted (default is 1, equal or smaller than 1 will result in the thinnest possible line drawn).
  : @param $anti-aliasing defines if anti-aliasing should be used (default is false). 
  : @return A new image with the specified circle painted.
- : @error If the passed xs:base64Binary is not a valid image type.
+ : @error IM001 If the passed xs:base64Binary is not a valid image.
  : @error If any of the passed color strings are not valid colors.
  :)
 declare function paint:draw-arc($image as xs:base64Binary, $origin-x as xs:double, $origin-y as xs:double, $perimeter-x as xs:double, $perimeter-y as xs:double, $start-degrees as xs:double, $end-degrees as xs:double,  $stroke-color as xs:string?, $fill-color as xs:string?, $stroke-width as xs:double?, $anti-aliasing as xs:boolean?) as xs:base64Binary {
@@ -222,7 +222,7 @@ declare function paint:draw-arc($image as xs:base64Binary, $origin-x as xs:doubl
  : @param $stroke-width is the width of the outer lines of the polygon that should be painted (default is 1, equal or smaller than 1 will result in the thinnest possible line drawn).
  : @param $anti-aliasing defines if anti-aliasing should be used (default is false). 
  : @return A new image with the specified polygon painted.
- : @error If the passed xs:base64Binary is not a valid image type.
+ : @error IM001 If the passed xs:base64Binary is not a valid image.
  : @error If any of the passed color strings are not valid colors.
  :)
 declare function paint:draw-polygon($image as xs:base64Binary, $x-values as xs:double+, $y-values as xs:double+, $stroke-color as xs:string?, $fill-color as xs:string?, $stroke-width as xs:double?, $anti-aliasing as xs:boolean?) as xs:base64Binary {
@@ -242,7 +242,7 @@ declare function paint:draw-polygon($image as xs:base64Binary, $x-values as xs:d
  : @param $font-size is the size of the text to be painted (default is 12).  
  : @param $text-color is a color with which the text should be painted (default is '#000000', black).
  : @return A new image with the specified text.
- : @error If the passed xs:base64Binary is not a valid image type.
+ : @error IM001 If the passed xs:base64Binary is not a valid image.
  : @error If the passed color string  is not a valid color.
  :)
 declare function paint:draw-text($image as xs:base64Binary, $text as xs:string, $x as xs:double, $y as xs:double, $font-family as xs:string, $font-size as xs:double?,  $text-color as xs:string?) as xs:base64Binary {

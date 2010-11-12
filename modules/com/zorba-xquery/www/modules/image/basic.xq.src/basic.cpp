@@ -44,7 +44,7 @@ WidthFunction::evaluate(
 {
 
   Magick::Image lImage;
-  ImageFunction::getOneImageArg(aArgs, 0, lImage);
+  ImageFunction::getOneImageArg(theModule, aArgs, 0, lImage);
   int lResult = lImage.columns();
   return ItemSequence_t(new SingletonItemSequence(
       theModule->getItemFactory()->createInt(lResult)));
@@ -65,7 +65,7 @@ HeightFunction::evaluate(
 {
 
   Magick::Image lImage;
-  ImageFunction::getOneImageArg(aArgs, 0, lImage);
+  ImageFunction::getOneImageArg(theModule, aArgs, 0, lImage);
   int lResult = lImage.rows();
   return ItemSequence_t(new SingletonItemSequence(
       theModule->getItemFactory()->createInt(lResult)));
@@ -85,7 +85,7 @@ TypeFunction::evaluate(
   const DynamicContext*                         aDynCtx) const
 {
   Magick::Image lImage;
-  ImageFunction::getOneImageArg(aArgs, 0, lImage);
+  ImageFunction::getOneImageArg(theModule, aArgs, 0, lImage);
   Magick::Blob lBlob;
   lImage.write(&lBlob); 
   long lBlobLength = (long) lBlob.length();
@@ -111,7 +111,7 @@ ConvertFunction::evaluate(
 {
 
   Magick::Image lImage;
-  ImageFunction::getOneImageArg(aArgs, 0 , lImage);
+  ImageFunction::getOneImageArg(theModule, aArgs, 0 , lImage);
       
   String lType;
   lType = ImageFunction::getOneStringArg(aArgs, 1);
@@ -122,7 +122,7 @@ ConvertFunction::evaluate(
 
 
   lImage.magick(lType.c_str()); // Set output format 
-  String lEncodedContent = ImageFunction::getEncodedStringFromImage(lImage); 
+  String lEncodedContent = ImageFunction::getEncodedStringFromImage(theModule, lImage); 
   Item lItem = theModule->getItemFactory()->createBase64Binary(lEncodedContent.c_str(), lEncodedContent.bytes());
 
   ImageFunction::checkIfItemIsNull(lItem);
@@ -145,7 +145,7 @@ CompressFunction::evaluate(
 {
 
   Magick::Image lImage;
-  ImageFunction::getOneImageArg(aArgs, 0 , lImage);
+  ImageFunction::getOneImageArg(theModule, aArgs, 0 , lImage);
   int lQuality = ImageFunction::getOneUnsignedIntArg(aArgs, 1);
   // make sure that we have at most a quality of 100 (highest possible value)
   if (lQuality > 100) {
@@ -154,7 +154,7 @@ CompressFunction::evaluate(
     lQuality = 0;
   }
   lImage.quality(lQuality); // Set output format 
-  String lEncodedContent = ImageFunction::getEncodedStringFromImage(lImage);
+  String lEncodedContent = ImageFunction::getEncodedStringFromImage(theModule, lImage);
   Item lItem = theModule->getItemFactory()->createBase64Binary(lEncodedContent.c_str(), lEncodedContent.bytes());
   ImageFunction::checkIfItemIsNull(lItem);
   return ItemSequence_t(new SingletonItemSequence(lItem));
@@ -181,7 +181,7 @@ CreateFunction::evaluate(
   Magick::Image lBlankImage( Magick::Geometry(width, height), "white");
   lBlankImage.magick(lType.c_str()); // Set output format 
 
-  String lEncodedContent = ImageFunction::getEncodedStringFromImage(lBlankImage); 
+  String lEncodedContent = ImageFunction::getEncodedStringFromImage(theModule, lBlankImage); 
   Item lItem = theModule->getItemFactory()->createBase64Binary(lEncodedContent.c_str(), lEncodedContent.bytes());
   ImageFunction::checkIfItemIsNull(lItem);
   return ItemSequence_t(new SingletonItemSequence(lItem));
@@ -203,8 +203,8 @@ EqualsFunction::evaluate(
 {
   Magick::Image lFirst;
   Magick::Image lSecond;
-  ImageFunction::getOneImageArg(aArgs, 0, lFirst);
-  ImageFunction::getOneImageArg(aArgs, 1, lSecond);
+  ImageFunction::getOneImageArg(theModule, aArgs, 0, lFirst);
+  ImageFunction::getOneImageArg(theModule, aArgs, 1, lSecond);
   lFirst.compare(lSecond);
   bool lResult = (lFirst.normalizedMeanError() < 0.0008);
   return ItemSequence_t(new SingletonItemSequence(
@@ -227,7 +227,7 @@ ExifFunction::evaluate(
   const DynamicContext*                         aDynCtx) const
 {
   Magick::Image lImage;
-  ImageFunction::getOneImageArg(aArgs, 0, lImage);
+  ImageFunction::getOneImageArg(theModule, aArgs, 0, lImage);
   String lTag = ImageFunction::getOneStringArg(aArgs, 1);
   std::string lTagWithExif("EXIF:");
   lTagWithExif += lTag.c_str(); 
