@@ -2539,7 +2539,7 @@ DEFINE_EVALUATE_ONE_GEOMETRY_RETURN_GEOMETRY(SFPointOnSurfaceFunction, getInteri
 zorba::Item GeoFunction::getBoundary(geos::geom::Geometry *geos_geometry, zorba::Item srs_uri) const 
 {
   geos::geom::Geometry  *geos_result = NULL;                                            
-  if((gmlsf_types)(int)geos_geometry->getUserData() == GMLSF_SURFACE)
+  if(geos_geometry->getUserData() == (void*)GMLSF_SURFACE)
   {
     geos::geom::LinearRing *exterior_ring;
     geos::geom::MultiPolygon* surface = dynamic_cast<geos::geom::MultiPolygon*>(geos_geometry);
