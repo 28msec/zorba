@@ -980,7 +980,7 @@ public:
 
   /**
    * Returns a read/write reverse iterator positioned at the first character of
-   * the string.
+   * the reversed string.
    * 
    * @return Returns said iterator.
    */
@@ -990,7 +990,7 @@ public:
 
   /**
    * Returns a read-only reverse iterator positioned at the first character of
-   * the string.
+   * the reversed string.
    * 
    * @return Returns said iterator.
    */
@@ -1000,7 +1000,7 @@ public:
 
   /**
    * Returns a read/write reverse iterator positioned at one past the last
-   * character of the string.
+   * character of the reversed string.
    * 
    * @return Returns said iterator.
    */
@@ -1010,7 +1010,7 @@ public:
 
   /**
    * Returns a read-only reverse iterator positioned at one past the last
-   * character of the string.
+   * character of the reversed string.
    * 
    * @return Returns said iterator.
    */
