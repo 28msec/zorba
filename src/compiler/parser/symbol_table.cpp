@@ -16,7 +16,6 @@
 #include "zorbatypes/numconversions.h"
 
 #include "compiler/parser/symbol_table.h"
-#include "util/fx/fxcharheap.h"
 
 #include "util/XmlWhitespace.h"
 #include "util/utf8_util.h"
