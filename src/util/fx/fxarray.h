@@ -34,7 +34,6 @@
 #include <sstream>
 #include <iostream>
 
-#include "util/fx/mmfile.h"
 #include "zorbaerrors/error_manager.h"
 
 namespace zorba {
@@ -57,21 +56,13 @@ template<typename T>
 class fxarray
 {
 public:   // state
-  mmfile * mmf_p;   // memory-mapped case, may be NULL
-  char * src;       // raw view: either mmf_p->data or heap pointer
+  char * src;       // raw view: heap pointer
   uint32_t eofoff;  // raw view: sentinel byte offset
 
   T * _begin;       // element view: pointer to first
   T * _end;         // element view: pointer to sentinel
 
 public:   // ctor,dtor
-  /**
-   ** Create a memory-mapped fxarray with a given backing file.
-   **
-   ** @param path - backing file pathname 
-   ** @param size - initial size
-  */
-  fxarray(std::string const& path, uint32_t initial_size=DEFAULT_SIZE);
 
   /**
    ** Create a fxarray in memory.
@@ -84,12 +75,6 @@ public:   // ctor,dtor
    ** Deallocate, possibly unmap and delete backing file.
    */
   ~fxarray();
-
-  /**
-   ** Destroy all the elements.
-   ** In the mmfile case, unmap and close backing file.
-   */
-  void destroy();
 
 public:   // array interface
   /**
@@ -122,12 +107,6 @@ public:   // array interface
    */
   void fill(char initval);
 
-  /**
-   ** Return mmfile
-   */
-  mmfile * get_mmfile() const { return mmf_p; }
-
-
 public:   // iterator interface
   /**
    ** Return the first element.
@@ -145,22 +124,7 @@ public:   // iterator interface
 
 
 public:   // memory-mapped only, nops in the non-mm case
-  /**
-   ** Unmap the backing file.
-   */
-  void unmap();
 
-  /**
-   ** Return the path of the backing file.
-   **
-   ** @return path of backing file
-   */
-  std::string get_path() const { return mmf_p ? mmf_p->get_path() : ""; }
-
-  /**
-   ** Rename the backing file.
-   */
-  void rename_backing_file(std::string const& new_path);
   /**
    ** Return data array pointer.
    **
@@ -178,24 +142,8 @@ public:   // memory-mapped only, nops in the non-mm case
 };
 
 
-
-
-template<typename T>
-fxarray<T>::fxarray(std::string const& path, uint32_t size)
-:
-  mmf_p(new mmfile(path, size*sizeof(T)))
-{
-  eofoff = mmf_p->get_eofoff();
-  src = mmf_p->get_data();
-  _begin = reinterpret_cast<T*>(src);
-  _end   = reinterpret_cast<T*>(src+eofoff);
-}
-
-
 template<typename T>
 fxarray<T>::fxarray(uint32_t size)
-:
-  mmf_p(NULL)
 {
   eofoff = size*sizeof(T);
   src = new char[eofoff];
@@ -207,12 +155,7 @@ fxarray<T>::fxarray(uint32_t size)
 template<typename T>
 fxarray<T>::~fxarray()
 {
-  if (mmf_p) {
-    delete mmf_p;
-  }
-  else if (src) {
-    delete[] src;
-  }
+  delete[] src;
 }
 
 
@@ -226,41 +169,15 @@ void fxarray<T>::fill(char initval)
 template<typename T>
 void fxarray<T>::expand(bool init)
 {
-  if (mmf_p) {
-    mmf_p->expand(init);
-    src = mmf_p->get_data();
-    eofoff = mmf_p->get_eofoff();
-  }
-  else {
-    char * src0 = new char[eofoff<<1];
-    memcpy(src0, src, eofoff);
-    eofoff <<= 1;
-    delete[] src;
-    src = src0;
-  }
+  char * src0 = new char[eofoff<<1];
+  memcpy(src0, src, eofoff);
+  eofoff <<= 1;
+  delete[] src;
+  src = src0;
 
   _begin = reinterpret_cast<T*>(src);
   _end   = reinterpret_cast<T*>(src+eofoff);
 
-}
-
-
-template<typename T>
-void fxarray<T>::unmap()
-{
-  if (mmf_p) mmf_p->unmap();
-}
-
-template<typename T>
-void fxarray<T>::rename_backing_file(const std::string& new_path)
-{
-  if (mmf_p) mmf_p->rename_backing_file(new_path);
-}
-
-template<typename T>
-void fxarray<T>::destroy()
-{
-  if (mmf_p) mmf_p->destroy();
 }
 
 

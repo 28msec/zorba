@@ -60,10 +60,6 @@ public:  //state
 
 
 public:  //ctor,dtor
-  /**
-   **  Create memory-mapped char heap.
-   */
-  fxcharheap(std::string const& path, uint32_t initial_size=DEFAULT_SIZE);
 
   /**
    **  Create in-memory char heap.

@@ -14,7 +14,6 @@
 SET(UTIL_SRCS
     ascii_util.cpp
     dynamic_bitset.cpp
-    fx/mmfile.cpp
     fx/fxcharheap.cpp
     file.cpp
     dir.cpp

@@ -73,17 +73,6 @@ void fxcharheap::ioexception(
 
   ______________________________________________________________________*/
 
-// memory-mapped heap
-fxcharheap::fxcharheap(
-    string const& path,
-    uint32_t initial_size)
-  :
-  fxary_p(new fxarray<char>(path, initial_size+sizeof(off_t)))
-{
-  bool init_offset = file(path).get_size()>0;
-  init(init_offset);
-}
-
 
 // in-memory heap
 fxcharheap::fxcharheap(
