@@ -22,14 +22,15 @@
 #include "../ft_thesaurus.h"
 
 namespace zorba {
+namespace wordnet {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-class wordnet : public ft_thesaurus {
+class thesaurus : public ft_thesaurus {
 public:
-  wordnet( zstring const &phrase, zstring const &relationship,
-           ft_int at_least, ft_int at_most );
-  ~wordnet();
+  thesaurus( zstring const &phrase, zstring const &relationship,
+             ft_int at_least, ft_int at_most );
+  ~thesaurus();
 
   bool next( zstring *synonym );
 
@@ -40,12 +41,14 @@ private:
   synonym_list_t::const_iterator i_;
 
   // forbid these
-  wordnet( wordnet const& );
-  wordnet& operator=( wordnet const& );
+  thesaurus( thesaurus const& );
+  thesaurus& operator=( thesaurus const& );
 };
 
 ///////////////////////////////////////////////////////////////////////////////
 
+} // namespace wordnet
 } // namespace zorba
+
 #endif  /* ZORBA_FULL_TEXT_WORDNET_H */
 /* vim:set et sw=2 ts=2: */

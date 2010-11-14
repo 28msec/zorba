@@ -246,6 +246,15 @@ public:
   }
 
   /**
+   * Checks whether this %mmap_file is mapped to a file.
+   *
+   * @return Returns \c true only if it is.
+   */
+  operator bool() const {
+    return !!addr_;
+  }
+
+  /**
    * Gets the ith character.
    *
    * @param i The index of the character.

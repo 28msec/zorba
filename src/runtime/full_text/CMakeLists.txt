@@ -38,6 +38,7 @@ SET(FULLTEXT_SRCS
     stop_words/stop_words_pt.cpp
     stop_words/stop_words_sv.cpp
     thesauri/wordnet.cpp
+    thesauri/wn_thes_seg.cpp
     )
 
 # vim:set et sw=4 ts=4:
