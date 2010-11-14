@@ -19,6 +19,7 @@ SET(UTIL_SRCS
     file.cpp
     dir.cpp
     indent.cpp
+    mmap_file.cpp
     XmlWhitespace.cpp
     unicode_util.cpp
     utf8_util.cpp
