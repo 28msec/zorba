@@ -22,7 +22,7 @@
 #include "util/less.h"
 
 #include "ft_thesaurus.h"
-#include "thesauri/wordnet.h"
+#include "thesauri/wn_thesaurus.h"
 
 using namespace std;
 using namespace zorba::locale;

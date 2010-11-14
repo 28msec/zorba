@@ -18,7 +18,7 @@
 #include "util/less.h"
 #include "util/mmap_file.h"
 
-#include "wordnet.h"
+#include "wn_thesaurus.h"
 
 using namespace std;
 

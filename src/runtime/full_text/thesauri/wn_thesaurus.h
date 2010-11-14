@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_FULL_TEXT_WORDNET_H
-#define ZORBA_FULL_TEXT_WORDNET_H
+#ifndef ZORBA_FULL_TEXT_WORDNET_THESAURUS_H
+#define ZORBA_FULL_TEXT_WORDNET_THESAURUS_H
 
 #include <list>
 
@@ -50,5 +50,5 @@ private:
 } // namespace wordnet
 } // namespace zorba
 
-#endif  /* ZORBA_FULL_TEXT_WORDNET_H */
+#endif  /* ZORBA_FULL_TEXT_WORDNET_THESAURUS_H */
 /* vim:set et sw=2 ts=2: */
