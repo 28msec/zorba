@@ -174,7 +174,7 @@ void URI::encode_file_URI(const zstring& filepath, zstring& uri)
   uri = "file:///";
 
   zstring tmp1( filepath );
-  ascii::replace_all( tmp1, "\\", "/" );
+  ascii::replace_all( tmp1, '\\', '/' );
 
   zstring tmp2;
   ascii::uri_encode(tmp1, &tmp2, false);
@@ -1377,10 +1377,7 @@ void URI::resolve(const URI* base_uri)
   path.append(thePath);
 
   // 6c - remove all "./" where "." is a complete path segment
-  zstring pattern("/\\./");
-  zstring replacement("/");
-  bool ok = utf8::replace_all(path, pattern, "", replacement, &path);
-  ZORBA_ASSERT(ok);
+  ascii::replace_all(path, "/./", 3, "/", 1);
 
   // 6d If the buffer string ends with "." as a complete path segment,
   //  that "." is removed.
