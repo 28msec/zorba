@@ -22,11 +22,11 @@
 #endif
 
 #ifndef _WIN32_WCE
-	#include <sys/types.h>
-	#include <errno.h>
-	#include <fcntl.h>
+  #include <sys/types.h>
+  #include <errno.h>
+  #include <fcntl.h>
 #else
-	#include <types.h>
+  #include <types.h>
 #endif
 
 
@@ -56,45 +56,45 @@ namespace zorba {
 template<typename T>
 class fxarray
 {
-public:		// state
-	mmfile * mmf_p;		// memory-mapped case, may be NULL
-	char * src;				// raw view: either mmf_p->data or heap pointer
-	uint32_t eofoff;	// raw view: sentinel byte offset
+public:   // state
+  mmfile * mmf_p;   // memory-mapped case, may be NULL
+  char * src;       // raw view: either mmf_p->data or heap pointer
+  uint32_t eofoff;  // raw view: sentinel byte offset
 
-  T * _begin;      	// element view: pointer to first
-  T * _end;					// element view: pointer to sentinel
+  T * _begin;       // element view: pointer to first
+  T * _end;         // element view: pointer to sentinel
 
-public:		// ctor,dtor
-	/**
+public:   // ctor,dtor
+  /**
    ** Create a memory-mapped fxarray with a given backing file.
-	 **
+   **
    ** @param path - backing file pathname 
-	 ** @param size - initial size
+   ** @param size - initial size
   */
   fxarray(std::string const& path, uint32_t initial_size=DEFAULT_SIZE);
 
-	/**
+  /**
    ** Create a fxarray in memory.
-	 **
-	 ** @param size - initial size
+   **
+   ** @param size - initial size
    */
   fxarray(uint32_t initial_size=DEFAULT_SIZE);
 
-	/**
+  /**
    ** Deallocate, possibly unmap and delete backing file.
    */
   ~fxarray();
 
-	/**
+  /**
    ** Destroy all the elements.
-	 **	In the mmfile case, unmap and close backing file.
+   ** In the mmfile case, unmap and close backing file.
    */
-	void destroy();
+  void destroy();
 
-public: 	// array interface
-	/**
+public:   // array interface
+  /**
    ** Subscript access to the data contained in the fxarray.
-	 **
+   **
    ** @param n - index of the element for which data should be accessed.
    ** @return  Read/write reference to data.
    ** @note data access with this operator is unchecked and
@@ -102,78 +102,78 @@ public: 	// array interface
    */
   T& operator[](size_t n) { return *(_begin + n); }
 
-	/**
-	 ** Return the size of this array.
-	 ** @return array size
-	 */
+  /**
+   ** Return the size of this array.
+   ** @return array size
+   */
   uint32_t size() const { return (eofoff / sizeof(T)); }
 
-	/**
-	 ** Double the array (and its file).
-	 **
-	 ** @param init - if true then initialize the new entries to 0
-	 */
+  /**
+   ** Double the array (and its file).
+   **
+   ** @param init - if true then initialize the new entries to 0
+   */
   void expand(bool init = false);
 
-	/**
-	 ** Fill array with an initial byte value.
-	 **
-	 ** @param initval the initial value to fill with
-	 */
+  /**
+   ** Fill array with an initial byte value.
+   **
+   ** @param initval the initial value to fill with
+   */
   void fill(char initval);
 
-	/**
-	 **	Return mmfile
+  /**
+   ** Return mmfile
    */
-	mmfile * get_mmfile() const { return mmf_p; }
+  mmfile * get_mmfile() const { return mmf_p; }
 
 
-public:		// iterator interface
-	/**
-	 ** Return the first element.
-	 **
-	 ** @return first element
-	 */
+public:   // iterator interface
+  /**
+   ** Return the first element.
+   **
+   ** @return first element
+   */
   T * begin() { return _begin; }
 
-	/**
-	 ** Return the sentinel element.
-	 **
-	 ** @return sentinel element
-	 */
+  /**
+   ** Return the sentinel element.
+   **
+   ** @return sentinel element
+   */
   T * end() { return _end; }
 
 
-public:		// memory-mapped only, nops in the non-mm case
-	/**
-	 ** Unmap the backing file.
-	 */
-	void unmap();
+public:   // memory-mapped only, nops in the non-mm case
+  /**
+   ** Unmap the backing file.
+   */
+  void unmap();
 
-	/**
-	 ** Return the path of the backing file.
-	 **
-	 ** @return path of backing file
-	 */
+  /**
+   ** Return the path of the backing file.
+   **
+   ** @return path of backing file
+   */
   std::string get_path() const { return mmf_p ? mmf_p->get_path() : ""; }
 
-	/**
-	 ** Rename the backing file.
-	 */
+  /**
+   ** Rename the backing file.
+   */
   void rename_backing_file(std::string const& new_path);
-	/**
-	 ** Return data array pointer.
-	 **
-	 ** @return data array pointer
-	 */
-	char * get_data() const { return src; }
+  /**
+   ** Return data array pointer.
+   **
+   ** @return data array pointer
+   */
+  char * get_data() const { return src; }
 
-	/**
-	 ** Return the data array sentinel.
-	 **
-	 ** @return data array sentinel
-	 */
-	uint32_t get_eofoff() const { return eofoff; }
+  /**
+   ** Return the data array sentinel.
+   **
+   ** @return data array sentinel
+   */
+  uint32_t get_eofoff() const { return eofoff; }
 
 };
 
@@ -183,10 +183,10 @@ public:		// memory-mapped only, nops in the non-mm case
 template<typename T>
 fxarray<T>::fxarray(std::string const& path, uint32_t size)
 :
-	mmf_p(new mmfile(path, size*sizeof(T)))
+  mmf_p(new mmfile(path, size*sizeof(T)))
 {
-	eofoff = mmf_p->get_eofoff();
-	src = mmf_p->get_data();
+  eofoff = mmf_p->get_eofoff();
+  src = mmf_p->get_data();
   _begin = reinterpret_cast<T*>(src);
   _end   = reinterpret_cast<T*>(src+eofoff);
 }
@@ -195,10 +195,10 @@ fxarray<T>::fxarray(std::string const& path, uint32_t size)
 template<typename T>
 fxarray<T>::fxarray(uint32_t size)
 :
-	mmf_p(NULL)
+  mmf_p(NULL)
 {
-	eofoff = size*sizeof(T);
-	src = new char[eofoff];
+  eofoff = size*sizeof(T);
+  src = new char[eofoff];
   _begin = reinterpret_cast<T*>(src);
   _end   = reinterpret_cast<T*>(src+eofoff);
 }
@@ -207,12 +207,12 @@ fxarray<T>::fxarray(uint32_t size)
 template<typename T>
 fxarray<T>::~fxarray()
 {
-	if (mmf_p) {
-		delete mmf_p;
-	}
-	else if (src) {
-		delete[] src;
-	}
+  if (mmf_p) {
+    delete mmf_p;
+  }
+  else if (src) {
+    delete[] src;
+  }
 }
 
 
@@ -226,18 +226,18 @@ void fxarray<T>::fill(char initval)
 template<typename T>
 void fxarray<T>::expand(bool init)
 {
-	if (mmf_p) {
-		mmf_p->expand(init);
-		src = mmf_p->get_data();
-		eofoff = mmf_p->get_eofoff();
-	}
-	else {
-		char * src0 = new char[eofoff<<1];
-		memcpy(src0, src, eofoff);
-		eofoff <<= 1;
-		delete[] src;
-		src = src0;
-	}
+  if (mmf_p) {
+    mmf_p->expand(init);
+    src = mmf_p->get_data();
+    eofoff = mmf_p->get_eofoff();
+  }
+  else {
+    char * src0 = new char[eofoff<<1];
+    memcpy(src0, src, eofoff);
+    eofoff <<= 1;
+    delete[] src;
+    src = src0;
+  }
 
   _begin = reinterpret_cast<T*>(src);
   _end   = reinterpret_cast<T*>(src+eofoff);
@@ -248,22 +248,22 @@ void fxarray<T>::expand(bool init)
 template<typename T>
 void fxarray<T>::unmap()
 {
-	if (mmf_p) mmf_p->unmap();
+  if (mmf_p) mmf_p->unmap();
 }
 
 template<typename T>
 void fxarray<T>::rename_backing_file(const std::string& new_path)
 {
-	if (mmf_p) mmf_p->rename_backing_file(new_path);
+  if (mmf_p) mmf_p->rename_backing_file(new_path);
 }
 
 template<typename T>
 void fxarray<T>::destroy()
 {
-	if (mmf_p) mmf_p->destroy();
+  if (mmf_p) mmf_p->destroy();
 }
 
 
 }  /* namespace zorba */
 #endif  /* ZORBA_FXARRAY_H */
-
+/* vim:set et sw=2 ts=2: */
