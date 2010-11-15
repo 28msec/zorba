@@ -109,7 +109,7 @@ void mmap_file::open( char const *path, ios::openmode mode ) {
     sizeof( wPath ) / sizeof( wPath[0] )
   );
 #else
-  char const *const wPath = path.c_str();
+  char const *const wPath = path;
 #endif /* UNICODE */
 
   DWORD createAccess = 0;
