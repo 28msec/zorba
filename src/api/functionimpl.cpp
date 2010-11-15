@@ -15,8 +15,6 @@
  */
 #include "api/functionimpl.h"
 
-#include "zorbatypes/xqpstring.h"
-#include "api/unmarshaller.h"
 #include "api/zorbaimpl.h"
 #include "functions/function.h"
 #include "zorbaerrors/errors.h"

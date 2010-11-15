@@ -45,8 +45,6 @@ namespace zorba {
 class binary_arith_func : public function 
 {
 public:
-  binary_arith_func(const signature& sig) : function(sig) {}
-
   binary_arith_func(const signature& sig, FunctionConsts::FunctionKind kind)
     :
     function(sig, kind)

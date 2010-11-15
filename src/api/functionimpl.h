@@ -20,8 +20,9 @@
 
 namespace zorba {
 
-  class function;
-  class ErrorHandler;
+class function;
+class ErrorHandler;
+
 
 class ZORBA_DLL_PUBLIC FunctionImpl : public Function
 {

@@ -23,12 +23,14 @@
 
 #include "compiler/rewriter/rules/ruleset.h"
 #include "compiler/rewriter/tools/expr_tools.h"
+#include "compiler/rewriter/framework/rewriter.h"
 
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/expr_iter.h"
 
 #include "compiler/codegen/plan_visitor.h"
 #include "compiler/api/compilercb.h"
+#include "compiler/api/compiler_api.h"
 
 #include "types/root_typemanager.h"
 #include "types/typeops.h"
@@ -178,7 +180,19 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
   case fo_expr_kind:
   {
     fo_expr* fo = static_cast<fo_expr *>(node);
-    const function* f = fo->get_func();
+    function* f = fo->get_func();
+
+    if (f->isUdf())
+    {
+      user_function* udf = static_cast<user_function*>(f);
+
+      if (!udf->isOptimized())
+      {
+        RewriterContext rctx(rCtx.theCCB, udf->getBody());
+        GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rctx);
+        udf->setBody(rctx.getRoot());
+      }
+    }
 
     // The various fn:error functions are non-discardable. Variable assignment
     // is also non-discardable.

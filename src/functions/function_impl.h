@@ -21,10 +21,10 @@
 #include "functions/function.h"
 #include "functions/library.h"
 
+#include "context/static_context.h"
+
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
-
-#include "context/static_context.h"
 
 #ifndef NDEBUG
 
@@ -126,16 +126,6 @@ static inline store::Item_t createQName(
   GENV_ITEMFACTORY->createQName(res, ns, pre, local);
   return res;
 }
-
-
-
-template <class Iter> class function_impl : public function 
-{
-public:
-  function_impl(const signature& sig) : function(sig) {}
-
-  DEFAULT_NARY_CODEGEN(Iter)
-};
 
 
 }	/* namespace zorba */

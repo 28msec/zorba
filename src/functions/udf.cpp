@@ -46,13 +46,15 @@ user_function::user_function(
     expr_t expr_body,
     expr_script_kind_t scriptingKind)
   :
-  function(sig),
+  function(sig, FunctionConsts::FN_UNKNOWN),
   theLoc(loc),
   theBodyExpr(expr_body),
   theScriptingKind(scriptingKind),
   theIsLeaf(true),
   theIsOptimized(false)
 {
+  setFlag(FunctionConsts::isUDF);
+  resetFlag(FunctionConsts::isBuiltin);
 }
 
 
@@ -63,6 +65,8 @@ user_function::user_function(::zorba::serialization::Archiver& ar)
   :
   function(ar)
 {
+  setFlag(FunctionConsts::isUDF);
+  resetFlag(FunctionConsts::isBuiltin);
 }
 
 
@@ -84,6 +88,7 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
   {
     try
     {
+#if 0
       // We shouldn't try to optimize the body during the process of serializing
       // the query plan, because udfs are serialized in some "random" order, and
       // as a result, they will be optimized in this random order, instead of a
@@ -105,6 +110,9 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
       {
         getPlan(ar.compiler_cb);
       }
+#else
+      getPlan(ar.compiler_cb);
+#endif
     }
     catch(...)
     {
@@ -163,7 +171,7 @@ xqtref_t user_function::getUDFReturnType(static_context* sctx) const
 /*******************************************************************************
 
 ********************************************************************************/
-void user_function::setBody(expr_t body)
+void user_function::setBody(const expr_t& body)
 {
   theBodyExpr = body;
 }

@@ -41,6 +41,7 @@ external_function::external_function(
   theScriptingKind(scriptingType),
   theImpl(impl)
 {
+  resetFlag(FunctionConsts::isBuiltin);
   setDeterministic(deterministic);
 }
 

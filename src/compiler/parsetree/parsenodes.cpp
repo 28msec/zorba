@@ -890,13 +890,15 @@ void FunctionDecl::set_annotations(rchandle<AnnotationListParsenode> annotations
 void FunctionDecl::parse_annotations()
 {
   if (annotations_h != NULL)
-    for (unsigned int i=0; i<annotations_h->size(); i++)
+  {
+    for (unsigned int i = 0; i < annotations_h->size(); i++)
     {
       if (annotations_h->operator[](i)->get_qname()->get_qname() == "nondeterministic")
         theDeterministic = false;
       if (annotations_h->operator[](i)->get_qname()->get_qname() == "private")
         thePrivate = true;
     }
+  }
 }
 
 

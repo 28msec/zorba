@@ -13,14 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <vector>
-
 #include "functions/function_impl.h"
 #include "functions/Alexis.h"
 
 #include "runtime/util/UtilImpl.h"
-
-using namespace std;
 
 namespace zorba 
 {
@@ -29,7 +25,17 @@ namespace zorba
 /*******************************************************************************
   zorba:tidy
 ********************************************************************************/
-typedef function_impl<ZorbaTidyIterator> zorba_tidy;
+class zorba_tidy : public function 
+{
+public:
+  zorba_tidy(const signature& sig) 
+    :
+    function(sig, FunctionConsts::FN_UNKNOWN)
+  {
+  }
+
+  DEFAULT_NARY_CODEGEN(ZorbaTidyIterator);
+};
 
 
 /*******************************************************************************
@@ -38,7 +44,11 @@ typedef function_impl<ZorbaTidyIterator> zorba_tidy;
 class zorba_tdoc : public function 
 {
 public:
-  zorba_tdoc(const signature& sig) : function(sig) {}
+  zorba_tdoc(const signature& sig) 
+    :
+    function(sig, FunctionConsts::FN_UNKNOWN)
+  {
+  }
 
   bool isSource() const { return true; }
 
@@ -56,17 +66,6 @@ void populateContext_Alexis(static_context* sctx)
   const char* tidy_ns = static_context::ZORBA_TIDY_FN_NS.c_str();
 
 #ifdef ZORBA_WITH_TIDY
-  DECL(sctx, zorba_tidy,
-       (createQName(util_ns, "", "tidy"),
-        GENV_TYPESYSTEM.STRING_TYPE_ONE,
-        GENV_TYPESYSTEM.ITEM_TYPE_ONE));
-
-  DECL(sctx, zorba_tidy,
-       (createQName(util_ns, "", "tidy"),
-        GENV_TYPESYSTEM.STRING_TYPE_ONE,
-        GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
-        GENV_TYPESYSTEM.ITEM_TYPE_ONE));
-
   DECL(sctx, zorba_tdoc,
        (createQName(util_ns, "", "tdoc"),
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION,

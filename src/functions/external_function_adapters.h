@@ -61,12 +61,6 @@ public:
 
   ~external_function() { }
 
-  bool isBuiltin() const { return false; }
-
-  bool isExternal() const { return true; }
-
-  bool isUdf() const { return false; }
-
   expr_script_kind_t getUpdateType() const { return theScriptingKind; }
 
   bool accessesDynCtx() const;

@@ -37,48 +37,14 @@ END_SERIALIZABLE_CLASS_VERSIONS(function)
 /*******************************************************************************
 
 ********************************************************************************/
-function::function(const signature& sig)
-  :
-  theSignature(sig),
-  theKind(FunctionConsts::FN_UNKNOWN),
-  theFlags(0)
-{
-  const store::Item* lName = getName();
-  //lName may be null for inlined functions
-  if(lName != 0 &&
-     equals(getName()->getNamespace(), XQUERY_FN_NS, sizeof(XQUERY_FN_NS)-1))
-  {
-    setFlag(FunctionConsts::hasFnNamespace);
-  }
-
-  setDeterministic(true);
-
-  zorba::serialization::Archiver& ar =
-  *::zorba::serialization::ClassSerializer::getInstance()->
-  getArchiverForHardcodedObjects();
-
-  if (ar.is_loading_hardcoded_objects())
-  {
-    // register this hardcoded object to help plan serialization
-    function* this_ptr = this;
-    ar & this_ptr;
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 function::function(const signature& sig, FunctionConsts::FunctionKind kind)
   :
   theSignature(sig),
   theKind(kind),
   theFlags(0)
 {
-  if (equals(getName()->getNamespace(), XQUERY_FN_NS, sizeof(XQUERY_FN_NS)-1))
-    setFlag(FunctionConsts::hasFnNamespace);
-
-  setDeterministic(true);
+  setFlag(FunctionConsts::isBuiltin);
+  setFlag(FunctionConsts::isDeterministic);
 
   zorba::serialization::Archiver& ar =
   *::zorba::serialization::ClassSerializer::getInstance()->
@@ -121,8 +87,8 @@ xqtref_t function::getReturnType(
 ********************************************************************************/
 bool function::validate_args(std::vector<PlanIter_t>& argv) const
 {
-  uint32_t n = theSignature.paramCount ();
-  return n == VARIADIC_SIG_SIZE || argv.size() == theSignature.paramCount();
+  ulong n = theSignature.paramCount();
+  return n == VARIADIC_SIG_SIZE || argv.size() == n;
 }
 
 

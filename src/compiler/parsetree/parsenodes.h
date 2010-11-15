@@ -1215,8 +1215,6 @@ public:
 
   void set_kind(ParseConstants::function_type_t t) { theKind = t; }
 
-  void set_deterministic(bool v)  { theDeterministic = v; }
-
   bool is_deterministic() const { return theDeterministic; }
 
   bool is_private() const { return thePrivate; }

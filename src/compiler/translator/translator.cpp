@@ -3320,6 +3320,7 @@ void* begin_visit(const VFO_DeclList& v)
                                 scriptKind,
                                 func_decl->is_deterministic(),
                                 ef);
+
       f->setPrivate(func_decl->is_private());
       f->setAnnotations(new AnnotationList(func_decl->get_annotations()));
       break;

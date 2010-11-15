@@ -57,8 +57,6 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-	function(const signature& sig);
-
 	function(const signature& sig, FunctionConsts::FunctionKind kind);
 
 	virtual ~function() {}
@@ -92,17 +90,19 @@ public:
     return (theFlags & flag) != 0;
   }
 
-  bool isDeterministic() const
-  {
-    return testFlag(FunctionConsts::isDeterministic);
+  bool isBuiltin() const 
+  { 
+    return testFlag(FunctionConsts::isBuiltin);
   }
 
-  void setDeterministic(bool v)
+  bool isUdf() const 
   {
-    if (v)
-      setFlag(FunctionConsts::isDeterministic);
-    else
-      resetFlag(FunctionConsts::isDeterministic);
+    return testFlag(FunctionConsts::isUDF);
+  }
+
+  bool isExternal() const
+  {
+    return !isBuiltin() && !isUdf();
   }
 
   bool isPrivate() const
@@ -118,6 +118,19 @@ public:
       resetFlag(FunctionConsts::isPrivate);
   }
 
+  bool isDeterministic() const
+  {
+    return testFlag(FunctionConsts::isDeterministic);
+  }
+
+  void setDeterministic(bool v)
+  {
+    if (v)
+      setFlag(FunctionConsts::isDeterministic);
+    else
+      resetFlag(FunctionConsts::isDeterministic);
+  }
+
   bool isUpdating() const { return getUpdateType() == UPDATE_EXPR; }
 
   bool isSequential() const { return getUpdateType() == SEQUENTIAL_EXPR; }
@@ -126,11 +139,7 @@ public:
 
   const AnnotationList* getAnnotationList() const { return theAnnotationList.getp(); }
 
-  virtual bool isBuiltin() const { return true; }
-
-  virtual bool isExternal() const { return false; }
-
-  virtual bool isUdf() const { return false; }
+	bool validate_args(std::vector<PlanIter_t>& argv) const;
 
   virtual bool isArithmeticFunction() const { return false; }
 
@@ -154,11 +163,7 @@ public:
 
   virtual bool isSource() const { return false; }
 
-  virtual expr_script_kind_t getUpdateType() const { return SIMPLE_EXPR; }
-
-  virtual xqtref_t getReturnType(
-        const TypeManager* tm,
-        const std::vector<xqtref_t>& argTypes) const;
+  virtual bool specializable() const { return false; }
 
   virtual function* specialize(
         static_context* sctx,
@@ -166,8 +171,6 @@ public:
   {
     return NULL;
   }
-
-  virtual bool specializable() const { return false; }
 
   virtual bool accessesDynCtx() const { return false; }
 
@@ -185,7 +188,11 @@ public:
 
   virtual BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const;
 
-	virtual bool validate_args(std::vector<PlanIter_t>& argv) const;
+  virtual expr_script_kind_t getUpdateType() const { return SIMPLE_EXPR; }
+
+  virtual xqtref_t getReturnType(
+        const TypeManager* tm,
+        const std::vector<xqtref_t>& argTypes) const;
 
   virtual PlanIter_t codegen(
         CompilerCB* cb,

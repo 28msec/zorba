@@ -89,12 +89,6 @@ public:
 
   const QueryLoc& get_location() const;
 
-  bool isBuiltin() const { return false; }
-
-  bool isExternal() const { return false; }
-
-  bool isUdf() const { return true; }
-
   expr_script_kind_t getUpdateType() const { return theScriptingKind; }
 
   //xqtref_t getUDFReturnType(static_context* sctx) const;
@@ -105,7 +99,9 @@ public:
 
   void setOptimized(bool v) { theIsOptimized = v; }
 
-  void setBody(expr_t body);
+  bool isOptimized() const { return theIsOptimized; }
+
+  void setBody(const expr_t& body);
 
   expr_t getBody() const;
 

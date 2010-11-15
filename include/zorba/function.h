@@ -22,26 +22,25 @@
 
 namespace zorba {
 
-  class ZORBA_DLL_PUBLIC Function : public SmartObject
-  {
-    public:
-      /** \brief Destructor
-       */
-      virtual ~Function() {}
+class ZORBA_DLL_PUBLIC Function : public SmartObject
+{
+ public:
+  /** \brief Destructor
+   */
+  virtual ~Function() {}
+  
+  virtual bool
+  isUpdating() const = 0;
 
-      virtual bool
-      isUpdating() const = 0;
+  virtual bool
+  requiresDynamicContext() const = 0;
 
-      virtual bool
-      requiresDynamicContext() const = 0;
+  virtual Item
+  getFunctionName() const = 0;
 
-      virtual Item
-      getFunctionName() const = 0;
-
-      virtual int
-      getArity() const = 0;
-
-  };
+  virtual int
+  getArity() const = 0;
+};
 
 } /* namespace zorba */
 #endif
