@@ -372,6 +372,44 @@ declare sequential function file:write(
 ) external;
 
 (:~
+ : This function behaves like the unix C function dirname: it takes
+ : a filename as an argument and returns its directory name.
+ : For example file:dirname('/tmp/test.xq') will return '/tmp/'.
+ : The function makes also sure, that the directory name ends with
+ : a '/'.
+ :
+ : @param $file The filename, of which the dirname should be get.
+ : @return The name of the directory the file is in.
+ :)
+declare function file:dirname($file as xs:string) as xs:string
+{
+  let $delim := "/"
+  let $res :=
+    if (matches($file, $delim)) then
+      replace($file, concat('^(.*)', $delim,'.*'),
+                         '$1')
+    else $file
+  return
+    if (matches($res, concat($delim, "$"))) then
+      $res
+    else concat($res, "/")
+};
+
+(:~
+ : This function behaves like the Unix C function basename. For a file Path
+ : or fiLe URI it returns the name of the file and cuts of the path.
+ : For example for '/tmp/test.xq', this function returns test.xq.
+ :
+ : @param $file A file URI/path.
+ : @return The base name of this file.
+ :)
+declare function file:basename($file as xs:string) as xs:string
+{
+  let $delim := "/"
+  return replace($file, concat("^.*", $delim), '')
+};
+
+(:~
  : This is a helper function. Since relative paths are assumed to have its
  : base directory on the current working directory, a user can still construct
  : the uri of the directory where your base uri is in. This function assumes,
