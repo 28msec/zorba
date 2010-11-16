@@ -7,7 +7,7 @@ import module namespace basic = 'http://www.zorba-xquery.com/modules/image/basic
 import module namespace file = 'http://www.zorba-xquery.com/modules/file';
 import module namespace paint = 'http://www.zorba-xquery.com/modules/image/paint';
 import schema namespace image = 'http://www.zorba-xquery.com/modules/image/image';
-declare variable $local:image-dir := fn:concat(file:dir-of-base-uri(<a/>), "images/");
+declare variable $local:image-dir := fn:concat(file:dirname(fn:static-base-uri()), "images/");
 
 
 

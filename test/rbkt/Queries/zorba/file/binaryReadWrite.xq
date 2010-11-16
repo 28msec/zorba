@@ -2,8 +2,8 @@ import module namespace file = "http://www.zorba-xquery.com/modules/file";
 import module namespace base64 = "http://www.zorba-xquery.com/modules/base64";
 import module namespace commons = "http://www.zorba-xquery.com/modules/file/tests/commons" at "common.xqlib";
 
-declare variable $inFile as xs:string := fn:concat(file:dir-of-base-uri(<a/>), "../image/images/bird.gif");
-declare variable $testDir as xs:string := fn:concat(file:dir-of-base-uri(<a/>),"tmpBinaryReadWrite");
+declare variable $inFile as xs:string := fn:concat(file:dirname(fn:static-base-uri()), "../image/images/bird.gif");
+declare variable $testDir as xs:string := fn:concat(file:dirname(fn:static-base-uri()),"tmpBinaryReadWrite");
 declare variable $outFile as xs:string := fn:concat($testDir, file:path-separator(), "bird.gif");
 
 declare sequential function local:thisTest() as xs:string* {
