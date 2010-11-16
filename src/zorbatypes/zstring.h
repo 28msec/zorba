@@ -21,22 +21,17 @@
 #include "util/string/buf_rep.h"
 #include "util/string/default_rep.h"
 #include "util/string/ptr_rep.h"
-#include "util/string/rstring.h"
 #include "util/string/rep_proxy.h"
+#include "util/string/rstring.h"
 
 namespace zorba {
 
-
-typedef rstring_classes::rep_proxy< rstring_classes::rep<atomic_int> > default_rep;
-
-typedef rstring_classes::rep_proxy< rstring_classes::ptr_rep<atomic_int> > ptr_rep;
-
-typedef rstring_classes::buf_rep< default_rep > buf_rep;
+typedef rstring_classes::rep<atomic_int> default_rep;
+typedef rstring_classes::ptr_rep<atomic_int> ptr_rep;
+typedef rstring_classes::buf_rep<default_rep> buf_rep;
 
 typedef rstring< default_rep > zstring;
-
 typedef rstring< ptr_rep > zstring_p;
-
 typedef rstring< buf_rep > zstring_b;
 
 } // namespace zorba

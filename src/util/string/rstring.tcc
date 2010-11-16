@@ -39,14 +39,11 @@ rstring<Rep>::append_safe( const_pointer s1, size_type n1, const_pointer s2,
                            size_type n2 ) {
   if ( size_type add_len = n1 + n2 ) {
     size_type const len = size();
-
-    mutate(len, 0, add_len);
-
+    mutate( len, 0, add_len );
     if ( n1 )
-      Rep::copy_chars( data() + len, s1, n1 );
-
+      Rep::copy( data() + len, s1, n1 );
     if ( n2 )
-      Rep::copy_chars( data() + len + n1, s2, n2 );
+      Rep::copy( data() + len + n1, s2, n2 );
   }
 }
 
@@ -86,16 +83,14 @@ template<class Rep> rstring<Rep>&
 rstring<Rep>::append( const_pointer s, size_type s_len ) {
   if ( s_len ) {
     size_type const len = size();
-
     if ( disjunct( s ) ) {
-      mutate(len, 0, s_len);
+      mutate( len, 0, s_len );
     } else {
       size_type const off = s - data();
-      mutate(len, 0, s_len);
+      mutate( len, 0, s_len );
       s = data() + off;
     }
-
-    Rep::copy_chars( data() + len, s, s_len );
+    Rep::copy( data() + len, s, s_len );
   }
   return *this;
 }
@@ -105,31 +100,25 @@ template<class Rep> rstring<Rep>&
 rstring<Rep>::append( size_type n, value_type c ) {
   if ( n ) { 
     size_type const len = size();
-
-    mutate(len, 0, n);
-
+    mutate( len, 0, n );
     assign_opt( data() + len, n, c );
   }
   return *this;
 }
 
-
 template<class Rep> void
 rstring<Rep>::push_back( value_type c ) {
   size_type const len = size();
-
-  mutate(len, 0, 1);
-
+  mutate( len, 0, 1 );
   traits_type::assign( data()[ len ], c );
 }
-
 
 // RSTRING_ASSIGN_RS_X
 template<class Rep> rstring<Rep>&
 rstring<Rep>::assign( rstring const &s ) {
   if ( rep() != s.rep() ) {
     rep().dispose( get_allocator() );
-    rep().copy(s.rep(), get_allocator(), s.get_allocator() );
+    rep().share( s.rep(), get_allocator(), s.get_allocator() );
   }
   return *this;
 }
@@ -142,9 +131,9 @@ rstring<Rep>::assign( const_pointer s, size_type n ) {
   else {
     size_type const pos = s - data();
     if ( pos > n )
-      Rep::copy_chars( data(), s, n );
+      Rep::copy( data(), s, n );
     else
-      Rep::move_chars( data(), s, n );
+      Rep::move( data(), s, n );
     rep().set_length( n );
   }
   return *this;
@@ -240,7 +229,7 @@ rstring<Rep>::copy( pointer buf, size_type n, size_type pos ) const {
   check_pos( pos, "copy" );
   n = limit_n( pos, n );
   if ( n )
-    Rep::copy_chars( buf, data(), n );
+    Rep::copy( buf, data(), n );
   return n;
 }
 
@@ -383,13 +372,13 @@ rstring<Rep>::insert( size_type pos, const_pointer s, size_type n ) {
   s = data() + off;
   pointer p = data() + pos;
   if ( s + n <= p )
-    Rep::copy_chars( p, s, n );
+    Rep::copy( p, s, n );
   else if ( s >= p )
-    Rep::copy_chars( p, s + n, n );
+    Rep::copy( p, s + n, n );
   else {
     size_type const nleft = p - s;
-    Rep::copy_chars( p, s, nleft );
-    Rep::copy_chars( p + nleft, p + n, n - nleft );
+    Rep::copy( p, s, nleft );
+    Rep::copy( p + nleft, p + n, n - nleft );
   }
   return *this;
 }
@@ -405,29 +394,28 @@ rstring<Rep>::mutate( size_type pos, size_type n1, size_type n2 ) {
     allocator_type const a = get_allocator();
     // TODO: if new_size == 0, use empty_rep()
 
-    Rep new_rep;
+    rep_proxy_type new_rep;
 
     // The call to construct will throw an error if the RepType is the buf_rep
-    new_rep.realloc(new_size, capacity(), a);
+    new_rep.realloc( new_size, capacity(), a );
 
     if ( pos )
-      Rep::copy_chars( new_rep.data(), data(), pos );
+      Rep::copy( new_rep.data(), data(), pos );
 
     if ( how_much )
-      Rep::copy_chars( new_rep.data() + pos + n2, data() + pos + n1, how_much );
+      Rep::copy( new_rep.data() + pos + n2, data() + pos + n1, how_much );
 
     // ???? The following line is not needed because the alloc method calls
     // the rep_base constructor, which makes the rep a shared one.
     //new_rep->set_sharable();
     
-    rep().dispose(a);
+    rep().dispose( a );
 
-    rep().take(new_rep, a, a);
+    rep().take( new_rep, a, a );
   }
-  else if ( how_much && n1 != n2 ) 
-  {
+  else if ( how_much && n1 != n2 ) {
     // in-place
-    Rep::move_chars( data() + pos + n2, data() + pos + n1, how_much );
+    Rep::move( data() + pos + n2, data() + pos + n1, how_much );
   }
   
   rep().set_length( new_size );
@@ -448,7 +436,7 @@ rstring<Rep>::replace( size_type pos, size_type n, const_pointer s,
     if ( !left )
       off += s_n - n;
     mutate( pos, n, s_n );
-    Rep::copy_chars( data() + pos, data() + off, s_n );
+    Rep::copy( data() + pos, data() + off, s_n );
   }
   return *this;
 }

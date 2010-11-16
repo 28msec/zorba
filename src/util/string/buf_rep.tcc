@@ -30,11 +30,9 @@ namespace rstring_classes {
 template<class ResultRepType>
 void buf_rep<ResultRepType>::construct( const_pointer begin, const_pointer end,
                                         allocator_type const &a ) {
-  if ( begin == end )
-    return;
   if ( !begin )
     throw std::logic_error( "NULL not valid" );
-  p_ = const_cast<pointer>(begin);
+  p_ = const_cast<pointer>( begin );    // TODO: This const_cast is evil!
   size_type const cap = end - begin;
   this->set_capacity( cap );
   //

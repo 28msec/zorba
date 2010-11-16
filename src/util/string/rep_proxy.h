@@ -22,305 +22,225 @@
 namespace zorba {
 namespace rstring_classes {
 
-/******************************************************************************
-  A proxy for either the default rep or the ptr rep.
-********************************************************************************/
-template<class Rep>
-class rep_proxy 
-{
+/**
+ * A proxy for either the default rep or the ptr rep.
+ */
+template<class RepType>
+class rep_proxy {
 public:
-  typedef typename Rep::value_type value_type;
+  typedef typename RepType::allocator_type allocator_type;
+  typedef typename RepType::difference_type difference_type;
+  typedef typename RepType::size_type size_type;
+  typedef typename RepType::traits_type traits_type;
 
-  typedef typename Rep::traits_type traits_type;
+  typedef typename RepType::value_type value_type;
+  typedef typename RepType::pointer pointer;
+  typedef typename RepType::const_pointer const_pointer;
+  typedef typename RepType::reference reference;
+  typedef typename RepType::const_reference const_reference;
 
-  typedef typename Rep::allocator_type allocator_type;
+  typedef typename RepType::iterator iterator;
+  typedef typename RepType::const_iterator const_iterator;
+  typedef typename RepType::reverse_iterator reverse_iterator;
+  typedef typename RepType::const_reverse_iterator const_reverse_iterator;
 
-  typedef typename Rep::difference_type difference_type;
-  typedef typename Rep::size_type size_type;
+  typedef rep_proxy<typename RepType::result_rep_type> result_rep_type;
 
-  typedef typename Rep::pointer pointer;
-  typedef typename Rep::const_pointer const_pointer;
-  typedef typename Rep::reference reference;
-  typedef typename Rep::const_reference const_reference;
+  enum { takes_pointer_ownership = RepType::takes_pointer_ownership };
 
-  typedef typename Rep::iterator iterator;
-  typedef typename Rep::const_iterator const_iterator;
-  typedef typename Rep::reverse_iterator reverse_iterator;
-  typedef typename Rep::const_reverse_iterator const_reverse_iterator;
-
-  typedef rep_proxy<typename Rep::result_rep_type> result_rep_type;
-
-public:
-  static const bool takes_pointer_ownership = false;
-
-private:
-  Rep * theRep;
-
-public:
   /**
    *
    */
-  static void assign( pointer to, size_type n, value_type c )
-  {
-    Rep::assign(to, n, c);
+  rep_proxy() : rep_( RepType::empty_rep() ) {
+    // do nothing
   }
 
   /**
    *
    */
-  static void copy_chars( pointer to, const_pointer from, size_type n ) 
-  {
-    Rep::copy(to, from, n);
+  ~rep_proxy() {
+    assert( rep_ == RepType::empty_rep() );
   }
 
   /**
    *
    */
-  static void move_chars( pointer to, const_pointer from, size_type n ) 
-  {
-    Rep::move(to, from, n);
-  }
-
-public:
-  /**
-   *
-   */
-  rep_proxy() : theRep(Rep::empty_rep())
-  {
+  size_type capacity() const {
+    return rep_->capacity(); 
   }
 
   /**
    *
    */
-  ~rep_proxy()
-  {
-    assert(theRep == Rep::empty_rep());
-  }
-
-  /**
-   *
-   */
-  bool is_shared() const 
-  {
-    return theRep->is_shared();
-  }
-
-  /**
-   *
-   */
-  pointer data() const
-  {
-    return theRep->data();
-  }
-
-  /**
-   *
-   */
-  size_type capacity() const 
-  {
-    return theRep->capacity(); 
-  }
-
-  /**
-   *
-   */
-  size_type length() const 
-  {
-    return theRep->length();
-  }
-
-  /**
-   *
-   */
-  void set_length( size_type n ) 
-  {
-    theRep->set_length(n);
-  }
-
-  /**
-   *
-   */
-  bool operator==(const rep_proxy& other)
-  {
-    return theRep == other.theRep;
-  }
-
-  /**
-   *
-   */
-  bool operator!=(const rep_proxy& other)
-  {
-    return theRep != other.theRep;
+  void construct( size_type size, value_type c, allocator_type const &a ) {
+    assert( rep_ == RepType::empty_rep() );
+    rep_ = RepType::construct( size, c, a );
   }
 
   /**
    *
    */
   template<class IteratorType>
-  void construct(IteratorType begin, IteratorType end, allocator_type const& a) 
-  {
-    assert(theRep == Rep::empty_rep());
-
-    theRep = Rep::construct(begin, end, a);
+  void construct( IteratorType begin, IteratorType end,
+                  allocator_type const &a ) {
+    assert( rep_ == RepType::empty_rep() );
+    rep_ = RepType::construct( begin, end, a );
   }
 
   /**
    *
    */
-  void construct(size_type size, value_type c,  allocator_type const& a)
-  {
-    assert(theRep == Rep::empty_rep());
-
-    theRep = Rep::construct(size, c, a);
-  }
-
-
-  /**
-   * This method is used only in the mutate method of rstring, when copy-on-write
-   * is necessary. It creates a representation with zero length and capacity >= to
-   * the given capacity. The actual capacity is computed internally, taking into
-   * account the given "old" capacity.
-   */
-  void realloc(size_type cap, size_type old_cap, allocator_type const& a)
-  {
-    assert(theRep == Rep::empty_rep());
-
-    theRep = Rep::alloc(a, cap, old_cap);
-    theRep->set_length(0);
+  pointer data() const {
+    return rep_->data();
   }
 
   /**
    *
    */
-  void dispose(allocator_type const& a)
-  {
-    if (theRep)
-      theRep->dispose(a);
+  void dispose( allocator_type const &a ) {
+    if ( rep_ && rep_ != RepType::empty_rep() )
+      rep_->dispose( a );
+    rep_ = RepType::empty_rep();
+  }
 
-    theRep = Rep::empty_rep();
+  /**
+   * Delegate to
+   */
+  bool is_sharable() {
+    return rep_->is_sharable();
   }
 
   /**
    *
    */
-  void reserve( size_type cap, allocator_type const& a) 
-  {
-    theRep = theRep->reserve(cap, a);
+  bool is_shared() const {
+    return rep_->is_shared();
   }
 
   /**
    *
    */
-  void copy(
-        const rep_proxy& other,
-        allocator_type const& my_alloc,
-        allocator_type const& other_alloc)
-  {
-    assert(theRep == Rep::empty_rep());
-
-    if (other.theRep->is_sharable() && my_alloc == other_alloc)
-    {
-      if ( other.theRep != Rep::empty_rep() )
-        other.theRep->inc();
-
-      theRep = other.theRep;
-    }
-    else
-    {
-      theRep = other.theRep->clone(my_alloc);
-    }
-  }
-
-  /**
-   *
-   */
-  void take(
-        rep_proxy& other,
-        allocator_type const& my_alloc,
-        allocator_type const& other_alloc)
-  {
-    assert(theRep == Rep::empty_rep());
-
-    if (my_alloc == other_alloc) 
-    {
-      theRep = other.theRep;
-      other.theRep = Rep::empty_rep();
-    }
-    else
-    {
-      theRep = other.theRep->clone(my_alloc);
-    }
-  }
-
-  /**
-   *
-   */
-  void swap(rep_proxy& other)
-  {
-    Rep* tmp = theRep;
-    theRep = other.theRep;
-    other.theRep = tmp;
+  size_type length() const {
+    return rep_->length();
   }
 
   /**
    * Makes the representation unsharable if necessary.  If it is currently
    * shared, it must be cloned.
    */
-  void make_unsharable_if_necessary(allocator_type const& a) 
-  {
-    if ( theRep != Rep::empty_rep() ) 
-    {
-      typename Rep::count_type const count = theRep->count();
-
-      if ( Rep::is_sharable( count ) ) 
-      {
-        if ( Rep::is_shared( count ) )
-        {
-          Rep* const new_rep = theRep->clone(a);
-
-          dispose(a);
-
-          theRep = new_rep;
+  void make_unsharable_if_necessary( allocator_type const &a ) {
+    if ( rep_ != RepType::empty_rep() ) {
+      typename RepType::count_type const count = rep_->count();
+      if ( RepType::is_sharable( count ) ) {
+        if ( RepType::is_shared( count ) ) {
+          RepType *const new_rep = rep_->clone( a );
+          rep_->dispose( a );
+          rep_ = new_rep;
         }
-
-        theRep->set_unsharable();
+        rep_->set_unsharable();
       }
+    }
+  }
+
+  /**
+   * This method is used only in the mutate method of rstring, when
+   * copy-on-write is necessary. It creates a representation with zero length
+   * and capacity >= to the given capacity. The actual capacity is computed
+   * internally, taking into account the given "old" capacity.
+   */
+  void realloc( size_type cap, size_type old_cap, allocator_type const &a ) {
+    assert( rep_ == RepType::empty_rep() );
+    rep_ = RepType::alloc( a, cap, old_cap );
+    rep_->set_length( 0 );
+  }
+
+  /**
+   *
+   */
+  void reserve( size_type cap, allocator_type const &a ) {
+    rep_ = rep_->reserve( cap, a );
+  }
+
+  /**
+   *
+   */
+  void set_length( size_type n ) {
+    rep_->set_length( n );
+  }
+
+  /**
+   *
+   */
+  void set_sharable() {
+    rep_->set_sharable();
+  }
+
+  /**
+   *
+   */
+  void set_unsharable() {
+    rep_->set_unsharable();
+  }
+
+  /**
+   *
+   */
+  void share( rep_proxy const &that, allocator_type const &this_alloc,
+              allocator_type const &that_alloc ) {
+    dispose( this_alloc );
+    if ( that.rep_->is_sharable() && this_alloc == that_alloc ) {
+      if ( that.rep_ != RepType::empty_rep() )
+        that.rep_->inc();
+      rep_ = that.rep_;
+    } else {
+      rep_ = that.rep_->clone( this_alloc );
     }
   }
 
   /**
    *
    */
-  void set_unsharable()
-  {
-    theRep->set_unsharable();
-  }
-
-
-  /**
-   *
-   */
-  void set_sharable()
-  {
-    theRep->set_sharable();
+  void swap( rep_proxy &that ) {
+    RepType *const tmp = rep_;
+    rep_ = that.rep_;
+    that.rep_ = tmp;
   }
 
   /**
    *
    */
-  bool is_sharable()
-  {
-    return theRep->is_sharable();
+  void take( rep_proxy &that, allocator_type const &this_alloc,
+             allocator_type const &that_alloc ) {
+    dispose( this_alloc );
+    if ( this_alloc == that_alloc ) {
+      rep_ = that.rep_;
+      that.rep_ = RepType::empty_rep();
+    } else {
+      rep_ = that.rep_->clone( this_alloc );
+    }
+  }
+
+  /**
+   *
+   */
+  bool operator==( rep_proxy const &j ) {
+    return rep_ == j.rep_;
+  }
+
+  /**
+   *
+   */
+  bool operator!=( rep_proxy const &j ) {
+    return !(*this == j);
   }
 
 private:
-  // disabled
-  rep_proxy(const rep_proxy&);
+  RepType *rep_;
 
   // disabled
-  rep_proxy& operator=(const rep_proxy&);
+  rep_proxy( rep_proxy const& );
+  rep_proxy& operator=( rep_proxy const& );
 };
-
 
 } // rstring_classes
 } // zorba

@@ -23,6 +23,8 @@
 #include <stdexcept>
 #include <string>
 
+#include "rep_proxy.h"
+
 namespace zorba {
 
 /**
@@ -1221,9 +1223,11 @@ public:
 
 private: //////////////////////////////////////////////////////////////////////
 
+  typedef rstring_classes::rep_proxy<RepType> rep_proxy_type;
+
   // Use empty base class optimization: http://www.cantrip.org/emptyopt.html
   struct string_data : allocator_type {
-    RepType rep_;
+    rep_proxy_type rep_;
 
     string_data( allocator_type const &a ) :
       allocator_type( a )
@@ -1396,7 +1400,7 @@ private:
    *
    * @return Returns said object.
    */
-  const RepType& rep() const {
+  rep_proxy_type& rep() {
     return data_.rep_;
   }
 
@@ -1405,7 +1409,7 @@ private:
    *
    * @return Returns said object.
    */
-  RepType& rep() {
+  rep_proxy_type const& rep() const {
     return data_.rep_;
   }
 
@@ -1421,7 +1425,7 @@ private:
                          size_type s_n ) {
     mutate( pos, n, s_n );
     if ( s_n )
-      RepType::copy_chars( data() + pos, s, s_n );
+      RepType::copy( data() + pos, s, s_n );
     return *this;
   }
 
@@ -1457,7 +1461,7 @@ template<class Rep> inline
 rstring<Rep>::rstring( allocator_type const &a ) :
   data_( a )
 {
-  rep().construct(0, value_type(), a);
+  rep().construct( 0, value_type(), a );
 }
 
 // RSTRING_C_RS_X
@@ -1465,7 +1469,7 @@ template<class Rep> inline
 rstring<Rep>::rstring( rstring const &s ) :
   data_( s.get_allocator() )
 {
-  rep().copy(s.rep(), s.get_allocator(), s.get_allocator());
+  rep().share( s.rep(), s.get_allocator(), s.get_allocator() );
 }
 
 // RSTRING_C_TRS_X
@@ -2229,9 +2233,8 @@ operator>=( typename rstring<Rep>::const_pointer s1, rstring<Rep> const &s2 ) {
 #if 1 || (!defined( __INTEL_COMPLER ) && \
     defined( __GNUC__ ) && (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 < 40300))
 template<class Rep> inline std::ostream&
-operator<<( std::ostream& os, rstring<Rep> const& s )
-{
-  return os.write(s.data(), s.size());
+operator<<( std::ostream &os, rstring<Rep> const &s ) {
+  return os.write( s.data(), s.size() );
 }
 #else
 template<
@@ -2242,10 +2245,9 @@ template<
   template<class,class,class> class RepType
 >
 inline std::basic_ostream<CharType,TraitsType>&
-operator<<( std::basic_ostream<CharType,TraitsType>& os,
-            rstring< RepType<RefCountType,TraitsType,Allocator> > const& s ) 
-{
-  return os.write(s.data(), s.size());
+operator<<( std::basic_ostream<CharType,TraitsType> &os,
+            rstring< RepType<RefCountType,TraitsType,Allocator> > const &s ) {
+  return os.write( s.data(), s.size() );
 }
 #endif
 
@@ -2261,7 +2263,7 @@ operator<<( std::basic_ostream<CharType,TraitsType>& os,
  */
 template<typename CharType,class TraitsType,class Rep>
 std::basic_istream<CharType,TraitsType>&
-getline( std::basic_istream<CharType,TraitsType>& is, rstring<Rep>& s,
+getline( std::basic_istream<CharType,TraitsType> &is, rstring<Rep> &s,
          typename rstring<Rep>::value_type delim );
 
 /**
