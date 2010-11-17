@@ -1,6 +1,5 @@
-declare function local:format-date(
-    $date as xs:string
-) as xs:string
+
+declare function local:format-date($date as xs:string) as xs:string
 { 
   try {
         let $date_ := xs:dateTime($date)

@@ -380,6 +380,13 @@ ostream& trycatch_expr::put( ostream& os) const
 ostream& eval_expr::put( ostream& os) const
 {
   BEGIN_PUT( eval_expr );
+  for (ulong i=0; i<theArgs.size(); i++)
+  {
+    os << indent << "using $" << vars[i].varname->getStringValue() << " := [";
+    os << endl << inc_indent;
+    theArgs[i]->put(os);
+    os << dec_indent << indent << "]" << endl; 
+  }
   theExpr->put (os);
   END_PUT();
 }

@@ -2728,6 +2728,17 @@ EvalVarDeclList :
         }
     ;
 
+EvalVarDecl :
+    QNAME
+    {
+      $$ = new VarGetsDecl(LOC(@$),
+                           static_cast<QName*>($1),
+                           NULL, NULL,
+                           new VarRef(LOC(@$), static_cast<QName*>($1)),
+                           VarGetsDecl::eval_var);
+    }
+;
+
 
 // [36b] VarGetsDecl
 // ------------------
@@ -2825,18 +2836,6 @@ WindowVars2 :
   | PREVIOUS DOLLAR QNAME
     {
       $$ = new WindowVars(LOC(@$), NULL, NULL, static_cast<QName*>($3), NULL);
-    }
-;
-
-
-EvalVarDecl :
-    QNAME
-    {
-      $$ = new VarGetsDecl(LOC(@$),
-                           static_cast<QName*>($1),
-                           NULL, NULL,
-                           new VarRef(LOC(@$), static_cast<QName*>($1)),
-                           VarGetsDecl::eval_var);
     }
 ;
 

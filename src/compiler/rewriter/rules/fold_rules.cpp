@@ -844,10 +844,11 @@ RULE_REWRITE_POST(InlineFunctions)
         {
           return body;
         }
-        // TODO: this is caught here, because clone is not implemented for all expressions
       }
       catch (...)
       {
+        // TODO: this is caught here, because clone is not implemented for all expressions
+        ZORBA_ERROR_LOC_DESC(XQP0019_INTERNAL_ERROR, udf->get_location(), "clone not implemented for expression");
       }
     }
   }

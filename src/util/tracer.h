@@ -18,19 +18,25 @@
 
 namespace zorba {
 
-#if !defined WIN32 && !defined WINCE
-#define TRACE __PRETTY_FUNCTION__<<" ("__FILE__<<':'<<__LINE__<<")"
-#define LOCATION	(__oss.str(""), \
-										__oss<<__FILE__<<":"<<__LINE__<<"::"<<__PRETTY_FUNCTION__, \
-										__oss.str())
-#else
-#define TRACE __FILE__<<':'<<__LINE__<<"::"<<__FUNCTION__
-#define LOCATION	(__oss.str(""), \
-										__oss<<__FILE__<<":"<<__LINE__<<"::"<<__FUNCTION__, \
-										__oss.str())
 
+#if !defined WIN32 && !defined WINCE
+#define TRACE __PRETTY_FUNCTION__<<" ("__FILE__<<':'<<std::dec<<__LINE__<<")"
+#define LOCATION	(__oss.str(""), \
+                   __oss<<__FILE__<<":"<<std::dec<<__LINE__<<"::"<<__PRETTY_FUNCTION__, \
+									 __oss.str())
+#elif defined WIN32
+#define TRACE __FUNCSIG__<<" ("__FILE__<<':'<<std::dec<<__LINE__<<")"
+#define LOCATION	(__oss.str(""), \
+                   __oss<<__FILE__<<":"<<std::dec<<__LINE__<<"::"<<__FUNCTION__, \
+									 __oss.str())
+#else
+#define TRACE __FILE__<<':'<<std::dec<<__LINE__<<"::"<<__FUNCTION__
+#define LOCATION	(__oss.str(""), \
+										__oss<<__FILE__<<":"<<std::dec<<__LINE__<<"::"<<__FUNCTION__, \
+										__oss.str())
 #endif
 
-} /* namespace zorba */
-#endif /* ZORBA_TRACER_H */
 
+} /* namespace zorba */
+
+#endif /* ZORBA_TRACER_H */

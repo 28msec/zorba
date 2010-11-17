@@ -1289,16 +1289,17 @@ catch_clause_t catch_clause::clone(expr::substitution_t& subst) const
 expr_t trycatch_expr::clone(substitution_t& subst) const
 {
   std::auto_ptr<trycatch_expr> lTryCatch(
-      new trycatch_expr(theSctx, get_loc(), theTryExpr));
+      new trycatch_expr(theSctx, get_loc(), theTryExpr->clone(subst)));
   for (std::vector<expr_t>::const_iterator lIter = theCatchExprs.begin();
        lIter != theCatchExprs.end(); ++lIter) {
-    lTryCatch->add_catch_expr((*lIter)->clone());
+    lTryCatch->add_catch_expr((*lIter)->clone(subst));
   }
   for (uint32_t i = 0; i < clause_count(); ++i) {
     lTryCatch->add_clause(theCatchClauses[i]->clone(subst));
   }
   return lTryCatch.release();
 }
+
 
 /*******************************************************************************
 
@@ -1311,14 +1312,12 @@ eval_expr::eval_var::eval_var(var_expr* ve)
 {
 }
 
-
 void eval_expr::eval_var::serialize(::zorba::serialization::Archiver& ar)
 {
   ar & varname;
   ar & var_key;
   ar & type;
 }
-
 
 void eval_expr::serialize(::zorba::serialization::Archiver& ar)
 {
@@ -1328,13 +1327,23 @@ void eval_expr::serialize(::zorba::serialization::Archiver& ar)
   ar & theArgs;
 }
 
-
 void eval_expr::compute_scripting_kind()
 {
   theScriptingKind = theExpr->get_scripting_kind();
 }
 
+expr_t eval_expr::clone(substitution_t& s) const
+{
+  rchandle<eval_expr> new_eval = new eval_expr(theSctx, theLoc, theExpr->clone(s));
+  for (unsigned int i=0; i<vars.size(); i++)
+    new_eval->add_var(vars[i], theArgs[i]->clone(s));
+  return new_eval.release();
+}
 
+
+/*******************************************************************************
+
+********************************************************************************/
 function_trace_expr::function_trace_expr(
     static_context* sctx,
     const QueryLoc& loc,
@@ -1382,6 +1391,10 @@ void function_trace_expr::compute_scripting_kind()
   theScriptingKind = theExpr->get_scripting_kind();
 }
 
+expr_t function_trace_expr::clone(substitution_t& s) const
+{
+  return new function_trace_expr(theExpr->clone(s));
+}
 
 /*******************************************************************************
 

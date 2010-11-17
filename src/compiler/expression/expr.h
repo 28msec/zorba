@@ -1058,6 +1058,8 @@ public:
 
   void accept(expr_visitor&);
 
+  expr_t clone(substitution_t& s) const;
+
   std::ostream& put(std::ostream&) const;
 };
 
@@ -1092,6 +1094,8 @@ public:
   void compute_scripting_kind();
 
   void accept(expr_visitor&);
+
+  expr_t clone(substitution_t& s) const;
 
   std::ostream& put(std::ostream&) const;
 

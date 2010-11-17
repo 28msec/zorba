@@ -787,7 +787,7 @@ void general_var_codegen(const var_expr& var)
 
   case var_expr::unknown_var:
   default:
-    // ZORBA_ASSERT (false);
+    ZORBA_ASSERT(false);
     break;
   }
 }
@@ -2837,7 +2837,22 @@ void end_visit(ftcontains_expr& v)
 PlanIter_t result()
 {
   PlanIter_t res = pop_itstack();
-  ZORBA_ASSERT(itstack.empty());
+
+#ifndef NDEBUG
+  if (!itstack.empty())
+  {
+    std::cout << "\nPlan_visitor stack still contains " << itstack.size() << " entries: " << std::endl;
+    while (!itstack.empty())
+    {
+      PlanIter_t top = pop_itstack();
+      XMLIterPrinter vp(std::cout);
+      print_iter_plan(vp, top);
+      std::cout << "=============================" << endl;    
+    }
+    ZORBA_ASSERT(0);
+  }
+#endif
+
   return res;
 }
 

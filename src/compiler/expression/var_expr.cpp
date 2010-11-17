@@ -60,6 +60,7 @@ std::string var_expr::decode_var_kind(enum var_kind k)
   case groupby_var: return "GROUPBY"; break;
   case non_groupby_var: return "NON-GROUPBY"; break;
   case arg_var: return "ARG"; break;
+  case eval_var: return "EVAL"; break;
   default: return "???";
   }
 }

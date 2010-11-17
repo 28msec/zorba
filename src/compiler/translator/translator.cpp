@@ -1173,10 +1173,27 @@ expr_t pop_nodestack(int n = 1)
 /*******************************************************************************
   Push the given expr into theNodeStack.
 ********************************************************************************/
+#ifdef NDEBUG
 inline void push_nodestack(const expr_t& e)
 {
   theNodeStack.push(e);
 }
+#else
+#define push_nodestack(e)                             \
+  do                                                  \
+  {                                                   \
+    expr_t node(e);                                   \
+    theNodeStack.push(node);                          \
+    if (Properties::instance()->traceTranslator())    \
+    {                                                 \
+      std::cout << "Pushed to nodestack: \n";         \
+      if (node.getp() != NULL)                        \
+        node->put(std::cout) << std::endl;            \
+      else                                            \
+        std::cout << "NULL" << std::endl;             \
+    }                                                 \
+  } while(0)
+#endif
 
 
 /*******************************************************************************
