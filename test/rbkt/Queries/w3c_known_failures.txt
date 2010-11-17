@@ -19,7 +19,6 @@ test/rbkt/w3c_testsuite/XQuery/Expressions/Construct/ComputeCon/ComputeConCommen
 test/rbkt/w3c_testsuite/XQuery/Expressions/exprSeqTypes/SeqExprCast/CastFOCA0003-1
 test/rbkt/w3c_testsuite/XQuery/Expressions/exprSeqTypes/SeqExprCast/CastFOCA0001-1
 test/rbkt/w3c_testsuite/XQuery/Construct/DirectConElem/DirectConElemNamespace/K2-DirectConElemNamespace-76
-test/rbkt/w3c_testsuite/XQuery/Construct/ComputeCon/ConDocNode/K2-ConDocNode-2
 test/rbkt/w3c_testsuite/XQuery/Construct/ComputeCon/ComputeConElem/comp-elem-bad-name-1
 test/rbkt/w3c_testsuite/XQuery/Construct/ComputeCon/ComputeConElem/comp-elem-bad-name-4
 test/rbkt/w3c_testsuite/XQuery/Construct/ComputeCon/ComputeConElem/comp-elem-bad-name-6

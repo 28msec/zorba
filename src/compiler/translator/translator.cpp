@@ -5140,6 +5140,9 @@ void* begin_visit(const BlockBody& v)
 {
   TRACE_VISIT();
 
+  if (theSctx->xquery_version() <= StaticContextConsts::xquery_version_1_0)
+    ZORBA_ERROR_LOC(XPST0003, loc);
+
   push_scope();
   return no_state;
 }
