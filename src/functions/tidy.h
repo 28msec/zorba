@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_FUNCTIONS_ALEXIS
-#define ZORBA_FUNCTIONS_ALEXIS
+#ifndef ZORBA_FUNCTIONS_TIDY
+#define ZORBA_FUNCTIONS_TIDY
 
 #include "common/shared_types.h"
 
 namespace zorba 
 {
 
-void populateContext_Alexis(static_context* sctx);
+void populateContext_tidy(static_context* sctx);
 
 }
 

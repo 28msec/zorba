@@ -159,7 +159,8 @@ LogicIterator::LogicIterator (
   :
   BinaryBaseIterator<LogicIterator, PlanIteratorState>(sctx, loc, theChild0, theChild1),
   theLogicType(aLogicType)
-{}
+{
+}
 
 
 bool
@@ -170,16 +171,19 @@ LogicIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   PlanIteratorState* state;
   DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
 
-  switch(theLogicType) {
+  switch(theLogicType) 
+  {
   case AND:
     bRes = FnBooleanIterator::effectiveBooleanValue(this->loc, planState, theChild0)
-      && FnBooleanIterator::effectiveBooleanValue(this->loc, planState, theChild1);
+        && FnBooleanIterator::effectiveBooleanValue(this->loc, planState, theChild1);
     break;
+
   case OR:
     bRes = FnBooleanIterator::effectiveBooleanValue(this->loc, planState, theChild0)
-      || FnBooleanIterator::effectiveBooleanValue(this->loc, planState, theChild1);
+        || FnBooleanIterator::effectiveBooleanValue(this->loc, planState, theChild1);
     break;
   }
+
   STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, bRes), state);
   STACK_END (state);
 }

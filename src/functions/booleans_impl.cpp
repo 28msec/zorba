@@ -561,6 +561,32 @@ public:
 
 
 /*******************************************************************************
+  Atomic Values Equivalent comparing function
+
+  http://www.w3.org/TR/xquery-11/#dt-equivalence-two-atomic-values
+********************************************************************************/
+class op_atomic_values_equivalent : public function
+{
+public:
+  op_atomic_values_equivalent(const signature& sig) 
+    :
+    function(sig, FunctionConsts::OP_ATOMIC_VALUES_EQUIVALENT_2)
+  {
+  }
+
+  PlanIter_t codegen(
+                    CompilerCB* /*cb*/,
+                    static_context* sctx,
+                    const QueryLoc& loc,
+                    std::vector<PlanIter_t>& argv,
+                    AnnotationHolder& ann) const
+  {
+    return new AtomicValuesEquivalenceIterator(sctx, loc, argv[0], argv[1]);
+  }
+};
+
+
+/*******************************************************************************
   Logic Operators (and/or)
 ********************************************************************************/
 
@@ -571,6 +597,16 @@ public:
     :
     function(sig, FunctionConsts::OP_AND_2)
   {
+  }
+
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const 
+  {
+    return ANNOTATION_TRUE;
+  }
+
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const 
+  {
+    return ANNOTATION_TRUE;
   }
 
   PlanIter_t codegen(
@@ -592,6 +628,16 @@ public:
     :
     function(sig, FunctionConsts::OP_OR_2)
   {
+  }
+
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const 
+  {
+    return ANNOTATION_TRUE;
+  }
+
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const 
+  {
+    return ANNOTATION_TRUE;
   }
 
   PlanIter_t codegen(
@@ -719,74 +765,50 @@ public:
 
 
 /*******************************************************************************
-  Atomic Values Equivalent comparing function
 
-  http://www.w3.org/TR/xquery-11/#dt-equivalence-two-atomic-values
 ********************************************************************************/
-class op_atomic_values_equivalent : public function
-{
-public:
-  op_atomic_values_equivalent(const signature& sig) 
-    :
-    function(sig, FunctionConsts::OP_ATOMIC_VALUES_EQUIVALENT_2)
-  {
-  }
-
-  PlanIter_t codegen(
-                    CompilerCB* /*cb*/,
-                    static_context* sctx,
-                    const QueryLoc& loc,
-                    std::vector<PlanIter_t>& argv,
-                    AnnotationHolder& ann) const
-  {
-    return new AtomicValuesEquivalenceIterator(sctx, loc, argv[0], argv[1]);
-  }
-};
-
-
 void populateContext_Comparison(static_context* sctx)
 {
   const char* zorba_ns = static_context::ZORBA_OP_NS.c_str();
 
-// General Comparison;
-DECL(sctx, op_equal,
-     (createQName(zorba_ns, "", "equal"),
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
-      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+  // General Comparison;
+  DECL(sctx, op_equal,
+       (createQName(zorba_ns, "", "equal"),
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+  
+  DECL(sctx, op_not_equal,
+       (createQName(zorba_ns, "", "not-equal"),
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
-DECL(sctx, op_not_equal,
-     (createQName(zorba_ns, "", "not-equal"),
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
-      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+  DECL(sctx, op_greater,
+       (createQName(zorba_ns, "", "greater"),
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+  
+  DECL(sctx, op_greater_equal,
+       (createQName(zorba_ns, "", "greater-equal"),
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
-DECL(sctx, op_greater,
-     (createQName(zorba_ns, "", "greater"),
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
-      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+  DECL(sctx, op_less,
+       (createQName(zorba_ns, "", "less"),
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
-DECL(sctx, op_greater_equal,
-     (createQName(zorba_ns, "", "greater-equal"),
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
-      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+  DECL(sctx, op_less_equal,
+       (createQName(zorba_ns, "", "less-equal"),
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
-DECL(sctx, op_less,
-     (createQName(zorba_ns, "", "less"),
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
-      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
-
-DECL(sctx, op_less_equal,
-     (createQName(zorba_ns, "", "less-equal"),
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
-      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
-// end Generic Comparison
-
-// Value Comparison
+  // Value Comparison
 
 #define DECL_TYPED_VAL( sctx, op, name, type, xqt )                     \
   DECL(sctx, op_value_##op##_##type,                                    \
@@ -808,17 +830,15 @@ DECL(sctx, op_less_equal,
   DECL_TYPED_VAL( sctx, op, name, string, STRING )
 
 
- DECL_ALL_VAL(sctx, equal, "equal");
- DECL_ALL_VAL(sctx, not_equal, "not-equal");
- DECL_ALL_VAL(sctx, less, "less");
- DECL_ALL_VAL(sctx, greater, "greater");
- DECL_ALL_VAL(sctx, less_equal, "less-equal");
- DECL_ALL_VAL(sctx, greater_equal, "greater-equal");
+  DECL_ALL_VAL(sctx, equal, "equal");
+  DECL_ALL_VAL(sctx, not_equal, "not-equal");
+  DECL_ALL_VAL(sctx, less, "less");
+  DECL_ALL_VAL(sctx, greater, "greater");
+  DECL_ALL_VAL(sctx, less_equal, "less-equal");
+  DECL_ALL_VAL(sctx, greater_equal, "greater-equal");
 
 #undef DECL_ALL_VAL
 #undef DECL_TYPED_VAL
-
-// end Value Comparison
 
 // Atomic Values Equivalent comparing function
 // http://www.w3.org/TR/xquery-11/#dt-equivalence-two-atomic-values
@@ -836,37 +856,35 @@ void populate_context_booleans_impl(static_context* sctx)
 {
   const char* xquery_op_ns = static_context::XQUERY_OP_NS.c_str();
 
-// start Boolean
-DECL(sctx, fn_true,
-     (createQName(XQUERY_FN_NS, "fn", "true"),
-      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+  // Boolean
+  DECL(sctx, fn_true,
+       (createQName(XQUERY_FN_NS, "fn", "true"),
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
-DECL(sctx, fn_false,
-     (createQName(XQUERY_FN_NS, "fn", "false"),
-      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+  DECL(sctx, fn_false,
+       (createQName(XQUERY_FN_NS, "fn", "false"),
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
-DECL(sctx, fn_boolean,
-     (createQName(XQUERY_FN_NS, "fn", "boolean"),
-      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+  DECL(sctx, fn_boolean,
+       (createQName(XQUERY_FN_NS, "fn", "boolean"),
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+  
+  DECL(sctx, fn_not,
+       (createQName(XQUERY_FN_NS, "fn", "not"),
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
-DECL(sctx, fn_not,
-     (createQName(XQUERY_FN_NS, "fn", "not"),
-      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
-// end Boolean
-
-// start Logic
-DECL(sctx, op_and,
-     (createQName(xquery_op_ns, "", "and"),
-      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-      true, GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
-
-DECL(sctx, op_or,
-     (createQName(xquery_op_ns, "", "or"),
-      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-      true, GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
-// end Logic
+  // Logic
+  DECL(sctx, op_and,
+       (createQName(xquery_op_ns, "", "and"),
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+        true, GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+  
+  DECL(sctx, op_or,
+       (createQName(xquery_op_ns, "", "or"),
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+        true, GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 }
 

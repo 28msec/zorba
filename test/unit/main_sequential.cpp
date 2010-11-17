@@ -102,10 +102,17 @@ main_sequential(int argc, char* argv[])
       }
       assert(lOut.str() == "blubb");
     }
-  } catch (QueryException& qe) {
-    std::cerr << qe << std::endl;
-    return 3;
-  } catch (ZorbaException& e) {
+  }
+  catch (QueryException& qe) 
+  {
+    if (qe.getErrorCode() != XPTY0004)
+    {
+      std::cerr << qe << std::endl;
+      return 3;
+    }
+  }
+  catch (ZorbaException& e)
+  {
     std::cerr << e << std::endl;
     return 4;
   }

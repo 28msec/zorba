@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_BOOLEAN_H
-#define ZORBA_BOOLEAN_H
+#ifndef ZORBA_FUNCTIONS_BOOLEAN_H
+#define ZORBA_FUNCTIONS_BOOLEAN_H
 
 #include <vector>
 
@@ -26,9 +26,9 @@
 namespace zorba 
 {
 
-void populate_context_booleans_impl(static_context *sctx);
+void populate_context_booleans_impl(static_context* sctx);
 
-void populateContext_Comparison(static_context *sctx);
+void populateContext_Comparison(static_context* sctx);
 
 }
 

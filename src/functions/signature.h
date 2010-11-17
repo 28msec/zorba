@@ -149,7 +149,7 @@ public:
     return theTypes[theIsVariadic ? 1 : (i + 1)]; 
   }
 
-  xqtref_t const& returnType() const { return theTypes[0]; }
+  const xqtref_t& returnType() const { return theTypes[0]; }
 
   xqtref_t& returnType() { return theTypes[0]; }
 

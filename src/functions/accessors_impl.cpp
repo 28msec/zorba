@@ -26,6 +26,8 @@
 
 #include "system/globalenv.h"
 
+#include "compiler/expression/expr_base.h"
+
 
 namespace zorba 
 {
@@ -33,6 +35,18 @@ namespace zorba
 /*******************************************************************************
   
 ********************************************************************************/
+BoolAnnotationValue fn_data::ignoresSortedNodes(expr* fo, ulong input) const
+{
+  return fo->getIgnoresDuplicateNodes();
+}
+
+
+BoolAnnotationValue fn_data::ignoresDuplicateNodes(expr* fo, ulong input) const
+{
+  return fo->getIgnoresDuplicateNodes();
+}
+
+
 xqtref_t fn_data::getReturnType(
     const TypeManager* tm,
     const std::vector<xqtref_t>& arg_types) const
@@ -126,7 +140,8 @@ void populate_context_accessors_impl(static_context* sctx)
 {
   DECL(sctx, fn_name_func,
        (createQName(XQUERY_FN_NS, "fn", "name"),
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION, GENV_TYPESYSTEM.STRING_TYPE_ONE));
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
+        GENV_TYPESYSTEM.STRING_TYPE_ONE));
 }
 
 

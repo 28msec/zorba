@@ -106,6 +106,8 @@
     <zorba:methods>
       <zorba:getReturnType/>
       <zorba:isMap producer="0"/>
+      <zorba:ignoresSortedNodes/>
+      <zorba:ignoresDuplicateNodes/>
     </zorba:methods>
 
   </zorba:function>

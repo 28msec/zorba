@@ -1,6 +1,6 @@
 module namespace ext = "http://www.zorba-xquery.com/m";
 
-declare function ext:bar() as xs:string external;
+declare function ext:bar() as xs:string? external;
 
 declare function ext:foo()
 {
@@ -14,4 +14,4 @@ declare function ext:foo2()
   return (1, $res)
 };
 
-declare function ext:bar2() as xs:string external;
+declare function ext:bar2() as xs:string? external;

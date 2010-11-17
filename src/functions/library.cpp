@@ -59,7 +59,7 @@
 #include "functions/arithmetic.h"
 //#include "functions/tuple_functions.h"
 #include "functions/InternalOperators.h"
-#include "functions/Alexis.h"
+#include "functions/tidy.h"
 #include "functions/Fop.h"
 
 
@@ -121,7 +121,7 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populateContext_Constructors(sctx);
   populateContext_VarDecl(sctx);
   populateContext_Hoisting(sctx);
-  populateContext_Alexis(sctx);
+  populateContext_tidy(sctx);
   populateContext_FOP(sctx);
 
   ar.set_loading_hardcoded_objects(false);

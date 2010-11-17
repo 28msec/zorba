@@ -1702,9 +1702,7 @@ void normalize_fo(fo_expr* foExpr)
       paramType = sign[i];
     }
 
-    xqtref_t param_prime_type = TypeOps::prime_type(tm, *paramType);
-
-    if (TypeOps::is_subtype(tm, *param_prime_type, *theRTM.ANY_ATOMIC_TYPE_ONE))
+    if (TypeOps::is_subtype(tm, *paramType, *theRTM.ANY_ATOMIC_TYPE_STAR))
     {
       argExpr = wrap_in_atomization(argExpr);
       argExpr = wrap_in_type_promotion(argExpr, paramType);
@@ -9015,7 +9013,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
     // If this is a udf that is invoked from another udf, mark that other udf
     // as a non-leaf function.
-    if (NULL != dynamic_cast<user_function*>(f))
+    if (f->isUdf())
     {
       if (! theCurrentPrologVFDecl.isNull() &&
           theCurrentPrologVFDecl.getKind() == PrologGraphVertex::FUN)
@@ -9043,28 +9041,36 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
     normalize_fo(foExpr);
 
+    expr_t resultExpr = foExpr.getp();
+
     if (f->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N ||
         f->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_VALUE_N)
     {
       FunctionConsts::FunctionKind fkind = FunctionConsts::OP_SORT_NODES_ASC_1;
 
-      foExpr = new fo_expr(theRootSctx,
-                           foExpr->get_loc(),
-                           BuiltinFunctionLibrary::getFunction(fkind),
-                           foExpr);
+      resultExpr = new fo_expr(theRootSctx,
+                               foExpr->get_loc(),
+                               BuiltinFunctionLibrary::getFunction(fkind),
+                               foExpr);
     }
     else if (f->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_GENERAL_N ||
              f->getKind() == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_GENERAL_N)
     {
       FunctionConsts::FunctionKind fkind = FunctionConsts::OP_SORT_DISTINCT_NODES_ASC_1;
 
-      foExpr = new fo_expr(theRootSctx,
-                           foExpr->get_loc(),
-                           BuiltinFunctionLibrary::getFunction(fkind),
-                           foExpr);
+      resultExpr = new fo_expr(theRootSctx,
+                               foExpr->get_loc(),
+                               BuiltinFunctionLibrary::getFunction(fkind),
+                               foExpr);
+    }
+    else if (f->isExternal())
+    {
+      const xqtref_t& resultType = f->getSignature().returnType();
+
+      resultExpr = wrap_in_type_match(foExpr, resultType);
     }
 
-    push_nodestack(foExpr.getp());
+    push_nodestack(resultExpr.getp());
   }
 }
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 #include "functions/function_impl.h"
-#include "functions/Alexis.h"
+#include "functions/tidy.h"
 
 #include "runtime/util/UtilImpl.h"
 
@@ -60,7 +60,7 @@ public:
 #endif/* ZORBA_WITH_TIDY */
 
 
-void populateContext_Alexis(static_context* sctx)
+void populateContext_tidy(static_context* sctx)
 {
   const char* util_ns = static_context::ZORBA_UTIL_FN_NS.c_str();
   const char* tidy_ns = static_context::ZORBA_TIDY_FN_NS.c_str();

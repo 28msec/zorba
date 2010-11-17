@@ -47,7 +47,7 @@ WidthFunction::evaluate(
   ImageFunction::getOneImageArg(aDynCtx, aArgs, 0, lImage);
   int lResult = lImage.columns();
   return ItemSequence_t(new SingletonItemSequence(
-      theModule->getItemFactory()->createInt(lResult)));
+      theModule->getItemFactory()->createUnsignedInt(lResult)));
 
 }
 
@@ -68,7 +68,7 @@ HeightFunction::evaluate(
   ImageFunction::getOneImageArg(aDynCtx, aArgs, 0, lImage);
   int lResult = lImage.rows();
   return ItemSequence_t(new SingletonItemSequence(
-      theModule->getItemFactory()->createInt(lResult)));
+      theModule->getItemFactory()->createUnsignedInt(lResult)));
 
 }
 

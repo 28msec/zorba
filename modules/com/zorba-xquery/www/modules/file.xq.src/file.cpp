@@ -160,7 +160,7 @@ FilesFunction::IteratorBackedItemSequence::next(Item& lItem)
   }
   
   String lUriStr(lPath.c_str());
-  lItem = theItemFactory->createAnyURI(lUriStr);
+  lItem = theItemFactory->createString(lUriStr);
   return true;
 }
 
@@ -330,7 +330,7 @@ PathSeparator::evaluate(
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  return ItemSequence_t(new SingletonItemSequence(theModule->getItemFactory()->createAnyURI(FileFunction::pathSeparator())));
+  return ItemSequence_t(new SingletonItemSequence(theModule->getItemFactory()->createString(FileFunction::pathSeparator())));
 }
 
 //*****************************************************************************

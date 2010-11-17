@@ -67,7 +67,7 @@ LIST(APPEND FUNCTIONS_SRCS
     durations_dates_times_impl.cpp
     sequences_impl.cpp
     fnerror_impl.cpp
-    Alexis.cpp
+    tidy.cpp
     arithmetic.cpp
     EnclosedExpr.cpp
     external_function_adapters.cpp

@@ -92,10 +92,10 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
   static_context* sctx = node->get_sctx();
   TypeManager* tm = sctx->get_typemanager();
 
-  fo_expr* fo;
-
-  if ((fo = dynamic_cast<fo_expr *>(node)) != NULL) 
+  if (node->get_expr_kind() == fo_expr_kind) 
   {
+    fo_expr* fo = static_cast<fo_expr *>(node);
+
     if (fo->get_func()->getKind() == FunctionConsts::FN_BOOLEAN_1) 
     {
       expr_t arg = fo->get_arg(0);
@@ -125,6 +125,15 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
     xqtref_t arg_type = arg->get_return_type();
     xqtref_t target_type = pe->get_target_type();
 
+    if (arg->get_expr_kind() == fo_expr_kind)
+    {
+      fo_expr* fo = static_cast<fo_expr *>(arg.getp());
+      const function* fn = fo->get_func();
+
+      if (fn->isExternal())
+        return NULL;
+    }
+
     // If arg type is subtype of target type, we can eliminate treat and promote
     // (because they are noops in this case), but not cast (which will actually
     // create a new item with the target type).
@@ -149,7 +158,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
 
     if (node->get_expr_kind() == treat_expr_kind)
     {
-      treat_expr* te = dynamic_cast<treat_expr *> (pe);
+      treat_expr* te = static_cast<treat_expr *> (pe);
 
       if (te->get_check_prime() && TypeOps::is_subtype(tm, *arg_ptype, *target_ptype))
       {
