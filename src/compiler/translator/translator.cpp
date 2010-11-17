@@ -9067,7 +9067,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     {
       const xqtref_t& resultType = f->getSignature().returnType();
 
-      resultExpr = wrap_in_type_match(foExpr, resultType);
+      resultExpr = wrap_in_type_match(foExpr.getp(), resultType);
     }
 
     push_nodestack(resultExpr.getp());
