@@ -17,49 +17,12 @@
 #ifndef ZORBA_FULL_TEXT_FT_THESAURUS_H
 #define ZORBA_FULL_TEXT_FT_THESAURUS_H
 
-#include <limits>
-
 #include "zorbatypes/zstring.h"
 #include "zorbautils/locale.h"
 
-#include "ft_query_item.h"
-#include "ft_util.h"
+#include "ft_util.h"                    /* for ft_int */
 
 namespace zorba {
-
-///////////////////////////////////////////////////////////////////////////////
-
-/**
- * ISO 2788: Guidelines for the establishment and development of monolingual
- * thesauri.
- */
-namespace iso2788 {
-
-  /**
-   * Relationship abbreviations from section 4.1.
-   */
-  enum rel_type {
-    unknown,
-    BT,   // broader term
-    BTG,  // broader term (generic)
-    BTP,  // broader term (partitive)
-    NT,   // narrower term
-    NTG,  // narrower term (generic)
-    NTP,  // narrower term (partitive)
-    RT,   // related term
-    TT,   // top term
-    UF,   // non-preferred term
-    USE,  // preferred term
-  };
-  extern char const *const string_of[];
-
-  rel_type find_rel( char const *relationship );
-
-  template<class StringType> inline
-  rel_type find_rel( StringType const &relationship ) {
-    return find_rel( relationship.c_str() );
-  }
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 

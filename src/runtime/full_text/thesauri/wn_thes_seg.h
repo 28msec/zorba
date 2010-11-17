@@ -29,8 +29,8 @@ namespace zorba {
 namespace wordnet {
 
 /**
- * An instance of this class is used to access either the word, stop-word,
- * file, or meta-name index portions of a generated index.
+ * An instance of this class is used to access either the lemma or synset
+ * portions of a binary version of a WordNet thesaurus.
  *
  * By implementing fully-blown random access iterators for it, the STL
  * algorithms work, in particular binary_search() and equal_range() that
@@ -41,41 +41,27 @@ public:
 
   ////////// typedefs /////////////////////////////////////////////////////////
 
-  typedef unsigned long size_type;
-  typedef ptrdiff_t difference_type;
-
   typedef char const* value_type;
   typedef value_type* const_pointer;
   typedef value_type const_reference;
 
+  typedef unsigned long size_type;
+  typedef ptrdiff_t difference_type;
+
   enum seg_id {
-    ts_lemma  = 0,
-    ts_synset = 1
+    id_lemma  = 0,
+    id_synset = 1
   };
 
   ////////// constructors /////////////////////////////////////////////////////
 
+  /**
+   * Constructs a %thes_seg.
+   */
   thes_seg() { }
 
   thes_seg( mmap_file const &file, seg_id id ) {
     set_file( file, id );
-  }
-
-  ////////// member functions /////////////////////////////////////////////////
-
-  /**
-   * Sets the thesaurus file to use by setting data members to the proper
-   * positions within the thesaurus file.
-   *
-   * @param file TODO
-   * @param id TODO
-   */
-  void set_file( mmap_file const &file, seg_id id );
-
-  size_type size() const { return num_entries_; }
-
-  const_reference operator[]( size_type i ) const {
-    return begin_ + offset_[i];
   }
 
   ////////// iterators ////////////////////////////////////////////////////////
@@ -147,13 +133,53 @@ public:
     friend class thes_seg;
   };
 
+  ////////// member functions /////////////////////////////////////////////////
+
+  /**
+   * Creates a new const_iterator positioned at the first segment entry.
+   *
+   * @return Returns said iterator.
+   */
   const_iterator begin() const {
     return const_iterator( this, 0 );
   }
 
+  /**
+   * Creates a new const_iterator positioned at one past the last segment
+   * entry.
+   *
+   * @return Returns said iterator.
+   */
   const_iterator end() const {
     return const_iterator( this, num_entries_ );
   }
+
+  /**
+   * Sets the thesaurus file and segment.
+   *
+   * @param file The binary version of a WordNet thesaurus.
+   * @param id The segment ID.
+   */
+  void set_file( mmap_file const &file, seg_id id );
+
+  /**
+   * Gets the number of entries in this segment.
+   *
+   * @return Returns the number of entries in this segment.
+   */
+  size_type size() const { return num_entries_; }
+
+  /**
+   * Gets the ith entry.
+   *
+   * @param i The index of the entry to get.
+   * @return Returns the ith entry.
+   */
+  const_reference operator[]( size_type i ) const {
+    return begin_ + offset_[i];
+  }
+
+  //////////////////////////////////////////////////////////////////////////// 
 
 private:
   mmap_file::const_iterator  begin_;

@@ -26,6 +26,10 @@ namespace wordnet {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+/**
+ * A %wordnet::thesaurus is an ft_thesaurus for Wordnet.
+ * See: http://wordnet.princeton.edu/
+ */
 class thesaurus : public ft_thesaurus {
 public:
   thesaurus( zstring const &phrase, zstring const &relationship,

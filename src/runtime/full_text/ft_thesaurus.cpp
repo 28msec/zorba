@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-#include <algorithm>
+#include <algorithm>                    /* for equal_range */
+#include <cstring>
 #include <functional>                   /* for binary_function */
 #include <utility>                      /* for pair */
 
@@ -28,46 +29,6 @@ using namespace std;
 using namespace zorba::locale;
 
 namespace zorba {
-
-///////////////////////////////////////////////////////////////////////////////
-
-/**
- * A less-verbose way to use std::lower_bound.
- */
-inline int find_index( char const *const *begin, char const *const *end,
-                       char const *s ) {
-  char const *const *const entry =
-    ::lower_bound( begin, end, s, less<char const*>() );
-  return entry != end && ::strcmp( s, *entry ) == 0 ? entry - begin : 0;
-}
-
-#define DEF_END(CHAR_ARRAY)                             \
-  static char const *const *const end =                 \
-    CHAR_ARRAY + sizeof( CHAR_ARRAY ) / sizeof( char* );
-
-#define FIND(what) \
-  static_cast<rel_type>( find_index( string_of, end, what ) )
-
-namespace iso2788 {
-  char const *const string_of[] = {
-    "#UNKNOWN",
-    "bt",
-    "btg",
-    "btp",
-    "nt",
-    "ntg",
-    "ntp",
-    "rt",
-    "tt",
-    "uf",
-    "use",
-  };
-
-  rel_type find_rel( char const *relationship ) {
-    DEF_END( string_of );
-    return FIND( relationship );
-  }
-} // namespace iso2788
 
 ///////////////////////////////////////////////////////////////////////////////
 

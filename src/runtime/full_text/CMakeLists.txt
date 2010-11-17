@@ -37,8 +37,8 @@ SET(FULLTEXT_SRCS
     stop_words/stop_words_no.cpp
     stop_words/stop_words_pt.cpp
     stop_words/stop_words_sv.cpp
-    thesauri/wn_thesaurus.cpp
-    thesauri/wn_thes_seg.cpp
     )
+
+ADD_SRC_SUBFOLDER(FULLTEXT_SRCS thesauri THESAURUS_SRCS)
 
 # vim:set et sw=4 ts=4:

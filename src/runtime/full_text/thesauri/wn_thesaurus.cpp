@@ -14,180 +14,27 @@
  * limitations under the License.
  */
 
+#include <algorithm>
+#include <utility>                      /* for pair */
+
 #include "util/ascii_util.h"
 #include "util/less.h"
 #include "util/mmap_file.h"
 
 #include "wn_thesaurus.h"
+#include "wn_thes_seg.h"
+#include "wn_types.h"
 
 using namespace std;
 
 namespace zorba {
 namespace wordnet {
 
-///////////////////////////////////////////////////////////////////////////////
-
-/**
- * A less-verbose way to use std::lower_bound.
- */ 
-inline int find_index( char const *const *begin, char const *const *end,
-                       char const *s ) {
-  char const *const *const entry =
-    ::lower_bound( begin, end, s, less<char const*>() );
-  return entry != end && ::strcmp( s, *entry ) == 0 ? entry - begin : 0;
-} 
-    
-#define DEF_END(CHAR_ARRAY)                             \
-  static char const *const *const end =                 \
-    CHAR_ARRAY + sizeof( CHAR_ARRAY ) / sizeof( char* );
-    
-///////////////////////////////////////////////////////////////////////////////
-
-namespace wn_pointer {
-
-  enum type {
-    unknown,
-    also_see,
-    antonym,
-    attribute,
-    cause,
-    derivationally_related_form,
-    derived_from_adjective,
-    domain_of_synset_region,
-    domain_of_synset_topic,
-    domain_of_synset_usage,
-    entailment,
-    hypernym,
-    hyponym,
-    instance_hypernym,
-    instance_hyponym,
-    member_holonym,
-    member_meronym,
-    member_of_domain_region,
-    member_of_domain_topic,
-    member_of_domain_usage,
-    part_holonym,
-    part_meronym,
-    participle_of_verb,
-    pertainym,
-    similar_to,
-    substance_holonym,
-    substance_meronym,
-    verb_group
-  };
-  char const *const string_of[] = {
-    "#UNKNOWN",
-    "also see",
-    "antonym",
-    "attribute",
-    "cause",
-    "derivationally related form",
-    "derived from adjective",
-    "domain of synset region",
-    "domain of synset topic",
-    "domain of synset usage",
-    "entailment",
-    "hypernym",
-    "hyponym",
-    "instance hypernym",
-    "instance hyponym",
-    "member holonym",
-    "member meronym",
-    "member of domain region",
-    "member of domain topic",
-    "member of domain usage",
-    "part holonym",
-    "part meronym",
-    "participle of verb",
-    "pertainym",
-    "similar to",
-    "substance holonym",
-    "substance meronym",
-    "verb group"
-  };
-
-#define FIND(what) \
-  static_cast<type>( find_index( string_of, end, what ) )
-    
-  type find( char wn_ptr_symbol ) {
-    switch ( wn_ptr_symbol ) {
-      case 'A' /* !  */: return antonym;
-      case 'a' /* =  */: return attribute;
-      case 'C' /* >  */: return cause;
-      case 'D' /* \  */: return derived_from_adjective;
-      case 'E' /* @  */: return hypernym;
-      case 'e' /* @i */: return instance_hypernym;
-      case 'F' /* +  */: return derivationally_related_form;
-      case 'G' /* $  */: return verb_group;
-      case 'H' /* #m */: return member_holonym;
-      case 'h' /* #p */: return part_holonym;
-      case 'i' /* #s */: return substance_holonym;
-      case 'L' /* *  */: return entailment;
-      case 'M' /* %m */: return member_meronym;
-      case 'm' /* %p */: return part_meronym;
-      case 'n' /* %s */: return substance_meronym;
-      case 'O' /* ~  */: return hyponym;
-      case 'o' /* ~i */: return instance_hyponym;
-      case 'P' /* \  */: return pertainym;
-      case 'R' /* ;r */: return domain_of_synset_region;
-      case 'r' /* -r */: return member_of_domain_region;
-      case 'S' /* ^  */: return also_see;
-      case 'T' /* ;c */: return domain_of_synset_topic;
-      case 't' /* -c */: return member_of_domain_topic;
-      case 'U' /* ;u */: return domain_of_synset_usage;
-      case 'u' /* -u */: return member_of_domain_usage;
-      case 'V' /* <  */: return participle_of_verb;
-      case '~' /* &  */: return similar_to;
-      default          : return unknown;
-    }
-  }
-
-  type find( char const *relationship ) {
-    DEF_END( string_of );
-    return FIND( relationship );
-  }
-
-  template<class StringType> inline
-  type find( StringType const &relationship ) {
-    return find( relationship.c_str() );
-  }
-
-  /**
-   * Attempts to map an ISO 2788 relationship to a WordNet relationship.
-   *
-   * @param iso_rel The ISO 2788 relationship.
-   * @return Returns the closest equivalent WordNet relationship.
-   */
-  type map_iso_rel( iso2788::rel_type iso_rel ) {
-    switch ( iso_rel ) {
-      case iso2788::BT : return hypernym;
-      case iso2788::BTG:
-      case iso2788::BTP:
-      case iso2788::NT : return hyponym;
-      case iso2788::NTG:
-      case iso2788::NTP:
-      case iso2788::RT : return similar_to;
-      case iso2788::TT :
-      case iso2788::UF :
-      case iso2788::USE:
-      default          : return unknown;
-    }
-  }
-
-} // namespace wn_pointer
+typedef pair<thes_seg::const_iterator,thes_seg::const_iterator> lemma_range;
 
 ///////////////////////////////////////////////////////////////////////////////
 
-enum part_of_speech {
-  adjective,
-  adverb,
-  noun,
-  verb,
-};
-
-///////////////////////////////////////////////////////////////////////////////
-
-#if 0
+#if 1
 static mmap_file const& get_thesaurus_file() {
   static mmap_file thesaurus_file;
   if ( !thesaurus_file )
@@ -203,25 +50,32 @@ thesaurus::thesaurus( zstring const &phrase, zstring const &relationship,
   zstring relationship_lower;
   ascii::to_lower( relationship, &relationship_lower );
 
-  wn_pointer::type wn_ptr;
+  pointer::type ptr_type;
   if ( iso2788::rel_type iso_rel = iso2788::find_rel( relationship_lower ) )
-    wn_ptr = wn_pointer::map_iso_rel( iso_rel );
+    ptr_type = pointer::map_iso_rel( iso_rel );
   else
-    wn_ptr = wn_pointer::find( relationship_lower );
+    ptr_type = pointer::find( relationship_lower );
 
+  static thes_seg const lemmas ( get_thesaurus_file(), thes_seg::id_lemma  );
+  static thes_seg const synsets( get_thesaurus_file(), thes_seg::id_synset );
 
-  if ( phrase == "wealthy" ) {
-    cout << "-> found phrase in thesaurus\n";
-    synonyms_.push_back( "affluent" );
-    synonyms_.push_back( "loaded" );
-    synonyms_.push_back( "rich" );
-    synonyms_.push_back( "wealthy" );
-    synonyms_.push_back( "well off" );
-    synonyms_.push_back( "well to do" );
-    i_ = synonyms_.begin();
-  } else {
-    i_ = synonyms_.end();
+  // always include the original phrase
+  synonyms_.push_back( phrase.c_str() );
+
+#if 0
+  lemma_range const range = ::equal_range(
+    lemmas.begin(), lemmas.end(), phrase, comparator
+  );
+  if ( range.first == lemmas.end() || comparator( phrase, *range.first ) ) {
+    // NOT FOUND
   }
+  synset_list const list( range.first );
+  FOR_EACH( synset_list, list, synset ) {
+    // TODO
+  }
+#endif
+
+  i_ = synonyms_.begin();
 }
 
 thesaurus::~thesaurus() {
