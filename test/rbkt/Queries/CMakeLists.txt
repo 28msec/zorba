@@ -313,9 +313,6 @@ EXPECTED_FAILURE(test/rbkt/zorba/xqddf/daniel/eic4 2962715)
 
 EXPECTED_FAILURE(test/rbkt/zorba/HigherOrder/hof-101 3071699)
 
-EXPECTED_FAILURE(test/rbkt/zorba/gflwor/gflwor_ex6 3081418)
-EXPECTED_FAILURE(test/rbkt/zorba/gflwor/gflwor_ex7 3107827)
-
 IF(CURL_FOUND AND LIBTIDY_FOUND)
   EXPECTED_FAILURE(test/rbkt/zorba/http_client/http-read-html-tidy2 2958058)
 ENDIF(CURL_FOUND AND LIBTIDY_FOUND)
