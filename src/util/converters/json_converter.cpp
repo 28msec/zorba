@@ -45,14 +45,14 @@ std::string  WStringToString(const std::wstring& s);
 bool create_Node_Helper(
     store::Item_t aParent,
     const zstring& aBaseUri,
-    xqpStringStore_t aName,
+    zstring aName,
     store::Item_t* aResult = NULL);
 
 
 bool create_Attribute_Helper(
     store::Item_t aParent,
-    xqpStringStore_t aName,
-    xqpStringStore_t aValue,
+    zstring aName,
+    zstring aValue,
     store::Item_t* aResult = NULL);
 
 
@@ -60,8 +60,8 @@ bool create_Pair_Helper(
     store::Item_t aParent,
     zstring& aBaseUri,
     store::Item_t* aResult,
-    xqpStringStore_t aName,
-    xqpStringStore_t aType,
+    zstring aName,
+    zstring aType,
     zstring& aValue,
     bool haveValue = false);
 
@@ -82,8 +82,8 @@ void parse_Json_ML_value(
 
 bool parse_element(
     const store::Item* aElement,
-    xqpStringStore_t& aJsonString,
-    xqpStringStore_t& aErrorLog);
+    zstring& aJsonString,
+    zstring& aErrorLog);
 
 
 bool parse_child(
@@ -111,9 +111,8 @@ bool JSON_parse(
   json::vector_list_t::iterator lVectIter;
   json::vector_list_t * lVect = lValue->getchildrenlist();
 
-  create_Node_Helper(NULL, aBaseUri, new xqpStringStore("json"), &aElement);
-  create_Attribute_Helper(aElement, new xqpStringStore("type"),
-                          new xqpStringStore("object"));
+  create_Node_Helper(NULL, aBaseUri, "json", &aElement);
+  create_Attribute_Helper(aElement, "type", "object");
 
   if( lVect != 0 )
   {
@@ -163,33 +162,33 @@ bool JSON_serialize(
 
 
 //helper functions
-bool create_Type_Helper(store::Item_t& result, xqpStringStore_t type_name)
+bool create_Type_Helper(store::Item_t& result, zstring type_name)
 {
   zstring xs_ns("http://www.w3.org/2001/XMLSchema");
   zstring xs_pre("xs");
-  return GENV_ITEMFACTORY->createQName(result, xs_ns, xs_pre, type_name->str());
+  return GENV_ITEMFACTORY->createQName(result, xs_ns, xs_pre, type_name);
 }
 
 
-bool create_QName_Helper(store::Item_t& result, xqpStringStore_t name)
+bool create_QName_Helper(store::Item_t& result, zstring name)
 {
   zstring ns;//ZORBA_JSON_FN_NS);
   zstring pre;//zorba-json");
-  return GENV_ITEMFACTORY->createQName(result, ns, pre, name->str());
+  return GENV_ITEMFACTORY->createQName(result, ns, pre, name);
 }
 
 
 bool create_Node_Helper(
     store::Item_t aParent,
     const zstring& aBaseUri,
-    xqpStringStore_t aName,
+    zstring aName,
     store::Item_t* aResult)
 {
   store::Item_t lQname, lTempResult, lTypeQname;
   store::NsBindings lBindings;
 
   create_QName_Helper(lQname, aName);
-  create_Type_Helper(lTypeQname, new xqpStringStore("untyped"));
+  create_Type_Helper(lTypeQname, "untyped");
 
   zstring baseuri = aBaseUri;
 
@@ -212,18 +211,17 @@ bool create_Node_Helper(
 
 bool create_Attribute_Helper(
     store::Item_t aParent,
-    xqpStringStore_t aName,
-    xqpStringStore_t aValue,
+    zstring aName,
+    zstring aValue,
     store::Item_t* aResult)
 {
   store::Item_t lQname, lTempResult, lStrItem;
   store::Item_t lTypeQname;
 
   create_QName_Helper(lQname, aName);
-  create_Type_Helper(lTypeQname, new xqpStringStore("string"));
+  create_Type_Helper(lTypeQname, "string");
 
-  zstring tmp = aValue->str();
-  GENV_ITEMFACTORY->createString(lStrItem, tmp);
+  GENV_ITEMFACTORY->createString(lStrItem, aValue);
 
   GENV_ITEMFACTORY->createAttributeNode(lTempResult,
                                         aParent,
@@ -242,23 +240,23 @@ bool create_Pair_Helper(
     store::Item_t aParent,
     const zstring& aBaseUri,
     store::Item_t* aResult,
-    xqpStringStore_t aName,
-    xqpStringStore_t aType,
+    zstring aName,
+    zstring aType,
     zstring& aValue,
     bool haveValue = false)
 {
   bool lRet = true;
-  if( !aName->empty() )
+  if( !aName.empty() )
   {
-    lRet = create_Node_Helper(aParent, aBaseUri, new xqpStringStore("pair"), aResult);
+    lRet = create_Node_Helper(aParent, aBaseUri, "pair", aResult);
     if( lRet )
-      lRet = create_Attribute_Helper(*aResult, new xqpStringStore("name"), aName, NULL);
+      lRet = create_Attribute_Helper(*aResult, "name", aName, NULL);
   }
   else
-    lRet = create_Node_Helper(aParent, aBaseUri, new xqpStringStore("item"), aResult);
+    lRet = create_Node_Helper(aParent, aBaseUri, "item", aResult);
 
   if( lRet )
-    lRet = create_Attribute_Helper(*aResult, new xqpStringStore("type"), aType, NULL);
+    lRet = create_Attribute_Helper(*aResult, "type", aType, NULL);
 
   if (haveValue)
   {
@@ -303,15 +301,15 @@ void parse_Json_value(
 
   if( aValue!=0 )
   {
-    xqpStringStore_t lName = xqpString((*aValue)->getname().c_str()).getStore();
+    xqpString lName = (*aValue)->getname().c_str();
     zstring empty;
 
     switch((*aValue)->getdatatype())
     {
     case json::datatype::_array:
     {
-      create_Pair_Helper(aParent, aBaseUri, aResult, lName,
-                         new xqpStringStore("array"), empty);
+      create_Pair_Helper(aParent, aBaseUri, aResult, lName.c_str(),
+                         "array", empty);
 
       lArr = (*aValue)->getarraylist();
       if( lArr != 0 )
@@ -323,8 +321,8 @@ void parse_Json_value(
     }
     case json::datatype::_object:
     {
-      create_Pair_Helper(aParent, aBaseUri, aResult, lName,
-                         new xqpStringStore("object"), empty);
+      create_Pair_Helper(aParent, aBaseUri, aResult, lName.c_str(),
+                         "object", empty);
 
       lVect = (*aValue)->getchildrenlist();
       if( lVect != 0 )
@@ -344,30 +342,30 @@ void parse_Json_value(
 
       delete lWtmp;
 
-      xqpStringStore_t lType;
+      zstring lType;
       if ((*aValue)->getdatatype() == json::datatype::_string)
       {
-        lType = new xqpStringStore("string");
+        lType = "string";
       }
       else if ((*aValue)->getdatatype() == json::datatype::_literal)
       {
         if( equals(lVal, "null", 4) )
         {
           haveVal = false;
-          lType = new xqpStringStore("null");
+          lType = "null";
         }
         else
         {
-          lType = new xqpStringStore("boolean");
+          lType = "boolean";
         }
       }
       else if (((*aValue)->getdatatype() == json::datatype::_number) ||
                ((*aValue)->getdatatype() == json::datatype::_fixed_number))
       {
-        lType = new xqpStringStore("number");
+        lType = "number";
       }
 
-      create_Pair_Helper(aParent, aBaseUri, aResult, lName, lType, lVal, haveVal);
+      create_Pair_Helper(aParent, aBaseUri, aResult, lName.c_str(), lType, lVal, haveVal);
       break;
     }
   }
@@ -400,10 +398,10 @@ void parse_Json_ML_value(
         std::wstring * lWtmp = (*lArrIter)->getstring();
 
         //transform from UCS-4 to UTF-8
-        xqpStringStore_t lName = xqpString((*lWtmp).c_str()).getStore();
+        xqpString lName((*lWtmp).c_str());
         delete lWtmp;
 
-        create_Node_Helper(aParent, aBaseUri, lName, aResult);
+        create_Node_Helper(aParent, aBaseUri, lName.c_str(), aResult);
         ++lArrIter;
 
         for ( ; lArrIter != lArr->end(); ++lArrIter )
@@ -419,14 +417,14 @@ void parse_Json_ML_value(
       {
         for ( lVectIter = lVect->begin(); lVectIter != lVect->end(); ++lVectIter )
         {
-          xqpStringStore_t lName = xqpString((*lVectIter)->getname().c_str()).getStore();
+          xqpString lName((*lVectIter)->getname().c_str());
           std::wstring * lWtmp = (*lVectIter)->getstring();
 
           //transform from UCS-4 to UTF-8
-          xqpStringStore_t lText = xqpString((*lWtmp).c_str()).getStore();
+          xqpString lText((*lWtmp).c_str());
           delete lWtmp;
 
-          create_Attribute_Helper(aParent, lName, lText, NULL);
+          create_Attribute_Helper(aParent, lName.c_str(), lText.c_str(), NULL);
         }
       }
       break;
@@ -435,8 +433,8 @@ void parse_Json_ML_value(
       std::wstring * lWtmp = (*aValue)->getstring();
 
       //transform from UCS-4 to UTF-8
-      xqpStringStore_t tmp = xqpString((*lWtmp).c_str()).getStore();
-      zstring lText(tmp->str());
+      xqpString tmp((*lWtmp).c_str());
+      zstring lText(tmp.c_str());
 
       delete lWtmp;
 
@@ -558,7 +556,7 @@ bool get_value(const store::Item* aElement, zstring& aValue)
     if (lStringHolder.indexOf("\"") != -1)
       lStringHolder = lStringHolder.replace("\"", "'", "");
 
-    aValue = lStringHolder.getStore()->str();
+    aValue = lStringHolder;
     return lRes;
   }
 
@@ -668,10 +666,10 @@ bool JSON_ML_parse(
       std::wstring * lWtmp = (*lArrIter)->getstring();
 
       //transform from UCS-4 to UTF-8
-      xqpStringStore_t lName = xqpString((*lWtmp).c_str()).getStore();
+      xqpString lName((*lWtmp).c_str());
       delete lWtmp;
 
-      create_Node_Helper(NULL, aBaseUri, lName, &aElement);
+      create_Node_Helper(NULL, aBaseUri, lName.c_str(), &aElement);
 
       ++lArrIter;
 

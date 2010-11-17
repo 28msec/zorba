@@ -60,9 +60,9 @@ namespace zorba
   if ( !(EXPR) ) ; else { os << indent << (LABEL) << "\n" << inc_indent; (EXPR)->put(os); os << dec_indent; }
 
 
-static inline xqp_string qname_to_string(store::Item_t qname) 
+static inline zstring qname_to_string(store::Item_t qname) 
 {
-  xqp_string result;
+  zstring result;
   zstring pfx = qname->getPrefix();
   zstring ns = qname->getNamespace();
   if (! ns.empty())

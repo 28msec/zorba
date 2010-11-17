@@ -43,8 +43,6 @@
 #include "types/casting.h"
 #include "types/typeops.h"
 
-#include "zorbatypes/xqpstring.h"
-
 #include "zorbaerrors/error_manager.h"
 
 #include "zorbautils/string_glue.h"

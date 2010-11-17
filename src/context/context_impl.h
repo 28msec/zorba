@@ -25,13 +25,13 @@
 
 
 #define DECL_STR_PARAM_TRIGGER( class, name, err, trigger )    \
-  xqp_string class::name () const {                            \
-    xqp_string val;                                            \
+  zstring class::name () const {                               \
+    zstring val;                                               \
     GET_CONTEXT_VALUE (name, val);                             \
     return val;                                                \
   }                                                            \
                                                                \
-  void class::set_##name (xqp_string val) {                    \
+  void class::set_##name (zstring val) {                       \
     bind_str ("int:" #name, val, err);                         \
     trigger;                                                   \
   }

@@ -57,7 +57,7 @@ static bool isHoistableCollection(expr* e)
   arg_expr is a constant, return the URI of the collection (i.e., the string
   value of the const arg).
 ********************************************************************************/
-static xqpStringStore* getCollectionName(const expr* e)
+static zstring* getCollectionName(const expr* e)
 {
   const fo_expr* fo = static_cast<const fo_expr *>(e);
   const const_expr* arg = static_cast<const const_expr *>(fo->get_arg(0));

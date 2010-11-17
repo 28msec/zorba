@@ -19,7 +19,6 @@
 #include <ostream>
 #include <string>
 #include <zorba/config.h>
-#include "zorbatypes/xqpstring.h"
 #include "compiler/parser/symbol_table.h"
 
 // needed because we have to delete the main module node

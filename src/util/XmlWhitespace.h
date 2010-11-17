@@ -39,7 +39,7 @@ zstring xmlWhitespacePreserve(zstring str);
 zstring xmlWhitespaceReplace(zstring str);
 
 /*
- * same as xmlWhitespaceReplace(xqpString str) plus
+ * same as xmlWhitespaceReplace(zstring str) plus
  * it collapses multiple consecutive spaces to a single one, 
  * and leading and trailing spaces are removed
  */ 

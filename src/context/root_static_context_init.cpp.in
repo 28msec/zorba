@@ -1,5 +1,4 @@
 #include "context/root_static_context.h"
-#include "zorbatypes/xqpstring.h"
 
 namespace zorba {
 

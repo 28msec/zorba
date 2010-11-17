@@ -22,7 +22,6 @@
 
 #include "store/api/shared_types.h"
 
-#include "zorbatypes/xqpstring.h"
 
 namespace zorba {
 
@@ -100,11 +99,11 @@ public:
 public:
   static std::string var_key(const void* var);
 
-  static xqpString expand_varname(
+  static zstring expand_varname(
         static_context* sctx,
-        const xqpStringStore_t& qname);
+        const zstring& qname);
 
-  static xqpString expand_varname(
+  static zstring expand_varname(
         static_context* sctx,
         const zstring& ns,
         const zstring& localname);
@@ -185,7 +184,7 @@ public:
 
   bool getExternalFunctionParam(const std::string& aName, void*& aValue) const;
 
-  std::vector<xqpString>* get_all_keymap_keys() const;
+  std::vector<zstring>* get_all_keymap_keys() const;
 
 protected:
   bool lookup_once(const std::string& key, dctx_value_t& val) const

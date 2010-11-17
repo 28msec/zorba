@@ -27,6 +27,8 @@
 
 #include "zorbautils/hashmap.h"
 
+#include "zorbatypes/xqpstring.h"
+
 
 namespace zorba
 {

@@ -34,7 +34,7 @@ typedef struct {
 int uuid_create(uuid_t * uuid);
 
 /* uuidToString -- transform a UUID to a string */
-xqpString uuidToString(uuid_t uuid);
+zstring uuidToString(uuid_t uuid);
 
 }/*namespace zorba*/
 

@@ -23,7 +23,7 @@
 #endif
 
 #include "zorbaerrors/error_manager.h"
-#include "zorbatypes/xqpstring.h"
+
 
 namespace zorba {
 

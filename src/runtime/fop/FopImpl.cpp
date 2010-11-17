@@ -76,7 +76,7 @@ END_SERIALIZABLE_CLASS_VERSIONS(ZorbaFopIterator)
     const char* baseString;
     std::vector<char> binData;
     std::vector<char> binDataRes;
-    xqpString resStore;
+    zstring resStore;
     jsize dataSize;
     jbyte* dataElements;
 
@@ -179,7 +179,8 @@ END_SERIALIZABLE_CLASS_VERSIONS(ZorbaFopIterator)
     for (jsize i = 0; i < dataSize; i++) {
       binData.push_back(dataElements[i]);
     }
-    //resStore = new xqpStringStore(baseString, strlen(baseString));
+
+    //resStore = new zstring(baseString, strlen(baseString));
     Base64::encode(binData, binDataRes);
     for (std::vector<char>::iterator iter = binDataRes.begin(); iter != binDataRes.end(); iter++) {
       resStore += *iter;

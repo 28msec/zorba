@@ -71,9 +71,9 @@ std::string dynamic_context::var_key(const void* var)
 /*******************************************************************************
 
 ********************************************************************************/
-xqp_string dynamic_context::expand_varname(
+zstring dynamic_context::expand_varname(
     static_context* sctx,
-    const xqpStringStore_t& qnameStr)
+    const zstring& qnameStr)
 {
   if(!sctx)
   {
@@ -82,7 +82,7 @@ xqp_string dynamic_context::expand_varname(
     return (const char*)NULL;
   }
 
-  rchandle<QName> qname = new QName(QueryLoc::null, qnameStr->str());
+  rchandle<QName> qname = new QName(QueryLoc::null, qnameStr);
   store::Item_t qnameItem;
   sctx->expand_qname(qnameItem,
                      zstring(),
@@ -100,7 +100,7 @@ xqp_string dynamic_context::expand_varname(
 /*******************************************************************************
 
 ********************************************************************************/
-xqp_string dynamic_context::expand_varname(
+zstring dynamic_context::expand_varname(
     static_context* sctx,
     const zstring& ns,
     const zstring& localname)
@@ -639,13 +639,13 @@ bool dynamic_context::getExternalFunctionParam (
 }
 
 
-std::vector<xqp_string>* dynamic_context::get_all_keymap_keys() const
+std::vector<zstring>* dynamic_context::get_all_keymap_keys() const
 {
-  std::auto_ptr<std::vector<xqp_string> > keys;
+  std::auto_ptr<std::vector<zstring> > keys;
   if (theParent != NULL)
     keys.reset(theParent->get_all_keymap_keys());
   else
-    keys.reset(new std::vector<xqp_string>);
+    keys.reset(new std::vector<zstring>);
 
   for (unsigned int i=0; i<keymap.size(); i++)
     keys->push_back(keymap.getentryKey(i));

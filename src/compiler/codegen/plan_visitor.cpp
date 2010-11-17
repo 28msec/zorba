@@ -2963,7 +2963,7 @@ PlanIter_t codegen(
   if (result != NULL &&
       descr != NULL &&
       Properties::instance()->printIteratorTree() &&
-      (xqp_string ("main query") == descr || ! Properties::instance()->iterPlanTest()))
+      (zstring("main query") == descr || ! Properties::instance()->iterPlanTest()))
   {
     std::ostream &os = Properties::instance()->iterPlanTest ()
       ? std::cout

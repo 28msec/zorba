@@ -1425,7 +1425,6 @@ void serializer::sax2_emitter::emit_node(const store::Item* item)
   {
     store::NsBindings local_nsBindings;
     store::Item_t item_qname;
-    //std::vector<xqpStringStore_t> aNSList;
     unsigned long namespaces_emited = 0;
     store::NsBindings::size_type ns_size = 0;
 
@@ -1443,7 +1442,7 @@ void serializer::sax2_emitter::emit_node(const store::Item* item)
 
       SAX2AttributesImpl attrs(const_cast<store::Item*>(item));
       ns_size = local_nsBindings.size();
-      std::vector<xqpStringStore_t>::size_type ans_size = theNameSpaces.size();
+      std::vector<zstring>::size_type ans_size = theNameSpaces.size();
       for ( unsigned long i = 0; i < ns_size; i++ )
       {
         bool is_declared = false;

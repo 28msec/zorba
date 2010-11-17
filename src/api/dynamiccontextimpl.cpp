@@ -96,11 +96,10 @@ bool DynamicContextImpl::setVariable(
     ZorbaImpl::checkItem(lItem);
 
     zstring const &lString = Unmarshaller::getInternalString(aQName);
-    xqpStringStore_t temp( to_xqpStringStore_t( lString ) );
-    xqpString lExpandedName = theCtx->expand_varname(theStaticContext, temp);
+    zstring lExpandedName = theCtx->expand_varname(theStaticContext, lString);
 
     // add it to the internal context
-    theCtx->add_variable(lExpandedName, lItem);
+    theCtx->add_variable(lExpandedName.str(), lItem);
 
     return true;
   }
@@ -127,10 +126,9 @@ bool DynamicContextImpl::setVariable(
     store::Iterator_t lRes = Unmarshaller::getInternalIterator(lIter);
 
     zstring const &lString = Unmarshaller::getInternalString(aQName);
-    xqpStringStore_t temp( to_xqpStringStore_t( lString ) );
-    xqpString lExpandedName = theCtx->expand_varname(theStaticContext, temp);
+    zstring lExpandedName = theCtx->expand_varname(theStaticContext, lString);
 
-    theCtx->add_variable(lExpandedName, lRes);
+    theCtx->add_variable(lExpandedName.str(), lRes);
 
     return true;
   }
@@ -160,11 +158,11 @@ bool DynamicContextImpl::setVariable(
     zstring lNamespace = Unmarshaller::getInternalString(aNamespace).str();
     zstring lLocalname = Unmarshaller::getInternalString(aLocalname).str();
 
-    xqpString lExpandedName = theCtx->expand_varname(theStaticContext,
+    zstring lExpandedName = theCtx->expand_varname(theStaticContext,
                                                      lNamespace,
                                                      lLocalname);
 
-    theCtx->add_variable(lExpandedName, lRes);
+    theCtx->add_variable(lExpandedName.str(), lRes);
 
     return true;
   }
@@ -187,13 +185,13 @@ bool DynamicContextImpl::getVariable(
     zstring lNamespace = Unmarshaller::getInternalString(aNamespace).str();
     zstring lLocalname = Unmarshaller::getInternalString(aLocalname).str();
 
-    xqpString lExpandedName = theCtx->expand_varname(theStaticContext,
+    zstring lExpandedName = theCtx->expand_varname(theStaticContext,
                                                      lNamespace,
                                                      lLocalname);
 
     store::Item_t item;
     store::TempSeq_t tempseq;
-    theCtx->get_variable(lExpandedName, QueryLoc::null, item, tempseq);
+    theCtx->get_variable(lExpandedName.str(), QueryLoc::null, item, tempseq);
     if (! item.isNull())
     {
       aItem = item;

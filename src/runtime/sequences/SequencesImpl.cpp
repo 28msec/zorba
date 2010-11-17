@@ -550,7 +550,7 @@ bool FnIdRefIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   bool           isMatchingId;
   ulong          i;
 
-  std::vector<xqpStringStore_t> idrefs;
+  std::vector<zstring> idrefs;
 
   FnIdRefIteratorState* state;
   DEFAULT_STACK_INIT(FnIdRefIteratorState, state, planState);

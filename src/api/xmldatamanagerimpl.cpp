@@ -32,7 +32,6 @@
 #include "system/globalenv.h"
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
-#include "zorbatypes/xqpstring.h"
 
 #include "context/static_context.h"
 #include "context/internal_uri_resolvers.h"

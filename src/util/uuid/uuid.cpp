@@ -20,7 +20,6 @@
 
 #include "util/uuid/sysdep.h"
 #include "util/uuid/uuid.h"
-#include "zorbatypes/xqpstring.h"
 
 namespace zorba {
 
@@ -222,14 +221,14 @@ uuid_t NameSpace_DNS = { // 6ba7b810-9dad-11d1-80b4-00c04fd430c8
 };
 
 /* uuidToString -- transform a UUID to a string*/
-xqpString uuidToString(uuid_t u)
+zstring uuidToString(uuid_t u)
 {
   char lBuffer[174];
   sprintf(lBuffer, "%8.8x-%4.4x-%4.4x-%2.2x%2.2x-9300a64ac3cd", u.time_low, u.time_mid,
           u.time_hi_and_version, u.clock_seq_hi_and_reserved,
           u.clock_seq_low);
 
-  xqpString lResult = lBuffer;
+  zstring lResult = lBuffer;
   return lResult;
 }
 
