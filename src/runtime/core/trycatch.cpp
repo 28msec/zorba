@@ -182,10 +182,16 @@ TryCatchIterator::bindErrorVars(
 
   // bind the error code (always)
   store::Item_t lErrorCodeItem;
-  GENV_ITEMFACTORY->createQName(lErrorCodeItem, e.ns().c_str(), e.prefix().c_str(), e.localName().c_str());
+  GENV_ITEMFACTORY->createQName(
+      lErrorCodeItem,
+      e.ns().c_str(),
+      e.prefix().c_str(),
+      e.localName().c_str());
 
-  std::vector<LetVarIter_t>::const_iterator lErrorCodeVarIter = clause->errorcode_var.begin();
-  std::vector<LetVarIter_t>::const_iterator lErrorCodeVarIterEnd = clause->errorcode_var.end();
+  typedef std::vector<LetVarIter_t>::const_iterator LetVarConstIter;
+
+  LetVarConstIter lErrorCodeVarIter = clause->errorcode_var.begin();
+  LetVarConstIter lErrorCodeVarIterEnd = clause->errorcode_var.end();
   for ( ; lErrorCodeVarIter != lErrorCodeVarIterEnd; lErrorCodeVarIter++ )
   {
     store::Iterator_t lErrorCodeIter = new ItemIterator(lErrorCodeItem);
@@ -194,8 +200,9 @@ TryCatchIterator::bindErrorVars(
     (*lErrorCodeVarIter)->bind(lErrorCodeIter, planState);
   }
 
-  std::vector<LetVarIter_t>::const_iterator lErrorDescVarIter = clause->errordesc_var.begin();
-  std::vector<LetVarIter_t>::const_iterator lErrorDescVarIterEnd = clause->errordesc_var.end();
+  // bind the description (if exists)
+  LetVarConstIter lErrorDescVarIter = clause->errordesc_var.begin();
+  LetVarConstIter lErrorDescVarIterEnd = clause->errordesc_var.end();
   for ( ; lErrorDescVarIter != lErrorDescVarIterEnd; lErrorDescVarIter++ )
   {
     // bind the description or the empty sequence
@@ -216,9 +223,9 @@ TryCatchIterator::bindErrorVars(
     (*lErrorDescVarIter)->bind(lErrorDescIter, planState);
   }
 
-  // TODO bind the error objects
-  std::vector<LetVarIter_t>::const_iterator lErrorObjVarIter = clause->errorobj_var.begin();
-  std::vector<LetVarIter_t>::const_iterator lErrorObjVarIterEnd = clause->errorobj_var.end();
+  // bind the error object if exists
+  LetVarConstIter lErrorObjVarIter = clause->errorobj_var.begin();
+  LetVarConstIter lErrorObjVarIterEnd = clause->errorobj_var.end();
   error::ZorbaUserError *ue = dynamic_cast<error::ZorbaUserError *>(&e);
   std::vector<store::Item_t> *eObjs = NULL;
   if (ue != NULL && !ue->theErrorObject.empty()) {
@@ -250,6 +257,16 @@ TryCatchIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     state->theTargetSequence = GENV_STORE.createTempSeq(lIterator, false, false);
     state->theTempIterator = state->theTargetSequence->getIterator();
     state->theTempIterator->open();
+  }
+  catch (error::ZorbaUserError& e)
+  {
+    // bugfix: for #3107911
+    // it's important to not loose the information about the fact
+    // that it's a user error here;
+    if (!matchedCatch(e, state, planState))
+    {
+      throw e;
+    }
   }
   catch (error::ZorbaError& e)
   {

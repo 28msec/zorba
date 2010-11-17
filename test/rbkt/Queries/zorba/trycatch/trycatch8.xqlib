@@ -1,0 +1,5 @@
+module namespace lib = 'http://www.example.com/lib';
+                                                                                                                                       
+declare function lib:error () as item() {                                                                                              
+  error(xs:QName("lib:error"), "error thrown from lib", <test/>)                                                                       
+};
