@@ -36,6 +36,8 @@
 
 namespace zorba {
 
+class xqpStringStore;
+typedef rchandle<xqpStringStore> xqpStringStore_t;
 
 /*******************************************************************************
   Wraps an std::string and adds UTF-8 support and thread-safe reference counting

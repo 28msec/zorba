@@ -35,8 +35,6 @@ namespace zorba
 
   /* string */
   class XQPCollator;
-  class xqpStringStore;
-  typedef rchandle<xqpStringStore> xqpStringStore_t;
 };
 #endif
 
