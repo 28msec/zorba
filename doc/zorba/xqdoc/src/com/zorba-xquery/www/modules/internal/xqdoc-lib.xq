@@ -532,10 +532,18 @@ declare sequential function doc2html:createModuleHelper($table, $category, $modu
       return
         if(fn:starts-with(fn:string($module/@uri),data($category/@uri))
            and fn:not(fn:contains (fn:substring-after(data($module/@uri),fn:concat(data($category/@uri),'/')),'/'))) then
-          if(fn:string($module/@uri) = $moduleUri) then
-            <li><span class="leftmenu_active">{fn:substring-after(data($module/@uri),fn:concat(data($category/@uri),'/'))}</span></li>
-          else 
-            <li><a href="{$module/@file}">{fn:substring-after(data($module/@uri),fn:concat(data($category/@uri),'/'))}</a></li>
+        (
+          let $uri := if(fn:substring-after(data($module/@uri),fn:concat(data($category/@uri),'/')) = "") then
+                        fn:substring-before($module/@file,".html")
+                      else
+                        fn:substring-after(data($module/@uri),fn:concat(data($category/@uri),'/'))
+          
+          return
+            if(fn:string($module/@uri) = $moduleUri) then
+              <li><span class="leftmenu_active">{$uri}</span></li>
+            else 
+              <li><a href="{$module/@file}">{$uri}</a></li>
+        )
         else ()
     }    
     </ul></li>
@@ -635,6 +643,7 @@ declare sequential function doc2html:main(
     </category>
   </category>
   <category name="http://www.w3.org/2005" uri="http://www.w3.org/2005" />
+  <category name="www.functx.com" uri="http://www.functx.com" />
   </menu>
   let $menu :=
   <ul class="treeview" id="documentation">

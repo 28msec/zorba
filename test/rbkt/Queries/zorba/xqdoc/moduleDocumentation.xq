@@ -53,7 +53,7 @@ declare function local:test-module(
     else
       () ,
     (: Test for module author :)
-    if (not($hasAuthor)) then
+    if (not($hasAuthor) and not($xqdoc/xqdoc:module/xqdoc:uri eq "http://www.functx.com")) then
       concat("ERROR: Missing module author name
   Module: ", $xqdoc/xqdoc:module/xqdoc:uri)
     else
@@ -97,7 +97,7 @@ declare function local:test-function(
         else
             (),
         (: Test for documented return value :)
-        if (not($hasReturn) and not($module/xqdoc:uri eq "http://www.w3.org/2005/xpath-functions")) then
+        if (not($hasReturn) and not($module/xqdoc:uri eq "http://www.w3.org/2005/xpath-functions") and not($module/xqdoc:uri eq "http://www.functx.com")) then
             concat("ERROR: Return value not documented;
     Module: ", $module/xqdoc:uri, "
     Function: ", $function/xqdoc:name, "
