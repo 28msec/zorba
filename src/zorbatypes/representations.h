@@ -21,6 +21,7 @@
 #include "zorbatypes/decimal.h"
 #include "zorbatypes/floatimpl.h"
 #include "zorbatypes/integer.h"
+#include "zorbatypes/zstring.h"
 
 namespace zorba {
 
@@ -32,7 +33,7 @@ namespace zorba {
   //
   // Mapping of basic schema types to C++ language types.
   //
-  typedef xqpString     xqp_anyURI;
+  typedef zstring       xqp_anyURI;
   typedef Base64        xqp_base64Binary;
   typedef bool          xqp_boolean;
   typedef char          xqp_byte;
@@ -42,8 +43,8 @@ namespace zorba {
   typedef Decimal       xqp_decimal;
   typedef Double        xqp_double;
   typedef Duration      xqp_duration;
-  typedef xqpString     xqp_ENTITIES;
-  typedef xqpString     xqp_ENTITY;
+  typedef zstring       xqp_ENTITIES;
+  typedef zstring       xqp_ENTITY;
   typedef Float         xqp_float;
   typedef DateTime      xqp_gDay;
   typedef DateTime      xqp_gMonth;
@@ -51,24 +52,24 @@ namespace zorba {
   typedef DateTime      xqp_gYear;
   typedef DateTime      xqp_gYearMonth;
   typedef Base16        xqp_hexBinary;
-  typedef xqpString     xqp_ID;
-  typedef xqpString     xqp_IDREF;
-  typedef xqpString     xqp_IDREFS;
+  typedef zstring       xqp_ID;
+  typedef zstring       xqp_IDREF;
+  typedef zstring       xqp_IDREFS;
   typedef int32_t       xqp_int;
   typedef Integer       xqp_integer;
-  typedef xqpString     xqp_language;
+  typedef zstring       xqp_language;
   typedef int64_t       xqp_long;
-  typedef xqpString     xqp_Name;
-  typedef xqpString     xqp_NCName;
-  typedef xqpString     xqp_NMTOKEN;
-  typedef xqpString     xqp_NMTOKENS;
-  typedef xqpString     xqp_normalizedString;
-  typedef xqpString     xqp_NOTATION;
-  typedef xqpString     xqp_QName;
+  typedef zstring       xqp_Name;
+  typedef zstring       xqp_NCName;
+  typedef zstring       xqp_NMTOKEN;
+  typedef zstring       xqp_NMTOKENS;
+  typedef zstring       xqp_normalizedString;
+  typedef zstring       xqp_NOTATION;
+  typedef zstring       xqp_QName;
   typedef int16_t       xqp_short;
-  typedef xqpString     xqp_string;
+  typedef xqpString     xqp_string;     // TODO: s/xqpString/zstring/
   typedef DateTime      xqp_time;
-  typedef xqpString     xqp_token;
+  typedef zstring       xqp_token;
   typedef unsigned char xqp_ubyte;
   typedef uint32_t      xqp_uint;
   typedef Integer       xqp_uinteger;
