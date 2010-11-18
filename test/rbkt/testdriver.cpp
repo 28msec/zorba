@@ -295,13 +295,8 @@ main(int argc, char** argv)
 
     lQuery = engine->createQuery(&errHandler);
     lQuery->setFileName(lQueryFile.get_path());
-#if 1
+
     lQuery->compile(lQueryString.c_str(), lContext, getCompilerHints());
-#else
-    Zorba_CompilerHints lHints;
-    lHints.opt_level = ZORBA_OPT_LEVEL_O0;
-    lQuery->compile (lQueryString.c_str(), lContext, lHints);
-#endif
 
     errors = -1;
     if ( errHandler.errors() )
