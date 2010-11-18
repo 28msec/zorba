@@ -859,20 +859,20 @@ void populate_context_booleans_impl(static_context* sctx)
 
   // Boolean
   DECL(sctx, fn_true,
-       (createQName(XQUERY_FN_NS, "fn", "true"),
+       (createQName(XQUERY_FN_NS, "", "true"),
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
   DECL(sctx, fn_false,
-       (createQName(XQUERY_FN_NS, "fn", "false"),
+       (createQName(XQUERY_FN_NS, "", "false"),
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
   DECL(sctx, fn_boolean,
-       (createQName(XQUERY_FN_NS, "fn", "boolean"),
+       (createQName(XQUERY_FN_NS, "", "boolean"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
   
   DECL(sctx, fn_not,
-       (createQName(XQUERY_FN_NS, "fn", "not"),
+       (createQName(XQUERY_FN_NS, "", "not"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 

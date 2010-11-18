@@ -814,12 +814,12 @@ void populate_context_sequences_impl(static_context* sctx)
   const char* zorba_op_ns = static_context::ZORBA_OP_NS.c_str();
 
   DECL(sctx, fn_unordered,
-       (createQName(XQUERY_FN_NS, "fn", "unordered"),
+       (createQName(XQUERY_FN_NS, "", "unordered"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
   DECL(sctx, fn_exactly_one,
-       (createQName(XQUERY_FN_NS, "fn", "exactly-one"),
+       (createQName(XQUERY_FN_NS, "", "exactly-one"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
         GENV_TYPESYSTEM.ITEM_TYPE_ONE));
 
@@ -847,23 +847,23 @@ void populate_context_sequences_impl(static_context* sctx)
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
   DECL(sctx, fn_max,
-       (createQName(XQUERY_FN_NS,"fn","max"),
+       (createQName(XQUERY_FN_NS,"","max"),
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
   
   DECL(sctx, fn_max,
-       (createQName(XQUERY_FN_NS,"fn","max"),
+       (createQName(XQUERY_FN_NS,"","max"),
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
         GENV_TYPESYSTEM.STRING_TYPE_ONE,
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
   DECL(sctx, fn_min,
-       (createQName(XQUERY_FN_NS,"fn","min"),
+       (createQName(XQUERY_FN_NS,"","min"),
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
   DECL(sctx, fn_min,
-       (createQName(XQUERY_FN_NS,"fn","min"),
+       (createQName(XQUERY_FN_NS,"","min"),
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
