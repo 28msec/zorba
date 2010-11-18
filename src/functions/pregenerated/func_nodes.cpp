@@ -83,31 +83,31 @@ PlanIter_t fn_lang::codegen(
 void populate_context_nodes(static_context* sctx)
 {
   DECL(sctx, fn_zorba_ref_node_reference,
-      (createQName("http://www.zorba-xquery.com/modules/node-reference","fn-zorba-ref","node-reference"),
+      (createQName("http://www.zorba-xquery.com/modules/node-reference","","node-reference"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
       GENV_TYPESYSTEM.ANY_URI_TYPE_ONE));
 
 
   DECL(sctx, fn_zorba_ref_node_by_reference,
-      (createQName("http://www.zorba-xquery.com/modules/node-reference","fn-zorba-ref","node-by-reference"),
+      (createQName("http://www.zorba-xquery.com/modules/node-reference","","node-by-reference"),
       GENV_TYPESYSTEM.ANY_URI_TYPE_ONE,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE));
 
 
   DECL(sctx, fn_local_name,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","local-name"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","local-name"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 
   DECL(sctx, fn_namespace_uri,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","namespace-uri"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","namespace-uri"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION));
 
 
   DECL(sctx, fn_lang,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","lang"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","lang"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));

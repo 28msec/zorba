@@ -93,51 +93,51 @@ PlanIter_t fn_format_number::codegen(
 void populate_context_numerics(static_context* sctx)
 {
   DECL(sctx, fn_abs,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","abs"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","abs"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
 
   DECL(sctx, fn_ceiling,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","ceiling"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","ceiling"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
 
   DECL(sctx, fn_floor,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","floor"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","floor"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
 
   DECL(sctx, fn_round,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","round"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","round"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
 
   DECL(sctx, fn_round_half_to_even,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","round-half-to-even"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","round-half-to-even"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
 
   DECL(sctx, fn_round_half_to_even,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","round-half-to-even"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","round-half-to-even"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
 
   DECL(sctx, fn_format_number,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","format-number"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","format-number"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 
   DECL(sctx, fn_format_number,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","format-number"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","format-number"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,

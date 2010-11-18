@@ -63,19 +63,19 @@ PlanIter_t fn_zorba_xqddf_check_integrity_constraint::codegen(
 void populate_context_ic_ddl(static_context* sctx)
 {
   DECL(sctx, fn_zorba_xqddf_activate_integrity_constraint,
-      (createQName("http://www.zorba-xquery.com/modules/xqddf","fn-zorba-xqddf","activate-integrity-constraint"),
+      (createQName("http://www.zorba-xquery.com/modules/xqddf","","activate-integrity-constraint"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       GENV_TYPESYSTEM.EMPTY_TYPE));
 
 
   DECL(sctx, fn_zorba_xqddf_deactivate_integrity_constraint,
-      (createQName("http://www.zorba-xquery.com/modules/xqddf","fn-zorba-xqddf","deactivate-integrity-constraint"),
+      (createQName("http://www.zorba-xquery.com/modules/xqddf","","deactivate-integrity-constraint"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       GENV_TYPESYSTEM.EMPTY_TYPE));
 
 
   DECL(sctx, fn_zorba_xqddf_check_integrity_constraint,
-      (createQName("http://www.zorba-xquery.com/modules/xqddf","fn-zorba-xqddf","check-integrity-constraint"),
+      (createQName("http://www.zorba-xquery.com/modules/xqddf","","check-integrity-constraint"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 

@@ -93,35 +93,35 @@ PlanIter_t fn_zorba_introspect_dctx_activated_integrity_constraints::codegen(
 void populate_context_dctx(static_context* sctx)
 {
   DECL(sctx, fn_zorba_introspect_dctx_is_available_collection,
-      (createQName("http://www.zorba-xquery.com/modules/introspection/dctx","fn-zorba-introspect-dctx","is-available-collection"),
+      (createQName("http://www.zorba-xquery.com/modules/introspection/dctx","","is-available-collection"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 
   DECL(sctx, fn_zorba_introspect_dctx_available_collections,
-      (createQName("http://www.zorba-xquery.com/modules/introspection/dctx","fn-zorba-introspect-dctx","available-collections"),
+      (createQName("http://www.zorba-xquery.com/modules/introspection/dctx","","available-collections"),
       GENV_TYPESYSTEM.QNAME_TYPE_STAR));
 
 
   DECL(sctx, fn_zorba_introspect_dctx_is_available_index,
-      (createQName("http://www.zorba-xquery.com/modules/introspection/dctx","fn-zorba-introspect-dctx","is-available-index"),
+      (createQName("http://www.zorba-xquery.com/modules/introspection/dctx","","is-available-index"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 
   DECL(sctx, fn_zorba_introspect_dctx_available_indexes,
-      (createQName("http://www.zorba-xquery.com/modules/introspection/dctx","fn-zorba-introspect-dctx","available-indexes"),
+      (createQName("http://www.zorba-xquery.com/modules/introspection/dctx","","available-indexes"),
       GENV_TYPESYSTEM.QNAME_TYPE_STAR));
 
 
   DECL(sctx, fn_zorba_introspect_dctx_is_activated_integrity_constraint,
-      (createQName("http://www.zorba-xquery.com/modules/introspection/dctx","fn-zorba-introspect-dctx","is-activated-integrity-constraint"),
+      (createQName("http://www.zorba-xquery.com/modules/introspection/dctx","","is-activated-integrity-constraint"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 
   DECL(sctx, fn_zorba_introspect_dctx_activated_integrity_constraints,
-      (createQName("http://www.zorba-xquery.com/modules/introspection/dctx","fn-zorba-introspect-dctx","activated-integrity-constraints"),
+      (createQName("http://www.zorba-xquery.com/modules/introspection/dctx","","activated-integrity-constraints"),
       GENV_TYPESYSTEM.QNAME_TYPE_STAR));
 
 }

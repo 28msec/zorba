@@ -43,25 +43,25 @@ PlanIter_t fn_error::codegen(
 void populate_context_fnerror(static_context* sctx)
 {
   DECL(sctx, fn_error,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","error"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","error"),
       GENV_TYPESYSTEM.NONE_TYPE));
 
 
   DECL(sctx, fn_error,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","error"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","error"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       GENV_TYPESYSTEM.NONE_TYPE));
 
 
   DECL(sctx, fn_error,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","error"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","error"),
       GENV_TYPESYSTEM.QNAME_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.NONE_TYPE));
 
 
   DECL(sctx, fn_error,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","error"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","error"),
       GENV_TYPESYSTEM.QNAME_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,

@@ -273,26 +273,26 @@ PlanIter_t fn_tokenize::codegen(
 void populate_context_strings(static_context* sctx)
 {
   DECL(sctx, fn_codepoints_to_string,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","codepoints-to-string"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","codepoints-to-string"),
       GENV_TYPESYSTEM.INTEGER_TYPE_STAR,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 
   DECL(sctx, fn_string_to_codepoints,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","string-to-codepoints"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","string-to-codepoints"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_STAR));
 
 
   DECL(sctx, fn_compare,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","compare"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","compare"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
 
 
   DECL(sctx, fn_compare,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","compare"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","compare"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
@@ -300,35 +300,35 @@ void populate_context_strings(static_context* sctx)
 
 
   DECL(sctx, fn_codepoint_equal,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","codepoint-equal"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","codepoint-equal"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION));
 
 
   DECL(sctx, fn_concat,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","concat"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","concat"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       true,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 
   DECL(sctx, fn_string_join,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","string-join"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","string-join"),
       GENV_TYPESYSTEM.STRING_TYPE_STAR,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 
   DECL(sctx, fn_substring,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","substring"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","substring"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 
   DECL(sctx, fn_substring,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","substring"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","substring"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
       GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
@@ -336,44 +336,44 @@ void populate_context_strings(static_context* sctx)
 
 
   DECL(sctx, fn_string_length,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","string-length"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","string-length"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_ONE));
 
 
   DECL(sctx, fn_normalize_space,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","normalize-space"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","normalize-space"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 
   DECL(sctx, fn_normalize_unicode,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","normalize-unicode"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","normalize-unicode"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 
   DECL(sctx, fn_normalize_unicode,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","normalize-unicode"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","normalize-unicode"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 
   DECL(sctx, fn_upper_case,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","upper-case"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","upper-case"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 
   DECL(sctx, fn_lower_case,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","lower-case"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","lower-case"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 
   DECL(sctx, fn_translate,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","translate"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","translate"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
@@ -381,32 +381,32 @@ void populate_context_strings(static_context* sctx)
 
 
   DECL(sctx, fn_encode_for_uri,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","encode-for-uri"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","encode-for-uri"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 
   DECL(sctx, fn_iri_to_uri,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","iri-to-uri"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","iri-to-uri"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 
   DECL(sctx, fn_escape_html_uri,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","escape-html-uri"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","escape-html-uri"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 
   DECL(sctx, fn_contains,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","contains"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","contains"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 
   DECL(sctx, fn_contains,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","contains"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","contains"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
@@ -414,14 +414,14 @@ void populate_context_strings(static_context* sctx)
 
 
   DECL(sctx, fn_starts_with,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","starts-with"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","starts-with"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 
   DECL(sctx, fn_starts_with,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","starts-with"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","starts-with"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
@@ -429,14 +429,14 @@ void populate_context_strings(static_context* sctx)
 
 
   DECL(sctx, fn_ends_with,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","ends-with"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","ends-with"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 
   DECL(sctx, fn_ends_with,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","ends-with"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","ends-with"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
@@ -444,14 +444,14 @@ void populate_context_strings(static_context* sctx)
 
 
   DECL(sctx, fn_substring_before,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","substring-before"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","substring-before"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 
   DECL(sctx, fn_substring_before,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","substring-before"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","substring-before"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
@@ -459,14 +459,14 @@ void populate_context_strings(static_context* sctx)
 
 
   DECL(sctx, fn_substring_after,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","substring-after"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","substring-after"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 
   DECL(sctx, fn_substring_after,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","substring-after"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","substring-after"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
@@ -474,14 +474,14 @@ void populate_context_strings(static_context* sctx)
 
 
   DECL(sctx, fn_matches,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","matches"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","matches"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 
   DECL(sctx, fn_matches,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","matches"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","matches"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
@@ -489,7 +489,7 @@ void populate_context_strings(static_context* sctx)
 
 
   DECL(sctx, fn_replace,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","replace"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","replace"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
@@ -497,7 +497,7 @@ void populate_context_strings(static_context* sctx)
 
 
   DECL(sctx, fn_replace,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","replace"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","replace"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
@@ -506,14 +506,14 @@ void populate_context_strings(static_context* sctx)
 
 
   DECL(sctx, fn_tokenize,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","tokenize"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","tokenize"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_STAR));
 
 
   DECL(sctx, fn_tokenize,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","tokenize"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","tokenize"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,

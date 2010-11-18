@@ -233,7 +233,7 @@ declare function local:create-context($iter, $function, $mapping) as xs:string?
                                $gen:newline, gen:indent(3),
                                '(createQName("',
                                local:get-zorba-ns($sig/@prefix, $mapping), 
-                               '","', $sig/@prefix, '","', $sig/@localname, '")',
+                               '","","', $sig/@localname, '")',
                                for $param in $sig/zorba:param
                                return local:create-zorba-type($param, $mapping),
                                local:create-zorba-type($sig/zorba:output, $mapping),

@@ -94,43 +94,43 @@ PlanIter_t fn_root::codegen(
 void populate_context_accessors(static_context* sctx)
 {
   DECL(sctx, fn_node_name,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","node-name"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","node-name"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.QNAME_TYPE_QUESTION));
 
 
   DECL(sctx, fn_nilled,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","nilled"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","nilled"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION));
 
 
   DECL(sctx, fn_string,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","string"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","string"),
       GENV_TYPESYSTEM.ITEM_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 
   DECL(sctx, fn_data,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","data"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","data"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR));
 
 
   DECL(sctx, fn_base_uri,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","base-uri"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","base-uri"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION));
 
 
   DECL(sctx, fn_document_uri,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","document-uri"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","document-uri"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION));
 
 
   DECL(sctx, fn_root,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","root"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","root"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION));
 

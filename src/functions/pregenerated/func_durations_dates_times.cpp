@@ -253,133 +253,133 @@ PlanIter_t fn_zorba_util_timestamp::codegen(
 void populate_context_durations_dates_times(static_context* sctx)
 {
   DECL(sctx, fn_years_from_duration,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","years-from-duration"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","years-from-duration"),
       GENV_TYPESYSTEM.DURATION_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
 
 
   DECL(sctx, fn_months_from_duration,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","months-from-duration"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","months-from-duration"),
       GENV_TYPESYSTEM.DURATION_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
 
 
   DECL(sctx, fn_days_from_duration,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","days-from-duration"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","days-from-duration"),
       GENV_TYPESYSTEM.DURATION_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
 
 
   DECL(sctx, fn_hours_from_duration,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","hours-from-duration"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","hours-from-duration"),
       GENV_TYPESYSTEM.DURATION_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
 
 
   DECL(sctx, fn_minutes_from_duration,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","minutes-from-duration"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","minutes-from-duration"),
       GENV_TYPESYSTEM.DURATION_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
 
 
   DECL(sctx, fn_seconds_from_duration,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","seconds-from-duration"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","seconds-from-duration"),
       GENV_TYPESYSTEM.DURATION_TYPE_QUESTION,
       GENV_TYPESYSTEM.DECIMAL_TYPE_QUESTION));
 
 
   DECL(sctx, fn_year_from_dateTime,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","year-from-dateTime"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","year-from-dateTime"),
       GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
 
 
   DECL(sctx, fn_month_from_dateTime,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","month-from-dateTime"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","month-from-dateTime"),
       GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
 
 
   DECL(sctx, fn_day_from_dateTime,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","day-from-dateTime"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","day-from-dateTime"),
       GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
 
 
   DECL(sctx, fn_hours_from_dateTime,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","hours-from-dateTime"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","hours-from-dateTime"),
       GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
 
 
   DECL(sctx, fn_minutes_from_dateTime,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","minutes-from-dateTime"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","minutes-from-dateTime"),
       GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
 
 
   DECL(sctx, fn_seconds_from_dateTime,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","seconds-from-dateTime"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","seconds-from-dateTime"),
       GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.DECIMAL_TYPE_QUESTION));
 
 
   DECL(sctx, fn_timezone_from_dateTime,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","timezone-from-dateTime"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","timezone-from-dateTime"),
       GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.DT_DURATION_TYPE_QUESTION));
 
 
   DECL(sctx, fn_year_from_date,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","year-from-date"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","year-from-date"),
       GENV_TYPESYSTEM.DATE_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
 
 
   DECL(sctx, fn_month_from_date,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","month-from-date"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","month-from-date"),
       GENV_TYPESYSTEM.DATE_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
 
 
   DECL(sctx, fn_day_from_date,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","day-from-date"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","day-from-date"),
       GENV_TYPESYSTEM.DATE_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
 
 
   DECL(sctx, fn_timezone_from_date,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","timezone-from-date"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","timezone-from-date"),
       GENV_TYPESYSTEM.DATE_TYPE_QUESTION,
       GENV_TYPESYSTEM.DT_DURATION_TYPE_QUESTION));
 
 
   DECL(sctx, fn_hours_from_time,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","hours-from-time"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","hours-from-time"),
       GENV_TYPESYSTEM.TIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
 
 
   DECL(sctx, fn_minutes_from_time,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","minutes-from-time"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","minutes-from-time"),
       GENV_TYPESYSTEM.TIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
 
 
   DECL(sctx, fn_seconds_from_time,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","seconds-from-time"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","seconds-from-time"),
       GENV_TYPESYSTEM.TIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.DECIMAL_TYPE_QUESTION));
 
 
   DECL(sctx, fn_timezone_from_time,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","timezone-from-time"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","timezone-from-time"),
       GENV_TYPESYSTEM.TIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.DT_DURATION_TYPE_QUESTION));
 
 
   DECL(sctx, fn_zorba_util_timestamp,
-      (createQName("http://www.zorba-xquery.com/zorba/util-functions","fn-zorba-util","timestamp"),
+      (createQName("http://www.zorba-xquery.com/zorba/util-functions","","timestamp"),
       GENV_TYPESYSTEM.LONG_TYPE_ONE));
 
 }

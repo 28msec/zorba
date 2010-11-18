@@ -53,13 +53,13 @@ PlanIter_t fn_zorba_base64_encode::codegen(
 void populate_context_base64(static_context* sctx)
 {
   DECL(sctx, fn_zorba_base64_decode,
-      (createQName("http://www.zorba-xquery.com/modules/base64","fn-zorba-base64","decode"),
+      (createQName("http://www.zorba-xquery.com/modules/base64","","decode"),
       GENV_TYPESYSTEM.BASE64BINARY_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 
   DECL(sctx, fn_zorba_base64_encode,
-      (createQName("http://www.zorba-xquery.com/modules/base64","fn-zorba-base64","encode"),
+      (createQName("http://www.zorba-xquery.com/modules/base64","","encode"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.BASE64BINARY_TYPE_ONE));
 

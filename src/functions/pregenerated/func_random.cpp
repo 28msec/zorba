@@ -73,39 +73,39 @@ PlanIter_t fn_zorba_util_uuid::codegen(
 void populate_context_random(static_context* sctx)
 {
   DECL(sctx, op_zorba_numgen,
-      (createQName("http://www.zorba-xquery.com/internal/zorba-ops","op-zorba","numgen"),
+      (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","numgen"),
       GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
 
 
   DECL(sctx, fn_zorba_util_random,
-      (createQName("http://www.zorba-xquery.com/zorba/util-functions","fn-zorba-util","random"),
+      (createQName("http://www.zorba-xquery.com/zorba/util-functions","","random"),
       GENV_TYPESYSTEM.INTEGER_TYPE_ONE));
 
 
   DECL(sctx, fn_zorba_util_random,
-      (createQName("http://www.zorba-xquery.com/zorba/util-functions","fn-zorba-util","random"),
+      (createQName("http://www.zorba-xquery.com/zorba/util-functions","","random"),
       GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
       GENV_TYPESYSTEM.INTEGER_TYPE_ONE));
 
 
   DECL(sctx, fn_zorba_random_random,
-      (createQName("http://www.zorba-xquery.com/modules/random","fn-zorba-random","random"),
+      (createQName("http://www.zorba-xquery.com/modules/random","","random"),
       GENV_TYPESYSTEM.INTEGER_TYPE_ONE));
 
 
   DECL(sctx, fn_zorba_random_random,
-      (createQName("http://www.zorba-xquery.com/modules/random","fn-zorba-random","random"),
+      (createQName("http://www.zorba-xquery.com/modules/random","","random"),
       GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
       GENV_TYPESYSTEM.INTEGER_TYPE_ONE));
 
 
   DECL(sctx, fn_zorba_util_uuid,
-      (createQName("http://www.zorba-xquery.com/zorba/util-functions","fn-zorba-util","uuid"),
+      (createQName("http://www.zorba-xquery.com/zorba/util-functions","","uuid"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 
   DECL(sctx, fn_zorba_util_uuid,
-      (createQName("http://www.zorba-xquery.com/modules/random","fn-zorba-random","uuid"),
+      (createQName("http://www.zorba-xquery.com/modules/random","","uuid"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 }

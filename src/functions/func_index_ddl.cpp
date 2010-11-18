@@ -153,7 +153,7 @@ void populate_context_index_ddl(static_context* sctx)
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
         true,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));
-  
+
   DECL(sctx, op_general_index_entry_builder,
        (createQName(zorba_op_ns, "", "general-index-entry-builder"),
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
@@ -168,29 +168,28 @@ void populate_context_index_ddl(static_context* sctx)
 
   DECL(sctx, fn_zorba_ddl_create_index,
        (createQName("http://www.zorba-xquery.com/modules/xqddf",
-                    "fn-zorba-xqddf",
+                    "",
                     "create-index"),
         GENV_TYPESYSTEM.QNAME_TYPE_ONE,
         GENV_TYPESYSTEM.EMPTY_TYPE));
-  
 
   DECL(sctx, fn_zorba_ddl_delete_index,
        (createQName("http://www.zorba-xquery.com/modules/xqddf",
-                    "fn-zorba-xqddf",
+                    "",
                     "delete-index"),
         GENV_TYPESYSTEM.QNAME_TYPE_ONE,
         GENV_TYPESYSTEM.EMPTY_TYPE));
 
   DECL(sctx, fn_zorba_ddl_refresh_index,
        (createQName("http://www.zorba-xquery.com/modules/xqddf",
-                    "fn-zorba-xqddf",
+                    "",
                     "refresh-index"),
         GENV_TYPESYSTEM.QNAME_TYPE_ONE,
         GENV_TYPESYSTEM.EMPTY_TYPE));
-  
+
   DECL(sctx, fn_zorba_ddl_probe_index_point_value,
        (createQName("http://www.zorba-xquery.com/modules/xqddf",
-                    "fn-zorba-xqddf",
+                    "",
                     "probe-index-point-value"),
         GENV_TYPESYSTEM.QNAME_TYPE_ONE,
         true,
@@ -198,7 +197,7 @@ void populate_context_index_ddl(static_context* sctx)
 
   DECL(sctx, fn_zorba_ddl_probe_index_point_general,
        (createQName("http://www.zorba-xquery.com/modules/xqddf",
-                    "fn-zorba-xqddf",
+                    "",
                     "probe-index-point-general"),
         GENV_TYPESYSTEM.QNAME_TYPE_ONE,
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
@@ -207,15 +206,15 @@ void populate_context_index_ddl(static_context* sctx)
 
   DECL(sctx, fn_zorba_ddl_probe_index_range_value,
        (createQName("http://www.zorba-xquery.com/modules/xqddf",
-                    "fn-zorba-xqddf",
+                    "",
                     "probe-index-range-value"),
         GENV_TYPESYSTEM.QNAME_TYPE_ONE,
         true,
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
-  
+
   DECL(sctx, fn_zorba_ddl_probe_index_range_general,
        (createQName("http://www.zorba-xquery.com/modules/xqddf",
-                    "fn-zorba-xqddf",
+                    "",
                     "probe-index-range-general"),
         GENV_TYPESYSTEM.QNAME_TYPE_ONE,
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,

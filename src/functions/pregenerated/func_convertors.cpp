@@ -155,31 +155,31 @@ PlanIter_t fn_zorba_csv_xml_to_txt_file::codegen(
 void populate_context_convertors(static_context* sctx)
 {
   DECL(sctx, fn_zorba_json_parse,
-      (createQName("http://www.zorba-xquery.com/modules/json","fn-zorba-json","parse"),
+      (createQName("http://www.zorba-xquery.com/modules/json","","parse"),
       GENV_TYPESYSTEM.STRING_TYPE_STAR,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
 
   DECL(sctx, fn_zorba_json_serialize,
-      (createQName("http://www.zorba-xquery.com/modules/json","fn-zorba-json","serialize"),
+      (createQName("http://www.zorba-xquery.com/modules/json","","serialize"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
       GENV_TYPESYSTEM.STRING_TYPE_STAR));
 
 
   DECL(sctx, fn_zorba_json_parse_ml,
-      (createQName("http://www.zorba-xquery.com/modules/json","fn-zorba-json","parse-ml"),
+      (createQName("http://www.zorba-xquery.com/modules/json","","parse-ml"),
       GENV_TYPESYSTEM.STRING_TYPE_STAR,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
 
   DECL(sctx, fn_zorba_json_serialize_ml,
-      (createQName("http://www.zorba-xquery.com/modules/json","fn-zorba-json","serialize-ml"),
+      (createQName("http://www.zorba-xquery.com/modules/json","","serialize-ml"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
       GENV_TYPESYSTEM.STRING_TYPE_STAR));
 
 
   DECL(sctx, fn_zorba_csv_csv_to_xml,
-      (createQName("http://www.zorba-xquery.com/modules/csv2xml","fn-zorba-csv","csv-to-xml"),
+      (createQName("http://www.zorba-xquery.com/modules/csv2xml","","csv-to-xml"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
@@ -191,7 +191,7 @@ void populate_context_convertors(static_context* sctx)
 
 
   DECL(sctx, fn_zorba_csv_txt_to_xml,
-      (createQName("http://www.zorba-xquery.com/modules/csv2xml","fn-zorba-csv","txt-to-xml"),
+      (createQName("http://www.zorba-xquery.com/modules/csv2xml","","txt-to-xml"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE,
       GENV_TYPESYSTEM.INTEGER_TYPE_PLUS,
@@ -201,7 +201,7 @@ void populate_context_convertors(static_context* sctx)
 
 
   DECL(sctx, fn_zorba_csv_csv_file_to_xml,
-      (createQName("http://www.zorba-xquery.com/modules/csv2xml","fn-zorba-csv","csv-file-to-xml"),
+      (createQName("http://www.zorba-xquery.com/modules/csv2xml","","csv-file-to-xml"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
@@ -213,7 +213,7 @@ void populate_context_convertors(static_context* sctx)
 
 
   DECL(sctx, fn_zorba_csv_txt_file_to_xml,
-      (createQName("http://www.zorba-xquery.com/modules/csv2xml","fn-zorba-csv","txt-file-to-xml"),
+      (createQName("http://www.zorba-xquery.com/modules/csv2xml","","txt-file-to-xml"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE,
       GENV_TYPESYSTEM.INTEGER_TYPE_PLUS,
@@ -223,7 +223,7 @@ void populate_context_convertors(static_context* sctx)
 
 
   DECL(sctx, fn_zorba_csv_xml_to_csv,
-      (createQName("http://www.zorba-xquery.com/modules/csv2xml","fn-zorba-csv","xml-to-csv"),
+      (createQName("http://www.zorba-xquery.com/modules/csv2xml","","xml-to-csv"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
       GENV_TYPESYSTEM.STRING_TYPE_STAR,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE,
@@ -234,7 +234,7 @@ void populate_context_convertors(static_context* sctx)
 
 
   DECL(sctx, fn_zorba_csv_xml_to_csv_file,
-      (createQName("http://www.zorba-xquery.com/modules/csv2xml","fn-zorba-csv","xml-to-csv-file"),
+      (createQName("http://www.zorba-xquery.com/modules/csv2xml","","xml-to-csv-file"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_STAR,
@@ -246,7 +246,7 @@ void populate_context_convertors(static_context* sctx)
 
 
   DECL(sctx, fn_zorba_csv_xml_to_txt,
-      (createQName("http://www.zorba-xquery.com/modules/csv2xml","fn-zorba-csv","xml-to-txt"),
+      (createQName("http://www.zorba-xquery.com/modules/csv2xml","","xml-to-txt"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
       GENV_TYPESYSTEM.STRING_TYPE_STAR,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE,
@@ -255,7 +255,7 @@ void populate_context_convertors(static_context* sctx)
 
 
   DECL(sctx, fn_zorba_csv_xml_to_txt_file,
-      (createQName("http://www.zorba-xquery.com/modules/csv2xml","fn-zorba-csv","xml-to-txt-file"),
+      (createQName("http://www.zorba-xquery.com/modules/csv2xml","","xml-to-txt-file"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_STAR,

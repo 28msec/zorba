@@ -54,19 +54,19 @@ PlanIter_t fn_zorba_util_print::codegen(
 void populate_context_debug(static_context* sctx)
 {
   DECL(sctx, fn_trace,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","trace"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","trace"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
 
   DECL(sctx, op_zorba_read_line,
-      (createQName("http://www.zorba-xquery.com/internal/zorba-ops","op-zorba","read-line"),
+      (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","read-line"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 
   DECL(sctx, fn_zorba_util_print,
-      (createQName("http://www.zorba-xquery.com/zorba/util-functions","fn-zorba-util","print"),
+      (createQName("http://www.zorba-xquery.com/zorba/util-functions","","print"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.EMPTY_TYPE));
 

@@ -113,53 +113,53 @@ PlanIter_t fn_in_scope_prefixes::codegen(
 void populate_context_qnames(static_context* sctx)
 {
   DECL(sctx, fn_resolve_QName,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","resolve-QName"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","resolve-QName"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.ELEMENT_TYPE_ONE,
       GENV_TYPESYSTEM.QNAME_TYPE_QUESTION));
 
 
   DECL(sctx, fn_QName,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","QName"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","QName"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.QNAME_TYPE_ONE));
 
 
   DECL(sctx, op_QName_equal,
-      (createQName("http://www.zorba-xquery.com/internal/xquery-ops","op","QName-equal"),
+      (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","QName-equal"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 
   DECL(sctx, fn_prefix_from_QName,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","prefix-from-QName"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","prefix-from-QName"),
       GENV_TYPESYSTEM.QNAME_TYPE_QUESTION,
       GENV_TYPESYSTEM.NCNAME_TYPE_QUESTION));
 
 
   DECL(sctx, fn_local_name_from_QName,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","local-name-from-QName"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","local-name-from-QName"),
       GENV_TYPESYSTEM.QNAME_TYPE_QUESTION,
       GENV_TYPESYSTEM.NCNAME_TYPE_QUESTION));
 
 
   DECL(sctx, fn_namespace_uri_from_QName,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","namespace-uri-from-QName"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","namespace-uri-from-QName"),
       GENV_TYPESYSTEM.QNAME_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION));
 
 
   DECL(sctx, fn_namespace_uri_for_prefix,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","namespace-uri-for-prefix"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","namespace-uri-for-prefix"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.ELEMENT_TYPE_ONE,
       GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION));
 
 
   DECL(sctx, fn_in_scope_prefixes,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","in-scope-prefixes"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","in-scope-prefixes"),
       GENV_TYPESYSTEM.ELEMENT_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_STAR));
 

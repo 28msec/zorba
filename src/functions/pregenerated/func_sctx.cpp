@@ -313,149 +313,149 @@ PlanIter_t fn_zorba_introspect_sctx_function_annotations::codegen(
 void populate_context_sctx(static_context* sctx)
 {
   DECL(sctx, fn_zorba_introspect_sctx_is_declared_collection,
-      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","is-declared-collection"),
+      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","","is-declared-collection"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 
   DECL(sctx, fn_zorba_introspect_sctx_declared_collections,
-      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","declared-collections"),
+      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","","declared-collections"),
       GENV_TYPESYSTEM.QNAME_TYPE_STAR));
 
 
   DECL(sctx, fn_zorba_introspect_sctx_is_declared_index,
-      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","is-declared-index"),
+      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","","is-declared-index"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 
   DECL(sctx, fn_zorba_introspect_sctx_declared_indexes,
-      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","declared-indexes"),
+      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","","declared-indexes"),
       GENV_TYPESYSTEM.QNAME_TYPE_STAR));
 
 
   DECL(sctx, fn_zorba_introspect_sctx_statically_known_namespaces,
-      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","statically-known-namespaces"),
+      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","","statically-known-namespaces"),
       GENV_TYPESYSTEM.STRING_TYPE_STAR));
 
 
   DECL(sctx, fn_zorba_introspect_sctx_statically_known_namespace_binding,
-      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","statically-known-namespace-binding"),
+      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","","statically-known-namespace-binding"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION));
 
 
   DECL(sctx, fn_zorba_introspect_sctx_in_scope_variables,
-      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","in-scope-variables"),
+      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","","in-scope-variables"),
       GENV_TYPESYSTEM.QNAME_TYPE_STAR));
 
 
   DECL(sctx, fn_zorba_introspect_sctx_default_collection_type,
-      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","default-collection-type"),
+      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","","default-collection-type"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 
   DECL(sctx, fn_zorba_introspect_sctx_xpath10_compatibility_mode,
-      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","xpath10-compatibility-mode"),
+      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","","xpath10-compatibility-mode"),
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 
   DECL(sctx, fn_zorba_introspect_sctx_statically_known_documents,
-      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","statically-known-documents"),
+      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","","statically-known-documents"),
       GENV_TYPESYSTEM.ANY_URI_TYPE_STAR));
 
 
   DECL(sctx, fn_zorba_introspect_sctx_statically_known_document_type,
-      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","statically-known-document-type"),
+      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","","statically-known-document-type"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.QNAME_TYPE_ONE));
 
 
   DECL(sctx, fn_zorba_introspect_sctx_statically_known_collations,
-      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","statically-known-collations"),
+      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","","statically-known-collations"),
       GENV_TYPESYSTEM.ANY_URI_TYPE_STAR));
 
 
   DECL(sctx, fn_zorba_introspect_sctx_construction_mode,
-      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","construction-mode"),
+      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","","construction-mode"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 
   DECL(sctx, fn_zorba_introspect_sctx_ordering_mode,
-      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","ordering-mode"),
+      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","","ordering-mode"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 
   DECL(sctx, fn_zorba_introspect_sctx_default_order,
-      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","default-order"),
+      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","","default-order"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 
   DECL(sctx, fn_zorba_introspect_sctx_boundary_space_policy,
-      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","boundary-space-policy"),
+      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","","boundary-space-policy"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 
   DECL(sctx, fn_zorba_introspect_sctx_copy_namespaces_mode,
-      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","copy-namespaces-mode"),
+      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","","copy-namespaces-mode"),
       GENV_TYPESYSTEM.STRING_TYPE_PLUS));
 
 
   DECL(sctx, fn_zorba_introspect_sctx_function_names,
-      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","function-names"),
+      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","","function-names"),
       GENV_TYPESYSTEM.QNAME_TYPE_STAR));
 
 
   DECL(sctx, fn_zorba_introspect_sctx_function_arguments_count,
-      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","function-arguments-count"),
+      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","","function-arguments-count"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       GENV_TYPESYSTEM.INT_TYPE_STAR));
 
 
   DECL(sctx, fn_zorba_introspect_sctx_in_scope_schema_types,
-      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","in-scope-schema-types"),
+      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","","in-scope-schema-types"),
       GENV_TYPESYSTEM.QNAME_TYPE_STAR));
 
 
   DECL(sctx, fn_zorba_introspect_sctx_in_scope_element_declarations,
-      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","in-scope-element-declarations"),
+      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","","in-scope-element-declarations"),
       GENV_TYPESYSTEM.QNAME_TYPE_STAR));
 
 
   DECL(sctx, fn_zorba_introspect_sctx_in_scope_attribute_declarations,
-      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","in-scope-attribute-declarations"),
+      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","","in-scope-attribute-declarations"),
       GENV_TYPESYSTEM.QNAME_TYPE_STAR));
 
 
   DECL(sctx, fn_zorba_introspect_sctx_in_scope_element_groups,
-      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","in-scope-element-groups"),
+      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","","in-scope-element-groups"),
       GENV_TYPESYSTEM.QNAME_TYPE_STAR));
 
 
   DECL(sctx, fn_zorba_introspect_sctx_in_scope_attribute_groups,
-      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","in-scope-attribute-groups"),
+      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","","in-scope-attribute-groups"),
       GENV_TYPESYSTEM.QNAME_TYPE_STAR));
 
 
   DECL(sctx, fn_zorba_introspect_sctx_is_declared_integrity_constraint,
-      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","is-declared-integrity-constraint"),
+      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","","is-declared-integrity-constraint"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 
   DECL(sctx, fn_zorba_introspect_sctx_declared_integrity_constraints,
-      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","declared-integrity-constraints"),
+      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","","declared-integrity-constraints"),
       GENV_TYPESYSTEM.QNAME_TYPE_STAR));
 
 
   DECL(sctx, fn_zorba_introspect_sctx_option,
-      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","option"),
+      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","","option"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION));
 
 
   DECL(sctx, fn_zorba_introspect_sctx_function_annotations,
-      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","function-annotations"),
+      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","","function-annotations"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
       GENV_TYPESYSTEM.QNAME_TYPE_STAR));

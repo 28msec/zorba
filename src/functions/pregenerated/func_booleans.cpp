@@ -63,21 +63,21 @@ PlanIter_t op_node_after::codegen(
 void populate_context_booleans(static_context* sctx)
 {
   DECL(sctx, op_is_same_node,
-      (createQName("http://www.zorba-xquery.com/internal/xquery-ops","op","is-same-node"),
+      (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","is-same-node"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION));
 
 
   DECL(sctx, op_node_before,
-      (createQName("http://www.zorba-xquery.com/internal/xquery-ops","op","node-before"),
+      (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","node-before"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION));
 
 
   DECL(sctx, op_node_after,
-      (createQName("http://www.zorba-xquery.com/internal/xquery-ops","op","node-after"),
+      (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","node-after"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION));

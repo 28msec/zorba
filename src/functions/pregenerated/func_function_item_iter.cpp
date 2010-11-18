@@ -53,13 +53,13 @@ PlanIter_t fn_function_arity::codegen(
 void populate_context_function_item_iter(static_context* sctx)
 {
   DECL(sctx, fn_function_name,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","function-name"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","function-name"),
       GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE,
       GENV_TYPESYSTEM.QNAME_TYPE_QUESTION));
 
 
   DECL(sctx, fn_function_arity,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","function-arity"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","function-arity"),
       GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE,
       GENV_TYPESYSTEM.INTEGER_TYPE_ONE));
 

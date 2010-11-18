@@ -83,27 +83,27 @@ PlanIter_t fn_default_collation::codegen(
 void populate_context_context(static_context* sctx)
 {
   DECL(sctx, fn_current_dateTime,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","current-dateTime"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","current-dateTime"),
       GENV_TYPESYSTEM.DATETIME_TYPE_ONE));
 
 
   DECL(sctx, fn_current_date,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","current-date"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","current-date"),
       GENV_TYPESYSTEM.DATE_TYPE_ONE));
 
 
   DECL(sctx, fn_current_time,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","current-time"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","current-time"),
       GENV_TYPESYSTEM.TIME_TYPE_ONE));
 
 
   DECL(sctx, fn_implicit_timezone,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","implicit-timezone"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","implicit-timezone"),
       GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE));
 
 
   DECL(sctx, fn_default_collation,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","default-collation"),
+      (createQName("http://www.w3.org/2005/xpath-functions","","default-collation"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 }
