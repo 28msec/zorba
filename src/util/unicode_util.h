@@ -271,14 +271,20 @@ public:
   bool compile( string const &pattern, char const *flags = "" );
 
   bool compile( char const *pattern, char const *flags = "" ) {
-    string temp;
-    return to_string( pattern, &temp ) && compile( temp, flags );
+    string u_pattern;
+    return to_string( pattern, &u_pattern ) && compile( u_pattern, flags );
   }
 
   template<class StringType>
   bool compile( StringType const &pattern, char const *flags = "" ) {
-    string temp;
-    return to_string( pattern, &temp ) && compile( temp, flags );
+    string u_pattern;
+    return to_string( pattern, &u_pattern ) && compile( u_pattern, flags );
+  }
+
+  template<class PatternStringType,class FlagsStringType>
+  bool compile( PatternStringType const &pattern,
+                FlagsStringType const &flags ) {
+    return compile( pattern, flags.c_str() );
   }
 
   ////////// partial match ////////////////////////////////////////////////////
@@ -286,19 +292,19 @@ public:
   bool match_part( string const &s );
 
   bool match_part( char const *s ) {
-    string temp;
-    return to_string( s, &temp ) && match_part( temp );
+    string u_s;
+    return to_string( s, &u_s ) && match_part( u_s );
   }
 
   bool match_part( char const *s, size_type s_len ) {
-    string temp;
-    return to_string( s, s_len, &temp ) && match_part( temp );
+    string u_s;
+    return to_string( s, s_len, &u_s ) && match_part( u_s );
   }
 
   template<class StringType>
   bool match_part( StringType const &s ) {
-    string temp;
-    return to_string( s, &temp ) && match_part( temp );
+    string u_s;
+    return to_string( s, &u_s ) && match_part( u_s );
   }
 
   ////////// partial match with substrings/tokenization ///////////////////////
@@ -332,8 +338,8 @@ public:
    * @return Returns \c true only if there is a match.
    */
   bool next_match( char const *s, size_type *pos, string *match ) {
-    string temp;
-    return to_string( s, &temp ) && next_match( temp, pos, match );
+    string u_s;
+    return to_string( s, &u_s ) && next_match( u_s, pos, match );
   }
 
   /**
@@ -351,8 +357,8 @@ public:
    */
   bool next_match( char const *s, size_type s_len, size_type *pos,
                    string *match ) {
-    string temp;
-    return to_string( s, s_len, &temp ) && next_match( temp, pos, match );
+    string u_s;
+    return to_string( s, s_len, &u_s ) && next_match( u_s, pos, match );
   }
 
   /**
@@ -370,8 +376,8 @@ public:
    */
   template<class StringType>
   bool next_match( StringType const &s, size_type *pos, string *match ) {
-    string temp;
-    return to_string( s, &temp ) && next_match( temp, pos, match );
+    string u_s;
+    return to_string( s, &u_s ) && next_match( u_s, pos, match );
   }
 
   /**
@@ -403,8 +409,8 @@ public:
    * @return Returns \c true only if there is a token.
    */
   bool next_token( char const *s, size_type *pos, string *token ) {
-    string temp;
-    return to_string( s, &temp ) && next_token( temp, pos, token );
+    string u_s;
+    return to_string( s, &u_s ) && next_token( u_s, pos, token );
   }
 
   /**
@@ -422,8 +428,8 @@ public:
    */
   bool next_token( char const *s, size_type s_len, size_type *pos,
                    string *token ) {
-    string temp;
-    return to_string( s, s_len, &temp ) && next_token( temp, pos, token );
+    string u_s;
+    return to_string( s, s_len, &u_s ) && next_token( u_s, pos, token );
   }
 
   /**
@@ -441,8 +447,8 @@ public:
    */
   template<class StringType>
   bool next_token( StringType const &s, size_type *pos, string *token ) {
-    string temp;
-    return to_string( s, &temp ) && next_token( temp, pos, token );
+    string u_s;
+    return to_string( s, &u_s ) && next_token( u_s, pos, token );
   }
 
   ////////// whole match //////////////////////////////////////////////////////
@@ -450,19 +456,19 @@ public:
   bool match_whole( string const &s );
 
   bool match_whole( char const *s ) {
-    string temp;
-    return to_string( s, &temp ) && match_whole( temp );
+    string u_s;
+    return to_string( s, &u_s ) && match_whole( u_s );
   }
 
   bool match_whole( char const *s, size_type s_len ) {
-    string temp;
-    return to_string( s, s_len, &temp ) && match_whole( temp );
+    string u_s;
+    return to_string( s, s_len, &u_s ) && match_whole( u_s );
   }
 
   template<class StringType>
   bool match_whole( StringType const &s ) {
-    string temp;
-    return to_string( s, &temp ) && match_whole( temp );
+    string u_s;
+    return to_string( s, &u_s ) && match_whole( u_s );
   }
 
   ////////// replacement //////////////////////////////////////////////////////

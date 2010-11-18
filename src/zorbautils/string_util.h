@@ -87,6 +87,16 @@ bool match_part( InputStringType const &in, PatternStringType const &pattern,
   return match_part( in.c_str(), pattern.c_str(), flags );
 }
 
+template<
+  class InputStringType,
+  class PatternStringType,
+  class FlagsStringType
+> inline
+bool match_part( InputStringType const &in, PatternStringType const &pattern,
+                 FlagsStringType const &flags ) {
+  return match_part( in.c_str(), pattern.c_str(), flags.c_str() );
+}
+
 bool match_whole( char const *in, char const *pattern, char const *flags );
 
 template<class InputStringType> inline
@@ -101,6 +111,15 @@ bool match_whole( InputStringType const &in, PatternStringType const &pattern,
   return match_whole( in.c_str(), pattern.c_str(), flags );
 }
 
+template<
+  class InputStringType,
+  class PatternStringType,
+  class FlagsStringType
+> inline
+bool match_whole( InputStringType const &in, PatternStringType const &pattern,
+                  FlagsStringType const &flags ) {
+  return match_whole( in.c_str(), pattern.c_str(), flags.c_str() );
+}
 ////////// regular expression replacement /////////////////////////////////////
 
 namespace utf8 {

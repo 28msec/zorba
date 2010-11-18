@@ -568,6 +568,11 @@ public:
   const char*
   c_str() const;
 
+  const char* data() const
+  {
+    return c_str();
+  }
+
   operator std::string() const
   {
     return theStrStore->theString;
