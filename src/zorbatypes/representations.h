@@ -13,69 +13,69 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #ifndef ZORBA_REPRESENTATIONS_H
 #define ZORBA_REPRESENTATIONS_H
 
-//#include "zorbatypes/xqpstring.h"
-#include "zorbatypes/integer.h"
+#include "zorbatypes/binary.h"
 #include "zorbatypes/decimal.h"
 #include "zorbatypes/floatimpl.h"
-#include "zorbatypes/binary.h"
+#include "zorbatypes/integer.h"
 
-namespace zorba
-{
+namespace zorba {
+
   class DurationBase;
   typedef rchandle<DurationBase> DurationBase_t;
 
-  class xqpString;
+  class xqpString;                      // TODO: delete this line
 
-  /*______________________________________________________________________
-  |
-  | The mapping of basic schema types to C++ language types.
-  |_______________________________________________________________________*/
-  typedef xqpString           xqp_QName;
-  typedef xqpString           xqp_NOTATION;
-  typedef xqpString           xqp_anyURI;
-  typedef xqpString           xqp_string;
-  typedef xqpString           xqp_normalizedString;
-  typedef xqpString           xqp_token;
-  typedef xqpString           xqp_language;
-  typedef xqpString           xqp_Name;
-  typedef xqpString           xqp_NCName;
-  typedef xqpString           xqp_ID;
-  typedef xqpString           xqp_IDREF;
-  typedef xqpString           xqp_IDREFS;
-  typedef xqpString           xqp_ENTITY;
-  typedef xqpString           xqp_ENTITIES;
-  typedef xqpString           xqp_NMTOKEN;
-  typedef xqpString           xqp_NMTOKENS;
-  typedef Integer             xqp_integer;
-  typedef Integer             xqp_uinteger;
-  typedef int32_t             xqp_int;
-  typedef uint32_t            xqp_uint;
-  typedef int64_t             xqp_long;
-  typedef uint64_t            xqp_ulong;
-  typedef int16_t             xqp_short;
-  typedef uint16_t            xqp_ushort;
-  typedef char                xqp_byte;
-  typedef unsigned char       xqp_ubyte;
-  typedef Decimal             xqp_decimal;
-  typedef Float               xqp_float;
-  typedef Double              xqp_double;
-  typedef bool                xqp_boolean;
-  typedef DateTime            xqp_dateTime;
-  typedef DateTime            xqp_date;
-  typedef DateTime            xqp_time;
-  typedef DateTime            xqp_gYearMonth;
-  typedef DateTime            xqp_gYear;
-  typedef DateTime            xqp_gMonthDay;
-  typedef DateTime            xqp_gDay;
-  typedef DateTime            xqp_gMonth;
-  typedef Duration            xqp_duration;
-  typedef Duration            xqp_dayTimeDuration;
-  typedef Duration            xqp_yearMonthDuration;
-  typedef Base64              xqp_base64Binary;
-  typedef Base16              xqp_hexBinary;
+  //
+  // Mapping of basic schema types to C++ language types.
+  //
+  typedef xqpString     xqp_anyURI;
+  typedef Base64        xqp_base64Binary;
+  typedef bool          xqp_boolean;
+  typedef char          xqp_byte;
+  typedef DateTime      xqp_date;
+  typedef DateTime      xqp_dateTime;
+  typedef Duration      xqp_dayTimeDuration;
+  typedef Decimal       xqp_decimal;
+  typedef Double        xqp_double;
+  typedef Duration      xqp_duration;
+  typedef xqpString     xqp_ENTITIES;
+  typedef xqpString     xqp_ENTITY;
+  typedef Float         xqp_float;
+  typedef DateTime      xqp_gDay;
+  typedef DateTime      xqp_gMonth;
+  typedef DateTime      xqp_gMonthDay;
+  typedef DateTime      xqp_gYear;
+  typedef DateTime      xqp_gYearMonth;
+  typedef Base16        xqp_hexBinary;
+  typedef xqpString     xqp_ID;
+  typedef xqpString     xqp_IDREF;
+  typedef xqpString     xqp_IDREFS;
+  typedef int32_t       xqp_int;
+  typedef Integer       xqp_integer;
+  typedef xqpString     xqp_language;
+  typedef int64_t       xqp_long;
+  typedef xqpString     xqp_Name;
+  typedef xqpString     xqp_NCName;
+  typedef xqpString     xqp_NMTOKEN;
+  typedef xqpString     xqp_NMTOKENS;
+  typedef xqpString     xqp_normalizedString;
+  typedef xqpString     xqp_NOTATION;
+  typedef xqpString     xqp_QName;
+  typedef int16_t       xqp_short;
+  typedef xqpString     xqp_string;
+  typedef DateTime      xqp_time;
+  typedef xqpString     xqp_token;
+  typedef unsigned char xqp_ubyte;
+  typedef uint32_t      xqp_uint;
+  typedef Integer       xqp_uinteger;
+  typedef uint64_t      xqp_ulong;
+  typedef uint16_t      xqp_ushort;
+  typedef Duration      xqp_yearMonthDuration;
 
-} /* namespace zorba */
+} // namespace zorba
 #endif /* ZORBA_REPRESENTATIONS_H */
+/* vim:set et sw=2 ts=2: */
