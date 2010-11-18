@@ -17,7 +17,6 @@
 #include <zorba/unit_tests.h>
 
 #include "zorbatypes/URI.h"
-#include "zorbatypes/xqpstring.h"
 
 #include "zorbaerrors/errors.h"
 
@@ -721,12 +720,6 @@ int UnitTester::runUriTest()
     std::cerr << e.theDescription << std::endl;
     return 11;
   }
-
-  xqpString lToEncode("/a /b/c");
-  xqpString lEncoded = lToEncode.encodeForUri("/",1);
-  std::cout << "encoded " << lEncoded << std::endl;
-
-  std::cout << "decoded " << lEncoded.decodeFromUri() << std::endl;
 
   return 0;
 }
