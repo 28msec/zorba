@@ -308,11 +308,11 @@ bool fileEquals(
       else
       {
         //properly find the column
-        for(aCol=1, aPos=0;aPos<lLine.length() && aPos<rLine.length();aCol++, aPos++)
+        for(aCol=1, aPos=0;aPos<(int)lLine.length() && aPos<(int)rLine.length();aCol++, aPos++)
         {
           if(lLine.c_str()[aPos] != rLine.c_str()[aPos])
             break;
-          if(lLine.c_str()[aPos] == '\t' && (aCol+1)%2 == 0)
+          if(lLine.c_str()[aPos] == '\t' && aCol%2)
             aCol++;
         }
         aRefLine = lLine;
