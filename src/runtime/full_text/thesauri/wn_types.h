@@ -17,8 +17,12 @@
 #ifndef ZORBA_FULL_TEXT_WORDNET_TYPES_H
 #define ZORBA_FULL_TEXT_WORDNET_TYPES_H
 
+#include <zorba/config.h>
+#ifndef WIN32
 #include <stdint.h>
-
+#else
+#include "zorbamisc/config/stdint.h"
+#endif
 #include "iso2788.h"
 
 namespace zorba {

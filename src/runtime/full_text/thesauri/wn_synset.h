@@ -17,7 +17,6 @@
 #ifndef ZORBA_FULL_TEXT_WORDNET_SYNSET_H
 #define ZORBA_FULL_TEXT_WORDNET_SYNSET_H
 
-#include <stdint.h>
 #include <vector>
 
 #include "wn_types.h"
