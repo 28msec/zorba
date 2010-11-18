@@ -23,7 +23,7 @@
 #include "store/api/store.h"
 
 #include "util/string_util.h"
-#include "zorbatypes/xqpstring.h"
+#include "zorbautils/string_util.h"
 
 using namespace std;
 
@@ -155,10 +155,12 @@ bool FnLangIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         {
           attrName = attr->getNodeName();
 
-          searchParent = !(equals(attrName->getLocalName(), "lang", 4) &&
-                           equals(attrName->getNamespace(), XML_NS, strlen(XML_NS)));
-          found = (!searchParent &&
-                   xqp_string(attr->getStringValue().str()).matches(xqp_string("^" + reqLang.str() + "(-|$)"), "i"));
+          searchParent = !(ZSTREQ(attrName->getLocalName(), "lang") &&
+                           ZSTREQ(attrName->getNamespace(), XML_NS));
+          found = !searchParent &&
+            match_whole(
+              attr->getStringValue().str(), reqLang.str() + "(?:-.+)?", "i"
+            );
         }
         theAttributes->close();
       }
@@ -170,4 +172,5 @@ bool FnLangIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END (state);
 }
 
-} /* namespace zorba */
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */
