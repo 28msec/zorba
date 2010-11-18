@@ -155,6 +155,15 @@ public:
 
   virtual ZorbaException::StackTrace_t
   getStackTrace() const;
+
+  static void
+  recordStackTrace(
+    const QueryLoc& aLoc,
+    const QueryLoc& aFuncCallLoc,
+    const store::Item_t& aFunctionName,
+    unsigned int aFunctionArity,
+    error::ZorbaError* aError);
+
 };
 
 

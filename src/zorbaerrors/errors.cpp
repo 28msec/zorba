@@ -328,6 +328,37 @@ QueryException::StackTrace_t ZorbaError::getStackTrace() const
   return lResult;
 }
 
+// check if a function call is withing the scope of a function declaration
+// if so, record the function call location in the stack trace
+// this function is called from the UDFunctionCallIterator and FunctionTraceIterator
+void
+ZorbaError::recordStackTrace(
+  const QueryLoc& aLoc,
+  const QueryLoc& aFuncCallLoc,
+  const store::Item_t& aFunctionName,
+  unsigned int aFunctionArity,
+  error::ZorbaError* aError)
+{
+  if (aError->theStackTrace.empty() && aError->hasQueryLocation())
+  {
+    if (aError->theQueryFileName != aLoc.getFilename().c_str())
+      return;
+    if (aError->theQueryLine < aLoc.getLineBegin())
+      return;
+    if (aError->theQueryLine > aLoc.getLineEnd())
+      return;
+    if (aError->theQueryLine == aLoc.getLineBegin()) {
+      if (aError->theQueryColumn < aLoc.getColumnBegin())
+        return;
+      if (aError->theQueryColumn > aLoc.getColumnEnd())
+        return;
+    }
+  }
+  aError->theStackTrace.push_back(error::ZorbaError::StackEntry_t(
+      aFuncCallLoc,
+      std::pair<store::Item_t, unsigned int>(aFunctionName, aFunctionArity)));
+  return;
+}
 
 ZorbaWarning::ZorbaWarning(
     WarningCode        aWarningCode,

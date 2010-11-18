@@ -305,28 +305,28 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
 
     STACK_END(state);
   }
+  catch (error::ZorbaUserError& uerr)
+  {
+     // bugfix: for #3107911
+     // it's important to not loose the information about the fact
+     // that it's a user error here; otherwise, later catch clauses will
+     // not be able to handle user errors anymore (e.g. try-catch expressions)
+    error::ZorbaError::recordStackTrace(
+        theUDF->get_location(),
+        loc,
+        theUDF->getName(),
+        theUDF->getArgVars().size(),
+        &uerr);
+    throw uerr;
+  }
   catch (error::ZorbaError& err)
   {
-    const QueryLoc& lLoc = theUDF->get_location();
-    if (err.theStackTrace.empty() && err.hasQueryLocation())
-    {
-      if (err.theQueryFileName != lLoc.getFilename().c_str())
-        throw err;
-      if (err.theQueryLine < lLoc.getLineBegin())
-        throw err;
-      if (err.theQueryLine > lLoc.getLineEnd())
-        throw err;
-      if (err.theQueryLine == lLoc.getLineBegin()) {
-        if (err.theQueryColumn < lLoc.getColumnBegin())
-          throw err;
-        if (err.theQueryColumn > lLoc.getColumnEnd())
-          throw err;
-      }
-    }
-    err.theStackTrace.push_back(error::ZorbaError::StackEntry_t(
+    error::ZorbaError::recordStackTrace(
+        theUDF->get_location(),
         loc,
-        std::pair<store::Item_t, unsigned int>(theUDF->getName(), theUDF->getArgVars().size()))
-    );
+        theUDF->getName(),
+        theUDF->getArgVars().size(),
+        &err);
     throw err;
   }
 }

@@ -85,7 +85,6 @@ public:
   void setFunctionCallLocation(const QueryLoc& aFunctionLocation);
   void setFunctionLocation(const QueryLoc& aFunctionLocation);
   void setFunctionArity(unsigned int arity);
-  void record_stack_trace(const QueryLoc& aLoc, const QueryLoc& aFuncCallLoc, const store::Item_t& aFunctionName, unsigned int aFunctionArity, error::ZorbaError* aError) const;
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;

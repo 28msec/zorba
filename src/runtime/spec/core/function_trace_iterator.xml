@@ -45,13 +45,5 @@
      <zorba:param type="unsigned int" name="arity" />
    </zorba:method>
 
-   <zorba:method return="void" name="record_stack_trace" const="true">
-     <zorba:param type="const QueryLoc&amp;" name="aLoc" />
-     <zorba:param type="const QueryLoc&amp;" name="aFuncCallLoc" />
-     <zorba:param type="const store::Item_t&amp;" name="aFunctionName" />
-     <zorba:param type="unsigned int" name="aFunctionArity" />
-     <zorba:param type="error::ZorbaError*" name="aError" />
-   </zorba:method>
-
   </zorba:iterator>
 </zorba:iterators>
