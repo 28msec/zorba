@@ -18,6 +18,7 @@
 
 #include <zorba/config.h>
 #include <exception>
+#include <string>
 
 namespace zorba
 {
@@ -78,25 +79,37 @@ public:
 };
 
 
-class  zorbatypesException : public std::exception
-{
-  const char*                 additionalInfo;
-  ZorbatypesError::ErrorCode  code;
+class zorbatypesException : public std::exception {
+public:
 
- public:
-  zorbatypesException(
-        const char* errMsg,
-        ZorbatypesError::ErrorCode errCode)
-    :
-    additionalInfo(errMsg), code(errCode)
-    {
-    }
+  zorbatypesException( char const *msg, ZorbatypesError::ErrorCode code ) :
+    msg_( msg ), code_( code )
+  {
+  }
 
-  virtual const char* what() const throw() { return additionalInfo; }
+  template<class StringType>
+  zorbatypesException( StringType const &msg,
+                       ZorbatypesError::ErrorCode code ) :
+    msg_( msg.c_str() ), code_( code )
+  {
+  }
 
-  ZorbatypesError::ErrorCode ErrorCode() const throw() { return code; }
+  ~zorbatypesException() throw() {
+  }
+
+  char const* what() const throw() {
+    return msg_.c_str();
+  }
+
+  ZorbatypesError::ErrorCode ErrorCode() const throw() {
+    return code_;
+  }
+
+private:
+  std::string const msg_;
+  ZorbatypesError::ErrorCode const code_;
 };
 
-
-}/*namespace zorba*/
+} // namespace zorba
 #endif
+/* vim:set et sw=2 ts=2: */
