@@ -24,7 +24,6 @@
 #include "util/tracer.h"
 
 #include "types/casting.h"
-#include "types/typeconstants.h"
 #include "types/typeops.h"
 
 #include "context/static_context.h"

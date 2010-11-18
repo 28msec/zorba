@@ -17,7 +17,7 @@
 
 #include "system/globalenv.h"
 
-#include "functions/arithmetic.h"
+#include "functions/func_arithmetic.h"
 #include "functions/function_impl.h"
 
 #include "runtime/core/arithmetic_impl.h"

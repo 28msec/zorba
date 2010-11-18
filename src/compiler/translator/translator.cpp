@@ -74,7 +74,7 @@
 #include "functions/library.h"
 #include "functions/signature.h"
 #include "functions/udf.h"
-#include "functions/external_function_adapters.h"
+#include "functions/external_function.h"
 
 #include "store/api/item.h"
 #include "store/api/update_consts.h"

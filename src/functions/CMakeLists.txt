@@ -61,29 +61,29 @@ ENDFOREACH(SPEC_FILE)
 LIST(APPEND FUNCTIONS_SRCS
     # provides the functions return_type,
     # computeAnnotation, and specialize
-    accessors_impl.cpp
-    booleans_impl.cpp
-    debug_impl.cpp
-    durations_dates_times_impl.cpp
-    sequences_impl.cpp
-    fnerror_impl.cpp
-    tidy.cpp
-    arithmetic.cpp
-    EnclosedExpr.cpp
-    external_function_adapters.cpp
-    VarDecl.cpp
     function.cpp
     udf.cpp
+    external_function.cpp
     library.cpp
-    Numerics.cpp
     signature.cpp
     annotation.cpp
-    InternalOperators.cpp
-    nodeid_internal.cpp
+    func_accessors_impl.cpp
+    func_arithmetic.cpp
+    func_booleans_impl.cpp
+    func_debug_impl.cpp
+    func_durations_dates_times_impl.cpp
+    func_enclosed.cpp
+    func_fnerror_impl.cpp
+    func_hoist.cpp
+    func_index_ddl.cpp
+    func_node_sort_distinct.cpp
     func_numerics_impl.cpp
-    func_index_ddl.cpp)
+    func_sequences_impl.cpp
+    func_tidy.cpp
+    func_var_decl.cpp
+)
 
 IF (ZORBA_WITH_FOP)
-  SET(FUNCTIONS_SRCS ${FUNCTIONS_SRCS} Fop.cpp)
+  SET(FUNCTIONS_SRCS ${FUNCTIONS_SRCS} func_fop.cpp)
 ENDIF (ZORBA_WITH_FOP)
 

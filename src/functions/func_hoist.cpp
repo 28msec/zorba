@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "functions/InternalOperators.h"
+#include "functions/func_hoist.h"
 #include "functions/function_impl.h"
+
+#include "compiler/expression/expr_base.h"
 
 #include "runtime/core/internal_operators.h"
 
@@ -49,6 +51,17 @@ public:
     return producer == 0;
   }
 
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const
+  {
+    return fo->getIgnoresDuplicateNodes();
+  }
+
+
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const
+  {
+    return fo->getIgnoresDuplicateNodes();
+  }
+
   DEFAULT_NARY_CODEGEN(HoistIterator);
 };
 
@@ -78,6 +91,17 @@ public:
   bool propagatesDistinctNodes(ulong producer) const
   {
     return producer == 0;
+  }
+
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const
+  {
+    return fo->getIgnoresDuplicateNodes();
+  }
+
+
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const
+  {
+    return fo->getIgnoresDuplicateNodes();
   }
 
   DEFAULT_NARY_CODEGEN(UnhoistIterator);

@@ -22,6 +22,8 @@
 #include "runtime/base/binarybase.h" // TODO remove after iterator refactoring
 #include "runtime/base/narybase.h"
 
+#include "types/typeconstants.h"
+
 namespace zorba
 {
 

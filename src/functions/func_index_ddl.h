@@ -157,7 +157,13 @@ public:
 
 
 /*******************************************************************************
-  fn-zorba-ddl:probe-index-point-value($indexName as xs:QName, ....)
+  fn-zorba-ddl:probe-index-point-value($indexName as xs:QName, 
+                                       $key1 as xs:anyAtomicItem,
+                                       ....
+                                       $keyN as xs:anyAtomicItem) as node()*
+
+  Note: the translator wraps calls to this function with an OP_NODE_SORT_ASC
+  function.
 ********************************************************************************/
 class fn_zorba_ddl_probe_index_point_value : public function
 {

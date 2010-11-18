@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 #include "functions/function_impl.h"
-#include "functions/tidy.h"
+#include "functions/func_tidy.h"
 
 #include "runtime/util/UtilImpl.h"
 

@@ -44,7 +44,7 @@ void populateContext_DocOrder(static_context* sctx);
   set, then the result of E may consist of nodes only or atomic values only, 
   and if it consists of atomic values only, then actions 1, 2, 3 become no-ops.  
 ********************************************************************************/
-class op_node_sort_distinct : public function 
+class op_node_sort_distinct_base : public function 
 {
 public:
   typedef enum 
@@ -57,7 +57,7 @@ public:
   Actions;
 
 public:
-  op_node_sort_distinct(
+  op_node_sort_distinct_base(
         const signature& sig,
         FunctionConsts::FunctionKind kind)
     :

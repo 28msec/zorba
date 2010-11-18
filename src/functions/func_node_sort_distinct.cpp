@@ -18,7 +18,7 @@
 
 #include "compiler/expression/expr_base.h"
 
-#include "functions/nodeid_internal.h"
+#include "functions/func_node_sort_distinct.h"
 #include "functions/function_impl.h"
 
 #include "types/typeops.h"
@@ -41,7 +41,7 @@ namespace zorba
 
   The "self" param is the fo expr F, and the "child" param is the E expr.
 ********************************************************************************/
-function* op_node_sort_distinct::optimize(const expr* self, expr* child) const
+function* op_node_sort_distinct_base::optimize(const expr* self, expr* child) const
 {
   TypeManager* tm = self->get_sctx()->get_typemanager();
 
@@ -150,7 +150,7 @@ function* op_node_sort_distinct::optimize(const expr* self, expr* child) const
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue op_node_sort_distinct::ignoresSortedNodes(
+BoolAnnotationValue op_node_sort_distinct_base::ignoresSortedNodes(
     expr* fo,
     ulong input) const 
 {
@@ -172,7 +172,7 @@ BoolAnnotationValue op_node_sort_distinct::ignoresSortedNodes(
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue op_node_sort_distinct::ignoresDuplicateNodes(
+BoolAnnotationValue op_node_sort_distinct_base::ignoresDuplicateNodes(
     expr* fo, 
     ulong input) const 
 {
@@ -194,7 +194,7 @@ BoolAnnotationValue op_node_sort_distinct::ignoresDuplicateNodes(
 /*******************************************************************************
 
 ********************************************************************************/
-PlanIter_t op_node_sort_distinct::codegen(
+PlanIter_t op_node_sort_distinct_base::codegen(
     CompilerCB* /*cb*/,
     static_context* sctx,
     const QueryLoc& loc,
@@ -238,12 +238,12 @@ PlanIter_t op_node_sort_distinct::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
-class op_either_nodes_or_atomics : public op_node_sort_distinct
+class op_either_nodes_or_atomics : public op_node_sort_distinct_base
 {
 public:
   op_either_nodes_or_atomics(const signature& sig)
     :
-    op_node_sort_distinct(sig, FunctionConsts::OP_EITHER_NODES_OR_ATOMICS_1)
+    op_node_sort_distinct_base(sig, FunctionConsts::OP_EITHER_NODES_OR_ATOMICS_1)
   {
   }
 
@@ -269,12 +269,12 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class op_distinct_nodes : public op_node_sort_distinct
+class op_distinct_nodes : public op_node_sort_distinct_base
 {
 public:
   op_distinct_nodes(const signature& sig)
     :
-    op_node_sort_distinct(sig, FunctionConsts::OP_DISTINCT_NODES_1)
+    op_node_sort_distinct_base(sig, FunctionConsts::OP_DISTINCT_NODES_1)
   {
   }
 
@@ -301,12 +301,12 @@ public:
   Check that the argument expr does not produce duplicate nodes. Used to wrap
   the domain expr of a general index.
 ********************************************************************************/
-class op_check_distinct_nodes : public op_node_sort_distinct
+class op_check_distinct_nodes : public op_node_sort_distinct_base
 {
 public:
   op_check_distinct_nodes(const signature& sig)
     :
-    op_node_sort_distinct(sig, FunctionConsts::OP_CHECK_DISTINCT_NODES_1)
+    op_node_sort_distinct_base(sig, FunctionConsts::OP_CHECK_DISTINCT_NODES_1)
   {
   }
 
@@ -334,12 +334,12 @@ public:
   (but no mixture of atomic and node items). In this case, the result is equal
   to the input
 ********************************************************************************/
-class op_distinct_nodes_or_atomics : public op_node_sort_distinct 
+class op_distinct_nodes_or_atomics : public op_node_sort_distinct_base
 {
 public:
   op_distinct_nodes_or_atomics(const signature& sig)
     :
-    op_node_sort_distinct(sig, FunctionConsts::OP_DISTINCT_NODES_OR_ATOMICS_1)
+    op_node_sort_distinct_base(sig, FunctionConsts::OP_DISTINCT_NODES_OR_ATOMICS_1)
   {
   }
 
@@ -365,12 +365,12 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class op_sort_nodes_ascending : public op_node_sort_distinct
+class op_sort_nodes_ascending : public op_node_sort_distinct_base
 {
 public:
   op_sort_nodes_ascending(const signature& sig)
     :
-    op_node_sort_distinct(sig, FunctionConsts::OP_SORT_NODES_ASC_1)
+    op_node_sort_distinct_base(sig, FunctionConsts::OP_SORT_NODES_ASC_1)
   {
   }
 
@@ -398,12 +398,12 @@ public:
   (but no mixture of atomic and node items). In this case, the result is
   equal to the input
 ********************************************************************************/
-class op_sort_nodes_asc_or_atomics : public op_node_sort_distinct 
+class op_sort_nodes_asc_or_atomics : public op_node_sort_distinct_base 
 {
 public:
   op_sort_nodes_asc_or_atomics(const signature& sig)
     :
-    op_node_sort_distinct(sig, FunctionConsts::OP_SORT_NODES_ASC_OR_ATOMICS_1)
+    op_node_sort_distinct_base(sig, FunctionConsts::OP_SORT_NODES_ASC_OR_ATOMICS_1)
   {
   }
 
@@ -429,12 +429,12 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class op_sort_nodes_descending : public op_node_sort_distinct
+class op_sort_nodes_descending : public op_node_sort_distinct_base
 {
 public:
   op_sort_nodes_descending(const signature& sig)
     :
-    op_node_sort_distinct(sig, FunctionConsts::OP_SORT_NODES_DESC_1)
+    op_node_sort_distinct_base(sig, FunctionConsts::OP_SORT_NODES_DESC_1)
   {
   }
   
@@ -462,12 +462,12 @@ public:
   input (but no mixture of atomic and node items). In this case, the result is
   equal to the input
 ********************************************************************************/
-class op_sort_nodes_desc_or_atomics : public op_node_sort_distinct
+class op_sort_nodes_desc_or_atomics : public op_node_sort_distinct_base
 {
 public:
   op_sort_nodes_desc_or_atomics(const signature& sig)
     :
-    op_node_sort_distinct(sig, FunctionConsts::OP_SORT_NODES_DESC_OR_ATOMICS_1)
+    op_node_sort_distinct_base(sig, FunctionConsts::OP_SORT_NODES_DESC_OR_ATOMICS_1)
   {
   }
   
@@ -493,16 +493,17 @@ public:
 /*******************************************************************************
   sort nodes in document order and doing distinct-nodes in one run
 ********************************************************************************/
-class op_sort_distinct_nodes_ascending : public op_node_sort_distinct
+class op_sort_distinct_nodes_ascending : public op_node_sort_distinct_base
 {
 public:
   op_sort_distinct_nodes_ascending(const signature& sig)
     :
-    op_node_sort_distinct(sig, FunctionConsts::OP_SORT_DISTINCT_NODES_ASC_1)
+    op_node_sort_distinct_base(sig, FunctionConsts::OP_SORT_DISTINCT_NODES_ASC_1)
   {
   }
 
   virtual bool is_node_sort_func() const { return true; }
+
   virtual bool is_node_distinct_func() const { return true; }
   
   const bool* action() const 
@@ -529,12 +530,13 @@ public:
   items as input (but no mixture of atomic and node items). In this case, the
   result is equal to the input
 ********************************************************************************/
-class op_sort_distinct_nodes_asc_or_atomics : public op_node_sort_distinct
+class op_sort_distinct_nodes_asc_or_atomics : public op_node_sort_distinct_base
 {
 public:
   op_sort_distinct_nodes_asc_or_atomics(const signature& sig) 
     :
-    op_node_sort_distinct(sig, FunctionConsts::OP_SORT_DISTINCT_NODES_ASC_OR_ATOMICS_1)
+    op_node_sort_distinct_base(sig,
+                               FunctionConsts::OP_SORT_DISTINCT_NODES_ASC_OR_ATOMICS_1)
   {
   }
 
@@ -561,12 +563,12 @@ public:
   internal function for sort-nodes in reverse document order and doing 
   distinct-nodes in one run
 ********************************************************************************/ 
-class op_sort_distinct_nodes_descending : public op_node_sort_distinct
+class op_sort_distinct_nodes_descending : public op_node_sort_distinct_base
 {
 public:
   op_sort_distinct_nodes_descending(const signature& sig)
     :
-    op_node_sort_distinct(sig, FunctionConsts::OP_SORT_DISTINCT_NODES_DESC_1)
+    op_node_sort_distinct_base(sig, FunctionConsts::OP_SORT_DISTINCT_NODES_DESC_1)
   {
   }
 
@@ -593,12 +595,13 @@ public:
   internal function for sort-nodes in reverse document order and doing 
   distinct-nodes in one run
 ********************************************************************************/ 
-class op_sort_distinct_nodes_descending_or_atomics : public op_node_sort_distinct
+class op_sort_distinct_nodes_descending_or_atomics : public op_node_sort_distinct_base
 {
 public:
   op_sort_distinct_nodes_descending_or_atomics(const signature& sig)
     :
-    op_node_sort_distinct(sig, FunctionConsts::OP_SORT_DISTINCT_NODES_DESC_OR_ATOMICS_1)
+    op_node_sort_distinct_base(sig,
+                               FunctionConsts::OP_SORT_DISTINCT_NODES_DESC_OR_ATOMICS_1)
   {
   }
 
@@ -657,7 +660,7 @@ void populateContext_DocOrder(static_context* sctx)
        (createQName(zorba_op_ns,"","sort-nodes-asc-or-atomics"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));
-
+#if 0
   DECL(sctx, op_sort_nodes_descending,
        (createQName(zorba_op_ns,"","sort-nodes-desc"),
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
@@ -667,7 +670,7 @@ void populateContext_DocOrder(static_context* sctx)
        (createQName(zorba_op_ns,"","sort-nodes-desc-or-atomics"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));
-
+#endif
   DECL(sctx, op_sort_distinct_nodes_ascending,
        (createQName(zorba_op_ns,"","sort-distinct-nodes-asc"),
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
@@ -677,7 +680,7 @@ void populateContext_DocOrder(static_context* sctx)
        (createQName(zorba_op_ns, "", "sort-distinct-nodes-asc-or-atomics"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));
-
+#if 0
   DECL(sctx, op_sort_distinct_nodes_descending,
        (createQName(zorba_op_ns, "", "sort-distinct-nodes-desc"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
@@ -687,6 +690,7 @@ void populateContext_DocOrder(static_context* sctx)
        (createQName(zorba_op_ns, "", "sort-distinct-nodes-desc-or-atomics"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+#endif
 }
 
 

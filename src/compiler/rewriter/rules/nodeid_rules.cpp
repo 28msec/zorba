@@ -24,7 +24,7 @@
 
 #include "types/typeops.h"
 
-#include "functions/nodeid_internal.h"
+#include "functions/func_node_sort_distinct.h"
 
 #include "zorbaerrors/Assert.h"
 
@@ -434,7 +434,8 @@ RULE_REWRITE_PRE(EliminateNodeOps)
     if (f->getKind() == FunctionConsts::FN_UNORDERED_1)
       return fo->get_arg(0);
 
-    const op_node_sort_distinct* nsdf = dynamic_cast<const op_node_sort_distinct*>(f);
+    const op_node_sort_distinct_base* nsdf;
+    nsdf = dynamic_cast<const op_node_sort_distinct_base*>(f);
 
     if (nsdf != NULL) 
     {

@@ -18,15 +18,15 @@
 
 #include "runtime/accessors/accessors.h"
 
-#include "functions/accessors_impl.h"
-#include "functions/function_impl.h"
+#include "compiler/expression/expr_base.h"
+
+#include "functions/func_accessors_impl.h"
 #include "functions/func_accessors.h"
+#include "functions/function_impl.h"
 
 #include "types/typeops.h"
 
 #include "system/globalenv.h"
-
-#include "compiler/expression/expr_base.h"
 
 
 namespace zorba 

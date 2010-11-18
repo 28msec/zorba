@@ -29,7 +29,6 @@
 
 #include "store/api/store.h"
 
-#include "store/util/hashmap_stringp.h"
 #include "store/util/hashmap_stringbuf.h"
 
 #include "zorbautils/mutex.h"

@@ -16,7 +16,7 @@
 
 #include "system/globalenv.h"
 
-#include "functions/VarDecl.h"
+#include "functions/func_var_decl.h"
 #include "functions/function_impl.h"
 
 #include "compiler/api/compilercb.h"

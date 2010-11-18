@@ -17,7 +17,7 @@
 
 #include "compiler/expression/expr_base.h"
 
-#include "functions/booleans_impl.h"
+#include "functions/func_booleans_impl.h"
 #include "functions/function_impl.h"
 #include "functions/library.h"
 
@@ -812,17 +812,18 @@ void populateContext_Comparison(static_context* sctx)
 
 #define DECL_TYPED_VAL( sctx, op, name, type, xqt )                     \
   DECL(sctx, op_value_##op##_##type,                                    \
-       (createQName (zorba_ns, "", "value-" name "-" #type), \
+       (createQName (zorba_ns, "", "value-" name "-" #type),            \
         GENV_TYPESYSTEM.xqt##_TYPE_QUESTION,                            \
         GENV_TYPESYSTEM.xqt##_TYPE_QUESTION,                            \
         GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION))
 
 #define DECL_ALL_VAL( sctx, op, name )                                  \
   DECL(sctx, op_value_##op,                                             \
-       (createQName (zorba_ns, "", "value-" name),   \
+       (createQName (zorba_ns, "", "value-" name),                      \
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,                       \
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,                       \
         GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION));                        \
+                                                                        \
   DECL_TYPED_VAL( sctx, op, name, double, DOUBLE );                     \
   DECL_TYPED_VAL( sctx, op, name, float, FLOAT );                       \
   DECL_TYPED_VAL( sctx, op, name, decimal, DECIMAL );                   \

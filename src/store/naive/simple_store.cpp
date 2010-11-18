@@ -25,8 +25,6 @@
 #include "zorbaerrors/error_manager.h"
 #include "zorbaerrors/Assert.h"
 
-#include "store/util/hashmap_stringp.h"
-
 #include "store/api/pul.h"
 
 #include "store/naive/properties.h"

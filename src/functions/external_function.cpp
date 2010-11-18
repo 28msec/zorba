@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "functions/external_function_adapters.h"
+#include "functions/external_function.h"
 
 #include "runtime/core/fncall_iterator.h"
 #include "api/unmarshaller.h"

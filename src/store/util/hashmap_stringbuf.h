@@ -28,8 +28,9 @@ namespace zorba { namespace store {
 
 /*******************************************************************************
 
-  A hash-based map container, mapping xqpStringStore pointers to values of type
-  V. String equality is based on string value, using byte-by-byte comparison.
+  A hash-based map container, mapping string pointers (wrapped by zstring_b) to
+  values of type V. String equality is based on string value, using byte-by-byte
+  comparison.
 
   It is used to map document/collection/index uris to document nodes/collection
   objs/index objs.
