@@ -7139,7 +7139,9 @@ expr_t create_cast_expr(const QueryLoc& loc, expr_t node, xqtref_t type, bool is
       {
         if (isCast)
         {
-          throw e;
+          // bugfix: report error location for invalid casts,
+          // e.g. xs:QName("foo:bar") where foo is not defined
+          ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
         }
         else
         {
