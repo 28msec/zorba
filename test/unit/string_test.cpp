@@ -421,6 +421,19 @@ static void test_reverse( char const *s ) {
 }
 
 template<class StringType>
+static void test_append_codepoints( char const *s ) {
+  StringType const s1( s );
+
+  typedef vector<unicode::char_type> vector_type;
+  vector_type code_points;
+  utf8::to_codepoints( s1, &code_points );
+
+  StringType s2;
+  utf8::append_codepoints( code_points.begin(), code_points.end(), &s2 );
+  ASSERT_TRUE( s1 == s2 );
+}
+
+template<class StringType>
 static void test_to_codepoints( char const *s ) {
   StringType const s1( s );
 
@@ -563,6 +576,11 @@ int string_test( int, char*[] ) {
   test_to_codepoints<string>( utf8_aeiou_acute );
   test_to_codepoints<zstring>( "hello" );
   test_to_codepoints<zstring>( utf8_aeiou_acute );
+
+  test_append_codepoints<string>( "hello" );
+  test_append_codepoints<string>( utf8_aeiou_acute );
+  test_append_codepoints<zstring>( "hello" );
+  test_append_codepoints<zstring>( utf8_aeiou_acute );
 
   test_to_string<string>();
   test_to_string<zstring>();

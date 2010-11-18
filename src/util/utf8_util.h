@@ -437,6 +437,20 @@ void reverse( InputStringType const &in, OutputStringType *out ) {
 }
 
 /**
+ * Appends a sequence of Unicode code-points to a string.
+ *
+ * @tparam ForwardIterator The iterator type.
+ * @param i The begining iterator.
+ * @param j The ending iterator.
+ * @param s A pointer to the string to be appended to.
+ */
+template<class ForwardIterator,class StringType> inline
+void append_codepoints( ForwardIterator i, ForwardIterator j, StringType *s ) {
+  typename utf8_stringify<StringType>::type u( *s );
+  std::copy( i, j, std::back_inserter( u ) );
+}
+
+/**
  * Converts a string to a sequence of Uncode code-points.
  *
  * @tparam StringType The type of string.
