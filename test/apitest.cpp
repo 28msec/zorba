@@ -24,7 +24,6 @@
 
 // tests are allowed to use internals
 #include "api/unmarshaller.h"
-#include "zorbatypes/xqpstring.h"
 #include "system/properties.h"
 
 #include <zorba/util/path.h>
@@ -179,16 +178,18 @@ int _tmain(int argc, _TCHAR* argv[])
   }
 
   // set external variables
-  vector<pair <string, string> > ext_vars = lProp->getExternalVars ();
+  vector<pair <string, string> > ext_vars = lProp->getExternalVars();
   DynamicContext* dctx = query->getDynamicContext ();
   dctx->setImplicitTimezone (lProp->tz ());
   for (vector<pair <string, string> >::const_iterator iter = ext_vars.begin ();
-       iter != ext_vars.end (); iter++) {
+       iter != ext_vars.end (); iter++) 
+  {
     set_var (iter->first, iter->second, dctx);
   }
 
   //if you want to print the plan into a file
-  if( ! lProp->dotPlanFile().empty () ) {
+  if( ! lProp->dotPlanFile().empty () ) 
+  {
     auto_ptr<ostream> planFile (new ofstream (lProp->dotPlanFile().c_str()));
     ostream *printPlanFile = planFile.get ();
 
@@ -196,29 +197,50 @@ int _tmain(int argc, _TCHAR* argv[])
   }
 
   int return_code = 0;
-  if (! lProp->compileOnly ()) {
+  if (! lProp->compileOnly()) 
+  {
     // output the result (either using xml serialization or using show)
 
-    try {
-      if (lProp->useSerializer()) {
+    try 
+    {
+      if (lProp->useSerializer()) 
+      {
         Zorba_SerializerOptions opts = Zorba_SerializerOptions::SerializerOptionsFromStringParams(lProp->getSerializerParameters());
         query->execute(*resultFile, &opts);
         // *resultFile << query;
-      } else {
+      }
+      else if (lProp->iterPlanTest())
+      {
         Iterator_t result = query->iterator();
         result->open();
         Item lItem;
-        while (result->next(lItem)) {
+        while (result->next(lItem)) 
+        {
+          ;
+        }
+        result->close();
+      }
+      else
+      {
+        Iterator_t result = query->iterator();
+        result->open();
+        Item lItem;
+        while (result->next(lItem)) 
+        {
           // unmarshall the store item from the api item
           store::Item_t lStoreItem = Unmarshaller::getInternalItem(lItem);
           *resultFile << lStoreItem->show() << endl;
         }
         result->close();
       }
-    } catch (QueryException& e) {
+    }
+    catch (QueryException& e)
+    {
       cerr << "Execution error: " << e << endl;
       return_code = 2;
-    } catch (ZorbaException &e) {
+    }
+    catch (ZorbaException &e)
+    {
       cerr << "Execution error: " << e << endl;
       return_code = 2;
     }

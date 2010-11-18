@@ -123,8 +123,6 @@ public:
 
 class ElementIterator : public NoaryBaseIterator<ElementIterator, ElementIteratorState>
 {
-  typedef std::vector<std::pair<xqpString, xqpString> > NsBindings;
-
 private:
   PlanIter_t          theQNameIter;
   PlanIter_t          theAttributesIter;
@@ -356,8 +354,6 @@ public:
 class EnclosedIteratorState : public PlanIteratorState
 {
 public:
-  std::string     * theAttrValueString;
-  xqpStringStore  * theElemContentString;
   store::Item_t     theContextItem;
   store::Iterator_t theDocChildren;
 

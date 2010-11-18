@@ -183,6 +183,7 @@ BoolAnnotationValue function::ignoresDuplicateNodes(expr* fo, ulong input) const
   return ANNOTATION_FALSE;
 }
 
+
 }
 
 /* vim:set ts=2 sw=2: */

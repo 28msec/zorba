@@ -36,7 +36,9 @@
     <zorba:methods>
       <zorba:isMap producer="0"/>
       <zorba:propagatesDistinctNodes producer="0"/>
-      <zorba:propagatesSortedNodes producer="0"/>        
+      <zorba:propagatesSortedNodes producer="0"/>
+      <zorba:ignoresSortedNodes/>
+      <zorba:ignoresDuplicateNodes/>
     </zorba:methods>
 
   </zorba:function>

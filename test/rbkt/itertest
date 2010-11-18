@@ -13,7 +13,7 @@ QUERY=$SRCDIR/test/rbkt/Queries/$TEST.xq
 test -e $QUERY || exit 0
 
 # Run apitest, strip non-comparable pointers
-$BINDIR/test/apitest --iter-plan-test -i --compile-only --no-tree-ids --debug-file /dev/null $QUERY \
+$BINDIR/test/apitest --iter-plan-test --print-iterator-tree --no-tree-ids --debug-file /dev/null $QUERY \
     | $SRCDIR/test/rbkt/remove_ctxvar_ptr >$OUT.iter
 
 # -w ignores all whitespace -- a bit too lax

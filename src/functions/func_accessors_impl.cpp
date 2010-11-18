@@ -37,7 +37,7 @@ namespace zorba
 ********************************************************************************/
 BoolAnnotationValue fn_data::ignoresSortedNodes(expr* fo, ulong input) const
 {
-  return fo->getIgnoresDuplicateNodes();
+  return fo->getIgnoresSortedNodes();
 }
 
 

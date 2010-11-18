@@ -70,6 +70,7 @@ LIST(APPEND FUNCTIONS_SRCS
     func_accessors_impl.cpp
     func_arithmetic.cpp
     func_booleans_impl.cpp
+    func_collections_impl.cpp
     func_debug_impl.cpp
     func_durations_dates_times_impl.cpp
     func_enclosed.cpp
@@ -79,6 +80,7 @@ LIST(APPEND FUNCTIONS_SRCS
     func_node_sort_distinct.cpp
     func_numerics_impl.cpp
     func_sequences_impl.cpp
+    func_strings_impl.cpp
     func_tidy.cpp
     func_var_decl.cpp
 )

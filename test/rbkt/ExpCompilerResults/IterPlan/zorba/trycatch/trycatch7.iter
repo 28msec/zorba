@@ -1,3 +1,9 @@
+Iterator tree for const-folded expr:
+<GenericArithIterator_AddOperation>
+  <SingletonIterator value="xs:integer(1)"/>
+  <SingletonIterator value="xs:integer(1)"/>
+</GenericArithIterator_AddOperation>
+
 Iterator tree for main query:
 <FunctionTraceIterator>
   <TryCatchIterator>

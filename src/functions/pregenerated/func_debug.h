@@ -54,6 +54,10 @@ public:
 
   bool propagatesSortedNodes(ulong producer) const { return producer == 0; }
 
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong producer) const;
+
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong producer) const;
+
   CODEGEN_DECL();
 };
 

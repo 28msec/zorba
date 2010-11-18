@@ -312,7 +312,7 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
      // that it's a user error here; otherwise, later catch clauses will
      // not be able to handle user errors anymore (e.g. try-catch expressions)
     error::ZorbaError::recordStackTrace(
-        theUDF->get_location(),
+        theUDF->getLoc(),
         loc,
         theUDF->getName(),
         theUDF->getArgVars().size(),
@@ -322,7 +322,7 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
   catch (error::ZorbaError& err)
   {
     error::ZorbaError::recordStackTrace(
-        theUDF->get_location(),
+        theUDF->getLoc(),
         loc,
         theUDF->getName(),
         theUDF->getArgVars().size(),

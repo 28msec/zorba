@@ -837,7 +837,7 @@ RULE_REWRITE_POST(InlineFunctions)
           dummy->setFunctionName(udf->getName());
           dummy->setFunctionArity(udf->getArgVars().size());
           dummy->setFunctionCallLocation(node->get_loc());
-          dummy->setFunctionLocation(udf->get_location());
+          dummy->setFunctionLocation(udf->getLoc());
           return dummy;
         }
         else 
@@ -848,7 +848,8 @@ RULE_REWRITE_POST(InlineFunctions)
       catch (...)
       {
         // TODO: this is caught here, because clone is not implemented for all expressions
-        ZORBA_ERROR_LOC_DESC(XQP0019_INTERNAL_ERROR, udf->get_location(), "clone not implemented for expression");
+        ZORBA_ERROR_LOC_DESC(XQP0019_INTERNAL_ERROR, udf->getLoc(),
+                             "clone not implemented for expression");
       }
     }
   }

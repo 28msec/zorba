@@ -923,8 +923,6 @@ UNARY_ACCEPT(CommentIterator);
 void EnclosedIteratorState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);
-  theAttrValueString = NULL;
-  theElemContentString = NULL;
   theDocChildren = NULL;
 }
 
@@ -932,13 +930,7 @@ void EnclosedIteratorState::init(PlanState& planState)
 void EnclosedIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
-  if (theAttrValueString) 
-  {
-    delete theAttrValueString; 
-    theAttrValueString = NULL;
-  }
 
-  theElemContentString = NULL;
   theContextItem = NULL;
 
   if (theDocChildren != NULL)
@@ -951,8 +943,6 @@ void EnclosedIteratorState::reset(PlanState& planState)
 
 EnclosedIteratorState::~EnclosedIteratorState()
 {
-  delete theAttrValueString;
-
   if (theDocChildren != NULL)
   {
     theDocChildren->close();

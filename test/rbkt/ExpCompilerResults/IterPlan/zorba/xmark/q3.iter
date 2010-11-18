@@ -1,3 +1,44 @@
+Iterator tree for const-folded expr:
+<LogicIterator>
+  <LogicIterator>
+    <SingletonIterator value="xs:boolean(true)"/>
+    <SingletonIterator value="xs:boolean(false)"/>
+  </LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+</LogicIterator>
+
+Iterator tree for const-folded expr:
+<LogicIterator>
+  <LogicIterator>
+    <SingletonIterator value="xs:boolean(true)"/>
+    <SingletonIterator value="xs:boolean(false)"/>
+  </LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+</LogicIterator>
+
+Iterator tree for const-folded expr:
+<LogicIterator>
+  <LogicIterator>
+    <SingletonIterator value="xs:boolean(true)"/>
+    <SingletonIterator value="xs:boolean(false)"/>
+  </LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+</LogicIterator>
+
+Iterator tree for const-folded expr:
+<LogicIterator>
+  <LogicIterator>
+    <SingletonIterator value="xs:boolean(true)"/>
+    <SingletonIterator value="xs:boolean(false)"/>
+  </LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+</LogicIterator>
+
+Iterator tree for const-folded expr:
+<PromoteIterator type="xs:double">
+  <SingletonIterator value="xs:integer(2)"/>
+</PromoteIterator>
+
 Iterator tree for main query:
 <flwor::FLWORIterator>
   <ForVariable name="b">

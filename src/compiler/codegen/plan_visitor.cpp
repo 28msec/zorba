@@ -2962,12 +2962,11 @@ PlanIter_t codegen(
 
   if (result != NULL &&
       descr != NULL &&
-      Properties::instance()->printIteratorTree() &&
-      (zstring("main query") == descr || ! Properties::instance()->iterPlanTest()))
+      Properties::instance()->printIteratorTree())
   {
     std::ostream &os = Properties::instance()->iterPlanTest ()
       ? std::cout
-      : Properties::instance ()->debug_out ();
+      : Properties::instance()->debug_out();
 
     os << "Iterator tree for " << descr << ":\n";
     XMLIterPrinter vp (os);

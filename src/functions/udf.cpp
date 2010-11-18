@@ -143,14 +143,6 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-/*******************************************************************************
-
-********************************************************************************/
-const QueryLoc& user_function::get_location() const
-{
-  return theLoc;
-}
-
 #if 0
 /*******************************************************************************
 
@@ -220,6 +212,32 @@ bool user_function::accessesDynCtx() const
 const std::vector<LetVarIter_t>& user_function::getArgVarRefIters() const
 {
   return theArgVarRefs;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+BoolAnnotationValue user_function::ignoresSortedNodes(
+    expr* fo,
+    ulong input) const
+{
+  assert(input < theArgVars.size());
+
+  return theArgVars[input]->getIgnoresSortedNodes();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+BoolAnnotationValue user_function::ignoresDuplicateNodes(
+    expr* fo,
+    ulong input) const
+{
+  assert(input < theArgVars.size());
+
+  return theArgVars[input]->getIgnoresDuplicateNodes();
 }
 
 

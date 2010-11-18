@@ -1,3 +1,12 @@
+Iterator tree for const-folded expr:
+<LogicIterator>
+  <LogicIterator>
+    <SingletonIterator value="xs:boolean(true)"/>
+    <SingletonIterator value="xs:boolean(false)"/>
+  </LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+</LogicIterator>
+
 Iterator tree for main query:
 <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,d)" typename="*" nill allowed="0">
   <SequencePointAccessIterator>

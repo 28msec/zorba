@@ -1,3 +1,8 @@
+Iterator tree for const-folded expr:
+<PromoteIterator type="xs:double">
+  <SingletonIterator value="xs:integer(5000)"/>
+</PromoteIterator>
+
 Iterator tree for main query:
 <flwor::FLWORIterator>
   <LetVariable name="auction" materialize="true">

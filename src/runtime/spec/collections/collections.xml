@@ -329,7 +329,9 @@
 
       <zorba:methods>
         <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
-        <zorba:accessesDynCtx returnValue="true"/>        
+        <zorba:accessesDynCtx returnValue="true"/>
+        <zorba:ignoresSortedNodes/>
+        <zorba:ignoresDuplicateNodes/>
       </zorba:methods>
 
     </zorba:function>

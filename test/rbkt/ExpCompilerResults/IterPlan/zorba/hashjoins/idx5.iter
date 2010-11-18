@@ -1,3 +1,21 @@
+Iterator tree for const-folded expr:
+<LogicIterator>
+  <LogicIterator>
+    <SingletonIterator value="xs:boolean(false)"/>
+    <SingletonIterator value="xs:boolean(false)"/>
+  </LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+</LogicIterator>
+
+Iterator tree for const-folded expr:
+<LogicIterator>
+  <LogicIterator>
+    <SingletonIterator value="xs:boolean(false)"/>
+    <SingletonIterator value="xs:boolean(false)"/>
+  </LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+</LogicIterator>
+
 Iterator tree for main query:
 <SequentialIterator>
   <SequentialIterator>

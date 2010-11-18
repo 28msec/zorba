@@ -131,11 +131,18 @@
     </zorba:description>
     
     <zorba:function>
+
         <zorba:signature localname="concat" prefix="fn">
             <zorba:param>xs:anyAtomicType?</zorba:param>
             <zorba:param>true</zorba:param>
             <zorba:output>xs:string</zorba:output>
         </zorba:signature>
+
+    <zorba:methods>
+      <zorba:ignoresSortedNodes/>
+      <zorba:ignoresDuplicateNodes/>
+    </zorba:methods>
+
     </zorba:function>
 </zorba:iterator>
 

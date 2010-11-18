@@ -1,3 +1,83 @@
+Iterator tree for const-folded expr:
+<CastIterator type="xs:date">
+  <SingletonIterator value="xs:string(1901-01-06)"/>
+</CastIterator>
+
+Iterator tree for const-folded expr:
+<CastIterator type="xs:dayTimeDuration">
+  <SingletonIterator value="xs:string(P1D)"/>
+</CastIterator>
+
+Iterator tree for const-folded expr:
+<CastIterator type="xs:date">
+  <SingletonIterator value="xs:string(1901-01-06)"/>
+</CastIterator>
+
+Iterator tree for const-folded expr:
+<CastIterator type="xs:dayTimeDuration">
+  <SingletonIterator value="xs:string(P1D)"/>
+</CastIterator>
+
+Iterator tree for const-folded expr:
+<CastIterator type="xs:date">
+  <SingletonIterator value="xs:string(1901-01-06)"/>
+</CastIterator>
+
+Iterator tree for const-folded expr:
+<CastIterator type="xs:dayTimeDuration">
+  <SingletonIterator value="xs:string(P1D)"/>
+</CastIterator>
+
+Iterator tree for const-folded expr:
+<CastIterator type="xs:boolean">
+  <SingletonIterator value="xs:integer(0)"/>
+</CastIterator>
+
+Iterator tree for const-folded expr:
+<CastIterator type="xs:boolean">
+  <SingletonIterator value="xs:integer(1)"/>
+</CastIterator>
+
+Iterator tree for const-folded expr:
+<CastIterator type="xs:dayTimeDuration">
+  <SingletonIterator value="xs:string(P1D)"/>
+</CastIterator>
+
+Iterator tree for const-folded expr:
+<CastIterator type="xs:dayTimeDuration">
+  <SingletonIterator value="xs:string(P1D)"/>
+</CastIterator>
+
+Iterator tree for const-folded expr:
+<CastIterator type="xs:date">
+  <SingletonIterator value="xs:string(2008-07-01+01:00)"/>
+</CastIterator>
+
+Iterator tree for const-folded expr:
+<NameCastIterator>
+  <SingletonIterator value="xs:string(bgcolor)"/>
+</NameCastIterator>
+
+Iterator tree for const-folded expr:
+<SingletonIterator value="2008-07-01+01:00"/>
+
+Iterator tree for const-folded expr:
+<SingletonIterator value="2008-07-01+01:00"/>
+
+Iterator tree for const-folded expr:
+<SingletonIterator value="xs:integer(20)"/>
+
+Iterator tree for const-folded expr:
+<SingletonIterator value="2008-07-01+01:00"/>
+
+Iterator tree for const-folded expr:
+<SingletonIterator value="2008-07-01+01:00"/>
+
+Iterator tree for const-folded expr:
+<FnEmptyIterator>
+  <SingletonIterator value="xs:boolean(true)"/>
+</FnEmptyIterator>
+
 Iterator tree for main query:
 <ElementIterator>
   <SingletonIterator value="xs:QName(,,html)"/>
@@ -177,4 +257,188 @@ Iterator tree for main query:
     </FnConcatIterator>
   </ElementIterator>
 </ElementIterator>
+
+Iterator tree for functx:day-of-week-name-en:
+<PromoteIterator type="xs:string">
+  <flwor::FLWORIterator>
+    <LetVariable name="date" materialize="true">
+      <LetVarIterator varname="date"/>
+    </LetVariable>
+    <LetVariable name="$$opt_temp_0" materialize="true">
+      <HoistIterator>
+        <SpecificNumArithIterator_AddOperation_INTEGER>
+          <FunctionTraceIterator>
+            <IfThenElseIterator>
+              <FnEmptyIterator>
+                <LetVarIterator varname="date"/>
+              </FnEmptyIterator>
+              <FnConcatIterator/>
+              <NumArithIterator_ModOperation>
+                <CastIterator type="xs:integer">
+                  <GenericArithIterator_DivideOperation>
+                    <GenericArithIterator_SubtractOperation>
+                      <CastIterator type="xs:date">
+                        <LetVarIterator varname="date"/>
+                      </CastIterator>
+                      <SingletonIterator value="1901-01-06"/>
+                    </GenericArithIterator_SubtractOperation>
+                    <SingletonIterator value="P1D"/>
+                  </GenericArithIterator_DivideOperation>
+                </CastIterator>
+                <SingletonIterator value="xs:integer(7)"/>
+              </NumArithIterator_ModOperation>
+            </IfThenElseIterator>
+          </FunctionTraceIterator>
+          <SingletonIterator value="xs:integer(1)"/>
+        </SpecificNumArithIterator_AddOperation_INTEGER>
+      </HoistIterator>
+    </LetVariable>
+    <ForVariable name="$$dot">
+      <FnConcatIterator>
+        <SingletonIterator value="xs:string(Sunday)"/>
+        <SingletonIterator value="xs:string(Monday)"/>
+        <SingletonIterator value="xs:string(Tuesday)"/>
+        <SingletonIterator value="xs:string(Wednesday)"/>
+        <SingletonIterator value="xs:string(Thursday)"/>
+        <SingletonIterator value="xs:string(Friday)"/>
+        <SingletonIterator value="xs:string(Saturday)"/>
+      </FnConcatIterator>
+    </ForVariable>
+    <LetVariable name="$$temp21" materialize="true">
+      <UnhoistIterator>
+        <LetVarIterator varname="$$opt_temp_0"/>
+      </UnhoistIterator>
+    </LetVariable>
+    <ReturnClause>
+      <IfThenElseIterator>
+        <InstanceOfIterator>
+          <LetVarIterator varname="$$temp21"/>
+        </InstanceOfIterator>
+        <IfThenElseIterator>
+          <FnBooleanIterator>
+            <TypedValueCompareIterator_INTEGER>
+              <ForVarIterator varname="$$pos"/>
+              <LetVarIterator varname="$$temp21"/>
+            </TypedValueCompareIterator_INTEGER>
+          </FnBooleanIterator>
+          <ForVarIterator varname="$$dot"/>
+          <FnConcatIterator/>
+        </IfThenElseIterator>
+        <IfThenElseIterator>
+          <FnBooleanIterator>
+            <LetVarIterator varname="$$temp21"/>
+          </FnBooleanIterator>
+          <ForVarIterator varname="$$dot"/>
+          <FnConcatIterator/>
+        </IfThenElseIterator>
+      </IfThenElseIterator>
+    </ReturnClause>
+  </flwor::FLWORIterator>
+</PromoteIterator>
+
+Iterator tree for fxx:net-working-days:
+<UDFunctionCallIterator>
+  <LetVarIterator varname="s"/>
+  <LetVarIterator varname="f"/>
+  <FnConcatIterator/>
+  <SingletonIterator value="xs:integer(0)"/>
+</UDFunctionCallIterator>
+
+Iterator tree for fxx:net-working-days-n:
+<flwor::FLWORIterator>
+  <ForVariable name="s">
+    <LetVarIterator varname="s"/>
+  </ForVariable>
+  <ForVariable name="f">
+    <LetVarIterator varname="f"/>
+  </ForVariable>
+  <LetVariable name="dates" materialize="true">
+    <LetVarIterator varname="dates"/>
+  </LetVariable>
+  <ForVariable name="total">
+    <LetVarIterator varname="total"/>
+  </ForVariable>
+  <ReturnClause>
+    <IfThenElseIterator>
+      <CompareIterator>
+        <ForVarIterator varname="s"/>
+        <ForVarIterator varname="f"/>
+      </CompareIterator>
+      <ForVarIterator varname="total"/>
+      <IfThenElseIterator>
+        <LogicIterator>
+          <FunctionTraceIterator>
+            <IfThenElseIterator>
+              <LogicIterator>
+                <TypedValueCompareIterator_INTEGER>
+                  <NumArithIterator_ModOperation>
+                    <CastIterator type="xs:integer">
+                      <GenericArithIterator_DivideOperation>
+                        <GenericArithIterator_SubtractOperation>
+                          <ForVarIterator varname="s"/>
+                          <SingletonIterator value="1901-01-06"/>
+                        </GenericArithIterator_SubtractOperation>
+                        <SingletonIterator value="P1D"/>
+                      </GenericArithIterator_DivideOperation>
+                    </CastIterator>
+                    <SingletonIterator value="xs:integer(7)"/>
+                  </NumArithIterator_ModOperation>
+                  <SingletonIterator value="xs:integer(5)"/>
+                </TypedValueCompareIterator_INTEGER>
+                <TypedValueCompareIterator_INTEGER>
+                  <NumArithIterator_ModOperation>
+                    <CastIterator type="xs:integer">
+                      <GenericArithIterator_DivideOperation>
+                        <GenericArithIterator_SubtractOperation>
+                          <ForVarIterator varname="s"/>
+                          <SingletonIterator value="1901-01-06"/>
+                        </GenericArithIterator_SubtractOperation>
+                        <SingletonIterator value="P1D"/>
+                      </GenericArithIterator_DivideOperation>
+                    </CastIterator>
+                    <SingletonIterator value="xs:integer(7)"/>
+                  </NumArithIterator_ModOperation>
+                  <SingletonIterator value="xs:integer(6)"/>
+                </TypedValueCompareIterator_INTEGER>
+              </LogicIterator>
+              <SingletonIterator value="xs:boolean(false)"/>
+              <SingletonIterator value="xs:boolean(true)"/>
+            </IfThenElseIterator>
+          </FunctionTraceIterator>
+          <FnBooleanIterator>
+            <CompareIterator>
+              <ForVarIterator varname="s"/>
+              <LetVarIterator varname="dates"/>
+            </CompareIterator>
+          </FnBooleanIterator>
+        </LogicIterator>
+        <UDFunctionCallIterator>
+          <PromoteIterator type="xs:date">
+            <GenericArithIterator_AddOperation>
+              <ForVarIterator varname="s"/>
+              <SingletonIterator value="P1D"/>
+            </GenericArithIterator_AddOperation>
+          </PromoteIterator>
+          <ForVarIterator varname="f"/>
+          <LetVarIterator varname="dates"/>
+          <SpecificNumArithIterator_AddOperation_INTEGER>
+            <ForVarIterator varname="total"/>
+            <SingletonIterator value="xs:integer(1)"/>
+          </SpecificNumArithIterator_AddOperation_INTEGER>
+        </UDFunctionCallIterator>
+        <UDFunctionCallIterator>
+          <PromoteIterator type="xs:date">
+            <GenericArithIterator_AddOperation>
+              <ForVarIterator varname="s"/>
+              <SingletonIterator value="P1D"/>
+            </GenericArithIterator_AddOperation>
+          </PromoteIterator>
+          <ForVarIterator varname="f"/>
+          <LetVarIterator varname="dates"/>
+          <ForVarIterator varname="total"/>
+        </UDFunctionCallIterator>
+      </IfThenElseIterator>
+    </IfThenElseIterator>
+  </ReturnClause>
+</flwor::FLWORIterator>
 

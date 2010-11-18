@@ -244,6 +244,10 @@ public:
 
   bool accessesDynCtx() const { return true; }
 
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong producer) const;
+
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong producer) const;
+
   CODEGEN_DECL();
 };
 

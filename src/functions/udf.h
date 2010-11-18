@@ -87,11 +87,11 @@ public:
 
   virtual ~user_function();
 
-  const QueryLoc& get_location() const;
-
   expr_script_kind_t getUpdateType() const { return theScriptingKind; }
 
   //xqtref_t getUDFReturnType(static_context* sctx) const;
+
+  const QueryLoc& getLoc() const { return theLoc; }
 
   void setLeaf(bool v) { theIsLeaf = v; }
 
@@ -115,14 +115,16 @@ public:
   
   const std::vector<LetVarIter_t>& getArgVarRefIters() const;
 
+  BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const;
+
+  BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const;
+
   PlanIter_t codegen(
         CompilerCB* cb,
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
         AnnotationHolder& ann) const;
-
-  const QueryLoc& getLoc() const { return theLoc; }
 };
 
 

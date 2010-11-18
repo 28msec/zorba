@@ -13,17 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "runtime/debug/debug.h"
+
+#include "compiler/api/compilercb.h"
+#include "compiler/expression/expr_base.h"
 
 #include "functions/func_debug.h"
 
 #include "context/static_context.h"
 
-#include "compiler/api/compilercb.h"
-
-#include "runtime/debug/debug.h"
-
 namespace zorba
 {
+
+/*******************************************************************************
+
+********************************************************************************/
+BoolAnnotationValue fn_trace::ignoresSortedNodes(
+    expr* fo,
+    ulong input) const 
+{
+  return fo->getIgnoresSortedNodes();
+}
+
+
+BoolAnnotationValue fn_trace::ignoresDuplicateNodes(
+    expr* fo, 
+    ulong input) const 
+{
+  return fo->getIgnoresDuplicateNodes();
+}
+
 
 PlanIter_t fn_trace::codegen(
     CompilerCB* cb,
