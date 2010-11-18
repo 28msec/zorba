@@ -23,6 +23,7 @@
 #include "util/atomic_int.h"
 #include "util/unicode_util.h"
 #include "util/utf8_string.h"
+#include "util/stl_util.h"
 #include "util/utf8_util.h"
 #include "zorbatypes/zstring.h"
 
@@ -332,20 +333,26 @@ static void test_next_match() {
 
 static void test_next_token() {
   unicode::regex re;
-  ASSERT_TRUE( re.compile( "\\s", "" ) );
+  ASSERT_TRUE( re.compile( ",", "" ) );
 
-  string const s( "hello world" );
+  string const s( "a,b,c" );
   unicode::string u;
   ASSERT_TRUE( unicode::to_string( s, &u ) );
 
   unicode::size_type pos = 0;
   unicode::string u_token;
   string token;
+  char comp[2];
+  comp[1] = '\0';
 
-  if ( !ASSERT_TRUE( re.next_token( u, &pos, &u_token ) ) )
-    return;
-  ASSERT_TRUE( utf8::to_string( u_token, &token ) );
-  ASSERT_TRUE( token == "hello" );
+  string const expected = "abc";
+  for ( string::size_type i = 0; i < expected.size(); ++i ) {
+    if ( !ASSERT_TRUE( re.next_token( u, &pos, &u_token ) ) )
+      return;
+    ASSERT_TRUE( utf8::to_string( u_token, &token ) );
+    *comp = expected[i];
+    ASSERT_TRUE( token == comp );
+  }
 
   ASSERT_TRUE( !re.next_token( u, &pos, &u_token ) );
 }

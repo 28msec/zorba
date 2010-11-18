@@ -15,6 +15,7 @@
  */
 
 #include <algorithm>
+#include <cassert>
 #include <cstdlib>
 #include <cwchar>
 #include <functional>                   /* for binary_function */
@@ -65,11 +66,13 @@ bool regex::compile( string const &pattern, char const *flags ) {
 }
 
 bool regex::match_part( string const &s ) {
+  assert( matcher_ );
   matcher_->reset( s );
   return matcher_->find() != 0;
 }
 
 bool regex::match_whole( string const &s ) {
+  assert( matcher_ );
   matcher_->reset( s );
   UErrorCode status = U_ZERO_ERROR;
   return matcher_->matches( status ) && U_SUCCESS( status );
@@ -77,24 +80,33 @@ bool regex::match_whole( string const &s ) {
 
 bool regex::next( get_type what, string const &s, size_type *pos,
                   string *substring ) {
-  if ( !*pos )
+  assert( matcher_ );
+  assert( pos );
+  unicode::size_type const s_len = s.length();
+  if ( *pos < s_len ) {
     matcher_->reset( s );
-  UErrorCode status = U_ZERO_ERROR;
-  if ( matcher_->find( *pos, status ) ) {
-    size_type const end = matcher_->end( status );
-    if ( substring ) {
-      size_type const start = matcher_->start( status );
-      switch ( what ) {
-        case get_match:
-          substring->setTo( s, start, end - start );
-          break;
-        case get_token:
-          substring->setTo( s, *pos, start - *pos );
-          break;
+    UErrorCode status = U_ZERO_ERROR;
+    if ( matcher_->find( *pos, status ) ) {
+      size_type const end = matcher_->end( status );
+      if ( substring ) {
+        size_type const start = matcher_->start( status );
+        switch ( what ) {
+          case get_match:
+            substring->setTo( s, start, end - start );
+            break;
+          case get_token:
+            substring->setTo( s, *pos, start - *pos );
+            break;
+        }
       }
+      *pos = end;
+      return true;
     }
-    *pos = end;
-    return true;
+    if ( what == get_token && substring ) {
+      substring->setTo( s, *pos, s_len - *pos );
+      *pos = s_len;
+      return true;
+    }
   }
   return false;
 }
