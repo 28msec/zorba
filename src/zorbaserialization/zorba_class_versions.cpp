@@ -33,7 +33,6 @@
 #define ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
 #include "zorbautils/hashmap.h"
 #include "zorbautils/hashmap_itemp.h"
-#include "zorbautils/hashmap_strh.h"
 #undef ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
 
 #include "zorbaserialization/serialization_engine.h"

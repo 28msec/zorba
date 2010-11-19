@@ -32,7 +32,6 @@
 #include "context/decimal_format.h"
 #include "context/internal_uri_resolvers.h"
 
-#include "zorbautils/hashmap_strh.h"
 #include "zorbautils/hashmap_zstring.h"
 
 #include "common/shared_types.h"
@@ -232,7 +231,7 @@ public:
   theImportedBuiltinModules :
   ---------------------------
   If this is the root sctx of a module, theImportedBuiltinModules stores the
-  namespaces of "builtin" modules that have been imported by this module. 
+  namespaces of "builtin" modules that have been imported by this module.
   Builtin modules are modules that declare user-visible zorba builtin functions
   (see also ns_consts.h)
 

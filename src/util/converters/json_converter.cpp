@@ -29,6 +29,8 @@
 
 #include "system/globalenv.h"
 
+#include "zorbatypes/xqpstring.h"
+
 
 namespace zorba
 {

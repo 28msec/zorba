@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -99,6 +99,23 @@ void replace_all( StringType &s,
       break;
     s.replace( pos, from_len, to, to_len );
   }
+}
+
+template<class InputStringType,class OutputStringType>
+void trim_start( InputStringType const &in, char const *chars,
+           OutputStringType *out ) {
+  *out = in;
+  typename OutputStringType::size_type pos = out->find_first_not_of( chars );
+  out->erase( 0, pos );
+}
+
+template<class InputStringType,class OutputStringType>
+void trim_end( InputStringType const &in, char const *chars,
+           OutputStringType *out ) {
+  *out = in;
+  typename OutputStringType::size_type pos = out->find_last_not_of( chars );
+  if ( pos != OutputStringType::npos && ++pos < out->size() )
+    out->erase( pos );
 }
 
 template<class InputStringType,class OutputStringType>

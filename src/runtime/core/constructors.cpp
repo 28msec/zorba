@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -86,7 +86,7 @@ void DocumentIterator::openImpl(PlanState& planState, uint32_t& offset)
   theNsPreserve =
     (theSctx->preserve_mode() == StaticContextConsts::preserve_ns ? true : false);
 
-  theNsInherit = 
+  theNsInherit =
     (theSctx->inherit_mode() == StaticContextConsts::inherit_ns ? true : false);
 }
 
@@ -123,7 +123,7 @@ bool DocumentIterator::nextImpl(store::Item_t& result, PlanState& planState) con
       if (child->getParent() != result.getp())
       {
         // Skip text node with zero-length value
-        if (child->getNodeKind() == store::StoreConsts::textNode && 
+        if (child->getNodeKind() == store::StoreConsts::textNode &&
             child->getStringValue().empty())
         {
           continue;
@@ -224,7 +224,7 @@ uint32_t ElementIterator::getStateSizeOfSubtree() const
 
   if (theQNameIter != 0)
     size += theQNameIter->getStateSizeOfSubtree();
-  
+
   if (theChildrenIter != 0)
     size += theChildrenIter->getStateSizeOfSubtree();
 
@@ -244,16 +244,16 @@ void ElementIterator::accept(PlanIterVisitor& v) const
 
   if (theQNameIter != 0)
     theQNameIter->accept(v);
-    
+
   if (theAttributesIter != 0)
     theAttributesIter->accept(v);
 
   if (theChildrenIter != 0)
     theChildrenIter->accept(v);
-    
+
   if (theNamespacesIter != 0)
     theNamespacesIter->accept(v);
-    
+
   v.endVisit(*this);
 }
 
@@ -268,7 +268,7 @@ void ElementIterator::openImpl(PlanState& planState, uint32_t& offset)
 
   if (theQNameIter != 0)
     theQNameIter->open(planState, offset);
-  
+
   if ( theChildrenIter != 0 )
     theChildrenIter->open(planState, offset);
 
@@ -284,7 +284,7 @@ void ElementIterator::openImpl(PlanState& planState, uint32_t& offset)
   theNsPreserve =
     (theSctx->preserve_mode() == StaticContextConsts::preserve_ns ? true : false);
 
-  theNsInherit = 
+  theNsInherit =
     (theSctx->inherit_mode() == StaticContextConsts::inherit_ns ? true : false);
 }
 
@@ -310,7 +310,7 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
   // Compute the node name. Note: the compiler wraps an xs:qname cast around
   // the name expression, so we know that consumeNext() returns exactly one,
-  // well formed qname. 
+  // well formed qname.
   consumeNext(nodeName, theQNameIter, planState);
 
   if (nodeName->getLocalName().empty())
@@ -320,10 +320,10 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   }
 
   typeName = (theTypePreserve ?
-              GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME : 
+              GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME :
               GENV_TYPESYSTEM.XS_UNTYPED_QNAME);
 
-  // Get the parent, if any, of the new element node 
+  // Get the parent, if any, of the new element node
   ZORBA_FATAL(theIsRoot || !path.empty(), "");
   parent = (theIsRoot ? NULL : path.top());
 
@@ -419,15 +419,15 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
         assert(child->getNodeKind() != store::StoreConsts::documentNode);
 
         if (child->getNodeKind() == store::StoreConsts::attributeNode)
-          ZORBA_ERROR_LOC(XQTY0024, loc); 
+          ZORBA_ERROR_LOC(XQTY0024, loc);
 
         // Skip text node with zero-length value
-        if (child->getNodeKind() == store::StoreConsts::textNode && 
+        if (child->getNodeKind() == store::StoreConsts::textNode &&
             child->getStringValue().empty())
         {
           ;
         }
-        // Else copy the child node if it was not a node constructed by a 
+        // Else copy the child node if it was not a node constructed by a
         // directly nested constructor
         else if (child->getParent() != result.getp())
           child->copy(result, -1, copymode);
@@ -458,7 +458,7 @@ void ElementIterator::resetImpl(PlanState& planState) const
 
   if (theQNameIter != 0)
     theQNameIter->reset(planState);
-  
+
   if ( theChildrenIter != 0 )
     theChildrenIter->reset(planState);
 
@@ -475,7 +475,7 @@ void ElementIterator::closeImpl(PlanState& planState)
 {
   if (theQNameIter != 0)
     theQNameIter->close(planState);
-  
+
   if (theChildrenIter != 0)
     theChildrenIter->close(planState);
 
@@ -486,7 +486,7 @@ void ElementIterator::closeImpl(PlanState& planState)
 
   StateTraitsImpl<ElementIteratorState>::destroyState(planState, theStateOffset);
 }
-  
+
 
 /*******************************************************************************
 
@@ -610,7 +610,7 @@ bool AttributeIterator::nextImpl(store::Item_t& result, PlanState& planState) co
       valueItem->appendStringValue(lexicalValue);
     }
   }
-  
+
   // normalize value of xml:id
   if (theIsId)
   {
@@ -645,7 +645,7 @@ TextIterator::TextIterator(
     static_context* sctx,
     const QueryLoc& loc,
     PlanIter_t&     aChild,
-    bool            isRoot) 
+    bool            isRoot)
   :
   UnaryBaseIterator<TextIterator, PlanIteratorState>(sctx, loc, aChild),
   theIsRoot(isRoot)
@@ -706,7 +706,7 @@ bool TextIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     while (consumeNext(valueItem, theChild, planState))
     {
       content += " ";
-      
+
       if (valueItem->isAtomic())
       {
         valueItem->appendStringValue(content);
@@ -714,7 +714,7 @@ bool TextIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       else
       {
         valueItem->getTypedValue(typedVal, typedIter);
-        
+
         if (typedIter == NULL)
         {
           typedVal->appendStringValue(content);
@@ -722,13 +722,13 @@ bool TextIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         else
         {
           typedIter->open();
-          
+
           while (typedIter->next(typedVal))
           {
             content += " ";
             typedVal->appendStringValue(content);
-          } 
-          
+          }
+
           typedIter->close();
         }
       }
@@ -781,7 +781,6 @@ bool PiIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   zstring target;
   zstring baseUri;
   bool lFirst;
-  xqpStringStore_t tmp;
 
   store::Item* parent;
   std::stack<store::Item*>& path = planState.theNodeConstuctionPath;
@@ -790,12 +789,12 @@ bool PiIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   // Compute the target of the pi node.
-  try 
+  try
   {
     if (!consumeNext(lItem, theChild0, planState))
       ZORBA_ERROR_LOC(XPTY0004, loc);
   }
-  catch (error::ZorbaError& e) 
+  catch (error::ZorbaError& e)
   {
     if (e.theErrorCode == FORG0001)
       ZORBA_ERROR_LOC(XQDY0041, loc);
@@ -818,11 +817,11 @@ bool PiIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     zstring upper;
     utf8::to_upper(target, &upper);
 
-    if (equals(upper, "XML", 3)) 
+    if (equals(upper, "XML", 3))
       ZORBA_ERROR_LOC(XQDY0064, loc);
   }
 
-  // Compute the content of the pi node  
+  // Compute the content of the pi node
   for (lFirst = true;
        consumeNext(lItem, theChild1.getp(), planState);
        lFirst = false)
@@ -839,9 +838,7 @@ bool PiIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     content += strvalue;
   }
 
-  tmp = new xqpStringStore(content.str());
-  tmp = tmp->trimL(" \n\r\t", 4);
-  content = tmp->str();
+  ascii::trim_start(content, " \n\r\t", &content);
 
   // Create the pi node
   ZORBA_FATAL(theIsRoot || !path.empty(), "");
@@ -850,7 +847,7 @@ bool PiIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   GENV_ITEMFACTORY->createPiNode(result, parent, -1, target, content, baseUri);
   STACK_PUSH(true, state);
-  
+
   STACK_END (state);
 }
 
@@ -883,13 +880,13 @@ bool CommentIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-      
+
   lFirst = true;
   while (true)
   {
     if (!consumeNext(lItem, theChild.getp(), planState))
       break;
-    
+
     if (!lFirst)
       content += " ";
 
@@ -909,7 +906,7 @@ bool CommentIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
   GENV_ITEMFACTORY->createCommentNode(result, parent, -1, content);
   STACK_PUSH(true, state);
-    
+
   STACK_END(state);
 }
 
@@ -1021,7 +1018,7 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
         store::Item_t typedValue;
         store::Iterator_t typedIter;
         result->getTypedValue(typedValue, typedIter);
-        
+
         if (typedIter == NULL)
         {
           typedValue->getStringValue2(strval);
@@ -1054,7 +1051,7 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
           store::Item_t typedValue;
           store::Iterator_t typedIter;
           result->getTypedValue(typedValue, typedIter);
-        
+
           if (typedIter == NULL)
           {
             typedValue->appendStringValue(strval);
@@ -1065,7 +1062,7 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
             {
               typedValue->appendStringValue(strval);
             }
-            
+
             while (typedIter->next(typedValue))
             {
               strval += " ";
@@ -1094,7 +1091,7 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
     {
       if (!consumeNext(result, theChild, planState))
         break;
- 
+
       if (result->isNode())
       {
         store::Item_t typedValue;
@@ -1175,10 +1172,10 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
           result->getStringValue2(strval);
 
           {
-            while(true) 
+            while(true)
             {
               bool status = consumeNext(state->theContextItem, theChild, planState);
-              if (!status) 
+              if (!status)
               {
                 state->theContextItem = NULL;
                 break;
@@ -1257,14 +1254,14 @@ bool NameCastIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 
   if (!consumeNext(result, theChild.getp(), planState))
   {
-    ZORBA_ERROR_LOC_DESC(XPTY0004, loc, 
+    ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
                          "Empty sequences cannot be cast to QName.");
   }
   valid = true;
 
   if (consumeNext(temp, theChild, planState))
   {
-    ZORBA_ERROR_LOC_DESC(XPTY0004, loc, 
+    ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
                          "Sequences with more than one item cannot be cast to QName.");
   }
 
@@ -1283,7 +1280,7 @@ bool NameCastIterator::nextImpl(store::Item_t& result, PlanState& planState) con
     if (e.theErrorCode != XPTY0004)
     {
       // the returned error codes are wrong for name casting => they must be changed
-      ZORBA_ERROR_LOC_DESC(XQDY0074, loc, 
+      ZORBA_ERROR_LOC_DESC(XQDY0074, loc,
                            "Item cannot be cast to QName.");
     }
     else

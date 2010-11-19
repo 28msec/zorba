@@ -85,6 +85,8 @@
 
 #include "debugger/zorba_debugger_commons.h"
 
+#include "zorbautils/string_util.h"
+
 
 #define NODE_SORT_OPT
 
@@ -2346,7 +2348,8 @@ void end_visit(const Module& v, void* /*visit_state*/)
 void* begin_visit(const VersionDecl& v)
 {
   TRACE_VISIT();
-  if (! xqpString(v.get_encoding().str()).matches ("^[A-Za-z]([A-Za-z0-9._]|[-])*$", ""))
+
+  if (!match_whole(v.get_encoding(), "^[A-Za-z]([A-Za-z0-9._]|[-])*$", ""))
     ZORBA_ERROR_LOC (XQST0087, loc);
 
   std::string versionStr = v.get_version().str();

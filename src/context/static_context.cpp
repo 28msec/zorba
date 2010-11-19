@@ -24,7 +24,7 @@
 #include "zorbaserialization/serialization_engine.h"
 
 #include "util/string_util.h"
-#include "zorbautils/hashmap_strh.h"
+
 #define ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
 #include "zorbautils/hashmap_itemp.h"
 #undef ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
@@ -244,7 +244,7 @@ void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
 
 
 /***************************************************************************//**
-  Target namespaces of zorba builtin modules 
+  Target namespaces of zorba builtin modules
 ********************************************************************************/
 #define NS_PRE static_context::ZORBA_NS_PREFIX
 
@@ -260,28 +260,28 @@ static_context::ZORBA_BASE64_FN_NS = NS_PRE + "modules/base64";
 const zstring
 static_context::ZORBA_NODEREF_FN_NS = NS_PRE + "modules/node-reference";
 
-const zstring 
+const zstring
 static_context::ZORBA_XQDDF_FN_NS = static_context::ZORBA_NS_PREFIX + "modules/xqddf";
 
-const zstring 
+const zstring
 static_context::ZORBA_SCHEMA_FN_NS = static_context::ZORBA_NS_PREFIX + "modules/schema";
 
-const zstring 
+const zstring
 static_context::ZORBA_TIDY_FN_NS = static_context::ZORBA_NS_PREFIX + "modules/tidy";
 
-const zstring 
+const zstring
 static_context::ZORBA_JSON_FN_NS = static_context::ZORBA_NS_PREFIX + "modules/json";
 
-const zstring 
+const zstring
 static_context::ZORBA_CSV_FN_NS = static_context::ZORBA_NS_PREFIX + "modules/csv2xml";
 
-const zstring 
+const zstring
 static_context::ZORBA_XQDOC_FN_NS = static_context::ZORBA_NS_PREFIX + "modules/xqdoc";
 
-const zstring 
+const zstring
 static_context::ZORBA_RANDOM_FN_NS = static_context::ZORBA_NS_PREFIX + "modules/random";
 
-const zstring 
+const zstring
 static_context::ZORBA_INTROSP_SCTX_FN_NS = static_context::ZORBA_NS_PREFIX + "modules/introspection/sctx";
 
 const zstring
@@ -295,7 +295,7 @@ static_context::ZORBA_FOP_FN_NS = NS_PRE + "zorba/fop-functions";
 
 
 /***************************************************************************//**
-  Target namespaces of zorba reserved modules 
+  Target namespaces of zorba reserved modules
 ********************************************************************************/
 const zstring
 static_context::XQUERY_OP_NS = ZORBA_NS_PREFIX + "internal/xquery-ops";
@@ -306,7 +306,7 @@ static_context::ZORBA_OP_NS = ZORBA_NS_PREFIX + "internal/zorba-ops";
 
 /***************************************************************************//**
   Static method to check if a given target namespace identifies a zorba
-  builtin module. 
+  builtin module.
 ********************************************************************************/
 bool static_context::is_builtin_module(const zstring& ns)
 {
@@ -334,7 +334,7 @@ bool static_context::is_builtin_module(const zstring& ns)
 
 /***************************************************************************//**
   Static method to check if a given target namespace identifies a zorba
-  reserved module. 
+  reserved module.
 ********************************************************************************/
 bool static_context::is_reserved_module(const zstring& ns)
 {
@@ -2184,7 +2184,7 @@ void static_context::get_functions(
                     if (ns == *ite)
                       break;
                   }
-                  
+
                   if (ite == end)
                     continue;
                 }
