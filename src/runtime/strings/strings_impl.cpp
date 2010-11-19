@@ -1375,11 +1375,11 @@ bool FnReplaceIterator::nextImpl(
 void FnTokenizeIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
-  theString = xqp_string();
+  theString.clear();
   start_pos = 0;
   hasmatched = false;
-  thePattern = xqp_string();
-  theFlags = xqp_string();
+  thePattern.clear();
+  theFlags.clear();
 }
 
 
@@ -1391,6 +1391,7 @@ bool FnTokenizeIterator::nextImpl(
   store::Item_t item;
   bool tmp;
   zstring strval;
+  unicode::string u_string;
 
   FnTokenizeIteratorState* state;
   DEFAULT_STACK_INIT(FnTokenizeIteratorState, state, planState);
@@ -1419,7 +1420,8 @@ bool FnTokenizeIterator::nextImpl(
 
   try
   {
-    tmp = xqp_string().matches(state->thePattern, state->theFlags);
+    static zstring const empty;
+    tmp = match_part( empty, state->thePattern, state->theFlags );
   }
   catch(zorbatypesException& ex)
   {
@@ -1431,14 +1433,26 @@ bool FnTokenizeIterator::nextImpl(
     ZORBA_ERROR_LOC_DESC(FORX0003, loc,
                          "Regular expression matches zero-length string.");
 
+
   while ((xqp_uint)state->start_pos < state->theString.length ())
   {
     try 
     {
-      token = state->theString.tokenize(state->thePattern,
-                                        state->theFlags,
-                                        &state->start_pos,
-                                        &state->hasmatched).getStore()->str();
+      unicode::regex re;
+      //
+      // The RE needs to be compiled every time due to the weird stack macros.
+      //
+      if ( !re.compile( state->thePattern, state->theFlags ) )
+        throw zorbatypesException(
+          state->thePattern, ZorbatypesError::FORX0002
+        );
+      unicode::string u_token;
+      bool const got_next = re.next_token(
+        state->theString, &state->start_pos, &u_token, &state->hasmatched
+      );
+      utf8::to_string( u_token, &token );
+      if ( !got_next )
+        break;
     }
     catch(zorbatypesException& ex) 
     {
@@ -1459,5 +1473,5 @@ bool FnTokenizeIterator::nextImpl(
 }
 
 
-} /* namespace zorba */
+} // namespace zorba
 /* vim:set et sw=2 ts=2: */

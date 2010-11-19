@@ -47,7 +47,7 @@ uint32_t parse_regex_flags( char const *flags ) {
       case 's': icu_flags |= UREGEX_DOTALL          ; break;
       case 'x': icu_flags |= UREGEX_COMMENTS        ; break;
       default:
-        throw zorbatypesException(flags, ZorbatypesError::FORX0001);
+        throw zorbatypesException( flags, ZorbatypesError::FORX0001 );
     }
   }
   return icu_flags;
@@ -78,8 +78,8 @@ bool regex::match_whole( string const &s ) {
   return matcher_->matches( status ) && U_SUCCESS( status );
 }
 
-bool regex::next( get_type what, string const &s, size_type *pos,
-                  string *substring ) {
+bool regex::next( re_type_t re_type, string const &s, size_type *pos,
+                  string *substring, bool *matched ) {
   assert( matcher_ );
   assert( pos );
   unicode::size_type const s_len = s.length();
@@ -90,29 +90,48 @@ bool regex::next( get_type what, string const &s, size_type *pos,
       size_type const end = matcher_->end( status );
       if ( substring ) {
         size_type const start = matcher_->start( status );
-        switch ( what ) {
-          case get_match:
+        switch ( re_type ) {
+          case re_is_match:
             substring->setTo( s, start, end - start );
             break;
-          case get_token:
+          case re_is_separator:
             substring->setTo( s, *pos, start - *pos );
             break;
         }
       }
       *pos = end;
+      if ( matched )
+        *matched = true;
       return true;
     }
-    if ( what == get_token && substring ) {
-      substring->setTo( s, *pos, s_len - *pos );
+    if ( re_type == re_is_separator ) {
+      //
+      // Special case: the RE did not match starting at pos, but there *is* a
+      // last token.  For example, given the RE of "," and:
+      //
+      //    s   = "a,b,c"
+      //    pos =  01234
+      //
+      // then calling next_token() with a pos of 4 will not match another ","
+      // but we should return the final token after the last "," (the "c").
+      //
+      if ( substring )
+        substring->setTo( s, *pos, s_len - *pos );
       *pos = s_len;
+      if ( matched )
+        *matched = false;
       return true;
     }
   }
+  if ( matched )
+    *matched = false;
   return false;
 }
 
 bool regex::replace_all( string const &in, string const &replacement,
                          string *out ) {
+  assert( matcher_ );
+  assert( out );
   matcher_->reset( in );
   UErrorCode status = U_ZERO_ERROR;
   *out = matcher_->replaceAll( replacement, status );

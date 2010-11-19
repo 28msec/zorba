@@ -322,7 +322,7 @@ public:
    * @return Returns \c true only if there is a match.
    */
   bool next_match( string const &s, size_type *pos, string *match ) {
-    return next( get_match, s, pos, match );
+    return next( re_is_match, s, pos, match, NULL );
   }
 
   /**
@@ -390,10 +390,16 @@ public:
    * character of the token.
    * @param token A pointer to the string that is to be set to the substring
    * separated by the pattern or NULL if the substring is not needed.
+   * @param matched A pointer to a \c bool to indicate whether the pattern
+   * matched for the token or NULL if this is not needed.  If not NULL, it is
+   * set to \c false either if there is no token or the token is the final
+   * token after the last separator; it is set to \c true only for non-last
+   * tokens.
    * @return Returns \c true only if there is a token.
    */
-  bool next_token( string const &s, size_type *pos, string *token ) {
-    return next( get_token, s, pos, token );
+  bool next_token( string const &s, size_type *pos, string *token,
+                   bool *matched = NULL ) {
+    return next( re_is_separator, s, pos, token, matched );
   }
 
   /**
@@ -406,11 +412,17 @@ public:
    * character of the token.
    * @param token A pointer to the string that is to be set to the substring
    * separated by the pattern or NULL if the substring is not needed.
+   * @param matched A pointer to a \c bool to indicate whether the pattern
+   * matched for the token or NULL if this is not needed.  If not NULL, it is
+   * set to \c false either if there is no token or the token is the final
+   * token after the last separator; it is set to \c true only for non-last
+   * tokens.
    * @return Returns \c true only if there is a token.
    */
-  bool next_token( char const *s, size_type *pos, string *token ) {
+  bool next_token( char const *s, size_type *pos, string *token,
+                   bool *matched = NULL ) {
     string u_s;
-    return to_string( s, &u_s ) && next_token( u_s, pos, token );
+    return to_string( s, &u_s ) && next_token( u_s, pos, token, matched );
   }
 
   /**
@@ -424,12 +436,18 @@ public:
    * character of the token.
    * @param token A pointer to the string that is to be set to the substring
    * separated by the pattern or NULL if the substring is not needed.
+   * @param matched A pointer to a \c bool to indicate whether the pattern
+   * matched for the token or NULL if this is not needed.  If not NULL, it is
+   * set to \c false either if there is no token or the token is the final
+   * token after the last separator; it is set to \c true only for non-last
+   * tokens.
    * @return Returns \c true only if there is a token.
    */
   bool next_token( char const *s, size_type s_len, size_type *pos,
-                   string *token ) {
+                   string *token, bool *matched = NULL ) {
     string u_s;
-    return to_string( s, s_len, &u_s ) && next_token( u_s, pos, token );
+    return  to_string( s, s_len, &u_s ) &&
+            next_token( u_s, pos, token, matched );
   }
 
   /**
@@ -446,9 +464,10 @@ public:
    * @return Returns \c true only if there is a token.
    */
   template<class StringType>
-  bool next_token( StringType const &s, size_type *pos, string *token ) {
+  bool next_token( StringType const &s, size_type *pos, string *token,
+                   bool *matched = NULL ) {
     string u_s;
-    return to_string( s, &u_s ) && next_token( u_s, pos, token );
+    return to_string( s, &u_s ) && next_token( u_s, pos, token, matched );
   }
 
   ////////// whole match //////////////////////////////////////////////////////
@@ -516,10 +535,13 @@ public:
 private:
   U_NAMESPACE_QUALIFIER RegexMatcher *matcher_;
 
-  enum get_type { get_match, get_token };
+  enum re_type_t {
+    re_is_match,                        // RE specifies what to match
+    re_is_separator                     // RE specifies what separates matches
+  };
 
-  bool next( get_type what, string const &s, size_type *pos,
-             string *substring );
+  bool next( re_type_t re_type, string const &s, size_type *pos,
+             string *substring, bool *matched );
 
   // forbid
   regex( regex const& );
