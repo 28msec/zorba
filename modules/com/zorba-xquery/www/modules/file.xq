@@ -15,9 +15,54 @@
 :)
 
 (:~
- : This library module provides simple file system I/O operations.
- :
+ :    <p>
+ :      <h1>Namespace conventions</h1>
+ :      <p>The module defined by this document does define several functions in the namespace
+ :          <code>http://www.zorba-xquery.com/modules/file</code>. In this document, the <code>file</code> prefix,
+ :        when used, is bound to this namespace URI.</p>
+ :    </p>
+ :    <p>
+ :      <h1>File paths vs. URIs</h1>
+ :      <p>In order to make this file API more accessible, the paths of the files are specified as
+ :        strings. The syntax of the path strings is operating system dependent. The following forms are accepted
+ :        and interpreted as described below.</p>
+ :      <ul>
+ :        <li>Operating system paths - absolute or relative paths are accepted:
+ :          <ul>
+ :            <li><code>C:\Test Dir\my file.xml</code>: An absolute path on Windows platforms.</li>
+ :            <li><code>C:/Test Dir\my file.xml</code>: An absolute path on Windows platforms that
+ :              tollerates slashes instead of backslashes.</li>
+ :            <li><code>C:\\\Test Dir//\\my file.xml</code>: An absolute path on Windows platforms
+ :              that tollerates an arbitrary number of slashes and backslashes.</li>
+ :            <li><code>/Test Dir/my file.xml</code>: An absolute path on UNIX-based platforms
+ :              that tollerates an arbitrary number of slashes.</li>
+ :            <li><code>//Test Dir////my file.xml</code>: An absolute path on UNIX-based
+ :              platforms.</li>
+ :            <li><code>my file.xml</code>: A relative path. The file should be searched for 
+ :              starting with the location pointed by the base URI of the current module.</li>
+ :          </ul>
+ :        </li>
+ :        <li>File URIs - only absolute paths are accepted:
+ :          <ul>
+ :            <li><code>file:///C:/Test%20Dir/my%20file.xml</code>: An absolute path on Windows
+ :              platforms.</li>
+ :            <li><code>file:///C:/Test Dir/my file.xml</code>: An absolute path on Windows
+ :              platforms. The URI tolerates spaces.</li>
+ :            <li><code>file:///C:/Test%20Dir///my%20file.xml</code>: An absolute path on Windows
+ :              platforms. The URI tolerates an arbitrary number of slashes.</li>
+ :            <li><code>file:///Test%20Dir/my%20file.xml</code>: An absolute path on UNIX-based
+ :              platforms.</li>
+ :            <li><code>file://localhost/Test%20Dir/my%20file.xml</code>: A URI that accepts
+ :              <code>localhost</code> as the autority of the URI.</li>
+ :          </ul>
+ :        </li>
+ :      </ul>
+ :      
+ :    </p>
+ : 
  : @author Gabriel Petrovay
+ : @author Matthias Brantner
+ : @author Markus Pilman
  :
  :)
 module namespace file = "http://www.zorba-xquery.com/modules/file";
@@ -372,11 +417,20 @@ declare sequential function file:write(
 ) external;
 
 (:~
- : This function behaves like the unix C function dirname: it takes
- : a filename as an argument and returns its directory name.
- : For example file:dirname('/tmp/test.xq') will return '/tmp/'.
- : The function makes also sure, that the directory name ends with
- : a '/'.
+ : file:normalize-path takes a path as a uri, a absolute path or relative path
+ : and normalizes it to the form used on the running platform.
+ :
+ : @param $path The uri or path to normalize.
+ : @return The normalization of $path.
+ :)
+declare function file:normalize-path($path as xs:string) as xs:string external;
+
+(:~
+ : The dirname function is the converse of basename; it returns a string of
+ : the parent directory of the pathname pointed to by path. Any
+ : trailing '/' and '\' characters - depending on the operating system - are
+ : not counted as part of the directory name. If path is the empty string or contains no `/'
+ : characters, dirname returns the string ".", signifying the current directory.
  :
  : @param $file The filename, of which the dirname should be get.
  : @return The name of the directory the file is in.
@@ -387,21 +441,24 @@ declare function file:dirname($file as xs:string) as xs:string
                   "/"
                 else file:path-separator()
   let $delim-escaped := replace($delim, '(\.|\[|\]|\\|\||\-|\^|\$|\?|\*|\+|\{|\}|\(|\))','\\$1')
-  let $res :=
-    if (matches($file, $delim-escaped)) then
-      replace($file, concat('^(.*)', $delim-escaped,'.*'),
-                         '$1')
-    else $file
+  let $normalized-file := replace(file:normalize-path($file), concat($delim-escaped, '$'), '')
   return
-    if (matches($res, concat($delim-escaped, "$"))) then
-      $res
-    else concat($res, $delim)
+    if (matches($file, concat("^", $delim-escaped, "+$"))) then
+      $delim
+    else if ($file eq "") then
+      "."
+    else if (matches($normalized-file, $delim-escaped)) then
+      replace($normalized-file, concat('^(.*)', $delim-escaped,'.*'),
+                         '$1')
+    else "."
 };
 
 (:~
- : This function behaves like the Unix C function basename. For a file Path
- : or fiLe URI it returns the name of the file and cuts of the path.
- : For example for '/tmp/test.xq', this function returns test.xq.
+ : The basename function returns the last component from the pathname pointed to by path,
+ : deleting any trailing '/' or '\' characters. If path consists entirely of '/' or '\' characters,
+ : the string '/' or '\' is returned. If path is the empty string, the
+ : string "." is returned.
+ : 
  :
  : @param $file A file URI/path.
  : @return The base name of this file.
@@ -412,6 +469,31 @@ declare function file:basename($file as xs:string) as xs:string
                   "/"
                 else file:path-separator()
   let $delim-escaped := replace($delim, '(\.|\[|\]|\\|\||\-|\^|\$|\?|\*|\+|\{|\}|\(|\))','\\$1')
-  return replace($file, concat("^.*", $delim-escaped), '')
+  let $normalized-file := replace(file:normalize-path($file), concat($delim-escaped, '$'), '')
+  return
+    if (matches($file, concat("^", $delim-escaped, "+$"))) then
+      "/"
+    else if ($file eq "") then
+      "."
+    else
+      replace($normalized-file, concat("^.*", $delim-escaped), '')
+};
+
+(:~
+ : The basename#2 function first gets the basename of the given path and then deletes the
+ : suffix $suffix, if it is the suffix of the basename of the basename of $file.
+ :
+ : @param $file A file URI/path.
+ : @param $suffix A suffix which should get deleted from the result.
+ : @return The basename of $file with a deleted $suffix.
+ :)
+declare function file:basename($file as xs:string, $suffix as xs:string) as xs:string
+{
+  let $res := file:basename($file)
+  return
+    if (fn:ends-with($res, $suffix)) then
+      fn:substring($res, 1, fn:string-length($suffix))
+    else
+      $res
 };
 

@@ -25,6 +25,7 @@
 #include <zorba/serializer.h>
 #include <zorba/store_consts.h>
 #include <zorba/base64.h>
+#include <zorba/util/path.h>
 
 #include "file_module.h"
 
@@ -589,6 +590,22 @@ WriteFunction::throwInvalidSerializationOptionValue() const
   throwError(lErrorMessage.str(), XPTY0004);
 }
 
+
+//*****************************************************************************
+NormalizePathFunction::NormalizePathFunction(const FileModule* aModule)
+  : FileFunction(aModule)
+{
+}
+
+ItemSequence_t NormalizePathFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
+                                const StaticContext* aSctxCtx,
+                                const DynamicContext* aDynCtx) const
+{
+  Item pathItem;
+  args[0]->next(pathItem);
+  String osPath = filesystem_path::resolve_path(pathItem.getStringValue().c_str());
+  return ItemSequence_t(new SingletonItemSequence(theModule->getItemFactory()->createString(osPath)));
+}
 
 //*****************************************************************************
 

@@ -996,7 +996,6 @@ _tmain(int argc, _TCHAR* argv[])
               << " (user: " << timing.deinitClock << ")"
               << " milliseconds" << std::endl;
   }
-
   return 0;
 }
 

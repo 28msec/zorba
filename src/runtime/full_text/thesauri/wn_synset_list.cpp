@@ -16,6 +16,7 @@
 
 #include "decode_base128.h"
 #include "wn_synset_list.h"
+#include "wn_types.h"
 
 namespace zorba {
 namespace wordnet {
@@ -56,7 +57,7 @@ synset_list::const_iterator& synset_list::const_iterator::operator++() {
     synset::ptr ptr;
     if ( (ptr.pos_ = part_of_speech::find( *b_++ )) == part_of_speech::unknown )
       ++junk; // TODO: throw exception
-    if ( (ptr.type_ = pointer::find( *b_++ )) == pointer::unknown )
+    if ( (ptr.type_ = zorba::wordnet::pointer::find( *b_++ )) == zorba::wordnet::pointer::unknown )
       ++junk; // TODO: throw exception
     ptr.synset_id_ = decode_base128( &b_ );
     ptr.source_    = decode_base128( &b_ );

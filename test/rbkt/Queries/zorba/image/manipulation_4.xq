@@ -8,7 +8,7 @@ import module namespace file = 'http://www.zorba-xquery.com/modules/file';
 import module namespace man = 'http://www.zorba-xquery.com/modules/image/manipulation';
 import schema namespace image = 'http://www.zorba-xquery.com/modules/image/image';
 
-declare variable $local:image-dir := fn:concat(file:dirname(fn:static-base-uri()), "images/");
+declare variable $local:image-dir := fn:concat(file:dirname(fn:static-base-uri()), "/images/");
 
 
 declare variable $local:gif as xs:base64Binary := file:read(concat($local:image-dir, "bird.gif"));

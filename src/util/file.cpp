@@ -163,7 +163,7 @@ filesystem_path::resolve_path
     lAbsolutePath = (lFileArg.indexOf("/") == 0);
 #endif
     // if a relative path, we have to resolve it against the base URI
-    if (!lAbsolutePath) {
+    if (!lAbsolutePath && aBase != "") {
       // resolve the relative path against the current working directory
       //lFileArg = aSctxCtx->resolve(aSctxCtx->getBaseURI(), lFileArg);
       lFileArg = aBase + File::getPathSeparator() + lFileArg;

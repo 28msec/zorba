@@ -6,13 +6,13 @@
 import module namespace basic = 'http://www.zorba-xquery.com/modules/image/basic';
 import module namespace file = 'http://www.zorba-xquery.com/modules/file';
 
-declare variable $local:image-dir := fn:concat(file:dirname(fn:static-base-uri()), "images/");
+declare variable $local:image-dir := fn:concat(file:dirname(fn:static-base-uri()), "/images/");
 
 
-declare variable $local:png as xs:base64Binary := file:read(concat($local:image-dir, "bird.png"));
-declare variable $local:gif as xs:base64Binary := file:read(concat($local:image-dir, "bird.gif"));
-declare variable $local:tiff as xs:base64Binary := file:read(concat($local:image-dir, "bird.tiff"));
-declare variable $local:jpg as xs:base64Binary := file:read(concat($local:image-dir, "bird.jpg"));
+declare variable $local:png as xs:base64Binary := file:read(concat($local:image-dir, "/bird.png"));
+declare variable $local:gif as xs:base64Binary := file:read(concat($local:image-dir, "/bird.gif"));
+declare variable $local:tiff as xs:base64Binary := file:read(concat($local:image-dir, "/bird.tiff"));
+declare variable $local:jpg as xs:base64Binary := file:read(concat($local:image-dir, "/bird.jpg"));
 
 
 

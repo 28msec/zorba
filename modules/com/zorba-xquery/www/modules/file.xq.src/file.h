@@ -329,6 +329,20 @@ namespace zorba {
 
   };
 
+  class NormalizePathFunction : public FileFunction
+  {
+    public:
+      NormalizePathFunction(const FileModule* aModule);
+
+      virtual String
+      getLocalName() const { return "normalize-path"; }
+
+      virtual ItemSequence_t
+      evaluate(const StatelessExternalFunction::Arguments_t& args,
+               const StaticContext* aStctxCtx,
+               const DynamicContext* aDznCtx) const;
+  };
+
 //*****************************************************************************
 
 } /* namespace filemodule */ } /* namespace zorba */

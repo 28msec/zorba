@@ -73,6 +73,8 @@ FileModule::getExternalFunction(String aLocalname) const
       lFunc = new RemoveFunction(this);
     } else if (aLocalname.equals("write")) {
       lFunc = new WriteFunction(this);
+    } else if (aLocalname.equals("normalize-path")) {
+      lFunc = new NormalizePathFunction(this);
     }
   }
   return lFunc;
