@@ -401,15 +401,8 @@ rstring<Rep>::mutate( size_type pos, size_type n1, size_type n2 ) {
 
     if ( pos )
       Rep::copy( new_rep.data(), data(), pos );
-
     if ( how_much )
       Rep::copy( new_rep.data() + pos + n2, data() + pos + n1, how_much );
-
-    // ???? The following line is not needed because the alloc method calls
-    // the rep_base constructor, which makes the rep a shared one.
-    //new_rep->set_sharable();
-    
-    rep().dispose( a );
 
     rep().take( new_rep, a, a );
   }
@@ -417,10 +410,8 @@ rstring<Rep>::mutate( size_type pos, size_type n1, size_type n2 ) {
     // in-place
     Rep::move( data() + pos + n2, data() + pos + n1, how_much );
   }
-  
   rep().set_length( new_size );
 }
-
 
 // RSTRING_REPLACE_2ST_CP_ST_X
 template<class Rep> rstring<Rep>&
