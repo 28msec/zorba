@@ -28,8 +28,6 @@ namespace zorba {
   class DurationBase;
   typedef rchandle<DurationBase> DurationBase_t;
 
-  class xqpString;                      // TODO: delete this line
-
   //
   // Mapping of basic schema types to C++ language types.
   //
@@ -67,7 +65,7 @@ namespace zorba {
   typedef zstring       xqp_NOTATION;
   typedef zstring       xqp_QName;
   typedef int16_t       xqp_short;
-  typedef xqpString     xqp_string;     // TODO: s/xqpString/zstring/
+  typedef zstring       xqp_string;
   typedef DateTime      xqp_time;
   typedef zstring       xqp_token;
   typedef unsigned char xqp_ubyte;
