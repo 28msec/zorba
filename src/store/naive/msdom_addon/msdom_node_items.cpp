@@ -426,10 +426,12 @@ store::Item_t XmlNode::getEBV() const
 /*******************************************************************************
 
 ********************************************************************************/
-xqpStringStore_t XmlNode::getBaseURIInternal(bool& local) const
+void XmlNode::getBaseURIInternal(zstring& uri, bool& local) const
 {
   local = false;
-  return theParent ? theParent->getBaseURI() : 0;
+
+  if (theParent)
+    theParent->getBaseURI(uri);
 }
 
 
@@ -804,8 +806,8 @@ void XmlNode::switchTree(
         // on the (potentially new) base uri of the parent node.
         if (baseUriAttr)
         {
-          xqpStringStore_t absuri = parent->getBaseURI();
-          xqpStringStore_t reluri = baseUriAttr->getBaseURI();
+          zstring absuri = parent->getBaseURI();
+          zstring reluri = baseUriAttr->getBaseURI();
           elem->adjustBaseUriProperty(hiddenBaseUriAttr, absuri, reluri);
         }
         // The current node N has a local base uri property. If, however, N does 
@@ -909,8 +911,8 @@ void XmlNode::deleteTree() throw()
 ********************************************************************************/
 DocumentNode::DocumentNode(
     XmlTree*          tree,
-    xqpStringStore_t& baseUri,
-    xqpStringStore_t& docUri,
+    zstring& baseUri,
+    zstring& docUri,
     IXMLDOMDocument *dom_doc,
     IXMLDOMDocumentFragment *doc_fragment)
   :
@@ -989,8 +991,8 @@ XmlNode* DocumentNode::copy2(
   XmlTree* tree = NULL;
   XmlNode* copyNode = NULL;
 
-  xqpStringStore_t baseuri = theBaseUri;
-  xqpStringStore_t docuri = theDocUri;
+  zstring baseuri = theBaseUri;
+  zstring docuri = theDocUri;
 
   try
   {
@@ -1024,7 +1026,7 @@ store::Item* DocumentNode::getType() const
 }
 
 
-xqpStringStore_t DocumentNode::getBaseURIInternal(bool& local) const
+void DocumentNode::getBaseURIInternal(zstring& uri, bool& local) const
 {
   local = true;
   return theBaseUri;
@@ -1041,7 +1043,8 @@ store::Iterator_t DocumentNode::getChildren() const
 
 void DocumentNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
-  xqpStringStore_t rch = getStringValue();
+  zstring rch;
+  getStringValue(rch);
   val = new UntypedAtomicItemImpl(rch);
   iter = NULL;
 }
@@ -1049,12 +1052,13 @@ void DocumentNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) co
 
 store::Item_t DocumentNode::getAtomizationValue() const
 {
-  xqpStringStore_t rch = getStringValue();
+  zstring rch;
+  getStringValue(rch);
   return new UntypedAtomicItemImpl(rch);
 }
 
 
-xqpStringStore_t DocumentNode::getStringValue() const
+zstring DocumentNode::getStringValue() const
 {
   std::string buf;
 
@@ -1067,14 +1071,14 @@ xqpStringStore_t DocumentNode::getStringValue() const
       buf += getChild(i)->getStringValue()->str();
   }
 
-  return new xqpStringStore(buf);
+  return new zstringStore(buf);
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-xqp_string DocumentNode::show() const
+zstring DocumentNode::show() const
 {
   std::stringstream strStream;
 
@@ -1112,8 +1116,8 @@ xqp_string DocumentNode::show() const
 ********************************************************************************/
 DocumentTreeNode::DocumentTreeNode(
     XmlTree*          tree,
-    xqpStringStore_t& baseUri,
-    xqpStringStore_t& docUri,
+    zstring& baseUri,
+    zstring& docUri,
     IXMLDOMDocument *dom_doc,
     IXMLDOMDocumentFragment *doc_fragment)
   :
@@ -1137,8 +1141,8 @@ DocumentTreeNode::DocumentTreeNode(
 ********************************************************************************/
 DocumentDagNode::DocumentDagNode(
     XmlTree*          tree,
-    xqpStringStore_t& baseUri,
-    xqpStringStore_t& docUri)
+    zstring& baseUri,
+    zstring& docUri)
   :
   DocumentNode(tree, baseUri, docUri)
 {
@@ -1218,12 +1222,12 @@ ElementNode::ElementNode(
   if(!dom_element)
   {//create the MS DOM Element
     HRESULT   hr;
-    xqpStringStore_t    name_str;
+    zstring    name_str;
 
     name_str = theName->getStringValue();
     CMyBSTR      bstr_name(name_str->c_str());
     CComVariant   node_type(NODE_ELEMENT);
-    xqpStringStore_t    ns_str;
+    zstring    ns_str;
     ns_str = nodeName->getNamespace();
     CMyBSTR      bstr_namespace(ns_str->c_str());
     IXMLDOMNode   *dom_node;
@@ -1319,7 +1323,7 @@ XmlNode* ElementNode::copy2(
     isId = isIdRefs = haveEmptyValue = haveTypedValue = haveListValue = false;
   }
 
-  xqpStringStore_t baseUri;
+  zstring baseUri;
 
   try
   {
@@ -1360,12 +1364,12 @@ XmlNode* ElementNode::copy2(
         {
           // If "this" does not belong to any namespace and the root parent
           // has a default ns binding, then undeclare this default binding.
-          xqpStringStore* prefix = theName->getPrefix();
+          zstring prefix = theName->getPrefix();
           if (prefix->empty() &&
               theName->getNamespace()->empty() &&
               rootParent->getNodeKind() == store::StoreConsts::elementNode)
           {
-            xqpStringStore* ns = reinterpret_cast<ElementNode*>(rootParent)->
+            zstring ns = reinterpret_cast<ElementNode*>(rootParent)->
                                  findBinding(prefix);
             if (ns != NULL)
               copyNode->addLocalBinding(prefix, theName->getNamespace());//ns);
@@ -1397,8 +1401,8 @@ XmlNode* ElementNode::copy2(
         ZORBA_ERROR(XQTY0086);
       }
 
-      xqpStringStore* prefix;
-      xqpStringStore* ns;
+      zstring prefix;
+      zstring ns;
       std::auto_ptr<NsBindingsContext> ctx(new NsBindingsContext);
 
       prefix = theName->getPrefix();
@@ -1410,7 +1414,7 @@ XmlNode* ElementNode::copy2(
 
       if (ns != NULL)
       {
-        xqpStringStore* ns2 = NULL;
+        zstring ns2 = NULL;
 
         if (rootParent &&
             rootParent->getNodeKind() == store::StoreConsts::elementNode &&
@@ -1434,7 +1438,7 @@ XmlNode* ElementNode::copy2(
 
         if (ns != NULL)
         {
-          xqpStringStore* ns2 = NULL;
+          zstring ns2 = NULL;
 
           if (rootParent &&
               rootParent->getNodeKind() == store::StoreConsts::elementNode &&
@@ -1489,14 +1493,14 @@ XmlNode* ElementNode::copy2(
     {
       if (baseUriAttr)
       {
-        xqpStringStore_t absuri = (parent ? parent->getBaseURI() : NULL);
-        xqpStringStore_t reluri = baseUriAttr->getBaseURI();
+        zstring absuri = (parent ? parent->getBaseURI() : NULL);
+        zstring reluri = baseUriAttr->getBaseURI();
         copyNode->addBaseUriProperty(absuri, reluri);
       }
       else if (parent == 0)
       {
-        xqpStringStore_t absuri = hiddenBaseUriAttr->getStringValueP();
-        xqpStringStore_t reluri;
+        zstring absuri = hiddenBaseUriAttr->getStringValueP();
+        zstring reluri;
         copyNode->addBaseUriProperty(absuri, reluri);
       }
       else
@@ -1569,7 +1573,7 @@ void ElementNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) con
     }
     else
     {
-      xqpStringStore_t rch = getStringValue();
+      zstring rch = getStringValue();
       val = new UntypedAtomicItemImpl(rch);
     }
   }
@@ -1588,7 +1592,7 @@ void ElementNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) con
 ********************************************************************************/
 store::Item_t ElementNode::getAtomizationValue() const
 {
-  xqpStringStore_t rch = getStringValue();
+  zstring rch = getStringValue();
   return new UntypedAtomicItemImpl(rch);
 }
 
@@ -1596,7 +1600,7 @@ store::Item_t ElementNode::getAtomizationValue() const
 /*******************************************************************************
 
 ********************************************************************************/
-xqpStringStore_t ElementNode::getStringValue() const
+zstring ElementNode::getStringValue() const
 {
   std::string buf;
 
@@ -1610,7 +1614,7 @@ xqpStringStore_t ElementNode::getStringValue() const
       buf += getChild(i)->getStringValue()->str();
   }
 
-  return new xqpStringStore(buf);
+  return new zstring(buf);
 }
 
 
@@ -1747,7 +1751,7 @@ void ElementNode::setNsContext(NsBindingsContext* parentCtx)
   Search all the in-scope ns bindings of "this" to find the ns uri associated
   with the given prefix. Return NULL if no binding exists for the given prefix.
 ********************************************************************************/
-xqpStringStore* ElementNode::findBinding(const xqpStringStore* prefix) const
+zstring ElementNode::findBinding(const zstring prefix) const
 {
   if (theNsContext == NULL)
     return NULL;
@@ -1787,8 +1791,8 @@ bool ElementNode::addBindingForQName(
     bool           isAttr,
     bool           replacePrefix)
 {
-  xqpStringStore* prefix = qname->getPrefix();
-  xqpStringStore* ns = qname->getNamespace();
+  zstring prefix = qname->getPrefix();
+  zstring ns = qname->getNamespace();
 
   // If ns is empty, then prefix must be empty
   ZORBA_FATAL(!ns->empty() || prefix->empty(),
@@ -1800,7 +1804,7 @@ bool ElementNode::addBindingForQName(
 
   if (prefix->str() != "xml")
   {
-    xqpStringStore* ns2 = findBinding(prefix);
+    zstring ns2 = findBinding(prefix);
 
     if (ns2 == NULL)
     {
@@ -1817,7 +1821,7 @@ bool ElementNode::addBindingForQName(
         //std::cout << "Prefix: " << prefix->str() << " ns: " << ns->c_str() << " ns2: " << ns2->c_str() << " local: " << qname->getLocalName()->str() << "\n";
         ZORBA_FATAL(!ns->empty(), "");
 
-        xqpStringStore_t prefix(new xqpStringStore("XXX"));
+        zstring prefix(new zstringStore("XXX"));
 
         while (findBinding(prefix) != NULL)
           prefix = prefix->append("X");
@@ -1844,8 +1848,8 @@ bool ElementNode::addBindingForQName(
 ********************************************************************************/
 void ElementNode::addBindingForQName2(const store::Item* qname)
 {
-  xqpStringStore* prefix = qname->getPrefix();
-  xqpStringStore* ns = qname->getNamespace();
+  zstring prefix = qname->getPrefix();
+  zstring ns = qname->getNamespace();
 
   // If ns is empty, then prefix must be empty
   ZORBA_FATAL(!ns->empty() || prefix->empty(),
@@ -1853,7 +1857,7 @@ void ElementNode::addBindingForQName2(const store::Item* qname)
 
   if (prefix->str() != "xml")
   {
-    xqpStringStore* ns2 = findBinding(prefix);
+    zstring ns2 = findBinding(prefix);
 
     if (ns2 == NULL)
     {
@@ -1876,7 +1880,7 @@ void ElementNode::addBindingForQName2(const store::Item* qname)
   Note: it is possible to add the binding (empty --> empty); this happens when we
   need to delete the default binding (empty --> ns) from the bindings of "this".
 ********************************************************************************/
-void ElementNode::addLocalBinding(xqpStringStore* prefix, xqpStringStore* ns)
+void ElementNode::addLocalBinding(zstring prefix, zstring ns)
 {
   if (!haveLocalBindings())
   {
@@ -1896,7 +1900,7 @@ void ElementNode::addLocalBinding(xqpStringStore* prefix, xqpStringStore* ns)
   Remove the given ns binding from the local ns bindings of "this", if it is
   there.
 ********************************************************************************/
-void ElementNode::removeLocalBinding(xqpStringStore* prefix, xqpStringStore* ns)
+void ElementNode::removeLocalBinding(zstring prefix, zstring ns)
 {
   if (haveLocalBindings())
   {
@@ -1934,15 +1938,15 @@ void ElementNode::add_ns_bindings_to_DOM(const store::NsBindings* localBindings)
   }
 }
 
-void ElementNode::addLocalBinding_DOM(xqpStringStore* prefix, xqpStringStore* ns)
+void ElementNode::addLocalBinding_DOM(zstring prefix, zstring ns)
 {
   if((!getTree()->during_import_DOM) && (theDOMElement))
   {
-    xqpString   qn;
+    zstring   qn;
     if(prefix->empty())
       qn = "xmlns";
     else
-      qn = xqpString::concat("xmlns:", prefix->c_str());
+      qn = zstring::concat("xmlns:", prefix->c_str());
     CMyBSTR      bstr_name(qn.c_str());
     CMyBSTR      bstr_namespace(ns->c_str());
     CComVariant   var_namespace(bstr_namespace);
@@ -1964,14 +1968,14 @@ void ElementNode::checkNamespaceConflict(
 {
   const QNameItemImpl* qn = reinterpret_cast<const QNameItemImpl*>(qname);
 
-  xqpStringStore* prefix = qn->getPrefix();
-  xqpStringStore* ns = qn->getNamespace();
+  zstring prefix = qn->getPrefix();
+  zstring ns = qn->getNamespace();
 
   // Nothing to do if the qname does not imply any ns binding
   if (prefix->empty() && ns->empty())
     return;
 
-  xqpStringStore* ns2 = findBinding(prefix);
+  zstring ns2 = findBinding(prefix);
 
   if (ns2 != NULL && !ns2->byteEqual(*ns))
   {
@@ -2013,8 +2017,8 @@ void ElementNode::checkUniqueAttr(const store::Item* attrName) const
   strings.
 ********************************************************************************/
 void ElementNode::addBaseUriProperty(
-    xqpStringStore_t& absUri,
-    xqpStringStore_t& relUri)
+    zstring& absUri,
+    zstring& relUri)
 {
   ZORBA_FATAL(absUri != NULL && !absUri->empty(), "");
 
@@ -2030,7 +2034,7 @@ void ElementNode::addBaseUriProperty(
   }
   else
   { 
-    xqpStringStore_t resolvedUriString;
+    zstring resolvedUriString;
     try {
       URI absoluteURI(&*absUri);
       URI resolvedURI(absoluteURI, &*relUri);
@@ -2057,8 +2061,8 @@ void ElementNode::addBaseUriProperty(
 ********************************************************************************/
 void ElementNode::adjustBaseUriProperty(
     AttributeNode*    attr,
-    xqpStringStore_t& absUri,
-    xqpStringStore_t& relUri)
+    zstring& absUri,
+    zstring& relUri)
 {
   ZORBA_FATAL(absUri != NULL && !absUri->empty(), "");
 
@@ -2069,7 +2073,7 @@ void ElementNode::adjustBaseUriProperty(
   }
   else
   { 
-    xqpStringStore_t resolvedUriString;
+    zstring resolvedUriString;
     try {
       URI lAbsoluteUri(&*absUri);
       URI lResolvedUri(lAbsoluteUri, &*relUri);
@@ -2156,7 +2160,7 @@ ElementTreeNode::ElementTreeNode(
     bool                        isId,
     bool                        isIdRefs,
     const store::NsBindings*    localBindings,
-    xqpStringStore_t&           baseUri,
+    zstring&           baseUri,
     IXMLDOMElement             *dom_element)
   :
   ElementNode(tree, parent, pos, nodeName,
@@ -2171,7 +2175,7 @@ ElementTreeNode::ElementTreeNode(
     // of "this" cannot be ElementNode.
     if (baseUri != NULL)
     {
-      xqpStringStore_t dummy;
+      zstring dummy;
       addBaseUriProperty(baseUri, dummy);
     }
   }
@@ -2202,7 +2206,7 @@ ElementTreeNode::ElementTreeNode(
 /*******************************************************************************
 
 ********************************************************************************/
-xqpStringStore_t ElementTreeNode::getBaseURIInternal(bool& local) const
+void ElementTreeNode::getBaseURIInternal(zstring& uri, bool& local) const
 {
   ulong numAttrs = numAttributes();
   for (ulong i = 0; i < numAttrs; i++)
@@ -2211,12 +2215,13 @@ xqpStringStore_t ElementTreeNode::getBaseURIInternal(bool& local) const
     if (attr->isBaseUri() && attr->isHidden())
     {
       local = true;
-      return attr->getStringValue();
+      attr->getStringValue(uri);
+      return
     }
   }
 
-  local = false;
-  return theParent ? theParent->getBaseURI().getp() : 0;
+  if (theParent)
+    theParent->getBaseURI(uri);
 }
 
 
@@ -2241,7 +2246,7 @@ ElementDagNode::ElementDagNode(
     bool                        isId,
     bool                        isIdRefs,
     const store::NsBindings*    localBindings,
-    xqpStringStore_t&           baseUri)
+    zstring&           baseUri)
   :
   ElementNode(tree, parent, pos, nodeName,
               typeName, haveTypedValue, haveEmptyValue, isId, isIdRefs,
@@ -2251,7 +2256,7 @@ ElementDagNode::ElementDagNode(
   {
     if (baseUri != NULL)
     {
-      xqpStringStore_t dummy;
+      zstring dummy;
       addBaseUriProperty(baseUri, dummy);
     }
   }
@@ -2274,7 +2279,7 @@ ElementDagNode::ElementDagNode(
 /*******************************************************************************
 
 ********************************************************************************/
-xqpStringStore_t ElementDagNode::getBaseURIInternal(bool& local) const
+void ElementDagNode::getBaseURIInternal(zstring& uri, bool& local) const
 {
   ulong numAttrs = numAttributes();
   for (ulong i = 0; i < numAttrs; i++)
@@ -2283,12 +2288,13 @@ xqpStringStore_t ElementDagNode::getBaseURIInternal(bool& local) const
     if (attr->isBaseUri() && attr->isHidden())
     {
       local = true;
-      return attr->getStringValue();
+      attr->getStringValue(uri);
+      return;
     }
   }
 
-  local = false;
-  return theParent ? theParent->getBaseURI().getp() : new xqpStringStore("");
+  if (theParent)
+    theParent->getBaseURI(uri);
 }
 
 
@@ -2335,11 +2341,11 @@ AttributeNode::AttributeNode(
   // just to be safe, we use a try-catch.
   try
   {
-    const xqpStringStore    *attr_prefix = attrName->getPrefix();
-    const xqpStringStore    *attr_namespace = attrName->getNamespace();
+    const zstringStore    *attr_prefix = attrName->getPrefix();
+    const zstringStore    *attr_namespace = attrName->getNamespace();
     if (attr_prefix->empty() && !attr_namespace->empty())
     {
-      xqpStringStore_t prefix(new xqpStringStore("XXX"));
+      zstring prefix(new zstringStore("XXX"));
       GET_FACTORY().createQName(attrName,
                                 attrName->getNamespace(),
                                 prefix,
@@ -2349,7 +2355,7 @@ AttributeNode::AttributeNode(
     {
       //check if the parent has a different prefix assigned for the namespace
       //or if he has the namespace at all
-      xqpStringStore  *orig_prefix;
+      zstringStore  *orig_prefix;
       orig_prefix = parent->getPrefixForNamespace(attr_namespace);
       if(orig_prefix && !orig_prefix->empty())
       {
@@ -2366,11 +2372,11 @@ AttributeNode::AttributeNode(
         //we must invent some prefix-namespace binding
         //find a prefix not used
         int   i = 1;
-        xqpString    temp_prefix;
+        zstring    temp_prefix;
         while(1)
         {
           char  stri[20];
-          const xqpStringStore    *temp_ns;
+          const zstringStore    *temp_ns;
 
           sprintf(stri, "XX%d", i);
           temp_prefix = stri;
@@ -2418,8 +2424,10 @@ AttributeNode::AttributeNode(
       // is not there already) 
       if (isBaseUri() && !isHidden())
       {
-        xqpStringStore_t parentBaseUri = p->getBaseURI();
-        xqpStringStore_t baseUri = this->getStringValue();
+        zstring parentBaseUri;
+        p->getBaseURI(parentBaseUri);
+        zstring baseUri;
+        this->getStringValue(baseUri);
 
         if (p->haveBaseUri())
         {
@@ -2449,12 +2457,12 @@ AttributeNode::AttributeNode(
     if(!dom_attribute)
     {//create the MS DOM Attribute
       HRESULT   hr;
-      xqpStringStore_t    name_str;
+      zstring    name_str;
 
       name_str = theName->getStringValue();
       CMyBSTR      bstr_name(name_str->c_str());
       CComVariant   node_type(NODE_ATTRIBUTE);
-      xqpStringStore_t    ns_str;
+      zstring    ns_str;
       ns_str = attrName->getNamespace();
       CMyBSTR      bstr_namespace(ns_str->c_str());
       IXMLDOMNode   *dom_node;
@@ -2472,7 +2480,7 @@ AttributeNode::AttributeNode(
     getTree()->during_import_DOM = ante_during;
     if((!getTree()->during_import_DOM) && theDOMAttribute)
     {//set the DOM attribute value
-      xqpStringStore_t    str_value = theTypedValue->getStringValue();
+      zstring    str_value = theTypedValue->getStringValue();
       CMyBSTR    bstr_value(str_value->c_str());
       CComVariant   var_value(bstr_value);
       theDOMAttribute->put_value(var_value);
@@ -2529,7 +2537,7 @@ void AttributeNode::setTypedValue(store::Item_t& value)
 
   if((!getTree()->during_import_DOM) && theDOMAttribute)
   {//set the DOM attribute value
-    xqpStringStore_t    str_value = theTypedValue->getStringValue();
+    zstring    str_value = theTypedValue->getStringValue();
     CMyBSTR    bstr_value(str_value->c_str());
     CComVariant   var_value(bstr_value);
     theDOMAttribute->put_value(var_value);
@@ -2567,7 +2575,7 @@ void AttributeNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) c
 /*******************************************************************************
 
 ********************************************************************************/
-xqpStringStore_t AttributeNode::getStringValue() const
+zstring AttributeNode::getStringValue() const
 {
   if (haveListValue())
   {
@@ -2582,7 +2590,7 @@ xqpStringStore_t AttributeNode::getStringValue() const
       str += items[i]->getStringValue()->str();
     }
 
-    return new xqpStringStore(str);
+    return new zstringStore(str);
   }
   else
   {
@@ -2686,7 +2694,7 @@ docopy:
       }
       else
       {
-        xqpStringStore_t rch = getStringValue();
+        zstring rch = getStringValue();
         typedValue = new UntypedAtomicItemImpl(rch);
       }
     }
@@ -2720,7 +2728,7 @@ docopy:
 ********************************************************************************/
 xqp_string AttributeNode::show() const
 {
-  return xqpString::concat(getNodeName()->getStringValue(), "=\"",
+  return zstring::concat(getNodeName()->getStringValue(), "=\"",
                            getStringValue()->str(), "\"");
 }
 
@@ -2739,7 +2747,7 @@ TextNode::TextNode(
     XmlTree*          tree,
     XmlNode*          parent,
     long              pos,
-    xqpStringStore_t& content,
+    zstring& content,
     IXMLDOMText      *dom_text)
   :
   XmlNode(tree, parent)
@@ -2856,7 +2864,7 @@ TextNode::~TextNode()
     theContent.theDOMText->Release();
 }
 
-void TextNodeContent::setText(xqpStringStore_t& text, bool update_DOM)
+void TextNodeContent::setText(zstring& text, bool update_DOM)
 {
 #ifdef ZORBA_MSDOM_IN_NATIVE_STORE_CACHING
   if (theContent.text != NULL)
@@ -2876,7 +2884,7 @@ void TextNodeContent::setText(xqpStringStore_t& text, bool update_DOM)
   }
 }
 
-void TextNodeContent::setText(xqpStringStore* text, bool update_DOM)
+void TextNodeContent::setText(zstring text, bool update_DOM)
 {
 #ifdef ZORBA_MSDOM_IN_NATIVE_STORE_CACHING
   if (theContent.text != NULL)
@@ -2934,7 +2942,7 @@ void TextNodeContent::setValue(store::Item* val, bool update_DOM)
   }
 }
 
-xqpStringStore* TextNodeContent::getText() const      
+zstring TextNodeContent::getText() const      
 {
 #ifdef ZORBA_MSDOM_IN_NATIVE_STORE_CACHING
   return theContent.text;
@@ -2949,7 +2957,7 @@ xqpStringStore* TextNodeContent::getText() const
   WideCharToMultiByte(CP_UTF8, 0, var_text.bstrVal, -1, str_text, len, NULL, NULL);
   str_text[len] = 0;
 
-  xqpStringStore *xss = new xqpStringStore(str_text);
+  zstringStore *xss = new zstringStore(str_text);
   ::free(str_text);
   return xss;
 }
@@ -2981,7 +2989,7 @@ XmlNode* TextNode::copy2(
 
   XmlTree* tree = NULL;
   TextNode* copyNode = NULL;
-  xqpStringStore_t textContent;
+  zstring textContent;
   store::Item_t typedContent;
 
   try
@@ -3082,7 +3090,7 @@ store::Item* TextNode::getType() const
 
 void TextNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
-  xqpStringStore_t rch;
+  zstring rch;
 
   if (isTyped())
   {
@@ -3100,7 +3108,7 @@ void TextNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 
 store::Item_t TextNode::getAtomizationValue() const
 {
-  xqpStringStore_t rch;
+  zstring rch;
 
   if (isTyped())
   {
@@ -3115,7 +3123,7 @@ store::Item_t TextNode::getAtomizationValue() const
 }
 
 
-xqpStringStore_t TextNode::getStringValue() const
+zstring TextNode::getStringValue() const
 {
   if (isTyped())
   {
@@ -3133,7 +3141,7 @@ xqpStringStore_t TextNode::getStringValue() const
 ********************************************************************************/
 xqp_string TextNode::show() const
 {
-  return xqpString::concat("<text nid=\"", theOrdPath.show(), "\">", getStringValue(), "</text>");
+  return zstring::concat("<text nid=\"", theOrdPath.show(), "\">", getStringValue(), "</text>");
 }
 
 
@@ -3152,8 +3160,8 @@ PiNode::PiNode(
     XmlTree*          tree,
     XmlNode*          parent,
     long              pos,
-    xqpStringStore_t& target,
-    xqpStringStore_t& content,
+    zstring& target,
+    zstring& content,
     IXMLDOMProcessingInstruction      *dom_pi)
   :
   XmlNode(tree, parent)
@@ -3223,8 +3231,8 @@ XmlNode* PiNode::copy2(
 
   PiNode* copyNode = NULL;
   XmlTree* tree = NULL;
-  xqpStringStore_t content;
-  xqpStringStore_t target;
+  zstring content;
+  zstring target;
 
   try
   {
@@ -3279,7 +3287,7 @@ store::Item* PiNode::getType() const
 
 void PiNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
-  xqpStringStore_t rch = getStringValue(); 
+  zstring rch = getStringValue(); 
   val = new StringItemNaive(rch);
   iter = NULL;
 }
@@ -3287,11 +3295,11 @@ void PiNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 
 store::Item_t PiNode::getAtomizationValue() const
 {
-  xqpStringStore_t rch = getStringValue(); 
+  zstring rch = getStringValue(); 
   return new StringItemNaive(rch);
 }
 
-xqpStringStore_t PiNode::getStringValue() const   
+zstring PiNode::getStringValue() const   
 {
 #ifdef ZORBA_MSDOM_IN_NATIVE_STORE_CACHING
   return theContent;
@@ -3306,7 +3314,7 @@ xqpStringStore_t PiNode::getStringValue() const
   WideCharToMultiByte(CP_UTF8, 0, var_text.bstrVal, -1, str_text, len, NULL, NULL);
   str_text[len] = 0;
 
-  xqpStringStore *xss = new xqpStringStore(str_text);
+  zstringStore *xss = new zstringStore(str_text);
   ::free(str_text);
   return xss;
 #endif
@@ -3336,7 +3344,7 @@ CommentNode::CommentNode(
     XmlTree*          tree,
     XmlNode*          parent,
     long              pos,
-    xqpStringStore_t& content,
+    zstring& content,
     IXMLDOMComment    *dom_comment)
   :
   XmlNode(tree, parent)
@@ -3405,7 +3413,7 @@ XmlNode* CommentNode::copy2(
 
   CommentNode* copyNode = NULL;
   XmlTree* tree = NULL;
-  xqpStringStore_t content;
+  zstring content;
 
   try
   {
@@ -3458,7 +3466,7 @@ store::Item* CommentNode::getType() const
 
 void CommentNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
-  xqpStringStore_t rch = getStringValue(); 
+  zstring rch = getStringValue(); 
   val = new StringItemNaive(rch);
   iter = NULL;
 }
@@ -3466,11 +3474,11 @@ void CommentNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) con
 
 store::Item_t CommentNode::getAtomizationValue() const
 {
-  xqpStringStore_t rch = getStringValue(); 
+  zstring rch = getStringValue(); 
   return new StringItemNaive(rch);
 }
 
-xqpStringStore_t CommentNode::getStringValue() const   
+zstring CommentNode::getStringValue() const   
 {
 #ifdef ZORBA_MSDOM_IN_NATIVE_STORE_CACHING
   return theContent;
@@ -3485,13 +3493,13 @@ xqpStringStore_t CommentNode::getStringValue() const
   WideCharToMultiByte(CP_UTF8, 0, var_text.bstrVal, -1, str_text, len, NULL, NULL);
   str_text[len] = 0;
 
-  xqpStringStore *xss = new xqpStringStore(str_text);
+  zstringStore *xss = new zstringStore(str_text);
   ::free(str_text);
   return xss;
 #endif
 }
 
-xqpStringStore* CommentNode::getStringValueP() const   
+zstring CommentNode::getStringValueP() const   
 {
 #ifdef ZORBA_MSDOM_IN_NATIVE_STORE_CACHING
   return theContent.getp();
@@ -3506,9 +3514,9 @@ xqpStringStore* CommentNode::getStringValueP() const
   WideCharToMultiByte(CP_UTF8, 0, var_text.bstrVal, -1, str_text, len, NULL, NULL);
   str_text[len] = 0;
 
-  temp_xqpString = new xqpStringStore(str_text);
+  temp_zstring = new zstringStore(str_text);
   ::free(str_text);
-  return temp_xqpString.getp();
+  return temp_zstring.getp();
 #endif
 }
 

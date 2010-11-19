@@ -6,8 +6,8 @@
 	<META NAME="GENERATOR" CONTENT="OpenOffice.org 3.1  (Win32)">
 	<META NAME="AUTHOR" CONTENT="Daniel Turcanu">
 	<META NAME="CREATED" CONTENT="20090628;18151700">
-	<META NAME="CHANGEDBY" CONTENT="Daniel Turcanu">
-	<META NAME="CHANGED" CONTENT="20100107;14002900">
+	<META NAME="CHANGEDBY" CONTENT="Daniel ">
+	<META NAME="CHANGED" CONTENT="20101119;13091700">
 </HEAD>
 <BODY LANG="en-US" DIR="LTR">
 <P><FONT SIZE=5>Using and maintaining Zorba plan serialization</FONT></P>
@@ -295,12 +295,12 @@ macros:</P>
 		<TD WIDTH=50%>
 			<P>Same as set_is_temp_field, but the members of the temporary
 			objects are not serialized as temporary objects.</P>
-			<P>For example, let's say you have to construct a xqpStringStore_t
-			on the stack and serialize it. The xqpStringStore_t is a temporary
+			<P>For example, let's say you have to construct a rchandle&lt;&gt;
+			on the stack and serialize it. The rchandle&lt;&gt; is a temporary
 			object, but its pointer inside maybe not, maybe it is a pointer to
-			an already existing xqpStringStore. To deal with this case you
-			have to call set_is_temp_field_one_level(true) before serializing
-			the xqpStringStore_t and then set_is_temp_field_one_level(false)
+			an already existing RCObject. To deal with this case you have to
+			call set_is_temp_field_one_level(true) before serializing the
+			xrchandle&lt;&gt; and then set_is_temp_field_one_level(false)
 			after that.</P>
 			<P>Be careful, that set_is_temp_field and
 			set_is_temp_field_one_level should always be called in pairs, one

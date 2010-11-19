@@ -53,8 +53,8 @@ char *ImportMSDOM::fromBSTR(BSTR inbstr)
 }
 
 rchandle<XmlNode>   ImportMSDOM::importMSDOM(IXMLDOMNode* domNode,
-                              xqpStringStore_t docUri,
-                              xqpStringStore_t baseUri)
+                              zstringStore_t docUri,
+                              zstringStore_t baseUri)
 {
   theDocUri = docUri;
   theBaseUri = baseUri;
@@ -273,7 +273,7 @@ bool ImportMSDOM::import_element(IXMLDOMElement *dom_elem)
     store::Item_t qname;
     store::Item_t tname;
     store::Item_t nullValue;
-    xqpStringStore_t baseUri;
+    zstringStore_t baseUri;
 
     // Get the parent node from the node stack
     if (!elem_stack.empty())
@@ -305,7 +305,7 @@ bool ImportMSDOM::import_element(IXMLDOMElement *dom_elem)
     //  const char* prefix = reinterpret_cast<const char*>(namespaces[i * 2]);
     //  const char* nsuri = reinterpret_cast<const char*>(namespaces[i * 2 + 1]);
       IXMLDOMNode   *attr;
-      std::pair<xqpString, xqpString>     nsb;
+      std::pair<zstring, zstring>     nsb;
       BSTR  attr_basename;
       BSTR  attr_prefix;
       bool  is_ns = false;
@@ -417,7 +417,7 @@ bool ImportMSDOM::import_element(IXMLDOMElement *dom_elem)
         VARIANT  attr_value;
         attr->get_nodeValue(&attr_value);
         char  *char_value = fromBSTR(attr_value.bstrVal);
-        xqpStringStore_t  stringValue = new xqpStringStore(char_value);
+        zstringStore_t  stringValue = new zstringStore(char_value);
         free(char_value);
         store::Item_t typedValue;
         theFactory->createUntypedAtomic(typedValue, stringValue);
@@ -472,7 +472,7 @@ bool ImportMSDOM::import_characters(IXMLDOMText *dom_text)
     VARIANT  var_text;
     dom_text->get_nodeValue(&var_text);
     char* charp = fromBSTR(var_text.bstrVal);
-    xqpStringStore_t content(new xqpStringStore(charp));
+    zstringStore_t content(new zstringStore(charp));
     ::free(charp);
 
     // Create the text node
@@ -509,8 +509,8 @@ bool ImportMSDOM::import_pi(IXMLDOMProcessingInstruction *dom_pi)
     data = fromBSTR(bstr_data);
     targetp = fromBSTR(bstr_target);
 
-    xqpStringStore_t content = new xqpStringStore(reinterpret_cast<const char*>(data));
-    xqpStringStore_t target = new xqpStringStore(reinterpret_cast<const char*>(targetp));
+    zstringStore_t content = new zstringStore(reinterpret_cast<const char*>(data));
+    zstringStore_t target = new zstringStore(reinterpret_cast<const char*>(targetp));
 
     ::free(data);
     ::free(targetp);
@@ -539,7 +539,7 @@ bool ImportMSDOM::import_comment(IXMLDOMComment *dom_comment)
 
     dom_comment->get_nodeValue(&var_comment);
     charp = fromBSTR(var_comment.bstrVal);
-    xqpStringStore_t content(new xqpStringStore(charp));
+    zstringStore_t content(new zstringStore(charp));
     ::free(charp);
 
     CommentNode *n;

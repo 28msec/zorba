@@ -308,7 +308,7 @@ public:
 
   store::Item_t getEBV() const;
 
-  xqpStringStore_t getBaseURI() const
+  zstring getBaseURI() const
   {
     bool local = false;
     return getBaseURIInternal(local);
@@ -417,7 +417,7 @@ public:
   virtual bool isIdRefs() const          { NODE_STOP; return false; }
 
 protected:
-  virtual xqpStringStore_t getBaseURIInternal(bool& local) const;
+  virtual zstring getBaseURIInternal(bool& local) const;
 
   ulong disconnect() throw();
   void connect(XmlNode* node, ulong pos) throw();
@@ -489,7 +489,7 @@ public:
 
   NsBindingsContext* getNsContext() const { return NULL; }
 
-  xqpStringStore* findBinding(xqpStringStore* pre) const { return NULL; }
+  zstring findBinding(zstring pre) const { return NULL; }
 
   virtual IXMLDOMNode* GetDOMNode() 
   {
@@ -500,7 +500,7 @@ public:
   }
 
 protected:
-  xqpStringStore_t getBaseURIInternal(bool& local) const;
+  zstring getBaseURIInternal(bool& local) const;
 };
 
 
@@ -649,10 +649,10 @@ public:
   NsBindingsContext* getNsContext() const { return theNsContext.getp(); }
 
   void setNsContext(NsBindingsContext* ctx);
-  xqpStringStore* findBinding(const xqpStringStore* prefix) const;
+  zstring findBinding(const zstring prefix) const;
   const store::NsBindings& getLocalBindings() const;
-  void addLocalBinding(xqpStringStore* prefix, xqpStringStore* ns);
-  void removeLocalBinding(xqpStringStore* prefix, xqpStringStore* ns);
+  void addLocalBinding(zstring prefix, zstring ns);
+  void removeLocalBinding(zstring prefix, zstring ns);
 
   bool addBindingForQName(
         store::Item_t& qname,
@@ -687,19 +687,19 @@ public:
   void restoreName(UpdRenameElem& upd);
 
   void add_ns_bindings_to_DOM(const store::NsBindings* localBindings);
-  void addLocalBinding_DOM(xqpStringStore* prefix, xqpStringStore* ns);
+  void addLocalBinding_DOM(zstring prefix, zstring ns);
 
   virtual IXMLDOMNode     *GetDOMNode()         { return theDOMElement; }
   virtual IXMLDOMElement  *GetDOMElement()      { return theDOMElement; }
 protected:
   void addBaseUriProperty(
-        xqpStringStore_t& absUri,
-        xqpStringStore_t& relUri);
+        zstring& absUri,
+        zstring& relUri);
 
   void adjustBaseUriProperty(
         AttributeNode*    attr,
-        xqpStringStore_t& absUri,
-        xqpStringStore_t& relUri);
+        zstring& absUri,
+        zstring& relUri);
 };
 
 
@@ -729,7 +729,7 @@ public:
         bool                        isId,
         bool                        isIdRefs,
         const store::NsBindings*    localBindings,
-        xqpStringStore_t&           baseUri,
+        zstring&           baseUri,
         IXMLDOMElement        * dom_element = NULL);
 
   ulong numAttributes() const          { return theAttributes.size(); }
@@ -753,7 +753,7 @@ public:
   }
 
 protected:
-  xqpStringStore_t getBaseURIInternal(bool& local) const;
+  zstring getBaseURIInternal(bool& local) const;
 
 private:
   //disable default copy constructor
@@ -785,7 +785,7 @@ public:
         bool                        isId,
         bool                        isIdRefs,
         const store::NsBindings*    localBindings,
-        xqpStringStore_t&           baseUri);
+        zstring&           baseUri);
 
   ulong numAttributes() const          { return theAttributes.size(); }
   NodeVector& attributes()             { return theAttributes; }
@@ -808,7 +808,7 @@ public:
   }
 
 protected:
-  xqpStringStore_t getBaseURIInternal(bool& local) const;
+  zstring getBaseURIInternal(bool& local) const;
 
 private:
   //disable default copy constructor
@@ -971,10 +971,10 @@ public:
 
   virtual IXMLDOMNode   *GetDOMNode()   { return theContent.theDOMText; }
 protected:
-  xqpStringStore* getText() const      { return theContent.getText(); }
+  zstring getText() const      { return theContent.getText(); }
 
-  void setText(xqpStringStore_t& text) { theContent.setText(text, !getTree()->during_import_DOM); }
-  void setText(xqpStringStore* text)   { theContent.setText(text, !getTree()->during_import_DOM); }
+  void setText(zstring& text) { theContent.setText(text, !getTree()->during_import_DOM); }
+  void setText(zstring text)   { theContent.setText(text, !getTree()->during_import_DOM); }
 
   store::Item* getValue() const        { return theContent.getValue(); }
 
@@ -998,7 +998,7 @@ class PiNode : public XmlNode
   zstring theContent;
 #else
   zstring  temp_xqpTarget;
-  zstring  temp_xqpString;
+  zstring  temp_zstring;
 #endif
 
 public:
@@ -1029,7 +1029,7 @@ public:
   store::Item_t getAtomizationValue() const;
   zstring getStringValue() const;
 
-  xqpStringStore* getTarget() const          { return theTarget.getp(); }
+  zstring getTarget() const          { return theTarget.getp(); }
 
   xqp_string show() const;
 
@@ -1054,9 +1054,9 @@ class CommentNode : public XmlNode
 protected:
   IXMLDOMComment    *theDOMComment;
 #ifdef ZORBA_MSDOM_IN_NATIVE_STORE_CACHING
-  xqpStringStore_t theContent;
+  zstring theContent;
 #else
-  xqpStringStore_t  temp_xqpString;
+  zstring  temp_zstring;
 #endif
 
 public:
@@ -1064,7 +1064,7 @@ public:
         XmlTree*          tree,
         XmlNode*          parent,
         long              pos,
-        xqpStringStore_t& content,
+        zstring& content,
         IXMLDOMComment    *theDOMComment = NULL);
 
   virtual ~CommentNode();

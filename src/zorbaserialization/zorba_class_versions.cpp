@@ -39,7 +39,6 @@
 #include "zorbaserialization/serialization_engine.h"
 
 #include "zorbatypes/rchandle.h"
-#include "zorbatypes/xqpstring.h"
 
 #include "common/shared_types.h"
 
@@ -55,21 +54,14 @@ END_SERIALIZABLE_CLASS_VERSIONS(SimpleRCObject)
 SERIALIZABLE_CLASS_VERSIONS(store::Iterator)
 END_SERIALIZABLE_CLASS_VERSIONS(store::Iterator)
 
-//SERIALIZABLE_TEMPLATE_VERSIONS(rchandle)
-////CLASS_VERSION(2, ZORBA_VERSION_0_9_5, BACKWARD_COMPATIBLE, "add a new version just for test")
-//END_SERIALIZABLE_TEMPLATE_VERSIONS(rchandle)
-//SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(rchandle, rchandle  <xqpStringStore*>)
-
 SERIALIZABLE_TEMPLATE_VERSIONS(serializable_hashmap)
 END_SERIALIZABLE_TEMPLATE_VERSIONS(serializable_hashmap)
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap, serializable_hashmap<xqp_string>, 2)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap, serializable_hashmap<xqtref_t>, 3)
 
 SERIALIZABLE_TEMPLATE_VERSIONS(serializable_hashmap_entry)
 END_SERIALIZABLE_TEMPLATE_VERSIONS(serializable_hashmap_entry)
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap_entry, serializable_hashmap<xqp_string>::entry, 2)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap_entry, serializable_hashmap<xqtref_t>::entry, 3)
 
 
@@ -94,8 +86,6 @@ SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_Ha
 
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_HashEntry<store::Item*, std::vector<FunctionInfo>* >, 5)
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_HashEntry<store::Item*, xqpStringStore_t>, 6)
-
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_HashEntry<store::Item*, var_expr_t>, 7)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_HashEntry<store::Item*, PrologOption>, 8)
@@ -109,8 +99,6 @@ SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_Hash
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, FunctionInfo, ItemPointerHashMapCmp>, 4)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, std::vector<FunctionInfo>*, ItemPointerHashMapCmp>, 5)
-
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, xqpStringStore_t, ItemPointerHashMapCmp>, 6)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, var_expr_t, ItemPointerHashMapCmp>, 7)
 
@@ -132,32 +120,9 @@ SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_ItemPointerHashMap, seriali
 
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_ItemPointerHashMap, serializable_ItemPointerHashMap<std::vector<FunctionInfo>* >, 5)
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_ItemPointerHashMap, serializable_ItemPointerHashMap<xqpStringStore_t>, 6)
-
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_ItemPointerHashMap, serializable_ItemPointerHashMap<var_expr_t>, 7)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_ItemPointerHashMap, serializable_ItemPointerHashMap<PrologOption>, 8)
-
-
-// HashMapStrHandle -- not used anymore, replaced by the HashMapZString
-
-// SERIALIZABLE_CLASS_VERSIONS(HashMapStrHandleCmp)
-// END_SERIALIZABLE_CLASS_VERSIONS(HashMapStrHandleCmp)
-
-// SERIALIZABLE_TEMPLATE_VERSIONS(serializable_HashMapStrHandle)
-// END_SERIALIZABLE_TEMPLATE_VERSIONS(serializable_HashMapStrHandle)
-
-// SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_HashEntry<xqpStringStore_t, xqpStringStore_t>, 9)
-
-// SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_HashEntry<xqpStringStore_t, xqtref_t>, 10)
-
-// SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<xqpStringStore_t, xqpStringStore_t, HashMapStrHandleCmp>,9)
-
-// SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<xqpStringStore_t, xqtref_t, HashMapStrHandleCmp>, 10)
-
-// SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_HashMapStrHandle, serializable_HashMapStrHandle<xqpStringStore_t>, 1)
-
-// SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_HashMapStrHandle, serializable_HashMapStrHandle<xqtref_t>, 2)
 
 
 
