@@ -56,17 +56,12 @@ namespace zorba {
   std::pair<short, short> getRandomPorts() 
   {
     srand(getSeed());
-    int lPort1 = rand();
-    lPort1 = lPort1 < 1026 ? lPort1 + 1026 : lPort1;
-    int lPort2 = rand();
-    lPort2 = lPort2 < 1026 ? lPort2 + 1026 : lPort2;
+    // using only ephemeral ports (49152–65535)
+    int from = 49152;
+    int to = 65535;
+    int lPort1 = rand() % (to - from + 1) + from;
+    int lPort2 = rand() % (to - from + 1) + from;
 
-    while (lPort1 > 65535) {
-      lPort1 -= 1000;
-    }
-    while (lPort2 > 65535) {
-      lPort2 -= 1000;
-    }
     return std::pair<short, short>(static_cast<short>(lPort1), static_cast<short>(lPort2));
   }
 
@@ -663,27 +658,27 @@ namespace zorba {
 } /* namespace zorba */
 
 int test_debugger_server (int argc, char* argv[]) {
-//  void* store = zorba::StoreManager::getStore();
-//  Zorba* lZorba = zorba::Zorba::getInstance(store);
-//
-//  std::cout << "---------------------" << std::endl;
-//  std::cout << "executing test_run" << std::endl;
-//  if (zorba::test_run(lZorba) != 0) {
-//  	return 1;
-//  }
-//
-//  std::cout << "---------------------" << std::endl;
-//  std::cout << "executing test_terminate" << std::endl;
-//  if (zorba::test_terminate(lZorba) != 0) {
-//    return 1;
-//  }
-//
-//  std::cout << "---------------------" << std::endl;
-//  std::cout << "executing test_terminate_immediately" << std::endl;
-//  if (zorba::test_terminate_immediately(lZorba) != 0) {
-//    return 1;
-//  }
-//
+  void* store = zorba::StoreManager::getStore();
+  Zorba* lZorba = zorba::Zorba::getInstance(store);
+
+  std::cout << "---------------------" << std::endl;
+  std::cout << "executing test_run" << std::endl;
+  if (zorba::test_run(lZorba) != 0) {
+  	return 1;
+  }
+
+  std::cout << "---------------------" << std::endl;
+  std::cout << "executing test_terminate" << std::endl;
+  if (zorba::test_terminate(lZorba) != 0) {
+    return 1;
+  }
+
+  std::cout << "---------------------" << std::endl;
+  std::cout << "executing test_terminate_immediately" << std::endl;
+  if (zorba::test_terminate_immediately(lZorba) != 0) {
+    return 1;
+  }
+
 //  std::cout << "---------------------" << std::endl;
 //  std::cout << "executing test_resume" << std::endl;
 //  if (zorba::test_resume(lZorba) != 0) {
