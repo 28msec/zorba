@@ -12,10 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License. 
 
+
+IF (${CMAKE_CXX_COMPILER} MATCHES "clang")
+ SET (CLANG 1)
+ELSE (${CMAKE_CXX_COMPILER} MATCHES "clang")
+ SET (CLANG 0)
+ENDIF(${CMAKE_CXX_COMPILER} MATCHES "clang")
+
 #-----------------------------------------------------------------------------
 # Let's use the highest warning level.
 #-----------------------------------------------------------------------------
-IF(CMAKE_BUILD_TOOL MATCHES "(msdev|devenv|nmake)")
+IF(NOT CLANG AND CMAKE_BUILD_TOOL MATCHES "(msdev|devenv|nmake)")
   # Use only the second highest warning level for the Visual Studio
   # compiler: /W3. This is because /W4 is too strict and generates too many
   # warnings. This would make much of the code non-portable or too many
@@ -48,13 +55,12 @@ IF(CMAKE_BUILD_TOOL MATCHES "(msdev|devenv|nmake)")
     MESSAGE(STATUS "Added /DNOMINMAX compiler flag to CMAKE_CXX_FLAGS. New flags:")
     MESSAGE(STATUS "CMAKE_CXX_FLAGS:          ${CMAKE_CXX_FLAGS}")
   ENDIF(NOT CMAKE_CXX_FLAGS MATCHES "/DNOMINMAX")
-ENDIF(CMAKE_BUILD_TOOL MATCHES "(msdev|devenv|nmake)")
+ENDIF()
 
-IF (${CMAKE_CXX_COMPILER} MATCHES "clang")
- SET (CLANG 1)
-ELSE (${CMAKE_CXX_COMPILER} MATCHES "clang")
- SET (CLANG 0)
-ENDIF(${CMAKE_CXX_COMPILER} MATCHES "clang")
+IF(CLANG AND WIN32)
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -no-integrated-as")
+  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -no-integrated-as")
+ENDIF()
 
 SET(ZORBA_GNUCOMPILER_VERSION)
 SET(ZORBA_GNUCOMPILER_MAJOR_VERSION)
