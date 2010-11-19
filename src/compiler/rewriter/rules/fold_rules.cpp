@@ -188,6 +188,10 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
 
       if (!udf->isOptimized())
       {
+        // Set the Optimized flag in advance to prevent an infinte loop (for
+        // recursive functions, an optimization could be attempted again)
+        udf->setOptimized(true);
+
         RewriterContext rctx(rCtx.theCCB, udf->getBody());
         GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rctx);
         udf->setBody(rctx.getRoot());
