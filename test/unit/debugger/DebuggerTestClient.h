@@ -47,8 +47,8 @@ public:
   void
   eval(std::string anExpr);
 
-  DebuggerTestHandler::DebugEvent
-  getNextEvent();
+  DebuggerTestHandler::DebuggerState
+  getStateAfterRun();
 
   std::pair<String, std::list<std::pair<String, String> > >
   getLastEvent();

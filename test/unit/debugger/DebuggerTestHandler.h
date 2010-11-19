@@ -32,15 +32,15 @@ public:
   virtual ~DebuggerTestHandler();
 
 public:
-	enum DebugEvent {
+	enum DebuggerState {
 		TERMINATED,
 		SUSPENDED,
 		IDLE
 	};
 
 public:
-	DebugEvent
-  getNextEvent();
+	DebuggerState
+  getStateAfterRun();
 
   std::pair<String, std::list<std::pair<String, String> > >
   getLastEvent();

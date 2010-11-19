@@ -61,10 +61,10 @@ DebuggerTestClient::eval(std::string anExpr)
   m_client->eval(lStr);
 }
 
-DebuggerTestHandler::DebugEvent
-DebuggerTestClient::getNextEvent()
+DebuggerTestHandler::DebuggerState
+DebuggerTestClient::getStateAfterRun()
 {
-	return m_handler->getNextEvent();
+	return m_handler->getStateAfterRun();
 }
 
 std::pair<String, std::list<std::pair<String, String> > >

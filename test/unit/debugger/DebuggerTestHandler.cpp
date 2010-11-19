@@ -32,27 +32,23 @@ DebuggerTestHandler::DebuggerTestHandler( zorba::ZorbaDebuggerClient* client )
 {
 }
 
-DebuggerTestHandler::DebugEvent DebuggerTestHandler::getNextEvent()
+DebuggerTestHandler::DebuggerState DebuggerTestHandler::getStateAfterRun()
 {
-	synchronous_logger::cout << "getNextEvent()\n";
-
-  if (m_client->isQueryTerminated()) {
-		synchronous_logger::cout << "Query is terminated\n";
-		return TERMINATED;
-  }
+	synchronous_logger::cout << "getStateAfterRun()\n";
 
 	while (m_client->isQueryRunning()) {
+		synchronous_logger::cout << "Query is running. Waiting...\n";
 		sleep(1);
 	}
 
 	if (m_client->isQueryTerminated()) {
-		synchronous_logger::cout << "Query is terminated\n";
+		synchronous_logger::cout << "Query is TERMINATED\n";
 		return TERMINATED;
 	} else if (m_client->isQuerySuspended()) {
-		synchronous_logger::cout << "Query is suspended\n";
+		synchronous_logger::cout << "Query is SUSPENDED\n";
 		return SUSPENDED;
 	} else {
-		synchronous_logger::cout << "Query is idle\n";
+		synchronous_logger::cout << "Query is IDLE\n";
 		return IDLE;
 	}
 }
