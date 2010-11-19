@@ -260,7 +260,6 @@ protected:
 #pragma warning( disable : 4996)
 #endif
 
-
 #endif /* ZORBA_RSTRING_REP_BASE_H */
 /*
  * Local variables:
