@@ -509,31 +509,6 @@ std::istream* StandardModuleURIResolver::checkModulePath(
       lPathNotation = lPathNotation.append("/index.xq");
   }
 
-#ifdef WIN32
-  //check first for relative path to zorba_simplestore.dll (this dll)
-  char  dll_path[1024];
-  DWORD dll_path_size;
-  dll_path_size = GetModuleFileName(NULL, dll_path, sizeof(dll_path));
-  if(dll_path_size)
-  {
-    dll_path[dll_path_size] = 0;
-    char *last_slash;
-    last_slash = strrchr(dll_path, '\\');
-    if(last_slash)
-    {
-      last_slash[1] = 0;
-      fileURL = dll_path;
-      fileURL += "..\\include\\zorba\\modules\\";
-      fileURL += lPathNotation;
-      std::auto_ptr<std::istream> modfile(new std::ifstream(fileURL.c_str()));
-      if (modfile->good())
-      {
-        return modfile.release();
-      }
-    }
-  }
-#endif
-
   for (std::vector<std::string>::const_iterator ite = modulePaths.begin();
        ite != modulePaths.end();
        ++ite)
@@ -567,45 +542,6 @@ ExternalModule* StandardModuleURIResolver::getExternalModule(
     URI lURI(fileURL);
 
     std::string lLibraryName = computeLibraryName(lURI);
-
-#ifdef WIN32
-    //check first for relative path to zorba_simplestore.dll (this dll)
-    char  dll_path[1024];
-    DWORD dll_path_size;
-    dll_path_size = GetModuleFileName(NULL, dll_path, sizeof(dll_path));
-    if(dll_path_size)
-    {
-      dll_path[dll_path_size] = 0;
-      char *last_slash;
-      last_slash = strrchr(dll_path, '\\');
-      if(last_slash)
-      {
-        std::string potentialModuleFile;
-        last_slash[1] = 0;
-        potentialModuleFile = dll_path;
-        potentialModuleFile += "..\\include\\zorba\\modules\\";
-        potentialModuleFile += lLibraryName.c_str();
-        std::auto_ptr<std::istream> modfile(new std::ifstream(potentialModuleFile.c_str()));
-        if (modfile->good())
-        {
-          ExternalModule* lModule = DynamicLoader::getInstance()->
-                                    getModule(potentialModuleFile);
-          if (lModule)
-          {
-            if (!lModule->getURI().equals(fileURL.c_str()))
-            {
-              ZORBA_ERROR_DESC_OSS(XQP0028_FUNCTION_IMPL_NOT_FOUND,
-                                   "The module loaded from " << potentialModuleFile
-                                   << "doesn't provide the required target namespace "
-                                   << "(" << lURI.toString() << ").");
-            }
-          }
-
-          return lModule;
-        }
-      }
-    }
-#endif
 
     // check all module path in the according order
     // the higher in the hirarchy the static context is

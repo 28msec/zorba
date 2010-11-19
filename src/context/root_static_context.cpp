@@ -94,6 +94,26 @@ void root_static_context::init()
   set_validation_mode(StaticContextConsts::lax_validation);
 
   std::vector<std::string> lRootModulePaths;
+#ifdef WIN32
+  //add first the relative path to zorba_simplestore.dll (this dll)
+  char  dll_path[1024];
+  DWORD dll_path_size;
+  dll_path_size = GetModuleFileName(NULL, dll_path, sizeof(dll_path));
+  if(dll_path_size)
+  {
+    dll_path[dll_path_size] = 0;
+    char *last_slash;
+    last_slash = strrchr(dll_path, '\\');
+    if(last_slash)
+    {
+      last_slash[1] = 0;
+      std::string fileURL;
+      fileURL = dll_path;
+      fileURL += "..\\include\\zorba\\modules\\";
+      lRootModulePaths.push_back(fileURL);
+    }
+  }
+#endif
   const char ** lPathsIter = get_builtin_module_paths();
   for (; *lPathsIter != 0; ++lPathsIter) 
   {
