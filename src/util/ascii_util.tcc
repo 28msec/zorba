@@ -103,7 +103,7 @@ void replace_all( StringType &s,
 
 template<class InputStringType,class OutputStringType>
 void trim_start( InputStringType const &in, char const *chars,
-           OutputStringType *out ) {
+                 OutputStringType *out ) {
   *out = in;
   typename OutputStringType::size_type pos = out->find_first_not_of( chars );
   out->erase( 0, pos );
@@ -111,7 +111,7 @@ void trim_start( InputStringType const &in, char const *chars,
 
 template<class InputStringType,class OutputStringType>
 void trim_end( InputStringType const &in, char const *chars,
-           OutputStringType *out ) {
+               OutputStringType *out ) {
   *out = in;
   typename OutputStringType::size_type pos = out->find_last_not_of( chars );
   if ( pos != OutputStringType::npos && ++pos < out->size() )

@@ -342,6 +342,58 @@ void trim( StringType &s, char const *chars ) {
 }
 
 /**
+ * Removes all leading specified characters.
+ *
+ * @tparam InputStringType The input string type.
+ * @tparam OutputStringType The output string type.
+ * @param in The input string.
+ * @param chars The characters to trim.
+ * @param out The output string (which must be different from \a in).
+ */
+template<class InputStringType,class OutputStringType>
+void trim_start( InputStringType const &in, char const *chars,
+                 OutputStringType *out );
+
+/**
+ * Removes all leading specified characters.
+ *
+ * @tparam StringType The string type.
+ * @param s The string.
+ */
+template<class StringType> inline
+void trim_start( StringType &s, char const *chars ) {
+  StringType temp;
+  trim_start( s, chars, &temp );
+  s = temp;
+}
+
+/**
+ * Removes all leading specified characters.
+ *
+ * @tparam InputStringType The input string type.
+ * @tparam OutputStringType The output string type.
+ * @param in The input string.
+ * @param chars The characters to trim.
+ * @param out The output string (which must be different from \a in).
+ */
+template<class InputStringType,class OutputStringType>
+void trim_end( InputStringType const &in, char const *chars,
+               OutputStringType *out );
+
+/**
+ * Removes all leading specified characters.
+ *
+ * @tparam StringType The string type.
+ * @param s The string.
+ */
+template<class StringType> inline
+void trim_end( StringType &s, char const *chars ) {
+  StringType temp;
+  trim_end( s, chars, &temp );
+  s = temp;
+}
+
+/**
  * Removes all leading and trailing whitespace.
  *
  * @tparam InputStringType The input string type.
@@ -351,7 +403,7 @@ void trim( StringType &s, char const *chars ) {
  */
 template<class InputStringType,class OutputStringType> inline
 void trim_whitespace( InputStringType const &in, OutputStringType *out ) {
-  trim( in, " \n\r\t", out );
+  trim( in, " \f\n\r\t\v", out );
 }
 
 /**
@@ -377,7 +429,7 @@ void trim_whitespace( StringType &s ) {
  *        On return, pos is stores the posoition of the 1st non-whitespace 
  *        char.
  */
-void skip_whitespace(const char* str, size_type str_len, size_type *pos);
+void skip_whitespace( const char* str, size_type str_len, size_type *pos );
 
 /**
  * Skips any consecutive whitespace chars that are found at a given starting
