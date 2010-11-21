@@ -24,12 +24,12 @@
 namespace zorba {
 
 typedef struct {
-  xqp_uint    time_low;
-  xqp_ushort  time_mid;
-  xqp_ushort  time_hi_and_version;
-  xqp_ubyte   clock_seq_hi_and_reserved;
-  xqp_ubyte   clock_seq_low;
-  xqp_byte    node[6];
+  xs_uint    time_low;
+  xs_ushort  time_mid;
+  xs_ushort  time_hi_and_version;
+  xs_ubyte   clock_seq_hi_and_reserved;
+  xs_ubyte   clock_seq_low;
+  xs_byte    node[6];
 } uuid_t;
 
 /* uuid_create -- generate a UUID */

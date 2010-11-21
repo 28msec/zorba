@@ -2091,7 +2091,7 @@ void ElementNode::adjustBaseUriProperty(
 /*******************************************************************************
 
 ********************************************************************************/
-xqp_string ElementNode::show() const
+xs_string ElementNode::show() const
 {
   std::stringstream str;
 
@@ -2726,7 +2726,7 @@ docopy:
 /*******************************************************************************
 
 ********************************************************************************/
-xqp_string AttributeNode::show() const
+xs_string AttributeNode::show() const
 {
   return zstring::concat(getNodeName()->getStringValue(), "=\"",
                            getStringValue()->str(), "\"");
@@ -3139,7 +3139,7 @@ zstring TextNode::getStringValue() const
 /*******************************************************************************
 
 ********************************************************************************/
-xqp_string TextNode::show() const
+xs_string TextNode::show() const
 {
   return zstring::concat("<text nid=\"", theOrdPath.show(), "\">", getStringValue(), "</text>");
 }
@@ -3324,7 +3324,7 @@ zstring PiNode::getStringValue() const
 /*******************************************************************************
 
 ********************************************************************************/
-xqp_string PiNode::show() const
+xs_string PiNode::show() const
 {
   return "<?" + getTarget()->str() + " " + getStringValue()->str() + "?>";
 }
@@ -3523,7 +3523,7 @@ zstring CommentNode::getStringValueP() const
 /*******************************************************************************
 
 ********************************************************************************/
-xqp_string CommentNode::show() const
+xs_string CommentNode::show() const
 {
   return "<!--" + getStringValue()->str() + "-->";
 }

@@ -37,7 +37,7 @@ typedef void (*apply_binary_fn)( ft_all_matches const&, ft_all_matches const&,
  * The integer type used in full-text, e.g., "at least N", "at most N",
  * "exactly N", "window N", etc.
  */
-typedef xqp_uint ft_int;
+typedef xs_uint ft_int;
 
 ////////// Functions //////////////////////////////////////////////////////////
 

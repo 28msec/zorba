@@ -54,9 +54,9 @@ public:			// table interface
 	std::string get(off_t id);
 	uint32_t size() const;
 
-	xqp_decimal* decimalval(char const* text, uint32_t length);
-	xqp_double* doubleval(char const* text, uint32_t length);
-	xqp_integer* integerval(char const* text, uint32_t length);
+	xs_decimal* decimalval(char const* text, uint32_t length);
+	xs_double* doubleval(char const* text, uint32_t length);
+	xs_integer* integerval(char const* text, uint32_t length);
 
 };
 

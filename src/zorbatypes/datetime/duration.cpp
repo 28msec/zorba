@@ -587,7 +587,7 @@ long Duration::getMinutes() const
 }
 
 
-xqp_decimal Duration::getSeconds() const
+xs_decimal Duration::getSeconds() const
 {
   return Decimal::parseInt(is_negative? -1 : 1) * (Decimal::parseInt(data[SECONDS_DATA]) + Decimal::parseInt(data[FRACSECONDS_DATA]) / Decimal::parseInt(FRAC_SECONDS_UPPER_LIMIT));
 }

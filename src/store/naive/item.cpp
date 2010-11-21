@@ -184,13 +184,13 @@ const zstring& Item::getString() const
 /** 
  * Accessor for xs:base64Binary
  */
-xqp_base64Binary Item::getBase64BinaryValue() const
+xs_base64Binary Item::getBase64BinaryValue() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
                         "Item::getBase64BinaryValue() not defined for items of type "
                         << getType()->getStringValue(), "");
 
-  return xqp_base64Binary();
+  return xs_base64Binary();
 }
 
 /**
@@ -210,7 +210,7 @@ bool Item::getBooleanValue() const
  * xs:nonNegativeInteger xs:positiveInteger, xs:(unsigned)long, xs:(unsigned)int,
  * xs:(unsigned)short, xs:(unsigned)byte
  */
-xqp_decimal Item::getDecimalValue() const
+xs_decimal Item::getDecimalValue() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
                         "Item::getDecimalValue() not defined for items of type "
@@ -225,7 +225,7 @@ xqp_decimal Item::getDecimalValue() const
  * xs:nonNegativeInteger xs:positiveInteger, xs:(unsigned)long, xs:(unsigned)int,
  * xs:(unsigned)short, xs:(unsigned)byte
  */
-xqp_integer Item::getIntegerValue() const
+xs_integer Item::getIntegerValue() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
                         "Item::getIntegerValue() not defined for items of type "
@@ -238,7 +238,7 @@ xqp_integer Item::getIntegerValue() const
 /** 
  * Accessor for xs:long, xs:int, xs:short, xs:byte
  */
-xqp_long Item::getLongValue() const
+xs_long Item::getLongValue() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
                         "Item::getLongValue() not defined for items of type "
@@ -251,7 +251,7 @@ xqp_long Item::getLongValue() const
 /**
  * Accessor for xs:int, xs:short, xs:byte
  */
-xqp_int Item::getIntValue() const
+xs_int Item::getIntValue() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
                         "Item::getIntValue() not defined for items of type "
@@ -264,7 +264,7 @@ xqp_int Item::getIntValue() const
 /**
  * Accessor for xs:short, xs:byte
  */
-xqp_short Item::getShortValue() const
+xs_short Item::getShortValue() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
                         "Item::getShortValue() not defined for items of type "
@@ -276,7 +276,7 @@ xqp_short Item::getShortValue() const
 /**
  * Accessor for xs:byte
  */
-xqp_byte Item::getByteValue() const
+xs_byte Item::getByteValue() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
                         "Item::getByteValue() not defined for items of type "
@@ -290,7 +290,7 @@ xqp_byte Item::getByteValue() const
  * Accessor for xs:unsignedLong,  xs:unsignedInt,  xs:unsignedShort, 
  *  xs:unsignedByte, xs:nonNegativeInteager, xs:positiveInteger
  */
-xqp_uinteger Item::getUnsignedIntegerValue() const
+xs_uinteger Item::getUnsignedIntegerValue() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
                         "Item::getUnsignedIntegerValue() not defined for items of type "
@@ -303,7 +303,7 @@ xqp_uinteger Item::getUnsignedIntegerValue() const
 /** 
  * Accessor for xs:unsignedLong, xs:unsignedInt, xs:unsignedShort, xs:unsignedByte 
  */
-xqp_ulong Item::getUnsignedLongValue() const
+xs_ulong Item::getUnsignedLongValue() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
                         "Item::getUnsignedLongValue() not defined for items of type "
@@ -315,7 +315,7 @@ xqp_ulong Item::getUnsignedLongValue() const
 /** 
  * Accessor for xs:unsignedInt, xs:unsignedShort, xs:unsignedByte 
  */
-xqp_uint Item::getUnsignedIntValue() const
+xs_uint Item::getUnsignedIntValue() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
                         "Item::getUnsignedIntValue() not defined for items of type "
@@ -327,7 +327,7 @@ xqp_uint Item::getUnsignedIntValue() const
 /** 
  * Accessor for xs:unsignedShort, xs:unsignedByte
  */
-xqp_ushort Item::getUnsignedShortValue() const
+xs_ushort Item::getUnsignedShortValue() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
                         "Item::getUnsignedShortValue() not defined for items of type "
@@ -340,7 +340,7 @@ xqp_ushort Item::getUnsignedShortValue() const
 /** 
  * Accessor for xs:unsignedByte
  */
-xqp_ubyte Item::getUnsignedByteValue() const
+xs_ubyte Item::getUnsignedByteValue() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
                         "Item::getUnsignedByteValue() not defined for items of type "
@@ -352,170 +352,170 @@ xqp_ubyte Item::getUnsignedByteValue() const
 /** 
  * Accessor for xs:float
  */
-xqp_float Item::getFloatValue() const
+xs_float Item::getFloatValue() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
                         "Item::getFloatValue() not defined for items of type "
                         << getType()->getStringValue(), "");
 
-  return *(new xqp_float);
+  return *(new xs_float);
 }
 
 
 /** 
  * Accessor for xs:double
  */
-xqp_double Item::getDoubleValue() const
+xs_double Item::getDoubleValue() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
                         "Item::getDoubleValue() not defined for items of type "
                         << getType()->getStringValue(), "");
 
-  return *(new xqp_double);
+  return *(new xs_double);
 }
 
 
 /** 
  * Accessor for xs:dateTime, xs:date
  */
-const xqp_date& Item::getDateValue() const
+const xs_date& Item::getDateValue() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
                         "Item::getDateValue() not defined for items of type "
                         << getType()->getStringValue(), "");
 
-  return *(new xqp_date);
+  return *(new xs_date);
 }
 
 /** 
  * Accessor for xs:dateTime
  */
-const xqp_dateTime& Item::getDateTimeValue() const
+const xs_dateTime& Item::getDateTimeValue() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
                         "Item::getDateTimeValue() not defined for items of type "
                         << getType()->getStringValue(), "");
-  return *(new xqp_dateTime);
+  return *(new xs_dateTime);
 }
 
 
 /** 
  * Accessor for xs:time
  */
-const xqp_time& Item::getTimeValue() const
+const xs_time& Item::getTimeValue() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
                         "Item::getTimeValue() not defined for items of type "
                         << getType()->getStringValue(), "");
 
-  return *(new xqp_time);
+  return *(new xs_time);
 }
 
 
 /** 
  * Accessor for xs:gDay
  */
-const xqp_gDay& Item::getGDayValue() const
+const xs_gDay& Item::getGDayValue() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
                         "Item::getGDayValue() not defined for items of type "
                         << getType()->getStringValue(), "");
 
-  return *(new xqp_gDay);
+  return *(new xs_gDay);
 }
 
 /** 
  * Accessor for xs:gMonth
  */
-const xqp_gMonth& Item::getGMonthValue() const
+const xs_gMonth& Item::getGMonthValue() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
                         "Item::getGMonthValue() not defined for items of type "
                         << getType()->getStringValue(), "");
 
-  return *(new xqp_gMonth);
+  return *(new xs_gMonth);
 }
 
 /** 
  * Accessor for xs:gMonthDay
  */
-const xqp_gMonthDay& Item::getGMonthDayValue() const
+const xs_gMonthDay& Item::getGMonthDayValue() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
                         "Item::getGMonthDayValue() not defined for items of type "
                         << getType()->getStringValue(), "");
 
-  return *(new xqp_gMonthDay);
+  return *(new xs_gMonthDay);
 }
 
 /** 
  * Accessor for xs:gYear
  */
-const xqp_gYear& Item::getGYearValue() const
+const xs_gYear& Item::getGYearValue() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
-  return *(new xqp_gYear);
+  return *(new xs_gYear);
 }
 
 /** 
  * Accessor for xs:gYearMonth
  */
-const xqp_gYearMonth& Item::getGYearMonthValue() const
+const xs_gYearMonth& Item::getGYearMonthValue() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
                         "Item::getGYearMonthValue() not defined for items of type "
                         << getType()->getStringValue(), "");
-  return *(new xqp_gYearMonth);
+  return *(new xs_gYearMonth);
 }
 
 /** 
  * Accessor for xs:duration
  */
-const xqp_duration& Item::getDurationValue() const
+const xs_duration& Item::getDurationValue() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
                         "Item::getDurationValue() not defined for items of type "
                         << getType()->getStringValue(), "");
 
-  return *(new xqp_duration);
+  return *(new xs_duration);
 }
 
 /** 
  * Accessor for xs:dayTimeDuration
  */
-const xqp_dayTimeDuration& Item::getDayTimeDurationValue() const
+const xs_dayTimeDuration& Item::getDayTimeDurationValue() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
                         "Item::getDayTimeDurationValue() not defined for items of type "
                         << getType()->getStringValue(), "");
 
-  return *(new xqp_dayTimeDuration);
+  return *(new xs_dayTimeDuration);
 }
 
 /**
  * Accessor for xs:yearMonthDuration
  */
-const xqp_yearMonthDuration& Item::getYearMonthDurationValue() const
+const xs_yearMonthDuration& Item::getYearMonthDurationValue() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
                         "Item::getYearMonthDurationValue() not defined for items of type "
                         << getType()->getStringValue(), "");
 
-  return *(new xqp_yearMonthDuration);
+  return *(new xs_yearMonthDuration);
 }
 
 
 /** 
  * Accessor for xs:hexBinary
  */
-xqp_hexBinary Item::getHexBinaryValue() const
+xs_hexBinary Item::getHexBinaryValue() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
                         "Item::getHexBinaryValue() not defined for items of type "
                         << getType()->getStringValue(), "");
 
-  return xqp_hexBinary();
+  return xs_hexBinary();
 }
 
 

@@ -1597,7 +1597,7 @@ void splitToAtomicTextValues(
     std::vector<zstring>& atomicTextValues)
 {
   /*xqpStringStore_t tmp = new xqpStringStore(textValue.str());
-  xqp_string normalizedTextValue(tmp->normalizeSpace());
+  xs_string normalizedTextValue(tmp->normalizeSpace());
   checked_vector<uint32_t> codes = normalizedTextValue.getCodepoints();
 
   xqpString::size_type start = 0;

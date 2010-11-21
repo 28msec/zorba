@@ -51,7 +51,7 @@ bool
 CurrentDateIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t itemRes;
-  std::auto_ptr<xqp_date> d;
+  std::auto_ptr<xs_date> d;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -71,7 +71,7 @@ bool
 CurrentTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t itemRes;
-  std::auto_ptr<xqp_time> t;
+  std::auto_ptr<xs_time> t;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -91,7 +91,7 @@ ImplicitTimezoneIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 {
   long secs;
   bool neg;
-  xqp_dayTimeDuration dtd;
+  xs_dayTimeDuration dtd;
   std::auto_ptr<Duration> dur;
 
   PlanIteratorState* state;

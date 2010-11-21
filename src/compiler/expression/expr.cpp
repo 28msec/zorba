@@ -1017,7 +1017,7 @@ const_expr::const_expr(static_context* sctx, const QueryLoc& loc, const char* v)
 }
 
 
-const_expr::const_expr(static_context* sctx, const QueryLoc& loc, xqp_integer v)
+const_expr::const_expr(static_context* sctx, const QueryLoc& loc, xs_integer v)
   :
   expr(sctx, loc, const_expr_kind)
 {
@@ -1028,7 +1028,7 @@ const_expr::const_expr(static_context* sctx, const QueryLoc& loc, xqp_integer v)
 const_expr::const_expr(
     static_context* sctx,
     const QueryLoc& loc,
-    xqp_decimal v)
+    xs_decimal v)
   :
   expr(sctx, loc, const_expr_kind)
 {
@@ -1039,7 +1039,7 @@ const_expr::const_expr(
 const_expr::const_expr(
     static_context* sctx,
     const QueryLoc& loc,
-    xqp_double v)
+    xs_double v)
   :
   expr(sctx, loc, const_expr_kind)
 {
@@ -1051,7 +1051,7 @@ const_expr::const_expr(
 const_expr::const_expr(
     static_context* sctx,
     const QueryLoc& loc,
-    xqp_boolean v)
+    xs_boolean v)
   :
   expr(sctx, loc, const_expr_kind)
 {

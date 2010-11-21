@@ -65,7 +65,7 @@ public:
 
   long getMinutes() const;
 
-  xqp_decimal getSeconds() const;
+  xs_decimal getSeconds() const;
 
   long getIntSeconds() const;
 

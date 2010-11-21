@@ -795,13 +795,13 @@ public:
 
   const_expr(static_context* sctx, const QueryLoc&, const char* sval);
 
-  const_expr(static_context* sctx, const QueryLoc&, xqp_integer);
+  const_expr(static_context* sctx, const QueryLoc&, xs_integer);
 
-  const_expr(static_context* sctx, const QueryLoc&, xqp_decimal);
+  const_expr(static_context* sctx, const QueryLoc&, xs_decimal);
 
-  const_expr(static_context* sctx, const QueryLoc&, xqp_double);
+  const_expr(static_context* sctx, const QueryLoc&, xs_double);
 
-  const_expr(static_context* sctx, const QueryLoc&, xqp_boolean);
+  const_expr(static_context* sctx, const QueryLoc&, xs_boolean);
 
   const_expr(static_context* sctx, const QueryLoc&, store::Item_t);  
 

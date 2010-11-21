@@ -205,25 +205,25 @@ off_t symbol_table::put_commentcontent(char const* yytext, uint32_t yyleng)
   return heap.put (yytext, 0, yyleng);
 }
 
-xqp_decimal* symbol_table::decimalval(char const* text, uint32_t length)
+xs_decimal* symbol_table::decimalval(char const* text, uint32_t length)
 {
-  xqp_decimal lDecimal;
+  xs_decimal lDecimal;
   NumConversions::strToDecimal(text, lDecimal);
-  return new xqp_decimal(lDecimal);
+  return new xs_decimal(lDecimal);
 }
 
-xqp_double* symbol_table::doubleval(char const* text, uint32_t length)
+xs_double* symbol_table::doubleval(char const* text, uint32_t length)
 {
-  xqp_double lDouble;
+  xs_double lDouble;
   NumConversions::strToDouble(text, lDouble);
-  return new xqp_double(lDouble);
+  return new xs_double(lDouble);
 }
 
-xqp_integer* symbol_table::integerval(char const* text, uint32_t length)
+xs_integer* symbol_table::integerval(char const* text, uint32_t length)
 {
-  xqp_integer lInteger;
+  xs_integer lInteger;
   NumConversions::strToInteger(text, lInteger);
-  return new xqp_integer(lInteger);
+  return new xs_integer(lInteger);
 }
 
 std::string symbol_table::get(off_t id)

@@ -129,7 +129,7 @@
     </zorba:function>
 
     <zorba:state>
-      <zorba:member type="xqp_string" 
+      <zorba:member type="xs_string" 
                     name="csv"
                     brief="csv text"/>
       <zorba:member type="string_codepoints_iterator" 
@@ -185,7 +185,7 @@
     </zorba:function>
 
     <zorba:state>
-      <zorba:member type="xqp_string"
+      <zorba:member type="xs_string"
                     name="csv"
                     brief="csv text"/>
       <zorba:member type="string_codepoints_iterator"

@@ -1023,7 +1023,7 @@ bool ZorbaDeleteNodesFirstIterator::nextImpl(
   store::Item_t                    collectionName;
   ulong                            collectionSize;
   store::Item_t                    numNodesItem;
-  xqp_ulong                         numNodes = 1;
+  xs_ulong                         numNodes = 1;
   std::vector<store::Item_t>       nodes;
   std::auto_ptr<store::PUL>        pul;
 
@@ -1102,7 +1102,7 @@ bool ZorbaDeleteNodesLastIterator::nextImpl(
   store::Item_t                    collectionName;
   ulong                            collectionSize;
   store::Item_t                    numNodesItem;
-  xqp_ulong                         numNodes = 1;
+  xs_ulong                         numNodes = 1;
   std::vector<store::Item_t>       nodes;
   std::auto_ptr<store::PUL>        pul;
 
@@ -1160,7 +1160,7 @@ bool ZorbaDeleteNodesLastIterator::nextImpl(
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  for (xqp_ulong i = numNodes; i > 0; --i)
+  for (xs_ulong i = numNodes; i > 0; --i)
     nodes.push_back(collection->nodeAt(collectionSize - i));
 
   pul->addDeleteFromCollection(collectionName, nodes, true);

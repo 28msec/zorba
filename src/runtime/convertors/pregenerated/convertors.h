@@ -209,7 +209,7 @@ public:
 class ZorbaCSV2XMLIteratorState : public PlanIteratorState
 {
 public:
-  xqp_string csv; //csv text
+  xs_string csv; //csv text
   string_codepoints_iterator csv_it; //iterator over csv codepoints
   bool first_row_is_header; //if the first line of csv describe the name of the columns
   checked_vector<uint32_t> separator_cp; //separator codepoint
@@ -265,7 +265,7 @@ public:
 class ZorbaTXT2XMLIteratorState : public PlanIteratorState
 {
 public:
-  xqp_string csv; //csv text
+  xs_string csv; //csv text
   string_codepoints_iterator csv_it; //iterator over csv codepoints
   bool first_row_is_header; //if the first line of csv describe the name of the columns
   checked_vector<unsigned int> columns_positions; //separator codepoint

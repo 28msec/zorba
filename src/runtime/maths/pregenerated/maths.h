@@ -822,7 +822,7 @@ public:
 class ModfIteratorState : public PlanIteratorState
 {
 public:
-  xqp_double theDoubInteger; //
+  xs_double theDoubInteger; //
 
   ModfIteratorState();
 
@@ -869,7 +869,7 @@ public:
 class FrexpIteratorState : public PlanIteratorState
 {
 public:
-  xqp_integer theIntExponent; //
+  xs_integer theIntExponent; //
 
   FrexpIteratorState();
 

@@ -239,7 +239,7 @@ double Item::getDoubleValue() const
 }
 
 
-xqp_long Item::getLongValue() const
+xs_long Item::getLongValue() const
 {
   ITEM_TRY
     

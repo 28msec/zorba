@@ -665,7 +665,7 @@ static expr_t partial_eval_logic(
     if ((constArg = dynamic_cast<const const_expr*>(arg)) != NULL)
     {
       if (constArg->get_val()->getEBV()->getBooleanValue() == shortcircuit_val)
-        return new const_expr(fo->get_sctx(), LOC(fo), (xqp_boolean)shortcircuit_val);
+        return new const_expr(fo->get_sctx(), LOC(fo), (xs_boolean)shortcircuit_val);
     }
     else
     {
@@ -684,7 +684,7 @@ static expr_t partial_eval_logic(
   if (nonConst1 < 0)
   {
     // Both args are constant exprs
-    return new const_expr(fo->get_sctx(), LOC(fo), (xqp_boolean) ! shortcircuit_val);
+    return new const_expr(fo->get_sctx(), LOC(fo), (xs_boolean) ! shortcircuit_val);
   }
 
   if (nonConst2 < 0)
@@ -747,8 +747,8 @@ static expr_t partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
                                                  XPTY0004),
                           *GENV_TYPESYSTEM.INTEGER_TYPE_ONE))
   {
-    xqp_integer ival = val->getIntegerValue();
-    xqp_integer zero = xqp_integer::parseInt(0);
+    xs_integer ival = val->getIntegerValue();
+    xs_integer zero = xs_integer::parseInt(0);
 
     if (ival < zero)
     {
@@ -760,7 +760,7 @@ static expr_t partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
                                          GET_BUILTIN_FUNCTION(FN_EMPTY_1),
                                          count_expr->get_arg(0)));
     }
-    else if (ival == xqp_integer::parseInt(1))
+    else if (ival == xs_integer::parseInt(1))
     {
       return fix_annotations(new fo_expr(fo.get_sctx(),
                                          fo.get_loc(),
@@ -779,7 +779,7 @@ static expr_t partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
       args[1] = dpos;
       args[2] = new const_expr(val_expr->get_sctx(),
                                LOC(val_expr),
-                               xqp_double(2.0));
+                               xs_double(2.0));
 
       expr_t subseq_expr = fix_annotations(
                            new fo_expr(count_expr->get_sctx(),

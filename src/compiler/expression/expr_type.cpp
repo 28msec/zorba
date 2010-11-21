@@ -345,7 +345,7 @@ void expr::compute_return_type(bool deep, bool* modified)
       if (lenExpr != NULL)
       {
         store::Item* val = lenExpr->get_val();
-        xqp_double len = val->getDoubleValue();
+        xs_double len = val->getDoubleValue();
         if (len == 1.0)
         {
           newType = tm->create_type(*e->theArgs[0]->get_return_type(),

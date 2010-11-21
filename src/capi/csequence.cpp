@@ -386,7 +386,7 @@ CSequence::integer_value(const XQC_Sequence* seq, int* value)
         // de-allocated memory.
         String lStringValue = me->theItem.getStringValue();
         const char* strvalue = lStringValue.c_str();
-        xqp_int intvalue;
+        xs_int intvalue;
         if ( ! NumConversions::strToInt(strvalue, intvalue)) {
           return XQC_TYPE_ERROR;
         }
@@ -426,7 +426,7 @@ CSequence::double_value(const XQC_Sequence* seq, double* value)
         // de-allocated memory.
         String lStringValue = me->theItem.getStringValue();
         const char* strvalue = lStringValue.c_str();
-        xqp_double doublevalue;
+        xs_double doublevalue;
         if ( ! NumConversions::strToDouble(strvalue, doublevalue)) {
           return XQC_TYPE_ERROR;
         }

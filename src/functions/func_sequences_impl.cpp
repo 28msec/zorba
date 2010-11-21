@@ -253,11 +253,11 @@ PlanIter_t fn_subsequence::codegen(
       lenExpr != NULL &&
       lenExpr->get_expr_kind() == const_expr_kind)
   {
-    xqp_double dpos = static_cast<const const_expr*>(posExpr)->
+    xs_double dpos = static_cast<const const_expr*>(posExpr)->
                       get_val()->getDoubleValue().round();
     long pos = static_cast<long>(dpos.getNumber());
 
-    xqp_double dlen = static_cast<const const_expr*>(lenExpr)->
+    xs_double dlen = static_cast<const const_expr*>(lenExpr)->
                       get_val()->getDoubleValue().round();
     long len = static_cast<long>(dlen.getNumber());
 
@@ -313,10 +313,10 @@ PlanIter_t op_zorba_subsequence_int::codegen(
       lenExpr != NULL &&
       lenExpr->get_expr_kind() == const_expr_kind)
   {
-    xqp_long pos = static_cast<const const_expr*>(posExpr)->
+    xs_long pos = static_cast<const const_expr*>(posExpr)->
                       get_val()->getLongValue();
 
-    xqp_long len = static_cast<const const_expr*>(lenExpr)->
+    xs_long len = static_cast<const const_expr*>(lenExpr)->
                       get_val()->getLongValue();
 
     const relpath_expr* pathExpr = static_cast<const relpath_expr*>(inputExpr);
@@ -392,7 +392,7 @@ PlanIter_t op_zorba_sequence_point_access::codegen(
   if (posExpr->get_expr_kind() == const_expr_kind)
   {
     store::Item* posItem = static_cast<const const_expr*>(posExpr)->get_val();
-    xqp_long pos = posItem->getLongValue();
+    xs_long pos = posItem->getLongValue();
 
     if (inputExpr->get_expr_kind() == relpath_expr_kind)
     {

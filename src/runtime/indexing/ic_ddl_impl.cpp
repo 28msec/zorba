@@ -157,7 +157,7 @@ CheckICIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     iter->close();
     
     // return result
-    //xqp_boolean icFuncResult;
+    //xs_boolean icFuncResult;
     //STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, icFuncResult),
     //             state);    
   }

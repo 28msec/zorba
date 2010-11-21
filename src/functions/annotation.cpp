@@ -93,15 +93,15 @@ AnnotationLiteral::AnnotationLiteral(const NumericLiteral* numericLiteral)
   switch (numericLiteral->get_type())
   {
   case ParseConstants::num_integer:
-    GENV_ITEMFACTORY->createInteger(theLiteral, numericLiteral->get<xqp_integer>());
+    GENV_ITEMFACTORY->createInteger(theLiteral, numericLiteral->get<xs_integer>());
     break;
 
   case ParseConstants::num_decimal:
-    GENV_ITEMFACTORY->createDecimal(theLiteral, numericLiteral->get<xqp_decimal>());
+    GENV_ITEMFACTORY->createDecimal(theLiteral, numericLiteral->get<xs_decimal>());
     break;
 
   case ParseConstants::num_double:
-    GENV_ITEMFACTORY->createDouble(theLiteral, numericLiteral->get<xqp_double>());
+    GENV_ITEMFACTORY->createDouble(theLiteral, numericLiteral->get<xs_double>());
     break;
   }
 }

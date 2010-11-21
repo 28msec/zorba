@@ -155,93 +155,93 @@ public:
 
   const zstring& getString() const { return theBaseItem->getString(); }
 
-  xqp_base64Binary getBase64BinaryValue() const { return theBaseItem->getBase64BinaryValue(); }
+  xs_base64Binary getBase64BinaryValue() const { return theBaseItem->getBase64BinaryValue(); }
 
-  xqp_hexBinary getHexBinaryValue() const { return theBaseItem->getHexBinaryValue(); }
+  xs_hexBinary getHexBinaryValue() const { return theBaseItem->getHexBinaryValue(); }
 
   bool getBooleanValue() const { return theBaseItem->getBooleanValue(); }
 
-  xqp_double getDoubleValue() const { return theBaseItem->getDoubleValue(); }
+  xs_double getDoubleValue() const { return theBaseItem->getDoubleValue(); }
 
-  xqp_float getFloatValue() const { return theBaseItem->getFloatValue(); }
+  xs_float getFloatValue() const { return theBaseItem->getFloatValue(); }
 
-  xqp_decimal getDecimalValue() const { return theBaseItem->getDecimalValue(); }
+  xs_decimal getDecimalValue() const { return theBaseItem->getDecimalValue(); }
 
-  xqp_integer getIntegerValue() const { return theBaseItem->getIntegerValue(); }
+  xs_integer getIntegerValue() const { return theBaseItem->getIntegerValue(); }
 
-  xqp_uinteger getUnsignedIntegerValue() const { return theBaseItem->getUnsignedIntegerValue(); }
+  xs_uinteger getUnsignedIntegerValue() const { return theBaseItem->getUnsignedIntegerValue(); }
 
-  xqp_long getLongValue() const { return theBaseItem->getLongValue(); }
+  xs_long getLongValue() const { return theBaseItem->getLongValue(); }
 
-  xqp_int getIntValue() const { return theBaseItem->getIntValue(); }
+  xs_int getIntValue() const { return theBaseItem->getIntValue(); }
 
-  xqp_short getShortValue() const { return theBaseItem->getShortValue(); }
+  xs_short getShortValue() const { return theBaseItem->getShortValue(); }
 
-  xqp_byte getByteValue() const { return theBaseItem->getByteValue(); }
+  xs_byte getByteValue() const { return theBaseItem->getByteValue(); }
 
-  xqp_ulong getUnsignedLongValue() const { return theBaseItem->getUnsignedLongValue(); }
+  xs_ulong getUnsignedLongValue() const { return theBaseItem->getUnsignedLongValue(); }
 
-  xqp_uint getUnsignedIntValue() const { return theBaseItem->getUnsignedIntValue(); }
+  xs_uint getUnsignedIntValue() const { return theBaseItem->getUnsignedIntValue(); }
 
-  xqp_ushort getUnsignedShortValue() const { return theBaseItem->getUnsignedShortValue(); }
+  xs_ushort getUnsignedShortValue() const { return theBaseItem->getUnsignedShortValue(); }
 
-  xqp_ubyte getUnsignedByteValue() const { return theBaseItem->getUnsignedByteValue(); }
+  xs_ubyte getUnsignedByteValue() const { return theBaseItem->getUnsignedByteValue(); }
 
   bool isNaN() const { return theBaseItem->isNaN(); }
 
   bool isPosOrNegInf() const { return theBaseItem->isPosOrNegInf(); }
 
-  const xqp_dateTime& getDateTimeValue() const
+  const xs_dateTime& getDateTimeValue() const
   {
     return theBaseItem->getDateTimeValue();
   }
 
-  const xqp_date& getDateValue() const
+  const xs_date& getDateValue() const
   {
     return theBaseItem->getDateValue();
   }
 
-  const xqp_time& getTimeValue() const
+  const xs_time& getTimeValue() const
   {
     return theBaseItem->getTimeValue();
   }
 
-  const xqp_gYearMonth& getGYearMonthValue() const
+  const xs_gYearMonth& getGYearMonthValue() const
   {
     return theBaseItem->getGYearMonthValue();
   }
 
-  const xqp_gYear& getGYearValue() const
+  const xs_gYear& getGYearValue() const
   {
     return theBaseItem->getGYearValue();
   }
 
-  const xqp_gMonth& getGMonthValue() const
+  const xs_gMonth& getGMonthValue() const
   {
     return theBaseItem->getGMonthValue();
   }
 
-  const xqp_gMonthDay& getGMonthDayValue() const
+  const xs_gMonthDay& getGMonthDayValue() const
   {
     return theBaseItem->getGMonthDayValue();
   }
 
-  const xqp_gDay& getGDayValue() const
+  const xs_gDay& getGDayValue() const
   {
     return theBaseItem->getGDayValue();
   }
 
-  const xqp_duration& getDurationValue() const
+  const xs_duration& getDurationValue() const
   {
     return theBaseItem->getDurationValue();
   }
 
-  const xqp_dayTimeDuration& getDayTimeDurationValue() const
+  const xs_dayTimeDuration& getDayTimeDurationValue() const
   {
     return theBaseItem->getDayTimeDurationValue();
   }
 
-  const xqp_yearMonthDuration& getYearMonthDurationValue() const
+  const xs_yearMonthDuration& getYearMonthDurationValue() const
   {
     return theBaseItem->getYearMonthDurationValue();
   }
@@ -805,21 +805,21 @@ protected:
   DateTimeItem() { };
 
 public:
-  const xqp_dateTime& getDateTimeValue() const { return theValue; }
+  const xs_dateTime& getDateTimeValue() const { return theValue; }
 
-  const xqp_date& getDateValue() const { return theValue; }
+  const xs_date& getDateValue() const { return theValue; }
 
-  const xqp_time& getTimeValue() const { return theValue; }
+  const xs_time& getTimeValue() const { return theValue; }
 
-  const xqp_gYearMonth& getGYearMonthValue() const { return theValue; }
+  const xs_gYearMonth& getGYearMonthValue() const { return theValue; }
 
-  const xqp_gYear& getGYearValue() const { return theValue; }
+  const xs_gYear& getGYearValue() const { return theValue; }
 
-  const xqp_gMonth& getGMonthValue() const { return theValue; }
+  const xs_gMonth& getGMonthValue() const { return theValue; }
 
-  const xqp_gMonthDay& getGMonthDayValue() const { return theValue; }
+  const xs_gMonthDay& getGMonthDayValue() const { return theValue; }
 
-  const xqp_gDay& getGDayValue() const { return theValue; }
+  const xs_gDay& getGDayValue() const { return theValue; }
 
   SchemaTypeCode getTypeCode() const;
 
@@ -860,16 +860,16 @@ protected:
   Duration theValue;
 
 protected:
-  DurationItem(const xqp_duration* aValue) : theValue(*aValue) { };
+  DurationItem(const xs_duration* aValue) : theValue(*aValue) { };
 
   DurationItem() {}
 
 public:
-  const xqp_duration& getDurationValue() const;
+  const xs_duration& getDurationValue() const;
 
-  const xqp_dayTimeDuration& getDayTimeDurationValue() const;
+  const xs_dayTimeDuration& getDayTimeDurationValue() const;
 
-  const xqp_yearMonthDuration& getYearMonthDurationValue() const;
+  const xs_yearMonthDuration& getYearMonthDurationValue() const;
 
   SchemaTypeCode getTypeCode() const;
 
@@ -917,15 +917,15 @@ class DoubleItem : public AtomicItem
   friend class BasicItemFactory;
 
 protected:
-	xqp_double theValue;
+	xs_double theValue;
 
 protected:
-	DoubleItem(const xqp_double& aValue) : theValue( aValue ) {}
+	DoubleItem(const xs_double& aValue) : theValue( aValue ) {}
 
   DoubleItem() {}
 
 public:
-	xqp_double getDoubleValue() const { return theValue; }
+	xs_double getDoubleValue() const { return theValue; }
 
   bool isNaN() const;
   bool isPosOrNegInf() const;
@@ -975,17 +975,17 @@ class FloatItem : public AtomicItem
   friend class BasicItemFactory;
 
 protected:
-  xqp_float theValue;
+  xs_float theValue;
 
 protected:
-  FloatItem(const xqp_float& aValue) : theValue ( aValue ) {}
+  FloatItem(const xs_float& aValue) : theValue ( aValue ) {}
 
   FloatItem() {}
 
 public:
-  xqp_float getFloatValue() const { return theValue; }
+  xs_float getFloatValue() const { return theValue; }
 
-  xqp_double getDoubleValue() const { return FloatCommons::parseFloat(theValue); }
+  xs_double getDoubleValue() const { return FloatCommons::parseFloat(theValue); }
 
   bool isNaN() const;
 
@@ -1059,14 +1059,14 @@ class DecimalItem : public AtomicItem
   friend class AtomicItem;
 
 protected:
-  xqp_decimal theValue;
+  xs_decimal theValue;
 
-  DecimalItem(const xqp_decimal& aValue) : theValue(aValue) {}
+  DecimalItem(const xs_decimal& aValue) : theValue(aValue) {}
 
   DecimalItem() {}
 
 public:
-  xqp_decimal getDecimalValue() const { return theValue; }
+  xs_decimal getDecimalValue() const { return theValue; }
 
   SchemaTypeCode getTypeCode() const { return XS_DECIMAL; }
 
@@ -1116,19 +1116,19 @@ class IntegerItem : public AtomicItem
   friend class AtomicItem;
 
 protected:
-  xqp_integer theValue;
+  xs_integer theValue;
 
 protected:
-  IntegerItem(const xqp_integer& aValue) : theValue ( aValue ) {}
+  IntegerItem(const xs_integer& aValue) : theValue ( aValue ) {}
 
   IntegerItem() {}
 
 public:
-  xqp_decimal getDecimalValue() const;
+  xs_decimal getDecimalValue() const;
 
-  xqp_integer getIntegerValue() const { return theValue; }
+  xs_integer getIntegerValue() const { return theValue; }
 
-  xqp_long getLongValue() const;
+  xs_long getLongValue() const;
 
   virtual SchemaTypeCode getTypeCode() const { return XS_INTEGER; }
 
@@ -1191,7 +1191,7 @@ class NonPositiveIntegerItem : public IntegerItem
   friend class BasicItemFactory;
 
 protected:
-  NonPositiveIntegerItem(const xqp_integer& aValue) : IntegerItem(aValue) {}
+  NonPositiveIntegerItem(const xs_integer& aValue) : IntegerItem(aValue) {}
 
   NonPositiveIntegerItem() {}
 
@@ -1212,7 +1212,7 @@ class NegativeIntegerItem : public IntegerItem
   friend class BasicItemFactory;
 
 protected:
-  NegativeIntegerItem(const xqp_integer& aValue) : IntegerItem(aValue) {}
+  NegativeIntegerItem(const xs_integer& aValue) : IntegerItem(aValue) {}
 
   NegativeIntegerItem() {}
 
@@ -1228,19 +1228,19 @@ public:
 /*******************************************************************************
   class NonNegativeIntegerItem
 
-  Note: xqp_uinteger is typedef of Integer
+  Note: xs_uinteger is typedef of Integer
 ********************************************************************************/
 class NonNegativeIntegerItem : public IntegerItem
 {
   friend class BasicItemFactory;
 
 protected:
-  NonNegativeIntegerItem(const xqp_uinteger& aValue) : IntegerItem(aValue) {}
+  NonNegativeIntegerItem(const xs_uinteger& aValue) : IntegerItem(aValue) {}
 
   NonNegativeIntegerItem() {}
 
 public:
-  xqp_uinteger getUnsignedIntegerValue() const { return theValue; }
+  xs_uinteger getUnsignedIntegerValue() const { return theValue; }
 
   SchemaTypeCode getTypeCode() const { return XS_NON_NEGATIVE_INTEGER; }
 
@@ -1258,12 +1258,12 @@ class PositiveIntegerItem : public  IntegerItem
   friend class BasicItemFactory;
 
 protected:
-  PositiveIntegerItem(const xqp_uinteger& aValue) : IntegerItem(aValue) { }
+  PositiveIntegerItem(const xs_uinteger& aValue) : IntegerItem(aValue) { }
 
   PositiveIntegerItem() {}
 
 public:
-  xqp_uinteger getUnsignedIntegerValue() const { return theValue; }
+  xs_uinteger getUnsignedIntegerValue() const { return theValue; }
 
   SchemaTypeCode getTypeCode() const { return XS_POSITIVE_INTEGER; }
 
@@ -1282,19 +1282,19 @@ class LongItem : public AtomicItem
   friend class AtomicItem;
 
 protected:
-  xqp_long theValue;
+  xs_long theValue;
 
 protected:
-  LongItem(xqp_long aValue) : theValue(aValue) {}
+  LongItem(xs_long aValue) : theValue(aValue) {}
 
   LongItem() {}
 
 public:
-  xqp_decimal getDecimalValue() const;
+  xs_decimal getDecimalValue() const;
 
-  xqp_integer getIntegerValue() const;
+  xs_integer getIntegerValue() const;
 
-  xqp_long getLongValue() const { return theValue; }
+  xs_long getLongValue() const { return theValue; }
 
   SchemaTypeCode getTypeCode() const { return XS_LONG; }
 
@@ -1363,18 +1363,18 @@ protected:
   int32_t theValue;
 
 protected:
-  IntItem(xqp_int aValue) : theValue(aValue) {}
+  IntItem(xs_int aValue) : theValue(aValue) {}
 
   IntItem() {}
 
 public:
   bool isNaN() const { return false; }
 
-  xqp_decimal getDecimalValue() const;
+  xs_decimal getDecimalValue() const;
 
-  xqp_integer getIntegerValue() const;
+  xs_integer getIntegerValue() const;
 
-  xqp_long getLongValue() const { return static_cast<xqp_long>(theValue); }
+  xs_long getLongValue() const { return static_cast<xs_long>(theValue); }
 
   int32_t getIntValue() const { return theValue; }
 
@@ -1440,23 +1440,23 @@ class ShortItem : public AtomicItem
   friend class AtomicItem;
 
 protected:
-  xqp_short theValue;
+  xs_short theValue;
 
 protected:
-  ShortItem(xqp_short aValue)  : theValue(aValue) {}
+  ShortItem(xs_short aValue)  : theValue(aValue) {}
 
   ShortItem() {}
 
 public:
-  xqp_decimal getDecimalValue() const;
+  xs_decimal getDecimalValue() const;
 
-  xqp_integer getIntegerValue() const;
+  xs_integer getIntegerValue() const;
 
-  xqp_long getLongValue() const { return static_cast<xqp_long>(theValue); }
+  xs_long getLongValue() const { return static_cast<xs_long>(theValue); }
 
-  xqp_int getIntValue() const { return static_cast<xqp_int>(theValue); }
+  xs_int getIntValue() const { return static_cast<xs_int>(theValue); }
 
-  xqp_short getShortValue() const { return theValue; }
+  xs_short getShortValue() const { return theValue; }
 
   SchemaTypeCode getTypeCode() const { return XS_SHORT; }
 
@@ -1522,25 +1522,25 @@ class ByteItem : public AtomicItem
   friend class AtomicItem;
 
 protected:
-  xqp_byte theValue;
+  xs_byte theValue;
 
 protected:
-  ByteItem(xqp_byte aValue) : theValue(aValue) {}
+  ByteItem(xs_byte aValue) : theValue(aValue) {}
 
   ByteItem() {}
 
 public:
-  xqp_decimal getDecimalValue() const;
+  xs_decimal getDecimalValue() const;
 
-  xqp_integer getIntegerValue() const;
+  xs_integer getIntegerValue() const;
 
-  xqp_long getLongValue() const { return static_cast<xqp_long>(theValue); }
+  xs_long getLongValue() const { return static_cast<xs_long>(theValue); }
 
-  xqp_int getIntValue() const { return static_cast<xqp_int>(theValue); }
+  xs_int getIntValue() const { return static_cast<xs_int>(theValue); }
 
-  xqp_short getShortValue() const { return static_cast<xqp_short>(theValue); }
+  xs_short getShortValue() const { return static_cast<xs_short>(theValue); }
 
-  xqp_byte getByteValue() const { return theValue; }
+  xs_byte getByteValue() const { return theValue; }
 
   SchemaTypeCode getTypeCode() const { return XS_BYTE; }
 
@@ -1606,23 +1606,23 @@ class UnsignedLongItem : public AtomicItem
   friend class AtomicItem;
 
 protected:
-  xqp_ulong theValue;
+  xs_ulong theValue;
 
 protected:
-  UnsignedLongItem(xqp_ulong aValue) : theValue(aValue) {}
+  UnsignedLongItem(xs_ulong aValue) : theValue(aValue) {}
 
   UnsignedLongItem() {}
 
  public:
   bool isNaN() const { return false; }
 
-  xqp_decimal getDecimalValue() const;
+  xs_decimal getDecimalValue() const;
 
-  xqp_integer getIntegerValue() const;
+  xs_integer getIntegerValue() const;
 
-  xqp_uinteger getUnsignedIntegerValue() const;
+  xs_uinteger getUnsignedIntegerValue() const;
 
-  xqp_ulong getUnsignedLongValue() const { return theValue; }
+  xs_ulong getUnsignedLongValue() const { return theValue; }
 
   SchemaTypeCode getTypeCode() const { return XS_UNSIGNED_LONG; }
 
@@ -1686,27 +1686,27 @@ class UnsignedIntItem : public AtomicItem
   friend class AtomicItem;
 
 protected:
-  xqp_uint theValue;
+  xs_uint theValue;
 
 protected:
-  UnsignedIntItem(xqp_uint aValue) : theValue(aValue) {}
+  UnsignedIntItem(xs_uint aValue) : theValue(aValue) {}
 
   UnsignedIntItem() {}
 
 public:
   bool isNaN() const { return false; }
 
-  xqp_decimal getDecimalValue() const;
+  xs_decimal getDecimalValue() const;
 
-  xqp_integer getIntegerValue() const;
+  xs_integer getIntegerValue() const;
 
-  xqp_uinteger getUnsignedIntegerValue() const;
+  xs_uinteger getUnsignedIntegerValue() const;
 
-  xqp_long getLongValue() const { return static_cast<xqp_long>(theValue); }
+  xs_long getLongValue() const { return static_cast<xs_long>(theValue); }
 
-  xqp_ulong getUnsignedLongValue() const { return static_cast<xqp_ulong>(theValue); }
+  xs_ulong getUnsignedLongValue() const { return static_cast<xs_ulong>(theValue); }
 
-  xqp_uint getUnsignedIntValue() const { return theValue; }
+  xs_uint getUnsignedIntValue() const { return theValue; }
 
   SchemaTypeCode getTypeCode() const { return XS_UNSIGNED_INT; }
 
@@ -1777,27 +1777,27 @@ class UnsignedShortItem : public AtomicItem
   friend class AtomicItem;
 
 protected:
-  xqp_ushort theValue;
+  xs_ushort theValue;
 
 protected:
-  UnsignedShortItem(xqp_ushort aValue) : theValue(aValue) {}
+  UnsignedShortItem(xs_ushort aValue) : theValue(aValue) {}
 
   UnsignedShortItem() {}
 
 public:
-  xqp_decimal getDecimalValue() const;
+  xs_decimal getDecimalValue() const;
 
-  xqp_integer getIntegerValue() const;
+  xs_integer getIntegerValue() const;
 
-  xqp_uinteger getUnsignedIntegerValue() const;
+  xs_uinteger getUnsignedIntegerValue() const;
 
-  xqp_long getLongValue() const { return static_cast<xqp_long>(theValue); }
+  xs_long getLongValue() const { return static_cast<xs_long>(theValue); }
 
-  xqp_ulong getUnsignedLongValue() const { return static_cast<xqp_ulong>(theValue); }
+  xs_ulong getUnsignedLongValue() const { return static_cast<xs_ulong>(theValue); }
 
-  xqp_uint getUnsignedIntValue() const { return static_cast<xqp_uint>(theValue); }
+  xs_uint getUnsignedIntValue() const { return static_cast<xs_uint>(theValue); }
 
-  xqp_ushort getUnsignedShortValue() const { return theValue; }
+  xs_ushort getUnsignedShortValue() const { return theValue; }
 
   bool isNaN() const { return false; }
 
@@ -1870,29 +1870,29 @@ class UnsignedByteItem : public AtomicItem
   friend class AtomicItem;
 
 protected:
-  xqp_ubyte theValue;
+  xs_ubyte theValue;
 
 protected:
-  UnsignedByteItem(xqp_ubyte aValue) : theValue(aValue) {}
+  UnsignedByteItem(xs_ubyte aValue) : theValue(aValue) {}
 
   UnsignedByteItem() : theValue(0) {}
 
 public:
-  xqp_decimal getDecimalValue() const;
+  xs_decimal getDecimalValue() const;
 
-  xqp_integer getIntegerValue() const;
+  xs_integer getIntegerValue() const;
 
-  xqp_uinteger getUnsignedIntegerValue() const;
+  xs_uinteger getUnsignedIntegerValue() const;
 
-  xqp_long getLongValue() const { return static_cast<xqp_long>(theValue); }
+  xs_long getLongValue() const { return static_cast<xs_long>(theValue); }
 
-  xqp_ulong getUnsignedLongValue() const { return static_cast<xqp_ulong>(theValue); }
+  xs_ulong getUnsignedLongValue() const { return static_cast<xs_ulong>(theValue); }
 
-  xqp_uint getUnsignedIntValue() const { return static_cast<xqp_uint>(theValue); }
+  xs_uint getUnsignedIntValue() const { return static_cast<xs_uint>(theValue); }
 
-  xqp_ushort getUnsignedShortValue() const { return static_cast<xqp_ushort>(theValue); }
+  xs_ushort getUnsignedShortValue() const { return static_cast<xs_ushort>(theValue); }
 
-  xqp_ubyte getUnsignedByteValue() const { return theValue; }
+  xs_ubyte getUnsignedByteValue() const { return theValue; }
 
   bool isNaN() const { return false; }
 
@@ -1964,15 +1964,15 @@ class BooleanItem : public AtomicItem
  friend class BasicItemFactory;
 
 protected:
-  xqp_boolean theValue;
+  xs_boolean theValue;
 
 protected:
-  BooleanItem(xqp_boolean aValue) : theValue(aValue) {}
+  BooleanItem(xs_boolean aValue) : theValue(aValue) {}
 
   BooleanItem() {}
 
 public:
-  xqp_boolean getBooleanValue() const { return theValue; }
+  xs_boolean getBooleanValue() const { return theValue; }
 
   SchemaTypeCode getTypeCode() const { return XS_BOOLEAN; }
 
@@ -2018,15 +2018,15 @@ class Base64BinaryItem : public AtomicItem
   friend class BasicItemFactory;
 
 protected:
-  xqp_base64Binary theValue;
+  xs_base64Binary theValue;
 
 protected:
-  Base64BinaryItem(xqp_base64Binary aValue) : theValue(aValue) {}
+  Base64BinaryItem(xs_base64Binary aValue) : theValue(aValue) {}
 
   Base64BinaryItem() {}
 
 public:
-  xqp_base64Binary getBase64BinaryValue() const { return theValue; }
+  xs_base64Binary getBase64BinaryValue() const { return theValue; }
 
   SchemaTypeCode getTypeCode() const { return XS_BASE64BINARY; }
 
@@ -2060,15 +2060,15 @@ class HexBinaryItem : public AtomicItem
   friend class BasicItemFactory;
 
 protected:
-  xqp_hexBinary theValue;
+  xs_hexBinary theValue;
 
 protected:
-  HexBinaryItem(xqp_hexBinary aValue) : theValue(aValue) {}
+  HexBinaryItem(xs_hexBinary aValue) : theValue(aValue) {}
 
   HexBinaryItem() {}
 
 public:
-  xqp_hexBinary getHexBinaryValue() const { return theValue; }
+  xs_hexBinary getHexBinaryValue() const { return theValue; }
 
   SchemaTypeCode getTypeCode() const { return XS_HEXBINARY; }
 

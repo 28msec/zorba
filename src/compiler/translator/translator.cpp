@@ -8484,17 +8484,17 @@ void end_visit(const NumericLiteral& v, void* /*visit_state*/)
   {
   case ParseConstants::num_integer:
   {
-    push_nodestack(new const_expr(theRootSctx, loc, v.get<xqp_integer>()));
+    push_nodestack(new const_expr(theRootSctx, loc, v.get<xs_integer>()));
     break;
   }
   case ParseConstants::num_decimal:
   {
-    push_nodestack(new const_expr(theRootSctx, loc, v.get<xqp_decimal>()));
+    push_nodestack(new const_expr(theRootSctx, loc, v.get<xs_decimal>()));
     break;
   }
   case ParseConstants::num_double:
   {
-    push_nodestack(new const_expr(theRootSctx, loc, v.get<xqp_double>()));
+    push_nodestack(new const_expr(theRootSctx, loc, v.get<xs_double>()));
     break;
   }
   }
@@ -8880,7 +8880,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
       varref_t tv = create_temp_var(loc, var_expr::let_var);
 
-      expr_t nanExpr = new const_expr(theRootSctx, loc, xqp_double::nan());
+      expr_t nanExpr = new const_expr(theRootSctx, loc, xs_double::nan());
 
       expr_t condExpr = new castable_expr(theRootSctx, loc, &*tv, theRTM.DOUBLE_TYPE_ONE);
 

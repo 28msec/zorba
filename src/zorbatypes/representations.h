@@ -29,51 +29,51 @@ namespace zorba {
   typedef rchandle<DurationBase> DurationBase_t;
 
   //
-  // Mapping of basic schema types to C++ language types.
+  // Mapping of basic XML schema types to C++ language types.
   //
-  typedef zstring       xqp_anyURI;
-  typedef Base64        xqp_base64Binary;
-  typedef bool          xqp_boolean;
-  typedef char          xqp_byte;
-  typedef DateTime      xqp_date;
-  typedef DateTime      xqp_dateTime;
-  typedef Duration      xqp_dayTimeDuration;
-  typedef Decimal       xqp_decimal;
-  typedef Double        xqp_double;
-  typedef Duration      xqp_duration;
-  typedef zstring       xqp_ENTITIES;
-  typedef zstring       xqp_ENTITY;
-  typedef Float         xqp_float;
-  typedef DateTime      xqp_gDay;
-  typedef DateTime      xqp_gMonth;
-  typedef DateTime      xqp_gMonthDay;
-  typedef DateTime      xqp_gYear;
-  typedef DateTime      xqp_gYearMonth;
-  typedef Base16        xqp_hexBinary;
-  typedef zstring       xqp_ID;
-  typedef zstring       xqp_IDREF;
-  typedef zstring       xqp_IDREFS;
-  typedef int32_t       xqp_int;
-  typedef Integer       xqp_integer;
-  typedef zstring       xqp_language;
-  typedef int64_t       xqp_long;
-  typedef zstring       xqp_Name;
-  typedef zstring       xqp_NCName;
-  typedef zstring       xqp_NMTOKEN;
-  typedef zstring       xqp_NMTOKENS;
-  typedef zstring       xqp_normalizedString;
-  typedef zstring       xqp_NOTATION;
-  typedef zstring       xqp_QName;
-  typedef int16_t       xqp_short;
-  typedef zstring       xqp_string;
-  typedef DateTime      xqp_time;
-  typedef zstring       xqp_token;
-  typedef unsigned char xqp_ubyte;
-  typedef uint32_t      xqp_uint;
-  typedef Integer       xqp_uinteger;
-  typedef uint64_t      xqp_ulong;
-  typedef uint16_t      xqp_ushort;
-  typedef Duration      xqp_yearMonthDuration;
+  typedef zstring       xs_anyURI;
+  typedef Base64        xs_base64Binary;
+  typedef bool          xs_boolean;
+  typedef char          xs_byte;
+  typedef DateTime      xs_date;
+  typedef DateTime      xs_dateTime;
+  typedef Duration      xs_dayTimeDuration;
+  typedef Decimal       xs_decimal;
+  typedef Double        xs_double;
+  typedef Duration      xs_duration;
+  typedef zstring       xs_ENTITIES;
+  typedef zstring       xs_ENTITY;
+  typedef Float         xs_float;
+  typedef DateTime      xs_gDay;
+  typedef DateTime      xs_gMonth;
+  typedef DateTime      xs_gMonthDay;
+  typedef DateTime      xs_gYear;
+  typedef DateTime      xs_gYearMonth;
+  typedef Base16        xs_hexBinary;
+  typedef zstring       xs_ID;
+  typedef zstring       xs_IDREF;
+  typedef zstring       xs_IDREFS;
+  typedef int32_t       xs_int;
+  typedef Integer       xs_integer;
+  typedef zstring       xs_language;
+  typedef int64_t       xs_long;
+  typedef zstring       xs_Name;
+  typedef zstring       xs_NCName;
+  typedef zstring       xs_NMTOKEN;
+  typedef zstring       xs_NMTOKENS;
+  typedef zstring       xs_normalizedString;
+  typedef zstring       xs_NOTATION;
+  typedef zstring       xs_QName;
+  typedef int16_t       xs_short;
+  typedef zstring       xs_string;
+  typedef DateTime      xs_time;
+  typedef zstring       xs_token;
+  typedef unsigned char xs_ubyte;
+  typedef uint32_t      xs_uint;
+  typedef Integer       xs_uinteger;
+  typedef uint64_t      xs_ulong;
+  typedef uint16_t      xs_ushort;
+  typedef Duration      xs_yearMonthDuration;
 
 } // namespace zorba
 #endif /* ZORBA_REPRESENTATIONS_H */

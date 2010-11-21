@@ -187,7 +187,7 @@ public:
       
   virtual long getMinutes() const;
       
-  virtual xqp_decimal getSeconds() const;
+  virtual xs_decimal getSeconds() const;
 
   virtual long getFractionalSeconds() const;
 

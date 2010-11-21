@@ -233,15 +233,15 @@ FnInsertBeforeIteratorState::~FnInsertBeforeIteratorState() {}
 
 void FnInsertBeforeIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
-  theCurrentPos = xqp_integer::parseInt(0);
-  thePosition = xqp_integer::parseInt(0);
+  theCurrentPos = xs_integer::parseInt(0);
+  thePosition = xs_integer::parseInt(0);
   theTargetItem = NULL;
 }
 
 void FnInsertBeforeIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
-  theCurrentPos = xqp_integer::parseInt(0);
-  thePosition = xqp_integer::parseInt(0);
+  theCurrentPos = xs_integer::parseInt(0);
+  thePosition = xs_integer::parseInt(0);
   theTargetItem = NULL;
 }
 // </FnInsertBeforeIterator>
@@ -279,15 +279,15 @@ FnRemoveIteratorState::~FnRemoveIteratorState() {}
 
 void FnRemoveIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
-  theCurrentPos = xqp_integer::parseInt(0);
-  thePosition = xqp_integer::parseInt(0);
+  theCurrentPos = xs_integer::parseInt(0);
+  thePosition = xs_integer::parseInt(0);
   theCollator = 0;
 }
 
 void FnRemoveIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
-  theCurrentPos = xqp_integer::parseInt(0);
-  thePosition = xqp_integer::parseInt(0);
+  theCurrentPos = xs_integer::parseInt(0);
+  thePosition = xs_integer::parseInt(0);
   theCollator = 0;
 }
 // </FnRemoveIterator>
@@ -851,16 +851,16 @@ OpToIteratorState::~OpToIteratorState() {}
 
 void OpToIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
-  theCurInt = xqp_integer::parseInt(0);
-  theFirstVal = xqp_integer::parseInt(0);
-  theLastVal = xqp_integer::parseInt(0);
+  theCurInt = xs_integer::parseInt(0);
+  theFirstVal = xs_integer::parseInt(0);
+  theLastVal = xs_integer::parseInt(0);
 }
 
 void OpToIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
-  theCurInt = xqp_integer::parseInt(0);
-  theFirstVal = xqp_integer::parseInt(0);
-  theLastVal = xqp_integer::parseInt(0);
+  theCurInt = xs_integer::parseInt(0);
+  theFirstVal = xs_integer::parseInt(0);
+  theLastVal = xs_integer::parseInt(0);
 }
 // </OpToIterator>
 

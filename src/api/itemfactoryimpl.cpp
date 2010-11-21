@@ -126,9 +126,9 @@ Item ItemFactoryImpl::createNCName(const String& aValue)
 Item ItemFactoryImpl::createBase64Binary(const char* aBinData, size_t aLength)
 {
   store::Item_t lItem;
-  xqp_base64Binary n;
+  xs_base64Binary n;
   std::string lMessage;
-  if (xqp_base64Binary::parseString(aBinData, aLength, n, lMessage)) {
+  if (xs_base64Binary::parseString(aBinData, aLength, n, lMessage)) {
     theItemFactory->createBase64Binary(lItem, n);
   } else {
     ZORBA_ERROR_DESC(STR0040_TYPE_ERROR, lMessage);
@@ -139,9 +139,9 @@ Item ItemFactoryImpl::createBase64Binary(const char* aBinData, size_t aLength)
 Item ItemFactoryImpl::createBase64Binary(const unsigned char* aBinData, size_t aLength)
 {
   store::Item_t lItem;
-  xqp_base64Binary n;
+  xs_base64Binary n;
   std::string lMessage;
-  xqp_base64Binary::encode(aBinData, aLength, n);
+  xs_base64Binary::encode(aBinData, aLength, n);
   theItemFactory->createBase64Binary(lItem, n);
   return &*lItem;
 }
@@ -368,8 +368,8 @@ Item ItemFactoryImpl::createFloat ( float aValue )
 Item ItemFactoryImpl::createHexBinary ( const char* aHexData, size_t aSize )
   {
     store::Item_t lItem;
-    xqp_hexBinary n;
-    if (xqp_hexBinary::parseString(aHexData, aSize, n))
+    xs_hexBinary n;
+    if (xs_hexBinary::parseString(aHexData, aSize, n))
       theItemFactory->createHexBinary(lItem, n);
     
     return &*lItem;

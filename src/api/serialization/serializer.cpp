@@ -1846,7 +1846,7 @@ serializer::binary_emitter::binary_emitter(
 ********************************************************************************/
 void serializer::binary_emitter::emit_item(const store::Item* item)
 {
-  xqp_base64Binary lValue;
+  xs_base64Binary lValue;
 
   // First assume the item is a base64Binary item and try to get its value.
   try 

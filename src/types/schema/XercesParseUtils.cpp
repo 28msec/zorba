@@ -87,7 +87,7 @@ bool XercesParseUtils::parseXSInteger(
   {
     long value = xsval->fData.fValue.f_long;
 
-    xqp_integer tvalue = Integer::parseLong(value);
+    xs_integer tvalue = Integer::parseLong(value);
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     return factory->createInteger(result, tvalue);
@@ -117,7 +117,7 @@ bool XercesParseUtils::parseXSPositiveInteger(
   {
     long value = xsval->fData.fValue.f_long;
 
-    xqp_integer tvalue = Integer::parseLong(value);
+    xs_integer tvalue = Integer::parseLong(value);
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     return factory->createPositiveInteger(result, tvalue);
@@ -147,7 +147,7 @@ bool XercesParseUtils::parseXSNonPositiveInteger(
   {
     long value = xsval->fData.fValue.f_long;
 
-    xqp_integer tvalue = Integer::parseLong(value);
+    xs_integer tvalue = Integer::parseLong(value);
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     return factory->createNonPositiveInteger(result, tvalue);
@@ -177,7 +177,7 @@ bool XercesParseUtils::parseXSNegativeInteger(
   {
     long value = xsval->fData.fValue.f_long;
 
-    xqp_integer tvalue = Integer::parseLong(value);
+    xs_integer tvalue = Integer::parseLong(value);
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     return factory->createNegativeInteger(result, tvalue);
@@ -206,7 +206,7 @@ bool XercesParseUtils::parseXSNonNegativeInteger(
   {
     long value = xsval->fData.fValue.f_long;
 
-    xqp_integer tvalue = Integer::parseLong(value);
+    xs_integer tvalue = Integer::parseLong(value);
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     return factory->createNonNegativeInteger(result, tvalue);
@@ -235,7 +235,7 @@ bool XercesParseUtils::parseXSUnsignedByte(
   {
     int value = xsval->fData.fValue.f_uchar;
 
-    xqp_ubyte tvalue = value;
+    xs_ubyte tvalue = value;
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     return factory->createUnsignedByte(result, tvalue);
@@ -264,7 +264,7 @@ bool XercesParseUtils::parseXSUnsignedShort(
   {
     int value = xsval->fData.fValue.f_ushort;
 
-    xqp_ushort tvalue = value;
+    xs_ushort tvalue = value;
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     return factory->createUnsignedShort(result, tvalue);
@@ -293,7 +293,7 @@ bool XercesParseUtils::parseXSUnsignedInt(
   {
     ulong value = xsval->fData.fValue.f_uint;
 
-    xqp_uint tvalue = value;
+    xs_uint tvalue = value;
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     return factory->createUnsignedInt(result, tvalue);
@@ -321,7 +321,7 @@ bool XercesParseUtils::parseXSUnsignedLong(
   {
     ulong value = xsval->fData.fValue.f_ulong;
 
-    xqp_ulong tvalue = value;
+    xs_ulong tvalue = value;
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     return factory->createUnsignedLong(result, tvalue);
@@ -350,7 +350,7 @@ bool XercesParseUtils::parseXSByte(
   {
     int value = xsval->fData.fValue.f_char;
 
-    xqp_byte tvalue = value;
+    xs_byte tvalue = value;
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     return factory->createByte(result, tvalue);
@@ -378,7 +378,7 @@ bool XercesParseUtils::parseXSShort(
   {
     short value = xsval->fData.fValue.f_short;
 
-    xqp_short tvalue = value;
+    xs_short tvalue = value;
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     return factory->createShort(result, tvalue);
@@ -406,7 +406,7 @@ bool XercesParseUtils::parseXSInt(
   {
     int value = xsval->fData.fValue.f_int;
 
-    xqp_int tvalue = value;
+    xs_int tvalue = value;
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     return factory->createInt(result, tvalue);
@@ -434,7 +434,7 @@ bool XercesParseUtils::parseXSLong(
   {
     long value = xsval->fData.fValue.f_long;
 
-    xqp_long tvalue = value;
+    xs_long tvalue = value;
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     return factory->createLong(result, tvalue);
@@ -462,7 +462,7 @@ bool XercesParseUtils::parseXSFloat(
   {
     //float value = xsval->fData.fValue.f_float;
 
-    //xqp_float tvalue = value;
+    //xs_float tvalue = value;
 
     //store::ItemFactory* factory = GENV_ITEMFACTORY;
     //return factory->createFloat(result, tvalue);
@@ -472,7 +472,7 @@ bool XercesParseUtils::parseXSFloat(
     zstring textValue2;
     utf8::normalize_whitespace(textValue, &textValue2);
     store::ItemFactory* factory = GENV_ITEMFACTORY;
-    xqp_float n;
+    xs_float n;
     if (NumConversions::strToFloat(textValue2.c_str(), n))
     {
       return factory->createFloat(result, n);
@@ -502,7 +502,7 @@ bool XercesParseUtils::parseXSDouble(
   {
     //double value = xsval->fData.fValue.f_double;
 
-    //xqp_double tvalue = value;
+    //xs_double tvalue = value;
     //store::ItemFactory* factory = GENV_ITEMFACTORY;
     //return factory->createDouble(result, tvalue);
 
@@ -511,7 +511,7 @@ bool XercesParseUtils::parseXSDouble(
     zstring textValue2;
     utf8::normalize_whitespace(textValue, &textValue2);
     store::ItemFactory* factory = GENV_ITEMFACTORY;
-    xqp_double n;
+    xs_double n;
     if (NumConversions::strToDouble(textValue2.c_str(), n))
     {
       return factory->createDouble(result, n);
@@ -541,7 +541,7 @@ bool XercesParseUtils::parseXSDecimal(
   {
     double value = xsval->fData.fValue.f_decimal.f_dvalue;
 
-    xqp_decimal tvalue;
+    xs_decimal tvalue;
     Decimal::parseNativeDouble(value, tvalue);
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
@@ -849,14 +849,14 @@ bool XercesParseUtils::parseXSDateTime(
 
     //TimeZone_t tz;
     //TimeZone::createTimeZone(0,0,0, tz);
-    //xqp_dateTime tValue;
+    //xs_dateTime tValue;
     //DateTime::createDateTime( year<0 ? true : false , year, month, day, hour, min, sec,
     //  milisec , tz, tValue);
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     //return factory->createDateTime(result, tValue);
     //return factory->createDateTime(result, year, month, day, hour, minute, sec);
-    xqp_dateTime dt;
+    xs_dateTime dt;
     zstring textValue2;
     utf8::normalize_whitespace(textValue, &textValue2);
 
@@ -895,12 +895,12 @@ bool XercesParseUtils::parseXSDate(
     //int day     = xsval->fData.fValue.f_datetime.f_day;
 
 
-    //xqp_date tValue;
+    //xs_date tValue;
     //Date::createDate( year, month, day, tValue);
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     //return factory->createDate(result, tValue);
-    xqp_date d;
+    xs_date d;
     zstring textValue2;
     utf8::normalize_whitespace(textValue, &textValue2);
 
@@ -944,12 +944,12 @@ bool XercesParseUtils::parseXSTime(
 
     //TimeZone_t tz;
     //TimeZone::createTimeZone(0,0,0, tz);
-    //xqp_time tValue;
+    //xs_time tValue;
     //Time::createTime( hour, min, doubleSec , (const TimeZone)*tz, tValue);
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     //return factory->createTime(result, tValue);
-    xqp_time t;
+    xs_time t;
     zstring textValue2;
     utf8::normalize_whitespace(textValue, &textValue2);
 
@@ -987,7 +987,7 @@ bool XercesParseUtils::parseXSGYearMonth(
 
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
-    xqp_gYearMonth tValue;
+    xs_gYearMonth tValue;
     
     zstring textValue2;
     utf8::normalize_whitespace(textValue, &textValue2);
@@ -1025,7 +1025,7 @@ bool XercesParseUtils::parseXSGYear(
     
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
-    xqp_gYear tValue;
+    xs_gYear tValue;
     
     zstring textValue2;
     utf8::normalize_whitespace(textValue, &textValue2);
@@ -1064,7 +1064,7 @@ bool XercesParseUtils::parseXSGMonthDay(
 
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
-    xqp_gMonthDay tValue;
+    xs_gMonthDay tValue;
     zstring textValue2;
     utf8::normalize_whitespace(textValue, &textValue2);
 
@@ -1101,7 +1101,7 @@ bool XercesParseUtils::parseXSGDay(
 
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
-    xqp_gDay tValue;
+    xs_gDay tValue;
     zstring textValue2;
     utf8::normalize_whitespace(textValue, &textValue2);
 
@@ -1138,7 +1138,7 @@ bool XercesParseUtils::parseXSGMonth(
 
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
-    xqp_gMonth tValue;
+    xs_gMonth tValue;
     zstring textValue2;
     utf8::normalize_whitespace(textValue, &textValue2);
 
@@ -1267,7 +1267,7 @@ bool XercesParseUtils::parseXSBase64Binary(
   {
     //char* textValue = xsval->fData.fValue.f_byteVal;
     //todo set tValue
-    xqp_base64Binary tValue;// = static_cast<xqp_base64Binary>(textValue.c_str());
+    xs_base64Binary tValue;// = static_cast<xs_base64Binary>(textValue.c_str());
     
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
@@ -1299,7 +1299,7 @@ bool XercesParseUtils::parseXSHexBinary(
   {
     //char* textValue = xsval->fData.fValue.f_byteVal;
     //todo set tValue
-    xqp_hexBinary tValue;// = static_cast<xqp_hexBinary>(textValue.c_str());
+    xs_hexBinary tValue;// = static_cast<xs_hexBinary>(textValue.c_str());
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     return factory->createHexBinary(result, tValue);

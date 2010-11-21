@@ -55,9 +55,9 @@
     </zorba:function>
 
     <zorba:state generateInit="false" generateReset="false">
-      <zorba:member type="xqp_uint" name="theIterator"
+      <zorba:member type="xs_uint" name="theIterator"
                     brief="the current iterator"/>
-      <zorba:member type="checked_vector&lt;xqp_uint&gt;" name="theResult"
+      <zorba:member type="checked_vector&lt;xs_uint&gt;" name="theResult"
                     brief="the resulting vector"/>
     </zorba:state>
 
@@ -602,15 +602,15 @@
     </zorba:function>
 
     <zorba:state generateReset="false">
-      <zorba:member type="xqp_string" name="theString"
+      <zorba:member type="xs_string" name="theString"
                     brief="the remaining string"/>
-      <zorba:member type="xqp_string" name="thePattern"
+      <zorba:member type="xs_string" name="thePattern"
                     brief="the pattern string"/>
-      <zorba:member type="xqp_string" name="theFlags"
+      <zorba:member type="xs_string" name="theFlags"
                     brief="the tokenizing flags"/>
-      <zorba:member type="xqp_int" name="start_pos" defaultValue="0"
+      <zorba:member type="xs_int" name="start_pos" defaultValue="0"
                     brief="the start position"/>
-      <zorba:member type="xqp_boolean" name="hasmatched" defaultValue="false"
+      <zorba:member type="xs_boolean" name="hasmatched" defaultValue="false"
                     brief="flag indicating whether a match was found"/>
     </zorba:state>
 

@@ -256,7 +256,7 @@ public:
 
   /** Accessor for xs:base64Binary
    */
-  virtual xqp_base64Binary getBase64BinaryValue() const;
+  virtual xs_base64Binary getBase64BinaryValue() const;
 
   /** Accessor for xs:boolean
    */
@@ -264,133 +264,133 @@ public:
 
   /** Accessor for xs:double
    */
-  virtual xqp_double getDoubleValue() const;
+  virtual xs_double getDoubleValue() const;
 
   /** 
    * Accessor for xs:float
    */
-  virtual xqp_float getFloatValue() const;
+  virtual xs_float getFloatValue() const;
 
   /** 
    * Accessor for xs:decimal, xs:nonPositiveInteger, negativeInteger,
    * nonNegativeInteger, positive)integer, xs:long, xs:unsignedLong,
    * xs:(unsigned)int, xs:(unsigned)short, xs:(unsigned)byte
    */
-  virtual xqp_decimal getDecimalValue() const;
+  virtual xs_decimal getDecimalValue() const;
 
   /** Accessor for xs:(nonPositive | negative | nonNegativeInteger | positive)integer,
    * xs:(unsigned)long, xs:(unsigned)int, xs:(unsigned)short, xs:(unsigned)byte
    */
-  virtual xqp_integer 
+  virtual xs_integer 
   getIntegerValue() const;
 
   /** Accessor for xs:nonNegativeInteager, xs:positiveInteger
    */
-  virtual xqp_uinteger
+  virtual xs_uinteger
   getUnsignedIntegerValue() const;
 
   /** Accessor for xs:long
    */
-  virtual xqp_long 
+  virtual xs_long 
   getLongValue() const;
 
   /** Accessor for xs:int
    */
-  virtual xqp_int 
+  virtual xs_int 
   getIntValue() const;
 
   /** Accessor for xs:short
    */
-  virtual xqp_short
+  virtual xs_short
   getShortValue() const;
 
   /** Accessor for xs:byte
    */
-  virtual xqp_byte
+  virtual xs_byte
   getByteValue() const;
 
   /** Accessor for xs:unsignedLong
    */
-  virtual xqp_ulong
+  virtual xs_ulong
   getUnsignedLongValue() const;
 
   /** Accessor for xs:nonNegativeIntegerValue, xs:positiveInteger, xs:unsignedInt
    */
-  virtual xqp_uint
+  virtual xs_uint
   getUnsignedIntValue() const;
 
   /** Accessor for xs:unsignedShort
    */
-  virtual xqp_ushort
+  virtual xs_ushort
   getUnsignedShortValue() const;
 
   /** Accessor for xs:unsignedChar, xs:unsignedByte
    */
-  virtual xqp_ubyte
+  virtual xs_ubyte
   getUnsignedByteValue() const;
 
 
   /** Accessor for xs:dateTime
    */
-  virtual const xqp_dateTime&
+  virtual const xs_dateTime&
   getDateTimeValue() const;
 
   /** Accessor for xs:date
    */
-  virtual const xqp_date&
+  virtual const xs_date&
   getDateValue() const;
 
   /** Accessor for xs:time
    */
-  virtual const xqp_time&
+  virtual const xs_time&
   getTimeValue() const;
 
   /** Accessor for xs:gYearMonth
    */
-  virtual const xqp_gYearMonth&
+  virtual const xs_gYearMonth&
   getGYearMonthValue() const;
 
   /** Accessor for xs:gYear
    */
-  virtual const xqp_gYear&
+  virtual const xs_gYear&
   getGYearValue() const;
 
   /** Accessor for xs:gMonth
    */
-  virtual const xqp_gMonth&
+  virtual const xs_gMonth&
   getGMonthValue() const;
 
   /** Accessor for xs:gMonthDay
    */
-  virtual const xqp_gMonthDay&
+  virtual const xs_gMonthDay&
   getGMonthDayValue() const;
 
   /** Accessor for xs:gDay
    */
-  virtual const xqp_gDay&
+  virtual const xs_gDay&
   getGDayValue() const;
 
   /** Accessor for xs:duration
    */
-  virtual const xqp_duration&
+  virtual const xs_duration&
   getDurationValue() const;
 
 
   /** Accessor for xs:dayTimeDuration
    */
-  virtual const xqp_dayTimeDuration&
+  virtual const xs_dayTimeDuration&
   getDayTimeDurationValue() const;
 
 
   /** Accessor for xs:yearMonthDuration
    */
-  virtual const xqp_yearMonthDuration&
+  virtual const xs_yearMonthDuration&
   getYearMonthDurationValue() const;
 
 
   /** Accessor for xs:hexBinary
    */
-  virtual xqp_hexBinary
+  virtual xs_hexBinary
   getHexBinaryValue() const;
 
 

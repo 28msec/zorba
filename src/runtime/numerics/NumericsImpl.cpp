@@ -296,8 +296,8 @@ bool DivideOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMA
     const store::Item* i0,
     const store::Item* i1)
 {
-  xqp_decimal ld0 = i0->getDecimalValue();
-  xqp_decimal ld1 = i1->getDecimalValue();
+  xs_decimal ld0 = i0->getDecimalValue();
+  xs_decimal ld1 = i1->getDecimalValue();
   if ( ld1 == Integer::parseInt(0) )
   {
     ZORBA_ERROR_LOC_DESC( FOAR0001, *loc, "Division by zero (decimals)");
@@ -315,8 +315,8 @@ bool DivideOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGE
     const store::Item* i0,
     const store::Item* i1 )
 {
-  xqp_decimal ll0 = Decimal::parseInteger(i0->getIntegerValue());
-  xqp_decimal ll1 = Decimal::parseInteger(i1->getIntegerValue());
+  xs_decimal ll0 = Decimal::parseInteger(i0->getIntegerValue());
+  xs_decimal ll1 = Decimal::parseInteger(i1->getIntegerValue());
   if ( ll1 == Integer::parseInt(0) )
   {
     ZORBA_ERROR_LOC_DESC( FOAR0001, *loc, "Division by zero (decimals)");
@@ -337,8 +337,8 @@ bool IntegerDivideOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_
     const store::Item* i0,
     const store::Item* i1 )
 {
-  xqp_double d0 = i0->getDoubleValue();
-  xqp_double d1 = i1->getDoubleValue();
+  xs_double d0 = i0->getDoubleValue();
+  xs_double d1 = i1->getDoubleValue();
 
   if ( d1 == Double::parseInt(0) )
   {
@@ -359,7 +359,7 @@ bool IntegerDivideOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_
     return GENV_ITEMFACTORY->createInteger(result, Integer::parseInt((int32_t)0));
   }
 
-  xqp_integer lInteger;
+  xs_integer lInteger;
   bool lBool = Integer::parseDouble( d0 / d1, lInteger);
   ZORBA_ASSERT(lBool);
 
@@ -376,9 +376,9 @@ bool IntegerDivideOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_F
     const store::Item* i0,
     const store::Item* i1)
 {
-  xqp_float f0 = i0->getFloatValue();
-  xqp_float f1 = i1->getFloatValue();
-  if ( f1 == xqp_float::parseInt(0) )
+  xs_float f0 = i0->getFloatValue();
+  xs_float f1 = i1->getFloatValue();
+  if ( f1 == xs_float::parseInt(0) )
   {
     ZORBA_ERROR_LOC_DESC( FOAR0001, *loc, "Division by zero (decimals)");
   }
@@ -399,7 +399,7 @@ bool IntegerDivideOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_F
     return GENV_ITEMFACTORY->createInteger(result, Integer::parseInt((int32_t)0));
   }
 
-  xqp_integer lInteger;
+  xs_integer lInteger;
   bool lBool = Integer::parseFloat( f0 / f1, lInteger);
   ZORBA_ASSERT(lBool);
 
@@ -416,8 +416,8 @@ bool IntegerDivideOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS
     const store::Item* i0,
     const store::Item* i1 )
 {
-  xqp_decimal ld0 = i0->getDecimalValue();
-  xqp_decimal ld1 = i1->getDecimalValue();
+  xs_decimal ld0 = i0->getDecimalValue();
+  xs_decimal ld1 = i1->getDecimalValue();
 
   if ( ld1 == Decimal::parseInt(0) )
   {
@@ -436,8 +436,8 @@ bool IntegerDivideOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS
     const store::Item* i0,
     const store::Item* i1 )
 {
-  xqp_integer ll0 = i0->getIntegerValue();
-  xqp_integer ll1 = i1->getIntegerValue();
+  xs_integer ll0 = i0->getIntegerValue();
+  xs_integer ll1 = i1->getIntegerValue();
 
   if ( ll1 == Integer::parseInt(0) )
   {
@@ -487,8 +487,8 @@ bool ModOperation::compute<TypeConstants::XS_DECIMAL, TypeConstants::XS_DECIMAL>
     const store::Item* i0,
     const store::Item* i1)
 {
-  xqp_decimal ld0 = i0->getDecimalValue();
-  xqp_decimal ld1 = i1->getDecimalValue();
+  xs_decimal ld0 = i0->getDecimalValue();
+  xs_decimal ld1 = i1->getDecimalValue();
 
   if ( ld1 == Decimal::parseInt(0) )
   {
@@ -507,8 +507,8 @@ bool ModOperation::compute<TypeConstants::XS_INTEGER, TypeConstants::XS_INTEGER>
     const store::Item* i0,
     const store::Item* i1)
 {
-  xqp_integer ll0 = i0->getIntegerValue();
-  xqp_integer ll1 = i1->getIntegerValue();
+  xs_integer ll0 = i0->getIntegerValue();
+  xs_integer ll1 = i1->getIntegerValue();
 
   if ( ll1 == Integer::parseInt(0) )
   {

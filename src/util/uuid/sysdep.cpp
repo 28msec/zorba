@@ -22,7 +22,7 @@ namespace zorba {
    100ns. */
 #ifdef WIN32
 
-void get_system_time(xqp_ulong *uuid_time)
+void get_system_time(xs_ulong *uuid_time)
 {
   ULARGE_INTEGER time;
 
@@ -31,15 +31,15 @@ void get_system_time(xqp_ulong *uuid_time)
   The difference is 17 Days in Oct + 30 (Nov) + 31 (Dec)
   + 18 years and 5 leap days, meaning P6653D*/
   GetSystemTimeAsFileTime((FILETIME *)&time);
-  time.QuadPart +=  (xqp_ulong) (1000*1000*10)       // seconds
-                  * (xqp_ulong) (60 * 60 * 24)       // days
-                  * (xqp_ulong) (17+30+31+365*18+5); // 6653 of days
+  time.QuadPart +=  (xs_ulong) (1000*1000*10)       // seconds
+                  * (xs_ulong) (60 * 60 * 24)       // days
+                  * (xs_ulong) (17+30+31+365*18+5); // 6653 of days
   *uuid_time = time.QuadPart;
 }
 
 #else
 
-void get_system_time(xqp_ulong *uuid_time)
+void get_system_time(xs_ulong *uuid_time)
 {
   struct timeval tp;
 
@@ -48,8 +48,8 @@ void get_system_time(xqp_ulong *uuid_time)
   /* Offset between UUID formatted times and Unix formatted times.
   UUID UTC base time is October 15, 1582.
   Unix base time is January 1, 1970, meaning P141427D*/
-  *uuid_time = ((xqp_ulong)tp.tv_sec * 10000000)
-      + ((xqp_ulong)tp.tv_usec * 10)
+  *uuid_time = ((xs_ulong)tp.tv_sec * 10000000)
+      + ((xs_ulong)tp.tv_usec * 10)
       + I64(0x01B21DD213814000);
 }
 

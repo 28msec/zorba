@@ -95,7 +95,7 @@ AbsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
     else if (TypeOps::is_subtype(tm, *type, *rtm.INTEGER_TYPE_ONE))
     {
-      if (result->getIntegerValue() >= xqp_decimal::zero()) 
+      if (result->getIntegerValue() >= xs_decimal::zero()) 
       {
         if ( !TypeOps::is_equal(tm, *type, *rtm.INTEGER_TYPE_ONE))
           GENV_ITEMFACTORY->createInteger(result, result->getIntegerValue());
@@ -107,7 +107,7 @@ AbsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
     else if (TypeOps::is_subtype(tm, *type, *rtm.DECIMAL_TYPE_ONE))
     {
-      if ( result->getDecimalValue() >= xqp_decimal::zero()) 
+      if ( result->getDecimalValue() >= xs_decimal::zero()) 
       {
         if ( !TypeOps::is_equal(tm, *type, *rtm.DECIMAL_TYPE_ONE))
           GENV_ITEMFACTORY->createDecimal(result, result->getDecimalValue());
@@ -760,7 +760,7 @@ static void formatNumber(
   bool positive = true;
   FormatNumberInfo::SubPictureInfo& sub_picture = info.pos_subpicture;
 
-  GENV_ITEMFACTORY->createDouble(zero, xqp_double::zero());
+  GENV_ITEMFACTORY->createDouble(zero, xs_double::zero());
 
   GenericCast::castToAtomic(doubleItem, number, &*rtm.DOUBLE_TYPE_ONE, tm);
 
@@ -778,7 +778,7 @@ static void formatNumber(
     return;
   }
 
-  xqp_double adjusted = doubleItem->getDoubleValue();
+  xs_double adjusted = doubleItem->getDoubleValue();
 
   if (sub_picture.str.find(info.percent) != zstring::npos)
     adjusted = adjusted * Double::parseInt(100);

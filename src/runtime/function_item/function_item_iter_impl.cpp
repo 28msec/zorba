@@ -77,7 +77,7 @@ FunctionArityIterator::nextImpl(
 {
   store::Item_t lFItem;
   FunctionItem* lFunctionItem = 0;
-  xqp_integer   lInt;
+  xs_integer    lInt;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);

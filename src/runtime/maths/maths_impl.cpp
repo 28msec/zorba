@@ -173,8 +173,8 @@ Atan2Iterator::nextImpl (store::Item_t& result, PlanState& planState) const
 {
   store::Item_t n0;
   store::Item_t n1;
-  xqp_double doub1;
-  xqp_double doub2;
+  xs_double doub1;
+  xs_double doub2;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -240,8 +240,8 @@ FmodIterator::nextImpl (store::Item_t& result, PlanState& planState) const
     if (consumeNext(n1, this->theChild1.getp(), planState))
     {
       {
-        xqp_double doub1 = n0->getDoubleValue();
-        xqp_double doub2 = n1->getDoubleValue();
+        xs_double doub1 = n0->getDoubleValue();
+        xs_double doub2 = n1->getDoubleValue();
 
         GENV_ITEMFACTORY->createDouble(result, doub1.fmod(doub2));
       }
@@ -272,10 +272,10 @@ LdexpIterator::nextImpl (store::Item_t& result, PlanState& planState) const
     if (consumeNext(n1, this->theChild1.getp(), planState))
     {
       {
-        xqp_integer integ = n1->getIntegerValue();
-        xqp_double  doub = n0->getDoubleValue();
-        xqp_integer integ_2 = Integer::parseInt(2);
-        xqp_double doub_pow = integ_2.pow(integ);
+        xs_integer integ = n1->getIntegerValue();
+        xs_double  doub = n0->getDoubleValue();
+        xs_integer integ_2 = Integer::parseInt(2);
+        xs_double doub_pow = integ_2.pow(integ);
 
         GENV_ITEMFACTORY->createDouble(result, doub * doub_pow);
       }
@@ -321,8 +321,8 @@ PowIterator::nextImpl (store::Item_t& result, PlanState& planState) const
     if (consumeNext(n1, this->theChild1.getp(), planState))
     {
       {
-        xqp_double doub1 = n0->getDoubleValue();
-        xqp_double  doub2 = n1->getDoubleValue();
+        xs_double doub1 = n0->getDoubleValue();
+        xs_double  doub2 = n1->getDoubleValue();
 
         GENV_ITEMFACTORY->createDouble(result, doub1.pow(doub2));
       }
@@ -451,8 +451,8 @@ ModfIterator::nextImpl (store::Item_t& result, PlanState& planState) const
   if (consumeNext(result, theChild.getp(), planState )) 
   {
     {
-      xqp_double    doub = result->getDoubleValue();
-      xqp_double    doub_fraction;
+      xs_double    doub = result->getDoubleValue();
+      xs_double    doub_fraction;
       doub.modf(doub_fraction, state->theDoubInteger);
       GENV_ITEMFACTORY->createDouble(result, doub_fraction);
     }
@@ -473,8 +473,8 @@ FrexpIterator::nextImpl (store::Item_t& result, PlanState& planState) const
   if (consumeNext(result, theChild.getp(), planState )) 
   {
     {
-      xqp_double    doub = result->getDoubleValue();
-      xqp_double    doub_mantissa;
+      xs_double    doub = result->getDoubleValue();
+      xs_double    doub_mantissa;
       doub.frexp(doub_mantissa, state->theIntExponent);
       GENV_ITEMFACTORY->createDouble(result, doub_mantissa);
     }

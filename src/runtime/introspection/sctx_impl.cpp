@@ -1191,7 +1191,7 @@ FunctionAnnotationsIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanSt
   store::Item_t      lName;
   store::Item_t      lArity;
   store::Item_t      temp;
-  xqp_int            arity;
+  xs_int             arity;
 
   DEFAULT_STACK_INIT(FunctionAnnotationsIteratorState, lState, aPlanState);
 

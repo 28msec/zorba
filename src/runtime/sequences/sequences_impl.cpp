@@ -328,13 +328,13 @@ FnInsertBeforeIterator::nextImpl(store::Item_t& result, PlanState& planState) co
  }
 
  state->thePosition = lPositionItem->getIntegerValue();
- if (state->thePosition < xqp_integer::parseInt(1))
-   state->thePosition = xqp_integer::parseInt(1);
+ if (state->thePosition < xs_integer::parseInt(1))
+   state->thePosition = xs_integer::parseInt(1);
 
 
  while (consumeNext(result, theChildren[0].getp(), planState))
  {
-    if ( state->theCurrentPos == state->thePosition-xqp_integer::parseInt(1) ) // position found => insert sequence
+    if ( state->theCurrentPos == state->thePosition-xs_integer::parseInt(1) ) // position found => insert sequence
     {
       state->theTargetItem = result;
       while ( consumeNext(result, theChildren[2].getp(), planState))
@@ -465,7 +465,7 @@ void FnSubsequenceIterator::resetImpl(PlanState& planState) const
 bool FnSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t startPosItem;
-  xqp_long startPos;
+  xs_long startPos;
   store::Item_t lengthItem;
 
   FnSubsequenceIteratorState* state;
@@ -475,13 +475,13 @@ bool FnSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState
 
   CONSUME(startPosItem, 1);
   startPos = 
-  static_cast<xqp_long>(startPosItem->getDoubleValue().round().getNumber()) - 1;
+  static_cast<xs_long>(startPosItem->getDoubleValue().round().getNumber()) - 1;
 
   if (theChildren.size() == 3)
   {
     CONSUME(lengthItem, 2);
     state->theRemaining = 
-    static_cast<xqp_long>(lengthItem->getDoubleValue().round().getNumber());
+    static_cast<xs_long>(lengthItem->getDoubleValue().round().getNumber());
   }
 
   if (startPos < 0)
@@ -548,7 +548,7 @@ void SubsequenceIntIterator::resetImpl(PlanState& planState) const
 bool SubsequenceIntIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t startPosItem;
-  xqp_long startPos;
+  xs_long startPos;
   store::Item_t lengthItem;
 
   SubsequenceIntIteratorState* state;
@@ -628,7 +628,7 @@ bool SequencePointAccessIterator::nextImpl(
     PlanState& planState) const
 {
   store::Item_t startPosItem;
-  xqp_long startPos;
+  xs_long startPos;
 
   SequencePointAccessIteratorState* state;
   DEFAULT_STACK_INIT(SequencePointAccessIteratorState, state, planState);
@@ -1394,7 +1394,7 @@ bool FnSumDoubleIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
-  xqp_double sum;
+  xs_double sum;
   store::Item_t item;
 
   PlanIteratorState* state;
@@ -1443,7 +1443,7 @@ bool FnSumFloatIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
-  xqp_float sum;
+  xs_float sum;
   store::Item_t item;
 
   PlanIteratorState* state;
@@ -1492,7 +1492,7 @@ bool FnSumDecimalIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
-  xqp_decimal sum;
+  xs_decimal sum;
   store::Item_t item;
 
   PlanIteratorState* state;
@@ -1541,7 +1541,7 @@ bool FnSumIntegerIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
-  xqp_integer sum;
+  xs_integer sum;
   store::Item_t item;
 
   PlanIteratorState* state;

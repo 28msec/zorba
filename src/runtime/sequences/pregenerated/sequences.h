@@ -307,8 +307,8 @@ public:
 class FnInsertBeforeIteratorState : public PlanIteratorState
 {
 public:
-  xqp_integer theCurrentPos; //the current position in the sequence
-  xqp_integer thePosition; //
+  xs_integer theCurrentPos; //the current position in the sequence
+  xs_integer thePosition; //
   store::Item_t theTargetItem; //
 
   FnInsertBeforeIteratorState();
@@ -359,8 +359,8 @@ public:
 class FnRemoveIteratorState : public PlanIteratorState
 {
 public:
-  xqp_integer theCurrentPos; //the current position in the sequence
-  xqp_integer thePosition; //the position to delete
+  xs_integer theCurrentPos; //the current position in the sequence
+  xs_integer thePosition; //the position to delete
   XQPCollator* theCollator; //the collator
 
   FnRemoveIteratorState();
@@ -459,7 +459,7 @@ public:
 class FnSubsequenceIteratorState : public PlanIteratorState
 {
 public:
-  xqp_long theRemaining; //
+  xs_long theRemaining; //
   bool theIsChildReset; //
 
   FnSubsequenceIteratorState();
@@ -511,7 +511,7 @@ public:
 class SubsequenceIntIteratorState : public PlanIteratorState
 {
 public:
-  xqp_long theRemaining; //
+  xs_long theRemaining; //
   bool theIsChildReset; //
 
   SubsequenceIntIteratorState();
@@ -1130,9 +1130,9 @@ public:
 class OpToIteratorState : public PlanIteratorState
 {
 public:
-  xqp_integer theCurInt; //the current integer
-  xqp_integer theFirstVal; //first integer
-  xqp_integer theLastVal; //last integer
+  xs_integer theCurInt; //the current integer
+  xs_integer theFirstVal; //first integer
+  xs_integer theLastVal; //last integer
 
   OpToIteratorState();
 

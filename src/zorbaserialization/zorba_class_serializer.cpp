@@ -794,151 +794,151 @@ void operator&(Archiver &ar, store::Item* &obj)
       }
       else if(name_of_type == "dateTime")
       {
-        SERIALIZE_REF_FIELD(xqp_dateTime, value, getDateTimeValue());
+        SERIALIZE_REF_FIELD(xs_dateTime, value, getDateTimeValue());
         FINALIZE_SERIALIZE(createDateTime, (result, &value_in));
       }
       else if(name_of_type == "date")
       {
-        SERIALIZE_REF_FIELD(xqp_date, value, getDateValue());
+        SERIALIZE_REF_FIELD(xs_date, value, getDateValue());
         FINALIZE_SERIALIZE(createDate, (result, &value_in));
       }
       else if(name_of_type == "time")
       {
-        SERIALIZE_REF_FIELD(xqp_time, value, getTimeValue());
+        SERIALIZE_REF_FIELD(xs_time, value, getTimeValue());
         FINALIZE_SERIALIZE(createTime, (result, &value_in));
       }
       else if(name_of_type == "duration")
       {
-        SERIALIZE_REF_FIELD(xqp_duration, value, getDurationValue());
+        SERIALIZE_REF_FIELD(xs_duration, value, getDurationValue());
         FINALIZE_SERIALIZE(createDuration, (result, &value_in));
       }
       else if(name_of_type == "dayTimeDuration")
       {
-        SERIALIZE_REF_FIELD(xqp_dayTimeDuration, value, getDayTimeDurationValue());
+        SERIALIZE_REF_FIELD(xs_dayTimeDuration, value, getDayTimeDurationValue());
         FINALIZE_SERIALIZE(createDayTimeDuration, (result, &value_in));
       }
       else if(name_of_type == "yearMonthDuration")
       {
-        SERIALIZE_REF_FIELD(xqp_yearMonthDuration, value, getYearMonthDurationValue());
+        SERIALIZE_REF_FIELD(xs_yearMonthDuration, value, getYearMonthDurationValue());
         FINALIZE_SERIALIZE(createYearMonthDuration, (result, &value_in));
       }
          
       else if(name_of_type == "float")
       {
-        SERIALIZE_FIELD(xqp_float, value, getFloatValue());
+        SERIALIZE_FIELD(xs_float, value, getFloatValue());
         FINALIZE_SERIALIZE(createFloat, (result, value));
       }
       else if(name_of_type == "double")
       {
-        SERIALIZE_FIELD(xqp_double, value, getDoubleValue());
+        SERIALIZE_FIELD(xs_double, value, getDoubleValue());
         FINALIZE_SERIALIZE(createDouble, (result, value));
       }
       else if(name_of_type == "decimal")
       {
-        SERIALIZE_FIELD(xqp_decimal, value, getDecimalValue());
+        SERIALIZE_FIELD(xs_decimal, value, getDecimalValue());
         FINALIZE_SERIALIZE(createDecimal, (result, value));
       }
       else if(name_of_type == "integer")
       {
-        SERIALIZE_FIELD(xqp_integer, value, getIntegerValue());
+        SERIALIZE_FIELD(xs_integer, value, getIntegerValue());
         FINALIZE_SERIALIZE(createInteger, (result, value));
       }
       else if(name_of_type == "nonPositiveInteger")
       {
-        SERIALIZE_FIELD(xqp_integer, value, getIntegerValue());
+        SERIALIZE_FIELD(xs_integer, value, getIntegerValue());
         FINALIZE_SERIALIZE(createNonPositiveInteger, (result, value));
       }
       else if(name_of_type == "nonNegativeInteger")
       {
-        SERIALIZE_FIELD(xqp_uinteger, value, getUnsignedIntegerValue());
+        SERIALIZE_FIELD(xs_uinteger, value, getUnsignedIntegerValue());
         FINALIZE_SERIALIZE(createNonNegativeInteger, (result, value));
       }
       else if(name_of_type == "negativeInteger")
       {
-        SERIALIZE_FIELD(xqp_integer, value, getIntegerValue());
+        SERIALIZE_FIELD(xs_integer, value, getIntegerValue());
         FINALIZE_SERIALIZE(createNegativeInteger, (result, value));
       }
       else if(name_of_type == "positiveInteger")
       {
-        SERIALIZE_FIELD(xqp_uinteger, value, getUnsignedIntegerValue());
+        SERIALIZE_FIELD(xs_uinteger, value, getUnsignedIntegerValue());
         FINALIZE_SERIALIZE(createPositiveInteger, (result, value));
       }
          
       else if(name_of_type == "long")
       {
-        SERIALIZE_FIELD(xqp_long, value, getLongValue());
+        SERIALIZE_FIELD(xs_long, value, getLongValue());
         FINALIZE_SERIALIZE(createLong, (result, value));
       }
       else if(name_of_type == "int")
       {
-        SERIALIZE_FIELD(xqp_int, value, getIntValue());
+        SERIALIZE_FIELD(xs_int, value, getIntValue());
         FINALIZE_SERIALIZE(createInt, (result, value));
       }
       else if(name_of_type == "short")
       {
-        SERIALIZE_FIELD(xqp_short, value, getShortValue());
+        SERIALIZE_FIELD(xs_short, value, getShortValue());
         FINALIZE_SERIALIZE(createShort, (result, value));
       }
       else if(name_of_type == "byte")
       {
-        SERIALIZE_FIELD(xqp_byte, value, getByteValue());
+        SERIALIZE_FIELD(xs_byte, value, getByteValue());
         FINALIZE_SERIALIZE(createByte, (result, value));
       }
       else if(name_of_type == "unsignedLong")
       {
-        SERIALIZE_FIELD(xqp_ulong, value, getUnsignedLongValue());
+        SERIALIZE_FIELD(xs_ulong, value, getUnsignedLongValue());
         FINALIZE_SERIALIZE(createUnsignedLong, (result, value));
       }
       else if(name_of_type == "unsignedInt")
       {
-        SERIALIZE_FIELD(xqp_uint, value, getUnsignedIntValue());
+        SERIALIZE_FIELD(xs_uint, value, getUnsignedIntValue());
         FINALIZE_SERIALIZE(createUnsignedInt, (result, value));
       }
       else if(name_of_type == "unsignedShort")
       {
-        SERIALIZE_FIELD(xqp_ushort, value, getUnsignedShortValue());
+        SERIALIZE_FIELD(xs_ushort, value, getUnsignedShortValue());
         FINALIZE_SERIALIZE(createUnsignedShort, (result, value));
       }
       else if(name_of_type == "unsignedByte")
       {
-        SERIALIZE_FIELD(xqp_ubyte, value, getUnsignedByteValue());
+        SERIALIZE_FIELD(xs_ubyte, value, getUnsignedByteValue());
         FINALIZE_SERIALIZE(createUnsignedByte, (result, value));
       }
          
       else if(name_of_type == "gYearMonth")
       {
-        SERIALIZE_REF_FIELD(xqp_gYearMonth, value, getGYearMonthValue());
+        SERIALIZE_REF_FIELD(xs_gYearMonth, value, getGYearMonthValue());
         FINALIZE_SERIALIZE(createGYearMonth, (result, &value_in));
       }
       else if(name_of_type == "gYear")
       {
-        SERIALIZE_REF_FIELD(xqp_gYear, value, getGYearValue());
+        SERIALIZE_REF_FIELD(xs_gYear, value, getGYearValue());
         FINALIZE_SERIALIZE(createGYear, (result, &value_in));
       }
       else if(name_of_type == "gMonthDay")
       {
-        SERIALIZE_REF_FIELD(xqp_gMonthDay, value, getGMonthDayValue());
+        SERIALIZE_REF_FIELD(xs_gMonthDay, value, getGMonthDayValue());
         FINALIZE_SERIALIZE(createGMonthDay, (result, &value_in));
       }
       else if(name_of_type == "gDay")
       {
-        SERIALIZE_REF_FIELD(xqp_gDay, value, getGDayValue());
+        SERIALIZE_REF_FIELD(xs_gDay, value, getGDayValue());
         FINALIZE_SERIALIZE(createGDay, (result, &value_in));
       }
       else if(name_of_type == "gMonth")
       {
-        SERIALIZE_REF_FIELD(xqp_gMonth, value, getGMonthValue());
+        SERIALIZE_REF_FIELD(xs_gMonth, value, getGMonthValue());
         FINALIZE_SERIALIZE(createGMonth, (result, &value_in));
       }
          
       else if(name_of_type == "base64Binary")
       {
-        SERIALIZE_REF_FIELD(xqp_base64Binary, value, getBase64BinaryValue());
+        SERIALIZE_REF_FIELD(xs_base64Binary, value, getBase64BinaryValue());
         FINALIZE_SERIALIZE(createBase64Binary, (result, value_in));
       }
       else if(name_of_type == "hexBinary")
       {
-        SERIALIZE_REF_FIELD(xqp_hexBinary, value, getHexBinaryValue());
+        SERIALIZE_REF_FIELD(xs_hexBinary, value, getHexBinaryValue());
         FINALIZE_SERIALIZE(createHexBinary, (result, value_in));
       }
       else if(name_of_type == "boolean")

@@ -141,7 +141,7 @@ class CtxVarIterator : public UnaryBaseIterator<CtxVarIterator, CtxVarState>
 {
 private:
   store::Item_t  theVarName;
-  xqp_long       theTargetPos;
+  xs_long       theTargetPos;
   PlanIter_t     theTargetPosIter;
   PlanIter_t     theTargetLenIter;
 
@@ -162,13 +162,13 @@ public:
 
   ~CtxVarIterator() {}
 
-  bool setTargetPos(xqp_long v);
+  bool setTargetPos(xs_long v);
 
   bool setTargetPosIter(const PlanIter_t& v);
 
   bool setTargetLenIter(const PlanIter_t& v);
 
-  xqp_long getTargetPos() const { return theTargetPos; }
+  xs_long getTargetPos() const { return theTargetPos; }
 
   PlanIterator* getTargetPosIter() const { return theTargetPosIter.getp(); }
 
@@ -285,7 +285,7 @@ class LetVarIterator : public NoaryBaseIterator<LetVarIterator, LetVarState>
 {
 private:
   store::Item_t  theVarName;
-  xqp_long       theTargetPos;
+  xs_long       theTargetPos;
   PlanIter_t     theTargetPosIter;
   PlanIter_t     theTargetLenIter;
 
@@ -306,13 +306,13 @@ public:
 
   ~LetVarIterator() {}
 
-  bool setTargetPos(xqp_long v);
+  bool setTargetPos(xs_long v);
 
   bool setTargetPosIter(const PlanIter_t& v);
 
   bool setTargetLenIter(const PlanIter_t& v);
 
-  xqp_long getTargetPos() const { return theTargetPos; }
+  xs_long getTargetPos() const { return theTargetPos; }
 
   PlanIterator* getTargetPosIter() const { return theTargetPosIter.getp(); }
 

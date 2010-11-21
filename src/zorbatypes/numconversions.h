@@ -36,62 +36,62 @@ public:
     String to Numeric Conversions
   ******************************************************************************/
 
-  static bool strToDouble(const char* aStr, xqp_double& aDouble);
+  static bool strToDouble(const char* aStr, xs_double& aDouble);
 
-  static bool strToFloat(const char* aStr, xqp_float& aFloat);
+  static bool strToFloat(const char* aStr, xs_float& aFloat);
 
-  static bool strToDecimal(const char* aStr, xqp_decimal& aDecimal);
+  static bool strToDecimal(const char* aStr, xs_decimal& aDecimal);
 
-  static bool strToInteger(const char* aCharStar, xqp_integer& aInteger);
+  static bool strToInteger(const char* aCharStar, xs_integer& aInteger);
 
-  static bool strToUInteger(const char* aStr, xqp_uinteger& aUInteger);
+  static bool strToUInteger(const char* aStr, xs_uinteger& aUInteger);
 
-  static bool strToLong(const char* aStr, xqp_long& aLong);
+  static bool strToLong(const char* aStr, xs_long& aLong);
 
-  static bool strToULong(const char* aStr, xqp_ulong& aULong);
+  static bool strToULong(const char* aStr, xs_ulong& aULong);
 
-  static bool strToInt(const char* aStarChar, xqp_int& aInt);
+  static bool strToInt(const char* aStarChar, xs_int& aInt);
 
-  static bool strToUInt(const char* aStr, xqp_uint& aUInt);
+  static bool strToUInt(const char* aStr, xs_uint& aUInt);
 
-  static bool strToShort(const char* aStr, xqp_short& aShort);
+  static bool strToShort(const char* aStr, xs_short& aShort);
 
-  static bool strToUShort(const char* aStr, xqp_ushort& aUShort);
+  static bool strToUShort(const char* aStr, xs_ushort& aUShort);
 
-  static bool strToByte(const char* aStr, xqp_byte& aByte);
+  static bool strToByte(const char* aStr, xs_byte& aByte);
 
-  static bool strToUByte(const char* aStr, xqp_ubyte& aUByte);
+  static bool strToUByte(const char* aStr, xs_ubyte& aUByte);
 
 
   /*****************************************************************************
     Numeric to String Conversions
   ******************************************************************************/
 
-  static zstring doubleToStr(xqp_double aDouble);
+  static zstring doubleToStr(xs_double aDouble);
 
-  static zstring floatToStr(xqp_float aFloat);
+  static zstring floatToStr(xs_float aFloat);
 
-  static zstring decimalToStr(xqp_decimal aDecimal);
+  static zstring decimalToStr(xs_decimal aDecimal);
 
-  static zstring integerToStr(xqp_integer aInteger);
+  static zstring integerToStr(xs_integer aInteger);
 
-  static zstring uintegerToStr(xqp_uinteger aUInteger);
+  static zstring uintegerToStr(xs_uinteger aUInteger);
 
-  static zstring longToStr(xqp_long aLong);
+  static zstring longToStr(xs_long aLong);
 
-  static zstring ulongToStr(xqp_ulong aULong);
+  static zstring ulongToStr(xs_ulong aULong);
 
-  static zstring intToStr(xqp_int aInt);
+  static zstring intToStr(xs_int aInt);
 
-  static zstring uintToStr(xqp_uint aUInt);
+  static zstring uintToStr(xs_uint aUInt);
 
-  static zstring shortToStr(xqp_short aShort);
+  static zstring shortToStr(xs_short aShort);
 
-  static zstring ushortToStr(xqp_ushort aUShort);
+  static zstring ushortToStr(xs_ushort aUShort);
 
-  static zstring byteToStr(xqp_byte aByte);
+  static zstring byteToStr(xs_byte aByte);
 
-  static zstring ubyteToStr(xqp_ubyte aUByte);
+  static zstring ubyteToStr(xs_ubyte aUByte);
 
   static zstring sizetToStr(size_t);
 
@@ -100,29 +100,29 @@ public:
     Numeric to Numeric Conversions
   ******************************************************************************/
 
-  static bool doubleToInt(const xqp_double&, xqp_int&);
+  static bool doubleToInt(const xs_double&, xs_int&);
 
-  static bool doubleToLong(const xqp_double&, xqp_long&);
+  static bool doubleToLong(const xs_double&, xs_long&);
 
-  static bool floatToInt(const xqp_float&, xqp_int&);
+  static bool floatToInt(const xs_float&, xs_int&);
 
-  static bool decimalToInteger(const xqp_decimal&, xqp_integer&);
+  static bool decimalToInteger(const xs_decimal&, xs_integer&);
 
-  static bool decimalToULong(const xqp_decimal&, xqp_ulong&);
+  static bool decimalToULong(const xs_decimal&, xs_ulong&);
 
-  static bool decimalToLong(const xqp_decimal&, xqp_long&);
+  static bool decimalToLong(const xs_decimal&, xs_long&);
 
-  static bool decimalToUInt(const xqp_decimal&, xqp_uint&);
+  static bool decimalToUInt(const xs_decimal&, xs_uint&);
 
-  static bool decimalToInt(const xqp_decimal&, xqp_int&);
+  static bool decimalToInt(const xs_decimal&, xs_int&);
 
-  static bool integerToLong(const xqp_integer&, xqp_long&);
+  static bool integerToLong(const xs_integer&, xs_long&);
 
-  static bool integerToUInt(const xqp_integer&, xqp_uint&);
+  static bool integerToUInt(const xs_integer&, xs_uint&);
 
-  static bool integerToInt(const xqp_integer&, xqp_int&);
+  static bool integerToInt(const xs_integer&, xs_int&);
 
-  static bool longToDouble(const xqp_long& aLong, xqp_double& aDouble);
+  static bool longToDouble(const xs_long& aLong, xs_double& aDouble);
 
 private:
   static bool isNegative(const char*& chp, bool& isNegZero);

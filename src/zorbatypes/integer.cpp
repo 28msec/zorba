@@ -498,11 +498,11 @@ Double  Integer::pow(Integer p) const
   result = theInteger.pow(p.theInteger, 15);
   char outbuf[300];
   result.toFixPtString(outbuf, 15);
-  xqp_double    double_result;
-  xqp_double::parseString(outbuf, double_result);
+  xs_double    double_result;
+  xs_double::parseString(outbuf, double_result);
   return double_result;
 #else
-  return xqp_double(::pow((double)theInteger, p.theInteger));
+  return xs_double(::pow((double)theInteger, p.theInteger));
 #endif
 }
 

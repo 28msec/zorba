@@ -192,7 +192,7 @@ bool SecondsFromDurationIterator::nextImpl(
     PlanState& planState) const
 {
   store::Item_t itemArg;
-  xqp_decimal lDecimal;
+  xs_decimal lDecimal;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -357,7 +357,7 @@ bool SecondsFromDatetimeIterator::nextImpl(
     PlanState& planState) const
 {
   store::Item_t itemArg;
-  xqp_decimal lDecimal;
+  xs_decimal lDecimal;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -383,7 +383,7 @@ bool TimezoneFromDatetimeIterator::nextImpl(
     PlanState& planState) const
 {
   store::Item_t itemArg;
-  xqp_dayTimeDuration tmpDuration;
+  xs_dayTimeDuration tmpDuration;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -493,7 +493,7 @@ bool TimezoneFromDateIterator::nextImpl(
     PlanState& planState) const
 {
   store::Item_t itemArg;
-  xqp_dayTimeDuration tmpDuration;
+  xs_dayTimeDuration tmpDuration;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -576,7 +576,7 @@ bool SecondsFromTimeIterator::nextImpl(
     PlanState& planState) const
 {
   store::Item_t itemArg;
-  xqp_decimal lDecimal;
+  xs_decimal lDecimal;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -602,7 +602,7 @@ bool TimezoneFromTimeIterator::nextImpl(
     PlanState& planState) const
 {
   store::Item_t itemArg;
-  xqp_dayTimeDuration tmpDuration;
+  xs_dayTimeDuration tmpDuration;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);

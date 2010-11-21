@@ -69,7 +69,7 @@ CodepointsToStringIterator::nextImpl(store::Item_t& result, PlanState& planState
     {
       {
         zstring lUtf8Code = item->getIntegerValue().toString();
-        xqp_uint lCode;
+        xs_uint lCode;
         if (NumConversions::strToUInt(lUtf8Code.c_str(), lCode)) 
         {
           try
@@ -377,10 +377,10 @@ bool SubstringIterator::nextImpl(
   store::Item_t lenItem;
   zstring strval;
   zstring resStr;
-  xqp_double start;
-  xqp_double len;
-  xqp_int istart;
-  xqp_int ilen;
+  xs_double start;
+  xs_double len;
+  xs_int istart;
+  xs_int ilen;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -404,7 +404,7 @@ bool SubstringIterator::nextImpl(
       {
         if (start.isFinite())
         {
-          xqp_int lInt;
+          xs_int lInt;
           if (NumConversions::doubleToInt(start.round(), lInt))
           {
             istart = lInt;
@@ -457,7 +457,7 @@ bool SubstringIterator::nextImpl(
           {
             if (len.isFinite())
             {
-              xqp_int lInt;
+              xs_int lInt;
               if (NumConversions::doubleToInt(len.round(), lInt))
               {
                 ilen = lInt;
@@ -1434,7 +1434,7 @@ bool FnTokenizeIterator::nextImpl(
                          "Regular expression matches zero-length string.");
 
 
-  while ((xqp_uint)state->start_pos < state->theString.length ())
+  while ((xs_uint)state->start_pos < state->theString.length ())
   {
     try 
     {

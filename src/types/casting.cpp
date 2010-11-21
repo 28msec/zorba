@@ -139,7 +139,7 @@ T1_TO_T2(str, uA)
 
 T1_TO_T2(str, flt)
 {
-  xqp_float n;
+  xs_float n;
   if (Float::parseString(strval.c_str(), n))
     return aFactory->createFloat(result, n);
 
@@ -150,7 +150,7 @@ T1_TO_T2(str, flt)
 
 T1_TO_T2(str, dbl)
 {
-  xqp_double n;
+  xs_double n;
   if (Double::parseString(strval.c_str(), n))
     return aFactory->createDouble(result, n);
 
@@ -161,7 +161,7 @@ T1_TO_T2(str, dbl)
 
 T1_TO_T2(str, dec)
 {
-  xqp_decimal n;
+  xs_decimal n;
   if (NumConversions::strToDecimal(strval.c_str(), n))
     return aFactory->createDecimal(result, n);
 
@@ -172,7 +172,7 @@ T1_TO_T2(str, dec)
 
 T1_TO_T2(str, int)
 {
-  xqp_integer n;
+  xs_integer n;
   if (NumConversions::strToInteger(strval.c_str(), n))
     return aFactory->createInteger(result, n);
 
@@ -217,7 +217,7 @@ T1_TO_T2(str, dTD)
 
 T1_TO_T2(str, dT)
 {
-  xqp_dateTime dt;
+  xs_dateTime dt;
   if (0 == DateTime::parseDateTime(strval.c_str(), strval.size(), dt))
     return aFactory->createDateTime(result, &dt);
 
@@ -228,7 +228,7 @@ T1_TO_T2(str, dT)
 
 T1_TO_T2(str, tim)
 {
-  xqp_time t;
+  xs_time t;
   if (0 == DateTime::parseTime(strval.c_str(), strval.size(), t))
     return aFactory->createTime(result, &t);
 
@@ -239,7 +239,7 @@ T1_TO_T2(str, tim)
 
 T1_TO_T2(str, dat)
 {
-  xqp_date d;
+  xs_date d;
   if (0 == DateTime::parseDate(strval.c_str(), strval.size(), d))
     return aFactory->createDate(result, &d);
 
@@ -250,7 +250,7 @@ T1_TO_T2(str, dat)
 
 T1_TO_T2(str, gYM)
 {
-  xqp_gYearMonth ym;
+  xs_gYearMonth ym;
   if (0 == DateTime::parseGYearMonth(strval.c_str(), strval.size(), ym))
     return aFactory->createGYearMonth(result, &ym);
 
@@ -261,7 +261,7 @@ T1_TO_T2(str, gYM)
 
 T1_TO_T2(str, gYr)
 {
-  xqp_gYear y;
+  xs_gYear y;
   if (0 == DateTime::parseGYear(strval.c_str(), strval.size(), y))
     return aFactory->createGYear(result, &y);
 
@@ -272,7 +272,7 @@ T1_TO_T2(str, gYr)
 
 T1_TO_T2(str, gMD)
 {
-  xqp_gMonthDay md;
+  xs_gMonthDay md;
   if (0 == DateTime::parseGMonthDay(strval.c_str(), strval.size(), md))
     return aFactory->createGMonthDay(result, &md);
 
@@ -283,7 +283,7 @@ T1_TO_T2(str, gMD)
 
 T1_TO_T2(str, gDay)
 {
-  xqp_gDay d;
+  xs_gDay d;
   if (0 == DateTime::parseGDay(strval.c_str(), strval.size(), d))
     return aFactory->createGDay(result, &d);
 
@@ -294,7 +294,7 @@ T1_TO_T2(str, gDay)
 
 T1_TO_T2(str, gMon)
 {
-  xqp_gMonth m;
+  xs_gMonth m;
   if (0 == DateTime::parseGMonth(strval.c_str(), strval.size(), m))
     return aFactory->createGMonth(result, &m);
 
@@ -351,8 +351,8 @@ T1_TO_T2(str, bool)
 
 T1_TO_T2(str, b64)
 {
-  xqp_base64Binary n;
-  if (xqp_base64Binary::parseString(strval, n))
+  xs_base64Binary n;
+  if (xs_base64Binary::parseString(strval, n))
     return aFactory->createBase64Binary(result, n);
 
   throwError(FORG0001, aErrorInfo);
@@ -362,8 +362,8 @@ T1_TO_T2(str, b64)
 
 T1_TO_T2(str, hxB)
 {
-  xqp_hexBinary n;
-  if (xqp_hexBinary::parseString(strval, n))
+  xs_hexBinary n;
+  if (xs_hexBinary::parseString(strval, n))
     return aFactory->createHexBinary(result, n);
 
   throwError(FORG0001, aErrorInfo);
@@ -643,8 +643,8 @@ T1_TO_T2(flt, dbl)
 
 T1_TO_T2(flt, dec)
 {
-  xqp_decimal n;
-  if (xqp_decimal::parseFloat(aItem->getFloatValue(), n))
+  xs_decimal n;
+  if (xs_decimal::parseFloat(aItem->getFloatValue(), n))
     return aFactory->createDecimal(result, n);
 
   throwError(FOCA0002, aErrorInfo);
@@ -654,8 +654,8 @@ T1_TO_T2(flt, dec)
 
 T1_TO_T2(flt, int)
 {
-  xqp_integer n;
-  if (xqp_integer::parseFloat(aItem->getFloatValue(), n))
+  xs_integer n;
+  if (xs_integer::parseFloat(aItem->getFloatValue(), n))
     return aFactory->createInteger(result, n);
 
   throwError(FOCA0002, aErrorInfo);
@@ -693,8 +693,8 @@ T1_TO_T2(dbl, flt)
 
 T1_TO_T2(dbl, dec)
 {
-  xqp_decimal n;
-  if (xqp_decimal::parseDouble(aItem->getDoubleValue(), n))
+  xs_decimal n;
+  if (xs_decimal::parseDouble(aItem->getDoubleValue(), n))
     return aFactory->createDecimal(result, n);
 
   throwError(FOCA0002, aErrorInfo);
@@ -704,8 +704,8 @@ T1_TO_T2(dbl, dec)
 
 T1_TO_T2(dbl, int)
 {
-  xqp_integer n;
-  if (xqp_integer::parseDouble(aItem->getDoubleValue(), n))
+  xs_integer n;
+  if (xs_integer::parseDouble(aItem->getDoubleValue(), n))
     return aFactory->createInteger(result, n);
 
   throwError(FOCA0002, aErrorInfo);
@@ -737,21 +737,21 @@ T1_TO_T2(dec, str)
 T1_TO_T2(dec, flt)
 {
   return aFactory->createFloat(result,
-                               xqp_float::parseDecimal(aItem->getDecimalValue()));
+                               xs_float::parseDecimal(aItem->getDecimalValue()));
 }
 
 
 T1_TO_T2(dec, dbl)
 {
   return aFactory->createDouble(result,
-                                xqp_double::parseDecimal(aItem->getDecimalValue()));
+                                xs_double::parseDecimal(aItem->getDecimalValue()));
 }
 
 
 T1_TO_T2(dec, int)
 {
   return aFactory->createInteger(result,
-                                 xqp_integer::parseDecimal(aItem->getDecimalValue()));
+                                 xs_integer::parseDecimal(aItem->getDecimalValue()));
 }
 
 
@@ -779,21 +779,21 @@ T1_TO_T2(int, str)
 T1_TO_T2(int, flt)
 {
   return aFactory->createFloat(result,
-                               xqp_float::parseInteger(aItem->getIntegerValue()));
+                               xs_float::parseInteger(aItem->getIntegerValue()));
 }
 
 
 T1_TO_T2(int, dbl)
 {
   return aFactory->createDouble(result,
-                                xqp_double::parseInteger(aItem->getIntegerValue()));
+                                xs_double::parseInteger(aItem->getIntegerValue()));
 }
 
 
 T1_TO_T2(int, dec)
 {
   return aFactory->createDecimal(result,
-                                 xqp_decimal::parseInteger(aItem->getIntegerValue()));
+                                 xs_decimal::parseInteger(aItem->getIntegerValue()));
 }
 
 
@@ -1127,36 +1127,36 @@ T1_TO_T2(bool, str)
 T1_TO_T2(bool, flt)
 {
   if (aItem->getBooleanValue())
-    return aFactory->createFloat(result, xqp_float::parseInt(1));
+    return aFactory->createFloat(result, xs_float::parseInt(1));
   else
-    return aFactory->createFloat(result, xqp_float::zero());
+    return aFactory->createFloat(result, xs_float::zero());
 }
 
 
 T1_TO_T2(bool, dbl)
 {
   if (aItem->getBooleanValue())
-    return aFactory->createDouble(result, xqp_double::parseInt(1));
+    return aFactory->createDouble(result, xs_double::parseInt(1));
   else
-    return aFactory->createDouble(result, xqp_double::zero());
+    return aFactory->createDouble(result, xs_double::zero());
 }
 
 
 T1_TO_T2(bool, dec)
 {
   if (aItem->getBooleanValue())
-    return aFactory->createDecimal(result, xqp_decimal::parseInt(1));
+    return aFactory->createDecimal(result, xs_decimal::parseInt(1));
   else
-    return aFactory->createDecimal(result, xqp_decimal::zero());
+    return aFactory->createDecimal(result, xs_decimal::zero());
 }
 
 
 T1_TO_T2(bool, int)
 {
   if (aItem->getBooleanValue())
-    return aFactory->createInteger(result, xqp_integer::parseInt(1));
+    return aFactory->createInteger(result, xs_integer::parseInt(1));
   else
-    return aFactory->createInteger(result, xqp_integer::zero());
+    return aFactory->createInteger(result, xs_integer::zero());
 }
 
 
@@ -1176,7 +1176,7 @@ T1_TO_T2(b64, str)
 
 T1_TO_T2(b64, hxB)
 {
-  return aFactory->createHexBinary(result, xqp_hexBinary(aItem->getBase64BinaryValue()));
+  return aFactory->createHexBinary(result, xs_hexBinary(aItem->getBase64BinaryValue()));
 }
 
 
@@ -1197,7 +1197,7 @@ T1_TO_T2(hxB, str)
 T1_TO_T2(hxB, b64)
 {
   return aFactory->createBase64Binary(result,
-                                      xqp_base64Binary(aItem->getHexBinaryValue()));
+                                      xs_base64Binary(aItem->getHexBinaryValue()));
 }
 
 
@@ -1350,21 +1350,21 @@ bool int_down(
   {
   case TypeConstants::XS_NON_POSITIVE_INTEGER:
   {
-    xqp_integer lInteger = aItem->getIntegerValue();
-    if (lInteger <= xqp_integer::zero())
+    xs_integer lInteger = aItem->getIntegerValue();
+    if (lInteger <= xs_integer::zero())
       return aFactory->createNonPositiveInteger(result, lInteger);
     break;
   }
   case TypeConstants::XS_NEGATIVE_INTEGER:
   {
-    xqp_integer lInteger = aItem->getIntegerValue();
-    if (lInteger < xqp_integer::zero())
+    xs_integer lInteger = aItem->getIntegerValue();
+    if (lInteger < xs_integer::zero())
       return aFactory->createNegativeInteger(result, lInteger);
     break;
   }
   case TypeConstants::XS_LONG:
   {
-    xqp_long n;
+    xs_long n;
     zstring lString;
     aItem->getStringValue2(lString);
     if (NumConversions::strToLong(lString.c_str(), n))
@@ -1373,7 +1373,7 @@ bool int_down(
   }
   case TypeConstants::XS_INT:
   {
-    xqp_int n;
+    xs_int n;
     zstring lString;
     aItem->getStringValue2(lString);
     if (NumConversions::strToInt(lString.c_str(), n))
@@ -1382,7 +1382,7 @@ bool int_down(
   }
   case TypeConstants::XS_SHORT:
   {
-    xqp_short n;
+    xs_short n;
     zstring lString;
     aItem->getStringValue2(lString);
     if (NumConversions::strToShort(lString.c_str(), n))
@@ -1391,7 +1391,7 @@ bool int_down(
   }
   case TypeConstants::XS_BYTE:
   {
-    xqp_byte n;
+    xs_byte n;
     zstring lString;
     aItem->getStringValue2(lString);
     if (NumConversions::strToByte(lString.c_str(), n))
@@ -1400,14 +1400,14 @@ bool int_down(
   }
   case TypeConstants::XS_NON_NEGATIVE_INTEGER:
   {
-    xqp_integer lInteger = aItem->getIntegerValue();
-    if (lInteger >= xqp_integer::zero())
+    xs_integer lInteger = aItem->getIntegerValue();
+    if (lInteger >= xs_integer::zero())
       return aFactory->createNonNegativeInteger(result, lInteger);
     break;
   }
   case TypeConstants::XS_UNSIGNED_LONG:
   {
-    xqp_ulong n;
+    xs_ulong n;
     zstring lString;
     aItem->getStringValue2(lString);
     if (NumConversions::strToULong(lString.c_str(), n))
@@ -1416,7 +1416,7 @@ bool int_down(
   }
   case TypeConstants::XS_UNSIGNED_INT:
   {
-    xqp_uint n;
+    xs_uint n;
     zstring lString;
     aItem->getStringValue2(lString);
     if (NumConversions::strToUInt(lString.c_str(), n))
@@ -1425,7 +1425,7 @@ bool int_down(
   }
   case TypeConstants::XS_UNSIGNED_SHORT:
   {
-    xqp_ushort n;
+    xs_ushort n;
     zstring lString;
     aItem->getStringValue2(lString);
     if (NumConversions::strToUShort(lString.c_str(), n))
@@ -1434,7 +1434,7 @@ bool int_down(
   }
   case TypeConstants::XS_UNSIGNED_BYTE:
   {
-    xqp_ubyte n;
+    xs_ubyte n;
     zstring lString;
     aItem->getStringValue2(lString);
     if (NumConversions::strToUByte(lString.c_str(), n))
@@ -1443,8 +1443,8 @@ bool int_down(
   }
   case TypeConstants::XS_POSITIVE_INTEGER:
   {
-    xqp_integer lInteger = aItem->getIntegerValue();
-    if (lInteger > xqp_integer::zero())
+    xs_integer lInteger = aItem->getIntegerValue();
+    if (lInteger > xs_integer::zero())
       return aFactory->createPositiveInteger(result, lInteger);
     break;
   }

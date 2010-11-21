@@ -60,7 +60,7 @@ void XMLIterPrinter::addAttribute(const std::string& aName, const std::string& a
 }
 
 
-void XMLIterPrinter::addAttribute(const std::string& aName, xqp_long aValue)
+void XMLIterPrinter::addAttribute(const std::string& aName, xs_long aValue)
 {
   assert(theOpenStart);
   theOStream << " " << aName << "=\"" << aValue << "\"";
@@ -143,7 +143,7 @@ void DOTIterPrinter::addAttribute(const std::string& aName, const std::string& a
   theOStream << "\\n" << aName << "=" << mvalue;
 }
 
-void DOTIterPrinter::addAttribute(const std::string& aName, xqp_long aValue)
+void DOTIterPrinter::addAttribute(const std::string& aName, xs_long aValue)
 {
   printSpaces(theIndent);
   theOStream << "\\n" << aName << "=" << aValue;

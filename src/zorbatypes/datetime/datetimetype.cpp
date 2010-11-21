@@ -971,7 +971,7 @@ int DateTime::getMinutes() const
 }
 
 
-xqp_decimal DateTime::getSeconds() const
+xs_decimal DateTime::getSeconds() const
 {
   return Decimal::parseInt(data[SECONDS_DATA]) + (Decimal::parseInt(data[FRACSECONDS_DATA]) / Integer::parseInt(FRAC_SECONDS_UPPER_LIMIT));
 }

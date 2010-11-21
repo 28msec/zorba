@@ -617,7 +617,7 @@ public:
         store::NsBindings& bindings,
         store::StoreConsts::NsScoping scope = store::StoreConsts::ALL_NAMESPACES) const;
 
-  xqp_string show() const;
+  xs_string show() const;
 
   //
   // SimpleStore Methods
@@ -889,7 +889,7 @@ public:
   zstring getStringValue() const;
   store::Item_t getAtomizationValue() const;
 
-  xqp_string show() const;
+  xs_string show() const;
 
   void replaceValue(UpdReplaceAttrValue& upd);
   void restoreValue(UpdReplaceAttrValue& upd);
@@ -964,7 +964,7 @@ public:
   store::Item_t getAtomizationValue() const;
   zstring getStringValue() const;
 			
-  xqp_string show() const;
+  xs_string show() const;
 
   void replaceValue(UpdReplaceTextValue& upd);
   void restoreValue(UpdReplaceTextValue& upd);
@@ -1031,7 +1031,7 @@ public:
 
   zstring getTarget() const          { return theTarget.getp(); }
 
-  xqp_string show() const;
+  xs_string show() const;
 
   void replaceValue(UpdReplacePiValue& upd);
   void restoreValue(UpdReplacePiValue& upd);
@@ -1086,7 +1086,7 @@ public:
   store::Item_t getAtomizationValue() const;
   zstring getStringValue() const;
 
-  xqp_string show() const;
+  xs_string show() const;
 
   void replaceValue(UpdReplaceCommentValue& upd);
   void restoreValue(UpdReplaceCommentValue& upd);

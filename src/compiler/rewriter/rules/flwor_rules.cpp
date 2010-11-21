@@ -218,7 +218,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       {
         MODIFY(subst_vars(rCtx, node, pvar, new const_expr(sctx,
                                                            loc,
-                                                           xqp_integer::parseInt(1))));
+                                                           xs_integer::parseInt(1))));
       }
 
       int uses = count_variable_uses(&flwor, var, &rCtx, 2);
@@ -803,7 +803,7 @@ static bool is_subseq_pred(
                                                  XPTY0004);
 
         if (TypeOps::is_subtype(tm, *valType, *rtm.INTEGER_TYPE_ONE) &&
-            val->getIntegerValue() >= xqp_integer::parseInt(1))
+            val->getIntegerValue() >= xs_integer::parseInt(1))
         {
           return true;
         }

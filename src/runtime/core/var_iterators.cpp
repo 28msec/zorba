@@ -213,7 +213,7 @@ void CtxVarIterator::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-bool CtxVarIterator::setTargetPos(xqp_long v) 
+bool CtxVarIterator::setTargetPos(xs_long v) 
 {
   if (theTargetPos == 0 && theTargetPosIter == NULL)
   {
@@ -297,8 +297,8 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   store::Item_t varSingleItem;
   store::Item_t posItem;
   store::Item_t lenItem;
-  xqp_long startPos;
-  xqp_long len;
+  xs_long startPos;
+  xs_long len;
 
   CtxVarState* state;
   DEFAULT_STACK_INIT(CtxVarState, state, planState);
@@ -578,7 +578,7 @@ void LetVarIterator::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-bool LetVarIterator::setTargetPos(xqp_long v) 
+bool LetVarIterator::setTargetPos(xs_long v) 
 {
   if (theTargetPos == 0 && theTargetPosIter == NULL)
   {
@@ -716,8 +716,8 @@ bool LetVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t posItem;
   store::Item_t lenItem;
-  xqp_long startPos;
-  xqp_long len;
+  xs_long startPos;
+  xs_long len;
 
   LetVarState* state;
   DEFAULT_STACK_INIT(LetVarState, state, planState);

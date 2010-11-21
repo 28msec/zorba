@@ -80,46 +80,46 @@ public:
 
   bool createString(store::Item_t& result, zstring& value);
 
-  bool createBase64Binary(store::Item_t& result, xqp_base64Binary value);
+  bool createBase64Binary(store::Item_t& result, xs_base64Binary value);
 
-  bool createBoolean(store::Item_t& result, xqp_boolean value);
+  bool createBoolean(store::Item_t& result, xs_boolean value);
 
 
-  bool createDouble(store::Item_t& result, const xqp_double& value);
+  bool createDouble(store::Item_t& result, const xs_double& value);
 
-  bool createFloat(store::Item_t& result, const xqp_float& value);
+  bool createFloat(store::Item_t& result, const xs_float& value);
 
-  bool createDecimal(store::Item_t& result, const xqp_decimal& value);
+  bool createDecimal(store::Item_t& result, const xs_decimal& value);
 
-  bool createInteger(store::Item_t& result, const xqp_integer& value);
+  bool createInteger(store::Item_t& result, const xs_integer& value);
 
-  bool createNonNegativeInteger(store::Item_t& result, const xqp_uinteger& value);
+  bool createNonNegativeInteger(store::Item_t& result, const xs_uinteger& value);
 
-  bool createPositiveInteger(store::Item_t& result,  const xqp_uinteger& value );
+  bool createPositiveInteger(store::Item_t& result,  const xs_uinteger& value );
 
-  bool createNonPositiveInteger(store::Item_t& result, const xqp_integer& value);
+  bool createNonPositiveInteger(store::Item_t& result, const xs_integer& value);
 
-  bool createNegativeInteger(store::Item_t& result,  const xqp_integer& value);
+  bool createNegativeInteger(store::Item_t& result,  const xs_integer& value);
 
-  bool createLong(store::Item_t& result, xqp_long value);
+  bool createLong(store::Item_t& result, xs_long value);
 
-  bool createInt(store::Item_t& result, xqp_int value);
+  bool createInt(store::Item_t& result, xs_int value);
 
-  bool createShort(store::Item_t& result, xqp_short value);
+  bool createShort(store::Item_t& result, xs_short value);
 
-  bool createByte(store::Item_t& result, xqp_byte value);
+  bool createByte(store::Item_t& result, xs_byte value);
 
-  bool createUnsignedLong(store::Item_t& result, xqp_ulong value);
+  bool createUnsignedLong(store::Item_t& result, xs_ulong value);
 
-  bool createUnsignedInt(store::Item_t& result, xqp_uint value);
+  bool createUnsignedInt(store::Item_t& result, xs_uint value);
 
-  bool createUnsignedShort(store::Item_t& result, xqp_ushort value);
+  bool createUnsignedShort(store::Item_t& result, xs_ushort value);
 
-  bool createUnsignedByte(store::Item_t& result, xqp_ubyte value);
+  bool createUnsignedByte(store::Item_t& result, xs_ubyte value);
 
-  bool createDateTime(store::Item_t& result, const xqp_date* date, const xqp_time* time);
+  bool createDateTime(store::Item_t& result, const xs_date* date, const xs_time* time);
 
-  bool createDateTime(store::Item_t& result, const xqp_dateTime* value);
+  bool createDateTime(store::Item_t& result, const xs_dateTime* value);
 
   bool createDateTime(store::Item_t& result, short year, short month, short day, short hour, short minute, double second);
 
@@ -129,13 +129,13 @@ public:
 
   bool createDateTime(store::Item_t& result, const store::Item_t&, const store::Item_t&);
 
-  bool createDate(store::Item_t& result, const xqp_date* value);
+  bool createDate(store::Item_t& result, const xs_date* value);
 
   bool createDate(store::Item_t& result, short year, short month, short day);
 
   bool createDate(store::Item_t& result, const char* str, ulong strlen);
 
-  bool createTime(store::Item_t& result, const xqp_time* value);
+  bool createTime(store::Item_t& result, const xs_time* value);
 
   bool createTime(store::Item_t& result, const char* str, ulong strlen);
 
@@ -143,52 +143,52 @@ public:
 
   bool createTime(store::Item_t& result, short hour, short minute, double second, short timeZone_hours);
 
-  bool createGDay(store::Item_t& result, const xqp_gDay* value);
+  bool createGDay(store::Item_t& result, const xs_gDay* value);
 
   bool createGDay(store::Item_t& result, const char* str, ulong strlen);
 
   bool createGDay(store::Item_t& result, short day);
 
-  bool createGMonth(store::Item_t& result, const xqp_gMonth* value);
+  bool createGMonth(store::Item_t& result, const xs_gMonth* value);
 
   bool createGMonth(store::Item_t& result, const char* str, ulong strlen);
 
   bool createGMonth(store::Item_t& result, short month);
 
-  bool createGMonthDay (store::Item_t& result, const xqp_gMonthDay* value);
+  bool createGMonthDay (store::Item_t& result, const xs_gMonthDay* value);
 
   bool createGMonthDay (store::Item_t& result,  const char* str, ulong strlen);
 
   bool createGMonthDay (store::Item_t& result,  short month, short day);
 
-  bool createGYear (store::Item_t& result, const xqp_gYear* value);
+  bool createGYear (store::Item_t& result, const xs_gYear* value);
 
   bool createGYear (store::Item_t& result,  const char* str, ulong strlen);
 
   bool createGYear (store::Item_t& result,  short year);
 
-  bool createGYearMonth (store::Item_t& result, const xqp_gYearMonth* value);
+  bool createGYearMonth (store::Item_t& result, const xs_gYearMonth* value);
 
   bool createGYearMonth (store::Item_t& result,  const char* str, ulong strlen);
 
   bool createGYearMonth (store::Item_t& result,  short year, short month);
 
-  bool createDuration(store::Item_t& result, xqp_duration* value);
+  bool createDuration(store::Item_t& result, xs_duration* value);
 
   bool createDuration(store::Item_t& result, const char* str, ulong strlen);
 
   bool createDuration(store::Item_t& result, short years, short months, short days, short hours, short minutes, double seconds);
 
-  bool createYearMonthDuration(store::Item_t& result, xqp_yearMonthDuration* value );
+  bool createYearMonthDuration(store::Item_t& result, xs_yearMonthDuration* value );
 
-  bool createDayTimeDuration(store::Item_t& result, xqp_dayTimeDuration* value );
+  bool createDayTimeDuration(store::Item_t& result, xs_dayTimeDuration* value );
 
   bool createENTITIES(store::Item_t& result, zstring& value);
 
   bool createENTITY(store::Item_t& result, zstring& value);
 
 
-  bool createHexBinary (store::Item_t& result,  xqp_hexBinary value );
+  bool createHexBinary (store::Item_t& result,  xs_hexBinary value );
 
   bool createID (store::Item_t& result, zstring& value );
 

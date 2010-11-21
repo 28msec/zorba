@@ -444,7 +444,7 @@
   </zorba:function>
 
   <zorba:state generateInit="true" generateReset="true">
-    <zorba:member type="xqp_double" name="theDoubInteger" defaultValue="xqp_double::zero()"
+    <zorba:member type="xs_double" name="theDoubInteger" defaultValue="xs_double::zero()"
                   brief=""/>
   </zorba:state>
     
@@ -467,7 +467,7 @@
   </zorba:function>
 
   <zorba:state generateInit="true" generateReset="true">
-    <zorba:member type="xqp_integer" name="theIntExponent" defaultValue="xqp_integer::zero()"
+    <zorba:member type="xs_integer" name="theIntExponent" defaultValue="xs_integer::zero()"
                   brief=""/>
   </zorba:state>
     

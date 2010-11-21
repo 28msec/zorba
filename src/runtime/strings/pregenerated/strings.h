@@ -81,8 +81,8 @@ public:
 class StringToCodepointsIteratorState : public PlanIteratorState
 {
 public:
-  xqp_uint theIterator; //the current iterator
-  checked_vector<xqp_uint> theResult; //the resulting vector
+  xs_uint theIterator; //the current iterator
+  checked_vector<xs_uint> theResult; //the resulting vector
 
   StringToCodepointsIteratorState();
 
@@ -887,11 +887,11 @@ public:
 class FnTokenizeIteratorState : public PlanIteratorState
 {
 public:
-  xqp_string theString; //the remaining string
-  xqp_string thePattern; //the pattern string
-  xqp_string theFlags; //the tokenizing flags
-  xqp_int start_pos; //the start position
-  xqp_boolean hasmatched; //flag indicating whether a match was found
+  xs_string theString; //the remaining string
+  xs_string thePattern; //the pattern string
+  xs_string theFlags; //the tokenizing flags
+  xs_int start_pos; //the start position
+  xs_boolean hasmatched; //flag indicating whether a match was found
 
   FnTokenizeIteratorState();
 

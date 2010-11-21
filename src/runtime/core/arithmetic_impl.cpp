@@ -340,7 +340,7 @@ bool AddOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DURATION
     const store::Item* i0,
     const store::Item* i1)
 {
-  std::auto_ptr<xqp_dateTime> d(i0->getDateTimeValue().addDuration(i1->getDurationValue()));
+  std::auto_ptr<xs_dateTime> d(i0->getDateTimeValue().addDuration(i1->getDurationValue()));
   return GENV_ITEMFACTORY->createDateTime(result, d.get());
 }
 
@@ -354,7 +354,7 @@ bool AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DATETIME
     const store::Item* i0,
     const store::Item* i1)
 {
-  std::auto_ptr<xqp_dateTime> d(i1->getDateTimeValue().addDuration(i0->getDurationValue()));
+  std::auto_ptr<xs_dateTime> d(i1->getDateTimeValue().addDuration(i0->getDurationValue()));
   return GENV_ITEMFACTORY->createDateTime(result, d.get());
 }
 
@@ -368,7 +368,7 @@ bool AddOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DURATION>
   const store::Item* i0,
   const store::Item* i1)
 {
-  std::auto_ptr<xqp_date> d(i0->getDateValue().addDuration(i1->getDurationValue()));
+  std::auto_ptr<xs_date> d(i0->getDateValue().addDuration(i1->getDurationValue()));
   return GENV_ITEMFACTORY->createDate(result, d.get());
 }
 
@@ -382,7 +382,7 @@ bool AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DATE>
   const store::Item* i0,
   const store::Item* i1 )
 {
-  std::auto_ptr<xqp_date> d(i1->getDateValue().addDuration(i0->getDurationValue()));
+  std::auto_ptr<xs_date> d(i1->getDateValue().addDuration(i0->getDurationValue()));
   return GENV_ITEMFACTORY->createDate (result, d.get());
 }
 
@@ -396,7 +396,7 @@ bool AddOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATION>
   const store::Item* i0,
   const store::Item* i1 )
 {
-  std::auto_ptr<xqp_time> t(i0->getTimeValue().addDuration(i1->getDurationValue()));
+  std::auto_ptr<xs_time> t(i0->getTimeValue().addDuration(i1->getDurationValue()));
   return GENV_ITEMFACTORY->createTime (result, t.get());
 }
 
@@ -410,7 +410,7 @@ bool AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_TIME>
   const store::Item* i0,
   const store::Item* i1 )
 {
-  std::auto_ptr<xqp_time> t(i1->getTimeValue().addDuration(i0->getDurationValue()));
+  std::auto_ptr<xs_time> t(i1->getTimeValue().addDuration(i0->getDurationValue()));
   return GENV_ITEMFACTORY->createTime (result, t.get());
 }
 
@@ -460,7 +460,7 @@ bool SubtractOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DUR
     const store::Item* i0,
     const store::Item* i1)
 {
-  std::auto_ptr<xqp_dateTime> d(i0->getDateTimeValue().subtractDuration(i1->getDurationValue()));
+  std::auto_ptr<xs_dateTime> d(i0->getDateTimeValue().subtractDuration(i1->getDurationValue()));
   return GENV_ITEMFACTORY->createDateTime(result, d.get());
 }
 
@@ -474,7 +474,7 @@ bool SubtractOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DURATIO
     const store::Item* i0,
     const store::Item* i1)
 {
-  std::auto_ptr<xqp_date> d(i0->getDateValue().subtractDuration(i1->getDurationValue()));
+  std::auto_ptr<xs_date> d(i0->getDateValue().subtractDuration(i1->getDurationValue()));
   return GENV_ITEMFACTORY->createDate(result, d.get());
 }
 
@@ -488,7 +488,7 @@ bool SubtractOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATIO
     const store::Item* i0,
     const store::Item* i1)
 {
-  std::auto_ptr<xqp_time> t(i0->getTimeValue().subtractDuration(i1->getDurationValue()));
+  std::auto_ptr<xs_time> t(i0->getTimeValue().subtractDuration(i1->getDurationValue()));
   return GENV_ITEMFACTORY->createTime(result, t.get());
 }
 
@@ -701,7 +701,7 @@ bool DivideOperation::compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_YM
   const store::Item* i0,
   const store::Item* i1 )
 {
-  xqp_decimal d = i0->getYearMonthDurationValue() / i1->getYearMonthDurationValue();
+  xs_decimal d = i0->getYearMonthDurationValue() / i1->getYearMonthDurationValue();
   return GENV_ITEMFACTORY->createDecimal(result, d);
 }
 
@@ -715,7 +715,7 @@ bool DivideOperation::compute<TypeConstants::XS_DT_DURATION,TypeConstants::XS_DT
     const store::Item* i0,
     const store::Item* i1 )
 {
-  xqp_decimal d = i0->getDayTimeDurationValue() / i1->getDayTimeDurationValue();
+  xs_decimal d = i0->getDayTimeDurationValue() / i1->getDayTimeDurationValue();
 
   return GENV_ITEMFACTORY->createDecimal(result, d);
 }

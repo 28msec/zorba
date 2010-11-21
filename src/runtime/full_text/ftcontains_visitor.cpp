@@ -52,7 +52,7 @@ inline void set_error_query_loc( error::ZorbaError &e, QueryLoc const &loc ) {
   );
 }
 
-inline ft_int to_ft_int( xqp_integer const &i ) {
+inline ft_int to_ft_int( xs_integer const &i ) {
   ft_int result;
   if ( !NumConversions::integerToUInt( i, result ) ) {
     // TODO
