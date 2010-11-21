@@ -183,7 +183,11 @@ public:
   }
 
   /**
+   * Shares 2 string representations.
    *
+   * @param that The %rep_proxy of the representation to share.
+   * @param this_alloc This allocator.
+   * @param that_alloc The allocator used by \a that.
    */
   void share( rep_proxy const &that, allocator_type const &this_alloc,
               allocator_type const &that_alloc ) {
@@ -198,7 +202,9 @@ public:
   }
 
   /**
+   * Swaps this string representation for another.
    *
+   * @param that The %rep_proxy to swap with.
    */
   void swap( rep_proxy &that ) {
     RepType *const tmp = rep_;
@@ -207,7 +213,11 @@ public:
   }
 
   /**
+   * Performs a destructive assignment.
    *
+   * @param that The %rep_proxy to copy from.  It is set to the empty string.
+   * @param this_alloc This allocator.
+   * @param that_allor The allocator used by \a that.
    */
   void take( rep_proxy &that, allocator_type const &this_alloc,
              allocator_type const &that_alloc ) {

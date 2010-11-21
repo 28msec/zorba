@@ -151,7 +151,7 @@ public:
   }
 
   /**
-   * Reserves a minumum capacity.
+   * Reserves a minimum capacity.
    *
    * @param cap The minimum capacity to reserve.
    * @param a The allocator to use.

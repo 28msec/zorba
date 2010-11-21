@@ -26,6 +26,8 @@
 namespace zorba {
 namespace rstring_classes {
 
+///////////////////////////////////////////////////////////////////////////////
+
 // BUF_REP_CONSTRUCT_2CP_A_X
 template<class ResultRepType>
 void buf_rep<ResultRepType>::construct( const_pointer begin, const_pointer end,
@@ -47,6 +49,38 @@ void buf_rep<ResultRepType>::construct( const_pointer begin, const_pointer end,
     }
   this->set_length( len );
 }
+
+///////////////////////////////////////////////////////////////////////////////
+
+// REP_PROXY_BUF_REP_SWAP_X
+template<class ResultRep>
+void rep_proxy< buf_rep<ResultRep> >::swap( buf_rep<ResultRep> &that ) {
+  pointer   const tmp_p   = this->p_;
+  size_type const tmp_cap = this->capacity();
+  size_type const tmp_len = this->length();
+
+  this->p_ = that.p_;
+  this->set_capacity( that.capacity() );
+  this->set_length( that.length() );
+
+  that.p_ = tmp_p;
+  that.set_capacity( tmp_cap );
+  that.set_length( tmp_len );
+}
+
+// REP_PROXY_BUF_REP_TAKE_X
+template<class ResultRep>
+void rep_proxy< buf_rep<ResultRep> >::take( RepType &that,
+                                            allocator_type const &this_alloc,
+                                            allocator_type const &that_alloc ) {
+  this->dispose( this_alloc );
+  this->p_ = that.p_;
+  this->set_capacity( that.capacity() );
+  this->set_length( that.length() );
+  that.dispose( that_alloc );
+}
+
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace rstring_classes
 } // namespace zorba

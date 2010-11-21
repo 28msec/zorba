@@ -17,12 +17,12 @@
 #ifndef ZORBA_RSTRING_BUF_REP_H
 #define ZORBA_RSTRING_BUF_REP_H
 
-#include <stdexcept>
 #include <cassert>
+#include <stdexcept>
 
 #include "rep_base.h"
-#include "util/void_int.h"
 #include "rep_proxy.h"
+#include "util/void_int.h"
 
 namespace zorba {
 namespace rstring_classes {
@@ -61,10 +61,6 @@ public:
   typedef typename base_type::ref_count_type ref_count_type;
   typedef ResultRepType result_rep_type;
 
-public:
-  static const bool takes_pointer_ownership = false;
-
-public:
   /**
    *
    */
@@ -87,14 +83,14 @@ public:
   }
 
   /**
-   *
+   * Constructs a %buf_rep.
    */
   buf_rep() : base_type( 0 ), p_( NULL ) {
     this->set_length( 0 );
   }
 
   /**
-   *
+   * Destroys this %buf_rep.
    */
   ~buf_rep() {
     assert( p_ == NULL );
@@ -125,7 +121,7 @@ public:
    *
    * @param a The allocator that was used to create this %buf_rep.
    */
-  void dispose( allocator_type const& ) {
+  void dispose( allocator_type const &a ) {
 #ifndef NDEBUG
     p_ = NULL;
     this->set_capacity( 0 );
@@ -133,87 +129,32 @@ public:
 #endif
   }
 
+  /**
+   * Gets the singleton %buf_rep for the empty string.
+   *
+   * @return Returns said %buf_rep.
+   */
   static buf_rep* empty_rep() {
     return 0;
   }
 
   /**
+   * Reserves a minimum capacity.
    *
+   * @param cap The minimum capacity to reserve.
+   * @param a The allocator to use.
+   * @throws std::length_error if \a cap &gt; \c capacity() since a %buf_rep
+   * can not grow in size.
    */
-  void make_unsharable_if_necessary( allocator_type const& ) {
-    // do nothing
-  }
-
-  /**
-   * A %buf_rep can not be reallocated.
-   */
-  void realloc( size_type cap, size_type old_cap, allocator_type const& ) {
-    throw std::length_error( "realloc" );
-  }
-
-  /**
-   *
-   */
-  void reserve( size_type cap, allocator_type const& ) {
+  void reserve( size_type cap, allocator_type const &a ) {
     if ( cap > this->capacity() )
       throw std::length_error( "reserve" );
   }
 
-  /**
-   *
-   */
-  void share( buf_rep const &that, allocator_type const&,
-              allocator_type const& ) {
-    this->p_ = that.p_;
-    this->set_capacity( that.capacity() );
-    this->set_length( that.length() );
-  }
-
-  /**
-   *
-   */
-  void swap( buf_rep &that ) {
-    pointer   const tmp_p   = this->p_;
-    size_type const tmp_cap = this->capacity();
-    size_type const tmp_len = this->length();
-
-    this->p_ = that.p_;
-    this->set_capacity( that.capacity() );
-    this->set_length( that.length() );
-
-    that.p_ = tmp_p;
-    that.set_capacity( tmp_cap );
-    that.set_length( tmp_len );
-  }
-
-  /**
-   *
-   */
-  void take( buf_rep &that, allocator_type const&,
-             allocator_type const &that_alloc ) {
-    p_ = that.p_;
-    this->set_capacity( that.capacity() );
-    this->set_length( that.length() );
-    that.dispose( that_alloc );
-  }
-
-  /**
-   *
-   */
-  bool operator==( buf_rep const &j ) {
-    return  this->p_ == j.p_ &&
-            this->capacity() == j.capacity() && this->length() == j.length();
-  }
-
-  /**
-   *
-   */
-  bool operator!=( buf_rep const &j ) {
-    return !(*this == j);
-  }
-
 private:
   pointer p_;
+
+  friend class rep_proxy<buf_rep>;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -244,7 +185,66 @@ public:
 
   typedef rep_proxy<typename RepType::result_rep_type> result_rep_type;
 
-  enum { takes_pointer_ownership = RepType::takes_pointer_ownership };
+  /**
+   * A %buf_rep can not be unshared, so this does nothing.
+   */
+  void make_unsharable_if_necessary( allocator_type const& ) {
+    // do nothing
+  }
+
+  /**
+   * A %buf_rep can not be reallocated.
+   */
+  void realloc( size_type, size_type, allocator_type const& ) {
+    throw std::length_error( "realloc" );
+  }
+
+  /**
+   * Shares 2 string representations.
+   *
+   * @param that The %rep_proxy of the representation to share.
+   */
+  void share( RepType const &that, allocator_type const&,
+              allocator_type const& ) {
+    this->p_ = that.p_;
+    this->set_capacity( that.capacity() );
+    this->set_length( that.length() );
+  }
+
+  // REP_PROXY_BUF_REP_SWAP_X
+  /**
+   * Swaps this string representation for another.
+   *
+   * @param that The %rep_proxy to swap with.
+   */
+  void swap( RepType &that );
+
+  // REP_PROXY_BUF_REP_TAKE_X
+  /**
+   * Performs a destructive assignment.
+   *
+   * @param that The %rep_proxy to copy from.  It is set to the empty string.
+   * @param this_alloc This allocator.
+   * @param that_allor The allocator used by \a that.
+   */
+  void take( RepType &that, allocator_type const &this_alloc,
+             allocator_type const &that_alloc );
+
+  /**
+   *
+   */
+  bool operator==( RepType const &j ) {
+    return  this->p_ == j.p_ &&
+            this->capacity() == j.capacity() && this->length() == j.length();
+  }
+
+  /**
+   *
+   */
+  bool operator!=( RepType const &j ) {
+    return !(*this == j);
+  }
+
 };
 
 ///////////////////////////////////////////////////////////////////////////////
