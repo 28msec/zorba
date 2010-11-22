@@ -128,7 +128,7 @@ namespace zorba {
     return 0;
   }
 
-	int test_run(Zorba* aZorba) {
+  int test_run(Zorba* aZorba) {
 
     std::stringstream lQueryStr;
     lQueryStr << "<a>Hello World</a>";
