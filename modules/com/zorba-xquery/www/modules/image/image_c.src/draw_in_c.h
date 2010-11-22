@@ -2,18 +2,53 @@
 
 
 void *  
-DrawPolygon(const void* aBlob, long* aLength, double aXValues[], double aYValues[], int aNumberOfPoints, const std::string aStrokeColor, const std::string aFillColor, double aStrokeWidth, bool aAntiAliasing); 
+DrawPolygon(const void* aBlob, 
+            long* aLength, 
+            double aXValues[], 
+            double aYValues[], 
+            int aNumberOfPoints, 
+            std::string& aStrokeColor, 
+            std::string& aFillColor, 
+            double aStrokeWidth, 
+            bool aAntiAliasing); 
 
 void *
-DrawPolyLine(const void* aBlob, long* aLength, double aXValues[], double aYValues[], int aNumberOfPoints, std::string aStrokeColor, double aStrokeWidth, bool aAntiAliasing, double aStrokeArray[], int aNumberOfStrokeValues);
+DrawPolyLine(const void* aBlob, 
+             long* aLength, 
+             double aXValues[], 
+             double aYValues[], 
+             int aNumberOfPoints, 
+             std::string& aStrokeColor, 
+             double aStrokeWidth, 
+             bool aAntiAliasing, 
+             double aStrokeArray[], 
+             int aNumberOfStrokeValues);
 
 
 void *
-DrawRoundedRect(const void* aBlob, long *aLength, double aUpperLeftX, double aUpperLeftY, double aLowerRightX, double aLowerRightY, double aCornerWidth, double aCornerHeight, std::string aStrokeColor, std::string aFillColor, double aStrokeWidth, bool aAntiAliasing);
+DrawRoundedRect(const void* aBlob, 
+                long *aLength, 
+                double aUpperLeftX, 
+                double aUpperLeftY, 
+                double aLowerRightX, 
+                double aLowerRightY, 
+                double aCornerWidth, 
+                double aCornerHeight, 
+                std::string& aStrokeColor, 
+                std::string& aFillColor, 
+                double aStrokeWidth, 
+                bool aAntiAliasing);
 
 
 void *
-DrawText(const void* aBlob, long* aLength, std::string aText, double aX, double aY, std::string aFont, double aFontSize, std::string aColor); 
+DrawText(const void* aBlob, 
+         long* aLength, 
+         const char* aText,
+         double aX, 
+         double aY, 
+         const char* aFont, 
+         double aFontSize, 
+         const char* aColor); 
 
 std::string
 GetImageType(const void* aBlob, long* aLength);

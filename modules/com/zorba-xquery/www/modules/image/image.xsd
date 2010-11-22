@@ -1,65 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema 
+<schema 
+    xmlns="http://www.w3.org/2001/XMLSchema" 
     targetNamespace="http://www.zorba-xquery.com/modules/image/image"
-    elementFormDefault="qualified"
-    xmlns="http://www.zorba-xquery.com/modules/image/image"
-    xmlns:xs="http://www.w3.org/2001/XMLSchema"> 
-    <xs:annotation xml:lang="en">
-        <xs:documentation>
+    xmlns:image="http://www.zorba-xquery.com/modules/image/image"
+    > 
+    
+    <annotation xml:lang="en">
+        <documentation>
             This schema defines the different types used in the modules under:
             http://www.zorba-xquery.com/modules/images/
-        </xs:documentation>
-    </xs:annotation>
+        </documentation>
+    </annotation>
     
-    <xs:simpleType name="imageType">
-        <xs:annotation xml:lang="en">
-            <xs:documentation>
+    <simpleType name="imageType">
+        <annotation xml:lang="en">
+            <documentation>
                 This type defines the different names that are allowed for image types.
-            </xs:documentation>
-        </xs:annotation>
-        <xs:restriction base="xs:string">
-            <xs:enumeration value="GIF"/>
-            <xs:enumeration value="PNG"/>
-            <xs:enumeration value="JPEG"/>
-            <xs:enumeration value="TIFF"/>
-        </xs:restriction>
-    </xs:simpleType>
+            </documentation>
+        </annotation>
+        <restriction base="string">
+            <enumeration value="GIF"/>
+            <enumeration value="PNG"/>
+            <enumeration value="JPEG"/>
+            <enumeration value="TIFF"/>
+            <enumeration value="SVG"/>  
+        </restriction>
+    </simpleType>
 
 
 
 
-   <xs:simpleType name="colorType">
-       <xs:annotation xml:lang="en">
-           <xs:documentation>
+   <simpleType name="colorType">
+       <annotation xml:lang="en">
+           <documentation>
                This type defines how colors should be formatted.
-           </xs:documentation>
-       </xs:annotation>
-       <xs:restriction base="xs:string">
-           <xs:length value="7"/>
-           <xs:pattern value="[#]([A-F0-9]{6})"/>
-       </xs:restriction>
-   </xs:simpleType> 
+           </documentation>
+       </annotation>
+       <restriction base="string">
+           <length value="7"/>
+           <pattern value="[#]([A-F0-9]{6})"/>
+       </restriction>
+   </simpleType> 
    
-   <xs:simpleType name="noiseType">
-       <xs:annotation xml:lang="en">
-           <xs:documentation>
+   <simpleType name="noiseType">
+       <annotation xml:lang="en">
+           <documentation>
                This type defines the different names that are allowed as noise identifiers.
-           </xs:documentation>
-       </xs:annotation>
-       <xs:restriction base="xs:string">
-           <xs:enumeration value="UniformNoise"/>
-           <xs:enumeration value="GaussianNoise"/>
-           <xs:enumeration value="MultiplicativeGaussianNoise"/>
-           <xs:enumeration value="ImpulseNoise"/>
-           <xs:enumeration value="LaplacianNoise"/>
-           <xs:enumeration value="PoissonNoise"/>
-       </xs:restriction>
-   </xs:simpleType>
+           </documentation>
+       </annotation>
+       <restriction base="string">
+           <enumeration value="UniformNoise"/>
+           <enumeration value="GaussianNoise"/>
+           <enumeration value="MultiplicativeGaussianNoise"/>
+           <enumeration value="ImpulseNoise"/>
+           <enumeration value="LaplacianNoise"/>
+           <enumeration value="PoissonNoise"/>
+       </restriction>
+   </simpleType>
     
     
-    <xs:simpleType name="compositeOperatorType">
-        <xs:annotation xml:lang="en">
-            <xs:documentation>
+    <simpleType name="compositeOperatorType">
+        <annotation xml:lang="en">
+            <documentation>
                 This type defines the different operators applicable for overlaying images.
                 OverCompositeOp: The result is the union of the the two image shapes with the composite image obscuring image in the region of overlap. 
                 InCompositeOp: The result is a simply composite image cut by the shape of image. None of the image data of image is included in the result.
@@ -72,40 +74,187 @@
                 SubtractCompositeOp: The result of composite image - image, with underflow wrapping around (mod 256). The add and subtract operators can be used to perform reverible transformations.
                 DifferenceCompositeOp: The result of abs(composite image - image). This is useful for comparing two very similar images.
                 BumpmapCompositeOp: The result image shaded by composite image.
-            </xs:documentation>
-        </xs:annotation>
-        <xs:restriction base="xs:string">
-            <xs:enumeration value="OverCompositeOp"/>
-            <xs:enumeration value="InCompositeOp"/>
-            <xs:enumeration value="OutCompositeOp"/>
-            <xs:enumeration value="AtopCompositeOp"/>
-            <xs:enumeration value="XorCompositeOp"/>
-            <xs:enumeration value="PlusCompositeOp"/>
-            <xs:enumeration value="MinusCompositeOp"/>
-            <xs:enumeration value="AddCompositeOp"/>
-            <xs:enumeration value="SubtractCompositeOp"/>
-            <xs:enumeration value="DifferenceCompositeOp"/>
-            <xs:enumeration value="BumpmapCompositeOp"/>
-        </xs:restriction>
-    </xs:simpleType> 
+            </documentation>
+        </annotation>
+        <restriction base="string">
+            <enumeration value="OverCompositeOp"/>
+            <enumeration value="InCompositeOp"/>
+            <enumeration value="OutCompositeOp"/>
+            <enumeration value="AtopCompositeOp"/>
+            <enumeration value="XorCompositeOp"/>
+            <enumeration value="PlusCompositeOp"/>
+            <enumeration value="MinusCompositeOp"/>
+            <enumeration value="AddCompositeOp"/>
+            <enumeration value="SubtractCompositeOp"/>
+            <enumeration value="DifferenceCompositeOp"/>
+            <enumeration value="BumpmapCompositeOp"/>
+        </restriction>
+    </simpleType> 
     
-    <xs:simpleType name="fontWeightType">
-        <xs:annotation xml:lang="en">
-            <xs:documentation>
-                This type defines the weights that a text can take.
-            </xs:documentation>
-        </xs:annotation>
-        <xs:restriction base="xs:int">
-            <xs:enumeration value="100"/>
-            <xs:enumeration value="200"/>
-            <xs:enumeration value="300"/>
-            <xs:enumeration value="400"/>
-            <xs:enumeration value="500"/>
-            <xs:enumeration value="600"/>
-            <xs:enumeration value="700"/>
-        </xs:restriction>
-    </xs:simpleType> 
     
-   
     
-</xs:schema>
+    <complexType name="pointType">
+        <sequence>
+            <element name="x" type="double"/>
+            <element name="y" type="double"/>
+        </sequence>
+    </complexType>
+    
+    <complexType name="paintableType"  >
+        <sequence>
+            <element name="strokeWidth" type="double" minOccurs="0" maxOccurs="1"/>
+            <element name="strokeColor" type="image:colorType" minOccurs="0" maxOccurs="1"/>
+            <element name="fillColor" type="image:colorType" minOccurs="0" maxOccurs="1"/>
+            <element name="antiAliasing" type="boolean" minOccurs="0" maxOccurs="1"/>
+        </sequence>
+    </complexType>
+    
+    
+    <element name="paintable" type="image:paintableType" />
+    
+    <element name="line">
+      <complexType>
+          <complexContent>
+            <extension base="image:paintableType">
+                <sequence>
+                    <element name="start" type="image:pointType"/>
+                    <element name="end" type="image:pointType" />
+                </sequence>
+            </extension>
+        </complexContent>
+      </complexType>
+    </element>
+ 
+    <element name="polyLine">
+      <complexType>
+        <complexContent>
+            <extension base="image:paintableType">
+                <sequence>
+                    <element name="point" type="image:pointType" minOccurs="3" maxOccurs="unbounded" />
+                </sequence>
+            </extension>
+        </complexContent>
+      </complexType>
+    </element>
+
+    <element name="strokedPolyLine">
+      <complexType>
+        <complexContent>
+           <extension base="image:paintableType">
+                <sequence>
+                    <element name="point" type="image:pointType" minOccurs="3" maxOccurs="unbounded" />
+                    <element name="strokeLength" type="double" />
+                    <element name="gapLength" type="double" />
+                </sequence>
+           </extension>
+       </complexContent>
+      </complexType>
+    </element>    
+
+
+    <element name="rectangle">
+      <complexType>
+          <complexContent>
+            <extension base="image:paintableType">
+                <sequence>
+                    <element name="upperLeft" type="image:pointType" />
+                    <element name="lowerRight" type="image:pointType" />
+                </sequence>
+            </extension>
+        </complexContent>
+      </complexType>
+    </element>
+    
+    <element name="roundedRectangle">
+       <complexType>
+        <complexContent>
+            <extension base="image:paintableType">
+                <sequence>
+                    <element name="upperLeft" type="image:pointType" />
+                    <element name="lowerRight" type="image:pointType" />
+                    <element name="cornerWidth" type="double"/>
+                    <element name="cornerHeight" type="double"/>
+                </sequence>
+            </extension>
+        </complexContent>
+      </complexType>
+    </element>
+
+    <element name="circle">
+       <complexType>
+        <complexContent>
+            <extension base="image:paintableType">
+                <sequence>
+                    <element name="origin" type="image:pointType"/>
+                    <element name="perimeter" type="double"/>
+                </sequence>
+            </extension>
+        </complexContent>
+      </complexType>
+    </element>
+
+    <element name="ellipse">
+       <complexType>
+          <complexContent>
+            <extension base="image:paintableType">
+                <sequence>
+                    <element name="origin" type="image:pointType"/>
+                    <element name="perimeterX" type="double" />
+                    <element name="perimeterY" type="double" />
+                </sequence>
+            </extension>
+        </complexContent>
+      </complexType>
+    </element>
+
+  
+    <element name="arc">
+     <complexType>
+          <complexContent>
+            <extension base="image:paintableType">
+                <sequence>
+                    <element name="origin" type="image:pointType"/>
+                    <element name="perimeterX" type="double" />
+                    <element name="perimeterY" type="double" />
+                    <element name="startDegrees" type="double"/>
+                    <element name="endDegrees" type="double" />
+                </sequence>
+            </extension>
+        </complexContent>
+      </complexType>
+    </element>
+
+    <element name="polygon">
+      <complexType>
+        <complexContent>
+            <extension base="image:paintableType">
+                <sequence>
+                    <element name="point" type="image:pointType" minOccurs="3" maxOccurs="unbounded" />
+                </sequence>
+            </extension>
+        </complexContent>
+      </complexType>
+
+    </element>
+
+    <element name="text">
+      <complexType>
+           <complexContent>
+            <extension base="image:paintableType">
+                <sequence>
+                    <element name="origin" type="image:pointType"/>
+                    <element name="text" type="string"/>
+                    <element name="font" type="string"/>
+                    <element name="font-size" type="double"/>
+                </sequence>
+            </extension>
+        </complexContent>
+      </complexType>
+    </element>
+
+
+
+
+    
+</schema>
+

@@ -33,20 +33,15 @@ ERROR:
 };
 
 
-(:~
- : @return true if the man:draw-poly-line function works.
- :)
 declare function local:test-draw-poly-line() as xs:boolean {
-    let $draw := paint:draw-poly-line($local:gif, (10,40,50, 200), (10, 80, 30, 200), (), (), ())
+    let $draw := paint:paint($local:gif, <image:polyLine><point><x>10</x><y>10</y></point><point><x>40</x><y>80</y></point><point><x>50</x><y>30</y></point><point><x>200</x><y>200</y></point></image:polyLine>)
     let $draw-ref := file:read(concat($local:image-dir, "paint/polyLine.gif"))
     return basic:equals($draw, $draw-ref)
 };
 
-(:~
- : @return true if the man:draw-poly-line function works.
- :)
 declare function local:test-draw-poly-line-anti-aliased() as xs:boolean {
-    let $draw := paint:draw-poly-line($local:gif, (10,40,50), (10, 80, 30), "#000000", (), true())
+    
+    let $draw := paint:paint($local:gif, <image:polyLine><antiAliasing>true</antiAliasing><point><x>10</x><y>10</y></point><point><x>40</x><y>80</y></point><point><x>50</x><y>30</y></point></image:polyLine>)
     let $draw-ref := file:read(concat($local:image-dir, "paint/polyLineAntiAliased.gif"))
     return basic:equals($draw,  $draw-ref)
 };
@@ -56,7 +51,8 @@ declare function local:test-draw-poly-line-anti-aliased() as xs:boolean {
  : @return true if the man:draw-poly-line function works.
  :)
 declare function local:test-draw-poly-line-red() as xs:boolean {
-    let $draw := paint:draw-poly-line($local:gif, (10,40,50), (10, 80, 30), "#FF0000", (), true())
+    let $draw := paint:paint($local:gif, <image:polyLine><strokeColor>#FF0000</strokeColor><antiAliasing>true</antiAliasing><point><x>10</x><y>10</y></point><point><x>40</x><y>80</y></point><point><x>50</x><y>30</y></point></image:polyLine>)
+    
     let $draw-ref := file:read(concat($local:image-dir, "paint/polyLineRed.gif"))
     return basic:equals($draw, $draw-ref)
 };
@@ -65,7 +61,8 @@ declare function local:test-draw-poly-line-red() as xs:boolean {
  : @return true if the man:draw-poly-line function works.
  :)
 declare function local:test-draw-poly-line-wide() as xs:boolean {
-    let $draw := paint:draw-poly-line($local:gif, (10,40,50), (10, 80, 30), (),  5, true())
+     let $draw := paint:paint($local:gif, <image:polyLine><strokeWidth>5</strokeWidth><antiAliasing>true</antiAliasing><point><x>10</x><y>10</y></point><point><x>40</x><y>80</y></point><point><x>50</x><y>30</y></point></image:polyLine>)
+    
     let $draw-ref := file:read(concat($local:image-dir, "paint/polyLineWide.gif"))
     return basic:equals($draw, $draw-ref)
 };

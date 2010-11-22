@@ -37,7 +37,7 @@ ERROR:
  : @return true if the man:draw-stroked-poly-line function works.
  :)
 declare function local:test-draw-stroked-poly-line() as xs:boolean {
-    let $draw := paint:draw-stroked-poly-line($local:gif, (10,40,50), (10, 80, 30), 5, 2, (), (), ())
+    let $draw := paint:paint($local:gif, <image:strokedPolyLine><point><x>10</x><y>10</y></point><point><x>40</x><y>80</y></point><point><x>50</x><y>30</y></point><strokeLength>5</strokeLength><gapLength>2</gapLength></image:strokedPolyLine>)
     let $draw-ref := file:read(concat($local:image-dir, "paint/polyLineStroked.gif"))
     return basic:equals($draw, $draw-ref)
 };
@@ -47,7 +47,7 @@ declare function local:test-draw-stroked-poly-line() as xs:boolean {
  : @return true if the man:draw-stroked-poly-line function works.
  :)
 declare function local:test-draw-stroked-poly-line-blue() as xs:boolean {
-    let $draw := paint:draw-stroked-poly-line($local:gif, (10,40,50), (10, 80, 30), 5, 2, "#0000FF", (), ())
+    let $draw := paint:paint($local:gif, <image:strokedPolyLine><strokeColor>#0000FF</strokeColor><point><x>10</x><y>10</y></point><point><x>40</x><y>80</y></point><point><x>50</x><y>30</y></point><strokeLength>5</strokeLength><gapLength>2</gapLength></image:strokedPolyLine>)
     let $draw-ref := file:read(concat($local:image-dir, "paint/polyLineStrokedBlue.gif"))
     return basic:equals($draw, $draw-ref)
 };
@@ -56,7 +56,7 @@ declare function local:test-draw-stroked-poly-line-blue() as xs:boolean {
  : @return true if the man:draw-stroked-poly-line function works.
  :)
 declare function local:test-draw-stroked-poly-line-wide() as xs:boolean {
-    let $draw := paint:draw-stroked-poly-line($local:gif, (10,40,50), (10, 80, 30), 5, 2, (), 4, ())
+    let $draw := paint:paint($local:gif, <image:strokedPolyLine><strokeWidth>4</strokeWidth><point><x>10</x><y>10</y></point><point><x>40</x><y>80</y></point><point><x>50</x><y>30</y></point><strokeLength>5</strokeLength><gapLength>2</gapLength></image:strokedPolyLine>)
     let $draw-ref := file:read(concat($local:image-dir, "paint/polyLineStrokedWide.gif"))
     return basic:equals($draw, $draw-ref)
 };
@@ -65,7 +65,7 @@ declare function local:test-draw-stroked-poly-line-wide() as xs:boolean {
  : @return true if the man:draw-stroked-poly-line function works.
  :)
 declare function local:test-draw-stroked-poly-line-anti-aliased() as xs:boolean {
-    let $draw := paint:draw-stroked-poly-line($local:gif, (10,40,50), (10, 80, 30), 5, 2, (), (), true())
+    let $draw := paint:paint($local:gif, <image:strokedPolyLine><antiAliasing>true</antiAliasing><point><x>10</x><y>10</y></point><point><x>40</x><y>80</y></point><point><x>50</x><y>30</y></point><strokeLength>5</strokeLength><gapLength>2</gapLength></image:strokedPolyLine>)
     let $draw-ref := file:read(concat($local:image-dir, "paint/polyLineStrokedAntiAliased.gif"))
     return basic:equals($draw, $draw-ref)
 };

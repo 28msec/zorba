@@ -26,7 +26,7 @@ IF (ImageMagick_FOUND)
   INCLUDE_DIRECTORIES("image_c.src")
   GENERATE_MODULE_LIBRARY(basic "image_c;image_commons;${ImageMagick_LIBRARIES}")
   GENERATE_MODULE_LIBRARY(manipulation "image_commons;${ImageMagick_LIBRARIES}")
-  GENERATE_MODULE_LIBRARY(paintschema "image_c;image_commons;${ImageMagick_LIBRARIES}")
+  GENERATE_MODULE_LIBRARY(paint "image_c;image_commons;${ImageMagick_LIBRARIES}")
   GENERATE_MODULE_LIBRARY(animation "image_commons;${ImageMagick_LIBRARIES}")
 
 ELSE (ImageMagick_FOUND)

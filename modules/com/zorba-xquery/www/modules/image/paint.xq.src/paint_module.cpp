@@ -24,20 +24,12 @@ PaintModule::getExternalFunction(String aLocalname) const
 {
   StatelessExternalFunction*& lFunc = theFunctions[aLocalname];
   if (!lFunc) {
-    if (1 == 0) {
-    } else if (aLocalname.equals("draw-stroked-poly-line")) {
-      lFunc = new DrawStrokedPolyLineFunction(this);
-    } else if (aLocalname.equals("draw-rounded-rectangle")) {
-      lFunc = new DrawRoundedRectangleFunction(this);
-    } else if (aLocalname.equals("draw-arc")) {
-      lFunc = new DrawArcFunction(this);
-    } else if (aLocalname.equals("draw-polygon")) {
-      lFunc = new DrawPolygonFunction(this);
-    } else if (aLocalname.equals("draw-text")) {
-      lFunc = new DrawTextFunction(this);
+    if (aLocalname.equals("paint-impl")) {
+      lFunc = new PaintImplFunction(this);
     }   
   }
   return lFunc;
 }
 
 } /* namespace paintmodule */ } /* namespace imagemodule */ } /* namespace zorba */
+

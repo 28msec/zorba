@@ -34,7 +34,7 @@ class PaintModule : public zorba::imagemodule::ImageModule
 public:
   
   virtual String
-  getURI() const { return "http://www.zorba-xquery.com/modules/image/paintschema"; }
+  getURI() const { return "http://www.zorba-xquery.com/modules/image/paint"; }
   
   virtual StatelessExternalFunction*
   getExternalFunction(String aLocalname) const;

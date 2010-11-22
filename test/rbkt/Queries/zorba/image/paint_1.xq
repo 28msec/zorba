@@ -37,49 +37,37 @@ ERROR:
  : @return true if the man:draw-line function works.
  :)
 declare function local:test-draw-line() as xs:boolean {
-    let $draw := paint:draw-line($local:gif, -20, -20, 80, 80, (), (), ())
+    let $draw := paint:paint($local:gif, <image:line><start><x>-20</x><y>-20</y></start><end><x>80</x><y>80</y></end></image:line>) 
     let $draw-ref := file:read(concat($local:image-dir,"paint/line.gif"))
     return basic:equals($draw, $draw-ref)
 };
 
-(:~
- : @return true if the man:draw-line with passed red color (#6F0000) function works.
- :)
 declare function local:test-draw-line-color-red() {
-    let $draw := paint:draw-line($local:gif, 0, 0, 80, 80, "#6F0000", (), ())
+    let $draw := paint:paint($local:gif, <image:line><strokeColor>#6F0000</strokeColor><start><x>0</x><y>0</y></start><end><x>80</x><y>80</y></end></image:line>) 
     let $draw-ref := file:read(concat($local:image-dir,"paint/redLine.gif"))
     return basic:equals($draw, $draw-ref)
 
 };
 
-(:~
- : @return true if the man:draw-line with passed green color (#006F00) function works.
- :)
 declare function local:test-draw-line-color-green() {
-    let $draw := paint:draw-line($local:gif, 0, 0, 80, 80, "#006F00", (), ())
+    let $draw := paint:paint($local:gif, <image:line><strokeColor>#006F00</strokeColor><start><x>0</x><y>0</y></start><end><x>80</x><y>80</y></end></image:line>)
+
     let $draw-ref := file:read(concat($local:image-dir,"paint/greenLine.gif"))
     return basic:equals($draw, $draw-ref)
 
 };
 
-(:~
- : @return true if the man:draw-line with passed blue color (#00006F) function works.
- :)
 declare function local:test-draw-line-color-blue() {
-    let $draw := paint:draw-line($local:gif, 0, 0, 80, 80, "#00006F", (), ())
+    let $draw := paint:paint($local:gif, <image:line><strokeColor>#00006F</strokeColor><start><x>0</x><y>0</y></start><end><x>80</x><y>80</y></end></image:line>) 
     let $draw-ref := file:read(concat($local:image-dir,"paint/blueLine.gif"))
     return basic:equals($draw, $draw-ref)
 
 };
 
-(:~
- : @return true if the man:draw-line with passed blue color (#00006F) function works.
- :)
 declare function local:test-stroke-width() {
-    let $draw := paint:draw-line($local:gif, 0, 0, 80, 80, "#000000", 10, false()) 
-    let $draw2 := paint:draw-line($draw, 30, 0, 70, 90, "#FF00FF", 1, false())    
-    let $draw2-ref := file:read(concat($local:image-dir,"paint/wideLine.gif"))
-    return basic:equals($draw2, $draw2-ref)
+    let $draw := paint:paint($local:gif, (<image:line><strokeWidth>10</strokeWidth><strokeColor>#000000</strokeColor><start><x>0</x><y>0</y></start><end><x>80</x><y>80</y></end></image:line>,<image:line><strokeColor>#FF00FF</strokeColor><start><x>30</x><y>0</y></start><end><x>70</x><y>90</y></end></image:line>))
+    let $draw-ref := file:read(concat($local:image-dir,"paint/wideLine.gif"))
+    return basic:equals($draw, $draw-ref)
 
 };
 
