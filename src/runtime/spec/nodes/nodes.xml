@@ -56,16 +56,20 @@
 -->
 <zorba:iterator name="FnLocalNameIterator">
 
-    <zorba:description author="Zorba Team">
-      fn:local-name
-    </zorba:description>
+  <zorba:description author="Zorba Team">
+    fn:local-name
+  </zorba:description>
 
-    <zorba:function>
-      <zorba:signature localname="local-name" prefix="fn">
-        <zorba:param>node()?</zorba:param>
-        <zorba:output>xs:string</zorba:output>
-      </zorba:signature>
-    </zorba:function>
+  <zorba:function>
+    <zorba:signature localname="local-name" prefix="fn">
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="local-name" prefix="fn">
+      <zorba:param>node()?</zorba:param>
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
 
 <!--
@@ -74,16 +78,20 @@
 -->
 <zorba:iterator name="FnNamespaceUriIterator">
 
-    <zorba:description author="Zorba Team">
-      fn:namespace-uri
-    </zorba:description>
+  <zorba:description author="Zorba Team">
+    fn:namespace-uri
+  </zorba:description>
 
-    <zorba:function>
-      <zorba:signature localname="namespace-uri" prefix="fn">
-        <zorba:param>node()?</zorba:param>
-        <zorba:output>xs:anyURI?</zorba:output>
-      </zorba:signature>
-    </zorba:function>
+  <zorba:function>
+    <zorba:signature localname="namespace-uri" prefix="fn">
+      <zorba:output>xs:anyURI?</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="namespace-uri" prefix="fn">
+      <zorba:param>node()?</zorba:param>
+      <zorba:output>xs:anyURI?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
 
 <!--
@@ -92,16 +100,46 @@
 -->
 <zorba:iterator name="FnLangIterator">
 
-    <zorba:description author="Zorba Team">
-      fn:lang
-    </zorba:description>
+  <zorba:description author="Zorba Team">
+    fn:lang
+  </zorba:description>
 
-    <zorba:function>
-      <zorba:signature localname="lang" prefix="fn">
-        <zorba:param>xs:string?</zorba:param>
-        <zorba:param>node()</zorba:param>
-        <zorba:output>xs:boolean</zorba:output>
-      </zorba:signature>
-    </zorba:function>
+  <zorba:function>
+    <zorba:signature localname="lang" prefix="fn">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:output>xs:boolean</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="lang" prefix="fn">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:param>node()</zorba:param>
+      <zorba:output>xs:boolean</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+
 </zorba:iterator>
+
+<!--
+/*******************************************************************************
+* 13.4 fn:number
+********************************************************************************/
+-->
+
+<zorba:iterator name="">
+
+  <zorba:description author="Zorba Team">fn:number</zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="number" prefix="fn">
+      <zorba:output>xs:double</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="number" prefix="fn">
+      <zorba:param>xs:anyAtomicType?</zorba:param>
+      <zorba:output>xs:double</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+
+</zorba:iterator>
+
 </zorba:iterators>

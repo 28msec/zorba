@@ -65,25 +65,29 @@
 
 <zorba:iterator name="FnStringIterator">
 
-    <zorba:description author="Zorba Team">fn:string</zorba:description>
-    
-    <zorba:function generateCodegen="false">
-        <zorba:signature localname="string" prefix="fn">
-            <zorba:param>item()?</zorba:param>
-            <zorba:output>xs:string</zorba:output>
-        </zorba:signature>
-    </zorba:function>
+  <zorba:description author="Zorba Team">fn:string</zorba:description>
 
-    <zorba:state generateInit="true" generateReset="true"
-        generateConstructor="true" generateDestructor="true">
-        <zorba:member type="bool" name="hasOutput" defaultValue="false" brief=""/>
-    </zorba:state>
+  <zorba:function generateCodegen="false">
+    <zorba:signature localname="string" prefix="fn">
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
 
-    <zorba:constructor>
-        <zorba:parameter type="bool" name="emptyStringOnNULL" />
-    </zorba:constructor>
-    
-    <zorba:member type="bool" name="theEmptyStringOnNULL" getterName="isUpdating" brief=""/>
+    <zorba:signature localname="string" prefix="fn">
+      <zorba:param>item()?</zorba:param>
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+
+  <zorba:state  generateInit="true" generateReset="true"
+                generateConstructor="true" generateDestructor="true">
+    <zorba:member type="bool" name="hasOutput" defaultValue="false" brief=""/>
+  </zorba:state>
+
+  <zorba:constructor>
+    <zorba:parameter type="bool" name="emptyStringOnNULL" />
+  </zorba:constructor>
+
+  <zorba:member type="bool" name="theEmptyStringOnNULL" getterName="isUpdating" brief=""/>
 </zorba:iterator>
 
 <!--
@@ -125,15 +129,19 @@
 -->
 <zorba:iterator name="BaseUriIterator">
 
-    <zorba:description author="Zorba Team">fn:base-uri</zorba:description>
-    
-    <zorba:function>
-        <zorba:signature localname="base-uri" prefix="fn">
-            <zorba:param>node()?</zorba:param>
-            <zorba:output>xs:anyURI?</zorba:output>
-        </zorba:signature>
-    </zorba:function>
-    
+  <zorba:description author="Zorba Team">fn:base-uri</zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="base-uri" prefix="fn">
+      <zorba:output>xs:anyURI?</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="base-uri" prefix="fn">
+      <zorba:param>node()?</zorba:param>
+      <zorba:output>xs:anyURI?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+
 </zorba:iterator>
 
 
@@ -170,15 +178,19 @@
 ********************************************************************************/
 -->
 <zorba:iterator name="RootIterator">
-    
-    <zorba:description author="Zorba Team">fn:root</zorba:description>
-    
-    <zorba:function>
-        <zorba:signature localname="root" prefix="fn">
-            <zorba:param>node()?</zorba:param>
-            <zorba:output>node()?</zorba:output>
-        </zorba:signature>
-    </zorba:function>
+
+  <zorba:description author="Zorba Team">fn:root</zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="root" prefix="fn">
+      <zorba:output>node()?</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="root" prefix="fn">
+      <zorba:param>node()?</zorba:param>
+      <zorba:output>node()?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
 
 </zorba:iterator>
 

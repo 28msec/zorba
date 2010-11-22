@@ -304,8 +304,8 @@ public:
 
 /**
  * 
- *        fn:string-length
- *    
+ *    fn:string-length
+ *  
  * Author: Zorba Team
  */
 class StringLengthIterator : public NaryBaseIterator<StringLengthIterator, PlanIteratorState>
@@ -340,8 +340,8 @@ public:
 
 /**
  * 
- *        fn:normalize-space
- *    
+ *    fn:normalize-space
+ *  
  * Author: Zorba Team
  */
 class NormalizeSpaceIterator : public NaryBaseIterator<NormalizeSpaceIterator, PlanIteratorState>

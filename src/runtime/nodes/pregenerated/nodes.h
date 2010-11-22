@@ -107,8 +107,8 @@ public:
 
 /**
  * 
- *      fn:local-name
- *    
+ *    fn:local-name
+ *  
  * Author: Zorba Team
  */
 class FnLocalNameIterator : public NaryBaseIterator<FnLocalNameIterator, PlanIteratorState>
@@ -143,8 +143,8 @@ public:
 
 /**
  * 
- *      fn:namespace-uri
- *    
+ *    fn:namespace-uri
+ *  
  * Author: Zorba Team
  */
 class FnNamespaceUriIterator : public NaryBaseIterator<FnNamespaceUriIterator, PlanIteratorState>
@@ -179,8 +179,8 @@ public:
 
 /**
  * 
- *      fn:lang
- *    
+ *    fn:lang
+ *  
  * Author: Zorba Team
  */
 class FnLangIterator : public NaryBaseIterator<FnLangIterator, PlanIteratorState>

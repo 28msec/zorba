@@ -8,7 +8,8 @@ declare function local:get-iterators($XMLdoc) as xs:string
   string-join (
     for $iter in $XMLdoc//zorba:iterator
     return
-      local:process-iterator($iter),
+      if($iter/@name = "") then ()
+      else local:process-iterator($iter),
   $gen:newline )
 };
 

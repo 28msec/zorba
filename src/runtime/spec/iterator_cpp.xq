@@ -4,7 +4,12 @@ import module namespace gen = "http://www.zorba-xquery.com/internal/gen" at "uti
 
 declare function local:get-iterators($XMLdoc) as xs:string
 {
-  string-join(for $iter in $XMLdoc//zorba:iterator return local:process-iterator($iter),$gen:newline)
+  string-join(
+  for $iter in $XMLdoc//zorba:iterator 
+  return
+    if($iter/@name = "") then ()
+    else local:process-iterator($iter)
+  ,$gen:newline)
 };
 
 declare function local:process-iterator($iter) as xs:string

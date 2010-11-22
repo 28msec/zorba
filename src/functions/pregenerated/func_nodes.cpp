@@ -80,6 +80,14 @@ PlanIter_t fn_lang::codegen(
   return new FnLangIterator(sctx, loc, argv);
 }
 
+PlanIter_t fn_number::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{}
+
 void populate_context_nodes(static_context* sctx)
 {
   DECL(sctx, fn_zorba_ref_node_reference,
@@ -96,8 +104,18 @@ void populate_context_nodes(static_context* sctx)
 
   DECL(sctx, fn_local_name,
       (createQName("http://www.w3.org/2005/xpath-functions","","local-name"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE));
+
+
+  DECL(sctx, fn_local_name,
+      (createQName("http://www.w3.org/2005/xpath-functions","","local-name"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
+
+
+  DECL(sctx, fn_namespace_uri,
+      (createQName("http://www.w3.org/2005/xpath-functions","","namespace-uri"),
+      GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION));
 
 
   DECL(sctx, fn_namespace_uri,
@@ -109,8 +127,25 @@ void populate_context_nodes(static_context* sctx)
   DECL(sctx, fn_lang,
       (createQName("http://www.w3.org/2005/xpath-functions","","lang"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+
+
+  DECL(sctx, fn_lang,
+      (createQName("http://www.w3.org/2005/xpath-functions","","lang"),
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+
+
+  DECL(sctx, fn_number,
+      (createQName("http://www.w3.org/2005/xpath-functions","","number"),
+      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
+
+
+  DECL(sctx, fn_number,
+      (createQName("http://www.w3.org/2005/xpath-functions","","number"),
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
 
 }
 

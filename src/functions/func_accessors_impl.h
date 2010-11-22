@@ -30,12 +30,17 @@ namespace zorba {
 void populate_context_accessors_impl(static_context* sctx);
 
 /*******************************************************************************
-  
+
 ********************************************************************************/
 class fn_name_func : public function
 {
 public:
- fn_name_func(const signature& s) : function(s, FunctionConsts::FN_NAME_1) {}
+  fn_name_func(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
+  {
+    theKind = (sig.paramCount() == 0 ?
+              FunctionConsts::FN_NAME_0 :
+              FunctionConsts::FN_NAME_1);
+  }
 
   CODEGEN_DECL();
 };

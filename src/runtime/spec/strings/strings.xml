@@ -203,16 +203,20 @@
 -->
 <zorba:iterator name="StringLengthIterator">
 
-    <zorba:description author="Zorba Team">
-        fn:string-length
-    </zorba:description>
-    
-    <zorba:function>
-        <zorba:signature localname="string-length" prefix="fn">
-            <zorba:param>xs:string?</zorba:param>
-            <zorba:output>xs:integer</zorba:output>
-        </zorba:signature>
-    </zorba:function>
+  <zorba:description author="Zorba Team">
+    fn:string-length
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="string-length" prefix="fn">
+      <zorba:output>xs:integer</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="string-length" prefix="fn">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:output>xs:integer</zorba:output>
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
 
 
@@ -223,16 +227,20 @@
 -->
 <zorba:iterator name="NormalizeSpaceIterator">
 
-    <zorba:description author="Zorba Team">
-        fn:normalize-space
-    </zorba:description>
-    
-    <zorba:function>
-        <zorba:signature localname="normalize-space" prefix="fn">
-            <zorba:param>xs:string?</zorba:param>
-            <zorba:output>xs:string</zorba:output>
-        </zorba:signature>
-    </zorba:function>
+  <zorba:description author="Zorba Team">
+    fn:normalize-space
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="normalize-space" prefix="fn">
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="normalize-space" prefix="fn">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
 
 

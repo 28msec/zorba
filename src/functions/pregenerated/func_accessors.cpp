@@ -107,6 +107,11 @@ void populate_context_accessors(static_context* sctx)
 
   DECL(sctx, fn_string,
       (createQName("http://www.w3.org/2005/xpath-functions","","string"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE));
+
+
+  DECL(sctx, fn_string,
+      (createQName("http://www.w3.org/2005/xpath-functions","","string"),
       GENV_TYPESYSTEM.ITEM_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
@@ -119,6 +124,11 @@ void populate_context_accessors(static_context* sctx)
 
   DECL(sctx, fn_base_uri,
       (createQName("http://www.w3.org/2005/xpath-functions","","base-uri"),
+      GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION));
+
+
+  DECL(sctx, fn_base_uri,
+      (createQName("http://www.w3.org/2005/xpath-functions","","base-uri"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION));
 
@@ -127,6 +137,11 @@ void populate_context_accessors(static_context* sctx)
       (createQName("http://www.w3.org/2005/xpath-functions","","document-uri"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION));
+
+
+  DECL(sctx, fn_root,
+      (createQName("http://www.w3.org/2005/xpath-functions","","root"),
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION));
 
 
   DECL(sctx, fn_root,

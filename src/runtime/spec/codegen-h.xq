@@ -72,8 +72,12 @@ declare function local:create-function($iter, $function) as xs:string?
           :)
           let $signatures := $function/zorba:signature
           let $argCounts := for $sig in $signatures
-                            return count($sig/zorba:param)
-          let $numSignatures := count($argCounts)
+                            return 
+                            if(exists($sig/zorba:param)) then count($sig/zorba:param)
+                            else xs:integer(0)
+          let $outCounts := for $sig in $signatures
+                            return count($sig/zorba:output)                            
+          let $numSignatures := count($outCounts)
           let $setNoneDeterministic := if ($function/@isDeterministic = 'false')
                                        then 
                                          ($gen:newline, $gen:indent, $gen:indent,

@@ -2,6 +2,7 @@ module namespace util = "http://www.zorba-xquery.com/util";
 
 import module namespace http = "http://expath.org/ns/http-client";
 import module namespace file = "http://www.zorba-xquery.com/modules/file";
+import module namespace sctx = "http://www.zorba-xquery.com/modules/introspection/sctx";
 
 declare sequential function util:download-and-write-spec($specURI as xs:string, $docPath as xs:string) {
   let $xhtml := http:send-request((), $specURI)[2]
@@ -56,4 +57,16 @@ as xs:string* {
           1000000 (:variadic function :)
          else
           fn:count(fn:tokenize(substring-after(xs:string(data($s)), "fn:"),"\$"))-1))
+};
+
+declare function util:create-zorba-function-arity-sequence($functionNames as xs:QName*)
+as xs:string* {
+  for $funcQname in $functionNames
+  where (fn:namespace-uri-from-QName($funcQname) = "http://www.w3.org/2005/xpath-functions")
+  order by fn:local-name-from-QName($funcQname)
+  return
+    for $arity in sctx:function-arguments-count($funcQname)
+    order by $arity
+    return
+      fn:concat(fn:local-name-from-QName($funcQname),"#", fn:string($arity))
 };

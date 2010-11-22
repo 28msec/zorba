@@ -39,7 +39,9 @@ declare sequential function local:process-file($file, $type as xs:string) as xs:
 
   return string-join(for $iter in $doc//zorba:iterator return 
   if(fn:not($iter/@generateVisitor) or $iter/@generateVisitor eq "true") then
-    local:process-iter($iter, $type)
+    if(fn:not($iter/@name = "")) then
+      local:process-iter($iter, $type)
+    else ()
   else ()
   ,$gen:newline)
 };

@@ -16,12 +16,17 @@
  * 8.1 fn:resolve-uri
 ********************************************************************************/
 -->
-  
+
 <zorba:iterator name="ResolveUriIterator">
-  
+
   <zorba:description author="Zorba Team">fn:resolve-uri</zorba:description>
-  
+
   <zorba:function>
+
+    <zorba:signature localname="resolve-uri" prefix="fn">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:output>xs:anyURI?</zorba:output>
+    </zorba:signature>
 
     <zorba:signature localname="resolve-uri" prefix="fn">
       <zorba:param>xs:string?</zorba:param>
@@ -34,7 +39,7 @@
     </zorba:methods>
 
   </zorba:function>
-  
+
 </zorba:iterator>
 
 </zorba:iterators>

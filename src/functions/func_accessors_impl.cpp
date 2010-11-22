@@ -139,6 +139,10 @@ PlanIter_t fn_string::codegen(
 void populate_context_accessors_impl(static_context* sctx)
 {
   DECL(sctx, fn_name_func,
+      (createQName(XQUERY_FN_NS, "", "name"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE));
+
+  DECL(sctx, fn_name_func,
        (createQName(XQUERY_FN_NS, "", "name"),
         GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
         GENV_TYPESYSTEM.STRING_TYPE_ONE));

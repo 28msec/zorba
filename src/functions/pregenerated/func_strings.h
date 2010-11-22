@@ -148,10 +148,12 @@ public:
 class fn_string_length : public function
 {
 public:
-  fn_string_length(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_STRING_LENGTH_1)
+  fn_string_length(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
+    theKind = (sig.paramCount() == 0 ?
+                FunctionConsts::FN_STRING_LENGTH_0 :
+                FunctionConsts::FN_STRING_LENGTH_1);
+  
   }
 
   CODEGEN_DECL();
@@ -162,10 +164,12 @@ public:
 class fn_normalize_space : public function
 {
 public:
-  fn_normalize_space(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_NORMALIZE_SPACE_1)
+  fn_normalize_space(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
+    theKind = (sig.paramCount() == 0 ?
+                FunctionConsts::FN_NORMALIZE_SPACE_0 :
+                FunctionConsts::FN_NORMALIZE_SPACE_1);
+  
   }
 
   CODEGEN_DECL();

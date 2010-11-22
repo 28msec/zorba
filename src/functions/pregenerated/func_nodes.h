@@ -70,10 +70,12 @@ public:
 class fn_local_name : public function
 {
 public:
-  fn_local_name(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_LOCAL_NAME_1)
+  fn_local_name(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
+    theKind = (sig.paramCount() == 0 ?
+                FunctionConsts::FN_LOCAL_NAME_0 :
+                FunctionConsts::FN_LOCAL_NAME_1);
+  
   }
 
   CODEGEN_DECL();
@@ -84,10 +86,12 @@ public:
 class fn_namespace_uri : public function
 {
 public:
-  fn_namespace_uri(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_NAMESPACE_URI_1)
+  fn_namespace_uri(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
+    theKind = (sig.paramCount() == 0 ?
+                FunctionConsts::FN_NAMESPACE_URI_0 :
+                FunctionConsts::FN_NAMESPACE_URI_1);
+  
   }
 
   CODEGEN_DECL();
@@ -98,10 +102,28 @@ public:
 class fn_lang : public function
 {
 public:
-  fn_lang(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_LANG_2)
+  fn_lang(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
+    theKind = (sig.paramCount() == 1 ?
+                FunctionConsts::FN_LANG_1 :
+                FunctionConsts::FN_LANG_2);
+  
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn:number
+class fn_number : public function
+{
+public:
+  fn_number(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
+  {
+    theKind = (sig.paramCount() == 0 ?
+                FunctionConsts::FN_NUMBER_0 :
+                FunctionConsts::FN_NUMBER_1);
+  
   }
 
   CODEGEN_DECL();

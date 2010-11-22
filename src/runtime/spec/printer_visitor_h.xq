@@ -21,8 +21,10 @@ declare sequential function local:process-file($file) as xs:string
       return 
         if( fn:not($iter/@generateVisitor) or
             $iter/@generateVisitor eq "true")
-         then
-          local:process-iter($iter)
+        then
+          if(fn:not($iter/@name = "")) then
+            local:process-iter($iter)
+          else ()
         else (),
     concat($gen:newline, $gen:newline))
 };

@@ -161,8 +161,10 @@ declare function local:create-function($iter, $function) as xs:string?
                      $gen:newline, $gen:indent, 'std::vector&lt;PlanIter_t&gt;&amp; argv,',
                      $gen:newline, $gen:indent, 'AnnotationHolder&amp; ann) const',
                      $gen:newline,'{',
-                     $gen:newline, $gen:indent, 'return new ', 
-                     local:iterator-call($iter, $function), ';', $gen:newline, '}'), '')
+                     if($iter/@name = "") then ""
+                     else string-join(($gen:newline, $gen:indent, 'return new ', 
+                                      local:iterator-call($iter, $function), ';', $gen:newline),''), 
+                     '}'), '')
   else
     ''
 };

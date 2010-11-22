@@ -52,6 +52,7 @@ typedef enum
   FN_FALSE_0,
   FN_TRUE_0,
 
+  FN_NAME_0,
   FN_NAME_1,
 
   OP_EXACTLY_ONE_NORAISE_1,

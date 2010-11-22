@@ -118,6 +118,48 @@ public:
 };
 
 
+//fn:position
+class fn_position : public function
+{
+public:
+  fn_position(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_POSITION_0)
+  {
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn:last
+class fn_last : public function
+{
+public:
+  fn_last(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_LAST_0)
+  {
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn:static-base-uri
+class fn_static_base_uri : public function
+{
+public:
+  fn_static_base_uri(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_STATIC_BASE_URI_0)
+  {
+  }
+
+  CODEGEN_DECL();
+};
+
+
 } //namespace zorba
 
 

@@ -337,8 +337,18 @@ void populate_context_strings(static_context* sctx)
 
   DECL(sctx, fn_string_length,
       (createQName("http://www.w3.org/2005/xpath-functions","","string-length"),
+      GENV_TYPESYSTEM.INTEGER_TYPE_ONE));
+
+
+  DECL(sctx, fn_string_length,
+      (createQName("http://www.w3.org/2005/xpath-functions","","string-length"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_ONE));
+
+
+  DECL(sctx, fn_normalize_space,
+      (createQName("http://www.w3.org/2005/xpath-functions","","normalize-space"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 
   DECL(sctx, fn_normalize_space,

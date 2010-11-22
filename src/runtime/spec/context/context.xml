@@ -124,5 +124,60 @@
     </zorba:function>
     
 </zorba:iterator>
-    
+
+
+<!--
+/*******************************************************************************
+* 15.1 fn:position
+********************************************************************************/
+-->
+
+<zorba:iterator name="">
+
+  <zorba:description author="Zorba Team">fn:position</zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="position" prefix="fn">
+      <zorba:output>xs:integer</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+* 15.2 fn:last
+********************************************************************************/
+-->
+
+<zorba:iterator name="">
+
+  <zorba:description author="Zorba Team">fn:last</zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="last" prefix="fn">
+      <zorba:output>xs:integer</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+* 15.8 fn:static-base-uri
+********************************************************************************/
+-->
+
+<zorba:iterator name="">
+
+  <zorba:description author="Zorba Team">fn:static-base-uri</zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="static-base-uri" prefix="fn">
+      <zorba:output>xs:anyURI?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+
+</zorba:iterator>
+
 </zorba:iterators>

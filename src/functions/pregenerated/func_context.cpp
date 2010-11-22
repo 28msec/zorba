@@ -80,6 +80,30 @@ PlanIter_t fn_default_collation::codegen(
   return new DefaultCollationIterator(sctx, loc, argv);
 }
 
+PlanIter_t fn_position::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{}
+
+PlanIter_t fn_last::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{}
+
+PlanIter_t fn_static_base_uri::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{}
+
 void populate_context_context(static_context* sctx)
 {
   DECL(sctx, fn_current_dateTime,
@@ -105,6 +129,21 @@ void populate_context_context(static_context* sctx)
   DECL(sctx, fn_default_collation,
       (createQName("http://www.w3.org/2005/xpath-functions","","default-collation"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
+
+
+  DECL(sctx, fn_position,
+      (createQName("http://www.w3.org/2005/xpath-functions","","position"),
+      GENV_TYPESYSTEM.INTEGER_TYPE_ONE));
+
+
+  DECL(sctx, fn_last,
+      (createQName("http://www.w3.org/2005/xpath-functions","","last"),
+      GENV_TYPESYSTEM.INTEGER_TYPE_ONE));
+
+
+  DECL(sctx, fn_static_base_uri,
+      (createQName("http://www.w3.org/2005/xpath-functions","","static-base-uri"),
+      GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION));
 
 }
 

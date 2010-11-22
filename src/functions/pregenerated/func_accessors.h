@@ -70,10 +70,12 @@ public:
 class fn_string : public function
 {
 public:
-  fn_string(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_STRING_1)
+  fn_string(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
+    theKind = (sig.paramCount() == 0 ?
+                FunctionConsts::FN_STRING_0 :
+                FunctionConsts::FN_STRING_1);
+  
   }
 
   CODEGEN_DECL();
@@ -108,10 +110,12 @@ public:
 class fn_base_uri : public function
 {
 public:
-  fn_base_uri(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_BASE_URI_1)
+  fn_base_uri(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
+    theKind = (sig.paramCount() == 0 ?
+                FunctionConsts::FN_BASE_URI_0 :
+                FunctionConsts::FN_BASE_URI_1);
+  
   }
 
   CODEGEN_DECL();
@@ -136,10 +140,12 @@ public:
 class fn_root : public function
 {
 public:
-  fn_root(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ROOT_1)
+  fn_root(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
+    theKind = (sig.paramCount() == 0 ?
+                FunctionConsts::FN_ROOT_0 :
+                FunctionConsts::FN_ROOT_1);
+  
   }
 
   CODEGEN_DECL();
