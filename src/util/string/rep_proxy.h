@@ -69,7 +69,7 @@ public:
    * representation.
    */
   void dispose( allocator_type const &a ) {
-    if ( rep_ && rep_ != RepType::empty_rep() )
+    if ( rep_ )
       rep_->dispose( a );
     rep_ = RepType::empty_rep();
   }
