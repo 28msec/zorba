@@ -19,8 +19,6 @@
 
 #undef uuid_t
 
-#include "zorbatypes/xqpstring.h"
-
 namespace zorba {
 
 typedef struct {
