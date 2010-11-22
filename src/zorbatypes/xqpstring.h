@@ -27,7 +27,6 @@
 #include <cstring>
 
 #include "zorbatypes/zorbatypes_decl.h"
-#include "zorbatypes/codepoint_iterator.h"
 #include "zorbautils/checked_vector.h"
 
 #include "zorbaserialization/serialization_engine.h"
