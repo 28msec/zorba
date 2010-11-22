@@ -193,7 +193,7 @@ public:
       data()[ n ] = value_type( 0 );
   }
 
-private:
+protected:
   /**
    * Constructs a %ptr_rep.
    *

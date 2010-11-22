@@ -23,7 +23,7 @@ namespace zorba {
 namespace rstring_classes {
 
 /**
- * A proxy for either the default rep or the ptr rep.
+ * A proxy for either default_rep or ptr_rep.
  */
 template<class RepType>
 class rep_proxy {
@@ -49,79 +49,29 @@ public:
   enum { takes_pointer_ownership = RepType::takes_pointer_ownership };
 
   /**
-   *
+   * Constructs a %rep_proxy.
    */
   rep_proxy() : rep_( RepType::empty_rep() ) {
     // do nothing
   }
 
   /**
-   *
+   * Destroys a %rep_proxy.
    */
   ~rep_proxy() {
     assert( rep_ == RepType::empty_rep() );
   }
 
   /**
+   * Disposes of this %rep_proxy and its associated string representation.
    *
-   */
-  size_type capacity() const {
-    return rep_->capacity(); 
-  }
-
-  /**
-   *
-   */
-  void construct( size_type size, value_type c, allocator_type const &a ) {
-    assert( rep_ == RepType::empty_rep() );
-    rep_ = RepType::construct( size, c, a );
-  }
-
-  /**
-   *
-   */
-  template<class IteratorType>
-  void construct( IteratorType begin, IteratorType end,
-                  allocator_type const &a ) {
-    assert( rep_ == RepType::empty_rep() );
-    rep_ = RepType::construct( begin, end, a );
-  }
-
-  /**
-   *
-   */
-  pointer data() const {
-    return rep_->data();
-  }
-
-  /**
-   *
+   * @param a The allocator that was used to allocate the string
+   * representation.
    */
   void dispose( allocator_type const &a ) {
     if ( rep_ && rep_ != RepType::empty_rep() )
       rep_->dispose( a );
     rep_ = RepType::empty_rep();
-  }
-
-  /**
-   * Delegate to
-   */
-  bool is_sharable() {
-    return rep_->is_sharable();
-  }
-
-  /**
-   *
-   */
-  bool is_shared() const {
-    return rep_->is_shared();
-  }
-
-  /**
-   *
-   */
-  size_type length() const {
-    return rep_->length();
   }
 
   /**
@@ -152,34 +102,6 @@ public:
     assert( rep_ == RepType::empty_rep() );
     rep_ = RepType::alloc( a, cap, old_cap );
     rep_->set_length( 0 );
-  }
-
-  /**
-   *
-   */
-  void reserve( size_type cap, allocator_type const &a ) {
-    rep_ = rep_->reserve( cap, a );
-  }
-
-  /**
-   *
-   */
-  void set_length( size_type n ) {
-    rep_->set_length( n );
-  }
-
-  /**
-   *
-   */
-  void set_sharable() {
-    rep_->set_sharable();
-  }
-
-  /**
-   *
-   */
-  void set_unsharable() {
-    rep_->set_unsharable();
   }
 
   /**
@@ -231,23 +153,83 @@ public:
   }
 
   /**
+   * Compares 2 %rep_proxy objects for equality.
    *
+   * @param i The first %rep_proxy.
+   * @param j The second %rep_proxy.
+   * @return Returns \c true only if they're equal.
    */
-  bool operator==( rep_proxy const &j ) {
-    return rep_ == j.rep_;
+  friend bool operator==( rep_proxy const &i, rep_proxy const &j ) {
+    return i.rep_ == j.rep_;
   }
 
   /**
+   * Compares 2 %rep_proxy objects for inequality.
    *
+   * @param i The first %rep_proxy.
+   * @param j The second %rep_proxy.
+   * @return Returns \c true only if they're not equal.
    */
-  bool operator!=( rep_proxy const &j ) {
-    return !(*this == j);
+  friend bool operator!=( rep_proxy const &i, rep_proxy const &j ) {
+    return !(i == j);
   }
+
+  ////////// Delegate member functions ////////////////////////////////////////
+
+  size_type capacity() const {
+    return rep_->capacity(); 
+  }
+
+  void construct( size_type size, value_type c, allocator_type const &a ) {
+    assert( rep_ == RepType::empty_rep() );
+    rep_ = RepType::construct( size, c, a );
+  }
+
+  template<class IteratorType>
+  void construct( IteratorType begin, IteratorType end,
+                  allocator_type const &a ) {
+    assert( rep_ == RepType::empty_rep() );
+    rep_ = RepType::construct( begin, end, a );
+  }
+
+  pointer data() const {
+    return rep_->data();
+  }
+
+  bool is_sharable() {
+    return rep_->is_sharable();
+  }
+
+  bool is_shared() const {
+    return rep_->is_shared();
+  }
+
+  size_type length() const {
+    return rep_->length();
+  }
+
+  void reserve( size_type cap, allocator_type const &a ) {
+    rep_ = rep_->reserve( cap, a );
+  }
+
+  void set_length( size_type n ) {
+    rep_->set_length( n );
+  }
+
+  void set_sharable() {
+    rep_->set_sharable();
+  }
+
+  void set_unsharable() {
+    rep_->set_unsharable();
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
 
 private:
   RepType *rep_;
 
-  // disabled
+  // forbid these
   rep_proxy( rep_proxy const& );
   rep_proxy& operator=( rep_proxy const& );
 };

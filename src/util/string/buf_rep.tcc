@@ -54,7 +54,8 @@ void buf_rep<ResultRepType>::construct( const_pointer begin, const_pointer end,
 
 // REP_PROXY_BUF_REP_SWAP_X
 template<class ResultRep>
-void rep_proxy< buf_rep<ResultRep> >::swap( buf_rep<ResultRep> &that ) {
+void rep_proxy< buf_rep<ResultRep> >::
+swap( rep_proxy< buf_rep<ResultRep> > &that ) {
   pointer   const tmp_p   = this->p_;
   size_type const tmp_cap = this->capacity();
   size_type const tmp_len = this->length();
@@ -70,9 +71,9 @@ void rep_proxy< buf_rep<ResultRep> >::swap( buf_rep<ResultRep> &that ) {
 
 // REP_PROXY_BUF_REP_TAKE_X
 template<class ResultRep>
-void rep_proxy< buf_rep<ResultRep> >::take( RepType &that,
-                                            allocator_type const &this_alloc,
-                                            allocator_type const &that_alloc ) {
+void rep_proxy< buf_rep<ResultRep> >::
+take( rep_proxy< buf_rep<ResultRep> > &that, allocator_type const &this_alloc,
+      allocator_type const &that_alloc ) {
   this->dispose( this_alloc );
   this->p_ = that.p_;
   this->set_capacity( that.capacity() );

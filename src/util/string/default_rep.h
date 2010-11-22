@@ -177,7 +177,7 @@ public:
     data()[ n ] = value_type( 0 );
   }
 
-private:
+protected:
   // REP_CONSTRUCT_2II_A_FIT_X
   /**
    * Constructs a %rep from forward iterators.

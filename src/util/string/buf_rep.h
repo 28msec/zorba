@@ -151,10 +151,8 @@ public:
       throw std::length_error( "reserve" );
   }
 
-private:
+protected:
   pointer p_;
-
-  friend class rep_proxy<buf_rep>;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -186,6 +184,11 @@ public:
   typedef rep_proxy<typename RepType::result_rep_type> result_rep_type;
 
   /**
+   * Default constructor.
+   */
+  rep_proxy() { }
+
+  /**
    * A %buf_rep can not be unshared, so this does nothing.
    */
   void make_unsharable_if_necessary( allocator_type const& ) {
@@ -204,7 +207,7 @@ public:
    *
    * @param that The %rep_proxy of the representation to share.
    */
-  void share( RepType const &that, allocator_type const&,
+  void share( rep_proxy const &that, allocator_type const&,
               allocator_type const& ) {
     this->p_ = that.p_;
     this->set_capacity( that.capacity() );
@@ -217,7 +220,7 @@ public:
    *
    * @param that The %rep_proxy to swap with.
    */
-  void swap( RepType &that );
+  void swap( rep_proxy &that );
 
   // REP_PROXY_BUF_REP_TAKE_X
   /**
@@ -227,24 +230,37 @@ public:
    * @param this_alloc This allocator.
    * @param that_allor The allocator used by \a that.
    */
-  void take( RepType &that, allocator_type const &this_alloc,
+  void take( rep_proxy &that, allocator_type const &this_alloc,
              allocator_type const &that_alloc );
 
   /**
+   * Compares 2 %rep_proxy objects for equality.
    *
+   * @param i The first %rep_proxy.
+   * @param j The second %rep_proxy.
+   * @return Returns \c true only if they're equal.
    */
-  bool operator==( RepType const &j ) {
-    return  this->p_ == j.p_ &&
-            this->capacity() == j.capacity() && this->length() == j.length();
+  friend bool operator==( rep_proxy const &i, rep_proxy const &j ) {
+    return  i.data() == j.data() &&
+            i.capacity() == j.capacity() &&
+            i.length() == j.length();
   }
 
   /**
+   * Compares 2 %rep_proxy objects for inequality.
    *
+   * @param i The first %rep_proxy.
+   * @param j The second %rep_proxy.
+   * @return Returns \c true only if they're not equal.
    */
-  bool operator!=( RepType const &j ) {
-    return !(*this == j);
+  friend bool operator!=( rep_proxy const &i, rep_proxy const &j ) {
+    return !(i == j);
   }
 
+private:
+  // forbid these
+  rep_proxy( rep_proxy const& );
+  rep_proxy& operator=( rep_proxy const& );
 };
 
 ///////////////////////////////////////////////////////////////////////////////
