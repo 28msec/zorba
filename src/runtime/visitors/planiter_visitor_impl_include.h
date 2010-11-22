@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-  class xqpStringStore;
-
   class PlanIterator;
   typedef rchandle<PlanIterator> PlanIter_t;
 
