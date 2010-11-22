@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,11 +17,12 @@
 #define ZORBA_SIMPLE_STORE_INDEX_HASH_VALUE
 
 #include "store/naive/simple_index.h"
+#include <map>
 
-namespace zorba 
-{ 
+namespace zorba
+{
 
-namespace simplestore 
+namespace simplestore
 {
 
 /**************************************************************************//**
@@ -104,7 +105,7 @@ public:
   void open();
 
   bool next(store::Item_t& result);
-  
+
   void reset();
 
   void close();
@@ -168,7 +169,7 @@ protected:
   ValueIndexValue::const_iterator          theEnd;
 
 public:
-  ProbeTreeValueIndexIterator(const store::Index_t& index) 
+  ProbeTreeValueIndexIterator(const store::Index_t& index)
     :
     theDoExtraFiltering(true),
     theResultSet(NULL)
@@ -181,7 +182,7 @@ public:
   void open();
 
   bool next(store::Item_t& result);
-  
+
   void reset();
 
   void close();

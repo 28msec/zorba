@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,15 +18,14 @@
 
 #include "store/api/shared_types.h"
 #include "store/util/item_vector.h"
-#include "zorbatypes/xqpstring.h"
 
-namespace zorba 
+namespace zorba
 {
 
 class XQPCollator;
 
 
-namespace store 
+namespace store
 {
 
 class IndexSpecification;
@@ -42,15 +41,15 @@ typedef rchandle<IndexEntryCreator> IndexEntryCreator_t;
   Specification for creating a value or general index.
 
   theNumKeyColumns: The number of columns in each key.
-  theKeyTypes     : The data types of the key columns. Each type must be a 
+  theKeyTypes     : The data types of the key columns. Each type must be a
                     builtin atomic type, and for sorted indices, it must have
                     an ordering.
   theCollations   : The names (uris) of the collations to use when comparing the
                     string columns of two keys. The size of this vector is equal
-                    to theNumKeyColumns; if a type of a key column is not string, 
-                    the associated entry in theCollations is the empty string.   
+                    to theNumKeyColumns; if a type of a key column is not string,
+                    the associated entry in theCollations is the empty string.
   theTimezone     : The timezone is needed to compare date/time key values.
-  theIsGeneral    : Whether the index is "general" or not. 
+  theIsGeneral    : Whether the index is "general" or not.
   theIsUnique     : Whether the index is unique, i.e., there is exactly one
                     value associated with each key.
   theIsSorted     : Whether the index is sorted by its key values or not.
@@ -121,7 +120,7 @@ public:
 
 
 /**************************************************************************//**
-  Class IndexKey represents an index key as a vector of item handles. 
+  Class IndexKey represents an index key as a vector of item handles.
 *******************************************************************************/
 class IndexKey : public ItemVector
 {
@@ -131,7 +130,7 @@ public:
 
 
 /**************************************************************************//**
-  An index delta is a set of [domain-node, associated-key] pairs. 
+  An index delta is a set of [domain-node, associated-key] pairs.
 *******************************************************************************/
 typedef std::vector<std::pair<store::Item_t, store::IndexKey*> > IndexDelta;
 
@@ -139,11 +138,11 @@ typedef std::vector<std::pair<store::Item_t, store::IndexKey*> > IndexDelta;
 /***************************************************************************//**
 
   Class IndexCondition represents a search condition on the keys of an index.
-  An instance of IndexCondition is given as a parameter to the init() method 
+  An instance of IndexCondition is given as a parameter to the init() method
   of an IndexProbeIterator (see iterator.h), which can then iterate over the
   items in the value of each index key that satisfies the condition.
 
-  There are 4 kinds of index conditions: 
+  There are 4 kinds of index conditions:
 
   POINT_VALUE :
   -------------
@@ -166,25 +165,25 @@ typedef std::vector<std::pair<store::Item_t, store::IndexKey*> > IndexDelta;
   -----------
 
   It represents a condition that is satisfied by the index keys inside a
-  user-specified "box". 
+  user-specified "box".
 
   Let M be the number of key columns. Then, an M-dimensional box is defined as
   a conjuction of M range conditions on columns 0 to M-1. Each range condition
   specifies a range of acceptable values for some key column. Specifically, a
-  range is defined as the set of all values X such that 
+  range is defined as the set of all values X such that
 
   lower_bound <? X <? upper_bound, where <? is either the lt or the le operator.
 
-  The lower bound may be -INFINITY and the upper bound may be +INFINTY. 
+  The lower bound may be -INFINITY and the upper bound may be +INFINTY.
 
   BOX_GENERAL :
   -------------
 
 ********************************************************************************/
-class IndexCondition : public SimpleRCObject 
+class IndexCondition : public SimpleRCObject
 {
 public:
-  typedef enum 
+  typedef enum
   {
     POINT_VALUE,
     POINT_GENERAL,
@@ -202,7 +201,7 @@ public:
   virtual void clear() = 0;
 
   /**
-   *  Return the kind of the condition. 
+   *  Return the kind of the condition.
    */
   virtual Kind getKind() const = 0;
 
@@ -276,7 +275,7 @@ public:
   1. All key tuples in a value index have the same fixed number of items, say M.
      Given this constraint, we can define the i-th "key column" of a value index
      as the set of items that appear in the i-th position of each key tuple. If
-     an index has N tuples, then there are M key columns, each containing N items. 
+     an index has N tuples, then there are M key columns, each containing N items.
 
   2. The items in each key column must be comparable with each other using the
      Item::equals() method and/or the Item::compare() method. This implies that
@@ -292,7 +291,7 @@ public:
   (called domain items). The relationship is N:M, that is, each domain item
   may have more than one associated key tuples and several domain items may
   be associated with the same key tuple.
-  
+
   Let D be a domain item and K an associated key tuple. In the case of value
   indexes, if K contains a key item whose type is xs:untypedAtomic, an error
   is raised. In contrast, a general index casts the xs:untyped key item to
@@ -321,7 +320,7 @@ protected:
 public:
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
-  long* getSharedRefCounter() const { return NULL; } 
+  long* getSharedRefCounter() const { return NULL; }
 
 public:
 
@@ -333,7 +332,7 @@ public:
   virtual Item* getName() const = 0;
 
   /**
-   *  Return a reference to the specification object that describes this index. 
+   *  Return a reference to the specification object that describes this index.
    */
   virtual const IndexSpecification& getSpecification() const = 0;
 
