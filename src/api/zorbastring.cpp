@@ -128,7 +128,6 @@ bool String::operator>( String const &s ) const {
   return *THIS_STRING > *STRING_OF( s );
 }
 
-
 bool String::operator>=( String const &s ) const {
   return *THIS_STRING >= *STRING_OF( s );
 }
@@ -258,7 +257,6 @@ String String::tokenize( String const &pattern, String const &flags,
   }
   return String();
 }
-
 
 ostream& operator<<( ostream &os, String const &s ) {
   return os << *STRING_OF( s );
