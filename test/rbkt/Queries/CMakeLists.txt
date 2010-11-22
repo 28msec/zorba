@@ -322,6 +322,6 @@ IF (ZORBA_WITH_FILE_ACCESS)
   EXPECTED_FAILURE(test/rbkt/zorba/file/copy 3104082)
 ENDIF (ZORBA_WITH_FILE_ACCESS)
 
-EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_1_0 3106633)
+EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_1_0 3106635)
 EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_1_1 3106635)
 # --------------------------------------------------------------------------

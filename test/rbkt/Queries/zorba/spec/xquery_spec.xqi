@@ -9,7 +9,9 @@ declare sequential function util:download-and-write-spec($specURI as xs:string, 
   return file:write($docPath, $xhtml, <s method="xml" indent="yes" />/@*)
 };
 
-declare sequential function util:create-spec-function-arity-sequence($docPath as xs:string)
+declare sequential function util:create-spec-function-arity-sequence(
+  $docPath as xs:string,
+  $xquery_version as xs:string)
 as xs:string* {
 
   let $docSpec := file:read-xml($docPath)
@@ -47,16 +49,30 @@ as xs:string* {
   return
     for $s in $functionsSpec
     let $funcName := fn:substring-after($s//*:code[@class="function"]/text(),"fn:")
-    where (fn:not($funcName = "function-name") and
-           fn:not($funcName = "numeric-function") and
+    where (fn:not($funcName = "numeric-function") and
            fn:not($funcName = "eg:distinct-nodes-stable") and
            fn:not($funcName = "median"))
     return
-        fn:concat($funcName, "#",
-        (if(fn:contains(substring-after(xs:string(data($s)), "fn:"),"...")) then
+      if($xquery_version = "1.0") then (: omit "fn:function-name all together :)
+        if($funcName = "function-name") then ()
+        else
+          fn:concat($funcName, "#",
+                    (if(fn:contains(substring-after(xs:string(data($s)), "fn:"),"...")) then
+                      1000000 (:variadic function :)
+                    else
+                      fn:count(fn:tokenize(substring-after(xs:string(data($s)), "fn:"),"\$"))-1)
+                    )
+(: for  $xquery_version = "1.1":)
+(: Added the exception from http://www.w3.org/TR/2009/WD-xpath-functions-11-20091215/#func-signatures :)
+      else 
+        fn:concat(
+        $funcName, "#",
+        (if(fn:contains(substring-after(xs:string(data($s)), "fn:"),"...")
+            and fn:not($funcName = "function-name")) then
           1000000 (:variadic function :)
          else
-          fn:count(fn:tokenize(substring-after(xs:string(data($s)), "fn:"),"\$"))-1))
+          fn:count(fn:tokenize(substring-after(xs:string(data($s)), "fn:"),"\$"))-1)
+        )
 };
 
 declare function util:create-zorba-function-arity-sequence($functionNames as xs:QName*)
