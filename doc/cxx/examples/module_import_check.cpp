@@ -55,7 +55,7 @@ bool example1(Zorba* aZorba)
   try {
     XQuery_t lQuery = aZorba->compileQuery(lStream, lStcxt);
     std::cout << lQuery << std::endl;
-  } catch (ZorbaException& e) {
+  } catch (ZorbaException&) {
     return true;
   } catch (...) {
     return false;

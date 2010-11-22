@@ -240,13 +240,18 @@ PaintImplFunction::applyPolyLine(Magick::Blob& aBlob, Item& aLine) const {
     lYValues.push_back(lPointValues[1]);
   }
   lChildren->close();
-  double lXValuesArray[lCounter];
-  double lYValuesArray[lCounter];
+  
+  long lBlobLength = (long) aBlob.length();
+  double* lXValuesArray = new double[lCounter];
+  double* lYValuesArray = new double[lCounter];
   std::memcpy(lXValuesArray, &lXValues[0], lCounter*sizeof(lXValues[0]));
   std::memcpy(lYValuesArray, &lYValues[0], lCounter*sizeof(lYValues[0]));
     
-  long lBlobLength = (long) aBlob.length();
   void * lBlobPointer = DrawPolyLine(aBlob.data(), &lBlobLength, &lXValuesArray[0], &lYValuesArray[0], lCounter, lStrokeColor, lStrokeWidth, lAntiAliasing, NULL, 0);
+  
+  delete[] lXValuesArray;
+  delete[] lYValuesArray;
+  
   Magick::Blob lBlobWithPolyLine(lBlobPointer, lBlobLength);
   // now read the blob back into an image to pass it back as encoded string 
   aBlob = lBlobWithPolyLine;
@@ -296,13 +301,18 @@ PaintImplFunction::applyStrokedPolyLine(Magick::Blob& aBlob, Item& aLine) const 
   lStrokeArray[1] = getDoubleValue(lPoint); 
   lChildren->close();
 
-  double lXValuesArray[lCounter];
-  double lYValuesArray[lCounter];
+  long lBlobLength = (long) aBlob.length();
+  
+  double* lXValuesArray = new double[lCounter];
+  double* lYValuesArray = new double[lCounter];
   memcpy(lXValuesArray, &lXValues[0], lCounter*sizeof(lXValues[0]));
   memcpy(lYValuesArray, &lYValues[0], lCounter*sizeof(lYValues[0]));
   
-  long lBlobLength = (long) aBlob.length();
   void * lBlobPointer = DrawPolyLine(aBlob.data(), &lBlobLength, &lXValuesArray[0], &lYValuesArray[0], lCounter, lStrokeColor, lStrokeWidth, lAntiAliasing, lStrokeArray, 2);
+  
+  delete[] lXValuesArray;
+  delete[] lYValuesArray;
+  
   Magick::Blob lBlobWithPolyLine(lBlobPointer, lBlobLength);
   // now read the blob back into an image to pass it back as encoded string 
   aBlob = lBlobWithPolyLine;
@@ -501,13 +511,19 @@ PaintImplFunction::applyPolygon(Magick::Blob& aBlob, Item& aLine) const {
     lYValues.push_back(lPointValues[1]);
   }
   lChildren->close();
-  double lXValuesArray[lCounter];
-  double lYValuesArray[lCounter];
+  
+  long lBlobLength = (long) aBlob.length();
+  
+  double* lXValuesArray = new double[lCounter];
+  double* lYValuesArray = new double[lCounter];
   memcpy(lXValuesArray, &lXValues[0], lCounter*sizeof(lXValues[0]));
   memcpy(lYValuesArray, &lYValues[0], lCounter*sizeof(lYValues[0]));
     
-  long lBlobLength = (long) aBlob.length();
   void * lBlobPointer = DrawPolygon(aBlob.data(), &lBlobLength, &lXValuesArray[0], &lYValuesArray[0], lCounter, lStrokeColor, lFillColor, lStrokeWidth, lAntiAliasing);
+  
+  delete[] lXValuesArray;
+  delete[] lYValuesArray;
+  
   Magick::Blob lBlobWithPolyLine(lBlobPointer, lBlobLength);
   // now read the blob back into an image to pass it back as encoded string 
   aBlob = lBlobWithPolyLine;
