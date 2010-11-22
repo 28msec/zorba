@@ -60,9 +60,9 @@ String::String( string const &s ) {
   new( THIS_STRING ) string_type( s );
 }
 
-String::String( zstring_ptr p ) {
+String::String( zstring_ptr zp ) {
   new( THIS_STRING ) string_type(
-    *reinterpret_cast<string_type const*>( p.v )
+    *reinterpret_cast<string_type const*>( zp.ptr )
   );
 }
 
@@ -79,8 +79,8 @@ String& String::operator=( String const &s ) {
   return *this;
 }
 
-String& String::operator=( zstring_ptr p ) {
-  *THIS_STRING = *reinterpret_cast<string_type const*>( p.v );
+String& String::operator=( zstring_ptr zp ) {
+  *THIS_STRING = *reinterpret_cast<string_type const*>( zp.ptr );
   return *this;
 }
 

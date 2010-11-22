@@ -322,12 +322,12 @@ public:
 private:
 
   // Using a struct guarantees correct struct/class alignment.
-  struct string_storage_type { void *v; };
+  struct string_storage_type { void *rep_storage; };
 
   string_storage_type string_storage_;
 
   // Using a struct prevents void* ambiguity with char*.
-  struct zstring_ptr { void const *v; };
+  struct zstring_ptr { void const *ptr; };
 
   String( zstring_ptr );
 
