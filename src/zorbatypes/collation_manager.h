@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,7 +21,7 @@
 #include <string>
 #include <map>
 
-namespace zorba 
+namespace zorba
 {
 
 #ifdef ZORBA_NO_UNICODE
@@ -35,7 +35,6 @@ class   Collator
 class XQPCollator
 {
   friend class CollationFactory;
-  friend class xqpStringStore;
 
  protected:
   void             * theCollator;
@@ -56,7 +55,7 @@ class XQPCollator
 };
 
 
-class CollationFactory 
+class CollationFactory
 {
  protected:
   XQPCollator * theRootCollator;
@@ -70,15 +69,15 @@ class CollationFactory
    * Creates a collator.
    * The URI specifies the locale and collation strengh that is used.
    *
-   * The uri must begin with 
+   * The uri must begin with
    * http://www.zorba-xquery.com/collations/.
-   * Then a collation strengh (PRIMARY, SECONDARY, TERTIARY, QUATTERNARY, 
+   * Then a collation strengh (PRIMARY, SECONDARY, TERTIARY, QUATTERNARY,
    * or IDENTICAL followed by a '/'.
    * Then a lowercase two-letter or three-letter ISO-639 code
    * followed by '/' and an optional uppercase two-letter ISO-3166 code.
    * For example, http://www.zorba-xquery.com/collations/PRIMARY/en/US
    * specifies an english language with US begin the country..
-   * 
+   *
    * For a detailed description see
    * http://www.icu-project.org/apiref/icu4c/classCollator.html
    * and http://www.icu-project.org/apiref/icu4c/classLocale.html

@@ -448,9 +448,11 @@ uint32_t xqpStringStore::hash(const XQPCollator* coll) const
   CollationKey collKey;
   UErrorCode status = U_ZERO_ERROR;
 
+  /*
   ((Collator*)coll->theCollator)->getCollationKey(xqpString::getUnicodeString(this),
                                                   collKey,
                                                   status);
+  */
 
   if(U_FAILURE(status))
   {
@@ -567,8 +569,10 @@ long xqpStringStore::compare(const xqpStringStore* other, const XQPCollator* col
 
   Collator::EComparisonResult result = ::Collator::EQUAL;
 
+  /*
   result = ((Collator*)coll->theCollator)->compare(xqpString::getUnicodeString(this),
                                                    xqpString::getUnicodeString(other));
+  */
 
   return result;
 }
@@ -608,9 +612,16 @@ long xqpStringStore::positionOf(
 
   UErrorCode status = U_ZERO_ERROR;
 
+  /*
   StringSearch search(xqpString::getUnicodeString(substr),
                       xqpString::getUnicodeString(this),
                       (RuleBasedCollator*)coll->theCollator, NULL, status);
+  */
+
+  StringSearch search(xqpString::getUnicodeString(substr),
+                      xqpString::getUnicodeString(this),
+                      NULL, NULL, status);
+
 
   if(U_FAILURE(status))
   {
@@ -653,9 +664,15 @@ long xqpStringStore::lastPositionOf(
 
   UErrorCode status = U_ZERO_ERROR;
 
+  /*
   StringSearch search(xqpString::getUnicodeString(substr),
                       xqpString::getUnicodeString(this),
                       (RuleBasedCollator *)coll->theCollator, NULL, status);
+  */
+  StringSearch search(xqpString::getUnicodeString(substr),
+                      xqpString::getUnicodeString(this),
+                      NULL, NULL, status);
+
 
   if(U_FAILURE(status))
   {
@@ -1756,7 +1773,7 @@ bool xqpString::matches(const xqpString& pattern, xqpString flags) const
 
   RegexMatcher matcher(uspattern, parse_regex_flags (flags.c_str ()), status);
 
-  if (U_FAILURE(status)) 
+  if (U_FAILURE(status))
   {
     throw zorbatypesException(pattern.c_str(), ZorbatypesError::FORX0002);
     return false;
@@ -1774,7 +1791,7 @@ xqpString xqpString::replace(xqpString pattern, xqpString replacement, xqpString
   UnicodeString us = getUnicodeString (this->getStore());
 
   RegexMatcher matcher (uspattern, us, parse_regex_flags (flags.c_str ()), status);
-  if (U_FAILURE(status)) 
+  if (U_FAILURE(status))
   {
     throw zorbatypesException(pattern.c_str(), ZorbatypesError::FORX0002);
     return "";
@@ -1789,7 +1806,7 @@ xqpString xqpString::replace(xqpString pattern, xqpString replacement, xqpString
 
   UnicodeString result = matcher.replaceAll(getUnicodeString(replacement.getStore()),
                                             status);
-  if (U_FAILURE(status)) 
+  if (U_FAILURE(status))
   {
     return "";
     // TODO: error
