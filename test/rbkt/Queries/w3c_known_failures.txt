@@ -36,8 +36,6 @@ test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-003
 test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-010
 test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-007
 test/rbkt/w3c_testsuite/XQuery/Modules/ModuleImport/modules-28
-test/rbkt/w3c_testsuite/XQuery/Modules/ModuleImport/errata8-003
-test/rbkt/w3c_testsuite/XQuery/Modules/ModuleImport/modules-circular
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/MatchesFunc/fn-matches-38
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/MatchesFunc/caselessmatch11
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/MatchesFunc/K2-MatchesFunc-14

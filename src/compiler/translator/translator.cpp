@@ -17,6 +17,7 @@
 #include <sstream>
 #include <iterator>
 #include <stack>
+#include <map>
 
 #include <zorba/config.h>
 
@@ -102,7 +103,7 @@ static expr_t translate_aux(
     static_context* rootSctx,
     short rootSctxId,
     ModulesInfo* minfo,
-    std::set<std::string> mod_stack,
+    const std::map<zstring, zstring>& modulesStack,
     bool isLibModule);
 
 #ifndef NDEBUG
@@ -748,8 +749,8 @@ public:
 /*******************************************************************************
 
   A new instance of TranslatorImpl is created for the translation of each
-  module participating in a query. The instance is destroyed when the translation
-  of the associated module is finished.
+  module component participating in a query. The instance is destroyed when
+  the translation of the associated module component is finished.
 
   theRootTranslator :
   -------------------
@@ -769,9 +770,10 @@ public:
 
   theModulesStack :
   -----------------
-  A set containing the ns uris of all the modules in the chain of module imports
-  from this module up to the main module. It is used to check that there are no
-  cycles in a chain of module imports.
+  A map containing the URLs of all the module components in the chain of module
+  imports from this module component up to the main module. For each such URL,
+  the map also stores the target namespace URI of module component. This map is
+  used to handle cycles in a chain of module imports.
 
   theImportedModules :
   --------------------
@@ -975,7 +977,7 @@ protected:
   CompilerCB                           * theCCB;
 
   ModulesInfo                          * theModulesInfo;
-  std::set<std::string>                  theModulesStack;
+  std::map<zstring, zstring>             theModulesStack;
   std::set<std::string>                  theImportedModules;
   zstring                                theModuleNamespace;
   zstring                                theModulePrefix;
@@ -1061,14 +1063,14 @@ TranslatorImpl(
     static_context* rootSctx,
     short rootSctxId,
     ModulesInfo* minfo,
-    std::set<std::string> mod_stack,
+    const std::map<zstring, zstring>& modulesStack,
     bool isLibModule)
   :
   theRootTranslator(rootTranslator),
   theRTM(GENV_TYPESYSTEM),
   theCCB(minfo->theCCB),
   theModulesInfo(minfo),
-  theModulesStack(mod_stack),
+  theModulesStack(modulesStack),
   theCurrSctxId(rootSctxId),
   theRootSctx(rootSctx),
   theSctx(rootSctx),
@@ -3008,10 +3010,15 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
     // Get the location uri for the module to import.
     const std::string& compURI = *ite;
 
-    // Make sure that there are no cycles in a chain of module imports.
-    std::set<std::string> mod_stk1 = theModulesStack;
-    if (! mod_stk1.insert(compURI).second)
-      ZORBA_ERROR_LOC(XQST0093, loc);
+    // If this import forms a cycle in a chain of module imports, skip it.
+    // If the importing module is referencing any variable or function of
+    // the skipped module, an XQST0093 error will be raised when the translator
+    // tries to process that var or function reference.
+    std::map<zstring, zstring> modulesStack = theModulesStack;
+    if (! modulesStack.insert(std::pair<zstring, zstring>(compURI, targetNS)).second)
+    {
+      return;
+    }
 
     // importedNS is the target namespace of the imported module, as declared
     // inside the module itself.
@@ -3129,7 +3136,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
                     moduleRootSctx,
                     moduleRootSctxId,
                     theModulesInfo,
-                    mod_stk1,
+                    modulesStack,
                     true);
 
       // Register the mapping between the current location uri and the
@@ -8697,6 +8704,8 @@ void* begin_visit(const FunctionCall& v)
 
   function* f = lookup_fn(qname, numArgs, loc);
 
+  // Note : f maybe NULL if it is a constructor of a builtin type
+
   if (f != NULL && !theCurrentPrologVFDecl.isNull())
   {
     if (f->isSequential() &&
@@ -9011,7 +9020,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
   numArgs = arguments.size();  // recompute size
 
-  // Check if this is a call to a builtin constructor function
+  // Check if this is a call to a type constructor function
   xqtref_t type = CTX_TM->create_named_type(qnameItem,
                                             TypeConstants::QUANT_QUESTION);
 
@@ -9033,6 +9042,16 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     function* f = lookup_fn(qname, numArgs, loc);
     if (f == NULL)
     {
+      std::map<zstring, zstring>::const_iterator ite = theModulesStack.begin();
+      std::map<zstring, zstring>::const_iterator end = theModulesStack.end();
+      for (; ite != end; ++ite)
+      {
+        if ((*ite).second == fn_ns)
+        {
+          ZORBA_ERROR_LOC(XQST0093, loc);
+        }
+      }
+
       ZORBA_ERROR_LOC_PARAM(XPST0017, loc, qname->get_qname(), to_string(numArgs));
     }
 
@@ -12127,14 +12146,14 @@ expr_t translate_aux(
     static_context* rootSctx,
     short rootSctxId,
     ModulesInfo* minfo,
-    std::set<std::string> mod_stack,
+    const std::map<zstring, zstring>& modulesStack,
     bool isLibModule)
 {
   std::auto_ptr<TranslatorImpl> t(new TranslatorImpl(rootTranslator,
                                                      rootSctx,
                                                      rootSctxId,
                                                      minfo,
-                                                     mod_stack,
+                                                     modulesStack,
                                                      isLibModule));
 
   root.accept(*t);
@@ -12155,7 +12174,7 @@ expr_t translate_aux(
 ********************************************************************************/
 expr_t translate(const parsenode& root, CompilerCB* ccb)
 {
-  std::set<std::string> mod_stack;
+  std::map<zstring, zstring> modulesStack;
 
   if (typeid(root) != typeid(MainModule))
   {
@@ -12171,7 +12190,7 @@ expr_t translate(const parsenode& root, CompilerCB* ccb)
                        ccb->theRootSctx,
                        ccb->theSctxMap.size(),
                        &minfo,
-                       mod_stack,
+                       modulesStack,
                        false);
 }
 
