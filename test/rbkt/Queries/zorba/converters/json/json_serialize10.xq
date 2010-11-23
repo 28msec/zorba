@@ -12,4 +12,4 @@ declare variable $test :=
     </pair>
   </json>;
 
-json:serialize($test)
+json:serialize($test) eq '{"servlet": ["": {"name": "value1"},,"value2"]}'
