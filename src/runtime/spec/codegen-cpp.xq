@@ -153,6 +153,9 @@ declare function local:create-function($iter, $function) as xs:string?
       'Error: could not find "prefix" and "localname" attributes for "zorba:function" element'
     else
       let $name := local:function-name($function)
+      let $ret := if($iter/@name = "") then "return NULL;"
+                  else string-join(( 'return new ',
+                                      local:iterator-call($iter, $function), ';'),'')
       return
         string-join(($gen:newline, 'PlanIter_t ', $name, '::codegen(',
                      $gen:newline, $gen:indent, 'CompilerCB*,',
@@ -160,11 +163,7 @@ declare function local:create-function($iter, $function) as xs:string?
                      $gen:newline, $gen:indent, 'const QueryLoc&amp; loc,',
                      $gen:newline, $gen:indent, 'std::vector&lt;PlanIter_t&gt;&amp; argv,',
                      $gen:newline, $gen:indent, 'AnnotationHolder&amp; ann) const',
-                     $gen:newline,'{',
-                     if($iter/@name = "") then ""
-                     else string-join(($gen:newline, $gen:indent, 'return new ', 
-                                      local:iterator-call($iter, $function), ';', $gen:newline),''), 
-                     '}'), '')
+                     $gen:newline,'{', $gen:newline, $gen:indent, $ret, $gen:newline,'}'), '')
   else
     ''
 };
@@ -174,15 +173,8 @@ declare function local:function-name($function) as xs:string
 {
   let $sig := ($function//zorba:signature)[1]
   return 
-    if ($sig/@prefix = 'fn' and starts-with(string($sig/@localname),':')) 
-    then
-      string-join(('op',
-                   translate(substring(string($sig/@localname), 2), '-', '_')),
-                  '_')
-      else 
-        string-join((translate($sig/@prefix, '-', '_'),
-                     translate($sig/@localname, '-', '_')),
-                    '_')
+    string-join((translate($sig/@prefix, '-', '_'),
+                 translate($sig/@localname, '-', '_')),'_')
 };
 
 

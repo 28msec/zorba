@@ -86,7 +86,9 @@ PlanIter_t fn_number::codegen(
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
-{}
+{
+  return NULL;
+}
 
 void populate_context_nodes(static_context* sctx)
 {

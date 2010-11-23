@@ -86,7 +86,9 @@ PlanIter_t fn_position::codegen(
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
-{}
+{
+  return NULL;
+}
 
 PlanIter_t fn_last::codegen(
   CompilerCB*,
@@ -94,7 +96,9 @@ PlanIter_t fn_last::codegen(
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
-{}
+{
+  return NULL;
+}
 
 PlanIter_t fn_static_base_uri::codegen(
   CompilerCB*,
@@ -102,7 +106,9 @@ PlanIter_t fn_static_base_uri::codegen(
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
-{}
+{
+  return NULL;
+}
 
 void populate_context_context(static_context* sctx)
 {
