@@ -39,7 +39,7 @@
 /* "%code requires" blocks.  */
 
 /* Line 35 of lalr1.cc  */
-#line 35 "/Users/pjl/src/flwor/zorba/trunk/src/compiler/parser/xquery_parser.y"
+#line 35 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
 
 
 #include <list>
@@ -71,7 +71,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 
 /* Line 35 of lalr1.cc  */
-#line 75 "/Users/pjl/src/flwor/zorba/trunk/build/src/compiler/parser/xquery_parser.hpp"
+#line 75 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
 
 
 #include <string>
@@ -82,14 +82,14 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 86 "/Users/pjl/src/flwor/zorba/trunk/build/src/compiler/parser/xquery_parser.hpp"
+#line 86 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
   class position;
   class location;
 
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 93 "/Users/pjl/src/flwor/zorba/trunk/build/src/compiler/parser/xquery_parser.hpp"
+#line 93 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
 
 #include "location.hh"
 
@@ -134,7 +134,7 @@ do {							\
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 138 "/Users/pjl/src/flwor/zorba/trunk/build/src/compiler/parser/xquery_parser.hpp"
+#line 138 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
 
   /// A Bison parser.
   class xquery_parser
@@ -146,7 +146,7 @@ namespace zorba {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 150 "/Users/pjl/src/flwor/zorba/trunk/src/compiler/parser/xquery_parser.y"
+#line 150 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
 
     zorba::parsenode *node;
     zorba::exprnode *expr;
@@ -170,7 +170,7 @@ namespace zorba {
 
 
 /* Line 35 of lalr1.cc  */
-#line 174 "/Users/pjl/src/flwor/zorba/trunk/build/src/compiler/parser/xquery_parser.hpp"
+#line 174 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -670,7 +670,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 674 "/Users/pjl/src/flwor/zorba/trunk/build/src/compiler/parser/xquery_parser.hpp"
+#line 674 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
 
 
 

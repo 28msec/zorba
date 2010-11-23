@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -117,7 +117,7 @@ static void normalize_eol(const char *text, uint32_t length, string *out, bool a
       *out += attribute ? ' ' : '\n';
     else if (ch != '\n' || lastCh != '\r')
       *out += (attribute && (ch == '\t' || ch == '\n'))? ' ' : ch;
-    
+
     lastCh = ch;
   }
 }
@@ -137,7 +137,7 @@ off_t symbol_table::put(char const* text, uint32_t length, int normalizationType
     text = normStr.c_str ();
     length = normStr.size ();
   }
-  
+
 	return heap.put(text, 0, length);
 }
 
@@ -150,10 +150,10 @@ off_t symbol_table::put_qname(char const* text, uint32_t length, bool do_trim_st
 {
   if (do_trim_start)
     trim_start(&text, length);
-  
+
   if (do_trim_end)
     trim_end(text, length);
-  
+
 	return heap.put(text, 0, length);
 }
 
@@ -161,9 +161,9 @@ off_t symbol_table::put_uri(char const* text, uint32_t length)
 {
   trim_start(&text, length);
   trim_end(text, length);
-  
+
   string result;
-  if (! decode_string (text, length, &result)) 
+  if (! decode_string (text, length, &result))
     return -1;
   result = xmlWhitespaceCollapse(zstring(result)).str();
   return heap.put (result.c_str (), 0, result.length ());
