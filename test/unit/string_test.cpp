@@ -56,6 +56,8 @@ unicode::code_point const ucp_iacute = 0xED;
 unicode::code_point const ucp_oacute = 0xF3;
 unicode::code_point const ucp_uacute = 0xFA;
 
+static char whitespace[] = " \f\n\r\t\v";
+
 ///////////////////////////////////////////////////////////////////////////////
 
 static int failures;
@@ -504,6 +506,43 @@ static void test_to_xml() {
   ASSERT_TRUE( s2 == "&#38;b&#60;de&#62;" );
 }
 
+static void test_trim_start_char() {
+  char const *s;
+
+  s = "hello";
+  ASSERT_TRUE( ascii::trim_start( s, whitespace ) == s );
+  ASSERT_TRUE( ascii::trim_start( s, ::strlen( s ), whitespace ) == s );
+
+  s = " hello";
+  ASSERT_TRUE( ascii::trim_start( s, whitespace ) == s + 1 );
+  ASSERT_TRUE( ascii::trim_start( s, ::strlen( s ), whitespace ) == s + 1 );
+
+  s = "  hello";
+  ASSERT_TRUE( ascii::trim_start( s, whitespace ) == s + 2 );
+  ASSERT_TRUE( ascii::trim_start( s, ::strlen( s ), whitespace ) == s + 2 );
+
+  s = "     ";
+  ASSERT_TRUE( ascii::trim_start( s, whitespace ) == s + 5 );
+  ASSERT_TRUE( ascii::trim_start( s, ::strlen( s ), whitespace ) == s + 5 );
+}
+
+static void test_trim_end_char() {
+  char const *s;
+  ascii::size_type len;
+
+  s = "hello"; len = ::strlen( s );
+  ASSERT_TRUE( ascii::trim_end( s, len, whitespace ) == len );
+
+  s = "hello "; len = ::strlen( s );
+  ASSERT_TRUE( ascii::trim_end( s, len, whitespace ) == len - 1 );
+
+  s = "hello  "; len = ::strlen( s );
+  ASSERT_TRUE( ascii::trim_end( s, len, whitespace ) == len - 2 );
+
+  s = "     "; len = ::strlen( s );
+  ASSERT_TRUE( ascii::trim_end( s, len, whitespace ) == 0 );
+}
+
 template<class StringType>
 static void test_trim_whitespace() {
   StringType const s( "  hello world  " );
@@ -565,6 +604,9 @@ int string_test( int, char*[] ) {
 
   test_trim_whitespace<string>();
   test_trim_whitespace<zstring>();
+
+  test_trim_start_char();
+  test_trim_end_char();
 
   test_replace_all<string>();
 

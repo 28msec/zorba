@@ -112,6 +112,31 @@ char* ltoa( long n, char *buf ) {
   return buf;
 }
 
+char const* trim_start( char const *s, char const *chars ) {
+  for ( ; *s; ++s ) {
+    if ( !std::strchr( chars, *s ) )
+      break;
+  }
+  return s;
+}
+
+char const* trim_start( char const *s, size_type s_len, char const *chars ) {
+  for ( ; s_len-- > 0; ++s ) {
+    if ( !std::strchr( chars, *s ) )
+      break;
+  }
+  return s;
+}
+
+size_type trim_end( char const *s, size_type s_len, char const *chars ) {
+  s += s_len - 1;
+  for ( ; s_len > 0; --s, --s_len ) {
+    if ( !std::strchr( chars, *s ) )
+      break;
+  }
+  return s_len;
+}
+
 } // namespace ascii
 } // namespace zorba
 

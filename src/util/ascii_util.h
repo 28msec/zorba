@@ -39,7 +39,6 @@ typedef std::size_t size_type;
 
 ZORBA_DLL_PUBLIC extern char const uri_safe[];
 
-
 ////////// classes ////////////////////////////////////////////////////////////
 
 /**
@@ -250,7 +249,8 @@ bool ends_with( StringType const &s, SuffixStringType const &ss ) {
  * sufficient size.
  * @return Returns \a buf for convenience.
  */
-ZORBA_DLL_PUBLIC char* ltoa( long n, char *buf );
+ZORBA_DLL_PUBLIC
+char* ltoa( long n, char *buf );
 
 /**
  * Converts an \c int to a C string.
@@ -342,6 +342,29 @@ void trim( StringType &s, char const *chars ) {
 }
 
 /**
+ * Skips leading specified characters.
+ *
+ * @param s The string to trim.
+ * @param chars The characters to trim.
+ * @return Returns a pointer to the first character in \a s that is not among
+ * the characters in \a chars.
+ */
+ZORBA_DLL_PUBLIC
+char const* trim_start( char const *s, char const *chars );
+
+/**
+ * Skips leading specified characters.
+ *
+ * @param s The string to trim.
+ * @param s_len The length of \a s.
+ * @param chars The characters to trim.
+ * @return Returns a pointer to the first character in \a s that is not among
+ * the characters in \a chars.
+ */
+ZORBA_DLL_PUBLIC
+char const* trim_start( char const *s, size_type s_len, char const *chars );
+
+/**
  * Removes all leading specified characters.
  *
  * @tparam InputStringType The input string type.
@@ -365,6 +388,28 @@ void trim_start( StringType &s, char const *chars ) {
   StringType temp;
   trim_start( s, chars, &temp );
   s = temp;
+}
+
+/**
+ * Skips trailing specified characters.
+ *
+ * @param s The string to trim.
+ * @param s_len The length of \a s.
+ * @param chars The characters to trim.
+ * @return Returns the new length of \a s.
+ */
+ZORBA_DLL_PUBLIC
+size_type trim_end( char const *s, size_type s_len, char const *chars );
+
+/**
+ * Skips trailing specified characters.
+ *
+ * @param s The string to trim.
+ * @param chars The characters to trim.
+ * @return Returns the new length of \a s.
+ */
+inline size_type trim_end( char const *s, char const *chars ) {
+  return trim_end( s, std::strlen( s ), chars );
 }
 
 /**
