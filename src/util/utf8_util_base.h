@@ -28,6 +28,9 @@
 namespace zorba {
 namespace utf8 {
 
+// TODO: There needs to be a better solution than making this DLL public.
+ZORBA_DLL_PUBLIC extern char const char_length_table[];
+
 ////////// types //////////////////////////////////////////////////////////////
 
 /**
@@ -52,7 +55,6 @@ typedef std::size_t size_type;
  * input or (b) "not found" as a result.
  */
 size_type const npos = static_cast<size_type>( -1 );
-
 
 ////////// functions //////////////////////////////////////////////////////////
 
@@ -86,10 +88,6 @@ size_type byte_pos( storage_type const *s, size_type s_size,
  * character.
  * @return Return a number in the range [1,6] or 0 for an invalid byte.
  */
-
-ZORBA_DLL_PUBLIC extern char const char_length_table[];
-
-
 inline size_type char_length( storage_type lead ) {
   return char_length_table[ static_cast<unsigned>( lead ) & 0xFF ];
 }
@@ -156,7 +154,7 @@ void encode( unicode::code_point c, StringType *out ) {
  * comprising an encoded character.
  *
  * @param b The byte to check.
- * @return Returns \a true only if the byte is the first byte of a UTF-8 byte
+ * @return Returns \c true only if the byte is the first byte of a UTF-8 byte
  * sequence comprising an encoded character.
  */
 inline bool is_start_byte( storage_type b ) {
@@ -184,6 +182,18 @@ size_type length( storage_type const *s );
  */
 ZORBA_DLL_PUBLIC
 size_type length( storage_type const *begin, storage_type const *end );
+
+/**
+ * Gets the number of Unicode characters comprising the UTF-8 string.
+ *
+ * @tparam StringType The string type.
+ * @param s The string.
+ * @return Returns said number of characters.
+ */
+template<class StringType>
+inline size_type length( StringType const &s ) {
+  return length( s.c_str() );
+}
 
 /**
  * Decodes the next Unicode character.
