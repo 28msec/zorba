@@ -470,16 +470,6 @@ rstring<Rep>::swap( rstring &s ) {
   }
 }
 
-// RSTRING_TAKE_RS_X
-template<class Rep> rstring<Rep>&
-rstring<Rep>::take( rstring &s ) {
-  if ( rep() != s.rep() ) {
-    rep().dispose( get_allocator() );
-    rep().take( s.rep(), get_allocator(), s.get_allocator() );
-  }
-  return *this;
-}
-
 ////////// out-of-line global function definitions ////////////////////////////
 
 template<typename CharType,class TraitsType,class Rep>

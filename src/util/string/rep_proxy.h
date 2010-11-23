@@ -143,12 +143,14 @@ public:
    */
   void take( rep_proxy &that, allocator_type const &this_alloc,
              allocator_type const &that_alloc ) {
-    dispose( this_alloc );
-    if ( this_alloc == that_alloc ) {
-      rep_ = that.rep_;
-      that.rep_ = RepType::empty_rep();
-    } else {
-      rep_ = that.rep_->clone( this_alloc );
+    if ( *this != that ) {
+      dispose( this_alloc );
+      if ( this_alloc == that_alloc ) {
+        rep_ = that.rep_;
+        that.rep_ = RepType::empty_rep();
+      } else {
+        rep_ = that.rep_->clone( this_alloc );
+      }
     }
   }
 

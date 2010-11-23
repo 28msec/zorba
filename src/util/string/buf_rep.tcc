@@ -74,11 +74,12 @@ template<class ResultRep>
 void rep_proxy< buf_rep<ResultRep> >::
 take( rep_proxy< buf_rep<ResultRep> > &that, allocator_type const &this_alloc,
       allocator_type const &that_alloc ) {
-  this->dispose( this_alloc );
-  this->p_ = that.p_;
-  this->set_capacity( that.capacity() );
-  this->set_length( that.length() );
-  that.dispose( that_alloc );
+  if ( *this != that ) {
+    this->p_ = that.p_;
+    this->set_capacity( that.capacity() );
+    this->set_length( that.length() );
+    that.dispose( that_alloc );
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////

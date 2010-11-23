@@ -2027,6 +2027,13 @@ rstring<Rep>::rfind( const_pointer s, size_type pos ) const {
   return rfind( s, pos, traits_type::length( s ) );
 }
 
+// RSTRING_TAKE_RS_X
+template<class Rep> inline rstring<Rep>&
+rstring<Rep>::take( rstring &s ) {
+  rep().take( s.rep(), get_allocator(), s.get_allocator() );
+  return *this;
+}
+
 ////////// inline global functions ////////////////////////////////////////////
 
 template<class Rep> inline void
