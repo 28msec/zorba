@@ -678,7 +678,7 @@ void Archiver::finalize_input_serialization()
 
       SimpleRCObject* rcobj1;
       store::Item* rcobj2;
-      //xqpStringStore* rcobj3;
+      //zStringStore* rcobj3;
 
 
       if(!(*it).to_add_ref)
@@ -692,7 +692,7 @@ void Archiver::finalize_input_serialization()
       {
         RCHelper::addReference(rcobj2); //this can lead to memory leaks
       }
-      //else if ((rcobj3 = dynamic_cast<xqpStringStore*>((SerializeBaseClass*)ptr)) != NULL)
+      //else if ((rcobj3 = dynamic_cast<zStringStore*>((SerializeBaseClass*)ptr)) != NULL)
       //{
       //  RCHelper::addReference(rcobj3); //this can lead to memory leaks
       //}
