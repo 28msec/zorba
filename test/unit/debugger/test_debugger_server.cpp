@@ -68,12 +68,12 @@ namespace zorba {
   XQuery_t createDebuggableQuery(Zorba* aZorba, std::iostream& os) {
     XQuery_t lQuery = aZorba->createQuery();
     lQuery->setFileName("test.xq");
-		lQuery->setDebugMode(true);
+    lQuery->setDebugMode(true);
 
-		Zorba_CompilerHints lHints;
-		lHints.opt_level = ZORBA_OPT_LEVEL_O0;
+    Zorba_CompilerHints lHints;
+    lHints.opt_level = ZORBA_OPT_LEVEL_O0;
 
-	  lQuery->compile(os, lHints);
+    lQuery->compile(os, lHints);
 
     return lQuery;
   }
@@ -121,8 +121,8 @@ namespace zorba {
 
     std::cout << "Result:\n" << aActualResult.str() << std::endl;
     if (aActualResult.str() != aExpectedResult) {
-    	std::cerr << "Result does not match expected result: " << aExpectedResult << std::endl;
-    	return -1;
+      std::cerr << "Result does not match expected result: " << aExpectedResult << std::endl;
+      return -1;
     }
 
     return 0;
@@ -155,7 +155,7 @@ namespace zorba {
 
   } // int test_run
 
-	int test_terminate_suspended(Zorba* aZorba) {
+  int test_terminate_suspended(Zorba* aZorba) {
 
     std::stringstream lQueryStr;
     lQueryStr << "if (fn:true())" << std::endl;
@@ -216,7 +216,7 @@ namespace zorba {
 
   } // int test_terminate_immediately
   
-	int test_resume(Zorba* aZorba) {
+  int test_resume(Zorba* aZorba) {
 
     std::stringstream lQueryStr;
     lQueryStr << "if (fn:true())" << std::endl;
@@ -622,7 +622,7 @@ int test_debugger_server (int argc, char* argv[]) {
   std::cout << "---------------------" << std::endl;
   std::cout << "executing test_run" << std::endl;
   if (zorba::test_run(lZorba) != 0) {
-  	return 1;
+    return 1;
   }
 
   std::cout << "---------------------" << std::endl;
@@ -643,12 +643,12 @@ int test_debugger_server (int argc, char* argv[]) {
     return 1;
   }
 
-//  std::cout << "---------------------" << std::endl;
-//  std::cout << "executing test_clear_pending" << std::endl;
-//  if (zorba::test_clear_pending(lZorba) != 0) {
-//    return 1;
-//  }
-//
+  std::cout << "---------------------" << std::endl;
+  std::cout << "executing test_clear_pending" << std::endl;
+  if (zorba::test_clear_pending(lZorba) != 0) {
+    return 1;
+  }
+
 //  std::cout << "---------------------" << std::endl;
 //  std::cout << "executing test_clear_set" << std::endl;
 //  if (zorba::test_clear_set(lZorba) != 0) {
