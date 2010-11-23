@@ -15,7 +15,6 @@
 <zorba:header>
     <zorba:include form="Quoted">zorbautils/checked_vector.h</zorba:include>
     <zorba:include form="Quoted">zorbatypes/representations.h</zorba:include>
-    <zorba:include form="Quoted">zorbatypes/xqpstring.h</zorba:include>
 </zorba:header>
 
 <!--
@@ -25,16 +24,16 @@
 -->
 <zorba:iterator  name="CodepointsToStringIterator">
 
-    <zorba:description author="Zorba Team">
-        fn:codepoints-to-string
-    </zorba:description>
-    
-    <zorba:function>
-        <zorba:signature localname="codepoints-to-string" prefix="fn">
-            <zorba:param>xs:integer*</zorba:param>
-            <zorba:output>xs:string</zorba:output>
-        </zorba:signature>
-    </zorba:function>
+  <zorba:description author="Zorba Team">
+    fn:codepoints-to-string
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="codepoints-to-string" prefix="fn">
+      <zorba:param>xs:integer*</zorba:param>
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
 <!--
 /*******************************************************************************
@@ -43,23 +42,23 @@
 -->
 <zorba:iterator name="StringToCodepointsIterator">
 
-    <zorba:description author="Zorba Team">
-        fn:string-to-codepoints
-    </zorba:description>
+  <zorba:description author="Zorba Team">
+    fn:string-to-codepoints
+  </zorba:description>
 
-    <zorba:function>
-      <zorba:signature localname="string-to-codepoints" prefix="fn">
-          <zorba:param>xs:string?</zorba:param>
-          <zorba:output>xs:integer*</zorba:output>
-      </zorba:signature>
-    </zorba:function>
+  <zorba:function>
+    <zorba:signature localname="string-to-codepoints" prefix="fn">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:output>xs:integer*</zorba:output>
+    </zorba:signature>
+  </zorba:function>
 
-    <zorba:state generateInit="false" generateReset="false">
-      <zorba:member type="xs_uint" name="theIterator"
-                    brief="the current iterator"/>
-      <zorba:member type="checked_vector&lt;xs_uint&gt;" name="theResult"
-                    brief="the resulting vector"/>
-    </zorba:state>
+  <zorba:state generateInit="false" generateReset="false">
+    <zorba:member type="xs_uint" name="theIterator"
+                  brief="the current iterator"/>
+    <zorba:member type="checked_vector&lt;xs_uint&gt;" name="theResult"
+                  brief="the resulting vector"/>
+  </zorba:state>
 
 </zorba:iterator>
 
@@ -71,23 +70,24 @@
 
 <zorba:iterator name="CompareStrIterator">
 
-    <zorba:description author="Zorba Team">
-        fn:compare
-    </zorba:description>
-    
-    <zorba:function>
-        <zorba:signature localname="compare" prefix="fn">
-            <zorba:param>xs:string?</zorba:param>
-            <zorba:param>xs:string?</zorba:param>
-            <zorba:output>xs:integer?</zorba:output>
-        </zorba:signature>
-        <zorba:signature localname="compare" prefix="fn">
-            <zorba:param>xs:string?</zorba:param>
-            <zorba:param>xs:string?</zorba:param>
-            <zorba:param>xs:string</zorba:param>
-            <zorba:output>xs:integer?</zorba:output>
-        </zorba:signature>
-    </zorba:function>
+  <zorba:description author="Zorba Team">
+      fn:compare
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="compare" prefix="fn">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:output>xs:integer?</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="compare" prefix="fn">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:param>xs:string</zorba:param>
+      <zorba:output>xs:integer?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
 
 
@@ -99,17 +99,17 @@
 
 <zorba:iterator name="CodepointEqualIterator">
 
-    <zorba:description author="Zorba Team">
-        fn:codepoint-equal
-    </zorba:description>
-    
-    <zorba:function>
-        <zorba:signature localname="codepoint-equal" prefix="fn">
-            <zorba:param>xs:string?</zorba:param>
-            <zorba:param>xs:string?</zorba:param>
-            <zorba:output>xs:boolean?</zorba:output>
-        </zorba:signature>
-    </zorba:function>
+  <zorba:description author="Zorba Team">
+      fn:codepoint-equal
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="codepoint-equal" prefix="fn">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:output>xs:boolean?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
 
 
@@ -126,24 +126,22 @@
 -->
 <zorba:iterator name="ConcatStrIterator">
 
-    <zorba:description author="Zorba Team">
-        fn:concat
-    </zorba:description>
-    
-    <zorba:function>
+  <zorba:description author="Zorba Team">
+      fn:concat
+  </zorba:description>
 
-        <zorba:signature localname="concat" prefix="fn">
-            <zorba:param>xs:anyAtomicType?</zorba:param>
-            <zorba:param>true</zorba:param>
-            <zorba:output>xs:string</zorba:output>
-        </zorba:signature>
+  <zorba:function>
+    <zorba:signature localname="concat" prefix="fn">
+      <zorba:param>xs:anyAtomicType?</zorba:param>
+      <zorba:param>true</zorba:param>
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
 
     <zorba:methods>
       <zorba:ignoresSortedNodes/>
       <zorba:ignoresDuplicateNodes/>
     </zorba:methods>
-
-    </zorba:function>
+  </zorba:function>
 </zorba:iterator>
 
 
@@ -155,17 +153,17 @@
 -->
 <zorba:iterator name="StringJoinIterator">
 
-    <zorba:description author="Zorba Team">
-        fn:string-join
-    </zorba:description>
-    
-    <zorba:function>
-        <zorba:signature localname="string-join" prefix="fn">
-            <zorba:param>xs:string*</zorba:param>
-            <zorba:param>xs:string</zorba:param>
-            <zorba:output>xs:string</zorba:output>
-        </zorba:signature>
-    </zorba:function>
+  <zorba:description author="Zorba Team">
+      fn:string-join
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="string-join" prefix="fn">
+      <zorba:param>xs:string*</zorba:param>
+      <zorba:param>xs:string</zorba:param>
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
 
 
@@ -176,23 +174,24 @@
 -->
 <zorba:iterator name="SubstringIterator">
 
-    <zorba:description author="Zorba Team">
-        fn:substring
-    </zorba:description>
-    
-    <zorba:function>
-        <zorba:signature localname="substring" prefix="fn">
-            <zorba:param>xs:string?</zorba:param>
-            <zorba:param>xs:double</zorba:param>
-            <zorba:output>xs:string</zorba:output>
-        </zorba:signature>
-        <zorba:signature localname="substring" prefix="fn">
-            <zorba:param>xs:string?</zorba:param>
-            <zorba:param>xs:double</zorba:param>
-            <zorba:param>xs:double</zorba:param>
-            <zorba:output>xs:string</zorba:output>
-        </zorba:signature>
-    </zorba:function>
+  <zorba:description author="Zorba Team">
+      fn:substring
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="substring" prefix="fn">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:param>xs:double</zorba:param>
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="substring" prefix="fn">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:param>xs:double</zorba:param>
+      <zorba:param>xs:double</zorba:param>
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
 
 
@@ -251,21 +250,22 @@
 -->
 <zorba:iterator name="NormalizeUnicodeIterator">
 
-    <zorba:description author="Zorba Team">
-        fn:normalize-unicode
-    </zorba:description>
-    
-    <zorba:function>
-        <zorba:signature localname="normalize-unicode" prefix="fn">
-            <zorba:param>xs:string?</zorba:param>
-            <zorba:output>xs:string</zorba:output>
-        </zorba:signature>        
-        <zorba:signature localname="normalize-unicode" prefix="fn">
-            <zorba:param>xs:string?</zorba:param>
-            <zorba:param>xs:string</zorba:param>
-            <zorba:output>xs:string</zorba:output>
-        </zorba:signature>
-    </zorba:function>
+  <zorba:description author="Zorba Team">
+      fn:normalize-unicode
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="normalize-unicode" prefix="fn">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="normalize-unicode" prefix="fn">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:param>xs:string</zorba:param>
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
 
 
@@ -276,16 +276,16 @@
 -->
 <zorba:iterator name="UpperCaseIterator">
 
-    <zorba:description author="Zorba Team">
-        fn:upper-case
-    </zorba:description>
-    
-    <zorba:function>
-        <zorba:signature localname="upper-case" prefix="fn">
-            <zorba:param>xs:string?</zorba:param>
-            <zorba:output>xs:string</zorba:output>
-        </zorba:signature>
-    </zorba:function>
+  <zorba:description author="Zorba Team">
+      fn:upper-case
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="upper-case" prefix="fn">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
 
 
@@ -296,16 +296,16 @@
 -->
 <zorba:iterator name="LowerCaseIterator">
 
-    <zorba:description author="Zorba Team">
-        fn:lower-case
-    </zorba:description>
-    
-    <zorba:function>
-        <zorba:signature localname="lower-case" prefix="fn">
-            <zorba:param>xs:string?</zorba:param>
-            <zorba:output>xs:string</zorba:output>
-        </zorba:signature>
-    </zorba:function>
+  <zorba:description author="Zorba Team">
+      fn:lower-case
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="lower-case" prefix="fn">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
 
 
@@ -316,18 +316,18 @@
 -->
 <zorba:iterator name="TranslateIterator">
 
-    <zorba:description author="Zorba Team">
-        fn:translate
-    </zorba:description>
-    
-    <zorba:function>
-        <zorba:signature localname="translate" prefix="fn">
-            <zorba:param>xs:string?</zorba:param>
-            <zorba:param>xs:string</zorba:param>
-            <zorba:param>xs:string</zorba:param>
-            <zorba:output>xs:string</zorba:output>
-        </zorba:signature>
-    </zorba:function>
+  <zorba:description author="Zorba Team">
+      fn:translate
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="translate" prefix="fn">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:param>xs:string</zorba:param>
+      <zorba:param>xs:string</zorba:param>
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
 
 
@@ -338,16 +338,16 @@
 -->
 <zorba:iterator name="EncodeForUriIterator">
 
-    <zorba:description author="Zorba Team">
-        fn:encode-for-uri
-    </zorba:description>
-    
-    <zorba:function>
-        <zorba:signature localname="encode-for-uri" prefix="fn">
-            <zorba:param>xs:string?</zorba:param>
-            <zorba:output>xs:string</zorba:output>
-        </zorba:signature>
-    </zorba:function>
+  <zorba:description author="Zorba Team">
+      fn:encode-for-uri
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="encode-for-uri" prefix="fn">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
 
 
@@ -358,16 +358,16 @@
 -->
 <zorba:iterator name="IriToUriIterator">
 
-    <zorba:description author="Zorba Team">
-        fn:iri-to-uri
-    </zorba:description>
-    
-    <zorba:function>
-        <zorba:signature localname="iri-to-uri" prefix="fn">
-            <zorba:param>xs:string?</zorba:param>
-            <zorba:output>xs:string</zorba:output>
-        </zorba:signature>
-    </zorba:function>
+  <zorba:description author="Zorba Team">
+      fn:iri-to-uri
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="iri-to-uri" prefix="fn">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
 
 
@@ -378,16 +378,16 @@
 -->
 <zorba:iterator name="EscapeHtmlUriIterator">
 
-    <zorba:description author="Zorba Team">
-        fn:escape-html-uri
-    </zorba:description>
-    
-    <zorba:function>
-        <zorba:signature localname="escape-html-uri" prefix="fn">
-            <zorba:param>xs:string?</zorba:param>
-            <zorba:output>xs:string</zorba:output>
-        </zorba:signature>
-    </zorba:function>
+  <zorba:description author="Zorba Team">
+      fn:escape-html-uri
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="escape-html-uri" prefix="fn">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
 
 
@@ -403,23 +403,24 @@
 -->
 <zorba:iterator name="ContainsIterator">
 
-    <zorba:description author="Zorba Team">
-        fn:contains
-    </zorba:description>
-    
-    <zorba:function>
-        <zorba:signature localname="contains" prefix="fn">
-            <zorba:param>xs:string?</zorba:param>
-            <zorba:param>xs:string?</zorba:param>
-            <zorba:output>xs:boolean</zorba:output>
-        </zorba:signature>
-        <zorba:signature localname="contains" prefix="fn">
-            <zorba:param>xs:string?</zorba:param>
-            <zorba:param>xs:string?</zorba:param>
-            <zorba:param>xs:string</zorba:param>
-            <zorba:output>xs:boolean</zorba:output>
-        </zorba:signature>
-    </zorba:function>
+  <zorba:description author="Zorba Team">
+      fn:contains
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="contains" prefix="fn">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:output>xs:boolean</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="contains" prefix="fn">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:param>xs:string</zorba:param>
+      <zorba:output>xs:boolean</zorba:output>
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
 
 
@@ -430,23 +431,24 @@
 -->
 <zorba:iterator name="StartsWithIterator">
 
-    <zorba:description author="Zorba Team">
-        fn:starts-with
-    </zorba:description>
-    
-    <zorba:function>
-        <zorba:signature localname="starts-with" prefix="fn">
-            <zorba:param>xs:string?</zorba:param>
-            <zorba:param>xs:string?</zorba:param>
-            <zorba:output>xs:boolean</zorba:output>
-        </zorba:signature>
-        <zorba:signature localname="starts-with" prefix="fn">
-            <zorba:param>xs:string?</zorba:param>
-            <zorba:param>xs:string?</zorba:param>
-            <zorba:param>xs:string</zorba:param>
-            <zorba:output>xs:boolean</zorba:output>
-        </zorba:signature>
-    </zorba:function>
+  <zorba:description author="Zorba Team">
+      fn:starts-with
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="starts-with" prefix="fn">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:output>xs:boolean</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="starts-with" prefix="fn">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:param>xs:string</zorba:param>
+      <zorba:output>xs:boolean</zorba:output>
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
 
 
@@ -457,23 +459,24 @@
 -->
 <zorba:iterator name="EndsWithIterator">
 
-    <zorba:description author="Zorba Team">
-        fn:ends-with
-    </zorba:description>
-    
-    <zorba:function>
-        <zorba:signature localname="ends-with" prefix="fn">
-            <zorba:param>xs:string?</zorba:param>
-            <zorba:param>xs:string?</zorba:param>
-            <zorba:output>xs:boolean</zorba:output>
-        </zorba:signature>
-        <zorba:signature localname="ends-with" prefix="fn">
-            <zorba:param>xs:string?</zorba:param>
-            <zorba:param>xs:string?</zorba:param>
-            <zorba:param>xs:string</zorba:param>
-            <zorba:output>xs:boolean</zorba:output>
-        </zorba:signature>
-    </zorba:function>
+  <zorba:description author="Zorba Team">
+      fn:ends-with
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="ends-with" prefix="fn">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:output>xs:boolean</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="ends-with" prefix="fn">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:param>xs:string</zorba:param>
+      <zorba:output>xs:boolean</zorba:output>
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
 
 
@@ -484,23 +487,24 @@
 -->
 <zorba:iterator name="SubstringBeforeIterator">
 
-    <zorba:description author="Zorba Team">
-        fn:substring-before
-    </zorba:description>
-    
-    <zorba:function>
-        <zorba:signature localname="substring-before" prefix="fn">
-            <zorba:param>xs:string?</zorba:param>
-            <zorba:param>xs:string?</zorba:param>
-            <zorba:output>xs:string</zorba:output>
-        </zorba:signature>
-        <zorba:signature localname="substring-before" prefix="fn">
-            <zorba:param>xs:string?</zorba:param>
-            <zorba:param>xs:string?</zorba:param>
-            <zorba:param>xs:string</zorba:param>
-            <zorba:output>xs:string</zorba:output>
-        </zorba:signature>
-    </zorba:function>
+  <zorba:description author="Zorba Team">
+      fn:substring-before
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="substring-before" prefix="fn">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="substring-before" prefix="fn">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:param>xs:string</zorba:param>
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
 
 
@@ -511,23 +515,24 @@
 -->
 <zorba:iterator name="SubstringAfterIterator">
 
-    <zorba:description author="Zorba Team">
-        fn:substring-after
-    </zorba:description>
-    
-    <zorba:function>
-        <zorba:signature localname="substring-after" prefix="fn">
-            <zorba:param>xs:string?</zorba:param>
-            <zorba:param>xs:string?</zorba:param>
-            <zorba:output>xs:string</zorba:output>
-        </zorba:signature>
-        <zorba:signature localname="substring-after" prefix="fn">
-            <zorba:param>xs:string?</zorba:param>
-            <zorba:param>xs:string?</zorba:param>
-            <zorba:param>xs:string</zorba:param>
-            <zorba:output>xs:string</zorba:output>
-        </zorba:signature>
-    </zorba:function>
+  <zorba:description author="Zorba Team">
+      fn:substring-after
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="substring-after" prefix="fn">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="substring-after" prefix="fn">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:param>xs:string</zorba:param>
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
 
 <!--
@@ -537,23 +542,24 @@
 -->
 <zorba:iterator name="FnMatchesIterator">
 
-    <zorba:description author="Zorba Team">
-        fn:matches
-    </zorba:description>
-    
-    <zorba:function>
-        <zorba:signature localname="matches" prefix="fn">
-            <zorba:param>xs:string?</zorba:param>
-            <zorba:param>xs:string</zorba:param>
-            <zorba:output>xs:boolean</zorba:output>
-        </zorba:signature>
-        <zorba:signature localname="matches" prefix="fn">
-            <zorba:param>xs:string?</zorba:param>
-            <zorba:param>xs:string</zorba:param>
-            <zorba:param>xs:string</zorba:param>
-            <zorba:output>xs:boolean</zorba:output>
-        </zorba:signature>
-    </zorba:function>
+  <zorba:description author="Zorba Team">
+      fn:matches
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="matches" prefix="fn">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:param>xs:string</zorba:param>
+      <zorba:output>xs:boolean</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="matches" prefix="fn">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:param>xs:string</zorba:param>
+      <zorba:param>xs:string</zorba:param>
+      <zorba:output>xs:boolean</zorba:output>
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
 
 <!--
@@ -563,25 +569,26 @@
 -->
 <zorba:iterator name="FnReplaceIterator">
 
-    <zorba:description author="Zorba Team">
-        fn:replace
-    </zorba:description>
-    
-    <zorba:function>
-        <zorba:signature localname="replace" prefix="fn">
-            <zorba:param>xs:string?</zorba:param>
-            <zorba:param>xs:string</zorba:param>
-            <zorba:param>xs:string</zorba:param>
-            <zorba:output>xs:string</zorba:output>
-        </zorba:signature>
-        <zorba:signature localname="replace" prefix="fn">
-            <zorba:param>xs:string?</zorba:param>
-            <zorba:param>xs:string</zorba:param>
-            <zorba:param>xs:string</zorba:param>
-            <zorba:param>xs:string</zorba:param>
-            <zorba:output>xs:string</zorba:output>
-        </zorba:signature>
-    </zorba:function>
+  <zorba:description author="Zorba Team">
+      fn:replace
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="replace" prefix="fn">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:param>xs:string</zorba:param>
+      <zorba:param>xs:string</zorba:param>
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="replace" prefix="fn">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:param>xs:string</zorba:param>
+      <zorba:param>xs:string</zorba:param>
+      <zorba:param>xs:string</zorba:param>
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
 
 <!--
@@ -591,36 +598,37 @@
 -->
 <zorba:iterator name="FnTokenizeIterator">
 
-    <zorba:description author="Zorba Team">
-        fn:tokenize
-    </zorba:description>
+  <zorba:description author="Zorba Team">
+      fn:tokenize
+  </zorba:description>
 
-    <zorba:function>
-      <zorba:signature localname="tokenize" prefix="fn">
-          <zorba:param>xs:string?</zorba:param>
-          <zorba:param>xs:string</zorba:param>
-          <zorba:output>xs:string*</zorba:output>
-      </zorba:signature>
-      <zorba:signature localname="tokenize" prefix="fn">
-          <zorba:param>xs:string?</zorba:param>
-          <zorba:param>xs:string</zorba:param>
-          <zorba:param>xs:string</zorba:param>
-          <zorba:output>xs:string*</zorba:output>
-      </zorba:signature>
-    </zorba:function>
+  <zorba:function>
+    <zorba:signature localname="tokenize" prefix="fn">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:param>xs:string</zorba:param>
+      <zorba:output>xs:string*</zorba:output>
+    </zorba:signature>
 
-    <zorba:state generateReset="false">
-      <zorba:member type="xs_string" name="theString"
-                    brief="the remaining string"/>
-      <zorba:member type="xs_string" name="thePattern"
-                    brief="the pattern string"/>
-      <zorba:member type="xs_string" name="theFlags"
-                    brief="the tokenizing flags"/>
-      <zorba:member type="xs_int" name="start_pos" defaultValue="0"
-                    brief="the start position"/>
-      <zorba:member type="xs_boolean" name="hasmatched" defaultValue="false"
-                    brief="flag indicating whether a match was found"/>
-    </zorba:state>
+    <zorba:signature localname="tokenize" prefix="fn">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:param>xs:string</zorba:param>
+      <zorba:param>xs:string</zorba:param>
+      <zorba:output>xs:string*</zorba:output>
+    </zorba:signature>
+  </zorba:function>
 
+  <zorba:state generateReset="false">
+    <zorba:member type="zstring" name="theString"
+                  brief="the remaining string"/>
+    <zorba:member type="zstring" name="thePattern"
+                  brief="the pattern string"/>
+    <zorba:member type="zstring" name="theFlags"
+                  brief="the tokenizing flags"/>
+    <zorba:member type="xs_int" name="start_pos" defaultValue="0"
+                  brief="the start position"/>
+    <zorba:member type="xs_boolean" name="hasmatched" defaultValue="false"
+                  brief="flag indicating whether a match was found"/>
+  </zorba:state>
 </zorba:iterator>
+
 </zorba:iterators>

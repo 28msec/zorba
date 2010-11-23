@@ -2274,7 +2274,9 @@ bool is_invalid_in_iri( code_point c ) {
           c == '`'  ||
           c == '{'  ||
           c == '|'  ||
-          c == '}'  ;
+          c == '}'  ||
+          c < 0x20  ||
+          0x7E < c;
 }
 
 bool is_lower( code_point c ) {

@@ -856,26 +856,23 @@ bool IriToUriIterator::nextImpl(
     PlanState& planState) const 
 {
   store::Item_t item;
-  zstring resStr;
-  zstring strval;
-  xqpStringStore_t tmp;
+  zstring lStrIri;
+  zstring lStrRes;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(item, theChildren [0].getp(), planState))
   {
-    item->getStringValue2(strval);
+    item->getStringValue2(lStrIri);
 
-    tmp = new xqpStringStore(strval.str());
+    utf8::iri_to_uri(lStrIri, &lStrRes);
 
-    resStr = tmp->iriToUri()->str();
-
-    STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state);
+    STACK_PUSH(GENV_ITEMFACTORY->createString(result, lStrRes), state);
   }
   else
   {
-    STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state);
+    STACK_PUSH(GENV_ITEMFACTORY->createString(result, lStrRes), state);
   }
   STACK_END (state);
 }
@@ -893,26 +890,23 @@ bool EscapeHtmlUriIterator::nextImpl(
     PlanState& planState) const 
 {
   store::Item_t item;
-  zstring resStr;
-  zstring strval;
-  xqpStringStore_t tmp;
+  zstring lStrUri;
+  zstring lStrRes;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(item, theChildren [0].getp(), planState))
   {
-    item->getStringValue2(strval);
+    item->getStringValue2(lStrUri);
 
-    tmp = new xqpStringStore(strval.str());
+    utf8::to_html_uri(lStrUri, &lStrRes);
 
-    resStr = tmp->escapeHtmlUri()->str();
-
-    STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state);
+    STACK_PUSH(GENV_ITEMFACTORY->createString(result, lStrRes), state);
   }
   else
   {
-    STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state);
+    STACK_PUSH(GENV_ITEMFACTORY->createString(result, lStrRes), state);
   }
   STACK_END (state);
 }

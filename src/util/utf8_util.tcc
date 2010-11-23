@@ -38,7 +38,7 @@ back_html_uri_insert_iterator<StringType>::operator=( value_type c ) {
     utf8::encoded_char_type ec;
     utf8::size_type const bytes = utf8::encode( c, ec );
     for ( size_type i = 0; i < bytes; ++i ) {
-      u = ec[i];
+      u = ec[i] & 0xFF;
       buf_[1] = dec2hex[ u >> 4 ];
       buf_[2] = dec2hex[ u & 0x0F ];
       this->container->append( buf_, 3 );
@@ -53,12 +53,12 @@ template<class StringType> back_iri_insert_iterator<StringType>&
 back_iri_insert_iterator<StringType>::operator=( value_type c ) {
   char const dec2hex[] = "0123456789ABCDEF";
   unsigned u = c & 0xFF;
-  if ( unicode::is_ucschar( u ) || unicode::is_iprivate( u ) ||
-       unicode::is_invalid_in_iri( u ) ) {
+  if ( unicode::is_ucschar( c ) || unicode::is_iprivate( c ) ||
+       unicode::is_invalid_in_iri( c ) ) {
     utf8::encoded_char_type ec;
     utf8::size_type const bytes = utf8::encode( c, ec );
     for ( size_type i = 0; i < bytes; ++i ) {
-      u = ec[i];
+      u = ec[i] & 0xFF;;
       buf_[1] = dec2hex[ u >> 4 ];
       buf_[2] = dec2hex[ u & 0x0F ];
       this->container->append( buf_, 3 );
