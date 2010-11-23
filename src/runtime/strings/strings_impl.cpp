@@ -746,37 +746,68 @@ bool TranslateIterator::nextImpl(
     store::Item_t& result, 
     PlanState& planState) const
 {
-  store::Item_t itemArg, item0, item1;
+  store::Item_t arg_item, map_item, trans_item;
   bool res = false;
-  xqpString strvalarg;
-  xqpString strval0;
-  xqpString strval1;
-  zstring resStr;
+  zstring arg_string;
+  zstring map_string;
+  zstring trans_string;
+  zstring result_string;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (consumeNext(itemArg, theChildren[0].getp(), planState ))
-  {
-    if (consumeNext(item0, theChildren[1].getp(), planState ))
-    {
-      if (consumeNext(item1, theChildren[2].getp(), planState ))
-      {
-        strval0 = item0->getStringValue().str();
-        strval1 = item1->getStringValue().str();
+  if ( consumeNext( arg_item  , theChildren[0].getp(), planState ) &&
+       consumeNext( map_item  , theChildren[1].getp(), planState ) &&
+       consumeNext( trans_item, theChildren[2].getp(), planState ) ) {
 
-        strvalarg = itemArg->getStringValue().str();
+    arg_string   = arg_item  ->getStringValue().str();
+    map_string   = map_item  ->getStringValue().str();
+    trans_string = trans_item->getStringValue().str();
 
-        resStr = strvalarg.translate(strval0, strval1).getStore()->str();
+    typedef std::map<unicode::code_point,unicode::code_point> cp_map_type;
+    cp_map_type trans_map;
 
-        res = GENV_ITEMFACTORY->createString(result, resStr);
-      }
+    if ( !map_string.empty() ) {
+      utf8_string<zstring const> const u_map_string  ( map_string   );
+      utf8_string<zstring const> const u_trans_string( trans_string );
+
+      utf8_string<zstring const>::const_iterator
+        map_i     = u_map_string  .begin(),
+        map_end   = u_map_string  .end  (),
+        trans_i   = u_trans_string.begin(),
+        trans_end = u_trans_string.end  ();
+
+      for ( ; map_i != map_end && trans_i != trans_end; ++map_i, ++trans_i )
+        trans_map[ *map_i ] = *trans_i;
+
+      for ( ; map_i != map_end; ++map_i )
+        trans_map[ *map_i ] = ~0;
     }
+
+    utf8_string<zstring> u_result_string( result_string );
+    utf8_string<zstring const> const u_arg_string( arg_string );
+
+    utf8_string<zstring const>::const_iterator
+      arg_i   = u_arg_string.begin(),
+      arg_end = u_arg_string.end  ();
+
+    for ( ; arg_i != arg_end; ++arg_i ) {
+      unicode::code_point cp = *arg_i;
+      cp_map_type::const_iterator const found_i = trans_map.find( cp );
+      if ( found_i != trans_map.end() ) {
+        cp = found_i->second;
+        if ( cp == ~0 )
+          continue;
+      }
+      u_result_string += cp;
+    }
+
+    res = GENV_ITEMFACTORY->createString(result, result_string);
   }
   
   if (!res)
   {
-    res = GENV_ITEMFACTORY->createString(result, resStr);
+    res = GENV_ITEMFACTORY->createString(result, result_string);
   }
 
   STACK_PUSH( res, state );
