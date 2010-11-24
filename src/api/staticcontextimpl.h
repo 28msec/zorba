@@ -243,7 +243,10 @@ public:
   getFullModulePaths( std::vector<String>& aFullModulePaths ) const;
 
   virtual String
-  resolve( const String& aBaseUri, const String& aRelativeURI ) const;
+  resolve(const String& aRelativeUri) const;
+
+  virtual String
+  resolve(const String& aRelativeUri, const String& aBaseUri) const;
 
   virtual void
   setDeclaredCollectionCallback ( CollectionCallback aCallbackFunction,

@@ -457,13 +457,21 @@ namespace zorba {
       virtual void
       getFullModulePaths( std::vector<String>& aFullModulePaths ) const = 0;
 
-      /** \brief Resolves a relative URI against an absolute base URI.
+      /** \brief Resolves the given URI against the value of the base-uri
+       * property from the static context.
        *
-       * @param aBaseUri The absolute URI against which the resolving is performed.
-       * @param aString The relative URI to be resolved.
+       * @param aRelativeUri The relative URI to be resolved.
        */
       virtual String
-      resolve( const String& aBaseUri, const String& aRelativeURI) const = 0;
+      resolve(const String& aRelativeUri) const = 0;
+
+      /** \brief Resolves the given relative URI against the absolute base URI.
+       *
+       * @param aRelativeURI The relative URI to be resolved.
+       * @param aBaseUri The absolute URI against which the resolving is performed.
+       */
+      virtual String
+      resolve(const String& aRelativeUri, const String& aBaseUri) const = 0;
 
       virtual void
       setDeclaredCollectionCallback ( CollectionCallback aCallbackFunction,

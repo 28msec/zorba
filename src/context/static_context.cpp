@@ -1220,15 +1220,30 @@ void static_context::compute_base_uri()
 /***************************************************************************//**
 
 ********************************************************************************/
-zstring static_context::resolve_relative_uri(
-    const zstring& uri,
-    bool validate)
+zstring
+static_context::resolve_relative_uri(
+    const zstring& aUri,
+    bool aValidate) const
 {
-  URI base(get_base_uri());
-  URI resolved_uri(base, uri, validate);
-  return resolved_uri.toString();
+  URI lBaseUri(get_base_uri());
+  URI lResolvedUri(lBaseUri, aUri, aValidate);
+  return lResolvedUri.toString();
 }
 
+
+/***************************************************************************//**
+
+********************************************************************************/
+zstring
+static_context::resolve_relative_uri(
+    const zstring& aRelativeUri,
+    const zstring& aBaseUri,
+    bool aValidate) const
+{
+  URI lBaseUri(aBaseUri);
+  URI lResolvedUri(lBaseUri, aRelativeUri, aValidate);
+  return lResolvedUri.toString();
+}
 
 
 /////////////////////////////////////////////////////////////////////////////////

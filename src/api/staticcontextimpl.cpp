@@ -1227,14 +1227,30 @@ StaticContextImpl::getFullModulePaths( std::vector<String>& aFullModulePaths ) c
 
 
 String
-StaticContextImpl::resolve(const String& aBaseUri, const String& aRelativeURI) const
+StaticContextImpl::resolve(const String& aRelativeUri) const
 {
-  // ?????
-  zstring lBaseUri = Unmarshaller::getInternalString(aBaseUri);
-  zstring lRelativeUri = Unmarshaller::getInternalString(aRelativeURI);
+  zstring lResolved;
+  try {
+    zstring lRelativeUri = Unmarshaller::getInternalString(aRelativeUri);
+    lResolved = theCtx->resolve_relative_uri(lRelativeUri, false);
+  } catch (error::ZorbaError& e) {
+    ZorbaImpl::notifyError(theErrorHandler, e);
+  }
+  return lResolved.str();
+}
 
-  zstring lResolved = theCtx->resolve_relative_uri(lRelativeUri, lBaseUri.empty());
 
+String
+StaticContextImpl::resolve(const String& aRelativeUri, const String& aBaseUri) const
+{
+  zstring lResolved;
+  try {
+    zstring lRelativeUri = Unmarshaller::getInternalString(aRelativeUri);
+    zstring lBaseUri = Unmarshaller::getInternalString(aBaseUri);
+    lResolved = theCtx->resolve_relative_uri(lRelativeUri, lBaseUri, false);
+  } catch (error::ZorbaError& e) {
+    ZorbaImpl::notifyError(theErrorHandler, e);
+  }
   return lResolved.str();
 }
 

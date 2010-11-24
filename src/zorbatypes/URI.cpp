@@ -22,6 +22,7 @@
 
 #include "URI.h"
 
+#include "api/zorbaimpl.h"
 #include "util/ascii_util.h"
 #include "util/utf8_util.h"
 #include "util/string_util.h"

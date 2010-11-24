@@ -602,7 +602,16 @@ public:
 
   void compute_base_uri();
 
-  zstring resolve_relative_uri(const zstring& uri, bool validate = true);
+  zstring
+  resolve_relative_uri(
+      const zstring& aUri,
+      bool aValidate = true) const;
+
+  zstring
+  resolve_relative_uri(
+      const zstring&  aRelativeUri,
+      const zstring&  aBaseUri,
+      bool            validate = true) const;
 
   //
   // URI Resolution
