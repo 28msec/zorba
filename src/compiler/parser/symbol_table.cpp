@@ -19,6 +19,7 @@
 
 #include "util/XmlWhitespace.h"
 #include "util/utf8_util.h"
+#include "util/ascii_util.h"
 
 #include <cstdlib>
 #include <string>
@@ -30,49 +31,8 @@ namespace zorba {
 /**
  * Whitespace characters used in the functions below
  */
-static const char* whitespace = " \t\r\n\f";
+static const char* whitespace = " \t\r\n\f\v";
 
-/**
- * The function will trim the whitespace from the begging of the string,
- * returning a pointer to the new starting character.
- *
- */
-void trim_start(const char** s, uint32_t& len)
-{
-  int done = 0;
-
-  while (! done && len > 0) {
-    done = 1;
-    for (const char *ws = whitespace; *ws != '\0'; ws++)
-      if (**s == *ws) {
-        ++*s; len--;
-        done = 0;
-        break;
-      }
-  }
-}
-
-/**
- * The function will trim the whitespace from the end of the string,
- * returning the new length.
- *
- */
-void trim_end(char const* s, uint32_t& len)
-{
-  int done = 0;
-
-  while (!done && len>0)
-  {
-    done = 1;
-    for (unsigned int i=0; i<strlen(whitespace); i++)
-      if (s[len-1] == whitespace[i])
-      {
-        len--;
-        done = 0;
-        break;
-      }
-  }
-}
 
 static bool decode_string (const char *yytext, uint32_t yyleng, string *result) {
   char delim = yytext [0];
@@ -149,18 +109,27 @@ off_t symbol_table::put_ncname(char const* text, uint32_t length)
 off_t symbol_table::put_qname(char const* text, uint32_t length, bool do_trim_start, bool do_trim_end)
 {
   if (do_trim_start)
-    trim_start(&text, length);
+  {
+    char const* temp = ascii::trim_start(text, length, whitespace);
+    length -= (temp-text);
+    text = temp;
+  }
 
   if (do_trim_end)
-    trim_end(text, length);
+  {
+    length = ascii::trim_end(text, length, whitespace);
+  }
 
 	return heap.put(text, 0, length);
 }
 
 off_t symbol_table::put_uri(char const* text, uint32_t length)
 {
-  trim_start(&text, length);
-  trim_end(text, length);
+  char const* temp = ascii::trim_start(text, length, whitespace);
+  length -= (temp-text);
+  text = temp;
+
+  length = ascii::trim_end(text, length, whitespace);
 
   string result;
   if (! decode_string (text, length, &result))
