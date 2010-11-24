@@ -590,6 +590,9 @@ XQDOC_NO_BEGIN_TAG (VarDecl)
 
 void end_visit(const VarDecl& n, void*)
 {
+  if (!n.is_global())
+    return;
+
   store::Item_t lVariableQName, lUriQName;
   store::Item_t lVariableElem, lUriElem, lUriText;
 
