@@ -322,4 +322,6 @@ ENDIF (ZORBA_WITH_FILE_ACCESS)
 
 EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_1_0 3106635)
 EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_1_1 3106635)
+
+EXPECTED_FAILURE(test/rbkt/zorba/modules/modules-28 3117616)
 # --------------------------------------------------------------------------
