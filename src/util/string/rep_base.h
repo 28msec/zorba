@@ -18,7 +18,7 @@
 #define ZORBA_RSTRING_REP_BASE_H
 
 #ifdef WIN32
-#pragma warning( disable : 4996)
+#pragma warning( disable : 4996 )
 #endif
 
 #include <memory>                       /* for allocator */
@@ -85,7 +85,7 @@ public:
    *
    * @param cap The new capacity.
    */
-  void set_capacity(size_type cap) {
+  void set_capacity( size_type cap ) {
     cap_ = cap;
   }
 
@@ -134,7 +134,7 @@ public:
   /**
    * Checks whether this representation is shared.
    *
-   * @return Returns <code>true</code> only if it is.
+   * @return Returns \c true only if it is.
    */
   bool is_shared() {
     return this->load() > 0;
@@ -143,7 +143,7 @@ public:
   /**
    * Checks whether this representation is shared.
    *
-   * @return Returns <code>true</code> only if it is.
+   * @return Returns \c true only if it is.
    */
   static bool is_shared( count_type count ) {
     return count > 0;
@@ -152,7 +152,7 @@ public:
   /**
    * Checks whether this representation is unsharable.
    *
-   * @return Returns <code>true</code> only if it is.
+   * @return Returns \c true only if it is.
    */
   bool is_sharable() {
     return this->load() >= 0;
@@ -161,7 +161,7 @@ public:
   /**
    * Checks whether this representation is unsharable.
    *
-   * @return Returns <code>true</code> only if it is.
+   * @return Returns \c true only if it is.
    */
   static bool is_sharable( count_type count ) {
     return count >= 0;
@@ -257,7 +257,7 @@ protected:
 } // namespace zorba
 
 #ifdef WIN32
-#pragma warning( disable : 4996)
+#pragma warning( disable : 4996 )
 #endif
 
 #endif /* ZORBA_RSTRING_REP_BASE_H */
