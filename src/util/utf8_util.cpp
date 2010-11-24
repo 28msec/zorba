@@ -19,6 +19,7 @@
 #endif /* ZORBA_NO_UNICODE */
 
 #include "utf8_util.h"
+#include "zorbaerrors/error_manager.h"
 #include "zorbatypes/zorbatypesError.h"
 
 #ifndef ZORBA_NO_UNICODE
@@ -34,26 +35,6 @@ unsigned const Mask6Bytes  = 0xFC;
 
 namespace zorba {
 namespace utf8 {
-
-ZORBA_DLL_PUBLIC extern char const char_length_table [] = {
-/*      0 1 2 3 4 5 6 7 8 9 A B C D E F */
-/* 0 */ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-/* 1 */ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-/* 2 */ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-/* 3 */ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-/* 4 */ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-/* 5 */ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-/* 6 */ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-/* 7 */ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-/* 8 */ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-/* 9 */ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-/* A */ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-/* B */ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-/* C */ 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
-/* D */ 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
-/* E */ 3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
-/* F */ 4,4,4,4,4,4,4,4,5,5,5,5,6,6,1,1
-};
 
 unicode::code_point const SubChar = 0xFFFD;
 
@@ -83,6 +64,33 @@ size_type byte_pos( storage_type const *s, size_type s_size,
   return p - s;
 }
 
+size_type char_length( storage_type lead ) {
+  static char const length_table[] = {
+    /*      0 1 2 3 4 5 6 7 8 9 A B C D E F */
+    /* 0 */ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    /* 1 */ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    /* 2 */ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    /* 3 */ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    /* 4 */ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    /* 5 */ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    /* 6 */ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    /* 7 */ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    /* 8 */ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    /* 9 */ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    /* A */ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    /* B */ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    /* C */ 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+    /* D */ 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+    /* E */ 3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
+    /* F */ 4,4,4,4,4,4,4,4,5,5,5,5,6,6,0,0
+  };
+
+  size_type const len = length_table[ static_cast<unsigned>( lead ) & 0xFF ];
+  if ( !len )
+    ZORBA_ERROR( XQP0034_ILLEGAL_UTF8_BYTE );
+  return len;
+}
+
 size_type char_pos( storage_type const *s, storage_type const *p ) {
   size_type pos = 0;
   while ( s < p ) {
@@ -94,7 +102,7 @@ size_type char_pos( storage_type const *s, storage_type const *p ) {
 
 size_type encode( unicode::code_point c, storage_type **ps ) {
   if ( !unicode::is_valid( c ) )
-    throw zorbatypesException( "", ZorbatypesError::FOCH0001 );
+    ZORBA_ERROR( FOCH0001 );
   unsigned const n = c & 0xFFFFFFFF;
   storage_type *&p = *ps, *const p0 = p;
   if ( n < 0x80 ) {

@@ -28,9 +28,6 @@
 namespace zorba {
 namespace utf8 {
 
-// TODO: There needs to be a better solution than making this DLL public.
-ZORBA_DLL_PUBLIC extern char const char_length_table[];
-
 ////////// types //////////////////////////////////////////////////////////////
 
 /**
@@ -86,11 +83,11 @@ size_type byte_pos( storage_type const *s, size_type s_size,
  *
  * @param lead The lead byte of a UTF-8 byte sequence comprising a Unicode
  * character.
- * @return Return a number in the range [1,6] or 0 for an invalid byte.
+ * @return Returns a number in the range [1,6].
+ * @throws XQP0034_ILLEGAL_UTF8_BYTE if \a lead is invalid.
  */
-inline size_type char_length( storage_type lead ) {
-  return char_length_table[ static_cast<unsigned>( lead ) & 0xFF ];
-}
+ZORBA_DLL_PUBLIC
+size_type char_length( storage_type lead );
 
 /**
  * Converts a pointer into a character offset.
@@ -98,6 +95,7 @@ inline size_type char_length( storage_type lead ) {
  * @param s A UTF-8 encoded C string.
  * @param p A pointer to somewhere within \a s.
  * @return Returns said offset.
+ * @throws XQP0034_ILLEGAL_UTF8_BYTE if an illegal UTF-8 byte is encountered.
  */
 ZORBA_DLL_PUBLIC
 size_type char_pos( storage_type const *s, storage_type const *p );
@@ -108,6 +106,7 @@ size_type char_pos( storage_type const *s, storage_type const *p );
  * @param s A UTF-8 encoded C string.
  * @param byte_pos The byte position.
  * @return Returns the corresponding character position.
+ * @throws XQP0034_ILLEGAL_UTF8_BYTE if an illegal UTF-8 byte is encountered.
  */
 inline size_type char_pos( storage_type const *s, size_type byte_pos ) {
   return byte_pos != npos ? char_pos( s, s + byte_pos ) : npos;
@@ -167,6 +166,7 @@ inline bool is_start_byte( storage_type b ) {
  *
  * @param s A pointer to the first byte of a NULL-terminated UTF-8 string.
  * @return Returns said number of characters.
+ * @throws XQP0034_ILLEGAL_UTF8_BYTE if an illegal UTF-8 byte is encountered.
  */
 ZORBA_DLL_PUBLIC
 size_type length( storage_type const *s );
@@ -179,6 +179,7 @@ size_type length( storage_type const *s );
  * @param end A pointer to one past the last byte of the same UTF-8 byte
  * sequence.
  * @return Returns said number of characters.
+ * @throws XQP0034_ILLEGAL_UTF8_BYTE if an illegal UTF-8 byte is encountered.
  */
 ZORBA_DLL_PUBLIC
 size_type length( storage_type const *begin, storage_type const *end );
@@ -189,6 +190,7 @@ size_type length( storage_type const *begin, storage_type const *end );
  * @tparam StringType The string type.
  * @param s The string.
  * @return Returns said number of characters.
+ * @throws XQP0034_ILLEGAL_UTF8_BYTE if an illegal UTF-8 byte is encountered.
  */
 template<class StringType>
 inline size_type length( StringType const &s ) {
