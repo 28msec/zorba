@@ -45,8 +45,6 @@
 
 #include "zorbaerrors/error_manager.h"
 
-#include "zorbautils/string_glue.h"
-
 #include "runtime/util/flowctl_exception.h"
 
 

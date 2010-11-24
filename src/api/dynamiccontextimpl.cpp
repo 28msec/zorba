@@ -44,7 +44,6 @@
 #include "store/api/temp_seq.h"
 
 #include "zorbaerrors/Assert.h"
-#include "zorbautils/string_glue.h"
 
 
 namespace zorba {

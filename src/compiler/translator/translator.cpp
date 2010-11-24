@@ -22,7 +22,6 @@
 #include <zorba/config.h>
 
 #include "zorbautils/fatal.h"
-#include "zorbautils/string_glue.h"
 #include "zorbatypes/URI.h"
 #include "zorbatypes/numconversions.h"
 #include "zorbaerrors/error_manager.h"
