@@ -51,8 +51,8 @@ public:
   /**
    * Constructs a %rep_proxy.
    */
-  rep_proxy() : rep_( RepType::empty_rep() ) {
-    // do nothing
+  rep_proxy() {
+    set_rep( RepType::empty_rep() );
   }
 
   /**
@@ -71,7 +71,7 @@ public:
   void dispose( allocator_type const &a ) {
     if ( rep_ )
       rep_->dispose( a );
-    rep_ = RepType::empty_rep();
+    set_rep( RepType::empty_rep() );
   }
 
   /**
@@ -85,7 +85,7 @@ public:
         if ( RepType::is_shared( count ) ) {
           RepType *const new_rep = rep_->clone( a );
           rep_->dispose( a );
-          rep_ = new_rep;
+          set_rep( new_rep );
         }
         rep_->set_unsharable();
       }
@@ -100,7 +100,7 @@ public:
    */
   void realloc( size_type cap, size_type old_cap, allocator_type const &a ) {
     assert( rep_ == RepType::empty_rep() );
-    rep_ = RepType::alloc( a, cap, old_cap );
+    set_rep( RepType::alloc( a, cap, old_cap ) );
     rep_->set_length( 0 );
   }
 
@@ -117,9 +117,9 @@ public:
     if ( that.rep_->is_sharable() && this_alloc == that_alloc ) {
       if ( that.rep_ != RepType::empty_rep() )
         that.rep_->inc();
-      rep_ = that.rep_;
+      set_rep( that.rep_ );
     } else {
-      rep_ = that.rep_->clone( this_alloc );
+      set_rep( that.rep_->clone( this_alloc ) );
     }
   }
 
@@ -130,8 +130,8 @@ public:
    */
   void swap( rep_proxy &that ) {
     RepType *const tmp = rep_;
-    rep_ = that.rep_;
-    that.rep_ = tmp;
+    set_rep( that.rep_ );
+    that.set_rep( tmp );
   }
 
   /**
@@ -146,10 +146,10 @@ public:
     if ( *this != that ) {
       dispose( this_alloc );
       if ( this_alloc == that_alloc ) {
-        rep_ = that.rep_;
-        that.rep_ = RepType::empty_rep();
+        set_rep( that.rep_ );
+        that.set_rep( RepType::empty_rep() );
       } else {
-        rep_ = that.rep_->clone( this_alloc );
+        set_rep( that.rep_->clone( this_alloc ) );
       }
     }
   }
@@ -184,14 +184,14 @@ public:
 
   void construct( size_type size, value_type c, allocator_type const &a ) {
     assert( rep_ == RepType::empty_rep() );
-    rep_ = RepType::construct( size, c, a );
+    set_rep( RepType::construct( size, c, a ) );
   }
 
   template<class IteratorType>
   void construct( IteratorType begin, IteratorType end,
                   allocator_type const &a ) {
     assert( rep_ == RepType::empty_rep() );
-    rep_ = RepType::construct( begin, end, a );
+    set_rep( RepType::construct( begin, end, a ) );
   }
 
   pointer data() const {
@@ -211,7 +211,7 @@ public:
   }
 
   void reserve( size_type cap, allocator_type const &a ) {
-    rep_ = rep_->reserve( cap, a );
+    set_rep( rep_->reserve( cap, a ) );
   }
 
   void set_length( size_type n ) {
@@ -230,6 +230,17 @@ public:
 
 private:
   RepType *rep_;
+
+#ifndef NDEBUG
+  const_pointer debug_str_;
+#endif /* NDEBUG */
+
+  void set_rep( RepType *r ) {
+    rep_ = r;
+#ifndef NDEBUG
+    debug_str_ = rep_ ? data() : NULL;
+#endif /* NDEBUG */
+  }
 
   // forbid these
   rep_proxy( rep_proxy const& );

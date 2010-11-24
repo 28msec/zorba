@@ -322,7 +322,12 @@ public:
 private:
 
   // Using a struct guarantees correct struct/class alignment.
-  struct string_storage_type { void *rep_storage; };
+  struct string_storage_type {
+    void *rep_storage;
+#ifndef NDEBUG
+    void *debug_str_storage;
+#endif /* NDEBUG */
+  };
 
   string_storage_type string_storage_;
 
