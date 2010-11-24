@@ -2683,7 +2683,7 @@ PositionalVar :
 FTScoreVar :
     SCORE DOLLAR QNAME
     {
-      $$ = new FTScoreVar(LOC(@$), static_cast<QName*>($3)->get_qname());
+      $$ = new FTScoreVar(LOC(@$), static_cast<QName*>($3));
       delete $3;
     }
 ;
@@ -2691,9 +2691,9 @@ FTScoreVar :
 
 // [36]
 LetClause
-    :   LET DOLLAR VarGetsDeclList
+    :   LET  VarGetsDeclList
         {
-            $$ = new LetClause( LOC(@$), dynamic_cast<VarGetsDeclList*>($3) );
+            $$ = new LetClause( LOC(@$), dynamic_cast<VarGetsDeclList*>($2) );
         }
     ;
 
@@ -2705,10 +2705,10 @@ VarGetsDeclList
             vgdl->push_back( dynamic_cast<VarGetsDecl*>($1) );
             $$ = vgdl;
         }
-    |   VarGetsDeclList COMMA DOLLAR VarGetsDecl
+    |   VarGetsDeclList COMMA VarGetsDecl
         {
             if( VarGetsDeclList *vgdl = dynamic_cast<VarGetsDeclList*>($1) )
-                vgdl->push_back( dynamic_cast<VarGetsDecl*>($4) );
+                vgdl->push_back( dynamic_cast<VarGetsDecl*>($3) );
             $$ = $1;
         }
     ;
@@ -2743,40 +2743,40 @@ EvalVarDecl :
 // [36b] VarGetsDecl
 // ------------------
 VarGetsDecl :
-    QNAME  GETS  ExprSingle
+    DOLLAR  QNAME  GETS  ExprSingle
     {
       $$ = new VarGetsDecl(LOC (@$),
-                           static_cast<QName*>($1),
+                           static_cast<QName*>($2),
                            NULL,
-                           NULL,
-                           $3);
-    }
-  | QNAME  TypeDeclaration  GETS  ExprSingle
-    {
-      $$ = new VarGetsDecl(LOC (@$),
-                           static_cast<QName*>($1),
-                           dynamic_cast<SequenceType *>($2),
                            NULL,
                            $4);
+    }
+  | DOLLAR  QNAME  TypeDeclaration  GETS  ExprSingle
+    {
+      $$ = new VarGetsDecl(LOC (@$),
+                           static_cast<QName*>($2),
+                           dynamic_cast<SequenceType *>($3),
+                           NULL,
+                           $5);
     }
 
     /* full-text extensions */
-  | QNAME  FTScoreVar  GETS  ExprSingle
+  | FTScoreVar  GETS  ExprSingle
     {
       $$ = new VarGetsDecl(LOC (@$),
-                           static_cast<QName*>($1),
+                           dynamic_cast<FTScoreVar*>($1)->get_var_name(),
                            NULL,
-                           dynamic_cast<FTScoreVar*>($2),
-                           $4);
+                           dynamic_cast<FTScoreVar*>($1),
+                           $3);
      }
-  | QNAME  TypeDeclaration  FTScoreVar  GETS  ExprSingle
+  | DOLLAR  QNAME  TypeDeclaration  FTScoreVar  GETS  ExprSingle
     {
       $$ = new VarGetsDecl(LOC (@$),
-                           static_cast<QName*>($1),
-                           dynamic_cast<SequenceType *>($2),
-                           dynamic_cast<FTScoreVar*>($3),
-                           $5);
-     }
+                           static_cast<QName*>($2),
+                           dynamic_cast<SequenceType *>($3),
+                           dynamic_cast<FTScoreVar*>($4),
+                           $6);
+    }
 ;
 
 

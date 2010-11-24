@@ -919,7 +919,7 @@ END_TAG( FTScope )
 void* begin_visit( FTScoreVar const &n ) {
   INDENT;
   os  << "<FTScoreVar" << IDS
-      << " varname='" << n.get_varname() << "'"
+      << " varname='" << n.get_var_name() << "'"
       << "/>";
   NL;
   return no_state;

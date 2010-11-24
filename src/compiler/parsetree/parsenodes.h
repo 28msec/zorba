@@ -1075,14 +1075,14 @@ protected:
 public:
   AnnotationListParsenode(const QueryLoc& loc, AnnotationParsenode* annotation);
 
-  void push_back(rchandle<AnnotationParsenode> annotation_h) 
+  void push_back(rchandle<AnnotationParsenode> annotation_h)
   {
     annotations_hv.push_back(annotation_h);
   }
 
   rchandle<AnnotationParsenode> operator[](int i) const
   {
-    return annotations_hv[i]; 
+    return annotations_hv[i];
   }
 
   std::vector<rchandle<AnnotationParsenode> >::const_iterator begin() const
@@ -1090,7 +1090,7 @@ public:
     return annotations_hv.begin();
   }
 
-  std::vector<rchandle<AnnotationParsenode> >::const_iterator end() const 
+  std::vector<rchandle<AnnotationParsenode> >::const_iterator end() const
   {
     return annotations_hv.end();
   }
@@ -2164,18 +2164,16 @@ public:
 ********************************************************************************/
 class FTScoreVar : public parsenode
 {
-public:
-  FTScoreVar(
-    QueryLoc const&,
-    zstring const &varname
-  );
+protected:
+  rchandle<QName>              var_name_h;
 
-  zstring const& get_varname() const { return varname_; }
+public:
+  FTScoreVar(const QueryLoc&,
+            rchandle<QName>);
+
+  QName* get_var_name() const { return var_name_h.getp(); }
 
   void accept( parsenode_visitor& ) const;
-
-private:
-  zstring const varname_;
 };
 
 

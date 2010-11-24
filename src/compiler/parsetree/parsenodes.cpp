@@ -1783,10 +1783,10 @@ void VarGetsDecl::accept( parsenode_visitor &v ) const
 
 FTScoreVar::FTScoreVar(
   QueryLoc const &loc,
-  zstring const &varname
-) :
+  rchandle<QName> _var_name_h)
+  :
   parsenode( loc ),
-  varname_( varname )
+  var_name_h(_var_name_h)
 {
 }
 
@@ -3106,7 +3106,7 @@ enum ParseConstants::axis_kind_t ForwardStep::get_axis_kind() const
     return theForwardAxis->get_axis();
 
   return (theAbbrevStep->get_attr_bit() ?
-          ParseConstants::axis_attribute : 
+          ParseConstants::axis_attribute :
           ParseConstants::axis_child);
 }
 
