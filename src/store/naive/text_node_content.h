@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #ifndef ZORBA_SIMPLE_STORE_TEXT_NODE_CONTENT
 #define ZORBA_SIMPLE_STORE_TEXT_NODE_CONTENT
 
+#include <cstring>                      /* for memset(3) */
 
 #include "store/naive/shared_types.h"
 
@@ -36,15 +38,29 @@ class TextNodeContent
 private:
   union
   {
-    void          * text;
-    store::Item   * value;
+    char        text[ sizeof( zstring ) ];
+    store::Item *value;
   }
   theContent;
+
+  static zstring* string_of( TextNodeContent const &tnc ) {
+    return const_cast<zstring*>(
+      reinterpret_cast<zstring const*>( tnc.theContent.text )
+    );
+  }
+
+  zstring* this_string() {
+    return string_of( *this );
+  }
+
+  zstring const* this_string() const {
+    return string_of( *this );
+  }
 
 public:
   TextNodeContent() 
   {
-    theContent.value = NULL;
+    std::memset( &theContent, 0, sizeof( theContent ) );
   }
 
   ~TextNodeContent()
@@ -54,29 +70,28 @@ public:
 
   const zstring& getText() const
   {
-    return *reinterpret_cast<const zstring*>(this);
+    return *this_string();
   }
 
   void setText(zstring& text)
   {
-    reinterpret_cast<zstring*>(this)->take(text);
+    this_string()->take( text );
   }
 
   void setText(TextNodeContent& other)
   {
-    reinterpret_cast<zstring*>(this)->
-    take(*reinterpret_cast<zstring*>(&other));
+    this_string()->take( *string_of( other ) );
   }
 
   void copyText(const zstring& text)
   {
-    *reinterpret_cast<zstring*>(this) = text;
+    *this_string() = text;
   }
 
   void destroyText()
   {
-    (*reinterpret_cast<zstring*>(this)).~zstring();
-    theContent.text = NULL;
+    this_string()->~zstring();
+    std::memset( &theContent, 0, sizeof( theContent ) );
   }
 
   store::Item* getValue() const
@@ -140,3 +155,4 @@ private:
  * mode: c++
  * End:
  */
+ /* vim:set et sw=2 ts=2: */
