@@ -23,10 +23,6 @@
 #include <stdlib.h>
 #include <signal.h>
 
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/convenience.hpp>
-
 #include <zorba/zorba.h>
 #include <zorba/error_handler.h>
 #include <zorba/exception.h>
@@ -46,6 +42,12 @@
 #include "testuriresolver.h"
 #include "testdriver_comparator.h"
 #include "testdriver_common.h"
+
+// These are included last because they define the <stdint.h>'s INTMAX_C and UINTMAX_C
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/convenience.hpp>
+
 
 namespace fs = boost::filesystem;
 
@@ -285,7 +287,11 @@ bool checkErrors(const Specification& lSpec, const TestErrorHandler& errHandler,
 /*******************************************************************************
 
 ********************************************************************************/
+#ifndef WIN32
 void* thread_main(void* param)
+#else
+DWORD WINAPI thread_main(LPVOID param)
+#endif
 {
   ThreadParams* params = (ThreadParams*)param;
 
@@ -360,7 +366,11 @@ void* thread_main(void* param)
 
     queries->theQueryLocks[queryNo]->lock();
     queries->theGlobalLock.unlock();
+#ifndef WIN32
     sched_yield();
+#else
+    // SwitchToThread();
+#endif
 
     // Form the full pathname for the file containing the query.
     relativeQueryFile = queries->theQueryFilenames[queryNo];
@@ -772,7 +782,11 @@ _tmain(int argc, _TCHAR* argv[])
   // messages are coming from it would be better to fix those than
   // take this heavy-handed approach.
   if (quiet) {
+#ifndef WIN32
     close(2);
+#else
+    fclose(stderr);
+#endif
   }
 
   //
@@ -905,6 +919,7 @@ _tmain(int argc, _TCHAR* argv[])
   //
   // Create and start the threads, then wait for all the threads to finish
   //
+#ifndef WIN32
   pthread_t* threads = new pthread_t[numThreads];
   for (long i = 0; i < numThreads; i++)
   {
@@ -917,6 +932,29 @@ _tmain(int argc, _TCHAR* argv[])
     void* thread_result;
     pthread_join(threads[i], &thread_result);
   }
+  // shutdown
+  delete[] threads;
+
+#else  
+
+  // Windows code
+  HANDLE* threads = new HANDLE[numThreads]; // pthread_t* threads = new pthread_t[numThreads];
+  DWORD* thread_ids = new DWORD[numThreads];
+
+  for (long i = 0; i < numThreads; i++)
+  {
+    ThreadParams* params = new ThreadParams(zorba, &queries, i);
+    // pthread_create(&threads[i], NULL, thread_main, (void*)params);
+    CreateThread(NULL, 0, thread_main, (void*)params, 0, &thread_ids[i]);
+  }
+  //LPTHREAD_START_ROUTINE
+
+  WaitForMultipleObjects(numThreads, threads, TRUE, INFINITE);
+  
+  // shutdown
+  delete[] threads;
+  delete[] thread_ids;
+#endif
 
   queries.theOutput << std::endl
                     << "***********************************************************************"
@@ -1024,11 +1062,7 @@ _tmain(int argc, _TCHAR* argv[])
       std::cout << std::endl << "Failed queries: " << std::endl
                 << report.str() << std::endl;
   }
-
-  //
-  // shutdown
-  //
-  delete [] threads;
+  
   queries.clear();
   zorba->shutdown();
   zorba::StoreManager::shutdownStore(store);
