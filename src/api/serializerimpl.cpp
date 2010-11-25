@@ -42,8 +42,8 @@ Serializer::createSerializer(ItemSequence* aOptions)
 }
 
 SerializerImpl::SerializerImpl(const Zorba_SerializerOptions_t& aOptions, ErrorHandler* aErrorHandler)
-  : theInternalSerializer(&theErrorManager),
-    theErrorHandler(aErrorHandler)
+  : theErrorHandler(aErrorHandler),
+    theInternalSerializer(&theErrorManager)
 {
   setSerializationParameters(theInternalSerializer, aOptions);
   if (!theErrorHandler) {
@@ -52,8 +52,8 @@ SerializerImpl::SerializerImpl(const Zorba_SerializerOptions_t& aOptions, ErrorH
 }
 
 SerializerImpl::SerializerImpl(ItemSequence* aOptions, ErrorHandler* aErrorHandler)
-  : theInternalSerializer(&theErrorManager),
-    theErrorHandler(aErrorHandler)
+  : theErrorHandler(aErrorHandler),
+    theInternalSerializer(&theErrorManager)
 {
   setSerializationParameters(theInternalSerializer, aOptions);
   if (!theErrorHandler) {
