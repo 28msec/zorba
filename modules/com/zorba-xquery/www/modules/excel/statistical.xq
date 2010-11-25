@@ -37,7 +37,7 @@ import module namespace excel-math="http://www.zorba-xquery.com/modules/excel/ma
 import module namespace excel-err="http://www.zorba-xquery.com/modules/excel/errors";
 
 (:~
- : Helper function for average function.
+ : Function for average function.
  : This function should not be used outside this module.
  : It counts all non-empty arguments from the sequence.
  : The string value of every argument is used for checking.
@@ -236,7 +236,7 @@ declare function excel:percentile( $numbers as xs:anyAtomicType*, $k_at as xs:an
 (: priority 1 :)
 
 (:~
- : Helper function for AVEDEV.
+ : Function for AVEDEV.
  : This function should not be used outside this module.
  : Computes formula sum(abs(x - average)) for every x in $numbers
  :
@@ -273,7 +273,7 @@ declare function excel:avedev($numbers as xs:anyAtomicType+) as xs:anyAtomicType
 };
 
 (:~
- : Helper function for AVERAGEA.
+ : Function for AVERAGEA.
  : This function should not be used outside this module.
  : This function adds all values that are castable to numeric.
  :
@@ -592,7 +592,7 @@ declare function excel:stdevp($numbers as xs:anyAtomicType+) as xs:anyAtomicType
 };
 
 (:~
- : Helper function for VAR, VARA, VARP, VARPA and SLOPE.
+ : Function for VAR, VARA, VARP, VARPA and SLOPE.
  : This function should not be used outside this module.
  : It computes formula sum((x - average_x)^2) for all x in $numbers.
  :
@@ -753,7 +753,7 @@ declare function excel:subtotal($function_num as xs:integer, $numbers as xs:anyA
 (: priority 2 :)
 
 (:~
- : Helper function for PROB function.
+ : Function for PROB function.
  : This function should not be used outside this module.
  : Computes the sum over a sequence of numbers.
  : Checks if the values are between 0 and 1.
@@ -777,7 +777,7 @@ declare %private function excel:sum_prob($prob_range as xs:anyAtomicType*) as xs
 };
 
 (:~
- : Helper function for PROB function.
+ : Function for PROB function.
  : This function should not be used outside this module.
  : Checks the prob range and x range if they have the same number of values.
  : Adds all probabilities corresponding to values between range_lower_limit and upper_limit.
@@ -869,7 +869,7 @@ declare function excel:prob($x_range as xs:anyAtomicType+,
 };
 
 (:~
- : Helper function for SLOPE function.
+ : Function for SLOPE function.
  : This function should not be used outside this module.
  : It computes the formula:<br/>
  : sum((x - average_x)(y - average_y)) <br/>

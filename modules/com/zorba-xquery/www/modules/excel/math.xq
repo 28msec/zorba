@@ -143,7 +143,7 @@ declare function excel:even($number as xs:anyAtomicType) as xs:anyAtomicType
 };
 
 (:~
- : Helper function for computing factorial.
+ : Function for computing factorial.
  : This function should not be used outside this module.
  : This recursive function computes: number * fact(number-1)
  : 
@@ -314,7 +314,7 @@ declare function excel:power(
  };
  
 (:~
- : Helper function for product.
+ : Function for product.
  : This function should not be used outside this module.
  : Multiplies all numbers in the sequence.
  :
@@ -550,7 +550,6 @@ declare function excel:trunc(
 };
  
 (:~
- : Helper function.
  : This function should not be used outside this module.
  : Sorts a sequence of numbers or arguments castable to numeric.
  : It first casts all arguments to numeric and then sorts ascending.
@@ -607,7 +606,7 @@ declare function excel:factdouble($number as xs:integer) as xs:integer
 };
 
 (:~
- : Helper function for computing GCD.
+ : Function for computing GCD.
  : This function should not be used outside this module.
  : It calculates the minimum value from a sequence of positive integers, 
  : not taking into account the zero value.
@@ -633,7 +632,7 @@ declare %private function excel:min-without-zero($numbers as xs:integer+) as xs:
 };
 
 (:~
- : Helper function for computing GCD.
+ : Function for computing GCD.
  : This function should not be used outside this module.
  : Checks if all integer numbers from a sequence divide exactly to a divident.
  :
@@ -655,7 +654,7 @@ declare %private function excel:try-exact-divide(
 };
 
 (:~
- : Helper function for computing GCD.
+ : Function for computing GCD.
  : This function should not be used outside this module.
  : This function iterates through possible divisors and checks if the sequence
  : divides exactly to any of those. It starts from the minimum value from the

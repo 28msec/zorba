@@ -323,8 +323,6 @@ declare %private function http:tidy-result($result as item()+, $override-media-t
 };
 
 (:~
- : Helper function.
- :
  : This function takes an https:body element, copies it, and
  : adds a method attribute to the copy if there is none
  : in the original element.
@@ -357,8 +355,6 @@ declare %private function http:create-body (
 };
 
 (:~
- : Helper function.
- :
  : This function takes an https:multipart element, copies it and
  : adds a @method attribute to all body elements which don't have
  : one.
@@ -382,8 +378,6 @@ declare %private function http:create-multipart (
 
 
 (:~
- : Helper function.
- :
  : This adds a default method attribute to all body elements which
  : don't contain a method attribute.
  :
@@ -408,7 +402,7 @@ declare %private function http:set-content-type(
 };
 
 (:~
- : Private helper function used internally by this module.
+ : Private function used internally by this module.
  :
  : This function checks if the request, href, and bodies parameters
  : are consistent.

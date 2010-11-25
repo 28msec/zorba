@@ -123,7 +123,7 @@ declare function local:test-variable(
     return
         (: Test for variable description :)
         if (not($hasDescr)) then
-            concat("ERROR: Missing function description
+            concat("ERROR: Missing variable description
     Module: ", $module/xqdoc:uri, "
     Variable: ", $variable/xqdoc:name)
         else

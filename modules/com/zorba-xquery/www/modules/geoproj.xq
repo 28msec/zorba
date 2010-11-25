@@ -77,13 +77,12 @@ declare function geoproj:rad-to-deg($rad as xs:double) as xs:double
 
 
 (:~
- : Helper function. <br/>
  : Compute the isometric latitude of $phi latitude.
  : 
  : @param $phi a latitude
  : @return isometric latitude in radians
  :)
-declare function geoproj:proj-tsfn($phi as xs:double) as xs:double
+declare %private function geoproj:proj-tsfn($phi as xs:double) as xs:double
 {
    let $e := 0.0818192
    return
@@ -196,8 +195,7 @@ declare function geoproj:wgs84-to-omerc-gmlpos( $lat_0 as xs:double,
 };
 
 (:~
- : Helper function. <br/>
- : For iterative computing of the inverse isometric latitude.
+ : Function for iterative computing of the inverse isometric latitude.
  : 
  : @param $i the maximum iterations
  : @param $ts precomputed value
@@ -205,7 +203,7 @@ declare function geoproj:wgs84-to-omerc-gmlpos( $lat_0 as xs:double,
  : @param $prev_phi previous computed inverse isometric latitude
  : @return isometric latitude in radians
  :)
-declare function geoproj:proj-phi2-helper($i as xs:integer, 
+declare %private function geoproj:proj-phi2-helper($i as xs:integer, 
                                           $ts as xs:double , $e as xs:double,
                                           $prev_phi as xs:double) as xs:double
 {
@@ -221,14 +219,13 @@ declare function geoproj:proj-phi2-helper($i as xs:integer,
 };
 
 (:~
- : Helper function. <br/>
- : For computing the inverse isometric latitude.
+ : Function for computing the inverse isometric latitude.
  : 
  : @param $ts precomputed value, based on an initial latitude.
  : @param $e the Earth eccentricity. For WGS84 is hardcoded to 0.0818192.
  : @return inverse isometric latitude in radians
  :)
-declare function geoproj:proj-phi2($ts as xs:double, $e as xs:double) as xs:double
+declare %private function geoproj:proj-phi2($ts as xs:double, $e as xs:double) as xs:double
 {
   let $phi := math:pi() div 2 - 2 * math:atan($ts)
   return

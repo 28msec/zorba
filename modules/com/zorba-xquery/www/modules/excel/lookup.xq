@@ -189,7 +189,7 @@ declare function excel:choose(
 };
  
 (:~
- : Helper function for HLOOKUP, LOOKUP, MATCH, VLOOKUP.
+ : Function for HLOOKUP, LOOKUP, MATCH, VLOOKUP.
  : This function should not be used outside this module.
  : It searches a lookup_value in table_header with three different algorithms
  : specified by range_lookup.

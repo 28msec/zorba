@@ -158,6 +158,14 @@ table.funclist {
   border-width: 1px;
   border-collapse: collapse;
 }
+
+table.varlist {
+  width: 100%;
+  border-style: solid;
+  border-width: 1px;
+  border-collapse: collapse;
+}
+
 table.letter {
   padding-top: 10px;
   width: 100%;

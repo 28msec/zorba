@@ -74,6 +74,7 @@ module namespace file = "http://www.zorba-xquery.com/modules/file";
  :
  : @param $sourceFile The path/URI of the file to copy.
  : @param $destinationFile The detination <tt>path/URI</tt>.
+ : @example copy.xq
  : @return true if the copy operation was successful.
  : @error An error is thrown if IO or Security problems occur.
  :)
