@@ -36,8 +36,6 @@ unsigned const Mask6Bytes  = 0xFC;
 namespace zorba {
 namespace utf8 {
 
-unicode::code_point const SubChar = 0xFFFD;
-
 size_type byte_pos( storage_type const *s, size_type char_pos ) {
   if ( char_pos == npos )
     return npos;
@@ -164,6 +162,8 @@ size_type length( storage_type const *begin, storage_type const *end ) {
 
 bool to_string( unicode::char_type const *in, size_type in_len,
                 storage_type **out, size_type *out_len ) {
+  unicode::code_point const SubChar = 0xFFFD;
+
   UErrorCode err = U_ZERO_ERROR;
   unicode::size_type utf8_len;
   u_strToUTF8WithSub(                   // pre-flight to get utf8_len
