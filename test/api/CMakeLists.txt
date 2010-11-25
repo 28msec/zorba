@@ -56,3 +56,4 @@ FOREACH (test ${TestsToRun})
   ZORBA_ADD_TEST_ALLSTORES(${TestName} APITests ${TName})
 ENDFOREACH(test)
 
+EXPECTED_FAILURE(test/api/test_static_context 3118348)
