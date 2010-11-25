@@ -19,6 +19,7 @@
 
 #include <iterator>
 
+#include "util/static_assert.h"
 #include "rep_base.h"
 
 namespace zorba {
@@ -164,11 +165,10 @@ public:
    * @return Returns said %ptr_rep.
    */
   static ptr_rep* empty_rep() {
-    //
-    // Go through void* to avoid string-aliasing warnings.
-    //
-    void *const p = reinterpret_cast<void*>( &empty_rep_storage[0] );
-    return reinterpret_cast<ptr_rep*>( p );
+    ZORBA_STATIC_ASSERT(
+      sizeof( ptr_rep ) <= sizeof( empty_rep_base::rep_model )
+    );
+    return reinterpret_cast<ptr_rep*>( empty_rep_base::empty_rep() );
   }
 
   // PTR_REP_RESERVE_ST_A_X
@@ -335,11 +335,6 @@ protected:
    * <code>delete[]</code>
    */
   bool dispose_data_using_delete_;
-
-  /**
-   * Storage for the empty %ptr_rep.
-   */
-  static size_type empty_rep_storage[];
 };
 
 } // namespace rstring_classes

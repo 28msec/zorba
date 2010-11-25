@@ -17,6 +17,8 @@
 #ifndef ZORBA_RSTRING_REP_BASE_H
 #define ZORBA_RSTRING_REP_BASE_H
 
+#include <zorba/config.h>
+
 #ifdef WIN32
 #pragma warning( disable : 4996 )
 #endif
@@ -24,8 +26,59 @@
 #include <memory>                       /* for allocator */
 #include <string>                       /* for char_traits */
 
+#include "util/atomic_int.h"
+
 namespace zorba {
 namespace rstring_classes {
+
+///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * An %empty_rep_base contains storage for the empty string representation
+ * shared by all derived string representation classes.
+ */
+class ZORBA_DLL_PUBLIC empty_rep_base {
+protected:
+
+  /**
+   * A %rep_model models the data contained in all known derived string
+   * representation classes so that the size of the empty string representation
+   * is as large as the largest derived class.
+   */
+  struct rep_model {
+    struct rep_base_model : atomic_int {
+      size_t    cap_;
+      size_t    len_;
+    } rep_base;
+    union derived_reps_model {
+      struct rep_model {
+        wchar_t data_[1];
+      } rep;
+      struct ptr_rep_model {
+        char*   p_;
+        bool    dispose_data_using_delete_;
+      } ptr_rep;
+    } derived_reps;
+  };
+
+  empty_rep_base() {
+    // This is defined to prevent naked instance creation.
+  }
+
+  /**
+   * Gets a pointer to the shared empty string representation.
+   *
+   * @return Returns said string representation.
+   */
+  static void* empty_rep() {
+    return static_cast<void*>( empty_rep_storage_ );
+  }
+
+private:
+  static char empty_rep_storage_[];
+};
+
+///////////////////////////////////////////////////////////////////////////////
 
 /**
  * A %rep_base is the base class for all string representations.
@@ -44,7 +97,10 @@ template<
   class TraitsType = std::char_traits<char>,
   class Allocator = std::allocator<typename TraitsType::char_type>
 >
-class rep_base : protected RefCountType {
+class rep_base :
+  protected empty_rep_base,
+  // Use empty base class optimization: http://www.cantrip.org/emptyopt.html
+  protected RefCountType {
 public:
   typedef TraitsType traits_type;
   typedef typename traits_type::char_type value_type;
@@ -252,6 +308,8 @@ protected:
   size_type cap_;
   size_type len_;
 };
+
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace rstring_classes
 } // namespace zorba

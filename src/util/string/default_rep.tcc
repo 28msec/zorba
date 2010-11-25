@@ -28,13 +28,6 @@ namespace zorba {
 namespace rstring_classes {
 
 template<class RefCountType,class TraitsType,class Allocator>
-typename rep<RefCountType,TraitsType,Allocator>::size_type
-rep<RefCountType,TraitsType,Allocator>::empty_rep_storage[
-  (sizeof( base_type ) + sizeof( value_type ) + sizeof( size_type ) - 1) /
-    sizeof( size_type )
-];
-
-template<class RefCountType,class TraitsType,class Allocator>
 rep<RefCountType,TraitsType,Allocator>*
   rep<RefCountType,TraitsType,Allocator>::
 alloc( allocator_type const &a, size_type cap, size_type old_cap ) {

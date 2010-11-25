@@ -27,13 +27,6 @@
 namespace zorba {
 namespace rstring_classes {
 
-template<class RefCountType,class TraitsType,class Allocator>
-typename ptr_rep<RefCountType,TraitsType,Allocator>::size_type
-ptr_rep<RefCountType,TraitsType,Allocator>::empty_rep_storage[
-  (sizeof( base_type ) + sizeof( pointer ) + sizeof( size_type ) - 1) /
-    sizeof( size_type )
-];
-
 // PTR_REP_CALC_CAP_2ST_X
 template<class RefCountType,class TraitsType,class Allocator>
 typename ptr_rep<RefCountType,TraitsType,Allocator>::size_type
