@@ -504,6 +504,34 @@ int UnitTester::runUriTest()
       "a/b/c/g" // path notation
     },
     {
+      "http://www.example.com/",
+      "/..",
+      "http://www.example.com/",
+      "http",
+      0,
+      "",
+      "www.example.com",
+      "",
+      "/",
+      "",
+      "",
+      "example.com" // path notation
+    },
+    {
+      "http://www.example.com/",
+      "/../dir1/dir2/../../../dir3/../dir/file",
+      "http://www.example.com/dir/file",
+      "http",
+      0,
+      "",
+      "www.example.com",
+      "",
+      "/dir/file",
+      "",
+      "",
+      "example.com" // path notation
+    },
+    {
       "",
       "http://www.msb.de",
       "http://www.msb.de",
