@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 SET(MAPM_SRCS
     mapm5sin.c
     mapm_add.c
@@ -50,3 +51,11 @@ SET(MAPM_SRCS
     mapmutil.c
     mapmutl1.c
     mapmutl2.c)
+  
+# disable warning "assuming signed overflow does not occur when assuming that (X + c) < X is always false."
+# no signed overflow may occur in these parts of mapm
+IF (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+  FOREACH(MAPM_SRC ${MAPM_SRCS})
+    SET_SOURCE_FILES_PROPERTIES(${CMAKE_SOURCE_DIR}/src/zorbatypes/mapm/${MAPM_SRC} PROPERTIES COMPILE_FLAGS "-Wstrict-overflow=0")
+  ENDFOREACH(MAPM_SRC)
+ENDIF (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
