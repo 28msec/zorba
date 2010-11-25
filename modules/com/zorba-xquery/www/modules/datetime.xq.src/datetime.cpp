@@ -117,7 +117,7 @@ CurrentTimeFunction::evaluate(
 /******************************************************************************
  *****************************************************************************/
 zorba::StatelessExternalFunction*
-DateTimeModule::getExternalFunction(zorba::String aLocalname) const
+DateTimeModule::getExternalFunction(const zorba::String& aLocalname)
 {
   zorba::StatelessExternalFunction*& lFunc = theFunctions[aLocalname];
   if (!lFunc) {

@@ -74,7 +74,7 @@ protected:
 public:
   String getURI() const { return "http://www.zorba-xquery.com/m"; }
 
-  StatelessExternalFunction* getExternalFunction(String aLocalname) const
+  StatelessExternalFunction* getExternalFunction(const String& aLocalname)
   {
     if (aLocalname.equals("bar"))
         return const_cast<MySimpleExternalFunction*>(&bar);

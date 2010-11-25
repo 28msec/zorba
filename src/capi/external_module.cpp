@@ -38,9 +38,9 @@ namespace zorbac {
   ExternalModuleWrapper::getURI() const { return theURI; }
 
   StatelessExternalFunction*
-  ExternalModuleWrapper::getExternalFunction(String aLocalname) const
+  ExternalModuleWrapper::getExternalFunction(const String& aLocalname)
   {
-    FunctionMap_t::iterator lIter = theFunctionMap.find(aLocalname.c_str());
+    FunctionMap_t::const_iterator lIter = theFunctionMap.find(aLocalname.c_str());
 
     if (lIter == theFunctionMap.end()) {
       return NULL;

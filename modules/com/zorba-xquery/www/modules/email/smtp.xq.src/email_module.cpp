@@ -37,7 +37,7 @@ namespace zorba {
     }
 
     StatelessExternalFunction*
-    SMTPModule::getExternalFunction(String aLocalname) const
+    SMTPModule::getExternalFunction(const String& aLocalname)
     {
       StatelessExternalFunction*& lFunc = theFunctions[aLocalname];
       if (!lFunc)

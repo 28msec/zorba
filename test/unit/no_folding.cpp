@@ -63,7 +63,7 @@ protected:
 public:
   String getURI() const { return "http://www.zorba-xquery.com/mod2"; }
   
-  StatelessExternalFunction* getExternalFunction(String aLocalname) const
+  StatelessExternalFunction* getExternalFunction(const String& aLocalname)
   {
     return const_cast<FoldingFunction*>(&lFunc);
   }

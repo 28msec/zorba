@@ -81,7 +81,7 @@ namespace zorba {
       
       typedef std::map<String, StatelessExternalFunction*, ltstr> FuncMap_t;
       
-      mutable FuncMap_t theFunctions;
+      FuncMap_t theFunctions;
       
     public:
       virtual ~HttpClientModule();
@@ -99,7 +99,7 @@ namespace zorba {
       getURI() const { return "http://www.zorba-xquery.com/modules/http-client"; }
       
       virtual StatelessExternalFunction*
-      getExternalFunction(String aLocalname) const
+      getExternalFunction(const String& aLocalname)
       {
         StatelessExternalFunction*& lFunc = theFunctions[aLocalname];
         if (!lFunc) {

@@ -32,7 +32,7 @@ ImageModule::~ImageModule()
 }
 
 StatelessExternalFunction*
-ImageModule::getExternalFunction(String aLocalname) const
+ImageModule::getExternalFunction(const String& aLocalname)
 {
   StatelessExternalFunction*& lFunc = theFunctions[aLocalname];
   return lFunc;

@@ -29,7 +29,7 @@ class AnimationModule : public ImageModule
 {
 
   virtual StatelessExternalFunction*
-    getExternalFunction(String aLocalname) const;
+  getExternalFunction(const String& aLocalname);
  
 
   virtual String

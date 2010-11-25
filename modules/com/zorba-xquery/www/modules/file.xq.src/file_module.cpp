@@ -33,7 +33,7 @@ FileModule::~FileModule()
 }
   
 StatelessExternalFunction*
-FileModule::getExternalFunction(String aLocalname) const
+FileModule::getExternalFunction(const String& aLocalname)
 {
   StatelessExternalFunction*& lFunc = theFunctions[aLocalname];
   if (!lFunc) {

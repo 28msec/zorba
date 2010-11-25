@@ -32,7 +32,7 @@ SerializeModule::~SerializeModule()
 }
   
 StatelessExternalFunction*
-SerializeModule::getExternalFunction(String aLocalname) const
+SerializeModule::getExternalFunction(const String& aLocalname)
 {
   StatelessExternalFunction*& lFunc = theFunctions[aLocalname];
   if (!lFunc) {

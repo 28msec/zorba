@@ -267,7 +267,7 @@ void ExecFunction::throwError(
 /******************************************************************************
  *****************************************************************************/
 zorba::StatelessExternalFunction*
-ProcessModule::getExternalFunction(zorba::String aLocalname) const
+ProcessModule::getExternalFunction(const zorba::String& aLocalname)
 {
   FuncMap_t::const_iterator lFind = theFunctions.find(aLocalname);
   zorba::StatelessExternalFunction*& lFunc = theFunctions[aLocalname];

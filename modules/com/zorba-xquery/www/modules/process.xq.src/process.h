@@ -44,7 +44,7 @@ protected:
 
   typedef std::map<String, StatelessExternalFunction*, ltstr> FuncMap_t;
 
-  mutable FuncMap_t theFunctions;
+  FuncMap_t theFunctions;
 
 public:
   virtual ~ProcessModule() {}
@@ -53,7 +53,7 @@ public:
   { return "http://www.zorba-xquery.com/modules/process"; }
 
   virtual zorba::StatelessExternalFunction*
-  getExternalFunction(zorba::String aLocalname) const;
+  getExternalFunction(const zorba::String& aLocalname);
 
   virtual void destroy();
 

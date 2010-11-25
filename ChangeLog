@@ -1,6 +1,6 @@
 Zorba - The XQuery Processor
 
-version x.y
+version 2.0
   * zorba executable deletes the output file (if one is provided) in case the execution fails
   * changed the error codes returned by the zorba executable (using different codes for
     different locations where the execution might fail)
@@ -8,6 +8,9 @@ version x.y
   * Added the XQuery 1.1 functions and variables annotations. Removed the "deterministic" 
     and "nondeterministic" keywords, which were replaced by the "%deterministic" and 
     "%nondeterministic" annotations.
+  * Changed the singature of ExternalModule::getExternalFunction. The const modified was removed
+    to allow for lazy instantiation of the function objects. Also, the localname is passed as
+    as a const reference.
 
 version 1.4
   * added a datetime library module with nondeterministic functions

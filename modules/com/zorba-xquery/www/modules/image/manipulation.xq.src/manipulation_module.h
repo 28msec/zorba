@@ -34,7 +34,7 @@ class ManipulationModule : public zorba::imagemodule::ImageModule
   getURI() const { return "http://www.zorba-xquery.com/modules/image/manipulation"; }
   
   virtual StatelessExternalFunction*
-  getExternalFunction(String aLocalname) const;
+  getExternalFunction(const String& aLocalname);
 
 };
 

@@ -64,7 +64,7 @@ HMACModule::~HMACModule()
 }
   
 StatelessExternalFunction*
-HMACModule::getExternalFunction(String aLocalname) const
+HMACModule::getExternalFunction(const String& aLocalname)
 {
   StatelessExternalFunction*& lFunc = theFunctions[aLocalname];
   if (!lFunc) {

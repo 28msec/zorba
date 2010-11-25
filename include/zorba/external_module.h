@@ -51,7 +51,7 @@ class ZORBA_DLL_PUBLIC ExternalModule : public ExternalFunctionData
    * @return the implementation of the function with the given name.
    */
   virtual StatelessExternalFunction*
-  getExternalFunction(String aLocalname) const = 0;
+  getExternalFunction(const String& aLocalname) = 0;
 
   /**
    * \brief Function used for destroying the ExternalModule object

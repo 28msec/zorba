@@ -41,7 +41,7 @@ namespace zorba { namespace serializemodule {
       };
 
       typedef std::map<String, StatelessExternalFunction*, ltstr> FuncMap_t;
-      mutable FuncMap_t theFunctions;
+      FuncMap_t theFunctions;
   
     public:
       virtual ~SerializeModule();
@@ -50,7 +50,7 @@ namespace zorba { namespace serializemodule {
       getURI() const { return "http://www.zorba-xquery.com/modules/serialize"; }
   
       virtual StatelessExternalFunction*
-      getExternalFunction(String aLocalname) const;
+      getExternalFunction(const String& aLocalname);
 
       virtual void
       destroy();

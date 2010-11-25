@@ -44,10 +44,10 @@ class MyParametrizedExternalFunction;
 class MyExternalModule : public ExternalModule
 {
 protected:
-  mutable MySimpleExternalFunction           * bar1;
-  mutable MyLazySimpleExternalFunction       * bar2;
-  mutable MyErrorReportingExternalFunction   * bar3;
-  mutable MyParametrizedExternalFunction     * bar4;
+  MySimpleExternalFunction           * bar1;
+  MyLazySimpleExternalFunction       * bar2;
+  MyErrorReportingExternalFunction   * bar3;
+  MyParametrizedExternalFunction     * bar4;
 
 public:
   MyExternalModule()
@@ -63,7 +63,7 @@ public:
   
   String getURI() const { return "urn:foo"; }
 
-  StatelessExternalFunction* getExternalFunction(String aLocalname) const;
+  StatelessExternalFunction* getExternalFunction(const String& aLocalname);
 };
 
 
@@ -480,7 +480,7 @@ MyExternalModule::~MyExternalModule()
 }
 
 
-StatelessExternalFunction* MyExternalModule::getExternalFunction(String aLocalname) const
+StatelessExternalFunction* MyExternalModule::getExternalFunction(const String& aLocalname)
 {
   if (aLocalname.equals("bar1")) 
   {
@@ -619,7 +619,7 @@ public:
     theExtFunc = f;
   }
 
-  StatelessExternalFunction* getExternalFunction(String aLocalname) const
+  StatelessExternalFunction* getExternalFunction(const String& aLocalname)
   {
     if (aLocalname.equals("ext")) 
     {

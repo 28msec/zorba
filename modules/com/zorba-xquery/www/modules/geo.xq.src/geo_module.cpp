@@ -41,7 +41,7 @@ GeoModule::~GeoModule()
 }
   
 StatelessExternalFunction*
-GeoModule::getExternalFunction(String aLocalname) const
+GeoModule::getExternalFunction(const String& aLocalname)
 {
   StatelessExternalFunction*& lFunc = theFunctions[aLocalname];
   if (!lFunc) {

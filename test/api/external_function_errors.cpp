@@ -38,10 +38,10 @@ class MyErrorReportingFunction4;
 class MyExternalModule : public ExternalModule
 {
 protected:
-  mutable MyErrorReportingFunction1   *theErrorFunc1;
-  mutable MyErrorReportingFunction2   *theErrorFunc2;
-  mutable MyErrorReportingFunction3   *theErrorFunc3;
-  mutable MyErrorReportingFunction4   *theErrorFunc4;
+  MyErrorReportingFunction1   *theErrorFunc1;
+  MyErrorReportingFunction2   *theErrorFunc2;
+  MyErrorReportingFunction3   *theErrorFunc3;
+  MyErrorReportingFunction4   *theErrorFunc4;
   ItemFactory                         *theItemFactory;
 
 public:
@@ -59,7 +59,7 @@ public:
   
   String getURI() const { return "urn:foo"; }
 
-  StatelessExternalFunction* getExternalFunction(String aLocalname) const;
+  StatelessExternalFunction* getExternalFunction(const String& aLocalname);
 
   ItemFactory*
   getItemFactory() { return theItemFactory; }
@@ -179,7 +179,7 @@ public:
 
 };
 
-StatelessExternalFunction* MyExternalModule::getExternalFunction(String aLocalname) const
+StatelessExternalFunction* MyExternalModule::getExternalFunction(const String& aLocalname)
 {
   if (aLocalname.equals("func1")) 
   {

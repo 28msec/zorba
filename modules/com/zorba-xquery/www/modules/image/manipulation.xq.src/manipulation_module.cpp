@@ -22,7 +22,7 @@ namespace zorba { namespace imagemodule {  namespace manipulationmodule {
 
 
 StatelessExternalFunction*
-ManipulationModule::getExternalFunction(String aLocalname) const
+ManipulationModule::getExternalFunction(const String& aLocalname)
 {
   StatelessExternalFunction*& lFunc = theFunctions[aLocalname];
   if (!lFunc) {

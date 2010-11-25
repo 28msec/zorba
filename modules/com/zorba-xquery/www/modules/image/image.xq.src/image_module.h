@@ -44,7 +44,7 @@ protected:
 
   typedef std::map<String, StatelessExternalFunction*, ltstr> FuncMap_t;
 
-  mutable FuncMap_t theFunctions;
+  FuncMap_t theFunctions;
 
 public:
   virtual String
@@ -54,7 +54,7 @@ public:
   virtual ~ImageModule();
 
   virtual StatelessExternalFunction*
-  getExternalFunction(String aLocalname) const;
+  getExternalFunction(const String& aLocalname);
 
   virtual void
   destroy();

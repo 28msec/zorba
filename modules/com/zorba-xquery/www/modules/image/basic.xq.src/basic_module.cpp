@@ -21,7 +21,7 @@ namespace zorba { namespace imagemodule { namespace basicmodule {
 
   
 StatelessExternalFunction*
-BasicModule::getExternalFunction(String aLocalname) const
+BasicModule::getExternalFunction(const String& aLocalname)
 {
   StatelessExternalFunction*& lFunc = theFunctions[aLocalname];
   if (!lFunc) {

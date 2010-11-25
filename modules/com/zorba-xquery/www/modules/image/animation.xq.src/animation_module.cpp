@@ -23,7 +23,7 @@ namespace zorba { namespace imagemodule { namespace animationmodule {
 
   
 StatelessExternalFunction*
-AnimationModule::getExternalFunction(String aLocalname) const
+AnimationModule::getExternalFunction(const String& aLocalname)
 {
   StatelessExternalFunction*& lFunc = theFunctions[aLocalname];
   if (!lFunc) {

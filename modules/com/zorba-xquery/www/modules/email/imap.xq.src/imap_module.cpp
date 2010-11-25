@@ -33,7 +33,7 @@ ImapModule::~ImapModule()
 }
   
 StatelessExternalFunction*
-ImapModule::getExternalFunction(String aLocalname) const
+ImapModule::getExternalFunction(const String& aLocalname)
 {
   StatelessExternalFunction*& lFunc = theFunctions[aLocalname];
   if (!lFunc) {

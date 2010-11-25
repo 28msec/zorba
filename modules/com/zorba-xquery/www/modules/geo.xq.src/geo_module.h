@@ -41,7 +41,7 @@ protected:
   
   typedef std::map<String, StatelessExternalFunction*, ltstr> FuncMap_t;
 
-  mutable FuncMap_t theFunctions;
+  FuncMap_t theFunctions;
   
 public:
   virtual ~GeoModule();
@@ -50,7 +50,7 @@ public:
   getURI() const { return "http://www.zorba-xquery.com/modules/geo"; }
   
   virtual StatelessExternalFunction*
-  getExternalFunction(String aLocalname) const;
+  getExternalFunction(const String& aLocalname);
 
   virtual void
   destroy();

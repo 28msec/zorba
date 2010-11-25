@@ -39,7 +39,7 @@ protected:
 protected:
   static ItemFactory* theFactory;
   typedef std::map<String, StatelessExternalFunction*, ltstr> FuncMap_t;
-  mutable FuncMap_t theFunctions;
+  FuncMap_t theFunctions;
 
 public:
   TestExternalModule() { }
@@ -53,7 +53,7 @@ public:
 
   String getURI() const { return "urn:extern"; }
 
-  StatelessExternalFunction* getExternalFunction(String aLocalname) const;
+  StatelessExternalFunction* getExternalFunction(const String& aLocalname);
 
   static ItemFactory* getItemFactory()
   {
@@ -133,7 +133,7 @@ int NondetermExternalFunction::counter = 0;
 /*******************************************************************************
   TestExternalModule::getExternalFunction
 ********************************************************************************/
-StatelessExternalFunction* TestExternalModule::getExternalFunction(String aLocalname) const
+StatelessExternalFunction* TestExternalModule::getExternalFunction(const String& aLocalname)
 {
   StatelessExternalFunction*& lFunc = theFunctions[aLocalname];
   if (!lFunc) {

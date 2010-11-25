@@ -110,7 +110,7 @@ class MySerializableExternalFunction : public PureStatelessExternalFunction
 class MySerializableExternalModule : public ExternalModule
 {
   protected:
-    mutable MySerializableExternalFunction* bar1;
+    MySerializableExternalFunction* bar1;
 
   public:
     MySerializableExternalModule()
@@ -125,7 +125,7 @@ class MySerializableExternalModule : public ExternalModule
     getURI() const { return "urn:foo"; }
 
     virtual StatelessExternalFunction*
-    getExternalFunction(String aLocalname) const
+    getExternalFunction(const String& aLocalname)
     {
       if (aLocalname.equals("bar1")) {
         if (!bar1) {

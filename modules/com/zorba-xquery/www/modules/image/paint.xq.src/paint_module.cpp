@@ -20,7 +20,7 @@
 namespace zorba { namespace imagemodule { namespace paintmodule {
 
 StatelessExternalFunction*
-PaintModule::getExternalFunction(String aLocalname) const
+PaintModule::getExternalFunction(const String& aLocalname)
 {
   StatelessExternalFunction*& lFunc = theFunctions[aLocalname];
   if (!lFunc) {

@@ -35,7 +35,7 @@ namespace zorbac {
       getURI() const;
 
       virtual zorba::StatelessExternalFunction*
-      getExternalFunction(zorba::String aLocalname) const;
+      getExternalFunction(const zorba::String& aLocalname);
 
       virtual XQC_Error
       registerFunction(CExternalFunction*);
