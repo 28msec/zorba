@@ -18,7 +18,9 @@
 #include <zorba/options.h>
 #include <zorba/singleton_item_sequence.h>
 #include <zorba/serializable.h>
+#include <zorba/default_error_handler.h>
 
+#include "api/zorbaimpl.h"
 #include "api/serialization/serializable_wrapper.h"
 #include "api/serialization/serializable.h"
 #include "api/unmarshaller.h"
@@ -39,23 +41,35 @@ Serializer::createSerializer(ItemSequence* aOptions)
   return new SerializerImpl(aOptions);
 }
 
-SerializerImpl::SerializerImpl(const Zorba_SerializerOptions_t& aOptions)
-  : theInternalSerializer(&theErrorManager)
+SerializerImpl::SerializerImpl(const Zorba_SerializerOptions_t& aOptions, ErrorHandler* aErrorHandler)
+  : theInternalSerializer(&theErrorManager),
+    theErrorHandler(aErrorHandler)
 {
   setSerializationParameters(theInternalSerializer, aOptions);
+  if (!theErrorHandler) {
+    theErrorHandler = new DefaultErrorHandler();
+  }
 }
 
-SerializerImpl::SerializerImpl(ItemSequence* aOptions)
-  : theInternalSerializer(&theErrorManager)
+SerializerImpl::SerializerImpl(ItemSequence* aOptions, ErrorHandler* aErrorHandler)
+  : theInternalSerializer(&theErrorManager),
+    theErrorHandler(aErrorHandler)
 {
   setSerializationParameters(theInternalSerializer, aOptions);
+  if (!theErrorHandler) {
+    theErrorHandler = new DefaultErrorHandler();
+  }
 }
 
 void
 SerializerImpl::serialize(Serializable* aObject, std::ostream& aOs) const
 {
-  intern::SerializableWrapper lWrapper(aObject);
-  theInternalSerializer.serialize((intern::Serializable*)&lWrapper, aOs);
+  try {
+    intern::SerializableWrapper lWrapper(aObject);
+    theInternalSerializer.serialize((intern::Serializable*)&lWrapper, aOs);
+  } catch (error::ZorbaError& e) {
+    ZorbaImpl::notifyError(theErrorHandler, e);
+  }
 }
 
 int

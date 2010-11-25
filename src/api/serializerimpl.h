@@ -27,18 +27,20 @@
 namespace zorba {
 
   class Serializable;
+  class ErrorHandler;
 
   class SerializerImpl : public Serializer
   {
     private:
       error::ErrorManager theErrorManager;
+      zorba::ErrorHandler* theErrorHandler;
       mutable serializer theInternalSerializer;
 
     public:
 
-      SerializerImpl(const Zorba_SerializerOptions_t& options);
+      SerializerImpl(const Zorba_SerializerOptions_t& aOptions, ErrorHandler* aErrorHandler = 0);
 
-      SerializerImpl(ItemSequence* options);
+      SerializerImpl(ItemSequence* options, ErrorHandler* aErrorHandler = 0);
 
       virtual ~SerializerImpl() {}
 

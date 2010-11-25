@@ -67,7 +67,7 @@ private:
   StaticContextImpl(const StaticContextImpl&);
 
 public:
-  StaticContextImpl(ErrorHandler*);
+  StaticContextImpl(ErrorHandler* = 0);
 
   StaticContextImpl(static_context*, ErrorHandler*);
 
