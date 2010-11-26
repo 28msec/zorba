@@ -196,6 +196,8 @@ filesystem_path::normalize_path
       if (token != "")
         lResult += separator + token;
     }
+    if (lResult == "") // if lResult is empty, then there was a path separator
+      lResult = separator;
     lFileArg = lResult;
   }
 
