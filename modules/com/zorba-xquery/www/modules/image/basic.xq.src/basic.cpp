@@ -230,7 +230,7 @@ EqualsFunction::evaluate(
   ImageFunction::getOneImageArg(aDynCtx, aArgs, 0, lFirst);
   ImageFunction::getOneImageArg(aDynCtx, aArgs, 1, lSecond);
   lFirst.compare(lSecond);
-  bool lResult = (lFirst.normalizedMeanError() < 0.0008);
+  bool lResult = (lFirst.normalizedMeanError() < 0.0018);
   return ItemSequence_t(new SingletonItemSequence(
       theModule->getItemFactory()->createBoolean(lResult)));
 

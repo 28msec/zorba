@@ -23,7 +23,7 @@
             <enumeration value="PNG"/>
             <enumeration value="JPEG"/>
             <enumeration value="TIFF"/>
-            <enumeration value="SVG"/>  
+            <enumeration value="BMP"/>  
         </restriction>
     </simpleType>
 
