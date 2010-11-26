@@ -44,10 +44,22 @@ namespace zorba {
     public:
 
       /**
-       * \brief Utility method to resolve a relative or absolute path
-       * or file: URI to a canonical absolute path. QQQ more doc!
+       * @brief Utility function to normalize a path as a system conforming
+       *        path and optionally resolve it.
+       *
+       * This function takes a path (as system path, file uri) and normalizes it.
+       * It converts file URIs to system paths and replaces '/' and '\' to the
+       * platform specific path separator ('\' on Windows, '/' on UNIX like operating
+       * systems like Linux and Mac OS X).
+       * If the parameter base is set, it also resolves the path.
+       *
+       * @param in The path to normalize.
+       * @param base The base name to resolve a path (default = ""), if this is the
+       *             empty string, it does not resolve anything, but only normalizes
+       *             the path.
+       * @return Returns a normalized and optionally a resolved path.
        */
-      static String resolve_path(String in, String base = "")
+      static String normalize_path(String in, String base = "")
         throw (ZorbaException);
 
       // from current dir

@@ -219,7 +219,7 @@ namespace zorba { namespace http_client {
   void HttpRequestHandler::beginMultipart(String aContentType, String aBoundary)
   {
     theMultiPartFileName = "";
-    theMultipartName = "blubb";
+    theMultipartName = "zorba-default";
     theInsideMultipart = true;
     std::string lValue = "Content-Type: ";
     lValue += aContentType.c_str();

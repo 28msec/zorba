@@ -603,7 +603,7 @@ ItemSequence_t NormalizePathFunction::evaluate(const StatelessExternalFunction::
 {
   Item pathItem;
   args[0]->next(pathItem);
-  String osPath = filesystem_path::resolve_path(pathItem.getStringValue().c_str());
+  String osPath = filesystem_path::normalize_path(pathItem.getStringValue().c_str());
   return ItemSequence_t(new SingletonItemSequence(theModule->getItemFactory()->createString(osPath)));
 }
 

@@ -94,7 +94,7 @@ FileFunction::getFilePathString(
 {
   String lFileArg = getOneStringArg(aArgs, aPos);
 
-  return (filesystem_path::resolve_path(lFileArg, getCurrentPath()));
+  return (filesystem_path::normalize_path(lFileArg, getCurrentPath()));
 }
 
 String

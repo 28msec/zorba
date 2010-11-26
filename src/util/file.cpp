@@ -58,7 +58,7 @@ namespace zorba {
 
 
 String
-filesystem_path::resolve_path
+filesystem_path::normalize_path
 (String aIn, String aBase)
   throw (ZorbaException)
 {
@@ -171,6 +171,32 @@ filesystem_path::resolve_path
 
     // no other encoding or decoding if already an absolute path
     // simply return it
+  }
+
+  // Replace all occurences of the path-separator with the system specific one
+  {
+#ifdef WIN32
+    String separator = "\\";
+    String non_system_separator = "/";
+    String pattern = "/+";
+#else
+    String separator = "/";
+    String non_system_separator = "\\";
+    String pattern = "\\\\+";
+#endif
+    String flags = "";
+    int32_t startPos = 0;
+    bool has_matched = false;
+    String lResult;
+    lResult = lFileArg.tokenize(pattern, flags, &startPos, &has_matched);
+    if (!has_matched)
+      return lFileArg;
+    while (has_matched) {
+      String token = lFileArg.tokenize(pattern, flags, &startPos, &has_matched);
+      if (token != "")
+        lResult += separator + token;
+    }
+    lFileArg = lResult;
   }
 
   return lFileArg;

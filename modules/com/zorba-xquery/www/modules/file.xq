@@ -438,11 +438,9 @@ declare function file:normalize-path($path as xs:string) as xs:string external;
  :)
 declare function file:dirname($file as xs:string) as xs:string
 {
-  let $delim := if (matches($file, "^[a-z]+:")) then 
-                  "/"
-                else file:path-separator()
+  let $delim := file:path-separator()
   let $delim-escaped := replace($delim, '(\.|\[|\]|\\|\||\-|\^|\$|\?|\*|\+|\{|\}|\(|\))','\\$1')
-  let $normalized-file := replace(file:normalize-path($file), concat($delim-escaped, '$'), '')
+  let $normalized-file := file:prepare-for-dirname-and-basename($file)
   return
     if (matches($file, concat("^", $delim-escaped, "+$"))) then
       $delim
@@ -461,7 +459,7 @@ declare function file:dirname($file as xs:string) as xs:string
 (:~
  : The basename function returns the last component from the pathname pointed to by path,
  : deleting any trailing '/' or '\' characters. If path consists entirely of '/' or '\' characters,
- : the string '/' or '\' is returned. If path is the empty string, the
+ : the empty string is returned. If path is the empty string, the
  : string "." is returned.
  : 
  :
@@ -470,14 +468,12 @@ declare function file:dirname($file as xs:string) as xs:string
  :)
 declare function file:basename($file as xs:string) as xs:string
 {
-  let $delim := if (matches($file, "^[a-z]+:")) then 
-                  "/"
-                else file:path-separator()
+  let $delim := file:path-separator()
   let $delim-escaped := replace($delim, '(\.|\[|\]|\\|\||\-|\^|\$|\?|\*|\+|\{|\}|\(|\))','\\$1')
-  let $normalized-file := replace(file:normalize-path($file), concat($delim-escaped, '$'), '')
+  let $normalized-file := file:prepare-for-dirname-and-basename($file)
   return
     if (matches($file, concat("^", $delim-escaped, "+$"))) then
-      $delim
+      ""
     else if (file:path-separator() eq '\' and matches($file, "^[a-zA-Z]:\\?$")) then
       ""
     else if ($file eq "") then
@@ -504,3 +500,15 @@ declare function file:basename($file as xs:string, $suffix as xs:string) as xs:s
       $res
 };
 
+(:~
+ : This is a helper function used by dirname and basename. This function takes a path as
+ : input and normalizes it according to the rules states in dirname/basename documentation
+ : and normalizes it to a system specific path.
+ :)
+declare %private function file:prepare-for-dirname-and-basename($path as xs:string) as xs:string
+{
+  let $delim := file:path-separator()
+  let $delim-escaped := replace($delim, '(\.|\[|\]|\\|\||\-|\^|\$|\?|\*|\+|\{|\}|\(|\))','\\$1')
+  let $normalized := replace(file:normalize-path($path), concat($delim-escaped, '+$'), '')
+  return $normalized
+};
