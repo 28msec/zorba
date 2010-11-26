@@ -50,16 +50,41 @@ public:
 } g_zorbaImplStaticsDestroyer;
 
 
+#ifdef WIN32
+bool ZorbaImpl::ctrl_c_signaled = false;
+
+BOOL WINAPI CtrlCHandlerRoutine(__in  DWORD dwCtrlType)
+{
+switch( dwCtrlType ) 
+  { 
+    case CTRL_LOGOFF_EVENT: 
+      break;
+    case CTRL_C_EVENT: 
+    case CTRL_CLOSE_EVENT: 
+    case CTRL_BREAK_EVENT: 
+    case CTRL_SHUTDOWN_EVENT: 
+    default: 
+      ZorbaImpl::ctrl_c_signaled = true;
+  } 
+  return FALSE;
+}
+#endif
+
 ZorbaImpl::ZorbaImpl() : theNumUsers(0)
 {
+#ifdef WIN32
+  SetConsoleCtrlHandler((PHANDLER_ROUTINE)CtrlCHandlerRoutine, TRUE);
+#endif
 }
 
 
 ZorbaImpl::~ZorbaImpl()
 {
-  shutdownInternal(false);
+#ifdef WIN32
+  if(!ZorbaImpl::ctrl_c_signaled)
+#endif
+    shutdownInternal(false);
 }
-
 
 /**
  * Protected function to initialize the Zorba Engine.

@@ -63,7 +63,10 @@ class ZorbaImpl : public Zorba
 
   SYNC_CODE(Mutex theUsersMutex);
   ulong           theNumUsers;
-
+public:
+#ifdef WIN32
+  static bool ctrl_c_signaled;
+#endif
  public:
 
   static void notifyError(ErrorHandler*, error::ZorbaError&);
