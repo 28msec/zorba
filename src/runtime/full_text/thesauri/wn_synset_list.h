@@ -72,7 +72,7 @@ public:
     const_iterator& operator++();
 
     const_iterator operator++(int) {
-      const_iterator const temp = *this;
+      const_iterator const temp( *this );
       return ++*this, temp;
     }
 

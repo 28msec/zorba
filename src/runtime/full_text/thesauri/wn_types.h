@@ -35,8 +35,14 @@ typedef uint32_t synset_id;
 
 ///////////////////////////////////////////////////////////////////////////////
 
+/**
+ * A WordNet part-of-speech.
+ */
 namespace part_of_speech {
 
+  /**
+   * The various parts-of-speech.
+   */
   enum type {
     unknown,
     adjective = 'a',
@@ -45,14 +51,28 @@ namespace part_of_speech {
     verb      = 'v',
   };
 
+  /**
+   * Attempts to find the WordNet part-of-speech corresponding to the given
+   * part-of-speech code.
+   *
+   * @param pos The part-of-speech code.
+   * @return Returns the corresponding part-of-speech of \c unknown.
+   */
   type find( char pos );
 
 } // part_of_speech
 
 ///////////////////////////////////////////////////////////////////////////////
 
+/**
+ * A %pointer is a WordNet "pointer" (pointer between synsets), not a C++
+ * pointer.
+ */
 namespace pointer {
 
+  /**
+   * The various types of WordNet pointer.
+   */
   enum type {
     unknown,
     also_see,
@@ -93,6 +113,12 @@ namespace pointer {
    */
   type find( char ptr_symbol );
 
+  /**
+   * Given a binary WordNet pointer symbol, find its corresponding type.
+   *
+   * @param ptr_symbol The pointer symbol to find.
+   * @return Returns the corresponding type or \c unknown.
+   */
   inline type find( unsigned char ptr_symbol ) {
     return find( static_cast<char>( ptr_symbol ) );
   }
@@ -105,10 +131,10 @@ namespace pointer {
   }
 
   /**
-   * Attempts to map an ISO 2788 relationship to a WordNet relationship.
+   * Attempts to map an ISO 2788 relationship to a WordNet pointer type.
    *
    * @param iso_rel The ISO 2788 relationship.
-   * @return Returns the closest equivalent WordNet relationship.
+   * @return Returns the closest equivalent WordNet pointer type.
    */
   type map_iso_rel( iso2788::rel_type iso_rel );
 

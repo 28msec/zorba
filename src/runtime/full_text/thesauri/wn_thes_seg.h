@@ -30,7 +30,7 @@ namespace wordnet {
 
 /**
  * An instance of this class is used to access either the lemma or synset
- * portions of a binary version of a WordNet thesaurus.
+ * segments of a binary version of a WordNet thesaurus.
  *
  * By implementing fully-blown random access iterators for it, the STL
  * algorithms work, in particular binary_search() and equal_range() that
@@ -58,8 +58,15 @@ public:
   /**
    * Constructs a %thes_seg.
    */
-  thes_seg() { }
+  thes_seg() {
+  }
 
+  /**
+   * Constructs a %thes_seg.
+   *
+   * @param file The mmap_file to access the segment within.
+   * @param seg_id The desired segment ID.
+   */
   thes_seg( mmap_file const &file, seg_id id ) {
     set_file( file, id );
   }
