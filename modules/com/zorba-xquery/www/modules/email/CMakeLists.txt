@@ -57,10 +57,16 @@ IF(CCLIENT_FOUND)
   ELSE (NOT WIN32 AND NOT CYGWIN)
     LIST(APPEND SMTP_LINK_LIBRARIES secur32.lib crypt32.lib winmm.lib ws2_32.lib)
   ENDIF (NOT WIN32 AND NOT CYGWIN)
-  
+ 
+  # including shared c-client library
+  ADD_LIBRARY(imap_commons STATIC cclient.xq.src/imap_client.cpp)
+  TARGET_LINK_LIBRARIES(imap_commons ${SMTP_LINK_LIBRARIES})
+  INCLUDE_DIRECTORIES("cclient.xq.src")
+
+
   IF (BUILD_MODULE)
     GENERATE_MODULE_LIBRARY(smtp "${SMTP_LINK_LIBRARIES}")
-    GENERATE_MODULE_LIBRARY(imap "${SMTP_LINK_LIBRARIES}")
+    GENERATE_MODULE_LIBRARY(imap "imap_commons;${SMTP_LINK_LIBRARIES}")
   ENDIF (BUILD_MODULE)
 
 ELSE(CCLIENT_FOUND)
