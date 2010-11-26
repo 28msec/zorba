@@ -100,7 +100,7 @@ FOREACH (test ${TestsToRun})
   ZORBA_ADD_TEST_ALLSTORES(${TestName} UnitTests ${TName})
 ENDFOREACH(test)
 
-EXPECTED_FAILURE(test/unit/uri_file_decoding_test 123)
+EXPECTED_FAILURE(test/unit/uri_file_decoding_test 3083706)
 EXPECTED_FAILURE(test/unit/uri 3118348)
 
 ADD_SUBDIRECTORY(debugger)
