@@ -102,20 +102,6 @@ void FTToken::init( int_t pos, int_t sent, int_t para, store::Item const *item,
   mod_values_ = NULL;
 }
 
-void FTToken::strip_diacritics( string_t const &s, string_t *result ) {
-  string_t n;
-  utf8::normalize( s, unicode::normalization::NFKD, &n );
-
-  result->clear();
-  result->reserve( n.size() );
-
-  FOR_EACH( string_t, i, n ) {
-    char const c = *i;
-    if ( isascii( c ) )
-      result->push_back( c );
-  }
-}
-
 FTToken::string_t const& FTToken::valueImpl( int selector,
                                              iso639_1::type alt_lang ) const {
   fix_selector( &selector );
@@ -139,7 +125,7 @@ FTToken::string_t const& FTToken::valueImpl( int selector,
   if ( mod_value_ref.empty() ) {
     switch ( selector ) {
       case ascii:
-        strip_diacritics( value_, &mod_value_ref );
+        utf8::strip_diacritics( value_, &mod_value_ref );
         break;
       case lower:
         utf8::to_lower( value_, &mod_value_ref );

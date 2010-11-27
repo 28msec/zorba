@@ -43,8 +43,8 @@ namespace zorba {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * An auto_vec<T> is like the standard auto_ptr<T> but works where T is a
- * pointer to a T[] and so delete[] must be used.
+ * An %auto_vec<T> is like the standard auto_ptr<T> but works where \c T is a
+ * pointer to a \c T[] and so \c delete[] must be used.
  */
 template<typename T> class auto_vec {
 public:

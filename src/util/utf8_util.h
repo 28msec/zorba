@@ -436,6 +436,21 @@ void reverse( InputStringType const &in, OutputStringType *out ) {
   std::reverse_copy( u_in.begin(), u_in.end(), std::back_inserter( u_out ) );
 }
 
+#ifndef ZORBA_NO_UNICODE
+/**
+ * Strips all diacritical marks from all characters converting them to their
+ * closest ASCII equivalents.
+ *
+ * @tparam InputStringType The input string type.
+ * @tparam OutputStringType The output string type.
+ * @param in The input string.
+ * @param out The output string.
+ */
+template<class InputStringType,class OutputStringType>
+void strip_diacritics( InputStringType const &in, OutputStringType *out );
+
+#endif /* ZORBA_NO_UNICODE */
+
 /**
  * Appends a sequence of Unicode code-points to a string.
  *

@@ -26,6 +26,13 @@ namespace ascii {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+template<class StringType> back_ascii_insert_iterator<StringType>&
+back_ascii_insert_iterator<StringType>::operator=( value_type c ) {
+  if ( isascii( c ) )
+    this->container->push_back( c );
+  return *this;
+}
+
 template<class StringType> back_uri_insert_iterator<StringType>&
 back_uri_insert_iterator<StringType>::operator=( value_type c ) {
   char const dec2hex[] = "0123456789ABCDEF";

@@ -36,10 +36,40 @@ namespace ascii {
  */
 typedef std::size_t size_type;
 
-
 ZORBA_DLL_PUBLIC extern char const uri_safe[];
 
 ////////// classes ////////////////////////////////////////////////////////////
+
+/**
+ * A %back_ascii_insert_iterator can be used to append characters to a string
+ * ensuring that non-ASCII characters are excluded.
+ *
+ * @tparam StringType The string type.
+ */
+template<class StringType>
+class back_ascii_insert_iterator :
+  public
+    back_insert_iterator_base<
+      StringType, back_ascii_insert_iterator<StringType>
+    >
+{
+  typedef back_insert_iterator_base<
+    StringType, back_ascii_insert_iterator<StringType>
+  > base_type;
+public:
+  typedef typename base_type::container_type container_type;
+  typedef typename StringType::value_type value_type;
+
+  /**
+   * Constructs a %back_ascii_insert_iterator.
+   *
+   * @param s The string to append to.
+   */
+  explicit back_ascii_insert_iterator( StringType &s ) : base_type( s ) {
+  }
+
+  back_ascii_insert_iterator& operator=( value_type c );
+};
 
 /**
  * A %back_uri_insert_iterator can be used to append characters to a string
@@ -118,6 +148,17 @@ private:
 };
 
 ////////// functions //////////////////////////////////////////////////////////
+
+/**
+ * This is a convenience function to create a back_ascii_insert_iterator.
+ *
+ * @tparam StringType The string type.
+ * @param out The output string.
+ */
+template<class StringType> inline back_ascii_insert_iterator<StringType>
+back_ascii_inserter( StringType &out ) {
+  return back_ascii_insert_iterator<StringType>( out );
+}
 
 /**
  * This is a convenience function to create a back_uri_insert_iterator.

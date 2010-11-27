@@ -258,7 +258,6 @@ private:
   }
 
   static void fix_selector( int *selector );
-  static void strip_diacritics( string_t const&, string_t *result );
 
   void copy( FTToken const& );
   void free();

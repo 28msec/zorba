@@ -92,7 +92,6 @@ unicode::code_point next_char( OctetIterator &i ) {
   return c;
 }
 
-
 template<class OctetIterator>
 unicode::code_point prev_char( OctetIterator &oi ) {
   while ( !is_start_byte( *--oi ) ) ;
@@ -117,6 +116,18 @@ bool normalize( InputStringType const &in, unicode::normalization::type n,
     return false;
   out->assign( temp, temp_len );
   return true;
+}
+
+template<class InputStringType,class OutputStringType>
+void strip_diacritics( InputStringType const &in, OutputStringType *out ) {
+  InputStringType in_normalized;
+  normalize( in, unicode::normalization::NFKD, &in_normalized );
+  out->clear();
+  out->reserve( in_normalized.size() );
+  std::copy(
+    in_normalized.begin(), in_normalized.end(),
+    ascii::back_ascii_inserter( *out )
+  );
 }
 
 template<class StringType>
@@ -150,7 +161,6 @@ bool to_string( wchar_t const *in, size_type in_len, StringType *out ) {
 
 #endif /* ZORBA_NO_UNICODE */
 
-
 template<class InputStringType,class OutputStringType>
 void to_lower( InputStringType const &in, OutputStringType *out ) {
   typename utf8_stringify<InputStringType const>::type const u_in( in );
@@ -160,7 +170,6 @@ void to_lower( InputStringType const &in, OutputStringType *out ) {
     u_in.begin(), u_in.end(), std::back_inserter( u_out ), unicode::to_lower
   );
 }
-
 
 template<class InputStringType,class OutputStringType>
 void to_upper( InputStringType const &in, OutputStringType *out ) {
