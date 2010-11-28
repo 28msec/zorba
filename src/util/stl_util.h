@@ -175,15 +175,15 @@ inline OutputIterator copy_n( InputIterator first, SizeType count,
 /**
  * A less-verbose way to copy the given sequence.
  */
-template<typename SequenceType> inline
-void copy_seq( SequenceType const &from, SequenceType &to ) {
+template<class FromSequenceType,class ToSequenceType> inline
+void copy_seq( FromSequenceType const &from, ToSequenceType &to ) {
   std::copy( from.begin(), from.end(), std::back_inserter( to ) );
 }
 
 /**
  * Given a seq<T*>, deletes all the elements.
  */
-template<typename SequenceType> inline
+template<class SequenceType> inline
 void delete_ptr_seq( SequenceType &seq ) {
   MUTATE_EACH( typename SequenceType, i, seq )
     delete *i;
@@ -192,8 +192,8 @@ void delete_ptr_seq( SequenceType &seq ) {
 /**
  * Moves the first element of the first sequence to the back of the second.
  */
-template<typename SequenceType> inline
-void move_front_to_back( SequenceType &from, SequenceType &to ) {
+template<class FromSequenceType,class ToSequenceType> inline
+void move_front_to_back( FromSequenceType &from, ToSequenceType &to ) {
   to.push_back( from.front() );
   from.pop_front();
 }
@@ -208,7 +208,7 @@ inline char* new_strdup( char const *s ) {
 /**
  * A less-verbose way to pop the first element from a sequence.
  */
-template<typename SequenceType> inline
+template<class SequenceType> inline
 typename SequenceType::value_type pop_front( SequenceType &seq ) {
   typename SequenceType::value_type const value( seq.front() );
   seq.pop_front();
