@@ -16,8 +16,8 @@ SET(THESAURUS_SRCS
     decode_base128.cpp
     iso2788.cpp
     wn_types.cpp
-    wn_thes_seg.cpp
-    wn_synset_list.cpp
+    wn_synset.cpp
+    wn_db_segment.cpp
     wn_thesaurus.cpp
     )
 

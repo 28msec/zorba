@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-#include "wn_thes_seg.h"
+#include "wn_db_segment.h"
 
 using namespace std;
 
 namespace zorba {
 namespace wordnet {
 
-void thes_seg::set_file( mmap_file const &file, seg_id id ) {
+void db_segment::set_file( mmap_file const &file, seg_id id ) {
   mmap_file::const_iterator c = begin_ = file.begin();
   size_type const *p = reinterpret_cast<size_type const*>( c );
   num_entries_ = p[0];

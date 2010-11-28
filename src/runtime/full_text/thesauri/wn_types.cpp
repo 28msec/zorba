@@ -95,34 +95,36 @@ namespace pointer {
 
   type find( char ptr_symbol ) {
     switch ( ptr_symbol ) {
-      case 'A' /* !  */: return antonym;
-      case 'a' /* =  */: return attribute;
-      case 'C' /* >  */: return cause;
-      case 'D' /* \  */: return derived_from_adjective;
-      case 'E' /* @  */: return hypernym;
-      case 'e' /* @i */: return instance_hypernym;
-      case 'F' /* +  */: return derivationally_related_form;
-      case 'G' /* $  */: return verb_group;
-      case 'H' /* #m */: return member_holonym;
-      case 'h' /* #p */: return part_holonym;
-      case 'i' /* #s */: return substance_holonym;
-      case 'L' /* *  */: return entailment;
-      case 'M' /* %m */: return member_meronym;
-      case 'm' /* %p */: return part_meronym;
-      case 'n' /* %s */: return substance_meronym;
-      case 'O' /* ~  */: return hyponym;
-      case 'o' /* ~i */: return instance_hyponym;
-      case 'P' /* \  */: return pertainym;
-      case 'R' /* ;r */: return domain_of_synset_region;
-      case 'r' /* -r */: return member_of_domain_region;
-      case 'S' /* ^  */: return also_see;
-      case 'T' /* ;c */: return domain_of_synset_topic;
-      case 't' /* -c */: return member_of_domain_topic;
-      case 'U' /* ;u */: return domain_of_synset_usage;
-      case 'u' /* -u */: return member_of_domain_usage;
-      case 'V' /* <  */: return participle_of_verb;
-      case '~' /* &  */: return similar_to;
-      default          : return unknown;
+      case also_see:
+      case antonym:
+      case attribute:
+      case cause:
+      case derivationally_related_form:
+      case derived_from_adjective:
+      case domain_of_synset_region:
+      case domain_of_synset_topic:
+      case domain_of_synset_usage:
+      case entailment:
+      case hypernym:
+      case hyponym:
+      case instance_hypernym:
+      case instance_hyponym:
+      case member_holonym:
+      case member_meronym:
+      case member_of_domain_region:
+      case member_of_domain_topic:
+      case member_of_domain_usage:
+      case part_holonym:
+      case participle_of_verb:
+      case part_meronym:
+      case pertainym:
+      case similar_to:
+      case substance_holonym:
+      case substance_meronym:
+      case verb_group:
+        return static_cast<type>( ptr_symbol );
+      default:
+        return unknown;
     }
   }
 

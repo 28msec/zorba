@@ -36,7 +36,7 @@ namespace wordnet {
  * algorithms work, in particular binary_search() and equal_range() that
  * are used to do look-ups.
  */
-class thes_seg {
+class db_segment {
 public:
 
   ////////// typedefs /////////////////////////////////////////////////////////
@@ -56,18 +56,18 @@ public:
   ////////// constructors /////////////////////////////////////////////////////
 
   /**
-   * Constructs a %thes_seg.
+   * Constructs a %db_segment.
    */
-  thes_seg() {
+  db_segment() {
   }
 
   /**
-   * Constructs a %thes_seg.
+   * Constructs a %db_segment.
    *
    * @param file The mmap_file to access the segment within.
    * @param seg_id The desired segment ID.
    */
-  thes_seg( mmap_file const &file, seg_id id ) {
+  db_segment( mmap_file const &file, seg_id id ) {
     set_file( file, id );
   }
 
@@ -131,13 +131,13 @@ public:
     // default copy constructor is OK
     // default assignment operator is OK
   private:
-    thes_seg const *seg_;
+    db_segment const *seg_;
     size_type i_;
 
-    const_iterator( thes_seg const *seg, size_type i ) :
+    const_iterator( db_segment const *seg, size_type i ) :
       seg_( seg ), i_( i ) { }
 
-    friend class thes_seg;
+    friend class db_segment;
   };
 
   ////////// member functions /////////////////////////////////////////////////

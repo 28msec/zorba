@@ -30,8 +30,8 @@ namespace wordnet {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-typedef uint32_t lemma_id;
-typedef uint32_t synset_id;
+typedef uint32_t lemma_id_t;
+typedef uint32_t synset_id_t;
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -74,34 +74,38 @@ namespace pointer {
    * The various types of WordNet pointer.
    */
   enum type {
+    //
+    // The char is the binary file WordNet pointer symbol; the comment is the
+    // original file WordNet pointer symbol.
+    //
     unknown,
-    also_see,
-    antonym,
-    attribute,
-    cause,
-    derivationally_related_form,
-    derived_from_adjective,
-    domain_of_synset_region,
-    domain_of_synset_topic,
-    domain_of_synset_usage,
-    entailment,
-    hypernym,
-    hyponym,
-    instance_hypernym,
-    instance_hyponym,
-    member_holonym,
-    member_meronym,
-    member_of_domain_region,
-    member_of_domain_topic,
-    member_of_domain_usage,
-    part_holonym,
-    part_meronym,
-    participle_of_verb,
-    pertainym,
-    similar_to,
-    substance_holonym,
-    substance_meronym,
-    verb_group
+    also_see                    = 'S', // ^
+    antonym                     = 'A', // !
+    attribute                   = 'a', // =
+    cause                       = 'C', // >
+    derivationally_related_form = 'F', // +
+    derived_from_adjective      = 'D', // '\'
+    domain_of_synset_region     = 'R', // ;r
+    domain_of_synset_topic      = 'T', // ;c
+    domain_of_synset_usage      = 'U', // ;u
+    entailment                  = 'L', // *
+    hypernym                    = 'E', // @
+    hyponym                     = 'O', // ~
+    instance_hypernym           = 'e', // @i
+    instance_hyponym            = 'o', // ~i
+    member_holonym              = 'H', // #m
+    member_meronym              = 'M', // %m
+    member_of_domain_region     = 'r', // -r
+    member_of_domain_topic      = 't', // -c
+    member_of_domain_usage      = 'u', // -u
+    part_holonym                = 'h', // #p
+    part_meronym                = 'm', // %p
+    participle_of_verb          = 'V', // <
+    pertainym                   = 'P', // '\'
+    similar_to                  = '~', // &
+    substance_holonym           = 'i', // #s
+    substance_meronym           = 'n', // %s
+    verb_group                  = 'G', // $
   };
   extern char const *const string_of[];
 

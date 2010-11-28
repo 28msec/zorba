@@ -14,12 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_FULL_TEXT_WORDNET_THESAURUS_H
-#define ZORBA_FULL_TEXT_WORDNET_THESAURUS_H
-
-#include <deque>
-
-#include "../ft_thesaurus.h"
+#include "decode_base128.h"
+#include "wn_synset.h"
 #include "wn_types.h"
 
 namespace zorba {
@@ -27,39 +23,33 @@ namespace wordnet {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-/**
- * A %wordnet::thesaurus is an ft_thesaurus for Wordnet.
- * See: http://wordnet.princeton.edu/
- */
-class thesaurus : public ft_thesaurus {
-public:
-  thesaurus( zstring const &phrase, zstring const &relationship,
-             ft_int at_least, ft_int at_most );
-  ~thesaurus();
+void synset::parse( unsigned char const *p ) {
+  int junk = 0;
 
-  bool next( zstring *synonym );
+  if ( (pos_ = part_of_speech::find( *p++ )) == part_of_speech::unknown )
+    ++junk; // TODO: throw exception
 
-private:
-  pointer::type const ptr_type_;
-  ft_int const at_least_, at_most_;
+  for ( unsigned n_lemmas = decode_base128( &p ); n_lemmas > 0; --n_lemmas )
+    lemma_ids_.push_back( decode_base128( &p ) );
 
-  ft_int level_;
-
-  typedef std::deque<synset_id_t> synset_id_queue;
-  synset_id_queue synset_id_queue_;
-
-  typedef std::deque<lemma_id_t> synonym_queue;
-  synonym_queue synonym_queue_;
-
-  // forbid these
-  thesaurus( thesaurus const& );
-  thesaurus& operator=( thesaurus const& );
-};
+  for ( unsigned n_ptrs = decode_base128( &p ); n_ptrs > 0; --n_ptrs ) {
+    synset::ptr ptr;
+    if ( (ptr.pos_ = part_of_speech::find( *p++ )) == part_of_speech::unknown )
+      ++junk; // TODO: throw exception
+    if ( (ptr.type_ = zorba::wordnet::pointer::find( *p++ )) ==
+          zorba::wordnet::pointer::unknown )
+      ++junk; // TODO: throw exception
+    ptr.synset_id_ = decode_base128( &p );
+    ptr.source_    = decode_base128( &p );
+    if ( ptr.source_ )
+      ptr.target_ = decode_base128( &p );
+    ptr_list_.push_back( ptr );
+  }
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace wordnet
 } // namespace zorba
 
-#endif  /* ZORBA_FULL_TEXT_WORDNET_THESAURUS_H */
 /* vim:set et sw=2 ts=2: */

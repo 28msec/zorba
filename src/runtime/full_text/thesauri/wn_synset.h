@@ -25,25 +25,34 @@ namespace zorba {
 namespace wordnet {
 
 /**
- * TODO
+ * A %synset is a WordNet synonym set.
  */
 class synset {
 public:
 
+  /**
+   * A %ptr is a pointer from one synset to another.
+   */
   struct ptr {
-    part_of_speech::type pos_;
     pointer::type type_;
-    synset_id synset_id_;
+    part_of_speech::type pos_;
+    synset_id_t synset_id_;
     uint8_t source_;
     uint8_t target_;
   };
 
-  typedef std::vector<lemma_id> lemma_id_list;
+  typedef std::vector<lemma_id_t> lemma_id_list;
   typedef std::vector<ptr> ptr_list;
 
   part_of_speech::type pos_;
   lemma_id_list lemma_ids_;
   ptr_list ptr_list_;
+
+  synset( unsigned char const *p ) {
+    parse( p );
+  }
+
+  void parse( unsigned char const *p );
 };
 
 } // namespace wordnet
