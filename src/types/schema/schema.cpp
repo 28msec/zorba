@@ -1596,56 +1596,6 @@ void splitToAtomicTextValues(
     const zstring& textValue,
     std::vector<zstring>& atomicTextValues)
 {
-  /*xqpStringStore_t tmp = new xqpStringStore(textValue.str());
-  xs_string normalizedTextValue(tmp->normalizeSpace());
-  checked_vector<uint32_t> codes = normalizedTextValue.getCodepoints();
-
-  xqpString::size_type start = 0;
-  xqpString::size_type i = 0;
-
-  while (i < codes.size())
-  {
-    if ( xqpStringStore::is_whitespace(codes[i]) )
-    {
-      zstring zstmp(normalizedTextValue.substr(start, i - start).c_str());
-      atomicTextValues.push_back(zstmp);
-      start = i+1;
-    }
-    i++;
-  }
-
-  if ( start < (i-1) )
-  {
-    zstring zstmp(normalizedTextValue.substr(start, i-start).c_str());
-    atomicTextValues.push_back(zstmp);
-  }*/
-
-/*
-  zstring normalizedTextValue;
-  utf8::normalize_whitespace(textValue, &normalizedTextValue);
-
-  utf8_string<zstring> const untv(normalizedTextValue);
-
-  size_t start = 0;
-  size_t i = 0;
-
-  for ( utf8_string<zstring>::const_iterator
-       it = untv.begin(); it != untv.end(); ++it ) 
-  {
-    unicode::code_point const cp = *it;
-    if ( unicode::is_space(cp) )
-    {
-      atomicTextValues.push_back(normalizedTextValue.substr(start, i - start));
-      start = i+1;
-    }
-    i++;
-  }
-
-  if ( start < (i-1) )
-  {
-    atomicTextValues.push_back(normalizedTextValue.substr(start, i-start));
-  }*/
-
   zstring normalizedTextValue;
   utf8::normalize_whitespace(textValue, &normalizedTextValue);
 
