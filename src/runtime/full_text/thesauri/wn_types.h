@@ -78,34 +78,107 @@ namespace pointer {
     // The char is the binary file WordNet pointer symbol; the comment is the
     // original file WordNet pointer symbol.
     //
+
     unknown,
-    also_see                    = 'S', // ^
-    antonym                     = 'A', // !
-    attribute                   = 'a', // =
-    cause                       = 'C', // >
-    derivationally_related_form = 'F', // +
-    derived_from_adjective      = 'D', // '\'
-    domain_of_synset_region     = 'R', // ;r
-    domain_of_synset_topic      = 'T', // ;c
-    domain_of_synset_usage      = 'U', // ;u
-    entailment                  = 'L', // *
-    hypernym                    = 'E', // @
-    hyponym                     = 'O', // ~
-    instance_hypernym           = 'e', // @i
-    instance_hyponym            = 'o', // ~i
-    member_holonym              = 'H', // #m
-    member_meronym              = 'M', // %m
-    member_of_domain_region     = 'r', // -r
-    member_of_domain_topic      = 't', // -c
-    member_of_domain_usage      = 'u', // -u
-    part_holonym                = 'h', // #p
-    part_meronym                = 'm', // %p
-    participle_of_verb          = 'V', // <
-    pertainym                   = 'P', // '\'
-    similar_to                  = '~', // &
-    substance_holonym           = 'i', // #s
-    substance_meronym           = 'n', // %s
-    verb_group                  = 'G', // $
+    also_see,
+
+    /**
+     * A word opposite in meaning to another.
+     */
+    antonym,
+
+    attribute,
+    cause,
+    derivationally_related_form,
+    derived_from_adjective,
+    domain_of_synset_region,
+    domain_of_synset_topic,
+    domain_of_synset_usage,
+
+    /**
+     * A verb that presupposes another, e.g., "snoring" entails "sleeping."
+     */
+    entailment,
+
+    /**
+     * A word with a broad meaning that more specific words fall under, e.g.,
+     * "meal" is a hypernym of "breakfast."
+     */
+    hypernym,
+
+    /**
+     * A word of more specific meaning than a general term applicable to it,
+     * e.g., "breakfast" is a hyponym of "meal."
+     */
+    hyponym,
+
+    /**
+     * A word that denotes a category of some specific instance, e.g., "author"
+     * is an instance hypernym of "Asimov."
+     */
+    instance_hypernym,
+
+    /**
+     * A term that donotes a specific instance of some general category, e.g.,
+     * "Asimov" is an instance hyponym of "author."
+     */
+    instance_hyponym,
+
+    /**
+     * A word that denotes a collection of individuals, e.g., "faculty" is a
+     * member holonym of "professor."
+     */
+    member_holonym,
+
+    /**
+     * A word that denotes a member of a larger group, e.g., a "person" is a
+     * member meronym of a "crowd."
+     */
+    member_meronym,
+
+    member_of_domain_region,
+    member_of_domain_topic,
+    member_of_domain_usage,
+
+    /**
+     * A word that denotes a larger whole comprised of some part, e.g., "car"
+     * is a part holonym of "engine."
+     */
+    part_holonym,
+
+    /**
+     * A word that denotes a part of a larger whole, e.g., an "engine" is part
+     * meronym of a "car."
+     */
+    part_meronym,
+
+    participle_of_verb,
+    
+    /**
+     * An adjective that classifies its noun, e.g., "musical instrument."
+     */
+    pertainym,
+
+    /**
+     * Similar, though not necessarily interchangeable, adjectives.  For
+     * example, "shiny" is similar to "bright", but they have subtle
+     * differences.
+     */
+    similar_to,
+
+    /**
+     * A word that denotes a larger whole containing some constituent
+     * substance, e.g., "bread" is a substance holonym of "flour."
+     */
+    substance_holonym,
+
+    /**
+     * A word that denotes a constituant substance of some larger whole, e.g.,
+     * "flour" is a substance meronym of "bread."
+     */
+    substance_meronym,
+
+    verb_group,
   };
   extern char const *const string_of[];
 

@@ -129,6 +129,9 @@ thesaurus::thesaurus( zstring const &phrase, zstring const &relationship,
   if ( char const *const lemma = find_lemma( phrase ) ) {
     unsigned char const *p = reinterpret_cast<unsigned char const*>( lemma );
     while ( *p++ ) ;                    // skip past lemma
+    //
+    // Load the synset_id_queue_ will all the synsets for the lemma.
+    //
     for ( unsigned num_synsets = decode_base128( &p ); num_synsets-- > 0; )
       synset_id_queue_.push_back( decode_base128( &p ) );
     synset_id_queue_.push_back( LevelSentinel );
@@ -163,11 +166,44 @@ bool thesaurus::next( zstring *synonym ) {
     if ( level_ >= at_least_ ) {
       cout << "+ level (" << level_ << ") >= at_least (" << at_least_ << ')' << endl;
       copy_seq( ss.lemma_ids_, synonym_queue_ );
+      cout << "+ copying lemmas; synonym_queue is now: ";
+      bool comma = false;
+      FOR_EACH( synonym_queue, lemma_id, synonym_queue_ ) {
+        if ( comma )
+          cout << ", ";
+        else
+          comma = true;
+        cout << get_lemma( *lemma_id );
+      }
+      cout << endl;
     }
 
     FOR_EACH( synset::ptr_list, ptr, ss.ptr_list_ ) {
-      if ( ptr_type_ && ptr->type_ != ptr_type_ )
-        continue;
+      if ( ptr_type_ ) {
+        if ( ptr->type_ != ptr_type_ )
+          continue;
+      } else {
+        switch ( ptr->type_ ) {
+          case pointer::antonym:
+          case pointer::entailment:
+          case pointer::member_holonym:
+          case pointer::member_meronym:
+          case pointer::part_holonym:
+          case pointer::part_meronym:
+          case pointer::pertainym:
+          case pointer::substance_holonym:
+          case pointer::substance_meronym:
+            continue;
+          case pointer::hypernym:
+          case pointer::hyponym:
+          case pointer::instance_hypernym:
+          case pointer::instance_hyponym:
+          case pointer::similar_to:
+            break;
+          default:
+            break;
+        }
+      }
       synset_id_queue_.push_back( ptr->synset_id_ );
 
       if ( ptr->source_ ) {
@@ -180,6 +216,7 @@ bool thesaurus::next( zstring *synonym ) {
     synset_id_queue_.push_back( LevelSentinel );
   }
   *synonym = get_lemma( pop_front( synonym_queue_ ) );
+  cout << "synonym=" << *synonym << endl;
   return true;
 }
 
