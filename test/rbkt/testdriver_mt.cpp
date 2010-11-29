@@ -230,23 +230,25 @@ void sigHandler(int sigNum)
 ********************************************************************************/
 void createPath(const fs::path& filePath, std::ofstream& fileStream)
 {
-  fileStream.open(filePath.native_file_string().c_str());
+  fileStream.open(filePath.file_string().c_str());
   if (!fileStream.good())
   {
     fs::path dirPath = filePath;
     dirPath = dirPath.remove_leaf();
     
-    if (!fs::exists(dirPath))
+    if (!fs::exists(dirPath.file_string()))
     {
-      fs::create_directories(dirPath);
+      fs::create_directories(dirPath.file_string());
 
-      fileStream.open(filePath.native_file_string().c_str());
+      // clear the bad flag on windows, which for some unknown reason doesn't reset when opening a file again
+      fileStream.clear(); 
+      fileStream.open(filePath.file_string().c_str());
     }
 
     if (!fileStream.good())
     {
       std::cerr << "Could not open file: " 
-                << filePath.native_file_string().c_str() << std::endl;
+                << filePath.file_string() << std::endl;
       abort();
     }
   }
@@ -376,7 +378,7 @@ DWORD WINAPI thread_main(LPVOID param)
     relativeQueryFile = queries->theQueryFilenames[queryNo];
     queryPath = fs::path(queries->theQueriesDir) / (relativeQueryFile);
 
-    std::string testName = fs::change_extension(queryPath, "").native_file_string();
+    std::string testName = fs::change_extension(queryPath, "").file_string();
     ulong pos = testName.find("Queries");
     testName = testName.substr(pos + 8);
 
@@ -389,7 +391,7 @@ DWORD WINAPI thread_main(LPVOID param)
     // exprected errors, or the pathnames of reference-result files.
     specPath = fs::change_extension(queryPath, ".spec");
     if (fs::exists(specPath))
-      querySpec.parseFile(specPath.native_file_string()); 
+      querySpec.parseFile(specPath.file_string()); 
 
     // Get the pathnames of the ref-result files found in the .spec file (if any).
     // If no ref-results file was specified in the .spec file, create a default
@@ -462,14 +464,14 @@ DWORD WINAPI thread_main(LPVOID param)
     }
 
     // Set the error file to be used by the error handler for the current query
-    errHandler.setErrorFile(errorFilePath.native_file_string());
+    errHandler.setErrorFile(errorFilePath.file_string());
 
     //
     // Compile the query, if it has not been compiled already. 
     //
     if (queries->theQueryObjects[queryNo] == 0)
     {
-      slurp_file(queryPath.native_file_string().c_str(),
+      slurp_file(queryPath.file_string().c_str(),
                  queryString,
                  rbkt_src_dir,
                  rbkt_bin_dir);
@@ -477,7 +479,7 @@ DWORD WINAPI thread_main(LPVOID param)
       try
       {
         query = zorba->createQuery(&errHandler);
-        query->setFileName(queryPath.native_file_string());
+        query->setFileName(queryPath.file_string());
         query->compile(queryString.c_str(), sctx, getCompilerHints());
       }
       catch(...)
@@ -597,12 +599,12 @@ DWORD WINAPI thread_main(LPVOID param)
       ulong i;
       for (i = 0; i < refFilePaths.size(); i++) 
       {
-        const char* refFilePath = refFilePaths[i].native_file_string().c_str();
-        const char* resFilePath = resultFilePath.native_file_string().c_str();
+        std::string refFilePath = refFilePaths[i].file_string();
+        std::string resFilePath = resultFilePath.file_string();
 
         int lLine, lCol, lPos; 
         std::string lRefLine, lResultLine;
-        bool success = zorba::fileEquals(refFilePath, resFilePath,
+        bool success = zorba::fileEquals(refFilePath.c_str(), resFilePath.c_str(),
                                          lLine, lCol, lPos,
                                          lRefLine, lResultLine,
                                          queries->theOutput);
@@ -614,8 +616,8 @@ DWORD WINAPI thread_main(LPVOID param)
 
         ++numCanon;
         int lCanonicalRes = zorba::canonicalizeAndCompare(querySpec.getComparisonMethod(),
-                                                          refFilePath,
-                                                          resFilePath,
+                                                          refFilePath.c_str(),
+                                                          resFilePath.c_str(),
                                                           rbkt_bin_dir,
                                                           queries->theOutput);
         if (lCanonicalRes == 0)
@@ -944,10 +946,8 @@ _tmain(int argc, _TCHAR* argv[])
   for (long i = 0; i < numThreads; i++)
   {
     ThreadParams* params = new ThreadParams(zorba, &queries, i);
-    // pthread_create(&threads[i], NULL, thread_main, (void*)params);
     CreateThread(NULL, 0, thread_main, (void*)params, 0, &thread_ids[i]);
   }
-  //LPTHREAD_START_ROUTINE
 
   WaitForMultipleObjects(numThreads, threads, TRUE, INFINITE);
   

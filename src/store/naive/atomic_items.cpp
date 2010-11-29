@@ -294,7 +294,7 @@ bool UntypedAtomicItem::castToUri(store::Item_t& result) const
     zstring tmp = uriVal.toString();
     return GET_FACTORY().createAnyURI(result, tmp);
   }
-  catch (error::ZorbaError& e)
+  catch (error::ZorbaError&)
   {
     result = NULL;
   }

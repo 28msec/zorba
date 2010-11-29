@@ -1181,7 +1181,7 @@ short SimpleStore::compareNodes(store::Item* node1, store::Item* node2) const
   XmlNode* n1 = static_cast<XmlNode*>(node1);
   XmlNode* n2 = static_cast<XmlNode*>(node2);
 
-  return n1->compare2(n2);
+  return (short)n1->compare2(n2);
 }
 
 
