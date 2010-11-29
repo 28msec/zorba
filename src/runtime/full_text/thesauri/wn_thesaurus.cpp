@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include <iostream>
+
 #include <algorithm>                    /* for equal_range */
 #include <utility>                      /* for pair */
 
@@ -43,7 +45,7 @@ namespace wordnet {
 static mmap_file const& get_db_file() {
   static mmap_file thesaurus_file;
   if ( !thesaurus_file )
-    thesaurus_file.open( "" ); // TODO
+    thesaurus_file.open( "/usr/local/tmp/zorba/thesaurus.zth" ); // TODO
   return thesaurus_file;
 }
 
@@ -53,7 +55,7 @@ static mmap_file const& get_db_file() {
  * @return Returns said segment.
  */
 template<db_segment::seg_id SegID>
-static db_segment const& get_db_segment() {
+static db_segment const& get() {
   static db_segment const segment( get_db_file(), SegID );
   return segment;
 }
@@ -68,7 +70,7 @@ static char const* find_lemma( zstring const &phrase ) {
   typedef pair<db_segment::const_iterator,db_segment::const_iterator>
     lemma_range;
 
-  db_segment const &lemmas = get_db_segment<db_segment::id_lemma>();
+  db_segment const &lemmas = get<db_segment::id_lemma>();
   char const *const c_phrase = phrase.c_str();
   less<char const*> comparator;
 
@@ -86,7 +88,7 @@ static char const* find_lemma( zstring const &phrase ) {
  * @return Returns said lemma.
  */
 inline char const* get_lemma( db_segment::size_type i ) {
-  return get_db_segment<db_segment::id_lemma>()[ i ];
+  return get<db_segment::id_lemma>()[ i ];
 }
 
 /**
@@ -97,7 +99,7 @@ inline char const* get_lemma( db_segment::size_type i ) {
  */
 inline unsigned char const* get_synset( db_segment::size_type i ) {
   return reinterpret_cast<unsigned char const*>(
-    get_db_segment<db_segment::id_synset>()[ i ]
+    get<db_segment::id_synset>()[ i ]
   );
 }
 
@@ -117,6 +119,8 @@ static pointer::type map_xquery_rel( zstring const &relationship ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+synset_id_t const LevelSentinel = ~0u;
+
 thesaurus::thesaurus( zstring const &phrase, zstring const &relationship,
                       ft_int at_least, ft_int at_most ) :
   ptr_type_( map_xquery_rel( relationship ) ),
@@ -127,6 +131,7 @@ thesaurus::thesaurus( zstring const &phrase, zstring const &relationship,
     while ( *p++ ) ;                    // skip past lemma
     for ( unsigned num_synsets = decode_base128( &p ); num_synsets-- > 0; )
       synset_id_queue_.push_back( decode_base128( &p ) );
+    synset_id_queue_.push_back( LevelSentinel );
   }
 }
 
@@ -135,26 +140,35 @@ thesaurus::~thesaurus() {
 }
 
 bool thesaurus::next( zstring *synonym ) {
-  if ( synonym_queue_.empty() ) {
-    if ( synset_id_queue_.empty() )
+  while ( synonym_queue_.empty() ) {
+    cout << "synonym_queue is empty" << endl;
+
+    if ( synset_id_queue_.empty() ) {
+      cout << "synset_id_queue is empty" << endl;
       return false;
-
-    //synset_it_->pos_;
-    synset const ss( get_synset( pop_front( synset_id_queue_ ) ) );
-
-    if ( level_ >= at_least_ && level_ <= at_most_ ) {
     }
-    ++level_;
 
-    //copy_seq( s.lemma_ids_, synonym_queue_ );
+    synset_id_t const synset_id = pop_front( synset_id_queue_ );
+    cout << "synset_id=" << synset_id << endl;
+    if ( synset_id == LevelSentinel ) {
+      cout << "+ found LevelSentinel" << endl;
+      if ( ++level_ > at_most_ ) {
+        cout << "+ level (" << level_ << ") > at_most (" << at_most_ << ')' << endl;
+        return false;
+      }
+      continue;
+    }
+
+    synset const ss( get_synset( synset_id ) );
+    if ( level_ >= at_least_ ) {
+      cout << "+ level (" << level_ << ") >= at_least (" << at_least_ << ')' << endl;
+      copy_seq( ss.lemma_ids_, synonym_queue_ );
+    }
 
     FOR_EACH( synset::ptr_list, ptr, ss.ptr_list_ ) {
       if ( ptr_type_ && ptr->type_ != ptr_type_ )
         continue;
-
-      //ptr->pos_;
-
-      ptr->synset_id_;
+      synset_id_queue_.push_back( ptr->synset_id_ );
 
       if ( ptr->source_ ) {
         // TODO
@@ -163,9 +177,9 @@ bool thesaurus::next( zstring *synonym ) {
         // TODO
       }
     }
+    synset_id_queue_.push_back( LevelSentinel );
   }
-  *synonym = get_lemma( synonym_queue_.front() );
-  synonym_queue_.pop_front();
+  *synonym = get_lemma( pop_front( synonym_queue_ ) );
   return true;
 }
 

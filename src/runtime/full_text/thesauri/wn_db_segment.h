@@ -20,7 +20,6 @@
 // standard
 #include <cstddef>                              /* for ptrdiff_t */
 #include <iterator>
-#include <sys/types.h>                          /* for off_t */
 
 // local
 #include "util/mmap_file.h"
@@ -45,7 +44,7 @@ public:
   typedef value_type* const_pointer;
   typedef value_type const_reference;
 
-  typedef unsigned long size_type;
+  typedef uint32_t size_type;
   typedef ptrdiff_t difference_type;
 
   enum seg_id {
@@ -57,19 +56,11 @@ public:
 
   /**
    * Constructs a %db_segment.
-   */
-  db_segment() {
-  }
-
-  /**
-   * Constructs a %db_segment.
    *
    * @param file The mmap_file to access the segment within.
    * @param seg_id The desired segment ID.
    */
-  db_segment( mmap_file const &file, seg_id id ) {
-    set_file( file, id );
-  }
+  db_segment( mmap_file const &file, seg_id id );
 
   ////////// iterators ////////////////////////////////////////////////////////
 
@@ -79,53 +70,86 @@ public:
   class const_iterator :
     public std::iterator<std::random_access_iterator_tag,value_type> {
   public:
-    const_iterator() { }
+    const_iterator() : seg_( 0 ), i_( 0 ) {
+    }
 
-    const_reference operator*() const { return (*seg_)[ i_ ]; }
+    mmap_file::const_iterator base() const {
+      return (*seg_)[ i_ ];
+    }
+
+    // Forward iterator requirements
+
+    const_reference operator*() const {
+      return (*seg_)[ i_ ];
+    }
 
     const_iterator& operator++() {
       return ++i_, *this;
-    }
-
-    const_iterator& operator--() {
-      return --i_, *this;
     }
 
     const_iterator operator++(int) {
       return const_iterator( seg_, i_++ );
     }
 
-    const_iterator operator--(int) {
-      return const_iterator( seg_, i_-- );
-    }
-
-    const_iterator& operator+=( int n ) {
-      return i_ += n, *this;
-    }
-
-    const_iterator& operator-=( int n ) {
-      return i_ -= n, *this;
-    }
-
     friend bool operator==( const_iterator const &i, const_iterator const &j ) {
-      return i.i_ == j.i_;
+      return i.base() == j.base();
     }
 
     friend bool operator!=( const_iterator const &i, const_iterator const &j ) {
       return !( i == j );
     }
 
-    friend const_iterator operator+( const_iterator const &i, int n ) {
-      return const_iterator( i.seg_, i.i_ + n );
+    // Bidirectional iterator requirements
+
+    const_iterator& operator--() {
+      return --i_, *this;
     }
 
-    friend const_iterator operator-( const_iterator const &i, int n ) {
-      return const_iterator( i.seg_, i.i_ - n );
+    const_iterator operator--(int) {
+      return const_iterator( seg_, i_-- );
     }
 
-    friend difference_type
-    operator-( const_iterator const &i, const_iterator const &j ) {
+    // Random access iterator requirements
+
+    const_reference operator[]( int n ) const {
+      return (*seg_)[ i_ + n ];
+    }
+
+    const_iterator operator+( int n ) {
+      return const_iterator( seg_, i_ + n );
+    }
+
+    const_iterator& operator+=( int n ) {
+      return i_ += n, *this;
+    }
+
+    const_iterator operator-( int n ) {
+      return const_iterator( seg_, i_ - n );
+    }
+
+    const_iterator& operator-=( int n ) {
+      return i_ -= n, *this;
+    }
+
+    friend difference_type operator-( const_iterator const &i,
+                                      const_iterator const &j ) {
       return i.i_ - j.i_;
+    }
+
+    friend bool operator<( const_iterator const &i, const_iterator const &j ) {
+      return i.base() < j.base();
+    }
+
+    friend bool operator<=( const_iterator const &i, const_iterator const &j ) {
+      return i.base() <= j.base();
+    }
+
+    friend bool operator>( const_iterator const &i, const_iterator const &j ) {
+      return i.base() > j.base();
+    }
+
+    friend bool operator>=( const_iterator const &i, const_iterator const &j ) {
+      return i.base() >= j.base();
     }
 
     // default copy constructor is OK
@@ -162,19 +186,13 @@ public:
   }
 
   /**
-   * Sets the thesaurus file and segment.
-   *
-   * @param file The binary version of a WordNet thesaurus.
-   * @param id The segment ID.
-   */
-  void set_file( mmap_file const &file, seg_id id );
-
-  /**
    * Gets the number of entries in this segment.
    *
    * @return Returns the number of entries in this segment.
    */
-  size_type size() const { return num_entries_; }
+  size_type size() const {
+    return num_entries_;
+  }
 
   /**
    * Gets the ith entry.
@@ -189,9 +207,11 @@ public:
   //////////////////////////////////////////////////////////////////////////// 
 
 private:
-  mmap_file::const_iterator  begin_;
-  size_type                  num_entries_;
-  off_t const                *offset_;
+  typedef uint32_t offset_type;
+
+  mmap_file::const_iterator const begin_;
+  size_type num_entries_;
+  offset_type const *offset_;
 };
 
 } // namespace wordnet

@@ -16,21 +16,21 @@
 
 #include "wn_db_segment.h"
 
-using namespace std;
-
 namespace zorba {
 namespace wordnet {
 
-void db_segment::set_file( mmap_file const &file, seg_id id ) {
-  mmap_file::const_iterator c = begin_ = file.begin();
-  size_type const *p = reinterpret_cast<size_type const*>( c );
-  num_entries_ = p[0];
+db_segment::db_segment( mmap_file const &file, seg_id id ) :
+  begin_( file.begin() )
+{
+  mmap_file::const_iterator byte_ptr = begin_;
+  size_type const *size_ptr = reinterpret_cast<size_type const*>( byte_ptr );
+  num_entries_ = size_ptr[0];
   for ( int i = id; i > 0; --i ) {
-    c += sizeof( num_entries_ ) + num_entries_ * sizeof( off_t );
-    p = reinterpret_cast<size_type const*>( c );
-    num_entries_ = p[0];
+    byte_ptr += sizeof( size_type ) + num_entries_ * sizeof( offset_type );
+    size_ptr = reinterpret_cast<size_type const*>( byte_ptr );
+    num_entries_ = size_ptr[0];
   }
-  offset_ = reinterpret_cast<off_t const*>( &p[1] );
+  offset_ = reinterpret_cast<offset_type const*>( &size_ptr[1] );
 }
 
 } // namespace wordnet
