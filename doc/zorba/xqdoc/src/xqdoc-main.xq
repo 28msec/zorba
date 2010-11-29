@@ -4,6 +4,7 @@ declare variable $modulesPath         as xs:string external;
 declare variable $xhtmlRequisitesPath as xs:string external;
 declare variable $xqdocBuildPath      as xs:string external;
 declare variable $examplePath         as xs:string external;
+declare variable $zorbaVersion        as xs:string external;
 
 (
 xqdoc2html:copy-xhtml-requisites( $modulesPath,
@@ -13,6 +14,7 @@ xqdoc2html:copy-xhtml-requisites( $modulesPath,
 xqdoc2html:main($modulesPath,
                 $xqdocBuildPath,
                 $xhtmlRequisitesPath,
-                $examplePath)
+                $examplePath,
+                $zorbaVersion)
 
 )

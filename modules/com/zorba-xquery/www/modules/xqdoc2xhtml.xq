@@ -63,6 +63,11 @@ declare variable $xqdoc2html:externalLinks :=
 declare variable $xqdoc2html:functionIndexPageName as xs:string := "function_index.html";
 
 (:~
+ : This is the name of the search XHTML page.
+ :)
+declare variable $xqdoc2html:searchPageName as xs:string := "search.html";
+
+(:~
  : The function clears all the files matching $pattern from the provided folderPath.
  :
  : @param $folderPath where to search for modules recursively.
@@ -90,7 +95,7 @@ declare %private sequential function xqdoc2html:clear-folder(
  :
  : @param   $sourcePath where to search for modules recursively.
  : @param   $destinationPath destination folder for the files.
- : @param   $pattern where to generate the XQDoc XML documents.
+ : @param   $pattern the pattern expressed by XQuery regular expressions.
  : @return  Empty sequence.
  :)
 declare %private sequential function xqdoc2html:gather-and-copy(
@@ -294,25 +299,23 @@ FAILED: ", $moduleUri, " (", ()(:$xqdocFileName:), ")")
  : documents found in $xqdocPath and writes the resulting pages to $targetPath. 
  : The hierarchy is not preserved. 
  :
- : @param $indexPath path to the XHTML index page.
  : @param $xqdocXmlPath path to the XQDoc XML files.
  : @param $xqdocXhtmlPath location where the resulting Xhtml will be saved on disk.
  : @param $xqSrcPath location of the xq.src folder containing the implementation of the external functions.
  : @param $leftMenu the menu containing the links to the generated Xhtml files.
  : @param $modulesPath the path to the .xq modules.
  : @param $functionIndexPageName the name of the generated page for the function index.
+ : @param $templatePath the path to the main.html template.
  : @return a string sequence with the status of every processed XQDoc XML file.
  :)
 declare %private sequential function xqdoc2html:generate-xqdoc-xhtml(
-  $indexPath              as xs:string, 
   $xqdocXmlPath           as xs:string,
   $xqdocXhtmlPath         as xs:string, 
   $xqSrcPath              as xs:string,
   $leftMenu               as element(menu),
   $modulesPath            as xs:string, 
-  $functionIndexPageName  as xs:string) as xs:string* {
-  let $indexHtmlDoc := file:read-xml($indexPath)
-  return
+  $functionIndexPageName  as xs:string,
+  $templatePath           as xs:string) as xs:string* {
   for $file in file:files($xqdocXmlPath, "\.xml$", fn:true())
   let $xmlFilePath := concat($xqdocXmlPath, file:path-separator(), $file)
   let $xhtmlFilePath := concat($xqdocXhtmlPath, file:path-separator(), fn:replace($file, "\.xml$", ".html"))
@@ -326,17 +329,9 @@ declare %private sequential function xqdoc2html:generate-xqdoc-xhtml(
       let $moduleDoc := $xqdoc/xqdoc:module
       let $moduleName := $moduleDoc/xqdoc:name
       let $moduleUri := $moduleDoc/xqdoc:uri
-      let $menu := <ul id="documentation">
-      <span><a href="index.html">{string($leftMenu/@title)}</a></span>
-      <li><a href="{$functionIndexPageName}">Function Index</a></li>
-      {
-        for $link in $xqdoc2html:externalLinks//a
-        return
-          <li>{$link}</li>
-      }      
-      </ul>
+      let $menu := xqdoc2html:create-left-menu($leftMenu, $moduleUri)
       let $menu := xqdoc2html:create-module-table($leftMenu, $menu, $moduleUri)
-      let $xhtml := xqdoc2html:doc($xqdoc, $menu, $xqdoc2html:indexCollector, $xqdoc2html:schemasCollector, $xqSrcPath)
+      let $xhtml := xqdoc2html:doc($xqdoc, $menu, $xqdoc2html:indexCollector, $xqdoc2html:schemasCollector, $xqSrcPath, $templatePath)
       return block {
         file:mkdirs($xhtmlFileDir, false());
 
@@ -354,67 +349,94 @@ FAILED: ", $xhtmlFilePath)
 };
 
 (:~
- : This function generates the XQDoc function index page and writes it to disk.
+ : This function generates the XQDoc function index page.
  : @param $indexFunctionLeft the menu containing the links to the generated Xhtml files.
- : @param $xqdocXhtmlPath location where the resulting XQDoc function index page will be saved.
- : @param $indexPageName the name of the resulting XQDoc function index page.
- : @return a string indicationg if the function index page was created successfully.
+ : @param $templatePath the path to the main.html template.
+ : @return The content of the function index page.
  :)
 declare sequential function xqdoc2html:generate-function-index-xhtml(
   $indexFunctionLeft,
-  $xqdocXhtmlPath as xs:string,
-  $indexPageName as xs:string
-) as xs:string* {
-let $content :=<html>
-  <head>
-    <title>Indexed Library Module Functions</title>
-    <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
-    <meta content="PRIVATE" http-equiv="CACHE-CONTROL" />
-    <meta content="-1" http-equiv="Expires" />
-    <link rel="stylesheet" type="text/css" href="css/main.css" />
-    <link rel="stylesheet" href="css/jquery.treeview.css" />
-    <link rel="stylesheet" href="css/screen.css" />
-    <script src="lib/jquery.js" type="text/javascript"> </script>
-    <script src="lib/jquery.cookie.js" type="text/javascript"> </script>
-    <script src="lib/jquery.treeview.js" type="text/javascript"> </script>
-    <script type="text/javascript">
-      $(function() &#123;
-        $("#documentation").treeview(&#123;
-            animated: "fast",
-            collapsed: true,
-            unique: false,
-            persist: "cookie"
-        &#125;);
-      &#125;)
-    </script>
-  </head>
-  <body>
-  <div id="main">
-    <div id="leftMenu">
-    {$indexFunctionLeft}
-    </div>
-    <div id="rightcontent">
-    <div class="section">
-            <span id="module_description">Indexed Library Module Functions</span>
-    </div>
-    {xqdoc2html:generate-function-index()}
-    </div>
-  </div>
-  </body>
-</html>
-return
-  try {
-    file:write(fn:concat($xqdocXhtmlPath, file:path-separator(), $indexPageName), $content, <s method="xhtml" indent="yes" />/@*);
-  } catch * ($error_code) {
-      concat("
-FAILED: ", fn:concat($xqdocXhtmlPath, file:path-separator()))
-  }  
+  $templatePath as xs:string
+) as document-node() {
+
+  let $indexHtmlDoc := file:read-xml($templatePath)
+  return block {
+      insert node <title>Function index</title>
+      as first into $indexHtmlDoc/*:html/*:head;
+
+      insert nodes $indexFunctionLeft
+      as last into $indexHtmlDoc/*:html/*:body/*:div[@id='main']/*:div[@id='leftMenu'];
+
+      let $right_content := $indexHtmlDoc/*:html/*:body/*:div[@id='main']/*:div[@id='rightcontent']
+      return
+        if ($right_content)
+        then
+          insert nodes
+            (<div class="section"><span id="module_description">Indexed Library Module Functions</span></div>,
+            xqdoc2html:generate-function-index())
+          as last into $right_content
+        else
+          ();
+
+    $indexHtmlDoc;
+  }
+};
+
+(:~
+ : This function generates the Search page XHTML.
+ : @param $indexFunctionLeft the menu containing the links to the generated Xhtml files.
+ : @param $templatePath the path to the main.html template.
+ : @param $zorbaVersion Zorba version.
+ : @return The content of the Search page.
+ :)
+declare sequential function xqdoc2html:generate-search-xhtml(
+  $indexFunctionLeft,
+  $templatePath as xs:string,
+  $zorbaVersion as xs:string
+) as document-node() {
+
+  let $searchDoc := file:read-xml($templatePath)
+  return block {
+      insert node <title>Search</title>
+      as first into $searchDoc/*:html/*:head;
+
+      insert nodes $indexFunctionLeft
+      as last into $searchDoc/*:html/*:body/*:div[@id='main']/*:div[@id='leftMenu'];
+
+      insert nodes
+           (<script src="http://www.google.com/jsapi" type="text/javascript"></script>,
+            <script type="text/javascript">
+            google.load('search', '1', &#123; language : 'en'&#125;);
+            google.setOnLoadCallback(function() &#123;
+              var customSearchControl = new google.search.CustomSearchControl('001923125976056611009:rghy-r4to5y');
+              customSearchControl.setResultSetSize(google.search.Search.FILTERED_CSE_RESULTSET);
+              var options = new google.search.DrawOptions();
+              options.setSearchFormRoot('searchbox');
+              customSearchControl.draw('searchresults', options);
+            &#125;, true);</script>,
+            <link rel="stylesheet" href="http://www.google.com/cse/style/look/minimalist.css" type="text/css" />)
+      as first into $searchDoc/*:html/*:body;
+
+      let $right_content := $searchDoc/*:html/*:body/*:div[@id='main']/*:div[@id='rightcontent']
+      return
+        if ($right_content)
+        then
+          insert nodes
+            (<div class="section"><span id="search">Zorba XQuery Processor {$zorbaVersion} search page</span></div>,
+             <div id="searchbox"></div>,
+             <div id="searchresults"></div>)
+          as last into $right_content
+        else
+          ();
+
+    $searchDoc;
+  }
 };
 
 (:~
  : This function gathers schemas found in the $xqdocSchemasPath and fills the $xqdoc2html:schemasCollector.
  : @param $xqdocSchemasPath the path where the schemas are stored.
- : @return a string sequence indicationg the result of every processed schema.
+ : @return a string sequence indicating the result of every processed schema.
  :)
 declare %private sequential function xqdoc2html:gather-schemas(
   $xqdocSchemasPath as xs:string) as xs:string* {
@@ -442,7 +464,7 @@ declare %private sequential function xqdoc2html:gather-schemas(
 (:~
  : This function gathers the modules found in the $xqdocXmlPath and fills the $xqdoc2html:indexCollector.
  : @param $xqdocXmlPath the path where the XQDoc XML modules are stored.
- : @return a string sequence indicationg the result of every processed XQDoc XML file.
+ : @return a string sequence indicating the result of every processed XQDoc XML file.
  :)
 declare %private sequential function xqdoc2html:gather-modules(
   $xqdocXmlPath as xs:string
@@ -724,28 +746,35 @@ declare %private sequential function xqdoc2html:create-module-table(
 };
 
 (:~
- : This function creates menu header for the index.html or function index XHTML pages.
+ : This function creates menu header provided $pageName page.
  :
  : @param $leftMenu the menu.
- : @param $isFunctionIndex true for the function index XHTML page, false for the index.html.
- : @param $functionIndexPageName the name of the function index XHTML page.
+ : @param $pageName the name of the function index XHTML page.
  : @return $root after the subcategories were added to it.
  :)
 declare %private function xqdoc2html:create-left-menu(
-  $leftMenu as element(menu), 
-  $isFunctionIndex as xs:boolean, 
-  $functionIndexPageName as xs:string) {
-  <ul id="documentation">    
+  $leftMenu as element(menu),
+  $pageName as xs:string) {
+  <ul id="documentation">
     {
     (
-      if($isFunctionIndex) then
+      if($pageName = $xqdoc2html:functionIndexPageName) then
         (
         <span><a href="index.html">{string($leftMenu/@title)}</a></span>,    
-        <li><span class="leftmenu_active">Function Index</span></li>)
-      else
+        <li><span class="leftmenu_active">Function Index</span></li>,
+        <li><a href="{$xqdoc2html:searchPageName}">Search page</a></li>)
+      else if($pageName = "index.html") then
         (<span class="leftmenu_active">{string($leftMenu/@title)}</span>,
-        
-      <li><a href="{$functionIndexPageName}">Function Index</a></li>),      
+         <li><a href="{$xqdoc2html:functionIndexPageName}">Function Index</a></li>,
+         <li><a href="{$xqdoc2html:searchPageName}">Search page</a></li>)
+      else if($pageName = $xqdoc2html:searchPageName) then
+        (<span><a href="index.html">{string($leftMenu/@title)}</a></span>,
+         <li><a href="{$xqdoc2html:functionIndexPageName}">Function Index</a></li>,
+         <li><span class="leftmenu_active">Search page</span></li>)
+      else
+         (<span><a href="index.html">{string($leftMenu/@title)}</a></span>,
+         <li><a href="{$xqdoc2html:functionIndexPageName}">Function Index</a></li>,
+         <li><a href="{$xqdoc2html:searchPageName}">Search page</a></li>),
       
       for $link in $xqdoc2html:externalLinks//a
       return
@@ -801,28 +830,37 @@ declare %private sequential function xqdoc2html:create-module-helper(
 (:~
  : This function reads, updates and returns the new index.html.
  :
- : @param $indexPath Where to search for XML XQDoc documents recursively.
+ : @param $templatePath the path to the 'main.html' template.
  : @param $menu the menu.
  : @param $modules the modules.
+ : @param $zorbaVersion Zorba version.
  : @return The content of the new index.html.
  :)
-declare %private sequential function xqdoc2html:generateIndexHtml(
-  $indexPath as xs:string, 
+declare %private sequential function xqdoc2html:generate-index-html(
+  $templatePath as xs:string, 
   $menu, 
-  $modules) as document-node() {
-    let $indexHtmlDoc := file:read-xml($indexPath)
+  $modules,
+  $zorbaVersion as xs:string) as document-node() {
+    let $indexHtmlDoc := file:read-xml($templatePath)
     return block {
+        insert node <title>XQuery Modules Documentation</title>
+        as first into $indexHtmlDoc/*:html/*:head;
+
         insert nodes $menu
         as last into $indexHtmlDoc/*:html/*:body/*:div[@id='main']/*:div[@id='leftMenu'];
 
-        let $module_list := $indexHtmlDoc/*:html/*:body/*:div[@id='main']/*:div[@id='rightcontent']/*:div[@id='module_list']
+        let $right_content := $indexHtmlDoc/*:html/*:body/*:div[@id='main']/*:div[@id='rightcontent']
         return
-          if ($module_list)
+          if ($right_content)
           then
-            insert node $modules as last into $module_list
+            insert nodes
+              (<div class="section"><span class="section">XQuery Modules Documentation for Zorba XQuery Processor {$zorbaVersion}</span></div>,
+              <p>This document contains a list of all the XQuery modules that come with the Zorba XQuery processor.</p>,
+              $modules)
+            as last into $right_content
           else
             ();
-        
+
         $indexHtmlDoc;
     }
 };
@@ -835,34 +873,36 @@ declare %private sequential function xqdoc2html:generateIndexHtml(
  : @param $xqdocBuildPath where to output the XQDoc XMLs and XHTMLs.
  : @param $xhtmlRequisitesPath where to search for the XHTML requisites.
  : @param $examplePath string with the paths where the examples are kept separated by ; .
+ : @param $zorbaVersion Zorba version.
  : @return Empty sequence.
  :)
 declare sequential function xqdoc2html:main(
   $modulePath as xs:string, 
   $xqdocBuildPath as xs:string,
   $xhtmlRequisitesPath as xs:string,
-  $examplePath as xs:string
+  $examplePath as xs:string,
+  $zorbaVersion as xs:string
 ) {
     let $leftMenu :=
     <menu title="XQuery Modules Documentation">
-    <category name="http://expath.org/ns" uri="http://expath.org/ns" />
-    <category name="http://www.zorba-xquery.com/modules" uri="http://www.zorba-xquery.com/modules" >
-      <category name="email" uri="http://www.zorba-xquery.com/modules/email" />
-      <category name="excel" uri="http://www.zorba-xquery.com/modules/excel" />
-      <category name="image" uri="http://www.zorba-xquery.com/modules/image" />
-      <category name="introspection" uri="http://www.zorba-xquery.com/modules/introspection" />
-      <category name="security" uri="http://www.zorba-xquery.com/modules/security" />
-      <category name="oauth" uri="http://www.zorba-xquery.com/modules/oauth" />
-      <category name="webservices" uri="http://www.zorba-xquery.com/modules/webservices" >
-        <category name="google" uri="http://www.zorba-xquery.com/modules/webservices/google" />
-        <category name="yahoo" uri="http://www.zorba-xquery.com/modules/webservices/yahoo" />
+      <category name="http://expath.org/ns" uri="http://expath.org/ns" />
+      <category name="http://www.zorba-xquery.com/modules" uri="http://www.zorba-xquery.com/modules" >
+        <category name="email" uri="http://www.zorba-xquery.com/modules/email" />
+        <category name="excel" uri="http://www.zorba-xquery.com/modules/excel" />
+        <category name="image" uri="http://www.zorba-xquery.com/modules/image" />
+        <category name="introspection" uri="http://www.zorba-xquery.com/modules/introspection" />
+        <category name="security" uri="http://www.zorba-xquery.com/modules/security" />
+        <category name="oauth" uri="http://www.zorba-xquery.com/modules/oauth" />
+        <category name="webservices" uri="http://www.zorba-xquery.com/modules/webservices" >
+          <category name="google" uri="http://www.zorba-xquery.com/modules/webservices/google" />
+          <category name="yahoo" uri="http://www.zorba-xquery.com/modules/webservices/yahoo" />
+        </category>
       </category>
-    </category>
-    <category name="http://www.w3.org/2005" uri="http://www.w3.org/2005" />
-    <category name="www.functx.com" uri="http://www.functx.com" />
+      <category name="http://www.w3.org/2005" uri="http://www.w3.org/2005" />
+      <category name="www.functx.com" uri="http://www.functx.com" />
     </menu>
     let $indexHtmlPath as xs:string := fn:concat($xhtmlRequisitesPath, file:path-separator(), "templates", file:path-separator(), "index.html")
-    return xqdoc2html:main($leftMenu, $modulePath, $xqdocBuildPath, $indexHtmlPath, $examplePath)
+    return xqdoc2html:main($leftMenu, $modulePath, $xqdocBuildPath, $indexHtmlPath, $examplePath, $zorbaVersion)
 };
 
 (:~
@@ -873,6 +913,7 @@ declare sequential function xqdoc2html:main(
  : @param $xqdocBuildPath where to output the XQDoc XMLs and XHTMLs.
  : @param $indexHtmlPath where to load the template for the index.html.
  : @param $examplePath string with the paths where the examples are kept separated by ; .
+ : @param $zorbaVersion Zorba version.
  : @return Empty sequence.
  :)
 declare %private sequential function xqdoc2html:main(
@@ -880,12 +921,22 @@ declare %private sequential function xqdoc2html:main(
   $modulePath as xs:string, 
   $xqdocBuildPath as xs:string,
   $indexHtmlPath as xs:string,
-  $examplePath as xs:string
+  $examplePath as xs:string,
+  $zorbaVersion as xs:string
 ) {  
-  declare $xqdocXmlPath   as xs:string := fn:concat($xqdocBuildPath, file:path-separator(), "xml");
-  declare $xqdocXhtmlPath as xs:string := fn:concat($xqdocBuildPath, file:path-separator(), "xhtml");
+  declare $xqdocXmlPath     as xs:string := fn:concat($xqdocBuildPath, file:path-separator(), "xml");
+  declare $xqdocXhtmlPath   as xs:string := fn:concat($xqdocBuildPath, file:path-separator(), "xhtml");
   declare $xqdocSchemasPath as xs:string := fn:concat($xqdocXhtmlPath, file:path-separator(), "schemas");
-  declare $xqSrcPath as xs:string := fn:concat($xqdocXhtmlPath, file:path-separator(), "xq.src");
+  declare $xqSrcPath        as xs:string := fn:concat($xqdocXhtmlPath, file:path-separator(), "xq.src");
+  declare $templatesPath    as xs:string := fn:concat($xqdocXhtmlPath, file:path-separator(), "templates");
+  declare $templatePath     as xs:string := fn:concat($templatesPath, file:path-separator(), file:files($templatesPath, "(main\.html)$", fn:true()));
+
+  (: if there is no main.html template we can not proceed further :)
+  if($templatePath = fn:concat($templatesPath, file:path-separator())) then
+    error()
+  else
+    ()
+  ;
   
   (: generate the XQDoc XML for all the modules :)
   if (file:mkdirs($xqdocXmlPath, false())) then
@@ -906,27 +957,35 @@ declare %private sequential function xqdoc2html:main(
     xqdoc2html:clear-folder($xqdocXhtmlPath,"xqdoc\.html$"),
     xqdoc2html:gather-modules($xqdocXmlPath),
     xqdoc2html:gather-schemas($xqdocSchemasPath),    
-    xqdoc2html:generate-xqdoc-xhtml($indexHtmlPath, $xqdocXmlPath, $xqdocXhtmlPath, $xqSrcPath, $leftMenu, $modulePath, $xqdoc2html:functionIndexPageName),
+    xqdoc2html:generate-xqdoc-xhtml($xqdocXmlPath, $xqdocXhtmlPath, $xqSrcPath, $leftMenu, $modulePath, $xqdoc2html:functionIndexPageName, $templatePath),
     (
-      (: generate the left menu for the Function Index XHTML :)
-      let $leftFunction := xqdoc2html:create-left-menu($leftMenu, fn:true(), $xqdoc2html:functionIndexPageName)
-      let $indexFunctionLeft := xqdoc2html:create-module-table($leftMenu, $leftFunction, $xqdoc2html:functionIndexPageName)
+      let $leftMenuFunction := xqdoc2html:create-left-menu($leftMenu, $xqdoc2html:functionIndexPageName)
+      let $indexFunctionLeft := xqdoc2html:create-module-table($leftMenu, $leftMenuFunction, $xqdoc2html:functionIndexPageName)
+      let $leftMenuSearch := xqdoc2html:create-left-menu($leftMenu, $xqdoc2html:searchPageName)
+      let $indexSearchLeft := xqdoc2html:create-module-table($leftMenu, $leftMenuSearch, $xqdoc2html:searchPageName)
+
+      let $functionIndex := xqdoc2html:generate-function-index-xhtml($indexFunctionLeft, $templatePath)
+      let $search := xqdoc2html:generate-search-xhtml($indexSearchLeft, $templatePath, $zorbaVersion)
+      
+      let $writeFuncIndex := file:write(fn:concat($xqdocXhtmlPath, file:path-separator(), $xqdoc2html:functionIndexPageName), $functionIndex, <s method="xhtml" indent="yes" />/@*)
+      let $writeFuncIndex := file:write(fn:concat($xqdocXhtmlPath, file:path-separator(), $xqdoc2html:searchPageName), $search, <s method="xhtml" indent="yes" />/@*)
       return
-        xqdoc2html:generate-function-index-xhtml($indexFunctionLeft,$xqdocXhtmlPath,$xqdoc2html:functionIndexPageName)
-    )
+        ()
+     )
   )
   else
     error()
   ;  
   
-  let $left := xqdoc2html:create-left-menu($leftMenu, fn:false(), $xqdoc2html:functionIndexPageName)
+  let $left := xqdoc2html:create-left-menu($leftMenu, "index.html")
   let $indexLeft := xqdoc2html:create-module-table($leftMenu, $left, "index.html")
   let $right := <ul />
   let $indexRight := xqdoc2html:create-module-table($leftMenu, $right, "index.html")
-  let $doc := xqdoc2html:generateIndexHtml($indexHtmlPath, $indexLeft, $indexRight)
-  let $index := xqdoc2html:configure-xhtml($doc/*:html, $modulePath) 
+  let $doc := xqdoc2html:generate-index-html($templatePath, $indexLeft, $indexRight, $zorbaVersion)
+  let $index := xqdoc2html:configure-xhtml($doc/*:html, $modulePath)
+  let $writeIndex := file:write(fn:concat($xqdocXhtmlPath, file:path-separator(), "index.html"), $index, <s method="xhtml" indent="yes" />/@*)
   return
-    file:write(fn:concat($xqdocXhtmlPath, file:path-separator(), "index.html"), $index, <s method="xhtml" indent="yes" />/@*)
+    ()
   ;
  
 };
@@ -941,48 +1000,36 @@ declare %private sequential function xqdoc2html:main(
  : @param $indexCollector the modules names part of the left menu.
  : @param $schemasCollector the schemas imported by the modules.
  : @param $xqSrcPath the path to the xq.src folders.
+ : @param $templatePath the path to the main.html template.
  : @return The created XHTML page.
  :)
-declare function xqdoc2html:doc(
+declare sequential function xqdoc2html:doc(
   $xqdoc, 
   $menu, 
   $indexCollector, 
   $schemasCollector, 
-  $xqSrcPath as xs:string)
+  $xqSrcPath as xs:string,
+  $templatePath as xs:string)
 {
-<html>
-  <head>
-    <title>Documentation for {xqdoc2html:module-uri($xqdoc)}</title>
-    <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
-    <meta content="PRIVATE" http-equiv="CACHE-CONTROL" />
-    <meta content="-1" http-equiv="Expires" />
-    <link rel="stylesheet" type="text/css" href="css/main.css" />
-    <link rel="stylesheet" href="css/jquery.treeview.css" />
-    <link rel="stylesheet" href="css/screen.css" />
-    <script src="lib/jquery.js" type="text/javascript"> </script>
-    <script src="lib/jquery.cookie.js" type="text/javascript"> </script>
-    <script src="lib/jquery.treeview.js" type="text/javascript"> </script>
-    <script type="text/javascript">
-      $(function() &#123;
-        $("#documentation").treeview(&#123;
-            animated: "fast",
-            collapsed: true,
-            unique: false,
-            persist: "cookie"
-        &#125;);
-      &#125;)
-    </script>
-  </head>
-  <body>
-  <div id="main">
-    <div id="leftMenu">
-    {$menu}
-    </div>
-    <div id="rightcontent">{xqdoc2html:body($xqdoc, $indexCollector, $schemasCollector, $xqSrcPath)}
-    </div>
-  </div>
-  </body>
-</html>
+  let $doc := file:read-xml($templatePath)
+  return block {
+    insert node <title>Documentation for {xqdoc2html:module-uri($xqdoc)}</title>
+    as first into $doc/*:html/*:head;
+
+    insert nodes $menu
+    as last into $doc/*:html/*:body/*:div[@id='main']/*:div[@id='leftMenu'];
+
+    let $right_content := $doc/*:html/*:body/*:div[@id='main']/*:div[@id='rightcontent']
+    return
+      if ($right_content)
+      then
+        insert nodes xqdoc2html:body($xqdoc, $indexCollector, $schemasCollector, $xqSrcPath)
+        as last into $right_content
+      else
+        ();
+
+    $doc;
+  }
 };
 
 (:~
@@ -1014,18 +1061,15 @@ declare function xqdoc2html:body(
   $schemasCollector, 
   $xqSrcPath as xs:string)
 {
-  <body>
-    <h1>{xqdoc2html:module-uri($xqdoc)}</h1>
-    {            
-      xqdoc2html:module-description($xqdoc/xqdoc:module),
-      xqdoc2html:module-resources($xqSrcPath, xqdoc2html:module-uri($xqdoc), $xqdoc/xqdoc:functions),
-      xqdoc2html:module-dependencies($xqdoc, $indexCollector, $schemasCollector),
-      xqdoc2html:module-external-specifications($xqdoc/xqdoc:module),
-      xqdoc2html:module-variables($xqdoc/xqdoc:variables),
-      xqdoc2html:module-function-summary($xqdoc/xqdoc:functions),
-      xqdoc2html:functions($xqdoc/xqdoc:functions)
-    }
-  </body>
+  (<h1>{xqdoc2html:module-uri($xqdoc)}</h1>,
+    xqdoc2html:module-description($xqdoc/xqdoc:module),
+    xqdoc2html:module-resources($xqSrcPath, xqdoc2html:module-uri($xqdoc), $xqdoc/xqdoc:functions),
+    xqdoc2html:module-dependencies($xqdoc, $indexCollector, $schemasCollector),
+    xqdoc2html:module-external-specifications($xqdoc/xqdoc:module),
+    xqdoc2html:module-variables($xqdoc/xqdoc:variables),
+    xqdoc2html:module-function-summary($xqdoc/xqdoc:functions),
+    xqdoc2html:functions($xqdoc/xqdoc:functions)
+  )
 };
 
 (:~
@@ -1196,12 +1240,10 @@ declare function xqdoc2html:function-return($comment) {
  : @return the XHTML for the description annotations.
  :)
 declare function xqdoc2html:description($comment) {
-   <p>{
-    if ($comment/xqdoc:description) then
-        $comment/xqdoc:description/node()
-    else
-        "No description available."
-   }</p>
+   <p>{if ($comment/xqdoc:description) then
+         $comment/xqdoc:description/node()
+       else
+         "No description available."}</p>
 };
 
 (:~
@@ -1478,7 +1520,7 @@ declare function xqdoc2html:functions($functions) {
  : Pretty print the function signature.
  :
  : @param $signature the function signature.
- : @return the XHTML for the function signature after reformating was done.
+ : @return the XHTML for the function signature after reformatting was done.
  :)
 declare function xqdoc2html:split-function-signature($signature as xs:string) {
   let $line1 := substring-before($signature, "(")
