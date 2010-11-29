@@ -331,6 +331,17 @@ inline bool is_space( char c ) {
 ZORBA_DLL_PUBLIC bool is_whitespace( char const *s );
 
 /**
+ * Checks whether an entire string is whitespace.
+ *
+ * @param s The string to check.
+ * @return Returns \c true only if the entire string is whitespace.
+ */
+template<class StringType> inline
+bool is_whitespace( StringType const &s ) {
+  return is_whitespace( s.c_str() );
+}
+
+/**
  * Converts sequences of one or more whitespace characters to a single space.
  * Additionally, all leading and trailing whitespace is removed.
  *
