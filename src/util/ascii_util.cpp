@@ -74,7 +74,9 @@ ZORBA_DLL_PUBLIC extern char const uri_safe[256] = {
 
 bool is_whitespace( char const *s ) {
   for ( ; *s; ++s )
-    if ( !isspace( *s ) )
+    // Because of our utf-8 support, *s can be negative
+	// break the isspace check.
+    if ( *s < 0 || !isspace( *s ) )
       return false;
   return true;
 }
