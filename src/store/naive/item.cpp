@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,10 +26,10 @@
 
 #include "functions/signature.h"
 
-namespace zorba 
-{ 
+namespace zorba
+{
 
-namespace store 
+namespace store
 {
 
 
@@ -99,7 +99,7 @@ zstring Item::getStringValue() const
 }
 
 
-void Item::getStringValue2(zstring& val) const 
+void Item::getStringValue2(zstring& val) const
 {
   ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
                         "String value not defined for items of type "
@@ -107,7 +107,7 @@ void Item::getStringValue2(zstring& val) const
 }
 
 
-void Item::appendStringValue(zstring& buf) const 
+void Item::appendStringValue(zstring& buf) const
 {
   ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
                         "String value not defined for items of type "
@@ -137,7 +137,7 @@ FTTokenIterator_t Item::getQueryTokens( locale::iso639_1::type, bool ) const
 /* ---------------------  Methods for AtomicValues --------------------------- */
 
 
-/** 
+/**
  * Accessor for xs:qname
  */
 const zstring& Item::getNamespace() const
@@ -148,7 +148,7 @@ const zstring& Item::getNamespace() const
 }
 
 
-/** 
+/**
  * Accessor for xs:qname
  */
 const zstring& Item::getPrefix() const
@@ -159,7 +159,7 @@ const zstring& Item::getPrefix() const
 }
 
 
-/** 
+/**
  * Accessor for xs:qname
  */
 const zstring& Item::getLocalName() const
@@ -181,7 +181,7 @@ const zstring& Item::getString() const
 }
 
 
-/** 
+/**
  * Accessor for xs:base64Binary
  */
 xs_base64Binary Item::getBase64BinaryValue() const
@@ -235,7 +235,7 @@ xs_integer Item::getIntegerValue() const
 }
 
 
-/** 
+/**
  * Accessor for xs:long, xs:int, xs:short, xs:byte
  */
 xs_long Item::getLongValue() const
@@ -286,8 +286,8 @@ xs_byte Item::getByteValue() const
 }
 
 
-/** 
- * Accessor for xs:unsignedLong,  xs:unsignedInt,  xs:unsignedShort, 
+/**
+ * Accessor for xs:unsignedLong,  xs:unsignedInt,  xs:unsignedShort,
  *  xs:unsignedByte, xs:nonNegativeInteager, xs:positiveInteger
  */
 xs_uinteger Item::getUnsignedIntegerValue() const
@@ -300,8 +300,8 @@ xs_uinteger Item::getUnsignedIntegerValue() const
 }
 
 
-/** 
- * Accessor for xs:unsignedLong, xs:unsignedInt, xs:unsignedShort, xs:unsignedByte 
+/**
+ * Accessor for xs:unsignedLong, xs:unsignedInt, xs:unsignedShort, xs:unsignedByte
  */
 xs_ulong Item::getUnsignedLongValue() const
 {
@@ -312,8 +312,8 @@ xs_ulong Item::getUnsignedLongValue() const
 }
 
 
-/** 
- * Accessor for xs:unsignedInt, xs:unsignedShort, xs:unsignedByte 
+/**
+ * Accessor for xs:unsignedInt, xs:unsignedShort, xs:unsignedByte
  */
 xs_uint Item::getUnsignedIntValue() const
 {
@@ -324,7 +324,7 @@ xs_uint Item::getUnsignedIntValue() const
 }
 
 
-/** 
+/**
  * Accessor for xs:unsignedShort, xs:unsignedByte
  */
 xs_ushort Item::getUnsignedShortValue() const
@@ -337,7 +337,7 @@ xs_ushort Item::getUnsignedShortValue() const
 }
 
 
-/** 
+/**
  * Accessor for xs:unsignedByte
  */
 xs_ubyte Item::getUnsignedByteValue() const
@@ -349,7 +349,7 @@ xs_ubyte Item::getUnsignedByteValue() const
 }
 
 
-/** 
+/**
  * Accessor for xs:float
  */
 xs_float Item::getFloatValue() const
@@ -362,7 +362,7 @@ xs_float Item::getFloatValue() const
 }
 
 
-/** 
+/**
  * Accessor for xs:double
  */
 xs_double Item::getDoubleValue() const
@@ -375,7 +375,7 @@ xs_double Item::getDoubleValue() const
 }
 
 
-/** 
+/**
  * Accessor for xs:dateTime, xs:date
  */
 const xs_date& Item::getDateValue() const
@@ -387,7 +387,7 @@ const xs_date& Item::getDateValue() const
   return *(new xs_date);
 }
 
-/** 
+/**
  * Accessor for xs:dateTime
  */
 const xs_dateTime& Item::getDateTimeValue() const
@@ -399,7 +399,7 @@ const xs_dateTime& Item::getDateTimeValue() const
 }
 
 
-/** 
+/**
  * Accessor for xs:time
  */
 const xs_time& Item::getTimeValue() const
@@ -412,7 +412,7 @@ const xs_time& Item::getTimeValue() const
 }
 
 
-/** 
+/**
  * Accessor for xs:gDay
  */
 const xs_gDay& Item::getGDayValue() const
@@ -424,7 +424,7 @@ const xs_gDay& Item::getGDayValue() const
   return *(new xs_gDay);
 }
 
-/** 
+/**
  * Accessor for xs:gMonth
  */
 const xs_gMonth& Item::getGMonthValue() const
@@ -436,7 +436,7 @@ const xs_gMonth& Item::getGMonthValue() const
   return *(new xs_gMonth);
 }
 
-/** 
+/**
  * Accessor for xs:gMonthDay
  */
 const xs_gMonthDay& Item::getGMonthDayValue() const
@@ -448,7 +448,7 @@ const xs_gMonthDay& Item::getGMonthDayValue() const
   return *(new xs_gMonthDay);
 }
 
-/** 
+/**
  * Accessor for xs:gYear
  */
 const xs_gYear& Item::getGYearValue() const
@@ -458,7 +458,7 @@ const xs_gYear& Item::getGYearValue() const
   return *(new xs_gYear);
 }
 
-/** 
+/**
  * Accessor for xs:gYearMonth
  */
 const xs_gYearMonth& Item::getGYearMonthValue() const
@@ -469,7 +469,7 @@ const xs_gYearMonth& Item::getGYearMonthValue() const
   return *(new xs_gYearMonth);
 }
 
-/** 
+/**
  * Accessor for xs:duration
  */
 const xs_duration& Item::getDurationValue() const
@@ -481,7 +481,7 @@ const xs_duration& Item::getDurationValue() const
   return *(new xs_duration);
 }
 
-/** 
+/**
  * Accessor for xs:dayTimeDuration
  */
 const xs_dayTimeDuration& Item::getDayTimeDurationValue() const
@@ -506,7 +506,7 @@ const xs_yearMonthDuration& Item::getYearMonthDurationValue() const
 }
 
 
-/** 
+/**
  * Accessor for xs:hexBinary
  */
 xs_hexBinary Item::getHexBinaryValue() const
@@ -750,7 +750,7 @@ error::ZorbaError* Item::getError() const
 const Item_t Item::getFunctionName() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-    __FUNCTION__, "FunctionItem");  
+    __FUNCTION__, "FunctionItem");
 }
 
 } // namespace store

@@ -651,6 +651,16 @@ public:
   std::vector<ModuleImportChecker*> getAllModuleImportCheckers() const;
 
   //
+  // Validating Items
+  //
+  bool validate(store::Item* rootElement, store::Item* validatedResult);
+  bool validate(store::Item* rootElement, store::Item* validatedResult, 
+                const zstring& targetNamespace);
+  bool validateSimpleContent(zstring& textValue, 
+      store::Item* typeQName, 
+      std::vector<store::Item_t>& resultList);
+
+  //
   // Type management
   //
   TypeManager* get_typemanager() const;

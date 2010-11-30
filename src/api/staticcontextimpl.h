@@ -262,6 +262,17 @@ public:
   virtual void
   removeModuleImportChecker(ModuleImportChecker* aChecker);
 
+  virtual bool
+  validate(Item& rootElement, Item& validatedResult);
+  
+  virtual bool 
+  validate(Item& rootElement, Item& validatedResult, 
+           const String& targetNamespace);
+  
+  virtual bool 
+  validateSimpleContent(String& stringValue,
+          const Item& typeQName, 
+          std::vector<Item>& resultList);
 };
 
 } /* namespace zorba */

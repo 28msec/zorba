@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "common/common.h"
 #include "api/staticcontextimpl.h"
 
 #include <zorba/error.h>
@@ -1284,6 +1285,47 @@ void
 StaticContextImpl::removeModuleImportChecker(ModuleImportChecker* aChecker)
 {
   theCtx->removeModuleImportChecker(aChecker);
+}
+
+bool
+StaticContextImpl::validate(Item& rootElement, Item& validatedResult)
+{
+  return theCtx->validate(Unmarshaller::getInternalItem(rootElement), 
+                          Unmarshaller::getInternalItem(validatedResult));
+}
+
+bool 
+StaticContextImpl::validate(Item& rootElement, Item& validatedResult, 
+    const String& targetNamespace)
+{
+  zstring lTns = Unmarshaller::getInternalString(targetNamespace);
+  return theCtx->validate(Unmarshaller::getInternalItem(rootElement), 
+                          Unmarshaller::getInternalItem(validatedResult),
+                          lTns);  
+}
+  
+bool 
+StaticContextImpl::validateSimpleContent(String& stringValue,
+    const Item& typeQName, 
+    std::vector<Item>& resultList)
+{
+  bool res;
+  std::vector<store::Item_t> tmpResList;
+  zstring lTextValue = Unmarshaller::getInternalString(stringValue);
+  
+  res = theCtx->validateSimpleContent(lTextValue,
+      Unmarshaller::getInternalItem(typeQName), tmpResList);
+  
+  if (!res)
+    return false;
+    
+  for(std::vector<Item>::size_type i = 0; i<tmpResList.size(); i++)
+  {
+    store::Item_t item = tmpResList[i];
+    resultList.push_back(Item(item));
+  }
+  
+  return true;
 }
 
 } /* namespace zorba */

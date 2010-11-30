@@ -29,6 +29,7 @@
 #endif
 
 // local
+#include "common/common.h"
 #include "util/mmap_file.h"
 
 namespace zorba {

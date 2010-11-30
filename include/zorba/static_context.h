@@ -505,6 +505,44 @@ namespace zorba {
         */
       virtual void
       removeModuleImportChecker(ModuleImportChecker* aChecker) = 0;
-  };
+      
+      /** \brief Validates this Item.
+        *  Note: works only on document and element nodes, otherwise returns false.
+        * 
+        * @param rootElement the root of the tree beeing validated 
+        * @return true if validating is correct, throws errors if validation fails
+        * @return validatedResult the result of the validation
+        * @throw ZorbaException if any validation error occured
+        */
+      bool
+      validate(Item& rootElement, Item& validatedResult);
+
+      /** \brief Validates this Item while loading the schema for targetNamespace
+        *  Note: works only on document or element nodes, otherwise returns false.
+        * 
+        * @param rootElement the root of the tree beeing validated 
+        * @return validatedResult the result of the validation
+        * @param targetNamespace the expected namespace of root of the tree beeing validated ???
+        * @return true if validating is correct, throws errors if validation fails
+        * @throw ZorbaException if any validation error occured
+        */
+      bool 
+      validate(Item& rootElement, Item& validatedResult, 
+               const String& targetNamespace);
+  
+      /** \brief Validates stringValue as XML simple content, i.e. the text value of attributes or 
+        * text only element content.
+        * 
+        * @param stringValue the value to be validated
+        * @return true if validating is correct, throws errors if validation fails
+        * @return resultList the result of the validation, a vector of atomic Items
+        * @throw ZorbaException if any validation error occured
+        */
+      bool 
+      validateSimpleContent(String& stringValue,
+          const Item& typeQName, 
+          std::vector<Item>& resultList);
+
+};
 } /* namespace zorba */
 #endif

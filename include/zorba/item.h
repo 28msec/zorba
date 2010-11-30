@@ -312,7 +312,7 @@ public:
    */
   int
   getNodeKind() const;
-
+  
 private:
   friend class Unmarshaller;
 

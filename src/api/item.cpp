@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -43,14 +43,14 @@ namespace zorba {
     throw SystemException(XQP0019_INTERNAL_ERROR, e.what(), "", 0); \
   } catch (...) { \
     throw SystemException(XQP0019_INTERNAL_ERROR, "Internal error", "", 0); \
-  } 
+  }
 
 
 Item::Item(const store::Item* other)
   :
   m_item(const_cast<store::Item*>(other))
 {
-  if (!isNull()) 
+  if (!isNull())
   {
     RCHelper::addReference(m_item);
   }
@@ -68,7 +68,7 @@ Item::Item(const Item& other)
   :
   m_item(other.m_item)
 {
-  if (!isNull()) 
+  if (!isNull())
   {
     RCHelper::addReference(m_item);
   }
@@ -84,7 +84,7 @@ Item::~Item()
 void
 Item::close()
 {
-  if (!isNull()) 
+  if (!isNull())
   {
     RCHelper::removeReference(m_item);
     m_item = NULL;
@@ -94,11 +94,11 @@ Item::close()
 
 const Item& Item::operator =(const Item& rhs)
 {
-  if (m_item != rhs.m_item) 
+  if (m_item != rhs.m_item)
   {
     close();
     m_item = rhs.m_item;
-    if (!isNull()) 
+    if (!isNull())
     {
       RCHelper::addReference(m_item);
     }
@@ -109,11 +109,11 @@ const Item& Item::operator =(const Item& rhs)
 
 const Item& Item::operator =(const store::Item* rhs)
 {
-  if (m_item != rhs) 
+  if (m_item != rhs)
   {
     close();
     m_item = const_cast<store::Item*>(rhs);
-    if (!isNull()) 
+    if (!isNull())
     {
       RCHelper::addReference(m_item);
     }
@@ -122,7 +122,7 @@ const Item& Item::operator =(const store::Item* rhs)
 }
 
 
-bool 
+bool
 Item::isNode() const
 {
   ITEM_TRY
@@ -132,7 +132,7 @@ Item::isNode() const
 }
 
 
-bool 
+bool
 Item::isAtomic() const
 {
   ITEM_TRY
@@ -142,7 +142,7 @@ Item::isAtomic() const
 }
 
 
-bool 
+bool
 Item::isNull() const
 {
   ITEM_TRY
@@ -242,14 +242,14 @@ double Item::getDoubleValue() const
 xs_long Item::getLongValue() const
 {
   ITEM_TRY
-    
+
     SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
     return m_item->getLongValue();
 
   ITEM_CATCH
-  return 0;  
-  
+  return 0;
+
 }
 
 
@@ -390,7 +390,7 @@ Item::getNodeName(Item& aNodeName) const
 {
   ITEM_TRY
     SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
-  
+
     store::Item* lNodeName = m_item->getNodeName();
 
     aNodeName = lNodeName;
@@ -405,7 +405,7 @@ Item::getNodeKind() const
 {
   ITEM_TRY
     SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
-  
+
     return m_item->getNodeKind();
   ITEM_CATCH
   return -1;
