@@ -1310,7 +1310,6 @@ bool FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     // casting of untyped atomic
     lResultType = tm->create_value_type(result);
-    std::cout << lResultType->toString() << std::endl;
 
     if (TypeOps::is_subtype(tm, *lResultType, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
     {
