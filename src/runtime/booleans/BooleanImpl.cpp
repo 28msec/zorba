@@ -85,6 +85,7 @@ bool FnBooleanIterator::effectiveBooleanValue(
 {
   store::Item_t item, temp;
   bool result;
+  bool is_sequence;
 
   TypeManager* tm = iter->getStaticContext()->get_typemanager();
 
@@ -101,7 +102,9 @@ bool FnBooleanIterator::effectiveBooleanValue(
   else
   {
     xqtref_t type = tm->create_value_type(item);
-    if (( !consumeNext(temp, iter, planState)) &&
+    is_sequence = consumeNext(temp, iter, planState);
+    if (!is_sequence 
+        &&
         (TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE)
          || TypeOps::is_subtype(tm, *type, *GENV_TYPESYSTEM.STRING_TYPE_ONE)
          || TypeOps::is_subtype(tm, *type, *GENV_TYPESYSTEM.ANY_URI_TYPE_ONE)
@@ -115,8 +118,13 @@ bool FnBooleanIterator::effectiveBooleanValue(
     }
     else
     {
-      ZORBA_ERROR_LOC_DESC(FORG0006, loc,
-                           "Wrong arguments in fn:boolean function.");
+      if (is_sequence)
+        ZORBA_ERROR_LOC_DESC(FORG0006, loc, "Wrong arguments in fn:boolean function. "
+          + zstring("Effective boolean value is not defined for a sequence of two or more items that starts with a ")
+          + type->toString()
+          + ".");
+      else
+        ZORBA_ERROR_LOC_DESC(FORG0006, loc, "Wrong arguments in fn:boolean function.");
     }
   }
 
