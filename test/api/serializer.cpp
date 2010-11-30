@@ -55,20 +55,20 @@ test_serialization_error(Zorba* aZorba)
   } catch (ZorbaException& e) {
     std::cerr << e << std::endl;
     lIterator->close();
-    return false;
+    return true;
   }
-	return true;
+	return false;
 }
 
 
 int
 serializer(int argc, char* argv[]) 
 {
-  //Zorba* lZorba = Zorba::getInstance(zorba::StoreManager::getStore());
+  Zorba* lZorba = Zorba::getInstance(zorba::StoreManager::getStore());
 
-  //if (!test_serialization_error(lZorba)) {
-  //  return 1;
-  //}
+  if (!test_serialization_error(lZorba)) {
+    return 1;
+  }
 
   return 0;
 }
