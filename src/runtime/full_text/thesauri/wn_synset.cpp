@@ -14,11 +14,17 @@
  * limitations under the License.
  */
 
-#include <stdexcept>
+#include "zorbaerrors/error_manager.h"
 
 #include "decode_base128.h"
 #include "wn_synset.h"
 #include "wn_types.h"
+
+#define THROW_DATA_EXCEPTION(CHAR,MSG) {                                \
+  ostringstream oss;                                                    \
+  oss << '\'' << (CHAR) << "': " MSG;                                   \
+  ZORBA_ERROR_DESC( XQP8702_WORDNET_THESAURUS_DATA_ERROR, oss.str() );  \
+}
 
 using namespace std;
 
@@ -38,7 +44,7 @@ void synset::parse( char const *p ) {
 
   char c = *p++;
   if ( (pos_ = part_of_speech::find( c )) == part_of_speech::unknown )
-    throw invalid_argument( "bad pos" );
+    THROW_DATA_EXCEPTION( c, "invalid part-of-speech" );
 
   for ( unsigned n_lemmas = decode_base128( &p ); n_lemmas > 0; --n_lemmas )
     lemma_ids_.push_back( decode_base128( &p ) );
@@ -48,12 +54,12 @@ void synset::parse( char const *p ) {
 
     c = *p++;
     if ( (ptr.pos_ = part_of_speech::find( c )) == part_of_speech::unknown )
-      throw invalid_argument( "bad pos" );
+      THROW_DATA_EXCEPTION( c, "invalid part-of-speech" );
 
     c = *p++;
     if ( (ptr.type_ = zorba::wordnet::pointer::find( c )) ==
           zorba::wordnet::pointer::unknown )
-      throw invalid_argument( "bad ptr type" );
+      THROW_DATA_EXCEPTION( c, "invalid pointer type" );
 
     ptr.synset_id_ = decode_base128( &p );
     ptr.source_    = decode_base128( &p );

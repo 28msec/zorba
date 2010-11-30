@@ -17,11 +17,13 @@
 #include <iostream>
 
 #include <algorithm>                    /* for equal_range */
+#include <cstring>                      /* for strcmp(3) */
 #include <utility>                      /* for pair */
 
 #include "util/ascii_util.h"
 #include "util/less.h"
 #include "util/mmap_file.h"
+#include "zorbaerrors/error_manager.h"
 
 #include "decode_base128.h"
 #include "wn_db_segment.h"
@@ -36,6 +38,14 @@ namespace wordnet {
 
 ////////// Helper functions ///////////////////////////////////////////////////
 
+#define THROW_VERSION_EXCEPTION(FILE_VERSION,OUR_VERSION) {                   \
+  ostringstream oss;                                                          \
+  oss << '"' << FILE_VERSION                                                  \
+      << "\": wrong WordNet file version; should be \""                       \
+      << OUR_VERSION << '"';                                                  \
+  ZORBA_ERROR_DESC( XQP8701_WORDNET_THESAURUS_VERSION_MISMATCH, oss.str() );  \
+}
+
 /**
  * Gets a reference to a singleton instance of the WordNet thesaurus database
  * file.
@@ -43,9 +53,18 @@ namespace wordnet {
  * @return Returns said reference.
  */
 static mmap_file const& get_db_file() {
+  typedef char version_type[4];
+  static char const our_version[] = "ZW01";
+
   static mmap_file thesaurus_file;
-  if ( !thesaurus_file )
+  if ( !thesaurus_file ) {
     thesaurus_file.open( "/usr/local/tmp/zorba/wordnet.zth" ); // TODO
+    char file_version[ sizeof( version_type ) + 1 ];
+    ::strncpy( file_version, thesaurus_file.begin(), sizeof( version_type ) );
+    file_version[ sizeof( version_type ) ] = '\0';
+    if ( ::strcmp( file_version, our_version ) != 0 )
+      THROW_VERSION_EXCEPTION( file_version, our_version );
+  }
   return thesaurus_file;
 }
 
