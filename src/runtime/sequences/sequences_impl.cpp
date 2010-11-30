@@ -1310,6 +1310,7 @@ bool FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     // casting of untyped atomic
     lResultType = tm->create_value_type(result);
+    std::cout << lResultType->toString() << std::endl;
 
     if (TypeOps::is_subtype(tm, *lResultType, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
     {
@@ -1318,7 +1319,8 @@ bool FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
 
     if (!TypeOps::is_numeric(tm, *lResultType) &&
-        !TypeOps::is_subtype(tm, *lResultType, *rtm.DURATION_TYPE_ONE))
+        (!TypeOps::is_subtype(tm, *lResultType, *rtm.DURATION_TYPE_ONE) ||
+         TypeOps::is_equal(tm, *lResultType, *rtm.DURATION_TYPE_ONE)))
       ZORBA_ERROR_LOC(FORG0006, loc);
 
     while (consumeNext(lRunningItem, theChildren[0].getp(), planState))
@@ -1333,7 +1335,7 @@ bool FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       }
 
       // handling of NaN
-      if (lRunningItem->isNaN()) 
+      if (lRunningItem->isNaN())
       {
          result = lRunningItem;
         break;
@@ -1541,18 +1543,27 @@ bool FnSumIntegerIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
-  xs_integer sum;
+  xs_integer    sum;
   store::Item_t item;
+  xqtref_t      lResultType;
+  xqtref_t      lTmpType;
+
+  const TypeManager* tm = theSctx->get_typemanager();
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(item, theChildren[0].getp(), planState))
   {
+    lResultType = tm->create_value_type(item);
     sum = item->getIntegerValue();
 
     while (consumeNext(item, theChildren[0].getp(), planState))
     {
+      lTmpType = tm->create_value_type(item);
+      if(TypeOps::is_subtype(tm, *lResultType, *lTmpType))
+        lResultType = lTmpType;
+
       if (item->isNaN())
       {
         result = item;
@@ -1563,6 +1574,7 @@ bool FnSumIntegerIterator::nextImpl(
     }
 
     GENV_ITEMFACTORY->createInteger(result, sum);
+    GenericCast::castToAtomic(result, result, &*lResultType, tm);
 
     STACK_PUSH(true, state);
   }

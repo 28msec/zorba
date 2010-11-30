@@ -72,9 +72,6 @@ test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/ReplaceFu
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/ReplaceFunc/K2-ReplaceFunc-6
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/ReplaceFunc/K-ReplaceFunc-7
 test/rbkt/w3c_testsuite/XQuery/Functions/NodeFunc/NodeLangFunc/K2-NodeLangFunc-2
-test/rbkt/w3c_testsuite/XQuery/Functions/SeqFunc/AggregateSeqFunc/SeqSUMFunc/fn-sum-9
-test/rbkt/w3c_testsuite/XQuery/Functions/SeqFunc/AggregateSeqFunc/SeqSUMFunc/K2-SeqSUMFunc-4
-test/rbkt/w3c_testsuite/XQuery/Functions/SeqFunc/AggregateSeqFunc/SeqSUMFunc/fn-sum-10
 test/rbkt/w3c_testsuite/XQuery/SchemaValidation/ValidateExpression/validateexpr-28
 test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/PrologExpr/VariableProlog/ExternalVariablesWith/K2-ExternalVariablesWith-22
 test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/PrologExpr/BaseURIProlog/K2-BaseURIProlog-5
