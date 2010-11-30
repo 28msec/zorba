@@ -74,25 +74,56 @@ namespace pointer {
    * The various types of WordNet pointer.
    */
   enum type {
-    //
-    // The char is the binary file WordNet pointer symbol; the comment is the
-    // original file WordNet pointer symbol.
-    //
-
     unknown,
+
+    /**
+     * A word that is related to another, e.g., for "varnished" (furniture) one
+     * should also see "finished."
+     */
     also_see,
 
     /**
-     * A word opposite in meaning to another.
+     * A word opposite in meaning to another, e.g., "light" is an antonym for
+     * "heavy."
      */
     antonym,
 
+    /**
+     * A noun for which adjectives express values, e.g., "weight" is an
+     * attribute for which the adjectives "light" and "heavy" express values.
+     */
     attribute,
+
+    /**
+     * A verb that causes another, e.g., "show" causes "see."
+     */
     cause,
+
+    /**
+     * A word that is derived from a root word, e.g., "metric" is a
+     * derivationally related form of "meter."
+     */
     derivationally_related_form,
+
+    /**
+     * An adverb that is derived from an adjective, e.g., "correctly" is
+     * derived from the adjective "correct."
+     */
     derived_from_adjective,
+
+    /**
+     * TODO
+     */
     domain_of_synset_region,
+
+    /**
+     * TODO
+     */
     domain_of_synset_topic,
+
+    /**
+     * TODO
+     */
     domain_of_synset_usage,
 
     /**
@@ -136,8 +167,19 @@ namespace pointer {
      */
     member_meronym,
 
+    /**
+     * TODO
+     */
     member_of_domain_region,
+
+    /**
+     * TODO
+     */
     member_of_domain_topic,
+
+    /**
+     * TODO
+     */
     member_of_domain_usage,
 
     /**
@@ -152,8 +194,12 @@ namespace pointer {
      */
     part_meronym,
 
+    /**
+     * An adjective that is the participle of some verb, e.g., "breaking" is
+     * the participle of the verb "break."
+     */
     participle_of_verb,
-    
+
     /**
      * An adjective that classifies its noun, e.g., "musical instrument."
      */
@@ -178,8 +224,16 @@ namespace pointer {
      */
     substance_meronym,
 
+    /**
+     * A verb that is a member of a group of similar verbs, e.g., "live" is in
+     * the verb group of "dwell", "live", "inhabit", etc.
+     */
     verb_group,
   };
+
+  /**
+   * The string representation of type.
+   */
   extern char const *const string_of[];
 
   /**
@@ -191,7 +245,7 @@ namespace pointer {
   type find( char ptr_symbol );
 
   /**
-   * Given a binary WordNet pointer symbol, find its corresponding type.
+   * Given a binary WordNet pointer symbol, finds its corresponding type.
    *
    * @param ptr_symbol The pointer symbol to find.
    * @return Returns the corresponding type or \c unknown.
@@ -200,8 +254,20 @@ namespace pointer {
     return find( static_cast<char>( ptr_symbol ) );
   }
 
+  /**
+   * Given a WordNet relationship, find its corresponding type.
+   *
+   * @param relationship The relationship to find.
+   * @return Returns the corresponding type or \c unknown.
+   */
   type find( char const *relationship );
 
+  /**
+   * Given a WordNet relationship, find its corresponding type.
+   *
+   * @param relationship The relationship to find.
+   * @return Returns the corresponding type or \c unknown.
+   */
   template<class StringType> inline
   type find( StringType const &relationship ) {
     return find( relationship.c_str() );

@@ -19,7 +19,7 @@
 namespace zorba {
 namespace wordnet {
 
-db_segment::db_segment( mmap_file const &file, seg_id id ) :
+db_segment::db_segment( mmap_file const &file, id_t id ) :
   begin_( file.begin() )
 {
   mmap_file::const_iterator byte_ptr = begin_;

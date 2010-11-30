@@ -16,11 +16,12 @@
 
 namespace zorba {
 
-unsigned decode_base128( unsigned char const **const p ) {
+unsigned decode_base128( char const **p ) {
+  unsigned char const *&u = *reinterpret_cast<unsigned char const**>( p );
   unsigned n = 0;
   do {
-    n = (n << 7) | (**p & 0x7F);
-  } while ( *(*p)++ & 0x80 );
+    n = (n << 7) | (*u & 0x7F);
+  } while ( *u++ & 0x80 );
   return n;
 }
 

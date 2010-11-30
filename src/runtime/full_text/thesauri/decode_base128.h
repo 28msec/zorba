@@ -27,7 +27,7 @@ namespace zorba {
  * decoding, the pointer is left one past the last byte.
  * @return Returns the decoded integer.
  */
-unsigned decode_base128( unsigned char const **const p );
+unsigned decode_base128( char const **p );
 
 } // namespace zorba
 

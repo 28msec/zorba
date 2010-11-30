@@ -18,6 +18,7 @@
 #define ZORBA_FULL_TEXT_WORDNET_THESAURUS_H
 
 #include <deque>
+#include <set>
 
 #include "../ft_thesaurus.h"
 #include "wn_types.h"
@@ -40,16 +41,17 @@ public:
   bool next( zstring *synonym );
 
 private:
+  typedef std::deque<synset_id_t> synset_id_queue;
+  typedef std::deque<lemma_id_t> synonym_queue;
+  typedef std::set<lemma_id_t> synonym_set;
+
   pointer::type const ptr_type_;
   ft_int const at_least_, at_most_;
-
   ft_int level_;
 
-  typedef std::deque<synset_id_t> synset_id_queue;
   synset_id_queue synset_id_queue_;
-
-  typedef std::deque<lemma_id_t> synonym_queue;
   synonym_queue synonym_queue_;
+  synonym_set synonyms_seen_;
 
   // forbid these
   thesaurus( thesaurus const& );

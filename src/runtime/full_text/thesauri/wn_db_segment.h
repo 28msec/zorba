@@ -18,6 +18,7 @@
 #define ZORBA_FULL_TEXT_WORDNET_THES_SEG_H
 
 // standard
+#include <cassert>
 #include <cstddef>                              /* for ptrdiff_t */
 #include <iterator>
 
@@ -53,9 +54,9 @@ public:
   typedef uint32_t size_type;
   typedef ptrdiff_t difference_type;
 
-  enum seg_id {
-    id_lemma  = 0,
-    id_synset = 1
+  enum id_t {
+    lemma  = 0,
+    synset = 1
   };
 
   ////////// constructors /////////////////////////////////////////////////////
@@ -64,9 +65,9 @@ public:
    * Constructs a %db_segment.
    *
    * @param file The mmap_file to access the segment within.
-   * @param seg_id The desired segment ID.
+   * @param id The desired segment ID.
    */
-  db_segment( mmap_file const &file, seg_id id );
+  db_segment( mmap_file const &file, id_t id );
 
   ////////// iterators ////////////////////////////////////////////////////////
 
@@ -77,10 +78,6 @@ public:
     public std::iterator<std::random_access_iterator_tag,value_type> {
   public:
     const_iterator() : seg_( 0 ), i_( 0 ) {
-    }
-
-    mmap_file::const_iterator base() const {
-      return (*seg_)[ i_ ];
     }
 
     // Forward iterator requirements
@@ -98,7 +95,7 @@ public:
     }
 
     friend bool operator==( const_iterator const &i, const_iterator const &j ) {
-      return i.base() == j.base();
+      return i.i_ == j.i_;
     }
 
     friend bool operator!=( const_iterator const &i, const_iterator const &j ) {
@@ -143,19 +140,19 @@ public:
     }
 
     friend bool operator<( const_iterator const &i, const_iterator const &j ) {
-      return i.base() < j.base();
+      return i.i_ < j.i_;
     }
 
     friend bool operator<=( const_iterator const &i, const_iterator const &j ) {
-      return i.base() <= j.base();
+      return i.i_ <= j.i_;
     }
 
     friend bool operator>( const_iterator const &i, const_iterator const &j ) {
-      return i.base() > j.base();
+      return i.i_ > j.i_;
     }
 
     friend bool operator>=( const_iterator const &i, const_iterator const &j ) {
-      return i.base() >= j.base();
+      return i.i_ >= j.i_;
     }
 
     // default copy constructor is OK
@@ -207,6 +204,7 @@ public:
    * @return Returns the ith entry.
    */
   const_reference operator[]( size_type i ) const {
+    assert( i < num_entries_ );
     return begin_ + offset_[i];
   }
 

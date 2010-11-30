@@ -14,31 +14,47 @@
  * limitations under the License.
  */
 
+#include <stdexcept>
+
 #include "decode_base128.h"
 #include "wn_synset.h"
 #include "wn_types.h"
+
+using namespace std;
 
 namespace zorba {
 namespace wordnet {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void synset::parse( unsigned char const *p ) {
-  int junk = 0;
+void synset::parse( char const *p ) {
+  //
+  // The format of a synset is:
+  //
+  //  synset = {pos}{#lemmas}{lemma#}...{#ptrs}{ptr}...
+  //  pos = a | r | n | v
+  //  ptr = {pos}{type}{synset#}{source}{target}
+  //
 
-  if ( (pos_ = part_of_speech::find( *p++ )) == part_of_speech::unknown )
-    ++junk; // TODO: throw exception
+  char c = *p++;
+  if ( (pos_ = part_of_speech::find( c )) == part_of_speech::unknown )
+    throw invalid_argument( "bad pos" );
 
   for ( unsigned n_lemmas = decode_base128( &p ); n_lemmas > 0; --n_lemmas )
     lemma_ids_.push_back( decode_base128( &p ) );
 
   for ( unsigned n_ptrs = decode_base128( &p ); n_ptrs > 0; --n_ptrs ) {
     synset::ptr ptr;
-    if ( (ptr.pos_ = part_of_speech::find( *p++ )) == part_of_speech::unknown )
-      ++junk; // TODO: throw exception
-    if ( (ptr.type_ = zorba::wordnet::pointer::find( *p++ )) ==
+
+    c = *p++;
+    if ( (ptr.pos_ = part_of_speech::find( c )) == part_of_speech::unknown )
+      throw invalid_argument( "bad pos" );
+
+    c = *p++;
+    if ( (ptr.type_ = zorba::wordnet::pointer::find( c )) ==
           zorba::wordnet::pointer::unknown )
-      ++junk; // TODO: throw exception
+      throw invalid_argument( "bad ptr type" );
+
     ptr.synset_id_ = decode_base128( &p );
     ptr.source_    = decode_base128( &p );
     if ( ptr.source_ )

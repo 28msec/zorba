@@ -48,11 +48,11 @@ public:
   lemma_id_list lemma_ids_;
   ptr_list ptr_list_;
 
-  synset( unsigned char const *p ) {
+  synset( char const *p ) {
     parse( p );
   }
 
-  void parse( unsigned char const *p );
+  void parse( char const *p );
 };
 
 } // namespace wordnet
