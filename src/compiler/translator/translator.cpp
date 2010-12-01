@@ -3774,8 +3774,15 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
 
     if (TypeOps::is_builtin_simple(CTX_TM, *returnType))
     {
+      QueryLoc temp_loc = QueryLoc::null;
+      if (dynamic_cast<flwor_expr*>(body.getp()) != NULL)
+        temp_loc = dynamic_cast<flwor_expr*>(body.getp())->get_return_expr()->get_loc();
+
       body = wrap_in_atomization(body);
       body = wrap_in_type_promotion(body, returnType);
+
+      if (!temp_loc.equals(QueryLoc::null))
+        body->set_loc(temp_loc);
     }
     else
     {
