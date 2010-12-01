@@ -434,12 +434,14 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   if (!consumeNext(result, theChild.getp(), planState))
   {
-    if (theQuantifier == TypeConstants::QUANT_PLUS ||
-        theQuantifier == TypeConstants::QUANT_ONE)
+    if (theQuantifier == TypeConstants::QUANT_PLUS)
     {
-      // ZORBA_ERROR_LOC_DESC(theErrorCode, loc, "Cannot treat empty sequence as <type>+ or <type>.");
       ZORBA_ERROR_LOC_DESC(theErrorCode, loc, "Cannot treat empty sequence as " 
-        + theTreatType->toSchemaString() + "+ or "
+        + theTreatType->toSchemaString() + "+.");
+    }
+    else if (theQuantifier == TypeConstants::QUANT_ONE)
+    {
+      ZORBA_ERROR_LOC_DESC(theErrorCode, loc, "Cannot treat empty sequence as " 
         + theTreatType->toSchemaString() + ".");
     }
   }
@@ -449,7 +451,9 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     if (consumeNext(temp, theChild.getp(), planState))
     {
       ZORBA_ERROR_LOC_DESC(theErrorCode, loc,
-      "Cannot treat sequence with more than one item as <type>? or <type>.");
+        theQuantifier == TypeConstants::QUANT_QUESTION ? 
+            "Cannot treat sequence with more than one item as " + theTreatType->toSchemaString() + "?."
+          : "Cannot treat sequence with more than one item as " + theTreatType->toSchemaString() + ".");
     }
 
     if (check_prime && !TypeOps::is_treatable(tm, result, *theTreatType))
