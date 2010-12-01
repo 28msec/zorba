@@ -40,6 +40,7 @@ public:
   Specification()
     : theInline(false),
       theComparisonMethod("Fragment"),
+      theSerializationMethod("XML"),
       theUseIndent(false),
       theEnableDtd(false)
   {}
@@ -56,6 +57,7 @@ private:
   std::string              theInputQueryFile;
   std::string              theComparisonMethod; // default is Fragment such that the user doesn't need to care about root tags for sequences etc
   std::string              theDefaultCollection;
+  std::string              theSerializationMethod;//"XML" (default), "TXT"(for CSV testing)
   bool                     theUseIndent;
   bool                     theEnableDtd;
 
@@ -91,6 +93,10 @@ private:
     theTimezone = s;
   }
 
+  void setSerializationMethod(std::string ser_method)
+  {
+    theSerializationMethod = ser_method;
+  }
   void setUseIndent() {
     theUseIndent = true;
   }
@@ -152,6 +158,10 @@ public:
     return theDefaultCollection;
   }
 
+  std::string getSerializationMethod()
+  {
+    return theSerializationMethod;
+  }
   bool getUseIndent() const {
     return theUseIndent;
   }
@@ -251,6 +261,9 @@ public:
             // Just --indent for now
             if (*lIter == "--indent") {
               setUseIndent();
+            } else if(*lIter == "--method") {
+              ++lIter;
+              theSerializationMethod = *lIter;
             } else {
               return false;
             }

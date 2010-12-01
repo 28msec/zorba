@@ -387,11 +387,14 @@ main(int argc, char** argv)
 
     errors = -1;
     {
-      { // serialize xml
+      { // serialize xml/txt
         std::ofstream lResFileStream(lResultFile.get_path().c_str());
         assert (lResFileStream.good());
         Zorba_SerializerOptions lSerOptions;
-        lSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_XML;
+        lSerOptions.ser_method = 
+          lSpec.getSerializationMethod() == "XML" ? ZORBA_SERIALIZATION_METHOD_XML :
+          lSpec.getSerializationMethod() == "TXT" ? ZORBA_SERIALIZATION_METHOD_TEXT :
+                                                  ZORBA_SERIALIZATION_METHOD_XML;
         lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
         lSerOptions.indent = lSpec.getUseIndent() ?
           ZORBA_INDENT_YES : ZORBA_INDENT_NO;
@@ -502,7 +505,7 @@ main(int argc, char** argv)
           std::cout << "testdriver: canonical result for reference result # " << i 
                     << " doesn't match." << std::endl;
         }
-
+ 
         ++i;
       } // for 
 
