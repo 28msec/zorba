@@ -411,15 +411,15 @@ main(int argc, char** argv)
       
       if (! lRefFileExists )
       {
-        if(lSpec.errorsSize() == 0)
-        {
-          std::cout << "No reference result and no expected errors." << std::endl;
-          return 3;
-        }
         if(lSpec.getComparisonMethod() == "Ignore")
         {
           std::cout << "Since the comparison method is set to 'Ignore' the test is considered successful." << std::endl;
           return 0;
+        }
+        if(lSpec.errorsSize() == 0)
+        {
+          std::cout << "No reference result and no expected errors." << std::endl;
+          return 3;
         }
       }
       
