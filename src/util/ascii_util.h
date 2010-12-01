@@ -726,6 +726,20 @@ void to_xml( InputStringType const &in, OutputStringType *out ) {
 }
 
 /**
+ * Escapes characters in the string for XML, specfically '"', '&', '\'', '<',
+ * and '>'.
+ *
+ * @tparam StringType The string type.
+ * @param s The string.
+ */
+template<class StringType> inline
+void to_xml( StringType &s ) {
+  StringType temp;
+  std::copy( s.begin(), s.end(), back_xml_inserter( temp ) );
+  s = temp;
+}
+
+/**
  * Percent-encodes (%xx) illegal URI characters.
  *
  * @tparam InputStringType The input string type.

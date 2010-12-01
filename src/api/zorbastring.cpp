@@ -214,9 +214,7 @@ String& String::trim() {
 }
 
 String& String::formatAsXML() {
-  string_type temp;
-  ascii::to_xml( *THIS_STRING, &temp );
-  *THIS_STRING = temp;
+  ascii::to_xml( *THIS_STRING );
   return *this;
 }
 
