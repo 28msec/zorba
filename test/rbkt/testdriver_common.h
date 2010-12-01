@@ -149,6 +149,9 @@ bool isErrorExpected(
     const TestErrorHandler& errHandler,
     const Specification* aSpec);
 
+bool isStaticError(
+    std::string strValue);
+
 void printErrors(
     const TestErrorHandler& errHandler,
     const char* msg,

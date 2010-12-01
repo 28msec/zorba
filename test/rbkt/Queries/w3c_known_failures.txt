@@ -8,7 +8,6 @@ test/rbkt/w3c_testsuite/XQuery/FunctX/functx-fn-tokenize/functx-fn-tokenize-7
 test/rbkt/w3c_testsuite/XQuery/FunctX/functx-fn-namespace-uri-for-prefix/functx-fn-namespace-uri-for-prefix-all
 test/rbkt/w3c_testsuite/XQuery/Expressions/PrimaryExpr/Literals/K2-Literals-10
 test/rbkt/w3c_testsuite/XQuery/Expressions/PrimaryExpr/Literals/K2-Literals-9
-test/rbkt/w3c_testsuite/XQuery/Expressions/PrimaryExpr/Literals/K2-Literals-1
 test/rbkt/w3c_testsuite/XQuery/Expressions/PrimaryExpr/Literals/K2-Literals-8
 test/rbkt/w3c_testsuite/XQuery/Expressions/Construct/DirectConElem/DirectConElemContent/Constr-cont-nsmode-10
 test/rbkt/w3c_testsuite/XQuery/Expressions/Construct/DirectConElem/DirectConElemContent/Constr-cont-nsmode-8
@@ -23,17 +22,6 @@ test/rbkt/w3c_testsuite/XQuery/Construct/ComputeCon/ComputeConElem/comp-elem-bad
 test/rbkt/w3c_testsuite/XQuery/Construct/ComputeCon/ComputeConElem/comp-elem-bad-name-3
 test/rbkt/w3c_testsuite/XQuery/Construct/ComputeCon/ComputeConElem/comp-elem-bad-name-5
 test/rbkt/w3c_testsuite/XQuery/Construct/ComputeCon/ComputeConElem/comp-elem-bad-name-2
-test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-006
-test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-009
-test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-001
-test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-008
-test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-002
-test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-004
-test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-005
-test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-003
-test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-010
-test/rbkt/w3c_testsuite/XQuery/Basics/EQNames/eqname-007
-test/rbkt/w3c_testsuite/XQuery/Modules/ModuleImport/modules-28
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/MatchesFunc/fn-matches-38
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/MatchesFunc/caselessmatch11
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/MatchesFunc/K2-MatchesFunc-14
@@ -70,7 +58,6 @@ test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/ReplaceFu
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/ReplaceFunc/K2-ReplaceFunc-6
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/ReplaceFunc/K-ReplaceFunc-7
 test/rbkt/w3c_testsuite/XQuery/Functions/NodeFunc/NodeLangFunc/K2-NodeLangFunc-2
-test/rbkt/w3c_testsuite/XQuery/SchemaValidation/ValidateExpression/validateexpr-28
 test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/PrologExpr/VariableProlog/ExternalVariablesWith/K2-ExternalVariablesWith-22
 test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/PrologExpr/BaseURIProlog/K2-BaseURIProlog-5
 test/rbkt/w3c_testsuite/XQuery/StaticTyping/STFLWORExpr/ST-PITest-02
