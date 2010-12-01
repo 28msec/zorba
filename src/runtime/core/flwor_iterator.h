@@ -143,7 +143,7 @@ public:
   - Data Members:
 
   theOrderSpecs : The vector of OrderSpecs for this OrderByClause (see common.h
-                  the the definition of class OrderSpec).
+                  for the definition of class OrderSpec).
   theStable     : Whether the sorting must be stable or not.
 ********************************************************************************/
 class OrderByClause : public ::zorba::serialization::SerializeBaseClass
@@ -243,10 +243,26 @@ public:
                        already bound or not, and for for each FOR var its
                        positional integer value.
 
+  theTempSeqs        : For each LET var, this vector stores a handle to a temp
+                       seq that will store the "current" value of the LET var.
+                       Note: The size of the vector is equal to the total number
+                       of FOR/LET variables. The entry at position "pos" 
+                       corresponds to the variable that, suntactically, appears
+                       at position "pos" within the flwor expr. The entries
+                       corresponding to FOR vars are left empty. 
+  theTempSeqIters    : For each LET var, this vector stores a handle to a
+                       PlanIteratorWrapper over the subplan that computes the
+                       domain expr of the LET var. This PlanIteratorWrapper is
+                       given as input to the init() method of the temp seq 
+                       corresponding to the same LET var (and stored in
+                       theTempSeqs)
+
   theSortTable       : The table that materializes a flwor tuple stream in inder
                        to sort it. The entries of this table are instances of
                        SortTuple (see gflwor/orderby_iterator.h).
-  theNumTuples       : The number of tuples in theSort.
+  theDataTable       : The "data" corresponding the the sort tuples in 
+                       theSortTable.
+  theNumTuples       : The number of tuples in theSortTable.
   theCurTuplePos     : A position inside theSortTable. Used, together with
                        theOrderResultIter, to return individual flwor results
                        after the full result set has been materialized and sorted. 

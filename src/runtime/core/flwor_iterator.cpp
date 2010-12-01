@@ -698,12 +698,7 @@ bool FLWORIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         // otherwise we just need to indicate that we finished by returning NULL.
         if ( curVar == 0 )
         {
-          if (theIsUpdating)
-          {
-            result = pul.release();
-            STACK_PUSH(true, iterState);
-          }
-          else if (theOrderByClause)
+          if (theOrderByClause)
           {
             if(theGroupByClause)
             {
@@ -740,7 +735,15 @@ bool FLWORIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
               while (iterState->theOrderResultIter->next(result))
               {
-                STACK_PUSH(true, iterState);
+                if (theIsUpdating)
+                {
+                  ZORBA_FATAL(result->isPul(), "");
+                  pul->mergeUpdates(result);
+                }
+                else
+                {
+                  STACK_PUSH(true, iterState);
+                }
               }
 
              iterState->theOrderResultIter->close();
@@ -754,16 +757,34 @@ bool FLWORIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
             while (iterState->theGroupMapIter != iterState->theGroupMap->end())
             {
+              if (!iterState->theFirstResult)
+                theReturnClause->reset(planState);
+
+              iterState->theFirstResult = false;
+
               bindGroupBy(iterState->theGroupMapIter, iterState, planState);
 
               while(consumeNext(result, theReturnClause, planState)) 
               {
-                STACK_PUSH(true, iterState);
+                if (theIsUpdating)
+                {
+                  ZORBA_FATAL(result->isPul(), "");
+                  pul->mergeUpdates(result);
+                }
+                else
+                {
+                  STACK_PUSH(true, iterState);
+                }
               }
 
-              theReturnClause->reset(planState);
               ++iterState->theGroupMapIter;
             }
+          }
+
+          if (theIsUpdating)
+          {
+            result = pul.release();
+            STACK_PUSH(true, iterState);
           }
 
           goto stop;
@@ -793,35 +814,33 @@ bool FLWORIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       {
         matVarsAndGroupBy(iterState, planState);
       }
-      else if (theIsUpdating)
-      {
-        if (!iterState->theFirstResult)
-          theReturnClause->reset(planState);
-
-        iterState->theFirstResult = false;
-
-        while(consumeNext(curItem, theReturnClause, planState)) 
-        {
-          ZORBA_FATAL(curItem->isPul(), "");
-
-          pul->mergeUpdates(curItem);
-        }
-      }
-      else if ( !theOrderByClause )
-      {
-        if (!iterState->theFirstResult)
-          theReturnClause->reset(planState);
-
-        iterState->theFirstResult = false;
-
-        while (consumeNext(result, theReturnClause, planState))
-        {
-          STACK_PUSH(true, iterState);
-        }
-      }
       else
       {
-        materializeResultForSort(iterState, planState);
+        if (!iterState->theFirstResult)
+          theReturnClause->reset(planState);
+
+        iterState->theFirstResult = false;
+
+        if (theOrderByClause)
+        {
+          materializeResultForSort(iterState, planState);
+        }
+        else if (theIsUpdating)
+        {
+          while(consumeNext(curItem, theReturnClause, planState)) 
+          {
+            ZORBA_FATAL(curItem->isPul(), "");
+            
+            pul->mergeUpdates(curItem);
+          }
+        }
+        else
+        {
+          while (consumeNext(result, theReturnClause, planState))
+          {
+            STACK_PUSH(true, iterState);
+          }
+        }
       }
     }
 
@@ -946,9 +965,10 @@ bool FLWORIterator::evalToBool(
 
 /***************************************************************************//**
   All FOR and LET vars are bound when this method is called. The method computes
-  the order-by tuple T and the return-clause sequence R for the current var
-  bindings. Then, it inserts the pair (T, I(R)) into theSortArray (where I is
-  an iterator over the temp seq storing R).
+  the sort tuple ST and the return-clause sequence R for the current var 
+  bindings. Then, it inserts I(R) into theDataTable, where I is an iterator over
+  the temp seq storing R, and the pair (ST, P) into theSortTable, where P is the
+  position of I(R) within theDataTable.
 ********************************************************************************/
 void FLWORIterator::materializeResultForSort(
     FlworState* iterState,
@@ -999,8 +1019,111 @@ void FLWORIterator::materializeResultForSort(
   store::Iterator_t resultIter = resultSeq->getIterator();
 
   dataTable[numTuples].transfer(resultIter);
+}
 
-  theReturnClause->reset(planState); 
+
+/***************************************************************************//**
+  All FOR and LET vars are bound when this method is called. The method computes
+  the group-by tuple T and then checks whether T is in the GroupMap already. If
+  not, it inserts T in the GroupMap, together with one temp sequence for each of
+  the non-grouping vars, storing the current value of the non-grouping var. If
+  yes, it appends to each of the temp sequences associated with T the current
+  value of each non-grouping var.
+********************************************************************************/
+void FLWORIterator::matVarsAndGroupBy(
+    FlworState* iterState,
+    PlanState& planState) const
+{
+  ZORBA_ASSERT(theGroupByClause);
+
+  GroupTuple* groupTuple = new GroupTuple();
+  std::vector<store::Item_t>& groupTupleItems = groupTuple->theItems;
+  std::vector<store::Item_t>& groupTupleValues = groupTuple->theTypedValues;
+
+  std::vector<GroupingSpec> groupSpecs = theGroupByClause->theGroupingSpecs;
+  std::vector<GroupingSpec>::iterator specIter = groupSpecs.begin();
+  std::vector<GroupingSpec>::iterator specEnd = groupSpecs.end();
+
+  while ( specIter != specEnd )
+  {
+    groupTupleItems.push_back(NULL);
+    store::Item_t& tupleItem = groupTupleItems.back();
+    
+    groupTupleValues.push_back(NULL);
+    store::Item_t& tupleValue = groupTupleValues.back();
+
+    bool status = consumeNext(tupleItem, specIter->theInput, planState);
+
+    if(status)
+    {
+      store::Iterator_t typedValueIter;
+
+      tupleItem->getTypedValue(tupleValue, typedValueIter);
+
+      if (typedValueIter != NULL)
+      {
+        typedValueIter->open();
+        if (typedValueIter->next(tupleValue))
+        {
+          store::Item_t temp;
+          if (typedValueIter->next(temp))
+          {
+            ZORBA_ERROR_DESC(XPTY0004,
+                             "Expected a singleton (atomization has more than one value)" );
+          }
+        }
+      }
+
+      // check that there are no more values for the current grouping column
+      store::Item_t temp;
+      if (consumeNext(temp, specIter->theInput, planState))
+      {
+        ZORBA_ERROR_DESC(XPTY0004, "Expected a singleton");
+      }
+    }
+
+    specIter->reset(planState);
+    ++specIter;
+  }
+
+  GroupHashMap* groupMap = iterState->theGroupMap;
+
+  std::vector<NonGroupingSpec> nongroupingSpecs = theGroupByClause->theNonGroupingSpecs;
+  std::vector<store::TempSeq_t>* nongroupVarSequences = 0;
+  long numNonGroupingSpecs = nongroupingSpecs.size();
+
+  if (groupMap->get(groupTuple, nongroupVarSequences))
+  {
+    for (long i = 0; i < numNonGroupingSpecs; ++i)
+    {
+      store::Iterator_t iterWrapper = 
+      new PlanIteratorWrapper(nongroupingSpecs[i].theInput,
+                                                              planState);
+      (*nongroupVarSequences)[i]->append(iterWrapper, true);
+
+      nongroupingSpecs[i].reset(planState);
+    }
+
+    delete groupTuple;
+  }
+  else
+  {
+    nongroupVarSequences = new std::vector<store::TempSeq_t>();
+
+    for (long i = 0; i < numNonGroupingSpecs; ++i)
+    {
+      store::Iterator_t iterWrapper = 
+      new PlanIteratorWrapper(nongroupingSpecs[i].theInput, planState);
+
+      store::TempSeq_t result = GENV_STORE.createTempSeq(iterWrapper, true, false);
+
+      nongroupVarSequences->push_back(result);
+
+      nongroupingSpecs[i].reset(planState);
+    }
+
+    groupMap->insert(groupTuple, nongroupVarSequences);
+  }
 }
 
 
@@ -1022,110 +1145,9 @@ void FLWORIterator::materializeGroupResultForSort(
   
     materializeResultForSort(iterState, planState);
 
+    theReturnClause->reset(planState);
+
     ++groupMapIter;
-  }
-}
-
-
-/***************************************************************************//**
-  All FOR and LET vars are bound when this method is called. The method computes
-  the group-by tuple T and then checks whether T is in the GroupMap already. If
-  not, it inserts T in the GroupMap, together with one temp sequence for each of
-  the non-grouping vars, storing the current value of the non-grouping var. If
-  yes, it appends to each of the temp sequences associated with T the current
-  value of each non-grouping var.
-********************************************************************************/
-void FLWORIterator::matVarsAndGroupBy(
-    FlworState* iterState,
-    PlanState& planState) const
-{
-  ZORBA_ASSERT(theGroupByClause);
-
-  GroupTuple* groupTuple = new GroupTuple();
-  std::vector<store::Item_t>& lGroupTupleItems = groupTuple->theItems;
-  std::vector<store::Item_t>& lGroupTupleValues = groupTuple->theTypedValues;
-
-  std::vector<GroupingSpec> lgroupSpecs = theGroupByClause->theGroupingSpecs;
-  std::vector<GroupingSpec>::iterator lSpecIter = lgroupSpecs.begin();
-  std::vector<GroupingSpec>::iterator end = lgroupSpecs.end();
-
-  while ( lSpecIter != end )
-  {
-    lGroupTupleItems.push_back(NULL);
-    store::Item_t& tupleItem = lGroupTupleItems.back();
-    
-    lGroupTupleValues.push_back(NULL);
-    store::Item_t& tupleValue = lGroupTupleValues.back();
-
-    bool status = consumeNext(tupleItem, lSpecIter->theInput, planState);
-
-    if(status)
-    {
-      store::Iterator_t lTypedValueIter;
-
-      tupleItem->getTypedValue(tupleValue, lTypedValueIter);
-
-      if (lTypedValueIter != NULL)
-      {
-        lTypedValueIter->open();
-        if(lTypedValueIter->next(tupleValue))
-        {
-          store::Item_t temp;
-          if (lTypedValueIter->next(temp))
-          {
-            ZORBA_ERROR_DESC(XPTY0004,
-                             "Expected a singleton (atomization has more than one value)" );
-          }
-        }
-      }
-
-      // check that there are no more values for the current grouping column
-      store::Item_t temp;
-      if (consumeNext(temp, lSpecIter->theInput, planState))
-      {
-        ZORBA_ERROR_DESC(XPTY0004, "Expected a singleton");
-      }
-    }
-
-    lSpecIter->reset(planState);
-    ++lSpecIter;
-  }
-
-  GroupHashMap* groupMap = iterState->theGroupMap;
-
-  std::vector<NonGroupingSpec> outerVars = theGroupByClause->theNonGroupingSpecs;
-  std::vector<store::TempSeq_t>* outerVarSequences = 0;
-  long numNonGroupingSpecs = outerVars.size();
-
-  if (groupMap->get(groupTuple, outerVarSequences))
-  {
-    for (long i = 0; i < numNonGroupingSpecs; ++i)
-    {
-      store::Iterator_t iterWrapper = new PlanIteratorWrapper(outerVars[i].theInput,
-                                                              planState);
-      (*outerVarSequences)[i]->append(iterWrapper, true);
-
-      outerVars[i].reset(planState);
-    }
-
-    delete groupTuple;
-  }
-  else
-  {
-    outerVarSequences = new std::vector<store::TempSeq_t>();
-
-    for (long i = 0; i < numNonGroupingSpecs; ++i)
-    {
-      store::Iterator_t iterWrapper = new PlanIteratorWrapper(outerVars[i].theInput,
-                                                              planState);
-      store::TempSeq_t result = GENV_STORE.createTempSeq(iterWrapper, true, false);
-
-      outerVarSequences->push_back(result);
-
-      outerVars[i].reset(planState);
-    }
-
-    groupMap->insert(groupTuple, outerVarSequences);
   }
 }
 
@@ -1140,8 +1162,8 @@ void FLWORIterator::bindGroupBy(
     PlanState& planState) const
 {
   // Bind grouping vars
-  GroupTuple* groupKey = (*groupMapIter).first;
-  std::vector<store::Item_t>::iterator groupKeyIter = groupKey->theItems.begin();
+  GroupTuple* groupTuple = (*groupMapIter).first;
+  std::vector<store::Item_t>::iterator groupKeyIter = groupTuple->theItems.begin();
 
   std::vector<GroupingSpec> groupSpecs = theGroupByClause->theGroupingSpecs;
   std::vector<GroupingSpec>::const_iterator specIter = groupSpecs.begin();
