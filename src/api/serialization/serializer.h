@@ -266,12 +266,6 @@ protected:
 
     bool havePrefix(const zstring& pre) const;
 
-    void expand_string(
-            const char* str,
-            ulong strlen,
-            std::stringstream& stringStream,
-            bool emit_attribute_value);
-
     store::ChildrenIterator* getChildIter();
 
     void releaseChildIter(store::ChildrenIterator* iter);
@@ -385,13 +379,14 @@ protected:
   protected:
     SAX2_ContentHandler * theSAX2ContentHandler;
     SAX2_LexicalHandler * theSAX2LexicalHandler;
-    
     store::NsBindings     theNameSpaces;
+    std::stringstream&    theSStream;
     
   public:
     sax2_emitter(
           serializer* the_serializer,
           transcoder& the_transcoder,
+          std::stringstream& aSStream,
           SAX2_ContentHandler* aSAX2ContentHandler);
 
     void emit_startPrefixMapping(

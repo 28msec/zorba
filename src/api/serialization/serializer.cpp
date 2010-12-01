@@ -164,34 +164,15 @@ void serializer::emitter::releaseChildIter(store::ChildrenIterator* iter)
   assert(iter == theChildIters[theFirstFreeChildIter]);
 }
 
-
 /*******************************************************************************
-
+  emit_attribute_value is set to true if the string expansion is performed
+  on a value of an attribute
 ********************************************************************************/
 void serializer::emitter::emit_expanded_string(
   const char* str,
   ulong strlen,
   bool emit_attribute_value = false)
 {
-  std::stringstream lStringStream;
-
-  expand_string(str, strlen, lStringStream, emit_attribute_value);
-
-  tr << lStringStream.str().c_str();
-}
-
-
-/*******************************************************************************
-  emit_attribute_value is set to true if the string expansion is performed
-  on a value of an attribute
-********************************************************************************/
-void serializer::emitter::expand_string(
-  const char* str,
-  ulong strlen,
-  std::stringstream& stringStream,
-  bool emit_attribute_value = false)
-{
-  transcoder lTranscoder(stringStream, false);
   const unsigned char* chars = (const unsigned char*)str;
   const unsigned char* chars_end  = chars + strlen;
 
@@ -220,7 +201,7 @@ void serializer::emitter::expand_string(
       if (cp >= 0x10000 && cp <= 0x10FFFF)
       {
         temp = chars;
-        lTranscoder << "&#" << NumConversions::uintToStr(utf8::next_char(temp))
+        tr << "&#" << NumConversions::uintToStr(utf8::next_char(temp))
                     << ";";
         chars += (skip-1);
         skip = 0;
@@ -229,7 +210,7 @@ void serializer::emitter::expand_string(
       {
         while (skip)
         {
-          lTranscoder<< *chars;
+          tr << *chars;
           if (skip > 1)
             chars++;
           skip--;
@@ -249,13 +230,13 @@ void serializer::emitter::expand_string(
     {
       if ((!emit_attribute_value) && (*chars == 0xA || *chars == 0x9))
       {
-        lTranscoder << *chars;
+        tr << *chars;
       }
       else
       {
         char buf[3];
         toHexString(*chars, buf);
-        lTranscoder << "&#x" << buf << ";";
+        tr << "&#x" << buf << ";";
       }
     }
     else switch (*chars)
@@ -266,20 +247,20 @@ void serializer::emitter::expand_string(
           attribute values.
         */
         if (ser && ser->method == PARAMETER_VALUE_HTML && emit_attribute_value)
-          lTranscoder << *chars;
+          tr << *chars;
         else
-          lTranscoder << "&lt;";
+          tr << "&lt;";
         break;
 
       case '>':
-        lTranscoder << "&gt;";
+        tr << "&gt;";
         break;
 
       case '"':
         if (emit_attribute_value)
-          lTranscoder << "&quot;";
+          tr << "&quot;";
         else
-          lTranscoder << *chars;
+          tr << *chars;
         break;
 
       case '&':
@@ -293,18 +274,18 @@ void serializer::emitter::expand_string(
           if (chars_end - chars > 1
             &&
             (*(chars+1) == '{'))
-            lTranscoder << *chars;
+            tr << *chars;
           else
-            lTranscoder << "&amp;";
+            tr << "&amp;";
         }
         else
         {
-          lTranscoder << "&amp;";
+          tr << "&amp;";
         }
         break;
 
       default:
-        lTranscoder << *chars;
+        tr << *chars;
         break;
     }
   }
@@ -316,7 +297,6 @@ void serializer::emitter::expand_string(
 ********************************************************************************/
 void serializer::emitter::emit_indentation(int depth)
 {
-  // TODO : optimize
   for (int i = 0; i < depth; i++)
     tr << "  ";
 }
@@ -337,7 +317,7 @@ void serializer::emitter::emit_declaration()
     else if (ser->encoding == PARAMETER_VALUE_UTF_16)
     {
       // Little-endian
-      tr.verbatim((char)0xFF); // TODO isn't the value truncated?
+      tr.verbatim((char)0xFF);
       tr.verbatim((char)0xFE);
     }
 #endif
@@ -1331,13 +1311,15 @@ void serializer::xhtml_emitter::emit_node(
 
 ********************************************************************************/
 serializer::sax2_emitter::sax2_emitter(
-  serializer * the_serializer,
-  transcoder & the_transcoder,
+  serializer* the_serializer,
+  transcoder& the_transcoder,
+  std::stringstream& aSStream,
   SAX2_ContentHandler * aSAX2ContentHandler )
   :
   emitter(the_serializer, the_transcoder),
   theSAX2ContentHandler( aSAX2ContentHandler ),
-  theSAX2LexicalHandler( 0 )
+  theSAX2LexicalHandler( 0 ),
+  theSStream(aSStream)
 {
   theSAX2LexicalHandler = dynamic_cast< SAX2_LexicalHandler * >( aSAX2ContentHandler );
 }
@@ -1576,11 +1558,9 @@ void serializer::sax2_emitter::emit_expanded_string(
   if ( theSAX2ContentHandler )
   {
     //use xml_emitter to normalize string
-    std::stringstream stringStream;
-    expand_string(str, strlen, stringStream, aEmitAttributeValue );
-
-    const String lString(stringStream.str());
-    theSAX2ContentHandler->characters(lString);
+    theSStream.str("");
+    emitter::emit_expanded_string(str, strlen, aEmitAttributeValue );
+    theSAX2ContentHandler->characters(theSStream.str());
   }
 }
 
@@ -2198,9 +2178,11 @@ void serializer::serialize(
 ********************************************************************************/
 void serializer::serialize(
     intern::Serializable* aObject,
-    std::ostream& aOStream,
+    std::ostream&         aOStream,
     SAX2_ContentHandler* aHandler)
 {
+  std::stringstream temp_sstream; // used to temporarily hold expanded strings
+
   // used for JSON serialization only
   bool firstItem = true;
 
@@ -2221,8 +2203,9 @@ void serializer::serialize(
     {
       ZORBA_ERROR(API0070_INVALID_SERIALIZATION_METHOD_FOR_SAX);
     }
-    // it's OK now, build a SAX emmiter
-    e = new sax2_emitter(this, *tr, aHandler);
+    // it's OK now, build a SAX emmiter  
+    tr = new transcoder(temp_sstream, false);
+    e = new sax2_emitter(this, *tr, temp_sstream, aHandler);
   }
 
   e->emit_declaration();
