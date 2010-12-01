@@ -199,11 +199,11 @@ int canonicalizeAndCompare(
   }
 
   // last, we have to diff the result
-  int lLine, lCol, lPos; // where do the files differ
+  int lLine, lCol; // where do the files differ
   std::string lRefLine, lResultLine;
   bool lRes = fileEquals(lCanonicalRefFile.c_str(),
                          lCanonicalResFile.c_str(),
-                         lLine, lCol, lPos, lRefLine, lResultLine);
+                         lLine, lCol, lRefLine, lResultLine);
   if (!lRes) 
   {
     aOutput << std::endl
@@ -226,19 +226,11 @@ int canonicalizeAndCompare(
     aOutput << "See line " << lLine << ", col " << lCol 
               << " of expected result. " << std::endl;
     aOutput << "Actual:   <";
-
-    if( -1 != lPos )
-      printPart(aOutput, aResultFile, lPos, 15);
-    else
-      aOutput << lResultLine;
+    aOutput << lResultLine;
 
     aOutput << ">" << std::endl;
     aOutput << "Expected: <";
-
-    if( -1 != lPos )
-      printPart(aOutput, aRefFile, lPos, 15);
-    else
-      aOutput << lRefLine;
+    aOutput << lRefLine;
 
     aOutput << ">" << std::endl;
 
@@ -252,71 +244,83 @@ int canonicalizeAndCompare(
   Return false if the files are not equal.
   aLine contains the line number in which the first difference occurs
   aCol contains the column number in which the first difference occurs
-  aPos is the character number off the first difference in the file
-  -1 is returned for aLine, aCol, and aPos if the files are equal
+  -1 is returned for aLine and aCol if the files are equal
 ********************************************************************************/
 bool fileEquals(
     const char* aRefFile,
     const char* aResFile,
     int& aLine,
     int& aCol,
-    int& aPos,
     std::string& aRefLine,
     std::string& aResLine,
     std::ostream& aOutput)
 {
-  std::ifstream li(aRefFile);
-  std::ifstream ri(aResFile); 
-  std::string lLine, rLine;
+  std::ifstream refStream(aRefFile);
+  std::ifstream resStream(aResFile);
+  std::string refLine, resLine;
 
-  if (!li.good())
+  if (!refStream.good())
   {
     aOutput << "Failed to open ref file " << aRefFile << std::endl;
     return false;
   }
 
-  if (!ri.good())
+  if (!resStream.good())
   {
     aOutput << "Failed to open results file " << aResFile << std::endl;
     return false;
   }
 
-  aLine = 1; aCol = 0; aPos = -1;
-  while (! li.eof() )
+  aLine = 1;
+  aCol = 0;
+  while (! refStream.eof() )
   {
-    if ( ri.eof() ) 
+    if ( resStream.eof() ) 
     {
-      std::getline(li, lLine);
-      if (li.peek() == -1) // ignore end-of-line in the ref result
+      std::getline(refStream, refLine);
+      if (refStream.peek() == -1) // ignore end-of-line in the ref result
         return true;
       else 
         return false;
     }
 
-    std::getline(li, lLine);
-    std::getline(ri, rLine);
+    std::getline(refStream, refLine);
+    std::getline(resStream, resLine);
 
-    while ( (aCol = lLine.compare(rLine)) != 0) 
+    while (refLine.compare(resLine) != 0) 
     {
+      // Lines did not match, but certain mismatches are overlooked.
+      // 1. If the first line of the reference results is an XML
+      // declaration, ignore that.
       if (aLine == 1 &&
-          lLine == "<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
+          refLine == "<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
       {
         ++aLine; 
-        std::getline(li, lLine);
+        std::getline(refStream, refLine);
         continue;
       }
       else
       {
-        //properly find the column
-        for(aCol=1, aPos=0;aPos<(int)lLine.length() && aPos<(int)rLine.length();aCol++, aPos++)
+        // Find the column of the mismatch
+        for(aCol=0;
+            aCol < (int)refLine.length() && aCol < (int)resLine.length();
+            aCol++)
         {
-          if(lLine.c_str()[aPos] != rLine.c_str()[aPos])
+          if(refLine.c_str()[aCol] != resLine.c_str()[aCol])
             break;
-          if(lLine.c_str()[aPos] == '\t' && aCol%2)
-            aCol++;
         }
-        aRefLine = lLine;
-        aResLine = rLine;
+
+        // 2. If the lines didn't match only because of an extra \r at
+        // the end of the reference results line, ignore that.
+        if (aCol == (int)resLine.length() && refLine.c_str()[aCol] == '\r')
+        {
+          break;
+        }
+
+        // Ok, actual mismatch. Send back the reference and result
+        // lines and return false.
+        aRefLine = refLine;
+        aResLine = resLine;
         return false;
       }
     }
@@ -324,17 +328,17 @@ bool fileEquals(
     ++aLine;
   }
 
-  if (! ri.eof() ) 
+  if (! resStream.eof() ) 
   {
-    std::getline(ri, rLine);
+    std::getline(resStream, resLine);
 
-    if (ri.peek() == -1) // ignore end-of-line in the actual result
+    if (resStream.peek() == -1) // ignore end-of-line in the actual result
     {
       return true;
     }
     else
     { 
-      aResLine = rLine;
+      aResLine = resLine;
       return false;
     }
   }

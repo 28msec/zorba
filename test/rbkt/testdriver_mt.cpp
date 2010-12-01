@@ -461,6 +461,7 @@ DWORD WINAPI thread_main(LPVOID param)
       sctx->setCollectionURIResolver(cresolver.get());
 
       sctx->setXQueryVersion(xquery_version_1_0);
+      sctx->setTraceStream(queries->theOutput);
     }
 
     // Set the error file to be used by the error handler for the current query
@@ -602,10 +603,10 @@ DWORD WINAPI thread_main(LPVOID param)
         std::string refFilePath = refFilePaths[i].file_string();
         std::string resFilePath = resultFilePath.file_string();
 
-        int lLine, lCol, lPos; 
+        int lLine, lCol; 
         std::string lRefLine, lResultLine;
         bool success = zorba::fileEquals(refFilePath.c_str(), resFilePath.c_str(),
-                                         lLine, lCol, lPos,
+                                         lLine, lCol,
                                          lRefLine, lResultLine,
                                          queries->theOutput);
         if (success)

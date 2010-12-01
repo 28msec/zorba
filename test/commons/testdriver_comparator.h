@@ -22,7 +22,7 @@
 namespace zorba {
 
 bool
-fileEquals(const char* aRefFile, const char* aResFile, int& aLine, int& aCol, int& aPos, std::string& aRefLine, std::string& aResLine, std::ostream& = std::cout);
+fileEquals(const char* aRefFile, const char* aResFile, int& aLine, int& aCol, std::string& aRefLine, std::string& aResLine, std::ostream& = std::cout);
 
 int
 canonicalizeAndCompare(const std::string& aComparisonMethod,

@@ -464,11 +464,11 @@ main(int argc, char** argv)
       for (std::vector<zorba::file>::const_iterator lIter = lRefFiles.begin();
            lIter != lRefFiles.end(); ++lIter) 
       {
-        int lLine, lCol, lPos; // where do the files differ
+        int lLine, lCol; // where do the files differ
         std::string lRefLine, lResultLine;
         bool lRes = zorba::fileEquals(lIter->c_str(),
                                       lResultFile.c_str(),
-                                      lLine, lCol, lPos,
+                                      lLine, lCol,
                                       lRefLine, lResultLine);
         if (lRes) 
         {

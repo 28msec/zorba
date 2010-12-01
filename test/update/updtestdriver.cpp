@@ -383,11 +383,11 @@ main(int argc, char** argv)
                                                                  zorba::file::CONVERT_SLASHES));
           std::cout << std::endl << "Ref " << lRefFile.get_path()  << std::endl;
           
-          int lLine, lCol, lPos;
+          int lLine, lCol;
           std::string lRefLine, lResultLine;
           lRes = zorba::fileEquals(lRefFile.get_path().c_str(),
                                    lResultFile.get_path().c_str(),
-                                   lLine, lCol, lPos, lRefLine, lResultLine);
+                                   lLine, lCol, lRefLine, lResultLine);
           
           // if the simple comparison doesn't work, we do the full-fledged
           // xml canonical comparison
