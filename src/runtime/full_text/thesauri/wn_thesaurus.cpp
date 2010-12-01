@@ -14,9 +14,13 @@
  * limitations under the License.
  */
 
-#include <iostream>
+#define DEBUG_FT_THESAURUS 1
 
-#include <algorithm>                    /* for equal_range */
+#if DEBUG_FT_THESAURUS
+#include <iostream>
+#endif
+#include <algorithm>                    /* for equal_range() */
+#include <cassert>
 #include <cstring>                      /* for strcmp(3) */
 #include <utility>                      /* for pair */
 
@@ -81,6 +85,8 @@ static db_segment const& get_segment() {
 }
 
 #define GET_SEGMENT(SEG_ID) get_segment<db_segment::SEG_ID>()
+#define LEMMAS              GET_SEGMENT( lemma )
+#define SYNSETS             GET_SEGMENT( synset )
 
 /**
  * Attempts to find a lemma within the WordNet thesaurus.
@@ -92,9 +98,9 @@ static char const* find_lemma( zstring const &phrase ) {
   typedef pair<db_segment::const_iterator,db_segment::const_iterator>
     lemma_range;
 
-  db_segment const &lemmas = GET_SEGMENT( lemma );
+  db_segment const &lemmas = LEMMAS;
   char const *const c_phrase = phrase.c_str();
-  less<char const*> comparator;
+  less<char const*> const comparator;
 
   lemma_range const range =
     ::equal_range( lemmas.begin(), lemmas.end(), c_phrase, comparator );
@@ -131,10 +137,8 @@ thesaurus::thesaurus( zstring const &phrase, zstring const &relationship,
     //
     // Load the synset_id_queue_ will all the synsets for the lemma.
     //
-    cout << "thesaurus::thesaurus()" << endl;
     for ( unsigned num_synsets = decode_base128( &p ); num_synsets-- > 0; ) {
       synset_id_t const synset_id = decode_base128( &p );
-      cout << "+ synset_id=" << synset_id << endl;
       synset_id_queue_.push_back( synset_id );
     }
   }
@@ -146,43 +150,60 @@ thesaurus::~thesaurus() {
 
 bool thesaurus::next( zstring *synonym ) {
   while ( synonym_queue_.empty() ) {
+#   if DEBUG_FT_THESAURUS
+    cout << "==================================================" << endl;
     cout << "synonym_queue is empty" << endl;
+#   endif
 
     if ( synset_id_queue_.empty() ) {
-      cout << "synset_id_queue is empty" << endl;
+#     if DEBUG_FT_THESAURUS
+      cout << "synset_id_queue is empty --> no more synonyms" << endl;
+#     endif
       return false;
     }
 
     synset_id_t const synset_id = pop_front( synset_id_queue_ );
     if ( synset_id == LevelSentinel ) {
+#     if DEBUG_FT_THESAURUS
       cout << "+ found LevelSentinel" << endl;
+#     endif
       if ( ++level_ > at_most_ ) {
-        cout << "+ level (" << level_ << ") > at_most (" << at_most_ << ')' << endl;
+#       if DEBUG_FT_THESAURUS
+        cout << "+ level (" << level_ << ") > at_most (" << at_most_
+             << ") --> no more synonyms" << endl;
+#       endif
         return false;
       }
       continue;
     }
 
+#   if DEBUG_FT_THESAURUS
     cout << "synset_id=" << synset_id << endl;
+#   endif
 
-    synset const ss( GET_SEGMENT( synset )[ synset_id ] );
+    synset const ss( SYNSETS[ synset_id ] );
     if ( level_ >= at_least_ ) {
-      cout << "+ level (" << level_ << ") >= at_least (" << at_least_ << ')' << endl;
+#     if DEBUG_FT_THESAURUS
+      cout << "+ level (" << level_ << ") >= at_least (" << at_least_ << ')'
+           << endl;
+#     endif
       FOR_EACH( synset::lemma_id_list, lemma_id, ss.lemma_ids_ ) {
         if ( synonyms_seen_.insert( *lemma_id ).second )
           synonym_queue_.push_back( *lemma_id );
       }
 
-      cout << "+ copying lemmas; synonym_queue is now: ";
+#     if DEBUG_FT_THESAURUS
+      cout << "+ copied lemmas; synonym_queue is now: ";
       bool comma = false;
       FOR_EACH( synonym_queue, lemma_id, synonym_queue_ ) {
         if ( comma )
           cout << ", ";
         else
           comma = true;
-        cout << GET_SEGMENT( lemma )[ *lemma_id ];
+        cout << LEMMAS[ *lemma_id ];
       }
       cout << endl;
+#     endif
     }
 
     FOR_EACH( synset::ptr_list, ptr, ss.ptr_list_ ) {
@@ -209,7 +230,13 @@ bool thesaurus::next( zstring *synonym ) {
           case pointer::pertainym:
           case pointer::substance_holonym:
           case pointer::substance_meronym:
+            //
+            // Unless specifically requested, these pointer types are skipped
+            // because it's thought that nobody would want/expect such words as
+            // synonyms.
+            //
             continue;
+
           case pointer::also_see:
           case pointer::hypernym:
           case pointer::hyponym:
@@ -225,30 +252,38 @@ bool thesaurus::next( zstring *synonym ) {
           case pointer::member_of_domain_topic: // ?
           case pointer::member_of_domain_usage: // ?
 
-          default:
-            cout << "ptr type=" << pointer::string_of[ ptr->type_ ] << endl;
+#           if DEBUG_FT_THESAURUS
+            cout << "+ ptr->type=" << pointer::string_of[ ptr->type_ ] << endl;
+#           endif
             break;
+
+          case pointer::unknown:
+            assert( ptr->type_ != pointer::unknown ); // always false
         }
-      }
+      } // if ( ptr_type_ )
       synset_id_queue_.push_back( ptr->synset_id_ );
 
+#if 0
       if ( ptr->source_ ) {
         // TODO
         ptr->target_;
       } else {
         // TODO
       }
+#endif
     } // FOR_EACH
 
     //
     // The synset IDs of all the pointers of this synset constitute a "level",
-    // so add the sentinel to increment the level.
+    // so add the sentinel to the queue to increment the level.
     //
     synset_id_queue_.push_back( LevelSentinel );
   } // while
 
-  *synonym = GET_SEGMENT( lemma )[ pop_front( synonym_queue_ ) ];
+  *synonym = LEMMAS[ pop_front( synonym_queue_ ) ];
+# if DEBUG_FT_THESAURUS
   cout << "--> synonym=" << *synonym << endl;
+# endif
   return true;
 }
 
