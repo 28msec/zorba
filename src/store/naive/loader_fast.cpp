@@ -203,7 +203,7 @@ void FastXmlLoader::reset()
   Return the number of bytes actually read, throw an exception if any I/O
   error occured.
 ********************************************************************************/
-long FastXmlLoader::readPacket(std::istream& stream, char* buf, long size)
+std::streamsize FastXmlLoader::readPacket(std::istream& stream, char* buf, long size)
 {
   try
   {
@@ -266,7 +266,7 @@ store::Item_t FastXmlLoader::loadXml(
 
   try
   {
-    long numChars = readPacket(stream, theBuffer, INPUT_CHUNK_SIZE);
+    std::streamsize numChars = readPacket(stream, theBuffer, INPUT_CHUNK_SIZE);
 
     if (numChars < 0)
     {
@@ -288,7 +288,7 @@ store::Item_t FastXmlLoader::loadXml(
     ctxt = xmlCreatePushParserCtxt(&theSaxHandler,
                                    this,
                                    theBuffer,
-                                   numChars,
+                                   static_cast<int>(numChars),
                                    docUri.c_str());
 
     if (ctxt == NULL)
@@ -301,7 +301,7 @@ store::Item_t FastXmlLoader::loadXml(
 
     while ((numChars = readPacket(stream, theBuffer, INPUT_CHUNK_SIZE)) > 0)
     {
-      xmlParseChunk(ctxt, theBuffer, numChars, 0);
+      xmlParseChunk(ctxt, theBuffer, static_cast<int>(numChars), 0);
 
       if (theErrorManager->hasErrors())
       {

@@ -113,7 +113,7 @@ public:
   }
 
 private:
-  transcoder& write_utf16(const char* str, ulong n);
+  transcoder& write_utf16(const char* str, std::streamsize n);
 
   transcoder& write_utf16_char(const char ch);
 };

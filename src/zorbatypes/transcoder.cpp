@@ -68,7 +68,7 @@ transcoder::~transcoder()
 }
 
 
-transcoder& transcoder::write_utf16(const char* str, ulong len)
+transcoder& transcoder::write_utf16(const char* str, std::streamsize len)
 {
 #ifndef ZORBA_NO_UNICODE
   UChar temp;

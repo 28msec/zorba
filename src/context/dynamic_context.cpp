@@ -160,7 +160,7 @@ dynamic_context::dynamic_context(dynamic_context* parent)
                                      gmtm.tm_hour,
                                      gmtm.tm_min,
                                      gmtm.tm_sec + timebuffer.millitm/1000.0,
-                                     theTimezone/3600);
+                                     static_cast<short>(theTimezone/3600));
 
 #if WIN32
     time_t t0;

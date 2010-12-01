@@ -139,6 +139,7 @@ ZorbaTDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
                          theSctx,
                          false,
                          true,
+                         false,
                          (theChildren.size() > 1 ? itemOpt : NULL));
       }
       catch (error::ZorbaError& e)

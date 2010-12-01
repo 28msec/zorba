@@ -205,7 +205,7 @@ void DtdXmlLoader::reset()
   Return the number of bytes actually read, throw an exception if any I/O
   error occured.
 ********************************************************************************/
-long DtdXmlLoader::readPacket(std::istream& stream, char* buf, long size)
+std::streamsize DtdXmlLoader::readPacket(std::istream& stream, char* buf, std::streamoff size)
 {
   try
   {
@@ -270,13 +270,13 @@ store::Item_t DtdXmlLoader::loadXml(
   try
   {
     stream.seekg(0, std::ios::end);
-    size_t fileSize = stream.tellg();
+    std::streamoff fileSize = stream.tellg();
     stream.seekg(0, std::ios::beg);
 
-    theBuffer = new char[fileSize+1];
+    theBuffer = new char[static_cast<unsigned int>(fileSize+1)];
     theBuffer[fileSize] = 0;
 
-    long numChars = readPacket(stream, theBuffer, fileSize);
+    std::streamsize numChars = readPacket(stream, theBuffer, fileSize);
 
     if (numChars < 0)
     {
@@ -300,7 +300,7 @@ store::Item_t DtdXmlLoader::loadXml(
     ctxt = xmlCreatePushParserCtxt( NULL, //&theSaxHandler,
                                    this,
                                    theBuffer,
-                                   numChars,
+                                   static_cast<int>(numChars),
                                    docUri.c_str());
 
     if (ctxt == NULL)
@@ -336,7 +336,7 @@ store::Item_t DtdXmlLoader::loadXml(
     /****************/
     while ((numChars = readPacket(stream, theBuffer, INPUT_CHUNK_SIZE)) > 0)
     {
-      xmlParseChunk(ctxt, theBuffer, numChars, 0);
+      xmlParseChunk(ctxt, theBuffer, static_cast<int>(numChars), 0);
 
       if (theErrorManager->hasErrors())
       {

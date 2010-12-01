@@ -169,7 +169,7 @@ public:
 protected:
   void abortload();
   void reset();
-  long readPacket(std::istream& stream, char* buf, long size);
+  std::streamsize readPacket(std::istream& stream, char* buf, long size);
 
   void setRoot(XmlNode* root);
 
@@ -290,7 +290,7 @@ public:
 protected:
   void abortload();
   void reset();
-  long readPacket(std::istream& stream, char* buf, long size);
+  std::streamsize readPacket(std::istream& stream, char* buf, std::streamoff size);
 
   void setRoot(XmlNode* root);
 

@@ -135,7 +135,7 @@ bool regex::replace_all( string const &in, string const &replacement,
   matcher_->reset( in );
   UErrorCode status = U_ZERO_ERROR;
   *out = matcher_->replaceAll( replacement, status );
-  return U_SUCCESS( status );
+  return U_SUCCESS( status ) == TRUE;
 }
 
 bool regex::replace_all( char const *in, char const *replacement,
@@ -2326,7 +2326,7 @@ bool normalize( string const &in, normalization::type n, string *out ) {
     default                 : icu_mode = UNORM_NONE; break;
   }
   Normalizer::normalize( in, icu_mode, 0, *out, status );
-  return U_SUCCESS( status );
+  return U_SUCCESS( status ) == TRUE;
 }
 
 int parse_xml_entity( char const *s, code_point *c ) {
@@ -2422,7 +2422,7 @@ bool to_string( char const *in, size_type in_len, string *out ) {
   UErrorCode status = U_ZERO_ERROR;
   u_strFromUTF8( buf, in_len + 1, &buf_len, in, in_len, &status );
   out->releaseBuffer( buf_len );
-  return U_SUCCESS( status );
+  return U_SUCCESS( status ) == TRUE;
 }
 
 bool to_string( wchar_t const *in, size_type in_len, string *out ) {
@@ -2431,7 +2431,7 @@ bool to_string( wchar_t const *in, size_type in_len, string *out ) {
   size_type buf_len;
   u_strFromWCS( buf, in_len + 1, &buf_len, in, in_len, &status );
   out->releaseBuffer( buf_len );
-  return U_SUCCESS( status );
+  return U_SUCCESS( status ) == TRUE;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
