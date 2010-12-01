@@ -22,7 +22,6 @@
 
 #include "URI.h"
 
-#include "api/zorbaimpl.h"
 #include "util/ascii_util.h"
 #include "util/utf8_util.h"
 #include "util/string_util.h"
@@ -1013,8 +1012,10 @@ void URI::initializePath(const zstring& uri)
   } // lStart < lEnd
 
 
-  xqpStringStore_t tmp = new xqpStringStore(lCodepoints, lStart, lIndex - lStart);
-  thePath = tmp->str();
+  thePath.clear();
+  utf8::append_codepoints(lCodepoints.begin() + lStart,
+                          lCodepoints.begin() + lIndex,
+                          &thePath);
 
   set_state(Path);
 
@@ -1033,9 +1034,10 @@ void URI::initializePath(const zstring& uri)
       ++lIndex;
     } /* lIndex < lEnd */
 
-
-    tmp = new xqpStringStore(lCodepoints, lStart, lIndex - lStart);
-    theQueryString = tmp->str();
+    theQueryString.clear();
+    utf8::append_codepoints(lCodepoints.begin() + lStart,
+                            lCodepoints.begin() + lIndex,
+                            &theQueryString);
 
     set_state(QueryString);
   }
@@ -1055,9 +1057,10 @@ void URI::initializePath(const zstring& uri)
 
     if ( lIndex > lStart)
     {
-      tmp = new xqpStringStore(lCodepoints, lStart, lIndex - lStart);
-      theFragment = tmp->str();
-
+      theFragment.clear();
+      utf8::append_codepoints(lCodepoints.begin() + lStart,
+                              lCodepoints.begin() + lIndex,
+                              &theFragment);
       set_state(Fragment);
     }
     else
