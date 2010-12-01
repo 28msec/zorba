@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include <algorithm>
+#include <algorithm>                    /* for lower_bound() */
 #include <cstring>
 
 #include "util/less.h"
