@@ -151,12 +151,14 @@ protected:
   long                          theTraceLevel;
 
 public:
-  static void populateValueIndex(
+  // needs to be virtual to allow implementation of additional stores
+  virtual void populateValueIndex(
       const store::Index_t& index,
       store::Iterator* sourceIter,
       ulong numColumns);
 
-  static void populateGeneralIndex(
+  // needs to be virtual to allow implementation of additional stores
+  virtual void populateGeneralIndex(
       const store::Index_t& index,
       store::Iterator* sourceIter,
       ulong numColumns);
@@ -207,6 +209,8 @@ public:
         const store::IndexSpecification& spec,
         store::Iterator* sourceIter);
 
+  // needs to be virtual to allow implementation of additional stores
+  virtual
   store::Index_t refreshIndex(
         const store::Item_t& qname,
         const store::IndexSpecification& spec,
@@ -220,6 +224,8 @@ public:
 
   store::Iterator_t listIndexNames();
 
+  // needs to be virtual to allow implementation of additional stores
+  virtual
   const IndexSet& getIndices() const { return theIndices; }
 
   store::IC_t activateIC(

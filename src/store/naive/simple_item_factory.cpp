@@ -59,7 +59,7 @@ bool BasicItemFactory::createUserTypedAtomicItem(
     store::Item_t& baseItem,
     store::Item_t& typeName)
 {
-  result = new UserTypedAtomicItemImpl(baseItem, typeName);
+  result = new UserTypedAtomicItem(baseItem, typeName);
   return true;
 }
 
@@ -114,28 +114,28 @@ bool BasicItemFactory::createString(store::Item_t& result, zstring& value)
 
 bool BasicItemFactory::createNormalizedString(store::Item_t& result, zstring& value)
 {
-  result = new NormalizedStringItemImpl(value);
+  result = new NormalizedStringItem(value);
   return true;
 }
 
 
 bool BasicItemFactory::createToken(store::Item_t& result, zstring& value )
 {
-  result = new TokenItemImpl(value);
+  result = new TokenItem(value);
   return true;
 }
 
 
 bool BasicItemFactory::createLanguage(store::Item_t& result, zstring& value )
 {
-  result = new LanguageItemImpl(value);
+  result = new LanguageItem(value);
   return true;
 }
 
 
 bool BasicItemFactory::createNMTOKEN(store::Item_t& result, zstring& value )
 {
-  result = new NMTOKENItemImpl(value);
+  result = new NMTOKENItem(value);
   return true;
 }
 
@@ -164,28 +164,28 @@ bool BasicItemFactory::createNMTOKENS(store::Item_t& result, zstring& value )
 
 bool BasicItemFactory::createName(store::Item_t& result, zstring& value )
 {
-  result = new NameItemImpl(value);
+  result = new NameItem(value);
   return true;
 }
 
 
 bool BasicItemFactory::createNCName(store::Item_t& result, zstring& value )
 {
-  result = new NCNameItemImpl(value);
+  result = new NCNameItem(value);
   return true;
 }
 
 
 bool BasicItemFactory::createID(store::Item_t& result, zstring& value )
 {
-  result = new IDItemImpl(value);
+  result = new IDItem(value);
   return true;
 }
 
 
 bool BasicItemFactory::createIDREF(store::Item_t& result, zstring& value)
 {
-  result = new IDREFItemImpl(value);
+  result = new IDREFItem(value);
   return true;
 }
 
@@ -214,7 +214,7 @@ bool BasicItemFactory::createIDREFS(store::Item_t& result, zstring& value )
 
 bool BasicItemFactory::createENTITY(store::Item_t& result, zstring& value )
 {
-  result = new ENTITYItemImpl(value);
+  result = new ENTITYItem(value);
   return true;
 }
 
@@ -1466,7 +1466,7 @@ bool BasicItemFactory::createError(
     store::Item_t& result,
     error::ZorbaError* inError)
 {
-  result = new ErrorItemNaive(inError);
+  result = new ErrorItem(inError);
   return true;
 }
 

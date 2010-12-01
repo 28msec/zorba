@@ -490,7 +490,7 @@ zstring UntypedAtomicItem::show() const
 
 
 /*******************************************************************************
-  class QNameItemImpl
+  class QNameItem
 ********************************************************************************/
 
 QNameItem::~QNameItem()
@@ -808,15 +808,15 @@ FTTokenIterator_t StringItem::getQueryTokens(
 #endif /* ZORBA_NO_FULL_TEXT */
 
 /*******************************************************************************
-  class NormalizedStringItemImpl
+  class NormalizedStringItem
 ********************************************************************************/
-store::Item* NormalizedStringItemImpl::getType() const
+store::Item* NormalizedStringItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_NORMALIZED_STRING];
 }
 
 
-zstring NormalizedStringItemImpl::show() const
+zstring NormalizedStringItem::show() const
 {
   zstring res("xs:NormalizedString(");
   res += theValue;
@@ -826,15 +826,15 @@ zstring NormalizedStringItemImpl::show() const
 
 
 /*******************************************************************************
-  class TokenItemImpl
+  class TokenItem
 ********************************************************************************/
-store::Item* TokenItemImpl::getType() const
+store::Item* TokenItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_TOKEN];
 }
 
 
-zstring TokenItemImpl::show() const
+zstring TokenItem::show() const
 {
   zstring res("xs:TOKEN(");
   res += theValue;
@@ -844,15 +844,15 @@ zstring TokenItemImpl::show() const
 
 
 /*******************************************************************************
-  class LanguageItemImpl
+  class LanguageItem
 ********************************************************************************/
-store::Item* LanguageItemImpl::getType() const
+store::Item* LanguageItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_LANGUAGE];
 }
 
 
-zstring LanguageItemImpl::show() const
+zstring LanguageItem::show() const
 {
   zstring res("xs:LANGUAGE(");
   res += theValue;
@@ -862,15 +862,15 @@ zstring LanguageItemImpl::show() const
 
 
 /*******************************************************************************
-  class NMTOKENItemImpl
+  class NMTOKENItem
 ********************************************************************************/
-store::Item* NMTOKENItemImpl::getType() const
+store::Item* NMTOKENItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_NMTOKEN];
 }
 
 
-zstring NMTOKENItemImpl::show() const
+zstring NMTOKENItem::show() const
 {
   zstring res("xs:NMTOKEN(");
   res += theValue;
@@ -880,15 +880,15 @@ zstring NMTOKENItemImpl::show() const
 
 
 /*******************************************************************************
-  class NameItemImpl
+  class NameItem
 ********************************************************************************/
-store::Item* NameItemImpl::getType() const
+store::Item* NameItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_NAME];
 }
 
 
-zstring NameItemImpl::show() const
+zstring NameItem::show() const
 {
   zstring res("xs:NAME(");
   res += theValue;
@@ -898,15 +898,15 @@ zstring NameItemImpl::show() const
 
 
 /*******************************************************************************
-  class NCNameItemImpl
+  class NCNameItem
 ********************************************************************************/
-store::Item* NCNameItemImpl::getType() const
+store::Item* NCNameItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_NCNAME];
 }
 
 
-zstring NCNameItemImpl::show() const
+zstring NCNameItem::show() const
 {
   zstring res("xs:NCName(");
   res += theValue;
@@ -916,15 +916,15 @@ zstring NCNameItemImpl::show() const
 
 
 /*******************************************************************************
-  class IDItemImpl
+  class IDItem
 ********************************************************************************/
-store::Item* IDItemImpl::getType() const
+store::Item* IDItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_ID];
 }
 
 
-zstring IDItemImpl::show() const
+zstring IDItem::show() const
 {
   zstring res("xs:ID(");
   res += theValue;
@@ -934,15 +934,15 @@ zstring IDItemImpl::show() const
 
 
 /*******************************************************************************
-  class IDREFItemImpl
+  class IDREFItem
 ********************************************************************************/
-store::Item* IDREFItemImpl::getType() const
+store::Item* IDREFItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_IDREF];
 }
 
 
-zstring IDREFItemImpl::show() const
+zstring IDREFItem::show() const
 {
   zstring res("xs:IDREF(");
   res += theValue;
@@ -952,14 +952,14 @@ zstring IDREFItemImpl::show() const
 
 
 /*******************************************************************************
-  class ENTITYItemImpl
+  class ENTITYItem
 ********************************************************************************/
-store::Item* ENTITYItemImpl::getType() const
+store::Item* ENTITYItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_ENTITY];
 }
 
-zstring ENTITYItemImpl::show() const
+zstring ENTITYItem::show() const
 {
   zstring res("xs:ENTITY(");
   res += theValue;
@@ -2141,7 +2141,7 @@ uint32_t HexBinaryItem::hash(long timezone, const XQPCollator* aCollation) const
 /*******************************************************************************
   class ErrorItem
 ********************************************************************************/
-ErrorItemNaive::~ErrorItemNaive()
+ErrorItem::~ErrorItem()
 {
   if (theError)
   {
@@ -2151,7 +2151,7 @@ ErrorItemNaive::~ErrorItemNaive()
 }
 
 
-zstring ErrorItemNaive::show() const
+zstring ErrorItem::show() const
 {
   return theError->toString();
 }

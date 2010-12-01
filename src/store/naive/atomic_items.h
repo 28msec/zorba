@@ -91,7 +91,7 @@ typedef rchandle<AtomicItem> AtomicItem_t;
 /*******************************************************************************
   class UserTypedAtomicItem
 ********************************************************************************/
-class UserTypedAtomicItemImpl : public AtomicItem
+class UserTypedAtomicItem : public AtomicItem
 {
   friend class BasicItemFactory;
   friend class AtomicItem;
@@ -101,7 +101,7 @@ protected:
   store::Item_t  theTypeName;
 
 protected:
-  UserTypedAtomicItemImpl(
+  UserTypedAtomicItem(
         store::Item_t& baseItem,
         store::Item_t& typeName)
   {
@@ -109,7 +109,7 @@ protected:
     theTypeName.transfer(typeName);
   }
 
-  UserTypedAtomicItemImpl() {}
+  UserTypedAtomicItem() {}
 
 public:
   store::Item* getBaseItem() const { return theBaseItem.getp(); }
@@ -622,14 +622,14 @@ private:
 
 
 /*******************************************************************************
-  class NormalizedStringItemImpl
+  class NormalizedStringItem
 ********************************************************************************/
-class NormalizedStringItemImpl : public StringItem
+class NormalizedStringItem : public StringItem
 {
   friend class BasicItemFactory;
 
 protected:
-  NormalizedStringItemImpl(zstring& value) : StringItem(value) {}
+  NormalizedStringItem(zstring& value) : StringItem(value) {}
 
 public:
   virtual SchemaTypeCode getTypeCode() const { return XS_NORMALIZED_STRING; }
@@ -641,14 +641,14 @@ public:
 
 
 /*******************************************************************************
-  class TokenItemImpl
+  class TokenItem
 ********************************************************************************/
-class TokenItemImpl : public NormalizedStringItemImpl
+class TokenItem : public NormalizedStringItem
 {
   friend class BasicItemFactory;
 
 public:
-  TokenItemImpl(zstring& value) : NormalizedStringItemImpl(value) {}
+  TokenItem(zstring& value) : NormalizedStringItem(value) {}
 
   virtual SchemaTypeCode getTypeCode() const { return XS_TOKEN; }
 
@@ -659,14 +659,14 @@ public:
 
 
 /*******************************************************************************
-  class NMTOKENItemImpl
+  class NMTOKENItem
 ********************************************************************************/
-class NMTOKENItemImpl : public TokenItemImpl
+class NMTOKENItem : public TokenItem
 {
   friend class BasicItemFactory;
 
 protected:
-  NMTOKENItemImpl(zstring& value) : TokenItemImpl(value) {}
+  NMTOKENItem(zstring& value) : TokenItem(value) {}
 
 public:
   virtual SchemaTypeCode getTypeCode() const { return XS_NMTOKEN; }
@@ -680,12 +680,12 @@ public:
 /*******************************************************************************
   class LanguageItem
 ********************************************************************************/
-class LanguageItemImpl : public TokenItemImpl
+class LanguageItem : public TokenItem
 {
   friend class BasicItemFactory;
 
 protected:
-  LanguageItemImpl(zstring& value) : TokenItemImpl(value) {}
+  LanguageItem(zstring& value) : TokenItem(value) {}
 
 public:
   virtual SchemaTypeCode getTypeCode() const { return XS_LANGUAGE; }
@@ -699,12 +699,12 @@ public:
 /*******************************************************************************
   class NameItem
 ********************************************************************************/
-class NameItemImpl : public TokenItemImpl
+class NameItem : public TokenItem
 {
   friend class BasicItemFactory;
 
 protected:
-  NameItemImpl(zstring& value) : TokenItemImpl(value) {}
+  NameItem(zstring& value) : TokenItem(value) {}
 
 public:
   virtual SchemaTypeCode getTypeCode() const { return XS_NAME; }
@@ -718,12 +718,12 @@ public:
 /*******************************************************************************
   class NCNameItem
 ********************************************************************************/
-class NCNameItemImpl : public NameItemImpl
+class NCNameItem : public NameItem
 {
   friend class BasicItemFactory;
 
 protected:
-  NCNameItemImpl(zstring& value) : NameItemImpl(value) {}
+  NCNameItem(zstring& value) : NameItem(value) {}
 
 public:
   virtual SchemaTypeCode getTypeCode() const { return XS_NCNAME; }
@@ -737,12 +737,12 @@ public:
 /*******************************************************************************
   class IDItem
 ********************************************************************************/
-class IDItemImpl : public NCNameItemImpl
+class IDItem : public NCNameItem
 {
   friend class BasicItemFactory;
 
 protected:
-  IDItemImpl(zstring& value) : NCNameItemImpl(value) { }
+  IDItem(zstring& value) : NCNameItem(value) { }
 
 public:
   SchemaTypeCode getTypeCode() const { return XS_ID; }
@@ -755,12 +755,12 @@ public:
 /*******************************************************************************
   class IDREFItem
 ********************************************************************************/
-class IDREFItemImpl : public NCNameItemImpl
+class IDREFItem : public NCNameItem
 {
   friend class BasicItemFactory;
 
 protected:
-  IDREFItemImpl(zstring& value) : NCNameItemImpl(value) { }
+  IDREFItem(zstring& value) : NCNameItem(value) { }
 
 public:
   SchemaTypeCode getTypeCode() const { return XS_IDREF; }
@@ -771,14 +771,14 @@ public:
 };
 
 /*******************************************************************************
-  class ENTITYItemImpl
+  class ENTITYItem
 ********************************************************************************/
-class ENTITYItemImpl : public NCNameItemImpl
+class ENTITYItem : public NCNameItem
 {
   friend class BasicItemFactory;
 
 protected:
-  ENTITYItemImpl(zstring& value) : NCNameItemImpl(value) { }
+  ENTITYItem(zstring& value) : NCNameItem(value) { }
 
 public:
   SchemaTypeCode getTypeCode() const { return XS_ENTITY; }
@@ -2110,7 +2110,7 @@ public:
   to it (and calling the virtual free() method on that pointer when the
   ErrorItem gets destroyed).
 ********************************************************************************/
-class ErrorItemNaive : public AtomicItem
+class ErrorItem : public AtomicItem
 {
   friend class BasicItemFactory;
 
@@ -2118,10 +2118,10 @@ protected:
   error::ZorbaError * theError;
 
 protected:
-  ErrorItemNaive(error::ZorbaError* error) : theError(error) {}
+  ErrorItem(error::ZorbaError* error) : theError(error) {}
 
 public:
-  ~ErrorItemNaive();
+  ~ErrorItem();
 
   bool isError() const  { return true; }
 
@@ -2133,8 +2133,8 @@ public:
 
 protected:
   // Disable copy
-  ErrorItemNaive(const ErrorItemNaive& other);
-  ErrorItemNaive& operator=(const ErrorItemNaive& other);
+  ErrorItem(const ErrorItem& other);
+  ErrorItem& operator=(const ErrorItem& other);
 };
 
 } // namespace simplestore

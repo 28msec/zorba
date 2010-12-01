@@ -157,12 +157,11 @@ IndexImpl::IndexImpl(
     const store::IndexSpecification& spec)
   :
   theQname(qname),
-  theSpec(spec),
-  theNumColumns(theSpec.theNumKeyColumns)
+  theSpec(spec)
 {
-  theCollators.resize(theNumColumns);
+  theCollators.resize(theSpec.getNumColumns());
 
-  for (ulong i = 0; i < theNumColumns; ++i)
+  for (ulong i = 0; i < theSpec.getNumColumns(); ++i)
   {
     if (!spec.theCollations[i].empty())
     {
@@ -181,7 +180,7 @@ IndexImpl::IndexImpl(
 ********************************************************************************/
 IndexImpl::~IndexImpl()
 {
-  for (ulong i = 0; i < theNumColumns; i++)
+  for (size_t i = 0; i < theCollators.size(); ++i)
   {
     if (theCollators[i])
       delete theCollators[i]; 

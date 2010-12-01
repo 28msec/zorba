@@ -53,7 +53,7 @@ ValueHashIndex::ValueHashIndex(
     const store::IndexSpecification& spec)
   :
   ValueIndex(qname, spec),
-  theCompFunction(theNumColumns, spec.theTimezone, theCollators),
+  theCompFunction(getNumColumns(), spec.theTimezone, theCollators),
   theMap(theCompFunction, 1024, spec.theIsThreadSafe)
 {
 }
@@ -97,7 +97,7 @@ bool ValueHashIndex::insert(
     store::Item_t& value,
     bool multikey)
 {
-  if (key->size() != theNumColumns)
+  if (key->size() != getNumColumns())
   {
     ZORBA_ERROR_PARAM(STR0003_INDEX_PARTIAL_KEY_INSERT,
                       theQname->getStringValue(), key->toString());
@@ -142,7 +142,7 @@ bool ValueHashIndex::insert(
 ********************************************************************************/
 bool ValueHashIndex::remove(const store::IndexKey* key, store::Item_t& value)
 {
-  if (key->size() != theNumColumns)
+  if (key->size() != getNumColumns())
   {
     ZORBA_ERROR_PARAM(STR0004_INDEX_PARTIAL_KEY_REMOVE,
                       theQname->getStringValue().c_str(), key->toString());
@@ -278,7 +278,7 @@ STLMapIndex::STLMapIndex(
     const store::IndexSpecification& spec)
   :
   ValueIndex(qname, spec),
-  theCompFunction(theNumColumns, spec.theTimezone, theCollators),
+  theCompFunction(getNumColumns(), spec.theTimezone, theCollators),
   theMap(theCompFunction)
 {
 }
@@ -317,7 +317,7 @@ bool STLMapIndex::insert(
     store::Item_t& value,
     bool multikey)
 {
-  if (key->size() != theNumColumns)
+  if (key->size() != getNumColumns())
   {
     ZORBA_ERROR_PARAM(STR0003_INDEX_PARTIAL_KEY_INSERT,
                       theQname->getStringValue().c_str(), key->toString());
@@ -328,7 +328,7 @@ bool STLMapIndex::insert(
 #if 0
   std::cout << "inserting entry : [(";
 
-  for (ulong i = 0; i < theNumColumns; i++)
+  for (ulong i = 0; i < getNumColumns(); i++)
   {
     if (key[i] != NULL)
       std::cout << key[i]->getStringValue() << ", ";
@@ -369,7 +369,7 @@ bool STLMapIndex::insert(
 ********************************************************************************/
 bool STLMapIndex::remove(const store::IndexKey* key, store::Item_t& value)
 {
-  if (key->size() != theNumColumns)
+  if (key->size() != getNumColumns())
   {
     ZORBA_ERROR_PARAM(STR0004_INDEX_PARTIAL_KEY_REMOVE,
                       theQname->getStringValue().c_str(), "");
@@ -447,7 +447,7 @@ void ProbeTreeValueIndexIterator::initExact()
 {
   const store::IndexKey& key = thePointCond->theKey;
 
-  if (key.size() != theIndex->theNumColumns)
+  if (key.size() != theIndex->getNumColumns())
   {
     ZORBA_ERROR_PARAM(STR0005_INDEX_PARTIAL_KEY_PROBE,
                       theIndex->getName()->getStringValue().c_str(), 

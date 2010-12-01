@@ -274,8 +274,12 @@ void SimpleStore::shutdown(bool soft)
     theIndices.clear();
     theICs.clear();
 
-    theCollections->clear();
-    destroyCollectionSet(theCollections);
+    if (theCollections != NULL)
+    {
+      theCollections->clear();
+      destroyCollectionSet(theCollections);
+      theCollections = NULL;
+    }
 
     theUriCollections.clear();
 
@@ -499,17 +503,17 @@ store::Index_t SimpleStore::createIndex(
   else if (spec.theIsSorted)
   {
     index = new STLMapIndex(qname, spec);
-    populateValueIndex(index, sourceIter, spec.theNumKeyColumns);
+    populateValueIndex(index, sourceIter, spec.getNumColumns());
   }
   else if (spec.theIsGeneral)
   {
     index = new GeneralHashIndex(qname, spec);
-    populateGeneralIndex(index, sourceIter, spec.theNumKeyColumns);
+    populateGeneralIndex(index, sourceIter, spec.getNumColumns());
   }
   else
   {
     index = new ValueHashIndex(qname, spec);
-    populateValueIndex(index, sourceIter, spec.theNumKeyColumns);
+    populateValueIndex(index, sourceIter, spec.getNumColumns());
   }
 
   if (!spec.theIsTemp)

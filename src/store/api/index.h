@@ -116,6 +116,10 @@ public:
     theKeyTypes.resize(numColumns);
     theCollations.resize(numColumns);
   }
+
+  ulong getNumColumns() const {
+    return theKeyTypes.size();
+  }
 };
 
 

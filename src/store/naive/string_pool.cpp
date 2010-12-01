@@ -31,7 +31,7 @@ StringPool::~StringPool()
   {
     if (theHashTab[i].theItem.is_shared())
     {
-      std::cout << "i = " << i << " String " << theHashTab[i].theItem
+      std::cerr << "i = " << i << " String " << theHashTab[i].theItem
                 << " is still in the pool" << std::endl;
       //delete theHashTab[i].theString.getp();
       count++;

@@ -78,7 +78,6 @@ class IndexImpl : public store::Index
 protected:  
   store::Item_t                   theQname;
   store::IndexSpecification       theSpec;
-  ulong                           theNumColumns;
   std::vector<XQPCollator*>       theCollators;
 
   std::vector<store::Item_t>      theSources;
@@ -95,7 +94,7 @@ public:
 
   const store::IndexSpecification& getSpecification() const { return theSpec; }
 
-  ulong getNumColumns() const { return theNumColumns; }
+  ulong getNumColumns() const { return theSpec.getNumColumns(); }
 
   long getTimezone() const { return theSpec.theTimezone; }
 

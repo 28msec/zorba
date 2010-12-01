@@ -44,21 +44,28 @@ namespace zorba {
     public:
       CollectionSet();
     
-      void clear();
+      // needs to be virtual to allow implementation of additional stores
+      virtual void
+      clear();
     
-      bool
+      // needs to be virtual to allow implementation of additional stores
+      virtual bool
       insert(const store::Item* aName, store::Collection_t& aCollection);
     
-      bool
+      // needs to be virtual to allow implementation of additional stores
+      virtual bool
       get(const store::Item* aName, store::Collection_t& aCollection);
     
-      bool
+      // needs to be virtual to allow implementation of additional stores
+      virtual bool
       remove(const store::Item* aName);
     
-      store::Iterator_t
+      // needs to be virtual to allow implementation of additional stores
+      virtual store::Iterator_t
       names();
     
-      CollectionIterator_t
+      // needs to be virtual to allow implementation of additional stores
+      virtual CollectionIterator_t
       collections();
     
     }; /* class CollectionSet */

@@ -2388,7 +2388,7 @@ bool AttributeNode::isId() const
   if (qn->isIdQName())
     return true;
 
-  if (dynamic_cast<IDItemImpl*>(theTypedValue.getp()) != NULL)
+  if (dynamic_cast<IDItem*>(theTypedValue.getp()) != NULL)
     return true;
 
   return false;
@@ -2407,13 +2407,13 @@ bool AttributeNode::isIdRefs() const
 
     for (ulong i = 0; i < numValues; ++i)
     {
-      if (dynamic_cast<IDREFItemImpl*>(values.getItem(i)) != NULL)
+      if (dynamic_cast<IDREFItem*>(values.getItem(i)) != NULL)
       {
         return true;
       }
-      else if (dynamic_cast<UserTypedAtomicItemImpl*>(values.getItem(i)) != NULL)
+      else if (dynamic_cast<UserTypedAtomicItem*>(values.getItem(i)) != NULL)
       {
-        UserTypedAtomicItemImpl* utai = dynamic_cast<UserTypedAtomicItemImpl*>(values.getItem(i));
+        UserTypedAtomicItem* utai = dynamic_cast<UserTypedAtomicItem*>(values.getItem(i));
         if ( utai->getTypeCode() == XS_IDREF )
           return true;
         if ( (dynamic_cast<AtomicItem*>(utai->getBaseItem()))->getTypeCode() == XS_IDREF )
@@ -2421,13 +2421,13 @@ bool AttributeNode::isIdRefs() const
       }
     }
   }
-  else if (dynamic_cast<IDREFItemImpl*>(theTypedValue.getp()) != NULL)
+  else if (dynamic_cast<IDREFItem*>(theTypedValue.getp()) != NULL)
   {
     return true;
   }
-  else if (dynamic_cast<UserTypedAtomicItemImpl*>(theTypedValue.getp()) != NULL)
+  else if (dynamic_cast<UserTypedAtomicItem*>(theTypedValue.getp()) != NULL)
   {
-    UserTypedAtomicItemImpl* utai = dynamic_cast<UserTypedAtomicItemImpl*>(theTypedValue.getp());
+    UserTypedAtomicItem* utai = dynamic_cast<UserTypedAtomicItem*>(theTypedValue.getp());
     if ( utai->getTypeCode() == XS_IDREF )
       return true;
     if ( (dynamic_cast<AtomicItem*>(utai->getBaseItem()))->getTypeCode() == XS_IDREF )
@@ -2829,13 +2829,13 @@ bool TextNode::isIdRefsInternal() const
 
       for (ulong i = 0; i < numValues; ++i)
       {
-        if (dynamic_cast<IDREFItemImpl*>(values.getItem(i)) != NULL)
+        if (dynamic_cast<IDREFItem*>(values.getItem(i)) != NULL)
         {
           return true;
         }
-        else if (dynamic_cast<UserTypedAtomicItemImpl*>(values.getItem(i)) != NULL)
+        else if (dynamic_cast<UserTypedAtomicItem*>(values.getItem(i)) != NULL)
         {
-          UserTypedAtomicItemImpl* utai = dynamic_cast<UserTypedAtomicItemImpl*>(values.getItem(i));
+          UserTypedAtomicItem* utai = dynamic_cast<UserTypedAtomicItem*>(values.getItem(i));
           if ( utai->getTypeCode() == XS_IDREF )
             return true;
           if ( (dynamic_cast<AtomicItem*>(utai->getBaseItem()))->getTypeCode() == XS_IDREF )
@@ -2843,13 +2843,13 @@ bool TextNode::isIdRefsInternal() const
         }
       }
     }
-    else if (dynamic_cast<IDREFItemImpl*>(value) != NULL)
+    else if (dynamic_cast<IDREFItem*>(value) != NULL)
     {
       return true;
     }
-    else if (dynamic_cast<UserTypedAtomicItemImpl*>(value) != NULL)
+    else if (dynamic_cast<UserTypedAtomicItem*>(value) != NULL)
     {
-      UserTypedAtomicItemImpl* utai = dynamic_cast<UserTypedAtomicItemImpl*>(value);
+      UserTypedAtomicItem* utai = dynamic_cast<UserTypedAtomicItem*>(value);
       if ( utai->getTypeCode() == XS_IDREF )
         return true;
       if ( (dynamic_cast<AtomicItem*>(utai->getBaseItem()))->getTypeCode() == XS_IDREF )

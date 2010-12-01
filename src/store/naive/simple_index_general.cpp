@@ -69,10 +69,10 @@ GeneralHashIndex::GeneralHashIndex(
     const store::IndexSpecification& spec)
   :
   GeneralIndex(qname, spec),
-  theCompFunction(theNumColumns, spec.theTimezone, theCollators),
+  theCompFunction(getNumColumns(), spec.theTimezone, theCollators),
   theSingleMap(NULL)
 {
-  assert(theNumColumns == 1);
+  assert(getNumColumns() == 1);
 
   for (ulong i = 0; i < XS_LAST; ++i)
   {
