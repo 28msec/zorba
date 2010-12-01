@@ -2265,7 +2265,7 @@ bool is_iprivate( code_point c ) {
 }
 
 bool is_invalid_in_iri( code_point c ) {
-  return  c == ' '  ||
+  return  c <= ' '  ||
           c == '"'  ||
           c == '<'  ||
           c == '>'  ||
@@ -2275,7 +2275,6 @@ bool is_invalid_in_iri( code_point c ) {
           c == '{'  ||
           c == '|'  ||
           c == '}'  ||
-          c < 0x20  ||
           0x7E < c;
 }
 
