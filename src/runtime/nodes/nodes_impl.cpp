@@ -147,22 +147,40 @@ bool FnLangIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     {
 
       for(;
-        NULL != node && node->getNodeKind () == store::StoreConsts::elementNode && ! found && searchParent;
+        NULL != node  && ! found && searchParent;
         node = node->getParent())
       {
-        for ((theAttributes = node->getAttributes())->open();
-             ! found && theAttributes->next(attr); )
+        if(node->getNodeKind () == store::StoreConsts::elementNode)
         {
-          attrName = attr->getNodeName();
+          for ((theAttributes = node->getAttributes())->open();
+              ! found && theAttributes->next(attr); )
+          {
+            attrName = attr->getNodeName();
 
-          searchParent = !(ZSTREQ(attrName->getLocalName(), "lang") &&
-                           ZSTREQ(attrName->getNamespace(), XML_NS));
-          found = !searchParent &&
-            match_whole(
-              attr->getStringValue().str(), reqLang.str() + "(?:-.+)?", "i"
-            );
+            searchParent = !(ZSTREQ(attrName->getLocalName(), "lang") &&
+                            ZSTREQ(attrName->getNamespace(), XML_NS));
+            found = !searchParent &&
+              match_whole(
+                attr->getStringValue().str(), reqLang.str() + "(?:-.+)?", "i"
+              );
+          }
+          theAttributes->close();
         }
-        theAttributes->close();
+        else if(node->getNodeKind () == store::StoreConsts::attributeNode)
+        {
+          searchParent = (NULL != node->getParent());
+          if(NULL != node->getParent())
+          {
+            attrName = node->getNodeName();
+
+            searchParent = !(ZSTREQ(attrName->getLocalName(), "lang") &&
+                            ZSTREQ(attrName->getNamespace(), XML_NS));
+            found = !searchParent &&
+              match_whole(
+                node->getStringValue().str(), reqLang.str() + "(?:-.+)?", "i"
+              );
+          }
+        }
       }
     }
   }

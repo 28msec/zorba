@@ -57,7 +57,6 @@ test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/ReplaceFu
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/ReplaceFunc/K2-ReplaceFunc-7
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/ReplaceFunc/K2-ReplaceFunc-6
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/ReplaceFunc/K-ReplaceFunc-7
-test/rbkt/w3c_testsuite/XQuery/Functions/NodeFunc/NodeLangFunc/K2-NodeLangFunc-2
 test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/PrologExpr/VariableProlog/ExternalVariablesWith/K2-ExternalVariablesWith-22
 test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/PrologExpr/BaseURIProlog/K2-BaseURIProlog-5
 test/rbkt/w3c_testsuite/XQuery/StaticTyping/STFLWORExpr/ST-PITest-02
