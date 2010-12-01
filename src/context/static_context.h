@@ -654,11 +654,16 @@ public:
   // Validating Items
   //
   bool validate(store::Item* rootElement, store::Item* validatedResult);
-  bool validate(store::Item* rootElement, store::Item* validatedResult, 
-                const zstring& targetNamespace);
-  bool validateSimpleContent(zstring& textValue, 
-      store::Item* typeQName, 
-      std::vector<store::Item_t>& resultList);
+
+  bool validate(
+        store::Item* rootElement,
+        store::Item* validatedResult, 
+        const zstring& targetNamespace);
+
+  bool validateSimpleContent(
+        zstring& textValue, 
+        store::Item* typeQName, 
+        std::vector<store::Item_t>& resultList);
 
   //
   // Type management
@@ -681,8 +686,8 @@ public:
   void set_default_function_ns(const zstring& ns, const QueryLoc& loc);
 
   void bind_ns(
-        zstring& prefix,
-        zstring& ns,
+        const zstring& prefix,
+        const zstring& ns,
         const QueryLoc& loc,
         const XQUERY_ERROR& err = XQST0033);
 

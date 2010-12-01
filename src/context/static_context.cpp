@@ -1654,8 +1654,8 @@ void static_context::set_default_function_ns(
   "this". If there is already in "this" a binding for the prefix, raise error.
 ********************************************************************************/
 void static_context::bind_ns(
-    zstring& prefix,
-    zstring& ns,
+    const zstring& prefix,
+    const zstring& ns,
     const QueryLoc& loc,
     const XQUERY_ERROR& err)
 {
@@ -1664,7 +1664,9 @@ void static_context::bind_ns(
     theNamespaceBindings = new NamespaceBindings(16, false);
   }
 
-  if (!theNamespaceBindings->insert(prefix, ns))
+  zstring temp(ns);
+
+  if (!theNamespaceBindings->insert(prefix, temp))
   {
     ZORBA_ERROR_LOC(err, loc);
   }

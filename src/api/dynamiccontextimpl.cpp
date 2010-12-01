@@ -94,7 +94,7 @@ bool DynamicContextImpl::setVariable(
     store::Item_t lItem(Unmarshaller::getInternalItem(aItem));
     ZorbaImpl::checkItem(lItem);
 
-    zstring const &lString = Unmarshaller::getInternalString(aQName);
+    const zstring& lString = Unmarshaller::getInternalString(aQName);
     zstring lExpandedName = theCtx->expand_varname(theStaticContext, lString);
 
     // add it to the internal context
@@ -124,7 +124,7 @@ bool DynamicContextImpl::setVariable(
 
     store::Iterator_t lRes = Unmarshaller::getInternalIterator(lIter);
 
-    zstring const &lString = Unmarshaller::getInternalString(aQName);
+    const zstring& lString = Unmarshaller::getInternalString(aQName);
     zstring lExpandedName = theCtx->expand_varname(theStaticContext, lString);
 
     theCtx->add_variable(lExpandedName.str(), lRes);
@@ -154,12 +154,12 @@ bool DynamicContextImpl::setVariable(
 
     store::Iterator_t lRes = Unmarshaller::getInternalIterator(lIter);
 
-    zstring lNamespace = Unmarshaller::getInternalString(aNamespace).str();
-    zstring lLocalname = Unmarshaller::getInternalString(aLocalname).str();
+    const zstring& lNamespace = Unmarshaller::getInternalString(aNamespace);
+    const zstring& lLocalname = Unmarshaller::getInternalString(aLocalname);
 
     zstring lExpandedName = theCtx->expand_varname(theStaticContext,
-                                                     lNamespace,
-                                                     lLocalname);
+                                                   lNamespace,
+                                                   lLocalname);
 
     theCtx->add_variable(lExpandedName.str(), lRes);
 
@@ -181,8 +181,8 @@ bool DynamicContextImpl::getVariable(
 {
   ZORBA_DCTX_TRY
   {
-    zstring lNamespace = Unmarshaller::getInternalString(aNamespace).str();
-    zstring lLocalname = Unmarshaller::getInternalString(aLocalname).str();
+    const zstring& lNamespace = Unmarshaller::getInternalString(aNamespace);
+    const zstring& lLocalname = Unmarshaller::getInternalString(aLocalname);
 
     zstring lExpandedName = theCtx->expand_varname(theStaticContext,
                                                      lNamespace,
@@ -255,7 +255,7 @@ bool DynamicContextImpl::setVariableAsDocument(
     InternalDocumentURIResolver* uriResolver;
     uriResolver = theStaticContext->get_document_uri_resolver();
 
-    zstring docUri = Unmarshaller::getInternalString(aDocUri);
+    const zstring& docUri = Unmarshaller::getInternalString(aDocUri);
 
     zstring tmpDocUri(docUri);
     store::Item_t docUriItem;
@@ -370,7 +370,7 @@ bool DynamicContextImpl::setContextItemAsDocument(
   {
     checkNoIterators();
 
-    zstring const &docUri = Unmarshaller::getInternalString(aDocURI);
+    const zstring& docUri = Unmarshaller::getInternalString(aDocURI);
     zstring const &baseUri = theStaticContext->get_base_uri();
 
     store::LoadProperties lLoadProperties;

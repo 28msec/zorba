@@ -3855,8 +3855,8 @@ void end_visit(const Param& v, void* /*visit_state*/)
   store::Item_t qnameItem;
   expand_no_default_qname(qnameItem, v.get_name(), v.get_location());
 
-  varref_t arg_var = create_var(loc, qnameItem, var_expr::arg_var);
-  varref_t subst_var = bind_var(loc, qnameItem, var_expr::let_var);
+  var_expr_t arg_var = create_var(loc, qnameItem, var_expr::arg_var);
+  var_expr_t subst_var = bind_var(loc, qnameItem, var_expr::let_var);
 
   let_clause_t lc = wrap_in_letclause(&*arg_var, subst_var);
 
@@ -8555,7 +8555,34 @@ void end_visit(const VarRef& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  var_expr* ve = lookup_var(v.get_name(), loc, XPST0008);
+  var_expr* ve = NULL;
+
+  try
+  {
+    ve = lookup_var(v.get_name(), loc, XPST0008);
+  }
+  catch (error::ZorbaError& e)
+  {
+    if (e.theErrorCode == XPST0008)
+    {
+      store::Item_t qnameItem;
+      expand_no_default_qname(qnameItem, v.get_name(), loc);
+
+      const zstring& var_ns = qnameItem->getNamespace();
+
+      std::map<zstring, zstring>::const_iterator ite = theModulesStack.begin();
+      std::map<zstring, zstring>::const_iterator end = theModulesStack.end();
+      for (; ite != end; ++ite)
+      {
+        if ((*ite).second == var_ns)
+        {
+          ZORBA_ERROR_LOC(XQST0093, loc);
+        }
+      }
+    }
+
+    throw e;
+  }
 
   if (ve->get_kind() == var_expr::prolog_var)
   {
@@ -11193,7 +11220,7 @@ void end_visit(const EvalExpr& v, void* visit_state)
 
   for (size_t i = 0; i < vgdl->size(); i++)
   {
-    varref_t ve = pop_nodestack().dyn_cast<var_expr> ();
+    var_expr_t ve = pop_nodestack().dyn_cast<var_expr> ();
     ve->set_kind(var_expr::eval_var);
     expr_t val = pop_nodestack();
 

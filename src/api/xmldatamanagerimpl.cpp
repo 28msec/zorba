@@ -138,7 +138,7 @@ Item XmlDataManagerImpl::loadDocument(
 
   ZORBA_DM_TRY
   {
-    zstring fileUri = Unmarshaller::getInternalString(aLocalFileUri);
+    const zstring& fileUri = Unmarshaller::getInternalString(aLocalFileUri);
 
     std::ifstream fileStream(fileUri.c_str());
 
@@ -166,7 +166,7 @@ Item XmlDataManagerImpl::loadDocument(
       ZORBA_ERROR_DESC(API0015_CANNOT_OPEN_FILE, "cannot read from stream");
     }
 
-    zstring docUri = Unmarshaller::getInternalString(uri);
+    const zstring& docUri = Unmarshaller::getInternalString(uri);
 
     if (aReplaceDoc)
       theStore->deleteDocument(docUri);
@@ -230,7 +230,7 @@ Item XmlDataManagerImpl::getDocument(const String& uri, ErrorHandler* aErrorHand
 
   ZORBA_DM_TRY
   {
-    zstring docUri = Unmarshaller::getInternalString(uri);
+    const zstring& docUri = Unmarshaller::getInternalString(uri);
     return &*theStore->getDocument(docUri);
   }
   ZORBA_DM_CATCH
@@ -250,7 +250,7 @@ bool XmlDataManagerImpl::deleteDocument(const String& uri, ErrorHandler* aErrorH
 
   ZORBA_DM_TRY
   {
-    zstring docUri = Unmarshaller::getInternalString(uri);
+    const zstring& docUri = Unmarshaller::getInternalString(uri);
     theStore->deleteDocument(docUri);
     return true;
   }
@@ -287,7 +287,7 @@ Collection_t XmlDataManagerImpl::createCollection(
 
   ZORBA_DM_TRY
   {
-    zstring colUri = Unmarshaller::getInternalString(uri);
+    const zstring& colUri = Unmarshaller::getInternalString(uri);
     return Collection_t(new CollectionImpl(theStore->createUriCollection(colUri),
                                            aErrorHandler));
   }
@@ -310,7 +310,7 @@ Collection_t XmlDataManagerImpl::getCollection(
 
   ZORBA_DM_TRY
   {
-    zstring colUri = Unmarshaller::getInternalString(uri);
+    const zstring& colUri = Unmarshaller::getInternalString(uri);
     store::Collection_t lColl = theStore->getUriCollection(colUri);
     if (lColl)
       return Collection_t(new CollectionImpl(lColl, aErrorHandler));
@@ -336,7 +336,7 @@ bool XmlDataManagerImpl::deleteCollection(
 
   ZORBA_DM_TRY
   {
-    zstring colUri = Unmarshaller::getInternalString(uri);
+    const zstring& colUri = Unmarshaller::getInternalString(uri);
     theStore->deleteUriCollection(colUri);
     return true;
   }

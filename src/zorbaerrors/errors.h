@@ -43,9 +43,10 @@ namespace error
 class ZORBA_DLL_PUBLIC ZorbaError : public ::zorba::serialization::SerializeBaseClass
 {
 public:
-  //typedef std::pair<store::Item_t, QueryLoc> StackEntry_t;
   typedef std::pair<QueryLoc, std::pair<store::Item_t, unsigned int> > StackEntry_t;
+
   typedef std::vector<StackEntry_t> StackTrace_t;
+
   zstring               theLocalName;
   zstring               thePrefix;
   zstring               theNamespace;
@@ -57,7 +58,7 @@ public:
   zstring               theFileName; // source file
   int                   theLineNumber; // line number in the source file
   bool                  theDebug;
-  StackTrace_t theStackTrace;
+  StackTrace_t          theStackTrace;
 
 public:
   SERIALIZABLE_CLASS(ZorbaError)
@@ -105,7 +106,8 @@ public:
   void setQueryLocation(
         unsigned int line,
         unsigned int column,
-        const StringType& filename) {
+        const StringType& filename) 
+  {
     theQueryLine = line;
     theQueryColumn = column;
     theQueryFileName = filename;

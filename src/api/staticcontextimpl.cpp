@@ -194,8 +194,8 @@ bool
 StaticContextImpl::addNamespace( const String& aPrefix, const String& aURI )
 {
   ZORBA_TRY
-    zstring lPrefix = Unmarshaller::getInternalString(aPrefix);
-    zstring lURI = Unmarshaller::getInternalString(aURI);
+    const zstring& lPrefix = Unmarshaller::getInternalString(aPrefix);
+    const zstring& lURI = Unmarshaller::getInternalString(aURI);
     QueryLoc loc;
     theCtx->bind_ns(lPrefix, lURI, loc);
     return true;
@@ -213,7 +213,7 @@ StaticContextImpl::getNamespaceURIByPrefix( const String& aPrefix ) const
   try
   {
     QueryLoc loc;
-    zstring lPrefix = Unmarshaller::getInternalString(aPrefix);
+    const zstring& lPrefix = Unmarshaller::getInternalString(aPrefix);
     zstring ns;
     theCtx->lookup_ns(ns, lPrefix, loc);
     return ns.c_str();
@@ -237,7 +237,7 @@ bool
 StaticContextImpl::setDefaultElementAndTypeNamespace( const String& aURI )
 {
   ZORBA_TRY
-    zstring lURI = Unmarshaller::getInternalString(aURI);
+    const zstring& lURI = Unmarshaller::getInternalString(aURI);
     QueryLoc loc;
     theCtx->set_default_elem_type_ns(lURI, loc);
     return true;
@@ -254,7 +254,7 @@ StaticContextImpl::getDefaultElementAndTypeNamespace( ) const
 {
   try
   {
-    return theCtx->default_elem_type_ns().str ();
+    return theCtx->default_elem_type_ns().str();
   }
   catch (error::ZorbaError& e)
   {
@@ -275,7 +275,7 @@ bool
 StaticContextImpl::setDefaultFunctionNamespace( const String& aURI )
 {
   ZORBA_TRY
-    zstring lURI = Unmarshaller::getInternalString(aURI);
+    const zstring& lURI = Unmarshaller::getInternalString(aURI);
     QueryLoc loc;
     theCtx->set_default_function_ns(lURI, loc);
     return true;
@@ -313,7 +313,7 @@ void
 StaticContextImpl::addCollation( const String& URI )
 {
   ZORBA_TRY
-    zstring lURI = Unmarshaller::getInternalString(URI);
+    const zstring& lURI = Unmarshaller::getInternalString(URI);
     theCtx->add_collation(lURI.str(), QueryLoc::null);
   ZORBA_CATCH
 }
@@ -325,7 +325,7 @@ StaticContextImpl::addCollation( const String& URI )
 void StaticContextImpl::setDefaultCollation( const String& URI )
 {
   ZORBA_TRY
-    zstring lURI = Unmarshaller::getInternalString(URI);
+    const zstring& lURI = Unmarshaller::getInternalString(URI);
     theCtx->set_default_collation(lURI.str(), QueryLoc::null);
   ZORBA_CATCH
 }
@@ -580,7 +580,7 @@ StaticContextImpl::setBaseURI( const String& aBaseURI )
 {
   try
   {
-    zstring baseURI = Unmarshaller::getInternalString(aBaseURI);
+    const zstring& baseURI = Unmarshaller::getInternalString(aBaseURI);
     zstring baseURI2 = baseURI;
 
     if(!GenericCast::instance()->isCastable(baseURI2,
@@ -717,7 +717,7 @@ StaticContextImpl::setDocumentType(const String& aDocUri, TypeIdentifier_t type)
     xqType = theCtx->get_typemanager()->create_type(*type);
   }
 
-  zstring const &uri = Unmarshaller::getInternalString(aDocUri);
+  const zstring& uri = Unmarshaller::getInternalString(aDocUri);
   theCtx->bind_document(uri, xqType);
 }
 
@@ -728,7 +728,7 @@ StaticContextImpl::setDocumentType(const String& aDocUri, TypeIdentifier_t type)
 TypeIdentifier_t
 StaticContextImpl::getDocumentType(const String& aDocUri) const
 {
-  zstring const &uri = Unmarshaller::getInternalString(aDocUri);
+  const zstring& uri = Unmarshaller::getInternalString(aDocUri);
   xqtref_t xqType = theCtx->lookup_document(uri);
   TypeIdentifier_t type = NULL;
   if (xqType == NULL)
@@ -794,7 +794,7 @@ TypeIdentifier_t
 StaticContextImpl::getCollectionType(const String& aCollectionUri) const
 {
 
-  zstring const &uri = Unmarshaller::getInternalString(aCollectionUri);
+  const zstring& uri = Unmarshaller::getInternalString(aCollectionUri);
   const XQType* xqType = theCtx->lookup_w3c_collection(uri);
   TypeIdentifier_t type = NULL;
   if (xqType == NULL)
@@ -991,9 +991,9 @@ bool StaticContextImpl::containsFunction(
 {
   store::Item_t qnameItem;
   GENV_ITEMFACTORY->createQName(qnameItem,
-                                Unmarshaller::getInternalString(aFnNameUri).str(),
+                                Unmarshaller::getInternalString(aFnNameUri),
                                 zstring(),
-                                Unmarshaller::getInternalString(aFnNameLocal).str());
+                                Unmarshaller::getInternalString(aFnNameLocal));
 
   const function* fn = theCtx->lookup_fn(qnameItem, arity);
 
@@ -1136,7 +1136,7 @@ StaticContextImpl::declareOption(const Item& aQName, const String& aOptionValue)
   try
   {
     const store::Item* lQName = Unmarshaller::getInternalItem(aQName);
-    zstring const &lOptionValue = Unmarshaller::getInternalString(aOptionValue);
+    const zstring& lOptionValue = Unmarshaller::getInternalString(aOptionValue);
     theCtx->bind_option(lQName, lOptionValue);
   }
   catch (error::ZorbaError& e)
@@ -1194,16 +1194,20 @@ void StaticContextImpl::setModulePaths(const std::vector<String>& aModulePaths)
 
 void StaticContextImpl::getModulePaths(std::vector<String>& aModulePaths) const
 {
-  try {
+  try 
+  {
     std::vector<std::string> lModulePaths;
 
     theCtx->get_module_paths(lModulePaths);
 
     for (std::vector<std::string>::const_iterator lIter = lModulePaths.begin();
-         lIter != lModulePaths.end(); ++lIter) {
+         lIter != lModulePaths.end(); ++lIter) 
+    {
       aModulePaths.push_back(lIter->c_str());
     }
-  } catch (error::ZorbaError& e) {
+  }
+  catch (error::ZorbaError& e)
+  {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
 }
@@ -1212,16 +1216,20 @@ void StaticContextImpl::getModulePaths(std::vector<String>& aModulePaths) const
 void
 StaticContextImpl::getFullModulePaths( std::vector<String>& aFullModulePaths ) const
 {
-  try {
+  try 
+  {
     std::vector<std::string> lFullModulePaths;
 
     theCtx->get_full_module_paths(lFullModulePaths);
 
     for (std::vector<std::string>::const_iterator lIter = lFullModulePaths.begin();
-         lIter != lFullModulePaths.end(); ++lIter) {
+         lIter != lFullModulePaths.end(); ++lIter)
+    {
       aFullModulePaths.push_back(lIter->c_str());
     }
-  } catch (error::ZorbaError& e) {
+  }
+  catch (error::ZorbaError& e) 
+  {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
 }
@@ -1231,10 +1239,13 @@ String
 StaticContextImpl::resolve(const String& aRelativeUri) const
 {
   zstring lResolved;
-  try {
-    zstring lRelativeUri = Unmarshaller::getInternalString(aRelativeUri);
+  try 
+  {
+    const zstring& lRelativeUri = Unmarshaller::getInternalString(aRelativeUri);
     lResolved = theCtx->resolve_relative_uri(lRelativeUri, false);
-  } catch (error::ZorbaError& e) {
+  }
+  catch (error::ZorbaError& e) 
+  {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
   return lResolved.str();
@@ -1245,11 +1256,14 @@ String
 StaticContextImpl::resolve(const String& aRelativeUri, const String& aBaseUri) const
 {
   zstring lResolved;
-  try {
-    zstring lRelativeUri = Unmarshaller::getInternalString(aRelativeUri);
-    zstring lBaseUri = Unmarshaller::getInternalString(aBaseUri);
+  try 
+  {
+    const zstring& lRelativeUri = Unmarshaller::getInternalString(aRelativeUri);
+    const zstring& lBaseUri = Unmarshaller::getInternalString(aBaseUri);
     lResolved = theCtx->resolve_relative_uri(lRelativeUri, lBaseUri, false);
-  } catch (error::ZorbaError& e) {
+  }
+  catch (error::ZorbaError& e)
+  {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
   return lResolved.str();
@@ -1257,7 +1271,7 @@ StaticContextImpl::resolve(const String& aRelativeUri, const String& aBaseUri) c
 
 
 void
-StaticContextImpl::setDeclaredCollectionCallback (
+StaticContextImpl::setDeclaredCollectionCallback(
     CollectionCallback aCallbackFunction,
     void* aCallbackData )
 {
@@ -1266,7 +1280,7 @@ StaticContextImpl::setDeclaredCollectionCallback (
 
 
 void
-StaticContextImpl::setDeclaredIndexCallback (
+StaticContextImpl::setDeclaredIndexCallback(
     IndexCallback aCallbackFunction,
     void* aCallbackData )
 {
@@ -1287,6 +1301,7 @@ StaticContextImpl::removeModuleImportChecker(ModuleImportChecker* aChecker)
   theCtx->removeModuleImportChecker(aChecker);
 }
 
+
 bool
 StaticContextImpl::validate(Item& rootElement, Item& validatedResult)
 {
@@ -1294,8 +1309,11 @@ StaticContextImpl::validate(Item& rootElement, Item& validatedResult)
                           Unmarshaller::getInternalItem(validatedResult));
 }
 
+
 bool 
-StaticContextImpl::validate(Item& rootElement, Item& validatedResult, 
+StaticContextImpl::validate(
+    Item& rootElement,
+    Item& validatedResult, 
     const String& targetNamespace)
 {
   zstring lTns = Unmarshaller::getInternalString(targetNamespace);
@@ -1303,9 +1321,11 @@ StaticContextImpl::validate(Item& rootElement, Item& validatedResult,
                           Unmarshaller::getInternalItem(validatedResult),
                           lTns);  
 }
-  
+
+
 bool 
-StaticContextImpl::validateSimpleContent(String& stringValue,
+StaticContextImpl::validateSimpleContent(
+    String& stringValue,
     const Item& typeQName, 
     std::vector<Item>& resultList)
 {
@@ -1314,12 +1334,13 @@ StaticContextImpl::validateSimpleContent(String& stringValue,
   zstring lTextValue = Unmarshaller::getInternalString(stringValue);
   
   res = theCtx->validateSimpleContent(lTextValue,
-      Unmarshaller::getInternalItem(typeQName), tmpResList);
+                                      Unmarshaller::getInternalItem(typeQName),
+                                      tmpResList);
   
   if (!res)
     return false;
     
-  for(std::vector<Item>::size_type i = 0; i<tmpResList.size(); i++)
+  for(std::vector<Item>::size_type i = 0; i < tmpResList.size(); ++i)
   {
     store::Item_t item = tmpResList[i];
     resultList.push_back(Item(item));
