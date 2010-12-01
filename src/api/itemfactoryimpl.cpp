@@ -105,9 +105,11 @@ Item ItemFactoryImpl::createQName(
   zstring const &lPrefix = Unmarshaller::getInternalString( aPrefix );
   zstring const &lLocalname = Unmarshaller::getInternalString( aLocalname );
   
-
   if (!GenericCast::instance()->castableToNCName(lLocalname.c_str()))
     ZORBA_ERROR_DESC_OSS(FORG0001, "Local name '" << lLocalname << "' must be an xs:NCName.");
+  
+  if (lPrefix.size() && !GenericCast::instance()->castableToNCName(lPrefix.c_str()))
+    ZORBA_ERROR_DESC_OSS(FORG0001, "Prefix '" << lPrefix << "' must be an xs:NCName.");
   
   store::Item_t lItem;
   theItemFactory->createQName(lItem, lNamespace, lPrefix, lLocalname);

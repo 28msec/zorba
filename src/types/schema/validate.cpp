@@ -50,7 +50,7 @@
 
 #include "zorbaerrors/Assert.h"
 
-//using namespace std;
+using namespace std;
 
 namespace zorba
 {
@@ -497,7 +497,7 @@ void Validator::processChildren(
         }
         else
           cout << "     - text2: '" << childStringValue << "' tQN: " <<
-            (typeQName ? typeQName->getStringValue()->c_str() : "NULL") <<
+            (typeQName ? typeQName->getStringValue() : "NULL") <<
             " xqT:" << ( xqType.getp() ? xqType.getp()->toString() : "NULL" )
                << "\n"; cout.flush();
 #endif
@@ -532,11 +532,19 @@ void Validator::processChildren(
 
           // XQ XP Datamodel Spec: http://www.w3.org/TR/xpath-datamodel/
           // section 6.7.4 Construction from a PSVI
-          zstring empty;
-          GENV_ITEMFACTORY->createTextNode(validatedTextNode,
-                                           parent,
-                                           childIndex,
-                                           empty);
+          if ( !utf8::is_whitespace(childStringValue) )
+          {
+            zstring empty;
+            GENV_ITEMFACTORY->createTextNode(validatedTextNode,
+                                             parent,
+                                             childIndex,
+                                             empty);
+            //cout << "      -- create empty text : ElementOnly || Empty" << endl;
+          }
+          else 
+          {
+            //cout << "      -- skip this text: (ElemOnly || Empty) && whitespace" << endl;
+          }
         }
         else
           //if ( xqType!=NULL &&
@@ -548,6 +556,7 @@ void Validator::processChildren(
                                            parent,
                                            childIndex,
                                            childStringValue);
+          //cout << "      -- create empty text: Mixed" << endl;
         }
       }
       break;
