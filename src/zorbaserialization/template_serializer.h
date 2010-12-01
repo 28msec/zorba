@@ -76,7 +76,11 @@ void operator&(Archiver &ar, std::list<T> &obj)
   if(ar.is_serializing_out())
   {
     char  strtemp[20];
+#ifndef WIN32
     sprintf(strtemp, "%d", (int)obj.size());
+#else
+    sprintf_s(strtemp, sizeof(strtemp), "%d", (int)obj.size());
+#endif
     bool is_ref;
     is_ref = ar.add_compound_field("std::list<T>", 0, !FIELD_IS_CLASS, strtemp, &obj, ARCHIVE_FIELD_NORMAL);
     if(!is_ref)
@@ -125,7 +129,11 @@ void operator&(Archiver &ar, std::vector<T> &obj)
   if(ar.is_serializing_out())
   {
     char  strtemp[20];
+#ifndef WIN32
     sprintf(strtemp, "%d", (int)obj.size());
+#else
+    sprintf_s(strtemp, sizeof(strtemp), "%d", (int)obj.size());
+#endif
     bool is_ref;
     is_ref = ar.add_compound_field("std::vector<T>", 0, !FIELD_IS_CLASS, strtemp, &obj, ARCHIVE_FIELD_NORMAL);
     if(!is_ref)
@@ -183,7 +191,11 @@ void operator&(Archiver &ar, std::vector<T> *&obj)
       return;
     }
     char  strtemp[20];
+#ifndef WIN32
     sprintf(strtemp, "%d", (int)obj->size());
+#else
+    sprintf_s(strtemp, sizeof(strtemp), "%d", (int)obj->size());
+#endif
     bool is_ref;
     is_ref = ar.add_compound_field("std::vector<T>*", 0, !FIELD_IS_CLASS, strtemp, obj, ar.is_serialize_base_class() ? ARCHIVE_FIELD_IS_BASECLASS : ARCHIVE_FIELD_IS_PTR);
     if(ar.is_serialize_base_class())                                     
@@ -256,7 +268,11 @@ void operator&(Archiver &ar, std::vector<T*> &obj)
   if(ar.is_serializing_out())
   {
     char  strtemp[20];
+#ifndef WIN32
     sprintf(strtemp, "%d", (int)obj.size());
+#else
+    sprintf_s(strtemp, sizeof(strtemp), "%d", (int)obj.size());
+#endif
     bool is_ref;
     is_ref = ar.add_compound_field("std::vector<T*>", 0, !FIELD_IS_CLASS, strtemp, &obj, ARCHIVE_FIELD_NORMAL);
     if(!is_ref)
@@ -589,8 +605,6 @@ void operator&(Archiver &ar, T &obj)
 {
   if(ar.is_serializing_out())
   {
-    //char  strtemp[20];
-    //sprintf(strtemp, "%d", 0);
     bool is_ref;
     
     is_ref = ar.add_compound_field(obj.get_class_name_str(),//typeid(obj).name()+6, 
@@ -678,8 +692,6 @@ void operator&(Archiver &ar, T *&obj)
                             ARCHIVE_FIELD_IS_NULL);
       return;
     }
-    //char  strtemp[20];
-    //sprintf(strtemp, "%d", 0);
     bool is_ref;
     
     is_ref = ar.add_compound_field((ar.is_serialize_base_class() ?
