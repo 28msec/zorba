@@ -24,24 +24,31 @@ namespace zorba {
 /**
  * ISO 2788: Guidelines for the establishment and development of monolingual
  * thesauri.
+ *
+ * ANSI/NISO Z39.19-2005: Guidelines for the Construction, Format, and
+ * Management of Monolingual Controlled Vocabularies.
  */
 namespace iso2788 {
 
   /**
-   * Relationship abbreviations from section 4.1.
+   * Relationship abbreviations from ISO 2788 section 4.1 and ANSI Z39.19-2005
+   * section 4.2.  Note: we do not implement "HN" (History Note), "SN" (Scope
+   * Note), or "X SN" (See Scope Note for...).
    */
   enum rel_type {
     unknown,
-    BT,   // broader term
-    BTG,  // broader term (generic)
-    BTP,  // broader term (partitive)
-    NT,   // narrower term
-    NTG,  // narrower term (generic)
-    NTP,  // narrower term (partitive)
-    RT,   // related term
-    TT,   // top term
-    UF,   // non-preferred term
-    USE,  // preferred term
+    BT,   ///< Broader Term
+    BTG,  ///< Broader Term (generic)
+    BTI,  ///< Broader Term (instance)
+    BTP,  ///< Broader Term (partitive)
+    NT,   ///< Narrower Term
+    NTG,  ///< Narrower Term (generic)
+    NTI,  ///< Narrower Term (instance)
+    NTP,  ///< Narrower Term (partitive)
+    RT,   ///< Related Term
+    TT,   ///< Top Term
+    UF,   ///< Non-preferred Term
+    USE,  ///< Preferred Term
   };
   extern char const *const string_of[];
 

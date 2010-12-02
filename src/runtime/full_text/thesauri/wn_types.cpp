@@ -134,16 +134,17 @@ namespace pointer {
   type map_iso_rel( iso2788::rel_type iso_rel ) {
     switch ( iso_rel ) {
       case iso2788::BT : return hypernym;
-      case iso2788::BTG:
-      case iso2788::BTP:
+      case iso2788::BTG: return hypernym;
+      case iso2788::BTI: return instance_hypernym;
+      case iso2788::BTP: return part_meronym;
       case iso2788::NT : return hyponym;
-      case iso2788::NTG:
-      case iso2788::NTP:
-      case iso2788::RT : return similar_to;
-      case iso2788::TT :
+      case iso2788::NTG: return hyponym;
+      case iso2788::NTI: return instance_hyponym;
+      case iso2788::NTP: return part_holonym;
+      case iso2788::RT : return also_see;
+      case iso2788::TT : return hypernym; // the best we can do
       case iso2788::UF :
-      case iso2788::USE:
-      default          : return unknown;
+      case iso2788::USE: return unknown;
     }
   }
 

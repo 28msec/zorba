@@ -110,6 +110,65 @@ static char const* find_lemma( zstring const &phrase ) {
 }
 
 /**
+ * Checks whether a WordNet synset pointer should be followed.
+ *
+ * @param ptr_type The pointer's type.
+ * @return Returns \c true only if the pointer should be followed.
+ */
+static bool follow_ptr( pointer::type ptr_type ) {
+  switch ( ptr_type ) {
+    case pointer::antonym:
+    case pointer::attribute:
+    case pointer::cause:
+    case pointer::derivationally_related_form:
+    case pointer::derived_from_adjective:
+    case pointer::entailment:
+    case pointer::member_holonym:
+    case pointer::member_meronym:
+    case pointer::part_holonym:
+    case pointer::part_meronym:
+    case pointer::participle_of_verb:
+    case pointer::pertainym:
+    case pointer::substance_holonym:
+    case pointer::substance_meronym:
+      //
+      // These pointer types are skipped because it's thought that nobody would
+      // want/expect such words as synonyms.
+      //
+      return false;
+
+    case pointer::also_see:
+    case pointer::hypernym:
+    case pointer::hyponym:
+    case pointer::instance_hypernym:
+    case pointer::instance_hyponym:
+    case pointer::similar_to:
+    case pointer::verb_group:
+      //
+      // These pointer types are thought to be what most would want/expect
+      // synonyms to be.
+      //
+      return true;
+
+    case pointer::domain_of_synset_region:
+    case pointer::domain_of_synset_topic:
+    case pointer::domain_of_synset_usage:
+    case pointer::member_of_domain_region:
+    case pointer::member_of_domain_topic:
+    case pointer::member_of_domain_usage:
+      //
+      // TODO: It's not clear what to do with these.  For now, err on the side
+      // of following them.
+      //
+      return true;
+
+    default:
+      assert( false );                  // ensures all cases are handled
+  }
+  return false;                         // suppesses warning -- never gets here
+}
+
+/**
  * Attempts to map an XQuery thesaurus relationship to a WordNet pointer type.
  *
  * @param relationship The XQuery thesaurus relationship.
@@ -167,7 +226,7 @@ bool thesaurus::next( zstring *synonym ) {
 #     if DEBUG_FT_THESAURUS
       cout << "+ found LevelSentinel" << endl;
 #     endif
-      if ( ++level_ > at_most_ ) {
+      if ( ++level_ > 1 /*at_most_*/ ) {
 #       if DEBUG_FT_THESAURUS
         cout << "+ level (" << level_ << ") > at_most (" << at_most_
              << ") --> no more synonyms" << endl;
@@ -215,54 +274,15 @@ bool thesaurus::next( zstring *synonym ) {
         if ( ptr->type_ != ptr_type_ )
           continue;
       } else {
-        switch ( ptr->type_ ) {
-          case pointer::antonym:
-          case pointer::attribute:
-          case pointer::cause:
-          case pointer::derivationally_related_form:
-          case pointer::derived_from_adjective:
-          case pointer::entailment:
-          case pointer::member_holonym:
-          case pointer::member_meronym:
-          case pointer::part_holonym:
-          case pointer::part_meronym:
-          case pointer::participle_of_verb:
-          case pointer::pertainym:
-          case pointer::substance_holonym:
-          case pointer::substance_meronym:
-            //
-            // Unless specifically requested, these pointer types are skipped
-            // because it's thought that nobody would want/expect such words as
-            // synonyms.
-            //
-            continue;
+        if ( !follow_ptr( ptr->type_ ) )
+          continue;
+      }
 
-          case pointer::also_see:
-          case pointer::hypernym:
-          case pointer::hyponym:
-          case pointer::instance_hypernym:
-          case pointer::instance_hyponym:
-          case pointer::similar_to:
-          case pointer::verb_group:
+#     if DEBUG_FT_THESAURUS
+      cout << "+ ptr->type=" << pointer::string_of[ ptr->type_ ] << endl;
+#     endif
 
-          case pointer::domain_of_synset_region: // ?
-          case pointer::domain_of_synset_topic: // ?
-          case pointer::domain_of_synset_usage: // ?
-          case pointer::member_of_domain_region: // ?
-          case pointer::member_of_domain_topic: // ?
-          case pointer::member_of_domain_usage: // ?
-
-#           if DEBUG_FT_THESAURUS
-            cout << "+ ptr->type=" << pointer::string_of[ ptr->type_ ] << endl;
-#           endif
-            break;
-
-          case pointer::unknown:
-            assert( ptr->type_ != pointer::unknown ); // always false
-        }
-      } // if ( ptr_type_ )
       synset_id_queue_.push_back( ptr->synset_id_ );
-
 #if 0
       if ( ptr->source_ ) {
         // TODO

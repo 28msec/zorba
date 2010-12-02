@@ -47,12 +47,15 @@ inline int find_index( char const *const *begin, char const *const *end,
 
 namespace iso2788 {
   char const *const string_of[] = {
+    // This MUST be in sorted order.
     "#UNKNOWN",
     "bt",
     "btg",
+    "bti",
     "btp",
     "nt",
     "ntg",
+    "nti",
     "ntp",
     "rt",
     "tt",
