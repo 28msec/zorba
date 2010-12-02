@@ -12,7 +12,7 @@
  : WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  : See the License for the specific language governing permissions and
  : limitations under the License.
-:)
+ :)
 
 
 (:~
@@ -83,9 +83,8 @@ declare %private sequential function xqdoc2html:clear-folder(
   else
     for $file in file:files($folderPath, $pattern, fn:true())
     let $filePath := fn:concat($folderPath, file:path-separator(), $file)
-    let $remove := file:remove($filePath) 
     return
-      ()
+      file:remove($filePath)
 };
 
 (:~
@@ -198,7 +197,7 @@ declare %private sequential function xqdoc2html:copy-xqsrc-folders(
 declare sequential function xqdoc2html:copy-xhtml-requisites(
   $modulesPath          as xs:string,
   $xhtmlRequisitesPath  as xs:string,
-  $xqdocBuildPath       as xs:string)  
+  $xqdocBuildPath       as xs:string)
 {
 let $xhtmlPath      := fn:concat($xqdocBuildPath, file:path-separator(), "xhtml"),
     $schemasPath    := fn:concat($xhtmlPath,      file:path-separator(), "schemas"),
@@ -213,8 +212,9 @@ return
   if (file:mkdirs($xhtmlPath, false())) then
   (
     (: second - clear the folder of all the files with these extensions :)
-    xqdoc2html:clear-folder($xhtmlPath,"(\.xsd|\.gif|\.js|\.css|\.html|\.cpp|\.h|\.xq)$"),
+    let $clear := xqdoc2html:clear-folder($xhtmlPath,"(\.xsd|\.gif|\.js|\.css|\.html|\.cpp|\.h|\.xq)$")
 
+    return(
     (: third - re-copy these files :)
     xqdoc2html:copy-files($modulesPath, $schemasPath, "\.xsd$"),
     xqdoc2html:copy-files($xhtmlRequisitesPath, $imagesPath, "\.gif$"),
@@ -226,6 +226,7 @@ return
 
     (: only create the examples folder. The examples will be copied later on in the process :)
     file:mkdirs($examplesPath, false())
+    )
   )
   else
     error()
@@ -1030,20 +1031,6 @@ declare sequential function xqdoc2html:doc(
 
     $doc;
   }
-};
-
-(:~
- : This function creates the XQDoc XHTML header.
- :
- : @param $xqdoc the node containing the XQDoc XML.
- : @return The 'head' of the XHTML.
- :)
-declare function xqdoc2html:header($xqdoc)
-{
-  <head>
-    <title>Documentation for {xqdoc2html:module-uri($xqdoc)}</title>
-    <link rel="stylesheet" type="text/css" href="" />
-  </head>
 };
 
 (:~
