@@ -2968,13 +2968,21 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
   if (atlist == NULL && static_context::is_builtin_module(targetNS))
   {
     theRootSctx->add_imported_builtin_module(targetNS);
-
-    // we cannot skip the sctx introspection module because if contains
-    // some non-external functions as well.
-    if (targetNS != static_context::ZORBA_INTROSP_SCTX_FN_NS)
+#ifdef NDEBUG
+    // We cannot skip the math or the sctx introspection modules because they
+    // contain some non-external functions as well.
+    if (targetNS != static_context::ZORBA_INTROSP_SCTX_FN_NS &&
+        targetNS != static_context::ZORBA_MATH_FN_NS)
     {
       return;
     }
+#else
+    if (targetNS == static_context::ZORBA_UTIL_FN_NS ||
+        targetNS == static_context::ZORBA_FOP_FN_NS)
+    {
+      return;
+    }
+#endif
   }
 
   InternalModuleURIResolver* standardModuleResolver = GENV.getModuleURIResolver();
@@ -3287,9 +3295,8 @@ void* begin_visit(const VFO_DeclList& v)
 
       if (f.getp() != 0)
       {
-        // We make sure that the types of the functions
-        // and the return type are equal to the one that is declared in
-        // the module
+        // We make sure that the types of the parameters and the return type
+        // are equal to the one that is declared in the module
         const signature& s = f->getSignature();
         if (!sig.equals(tm, s))
         {

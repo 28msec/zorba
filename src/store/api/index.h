@@ -81,19 +81,7 @@ public:
 public:
   IndexSpecification()
     :
-    theTimezone(0),
-    theIsGeneral(false),
-    theIsUnique(false),
-    theIsSorted(false),
-    theIsTemp(false),
-    theIsThreadSafe(false)
-  {
-  }
-
-  IndexSpecification(ulong numColumns)
-    :
-    theKeyTypes(numColumns),
-    theCollations(numColumns),
+    theNumKeyColumns(0),
     theTimezone(0),
     theIsGeneral(false),
     theIsUnique(false),
@@ -105,6 +93,7 @@ public:
 
   void clear()
   {
+    theNumKeyColumns = 0;
     theKeyTypes.clear();
     theCollations.clear();
     theTimezone = 0;
@@ -113,12 +102,14 @@ public:
 
   void resize(ulong numColumns)
   {
+    theNumKeyColumns = numColumns;
     theKeyTypes.resize(numColumns);
     theCollations.resize(numColumns);
   }
 
-  ulong getNumColumns() const {
-    return theKeyTypes.size();
+  ulong getNumColumns() const 
+  {
+    return theNumKeyColumns;
   }
 };
 

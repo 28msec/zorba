@@ -125,7 +125,6 @@ void createIndexSpec(
   const std::vector<OrderModifier>& keyModifiers(indexDecl->getOrderModifiers());
   ulong numColumns = keyTypes.size();
 
-  spec.theNumKeyColumns = numColumns;
   spec.resize(numColumns);
 
   for(ulong i = 0; i < numColumns; ++i) 
