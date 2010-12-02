@@ -80,10 +80,7 @@ ZorbaImpl::ZorbaImpl() : theNumUsers(0)
 
 ZorbaImpl::~ZorbaImpl()
 {
-#ifdef WIN32
-  if(!ZorbaImpl::ctrl_c_signaled)
-#endif
-    shutdownInternal(false);
+  shutdownInternal(false);
 }
 
 /**

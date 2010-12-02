@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include "api/zorbaimpl.h"
+
 #include "zorbautils/fatal.h"
 #include "zorbautils/latch.h"
 #include <cassert>
@@ -266,6 +268,10 @@ int Latch::destroy()
 ********************************************************************************/
 int Latch::readlock()
 {
+#ifdef WIN32
+  if(ZorbaImpl::ctrl_c_signaled)
+    return 0;
+#endif
 	int status;
 
 	if (valid != LATCH_VALID) return EINVAL;
@@ -299,6 +305,10 @@ int Latch::readlock()
 ********************************************************************************/
 int Latch::readtrylock()
 {
+#ifdef WIN32
+  if(ZorbaImpl::ctrl_c_signaled)
+    return 0;
+#endif
 	int status, status2;
 
 	if (valid != LATCH_VALID) return EINVAL;
@@ -323,6 +333,10 @@ int Latch::readtrylock()
 ********************************************************************************/
 int Latch::readunlock()
 {
+#ifdef WIN32
+  if(ZorbaImpl::ctrl_c_signaled)
+    return 0;
+#endif
 	int status, status2;
 	
 	if (valid != LATCH_VALID) return EINVAL;
@@ -343,6 +357,10 @@ int Latch::readunlock()
 ********************************************************************************/
 int Latch::writelock()
 {
+#ifdef WIN32
+  if(ZorbaImpl::ctrl_c_signaled)
+    return 0;
+#endif
 	int status;
 
 	if (valid != LATCH_VALID) return EINVAL;
@@ -370,6 +388,10 @@ int Latch::writelock()
 
 int Latch::writetrylock()
 {
+#ifdef WIN32
+  if(ZorbaImpl::ctrl_c_signaled)
+    return 0;
+#endif
 	int status, status2;
 
 	if (valid != LATCH_VALID) return EINVAL;
@@ -389,6 +411,10 @@ int Latch::writetrylock()
 
 int Latch::writeunlock()
 {
+#ifdef WIN32
+  if(ZorbaImpl::ctrl_c_signaled)
+    return 0;
+#endif
 	int status;
 
 	if (valid != LATCH_VALID) return EINVAL;

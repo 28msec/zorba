@@ -25,8 +25,6 @@
 #include "zorbaerrors/error_manager.h"
 #include "zorbaerrors/Assert.h"
 
-#include "api/zorbaimpl.h"
-
 #include "store/api/pul.h"
 
 #include "store/naive/properties.h"
@@ -110,10 +108,7 @@ SimpleStore::SimpleStore()
 ********************************************************************************/
 SimpleStore::~SimpleStore()
 {
-#ifdef WIN32
-  if(!ZorbaImpl::ctrl_c_signaled)
-#endif
-    shutdown(false);
+  shutdown(false);
 }
 
 

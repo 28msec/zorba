@@ -19,6 +19,8 @@
 #include "zorbaerrors/error_manager.h"
 #include "zorbautils/fatal.h"
 #include "zorbautils/lock.h"
+#include "api/zorbaimpl.h"
+
 
 
 namespace zorba { 
@@ -37,6 +39,10 @@ Lock::Lock()
 
 Lock::~Lock()
 {
+#ifdef WIN32
+  if(ZorbaImpl::ctrl_c_signaled)
+    return;
+#endif
   assert(theMode == NOLOCK);
   assert(theNumWaiters == 0);
   assert(theHolders.empty());
@@ -49,6 +55,10 @@ Lock::~Lock()
 ********************************************************************************/
 void Lock::rlock()
 {
+#ifdef WIN32
+  if(ZorbaImpl::ctrl_c_signaled)
+    return;
+#endif
   theMutex.lock();
 
   ThreadId thisThread = Thread::self();
@@ -130,6 +140,10 @@ retry:
 ********************************************************************************/
 void Lock::wlock()
 {
+#ifdef WIN32
+  if(ZorbaImpl::ctrl_c_signaled)
+    return;
+#endif
   theMutex.lock();
 
   ThreadId thisThread = Thread::self();
@@ -222,6 +236,10 @@ retry:
 ********************************************************************************/
 void Lock::unlock()
 {
+#ifdef WIN32
+  if(ZorbaImpl::ctrl_c_signaled)
+    return;
+#endif
   theMutex.lock();
 
   ThreadId thisThread = Thread::self();
