@@ -334,6 +334,23 @@ bool static_context::is_builtin_module(const zstring& ns)
 
 
 /***************************************************************************//**
+  Static method to check if a given target namespace identifies a zorba non
+  pure builtin module, i.e. a builtin module that, in addition to builtin 
+  external functions, contains variable declarations and/or udfs.
+********************************************************************************/
+bool static_context::is_non_pure_builtin_module(const zstring& ns)
+{
+  if (ns.compare(0, ZORBA_NS_PREFIX.size(), ZORBA_NS_PREFIX) == 0)
+  {
+    return (ns == ZORBA_MATH_FN_NS ||
+            ns == ZORBA_INTROSP_SCTX_FN_NS);
+  }
+
+  return false;
+}
+
+
+/***************************************************************************//**
   Static method to check if a given target namespace identifies a zorba
   reserved module.
 ********************************************************************************/

@@ -545,6 +545,8 @@ protected:
 public:
   static bool is_builtin_module(const zstring& ns);
 
+  static bool is_non_pure_builtin_module(const zstring& ns);
+
   static bool is_reserved_module(const zstring& ns);
 
 public:

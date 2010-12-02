@@ -2961,7 +2961,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 
   const URILiteralList* atlist = v.get_at_list();
 
-  // If the imported module X is a "builtin" one (i.e., containing decalrations
+  // If the imported module X is a "pure builtin" one (i.e., contains decalrations
   // of zorba builtin functions only), then we don't need to process it. We just
   // need to record in the root sctx of the importing module that X has been
   // imported.
@@ -2971,8 +2971,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 #ifdef NDEBUG
     // We cannot skip the math or the sctx introspection modules because they
     // contain some non-external functions as well.
-    if (targetNS != static_context::ZORBA_INTROSP_SCTX_FN_NS &&
-        targetNS != static_context::ZORBA_MATH_FN_NS)
+    if (!static_context::is_non_pure_builtin_module(targetNS))
     {
       return;
     }
