@@ -121,6 +121,11 @@ private:
   void eval_ftrange( ftrange const&, ft_int *at_least, ft_int *at_most );
   ft_int get_int( PlanIter_t );
 
+  void lookup_thesaurus( zstring const &uri, zstring const &query_phrase,
+                         FTToken const &qt0, zstring const &relationship,
+                         ft_int at_least, ft_int at_most,
+                         FTQueryItemSeq &result );
+
   FTTokenIterator_t &search_ctx_;
   static_context const &static_ctx_;
   store::Item const *const ignore_item_;

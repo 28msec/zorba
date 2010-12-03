@@ -24,9 +24,10 @@
 #include <cstring>                      /* for strcmp(3) */
 #include <utility>                      /* for pair */
 
+#include <zorba/util/path.h>
+
 #include "util/ascii_util.h"
 #include "util/less.h"
-#include "util/mmap_file.h"
 #include "zorbaerrors/error_manager.h"
 
 #include "decode_base128.h"
@@ -56,20 +57,29 @@ namespace wordnet {
  *
  * @return Returns said reference.
  */
-static mmap_file const& get_db_file() {
+mmap_file const& get_wordnet_file() {
   typedef char version_type[4];
   static char const our_version[] = "ZW01";
 
-  static mmap_file thesaurus_file;
-  if ( !thesaurus_file ) {
-    thesaurus_file.open( "/usr/local/tmp/zorba/wordnet.zth" ); // TODO
+  static mmap_file wordnet_file;
+  if ( !wordnet_file ) {
+    zstring const &dir = thesaurus::get_directory();
+    assert( !dir.empty() );
+
+    zstring wordnet_path = dir;
+    if ( !ascii::ends_with( wordnet_path,
+                            filesystem_path::get_path_separator() ) )
+      wordnet_path += filesystem_path::get_path_separator();
+    wordnet_path += "wordnet.zth";
+
+    wordnet_file.open( wordnet_path.c_str() );
     char file_version[ sizeof( version_type ) + 1 ];
-    ::strncpy( file_version, thesaurus_file.begin(), sizeof( version_type ) );
+    ::strncpy( file_version, wordnet_file.begin(), sizeof( version_type ) );
     file_version[ sizeof( version_type ) ] = '\0';
     if ( ::strcmp( file_version, our_version ) != 0 )
       THROW_VERSION_EXCEPTION( file_version, our_version );
   }
-  return thesaurus_file;
+  return wordnet_file;
 }
 
 /**
@@ -80,7 +90,7 @@ static mmap_file const& get_db_file() {
  */
 template<db_segment::id_t SegID>
 static db_segment const& get_segment() {
-  static db_segment const segment( get_db_file(), SegID );
+  static db_segment const segment( get_wordnet_file(), SegID );
   return segment;
 }
 
@@ -285,10 +295,10 @@ bool thesaurus::next( zstring *synonym ) {
       synset_id_queue_.push_back( ptr->synset_id_ );
 #if 0
       if ( ptr->source_ ) {
-        // TODO
-        ptr->target_;
-      } else {
-        // TODO
+        lemma_id_t const source_lemma_id = ss.lemma_ids_[ ptr->source_ - 1 ];
+
+        synset const tt( SYNSETS[ ptr->synset_id_ ] );
+        lemma_id_t const target_lemma_id = tt.lemma_ids_[ ptr->target_ - 1 ];
       }
 #endif
     } // FOR_EACH

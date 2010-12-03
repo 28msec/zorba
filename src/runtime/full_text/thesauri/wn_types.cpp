@@ -144,7 +144,8 @@ namespace pointer {
       case iso2788::RT : return also_see;
       case iso2788::TT : return hypernym; // the best we can do
       case iso2788::UF :
-      case iso2788::USE: return unknown;
+      case iso2788::USE:
+      default          : return unknown;
     }
   }
 

@@ -1158,10 +1158,16 @@ private:
 
 } // anonymous namespace
 
-static void lookup_thesaurus( zstring const &uri, zstring const &query_phrase,
-                              FTToken const &qt0, zstring const &relationship,
-                              ft_int at_least, ft_int at_most,
-                              FTQueryItemSeq &result ) {
+void ftcontains_visitor::
+lookup_thesaurus( zstring const &uri, zstring const &query_phrase,
+                  FTToken const &qt0, zstring const &relationship,
+                  ft_int at_least, ft_int at_most, FTQueryItemSeq &result ) {
+  static bool set_directory;
+  if ( !set_directory ) {
+    ft_thesaurus::set_directory( static_ctx_.get_thesauri_directory() );
+    set_directory = true;
+  }
+
   auto_ptr<ft_thesaurus> thesaurus(
     ft_thesaurus::get(
       uri, qt0.lang(), query_phrase, relationship, at_least, at_most

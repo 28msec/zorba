@@ -76,6 +76,8 @@ namespace thesaurus_impl {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+zstring ft_thesaurus::thesauri_directory_;
+
 ft_thesaurus::~ft_thesaurus() {
   // do nothing
 }
@@ -95,6 +97,12 @@ ft_thesaurus* ft_thesaurus::get( zstring const &uri, iso639_1::type lang,
     default:
       return NULL;
   }
+}
+
+void ft_thesaurus::set_directory( zstring const &path ) {
+  if ( path.empty() )
+    ; // throw XXX;
+  thesauri_directory_ = path;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

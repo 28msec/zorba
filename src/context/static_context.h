@@ -517,6 +517,7 @@ protected:
 
 #ifndef ZORBA_NO_FULL_TEXT
   ftmatch_options                       * theFTMatchOptions;
+  zstring                                 theThesauriDirectory;
 #endif /* ZORBA_NO_FULL_TEXT */
 
   StaticContextConsts::xquery_version_t      theXQueryVersion;
@@ -880,6 +881,19 @@ public:
 
   void set_match_options( ftmatch_options *mo ) {
     theFTMatchOptions = mo;
+  }
+
+  zstring const& get_thesauri_directory() const {
+    return theThesauriDirectory;
+  }
+
+  void set_thesauri_directory( char const *path ) {
+    theThesauriDirectory = path;
+  }
+
+  template<class StringType>
+  void set_thesauri_directory( StringType const &path ) {
+    theThesauriDirectory = path;
   }
 #endif /* ZORBA_NO_FULL_TEXT */
 

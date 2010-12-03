@@ -20,6 +20,8 @@
 #include <deque>
 #include <set>
 
+#include "util/mmap_file.h"
+
 #include "../ft_thesaurus.h"
 #include "wn_types.h"
 
@@ -52,6 +54,8 @@ private:
   synset_id_queue synset_id_queue_;
   synonym_queue synonym_queue_;
   synonym_set synonyms_seen_;
+
+  friend mmap_file const& get_wordnet_file();
 
   // forbid these
   thesaurus( thesaurus const& );
