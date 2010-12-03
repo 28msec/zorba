@@ -807,6 +807,72 @@ FTTokenIterator_t StringItem::getQueryTokens(
 
 #endif /* ZORBA_NO_FULL_TEXT */
 
+///////////////////////////////////////////////////////////////////////////////
+
+void StreamableStringItem::appendStringValue( zstring &buf ) const {
+  materialize_if_necessary();
+  buf += theValue;
+}
+
+long StreamableStringItem::compare( Item const *other, long timezone,
+                                    XQPCollator const *collator ) const {
+  materialize_if_necessary();
+  return StringItem::compare( other, timezone, collator );
+}
+
+bool StreamableStringItem::equals( store::Item const *item, long timezone,
+                                   XQPCollator const *collator ) const {
+  materialize_if_necessary();
+  return equals( item, timezone, collator );
+}
+
+store::Item_t StreamableStringItem::getEBV() const {
+  materialize_if_necessary();
+  return StringItem::getEBV();
+}
+
+zstring const& StreamableStringItem::getString() const {
+  materialize_if_necessary();
+  return theValue;
+}
+
+zstring StreamableStringItem::getStringValue() const {
+  materialize_if_necessary();
+  return theValue;
+}
+
+void StreamableStringItem::getStringValue2( zstring &val ) const {
+  materialize_if_necessary();
+  val = theValue;
+}
+
+uint32_t StreamableStringItem::hash( long timezone,
+                                     XQPCollator const *collator ) const {
+  materialize_if_necessary();
+  return utf8::hash( theValue, collator );
+}
+
+zstring StreamableStringItem::show() const {
+  materialize_if_necessary();
+  return StringItem::show();
+}
+
+void StreamableStringItem::materialize_if_necessary() const {
+  if ( theValue.empty() ) {
+    StreamableStringItem *const ssi = const_cast<StreamableStringItem*>( this );
+    char buf[ 4096 ];
+    streampos const pos = ssi->istream_.tellg();
+    if ( pos )
+      ssi->istream_.seekg( 0, ios::beg );
+    while ( ssi->istream_.read( buf, sizeof( buf ) ) ) {
+      ssi->theValue.append( buf, ssi->istream_.gcount() );
+    }
+    ssi->istream_.clear();
+    if ( pos )
+      ssi->istream_.seekg( pos, ios::beg );
+  }
+}
+
 /*******************************************************************************
   class NormalizedStringItem
 ********************************************************************************/

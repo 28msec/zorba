@@ -112,6 +112,13 @@ bool BasicItemFactory::createString(store::Item_t& result, zstring& value)
 }
 
 
+bool BasicItemFactory::createStreamableString( store::Item_t& result,
+                                               std::streambuf *buf ) {
+  result = new StreamableStringItem( buf );
+  return true;
+}
+
+
 bool BasicItemFactory::createNormalizedString(store::Item_t& result, zstring& value)
 {
   result = new NormalizedStringItem(value);
@@ -1496,4 +1503,4 @@ void BasicItemFactory::splitToAtomicTextValues(
 
 } // namespace simplestore
 } // namespace zorba
-
+/* vim:set et sw=2 ts=2: */

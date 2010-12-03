@@ -18,6 +18,8 @@
 #define ZORBA_STORE_ATOMIC_ITEMS_H
 
 #include <zorba/config.h>
+#include <iostream>
+#include <streambuf>
 #include <vector>
 
 #include "store/api/item.h"
@@ -530,10 +532,7 @@ public:
   zstring show() const;
 };
 
-
-/******************************************************************************
-  class StringItem
- *****************************************************************************/
+///////////////////////////////////////////////////////////////////////////////
 
 class StringItem : public AtomicItem
 {
@@ -620,6 +619,49 @@ private:
 };
 #endif /* ZORBA_NO_FULL_TEXT */
 
+///////////////////////////////////////////////////////////////////////////////
+
+class StreamableStringItem : public StringItem {
+public:
+  bool equals( store::Item const*, long timezone = 0,
+               XQPCollator const *collator = 0 ) const;
+
+  long compare( Item const *other, long timezone = 0,
+                XQPCollator const *collator = 0 ) const;
+
+  store::Item_t getEBV() const;
+
+  zstring getStringValue() const;
+
+  void getStringValue2( zstring &result ) const;
+
+  void appendStringValue( zstring &buf ) const;
+
+  std::istream& getStream() {
+    return istream_;
+  }
+
+  std::istream const& getStream() const {
+    return istream_;
+  }
+
+  zstring const& getString() const;
+
+  uint32_t hash( long timezone = 0, XQPCollator const *collator = 0 ) const;
+
+  zstring show() const;
+
+protected:
+  StreamableStringItem( std::streambuf *buf ) : istream_( buf ) {
+    istream_.exceptions( std::ios::badbit | std::ios::failbit );
+  }
+
+  void materialize_if_necessary() const;
+
+  std::istream istream_;
+
+  friend class BasicItemFactory;
+};
 
 /*******************************************************************************
   class NormalizedStringItem

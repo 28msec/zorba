@@ -16,6 +16,8 @@
 #ifndef ZORBA_SIMPLE_STORE_ITEM_FACTORY
 #define ZORBA_SIMPLE_STORE_ITEM_FACTORY
 
+#include <streambuf>
+
 #include "store/naive/shared_types.h"
 
 #include "store/api/item_factory.h"
@@ -79,6 +81,8 @@ public:
   bool createUntypedAtomic(store::Item_t& result, zstring& value);
 
   bool createString(store::Item_t& result, zstring& value);
+
+  bool createStreamableString(store::Item_t& result, std::streambuf*);
 
   bool createBase64Binary(store::Item_t& result, xs_base64Binary value);
 
@@ -323,3 +327,4 @@ private:
  * mode: c++
  * End:
  */
+ /* vim:set et sw=2 ts=2: */
