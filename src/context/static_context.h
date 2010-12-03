@@ -435,7 +435,6 @@ public:
   static const zstring ZORBA_SCHEMA_FN_NS;
   static const zstring ZORBA_TIDY_FN_NS;
   static const zstring ZORBA_JSON_FN_NS;
-  static const zstring ZORBA_CSV_FN_NS;
   static const zstring ZORBA_XQDOC_FN_NS;
   static const zstring ZORBA_RANDOM_FN_NS;
   static const zstring ZORBA_INTROSP_SCTX_FN_NS;

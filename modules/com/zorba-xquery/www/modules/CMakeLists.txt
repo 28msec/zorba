@@ -46,3 +46,4 @@ ELSE(GEOS_FOUND)
 MESSAGE(STATUS "Geos Library Not Found. You need to install Geos library in order to compile the Geo Module.")
 ENDIF(GEOS_FOUND)
 
+GENERATE_MODULE_LIBRARY(csv "")

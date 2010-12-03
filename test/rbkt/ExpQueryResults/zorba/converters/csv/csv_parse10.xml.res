@@ -1,0 +1,4929 @@
+<row>
+  <State_Postal_Code>MI</State_Postal_Code>
+  <State>MICHIGAN</State>
+  <County>ALGER</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04057529"</Staid>
+  <Place_Name>WEST BRANCH WHITEFISH RIVER NEAR DIFFIN  MI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>BOTTOM MATERIAL</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf/>
+  <Phosphorus__wu/>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_>1</Phosphorus__bs_62.5u_>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>MI</State_Postal_Code>
+  <State>MICHIGAN</State>
+  <County>ALGER</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04057529"</Staid>
+  <Place_Name>WEST BRANCH WHITEFISH RIVER NEAR DIFFIN  MI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>MI</State_Postal_Code>
+  <State>MICHIGAN</State>
+  <County>DELTA</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04057577"</Staid>
+  <Place_Name>CHIPPENY CREEK NEAR RAPID RIVER  MI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>MI</State_Postal_Code>
+  <State>MICHIGAN</State>
+  <County>DELTA</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04057658"</Staid>
+  <Place_Name>DAYS RIVER NEAR BRAMPTON  MI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>MI</State_Postal_Code>
+  <State>MICHIGAN</State>
+  <County>DELTA</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04058980"</Staid>
+  <Place_Name>HUNTERS BROOK NEAR CORNELL  MI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>MI</State_Postal_Code>
+  <State>MICHIGAN</State>
+  <County>DELTA</County>
+  <Suid>WMIC</Suid>
+  <Staid>="040590305"</Staid>
+  <Place_Name>ESCANABA RIVER AT LAMBERT  MI</Place_Name>
+  <Land_Use_Group>MIXED</Land_Use_Group>
+  <Land_Use_Code>mx</Land_Use_Code>
+  <Sample_Medium_Desc>BOTTOM MATERIAL</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf/>
+  <Phosphorus__wu/>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_>1</Phosphorus__bs_62.5u_>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>MI</State_Postal_Code>
+  <State>MICHIGAN</State>
+  <County>DELTA</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04059597"</Staid>
+  <Place_Name>BARK RIVER NEAR BARK RIVER  MI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>BOTTOM MATERIAL</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf/>
+  <Phosphorus__wu/>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_>1</Phosphorus__bs_62.5u_>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>MI</State_Postal_Code>
+  <State>MICHIGAN</State>
+  <County>IRON</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04061050"</Staid>
+  <Place_Name>SOUTH BRANCH PAINT RIVER NEAR ELMWOOD  MI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>BOTTOM MATERIAL</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf/>
+  <Phosphorus__wu/>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_>1</Phosphorus__bs_62.5u_>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>MI</State_Postal_Code>
+  <State>MICHIGAN</State>
+  <County>IRON</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04061050"</Staid>
+  <Place_Name>SOUTH BRANCH PAINT RIVER NEAR ELMWOOD  MI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>MI</State_Postal_Code>
+  <State>MICHIGAN</State>
+  <County>IRON</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04061200"</Staid>
+  <Place_Name>WEST BRANCH NET RIVER NEAR PARK SIDING  MI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>MI</State_Postal_Code>
+  <State>MICHIGAN</State>
+  <County>IRON</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04061245"</Staid>
+  <Place_Name>EAST BRANCH NET RIVER NEAR PARK SIDING  MI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>MI</State_Postal_Code>
+  <State>MICHIGAN</State>
+  <County>IRON</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04062462"</Staid>
+  <Place_Name>FENCE RIVER NEAR MICHIGAMME  MI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>MI</State_Postal_Code>
+  <State>MICHIGAN</State>
+  <County>MARQUETTE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04057950"</Staid>
+  <Place_Name>BLACK RIVER NEAR REPUBLIC  MI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>MI</State_Postal_Code>
+  <State>MICHIGAN</State>
+  <County>MARQUETTE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04058120"</Staid>
+  <Place_Name>GREEN CREEK NEAR PALMER  MI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>BOTTOM MATERIAL</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf/>
+  <Phosphorus__wu/>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_>1</Phosphorus__bs_62.5u_>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>MI</State_Postal_Code>
+  <State>MICHIGAN</State>
+  <County>MARQUETTE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04058305"</Staid>
+  <Place_Name>EAST BRANCH ESCANABA RIVER NEAR PALMER  MI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>MI</State_Postal_Code>
+  <State>MICHIGAN</State>
+  <County>MARQUETTE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04062085"</Staid>
+  <Place_Name>PESHEKEE RIVER NEAR MARTINS LANDING  MI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>rf</Land_Use_Code>
+  <Sample_Medium_Desc>BOTTOM MATERIAL</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf/>
+  <Phosphorus__wu/>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_>1</Phosphorus__bs_62.5u_>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>MI</State_Postal_Code>
+  <State>MICHIGAN</State>
+  <County>MARQUETTE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04062085"</Staid>
+  <Place_Name>PESHEKEE RIVER NEAR MARTINS LANDING  MI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>rf</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>33</Ammonia__wf>
+  <Nitrite__wf>33</Nitrite__wf>
+  <Ammonia___organic-N__w>33</Ammonia___organic-N__w>
+  <NH3_orgN__wu>33</NH3_orgN__wu>
+  <NO3_NO2__wf>33</NO3_NO2__wf>
+  <Phosphorus__wu>33</Phosphorus__wu>
+  <Phosphorus__wf>33</Phosphorus__wf>
+  <Orthophosphate__wf>33</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>MI</State_Postal_Code>
+  <State>MICHIGAN</State>
+  <County>MARQUETTE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04062190"</Staid>
+  <Place_Name>WEST BRANCH PESHEKEE RIVER NEAR CHAMPION  MI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>MI</State_Postal_Code>
+  <State>MICHIGAN</State>
+  <County>MENOMINEE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04059400"</Staid>
+  <Place_Name>TENMILE CREEK AT PERRONVILLE  MI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>MI</State_Postal_Code>
+  <State>MICHIGAN</State>
+  <County>MENOMINEE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04059620"</Staid>
+  <Place_Name>DEER CREEK NEAR FOX  MI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>MI</State_Postal_Code>
+  <State>MICHIGAN</State>
+  <County>MENOMINEE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04059685"</Staid>
+  <Place_Name>CEDAR RIVER NEAR SPALDING  MI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>MI</State_Postal_Code>
+  <State>MICHIGAN</State>
+  <County>MENOMINEE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04059715"</Staid>
+  <Place_Name>FORTY SEVEN MILE CREEK NEAR HOULE  MI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>MI</State_Postal_Code>
+  <State>MICHIGAN</State>
+  <County>MENOMINEE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04059758"</Staid>
+  <Place_Name>BIG BROOK NEAR PALESTINE  MI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>MI</State_Postal_Code>
+  <State>MICHIGAN</State>
+  <County>MENOMINEE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04067080"</Staid>
+  <Place_Name>LITTLE CEDAR RIVER NEAR BAGLEY  MI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>ADAMS</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04072657"</Staid>
+  <Place_Name>NEENAH CREEK NEAR OXFORD  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>ADAMS</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04072749"</Staid>
+  <Place_Name>LAWRENCE CREEK NEAR LAWRENCE  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>BROWN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04071990"</Staid>
+  <Place_Name>SUAMICO RIVER AT FLINTVILLE  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>BROWN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04072150"</Staid>
+  <Place_Name>DUCK CREEK NEAR HOWARD  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>cr</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>95</Ammonia__wf>
+  <Nitrite__wf>95</Nitrite__wf>
+  <Ammonia___organic-N__w>95</Ammonia___organic-N__w>
+  <NH3_orgN__wu>96</NH3_orgN__wu>
+  <NO3_NO2__wf>95</NO3_NO2__wf>
+  <Phosphorus__wu>96</Phosphorus__wu>
+  <Phosphorus__wf>95</Phosphorus__wf>
+  <Orthophosphate__wf>95</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>BROWN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04072225"</Staid>
+  <Place_Name>BEAVER DAM CREEK NEAR HOWARD  WI</Place_Name>
+  <Land_Use_Group>URBAN</Land_Use_Group>
+  <Land_Use_Code>ur</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>BROWN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04072233"</Staid>
+  <Place_Name>LANCASTER BROOK AT SHAWANO AVENUE AT HOWARD  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>NA</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>28</Ammonia__wf>
+  <Nitrite__wf>28</Nitrite__wf>
+  <Ammonia___organic-N__w>25</Ammonia___organic-N__w>
+  <NH3_orgN__wu>25</NH3_orgN__wu>
+  <NO3_NO2__wf>28</NO3_NO2__wf>
+  <Phosphorus__wu>28</Phosphorus__wu>
+  <Phosphorus__wf>25</Phosphorus__wf>
+  <Orthophosphate__wf>28</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend>2</Particulate-N__suspend>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu>3</Total_nitrogen__wu>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>BROWN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04084940"</Staid>
+  <Place_Name>PLUM CREEK NEAR CT HIGHWAY ZZ NEAR WRIGHTSTOWN  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>BROWN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04085046"</Staid>
+  <Place_Name>APPLE CREEK AT SNIDERVILLE  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>NA</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>5</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend>2</Particulate-N__suspend>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu>2</Total_nitrogen__wu>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>BROWN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04085051"</Staid>
+  <Place_Name>APPLE CREEK NEAR WRIGHTSTOWN  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>BROWN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04085068"</Staid>
+  <Place_Name>ASHWAUBENON CREEK NEAR LITTLE RAPIDS  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>NA</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend>1</Particulate-N__suspend>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu>1</Total_nitrogen__wu>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>BROWN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="040850683"</Staid>
+  <Place_Name>ASHWAUBENON CREEK AT SOUTH BRIDGE RD NR DEPERE  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>NA</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend>1</Particulate-N__suspend>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu>1</Total_nitrogen__wu>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>BROWN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04085091"</Staid>
+  <Place_Name>EAST RIVER @ LAMERS &amp; CLANCY RD NEAR GREENLEAF  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>BROWN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="040850926"</Staid>
+  <Place_Name>UNNAMED EAST RIVER TRIBUTARY #1 NEAR GREENLEAF  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>BROWN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="040850928"</Staid>
+  <Place_Name>EAST RIVER NEAR GREENLEAF  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>BROWN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04085094"</Staid>
+  <Place_Name>UNNAMED EAST RIVER TRIBUTARY #2 NEAR GREENLEAF  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>BROWN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04085095"</Staid>
+  <Place_Name>UNNAMED EAST RIVER TRIBUTARY NEAR WRIGHTSTOWN  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>BROWN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04085098"</Staid>
+  <Place_Name>UNNAMED EAST RIVER TRIBUTARY #3 NEAR GREENLEAF  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>3</Ammonia__wf>
+  <Nitrite__wf>3</Nitrite__wf>
+  <Ammonia___organic-N__w>3</Ammonia___organic-N__w>
+  <NH3_orgN__wu>3</NH3_orgN__wu>
+  <NO3_NO2__wf>3</NO3_NO2__wf>
+  <Phosphorus__wu>3</Phosphorus__wu>
+  <Phosphorus__wf>3</Phosphorus__wf>
+  <Orthophosphate__wf>3</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>BROWN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="040851046"</Staid>
+  <Place_Name>EAST RIVER AT PARTRIDGE ROAD NEAR GREENLEAF  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>BROWN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="040851048"</Staid>
+  <Place_Name>UNNAMED EAST RIVER TRIBUTARY #4 NEAR GREENLEAF  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>BROWN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04085105"</Staid>
+  <Place_Name>EAST RIVER AT WRIGHTSTOWN ROAD NEAR GREENLEAF  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>BROWN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04085107"</Staid>
+  <Place_Name>EAST RIVER TRIBUTARY NEAR GREENLEAF  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>BROWN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04085108"</Staid>
+  <Place_Name>EAST RIVER AT CT HIGHWAY ZZ NEAR GREENLEAF  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>cr</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>13</Ammonia__wf>
+  <Nitrite__wf>13</Nitrite__wf>
+  <Ammonia___organic-N__w>13</Ammonia___organic-N__w>
+  <NH3_orgN__wu>15</NH3_orgN__wu>
+  <NO3_NO2__wf>14</NO3_NO2__wf>
+  <Phosphorus__wu>15</Phosphorus__wu>
+  <Phosphorus__wf>13</Phosphorus__wf>
+  <Orthophosphate__wf>13</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>BROWN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04085109"</Staid>
+  <Place_Name>EAST RIVER AT MIDWAY ROAD NEAR DE PERE  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>cr</Land_Use_Code>
+  <Sample_Medium_Desc>BOTTOM MATERIAL</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf/>
+  <Phosphorus__wu/>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_>1</Phosphorus__bs_62.5u_>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>BROWN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04085109"</Staid>
+  <Place_Name>EAST RIVER AT MIDWAY ROAD NEAR DE PERE  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>cr</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>26</Ammonia__wf>
+  <Nitrite__wf>26</Nitrite__wf>
+  <Ammonia___organic-N__w>26</Ammonia___organic-N__w>
+  <NH3_orgN__wu>26</NH3_orgN__wu>
+  <NO3_NO2__wf>26</NO3_NO2__wf>
+  <Phosphorus__wu>26</Phosphorus__wu>
+  <Phosphorus__wf>26</Phosphorus__wf>
+  <Orthophosphate__wf>26</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>BROWN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04085110"</Staid>
+  <Place_Name>EAST RIVER @ CTH PP IN BROWN COUNTY NR DE PERE  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>cr</Land_Use_Code>
+  <Sample_Medium_Desc>BOTTOM MATERIAL</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf/>
+  <Phosphorus__wu/>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_>1</Phosphorus__bs_62.5u_>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>BROWN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04085110"</Staid>
+  <Place_Name>EAST RIVER @ CTH PP IN BROWN COUNTY NR DE PERE  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>cr</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>BROWN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="040851235"</Staid>
+  <Place_Name>BOWER CREEK TRIB AT LIME KILN ROAD NR BELLEVUE  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>NA</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend>2</Particulate-N__suspend>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu>2</Total_nitrogen__wu>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>BROWN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="040851325"</Staid>
+  <Place_Name>BAIRD CREEK AT SUPERIOR ROAD AT GREEN BAY  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>NA</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>6</Ammonia__wf>
+  <Nitrite__wf>6</Nitrite__wf>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf>6</NO3_NO2__wf>
+  <Phosphorus__wu>7</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf>6</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend>6</Particulate-N__suspend>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu>6</Total_nitrogen__wu>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>BROWN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04085139"</Staid>
+  <Place_Name>FOX RIVER AT MOUTH AT GREEN BAY  WI</Place_Name>
+  <Land_Use_Group>MIXED</Land_Use_Group>
+  <Land_Use_Code>mx</Land_Use_Code>
+  <Sample_Medium_Desc>BOTTOM MATERIAL</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf/>
+  <Phosphorus__wu/>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_>2</Phosphorus__bs_62.5u_>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>BROWN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04085139"</Staid>
+  <Place_Name>FOX RIVER AT MOUTH AT GREEN BAY  WI</Place_Name>
+  <Land_Use_Group>MIXED</Land_Use_Group>
+  <Land_Use_Code>mx</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>26</Ammonia__wf>
+  <Nitrite__wf>26</Nitrite__wf>
+  <Ammonia___organic-N__w>26</Ammonia___organic-N__w>
+  <NH3_orgN__wu>26</NH3_orgN__wu>
+  <NO3_NO2__wf>26</NO3_NO2__wf>
+  <Phosphorus__wu>26</Phosphorus__wu>
+  <Phosphorus__wf>26</Phosphorus__wf>
+  <Orthophosphate__wf>26</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>BROWN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04085310"</Staid>
+  <Place_Name>NESHOTA RIVER NEAR DENMARK  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>CALUMET</County>
+  <Suid>WMIC</Suid>
+  <Staid>="040850875"</Staid>
+  <Place_Name>EAST RIVER NEAR FOREST JUNCTION  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>COLUMBIA</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04072410"</Staid>
+  <Place_Name>FOX RIVER NEAR PARDEEVILLE  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>COLUMBIA</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04072711"</Staid>
+  <Place_Name>BIG SLOUGH NEAR BRIGGSVILLE  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>DOOR</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04085170"</Staid>
+  <Place_Name>HIBBARD CREEK AT JACKSONPORT  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>FLORENCE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04063674"</Staid>
+  <Place_Name>POPPLE RIVER NEAR LONG LAKE  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>FLORENCE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04063679"</Staid>
+  <Place_Name>MORGAN CREEK NEAR FENCE  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>FLORENCE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04063688"</Staid>
+  <Place_Name>SOUTH BRANCH POPPLE RIVER NEAR NEWALD  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>FLORENCE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04063700"</Staid>
+  <Place_Name>POPPLE RIVER NEAR FENCE  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>rf</Land_Use_Code>
+  <Sample_Medium_Desc>BOTTOM MATERIAL</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf/>
+  <Phosphorus__wu/>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_>3</Phosphorus__bs_62.5u_>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>FLORENCE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04063700"</Staid>
+  <Place_Name>POPPLE RIVER NEAR FENCE  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>rf</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>92</Ammonia__wf>
+  <Nitrite__wf>91</Nitrite__wf>
+  <Ammonia___organic-N__w>50</Ammonia___organic-N__w>
+  <NH3_orgN__wu>72</NH3_orgN__wu>
+  <NO3_NO2__wf>92</NO3_NO2__wf>
+  <Phosphorus__wu>92</Phosphorus__wu>
+  <Phosphorus__wf>50</Phosphorus__wf>
+  <Orthophosphate__wf>92</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend>30</Particulate-N__suspend>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu>20</Total_nitrogen__wu>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>FOND DU LAC</County>
+  <Suid>WMIC</Suid>
+  <Staid>="040734644"</Staid>
+  <Place_Name>SILVER CREEK AT SOUTH KORO ROAD NEAR RIPON  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>FOND DU LAC</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04083500"</Staid>
+  <Place_Name>EAST BRANCH FOND DU LAC RIVER AT FOND DU LAC  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>FOND DU LAC</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04085475"</Staid>
+  <Place_Name>SHEBOYGAN RIVER AT DOTYVILLE  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>BOTTOM MATERIAL</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf/>
+  <Phosphorus__wu/>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_>1</Phosphorus__bs_62.5u_>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>FOND DU LAC</County>
+  <Suid>WMIC</Suid>
+  <Staid>="040854805"</Staid>
+  <Place_Name>SHEBOYGAN RIVER NEAR ST. CLOUD  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>FOND DU LAC</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04086104"</Staid>
+  <Place_Name>MILWAUKEE RIVER AT CT HWY Y AT CAMPBELLSPORT  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>FOND DU LAC</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04086139"</Staid>
+  <Place_Name>WEST BRANCH MILWAUKEE RIVER NEAR KEWASKUM  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>FOND DU LAC</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04086198"</Staid>
+  <Place_Name>EAST BRANCH MILWAUKEE RIVER NEAR NEW FANE  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>FOND DU LAC</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04086200"</Staid>
+  <Place_Name>EAST BRANCH MILWAUKEE RIVER AT NEW FANE  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>FOREST</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04063631"</Staid>
+  <Place_Name>PINE RIVER NEAR WINDSOR DAM NEAR ALVIN  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>FOREST</County>
+  <Suid>WMIC</Suid>
+  <Staid>="040636722"</Staid>
+  <Place_Name>POPPLE RIVER NEAR NEWALD  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>FOREST</County>
+  <Suid>WMIC</Suid>
+  <Staid>="040636728"</Staid>
+  <Place_Name>LITTLE POPPLE RIVER NEAR NEWALD  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>FOREST</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04067690"</Staid>
+  <Place_Name>SOUTH BRANCH PESHTIGO RIVER NEAR ARGONNE  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>FOREST</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04067892"</Staid>
+  <Place_Name>RAT RIVER @ CNTY TRNK HIGHWAY H AT BLACKWELL  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>FOREST</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04069800"</Staid>
+  <Place_Name>NORTH BRANCH OCONTO RIVER NEAR CARTER  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>FOREST</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04074505"</Staid>
+  <Place_Name>SWAMP CREEK AT KEITH SIDING RD NEAR CRANDON  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>BOTTOM MATERIAL</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf/>
+  <Phosphorus__wu/>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_>1</Phosphorus__bs_62.5u_>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>FOREST</County>
+  <Suid>WMIC</Suid>
+  <Staid>="040745072"</Staid>
+  <Place_Name>HEMLOCK CREEK NEAR CRANDON  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>BOTTOM MATERIAL</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf/>
+  <Phosphorus__wu/>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_>1</Phosphorus__bs_62.5u_>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>FOREST</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04074537"</Staid>
+  <Place_Name>SWAMP CREEK ABOVE HIGHWAY 55 NEAR MOLE LAKE  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>BOTTOM MATERIAL</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf/>
+  <Phosphorus__wu/>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_>1</Phosphorus__bs_62.5u_>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>FOREST</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04074549"</Staid>
+  <Place_Name>SWAMP CREEK NEAR MOLE LAKE  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>BOTTOM MATERIAL</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf/>
+  <Phosphorus__wu/>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_>1</Phosphorus__bs_62.5u_>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>GREEN LAKE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04073069"</Staid>
+  <Place_Name>GRAND RIVER TRIBUTARY NEAR KINGSTON  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>3</NH3_orgN__wu>
+  <NO3_NO2__wf>3</NO3_NO2__wf>
+  <Phosphorus__wu>3</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>GREEN LAKE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04073100"</Staid>
+  <Place_Name>BELLE FOUNTAIN CREEK NEAR KINGSTON  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>GREEN LAKE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04073452"</Staid>
+  <Place_Name>SUCKER CREEK NEAR PRINCETON  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>GREEN LAKE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04073500"</Staid>
+  <Place_Name>FOX RIVER AT BERLIN  WI</Place_Name>
+  <Land_Use_Group>MIXED</Land_Use_Group>
+  <Land_Use_Code>mx</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>KENOSHA</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04087258"</Staid>
+  <Place_Name>PIKE RIVER AT CTH A NEAR KENOSHA  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>NA</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>6</Ammonia__wf>
+  <Nitrite__wf>6</Nitrite__wf>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf>6</NO3_NO2__wf>
+  <Phosphorus__wu>6</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf>6</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend>6</Particulate-N__suspend>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu>6</Total_nitrogen__wu>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>KENOSHA</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04087270"</Staid>
+  <Place_Name>PIKE CREEK AT 43RD STREET AT KENOSHA  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>NA</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend>2</Particulate-N__suspend>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu>2</Total_nitrogen__wu>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>KENOSHA</County>
+  <Suid>WMIC</Suid>
+  <Staid>="05527729"</Staid>
+  <Place_Name>KILBOURN DITCH AT 6OTH STREET NEAR KENOSHA  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>NA</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend>2</Particulate-N__suspend>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu>2</Total_nitrogen__wu>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>KEWAUNEE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04085188"</Staid>
+  <Place_Name>RIO CREEK AT PHEASANT ROAD NEAR RIO CREEK  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>NA</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>6</Ammonia__wf>
+  <Nitrite__wf>6</Nitrite__wf>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf>6</NO3_NO2__wf>
+  <Phosphorus__wu>6</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf>6</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend>6</Particulate-N__suspend>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu>6</Total_nitrogen__wu>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>KEWAUNEE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="040851932"</Staid>
+  <Place_Name>KEWAUNEE RIVER TRIB @ LOWELL ROAD NR LUXEMBURG  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>NA</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend>2</Particulate-N__suspend>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu>2</Total_nitrogen__wu>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>KEWAUNEE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="040851958"</Staid>
+  <Place_Name>KEWAUNEE RIVER NEAR CASCO  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>KEWAUNEE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04085197"</Staid>
+  <Place_Name>CASCO CREEK NEAR CASCO  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>KEWAUNEE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="040851987"</Staid>
+  <Place_Name>LITTLE SCARBORO CREEK NEAR LUXEMBURG  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>KEWAUNEE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04085233"</Staid>
+  <Place_Name>KROK CREEK NEAR ELLISVILLE  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>KEWAUNEE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04085240"</Staid>
+  <Place_Name>EAST TWIN RIVER NEAR TISCH MILLS  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>KEWAUNEE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="040852508"</Staid>
+  <Place_Name>TISCH MILLS CREEK AT TISCH MILLS  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>KEWAUNEE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="040853145"</Staid>
+  <Place_Name>BLACK CREEK AT CURRAN ROAD NEAR DENMARK  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>NA</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>6</Ammonia__wf>
+  <Nitrite__wf>6</Nitrite__wf>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf>6</NO3_NO2__wf>
+  <Phosphorus__wu>6</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf>6</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend>6</Particulate-N__suspend>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu>6</Total_nitrogen__wu>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>LANGLADE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04074486"</Staid>
+  <Place_Name>WOLF RIVER AT TURTLE LAKE ROAD AT POST LAKE  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>BOTTOM MATERIAL</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf/>
+  <Phosphorus__wu/>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_>1</Phosphorus__bs_62.5u_>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>LANGLADE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04074620"</Staid>
+  <Place_Name>WOLF RIVER NEAR POST LAKE  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>BOTTOM MATERIAL</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf/>
+  <Phosphorus__wu/>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_>1</Phosphorus__bs_62.5u_>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>LANGLADE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04075050"</Staid>
+  <Place_Name>WOLF RIVER AT HIGHWAY M NEAR LANGLADE  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>BOTTOM MATERIAL</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf/>
+  <Phosphorus__wu/>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_>1</Phosphorus__bs_62.5u_>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>LANGLADE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04075050"</Staid>
+  <Place_Name>WOLF RIVER AT HIGHWAY M NEAR LANGLADE  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>MANITOWOC</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04085270"</Staid>
+  <Place_Name>JAMBO CREEK AT JAMBO CREEK ROAD NEAR MISHICOT  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>NA</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend>2</Particulate-N__suspend>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu>2</Total_nitrogen__wu>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>MANITOWOC</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04085322"</Staid>
+  <Place_Name>DEVILS RIVER AT ROSENCRANS ROAD NEAR MARIBEL  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>NA</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend>2</Particulate-N__suspend>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu>2</Total_nitrogen__wu>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>MANITOWOC</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04085323"</Staid>
+  <Place_Name>DEVILS RIVER NEAR DENMARK  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>MANITOWOC</County>
+  <Suid>WMIC</Suid>
+  <Staid>="040854395"</Staid>
+  <Place_Name>POINT CREEK AT UCKER POINT ROAD NEAR NEWTON  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>NA</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend>2</Particulate-N__suspend>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu>2</Total_nitrogen__wu>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>MANITOWOC</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04085455"</Staid>
+  <Place_Name>MEEME RIVER AT WASHINGTON ROAD NEAR CLEVELAND  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>NA</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend>2</Particulate-N__suspend>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu>2</Total_nitrogen__wu>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>MARATHON</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04079589"</Staid>
+  <Place_Name>CAMP CREEK NEAR GALLOWAY  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>MARATHON</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04079608"</Staid>
+  <Place_Name>LITTLE WOLF RIVER NEAR ST HWY 49 NEAR GALLOWAY  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>MARINETTE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04066500"</Staid>
+  <Place_Name>PIKE RIVER AT AMBERG  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>NA</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>27</Ammonia__wf>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w>27</Ammonia___organic-N__w>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf>27</NO3_NO2__wf>
+  <Phosphorus__wu/>
+  <Phosphorus__wf>27</Phosphorus__wf>
+  <Orthophosphate__wf>26</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>MARINETTE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04066690"</Staid>
+  <Place_Name>WAUSAUKEE RIVER NEAR WAUSAUKEE  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>MARINETTE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04067500"</Staid>
+  <Place_Name>MENOMINEE RIVER NEAR MC ALLISTER  WI</Place_Name>
+  <Land_Use_Group>MIXED</Land_Use_Group>
+  <Land_Use_Code>mx</Land_Use_Code>
+  <Sample_Medium_Desc>BOTTOM MATERIAL</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf/>
+  <Phosphorus__wu/>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_>1</Phosphorus__bs_62.5u_>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>MARINETTE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04067500"</Staid>
+  <Place_Name>MENOMINEE RIVER NEAR MC ALLISTER  WI</Place_Name>
+  <Land_Use_Group>MIXED</Land_Use_Group>
+  <Land_Use_Code>mx</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>31</Ammonia__wf>
+  <Nitrite__wf>31</Nitrite__wf>
+  <Ammonia___organic-N__w>31</Ammonia___organic-N__w>
+  <NH3_orgN__wu>31</NH3_orgN__wu>
+  <NO3_NO2__wf>31</NO3_NO2__wf>
+  <Phosphorus__wu>31</Phosphorus__wu>
+  <Phosphorus__wf>31</Phosphorus__wf>
+  <Orthophosphate__wf>31</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>MARINETTE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04067651"</Staid>
+  <Place_Name>MENOMINEE RIVER AT MOUTH AT MARINETTE  WI</Place_Name>
+  <Land_Use_Group>MIXED</Land_Use_Group>
+  <Land_Use_Code>mx</Land_Use_Code>
+  <Sample_Medium_Desc>BOTTOM MATERIAL</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf/>
+  <Phosphorus__wu/>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_>1</Phosphorus__bs_62.5u_>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>MARINETTE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04068200"</Staid>
+  <Place_Name>THUNDER RIVER NEAR LAKEWOOD  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>MARINETTE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04069200"</Staid>
+  <Place_Name>MIDDLE INLET AT CAMP ROAD NEAR MIDDLE INLET  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>MARINETTE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04069343"</Staid>
+  <Place_Name>SOUTH BRANCH BEAVER CREEK NEAR POUND  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>MARINETTE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04069390"</Staid>
+  <Place_Name>LITTLE PESHTIGO RIVER NEAR COLEMAN  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>MARQUETTE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04072665"</Staid>
+  <Place_Name>NEENAH CREEK NR CNTY TRNK HIGHWAY A NR OXFORD  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>MARQUETTE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04072690"</Staid>
+  <Place_Name>WIDOW GREEN CREEK NEAR BRIGGSVILLE  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>MARQUETTE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04072732"</Staid>
+  <Place_Name>GOOD EARTH CREEK NEAR ENDEAVOR  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>MARQUETTE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04073230"</Staid>
+  <Place_Name>MECAN RIVER AT 14TH AVENUE NEAR RICHFORD  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>MARQUETTE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04073248"</Staid>
+  <Place_Name>CHAFFEE CREEK NEAR NESHKORO  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>MARQUETTE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04073300"</Staid>
+  <Place_Name>CHAFFEE CREEK AT NESHKORO  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>BOTTOM MATERIAL</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf/>
+  <Phosphorus__wu/>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_>1</Phosphorus__bs_62.5u_>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>MARQUETTE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04073300"</Staid>
+  <Place_Name>CHAFFEE CREEK AT NESHKORO  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>MARQUETTE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04073302"</Staid>
+  <Place_Name>CHAFFEE CREEK NEAR BUDSIN  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>MENOMINEE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04075350"</Staid>
+  <Place_Name>EVERGREEN RIVER AT CTH WW NEAR LANGLADE  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>MENOMINEE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04075365"</Staid>
+  <Place_Name>EVERGREEN RIVER BLW EVERGREEN FALLS NR LANGLADE WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>NA</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>34</Ammonia__wf>
+  <Nitrite__wf>8</Nitrite__wf>
+  <Ammonia___organic-N__w>26</Ammonia___organic-N__w>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf>34</NO3_NO2__wf>
+  <Phosphorus__wu>8</Phosphorus__wu>
+  <Phosphorus__wf>26</Phosphorus__wf>
+  <Orthophosphate__wf>34</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu>8</Total_nitrogen__wu>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>MENOMINEE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04075860"</Staid>
+  <Place_Name>LITTLE W. BR. WOLF R. AT MILL POND AT NEOPIT  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>MILWAUKEE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="040869415"</Staid>
+  <Place_Name>LINCOLN CREEK AT 47TH STREET AT MILWAUKEE  WI</Place_Name>
+  <Land_Use_Group>URBAN</Land_Use_Group>
+  <Land_Use_Code>ur</Land_Use_Code>
+  <Sample_Medium_Desc>BOTTOM MATERIAL</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf/>
+  <Phosphorus__wu/>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_>2</Phosphorus__bs_62.5u_>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>MILWAUKEE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="040869415"</Staid>
+  <Place_Name>LINCOLN CREEK AT 47TH STREET AT MILWAUKEE  WI</Place_Name>
+  <Land_Use_Group>URBAN</Land_Use_Group>
+  <Land_Use_Code>ur</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>127</Ammonia__wf>
+  <Nitrite__wf>127</Nitrite__wf>
+  <Ammonia___organic-N__w>34</Ammonia___organic-N__w>
+  <NH3_orgN__wu>75</NH3_orgN__wu>
+  <NO3_NO2__wf>127</NO3_NO2__wf>
+  <Phosphorus__wu>126</Phosphorus__wu>
+  <Phosphorus__wf>34</Phosphorus__wf>
+  <Orthophosphate__wf>127</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend>40</Particulate-N__suspend>
+  <Total_nitrogen__wf>10</Total_nitrogen__wf>
+  <Total_nitrogen__wu>51</Total_nitrogen__wu>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>MILWAUKEE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04086950"</Staid>
+  <Place_Name>LINCOLN CREEK AT MILWAUKEE  WI</Place_Name>
+  <Land_Use_Group>URBAN</Land_Use_Group>
+  <Land_Use_Code>ur</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>MILWAUKEE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04087000"</Staid>
+  <Place_Name>MILWAUKEE RIVER AT MILWAUKEE  WI</Place_Name>
+  <Land_Use_Group>MIXED</Land_Use_Group>
+  <Land_Use_Code>mx</Land_Use_Code>
+  <Sample_Medium_Desc>BOTTOM MATERIAL</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf/>
+  <Phosphorus__wu/>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_>2</Phosphorus__bs_62.5u_>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>MILWAUKEE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04087000"</Staid>
+  <Place_Name>MILWAUKEE RIVER AT MILWAUKEE  WI</Place_Name>
+  <Land_Use_Group>MIXED</Land_Use_Group>
+  <Land_Use_Code>mx</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>143</Ammonia__wf>
+  <Nitrite__wf>143</Nitrite__wf>
+  <Ammonia___organic-N__w>99</Ammonia___organic-N__w>
+  <NH3_orgN__wu>133</NH3_orgN__wu>
+  <NO3_NO2__wf>142</NO3_NO2__wf>
+  <Phosphorus__wu>142</Phosphorus__wu>
+  <Phosphorus__wf>99</Phosphorus__wf>
+  <Orthophosphate__wf>143</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend>32</Particulate-N__suspend>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu>9</Total_nitrogen__wu>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>MILWAUKEE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04087070"</Staid>
+  <Place_Name>LITTLE MENOMONEE RIVER AT MILWAUKEE  WI</Place_Name>
+  <Land_Use_Group>URBAN</Land_Use_Group>
+  <Land_Use_Code>ur</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend>1</Particulate-N__suspend>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu>1</Total_nitrogen__wu>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>MILWAUKEE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04087118"</Staid>
+  <Place_Name>HONEY CREEK NEAR PORTLAND AVENUE AT WAUWATOSA  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>NA</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>5</Ammonia__wf>
+  <Nitrite__wf>5</Nitrite__wf>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf>5</NO3_NO2__wf>
+  <Phosphorus__wu>5</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf>5</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend>5</Particulate-N__suspend>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu>5</Total_nitrogen__wu>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>MILWAUKEE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04087119"</Staid>
+  <Place_Name>HONEY CREEK AT WAUWATOSA  WI</Place_Name>
+  <Land_Use_Group>URBAN</Land_Use_Group>
+  <Land_Use_Code>ur</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>MILWAUKEE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04087150"</Staid>
+  <Place_Name>KINNICKINNIC RIVER AT S 27TH ST AT MILWAUKEE  WI</Place_Name>
+  <Land_Use_Group>URBAN</Land_Use_Group>
+  <Land_Use_Code>ur</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>MILWAUKEE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="040871605"</Staid>
+  <Place_Name>KINNICKINNIC RIVER AT CHASE AVE AT MILWAUKEE  WI</Place_Name>
+  <Land_Use_Group>URBAN</Land_Use_Group>
+  <Land_Use_Code>ur</Land_Use_Code>
+  <Sample_Medium_Desc>BOTTOM MATERIAL</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf/>
+  <Phosphorus__wu/>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_>1</Phosphorus__bs_62.5u_>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>MILWAUKEE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04087170"</Staid>
+  <Place_Name>MILWAUKEE RIVER AT MOUTH AT MILWAUKEE  WI</Place_Name>
+  <Land_Use_Group>MIXED</Land_Use_Group>
+  <Land_Use_Code>mx</Land_Use_Code>
+  <Sample_Medium_Desc>BOTTOM MATERIAL</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf/>
+  <Phosphorus__wu/>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_>1</Phosphorus__bs_62.5u_>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>MILWAUKEE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04087204"</Staid>
+  <Place_Name>OAK CREEK AT SOUTH MILWAUKEE  WI</Place_Name>
+  <Land_Use_Group>URBAN</Land_Use_Group>
+  <Land_Use_Code>ur</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>32</Ammonia__wf>
+  <Nitrite__wf>5</Nitrite__wf>
+  <Ammonia___organic-N__w>27</Ammonia___organic-N__w>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>33</NO3_NO2__wf>
+  <Phosphorus__wu>6</Phosphorus__wu>
+  <Phosphorus__wf>27</Phosphorus__wf>
+  <Orthophosphate__wf>32</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend>5</Particulate-N__suspend>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu>5</Total_nitrogen__wu>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>MILWAUKEE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04087213"</Staid>
+  <Place_Name>ROOT RIVER AT LAYTON AVENUE AT GREENFIELD  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>NA</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend>2</Particulate-N__suspend>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu>2</Total_nitrogen__wu>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>MILWAUKEE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04087220"</Staid>
+  <Place_Name>ROOT RIVER NEAR FRANKLIN  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>NA</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend>1</Particulate-N__suspend>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu>1</Total_nitrogen__wu>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>OCONTO</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04070300"</Staid>
+  <Place_Name>WAUPEE CREEK NEAR MOUNTAIN  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>OCONTO</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04070606"</Staid>
+  <Place_Name>SOUTH BRANCH OCONTO RIVER NEAR BOULDER LAKE  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>OCONTO</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04070640"</Staid>
+  <Place_Name>SECOND SOUTH BRANCH OCONTO RIVER NEAR MOUNTAIN  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>BOTTOM MATERIAL</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf/>
+  <Phosphorus__wu/>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_>1</Phosphorus__bs_62.5u_>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>OCONTO</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04070850"</Staid>
+  <Place_Name>PESHTIGO BROOK NEAR SURING  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>OCONTO</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04071720"</Staid>
+  <Place_Name>KELLY BROOK NEAR OCONTO FALLS  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>OCONTO</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04071830"</Staid>
+  <Place_Name>NORTH BRANCH PENSAUKEE RIVER NEAR MORGAN  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>OCONTO</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04071903"</Staid>
+  <Place_Name>LITTLE SUAMICO RIVER NEAR SOBIESKI  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>ONEIDA</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04074350"</Staid>
+  <Place_Name>WOLF RIVER NEAR NASHVILLE  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>ONEIDA</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04074420"</Staid>
+  <Place_Name>WOLF RIVER NEAR JENNINGS  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>OUTAGAMIE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04072013"</Staid>
+  <Place_Name>DUCK CREEK AT STINGE ROAD NEAR BLACK CREEK  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>3</Ammonia__wf>
+  <Nitrite__wf>3</Nitrite__wf>
+  <Ammonia___organic-N__w>3</Ammonia___organic-N__w>
+  <NH3_orgN__wu>3</NH3_orgN__wu>
+  <NO3_NO2__wf>3</NO3_NO2__wf>
+  <Phosphorus__wu>3</Phosphorus__wu>
+  <Phosphorus__wf>3</Phosphorus__wf>
+  <Orthophosphate__wf>3</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>OUTAGAMIE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="040720135"</Staid>
+  <Place_Name>UNNAMED DUCK CREEK TRIBUTARY NEAR BLACK CREEK  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>3</Ammonia__wf>
+  <Nitrite__wf>3</Nitrite__wf>
+  <Ammonia___organic-N__w>3</Ammonia___organic-N__w>
+  <NH3_orgN__wu>3</NH3_orgN__wu>
+  <NO3_NO2__wf>3</NO3_NO2__wf>
+  <Phosphorus__wu>3</Phosphorus__wu>
+  <Phosphorus__wf>3</Phosphorus__wf>
+  <Orthophosphate__wf>3</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>OUTAGAMIE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04072014"</Staid>
+  <Place_Name>DUCK CREEK AT CT HIGHWAY EE NEAR FIVE CORNERS  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>OUTAGAMIE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04072016"</Staid>
+  <Place_Name>DUCK CREEK AT MURPHY CORNER  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>3</Ammonia__wf>
+  <Nitrite__wf>3</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>3</NO3_NO2__wf>
+  <Phosphorus__wu>3</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>3</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend>1</Particulate-N__suspend>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu>1</Total_nitrogen__wu>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>OUTAGAMIE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04072017"</Staid>
+  <Place_Name>UNNAMED DUCK CREEK TRIB AT CTH S NEAR FREEDOM  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>OUTAGAMIE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04072021"</Staid>
+  <Place_Name>DUCK CREEK TRIBUTARY NEAR MACKVILLE  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>OUTAGAMIE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04072028"</Staid>
+  <Place_Name>DUCK CREEK AT CNTY TRUNK HIGHWAY S NR FREEDOM  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>OUTAGAMIE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04072031"</Staid>
+  <Place_Name>DUCK CREEK NEAR FREEDOM  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>OUTAGAMIE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04072038"</Staid>
+  <Place_Name>UNNAMED DUCK CREEK TRIBUTARY NEAR FREEDOM  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>OUTAGAMIE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04072040"</Staid>
+  <Place_Name>FISH CREEK NEAR ONEIDA  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>OUTAGAMIE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="040720445"</Staid>
+  <Place_Name>DUCK CREEK TRIBUTARY AT RANCH ROAD NEAR ONEIDA  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>OUTAGAMIE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04072050"</Staid>
+  <Place_Name>DUCK CREEK AT SEMINARY ROAD NEAR ONEIDA  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>cr</Land_Use_Code>
+  <Sample_Medium_Desc>BOTTOM MATERIAL</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf/>
+  <Phosphorus__wu/>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_>4</Phosphorus__bs_62.5u_>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>OUTAGAMIE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04072050"</Staid>
+  <Place_Name>DUCK CREEK AT SEMINARY ROAD NEAR ONEIDA  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>cr</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>130</Ammonia__wf>
+  <Nitrite__wf>130</Nitrite__wf>
+  <Ammonia___organic-N__w>60</Ammonia___organic-N__w>
+  <NH3_orgN__wu>101</NH3_orgN__wu>
+  <NO3_NO2__wf>130</NO3_NO2__wf>
+  <Phosphorus__wu>129</Phosphorus__wu>
+  <Phosphorus__wf>60</Phosphorus__wf>
+  <Orthophosphate__wf>130</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend>32</Particulate-N__suspend>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu>29</Total_nitrogen__wu>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>OUTAGAMIE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04078042"</Staid>
+  <Place_Name>SHIOC RIVER NEAR NICHOLS  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>OUTAGAMIE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04078085"</Staid>
+  <Place_Name>BLACK OTTER CREEK NEAR HORTONVILLE  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>NA</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend>2</Particulate-N__suspend>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu>2</Total_nitrogen__wu>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>OUTAGAMIE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04084429"</Staid>
+  <Place_Name>MUD CREEK AT SPENCER ROAD AT APPLETON  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>NA</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>6</Ammonia__wf>
+  <Nitrite__wf>6</Nitrite__wf>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf>6</NO3_NO2__wf>
+  <Phosphorus__wu>6</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf>6</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend>6</Particulate-N__suspend>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu>6</Total_nitrogen__wu>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>OUTAGAMIE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04084468"</Staid>
+  <Place_Name>GARNERS CREEK AT PARK STREET AT KAUKAUNA  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>NA</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend>2</Particulate-N__suspend>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu>2</Total_nitrogen__wu>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>OZAUKEE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04086500"</Staid>
+  <Place_Name>CEDAR CREEK NEAR CEDARBURG  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>OZAUKEE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04086600"</Staid>
+  <Place_Name>MILWAUKEE RIVER NEAR CEDARBURG  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>OZAUKEE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04086699"</Staid>
+  <Place_Name>PIGEON CREEK AT WILLIAMSBURG DR AT THEINSVILLE  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>NA</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend>2</Particulate-N__suspend>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu>2</Total_nitrogen__wu>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>PORTAGE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04080770"</Staid>
+  <Place_Name>TOMORROW RIVER @ STATE HIGHWAY 66 NEAR ROSHOLT  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>PORTAGE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04080785"</Staid>
+  <Place_Name>COLLINS LAKE OUTLET NEAR ROSHOLT  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>PORTAGE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04080786"</Staid>
+  <Place_Name>TOMORROW RIVER NEAR POLONIA  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>PORTAGE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04080789"</Staid>
+  <Place_Name>TOMORROW RIVER NEAR GARFIELD  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>PORTAGE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04080791"</Staid>
+  <Place_Name>TOMORROW RIVER @ HEMP FISHERY AREA NR GARFIELD  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>NA</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu/>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf>1</Total_nitrogen__wf>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>PORTAGE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04080792"</Staid>
+  <Place_Name>PONCHO CREEK NEAR POLONIA  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>PORTAGE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04080798"</Staid>
+  <Place_Name>TOMORROW RIVER NEAR NELSONVILLE  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>cr</Land_Use_Code>
+  <Sample_Medium_Desc>BOTTOM MATERIAL</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf/>
+  <Phosphorus__wu/>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_>3</Phosphorus__bs_62.5u_>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>PORTAGE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04080798"</Staid>
+  <Place_Name>TOMORROW RIVER NEAR NELSONVILLE  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>cr</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>32</Ammonia__wf>
+  <Nitrite__wf>32</Nitrite__wf>
+  <Ammonia___organic-N__w>32</Ammonia___organic-N__w>
+  <NH3_orgN__wu>32</NH3_orgN__wu>
+  <NO3_NO2__wf>32</NO3_NO2__wf>
+  <Phosphorus__wu>32</Phosphorus__wu>
+  <Phosphorus__wf>32</Phosphorus__wf>
+  <Orthophosphate__wf>32</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>RACINE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="040872325"</Staid>
+  <Place_Name>ROOT RIVER CANAL NEAR RAYMOND  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>RACINE</County>
+  <Suid>WMIC</Suid>
+  <Staid>="040872393"</Staid>
+  <Place_Name>HOODS CREEK AT BROOK ROAD NEAR FRANKSVILLE  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>NA</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend>2</Particulate-N__suspend>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu>2</Total_nitrogen__wu>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>SHAWANO</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04071795"</Staid>
+  <Place_Name>PENSAUKEE RIVER NEAR KRAKOW  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>cr</Land_Use_Code>
+  <Sample_Medium_Desc>BOTTOM MATERIAL</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf/>
+  <Phosphorus__wu/>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_>1</Phosphorus__bs_62.5u_>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>SHAWANO</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04071795"</Staid>
+  <Place_Name>PENSAUKEE RIVER NEAR KRAKOW  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>cr</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>34</Ammonia__wf>
+  <Nitrite__wf>34</Nitrite__wf>
+  <Ammonia___organic-N__w>34</Ammonia___organic-N__w>
+  <NH3_orgN__wu>34</NH3_orgN__wu>
+  <NO3_NO2__wf>34</NO3_NO2__wf>
+  <Phosphorus__wu>34</Phosphorus__wu>
+  <Phosphorus__wf>34</Phosphorus__wf>
+  <Orthophosphate__wf>34</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>SHAWANO</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04077605"</Staid>
+  <Place_Name>WEST BRANCH RED RIVER NEAR BOWLER  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>SHAWANO</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04077614"</Staid>
+  <Place_Name>SILVER CREEK AT SILVER CREEK ROAD NEAR BOWLER  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>SHAWANO</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04077653"</Staid>
+  <Place_Name>SMITH CREEK NEAR BOWLER  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>SHAWANO</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04078092"</Staid>
+  <Place_Name>MIDDLE BRANCH EMBARRASS RIVER NEAR ELAND  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>3</NH3_orgN__wu>
+  <NO3_NO2__wf>3</NO3_NO2__wf>
+  <Phosphorus__wu>3</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>SHAWANO</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04078109"</Staid>
+  <Place_Name>SOUTH BR. EMBARRASS R AT CTH M NEAR WITTENBERG  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>SHAWANO</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04078490"</Staid>
+  <Place_Name>MILL CREEK NEAR PELLA  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>SHEBOYGAN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="040854945"</Staid>
+  <Place_Name>SHEBOYGAN RIVER NEAR ELKHART LAKE  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>SHEBOYGAN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04085760"</Staid>
+  <Place_Name>MULLET RIVER NEAR PLYMOUTH  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>SHEBOYGAN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="040860041"</Staid>
+  <Place_Name>SHEBOYGAN RIVER AT MOUTH AT SHEBOYGAN  WI</Place_Name>
+  <Land_Use_Group>MIXED</Land_Use_Group>
+  <Land_Use_Code>mx</Land_Use_Code>
+  <Sample_Medium_Desc>BOTTOM MATERIAL</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf/>
+  <Phosphorus__wu/>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_>1</Phosphorus__bs_62.5u_>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>SHEBOYGAN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04086156"</Staid>
+  <Place_Name>WATERCRESS CREEK NEAR DUNDEE  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>SHEBOYGAN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04086277"</Staid>
+  <Place_Name>NICHOLS CREEK NEAR CASCADE  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>4</Ammonia__wf>
+  <Nitrite__wf>4</Nitrite__wf>
+  <Ammonia___organic-N__w>4</Ammonia___organic-N__w>
+  <NH3_orgN__wu>4</NH3_orgN__wu>
+  <NO3_NO2__wf>4</NO3_NO2__wf>
+  <Phosphorus__wu>4</Phosphorus__wu>
+  <Phosphorus__wf>4</Phosphorus__wf>
+  <Orthophosphate__wf>4</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>SHEBOYGAN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04086284"</Staid>
+  <Place_Name>NORTH BRANCH MILWAUKEE RIVER TRIB NEAR CASCADE  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>SHEBOYGAN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04086289"</Staid>
+  <Place_Name>LAKE ELLEN OUTLET NEAR CASCADE  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>SHEBOYGAN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04086290"</Staid>
+  <Place_Name>NORTH BR MILWAUKEE RIVER AT CTH W NEAR CASCADE  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>SHEBOYGAN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04086292"</Staid>
+  <Place_Name>CHAMBERS CREEK NEAR CASCADE  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>SHEBOYGAN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04086296"</Staid>
+  <Place_Name>MELIUS CREEK NEAR CASCADE  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>SHEBOYGAN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04086297"</Staid>
+  <Place_Name>NORTH BRANCH MILWAUKEE RIVER NEAR BATAVIA  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>4</Ammonia__wf>
+  <Nitrite__wf>4</Nitrite__wf>
+  <Ammonia___organic-N__w>4</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>4</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>4</Phosphorus__wf>
+  <Orthophosphate__wf>4</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>SHEBOYGAN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04086301"</Staid>
+  <Place_Name>GOOSEVILLE CREEK NEAR BATAVIA  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>SHEBOYGAN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04086307"</Staid>
+  <Place_Name>BATAVIA CREEK NEAR BATAVIA  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>SHEBOYGAN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="040863075"</Staid>
+  <Place_Name>NORTH BRANCH MILWAUKEE RIVER NEAR RANDOM LAKE  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>cr</Land_Use_Code>
+  <Sample_Medium_Desc>BOTTOM MATERIAL</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf/>
+  <Phosphorus__wu/>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_>3</Phosphorus__bs_62.5u_>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>SHEBOYGAN</County>
+  <Suid>WMIC</Suid>
+  <Staid>="040863075"</Staid>
+  <Place_Name>NORTH BRANCH MILWAUKEE RIVER NEAR RANDOM LAKE  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>cr</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>52</Ammonia__wf>
+  <Nitrite__wf>52</Nitrite__wf>
+  <Ammonia___organic-N__w>51</Ammonia___organic-N__w>
+  <NH3_orgN__wu>51</NH3_orgN__wu>
+  <NO3_NO2__wf>52</NO3_NO2__wf>
+  <Phosphorus__wu>51</Phosphorus__wu>
+  <Phosphorus__wf>51</Phosphorus__wf>
+  <Orthophosphate__wf>52</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>WASHINGTON</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04086326"</Staid>
+  <Place_Name>NORTH BR MILWAUKEE R @ HWY 84 NEAR RANDOM LAKE  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>WASHINGTON</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04086460"</Staid>
+  <Place_Name>CEDAR CREEK NEAR JACKSON  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>WAUKESHA</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04087030"</Staid>
+  <Place_Name>MENOMONEE RIVER AT MENOMONEE FALLS  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>NA</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>5</Ammonia__wf>
+  <Nitrite__wf>5</Nitrite__wf>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf>5</NO3_NO2__wf>
+  <Phosphorus__wu>5</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf>5</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend>5</Particulate-N__suspend>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu>5</Total_nitrogen__wu>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>WAUKESHA</County>
+  <Suid>WMIC</Suid>
+  <Staid>="0408703164"</Staid>
+  <Place_Name>LILY CREEK AT GOOD HOPE ROAD NR MENOMONEE FALLS WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>NA</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend>2</Particulate-N__suspend>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu>2</Total_nitrogen__wu>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>WAUKESHA</County>
+  <Suid>WMIC</Suid>
+  <Staid>="040870856"</Staid>
+  <Place_Name>UNDERWOOD CR AT WATERTOWN PLANK RD @ ELM GROVE  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>NA</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend>2</Particulate-N__suspend>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu>2</Total_nitrogen__wu>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>WAUKESHA</County>
+  <Suid>WMIC</Suid>
+  <Staid>="055437901"</Staid>
+  <Place_Name>FOX RIVER AT RIVER ROAD NEAR SUSSEX  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>NA</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend>2</Particulate-N__suspend>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu>2</Total_nitrogen__wu>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>WAUKESHA</County>
+  <Suid>WMIC</Suid>
+  <Staid>="05543796"</Staid>
+  <Place_Name>POPLAR CREEK NEAR WAUKESHA  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>NA</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf/>
+  <Phosphorus__wu/>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend>1</Particulate-N__suspend>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>WAUPACA</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04079000"</Staid>
+  <Place_Name>WOLF RIVER AT NEW LONDON  WI</Place_Name>
+  <Land_Use_Group>MIXED</Land_Use_Group>
+  <Land_Use_Code>mx</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>WAUPACA</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04079657"</Staid>
+  <Place_Name>COMET CREEK NEAR BIG FALLS  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>WAUPACA</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04079790"</Staid>
+  <Place_Name>WHITCOMB CREEK NEAR BIG FALLS  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>WAUPACA</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04079840"</Staid>
+  <Place_Name>BLAKE CREEK AT SYMCO  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>WAUPACA</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04081100"</Staid>
+  <Place_Name>WALLA WALLA CREEK NEAR WEYAUWEGA  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>WAUSHARA</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04073200"</Staid>
+  <Place_Name>MECAN RIVER NEAR RICHFORD  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>1</Ammonia__wf>
+  <Nitrite__wf>1</Nitrite__wf>
+  <Ammonia___organic-N__w>1</Ammonia___organic-N__w>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf>1</Phosphorus__wf>
+  <Orthophosphate__wf>1</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>WAUSHARA</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04081407"</Staid>
+  <Place_Name>PINE RIVER AT WILD ROSE  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>WAUSHARA</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04081412"</Staid>
+  <Place_Name>PINE RIVER NEAR SAXEVILLE  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>WAUSHARA</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04081437"</Staid>
+  <Place_Name>WILLOW CREEK NEAR MOUNT MORRIS  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>fo</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>WINNEBAGO</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04081402"</Staid>
+  <Place_Name>ALDER CREEK NEAR FREMONT  WI</Place_Name>
+  <Land_Use_Group>AG</Land_Use_Group>
+  <Land_Use_Code>ag</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf/>
+  <Nitrite__wf/>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu>1</NH3_orgN__wu>
+  <NO3_NO2__wf>1</NO3_NO2__wf>
+  <Phosphorus__wu>1</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf/>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>WINNEBAGO</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04081897"</Staid>
+  <Place_Name>SAWYER CREEK AT WESTHAVEN ROAD AT OSHKOSH  WI</Place_Name>
+  <Land_Use_Group>OTHER</Land_Use_Group>
+  <Land_Use_Code>NA</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>6</Ammonia__wf>
+  <Nitrite__wf>6</Nitrite__wf>
+  <Ammonia___organic-N__w/>
+  <NH3_orgN__wu/>
+  <NO3_NO2__wf>6</NO3_NO2__wf>
+  <Phosphorus__wu>6</Phosphorus__wu>
+  <Phosphorus__wf/>
+  <Orthophosphate__wf>6</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend>6</Particulate-N__suspend>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu>6</Total_nitrogen__wu>
+</row><row>
+  <State_Postal_Code>WI</State_Postal_Code>
+  <State>WISCONSIN</State>
+  <County>WINNEBAGO</County>
+  <Suid>WMIC</Suid>
+  <Staid>="04082450"</Staid>
+  <Place_Name>FOX RIVER AT MAIN STREET BRIDGE AT OSHKOSH  WI</Place_Name>
+  <Land_Use_Group>MIXED</Land_Use_Group>
+  <Land_Use_Code>mx</Land_Use_Code>
+  <Sample_Medium_Desc>SURFACE WATER</Sample_Medium_Desc>
+  <Ammonia__wf>2</Ammonia__wf>
+  <Nitrite__wf>2</Nitrite__wf>
+  <Ammonia___organic-N__w>2</Ammonia___organic-N__w>
+  <NH3_orgN__wu>2</NH3_orgN__wu>
+  <NO3_NO2__wf>2</NO3_NO2__wf>
+  <Phosphorus__wu>2</Phosphorus__wu>
+  <Phosphorus__wf>2</Phosphorus__wf>
+  <Orthophosphate__wf>2</Orthophosphate__wf>
+  <Phosphorus__bs_62.5u_/>
+  <Particulate-N__suspend/>
+  <Total_nitrogen__wf/>
+  <Total_nitrogen__wu/>
+</row>

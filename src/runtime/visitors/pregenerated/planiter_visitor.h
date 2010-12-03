@@ -98,22 +98,6 @@ namespace zorba{
 
     class ZorbaJsonSerializeMLIterator;
 
-    class ZorbaCSV2XMLIterator;
-
-    class ZorbaTXT2XMLIterator;
-
-    class ZorbaCSV2XMLFromFileIterator;
-
-    class ZorbaTXT2XMLFromFileIterator;
-
-    class ZorbaXML2CSVIterator;
-
-    class ZorbaXML2CSVFILEIterator;
-
-    class ZorbaXML2TXTIterator;
-
-    class ZorbaXML2TXTFILEIterator;
-
     class FunctionTraceIterator;
 
     class TraceIterator;
@@ -587,30 +571,6 @@ public:
 
     virtual void beginVisit ( const ZorbaJsonSerializeMLIterator& ) = 0;
     virtual void endVisit   ( const ZorbaJsonSerializeMLIterator& ) = 0;
-
-    virtual void beginVisit ( const ZorbaCSV2XMLIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaCSV2XMLIterator& ) = 0;
-
-    virtual void beginVisit ( const ZorbaTXT2XMLIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaTXT2XMLIterator& ) = 0;
-
-    virtual void beginVisit ( const ZorbaCSV2XMLFromFileIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaCSV2XMLFromFileIterator& ) = 0;
-
-    virtual void beginVisit ( const ZorbaTXT2XMLFromFileIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaTXT2XMLFromFileIterator& ) = 0;
-
-    virtual void beginVisit ( const ZorbaXML2CSVIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaXML2CSVIterator& ) = 0;
-
-    virtual void beginVisit ( const ZorbaXML2CSVFILEIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaXML2CSVFILEIterator& ) = 0;
-
-    virtual void beginVisit ( const ZorbaXML2TXTIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaXML2TXTIterator& ) = 0;
-
-    virtual void beginVisit ( const ZorbaXML2TXTFILEIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaXML2TXTFILEIterator& ) = 0;
 
     virtual void beginVisit ( const FunctionTraceIterator& ) = 0;
     virtual void endVisit   ( const FunctionTraceIterator& ) = 0;

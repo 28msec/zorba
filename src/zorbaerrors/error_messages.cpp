@@ -244,15 +244,6 @@ DEF_ERR_CODE(API0066_JSON_SEQUENCE_CANNOT_BE_SERIALIZED, API0066,
 DEF_ERR_CODE(API0070_INVALID_SERIALIZATION_METHOD_FOR_SAX, API0070,
 "Invalid serialization method. Only XML output can issue SAX event notifications. Therefore, only the following serialization methods are allowed: xml, xhtml, jsonml")
 
-DEF_ERR_CODE(API0071_CONV_CSV2XML_PARAM, API0071,
-"Invalid parameter in csv import: /s /s")
-
-DEF_ERR_CODE(API0072_CONV_CSV2XML_TOO_MANY_FIELDS, API0072,
-"CSV import error: first row is header but one of the subsequent rows contains more fields than the header")
-
-DEF_ERR_CODE(API0073_CONV_XML2CSV_PARAM, API0073,
-"CSV export error: /s /s")
-
 //
 // Store Errors
 //

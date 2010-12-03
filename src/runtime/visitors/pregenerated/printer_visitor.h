@@ -152,30 +152,6 @@ namespace zorba {
     void beginVisit( const ZorbaJsonSerializeMLIterator& );
     void endVisit  ( const ZorbaJsonSerializeMLIterator& );
 
-    void beginVisit( const ZorbaCSV2XMLIterator& );
-    void endVisit  ( const ZorbaCSV2XMLIterator& );
-
-    void beginVisit( const ZorbaTXT2XMLIterator& );
-    void endVisit  ( const ZorbaTXT2XMLIterator& );
-
-    void beginVisit( const ZorbaCSV2XMLFromFileIterator& );
-    void endVisit  ( const ZorbaCSV2XMLFromFileIterator& );
-
-    void beginVisit( const ZorbaTXT2XMLFromFileIterator& );
-    void endVisit  ( const ZorbaTXT2XMLFromFileIterator& );
-
-    void beginVisit( const ZorbaXML2CSVIterator& );
-    void endVisit  ( const ZorbaXML2CSVIterator& );
-
-    void beginVisit( const ZorbaXML2CSVFILEIterator& );
-    void endVisit  ( const ZorbaXML2CSVFILEIterator& );
-
-    void beginVisit( const ZorbaXML2TXTIterator& );
-    void endVisit  ( const ZorbaXML2TXTIterator& );
-
-    void beginVisit( const ZorbaXML2TXTFILEIterator& );
-    void endVisit  ( const ZorbaXML2TXTFILEIterator& );
-
     void beginVisit( const FunctionTraceIterator& );
     void endVisit  ( const FunctionTraceIterator& );
 

@@ -274,9 +274,6 @@ const zstring
 static_context::ZORBA_JSON_FN_NS = static_context::ZORBA_NS_PREFIX + "modules/json";
 
 const zstring
-static_context::ZORBA_CSV_FN_NS = static_context::ZORBA_NS_PREFIX + "modules/csv2xml";
-
-const zstring
 static_context::ZORBA_XQDOC_FN_NS = static_context::ZORBA_NS_PREFIX + "modules/xqdoc";
 
 const zstring
@@ -320,7 +317,6 @@ bool static_context::is_builtin_module(const zstring& ns)
             ns == ZORBA_SCHEMA_FN_NS ||
             ns == ZORBA_TIDY_FN_NS ||
             ns == ZORBA_JSON_FN_NS ||
-            ns == ZORBA_CSV_FN_NS ||
             ns == ZORBA_XQDOC_FN_NS ||
             ns == ZORBA_RANDOM_FN_NS ||
             ns == ZORBA_INTROSP_SCTX_FN_NS ||
