@@ -149,6 +149,16 @@ function (svn_unpackage changefile svndir tmpdir svnlogfile changeslogfile
                    WORKING_DIRECTORY "${tmpdir}")
   set (chgdir "${tmpdir}/changes")
 
+  # De-Windows all text files - this also is currently Linux-specific
+  # and depends on "dos2unix" existing.
+  file (GLOB_RECURSE textfiles RELATIVE "${chgdir}"
+    *.c *.cpp *.cxx *.h *.hpp *.hxx *.txt *.cmake *.conf
+    *.xml *.xq *.txt *.res *.spec *.xqlib)
+  foreach (textfile ${textfiles})
+    execute_process (COMMAND dos2unix -k "${textfile}"
+                     WORKING_DIRECTORY "${chgdir}")
+  endforeach (textfile)
+
   # Checkout/update svn from specified URL and rev
   execute_process (COMMAND "${ZORBA_EXE_SCRIPT}" --omit-xml-declaration
                    --query "data(info/entry/url)"
