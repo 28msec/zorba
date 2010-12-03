@@ -216,7 +216,7 @@ bool to_string( char const *in, size_type in_len, string *out );
  * @return Returns \c true only if the conversion succeeded.
  */
 inline bool to_string( char const *in, string *out ) {
-  return to_string( in, std::strlen( in ), out );
+  return to_string( in, (size_type)std::strlen( in ), out );
 }
 
 /**
@@ -237,7 +237,7 @@ bool to_string( wchar_t const *in, size_type in_len, string *out );
  * @return Returns \c true only if the conversion succeeded.
  */
 inline bool to_string( wchar_t const *in, string *out ) {
-  return to_string( in, std::wcslen( in ), out );
+  return to_string( in, (size_type)std::wcslen( in ), out );
 }
 
 /**

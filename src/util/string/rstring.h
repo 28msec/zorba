@@ -2241,7 +2241,7 @@ operator>=( typename rstring<Rep>::const_pointer s1, rstring<Rep> const &s2 ) {
     defined( __GNUC__ ) && (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 < 40300))
 template<class Rep> inline std::ostream&
 operator<<( std::ostream &os, rstring<Rep> const &s ) {
-  return os.write( s.data(), s.size() );
+  return os.write( s.data(), (std::streamsize)s.size() );
 }
 #else
 template<

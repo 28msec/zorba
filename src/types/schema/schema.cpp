@@ -1823,7 +1823,7 @@ void Schema::serialize(::zorba::serialization::Archiver &ar)
        try
        {
          theGrammarPool->serializeGrammars(&binmemoutputstream);
-         size = binmemoutputstream.getSize();
+         size = (unsigned int)binmemoutputstream.getSize();
          binchars = (unsigned char*)binmemoutputstream.getRawBuffer();
        }
        catch (...)

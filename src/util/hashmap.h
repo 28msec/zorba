@@ -146,7 +146,7 @@ public:
     ar & v;
     //ar & tab;
     //compress tab
-    int tab_size = tab.size();
+    int tab_size = (int)tab.size();
     ar.set_is_temp_field_one_level(true);
     ar & tab_size;
     if(ar.is_serializing_out())
