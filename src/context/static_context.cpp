@@ -3080,7 +3080,7 @@ bool static_context::lookup_option(
   const static_context* sctx = this;
   while (sctx != NULL)
   {
-    if (theOptionMap && theOptionMap->get(qname2, option))
+    if (sctx->theOptionMap && sctx->theOptionMap->get(qname2, option))
     {
       value = option.theValue;
       return true;

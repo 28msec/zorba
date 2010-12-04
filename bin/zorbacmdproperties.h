@@ -17,6 +17,7 @@
 #define ZORBA_CMD_PROPERTIES_H
 
 #include <zorba/config.h>
+#include <zorba/item.h>
 
 #include "zorbacmdproperties_base.h"
 
@@ -28,10 +29,17 @@ public:
     bool        inline_file;
   };
   typedef std::vector<ExternalVariable> ExternalVars_t;
+  struct StaticContextOption {
+    std::string clark_qname;
+    std::string value;
+  };
+  typedef std::vector<StaticContextOption> Options_t;
+
   typedef std::vector<std::string>      QueriesOrFiles_t;
 
 protected:
   ExternalVars_t theExternalVars;
+  Options_t      theStaticContextOptions;
 
   unsigned int theRequestPort;
   unsigned int theEventPort;
@@ -42,6 +50,12 @@ public:
 
   ExternalVars_t::const_iterator
   externalVarsEnd() const    { return theExternalVars.end(); }
+
+  Options_t::const_iterator
+  optionsBegin() const  { return theStaticContextOptions.begin(); }
+
+  Options_t::const_iterator
+  optionsEnd() const    { return theStaticContextOptions.end(); }
 
   QueriesOrFiles_t::const_iterator
   queriesOrFilesBegin() const { return theQueriesOrFiles.begin(); }

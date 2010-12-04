@@ -140,6 +140,24 @@ Item ItemFactoryImpl::createQName(
   return &*lItem;
 }
   
+Item
+ItemFactoryImpl::createQName(const String& aQNameString)
+{
+  zstring const &lQNameString = Unmarshaller::getInternalString( aQNameString );
+  store::Item_t lItem;
+
+  size_t lOpen  = lQNameString.find("{");
+  size_t lClose = lQNameString.find("}");
+
+  if (lOpen == 0 && lClose != std::string::npos) {
+    zstring const &lNamespace = lQNameString.substr(1, lClose - 1);
+    zstring const &lLocalname = lQNameString.substr(lClose+1);
+    theItemFactory->createQName(lItem, lNamespace, zstring(), lLocalname);
+    if (!GenericCast::instance()->castableToNCName(lLocalname.c_str()))
+      ZORBA_ERROR_DESC_OSS(FORG0001, "Local name '" << lLocalname << "' must be an xs:NCName.");
+  }
+  return &*lItem;
+}
 
 Item ItemFactoryImpl::createNCName(const String& aValue)
 {

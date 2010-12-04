@@ -33,7 +33,7 @@ namespace zorbacmd {
 class ZorbaCMDPropertiesBase : public ::zorba::PropertiesBase {
 protected:
   const char **get_all_options () const {
-    static const char *result [] = { "--timing", "--output-file", "--serialization-parameter", "--serialize-html", "--serialize-text", "--indent", "--print-query", "--print-errors-as-xml", "--byte-order-mark", "--omit-xml-declaration", "--base-uri", "--boundary-space", "--default-collation", "--construction-mode", "--ordering-mode", "--multiple", "--query", "--as-files", "--external-variable", "--context-item", "--optimization-level", "--lib-module", "--parse-only", "--compile-only", "--no-serializer", "--debug-ports", "--debug", "--debug-server", "--debug-server-host", "--no-colors", "--no-logo", "--timeout", "--module-path", "--install-path", NULL };
+    static const char *result [] = { "--timing", "--output-file", "--serialization-parameter", "--serialize-html", "--serialize-text", "--indent", "--print-query", "--print-errors-as-xml", "--byte-order-mark", "--omit-xml-declaration", "--base-uri", "--boundary-space", "--default-collation", "--construction-mode", "--ordering-mode", "--multiple", "--query", "--as-files", "--external-variable", "--context-item", "--optimization-level", "--lib-module", "--parse-only", "--compile-only", "--no-serializer", "--debug-ports", "--debug", "--debug-server", "--debug-server-host", "--no-colors", "--no-logo", "--timeout", "--module-path", "--install-path", "--option", NULL };
     return result;
   }
   bool theTiming;
@@ -70,6 +70,7 @@ protected:
   long theTimeout;
   std::string theModulePath;
   std::string theInstallPath;
+  std::vector<std::string> theOption;
 
   void initialize () {
     theTiming = false;
@@ -129,6 +130,7 @@ public:
   const long &timeout () const { return theTimeout; }
   const std::string &modulePath () const { return theModulePath; }
   const std::string &installPath () const { return theInstallPath; }
+  const std::vector<std::string> &option () const { return theOption; }
 
   std::string load_argv (int argc, const char **argv) {
     if (argv == NULL) return "";
@@ -275,6 +277,11 @@ public:
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
         if (*argv == NULL) { result = "No value given for --install-path option"; break; }        init_val (*argv, theInstallPath, d);
       }
+      else if (strcmp (*argv, "--option") == 0) {
+        int d = 2;
+        if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
+        if (*argv == NULL) { result = "No value given for --option option"; break; }        init_val (*argv, theOption, d);
+      }
       else if (strcmp (*argv, "--") == 0) {
         copy_args (++argv);
         break;
@@ -325,6 +332,7 @@ public:
 "--timeout\nSpecify a timeout in seconds. After the specified time, the execution of the query will be aborted.\n\n"
 "--module-path\nModule paths added to the built-in resolver, i.e. where module imports are looking for modules.\n\n"
 "--install-path\nThe path where the modules are searched.\n\n"
+"--option\nSet an XQuery option in the static context. The name of the option should be given as an expanded QName, e.g. --option {http://www.zorba-xquery.com}option=value\n\n"
 ;
   }
 

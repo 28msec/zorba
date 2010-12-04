@@ -137,6 +137,16 @@ itemfactory(int argc, char* argv[])
     UNIT_ASSERT ( lItem.getNamespace() == "http://www.flworfound.org" );
     UNIT_ASSERT ( !lItem.getAtomizationValue().isNull() );
 
+    // test generating a qname from the clark notation {ns}localname
+    lItem = lFactory->createQName("{http://www.flworfound.org}name");
+    UNIT_ASSERT ( checkType(lItem.getType(), "QName") );
+    UNIT_ASSERT ( lItem.isAtomic() );
+    UNIT_ASSERT ( lItem.getStringValue() == "name" );
+    UNIT_ASSERT ( lItem.getPrefix().length() == 0 );
+    UNIT_ASSERT ( lItem.getPrefix().empty() );
+    UNIT_ASSERT ( lItem.getNamespace() == "http://www.flworfound.org" );
+    UNIT_ASSERT ( !lItem.getAtomizationValue().isNull() );
+
     /** NCName */
     lItem = lFactory->createNCName("ncname");
     UNIT_ASSERT ( checkType(lItem.getType(), "NCName") );

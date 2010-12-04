@@ -130,6 +130,21 @@ populateStaticContext(
     }
     aStaticContext->setDefaultCollation( aProperties.defaultCollation() );
   }
+
+  ZorbaCMDProperties::Options_t::const_iterator lIter = aProperties.optionsBegin();
+  ZorbaCMDProperties::Options_t::const_iterator end = aProperties.optionsEnd();
+  for (; lIter != end; ++lIter)
+  {
+    try {
+      zorba::Zorba* lZorba = zorba::Zorba::getInstance(0);
+      Item lQName = lZorba->getItemFactory()->createQName(lIter->clark_qname);
+      aStaticContext->declareOption(lQName, lIter->value);
+    } catch (zorba::ZorbaException& e) {
+      std::cerr << "unable to set static context option with qname "
+                << lIter->clark_qname << std::endl;
+      return false;
+    }
+  }
   return true;
 }
 

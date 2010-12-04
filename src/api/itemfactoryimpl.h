@@ -51,6 +51,9 @@ namespace zorba {
       virtual Item
       createQName(const String& aNamespace, const String& aLocalname);
 
+      virtual Item
+      createQName(const String& aQNameString);
+
       virtual Item 
       createNCName(const String& aValue);
     

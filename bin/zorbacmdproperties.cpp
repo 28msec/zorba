@@ -86,6 +86,21 @@ std::string ZorbaCMDProperties::check_args () {
     theRequestPort = atoi( theDebugPorts.substr(0, lSemi).c_str() );
     theEventPort = atoi( theDebugPorts.substr(lSemi + 1, theDebugPorts.length() ).c_str());
   }
+  for (std::vector<std::string>::const_iterator lIter = theOption.begin();
+       lIter != theOption.end(); ++lIter) {
+    size_t lEQual = lIter->find_last_of("=");
+    if (lEQual == std::string::npos)
+      return "option must be of the form {namespace}localname=value";
+
+    std::string lClarkQName = lIter->substr(0, lEQual);
+    std::string lValue      = lIter->substr(lEQual + 1);
+
+    StaticContextOption lOption;
+    lOption.clark_qname = lClarkQName;
+    lOption.value = lValue;
+    theStaticContextOptions.push_back(lOption);
+  }
+       
   return "";
 }
 

@@ -90,6 +90,18 @@ namespace zorba {
       virtual Item
       createQName(const String& aNamespace, const String& aLocalname) = 0;
 
+      /** \brief Creates a QName Item
+       *         see [http://www.w3.org/TR/xmlschema-2/#QName]
+       *
+       * The QName is constructed by parsing the string using the notation
+       * invented by James Clark (i.e. {namespace}localname).
+       *
+       * @param aQNameString String in the QName notation by James Clark.
+       * @return The QName Item.
+       */
+      virtual Item
+      createQName(const String& aQNameString) = 0;
+
       /** \brief Creates a NCName Item
        *         see [http://www.w3.org/TR/xmlschema-2/#NCName]
        *
