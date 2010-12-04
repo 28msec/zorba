@@ -39,6 +39,9 @@ namespace zorba {
       createString(const String& aString);
 
       virtual Item
+      createStreamableString(std::streambuf*);
+
+      virtual Item
       createAnyURI(const String& aURI);
 
       virtual Item
@@ -222,6 +225,7 @@ namespace zorba {
                                 Loki::CreateUsingNew,
                                 Loki::DeletableSingleton> ItemFactorySingleton;
 
-} /* namespace zorba */
+} // namespace zorba
 
 #endif
+/* vim:set et sw=2 ts=2 */

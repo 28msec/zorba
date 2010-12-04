@@ -13,8 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #ifndef ZORBA_ITEM_FACTORY_API_H
 #define ZORBA_ITEM_FACTORY_API_H
+
+#include <iostream>
 #include <vector>
 
 #include <zorba/config.h>
@@ -45,6 +48,15 @@ namespace zorba {
        */
       virtual Item
       createString(const String& aString) = 0;
+
+      /** \brief Creates a streamable String Item
+       *         see [http://www.w3.org/TR/xmlschema-2/#string]
+       *
+       * @param buf A streambuf whence to read the string's content.
+       * @return The streamable String Item
+       */
+      virtual Item
+      createStreamableString( std::streambuf *buf ) = 0;
 
       /** \brief Creates an AnyURI Item
        *         see [http://www.w3.org/TR/xmlschema-2/#anyURI]
@@ -589,7 +601,8 @@ namespace zorba {
       virtual Item createTextNode(
         Item   parent,
         String content) = 0;
-}; /* class ItemFactory */
+}; // class ItemFactory
 
-} /* namespace zorba */
+} // namespace zorba
 #endif
+/* vim:set et sw=2 ts=2: */
