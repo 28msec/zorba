@@ -637,17 +637,13 @@ public:
 
   void appendStringValue( zstring &buf ) const;
 
-  std::istream& getStream() {
-    return istream_;
-  }
-
-  std::istream const& getStream() const {
-    return istream_;
-  }
+  std::istream& getStream();
 
   zstring const& getString() const;
 
   uint32_t hash( long timezone = 0, XQPCollator const *collator = 0 ) const;
+
+  bool isStreamable() const;
 
   zstring show() const;
 

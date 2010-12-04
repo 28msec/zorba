@@ -16,6 +16,7 @@
 #ifndef ZORBA_STORE_ITEM_H
 #define ZORBA_STORE_ITEM_H
 
+#include <iostream>
 #include <vector>
 
 #include <zorba/config.h>
@@ -616,6 +617,23 @@ public:
   /* -------------------- Methods for ErrorItem --------------------- */
 
   virtual error::ZorbaError* getError() const;
+
+  /* -------------------- Methods for streamability ----------------- */
+
+  /**
+   * Checks whether the item's content is streamable.
+   *
+   * @return true only if it is.
+   */
+  virtual bool isStreamable() const;
+
+  /**
+   * Gets an istream for the item's content.
+   *
+   * @return the stream.
+   * @throw ZorbaException if the item is not streamable.
+   */
+  virtual std::istream& getStream();
 
   /* -------------------- Methods for Full-Text --------------------- */
 

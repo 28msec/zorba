@@ -831,6 +831,10 @@ store::Item_t StreamableStringItem::getEBV() const {
   return StringItem::getEBV();
 }
 
+std::istream& StreamableStringItem::getStream() {
+  return istream_;
+}
+
 zstring const& StreamableStringItem::getString() const {
   materialize_if_necessary();
   return theValue;
@@ -850,6 +854,10 @@ uint32_t StreamableStringItem::hash( long timezone,
                                      XQPCollator const *collator ) const {
   materialize_if_necessary();
   return utf8::hash( theValue, collator );
+}
+
+bool StreamableStringItem::isStreamable() const {
+  return true;
 }
 
 zstring StreamableStringItem::show() const {

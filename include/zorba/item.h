@@ -16,7 +16,7 @@
 #ifndef ZORBA_ITEM_API_H
 #define ZORBA_ITEM_API_H
 
-#include <ostream>
+#include <iostream>
 #include <zorba/config.h>
 #include <zorba/api_shared_types.h>
 
@@ -53,7 +53,7 @@ public:
   /** \brief Copy constructor
    */
   Item(const Item& other);
-  
+
   /** \brief Constructor that is used to construct Items in the Zorba engine itself.
    *
    * This constructor is for internal use only.
@@ -175,7 +175,7 @@ public:
    */
   double
   getDoubleValue() const;
-  
+
   /** \brief Get the long value of the Item.
    *
    * @return Item the long value of the Item.
@@ -312,7 +312,24 @@ public:
    */
   int
   getNodeKind() const;
-  
+
+  /**
+   * Checks whether the item's content is streamable.
+   *
+   * @return true only if it is.
+   */
+  bool
+  isStreamable() const;
+
+  /**
+   * Gets an istream for the item's content.
+   *
+   * @return the stream.
+   * @throw ZorbaException if the item is not streamable.
+   */
+  std::istream&
+  getStream();
+
 private:
   friend class Unmarshaller;
 
@@ -322,3 +339,4 @@ private:
 } // namespace zorba
 
 #endif
+/* vim:set et sw=2 ts=2: */

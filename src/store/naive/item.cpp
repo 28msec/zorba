@@ -753,6 +753,17 @@ const Item_t Item::getFunctionName() const
     __FUNCTION__, "FunctionItem");
 }
 
+bool Item::isStreamable() const
+{
+  return false;
+}
+
+std::istream& Item::getStream()
+{
+  ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+                        __FUNCTION__, getType()->getStringValue());
+}
+
 } // namespace store
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

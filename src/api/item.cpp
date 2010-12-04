@@ -411,5 +411,28 @@ Item::getNodeKind() const
   return -1;
 }
 
+bool
+Item::isStreamable() const
+{
+  ITEM_TRY
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
-} /* namespace zorba */
+    return m_item->isStreamable();
+  ITEM_CATCH
+  return false;
+}
+
+std::istream&
+Item::getStream()
+{
+  ITEM_TRY
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
+
+    return m_item->getStream();
+  ITEM_CATCH
+  // TODO: throw exception
+}
+
+} // namespace zorba
+
+/* vim:set et sw=2 ts=2: */
