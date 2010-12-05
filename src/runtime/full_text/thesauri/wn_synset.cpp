@@ -20,10 +20,10 @@
 #include "wn_synset.h"
 #include "wn_types.h"
 
-#define THROW_DATA_EXCEPTION(CHAR,MSG) {                                \
-  ostringstream oss;                                                    \
-  oss << '\'' << (CHAR) << "': " MSG;                                   \
-  ZORBA_ERROR_DESC( XQP8702_WORDNET_THESAURUS_DATA_ERROR, oss.str() );  \
+#define THROW_DATA_EXCEPTION(CHAR,MSG) {                        \
+  ostringstream oss;                                            \
+  oss << '\'' << (CHAR) << "': " MSG;                           \
+  ZORBA_ERROR_DESC( XQP8403_THESAURUS_DATA_ERROR, oss.str() );  \
 }
 
 using namespace std;

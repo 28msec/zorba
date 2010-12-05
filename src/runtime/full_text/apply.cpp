@@ -21,6 +21,9 @@
 
 #include <zorba/error.h>
 
+#include "store/api/item.h"
+#include "store/api/item_factory.h"
+#include "system/globalenv.h"
 #include "system/properties.h"
 #include "util/indent.h"
 #include "util/stl_util.h"
@@ -1135,8 +1138,14 @@ apply_ftwords( FTQueryItemSeq &query_items, FTToken::int_t query_pos,
 
 ////////// ApplyThesaurusOption ///////////////////////////////////////////////
 
+#define THESAURI_DIR_OPT_QNAME_NAMESPACE  "http://www.zorba-xquery.org/options"
+#define THESAURI_DIR_OPT_QNAME_LOCAL_NAME "thesauri-directory"
+
 namespace {
 
+/**
+ * This is used to tokenize synonym phrases returned from thesaurus look-ups.
+ */
 class thesaurus_callback : public Tokenizer::Callback {
 public:
   thesaurus_callback( int token_no, int sent_no, iso639_1::type lang,
@@ -1158,13 +1167,30 @@ private:
 
 } // anonymous namespace
 
+void ftcontains_visitor::set_thesauri_directory() {
+  store::Item_t option_qname;
+  GENV_ITEMFACTORY->createQName(
+    option_qname,
+    THESAURI_DIR_OPT_QNAME_NAMESPACE, "", THESAURI_DIR_OPT_QNAME_LOCAL_NAME
+  );
+  zstring option_value;
+  if ( !static_ctx_.lookup_option( option_qname, option_value ) ) {
+    ZORBA_ERROR_DESC(
+      XQP8401_THESAURI_DIRECTORY_NOT_SET,
+      "\"{" THESAURI_DIR_OPT_QNAME_NAMESPACE "}"
+      THESAURI_DIR_OPT_QNAME_LOCAL_NAME "\": option not set"
+    );
+  }
+  ft_thesaurus::set_directory( option_value );
+}
+
 void ftcontains_visitor::
 lookup_thesaurus( zstring const &uri, zstring const &query_phrase,
                   FTToken const &qt0, zstring const &relationship,
                   ft_int at_least, ft_int at_most, FTQueryItemSeq &result ) {
   static bool set_directory;
   if ( !set_directory ) {
-    ft_thesaurus::set_directory( static_ctx_.get_thesauri_directory() );
+    set_thesauri_directory();
     set_directory = true;
   }
 

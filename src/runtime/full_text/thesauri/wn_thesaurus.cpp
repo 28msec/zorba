@@ -43,12 +43,12 @@ namespace wordnet {
 
 ////////// Helper functions ///////////////////////////////////////////////////
 
-#define THROW_VERSION_EXCEPTION(FILE_VERSION,OUR_VERSION) {                   \
-  ostringstream oss;                                                          \
-  oss << '"' << FILE_VERSION                                                  \
-      << "\": wrong WordNet file version; should be \""                       \
-      << OUR_VERSION << '"';                                                  \
-  ZORBA_ERROR_DESC( XQP8701_WORDNET_THESAURUS_VERSION_MISMATCH, oss.str() );  \
+#define THROW_VERSION_EXCEPTION(FILE_VERSION,OUR_VERSION) {           \
+  ostringstream oss;                                                  \
+  oss << '"' << FILE_VERSION                                          \
+      << "\": wrong WordNet file version; should be \""               \
+      << OUR_VERSION << '"';                                          \
+  ZORBA_ERROR_DESC( XQP8402_THESAURUS_VERSION_MISMATCH, oss.str() );  \
 }
 
 /**

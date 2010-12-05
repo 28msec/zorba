@@ -126,6 +126,8 @@ private:
                          ft_int at_least, ft_int at_most,
                          FTQueryItemSeq &result );
 
+  void set_thesauri_directory();
+
   FTTokenIterator_t &search_ctx_;
   static_context const &static_ctx_;
   store::Item const *const ignore_item_;
