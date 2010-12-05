@@ -19,10 +19,14 @@
 namespace zorba {
 namespace wordnet {
 
+db_segment::size_type const WordNet_File_Header_Size =
+    + 4                                 // version char[4]
+    + sizeof( uint32_t );               // endianness value
+
 db_segment::db_segment( mmap_file const &file, id_t id ) :
   begin_( file.begin() )
 {
-  mmap_file::const_iterator byte_ptr = begin_ + 4; // skip version char[4]
+  mmap_file::const_iterator byte_ptr = begin_ + WordNet_File_Header_Size;
   size_type const *size_ptr = reinterpret_cast<size_type const*>( byte_ptr );
   num_entries_ = size_ptr[0];
   for ( int i = id; i > 0; --i ) {

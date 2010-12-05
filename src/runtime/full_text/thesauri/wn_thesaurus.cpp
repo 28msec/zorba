@@ -51,6 +51,9 @@ namespace wordnet {
   ZORBA_ERROR_DESC( XQP8402_THESAURUS_VERSION_MISMATCH, oss.str() );  \
 }
 
+#define THROW_ENDIANNESS_EXCEPTION() \
+  ZORBA_ERROR_DESC( XQP8403_THESAURUS_DATA_ERROR, "wrong endianness" )
+
 /**
  * Gets a reference to a singleton instance of the WordNet thesaurus database
  * file.
@@ -71,13 +74,21 @@ mmap_file const& get_wordnet_file() {
                             filesystem_path::get_path_separator() ) )
       wordnet_path += filesystem_path::get_path_separator();
     wordnet_path += "wordnet.zth";
-
     wordnet_file.open( wordnet_path.c_str() );
+
+    // check version
     char file_version[ sizeof( version_type ) + 1 ];
-    ::strncpy( file_version, wordnet_file.begin(), sizeof( version_type ) );
+    char const *byte_ptr = wordnet_file.begin();
+    ::strncpy( file_version, byte_ptr, sizeof( version_type ) );
     file_version[ sizeof( version_type ) ] = '\0';
     if ( ::strcmp( file_version, our_version ) != 0 )
       THROW_VERSION_EXCEPTION( file_version, our_version );
+
+    // check endian-ness
+    byte_ptr += sizeof( uint32_t );
+    uint32_t const file_endian = *reinterpret_cast<uint32_t const*>( byte_ptr );
+    if ( file_endian != 42 )
+      THROW_ENDIANNESS_EXCEPTION();
   }
   return wordnet_file;
 }
