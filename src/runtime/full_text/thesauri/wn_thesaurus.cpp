@@ -41,6 +41,12 @@ using namespace std;
 namespace zorba {
 namespace wordnet {
 
+/**
+ * Used to ensure the endianness of the WordNet data file matches that of the
+ * CPU we're running on.
+ */
+uint32_t const Magic_Number = 42;       // same as TIFF -- why not?
+
 ////////// Helper functions ///////////////////////////////////////////////////
 
 #define THROW_VERSION_EXCEPTION(FILE_VERSION,OUR_VERSION) {           \
@@ -87,7 +93,7 @@ mmap_file const& get_wordnet_file() {
     // check endian-ness
     byte_ptr += sizeof( uint32_t );
     uint32_t const file_endian = *reinterpret_cast<uint32_t const*>( byte_ptr );
-    if ( file_endian != 42 )
+    if ( file_endian != Magic_Number )
       THROW_ENDIANNESS_EXCEPTION();
   }
   return wordnet_file;
