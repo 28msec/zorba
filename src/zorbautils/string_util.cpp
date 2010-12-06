@@ -26,7 +26,7 @@ U_NAMESPACE_USE
 
 namespace zorba {
 
-ulong find( char const *s, size_t s_len, char const *ss, size_t ss_len,
+size_t find( char const *s, size_t s_len, char const *ss, size_t ss_len,
             XQPCollator const *collator ) {
   if ( !collator ) {
     char const *const result = ::strstr( s, ss );
@@ -34,8 +34,8 @@ ulong find( char const *s, size_t s_len, char const *ss, size_t ss_len,
   }
 
   unicode::string u_s, u_ss;
-  unicode::to_string( s, s_len, &u_s );
-  unicode::to_string( ss, ss_len, &u_ss );
+  unicode::to_string( s, (unicode::size_type)s_len, &u_s );
+  unicode::to_string( ss, (unicode::size_type)ss_len, &u_ss );
 
   UErrorCode err = U_ZERO_ERROR;
   StringSearch search(
@@ -54,7 +54,7 @@ ulong find( char const *s, size_t s_len, char const *ss, size_t ss_len,
 }
 
 
-ulong rfind(
+size_t rfind(
     char const *s,
     size_t s_len,
     char const *ss,
@@ -66,17 +66,18 @@ ulong rfind(
     zstring_b tmp;
     tmp.wrap_memory(const_cast<char*>(s), s_len);
 
-    ulong pos = tmp.rfind(ss, ss_len);
+    size_t pos = tmp.rfind(ss, ss_len);
 
-    if (pos == zstring::npos)
-      return -1;
-    else
-      return pos;
+    //if (pos == zstring::npos)
+    //  return -1;
+    //else
+    //  return pos;
+    return pos;
   }
 
   unicode::string u_s, u_ss;
-  unicode::to_string( s, s_len, &u_s );
-  unicode::to_string( ss, ss_len, &u_ss );
+  unicode::to_string( s, (unicode::size_type)s_len, &u_s );
+  unicode::to_string( ss, (unicode::size_type)ss_len, &u_ss );
 
   UErrorCode err = U_ZERO_ERROR;
 

@@ -537,7 +537,7 @@ void ElementNode::removeAttributes(
 void XmlNode::removeType(UpdatePrimitive& upd)
 {
   TypeUndoList& undoList = upd.theTypeUndoList;
-  ulong undoSize = undoList.size();
+  ulong undoSize = (ulong)undoList.size();
 
   zorba::store::Item* revalidationNode = NULL;
   XmlNode* currNode = this;
@@ -647,7 +647,7 @@ void XmlNode::restoreType(TypeUndoList& undoList)
     return;
 
   ulong pos = 0;
-  ulong numNodes = undoList.size();
+  ulong numNodes = (ulong)undoList.size();
   XmlNode* currNode = this;
 
   while(currNode != NULL && pos < numNodes)
@@ -813,7 +813,7 @@ void InternalNode::restoreChild(UpdDelete& upd)
 ********************************************************************************/
 void InternalNode::insertChildren(UpdInsertChildren& upd, ulong pos)
 {
-  ulong numNewChildren = upd.theNewChildren.size();
+  ulong numNewChildren = (ulong)upd.theNewChildren.size();
   XmlNode* rsib = (pos < numChildren() ? getChild(pos) : NULL);
   XmlNode* lsib = (pos > 0 ? getChild(pos-1) : NULL);
 
@@ -948,7 +948,7 @@ void InternalNode::undoInsertChildren(UpdInsertChildren& upd)
 void ElementNode::insertAttributes(UpdInsertAttributes& upd)
 {
   ulong numAttrs = numAttributes();
-  ulong numNewAttrs = upd.theNewAttrs.size();
+  ulong numNewAttrs = (ulong)upd.theNewAttrs.size();
 
   removeType(upd);
 
@@ -1005,7 +1005,7 @@ void ElementNode::undoInsertAttributes(UpdInsertAttributes& upd)
 
   removeAttributes(pos, upd.theNumApplied);
 
-  ulong numBindings = upd.theNewBindings.size();
+  ulong numBindings = (ulong)upd.theNewBindings.size();
   for (ulong i = 0; i < numBindings; ++i)
   {
     removeLocalBinding(upd.theNewBindings[i]->getPrefix(),
@@ -1029,7 +1029,7 @@ void ElementNode::replaceAttribute(UpdReplaceAttribute& upd)
 
   upd.thePos = pos;
 
-  ulong numNewAttrs = upd.theNewAttrs.size();
+  ulong numNewAttrs = (ulong)upd.theNewAttrs.size();
 
   for (ulong i = 0; i < numNewAttrs; i++)
   {
@@ -1095,7 +1095,7 @@ void ElementNode::restoreAttribute(UpdReplaceAttribute& upd)
 
   removeAttributes(pos, upd.theNumApplied);
 
-  ulong numBindings = upd.theNewBindings.size();
+  ulong numBindings = (ulong)upd.theNewBindings.size();
   for (ulong i = 0; i < numBindings; i++)
     removeLocalBinding(upd.theNewBindings[i]->getPrefix(),
                        upd.theNewBindings[i]->getNamespace());
@@ -1120,7 +1120,7 @@ void InternalNode::replaceChild(UpdReplaceChild& upd)
 
   ZORBA_FATAL(pos < children().size(), "");
 
-  ulong numNewChildren = upd.theNewChildren.size();
+  ulong numNewChildren = (ulong)upd.theNewChildren.size();
   XmlNode* rsib = (pos < numChildren() - 1 ? getChild(pos+1) : NULL);
   XmlNode* lsib = (pos > 0 ? getChild(pos-1) : NULL);
 

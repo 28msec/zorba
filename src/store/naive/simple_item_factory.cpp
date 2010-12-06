@@ -926,7 +926,7 @@ bool BasicItemFactory::createNOTATION(store::Item_t& result, zstring& str)
   zstring local;
 
   ascii::trim_whitespace(str);
-  ulong pos = str.rfind(":", str.size(), 1);
+  zstring::size_type pos = str.rfind(":", str.size(), 1);
 
   if (pos != zstring::npos)
   {

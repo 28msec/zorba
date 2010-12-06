@@ -37,7 +37,7 @@ namespace zorba
 ********************************************************************************/
 int parse_long(
     const char* str,
-    ulong str_len,
+    ascii::size_type str_len,
     ascii::size_type& position,
     long& result,
     long min_digits,

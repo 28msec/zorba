@@ -265,7 +265,7 @@ public:
 
   void setOrderModifiers(const std::vector<OrderModifier>& modifiers);
 
-  ulong numSources() const { return theSourceNames.size(); }
+  ulong numSources() const { return (ulong)theSourceNames.size(); }
 
   const store::Item* getSourceName(ulong i) const { return theSourceNames[i]; }
 

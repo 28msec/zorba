@@ -40,7 +40,7 @@ public:
    */
   ICU_Tokenizer( bool wildcards = false );
 
-  void tokenize( char const*, int, locale::iso639_1::type, Callback&, void* );
+  void tokenize( char const*, size_t, locale::iso639_1::type, Callback&, void* );
 
 private:
   struct ICU_Iterators {

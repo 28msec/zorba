@@ -71,7 +71,7 @@ public:
 
   void erase(ulong i) { theSteps.erase(theSteps.begin() + i); }
 
-  ulong numSteps() const { return theSteps.size(); }
+  ulong numSteps() const { return (ulong)theSteps.size(); }
 
 	const expr_t& operator[](int n) const { return theSteps[n]; }
 

@@ -29,14 +29,14 @@ SequentialIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  for (; i < theChildren.size(); ++i) 
+  for (; i < (ulong)theChildren.size(); ++i) 
   {
     while (CONSUME(result, i))
     {
-      if (i == theChildren.size() - 1)
+      if (i == (ulong)theChildren.size() - 1)
       {
         STACK_PUSH(true, state);
-        i = theChildren.size() - 1;
+        i = (ulong)theChildren.size() - 1;
       }
     }
   }

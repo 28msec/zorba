@@ -68,7 +68,7 @@ bool zorba::SAXParser::parseDocument(store::Item_t& result, std::istream& stream
 	theHandler.error = &SAXParser::error;
 	theHandler.warning = &SAXParser::warning;
 
-	xmlSAXUserParseMemory(&theHandler, (void *) this, xmlText.c_str(), xmlText.size());
+	xmlSAXUserParseMemory(&theHandler, (void *) this, xmlText.c_str(), (int)xmlText.size());
 	result = theResult;
 	return theSucceeded;
 }

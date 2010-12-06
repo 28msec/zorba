@@ -689,7 +689,7 @@ store::Item* AnyUriItem::getType() const
 
 uint32_t AnyUriItem::hash(long timezone, const XQPCollator* aCollation) const
 {
-  return hashfun::h32(theValue.data(), theValue.size());
+  return hashfun::h32(theValue.data(), (uint32_t)theValue.size());
 }
 
 
@@ -769,7 +769,7 @@ zstring StringItem::show() const
 
 #ifndef ZORBA_NO_FULL_TEXT
 
-void AtomicItemTokenizer::operator()( char const *utf8_s, int utf8_len,
+void AtomicItemTokenizer::operator()( char const *utf8_s, size_t utf8_len,
                                       int token_no, int sent_no, int para_no,
                                       void* )
 {

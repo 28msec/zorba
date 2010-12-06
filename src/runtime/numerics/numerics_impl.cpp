@@ -522,8 +522,8 @@ static void parsePart(
   // get grouping separators
   int digit_signs = 0;
   int zero_signs = 0;
-  int start = fractional? 0 : str.size()-1;
-  int end = fractional? str.size() : -1;
+  int start = fractional? 0 : (int)str.size()-1;
+  int end = fractional? (int)str.size() : -1;
   int delta = fractional? 1 : -1;  
   int first_digit_sign = -1;
   int last_zero_sign = -1;
@@ -604,7 +604,7 @@ static void parseSubpicture(
 
   // prefix
   zstring temp = sub_picture.integer_part.str;
-  chars = temp.size();
+  chars = (int)temp.size();
   for (int i = 0; i < chars; i++)
   {
     zstring::value_type ch = temp[i];
@@ -617,7 +617,7 @@ static void parseSubpicture(
   }
   // suffix
   temp = sub_picture.fractional_part.str;
-  chars = temp.size();
+  chars = (int)temp.size();
   for (int i=chars-1; i >= 0; i--)
   {
     zstring::value_type ch = temp[i];
@@ -701,7 +701,7 @@ static void formatGroupings(
 
   result.clear();
 
-  long len = str.size();
+  long len = (long)str.size();
 
   for (long i = len-1; i >= 0; i--)
   {
@@ -792,7 +792,7 @@ static void formatNumber(
   // process min sizes
   zstring integer_part;
   zstring fractional_part;
-  ulong pos = converted.find(".", 0, 1);
+  zstring::size_type pos = converted.find(".", 0, 1);
   if (pos == zstring::npos)
   {
     integer_part = converted;
@@ -804,10 +804,10 @@ static void formatNumber(
   }
 
   // Add zeros
-  zstring temp = createZeros(sub_picture.integer_part.minimum_size - integer_part.size());
+  zstring temp = createZeros((int)(sub_picture.integer_part.minimum_size - integer_part.size()));
   temp.append(integer_part);
   integer_part = temp;  
-  fractional_part.append(createZeros(sub_picture.fractional_part.minimum_size - fractional_part.size()));
+  fractional_part.append(createZeros((int)(sub_picture.fractional_part.minimum_size - fractional_part.size())));
 
   // groupings
   zstring integer_part_result;

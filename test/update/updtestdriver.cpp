@@ -240,7 +240,7 @@ main(int argc, char** argv)
 
   std::vector<zorba::XQuery_t> lQueries;
 
-  ulong numQueries = lSpec.theStates.size();
+  ulong numQueries = (ulong)lSpec.theStates.size();
 
   for(ulong curQuery = 0; curQuery < numQueries; ++curQuery)
   {
@@ -361,7 +361,7 @@ main(int argc, char** argv)
       {
         bool lRes = false;
         bool anyMatch = false;
-        ulong numRefs = lState->theCompares.size();
+        ulong numRefs = (ulong)lState->theCompares.size();
         
         for (ulong i = 0; i < numRefs && !lRes; i++) 
         {

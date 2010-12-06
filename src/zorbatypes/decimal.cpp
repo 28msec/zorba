@@ -140,7 +140,7 @@ bool Decimal::parseString(const char* aCharStar, Decimal& aDecimal)
       }
       else
       {
-        int len = firstSpace - aCharStar + 1;
+        int len = (int)(firstSpace - aCharStar + 1);
         char* copy = new char[firstSpace - aCharStar + 1];
         strncpy(copy, aCharStar, len);
         copy[len-1] = 0;
@@ -448,7 +448,7 @@ void Decimal::reduceFloatingPointString(char *str)
   if(!strDot)
     return;//not a floating point number
   char *lE = strrchr(str, 'E');
-  int len = strlen(str);
+  int len = (int)strlen(str);
   bool has_E = false;
   if(!lE)
     lE = strrchr(str, 'e');
@@ -457,7 +457,7 @@ void Decimal::reduceFloatingPointString(char *str)
   else
     has_E = true;
   char *digit_ptr = lE-1;
-  int pos = (digit_ptr - strDot);
+  int pos = (int)(digit_ptr - strDot);
   while(pos > 8) //(*digit_ptr != '.')
   {
     if(*digit_ptr == '9')

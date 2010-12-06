@@ -333,8 +333,8 @@ DebuggerClientImpl::clearBreakpoint(const String& aFileName, unsigned int aLineN
       lToRemove.push_back(lIter->first);
     }
   }
-  int lNoBrks = lToRemove.size();
-  for (int i = 0; i < lNoBrks; i++) {
+  size_t lNoBrks = lToRemove.size();
+  for (size_t i = 0; i < lNoBrks; i++) {
     theBreakpoints.erase(lToRemove[i]);
   }
   if (lNoBrks > 0) {

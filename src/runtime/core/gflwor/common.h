@@ -253,7 +253,7 @@ template <class T> inline void castIterVector(
     std::vector<rchandle<T> >& destVector,
     const std::vector<PlanIter_t>& sourceVector)
 {
-  ulong numIters = sourceVector.size();
+  size_t numIters = sourceVector.size();
   destVector.resize(numIters);
 
   for (ulong i = 0; i < numIters; ++i)

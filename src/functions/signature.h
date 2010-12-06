@@ -136,7 +136,7 @@ public:
 
   uint32_t paramCount() const 
   {
-    return isVariadic() ? VARIADIC_SIG_SIZE : theTypes.size() - 1;
+    return isVariadic() ? VARIADIC_SIG_SIZE : (uint32_t)(theTypes.size() - 1);
   }
 
   xqtref_t const& operator[](int i) const 

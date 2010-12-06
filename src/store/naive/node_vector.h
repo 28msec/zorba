@@ -49,7 +49,7 @@ public:
 
   void clear() { theNodes.clear(); }
 
-  ulong size() const { return theNodes.size(); }
+  ulong size() const { return (ulong)theNodes.size(); }
 
   void resize(ulong size) { theNodes.resize(size); }
 

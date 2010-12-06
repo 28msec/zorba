@@ -342,7 +342,7 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     {
       if (startPos > 0)
       {
-        state->theTempSeq->getItem(startPos, result);
+        state->theTempSeq->getItem((ulong)startPos, result);
       }
       
       if (result)
@@ -379,8 +379,8 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       startPos = 1;
     }
 
-    state->theLastPos = startPos + len;
-    state->thePos = startPos;
+    state->theLastPos = (ulong)(startPos + len);
+    state->thePos = (ulong)startPos;
 
     planState.theDynamicContext->get_variable(varName,
                                               loc,
@@ -631,7 +631,7 @@ void LetVarIterator::bind(store::TempSeq_t& value, PlanState& planState)
   {
     if (theTargetPos > 0)
     {
-      value->getItem(theTargetPos, state->theItem);
+      value->getItem((ulong)theTargetPos, state->theItem);
     }
     else 
     {
@@ -657,7 +657,7 @@ void LetVarIterator::bind(
   {
     if (theTargetPos > 0)
     {
-      value->getItem(startPos + theTargetPos - 1, state->theItem);
+      value->getItem((ulong)(startPos + theTargetPos - 1), state->theItem);
     }
     else
     {
@@ -736,7 +736,7 @@ bool LetVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     if (theTargetLenIter == NULL)
     {
       if (startPos > 0)
-        state->theTempSeq->getItem(startPos, result);
+        state->theTempSeq->getItem((ulong)startPos, result);
 
       if (result)
         STACK_PUSH(true, state);
@@ -756,8 +756,8 @@ bool LetVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         startPos = 1;
       }
 
-      state->theLastPos = startPos + len;
-      state->thePos = startPos;
+      state->theLastPos = (ulong)(startPos + len);
+      state->thePos = (ulong)startPos;
 
       while (state->thePos < state->theLastPos)
       {

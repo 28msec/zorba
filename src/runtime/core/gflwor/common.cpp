@@ -181,9 +181,9 @@ uint32_t GroupTupleCmp::hash(GroupTuple* t) const
 {
   uint32_t hash = 0;
 
-  long numCols = theGroupingSpecs->size();
+  ulong numCols = (ulong)theGroupingSpecs->size();
 
-  for (long i = 0; i < numCols; i++)
+  for (ulong i = 0; i < numCols; i++)
   {
     if (t->theTypedValues[i] != NULL)
     {

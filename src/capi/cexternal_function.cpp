@@ -57,7 +57,7 @@ namespace zorbac {
   CExternalFunction::evaluate
   (const StatelessExternalFunction::Arguments_t& args) const
   {
-    unsigned int lSequencesSize = args.size();
+    unsigned int lSequencesSize = (unsigned int)args.size();
     XQC_Sequence** lSequences = new XQC_Sequence*[lSequencesSize];
 
     // Wrap each Argument (which is just an ItemSequence) in a

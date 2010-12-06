@@ -404,7 +404,7 @@ static bool checkVarDependency(
   std::vector<ulong> varidSet;
   bitset.getSet(varidSet);
 
-  ulong numVars = varidSet.size();
+  ulong numVars = (ulong)varidSet.size();
   for (ulong i = 0; i < numVars; ++i)
   {
     const var_expr* var = (*rCtx.theIdVarMap)[varidSet[i]];
@@ -763,7 +763,7 @@ static void findFlworForVar(
 {
   flworExpr = NULL;
 
-  for (long i = rCtx.theFlworStack.size() - 1; i >= 0; --i)
+  for (long i = (long)rCtx.theFlworStack.size() - 1; i >= 0; --i)
   {
     flworExpr = dynamic_cast<flwor_expr*>(rCtx.theFlworStack[i].getp());
 

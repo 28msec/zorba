@@ -56,7 +56,7 @@ public:
 
   void getSet(std::vector<ulong>& set) const
   {
-    ulong numBytes = m_bits.size();
+    ulong numBytes = (ulong)m_bits.size();
     for (ulong i = 0; i < numBytes; ++i)
     {
       if (m_bits[i] == 0)

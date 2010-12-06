@@ -472,7 +472,7 @@ void DataflowAnnotationsComputer::compute_relpath_expr(relpath_expr* e)
   {
     TypeManager* tm = e->get_type_manager();
 
-    ulong num_steps = e->size();
+    ulong num_steps = (ulong)e->size();
     bool only_child_axes = true;
     ulong num_desc_axes = 0;
     ulong num_following_axes = 0;

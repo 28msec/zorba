@@ -283,7 +283,7 @@ class ZORBA_DLL_PUBLIC ReplyMessage: public AbstractMessage
 
     void setData( zstring const &lData )
     {
-      setLength( MESSAGE_HEADER_SIZE + lData.length() );
+      setLength( (Length)(MESSAGE_HEADER_SIZE + lData.length()) );
       theData = lData;
     }
     
@@ -486,7 +486,7 @@ class ZORBA_DLL_PUBLIC SetMessage: public AbstractCommandMessage
     void addExpr( unsigned int anId, zstring &anExpr )
     {
       theExprs.insert( std::make_pair( anId,  anExpr ) );
-      setLength( MESSAGE_HEADER_SIZE + getData().length() );
+      setLength( (Length)(MESSAGE_HEADER_SIZE + getData().length()) );
     }
 
     std::map<unsigned int, zstring> getExprs()
@@ -497,7 +497,7 @@ class ZORBA_DLL_PUBLIC SetMessage: public AbstractCommandMessage
     void addLocation( unsigned int anId, QueryLoc &aLocation )
     {
       theLocations.insert( std::make_pair( anId, aLocation ) );
-      setLength( MESSAGE_HEADER_SIZE + getData().length() );
+      setLength( (Length)(MESSAGE_HEADER_SIZE + getData().length()) );
     }
 
     std::map<unsigned int, QueryLoc> getLocations()
@@ -527,7 +527,7 @@ class ZORBA_DLL_PUBLIC ClearMessage: public AbstractCommandMessage
     void addId( unsigned int id )
     {
       theIds.push_back( id );
-      setLength( MESSAGE_HEADER_SIZE + getData().length() );
+      setLength( (Length)(MESSAGE_HEADER_SIZE + getData().length()) );
     }
 
     std::vector<unsigned int> getIds()

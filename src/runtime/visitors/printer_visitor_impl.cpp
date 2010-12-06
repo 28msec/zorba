@@ -716,7 +716,7 @@ void PrinterVisitor::beginVisitFlworLetVariable(
 
   std::ostringstream str;
 
-  ulong numRefs = varRefs.size();
+  ulong numRefs = (ulong)varRefs.size();
   for (ulong i = 0; i < numRefs; i++)
   {
     str << varRefs[i].getp();
@@ -749,7 +749,7 @@ void PrinterVisitor::beginVisitFlworForVariable(
 
   std::ostringstream str;
 
-  ulong numRefs = varRefs.size();
+  ulong numRefs = (ulong)varRefs.size();
   for (ulong i = 0; i < numRefs; i++)
   {
     str << varRefs[i].getp();
@@ -764,7 +764,7 @@ void PrinterVisitor::beginVisitFlworForVariable(
   {
     std::ostringstream str;
 
-    ulong numRefs = posRefs.size();
+    ulong numRefs = (ulong)posRefs.size();
     for (ulong i = 0; i < numRefs; i++)
     {
       str << posRefs[i].getp();
@@ -836,7 +836,7 @@ void PrinterVisitor::beginVisitGroupVariable(const std::vector<ForVarIter_t>& va
 
   std::ostringstream str;
 
-  ulong numRefs = varRefs.size();
+  ulong numRefs = (ulong)varRefs.size();
   for (ulong i = 0; i < numRefs; i++)
   {
     str << varRefs[i].getp();
@@ -864,7 +864,7 @@ void PrinterVisitor::beginVisitNonGroupVariable(const std::vector<LetVarIter_t>&
 
   std::ostringstream str;
 
-  ulong numRefs = varRefs.size();
+  ulong numRefs = (ulong)varRefs.size();
   for (ulong i = 0; i < numRefs; i++)
   {
     str << varRefs[i].getp();
@@ -913,7 +913,7 @@ void PrinterVisitor::beginVisitOrderByForVariable(
   str1 << inputVar->getVarName()->getStringValue() << " : " <<
       inputVar.getp();
 
-  ulong numRefs = varRefs.size();
+  ulong numRefs = (ulong)varRefs.size();
   for (ulong i = 0; i < numRefs; i++)
   {
     str2 << varRefs[i].getp();
@@ -947,7 +947,7 @@ void PrinterVisitor::beginVisitOrderByLetVariable(
 
   str1 << inputVar->getVarName()->getStringValue() << " : " << inputVar.getp();
 
-  ulong numRefs = varRefs.size();
+  ulong numRefs = (ulong)varRefs.size();
   for (ulong i = 0; i < numRefs; i++)
   {
     str2 << varRefs[i].getp();
@@ -980,7 +980,7 @@ void PrinterVisitor::beginVisitWindowVariable(
 
   std::ostringstream str;
 
-  ulong numRefs = varRefs.size();
+  ulong numRefs = (ulong)varRefs.size();
   for (ulong i = 0; i < numRefs; i++)
   {
     str << varRefs[i].getp();
@@ -1012,7 +1012,7 @@ void PrinterVisitor::beginVisitWinCondVariable(
 
   std::ostringstream str;
 
-  ulong numRefs = varRefs.size();
+  ulong numRefs = (ulong)varRefs.size();
   for (ulong i = 0; i < numRefs; i++)
   {
     str << varRefs[i].getp();

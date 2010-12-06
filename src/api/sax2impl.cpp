@@ -74,7 +74,7 @@ SAX2AttributesImpl::~SAX2AttributesImpl()
 //x2
 unsigned int SAX2AttributesImpl::getLength() const
 {
-  return attrs.size();
+  return (unsigned int)attrs.size();
 }
 
 
@@ -111,7 +111,7 @@ const String SAX2AttributesImpl::getValue(const unsigned int index) const
 int SAX2AttributesImpl::getIndex(const String &  uri, const String & localPart ) const
 {
   unsigned int  i;
-  unsigned int  size = attrs.size();
+  unsigned int  size = (unsigned int)attrs.size();
 
   for(i = 0; i < size; i++)
   {
@@ -128,7 +128,7 @@ int SAX2AttributesImpl::getIndex(const String &  uri, const String & localPart )
 int SAX2AttributesImpl::getIndex(const String & qName ) const
 {
   unsigned int  i;
-  unsigned int  size = attrs.size();
+  unsigned int  size = (unsigned int)attrs.size();
 
   for(i = 0; i < size; i++)
   {
@@ -146,7 +146,7 @@ const String SAX2AttributesImpl::getType(
     const String & localPart) const
 {
   unsigned int  i;
-  unsigned int  size = attrs.size();
+  unsigned int  size = (unsigned int)attrs.size();
 
   for(i = 0; i < size; i++)
   {
@@ -166,7 +166,7 @@ const String SAX2AttributesImpl::getType(
 const String SAX2AttributesImpl::getType(const String & qName) const
 {
   unsigned int  i;
-  unsigned int  size = attrs.size();
+  unsigned int  size = (unsigned int)attrs.size();
 
   for(i = 0; i < size; i++)
   {
@@ -186,7 +186,7 @@ const String SAX2AttributesImpl::getValue(
     const String & localPart ) const
 {
   unsigned int  i;
-  unsigned int  size = attrs.size();
+  unsigned int  size = (unsigned int)attrs.size();
 
   for(i = 0;i < size; i++)
   {
@@ -205,7 +205,7 @@ const String SAX2AttributesImpl::getValue(
 const String SAX2AttributesImpl::getValue(const String & qName) const
 {
   unsigned int  i;
-  unsigned int  size = attrs.size();
+  unsigned int  size = (unsigned int)attrs.size();
 
   for(i = 0; i < size; i++)
   {

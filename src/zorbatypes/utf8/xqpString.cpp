@@ -88,7 +88,7 @@ static xqpStringStore_t getXqpString(UnicodeString source)
   Return an UnicodeString (UTF-16 encoded) version of the string.
 ********************************************************************************/
 UnicodeString
-xqpString::getUnicodeString(const char* aSrc, const ulong aLen)
+xqpString::getUnicodeString(const char* aSrc, const size_type aLen)
 {
   UnicodeString lRet;
   UErrorCode lStatus = U_ZERO_ERROR;
@@ -169,7 +169,7 @@ bool xqpStringStore::is_whitespace(uint32_t cp)
   Returns true if the characters given as 'start' and 'length' contain the
   codepoint 'cp'.
 ********************************************************************************/
-bool xqpStringStore::is_contained(const char* start, uint16_t length, uint32_t cp)
+bool xqpStringStore::is_contained(const char* start, size_type length, uint32_t cp)
 {
   if( length != 0 && start != NULL)
   {
@@ -298,7 +298,7 @@ bool xqpStringStore::is_entity_or_char_ref(const char* str)
   if (str == NULL)
     return false;
 
-  int len = strlen(str);
+  size_type len = strlen(str);
 
   if (len < 4 || str[0] != '&' || str[len-1] != ';')
     return false;
@@ -309,7 +309,7 @@ bool xqpStringStore::is_entity_or_char_ref(const char* str)
   if (str[1] != '#')
     return false;
 
-  int start = 2;
+  size_type start = 2;
   bool hex = false;
   if (str[2] == 'x')
   {
@@ -317,7 +317,7 @@ bool xqpStringStore::is_entity_or_char_ref(const char* str)
     hex = true;
   }
 
-  for (int i = start; i<len-1; i++)
+  for (size_type i = start; i<len-1; i++)
     if ((!hex && !is_digit(str[i])) || (hex && (!is_hex_digit(str[i]))))
       return false;
 
@@ -524,7 +524,7 @@ long xqpStringStore::bytePositionOf(
   if (lRes == std::string::npos)
     return -1;
   else
-    return lRes;
+    return (long)lRes;
 }
 
 
@@ -538,7 +538,7 @@ long xqpStringStore::byteLastPositionOf(const char* substr, size_type substrLen)
   if (lRes == std::string::npos)
     return -1;
   else
-    return lRes;
+    return (long)lRes;
 }
 
 
@@ -607,7 +607,7 @@ long xqpStringStore::positionOf(
     if (lRes == std::string::npos)
       return -1;
     else
-      return lRes;
+      return (long)lRes;
   }
 
   UErrorCode status = U_ZERO_ERROR;
@@ -659,7 +659,7 @@ long xqpStringStore::lastPositionOf(
     if (lRes == std::string::npos)
       return -1;
     else
-      return lRes;
+      return (long)lRes;
   }
 
   UErrorCode status = U_ZERO_ERROR;
@@ -708,7 +708,7 @@ bool xqpStringStore::matches(
 {
   UErrorCode status = U_ZERO_ERROR;
 
-  UnicodeString uspattern = xqpString::getUnicodeString(pattern, patternLength);
+  UnicodeString uspattern = xqpString::getUnicodeString(pattern, (const ulong)patternLength);
   UnicodeString us = xqpString::getUnicodeString(this);
 
   RegexMatcher matcher(uspattern, parse_regex_flags(regexFlags), status);
@@ -755,11 +755,11 @@ xqpStringStore_t xqpStringStore::reverse() const
   xqpStringStore_t result = new xqpStringStore();
   char_type ch;
   const char* c = c_str();
-  unsigned int len = numChars();
-  for (unsigned int i=0; i<len; i++)
+  size_t len = numChars();
+  for (size_t i=0; i<len; i++)
     UTF8Decode(c);
 
-  for (unsigned int i=0; i<len; i++)
+  for (size_t i=0; i<len; i++)
   {
     ch = UTF8DecodePrev(c);
     result->append_in_place(ch);
@@ -773,8 +773,8 @@ xqpStringStore_t xqpStringStore::reverse() const
 ********************************************************************************/
 xqpStringStore_t xqpStringStore::uppercase() const
 {
-  uint32_t i;
-  uint32_t len = numChars();
+  size_t i;
+  size_t len = numChars();
   const char* c = c_str();
   uint32_t cp;
   char seq[5];
@@ -799,8 +799,8 @@ xqpStringStore_t xqpStringStore::uppercase() const
 ********************************************************************************/
 xqpStringStore_t xqpStringStore::lowercase() const
 {
-  uint32_t i;
-  uint32_t len = numChars();
+  size_t i;
+  size_t len = numChars();
   const char* c = c_str();
   uint32_t cp;
   char seq[5];
@@ -840,7 +840,7 @@ xqpStringStore_t xqpStringStore::trimL(const char* start, size_type len) const
   for(uint16_t i = 0; i < len; i++)
     trimCP[i] = UTF8Decode(start);
 
-  uint32_t StrLen;
+  size_t StrLen;
   for (StrLen = numChars(); StrLen > 0; --StrLen)
   {
     const char* oldc = c;
@@ -890,7 +890,7 @@ xqpStringStore_t xqpStringStore::trimR(const char* start, size_type len) const
   const char* str = c_str(), *end = str, *end0 = end;
   end += bytes();
 
-  uint32_t StrLen = numChars();
+  size_t StrLen = numChars();
 
   for (; StrLen > 0; --StrLen)
   {
@@ -1015,7 +1015,7 @@ xqpStringStore_t xqpStringStore::normalizeSpace() const
 {
   xqpStringStore_t newStr = new xqpStringStore;
 
-  uint32_t len = numChars();
+  size_t len = numChars();
   const char* c = c_str();
   uint32_t cp, cpPrev;
   char seq[5];
@@ -1088,8 +1088,8 @@ xqpStringStore_t xqpStringStore::normalize(const xqpStringStore* normMode) const
 ********************************************************************************/
 xqpStringStore_t xqpStringStore::formatAsXML() const
 {
-  uint32_t i;
-  uint32_t len = numChars();
+  size_t i;
+  size_t len = numChars();
   const char* c = c_str();
   uint32_t cp;
   char seq[5];
@@ -1130,8 +1130,8 @@ xqpStringStore_t xqpStringStore::formatAsXML() const
 ********************************************************************************/
 xqpStringStore_t xqpStringStore::escapeHtmlUri() const
 {
-  uint32_t i;
-  uint32_t len = numChars();
+  size_t i;
+  size_t len = numChars();
   const char* c = c_str();
   unsigned int cp;
   char seq[5];
@@ -1178,8 +1178,8 @@ xqpStringStore_t xqpStringStore::escapeHtmlUri() const
 ********************************************************************************/
 xqpStringStore_t xqpStringStore::iriToUri() const
 {
-  uint32_t i;
-  uint32_t len = numChars();
+  size_t i;
+  size_t len = numChars();
   const char* c = c_str();
   unsigned int cp;
   char seq[5];
@@ -1305,7 +1305,7 @@ void xqpStringStore::encodeForUri(
 {
   const char DEC2HEX[16 + 1] = "0123456789ABCDEF";
 
-  const int srcLen = theString.length();
+  const size_t srcLen = theString.length();
   const unsigned char* srcp = (const unsigned char *)c_str();
   const unsigned char* const srcEndp = srcp + srcLen;
 
@@ -1491,12 +1491,12 @@ xqpString::xqpString(const wchar_t * src)
 {
   UnicodeString tmp;
   UErrorCode ErrorCode = U_ZERO_ERROR;
-  UChar* dest = tmp.getBuffer(wcslen(src)+1);
+  UChar* dest = tmp.getBuffer((int32_t)(wcslen(src)+1));
 
   int32_t DestLength;
 
   //convert from std::wstring to UTF16 encoded string
-  u_strFromWCS(dest, wcslen(src) + 1, &DestLength, src, -1, &ErrorCode);
+  u_strFromWCS(dest, (int32_t)(wcslen(src) + 1), &DestLength, src, -1, &ErrorCode);
 
   if(U_FAILURE(ErrorCode))
   {
@@ -1508,7 +1508,7 @@ xqpString::xqpString(const wchar_t * src)
 
   //convert from UTF16 to UTF8
   u_strToUTF8(target, targetLen, &DestLength, dest, -1, &ErrorCode);
-  tmp.releaseBuffer (wcslen(src));
+  tmp.releaseBuffer ((int32_t)wcslen(src));
 
   if(U_FAILURE(ErrorCode))
   {
@@ -1645,11 +1645,11 @@ std::ostream& operator<<(std::ostream& os, xqpStringStore_t str)
 xqpString xqpString::substr(xqpString::size_type index, xqpString::size_type length) const
 {
   char* target;
-  int32_t size =  length*4 + 1;
+  size_type size =  length*4 + 1;
   target = new char[size]; //will hold UTF-8 encoded characters
   UnicodeString str = getUnicodeString(theStrStore);
 
-  int32_t targetsize = str.extract(index, length, target, size, "UTF-8");
+  int32_t targetsize = str.extract((int32_t)index, (int32_t)length, target, (int32_t)size, "UTF-8");
   target[targetsize] = 0; /* NULL termination */
 
   xqpString ret(&target[0]);
@@ -1694,8 +1694,8 @@ xqpString xqpString::normalize(xqpString normMode)
 
 std::map<uint32_t,uint32_t> xqpString::createMapArray(xqpString mapString, xqpString transString) const
 {
-  uint16_t      mapLen    = mapString.length();
-  uint16_t      transLen  = transString.length();
+  size_type     mapLen    = mapString.length();
+  size_type     transLen  = transString.length();
   const char*   mapPtr    = mapString.theStrStore->c_str();
   const char*   transPtr  = transString.theStrStore->c_str();
   uint32_t      tmp0, tmp1;
@@ -1735,9 +1735,10 @@ xqpString xqpString::translate(xqpString mapString, xqpString transString) const
 
   //create the new xqpStringStore
   std::string tmp = "";
-  uint32_t len = length();
+  size_type len = length();
   const char* c = c_str();
-  uint32_t cp, i;
+  uint32_t cp;
+  size_type i;
   char seq[5];
 
   for(i=0; i<len; ++i)
@@ -1819,10 +1820,10 @@ xqpString
 xqpString::tokenize(
     xqpString pattern,
     xqpString flags,
-    int32_t* start_pos,
+    size_type* start_pos,
     bool* hasmatched) const
 {
-  int32_t pos = *start_pos;
+  size_type pos = *start_pos;
   UErrorCode status = U_ZERO_ERROR;
   UnicodeString uspattern = getUnicodeString(pattern.getStore());
   UnicodeString us = getUnicodeString(this->getStore());
@@ -1834,7 +1835,7 @@ xqpString::tokenize(
     return "";
   }
 
-  if(m.find(*start_pos, status))
+  if(m.find((int32_t)*start_pos, status))
   {
     *hasmatched = true;
     int32_t start = m.start (status), end = m.end (status);
@@ -1853,7 +1854,7 @@ xqpString::tokenize(
 wchar_t * xqpString::getWCS(xqpString aSrc,
                            int32_t *aDestLen)
 {
-  return getWCS(aSrc.c_str(), aSrc.length(), aDestLen);
+  return getWCS(aSrc.c_str(), (unsigned int)aSrc.length(), aDestLen);
 }
 
 wchar_t * xqpString::getWCS(const char * aSrc,

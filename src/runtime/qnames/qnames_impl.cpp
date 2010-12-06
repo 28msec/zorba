@@ -43,7 +43,7 @@ ResolveQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   zstring resNs;
   zstring resPre;
   zstring resLocal;
-  ulong index;
+  zstring::size_type index;
   store::NsBindings NamespaceBindings;
   store::NsBindings::const_iterator iter;
 
@@ -115,7 +115,7 @@ bool QNameIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   zstring resNs;
   zstring resPre;
   zstring resLocal;
-  ulong index;
+  zstring::size_type index;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);

@@ -103,7 +103,7 @@ char* ltoa( long n, char *buf ) {
   if ( is_neg ) n = -n;
   char *s = buf;
   do {                                  // generate digits in reverse
-    *s++ = n % 10 + '0';
+    *s++ = (char)(n % 10 + '0');
   } while ( n /= 10 );
   if ( is_neg ) *s++ = '-';
   *s = '\0';

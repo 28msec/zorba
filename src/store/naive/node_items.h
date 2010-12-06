@@ -273,7 +273,7 @@ public:
     push_lang( lang );
   }
 
-  void operator()( char const *utf8_s, int utf8_len,
+  void operator()( char const *utf8_s, size_t utf8_len,
                    int pos, int sent, int para, void* );
 
   void beginTokenization( XmlNode& );
@@ -289,7 +289,7 @@ public:
 
   void pop_lang() { lang_stack_.pop(); }
 
-  void tokenize( char const *utf8_s, int len );
+  void tokenize( char const *utf8_s, size_t len );
 
 private:
   typedef std::stack<locale::iso639_1::type> lang_stack_t;

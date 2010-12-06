@@ -44,7 +44,7 @@ static const long max_value[] =
 *******************************************************************************/
 static bool parse_s_string(
     const char* str,
-    ulong strlen,
+    ascii::size_type strlen,
     ascii::size_type& pos,
     long& seconds,
     long& frac_seconds)
@@ -93,7 +93,7 @@ static bool parse_s_string(
 *******************************************************************************/
 static bool parse_ms_string(
     const char* str,
-    ulong strlen,
+    ascii::size_type strlen,
     ascii::size_type& pos,
     long& minutes,
     long& seconds,
@@ -154,7 +154,7 @@ static bool parse_ms_string(
 *******************************************************************************/
 static bool parse_hms_string(
     const char* str,
-    ulong strlen,
+    ascii::size_type strlen,
     ascii::size_type& pos,
     long& hours,
     long& minutes,
@@ -218,7 +218,7 @@ static bool parse_hms_string(
 }
 
 
-int Duration::parseDuration(const char* str, ulong strlen, Duration& d)
+int Duration::parseDuration(const char* str, ascii::size_type strlen, Duration& d)
 {
   zstring::size_type ym_pos;
   zstring::size_type t_pos;
@@ -237,7 +237,7 @@ int Duration::parseDuration(const char* str, ulong strlen, Duration& d)
   // Check month or year
   if (ym_pos != zstring::npos)
   {
-    if (0 != parseYearMonthDuration(str, ym_pos+1, d))
+    if (0 != parseYearMonthDuration(str, (ulong)ym_pos+1, d))
       return 1;
 
     ascii::size_type pos = ym_pos+1;
@@ -269,7 +269,7 @@ int Duration::parseDuration(const char* str, ulong strlen, Duration& d)
 }
 
 
-int Duration::parseYearMonthDuration(const char* str, ulong strlen, Duration& d)
+int Duration::parseYearMonthDuration(const char* str, ascii::size_type strlen, Duration& d)
 {
   bool negative = false;
   ascii::size_type pos = 0;
@@ -341,7 +341,7 @@ int Duration::parseYearMonthDuration(const char* str, ulong strlen, Duration& d)
 ********************************************************************************/
 int Duration::parseDayTimeDuration(
     const char* str,
-    ulong strlen,
+    ascii::size_type strlen,
     Duration& d,
     bool dont_check_letter_p)
 {

@@ -80,8 +80,8 @@ void BinArchiver::serialize_out()
 
   os->write(ZORBA_BIN_SERIALIZED_PLAN_STRING, sizeof(ZORBA_BIN_SERIALIZED_PLAN_STRING));
 
-  os->write(archive_name.c_str(), archive_name.length()+1);
-  os->write(archive_info.c_str(), archive_info.length()+1);
+  os->write(archive_name.c_str(), (std::streamsize)archive_name.length()+1);
+  os->write(archive_info.c_str(), (std::streamsize)archive_info.length()+1);
   write_int(archive_version);
   write_int(nr_ids);
 
@@ -102,7 +102,7 @@ int BinArchiver::add_to_string_pool(const char *str)
   if(string_pool.get(str, str_pos))
     return str_pos;
   strings.push_back(str);
-  str_pos = strings.size();
+  str_pos = (int)strings.size();
   const char *str_dup = strdup(str);
   string_pool.insert(str_dup, str_pos);
   return str_pos;
@@ -134,7 +134,7 @@ void BinArchiver::collect_strings(archive_field   *parent_field)
 
 void   BinArchiver::serialize_out_string_pool()
 {
-  write_int(strings.size());
+  write_int((unsigned int)strings.size());
   std::vector<std::string>::iterator  strings_it;
   for(strings_it = strings.begin(); strings_it != strings.end(); strings_it++)
   {
@@ -181,7 +181,7 @@ void BinArchiver::serialize_compound_fields(archive_field   *parent_field)
 
 void BinArchiver::write_string(const char *str)
 {
-  os->write(str, strlen(str)+1);
+  os->write(str, (std::streamsize)strlen(str)+1);
 }
 
 void BinArchiver::write_int(unsigned int intval)

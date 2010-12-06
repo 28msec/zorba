@@ -19,6 +19,7 @@
 #include <zorba/config.h>
 #include "zorbatypes/zorbatypes_decl.h"
 #include "zorbatypes/duration.h"
+#include "util/ascii_util.h"
 
 
 namespace zorba
@@ -33,7 +34,7 @@ public:
   /**
    *  Returns 0 on success.
    */
-  static int parseTimeZone(const char* str, ulong strlen, TimeZone& tz);
+  static int parseTimeZone(const char* str, ascii::size_type strlen, TimeZone& tz);
 
   /**
    *  Returns 0 on success.

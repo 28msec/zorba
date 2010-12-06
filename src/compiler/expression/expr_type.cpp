@@ -382,7 +382,7 @@ void expr::compute_return_type(bool deep, bool* modified)
 
     if (newType == NULL)
     {
-      ulong numArgs = e->theArgs.size();
+      ulong numArgs = (ulong)e->theArgs.size();
       std::vector<xqtref_t> types(numArgs);
 
       for (ulong i = 0; i < numArgs; ++i)

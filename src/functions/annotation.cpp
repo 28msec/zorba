@@ -55,7 +55,7 @@ Item AnnotationImpl::getQName() const
 
 unsigned int AnnotationImpl::getLiteralsCount() const
 {
-  return theLiteralList.size();
+  return (unsigned int)theLiteralList.size();
 }
 
 
@@ -163,7 +163,7 @@ const store::Item* AnnotationInternal::getQName() const
 
 unsigned int AnnotationInternal::getLiteralsCount() const
 {
-  return theLiteralList.size();
+  return (unsigned int)theLiteralList.size();
 }
 
 const AnnotationLiteral* AnnotationInternal::getLiteral(unsigned int index) const

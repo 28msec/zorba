@@ -30,7 +30,7 @@ NaiveFTTokenIterator::NaiveFTTokenIterator( FTTokens const &tokens,
 }
 
 NaiveFTTokenIterator::NaiveFTTokenIterator( FTTokens const *tokens ) :
-  tokens_( tokens ), begin_( 0 ), end_( tokens->size() ), must_delete_( true )
+  tokens_( tokens ), begin_( 0 ), end_( (index_t)tokens->size() ), must_delete_( true )
 {
   init();
   pos_ = begin_;

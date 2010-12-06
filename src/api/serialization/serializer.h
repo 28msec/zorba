@@ -251,7 +251,7 @@ protected:
      */
     virtual void emit_expanded_string(
             const char* str,
-            ulong strlen,
+            zstring::size_type strlen,
             bool emit_attribute_value);
 
     /**
@@ -405,7 +405,7 @@ protected:
 
     void emit_expanded_string(
           const char* str,
-          ulong strlen,
+          zstring::size_type strlen,
           bool aEmitAttributeValue = false );
 
     int emit_node_children(

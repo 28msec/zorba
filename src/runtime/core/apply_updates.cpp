@@ -84,7 +84,7 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     // maintained incrementally, and pass this info back to the pul.
     pul->getIndicesToRefresh(indexes);
 
-    ulong numIndices = indexes.size();
+    ulong numIndices = (ulong)indexes.size();
 
     std::vector<IndexDecl*> zorbaIndexes(numIndices); 
 

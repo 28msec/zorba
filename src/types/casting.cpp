@@ -391,8 +391,8 @@ T1_TO_T2(str, QN)
 {
   ascii::trim_whitespace(strval);
 
-  ulong idx = strval.find(":");
-  ulong lidx = strval.rfind(":", strval.size(), 1);
+  zstring::size_type idx = strval.find(":");
+  zstring::size_type lidx = strval.rfind(":", strval.size(), 1);
 
   if (idx != lidx)
     throwError(FORG0001, aErrorInfo);
@@ -443,7 +443,7 @@ T1_TO_T2(str, NOT)
   zstring prefix;
   zstring local;
 
-  ulong pos = strval.rfind(":", strval.size(), 1);
+  zstring::size_type pos = strval.rfind(":", strval.size(), 1);
   if (pos != zstring::npos)
   {
     prefix = strval.substr(0, pos);
@@ -1926,8 +1926,8 @@ bool GenericCast::castToQName(
   item->getStringValue2(strval);
   ascii::trim_whitespace(strval);
 
-  ulong idx = strval.find(":");
-  ulong lidx = strval.rfind(":", strval.size(), 1);
+  zstring::size_type idx = strval.find(":");
+  zstring::size_type lidx = strval.rfind(":", strval.size(), 1);
   if (idx != lidx)
     throwError(FORG0001, errorInfo);
 

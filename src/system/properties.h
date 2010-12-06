@@ -58,7 +58,7 @@ class ZORBA_DLL_PUBLIC Properties : public ZorbaProperties
 
   bool hasSingleQuery() 
   {
-    int sz = getPositionalArgs().size();
+    size_t sz = getPositionalArgs().size();
     return ((inlineQuery () && sz == 0) || (! inlineQuery () && sz == 1));
   }
 

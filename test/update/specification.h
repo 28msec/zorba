@@ -400,7 +400,7 @@ public:
       std::cout << "  HasCompare: " << (*lIter)->hasCompare << std::endl; 
       if ((*lIter)->hasCompare) 
       {
-        ulong numCompares = (*lIter)->theCompares.size();
+        ulong numCompares = (ulong)(*lIter)->theCompares.size();
         for (ulong i = 0; i < numCompares; i++)
         {
           std::cout << "  Compare: " << (*lIter)->theCompares[i] << std::endl; 

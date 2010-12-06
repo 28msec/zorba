@@ -21,6 +21,7 @@
 #include "zorbatypes/representations.h"
 
 #include "zorbaserialization/class_serializer.h"
+#include "util/ascii_util.h"
 
 namespace zorba
 {
@@ -70,7 +71,7 @@ public:
    */
   static int parseDuration(
         const char* str,
-        ulong strlen,
+        ascii::size_type strlen,
         Duration& d);
 
   /**
@@ -78,7 +79,7 @@ public:
    */
   static int parseYearMonthDuration(
         const char* str,
-        ulong strlen,
+        ascii::size_type strlen,
         Duration& d);
   
   /**
@@ -86,7 +87,7 @@ public:
    */
   static int parseDayTimeDuration(
         const char* str,
-        ulong strlen,
+        ascii::size_type strlen,
         Duration& d,
         bool dont_check_letter_p = false);
 

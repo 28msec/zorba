@@ -89,7 +89,7 @@ class StackFrameImpl: public StackFrame{
 
     unsigned int size() const
     {
-      return theStack.size(); 
+      return (unsigned int)theStack.size(); 
     }
 
     bool empty() const

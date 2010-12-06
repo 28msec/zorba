@@ -30,8 +30,8 @@ const char Base64Impl::base64chars[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmn
   dataout len must be 8/6*datalen+2
   return dataoutlen
 */
-unsigned int
-Base64Impl::Encode(const unsigned char *datain, unsigned int datalen,
+size_t
+Base64Impl::Encode(const unsigned char *datain, size_t datalen,
 			  char *dataout)///pre-allocated at the right size
 {
 	unsigned char	rembits6;
@@ -115,8 +115,8 @@ Base64Impl::getChar6BitIndex(char c)
 	dataout must be pre-allocated for 6/8*datalen
 return dataoutlen
 */
-unsigned int
-Base64Impl::Decode(const unsigned char *datain, unsigned int datalen,
+size_t
+Base64Impl::Decode(const unsigned char *datain, size_t datalen,
 			  unsigned char *dataout)
 {
 	unsigned char	*orig_dataout = dataout;

@@ -85,7 +85,7 @@ bool NsBindingsContext::findBinding(const zstring& prefix, zstring& uri) const
   while (currentContext != NULL)
   {
     const store::NsBindings& bindings = currentContext->theBindings;
-    ulong numBindings = bindings.size();
+    ulong numBindings = (ulong)bindings.size();
 
     for (ulong i = 0; i < numBindings; ++i)
     {
@@ -115,7 +115,7 @@ void NsBindingsContext::addBinding(
     const zstring& ns,
     bool soft)
 {
-  ulong numBindings = theBindings.size();
+  ulong numBindings = (ulong)theBindings.size();
 
   for (ulong i = 0; i < numBindings; ++i)
   {
@@ -140,7 +140,7 @@ void NsBindingsContext::addBinding(
 ********************************************************************************/
 void NsBindingsContext::updateBinding(const zstring& prefix, const zstring& ns)
 {
-  ulong numBindings = theBindings.size();
+  ulong numBindings = (ulong)theBindings.size();
 
   for (ulong i = 0; i < numBindings; ++i)
   {
@@ -160,7 +160,7 @@ void NsBindingsContext::updateBinding(const zstring& prefix, const zstring& ns)
 ********************************************************************************/
 void NsBindingsContext::removeBinding(const zstring& prefix, const zstring& ns)
 {
-  ulong numBindings = theBindings.size();
+  ulong numBindings = (ulong)theBindings.size();
 
   for (ulong i = 0; i < numBindings; i++)
   {

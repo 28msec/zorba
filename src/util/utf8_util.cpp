@@ -167,14 +167,14 @@ bool to_string( unicode::char_type const *in, size_type in_len,
   UErrorCode err = U_ZERO_ERROR;
   unicode::size_type utf8_len;
   u_strToUTF8WithSub(                   // pre-flight to get utf8_len
-    NULL, 0, &utf8_len, in, in_len, SubChar, NULL, &err
+    NULL, 0, &utf8_len, in, (int32_t)in_len, SubChar, NULL, &err
   );
   // must not check "err" here since ICU always returns "buffer overflow"
 
   storage_type *const utf8_buf = new storage_type[ utf8_len ];
   err = U_ZERO_ERROR;
   u_strToUTF8WithSub(
-    utf8_buf, utf8_len, NULL, in, in_len, SubChar, NULL, &err
+    utf8_buf, utf8_len, NULL, in, (int32_t)in_len, SubChar, NULL, &err
   );
   if ( U_FAILURE( err ) ) {
     delete[] utf8_buf;

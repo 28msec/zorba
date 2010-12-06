@@ -121,8 +121,8 @@ void namespace_context::getAllBindings(store::NsBindings& bindings) const
   while (parentContext)
   {
     const store::NsBindings& parentBindings = parentContext->m_bindings;
-    ulong parentSize = parentBindings.size();
-    ulong currSize = bindings.size();
+    ulong parentSize = (ulong)parentBindings.size();
+    ulong currSize = (ulong)bindings.size();
 
     // for each parent binding, add it to the result, if it doesn't have the
     // same prefix as another binding that is already in the result.

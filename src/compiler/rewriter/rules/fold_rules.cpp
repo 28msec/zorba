@@ -381,7 +381,7 @@ RULE_REWRITE_POST(MarkFreeVars)
           const group_clause* gc = static_cast<const group_clause *>(c);
 
           const flwor_clause::rebind_list_t& gvars = gc->get_grouping_vars();
-          unsigned numGroupVars = gvars.size();
+          unsigned numGroupVars = (unsigned)gvars.size();
 
           for (unsigned i = 0; i < numGroupVars; ++i)
           {
@@ -389,7 +389,7 @@ RULE_REWRITE_POST(MarkFreeVars)
           }
 
           const flwor_clause::rebind_list_t& ngvars = gc->get_nongrouping_vars();
-          unsigned numNonGroupVars = ngvars.size();
+          unsigned numNonGroupVars = (unsigned)ngvars.size();
 
           for (unsigned i = 0; i < numNonGroupVars; ++i)
           {
@@ -839,7 +839,7 @@ RULE_REWRITE_POST(InlineFunctions)
         {
           function_trace_expr* dummy = new function_trace_expr(body);
           dummy->setFunctionName(udf->getName());
-          dummy->setFunctionArity(udf->getArgVars().size());
+          dummy->setFunctionArity((unsigned int)udf->getArgVars().size());
           dummy->setFunctionCallLocation(node->get_loc());
           dummy->setFunctionLocation(udf->getLoc());
           return dummy;

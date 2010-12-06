@@ -628,7 +628,7 @@ bool OrdPath::compressLocal(const DeweyID& dewey)
 
   ulong bitLen = 0;
 
-  ulong numComps = dewey.size();
+  ulong numComps = (ulong)dewey.size();
   for (ulong i = 0; i < numComps; ++i)
   {
     if (! pushComp(getLocalData(), MAX_EMBEDDED_BIT_LEN, dewey[i], bitLen))
@@ -656,7 +656,7 @@ void OrdPath::compressRemote(const DeweyID& dewey)
   {
     memset(databuf, 0, MAX_BYTE_LEN);
 
-    ulong numComps = dewey.size();
+    ulong numComps = (ulong)dewey.size();
     for (ulong i = 0; i < numComps; ++i)
     {
       bool success = pushComp(databuf, MAX_BIT_LEN, dewey[i], bitLen);

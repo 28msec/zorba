@@ -116,7 +116,7 @@ DEFAULT_END_VISIT (AposAttrValueContent)
 
 void* begin_visit(const ArgList& n)
 {
-  for (int i=0; i<n.size(); ++i) {
+  for (int i=0; i<(int)n.size(); ++i) {
     if(i > 0)
     {
       os << ", ";
@@ -804,7 +804,7 @@ DEFAULT_END_VISIT (ParamList)
 
     void* begin_visit(const QVarInDeclList& n)
     {
-      for(int i=0; i<n.size(); ++i)
+      for(int i=0; i<(int)n.size(); ++i)
       {
         if(i)
         {

@@ -125,7 +125,7 @@ public:
 
   void clear()
   {
-    ulong numColumns = theKeyValues.size();
+    ulong numColumns = (ulong)theKeyValues.size();
     for (ulong i = 0; i < numColumns; ++i)
     {
       if (theKeyValues[i] != NULL)

@@ -135,7 +135,7 @@ bool Integer::parseString(const char* aCharStar, Integer& aInteger)
       }
       else
       {
-        int len = firstSpace - aCharStar + 1;
+        ptrdiff_t len = firstSpace - aCharStar + 1;
         char* copy = new char[len];
         strncpy(copy, aCharStar, len);
         copy[len-1] = 0;

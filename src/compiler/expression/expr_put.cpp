@@ -364,7 +364,7 @@ ostream& trycatch_expr::put( ostream& os) const
 
   theTryExpr->put(os);
 
-  ulong numClauses = theCatchClauses.size();
+  ulong numClauses = (ulong)theCatchClauses.size();
 
   for (ulong i = 0; i < numClauses; ++i)
   {
@@ -414,7 +414,7 @@ ostream& fo_expr::put( ostream& os) const
   os << indent << qname->getStringValue() << "/" << num_args()
      << expr_addr(this) << " [\n" << inc_indent;
 
-  ulong numArgs = theArgs.size();
+  ulong numArgs = (ulong)theArgs.size();
 
   for (ulong i = 0; i < numArgs; ++i)
   {

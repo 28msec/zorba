@@ -27,7 +27,7 @@ class  checked_vector : public std::vector<T>
 {
 public:
   checked_vector () {}
-  checked_vector (int n) : std::vector<T> (n) {}
+  checked_vector (size_t n) : std::vector<T> (n) {}
   checked_vector (const std::vector<T> &other)
     : std::vector<T> (other)
   {}

@@ -520,7 +520,7 @@ void XQueryImpl::doCompile(
   theStaticContext->set_entity_retrieval_uri(url);
 
   theCompilerCB->theRootSctx = theStaticContext;
-  const short sctxid = theCompilerCB->theSctxMap.size() + 1;
+  const short sctxid = (short)theCompilerCB->theSctxMap.size() + 1;
   (theCompilerCB->theSctxMap)[sctxid] = theStaticContext;
 
   // Set the compiler config.
@@ -649,7 +649,7 @@ XQuery_t XQueryImpl::clone() const
     clone->theCompilerCB->theRootSctx = clone->theStaticContext;
     clone->theCompilerCB->theSctxMap = theCompilerCB->theSctxMap;
 
-    const short sctxid = clone->theCompilerCB->theSctxMap.size() + 1;
+    const short sctxid = (short)clone->theCompilerCB->theSctxMap.size() + 1;
     (clone->theCompilerCB->theSctxMap)[sctxid] = theStaticContext;
 
     clone->thePlanProxy = thePlanProxy;

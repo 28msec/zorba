@@ -217,7 +217,7 @@ void	M_reverse_string(char *s)
 int	ct;
 char	ch, *p1, *p2;
 
-if ((ct = strlen(s)) <= 1)
+if ((ct = (int)strlen(s)) <= 1)
   return;
 
 p1 = s;

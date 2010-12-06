@@ -101,7 +101,7 @@ store::Item_t SimpleCollection::loadDocument(
     if(position < 0 || position >= static_cast<long>(theXmlTrees.size()))
     {
       theXmlTrees.push_back(root);
-      BASE_NODE(root)->setCollection(this, theXmlTrees.size()-1);
+      BASE_NODE(root)->setCollection(this, (ulong)theXmlTrees.size()-1);
     }
     else
     {
@@ -149,7 +149,7 @@ void SimpleCollection::addNode(
   if (position < 0 || position >= static_cast<long>(theXmlTrees.size()))
   {
     theXmlTrees.push_back(nodeItem);
-    node->setCollection(this, theXmlTrees.size() - 1);
+    node->setCollection(this, (ulong)theXmlTrees.size() - 1);
   }
   else
   {
@@ -183,8 +183,8 @@ ulong SimpleCollection::addNodes(
   if (!before)
     ++targetPos;
 
-  ulong numNodes = theXmlTrees.size();
-  ulong numNewNodes = nodes.size();
+  ulong numNodes = (ulong)theXmlTrees.size();
+  ulong numNewNodes = (ulong)nodes.size();
   
   for (ulong i = 0; i < numNewNodes; ++i)
   {
@@ -314,7 +314,7 @@ ulong SimpleCollection::removeNodes(ulong position, ulong num)
   {
     ulong last = position + num;
     if (last > theXmlTrees.size())
-      last = theXmlTrees.size();
+      last = (ulong)theXmlTrees.size();
 
     for (ulong i = position; i < last; ++i)
     { 
@@ -374,7 +374,7 @@ bool SimpleCollection::findNode(const store::Item* node, ulong& position) const
     return true;
   }
 
-  ulong numTrees = theXmlTrees.size();
+  ulong numTrees = (ulong)theXmlTrees.size();
 
   for (ulong i = 0; i < numTrees; ++i)
   {
@@ -396,7 +396,7 @@ bool SimpleCollection::findNode(const store::Item* node, ulong& position) const
 ********************************************************************************/
 void SimpleCollection::adjustTreePositions()
 {
-  ulong numTrees = theXmlTrees.size();
+  ulong numTrees = (ulong)theXmlTrees.size();
 
   for (ulong i = 0; i < numTrees; ++i)
   {
@@ -422,7 +422,7 @@ void SimpleCollection::getIndexes(std::vector<store::Index*>& indexes)
     const store::IndexSpecification& indexSpec = index->getSpecification();
 
     const std::vector<store::Item_t>& indexSources = indexSpec.theSources;
-    ulong numIndexSources = indexSources.size();
+    ulong numIndexSources = (ulong)indexSources.size();
 
     for (ulong i = 0; i < numIndexSources; ++i)
     {

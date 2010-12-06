@@ -1341,7 +1341,7 @@ void push_scope()
     // this allows the debugger to introspect (during runtime)
     // all variables in scope
     theSctxIdStack.push(sctxid());
-    theCurrSctxId = theCCB->theSctxMap.size() + 1;
+    theCurrSctxId = (short)theCCB->theSctxMap.size() + 1;
     (theCCB->theSctxMap)[sctxid()] = theSctx;
   }
   else
@@ -2096,7 +2096,7 @@ void collect_flwor_vars (
 
   // Find the ordinal number of the "end-1" clause.
   int i;
-  for (i = clauses.size () - 1; i >= 0; --i)
+  for (i = (int)clauses.size () - 1; i >= 0; --i)
   {
     if (&*clauses [i] == end)
     {
@@ -2114,7 +2114,7 @@ void collect_flwor_vars (
     if (typeid (c) == typeid (ForClause))
     {
       const VarInDeclList& lV = *(static_cast<const ForClause*>(&c)->get_vardecl_list());
-      for (int j =  lV.size() - 1; j >= 0; --j)
+      for (int j =  (int)lV.size() - 1; j >= 0; --j)
       {
         vars.insert(lookup_var(lV[j]->get_name(), loc, XPST0008));
       }
@@ -2122,7 +2122,7 @@ void collect_flwor_vars (
     else if (typeid (c) == typeid (LetClause))
     {
       const VarGetsDeclList& lV = *(static_cast<const LetClause*>(&c)->get_vardecl_list());
-      for (int j =  lV.size() - 1; j >= 0; --j)
+      for (int j =  (int)lV.size() - 1; j >= 0; --j)
       {
         vars.insert(lookup_var(lV[j]->get_name(), loc, XPST0008));
       }
@@ -3092,7 +3092,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       moduleRootSctx->set_entity_retrieval_uri(compURI);
       moduleRootSctx->set_module_namespace(targetNS);
       moduleRootSctx->set_typemanager(new TypeManagerImpl(&GENV_TYPESYSTEM));
-      short moduleRootSctxId = theCCB->theSctxMap.size() + 1;
+      short moduleRootSctxId = (short)theCCB->theSctxMap.size() + 1;
       (theCCB->theSctxMap)[moduleRootSctxId] = moduleRootSctx;
 
       // Create an sctx where the imported module is going to register all the
@@ -3204,7 +3204,7 @@ void* begin_visit(const VFO_DeclList& v)
     if (params == NULL)
       params = new ParamList(loc);
 
-    int nargs = params->size();
+    int nargs = (int)params->size();
 
     // Translate the type declarations for the args and the return value of the
     // udf and put the resulting types in the arg_types vector.
@@ -5175,7 +5175,7 @@ void end_visit(const BlockBody& v, void* /*visit_state*/)
 
   checked_vector<expr_t> stmts;
 
-  for (int i = 0; i < v.size(); i++)
+  for (int i = 0; i < (int)v.size(); i++)
     stmts.push_back(pop_nodestack());
 
   rchandle<VFO_DeclList> decls = v.get_decls();
@@ -5268,7 +5268,7 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
 
   flwor->set_return_expr(retExpr);
 
-  ulong curClausePos = theFlworClausesStack.size() - 1;
+  ulong curClausePos = (ulong)theFlworClausesStack.size() - 1;
 
   while(theFlworClausesStack[curClausePos] != NULL)
   {
@@ -5317,7 +5317,7 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
     --curClausePos;
   }
 
-  ulong numClauses = theFlworClausesStack.size();
+  ulong numClauses = (ulong)theFlworClausesStack.size();
 
   for (ulong i = curClausePos + 1; i < numClauses; ++i)
     flwor->add_clause(theFlworClausesStack[i]);
@@ -5378,7 +5378,7 @@ void end_visit(const ForClause& v, void* /*visit_state*/)
 
   if (v.has_allowing_empty())
   {
-    ulong curClause = theFlworClausesStack.size() - 1;
+    ulong curClause = (ulong)theFlworClausesStack.size() - 1;
     while(theFlworClausesStack[curClause] != NULL)
       --curClause;
 
@@ -5838,7 +5838,7 @@ void* begin_visit(const GroupByClause& v)
 
   // Collect the var_exprs for all the grouping vars specified in this GroupByClause.
   GroupSpecList* lList = v.get_spec_list();
-  for (size_t i = 0; i < lList->size(); ++i)
+  for (int i = 0; i < (int)lList->size(); ++i)
   {
     GroupSpec* spec = (*lList)[i];
     const QName* varname = spec->get_var_name();
@@ -5892,7 +5892,7 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
   var_expr_t input_var;
   var_expr_t output_var;
 
-  for (int i = numGroupSpecs - 1; i >= 0; i--)
+  for (int i = (int)numGroupSpecs - 1; i >= 0; i--)
   {
     const GroupSpec& groupSpec = *groupSpecs[i];
 
@@ -6011,7 +6011,7 @@ void end_visit(const OrderByClause& v, void* /*visit_state*/)
   TRACE_VISIT_OUT();
 
   const OrderSpecList& orderSpecs = *v.get_spec_list();
-  unsigned numOrderSpecs = orderSpecs.size();
+  unsigned numOrderSpecs = (unsigned)orderSpecs.size();
 
   std::vector<OrderModifier> modifiers(numOrderSpecs);
   std::vector<expr_t> orderExprs(numOrderSpecs);
@@ -6254,7 +6254,7 @@ void end_visit(const QuantifiedExpr& v, void* /*visit_state*/)
     testExpr = wrap_in_bev(testExpr);
   }
 
-  for (int i = 0; i < v.get_decl_list()->size(); ++i)
+  for (int i = 0; i < (int)v.get_decl_list()->size(); ++i)
   {
     pop_scope();
   }
@@ -8843,7 +8843,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     arguments.push_back(argExpr);
   }
 
-  ulong numArgs = arguments.size();
+  ulong numArgs = (ulong)arguments.size();
 
   rchandle<QName> qname = v.get_fname();
   const zstring& localName = qname->get_localname();
@@ -9057,7 +9057,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     }
   }
 
-  numArgs = arguments.size();  // recompute size
+  numArgs = (ulong)arguments.size();  // recompute size
 
   // Check if this is a call to a type constructor function
   xqtref_t type = CTX_TM->create_named_type(qnameItem,
@@ -9523,7 +9523,7 @@ void* begin_visit(const DirAttributeList& v)
   // visit namespace declaratrion attributes first
   for (int visitType = 0; visitType < 2; visitType++)
   {
-    for (int i = 0; i < v.size (); i++)
+    for (int i = 0; i < (int)v.size (); i++)
     {
       const DirAttr* attr = v[i];
       const QName* qname = attr->get_name().getp();
@@ -12103,7 +12103,7 @@ void end_visit(const TypedFunctionTest& v, void* /*visit_state*/)
   xqtref_t              lRetXQType;
 
   if (lParamTypes) {
-    for (int i = 0; i < lParamTypes->size(); ++i)
+    for (int i = 0; i < (int)lParamTypes->size(); ++i)
     {
       const SequenceType* lParamType = (*lParamTypes)[i].getp();
       if (lParamType == 0) {
@@ -12227,7 +12227,7 @@ expr_t translate(const parsenode& root, CompilerCB* ccb)
   return translate_aux(NULL,
                        root,
                        ccb->theRootSctx,
-                       ccb->theSctxMap.size(),
+                       (short)ccb->theSctxMap.size(),
                        &minfo,
                        modulesStack,
                        false);

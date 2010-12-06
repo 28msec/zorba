@@ -25,7 +25,7 @@ namespace zorba
 namespace simplestore
 {
 
-const ulong SimpleLazyTempSeq::MAX_POSITION = std::vector<store::Item_t>().max_size();  //FIXME Is there no better way?
+const ulong SimpleLazyTempSeq::MAX_POSITION = (ulong)std::vector<store::Item_t>().max_size();  //FIXME Is there no better way?
 
 
 /*******************************************************************************

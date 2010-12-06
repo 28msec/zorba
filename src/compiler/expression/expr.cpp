@@ -1239,7 +1239,7 @@ void trycatch_expr::compute_scripting_kind()
 {
   theScriptingKind = theTryExpr->get_scripting_kind();
 
-  ulong numCatchClauses = theCatchClauses.size();
+  ulong numCatchClauses = (ulong)theCatchClauses.size();
 
   for(ulong i = 0; i < numCatchClauses; ++i) 
   {
@@ -1499,7 +1499,7 @@ void sequential_expr::compute_scripting_kind()
   theScriptingKind = SIMPLE_EXPR;
   bool vacuous = true;
 
-  ulong numChildren = theArgs.size();
+  ulong numChildren = (ulong)theArgs.size();
 
   for (ulong i = 0; i < numChildren; ++i)
   {
@@ -1901,7 +1901,7 @@ void transform_expr::compute_scripting_kind()
 {
   theScriptingKind = SIMPLE_EXPR;
 
-  ulong numCopyVars = theCopyClauses.size();
+  ulong numCopyVars = (ulong)theCopyClauses.size();
 
   for (ulong i = 0; i < numCopyVars; ++i)
   {

@@ -199,7 +199,7 @@ void printCommentFragment(store::Item_t& aParent, string aString, string aTag)
     {
       store::Iterator_t lIter2 = lRootElem->getChildren();
       lIter2->open();
-      size_t i = 0;
+      long i = 0;
       store::Item_t lTmp;
       while (lIter2->next(lTmp))
       {
@@ -499,7 +499,7 @@ void end_visit(const FunctionDecl& n, void* /*visit_state*/)
   // add all invoked function elements as children to the end of the current
   // function element. After this, clear the set of invoked functions
   // to be prepared for the next function declaration
-  size_t i = 3;
+  long i = 3;
   for (map<string, store::Item_t>::const_iterator lIter = theInvokedFunc.begin();
        lIter != theInvokedFunc.end(); ++lIter) {
     store::CopyMode lCopyMode;
@@ -618,7 +618,7 @@ void end_visit(const VarDecl& n, void*)
   // add all invoked function elements as children to the end of the current
   // function element. After this, clear the set of invoked functions
   // to be prepared for the next function declaration
-  size_t i = 3;
+  long i = 3;
   for (std::map<std::string, store::Item_t>::const_iterator lIter = theInvokedFunc.begin();
        lIter != theInvokedFunc.end(); ++lIter) {
     store::CopyMode lCopyMode;

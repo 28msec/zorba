@@ -40,7 +40,7 @@ namespace simplestore
 *******************************************************************************/
 void GeneralIndexValue::addNode(store::Item_t& node, bool multikey, bool untyped)
 {
-  ulong numNodes = theNodes.size();
+  size_t numNodes = theNodes.size();
   theNodes.resize(numNodes + 1);
   theNodes[numNodes].theNode.transfer(node);
   theNodes[numNodes].theMultiKey = multikey;

@@ -159,7 +159,7 @@ void OrderByState::reset(PlanState& planState)
 
 void OrderByState::clearSortTable()
 {
-  ulong numTuples = theSortTable.size();
+  ulong numTuples = (ulong)theSortTable.size();
 
   for (ulong i = 0; i < numTuples; ++i)
   {
@@ -240,14 +240,14 @@ void OrderByIterator::accept(PlanIterVisitor& v) const
 {
   v.beginVisit(*this);
 
-  ulong numVars = theInputForVars.size();
+  ulong numVars = (ulong)theInputForVars.size();
   for (ulong i = 0; i < numVars; ++i)
   {
     v.beginVisitOrderByForVariable(theInputForVars[i], theOutputForVarsRefs[i]);
     v.endVisitOrderByForVariable();
   }
 
-  numVars = theInputLetVars.size();
+  numVars = (ulong)theInputLetVars.size();
   for (ulong i = 0; i < numVars; ++i)
   {
     v.beginVisitOrderByLetVariable(theInputLetVars[i], theOutputLetVarsRefs[i]);
@@ -270,7 +270,7 @@ void OrderByIterator::openImpl(PlanState& planState, uint32_t& aOffset)
                                                                     theStateOffset);
 
   // Do a manual pass to set the Collator
-  ulong numSpecs = theOrderSpecs.size();
+  ulong numSpecs = (ulong)theOrderSpecs.size();
   for (ulong i = 0; i < numSpecs; ++i)
   {
     theOrderSpecs[i].open(planState, aOffset);
@@ -346,7 +346,7 @@ bool OrderByIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   }
 
   iterState->theCurTuplePos = 0;
-  iterState->theNumTuples = iterState->theSortTable.size();
+  iterState->theNumTuples = (ulong)iterState->theSortTable.size();
 
   while(iterState->theCurTuplePos < iterState->theNumTuples)
   {
@@ -375,13 +375,13 @@ void OrderByIterator::materializeResultForSort(
   OrderByState::SortTable& sortTable = iterState->theSortTable;
   OrderByState::DataTable& dataTable = iterState->theDataTable;
 
-  ulong numTuples = sortTable.size();
+  ulong numTuples = (ulong)sortTable.size();
   sortTable.resize(numTuples + 1);
   dataTable.resize(numTuples + 1);
 
   // Create the sort tuple
 
-  ulong numSpecs = theOrderSpecs.size();
+  ulong numSpecs = (ulong)theOrderSpecs.size();
 
   std::vector<store::Item*>& sortKey = sortTable[numTuples].theKeyValues;
   sortKey.resize(numSpecs);
@@ -411,8 +411,8 @@ void OrderByIterator::materializeResultForSort(
 
   // create the data tuple
 
-  ulong numForVars = theInputForVars.size();
-  ulong numLetVars = theInputLetVars.size();
+  ulong numForVars = (ulong)theInputForVars.size();
+  ulong numLetVars = (ulong)theInputLetVars.size();
 
   StreamTuple& streamTuple = dataTable[numTuples];
   streamTuple.theItems.resize(numForVars);
@@ -446,13 +446,13 @@ void OrderByIterator::bindOrderBy(
 {
   StreamTuple& streamTuple = iterState->theDataTable[iterState->theSortTable[iterState->theCurTuplePos].theDataPos];
 
-  ulong numForVarsRefs = theOutputForVarsRefs.size();
+  ulong numForVarsRefs = (ulong)theOutputForVarsRefs.size();
   for (ulong i = 0; i < numForVarsRefs; ++i)
   {
     bindVariables(streamTuple.theItems[i], theOutputForVarsRefs[i], planState);
   }
 
-  ulong numLetVarsRefs = theOutputLetVarsRefs.size();
+  ulong numLetVarsRefs = (ulong)theOutputLetVarsRefs.size();
   for(ulong i = 0; i < numLetVarsRefs; ++i)
   {
     bindVariables(streamTuple.theSequences[i], theOutputLetVarsRefs[i], planState);

@@ -23,18 +23,18 @@ namespace zorba { namespace simplestore {
 
 ItemVector::ItemVector(std::vector<store::Item_t>& items)
 {
-  ulong numItems = items.size();
+  size_t numItems = items.size();
 
   theItems.resize(numItems);
 
-  for (ulong i = 0; i < numItems; i++)
+  for (size_t i = 0; i < numItems; i++)
     theItems[i].transfer(items[i]);
 }
 
 
 zstring ItemVector::getStringValue() const
 {
-  ulong numItems = theItems.size();
+  size_t numItems = theItems.size();
 
   if (numItems == 1)
   {
@@ -46,7 +46,7 @@ zstring ItemVector::getStringValue() const
 
     theItems[0]->appendStringValue(val);
 
-    for (ulong i = 1; i < numItems; ++i)
+    for (size_t i = 1; i < numItems; ++i)
     {
       val += " ";
       theItems[i]->appendStringValue(val);
@@ -61,7 +61,7 @@ zstring ItemVector::getStringValue() const
 
 void ItemVector::getStringValue2(zstring& val) const
 {
-  ulong numItems = theItems.size();
+  size_t numItems = theItems.size();
 
   if (numItems == 1)
   {
@@ -72,7 +72,7 @@ void ItemVector::getStringValue2(zstring& val) const
   {
     theItems[0]->appendStringValue(val);
 
-    for (ulong i = 1; i < numItems; ++i)
+    for (size_t i = 1; i < numItems; ++i)
     {
       val += " ";
       theItems[i]->appendStringValue(val);
@@ -83,13 +83,13 @@ void ItemVector::getStringValue2(zstring& val) const
 
 void ItemVector::appendStringValue(zstring& buf) const
 {
-  ulong numItems = theItems.size();
+  size_t numItems = theItems.size();
 
   if (numItems > 0)
   {
     theItems[0]->appendStringValue(buf);
 
-    for (ulong i = 1; i < numItems; ++i)
+    for (size_t i = 1; i < numItems; ++i)
     {
       buf += " ";
       theItems[i]->appendStringValue(buf);

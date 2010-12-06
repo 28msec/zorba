@@ -80,7 +80,7 @@ public:
 
   explicit Base64(const Base16& aBase16);
 
-  Base64(const unsigned char *bin_data, unsigned int len);
+  Base64(const unsigned char *bin_data, size_t len);
 
   Base64() {}
 

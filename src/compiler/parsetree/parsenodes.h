@@ -776,7 +776,7 @@ public:
 
   const zstring& operator[](int i) const { return theUris[i]; }
 
-  ulong size() const { return theUris.size(); }
+  ulong size() const { return (ulong)theUris.size(); }
 
   void accept(parsenode_visitor&) const;
 };
@@ -850,7 +850,7 @@ protected:
 public:
   VFO_DeclList(const QueryLoc&);
 
-  int size () const { return vfo_hv.size (); }
+  ulong size () const { return (ulong)vfo_hv.size (); }
 
   void push_front(rchandle<parsenode> vfo_h) { vfo_hv.insert(vfo_hv.begin(), vfo_h); }
 
@@ -1424,7 +1424,7 @@ public:
 
   void addKeySpec(IndexKeySpec* spec) { theKeySpecs.push_back(spec); }
 
-  ulong size() const { return theKeySpecs.size(); }
+  ulong size() const { return (ulong)theKeySpecs.size(); }
 
   const IndexKeySpec* getKeySpec(ulong i) const { return theKeySpecs[i].getp(); }
 
@@ -1850,7 +1850,7 @@ public:
 
   rchandle<exprnode>& operator[](int k) { return statements[k]; }
 
-  int size () const { return statements.size (); }
+  ulong size () const { return (ulong)statements.size (); }
 
   rchandle<VFO_DeclList> get_decls () const { return decls; }
 
@@ -2661,7 +2661,7 @@ public:
 
   rchandle<QVarInDecl> operator[](int i) const { return qvar_decl_hv[i]; }
 
-  int size () const { return qvar_decl_hv.size ();}
+  ulong size () const { return (ulong)qvar_decl_hv.size ();}
 
   void accept(parsenode_visitor&) const;
 };
@@ -2752,7 +2752,7 @@ public:
   { return clause_hv.rend(); }
 
   uint32_t size () const
-  { return clause_hv.size (); }
+  { return (uint32_t)clause_hv.size (); }
 
   void accept(parsenode_visitor&) const;
 };
@@ -2807,7 +2807,7 @@ public:
   { return operand_hv.rend(); }
 
   uint32_t size () const
-  { return operand_hv.size (); }
+  { return (uint32_t)operand_hv.size (); }
 
   void accept(parsenode_visitor&) const;
 };
@@ -2881,7 +2881,7 @@ public:
   { return clause_hv.rend(); }
 
   uint32_t size () const
-  { return clause_hv.size (); }
+  { return (uint32_t)clause_hv.size (); }
 
   void accept(parsenode_visitor&) const;
 };
@@ -3853,7 +3853,7 @@ public:
 
   rchandle<exprnode> operator[](int i) { return pred_hv[i]; }
 
-  int size () const { return pred_hv.size (); }
+  ulong size () const { return (ulong)pred_hv.size (); }
 
   void accept(parsenode_visitor&) const;
 };
@@ -4142,7 +4142,7 @@ public:
 
   rchandle<exprnode> operator[](int i) const { return arg_hv[i]; }
 
-  int size() const { return arg_hv.size (); }
+  ulong size() const { return (ulong)arg_hv.size (); }
 
   void accept(parsenode_visitor&) const;
 };
@@ -4282,7 +4282,7 @@ public:
 
   const DirAttr *operator[] (int i) const { return theAttributes[i]; }
 
-  int size () const { return theAttributes.size (); }
+  ulong size () const { return (ulong)theAttributes.size (); }
 
   void accept(parsenode_visitor&) const;
 };
@@ -5811,7 +5811,7 @@ public:
 
   rchandle<SequenceType> operator[](int i) const { return theTypes[i]; }
 
-  int size() const { return theTypes.size (); }
+  ulong size() const { return (ulong)theTypes.size (); }
 
   void accept(parsenode_visitor&) const;
 };

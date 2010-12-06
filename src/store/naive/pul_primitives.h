@@ -843,7 +843,7 @@ protected:
 public:
   const store::Item* getName() const { return theName.getp(); }
 
-  ulong numNodes() const { return theNodes.size(); }
+  ulong numNodes() const { return (ulong)theNodes.size(); }
 
   store::Item* getNode(ulong i) const { return theNodes[i].getp(); }
 };

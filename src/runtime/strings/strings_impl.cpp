@@ -411,12 +411,12 @@ bool SubstringIterator::nextImpl(
           }
           else
           {
-            istart = utf8_string<zstring>(strval).length();
+            istart = (xs_int)utf8_string<zstring>(strval).length();
           }
         }
         else
         {
-          istart = utf8_string<zstring>(strval).length();
+          istart = (xs_int)utf8_string<zstring>(strval).length();
         }
 
         if( theChildren.size() == 2)
@@ -464,12 +464,12 @@ bool SubstringIterator::nextImpl(
               }
               else
               {
-                ilen = utf8_string<zstring>(strval).length() - istart + 1;
+                ilen = (xs_int)(utf8_string<zstring>(strval).length() - istart + 1);
               }
             }
             else
             {
-              ilen = utf8_string<zstring>(strval).length() - istart + 1;
+              ilen = (xs_int)(utf8_string<zstring>(strval).length() - istart + 1);
             }
     
             if( !(start + len).isNaN())
@@ -1125,7 +1125,7 @@ bool SubstringBeforeIterator::nextImpl(
   store::Item_t item0;
   store::Item_t item1;
   store::Item_t itemColl;
-  ulong index = zstring::npos;
+  zstring::size_type index = zstring::npos;
   zstring arg1;
   zstring arg2;
   zstring resStr;
@@ -1193,7 +1193,7 @@ bool SubstringAfterIterator::nextImpl(
   store::Item_t item0;
   store::Item_t item1;
   store::Item_t itemColl;
-  ulong startPos = zstring::npos;
+  zstring::size_type startPos = zstring::npos;
   zstring arg1;
   zstring arg2;
   zstring resStr;

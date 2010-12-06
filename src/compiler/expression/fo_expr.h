@@ -80,7 +80,7 @@ public:
 
   const store::Item* get_fname() const;
 
-  ulong num_args() const { return theArgs.size(); }
+  ulong num_args() const { return (ulong)theArgs.size(); }
 
   expr* get_arg(ulong i) const { return theArgs[i].getp(); }
 

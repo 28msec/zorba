@@ -52,7 +52,7 @@ public:
 
   void appendStringValue(zstring& buf) const;
 
-  ulong size() const { return theItems.size(); }
+  ulong size() const { return (ulong)theItems.size(); }
 
   bool empty() const { return theItems.empty(); }
 

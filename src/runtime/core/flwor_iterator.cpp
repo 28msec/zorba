@@ -317,13 +317,13 @@ void GroupByClause::accept(PlanIterVisitor& v) const
 { 
   v.beginVisitGroupByClause();
 
-  ulong numSpecs = theGroupingSpecs.size();
+  ulong numSpecs = (ulong)theGroupingSpecs.size();
   for (ulong i = 0; i < numSpecs; ++i)
   {
     theGroupingSpecs[i].accept(v);
   }
 
-  numSpecs = theNonGroupingSpecs.size();
+  numSpecs = (ulong)theNonGroupingSpecs.size();
   for (ulong i = 0; i < numSpecs; ++i)
   {
     theNonGroupingSpecs[i].accept(v);
@@ -340,13 +340,13 @@ uint32_t GroupByClause::getStateSizeOfSubtree() const
 {
   uint32_t size = 0;
 
-  ulong numSpecs = theGroupingSpecs.size();
+  ulong numSpecs = (ulong)theGroupingSpecs.size();
   for (ulong i = 0; i < numSpecs; ++i)
   {
     size += theGroupingSpecs[i].getStateSizeOfSubtree();
   }
   
-  numSpecs = theNonGroupingSpecs.size();
+  numSpecs = (ulong)theNonGroupingSpecs.size();
   for (ulong i = 0; i < numSpecs; ++i)
   {
     size += theNonGroupingSpecs[i].getStateSizeOfSubtree();
@@ -469,7 +469,7 @@ void FlworState::init(
 {
   PlanIteratorState::init(planState);
 
-  ulong numVars = forletClauses.size();
+  ulong numVars = (ulong)forletClauses.size();
   std::vector<long> v(numVars, 0);
   theVarBindingState.swap(v);
   assert(theVarBindingState.size() > 0);
@@ -558,7 +558,7 @@ void FlworState::reset(PlanState& planState)
 ********************************************************************************/
 void FlworState::clearSortTable()
 {
-  ulong numTuples = theSortTable.size();
+  ulong numTuples = (ulong)theSortTable.size();
 
   for (ulong i = 0; i < numTuples; ++i)
   {
@@ -615,7 +615,7 @@ FLWORIterator::FLWORIterator(
   :
   Batcher<FLWORIterator>(sctx, loc),
   theForLetClauses(aForLetClauses),
-  theNumBindings(aForLetClauses.size()),
+  theNumBindings((ulong)aForLetClauses.size()),
   theWhereClause(aWhereClause),
   theGroupByClause(aGroupByClauses),
   theOrderByClause(orderByClause),
@@ -725,7 +725,7 @@ bool FLWORIterator::nextImpl(store::Item_t& result, PlanState& planState) const
             }
 
             iterState->theCurTuplePos = 0;
-            iterState->theNumTuples = iterState->theSortTable.size();
+            iterState->theNumTuples = (ulong)iterState->theSortTable.size();
 
             while (iterState->theCurTuplePos < iterState->theNumTuples)
             {
@@ -979,14 +979,14 @@ void FLWORIterator::materializeResultForSort(
   FlworState::SortTable& sortTable = iterState->theSortTable;
   FlworState::DataTable& dataTable = iterState->theDataTable;
 
-  ulong numTuples = sortTable.size();
+  ulong numTuples = (ulong)sortTable.size();
   sortTable.resize(numTuples + 1);
   dataTable.resize(numTuples + 1);
 
   // Create the sort tuple
 
   std::vector<OrderSpec>& orderSpecs = theOrderByClause->theOrderSpecs;
-  ulong numSpecs = orderSpecs.size();
+  ulong numSpecs = (ulong)orderSpecs.size();
 
   std::vector<store::Item*>& sortKey = sortTable[numTuples].theKeyValues;
   sortKey.resize(numSpecs);
@@ -1090,11 +1090,11 @@ void FLWORIterator::matVarsAndGroupBy(
 
   std::vector<NonGroupingSpec> nongroupingSpecs = theGroupByClause->theNonGroupingSpecs;
   std::vector<store::TempSeq_t>* nongroupVarSequences = 0;
-  long numNonGroupingSpecs = nongroupingSpecs.size();
+  ulong numNonGroupingSpecs = (ulong)nongroupingSpecs.size();
 
   if (groupMap->get(groupTuple, nongroupVarSequences))
   {
-    for (long i = 0; i < numNonGroupingSpecs; ++i)
+    for (ulong i = 0; i < numNonGroupingSpecs; ++i)
     {
       store::Iterator_t iterWrapper = 
       new PlanIteratorWrapper(nongroupingSpecs[i].theInput,
@@ -1110,7 +1110,7 @@ void FLWORIterator::matVarsAndGroupBy(
   {
     nongroupVarSequences = new std::vector<store::TempSeq_t>();
 
-    for (long i = 0; i < numNonGroupingSpecs; ++i)
+    for (ulong i = 0; i < numNonGroupingSpecs; ++i)
     {
       store::Iterator_t iterWrapper = 
       new PlanIteratorWrapper(nongroupingSpecs[i].theInput, planState);

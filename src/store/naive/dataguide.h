@@ -132,8 +132,8 @@ public:
     return store::StoreConsts::elementNode; 
   }
 
-  ulong numChildren() const { return theChildren.size(); }
-  ulong numAttributes() const { return theAttributes.size(); }
+  ulong numChildren() const { return (ulong)theChildren.size(); }
+  ulong numAttributes() const { return (ulong)theAttributes.size(); }
 
   void getPathInfo(
         std::vector<const store::Item*>& ctxPath,

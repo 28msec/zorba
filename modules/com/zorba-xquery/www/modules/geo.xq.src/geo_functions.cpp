@@ -168,12 +168,12 @@ bool GeoFunction::getChild(zorba::Iterator_t children, const char *localname, co
     Item    child_name;
     child_item.getNodeName(child_name);
     String  item_namespace = child_name.getNamespace();
-    if(!item_namespace.byteEqual(ns, strlen(ns)))
+    if(!item_namespace.byteEqual(ns, (unsigned int)strlen(ns)))
     {
       continue;//next child
     }
     String  item_name = child_name.getLocalName();
-    if(!item_name.byteEqual(localname, strlen(localname)))
+    if(!item_name.byteEqual(localname, (unsigned int)strlen(localname)))
     {
       continue;//next child
     }
@@ -195,7 +195,7 @@ bool GeoFunction::getAttribute(  zorba::Item &item,
     zorba::Item   attr_qname;
     attr_item.getNodeName(attr_qname);
     String  attr_name = attr_qname.getLocalName();
-    if(!attr_name.byteEqual(name, strlen(name)))
+    if(!attr_name.byteEqual(name, (unsigned int)strlen(name)))
     {
       continue;//next attr
     }
@@ -205,7 +205,7 @@ bool GeoFunction::getAttribute(  zorba::Item &item,
       return true;
    }
     String  attr_ns= attr_qname.getNamespace();
-    if(attr_ns.byteEqual(ns, strlen(ns)))
+    if(attr_ns.byteEqual(ns, (unsigned int)strlen(ns)))
     {
       children->close();
       return true;
@@ -227,7 +227,7 @@ bool GeoFunction::checkOptionalAttribute(zorba::Item &item,
                      attr_item))
      return true;
   String  attr_value = attr_item.getStringValue();
-  return attr_value.byteEqual(value, strlen(value));
+  return attr_value.byteEqual(value, (unsigned int)strlen(value));
 }
 
 int GeoFunction::get_srsDimension(zorba::Item &item, int prev_srsdimension) const
@@ -633,7 +633,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
   {
     geos::geom::CoordinateSequence *cl = NULL;//new geos::geom::CoordinateArraySequence();
     readPosListCoordinates(lItem, cl, srs_dim);
-    uint32_t  last_index = cl->size()-1;
+    uint32_t  last_index = (uint32_t)cl->size()-1;
     if(what_action == GET_END_POINT)
     {
       optional_child_index_or_count = &last_index;
@@ -655,7 +655,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
     }
     else if((what_action == COUNT_CHILDREN) || (what_action == GET_NUM_POINTS))
     {
-      (*optional_child_index_or_count) = cl->size();
+      (*optional_child_index_or_count) = (uint32_t)cl->size();
       delete cl;
     }
     else if((what_action == GET_NTH_CHILD) || (what_action == GET_NTH_POINT))
@@ -835,7 +835,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
   {
     geos::geom::CoordinateSequence *cl = NULL;//new geos::geom::CoordinateArraySequence();
     readPosListCoordinates(lItem, cl, srs_dim);
-    uint32_t  last_index = cl->size()-1;
+    uint32_t  last_index = (uint32_t)cl->size()-1;
     if(what_action == GET_END_POINT)
     {
       optional_child_index_or_count = &last_index;
@@ -857,7 +857,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
     }
     else if((what_action == COUNT_CHILDREN) || (what_action == GET_NUM_POINTS))
     {
-      (*optional_child_index_or_count) = cl->size();
+      (*optional_child_index_or_count) = (uint32_t)cl->size();
       delete cl;
     }
     else if((what_action == GET_NTH_CHILD) || (what_action == GET_NTH_POINT))
@@ -1850,7 +1850,7 @@ bool GeoFunction::isClosedCurve(const geos::geom::Geometry *geos_geometry) const
 {
   //Curve is a MultiLineString
   const geos::geom::MultiLineString *curve = dynamic_cast<const geos::geom::MultiLineString *>(geos_geometry);
-  unsigned int num_segments = curve->getNumGeometries();
+  unsigned int num_segments = (unsigned int)curve->getNumGeometries();
   if(!num_segments)
     return false;
   unsigned int i;
@@ -1882,7 +1882,7 @@ geos::geom::LineString *GeoFunction::curveToLineString(const geos::geom::Geometr
   const geos::geom::MultiLineString *curve = dynamic_cast<const geos::geom::MultiLineString *>(geos_geometry);
   if(!isCurve(curve))
     return NULL;
-  unsigned int num_segments = curve->getNumGeometries();
+  unsigned int num_segments = (unsigned int)curve->getNumGeometries();
   if(!num_segments)
     return NULL;
   const geos::geom::LineString *segment;
@@ -2051,7 +2051,7 @@ bool GeoFunction::isSurface(const geos::geom::MultiPolygon *multipolygon,
 
   std::vector<int>    ids;
   unsigned int i;
-  unsigned int nr_patches = multipolygon->getNumGeometries();
+  unsigned int nr_patches = (unsigned int)multipolygon->getNumGeometries();
   if(!nr_patches)
     return false;
   ids.resize(nr_patches);
@@ -2165,7 +2165,7 @@ bool GeoFunction::isSurface(const geos::geom::MultiPolygon *multipolygon,
     geos::geom::CoordinateSequence      *cl = NULL;
 
     std::vector<const geos::geom::LineString *> segments;
-    unsigned int nr_segments = 0; 
+    size_t nr_segments = 0; 
     for(unsigned int b=0;b<boundary_segments.size();b++)
     {
       nr_segments += boundary_segments[b]->getNumGeometries();
@@ -2864,10 +2864,10 @@ SFAsBinaryFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
   delete geos_geometry;
   
   std::string binary_hex = as_binary.str();
-  unsigned int binary_len = binary_hex.size() / 2;
+  size_t binary_len = binary_hex.size() / 2;
   const char *hex_str = binary_hex.c_str();
   unsigned char *binary_bin = new unsigned char[binary_len];
-  for(unsigned int i=0;i<binary_len;i++)
+  for(size_t i=0;i<binary_len;i++)
   {
     binary_bin[i] = ((hex_to_bin(hex_str[i*2]) << 4) | hex_to_bin(hex_str[i*2+1]));
   }
@@ -4462,7 +4462,7 @@ SFBoundingPolygonsFunction::evaluate(const StatelessExternalFunction::Arguments_
   //const geos::geom::CoordinateSequence *coords = exterior_ring->getCoordinates();
 
 
-  unsigned int nr_patches = surface->getNumGeometries();
+  unsigned int nr_patches = (unsigned int)surface->getNumGeometries();
   unsigned int i;
   for(i=0;i<nr_patches;i++)
   {

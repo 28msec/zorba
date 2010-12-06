@@ -98,7 +98,7 @@ static void test_empty( StringType const &s ) {
  */
 template<class StringType>
 static void test_non_empty( StringType &s, char const *csc ) {
-  unsigned const cs_len = ::strlen( csc );
+  unsigned const cs_len = (unsigned)::strlen( csc );
   char *const cs = new_c_string( "world" );
 
   ASSERT_TRUE( !s.empty() );
@@ -424,7 +424,7 @@ static void test_reverse( char const *s ) {
   utf8::reverse( u1, &u2 );
   ASSERT_TRUE( s1.size() == s2.size() );
   typename StringType::size_type const u2_last = u2.size() - 1;
-  for ( int i = u1.size() / 2 - 1; i >= 0; --i )
+  for ( int i = (int)u1.size() / 2 - 1; i >= 0; --i )
     if ( !ASSERT_TRUE( u1[i] == u2[ u2_last - i ] ) )
       break;
 }

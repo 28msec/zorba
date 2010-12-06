@@ -153,7 +153,7 @@ UpdInsertChildren::UpdInsertChildren(
   theSibling.transfer(sibling);
 
   ulong numNewChildren = 0;
-  ulong numChildren = children.size();
+  ulong numChildren = (ulong)children.size();
   theNewChildren.resize(numChildren);
 
   for (ulong i = 0; i < numChildren; i++)
@@ -255,7 +255,7 @@ UpdInsertAttributes::UpdInsertAttributes(
   UpdatePrimitive(pul, target),
   theNumApplied(0)
 {
-  ulong numAttrs = attrs.size();
+  ulong numAttrs = (ulong)attrs.size();
   theNewAttrs.resize(numAttrs);
   for (ulong i = 0; i < numAttrs; i++)
     theNewAttrs[i].transfer(attrs[i]);
@@ -296,7 +296,7 @@ UpdReplaceAttribute::UpdReplaceAttribute(
 {
   theAttr.transfer(attr);
 
-  ulong numAttrs = newAttrs.size();
+  ulong numAttrs = (ulong)newAttrs.size();
   theNewAttrs.resize(numAttrs);
   for (ulong i = 0; i < numAttrs; i++)
       theNewAttrs[i].transfer(newAttrs[i]);
@@ -346,7 +346,7 @@ UpdReplaceChild::UpdReplaceChild(
        childKind == store::StoreConsts::textNode))
     theRemoveType = true;
 
-  ulong numChildren = newChildren.size();
+  ulong numChildren = (ulong)newChildren.size();
   theNewChildren.resize(numChildren);
   for (ulong i = 0; i < numChildren; i++)
   {
@@ -684,7 +684,7 @@ UpdCollection::UpdCollection(
 {
   theName.transfer(name);
 
-  ulong numNodes = nodes.size();
+  ulong numNodes = (ulong)nodes.size();
   theNodes.resize(numNodes);
 
   for (ulong i = 0; i < numNodes; ++i)
@@ -702,7 +702,7 @@ UpdCollection::UpdCollection(
 {
   theName.transfer(name);
 
-  ulong numNodes = nodes.size();
+  ulong numNodes = (ulong)nodes.size();
   theNodes.resize(numNodes);
 
   for (ulong i = 0; i < numNodes; ++i)
@@ -791,7 +791,7 @@ void UpdInsertIntoCollection::apply()
 
   theIsApplied = true;
 
-  ulong numNodes = theNodes.size();
+  ulong numNodes = (ulong)theNodes.size();
   for (ulong i = 0; i < numNodes; ++i)
   {
     lColl->addNode(theNodes[i], -1);
@@ -831,7 +831,7 @@ void UpdInsertFirstIntoCollection::apply()
 
   theCollectionPul->setAdjustTreePositions();
 
-  ulong numNodes = theNodes.size();
+  ulong numNodes = (ulong)theNodes.size();
   for (ulong i = 0; i < numNodes; ++i)
   {
     lColl->addNode(theNodes[i], i);
@@ -866,7 +866,7 @@ void UpdInsertLastIntoCollection::apply()
 
   theIsApplied = true;
 
-  ulong numNodes = theNodes.size();
+  ulong numNodes = (ulong)theNodes.size();
   for (ulong i = 0; i < numNodes; ++i)
   {
     lColl->addNode(theNodes[i], -1);
@@ -917,7 +917,7 @@ void UpdInsertBeforeIntoCollection::undo()
   assert(lColl);
   ZORBA_ASSERT(theFirstNode == lColl->nodeAt(theFirstPos));
 
-  lColl->removeNodes(theFirstPos, theNodes.size());
+  lColl->removeNodes(theFirstPos, (ulong)theNodes.size());
 }
 
 
@@ -948,7 +948,7 @@ void UpdInsertAfterIntoCollection::undo()
   assert(lColl);
   ZORBA_ASSERT(theFirstNode == lColl->nodeAt(theFirstPos));
 
-  lColl->removeNodes(theFirstPos, theNodes.size());
+  lColl->removeNodes(theFirstPos, (ulong)theNodes.size());
 }
 
 
@@ -965,7 +965,7 @@ void UpdDeleteNodesFromCollection::apply()
 
   ulong size = lColl->size();
 
-  ulong numNodes = theNodes.size();
+  ulong numNodes = (ulong)theNodes.size();
 
   bool isLast = theIsLast;
 

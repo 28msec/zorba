@@ -36,7 +36,7 @@ FTTokenIterator::index_t FTTokenSeqIterator::begin() const {
 }
 
 FTTokenIterator::index_t FTTokenSeqIterator::end() const {
-  return tokens_.size();;
+  return (FTTokenIterator::index_t)tokens_.size();;
 }
 
 bool FTTokenSeqIterator::hasNext() const {

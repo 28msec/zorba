@@ -276,7 +276,7 @@ void StoreNodeSortIterator::reset()
   // Do not reset the input. This is done by the runtime NodeSortIterator,
   // which wraps this store iterator.
 
-  ulong numNodes = theNodes.size();
+  ulong numNodes = (ulong)theNodes.size();
   for (ulong i = 0; i < numNodes; i++)
   {
     XmlNode* n = theNodes[i];
@@ -293,7 +293,7 @@ void StoreNodeSortIterator::close()
   // Do not close the input. This is done by the runtime NodeSortIterator,
   // which wraps this store iterator.
 
-  ulong numNodes = theNodes.size();
+  ulong numNodes = (ulong)theNodes.size();
   for (ulong i = 0; i < numNodes; i++)
   {
     XmlNode* n = theNodes[i];

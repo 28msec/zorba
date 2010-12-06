@@ -29,30 +29,30 @@ namespace zorba {
 
 ////////// find with collation ////////////////////////////////////////////////
 
-ulong find( char const *s, size_t s_len, char const *ss, size_t ss_len,
+size_t find( char const *s, size_t s_len, char const *ss, size_t ss_len,
             XQPCollator const *collator );
 
-ulong rfind( char const *s, size_t s_len, char const *ss, size_t ss_len,
+size_t rfind( char const *s, size_t s_len, char const *ss, size_t ss_len,
              XQPCollator const *collator );
 
-inline ulong find( char const *s, char const *ss,
+inline size_t find( char const *s, char const *ss,
                    XQPCollator const *collator ) {
   return find( s, std::strlen( s ), ss, std::strlen( ss ), collator );
 }
 
 template<class StringType,class SubstringType> inline
-ulong find( StringType const &s, SubstringType const &ss,
+size_t find( StringType const &s, SubstringType const &ss,
            XQPCollator const *collator ) {
   return find( s.c_str(), s.size(), ss.c_str(), ss.size(), collator );
 }
 
 template<class StringType> inline
-ulong find( StringType const &s, char const *ss, XQPCollator const *collator ) {
+size_t find( StringType const &s, char const *ss, XQPCollator const *collator ) {
   return find( s.c_str(), s.size(), ss, std::strlen( ss ), collator );
 }
 
 template<class SubstringType> inline
-ulong find( char const *s, SubstringType const &ss,
+size_t find( char const *s, SubstringType const &ss,
             XQPCollator const *collator ) {
   return find( s, std::strlen( s ), ss.c_str(), ss.size(), collator );
 }
@@ -65,7 +65,7 @@ bool ends_with(
     const SubstringType& suffix,
     XQPCollator const* collator)
 {
-  ulong pos = rfind(s.c_str(), s.size(), suffix.c_str(), suffix.size(), collator);
+  size_t pos = rfind(s.c_str(), s.size(), suffix.c_str(), suffix.size(), collator);
 
   return (pos != StringType::npos &&
           (pos + utf8::length(suffix.c_str()) == utf8::length(s.c_str())));

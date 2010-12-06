@@ -166,7 +166,7 @@ off_t fxcharheap::put(    // return the target offset
 
 off_t fxcharheap::put(char const* buf)
 {
-  uint32_t n = strlen(buf);
+  uint32_t n = (uint32_t)strlen(buf);
   return put(buf, 0, n);
 }
 
@@ -203,7 +203,7 @@ void fxcharheap::get(
   uint32_t maxlen) const  // input: maximum output size, truncate 
 {
   try {
-    uint32_t len = strlen(&data[id]);
+    uint32_t len = (uint32_t)strlen(&data[id]);
     if (maxlen < len+1) len = maxlen-1;
     memcpy(&buf[output_offset], &data[id], len+1);  // include the trailing 0
   } catch (...) {
@@ -219,7 +219,7 @@ void fxcharheap::get0(
   uint32_t maxlen) const  // input: maximum output size, truncate 
 {
   try {
-    uint32_t len = strlen(&data[id]);
+    uint32_t len = (uint32_t)strlen(&data[id]);
     if (len > (maxlen - 1)) len = maxlen-1;
     memcpy(&buf[output_offset], &data[id], len);
     buf [output_offset + len] = 0;
@@ -246,13 +246,13 @@ char * fxcharheap::get(off_t id) const
 
 uint32_t fxcharheap::get_length(off_t id) const
 {
-  return strlen(&data[id]);
+  return (uint32_t)strlen(&data[id]);
 }
 
 
 uint32_t fxcharheap::get_length0(long id) const
 {
-  return strlen(&data[id]);
+  return (uint32_t)strlen(&data[id]);
 }
 
 
@@ -285,7 +285,7 @@ fxcharheap::fxcharheap_iterator::~fxcharheap_iterator()
 
 char const* fxcharheap::fxcharheap_iterator::operator++()
 {
-  uint32_t len = strlen(current);
+  uint32_t len = (uint32_t)strlen(current);
   char const* result = current;
   current += (len+1);
   return result;

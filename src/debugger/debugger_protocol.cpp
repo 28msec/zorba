@@ -402,7 +402,7 @@ DetachMessage::~DetachMessage(){}
 StepMessage::StepMessage(StepCommand aKind):
   AbstractCommandMessage(EXECUTION, STEP), theKind(aKind)
 {
-  setLength(MESSAGE_HEADER_SIZE + getData().length());
+  setLength((Length)(MESSAGE_HEADER_SIZE + getData().length()));
   checkIntegrity();
 }
 
@@ -427,7 +427,7 @@ Byte* StepMessage::serialize(Length& aLength) const
   memset(lMsg, '\0', getLength() + 1);
   memcpy(lMsg, lHeader.get(), MESSAGE_HEADER_SIZE);
   const char* s = lJSONString.c_str();
-  unsigned int l = lJSONString.length();
+  size_t l = lJSONString.length();
   memcpy(lMsg + MESSAGE_HEADER_SIZE, s, l);
   aLength = getLength();
   return lMsg; 
@@ -508,7 +508,7 @@ Byte * SetMessage::serialize( Length & aLength ) const
   memset(lMsg, '\0', getLength()+1);
   memcpy( lMsg, lHeader.get(), MESSAGE_HEADER_SIZE );
   const char * s = lJSONString.c_str();
-  unsigned int l = lJSONString.length();
+  size_t l = lJSONString.length();
   memcpy( lMsg + MESSAGE_HEADER_SIZE, s, l );
   aLength = getLength();
   return lMsg; 
@@ -572,7 +572,7 @@ Byte * ClearMessage::serialize( Length & aLength ) const
   memset(lMsg, '\0', getLength()+1);
   memcpy( lMsg, lHeader.get(), MESSAGE_HEADER_SIZE );
   const char * s = lJSONString.c_str();
-  unsigned int l = lJSONString.length();
+  size_t l = lJSONString.length();
   memcpy( lMsg + MESSAGE_HEADER_SIZE, s, l );
   aLength = getLength();
   return lMsg; 
@@ -626,7 +626,7 @@ TerminatedEvent::~TerminatedEvent(){}
 SuspendedEvent::SuspendedEvent( const QueryLoc &aLocation, const SuspensionCause aCause ):
   AbstractCommandMessage( ENGINE_EVENT, SUSPENDED ), theLocation( aLocation ), theCause( aCause ) 
 {
-  unsigned int l = MESSAGE_HEADER_SIZE + getData().length();
+  Length l = (Length)(MESSAGE_HEADER_SIZE + getData().length());
   setLength( l );
   checkIntegrity();
 }
@@ -664,7 +664,7 @@ Byte * SuspendedEvent::serialize( Length & aLength ) const
   memset(lMsg, '\0', getLength()+1);
   memcpy( lMsg, lHeader.get(), MESSAGE_HEADER_SIZE );
   const char * s = lJSONString.c_str();
-  unsigned int l = lJSONString.length();
+  size_t l = lJSONString.length();
   memcpy( lMsg + MESSAGE_HEADER_SIZE, s, l );
   aLength = getLength();
   return lMsg; 
@@ -712,7 +712,7 @@ EvaluatedEvent::EvaluatedEvent( int aId, zstring const &anExpr, zstring const &a
 {
   setId(aId);
   
-  unsigned int l = MESSAGE_HEADER_SIZE + getData().length();
+  Length l = (Length)(MESSAGE_HEADER_SIZE + getData().length());
   setLength( l );
   checkIntegrity();
 }
@@ -742,7 +742,7 @@ EvaluatedEvent::EvaluatedEvent( int aId, zstring const &anExpr, list<pair<zstrin
     lValues.push_back(std::make_pair(lFirst, lSecond));
   }
   theValuesAndTypes = lValues;
-  unsigned int l = MESSAGE_HEADER_SIZE + getData().length();
+  Length l = (Length)(MESSAGE_HEADER_SIZE + getData().length());
   setLength( l );
   checkIntegrity();
 }
@@ -832,7 +832,7 @@ Byte * EvaluatedEvent::serialize( Length &aLength ) const
   memset(lMsg, '0', getLength()+1);
   memcpy( lMsg, lHeader.get(), MESSAGE_HEADER_SIZE );
   const char * s = lJSONString.c_str();
-  unsigned int l = lJSONString.length();
+  size_t l = lJSONString.length();
   memcpy( lMsg + MESSAGE_HEADER_SIZE, s, l );
   aLength = getLength();
   return lMsg; 
@@ -886,7 +886,7 @@ void EvaluatedEvent::setId(Id aId)
 EvalMessage::EvalMessage( zstring const &anExpr ):
   AbstractCommandMessage( DYNAMIC, EVAL ), theExpr( anExpr )
 {
-    unsigned int l = MESSAGE_HEADER_SIZE + getData().length();
+    Length l = (Length)(MESSAGE_HEADER_SIZE + getData().length());
     setLength( l );
     checkIntegrity();
 }
@@ -931,7 +931,7 @@ Byte * EvalMessage::serialize( Length & aLength ) const
   memset(lMsg, '0', getLength()+1);
   memcpy( lMsg, lHeader.get(), MESSAGE_HEADER_SIZE );
   const char * s = lJSONString.c_str();
-  unsigned int l = lJSONString.length();
+  size_t l = lJSONString.length();
   memcpy( lMsg + MESSAGE_HEADER_SIZE, s, l );
   aLength = getLength();
   return lMsg; 
@@ -974,7 +974,7 @@ FrameReply::FrameReply(const Id anId, const ErrorCode aErrorCode,
   : ReplyMessage(anId, aErrorCode), theStack(aStack)
 {
   setFlags(REPLY_FRAME_FLAG);
-  unsigned int l = MESSAGE_HEADER_SIZE + getData().length();
+  Length l = (Length)(MESSAGE_HEADER_SIZE + getData().length());
   setLength(l);
   checkIntegrity();
 }
@@ -1035,7 +1035,7 @@ Byte* FrameReply::serialize(Length& aLength) const
   auto_vec<Byte> lHeader(ReplyMessage::serialize(aLength));
   zstring lJSON = getData();
   const char* s = lJSON.c_str();
-  unsigned int l = lJSON.length();
+  size_t l = lJSON.length();
   Byte* lMsg = new Byte[MESSAGE_HEADER_SIZE + l + 1];
   memset(lMsg, '0', MESSAGE_HEADER_SIZE + l + 1);
   memcpy(lMsg, lHeader.get(), MESSAGE_HEADER_SIZE);
@@ -1052,7 +1052,7 @@ SetReply::SetReply(const Id anId, const ErrorCode aErrorCode):
   ReplyMessage(anId, aErrorCode)
 {
   setFlags(REPLY_SET_FLAG);
-  unsigned int l = MESSAGE_HEADER_SIZE + getData().length();
+  Length l = (Length)(MESSAGE_HEADER_SIZE + getData().length());
   setLength(l);
   checkIntegrity();
 }
@@ -1110,7 +1110,7 @@ Byte* SetReply::serialize(Length& aLength) const
   auto_vec<Byte> lHeader(ReplyMessage::serialize( aLength ));
   zstring lJSONString = getData();
   const char * s = lJSONString.c_str();
-  unsigned int l = lJSONString.length();
+  size_t l = lJSONString.length();
   Byte * lMsg = new Byte[ MESSAGE_HEADER_SIZE + l + 1 ];
   memset(lMsg, '0', MESSAGE_HEADER_SIZE + l + 1);
   memcpy( lMsg, lHeader.get(), MESSAGE_HEADER_SIZE );
@@ -1122,7 +1122,7 @@ Byte* SetReply::serialize(Length& aLength) const
 void SetReply::addBreakpoint(unsigned int anId, QueryLoc& aLocation)
 {
   theBreakpoints.insert(std::make_pair<unsigned int, QueryLoc>(anId, aLocation));
-  setLength(getData().length());
+  setLength((Length)(getData().length()));
 }
 
 /**
@@ -1132,7 +1132,7 @@ VariableReply::VariableReply( const Id anId, const ErrorCode aErrorCode, bool co
   ReplyMessage( anId, aErrorCode ), theContainsData(containsData)
 {
   setFlags(theContainsData ? REPLY_VARIABLE_FLAG | VARIABLE_DATA_FLAG : REPLY_VARIABLE_FLAG);
-  unsigned int l = MESSAGE_HEADER_SIZE + getData().length();
+  Length l = (Length)(MESSAGE_HEADER_SIZE + getData().length());
   setLength(l);
   checkIntegrity();
 }
@@ -1319,7 +1319,7 @@ Byte * VariableReply::serialize( Length & aLength ) const
   auto_vec<Byte> lHeader(ReplyMessage::serialize( aLength ));
   zstring lJSONString = getData();
   const char * s = lJSONString.c_str();
-  unsigned int l = lJSONString.length();
+  size_t l = lJSONString.length();
   Byte * lMsg = new Byte[ MESSAGE_HEADER_SIZE + l + 1 ];
   memset(lMsg, '0', MESSAGE_HEADER_SIZE + l + 1);
   memcpy( lMsg, lHeader.get(), MESSAGE_HEADER_SIZE );
@@ -1389,27 +1389,27 @@ std::map<std::pair<zstring, zstring>, std::list<std::pair<zstring, zstring> > > 
 void VariableReply::addGlobal( zstring const &aVariable, zstring const &aType )
 {
   theGlobals.insert( std::make_pair( aVariable, aType ) );
-  setLength( MESSAGE_HEADER_SIZE + getData().length() );
+  setLength( (Length)(MESSAGE_HEADER_SIZE + getData().length()) );
 }
 
 void VariableReply::addGlobal( zstring const &aVariable, zstring const &aType, std::list<std::pair<zstring, zstring> > val )
 {
   theGlobals.insert( std::make_pair( aVariable, aType ) );
   theGlobalData.push_back(val);
-  setLength( MESSAGE_HEADER_SIZE + getData().length() );
+  setLength( (Length)(MESSAGE_HEADER_SIZE + getData().length()) );
 }
 
 void VariableReply::addLocal( zstring const &aVariable, zstring const &aType )
 {
   theLocals.insert( std::make_pair( aVariable, aType ) );
-  setLength( MESSAGE_HEADER_SIZE + getData().length() );
+  setLength( (Length)(MESSAGE_HEADER_SIZE + getData().length()) );
 }
 
 void VariableReply::addLocal( zstring const &aVariable, zstring const &aType, std::list<std::pair<zstring, zstring> > val )
 {
   theLocals.insert( std::make_pair( aVariable, aType ) );
   theLocalData.push_back(val);
-  setLength( MESSAGE_HEADER_SIZE + getData().length() );
+  setLength( (Length)(MESSAGE_HEADER_SIZE + getData().length()) );
 }
 
 /**
@@ -1461,7 +1461,7 @@ theFilename(aFilename),
 theFirstLine(aFirstline),
 theLastLine(aLastline)
 {
-  unsigned int l = MESSAGE_HEADER_SIZE + getData().length();
+  Length l = (Length)(MESSAGE_HEADER_SIZE + getData().length());
   setLength(l);
   checkIntegrity();
 }
@@ -1479,7 +1479,7 @@ Byte* ListCommand::serialize( Length& aLength ) const
   memset(lMsg, '0', getLength() + 1);
   memcpy( lMsg, lHeader.get(), MESSAGE_HEADER_SIZE );
   const char * s = lJSONString.c_str();
-  unsigned int l = lJSONString.length();
+  size_t l = lJSONString.length();
   memcpy( lMsg + MESSAGE_HEADER_SIZE, s, l );
   aLength = getLength();
   return lMsg;
@@ -1528,7 +1528,7 @@ ListReply::ListReply(const Id aId,
 ReplyMessage(aId, aErrorCode), theString(aCode)
 {
   setFlags(REPLY_LIST_FLAG);
-  unsigned int l = MESSAGE_HEADER_SIZE + getData().length();
+  Length l = (Length)(MESSAGE_HEADER_SIZE + getData().length());
   setLength(l);
   checkIntegrity();
 }
@@ -1556,7 +1556,7 @@ Byte* ListReply::serialize( Length &aLength ) const
   auto_vec<Byte> lHeader(ReplyMessage::serialize( aLength ));
   zstring lJSONString = getData();
   const char * s = lJSONString.c_str();
-  unsigned int l = lJSONString.length();
+  size_t l = lJSONString.length();
   Byte * lMsg = new Byte[ MESSAGE_HEADER_SIZE + l + 1 ];
   memset(lMsg, '0', MESSAGE_HEADER_SIZE + l + 1);
   memcpy( lMsg, lHeader.get(), MESSAGE_HEADER_SIZE );

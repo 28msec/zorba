@@ -26,7 +26,7 @@ namespace zorba { namespace simplestore {
 StringPool::~StringPool() 
 {
   ulong count = 0;
-  ulong n = theHashTab.size();
+  ulong n = (ulong)theHashTab.size();
   for (ulong i = 0; i < n; i++)
   {
     if (theHashTab[i].theItem.is_shared())
@@ -51,7 +51,7 @@ bool StringPool::insertc(const char* str, zstring& outStr)
 {
   bool found = false;
 
-  ulong len = strlen(str);
+  zstring::size_type len = strlen(str);
   ulong hval = hashfun::h32(str, len, FNV_32_INIT) % theHashTabSize;
 
   {
@@ -96,7 +96,7 @@ void StringPool::garbageCollect()
 
   HashEntry<zstring, DummyHashValue>* freeList = NULL;
 
-  ulong size = theHashTabSize;
+  zstring::size_type size = theHashTabSize;
 
   for (ulong i = 0; i < size; ++i)
   {

@@ -170,14 +170,14 @@ uint32_t GroupByIterator::getStateSizeOfSubtree() const
   int32_t size = this->getStateSize();
   size  += theTupleIter->getStateSizeOfSubtree();
 
-  ulong numSpecs = theGroupingSpecs.size();
+  ulong numSpecs = (ulong)theGroupingSpecs.size();
 
   for (ulong i = 0; i < numSpecs; ++i)
   {
     size += theGroupingSpecs[i].getStateSizeOfSubtree();
   }
 
-  numSpecs = theNonGroupingSpecs.size();
+  numSpecs = (ulong)theNonGroupingSpecs.size();
 
   for (ulong i = 0; i < numSpecs; ++i)
   {
@@ -196,14 +196,14 @@ void GroupByIterator::accept(PlanIterVisitor& v) const
       
   theTupleIter->accept(v);
 
-  ulong numSpecs = theGroupingSpecs.size();
+  ulong numSpecs = (ulong)theGroupingSpecs.size();
 
   for (ulong i = 0; i < numSpecs; ++i)
   {
     theGroupingSpecs[i].accept(v);
   }
 
-  numSpecs = theNonGroupingSpecs.size();
+  numSpecs = (ulong)theNonGroupingSpecs.size();
 
   for (ulong i = 0; i < numSpecs; ++i)
   {
@@ -228,7 +228,7 @@ void GroupByIterator::openImpl(PlanState& planState, uint32_t& aOffset)
       
   theTupleIter->open(planState, aOffset);
 
-  ulong numSpecs = theGroupingSpecs.size();
+  ulong numSpecs = (ulong)theGroupingSpecs.size();
 
   for (ulong i = 0; i < numSpecs; ++i)
   {
@@ -246,7 +246,7 @@ void GroupByIterator::openImpl(PlanState& planState, uint32_t& aOffset)
     }
   }
 
-  numSpecs = theNonGroupingSpecs.size();
+  numSpecs = (ulong)theNonGroupingSpecs.size();
 
   for (ulong i = 0; i < numSpecs; ++i)
   {
@@ -260,14 +260,14 @@ void GroupByIterator::openImpl(PlanState& planState, uint32_t& aOffset)
 ********************************************************************************/
 void GroupByIterator::closeImpl(PlanState& planState) 
 {
-  ulong numSpecs = theGroupingSpecs.size();
+  ulong numSpecs = (ulong)theGroupingSpecs.size();
 
   for (ulong i = 0; i < numSpecs; ++i)
   {
     theGroupingSpecs[i].close(planState);
   }
 
-  numSpecs = theNonGroupingSpecs.size();
+  numSpecs = (ulong)theNonGroupingSpecs.size();
 
   for (ulong i = 0; i < numSpecs; ++i)
   {
@@ -285,14 +285,14 @@ void GroupByIterator::closeImpl(PlanState& planState)
 ********************************************************************************/
 void GroupByIterator::resetImpl(PlanState& planState) const 
 {
-  ulong numSpecs = theGroupingSpecs.size();
+  ulong numSpecs = (ulong)theGroupingSpecs.size();
 
   for (ulong i = 0; i < numSpecs; ++i)
   {
     theGroupingSpecs[i].reset(planState);
   }
 
-  numSpecs = theNonGroupingSpecs.size();
+  numSpecs = (ulong)theNonGroupingSpecs.size();
 
   for (ulong i = 0; i < numSpecs; ++i)
   {
@@ -355,7 +355,7 @@ void GroupByIterator::matVarsAndGroupBy(
   std::vector<store::Item_t>& groupTupleItems = groupTuple->theItems;
   std::vector<store::Item_t>& groupTupleValues = groupTuple->theTypedValues;
 
-  ulong numVars = theGroupingSpecs.size();
+  ulong numVars = (ulong)theGroupingSpecs.size();
 
   // For each grouping variable
   for (ulong i = 0; i < numVars; ++i)
@@ -420,7 +420,7 @@ void GroupByIterator::matVarsAndGroupBy(
 
   GroupHashMap* groupMap = aGroupByState->theGroupMap;
 
-  numVars = theNonGroupingSpecs.size();
+  numVars = (ulong)theNonGroupingSpecs.size();
 
   std::vector<store::TempSeq_t>* nonGroupTuple = NULL;
 
@@ -472,13 +472,13 @@ void GroupByIterator::bindGroupBy(
     PlanState& aPlanState) const 
 {
   // Bind grouping vars
-  ulong numVars = theGroupingSpecs.size();
+  ulong numVars = (ulong)theGroupingSpecs.size();
 
   GroupTuple* groupTuple = (*aGroupMapIter).first;
 
   for (ulong i = 0; i < numVars; ++i)
   {
-    ulong numVarRefs = theGroupingSpecs[i].theVarRefs.size();
+    ulong numVarRefs = (ulong)theGroupingSpecs[i].theVarRefs.size();
 
     for (ulong j = 0; j < numVarRefs; ++j)
     {
@@ -487,7 +487,7 @@ void GroupByIterator::bindGroupBy(
   }
 
   // Bind non-grouping vars
-  numVars = theNonGroupingSpecs.size();
+  numVars = (ulong)theNonGroupingSpecs.size();
 
   std::vector<store::TempSeq_t>* nonGroupTuple = (*aGroupMapIter).second;
 
@@ -495,7 +495,7 @@ void GroupByIterator::bindGroupBy(
   {
     store::TempSeq_t nonGroupVar = (*nonGroupTuple)[i].getp();
 
-    ulong numVarRefs = theNonGroupingSpecs[i].theVarRefs.size();
+    ulong numVarRefs = (ulong)theNonGroupingSpecs[i].theVarRefs.size();
 
     for (ulong j = 0; j < numVarRefs; ++j)
     {

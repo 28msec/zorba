@@ -502,7 +502,7 @@ std::istream* StandardModuleURIResolver::checkModulePath(
   zstring lPathNotation = lURI.toPathNotation();
   if (!ascii::ends_with(lPathNotation, ".xq", 3))
   {
-    int pos;
+    zstring::size_type pos;
     if((pos = lPathNotation.find("zorba-xquery")) != -1)
       lPathNotation = lPathNotation.append(".xq");
     else

@@ -171,7 +171,7 @@ void index_flwor_vars(
         const group_clause* gc = static_cast<const group_clause *>(c);
 
         const flwor_clause::rebind_list_t& gvars = gc->get_grouping_vars();
-        unsigned numGroupVars = gvars.size();
+        unsigned numGroupVars = (unsigned)gvars.size();
 
         for (unsigned i = 0; i < numGroupVars; ++i)
         {
@@ -179,7 +179,7 @@ void index_flwor_vars(
         }
 
         const flwor_clause::rebind_list_t& ngvars = gc->get_nongrouping_vars();
-        unsigned numNonGroupVars = ngvars.size();
+        unsigned numNonGroupVars = (unsigned)ngvars.size();
 
         for (unsigned i = 0; i < numNonGroupVars; ++i)
         {
@@ -356,7 +356,7 @@ void build_expr_to_vars_map(
         const group_clause* gc = static_cast<const group_clause *>(c);
 
         const flwor_clause::rebind_list_t& gvars = gc->get_grouping_vars();
-        unsigned numGroupVars = gvars.size();
+        unsigned numGroupVars = (unsigned)gvars.size();
 
         for (unsigned i = 0; i < numGroupVars; ++i)
         {
@@ -364,7 +364,7 @@ void build_expr_to_vars_map(
         }
 
         const flwor_clause::rebind_list_t& ngvars = gc->get_nongrouping_vars();
-        unsigned numNonGroupVars = ngvars.size();
+        unsigned numNonGroupVars = (unsigned)ngvars.size();
         
         for (unsigned i = 0; i < numNonGroupVars; ++i)
         {

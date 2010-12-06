@@ -56,7 +56,7 @@ namespace zorba { namespace emailmodule {
 
       // check if there is a mailstream that is already open with the same parameters, if true then take it (this is the ideal case)
       
-      int lNumberOfKnownHosts = theHosts.size();
+      int lNumberOfKnownHosts = (int)theHosts.size();
       std::list<Host>::iterator allHostsIterator;
       for (allHostsIterator = theHosts.begin(); allHostsIterator != theHosts.end(); allHostsIterator++) {  
         if (((*allHostsIterator).lMailStream) &&

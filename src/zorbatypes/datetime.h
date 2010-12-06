@@ -193,42 +193,42 @@ public:
   /**
    *  Returns 0 on success
    */
-  static int parseDateTime(const char* str, ulong strlen, DateTime& dt);
+  static int parseDateTime(const char* str, ascii::size_type strlen, DateTime& dt);
       
   /**
    *  Returns 0 on success
    */
-  static int parseDate(const char* str, ulong strlen, DateTime& dt);
+  static int parseDate(const char* str, ascii::size_type strlen, DateTime& dt);
       
   /**
    *  Returns 0 on success
    */
-  static int parseTime(const char* str, ulong strlen, DateTime& dt);
+  static int parseTime(const char* str, ascii::size_type strlen, DateTime& dt);
       
   /**
    *  Returns 0 on success
    */
-  static int parseGYearMonth(const char* str, ulong strlen, DateTime& dt);
+  static int parseGYearMonth(const char* str, ascii::size_type strlen, DateTime& dt);
 
   /**
    *  Returns 0 on success
    */
-  static int parseGYear(const char* str, ulong strlen, DateTime& dt);
+  static int parseGYear(const char* str, ascii::size_type strlen, DateTime& dt);
 
   /**
    *  Returns 0 on success
    */
-  static int parseGMonth(const char* str, ulong strlen, DateTime& dt);
+  static int parseGMonth(const char* str, ascii::size_type strlen, DateTime& dt);
 
   /**
    *  Returns 0 on success
    */
-  static int parseGMonthDay(const char* str, ulong strlen, DateTime& dt);
+  static int parseGMonthDay(const char* str, ascii::size_type strlen, DateTime& dt);
 
   /**
    *  Returns 0 on success
    */
-  static int parseGDay(const char* str, ulong strlen, DateTime& dt);
+  static int parseGDay(const char* str, ascii::size_type strlen, DateTime& dt);
 
   static int getDayOfWeek(int year, int month, int day);
 
@@ -243,7 +243,7 @@ public:
 protected:
   static int parse_date(
         const char* str,
-        ulong strlen,
+        ascii::size_type strlen,
         ascii::size_type& position,
         long& year,
         long& month,
@@ -251,7 +251,7 @@ protected:
 
   static int parse_time(
         const char* str,
-        ulong strlen,
+        ascii::size_type strlen,
         ascii::size_type& position,
         long& hour,
         long& minute,

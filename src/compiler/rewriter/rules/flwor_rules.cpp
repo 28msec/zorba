@@ -828,7 +828,7 @@ static bool is_subseq_pred(
           std::vector<ulong> posExprVarIds;
           exprVarMap[posExpr].getSet(posExprVarIds);
 
-          ulong numPosExprVars = posExprVarIds.size();
+          ulong numPosExprVars = (ulong)posExprVarIds.size();
           for (ulong i = 0; i < numPosExprVars; ++i)
           {
             if (posExprVarIds[i] >= forVarId)

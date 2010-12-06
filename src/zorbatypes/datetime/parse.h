@@ -44,7 +44,7 @@ namespace zorba
 ********************************************************************************/
 int parse_long(
     const char* str,
-    ulong str_len,
+    ascii::size_type str_len,
     ascii::size_type& position,
     long& result,
     long min_digits = -1,
@@ -62,7 +62,7 @@ int parse_long(
 ********************************************************************************/
 ZORBA_DLL_PUBLIC inline double parse_frac(
     const char* str,
-    ulong strlen,
+    ascii::size_type strlen,
     ascii::size_type& position,
     double& result)
 {
@@ -82,12 +82,12 @@ ZORBA_DLL_PUBLIC inline double parse_frac(
 }
 
 
-ZORBA_DLL_PUBLIC inline std::string to_string(int value, int min_digits = 0)
+ZORBA_DLL_PUBLIC inline std::string to_string(int value, unsigned int min_digits = 0)
 {
   std::string zeros = "";
   const std::string& temp = NumConversions::longToStr(value).str();
   
-  for (int i=temp.size(); i<min_digits; i++)
+  for (unsigned int i=(unsigned int)temp.size(); i<min_digits; i++)
     zeros += '0';
        
   return zeros + temp;

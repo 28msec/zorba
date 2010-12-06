@@ -71,7 +71,7 @@ namespace zorba { namespace http_client {
     }
     size_t result;
     if (!sbuffer->theStatusOnly) {
-      result = sbuffer->sputn(buffer, size*nitems);
+      result = sbuffer->sputn(buffer, (std::streamsize)(size*nitems));
       sbuffer->setg(sbuffer->eback(), sbuffer->gptr(), sbuffer->pptr());
     } else {
       result = size*nitems;
@@ -88,7 +88,7 @@ namespace zorba { namespace http_client {
     char* _gptr = gptr();
     char* _eback = eback();
 
-    int new_size = 2 * (epptr() - _eback);
+    int new_size = (int)(2 * (epptr() - _eback));
     if (new_size == 0)
       new_size = INITIAL_BUFFER_SIZE;
 

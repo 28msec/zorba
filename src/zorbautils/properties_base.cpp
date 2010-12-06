@@ -152,7 +152,7 @@ string PropertiesBase::load_env(const string& env_pfx, const char** options)
     }
   }
   
-  int nargs = arg_vec.size();
+  int nargs = (int)arg_vec.size();
 
   if (nargs == 1)
   {

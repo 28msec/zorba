@@ -49,7 +49,7 @@ static PlanIter_t compile(
   XQueryCompiler compiler(ccb);
   std::stringstream os;
 
-  os.write(query.data(), query.size());
+  os.write(query.data(), (std::streamsize)query.size());
 
   zstring dummyname;
   parsenode_t ast = compiler.parse(os, dummyname);

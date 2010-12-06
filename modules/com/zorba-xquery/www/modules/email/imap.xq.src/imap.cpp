@@ -188,7 +188,7 @@ ListFunction::evaluate(
     return ItemSequence_t(new EmptySequence());
   }   
 
-  int lVectorSize = lListedMailboxes.size();
+  int lVectorSize = (int)lListedMailboxes.size();
   std::vector<Item> lItemVector;
   for (int i = 0; i < lVectorSize; i++) {
     lItemVector.push_back(theModule->getItemFactory()->createString(lListedMailboxes[i]));
@@ -318,7 +318,7 @@ SearchFunction::evaluate(
     ImapFunction::throwImapError(lErrorMessage);
   }
      
-  int lVectorSize =lFoundSequenceNumbers.size();
+  int lVectorSize =(int)lFoundSequenceNumbers.size();
   std::vector<Item> lItemVector;
   for (int i = 0; i < lVectorSize; i++) {
     lItemVector.push_back(theModule->getItemFactory()->createLong(lFoundSequenceNumbers[i]));

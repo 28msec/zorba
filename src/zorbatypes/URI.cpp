@@ -230,7 +230,7 @@ bool URI::is_well_formed_address(const char* addr, ulong addrLen)
   zstring_b wrap;
   wrap.wrap_memory(addr, addrLen);
 
-  ulong lLastPeriodPos = wrap.rfind(".");
+  zstring::size_type lLastPeriodPos = wrap.rfind(".");
 
   if ( lLastPeriodPos != zstring::npos && lLastPeriodPos + 1 == addrLen ) 
   {
@@ -597,15 +597,15 @@ void URI::initialize(const zstring& uri, bool have_base)
   ascii::normalize_whitespace(uri, &lTrimmedURI);
   ascii::trim_whitespace(lTrimmedURI);
 
-  ulong lTrimmedURILength = lTrimmedURI.size();
+  zstring::size_type lTrimmedURILength = lTrimmedURI.size();
 
   // index of the current processing state used in this function
   ulong lIndex = 0;
 
-  ulong lColonIdx    = lTrimmedURI.find(":");
-  ulong lSlashIdx    = lTrimmedURI.find("/");
-  ulong lQueryIdx    = lTrimmedURI.find("?");
-  ulong lFragmentIdx = lTrimmedURI.find("#");
+  zstring::size_type lColonIdx    = lTrimmedURI.find(":");
+  zstring::size_type lSlashIdx    = lTrimmedURI.find("/");
+  zstring::size_type lQueryIdx    = lTrimmedURI.find("?");
+  zstring::size_type lFragmentIdx = lTrimmedURI.find("#");
 
 #ifdef WIN32
   // on WIN32 we might have a drive specification ("C:")
@@ -645,7 +645,7 @@ void URI::initialize(const zstring& uri, bool have_base)
   {
     initializeScheme(lTrimmedURI);
 
-    lIndex = theScheme.size() + 1;
+    lIndex = (ulong)theScheme.size() + 1;
   }
 
   /**
@@ -736,7 +736,7 @@ void URI::initialize(const zstring& uri, bool have_base)
 ********************************************************************************/
 void URI::initializeScheme(const zstring& uri)
 {
-  ulong lSchemeSeparatorIdx = uri.find_first_of(":/?#", 0,4 );
+  zstring::size_type lSchemeSeparatorIdx = uri.find_first_of(":/?#", 0,4 );
   
   if ( valid && lSchemeSeparatorIdx == zstring::npos ) 
   {
@@ -769,9 +769,9 @@ void URI::initializeScheme(const zstring& uri)
 ********************************************************************************/
 void URI::initializeAuthority(const zstring& uri)
 {
-  ulong lIndex = 0;
-  ulong lStart = 0;
-  ulong lEnd = uri.size();
+  zstring::size_type lIndex = 0;
+  zstring::size_type lStart = 0;
+  zstring::size_type lEnd = uri.size();
 
   zstring lUserInfo;
   bool lUserInfoFound;
@@ -885,7 +885,7 @@ bool URI::is_valid_server_based_authority(
     const zstring& user_info,
     bool user_info_found)
 {
-  if ( !is_well_formed_address(host.c_str(), host.size()) )  
+  if ( !is_well_formed_address(host.c_str(), (ulong)host.size()) )  
   {
     return false;
   }
@@ -930,7 +930,7 @@ void URI::initializePath(const zstring& uri)
 
   ulong lIndex = 0;
   ulong lStart = 0;
-  ulong lEnd = lCodepoints.size();
+  ulong lEnd = (ulong)lCodepoints.size();
   uint32_t lCp = 0;
 
   if (uri.empty())
@@ -1241,7 +1241,7 @@ void URI::resolve(const URI* base_uri)
     initialize(*base_uri);
   }
 
-  ulong lIndex = 0;
+  zstring::size_type lIndex = 0;
 
   // If the path component is empty and the scheme, authority, and
   // query components are undefined, then it is a reference to the
@@ -1283,7 +1283,7 @@ void URI::resolve(const URI* base_uri)
       zstring path;
       base_uri->get_path(path);
 
-      ulong last_slash = path.rfind("/");
+      zstring::size_type last_slash = path.rfind("/");
       if ( last_slash != zstring::npos )
         thePath = path.substr(0, last_slash+1);
       else 
@@ -1369,7 +1369,7 @@ void URI::resolve(const URI* base_uri)
 
   if ( base_uri->is_set(Path) ) 
   {
-    ulong last_slash = base_path.rfind("/");
+    zstring::size_type last_slash = base_path.rfind("/");
     if ( last_slash != zstring::npos )
       path = base_path.substr(0, last_slash+1);
 //  else
@@ -1395,8 +1395,8 @@ void URI::resolve(const URI* base_uri)
   // buffer string.  Removal of these path segments is performed
   // iteratively, removing the leftmost matching pattern on each
   // iteration, until no matching pattern remains.
-  ulong segIndex;
-  ulong offset = 1;
+  zstring::size_type segIndex;
+  zstring::size_type offset = 1;
 
   zstring_b tmp_path;
   tmp_path.wrap_memory(const_cast<char*>(path.c_str() + 1), path.size() - 1);

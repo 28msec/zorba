@@ -979,7 +979,7 @@ public:
 
   void add_clause(catch_clause_t cc);
   
-  uint32_t clause_count() const { return theCatchClauses.size(); }
+  uint32_t clause_count() const { return (uint32_t)theCatchClauses.size(); }
   
   catch_clause_t const& operator[](int i) const { return theCatchClauses[i]; }
 
@@ -1044,7 +1044,7 @@ public:
 
   expr* get_arg_expr(ulong i) { return theArgs[i].getp(); }
 
-  unsigned var_count() const { return vars.size (); }
+  unsigned var_count() const { return (unsigned)vars.size (); }
 
   eval_var& get_var(ulong i) { return vars[i]; }
 
@@ -1239,7 +1239,7 @@ public:
         const QueryLoc&,
         checked_vector<expr_t>& seq);
 
-  unsigned size() const { return theArgs.size(); }
+  unsigned size() const { return (unsigned)theArgs.size(); }
 
   const expr_t& operator[](int i) const { return theArgs[i]; }
 

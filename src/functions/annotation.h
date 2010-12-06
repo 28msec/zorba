@@ -133,7 +133,7 @@ public:
   AnnotationList() {};
   AnnotationList(const AnnotationListParsenode* annotations);
 
-  unsigned int size() const { return theAnnotationList.size(); }
+  ulong size() const { return (ulong)theAnnotationList.size(); }
 
   const AnnotationInternal* getAnnotation(unsigned int index) const;
 

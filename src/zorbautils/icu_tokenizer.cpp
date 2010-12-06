@@ -44,7 +44,7 @@ namespace {
 
 class token {
 public:
-  void append( char const *s, int slen ) {
+  void append( char const *s, size_t slen ) {
     value_.append( s, slen );
   }
 
@@ -66,7 +66,7 @@ public:
     }
   }
 
-  void set( char const *s, int slen, int pos, int sent, int para ) {
+  void set( char const *s, size_t slen, int pos, int sent, int para ) {
     clear();
     append( s, slen );
     pos_  = pos;
@@ -186,14 +186,14 @@ ICU_Tokenizer::ICU_Tokenizer( bool wildcards ) : wildcards_( wildcards ) {
 #define IS_WORD_BREAK(TYPE,STATUS) \
   ( (STATUS) >= UBRK_WORD_##TYPE && (STATUS) < UBRK_WORD_##TYPE##_LIMIT )
 
-void ICU_Tokenizer::tokenize( char const *utf8_s, int utf8_len,
+void ICU_Tokenizer::tokenize( char const *utf8_s, size_t utf8_len,
                               iso639_1::type lang, Callback &callback,
                               void *payload ) {
   ICU_Iterators &iters = get_iterators_for( lang );
 
   unicode::char_type *utf16_buf;
   unicode::size_type utf16_len;
-  if ( !unicode::to_string( utf8_s, utf8_len, &utf16_buf, &utf16_len ) ) {
+  if ( !unicode::to_string( utf8_s, (unicode::size_type)utf8_len, &utf16_buf, &utf16_len ) ) {
     // TODO
   }
   auto_vec<unicode::char_type> const auto_utf16_buf( utf16_buf );

@@ -70,7 +70,7 @@ static void toHexString(unsigned char ch, char result[])
 ********************************************************************************/
 static void tokenize(
     const char* str,
-    ulong strlen,
+    zstring::size_type strlen,
     const char* separators,
     ulong seplen,
     std::vector<zstring>& tokens)
@@ -131,7 +131,7 @@ serializer::emitter::emitter(serializer* the_serializer, transcoder& the_transco
 ********************************************************************************/
 serializer::emitter::~emitter()
 {
-  ulong numIters = theChildIters.size();
+  ulong numIters = (ulong)theChildIters.size();
   for (ulong i = 0; i < numIters; i++)
     delete theChildIters[i];
 
@@ -170,7 +170,7 @@ void serializer::emitter::releaseChildIter(store::ChildrenIterator* iter)
 ********************************************************************************/
 void serializer::emitter::emit_expanded_string(
   const char* str,
-  ulong strlen,
+  zstring::size_type strlen,
   bool emit_attribute_value = false)
 {
   const unsigned char* chars = (const unsigned char*)str;
@@ -519,10 +519,10 @@ void serializer::emitter::emit_text_node(
           zstring::size_type pos2 = text.find("]]>", pos1, 3);
           if ( pos2 != zstring::npos)
           {
-            ulong n = pos2 + 2 - pos1;
+            zstring::size_type n = pos2 + 2 - pos1;
 
             tr << "<![CDATA[";
-            tr.write(textp, n) << "]]>";
+            tr.write(textp, (std::streamsize)n) << "]]>";
             pos1 += n; 
             textp += n;
           }
@@ -634,7 +634,7 @@ bool serializer::emitter::emit_bindings(const store::Item* item)
   store::NsBindings nsBindings;
   item->getNamespaceBindings(nsBindings);
 
-  ulong numBindings = nsBindings.size();
+  ulong numBindings = (ulong)nsBindings.size();
 
   for (ulong i = 0; i < numBindings; ++i)
   {
@@ -1552,7 +1552,7 @@ void serializer::sax2_emitter::emit_item(const store::Item* item)
 ********************************************************************************/
 void serializer::sax2_emitter::emit_expanded_string(
   const char* str,
-  ulong strlen,
+  zstring::size_type strlen,
   bool aEmitAttributeValue)
 {
   if ( theSAX2ContentHandler )

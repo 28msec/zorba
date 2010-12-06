@@ -506,7 +506,7 @@ void serialize_my_children(Archiver &ar, store::Iterator_t iter)
     std::vector<store::Item_t>  childs;
     iterator_to_vector(iter, childs);
     std::vector<store::Item_t>::iterator  child_it;
-    int child_count = childs.size();
+    int child_count = (int)childs.size();
     ar & child_count;
 //    ar.set_is_temp_field(false);
     for(child_it = childs.begin(); child_it != childs.end(); child_it++)

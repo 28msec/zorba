@@ -318,19 +318,19 @@ utf_error validate_next(octet_iterator& it, octet_iterator end, uint32_t* code_p
   
   if (cp < 0x80) {
     if (length != 1) {
-      std::advance(it, -(length-1));
+      std::advance(it, -(int)(length-1));
       return OVERLONG_SEQUENCE;
     }
   }
   else if (cp < 0x800) {
     if (length != 2) {
-      std::advance(it, -(length-1));
+      std::advance(it, -(int)(length-1));
       return OVERLONG_SEQUENCE;
     }
   }
   else if (cp < 0x10000) {
     if (length != 3) {
-      std::advance(it, -(length-1));
+      std::advance(it, -(int)(length-1));
       return OVERLONG_SEQUENCE;
     }
   }

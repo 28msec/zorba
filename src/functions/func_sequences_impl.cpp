@@ -40,7 +40,7 @@ xqtref_t op_concatenate::getReturnType(
     const TypeManager* tm,
     const std::vector<xqtref_t>& arg_types) const 
 {
-  int sz = arg_types.size();
+  ulong sz = (ulong)arg_types.size();
 
   if (sz == 0)
   {
@@ -50,7 +50,7 @@ xqtref_t op_concatenate::getReturnType(
   {
     xqtref_t t = arg_types[0];
     TypeConstants::quantifier_t q = TypeConstants::QUANT_STAR;
-    for (int i = 1; i < sz; i++) 
+    for (ulong i = 1; i < sz; i++) 
     {
       t = TypeOps::union_type(*t, *arg_types[i], tm);
       TypeConstants::quantifier_t pq = TypeOps::quantifier(*t);

@@ -216,7 +216,7 @@ public:
 
   long find_var(const var_expr* var) const
   {
-    ulong numVars = theVarExprs.size();
+    ulong numVars = (ulong)theVarExprs.size();
     for (ulong i = 0; i < numVars; ++i)
     {
       if (theVarExprs[i] == var)
@@ -464,7 +464,7 @@ void end_visit(dynamic_function_invocation_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 
-  ulong numArgs = v.get_args().size() + 1;
+  ulong numArgs = (ulong)v.get_args().size() + 1;
 
   std::vector<PlanIter_t> argIters(numArgs);
 
@@ -676,7 +676,7 @@ void general_var_codegen(const var_expr& var)
   {
     ZORBA_ASSERT(!theClauseStack.empty());
 
-    long stackSize = theClauseStack.size();
+    long stackSize = (long)theClauseStack.size();
     long varPos;
     VarRebind_t varRebind;
     PlanIter_t varIter;
@@ -1196,7 +1196,7 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
   if (c.get_kind() != flwor_clause::where_clause)
   {
     ZORBA_ASSERT(!theClauseStack.empty());
-    ulong stackSize = theClauseStack.size();
+    ulong stackSize = (ulong)theClauseStack.size();
 
     clauseVarMap = theClauseStack[stackSize-1];
     theClauseStack.resize(stackSize - 1);
@@ -1346,7 +1346,7 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
   //
   else if (c.get_kind() == flwor_clause::order_clause)
   {
-    ulong numVars = clauseVarMap->theVarRebinds.size();
+    ulong numVars = (ulong)clauseVarMap->theVarRebinds.size();
     ulong numForVars = 0;
     ulong numLetVars = 0;
 
@@ -1457,7 +1457,7 @@ void flwor_codegen(const flwor_expr& flworExpr)
     if (c.get_kind() != flwor_clause::where_clause)
     {
       ZORBA_ASSERT(!theClauseStack.empty());
-      ulong stackSize = theClauseStack.size();
+      ulong stackSize = (ulong)theClauseStack.size();
 
       clauseVarMap = theClauseStack[stackSize-1];
       theClauseStack.resize(stackSize - 1);
@@ -1601,8 +1601,8 @@ void generate_groupby(
   const group_clause::rebind_list_t& gvars = gbc->get_grouping_vars();
   const group_clause::rebind_list_t& ngvars = gbc->get_nongrouping_vars();
   const vector<string>& collations = gbc->get_collations();
-  long numVars = gvars.size() + ngvars.size();
-  long numGroupVars = gvars.size();
+  long numVars = (long)(gvars.size() + ngvars.size());
+  long numGroupVars = (long)gvars.size();
   long i = numVars - 1;
 
   for (; i >= numGroupVars; --i)

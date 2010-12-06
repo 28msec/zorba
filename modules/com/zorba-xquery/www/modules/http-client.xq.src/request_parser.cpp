@@ -33,7 +33,7 @@ namespace zorba { namespace http_client {
     unsigned theSize;
   public:
     AttributesSequence(std::vector<Item>& aItems)
-      : theItems(aItems), thePosition(0), theSize(aItems.size()) {}
+      : theItems(aItems), thePosition(0), theSize((unsigned)aItems.size()) {}
     virtual bool next(Item& aItem)
     {
       if (thePosition < theSize) {

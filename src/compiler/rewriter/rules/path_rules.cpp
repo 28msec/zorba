@@ -27,7 +27,7 @@ RULE_REWRITE_PRE(EliminateExtraneousPathSteps)
 {
   relpath_expr *re = dynamic_cast<relpath_expr *>(node);
   if (re != NULL) {
-    ulong numSteps = re->size();
+    ulong numSteps = (ulong)re->size();
     
     for (ulong i = 0; i < numSteps - 1; i++) {
       axis_step_expr* axisStep = dynamic_cast<axis_step_expr*>((*re)[i].getp());

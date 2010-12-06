@@ -45,7 +45,7 @@ WidthFunction::evaluate(
 
   Magick::Image lImage;
   ImageFunction::getOneImageArg(aDynCtx, aArgs, 0, lImage);
-  int lResult = lImage.columns();
+  unsigned int lResult = (unsigned int)lImage.columns();
   return ItemSequence_t(new SingletonItemSequence(
       theModule->getItemFactory()->createUnsignedInt(lResult)));
 
@@ -66,7 +66,7 @@ HeightFunction::evaluate(
 
   Magick::Image lImage;
   ImageFunction::getOneImageArg(aDynCtx, aArgs, 0, lImage);
-  int lResult = lImage.rows();
+  unsigned int lResult = (unsigned int)lImage.rows();
   return ItemSequence_t(new SingletonItemSequence(
       theModule->getItemFactory()->createUnsignedInt(lResult)));
 

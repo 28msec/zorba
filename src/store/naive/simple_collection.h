@@ -85,7 +85,7 @@ public:
 
   const store::Item* getName() const { return theName.getp(); }
 
-  ulong size() const { return theXmlTrees.size(); }
+  ulong size() const { return (ulong)theXmlTrees.size(); }
 
   // virtual to allow extension by subclasses
   virtual ulong createTreeId() { return theTreeCounter++; }

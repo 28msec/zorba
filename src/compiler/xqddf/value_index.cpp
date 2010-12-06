@@ -265,7 +265,7 @@ void IndexDecl::analyze()
 
   std::vector<expr*> keySources;
 
-  ulong numKeys = theKeyExprs.size();
+  ulong numKeys = (ulong)theKeyExprs.size();
 
   if (theIsGeneral && numKeys > 1)
   {
@@ -427,7 +427,7 @@ expr* IndexDecl::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
   static_context* sctx = domainExpr->get_sctx();
   const QueryLoc& dotloc = dot->get_loc();
 
-  ulong numKeys = theKeyExprs.size();
+  ulong numKeys = (ulong)theKeyExprs.size();
   std::vector<expr_t> clonedExprs(numKeys + 1);
 
   //
@@ -539,7 +539,7 @@ DocIndexer* IndexDecl::getDocIndexer(CompilerCB* ccb, const QueryLoc& loc)
 
   const QueryLoc& dotloc = dot->get_loc();
 
-  ulong numKeys = theKeyExprs.size();
+  ulong numKeys = (ulong)theKeyExprs.size();
   std::vector<expr_t> clonedExprs(numKeys + 1);
 
   //
@@ -658,7 +658,7 @@ std::string IndexDecl::toString()
   os << "Domain Variable : ";
   getDomainVariable()->put(os);
 
-  ulong numColumns = theKeyExprs.size();
+  ulong numColumns = (ulong)theKeyExprs.size();
 
   for (ulong i = 0; i < numColumns; ++i)
   {

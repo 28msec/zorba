@@ -58,7 +58,7 @@ public:
   bool         theIsFree;
   T            theItem;
   V            theValue;
-  long         theNext;  // offset from "this" to the next entry.
+  ptrdiff_t    theNext;  // offset from "this" to the next entry.
 
 #ifdef ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
   SERIALIZABLE_TEMPLATE_CLASS(HASHENTRY)
@@ -155,10 +155,10 @@ public:
 
   protected:
     const checked_vector<HASHENTRY<T, V> >*  theHashTab;
-    ulong                                    thePos;
+    size_t                                    thePos;
 
   protected:
-    iterator(const checked_vector<HASHENTRY<T, V> >* ht, ulong pos)
+    iterator(const checked_vector<HASHENTRY<T, V> >* ht, size_t pos)
       :
       theHashTab(ht),
       thePos(pos)
@@ -238,8 +238,8 @@ public:
 protected:
   ulong                             theNumEntries;
 
-  ulong                             theHashTabSize;
-  ulong                             theInitialSize;
+  size_t                            theHashTabSize;
+  size_t                            theInitialSize;
   checked_vector<HASHENTRY<T, V> >  theHashTab;
   double                            theLoadFactor;
   C                                 theCompareFunction;
@@ -342,7 +342,7 @@ public:
   depends on some parametrs (e.g. the collation or timezone). These parameters
   are provided as data members of the given comparison-function obj.
 ********************************************************************************/
-HASHMAP(const C& compFunction, ulong size, bool sync, bool useTransfer = false)
+HASHMAP(const C& compFunction, size_t size, bool sync, bool useTransfer = false)
   :
   theNumEntries(0),
   theHashTabSize(size),
@@ -369,7 +369,7 @@ HASHMAP(const C& compFunction, ulong size, bool sync, bool useTransfer = false)
   theCompareFunction data member is initialized with the default constructor
   of the C class.
 ********************************************************************************/
-HASHMAP(ulong size, bool sync, bool useTransfer = false)
+HASHMAP(size_t size, bool sync, bool useTransfer = false)
   :
   theNumEntries(0),
   theHashTabSize(size),
@@ -420,7 +420,7 @@ C get_compare_function()
 /*******************************************************************************
 
 ********************************************************************************/
-ulong capacity() const
+size_t capacity() const
 {
   return theHashTab.size();
 }
@@ -436,9 +436,9 @@ void clear()
   theNumEntries = 0;
   numCollisions = 0;
 
-  ulong n = (ulong)theHashTab.size();
+  size_t n = theHashTab.size();
 
-  for (ulong i = 0; i < n; ++i)
+  for (size_t i = 0; i < n; ++i)
   {
     theHashTab[i].~HASHENTRY<T, V>();
   }
@@ -710,7 +710,7 @@ protected:
 /*******************************************************************************
 
 ********************************************************************************/
-ulong computeTabSize(ulong size)
+size_t computeTabSize(size_t size)
 {
   return size + 32 + size/5;
 }
@@ -868,7 +868,7 @@ retry:
   // If no free entry exists, we extend the collision area of the hash table.
   if (freelist()->getNext() == 0)
   {
-    long offset = headEntry - &theHashTab[0];
+    ptrdiff_t offset = headEntry - &theHashTab[0];
     extendCollisionArea();
     headEntry = &theHashTab[0] + offset;
   }
@@ -889,9 +889,9 @@ retry:
 ********************************************************************************/
 void extendCollisionArea()
 {
-  ulong oldSize = theHashTab.size();
-  ulong numCollisionEntries = oldSize - theHashTabSize;
-  ulong newSize = theHashTabSize + 2 * numCollisionEntries;
+  size_t oldSize = theHashTab.size();
+  size_t numCollisionEntries = oldSize - theHashTabSize;
+  size_t newSize = theHashTabSize + 2 * numCollisionEntries;
 
   //foo();  for setting a breakpoint
 
@@ -922,7 +922,7 @@ void formatCollisionArea(HASHENTRY<T, V>* firstentry = NULL)
 /*******************************************************************************
 
 ********************************************************************************/
-void resizeHashTab(ulong newSize)
+void resizeHashTab(size_t newSize)
 {
   HASHENTRY<T, V>* entry;
   HASHENTRY<T, V>* oldentry;
@@ -931,7 +931,7 @@ void resizeHashTab(ulong newSize)
   checked_vector<HASHENTRY<T, V> > oldTab(computeTabSize(newSize));
   theHashTab.swap(oldTab);
 
-  ulong oldsize = oldTab.size();
+  size_t oldsize = oldTab.size();
   theHashTabSize = newSize;
 
   formatCollisionArea();
@@ -939,7 +939,7 @@ void resizeHashTab(ulong newSize)
   numCollisions = 0;
 
   // Now rehash every entry
-  for (ulong i = 0; i < oldsize; i++)
+  for (size_t i = 0; i < oldsize; i++)
   {
     oldentry = &oldTab[i];
 
@@ -956,7 +956,7 @@ void resizeHashTab(ulong newSize)
       // table. If no free entry exists, extend the collision area.
       if (freelist()->getNext() == NULL)
       {
-        long offset = headEntry - &theHashTab[0];
+        ptrdiff_t offset = headEntry - &theHashTab[0];
         extendCollisionArea();
         headEntry = &theHashTab[0] + offset;
       }

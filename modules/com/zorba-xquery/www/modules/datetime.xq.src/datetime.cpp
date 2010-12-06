@@ -66,8 +66,8 @@ CurrentDateTimeFunction::evaluate(
 
   zorba::Item lDateTime = 
     Zorba::getInstance(0)->getItemFactory()->createDateTime(
-      gmtm.tm_year + 1900, gmtm.tm_mon + 1, gmtm.tm_mday, gmtm.tm_hour,
-      gmtm.tm_min, gmtm.tm_sec + lMilliTm/1000.0, lTimezone/3600);
+      (short)(gmtm.tm_year + 1900), (short)(gmtm.tm_mon + 1), (short)gmtm.tm_mday, (short)gmtm.tm_hour,
+      (short)gmtm.tm_min, gmtm.tm_sec + lMilliTm/1000.0, (short)(lTimezone/3600));
 
   return zorba::ItemSequence_t(new zorba::SingletonItemSequence(lDateTime));
 }
@@ -109,7 +109,7 @@ CurrentTimeFunction::evaluate(
 
   zorba::Item lDateTime = 
     Zorba::getInstance(0)->getItemFactory()->createTime(
-      gmtm.tm_hour, gmtm.tm_min, gmtm.tm_sec + lMilliTm/1000.0, lTimezone/3600);
+      (short)gmtm.tm_hour, (short)gmtm.tm_min, gmtm.tm_sec + lMilliTm/1000.0, (short)(lTimezone/3600));
 
   return zorba::ItemSequence_t(new zorba::SingletonItemSequence(lDateTime));
 }

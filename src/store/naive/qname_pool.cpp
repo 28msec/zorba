@@ -62,7 +62,7 @@ QNamePool::QNamePool(ulong size, StringPool* nspool)
 ********************************************************************************/
 QNamePool::~QNamePool() 
 {
-  ulong n = theHashSet.theHashTab.size();
+  ulong n = (ulong)theHashSet.theHashTab.size();
   for (ulong i = 0; i < n; i++)
   {
     if (!theHashSet.theHashTab[i].isFree())
@@ -155,7 +155,7 @@ retry:
     haveLock = true;)
 
     QNHashEntry* entry = hashFind(ns, pre, ln,
-                                  pooledNs.size(), strlen(pre), strlen(ln),
+                                  (ulong)pooledNs.size(), (ulong)strlen(pre), (ulong)strlen(ln),
                                   hval);
     if (entry == 0)
     {
@@ -251,7 +251,7 @@ retry:
     haveLock = true;)
 
     QNHashEntry* entry = hashFind(ns.c_str(), pre.c_str(), ln.c_str(),
-                                  ns.size(), pre.size(), ln.size(),
+                                  (ulong)ns.size(), (ulong)pre.size(), (ulong)ln.size(),
                                   hval);
     if (entry == 0)
     {

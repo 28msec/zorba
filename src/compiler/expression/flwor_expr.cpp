@@ -595,8 +595,8 @@ group_clause::group_clause(
   theNonGroupVars(ngvars),
   theCollations(collations)
 {
-  ulong numGVars = theGroupVars.size();
-  ulong numNGVars = theNonGroupVars.size();
+  ulong numGVars = (ulong)theGroupVars.size();
+  ulong numNGVars = (ulong)theNonGroupVars.size();
 
   for (ulong i = 0; i < numGVars; ++i)
     theGroupVars[i].second->set_flwor_clause(this);
@@ -608,8 +608,8 @@ group_clause::group_clause(
 
 group_clause::~group_clause()
 {
-  ulong numGVars = theGroupVars.size();
-  ulong numNGVars = theNonGroupVars.size();
+  ulong numGVars = (ulong)theGroupVars.size();
+  ulong numNGVars = (ulong)theNonGroupVars.size();
 
   for (ulong i = 0; i < numGVars; ++i)
     theGroupVars[i].second->set_flwor_clause(NULL);
@@ -630,7 +630,7 @@ void group_clause::serialize(::zorba::serialization::Archiver& ar)
 
 expr* group_clause::get_input_for_group_var(const var_expr* var)
 {
-  ulong numVars = theGroupVars.size();
+  ulong numVars = (ulong)theGroupVars.size();
   for (ulong i = 0; i < numVars; ++i)
   {
     if (theGroupVars[i].second.getp() == var)
@@ -643,7 +643,7 @@ expr* group_clause::get_input_for_group_var(const var_expr* var)
 
 expr* group_clause::get_input_for_nongroup_var(const var_expr* var)
 {
-  ulong numVars = theNonGroupVars.size();
+  ulong numVars = (ulong)theNonGroupVars.size();
   for (ulong i = 0; i < numVars; ++i)
   {
     if (theNonGroupVars[i].second.getp() == var)
@@ -656,8 +656,8 @@ expr* group_clause::get_input_for_nongroup_var(const var_expr* var)
 
 flwor_clause_t group_clause::clone(expr::substitution_t& subst) const
 {
-  ulong numGroupVars = theGroupVars.size();
-  ulong numNonGroupVars = theNonGroupVars.size();
+  ulong numGroupVars = (ulong)theGroupVars.size();
+  ulong numNonGroupVars = (ulong)theNonGroupVars.size();
 
   rebind_list_t cloneGroupVars(numGroupVars);
   rebind_list_t cloneNonGroupVars(numNonGroupVars);
@@ -966,7 +966,7 @@ long flwor_expr::defines_variable(const var_expr* v) const
   if (varClause == NULL)
     return -1;
 
-  ulong numClauses = theClauses.size();
+  ulong numClauses = (ulong)theClauses.size();
 
   for (ulong i = 0; i < numClauses; ++i)
   {
@@ -984,7 +984,7 @@ long flwor_expr::defines_variable(const var_expr* v) const
 ********************************************************************************/
 void flwor_expr::get_vars_defined(std::vector<var_expr*>& varExprs) const
 {
-  ulong numClauses = theClauses.size();
+  ulong numClauses = (ulong)theClauses.size();
 
   for (ulong i = 0; i < numClauses; ++i)
   {

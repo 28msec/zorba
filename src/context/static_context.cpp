@@ -1774,7 +1774,7 @@ void static_context::get_namespace_bindings(store::NsBindings& bindings) const
 
         // Ignore duplicates
         const zstring& prefix = binding.first;
-        ulong numBindings = bindings.size();
+        ulong numBindings = (ulong)bindings.size();
         bool found = 0;
         for (unsigned int i = 0; i < numBindings; ++i)
         {
@@ -1936,7 +1936,7 @@ void static_context::getVariables(std::vector<var_expr_t>& vars) const
 
       for (; ite != end; ++ite)
       {
-        ulong numVars = vars.size();
+        ulong numVars = (ulong)vars.size();
         ulong i = 0;
         for (; i < numVars; ++i)
         {
@@ -2039,7 +2039,7 @@ void static_context::bind_fn(
 
     if (theFunctionArityMap->get(qname, fv))
     {
-      ulong numFunctions = fv->size();
+      ulong numFunctions = (ulong)fv->size();
       for (ulong i = 0; i < numFunctions; ++i)
       {
         if ((*fv)[i].theFunction == f)
@@ -2103,7 +2103,7 @@ void static_context::unbind_fn(
 
     if (theFunctionArityMap->get(qname2, fv))
     {
-      ulong numFunctions = fv->size();
+      ulong numFunctions = (ulong)fv->size();
       for (ulong i = 0; i < numFunctions; ++i)
       {
         if ((*fv)[i].theFunction.getp() == f)
@@ -2158,7 +2158,7 @@ function* static_context::lookup_fn(
       if (sctx->theFunctionArityMap != NULL &&
           sctx->theFunctionArityMap->get(qname2, fv))
       {
-        ulong numFunctions = fv->size();
+        ulong numFunctions = (ulong)fv->size();
         for (ulong i = 0; i < numFunctions; ++i)
         {
           if ((*fv)[i].theFunction->getArity() == arity)
@@ -2260,7 +2260,7 @@ void static_context::get_functions(
       {
         std::vector<FunctionInfo>* fv = (*ite).second;
 
-        ulong numFunctions = fv->size();
+        ulong numFunctions = (ulong)fv->size();
         for (ulong i = 0; i < numFunctions; ++i)
         {
           function* f = (*fv)[i].theFunction.getp();
@@ -2336,7 +2336,7 @@ void static_context::find_functions(
 
   if (theFunctionArityMap != NULL && theFunctionArityMap->get(qname2, fv))
   {
-    ulong numFunctions = fv->size();
+    ulong numFunctions = (ulong)fv->size();
     for (ulong i = 0; i < numFunctions; ++i)
     {
       if (!(*fv)[i].theIsDisabled)
@@ -3392,7 +3392,7 @@ void static_context::add_decimal_format(
   if (theDecimalFormats == NULL)
     theDecimalFormats = new std::vector<DecimalFormat_t>;
 
-  ulong num = theDecimalFormats->size();
+  ulong num = (ulong)theDecimalFormats->size();
   for (ulong i = 0; i < num; ++i)
   {
     const DecimalFormat_t& format = (*theDecimalFormats)[i];
@@ -3417,7 +3417,7 @@ DecimalFormat_t static_context::get_decimal_format(const store::Item_t& qname)
 {
   if (theDecimalFormats != NULL)
   {
-    ulong num = theDecimalFormats->size();
+    ulong num = (ulong)theDecimalFormats->size();
 
     for (ulong i = 0; i < num; ++i)
     {
@@ -3454,7 +3454,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
     {
       theVariablesMap = new VariableMap(0,
                                         NULL,
-                                        module->theVariablesMap->capacity(),
+                                        (ulong)module->theVariablesMap->capacity(),
                                         false);
     }
 
@@ -3488,7 +3488,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
     {
       theFunctionMap = new FunctionMap(0,
                                        NULL,
-                                       module->theFunctionMap->capacity(),
+                                       (ulong)module->theFunctionMap->capacity(),
                                        false);
     }
 
@@ -3535,7 +3535,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
     {
       theFunctionArityMap = new FunctionArityMap(0,
                                                  NULL,
-                                                 module->theFunctionArityMap->capacity(),
+                                                 (ulong)module->theFunctionArityMap->capacity(),
                                                  false);
     }
 
@@ -3544,7 +3544,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
     for (; ite != end; ++ite)
     {
       std::vector<FunctionInfo>* fv = (*ite).second;
-      ulong num = fv->size();
+      ulong num = (ulong)fv->size();
       for (ulong i = 0; i < num; ++i)
       {
         function_t f = (*fv)[i].theFunction;

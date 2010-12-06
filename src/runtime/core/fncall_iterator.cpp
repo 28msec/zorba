@@ -315,7 +315,7 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
         theUDF->getLoc(),
         loc,
         theUDF->getName(),
-        theUDF->getArgVars().size(),
+        (unsigned int)theUDF->getArgVars().size(),
         &uerr);
     throw uerr;
   }
@@ -325,7 +325,7 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
         theUDF->getLoc(),
         loc,
         theUDF->getName(),
-        theUDF->getArgVars().size(),
+        (unsigned int)theUDF->getArgVars().size(),
         &err);
     throw err;
   }
@@ -370,7 +370,7 @@ StatelessExtFunctionCallIteratorState::StatelessExtFunctionCallIteratorState()
 
 StatelessExtFunctionCallIteratorState::~StatelessExtFunctionCallIteratorState()
 {
-  ulong n = m_extArgs.size();
+  ulong n = (ulong)m_extArgs.size();
 
   for (ulong i = 0; i < n; ++i)
   {
@@ -471,9 +471,9 @@ void StatelessExtFunctionCallIterator::openImpl(PlanState& planState, uint32_t& 
   StatelessExtFunctionCallIteratorState* state =
   StateTraitsImpl<StatelessExtFunctionCallIteratorState>::getState(planState,
                                                                    theStateOffset);
-  int n = theChildren.size();
+  ulong n = (ulong)theChildren.size();
   state->m_extArgs.resize(n);
-  for(int i = 0; i < n; ++i)
+  for(ulong i = 0; i < n; ++i)
   {
     state->m_extArgs[i] = new ExtFuncArgItemSequence(theChildren[i], planState);
   }

@@ -90,7 +90,7 @@ inline void applyList(std::vector<UpdatePrimitive*> aVector)
 ********************************************************************************/
 inline void undoList(std::vector<UpdatePrimitive*> list)
 {
-  ulong size = list.size();
+  ulong size = (ulong)list.size();
 
   for (ulong i = size; i > 0; --i) 
   {
@@ -255,7 +255,7 @@ void PULImpl::addDelete(store::Item_t& target)
   }
   else
   {
-    ulong numUpdates = updates->size();
+    ulong numUpdates = (ulong)updates->size();
     for (ulong i = 0; i < numUpdates; i++)
     {
       if ((*updates)[i]->getKind() == store::UpdateConsts::UP_DELETE)
@@ -364,7 +364,7 @@ void PULImpl::addInsertAttributes(
 
   ElementNode* n = ELEM_NODE(target);
 
-  ulong numAttrs = attrs.size();
+  ulong numAttrs = (ulong)attrs.size();
   for (ulong i = 0; i < numAttrs; i++)
   {
     n->checkNamespaceConflict(attrs[i]->getNodeName(), XUDY0023);
@@ -415,7 +415,7 @@ void PULImpl::addReplaceNode(
 
     if (elemParent != NULL)
     {
-      ulong numNewAttrs = newNodes.size();
+      ulong numNewAttrs = (ulong)newNodes.size();
       for (ulong i = 0; i < numNewAttrs; ++i)
       {
         elemParent->checkNamespaceConflict(newNodes[i]->getNodeName(), XUDY0023); 
@@ -441,7 +441,7 @@ void PULImpl::addReplaceNode(
   }
   else
   {
-    ulong numUpdates = updates->size();
+    ulong numUpdates = (ulong)updates->size();
     for (ulong i = 0; i < numUpdates; i++)
     {
       if ((*updates)[i]->getKind() == kind)
@@ -481,7 +481,7 @@ void PULImpl::addReplaceContent(
   }
   else
   {
-    ulong numUpdates = updates->size();
+    ulong numUpdates = (ulong)updates->size();
     for (ulong i = 0; i < numUpdates; i++)
     {
       if ((*updates)[i]->getKind() == store::UpdateConsts::UP_REPLACE_CONTENT)
@@ -539,7 +539,7 @@ void PULImpl::addReplaceValue(store::Item_t& target, zstring& newValue)
   }
   else
   {
-    ulong numUpdates = updates->size();
+    ulong numUpdates = (ulong)updates->size();
     for (ulong i = 0; i < numUpdates; i++)
     {
       if (store::UpdateConsts::isReplaceValue((*updates)[i]->getKind()))
@@ -610,7 +610,7 @@ void PULImpl::addRename(store::Item_t& target, store::Item_t& newName)
   }
   else
   {
-    ulong numUpdates = updates->size();
+    ulong numUpdates = (ulong)updates->size();
     for (ulong i = 0; i < numUpdates; i++)
     {
       if (store::UpdateConsts::isRename((*updates)[i]->getKind()))
@@ -631,7 +631,7 @@ void PULImpl::addRename(store::Item_t& target, store::Item_t& newName)
 ********************************************************************************/
 void PULImpl::addPut(store::Item_t& target, store::Item_t& uri)
 {
-  ulong numPuts = thePutList.size();
+  ulong numPuts = (ulong)thePutList.size();
 
   for (ulong i = 0; i < numPuts; ++i)
   {
@@ -972,8 +972,8 @@ void PULImpl::mergeUpdates(store::Item* other)
   }
 
   // Merge fn:put primitives
-  ulong numPuts = thePutList.size();
-  ulong numOtherPuts = otherp->thePutList.size();
+  ulong numPuts = (ulong)thePutList.size();
+  ulong numOtherPuts = (ulong)otherp->thePutList.size();
 
   for (ulong i = 0; i < numOtherPuts; ++i)
   {
@@ -1025,8 +1025,8 @@ void PULImpl::mergeUpdateList(
   ulong numUpdates;
   ulong numOtherUpdates;
 
-  numUpdates = myList.size();
-  numOtherUpdates = otherList.size();
+  numUpdates = (ulong)myList.size();
+  numOtherUpdates = (ulong)otherList.size();
 
   for (ulong i = 0; i < numOtherUpdates; ++i)
   {
@@ -1104,7 +1104,7 @@ void PULImpl::mergeUpdateList(
       {
         if (store::UpdateConsts::isRename(updKind))
         {
-          ulong numTargetUpdates = targetUpdates->size();
+          ulong numTargetUpdates = (ulong)targetUpdates->size();
           for (ulong j = 0; j < numTargetUpdates; j++)
           {
             if (store::UpdateConsts::isRename((*targetUpdates)[j]->getKind()))
@@ -1113,7 +1113,7 @@ void PULImpl::mergeUpdateList(
         }
         else if (store::UpdateConsts::isReplaceValue(updKind))
         {
-          ulong numTargetUpdates = targetUpdates->size();
+          ulong numTargetUpdates = (ulong)targetUpdates->size();
           for (ulong j = 0; j < numTargetUpdates; j++)
           {
             if (store::UpdateConsts::isReplaceValue((*targetUpdates)[j]->getKind()))
@@ -1126,7 +1126,7 @@ void PULImpl::mergeUpdateList(
       {
         if (store::UpdateConsts::isReplaceNode(updKind))
         {
-          ulong numTargetUpdates = targetUpdates->size();
+          ulong numTargetUpdates = (ulong)targetUpdates->size();
           for (ulong j = 0; j < numTargetUpdates; ++j)
           {
             if (store::UpdateConsts::isReplaceNode((*targetUpdates)[j]->getKind()))
@@ -1139,7 +1139,7 @@ void PULImpl::mergeUpdateList(
       {
         if (updKind == store::UpdateConsts::UP_REPLACE_CONTENT)
         {
-          ulong numTargetUpdates = targetUpdates->size();
+          ulong numTargetUpdates = (ulong)targetUpdates->size();
           for (ulong j = 0; j < numTargetUpdates; ++j)
           {
             if ((*targetUpdates)[j]->getKind() == store::UpdateConsts::UP_REPLACE_CONTENT)
@@ -1152,7 +1152,7 @@ void PULImpl::mergeUpdateList(
       {
         if (updKind == store::UpdateConsts::UP_DELETE)
         {
-          ulong numTargetUpdates = targetUpdates->size();
+          ulong numTargetUpdates = (ulong)targetUpdates->size();
           ulong j;
           for (j = 0; j < numTargetUpdates; ++j)
           {
@@ -1190,7 +1190,7 @@ void PULImpl::mergeUpdateList(
 ********************************************************************************/
 void PULImpl::checkTransformUpdates(const std::vector<store::Item*>& rootNodes) const
 {
-  ulong numRoots = rootNodes.size();
+  ulong numRoots = (ulong)rootNodes.size();
 
   CollectionPulMap::const_iterator collIte = theCollectionPuls.begin();
   CollectionPulMap::const_iterator collEnd = theCollectionPuls.end();
@@ -1272,7 +1272,7 @@ void PULImpl::getIndicesToRefresh(std::vector<store::Index*>& indices)
       pul->theModifiedDocs.insert(node->getRoot());
     }
 
-    ulong numCollUpdates = pul->theInsertIntoCollectionList.size();
+    ulong numCollUpdates = (ulong)pul->theInsertIntoCollectionList.size();
 
     for (ulong i = 0; i < numCollUpdates; ++i)
     {
@@ -1284,7 +1284,7 @@ void PULImpl::getIndicesToRefresh(std::vector<store::Index*>& indices)
         pul->theInsertedDocs.push_back(static_cast<XmlNode*>(upd->getNode(j)));
     }
 
-    numCollUpdates = pul->theDeleteFromCollectionList.size();
+    numCollUpdates = (ulong)pul->theDeleteFromCollectionList.size();
 
     for (ulong i = 0; i < numCollUpdates; ++i)
     {
@@ -1311,7 +1311,7 @@ void PULImpl::getIndicesToRefresh(std::vector<store::Index*>& indices)
       continue;
 
     const std::vector<store::Item_t>& indexSources = indexSpec.theSources;
-    ulong numIndexSources = indexSources.size();
+    ulong numIndexSources = (ulong)indexSources.size();
 
     for (ulong i = 0; i < numIndexSources; ++i)
     {
@@ -1520,14 +1520,14 @@ CollectionPul::~CollectionPul()
   cleanList(theDeleteFromCollectionList);
   cleanList(theDeleteCollectionList);
 
-  ulong numDeltas = theBeforeIndexDeltas.size();
+  ulong numDeltas = (ulong)theBeforeIndexDeltas.size();
 
   for (ulong i = 0; i < numDeltas; ++i)
   {
     cleanIndexDelta(theBeforeIndexDeltas[i]);
   }
 
-  numDeltas = theAfterIndexDeltas.size();
+  numDeltas = (ulong)theAfterIndexDeltas.size();
 
   for (ulong i = 0; i < numDeltas; ++i)
   {
@@ -1582,7 +1582,7 @@ static bool cmp(const std::pair<store::Item_t, store::IndexKey*>& e1,
 ********************************************************************************/
 void CollectionPul::computeIndexDeltas(std::vector<store::IndexDelta>& deltas)
 {
-  ulong numIncrementalIndices = theIncrementalIndices.size();
+  ulong numIncrementalIndices = (ulong)theIncrementalIndices.size();
 
   if (numIncrementalIndices == 0)
     return;
@@ -1617,7 +1617,7 @@ void CollectionPul::computeIndexDeltas(std::vector<store::IndexDelta>& deltas)
 ********************************************************************************/
 void CollectionPul::refreshIndices()
 {
-  ulong numIncrementalIndices = theIncrementalIndices.size();
+  ulong numIncrementalIndices = (ulong)theIncrementalIndices.size();
 
   for (ulong idx = 0; idx < numIncrementalIndices; ++idx)
   {
@@ -1684,7 +1684,7 @@ void CollectionPul::refreshIndices()
     //
     // Referesh the index w.r.t. newly inserted docs.
     //
-    ulong numDocs = theInsertedDocs.size();
+    ulong numDocs = (ulong)theInsertedDocs.size();
 
     for (ulong i = 0; i < numDocs; ++i)
     {
@@ -1694,7 +1694,7 @@ void CollectionPul::refreshIndices()
       {
         docIndexer->createIndexEntries(theInsertedDocs[i], delta);
 
-        ulong numEntries = delta.size();
+        ulong numEntries = (ulong)delta.size();
 
         for (ulong j = 0; j < numEntries; ++j)
         {
@@ -1713,7 +1713,7 @@ void CollectionPul::refreshIndices()
     //
     // Referesh the index w.r.t. deleted docs,
     //
-    numDocs = theDeletedDocs.size();
+    numDocs = (ulong)theDeletedDocs.size();
 
     for (ulong i = 0; i < numDocs; ++i)
     {
@@ -1723,7 +1723,7 @@ void CollectionPul::refreshIndices()
       {
         docIndexer->createIndexEntries(theDeletedDocs[i], delta);
 
-        ulong numEntries = delta.size();
+        ulong numEntries = (ulong)delta.size();
 
         for (ulong j = 0; j < numEntries; ++j)
         {
@@ -1769,7 +1769,7 @@ void CollectionPul::applyUpdates()
     // of XQUF primitives were only temporary and have been resolved by now.
     // If not, an exception will be raised, and the updates will be undone
     // in the "catch" clause below.
-    ulong numToRecheck = thePrimitivesToRecheck.size();
+    ulong numToRecheck = (ulong)thePrimitivesToRecheck.size();
     for (ulong i = 0; i < numToRecheck; ++i)
       thePrimitivesToRecheck[i]->check();
 
@@ -1835,7 +1835,7 @@ void CollectionPul::finalizeUpdates()
     // Detach nodes that were deleted from their trees due to replace-node,
     // replace-content, or delete-node XQUF primitives.
 
-    ulong numUpdates = theReplaceNodeList.size();
+    ulong numUpdates = (ulong)theReplaceNodeList.size();
     for (ulong i = 0; i < numUpdates; ++i)
     {
       UpdatePrimitive* upd = theReplaceNodeList[i];
@@ -1876,13 +1876,13 @@ void CollectionPul::finalizeUpdates()
       }
     }
 
-    numUpdates = theReplaceContentList.size();
+    numUpdates = (ulong)theReplaceContentList.size();
     for (ulong i = 0; i < numUpdates; ++i)
     {
       UpdReplaceElemContent* upd;
       upd = static_cast<UpdReplaceElemContent*>(theReplaceContentList[i]);
 
-      ulong numChildren = upd->theOldChildren.size();
+      ulong numChildren = (ulong)upd->theOldChildren.size();
       for (ulong j = 0; j < numChildren; ++j)
       {
         XmlNode* node = upd->theOldChildren[j];
@@ -1891,7 +1891,7 @@ void CollectionPul::finalizeUpdates()
       }
     }
 
-    numUpdates = theDeleteList.size();
+    numUpdates = (ulong)theDeleteList.size();
     for (ulong i = 0; i < numUpdates; ++i)
     {
       UpdDelete* upd = static_cast<UpdDelete*>(theDeleteList[i]);
@@ -1911,7 +1911,7 @@ void CollectionPul::finalizeUpdates()
       }
     }
 
-    numUpdates = theInsertList.size();
+    numUpdates = (ulong)theInsertList.size();
     for (ulong i = 0; i < numUpdates; ++i)
     {
       UpdInsertChildren* upd = static_cast<UpdInsertChildren*>(theInsertList[i]);
@@ -1924,7 +1924,7 @@ void CollectionPul::finalizeUpdates()
       }
     }
 
-    numUpdates = theDoFirstList.size();
+    numUpdates = (ulong)theDoFirstList.size();
     for (ulong i = 0; i < numUpdates; ++i)
     {
       if (theDoFirstList[i]->getKind() != store::UpdateConsts::UP_INSERT_INTO)

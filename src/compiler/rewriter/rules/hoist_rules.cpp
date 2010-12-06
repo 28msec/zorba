@@ -270,7 +270,7 @@ static expr_t try_hoisting(
     if (gc != NULL)
     {
       const flwor_clause::rebind_list_t& gvars = gc->get_grouping_vars();
-      ulong numGroupVars = gvars.size();
+      ulong numGroupVars = (ulong)gvars.size();
 
       for (ulong i = 0; i < numGroupVars; ++i)
       {
@@ -279,7 +279,7 @@ static expr_t try_hoisting(
       }
 
       const flwor_clause::rebind_list_t& ngvars = gc->get_nongrouping_vars();
-      ulong numNonGroupVars = ngvars.size();
+      ulong numNonGroupVars = (ulong)ngvars.size();
 
       for (ulong i = 0; i < numNonGroupVars; ++i)
       {

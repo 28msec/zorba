@@ -189,7 +189,7 @@ void ExprIterator::next()
 
       if (theClausesEnd != flworExpr->theClauses.end())
       {
-        ulong pos = theClausesIter - theClausesBegin;
+        ulong pos = (ulong)(theClausesIter - theClausesBegin);
         if (pos >= flworExpr->num_clauses())
           break;
 

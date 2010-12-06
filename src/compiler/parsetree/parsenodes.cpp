@@ -876,7 +876,7 @@ void FunctionDecl::accept( parsenode_visitor &v ) const
 
 int FunctionDecl::get_param_count() const
 {
-  return paramlist_h == NULL ? 0 : paramlist_h->size ();
+  return paramlist_h == NULL ? 0 : (int)paramlist_h->size ();
 }
 
 
@@ -982,7 +982,7 @@ CollectionDecl::CollectionDecl(
   if (aPropertyList == NULL)
     return;
 
-  ulong numProperties = aPropertyList->size();
+  ulong numProperties = (ulong)aPropertyList->size();
   for (ulong i = 0; i < numProperties; ++i)
   {
     const DeclProperty* property = aPropertyList->getProperty(i);
@@ -1105,7 +1105,7 @@ AST_IndexDecl::AST_IndexDecl(
   if (properties == NULL)
     return;
 
-  ulong numProperties = properties->size();
+  ulong numProperties = (ulong)properties->size();
   for (ulong i = 0; i < numProperties; ++i)
   {
     const DeclProperty* property = properties->getProperty(i);
@@ -1347,7 +1347,7 @@ void BlockBody::accept ( parsenode_visitor &v ) const
 
   ACCEPT (decls);
 
-  for (int i = 0; i < size (); i++)
+  for (int i = 0; i < (int)size (); i++)
     (*this) [i]->accept (v);
 
   END_VISITOR();
@@ -1402,7 +1402,7 @@ void Expr::accept( parsenode_visitor &v ) const
 
 int Expr::numberOfChildren() const
 {
-  return expr_hv.size();
+  return (int)expr_hv.size();
 }
 
 
@@ -1650,7 +1650,7 @@ void ForClause::accept( parsenode_visitor &v ) const
   END_VISITOR();
 }
 
-int ForClause::get_decl_count () const { return vardecl_list_h->size (); }
+int ForClause::get_decl_count () const { return (int)vardecl_list_h->size (); }
 
 
 // [34a] VarInDeclList
@@ -1743,7 +1743,7 @@ void LetClause::accept( parsenode_visitor &v ) const
   END_VISITOR();
 }
 
-int LetClause::get_decl_count () const { return vardecl_list_h->size (); }
+int LetClause::get_decl_count () const { return (int)vardecl_list_h->size (); }
 
 
 // [36a] VarGetsDeclList

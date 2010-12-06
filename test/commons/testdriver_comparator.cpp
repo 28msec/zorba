@@ -115,13 +115,13 @@ int canonicalizeAndCompare(
 //       if (*bufp == '\0')
 //         *bufp2 = *bufp;
 
-      lTmpRefResult.write(buf2, bufp2 - buf2);
+      lTmpRefResult.write(buf2, (std::streamsize)(bufp2 - buf2));
     }
 
     lTmpRefResult << "</root>";
 
     lRefResult_ptr = xmlReadMemory(lTmpRefResult.str().c_str(),
-                                   lTmpRefResult.str().size(),
+                                   (int)lTmpRefResult.str().size(),
                                    "ref_result.xml", 0, libxmlFlags);
 
     // prepend and append an artifical root tag as requested by the guidelines
@@ -146,7 +146,7 @@ int canonicalizeAndCompare(
     lTmpResult << "</root>";
 
     lResult_ptr = xmlReadMemory(lTmpResult.str().c_str(),
-                                lTmpResult.str().size(),
+                                (int)lTmpResult.str().size(),
                                 "result.xml", 0, libxmlFlags);
     
   }

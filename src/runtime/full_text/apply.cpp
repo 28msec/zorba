@@ -789,7 +789,7 @@ static void form_combinations( ft_match_seq const &ms, ft_int k,
     result.push_back( ft_match() );
     return;
   }
-  ft_int const count = ms.size();
+  ft_int const count = (ft_int)ms.size();
   if ( count < k )
     return;
   if ( count == k )
@@ -825,7 +825,7 @@ static void form_combinations( ft_match_seq const &ms, ft_int k,
  */
 static void form_combinations_at_least( ft_match_seq const &ms, ft_int times,
                                         ft_match_seq &result ) {
-  ft_int const count = ms.size();
+  ft_int const count = (ft_int)ms.size();
   for ( ft_int k = times; k <= count; ++k ) {
     form_combinations( ms, k, result );
   }
@@ -1154,8 +1154,8 @@ public:
   {
   }
 
-  void operator()( char const *utf8_s, int utf8_len, int, int, int, void* ) {
-    FTToken const t( utf8_s, utf8_len, token_no_, sent_no_, lang_ );
+  void operator()( char const *utf8_s, size_t utf8_len, int, int, int, void* ) {
+    FTToken const t( utf8_s, (int)utf8_len, token_no_, sent_no_, lang_ );
     tokens_.push_back( t );
   }
 

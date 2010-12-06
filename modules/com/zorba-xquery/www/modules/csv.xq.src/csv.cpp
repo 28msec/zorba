@@ -79,12 +79,12 @@ bool compareItemQName(Item item, const char *localname, const char *ns)
   Item node_name;
   item.getNodeName(node_name);
   String  item_namespace = node_name.getNamespace();
-  if(ns && ns[0] && !item_namespace.byteEqual(ns, strlen(ns)))
+  if(ns && ns[0] && !item_namespace.byteEqual(ns, (unsigned int)strlen(ns)))
   {
     return false;
   }
   String  item_name = node_name.getLocalName();
-  if(!item_name.byteEqual(localname, strlen(localname)))
+  if(!item_name.byteEqual(localname, (unsigned int)strlen(localname)))
   {
     return false;
   }
@@ -114,12 +114,12 @@ bool getChild(zorba::Iterator_t children, const char *localname, const char *ns,
     Item    child_name;
     child_item.getNodeName(child_name);
     String  item_namespace = child_name.getNamespace();
-    if(!item_namespace.byteEqual(ns, strlen(ns)))
+    if(!item_namespace.byteEqual(ns, (unsigned int)strlen(ns)))
     {
       continue;//next child
     }
     String  item_name = child_name.getLocalName();
-    if(!item_name.byteEqual(localname, strlen(localname)))
+    if(!item_name.byteEqual(localname, (unsigned int)strlen(localname)))
     {
       continue;//next child
     }
@@ -389,9 +389,9 @@ void CSVOptions::parse(zorba::Item options_node, ItemFactory *item_factory)
       add_last_void_columns = true;
   }
   
-  separator_size = separator.length();
-  quote_char_size = quote_char.length();
-  quote_escape_size = quote_escape.length();
+  separator_size = (unsigned int)separator.length();
+  quote_char_size = (unsigned int)quote_char.length();
+  quote_escape_size = (unsigned int)quote_escape.length();
   if(!quote_char_size)
     quote_escape_size = 0;
 }
@@ -409,7 +409,7 @@ CSVParseFunction::CSVItemSequence::CSVItemSequence(Item string_item,
 void CSVParseFunction::CSVItemSequence::rtrim(std::string &field)
 {
   const char *cstr = field.c_str();
-  int len = field.length();
+  size_t len = field.length();
   const char *endstr = cstr + len-1;
   while((endstr > cstr) && isascii(*endstr) && isspace(*endstr))
   {
@@ -491,7 +491,7 @@ bool   CSVParseFunction::CSVItemSequence::txt_read_line(std::vector<std::string>
   
   unsigned int   pos = 1;
   unsigned int   column = 0;
-  unsigned int   column_positions_size = csv_options.column_positions.size();
+  size_t         column_positions_size = csv_options.column_positions.size();
   while(*str)
   {
     if((column < column_positions_size) && 
@@ -874,7 +874,7 @@ void CSVSerializeFunction::csv_write_line(
         Item element_name;
         store_column.getNodeName(element_name);
         String column_name = element_name.getLocalName();
-        for(unsigned int i=line.size();i<header.size();i++)
+        for(size_t i=line.size();i<header.size();i++)
         {
           if(header.at(i) == column_name)
           {
@@ -968,7 +968,7 @@ void CSVSerializeFunction::csv_write_line_to_string(std::vector<String> &line,
                          std::string &result_string) const
 {
   std::vector<String>::iterator   line_it;
-  unsigned int addlen = 1;
+  size_t addlen = 1;
   for(line_it = line.begin(); line_it != line.end(); line_it++)
   {
     addlen += (*line_it).bytes() + csv_options.separator_size;
@@ -1000,12 +1000,12 @@ void CSVSerializeFunction::txt_write_line_to_string(std::vector<String> &line,
     result_string.append(csv_options.column_positions[0] - 1, ' ');
 
   unsigned int i;
-  unsigned int column_positions_size = csv_options.column_positions.size();
+  size_t column_positions_size = csv_options.column_positions.size();
   for(i=0;i<column_positions_size;i++)
   {
     if(i >= line.size())
       break;
-    unsigned int    field_length = line[i].length();
+    unsigned int    field_length = (unsigned int)line[i].length();
     unsigned int    column_length;
     if(i < (column_positions_size-1))
     {

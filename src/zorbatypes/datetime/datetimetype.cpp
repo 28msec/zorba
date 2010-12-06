@@ -344,7 +344,7 @@ int DateTime::getLocalTime(DateTime& dt)
 }
 
 
-int DateTime::parseDateTime(const char* str, ulong strlen, DateTime& dt)
+int DateTime::parseDateTime(const char* str, ascii::size_type strlen, DateTime& dt)
 {
   ascii::size_type pos = 0;
 
@@ -401,7 +401,7 @@ int DateTime::parseDateTime(const char* str, ulong strlen, DateTime& dt)
 }
 
 
-int DateTime::parseDate(const char* str, ulong strlen, DateTime& dt)
+int DateTime::parseDate(const char* str, ascii::size_type strlen, DateTime& dt)
 {
   TimeZone tz;
   ascii::size_type pos = 0;
@@ -435,7 +435,7 @@ int DateTime::parseDate(const char* str, ulong strlen, DateTime& dt)
 }
 
 
-int DateTime::parseTime(const char* str, ulong strlen, DateTime& dt)
+int DateTime::parseTime(const char* str, ascii::size_type strlen, DateTime& dt)
 {
   ascii::size_type pos = 0;
 
@@ -470,7 +470,7 @@ int DateTime::parseTime(const char* str, ulong strlen, DateTime& dt)
 }
 
 
-int DateTime::parseGYearMonth(const char* str, ulong strlen, DateTime& dt)
+int DateTime::parseGYearMonth(const char* str, ascii::size_type strlen, DateTime& dt)
 {
   ascii::size_type pos = 0;
   ascii::size_type temp_pos = 0;
@@ -495,7 +495,7 @@ int DateTime::parseGYearMonth(const char* str, ulong strlen, DateTime& dt)
   temp += "-01";
 
   if (parse_date(temp.c_str(),
-                 temp.size(),
+                 (ulong)temp.size(),
                  temp_pos,
                  dt.data[YEAR_DATA],
                  dt.data[MONTH_DATA],
@@ -521,7 +521,7 @@ int DateTime::parseGYearMonth(const char* str, ulong strlen, DateTime& dt)
 }
 
 
-int DateTime::parseGYear(const char* str, ulong strlen, DateTime& dt)
+int DateTime::parseGYear(const char* str, ascii::size_type strlen, DateTime& dt)
 {
   ascii::size_type pos = 0;
   ascii::size_type temp_pos = 0;
@@ -548,7 +548,7 @@ int DateTime::parseGYear(const char* str, ulong strlen, DateTime& dt)
   temp += "-01-01";
 
   if (parse_date(temp.c_str(),
-                 temp.size(),
+                 (ulong)temp.size(),
                  temp_pos,
                  dt.data[YEAR_DATA],
                  dt.data[MONTH_DATA],
@@ -574,7 +574,7 @@ int DateTime::parseGYear(const char* str, ulong strlen, DateTime& dt)
 }
 
 
-int DateTime::parseGMonth(const char* str, ulong strlen, DateTime& dt)
+int DateTime::parseGMonth(const char* str, ascii::size_type strlen, DateTime& dt)
 {
   ascii::size_type pos = 0;
   ascii::size_type temp_pos = 0;
@@ -596,7 +596,7 @@ int DateTime::parseGMonth(const char* str, ulong strlen, DateTime& dt)
   temp += "-01";
 
   if (parse_date(temp.c_str(),
-                 temp.size(),
+                 (ulong)temp.size(),
                  temp_pos,
                  dt.data[YEAR_DATA],
                  dt.data[MONTH_DATA],
@@ -622,7 +622,7 @@ int DateTime::parseGMonth(const char* str, ulong strlen, DateTime& dt)
 }
 
 
-int DateTime::parseGMonthDay(const char* str, ulong strlen, DateTime& dt)
+int DateTime::parseGMonthDay(const char* str, ascii::size_type strlen, DateTime& dt)
 {
   ascii::size_type pos = 0;
   ascii::size_type temp_pos = 0;
@@ -643,7 +643,7 @@ int DateTime::parseGMonthDay(const char* str, ulong strlen, DateTime& dt)
   temp.append(str + pos, 6); // Year 4 to make it a leap year, to allow the MonthDay of 29 February
 
   if (parse_date(temp.c_str(),
-                 temp.size(),
+                 (ulong)temp.size(),
                  temp_pos,
                  dt.data[YEAR_DATA],
                  dt.data[MONTH_DATA],
@@ -671,7 +671,7 @@ int DateTime::parseGMonthDay(const char* str, ulong strlen, DateTime& dt)
 }
 
 
-int DateTime::parseGDay(const char* str, ulong strlen, DateTime& dt)
+int DateTime::parseGDay(const char* str, ascii::size_type strlen, DateTime& dt)
 {
   ascii::size_type pos = 0;
   ascii::size_type temp_pos = 0;
@@ -694,7 +694,7 @@ int DateTime::parseGDay(const char* str, ulong strlen, DateTime& dt)
   temp.append(str + pos, 3);
 
   if (parse_date(temp.c_str(),
-                 temp.size(),
+                 (ulong)temp.size(),
                  temp_pos,
                  dt.data[YEAR_DATA],
                  dt.data[MONTH_DATA],
@@ -723,14 +723,14 @@ int DateTime::parseGDay(const char* str, ulong strlen, DateTime& dt)
 // Returns 0 on success
 int DateTime::parse_date(
     const char* str,
-    ulong strlen,
+    ascii::size_type strlen,
     ascii::size_type& pos,
     long& year,
     long& month,
     long& day)
 {
   bool is_negative = false;
-  ulong temp_pos;
+  ascii::size_type temp_pos;
   
   if (pos == strlen)
     return 1;
@@ -785,7 +785,7 @@ int DateTime::parse_date(
 // Returns 0 on success
 int DateTime::parse_time(
     const char* str,
-    ulong strlen,
+    ascii::size_type strlen,
     ascii::size_type& position,
     long& hour,
     long& minute,

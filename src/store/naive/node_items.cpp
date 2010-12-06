@@ -1620,8 +1620,8 @@ void ElementNode::getNamespaceBindings(
   while (parentContext != NULL)
   {
     const store::NsBindings& parentBindings = parentContext->getBindings();
-    ulong parentSize = parentBindings.size();
-    ulong currSize = bindings.size();
+    ulong parentSize = (ulong)parentBindings.size();
+    ulong currSize = (ulong)bindings.size();
 
     // for each parent binding, add it to the result, if it doesn't have the
     // same prefix as another binding that is already in the result.
@@ -2455,7 +2455,7 @@ void AttributeNode::getStringValue2(zstring& val) const
   {
     const std::vector<store::Item_t>& items = getValueVector().getItems();
 
-    ulong size = items.size();
+    ulong size = (ulong)items.size();
 
     if (size == 1)
     {
@@ -2485,7 +2485,7 @@ void AttributeNode::appendStringValue(zstring& buf) const
   {
     const std::vector<store::Item_t>& items = getValueVector().getItems();
 
-    ulong size = items.size();
+    ulong size = (ulong)items.size();
 
     if (size > 0)
     {
@@ -3184,7 +3184,7 @@ inline void XmlNodeTokenizer::endTokenization( XmlNode &node ) {
   node.theEndTokenIndex = tokens_.size();
 }
 
-void XmlNodeTokenizer::operator()( char const *utf8_s, int utf8_len,
+void XmlNodeTokenizer::operator()( char const *utf8_s, size_t utf8_len,
                                    int pos, int sent, int para,
                                    void *payload ) {
   store::Item const *const item = static_cast<store::Item*>( payload );
@@ -3193,7 +3193,7 @@ void XmlNodeTokenizer::operator()( char const *utf8_s, int utf8_len,
 }
 
 
-inline void XmlNodeTokenizer::tokenize( char const *utf8_s, int len ) 
+inline void XmlNodeTokenizer::tokenize( char const *utf8_s, size_t len ) 
 {
   tokenizer_.tokenize(
     utf8_s, len, get_lang(), *this,

@@ -536,7 +536,7 @@ bool AncestorAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
       ancestor = ancestor->getParent();
     }
 
-    state->theCurrentAncPos = state->theAncestors.size() - 1;
+    state->theCurrentAncPos = (long)state->theAncestors.size() - 1;
 
     while (state->theCurrentAncPos >= 0)
     {
@@ -651,7 +651,7 @@ bool AncestorSelfAxisIterator::nextImpl(
       ancestor = ancestor->getParent();
     }
 
-    state->theCurrentAncPos = state->theAncestors.size() - 1;
+    state->theCurrentAncPos = (long)state->theAncestors.size() - 1;
 
     while (state->theCurrentAncPos >= 0)
     {
@@ -1031,7 +1031,7 @@ bool ChildAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 ********************************************************************************/
 DescendantAxisState::~DescendantAxisState()
 {
-  ulong len = theCurrentPath.size();
+  ulong len = (ulong)theCurrentPath.size();
   for (ulong i = 0; i < len; ++i)
   {
     delete theCurrentPath[i].second;
@@ -1420,7 +1420,7 @@ PrecedingReverseAxisState::~PrecedingReverseAxisState()
   if (theAncestor.second != NULL)
     delete theAncestor.second;
 
-  ulong len = theCurrentPath.size();
+  ulong len = (ulong)theCurrentPath.size();
   for (ulong i = 0; i < len; ++i)
   {
     delete theCurrentPath[i].second;

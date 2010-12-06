@@ -30,7 +30,7 @@ NodeVector dummyVector;
 
 ulong NodeVector::find(XmlNode* n)
 {
-  ulong size = theNodes.size();
+  ulong size = (ulong)theNodes.size();
   ulong i;
   for (i = 0; i < size; i++)
   {

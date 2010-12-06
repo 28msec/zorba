@@ -69,12 +69,12 @@ public:
 
   transcoder& operator<<(const zstring& str)
   {
-    return write(str.c_str(), str.size());
+    return write(str.c_str(), (std::streamsize)str.size());
   }
 
   transcoder& operator<<(const char* str)
   {
-    return write(str, strlen(str));
+    return write(str, (std::streamsize)strlen(str));
   }
 
   transcoder& operator<<(const char ch)

@@ -47,7 +47,7 @@ void TimeZone::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-int TimeZone::parseTimeZone(const char* str, ulong strlen, TimeZone& tz)
+int TimeZone::parseTimeZone(const char* str, ascii::size_type strlen, TimeZone& tz)
 {
   ascii::size_type pos = 0;
   

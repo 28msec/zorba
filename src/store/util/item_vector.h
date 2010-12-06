@@ -39,7 +39,7 @@ public:
 
   bool empty() const { return theItems.empty(); }
 
-  ulong size() const { return theItems.size(); }
+  ulong size() const { return (ulong)theItems.size(); }
 
   void resize(ulong newSize) { theItems.resize(newSize); }
 
@@ -53,9 +53,9 @@ public:
 
   void transfer_back(Item_t& item) 
   {
-    ulong size = theItems.size();
-    theItems.resize(size+1);
-    theItems[size].transfer(item);
+    ulong size_ = size();
+    theItems.resize(size_+1);
+    theItems[size_].transfer(item);
   }
 
   iterator begin() { return theItems.begin(); }

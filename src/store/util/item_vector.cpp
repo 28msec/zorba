@@ -39,7 +39,7 @@ std::string ItemVector::toString() const
 ********************************************************************************/
 std::ostream& operator<<(std::ostream& os, const ItemVector& key)
 {
-  ulong size = key.theItems.size();
+  ulong size = (ulong)key.theItems.size();
 
   os << "[";
 

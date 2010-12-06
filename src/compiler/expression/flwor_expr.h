@@ -457,9 +457,9 @@ public:
 
   const std::vector<std::string>& get_collations() const { return theCollations; }
 
-  ulong getNumGroupingVars() const { return theGroupVars.size(); }
+  ulong getNumGroupingVars() const { return (ulong)theGroupVars.size(); }
 
-  ulong getNumNonGroupingVars() const { return theNonGroupVars.size(); }
+  ulong getNumNonGroupingVars() const { return (ulong)theNonGroupVars.size(); }
 
   const rebind_list_t& get_grouping_vars() const { return theGroupVars; }
 
@@ -526,7 +526,7 @@ public:
 
   const std::vector<expr_t>& get_column_exprs() const { return theOrderingExprs; }
 
-  ulong num_columns() const { return theOrderingExprs.size(); }
+  ulong num_columns() const { return (ulong)theOrderingExprs.size(); }
 
   expr* get_column_expr(ulong i) const { return theOrderingExprs[i].getp(); }
 
@@ -653,7 +653,7 @@ public:
 
   void compute_scripting_kind();
 
-  ulong num_clauses() const { return theClauses.size(); }
+  ulong num_clauses() const { return (ulong)theClauses.size(); }
 
   void add_clause(flwor_clause* c);
 

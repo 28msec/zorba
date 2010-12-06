@@ -826,7 +826,7 @@ TransformIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
   lCopyMode.set(true, typePreserve, nsPreserve, nsInherit);
 
   {
-    ulong numCopyClauses = theCopyClauses.size(); 
+    ulong numCopyClauses = (ulong)theCopyClauses.size(); 
     std::vector<store::Item*> copyNodes(numCopyClauses);
 
     // For each copy var compute the target node and bind that node to all

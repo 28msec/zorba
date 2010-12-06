@@ -53,7 +53,7 @@ public:
 
   typedef uint32_t char_type;
 
-  typedef ulong size_type;
+  typedef size_t size_type;
 
 protected:
   SYNC_CODE(mutable RCLock  theRCLock;)
@@ -63,7 +63,7 @@ protected:
 public:
   static bool is_whitespace(uint32_t cp);
 
-  static bool is_contained(const char* start, uint16_t length, uint32_t cp);
+  static bool is_contained(const char* start, size_type length, uint32_t cp);
 
   static bool is_unreservedCP(uint32_t cp);
 
@@ -702,7 +702,7 @@ public:
   replace(xqpString pattern, xqpString replacement, xqpString flags);
 
   xqpString
-  tokenize(xqpString pattern, xqpString flags, int32_t *start_pos, bool *hasmatched) const;
+  tokenize(xqpString pattern, xqpString flags, size_type *start_pos, bool *hasmatched) const;
 
   /**  Transforms a string encoded as UTF-8 into UCS-4.
    *  @param aSrc UTF-8 encoded string.
@@ -719,7 +719,7 @@ public:
   getUnicodeString(const xqpStringStore* aSrc);
 
   static UnicodeString
-  getUnicodeString(const char* aSrc, const ulong aLen);
+  getUnicodeString(const char* aSrc, const size_type aLen);
 
 public:
     static xqpString concat(const char *s1,

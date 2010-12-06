@@ -605,10 +605,10 @@ public:
   {
   }
 
-  void operator()( char const *utf8_s, int utf8_len,
+  void operator()( char const *utf8_s, size_t utf8_len,
                    int token_no, int sent_no, int para_no, void* = 0 );
 
-  void tokenize( char const *utf8_s, int len ) {
+  void tokenize( char const *utf8_s, size_t len ) {
     tokenizer_.tokenize( utf8_s, len, lang_, *this );
   }
 

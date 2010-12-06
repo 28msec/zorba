@@ -123,7 +123,7 @@ void createIndexSpec(
 {
   const std::vector<xqtref_t>& keyTypes(indexDecl->getKeyTypes());
   const std::vector<OrderModifier>& keyModifiers(indexDecl->getOrderModifiers());
-  ulong numColumns = keyTypes.size();
+  ulong numColumns = (ulong)keyTypes.size();
 
   spec.resize(numColumns);
 
@@ -144,7 +144,7 @@ void createIndexSpec(
   spec.theIsThreadSafe = true;
   spec.theIsAutomatic = indexDecl->getMaintenanceMode() != IndexDecl::MANUAL;
 
-  ulong numSources = indexDecl->numSources();
+  ulong numSources = (ulong)indexDecl->numSources();
 
   spec.theSources.resize(numSources);
 
@@ -589,7 +589,7 @@ bool ProbeIndexPointValueIterator::nextImpl(
   store::Item_t qnameItem;
   store::Item_t keyItem;
   store::IndexCondition_t cond;
-  ulong numChildren = theChildren.size();
+  ulong numChildren = (ulong)theChildren.size();
   ulong i;
   bool status;
   TypeManager* tm = theSctx->get_typemanager();
@@ -736,7 +736,7 @@ bool ProbeIndexPointGeneralIterator::nextImpl(
 {
   store::Item_t qnameItem;
   store::Item_t keyItem;
-  ulong numChildren = theChildren.size();
+  ulong numChildren = (ulong)theChildren.size();
   bool status;
 
   ProbeIndexPointGeneralIteratorState* state;
@@ -901,7 +901,7 @@ bool ProbeIndexRangeValueIterator::nextImpl(
   store::Item_t qname;
   IndexDecl_t indexDecl;
   store::IndexCondition_t cond;
-  ulong numChildren = theChildren.size();
+  ulong numChildren = (ulong)theChildren.size();
   bool status;
  
   ProbeIndexRangeValueIteratorState* state;

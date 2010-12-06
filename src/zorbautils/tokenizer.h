@@ -49,7 +49,7 @@ public:
      * @param para_no   The paragraph number.  Paragraph numbers start at 1.
      * @param payload   Optional user-defined data.
      */
-    virtual void operator()( char const *utf8_s, int utf8_len,
+    virtual void operator()( char const *utf8_s, size_t utf8_len,
                              int token_no, int sent_no, int para_no,
                              void *payload = 0 ) = 0;
   };
@@ -85,7 +85,7 @@ public:
    * @param callback  The Callback to call once per token.
    * @param payload   Optional user-defined data.
    */
-  virtual void tokenize( char const *utf8_s, int len,
+  virtual void tokenize( char const *utf8_s, size_t len,
                          locale::iso639_1::type lang, Callback &callback,
                          void *payload = 0 ) = 0;
 

@@ -165,7 +165,7 @@ void XmlArchiver::encode_string(const char *value)
 
 void XmlArchiver::write_string(const char *str)
 {
-  os->write(str, strlen(str));
+  os->write(str, (std::streamsize)strlen(str));
 }
 
 const char *XmlArchiver::get_field_treat_string(enum ArchiveFieldTreat field_treat)

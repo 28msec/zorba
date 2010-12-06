@@ -60,7 +60,7 @@ store::Item_t SimpleTempSeq::operator[](ulong aIndex)
 ********************************************************************************/
 ulong SimpleTempSeq::getSize() 
 {
-  return theItems.size();
+  return (ulong)theItems.size();
 }
 
 

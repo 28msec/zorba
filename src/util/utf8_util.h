@@ -701,7 +701,7 @@ uint32_t hash(const StringType& s, const XQPCollator* collation = NULL)
   if (!collation || collation->doMemCmp())
   {
     const char* str = s.data();
-    ulong len = s.size();
+    ulong len = (ulong)s.size();
     uint32_t hash = 5381;
     ulong i = 0;
     int c;

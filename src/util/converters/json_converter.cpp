@@ -37,7 +37,7 @@ namespace zorba
 
 json::value* getValue(
     const char* aJSON,
-    const unsigned int aLen,
+    const zstring::size_type aLen,
     zstring& error_log);
 
 
@@ -101,7 +101,7 @@ bool get_value(
 
 bool JSON_parse(
     const char* aJsonString,
-    const unsigned int aLength,
+    const zstring::size_type aLength,
     store::Item_t& aElement,
     const zstring& aBaseUri,
     zstring& aErrorLog)
@@ -270,11 +270,11 @@ bool create_Pair_Helper(
 }
 
 
-json::value* getValue(const char* aJSON, const unsigned int aLen, zstring& aErrorLog)
+json::value* getValue(const char* aJSON, const zstring::size_type aLen, zstring& aErrorLog)
 {
   //transforn from UTF-8 to UCS-4 using ICU
   int32_t lUCS4Len;
-  wchar_t * lUCS4 = xqpString::getWCS(aJSON, aLen, &lUCS4Len);
+  wchar_t * lUCS4 = xqpString::getWCS(aJSON, (int32_t)aLen, &lUCS4Len);
 
   json::parser lParser;
   json::value* lValue = lParser.parse(lUCS4, lUCS4Len);
@@ -649,7 +649,7 @@ bool parse_Json_ML_child(
 
 bool JSON_ML_parse(
     const char* aJsonString,
-    const unsigned int aLength,
+    const zstring::size_type aLength,
     store::Item_t& aElement,
     const zstring& aBaseUri,
     zstring& aErrorLog)

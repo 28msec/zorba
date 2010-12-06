@@ -128,7 +128,7 @@ GuideNode* ElementGuideNode::findPath(
 
   unique = true;
 
-  ulong pathLen = path.size();
+  ulong pathLen = (ulong)path.size();
 
   for (ulong i = 0; i < pathLen; i++)
   {
@@ -159,7 +159,7 @@ GuideNode* ElementGuideNode::findPath(
 ********************************************************************************/
 ElementGuideNode* ElementGuideNode::findChild(const store::Item* name)
 {
-  ulong numChildren = theChildren.size();
+  ulong numChildren = (ulong)theChildren.size();
   for (ulong i = 0; i < numChildren; i++)
   {
     if (theChildren[i]->theName->equals(name))
@@ -175,7 +175,7 @@ ElementGuideNode* ElementGuideNode::findChild(const store::Item* name)
 ********************************************************************************/
 AttributeGuideNode* ElementGuideNode::findAttr(const store::Item* name)
 {
-  ulong numAttrs = theAttributes.size();
+  ulong numAttrs = (ulong)theAttributes.size();
   for (ulong i = 0; i < numAttrs; i++)
   {
     if (theAttributes[i]->theName->equals(name))
@@ -201,7 +201,7 @@ std::string ElementGuideNode::show(ulong depth) const
 
   depth += 2;
 
-  ulong numChildren = theChildren.size();
+  ulong numChildren = (ulong)theChildren.size();
 
   if (theName != NULL)
   {

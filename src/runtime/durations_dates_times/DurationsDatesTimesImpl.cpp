@@ -357,7 +357,7 @@ static void parse_presentation_modifier(
   }
   else if (str[position+1] == '0')
   {
-    int start = position;
+    ascii::size_type start = position;
     while (position+1 < str.size() && str[position+1] == '0')
     {
       modifier.append(str, position+1, 1);

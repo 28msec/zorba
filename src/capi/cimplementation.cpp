@@ -203,9 +203,9 @@ namespace zorbac {
     char lBuf[1024];
     memset(lBuf, 0, 1024);
 
-    int lRead = 0;
+    size_t lRead = 0;
     while ( (lRead = fread(lBuf, 1, 1024, aFile)) > 0 ) {
-      aStream.write(lBuf, lRead);
+      aStream.write(lBuf, (std::streamsize)lRead);
     }
     if (!feof(aFile)) {
       return XQC_INTERNAL_ERROR;
