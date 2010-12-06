@@ -53,7 +53,7 @@
 #include "runtime/update/update.h"
 #include "runtime/eval/eval.h"
 
-#include "debugger/zorba_debugger_commons.h"
+#include "debugger/debugger_commons.h"
 
 #include "context/static_context.h"
 #include "context/namespace_context.h"

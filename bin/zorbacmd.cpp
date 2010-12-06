@@ -913,7 +913,7 @@ _tmain(int argc, _TCHAR* argv[])
         }
 
         std::auto_ptr<zorba::DebuggerServerRunnable> lServer;
-        std::auto_ptr<ZorbaDebuggerClient>           lClient;
+        std::auto_ptr<DebuggerClient>                lClient;
         std::auto_ptr<DebuggerHandler>               lHandler;
 
         if (lProperties.getRequestPort() == lProperties.getEventPort()) {
@@ -955,7 +955,7 @@ _tmain(int argc, _TCHAR* argv[])
             try {
               // wait 1 second before trying to reconnect
               sleep(1);
-              lClient.reset(ZorbaDebuggerClient::createClient(
+              lClient.reset(DebuggerClient::createClient(
                 lHost, lProperties.getRequestPort(), lProperties.getEventPort()));
               lHandler.reset(new DebuggerHandler(lZorbaInstance, lClient.get(), lFileName));
               lClient->registerEventHandler( lHandler.get() );

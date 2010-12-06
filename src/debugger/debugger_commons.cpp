@@ -15,7 +15,7 @@
  */
 #include "system/globalenv.h"
 
-#include "zorba_debugger_commons.h"
+#include "debugger_commons.h"
 
 #include "compiler/api/compilercb.h"
 #include "context/static_context.h"
@@ -36,13 +36,13 @@ namespace zorba {
 SERIALIZABLE_CLASS_VERSIONS(DebugLocation)
 END_SERIALIZABLE_CLASS_VERSIONS(DebugLocation)
 
-SERIALIZABLE_CLASS_VERSIONS(ZorbaDebuggerCommons)
-END_SERIALIZABLE_CLASS_VERSIONS(ZorbaDebuggerCommons)
+SERIALIZABLE_CLASS_VERSIONS(DebuggerCommons)
+END_SERIALIZABLE_CLASS_VERSIONS(DebuggerCommons)
 
 SERIALIZABLE_CLASS_VERSIONS(DebuggerSingletonIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(DebuggerSingletonIterator)
 
-ZorbaDebuggerCommons::ZorbaDebuggerCommons(static_context* sctx)
+DebuggerCommons::DebuggerCommons(static_context* sctx)
 :
 theBreak(false),
 theCause(0),
@@ -56,11 +56,12 @@ theExecEval(false)
   theDebugIteratorState = NULL;
 }
 
-ZorbaDebuggerCommons::~ZorbaDebuggerCommons()
+DebuggerCommons::~DebuggerCommons()
 {
 }
 
-void ZorbaDebuggerCommons::serialize( ::zorba::serialization::Archiver& ar)
+void
+DebuggerCommons::serialize(::zorba::serialization::Archiver& ar)
 {
   ar & theLocationMap;
   ar & theUriFileMappingMap;
@@ -83,38 +84,44 @@ void ZorbaDebuggerCommons::serialize( ::zorba::serialization::Archiver& ar)
 }
 
 
-void ZorbaDebuggerCommons::setRuntime( ZorbaDebuggerRuntime* aRuntime )
+void
+DebuggerCommons::setRuntime(DebuggerRuntime* aRuntime)
 {
   theRuntime = aRuntime;
 }
 
-ZorbaDebuggerRuntime* ZorbaDebuggerCommons::getRuntime()
+DebuggerRuntime*
+DebuggerCommons::getRuntime()
 {
   return theRuntime;
 }
 
-void ZorbaDebuggerCommons::setCurrentStaticContext( static_context* aStaticContext )
+void
+DebuggerCommons::setCurrentStaticContext(static_context* aStaticContext)
 {
   theCurrentStaticContext = aStaticContext;
 }
 
-void ZorbaDebuggerCommons::setCurrentDynamicContext( dynamic_context* aDynamicContext )
+void
+DebuggerCommons::setCurrentDynamicContext(dynamic_context* aDynamicContext)
 {
  theCurrentDynamicContext = aDynamicContext;
 }
 
-dynamic_context* ZorbaDebuggerCommons::getCurrentDynamicContext() const
+dynamic_context*
+DebuggerCommons::getCurrentDynamicContext() const
 {
   return theCurrentDynamicContext;
 }
 
-static_context* ZorbaDebuggerCommons::getCurrentStaticContext() const
+static_context*
+DebuggerCommons::getCurrentStaticContext() const
 {
   return theCurrentStaticContext;
 }
 
-bool ZorbaDebuggerCommons::addBreakpoint(DebugLocation_t& aLocation,
-                                         unsigned int aId)
+bool
+DebuggerCommons::addBreakpoint(DebugLocation_t& aLocation, unsigned int aId)
 {
   bool lResult = false;
   // First we check, if the filename is a module namespace
@@ -160,7 +167,8 @@ bool ZorbaDebuggerCommons::addBreakpoint(DebugLocation_t& aLocation,
   return lResult;
 }
 
-bool ZorbaDebuggerCommons::hasToBreakAt( const QueryLoc& aLocation ) const
+bool
+DebuggerCommons::hasToBreakAt(const QueryLoc& aLocation) const
 {
   if (theExecEval) {
     return false;
@@ -177,7 +185,8 @@ bool ZorbaDebuggerCommons::hasToBreakAt( const QueryLoc& aLocation ) const
   return false;
 }
 
-bool ZorbaDebuggerCommons::hasToBreakAt(const ZorbaDebugIterator* aIter)
+bool
+DebuggerCommons::hasToBreakAt(const ZorbaDebugIterator* aIter)
 {
   //Preconditions
   ZORBA_ASSERT(aIter != NULL);
@@ -198,7 +207,8 @@ bool ZorbaDebuggerCommons::hasToBreakAt(const ZorbaDebugIterator* aIter)
   return false;
 }
 
-bool ZorbaDebuggerCommons::hasToBreak(SuspensionCause* aCause) const
+bool
+DebuggerCommons::hasToBreak(SuspensionCause* aCause) const
 {
   //This is not a precondition, because the client does not hava another
   //way to check it, then calling this function. But if theCause is 0, this
@@ -220,7 +230,8 @@ bool ZorbaDebuggerCommons::hasToBreak(SuspensionCause* aCause) const
   return theBreak;
 }
 
-void ZorbaDebuggerCommons::setBreak( bool lBreak, SuspensionCause aCause )
+void
+DebuggerCommons::setBreak(bool lBreak, SuspensionCause aCause)
 {
 #ifndef NDEBUG
   //Check preconditions
@@ -235,19 +246,21 @@ void ZorbaDebuggerCommons::setBreak( bool lBreak, SuspensionCause aCause )
 #endif //NDEBUG
 }
 
-void ZorbaDebuggerCommons::setCurrentIterator( const ZorbaDebugIterator* aIterator )
+void
+DebuggerCommons::setCurrentIterator(const ZorbaDebugIterator* aIterator)
 {
   theCurrentIterator = (ZorbaDebugIterator*)aIterator;
   //Test postconditions
   ZORBA_ASSERT(aIterator == theCurrentIterator);
 }
 
-const ZorbaDebugIterator* ZorbaDebuggerCommons::getCurrentIterator() const
+const ZorbaDebugIterator*
+DebuggerCommons::getCurrentIterator() const
 {
   return theCurrentIterator;
 }
 
-void ZorbaDebuggerCommons::makeStepOut()
+void DebuggerCommons::makeStepOut()
 {
   /*const */ZorbaDebugIterator* lIter = (ZorbaDebugIterator*)theCurrentIterator->getParent();
   if (lIter != NULL) {
@@ -255,7 +268,8 @@ void ZorbaDebuggerCommons::makeStepOut()
   }
 }
 
-void ZorbaDebuggerCommons::makeStepOver()
+void
+DebuggerCommons::makeStepOver()
 {
   //Preconditions
   ZORBA_ASSERT(theCurrentIterator != NULL);
@@ -266,14 +280,16 @@ void ZorbaDebuggerCommons::makeStepOver()
   }
 }
 
-void ZorbaDebuggerCommons::setPlanState( PlanState* aPlanState )
+void
+DebuggerCommons::setPlanState(PlanState* aPlanState)
 {
   thePlanState = aPlanState;
   //Check postconditions
   ZORBA_ASSERT(thePlanState == aPlanState);
 }
 
-void ZorbaDebuggerCommons::setDebugIteratorState( ZorbaDebugIteratorState* aState )
+void
+DebuggerCommons::setDebugIteratorState(ZorbaDebugIteratorState* aState)
 {
   theDebugIteratorState = aState;
   //Check postconditions
@@ -281,8 +297,7 @@ void ZorbaDebuggerCommons::setDebugIteratorState( ZorbaDebugIteratorState* aStat
 }
 
 std::list<std::pair<zstring, zstring> > 
-ZorbaDebuggerCommons::eval(const zstring& aExpr,
-                           Zorba_SerializerOptions& aSerOpts)
+DebuggerCommons::eval(const zstring& aExpr, Zorba_SerializerOptions& aSerOpts)
 {
   theExecEval = true;
   zstring lStore = aExpr;
@@ -295,13 +310,14 @@ ZorbaDebuggerCommons::eval(const zstring& aExpr,
   return lRes;
 }
 
-store::Item_t ZorbaDebuggerCommons::getEvalItem()
+store::Item_t
+DebuggerCommons::getEvalItem()
 {
   return theEvalItem;
 }
 
-void ZorbaDebuggerCommons::addModuleUriMapping( std::string aUri, 
-                                                      std::string aFileUri )
+void
+DebuggerCommons::addModuleUriMapping(std::string aUri, std::string aFileUri)
 {
   ZORBA_ASSERT(theUriFileMappingMap.find(aUri) == theUriFileMappingMap.end());
   theUriFileMappingMap.insert(
@@ -309,7 +325,8 @@ void ZorbaDebuggerCommons::addModuleUriMapping( std::string aUri,
   ZORBA_ASSERT(theUriFileMappingMap.find(aUri) != theUriFileMappingMap.end());
 }
 
-std::string ZorbaDebuggerCommons::getFilepathOfURI(const std::string& aUri) const
+std::string
+DebuggerCommons::getFilepathOfURI(const std::string& aUri) const
 {
   std::map<std::string, std::string>::const_iterator lIter;
   lIter = theUriFileMappingMap.find(aUri);
@@ -327,7 +344,8 @@ std::string ZorbaDebuggerCommons::getFilepathOfURI(const std::string& aUri) cons
   return lRes.str();
 }
 
-void ZorbaDebuggerCommons::clearBreakpoint( unsigned int aId )
+void
+DebuggerCommons::clearBreakpoint(unsigned int aId)
 {
   std::map<DebugLocation_t, bool, DebugLocation>::iterator lLocation;
   std::map<unsigned int, DebugLocation_t>::iterator lBreakpoint;
@@ -343,14 +361,16 @@ void ZorbaDebuggerCommons::clearBreakpoint( unsigned int aId )
   }
 }
 
-void DebugLocation::serialize(::zorba::serialization::Archiver& ar)
+void
+DebugLocation::serialize(::zorba::serialization::Archiver& ar)
 {
   ar & theFileName;
   ar & theLineNumber;
   ar & theQueryLocation;
 }
 
-bool DebugLocation::operator()( const DebugLocation_t& aLocation1, const DebugLocation_t& aLocation2 ) const
+bool
+DebugLocation::operator()(const DebugLocation_t& aLocation1, const DebugLocation_t& aLocation2) const
 {
   int c;
   if ((c = aLocation1.theFileName.compare(aLocation2.theFileName)) != 0) {
@@ -373,22 +393,23 @@ bool DebugLocation::operator()( const DebugLocation_t& aLocation1, const DebugLo
 }
 
 DebuggerSingletonIterator::DebuggerSingletonIterator(
-  static_context* sctx, QueryLoc loc, ZorbaDebuggerCommons* lCommons) :
+  static_context* sctx, QueryLoc loc, DebuggerCommons* lCommons) :
 NoaryBaseIterator<DebuggerSingletonIterator, PlanIteratorState>(sctx, loc),
 theCommons(lCommons)
 {
 }
 
-void DebuggerSingletonIterator::serialize(::zorba::serialization::Archiver& ar)
+void
+DebuggerSingletonIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-  serialize_baseclass( ar, (NoaryBaseIterator<DebuggerSingletonIterator,PlanIteratorState>*)this );
+  serialize_baseclass(ar, (NoaryBaseIterator<DebuggerSingletonIterator,PlanIteratorState>*)this);
   ar & theCommons;
 }
 
 NOARY_ACCEPT(DebuggerSingletonIterator);
 
-bool DebuggerSingletonIterator::nextImpl( store::Item_t& result,
-                                                PlanState& planState ) const
+bool
+DebuggerSingletonIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
@@ -398,4 +419,3 @@ bool DebuggerSingletonIterator::nextImpl( store::Item_t& result,
 }
 
 } // namespace zorba
-/* vim:set et sw=2 ts=2: */

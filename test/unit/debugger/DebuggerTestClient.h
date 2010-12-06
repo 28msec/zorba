@@ -68,7 +68,7 @@ private:
   int m_request_port;
   int m_event_port;
 
-	zorba::ZorbaDebuggerClient* m_client;
+	zorba::DebuggerClient* m_client;
 	DebuggerTestHandler* m_handler;
   std::iostream& m_query;
 

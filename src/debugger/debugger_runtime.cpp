@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "zorba_debugger_runtime.h"
+#include "debugger_runtime.h"
 
 #include <memory>
 #include <vector>
@@ -39,7 +39,7 @@
 #include "debugger/debugger_protocol.h"
 #include "debugger/synchronous_logger.h"
 #include "debugger/debugger_communication.h"
-#include "debugger/zorba_debugger_commons.h"
+#include "debugger/debugger_commons.h"
 
 #ifdef WIN32
 #include <windows.h>
@@ -47,20 +47,21 @@
 #endif
 
 namespace zorba {
-  class EvalCommand : public Runnable
-  {
+
+class EvalCommand : public Runnable
+{
   public:
-    EvalCommand(ZorbaDebuggerCommons* aCommons, 
-      DebuggerCommunicator* aCommunicator,
-      const zstring& aEvalString,
-      Zorba_SerializerOptions& aSerOpts,
-      Id aId)
-      : 
-    theCommons(aCommons), 
-    theCommunicator(aCommunicator),
-    theEvalString(aEvalString),
-    theSerOpts(aSerOpts),
-    theId(aId)
+
+    EvalCommand(DebuggerCommons* aCommons,
+                DebuggerCommunicator* aCommunicator,
+                const zstring& aEvalString,
+                Zorba_SerializerOptions& aSerOpts,
+                Id aId)
+      : theCommons(aCommons), 
+        theCommunicator(aCommunicator),
+        theEvalString(aEvalString),
+        theSerOpts(aSerOpts),
+        theId(aId)
     {}
 
     virtual ~EvalCommand() {}
@@ -102,20 +103,21 @@ namespace zorba {
     }
 
   private:
-    ZorbaDebuggerCommons*     theCommons;
+
+    DebuggerCommons*          theCommons;
     DebuggerCommunicator*     theCommunicator;
     zstring                   theEvalString;
     Zorba_SerializerOptions&  theSerOpts;
     Id                        theId;
   };
 
-ZorbaDebuggerRuntime::ZorbaDebuggerRuntime(
-  XQueryImpl* xqueryImpl,
-  std::ostream& oStream,
-  Zorba_SerializerOptions& serializerOptions,
-  DebuggerCommunicator* communicator,
-  itemHandler aHandler,
-  void* aCallBackData)
+DebuggerRuntime::DebuggerRuntime(
+    XQueryImpl* xqueryImpl,
+    std::ostream& oStream,
+    Zorba_SerializerOptions& serializerOptions,
+    DebuggerCommunicator* communicator,
+    itemHandler aHandler,
+    void* aCallBackData)
   : theQuery(xqueryImpl),
     theOStream(oStream),
     theSerializerOptions(serializerOptions),
@@ -131,7 +133,7 @@ ZorbaDebuggerRuntime::ZorbaDebuggerRuntime(
 {
 }
 
-ZorbaDebuggerRuntime::~ZorbaDebuggerRuntime()
+DebuggerRuntime::~DebuggerRuntime()
 {
   delete theSerializer;
 }
@@ -139,7 +141,7 @@ ZorbaDebuggerRuntime::~ZorbaDebuggerRuntime()
 // this is the main loop of the thread
 // the runtime thread terminates if this method finishes
 void
-ZorbaDebuggerRuntime::run()
+DebuggerRuntime::run()
 {
   theWrapper->open();
   thePlanIsOpen = true;
@@ -151,7 +153,8 @@ ZorbaDebuggerRuntime::run()
   runQuery();
 }
 
-void ZorbaDebuggerRuntime::finish()
+void
+DebuggerRuntime::finish()
 {
   if (thePlanIsOpen) {
     theWrapper->close();
@@ -162,7 +165,8 @@ void ZorbaDebuggerRuntime::finish()
   }
 }
 
-void ZorbaDebuggerRuntime::resetRuntime()
+void
+DebuggerRuntime::resetRuntime()
 {
   theWrapper = theQuery->generateWrapper();
   thePlanIsOpen = false;
@@ -171,7 +175,8 @@ void ZorbaDebuggerRuntime::resetRuntime()
   reset();
 }
 
-bool ZorbaDebuggerRuntime::processMessage(AbstractCommandMessage* message)
+bool
+DebuggerRuntime::processMessage(AbstractCommandMessage* message)
 {
   AutoLock lLock(theLock, Lock::WRITE);
   theCurrentMessage = message;
@@ -198,13 +203,15 @@ bool ZorbaDebuggerRuntime::processMessage(AbstractCommandMessage* message)
   return false;
 }
 
-ExecutionStatus ZorbaDebuggerRuntime::getExecutionStatus() const
+ExecutionStatus
+DebuggerRuntime::getExecutionStatus() const
 {
   AutoLock lLock(theLock, Lock::READ);
   return theExecStatus;
 }
 
-void ZorbaDebuggerRuntime::runQuery()
+void
+DebuggerRuntime::runQuery()
 {
   theLock.wlock();
   theExecStatus = theExecStatus == QUERY_SUSPENDED ? QUERY_RESUMED : QUERY_RUNNING;
@@ -240,7 +247,7 @@ void ZorbaDebuggerRuntime::runQuery()
 }
 
 bool
-ZorbaDebuggerRuntime::execCommands()
+DebuggerRuntime::execCommands()
 {
   switch (theCurrentMessage->getCommand())
   {
@@ -262,7 +269,8 @@ ZorbaDebuggerRuntime::execCommands()
   return false;
 }
 
-void ZorbaDebuggerRuntime::breakpointCommands()
+void
+DebuggerRuntime::breakpointCommands()
 {
   switch (theCurrentMessage->getCommand())
   {
@@ -292,7 +300,7 @@ void ZorbaDebuggerRuntime::breakpointCommands()
       std::vector<unsigned int> lIds = lMessage->getIds();
       std::vector<unsigned int>::iterator lIter;
       for (lIter = lIds.begin(); lIter != lIds.end(); ++lIter) {
-        ZorbaDebuggerCommons* lCommons = 
+        DebuggerCommons* lCommons = 
           theWrapper->thePlanState->theDebuggerCommons;
         lCommons->clearBreakpoint(*lIter);
       }
@@ -301,7 +309,8 @@ void ZorbaDebuggerRuntime::breakpointCommands()
   }
 }
 
-void ZorbaDebuggerRuntime::staticCommands()
+void
+DebuggerRuntime::staticCommands()
 {
   switch (theCurrentMessage->getCommand())
   {
@@ -311,7 +320,8 @@ void ZorbaDebuggerRuntime::staticCommands()
   }
 }
 
-void ZorbaDebuggerRuntime::dynamicCommands()
+void
+DebuggerRuntime::dynamicCommands()
 {
   if (theExecStatus != QUERY_SUSPENDED) {
     std::auto_ptr<ReplyMessage> lReply(
@@ -331,28 +341,31 @@ void ZorbaDebuggerRuntime::dynamicCommands()
   }
 }
 
-void ZorbaDebuggerRuntime::setQueryRunning()
+void
+DebuggerRuntime::setQueryRunning()
 {
   AutoLock lLock(theLock, Lock::WRITE);
   assert(theExecStatus == QUERY_RESUMED);
   theExecStatus = QUERY_RUNNING;
 }
 
-QueryLoc ZorbaDebuggerRuntime::addBreakpoint(const QueryLoc& aLocation,
+QueryLoc
+DebuggerRuntime::addBreakpoint(const QueryLoc& aLocation,
                                              unsigned int aId)
 {
   AutoLock lLock(theLock, Lock::WRITE);
   DebugLocation_t lLocation;
   lLocation.theFileName = aLocation.getFilename().c_str();
   lLocation.theLineNumber = aLocation.getLineno();
-  ZorbaDebuggerCommons* lCommons = theWrapper->thePlanState->theDebuggerCommons;
+  DebuggerCommons* lCommons = theWrapper->thePlanState->theDebuggerCommons;
   if (lCommons->addBreakpoint(lLocation, aId)){
     return lLocation.theQueryLocation;
   }
   return QueryLoc();
 }
 
-void ZorbaDebuggerRuntime::suspendRuntime( QueryLoc aLocation, SuspensionCause aCause )
+void
+DebuggerRuntime::suspendRuntime( QueryLoc aLocation, SuspensionCause aCause )
 {
   theLock.wlock();
   theExecStatus = QUERY_SUSPENDED;
@@ -363,7 +376,8 @@ void ZorbaDebuggerRuntime::suspendRuntime( QueryLoc aLocation, SuspensionCause a
   suspend();
 }
 
-void ZorbaDebuggerRuntime::resumeQuery()
+void
+DebuggerRuntime::resumeQuery()
 {
   AutoLock lLock(theLock, Lock::WRITE);
 #ifndef NDEBUG
@@ -373,7 +387,8 @@ void ZorbaDebuggerRuntime::resumeQuery()
   resumeRuntime();
 }
 
-void ZorbaDebuggerRuntime::resumeRuntime()
+void
+DebuggerRuntime::resumeRuntime()
 {
   theExecStatus = QUERY_RESUMED;
   resume();
@@ -381,7 +396,8 @@ void ZorbaDebuggerRuntime::resumeRuntime()
   theCommunicator->sendEvent(&lEvent);
 }
 
-void ZorbaDebuggerRuntime::terminateRuntime()
+void
+DebuggerRuntime::terminateRuntime()
 {
   AutoLock lLock(theLock, Lock::WRITE);
 #ifndef NDEBUG
@@ -398,7 +414,8 @@ void ZorbaDebuggerRuntime::terminateRuntime()
   theExecStatus = QUERY_TERMINATED;
 }
 
-void ZorbaDebuggerRuntime::detachRuntime()
+void
+DebuggerRuntime::detachRuntime()
 {
   AutoLock lLock(theLock, Lock::WRITE);
   //theWrapper->theStateBlock->theHasToQuit = true;
@@ -409,9 +426,10 @@ void ZorbaDebuggerRuntime::detachRuntime()
   theExecStatus = QUERY_DETACHED; 
 }
 
-ReplyMessage* ZorbaDebuggerRuntime::getAllVariables()
+ReplyMessage*
+DebuggerRuntime::getAllVariables()
 {
-  ZorbaDebuggerCommons* lCommons = 
+  DebuggerCommons* lCommons = 
     theWrapper->thePlanState->theDebuggerCommons;
   static_context* lContext = lCommons->getCurrentStaticContext();
   std::vector<std::string> lVariables;
@@ -429,7 +447,8 @@ ReplyMessage* ZorbaDebuggerRuntime::getAllVariables()
   return lReply.release();
 }
 
-void ZorbaDebuggerRuntime::step()
+void
+DebuggerRuntime::step()
 {
 #ifndef NDEBUG
   // Check preconditions
@@ -437,7 +456,7 @@ void ZorbaDebuggerRuntime::step()
 #endif // NDEBUG
   StepMessage* lMessage = static_cast<StepMessage*>(theCurrentMessage);
   StepCommand lCommand = lMessage->getStepKind();
-  ZorbaDebuggerCommons* lCommons = theWrapper->thePlanState->theDebuggerCommons;
+  DebuggerCommons* lCommons = theWrapper->thePlanState->theDebuggerCommons;
 
   switch (lCommand)
   {
@@ -457,12 +476,14 @@ void ZorbaDebuggerRuntime::step()
   }
 }
 
-void ZorbaDebuggerRuntime::setNotSendTerminateEvent()
+void
+DebuggerRuntime::setNotSendTerminateEvent()
 {
   theNotSendTerminateEvent = true;
 }
 
-void ZorbaDebuggerRuntime::evalCommand()
+void
+DebuggerRuntime::evalCommand()
 {
   ZORBA_ASSERT(dynamic_cast<EvalMessage*>(theCurrentMessage));
   zstring const &lExpr = static_cast<EvalMessage*>(theCurrentMessage)->getExpr();
@@ -476,7 +497,8 @@ void ZorbaDebuggerRuntime::evalCommand()
   lCommand->start();
 }
 
-ReplyMessage* ZorbaDebuggerRuntime::listSource()
+ReplyMessage*
+DebuggerRuntime::listSource()
 {
   ZORBA_ASSERT(dynamic_cast<ListCommand*>(theCurrentMessage));
   ListCommand* lCommand = dynamic_cast<ListCommand*>(theCurrentMessage);

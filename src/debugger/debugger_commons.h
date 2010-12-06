@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_DEBUGGER_COMMONS
-#define ZORBA_DEBUGGER_COMMONS
+#ifndef ZORBA_DEBUGGER_COMMONS_H
+#define ZORBA_DEBUGGER_COMMONS_H
 
 #include <map>
 #include <string>
@@ -32,7 +32,7 @@ typedef struct Zorba_SerializerOptions Zorba_SerializerOptions_t;
 namespace zorba {
   class dynamic_context;
   class static_context;
-  class ZorbaDebuggerRuntime;
+  class DebuggerRuntime;
   class ZorbaDebugIterator;
   class TranslatorImpl;
   class PlanState;
@@ -68,7 +68,7 @@ namespace zorba {
     */
     DebuggerSingletonIterator(static_context* sctx,
       QueryLoc loc,
-      ZorbaDebuggerCommons* lCommons);
+      DebuggerCommons* lCommons);
 
     virtual ~DebuggerSingletonIterator() {}
 
@@ -79,7 +79,7 @@ namespace zorba {
     bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
   protected:
-    ZorbaDebuggerCommons* theCommons;
+    DebuggerCommons* theCommons;
   public:
     SERIALIZABLE_CLASS(DebuggerSingletonIterator)
     SERIALIZABLE_CLASS_CONSTRUCTOR2T(DebuggerSingletonIterator, NoaryBaseIterator<DebuggerSingletonIterator,PlanIteratorState>)
@@ -94,7 +94,7 @@ namespace zorba {
   * the debug runtime and deliver information to the debugger runtime.
   *
   */
-  class ZorbaDebuggerCommons : public zorba::serialization::SerializeBaseClass{
+  class DebuggerCommons : public zorba::serialization::SerializeBaseClass{
     friend class TranslatorImpl;
   public: // Creation and destruction
     /**
@@ -102,26 +102,26 @@ namespace zorba {
     *
     * Initializes the internally used variables.
     */
-    ZorbaDebuggerCommons(static_context* sctx);
-    virtual ~ZorbaDebuggerCommons();
+    DebuggerCommons(static_context* sctx);
+    virtual ~DebuggerCommons();
 
-    SERIALIZABLE_CLASS(ZorbaDebuggerCommons);
-    SERIALIZABLE_CLASS_CONSTRUCTOR(ZorbaDebuggerCommons);
+    SERIALIZABLE_CLASS(DebuggerCommons);
+    SERIALIZABLE_CLASS_CONSTRUCTOR(DebuggerCommons);
     void serialize( ::zorba::serialization::Archiver& ar);
 
   public: // Commands
     //************************************
     // Method:    setRuntime
-    // FullName:  zorba::ZorbaDebuggerCommons::setRuntime
+    // FullName:  zorba::DebuggerCommons::setRuntime
     // Access:    public 
     // Returns:   void
     // Qualifier:
-    // Parameter: ZorbaDebuggerRuntime * aRuntime
+    // Parameter: DebuggerRuntime * aRuntime
     //************************************
-    void setRuntime(ZorbaDebuggerRuntime* aRuntime);
+    void setRuntime(DebuggerRuntime* aRuntime);
     //************************************
     // Method:    setCurrentDynamicContext
-    // FullName:  zorba::ZorbaDebuggerCommons::setCurrentDynamicContext
+    // FullName:  zorba::DebuggerCommons::setCurrentDynamicContext
     // Access:    public 
     // Returns:   void
     // Qualifier:
@@ -136,7 +136,7 @@ namespace zorba {
     /**
     * @brief Sets the theBreak variable.
     *
-    * @see ZorbaDebuggerCommons::hasToBreak for a description why this is
+    * @see DebuggerCommons::hasToBreak for a description why this is
     *  needed.
     *
     * @pre lBreak implies aCause != 0
@@ -215,15 +215,15 @@ namespace zorba {
     void clearBreakpoint(unsigned int aId);
     //************************************
     // Method:    getRuntime
-    // FullName:  zorba::ZorbaDebuggerCommons::getRuntime
+    // FullName:  zorba::DebuggerCommons::getRuntime
     // Access:    public 
-    // Returns:   ZorbaDebuggerRuntime*
+    // Returns:   DebuggerRuntime*
     // Qualifier:
     //************************************
-    ZorbaDebuggerRuntime* getRuntime();
+    DebuggerRuntime* getRuntime();
     //************************************
     // Method:    getCurrentDynamicContext
-    // FullName:  zorba::ZorbaDebuggerCommons::getCurrentDynamicContext
+    // FullName:  zorba::DebuggerCommons::getCurrentDynamicContext
     // Access:    public 
     // Returns:   dynamic_context*
     // Qualifier: const
@@ -231,7 +231,7 @@ namespace zorba {
     dynamic_context* getCurrentDynamicContext() const;
     //************************************
     // Method:    getCurrentStaticContext
-    // FullName:  zorba::ZorbaDebuggerCommons::getCurrentStaticContext
+    // FullName:  zorba::DebuggerCommons::getCurrentStaticContext
     // Access:    public 
     // Returns:   static_context*
     // Qualifier: const
@@ -299,7 +299,7 @@ namespace zorba {
     std::map<DebugLocation_t, bool, DebugLocation> theLocationMap;
     std::map<std::string, std::string >            theUriFileMappingMap;
     std::map<unsigned int, DebugLocation_t>        theBreakpoints;
-    ZorbaDebuggerRuntime*                          theRuntime;
+    DebuggerRuntime*                               theRuntime;
     static_context*                                theCurrentStaticContext;
     dynamic_context*                               theCurrentDynamicContext;
     bool                                           theBreak;
@@ -316,4 +316,4 @@ namespace zorba {
   };
 }
 
-#endif // ZORBA_DEBUGGER_COMMONS
+#endif // ZORBA_DEBUGGER_COMMONS_H

@@ -25,10 +25,12 @@
 #ifdef ZORBA_HAVE_PTHREAD_H
 #    include <pthread.h>
 #    define ZORBA_THREAD_RETURN void *
+     typedef pthread_t ThreadId;
 #else
      typedef DWORD ThreadId;
 #    define ZORBA_THREAD_RETURN DWORD WINAPI
 #endif
+
 
 namespace zorba {
 
@@ -124,11 +126,24 @@ private:
 
     static void
     mutexCleanupHandler(void *);
-
 #else
     ThreadId theThreadId;
     HANDLE   theThread;
+
 #endif
+
+
+public:
+
+    static ThreadId self()
+    {
+#ifdef ZORBA_HAVE_PTHREAD_H
+      return pthread_self();
+#else
+      return GetCurrentThreadId();
+#endif
+    }
+
 };
 } /* namespace zorba */
 

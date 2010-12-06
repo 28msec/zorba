@@ -13,42 +13,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "debugger_server.h"
+
 #include "context/static_context.h"
 
-#include "zorba_debugger_server.h"
-
 #include "debugger/debugger_communication.h"
-#include "debugger/zorba_debugger_runtime.h"
+#include "debugger/debugger_runtime.h"
 #include "api/xqueryimpl.h"
 
 #include <memory>
 
 namespace zorba {
 
-ZorbaDebuggerServer::ZorbaDebuggerServer(XQueryImpl* aQuery,
-                                         Zorba_SerializerOptions& serializerOption,
-                                         std::ostream& anOstream,
-                                         itemHandler aHandler,
-                                         void* aCallBackData,
-                                         std::string aHost,
-                                         unsigned short requestPort /*= 8000*/,
-                                         unsigned short eventPort /*= 9000*/)
+DebuggerServer::DebuggerServer(XQueryImpl* aQuery,
+                               Zorba_SerializerOptions& serializerOption,
+                               std::ostream& anOstream,
+                               itemHandler aHandler,
+                               void* aCallBackData,
+                               std::string aHost,
+                               unsigned short requestPort /*= 8000*/,
+                               unsigned short eventPort /*= 9000*/)
   : theRequestPort(requestPort),
     theEventPort(eventPort)
 {
   theCommunicator = new DebuggerCommunicator(aHost, theRequestPort, theEventPort);
-  theRuntime = new ZorbaDebuggerRuntime(aQuery, anOstream, serializerOption,
+  theRuntime = new DebuggerRuntime(aQuery, anOstream, serializerOption,
     theCommunicator, aHandler, aCallBackData);
 }
 
-ZorbaDebuggerServer::~ZorbaDebuggerServer()
+DebuggerServer::~DebuggerServer()
 {
   delete theRuntime;
   delete theCommunicator;
 }
 
 void
-ZorbaDebuggerServer::run()
+DebuggerServer::run()
 {
   theCommunicator->handshake();
 
@@ -77,6 +77,6 @@ ZorbaDebuggerServer::run()
     } // if (lMessage.get() != NULL)
   } // while
   theRuntime->join();
-} // ZorbaDebuggerServer::run
+} // DebuggerServer::run
 
 } /* namespace zorba */

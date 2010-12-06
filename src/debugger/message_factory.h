@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_DEBUGGER_MESSAGE_FACTORY
-#define ZORBA_DEBUGGER_MESSAGE_FACTORY
+#ifndef ZORBA_DEBUGGER_MESSAGE_FACTORY_H
+#define ZORBA_DEBUGGER_MESSAGE_FACTORY_H
 
 #include <iostream>
 
@@ -43,5 +43,7 @@ class ZORBA_DLL_PUBLIC MessageFactory
     static AbstractMessage * buildMessage(
       Byte * aMessage, const unsigned int aLength);
 };
+
 }//end of zorba namespace
-#endif /*ZORBA_DEBUGGER_MESSAGE_FACTORY_HPP_*/
+
+#endif // ZORBA_DEBUGGER_MESSAGE_FACTORY_H

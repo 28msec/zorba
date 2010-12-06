@@ -28,7 +28,7 @@ namespace zorba {
 
 class DebuggerTestHandler : public zorba::DefaultDebuggerEventHandler {
 public:
-	DebuggerTestHandler(zorba::ZorbaDebuggerClient* client);
+	DebuggerTestHandler(zorba::DebuggerClient* client);
   virtual ~DebuggerTestHandler();
 
 public:
@@ -52,7 +52,7 @@ public:
   evaluated(String &anExpr, String &aError);
 
 private:
-	zorba::ZorbaDebuggerClient* m_client;
+	zorba::DebuggerClient* m_client;
 	std::pair<String, std::list<std::pair<String, String> > > theLastValuesAndTypes;
 
 };

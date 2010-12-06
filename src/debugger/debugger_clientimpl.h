@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_DEBUGGER_CLIENT_IMPL_CLIENT_H
-#define ZORBA_DEBUGGER_CLIENT_IMPL_CLIENT_H
+#ifndef ZORBA_DEBUGGER_CLIENT_IMPL_H
+#define ZORBA_DEBUGGER_CLIENT_IMPL_H
 
 #include <iostream>
 #include <vector>
@@ -24,34 +24,35 @@
 #include <zorba/api_shared_types.h>
 #include <zorba/debugger_client.h>
 
-#include "zorbautils/thread.h"
+#include "zorbautils/runnable.h"
 #include "zorbautils/lock.h"
 
 #include "debugger/debugger_common.h"
 #include "debugger/debugger_protocol.h"
 
-namespace zorba{
+namespace zorba {
 
   class AbstractMessage;
   class AbstractCommandMessage;
   class TCPSocket;
   class TCPServerSocket;
+  class DebuggerEventListener;
 
   ZORBA_THREAD_RETURN listenEvents(void* aClient);
 
-  class ZorbaDebuggerClientImpl : public ZorbaDebuggerClient
+  class DebuggerClientImpl : public DebuggerClient
   {
-    friend
-    ZORBA_THREAD_RETURN listenEvents(void* aClient);
+
+    friend class DebuggerEventListener;
 
     public:
-      ZorbaDebuggerClientImpl(std::string aServerAddress = "127.0.0.1",
+      DebuggerClientImpl(std::string aServerAddress = "127.0.0.1",
                               unsigned short aRequestPortno = 8000,
                               unsigned short aEventPortno = 9000);
 
-      virtual ~ZorbaDebuggerClientImpl();
+      virtual ~DebuggerClientImpl();
 
-      ZorbaDebuggerClient* registerEventHandler(DebuggerEventHandler* anEventHandler);
+      DebuggerClient* registerEventHandler(DebuggerEventHandler* anEventHandler);
       
       bool isQueryRunning() const;
 
@@ -129,9 +130,9 @@ namespace zorba{
 
       ExecutionStatus theExecutionStatus; 
 
-      mutable Lock    theExecutionStatusLock;
+      mutable Lock theExecutionStatusLock;
 
-      Thread* theEventListener;
+      DebuggerEventListener* theEventListener;
 
       std::map<unsigned int, String> theBreakpoints;
 
@@ -144,4 +145,5 @@ namespace zorba{
       void send(std::string aMessage) const;
   };
 }//end of namespace
-#endif
+
+#endif // ZORBA_DEBUGGER_CLIENT_IMPL_H

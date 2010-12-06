@@ -34,8 +34,8 @@ namespace zorba
 
 class RCObject;
 class ZorbaDebugger;
-class ZorbaDebuggerRuntime;
-class ZorbaDebuggerCommons;
+class DebuggerRuntime;
+class DebuggerCommons;
 class DynamicContextImpl;
 class StaticContextImpl;
 class ResultIteratorImpl;
@@ -137,7 +137,7 @@ class XQueryImpl : public XQuery , public ::zorba::serialization::SerializeBaseC
   friend class DynamicContextImpl;
   friend class CompilerCB;
   friend class ZorbaDebugger;
-  friend class ZorbaDebuggerRuntime;
+  friend class DebuggerRuntime;
 
  protected:
 

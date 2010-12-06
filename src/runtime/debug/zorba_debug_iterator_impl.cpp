@@ -24,8 +24,8 @@
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
 
-#include "debugger/zorba_debugger_runtime.h"
-#include "debugger/zorba_debugger_commons.h"
+#include "debugger/debugger_runtime.h"
+#include "debugger/debugger_commons.h"
 
 #include "runtime/visitors/planiter_visitor.h"
 #include "runtime/core/item_iterator.h"
@@ -177,7 +177,7 @@ std::list<std::pair<zstring, zstring> >
 
 void ZorbaDebugIterator::checkBreak(PlanState* planState) const
 {
-  ZorbaDebuggerCommons* lCommons  = planState->theDebuggerCommons;
+  DebuggerCommons* lCommons  = planState->theDebuggerCommons;
   SuspensionCause lCause = 0;
 
   // check whether we have to suspend 

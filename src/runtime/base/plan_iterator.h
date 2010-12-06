@@ -98,7 +98,7 @@ namespace zorba
 class RuntimeCB;
 class PlanIterVisitor;
 class dynamic_context;
-class ZorbaDebuggerCommons;
+class DebuggerCommons;
 class XQueryImpl;
 
 
@@ -139,7 +139,7 @@ public:
 
   std::stack<store::Item*>  theNodeConstuctionPath;
 
-  ZorbaDebuggerCommons    * theDebuggerCommons;
+  DebuggerCommons         * theDebuggerCommons;
 
   bool                      theHasToQuit;
 

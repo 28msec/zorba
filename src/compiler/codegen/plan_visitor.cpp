@@ -88,7 +88,7 @@
 #include "runtime/function_item/function_item_iter.h"
 #include "runtime/function_item/dynamic_fncall_iterator.h"
 
-#include "debugger/zorba_debugger_commons.h"
+#include "debugger/debugger_commons.h"
 
 #include "functions/function.h"
 #include "functions/library.h"

@@ -1,0 +1,111 @@
+/*
+ * Copyright 2006-2008 The FLWOR Foundation.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#include "debugger_event_listener.h"
+
+#include <memory>
+
+#include "debugger/socket.h"
+#include "debugger/debugger_clientimpl.h"
+#include "debugger/message_factory.h"
+#include "debugger/query_locationimpl.h"
+
+#include "util/ascii_util.h"
+
+namespace zorba {
+
+DebuggerEventListener::DebuggerEventListener(DebuggerClientImpl* aClient)
+  : theClient(aClient)
+{
+}
+
+DebuggerEventListener::~DebuggerEventListener()
+{
+}
+
+void
+DebuggerEventListener::run()
+{
+  std::cout << "Running event listener (" << Runnable::self() << ")" << std::endl;
+  assert(theClient != 0);
+
+  try {
+    std::auto_ptr<TCPSocket> lSocket(theClient->theEventServerSocket->accept());
+    while (theClient->getExecutionStatus() != QUERY_TERMINATED) {
+      std::auto_ptr<AbstractMessage> lMessage(MessageFactory::buildMessage(lSocket.get()));
+      SuspendedEvent* lSuspendedMsg;
+      EvaluatedEvent* lEvaluatedEvent;
+      if ((lSuspendedMsg = dynamic_cast<SuspendedEvent*> (lMessage.get()))) {
+        theClient->setExecutionStatus(QUERY_SUSPENDED);
+        theClient->theRemoteLocation  = lSuspendedMsg->getLocation();
+        if (theClient->theEventHandler) {
+          QueryLocationImpl loc(lSuspendedMsg->getLocation());
+          theClient->theEventHandler->suspended(loc, (SuspendedBy)lSuspendedMsg->getCause());
+        }
+      } else if (dynamic_cast<StartedEvent*> (lMessage.get())) {
+        theClient->setExecutionStatus(QUERY_RUNNING);
+        if (theClient->theEventHandler) {
+          theClient->theEventHandler->started();
+        }
+      } else if (dynamic_cast<ResumedEvent*> (lMessage.get())) {
+        theClient->setExecutionStatus(QUERY_RUNNING);
+        if (theClient->theEventHandler) {
+          theClient->theEventHandler->resumed();
+        }
+      } else if (dynamic_cast<TerminatedEvent*> (lMessage.get())) {
+        if (theClient->getExecutionStatus() != QUERY_IDLE) {
+          theClient->setExecutionStatus(QUERY_TERMINATED);
+          if (theClient->theEventHandler) {
+            theClient->theEventHandler->terminated();
+          }
+          // Why was that here? Did XQDT need this?
+          //theClient->theRequestSocket->send("quit", 5);
+        }
+        break;
+      } else if ((lEvaluatedEvent = dynamic_cast<EvaluatedEvent*>(lMessage.get()))) {
+        if (theClient->theEventHandler) {
+          String lExpr(lEvaluatedEvent->getExpr().c_str());
+          String lError(lEvaluatedEvent->getError().c_str());
+          if (lError.length() > 0) {
+            theClient->theEventHandler->evaluated(lExpr, lError);
+          } else {
+            std::list< std::pair<String, String> > lValuesAndTypes;
+            std::list< std::pair<zstring, zstring> > lMap = lEvaluatedEvent->getValuesAndTypes();
+            std::list< std::pair<zstring, zstring> >::const_iterator it;
+            for (it=lMap.begin(); it!=lMap.end(); ++it) {
+              zstring temp(it->first);
+              ascii::replace_all( temp, "&quot;", "\"" );
+              String lResult(temp.c_str());
+              String lType(it->second.c_str());
+              lValuesAndTypes.push_back(std::make_pair(lResult, lType));
+            }
+            theClient->theEventHandler->evaluated(lExpr, lValuesAndTypes);
+          }
+        }
+      }
+    }
+  } catch(std::exception&) {
+    //do nothing...
+  }
+}
+
+void
+DebuggerEventListener::finish()
+{
+}
+
+
+} //end of namespace

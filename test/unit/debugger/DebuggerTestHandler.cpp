@@ -27,7 +27,7 @@
 
 namespace zorba {
 
-DebuggerTestHandler::DebuggerTestHandler( zorba::ZorbaDebuggerClient* client )
+DebuggerTestHandler::DebuggerTestHandler(zorba::DebuggerClient* client)
   : m_client(client)
 {
 }

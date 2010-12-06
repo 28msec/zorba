@@ -26,14 +26,14 @@ typedef struct Zorba_SerializerOptions Zorba_SerializerOptions_t;
 namespace zorba {
   class XQueryImpl;
   class DebuggerCommunicator;
-  class ZorbaDebuggerRuntime;
+  class DebuggerRuntime;
   typedef Zorba_SerializerOptions_t* (*itemHandler)(void* aUserData);
 
-  class ZorbaDebuggerServer {
+  class DebuggerServer {
   public: // Creation and destruction
     //************************************
-    // Method:    ZorbaDebuggerServer
-    // FullName:  zorba::ZorbaDebuggerServer::ZorbaDebuggerServer
+    // Method:    DebuggerServer
+    // FullName:  zorba::DebuggerServer::DebuggerServer
     // Access:    public 
     // Qualifier: This constructor creates a new server
     //            Object.
@@ -48,19 +48,19 @@ namespace zorba {
     //            gets informed, when an event occurred (like terminated,
     //            suspended...)
     //************************************
-    ZorbaDebuggerServer(XQueryImpl* aQuery,
-                        Zorba_SerializerOptions& serializerOption,
-                        std::ostream& anOstream,
-                        itemHandler aHandler,
-                        void* aCallBackData,
-                        std::string aHost,
-                        unsigned short requestPort = 8000,
-                        unsigned short eventPort = 9000);
-    virtual ~ZorbaDebuggerServer();
+    DebuggerServer(XQueryImpl* aQuery,
+                   Zorba_SerializerOptions& serializerOption,
+                   std::ostream& anOstream,
+                   itemHandler aHandler,
+                   void* aCallBackData,
+                   std::string aHost,
+                   unsigned short requestPort = 8000,
+                   unsigned short eventPort = 9000);
+    virtual ~DebuggerServer();
   public:
     //************************************
     // Method:    run
-    // FullName:  zorba::ZorbaDebuggerServer::run
+    // FullName:  zorba::DebuggerServer::run
     // Access:    public 
     // Returns:   void
     // Qualifier: This method is called when the thread starts (as documented in
@@ -73,11 +73,10 @@ namespace zorba {
     unsigned short                    theRequestPort;
     unsigned short                    theEventPort;
     DebuggerCommunicator*             theCommunicator;
-    ZorbaDebuggerRuntime*             theRuntime;
+    DebuggerRuntime*                  theRuntime;
     itemHandler*                      theHandler;
     void*                             theCallBackData;
   };
 }
 
-#endif
-
+#endif // ZORBA_DEBUGGER_SERVER

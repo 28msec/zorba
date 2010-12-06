@@ -95,15 +95,15 @@ namespace zorba {
 
   /** 
    * Client instance of Zorba debugger.
-   * ZorbaDebuggerClient API provides to send commands to a
+   * DebuggerClient API provides to send commands to a
    * remote debugger and to handle events from it.
    */
-  class ZORBA_DLL_PUBLIC ZorbaDebuggerClient
+  class ZORBA_DLL_PUBLIC DebuggerClient
   {
 
     public:
 
-      virtual ~ZorbaDebuggerClient(){}
+      virtual ~DebuggerClient() {}
 
       /** \brief Gets a new instance of Zorba debugger client.
        *
@@ -111,14 +111,14 @@ namespace zorba {
        * The parameters are the network ports for the request and event connection
        * (by default: 8000 for commands and 9000 for events):
        * <pre>
-       * ZorbaDebuggerClient* lClient = ZorbaDebuggerClient::createClient(8000, 9000);
+       * DebuggerClient* lClient = DebuggerClient::createClient(8000, 9000);
        * </pre>
        *
        * @param unsigned short aRequestPortno Network port number for debugging commands.
        * @param unsigned short aEventPortno.
-       * @return ZorbaDebuggerClient the newly created debugger client instance.
+       * @return DebuggerClient the newly created debugger client instance.
        */
-      static ZorbaDebuggerClient*
+      static DebuggerClient*
       createClient(unsigned short aRequestPortno = 8000, unsigned short aEventPortno = 9000);
 
       /** \brief Gets a new instance of Zorba debugger client.
@@ -129,15 +129,15 @@ namespace zorba {
        * The parameters are the network ports for the request and event connection
        * (by default: 8000 for commands and 9000 for events).
        * <pre>
-       * ZorbaDebuggerClient* lClient = ZorbaDebuggerClient::createClient("192.168.0.1");
+       * DebuggerClient* lClient = DebuggerClient::createClient("192.168.0.1");
        * </pre>
        *
        * @param std::string aServerAddress the IP address of the debugger server.
        * @param unsigned short aRequestPortno Network port number for debugging commands.
        * @param unsigned short aEventPortno.
-       * @return ZorbaDebuggerClient the newly created debugger client instance.
+       * @return DebuggerClient the newly created debugger client instance.
        */
-       static ZorbaDebuggerClient*
+       static DebuggerClient*
        createClient(std::string aServerAddress, unsigned short aRequestPortno = 8000, unsigned short aEventPortno = 9000);
 
 
@@ -147,7 +147,7 @@ namespace zorba {
        * @param aDebuggerEventHandler DebuggerEventHandler Handler for runtime events comming
        * from the remote debugger server.
        */
-      virtual ZorbaDebuggerClient*
+      virtual DebuggerClient*
       registerEventHandler(DebuggerEventHandler *aDebuggerEventHandler) = 0;
      
       /** \brief Indicates if the query is running.

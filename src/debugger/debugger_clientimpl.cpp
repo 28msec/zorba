@@ -19,27 +19,20 @@
 
 #include <iostream>
 #include <memory>
-#include <exception>
 
-#include <zorba/api_shared_types.h>
-#include <zorba/debugger_exception.h>
 #include <zorbaerrors/Assert.h>
-
-#include "common/common.h"
 
 #include "api/unmarshaller.h"
 
 #include "util/ascii_util.h"
 #include "util/stl_util.h"
 
+#include "debugger/debugger_event_listener.h"
 #include "debugger/query_locationimpl.h"
-#include "debugger/utils.h"
 #include "debugger/socket.h"
 #include "debugger/message_factory.h"
 #include "debugger/stackimpl.h"
 
-#include "json/parser.h"
-#include "json/value.h"
 
 #ifdef WIN32
 #include <windows.h>
@@ -48,11 +41,11 @@
 
 using namespace std;
 
-namespace zorba{
+namespace zorba {
 
-unsigned int ZorbaDebuggerClientImpl::theLastId = 0;
+unsigned int DebuggerClientImpl::theLastId = 0;
 
-ZorbaDebuggerClientImpl::ZorbaDebuggerClientImpl(std::string aServerAddress, unsigned short aRequestPortno, unsigned short aEventPortno)
+DebuggerClientImpl::DebuggerClientImpl(std::string aServerAddress, unsigned short aRequestPortno, unsigned short aEventPortno)
  : theEventHandler(0),
    theRequestSocket(0),
    theEventServerSocket(0),
@@ -67,34 +60,35 @@ ZorbaDebuggerClientImpl::ZorbaDebuggerClientImpl(std::string aServerAddress, uns
 			//Perform the handshake with the server
 		} while (!handshake());
 		//Start the event listener thread
-		theEventListener = new Thread(listenEvents, this);
+		theEventListener = new DebuggerEventListener(this);
+    theEventListener->start();
 	} catch(DebuggerSocketException& e) {
 		throw e;
   }
 }
 
-ZorbaDebuggerClientImpl::~ZorbaDebuggerClientImpl()
+DebuggerClientImpl::~DebuggerClientImpl()
 {
-  theEventListener->join();
+  theEventListener->terminate();
   delete theEventListener;
 }
 
 ExecutionStatus
-ZorbaDebuggerClientImpl::getExecutionStatus() const
+DebuggerClientImpl::getExecutionStatus() const
 {
   AutoLock lLock(theExecutionStatusLock, Lock::READ);
   return theExecutionStatus;
 }
 
 void
-ZorbaDebuggerClientImpl::setExecutionStatus(const ExecutionStatus& e)
+DebuggerClientImpl::setExecutionStatus(const ExecutionStatus& e)
 {
   AutoLock lLock(theExecutionStatusLock, Lock::WRITE);
   theExecutionStatus = e;
 }
 
-ZorbaDebuggerClient*
-ZorbaDebuggerClientImpl::registerEventHandler(DebuggerEventHandler* anEventHandler)
+DebuggerClient*
+DebuggerClientImpl::registerEventHandler(DebuggerEventHandler* anEventHandler)
 {
   theEventHandler = anEventHandler;
   //Special case for event handler initialization
@@ -105,7 +99,7 @@ ZorbaDebuggerClientImpl::registerEventHandler(DebuggerEventHandler* anEventHandl
 }
 
 bool
-ZorbaDebuggerClientImpl::handshake()
+DebuggerClientImpl::handshake()
 {
   bool result = false;
   auto_vec<char> msg(new char[ 12 ]);
@@ -123,103 +117,36 @@ ZorbaDebuggerClientImpl::handshake()
   return false;
 }
 
-ZORBA_THREAD_RETURN
-listenEvents(void* aClient)
-{
-  ZorbaDebuggerClientImpl* lClient = (ZorbaDebuggerClientImpl*) aClient;
-  assert(lClient != 0);
-
-  try {
-    std::auto_ptr<TCPSocket> lSocket(lClient->theEventServerSocket->accept());
-    while (lClient->getExecutionStatus() != QUERY_TERMINATED) {
-      std::auto_ptr<AbstractMessage> lMessage(MessageFactory::buildMessage(lSocket.get()));
-      SuspendedEvent* lSuspendedMsg;
-      EvaluatedEvent* lEvaluatedEvent;
-      if ((lSuspendedMsg = dynamic_cast<SuspendedEvent*> (lMessage.get()))) {
-        lClient->setExecutionStatus(QUERY_SUSPENDED);
-        lClient->theRemoteLocation  = lSuspendedMsg->getLocation();
-        if (lClient->theEventHandler) {
-          QueryLocationImpl loc(lSuspendedMsg->getLocation());
-          lClient->theEventHandler->suspended(loc, (SuspendedBy)lSuspendedMsg->getCause());
-        }
-      } else if (dynamic_cast<StartedEvent*> (lMessage.get())) {
-        lClient->setExecutionStatus(QUERY_RUNNING);
-        if (lClient->theEventHandler) {
-          lClient->theEventHandler->started();
-        }
-      } else if (dynamic_cast<ResumedEvent*> (lMessage.get())) {
-        lClient->setExecutionStatus(QUERY_RUNNING);
-        if (lClient->theEventHandler) {
-          lClient->theEventHandler->resumed();
-        }
-      } else if (dynamic_cast<TerminatedEvent*> (lMessage.get())) {
-        if (lClient->getExecutionStatus() != QUERY_IDLE) {
-          lClient->setExecutionStatus(QUERY_TERMINATED);
-          if (lClient->theEventHandler) {
-            lClient->theEventHandler->terminated();
-          }
-          // Why was that here? Did XQDT need this?
-          //lClient->theRequestSocket->send("quit", 5);
-        }
-        break;
-      } else if ((lEvaluatedEvent = dynamic_cast<EvaluatedEvent*>(lMessage.get()))) {
-        if (lClient->theEventHandler) {
-          String lExpr(lEvaluatedEvent->getExpr().c_str());
-          String lError(lEvaluatedEvent->getError().c_str());
-          if (lError.length() > 0) {
-            lClient->theEventHandler->evaluated(lExpr, lError);
-          } else {
-            list< pair<String, String> > lValuesAndTypes;
-            list< pair<zstring, zstring> > lMap = lEvaluatedEvent->getValuesAndTypes();
-            list< pair<zstring, zstring> >::const_iterator it;
-            for (it=lMap.begin(); it!=lMap.end(); ++it) {
-              zstring temp(it->first);
-              ascii::replace_all( temp, "&quot;", "\"" );
-              String lResult(temp.c_str());
-              String lType(it->second.c_str());
-              lValuesAndTypes.push_back(std::make_pair(lResult, lType));
-            }
-            lClient->theEventHandler->evaluated(lExpr, lValuesAndTypes);
-          }
-        }
-      }
-    }
-  } catch(std::exception&) {
-    //do nothing...
-  }
-  return 0;
-}
-
 bool
-ZorbaDebuggerClientImpl::isQueryRunning() const
+DebuggerClientImpl::isQueryRunning() const
 {
   AutoLock lLock(theExecutionStatusLock, Lock::READ);
   return theExecutionStatus == QUERY_RUNNING;
 }
 
 bool
-ZorbaDebuggerClientImpl::isQueryIdle() const
+DebuggerClientImpl::isQueryIdle() const
 {
   AutoLock lLock(theExecutionStatusLock, Lock::READ);
   return theExecutionStatus == QUERY_IDLE;
 }
 
 bool
-ZorbaDebuggerClientImpl::isQuerySuspended() const
+DebuggerClientImpl::isQuerySuspended() const
 {
   AutoLock lLock(theExecutionStatusLock, Lock::READ);
   return theExecutionStatus == QUERY_SUSPENDED;
 }
 
 bool
-ZorbaDebuggerClientImpl::isQueryTerminated() const
+DebuggerClientImpl::isQueryTerminated() const
 {
   AutoLock lLock(theExecutionStatusLock, Lock::READ);
   return theExecutionStatus == QUERY_TERMINATED;
 }
 
 ReplyMessage*
-ZorbaDebuggerClientImpl::send(AbstractCommandMessage* aMessage) const
+DebuggerClientImpl::send(AbstractCommandMessage* aMessage) const
 {
   //Connect the client
   Length length;
@@ -240,7 +167,7 @@ ZorbaDebuggerClientImpl::send(AbstractCommandMessage* aMessage) const
 }
 
 bool
-ZorbaDebuggerClientImpl::run()
+DebuggerClientImpl::run()
 {
   RunMessage lMessage;
   //TODO: check reply message
@@ -249,7 +176,7 @@ ZorbaDebuggerClientImpl::run()
 }
 
 bool
-ZorbaDebuggerClientImpl::suspend()
+DebuggerClientImpl::suspend()
 {
   SuspendMessage lMessage;
   //TODO: check reply message
@@ -258,7 +185,7 @@ ZorbaDebuggerClientImpl::suspend()
 }
 
 bool
-ZorbaDebuggerClientImpl::resume()
+DebuggerClientImpl::resume()
 {
   ResumeMessage lMessage;
   //TODO: check reply message
@@ -267,7 +194,7 @@ ZorbaDebuggerClientImpl::resume()
 }
 
 bool
-ZorbaDebuggerClientImpl::terminate()
+DebuggerClientImpl::terminate()
 {
   TerminateMessage lMessage;
   //TODO: check reply message
@@ -276,7 +203,7 @@ ZorbaDebuggerClientImpl::terminate()
 }
 
 void
-ZorbaDebuggerClientImpl::detach()
+DebuggerClientImpl::detach()
 {
   DetachMessage lMessage;
   //TODO: check reply message
@@ -284,7 +211,7 @@ ZorbaDebuggerClientImpl::detach()
 }
 
 bool
-ZorbaDebuggerClientImpl::stepInto()
+DebuggerClientImpl::stepInto()
 {
   StepMessage lMessage(STEP_INTO);
   //TODO: check reply message
@@ -293,7 +220,7 @@ ZorbaDebuggerClientImpl::stepInto()
 }
 
 bool
-ZorbaDebuggerClientImpl::stepOver()
+DebuggerClientImpl::stepOver()
 {
   StepMessage lMessage(STEP_OVER);
   //TODO: check reply message
@@ -302,7 +229,7 @@ ZorbaDebuggerClientImpl::stepOver()
 }
 
 bool
-ZorbaDebuggerClientImpl::stepOut()
+DebuggerClientImpl::stepOut()
 {
   StepMessage lMessage(STEP_OUT);
   //TODO: check reply message
@@ -311,7 +238,7 @@ ZorbaDebuggerClientImpl::stepOut()
 }
 
 bool
-ZorbaDebuggerClientImpl::addBreakpoint(const String& anExpr)
+DebuggerClientImpl::addBreakpoint(const String& anExpr)
 {
   zstring const &lExpr = Unmarshaller::getInternalString( anExpr );
   SetMessage lMessage;
@@ -326,7 +253,7 @@ ZorbaDebuggerClientImpl::addBreakpoint(const String& anExpr)
 
 
 QueryLocation_t
-ZorbaDebuggerClientImpl::addBreakpoint(const unsigned int aLineNo)
+DebuggerClientImpl::addBreakpoint(const unsigned int aLineNo)
 {
   QueryLoc loc;
   loc.setLineBegin(aLineNo);
@@ -339,7 +266,7 @@ ZorbaDebuggerClientImpl::addBreakpoint(const unsigned int aLineNo)
 }
 
 QueryLocation_t
-ZorbaDebuggerClientImpl::addBreakpoint(const String& aFileName, const unsigned int aLineNo)
+DebuggerClientImpl::addBreakpoint(const String& aFileName, const unsigned int aLineNo)
 {
   zstring const &lFilename = Unmarshaller::getInternalString(aFileName);
   QueryLoc loc;
@@ -358,7 +285,7 @@ ZorbaDebuggerClientImpl::addBreakpoint(const String& aFileName, const unsigned i
 }
 
 QueryLocation_t
-ZorbaDebuggerClientImpl::addBreakpoint(QueryLoc& aLocation)
+DebuggerClientImpl::addBreakpoint(QueryLoc& aLocation)
 {
   SetMessage lMessage;
   lMessage.addLocation(theLastId, aLocation);
@@ -378,7 +305,7 @@ ZorbaDebuggerClientImpl::addBreakpoint(QueryLoc& aLocation)
 }
 
 bool
-ZorbaDebuggerClientImpl::clearBreakpoint(unsigned int anId)
+DebuggerClientImpl::clearBreakpoint(unsigned int anId)
 {
   ClearMessage lMessage;
   lMessage.addId(anId);
@@ -392,7 +319,7 @@ ZorbaDebuggerClientImpl::clearBreakpoint(unsigned int anId)
 }
 
 bool
-ZorbaDebuggerClientImpl::clearBreakpoint(const String& aFileName, unsigned int aLineNo)
+DebuggerClientImpl::clearBreakpoint(const String& aFileName, unsigned int aLineNo)
 {
   ClearMessage lMessage;
   std::stringstream lB;
@@ -417,7 +344,7 @@ ZorbaDebuggerClientImpl::clearBreakpoint(const String& aFileName, unsigned int a
 }
 
 bool
-ZorbaDebuggerClientImpl::clearBreakpoints(std::list<unsigned int>& Ids)
+DebuggerClientImpl::clearBreakpoints(std::list<unsigned int>& Ids)
 {
   ClearMessage lMessage;
   std::list<unsigned int>::const_iterator it;
@@ -430,7 +357,7 @@ ZorbaDebuggerClientImpl::clearBreakpoints(std::list<unsigned int>& Ids)
 }
 
 bool
-ZorbaDebuggerClientImpl::clearBreakpoints()
+DebuggerClientImpl::clearBreakpoints()
 {
   ClearMessage lMessage;
   std::map<unsigned int, String>::iterator it;
@@ -443,19 +370,19 @@ ZorbaDebuggerClientImpl::clearBreakpoints()
 }
 
 std::map<unsigned int, String>
-ZorbaDebuggerClientImpl::getBreakpoints() const
+DebuggerClientImpl::getBreakpoints() const
 {
   return theBreakpoints;
 }
 
 QueryLocation_t
-ZorbaDebuggerClientImpl::getLocation() const
+DebuggerClientImpl::getLocation() const
 {
   return new QueryLocationImpl(theRemoteLocation);
 }
 
 bool
-ZorbaDebuggerClientImpl::eval(String& anExpr) const
+DebuggerClientImpl::eval(String& anExpr) const
 {
   zstring lExpr = Unmarshaller::getInternalString( anExpr );
   ascii::replace_all( lExpr, "\"", "&quot;" );
@@ -466,7 +393,7 @@ ZorbaDebuggerClientImpl::eval(String& anExpr) const
 }
 
 std::list<Variable>
-ZorbaDebuggerClientImpl::getAllVariables(bool data) const
+DebuggerClientImpl::getAllVariables(bool data) const
 {
   std::list<Variable> lVariables;
   VariableMessage lMessage(data);
@@ -497,7 +424,7 @@ ZorbaDebuggerClientImpl::getAllVariables(bool data) const
 }
 
 std::list<Variable>
-ZorbaDebuggerClientImpl::getLocalVariables(bool data) const
+DebuggerClientImpl::getLocalVariables(bool data) const
 {
   std::list<Variable> lVariables;
   VariableMessage lMessage(data);
@@ -528,7 +455,7 @@ ZorbaDebuggerClientImpl::getLocalVariables(bool data) const
 }
 
 std::list<Variable>
-ZorbaDebuggerClientImpl::getGlobalVariables(bool data) const
+DebuggerClientImpl::getGlobalVariables(bool data) const
 {
   std::list<Variable> lVariables;
   if (theExecutionStatus != QUERY_SUSPENDED) {
@@ -561,7 +488,7 @@ ZorbaDebuggerClientImpl::getGlobalVariables(bool data) const
 }
 
 StackFrame_t
-ZorbaDebuggerClientImpl::getStack() const
+DebuggerClientImpl::getStack() const
 {
   auto_ptr<StackFrameImpl> lStack(new StackFrameImpl());
   FrameMessage lMessage;
@@ -580,7 +507,7 @@ ZorbaDebuggerClientImpl::getStack() const
 }
 
 std::string
-ZorbaDebuggerClientImpl::listSource(
+DebuggerClientImpl::listSource(
   const std::string& aUri,
   unsigned long aFirstline /*= 0*/,
   unsigned long aLastName /*= 0*/) const

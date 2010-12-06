@@ -71,17 +71,17 @@ static void printSchnitzel() {
 	zorba::synchronous_logger::cout << " - - - |    .  :     \\\n";
 	zorba::synchronous_logger::cout << "       |.    :    . . |  <-- Schnitzel\n";
 	zorba::synchronous_logger::cout << " -- - /   .    .       \\\n";
-	zorba::synchronous_logger::cout << "      \\.    :     : :  /\n";
+	zorba::synchronous_logger::cout << "      \\.    :     : : /\n";
 	zorba::synchronous_logger::cout << " - - - \\       .      |\n";
 	zorba::synchronous_logger::cout << "        |_____________|\n";
 	zorba::synchronous_logger::cout << "        /   \\     /   \\\n";
-	zorba::synchronous_logger::cout << "       |  @  |   |  @  |\n";
+	zorba::synchronous_logger::cout << "       |  @  |    |  @  |\n";
 	zorba::synchronous_logger::cout << "        \\___/     \\___/\n";
 }
 
 namespace zorba{
 
-	DebuggerHandler::DebuggerHandler(Zorba* aZorba, ZorbaDebuggerClient* aClient, std::string aFileName):
+	DebuggerHandler::DebuggerHandler(Zorba* aZorba, DebuggerClient* aClient, std::string aFileName):
 	theZorba(aZorba), theClient(aClient), theFileName(aFileName), theInterrupt(false)
   {
     suspendimpl::Suspend::setHandler(this);

@@ -30,8 +30,7 @@ namespace zorba
 {
 
 class PlanState;
-class ZorbaDebuggerCommons;
-class ZorbaDebuggerRuntime;
+class DebuggerRuntime;
 class Timeout;
 class XQueryImpl;
 class dynamic_context;
@@ -64,7 +63,7 @@ class dynamic_context;
 class PlanWrapper : public store::Iterator, public intern::Serializable
 {
   friend class DynamicFunctionInvocationIterator;
-  friend class ZorbaDebuggerRuntime;
+  friend class DebuggerRuntime;
 
 protected:
 

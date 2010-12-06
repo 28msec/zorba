@@ -22,7 +22,6 @@
 #include "api/zorbaimpl.h"
 
 
-
 namespace zorba { 
 
 
@@ -61,7 +60,7 @@ void Lock::rlock()
 #endif
   theMutex.lock();
 
-  ThreadId thisThread = Thread::self();
+  ThreadId thisThread = Runnable::self();
 
 retry:
 
@@ -146,7 +145,7 @@ void Lock::wlock()
 #endif
   theMutex.lock();
 
-  ThreadId thisThread = Thread::self();
+  ThreadId thisThread = Runnable::self();
 
 retry:
 
@@ -242,7 +241,7 @@ void Lock::unlock()
 #endif
   theMutex.lock();
 
-  ThreadId thisThread = Thread::self();
+  ThreadId thisThread = Runnable::self();
 
   if (theMode == WRITE)
   {

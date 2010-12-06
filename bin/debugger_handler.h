@@ -29,10 +29,10 @@
 namespace zorba{
 
 class Zorba;
-class ZorbaDebuggerClient;
+class DebuggerClient;
 
 #ifdef SIGINT /* not all system have SIGINT */
-void setDebugClient(ZorbaDebuggerClient* lClient);
+void setDebugClient(DebuggerClient* lClient);
 
 void suspend(int aSignum);
 #endif
@@ -44,7 +44,7 @@ class DebuggerHandler: public DefaultDebuggerEventHandler
     Zorba* theZorba;
 
     //debugger client
-    ZorbaDebuggerClient* theClient;
+    DebuggerClient* theClient;
     
     //the filename of the main query
     std::string theFileName;
@@ -122,7 +122,7 @@ class DebuggerHandler: public DefaultDebuggerEventHandler
     std::istream* getSource(const String& aNamespace) const;
 
   public:
-    DebuggerHandler(Zorba* aZorba, ZorbaDebuggerClient* aClient, std::string aFileName);
+    DebuggerHandler(Zorba* aZorba, DebuggerClient* aClient, std::string aFileName);
     
     virtual ~DebuggerHandler();
 

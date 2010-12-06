@@ -13,9 +13,6 @@
 # limitations under the License.
 
 SET(DEBUGGER_SRCS
-    debugger_client.cpp
-    debugger_communication.cpp
-    debugger_clientimpl.cpp
     query_locationimpl.cpp
     socket.cpp
     debugger_exception.cpp
@@ -24,7 +21,11 @@ SET(DEBUGGER_SRCS
     synchronous_logger.cpp
     message_factory.cpp
     utils.cpp
-    zorba_debugger_commons.cpp
-    zorba_debugger_runtime.cpp
-    zorba_debugger_server.cpp
+    debugger_communication.cpp
+    debugger_commons.cpp
+    debugger_runtime.cpp
+    debugger_client.cpp
+    debugger_clientimpl.cpp
+    debugger_event_listener.cpp
+    debugger_server.cpp
 )

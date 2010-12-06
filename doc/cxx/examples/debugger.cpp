@@ -127,7 +127,7 @@ ZORBA_THREAD_RETURN runClient( void* )
 {
   sleep(1);
   MyDebuggerEventHandler lEventHandler;
-  ZorbaDebuggerClient * lClient = ZorbaDebuggerClient::createClient(
+  DebuggerClient* lClient = DebuggerClient::createClient(
     thePorts.first, thePorts.second);
   lClient->registerEventHandler( &lEventHandler );
   lClient->run();

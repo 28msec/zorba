@@ -16,7 +16,7 @@
 
 #include "compiler/api/compilercb.h"
 #include "compiler/expression/expr_base.h"
-#include "debugger/zorba_debugger_commons.h"
+#include "debugger/debugger_commons.h"
 
 #include "context/static_context.h"
 

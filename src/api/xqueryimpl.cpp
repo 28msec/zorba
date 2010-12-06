@@ -64,8 +64,8 @@
 #include "zorbaserialization/bin_archiver.h"
 #include "zorbaserialization/class_serializer.h"
 
-#include "debugger/zorba_debugger_server.h"
-#include "debugger/zorba_debugger_commons.h"
+#include "debugger/debugger_server.h"
+#include "debugger/debugger_commons.h"
 
 namespace zorba
 {
@@ -543,7 +543,7 @@ void XQueryImpl::doCompile(
   {
     theCompilerCB->theConfig.force_gflwor = true;
     theCompilerCB->theDebuggerCommons =
-      new ZorbaDebuggerCommons(theCompilerCB->theRootSctx);
+      new DebuggerCommons(theCompilerCB->theRootSctx);
     theCompilerCB->theConfig.opt_level = CompilerCB::config::O0;
   }
 
@@ -1223,9 +1223,9 @@ void XQueryImpl::debug(
 
     theExecuting = true;
 
-    ZorbaDebuggerServer aDebuggerServer(this, aSerOptions, aOutStream,
-                                        aCallbackFunction, aCallbackData,
-                                        aHost, aCommandPort, anEventPort);
+    DebuggerServer aDebuggerServer(
+      this, aSerOptions, aOutStream, aCallbackFunction,
+      aCallbackData, aHost, aCommandPort, anEventPort);
     aDebuggerServer.run();
 
     theExecuting = false;

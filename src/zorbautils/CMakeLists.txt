@@ -15,7 +15,6 @@
 SET(ZORBAUTILS_SRCS
     properties_base.cpp
     hashset_itemh.cpp
-    thread.cpp
     mutex.cpp
     condition.cpp
     latch.cpp

@@ -21,9 +21,7 @@
 
 #include "zorbamisc/config/platform.h"
 
-
-
-#include "zorbautils/thread.h"
+#include "zorbautils/runnable.h"
 #include "zorbautils/mutex.h"
 #include "zorbautils/condition.h"
 
@@ -110,5 +108,3 @@ public:
 }
 
 #endif
-
-

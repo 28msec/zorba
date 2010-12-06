@@ -83,7 +83,7 @@
 
 #include "runtime/api/plan_wrapper.h"
 
-#include "debugger/zorba_debugger_commons.h"
+#include "debugger/debugger_commons.h"
 
 #include "zorbautils/string_util.h"
 

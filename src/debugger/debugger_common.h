@@ -42,4 +42,5 @@ const SuspensionCause CAUSE_USER               = 0x01;
 const SuspensionCause CAUSE_BREAKPOINT         = 0x02;
 const SuspensionCause CAUSE_STEP               = 0x03;
 const SuspensionCause CAUSE_ERROR              = 0x04;
-#endif
+
+#endif //ZORBA_DEBUGGER_COMMON_H

@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_DEBUGGER_RUNTIME
-#define ZORBA_DEBUGGER_RUNTIME
+#ifndef ZORBA_DEBUGGER_RUNTIME_H
+#define ZORBA_DEBUGGER_RUNTIME_H
 
 #include "common/shared_types.h"
 
@@ -41,30 +41,30 @@ namespace zorba {
   class ReplyMessage;
   typedef Zorba_SerializerOptions_t* (*itemHandler)(void* aUserData);
 
-  class ZorbaDebuggerRuntime : public Runnable {
+  class DebuggerRuntime : public Runnable {
   public: // Creation and destruction
 
     //************************************
-    // Method:    ZorbaDebuggerRuntime
-    // FullName:  zorba::ZorbaDebuggerRuntime::ZorbaDebuggerRuntime
+    // Method:    DebuggerRuntime
+    // FullName:  zorba::DebuggerRuntime::DebuggerRuntime
     // Access:    public 
     // Qualifier: creates an instance of the debugger runtime.
     // Parameter: XQueryImpl * xqueryImpl
     // Parameter: std::ostream & oStream
     // Parameter: DebuggerCommunicator * communicator
     //************************************
-    ZorbaDebuggerRuntime(
+    DebuggerRuntime(
       XQueryImpl* xqueryImpl,
       std::ostream& oStream,
       Zorba_SerializerOptions&  serializerOptions,
       DebuggerCommunicator* communicator,
       itemHandler aHandler,
       void* aCallBackData);
-    virtual ~ZorbaDebuggerRuntime();
+    virtual ~DebuggerRuntime();
   public:
     //************************************
     // Method:    run
-    // FullName:  zorba::ZorbaDebuggerRuntime::run
+    // FullName:  zorba::DebuggerRuntime::run
     // Access:    public 
     // Returns:   void
     // Qualifier: This method starts the query in the new thread and waits
@@ -75,7 +75,7 @@ namespace zorba {
   public: // Commands to the runtime
     //************************************
     // Method:    processMessage
-    // FullName:  zorba::ZorbaDebuggerRuntime::processMessage
+    // FullName:  zorba::DebuggerRuntime::processMessage
     // Access:    public 
     // Returns:   bool - true if the runtime has to be terminated - false otherwise
     // Qualifier: Reads a message and processes the command of it
@@ -85,7 +85,7 @@ namespace zorba {
     bool processMessage(AbstractCommandMessage* message);
     //************************************
     // Method:    setQueryRunning
-    // FullName:  zorba::ZorbaDebuggerRuntime::setQueryRunning
+    // FullName:  zorba::DebuggerRuntime::setQueryRunning
     // Access:    public 
     // Returns:   void
     // Qualifier: This sets the execution status from RESUMED to RUNNING.
@@ -98,7 +98,7 @@ namespace zorba {
   public: // Queries to the runtime
     //************************************
     // Method:    getExecutionStatus
-    // FullName:  zorba::ZorbaDebuggerRuntime::getExecutionStatus
+    // FullName:  zorba::DebuggerRuntime::getExecutionStatus
     // Access:    public 
     // Returns:   ExecutionStatus
     // Qualifier: Get the execution status of the runtime.
@@ -106,7 +106,7 @@ namespace zorba {
     ExecutionStatus getExecutionStatus() const;
     //************************************
     // Method:    suspend
-    // FullName:  zorba::ZorbaDebuggerRuntime::suspend
+    // FullName:  zorba::DebuggerRuntime::suspend
     // Access:    private 
     // Returns:   void
     // Qualifier:
@@ -119,7 +119,7 @@ namespace zorba {
   private: // Implementation of runtime commands
     //************************************
     // Method:    execCommands
-    // FullName:  zorba::ZorbaDebuggerRuntime::execCommands
+    // FullName:  zorba::DebuggerRuntime::execCommands
     // Access:    private 
     // Returns:   bool - true if the runtime has to be terminated
     // Qualifier: This executes a command from the EXECUTION
@@ -130,7 +130,7 @@ namespace zorba {
     bool execCommands();
     //************************************
     // Method:    breakpointCommand
-    // FullName:  zorba::ZorbaDebuggerRuntime::breakpointCommand
+    // FullName:  zorba::DebuggerRuntime::breakpointCommand
     // Access:    private 
     // Returns:   void
     // Qualifier: This executes a command from the BREAKPOINTS
@@ -146,7 +146,7 @@ namespace zorba {
     ReplyMessage* listSource();
     //************************************
     // Method:    dynamicCommands
-    // FullName:  zorba::ZorbaDebuggerRuntime::dynamicCommands
+    // FullName:  zorba::DebuggerRuntime::dynamicCommands
     // Access:    private 
     // Returns:   void
     // Qualifier:
@@ -154,7 +154,7 @@ namespace zorba {
     void dynamicCommands();
     //************************************
     // Method:    addBreakpoint
-    // FullName:  zorba::ZorbaDebuggerRuntime::addBreakpoint
+    // FullName:  zorba::DebuggerRuntime::addBreakpoint
     // Access:    private 
     // Returns:   zorba::QueryLoc
     // Qualifier:
@@ -163,7 +163,7 @@ namespace zorba {
     QueryLoc addBreakpoint(const QueryLoc& aLocation, unsigned int aId);
     //************************************
     // Method:    getAllVariables
-    // FullName:  zorba::ZorbaDebuggerRuntime::getAllVariables
+    // FullName:  zorba::DebuggerRuntime::getAllVariables
     // Access:    private 
     // Returns:   ReplyMessage*
     // Qualifier:
@@ -208,4 +208,4 @@ namespace zorba {
   };
 }
 
-#endif // ZORBA_DEBUGGER_RUNTIME
+#endif // ZORBA_DEBUGGER_RUNTIME_H
