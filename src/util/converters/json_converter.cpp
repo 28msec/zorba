@@ -474,6 +474,12 @@ bool parse_element(
   }
   lAttrIt->close();
 
+  if(lType.empty())
+  {
+    aErrorLog = "Element does not have a 'type' attribute defined.";
+    return false;
+  }
+
   if(equals(lType, "object", 6))
   {
     aJsonString.append("\"");
@@ -498,6 +504,12 @@ bool parse_element(
     get_value(aElement, lValue);
     if(equals(aElement->getNodeName()->getStringValue(), "pair", 4))
     {
+      if(lName.empty())
+      {
+        aErrorLog = "Element does not have a 'name' attribute defined.";
+        return false;
+      }
+
       aJsonString.append("\"");
       aJsonString.append(lName);
       aJsonString.append("\": ");

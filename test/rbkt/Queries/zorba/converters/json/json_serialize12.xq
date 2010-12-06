@@ -1,4 +1,4 @@
-(: type attribute missing :)
+(: name attribute missing :)
 
 import module namespace json = "http://www.zorba-xquery.com/modules/json";
 
