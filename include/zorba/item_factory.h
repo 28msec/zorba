@@ -52,11 +52,11 @@ namespace zorba {
       /** \brief Creates a streamable String Item
        *         see [http://www.w3.org/TR/xmlschema-2/#string]
        *
-       * @param buf A streambuf whence to read the string's content.
+       * @param stream An istream whence to read the string's content.
        * @return The streamable String Item
        */
       virtual Item
-      createStreamableString( std::streambuf *buf ) = 0;
+      createStreamableString( std::istream &stream ) = 0;
 
       /** \brief Creates an AnyURI Item
        *         see [http://www.w3.org/TR/xmlschema-2/#anyURI]

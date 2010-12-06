@@ -19,7 +19,6 @@
 
 #include <zorba/config.h>
 #include <iostream>
-#include <streambuf>
 #include <vector>
 
 #include "store/api/item.h"
@@ -648,13 +647,12 @@ public:
   zstring show() const;
 
 protected:
-  StreamableStringItem( std::streambuf *buf ) : istream_( buf ) {
-    istream_.exceptions( std::ios::badbit | std::ios::failbit );
+  StreamableStringItem( std::istream &stream ) : istream_( stream ) {
   }
 
   void materialize_if_necessary() const;
 
-  std::istream istream_;
+  mutable std::istream &istream_;
 
   friend class BasicItemFactory;
 };

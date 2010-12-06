@@ -867,17 +867,24 @@ zstring StreamableStringItem::show() const {
 
 void StreamableStringItem::materialize_if_necessary() const {
   if ( theValue.empty() ) {
-    StreamableStringItem *const ssi = const_cast<StreamableStringItem*>( this );
+    ios::iostate const old_exceptions = istream_.exceptions();
+    istream_.exceptions( std::ios::badbit | std::ios::failbit );
+    streampos const pos = istream_.tellg();
+    if ( pos )
+      istream_.seekg( 0, ios::beg );
     char buf[ 4096 ];
-    streampos const pos = ssi->istream_.tellg();
-    if ( pos )
-      ssi->istream_.seekg( 0, ios::beg );
-    while ( ssi->istream_.read( buf, sizeof( buf ) ) ) {
-      ssi->theValue.append( buf, ssi->istream_.gcount() );
+    StreamableStringItem *const ssi = const_cast<StreamableStringItem*>( this );
+    istream_.exceptions( istream_.exceptions() & ~ios::failbit );
+    while ( istream_ ) {
+      istream_.read( buf, sizeof( buf ) );
+      ssi->theValue.append( buf, istream_.gcount() );
     }
-    ssi->istream_.clear();
-    if ( pos )
-      ssi->istream_.seekg( pos, ios::beg );
+    istream_.clear();                   // clear eofbit
+    if ( pos ) {
+      istream_.exceptions( istream_.exceptions() | ios::failbit );
+      istream_.seekg( pos, ios::beg );
+    }
+    istream_.exceptions( old_exceptions );
   }
 }
 

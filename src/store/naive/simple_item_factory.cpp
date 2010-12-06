@@ -113,8 +113,8 @@ bool BasicItemFactory::createString(store::Item_t& result, zstring& value)
 
 
 bool BasicItemFactory::createStreamableString( store::Item_t& result,
-                                               std::streambuf *buf ) {
-  result = new StreamableStringItem( buf );
+                                               std::istream &stream ) {
+  result = new StreamableStringItem( stream );
   return true;
 }
 

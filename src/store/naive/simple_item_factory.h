@@ -16,7 +16,7 @@
 #ifndef ZORBA_SIMPLE_STORE_ITEM_FACTORY
 #define ZORBA_SIMPLE_STORE_ITEM_FACTORY
 
-#include <streambuf>
+#include <iostream>
 
 #include "store/naive/shared_types.h"
 
@@ -82,7 +82,7 @@ public:
 
   bool createString(store::Item_t& result, zstring& value);
 
-  bool createStreamableString(store::Item_t& result, std::streambuf*);
+  bool createStreamableString(store::Item_t& result, std::istream&);
 
   bool createBase64Binary(store::Item_t& result, xs_base64Binary value);
 

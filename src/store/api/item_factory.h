@@ -16,7 +16,7 @@
 #ifndef ZORBA_STORE_ITEM_FACTORY_H
 #define ZORBA_STORE_ITEM_FACTORY_H
 
-#include <streambuf>
+#include <istream>
 #include <vector>
 
 #include <zorba/config.h>
@@ -93,7 +93,7 @@ public:
    */
   virtual bool createString(Item_t& result, zstring& value) = 0;
 
-  virtual bool createStreamableString( Item_t& result, std::streambuf* ) = 0;
+  virtual bool createStreamableString( Item_t& result, std::istream& ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#normalizedString]

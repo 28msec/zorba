@@ -39,7 +39,7 @@ namespace zorba {
       createString(const String& aString);
 
       virtual Item
-      createStreamableString(std::streambuf*);
+      createStreamableString(std::istream&);
 
       virtual Item
       createAnyURI(const String& aURI);
