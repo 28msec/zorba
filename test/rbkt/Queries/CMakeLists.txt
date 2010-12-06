@@ -292,8 +292,6 @@ EXPECTED_FAILURE(test/rbkt/zorba/converters/json/json_serialize5 3082260)
 EXPECTED_FAILURE(test/rbkt/zorba/converters/json/json_serialize7 3082213)
 EXPECTED_FAILURE(test/rbkt/zorba/converters/json/json_serialize8 3082226)
 EXPECTED_FAILURE(test/rbkt/zorba/converters/json/json_serialize13 3082260)
-EXPECTED_FAILURE(test/rbkt/zorba/converters/json/json_serialize14 3089865)
-EXPECTED_FAILURE(test/rbkt/zorba/converters/json/json_serialize15 3089865)
 
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/admin 2935047)
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/ic-uniqueKey-err2 2935047)

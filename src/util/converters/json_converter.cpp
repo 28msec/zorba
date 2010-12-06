@@ -595,8 +595,10 @@ bool parse_child(
       aJsonString.append(",");
 
     if (lChild->getNodeKind() == store::StoreConsts::elementNode)
+    {
       lResult = parse_element(&*lChild, aJsonString, aErrorLog);
-    lFirst = false;
+      lFirst = false;
+    }
   }
   lChildrenIt->close();
   return lResult;
