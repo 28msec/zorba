@@ -1810,14 +1810,28 @@ bool FnParseIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   URI lValidatedBaseUri;
   zstring docUri;
   std::auto_ptr<std::istringstream> iss;
+	std::istream *is;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   consumeNext (result, theChildren [0].getp (), planState);
 
-  result->getStringValue2(docString);
-  iss.reset (new std::istringstream(docString.c_str()));
+	if ( result->isStreamable() ) {
+		//
+		// The "iss" auto_ptr can NOT be used since it will delete the stream that,
+		// in this case, is a data member inside another object and not dynamically
+		// allocated.
+		//
+		// We can't replace "iss" with "is" since we still need the auto_ptr for
+		// the case when the result is not streamable.
+		//
+		is = &result->getStream();
+	} else {
+		result->getStringValue2(docString);
+		iss.reset (new std::istringstream(docString.c_str()));
+		is = iss.get();
+	}
 
   // optional base URI argument
   if (theChildren.size() == 2)
@@ -1853,7 +1867,7 @@ bool FnParseIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   {
     store::LoadProperties loadProps;
     loadProps.setStoreDocument(false);
-    result = lStore.loadDocument(baseUri, docUri, *iss, loadProps);
+    result = lStore.loadDocument(baseUri, docUri, *is, loadProps);
   }
   catch (error::ZorbaError& e)
   {

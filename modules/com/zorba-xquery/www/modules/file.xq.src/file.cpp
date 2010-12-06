@@ -16,6 +16,7 @@
 
 #include "file.h"
 
+#include <memory>
 #include <fstream>
 #include <sstream>
 
@@ -38,7 +39,7 @@ CopyFunction::CopyFunction(const FileModule* aModule)
   : FileFunction(aModule)
 {
 }
-  
+
 ItemSequence_t
 CopyFunction::evaluate(
   const StatelessExternalFunction::Arguments_t& aArgs,
@@ -98,7 +99,7 @@ ExistsFunction::ExistsFunction(const FileModule* aModule)
   : FileFunction(aModule)
 {
 }
-  
+
 ItemSequence_t
 ExistsFunction::evaluate(
   const StatelessExternalFunction::Arguments_t& aArgs,
@@ -123,7 +124,7 @@ FilesFunction::FilesFunction(const FileModule* aModule)
   : FileFunction(aModule)
 {
 }
-  
+
 ItemSequence_t
 FilesFunction::evaluate(
   const StatelessExternalFunction::Arguments_t& aArgs,
@@ -159,7 +160,7 @@ FilesFunction::IteratorBackedItemSequence::next(Item& lItem)
   if (!theIterator->next(lPath)) {
     return false;
   }
-  
+
   String lUriStr(lPath.c_str());
   lItem = theItemFactory->createString(lUriStr);
   return true;
@@ -171,7 +172,7 @@ IsDirectoryFunction::IsDirectoryFunction(const FileModule* aModule)
   : FileFunction(aModule)
 {
 }
-  
+
 ItemSequence_t
 IsDirectoryFunction::evaluate(
   const StatelessExternalFunction::Arguments_t& aArgs,
@@ -195,7 +196,7 @@ IsFileFunction::IsFileFunction(const FileModule* aModule)
   : FileFunction(aModule)
 {
 }
-  
+
 ItemSequence_t
 IsFileFunction::evaluate(
   const StatelessExternalFunction::Arguments_t& aArgs,
@@ -219,7 +220,7 @@ LastModifiedFunction::LastModifiedFunction(const FileModule* aModule)
   : FileFunction(aModule)
 {
 }
-  
+
 ItemSequence_t
 LastModifiedFunction::evaluate(
   const StatelessExternalFunction::Arguments_t& aArgs,
@@ -264,7 +265,7 @@ MkdirFunction::MkdirFunction(const FileModule* aModule)
   : FileFunction(aModule)
 {
 }
-  
+
 ItemSequence_t
 MkdirFunction::evaluate(
   const StatelessExternalFunction::Arguments_t& aArgs,
@@ -324,7 +325,7 @@ PathSeparator::PathSeparator(const FileModule* aModule)
   : FileFunction(aModule)
 {
 }
-  
+
 ItemSequence_t
 PathSeparator::evaluate(
   const StatelessExternalFunction::Arguments_t& aArgs,
@@ -340,7 +341,7 @@ PathToFullPathFunction::PathToFullPathFunction(const FileModule* aModule)
   : FileFunction(aModule)
 {
 }
-  
+
 ItemSequence_t
 PathToFullPathFunction::evaluate(
   const StatelessExternalFunction::Arguments_t& aArgs,
@@ -359,7 +360,7 @@ PathToUriFunction::PathToUriFunction(const FileModule* aModule)
   : FileFunction(aModule)
 {
 }
-  
+
 ItemSequence_t
 PathToUriFunction::evaluate(
   const StatelessExternalFunction::Arguments_t& aArgs,
@@ -378,7 +379,7 @@ ReadFunction::ReadFunction(const FileModule* aModule)
   : FileFunction(aModule)
 {
 }
-  
+
 ItemSequence_t
 ReadFunction::evaluate(
   const StatelessExternalFunction::Arguments_t& aArgs,
@@ -415,7 +416,28 @@ ReadTextFunction::ReadTextFunction(const FileModule* aModule)
   : FileFunction(aModule)
 {
 }
-  
+
+struct StreamableItemSequence : ItemSequence {
+
+  Item          item;
+  std::ifstream stream;
+
+  StreamableItemSequence() : has_next( true ) {
+  }
+
+  bool next( Item &result ) {
+    if ( has_next ) {
+      result = item;
+      has_next = false;
+      return !result.isNull();
+    }
+    return false;
+  }
+
+private:
+  bool has_next;
+};
+
 ItemSequence_t
 ReadTextFunction::evaluate(
   const StatelessExternalFunction::Arguments_t& aArgs,
@@ -425,20 +447,13 @@ ReadTextFunction::evaluate(
   String lFileStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
 
-  std::ifstream lInStream;
-  lFile->openInputStream(lInStream);
+  std::auto_ptr<StreamableItemSequence> seq( new StreamableItemSequence );
+  lFile->openInputStream( seq->stream );
 
-  std::stringstream lStrStream;
-  char lBuf[1024];
-  while (!lInStream.eof()) {
-    lInStream.read(lBuf, 1024);
-    lStrStream.write(lBuf, lInStream.gcount());
-  }  
+  seq->item =
+    theModule->getItemFactory()->createStreamableString( seq->stream );
 
-  std::string lResult = lStrStream.str();
-  Item lItem = theModule->getItemFactory()->createString(lResult.c_str());
-
-  return ItemSequence_t(new SingletonItemSequence(lItem));
+  return ItemSequence_t( seq.release() );
 }
 
 //*****************************************************************************
@@ -447,7 +462,7 @@ ReadXmlFunction::ReadXmlFunction(const FileModule* aModule)
   : FileFunction(aModule)
 {
 }
-  
+
 ItemSequence_t
 ReadXmlFunction::evaluate(
   const StatelessExternalFunction::Arguments_t& aArgs,
@@ -472,7 +487,7 @@ RemoveFunction::RemoveFunction(const FileModule* aModule)
   : FileFunction(aModule)
 {
 }
-  
+
 ItemSequence_t
 RemoveFunction::evaluate(
   const StatelessExternalFunction::Arguments_t& aArgs,
@@ -494,7 +509,7 @@ WriteFunction::WriteFunction(const FileModule* aModule)
   : FileFunction(aModule)
 {
 }
-  
+
 ItemSequence_t
 WriteFunction::evaluate(
   const StatelessExternalFunction::Arguments_t& aArgs,
@@ -511,7 +526,7 @@ WriteFunction::evaluate(
     aArgs[3]->next(lAppendItem);
     lAppend = lAppendItem.getBooleanValue();
   }
-  
+
   Serializer_t lSerializer = Serializer::createSerializer(aArgs.at(2));
 
   bool lBinary = false;
@@ -535,7 +550,7 @@ const Zorba_SerializerOptions_t
 WriteFunction::createSerializerOptions(const Item& aItem) const
 {
   Zorba_SerializerOptions_t lOptions;
-  
+
   // in case the parameter is a string
   if (aItem.isAtomic()) {
     zorba::String lMethod = aItem.getStringValue();
@@ -621,3 +636,4 @@ ItemSequence_t NormalizePathFunction::evaluate(const StatelessExternalFunction::
 extern "C" DLL_EXPORT zorba::ExternalModule* createModule() {
   return new zorba::filemodule::FileModule();
 }
+/* vim:set et sw=2 ts=2: */
