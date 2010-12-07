@@ -1,0 +1,405 @@
+#! /usr/bin/perl
+##
+#   Copyright 2006-2008 The FLWOR Foundation.
+#   
+#   Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#   
+#   http://www.apache.org/licenses/LICENSE-2.0
+# 
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
+##
+
+use 5.10.0;
+use feature "switch";
+use strict;
+
+use File::Basename;
+use Getopt::Std;
+use IO::File;
+
+##
+# Converts a WordNet text database ({index|data}.{adj|adv|noun|verb} files)
+# into a single, binary-file format for both compactness (the binary form is
+# about 78% smaller) and efficiency of access.
+#
+# The binary format is such that it can easily be mmap'd in C or C++ with
+# instant access to offset arrays (no parsing nor conversion of the data).  One
+# caveat of this is that uint32 values are endian-dependent, hence a binary
+# file created using a little-endian CPU won't work using a big-endian one.
+# However, an "endianness check" value is embedded into the header (both the
+# idea and value are borrowed from TIFF files).
+#
+# The format of the binary file is:
+#
+#   char[4] version
+#   uint32  42 # endianness check value
+#   uint32  num_lemmas
+#   uint32  lemma_offset[ num_lemmas ]
+#   uint32  num_synsets
+#   uint32  synset_offset[ num_synsets ]
+#           lemmas
+#           synsets
+#
+# The header (version, endianness-check, numbers, and offsets) are all aligned
+# on 4-byte (uint32) boundaries.
+#
+# A lemma entry is:
+#
+#   lemma_entry = lemma\0{#synsets}{synset#}...
+#
+# A synset entry is:
+#
+#   synset_entry = {pos}{#lemmas}{lemma#}...{#ptrs}{ptr}...
+#   pos = a | r | n | v
+#   ptr = {pos}{type}{synset#}{source#}[{target#}]
+##
+
+########## Constants ##########################################################
+
+my( @EXT ) = ( "adj", "adv", "noun", "verb" );
+
+my $ME = basename( $0 );
+
+my $VERSION = 'ZW01';                   # Zorba Wordnet 01
+
+########## Process command-line ###############################################
+
+sub usage {
+  die "usage: $ME [-v] wordnet_dict_dir [thesaurus_file]\n";
+}
+
+our( $opt_v );
+getopts( 'v' ) or usage();
+usage() unless $#ARGV >= 0 && $#ARGV <= 1;
+
+my( $WN_DIR, $THESAURUS_FILE ) = @ARGV;
+$THESAURUS_FILE = "wordnet.zth" unless $THESAURUS_FILE;
+
+########## Global data ########################################################
+
+##
+# WordNet index data:
+#   "lemma" => {
+#     id => $id
+#     synset_ids => @synset_ids
+#   }
+##
+my %index;
+
+##
+# Array of all lemmas.  Allows lemma look-up by ID.
+##
+my @lemmas;
+
+##
+# WordNet synset data:
+#   "synset_id" => {
+#     word_ids => @word_ids
+#     ptrs => @{
+#       pos => $pos
+#       type => $type
+#       synset_id => $synset_id
+#       source => $source
+#       target => $target
+#     }
+#   }
+##
+my %synsets;
+
+########## Functions ##########################################################
+
+##
+# Assigns each lemma a unique ID starting at 0 since it's ID will be an index
+# into an offset array in the binary format.
+##
+sub assign_lemma_ids {
+  @lemmas = sort keys %index;
+  my $lemma_id = 0;
+  map { $index{ $_ }{ id } = $lemma_id++ } @lemmas;
+}
+
+##
+# Assigns each synset a unique ID starting at 0 since it's ID will be an index
+# into an offset array in the binary format.
+##
+sub assign_synset_ids {
+  my $synset_id = 0;
+  map { $synsets{ $_ }{ id } = $synset_id++ } sort keys %synsets;
+}
+
+sub fix_lemma {
+  my $lemma = shift;
+  $lemma =~ s/[_-]/ /g;
+  $lemma =~ s/\([^)]+\)//g;
+  return lc( $lemma );
+}
+
+##
+# Maps a multi-character WordNet pointer symbol to a single-character symbol
+# that's more compact and easier to parse (not to mention more mnemonic).
+##
+sub map_ptr_sym {
+  my( $wn_ptr, $pos ) = @_;
+  given ( $wn_ptr ) {
+    when ( '!'  ) { return 'A'; }       # antonym
+    when ( '='  ) { return 'a'; }       # attribute
+    when ( '>'  ) { return 'C'; }       # cause
+    when ( '@'  ) { return 'E'; }       # hypernym
+    when ( '@i' ) { return 'e'; }       # instance_hypernym
+    when ( '+'  ) { return 'F'; }       # derivationally_related_form
+    when ( '$'  ) { return 'G'; }       # verb_group
+    when ( '#m' ) { return 'H'; }       # member_holonym
+    when ( '#p' ) { return 'h'; }       # part_holonym
+    when ( '#s' ) { return 'i'; }       # substance_holonym
+    when ( '*'  ) { return 'L'; }       # entailment
+    when ( '%m' ) { return 'M'; }       # member_meronym
+    when ( '%p' ) { return 'm'; }       # part_meronym
+    when ( '%s' ) { return 'n'; }       # substance_meronym
+    when ( '~'  ) { return 'O'; }       # hyponym
+    when ( '~i' ) { return 'o'; }       # instance_hyponym
+    when ( '\\' ) { return $pos eq 'a' ? 'P' : 'D'; }
+                                        # pertainym/derived_from_adjective
+    when ( ';r' ) { return 'R'; }       # domain_of_synset_region
+    when ( '-r' ) { return 'r'; }       # member_of_domain_region
+    when ( '^'  ) { return 'S'; }       # also_see
+    when ( ';c' ) { return 'T'; }       # domain_of_synset_topic
+    when ( '-c' ) { return 't'; }       # member_of_domain_topic
+    when ( ';u' ) { return 'U'; }       # domain_of_synset_usage
+    when ( '-u' ) { return 'u'; }       # member_of_domain_usage
+    when ( '<'  ) { return 'V'; }       # participle_of_verb
+    when ( '&'  ) { return '~'; }       # similar_to
+    default       { die "$ME: '$wn_ptr': unknown ptr_symbol\n"; }
+  }
+}
+
+##
+# Prints a synset -- currently not used, but handy for debugging.
+##
+sub print_synset {
+  my $ss_key = shift;
+  my @words; 
+  map { push( @words, $lemmas[ $_ ] ) } @{ $synsets{ $ss_key }{ word_ids } };
+
+  print "synset $ss_key\n";
+  print "  words: ", join( ',', @words ), "\n";
+  print "  ptrs: \n";
+  for my $ptr ( @{ $synsets{ $ss_key }{ ptrs } } ) {
+    print "    $ptr->{ pos } $ptr->{ type } $ptr->{ synset_id } $ptr->{ source } $ptr->{ target }\n";
+  }
+}
+
+sub read_data_files {
+  for my $ext ( @EXT ) {
+    my $data_file = "$WN_DIR/data.$ext";
+    my $data_fh = IO::File->new( "< $data_file" );
+    die "$ME: could not open $data_file: $!\n" unless $data_fh;
+    print "$ME: reading ", basename( $data_file ) if $opt_v;
+
+    my $dot = 0;
+    while ( <$data_fh> ) {
+      next if /^ /;
+      chop();
+
+      my( $synset_offset, $lex_filenum, $ss_type, $w_cnt, $rest ) =
+        split( / /, $_, 5 );
+      my @rest = split( / /, $rest );
+      #/' this comment syncs vim's broken syntax highlighing -- do not remove
+
+      ##
+      # Treat "adjective satellites" ('s') as ordinary adjectives ('a').
+      ##
+      $ss_type = 'a' if $ss_type eq 's';
+
+      ##
+      # Since we combine all WordNet text data files into a single binary file,
+      # we need to ensure that a synset key is unique.  Therefore a synset key
+      # is its offset followed by its type.
+      ##
+      my $ss_key = "$synset_offset$ss_type";
+
+      my $word_ids_ref = \@{ $synsets{ $ss_key }{ word_ids } };
+
+      $w_cnt = hex( $w_cnt );
+      while ( $w_cnt-- ) {
+        my $lemma = fix_lemma( shift( @rest ) );
+        die "$ME: \"$lemma\": lemma not found\n" unless exists $index{ $lemma };
+        push( @{ $word_ids_ref }, $index{ $lemma }{ id } );
+        shift( @rest );                   # lex_id
+      }
+
+      my $ptrs_ref = \@{ $synsets{ $ss_key }{ ptrs } };
+
+      my( $p_cnt ) = shift( @rest ) + 0;  # + 0 forces conversion to integer
+      while ( $p_cnt-- ) {
+        my $ptr = shift( @rest );
+        my $ptr_synset_offset = shift( @rest );
+        my $pos = shift( @rest );
+        my $source_target = shift( @rest );
+        $source_target = hex( $source_target );
+
+        my $ptr = {
+          pos       => $pos,
+          type      => map_ptr_sym( $ptr, $pos ),
+          synset_id => "$ptr_synset_offset$pos",  # to match synset keys
+          source    => $source_target >> 8,
+          target    => $source_target & 0xFF
+        };
+        push( @{ $ptrs_ref }, $ptr );
+      }
+      print '.' if $opt_v && !(++$dot % 1000);
+    }
+    $data_fh->close();
+    print "\n" if $opt_v;
+  }
+}
+
+sub read_index_files {
+  for my $ext ( @EXT ) {
+    my %seen_lemma;
+    my $index_file = "$WN_DIR/index.$ext";
+    my $index_fh = IO::File->new( "< $index_file" );
+    die "$ME: could not open $index_file: $!\n" unless $index_fh;
+    print "$ME: reading ", basename( $index_file ) if $opt_v;
+
+    my $dot = 0;
+    while ( <$index_fh> ) {
+      next if /^ /;
+      chop();
+
+      my( $lemma, $pos, $synset_cnt, $p_cnt, $rest ) = split( / /, $_, 5 );
+      my @rest = split( / /, $rest );
+      #/' this comment syncs vim's broken syntax highlighing -- do not remove
+
+      $lemma = fix_lemma( $lemma );
+      next if $seen_lemma{ $lemma };
+      $seen_lemma{ $lemma } = 1;
+
+      shift( @rest ) while $p_cnt--;    # ptr_symbols
+      shift( @rest );                   # sense_cnt
+      shift( @rest );                   # tagsense_cnt
+
+      map { push( @{ $index{ $lemma }{ synset_ids } }, "$_$pos" ) } @rest;
+      print '.' if $opt_v && !(++$dot % 1000);
+    }
+    $index_fh->close();
+    print "\n" if $opt_v;
+  }
+}
+
+sub write_thesaurus {
+  my $th_fh = IO::File->new( "> $THESAURUS_FILE" );
+  die "$ME: could not open $THESAURUS_FILE: $!\n" unless $th_fh;
+  binmode( $th_fh );
+  print "$ME: writing $THESAURUS_FILE" if $opt_v;
+
+  # Handy constants.
+  my $x00 = pack( 'C', 0 );
+  my $x80 = pack( 'C', 0x80 );
+  my $x00000000 = pack( 'L', 0 );
+
+  print $th_fh $VERSION, pack( 'L', 42 );
+
+  ##
+  # Write place-holder zeros for offsets, then seek back later to write the
+  # actual offsets.
+  ##
+  my $num_lemmas = @lemmas;
+  print $th_fh pack( 'L', $num_lemmas );
+  my $lemma_offsets_offset = tell( $th_fh );
+  print $th_fh $x00000000 x $num_lemmas;
+
+  my $num_synsets = keys %synsets;
+  print $th_fh pack( 'L', $num_synsets );
+  my $synset_offsets_offset = tell( $th_fh );
+  print $th_fh $x00000000 x $num_synsets;
+
+  my $dot = 0;
+
+  ##
+  # Write lemmas.
+  ##
+  my @offsets;
+  for my $lemma ( @lemmas ) {
+    push( @offsets, tell( $th_fh ) );
+    print $th_fh "$lemma\0";
+
+    my $synset_ids_ref = \@{ $index{ $lemma }{ synset_ids } };
+    print $th_fh pack( 'w', scalar( @{ $synset_ids_ref } ) );
+    map { print $th_fh pack( 'w', $synsets{ $_ }{ id } ) }
+      @{ $synset_ids_ref };
+
+    print '.' if $opt_v && !(++$dot % 1000);
+  }
+
+  ##
+  # Write lemma offsets.
+  ##
+  my $resume_offset = tell( $th_fh );
+  seek( $th_fh, $lemma_offsets_offset, 0 );
+  print $th_fh pack( 'L*', @offsets );
+  seek( $th_fh, $resume_offset, 0 );
+
+  ##
+  # Write synsets.
+  ##
+  @offsets = ();
+  for my $synset_id ( sort keys %synsets ) {
+    push( @offsets, tell( $th_fh ) );
+    my $synset_ref = \%{ $synsets{ $synset_id } };
+
+    # The last character of a synset_id is its part-of-speech.
+    print $th_fh chop( $synset_id );
+
+    my $word_ids_ref = \@{ $synset_ref->{ word_ids } };
+    print $th_fh pack( 'w', scalar( @{ $word_ids_ref } ) );
+    print $th_fh pack( 'w*', @{ $word_ids_ref } );
+
+    my $ptrs_ref = \@{ $synset_ref->{ ptrs } };
+    print $th_fh pack( 'w', scalar( @{ $ptrs_ref } ) );
+    for my $ptr ( @{ $ptrs_ref } ) {
+      print $th_fh "$ptr->{ pos }$ptr->{ type }";
+
+      my $ptr_synset_id = $ptr->{ synset_id };
+      die "$ME: \"$ptr_synset_id\": synset_id not found\n"
+        unless exists $synsets{ $ptr_synset_id };
+      print $th_fh pack( 'w', $synsets{ $ptr_synset_id }{ id } );
+
+      if ( $ptr->{ source } gt 0 ) {
+        print $th_fh pack( 'ww', $ptr->{ source }, $ptr->{ target } );
+      } else {
+        print $th_fh $x00;
+      }
+    }
+    print '.' if $opt_v && !(++$dot % 1000);
+  }
+
+  ##
+  # Write synset offsets.
+  ##
+  seek( $th_fh, $synset_offsets_offset, 0 );
+  print $th_fh pack( 'L*', @offsets );
+
+  $th_fh->close();
+  if ( $opt_v ) {
+    print "\n";
+    print "$num_lemmas lemmas\n";
+    print "$num_synsets synsets\n";
+  }
+}
+
+########## Main ###############################################################
+
+$| = 1 if $opt_v;
+read_index_files();
+assign_lemma_ids();
+read_data_files();
+assign_synset_ids();
+write_thesaurus();
+
+# vim:set et sw=2 ts=2:
