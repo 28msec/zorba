@@ -52,7 +52,7 @@ namespace zorba {
       /** \brief Creates a streamable String Item
        *         see [http://www.w3.org/TR/xmlschema-2/#string]
        *
-       * @param buf A streambuf whence to read the string's content.
+       * @param stream An istream whence to read the string's content.
        * @return The streamable String Item
        */
       virtual Item
