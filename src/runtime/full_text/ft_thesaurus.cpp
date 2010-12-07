@@ -100,8 +100,9 @@ ft_thesaurus* ft_thesaurus::get( zstring const &uri, iso639_1::type lang,
 }
 
 void ft_thesaurus::set_directory( zstring const &path ) {
-  if ( path.empty() )
-    ; // throw XXX;
+  //TODO if path.empty throw error
+//   if ( path.empty() )
+//     ; // throw XXX;
   thesauri_directory_ = path;
 }
 

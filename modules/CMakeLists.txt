@@ -23,6 +23,17 @@ MACRO(GENERATE_MODULE_LIBRARY MODULE_NAME LINK_LIBRARIES)
   # directory are added to the sources list
   FILE(GLOB_RECURSE SRC_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "${CMAKE_CURRENT_SOURCE_DIR}/${MODULE_NAME}.xq.src/*.cpp")
 
+  #only for smtp library set -Wno-write-strings in order to remove the
+  #warning "deprecated conversion from string constant to char*"
+  #we need to set it to both GNUCC and GNUCXX because of linkage.c and c-client.h
+  IF(${MODULE_NAME} STREQUAL "smtp")
+    IF (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+      FOREACH(SMTP_SRC ${SRC_FILES})
+        SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/smtp.xq.src/${SMTP_SRC} PROPERTIES COMPILE_FLAGS "-Wno-write-strings")
+      ENDFOREACH(SMTP_SRC)
+    ENDIF (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+  ENDIF(${MODULE_NAME} STREQUAL "smtp")
+
   # Each library name is module name without ending prefixed by the path of the module 
   # (slashes replaced by underscores)
   # E.g. 'com/zorba-xquery/www/modules/file.xq' -> com_zorba-xquery_www_modules_file

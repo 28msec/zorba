@@ -2358,7 +2358,7 @@ Expr
             BlockBody *blk2 = new BlockBody( LOC(@$) );
             blk2->add( $1 );
 
-            for ( int i = 0; i < blk->size(); ++i )
+            for ( ulong i = 0; i < blk->size(); ++i )
                 blk2->add( (*blk)[i] );
 
             $$ = blk2;
