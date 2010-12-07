@@ -166,7 +166,7 @@ declare function xsl-fo:generator($output-format as xs:string, $xsl-fo-document 
         "None of the envroinment variables FOP_HOME and FOP_LIB_DIR has bin set.")
   let $classpath as xs:string* :=
     ($fop-jar-file, for $jar in ("avalon-framework", "batik-all", "commons-io", "commons-logging", "serializer",
-                 "xalan", "xercesImpl", "xml-apis", "xml-apis-ext", "xmlgraphics-commons")
+                 "xalan", "xmlgraphics-commons")
     let $jar-dir as xs:string :=
       if ($fop-home) then
         fn:concat($fop-home, file:path-separator(), "lib")

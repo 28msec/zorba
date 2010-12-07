@@ -652,7 +652,7 @@ protected:
 
   void materialize_if_necessary() const;
 
-  mutable std::istream &istream_;
+  std::istream &istream_;
 
   friend class BasicItemFactory;
 };
