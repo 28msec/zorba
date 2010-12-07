@@ -101,7 +101,7 @@ void replace_all( StringType &s,
                   char const *from, typename StringType::size_type from_len,
                   char const *to, typename StringType::size_type to_len ) {
   for ( typename StringType::size_type pos = 0;
-        pos + from_len < s.size(); pos += to_len ) {
+        pos + from_len <= s.size(); pos += to_len ) {
     if ( (pos = s.find( from, pos, from_len )) == StringType::npos )
       break;
     s.replace( pos, from_len, to, to_len );
