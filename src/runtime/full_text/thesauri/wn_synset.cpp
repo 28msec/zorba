@@ -33,13 +33,13 @@ namespace wordnet {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void synset::parse( char const *p ) {
+synset::synset( char const *p ) {
   //
-  // The format of a synset is:
+  // The binary format of a synset is:
   //
   //  synset = {pos}{#lemmas}{lemma#}...{#ptrs}{ptr}...
   //  pos = a | r | n | v
-  //  ptr = {pos}{type}{synset#}{source}{target}
+  //  ptr = {pos}{type}{synset#}{source}[{target}]
   //
 
   char c = *p++;
@@ -65,7 +65,8 @@ void synset::parse( char const *p ) {
     ptr.source_    = decode_base128( &p );
     if ( ptr.source_ )
       ptr.target_ = decode_base128( &p );
-    ptr_list_.push_back( ptr );
+
+    ptrs_.push_back( ptr );
   }
 }
 

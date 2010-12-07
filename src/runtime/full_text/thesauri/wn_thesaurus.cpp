@@ -273,7 +273,7 @@ bool thesaurus::next( zstring *synonym ) {
       cout << "+ level (" << level_ << ") >= at_least (" << at_least_ << ')'
            << endl;
 #     endif
-      FOR_EACH( synset::lemma_id_list, lemma_id, ss.lemma_ids_ ) {
+      FOR_EACH( synset::lemma_id_list, lemma_id, ss.lemma_ids() ) {
         if ( synonyms_seen_.insert( *lemma_id ).second )
           synonym_queue_.push_back( *lemma_id );
       }
@@ -292,7 +292,7 @@ bool thesaurus::next( zstring *synonym ) {
 #     endif
     }
 
-    FOR_EACH( synset::ptr_list, ptr, ss.ptr_list_ ) {
+    FOR_EACH( synset::ptr_list, ptr, ss.ptrs() ) {
       if ( ptr_type_ ) {
         //
         // A pointer type (relationship) was given for the thesaurus option: if
@@ -312,10 +312,10 @@ bool thesaurus::next( zstring *synonym ) {
       synset_id_queue_.push_back( ptr->synset_id_ );
 #if 0
       if ( ptr->source_ ) {
-        lemma_id_t const source_lemma_id = ss.lemma_ids_[ ptr->source_ - 1 ];
+        lemma_id_t const source_lemma_id = ss.lemma_ids()[ ptr->source_ - 1 ];
 
         synset const tt( SYNSETS[ ptr->synset_id_ ] );
-        lemma_id_t const target_lemma_id = tt.lemma_ids_[ ptr->target_ - 1 ];
+        lemma_id_t const target_lemma_id = tt.lemma_ids()[ ptr->target_ - 1 ];
       }
 #endif
     } // FOR_EACH

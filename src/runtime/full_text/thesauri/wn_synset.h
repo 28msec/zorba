@@ -44,15 +44,44 @@ public:
   typedef std::vector<lemma_id_t> lemma_id_list;
   typedef std::vector<ptr> ptr_list;
 
-  part_of_speech::type pos_;
-  lemma_id_list lemma_ids_;
-  ptr_list ptr_list_;
+  /**
+   * Constructs a %synset.
+   *
+   * @param p A pointer to the first byte of a binary %synset entry.
+   */
+  synset( char const *p );
 
-  synset( char const *p ) {
-    parse( p );
+  /**
+   * Gets this %synset's part-of-speech.
+   *
+   * @return Returns said part-of-speech.
+   */
+  part_of_speech::type pos() const {
+    return pos_;
   }
 
-  void parse( char const *p );
+  /**
+   * Gets this %synset's lemma IDs.
+   *
+   * @return Returns said lemma IDs.
+   */
+  lemma_id_list const& lemma_ids() const {
+    return lemma_ids_;
+  }
+
+  /**
+   * Gets this %synset's ptrs.
+   *
+   * @return Returns said ptrs.
+   */
+  ptr_list const& ptrs() const {
+    return ptrs_;
+  }
+
+private:
+  part_of_speech::type pos_;
+  lemma_id_list lemma_ids_;
+  ptr_list ptrs_;
 };
 
 } // namespace wordnet
