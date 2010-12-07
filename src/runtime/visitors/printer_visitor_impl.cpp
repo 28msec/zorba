@@ -58,12 +58,6 @@
 #include "context/static_context.h"
 #include "context/namespace_context.h"
 
-#ifdef ZORBA_WITH_FOP
-#include "runtime/fop/FopImpl.h"
-#endif // ZORBA_WITH_FOP
-
-
-
 namespace zorba{
 
 #define PRINTER_VISITOR_DEFINITION(class)                \
@@ -1136,10 +1130,6 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
   PRINTER_VISITOR_DEFINITION(ZorbaTidyIterator);
   PRINTER_VISITOR_DEFINITION(ZorbaTDocIterator);
 #endif  // ZORBA_WITH_TIDY
-
-#ifdef ZORBA_WITH_FOP
-  PRINTER_VISITOR_DEFINITION(ZorbaFopIterator);
-#endif // ZORBA_WITH_FOP
 
   PRINTER_VISITOR_DEFINITION (UDFunctionCallIterator)
   PRINTER_VISITOR_DEFINITION (StatelessExtFunctionCallIterator)

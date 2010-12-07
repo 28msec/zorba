@@ -316,10 +316,6 @@
   PLAN_ITER_VISITOR(ZorbaTidyIterator);
   PLAN_ITER_VISITOR(ZorbaTDocIterator);
 #endif
-#ifdef ZORBA_WITH_FOP
-	PLAN_ITER_VISITOR(ZorbaFopIterator);
-#endif // ZORBA_WITH_FOP
-
   PLAN_ITER_VISITOR ( DebuggerSingletonIterator );
 
   PLAN_ITER_VISITOR(HoistIterator);

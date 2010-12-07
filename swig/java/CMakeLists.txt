@@ -13,7 +13,7 @@
 # limitations under the License.
 
 FIND_PACKAGE ( Java )
-include ( FindJNI )
+INCLUDE ( ${CMAKE_SOURCE_DIR}/cmake_modules/FindJNI.cmake )
 
 STRING ( COMPARE NOTEQUAL ${JAVA_INCLUDE_PATH} "JAVA_INCLUDE_PATH-NOTFOUND" JNI_FOUND )
 

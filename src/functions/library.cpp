@@ -37,7 +37,6 @@
 #include "functions/func_durations_dates_times.h"
 #include "functions/func_durations_dates_times_impl.h"
 #include "functions/func_enclosed.h"
-#include "functions/func_fop.h"
 #include "functions/func_fnerror.h"
 #include "functions/func_fnput.h"
 #include "functions/func_hoist.h"
@@ -122,7 +121,6 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populateContext_VarDecl(sctx);
   populateContext_Hoisting(sctx);
   populateContext_tidy(sctx);
-  populateContext_FOP(sctx);
 
   ar.set_loading_hardcoded_objects(false);
 }
