@@ -15,6 +15,7 @@
  */
 
 #include <algorithm>                    /* for equal_range */
+#include <cassert>
 #include <cstring>
 #include <functional>                   /* for binary_function */
 #include <utility>                      /* for pair */
@@ -32,7 +33,10 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-namespace thesaurus_impl {
+/**
+ * The "statically known thesauri" implementations.
+ */
+namespace thesauri_impl {
 
   enum type {
     none,
@@ -62,7 +66,13 @@ namespace thesaurus_impl {
     { "http://wordnet.princeton.edu", wordnet },
   };
 
-  static type get_type( zstring const &uri ) {
+  /**
+   * Given a thesaurus URI, finds its corresponding thesaurus implementation.
+   *
+   * @param uri The thesaurus' URI.
+   * @return Returns the implementation's type or \c none.
+   */
+  static type find( zstring const &uri ) {
     static table_entry const *const table_end =
       table + sizeof( table ) / sizeof( table[0] );
     table_entry entry_to_find;
@@ -72,7 +82,7 @@ namespace thesaurus_impl {
     return result.first == result.second ? none : result.first->te_type;
   }
 
-} // namespace thesaurus_impl
+} // namespace thesauri_impl
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -91,8 +101,8 @@ ft_thesaurus* ft_thesaurus::get( zstring const &uri, iso639_1::type lang,
     ascii::ends_with( uri, '/' ) ? uri.substr( 0, uri.size() - 1 ) : uri
   );
 
-  switch ( thesaurus_impl::get_type( uri_no_slash ) ) {
-    case thesaurus_impl::wordnet:
+  switch ( thesauri_impl::find( uri_no_slash ) ) {
+    case thesauri_impl::wordnet:
       return new wordnet::thesaurus( phrase, relationship, at_least, at_most );
     default:
       return NULL;
@@ -100,9 +110,7 @@ ft_thesaurus* ft_thesaurus::get( zstring const &uri, iso639_1::type lang,
 }
 
 void ft_thesaurus::set_directory( zstring const &path ) {
-  //TODO if path.empty throw error
-//   if ( path.empty() )
-//     ; // throw XXX;
+  assert( !path.empty() );
   thesauri_directory_ = path;
 }
 
