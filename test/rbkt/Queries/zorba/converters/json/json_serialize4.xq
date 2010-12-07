@@ -4,9 +4,9 @@ import module namespace json = "http://www.zorba-xquery.com/modules/json";
 
 json:serialize(
   <json type="object">
-     <pair name="firstName" type="string">&quot;</pair>
+     <pair name="firstName" type="string">\"</pair>
   </json>
 ),
 json:serialize-ml(
-  <person><firstName>&quot;</firstName></person>
+  <person><firstName>\&quot;</firstName></person>
 )

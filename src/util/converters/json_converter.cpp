@@ -100,6 +100,18 @@ bool get_value(
     const store::Item* aElement,
     zstring& aValue);
 
+void replace_special_chars(
+    zstring& aValue)
+{
+  zorba::ascii::replace_all(aValue, "\\", "\\\\");  //reverse solidus
+  zorba::ascii::replace_all(aValue, "\"", "\\\"");  //quotation mark
+  zorba::ascii::replace_all(aValue, "\b", "\\b" );  //backspace
+  zorba::ascii::replace_all(aValue, "\f", "\\f" );  //formfeed
+  zorba::ascii::replace_all(aValue, "\n", "\\n" );  //new line
+  zorba::ascii::replace_all(aValue, "\r", "\\r" );  //carriage return
+  zorba::ascii::replace_all(aValue, "\t", "\\t" );  //horizontal tab
+}
+
 
 bool JSON_parse(
     const char* aJsonString,
@@ -342,6 +354,8 @@ void parse_Json_value(
       //transform from UCS-4 to UTF-8
       xqpString tmp((*lWtmp).c_str());
       zstring lVal(tmp.c_str());
+      replace_special_chars(lVal);
+
       bool haveVal = true;
 
       delete lWtmp;
@@ -439,6 +453,7 @@ void parse_Json_ML_value(
       //transform from UCS-4 to UTF-8
       xqpString tmp((*lWtmp).c_str());
       zstring lText(tmp.c_str());
+      replace_special_chars(lText);
 
       delete lWtmp;
 
@@ -505,6 +520,7 @@ bool parse_element(
   {
     zstring lValue;
     get_value(aElement, lValue);
+
     if(equals(aElement->getNodeName()->getStringValue(), "pair", 4))
     {
       if(lName.empty())
@@ -583,9 +599,6 @@ bool get_value(const store::Item* aElement, zstring& aValue)
   if ( lRes )
   {
     xqpString lStringHolder(aValue.str());
-
-    if (lStringHolder.indexOf("\"") != -1)
-      lStringHolder = lStringHolder.replace("\"", "'", "");
 
     aValue = lStringHolder;
     return lRes;

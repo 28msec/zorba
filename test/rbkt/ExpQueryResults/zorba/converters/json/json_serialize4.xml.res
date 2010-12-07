@@ -1,1 +1,1 @@
-{"firstName": "'"} ["person", ["firstName", "'"]]
+{"firstName": "\""} ["person", ["firstName", "\""]]

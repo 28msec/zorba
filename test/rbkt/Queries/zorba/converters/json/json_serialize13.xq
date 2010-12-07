@@ -16,5 +16,4 @@ declare variable $local:json :=
       }
     }';
 
-json:serialize(json:parse($local:json)) eq $local:json
-
+json:serialize(json:parse($local:json))
