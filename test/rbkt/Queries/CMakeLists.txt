@@ -290,7 +290,6 @@ ENDIF (FOUND_XQTS)
 # !!! do not abuse this list or you will be prosecuted !!!
 EXPECTED_FAILURE(test/rbkt/zorba/converters/json/json_serialize5 3082260)
 EXPECTED_FAILURE(test/rbkt/zorba/converters/json/json_serialize7 3082213)
-EXPECTED_FAILURE(test/rbkt/zorba/converters/json/json_serialize8 3082226)
 EXPECTED_FAILURE(test/rbkt/zorba/converters/json/json_serialize13 3082260)
 
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/admin 2935047)

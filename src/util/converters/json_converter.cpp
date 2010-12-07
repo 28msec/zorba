@@ -85,13 +85,15 @@ void parse_Json_ML_value(
 bool parse_element(
     const store::Item* aElement,
     zstring& aJsonString,
-    zstring& aErrorLog);
+    zstring& aErrorLog,
+    const zstring& aParentType);
 
 
 bool parse_child(
     const store::Item* aElement,
     zstring& aJsonString,
-    zstring& aErrorLog);
+    zstring& aErrorLog,
+    const zstring& aParentType);
 
 
 bool get_value(
@@ -154,7 +156,7 @@ bool JSON_serialize(
 
   aJsonString.append("{");
 
-  lResult = parse_child(aElement, aJsonString, aErrorLog);
+  lResult = parse_child(aElement, aJsonString, aErrorLog, "object");
 
   if( lResult )
     aJsonString.append("}");
@@ -451,7 +453,8 @@ void parse_Json_ML_value(
 bool parse_element(
     const store::Item* aElement,
     zstring& aJsonString,
-    zstring& aErrorLog)
+    zstring& aErrorLog,
+    const zstring& aParentType)
 {
   store::Iterator_t lAttrIt, lChildrenIt;
   store::Item_t     lAttr, lChild;
@@ -486,7 +489,7 @@ bool parse_element(
     aJsonString.append(lName);
     aJsonString.append("\": {");
     //parse every children
-    lResult = parse_child(aElement, aJsonString, aErrorLog);
+    lResult = parse_child(aElement, aJsonString, aErrorLog, "object");
     aJsonString.append("}");
   }
   else if(equals(lType, "array", 5))
@@ -495,7 +498,7 @@ bool parse_element(
     aJsonString.append(lName);
     aJsonString.append("\": [");
     //parse every children
-    lResult = parse_child(aElement, aJsonString, aErrorLog);
+    lResult = parse_child(aElement, aJsonString, aErrorLog, "array");
     aJsonString.append("]");
   }
   else if(equals(lType, "string", 6))
@@ -507,6 +510,12 @@ bool parse_element(
       if(lName.empty())
       {
         aErrorLog = "Element does not have a 'name' attribute defined.";
+        return false;
+      }
+
+      if(!equals(aParentType, "object", 6))
+      {
+        aErrorLog = "'Pair' is allowed only into as part of an object.";
         return false;
       }
 
@@ -581,7 +590,8 @@ bool get_value(const store::Item* aElement, zstring& aValue)
 bool parse_child(
     const store::Item* aElement,
     zstring& aJsonString,
-    zstring& aErrorLog)
+    zstring& aErrorLog,
+    const zstring& aParentType)
 {
   bool lResult = true, lFirst = true;
   store::Iterator_t lChildrenIt;
@@ -596,7 +606,7 @@ bool parse_child(
 
     if (lChild->getNodeKind() == store::StoreConsts::elementNode)
     {
-      lResult = parse_element(&*lChild, aJsonString, aErrorLog);
+      lResult = parse_element(&*lChild, aJsonString, aErrorLog, aParentType);
       lFirst = false;
     }
   }
