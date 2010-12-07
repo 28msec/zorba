@@ -289,7 +289,6 @@ ENDIF (FOUND_XQTS)
 # the list of tests that are failing but can be accepted by the commit queue
 # !!! do not abuse this list or you will be prosecuted !!!
 EXPECTED_FAILURE(test/rbkt/zorba/converters/json/json_serialize5 3082260)
-EXPECTED_FAILURE(test/rbkt/zorba/converters/json/json_serialize7 3082213)
 EXPECTED_FAILURE(test/rbkt/zorba/converters/json/json_serialize13 3082260)
 
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/admin 2935047)

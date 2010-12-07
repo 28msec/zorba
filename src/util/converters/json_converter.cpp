@@ -537,7 +537,8 @@ bool parse_element(
     }
     aJsonString.append("null");
   }
-  else //number,boolean
+  else if (equals(lType, "number", 6) ||
+           equals(lType, "boolean", 7))
   {
     zstring lValue;
     get_value(aElement, lValue);
@@ -548,6 +549,13 @@ bool parse_element(
       aJsonString.append("\": ");
     }
     aJsonString.append(lValue);
+  }
+  else
+  {
+    aErrorLog.append("Type '");
+    aErrorLog.append(lType);
+    aErrorLog.append("' not recognized.");
+    return false;
   }
 
   return lResult;
