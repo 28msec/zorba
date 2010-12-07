@@ -175,6 +175,7 @@ CSVOptions::CSVOptions()
   first_row_is_header = 0;//not header
   last_subheader_row = 0;
   start_from_row = 1;
+  last_row = 0;
   column_specified = false;
   add_last_void_columns = false;
   //row_name = "row";
