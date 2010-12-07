@@ -78,7 +78,8 @@ namespace zorba { namespace emailmodule {
     createFlagsNode(const ImapModule* aModule,
                     Item& aParent,
                     Item& aFlags,
-                    std::vector<int>& aFlagsVector);
+                    std::vector<int>& aFlagsVector,
+                    const bool aQualified);
 
     /*
      * Creates a simple named  node containing a text node.

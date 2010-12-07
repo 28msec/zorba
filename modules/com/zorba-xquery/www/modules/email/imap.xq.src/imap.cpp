@@ -515,7 +515,7 @@ FetchFlagsFunction::evaluate(
 
 
   Item lFlagsItem;
-  ImapFunction::createFlagsNode(theModule, lParent, lFlagsItem, lFlags);
+  ImapFunction::createFlagsNode(theModule, lParent, lFlagsItem, lFlags, true);
 
   return ItemSequence_t(new SingletonItemSequence(lFlagsItem));
 }
@@ -711,8 +711,15 @@ FetchMessageFunction::getMessage(const ImapModule* aModule,
   if (lErrorMessage.size() != 0) {
     ImapFunction::throwImapError(lErrorMessage);
   }
-  // begin construction of envelope 
-  Item lEnvelopeName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "envelope");
+  /* begin construction of envelope
+   * Important: if we only want the envelope, then the envelope MUST be qualified (being the root of the DOM)
+   */
+  Item lEnvelopeName;
+  if (aOnlyEnvelope) {
+    lEnvelopeName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "envelope");
+  } else {
+     lEnvelopeName = aModule->getItemFactory()->createQName("", "", "envelope");
+  }  
   Item lEnvelopeType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "envelopeType");
  
   Item lNullItem;
@@ -728,11 +735,11 @@ FetchMessageFunction::getMessage(const ImapModule* aModule,
 
   // create the remail node if needed 
   if (lEnvelope->remail) {
-    ImapFunction::createInnerNodeWithText(aModule, lEnvelopeItem, "http://www.zorba-xquery.com/modules/email/email", "email",  "remail", "string", lEnvelope->remail);
+    ImapFunction::createInnerNodeWithText(aModule, lEnvelopeItem, "", "email",  "remail", "string", lEnvelope->remail);
   }
   /* create the date node if needed */
   if (lEnvelope->date) {
-    ImapFunction::createInnerNodeWithText(aModule, lEnvelopeItem, "http://www.zorba-xquery.com/modules/email/email", "",  "date", "string", ImapFunction::getDateTime(reinterpret_cast<const char*>(lEnvelope->date)));
+    ImapFunction::createInnerNodeWithText(aModule, lEnvelopeItem, "", "",  "date", "string", ImapFunction::getDateTime(reinterpret_cast<const char*>(lEnvelope->date)));
   }
   // create from node if needed
   if (lEnvelope->from) {
@@ -746,7 +753,7 @@ FetchMessageFunction::getMessage(const ImapModule* aModule,
   }
   // create subject node
   if (lEnvelope->subject) {
-    ImapFunction::createInnerNodeWithText(aModule, lEnvelopeItem, "http://www.zorba-xquery.com/modules/email/email", "email",  "subject", "string", lEnvelope->subject);
+    ImapFunction::createInnerNodeWithText(aModule, lEnvelopeItem, "", "",  "subject", "string", lEnvelope->subject);
   }
    
   ADDRESS* lRecipents;
@@ -775,11 +782,11 @@ FetchMessageFunction::getMessage(const ImapModule* aModule,
 
   // create messageId node
   if (lEnvelope->message_id) {
-    ImapFunction::createInnerNodeWithText(aModule, lEnvelopeItem,  "http://www.zorba-xquery.com/modules/email/email", "email",  "messageId", "string", lEnvelope->message_id);
+    ImapFunction::createInnerNodeWithText(aModule, lEnvelopeItem,  "", "",  "messageId", "string", lEnvelope->message_id);
   }
   Item lFlagsItem;
   // create flags node
-  ImapFunction::createFlagsNode(aModule, lEnvelopeItem, lFlagsItem, lFlags);
+  ImapFunction::createFlagsNode(aModule, lEnvelopeItem, lFlagsItem, lFlags, false);
 
   // if we only want the envelope, then here is a good place to stop
   if (aOnlyEnvelope) {
@@ -790,7 +797,7 @@ FetchMessageFunction::getMessage(const ImapModule* aModule,
   /* if we want the whole message, then build it together */
   
   /* <email:mimeVersion>1.0</email:mimeVersion> */
-  ImapFunction::createInnerNodeWithText(aModule, aParent,  "http://www.zorba-xquery.com/modules/email/email", "email", "mimeVersion", "string", "1.0");
+  ImapFunction::createInnerNodeWithText(aModule, aParent,  "", "", "mimeVersion", "string", "1.0");
   
  
   // make a tolower version of the subtype
@@ -799,12 +806,12 @@ FetchMessageFunction::getMessage(const ImapModule* aModule,
   std::transform(lSubType.begin(), lSubType.end(), lSubType.begin(), tolower);
    
   /* creating the <body> node */ 
-  static Item lBodyName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "body");
+  static Item lBodyName = aModule->getItemFactory()->createQName("", "", "body");
   static Item lBodyType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "bodyTypeChoice");
   static Item lBodyItem = aModule->getItemFactory()->createElementNode(aParent, lBodyName, lBodyType, false, false, ns_binding); 
   /* in case of non-multipart, just add the body to the message */
       
-  static Item lMultipartParentName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "multipart");
+  static Item lMultipartParentName = aModule->getItemFactory()->createQName("", "", "multipart");
   static Item lMultipartParentType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "multipartType");
   Item lMultipartParent; 
       // using a vector instead of a stack, because including stack will clash with the c-client include ... 

@@ -225,7 +225,7 @@ declare sequential function imap:move($host-info as element(imaps:hostInfo), $ma
  : @error If any of the passed message number does not exist.
  :) 
 declare function imap:fetch-envelope($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long, $uid as xs:boolean?) as element() { 
-    validate { imap:fetch-envelope-impl( validate { $host-info }, $mailbox , $message-number, $uid ) } 
+     validate {imap:fetch-envelope-impl( validate { $host-info }, $mailbox , $message-number, $uid )} 
 };
 
 
@@ -243,7 +243,7 @@ declare function imap:fetch-envelope($host-info as element(imaps:hostInfo), $mai
  : @error If any of the passed message number does not exist.
  :)
 declare function imap:fetch-message($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long, $uid as xs:boolean) as element(email:Message) {
-  validate { imap:fetch-message-impl(validate {$host-info}, $mailbox, $message-number, $uid) }
+   validate {imap:fetch-message-impl(validate {$host-info}, $mailbox, $message-number, $uid)} 
 }; 
 
 (:~
@@ -336,7 +336,7 @@ declare function imap:fetch-message-sequence-number($host-info as element(imaps:
  :)
 declare function imap:fetch-flags($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long, $uid as xs:boolean?) as element(email:flags) 
 {
-  validate { imap:fetch-flags-impl(validate{$host-info}, $mailbox, $message-number, $uid) }
+   validate {imap:fetch-flags-impl(validate{$host-info}, $mailbox, $message-number, $uid)} 
 };
  
 

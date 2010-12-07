@@ -259,14 +259,21 @@ void
 ImapFunction::createFlagsNode(const ImapModule* aModule,
                               Item& aParent,
                               Item& aFlags,
-                              std::vector<int>& aFlagsVector) {
+                              std::vector<int>& aFlagsVector,
+                              const bool aQualified) {
 
 
 
   std::vector<std::pair<String, String> >  ns_binding;
   ns_binding.push_back(std::pair<String, String>("email", "http://www.zorba-xquery.com/modules/email/email"));
-
-  Item lFlagsName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "flags");
+  
+  // if aParent is null, then we want to have the flags node qualified (so that it can be shema validated)
+  Item lFlagsName;
+  if (!aQualified) {
+    lFlagsName = aModule->getItemFactory()->createQName("", "", "flags");
+  } else {
+    lFlagsName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "flags");
+  }  
   Item lFlagsType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email",  "flagsType");
   aFlags = aModule->getItemFactory()->createElementNode(aParent, lFlagsName, lFlagsType, false, false, ns_binding);
 
@@ -293,7 +300,7 @@ ImapFunction::createFlagsNode(const ImapModule* aModule,
         break;
       }
       
-      Item lOneFlagName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", lFlagName);
+      Item lOneFlagName = aModule->getItemFactory()->createQName("", "", lFlagName);
       Item lOneFlagType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "emptyType");
       Item lOneFlag = aModule->getItemFactory()->createElementNode(aFlags, lOneFlagName, lOneFlagType, false, true, ns_binding);
     }
@@ -331,7 +338,7 @@ ImapFunction::createContentNode(const ImapModule* aModule,
   static Item lNullItem;
    
   std::vector<std::pair<String, String> > null_binding;
-  static Item lName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "content");
+  static Item lName = aModule->getItemFactory()->createQName("", "", "content");
   static Item lType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "contentType" );
   Item lItem = aModule->getItemFactory()->createElementNode(aParent, lName, lType, false, false, null_binding);
   
@@ -353,17 +360,17 @@ ImapFunction::createEmailAddressNode(const ImapModule* aModule,
 {
 
   static Item lType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "emailAddress");
-  Item lName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email",  aName);
+  Item lName = aModule->getItemFactory()->createQName("", "",  aName);
 
   std::vector<std::pair<String, String> >  ns_binding; 
    ns_binding.push_back(std::pair<String, String>("email", "http://www.zorba-xquery.com/modules/email/email"));
  
   Item lItem = aModule->getItemFactory()->createElementNode(aParent, lName, lType, false, false, ns_binding);
   if (aPersonal) {
-    createInnerNodeWithText(aModule, lItem, "http://www.zorba-xquery.com/modules/email/email", "email", "name", "string", aPersonal);
+    createInnerNodeWithText(aModule, lItem, "", "", "name", "string", aPersonal);
   }
   if ((aMailbox) && (aHost)) {
-    createInnerNodeWithText(aModule, lItem, "http://www.zorba-xquery.com/modules/email/email", "email", "email", "string", std::string(aMailbox) + "@" + std::string(aHost));  
+    createInnerNodeWithText(aModule, lItem, "", "", "email", "string", std::string(aMailbox) + "@" + std::string(aHost));  
   }
 }
 
@@ -378,7 +385,7 @@ ImapFunction::createRecipentNode(const ImapModule* aModule,
                                  const char* aHost) 
 {                    
   static Item lType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "recipientType");                                                                    
-  static Item lName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email",  "recipient");                           
+  static Item lName = aModule->getItemFactory()->createQName("", "",  "recipient");                           
   
   std::vector<std::pair<String, String> >  ns_binding;                                        
     ns_binding.push_back(std::pair<String, String>("email", "http://www.zorba-xquery.com/modules/email/email"));

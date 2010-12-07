@@ -41,7 +41,7 @@ ERROR:
  : @return true if fetching a message envelope works 
  :)
 declare function local:test-fetch-envelope() as xs:boolean {
- (imap:fetch-envelope($local:host-info, "INBOX", xs:long(1), true())/email:from/email:name eq 'root')
+ (imap:fetch-envelope($local:host-info, "INBOX", xs:long(1), true())/from/name eq 'root')
 };
 
 
@@ -49,7 +49,7 @@ declare function local:test-fetch-envelope() as xs:boolean {
  : @return true if fetching a message works 
  :)
 declare function local:test-fetch-message() as xs:boolean {
-  fn:contains(imap:fetch-message($local:host-info, "INBOX", xs:long(1), true())//email:content, 'test')
+  fn:contains(imap:fetch-message($local:host-info, "INBOX", xs:long(1), true())//content, 'test')
 };
 
 
@@ -72,13 +72,13 @@ declare function local:test-fetch-from() as xs:boolean {
 
 
 declare function local:test-fetch-flags() as xs:boolean {
-  deep-equal(imap:fetch-flags($local:host-info, "INBOX", xs:long(1), true())[1]/*[last()], <email:draft/>);
+  deep-equal(imap:fetch-flags($local:host-info, "INBOX", xs:long(1), true())[1]/*[last()], <draft/>);
 
 };
 
 declare sequential function local:test-set-flags() as xs:boolean {
-  imap:set-flags($local:host-info, "INBOX", xs:long(2), <email:flags><email:answered/></email:flags>, true());
-  deep-equal(imap:fetch-flags($local:host-info, "INBOX", xs:long(2), true())[1]/*[last()], <email:answered/>);
+  imap:set-flags($local:host-info, "INBOX", xs:long(2), <email:flags><answered/></email:flags>, true());
+  deep-equal(imap:fetch-flags($local:host-info, "INBOX", xs:long(2), true())[1]/*[last()], <answered/>);
 
 
  

@@ -2,7 +2,7 @@
 <schema xmlns="http://www.w3.org/2001/XMLSchema" 
 targetNamespace="http://www.zorba-xquery.com/modules/email/email"
 xmlns:tns="http://www.zorba-xquery.com/modules/email/email" 
-elementFormDefault="qualified">
+>
 
 
  <complexType name="emptyType">
@@ -60,7 +60,7 @@ elementFormDefault="qualified">
 <sequence>
 <element name="remail" type="string" maxOccurs="1" minOccurs="0"/>
 <element name="date" type="dateTime" maxOccurs="1" minOccurs="0"/>
-<element name="from" type="tns:emailAddress" maxOccurs="1" minOccurs="1"/>
+<element name="from" type="tns:emailAddress" maxOccurs="1" minOccurs="0"/>
 <element name="sender" type="tns:emailAddress" maxOccurs="1" minOccurs="0"/>
 <element name="replyTo" type="tns:emailAddress" maxOccurs="1" minOccurs="0"/>
 <element name="subject" type="string" maxOccurs="1" minOccurs="0"/>
