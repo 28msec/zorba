@@ -95,10 +95,31 @@ span.index a:hover{
   border:1px dotted #B93333;
 }
 
+span.functName a{
+  color: #B93333;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+span.functName a:hover {
+  color: #B93333;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+span.funcParam {
+  color:  #FFCC00;
+}
+
+span.functName {
+  color: #B93333;
+  font-weight: bold;
+  text-decoration: none;
+}
+
 span.padding {
   padding: 2px 4px;
 }
-
 
 /****************
  MENU
