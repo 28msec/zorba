@@ -215,9 +215,14 @@ synset_id_t const LevelSentinel = ~0u;
 
 thesaurus::thesaurus( zstring const &phrase, zstring const &relationship,
                       ft_int at_least, ft_int at_most ) :
-  ptr_type_( map_xquery_rel( relationship ) ),
+  query_ptr_type_( map_xquery_rel( relationship ) ),
   at_least_( at_least ), at_most_( at_most ), level_( 0 )
 {
+# if DEBUG_FT_THESAURUS
+  cout << "==================================================" << endl;
+  cout << "query phrase: " << phrase << endl;
+  cout << "query ptr_type=" << pointer::string_of[ query_ptr_type_ ] << endl;
+# endif
   if ( char const *p = find_lemma( phrase ) ) {
     while ( *p++ ) ;                    // skip past lemma
     //
@@ -227,6 +232,11 @@ thesaurus::thesaurus( zstring const &phrase, zstring const &relationship,
       synset_id_t const synset_id = decode_base128( &p );
       synset_id_queue_.push_back( synset_id );
     }
+    //
+    // The initial synset IDs constitute a "level", so add the sentinel to the
+    // queue to increment the level.
+    //
+    synset_id_queue_.push_back( LevelSentinel );
   }
 }
 
@@ -237,7 +247,6 @@ thesaurus::~thesaurus() {
 bool thesaurus::next( zstring *synonym ) {
   while ( synonym_queue_.empty() ) {
 #   if DEBUG_FT_THESAURUS
-    cout << "==================================================" << endl;
     cout << "synonym_queue is empty" << endl;
 #   endif
 
@@ -273,32 +282,48 @@ bool thesaurus::next( zstring *synonym ) {
       cout << "+ level (" << level_ << ") >= at_least (" << at_least_ << ')'
            << endl;
 #     endif
-      FOR_EACH( synset::lemma_id_list, lemma_id, ss.lemma_ids() ) {
-        if ( synonyms_seen_.insert( *lemma_id ).second )
-          synonym_queue_.push_back( *lemma_id );
+      if ( !query_ptr_type_ || level_ ) {
+        //
+        // The first batch of synsets in the queue are from the inital look-up
+        // of the query phrase.  All the lemmas in all these synsets are
+        // synonyms of the query phrase (they all have the same "sense").
+        //
+        // If there was no relationship specified in the query (query_ptr_type_
+        // is "unknown"), then it's OK to return those lemmas as synonyms.
+        //
+        // However, if a relationship was specified, then it's not OK to return
+        // those lemmas since the user isn't looking for synonyms, but is
+        // instead looking for lemmas that have the given relationship.
+        //
+        // But once we're past the first (zeroth) level (the synsets of the
+        // inital look-up), it's always OK to return the lemmas.
+        //
+        FOR_EACH( synset::lemma_id_list, lemma_id, ss.lemma_ids() ) {
+          if ( synonyms_seen_.insert( *lemma_id ).second )
+            synonym_queue_.push_back( *lemma_id );
+        }
+#       if DEBUG_FT_THESAURUS
+        cout << "+ copied lemmas; synonym_queue is now: ";
+        bool comma = false;
+        FOR_EACH( synonym_queue, lemma_id, synonym_queue_ ) {
+          if ( comma )
+            cout << ", ";
+          else
+            comma = true;
+          cout << LEMMAS[ *lemma_id ];
+        }
+        cout << endl;
+#       endif
       }
-
-#     if DEBUG_FT_THESAURUS
-      cout << "+ copied lemmas; synonym_queue is now: ";
-      bool comma = false;
-      FOR_EACH( synonym_queue, lemma_id, synonym_queue_ ) {
-        if ( comma )
-          cout << ", ";
-        else
-          comma = true;
-        cout << LEMMAS[ *lemma_id ];
-      }
-      cout << endl;
-#     endif
     }
 
     FOR_EACH( synset::ptr_list, ptr, ss.ptrs() ) {
-      if ( ptr_type_ ) {
+      if ( query_ptr_type_ ) {
         //
         // A pointer type (relationship) was given for the thesaurus option: if
         // this ptr's type doesn't match, skip it.
         //
-        if ( ptr->type_ != ptr_type_ )
+        if ( ptr->type_ != query_ptr_type_ )
           continue;
       } else {
         if ( !follow_ptr( ptr->type_ ) )
@@ -306,9 +331,9 @@ bool thesaurus::next( zstring *synonym ) {
       }
 
 #     if DEBUG_FT_THESAURUS
-      cout << "+ ptr->type=" << pointer::string_of[ ptr->type_ ] << endl;
+      cout << "+ pushing synset_id=" << ptr->synset_id_
+           << " (type=" << pointer::string_of[ ptr->type_ ] << ')' << endl;
 #     endif
-
       synset_id_queue_.push_back( ptr->synset_id_ );
 #if 0
       if ( ptr->source_ ) {
