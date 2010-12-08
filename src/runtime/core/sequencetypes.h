@@ -239,6 +239,7 @@ public:
     SERIALIZE_ENUM(TypeConstants::quantifier_t, theQuantifier);
     ar & check_prime;
     SERIALIZE_ENUM(XQUERY_ERROR, theErrorCode);
+    ar & theFnQName;
   }
 
 public:
