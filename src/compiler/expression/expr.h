@@ -285,6 +285,9 @@ class treat_expr : public cast_base_expr
 protected:
   XQUERY_ERROR theError;
   bool         theCheckPrime;
+  store::Item_t theFnQName;    // Stores the QName of the function, if the promote expr
+                               // is used to cast the function's body to its result type
+
 
 public:
   SERIALIZABLE_CLASS(treat_expr)
@@ -298,13 +301,18 @@ public:
         expr_t,
         xqtref_t,
         XQUERY_ERROR,
-        bool check_prime = true);
+        bool check_prime = true,
+        store::Item_t fnQname = NULL);
 
   XQUERY_ERROR get_err() const { return theError; }
 
   bool get_check_prime() const { return theCheckPrime; }
 
   void set_check_prime(bool check_prime) { theCheckPrime = check_prime; }
+
+  void set_fn_qname(store::Item_t fnQName) { theFnQName = fnQName; }
+
+  store::Item_t get_fn_qname() const { return theFnQName; }
 
   expr_t clone(substitution_t& s) const;
 
@@ -347,7 +355,9 @@ class promote_expr : public cast_base_expr
 {
   friend class ExprIterator;
   friend class expr;
-
+  store::Item_t theFnQName;    // Stores the QName of the function, if the promote expr
+                               // is used to cast the function's body to its result type
+  
 public:
   SERIALIZABLE_CLASS(promote_expr)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(promote_expr, cast_base_expr)
@@ -357,9 +367,13 @@ public:
   }
 
 public:
-  promote_expr(static_context* sctx, const QueryLoc& loc, expr_t input, xqtref_t type);
+  promote_expr(static_context* sctx, const QueryLoc& loc, expr_t input, xqtref_t type, store::Item_t fnQname = NULL);
 
   expr_t clone(substitution_t& s) const;
+
+  void set_fn_qname(store::Item_t fnQName) { theFnQName = fnQName; }
+
+  store::Item_t get_fn_qname() const { return theFnQName; }
 
   void accept(expr_visitor&);
 

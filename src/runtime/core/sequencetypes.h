@@ -169,6 +169,8 @@ class PromoteIterator : public UnaryBaseIterator<PromoteIterator,
 private:
   xqtref_t                    thePromoteType;
   TypeConstants::quantifier_t theQuantifier;
+  store::Item_t								theFnQName;      // Stores the QName of the function, if the promote expr
+                                               // is used to cast the function's body to its result type
 
 public:
   SERIALIZABLE_CLASS(PromoteIterator);
@@ -184,6 +186,7 @@ public:
 
     ar & thePromoteType;
     SERIALIZE_ENUM(TypeConstants::quantifier_t, theQuantifier);
+    ar & theFnQName;
   }
 
 public:
@@ -191,7 +194,8 @@ public:
         static_context* sctx,
         const QueryLoc&,
         PlanIter_t&,
-        const xqtref_t& aPromoteType);
+        const xqtref_t& aPromoteType,
+        store::Item_t fnQName = NULL);
 
   ~PromoteIterator();
 
@@ -215,6 +219,9 @@ private:
   TypeConstants::quantifier_t theQuantifier;
   bool check_prime;
   XQUERY_ERROR theErrorCode;
+  store::Item_t								theFnQName;      // Stores the QName of the function, if the promote expr
+                                               // is used to cast the function's body to its result type
+
 
 public:
   SERIALIZABLE_CLASS(TreatIterator);
@@ -241,7 +248,8 @@ public:
         PlanIter_t& aChild,
         const xqtref_t& aTreatType,
         bool check_prime,
-        XQUERY_ERROR);
+        XQUERY_ERROR,
+        store::Item_t fnQName = NULL);
 
   void accept(PlanIterVisitor& v) const;
 

@@ -497,11 +497,13 @@ treat_expr::treat_expr(
     expr_t inputExpr,
     xqtref_t type,
     XQUERY_ERROR err,
-    bool check_prime)
+    bool check_prime,
+    store::Item_t fnQname)
   :
   cast_base_expr(sctx, loc, treat_expr_kind, inputExpr, type),
   theError(err),
-  theCheckPrime(check_prime)
+  theCheckPrime(check_prime),
+  theFnQName(fnQname)
 {
 }
 
@@ -521,7 +523,8 @@ expr_t treat_expr::clone(substitution_t& subst) const
                         get_input()->clone(subst), 
                         get_target_type(),
                         get_err(),
-                        get_check_prime());
+                        get_check_prime(),
+                        get_fn_qname());
 }
 
 
@@ -532,9 +535,11 @@ promote_expr::promote_expr(
     static_context* sctx,
     const QueryLoc& loc,
     expr_t input,
-    xqtref_t type)
+    xqtref_t type,
+    store::Item_t fnQName)
   :
-  cast_base_expr(sctx, loc, promote_expr_kind, input, type)
+  cast_base_expr(sctx, loc, promote_expr_kind, input, type),
+  theFnQName(fnQName)
 {
 }
 
@@ -544,7 +549,8 @@ expr_t promote_expr::clone(substitution_t& subst) const
   return new promote_expr(theSctx, 
                           get_loc(),
                           get_input()->clone(subst),
-                          get_target_type());
+                          get_target_type(),
+                          theFnQName);
 }
 
 

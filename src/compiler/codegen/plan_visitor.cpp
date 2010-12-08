@@ -1640,7 +1640,7 @@ void end_visit (promote_expr& v)
   CODEGEN_TRACE_OUT("");
   PlanIter_t lChild = pop_itstack();
   // TODO: Currently we use cast. Promotion may be more efficient.
-  push_itstack(new PromoteIterator(sctx, qloc, lChild, v.get_target_type()));
+  push_itstack(new PromoteIterator(sctx, qloc, lChild, v.get_target_type(), v.get_fn_qname()));
 }
 
 
@@ -2135,7 +2135,7 @@ void end_visit(treat_expr& v)
   CODEGEN_TRACE_OUT("");
   PlanIter_t arg;
   arg = pop_itstack();
-  push_itstack(new TreatIterator(sctx, qloc, arg, v.get_target_type(), v.get_check_prime(), v.get_err()));
+  push_itstack(new TreatIterator(sctx, qloc, arg, v.get_target_type(), v.get_check_prime(), v.get_err(), v.get_fn_qname()));
 }
 
 bool begin_visit (castable_expr& v)

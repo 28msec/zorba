@@ -1776,16 +1776,16 @@ expr_t wrap_in_atomization(expr* e)
 /*******************************************************************************
 
 ********************************************************************************/
-expr_t wrap_in_type_promotion(expr_t e, xqtref_t type)
+expr_t wrap_in_type_promotion(expr_t e, xqtref_t type, store::Item_t fnQName = NULL)
 {
-  return new promote_expr(theRootSctx, e->get_loc(), e, type);
+  return new promote_expr(theRootSctx, e->get_loc(), e, type, fnQName);
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-expr_t wrap_in_type_match(expr_t e, xqtref_t type, XQUERY_ERROR errorCode = XPTY0004)
+expr_t wrap_in_type_match(expr_t e, xqtref_t type, XQUERY_ERROR errorCode = XPTY0004, store::Item_t fnQName = NULL)
 {
   TypeManager* tm = e->get_type_manager();
 
@@ -1793,7 +1793,7 @@ expr_t wrap_in_type_match(expr_t e, xqtref_t type, XQUERY_ERROR errorCode = XPTY
   // but in that case "type" will be item()* anyway
   return (TypeOps::is_subtype(tm, *theRTM.ITEM_TYPE_STAR, *type) ?
           e :
-          new treat_expr(theRootSctx, e->get_loc(), e, type, errorCode));
+          new treat_expr(theRootSctx, e->get_loc(), e, type, errorCode, true, fnQName));
 }
 
 
@@ -3780,19 +3780,13 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
 
     if (TypeOps::is_builtin_simple(CTX_TM, *returnType))
     {
-      QueryLoc temp_loc = QueryLoc::null;
-      if (dynamic_cast<flwor_expr*>(body.getp()) != NULL)
-        temp_loc = dynamic_cast<flwor_expr*>(body.getp())->get_return_expr()->get_loc();
-
       body = wrap_in_atomization(body);
-      body = wrap_in_type_promotion(body, returnType);
-
-      if (!temp_loc.equals(QueryLoc::null))
-        body->set_loc(temp_loc);
+      body = wrap_in_type_promotion(body, returnType, udf->getName());
+      body->set_loc(v.get_return_type()->get_location());
     }
     else
     {
-      body = wrap_in_type_match(body, returnType);
+      body = wrap_in_type_match(body, returnType, XPTY0004, udf->getName());
     }
 
     if (theCCB->theConfig.translate_cb != NULL)
@@ -8790,7 +8784,7 @@ void* begin_visit(const FunctionCall& v)
       }
     }
 
-    ulong numParams = f->getArity();
+    size_t numParams = f->getArity();
 
     for (ulong i = 0; i < numParams; ++i)
     {

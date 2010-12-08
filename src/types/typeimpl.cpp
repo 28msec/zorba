@@ -196,7 +196,8 @@ std::string XQType::toSchemaString() const
     result = "empty-sequence()";
     break;
   case ATOMIC_TYPE_KIND:
-    result = "xs:anyAtomicType()";
+    result = toString();
+    // result = "xs:anyAtomicType()";
     break;
   case ITEM_KIND:
     result = "item()";

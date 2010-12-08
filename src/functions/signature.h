@@ -134,7 +134,7 @@ public:
 
   bool isVariadic() const { return theIsVariadic; }
 
-  uint32_t paramCount() const 
+  size_t paramCount() const 
   {
     return isVariadic() ? VARIADIC_SIG_SIZE : (uint32_t)(theTypes.size() - 1);
   }

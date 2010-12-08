@@ -71,7 +71,7 @@ public:
 
   signature& getSignature() { return theSignature; }
 
-  ulong getArity() const { return theSignature.paramCount(); }
+  size_t getArity() const { return theSignature.paramCount(); }
 
   bool isVariadic() const { return theSignature.isVariadic(); }
 
