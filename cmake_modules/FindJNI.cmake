@@ -65,9 +65,9 @@ MACRO(java_append_library_directories _var)
 
     # Append default list architectures if CMAKE_SYSTEM_PROCESSOR was empty or
     # system is non-Linux (where the code above has not been well tested)
-    IF(NOT _java_libarch OR NOT (CMAKE_SYSTEM_NAME MATCHES "Linux"))
+    IF(NOT _java_libarch OR NOT CMAKE_SYSTEM_NAME MATCHES "Linux")
         LIST(APPEND _java_libarch "i386" "amd64" "ppc")
-    ENDIF(NOT _java_libarch OR NOT (CMAKE_SYSTEM_NAME MATCHES "Linux"))
+    ENDIF(NOT _java_libarch OR NOT CMAKE_SYSTEM_NAME MATCHES "Linux")
 
     # Sometimes ${CMAKE_SYSTEM_PROCESSOR} is added to the list to prefer
     # current value to a hardcoded list. Remove possible duplicates.
