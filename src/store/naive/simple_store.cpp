@@ -1336,8 +1336,6 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
 
   ulong treePos = (ulong)tmp;
 
-  std::cout << "tree pos = " << treePos << std::endl;
-
   //
   // Check if the uri specifies attribute node or not
   //
