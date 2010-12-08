@@ -305,7 +305,7 @@ parsenode_t XQueryCompiler::createMainModule(
     if(!lURI.is_absolute())
     {
       zstring lURIstr = lURI.toString();
-      
+
       ZORBA_ERROR_LOC_DESC(XQST0046,
                            mod_ast->get_decl()->get_location(),
                            "The passed URI is not absolute, it's relative.");
@@ -320,7 +320,9 @@ parsenode_t XQueryCompiler::createMainModule(
 
   // create a dummy main module
   std::stringstream lDocStream;
-  lDocStream << "import module namespace m = '" << lib_namespace.c_str() << "'; 1";
+  zstring tmp;
+  zorba::ascii::to_xml(lib_namespace, &tmp);
+  lDocStream << "import module namespace m = '" << tmp << "'; 1";
 
   aXQuery.clear();
   aXQuery.seekg(0);
