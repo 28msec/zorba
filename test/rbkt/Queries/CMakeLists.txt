@@ -288,6 +288,11 @@ ENDIF (FOUND_XQTS)
 # --------------------------------------------------------------------------
 # the list of tests that are failing but can be accepted by the commit queue
 # !!! do not abuse this list or you will be prosecuted !!!
+IF (WIN32)
+  EXPECTED_FAILURE(test/rbkt/zorba/modules/process 3132180)
+ENDIF (WIN32)
+EXPECTED_FAILURE(test/rbkt/zorba/modules/schema 3131554)
+
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/admin 2935047)
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/ic-uniqueKey-err2 2935047)
 

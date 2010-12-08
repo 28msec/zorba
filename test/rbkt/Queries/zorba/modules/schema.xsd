@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema targetNamespace="http://www.zorba-xquery.com/schema/test/data" 
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:t="http://www.zorba-xquery.com/schema/test/data"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+
+  <!-- 
+  *********************
+  	Elements 
+  *********************
+  -->  
+  <xs:element name="entry" type="t:MyGuestbookEntryType"></xs:element>
+  <xs:element name="age" type="t:MyAgeType"></xs:element>
+  <xs:element name="simple">
+	  <xs:complexType>
+	    <xs:simpleContent>
+	      <xs:extension base="xs:string">
+	          <xs:attribute name="simple" type="t:MyStringType" form="qualified"/> 
+	      </xs:extension>
+	    </xs:simpleContent>
+	  </xs:complexType>
+  </xs:element> 
+  <xs:attribute name="simple" type="t:MyStringType" />
+
+  <!-- 
+  *********************
+  complexTypes
+  *********************
+  -->  
+  <xs:complexType name="MyGuestbookEntryType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="author" type="xs:string" />
+        <xs:attribute name="date" type="xs:date" />
+        <xs:attribute name="time" type="xs:time" />
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  
+  
+  <!-- 
+  *********************
+  simpleTypes
+  *********************
+  -->  
+  <xs:simpleType name="MyAgeType">
+    <xs:restriction base="xs:integer">
+      <xs:minInclusive value="0"/>
+      <xs:maxInclusive value="100"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="MyStringType">
+  	<xs:restriction base="xs:string">
+  		<xs:enumeration value="test"></xs:enumeration>
+  		<xs:enumeration value="hello"></xs:enumeration>
+  		<xs:enumeration value="value"></xs:enumeration>
+  	</xs:restriction>
+  </xs:simpleType>
+  
+</xs:schema>
+
