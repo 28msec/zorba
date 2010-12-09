@@ -79,6 +79,7 @@ ELSE(WIN32)
     string_instantiate.cpp
     string_test.cpp
     main_sequential.cpp
+    os_module.cpp
   # multithread_simple.cpp
   # multithread_stress_test.cpp
  )
