@@ -47,7 +47,7 @@ private:
   typedef std::deque<lemma_id_t> synonym_queue;
   typedef std::set<lemma_id_t> synonym_set;
 
-  pointer::type const query_ptr_type_;
+  pointer::type query_ptr_type_;
   ft_int const at_least_, at_most_;
   ft_int level_;
 

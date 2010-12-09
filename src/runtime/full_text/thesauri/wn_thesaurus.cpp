@@ -209,9 +209,46 @@ static pointer::type map_xquery_rel( zstring const &relationship ) {
   return pointer::find( relationship_lower );
 }
 
+#if DEBUG_FT_THESAURUS
+class oseparator {
+public:
+  explicit oseparator( char const *sep = ", " ) : sep_( sep ), print_( false ) {
+  }
+
+  string const& sep() const {
+    return sep_;
+  }
+
+  void sep( char const *s ) {
+    sep_ = s;
+  }
+
+  template<class StringType>
+  void sep( StringType const &s ) {
+    sep_ = s;
+  }
+
+  void reset() {
+    print_ = false;
+  }
+
+  friend ostream& operator<<( ostream &os, oseparator &sep ) {
+    if ( sep.print_ )
+      os << sep.sep_;
+    else
+      sep.print_ = true;
+    return os;
+  }
+
+private:
+  string sep_;
+  bool print_;
+};
+#endif
+
 ///////////////////////////////////////////////////////////////////////////////
 
-synset_id_t const LevelSentinel = ~0u;
+synset_id_t const LevelMarker = ~0u;
 
 thesaurus::thesaurus( zstring const &phrase, zstring const &relationship,
                       ft_int at_least, ft_int at_most ) :
@@ -236,7 +273,7 @@ thesaurus::thesaurus( zstring const &phrase, zstring const &relationship,
     // The initial synset IDs constitute a "level", so add the sentinel to the
     // queue to increment the level.
     //
-    synset_id_queue_.push_back( LevelSentinel );
+    synset_id_queue_.push_back( LevelMarker );
   }
 }
 
@@ -258,16 +295,22 @@ bool thesaurus::next( zstring *synonym ) {
     }
 
     synset_id_t const synset_id = pop_front( synset_id_queue_ );
-    if ( synset_id == LevelSentinel ) {
+    if ( synset_id == LevelMarker ) {
 #     if DEBUG_FT_THESAURUS
-      cout << "+ found LevelSentinel" << endl;
+      cout << "+ found LevelMarker" << endl;
 #     endif
-      if ( ++level_ > 1 /*at_most_*/ ) {
+      if ( ++level_ > at_most_ ) {
 #       if DEBUG_FT_THESAURUS
         cout << "+ level (" << level_ << ") > at_most (" << at_most_
              << ") --> no more synonyms" << endl;
 #       endif
         return false;
+      }
+      if ( query_ptr_type_ == pointer::antonym ) {
+#       if DEBUG_FT_THESAURUS
+        cout << "$ resetting query_ptr_type_ to unknown" << endl;
+#       endif
+        query_ptr_type_ = pointer::unknown;
       }
       continue;
     }
@@ -299,18 +342,27 @@ bool thesaurus::next( zstring *synonym ) {
         // inital look-up), it's always OK to return the lemmas.
         //
         FOR_EACH( synset::lemma_id_list, lemma_id, ss.lemma_ids() ) {
-          if ( synonyms_seen_.insert( *lemma_id ).second )
+#         if DEBUG_FT_THESAURUS
+          cout << "? " << LEMMAS[ *lemma_id ] << " -> ";
+#         endif
+          if ( synonyms_seen_.insert( *lemma_id ).second ) {
             synonym_queue_.push_back( *lemma_id );
+#           if DEBUG_FT_THESAURUS
+            cout << "pushed";
+#           endif
+          }
+#         if DEBUG_FT_THESAURUS
+          else {
+            cout << "skipped";
+          }
+          cout << endl;
+#         endif
         }
 #       if DEBUG_FT_THESAURUS
-        cout << "+ copied lemmas; synonym_queue is now: ";
-        bool comma = false;
+        cout << "+ synonym_queue is now: ";
+        oseparator comma;
         FOR_EACH( synonym_queue, lemma_id, synonym_queue_ ) {
-          if ( comma )
-            cout << ", ";
-          else
-            comma = true;
-          cout << LEMMAS[ *lemma_id ];
+          cout << comma << LEMMAS[ *lemma_id ];
         }
         cout << endl;
 #       endif
@@ -347,9 +399,9 @@ bool thesaurus::next( zstring *synonym ) {
 
     //
     // The synset IDs of all the pointers of this synset constitute a "level",
-    // so add the sentinel to the queue to increment the level.
+    // so add the level marker to the queue to increment the level.
     //
-    synset_id_queue_.push_back( LevelSentinel );
+    synset_id_queue_.push_back( LevelMarker );
   } // while
 
   *synonym = LEMMAS[ pop_front( synonym_queue_ ) ];
