@@ -38,6 +38,49 @@ using namespace zorba;
 
 namespace zorba {
 
+class ClientServerWrapper {
+  friend void initTest(
+      Zorba*, std::stringstream&, std::ostringstream&,
+      ClientServerWrapper&, bool);
+
+  private:
+    std::auto_ptr<DebuggerTestClient> theClient;
+    std::auto_ptr<DebuggerServerRunnable> theServer;
+
+  public:
+
+    ClientServerWrapper() {
+    }
+
+    ~ClientServerWrapper() {
+      if (theClient.get() != 0) {
+        theClient->terminate();
+      }
+      if (theClient.get() != 0) {
+        theServer->join();
+      }
+    }
+
+    DebuggerServerRunnable* getServer() {
+      return theServer.get();
+    }
+
+    DebuggerTestClient* getClient() {
+      return theClient.get();
+    }
+
+  private:
+
+    void setServer(DebuggerServerRunnable* aServer) {
+      theServer.reset(aServer);
+    }
+
+    void setClient(DebuggerTestClient* aClient) {
+      theClient.reset(aClient);
+    }
+
+};
+
   unsigned int getSeed()
   {
 #ifdef WIN32
@@ -110,6 +153,37 @@ namespace zorba {
     }
   }
 
+  void initTest(
+      Zorba* lZorba,
+      std::stringstream& aQueryStr,
+      std::ostringstream& aResult,
+      ClientServerWrapper& aClientServer,
+      bool aStartClient)
+  {
+    std::stringstream lState;
+    {
+      XQuery_t lQuery = createDebuggableQuery(lZorba, aQueryStr);
+      lQuery->saveExecutionPlan(lState, ZORBA_USE_BINARY_ARCHIVE, SAVE_UNUSED_FUNCTIONS);
+    }
+    XQuery_t lQuery = lZorba->createQuery();
+    lQuery->loadExecutionPlan(lState);
+
+    std::pair<short, short> lPorts = getRandomPorts();
+    Zorba_SerializerOptions lSerOptions;
+    lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
+    aClientServer.setServer(new DebuggerServerRunnable(
+      lQuery, aResult, "127.0.0.1", lPorts.first, lPorts.second, lSerOptions));
+    aClientServer.getServer()->start();
+    sleep(1);   
+
+    aClientServer.setClient(new DebuggerTestClient(lPorts.first, lPorts.second, aQueryStr));
+
+    if (aStartClient) {
+      aClientServer.getClient()->run();
+      sleep(1);
+    }
+  }
+
   int uninitTest(
       std::auto_ptr<DebuggerServerRunnable>& aServer,
       std::auto_ptr<DebuggerTestClient>& aClient,
@@ -128,6 +202,16 @@ namespace zorba {
     return 0;
   }
 
+  int testResult(std::ostringstream& aActualResult, std::string& aExpectedResult) {
+    std::cout << "Result:\n" << aActualResult.str() << std::endl;
+    if (aActualResult.str() != aExpectedResult) {
+      std::cerr << "Result does not match expected result: " << aExpectedResult << std::endl;
+      return -1;
+    }
+
+    return 0;
+  }
+
   int test_run(Zorba* aZorba) {
 
     std::stringstream lQueryStr;
@@ -135,15 +219,14 @@ namespace zorba {
     std::string lExpectedResult("<a>Hello World</a>");
     std::ostringstream lResult;
 
-    std::auto_ptr<DebuggerTestClient> lClient;
-    std::auto_ptr<DebuggerServerRunnable> lServer;
-    initTest(aZorba, lQueryStr, lResult, lClient, lServer, true);
+    ClientServerWrapper lClientServer;
+    initTest(aZorba, lQueryStr, lResult, lClientServer, true);
 
     DebuggerTestHandler::DebuggerState evt;
 
     // begin testing ----------------------------------------------------
     //
-    evt = lClient->getStateAfterRun();
+    evt = lClientServer.getClient()->getStateAfterRun();
     if (evt != DebuggerTestHandler::TERMINATED) {
       std::cerr << "Query did not terminate" << std::endl;
       return 2;
@@ -151,7 +234,7 @@ namespace zorba {
     //
     // end testing ------------------------------------------------------
 
-    return uninitTest(lServer, lClient, lResult, lExpectedResult);
+    return testResult(lResult, lExpectedResult);
 
   } // int test_run
 
@@ -164,9 +247,8 @@ namespace zorba {
     std::string lExpectedResult("");
     std::ostringstream lResult;
 
-    std::auto_ptr<DebuggerTestClient> lClient;
-    std::auto_ptr<DebuggerServerRunnable> lServer;
-    initTest(aZorba, lQueryStr, lResult, lClient, lServer, false);
+    ClientServerWrapper lClientServer;
+    initTest(aZorba, lQueryStr, lResult, lClientServer, false);
 
     DebuggerTestHandler::DebuggerState evt;
 
@@ -174,16 +256,16 @@ namespace zorba {
     //
     std::string lFile("test.xq");
     std::cout << "Adding breakpoint in file \"" << lFile << "\" at line 1" << std::endl;
-    QueryLocation_t loc = lClient->addBreakpoint(lFile, 1);
+    QueryLocation_t loc = lClientServer.getClient()->addBreakpoint(lFile, 1);
     if (loc == NULL) {
       return -1;
     }
     std::cout << "Breakpoint set at location " << loc << std::endl;
 
-    lClient->run();
+    lClientServer.getClient()->run();
     sleep(1); // wait for the query to start
 
-    evt = lClient->getStateAfterRun();
+    evt = lClientServer.getClient()->getStateAfterRun();
     if (evt != DebuggerTestHandler::SUSPENDED) {
       std::cerr << "Query did not suspend at breakpoint" << std::endl;
       return 2;
@@ -191,7 +273,7 @@ namespace zorba {
     //
     // end testing ------------------------------------------------------
 
-    return uninitTest(lServer, lClient, lResult, lExpectedResult);
+    return testResult(lResult, lExpectedResult);
 
   } // int test_terminate_suspended
 
@@ -202,9 +284,8 @@ namespace zorba {
     std::string lExpectedResult("");
     std::ostringstream lResult;
 
-    std::auto_ptr<DebuggerTestClient> lClient;
-    std::auto_ptr<DebuggerServerRunnable> lServer;
-    initTest(aZorba, lQueryStr, lResult, lClient, lServer, false);
+    ClientServerWrapper lClientServer;
+    initTest(aZorba, lQueryStr, lResult, lClientServer, false);
 
     // begin testing ----------------------------------------------------
     //
@@ -212,7 +293,7 @@ namespace zorba {
     //
     // end testing ------------------------------------------------------
 
-    return uninitTest(lServer, lClient, lResult, lExpectedResult);
+    return testResult(lResult, lExpectedResult);
 
   } // int test_terminate_immediately
   
@@ -225,14 +306,15 @@ namespace zorba {
     std::string lExpectedResult("1");
     std::ostringstream lResult;
 
-    std::auto_ptr<DebuggerTestClient> lClient;
-    std::auto_ptr<DebuggerServerRunnable> lServer;
-    initTest(aZorba, lQueryStr, lResult, lClient, lServer, false);
+    ClientServerWrapper lClientServer;
+    initTest(aZorba, lQueryStr, lResult, lClientServer, false);
 
     DebuggerTestHandler::DebuggerState evt;
 
     // begin testing ----------------------------------------------------
     //
+    DebuggerTestClient* lClient = lClientServer.getClient();
+
     std::string lFile("test.xq");
     std::cout << "Adding breakpoint in file \"" << lFile << "\" at line 1" << std::endl;
     QueryLocation_t loc = lClient->addBreakpoint(lFile, 1);
@@ -263,7 +345,7 @@ namespace zorba {
     //
     // end testing ------------------------------------------------------
 
-    return uninitTest(lServer, lClient, lResult, lExpectedResult);
+    return testResult(lResult, lExpectedResult);
 
   } // int test_resume
 
@@ -643,12 +725,12 @@ int test_debugger_server (int argc, char* argv[]) {
     return 1;
   }
 
-  std::cout << "---------------------" << std::endl;
-  std::cout << "executing test_clear_pending" << std::endl;
-  if (zorba::test_clear_pending(lZorba) != 0) {
-    return 1;
-  }
-
+//  std::cout << "---------------------" << std::endl;
+//  std::cout << "executing test_clear_pending" << std::endl;
+//  if (zorba::test_clear_pending(lZorba) != 0) {
+//    return 1;
+//  }
+//
 //  std::cout << "---------------------" << std::endl;
 //  std::cout << "executing test_clear_set" << std::endl;
 //  if (zorba::test_clear_set(lZorba) != 0) {

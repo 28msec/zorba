@@ -69,6 +69,7 @@ DebuggerClientImpl::DebuggerClientImpl(std::string aServerAddress, unsigned shor
 
 DebuggerClientImpl::~DebuggerClientImpl()
 {
+  theEventListener->join();
   theEventListener->terminate();
   delete theEventListener;
 }
