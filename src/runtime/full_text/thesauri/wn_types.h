@@ -56,7 +56,7 @@ namespace part_of_speech {
    * part-of-speech code.
    *
    * @param pos The part-of-speech code.
-   * @return Returns the corresponding part-of-speech of \c unknown.
+   * @return Returns the corresponding part-of-speech or \c unknown.
    */
   type find( char pos );
 
