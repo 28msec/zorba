@@ -38,7 +38,6 @@ JavaVMSingelton::JavaVMSingelton(const char* classPath)
   classPathOption = new char[classpathOption.size() + 1];
   memset(classPathOption, 0, sizeof(char) * (classpathOption.size() + 1));
   memcpy(classPathOption, classpathOption.c_str(), classpathOption.size() * sizeof(char));
-  classpathOption[classpathOption.size()] = 0;
   std::string lAwtArgStr = "-Djava.awt.headless=true";
   awtOption = new char[lAwtArgStr.size() + 1];
   memset(awtOption, 0, sizeof(char) * (lAwtArgStr.size() + 1));

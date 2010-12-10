@@ -138,7 +138,7 @@ declare function xsl-fo:generator($output-format as xs:string, $xsl-fo-document 
           else
             ()
       else ()
-    else () 
+    else os:get-env("FOP_HOME") 
   let $fop-lib-dir as xs:string? :=
     if (os:get-env("FOP_LIB_DIR")) then
       os:get-env("FOP_LIB_DIR")
