@@ -291,6 +291,19 @@ ENDIF (FOUND_XQTS)
 IF (WIN32)
   EXPECTED_FAILURE(test/rbkt/zorba/modules/process 3132180)
 ENDIF (WIN32)
+
+# check the bug 3132686 for missing the xml_files: attached in test.zip
+EXPECTED_FAILURE(test/rbkt/zorba/utf-8/utf8inDataDe 3132686)
+EXPECTED_FAILURE(test/rbkt/zorba/utf-8/utf8inDataEn 3132686)
+EXPECTED_FAILURE(test/rbkt/zorba/utf-8/utf8inDataFr 3132686)
+EXPECTED_FAILURE(test/rbkt/zorba/utf-8/utf8inDataNo 3132686)
+EXPECTED_FAILURE(test/rbkt/zorba/utf-8/utf8inDataRo 3132686)
+EXPECTED_FAILURE(test/rbkt/zorba/utf-8/utf8inPathDe 3132686)
+EXPECTED_FAILURE(test/rbkt/zorba/utf-8/utf8inPathEn 3132686)
+EXPECTED_FAILURE(test/rbkt/zorba/utf-8/utf8inPathFr 3132686)
+EXPECTED_FAILURE(test/rbkt/zorba/utf-8/utf8inPathNo 3132686)
+EXPECTED_FAILURE(test/rbkt/zorba/utf-8/utf8inPathRo 3132686)
+
 EXPECTED_FAILURE(test/rbkt/zorba/modules/schema 3131554)
 
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/admin 2935047)
