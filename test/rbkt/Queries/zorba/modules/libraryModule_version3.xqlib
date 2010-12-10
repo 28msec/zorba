@@ -1,0 +1,7 @@
+xquery version "1.1";
+
+module namespace foo = "http://foo.com/";
+
+declare function foo:bar() {
+  1
+};
