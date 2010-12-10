@@ -18,6 +18,12 @@
  : several output formats. See <a href="http://xmlgraphics.apache.org/fop/">the Apache FOP
  : documentation</a> for further information.
  :
+ : Not for Windows users: Under Windows, this module won't work out of the box, since
+ : this module uses Java and the Java VM dll is not in the system path by default. To make
+ : this module work, you need to add the directory where the jvm.dll is located to the
+ : system path. This dll is in JRE_DIR\bin\client. On a standard installation, this would
+ : be something like "C:\Program Files\Java\jre6\bin\client".
+ :
  : @author Markus Pilman
  :)
 module namespace xsl-fo = "http://www.zorba-xquery.com/modules/xsl-fo";
