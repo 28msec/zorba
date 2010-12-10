@@ -187,7 +187,7 @@ static bool follow_ptr( pointer::type ptr_type ) {
       // TODO: It's not clear what to do with these.  For now, err on the side
       // of following them.
       //
-      return true;
+      return false;
 
     default:
       assert( false );                  // ensures all cases are handled
@@ -306,6 +306,15 @@ bool thesaurus::next( zstring *synonym ) {
 #       endif
         return false;
       }
+
+      if ( !synset_id_queue_.empty() ) {
+        //
+        // TODO ... constitute a "level", so add the level marker to the queue
+        // to increment the level.
+        //
+        synset_id_queue_.push_back( LevelMarker );
+      }
+
       if ( query_ptr_type_ == pointer::antonym ) {
 #       if DEBUG_FT_THESAURUS
         cout << "$ resetting query_ptr_type_ to unknown" << endl;
@@ -316,7 +325,8 @@ bool thesaurus::next( zstring *synonym ) {
     }
 
 #   if DEBUG_FT_THESAURUS
-    cout << "synset_id=" << synset_id << endl;
+    cout << "--------------------------------------------------" << endl;
+    cout << "NEXT SYNSET" << endl;
 #   endif
 
     synset const ss( SYNSETS[ synset_id ] );
@@ -359,7 +369,7 @@ bool thesaurus::next( zstring *synonym ) {
 #         endif
         }
 #       if DEBUG_FT_THESAURUS
-        cout << "+ synonym_queue is now: ";
+        cout << "  synonym_queue is now: ";
         oseparator comma;
         FOR_EACH( synonym_queue, lemma_id, synonym_queue_ ) {
           cout << comma << LEMMAS[ *lemma_id ];
@@ -383,8 +393,15 @@ bool thesaurus::next( zstring *synonym ) {
       }
 
 #     if DEBUG_FT_THESAURUS
-      cout << "+ pushing synset_id=" << ptr->synset_id_
-           << " (type=" << pointer::string_of[ ptr->type_ ] << ')' << endl;
+      cout << "+ pushing \"" << pointer::string_of[ ptr->type_ ]
+           << "\" synset (ID=" << ptr->synset_id_ << ')' << endl;
+      synset const ss2( SYNSETS[ ptr->synset_id_ ] );
+      oseparator comma;
+      cout << "  lemmas: ";
+      FOR_EACH( synset::lemma_id_list, lemma_id, ss2.lemma_ids() ) {
+        cout << comma << LEMMAS[ *lemma_id ];
+      }
+      cout << endl;
 #     endif
       synset_id_queue_.push_back( ptr->synset_id_ );
 #if 0
@@ -396,12 +413,6 @@ bool thesaurus::next( zstring *synonym ) {
       }
 #endif
     } // FOR_EACH
-
-    //
-    // The synset IDs of all the pointers of this synset constitute a "level",
-    // so add the level marker to the queue to increment the level.
-    //
-    synset_id_queue_.push_back( LevelMarker );
   } // while
 
   *synonym = LEMMAS[ pop_front( synonym_queue_ ) ];
