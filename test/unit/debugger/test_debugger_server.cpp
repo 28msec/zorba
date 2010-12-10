@@ -338,8 +338,7 @@ class ClientServerWrapper {
 
     evt = lClient->getStateAfterRun();
     if (evt != DebuggerTestHandler::TERMINATED) {
-      std::cerr << "Query did not terminate after resume. Expecting: "
-        << DebuggerTestHandler::TERMINATED << " Received: " << evt << std::endl;
+      std::cerr << "Query did not terminate after resume." << std::endl;
       return 2;
     }
     //
