@@ -514,8 +514,8 @@ namespace zorba {
         * @return validatedResult the result of the validation
         * @throw ZorbaException if any validation error occured
         */
-      bool
-      validate(Item& rootElement, Item& validatedResult);
+      virtual bool
+      validate(const Item& rootElement, Item& validatedResult) = 0;
 
       /** \brief Validates this Item while loading the schema for targetNamespace
         *  Note: works only on document or element nodes, otherwise returns false.
@@ -526,9 +526,9 @@ namespace zorba {
         * @return true if validating is correct, throws errors if validation fails
         * @throw ZorbaException if any validation error occured
         */
-      bool 
-      validate(Item& rootElement, Item& validatedResult, 
-               const String& targetNamespace);
+      virtual bool 
+      validate(const Item& rootElement, Item& validatedResult, 
+               const String& targetNamespace) = 0;
   
       /** \brief Validates stringValue as XML simple content, i.e. the text value of attributes or 
         * text only element content.
@@ -538,10 +538,10 @@ namespace zorba {
         * @return resultList the result of the validation, a vector of atomic Items
         * @throw ZorbaException if any validation error occured
         */
-      bool 
-      validateSimpleContent(String& stringValue,
+      virtual bool 
+      validateSimpleContent(const String& stringValue,
           const Item& typeQName, 
-          std::vector<Item>& resultList);
+          std::vector<Item>& resultList) = 0;
 
 };
 } /* namespace zorba */

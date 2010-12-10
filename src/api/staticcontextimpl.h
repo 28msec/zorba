@@ -263,14 +263,14 @@ public:
   removeModuleImportChecker(ModuleImportChecker* aChecker);
 
   virtual bool
-  validate(Item& rootElement, Item& validatedResult);
+  validate(const Item& rootElement, Item& validatedResult);
   
   virtual bool 
-  validate(Item& rootElement, Item& validatedResult, 
+  validate(const Item& rootElement, Item& validatedResult, 
            const String& targetNamespace);
   
   virtual bool 
-  validateSimpleContent(String& stringValue,
+  validateSimpleContent(const String& stringValue,
           const Item& typeQName, 
           std::vector<Item>& resultList);
 };

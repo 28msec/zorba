@@ -1495,13 +1495,14 @@ bool
 static_context::validate(store::Item* rootElement, store::Item* validatedResult, 
                          const zstring& targetNamespace)
 {
+  if ( !rootElement->isNode() ||
+       (rootElement->getNodeKind() != store::StoreConsts::documentNode &&
+       rootElement->getNodeKind() != store::StoreConsts::elementNode))
+    return false;
+     
   if ( rootElement->isValidated() )
     return false;
   
-  if ( rootElement->getNodeKind() != store::StoreConsts::documentNode ||
-       rootElement->getNodeKind() != store::StoreConsts::elementNode)
-    return false;
-     
 #ifndef ZORBA_NO_XMLSCHEMA
 
   TypeManager* tm = this->get_typemanager();
@@ -1509,30 +1510,26 @@ static_context::validate(store::Item* rootElement, store::Item* validatedResult,
   rootElement->getDocumentURI(docUri);
   StaticContextConsts::validation_mode_t lValidationMode = this->validation_mode();
 
-  if (!rootElement->isValidated())
+  if (lValidationMode != StaticContextConsts::skip_validation)
   {
-    if (lValidationMode != StaticContextConsts::skip_validation)
-    {
-      store::Item_t validatedNode;
-      store::Item_t typeName;
-      QueryLoc loc;
+    store::Item_t validatedNode;
+    store::Item_t typeName;
+    QueryLoc loc;
 
-      ParseConstants::validation_mode_t mode = 
-          (lValidationMode == StaticContextConsts::strict_validation ?
-              ParseConstants::val_strict :
-              ParseConstants::val_lax );
+    ParseConstants::validation_mode_t mode = 
+        (lValidationMode == StaticContextConsts::strict_validation ?
+            ParseConstants::val_strict :
+            ParseConstants::val_lax );
 
-      store::Item_t tmp = store::Item_t(validatedResult);
-      bool success = Validator::effectiveValidationValue(tmp,
-                                                         rootElement,
-                                                         typeName,
-                                                         tm,
-                                                         mode,
-                                                         this,
-                                                         loc);
+    store::Item_t tmp = validatedResult;
+    return Validator::effectiveValidationValue(tmp,
+                                               rootElement,
+                                               typeName,
+                                               tm,
+                                               mode,
+                                               this,
+                                               loc);
 
-      return success;
-    }
   }
 #endif //ZORBA_NO_XMLSCHEMA
   
@@ -1548,7 +1545,9 @@ static_context::validateSimpleContent(zstring& stringValue,
   this->get_namespace_bindings(bindings);
   store::Item_t lTypeQName(typeQName);
   
-  Validator::processTextValue(this, this->get_typemanager(), bindings, lTypeQName, stringValue, resultList);
+  Validator::processTextValue(
+      this, this->get_typemanager(), bindings,
+      lTypeQName, stringValue, resultList);
   return true;
 }
   
