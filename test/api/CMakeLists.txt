@@ -38,7 +38,7 @@ CREATE_TEST_SOURCELIST(APITests
   serializer.cpp
   annotations.cpp
   external_function_errors.cpp
-  #validate.cpp
+  validate.cpp
 )
 
 # add the executable
