@@ -88,7 +88,7 @@ static ptr_direction_t add_ptr_directions( ptr_direction_t di,
     return 0;
   ptr_direction_t const dsum = di + dj;
   assert( dsum );
-  return dsum < -1 ? -1 : +1;
+  return dsum <= -1 ? -1 : +1;
 }
 
 /**
