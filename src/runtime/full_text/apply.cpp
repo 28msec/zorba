@@ -1200,7 +1200,7 @@ lookup_thesaurus( zstring const &uri, zstring const &query_phrase,
     )
   );
   if ( !thesaurus.get() )
-    ZORBA_ERROR( FTST0018 );
+    ZORBA_ERROR_PARAM( FTST0018, uri, "" );
 
   FTTokenSeqIterator::FTTokens synonyms;
   thesaurus_callback cb( qt0.pos(), qt0.sent(), qt0.lang(), synonyms );
