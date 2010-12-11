@@ -19,6 +19,7 @@
 
 #include <deque>
 #include <set>
+#include <utility>                      /* for pair */
 
 #include "util/mmap_file.h"
 
@@ -43,17 +44,25 @@ public:
   bool next( zstring *synonym );
 
 private:
-  typedef std::deque<synset_id_t> synset_id_queue;
+  typedef std::pair<synset_id_t,ptr_direction_t> synset_queue_entry;
+  typedef std::deque<synset_queue_entry> synset_queue;
   typedef std::deque<lemma_id_t> synonym_queue;
   typedef std::set<lemma_id_t> synonym_set;
 
+  /**
+   * The WordNet pointer type that is the closest equivalent of the
+   * "relationship" given in the original query, if any.
+   */
   pointer::type query_ptr_type_;
+
   ft_int const at_least_, at_most_;
   ft_int level_;
 
-  synset_id_queue synset_id_queue_;
+  synset_queue synset_queue_;
   synonym_queue synonym_queue_;
   synonym_set synonyms_seen_;
+
+  static synset_queue::value_type const LevelMarker;
 
   friend mmap_file const& get_wordnet_file();
 

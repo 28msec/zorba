@@ -22,7 +22,7 @@
 #include <algorithm>                    /* for equal_range() */
 #include <cassert>
 #include <cstring>                      /* for strcmp(3) */
-#include <utility>                      /* for pair */
+#include <limits>
 
 #include <zorba/util/path.h>
 
@@ -59,6 +59,64 @@ uint32_t const Magic_Number = 42;       // same as TIFF -- why not?
 
 #define THROW_ENDIANNESS_EXCEPTION() \
   ZORBA_ERROR_DESC( XQP8403_THESAURUS_DATA_ERROR, "wrong endianness" )
+
+/**
+ * Adds two pointer "directions".
+ *
+ * @param di The first direction.
+ * @param dj The second direction.
+ * @return Returns the "sum" of the two directions.
+ */
+static ptr_direction_t add_ptr_directions( ptr_direction_t di,
+                                           ptr_direction_t dj ) {
+  //
+  // Addition of two directions is defined by this table:
+  //
+  //   di dj result
+  //   -- -- ------
+  //    0  0  0
+  //    0  1  1
+  //    1  0  1
+  //    1  1  1
+  //    0 -1 -1
+  //   -1  0 -1
+  //   -1 -1 -1
+  //    1 -1 ERROR
+  //   -1  1 ERROR
+  //
+  if ( !(di || dj) )
+    return 0;
+  ptr_direction_t const dsum = di + dj;
+  assert( dsum );
+  return dsum < -1 ? -1 : +1;
+}
+
+/**
+ * Checks whether two WordNet pointer directions are "congruous", i.e., they do
+ * not point in opposite directions.
+ *
+ * @param di The first direction.
+ * @param dj The second direction.
+ * @return Returns \c true only if the two directions are congruous.
+ */
+inline bool congruous( ptr_direction_t di, ptr_direction_t dj ) {
+  //
+  // Congruity of two directions is defined by this table:
+  //
+  //   di dj result
+  //   -- -- ------
+  //    0  0  T
+  //    0  1  T
+  //    1  0  T
+  //    1  1  T
+  //    0 -1  T
+  //   -1  0  T
+  //   -1 -1  T
+  //    1 -1  F
+  //   -1  1  F
+  //
+  return (di || dj) ? di + dj != 0 : true;
+}
 
 /**
  * Gets a reference to a singleton instance of the WordNet thesaurus database
@@ -137,6 +195,27 @@ static char const* find_lemma( zstring const &phrase ) {
 }
 
 /**
+ * "Fixes" the "at most" parameter.  The Full Text specification section 3.4.3
+ * saus in part:
+ *
+ *    FTThesaurusID specifies the relationship sought between tokens and
+ *    phrases written in the query and terms in the thesaurus and the number of
+ *    levels to be queried in hierarchical relationships by including an
+ *    FTRange "levels". If no levels are specified, the default is to query all
+ *    levels in hierarchical relationships.
+ *
+ * The problem with defaulting to "all levels" is that it makes queries too
+ * broad, hence if at_most specifies "all levels" (max int), clamp it at 2
+ * (which seems to work well in practice).
+ *
+ * For more information, see:
+ * http://www.w3.org/Bugs/Public/show_bug.cgi?id=11444
+ */
+inline ft_int fix_at_most( ft_int at_most ) {
+  return at_most == numeric_limits<ft_int>::max() ? 2 : at_most;
+}
+
+/**
  * Checks whether a WordNet synset pointer should be followed.
  *
  * @param ptr_type The pointer's type.
@@ -149,9 +228,15 @@ static bool follow_ptr( pointer::type ptr_type ) {
     case pointer::cause:
     case pointer::derivationally_related_form:
     case pointer::derived_from_adjective:
+    case pointer::domain_of_synset_region:
+    case pointer::domain_of_synset_topic:
+    case pointer::domain_of_synset_usage:
     case pointer::entailment:
     case pointer::member_holonym:
     case pointer::member_meronym:
+    case pointer::member_of_domain_region:
+    case pointer::member_of_domain_topic:
+    case pointer::member_of_domain_usage:
     case pointer::part_holonym:
     case pointer::part_meronym:
     case pointer::participle_of_verb:
@@ -177,18 +262,6 @@ static bool follow_ptr( pointer::type ptr_type ) {
       //
       return true;
 
-    case pointer::domain_of_synset_region:
-    case pointer::domain_of_synset_topic:
-    case pointer::domain_of_synset_usage:
-    case pointer::member_of_domain_region:
-    case pointer::member_of_domain_topic:
-    case pointer::member_of_domain_usage:
-      //
-      // TODO: It's not clear what to do with these.  For now, err on the side
-      // of following them.
-      //
-      return false;
-
     default:
       assert( false );                  // ensures all cases are handled
   }
@@ -207,6 +280,56 @@ static pointer::type map_xquery_rel( zstring const &relationship ) {
   if ( iso2788::rel_type iso_rel = iso2788::find_rel( relationship_lower ) )
     return pointer::map_iso_rel( iso_rel );
   return pointer::find( relationship_lower );
+}
+
+/**
+ * Gets the "direction" of a WordNet pointer, i.e., whether a pointer leads to
+ * a more specific, neutral, or more general lemma.
+ *
+ * @param ptr_type The WordNet pointer type to get the direction of.
+ * @return Returns -1, 0, or +1 if \a ptr_type leads to a more specific,
+ * neutral, or more general lemma, respectively.
+ */
+static ptr_direction_t ptr_direction( pointer::type ptr_type ) {
+  switch ( ptr_type ) {
+    case pointer::attribute:
+    case pointer::derivationally_related_form:
+    case pointer::domain_of_synset_region:
+    case pointer::domain_of_synset_topic:
+    case pointer::domain_of_synset_usage:
+    case pointer::entailment:
+    case pointer::hypernym:
+    case pointer::instance_hypernym:
+    case pointer::member_holonym:
+    case pointer::part_holonym:
+    case pointer::substance_holonym:
+      return +1;
+
+    case pointer::derived_from_adjective:
+    case pointer::hyponym:
+    case pointer::instance_hyponym:
+    case pointer::member_meronym:
+    case pointer::member_of_domain_region:
+    case pointer::member_of_domain_topic:
+    case pointer::member_of_domain_usage:
+    case pointer::part_meronym:
+    case pointer::substance_meronym:
+      return -1;
+
+    case pointer::also_see:
+    case pointer::antonym:
+    case pointer::cause:
+    case pointer::participle_of_verb:
+    case pointer::pertainym:
+    case pointer::similar_to:
+    case pointer::unknown:
+    case pointer::verb_group:
+      return 0;
+
+    default:
+      assert( false );                  // ensures all cases are handled
+  }
+  return 0;                             // suppesses warning -- never gets here
 }
 
 #if DEBUG_FT_THESAURUS
@@ -248,12 +371,13 @@ private:
 
 ///////////////////////////////////////////////////////////////////////////////
 
-synset_id_t const LevelMarker = ~0u;
+thesaurus::synset_queue::value_type const thesaurus::LevelMarker =
+  make_pair( ~0u, 0 );
 
 thesaurus::thesaurus( zstring const &phrase, zstring const &relationship,
                       ft_int at_least, ft_int at_most ) :
   query_ptr_type_( map_xquery_rel( relationship ) ),
-  at_least_( at_least ), at_most_( at_most ), level_( 0 )
+  at_least_( at_least ), at_most_( fix_at_most( at_most ) ), level_( 0 )
 {
 # if DEBUG_FT_THESAURUS
   cout << "==================================================" << endl;
@@ -263,17 +387,17 @@ thesaurus::thesaurus( zstring const &phrase, zstring const &relationship,
   if ( char const *p = find_lemma( phrase ) ) {
     while ( *p++ ) ;                    // skip past lemma
     //
-    // Load the synset_id_queue_ will all the synsets for the lemma.
+    // Load the synset_queue_ will all the synsets for the lemma.
     //
     for ( unsigned num_synsets = decode_base128( &p ); num_synsets-- > 0; ) {
       synset_id_t const synset_id = decode_base128( &p );
-      synset_id_queue_.push_back( synset_id );
+      synset_queue_.push_back( make_pair( synset_id, 0 ) );
     }
     //
     // The initial synset IDs constitute a "level", so add the sentinel to the
     // queue to increment the level.
     //
-    synset_id_queue_.push_back( LevelMarker );
+    synset_queue_.push_back( LevelMarker );
   }
 }
 
@@ -284,18 +408,21 @@ thesaurus::~thesaurus() {
 bool thesaurus::next( zstring *synonym ) {
   while ( synonym_queue_.empty() ) {
 #   if DEBUG_FT_THESAURUS
+    cout << "--------------------------------------------------" << endl;
     cout << "synonym_queue is empty" << endl;
 #   endif
 
-    if ( synset_id_queue_.empty() ) {
+    if ( synset_queue_.empty() ) {
 #     if DEBUG_FT_THESAURUS
-      cout << "synset_id_queue is empty --> no more synonyms" << endl;
+      cout << "synset_queue is empty --> no more synonyms" << endl;
 #     endif
       return false;
     }
 
-    synset_id_t const synset_id = pop_front( synset_id_queue_ );
-    if ( synset_id == LevelMarker ) {
+    synset_queue::value_type const synset_entry( pop_front( synset_queue_ ) );
+    synset_id_t const synset_id = synset_entry.first;
+
+    if ( synset_id == LevelMarker.first ) {
 #     if DEBUG_FT_THESAURUS
       cout << "+ found LevelMarker" << endl;
 #     endif
@@ -307,15 +434,34 @@ bool thesaurus::next( zstring *synonym ) {
         return false;
       }
 
-      if ( !synset_id_queue_.empty() ) {
-        //
-        // TODO ... constitute a "level", so add the level marker to the queue
-        // to increment the level.
-        //
-        synset_id_queue_.push_back( LevelMarker );
-      }
+      //
+      // We've just incremented the level, so all synsets that have been added
+      // to the queue since the last time we were here constitute a "level",
+      // therefore add the level marker so we know when to increment the level
+      // next time.
+      //
+      // Note that we do this only if the queue isn't empty, otherwise the
+      // queue would never become empty.
+      //
+      if ( !synset_queue_.empty() )
+        synset_queue_.push_back( LevelMarker );
 
       if ( query_ptr_type_ == pointer::antonym ) {
+        //
+        // Antonyms are a special case.  When the initial batch of synset
+        // pointers are followed, we obviously follow only those whose type is
+        // antonym.
+        //
+        // After that, however, we can no longer follow antonym pointers
+        // otherwise we'd get antonyms of the antonyms (i.e., synonyms of the
+        // original word).  Instead, we need synonyms of the antonyms.  Hence,
+        // after the initial batch of antonym synset pointers are followed, we
+        // reset query_ptr_type_ to unknown.
+        //
+        // For example, given the word "poor", we initially follow an antonym
+        // pointer to the word "rich".  After that, we don't want antonyms of
+        // rich, but synonyms, e.g., "affluent", "wealthy", "well to do", etc.
+        //
 #       if DEBUG_FT_THESAURUS
         cout << "$ resetting query_ptr_type_ to unknown" << endl;
 #       endif
@@ -324,12 +470,8 @@ bool thesaurus::next( zstring *synonym ) {
       continue;
     }
 
-#   if DEBUG_FT_THESAURUS
-    cout << "--------------------------------------------------" << endl;
-    cout << "NEXT SYNSET" << endl;
-#   endif
-
     synset const ss( SYNSETS[ synset_id ] );
+
     if ( level_ >= at_least_ ) {
 #     if DEBUG_FT_THESAURUS
       cout << "+ level (" << level_ << ") >= at_least (" << at_least_ << ')'
@@ -379,6 +521,9 @@ bool thesaurus::next( zstring *synonym ) {
       }
     }
 
+    //
+    // Examine, and possibly follow, this synset's pointers.
+    //
     FOR_EACH( synset::ptr_list, ptr, ss.ptrs() ) {
       if ( query_ptr_type_ ) {
         //
@@ -392,18 +537,44 @@ bool thesaurus::next( zstring *synonym ) {
           continue;
       }
 
+      //
+      // Ensure the "direction" of the pointer that got us to this synset and
+      // that of the current pointer are "congruous", i.e., they do not point
+      // in opposite directions.  Once we start to follow a pointer that has a
+      // direction, we want to keep going in the same direction (or at least
+      // laterally) in the semantic tree.
+      //
+      // For example, given the word "poor" (as in "poor people"), if we
+      // followed a hypernym pointer to the broader word "people", we would
+      // then not want to follow a hyponym pointers to more specific words like
+      // "blind" ("blind people"), "brave" ("brave people"), "clientele",
+      // "rich" ("rich people"), i.e., all the different kinds of people, since
+      // none of those are synonyms of "poor".
+      //
+      ptr_direction_t const synset_ptr_direction = synset_entry.second;
+      ptr_direction_t const current_ptr_direction = ptr_direction( ptr->type_ );
+      if ( !congruous( synset_ptr_direction, current_ptr_direction ) )
+        continue;
+
 #     if DEBUG_FT_THESAURUS
       cout << "+ pushing \"" << pointer::string_of[ ptr->type_ ]
            << "\" synset (ID=" << ptr->synset_id_ << ')' << endl;
-      synset const ss2( SYNSETS[ ptr->synset_id_ ] );
+      synset const ptr_ss( SYNSETS[ ptr->synset_id_ ] );
       oseparator comma;
       cout << "  lemmas: ";
-      FOR_EACH( synset::lemma_id_list, lemma_id, ss2.lemma_ids() ) {
+      FOR_EACH( synset::lemma_id_list, lemma_id, ptr_ss.lemma_ids() ) {
         cout << comma << LEMMAS[ *lemma_id ];
       }
       cout << endl;
 #     endif
-      synset_id_queue_.push_back( ptr->synset_id_ );
+
+      synset_queue_.push_back(
+        make_pair(
+          ptr->synset_id_,
+          add_ptr_directions( synset_ptr_direction, current_ptr_direction )
+        )
+      );
+
 #if 0
       if ( ptr->source_ ) {
         lemma_id_t const source_lemma_id = ss.lemma_ids()[ ptr->source_ - 1 ];
