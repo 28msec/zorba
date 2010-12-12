@@ -164,6 +164,23 @@ std::string start_state(int);   /* forward declaration, used by YY_USER_ACTION *
   yylloc->columns(yyleng - last_endl);\
 }
 
+#define YY_LOCATION_UNDO	\
+do { \
+  int last_endl = 0;\
+  for (int i=0; i<yyleng; i++) \
+    if (yytext[i] == '\n')  \
+    { \
+      yylloc->lines(-1);\
+      last_endl = i+1;\
+    }\
+  \
+  yylloc->step();\
+  yylloc->columns(yyleng - last_endl);\
+} while(0)
+
+
+
+
 %}
 
 
@@ -300,6 +317,14 @@ NonSharpPragmaChar                  [\x09\x0A\x0D\x20-\x22\x24-\xFD]
 NonSharpNonParPragmaChar            [\x09\x0A\x0D\x20-\x28\x2A-\xFD]
 PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPragmaChar})*"#"*
 
+
+	/* Char ranges used for parsing CDATA contents */
+NonClosingSquareBracketChar					[\x09\x0A\x0D\x20-\x5C\x5E-\xFD] 
+NonGreaterThenChar									[\x09\x0A\x0D\x20-\x3D\x3F-\xFD]
+NonSqBraNonGTChar				            [\x09\x0A\x0D\x20-\x3D\x3F-\x5C\x5E-\xFD]
+  /* CDataChars													({NonSqBraNonGTChar}|"]"{NonSqBraNonGTChar}|"]]"{NonGreaterThenChar})*"]"* */
+
+CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]"{NonGreaterThenChar})*"]"*
 
   /*______________________________________________________________________
    |
@@ -977,8 +1002,15 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
    | recognized.
    |______________________________________________________________________*/
 
+
+<MODE_CDATA_SECTION>{CDataChars}"]]>" { POP_STATE(); TRY_SVAL_TOKEN (CHAR_LITERAL_AND_CDATA_END, put(yytext, yyleng-3, 1), yytext); } 
+
+  /* <MODE_CDATA_SECTION>{Char}*"]]>" { POP_STATE(); TRY_SVAL_TOKEN (CHAR_LITERAL_AND_CDATA_END, put(yytext, yyleng-3, 1), yytext); } */
+
+	/*
 <MODE_CDATA_SECTION>"]]>" { POP_STATE(); TRY_SVAL_TOKEN (CHAR_LITERAL_AND_CDATA_END, put(yytext, yyleng-3, 1), yytext); }
 <MODE_CDATA_SECTION>{Char} { yymore(); }
+	*/
 
 
   /*______________________________________________________________________

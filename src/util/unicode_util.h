@@ -250,7 +250,7 @@ inline bool to_string( wchar_t const *in, string *out ) {
  */
 template<class StringType>
 inline bool to_string( StringType const &in, string *out ) {
-  return to_string( in.data(), in.size(), out );
+  return to_string( in.data(), zorba::unicode::size_type(in.size()), out );
 }
 
 ////////// classes ////////////////////////////////////////////////////////////

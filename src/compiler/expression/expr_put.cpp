@@ -115,7 +115,7 @@ std::ostream& wrapper_expr::put(std::ostream& os) const
   {
     const var_expr* varExpr = static_cast<const var_expr*>(get_expr());
 
-    os << indent << "var_ref [" << expr_addr(this) << " ";
+    os << indent << "var_ref" << expr_addr(this) << " [ ";
     put_qname(varExpr->get_name(), os);
     os << expr_addr(varExpr) << " ]" << endl;
     return os;
@@ -251,19 +251,19 @@ ostream& group_clause::put( ostream& os ) const
   for (unsigned i = 0; i < theGroupVars.size(); i++) 
   {
     PUT_SUB("", theGroupVars[i].first);
-    os << indent << "-->" << theGroupVars[i].second.getp() << endl;
+    os << inc_indent << indent << "-->" << dec_indent;
+    theGroupVars[i].second->put(os) << endl;
   }
-  os << endl;
 
   os << indent << "NON GROUP BY VARS ";
 
   for (unsigned i = 0; i < theNonGroupVars.size(); i++) 
   {
     PUT_SUB("", theNonGroupVars[i].first);
-    os << indent << "-->" << theNonGroupVars[i].second.getp() << endl;
+    os << inc_indent << indent << "-->" << dec_indent;
+    theNonGroupVars[i].second->put(os) << endl;
   }
-  os << endl;
-
+  
   END_PUT();
 }
 
