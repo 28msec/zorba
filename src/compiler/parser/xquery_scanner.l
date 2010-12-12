@@ -317,14 +317,12 @@ NonSharpPragmaChar                  [\x09\x0A\x0D\x20-\x22\x24-\xFD]
 NonSharpNonParPragmaChar            [\x09\x0A\x0D\x20-\x28\x2A-\xFD]
 PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPragmaChar})*"#"*
 
-
-	/* Char ranges used for parsing CDATA contents */
+	/* Char ranges and definitions used for parsing CDATA contents */
 NonClosingSquareBracketChar					[\x09\x0A\x0D\x20-\x5C\x5E-\xFD] 
 NonGreaterThenChar									[\x09\x0A\x0D\x20-\x3D\x3F-\xFD]
 NonSqBraNonGTChar				            [\x09\x0A\x0D\x20-\x3D\x3F-\x5C\x5E-\xFD]
-  /* CDataChars													({NonSqBraNonGTChar}|"]"{NonSqBraNonGTChar}|"]]"{NonGreaterThenChar})*"]"* */
-
 CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]"{NonGreaterThenChar})*"]"*
+
 
   /*______________________________________________________________________
    |
@@ -1002,15 +1000,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
    | recognized.
    |______________________________________________________________________*/
 
-
 <MODE_CDATA_SECTION>{CDataChars}"]]>" { POP_STATE(); TRY_SVAL_TOKEN (CHAR_LITERAL_AND_CDATA_END, put(yytext, yyleng-3, 1), yytext); } 
-
-  /* <MODE_CDATA_SECTION>{Char}*"]]>" { POP_STATE(); TRY_SVAL_TOKEN (CHAR_LITERAL_AND_CDATA_END, put(yytext, yyleng-3, 1), yytext); } */
-
-	/*
-<MODE_CDATA_SECTION>"]]>" { POP_STATE(); TRY_SVAL_TOKEN (CHAR_LITERAL_AND_CDATA_END, put(yytext, yyleng-3, 1), yytext); }
-<MODE_CDATA_SECTION>{Char} { yymore(); }
-	*/
 
 
   /*______________________________________________________________________
