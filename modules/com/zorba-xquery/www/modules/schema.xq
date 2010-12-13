@@ -33,3 +33,14 @@ module namespace schema = "http://www.zorba-xquery.com/modules/schema";
 declare function schema:schema-type (
   $item as item()
 ) as xs:QName external;
+
+(:~
+ : This function returns true if the given node has need validated,
+ : and false otherwise.
+ :
+ : @param $node the node item that should be checked for validation
+ : @return true if the given node has been validated, false otherwise.
+ :)
+declare function schema:is-validated(
+  $node as node()
+) as xs:boolean external;

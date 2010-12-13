@@ -21,7 +21,6 @@
 #include <sstream>
 
 #include <zorba/zorba.h>
-#include <zorba/static_context_consts.h>
 #include <zorba/store_manager.h>
 #include <zorba/uri_resolvers.h>
 
@@ -148,7 +147,6 @@ item_validation_with_error2(Zorba* aZorba)
 {
   try {
     StaticContext_t lContext = aZorba->createStaticContext();
-    lContext->setRevalidationMode(validate_strict);
 
     ValidationTestSchemaURIResolver lResolver;
 
@@ -169,7 +167,7 @@ item_validation_with_error2(Zorba* aZorba)
     while (lIterator->next(lItem)) {
       Item lValidatedItem;
       if (!lContext->validate(lItem, lValidatedItem)) {
-        return false; // atomic types can not be validated
+        return false;
       }
     }
     lIterator->close();
@@ -195,7 +193,7 @@ validate(int argc, char* argv[])
   }
 
   if (!item_validation_with_error2(lZorba)) {
-    return 3;
+    return 2;
   }
 
   return 0;

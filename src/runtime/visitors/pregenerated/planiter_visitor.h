@@ -335,6 +335,8 @@ namespace zorba{
 #endif
     class ZorbaSchemaTypeIterator;
 
+    class ZorbaIsValidatedIterator;
+
     class SequentialIterator;
 
     class LoopIterator;
@@ -926,6 +928,9 @@ public:
 #endif
     virtual void beginVisit ( const ZorbaSchemaTypeIterator& ) = 0;
     virtual void endVisit   ( const ZorbaSchemaTypeIterator& ) = 0;
+
+    virtual void beginVisit ( const ZorbaIsValidatedIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaIsValidatedIterator& ) = 0;
 
     virtual void beginVisit ( const SequentialIterator& ) = 0;
     virtual void endVisit   ( const SequentialIterator& ) = 0;

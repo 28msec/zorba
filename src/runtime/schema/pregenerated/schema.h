@@ -110,6 +110,40 @@ public:
 };
 
 
+/**
+ * iterator backing the schema:is-validated function
+ * Author: Zorba Team
+ */
+class ZorbaIsValidatedIterator : public NaryBaseIterator<ZorbaIsValidatedIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(ZorbaIsValidatedIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaIsValidatedIterator,
+    NaryBaseIterator<ZorbaIsValidatedIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<ZorbaIsValidatedIterator, PlanIteratorState>*)this);
+  }
+
+  ZorbaIsValidatedIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<ZorbaIsValidatedIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~ZorbaIsValidatedIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
 }
 #endif
 /*

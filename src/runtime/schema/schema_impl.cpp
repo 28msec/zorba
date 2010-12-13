@@ -22,6 +22,7 @@
 #include "system/globalenv.h"
 #include "zorbaerrors/errors.h"
 #include "store/api/item.h"
+#include "store/api/item_factory.h"
 
 namespace zorba {
 
@@ -87,6 +88,25 @@ ZorbaSchemaTypeIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   {
     result = item->getType();
     STACK_PUSH(true, state );
+  }
+
+  STACK_END (state);
+}
+
+bool
+ZorbaIsValidatedIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t item;
+  store::ItemFactory* factory = GENV_ITEMFACTORY;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  if (consumeNext(item, theChildren[0].getp(), planState))
+  {
+    factory->createBoolean(result, item->isValidated());
+
+    STACK_PUSH(true, state);
   }
 
   STACK_END (state);

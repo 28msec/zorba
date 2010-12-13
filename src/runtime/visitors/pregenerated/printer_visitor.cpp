@@ -2248,6 +2248,20 @@ void PrinterVisitor::endVisit ( const ZorbaSchemaTypeIterator& ) {
 // </ZorbaSchemaTypeIterator>
 
 
+// <ZorbaIsValidatedIterator>
+void PrinterVisitor::beginVisit ( const ZorbaIsValidatedIterator& a) {
+  thePrinter.startBeginVisit("ZorbaIsValidatedIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const ZorbaIsValidatedIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </ZorbaIsValidatedIterator>
+
+
 // <SequentialIterator>
 void PrinterVisitor::beginVisit ( const SequentialIterator& a) {
   thePrinter.startBeginVisit("SequentialIterator", ++theId);

@@ -66,6 +66,20 @@ public:
 };
 
 
+//fn-zorba-schema:is-validated
+class fn_zorba_schema_is_validated : public function
+{
+public:
+  fn_zorba_schema_is_validated(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_ZORBA_SCHEMA_IS_VALIDATED_1)
+  {
+  }
+
+  CODEGEN_DECL();
+};
+
+
 } //namespace zorba
 
 

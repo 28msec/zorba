@@ -63,5 +63,22 @@
 
 </zorba:iterator>
 
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="ZorbaIsValidatedIterator" arity="nary">
+
+  <zorba:description author="Zorba Team">iterator backing the schema:is-validated function</zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="is-validated" prefix="fn-zorba-schema">
+      <zorba:param>node()</zorba:param>
+      <zorba:output>xs:boolean</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+
+</zorba:iterator>
+
 </zorba:iterators>
 

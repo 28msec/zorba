@@ -85,6 +85,34 @@ ZorbaSchemaTypeIterator::~ZorbaSchemaTypeIterator() {}
 // </ZorbaSchemaTypeIterator>
 
 
+// <ZorbaIsValidatedIterator>
+const char* ZorbaIsValidatedIterator::class_name_str = "ZorbaIsValidatedIterator";
+ZorbaIsValidatedIterator::class_factory<ZorbaIsValidatedIterator>
+ZorbaIsValidatedIterator::g_class_factory;
+
+const serialization::ClassVersion 
+ZorbaIsValidatedIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int ZorbaIsValidatedIterator::class_versions_count =
+sizeof(ZorbaIsValidatedIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void ZorbaIsValidatedIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+ZorbaIsValidatedIterator::~ZorbaIsValidatedIterator() {}
+
+// </ZorbaIsValidatedIterator>
+
+
 
 }
 

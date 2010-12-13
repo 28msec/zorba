@@ -50,6 +50,16 @@ PlanIter_t fn_zorba_schema_schema_type::codegen(
   return new ZorbaSchemaTypeIterator(sctx, loc, argv);
 }
 
+PlanIter_t fn_zorba_schema_is_validated::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new ZorbaIsValidatedIterator(sctx, loc, argv);
+}
+
 void populate_context_schema(static_context* sctx)
 {
   DECL(sctx, fn_zorba_util_schema_type,
@@ -62,6 +72,12 @@ void populate_context_schema(static_context* sctx)
       (createQName("http://www.zorba-xquery.com/modules/schema","","schema-type"),
       GENV_TYPESYSTEM.ITEM_TYPE_ONE,
       GENV_TYPESYSTEM.QNAME_TYPE_ONE));
+
+
+  DECL(sctx, fn_zorba_schema_is_validated,
+      (createQName("http://www.zorba-xquery.com/modules/schema","","is-validated"),
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 }
 
