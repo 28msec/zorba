@@ -74,6 +74,10 @@ static rel_table_entry rel_table_de[] = {
   { RT ,  "vb" },
   { BTP,  "verbandsbegriff bestandsrelation" },
   { RT ,  "verwandter begriff" },
+#if 0
+  { BTI,  /* TODO */ },
+  { NTI,  /* TODO */ },
+#endif
 };
 REL_TABLE_END(de);
 
@@ -130,6 +134,10 @@ static rel_table_entry rel_table_fr[] = {
   { NTP,  "tsp" },
   { RT ,  "va" },
   { RT ,  "voir aussi" },
+#if 0
+  { BTI,  /* TODO */ },
+  { NTI,  /* TODO */ },
+#endif
 };
 REL_TABLE_END(fr);
 
