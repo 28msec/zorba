@@ -57,13 +57,19 @@ namespace thesauri_impl {
     }
   };
 
+#define ZORBA_W3C_TEST_SUITE_THESAURUS_URIS 1
+
   static table_entry const table[] = {
     //
     // 1. Entries *must* be sorted by URI.
     // 2. URIs *must* *not* have a trailing '/'.
     //
-    { "default"                     , wordnet },
-    { "http://wordnet.princeton.edu", wordnet },
+    { "default"                                           , wordnet },
+#if ZORBA_W3C_TEST_SUITE_THESAURUS_URIS
+    { "http://bstore1.example.com/TechnicalThesaurus.xml" , wordnet },
+    { "http://bstore1.example.com/UsabilityThesaurus.xml" , wordnet },
+#endif
+    { "http://wordnet.princeton.edu"                      , wordnet },
   };
 
   /**
@@ -92,7 +98,6 @@ ft_thesaurus::~ft_thesaurus() {
   // do nothing
 }
 
-// TODO: do something with "lang"
 ft_thesaurus* ft_thesaurus::get( zstring const &uri, iso639_1::type lang,
                                  zstring const &phrase,
                                  zstring const &relationship,
@@ -103,7 +108,9 @@ ft_thesaurus* ft_thesaurus::get( zstring const &uri, iso639_1::type lang,
 
   switch ( thesauri_impl::find( uri_no_slash ) ) {
     case thesauri_impl::wordnet:
-      return new wordnet::thesaurus( phrase, relationship, at_least, at_most );
+      return new wordnet::thesaurus(
+        phrase, relationship, lang, at_least, at_most
+      );
     default:
       return NULL;
   }

@@ -22,6 +22,7 @@
 #include <utility>                      /* for pair */
 
 #include "util/mmap_file.h"
+#include "zorbautils/locale.h"
 
 #include "../ft_thesaurus.h"
 #include "wn_types.h"
@@ -38,7 +39,7 @@ namespace wordnet {
 class thesaurus : public ft_thesaurus {
 public:
   thesaurus( zstring const &phrase, zstring const &relationship,
-             ft_int at_least, ft_int at_most );
+             locale::iso639_1::type lang, ft_int at_least, ft_int at_most );
   ~thesaurus();
 
   bool next( zstring *synonym );

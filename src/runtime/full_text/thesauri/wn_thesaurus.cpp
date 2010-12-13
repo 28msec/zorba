@@ -37,6 +37,7 @@
 #include "wn_types.h"
 
 using namespace std;
+using namespace zorba::locale;
 
 namespace zorba {
 namespace wordnet {
@@ -272,14 +273,16 @@ static bool follow_ptr( pointer::type ptr_type ) {
  * Attempts to map an XQuery thesaurus relationship to a WordNet pointer type.
  *
  * @param relationship The XQuery thesaurus relationship.
+ * @param lang The language of the relationship.
  * @return Returns the corresponding Wordnet pointer type.
  */
-static pointer::type map_xquery_rel( zstring const &relationship ) {
-  zstring relationship_lower;
-  ascii::to_lower( relationship, &relationship_lower );
-  if ( iso2788::rel_type iso_rel = iso2788::find_rel( relationship_lower ) )
+static pointer::type map_xquery_rel( zstring const &relationship,
+                                     iso639_1::type lang ) {
+  zstring rel_lower;
+  ascii::to_lower( relationship, &rel_lower );
+  if ( iso2788::rel_type iso_rel = iso2788::find_rel( rel_lower, lang ) )
     return pointer::map_iso_rel( iso_rel );
-  return pointer::find( relationship_lower );
+  return pointer::find( rel_lower );
 }
 
 /**
@@ -375,8 +378,8 @@ thesaurus::synset_queue::value_type const thesaurus::LevelMarker =
   make_pair( ~0u, 0 );
 
 thesaurus::thesaurus( zstring const &phrase, zstring const &relationship,
-                      ft_int at_least, ft_int at_most ) :
-  query_ptr_type_( map_xquery_rel( relationship ) ),
+                      iso639_1::type lang, ft_int at_least, ft_int at_most ) :
+  query_ptr_type_( map_xquery_rel( relationship, lang ) ),
   at_least_( at_least ), at_most_( fix_at_most( at_most ) ), level_( 0 )
 {
 # if DEBUG_FT_THESAURUS

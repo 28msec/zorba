@@ -20,56 +20,177 @@
 #include "util/less.h"
 #include "iso2788.h"
 
+#define eacute  "\xC3\xA9"
+#define uuml    "\xC3\xBC"
+
 using namespace std;
+using namespace zorba::locale;
 
 namespace zorba {
+namespace iso2788 {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-/**
- * A less-verbose way to use std::lower_bound.
- */
-inline int find_index( char const *const *begin, char const *const *end,
-                       char const *s ) {
-  char const *const *const entry =
-    ::lower_bound( begin, end, s, less<char const*>() );
-  return entry != end && ::strcmp( s, *entry ) == 0 ? entry - begin : 0;
+struct rel_table_entry {
+  rel_type type;
+  char const *name;
+};
+
+struct less_rel_table_entry :
+  binary_function<rel_table_entry const&,rel_table_entry const&,bool>
+{
+  less_rel_table_entry() { }
+  result_type operator()( first_argument_type i, second_argument_type j ) {
+    return ::strcmp( i.name, j.name ) < 0;
+  }
+};
+
+#define REL_TABLE_END(LANG)                                     \
+  static rel_table_entry const *const rel_table_##LANG##_end =  \
+    rel_table_##LANG +                                          \
+    sizeof( rel_table_##LANG ) / sizeof( rel_table_##LANG[0] )
+
+static rel_table_entry rel_table_de[] = {
+  // This MUST be sorted by name.
+  { USE,  "benutzen" },
+  { UF ,  "benutzt f" uuml "r" },
+  { UF ,  "bf" },
+  { USE,  "bs" },
+  { SN ,  "d" },
+  { SN ,  "definition" },
+  { BTG,  "oa" },
+  { BT ,  "ob" },
+  { BT ,  "oberbegriff" },
+  { BTG,  "oberbegriff abstraktionsrelation" },
+  { TT ,  "sb" },
+  { BTP,  "sp" },
+  { TT ,  "spitzenbegriff" },
+  { NTP,  "teilbegriff bestandsrelation" },
+  { NTP,  "tp" },
+  { NTG,  "ua" },
+  { NT ,  "ub" },
+  { NT ,  "unterbegriff" },
+  { NTG,  "unterbegriff abstraktionsrelation" },
+  { RT ,  "vb" },
+  { BTP,  "verbandsbegriff bestandsrelation" },
+  { RT ,  "verwandter begriff" },
+};
+REL_TABLE_END(de);
+
+static rel_table_entry rel_table_en[] = {
+  // This MUST be sorted by name.
+  { BT ,  "broader term" },
+  { BTG,  "broader term generic" },
+  { BTI,  "broader term instance" },
+  { BTP,  "broader term partitive" },
+  { BT ,  "bt" },
+  { BTG,  "btg" },
+  { BTI,  "bti" },
+  { BTP,  "btp" },
+  { NT ,  "narrower term" },
+  { NTG,  "narrower term generic" },
+  { NTI,  "narrower term instance" },
+  { NTP,  "narrower term partitive" },
+  { NT ,  "nt" },
+  { NTG,  "ntg" },
+  { NTI,  "nti" },
+  { NTP,  "ntp" },
+  { RT ,  "related term" },
+  { RT ,  "rt" },
+  { SN ,  "scope note" },
+  { TT ,  "top term" },
+  { TT ,  "tt" },
+  { UF ,  "uf" },
+  { USE,  "use" },
+  { UF ,  "use for" },
+};
+REL_TABLE_END(en);
+
+static rel_table_entry rel_table_fr[] = {
+  // This MUST be sorted by name.
+  { USE,  "em" },
+  { USE,  "employer" },
+  { UF ,  "employ" eacute " pour" },
+  { UF ,  "ep" },
+  { TT ,  "mv" },
+  { SN ,  "ne" },
+  { TT ,  "nom de la classe la plus g" eacute "n" eacute "ale" },
+  { SN ,  "note explicative" },
+  { BT ,  "term g" eacute "n" eacute "rique" },
+  { BTG,  "term g" eacute "n" eacute "rique g" eacute "n" eacute "rique" },
+  { BTP,  "term g" eacute "n" eacute "rique partitif" },
+  { NT ,  "terme sp" eacute "cifique" },
+  { NTG,  "terme sp" eacute "cifique g" eacute "n" eacute "rique" },
+  { NTP,  "terme sp" eacute "cifique partitif" },
+  { BT ,  "tg" },
+  { BTG,  "tgg" },
+  { BTP,  "tgp" },
+  { NT ,  "ts" },
+  { NTG,  "tsg" },
+  { NTP,  "tsp" },
+  { RT ,  "va" },
+  { RT ,  "voir aussi" },
+};
+REL_TABLE_END(fr);
+
+#define LANG(CODE)                    \
+  iso639_1::CODE:                     \
+    *begin = rel_table_##CODE;        \
+    *end   = rel_table_##CODE##_end;  \
+    return true
+
+static bool get_rel_table( iso639_1::type code, rel_table_entry const **begin,
+                           rel_table_entry const **end ) {
+  switch ( code ) {
+    case LANG(de);
+    case LANG(en);
+    case LANG(fr);
+    default:
+      return false;
+  }
 }
 
-#define DEF_END(CHAR_ARRAY)                             \
-  static char const *const *const end =                 \
-    CHAR_ARRAY + sizeof( CHAR_ARRAY ) / sizeof( char* );
-
-#define FIND(what) \
-  static_cast<rel_type>( find_index( string_of, end, what ) )
-
 ///////////////////////////////////////////////////////////////////////////////
 
-namespace iso2788 {
-  char const *const string_of[] = {
-    // This MUST be in sorted order.
-    "#UNKNOWN",
-    "bt",
-    "btg",
-    "bti",
-    "btp",
-    "nt",
-    "ntg",
-    "nti",
-    "ntp",
-    "rt",
-    "tt",
-    "uf",
-    "use",
-  };
+rel_type find_rel( char const *relationship, iso639_1::type lang ) {
+  typedef pair<rel_table_entry const*,rel_table_entry const*> range_type;
 
-  rel_type find_rel( char const *relationship ) {
-    DEF_END( string_of );
-    return FIND( relationship );
+  rel_table_entry const *begin, *end;
+  if ( !get_rel_table( lang, &begin, &end ) ) {
+    begin = rel_table_en;
+    end   = rel_table_en_end;
   }
-} // namespace iso2788
+
+  rel_table_entry entry_to_find;
+  entry_to_find.name = relationship;
+
+  range_type const result =
+    ::equal_range( begin, end, entry_to_find, less_rel_table_entry() );
+  return result.first == result.second ? unknown : result.first->type;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 
+char const *const string_of[] = {
+  // This MUST be in sorted order.
+  "#UNKNOWN",
+  "bt",
+  "btg",
+  "bti",
+  "btp",
+  "nt",
+  "ntg",
+  "nti",
+  "ntp",
+  "rt",
+  "sn",
+  "tt",
+  "uf",
+  "use",
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
+} // namespace iso2788
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

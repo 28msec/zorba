@@ -15,6 +15,7 @@
  */
 
 #include <algorithm>                    /* for lower_bound */
+#include <cassert>
 
 #include "util/less.h"
 
@@ -142,10 +143,11 @@ namespace pointer {
       case iso2788::NTI: return instance_hyponym;
       case iso2788::NTP: return part_holonym;
       case iso2788::RT : return also_see;
+      case iso2788::SN : return unknown;
       case iso2788::TT : return hypernym; // the best we can do
-      case iso2788::UF :
-      case iso2788::USE:
-      default          : return unknown;
+      case iso2788::UF : return unknown;
+      case iso2788::USE: return unknown;
+      default          : assert( false ); // ensures all cases are handled
     }
   }
 

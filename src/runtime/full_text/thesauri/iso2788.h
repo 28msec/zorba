@@ -17,6 +17,8 @@
 #ifndef ZORBA_ISO_2788_H
 #define ZORBA_ISO_2788_H
 
+#include "zorbautils/locale.h"
+
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -32,8 +34,8 @@ namespace iso2788 {
 
   /**
    * Relationship abbreviations from ISO 2788 section 4.1 and ANSI Z39.19-2005
-   * section 4.2.  Note: we do not implement "HN" (History Note), "SN" (Scope
-   * Note), or "X SN" (See Scope Note for...).
+   * section 4.2.  Note: we do not implement "HN" (History Note) or "X SN" (See
+   * Scope Note for...).
    */
   enum rel_type {
     unknown,
@@ -46,6 +48,7 @@ namespace iso2788 {
     NTI,  ///< Narrower Term (instance)
     NTP,  ///< Narrower Term (partitive)
     RT,   ///< Related Term
+    SN,   ///< Scope Note
     TT,   ///< Top Term
     UF,   ///< Non-preferred Term
     USE,  ///< Preferred Term
@@ -57,9 +60,10 @@ namespace iso2788 {
    * string.
    *
    * @param relationship The relationship to find.  It must be lower-case.
+   * @param lang The language of the relationship.
    * @return Returns the corresponding relationship or \c unknown.
    */
-  rel_type find_rel( char const *relationship );
+  rel_type find_rel( char const *relationship, locale::iso639_1::type lang );
 
   /**
    * Attempts to find the ISO-2788 relationship corresponding to the given
@@ -67,11 +71,13 @@ namespace iso2788 {
    *
    * @tparam The string type.
    * @param relationship The relationship to find.  It must be lower-case.
+   * @param lang The language of the relationship.
    * @return Returns the corresponding relationship or \c unknown.
    */
   template<class StringType> inline
-  rel_type find_rel( StringType const &relationship ) {
-    return find_rel( relationship.c_str() );
+  rel_type find_rel( StringType const &relationship,
+                     locale::iso639_1::type lang ) {
+    return find_rel( relationship.c_str(), lang );
   }
 }
 
