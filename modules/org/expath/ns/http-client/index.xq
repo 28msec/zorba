@@ -132,7 +132,11 @@ declare sequential function http:send-request(
   $request as element()?,
   $href as xs:string?,
   $bodies as item()*) as item()+ {
-  zorba-http:send-request($request, $href, $bodies)
+  try {
+    zorba-http:send-request($request, $href, $bodies)
+  } catch XPTY0004 {
+    fn:error($err:HC005, "The request element is not valid.")
+  }
 };
 
 (:~
@@ -153,7 +157,11 @@ declare sequential function http:send-request(
  :)
 declare sequential function http:send-request (
   $request as element()) as item()+ {
-  http:send-request($request, (), ())
+  try {
+    http:send-request($request, (), ())
+  } catch XPTY0004 {
+    fn:error($err:HC005, "The request element is not valid.")
+  }
 };
 
 (:~
@@ -177,6 +185,10 @@ declare sequential function http:send-request (
 declare sequential function http:send-request(
   $request as element()?,
   $href as xs:string?) as item()+ {
-  http:send-request($request, $href, ())
+  try {
+    http:send-request($request, $href, ())
+  } catch XPTY0004 {
+    fn:error($err:HC005, "The request element is not valid.")
+  }
 };
 

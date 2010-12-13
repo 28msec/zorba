@@ -159,15 +159,16 @@ declare sequential function http:send-request(
   $bodies as item()*) as item()+ {
   if (http:check-params($request, $href, $bodies))
   then
-    let $req := if ($request) then http:set-content-type($request) else ()
-    let $result := if (fn:empty($req)) then 
-                      http:http-sequential-impl((),
-                                                $href,
-                                                $bodies)
-                   else
-                      http:http-sequential-impl(validate {$req},
-                                                $href,
-                                                $bodies)
+    let $req := if ($request) then
+      try {
+        validate { http:set-content-type($request) }
+      } catch XQDY0027 {
+        fn:error($err:HC005, "The request element is not valid.")
+      }
+    else ()
+    let $result := http:http-sequential-impl($req,
+                                             $href,
+                                             $bodies)
     return http:tidy-result($result, fn:data($request/@override-media-type))
   else ();
 };
@@ -417,14 +418,24 @@ declare %private function http:check-params(
   $request as element(https:request)?,
   $href as xs:string?,
   $bodies as item()*) as xs:boolean {
-  if (fn:empty($href) and fn:empty($request)) then
-    fn:error($err:HCV01, "Not all required arguments are set.")
-  else if ($href eq "") then
-    fn:error($err:HCV01,
-      "The href value is set to the empty string")
-  else if (not(count($request//body[not(exists(node()))]) eq count($bodies))) then
-    fn:error($err:HCV01,
-      "The number of bodies without children is not equal the size of the bodies sequence")
-  else
-    fn:true()
+  let $multipart := $request/http:multipart
+  let $override := $request/@override-media-type/data(.)
+  let $should-be-empty :=
+    for $x in $request//https:body
+    return
+      if ($x/@src and fn:not((fn:count($x/@*) eq 2))) then 1
+      else ()
+  return
+    if (fn:empty($href) and fn:empty($request)) then
+      fn:error($err:HC005, "The request element is not valid.")
+    else if ($href eq "") then
+      fn:error($err:HC005,
+        "The request element is not valid.")
+    else if (not(count($request//https:body[not(exists(node())) and not(exists(@src))]) eq count($bodies))) then
+      fn:error($err:HC005,
+        "The request element is not valid.")
+    else if ($should-be-empty) then
+      fn:error($err:HC004, "The src attribute on the body element is mutually exclusive with all other attribute (except the media-type).")
+    else
+      fn:true()
 };
