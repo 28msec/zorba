@@ -288,9 +288,6 @@ ENDIF (FOUND_XQTS)
 # --------------------------------------------------------------------------
 # the list of tests that are failing but can be accepted by the commit queue
 # !!! do not abuse this list or you will be prosecuted !!!
-IF (WIN32)
-  EXPECTED_FAILURE(test/rbkt/zorba/modules/process 3132180)
-ENDIF (WIN32)
 
 # check the bug 3132686 for missing the xml_files: attached in test.zip
 EXPECTED_FAILURE(test/rbkt/zorba/utf-8/utf8inDataDe 3132686)

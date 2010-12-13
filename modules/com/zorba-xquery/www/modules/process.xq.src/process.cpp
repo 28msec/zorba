@@ -21,6 +21,7 @@
 #include <vector>
 #include <iostream>
 #include <limits.h>
+#include <algorithm>
 
 #ifdef WIN32
 #  include <windows.h>
@@ -85,7 +86,176 @@ void create_result_node(
   aFactory->createTextNode(lExitCode, lExitCodeString.str());
 }
 
-#ifndef WIN32
+#ifdef WIN32
+
+/***********************************************
+*  throw a descriptive message of the last error
+*  accessible with GetLastError() on windows
+*/
+void throw_last_error(const zorba::String& aFilename, unsigned int aLineNumber){
+  LPVOID lpvMessageBuffer;
+  CHAR lErrorBuffer[512];
+  FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER|FORMAT_MESSAGE_FROM_SYSTEM,
+          NULL, GetLastError(),
+          MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+          (LPTSTR)&lpvMessageBuffer, 0, NULL);
+  wsprintf(lErrorBuffer,"Process Error Code: %d - Message= %s",GetLastError(), (char *)lpvMessageBuffer);
+  LocalFree(lpvMessageBuffer);
+  throw zorba::ExternalFunctionData::createZorbaException(XPTY0004,lErrorBuffer, aFilename, aLineNumber);
+}
+
+/******************************************
+*  read output from child process on windows
+*/
+void read_child_output(HANDLE aOutputPipe, std::ostringstream& aTargetStream)
+{
+  CHAR lBuffer[256];
+  DWORD lBytesRead;
+  
+  while(TRUE)
+  {
+    if (
+      !ReadFile(aOutputPipe,lBuffer,sizeof(lBuffer),&lBytesRead,NULL) 
+      || !lBytesRead
+    )
+    {
+      if (GetLastError() == ERROR_BROKEN_PIPE)
+        break; // finished
+      else{
+      
+         // couldn't read from pipe
+         throw_last_error(__FILE__, __LINE__);
+      }
+    }
+    
+    // remove the windows specific carriage return outputs
+    std::stringstream lTmp;
+    lTmp.write(lBuffer,lBytesRead);
+    std::string lRawString=lTmp.str();
+    std::replace( lRawString.begin(), lRawString.end(), '\r', ' ' );
+    aTargetStream.write(lRawString.c_str(),static_cast<std::streamsize>(lRawString.length()));
+    lBytesRead=NULL;
+  }
+}
+
+/******************************************
+*  Create a child process on windows with
+*  redirected output
+*/
+BOOL create_child_process(HANDLE aStdOutputPipe,HANDLE aStdErrorPipe,const std::string& aCommand,PROCESS_INFORMATION& aProcessInformation){
+  STARTUPINFO lChildStartupInfo;
+  BOOL result=FALSE;
+  
+  // set the output handles
+  FillMemory(&lChildStartupInfo,sizeof(lChildStartupInfo),0);
+  lChildStartupInfo.cb = sizeof(lChildStartupInfo);
+  GetStartupInfo(&lChildStartupInfo);
+  lChildStartupInfo.dwFlags = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
+  lChildStartupInfo.wShowWindow = SW_HIDE; // don't show the command window
+  lChildStartupInfo.hStdOutput = aStdOutputPipe;
+  lChildStartupInfo.hStdError  = aStdErrorPipe;
+
+  // convert from const char* to char*
+  size_t length = strlen(aCommand.c_str());
+  char *tmpCommand=new char[length+1];
+  strcpy (tmpCommand,aCommand.c_str());
+  tmpCommand[length]='\0';
+  
+  try{
+  
+    // settings for the child process      
+    LPCSTR lApplicationName=NULL;
+    LPSTR lCommandLine=tmpCommand;
+    LPSECURITY_ATTRIBUTES lProcessAttributes=NULL;
+    LPSECURITY_ATTRIBUTES lThreadAttributes=NULL;
+    BOOL lInheritHandles=TRUE; // that's what we want
+    DWORD lCreationFlags=CREATE_NEW_CONSOLE;
+    LPVOID lEnvironment=NULL;
+    LPCTSTR lCurrentDirectory=NULL; // same as main process
+    
+    // start child
+    result=CreateProcess(
+          lApplicationName,lCommandLine,lProcessAttributes,
+          lThreadAttributes,lInheritHandles,lCreationFlags,
+          lEnvironment,lCurrentDirectory,&lChildStartupInfo,
+          &aProcessInformation);
+          
+  }catch(...){
+    delete[] tmpCommand;
+    tmpCommand=0;
+    throw;  
+  }
+        
+  delete[] tmpCommand;
+  tmpCommand=0;
+        
+  return result;
+}
+
+/******************************************
+*  run a process that executes the aCommand
+*  in a new console and reads the output
+*/
+int run_process(const std::string& aCommand,std::ostringstream& aTargetOutStream,std::ostringstream& aTargetErrStream)
+{
+  HANDLE lOutRead, lErrRead, lStdOut, lStdErr;
+  SECURITY_ATTRIBUTES lSecurityAttributes;
+  PROCESS_INFORMATION lChildProcessInfo;
+  DWORD exitCode=0;
+    
+  // prepare security attributes
+  lSecurityAttributes.nLength= sizeof(lSecurityAttributes);
+  lSecurityAttributes.lpSecurityDescriptor = NULL;
+  lSecurityAttributes.bInheritHandle = TRUE;
+
+  // create output pipes
+  if(
+      !CreatePipe(&lOutRead,&lStdOut,&lSecurityAttributes,0) // std::cout >> lOutRead
+      || !CreatePipe(&lErrRead,&lStdErr,&lSecurityAttributes,0) // std::cerr >> lErrRead
+    ){
+    throw zorba::ExternalFunctionData::createZorbaException(
+        XPTY0004,"Couldn't create one of std::cout/std::cerr pipe for child process execution.", __FILE__, __LINE__);
+  };
+  
+  //start child process
+  BOOL ok=create_child_process(lStdOut,lStdErr,aCommand,lChildProcessInfo);
+  if(ok==TRUE)
+  {
+
+    // close unneeded handle  
+    CloseHandle(lChildProcessInfo.hThread);
+    
+    // wait for the process to finish
+    WaitForSingleObject(lChildProcessInfo.hProcess,INFINITE);
+    if (!GetExitCodeProcess(lChildProcessInfo.hProcess, &exitCode))
+    {
+      std::stringstream lErrorMsg;
+      lErrorMsg 
+        << "Couldn't get exit code from child process. Executed command: '" << aCommand << "'.";
+      throw zorba::ExternalFunctionData::createZorbaException(
+          XPTY0004,lErrorMsg.str().c_str(), __FILE__, __LINE__);
+    }
+    CloseHandle(lChildProcessInfo.hProcess);
+    CloseHandle(lStdOut);
+    CloseHandle(lStdErr);
+  
+    // read child's output
+    read_child_output(lOutRead,aTargetOutStream);
+    read_child_output(lErrRead,aTargetErrStream);
+  }else{
+  
+     // couldn't launch process
+     throw_last_error(__FILE__, __LINE__);
+  };
+  
+  // close 
+  CloseHandle(lOutRead);
+  CloseHandle(lErrRead);
+  
+  return exitCode;
+}
+
+#else
 
 #define READ  0
 #define WRITE 1
@@ -167,22 +337,33 @@ ExecFunction::evaluate(
 
   std::ostringstream lTmp;
 
+#ifdef WIN32
+  // execute process command in a new commandline
+  lTmp << "cmd /C ";
+#endif
+ 
   lTmp << lCommand;
   for (std::vector<std::string>::const_iterator lIter = lArgs.begin();
        lIter != lArgs.end(); ++lIter)
   {
     lTmp << " " << *lIter;
   }
-
+  
   std::ostringstream lStdout;
   std::ostringstream lStderr;
 
 #ifdef WIN32
-  int status = system(lTmp.str().c_str());
+  std::string lCommandLineString=lTmp.str();
+  int status = run_process(lCommandLineString,lStdout,lStderr);
+  
   if (status != 0)
   {
-    std::cerr << "[FAILURE] command execution failed. Exit code: " << status
-      << std::endl;
+    
+    std::stringstream lErrorMsg;
+    lErrorMsg <<
+        "[FAILURE] command execution failed. Exit code: " << status << "." ;
+    throw zorba::ExternalFunctionData::createZorbaException(
+          XPTY0004,lErrorMsg.str().c_str(), __FILE__, __LINE__);
   }
 
 #else //not WIN32
