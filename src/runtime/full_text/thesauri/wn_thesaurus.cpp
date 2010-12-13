@@ -21,6 +21,7 @@
 #endif
 #include <algorithm>                    /* for equal_range() */
 #include <cassert>
+#include <cstdlib>                      /* for abs(3) */
 #include <cstring>                      /* for strcmp(3) */
 #include <limits>
 
@@ -68,7 +69,7 @@ uint32_t const Magic_Number = 42;       // same as TIFF -- why not?
  * @param dj The second direction.
  * @return Returns the "sum" of the two directions.
  */
-static ptr_direction_t add_ptr_directions( ptr_direction_t di,
+inline ptr_direction_t add_ptr_directions( ptr_direction_t di,
                                            ptr_direction_t dj ) {
   //
   // Addition of two directions is defined by this table:
@@ -85,11 +86,7 @@ static ptr_direction_t add_ptr_directions( ptr_direction_t di,
   //    1 -1 ERROR
   //   -1  1 ERROR
   //
-  if ( !(di || dj) )
-    return 0;
-  ptr_direction_t const dsum = di + dj;
-  assert( dsum );
-  return dsum <= -1 ? -1 : +1;
+  return di ? di : dj;
 }
 
 /**
@@ -116,7 +113,7 @@ inline bool congruous( ptr_direction_t di, ptr_direction_t dj ) {
   //    1 -1  F
   //   -1  1  F
   //
-  return (di || dj) ? di + dj != 0 : true;
+  return abs( di - dj ) <= 1;
 }
 
 /**
