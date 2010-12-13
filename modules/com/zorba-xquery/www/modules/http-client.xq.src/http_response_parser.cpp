@@ -80,10 +80,11 @@ namespace zorba { namespace http_client {
   };
 
   HttpResponseParser::HttpResponseParser(RequestHandler& aHandler, CURL* aCurl,
-    CURLM* aCurlM, std::string aOverridenContentType, bool aStatusOnly)
+    CURLM* aCurlM, ErrorThrower& aErrorThrower,
+    std::string aOverridenContentType, bool aStatusOnly)
     : 
-  theHandler(aHandler), theCurl(aCurl), theMulti(aCurlM), theStatus(-1),
-    theStreamBuffer(0), theInsideRead(false),
+  theHandler(aHandler), theCurl(aCurl), theMulti(aCurlM), theErrorThrower(aErrorThrower),
+    theStatus(-1), theStreamBuffer(0), theInsideRead(false),
     theOverridenContentType(aOverridenContentType),
     theStatusOnly(aStatusOnly)
   {
@@ -291,7 +292,15 @@ namespace zorba { namespace http_client {
 
   zorba::Item HttpResponseParser::createXmlItem( std::istream& aStream )
   {
-    XmlDataManager* lDM = Zorba::getInstance(0)->getXmlDataManager();
-    return lDM->parseDocument(aStream);
+    try {
+      XmlDataManager* lDM = Zorba::getInstance(0)->getXmlDataManager();
+      return lDM->parseDocument(aStream);
+    } catch (...) {
+      theErrorThrower.raiseException("http://expath.org/ns/error", 
+          "HC002", "Error parsing the entity content as XML.");
+      //compiler does not recognize, that this function throws an exception, so we just
+      // return something
+      return Item(); 
+    }
   }
 }}

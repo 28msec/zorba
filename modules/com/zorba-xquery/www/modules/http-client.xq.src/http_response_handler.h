@@ -50,9 +50,11 @@ namespace http_client {
     Item theMultipart;
     ItemFactory* theFactory;
     bool theIsInsideMultipart;
+    bool theDeleteResponse;
     Item theUntypedQName;
   public:
     HttpResponseHandler(ItemFactory* aFactory);
+    virtual ~HttpResponseHandler();
   public:
     ItemSequence* getResult();
   public: //Interface implementation

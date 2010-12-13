@@ -69,11 +69,16 @@ namespace zorba { namespace http_client {
     :
   theResult(new HttpResponseIterator()),
   theFactory(aFactory),
-  theIsInsideMultipart(false)
+  theIsInsideMultipart(false),
+  theDeleteResponse(true)
   {
-    String lXSNS = "http://www.w3.org/2001/XMLSchema";
-    String lUntypedLocalName = "untyped";
-    theUntypedQName = theFactory->createQName(lXSNS, lUntypedLocalName);
+    theUntypedQName = theFactory->createQName("http://www.w3.org/2001/XMLSchema", "untyped");
+  }
+
+  HttpResponseHandler::~HttpResponseHandler() {
+    if (theDeleteResponse) {
+      delete theResult;
+    }
   }
 
   void HttpResponseHandler::begin()
@@ -182,6 +187,7 @@ namespace zorba { namespace http_client {
 
   ItemSequence* HttpResponseHandler::getResult()
   {
+    theDeleteResponse = false;
     return theResult;
   }
 }} //namespace zorba, namespace http_client

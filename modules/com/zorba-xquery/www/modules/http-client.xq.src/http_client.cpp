@@ -29,7 +29,7 @@
 namespace zorba {
 
   namespace http_client {
-    
+
     class HttpSendFunction : public NonePureStatelessExternalFunction {
     protected:
       const ExternalModule*     theModule;
@@ -143,6 +143,8 @@ namespace zorba {
       std::auto_ptr<RequestParser> lParser;
       struct curl_slist* lHeaderList = 0;
 
+      ErrorThrower thrower(aFunctionData, aFactory, &lHeaderList);
+
       if (lReqSet) {
         lHandler.reset(new HttpRequestHandler(lCURL, args[2]));
         lParser.reset(new RequestParser(lHandler.get()));
@@ -159,7 +161,7 @@ namespace zorba {
         lHandler->getOverrideContentType(lOverrideContentType);
       bool lStatusOnly =
           lHandler.get() == NULL ? false : (lHandler->isStatusOnly() || lHandler->isHeadRequest());
-      HttpResponseParser lRespParser(lRespHandler, lCURL, lCURLM,
+      HttpResponseParser lRespParser(lRespHandler, lCURL, lCURLM, thrower,
         lOverrideContentType.c_str(), lStatusOnly);
       int lRetCode = lRespParser.parse();
 
@@ -169,7 +171,7 @@ namespace zorba {
 
       if (lRetCode) {
         zorba::Item lError = aFactory->createQName("http://expath.org/ns/error", "HC001");
-        aFunctionData->error(lError, "Could not perform the request - got an error from curl");
+        aFunctionData->error(lError, "An HTTP error occurred.");
       }
 
       return ItemSequence_t(lRespHandler.getResult());

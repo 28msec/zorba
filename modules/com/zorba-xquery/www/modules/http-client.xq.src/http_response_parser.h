@@ -22,6 +22,7 @@
 #include <curl/curl.h>
 
 #include "inform_data_read.h"
+#include "error_thrower.h"
 
 namespace zorba {
 class Item;
@@ -34,6 +35,7 @@ namespace http_client {
     RequestHandler& theHandler;
     CURL* theCurl;
     CURLM* theMulti;
+    ErrorThrower& theErrorThrower;
     std::string theCurrentContentType;
     std::vector<std::pair<std::string, std::string> > theHeaders;
     int theStatus;
@@ -50,6 +52,7 @@ namespace http_client {
       RequestHandler& aHandler,
       CURL* aCurl,
       CURLM* aCurlM,
+      ErrorThrower& aErrorThrower,
       std::string aOverridenContentType = "",
       bool aStatusOnly = false);
     virtual ~HttpResponseParser();
