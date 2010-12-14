@@ -79,7 +79,7 @@ getopts( 'v' ) or usage();
 usage() unless $#ARGV >= 0 && $#ARGV <= 1;
 
 my( $WN_DIR, $THESAURUS_FILE ) = @ARGV;
-$THESAURUS_FILE = "wordnet.zth" unless $THESAURUS_FILE;
+$THESAURUS_FILE = "wordnet-en.zth" unless $THESAURUS_FILE;
 
 ########## Global data ########################################################
 

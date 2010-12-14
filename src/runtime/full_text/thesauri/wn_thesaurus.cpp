@@ -135,7 +135,9 @@ mmap_file const& get_wordnet_file() {
     if ( !ascii::ends_with( wordnet_path,
                             filesystem_path::get_path_separator() ) )
       wordnet_path += filesystem_path::get_path_separator();
-    wordnet_path += "wordnet.zth";
+    wordnet_path += "wordnet-";
+    wordnet_path += iso639_1::string_of[ iso639_1::en ];
+    wordnet_path += ".zth";
     wordnet_file.open( wordnet_path.c_str() );
 
     // check version
