@@ -197,16 +197,15 @@ std::string XQType::toSchemaString() const
     break;
   case ATOMIC_TYPE_KIND:
     result = toString();
-    // result = "xs:anyAtomicType()";
     break;
   case ITEM_KIND:
     result = "item()";
     break;
   case NODE_TYPE_KIND:
-    result = "node()";
+    result = toString();
     break;
   case FUNCTION_TYPE_KIND:
-    result = "function(...) as ...";
+    result = toString();
     break;
   case ANY_TYPE_KIND:
     result = "xs:anyType";
@@ -218,11 +217,11 @@ std::string XQType::toSchemaString() const
     result = "function(*)";
     break;
   case UNTYPED_KIND:
-    result = "xs:untyped";
+    result = toString();
     break;
   default:
-      return toString();
-      break;
+    return toString();
+    break;
   }
 
   result += TypeOps::decode_quantifier(get_quantifier());
@@ -427,11 +426,11 @@ std::ostream& NodeXQType::serialize_ostream(std::ostream& os) const
   xqtref_t content_type = get_content_type();
 
   os << "[NodeXQType " << store::StoreConsts::toString(node_kind)
-     << TypeOps::decode_quantifier(get_quantifier()) << " ";
+     << TypeOps::decode_quantifier(get_quantifier());
 
   if (m_node_name != NULL)
   {
-    os << "nametest=[uri: " << m_node_name->getNamespace()
+    os << " nametest=[uri: " << m_node_name->getNamespace()
        << ", local: " << m_node_name->getLocalName() << "]";
   }
 

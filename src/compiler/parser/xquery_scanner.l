@@ -164,22 +164,6 @@ std::string start_state(int);   /* forward declaration, used by YY_USER_ACTION *
   yylloc->columns(yyleng - last_endl);\
 }
 
-#define YY_LOCATION_UNDO	\
-do { \
-  int last_endl = 0;\
-  for (int i=0; i<yyleng; i++) \
-    if (yytext[i] == '\n')  \
-    { \
-      yylloc->lines(-1);\
-      last_endl = i+1;\
-    }\
-  \
-  yylloc->step();\
-  yylloc->columns(yyleng - last_endl);\
-} while(0)
-
-
-
 
 %}
 
