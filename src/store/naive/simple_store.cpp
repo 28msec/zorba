@@ -300,7 +300,7 @@ void SimpleStore::shutdown(bool soft)
 
     if (theQNamePool != NULL)
     {
-      ulong numTypes = theSchemaTypeNames.size();
+      ulong numTypes = (ulong)theSchemaTypeNames.size();
       for (ulong i = 0; i < numTypes; i++)
         theSchemaTypeNames[i] = NULL;
 
@@ -1274,7 +1274,7 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
 {
   const zstring& str = uri->getString();
 
-  ulong prefixlen = strlen("zorba://node_reference/");
+  ulong prefixlen = (ulong)strlen("zorba://node_reference/");
 
   if (strncmp(str.c_str(), "zorba://node_reference/", prefixlen))
     ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str, "");
@@ -1431,7 +1431,7 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
   // Search for node in the tree
   //
 
-  OrdPath op((unsigned char*)start, strlen(start));
+  OrdPath op((unsigned char*)start, (ulong)strlen(start));
 
   if (rootNode->getOrdPath() == op)
   {
