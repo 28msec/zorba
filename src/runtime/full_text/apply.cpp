@@ -925,7 +925,6 @@ apply_query_tokens_as_phrase( FTTokenIterator &query_tokens,
   if ( th_option && !th_option->no_thesaurus() ) {
     zstring query_phrase;
     if ( FTToken const *const qt0 = to_string( query_tokens, &query_phrase ) ) {
-#if 0
       FTQueryItemSeq synonyms;
       apply_thesaurus_option( th_option, query_phrase, *qt0, synonyms );
 
@@ -936,7 +935,6 @@ apply_query_tokens_as_phrase( FTTokenIterator &query_tokens,
         synonyms, query_pos, ignore_item, options_no_thesaurus, matcher, result
       );
       return;
-#endif
     }
   }
 
