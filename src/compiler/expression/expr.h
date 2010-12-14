@@ -364,6 +364,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar, (cast_base_expr*)this);
+    ar & theFnQName;
   }
 
 public:

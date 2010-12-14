@@ -513,6 +513,7 @@ void treat_expr::serialize(::zorba::serialization::Archiver& ar)
   serialize_baseclass(ar, (cast_base_expr*)this);
   SERIALIZE_ENUM(XQUERY_ERROR, theError);
   ar & theCheckPrime;
+  ar & theFnQName;
 }
 
 
