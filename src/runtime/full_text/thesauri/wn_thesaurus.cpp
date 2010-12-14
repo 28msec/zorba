@@ -196,7 +196,7 @@ static char const* find_lemma( zstring const &phrase ) {
 
 /**
  * "Fixes" the "at most" parameter.  The Full Text specification section 3.4.3
- * saus in part:
+ * says in part:
  *
  *    FTThesaurusID specifies the relationship sought between tokens and
  *    phrases written in the query and terms in the thesaurus and the number of
@@ -262,8 +262,8 @@ static bool follow_ptr( pointer::type ptr_type ) {
       //
       return true;
 
-    default:
-      assert( false );                  // ensures all cases are handled
+    case pointer::unknown:
+      assert( false );
   }
   return false;                         // suppesses warning -- never gets here
 }
@@ -324,12 +324,11 @@ static ptr_direction_t ptr_direction( pointer::type ptr_type ) {
     case pointer::participle_of_verb:
     case pointer::pertainym:
     case pointer::similar_to:
-    case pointer::unknown:
     case pointer::verb_group:
       return 0;
 
-    default:
-      assert( false );                  // ensures all cases are handled
+    case pointer::unknown:
+      assert( false );
   }
   return 0;                             // suppesses warning -- never gets here
 }
