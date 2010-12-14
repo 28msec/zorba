@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#define DEBUG_FT_THESAURUS 1
+#define DEBUG_FT_THESAURUS 0
 
 #if DEBUG_FT_THESAURUS
 #include <iostream>
