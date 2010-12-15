@@ -1312,6 +1312,7 @@ StaticContextImpl::validate(const Item& rootElement, Item& validatedResult)
   catch (error::ZorbaError& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
+    return false;
   }
 }
 
@@ -1331,6 +1332,7 @@ StaticContextImpl::validate(
   catch (error::ZorbaError& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
+    return false;
   }
 }
 
@@ -1364,6 +1366,7 @@ StaticContextImpl::validateSimpleContent(
   catch (error::ZorbaError& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
+    return false;
   }
 }
 
