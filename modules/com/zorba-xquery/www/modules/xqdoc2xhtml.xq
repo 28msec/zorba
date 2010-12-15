@@ -703,18 +703,18 @@ declare sequential function xqdoc2html:configure-xhtml (
   return block {
     if (starts-with($funcName, "updating")) then
       replace node $func/text() with
-        (<a href="{$xquSpec}" title="updating" target="_blank"><img src="{concat($imagesPath, "U.gif")}" /></a>,
-        text {substring-after($funcName, "updating")})
+        <span class="no_underline"><a href="{$xquSpec}" title="updating" target="_blank">
+        <img src="{concat($imagesPath, "U.gif")}" /></a>{text {substring-after($funcName, "updating")}}</span>
         
     else if (starts-with($funcName, "sequential")) then
       replace node $func/text() with
-        (<a href="{$xqsSpec}" title="sequential" target="_blank"><img src="{concat($imagesPath, "S.gif")}" /></a>,
-        text {substring-after($funcName, "sequential")})
+        <span class="no_underline"><a href="{$xqsSpec}" title="sequential" target="_blank">
+        <img src="{concat($imagesPath, "S.gif")}" /></a>{text {substring-after($funcName, "sequential")}}</span>
         
     else if (starts-with($funcName, "nondeterministic")) then
       replace node $func/text() with
-        (<a href="{$xq11Spec}" title="nondeterministic" target="_blank"><img src="{concat($imagesPath, "N.gif")}" /></a>,
-        text {substring-after($funcName, "nondeterministic")})
+        <span class="no_underline"><a href="{$xq11Spec}" title="nondeterministic" target="_blank">
+        <img src="{concat($imagesPath, "N.gif")}" /></a>{text {substring-after($funcName, "nondeterministic")}}</span>
     else ();
   };
    
@@ -1384,15 +1384,15 @@ declare function xqdoc2html:module-description($module) {
 };
 
 (:~
- : Create the items for the external specifications 
+ : Create the items for the Related Specifications 
  : ('see' annotattions appearing in the module description part).
  :
  : @param $module the node containing the XQDoc XML module.
- : @return the XHTML for the 'External Specifications'.
+ : @return the XHTML for the 'Related Specifications'.
  :)
 declare function xqdoc2html:module-external-specifications($module) {
   if(fn:count($module/xqdoc:comment/xqdoc:*[(local-name(.) = ("see"))]) >0) then
-    (<div class="section"><span id="external_specifications">External Specifications</span></div>,
+    (<div class="section"><span id="external_specifications">Related Specifications</span></div>,
     <p>For more details please check out these resources:<ul>
     {
       let $annotations := $module/xqdoc:comment/xqdoc:*[(local-name(.) = ("see"))]

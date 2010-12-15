@@ -108,7 +108,7 @@ span.functName a:hover {
 }
 
 span.funcParam {
-  color:  #FFCC00;
+  color: DarkGreen; /*  #FFCC00; */
 }
 
 span.functName {
@@ -119,6 +119,18 @@ span.functName {
 
 span.padding {
   padding: 2px 4px;
+}
+
+span.no_underline a{
+  color: #B93333;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+span.no_underline a:hover {
+  color: #B93333;
+  font-weight: bold;
+  text-decoration: none;
 }
 
 /****************

@@ -399,7 +399,7 @@ declare function excel:mina($numbers as xs:anyAtomicType*) as xs:anyAtomicType
  : @param $order_ascending <dl>A boolean having the meaning:
  :        <dt>false</dt><dd>then rank the number as if the sequence was sorted in descending order.</dd>
  :        <dt>true</dt> <dd>then rank the number as if the sequence was sorted in ascending order.</dd></dl>
- : @return The rank of <tt>$x</tt>.
+ : @return The rank of $x.
  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type.
  :)
 declare function excel:rank(
@@ -447,7 +447,7 @@ declare function excel:rank(
  : @param $x The number whose rank you want to find.
  : @param $numbers the sequence of numbers or values castable to numbers.
  :        The sequence can be of any length.
- : @return The rank of <tt>$x</tt>.
+ : @return The rank of $x.
  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type.
 :)
 declare function excel:rank(
@@ -542,7 +542,7 @@ declare function excel:quartile($numbers as xs:anyAtomicType*, $quart as xs:inte
  :        The sequence can be of any length, from 1 up.
  : @param $k The position (from the smallest) in the sequence of data to return.
  :        Must have value between 1 and size of sequence.
- : @return The k-th smallest value of <tt>$numbers</tt>.
+ : @return The k-th smallest value of $numbers.
  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type.
  : @error XQP0021(errNum) if the sequence is zero length.
  : @error XQP0021(errNum) if $k is not a value between 1 and the size of sequence.

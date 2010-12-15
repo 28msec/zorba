@@ -26,195 +26,195 @@ module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
 
 (:~
- : The <tt>create-collection</tt> function is an updating function that adds
- : a mapping from the expanded QName <tt>$name</tt> to an empty sequence
+ : The create-collection function is an updating function that adds
+ : a mapping from the expanded QName $name to an empty sequence
  : to the map of available collections.
  :
  : @param $name The QName of the collection to add to the map of available
  :        collections.
- : @error <tt></tt> if the expanded QName of <tt>$name</tt> is not equal
+ : @error if the expanded QName of $name is not equal
  :       (as defined by the eq operator) to the name of any resource
  :       in the statically known collections.
- : @error <tt></tt> if available collections already provides a mapping
- :        for the expaned QName <tt>$name</tt>.
+ : @error if available collections already provides a mapping
+ :        for the expaned QName $name.
  : @return The result of the function is an empty XDM instance and a 
- :         pending update list that consists the <tt>upd:createCollection($name)</tt>
+ :         pending update list that consists the upd:createCollection($name)
  :         primitive.
  :)
 declare updating function xqddf:create-collection($name as xs:QName) external;
 
 (:~
- : The <tt>create-collection</tt> function is an updating function that adds a new
- : mapping from the expanded QName <tt>$name</tt> to the map of available
+ : The create-collection function is an updating function that adds a new
+ : mapping from the expanded QName $name to the map of available
  : collections.
- : Moreover, it adds copies (see below) of the sequence <tt>$content</tt> to
+ : Moreover, it adds copies (see below) of the sequence $content to
  : this collection.
  :
  : @param $name The QName of the collection to add to the map of available
  :        collections.
  : @param $content The sequences of nodes that should be added to the new
           collection.
- : @error <tt></tt> if the expanded QName of <tt>$name</tt> is not equal
+ : @error if the expanded QName of $name is not equal
  :       (as defined by the
  :       <a href="http://www.w3.org/TR/xquery/#id-value-comparisons">eq operator</a>) 
  :       to the name of any resource in the statically known collections.
- : @error <tt></tt> if available collections already provides a mapping
- :        for the expaned QName <tt>$name</tt>.
- : @error <tt></tt> If $content does not match the expected type according
+ : @error if available collections already provides a mapping
+ :        for the expaned QName $name.
+ : @error If $content does not match the expected type according
  :        to the rules for SequenceType Matching.
- : @return The variable <tt>$content</tt> is evaluated as though it were an
+ : @return The variable $content is evaluated as though it were an
  :         enclosed expression in an element constructor (see Rule 1e in
  :         Section 3.7.1.3 ContentXQ of the
  :         <a href="http://www.w3.org/TR/xquery/#id-content">XQuery Update Facility 1.0</a>
  :         specification).
  :         The result of this step is a sequence of nodes to be inserted,
- :         called the insertion sequence. Let <tt>$list</tt> be the
+ :         called the insertion sequence. Let $list be the
  :         insertion sequence. The result of the function is an empty
  :         XDM instance and a pending update list that consists of the
  :         following update primitives:
  :         <ul>
- :           <li><tt>upd:createCollection($name)</tt></li>
- :           <li><tt>upd:insertNodesFirst($name, $list)</tt></li>
+ :           <li>upd:createCollection($name)</li>
+ :           <li>upd:insertNodesFirst($name, $list)</li>
  :         </ul>
  :)
 declare updating function xqddf:create-collection($name as xs:QName,
                                                 $content as node()*) external;
 
 (:~
- : The <tt>delete-collection</tt> function is an updating function that removes a
- : resource from the map of available collections. The QName <tt>$name</tt>
+ : The delete-collection function is an updating function that removes a
+ : resource from the map of available collections. The QName $name
  : is the name of the resource.
  :
  : @param $name The QName of the collection to remove from the map of available
  :        collections.
- : @error <tt></tt> If available collections does not provide a mapping for
- :        the expaned QName <tt>$name</tt>.
- : @error <tt></tt> If If any of the in-scope variables references a node that
- :        belongs to the collection with QName <tt>$name</tt>.
- : @error <tt></tt> If the domain or key expression of any of the available
- :        indexes access the collection with name <tt>$name</tt>.
+ : @error If available collections does not provide a mapping for
+ :        the expaned QName $name.
+ : @error If If any of the in-scope variables references a node that
+ :        belongs to the collection with QName $name.
+ : @error If the domain or key expression of any of the available
+ :        indexes access the collection with name $name.
  : @return The result of the function is an empty XDM instance and a pending
- :         update list that contains the <tt>upd:deleteCollection($name)</tt>
+ :         update list that contains the upd:deleteCollection($name)
  :         update primitive.
  :)
 declare updating function xqddf:delete-collection($name as xs:QName) external;
 
 (:~
- : The <tt>insert-nodes</tt> function is an updating function that inserts
+ : The insert-nodes function is an updating function that inserts
  : copies (see below) of zero or more nodes into a collection. 
  : Note that the insertion position of the nodes in the collection is not
  : defined.
  :
- : @param <tt>$name</tt> The name of the collection to which the nodes should
+ : @param $name The name of the collection to which the nodes should
  :        be added.
- : @param <tt>$content</tt> The sequences of nodes that should be added to the
+ : @param $content The sequences of nodes that should be added to the
  :        collection.
- : @error <tt></tt> If available collections does not provide a mapping for
- :        the expanded QName <tt>$name</tt>.
- : @error <tt></tt> If the modifier property of the collection <tt>$name</tt>
- :        is <tt>append-only</tt>, <tt>const</tt>, or <tt>queue</tt>.
- : @error <tt></tt> If <tt>$content</tt> does not match the expected type
+ : @error If available collections does not provide a mapping for
+ :        the expanded QName $name.
+ : @error If the modifier property of the collection $name
+ :        is append-only, const, or queue.
+ : @error If $content does not match the expected type
  :        according to the rules for SequenceType Matching.
- : @return The variable <tt>$content</tt> is evaluated as though it were
+ : @return The variable $content is evaluated as though it were
  :         an enclosed expression in an element constructor
  :         (see Rule 1e in Section 3.7.1.3 ContentXQ of the
  :         XQuery Update Facility 1.0 specification).
  :         The result of this step is a sequence of nodes to be inserted,
- :         called the insertion sequence. Let <tt>$list</tt> be the insertion sequence.
+ :         called the insertion sequence. Let $list be the insertion sequence.
  :         The result of the function is an empty XDM instance and a pending update list
- :         that contains the <tt>upd:insertNodes($name, $list)</tt>
+ :         that contains the upd:insertNodes($name, $list)
  :         update primitive.
  :)
 declare updating function xqddf:insert-nodes($name as xs:QName,
                                              $content as node()*) external;
 
 (:~
- : The <tt>insert-nodes-first</tt> function is an updating function that inserts
+ : The insert-nodes-first function is an updating function that inserts
  : copies (see below) of zero or more nodes as first nodes into a collection. 
  :
- : @param <tt>$name</tt> The name of the collection to which the nodes should
+ : @param $name The name of the collection to which the nodes should
  :        be added.
- : @param <tt>$content</tt> The sequences of nodes that should be added to the
+ : @param $content The sequences of nodes that should be added to the
  :        collection.
- : @error <tt></tt> If available collections does not provide a mapping for
- :        the expanded QName <tt>$name</tt>.
- : @error <tt></tt> If the modifier property of the collection <tt>$name</tt>
- :        is <tt>append-only</tt>, <tt>const</tt>, or <tt>queue</tt>.
- : @error <tt></tt> If the order property of the collection <tt>$name</tt>
- :        is <tt>unordered</tt>.
- : @error <tt></tt> If <tt>$content</tt> does not match the expected type
+ : @error If available collections does not provide a mapping for
+ :        the expanded QName $name.
+ : @error If the modifier property of the collection $name
+ :        is append-only, const, or queue.
+ : @error If the order property of the collection $name
+ :        is unordered.
+ : @error If $content does not match the expected type
  :        according to the rules for SequenceType Matching.
- : @return The variable <tt>$content</tt> is evaluated as though it were
+ : @return The variable $content is evaluated as though it were
  :         an enclosed expression in an element constructor
  :         (see Rule 1e in Section 3.7.1.3 ContentXQ of the
  :         XQuery Update Facility 1.0 specification).
  :         The result of this step is a sequence of nodes to be inserted,
- :         called the insertion sequence. Let <tt>$list</tt> be the insertion sequence.
+ :         called the insertion sequence. Let $list be the insertion sequence.
  :         The result of the function is an empty XDM instance and a pending update list
- :         that contains the <tt>upd:insertNodesFirst($name, $list)</tt>
+ :         that contains the upd:insertNodesFirst($name, $list)
  :         update primitive.
  :)
 declare updating function xqddf:insert-nodes-first($name as xs:QName,
                                                  $content as node()*) external;
 
 (:~
- : The <tt>insert-nodes-last</tt> function is an updating function that inserts copies
+ : The insert-nodes-last function is an updating function that inserts copies
  : (see below) of zero or more nodes as last nodes into a collection.
  :
- : @param <tt>$name</tt> The name of the collection to which the nodes should
+ : @param $name The name of the collection to which the nodes should
  :        be added.
- : @param <tt>$content</tt> The sequences of nodes that should be added to the new
+ : @param $content The sequences of nodes that should be added to the new
  :        collection.
- : @error <tt></tt> If available collections does not provide a mapping for
- :        the expanded QName <tt>$name</tt>.
- : @error <tt></tt> If the modifier property of the collection <tt>$name</tt>
- :        is <tt>const</tt>.
- : @error <tt></tt> If the order property of the collection <tt>$name</tt>
- :        is <tt>unordered</tt>.
- : @error <tt></tt> If <tt>$content</tt> does not match the expected type
+ : @error If available collections does not provide a mapping for
+ :        the expanded QName $name.
+ : @error If the modifier property of the collection $name
+ :        is const.
+ : @error If the order property of the collection $name
+ :        is unordered.
+ : @error If $content does not match the expected type
  :        according to the rules for SequenceType Matching.
- : @return The variable <tt>$content</tt> is evaluated as though it were
+ : @return The variable $content is evaluated as though it were
  :         an enclosed expression in an element constructor
  :         (see Rule 1e in Section 3.7.1.3 ContentXQ of the
  :         XQuery Update Facility 1.0 specification).
  :         The result of this step is a sequence of nodes to be inserted,
- :         called the insertion sequence. Let <tt>$list</tt> be the insertion sequence.
+ :         called the insertion sequence. Let $list be the insertion sequence.
  :         The result of the function is an empty XDM instance and a pending update list
- :         that contains the <tt>upd:insertNodesLast($name, $list)</tt>
+ :         that contains the upd:insertNodesLast($name, $list)
  :         update primitive.
  :)
 declare updating function xqddf:insert-nodes-last($name as xs:QName,
                                                 $content as node()*) external;
 
 (:~
- : The <tt>insert-nodes-before</tt> function is an updating function that inserts
- : copies of zero or more nodes as preceding siblings of <tt>$target</tt>
+ : The insert-nodes-before function is an updating function that inserts
+ : copies of zero or more nodes as preceding siblings of $target
  : into a collection.
  :
- : @param <tt>$name</tt> The name of the collection to which the nodes should
+ : @param $name The name of the collection to which the nodes should
  :        be added.
- : @param <tt>$target</tt> The node in the collection before which the <tt>$content</tt>
+ : @param $target The node in the collection before which the $content
  :        sequence should be inserted.
- : @param <tt>$content</tt> The sequences of nodes that should be added to the new
+ : @param $content The sequences of nodes that should be added to the new
  :        collection.
- : @error <tt></tt> If available collections does not provide a mapping for
- :        the expanded QName <tt>$name</tt>.
- : @error <tt></tt> If the modifier property of the collection <tt>$name</tt>
- :        is <tt>const</tt>, <tt>append-only</tt>, or <tt>queue</tt>.
- : @error <tt></tt> If the order property of the collection <tt>$name</tt>
- :        is <tt>unordered</tt>.
- : @error <tt></tt> If <tt>$content</tt> does not match the expected type
+ : @error If available collections does not provide a mapping for
+ :        the expanded QName $name.
+ : @error If the modifier property of the collection $name
+ :        is const, append-only, or queue.
+ : @error If the order property of the collection $name
+ :        is unordered.
+ : @error If $content does not match the expected type
  :        according to the rules for SequenceType Matching.
- : @error <tt></tt> If the <tt>$target</tt> node is not a node that is
- :        contained in the collection <tt>$name</tt>.
- : @return The variable <tt>$content</tt> is evaluated as though it were
+ : @error If the $target node is not a node that is
+ :        contained in the collection $name.
+ : @return The variable $content is evaluated as though it were
  :         an enclosed expression in an element constructor
  :         (see Rule 1e in Section 3.7.1.3 ContentXQ of the
  :         XQuery Update Facility 1.0 specification).
  :         The result of this step is a sequence of nodes to be inserted,
- :         called the insertion sequence. Let <tt>$list</tt> be the insertion sequence.
+ :         called the insertion sequence. Let $list be the insertion sequence.
  :         The result of the function is an empty XDM instance and a pending update list
- :         that contains the <tt>upd:insertNodesBefore($name, $target, $list)</tt>
+ :         that contains the upd:insertNodesBefore($name, $target, $list)
  :         update primitive.
  :)
 declare updating function xqddf:insert-nodes-before($name as xs:QName,
@@ -222,34 +222,34 @@ declare updating function xqddf:insert-nodes-before($name as xs:QName,
                                                     $content as node()*) external;
 
 (:~
- : The <tt>insert-nodes-after</tt> function is an updating function that inserts
- : copies of zero or more nodes as following siblings of <tt>$target</tt>
+ : The insert-nodes-after function is an updating function that inserts
+ : copies of zero or more nodes as following siblings of $target
  : into a collection.
  :
- : @param <tt>$name</tt> The name of the collection to which the nodes should
+ : @param $name The name of the collection to which the nodes should
  :        be added.
- : @param <tt>$target</tt> The node in the collection after which the <tt>$content</tt>
+ : @param $target The node in the collection after which the $content
  :        sequence should be inserted.
- : @param <tt>$content</tt> The sequences of nodes that should be added to the new
+ : @param $content The sequences of nodes that should be added to the new
  :        collection.
- : @error <tt></tt> If available collections does not provide a mapping for
- :        the expanded QName <tt>$name</tt>.
- : @error <tt></tt> If <tt>$content</tt> does not match the expected type
+ : @error If available collections does not provide a mapping for
+ :        the expanded QName $name.
+ : @error If $content does not match the expected type
  :        according to the rules for SequenceType Matching.
- : @error <tt></tt> If the modifier property of the collection <tt>$name</tt>
- :        is <tt>const</tt>, <tt>append-only</tt>, or <tt>queue</tt>.
- : @error <tt></tt> If the order property of the collection <tt>$name</tt>
- :        is <tt>unordered</tt>.
- : @error <tt></tt> If the <tt>$target</tt> node is not a node that is
- :        contained in the collection <tt>$name</tt>.
- : @return The variable <tt>$content</tt> is evaluated as though it were
+ : @error If the modifier property of the collection $name
+ :        is const, append-only, or queue.
+ : @error If the order property of the collection $name
+ :        is unordered.
+ : @error If the $target node is not a node that is
+ :        contained in the collection $name.
+ : @return The variable $content is evaluated as though it were
  :         an enclosed expression in an element constructor
  :         (see Rule 1e in Section 3.7.1.3 ContentXQ of the
  :         XQuery Update Facility 1.0 specification).
  :         The result of this step is a sequence of nodes to be inserted,
- :         called the insertion sequence. Let <tt>$list</tt> be the insertion sequence.
+ :         called the insertion sequence. Let $list be the insertion sequence.
  :         The result of the function is an empty XDM instance and a pending update list
- :         that contains the <tt>upd:insertNodesAfter($name, $target, $list)</tt>
+ :         that contains the upd:insertNodesAfter($name, $target, $list)
  :         update primitive.
  :)
 declare updating function xqddf:insert-nodes-after($name as xs:QName,
@@ -257,23 +257,23 @@ declare updating function xqddf:insert-nodes-after($name as xs:QName,
                                                   $content as node()*) external;
 
 (:~
- : The <tt>delete-nodes</tt> function is an updating function that deletes zero of more
+ : The delete-nodes function is an updating function that deletes zero of more
  : nodes from a collection. 
  :
- : @param <tt>$name</tt> The name of the collection from which the nodes
+ : @param $name The name of the collection from which the nodes
  :        should be deleted.
- : @param <tt>$target</tt> The nodes in the collection that should be deleted.
- : @error <tt></tt> If available collections does not provide a mapping
- :        for the expaned QName <tt>$name</tt>.
- : @error <tt></tt> If the modifier property of the statically known
- :        collection identified by QName <tt>$name</tt> is <tt>const</tt>,
- :        <tt>queue</tt>, or <tt>append-only</tt>.
- : @error <tt></tt> If any node of the <tt>$target</tt> sequence is not a member of
- :        the sequence that is mapped from the expanded QName <tt>$name</tt>.
- : @return  For each node <tt>$tnode</tt> in the target sequence <tt>$target</tt>,
+ : @param $target The nodes in the collection that should be deleted.
+ : @error If available collections does not provide a mapping
+ :        for the expaned QName $name.
+ : @error If the modifier property of the statically known
+ :        collection identified by QName $name is const,
+ :        queue, or append-only.
+ : @error If any node of the $target sequence is not a member of
+ :        the sequence that is mapped from the expanded QName $name.
+ : @return  For each node $tnode in the target sequence $target,
  :          the following update primitive is appended to the pending update list:
  :          <ul>
- :            <li><tt>upd:deleteNode($name\$, $tnode)</tt></li>
+ :            <li>upd:deleteNode($name\$, $tnode)</li>
  :          </ul>
  :          The resulting pending update list (together with an empty XDM instance)
  :          is the result of the delete-nodes function.
@@ -282,163 +282,163 @@ declare updating function xqddf:delete-nodes($name as xs:QName,
                                              $target as node()*) external;
 
 (:~
- : The <tt>delete-node-first</tt> function is an updating function that deletes the
+ : The delete-node-first function is an updating function that deletes the
  : first node from an ordered collection.
  :
- : @param <tt>$name</tt> The name of the collection from which the first node
+ : @param $name The name of the collection from which the first node
  :        should be deleted.
- : @error <tt>XDDY0009</tt> If available collections does not provide a mapping
- :        for the expaned QName <tt>$name</tt>.
- : @error <tt></tt> If the modifier property of the collection <tt>$name</tt>
- :        is <tt>const</tt> or <tt>append-only</tt>.
- : @error <tt></tt> If the order property of the collection <tt>$name</tt>
- :        is <tt>unordered</tt>.
- : @error <tt></tt> If the sequences mapped by the expanded QName
- :        <tt>$name</tt> doesn't contain any nodes.
- : @return Let <tt>$tnode</tt> be the first node of the sequence in the map
- :         of available collections identified by QName <tt>$name</tt>.
+ : @error XDDY0009 If available collections does not provide a mapping
+ :        for the expaned QName $name.
+ : @error If the modifier property of the collection $name
+ :        is const or append-only.
+ : @error If the order property of the collection $name
+ :        is unordered.
+ : @error If the sequences mapped by the expanded QName
+ :        $name doesn't contain any nodes.
+ : @return Let $tnode be the first node of the sequence in the map
+ :         of available collections identified by QName $name.
  :         The result of this function is an empty XDM instance and a pending
- :         update list containing the <tt>upd:deleteNode($name, $tnode)</tt>
+ :         update list containing the upd:deleteNode($name, $tnode)
  :         update primitive.
  :)
 declare updating function xqddf:delete-node-first($name as xs:QName) external;
 
 (:~
- : The <tt>delete-nodes-first</tt> function is an updating function that deletes the
+ : The delete-nodes-first function is an updating function that deletes the
  : first N nodes from an ordered collection, where N is a given number.
  :
- : @param <tt>$name</tt> The name of the collection from which the last nodes
+ : @param $name The name of the collection from which the last nodes
  :        should be deleted.
- : @param <tt>$number</tt> The number of nodes to delete.
- : @error <tt></tt> If available collections does not provide a mapping
- :        for the expaned QName <tt>$name</tt>.
- : @error <tt></tt> If the modifier property of the collection <tt>$name</tt>
- :        is <tt>const</tt> or <tt>append-only</tt>.
- : @error <tt></tt> If the order property of the collection <tt>$name</tt>
- :        is <tt>unordered</tt>.
- : @error <tt>XDDY0014</tt> If the collection contains less than $number nodes.
- : @return Let <tt>$tnodes</tt> be the sequence consisting of the first $number
+ : @param $number The number of nodes to delete.
+ : @error If available collections does not provide a mapping
+ :        for the expaned QName $name.
+ : @error If the modifier property of the collection $name
+ :        is const or append-only.
+ : @error If the order property of the collection $name
+ :        is unordered.
+ : @error XDDY0014 If the collection contains less than $number nodes.
+ : @return Let $tnodes be the sequence consisting of the first $number
  :         nodes in the collection. The result of this function is an empty XDM
  :         instance and a pending update list containing the
- :         <tt>upd:deleteNodes($name, $tnodes)</tt> update primitive.
+ :         upd:deleteNodes($name, $tnodes) update primitive.
  :)
 declare updating function xqddf:delete-nodes-first($name as xs:QName,
                                                    $number as xs:unsignedLong) external;
 
 (:~
- : The <tt>delete-node-last</tt> function is an updating function that deletes the
+ : The delete-node-last function is an updating function that deletes the
  : last node from an ordered collection.
  :
- : @param <tt>$name</tt> The name of the collection from which the last node
+ : @param $name The name of the collection from which the last node
  :        should be deleted.
- : @error <tt></tt> If available collections does not provide a mapping
- :        for the expaned QName <tt>$name</tt>.
- : @error <tt></tt> If the modifier property of the collection <tt>$name</tt>
- :        is <tt>const</tt>, <tt>append-only</tt>, or <tt>queue</tt>.
- : @error <tt></tt> If the order property of the collection <tt>$name</tt>
- :        is <tt>unordered</tt>.
- : @error <tt>XDDY0014</tt> If the sequences mapped by the expanded QName
- :        <tt>$name</tt> doesn't contain any nodes.
- : @return Let <tt>$tnode</tt> be the last node of the sequence in the map
- :         of available collections identified by QName <tt>$name</tt>.
+ : @error If available collections does not provide a mapping
+ :        for the expaned QName $name.
+ : @error If the modifier property of the collection $name
+ :        is const, append-only, or queue.
+ : @error If the order property of the collection $name
+ :        is unordered.
+ : @error XDDY0014 If the sequences mapped by the expanded QName
+ :        $name doesn't contain any nodes.
+ : @return Let $tnode be the last node of the sequence in the map
+ :         of available collections identified by QName $name.
  :         The result of this function is an empty XDM instance and a pending
- :         update list containing the <tt>upd:deleteNode($name, $tnode)</tt>
+ :         update list containing the upd:deleteNode($name, $tnode)
  :         update primitive.
  :)
 declare updating function xqddf:delete-node-last($name as xs:QName) external;
 
 
 (:~
- : The <tt>delete-nodes-last</tt> function is an updating function that deletes the
+ : The delete-nodes-last function is an updating function that deletes the
  : last N nodes from an ordered collection, where N is a given number.
  :
- : @param <tt>$name</tt> The name of the collection from which the last nodes
+ : @param $name The name of the collection from which the last nodes
  :        should be deleted.
- : @param <tt>$number</tt> The number of nodes to delete.
- : @error <tt></tt> If available collections does not provide a mapping
- :        for the expaned QName <tt>$name</tt>.
- : @error <tt></tt> If the modifier property of the collection <tt>$name</tt>
- :        is <tt>const</tt>, <tt>append-only</tt>, or <tt>queue</tt>.
- : @error <tt></tt> If the order property of the collection <tt>$name</tt>
- :        is <tt>unordered</tt>.
- : @error <tt>XDDY0014</tt> If the collection contains less than $number nodes.
- : @return Let <tt>$tnodes</tt> be the sequence consisting of the last $number
+ : @param $number The number of nodes to delete.
+ : @error If available collections does not provide a mapping
+ :        for the expaned QName $name.
+ : @error If the modifier property of the collection $name
+ :        is const, append-only, or queue.
+ : @error If the order property of the collection $name
+ :        is unordered.
+ : @error XDDY0014 If the collection contains less than $number nodes.
+ : @return Let $tnodes be the sequence consisting of the last $number
  :         nodes in the collection. The result of this function is an empty XDM
  :         instance and a pending update list containing the
- :         <tt>upd:deleteNodes($name, $tnode)</tt> update primitive.
+ :         upd:deleteNodes($name, $tnode) update primitive.
  :)
 declare updating function xqddf:delete-nodes-last($name as xs:QName,
                                                   $number as xs:unsignedLong) external;
 
 (:~
- : The <tt>index-of</tt> function is simple function that returns the
- : index of the node <tt>$node</tt> in the sequence of nodes belonging to
+ : The index-of function is simple function that returns the
+ : index of the node $node in the sequence of nodes belonging to
  : the entry with QName $name in the map of available collections.
  :
- : @param <tt>$name</tt> The name of the collection
- : @param <tt>node</tt> The node to retrieve the index from.
- : @error <tt></tt> If available collections does not provide a mapping
- :        for the expaned QName <tt>$name</tt>.
- : @error <tt></tt> If the order property of the collection <tt>$name</tt>
- :        is <tt>unordered</tt>.
- : @error <tt></tt> If the node <tt>$node</tt> is not contained in the collection.
+ : @param $name The name of the collection
+ : @param node The node to retrieve the index from.
+ : @error If available collections does not provide a mapping
+ :        for the expaned QName $name.
+ : @error If the order property of the collection $name
+ :        is unordered.
+ : @error If the node $node is not contained in the collection.
  : @return The result of this function is the position as xs:integer of
- :         the node <tt>$node</tt> in the sequence belonging to the entry
+ :         the node $node in the sequence belonging to the entry
  :         with QName $name in the map of available collections.
  :)
 declare function xqddf:index-of($name as xs:QName, $node as node()) as xs:integer external;
 
 (:~
- : The <tt>collection</tt> function is simple function that returns the
- : the sequence of nodes belonging to the entry with QName <tt>$name</tt>
+ : The collection function is simple function that returns the
+ : the sequence of nodes belonging to the entry with QName $name
  : in the map of available collections.
  :
- : @param <tt>$name</tt> The name of the collection
- : @error <tt></tt> If available collections does not provide a mapping
- :        for the expaned QName <tt>$name</tt>.
+ : @param $name The name of the collection
+ : @error If available collections does not provide a mapping
+ :        for the expaned QName $name.
  : @return The result of this function is the sequence of nodes
- :         belonging to the entry with QName <tt>$name</tt> in the map
+ :         belonging to the entry with QName $name in the map
  :         of available collections.
  :)
 declare function xqddf:collection($name as xs:QName) as node()* external;
 
 (:~
- : The <tt>create-index</tt> function is an updating function that adds a
- : mapping from the expanded QName <tt>$name</tt> to a map of index entries
+ : The create-index function is an updating function that adds a
+ : mapping from the expanded QName $name to a map of index entries
  : to the map of available indexes.
  :
  : @param $name The QName of the index to add to the map of available
  :        indexes.
- : @error <tt></tt> if the expanded QName of <tt>$name</tt> is not equal
+ : @error if the expanded QName of $name is not equal
  :       (as defined by the
  :       <a href="http://www.w3.org/TR/xquery/#id-value-comparisons">eq operator</a>) 
  :       to the name of any resource in the statically known indexes.
- : @error <tt></tt> if available indexes already provides a mapping
- :        for the expaned QName <tt>$name</tt>.
+ : @error if available indexes already provides a mapping
+ :        for the expaned QName $name.
  : @return The result of the function is an empty XDM instance and a pending
- :         update list that contains the <tt>upd:createIndex($name)</tt>
+ :         update list that contains the upd:createIndex($name)
  :         update primitive.
  :)
 declare updating function xqddf:create-index($name as xs:QName) external;
 
 (:~
- : The <tt>delete-index</tt> function is an updating function that removes a resource
- : from the map of available indexes. The QName <tt>$name</tt> is the name
+ : The delete-index function is an updating function that removes a resource
+ : from the map of available indexes. The QName $name is the name
  : of the resource.
  :
  : @param $name The QName of the index to delete from the map of available
  :        indexes.
  : @error XDDY0009 If available indexes does not provide a mapping for
- :        the expaned QName <tt>$name</tt>.
+ :        the expaned QName $name.
  : @return The result of the function is an empty XDM instance and a pending
- :         update list that contains the <tt>upd:deleteIndex($name)</tt>
+ :         update list that contains the upd:deleteIndex($name)
  :         update primitive.
  :)
 declare updating function xqddf:delete-index($name as xs:QName) external;
 
 (:~
- : The <tt>refresh-index</tt> function is an updating function that populates
- : the map of index entries indentified by the expanded QName <tt>$name</tt>
+ : The refresh-index function is an updating function that populates
+ : the map of index entries indentified by the expanded QName $name
  : in the map of available indexes.
  : Note that if the maintenance property of the index in question is automatic,
  : this function is a NOP.
@@ -446,51 +446,51 @@ declare updating function xqddf:delete-index($name as xs:QName) external;
  : @param $name The QName of the index to refresh.
  : @return The result of the function is an empty XDM instance and a
  :         pending update list that consists of a
- :         <tt>upd:refresHindex($name)</tt> update primitive.
- : @error <tt></tt> If available indexes does not provide a mapping for
- :        the expanded QName <tt>$name</tt>.
+ :         upd:refresHindex($name) update primitive.
+ : @error If available indexes does not provide a mapping for
+ :        the expanded QName $name.
  :)
 declare updating function xqddf:refresh-index($name as xs:QName) external;
 
 (:~
- : The <tt>activate-integrity-constraint</tt> function is an updating function
+ : The activate-integrity-constraint function is an updating function
  : that activates the integrity constraint indentified by the expanded QName
- : <tt>$name</tt> in the dynamic context.
+ : $name in the dynamic context.
  :
  : @param $name The QName of the integrity constraint to activate.
  : @return The result of the function is an empty XDM instance and a
  :         pending update list that consists of a
- :         <tt>upd:activateIntegrityConstraint($name)</tt> update primitive.
- : @error <tt></tt> If available integrity constraints in the static context
- :        does not provide a mapping for the expanded QName <tt>$name</tt>.
+ :         upd:activateIntegrityConstraint($name) update primitive.
+ : @error If available integrity constraints in the static context
+ :        does not provide a mapping for the expanded QName $name.
  :)
 declare updating function xqddf:activate-integrity-constraint(
   $name as xs:QName) external;
 
 (:~
- : The <tt>deactivate-integrity-constraint</tt> function is an updating function
+ : The deactivate-integrity-constraint function is an updating function
  : that deactivates the integrity constraint indentified by the expanded QName
- : <tt>$name</tt> in the dynamic context.
+ : $name in the dynamic context.
  :
  : @param $name The QName of the integrity constraint to deactivate.
  : @return The result of the function is an empty XDM instance and a
  :         pending update list that consists of a
- :         <tt>upd:deActivateIntegrityConstraint($name)</tt> update primitive.
- : @error <tt></tt> If available integrity constraints in the static context
- :        does not provide a mapping for the expanded QName <tt>$name</tt>.
+ :         upd:deActivateIntegrityConstraint($name) update primitive.
+ : @error If available integrity constraints in the static context
+ :        does not provide a mapping for the expanded QName $name.
  :)
 declare updating function xqddf:deactivate-integrity-constraint(
   $name as xs:QName) external;
 
 (:~
- : The <tt>check-integrity-constraint</tt> function checks if the constraints
+ : The check-integrity-constraint function checks if the constraints
  : specified by the integrity constraints (indentified by the expanded QName
- : <tt>$name</tt>) are valid in the database.
+ : $name) are valid in the database.
  :
  : @param $name The QName of the integrity constraint to check.
  : @return true if the constraints are valid in the database, false otherwise.
- : @error <tt></tt> If available integrity constraints in the static context
- :        does not provide a mapping for the expanded QName <tt>$name</tt>.
+ : @error If available integrity constraints in the static context
+ :        does not provide a mapping for the expanded QName $name.
  :)
 declare function xqddf:check-integrity-constraint(
   $name as xs:QName) as xs:boolean external;

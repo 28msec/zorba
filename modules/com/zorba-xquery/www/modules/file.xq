@@ -72,7 +72,7 @@ module namespace file = "http://www.zorba-xquery.com/modules/file";
  : path/URI is already used.
  :
  : @param $sourceFile The path/URI of the file to copy.
- : @param $destinationFile The detination <tt>path/URI</tt>.
+ : @param $destinationFile The detination path/URI.
  : @example copy.xq
  : @return true if the copy operation was successful.
  : @error An error is thrown if IO or Security problems occur.
@@ -116,7 +116,7 @@ declare %nondeterministic function file:exists(
  : Lists the file system items in a certain directory.
  : The order of the items in the result is not defined.
  : The "." and ".." items are not returned.
- : The file paths are relative to the provided <tt>$path</tt>.
+ : The file paths are relative to the provided $path.
  :
  : @param $path The path/URI to retrieve the children from.
  : @return The sequence of names of the direct children. 
@@ -131,8 +131,8 @@ declare %nondeterministic function file:files(
  : The order of the items in the result is not defined.
  : The "." and ".." items are not considered for the match.
  : The result of this function is equivalent to the following call:
- : <tt>file:files($path, $pattern, fn:false())</tt>
- : The file paths are relative to the provided <tt>$path</tt>.
+ : file:files($path, $pattern, fn:false())
+ : The file paths are relative to the provided $path.
  : 
  : @param $path The path/URI to retrieve the children from.
  : @param $pattern The file name condition to be checked.
@@ -149,7 +149,7 @@ declare function file:files(
  : Lists all files matching the given pattern in a given directory.
  : The order of the items in the result is not defined.
  : The "." and ".." items are not considered for the match.
- : The file paths are relative to the provided <tt>$path</tt>.
+ : The file paths are relative to the provided $path.
  : 
  : @param $path The path/URI to retrieve the children from.
  : @param $pattern The file name condition to be checked.
@@ -385,10 +385,10 @@ declare sequential function file:remove(
  : @param $file The file to write the content to.
  : @param $content The content to be serialized to the file.
  : @param $serializer-params Parameter to control the serialization of the
- :        content. The semantics is the same with the <tt>$params</tt>
- :        parameter of the <tt><a target="_blank"
+ :        content. The semantics is the same with the $params
+ :        parameter of the <a target="_blank"
  :        href="http://www.w3.org/TR/xpath-functions-11/#func-serialize"
- :        >fn:serialize</a></tt> function.
+ :        >fn:serialize</a> function.
  : @return The empty sequence
  : @error An error is thrown if IO or Security problems occur.
  :)
@@ -407,10 +407,10 @@ declare sequential function file:write(
  : @param $file The file to write the content to.
  : @param $content The content to be serialized to the file.
  : @param $serializer-params Parameter to control the serialization of the
- :        content. The semantics is the same with the <tt>$params</tt>
- :        parameter of the <tt><a target="_blank"
+ :        content. The semantics is the same with the $params
+ :        parameter of the <a target="_blank"
  :        href="http://www.w3.org/TR/xpath-functions-11/#func-serialize"
- :        >fn:serialize</a></tt> function.
+ :        >fn:serialize</a> function.
  : @param $append Flag to specify if this is an append operation or not.
  : @return The empty sequence
  : @error An error is thrown if IO or Security problems occur.
