@@ -103,7 +103,8 @@ static expr_t translate_aux(
     short rootSctxId,
     ModulesInfo* minfo,
     const std::map<zstring, zstring>& modulesStack,
-    bool isLibModule);
+    bool isLibModule,
+    StaticContextConsts::xquery_version_t maxLibModuleVersion = StaticContextConsts::xquery_version_unknown);
 
 #ifndef NDEBUG
 
@@ -965,6 +966,12 @@ public:
   op_concatenate       : Cached ptr to the function obj for the concat func
   op_enclosed_expr     : Cached ptr to the function obj for the enclosed_expr op
 
+  theMaxLibModuleVersion  : This specifies the maximum module version for an 
+                         imported library. In case a version 1.0 module tries 
+                         to import a version 1.1 library, an error must be raised.
+                         A value of xquery_version_unknown is interpreted as 
+                         "don't care".
+
 ********************************************************************************/
 class TranslatorImpl : public parsenode_visitor
 {
@@ -1055,6 +1062,8 @@ protected:
 
   std::vector<var_expr_t>              theScopedVars;
 
+  StaticContextConsts::xquery_version_t theMaxLibModuleVersion;
+
 public:
 
 TranslatorImpl(
@@ -1063,7 +1072,8 @@ TranslatorImpl(
     short rootSctxId,
     ModulesInfo* minfo,
     const std::map<zstring, zstring>& modulesStack,
-    bool isLibModule)
+    bool isLibModule,
+    StaticContextConsts::xquery_version_t maxLibModuleVersion = StaticContextConsts::xquery_version_unknown)
   :
   theRootTranslator(rootTranslator),
   theRTM(GENV_TYPESYSTEM),
@@ -1087,7 +1097,8 @@ TranslatorImpl(
   hadDefNSDecl(false),
   hadEmptyOrdDecl(false),
   hadOrdModeDecl(false),
-  hadRevalDecl(false)
+  hadRevalDecl(false),
+  theMaxLibModuleVersion(maxLibModuleVersion)
 {
   xquery_fns_def_dot.insert ("string-length");
   xquery_fns_def_dot.insert ("normalize-space");
@@ -2370,6 +2381,21 @@ void* begin_visit(const VersionDecl& v)
     version = StaticContextConsts::xquery_version_unknown;
   }
 
+  if (theMaxLibModuleVersion != StaticContextConsts::xquery_version_unknown
+    &&
+    version > theMaxLibModuleVersion)
+  {
+    zstring maxversion;
+    if (theMaxLibModuleVersion == StaticContextConsts::xquery_version_1_1)
+      maxversion = "1.1";
+    else
+      maxversion = "1.0";
+    // TODO: the error code might need to be changed after W3C solves 
+    // the bug report concerning modules of version 1.0 importing v1.1 libraries.
+    ZORBA_ERROR_LOC_DESC(XQST0031, loc, "An XQuery " + versionStr 
+      + " version library cannot be imported by a " + maxversion + " version module.");
+  }
+
   if (version == StaticContextConsts::xquery_version_unknown)
     ZORBA_ERROR_LOC(XQST0031, loc);
 
@@ -3143,7 +3169,8 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
                     moduleRootSctxId,
                     theModulesInfo,
                     modulesStack,
-                    true);
+                    true,
+                    theSctx->xquery_version());
 
       // Register the mapping between the current location uri and the
       // target namespace.
@@ -12180,14 +12207,16 @@ expr_t translate_aux(
     short rootSctxId,
     ModulesInfo* minfo,
     const std::map<zstring, zstring>& modulesStack,
-    bool isLibModule)
+    bool isLibModule,
+    StaticContextConsts::xquery_version_t maxLibModuleVersion)
 {
   std::auto_ptr<TranslatorImpl> t(new TranslatorImpl(rootTranslator,
                                                      rootSctx,
                                                      rootSctxId,
                                                      minfo,
                                                      modulesStack,
-                                                     isLibModule));
+                                                     isLibModule,
+                                                     maxLibModuleVersion));
 
   root.accept(*t);
 
