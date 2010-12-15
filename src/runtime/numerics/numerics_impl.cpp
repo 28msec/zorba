@@ -682,11 +682,15 @@ static bool isAllowedType(store::Item* type_qname)
     return false;
 }
 
-// returns n zeros "0". n can be 0 and then the function will return ""
+// returns n zeros "0". n can be <=0 and then the function will return ""
 static zstring createZeros(int n)
 {
   zstring result;
-  result.append(n, '0');
+  // bugfix for bug #3134696
+  // if called from formatNumber with n = -1
+  if (n > 0) {
+    result.append(n, '0');
+  }
   return result;
 }
 
