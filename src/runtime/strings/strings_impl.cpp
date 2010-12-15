@@ -37,6 +37,7 @@
 
 #include "zorbautils/string_util.h"
 
+#include "util/regex.h"
 #include "util/utf8_util.h"
 #include "util/utf8_string.h"
 #include "util/string_util.h"
@@ -1266,7 +1267,7 @@ bool FnMatchesIterator::nextImpl(
     PlanState& planState) const
 {
   zstring input;
-  zstring pattern;
+  zstring xquery_pattern;
   zstring flags;
   store::Item_t item;
   bool res = false;
@@ -1280,7 +1281,7 @@ bool FnMatchesIterator::nextImpl(
   if (!consumeNext(item, theChildren[1].getp(), planState))
     ZORBA_ASSERT (false);
 
-  item->getStringValue2(pattern);
+  item->getStringValue2(xquery_pattern);
 
   if(theChildren.size() == 3) 
   {
@@ -1292,7 +1293,9 @@ bool FnMatchesIterator::nextImpl(
 
   try 
   {
-    res = zorba::match_part(input, pattern, flags.c_str());
+    zstring lib_pattern;
+    convert_xquery_re( xquery_pattern, &lib_pattern );
+    res = zorba::match_part(input, lib_pattern, flags.c_str());
   }
   catch(zorbatypesException& ex) 
   {
