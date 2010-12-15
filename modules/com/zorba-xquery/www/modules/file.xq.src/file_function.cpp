@@ -27,6 +27,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #ifdef WIN32
+#include <Windows.h>
 #include <direct.h>
 #else
 #include <unistd.h>
@@ -35,7 +36,9 @@
 static zorba::String getCurrentPath()
 {
 #ifdef WIN32
-  char* buffer = _getcwd(NULL, 0);
+  wchar_t* wbuffer = _wgetcwd(NULL, 0);
+  char buffer[1024];
+  WideCharToMultiByte(CP_UTF8, 0, wbuffer, -1, buffer, sizeof(buffer), NULL, NULL);
 #else
   char buffer[2048];
   getcwd(buffer, 2048);

@@ -356,7 +356,21 @@ FileImpl::openInputStream(std::ifstream& aInStream, bool binary) const
     if (binary) {
       lMode |= std::ios_base::binary;
     }
+#ifndef WIN32
     aInStream.open(lPath.c_str(), lMode);
+#else
+    WCHAR wpath_str[1024];
+    wpath_str[0] = 0;
+    if(MultiByteToWideChar(CP_UTF8,
+                        0, lPath.c_str(), -1,
+                        wpath_str, sizeof(wpath_str)/sizeof(WCHAR)) == 0)
+    {//probably there is some invalid utf8 char, try the Windows ACP
+      MultiByteToWideChar(CP_ACP,
+                        0, lPath.c_str(), -1,
+                        wpath_str, sizeof(wpath_str)/sizeof(WCHAR));
+    }
+    aInStream.open(wpath_str, lMode);
+#endif
 
     if (aInStream.is_open() == false) {
       ZORBA_ERROR_DESC_OSS(FODC0002, "File not accessible: " << lPath);
@@ -379,7 +393,21 @@ FileImpl::openOutputStream(std::ofstream& aOutStream, bool append, bool binary) 
     if (binary) {
       lMode |= std::ios_base::binary;
     }
+#ifndef WIN32
     aOutStream.open(lPath.c_str(), lMode);
+#else
+    WCHAR wpath_str[1024];
+    wpath_str[0] = 0;
+    if(MultiByteToWideChar(CP_UTF8,
+                        0, lPath.c_str(), -1,
+                        wpath_str, sizeof(wpath_str)/sizeof(WCHAR)) == 0)
+    {//probably there is some invalid utf8 char, try the Windows ACP
+      MultiByteToWideChar(CP_ACP,
+                        0, lPath.c_str(), -1,
+                        wpath_str, sizeof(wpath_str)/sizeof(WCHAR));
+    }
+    aOutStream.open(wpath_str, lMode);
+#endif
 
     if (aOutStream.is_open() == false) {
       ZORBA_ERROR_DESC_OSS(FODC0002, "File not accessible: " << lPath);
