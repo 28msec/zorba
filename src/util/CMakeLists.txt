@@ -20,7 +20,6 @@ SET(UTIL_SRCS
     dir.cpp
     indent.cpp
     mmap_file.cpp
-    XmlWhitespace.cpp
     unicode_util.cpp
     utf8_util.cpp
     uuid/sysdep.cpp

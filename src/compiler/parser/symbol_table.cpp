@@ -17,7 +17,6 @@
 
 #include "compiler/parser/symbol_table.h"
 
-#include "util/XmlWhitespace.h"
 #include "util/utf8_util.h"
 #include "util/ascii_util.h"
 
@@ -134,7 +133,7 @@ off_t symbol_table::put_uri(char const* text, uint32_t length)
   string result;
   if (! decode_string (text, length, &result))
     return -1;
-  result = xmlWhitespaceCollapse(zstring(result)).str();
+  ascii::normalize_whitespace( result );
   return heap.put (result.c_str (), 0, result.length ());
 }
 

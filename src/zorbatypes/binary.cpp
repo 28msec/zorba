@@ -21,7 +21,6 @@
 
 #include "zorbatypes/binary.h"
 #include "zorbaerrors/error_manager.h"
-#include "util/XmlWhitespace.h"
 #include "util/ascii_util.h"
 #include "util/stl_util.h"
 #include "zorbaserialization/template_serializer.h"
@@ -363,7 +362,7 @@ void Base64::insertData(const char* str, size_t len)
         ZORBA_ERROR_DESC(FORG0001,"In Base 64, '=' must be at the end and must be succeed by [AEIMQUYcgkosw048]");
       }
     }
-    else if ( xmlWhitespaceChar(lChar) ) 
+    else if ( ascii::is_space(lChar) ) 
     {
       // ignore it
     }
