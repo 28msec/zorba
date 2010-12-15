@@ -233,8 +233,6 @@ declare function excel:percentile( $numbers as xs:anyAtomicType*, $k_at as xs:an
 
 
 
-(: priority 1 :)
-
 (:~
  : Function for AVEDEV.
  : This function should not be used outside this module.
@@ -566,30 +564,6 @@ declare function excel:small($numbers as xs:anyAtomicType*, $k as xs:integer) as
       $ordered_numbers[$k]
 };
 
-(:~
- : Not implemented.
- :
- : @param $numbers Not documented.
- : @return Not documented.
- : @error
- :)
-declare function excel:stdev($numbers as xs:anyAtomicType+) as xs:anyAtomicType
-{
-  fn:error($excel-err:errNA, "Stdev function: not implemented")
-};
-
-(:~
- : Not implemented.
- :
- : @param $numbers Not documented.
- : @return Not documented.
- : @error
- : @error
- :)
-declare function excel:stdevp($numbers as xs:anyAtomicType+) as xs:anyAtomicType
-{
-  fn:error($excel-err:errNA, "Stdevp function: not implemented")
-};
 
 (:~
  : Function for VAR, VARA, VARP, VARPA and SLOPE.
@@ -699,8 +673,8 @@ declare function excel:varpa($numbers as xs:anyAtomicType+) as xs:anyAtomicType
  :       <dt>4 or 104</dt> <dd> MAX</dd>
  :       <dt>5 or 105</dt> <dd> MIN</dd>
  :       <dt>6 or 106</dt> <dd> PRODUCT</dd>
- :       <dt>7 or 107</dt> <dd> STDEV</dd>
- :       <dt>8 or 108</dt> <dd> STDEVP</dd>
+ :       <dt>7 or 107</dt> <dd> STDEV (not implemented)</dd>
+ :       <dt>8 or 108</dt> <dd> STDEVP (not implemented)</dd>
  :       <dt>9 or 109</dt> <dd> SUM</dd>
  :       <dt>10 or 110</dt> <dd> VAR</dd>
  :       <dt>11 or 111</dt> <dd> VARP</dd></dl>
@@ -733,10 +707,12 @@ declare function excel:subtotal($function_num as xs:integer, $numbers as xs:anyA
     excel-math:product($numbers)
   else
   if ($function_num = 7 or $function_num = 107) then
-   excel:stdev($numbers)
+   (: excel:stdev($numbers) :)
+   fn:error($excel-err:errNA, "Stdev function: not implemented")
   else
   if ($function_num = 8 or $function_num = 108) then
-    excel:stdevp($numbers)
+    (: excel:stdevp($numbers) :)
+	fn:error($excel-err:errNA, "Stdevp function: not implemented")
   else
   if ($function_num = 9 or $function_num = 109) then
     excel-math:sum($numbers)
@@ -749,8 +725,6 @@ declare function excel:subtotal($function_num as xs:integer, $numbers as xs:anyA
   else
     fn:error($excel-err:errNum, "Subtotal function: function_num should be between 1 and 11 or 101 and 111")
 };
-
-(: priority 2 :)
 
 (:~
  : Function for PROB function.
