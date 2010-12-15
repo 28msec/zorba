@@ -60,9 +60,9 @@ namespace zorba {
  * @param icu_pat The ICU pattern string.
  */
 static void parse_digits( zstring const &xq_pat, zstring::const_iterator &xq_c,
-                          char stop, zstring &icu_pat ) {
+                          char stop, zstring *icu_pat ) {
   while ( ++xq_c != xq_pat.end() ) {
-    icu_pat += *xq_c;
+    *icu_pat += *xq_c;
     if ( *xq_c == stop )
       break;
     if ( !isdigit( *xq_c ) )
@@ -71,34 +71,34 @@ static void parse_digits( zstring const &xq_pat, zstring::const_iterator &xq_c,
 }
 
 /**
- * Converts an XQuery pattern ("wildcard syntax") into an ICU regular
- * expression pattern.
+ * Converts an XQuery full-text "wildcard syntax" pattern into an ICU regular
+ * expression.
  */
-static void xquery_to_icu_pattern( zstring const &xq_pat, zstring &icu_pat ) {
-  icu_pat.clear();
-  icu_pat.reserve( xq_pat.length() );
+static void wildcard_to_icu_pattern( zstring const &xq_pat, zstring *icu_pat ) {
+  icu_pat->clear();
+  icu_pat->reserve( xq_pat.length() );
 
   bool got_backslash = false, got_dot = false;
 
   FOR_EACH( zstring, xq_c, xq_pat ) {
     if ( got_backslash ) {
-      icu_pat += '\\';
-      icu_pat += *xq_c;
+      *icu_pat += '\\';
+      *icu_pat += *xq_c;
       got_backslash = false;
       continue;
     }
     if ( got_dot ) {
       switch ( *xq_c ) {
         case '.':
-          icu_pat += '.';
+          *icu_pat += '.';
           continue;
         case '{':
-          icu_pat += '{';
+          *icu_pat += '{';
           parse_digits( xq_pat, xq_c, ',', icu_pat );
           parse_digits( xq_pat, xq_c, '}', icu_pat );
           break;
         default:
-          icu_pat += *xq_c;
+          *icu_pat += *xq_c;
           break;
       }
       got_dot = false;
@@ -107,7 +107,7 @@ static void xquery_to_icu_pattern( zstring const &xq_pat, zstring &icu_pat ) {
     switch ( *xq_c ) {
       case '.':
         got_dot = true;
-        icu_pat += *xq_c;
+        *icu_pat += *xq_c;
         break;
       case '\\':
         got_backslash = true;
@@ -124,10 +124,10 @@ static void xquery_to_icu_pattern( zstring const &xq_pat, zstring &icu_pat ) {
       case '{':
       case '|':
       case '}':
-        icu_pat += '\\';
+        *icu_pat += '\\';
         // no break;
       default:
-        icu_pat += *xq_c;
+        *icu_pat += *xq_c;
         break;
     }
   }
@@ -142,7 +142,7 @@ static void xquery_to_icu_pattern( zstring const &xq_pat, zstring &icu_pat ) {
 
 ft_wildcard::ft_wildcard( zstring const &xq_pat ) {
   zstring icu_pat;
-  xquery_to_icu_pattern( xq_pat, icu_pat );
+  wildcard_to_icu_pattern( xq_pat, &icu_pat );
 #if DEBUG_MATCHER
   cout << "xq : " << xq_pat << endl;
   cout << "icu: " << icu_pat << endl;
@@ -180,7 +180,7 @@ static char const *const xq_patterns[] = {
 int main() {
   for ( char const *const *xq_pat = xq_patterns; *xq_pat; ++xq_pat ) {
     zstring icu_pat;
-    xquery_to_icu_pattern( *xq_pat, icu_pat );
+    wildcard_to_icu_pattern( *xq_pat, icu_pat );
     cout << *xq_pat << '\n' << icu_pat << "\n\n";
   }
 }
