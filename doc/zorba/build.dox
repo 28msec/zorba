@@ -165,21 +165,12 @@ For windows, just download the ImageMagick windows binary (Q8-windows-dll) and i
 
 \section mac Note for Mac OS Users 
 
-The easiest way to install the required packages (like CMake, etc.) is
-to use Darwin Ports (http://darwinports.com/). After installing Darwin
-Ports, you should run <tt>sudo port -d selfupdate</tt> to upgrade the
-package lists. If this was successful, you can simply install packages
-by typing e.g. <tt>sudo port install cmake</tt>.  Note that versions
-of libcurl and libtidy, that are already installed as part of Mac OS X
-are sufficient.  However, a newer version of libxml2 than the one that
-is part of Mac OS X (v 2.6.16) is needed which can be obtained from
-Darwin Ports (v 2.6.31) or from source (v 2.2.7 ).  Assumming the
-latter, one add the following to the cmake configuration options
+The easiest way to install the required packages (like CMake or Xerces-C) is
+to use Macports (http://macports.org/).
 
-\verbatim
-cmake -D LIBXML2_LIBRARIES=/usr/local/lib/libxml2.dylib
-\endverbatim
-
+Once all the required packages are installed you can execute CMake. By default
+CMake on Mac OS X uses the Makefile generator. Alternatively, you could specify
+different generators (e.g. Xcode) by starting CMake using the -G option (e.g. -G Xcode). 
 
 \subsection universal Building as Universal binaries
 
