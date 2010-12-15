@@ -37,8 +37,8 @@ static zorba::String getCurrentPath()
 {
 #ifdef WIN32
   wchar_t* wbuffer = _wgetcwd(NULL, 0);
-  char buffer[1024];
-  WideCharToMultiByte(CP_UTF8, 0, wbuffer, -1, buffer, sizeof(buffer), NULL, NULL);
+  char *buffer = (char*)malloc(1024);
+  WideCharToMultiByte(CP_UTF8, 0, wbuffer, -1, buffer, 1024, NULL, NULL);
 #else
   char buffer[2048];
   getcwd(buffer, 2048);
