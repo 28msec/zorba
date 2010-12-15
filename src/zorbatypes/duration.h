@@ -4,7 +4,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -31,7 +31,7 @@ namespace zorba
 
   See http://www.w3.org/TR/xmlschema-2/#duration for details.
 
-  Note: class Timezone (in timezone.h) is a subclass of Duration 
+  Note: class Timezone (in timezone.h) is a subclass of Duration
 ********************************************************************************/
 class ZORBA_DLL_PUBLIC Duration : public ::zorba::serialization::SerializeBaseClass
 {
@@ -45,7 +45,7 @@ public:
   } FACET_TYPE;
 
   static const int FRAC_SECONDS_UPPER_LIMIT; // = 1000000, maximum 6 digits
-  
+
 protected:
 
   typedef enum
@@ -59,7 +59,7 @@ protected:
     FRACSECONDS_DATA = 6
   } DATA_TYPE;
 
-protected:  
+protected:
   FACET_TYPE facet;
 
   bool       is_negative;
@@ -67,7 +67,8 @@ protected:
 
 public:
   /**
-   * Returns 0 on success
+   * Returns 0 on success, 1 on nonspecified error and 2 on integer overflow
+   *
    */
   static int parseDuration(
         const char* str,
@@ -75,15 +76,15 @@ public:
         Duration& d);
 
   /**
-   * Returns 0 on success
+   * Returns 0 on success, 1 on nonspecified error and 2 on integer overflow
    */
   static int parseYearMonthDuration(
         const char* str,
         ascii::size_type strlen,
         Duration& d);
-  
+
   /**
-   * Returns 0 on success
+   * Returns 0 on success, 1 on nonspecified error and 2 on integer overflow
    */
   static int parseDayTimeDuration(
         const char* str,
@@ -103,7 +104,7 @@ public:
 
 public:
   Duration();
-  
+
   Duration(FACET_TYPE facet_type);
 
   /**
@@ -147,31 +148,31 @@ public:
         long minutes,
         int seconds,
         int frac_seconds);
-  
+
   virtual ~Duration() {}
 
   bool operator==(const Duration& d) const;
-      
+
   int compare(const Duration& d, bool ignore_sign = false) const;
-      
+
   zstring toString() const;
-      
+
   Duration* toDuration() const;
-      
+
   Duration* toNegDuration() const;
-      
+
   Duration* toYearMonthDuration() const;
-      
+
   Duration* toDayTimeDuration() const;
 
   Duration* operator+(const Duration& d) const;
-      
+
   Duration* operator-(const Duration& d) const;
-      
+
   Duration* operator*(const Double& value) const;
-      
+
   Duration* operator/(const Double& value) const;
-      
+
   Decimal operator/(const Duration& d) const;
 
   virtual bool isNegative() const;
@@ -179,15 +180,15 @@ public:
   bool isZero() const;
 
   long getYears() const;
-      
+
   long getMonths() const;
-      
+
   long getDays() const;
-      
+
   virtual long getHours() const;
-      
+
   virtual long getMinutes() const;
-      
+
   virtual xs_decimal getSeconds() const;
 
   virtual long getFractionalSeconds() const;
@@ -197,7 +198,7 @@ public:
   Double getTotalSeconds() const;
 
   long getTotalMilliseconds() const;
-      
+
   uint32_t hash() const;
 
   FACET_TYPE getFacet() const { return facet; };

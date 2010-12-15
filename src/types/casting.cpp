@@ -184,8 +184,17 @@ T1_TO_T2(str, int)
 T1_TO_T2(str, dur)
 {
   Duration d;
-  if (0 == Duration::parseDuration(strval.c_str(), strval.size(), d))
+  int err;
+
+  if (0 == (err = Duration::parseDuration(strval.c_str(), strval.size(), d)))
     return aFactory->createDuration(result, &d);
+
+  if (err == 2)  // improved error message
+  {
+    ZORBA_ERROR_DESC_OSS(FORG0001, "Passed item \"" + strval + "\" (of type "
+        << TypeOps::toString(*aErrorInfo.theSourceType) << ") is not castable to passed target type ("
+        << TypeOps::toString(*aErrorInfo.theTargetType) << ") as a component exceedes the maximum supported value (2^31 = 2147483648).");
+  }
 
   throwError(FORG0001, aErrorInfo);
   return false;
@@ -195,8 +204,17 @@ T1_TO_T2(str, dur)
 T1_TO_T2(str, yMD)
 {
   Duration d;
-  if (0 == Duration::parseYearMonthDuration(strval.c_str(), strval.size(), d))
+  int err;
+
+  if (0 == (err = Duration::parseYearMonthDuration(strval.c_str(), strval.size(), d)))
     return aFactory->createYearMonthDuration(result, &d);
+
+  if (err == 2)  // improved error message
+  {
+    ZORBA_ERROR_DESC_OSS(FORG0001, "Passed item \"" + strval + "\" (of type "
+        << TypeOps::toString(*aErrorInfo.theSourceType) << ") is not castable to passed target type ("
+        << TypeOps::toString(*aErrorInfo.theTargetType) << ") as a component exceedes the maximum supported value (2^31 = 2147483648).");
+  }
 
   throwError(FORG0001, aErrorInfo);
   return false;
@@ -206,9 +224,17 @@ T1_TO_T2(str, yMD)
 T1_TO_T2(str, dTD)
 {
   Duration d;
+  int err;
 
-  if (0 == Duration::parseDayTimeDuration(strval.c_str(), strval.size(), d))
+  if (0 == (err = Duration::parseDayTimeDuration(strval.c_str(), strval.size(), d)))
     return aFactory->createDayTimeDuration(result, &d);
+
+  if (err == 2)  // improved error message
+  {
+    ZORBA_ERROR_DESC_OSS(FORG0001, "Passed item \"" + strval + "\" (of type "
+        << TypeOps::toString(*aErrorInfo.theSourceType) << ") is not castable to passed target type ("
+        << TypeOps::toString(*aErrorInfo.theTargetType) << ") as a component exceedes the maximum supported value (2^31 = 2147483648).");
+  }
 
   throwError(FORG0001, aErrorInfo);
   return false;

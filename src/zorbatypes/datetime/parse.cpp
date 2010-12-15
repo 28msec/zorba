@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,14 +18,14 @@
 
 namespace zorba
 {
-    
+
 
 /*******************************************************************************
   Parses an integer number. Will parse digits starting with the given position
   stopping at first non-digit character and updating the position. If min_digits
   and/or max_digits values are greater than 0, the number of parsed characters
   must obey these conditions, or the function will return an error.
- 
+
   @param str The source string to parse
   @param str_len the length of the input string
   @param position The position to start parsing from
@@ -33,7 +33,9 @@ namespace zorba
   @param min_digits Minimum number of digits
   @param max_digits Maximum number od digits
   @param delta Where to start parsing, the first digit being pointed by position+delta
-  @return Returns 1 on an error, 0 on success
+  @return Returns 0 on success and a positive value on an error, as follows:
+          1 - nonspecified error
+          2 - integer overflow
 ********************************************************************************/
 int parse_long(
     const char* str,
@@ -60,6 +62,9 @@ int parse_long(
     result = 10 * result + str[position + delta] - '0';
     position++;
     digits++;
+
+    if (result < 0) // we've had an overflow
+      return 2;
   }
 
   if (min_digits >= 0 && digits < min_digits)

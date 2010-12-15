@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,7 +32,7 @@ namespace zorba
   stopping at first non-digit character and updating the position. If min_digits
   and/or max_digits values are greater than 0, the number of parsed characters
   must obey these conditions, or the function will return an error.
- 
+
   @param str The source string to parse
   @param str_len the length of the input string
   @param position The position to start parsing from
@@ -40,7 +40,9 @@ namespace zorba
   @param min_digits Minimum number of digits
   @param max_digits Maximum number od digits
   @param delta Where to start parsing, the first digit being pointed by position+delta
-  @return Returns 1 on an error, 0 on success
+  @return Returns 0 on success and a positive value on an error, as follows:
+          1 - nonspecified error
+          2 - integer overflow
 ********************************************************************************/
 int parse_long(
     const char* str,
@@ -58,7 +60,7 @@ int parse_long(
   @param s
   @param position
   @param result
-  @return
+  @return Returns 0 on success and a positive value on an error
 ********************************************************************************/
 ZORBA_DLL_PUBLIC inline double parse_frac(
     const char* str,
@@ -66,6 +68,9 @@ ZORBA_DLL_PUBLIC inline double parse_frac(
     ascii::size_type& position,
     double& result)
 {
+  if (position >= strlen)
+    return 1;
+
   if (str[position] < '0' || str[position] > '9')
     return 1;
 
@@ -77,7 +82,7 @@ ZORBA_DLL_PUBLIC inline double parse_frac(
     temp /= 10;
     position++;
   }
-  
+
   return 0;
 }
 
@@ -86,18 +91,18 @@ ZORBA_DLL_PUBLIC inline std::string to_string(int value, unsigned int min_digits
 {
   std::string zeros = "";
   const std::string& temp = NumConversions::longToStr(value).str();
-  
+
   for (unsigned int i=(unsigned int)temp.size(); i<min_digits; i++)
     zeros += '0';
-       
+
   return zeros + temp;
 }
 
 
 /**
  * Returns the number of leap years between 1 AD and the given year.
- * @param year 
- * @return 
+ * @param year
+ * @return
  */
 ZORBA_DLL_PUBLIC int leap_years_count(int year);
 
@@ -112,7 +117,7 @@ T quotient(T a, T b)
 }
 
 
-template <typename T> 
+template <typename T>
 T modulo(T a, T b)
 {
   a = a % b;
@@ -123,7 +128,7 @@ T modulo(T a, T b)
 }
 
 
-template <typename T> 
+template <typename T>
 int floor(T a)
 {
   if (a>=0)
@@ -135,7 +140,7 @@ int floor(T a)
 }
 
 
-template <typename T> 
+template <typename T>
 T abs(T value)
 {
   if (value < 0)
@@ -167,7 +172,7 @@ ZORBA_DLL_PUBLIC bool is_digit(char ch);
 
 
 ZORBA_DLL_PUBLIC bool are_digits(std::string& s, unsigned int& position, int count);
-    
+
 
 // Returns the last day of the given year and month. E.g. for 1980 and 2 it
 // will return 29. Returns 0 on an error
