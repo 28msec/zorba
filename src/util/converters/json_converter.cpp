@@ -500,19 +500,29 @@ bool parse_element(
 
   if(equals(lType, "object", 6))
   {
-    aJsonString.append("\"");
-    aJsonString.append(lName);
-    aJsonString.append("\": {");
+    if(!lName.empty())
+    {
+      aJsonString.append("\"");
+      aJsonString.append(lName);
+      aJsonString.append("\": ");
+    }
+
     //parse every children
+    aJsonString.append("{");
     lResult = parse_child(aElement, aJsonString, aErrorLog, "object");
     aJsonString.append("}");
   }
   else if(equals(lType, "array", 5))
   {
-    aJsonString.append("\"");
-    aJsonString.append(lName);
-    aJsonString.append("\": [");
+    if(!lName.empty())
+    {
+      aJsonString.append("\"");
+      aJsonString.append(lName);
+      aJsonString.append("\": ");
+    }
+
     //parse every children
+    aJsonString.append("[");
     lResult = parse_child(aElement, aJsonString, aErrorLog, "array");
     aJsonString.append("]");
   }
@@ -622,11 +632,11 @@ bool parse_child(
   lChildrenIt->open();
   while (lChildrenIt->next(lChild) && lResult)
   {
-    if( !lFirst )
-      aJsonString.append(",");
-
     if (lChild->getNodeKind() == store::StoreConsts::elementNode)
     {
+      if( !lFirst )
+        aJsonString.append(", ");
+
       lResult = parse_element(&*lChild, aJsonString, aErrorLog, aParentType);
       lFirst = false;
     }

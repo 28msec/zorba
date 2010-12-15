@@ -338,7 +338,4 @@ EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_1_1 3106635)
 EXPECTED_FAILURE(test/rbkt/zorba/modules/mainModule_version1 3134223)
 EXPECTED_FAILURE(test/rbkt/zorba/schemas/is-validated 3136764)
 
-EXPECTED_FAILURE(test/rbkt/zorba/converters/json/json_serialize9  3082160)
-EXPECTED_FAILURE(test/rbkt/zorba/converters/json/json_serialize10 3082160)
-
 # --------------------------------------------------------------------------
