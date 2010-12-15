@@ -54,18 +54,18 @@ namespace zorba {
  * Parses digits up to the given stop character.  If a non-digit other than the
  * stop character is encountered, a Zorba exception is thrown.
  *
- * @param xq_pat  The XQuery pattern string.
- * @param xq_c    The iterator over xq_pat.
+ * @param ws_pat  The XQuery full-text "wildcard syntax" pattern string.
+ * @param ws_c    The iterator over ws_pat.
  * @param stop    The stop character.
- * @param icu_pat The ICU pattern string.
+ * @param icu_pat A pointer to the ICU pattern string.
  */
-static void parse_digits( zstring const &xq_pat, zstring::const_iterator &xq_c,
+static void parse_digits( zstring const &ws_pat, zstring::const_iterator &ws_c,
                           char stop, zstring *icu_pat ) {
-  while ( ++xq_c != xq_pat.end() ) {
-    *icu_pat += *xq_c;
-    if ( *xq_c == stop )
+  while ( ++ws_c != ws_pat.end() ) {
+    *icu_pat += *ws_c;
+    if ( *ws_c == stop )
       break;
-    if ( !isdigit( *xq_c ) )
+    if ( !isdigit( *ws_c ) )
       ZORBA_ERROR( FTDY0020 );
   }
 }
@@ -73,41 +73,44 @@ static void parse_digits( zstring const &xq_pat, zstring::const_iterator &xq_c,
 /**
  * Converts an XQuery full-text "wildcard syntax" pattern into an ICU regular
  * expression.
+ *
+ * @param ws_pat  The XQuery full-text "wildcard syntax" pattern string.
+ * @param icu_pat A pointer to the ICU pattern string.
  */
-static void wildcard_to_icu_pattern( zstring const &xq_pat, zstring *icu_pat ) {
+static void wildcard_to_icu_pattern( zstring const &ws_pat, zstring *icu_pat ) {
   icu_pat->clear();
-  icu_pat->reserve( xq_pat.length() );
+  icu_pat->reserve( ws_pat.length() );
 
   bool got_backslash = false, got_dot = false;
 
-  FOR_EACH( zstring, xq_c, xq_pat ) {
+  FOR_EACH( zstring, ws_c, ws_pat ) {
     if ( got_backslash ) {
       *icu_pat += '\\';
-      *icu_pat += *xq_c;
+      *icu_pat += *ws_c;
       got_backslash = false;
       continue;
     }
     if ( got_dot ) {
-      switch ( *xq_c ) {
+      switch ( *ws_c ) {
         case '.':
           *icu_pat += '.';
           continue;
         case '{':
           *icu_pat += '{';
-          parse_digits( xq_pat, xq_c, ',', icu_pat );
-          parse_digits( xq_pat, xq_c, '}', icu_pat );
+          parse_digits( ws_pat, ws_c, ',', icu_pat );
+          parse_digits( ws_pat, ws_c, '}', icu_pat );
           break;
         default:
-          *icu_pat += *xq_c;
+          *icu_pat += *ws_c;
           break;
       }
       got_dot = false;
       continue;
     }
-    switch ( *xq_c ) {
+    switch ( *ws_c ) {
       case '.':
         got_dot = true;
-        *icu_pat += *xq_c;
+        *icu_pat += *ws_c;
         break;
       case '\\':
         got_backslash = true;
@@ -127,7 +130,7 @@ static void wildcard_to_icu_pattern( zstring const &xq_pat, zstring *icu_pat ) {
         *icu_pat += '\\';
         // no break;
       default:
-        *icu_pat += *xq_c;
+        *icu_pat += *ws_c;
         break;
     }
   }
@@ -140,11 +143,11 @@ static void wildcard_to_icu_pattern( zstring const &xq_pat, zstring *icu_pat ) {
 
 #if !STANDALONE_TEST
 
-ft_wildcard::ft_wildcard( zstring const &xq_pat ) {
+ft_wildcard::ft_wildcard( zstring const &ws_pat ) {
   zstring icu_pat;
-  wildcard_to_icu_pattern( xq_pat, &icu_pat );
+  wildcard_to_icu_pattern( ws_pat, &icu_pat );
 #if DEBUG_MATCHER
-  cout << "xq : " << xq_pat << endl;
+  cout << "xq : " << ws_pat << endl;
   cout << "icu: " << icu_pat << endl;
 #endif
   if ( !regex_.compile( icu_pat ) )
@@ -157,7 +160,7 @@ ft_wildcard::ft_wildcard( zstring const &xq_pat ) {
 
 ////////// Stand-alone testing ////////////////////////////////////////////////
 
-static char const *const xq_patterns[] = {
+static char const *const ws_patterns[] = {
   "hello",
   "hello.",
   "hello*",
@@ -178,10 +181,10 @@ static char const *const xq_patterns[] = {
 };
 
 int main() {
-  for ( char const *const *xq_pat = xq_patterns; *xq_pat; ++xq_pat ) {
+  for ( char const *const *ws_pat = ws_patterns; *ws_pat; ++ws_pat ) {
     zstring icu_pat;
-    wildcard_to_icu_pattern( *xq_pat, icu_pat );
-    cout << *xq_pat << '\n' << icu_pat << "\n\n";
+    wildcard_to_icu_pattern( *ws_pat, icu_pat );
+    cout << *ws_pat << '\n' << icu_pat << "\n\n";
   }
 }
 #endif /* STANDALONE_TEST */
