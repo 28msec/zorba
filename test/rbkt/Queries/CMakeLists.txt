@@ -313,6 +313,8 @@ EXPECTED_FAILURE(test/rbkt/zorba/durationdatetime/FormatDateTimeFunc/FormatDateF
 EXPECTED_FAILURE(test/rbkt/zorba/durationdatetime/FormatDateTimeFunc/FormatDateFuncYearMonth2 3134651)
 EXPECTED_FAILURE(test/rbkt/zorba/durationdatetime/FormatDateTimeFunc/FormatDateTimeFuncReflexivity 3134651)
 
+EXPECTED_FAILURE(test/rbkt/zorba/schemas/any 3137594)
+
 EXPECTED_FAILURE(test/rbkt/zorba/modules/schema 3131554)
 
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/admin 2935047)
