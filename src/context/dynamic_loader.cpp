@@ -30,26 +30,32 @@ namespace zorba {
 #ifdef WIN32
 static void displayError(std::string& aErrorMsg)
 {
-  LPVOID lpMsgBuf;
-  LPVOID lpDisplayBuf;
+  LPWSTR lpMsgBuf;
+  LPWSTR lpDisplayBuf;
   DWORD dw = GetLastError();
 
-  FormatMessage(
+  FormatMessageW(
                 FORMAT_MESSAGE_ALLOCATE_BUFFER |
                 FORMAT_MESSAGE_FROM_SYSTEM |
                 FORMAT_MESSAGE_IGNORE_INSERTS,
                 NULL,
                 dw,
                 MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-                (LPTSTR) &lpMsgBuf,
+                (LPWSTR)&lpMsgBuf,
                 0, NULL );
-  lpDisplayBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT,
-                                    (lstrlen((LPCTSTR)lpMsgBuf) + 40) * sizeof(TCHAR));
-  StringCchPrintf((LPTSTR)lpDisplayBuf,
-                  LocalSize(lpDisplayBuf) / sizeof(TCHAR),
-                  TEXT("Failed with error %d: %s"), dw, lpMsgBuf);
+  lpDisplayBuf = (LPWSTR)LocalAlloc(LMEM_ZEROINIT,
+                                    (wcslen(lpMsgBuf) + 40) * sizeof(WCHAR));
+  StringCchPrintfW(lpDisplayBuf,
+                  LocalSize(lpDisplayBuf) / sizeof(WCHAR),
+                  L"Failed with error %d: %s", dw, lpMsgBuf);
 
-  aErrorMsg = (LPCTSTR) lpDisplayBuf;
+  char *buf;
+  buf = new char[LocalSize(lpDisplayBuf) / sizeof(WCHAR) + 10];
+  //use ACP instead of UTF8 because it is for display on Windows
+  WideCharToMultiByte(CP_ACP, 0, lpDisplayBuf, -1, buf, sizeof(buf), NULL, NULL);
+
+  aErrorMsg = buf;
+  delete[] buf;
 
   LocalFree(lpMsgBuf);
   LocalFree(lpDisplayBuf);
@@ -63,7 +69,17 @@ ExternalModule* DynamicLoader::getModule(const zstring& aFile) const
   ExternalModule* (*createModule)() = NULL;
 
 #ifdef WIN32
-  HMODULE handle = LoadLibrary(aFile.c_str());
+  WCHAR wpath_str[1024];
+  wpath_str[0] = 0;
+  if(MultiByteToWideChar(CP_UTF8,
+                      0, aFile.c_str(), -1,
+                      wpath_str, sizeof(wpath_str)/sizeof(WCHAR)) == 0)
+  {//probably there is some invalid utf8 char, try the Windows ACP
+    MultiByteToWideChar(CP_ACP,
+                      0, aFile.c_str(), -1,
+                      wpath_str, sizeof(wpath_str)/sizeof(WCHAR));
+  }
+  HMODULE handle = LoadLibraryW(wpath_str);
   if (handle == NULL)
   {
     std::string lErrorMessage;

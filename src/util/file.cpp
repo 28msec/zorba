@@ -214,10 +214,13 @@ filesystem_path::get_path_separator () {
 }
 
 filesystem_path::filesystem_path () {
-  char buf [512];
+  char buf [1024];
 #ifdef WIN32
-  GetCurrentDirectoryA (sizeof (buf), buf);
+  WCHAR wbuf[1024];
+  GetCurrentDirectoryW (sizeof (wbuf)/sizeof(WCHAR), wbuf);
+  WideCharToMultiByte(CP_UTF8, 0, wbuf, -1, buf, sizeof(buf), NULL, NULL);
 
+  path = buf;
  // GetCurrentDirectory sometimes misses drive letter
   resolve_relative ();
 #else
@@ -261,10 +264,23 @@ filesystem_path::resolve_relative ()
     // http://msdn.microsoft.com/en-us/library/aa364963(VS.85).aspx
 
 #ifndef WINCE//for win ce don't bother with relative paths
-    char fullpath[1024];
-    fullpath[0] = 0;
-    GetFullPathName(path.c_str(), sizeof(fullpath), fullpath, NULL);
-    *this = fullpath;
+  char fullpath[1024];
+  fullpath[0] = 0;
+  wchar_t *wfullpath;
+	wfullpath = new wchar_t[1024];
+	wchar_t *wpath;
+	int wpath_len = path.length() + 10;
+	wpath = new wchar_t[wpath_len];
+  wpath[0] = 0;
+	if(MultiByteToWideChar(CP_UTF8, 0, path.c_str(), -1, wpath, wpath_len) == 0)
+	{//error case, maybe there is an invalid utf-8 char, try windows ACP
+    MultiByteToWideChar(CP_ACP, 0, path.c_str(), -1, wpath, wpath_len);
+  }
+  GetFullPathNameW(wpath, 1024, wfullpath, NULL);
+	delete[] wpath;
+	WideCharToMultiByte(CP_UTF8, 0, wfullpath, -1, fullpath, sizeof(fullpath), NULL, NULL);
+	delete[] wfullpath;
+  *this = fullpath;
 #endif
 #else
     *this = filesystem_path (filesystem_path (), *this);
@@ -390,21 +406,23 @@ void file::do_stat () {
   }
 #else
 
-#ifdef UNICODE
-  TCHAR path_str[1024];
-  MultiByteToWideChar(CP_ACP,/// or CP_UTF8
+  WCHAR wpath_str[1024];
+  wpath_str[0] = 0;
+  if(MultiByteToWideChar(CP_UTF8,
                       0, c_str(), -1,
-                      path_str, sizeof(path_str)/sizeof(TCHAR));
-#else
-  const char  *path_str = c_str();
-#endif
+                      wpath_str, sizeof(wpath_str)/sizeof(WCHAR)) == 0)
+  {//probably there is some invalid utf8 char, try the Windows ACP
+    MultiByteToWideChar(CP_ACP,
+                      0, c_str(), -1,
+                      wpath_str, sizeof(wpath_str)/sizeof(WCHAR));
+  }
 
   DWORD lFileAttributes;
-  lFileAttributes = GetFileAttributes(path_str);
+  lFileAttributes = GetFileAttributesW(wpath_str);
   if(lFileAttributes == INVALID_FILE_ATTRIBUTES) {
     type = type_invalid;
   } else {
-    HANDLE hFile = CreateFile(path_str, GENERIC_READ, FILE_SHARE_READ |
+    HANDLE hFile = CreateFileW(wpath_str, GENERIC_READ, FILE_SHARE_READ |
         FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
     if (hFile == INVALID_HANDLE_VALUE) {
       size = -1;
@@ -452,22 +470,24 @@ enum file::filetype file::get_filetype() {
 
 #else
 
-#ifdef UNICODE
-  TCHAR path_str[1024];
-  MultiByteToWideChar(CP_ACP,/// or CP_UTF8
+  WCHAR wpath_str[1024];
+  wpath_str[0] = 0;
+  if(MultiByteToWideChar(CP_UTF8,
                       0, c_str(), -1,
-                      path_str, sizeof(path_str)/sizeof(TCHAR));
-#else
-  const char  *path_str = c_str();
-#endif
+                      wpath_str, sizeof(wpath_str)/sizeof(WCHAR)) == 0)
+  {//probably there is some invalid utf8 char, try the Windows ACP
+    MultiByteToWideChar(CP_ACP,
+                      0, c_str(), -1,
+                      wpath_str, sizeof(wpath_str)/sizeof(WCHAR));
+  }
 
   DWORD lFileAttributes;
-  lFileAttributes = GetFileAttributes(path_str);
+  lFileAttributes = GetFileAttributesW(wpath_str);
   if(lFileAttributes == INVALID_FILE_ATTRIBUTES) {
     error(__FUNCTION__,"file/dir not exist " + get_path ());
     return type_non_existent;
   } else {
-    HANDLE hFile = CreateFile(path_str, GENERIC_READ, FILE_SHARE_READ |
+    HANDLE hFile = CreateFileW(wpath_str, GENERIC_READ, FILE_SHARE_READ |
         FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
     if (hFile == INVALID_HANDLE_VALUE) {
       size = -1;
@@ -513,15 +533,17 @@ void file::create() {
   ::close(fd);
   set_filetype(type_file);
 #else
-#ifdef UNICODE
-  TCHAR path_str[1024];
-  MultiByteToWideChar(CP_ACP,/// or CP_UTF8
+  WCHAR wpath_str[1024];
+  wpath_str[0] = 0;
+  if(MultiByteToWideChar(CP_UTF8,
                       0, c_str(), -1,
-                      path_str, sizeof(path_str)/sizeof(TCHAR));
-#else
-  const char  *path_str = c_str();
-#endif
-  HANDLE fd = CreateFile(path_str,GENERIC_READ | GENERIC_WRITE,
+                      wpath_str, sizeof(wpath_str)/sizeof(WCHAR)) == 0)
+  {//probably there is some invalid utf8 char, try the Windows ACP
+    MultiByteToWideChar(CP_ACP,
+                      0, c_str(), -1,
+                      wpath_str, sizeof(wpath_str)/sizeof(WCHAR));
+  }
+  HANDLE fd = CreateFileW(wpath_str,GENERIC_READ | GENERIC_WRITE,
                       FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
                       CREATE_ALWAYS, 0, NULL);
   if (fd == INVALID_HANDLE_VALUE)
@@ -542,18 +564,20 @@ void file::mkdir() {
   }
   set_filetype(file::type_directory);
 #else
-#ifdef UNICODE
-  TCHAR path_str[1024];
-  MultiByteToWideChar(CP_ACP,/// or CP_UTF8
+  WCHAR wpath_str[1024];
+  wpath_str[0] = 0;
+  if(MultiByteToWideChar(CP_UTF8,
                       0, c_str(), -1,
-                      path_str, sizeof(path_str)/sizeof(TCHAR));
-#else
-  const char  *path_str = c_str();
-#endif
-  if (!CreateDirectory(path_str, NULL))
+                      wpath_str, sizeof(wpath_str)/sizeof(WCHAR)) == 0)
+  {//probably there is some invalid utf8 char, try the Windows ACP
+    MultiByteToWideChar(CP_ACP,
+                      0, c_str(), -1,
+                      wpath_str, sizeof(wpath_str)/sizeof(WCHAR));
+  }
+  if (!CreateDirectoryW(wpath_str, NULL))
   {
     ostringstream oss;
-    oss<<"mkdir failed ["<<GetLastError() << "]"<<"] for: "<<path_str;
+    oss<<"mkdir failed ["<<GetLastError() << "]"<<"] for: "<<wpath_str;
     error(__FUNCTION__,oss.str());
   }
   set_filetype(file::type_directory);
@@ -580,18 +604,20 @@ void file::remove(bool ignore) {
   }
 #else
   BOOL  retval = TRUE;
-#ifdef UNICODE
-  TCHAR path_str[1024];
-  MultiByteToWideChar(CP_ACP,/// or CP_UTF8
+  WCHAR wpath_str[1024];
+  wpath_str[0] = 0;
+  if(MultiByteToWideChar(CP_UTF8,
                       0, c_str(), -1,
-                      path_str, sizeof(path_str)/sizeof(TCHAR));
-#else
-  const char  *path_str = c_str();
-#endif
+                      wpath_str, sizeof(wpath_str)/sizeof(WCHAR)) == 0)
+  {//probably there is some invalid utf8 char, try the Windows ACP
+    MultiByteToWideChar(CP_ACP,
+                      0, c_str(), -1,
+                      wpath_str, sizeof(wpath_str)/sizeof(WCHAR));
+  }
   if(this->type == type_file)
-    retval = DeleteFile(path_str);
+    retval = DeleteFileW(wpath_str);
   else if(this->type == type_directory)
-    retval = RemoveDirectory(path_str);
+    retval = RemoveDirectoryW(wpath_str);
   if(!retval && !ignore)
     error(__FUNCTION__, "failed to remove " + get_path ());
 #endif
@@ -609,15 +635,17 @@ void file::rmdir(bool ignore) {
   }
 #else
   BOOL  retval;
-#ifdef UNICODE
-  TCHAR path_str[1024];
-  MultiByteToWideChar(CP_ACP,/// or CP_UTF8
+  WCHAR wpath_str[1024];
+  wpath_str[0] = 0;
+  if(MultiByteToWideChar(CP_UTF8,
                       0, c_str(), -1,
-                      path_str, sizeof(path_str)/sizeof(TCHAR));
-#else
-  const char  *path_str = c_str();
-#endif
-  retval = RemoveDirectory(path_str);
+                      wpath_str, sizeof(wpath_str)/sizeof(WCHAR)) == 0)
+  {//probably there is some invalid utf8 char, try the Windows ACP
+    MultiByteToWideChar(CP_ACP,
+                      0, c_str(), -1,
+                      wpath_str, sizeof(wpath_str)/sizeof(WCHAR));
+  }
+  retval = RemoveDirectoryW(wpath_str);
   if(!retval && !ignore)
     error(__FUNCTION__, "rmdir failed on " + get_path ());
 #endif
@@ -632,7 +660,17 @@ void file::chdir() {
     error(__FUNCTION__, "chdir failed on " + get_path ());
   }
 #else
-  if (::_chdir(c_str())) {
+  WCHAR wpath_str[1024];
+  wpath_str[0] = 0;
+  if(MultiByteToWideChar(CP_UTF8,
+                      0, c_str(), -1,
+                      wpath_str, sizeof(wpath_str)/sizeof(WCHAR)) == 0)
+  {//probably there is some invalid utf8 char, try the Windows ACP
+    MultiByteToWideChar(CP_ACP,
+                      0, c_str(), -1,
+                      wpath_str, sizeof(wpath_str)/sizeof(WCHAR));
+  }
+  if (::_wchdir(wpath_str)) {
     error(__FUNCTION__, "chdir failed on " + get_path ());
   }
 #endif
@@ -648,23 +686,30 @@ void file::rename(std::string const& newpath) {
   }
   set_path(newpath);
 #else
-#ifdef UNICODE
-  TCHAR path_str[1024];
-  MultiByteToWideChar(CP_ACP,/// or CP_UTF8
+  WCHAR wpath_str[1024];
+  wpath_str[0] = 0;
+  if(MultiByteToWideChar(CP_UTF8,
                       0, c_str(), -1,
-                      path_str, sizeof(path_str)/sizeof(TCHAR));
-  TCHAR newpath_str[1024];
-  MultiByteToWideChar(CP_ACP,/// or CP_UTF8
-                      0, newpath.c_str(), -1,
-                      newpath_str, sizeof(newpath_str)/sizeof(TCHAR));
-#else
-  const char  *path_str = c_str();
-  const char  *newpath_str = newpath.c_str();
-#endif
-  if(!MoveFile(path_str, newpath_str))
+                      wpath_str, sizeof(wpath_str)/sizeof(WCHAR)) == 0)
+  {//probably there is some invalid utf8 char, try the Windows ACP
+    MultiByteToWideChar(CP_ACP,
+                      0, c_str(), -1,
+                      wpath_str, sizeof(wpath_str)/sizeof(WCHAR));
+  }
+  WCHAR wnewpath_str[1024];
+  wnewpath_str[0] = 0;
+  if(MultiByteToWideChar(CP_UTF8,
+                      0, c_str(), -1,
+                      wnewpath_str, sizeof(wnewpath_str)/sizeof(WCHAR)) == 0)
+  {//probably there is some invalid utf8 char, try the Windows ACP
+    MultiByteToWideChar(CP_ACP,
+                      0, c_str(), -1,
+                      wnewpath_str, sizeof(wnewpath_str)/sizeof(WCHAR));
+  }
+  if(!MoveFileW(wpath_str, wnewpath_str))
   {
     ostringstream oss;
-    oss << path_str << " to " << newpath;
+    oss << wpath_str << " to " << newpath;
     error(__FUNCTION__, "failed to rename: " +oss.str());
   }
 #endif

@@ -81,22 +81,29 @@ dir_iterator::dir_iterator(
   if (!end_iterator) operator++();
 #else
 	if(!end_iterator) {
-		win32_dir = FindFirstFile((LPCTSTR)(path + "\\*.*").c_str(), &win32_direntry);
+    std::string path_star = path + "\\*.*";
+    WCHAR wpath_str[1024];
+    wpath_str[0] = 0;
+    if(MultiByteToWideChar(CP_UTF8,
+                        0, path_star.c_str(), -1,
+                        wpath_str, sizeof(wpath_str)/sizeof(WCHAR)) == 0)
+    {//probably there is some invalid utf8 char, try the Windows ACP
+      MultiByteToWideChar(CP_ACP,
+                        0, path_star.c_str(), -1,
+                        wpath_str, sizeof(wpath_str)/sizeof(WCHAR));
+    }
+		win32_dir = FindFirstFileW(wpath_str, &win32_direntry);
     if(win32_dir == INVALID_HANDLE_VALUE) {
       std::string lMsg = "opendir failed on " + dirpath;
       ZORBA_ERROR_DESC( XQP0011_SYSTEM_FILE_ERROR_IN_FUNCTION, lMsg);
     }
-    if (_tcscmp(win32_direntry.cFileName,_T(".")) == 0 ||
-      _tcscmp(win32_direntry.cFileName,_T("..")) == 0) {
+    if (wcscmp(win32_direntry.cFileName, L".") == 0 ||
+      wcscmp(win32_direntry.cFileName, L"..") == 0) {
         operator ++();
     }
 	} else {
 		win32_dir = INVALID_HANDLE_VALUE;
-#ifdef UNICODE
-		_tcscpy(win32_direntry.cFileName, _T(""));
-#else
-		strcpy(win32_direntry.cFileName, "");
-#endif
+		wcscpy(win32_direntry.cFileName, L"");
 	}
 #endif
 
@@ -135,14 +142,14 @@ dir_iterator::operator++()
 #else
 	if(win32_dir != INVALID_HANDLE_VALUE) {
 		while(true) {
-			if(!FindNextFile(win32_dir, &win32_direntry)) {				
+			if(!FindNextFileW(win32_dir, &win32_direntry)) {				
         FindClose(win32_dir); 
         win32_dir = INVALID_HANDLE_VALUE; 
-				_tcscpy(win32_direntry.cFileName, _T(""));
+				wcscpy(win32_direntry.cFileName, L"");
         break; 
       }
-			if (_tcscmp(win32_direntry.cFileName,_T(".")) &&
-          _tcscmp(win32_direntry.cFileName,_T(".."))) {
+			if (wcscmp(win32_direntry.cFileName, L".") &&
+          wcscmp(win32_direntry.cFileName, L"..")) {
         break;
 			}
 		}
@@ -160,7 +167,7 @@ bool operator!=(
 	return true;
 #else
 	if (x.dirpath==y.dirpath) return false;
-	if (!_tcscmp(x.win32_direntry.cFileName, y.win32_direntry.cFileName)) return false;
+	if (!wcscmp(x.win32_direntry.cFileName, y.win32_direntry.cFileName)) return false;
 	return true;
 #endif
 }

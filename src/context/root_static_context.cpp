@@ -96,12 +96,14 @@ void root_static_context::init()
   std::vector<std::string> lRootModulePaths;
 #ifdef WIN32
   //add first the relative path to zorba_simplestore.dll (this dll)
-  char  dll_path[1024];
+  WCHAR  wdll_path[1024];
   DWORD dll_path_size;
-  dll_path_size = GetModuleFileName(NULL, dll_path, sizeof(dll_path));
+  dll_path_size = GetModuleFileNameW(NULL, wdll_path, sizeof(wdll_path)/sizeof(wdll_path[0]));
   if(dll_path_size)
   {
-    dll_path[dll_path_size] = 0;
+    wdll_path[dll_path_size] = 0;
+    char  dll_path[1024];
+    WideCharToMultiByte(CP_UTF8, 0, wdll_path, -1, dll_path, sizeof(dll_path), NULL, NULL);
     char *last_slash;
     last_slash = strrchr(dll_path, '\\');
     if(last_slash)

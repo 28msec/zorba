@@ -35,7 +35,8 @@ namespace zorba {
       struct dirent *dirent;
 #else
       HANDLE          win32_dir;
-      WIN32_FIND_DATA win32_direntry;
+      WIN32_FIND_DATAW win32_direntry;
+      mutable char    temp_file_name[1024];
 #endif
 
     public:
@@ -60,8 +61,9 @@ namespace zorba {
 	      return dirent->d_name; 
       }
 #else
-      const TCHAR* operator*() { 
-	      return win32_direntry.cFileName;
+      const char* operator*() { 
+        WideCharToMultiByte(CP_UTF8, 0, win32_direntry.cFileName, -1, temp_file_name, sizeof(temp_file_name), NULL, NULL);
+	      return temp_file_name;
       }
 #endif
 
@@ -71,8 +73,11 @@ namespace zorba {
 	      return dirent?dirent->d_name:0;
       }
 #else
-      const TCHAR* get_name() const { 
-	      return (win32_dir != INVALID_HANDLE_VALUE) ? win32_direntry.cFileName : NULL;
+      const char* get_name() const { 
+	      if (win32_dir == INVALID_HANDLE_VALUE) 
+          return NULL;
+        WideCharToMultiByte(CP_UTF8, 0, win32_direntry.cFileName, -1, temp_file_name, sizeof(temp_file_name), NULL, NULL);
+	      return temp_file_name;
       }
 #endif
 	};
