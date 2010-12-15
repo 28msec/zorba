@@ -21,9 +21,10 @@
 
 #include "util/ascii_util.h"
 #include "util/atomic_int.h"
+#include "util/regex.h"
+#include "util/stl_util.h"
 #include "util/unicode_util.h"
 #include "util/utf8_string.h"
-#include "util/stl_util.h"
 #include "util/utf8_util.h"
 #include "zorbatypes/zstring.h"
 

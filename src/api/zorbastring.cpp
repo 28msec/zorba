@@ -18,6 +18,7 @@
 
 #include "api/unmarshaller.h"
 #include "util/ascii_util.h"
+#include "util/regex.h"
 #include "util/static_assert.h"
 #include "util/string_util.h"
 #include "util/utf8_util.h"

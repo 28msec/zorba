@@ -17,7 +17,7 @@
 #ifndef ZORBA_FULL_TEXT_FT_WILDCARD_H
 #define ZORBA_FULL_TEXT_FT_WILDCARD_H
 
-#include "util/unicode_util.h"
+#include "util/regex.h"
 #include "zorbatypes/zstring.h"
 
 namespace zorba {

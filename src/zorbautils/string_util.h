@@ -22,6 +22,7 @@
 #include "zorbatypes/collation_manager.h"
 #include "zorbatypes/zorbatypesError.h"
 
+#include "util/regex.h"
 #include "util/unicode_util.h"
 #include "util/utf8_util.h"
 
@@ -30,19 +31,19 @@ namespace zorba {
 ////////// find with collation ////////////////////////////////////////////////
 
 size_t find( char const *s, size_t s_len, char const *ss, size_t ss_len,
-            XQPCollator const *collator );
-
-size_t rfind( char const *s, size_t s_len, char const *ss, size_t ss_len,
              XQPCollator const *collator );
 
+size_t rfind( char const *s, size_t s_len, char const *ss, size_t ss_len,
+              XQPCollator const *collator );
+
 inline size_t find( char const *s, char const *ss,
-                   XQPCollator const *collator ) {
+                    XQPCollator const *collator ) {
   return find( s, std::strlen( s ), ss, std::strlen( ss ), collator );
 }
 
 template<class StringType,class SubstringType> inline
 size_t find( StringType const &s, SubstringType const &ss,
-           XQPCollator const *collator ) {
+             XQPCollator const *collator ) {
   return find( s.c_str(), s.size(), ss.c_str(), ss.size(), collator );
 }
 
@@ -53,7 +54,7 @@ size_t find( StringType const &s, char const *ss, XQPCollator const *collator ) 
 
 template<class SubstringType> inline
 size_t find( char const *s, SubstringType const &ss,
-            XQPCollator const *collator ) {
+             XQPCollator const *collator ) {
   return find( s, std::strlen( s ), ss.c_str(), ss.size(), collator );
 }
 
