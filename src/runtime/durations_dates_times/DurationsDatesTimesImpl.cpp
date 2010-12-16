@@ -18,6 +18,7 @@
 #include "zorbatypes/duration.h"
 #include "zorbatypes/numconversions.h"
 #include "zorbatypes/datetime/parse.h"
+#include "util/ascii_util.h"
 
 #include "system/globalenv.h"
 
@@ -61,6 +62,11 @@ UNARY_ACCEPT(FnAdjustToTimeZoneIterator_1);
 BINARY_ACCEPT(FnAdjustToTimeZoneIterator_2);
 
 
+static void skip_whitespace(zstring& str, ascii::size_type& position, int delta = 0)
+{
+  while (position+delta < str.size() && ascii::is_space(str[position+delta]))
+    position++;
+}
 
 bool FnDateTimeConstructorIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -235,7 +241,7 @@ static void format_string_width(
 {
   zstring temp = source;
   while (modifier.max_width_modifier > 0 && temp.size() < (unsigned int)modifier.max_width_modifier)
-	temp.append(" ");
+    temp.append(" ");
   destination.append(temp.c_str());
 }
 
@@ -246,8 +252,7 @@ static bool format_string(
     Modifier& modifier)
 {
   zstring temp;
-  if (modifier.presentation_modifier.size() == 0 ||
-      modifier.presentation_modifier == "n")
+  if (modifier.presentation_modifier == "n")
   {
     zstring newcase = source;
     ascii::to_lower(newcase);
@@ -300,6 +305,23 @@ static void format_component(
 }
 
 
+static void output_year(
+    zstring& destination,
+    long number,
+    Modifier& modifier)
+{
+  format_number(destination, number, modifier);
+
+  if (modifier.max_width_modifier >= 0)
+  {
+    if ((unsigned int)modifier.max_width_modifier > destination.size())
+      modifier.max_width_modifier = destination.size();
+
+    destination = destination.substr(destination.size() - modifier.max_width_modifier, modifier.max_width_modifier);
+  }
+}
+
+
 static void output_month(
     zstring& destination,
     long number,
@@ -324,6 +346,9 @@ static void output_day_of_week(
   if (modifier.max_width_modifier > 0 && (unsigned int)modifier.max_width_modifier < temp.size())
     temp = temp.substr(0, modifier.max_width_modifier);
 
+  if (modifier.presentation_modifier.size() == 0)
+    modifier.presentation_modifier = "n"; // Default for day of week is "n"
+
   format_component(destination, number, temp, modifier);
 }
 
@@ -335,32 +360,39 @@ static void parse_presentation_modifier(
 {
   result = "";
 
+  skip_whitespace(str, position, 1);
+
   if (position+1 >= str.size())
     return;
 
   zstring modifier = "";
 
-  if (position+2 < str.size() &&
-      (str.substr(position+1, 2) == "Ww" ||
-       str.substr(position+1, 2) == "Nn", 2))
-  {
-    modifier.append(str.substr(position+1, 2));
-    position += 2;
-  }
-  else if (str[position+1] == '1' || str[position+1] == 'i' || str[position+1] == 'I'
+  if (str[position+1] == '1' || str[position+1] == 'i' || str[position+1] == 'I'
            || str[position+1] == 'a' || str[position+1] == 'A'
            || str[position+1] == 'w' || str[position+1] == 'W'
            || str[position+1] == 'n' || str[position+1] == 'N' )
   {
     modifier.append(str, position+1, 1);
     position++;
+
+    skip_whitespace(str, position, 1);
+
+    if (position+1 < str.size() &&
+        ((modifier[0] == 'W' && str[position+1] == 'w')
+          ||
+        (modifier[0] == 'N' && str[position+1] == 'n')))
+    {
+      modifier.append(str, position+1, 1);
+      position++;
+    }
   }
   else if (str[position+1] == '0')
   {
     ascii::size_type start = position;
-    while (position+1 < str.size() && str[position+1] == '0')
+    while (position+1 < str.size() && (str[position+1] == '0' || ascii::is_space(str[position+1])))
     {
-      modifier.append(str, position+1, 1);
+      if (str[position+1] == '0')
+        modifier.append(str, position+1, 1);
       position++;
     }
 
@@ -384,6 +416,8 @@ static void parse_second_modifier(
     zstring& result)
 {
   result = "";
+
+  skip_whitespace(str, position, 1);
 
   if (position+1 >= str.size())
     return;
@@ -412,10 +446,13 @@ static void parse_width_modifier(
   min_width = -2;
   max_width = -2;
 
+  skip_whitespace(str, position, 1);
+
   if (position+1 >= str.size() || str[position+1] != ',')
     return;
 
   position++;
+  skip_whitespace(str, position, 1);
 
   // The min_width must be present if there is a comma symbol
   min_width = -3;
@@ -433,11 +470,15 @@ static void parse_width_modifier(
       min_width = -3;
   }
 
+  skip_whitespace(str, position, 1);
+
   if (position+1 >= str.size() || str[position+1] != '-')
     return;
 
   position++;
-  if (str[position+1] == '*')
+  skip_whitespace(str, position, 1);
+
+  if (position+1 < str.size() && str[position+1] == '*')
   {
     max_width = -1;
     position++;
@@ -509,18 +550,42 @@ bool FnFormatDateTimeIterator::nextImpl(
 
   if (!consumeNext(dateTimeItem, theChildren[0].getp(), planState))
   {
-    // Got void, returning void
+    // Got void -- returning void
     STACK_PUSH(false, state);
   }
   else
   {
   	consumeNext(picture, theChildren[1].getp(), planState);
+
     pictureString = picture->getStringValue().str();
     resultString = "";
     variable_marker = false;
+
     for (ascii::size_type i = 0; i < pictureString.size(); i++)
     {
-      if (variable_marker)
+      if (!variable_marker)
+      {
+        if (pictureString[i] == '[')
+        {
+          // check for quoted "[["
+          if (i<pictureString.size()-1 && pictureString[i+1] == '[')
+            i++;
+          else
+          {
+            variable_marker = true;
+            continue;
+          }
+        }
+        else if (pictureString[i] == ']')
+        {
+          // check for quoted "]]"
+          if (i<pictureString.size()-1 && pictureString[i+1] == ']')
+            i++;
+        }
+
+        resultString.append(pictureString, i, 1);
+      }
+      else  // variable_marker == true
       {
         char component = 0;
         Modifier modifier;
@@ -531,6 +596,10 @@ bool FnFormatDateTimeIterator::nextImpl(
         case 'H': case 'h': case 'P': case 'm': case 's': case 'f':
         case 'Z': case 'z': case 'C': case 'E':
           component = pictureString[i];
+          break;
+
+        case ' ': case '\f': case '\n': case '\r': case '\t': case '\v':
+          continue; // ignore whitespace
           break;
 
         case ']':
@@ -565,8 +634,7 @@ bool FnFormatDateTimeIterator::nextImpl(
         switch (component)
         {
         case 'Y':
-          // TODO: year can be negative
-          format_number(resultString, dateTimeItem->getDateTimeValue().getYear(), modifier);
+          output_year(resultString, abs<int>(dateTimeItem->getDateTimeValue().getYear()), modifier);
           break;
         case 'M':
           output_month(resultString, dateTimeItem->getDateTimeValue().getMonth(), modifier);
@@ -596,15 +664,17 @@ bool FnFormatDateTimeIterator::nextImpl(
                         modifier);
           break;
         case 'P':  // am/pm marker
+          if (modifier.presentation_modifier.empty())
+            modifier.presentation_modifier = "n";  // Default for the AM/PM marker is "n"
           format_string(resultString, dateTimeItem->getDateTimeValue().getHours() >= 12 ? "pm" : "am", modifier);
           break;
         case 'm':
-          if (modifier.presentation_modifier.size() == 0)
+          if (modifier.presentation_modifier.empty())
             modifier.presentation_modifier.append("01");
           format_number(resultString, dateTimeItem->getDateTimeValue().getMinutes(), modifier);
           break;
         case 's':
-          if (modifier.presentation_modifier.size() == 0)
+          if (modifier.presentation_modifier.empty())
             modifier.presentation_modifier.append("01");
           format_number(resultString, dateTimeItem->getDateTimeValue().getIntSeconds(), modifier);
           break;
@@ -622,36 +692,19 @@ bool FnFormatDateTimeIterator::nextImpl(
 		      }
           break;
         case 'C': // calendar: the name or abbreviation of a calendar name
+          if (modifier.presentation_modifier.empty())
+            modifier.presentation_modifier.append("n");
           format_string(resultString, "gregorian", modifier);
           break;
         case 'E': // era: the name of a baseline for the numbering of years, for example the reign of a monarch
+          if (modifier.presentation_modifier.empty())
+            modifier.presentation_modifier.append("n");
           format_string(resultString, dateTimeItem->getDateTimeValue().getYear() < 0 ? "ad" : "bc", modifier);
           break;
-        }
-      }
-      else
-      {
-        if (pictureString[i] == '[')
-        {
-          // check for quoted "[["
-          if (i<pictureString.size()-1 && pictureString[i+1] == '[')
-            i++;
-          else
-          {
-            variable_marker = true;
-            continue;
-          }
-        }
-        else if (pictureString[i] == ']')
-        {
-          // check for quoted "]]"
-          if (i<pictureString.size()-1 && pictureString[i+1] == ']')
-            i++;
-        }
+        } // switch
+      } // if (!variable_marker)
 
-        resultString.append(pictureString, i, 1);
-      }
-    }
+    } // for
 
     STACK_PUSH(GENV_ITEMFACTORY->createString(result, resultString), state);
   }

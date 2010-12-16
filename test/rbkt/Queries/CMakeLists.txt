@@ -301,17 +301,6 @@ EXPECTED_FAILURE(test/rbkt/zorba/utf-8/utf8inPathFr 3132686)
 EXPECTED_FAILURE(test/rbkt/zorba/utf-8/utf8inPathNo 3132686)
 EXPECTED_FAILURE(test/rbkt/zorba/utf-8/utf8inPathRo 3132686)
 
-EXPECTED_FAILURE(test/rbkt/zorba/durationdatetime/FormatDateTimeFunc/FormatDateFuncMonthDefault 3134651)
-EXPECTED_FAILURE(test/rbkt/zorba/durationdatetime/FormatDateTimeFunc/FormatDateFuncMonthLowerCase 3134651)
-EXPECTED_FAILURE(test/rbkt/zorba/durationdatetime/FormatDateTimeFunc/FormatDateFuncMonthNumberSpaces 3134651)
-EXPECTED_FAILURE(test/rbkt/zorba/durationdatetime/FormatDateTimeFunc/FormatDateFuncMonthTitleCase 3134651)
-EXPECTED_FAILURE(test/rbkt/zorba/durationdatetime/FormatDateTimeFunc/FormatDateFuncMonthUpperCase 3134651)
-EXPECTED_FAILURE(test/rbkt/zorba/durationdatetime/FormatDateTimeFunc/FormatDateFuncReflexivity 3134651)
-EXPECTED_FAILURE(test/rbkt/zorba/durationdatetime/FormatDateTimeFunc/FormatDateFuncYearDefaultExtraChars 3134651)
-EXPECTED_FAILURE(test/rbkt/zorba/durationdatetime/FormatDateTimeFunc/FormatDateFuncYearMaxWidth 3134651)
-EXPECTED_FAILURE(test/rbkt/zorba/durationdatetime/FormatDateTimeFunc/FormatDateFuncYearMonth1 3134651)
-EXPECTED_FAILURE(test/rbkt/zorba/durationdatetime/FormatDateTimeFunc/FormatDateFuncYearMonth2 3134651)
-EXPECTED_FAILURE(test/rbkt/zorba/durationdatetime/FormatDateTimeFunc/FormatDateTimeFuncReflexivity 3134651)
 
 EXPECTED_FAILURE(test/rbkt/zorba/schemas/any 3137594)
 
