@@ -516,8 +516,6 @@ void DtdXmlLoader::loadNode(xmlNode *a_node)
 #ifdef LIBXML_DOCB_ENABLED
       case XML_DOCB_DOCUMENT_NODE:
 #endif //LIBXML_DOCB_ENABLED
-        std::cout << "DtdXmlLoader::loadNode nodeType: " << (int)(cur_node->type)
-          << std::endl; std::cout.flush();
         break;
       default:
         std::cout << "AssertError: Unknown libxml2 node type: " << (int)(cur_node->type)
