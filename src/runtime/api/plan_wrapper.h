@@ -78,6 +78,8 @@ protected:
   Timeout            * theTimeout;
   Mutex                theTimeoutMutex;
 
+  store::Iterator_t    theExitValue;
+
 public:
 
   PlanWrapper(

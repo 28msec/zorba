@@ -39,7 +39,8 @@ PlanWrapper::PlanWrapper(
   theIterator(aIter),
   theDynamicContext(NULL),
   theIsOpen(false),
-  theTimeout(0)
+  theTimeout(0),
+  theExitValue(0)
 {
   assert (aCompilerCB);
 
@@ -124,8 +125,26 @@ void PlanWrapper::open()
 bool PlanWrapper::next(store::Item_t& result)
 {
   ZORBA_ASSERT(theIsOpen);
-
-  return PlanIterator::consumeNext(result, theIterator, *thePlanState);
+  // bugfix for #3042039
+  // from the scripting spec:
+  // "If an exit expression is evaluated within a query body
+  // (i.e., not within the body of a function),
+  // further evaluation of the query is interrupted and the XDM instance
+  // returned by the operand expression is returned as the result of the query."
+  // However, for reasons of lazy evaluation, we also return the result
+  // that was computed before the exit expression was evaluated
+  // (see test scripting/exit4.xq)
+  if (!theExitValue) {
+    try
+    {
+      return PlanIterator::consumeNext(result, theIterator, *thePlanState);
+    }  
+    catch (ExitException &e)
+    {
+      theExitValue = e.val;
+    }
+  }
+  return theExitValue->next(result);
 }
 
 
@@ -137,6 +156,7 @@ void PlanWrapper::reset()
   ZORBA_ASSERT(theIsOpen);
 
   theIterator->reset(*thePlanState); 
+  theExitValue = 0;
 }
 
 
@@ -148,6 +168,7 @@ void PlanWrapper::close()
   ZORBA_ASSERT(theIsOpen);
   
   theIterator->close(*thePlanState);
+  theExitValue = 0;
 
   theIsOpen = false;
 }
