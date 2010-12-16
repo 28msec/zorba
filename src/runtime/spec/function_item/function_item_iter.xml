@@ -64,4 +64,34 @@
     </zorba:function>
   
   </zorba:iterator>
+
+  <!--
+  /*******************************************************************************
+    fn:partial-apply
+  ********************************************************************************/
+  -->
+  <zorba:iterator name="PartialApplyIterator">
+    <zorba:description author="Zorba Team">
+      Returns the new function item obtained by binding one of the arguments of a supplied function item to a value.
+      That is, it curries the supplied function.
+    </zorba:description>
+
+    <zorba:function >
+
+      <zorba:signature localname="partial-apply" prefix="fn">
+        <zorba:param>function()</zorba:param>
+        <zorba:param>item()*</zorba:param>
+        <zorba:output>function()</zorba:output>
+      </zorba:signature>
+
+      <zorba:signature localname="partial-apply" prefix="fn">
+        <zorba:param>function()</zorba:param>
+        <zorba:param>item()*</zorba:param>
+        <zorba:param>xs:integer</zorba:param>
+        <zorba:output>function()</zorba:output>
+      </zorba:signature>
+
+    </zorba:function>
+  
+  </zorba:iterator>
 </zorba:iterators>

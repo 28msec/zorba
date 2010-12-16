@@ -109,6 +109,43 @@ public:
 };
 
 
+/**
+ * 
+ *      Returns the new function item obtained by binding one of the arguments of a supplied function item to a value.
+ *      That is, it curries the supplied function.
+ *    
+ * Author: Zorba Team
+ */
+class PartialApplyIterator : public NaryBaseIterator<PartialApplyIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(PartialApplyIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(PartialApplyIterator,
+    NaryBaseIterator<PartialApplyIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<PartialApplyIterator, PlanIteratorState>*)this);
+  }
+
+  PartialApplyIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<PartialApplyIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~PartialApplyIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
 }
 #endif
 /*

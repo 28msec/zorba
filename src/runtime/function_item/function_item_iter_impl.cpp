@@ -96,5 +96,21 @@ FunctionArityIterator::nextImpl(
   STACK_END(state);
 }
 
+/*******************************************************************************
+
+ ******************************************************************************/
+bool
+PartialApplyIterator::nextImpl(
+    store::Item_t& r,
+    PlanState& planState) const
+{
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  ZORBA_ERROR_LOC_DESC(XQP0019_INTERNAL_ERROR, loc,
+                       "The fn:partial-apply function is not implemented, yet");
+
+  STACK_END(state);
+}
 
 }//zorba namespace

@@ -1029,6 +1029,20 @@ void PrinterVisitor::endVisit ( const FunctionArityIterator& ) {
 // </FunctionArityIterator>
 
 
+// <PartialApplyIterator>
+void PrinterVisitor::beginVisit ( const PartialApplyIterator& a) {
+  thePrinter.startBeginVisit("PartialApplyIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const PartialApplyIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </PartialApplyIterator>
+
+
 // <ActivateICIterator>
 void PrinterVisitor::beginVisit ( const ActivateICIterator& a) {
   thePrinter.startBeginVisit("ActivateICIterator", ++theId);

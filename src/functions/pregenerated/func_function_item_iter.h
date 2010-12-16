@@ -66,6 +66,22 @@ public:
 };
 
 
+//fn:partial-apply
+class fn_partial_apply : public function
+{
+public:
+  fn_partial_apply(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
+  {
+    theKind = (sig.paramCount() == 2 ?
+                FunctionConsts::FN_PARTIAL_APPLY_2 :
+                FunctionConsts::FN_PARTIAL_APPLY_3);
+  
+  }
+
+  CODEGEN_DECL();
+};
+
+
 } //namespace zorba
 
 

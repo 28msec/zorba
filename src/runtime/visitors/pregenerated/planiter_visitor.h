@@ -160,6 +160,8 @@ namespace zorba{
 
     class FunctionArityIterator;
 
+    class PartialApplyIterator;
+
     class ActivateICIterator;
 
     class DeactivateICIterator;
@@ -666,6 +668,9 @@ public:
 
     virtual void beginVisit ( const FunctionArityIterator& ) = 0;
     virtual void endVisit   ( const FunctionArityIterator& ) = 0;
+
+    virtual void beginVisit ( const PartialApplyIterator& ) = 0;
+    virtual void endVisit   ( const PartialApplyIterator& ) = 0;
 
     virtual void beginVisit ( const ActivateICIterator& ) = 0;
     virtual void endVisit   ( const ActivateICIterator& ) = 0;
