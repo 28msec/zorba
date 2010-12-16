@@ -309,10 +309,6 @@ EXPECTED_FAILURE(test/rbkt/zorba/modules/schema 3131554)
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/admin 2935047)
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/ic-uniqueKey-err2 2935047)
 
-EXPECTED_FAILURE(test/rbkt/zorba/string/ReplaceFunc/replace11 2965838)
-EXPECTED_FAILURE(test/rbkt/zorba/string/ReplaceFunc/replace13 2965838)
-EXPECTED_FAILURE(test/rbkt/zorba/string/ReplaceFunc/replace16 2965838)
-
 EXPECTED_FAILURE(test/rbkt/zorba/HigherOrder/hof-101 3071699)
 
 IF(CURL_FOUND AND LIBTIDY_FOUND)

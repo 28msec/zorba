@@ -1329,7 +1329,7 @@ bool FnReplaceIterator::nextImpl(
   zstring input;
   zstring flags;
   zstring pattern;
-  zstring replacement;
+  zstring replacement, replacement2;
   zstring resStr;
   store::Item_t item;
   bool tmp;
@@ -1372,9 +1372,65 @@ bool FnReplaceIterator::nextImpl(
     ZORBA_ERROR_LOC_DESC(FORX0003, loc,
                          "Regular expression matches zero-length string.");
 
+  { // local scope
+    int num_capturing_groups = 0;
+
+    bool got_paren = false;
+    FOR_EACH( zstring, c, pattern ) {
+      if ( got_paren && *c != '?' )
+        ++num_capturing_groups;
+      got_paren = *c == '(';
+    }
+
+    bool got_backslash = false, got_dollar = false;
+    FOR_EACH( zstring, c, replacement ) {
+      if ( got_backslash ) {
+        switch ( *c ) {
+          case '\\':
+          case '$':
+            replacement2 += '\\';
+            replacement2 += *c;
+            got_backslash = false;
+            continue;
+          default:
+            ZORBA_ERROR_LOC_DESC(
+              FORX0004, loc, "Illegal character following '\\'."
+            );
+        }
+      }
+      if ( got_dollar ) {
+        if ( !ascii::is_digit( *c ) )
+          ZORBA_ERROR_LOC_DESC(
+            FORX0004, loc, "Illegal character following '$'."
+          );
+        if ( *c - '0' <= num_capturing_groups ) {
+          replacement2 += '$';
+          replacement2 += *c;
+        }
+        got_dollar = false;
+        continue;
+      }
+      switch ( *c ) {
+        case '\\':
+          got_backslash = true;
+          break;
+        case '$':
+          got_dollar = true;
+          break;
+        default:
+          replacement2 += *c;
+          break;
+      }
+    } // FOR_EACH
+    if ( got_backslash )
+      ZORBA_ERROR_LOC_DESC( FORX0004, loc, "Terminating '\\'." );
+    if ( got_dollar )
+      ZORBA_ERROR_LOC_DESC( FORX0004, loc, "Terminating '$'." );
+  } // local scope
+
   try 
   {
-    utf8::replace_all(input, pattern, flags.c_str(), replacement, &resStr);
+    utf8::replace_all(input, pattern, flags.c_str(), replacement2, &resStr);
   }
   catch(zorbatypesException& ex) 
   {
