@@ -69,7 +69,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *lib_re ) {
   }
 }
 
-uint32_t parse_regex_flags( char const *flags ) {
+static uint32_t parse_regex_flags( char const *flags ) {
   uint32_t icu_flags = 0;
   for ( char const *f = flags; *f; ++f ) {
     switch ( *f ) {
