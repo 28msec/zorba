@@ -92,7 +92,7 @@ bool URI::is_alphanum(uint32_t c)
 ********************************************************************************/
 bool URI::is_unreserved_char(uint32_t c)
 {
-  std::string lMarkCharacter("-_.!~*'{}");
+  static std::string lMarkCharacter("-_.!~*'{}");
   return (is_alphanum(c) || (c == ' ') || (c > 127 ) ||
     ((c<128) && lMarkCharacter.find((char)c) != std::string::npos));
 }
@@ -103,7 +103,7 @@ bool URI::is_unreserved_char(uint32_t c)
 ********************************************************************************/
 bool URI::is_path_character(uint32_t c)
 {
-  std::string lPathChracters(";/\\:@&=+$,");
+  static std::string lPathChracters(";/\\:@&=+$,");
   return ((c<128) && lPathChracters.find((char)c) != std::string::npos);
 }
 
@@ -113,7 +113,7 @@ bool URI::is_path_character(uint32_t c)
 ********************************************************************************/
 bool URI::is_reservered_or_unreserved_char(uint32_t c)
 {
-  std::string lMarkOrReservedChars("-_.!~*'();/?:@&=+$,[]");
+  static std::string lMarkOrReservedChars("-_.!~*'();/?:@&=+$,[]");
   return (is_alphanum(c) ||
           (c == ' ') ||
           ((c<128) && lMarkOrReservedChars.find((char)c) != std::string::npos));

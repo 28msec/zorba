@@ -1242,11 +1242,12 @@ StaticContextImpl::resolve(const String& aRelativeUri) const
   try 
   {
     const zstring& lRelativeUri = Unmarshaller::getInternalString(aRelativeUri);
-    lResolved = theCtx->resolve_relative_uri(lRelativeUri, false);
+    lResolved = theCtx->resolve_relative_uri(lRelativeUri, true);
   }
   catch (error::ZorbaError& e) 
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
+    return false;
   }
   return lResolved.str();
 }
@@ -1260,11 +1261,12 @@ StaticContextImpl::resolve(const String& aRelativeUri, const String& aBaseUri) c
   {
     const zstring& lRelativeUri = Unmarshaller::getInternalString(aRelativeUri);
     const zstring& lBaseUri = Unmarshaller::getInternalString(aBaseUri);
-    lResolved = theCtx->resolve_relative_uri(lRelativeUri, lBaseUri, false);
+    lResolved = theCtx->resolve_relative_uri(lRelativeUri, lBaseUri, true);
   }
   catch (error::ZorbaError& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
+    return false;
   }
   return lResolved.str();
 }

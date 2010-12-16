@@ -47,18 +47,18 @@ using namespace zorba;
     std::cout << "r2: \"" << lResolved2 << "\"" << std::endl; \
     if (lResolved1 != RESULT) { \
       std::cout << "Bad r1 result! Expected: \"" << RESULT << "\"" << std::endl; \
-      return 1; \
+      lFailed = true; \
     } \
     if (lResolved2 != RESULT) { \
       std::cout << "Bad r2 result! Expected: \"" << RESULT << "\"" << std::endl; \
-      return 2; \
+      lFailed = true; \
     } \
     std::cout << "Correct!" << std::endl; \
     std::cout << "-----------------------------------------------------------------------" << std::endl; \
   } catch (ZorbaException&) { \
     std::cout << "Exception!" << std::endl; \
     std::cout << "-----------------------------------------------------------------------" << std::endl; \
-    return 3; \
+    lFailed = true; \
   } \
 }
 
@@ -73,8 +73,8 @@ using namespace zorba;
     std::cout << "This should have thrown an exception!" << std::endl; \
     std::cout << "-----------------------------------------------------------------------" << std::endl; \
     return 1; \
-  } catch (ZorbaException&) { \
-    std::cout << "Caught exception. Good!" << std::endl; \
+  } catch (ZorbaException& e) { \
+    std::cout << "Caught exception. " << e << std::endl << "Good!" << std::endl; \
     std::cout << "-----------------------------------------------------------------------" << std::endl; \
   } \
 }
@@ -117,6 +117,8 @@ test_disabled_function(Zorba* lZorba)
 int
 test_resolve(Zorba* lZorba)
 {
+  bool lFailed = false;
+
   SCTX_TEST_RESOLVE("http://www.example.com/dir/file", "relative_path", "http://www.example.com/dir/relative_path");
   SCTX_TEST_RESOLVE("http://www.example.com/dir/file", "relative_path_slash/", "http://www.example.com/dir/relative_path_slash/");
   SCTX_TEST_RESOLVE("http://www.example.com/dir/file", "relative_path/two_segments", "http://www.example.com/dir/relative_path/two_segments");
@@ -137,14 +139,19 @@ test_resolve(Zorba* lZorba)
   // failing
   SCTX_TEST_RESOLVE_EXCEPTION("http://www.example.com/\\", "");
   // failing
+  SCTX_TEST_RESOLVE_EXCEPTION("http://www.example.com/", "\\");
+  // failing
   SCTX_TEST_RESOLVE_EXCEPTION("http://www.example.com/ ", "");
   // failing
-  SCTX_TEST_RESOLVE_EXCEPTION("http://www.example.com/", "\\");
-  // ???? should this work?
   SCTX_TEST_RESOLVE_EXCEPTION("http://www.example.com/", " ");
   SCTX_TEST_RESOLVE_EXCEPTION("", "");
-
-  return 0;
+  
+  if (lFailed) {
+    std::cerr << "at least one of the above tests failed" << std::endl;
+    return 1;
+  } else {
+    return 0;
+  }
 }
 
 /**
