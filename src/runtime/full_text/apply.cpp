@@ -321,7 +321,8 @@ static bool is_decendant( store::Item const *i, store::Item const *j ) {
 #   if DEBUG_FT_IS_DESCENDANT
     cout << "i=" << i->show() << endl;
 #   endif
-    if ( i->getNodeName()->equals( j_name ) ) {
+    store::Item *const i_name = i->getNodeName();
+    if ( i_name && i_name->equals( j_name ) ) {
 #     if DEBUG_FT_IS_DESCENDANT
       cout << "--> MATCH" << endl;
 #     endif
