@@ -1,0 +1,1 @@
+element { "xmlns:foo" } {}
