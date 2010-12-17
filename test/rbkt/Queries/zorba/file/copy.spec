@@ -1,1 +1,0 @@
-Args: -x zorbaPath:=xs:string($RBKT_SRC_DIR/../../)

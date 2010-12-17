@@ -1,0 +1,215 @@
+Summary of Simple Marked Text (MTX) Format
+Version 1.5.5 - January 1997
+
+General Considerations
+
+  Source file names have an .mtx extension.
+  HTML file names have an .html extension.
+  Files contain only ASCII characters
+    (return, linefeed, tab, space to ~).
+  Paragraphs are delimited by blank lines. Extra blank
+    lines will be eliminated. Adjacent lines will be
+    combined into a single paragraph.
+  Lines indented with spaces or tabs will become an item
+    in a list.
+  Items marked by a "N" use Netscape HTML extensions. For
+    maximum compatibility, avoid these tags.
+  Items marked by a "**" are depreciated. They will disappear
+    in a future release of MTX and should be avoided.
+    
+Special Tags (must occur one to a line at top of file)
+
+  %TITLE title       - title for HTML page
+ N%TITLE $title      - title with centered heading 
+**%HEADING none      - supress heading
+**%HEADING heading   - heading different from title
+**%HEADING $heading  - centered heading
+  %FILE name         - name for HTML file
+  %IMAGES path       - path for image files
+**%LOGO name         - title inline graphic (.gif)
+**%LOGO $name        - centered title graphic (.gif)
+ N%WATERMARK name    - watermark graphic (.gif)
+ N%COLORS colors     - background and text colors
+  %HOME text         - label for home document
+  %HOMEURL url       - URL for home document
+  %HOMEURL none      - no URL for home document
+  %PARENT text       - label for parent document
+  %PARENTURL url     - URL for parent document
+  %PARENTURL none    - no URL for parent document
+  %INDEX text        - label for index document
+  %INDEXURL url      - URL for index document
+  %INDEXURL none     - no URL for index document
+  %PREV text         - label for previous document
+  %PREVURL url       - URL for previous document
+  %PREVURL none      - no URL for previous document
+  %NEXT text         - label for next document
+  %NEXTURL url       - URL for next document
+  %NEXTURL none      - no URL for next document
+  %BASE path         - path for relative URLs
+  %PATH path         - path for document only
+  %AUTHOR text       - author info
+  %AUTHURL url       - URL for author
+  %CONTACT text      - page contact info
+  %CONTURL url       - URL for page contact
+  %VERSION text      - document version info
+  %VERSURL url       - URL for document version
+  %COPYRIGHT text    - document copyright info
+  %COPYURL url       - URL for document copyright
+  %OUTLINE none      - no outline
+  %OUTLINE long      - long outline
+  %LAYOUT cover      - suppress administrative info
+  %LAYOUT print      - suppress navigation info
+**%LAYOUT keyword    - file contains a keyword list
+**%LAYOUT noindex    - suppress indexing of this file
+  %LAYOUT feedback   - override feedback suppression
+  %LAYOUT nofeedback - suppress feedback for all questions
+  %LAYOUT url        - review materials for quizCGI tests
+ N%LAYOUT slide      - presentation slide format
+ N%REFRESH seconds   - client pull refresh
+ N%REFRESH secs url  - client pull refresh with link
+  %ABSTRACT text     - description for page indexing
+  %KEYWORDS words    - keywords for page indexing
+  %COUNTER date url  - counter date and cgi url
+  %QUIZCGI url       - url for quizCGI testing engine
+  %QUIZCGI name      - name of user list for quizCGI test
+  %MTX version       - MTX format version
+  %%text             - comment line (ignored)
+
+  NOTE: Each document will have a short outline at the top
+    unless otherwise specified. Links to email addresses
+    will be prefixed with "mailto:" automatically. Default
+    "Home," "Parent," "Previous," and "Next" labels will
+    be used if not otherwise specified.
+
+Heading Tags (must occur at the beginning of line)
+
+  #heading text      - primary outline heading
+  ##heading text     - secondary outline heading
+  ###...             - up to ##### (5) levels deep
+  #!heading text     - page heading (if different from title)
+  #!!name            - page heading graphic
+  #!!name text       - page heading graphic with alternate text
+ N#$heading text     - centered heading
+  #text#url name     - heading link to url outside document
+  #text#=anchor name - use heading as named anchor
+
+  NOTE: Any text that precedes the first #heading will appear
+    just after the page heading and before the outline.
+
+Embedded Tags (can occur anywhere)
+
+  {B}            - line break
+  {P}            - paragraph break
+  {S}            - non-breaking space
+  {*text*}       - strong (bold) text
+  {!text!}       - emphasized (italics) text
+**{@text@}       - fixed font text
+  {FtextF}       - fixed font text
+ N{BtextB}       - big text
+ N{StextS}       - small text
+ N{PtextP}       - superscript text
+ N{NtextN}       - subscript text
+  {=name=}       - inline graphic (.gif)
+  {=name text=}  - inline graphic with alternate text
+  {+name+}       - inline (.gif) with linked (.jpg) graphic
+  {+name text+}  - inline graphic with alternate text
+  {-name-}       - inline (.gif) with linked (.gif) graphic
+  {-name text-}  - inline graphic with alternate text
+  {#name#}       - inline (.gif) with linked (.html) file
+  {#name text#}  - inline graphic with alternate text
+ N{MnameM}       - inline (embedded .mov) quicktime movie
+ N{M!nameM}      - hidden (embedded .mov) quicktime audio
+  {#url##}         - link to quoted url
+  {#text#url#}     - link to url
+  {#text#anchor#}  - link to named anchor
+  {#text#=anchor#} - create named anchor
+ N{=\name=}      - floating graphic (left)
+ N{=/name=}      - floating graphic (right)
+ N{=$name=}      - floating graphic (vertically centered)
+ N{C}            - clear floating graphic alignment
+
+  NOTE: File extensions (.gif, .jpg, .mov, and .html) are
+    automatically added to file names. Linked .gif files
+    have an "L" added to the name (pictureL.gif). Anchor
+    names are case sensitive (#name <> #NAME). Links to
+    email addresses will be prefixed with "mailto:"
+    automatically. Floating graphic alignment must be
+    cleared using {C}. Graphic alignment may also be used
+    with {+...+}, {-...-}, {#...#}, and {M...M}. 
+
+List Tags (must occur after leading white space)
+
+   text   - bulleted list item
+  #text   - numbered list item (1, 2, 3...)
+ N@text   - lettered list item (a, b, c...)
+ N!text   - roman numbered list item (I, II, III...)
+  +text   - glossary list title item (bold)
+  -text   - glossary list definition
+
+  NOTE: Lists may be nested by using variable amounts
+    of leading white space.
+
+Format Tags (must occur at the beginning of line)
+
+  'text   - block quote
+ N''text  - pull quote
+  =text   - preformatted text
+  +text   - non print text (suppressed with print layout)
+ N$text   - centered text
+  -----   - horizontal rule (one or more dashes)
+
+Question Tags (must occur at the beginning of line)
+
+  ?x           - begin question (single correct answer)
+  ?xyz         - begin question (multiple correct answers)
+  ?x?none      - begin question (suppress feedback)
+  question text   - question text
+  @answer text    - answer text
+    feedback text - indented at least one space
+
+  NOTE: Questions may have up to 26 (A-Z) answer choices.
+    Inline graphics may be used as part of any question,
+    answer, or feedback element.
+
+Tables (each line must begin with "|") (N)
+
+The first line must be one of the following:
+  |                     - no caption
+  |none                 - no caption
+  |caption text         - caption for table
+  |caption|noborder     - caption for table with no border
+  |caption|nowide       - caption for minimal width table
+  |caption|noblanks     - caption for table with no blanks
+  |caption|nowide|noborder|noblanks  - combination of above
+Subsequent lines can be variations of the following:
+  |text 1|text 2|text 3 - row with three cells
+  |text 1||text 3       - use empty cells where needed
+  |text 1|two   |text 3 - pad cells with spaces or tabs
+  |text 1\3             - use "\n" to span n columns
+  |text 1|*     |text 3 - non-blank empty cell use "*"
+  |text 1|^two  |text 3 - force cell alignment to top
+  |*col 1|*col 2|*col 3 - column headings begin with "*"
+  |*row 1|text 1|text 2 - row headings begin with "*"
+
+  NOTE: Each line becomes one row in the table. Cells may
+  contain graphics or hypertext links. Use {BR} to force
+  word wrap within a cell. By default, tables will have
+  borders, blanks for empty cells, and resize to cover 95%
+  of the window side to side.
+
+Author and Copyright
+
+MTX was developed by Richard Rathe, MD, Director of the Office of Medical
+Informatics for the College of Medicine at the University of Florida. The MTX
+format, documentation, and tools are Copyright 1995 and 1996 by Richard Rathe.
+MTX is available without charge for non-commercial use at:
+
+  http://www.med.ufl.edu/medinfo/mtx/
+
+All copyright and authorship notices must remain in place.
+
+Questions, comments, or suggestions should be sent to:
+
+  rrathe@dean.med.ufl.edu
+
+Enjoy! RR

@@ -72,8 +72,8 @@ CopyFunction::evaluate(
     // open the output stream in the desired write mode
     std::ifstream lInStream;
     std::ofstream lOutStream;
-    lSrcFile->openInputStream(lInStream);
-    lDstFile->openOutputStream(lOutStream);
+    lSrcFile->openInputStream(lInStream, true);
+    lDstFile->openOutputStream(lOutStream, false, true);
 
     // copy the data
     char lBuf[1024];
