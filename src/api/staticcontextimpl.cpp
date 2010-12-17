@@ -906,7 +906,7 @@ StaticContextImpl::getSchemaURIResolvers() const
   try {
     theCtx->get_schema_uri_resolvers(lResolvers);
     std::vector<InternalSchemaURIResolver*>::iterator lIter;
-    for (lResolvers.begin(); lIter != lResolvers.end(); ++lIter) {
+    for (lIter = lResolvers.begin(); lIter != lResolvers.end(); ++lIter) {
       SchemaURIResolverWrapper* lWrapper =
         dynamic_cast<SchemaURIResolverWrapper*>(*lIter);
       if (lWrapper) { // if it's the user's resolver
