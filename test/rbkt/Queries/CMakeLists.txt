@@ -305,7 +305,6 @@ EXPECTED_FAILURE(test/rbkt/zorba/trycatch/trycatch_prefix_not_defined 3139059)
 EXPECTED_FAILURE(test/rbkt/zorba/constructors/element_xmlns_prefix 3139119)
 
 EXPECTED_FAILURE(test/rbkt/zorba/durationdatetime/Duration/xs_duration_zero 3139155)
-EXPECTED_FAILURE(test/rbkt/zorba/durationdatetime/Duration/xs_duration1 3139155)
 
 EXPECTED_FAILURE(test/rbkt/zorba/schemas/any 3137594)
 

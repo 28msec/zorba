@@ -224,7 +224,7 @@ int Duration::parseDuration(const char* str, ascii::size_type strlen, Duration& 
   t_pos = wrap.find('T');
   ym_pos = wrap.find('M');
 
-  if (ym_pos == zstring::npos)
+  if (ym_pos == zstring::npos || t_pos < ym_pos)
     ym_pos = wrap.find('Y');
   else if (t_pos != zstring::npos && t_pos < ym_pos)
     ym_pos = zstring::npos;
