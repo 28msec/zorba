@@ -725,6 +725,19 @@ static bool every_start_is( ft_match::includes_t const &includes,
   return true;
 }
 
+/**
+ * Helper function for apply_ftscope_same(): checks whether the given two
+ * string matches are in the same pos/sent/para.
+ */
+inline bool same( ft_string_match const &smi, ft_string_match const &smj,
+                  ft_token_span::start_end_ptr sep ) {
+  return
+    (smi.*sep).start == (smj.*sep).start &&
+    (smi.*sep).start == (smi.*sep).end   &&
+    (smj.*sep).start == (smj.*sep).end   &&
+    (smi.*sep).start > 0 && (smj.*sep).start > 0;
+}
+
 static void apply_ftscope_same( ft_all_matches const &am,
                                 ft_token_span::start_end_ptr sep,
                                 ft_all_matches &result ) {
@@ -732,26 +745,26 @@ static void apply_ftscope_same( ft_all_matches const &am,
   PUT_ALL_MATCHES( am );
 
   FOR_EACH( ft_all_matches, m, am ) {
+    bool every_satisfies = true;
     FOR_EACH( ft_match::includes_t, i1, m->includes ) {
       FOR_EACH( ft_match::includes_t, i2, m->includes ) {
-        if ( &*i1 == &*i2 )
-          continue;
-        if ( ((*i1).*sep).start == ((*i2).*sep).start &&
-             ((*i1).*sep).start == ((*i1).*sep).end &&
-             ((*i2).*sep).start == ((*i2).*sep).end &&
-             ((*i1).*sep).start > 0 && ((*i2).*sep).start > 0 ) {
-          ft_match m_new;
-          copy_seq( m->includes, m_new.includes );
-          FOR_EACH( ft_match::excludes_t, e, m->excludes ) {
-            if ( ((*e).*sep).start == 0 ||
-                 (((*e).*sep).start == ((*e).*sep).end &&
-                  every_start_is( m->includes, sep, ((*e).*sep).start ) ) ) {
-              m_new.excludes.push_back( *e );
-            }
-          }
-          result.push_back( m_new );
+        if ( &*i1 != &*i2 && !same( *i1, *i2, sep ) ) {
+          every_satisfies = false;
+          break;
         }
       }
+    }
+    if ( every_satisfies ) {
+      ft_match m_new;
+      copy_seq( m->includes, m_new.includes );
+      FOR_EACH( ft_match::excludes_t, e, m->excludes ) {
+        if ( ((*e).*sep).start == 0 ||
+              (((*e).*sep).start == ((*e).*sep).end &&
+              every_start_is( m->includes, sep, ((*e).*sep).start ) ) ) {
+          m_new.excludes.push_back( *e );
+        }
+      }
+      result.push_back( m_new );
     }
   }
 
