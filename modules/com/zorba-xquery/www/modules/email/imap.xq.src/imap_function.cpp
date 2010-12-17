@@ -152,6 +152,8 @@ ImapFunction::getDateTime(const std::string& aCClientDateTime) {
   std::stringstream lDateTimeStream(aCClientDateTime);
   std::string lBuffer;
   std::vector<std::string> lTokens;
+  std::cout << aCClientDateTime.c_str() << std::endl;
+  
   while (lDateTimeStream >> lBuffer) { 
     lTokens.push_back(lBuffer);
   }

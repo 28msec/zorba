@@ -727,7 +727,7 @@ FetchMessageFunction::getMessage(const ImapModule* aModule,
   if (aOnlyEnvelope) {
     lEnvelopeItem =  aModule->getItemFactory()->createElementNode(lNullItem, lEnvelopeName, lEnvelopeType, false, false, ns_binding);
   } else {
-    Item lMessageName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "Message");
+    Item lMessageName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "message");
     Item lMessageType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "messageType");
     aParent =  aModule->getItemFactory()->createElementNode(lNullItem, lMessageName, lMessageType, false, false, ns_binding);
     lEnvelopeItem =  aModule->getItemFactory()->createElementNode(aParent, lEnvelopeName, lEnvelopeType, false, false, ns_binding);

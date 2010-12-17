@@ -80,7 +80,7 @@ xmlns:tns="http://www.zorba-xquery.com/modules/email/email"
 </complexType>
 
 
- <element name="Message" type="tns:messageType"/>
+ <element name="message" type="tns:messageType"/>
 
  <element name="envelope" type="tns:envelopeType" /> 
 
