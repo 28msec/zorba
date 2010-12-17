@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_PROCESSMODULE_PROCESS_H
-#define ZORBA_PROCESSMODULE_PROCESS_H
+#ifndef ZORBA_PROCESSMODULE_CSV_H
+#define ZORBA_PROCESSMODULE_CSV_H
 
 #include <zorba/zorba.h>
 #include <zorba/external_module.h>
 #include <zorba/external_function.h>
 #include <zorba/smart_ptr.h>
 
+#include "stream_wrapper.h"
 
 namespace zorba {
 namespace csv {
@@ -104,11 +105,9 @@ class CSVParseFunction : public NonePureStatelessExternalFunction
   class CSVItemSequence : public ItemSequence
   {
   private:
-    //Item string_item;
-    zorba::String csv_string;
-    const char  *str;
     ItemFactory   *item_factory;
     unsigned int line_index;
+    SmartPtr<CharStreamBase>  input_stream;
 
     class HeaderNode : public SmartObject
     {
@@ -124,9 +123,10 @@ class CSVParseFunction : public NonePureStatelessExternalFunction
     CSVOptions  csv_options;
 
   public:
-    CSVItemSequence(Item string_item, ItemFactory   *item_factory);
     virtual ~CSVItemSequence() {}
     
+    void init(Item string_item, ItemFactory   *item_factory);
+
     bool next(Item& val);
   private:
     void rtrim(std::string &field);
@@ -217,4 +217,4 @@ protected:
 } /* namespace csv */
 } /* namespace zorba */
 
-#endif // ZORBA_PROCESSMODULE_PROCESS_H
+#endif // ZORBA_PROCESSMODULE_CSV_H

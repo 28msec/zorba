@@ -32,8 +32,8 @@
 #include <zorba/file.h>
 
 namespace zorba{
-unsigned int utf8_sequence_length(const char* lead_it);
 String encodeStringToQNameString(std::string &str);
+unsigned int utf8_sequence_length(const char* lead_it);
 }
 
 namespace zorba {  namespace csv {
@@ -397,12 +397,19 @@ void CSVOptions::parse(zorba::Item options_node, ItemFactory *item_factory)
     quote_escape_size = 0;
 }
 
-CSVParseFunction::CSVItemSequence::CSVItemSequence(Item string_item,
-                                                   ItemFactory   *item_factory)
+void CSVParseFunction::CSVItemSequence::init(Item string_item,
+                                        ItemFactory   *item_factory)
 {
-  //this->string_item = string_item;
-  csv_string = string_item.getStringValue();
-  str = csv_string.c_str();
+	if ( string_item.isStreamable() ) {
+    unsigned int max_len = csv_options.separator_size;
+    if(max_len < csv_options.quote_char_size)
+      max_len = csv_options.quote_char_size;
+    if(max_len < csv_options.quote_escape_size)
+      max_len = csv_options.quote_escape_size;
+		input_stream = new StreamWrapper(string_item, max_len);
+	} else {
+    input_stream = new CharPtrStream(string_item);
+	}
   this->item_factory = item_factory;
   line_index = 1;
 }
@@ -443,38 +450,38 @@ bool CSVParseFunction::CSVItemSequence::csv_read_line(std::vector<std::string>& 
   line.resize(1);
   std::string    *field = &line.back();
   field->reserve(100);
-  while(*str)
+  while(!input_stream->is_end())
   {
-    if(!is_within_quotes && !strncmp(csv_options.separator.c_str(), str, csv_options.separator_size))
+    if(!is_within_quotes && input_stream->compare(csv_options.separator))
     {
       line.resize(line.size()+1);
       field = &line.back();
       field->reserve(100);
-      str += csv_options.separator_size;
+      input_stream->skip(csv_options.separator_size);
     }
-    else if((csv_options.quote_escape_size > 1) && !strncmp(csv_options.quote_escape.c_str(), str, csv_options.quote_escape_size))
+    else if((csv_options.quote_escape_size > 1) && input_stream->compare(csv_options.quote_escape))
     {
       field->append(csv_options.quote_char);
-      str += csv_options.quote_escape_size;
+      input_stream->skip(csv_options.quote_escape_size);
     }
-    else if(csv_options.quote_char_size && !strncmp(csv_options.quote_char.c_str(), str, csv_options.quote_char_size))
+    else if(csv_options.quote_char_size && input_stream->compare(csv_options.quote_char))
     {
       is_within_quotes = !is_within_quotes;
-      str += csv_options.quote_char_size;
+      input_stream->skip(csv_options.quote_char_size);
     }
-    else if(!is_within_quotes && ((*str == '\n') || (*str == '\r')))
+    else if(!is_within_quotes && ((*input_stream->get_utf8_seq() == '\n') || (*input_stream->get_utf8_seq() == '\r')))
     {
-      while(*str  && (((*str) == '\r') || ((*str) == '\n')))
+      while(!input_stream->is_end()  && (((*input_stream->get_utf8_seq()) == '\r') || ((*input_stream->get_utf8_seq()) == '\n')))
       {
-        str++;
+        input_stream->skip(1);
       }
       break;
     }
     else
     {
-      unsigned int seq_len = utf8_sequence_length(str);
-      field->append(str, seq_len);
-      str += seq_len;
+      unsigned int seq_len = input_stream->get_utf8_sequence_length();
+      field->append(input_stream->get_utf8_seq(), seq_len);
+      input_stream->skip(seq_len);
     }
     is_empty_line = false;
   }
@@ -493,18 +500,25 @@ bool   CSVParseFunction::CSVItemSequence::txt_read_line(std::vector<std::string>
   unsigned int   pos = 1;
   unsigned int   column = 0;
   size_t         column_positions_size = csv_options.column_positions.size();
-  while(*str)
+  while(!input_stream->is_end())
   {
+    const char *curent_char = input_stream->get_utf8_seq();
     if((column < column_positions_size) && 
       (pos >= csv_options.column_positions[column]))
     {
       if((column == (column_positions_size-1)) && csv_options.last_column_position_is_computed)
       {
         //premature finish of the line
-        while(*str  && ((*str != '\r') && (*str != '\n')))
-          str++;
-        while(*str  && ((*str == '\r') || (*str == '\n')))
-          str++;
+        while(!input_stream->is_end()  && ((*curent_char != '\r') && (*curent_char != '\n')))
+        {
+          input_stream->skip(1);
+          curent_char = input_stream->get_utf8_seq();
+        }
+        while(!input_stream->is_end()  && ((*curent_char == '\r') || (*curent_char == '\n')))
+        {
+          input_stream->skip(1);
+          curent_char = input_stream->get_utf8_seq();
+        }
         break;
       }
       if(field)
@@ -517,26 +531,27 @@ bool   CSVParseFunction::CSVItemSequence::txt_read_line(std::vector<std::string>
 
     }
     
-    if((*str == '\n') || (*str == '\r'))
+    if((*curent_char == '\n') || (*curent_char == '\r'))
     {
-      while(*str  && ((*str == '\r') || (*str == '\n')))
+      while(!input_stream->is_end()  && ((*curent_char == '\r') || (*curent_char == '\n')))
       {
-        str++;
+        input_stream->skip(1);
+        curent_char = input_stream->get_utf8_seq();
       }
       break;
     }
-    else if(field && !field->length() && ((*str == ' ') || (*str == '\t')))
+    else if(field && !field->length() && ((*curent_char == ' ') || (*curent_char == '\t')))
     {
       //ignore padding whitespace
-      str++;
+      input_stream->skip(1);
       pos++;
     }
     else
     {
-      unsigned int seq_len = utf8_sequence_length(str);
+      unsigned int seq_len = input_stream->get_utf8_sequence_length();
       if(field)
-        field->append(str, seq_len);
-      str += seq_len;
+        field->append(curent_char, seq_len);
+      input_stream->skip(seq_len);
       pos++;
       is_empty_line = false;
     }
@@ -787,8 +802,9 @@ CSVParseFunction::evaluate(const Arguments_t& args,
   Item options_item;
   args[1]->next(options_item);
   
-  CSVItemSequence *out_sequence = new CSVItemSequence(string_item, theModule->getItemFactory());
+  CSVItemSequence *out_sequence = new CSVItemSequence();
   out_sequence->csv_options.parse(options_item, theModule->getItemFactory());
+  out_sequence->init(string_item, theModule->getItemFactory());
 
   //out_sequence->baseUri = sctx->get_base_uri();
   return ItemSequence_t(out_sequence);
