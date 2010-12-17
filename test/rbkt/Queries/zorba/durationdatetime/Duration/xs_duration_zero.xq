@@ -22,4 +22,4 @@ xs:duration("P0YT0M"),
 xs:duration("P0YT0S"),
 xs:duration("P0YT0H0M"),
 xs:duration("P0YT0M0S"),
-xs:duration("P0YT0H0S"),
+xs:duration("P0YT0H0S")
