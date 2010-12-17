@@ -484,14 +484,24 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     if (check_prime && !TypeOps::is_treatable(tm, result, *theTreatType))
     {
-      ZORBA_ERROR_LOC_DESC(theErrorCode, loc,
-          (theFnQName.getp() != NULL)?
+      zstring msg = (theFnQName.getp() != NULL)?
               "Cannot treat " + tm->create_value_type(result)->toSchemaString() 
               + " as " + theTreatType->toSchemaString() + " when returning the result of the function "
               + theFnQName->getStringValue() + "()."
           :
               "Cannot treat " + tm->create_value_type(result)->toSchemaString() 
-              + " as " + theTreatType->toSchemaString());
+              + " as " + theTreatType->toSchemaString() + ".";
+
+      xqtref_t subtype = tm->create_value_type(result);
+      if (subtype->type_kind() == XQType::ATOMIC_TYPE_KIND &&
+        theTreatType->type_kind() == XQType::ATOMIC_TYPE_KIND && 
+        static_cast<const AtomicXQType*>(subtype.getp())->get_type_code() == TypeConstants::XS_STRING &&
+        static_cast<const AtomicXQType*>(theTreatType.getp())->get_type_code() == TypeConstants::XS_QNAME)
+      {
+        msg += " Treating as xs:QName is permitted only if the xs:string is written as a string literal.";
+      }
+
+      ZORBA_ERROR_LOC_DESC(theErrorCode, loc, msg);
     }
     else
     {
