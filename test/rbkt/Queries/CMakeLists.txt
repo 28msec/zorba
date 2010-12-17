@@ -301,7 +301,6 @@ EXPECTED_FAILURE(test/rbkt/zorba/utf-8/utf8inPathFr 3132686)
 EXPECTED_FAILURE(test/rbkt/zorba/utf-8/utf8inPathNo 3132686)
 EXPECTED_FAILURE(test/rbkt/zorba/utf-8/utf8inPathRo 3132686)
 
-EXPECTED_FAILURE(test/rbkt/zorba/trycatch/trycatch_prefix_not_defined 3139059)
 EXPECTED_FAILURE(test/rbkt/zorba/constructors/element_xmlns_prefix 3139119)
 
 EXPECTED_FAILURE(test/rbkt/zorba/durationdatetime/Duration/xs_duration_zero 3139155)
