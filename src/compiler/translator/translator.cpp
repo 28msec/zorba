@@ -8286,10 +8286,10 @@ void end_visit(const NameTest& v, void* /*visit_state*/)
           cc->add_nametest_h(new NodeNameTest(zstring(), zstring()));
           break;
         case ParseConstants::wild_elem:
-          cc->add_nametest_h(new NodeNameTest(zstring(), wildcard->getPrefix()));
+          cc->add_nametest_h(new NodeNameTest(wildcard->getPrefix(), zstring()));
           break;
         case ParseConstants::wild_prefix:
-          cc->add_nametest_h(new NodeNameTest(wildcard->getLocalName(), zstring()));
+          cc->add_nametest_h(new NodeNameTest(zstring(), wildcard->getLocalName()));
           break;
       }
     }
