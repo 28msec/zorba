@@ -640,9 +640,7 @@ void apply_ftorder( ft_all_matches const &am, ft_all_matches &result ) {
     bool every_satisfies = true;
     FOR_EACH( ft_match::includes_t, i1, m->includes ) {
       FOR_EACH( ft_match::includes_t, i2, m->includes ) {
-        if ( &*i1 == &*i2 )
-          continue;
-        if ( !ordered( *i1, *i2 ) ) {
+        if ( &*i1 != &*i2 && !ordered( *i1, *i2 ) ) {
           every_satisfies = false;
           break;
         }
