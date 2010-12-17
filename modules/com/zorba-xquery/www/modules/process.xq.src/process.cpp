@@ -380,21 +380,18 @@ ExecFunction::evaluate(
   }
   else
   {
-    char outbuf[PATH_MAX];
-    int length = 0;
-    while ( (length=read(outfp, outbuf, PATH_MAX)) > 0 )
+    char lBuf[PATH_MAX];
+    ssize_t length = 0;
+    while ( (length=read(outfp, lBuf, PATH_MAX)) > 0 )
     {
-      outbuf[length] = '\0';
-      lStdout << outbuf;
+      lStdout.write(lBuf, length);
     }
 
     status = close(outfp);
 
-    char errbuf[PATH_MAX];
-    while ( (length=read(errfp, errbuf, PATH_MAX)) > 0 )
+    while ( (length=read(errfp, lBuf, PATH_MAX)) > 0 )
     {
-      errbuf[length] = '\0';
-      lStderr << errbuf;
+      lStderr.write(lBuf, length);
     }
 
     status = close(errfp);

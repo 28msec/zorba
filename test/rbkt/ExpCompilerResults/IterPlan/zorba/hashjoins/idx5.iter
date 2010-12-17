@@ -44,7 +44,7 @@ Iterator tree for main query:
               <PromoteIterator type="xs:anyAtomicType">
                 <FnDataIterator>
                   <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
-                    <TreatIterator type="[NodeXQType anyNode  content=[XQType ANY_TYPE_KIND*]]" quant="*">
+                    <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
                       <ForVarIterator varname="$$opt_temp_0"/>
                     </TreatIterator>
                   </ChildAxisIterator>
@@ -70,7 +70,7 @@ Iterator tree for main query:
                 <PromoteIterator type="xs:anyAtomicType">
                   <FnDataIterator>
                     <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
-                      <TreatIterator type="[NodeXQType anyNode  content=[XQType ANY_TYPE_KIND*]]" quant="*">
+                      <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
                         <ForVarIterator varname="test"/>
                       </TreatIterator>
                     </ChildAxisIterator>
@@ -94,7 +94,7 @@ Iterator tree for main query:
           <WhereClause>
             <FnBooleanIterator>
               <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,name)" typename="*" nill allowed="0">
-                <TreatIterator type="[NodeXQType anyNode  content=[XQType ANY_TYPE_KIND*]]" quant="*">
+                <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
                   <ForVarIterator varname="$$dot"/>
                 </TreatIterator>
               </AttributeAxisIterator>

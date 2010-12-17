@@ -1,0 +1,40 @@
+import module namespace file = "http://www.zorba-xquery.com/modules/file";
+import module namespace process = "http://www.zorba-xquery.com/modules/process";
+import module namespace zorba-util = "http://www.zorba-xquery.com/zorba/util-functions"; 
+
+declare variable $testfile external;  
+declare variable $apitest-path external;
+declare variable $source-dir := "@CMAKE_SOURCE_DIR@";
+declare variable $binary-dir := "@CMAKE_BINARY_DIR@";
+
+(: cut .iter ending :)
+let $cut-path := fn:substring($testfile, 1, fn:string-length($testfile) - 5)
+(: expected result file :)
+let $expected-file := fn:concat($source-dir, '/test/rbkt/ExpCompilerResults/IterPlan/', $cut-path, '.iter')
+(: query file :)
+let $query-file := fn:concat($source-dir, '/test/rbkt/Queries/', $cut-path, '.xq')
+let $apitest-path-normalized := file:normalize-path($apitest-path)
+let $expected-file-normalized := file:normalize-path($expected-file)
+let $query-file-normalized := file:normalize-path($query-file)
+return
+  if (file:exists($query-file-normalized)) then
+    let $query-options := ('--iter-plan-test',
+                           '--print-iterator-tree',
+                           '--no-tree-ids',
+                           $query-file-normalized)
+    (: generate iterplan with apitest :)
+    let $query-result := process:exec($apitest-path-normalized, $query-options)
+    let $query-stdout as xs:string := xs:string($query-result/stdout/text())
+    let $expected-text as xs:string := file:read-text($expected-file-normalized)
+    return
+      (: compare generated iterator tree with expected result :)
+      if ($query-stdout eq $expected-text) then
+        "Passed!"
+      else
+        fn:concat("Failed! Generated iterator tree is not equal to the expected Result!
+",
+                  "Command to generate iterator tree: ", $apitest-path, " ", fn:string-join($query-options," "), "
+",
+                  "Exected Result: ", $expected-file)
+  else
+    fn:concat("Passed! But only because query file ", $query-file, " not found. Test was not executed!")

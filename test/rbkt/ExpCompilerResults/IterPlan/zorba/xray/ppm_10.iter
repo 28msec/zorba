@@ -507,7 +507,7 @@ Iterator tree for main query:
               <flwor::FLWORIterator>
                 <ForVariable name="channel">
                   <UDFunctionCallIterator>
-                    <TreatIterator type="[NodeXQType elementNode  content=[XQType ANY_TYPE_KIND*]]" quant="">
+                    <TreatIterator type="[NodeXQType elementNode content=[XQType ANY_TYPE_KIND*]]" quant="">
                       <CtxVarIterator>
                         <SingletonIterator value="xs:string(475:scene)"/>
                       </CtxVarIterator>
