@@ -684,12 +684,18 @@ static void apply_ftscope_diff( ft_all_matches const &am,
   PUT_ALL_MATCHES( am );
 
   FOR_EACH( ft_all_matches, m, am ) {
-    bool every_satisfies = true;
-    FOR_EACH( ft_match::includes_t, i1, m->includes ) {
-      FOR_EACH( ft_match::includes_t, i2, m->includes ) {
-        if ( &*i1 != &*i2 && !different( *i1, *i2, sep ) ) {
-          every_satisfies = false;
-          break;
+    //
+    // See: http://www.w3.org/Bugs/Public/show_bug.cgi?id=9448
+    //
+    bool every_satisfies = false;
+    if ( m->includes.size() > 1 ) {
+      every_satisfies = true;
+      FOR_EACH( ft_match::includes_t, i1, m->includes ) {
+        FOR_EACH( ft_match::includes_t, i2, m->includes ) {
+          if ( &*i1 != &*i2 && !different( *i1, *i2, sep ) ) {
+            every_satisfies = false;
+            break;
+          }
         }
       }
     }
