@@ -751,6 +751,11 @@ static void apply_ftscope_same( ft_all_matches const &am,
 
 void apply_ftscope( ft_all_matches const &am, ft_scope::type scope,
                     ft_big_unit::type unit, ft_all_matches &result ) {
+  BEGIN_APPLY( apply_ftscope );
+  PUT_ALL_MATCHES( am );
+  PUT_ENUM( ft_scope, scope );
+  PUT_ENUM( ft_big_unit, unit );
+
   ft_token_span::start_end_ptr sep = 0;
   switch ( unit ) {
     case ft_big_unit::sentence:
@@ -768,6 +773,8 @@ void apply_ftscope( ft_all_matches const &am, ft_scope::type scope,
       apply_ftscope_diff( am, sep, result );
       break;
   }
+
+  END_APPLY( result );
 }
 
 ////////// ApplyFTTimes ///////////////////////////////////////////////////////
