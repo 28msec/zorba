@@ -120,11 +120,10 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   static_context* sctx = node->get_sctx();
   TypeManager* tm = sctx->get_typemanager();
 
-  flwor_expr* flworp = dynamic_cast<flwor_expr *>(node);
-
-  if (flworp == NULL || flworp->is_general())
+  if (node->get_expr_kind() != flwor_expr_kind)
     return NULL;
 
+  flwor_expr* flworp = static_cast<flwor_expr *>(node);
   flwor_expr& flwor = *flworp;
 
   VarSetAnnVal myVars;
@@ -175,6 +174,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   }
 
   bool modified = false;
+  group_clause* gc = NULL;
 
   // (a) Remove, if possible, FOR/LET vars that are not referenced anywhere
   // (b) Replace, if possible, FOR/LET vars that are referenced only once, with
@@ -187,7 +187,11 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
 
     flwor_clause& c = *flwor.get_clause(i);
 
-    if (c.get_kind() == flwor_clause::for_clause)
+    if (c.get_kind() == flwor_clause::group_clause)
+    {
+      gc = static_cast<group_clause *>(&c);
+    }
+    else if (c.get_kind() == flwor_clause::for_clause)
     {
       numForLetClauses++;
       for_clause* fc = static_cast<for_clause *>(&c);
@@ -313,6 +317,25 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   // FLWOR with no remaining clauses
   if (numForLetClauses == 0)
   {
+    if (gc != NULL)
+    {
+      const flwor_clause::rebind_list_t& gVars = gc->get_grouping_vars();
+      flwor_clause::rebind_list_t::const_iterator gVarsIte = gVars.begin();
+      flwor_clause::rebind_list_t::const_iterator gVarsEnd = gVars.end();
+      for (; gVarsIte != gVarsEnd; ++gVarsIte)
+      {
+        subst_vars(rCtx, flworp, gVarsIte->second.getp(), gVarsIte->first.getp());
+      }
+
+      const flwor_clause::rebind_list_t& ngVars = gc->get_nongrouping_vars();
+      flwor_clause::rebind_list_t::const_iterator ngVarsIte = ngVars.begin();
+      flwor_clause::rebind_list_t::const_iterator ngVarsEnd = ngVars.end();
+      for (; ngVarsIte != ngVarsEnd; ++ngVarsIte)
+      {
+        subst_vars(rCtx, flworp, ngVarsIte->second.getp(), ngVarsIte->first.getp());
+      }
+    }
+
     expr_t result = flwor.get_return_expr();
     expr* whereExpr;
 

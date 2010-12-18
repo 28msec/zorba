@@ -197,8 +197,8 @@ public:
 
   - Data Members:
 
-  theGroupingSpecs :
-  theOuterVars     :
+  theGroupingSpecs    :
+  theNonGroupingSpecs :
 ********************************************************************************/
 class GroupByClause : public ::zorba::serialization::SerializeBaseClass
 {

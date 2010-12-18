@@ -150,10 +150,14 @@ static bool hoist_expressions(
 
       expr* domainExpr = flc->get_expr();
 
-      expr_t var = try_hoisting(rCtx, domainExpr, varmap, freevarMap, &curr_holder);
-      if (var != NULL)
+      expr_t unhoistExpr = try_hoisting(rCtx,
+                                        domainExpr,
+                                        varmap,
+                                        freevarMap,
+                                        &curr_holder);
+      if (unhoistExpr != NULL)
       {
-        flc->set_expr(var.getp());
+        flc->set_expr(unhoistExpr.getp());
         numForLetClauses = flwor->num_forlet_clauses();
         status = true;
       }
@@ -174,10 +178,10 @@ static bool hoist_expressions(
     expr_t we = flwor->get_where();
     if (we != NULL)
     {
-      expr_t wvar = try_hoisting(rCtx, we, varmap, freevarMap, &curr_holder);
-      if (wvar != NULL)
+      expr_t unhoistExpr = try_hoisting(rCtx, we, varmap, freevarMap, &curr_holder);
+      if (unhoistExpr != NULL)
       {
-        flwor->set_where(wvar.getp());
+        flwor->set_where(unhoistExpr.getp());
         status = true;
       }
       else
@@ -213,10 +217,10 @@ static bool hoist_expressions(
       expr* ce = &*(*iter);
       if (ce)
       {
-        expr_t var = try_hoisting(rCtx, ce, varmap, freevarMap, fholder);
-        if (var != NULL)
+        expr_t unhoistExpr = try_hoisting(rCtx, ce, varmap, freevarMap, fholder);
+        if (unhoistExpr != NULL)
         {
-          *iter = var.getp();
+          *iter = unhoistExpr.getp();
           status = true;
         }
         else
@@ -289,10 +293,12 @@ static expr_t try_hoisting(
     }
 
     // Check whether expr e references any variables from the current flwor. If
-    // not, then move to the previous (outer) flwor. If yes, then let V be the
-    // inner-most var referenced by e. If there are any FOR vars after V, e can
-    // be hoisted out of any such FOR vars. Otherwise, e cannot be hoisted.
-    for(i = h->clause_count - 1; i >= 0; --i)
+    // not, then e can be hoisted out of the current flwor and we repeat the 
+    // while-loop to see if e can be hoisted w.r.t. the previous (outer) flwor.
+    // If yes, then let V be the/ inner-most var referenced by e. If there are any
+    // FOR vars after V, e can be hoisted out of any such FOR vars. Otherwise, e
+    // cannot be hoisted.
+    for (i = h->clause_count - 1; i >= 0; --i)
     {
       const forletwin_clause* flc = reinterpret_cast<const forletwin_clause*>
                                     ((*h->flwor)[i]);
