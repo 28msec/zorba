@@ -79,7 +79,9 @@ bool ft_token_matcher::match( FTToken const &dt, FTToken const &qt ) const {
     //
     // Perform stop-word comparison case-insensitively.  Note, however, that
     // the XQuery Full Text spec currently isn't clear on whether this should
-    // be done case-insensitively.  See W3C Bug 9858.
+    // be done case-insensitively.
+    //
+    // See also: http://www.w3.org/Bugs/Public/show_bug.cgi?id=9858
     //
     if ( stop_words_->contains( qt.value( FTToken::lower ) ) )
       return true;
