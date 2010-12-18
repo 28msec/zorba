@@ -32,8 +32,8 @@ typedef char const *const *ft_stop_table;
     extern char const *const stop_words_##CODE[]; \
     return stop_words_##CODE
 
-static ft_stop_table get_table( iso639_1::type code ) {
-  switch ( code ) {
+static ft_stop_table get_table_for( iso639_1::type lang ) {
+  switch ( lang ) {
     case LANG(da);
     case LANG(de);
     case LANG(en);
@@ -59,7 +59,7 @@ static ft_stop_table get_table( iso639_1::type code ) {
 
 ft_stop_words_set const*
 ft_stop_words_set::construct( ftstop_word_option const &option,
-                              iso639_1::type code ) {
+                              iso639_1::type lang ) {
   bool must_delete = false;             // pointless init. to stifle warning
   set_t *word_set = 0;                  // pointless init. to stifle warning
 
@@ -69,7 +69,7 @@ ft_stop_words_set::construct( ftstop_word_option const &option,
       must_delete = true;
       break;
     case ft_stop_words_mode::with_default:
-      word_set = get_default_word_set_for( code );
+      word_set = get_default_word_set_for( lang );
       if ( !word_set ) {
         // TODO: throw exception?
         return 0;
@@ -108,13 +108,13 @@ ft_stop_words_set::construct( ftstop_word_option const &option,
 }
 
 ft_stop_words_set::set_t*
-ft_stop_words_set::get_default_word_set_for( iso639_1::type code ) {
+ft_stop_words_set::get_default_word_set_for( iso639_1::type lang ) {
   static set_t* cached_word_sets[ iso639_1::NUM_ENTRIES ];
-  if ( !code )
-    return 0;
-  set_t *&word_set = cached_word_sets[ code ];
+  if ( !lang )
+    lang = get_host_lang();
+  set_t *&word_set = cached_word_sets[ lang ];
   if ( !word_set ) {
-    if ( ft_stop_table const table = get_table( code ) ) {
+    if ( ft_stop_table const table = get_table_for( lang ) ) {
       word_set = new set_t;
       for ( ft_stop_table word = table; *word; ++word ) {
         word_set->insert( *word );
