@@ -301,8 +301,6 @@ EXPECTED_FAILURE(test/rbkt/zorba/utf-8/utf8inPathFr 3132686)
 EXPECTED_FAILURE(test/rbkt/zorba/utf-8/utf8inPathNo 3132686)
 EXPECTED_FAILURE(test/rbkt/zorba/utf-8/utf8inPathRo 3132686)
 
-EXPECTED_FAILURE(test/rbkt/zorba/constructors/element_xmlns_prefix 3139119)
-
 EXPECTED_FAILURE(test/rbkt/zorba/schemas/any 3137594)
 
 EXPECTED_FAILURE(test/rbkt/zorba/modules/schema 3131554)

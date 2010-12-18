@@ -214,7 +214,7 @@ bool ZorbaError::isXPathTypeError() const
 
 bool ZorbaError::isXQueryDynamicError() const
 {
-  return ((XQDY0025 <= theErrorCode && theErrorCode <= XQDY0092) ||
+  return ((XQDY0025 <= theErrorCode && theErrorCode <= XQDY0096) ||
           XUDY0009 == theErrorCode ||
           (XUDY0014 <= theErrorCode && theErrorCode <= XUDY0021) ||
           (XUDY0023 <= theErrorCode && theErrorCode <= XUDY0025) ||

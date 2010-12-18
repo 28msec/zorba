@@ -195,6 +195,14 @@ typedef enum
   // An implementation MAY raise a dynamic error if a constructed attribute
   // named xml:space has a value other than preserve or default.
 
+  XQDY0096,
+  // A dynamic error is raised [err:XQDY0096] if the node-name of the 
+  // constructed element node has any of the following properties:
+  //    Its namespace prefix is xmlns.
+  //    Its namespace URI is http://www.w3.org/2000/xmlns/.
+  //    Its namespace prefix is xml and its namespace URI is not http://www.w3.org/XML/1998/namespace.
+  //    Its namespace prefix is other than xml and its namespace URI is http://www.w3.org/XML/1998/namespace.
+
   //
   // XQuery static errors
   //

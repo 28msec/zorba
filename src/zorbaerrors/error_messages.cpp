@@ -432,6 +432,8 @@ DEF_ERR_CODE (XQDY0074, XQDY0074, "The value of the name expression in a compute
 
 DEF_ERR_CODE (XQDY0084, XQDY0084, "The element validated by a validate statement does not have a top-level element declaration in the in-scope element declarations, if validation mode is strict.")
 
+DEF_ERR_CODE (XQDY0096, XQDY0096, "The constructed element's node-name has the xmlns prefix, or has the xml prefix and its namespace URI is not http://www.w3.org/XML/1998/namespace, or has a prefix other than xml and its namespace URI is http://www.w3.org/XML/1998/namespace.")
+
 //
 // XQST
 //

@@ -319,6 +319,12 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
                      "Element name must not have an empty local part.");
   }
 
+  if (nodeName->getPrefix() == "xmlns" ||
+        nodeName->getNamespace() == "http://www.w3.org/2000/xmlns/" ||
+        (nodeName->getPrefix() == "xml" && nodeName->getNamespace() != "http://www.w3.org/XML/1998/namespace") ||
+        (nodeName->getPrefix() != "xml" && nodeName->getNamespace() == "http://www.w3.org/XML/1998/namespace"))
+      ZORBA_ERROR_LOC(XQDY0096, loc);
+
   typeName = (theTypePreserve ?
               GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME :
               GENV_TYPESYSTEM.XS_UNTYPED_QNAME);
@@ -1279,9 +1285,13 @@ bool NameCastIterator::nextImpl(store::Item_t& result, PlanState& planState) con
   {
     if (e.theErrorCode != XPTY0004)
     {
-      // the returned error codes are wrong for name casting => they must be changed
-      ZORBA_ERROR_LOC_DESC(XQDY0074, loc,
-                           "Item cannot be cast to QName.");
+      zstring name = result->getStringValue();
+      if (!theIsAttrName && name.find(":") != zstring::npos && name.substr(0, name.find(":")) == "xmlns")
+        ZORBA_ERROR_LOC(XQDY0096, loc);  // this needs to be checked and thrown here as the optimizer 
+                                         // might try to fold a const expression and would return a different error code
+      else
+        // the returned error codes are wrong for name casting => they must be changed
+        ZORBA_ERROR_LOC_DESC(XQDY0074, loc, "Item cannot be cast to QName.");
     }
     else
     {

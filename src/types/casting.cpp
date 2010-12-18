@@ -66,12 +66,12 @@ struct ErrorInfo
 };
 
 
-inline void throwError(XQUERY_ERROR aErrorCode, const ErrorInfo& aInfo)
+inline void throwError(XQUERY_ERROR aErrorCode, const ErrorInfo& aInfo, zstring additional_info = "")
 {
   ZORBA_ERROR_DESC_OSS(aErrorCode,
                        "Passed item (of type " << TypeOps::toString(*aInfo.theSourceType)
                        << ") is not castable to passed target type ("
-                       << TypeOps::toString (*aInfo.theTargetType) << ").");
+                       << TypeOps::toString (*aInfo.theTargetType) << ")." + additional_info);
 
 };
 
@@ -1981,7 +1981,7 @@ bool GenericCast::castToQName(
     {
       if (!nsCtx->findBinding(prefix, nsuri))
       {
-        throwError(FONS0004, errorInfo);
+        throwError(FONS0004, errorInfo, " Prefix \"" + prefix + "\" has not been declared.");
       }
     }
 
