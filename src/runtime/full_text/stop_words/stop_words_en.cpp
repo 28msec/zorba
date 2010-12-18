@@ -204,6 +204,7 @@ extern char const *const stop_words_en[] = {
   "nothing",
   "now",
   "nowhere",
+  "numerous", // addition to pass W3C test ft-3.4.7-expressions-q1.xq
   "of",
   "off",
   "often",
