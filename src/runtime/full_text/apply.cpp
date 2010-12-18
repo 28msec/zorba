@@ -32,7 +32,6 @@
 
 #include "apply.h"
 #include "ft_single_token_iterator.h"
-#include "ft_stop_words_set.h"
 #include "ft_thesaurus.h"
 #include "ft_token_matcher.h"
 #include "ft_token_seq_iterator.h"
