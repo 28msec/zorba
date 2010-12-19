@@ -656,6 +656,25 @@ inline char to_lower( char c ) {
 /**
  * Converts a string to lower-case in-place.
  *
+ * @param begin A pointer to the first character of the string.
+ * @param end A pointer to one past the last character of the string.
+ */
+inline void to_lower( char *begin, char *end ) {
+  std::transform( begin, end, begin, static_cast<char (*)(char)>( to_lower ) );
+}
+
+/**
+ * Converts a string to lower-case in-place.
+ *
+ * @param s The string to convert.
+ */
+inline void to_lower( char *s ) {
+  to_lower( s, s + std::strlen( s ) );
+}
+
+/**
+ * Converts a string to lower-case in-place.
+ *
  * @tparam StringType The string type.
  * @param s The string to convert.
  */
@@ -695,6 +714,25 @@ void to_lower( InputStringType const &in, OutputStringType *out ) {
  */
 inline char to_upper( char c ) {
   return toupper( c );
+}
+
+/**
+ * Converts a string to upper-case in-place.
+ *
+ * @param begin A pointer to the first character of the string.
+ * @param end A pointer to one past the last character of the string.
+ */
+inline void to_upper( char *begin, char *end ) {
+  std::transform( begin, end, begin, static_cast<char (*)(char)>( to_upper ) );
+}
+
+/**
+ * Converts a string to upper-case in-place.
+ *
+ * @param s The string to convert.
+ */
+inline void to_upper( char *s ) {
+  to_upper( s, s + std::strlen( s ) );
 }
 
 /**
