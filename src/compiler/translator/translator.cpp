@@ -2755,7 +2755,9 @@ void* begin_visit(const NamespaceDecl& v)
   zstring pre = v.get_prefix();
   zstring uri = v.get_uri();
 
-  if (pre == "xml" || pre == "xmlns" || uri == XML_NS || uri == XMLNS_NS)
+  if (pre == "xmlns")
+    ZORBA_ERROR_LOC_DESC(XQST0070, loc, "The namespace prefix \"xmlns\" cannot be bound to any URI.");
+  else if (pre == "xml" || uri == XML_NS || uri == XMLNS_NS)
     ZORBA_ERROR_LOC(XQST0070, loc);
 
   theSctx->bind_ns(pre, uri, loc);
