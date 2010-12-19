@@ -46,6 +46,31 @@ class Validator
         static_context* sctx,
         const QueryLoc& loc); 
 
+  static void processTextValue (
+        static_context* sctx,
+        TypeManager* typeManager, 
+        store::NsBindings& bindings,
+        const store::Item_t& typeQName,
+        zstring& textValue, 
+        std::vector<store::Item_t>& resultList);
+
+private:
+  static bool realValidationValue (
+        store::Item_t& result,
+        const store::Item_t& sourceNode,
+        const store::Item_t& typeName,
+        TypeManager* typeManager,
+        ParseConstants::validation_mode_t validationMode,
+        static_context* sctx,
+        const QueryLoc& loc);
+
+  static void processChildren (
+        static_context* sctx,
+        TypeManager* typeManager,
+        EventSchemaValidator& schemaValidator,
+        store::Item* parent,
+        store::Iterator_t children);
+
   static store::Item_t processElement (
         static_context* sctx,
         TypeManager* typeManager, 
@@ -64,34 +89,9 @@ class Validator
         store::Item* parent,
         store::Iterator_t attributes);
 
-  static void processChildren (
-        static_context* sctx,
-        TypeManager* typeManager,
-        EventSchemaValidator& schemaValidator,
-        store::Item* parent,
-        store::Iterator_t children);
-
   static void processNamespaces (
         EventSchemaValidator& schemaValidator,
         const store::Item_t& item);
-        
-  static void processTextValue (
-        static_context* sctx,
-        TypeManager* typeManager, 
-        store::NsBindings& bindings,
-        const store::Item_t& typeQName,
-        zstring& textValue, 
-        std::vector<store::Item_t> &resultList);
-
-private:
-  static bool realValidationValue (
-        store::Item_t& result,
-        const store::Item_t& sourceNode,
-        const store::Item_t& typeName,
-        TypeManager* typeManager,
-        ParseConstants::validation_mode_t validationMode,
-        static_context* sctx,
-        const QueryLoc& loc); 
 };
 
 } // namespace zorba

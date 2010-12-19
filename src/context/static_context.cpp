@@ -1491,9 +1491,11 @@ static_context::validate(store::Item* rootElement, store::Item* validatedResult)
   return validate(rootElement, validatedResult, xsTns);
 }
 
-bool 
-static_context::validate(store::Item* rootElement, store::Item* validatedResult, 
-                         const zstring& targetNamespace)
+
+bool static_context::validate(
+    store::Item* rootElement,
+    store::Item* validatedResult, 
+    const zstring& targetNamespace)
 {
   if ( !rootElement->isNode() ||
        (rootElement->getNodeKind() != store::StoreConsts::documentNode &&

@@ -56,7 +56,7 @@ public:
 #ifndef ZORBA_NO_XMLSCHEMA
   void validate(const std::set<store::Item*>& nodes, store::PUL& pul);
 #else
-    void validate(const std::set<store::Item*>& nodes, store::PUL& pul) {}
+  void validate(const std::set<store::Item*>& nodes, store::PUL& pul) {}
 #endif
 };
 

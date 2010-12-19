@@ -155,77 +155,77 @@ void validateAfterUpdate(
     static_context* staticContext,
     const QueryLoc& loc)
 {
-    ZORBA_ASSERT(item->isNode());
+  ZORBA_ASSERT(item->isNode());
 
-    TypeManager* typeManager = staticContext->get_typemanager();
+  TypeManager* typeManager = staticContext->get_typemanager();
 
-    StaticContextConsts::validation_mode_t mode = staticContext->validation_mode();
+  StaticContextConsts::validation_mode_t mode = staticContext->validation_mode();
 
-    if (mode == StaticContextConsts::skip_validation)
-      return;
+  if (mode == StaticContextConsts::skip_validation)
+    return;
 
-    bool isLax = (mode == StaticContextConsts::lax_validation);
+  bool isLax = (mode == StaticContextConsts::lax_validation);
 
-    Schema* schema = typeManager->getSchema();
-    if ( !schema )
-    {
-        // no schema available no change to pul
-        return;
-    }
+  Schema* schema = typeManager->getSchema();
+  if ( !schema )
+  {
+    // no schema available no change to pul
+    return;
+  }
 
-    EventSchemaValidator schemaValidator =
+  EventSchemaValidator schemaValidator =
       EventSchemaValidator(typeManager,
                            schema->getGrammarPool(),
                            isLax,
                            loc);
 
-    switch ( item->getNodeKind() )
-    {
-    case store::StoreConsts::documentNode:
-    {
-        //cout << "Validate after update document" << "\n"; cout.flush();
+  switch ( item->getNodeKind() )
+  {
+  case store::StoreConsts::documentNode:
+  {
+    //cout << "Validate after update document" << "\n"; cout.flush();
 
-        schemaValidator.startDoc();
+    schemaValidator.startDoc();
 
-        store::NsBindings bindings;
-        namespace_context nsCtx = namespace_context(staticContext, bindings);
+    store::NsBindings bindings;
+    namespace_context nsCtx = namespace_context(staticContext, bindings);
 
-        std::vector<store::Item_t> typedValues;
-        processChildren(pul,
-                        staticContext,
-                        nsCtx,
-                        typeManager,
-                        schemaValidator,
-                        item->getChildren(),
-                        typedValues);
-
-        schemaValidator.endDoc();
-
-        //cout << "End Validate after update doc" << "\n"; cout.flush();
-        return;
-    }
-    case store::StoreConsts::elementNode:
-    {
-        //cout << "Validate  after update element" << "\n"; cout.flush();
-
-        schemaValidator.startDoc();
-
-        processElement(pul,
+    std::vector<store::Item_t> typedValues;
+    processChildren(pul,
                     staticContext,
+                    nsCtx,
                     typeManager,
                     schemaValidator,
-                    item);
+                    item->getChildren(),
+                    typedValues);
+    
+    schemaValidator.endDoc();
+    
+    //cout << "End Validate after update doc" << "\n"; cout.flush();
+    return;
+  }
+  case store::StoreConsts::elementNode:
+  {
+    //cout << "Validate  after update element" << "\n"; cout.flush();
+      
+    schemaValidator.startDoc();
 
-        schemaValidator.endDoc();
+    processElement(pul,
+                   staticContext,
+                   typeManager,
+                   schemaValidator,
+                   item);
 
-        //cout << "End Validate  after update elem" << "\n"; cout.flush();
-        return;
-    }
-    default:
-        ZORBA_ERROR_LOC_DESC( XQDY0061, loc,
+    schemaValidator.endDoc();
+
+    //cout << "End Validate  after update elem" << "\n"; cout.flush();
+    return;
+  }
+  default:
+    ZORBA_ERROR_LOC_DESC(XQDY0061, loc,
                 "Argument in validate expression not a document or element node.");
-        return;
-    }
+    return;
+  }
 }
 
 

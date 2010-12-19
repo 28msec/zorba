@@ -649,7 +649,6 @@ void DynamicContextImpl::validateIfNecesary(
       {
         GENV_STORE.deleteDocument(docUri);
         docItem = validatedNode;
-        docItem->markValidated();
         GENV_STORE.addNode(docUri, docItem);
       }
     }
@@ -703,7 +702,6 @@ void DynamicContextImpl::validateIfNecesary(
       {
         GENV_STORE.deleteDocument(docUri);
         docItem = validatedNode;
-        docItem->markValidated();
         GENV_STORE.addNode(docUri, docItem);
       }
     }
