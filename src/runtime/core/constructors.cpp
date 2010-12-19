@@ -1286,9 +1286,15 @@ bool NameCastIterator::nextImpl(store::Item_t& result, PlanState& planState) con
     if (e.theErrorCode != XPTY0004)
     {
       zstring name = result->getStringValue();
-      if (!theIsAttrName && name.find(":") != zstring::npos && name.substr(0, name.find(":")) == "xmlns")
-        ZORBA_ERROR_LOC(XQDY0096, loc);  // this needs to be checked and thrown here as the optimizer 
-                                         // might try to fold a const expression and would return a different error code
+      if (name.find(":") != zstring::npos && name.substr(0, name.find(":")) == "xmlns")
+      {
+        // this needs to be checked and thrown here as the optimizer 
+        // might try to fold a const expression and would return a different error code
+        if (theIsAttrName)
+          ZORBA_ERROR_LOC(XQDY0044, loc);
+        else
+          ZORBA_ERROR_LOC(XQDY0096, loc);  
+      }
       else
         // the returned error codes are wrong for name casting => they must be changed
         ZORBA_ERROR_LOC_DESC(XQDY0074, loc, "Item cannot be cast to QName.");
