@@ -1,0 +1,6 @@
+module namespace lm = "http://www.example.com";
+
+declare function lm:foo()
+{
+  lm:boo()
+};

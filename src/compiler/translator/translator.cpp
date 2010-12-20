@@ -775,6 +775,9 @@ public:
   the map also stores the target namespace URI of module component. This map is
   used to handle cycles in a chain of module imports.
 
+  theHaveModuleImportCycle :
+  --------------------------
+
   theImportedModules :
   --------------------
   A set containing the target namespace uris of the modules directly imported
@@ -984,6 +987,7 @@ protected:
 
   ModulesInfo                          * theModulesInfo;
   std::map<zstring, zstring>             theModulesStack;
+  bool                                   theHaveModuleImportCycle;
   std::set<std::string>                  theImportedModules;
   zstring                                theModuleNamespace;
   zstring                                theModulePrefix;
@@ -1080,6 +1084,7 @@ TranslatorImpl(
   theCCB(minfo->theCCB),
   theModulesInfo(minfo),
   theModulesStack(modulesStack),
+  theHaveModuleImportCycle(false),
   theCurrSctxId(rootSctxId),
   theRootSctx(rootSctx),
   theSctx(rootSctx),
@@ -3051,6 +3056,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
     std::map<zstring, zstring> modulesStack = theModulesStack;
     if (! modulesStack.insert(std::pair<zstring, zstring>(compURI, targetNS)).second)
     {
+      theHaveModuleImportCycle = true;
       return;
     }
 
@@ -8609,7 +8615,7 @@ void end_visit(const VarRef& v, void* /*visit_state*/)
   }
   catch (error::ZorbaError& e)
   {
-    if (e.theErrorCode == XPST0008)
+    if (e.theErrorCode == XPST0008 && theHaveModuleImportCycle)
     {
       store::Item_t qnameItem;
       expand_no_default_qname(qnameItem, v.get_name(), loc);
@@ -8618,7 +8624,7 @@ void end_visit(const VarRef& v, void* /*visit_state*/)
 
       std::map<zstring, zstring>::const_iterator ite = theModulesStack.begin();
       std::map<zstring, zstring>::const_iterator end = theModulesStack.end();
-      for (; ite != end; ++ite)
+      for (++ite; ite != end; ++ite)
       {
         if ((*ite).second == var_ns)
         {
@@ -9114,13 +9120,16 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     function* f = lookup_fn(qname, numArgs, loc);
     if (f == NULL)
     {
-      std::map<zstring, zstring>::const_iterator ite = theModulesStack.begin();
-      std::map<zstring, zstring>::const_iterator end = theModulesStack.end();
-      for (; ite != end; ++ite)
+      if (theHaveModuleImportCycle)
       {
-        if ((*ite).second == fn_ns)
+        std::map<zstring, zstring>::const_iterator ite = theModulesStack.begin();
+        std::map<zstring, zstring>::const_iterator end = theModulesStack.end();
+        for (++ite; ite != end; ++ite)
         {
-          ZORBA_ERROR_LOC(XQST0093, loc);
+          if ((*ite).second == fn_ns)
+          {
+            ZORBA_ERROR_LOC(XQST0093, loc);
+          }
         }
       }
 

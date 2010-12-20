@@ -53,8 +53,6 @@ SERIALIZABLE_CLASS_VERSIONS(StatelessExtFunctionCallIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(StatelessExtFunctionCallIterator)
 
 
-ulong UDFunctionCallIterator::theDepth = 0;
-
 
 UDFunctionCallIteratorState::UDFunctionCallIteratorState()
   :
