@@ -568,7 +568,7 @@ ftprimary_with_options::ftprimary_with_options(
   ftnode( loc ),
   primary_( NULL ),
   match_options_( new ftmatch_options( loc ) ),
-  weight_( NULL )
+  weight_expr_( NULL )
 {
   // do nothing else
 }
@@ -582,7 +582,7 @@ ft_visit_result::type ftprimary_with_options::accept( ftnode_visitor &v ) {
   BEGIN_VISIT( v );
   ACCEPT( primary_, v );
   ACCEPT( match_options_, v );
-  EV_ACCEPT( weight_, v );
+  EV_ACCEPT( weight_expr_, v );
   END_VISIT( v );
 }
 
@@ -590,7 +590,7 @@ ostream& ftprimary_with_options::put( ostream &o ) const {
   BEGIN_INDENT_PUT( o, ftprimary_with_options );
   PUT_NODE( o, primary_ );
   PUT_NODE( o, match_options_ );
-  PUT_EXPR( o, weight_ );
+  PUT_EXPR( o, weight_expr_ );
   OUTDENT_END_PUT( o );
 }
 
@@ -598,8 +598,8 @@ void ftprimary_with_options::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (ftnode*)this );
   ar & primary_;
   ar & match_options_;
-  ar & weight_;
-  ar & plan_iter_;
+  ar & weight_expr_;
+  ar & weight_iter_;
 }
 
 ftrange::ftrange(

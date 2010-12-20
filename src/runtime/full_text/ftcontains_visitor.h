@@ -119,7 +119,8 @@ private:
                                FTToken const&, FTQueryItemSeq&, bool = true );
 
   void eval_ftrange( ftrange const&, ft_int *at_least, ft_int *at_most );
-  ft_int get_int( PlanIter_t );
+  double get_double( PlanIter_t const& );
+  ft_int get_int( PlanIter_t const& );
 
   void lookup_thesaurus( zstring const &uri, zstring const &query_phrase,
                          FTToken const &qt0, zstring const &relationship,

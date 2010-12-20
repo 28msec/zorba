@@ -2879,9 +2879,9 @@ DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftor )
 
 DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftprimary_with_options );
 void V::end_visit( ftprimary_with_options &pwo ) {
-  if ( pwo.get_weight() ) {
+  if ( pwo.get_weight_expr() ) {
     PlanIter_t it = plan_visitor_->pop_itstack();
-    pwo.set_plan_iter( it );
+    pwo.set_weight_iter( it );
     sub_iters_.push_back( it );
   }
 }

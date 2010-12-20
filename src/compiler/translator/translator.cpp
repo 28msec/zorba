@@ -12005,7 +12005,10 @@ void end_visit (const FTWeight& v, void* /*visit_state*/) {
   ftprimary_with_options *const pwo =
     dynamic_cast<ftprimary_with_options*>( top_ftstack() );
   ZORBA_ASSERT( pwo );
-  pwo->set_weight( pop_nodestack() );
+  expr_t e( pop_nodestack() );
+  e = wrap_in_atomization( e );
+  e = wrap_in_type_promotion( e, theRTM.DOUBLE_TYPE_ONE );
+  pwo->set_weight_expr( e );
 #endif /* ZORBA_NO_FULL_TEXT */
 }
 

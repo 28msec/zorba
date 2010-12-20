@@ -42,8 +42,8 @@ DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftmild_not );
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftor );
 
 ft_visit_result::type V::begin_visit( ftprimary_with_options &pwo ) {
-  if ( pwo.get_weight().getp() )
-    push_back( &pwo.get_weight() );
+  if ( pwo.get_weight_expr().getp() )
+    push_back( &pwo.get_weight_expr() );
   return ft_visit_result::no_end;
 }
 DEF_FTNODE_VISITOR_END_VISIT( V, ftprimary_with_options );

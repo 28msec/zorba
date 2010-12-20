@@ -671,8 +671,8 @@ public:
   ft_visit_result::type accept( ftnode_visitor& );
   ftprimary const* get_primary() const { return primary_; }
   ftmatch_options const* get_match_options() const { return match_options_; }
-  PlanIter_t get_plan_iter() const { return plan_iter_; }
-  expr_t& get_weight() { return weight_; }
+  expr_t& get_weight_expr() { return weight_expr_; }
+  PlanIter_t get_weight_iter() const { return weight_iter_; }
   std::ostream& put( std::ostream& ) const;
 
   void set_match_options( ftmatch_options *o ) {
@@ -680,24 +680,24 @@ public:
     match_options_ = o;
   }
 
-  void set_plan_iter( PlanIter_t it ) {
-    plan_iter_ = it;
-  }
-
   void set_primary( ftprimary *p ) {
     delete primary_;
     primary_ = p;
   }
 
-  void set_weight( expr_t e ) {
-    weight_ = e;
+  void set_weight_expr( expr_t const &e ) {
+    weight_expr_ = e;
+  }
+
+  void set_weight_iter( PlanIter_t const &it ) {
+    weight_iter_ = it;
   }
 
 private:
   ftprimary *primary_;
   ftmatch_options *match_options_;
-  expr_t weight_;
-  PlanIter_t plan_iter_;
+  expr_t weight_expr_;
+  PlanIter_t weight_iter_;
 };
 
 

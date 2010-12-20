@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <cmath>                        /* for fabs(3) */
 #include <limits>
 #include <memory>
 
@@ -50,6 +51,10 @@ inline void set_error_query_loc( error::ZorbaError &e, QueryLoc const &loc ) {
   e.setQueryLocation(
     loc.getLineBegin(), loc.getColumnBegin(), loc.getFilename()
   );
+}
+
+inline double to_double( xs_double const &d ) {
+  return d.getNumber();
 }
 
 inline ft_int to_ft_int( xs_integer const &i ) {
@@ -169,7 +174,15 @@ expr_visitor* ftcontains_visitor::get_expr_visitor() {
   return NULL;
 }
 
-ft_int ftcontains_visitor::get_int( PlanIter_t iter ) {
+double ftcontains_visitor::get_double( PlanIter_t const &iter ) {
+  store::Item_t item;
+  iter->reset( plan_state_ );
+	bool const got_item = PlanIterator::consumeNext( item, iter, plan_state_ );
+  ZORBA_ASSERT( got_item );
+  return to_double( item->getDoubleValue() );
+}
+
+ft_int ftcontains_visitor::get_int( PlanIter_t const &iter ) {
   store::Item_t item;
   iter->reset( plan_state_ );
 	bool const got_item = PlanIterator::consumeNext( item, iter, plan_state_ );
@@ -359,8 +372,20 @@ ft_visit_result::type V::begin_visit( ftprimary_with_options &pwo ) {
   PUSH_OPTIONS( newer_options );
   return ft_visit_result::proceed;
 }
-void V::end_visit( ftprimary_with_options& ) {
+void V::end_visit( ftprimary_with_options &pwo ) {
   delete POP_OPTIONS();
+
+  double weight;
+  PlanIter_t weight_plan_iter = pwo.get_weight_iter();
+  if ( weight_plan_iter ) {
+    weight = get_double( weight_plan_iter );
+    if ( fabs( weight ) > 1000.0 )
+      ZORBA_ERROR_LOC( FTDY0016, pwo.get_loc() );
+  } else
+    weight = 1.0;
+
+  // TODO: do something with weight
+
   END_VISIT( ftprimary_with_options );
 }
 
@@ -383,10 +408,10 @@ void V::end_visit( ftwords &w ) {
   locale::iso639_1::type const lang = get_lang_from( &options );
   bool const wildcards = get_wildcards_from( &options );
 
-  store::Item_t item;
   PlanIter_t plan_iter = w.get_plan_iter();
   plan_iter->reset( plan_state_ );
   FTQueryItemSeq query_items;
+  store::Item_t item;
 
   while ( PlanIterator::consumeNext( item, plan_iter, plan_state_ ) ) {
     try {
