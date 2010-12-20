@@ -140,7 +140,7 @@ private:
     expr_list_.push_back( e );
   }
 
-  expr_list_t  expr_list_;
+  expr_list_t expr_list_;
 };
 
 } // namespace zorba
