@@ -408,7 +408,7 @@ void V::end_visit( ftwords &w ) {
   locale::iso639_1::type const lang = get_lang_from( &options );
   bool const wildcards = get_wildcards_from( &options );
 
-  PlanIter_t plan_iter = w.get_plan_iter();
+  PlanIter_t plan_iter = w.get_value_iter();
   plan_iter->reset( plan_state_ );
   FTQueryItemSeq query_items;
   store::Item_t item;
@@ -503,7 +503,7 @@ DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftwindow_filter )
 void V::end_visit( ftwindow_filter &f ) {
   auto_ptr<ft_all_matches> const am( POP_MATCHES() );
   auto_ptr<ft_all_matches> result( new ft_all_matches );
-  apply_ftwindow( *am, get_int( f.get_plan_iter() ), f.get_unit(), *result );
+  apply_ftwindow( *am, get_int( f.get_window_iter() ), f.get_unit(), *result );
   PUSH_MATCHES( result.release() );
   END_VISIT( ftwindow_filter );
 }

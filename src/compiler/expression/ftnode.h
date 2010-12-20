@@ -575,23 +575,22 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(ftwindow_filter,ftpos_filter)
   void serialize( serialization::Archiver& );
 
-  ftwindow_filter( QueryLoc const&, expr_t, ft_unit::type );
+  ftwindow_filter( QueryLoc const&, expr_t const&, ft_unit::type );
 
   ft_visit_result::type accept( ftnode_visitor& );
   ft_unit::type get_unit() const { return unit_; }
-  expr_t& get_window() { return window_; }
+  expr_t& get_window_expr() { return window_expr_; }
+  PlanIter_t get_window_iter() const { return window_iter_; }
   std::ostream& put( std::ostream& ) const;
 
-  PlanIter_t get_plan_iter() const { return plan_iter_; }
-
-  void set_plan_iter( PlanIter_t it ) {
-    plan_iter_ = it;
+  void set_window_iter( PlanIter_t const &iter ) {
+    window_iter_ = iter;
   }
 
 private:
-  expr_t window_;
+  expr_t window_expr_;
   ft_unit::type unit_;
-  PlanIter_t plan_iter_;
+  PlanIter_t window_iter_;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -689,8 +688,8 @@ public:
     weight_expr_ = e;
   }
 
-  void set_weight_iter( PlanIter_t const &it ) {
-    weight_iter_ = it;
+  void set_weight_iter( PlanIter_t const &iter ) {
+    weight_iter_ = iter;
   }
 
 private:
@@ -710,30 +709,29 @@ public:
   ftrange(
     QueryLoc const&,
     ft_range_mode::type,
-    expr_t expr1,
+    expr_t const &expr1,
     expr_t expr2 = NULL
   );
 
   ft_visit_result::type accept( ftnode_visitor& );
   expr_t& get_expr1() { return expr1_; }
   expr_t& get_expr2() { return expr2_; }
+  PlanIter_t get_plan_iter1() const { return iter1_; }
+  PlanIter_t get_plan_iter2() const { return iter2_; }
   ft_range_mode::type get_mode() const { return mode_; }
   std::ostream& put( std::ostream& ) const;
 
-  PlanIter_t get_plan_iter1() const { return it1_; }
-  PlanIter_t get_plan_iter2() const { return it2_; }
-
-  void set_plan_iters( PlanIter_t it1, PlanIter_t it2 ) {
-    it1_ = it1;
-    it2_ = it2;
+  void set_plan_iters( PlanIter_t const &iter1, PlanIter_t const &iter2 ) {
+    iter1_ = iter1;
+    iter2_ = iter2;
   }
 
 private:
   ft_range_mode::type mode_;
   expr_t expr1_;
   expr_t expr2_;
-  PlanIter_t it1_;
-  PlanIter_t it2_;
+  PlanIter_t iter1_;
+  PlanIter_t iter2_;
 };
 
 
@@ -763,25 +761,24 @@ public:
 
   ftwords(
     QueryLoc const&,
-    expr_t,
+    expr_t const&,
     ft_anyall_mode::type = ft_anyall_mode::DEFAULT
   );
 
   ft_visit_result::type accept( ftnode_visitor& );
-  expr_t& get_expr() { return expr_; }
+  expr_t& get_value_expr() { return value_expr_; }
+  PlanIter_t get_value_iter() const { return value_iter_; }
   ft_anyall_mode::type get_mode() const { return mode_; }
   std::ostream& put( std::ostream& ) const;
 
-  PlanIter_t get_plan_iter() const { return plan_iter_; }
-
-  void set_plan_iter( PlanIter_t it ) {
-    plan_iter_ = it;
+  void set_plan_iter( PlanIter_t const &iter ) {
+    value_iter_ = iter;
   }
 
 private:
-  expr_t expr_;
+  expr_t value_expr_;
   ft_anyall_mode::type mode_;
-  PlanIter_t plan_iter_;
+  PlanIter_t value_iter_;
 };
 
 } /* namespace zorba */

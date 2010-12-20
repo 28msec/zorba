@@ -605,7 +605,7 @@ void ftprimary_with_options::serialize( serialization::Archiver &ar ) {
 ftrange::ftrange(
   QueryLoc const &loc,
   ft_range_mode::type mode,
-  expr_t expr1,
+  expr_t const &expr1,
   expr_t expr2
 ) :
   ftnode( loc ),
@@ -635,8 +635,8 @@ void ftrange::serialize( serialization::Archiver &ar ) {
   SERIALIZE_ENUM(ft_range_mode::type,mode_);
   ar & expr1_;
   ar & expr2_;
-  ar & it1_;
-  ar & it2_;
+  ar & iter1_;
+  ar & iter2_;
 }
 
 ftscope_filter::ftscope_filter(
@@ -945,19 +945,19 @@ void ftwild_card_option::serialize( serialization::Archiver &ar ) {
 
 ftwindow_filter::ftwindow_filter(
   QueryLoc const &loc,
-  expr_t window,
+  expr_t const &window_expr,
   ft_unit::type unit )
 :
   ftpos_filter( loc ),
-  window_( window ),
+  window_expr_( window_expr ),
   unit_( unit )
 {
-  ZORBA_ASSERT( window_ );
+  ZORBA_ASSERT( window_expr );
 }
 
 ft_visit_result::type ftwindow_filter::accept( ftnode_visitor &v ) {
   BEGIN_VISIT( v );
-  EV_ACCEPT( window_, v );
+  EV_ACCEPT( window_expr_, v );
   END_VISIT( v );
 }
 
@@ -965,31 +965,31 @@ ostream& ftwindow_filter::put( ostream &o ) const {
   BEGIN_PUT( o, ftwindow_filter );
   PUT_ENUM( o, ft_unit, unit );
   INDENT_PUT( o );
-  PUT_EXPR( o, window_ );
+  PUT_EXPR( o, window_expr_ );
   OUTDENT_END_PUT( o );
 }
 
 void ftwindow_filter::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (ftpos_filter*)this );
-  ar & window_;
+  ar & window_expr_;
   SERIALIZE_ENUM(ft_unit::type,unit_);
-  ar & plan_iter_;
+  ar & window_iter_;
 }
 
 ftwords::ftwords(
   QueryLoc const &loc,
-  expr_t expr,
+  expr_t const &value_expr,
   ft_anyall_mode::type mode
 ) :
   ftnode( loc ),
-  expr_( expr ),
+  value_expr_( value_expr ),
   mode_( mode )
 {
 }
 
 ft_visit_result::type ftwords::accept( ftnode_visitor &v ) {
   BEGIN_VISIT( v );
-  EV_ACCEPT( expr_, v );
+  EV_ACCEPT( value_expr_, v );
   END_VISIT( v );
 }
 
@@ -997,15 +997,15 @@ ostream& ftwords::put( ostream &o ) const {
   BEGIN_PUT( o, ftwords );
   PUT_ENUM( o, ft_anyall_mode, mode );
   INDENT_PUT( o );
-  PUT_EXPR( o, expr_ );
+  PUT_EXPR( o, value_expr_ );
   OUTDENT_END_PUT( o );
 }
 
 void ftwords::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (ftnode*)this );
-  ar & expr_;
   SERIALIZE_ENUM( ft_anyall_mode::type, mode_ );
-  ar & plan_iter_;
+  ar & value_expr_;
+  ar & value_iter_;
 }
 
 ftwords_times::ftwords_times(

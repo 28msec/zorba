@@ -2921,7 +2921,7 @@ DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftscope_filter )
 DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftwindow_filter );
 void V::end_visit( ftwindow_filter &f ) {
   PlanIter_t it = plan_visitor_->pop_itstack();
-  f.set_plan_iter( it );
+  f.set_window_iter( it );
   sub_iters_.push_back( it );
 }
 
