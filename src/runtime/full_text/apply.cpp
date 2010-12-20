@@ -83,8 +83,13 @@ private:
   ft_all_matches &result_;
 };
 
-#define TRACE_APPLY(RESULT) \
-  trace_helper const trace_helper_##__LINE__( __func__, RESULT )
+#ifdef MSVC
+#  define TRACE_APPLY(RESULT) \
+     trace_helper const trace_helper_##__LINE__( __FUNCTION__, RESULT )
+#else
+#  define TRACE_APPLY(RESULT) \
+     trace_helper const trace_helper_##__LINE__( __func__, RESULT )
+#endif
 
 #define PUT_ALL_MATCHES(ARG)                \
   if ( !TRACE_FULL_TEXT ) ; else            \
