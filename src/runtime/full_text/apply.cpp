@@ -24,11 +24,16 @@
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
 #include "system/globalenv.h"
-#include "system/properties.h"
 #include "util/indent.h"
 #include "util/stl_util.h"
 #include "zorbaerrors/error_manager.h"
 #include "zorbautils/tokenizer.h"
+
+#ifndef NDEBUG
+#include "system/properties.h"
+#define DOUT            Properties::instance()->debug_out()
+#define TRACE_FULL_TEXT Properties::instance()->traceFulltext()
+#endif /* NDEBUG */
 
 #include "apply.h"
 #include "ft_single_token_iterator.h"
@@ -53,12 +58,33 @@ namespace zorba {
 
 #ifndef NDEBUG
 
-#define DOUT Properties::instance()->debug_out()
-#define TRACE_FULL_TEXT Properties::instance()->traceFulltext()
+/**
+ * An instance of this class is ued to perform RAII (Resource Acquisition Is
+ * Initialization) to guarantee that the result is printed and that the proper
+ * number of "dec_indent" calls are done regardless of how the enclosing
+ * function exits.
+ */
+class trace_helper {
+public:
+  trace_helper( char const *fn_name, ft_all_matches &result ) :
+    result_( result )
+  {
+    if ( TRACE_FULL_TEXT )
+      DOUT << '\n' << indent << fn_name << "()\n" << inc_indent;
+  }
 
-#define BEGIN_APPLY(NAME)                               \
-  if ( !TRACE_FULL_TEXT ) ; else                        \
-  DOUT << '\n' << indent <<  #NAME "()\n" << inc_indent
+  ~trace_helper() {
+    if ( TRACE_FULL_TEXT )
+      DOUT  << indent << "RESULT\n" << inc_indent << result_ << dec_indent
+            << dec_indent;
+  }
+
+private:
+  ft_all_matches &result_;
+};
+
+#define TRACE_APPLY(RESULT) \
+  trace_helper const trace_helper_##__LINE__( __func__, RESULT )
 
 #define PUT_ALL_MATCHES(ARG)                \
   if ( !TRACE_FULL_TEXT ) ; else            \
@@ -73,18 +99,12 @@ namespace zorba {
   if ( !TRACE_FULL_TEXT ) ; else                                          \
   DOUT << indent << "ARG " #ARG "=" << FT_ENUM::string_of[ ARG ] << endl
 
-#define END_APPLY(RESULT)                                               \
-  if ( !TRACE_FULL_TEXT ) ; else                                        \
-  DOUT  << indent << "RESULT\n" << inc_indent << (RESULT) << dec_indent \
-        << dec_indent
-
 #else /* NDEBUG */
 
-#define BEGIN_APPLY(NAME)     /* nothing */
+#define TRACE_APPLY(RESULT)   /* nothing */
 #define PUT_ALL_MATCHES(ARG)  /* nothing */
 #define PUT_ARG(ARG)          /* nothing */
 #define PUT_ENUM(FT_ENUM,ARG) /* nothing */
-#define END_APPLY(RESULT)     /* nothing */
 
 #endif /* NDEBUG */
 
@@ -415,7 +435,7 @@ static void match_tokens( FTTokenIterator &doc_tokens,
 
 void apply_ftand( ft_all_matches const &ami, ft_all_matches const &amj,
                   ft_all_matches &result ) {
-  BEGIN_APPLY( apply_ftand );
+  TRACE_APPLY( result );
   PUT_ALL_MATCHES( ami );
   PUT_ALL_MATCHES( amj );
 
@@ -431,8 +451,6 @@ void apply_ftand( ft_all_matches const &ami, ft_all_matches const &amj,
       }
     }
   }
-
-  END_APPLY( result );
 }
 
 ////////// ApplyFTContent /////////////////////////////////////////////////////
@@ -448,7 +466,7 @@ inline bool token_covers_pos( ft_token_span const &ts,
 
 void apply_ftcontent( ft_all_matches &am, ft_content_mode::type mode,
                       ft_int start_pos, ft_int end_pos ) {
-  BEGIN_APPLY( apply_ftcontent );
+  TRACE_APPLY( am );
   PUT_ENUM( ft_content_mode, mode );
   PUT_ARG( start_pos );
   PUT_ARG( end_pos );
@@ -494,8 +512,6 @@ void apply_ftcontent( ft_all_matches &am, ft_content_mode::type mode,
         m = am.erase( m );
     }
   }
-
-  END_APPLY( am );
 }
 
 ////////// ApplyFTDistance ////////////////////////////////////////////////////
@@ -517,7 +533,7 @@ static ft_int distance( ft_token_span const &tsi, ft_token_span const &tsj,
 void apply_ftdistance( ft_all_matches const &am,
                        ft_int at_least, ft_int at_most,
                        ft_unit::type unit, ft_all_matches &result ) {
-  BEGIN_APPLY( apply_ftdistance );
+  TRACE_APPLY( result );
   PUT_ARG( at_least );
   PUT_ARG( at_most );
   PUT_ENUM( ft_unit, unit );
@@ -554,15 +570,13 @@ void apply_ftdistance( ft_all_matches const &am,
       result.push_back( m_new );
     }
   }
-
-  END_APPLY( result );
 }
 
 ////////// ApplyFTMildNot /////////////////////////////////////////////////////
 
 void apply_ftmild_not( ft_all_matches const &ami, ft_all_matches const &amj,
                        ft_all_matches &result ) {
-  BEGIN_APPLY( apply_ftmild_not );
+  TRACE_APPLY( result );
   PUT_ALL_MATCHES( ami );
   PUT_ALL_MATCHES( amj );
 
@@ -602,22 +616,18 @@ void apply_ftmild_not( ft_all_matches const &ami, ft_all_matches const &amj,
         result.push_back( *mi );
     }
   }
-
-  END_APPLY( result );
 }
 
 ////////// ApplyFTOr //////////////////////////////////////////////////////////
 
 void apply_ftor( ft_all_matches const &ami, ft_all_matches const &amj,
                  ft_all_matches &result ) {
-  BEGIN_APPLY( apply_ftor );
+  TRACE_APPLY( result );
   PUT_ALL_MATCHES( ami );
   PUT_ALL_MATCHES( amj );
 
   copy_seq( ami, result );
   copy_seq( amj, result );
-
-  END_APPLY( result );
 }
 
 ////////// ApplyFTOrder ///////////////////////////////////////////////////////
@@ -633,7 +643,7 @@ inline bool ordered( ft_string_match const &smi, ft_string_match const &smj ) {
 }
 
 void apply_ftorder( ft_all_matches const &am, ft_all_matches &result ) {
-  BEGIN_APPLY( apply_ftorder );
+  TRACE_APPLY( result );
   PUT_ALL_MATCHES( am );
 
   FOR_EACH( ft_all_matches, m, am ) {
@@ -658,8 +668,6 @@ void apply_ftorder( ft_all_matches const &am, ft_all_matches &result ) {
       result.push_back( m_new );
     }
   }
-
-  END_APPLY( result );
 }
 
 ////////// ApplyFTScope ///////////////////////////////////////////////////////
@@ -680,7 +688,7 @@ inline bool different( ft_string_match const &smi, ft_string_match const &smj,
 static void apply_ftscope_diff( ft_all_matches const &am,
                                 ft_token_span::start_end_ptr sep,
                                 ft_all_matches &result ) {
-  BEGIN_APPLY( apply_ftscope_diff );
+  TRACE_APPLY( result );
   PUT_ALL_MATCHES( am );
 
   FOR_EACH( ft_all_matches, m, am ) {
@@ -711,8 +719,6 @@ static void apply_ftscope_diff( ft_all_matches const &am,
       result.push_back( m_new );
     }
   }
-
-  END_APPLY( result );
 }
 
 /**
@@ -745,7 +751,7 @@ inline bool same( ft_string_match const &smi, ft_string_match const &smj,
 static void apply_ftscope_same( ft_all_matches const &am,
                                 ft_token_span::start_end_ptr sep,
                                 ft_all_matches &result ) {
-  BEGIN_APPLY( apply_ftscope_same );
+  TRACE_APPLY( result );
   PUT_ALL_MATCHES( am );
 
   FOR_EACH( ft_all_matches, m, am ) {
@@ -771,13 +777,11 @@ static void apply_ftscope_same( ft_all_matches const &am,
       result.push_back( m_new );
     }
   }
-
-  END_APPLY( result );
 }
 
 void apply_ftscope( ft_all_matches const &am, ft_scope::type scope,
                     ft_big_unit::type unit, ft_all_matches &result ) {
-  BEGIN_APPLY( apply_ftscope );
+  TRACE_APPLY( result );
   PUT_ALL_MATCHES( am );
   PUT_ENUM( ft_scope, scope );
   PUT_ENUM( ft_big_unit, unit );
@@ -799,8 +803,6 @@ void apply_ftscope( ft_all_matches const &am, ft_scope::type scope,
       apply_ftscope_diff( am, sep, result );
       break;
   }
-
-  END_APPLY( result );
 }
 
 ////////// ApplyFTTimes ///////////////////////////////////////////////////////
@@ -890,7 +892,7 @@ static void form_range( ft_match_seq const &ms, ft_int at_least, ft_int at_most,
 
 void apply_fttimes( ft_all_matches const &am, ft_range_mode::type mode,
                     ft_int at_least, ft_int at_most, ft_all_matches &result ) {
-  BEGIN_APPLY( apply_fttimes );
+  TRACE_APPLY( result );
   PUT_ENUM( ft_range_mode, mode );
   PUT_ARG( at_least );
   PUT_ARG( at_most );
@@ -903,14 +905,12 @@ void apply_fttimes( ft_all_matches const &am, ft_range_mode::type mode,
     form_combinations_at_least( am, at_least, result );
   else
     form_range( am, at_least, at_most, result );
-
-  END_APPLY( result );
 }
 
 ////////// ApplyFTUnaryNot ////////////////////////////////////////////////////
 
 void apply_ftunary_not( ft_all_matches &am ) {
-  BEGIN_APPLY( apply_ftunary_not );
+  TRACE_APPLY( am );
   PUT_ALL_MATCHES( am );
 
   if ( am.empty() )
@@ -918,8 +918,6 @@ void apply_ftunary_not( ft_all_matches &am ) {
   else
     MUTATE_EACH( ft_all_matches, m, am )
       m->includes.swap( m->excludes );
-
-  END_APPLY( am );
 }
 
 ////////// ApplyFTWords ///////////////////////////////////////////////////////
@@ -951,7 +949,7 @@ apply_query_tokens_as_phrase( FTTokenIterator &query_tokens,
                               ftmatch_options const &options,
                               ft_token_matcher const &matcher,
                               ft_all_matches &result ) {
-  BEGIN_APPLY( apply_query_tokens_as_phrase );
+  TRACE_APPLY( result );
   PUT_ARG( query_pos );
 
   ftthesaurus_option const *const th_option = options.get_thesaurus_option();
@@ -989,8 +987,6 @@ apply_query_tokens_as_phrase( FTTokenIterator &query_tokens,
     m_new.includes.push_back( si );
     result.push_back( m_new );
   }
-
-  END_APPLY( result );
 }
 
 static void make_conj_disj( ft_all_matches const &cur_res,
@@ -1014,14 +1010,12 @@ apply_ftwords_phrase( FTQueryItemSeq &query_items, FTToken::int_t query_pos,
                       ft_all_matches &result ) {
   FTQueryItemSeqIterator query_tokens( query_items );
   if ( query_tokens.hasNext() ) {
-    BEGIN_APPLY( apply_ftwords_phrase );
+    TRACE_APPLY( result );
     PUT_ARG( query_pos );
 
     apply_query_tokens_as_phrase(
       query_tokens, query_pos, ignore_item, options, matcher, result
     );
-
-    END_APPLY( result );
   }
 }
 
@@ -1031,7 +1025,7 @@ apply_ftwords_all( FTQueryItemSeq &query_items, FTToken::int_t query_pos,
                    ftmatch_options const &options,
                    ft_token_matcher const &matcher, ft_all_matches &result ) {
   if ( !query_items.empty() ) {
-    BEGIN_APPLY( apply_ftwords_all );
+    TRACE_APPLY( result );
     PUT_ARG( query_pos );
 
     FTQueryItemSeq first_query_item;
@@ -1054,8 +1048,6 @@ apply_ftwords_all( FTQueryItemSeq &query_items, FTToken::int_t query_pos,
     } else {
       result.swap( first_am );
     }
-
-    END_APPLY( result );
   }
 }
 
@@ -1065,7 +1057,7 @@ apply_ftwords_any( FTQueryItemSeq &query_items, FTToken::int_t query_pos,
                    ftmatch_options const &options,
                    ft_token_matcher const &matcher, ft_all_matches &result ) {
   if ( !query_items.empty() ) {
-    BEGIN_APPLY( apply_ftwords_any );
+    TRACE_APPLY( result );
     PUT_ARG( query_pos );
 
     FTQueryItemSeq first_query_item;
@@ -1088,8 +1080,6 @@ apply_ftwords_any( FTQueryItemSeq &query_items, FTToken::int_t query_pos,
       result.swap( first_am );
     else
       apply_ftor( first_am, rest_am, result );
-
-    END_APPLY( result );
   }
 }
 
@@ -1107,7 +1097,7 @@ apply_ftwords_xxx_word( FTQueryItemSeq &query_items, FTToken::int_t query_pos,
                         apply_binary_fn apply_fn, ft_all_matches &result ) {
   FTQueryItemSeqIterator query_tokens( query_items );
   if ( query_tokens.hasNext() ) {
-    BEGIN_APPLY( apply_ftwords_xxx_word );
+    TRACE_APPLY( result );
     PUT_ARG( query_pos );
 
     ft_all_matches_seq all_am_seq;
@@ -1126,8 +1116,6 @@ apply_ftwords_xxx_word( FTQueryItemSeq &query_items, FTToken::int_t query_pos,
     if ( !all_am_seq.empty() )
       first_am = pop_front( all_am_seq );
     make_conj_disj( first_am, all_am_seq, apply_fn, result );
-
-    END_APPLY( result );
   }
 }
 
@@ -1286,7 +1274,7 @@ apply_thesaurus_option( ftthesaurus_option const *th_option,
 
 void apply_ftwindow( ft_all_matches const &am, ft_int window_size,
                      ft_unit::type unit, ft_all_matches &result ) {
-  BEGIN_APPLY( apply_ftwindow );
+  TRACE_APPLY( result );
   PUT_ARG( window_size );
   PUT_ENUM( ft_unit, unit );
   PUT_ALL_MATCHES( am );
@@ -1317,8 +1305,6 @@ void apply_ftwindow( ft_all_matches const &am, ft_int window_size,
       result.push_back( m_new );
     }
   }
-
-  END_APPLY( result );
 }
 
 } // namespace zorba

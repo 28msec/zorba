@@ -25,14 +25,14 @@
 #include "zorbaerrors/error_manager.h"
 #include "zorbatypes/numconversions.h"
 
-#include "ft_util.h"
-#include "ftcontains_visitor.h"
-
 #ifndef NDEBUG
 #include "system/properties.h"
-#define DOUT Properties::instance()->debug_out()
+#define DOUT            Properties::instance()->debug_out()
 #define TRACE_FULL_TEXT Properties::instance()->traceFulltext()
 #endif /* NDEBUG */
+
+#include "ft_util.h"
+#include "ftcontains_visitor.h"
 
 using namespace std;
 
@@ -181,19 +181,16 @@ ft_int ftcontains_visitor::get_int( PlanIter_t iter ) {
 
 #ifndef NDEBUG
 
-#define DOUT Properties::instance()->debug_out()
-#define TRACE_FULL_TEXT Properties::instance()->traceFulltext()
-
 inline void pop_helper( char const *what, int line ) {
   if ( TRACE_FULL_TEXT )
     DOUT << indent << "(pop " << what << " @ line " << line << ")\n";
 }
 
-#define PUSH(WHAT,OBJ) \
-  do {                                                                \
-    if ( !TRACE_FULL_TEXT ) ; else                                    \
-    DOUT << indent << "(push " #WHAT " @ line " << __LINE__ << ")\n"; \
-    push_##WHAT(OBJ);                                                 \
+#define PUSH(WHAT,OBJ)                                                  \
+  do {                                                                  \
+    if ( TRACE_FULL_TEXT )                                              \
+      DOUT << indent << "(push " #WHAT " @ line " << __LINE__ << ")\n"; \
+    push_##WHAT(OBJ);                                                   \
   } while (0)
 
 #define POP(WHAT) \
