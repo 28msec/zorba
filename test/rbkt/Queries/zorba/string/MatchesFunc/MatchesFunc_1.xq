@@ -1,0 +1,1 @@
+fn:matches("Name", "^\i\c*$")
