@@ -25,6 +25,7 @@ using namespace std;
 U_NAMESPACE_USE
 
 namespace zorba {
+namespace utf8 {
 
 size_t find( char const *s, size_t s_len, char const *ss, size_t ss_len,
             XQPCollator const *collator ) {
@@ -115,5 +116,6 @@ bool match_whole( char const *in, char const *pattern, char const *flags ) {
   return re.match_whole( in );
 }
 
+} // namespace utf8
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

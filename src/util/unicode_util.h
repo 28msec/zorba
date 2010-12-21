@@ -63,26 +63,7 @@ namespace normalization {
  */
 typedef U_NAMESPACE_QUALIFIER UnicodeString string;
 
-////////// functions //////////////////////////////////////////////////////////
-
-/**
- * Tests whether the given character is lower-case.
- *
- * @param c The character.
- * @return Returns \c true only if the character is lower-case.
- */
-ZORBA_DLL_PUBLIC
-bool is_lower( code_point c );
-
-/**
- * Test whether the given character is a "iprivate".
- *
- * @param c The character.
- * @return Returns \c true only if the character is a "iprivate".
- * See RFC 3987.
- */
-ZORBA_DLL_PUBLIC
-bool is_iprivate( code_point c );
+////////// code-point checking ////////////////////////////////////////////////
 
 /**
  * Test whether the given character is invalid in an IRI.
@@ -93,6 +74,16 @@ bool is_iprivate( code_point c );
  */
 ZORBA_DLL_PUBLIC
 bool is_invalid_in_iri( code_point c );
+
+/**
+ * Test whether the given character is a "iprivate".
+ *
+ * @param c The character.
+ * @return Returns \c true only if the character is a "iprivate".
+ * See RFC 3987.
+ */
+ZORBA_DLL_PUBLIC
+bool is_iprivate( code_point c );
 
 /**
  * Unicode version is isspace(3).
@@ -118,6 +109,31 @@ inline bool is_space( code_point c ) {
  */
 ZORBA_DLL_PUBLIC
 bool is_ucschar( code_point c );
+
+/**
+ * Checks whether the given code-point is valid.
+ *
+ * @param c The code-point to check.
+ * @return Returns \c true only if the code-point is valid.
+ */
+template<class CodePointType>
+inline bool is_valid( CodePointType c ) {
+  return  c == 0x09 || c == 0x0A || c == 0x0D ||
+          (c >= 0x00020 && c <= 0x00D7FF) ||
+          (c >= 0x0E000 && c <= 0x00FFFD) ||
+          (c >= 0x10000 && c <= 0x10FFFF);
+}
+
+////////// case checking & conversion /////////////////////////////////////////
+
+/**
+ * Tests whether the given character is lower-case.
+ *
+ * @param c The character.
+ * @return Returns \c true only if the character is lower-case.
+ */
+ZORBA_DLL_PUBLIC
+bool is_lower( code_point c );
 
 /**
  * Tests whether the given character is upper-case.
@@ -148,30 +164,7 @@ code_point to_lower( code_point c );
 ZORBA_DLL_PUBLIC
 code_point to_upper( code_point c );
 
-/**
- * Checks whether the given code-point is valid.
- *
- * @param c The code-point to check.
- * @return Returns \c true only if the code-point is valid.
- */
-template<class CodePointType>
-inline bool is_valid( CodePointType c ) {
-  return  c == 0x09 || c == 0x0A || c == 0x0D ||
-          (c >= 0x00020 && c <= 0x00D7FF) ||
-          (c >= 0x0E000 && c <= 0x00FFFD) ||
-          (c >= 0x10000 && c <= 0x10FFFF);
-}
-
-/**
- * Parses an XML entity reference.
- *
- * @param s The C string pointing to the start of the entity reference.
- * @param c A pointer to the code-point result.
- * @return If successful, returns the number of characters parsed; otherwise
- * returns -1.
- */
-ZORBA_DLL_PUBLIC
-int parse_xml_entity( char const *s, code_point *c );
+////////// normalization //////////////////////////////////////////////////////
 
 /**
  * Normalizes the given string.
@@ -182,6 +175,8 @@ int parse_xml_entity( char const *s, code_point *c );
  */
 ZORBA_DLL_PUBLIC
 bool normalize( string const &in, normalization::type n, string *out );
+
+////////// string conversion //////////////////////////////////////////////////
 
 /**
  * Converts a UTF-8 encoded string into a sequence of Unicode characters.
@@ -251,6 +246,19 @@ template<class StringType>
 inline bool to_string( StringType const &in, string *out ) {
   return to_string( in.data(), zorba::unicode::size_type(in.size()), out );
 }
+
+////////// miscellaneous //////////////////////////////////////////////////////
+
+/**
+ * Parses an XML entity reference.
+ *
+ * @param s The C string pointing to the start of the entity reference.
+ * @param c A pointer to the code-point result.
+ * @return If successful, returns the number of characters parsed; otherwise
+ * returns -1.
+ */
+ZORBA_DLL_PUBLIC
+int parse_xml_entity( char const *s, code_point *c );
 
 ///////////////////////////////////////////////////////////////////////////////
 

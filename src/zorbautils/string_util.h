@@ -27,6 +27,7 @@
 #include "util/utf8_util.h"
 
 namespace zorba {
+namespace utf8 {
 
 ////////// find with collation ////////////////////////////////////////////////
 
@@ -123,9 +124,8 @@ bool match_whole( InputStringType const &in, PatternStringType const &pattern,
                   FlagsStringType const &flags ) {
   return match_whole( in.c_str(), pattern.c_str(), flags.c_str() );
 }
-////////// regular expression replacement /////////////////////////////////////
 
-namespace utf8 {
+////////// regular expression replacement /////////////////////////////////////
 
 /**
  * Replaces all occurrences of a substring that matches the given regular
@@ -215,8 +215,9 @@ bool replace_all( InputStringType const &in, PatternStringType const &pattern,
           utf8::to_string( u_out.getBuffer(), u_out.length(), out );
 }
 
-} // namespace utf8
+///////////////////////////////////////////////////////////////////////////////
 
+} // namespace utf8
 } // namespace zorba
 #endif  /* ZORBA_UTILS_STRING_UTIL_H */
 

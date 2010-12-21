@@ -971,7 +971,7 @@ bool ContainsIterator::nextImpl(
         XQPCollator* coll = theSctx->get_collator(itemColl->getStringValue().str(), loc);
         resBool = ((coll == NULL || coll->doMemCmp())?
                   (arg1.find(arg2) != zstring::npos):
-                  (zorba::find(arg1, arg2, coll) != zstring::npos));
+                  (utf8::find(arg1, arg2, coll) != zstring::npos));
       }
     }
     STACK_PUSH( GENV_ITEMFACTORY->createBoolean(result, resBool), state );
@@ -1039,7 +1039,7 @@ bool StartsWithIterator::nextImpl(
           XQPCollator* coll = theSctx->get_collator(itemColl->getStringValue().str(), loc);
           resBool = ((coll == NULL || coll->doMemCmp())?
                     (arg1.find(arg2) == 0):
-                    (zorba::find(arg1, arg2, coll) == 0));
+                    (utf8::find(arg1, arg2, coll) == 0));
         }
       }
       STACK_PUSH( GENV_ITEMFACTORY->createBoolean(result, resBool), state );
@@ -1106,7 +1106,7 @@ bool EndsWithIterator::nextImpl(
 
         resBool = ((coll == NULL || coll->doMemCmp())?
                   utf8::ends_with(arg1, arg2):
-                  zorba::ends_with(arg1, arg2, coll));
+                  utf8::ends_with(arg1, arg2, coll));
       }
     }
     STACK_PUSH( GENV_ITEMFACTORY->createBoolean(result, resBool), state );
@@ -1172,7 +1172,7 @@ bool SubstringBeforeIterator::nextImpl(
           coll = theSctx->get_collator(itemColl->getStringValue().str(), loc);
           index = ((coll == NULL || coll->doMemCmp())?
                   arg1.find(arg2):
-                  zorba::find(arg1, arg2, coll));
+                  utf8::find(arg1, arg2, coll));
         }
       }
 
@@ -1246,7 +1246,7 @@ bool SubstringAfterIterator::nextImpl(
           XQPCollator* coll = theSctx->get_collator(itemColl->getStringValue().str(), loc);
           startPos = ((coll == NULL || coll->doMemCmp())?
                       arg1.find(arg2):
-                      zorba::find(arg1, arg2, coll));
+                      utf8::find(arg1, arg2, coll));
         }
       }
 
@@ -1307,7 +1307,7 @@ bool FnMatchesIterator::nextImpl(
   {
     zstring lib_pattern;
     convert_xquery_re( xquery_pattern, &lib_pattern );
-    res = zorba::match_part(input, lib_pattern, flags.c_str());
+    res = utf8::match_part(input, lib_pattern, flags.c_str());
   }
   catch(zorbatypesException& ex) 
   {
@@ -1372,7 +1372,7 @@ bool FnReplaceIterator::nextImpl(
 
   try 
   {
-    tmp = zorba::match_part(zstring(), pattern, flags.c_str());
+    tmp = utf8::match_part(zstring(), pattern, flags.c_str());
   }
   catch(zorbatypesException& ex) 
   {
@@ -1517,7 +1517,7 @@ bool FnTokenizeIterator::nextImpl(
   try
   {
     static zstring const empty;
-    tmp = match_part( empty, state->thePattern, state->theFlags );
+    tmp = utf8::match_part( empty, state->thePattern, state->theFlags );
   }
   catch(zorbatypesException& ex)
   {

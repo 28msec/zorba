@@ -160,7 +160,7 @@ bool FnLangIterator::nextImpl(store::Item_t& result, PlanState& planState) const
             searchParent = !(ZSTREQ(attrName->getLocalName(), "lang") &&
                             ZSTREQ(attrName->getNamespace(), XML_NS));
             found = !searchParent &&
-              match_whole(
+              utf8::match_whole(
                 attr->getStringValue().str(), reqLang.str() + "(?:-.+)?", "i"
               );
           }
@@ -176,7 +176,7 @@ bool FnLangIterator::nextImpl(store::Item_t& result, PlanState& planState) const
             searchParent = !(ZSTREQ(attrName->getLocalName(), "lang") &&
                             ZSTREQ(attrName->getNamespace(), XML_NS));
             found = !searchParent &&
-              match_whole(
+              utf8::match_whole(
                 node->getStringValue().str(), reqLang.str() + "(?:-.+)?", "i"
               );
           }

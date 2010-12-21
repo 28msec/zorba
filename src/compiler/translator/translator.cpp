@@ -2366,7 +2366,7 @@ void* begin_visit(const VersionDecl& v)
 {
   TRACE_VISIT();
 
-  if (!match_whole(v.get_encoding(), "^[A-Za-z]([A-Za-z0-9._]|[-])*$", ""))
+  if (!utf8::match_whole(v.get_encoding(), "^[A-Za-z]([A-Za-z0-9._]|[-])*$", ""))
     ZORBA_ERROR_LOC (XQST0087, loc);
 
   std::string versionStr = v.get_version().str();
