@@ -60,11 +60,13 @@ size_type const npos = static_cast<size_type>( -1 );
  * comprising an encoded character.  If not, throws an exception.
  *
  * @param b The byte to check.
+ * @param check_start_byte If \c true, checks for a valid start byte; if \a
+ * false, checks for a valid continuation byte.
  * @return Returns \a b for convenience.
  * @throws XQP0034_ILLEGAL_UTF8_BYTE if \a b is an illegal UTF-8 byte.
  */
 ZORBA_DLL_PUBLIC
-storage_type assert_valid_byte( storage_type b );
+storage_type assert_valid_byte( storage_type b, bool check_start_byte );
 
 /**
  * Converts a character position into a byte position.
@@ -161,14 +163,30 @@ void encode( unicode::code_point c, StringType *out ) {
 
 /**
  * Checks whether the given byte is the first byte of a UTF-8 byte sequence
- * comprising an encoded character.
+ * comprising an encoded character.  Note that this is not equivalent to
+ * !is_continuation_byte(b).
  *
  * @param b The byte to check.
  * @return Returns \c true only if the byte is the first byte of a UTF-8 byte
  * sequence comprising an encoded character.
  */
 inline bool is_start_byte( storage_type b ) {
-  return (b & 0xC0) != 0x80;
+  unsigned char const u = b;
+  return u < 128 || (u >= 194 && u < 254);
+}
+
+/**
+ * Checks whether the given byte is not the first byte of a UTF-8 byte sequence
+ * comprising an encoded character.  Note that this is not equivalent to
+ * !is_start_byte(b).
+ *
+ * @param b The byte to check.
+ * @return Returns \c true only if the byte is not the first byte of a UTF-8
+ * byte sequence comprising an encoded character.
+ */
+inline bool is_continuation_byte( storage_type b ) {
+  unsigned char const u = b;
+  return u >= 128 && u < 192;
 }
 
 /**
@@ -176,10 +194,12 @@ inline bool is_start_byte( storage_type b ) {
  * comprising an encoded character.
  *
  * @param b The byte to check.
+ * @param check_start_byte If \c true, checks for a valid start byte; if \a
+ * false, checks for a valid continuation byte.
  * @return Returns \c true only if the byte is valid.
  */
-inline bool is_valid_byte( storage_type b ) {
-  return static_cast<unsigned char>( b ) < 0xFEu;
+inline bool is_valid_byte( storage_type b, bool check_start_byte ) {
+  return check_start_byte ? is_start_byte( b ) : is_continuation_byte( b );
 }
 
 /**
@@ -228,6 +248,7 @@ inline size_type length( StringType const &s ) {
  * comprising a Unicode character.  The iterator is advanced by the number of
  * bytes comprising the UTF-8 byte sequence.
  * @return Returns said character.
+ * @throws XQP0034_ILLEGAL_UTF8_BYTE if an illegal UTF-8 byte is encountered.
  */
 template<class OctetIterator>
 unicode::code_point next_char( OctetIterator &i );
@@ -272,6 +293,7 @@ inline unicode::code_point char_at( storage_type const *s, size_type s_size,
  * repositioned to the first byte of the UTF-8 byte sequence comprising e
  * previous character.
  * @return Returns said character.
+ * @throws XQP0034_ILLEGAL_UTF8_BYTE if an illegal UTF-8 byte is encountered.
  */
 template<class OctetIterator>
 unicode::code_point prev_char( OctetIterator &i );

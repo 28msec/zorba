@@ -36,8 +36,8 @@ unsigned const Mask6Bytes  = 0xFC;
 namespace zorba {
 namespace utf8 {
 
-storage_type assert_valid_byte( storage_type b ) {
-  if ( !is_valid_byte( b ) )
+storage_type assert_valid_byte( storage_type b, bool check_start_byte ) {
+  if ( !is_valid_byte( b, check_start_byte ) )
     ZORBA_ERROR( XQP0034_ILLEGAL_UTF8_BYTE );
   return b;
 }
