@@ -17,7 +17,6 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/guestbook.xq ${CMAKE_CURRENT_BINARY_D
 # create the testing file and list of tests
 CREATE_TEST_SOURCELIST(DebuggerTests
     DebuggerTests.cpp
-    test_debugger_protocol.cpp
     test_debugger_endianness.cpp
     test_debugger_server.cpp
     test_debugger_serialization.cpp

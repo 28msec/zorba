@@ -16,7 +16,7 @@
 
 #include <string>
 
-#include <zorba/unit_tests.h>
+#include "unit_test_list.h"
 
 #include "debugger/message_factory.h"
 #include "zorbatypes/zstring.h"
@@ -367,7 +367,7 @@ bool TestDebuggerSerialization::testVariableMessage()
 
   
 
-int UnitTester::runDebuggerProtocolTest()
+int UnitTests::runDebuggerProtocolTest(int argc, char* argv[])
 {
   bool lResult;
   zorba::TestDebuggerSerialization * test = new zorba::TestDebuggerSerialization();

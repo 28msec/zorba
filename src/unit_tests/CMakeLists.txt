@@ -14,6 +14,7 @@
                                   
 
 SET(UNIT_TEST_SRCS
+    unit_tests.cpp
     test_uri.cpp
     test_debugger_protocol.cpp
 )

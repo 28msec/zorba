@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include <zorba/unit_tests.h>
+#include "unit_test_list.h"
 
 #include "zorbatypes/URI.h"
 
@@ -25,6 +25,7 @@
 
 namespace zorba {
 
+namespace UnitTests {
 
 struct URITestEntry
 {
@@ -43,7 +44,7 @@ struct URITestEntry
 };
 
 
-int UnitTester::runUriTest()
+int runUriTest(int argc, char* argv[])
 {
   zstring foo("/b");
 
@@ -755,3 +756,4 @@ int UnitTester::runUriTest()
 
 }
 
+}

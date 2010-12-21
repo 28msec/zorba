@@ -4,7 +4,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -13,26 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_UNIT_TESTS_H
-#define ZORBA_UNIT_TESTS_H
 
-#include <zorba/config.h>
+#ifndef ZORBA_UNIT_TEST_LIST_H
+#define ZORBA_UNIT_TEST_LIST_H
 
+
+using namespace std;
 
 namespace zorba {
 
-  namespace UnitTests
-  {
-    ZORBA_DLL_PUBLIC int runUnitTest(int argc, char* argv[]);
+  namespace UnitTests {
+    int runUriTest(int argc, char* argv[]);
+    int runDebuggerProtocolTest(int argc, char* argv[]);
+    /**
+     * ADD NEW UNIT TESTS HERE
+     */
+
+
+    void initializeTestList();
   };
+    
 
-}
+} /* namespace zorba */
 
-
-#endif
-
-/*
- * Local variables:
- * mode: c++
- * End:
- */
+#endif /* ZORBA_UNIT_TEST_LIST_H */

@@ -19,15 +19,19 @@
 #include <zorba/store_manager.h>
 #include <zorba/unit_tests.h>
 
+/**
+ * This is the main entry point for unit tests which require a running
+ * Zorba instance, and which execute inside of libzorba.
+ */
 
 using namespace zorba;
 
-int uri(int argc, char* argv[]) 
+int main(int argc, char* argv[])
 {
   void* lStore = zorba::StoreManager::getStore();
   Zorba* lZorba = Zorba::getInstance(lStore);
 
-  int res = UnitTester::runUriTest();
+  int res = UnitTests::runUnitTest(argc, argv + 1);
 
   lZorba->shutdown();
   zorba::StoreManager::shutdownStore(lStore);

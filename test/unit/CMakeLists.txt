@@ -43,7 +43,6 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/main_sequential.xqlib ${CMAKE_CURRENT
 IF(WIN32)
   CREATE_TEST_SOURCELIST(UnitTests
     UnitTests.cpp
-    uri.cpp
     path_resolver.cpp
     userdefined_uri_resolver.cpp
     multiple_runs.cpp
@@ -64,7 +63,6 @@ IF(WIN32)
 ELSE(WIN32)
   CREATE_TEST_SOURCELIST(UnitTests
     UnitTests.cpp
-    uri.cpp
     path_resolver.cpp
     userdefined_uri_resolver.cpp
     plan_serializer.cpp
@@ -101,6 +99,14 @@ FOREACH (test ${TestsToRun})
   ZORBA_ADD_TEST_ALLSTORES(${TestName} UnitTests ${TName})
 ENDFOREACH(test)
 
-EXPECTED_FAILURE(test/unit/uri 3118348)
+# Add lib-internal unit tests
+ZORBA_GENERATE_STORE_SPECIFIC_EXES(LibUnitTest lib_unit_test.cpp "" "" "")
+
+# ADD NEW UNIT TESTS HERE
+ZORBA_ADD_TEST_ALLSTORES("test/libunit/uri" LibUnitTest uri)
+ZORBA_ADD_TEST_ALLSTORES("test/libunit/debugger_protocol" LibUnitTest debugger_protocol)
+
+
+EXPECTED_FAILURE(test/libunit/uri 3118348)
 
 ADD_SUBDIRECTORY(debugger)
