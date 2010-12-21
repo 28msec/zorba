@@ -84,7 +84,18 @@ store::Item_t StandardDocumentURIResolver::resolve(
     zstring decodedURI;
     URI::decode_file_URI(lURI.toString(), decodedURI);
 
+#ifndef WIN32
     lInStream.open(decodedURI.c_str(), std::ios::in);
+#else
+    WCHAR *wdecodedURI;
+    wdecodedURI = new WCHAR[decodedURI.length() + 10];
+    if(MultiByteToWideChar(CP_UTF8, 0, decodedURI.c_str(), -1, wdecodedURI, decodedURI.length()+10) == 0)
+    {
+      MultiByteToWideChar(CP_ACP, 0, decodedURI.c_str(), -1, wdecodedURI, decodedURI.length()+10);
+    }
+    lInStream.open(wdecodedURI, std::ios::in);
+    delete[] wdecodedURI;
+#endif
     if (lInStream.is_open() == false)
     {
       ZORBA_ERROR_DESC_OSS(FODC0002, "File not found or accessible " << decodedURI);
