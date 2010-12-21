@@ -745,11 +745,12 @@ Duration* Duration::operator*(const Double& value) const
   Integer significants = Integer::parseInt(FRAC_SECONDS_UPPER_LIMIT);
 
   result = getTotalSeconds() * value;
-  result = result.round(significants);
-  dSeconds = result.round();
-  NumConversions::doubleToInt(dSeconds.floor(), seconds);
 
-  result = (result - dSeconds) * Double::parseInt(FRAC_SECONDS_UPPER_LIMIT);
+  result = result.round(significants);
+
+  NumConversions::doubleToInt(result.floor(), seconds);
+
+  result = (result - result.floor()) * Double::parseInt(FRAC_SECONDS_UPPER_LIMIT);
 
   NumConversions::doubleToInt(result.round(), frac_seconds);
 
