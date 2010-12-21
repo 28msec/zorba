@@ -414,7 +414,7 @@ void V::end_visit( ftwords &w ) {
         query_items.push_back( qi );
     }
     catch ( error::ZorbaError &e ) {
-      set_error_query_loc( e, w.get_loc() );
+      set_error_query_loc( e, w.get_value_expr()->get_loc() );
       throw;
     }
   }
@@ -427,7 +427,7 @@ void V::end_visit( ftwords &w ) {
       );
     }
     catch ( error::ZorbaError &e ) {
-      set_error_query_loc( e, w.get_loc() );
+      set_error_query_loc( e, w.get_value_expr()->get_loc() );
       throw;
     }
     PUSH_MATCHES( result.release() );
