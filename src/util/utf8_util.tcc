@@ -24,6 +24,7 @@
 #include <cctype>
 
 #include "util/string/string_traits.h"
+#include "zorbaerrors/error_manager.h"
 
 namespace zorba {
 namespace utf8 {
@@ -81,14 +82,16 @@ unicode::code_point next_char( OctetIterator &i ) {
     unsigned mask = (0x7F >> len) & 0x1F;
     c = unicode::code_point( 0 );
     switch ( len ) {
-      case 6: c |= ((*i & mask) << 30); ++i; mask = 0x3F;
-      case 5: c |= ((*i & mask) << 24); ++i; mask = 0x3F;
-      case 4: c |= ((*i & mask) << 18); ++i; mask = 0x3F;
-      case 3: c |= ((*i & mask) << 12); ++i; mask = 0x3F;
-      case 2: c |= ((*i & mask) <<  6); ++i;
-              c |=  (*i & 0x3F);        ++i;
+      case 6: c |= ((assert_valid_byte( *i ) & mask) << 30); ++i; mask = 0x3F;
+      case 5: c |= ((assert_valid_byte( *i ) & mask) << 24); ++i; mask = 0x3F;
+      case 4: c |= ((assert_valid_byte( *i ) & mask) << 18); ++i; mask = 0x3F;
+      case 3: c |= ((assert_valid_byte( *i ) & mask) << 12); ++i; mask = 0x3F;
+      case 2: c |= ((assert_valid_byte( *i ) & mask) <<  6); ++i;
+              c |=  (assert_valid_byte( *i ) & 0x3F)       ; ++i;
     }
   }
+  if ( !unicode::is_valid( c ) )
+    ZORBA_ERROR( FOCH0001 );
   return c;
 }
 

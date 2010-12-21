@@ -56,6 +56,17 @@ size_type const npos = static_cast<size_type>( -1 );
 ////////// functions //////////////////////////////////////////////////////////
 
 /**
+ * Checks whether the given byte is a valid byte in a UTF-8 byte sequence
+ * comprising an encoded character.  If not, throws an exception.
+ *
+ * @param b The byte to check.
+ * @return Returns \a b for convenience.
+ * @throws XQP0034_ILLEGAL_UTF8_BYTE if \a b is an illegal UTF-8 byte.
+ */
+ZORBA_DLL_PUBLIC
+storage_type assert_valid_byte( storage_type b );
+
+/**
  * Converts a character position into a byte position.
  *
  * @param s A null-terminated UTF-8 encoded C string.
@@ -158,6 +169,17 @@ void encode( unicode::code_point c, StringType *out ) {
  */
 inline bool is_start_byte( storage_type b ) {
   return (b & 0xC0) != 0x80;
+}
+
+/**
+ * Checks whether the given byte is a valid byte in a UTF-8 byte sequence
+ * comprising an encoded character.
+ *
+ * @param b The byte to check.
+ * @return Returns \c true only if the byte is valid.
+ */
+inline bool is_valid_byte( storage_type b ) {
+  return static_cast<unsigned char>( b ) < 0xFEu;
 }
 
 /**
