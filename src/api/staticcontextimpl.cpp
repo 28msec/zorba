@@ -1247,7 +1247,7 @@ StaticContextImpl::resolve(const String& aRelativeUri) const
   catch (error::ZorbaError& e) 
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
-    return false;
+    return "";
   }
   return lResolved.str();
 }
@@ -1266,7 +1266,7 @@ StaticContextImpl::resolve(const String& aRelativeUri, const String& aBaseUri) c
   catch (error::ZorbaError& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
-    return false;
+    return "";
   }
   return lResolved.str();
 }

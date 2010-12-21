@@ -1,7 +1,5 @@
 test/rbkt/w3c_testsuite/XQuery/FunctX/functx-functx-dayTimeDuration/functx-functx-dayTimeDuration-all
 test/rbkt/w3c_testsuite/XQuery/FunctX/functx-functx-dayTimeDuration/functx-functx-dayTimeDuration-3
-test/rbkt/w3c_testsuite/XQuery/FunctX/functx-fn-compare/functx-fn-compare-all
-test/rbkt/w3c_testsuite/XQuery/FunctX/functx-fn-compare/functx-fn-compare-5
 test/rbkt/w3c_testsuite/XQuery/FunctX/functx-functx-id-from-element/functx-functx-id-from-element-1
 test/rbkt/w3c_testsuite/XQuery/FunctX/functx-fn-tokenize/functx-fn-tokenize-all
 test/rbkt/w3c_testsuite/XQuery/FunctX/functx-fn-tokenize/functx-fn-tokenize-7

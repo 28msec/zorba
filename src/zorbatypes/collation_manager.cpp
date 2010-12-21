@@ -89,19 +89,12 @@ CollationFactory::createCollator(const std::string& aCollationURI)
 
   if (aCollationURI == W3C_CODEPT_COLLATION_NS)
   {
-#ifndef ZORBA_NO_UNICODE
-    Collator* lCollator;
-    UErrorCode lError = U_ZERO_ERROR;
-    lCollator = Collator::createInstance(Locale("root"), lError);
-    assert(lError == U_ZERO_ERROR);
-    lCollator->setStrength(Collator::TERTIARY);
-    lCollator->setAttribute(UCOL_CASE_FIRST, UCOL_UPPER_FIRST, lError);
-    assert( lError == U_ZERO_ERROR );
-    return new XQPCollator(lCollator, aCollationURI, true);
-#else
-    Collator* coll = new Collator;
-    return new XQPCollator(coll, aCollationURI, true);
-#endif
+    //according to the rules of Unicode Codepoint Collation
+    //http://www.w3.org/TR/xpath-functions-30/#codepoint-collation
+    //and considering the fact that Zorba uses UTF-8 encoding, this means that
+    //a comparison of the byte sequences is all it is needed, i.e. create a collator 
+    // with 'theDoMemCmp' set to true
+    return new XQPCollator(NULL, aCollationURI, true);
   }
 
   size_t lStartURI = aCollationURI.find(coll_uri_start);

@@ -676,7 +676,7 @@ bool to_string( wchar_t const *in, StringType *out ) {
 template<class StringType1,class StringType2> inline
 int compare(const StringType1 &s1, const StringType2 &s2, const XQPCollator* collation)
 {
-  if (collation == NULL)
+  if (collation == NULL || collation->doMemCmp())
     return s1.compare(s2);
 
   unicode::string us1;

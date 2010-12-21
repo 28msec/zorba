@@ -198,7 +198,9 @@ bool CompareStrIterator::nextImpl(
         coll = theSctx->get_default_collator(loc);
       }
 
-      res = utf8::compare(n0->getStringValue(), n1->getStringValue(), coll);
+      res  = ((coll == NULL || coll->doMemCmp())?
+              n0->getStringValue().compare(n1->getStringValue()):
+              utf8::compare(n0->getStringValue(), n1->getStringValue(), coll));
 
       GENV_ITEMFACTORY->createInteger(result, Integer::parseInt(res));
 
@@ -967,7 +969,9 @@ bool ContainsIterator::nextImpl(
       if (consumeNext(itemColl, theChildren[2].getp(), planState ))
       {
         XQPCollator* coll = theSctx->get_collator(itemColl->getStringValue().str(), loc);
-        resBool = (zorba::find(arg1, arg2, coll) != zstring::npos);
+        resBool = ((coll == NULL || coll->doMemCmp())?
+                  (arg1.find(arg2) != zstring::npos):
+                  (zorba::find(arg1, arg2, coll) != zstring::npos));
       }
     }
     STACK_PUSH( GENV_ITEMFACTORY->createBoolean(result, resBool), state );
@@ -1033,7 +1037,9 @@ bool StartsWithIterator::nextImpl(
         if (consumeNext(itemColl, theChildren[2].getp(), planState ))
         {
           XQPCollator* coll = theSctx->get_collator(itemColl->getStringValue().str(), loc);
-          resBool = (zorba::find(arg1, arg2, coll) == 0);
+          resBool = ((coll == NULL || coll->doMemCmp())?
+                    (arg1.find(arg2) == 0):
+                    (zorba::find(arg1, arg2, coll) == 0));
         }
       }
       STACK_PUSH( GENV_ITEMFACTORY->createBoolean(result, resBool), state );
@@ -1098,7 +1104,9 @@ bool EndsWithIterator::nextImpl(
       {
         XQPCollator* coll = theSctx->get_collator(itemColl->getStringValue().str(), loc);
 
-        resBool = zorba::ends_with(arg1, arg2, coll);
+        resBool = ((coll == NULL || coll->doMemCmp())?
+                  utf8::ends_with(arg1, arg2):
+                  zorba::ends_with(arg1, arg2, coll));
       }
     }
     STACK_PUSH( GENV_ITEMFACTORY->createBoolean(result, resBool), state );
@@ -1162,7 +1170,9 @@ bool SubstringBeforeIterator::nextImpl(
         {
           XQPCollator* coll = 0;
           coll = theSctx->get_collator(itemColl->getStringValue().str(), loc);
-          index = zorba::find(arg1, arg2, coll);
+          index = ((coll == NULL || coll->doMemCmp())?
+                  arg1.find(arg2):
+                  zorba::find(arg1, arg2, coll));
         }
       }
 
@@ -1234,7 +1244,9 @@ bool SubstringAfterIterator::nextImpl(
         if (consumeNext(itemColl, theChildren[2].getp(), planState))
         {
           XQPCollator* coll = theSctx->get_collator(itemColl->getStringValue().str(), loc);
-          startPos = zorba::find(arg1, arg2, coll);
+          startPos = ((coll == NULL || coll->doMemCmp())?
+                      arg1.find(arg2):
+                      zorba::find(arg1, arg2, coll));
         }
       }
 

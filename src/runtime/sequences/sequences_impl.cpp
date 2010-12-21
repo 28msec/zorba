@@ -980,21 +980,41 @@ static bool DeepEqual(
       }
       case store::StoreConsts::textNode:     /* deliberate fall-through */
       case store::StoreConsts::commentNode:
-        return (0 == utf8::compare(item1->getStringValue(),
-                                   item2->getStringValue(),
-                                   collator));
+      {
+        if(collator == NULL || collator->doMemCmp())
+          return (0 == item1->getStringValue().compare(item2->getStringValue()));
+        else
+          return (0 == utf8::compare(item1->getStringValue(),
+                                    item2->getStringValue(),
+                                    collator));
         break;
+      }
 
       case store::StoreConsts::piNode:
-        if (0 != utf8::compare(item1->getNodeName()->getStringValue(),
-                               item2->getNodeName()->getStringValue(),
-                               collator))
+      {
+        int lCmpRes = ((collator == NULL || collator->doMemCmp())?
+                       item1->getNodeName()->getStringValue().compare(
+                       item2->getNodeName()->getStringValue())
+                       :
+                       utf8::compare(item1->getNodeName()->getStringValue(),
+                                     item2->getNodeName()->getStringValue(),
+                                     collator)
+                       );
+        if (0 != lCmpRes)
           return false;
 
-        return (0 == utf8::compare(item1->getStringValue(),
-                                   item2->getStringValue(),
-                                   collator));
+        lCmpRes = ((collator == NULL || collator->doMemCmp())?
+                   item1->getStringValue().compare(
+                   item2->getStringValue())
+                   :
+                   utf8::compare(item1->getStringValue(),
+                                 item2->getStringValue(),
+                                 collator)
+                  );
+
+        return (0 == lCmpRes);
         break;
+      }
     }
 
     ZORBA_ASSERT(false);  // should never reach here

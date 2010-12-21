@@ -28,7 +28,7 @@ namespace zorba {
 
 size_t find( char const *s, size_t s_len, char const *ss, size_t ss_len,
             XQPCollator const *collator ) {
-  if ( !collator ) {
+  if ( !collator || collator->doMemCmp()) {
     char const *const result = ::strstr( s, ss );
     return result ? result - s : zstring::npos;
   }
@@ -61,7 +61,7 @@ size_t rfind(
     size_t ss_len,
     XQPCollator const *collator ) 
 {
-  if ( ! collator )
+  if ( ! collator || collator->doMemCmp())
   {
     zstring_b tmp;
     tmp.wrap_memory(const_cast<char*>(s), s_len);

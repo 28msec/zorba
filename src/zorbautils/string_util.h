@@ -66,7 +66,9 @@ bool ends_with(
     const SubstringType& suffix,
     XQPCollator const* collator)
 {
-  size_t pos = rfind(s.c_str(), s.size(), suffix.c_str(), suffix.size(), collator);
+  size_t pos = ((collator == NULL || collator->doMemCmp())?
+                rfind(s.c_str(), s.size(), suffix.c_str(), suffix.size(), NULL):
+                rfind(s.c_str(), s.size(), suffix.c_str(), suffix.size(), collator));
 
   return (pos != StringType::npos &&
           (pos + utf8::length(suffix.c_str()) == utf8::length(s.c_str())));
