@@ -107,6 +107,9 @@ END_SERIALIZABLE_CLASS_VERSIONS(ftthesaurus_option)
 SERIALIZABLE_CLASS_VERSIONS(ftunary_not)
 END_SERIALIZABLE_CLASS_VERSIONS(ftunary_not)
 
+SERIALIZABLE_CLASS_VERSIONS(ftweight)
+END_SERIALIZABLE_CLASS_VERSIONS(ftweight)
+
 SERIALIZABLE_CLASS_VERSIONS(ftwild_card_option)
 END_SERIALIZABLE_CLASS_VERSIONS(ftwild_card_option)
 
@@ -568,7 +571,7 @@ ftprimary_with_options::ftprimary_with_options(
   ftnode( loc ),
   primary_( NULL ),
   match_options_( new ftmatch_options( loc ) ),
-  weight_expr_( NULL )
+  weight_( NULL )
 {
   // do nothing else
 }
@@ -576,13 +579,14 @@ ftprimary_with_options::ftprimary_with_options(
 ftprimary_with_options::~ftprimary_with_options() {
   delete primary_;
   delete match_options_;
+  delete weight_;
 }
 
 ft_visit_result::type ftprimary_with_options::accept( ftnode_visitor &v ) {
   BEGIN_VISIT( v );
   ACCEPT( primary_, v );
   ACCEPT( match_options_, v );
-  EV_ACCEPT( weight_expr_, v );
+  ACCEPT( weight_, v );
   END_VISIT( v );
 }
 
@@ -590,7 +594,7 @@ ostream& ftprimary_with_options::put( ostream &o ) const {
   BEGIN_INDENT_PUT( o, ftprimary_with_options );
   PUT_NODE( o, primary_ );
   PUT_NODE( o, match_options_ );
-  PUT_EXPR( o, weight_expr_ );
+  PUT_NODE( o, weight_ );
   OUTDENT_END_PUT( o );
 }
 
@@ -598,8 +602,7 @@ void ftprimary_with_options::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (ftnode*)this );
   ar & primary_;
   ar & match_options_;
-  ar & weight_expr_;
-  ar & weight_iter_;
+  ar & weight_;
 }
 
 ftrange::ftrange(
@@ -916,6 +919,29 @@ ostream& ftunary_not::put( ostream &o ) const {
 void ftunary_not::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (ftnode*)this );
   ar & subnode_;
+}
+
+ftweight::ftweight( QueryLoc const &loc, expr_t const &weight_expr ) :
+  ftnode( loc ), weight_expr_( weight_expr )
+{
+}
+
+ft_visit_result::type ftweight::accept( ftnode_visitor &v ) {
+  BEGIN_VISIT( v );
+  EV_ACCEPT( weight_expr_, v );
+  END_VISIT( v );
+}
+
+ostream& ftweight::put( ostream &o ) const {
+  BEGIN_INDENT_PUT( o, ftweight );
+  PUT_EXPR( o, weight_expr_ );
+  OUTDENT_END_PUT( o );
+}
+
+void ftweight::serialize( serialization::Archiver &ar ) {
+  serialize_baseclass( ar, (ftnode*)this );
+  ar & weight_expr_;
+  ar & weight_iter_;
 }
 
 ftwild_card_option::ftwild_card_option(

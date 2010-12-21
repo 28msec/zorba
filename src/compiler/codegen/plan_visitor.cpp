@@ -256,6 +256,7 @@ protected:
   DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftrange );
   DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftselection );
   DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftunary_not );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftweight );
   DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftwords );
   DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftwords_times );
 
@@ -2876,15 +2877,7 @@ DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftand )
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftextension_selection )
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftmild_not )
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftor )
-
-DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftprimary_with_options );
-void V::end_visit( ftprimary_with_options &pwo ) {
-  if ( pwo.get_weight_expr() ) {
-    PlanIter_t it = plan_visitor_->pop_itstack();
-    pwo.set_weight_iter( it );
-    sub_iters_.push_back( it );
-  }
-}
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftprimary_with_options )
 
 DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftrange );
 void V::end_visit( ftrange &r ) {
@@ -2904,6 +2897,13 @@ void V::end_visit( ftrange &r ) {
 
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftselection )
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftunary_not )
+
+DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftweight );
+void V::end_visit( ftweight &w ) {
+  PlanIter_t it = plan_visitor_->pop_itstack();
+  w.set_weight_iter( it );
+  sub_iters_.push_back( it );
+}
 
 DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftwords );
 void V::end_visit( ftwords &w ) {

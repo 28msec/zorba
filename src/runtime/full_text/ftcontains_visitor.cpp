@@ -374,20 +374,17 @@ ft_visit_result::type V::begin_visit( ftprimary_with_options &pwo ) {
 }
 void V::end_visit( ftprimary_with_options &pwo ) {
   delete POP_OPTIONS();
-
-  double weight;
-  PlanIter_t weight_plan_iter = pwo.get_weight_iter();
-  if ( weight_plan_iter ) {
-    weight = get_double( weight_plan_iter );
-    if ( fabs( weight ) > 1000.0 )
-      ZORBA_ERROR_LOC( FTDY0016, pwo.get_loc() );
-  } else
-    weight = 1.0;
-
-  // TODO: do something with weight
-
   END_VISIT( ftprimary_with_options );
 }
+
+ft_visit_result::type V::begin_visit( ftweight &w ) {
+  double const weight = get_double( w.get_weight_iter() );
+  if ( fabs( weight ) > 1000.0 )
+    ZORBA_ERROR_LOC( FTDY0016, w.get_loc() );
+  // TODO: do something with weight
+  return ft_visit_result::proceed;
+}
+DEF_FTNODE_VISITOR_END_VISIT( V, ftweight )
 
 ft_visit_result::type V::begin_visit( ftselection& ) {
   BEGIN_VISIT( ftselection );

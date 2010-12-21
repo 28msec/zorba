@@ -61,6 +61,7 @@ class ftstop_words;
 class ftthesaurus_id;
 class ftthesaurus_option;
 class ftunary_not;
+class ftweight;
 class ftwild_card_option;
 class ftwindow_filter;
 class ftwords;

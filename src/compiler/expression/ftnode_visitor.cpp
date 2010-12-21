@@ -40,13 +40,7 @@ DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftand );
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftextension_selection );
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftmild_not );
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftor );
-
-ft_visit_result::type V::begin_visit( ftprimary_with_options &pwo ) {
-  if ( pwo.get_weight_expr().getp() )
-    push_back( &pwo.get_weight_expr() );
-  return ft_visit_result::no_end;
-}
-DEF_FTNODE_VISITOR_END_VISIT( V, ftprimary_with_options );
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftprimary_with_options );
 
 ft_visit_result::type V::begin_visit( ftrange &r ) {
   push_back( &r.get_expr1() );
@@ -58,6 +52,12 @@ DEF_FTNODE_VISITOR_END_VISIT( V, ftrange );
 
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftselection );
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftunary_not );
+
+ft_visit_result::type V::begin_visit( ftweight &w ) {
+  push_back( &w.get_weight_expr() );
+  return ft_visit_result::no_end;
+}
+DEF_FTNODE_VISITOR_END_VISIT( V, ftweight );
 
 ft_visit_result::type V::begin_visit( ftwords &w ) {
   push_back( &w.get_value_expr() );

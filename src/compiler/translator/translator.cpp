@@ -12017,7 +12017,7 @@ void end_visit (const FTWeight& v, void* /*visit_state*/) {
   expr_t e( pop_nodestack() );
   e = wrap_in_atomization( e );
   e = wrap_in_type_promotion( e, theRTM.DOUBLE_TYPE_ONE );
-  pwo->set_weight_expr( e );
+  pwo->set_weight( new ftweight( v.get_location(), e ) );
 #endif /* ZORBA_NO_FULL_TEXT */
 }
 
