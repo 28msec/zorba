@@ -377,7 +377,7 @@ void V::end_visit( ftprimary_with_options &pwo ) {
 ft_visit_result::type V::begin_visit( ftweight &w ) {
   double const weight = get_double( w.get_weight_iter() );
   if ( fabs( weight ) > 1000.0 )
-    ZORBA_ERROR_LOC( FTDY0016, w.get_loc() );
+    ZORBA_ERROR_LOC( FTDY0016, w.get_weight_expr()->get_loc() );
   // TODO: do something with weight
   return ft_visit_result::proceed;
 }

@@ -11738,17 +11738,26 @@ void *begin_visit (const FTPrimaryWithOptions& v) {
 void end_visit (const FTPrimaryWithOptions& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 #ifndef ZORBA_NO_FULL_TEXT
+  ftweight *const w = dynamic_cast<ftweight*>( top_ftstack() );
+  if ( w )
+    pop_ftstack();
+
   ftmatch_options *const mo = dynamic_cast<ftmatch_options*>( top_ftstack() );
   if ( mo )
     pop_ftstack();
+
   ftprimary *const p = dynamic_cast<ftprimary*>( pop_ftstack() );
   ZORBA_ASSERT( p );
+
   ftprimary_with_options *const pwo =
     dynamic_cast<ftprimary_with_options*>( top_ftstack() );
   ZORBA_ASSERT( pwo );
+
   pwo->set_primary( p );
   if ( mo )
     pwo->set_match_options( mo );
+  if ( w )
+    pwo->set_weight( w );
 #endif /* ZORBA_NO_FULL_TEXT */
 }
 
@@ -12011,13 +12020,10 @@ void *begin_visit (const FTWeight& v) {
 void end_visit (const FTWeight& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 #ifndef ZORBA_NO_FULL_TEXT
-  ftprimary_with_options *const pwo =
-    dynamic_cast<ftprimary_with_options*>( top_ftstack() );
-  ZORBA_ASSERT( pwo );
   expr_t e( pop_nodestack() );
   e = wrap_in_atomization( e );
   e = wrap_in_type_promotion( e, theRTM.DOUBLE_TYPE_ONE );
-  pwo->set_weight( new ftweight( v.get_location(), e ) );
+  push_ftstack( new ftweight( v.get_location(), e ) );
 #endif /* ZORBA_NO_FULL_TEXT */
 }
 
