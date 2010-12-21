@@ -45,7 +45,25 @@ namespace zorba {
 #undef min
 #endif
 
-////////// Inlines ////////////////////////////////////////////////////////////
+////////// Local functions ////////////////////////////////////////////////////
+
+#define GET_OPTION(O) get_##O##_option()
+
+#define REPLACE_OPTION(O)                                                     \
+  if ( newer_options->GET_OPTION(O) || !older_options->GET_OPTION(O) ) ; else \
+    newer_options->set_##O##_option( older_options->GET_OPTION(O) )
+
+static void replace_match_options( ftmatch_options const *older_options,
+                                   ftmatch_options *newer_options ) {
+  REPLACE_OPTION( case );
+  REPLACE_OPTION( diacritics );
+  REPLACE_OPTION( extension );
+  REPLACE_OPTION( language );
+  REPLACE_OPTION( stem );
+  REPLACE_OPTION( stop_word );
+  REPLACE_OPTION( thesaurus );
+  REPLACE_OPTION( wild_card );
+}
 
 inline void set_error_query_loc( error::ZorbaError &e, QueryLoc const &loc ) {
   e.setQueryLocation(
@@ -64,6 +82,8 @@ inline ft_int to_ft_int( xs_integer const &i ) {
   }
   return result;
 }
+
+////////// ftcontains_visitor inline member functions /////////////////////////
 
 inline void ftcontains_visitor::push_matches( ft_all_matches *am ) {
   matches_stack_.push( am );
@@ -93,27 +113,7 @@ inline ftmatch_options const* ftcontains_visitor::pop_options() {
   return mo;
 }
 
-////////// Local functions ////////////////////////////////////////////////////
-
-#define GET_OPTION(O) get_##O##_option()
-
-#define REPLACE_OPTION(O)                                                     \
-  if ( newer_options->GET_OPTION(O) || !older_options->GET_OPTION(O) ) ; else \
-    newer_options->set_##O##_option( older_options->GET_OPTION(O) )
-
-static void replace_match_options( ftmatch_options const *older_options,
-                                   ftmatch_options *newer_options ) {
-  REPLACE_OPTION( case );
-  REPLACE_OPTION( diacritics );
-  REPLACE_OPTION( extension );
-  REPLACE_OPTION( language );
-  REPLACE_OPTION( stem );
-  REPLACE_OPTION( stop_word );
-  REPLACE_OPTION( thesaurus );
-  REPLACE_OPTION( wild_card );
-}
-
-////////// ftcontains_visitor member functions ////////////////////////////////
+////////// ftcontains_visitor non-inline member functions /////////////////////
 
 ftcontains_visitor::ftcontains_visitor( FTTokenIterator_t &search_ctx,
                                         static_context const &static_ctx,
@@ -288,7 +288,6 @@ ft_visit_result::type V::begin_visit( ftand& ) {
   PUSH_MATCHES( NULL ); // sentinel
   return ft_visit_result::proceed;
 }
-
 void V::end_visit( ftand& ) {
   while ( true ) {
     // the popping order is significant
@@ -312,7 +311,6 @@ ft_visit_result::type V::begin_visit( ftmild_not& ) {
   PUSH_MATCHES( NULL ); // sentinel
   return ft_visit_result::proceed;
 }
-
 void V::end_visit( ftmild_not &mn ) {
   while ( true ) {
     // the popping order is significant
@@ -340,7 +338,6 @@ ft_visit_result::type V::begin_visit( ftor& ) {
   PUSH_MATCHES( NULL ); // sentinel
   return ft_visit_result::proceed;
 }
-
 void V::end_visit( ftor& ) {
   while ( true ) {
     // the popping order is significant
