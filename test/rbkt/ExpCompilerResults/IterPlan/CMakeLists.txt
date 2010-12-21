@@ -40,12 +40,12 @@ FOREACH(ZORBA_STORE_NAME ${ZORBA_STORE_NAMES})
   FOREACH (TESTFILE ${TESTFILES})
     STRING (REPLACE w3c_testsuite official_ts TESTNAME "${TESTFILE}")
     ADD_TEST (
-      NAME "iterplans/${TESTNAME}" 
-      COMMAND "${ZORBA_EXE_SCRIPT}" 
-              -q "${CMAKE_BINARY_DIR}/test/rbkt/itertest.xq" -f 
-              -e "testfile:=${TESTFILE}" 
-              -e "apitest-path:=${APITEST_PATH}" 
-              -z "method=text")
+      "iterplans/${TESTNAME}" 
+      "${ZORBA_EXE_SCRIPT}" 
+      -q "${CMAKE_BINARY_DIR}/test/rbkt/itertest.xq" -f 
+      -e "testfile:=${TESTFILE}" 
+      -e "apitest-path:=${APITEST_PATH}" 
+      -z "method=text")
     SET_TESTS_PROPERTIES("iterplans/${TESTNAME}" 
       PROPERTIES PASS_REGULAR_EXPRESSION "Passed! *")
   ENDFOREACH(TESTFILE)
