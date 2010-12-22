@@ -206,6 +206,32 @@ bool to_string( wchar_t const *in, size_type in_len, storage_type **out,
 }
 #endif /* WIN32 */
 
+bool to_wchar_t( storage_type const *in, size_type in_len, wchar_t **out,
+                 unicode::size_type *out_len ) {
+  unicode::string u_in;
+  if ( !unicode::to_string( in, in_len, &u_in ) )
+    return false;
+  unicode::size_type const u_len = u_in.length();
+  unicode::char_type const *const in_buf = u_in.getBuffer();
+
+  unicode::size_type dest_len;
+  UErrorCode err = U_ZERO_ERROR;
+  u_strToWCS( NULL, 0, &dest_len, in_buf, u_len, &err );
+  if ( err == U_BUFFER_OVERFLOW_ERROR ) {
+    *out = new wchar_t[ ++dest_len ];
+    err = U_ZERO_ERROR;
+    u_strToWCS( *out, dest_len, NULL, in_buf, u_len, &err );
+  }
+  u_in.releaseBuffer();
+  if ( U_FAILURE( err ) ) {
+    delete[] *out;
+    return false;
+  }
+  if ( out_len )
+    *out_len = dest_len;
+  return true;
+}
+
 #endif /* ZORBA_NO_UNICODE */
 
 } // namespace utf8

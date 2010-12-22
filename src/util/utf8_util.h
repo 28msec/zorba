@@ -610,6 +610,53 @@ bool to_string( unicode::string const &in, StringType *out ) {
   return to_string( in.getBuffer(), in.length(), out );
 }
 
+/**
+ * Converts a UTF-8 encoded string to a wchar_t array.
+ *
+ * @param in The UTF-8 encoded string to convert.
+ * @param in_len The number of bytes (not characters) of \a in.
+ * @param out A pointer to a pointer to the starting location for the result.
+ * It is the caller's responsibility to deallocate this.
+ * @param out_len If not NULL, the number of characters (not bytes) of the
+ * wchar_t string are put here.
+ * @return Returns \c true only if the conversion succeeded.
+ */
+ZORBA_DLL_PUBLIC
+bool to_wchar_t( storage_type const *in, size_type in_len, wchar_t **out,
+                 unicode::size_type *out_len );
+
+/**
+ * Converts a UTF-8 encoded string to a wchar_t array.
+ *
+ * @param in The UTF-8 encoded string to convert.
+ * @param out A pointer to a pointer to the starting location for the result.
+ * It is the caller's responsibility to deallocate this.
+ * @param out_len If not NULL, the number of characters (not bytes) of the
+ * wchar_t string are put here.
+ * @return Returns \c true only if the conversion succeeded.
+ */
+inline bool to_wchar_t( storage_type const *in, wchar_t **out,
+                        unicode::size_type *out_len ) {
+  return to_wchar_t( in, std::strlen( in ), out, out_len );
+}
+
+/**
+ * Converts a UTF-8 encoded string to a wchar_t array.
+ *
+ * @tparam StringType The string type.
+ * @param in The UTF-8 encoded string to convert.
+ * @param out A pointer to a pointer to the starting location for the result.
+ * It is the caller's responsibility to deallocate this.
+ * @param out_len If not NULL, the number of characters (not bytes) of the
+ * wchar_t string are put here.
+ * @return Returns \c true only if the conversion succeeded.
+ */
+template<class StringType> inline
+bool to_wchar_t( StringType const &in, wchar_t **out,
+                 unicode::size_type *out_len ) {
+  return to_wchar_t( in.data(), in.size(), out, out_len );
+}
+
 #ifndef WIN32
 //
 // On Windows, UChar == wchar_t, so these functions would multiply define those

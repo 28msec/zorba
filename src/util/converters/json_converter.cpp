@@ -287,13 +287,16 @@ bool create_Pair_Helper(
 json::value* getValue(const char* aJSON, const zstring::size_type aLen, zstring& aErrorLog)
 {
   //transforn from UTF-8 to UCS-4 using ICU
-  int32_t lUCS4Len;
-  wchar_t * lUCS4 = xqpString::getWCS(aJSON, (int32_t)aLen, &lUCS4Len);
+  wchar_t *lUCS4;
+  unicode::size_type lUCS4Len;
+  utf8::to_wchar_t(
+    aJSON, static_cast<unicode::size_type>( aLen ), &lUCS4, &lUCS4Len
+  );
 
   json::parser lParser;
   json::value* lValue = lParser.parse(lUCS4, lUCS4Len);
   std::wstring lErr = lParser.printerrors();
-  free(lUCS4);
+  delete[] lUCS4;
 
   //transform from UCS-4 to UTF-8
   utf8::to_string(lErr.c_str(), &aErrorLog);
@@ -779,3 +782,4 @@ std::string  WStringToString(const std::wstring& aWstr)
 }
 
 } /*namespace Zorba */
+/* vim:set et sw=2 ts=2: */

@@ -15,6 +15,7 @@
  */
 
 #include <cstring>
+#include <cwchar>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -504,6 +505,18 @@ static void test_to_upper() {
   }
 }
 
+static void test_to_wchar_t() {
+  string const s = "hello";
+  wchar_t *w;
+  unicode::size_type w_len;
+  if ( !ASSERT_TRUE( utf8::to_wchar_t( s, &w, &w_len ) ) )
+    return;
+  ASSERT_TRUE( ::wcslen( w ) == s.length() );
+  for ( string::size_type i = 0; i < s.length(); ++i )
+    ASSERT_TRUE( w[i] == s[i] );
+  delete[] w;
+}
+
 template<class StringType>
 static void test_to_xml() {
   StringType const s( "&b<de>" );
@@ -648,6 +661,8 @@ int string_test( int, char*[] ) {
   test_iri_to_uri();
   test_to_xml<string>();
   test_uri_encode<string>();
+
+  test_to_wchar_t();
 
   cout << failures << " test(s) failed\n";
   return failures ? 1 : 0;
