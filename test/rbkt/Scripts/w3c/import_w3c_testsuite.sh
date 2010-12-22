@@ -325,7 +325,7 @@ find "TestSources" -name '*.xq' -exec mv "{}" "$SRC/test/rbkt/Queries/w3c_testsu
 find "TestSources" -type f -exec mv "{}" "$SRC/test/rbkt/Queries/w3c_testsuite/{}" \;
 mv "XQTSCatalog.xsd" "$SRC/test/rbkt/Queries/w3c_testsuite/"
 mv "ReportingResults" "$SRC/test/rbkt/Scripts/w3c/w3c_reportingresults"
-find "cat" -type f -exec cp "{}" "$SRC/test/rbkt/Queries/w3c_testsuite/{}" \; 
+find "cat" -type f -exec mv "{}" "$SRC/test/rbkt/Queries/w3c_testsuite/{}" \; 
 
 echo "Cleaning up work directory...$orig_pwd $unzip_dir"
 
