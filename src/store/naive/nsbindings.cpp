@@ -15,7 +15,6 @@
  */
 
 #include "zorbautils/fatal.h"
-#include "zorbatypes/xqpstring.h"
 #include "store/naive/nsbindings.h"
 
 namespace zorba { namespace simplestore {

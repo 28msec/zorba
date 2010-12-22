@@ -18,7 +18,6 @@
 #include <zorba/identtypes.h>
 #include <zorba/typeident.h>
 
-#include "zorbatypes/xqpstring.h"
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/duration.h"
 
