@@ -72,6 +72,7 @@ echo Cleaning up previous data...
 rm -rf "$SRC/test/rbkt/Queries/w3c_testsuite" "$SRC/test/rbkt/ExpQueryResults/w3c_testsuite"
 
 mkdir -p "$SRC/test/rbkt/Queries/w3c_testsuite/TestSources"
+mkdir -p "$SRC/test/rbkt/Queries/w3c_testsuite/cat"
 
 echo Importing XQTS_$XQTSVERSION ...
 q=`mktemp "$WORK/xq.XXXXXX"`
@@ -324,6 +325,7 @@ find "TestSources" -name '*.xq' -exec mv "{}" "$SRC/test/rbkt/Queries/w3c_testsu
 find "TestSources" -type f -exec mv "{}" "$SRC/test/rbkt/Queries/w3c_testsuite/{}" \;
 mv "XQTSCatalog.xsd" "$SRC/test/rbkt/Queries/w3c_testsuite/"
 mv "ReportingResults" "$SRC/test/rbkt/Scripts/w3c/w3c_reportingresults"
+find "cat" -type f -exec cp "{}" "$SRC/test/rbkt/Queries/w3c_testsuite/{}" \; 
 
 echo "Cleaning up work directory...$orig_pwd $unzip_dir"
 
