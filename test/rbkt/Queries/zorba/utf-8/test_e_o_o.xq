@@ -1,0 +1,1 @@
+doc(resolve-uri('_é_ó_ò.xml'))
