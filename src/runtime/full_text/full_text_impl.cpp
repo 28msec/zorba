@@ -35,9 +35,9 @@ namespace zorba {
 FTContainsIterator::FTContainsIterator(
   static_context *sctx,
   QueryLoc const &loc,
-  PlanIter_t search_ctx,
-  PlanIter_t ftignore_option,
-  ftnode_t ftselection,
+  PlanIter_t &search_ctx,
+  PlanIter_t &ftignore_option,
+  ftnode_t const &ftselection,
   sub_iter_list_t &sub_iters
 ) : 
   base_type( sctx, loc, search_ctx, ftignore_option ),
