@@ -2684,7 +2684,6 @@ FTScoreVar :
     SCORE DOLLAR QNAME
     {
       $$ = new FTScoreVar(LOC(@$), static_cast<QName*>($3));
-      delete $3;
     }
 ;
 
