@@ -19,6 +19,7 @@
 
 #include <algorithm>
 #include <cwchar>
+#include <string>
 
 #include <zorba/config.h>
 
@@ -536,15 +537,16 @@ void to_upper( StringType &s ) {
  * Converts a unicode::char_type array into a UTF-8 encoded string.
  *
  * @param in The Unicode characters to convert.
- * @param in_len The number of unicode characters to convert.
+ * @param in_len The number of unicode characters (not bytes) to convert.
  * @param out A pointer to a pointer to the starting location for the result.
  * It is the caller's responsibility to deallocate this.
- * @param out_len The number of bytes of the UTF-8 string.
+ * @param out_len If not NULL, the number of bytes (not characters) of the
+ * UTF-8 string are put here.
  * @return Returns \c true only if the conversion succeeded.
  */
 ZORBA_DLL_PUBLIC
-bool to_string( unicode::char_type const *in, size_type in_len,
-                storage_type **out, size_type *out_len );
+bool to_string( unicode::char_type const *in, unicode::size_type in_len,
+                storage_type **out, size_type *out_len = 0 );
 
 /**
  * Converts a unicode::char_type array into a UTF-8 encoded string.
@@ -552,11 +554,12 @@ bool to_string( unicode::char_type const *in, size_type in_len,
  * @param in The Unicode characters to convert.
  * @param out A pointer to a pointer to the starting location for the result.
  * It is the caller's responsibility to deallocate this.
- * @param out_len The number of bytes of the UTF-8 string.
+ * @param out_len If not NULL, the number of bytes (not characters) of the
+ * UTF-8 string are put here.
  * @return Returns \c true only if the conversion succeeded.
  */
 inline bool to_string( unicode::char_type const *in, storage_type **out,
-                       size_type *out_len ) {
+                       size_type *out_len = 0 ) {
   return to_string( in, u_strlen( in ), out, out_len );
 }
 
@@ -566,11 +569,12 @@ inline bool to_string( unicode::char_type const *in, storage_type **out,
  * @param in The unicode::string to convert.
  * @param out A pointer to a pointer to the starting location for the result.
  * It is the caller's responsibility to deallocate this.
- * @param out_len The number of bytes of the UTF-8 string.
+ * @param out_len If not NULL, the number of bytes (not characters) of the
+ * UTF-8 string are put here.
  * @return Returns \c true only if the conversion succeeded.
  */
 inline bool to_string( unicode::string const &in, storage_type **out,
-                       size_type *out_len ) {
+                       size_type *out_len = 0 ) {
   return to_string( in.getBuffer(), in.length(), out, out_len );
 }
 
@@ -608,6 +612,81 @@ bool to_string( unicode::char_type const *in, StringType *out ) {
 template<class StringType> inline
 bool to_string( unicode::string const &in, StringType *out ) {
   return to_string( in.getBuffer(), in.length(), out );
+}
+
+//
+// On Windows, UChar == wchar_t, so these functions would multiply define those
+// previously.
+//
+#ifndef WIN32
+
+/**
+ * Converts a wide-character string into a UTF-8 encoded string.
+ *
+ * @param in The wide-character string to convert.
+ * @param in_len The length of the unicode::string.
+ * @param out A pointer to a pointer to the starting location for the result.
+ * It is the caller's responsibility to deallocate this.
+ * @param out_len If not NULL, the number of bytes (not characters) of the
+ * UTF-8 string are put here.
+ * @return Returns \c true only if the conversion succeeded.
+ */
+bool to_string( wchar_t const *in, size_type in_len, storage_type **out,
+                size_type *out_len = 0 );
+
+/**
+ * Converts a wide-character string into a UTF-8 encoded string.
+ *
+ * @param in The wide-character string to convert.
+ * @param out A pointer to a pointer to the starting location for the result.
+ * It is the caller's responsibility to deallocate this.
+ * @param out_len If not NULL, the number of bytes (not characters) of the
+ * UTF-8 string are put here.
+ * @return Returns \c true only if the conversion succeeded.
+ */
+inline bool to_string( wchar_t const *in, storage_type **out,
+                       size_type *out_len = 0 ) {
+  return to_string( in, std::wcslen( in ), out, out_len );
+}
+
+/**
+ * Converts a wide-character string into a UTF-8 encoded string.
+ *
+ * @tparam StringType The type of the result string.
+ * @param in The wide-character string to convert.
+ * @param in_len The length of the unicode::string.
+ * @param out A pointer to the result string.
+ * @return Returns \c true only if the conversion succeeded.
+ */
+template<class StringType>
+bool to_string( wchar_t const *in, size_type in_len, StringType *out );
+
+/**
+ * Converts a wide-character string into a UTF-8 encoded string.
+ *
+ * @tparam StringType The type of the result string.
+ * @param in The wide-character string to convert.
+ * @param out A pointer to the result string.
+ * @return Returns \c true only if the conversion succeeded.
+ */
+template<class StringType> inline
+bool to_string( wchar_t const *in, StringType *out ) {
+  return to_string( in, std::wcslen( in ), out );
+}
+
+#endif /* WIN32 */
+
+/**
+ * Converts a wide-character string into a UTF-8 encoded string.
+ *
+ * @tparam StringType The type of the result string.
+ * @param in The wide-character string to convert.
+ * @param out A pointer to the result string.
+ * @return Returns \c true only if the conversion succeeded.
+ */
+template<class StringType> inline
+bool to_string( std::wstring const &in, StringType *out ) {
+  return to_string( in.data(), in.size(), out );
 }
 
 /**
@@ -657,63 +736,6 @@ bool to_wchar_t( StringType const &in, wchar_t **out,
   return to_wchar_t( in.data(), in.size(), out, out_len );
 }
 
-#ifndef WIN32
-//
-// On Windows, UChar == wchar_t, so these functions would multiply define those
-// previously.
-//
-
-/**
- * Converts a wide-character string into a UTF-8 encoded string.
- *
- * @param in The wide-character string to convert.
- * @param in_len The length of the unicode::string.
- * @param out A pointer to a pointer to the starting location for the result.
- * It is the caller's responsibility to deallocate this.
- * @param out_len The number of bytes of the UTF-8 string.
- * @return Returns \c true only if the conversion succeeded.
- */
-bool to_string( wchar_t const *in, size_type in_len, storage_type **out,
-                size_type *out_len );
-
-/**
- * Converts a wide-character string into a UTF-8 encoded string.
- *
- * @param in The wide-character string to convert.
- * @param out A pointer to a pointer to the starting location for the result.
- * It is the caller's responsibility to deallocate this.
- * @param out_len The number of bytes of the UTF-8 string.
- * @return Returns \c true only if the conversion succeeded.
- */
-inline bool to_string( wchar_t const *in, storage_type **out,
-                       size_type *out_len ) {
-  return to_string( in, std::wcslen( in ), out, out_len );
-}
-
-/**
- * Converts a wide-character string into a UTF-8 encoded string.
- *
- * @param in The wide-character string to convert.
- * @param in_len The length of the unicode::string.
- * @param out A pointer to the result string.
- * @return Returns \c true only if the conversion succeeded.
- */
-template<class StringType>
-bool to_string( wchar_t const *in, size_type in_len, StringType *out );
-
-/**
- * Converts a wide-character string into a UTF-8 encoded string.
- *
- * @param in The wide-character string to convert.
- * @param out A pointer to the result string.
- * @return Returns \c true only if the conversion succeeded.
- */
-template<class StringType> inline
-bool to_string( wchar_t const *in, StringType *out ) {
-  return to_string( in, std::wcslen( in ), out );
-}
-
-#endif /* WIN32 */
 
 #endif /* ZORBA_NO_UNICODE */
 

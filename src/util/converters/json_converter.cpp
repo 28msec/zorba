@@ -29,8 +29,6 @@
 
 #include "system/globalenv.h"
 
-#include "zorbatypes/xqpstring.h"
-
 
 namespace zorba
 {
@@ -303,7 +301,6 @@ json::value* getValue(const char* aJSON, const zstring::size_type aLen, zstring&
   return lValue;
 }
 
-
 void parse_Json_value(
     json::value** aValue,
     store::Item_t aParent,
@@ -320,14 +317,16 @@ void parse_Json_value(
 
   if( aValue!=0 )
   {
-    xqpString lName = (*aValue)->getname().c_str();
+    zstring lName;
+    utf8::to_string( (*aValue)->getname(), &lName );
+
     zstring empty;
 
     switch((*aValue)->getdatatype())
     {
     case json::datatype::_array:
     {
-      create_Pair_Helper(aParent, aBaseUri, aResult, lName.c_str(),
+      create_Pair_Helper(aParent, aBaseUri, aResult, lName,
                          "array", empty);
 
       lArr = (*aValue)->getarraylist();
@@ -340,7 +339,7 @@ void parse_Json_value(
     }
     case json::datatype::_object:
     {
-      create_Pair_Helper(aParent, aBaseUri, aResult, lName.c_str(),
+      create_Pair_Helper(aParent, aBaseUri, aResult, lName,
                          "object", empty);
 
       lVect = (*aValue)->getchildrenlist();
@@ -354,9 +353,8 @@ void parse_Json_value(
     default:
       std::wstring * lWtmp = (*aValue)->getstring();
 
-      //transform from UCS-4 to UTF-8
-      xqpString tmp((*lWtmp).c_str());
-      zstring lVal(tmp.c_str());
+      zstring lVal;
+      utf8::to_string( *lWtmp, &lVal );
       replace_special_chars(lVal);
 
       bool haveVal = true;
@@ -386,7 +384,7 @@ void parse_Json_value(
         lType = "number";
       }
 
-      create_Pair_Helper(aParent, aBaseUri, aResult, lName.c_str(), lType, lVal, haveVal);
+      create_Pair_Helper(aParent, aBaseUri, aResult, lName, lType, lVal, haveVal);
       break;
     }
   }
@@ -416,13 +414,12 @@ void parse_Json_ML_value(
       lArrIter = lArr->begin();
       if((*lArrIter)->getdatatype() == json::datatype::_string)
       {
-        std::wstring * lWtmp = (*lArrIter)->getstring();
-
-        //transform from UCS-4 to UTF-8
-        xqpString lName((*lWtmp).c_str());
+        std::wstring *lWtmp = (*lArrIter)->getstring();
+        zstring lName;
+        utf8::to_string( *lWtmp, &lName );
         delete lWtmp;
 
-        create_Node_Helper(aParent, aBaseUri, lName.c_str(), aResult);
+        create_Node_Helper(aParent, aBaseUri, lName, aResult);
         ++lArrIter;
 
         for ( ; lArrIter != lArr->end(); ++lArrIter )
@@ -438,26 +435,23 @@ void parse_Json_ML_value(
       {
         for ( lVectIter = lVect->begin(); lVectIter != lVect->end(); ++lVectIter )
         {
-          xqpString lName((*lVectIter)->getname().c_str());
+          zstring lName;
+          utf8::to_string( (*lVectIter)->getname(), &lName );
           std::wstring * lWtmp = (*lVectIter)->getstring();
-
-          //transform from UCS-4 to UTF-8
-          xqpString lText((*lWtmp).c_str());
+          zstring lText;
+          utf8::to_string( *lWtmp, &lText );
           delete lWtmp;
 
-          create_Attribute_Helper(aParent, lName.c_str(), lText.c_str(), NULL);
+          create_Attribute_Helper(aParent, lName, lText, NULL);
         }
       }
       break;
 
     default:
       std::wstring * lWtmp = (*aValue)->getstring();
-
-      //transform from UCS-4 to UTF-8
-      xqpString tmp((*lWtmp).c_str());
-      zstring lText(tmp.c_str());
+      zstring lText;
+      utf8::to_string( *lWtmp, &lText );
       replace_special_chars(lText);
-
       delete lWtmp;
 
       if( ! equals(lText, "null", 4) )
@@ -608,16 +602,7 @@ bool get_value(const store::Item* aElement, zstring& aValue)
     }
   }
   lChildrenIt->close();
-
-  if ( lRes )
-  {
-    xqpString lStringHolder(aValue.str());
-
-    aValue = lStringHolder;
-    return lRes;
-  }
-
-  return false;
+  return lRes;
 }
 
 
@@ -724,12 +709,11 @@ bool JSON_ML_parse(
     if((*lArrIter)->getdatatype() == json::datatype::_string)
     {
       std::wstring * lWtmp = (*lArrIter)->getstring();
-
-      //transform from UCS-4 to UTF-8
-      xqpString lName((*lWtmp).c_str());
+      zstring lName;
+      utf8::to_string( *lWtmp, &lName );
       delete lWtmp;
 
-      create_Node_Helper(NULL, aBaseUri, lName.c_str(), &aElement);
+      create_Node_Helper(NULL, aBaseUri, lName, &aElement);
 
       ++lArrIter;
 

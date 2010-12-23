@@ -166,28 +166,29 @@ size_type length( storage_type const *begin, storage_type const *end ) {
 
 #ifndef ZORBA_NO_UNICODE
 
-bool to_string( unicode::char_type const *in, size_type in_len,
+bool to_string( unicode::char_type const *in, unicode::size_type in_len,
                 storage_type **out, size_type *out_len ) {
   unicode::code_point const SubChar = 0xFFFD;
 
   UErrorCode err = U_ZERO_ERROR;
   unicode::size_type utf8_len;
   u_strToUTF8WithSub(                   // pre-flight to get utf8_len
-    NULL, 0, &utf8_len, in, (int32_t)in_len, SubChar, NULL, &err
+    NULL, 0, &utf8_len, in, in_len, SubChar, NULL, &err
   );
   // must not check "err" here since ICU always returns "buffer overflow"
 
   storage_type *const utf8_buf = new storage_type[ utf8_len ];
   err = U_ZERO_ERROR;
   u_strToUTF8WithSub(
-    utf8_buf, utf8_len, NULL, in, (int32_t)in_len, SubChar, NULL, &err
+    utf8_buf, utf8_len, NULL, in, in_len, SubChar, NULL, &err
   );
   if ( U_FAILURE( err ) ) {
     delete[] utf8_buf;
     return false;
   }
   *out = utf8_buf;
-  *out_len = utf8_len;
+  if ( out_len )
+    *out_len = utf8_len;
   return true;
 }
 
@@ -198,7 +199,7 @@ bool to_string( wchar_t const *in, size_type in_len, storage_type **out,
   unicode::string temp;
   if ( unicode::to_string( in, in_len, &temp ) ) {
     size_type const temp_len = temp.length();
-    unicode::char_type *const buf = temp.getBuffer( -1 );
+    unicode::char_type const *const buf = temp.getBuffer( -1 );
     result = utf8::to_string( buf, temp_len, out, out_len );
     temp.releaseBuffer();
   }
@@ -214,13 +215,13 @@ bool to_wchar_t( storage_type const *in, size_type in_len, wchar_t **out,
   unicode::size_type const u_len = u_in.length();
   unicode::char_type const *const in_buf = u_in.getBuffer();
 
-  unicode::size_type dest_len;
+  unicode::size_type w_len;
   UErrorCode err = U_ZERO_ERROR;
-  u_strToWCS( NULL, 0, &dest_len, in_buf, u_len, &err );
+  u_strToWCS( NULL, 0, &w_len, in_buf, u_len, &err );
   if ( err == U_BUFFER_OVERFLOW_ERROR ) {
-    *out = new wchar_t[ ++dest_len ];
+    *out = new wchar_t[ ++w_len ];
     err = U_ZERO_ERROR;
-    u_strToWCS( *out, dest_len, NULL, in_buf, u_len, &err );
+    u_strToWCS( *out, w_len, NULL, in_buf, u_len, &err );
   }
   u_in.releaseBuffer();
   if ( U_FAILURE( err ) ) {
@@ -228,7 +229,7 @@ bool to_wchar_t( storage_type const *in, size_type in_len, wchar_t **out,
     return false;
   }
   if ( out_len )
-    *out_len = dest_len;
+    *out_len = w_len;
   return true;
 }
 
