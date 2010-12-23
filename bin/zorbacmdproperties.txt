@@ -33,3 +33,4 @@
 ("module-path", po::value<std::string>(), "Module paths added to the built-in resolver, i.e. where module imports are looking for modules.")
 ("install-path", po::value<std::string>(), "The path where the modules are searched.")
 ("option", po::value<std::vector<std::string> >(), "Set an XQuery option in the static context. The QName of the option is passed as a string in the notation by James Clark (i.e. {namespace}localname). For example, --option {http://www.zorba-xquery.com}option=value").
+("trailing-nl", "Output a trailing newline after the result of the query.")

@@ -619,6 +619,9 @@ compileAndExecute(
         else
         {
           query->execute(outputStream, &lSerOptions);
+          if (properties.trailingNl()) {
+            outputStream << std::endl;
+          }
         }
 
         if (doTiming)
