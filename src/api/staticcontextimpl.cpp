@@ -1305,11 +1305,29 @@ StaticContextImpl::removeModuleImportChecker(ModuleImportChecker* aChecker)
 
 
 bool
-StaticContextImpl::validate(const Item& rootElement, Item& validatedResult)
+StaticContextImpl::validate(const Item& rootElement, Item& validatedResult,
+    validation_mode_t validationMode)
 {
   try {
+    StaticContextConsts::validation_mode_t valMode;
+    
+    switch( validationMode)
+    {
+      case validate_lax:
+        valMode = StaticContextConsts::lax_validation;
+        break;        
+      case validate_skip:
+        valMode = StaticContextConsts::skip_validation;
+        break;        
+      case validate_strict:
+      default:
+        valMode = StaticContextConsts::strict_validation;
+        break;        
+    }
+    
     return theCtx->validate(Unmarshaller::getInternalItem(rootElement), 
-                            Unmarshaller::getInternalItem(validatedResult));
+                            Unmarshaller::getInternalItem(validatedResult),
+                            valMode);
   }
   catch (error::ZorbaError& e)
   {
@@ -1323,13 +1341,31 @@ bool
 StaticContextImpl::validate(
     const Item& rootElement,
     Item& validatedResult, 
-    const String& targetNamespace)
+    const String& targetNamespace,
+    validation_mode_t validationMode)
 {
   try {
+    StaticContextConsts::validation_mode_t valMode;
+    
+    switch( validationMode)
+    {
+      case validate_lax:
+        valMode = StaticContextConsts::lax_validation;
+        break;        
+      case validate_skip:
+        valMode = StaticContextConsts::skip_validation;
+        break;        
+      case validate_strict:
+      default:
+        valMode = StaticContextConsts::strict_validation;
+        break;        
+    }
+    
     zstring lTns = Unmarshaller::getInternalString(targetNamespace);
     return theCtx->validate(Unmarshaller::getInternalItem(rootElement), 
                             Unmarshaller::getInternalItem(validatedResult),
-                            lTns);  
+                            lTns,
+                            valMode);  
   }
   catch (error::ZorbaError& e)
   {

@@ -1484,18 +1484,19 @@ std::vector<ModuleImportChecker*> static_context::getAllModuleImportCheckers() c
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-bool
-static_context::validate(store::Item* rootElement, store::Item* validatedResult)
+bool static_context::validate(
+    store::Item* rootElement, 
+    store::Item* validatedResult,
+    StaticContextConsts::validation_mode_t validationMode)
 {
   zstring xsTns(XML_SCHEMA_NS);
-  return validate(rootElement, validatedResult, xsTns);
+  return validate(rootElement, validatedResult, xsTns, validationMode);
 }
 
-
 bool static_context::validate(
-    store::Item* rootElement,
-    store::Item* validatedResult, 
-    const zstring& targetNamespace)
+    store::Item* rootElement, store::Item* validatedResult, 
+    const zstring& targetNamespace, 
+    StaticContextConsts::validation_mode_t validationMode)
 {
   if ( !rootElement->isNode() ||
        (rootElement->getNodeKind() != store::StoreConsts::documentNode &&
@@ -1510,16 +1511,15 @@ bool static_context::validate(
   TypeManager* tm = this->get_typemanager();
   zstring docUri; 
   rootElement->getDocumentURI(docUri);
-  StaticContextConsts::validation_mode_t lValidationMode = this->validation_mode();
 
-  if (lValidationMode != StaticContextConsts::skip_validation)
+  if (validationMode != StaticContextConsts::skip_validation)
   {
     store::Item_t validatedNode;
     store::Item_t typeName;
     QueryLoc loc;
 
     ParseConstants::validation_mode_t mode = 
-        (lValidationMode == StaticContextConsts::strict_validation ?
+        (validationMode == StaticContextConsts::strict_validation ?
             ParseConstants::val_strict :
             ParseConstants::val_lax );
 
@@ -1538,8 +1538,8 @@ bool static_context::validate(
   return false;
 }
 
-bool 
-static_context::validateSimpleContent(zstring& stringValue, 
+bool static_context::validateSimpleContent(
+    zstring& stringValue, 
     store::Item* typeQName, 
     std::vector<store::Item_t>& resultList)
 {

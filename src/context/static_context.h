@@ -654,12 +654,16 @@ public:
   //
   // Validating Items
   //
-  bool validate(store::Item* rootElement, store::Item* validatedResult);
+  bool validate(
+        store::Item* rootElement, 
+        store::Item* validatedResult,
+        StaticContextConsts::validation_mode_t validationMode = StaticContextConsts::strict_validation);
 
   bool validate(
         store::Item* rootElement,
         store::Item* validatedResult, 
-        const zstring& targetNamespace);
+        const zstring& targetNamespace,
+        StaticContextConsts::validation_mode_t validationMode = StaticContextConsts::strict_validation);
 
   bool validateSimpleContent(
         zstring& textValue, 

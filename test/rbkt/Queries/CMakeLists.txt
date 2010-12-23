@@ -301,6 +301,9 @@ EXPECTED_FAILURE(test/rbkt/zorba/utf-8/utf8inPathFr 3132686)
 EXPECTED_FAILURE(test/rbkt/zorba/utf-8/utf8inPathNo 3132686)
 EXPECTED_FAILURE(test/rbkt/zorba/utf-8/utf8inPathRo 3132686)
 
+# This is not a bug, this is working per spec
+# The ##other means any other namespace but it MUST have a namespace
+# todo: comment next line after remote queue fixed
 EXPECTED_FAILURE(test/rbkt/zorba/schemas/any 3137594)
 
 EXPECTED_FAILURE(test/rbkt/zorba/modules/schema 3131554)

@@ -263,11 +263,13 @@ public:
   removeModuleImportChecker(ModuleImportChecker* aChecker);
 
   virtual bool
-  validate(const Item& rootElement, Item& validatedResult);
+  validate(const Item& rootElement, Item& validatedResult,
+           validation_mode_t validationMode = validate_strict);
   
   virtual bool 
   validate(const Item& rootElement, Item& validatedResult, 
-           const String& targetNamespace);
+           const String& targetNamespace,
+           validation_mode_t validationMode = validate_strict);
   
   virtual bool 
   validateSimpleContent(const String& stringValue,

@@ -515,7 +515,8 @@ namespace zorba {
         * @throw ZorbaException if any validation error occured
         */
       virtual bool
-      validate(const Item& rootElement, Item& validatedResult) = 0;
+      validate(const Item& rootElement, Item& validatedResult,
+               validation_mode_t validationMode = validate_strict) = 0;
 
       /** \brief Validates this Item while loading the schema for targetNamespace
         *  Note: works only on document or element nodes, otherwise returns false.
@@ -528,7 +529,8 @@ namespace zorba {
         */
       virtual bool 
       validate(const Item& rootElement, Item& validatedResult, 
-               const String& targetNamespace) = 0;
+               const String& targetNamespace,
+               validation_mode_t validationMode = validate_strict) = 0;
   
       /** \brief Validates stringValue as XML simple content, i.e. the text value of attributes or 
         * text only element content.
