@@ -26,12 +26,7 @@ SET(ZORBATYPES_SRCS
   
 IF(ZORBA_NO_UNICODE)
   LIST(APPEND ZORBATYPES_SRCS 
-    xqpString_ascii.cpp
     regex_ascii.cpp
-    )
-ELSE(ZORBA_NO_UNICODE)
-  LIST(APPEND ZORBATYPES_SRCS 
-    utf8/xqpString.cpp
     )
 ENDIF(ZORBA_NO_UNICODE)
 
