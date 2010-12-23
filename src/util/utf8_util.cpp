@@ -195,15 +195,10 @@ bool to_string( unicode::char_type const *in, unicode::size_type in_len,
 #ifndef WIN32
 bool to_string( wchar_t const *in, size_type in_len, storage_type **out,
                 size_type *out_len ) {
-  bool result = false;
   unicode::string temp;
-  if ( unicode::to_string( in, in_len, &temp ) ) {
-    size_type const temp_len = temp.length();
-    unicode::char_type const *const buf = temp.getBuffer( -1 );
-    result = utf8::to_string( buf, temp_len, out, out_len );
-    temp.releaseBuffer();
-  }
-  return result;
+  if ( !unicode::to_string( in, in_len, &temp ) )
+    return false;
+  return utf8::to_string( temp.getBuffer(), temp.length(), out, out_len );
 }
 #endif /* WIN32 */
 

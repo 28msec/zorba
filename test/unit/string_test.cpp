@@ -467,8 +467,7 @@ static void test_to_codepoints( char const *s ) {
 }
 
 template<class StringType>
-static void test_to_string() {
-#if 0
+static void test_to_string_from_utf8() {
   StringType const s( utf8_aeiou_acute );
   unicode::string u;
   ASSERT_TRUE( unicode::to_string( s, &u ) );
@@ -476,7 +475,16 @@ static void test_to_string() {
   StringType t;
   ASSERT_TRUE( utf8::to_string( u, &t ) );
   ASSERT_TRUE( t == s );
-#endif
+}
+
+template<class StringType>
+static void test_to_string_from_wchar_t() {
+  wchar_t const w[] = L"hello";
+  StringType s;
+  ASSERT_TRUE( utf8::to_string( w, &s ) );
+  ASSERT_TRUE( ::wcslen( w ) == s.length() );
+  for ( string::size_type i = 0; i < s.length(); ++i )
+    ASSERT_TRUE( s[i] == w[i] );
 }
 
 template<class StringType>
@@ -650,9 +658,13 @@ int string_test( int, char*[] ) {
   test_append_codepoints<zstring>( "hello" );
   test_append_codepoints<zstring>( utf8_aeiou_acute );
 
-  test_to_string<string>();
-  test_to_string<zstring>();
-  test_to_string<zstring_p>();
+  test_to_string_from_utf8<string>();
+  test_to_string_from_utf8<zstring>();
+  test_to_string_from_utf8<zstring_p>();
+
+  test_to_string_from_wchar_t<string>();
+  test_to_string_from_wchar_t<zstring>();
+  test_to_string_from_wchar_t<zstring_p>();
 
   test_to_upper<string>();
   test_to_upper<zstring>();

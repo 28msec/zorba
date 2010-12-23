@@ -631,6 +631,7 @@ bool to_string( unicode::string const &in, StringType *out ) {
  * UTF-8 string are put here.
  * @return Returns \c true only if the conversion succeeded.
  */
+ZORBA_DLL_PUBLIC
 bool to_string( wchar_t const *in, size_type in_len, storage_type **out,
                 size_type *out_len = 0 );
 
