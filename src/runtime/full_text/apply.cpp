@@ -1227,7 +1227,7 @@ lookup_thesaurus( zstring const &uri, zstring const &query_phrase,
 
   for ( zstring synonym; thesaurus->next( &synonym ); ) {
     synonyms.clear();
-    tokenizer->tokenize( synonym.c_str(), synonym.size(), qt0.lang(), cb );
+    tokenizer->tokenize( synonym.data(), synonym.size(), qt0.lang(), cb );
     FTQueryItem const query_item( new FTTokenSeqIterator( synonyms ) );
     result.push_back( query_item );
   }
