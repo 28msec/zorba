@@ -22,6 +22,7 @@
 #include <zorba/smart_ptr.h>
 
 #include "stream_wrapper.h"
+#include "stringiterator_streambuf.h"
 
 namespace zorba {
 namespace csv {
@@ -170,6 +171,48 @@ protected:
 
 class CSVSerializeFunction : public NonePureStatelessExternalFunction
 {
+  class StringStreamSequence : public ItemSequence, public StringIteratorStreamBuf
+  {
+  private:
+    ItemSequence*  input_nodes;
+    std::vector<std::vector<String> > headers;
+    int line_index;
+    bool has_next;
+  public:
+    std::istream is;
+    CSVOptions csv_options;
+    Item streamable_item;
+  public:
+    StringStreamSequence(ItemSequence* input);
+    virtual ~StringStreamSequence() {}
+  
+    //for ItemSequence
+    bool next( Item &result )
+    {
+      if(!has_next)
+        return false;
+      result = streamable_item;
+      has_next = false;
+      return true;
+    }
+
+    //for StringIteratorStreamBuf
+    virtual bool next(std::string &next_string);
+  private:
+    void csv_get_headers(  Item node, 
+                           unsigned int level,
+                           unsigned int &position);
+    void csv_write_line(
+      Item node, 
+      std::vector<String>& line,
+      unsigned int level);
+    bool needs_quote(String &field);
+    std::string csv_quote_field(String &field);
+    void csv_write_line_to_string(std::vector<String> &line,
+                           std::string &result_string);
+    void txt_write_line_to_string(std::vector<String> &line,
+                                std::string &result_string);
+  };
 public:
   CSVSerializeFunction(const CSVModule* aModule) : theModule(aModule) {}
 
@@ -190,24 +233,6 @@ public:
 
 private:
 
-  void csv_get_headers(  Item node, 
-                         unsigned int level,
-                         unsigned int &position,
-                         std::vector<std::vector<String> > &headers) const;
-  void csv_write_line(
-    Item node, 
-    std::vector<String>& line,
-    unsigned int level,
-    std::vector<std::vector<String> > &headers) const;
-  bool needs_quote(String &field, CSVOptions &csv_options) const;
-  std::string csv_quote_field(String &field, 
-                         CSVOptions &csv_options) const;
-  void csv_write_line_to_string(std::vector<String> &line, 
-                         CSVOptions &csv_options,
-                         std::string &result_string) const;
-  void txt_write_line_to_string(std::vector<String> &line, 
-                              CSVOptions &csv_options,
-                              std::string &result_string) const;
 protected:
   const CSVModule* theModule;
 };

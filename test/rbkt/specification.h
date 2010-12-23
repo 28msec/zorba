@@ -265,7 +265,7 @@ public:
               ++lIter;
               theSerializationMethod = *lIter;
               if(theSerializationMethod == "TXT")
-                theComparisonMethod = "TEXT";
+                theComparisonMethod = "Text";
             } else {
               return false;
             }

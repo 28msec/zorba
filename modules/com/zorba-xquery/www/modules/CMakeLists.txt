@@ -80,3 +80,10 @@ MESSAGE(STATUS "Geos Library Not Found. You need to install Geos library in orde
 ENDIF(GEOS_FOUND)
 
 GENERATE_MODULE_LIBRARY(csv "")
+
+#add unit test for streambuf implementation in csv, related to streamable strings
+CREATE_TEST_SOURCELIST(StreambufUnitTests StreambufUnitTests.cpp
+						streambuftest.cpp
+						)
+ADD_EXECUTABLE("StreambufUnitTests" ${StreambufUnitTests} csv.xq.src/stringiterator_streambuf.cpp)
+ADD_TEST("streamable_string_streambuf" StreambufUnitTests "streambuftest")

@@ -813,11 +813,17 @@ CSVParseFunction::evaluate(const Arguments_t& args,
 
 //////////////////////////////////////////////////////////////////////////////////
 //////////////////serialize
+CSVSerializeFunction::StringStreamSequence::StringStreamSequence(ItemSequence* input) : is(this) ,
+                                                                                        input_nodes(input)
+{
+//  input_nodes = input;
+  line_index = 0;
+  has_next = true;
+}
 
-void CSVSerializeFunction::csv_get_headers(  Item node, 
+void CSVSerializeFunction::StringStreamSequence::csv_get_headers(  Item node, 
                                              unsigned int level,
-                                             unsigned int &position,
-                                             std::vector<std::vector<String> > &headers) const
+                                             unsigned int &position)
 {
   Iterator_t   children = node.getChildren();
   Item         column;
@@ -841,7 +847,7 @@ void CSVSerializeFunction::csv_get_headers(  Item node,
         header.resize(position);
       header.push_back(column_name);
       unsigned int prev_position = position;
-      csv_get_headers(column, level+1, position, headers);
+      csv_get_headers(column, level+1, position);
       if(prev_position == position)
         position++;
     }
@@ -858,11 +864,10 @@ void CSVSerializeFunction::csv_get_headers(  Item node,
   children->close();
 }
 
-void CSVSerializeFunction::csv_write_line(
+void CSVSerializeFunction::StringStreamSequence::csv_write_line(
     Item node, 
     std::vector<String>& line,
-    unsigned int level,
-    std::vector<std::vector<String> > &headers) const
+    unsigned int level)
 {
   //iterate through all children of the node and get the string values
   Iterator_t   children = node.getChildren();
@@ -904,7 +909,7 @@ void CSVSerializeFunction::csv_write_line(
             }
             else
             {
-              csv_write_line(store_column, line, level+1, headers);
+              csv_write_line(store_column, line, level+1);
             }
             if(line.size() >= header.size())
               return;
@@ -944,7 +949,7 @@ void CSVSerializeFunction::csv_write_line(
 }
 
 
-bool CSVSerializeFunction::needs_quote(String &field, CSVOptions &csv_options) const
+bool CSVSerializeFunction::StringStreamSequence::needs_quote(String &field)
 {
   if((field.indexOf(csv_options.separator.c_str()) >= 0) || 
      (csv_options.quote_char_size && field.indexOf(csv_options.quote_char.c_str()) >= 0) ||
@@ -954,9 +959,8 @@ bool CSVSerializeFunction::needs_quote(String &field, CSVOptions &csv_options) c
     return false;
 }
 
-std::string CSVSerializeFunction::csv_quote_field(
-    String &field, 
-    CSVOptions &csv_options) const
+std::string CSVSerializeFunction::StringStreamSequence::csv_quote_field(
+    String &field)
 {
   const char *fieldstr = field.c_str();
   std::string   result;
@@ -980,9 +984,8 @@ std::string CSVSerializeFunction::csv_quote_field(
   return result;
 }
 
-void CSVSerializeFunction::csv_write_line_to_string(std::vector<String> &line, 
-                         CSVOptions &csv_options,
-                         std::string &result_string) const
+void CSVSerializeFunction::StringStreamSequence::csv_write_line_to_string(std::vector<String> &line, 
+                         std::string &result_string)
 {
   std::vector<String>::iterator   line_it;
   size_t addlen = 1;
@@ -996,9 +999,9 @@ void CSVSerializeFunction::csv_write_line_to_string(std::vector<String> &line,
   {
     if(line_it != line.begin())
       result_string.append(csv_options.separator);
-    if(needs_quote(*line_it, csv_options))
+    if(needs_quote(*line_it))
     {
-      result_string.append(csv_quote_field(*line_it, csv_options));
+      result_string.append(csv_quote_field(*line_it));
     }
     else
       result_string.append((*line_it).c_str());
@@ -1007,9 +1010,8 @@ void CSVSerializeFunction::csv_write_line_to_string(std::vector<String> &line,
 }
 
 
-void CSVSerializeFunction::txt_write_line_to_string(std::vector<String> &line, 
-                              CSVOptions &csv_options,
-                              std::string &result_string) const
+void CSVSerializeFunction::StringStreamSequence::txt_write_line_to_string(std::vector<String> &line, 
+                              std::string &result_string)
 {
   result_string.reserve(result_string.length() + csv_options.column_positions.back() + 1);
 
@@ -1057,7 +1059,56 @@ void CSVSerializeFunction::txt_write_line_to_string(std::vector<String> &line,
   result_string.append("\n");
 }
 
+bool CSVSerializeFunction::StringStreamSequence::next(std::string &result_string)
+{
+  Item node_item;
+  if(!input_nodes->next(node_item))
+    return false;
 
+  if(csv_options.first_row_is_header > 0)
+  {
+    unsigned int position = 0;
+    csv_get_headers(   node_item, 
+                        0,
+                        position);
+    for(unsigned int i=0;i<headers.size();i++)
+    {
+      headers.at(i).resize(position);
+
+      //now write the headers
+      if(csv_options.column_positions.size() == 0)
+      {
+        csv_write_line_to_string(headers.at(i), 
+                                  result_string);
+      }
+      else
+      {
+        txt_write_line_to_string(headers.at(i), 
+                                  result_string);
+      }
+    }
+    csv_options.first_row_is_header = 0;
+  }
+  std::vector<String> line;
+  csv_write_line(node_item,
+                      line, 0);
+
+  //std::string line_string;
+  if(csv_options.column_positions.size() == 0)
+  {
+    csv_write_line_to_string(line, 
+                              result_string);
+  }
+  else
+  {
+    txt_write_line_to_string(line, 
+                              result_string);
+  }
+  line_index++;
+  return true;
+}
+
+ 
 zorba::ItemSequence_t
 CSVSerializeFunction::evaluate(const Arguments_t& args,
          const zorba::StaticContext* sctx,
@@ -1067,67 +1118,11 @@ CSVSerializeFunction::evaluate(const Arguments_t& args,
   Item options_item;
   args[1]->next(options_item);
   
-  CSVOptions csv_options;
-  csv_options.parse(options_item, theModule->getItemFactory());
+  StringStreamSequence  *stream_sequence = new StringStreamSequence((ItemSequence*)args[0]);
+  stream_sequence->csv_options.parse(options_item, theModule->getItemFactory());
+  stream_sequence->streamable_item = theModule->getItemFactory()->createStreamableString(stream_sequence->is);
 
-  Item node_item;
-  std::string result_string;
-  std::vector<String> line;
-  std::vector<std::vector<String> > headers;
-  int line_index = 0;
-  while(args[0]->next(node_item))
-  {
-    if(csv_options.first_row_is_header > 0)
-    {
-      unsigned int position = 0;
-      csv_get_headers(   node_item, 
-                         0,
-                         position,
-                         headers);
-      for(unsigned int i=0;i<headers.size();i++)
-      {
-        headers.at(i).resize(position);
-
-        //now write the headers
-        if(csv_options.column_positions.size() == 0)
-        {
-          csv_write_line_to_string(headers.at(i), 
-                                   csv_options,
-                                   result_string);
-        }
-        else
-        {
-          txt_write_line_to_string(headers.at(i), 
-                                   csv_options,
-                                   result_string);
-        }
-      }
-      csv_options.first_row_is_header = 0;
-    }
-    line.clear();
-    csv_write_line(node_item,
-                       line, 0, headers);
-
-    //std::string line_string;
-    if(csv_options.column_positions.size() == 0)
-    {
-      csv_write_line_to_string(line, 
-                               csv_options,
-                               result_string);
-    }
-    else
-    {
-      txt_write_line_to_string(line, 
-                               csv_options,
-                               result_string);
-    }
-    line_index++;
-    //result_string += line_string;
-  }
-
-  return ItemSequence_t(new SingletonItemSequence(                                      
-     theModule->getItemFactory()->createString(result_string)));                           
-
+  return ItemSequence_t(stream_sequence);
 }
 
 

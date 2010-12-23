@@ -288,6 +288,10 @@ unsigned int utf8_sequence_length(const char* lead_it)
     return 3;
   else if ((lead >> 3) == 0x1e)
     return 4;
+  else if ((lead >> 2) == 0x3e)
+    return 5;
+  else if ((lead >> 1) == 0x7e)
+    return 6;
   else
     return 1;
 }
@@ -317,6 +321,28 @@ uint32_t utf8_to_codepoint(const char* it)
     cp += (*it << 6) & 0xfff;
     ++it;
     cp += (*it) & 0x3f;
+    break;
+  case 5:
+    ++it;
+    cp = ((cp&0x03) << 24)  + ((*it)&0x3F << 18);
+    ++it;
+    cp += (*it)&0x3F << 12;
+    ++it;
+    cp += (*it)&0x3F << 6;
+    ++it;
+    cp += (*it)&0x3f;
+    break;
+  case 6:
+    ++it;
+    cp = ((cp&0x01) << 30)  + ((*it)&0x3F << 24);
+    ++it;
+    cp += (*it)&0x3F << 18;
+    ++it;
+    cp += (*it)&0x3F << 12;
+    ++it;
+    cp += (*it)&0x3F << 6;
+    ++it;
+    cp += (*it)&0x3f;
     break;
   }
   return cp;
