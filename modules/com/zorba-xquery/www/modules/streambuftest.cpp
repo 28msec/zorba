@@ -16,6 +16,7 @@
 #include <string.h>
 #include "csv.xq.src/stringiterator_streambuf.h"
 #include <istream>
+#include <stdio.h>
 
 class TestStreambuf : public zorba::StringIteratorStreamBuf
 {

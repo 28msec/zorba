@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <stdio.h>
 #include <streambuf>
 
 #ifndef STRING_ITERATOR_TO_STREAMBUF_IMPL
