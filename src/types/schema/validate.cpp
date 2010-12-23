@@ -135,9 +135,18 @@ bool Validator::realValidationValue(
     //cout << "No schema: isNode() " << sourceNode->isNode() << "  nodeKind: "<<
     // sourceNode->getNodeKind() << endl;
 
-    // no schema available - items remain the same
-    result = sourceNode;
-    return true;
+    if ( validationMode == ParseConstants::val_strict )
+    {
+      ZORBA_ERROR_LOC_DESC(XQDY0084, loc,
+            "No valid schema found for top level element.");
+      return false;
+    }
+    else
+    {
+      // no schema available - items remain the same
+      result = sourceNode;
+      return true;    
+    }
   }
 
 #ifndef ZORBA_NO_XMLSCHEMA
