@@ -41,22 +41,22 @@ declare variable $zorba-csv:errWrongParam as xs:QName := fn:QName($zorba-csv:csv
  : Parse a CSV or fixed size text and convert to XML.<br/>
  : By default each line iw converted to a &lt;row> element, and each field to a &lt;column> element inside &lt;row>.<br/>
  : @param $csv the string containing the csv or fixed size text.
- : @param $options having format
+ : @param $options having format<br/>
  :    &lt;options><br/>
  :    &#160;&#160;  &lt;csv  [separator="default comma ,"] ? <br/>
  :    &#160;&#160;    [quote-char="default double quotes &amp;quote;"]? <br/>
  :    &#160;&#160;    [quote-escape="default double double quotes &amp;quote;&amp;quote;"]? /> <br/>
- :    &#160;&#160;  ]<br/>
  :    &#160;&#160;  <br/>
+ :    &#160;&#160;  or<br/>
  :    &#160;&#160;  &lt;column-widths><br/>
  :    &#160;&#160;  &#160;&#160;&lt;column-width><i>[column fixed width, unsigned int]</i>&lt;column-width>*<br/>
  :		&#160;&#160;	&lt;/column-widths><br/>
- :    &#160;&#160;  ]<br/>
  :    &#160;&#160;  <br/>
+ :    &#160;&#160;  or<br/>
  :    &#160;&#160;  &lt;column-positions><br/>
  :    &#160;&#160;  &#160;&#160;&lt;column-position><i>[column position on line, unsigned int]</i>&lt;column-position>*<br/>
  :		&#160;&#160;	&lt;/column-positions><br/>
- :    &#160;&#160;  ]<br/>
+ :    &#160;&#160;  <br/>
  :    &#160;&#160;  &lt;first-row-is-header [line="<i>first_line[-last_line]?</i>"]?/>?<br/>
  :    &#160;&#160;  &lt;start-from-row line="<i>first_line[-last_line]?</i>"/>?<br/>
  :    &#160;&#160;  &lt;add-last-void-columns/>?<br/>
@@ -112,7 +112,7 @@ declare variable $zorba-csv:errWrongParam as xs:QName := fn:QName($zorba-csv:csv
  :        <i>ID,Name,Occupation<br/>
  :        1,John,student</i><br/>
  :        <br/>
- :        is parsed into
+ :        is parsed into<br/>
  :        <i>&lt;row><br/>
  :        &lt;ID>1&lt;/ID><br/>
  :        &lt;Name>John&lt;/Name><br/>
@@ -168,10 +168,10 @@ declare variable $zorba-csv:errWrongParam as xs:QName := fn:QName($zorba-csv:csv
  :        &lt;/xml-nodes></i><br/>
  :        <br/>
  :        the output for each line will look like<br/>
- :        <i>&lt;r>
- :        &#160;&#160;&lt;c>field1&lt;/c>
- :        &#160;&#160;&lt;c>field2&lt;/c>
- :        &#160;&#160;.......
+ :        <i>&lt;r><br/>
+ :        &#160;&#160;&lt;c>field1&lt;/c><br/>
+ :        &#160;&#160;&lt;c>field2&lt;/c><br/>
+ :        &#160;&#160;.......<br/>
  :        &lt;/r></i><br/>
  :        <br/>
  :        If this parameter is not specified, the row name is by default "row" and the column name is by default "column".
@@ -179,31 +179,42 @@ declare variable $zorba-csv:errWrongParam as xs:QName := fn:QName($zorba-csv:csv
  :    </dl>
  : @return a sequence of row elements, one for each line in csv
  : @error zorba-csv:WrongParam if the options parameter doesn't have the name "options".
+ : @example csv_parse1.xq
+ : @example csv_parse2.xq
+ : @example csv_parse3.xq
+ : @example csv_parse6.xq
+ : @example csv_parse11.xq
+ : @example csv_parse_utf8_11.xq
+ : @example txt_parse5.xq
+ : @example txt_parse8.xq
 :)
 declare function zorba-csv:parse($csv as xs:string,
                                  $options as element(options)?) as element()* external;
                                  
 (:~
  : Convert XML into CSV or fixed size text.<br/>
+ : Note: if you want to serialize out the result, make sure that the serializer method is set to Text. 
+ :  For example, in zorba app, you have to set the param --serialize-text. 
+ :  When using file:write function, you have to set the serialization option <method>text</method>.<br/>
  :
  : @param $xml a sequence of elements, each element representing a row. The name of each row element is ignored.
  :     The childs of each row are the column fields.
- : @param $options having format
+ : @param $options having format<br/>
  :    &lt;options><br/>
  :    &#160;&#160;  &lt;csv  [separator="default comma ,"] ? <br/>
  :    &#160;&#160;    [quote-char="default double quotes &amp;quote;"]? <br/>
  :    &#160;&#160;    [quote-escape="default double double quotes &amp;quote;&amp;quote;"]? /> <br/>
- :    &#160;&#160;  ]<br/>
+ :    &#160;&#160;  <br/>
  :    &#160;&#160;  or<br/>
  :    &#160;&#160;  &lt;column-widths [align="left|right"]?><br/>
  :    &#160;&#160;  &#160;&#160;&lt;column-width [align="left|right"]?><i>[column fixed width, unsigned int]</i>&lt;column-width>*<br/>
  :		&#160;&#160;	&lt;/column-widths><br/>
- :    &#160;&#160;  ]<br/>
+ :    &#160;&#160;  <br/>
  :    &#160;&#160;  or<br/>
  :    &#160;&#160;  &lt;column-positions [align="left|right"]?><br/>
  :    &#160;&#160;  &#160;&#160;&lt;column-position [align="left|right"]?><i>[column position on line, unsigned int]</i>&lt;column-position>*<br/>
  :		&#160;&#160;	&lt;/column-positions><br/>
- :    &#160;&#160;  ]<br/>
+ :    &#160;&#160;  <br/>
  :    &#160;&#160;  &lt;first-row-is-header/>?<br/>
  :    &lt;/options>
  :    <br/>
@@ -269,7 +280,7 @@ declare function zorba-csv:parse($csv as xs:string,
  :        <i>&lt;row><br/>
  :        &lt;ID>1&lt;/ID><br/>
  :        &lt;Name><br/>
- :        &#160;&#160;Mr.
+ :        &#160;&#160;Mr.<br/>
  :        &#160;&#160;&lt;First_Name>John&lt;/First_Name><br/>
  :        &#160;&#160;&lt;Last_Name>Howard&lt;/Last_Name><br/>
  :        &lt;/Name><br/>
@@ -280,12 +291,21 @@ declare function zorba-csv:parse($csv as xs:string,
  :        ,,First Name,Last Name,<br/>
  :        1,Mr.,John,Howard,student</i><br/>
  :				<br/>
- :        If first-row-is-header is not specified, only the first layer of columns is processed, and the fields
- :        are the string values of each column.<br/>
+ :        If first-row-is-header is not specified and the columns have a deeper hierarchy,
+ :          only the first layer of columns is processed, and the fields are the string values of each column.<br/>
  :     </dd>
  :    </dl>
- : @return the csv or fixed size text as string
+ : @return the csv or fixed size text as string containing all the lines
+ : @example csv_serialize1.xq
+ : @example csv_serialize2.xq
+ : @example csv_serialize3.xq
+ : @example csv_serialize5.xq
+ : @example csv_serialize6.xq
+ : @example csv_parse_serialize6.xq
+ : @example txt_serialize4.xq
+ : @example txt_serialize6.xq
+ : @example txt_parse_serialize6.xq
 :)
 declare function zorba-csv:serialize($xml as element()*,
-																		$options as element(options)?) as xs:string external;
+									$options as element(options)?) as xs:string external;
 																		
