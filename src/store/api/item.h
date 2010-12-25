@@ -160,25 +160,31 @@ public:
   hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
   
   /**
-   *  Compares (by value) two items for equality. All comparisons must be done
-   *  by this method. A store may carry out pooling and implement the value
-   *  comparison using "pointer identity".
+   * Compares (by value) two items for equality. 
    *
-   *  @param An optional XQPCollator that is used for comparing string items
-   *
-   *  @return  true, if the two items are the "same"
+   * @param  An optional XQPCollator that is used for comparing string items
+   * @return true, if the two items are the "same"
+   * @throws STR0040_TYPE_ERROR if the items are not equality-comparable. For two
+   *         items to be equality-comparable, one has to be a subtype of the other
+   *         and they must also be comparable by the eq operator as specified in
+   *         the table of http://www.w3.org/TR/xquery/#mapping.  
    */
   virtual bool 
   equals(const Item*, long timezone = 0, const XQPCollator* aCollation = 0) const;
 
   /**
-   *  Compares (by value) two items, returning -1 if "this" is less than "other",
-   *  0 if "this" and "other" are equal, and 1 if "this" is greater than "other".
+   *  Compares (by value) two items, returning < 0 if "this" is less than "other",
+   *  0 if "this" and "other" are equal, and > 0 if "this" is greater than "other".
    *
-   *  @param An optional XQPCollator that is used for comparing string items
-   *
-   *  @return  -1 if "this" is less than "other", 0 if "this" and "other" are
-   *           equal, and 1 if "this" is greater than "other".
+   * @param  aCollation An optional XQPCollator that is used for comparing string items
+   * @return < 0 if "this" is less than "other", 0 if "this" and "other" are
+   *         equal, and > 0 if "this" is greater than "other".
+   * @throws STR0040_TYPE_ERROR if the items are not order-comparable. For two
+   *         items to be order-comparable, one has to be a subtype of the other
+   *         and they must also be comparable by the gt operator as specified in
+   *         the table of http://www.w3.org/TR/xquery/#mapping.  
+   * @throws STR0041_NAN_COMPARISON if both "this" and "other" are xs:double
+   *         or xs:float and at leat one of the items is NaN.
    */
   virtual long
   compare(const Item* other, long timezone = 0, const XQPCollator* aCollation = 0) const;

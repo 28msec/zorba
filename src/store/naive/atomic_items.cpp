@@ -743,9 +743,6 @@ long StringItem::compare(
     long timezone,
     const XQPCollator* aCollation) const
 {
-  if (aCollation == NULL || aCollation->doMemCmp())
-    return norm_3way( theValue.compare(other->getString()) );
-
   return utf8::compare(theValue, other->getString(), aCollation);
 }
 

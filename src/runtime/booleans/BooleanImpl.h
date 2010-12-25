@@ -183,16 +183,6 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
 public:
-  /**
-   * Value comparison of the passed two items with the operator
-   * which is defined in the CompareIterator object.
-   *
-   * @param item0
-   * @param item1
-   * @param aCompType
-   * @param aCollation optional collation parameter
-   * @return
-   */
   static bool valueComparison(
         const QueryLoc& loc,
         store::Item_t& aItem0,
@@ -202,14 +192,6 @@ public:
         long timezone,
         XQPCollator* aCollation);
 
-  /**
-   * Value Equal on the passed items
-   *
-   * @param aItem0
-   * @param aItem1
-   * @param aCollation optional collation parameter
-   * @return 1 (equal), 0 (not equal), -2 (value equal not possible)
-   */
   static bool valueEqual(
         const QueryLoc& loc,
         store::Item_t& aItem0,
@@ -218,17 +200,6 @@ public:
         long timezone,
         XQPCollator* aCollation);
 
-  /**
-   * Value Comparison on the passed items
-   * @param aItem0
-   * @param aItem1
-   * @param aCollation options collation parameter
-   * @return -1 (smaller),
-   *          0 (equal),
-   *          1 (bigger),
-   *          2 (not equal, not bigger, not smaller),
-   *         -2 (value comparison not possible)
-   */
   static long valueCompare(
         const QueryLoc& loc,
         store::Item_t& aItem0,
@@ -237,16 +208,6 @@ public:
         long timezone,
         XQPCollator* aCollation);
 
-  /**
-   * General comparison of the passed two items with the operator
-   * which is defined in the CompareIterator object.
-   *
-   * @param item0
-   * @param item1
-   * @param aCompType
-   * @param aCollation optional collation parameter
-   * @return
-   */
   static bool generalComparison(
         const QueryLoc& loc,
         store::Item_t& aItem0,
@@ -256,13 +217,6 @@ public:
         long timezone,
         XQPCollator*   aCollation);
 
-  /**
-   * General Equal on the passed items
-   * @param aItem0
-   * @param aItem1
-   * @param aCollation options collation parameter
-   * @return 1 (equal), 0 (not equal), -2 (general equal not possible)
-   */
   static bool generalEqual(
         const QueryLoc& loc,
         store::Item_t& aItem0,
@@ -271,14 +225,6 @@ public:
         long timezone,
         XQPCollator* aCollation);
 
-  /**
-   * General Comparison on the passed items
-   * @param aItem0
-   * @param aItem1
-   * @param aCollation options collation parameter (passed as pointer to make it possible to be set to 0)
-   * @return -1 (smaller), 0 (equal), 1 (bigger),
-   *          2 (not equal, not bigger, not smaller), -2 (general comparison not possible)
-   */
   static long generalCompare(
         const QueryLoc& loc,
         store::Item_t& aItem0,
@@ -287,17 +233,6 @@ public:
         long timezone,
         XQPCollator* aCollation);
 
-  /**
-   * Checks if the two passed items contain the same value (without performing and
-   * castings or promotions on the two items). 
-   *
-   * @param  item0
-   * @param  item1
-   * @param  aCollation optional collation parameter (passed as pointer to make
-   *         it possible to be set to 0)
-   * @return true if the two item are equal; false otherwise.
-   * @throw  XPTY0004 if the two items are not comparable
-   */
   static bool equal(
         const QueryLoc& loc,
         const store::Item_t& aItem0,
@@ -306,20 +241,6 @@ public:
         long timezone,
         XQPCollator* aCollation);
 
-  /**
-   * Compares two items (without castings and promotions which are used in general
-   * and value comparison).
-   * @param item0
-   * @param item1
-   * @param aCollation optional collation parameter (passed as pointer to make
-   *        it possible to be set to 0)
-   * @return -1, if item0 &lt; item1
-   *          0, if item0 == item1
-   *          1, if item0 &gt; item1
-   *          2, if item0 not equal, not bigger, not smaller item1 (special case
-   *             when an Item has the value NaN)
-   *         -2, if it is not possible to compare the values the two passed items
-   */
   static long compare(
         const QueryLoc& loc,
         const store::Item_t& aItem0,

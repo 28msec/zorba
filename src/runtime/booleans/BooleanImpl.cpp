@@ -207,6 +207,9 @@ BINARY_ACCEPT(LogicIterator);
 /////////////////////////////////////////////////////////////////////////////////
 
 
+/*******************************************************************************
+
+********************************************************************************/
 CompareIterator::CompareIterator(
      static_context* sctx,
      const QueryLoc& loc,
@@ -240,6 +243,9 @@ CompareIterator::CompareIterator(
 BINARY_ACCEPT(CompareIterator);
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void CompareIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
   BinaryBaseIterator<CompareIterator, PlanIteratorState>::openImpl(planState, offset);
@@ -250,6 +256,9 @@ void CompareIterator::openImpl(PlanState& planState, uint32_t& offset)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 bool CompareIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t lItem0, lItem1, tItem0, tItem1;
@@ -443,6 +452,21 @@ bool CompareIterator::valueComparison(
 }
 
 
+/*******************************************************************************
+  Compares two items for equality according to the rules of value comparison
+
+  @param  item0
+  @param  item1
+  @param  tm The type manager to use to extract the type of the 2 items and
+          perform any necessary type checks and castings/promotions
+  @param  timezone Optional timezone parameter used when comparing datetimes
+  @param  aCollation optional collation parameter (passed as pointer to make
+          it possible to be set to 0)
+  @return True if the two item are equal; false otherwise.
+  @throw  appropriate exception if any necesary casting/promotion fails.
+  @throw  XPTY0004 if the two items are not equality comparable according to
+          the table in http://www.w3.org/TR/xquery/#mapping. 
+********************************************************************************/
 bool CompareIterator::valueEqual(
     const QueryLoc& loc,
     store::Item_t& aItem0,
@@ -457,6 +481,9 @@ bool CompareIterator::valueEqual(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 long CompareIterator::valueCompare(
     const QueryLoc& loc,
     store::Item_t& aItem0,
@@ -471,6 +498,9 @@ long CompareIterator::valueCompare(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void CompareIterator::valueCasting(
     const TypeManager* tm,
     store::Item_t& aItem0,
@@ -520,7 +550,23 @@ void CompareIterator::valueCasting(
 
 
 /*******************************************************************************
+  Compares two items for their relative order with respect to a general 
+  comparison operator.
 
+  @param  item0
+  @param  item1
+  $param  aCompType
+  @param  tm The type manager to use to extract the type of the 2 items and
+          perform any necessary type checks and castings/promotions
+  @param  timezone Optional timezone parameter used when comparing datetimes
+  @param  aCollation optional collation parameter (passed as pointer to make
+          it possible to be set to 0)
+  @return True if the ordering between item0 and item1 satisfies the given
+          general comparison operator; false otherwise.
+  @throw  appropriate exception if any necesary casting/promotion fails.
+  @throw  XPTY0004 if the two items are not order comparable.
+  @throw  STR0041_NAN_COMPARISON if both the items are of type xs:double or
+          xs:float and at leat one of the items is NaN.
 ********************************************************************************/
 bool CompareIterator::generalComparison(
     const QueryLoc& loc,
@@ -575,13 +621,27 @@ bool CompareIterator::generalComparison(
 }
 
 
+/*******************************************************************************
+  Compares two items for equality according to the rules of general comparison
+
+  @param  item0
+  @param  item1
+  @param  tm The type manager to use to extract the type of the 2 items and
+          perform any necessary type checks and castings/promotions
+  @param  timezone Optional timezone parameter used when comparing datetimes
+  @param  aCollation optional collation parameter (passed as pointer to make
+          it possible to be set to 0)
+  @return True if the two item are equal; false otherwise.
+  @throw  appropriate exception if any necesary casting/promotion fails.
+  @throw  XPTY0004 if the two items are not equality comparable.
+********************************************************************************/
 bool CompareIterator::generalEqual(
     const QueryLoc& loc,
     store::Item_t& aItem0,
     store::Item_t& aItem1,
     const TypeManager* typemgr,
     long timezone,
-    XQPCollator*   aCollation)
+    XQPCollator* aCollation)
 {
   store::Item_t castItem0, castItem1;
   generalCasting(typemgr, aItem0, aItem1, castItem0, castItem1);
@@ -589,6 +649,23 @@ bool CompareIterator::generalEqual(
 }
 
 
+/*******************************************************************************
+  Compares two items for ordering according to the rules of general comparison
+
+  @param  item0
+  @param  item1
+  @param  tm The type manager to use to extract the type of the 2 items and
+          perform any necessary type checks and castings/promotions
+  @param  timezone Optional timezone parameter used when comparing datetimes
+  @param  aCollation optional collation parameter (passed as pointer to make
+          it possible to be set to 0)
+  @return < 0 if item0 is less than item1, 0 if the two items are equal, or
+          > 0 if item0 is greater than item1.
+  @throw  appropriate exception if any necesary casting/promotion fails.
+  @throw  XPTY0004 if the two items are not order comparable.
+  @throw  STR0041_NAN_COMPARISON if both the items are of type xs:double or
+          xs:float and at leat one of the items is NaN.
+********************************************************************************/
 long CompareIterator::generalCompare(
     const QueryLoc& loc,
     store::Item_t& aItem0,
@@ -603,6 +680,9 @@ long CompareIterator::generalCompare(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void CompareIterator::generalCasting(
     const TypeManager* tm,
     store::Item_t& aItem0,
@@ -669,15 +749,18 @@ void CompareIterator::generalCasting(
 
 
 /*******************************************************************************
-  Checks if the two passed items contain the same value (without performing and
+  Checks if the two passed items contain the same value (without performing any
   castings or promotions on the two items). 
 
   @param  item0
   @param  item1
+  @param  tm The type manager to use to extract the type of the 2 items
+  @param  timezone Optional timezone parameter used when comparing datetimes
   @param  aCollation optional collation parameter (passed as pointer to make
           it possible to be set to 0)
-  @return true if the two item are equal; false otherwise.
-  @throw  XPTY0004 if the two items are not comparable 
+  @return True if the two item are equal; false otherwise.
+  @throw  XPTY0004 if the two items are not equality comparable according to
+          the table in http://www.w3.org/TR/xquery/#mapping. 
 ********************************************************************************/
 bool CompareIterator::equal(
     const QueryLoc& loc,
@@ -734,7 +817,21 @@ bool CompareIterator::equal(
 
 
 /*******************************************************************************
+  Performs an order-comparison between two given items (without performing any
+  castings or promotions on the two items). 
 
+  @param  item0
+  @param  item1
+  @param  tm The type manager to use to extract the type of the 2 items
+  @param  timezone Optional timezone parameter used when comparing datetimes
+  @param  aCollation optional collation parameter (passed as pointer to make
+          it possible to be set to 0)
+  @return < 0 if item0 is less than item1, 0 if the two items are equal, or
+          > 0 if item0 is greater than item1.
+  @throw  XPTY0004 if the two items are not order comparable according to
+          the table in http://www.w3.org/TR/xquery/#mapping. 
+  @throw  STR0041_NAN_COMPARISON if both the items are of type xs:double or
+          xs:float and at leat one of the items is NaN.
 ********************************************************************************/
 long CompareIterator::compare(
     const QueryLoc& loc,
