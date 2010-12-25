@@ -769,15 +769,6 @@ zstring StringItem::show() const
 
 #ifndef ZORBA_NO_FULL_TEXT
 
-void AtomicItemTokenizer::operator()( char const *utf8_s, size_t utf8_len,
-                                      int token_no, int sent_no, int para_no,
-                                      void* )
-{
-  FTToken t( utf8_s, utf8_len, token_no, sent_no, lang_ );
-  tokens_.push_back( t );
-}
-
-
 FTTokenIterator_t StringItem::getDocumentTokens(locale::iso639_1::type lang) const
 {
   auto_ptr<Tokenizer> tokenizer( Tokenizer::create() );
@@ -807,86 +798,122 @@ FTTokenIterator_t StringItem::getQueryTokens(
 
 #endif /* ZORBA_NO_FULL_TEXT */
 
-///////////////////////////////////////////////////////////////////////////////
 
-void StreamableStringItem::appendStringValue( zstring &buf ) const {
+/*******************************************************************************
+  class StreamableStringItem
+********************************************************************************/
+void StreamableStringItem::appendStringValue(zstring& buf) const 
+{
   materialize_if_necessary();
   buf += theValue;
 }
 
-long StreamableStringItem::compare( Item const *other, long timezone,
-                                    XQPCollator const *collator ) const {
+
+long StreamableStringItem::compare( 
+    const Item* other,
+    long timezone,
+    const XQPCollator* collator) const 
+{
   materialize_if_necessary();
-  return StringItem::compare( other, timezone, collator );
+  return StringItem::compare(other, timezone, collator);
 }
 
-bool StreamableStringItem::equals( store::Item const *item, long timezone,
-                                   XQPCollator const *collator ) const {
+
+bool StreamableStringItem::equals( 
+    store::Item const *item,
+    long timezone,
+    XQPCollator const *collator ) const 
+{
   materialize_if_necessary();
   return equals( item, timezone, collator );
 }
 
-store::Item_t StreamableStringItem::getEBV() const {
+store::Item_t StreamableStringItem::getEBV() const 
+{
   materialize_if_necessary();
   return StringItem::getEBV();
 }
 
-std::istream& StreamableStringItem::getStream() {
+
+std::istream& StreamableStringItem::getStream() 
+{
   return istream_;
 }
 
-zstring const& StreamableStringItem::getString() const {
+
+zstring const& StreamableStringItem::getString() const 
+{
   materialize_if_necessary();
   return theValue;
 }
 
-zstring StreamableStringItem::getStringValue() const {
+
+zstring StreamableStringItem::getStringValue() const 
+{
   materialize_if_necessary();
   return theValue;
 }
 
-void StreamableStringItem::getStringValue2( zstring &val ) const {
+
+void StreamableStringItem::getStringValue2( zstring &val ) const 
+{
   materialize_if_necessary();
   val = theValue;
 }
 
+
 uint32_t StreamableStringItem::hash( long timezone,
-                                     XQPCollator const *collator ) const {
+                                     XQPCollator const *collator ) const 
+{
   materialize_if_necessary();
   return utf8::hash( theValue, collator );
 }
 
-bool StreamableStringItem::isStreamable() const {
+
+bool StreamableStringItem::isStreamable() const 
+{
   return true;
 }
 
-zstring StreamableStringItem::show() const {
+
+zstring StreamableStringItem::show() const 
+{
   materialize_if_necessary();
   return StringItem::show();
 }
 
-void StreamableStringItem::materialize_if_necessary() const {
-  if ( theValue.empty() ) {
+
+void StreamableStringItem::materialize_if_necessary() const 
+{
+  if ( theValue.empty() ) 
+  {
     ios::iostate const old_exceptions = istream_.exceptions();
     istream_.exceptions( std::ios::badbit | std::ios::failbit );
+
     streampos const pos = istream_.tellg();
     if ( pos )
       istream_.seekg( 0, ios::beg );
+
     char buf[ 4096 ];
     StreamableStringItem *const ssi = const_cast<StreamableStringItem*>( this );
     istream_.exceptions( istream_.exceptions() & ~ios::failbit );
-    while ( istream_ ) {
+    while ( istream_ ) 
+    {
       istream_.read( buf, sizeof( buf ) );
       ssi->theValue.append( buf, istream_.gcount() );
     }
     istream_.clear();                   // clear eofbit
-    if ( pos ) {
+
+    if ( pos ) 
+    {
       istream_.exceptions( istream_.exceptions() | ios::failbit );
       istream_.seekg( pos, ios::beg );
     }
+
     istream_.exceptions( old_exceptions );
   }
 }
+
 
 /*******************************************************************************
   class NormalizedStringItem
@@ -1138,7 +1165,7 @@ long DateTimeItem::compare(
   catch (InvalidTimezoneException)
   {
     ZORBA_ERROR(FODT0003);
-    return false;
+    return 0;
   }
 }
 
@@ -2237,6 +2264,21 @@ zstring ErrorItem::show() const
   return theError->toString();
 }
 
+
+/*******************************************************************************
+  class AtomicItemTokenizer
+********************************************************************************/
+void AtomicItemTokenizer::operator()(
+    char const *utf8_s,
+    size_t utf8_len,
+    int token_no, 
+    int sent_no,
+    int para_no,
+    void* )
+{
+  FTToken t( utf8_s, utf8_len, token_no, sent_no, lang_ );
+  tokens_.push_back( t );
+}
 
 
 } // namespace simplestore

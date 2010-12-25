@@ -37,18 +37,21 @@ namespace flwor
 class SortTupleCmp
 {
 private:
+  const QueryLoc               & theLocation;
   const std::vector<OrderSpec> * theOrderSpecs;
   const TypeManager            * theTypeManager;
   long                           theTimezone;
 
 public:
-  SortTupleCmp() : theOrderSpecs(0), theTypeManager(0), theTimezone(0) {}
+  //SortTupleCmp() : theOrderSpecs(0), theTypeManager(0), theTimezone(0) {}
 
   SortTupleCmp(
+        const QueryLoc& loc,
         dynamic_context* dctx,
         const TypeManager* tm,
         const std::vector<OrderSpec>* orderSpecs)
     :
+    theLocation(loc),
     theOrderSpecs(orderSpecs) 
   {
     theTypeManager = tm;

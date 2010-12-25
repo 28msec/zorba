@@ -707,7 +707,8 @@ bool FLWORIterator::nextImpl(store::Item_t& result, PlanState& planState) const
             }
 
             {
-              SortTupleCmp cmp(planState.theDynamicContext,
+              SortTupleCmp cmp(theOrderByClause->theLocation,
+                               planState.theDynamicContext,
                                theSctx->get_typemanager(),
                                &theOrderByClause->theOrderSpecs);
 

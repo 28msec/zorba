@@ -230,6 +230,7 @@ public:
    *         -2 (value comparison not possible)
    */
   static long valueCompare(
+        const QueryLoc& loc,
         store::Item_t& aItem0,
         store::Item_t& aItem1,
         const TypeManager* typemgr,
@@ -279,6 +280,7 @@ public:
    *          2 (not equal, not bigger, not smaller), -2 (general comparison not possible)
    */
   static long generalCompare(
+        const QueryLoc& loc,
         store::Item_t& aItem0,
         store::Item_t& aItem1,
         const TypeManager* typemgr,
@@ -319,6 +321,7 @@ public:
    *         -2, if it is not possible to compare the values the two passed items
    */
   static long compare(
+        const QueryLoc& loc,
         const store::Item_t& aItem0,
         const store::Item_t& aItem1,
         const TypeManager* typemgr,

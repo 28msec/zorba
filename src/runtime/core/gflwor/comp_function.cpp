@@ -21,18 +21,17 @@
 namespace zorba {
 namespace flwor {
 
-using namespace std;
 
 bool SortTupleCmp::operator()(const SortTuple& t1, const SortTuple& t2) const
 {
   ZORBA_ASSERT(t1.theKeyValues.size() == t2.theKeyValues.size());
   ZORBA_ASSERT(t1.theKeyValues.size() == theOrderSpecs->size());
 
-  vector<store::Item*>::const_iterator t1iter = t1.theKeyValues.begin();
-  vector<store::Item*>::const_iterator t1end = t1.theKeyValues.end();
-  vector<store::Item*>::const_iterator t2iter = t2.theKeyValues.begin();
+  std::vector<store::Item*>::const_iterator t1iter = t1.theKeyValues.begin();
+  std::vector<store::Item*>::const_iterator t1end = t1.theKeyValues.end();
+  std::vector<store::Item*>::const_iterator t2iter = t2.theKeyValues.begin();
 
-  vector<OrderSpec>::const_iterator orderSpecIter = theOrderSpecs->begin();
+  std::vector<OrderSpec>::const_iterator orderSpecIter = theOrderSpecs->begin();
 
   while (t1iter != t1end)
   {
@@ -67,14 +66,23 @@ long SortTupleCmp::compare(
       bool nativeCompare,
       XQPCollator* collator) const
 {
-  if (empty_item(item1))
+  if (item1 == NULL)
   {
-    if (empty_item(item2))
+    if (item2 == NULL)
       return 0;
     else
       return descAsc(emptyLeast ? -1 : 1, desc);
   }
-  else if (empty_item(item2))
+  else if (item1->isNaN())
+  {
+    if (item2 == NULL)
+      return descAsc(emptyLeast ? 1 : -1, desc);
+    else if (item2->isNaN())
+      return 0;
+    else
+      return descAsc(emptyLeast ? -1 : 1, desc);
+  }
+  else if (item2 == NULL || item2->isNaN())
   {
     return descAsc(emptyLeast ? 1 : -1, desc);
   }
@@ -92,7 +100,8 @@ long SortTupleCmp::compare(
     {
       store::Item_t ls1(item1);
       store::Item_t ls2(item2);
-      result = CompareIterator::valueCompare(ls1,
+      result = CompareIterator::valueCompare(theLocation,
+                                             ls1,
                                              ls2,
                                              theTypeManager,
                                              theTimezone,

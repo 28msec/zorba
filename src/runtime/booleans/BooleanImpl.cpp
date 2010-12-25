@@ -399,59 +399,47 @@ bool CompareIterator::valueComparison(
     long timezone,
     XQPCollator* aCollation)
 {
-  long compValue = -2;
+  try
+  {
+    switch(aCompType)
+    {
+    case CompareConsts::VALUE_EQUAL:
+    {
+      return valueEqual(loc, aItem0, aItem1, typemgr, timezone, aCollation);
+    }
+    case CompareConsts::VALUE_NOT_EQUAL:
+    {
+      return ! valueEqual(loc, aItem0, aItem1, typemgr, timezone, aCollation);
+    }
+    case CompareConsts::VALUE_GREATER:
+    {
+      return valueCompare(loc, aItem0, aItem1, typemgr, timezone, aCollation) > 0;
+    }
+    case CompareConsts::VALUE_GREATER_EQUAL:
+    {
+      return valueCompare(loc, aItem0, aItem1, typemgr, timezone, aCollation) >= 0;
+    }
+    case CompareConsts::VALUE_LESS:
+    {
+      return valueCompare(loc, aItem0, aItem1, typemgr, timezone, aCollation) < 0;
+    }
+    case CompareConsts::VALUE_LESS_EQUAL:
+    {
+      return valueCompare(loc, aItem0, aItem1, typemgr, timezone, aCollation) <= 0;
+    }
+    default:
+    {
+      ZORBA_ASSERT(false);
+    }
+    }
+  }
+  catch (error::ZorbaError& e)
+  {
+    if (e.theErrorCode == STR0041_NAN_COMPARISON)
+      return false;
 
-  switch(aCompType)
-  {
-  case CompareConsts::VALUE_EQUAL:
-  {
-    return valueEqual(loc, aItem0, aItem1, typemgr, timezone, aCollation);
+    throw e;
   }
-  case CompareConsts::VALUE_NOT_EQUAL:
-  {
-    return ! valueEqual(loc, aItem0, aItem1, typemgr, timezone, aCollation);
-  }
-  case CompareConsts::VALUE_GREATER:
-  {
-    compValue = valueCompare(aItem0, aItem1, typemgr, timezone, aCollation);
-    if ( compValue > -2 )
-      return compValue == 1;
-
-    break;
-  }
-  case CompareConsts::VALUE_GREATER_EQUAL:
-  {
-    compValue = valueCompare(aItem0, aItem1, typemgr, timezone, aCollation);
-    if ( compValue > -2 )
-      return (compValue == 0 || compValue == 1);
-
-    break;
-  }
-  case CompareConsts::VALUE_LESS:
-  {
-    compValue = valueCompare(aItem0, aItem1, typemgr, timezone, aCollation);
-    if ( compValue > -2 )
-      return compValue == -1;
-
-    break;
-  }
-  case CompareConsts::VALUE_LESS_EQUAL:
-  {
-    compValue = valueCompare(aItem0, aItem1, typemgr, timezone, aCollation);
-
-    if ( compValue > -2 )
-      return (compValue == -1 || compValue == 0);
-
-    break;
-  }
-  default:
-  {
-    ZORBA_ASSERT(false);
-  }
-  }
-
-  ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
-                       "Dynamic type of a value does not match a required type.");
 }
 
 
@@ -470,6 +458,7 @@ bool CompareIterator::valueEqual(
 
 
 long CompareIterator::valueCompare(
+    const QueryLoc& loc,
     store::Item_t& aItem0,
     store::Item_t& aItem1,
     const TypeManager* typemgr,
@@ -478,7 +467,7 @@ long CompareIterator::valueCompare(
 {
   store::Item_t castItem0, castItem1;
   valueCasting(typemgr, aItem0, aItem1, castItem0, castItem1);
-  return compare(castItem0, castItem1, typemgr, timezone, aCollation);
+  return compare(loc, castItem0, castItem1, typemgr, timezone, aCollation);
 }
 
 
@@ -542,62 +531,47 @@ bool CompareIterator::generalComparison(
     long timezone,
     XQPCollator* aCollation)
 {
-  long compValue = -2;
-
-  switch(aCompType)
+  try
   {
-  case CompareConsts::GENERAL_EQUAL:
+    switch(aCompType)
+    {
+    case CompareConsts::GENERAL_EQUAL:
+    {
+      return generalEqual(loc, aItem0, aItem1, typemgr, timezone, aCollation);
+    }
+    case CompareConsts::GENERAL_NOT_EQUAL:
+    {
+      return !generalEqual(loc, aItem0, aItem1, typemgr, timezone, aCollation);
+    }
+    case CompareConsts::GENERAL_GREATER:
+    {
+      return generalCompare(loc, aItem0, aItem1, typemgr, timezone, aCollation) > 0;
+    }
+    case CompareConsts::GENERAL_GREATER_EQUAL:
+    {
+      return generalCompare(loc, aItem0, aItem1, typemgr, timezone, aCollation) >= 0;
+    }
+    case CompareConsts::GENERAL_LESS:
+    {
+      return generalCompare(loc, aItem0, aItem1, typemgr, timezone, aCollation) < 0;
+    }
+    case CompareConsts::GENERAL_LESS_EQUAL:
+    {
+      return generalCompare(loc, aItem0, aItem1, typemgr, timezone, aCollation) <= 0;
+    }
+    default:
+    {
+      ZORBA_ASSERT(false);
+    }
+    }
+  }
+  catch (error::ZorbaError& e)
   {
-    return generalEqual(loc, aItem0, aItem1, typemgr, timezone, aCollation);
+    if (e.theErrorCode == STR0041_NAN_COMPARISON)
+      return false;
+
+    throw e;
   }
-  case CompareConsts::GENERAL_NOT_EQUAL:
-  {
-    return !generalEqual(loc, aItem0, aItem1, typemgr, timezone, aCollation);
-  }
-  case CompareConsts::GENERAL_GREATER:
-  {
-    compValue = generalCompare(aItem0, aItem1, typemgr, timezone, aCollation);
-
-    if ( compValue != -2 )
-      return compValue == 1;
-
-    break;
-  }
-  case CompareConsts::GENERAL_GREATER_EQUAL:
-  {
-    compValue = generalCompare(aItem0, aItem1, typemgr, timezone, aCollation);
-
-    if ( compValue != -2 )
-      return (compValue == 0 || compValue == 1);
-
-    break;
-  }
-  case CompareConsts::GENERAL_LESS:
-  {
-    compValue = generalCompare(aItem0, aItem1, typemgr, timezone, aCollation);
-
-    if ( compValue != -2 )
-      return compValue == -1;
-
-    break;
-  }
-  case CompareConsts::GENERAL_LESS_EQUAL:
-  {
-    compValue = generalCompare(aItem0, aItem1, typemgr, timezone, aCollation);
-
-    if ( compValue != -2 )
-      return compValue == 0 || compValue == -1;
-
-    break;
-  }
-  default:
-  {
-    ZORBA_ASSERT(false);
-  }
-  }
-
-  ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
-                       "Dynamic type of a value does not match a required type.");
 }
 
 
@@ -616,6 +590,7 @@ bool CompareIterator::generalEqual(
 
 
 long CompareIterator::generalCompare(
+    const QueryLoc& loc,
     store::Item_t& aItem0,
     store::Item_t& aItem1,
     const TypeManager* typemgr,
@@ -624,7 +599,7 @@ long CompareIterator::generalCompare(
 {
   store::Item_t castItem0, castItem1;
   generalCasting(typemgr, aItem0, aItem1, castItem0, castItem1);
-  return compare(castItem0, castItem1, typemgr, timezone, aCollation);
+  return compare(loc, castItem0, castItem1, typemgr, timezone, aCollation);
 }
 
 
@@ -762,6 +737,7 @@ bool CompareIterator::equal(
 
 ********************************************************************************/
 long CompareIterator::compare(
+    const QueryLoc& loc,
     const store::Item_t& aItem0,
     const store::Item_t& aItem1,
     const TypeManager* tm,
@@ -778,9 +754,16 @@ long CompareIterator::compare(
     {
       if (TypeOps::is_equal(tm, *type0, *type1) &&
           !TypeOps::is_equal(tm, *type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE))
+      {
         return aItem0->compare(aItem1, timezone, aCollation);
+      }
       else
-        return -2;
+      {
+        ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, loc,
+                                 "Cannot compare an item of type "
+                                 << type0->toString() << " with an item of type "
+                                 << type1->toString());
+      }
     }
     else if (TypeOps::is_subtype(tm, *type1, *type0))
     {
@@ -802,7 +785,10 @@ long CompareIterator::compare(
       }
       else
       {
-        return -2;
+        ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, loc,
+                                 "Cannot compare an item of type "
+                                 << type0->toString() << " with an item of type "
+                                 << type1->toString());
       }
     }
   }
@@ -810,9 +796,16 @@ long CompareIterator::compare(
   {
     // For example, two QName items do not have an order relationship.
     if (e.theErrorCode == STR0040_TYPE_ERROR)
-      return -2;
+    {
+      ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, loc,
+                               "Cannot compare an item of type "
+                               << type0->toString() << " with an item of type "
+                               << type1->toString());
+    }
     else
+    {
       throw e;
+    }
   }
 }
 

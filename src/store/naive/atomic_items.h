@@ -32,6 +32,7 @@
 #include "zorbautils/tokenizer.h"
 
 #include "zorbaerrors/errors.h"
+#include "zorbaerrors/error_manager.h"
 
 
 namespace zorba
@@ -531,8 +532,10 @@ public:
   zstring show() const;
 };
 
-///////////////////////////////////////////////////////////////////////////////
 
+/*******************************************************************************
+  class StringItem
+********************************************************************************/
 class StringItem : public AtomicItem
 {
   friend class BasicItemFactory;
@@ -587,74 +590,51 @@ public:
 };
 
 
-#ifndef ZORBA_NO_FULL_TEXT
-/**
- * An <code>AtomicItemTokenizer</code> is-a Tokenizer::Callback TODO
- */
-class AtomicItemTokenizer : public Tokenizer::Callback
+/*******************************************************************************
+  class StreamableStringItem
+********************************************************************************/
+class StreamableStringItem : public StringItem 
 {
+  friend class BasicItemFactory;
+
+protected:
+  std::istream & istream_;
+
 public:
-  typedef NaiveFTTokenIterator::FTTokens FTTokens;
+  bool equals(
+        store::Item const*,
+        long timezone = 0,
+        const XQPCollator* collator = 0 ) const;
 
-  AtomicItemTokenizer( Tokenizer &tokenizer, locale::iso639_1::type lang,
-                       FTTokens &tokens ) :
-    tokenizer_( tokenizer ),
-    tokens_( tokens ),
-    lang_( lang )
-  {
-  }
-
-  void operator()( char const *utf8_s, size_t utf8_len,
-                   int token_no, int sent_no, int para_no, void* = 0 );
-
-  void tokenize( char const *utf8_s, size_t len ) {
-    tokenizer_.tokenize( utf8_s, len, lang_, *this );
-  }
-
-private:
-  Tokenizer &tokenizer_;
-  FTTokens &tokens_;
-  locale::iso639_1::type const lang_;
-};
-#endif /* ZORBA_NO_FULL_TEXT */
-
-///////////////////////////////////////////////////////////////////////////////
-
-class StreamableStringItem : public StringItem {
-public:
-  bool equals( store::Item const*, long timezone = 0,
-               XQPCollator const *collator = 0 ) const;
-
-  long compare( Item const *other, long timezone = 0,
-                XQPCollator const *collator = 0 ) const;
+  long compare( 
+        Item const* other,
+        long timezone = 0,
+        const XQPCollator* collator = 0) const;
 
   store::Item_t getEBV() const;
 
   zstring getStringValue() const;
 
-  void getStringValue2( zstring &result ) const;
+  void getStringValue2(zstring& result) const;
 
-  void appendStringValue( zstring &buf ) const;
+  void appendStringValue(zstring& buf) const;
 
   std::istream& getStream();
 
-  zstring const& getString() const;
+  const zstring& getString() const;
 
-  uint32_t hash( long timezone = 0, XQPCollator const *collator = 0 ) const;
+  uint32_t hash(long timezone = 0, const XQPCollator* collator = 0) const;
 
   bool isStreamable() const;
 
   zstring show() const;
 
 protected:
-  StreamableStringItem( std::istream &stream ) : istream_( stream ) {
+  StreamableStringItem(std::istream& stream) : istream_(stream) 
+  {
   }
 
   void materialize_if_necessary() const;
-
-  std::istream &istream_;
-
-  friend class BasicItemFactory;
 };
 
 /*******************************************************************************
@@ -986,7 +966,7 @@ public:
         const XQPCollator* aCollation = 0) const
   {
     if (theValue.isNaN() || other->getDoubleValue().isNaN())
-      return 2;
+      ZORBA_ERROR(STR0041_NAN_COMPARISON);
 
     return theValue.compare(other->getDoubleValue());
   }
@@ -1047,7 +1027,7 @@ public:
         const XQPCollator* aCollation = 0) const
   {
     if (theValue.isNaN() || other->getFloatValue().isNaN())
-      return 2;
+      ZORBA_ERROR(STR0041_NAN_COMPARISON);
 
     return getDoubleValue().compare(other->getDoubleValue());
   }
@@ -2172,6 +2152,39 @@ protected:
   ErrorItem(const ErrorItem& other);
   ErrorItem& operator=(const ErrorItem& other);
 };
+
+
+#ifndef ZORBA_NO_FULL_TEXT
+/**
+ * An <code>AtomicItemTokenizer</code> is-a Tokenizer::Callback TODO
+ */
+class AtomicItemTokenizer : public Tokenizer::Callback
+{
+public:
+  typedef NaiveFTTokenIterator::FTTokens FTTokens;
+
+  AtomicItemTokenizer( Tokenizer &tokenizer, locale::iso639_1::type lang,
+                       FTTokens &tokens ) :
+    tokenizer_( tokenizer ),
+    tokens_( tokens ),
+    lang_( lang )
+  {
+  }
+
+  void operator()( char const *utf8_s, size_t utf8_len,
+                   int token_no, int sent_no, int para_no, void* = 0 );
+
+  void tokenize( char const *utf8_s, size_t len ) {
+    tokenizer_.tokenize( utf8_s, len, lang_, *this );
+  }
+
+private:
+  Tokenizer &tokenizer_;
+  FTTokens &tokens_;
+  locale::iso639_1::type const lang_;
+};
+#endif /* ZORBA_NO_FULL_TEXT */
+
 
 } // namespace simplestore
 } // namespace zorba
