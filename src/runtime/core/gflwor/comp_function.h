@@ -78,7 +78,7 @@ public:
 
   long descAsc(long result, bool desc) const
   {
-    ZORBA_ASSERT (result <= 1 && result >= -1);
+    assert(-1 <= result && result <= 1);
     return desc ? -result : result;
   }
 };

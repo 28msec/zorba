@@ -169,6 +169,7 @@ FnIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   store::Item_t searchItem;
   TypeManager* typemgr = theSctx->get_typemanager();
   long timezone = 0;
+  bool found;
 
   FnIndexOfIteratorState* state;
   DEFAULT_STACK_INIT(FnIndexOfIteratorState, state, planState);
@@ -185,15 +186,30 @@ FnIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   while ( consumeNext(lSequenceItem, theChildren[0].getp(), planState))
   {
-    // inc the position in the sequence; do it at the beginning of the loop because index-of starts with one
+    // inc the position in the sequence; do it at the beginning of the loop
+    // because index-of starts with one
     ++state->theCurrentPos;
 
     searchItem = state->theSearchItem;
-    if (CompareIterator::valueEqual(lSequenceItem,
-                                    searchItem,
-                                    typemgr,
-                                    timezone,
-                                    state->theCollator) > 0)
+
+    try
+    {
+      found = CompareIterator::valueEqual(loc,
+                                          lSequenceItem,
+                                          searchItem,
+                                          typemgr,
+                                          timezone,
+                                          state->theCollator);
+    }
+    catch (error::ZorbaError& e)
+    {
+      if (e.theErrorCode == XPTY0004)
+        found = false;
+      else
+        throw e;
+    }
+
+    if (found)
     {
       STACK_PUSH(GENV_ITEMFACTORY->createInteger(result,
                                                  Integer::parseInt(state->theCurrentPos)),
@@ -201,7 +217,7 @@ FnIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
   }
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 
@@ -278,12 +294,12 @@ bool FnDistinctValuesIterator::nextImpl(
   {
     lCollator = getCollator(theSctx, loc, planState, theChildren[1].getp());
 
-    theValueCompare = new ValueCompareParam(planState.theDynamicContext, theSctx);
+    theValueCompare = new ValueCompareParam(loc, planState.theDynamicContext, theSctx);
     theValueCompare->theCollator = lCollator;
   }
   else
   {
-    theValueCompare = new ValueCompareParam(planState.theDynamicContext, theSctx);
+    theValueCompare = new ValueCompareParam(loc, planState.theDynamicContext, theSctx);
   }
 
   // theValueCompare managed by state->theAlreadySeenMap
@@ -794,7 +810,9 @@ FnExactlyOneIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 ********************************************************************************/
 
 // Forward declaration
-static bool DeepEqual(static_context* sctx,
+static bool DeepEqual(
+    const QueryLoc& loc,
+    static_context* sctx,
     dynamic_context* dctx,
     store::Item_t& item1,
     store::Item_t& item2,
@@ -802,6 +820,7 @@ static bool DeepEqual(static_context* sctx,
 
 
 static bool DeepEqual(
+    const QueryLoc& loc,
     static_context* sctx,
     dynamic_context* dctx,
     store::Iterator_t it1,
@@ -836,14 +855,16 @@ static bool DeepEqual(
       return true;
     else if (!c1Valid || !c2Valid)
       return false;
-    else if (!DeepEqual(sctx, dctx, child1, child2, collator))
+    else if (!DeepEqual(loc, sctx, dctx, child1, child2, collator))
       return false;
   }
 
   return true;
 }
 
+
 static bool DeepEqualAttributes(
+  const QueryLoc& loc,
   static_context* sctx,
   dynamic_context* dctx,
   store::Iterator_t it1,
@@ -862,7 +883,7 @@ static bool DeepEqualAttributes(
     it2->reset();
     bool found = false;
     while (it2->next(child2))
-      if (DeepEqual(sctx, dctx, child1, child2, collator))
+      if (DeepEqual(loc, sctx, dctx, child1, child2, collator))
       {
         found = true;
         break;
@@ -882,7 +903,9 @@ static bool DeepEqualAttributes(
   return true;
 }
 
+
 static bool DeepEqual(
+    const QueryLoc& loc,
     static_context* sctx,
     dynamic_context* dctx,
     store::Item_t& item1,
@@ -930,7 +953,17 @@ static bool DeepEqual(
           item2->getDoubleValue().isNaN())))
       return true;
 
-    return CompareIterator::valueEqual(item1, item2, tm, timezone, collator) > 0;
+    try
+    {
+      return CompareIterator::valueEqual(loc, item1, item2, tm, timezone, collator);
+    }
+    catch (error::ZorbaError& e)
+    {
+      if (e.theErrorCode == XPTY0004)
+        return false;
+      else
+        throw e;
+    }
   }
   else
   {
@@ -947,16 +980,35 @@ static bool DeepEqual(
         break;
 
       case store::StoreConsts::documentNode:
-        return DeepEqual(sctx, dctx, item1->getChildren(), item2->getChildren(), collator, true, false);
+        return DeepEqual(loc,
+                         sctx,
+                         dctx,
+                         item1->getChildren(),
+                         item2->getChildren(),
+                         collator,
+                         true,
+                         false);
         break;
 
       case store::StoreConsts::elementNode:
         if (! item1->getNodeName()->equals(item2->getNodeName()))
           return false;
 
-        return (DeepEqualAttributes(sctx, dctx, item1->getAttributes(), item2->getAttributes(), collator)
+        return (DeepEqualAttributes(loc,
+                                    sctx,
+                                    dctx,
+                                    item1->getAttributes(),
+                                    item2->getAttributes(),
+                                    collator)
                 &&
-                DeepEqual(sctx, dctx, item1->getChildren(), item2->getChildren(), collator, true, true));
+                DeepEqual(loc,
+                          sctx,
+                          dctx,
+                          item1->getChildren(),
+                          item2->getChildren(),
+                          collator,
+                          true,
+                          true));
         break;
 
       case store::StoreConsts::attributeNode:
@@ -970,9 +1022,9 @@ static bool DeepEqual(
         item2->getTypedValue(tvalue2, tvalue2Iter);
 
         if (tvalue1Iter == NULL && tvalue2Iter == NULL)
-          return DeepEqual(sctx, dctx, tvalue1, tvalue2, collator);
+          return DeepEqual(loc, sctx, dctx, tvalue1, tvalue2, collator);
         else if (tvalue1Iter != NULL && tvalue2Iter != NULL)
-          return DeepEqual(sctx, dctx, tvalue1Iter, tvalue2Iter, collator, false, false);
+          return DeepEqual(loc, sctx, dctx, tvalue1Iter, tvalue2Iter, collator, false, false);
         else
           return false;
 
@@ -1052,11 +1104,14 @@ bool FnDeepEqualIterator::nextImpl(
       break;
     }
 
-    if (arg1->isFunction() || arg2->isFunction()) {
-      ZORBA_ERROR_LOC_DESC(FOTY0015, loc, "An argument to fn:deep-equal() contains a function item.");
+    if (arg1->isFunction() || arg2->isFunction()) 
+    {
+      ZORBA_ERROR_LOC_DESC(FOTY0015, loc,
+                           "An argument to fn:deep-equal() contains a function item.");
     }
 
-    equal = equal && DeepEqual(theSctx,
+    equal = equal && DeepEqual(loc,
+                               theSctx,
                                planState.theDynamicContext,
                                arg1,
                                arg2,

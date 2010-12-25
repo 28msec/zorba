@@ -166,10 +166,12 @@ void NonGroupingSpec::close(PlanState& planState)
 
 
 GroupTupleCmp::GroupTupleCmp(
+    const QueryLoc& loc,
     dynamic_context* dctx,
     const TypeManager* tm,
     std::vector<GroupingSpec>* groupingSpecs) 
   :
+  theLocation(loc),
   theGroupingSpecs(groupingSpecs),
   theTypeManager(tm)
 {
@@ -223,13 +225,25 @@ bool GroupTupleCmp::equal(const GroupTuple* t1, const GroupTuple* t2) const
     {
       store::Item_t item1 = *iter1;
       store::Item_t item2 = *iter2;
-      if (CompareIterator::valueEqual(item1,
-                                      item2,
-                                      theTypeManager,
-                                      theTimezone,
-                                      (*theGroupingSpecs)[i].theCollator) != 1)
+
+      try
       {
-        return false;                                 
+        if (!CompareIterator::valueEqual(theLocation,
+                                         item1,
+                                         item2,
+                                         theTypeManager,
+                                         theTimezone,
+                                         (*theGroupingSpecs)[i].theCollator))
+        {
+          return false;                                 
+        }
+      }
+      catch (error::ZorbaError& e)
+      {
+        if (e.theErrorCode == XPTY0004)
+          return false;
+        else
+          throw e;
       }
     }
     
@@ -237,6 +251,7 @@ bool GroupTupleCmp::equal(const GroupTuple* t1, const GroupTuple* t2) const
     ++iter1;
     ++iter2;
   }
+
   return true;
 }
 

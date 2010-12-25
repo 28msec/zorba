@@ -511,13 +511,14 @@ void FlworState::init(
     TypeManager* tm,
     const std::vector<ForLetClause>& forletClauses,
     std::vector<OrderSpec>* orderSpecs,
+    const QueryLoc& groupbyLoc,
     std::vector<GroupingSpec>* groupingSpecs)
 {
   init(planState, forletClauses);
  
   if (groupingSpecs != 0)
   {
-    GroupTupleCmp cmp(planState.theDynamicContext, tm, groupingSpecs);
+    GroupTupleCmp cmp(groupbyLoc, planState.theDynamicContext, tm, groupingSpecs);
     theGroupMap = new GroupHashMap(cmp, 1024, false);
   }
 }
@@ -1243,6 +1244,7 @@ void FLWORIterator::openImpl(PlanState& planState, uint32_t& offset)
                       theSctx->get_typemanager(),
                       theForLetClauses,
                       (theOrderByClause ? &theOrderByClause->theOrderSpecs : NULL),
+                      theGroupByClause->theLocation,
                       &theGroupByClause->theGroupingSpecs); 
     }
     else if (theOrderByClause) 
@@ -1251,6 +1253,7 @@ void FLWORIterator::openImpl(PlanState& planState, uint32_t& offset)
                       theSctx->get_typemanager(),
                       theForLetClauses,
                       &theOrderByClause->theOrderSpecs,
+                      QueryLoc::null,
                       0);
     }
   }

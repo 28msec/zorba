@@ -32,77 +32,22 @@ namespace zorba
 class ValueCompareParam
 {
 public:
-  ValueCompareParam(dynamic_context* dctx, static_context* sctx)
+  ValueCompareParam(
+        const QueryLoc& loc,
+        dynamic_context* dctx,
+        static_context* sctx)
     :
+    theLocation(loc),
     theTypeManager(sctx->get_typemanager()),
     theTimezone(dctx->get_implicit_timezone()),
-    theCollator(sctx->get_default_collator(QueryLoc::null)) 
+    theCollator(sctx->get_default_collator(loc)) 
   {
   }
 
-  TypeManager * theTypeManager;
-  long          theTimezone;
-  XQPCollator * theCollator;
-};
-
-
-/*******************************************************************************
-
-********************************************************************************/
-class ItemValueHandleHashSet 
-{
-public:
-
-  class CompareFunction
-  {
-  private:
-    ValueCompareParam * theCompareParam;
-
-  public:
-    CompareFunction(ValueCompareParam* comp) : theCompareParam(comp) { }
-
-    bool equal(const store::Item_t& item1, const store::Item_t& item2)
-    {
-      store::Item_t t1(item1);
-      store::Item_t t2(item2);
-      return 1 == CompareIterator::valueEqual(t1, t2,
-                                              theCompareParam->theTypeManager,
-                                              theCompareParam->theTimezone,
-                                              theCompareParam->theCollator); 
-    }
-
-    uint32_t hash(const store::Item_t& t)
-    {
-      return t->hash();
-    }
-
-  };
-
-private:
-  ValueCompareParam                      * theCompareParam;
-  CompareFunction                          theCompareFunction;
-  HashSet<store::Item_t, CompareFunction>  theSet;
-
-public:
-  ItemValueHandleHashSet(ValueCompareParam* compParam, ulong size = 1024)
-    :
-    theCompareParam(compParam),
-    theCompareFunction(compParam),
-    theSet(theCompareFunction, size, false) // no sync
-  {
-  }
-
-  ~ItemValueHandleHashSet()
-  {
-    if (theCompareParam)
-      delete theCompareParam; 
-  }
-
-  void clear() { theSet.clear(); }
-
-  bool find(const store::Item_t& key) { return theSet.find(key); }
-
-  bool insert(store::Item_t& key) { return theSet.insert(key); }
+  const QueryLoc & theLocation;
+  TypeManager    * theTypeManager;
+  long             theTimezone;
+  XQPCollator    * theCollator;
 };
 
 
@@ -127,11 +72,12 @@ public:
       assert (item2 != NULL);
       store::Item_t t1(item1);
       store::Item_t t2(item2);
-      return CompareIterator::valueEqual(t1, t2,
+      return CompareIterator::valueEqual(theCompareParam->theLocation,
+                                         t1,
+                                         t2,
                                          theCompareParam->theTypeManager,
                                          theCompareParam->theTimezone,
-                                         theCompareParam->theCollator)
-	     != 0; 
+                                         theCompareParam->theCollator);
     }
 
     uint32_t hash(const store::Item_t& t)

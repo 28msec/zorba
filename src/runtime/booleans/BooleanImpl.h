@@ -182,46 +182,7 @@ public:
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
-  /**
-   * Checks if the two passed items contain the same value (without castings
-   * and promotions which are used in general and value comparison).
-   *
-   * @param item0
-   * @param item1
-   * @param aCollation optional collation parameter (passed as pointer to make
-   *        it possible to be set to 0)
-   * @return  1, if item0 == item1
-   *          0, if item0 != item1
-   *         -2, if it is not possible to compare the values of the passed items
-   */
-  static long equal(
-        const store::Item_t& aItem0,
-        const store::Item_t& aItem1,
-        const TypeManager* typemgr,
-        long timezone,
-        XQPCollator* aCollation);
-
-  /**
-   * Compares two items (without castings and promotions which are used in general
-   * and value comparison).
-   * @param item0
-   * @param item1
-   * @param aCollation optional collation parameter (passed as pointer to make
-   *        it possible to be set to 0)
-   * @return -1, if item0 &lt; item1
-   *          0, if item0 == item1
-   *          1, if item0 &gt; item1
-   *          2, if item0 not equal, not bigger, not smaller item1 (special case
-   *             when an Item has the value NaN)
-   *         -2, if it is not possible to compare the values the two passed items
-   */
-  static long compare(
-        const store::Item_t& aItem0,
-        const store::Item_t& aItem1,
-        const TypeManager* typemgr,
-        long timezone,
-        XQPCollator* aCollation);
-
+public:
   /**
    * Value comparison of the passed two items with the operator
    * which is defined in the CompareIterator object.
@@ -249,7 +210,8 @@ public:
    * @param aCollation optional collation parameter
    * @return 1 (equal), 0 (not equal), -2 (value equal not possible)
    */
-  static long valueEqual(
+  static bool valueEqual(
+        const QueryLoc& loc,
         store::Item_t& aItem0,
         store::Item_t& aItem1,
         const TypeManager* typemgr,
@@ -300,7 +262,8 @@ public:
    * @param aCollation options collation parameter
    * @return 1 (equal), 0 (not equal), -2 (general equal not possible)
    */
-  static long generalEqual(
+  static bool generalEqual(
+        const QueryLoc& loc,
         store::Item_t& aItem0,
         store::Item_t& aItem1,
         const TypeManager* typemgr,
@@ -318,6 +281,46 @@ public:
   static long generalCompare(
         store::Item_t& aItem0,
         store::Item_t& aItem1,
+        const TypeManager* typemgr,
+        long timezone,
+        XQPCollator* aCollation);
+
+  /**
+   * Checks if the two passed items contain the same value (without performing and
+   * castings or promotions on the two items). 
+   *
+   * @param  item0
+   * @param  item1
+   * @param  aCollation optional collation parameter (passed as pointer to make
+   *         it possible to be set to 0)
+   * @return true if the two item are equal; false otherwise.
+   * @throw  XPTY0004 if the two items are not comparable
+   */
+  static bool equal(
+        const QueryLoc& loc,
+        const store::Item_t& aItem0,
+        const store::Item_t& aItem1,
+        const TypeManager* typemgr,
+        long timezone,
+        XQPCollator* aCollation);
+
+  /**
+   * Compares two items (without castings and promotions which are used in general
+   * and value comparison).
+   * @param item0
+   * @param item1
+   * @param aCollation optional collation parameter (passed as pointer to make
+   *        it possible to be set to 0)
+   * @return -1, if item0 &lt; item1
+   *          0, if item0 == item1
+   *          1, if item0 &gt; item1
+   *          2, if item0 not equal, not bigger, not smaller item1 (special case
+   *             when an Item has the value NaN)
+   *         -2, if it is not possible to compare the values the two passed items
+   */
+  static long compare(
+        const store::Item_t& aItem0,
+        const store::Item_t& aItem1,
         const TypeManager* typemgr,
         long timezone,
         XQPCollator* aCollation);

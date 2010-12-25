@@ -51,6 +51,7 @@ public:
   void init(
         PlanState& aState,
         const TypeManager* tm,
+        const QueryLoc& loc,
         std::vector<GroupingSpec>* gspecs);
 
   void reset(PlanState& state);

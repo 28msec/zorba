@@ -203,14 +203,16 @@ public:
 class GroupTupleCmp
 {
 private:
+  const QueryLoc            & theLocation;
   std::vector<GroupingSpec> * theGroupingSpecs;
   const TypeManager         * theTypeManager;
   long                        theTimezone;
 
 public:
-  GroupTupleCmp() : theGroupingSpecs(0), theTypeManager(0), theTimezone(0) {}
+  //GroupTupleCmp() : theGroupingSpecs(0), theTypeManager(0), theTimezone(0) {}
 
   GroupTupleCmp(
+        const QueryLoc& loc,
         dynamic_context* dctx,
         const TypeManager* tm,
         std::vector<GroupingSpec>* groupSpecs);

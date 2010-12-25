@@ -422,9 +422,19 @@ public:
    * should keep the default (error) implementation of these methods.
    */
 
+  /**
+   * If isValidated() is invoked on some item, it returns true if markValidated()
+   * has been called before on the root of the tree where the item belongs to,
+   * otherwise it returns false. Notice that validation is not done by the store, 
+   * so the store itself cannot invoke the markValidated() method; it has to be
+   * invoked by the "user" of the store.
+   */
   virtual bool
   isValidated() const;
 
+  /**
+   * Mark the item as validated.
+   */
   virtual void
   markValidated();
 

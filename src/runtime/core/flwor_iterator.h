@@ -310,6 +310,7 @@ public:
         TypeManager* tm,
         const std::vector<ForLetClause>& forletClauses,
         std::vector<OrderSpec>* orderSpecs,
+        const QueryLoc& groupbyLoc,
         std::vector<GroupingSpec>* groupingSpecs);
   
   void reset(PlanState&);

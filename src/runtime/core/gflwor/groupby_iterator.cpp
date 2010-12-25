@@ -80,11 +80,12 @@ GroupByState::~GroupByState()
 void GroupByState::init(
     PlanState& aState,
     const TypeManager* tm,
+    const QueryLoc& loc,
     std::vector<GroupingSpec>* gspecs) 
 {
   PlanIteratorState::init(aState);
 
-  GroupTupleCmp cmp(aState.theDynamicContext, tm, gspecs);
+  GroupTupleCmp cmp(loc, aState.theDynamicContext, tm, gspecs);
   theGroupMap = new GroupHashMap(cmp, 1024, false);
 }
 
@@ -224,7 +225,7 @@ void GroupByIterator::openImpl(PlanState& planState, uint32_t& aOffset)
   GroupByState* state = StateTraitsImpl<GroupByState>::getState(planState,
                                                                 theStateOffset);
       
-  state->init(planState, theSctx->get_typemanager(), &theGroupingSpecs); 
+  state->init(planState, theSctx->get_typemanager(), loc, &theGroupingSpecs); 
       
   theTupleIter->open(planState, aOffset);
 

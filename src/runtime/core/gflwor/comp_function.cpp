@@ -70,7 +70,7 @@ long SortTupleCmp::compare(
   if (empty_item(item1))
   {
     if (empty_item(item2))
-      return descAsc(0, desc);
+      return 0;
     else
       return descAsc(emptyLeast ? -1 : 1, desc);
   }
@@ -93,17 +93,18 @@ long SortTupleCmp::compare(
       store::Item_t ls1(item1);
       store::Item_t ls2(item2);
       result = CompareIterator::valueCompare(ls1,
-                                              ls2,
-                                              theTypeManager,
-                                              theTimezone,
-                                              collator);
+                                             ls2,
+                                             theTypeManager,
+                                             theTimezone,
+                                             collator);
     }
 
     if (result > 1 || result < -1) 
     {
-      ZORBA_ERROR_DESC( XPTY0004, "Non-comparable types found while sorting" );
+      ZORBA_ERROR_DESC(XPTY0004, "Non-comparable types found while sorting" );
     }
-    return descAsc (result , desc);
+
+    return descAsc(result , desc);
   }
 }
   

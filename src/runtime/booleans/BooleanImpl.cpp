@@ -405,21 +405,11 @@ bool CompareIterator::valueComparison(
   {
   case CompareConsts::VALUE_EQUAL:
   {
-    compValue = valueEqual(aItem0, aItem1, typemgr, timezone, aCollation);
-
-    if (compValue >= 0)
-      return compValue != 0;
-
-    break;
+    return valueEqual(loc, aItem0, aItem1, typemgr, timezone, aCollation);
   }
   case CompareConsts::VALUE_NOT_EQUAL:
   {
-    compValue = valueEqual(aItem0, aItem1, typemgr, timezone, aCollation);
-
-    if (compValue >= 0)
-      return (compValue > 0 ? false : true);
-
-    break;
+    return ! valueEqual(loc, aItem0, aItem1, typemgr, timezone, aCollation);
   }
   case CompareConsts::VALUE_GREATER:
   {
@@ -455,7 +445,8 @@ bool CompareIterator::valueComparison(
     break;
   }
   default:
-  {    ZORBA_ASSERT(false);
+  {
+    ZORBA_ASSERT(false);
   }
   }
 
@@ -464,7 +455,8 @@ bool CompareIterator::valueComparison(
 }
 
 
-long CompareIterator::valueEqual(
+bool CompareIterator::valueEqual(
+    const QueryLoc& loc,
     store::Item_t& aItem0,
     store::Item_t& aItem1,
     const TypeManager* typemgr,
@@ -473,7 +465,7 @@ long CompareIterator::valueEqual(
 {
   store::Item_t castItem0, castItem1;
   valueCasting(typemgr, aItem0, aItem1, castItem0, castItem1);
-  return equal(castItem0, castItem1, typemgr, timezone, aCollation);
+  return equal(loc, castItem0, castItem1, typemgr, timezone, aCollation);
 }
 
 
@@ -556,21 +548,11 @@ bool CompareIterator::generalComparison(
   {
   case CompareConsts::GENERAL_EQUAL:
   {
-    compValue = generalEqual(aItem0, aItem1, typemgr, timezone, aCollation);
-
-    if (compValue >= 0)
-      return compValue != 0;
-
-    break;
+    return generalEqual(loc, aItem0, aItem1, typemgr, timezone, aCollation);
   }
   case CompareConsts::GENERAL_NOT_EQUAL:
   {
-    compValue = generalEqual(aItem0, aItem1, typemgr, timezone, aCollation);
-
-    if (compValue >= 0)
-      return (compValue > 0 ? false : true);
-
-    break;
+    return !generalEqual(loc, aItem0, aItem1, typemgr, timezone, aCollation);
   }
   case CompareConsts::GENERAL_GREATER:
   {
@@ -619,7 +601,8 @@ bool CompareIterator::generalComparison(
 }
 
 
-long CompareIterator::generalEqual(
+bool CompareIterator::generalEqual(
+    const QueryLoc& loc,
     store::Item_t& aItem0,
     store::Item_t& aItem1,
     const TypeManager* typemgr,
@@ -628,7 +611,7 @@ long CompareIterator::generalEqual(
 {
   store::Item_t castItem0, castItem1;
   generalCasting(typemgr, aItem0, aItem1, castItem0, castItem1);
-  return equal(castItem0, castItem1, typemgr, timezone, aCollation);
+  return equal(loc, castItem0, castItem1, typemgr, timezone, aCollation);
 }
 
 
@@ -711,9 +694,18 @@ void CompareIterator::generalCasting(
 
 
 /*******************************************************************************
+  Checks if the two passed items contain the same value (without performing and
+  castings or promotions on the two items). 
 
+  @param  item0
+  @param  item1
+  @param  aCollation optional collation parameter (passed as pointer to make
+          it possible to be set to 0)
+  @return true if the two item are equal; false otherwise.
+  @throw  XPTY0004 if the two items are not comparable 
 ********************************************************************************/
-long CompareIterator::equal(
+bool CompareIterator::equal(
+    const QueryLoc& loc,
     const store::Item_t& aItem0,
     const store::Item_t& aItem1,
     const TypeManager* tm,
@@ -723,53 +715,45 @@ long CompareIterator::equal(
   xqtref_t type0 = tm->create_value_type(aItem0.getp());
   xqtref_t type1 = tm->create_value_type(aItem1.getp());
 
-  try
+  if (TypeOps::is_subtype(tm, *type0, *type1))
   {
-    if (TypeOps::is_subtype(tm, *type0, *type1))
-    {
-      return (aItem1->equals(aItem0, timezone, aCollation) ? 1 : 0);
-    }
-    else if (TypeOps::is_subtype(tm, *type1, *type0))
-    {
-      return (aItem0->equals(aItem1, timezone, aCollation) ? 1 : 0);
-    }
-    else
-    {
-      // There are 2 cases when two types are comparable without one being a
-      // subtype of the other: (a) they belong to different branches under of
-      // the type-inheritance subtree rooted at xs:Integer, (b) they belong to
-      // different branches under of the type-inheritance subtree rooted at
-      // xs::duration (i.e. one is xs:yearMonthDuration and the other is
-      // xs:dayTimeDuration).
-      // The same case happens when there are two types derived from xs:NOTATION.
-      //
-      if (TypeOps::is_subtype(tm, *type0, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE) &&
-          TypeOps::is_subtype(tm, *type1, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE))
-      {
-        return (aItem0->getIntegerValue() == aItem1->getIntegerValue() ? 1 : 0);
-      }
-      else if (TypeOps::is_subtype(tm, *type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE) &&
-               TypeOps::is_subtype(tm, *type1, *GENV_TYPESYSTEM.DURATION_TYPE_ONE))
-      {
-        return (aItem0->getDurationValue() == aItem1->getDurationValue() ? 1 : 0);
-      }
-      else if (TypeOps::is_subtype(tm, *type0, *GENV_TYPESYSTEM.NOTATION_TYPE_ONE) &&
-               TypeOps::is_subtype(tm, *type1, *GENV_TYPESYSTEM.NOTATION_TYPE_ONE))
-      {
-        return aItem0->equals(aItem1);
-      }
-      else
-      {
-        return -2;
-      }
-    }
+    return aItem1->equals(aItem0, timezone, aCollation);
   }
-  catch(error::ZorbaError& e)
+  else if (TypeOps::is_subtype(tm, *type1, *type0))
   {
-    if (e.theErrorCode == STR0040_TYPE_ERROR)
-      return -2;
+    return aItem0->equals(aItem1, timezone, aCollation);
+  }
+  else
+  {
+    // There are 2 cases when two types are comparable without one being a
+    // subtype of the other: (a) they belong to different branches under of
+    // the type-inheritance subtree rooted at xs:Integer, (b) they belong to
+    // different branches under of the type-inheritance subtree rooted at
+    // xs::duration (i.e. one is xs:yearMonthDuration and the other is
+    // xs:dayTimeDuration).
+    // The same case happens when there are two types derived from xs:NOTATION.
+    if (TypeOps::is_subtype(tm, *type0, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE) &&
+        TypeOps::is_subtype(tm, *type1, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE))
+    {
+      return (aItem0->getIntegerValue() == aItem1->getIntegerValue());
+    }
+    else if (TypeOps::is_subtype(tm, *type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE) &&
+             TypeOps::is_subtype(tm, *type1, *GENV_TYPESYSTEM.DURATION_TYPE_ONE))
+    {
+      return (aItem0->getDurationValue() == aItem1->getDurationValue());
+    }
+    else if (TypeOps::is_subtype(tm, *type0, *GENV_TYPESYSTEM.NOTATION_TYPE_ONE) &&
+             TypeOps::is_subtype(tm, *type1, *GENV_TYPESYSTEM.NOTATION_TYPE_ONE))
+    {
+      return aItem0->equals(aItem1);
+    }
     else
-      throw e;
+    {
+      ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, loc,
+                               "Cannot compare for equality an item of type "
+                               << type0->toString() << " with an item of type "
+                               << type1->toString());
+    }
   }
 }
 
@@ -824,6 +808,7 @@ long CompareIterator::compare(
   }
   catch(error::ZorbaError& e)
   {
+    // For example, two QName items do not have an order relationship.
     if (e.theErrorCode == STR0040_TYPE_ERROR)
       return -2;
     else
@@ -1027,12 +1012,29 @@ bool AtomicValuesEquivalenceIterator::nextImpl(
     }
     else
     {
-      are_equivalent = (1 == CompareIterator::valueEqual(lItem0, lItem1, theTypeManager, theTimezone, theCollation));
-      STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, are_equivalent), state);
+      try
+      {
+        are_equivalent = CompareIterator::valueEqual(loc,
+                                                     lItem0,
+                                                     lItem1,
+                                                     theTypeManager,
+                                                     theTimezone,
+                                                     theCollation);
+      }
+      catch (error::ZorbaError& e)
+      {
+        if (e.theErrorCode == XPTY0004)
+          are_equivalent = false;
+        else
+          throw e;
+      }
+
+      STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, are_equivalent),
+                 state);
     }
   }
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 

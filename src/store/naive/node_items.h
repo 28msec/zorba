@@ -493,7 +493,11 @@ public:
 
   bool isValidated() const { return getTree()->isValidated(); }
 
-  void markValidated() { getTree()->markValidated(); }
+  void markValidated() 
+  {
+    assert(theParent == NULL);
+    getTree()->markValidated();
+  }
 
   virtual void finalizeNode() { return; }
 
