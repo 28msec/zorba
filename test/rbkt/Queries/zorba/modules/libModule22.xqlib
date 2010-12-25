@@ -1,0 +1,15 @@
+module namespace def = "http://www.david.ch/default";
+
+import schema namespace http="http://www.28msec.com/modules/http" at "schema2.xsd";
+
+declare function def:test($x as schema-element(http:cookie)) {
+  $x
+};
+
+declare function def:invoke($x) {
+  def:test(
+    validate {
+      $x
+    }
+  )
+};

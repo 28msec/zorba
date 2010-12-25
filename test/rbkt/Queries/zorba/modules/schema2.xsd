@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:http="http://www.28msec.com/modules/http" 
+           targetNamespace="http://www.28msec.com/modules/http"    
+           elementFormDefault="qualified" >
+
+  <xs:simpleType name="cookieString">
+    <xs:restriction base="xs:string">
+      <xs:pattern value='[^;,%"= \t\n\r{}]*'/>
+    </xs:restriction>
+  </xs:simpleType>
+
+ <xs:element name="cookie">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="david" type="xs:string" />
+      </xs:sequence>
+      <xs:attribute name="name" type="cookieString" />
+      <xs:attribute name="expires" type="xs:dateTime" />
+      <xs:attribute name="domain" type="xs:string" />
+      <xs:attribute name="path" type="xs:string" />
+      <xs:attribute name="secure" type="xs:boolean" />
+    </xs:complexType>
+  </xs:element>  
+
+  
+</xs:schema>
+
+
