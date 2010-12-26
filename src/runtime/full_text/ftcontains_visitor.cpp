@@ -100,7 +100,7 @@ inline void pop_helper( char const *what, int line ) {
   } while (0)
 
 #define POP(WHAT) \
-  ( pop_helper( #WHAT, __LINE__ ), pop_stack( WHAT##_stack_ )
+  ( pop_helper( #WHAT, __LINE__ ), pop_stack( WHAT##_stack_ ) )
 
 #else /* NDEBUG */
 
