@@ -1,3 +1,7 @@
+(:Parse a text file with fixed size columns
+The text file is taken from http://data.gov.
+:)
+
 import module namespace zorba-csv = "http://www.zorba-xquery.com/modules/csv";
 import module namespace file="http://www.zorba-xquery.com/modules/file";
 
@@ -95,4 +99,192 @@ zorba-csv:parse(file:read-text(fn:resolve-uri("pusum02a.txt")),
 </options>
 
 )                 
-                    
+         
+		 
+		 
+(:
+<b>Input</b>:
+
+AK    643786    643786    643786   85   17    2      69.20     116.76     203.55      320.31   21262139     909265     917565    1049824    24138793   11073742    3840140   14913882    2862282    5624872    23401036    1639283    2272159      87252     111849       7013     144446    2823241     351481    3726988   24945   29966  1294603   130525     223785     706700       5615   329   459    1395707/200106/200202200308 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 0 1 1 0 1 1 1 0 0 1 0 0 0 
+AL   4447100   4447100   4447100  206   76   17     247.72     654.64     940.98     1595.62   60530598    4240026     465982    5822386    71058992   37040130    8116560   45156690   10066006   14525722    69748418   17136487    8913046     300832     272135      15666     582025   13226499    3219055   17049279   33696   44092  5710811   639360     258283    1315744      10105  1344  1704    4894910/200109/200201200305 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1 1 0 1 1 1 1 0 0 1 0 0 0 1 0 0 0 
+
+
+<b>Output:</b>
+
+<row>
+  <column>AK</column>
+  <column>643786</column>
+  <column>643786</column>
+  <column>643786</column>
+  <column>85</column>
+  <column>17</column>
+  <column>2</column>
+  <column>69.20</column>
+  <column>116.76</column>
+  <column>203.55</column>
+  <column>320.31</column>
+  <column>21262139</column>
+  <column>909265</column>
+  <column>917565</column>
+  <column>1049824</column>
+  <column>24138793</column>
+  <column>11073742</column>
+  <column>3840140</column>
+  <column>14913882</column>
+  <column>2862282</column>
+  <column>5624872</column>
+  <column>23401036</column>
+  <column>1639283</column>
+  <column>2272159</column>
+  <column>87252</column>
+  <column>111849</column>
+  <column>7013</column>
+  <column>144446</column>
+  <column>2823241</column>
+  <column>351481</column>
+  <column>3726988</column>
+  <column>24945</column>
+  <column>29966</column>
+  <column>1294603</column>
+  <column>130525</column>
+  <column>223785</column>
+  <column>706700</column>
+  <column>5615</column>
+  <column>329</column>
+  <column>459</column>
+  <column>13957</column>
+  <column>07/2001</column>
+  <column>06/2002</column>
+  <column>02200308</column>
+  <column>0</column>
+  <column>0</column>
+  <column>0</column>
+  <column>0</column>
+  <column>0</column>
+  <column>0</column>
+  <column>0</column>
+  <column>0</column>
+  <column>0</column>
+  <column>0</column>
+  <column>0</column>
+  <column>0</column>
+  <column>0</column>
+  <column>1</column>
+  <column>1</column>
+  <column>1</column>
+  <column>1</column>
+  <column>1</column>
+  <column>1</column>
+  <column>1</column>
+  <column>1</column>
+  <column>1</column>
+  <column>1</column>
+  <column>1</column>
+  <column>1</column>
+  <column>1</column>
+  <column>1</column>
+  <column>1</column>
+  <column>0</column>
+  <column>0</column>
+  <column>1</column>
+  <column>1</column>
+  <column>0</column>
+  <column>1</column>
+  <column>1</column>
+  <column>1</column>
+  <column>0</column>
+  <column>0</column>
+  <column>1</column>
+  <column>0</column>
+  <column>0</column>
+  <column>0</column>
+</row><row>
+  <column>AL</column>
+  <column>4447100</column>
+  <column>4447100</column>
+  <column>4447100</column>
+  <column>206</column>
+  <column>76</column>
+  <column>17</column>
+  <column>247.72</column>
+  <column>654.64</column>
+  <column>940.98</column>
+  <column>1595.62</column>
+  <column>60530598</column>
+  <column>4240026</column>
+  <column>465982</column>
+  <column>5822386</column>
+  <column>71058992</column>
+  <column>37040130</column>
+  <column>8116560</column>
+  <column>45156690</column>
+  <column>10066006</column>
+  <column>14525722</column>
+  <column>69748418</column>
+  <column>17136487</column>
+  <column>8913046</column>
+  <column>300832</column>
+  <column>272135</column>
+  <column>15666</column>
+  <column>582025</column>
+  <column>13226499</column>
+  <column>3219055</column>
+  <column>17049279</column>
+  <column>33696</column>
+  <column>44092</column>
+  <column>5710811</column>
+  <column>639360</column>
+  <column>258283</column>
+  <column>1315744</column>
+  <column>10105</column>
+  <column>1344</column>
+  <column>1704</column>
+  <column>48949</column>
+  <column>10/2001</column>
+  <column>09/2002</column>
+  <column>01200305</column>
+  <column>0</column>
+  <column>0</column>
+  <column>0</column>
+  <column>0</column>
+  <column>0</column>
+  <column>0</column>
+  <column>0</column>
+  <column>0</column>
+  <column>0</column>
+  <column>0</column>
+  <column>0</column>
+  <column>0</column>
+  <column>0</column>
+  <column>0</column>
+  <column>1</column>
+  <column>0</column>
+  <column>0</column>
+  <column>0</column>
+  <column>0</column>
+  <column>0</column>
+  <column>0</column>
+  <column>0</column>
+  <column>0</column>
+  <column>0</column>
+  <column>0</column>
+  <column>1</column>
+  <column>1</column>
+  <column>0</column>
+  <column>1</column>
+  <column>1</column>
+  <column>1</column>
+  <column>1</column>
+  <column>0</column>
+  <column>0</column>
+  <column>1</column>
+  <column>0</column>
+  <column>0</column>
+  <column>0</column>
+  <column>1</column>
+  <column>0</column>
+  <column>0</column>
+  <column>0</column>
+</row>
+
+:)           

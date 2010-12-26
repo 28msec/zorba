@@ -39,7 +39,7 @@ declare variable $zorba-csv:errWrongParam as xs:QName := fn:QName($zorba-csv:csv
 
 (:~
  : Parse a CSV or fixed size text and convert to XML.<br/>
- : By default each line iw converted to a &lt;row> element, and each field to a &lt;column> element inside &lt;row>.<br/>
+ : By default each line is converted to a &lt;row> element, and each field to a &lt;column> element inside &lt;row>.<br/>
  : @param $csv the string containing the csv or fixed size text.
  : @param $options having format<br/>
  :    &lt;options><br/>
@@ -195,7 +195,7 @@ declare function zorba-csv:parse($csv as xs:string,
  : Convert XML into CSV or fixed size text.<br/>
  : Note: if you want to serialize out the result, make sure that the serializer method is set to Text. 
  :  For example, in zorba app, you have to set the param --serialize-text. 
- :  When using file:write function, you have to set the serialization option <method>text</method>.<br/>
+ :  When using file:write function, you have to set the serialization option &lt;method>text&lt;/method>.<br/>
  :
  : @param $xml a sequence of elements, each element representing a row. The name of each row element is ignored.
  :     The childs of each row are the column fields.
@@ -274,7 +274,7 @@ declare function zorba-csv:parse($csv as xs:string,
  :        <b>Subheaders</b><br/>
  :        If the row-column hierarchy is more complex, then subheaders are also generated on subsequent lines.
  :        The number of subheaders depends on the depth of the column hierarchy.<br/>
- :        When generating the subheaders, the non-whitespace text node are also taken into account, 
+ :        When generating the subheaders, the non-whitespace text nodes are also taken into account, 
  :        and a separate column is generated for them too.<br/>
  :        For example, the xml row element:<br/>
  :        <i>&lt;row><br/>

@@ -1,4 +1,4 @@
-(: xml-to-csv example with 2 rows :)
+(: Serialize a sequence of two nodes into two lines of csv :)
 
 import module namespace zorba-csv = "http://www.zorba-xquery.com/modules/csv";
 
@@ -16,3 +16,12 @@ zorba-csv:serialize(
     <f4>value14</f4>
   </row>), 
   ())
+
+(:
+<b>Output:</b>
+
+<?xml version="1.0" encoding="UTF-8"?>
+value1,value2,value3,value4
+value11,value12,value13,value14
+
+:)

@@ -1,4 +1,9 @@
-(: xml-to-txt example with 2 rows :)
+(: Serialize some nodes to text with fixed size columns.
+The first line is the header.
+Note that the last xml node doesn't have the same elements as the first node, 
+so it is ignored.
+Also note the truncation of fields.
+ :)
 
 import module namespace zorba-csv = "http://www.zorba-xquery.com/modules/csv";
 
@@ -33,4 +38,13 @@ zorba-csv:serialize(
   </column-widths>
 </options>   
 )
+
+(:
+<b>Output:</b>
+
+f1        f2     f3        f4     
+value1    "value2value3&,vavalue4 
+value11   value12value13   value14
+
+:)
   

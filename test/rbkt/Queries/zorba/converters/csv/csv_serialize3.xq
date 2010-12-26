@@ -1,3 +1,4 @@
+(: Serialize xml nodes to csv, with header and escaping some fields. :)
 import module namespace zorba-csv = "http://www.zorba-xquery.com/modules/csv";
 
 zorba-csv:serialize(
@@ -27,3 +28,15 @@ zorba-csv:serialize(
        quote-escape="&quot;&quot;"/>
 </options>
 )
+
+
+
+(:
+<b>Output:</b>
+
+<?xml version="1.0" encoding="UTF-8"?>
+f1,f2,f3,f4
+value1,"""value2""","value3,value33",value4
+value11,value12,value13,value14
+
+:)

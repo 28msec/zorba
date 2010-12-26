@@ -1,3 +1,7 @@
+(: Serialize xml to csv and then parse it back.
+Note that the last node has element names that do not correpond to the header names taken from the first node,
+so it is not processed.
+:)
 import module namespace zorba-csv = "http://www.zorba-xquery.com/modules/csv";
 
 
@@ -31,3 +35,29 @@ zorba-csv:serialize(
 </row3>),
 $options),
 $options)
+
+
+(:
+<b>Intermediate serialize output:</b>
+
+<?xml version="1.0" encoding="UTF-8"?>
+f1,f2,f3,f4
+value1,"""value2""","value3,value33",value4
+value11,value12,value13,value14
+
+<b>Final parse output:</b>
+
+<?xml version="1.0" encoding="UTF-8"?>
+<row>
+  <f1>value1</f1>
+  <f2>"value2"</f2>
+  <f3>value3,value33</f3>
+  <f4>value4</f4>
+</row><row>
+  <f1>value11</f1>
+  <f2>value12</f2>
+  <f3>value13</f3>
+  <f4>value14</f4>
+</row>
+
+:)
