@@ -402,7 +402,31 @@ private:
   ftwild_card_option_t wild_card_option_;
 };
 
-////////// FTPrimary //////////////////////////////////////////////////////////
+////////// Miscellaneous //////////////////////////////////////////////////////
+
+class ftweight : public ftnode {
+public:
+  SERIALIZABLE_CLASS(ftweight)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftweight,ftnode)
+  void serialize( serialization::Archiver& );
+
+  ftweight( QueryLoc const&, expr_t const &weight_expr );
+
+  ft_visit_result::type accept( ftnode_visitor& );
+  expr_t& get_weight_expr() { return weight_expr_; }
+  PlanIter_t get_weight_iter() const { return weight_iter_; }
+  std::ostream& put( std::ostream& ) const;
+
+  void set_weight_iter( PlanIter_t const &iter ) {
+    weight_iter_ = iter;
+  }
+
+private:
+  expr_t weight_expr_;
+  PlanIter_t weight_iter_;
+};
+
+////////// FTPrimary & FTSelection ////////////////////////////////////////////
 
 class ftprimary : public ftnode {
 public:
@@ -414,6 +438,43 @@ public:
 
 protected:
   ftprimary( QueryLoc const &loc ) : ftnode( loc ) { }
+};
+
+
+class ftprimary_with_options : public ftnode {
+public:
+  SERIALIZABLE_CLASS(ftprimary_with_options)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftprimary_with_options,ftnode)
+  void serialize( serialization::Archiver& );
+
+  ftprimary_with_options( QueryLoc const& );
+  ~ftprimary_with_options();
+
+  ft_visit_result::type accept( ftnode_visitor& );
+  ftprimary const* get_primary() const { return primary_; }
+  ftweight* get_weight() { return weight_; }
+  ftmatch_options const* get_match_options() const { return match_options_; }
+  std::ostream& put( std::ostream& ) const;
+
+  void set_match_options( ftmatch_options *o ) {
+    delete match_options_;
+    match_options_ = o;
+  }
+
+  void set_primary( ftprimary *p ) {
+    delete primary_;
+    primary_ = p;
+  }
+
+  void set_weight( ftweight *weight ) {
+    delete weight_;
+    weight_ = weight;
+  }
+
+private:
+  ftprimary *primary_;
+  ftmatch_options *match_options_;
+  ftweight *weight_;
 };
 
 
@@ -593,7 +654,7 @@ private:
   PlanIter_t window_iter_;
 };
 
-///////////////////////////////////////////////////////////////////////////////
+////////// Boolean operators //////////////////////////////////////////////////
 
 class ftand : public ftnode {
 public:
@@ -658,64 +719,24 @@ private:
 };
 
 
-class ftweight : public ftnode {
+class ftunary_not : public ftnode {
 public:
-  SERIALIZABLE_CLASS(ftweight)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftweight,ftnode)
+  SERIALIZABLE_CLASS(ftunary_not)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftunary_not,ftnode)
   void serialize( serialization::Archiver& );
 
-  ftweight( QueryLoc const&, expr_t const &weight_expr );
+  ftunary_not( QueryLoc const&, ftnode *subnode );
+  ~ftunary_not();
 
   ft_visit_result::type accept( ftnode_visitor& );
-  expr_t& get_weight_expr() { return weight_expr_; }
-  PlanIter_t get_weight_iter() const { return weight_iter_; }
+  ftnode const* get_subnode() const { return subnode_; }
   std::ostream& put( std::ostream& ) const;
 
-  void set_weight_iter( PlanIter_t const &iter ) {
-    weight_iter_ = iter;
-  }
-
 private:
-  expr_t weight_expr_;
-  PlanIter_t weight_iter_;
+  ftnode *subnode_;
 };
 
-class ftprimary_with_options : public ftnode {
-public:
-  SERIALIZABLE_CLASS(ftprimary_with_options)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftprimary_with_options,ftnode)
-  void serialize( serialization::Archiver& );
-
-  ftprimary_with_options( QueryLoc const& );
-  ~ftprimary_with_options();
-
-  ft_visit_result::type accept( ftnode_visitor& );
-  ftprimary const* get_primary() const { return primary_; }
-  ftweight* get_weight() { return weight_; }
-  ftmatch_options const* get_match_options() const { return match_options_; }
-  std::ostream& put( std::ostream& ) const;
-
-  void set_match_options( ftmatch_options *o ) {
-    delete match_options_;
-    match_options_ = o;
-  }
-
-  void set_primary( ftprimary *p ) {
-    delete primary_;
-    primary_ = p;
-  }
-
-  void set_weight( ftweight *weight ) {
-    delete weight_;
-    weight_ = weight;
-  }
-
-private:
-  ftprimary *primary_;
-  ftmatch_options *match_options_;
-  ftweight *weight_;
-};
-
+////////// Miscellaneous //////////////////////////////////////////////////////
 
 class ftrange : public ftnode {
 public:
@@ -749,24 +770,6 @@ private:
   expr_t expr2_;
   PlanIter_t iter1_;
   PlanIter_t iter2_;
-};
-
-
-class ftunary_not : public ftnode {
-public:
-  SERIALIZABLE_CLASS(ftunary_not)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftunary_not,ftnode)
-  void serialize( serialization::Archiver& );
-
-  ftunary_not( QueryLoc const&, ftnode *subnode );
-  ~ftunary_not();
-
-  ft_visit_result::type accept( ftnode_visitor& );
-  ftnode const* get_subnode() const { return subnode_; }
-  std::ostream& put( std::ostream& ) const;
-
-private:
-  ftnode *subnode_;
 };
 
 
