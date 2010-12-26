@@ -656,66 +656,66 @@ private:
 
 ////////// Boolean operators //////////////////////////////////////////////////
 
-class ftand : public ftnode {
+/**
+ * This is an abstract base class for nodes that have a list of child nodes,
+ * currently ftand, ftmild_not, and ftor.
+ */
+class ftnode_list : public ftnode {
+public:
+  SERIALIZABLE_ABSTRACT_CLASS(ftnode_list)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftnode_list,ftnode)
+  void serialize( serialization::Archiver& );
+
+  typedef std::list<ftnode*> ftnode_list_t;
+
+  ~ftnode_list();
+
+  ftnode_list_t& get_node_list() { return list_; }
+  ftnode_list_t const& get_node_list() const { return list_; }
+
+protected:
+  ftnode_list( QueryLoc const &loc, ftnode_list_t& );
+
+private:
+  ftnode_list_t list_;
+};
+
+class ftand : public ftnode_list {
 public:
   SERIALIZABLE_CLASS(ftand)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftand,ftnode)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftand,ftnode_list)
   void serialize( serialization::Archiver& );
-
-  typedef std::list<ftnode*> ftnode_list_t;
 
   ftand( QueryLoc const&, ftnode_list_t& );
-  ~ftand();
 
   ft_visit_result::type accept( ftnode_visitor& );
-  ftnode_list_t& get_node_list() { return list_; }
-  ftnode_list_t const& get_node_list() const { return list_; }
   std::ostream& put( std::ostream& ) const;
-
-private:
-  ftnode_list_t list_;
 };
 
 
-class ftmild_not : public ftnode {
+class ftmild_not : public ftnode_list {
 public:
   SERIALIZABLE_CLASS(ftmild_not)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftmild_not,ftnode)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftmild_not,ftnode_list)
   void serialize( serialization::Archiver& );
 
-  typedef std::list<ftnode*> ftnode_list_t;
-
   ftmild_not( QueryLoc const&, ftnode_list_t& );
-  ~ftmild_not();
 
   ft_visit_result::type accept( ftnode_visitor& );
-  ftnode_list_t& get_node_list() { return list_; }
-  ftnode_list_t const& get_node_list() const { return list_; }
   std::ostream& put( std::ostream& ) const;
-
-private:
-  ftnode_list_t list_;
 };
 
 
-class ftor : public ftnode {
+class ftor : public ftnode_list {
 public:
   SERIALIZABLE_CLASS(ftor)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftor,ftnode)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftor,ftnode_list)
   void serialize( serialization::Archiver& );
 
-  typedef std::list<ftnode*> ftnode_list_t;
-
   ftor( QueryLoc const&, ftnode_list_t& );
-  ~ftor();
 
   ft_visit_result::type accept( ftnode_visitor& );
-  ftnode_list_t& get_node_list() { return list_; }
-  ftnode_list_t const& get_node_list() const { return list_; }
   std::ostream& put( std::ostream& ) const;
-
-private:
-  ftnode_list_t list_;
 };
 
 

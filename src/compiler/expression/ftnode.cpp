@@ -28,6 +28,8 @@
 using namespace std;
 
 namespace zorba {
+
+///////////////////////////////////////////////////////////////////////////////
   
 SERIALIZABLE_CLASS_VERSIONS(ftand)
 END_SERIALIZABLE_CLASS_VERSIONS(ftand)
@@ -64,6 +66,9 @@ END_SERIALIZABLE_CLASS_VERSIONS(ftmild_not)
 
 SERIALIZABLE_CLASS_VERSIONS(ftnode)
 END_SERIALIZABLE_CLASS_VERSIONS(ftnode)
+
+SERIALIZABLE_CLASS_VERSIONS(ftnode_list)
+END_SERIALIZABLE_CLASS_VERSIONS(ftnode_list)
 
 SERIALIZABLE_CLASS_VERSIONS(ftor)
 END_SERIALIZABLE_CLASS_VERSIONS(ftor)
@@ -152,7 +157,7 @@ END_SERIALIZABLE_CLASS_VERSIONS(ftwords_times)
         ++i )                                 \
     ACCEPT( *i, V );
 
-////////// put() macros ///////////////////////////////////////////////////////
+////////// PUT() macros ///////////////////////////////////////////////////////
 
 #define PUT(OS)                     OS << indent
 #define BEGIN_PUT(OS,LABEL)         PUT(OS) << #LABEL
@@ -189,34 +194,25 @@ void ftnode::serialize( serialization::Archiver &ar ) {
   ar & loc_;
 }
 
-ftand::ftand(
-  QueryLoc const &loc,
-  ftnode_list_t &list
-) :
-  ftnode( loc )
+ftand::ftand( QueryLoc const &loc, ftnode_list_t &list ) :
+  ftnode_list( loc, list )
 {
-  list_.swap( list );
-}
-
-ftand::~ftand() {
-  delete_ptr_seq( list_ );
 }
 
 ft_visit_result::type ftand::accept( ftnode_visitor &v ) {
   BEGIN_VISIT( v );
-  ACCEPT_SEQ( ftnode_list_t, list_, v );
+  ACCEPT_SEQ( ftnode_list_t, get_node_list(), v );
   END_VISIT( v );
 }
 
 ostream& ftand::put( ostream &o ) const {
   BEGIN_INDENT_PUT( o, ftand );
-  PUT_SEQ( o, ftnode_list_t, list_ );
+  PUT_SEQ( o, ftnode_list_t, get_node_list() );
   OUTDENT_END_PUT( o );
 }
 
 void ftand::serialize( serialization::Archiver &ar ) {
-  serialize_baseclass( ar, (ftnode*)this );
-  ar & list_;
+  serialize_baseclass( ar, (ftnode_list*)this );
 }
 
 ftcase_option::ftcase_option(
@@ -485,57 +481,60 @@ void ftmatch_options::set_missing_defaults() {
 }
 
 ftmild_not::ftmild_not( QueryLoc const &loc, ftnode_list_t &list ) :
-  ftnode( loc )
+  ftnode_list( loc, list )
 {
-  list_.swap( list );
-}
-
-ftmild_not::~ftmild_not() {
-  delete_ptr_seq( list_ );
 }
 
 ft_visit_result::type ftmild_not::accept( ftnode_visitor &v ) {
   BEGIN_VISIT( v );
-  ACCEPT_SEQ( ftnode_list_t, list_, v );
+  ACCEPT_SEQ( ftnode_list_t, get_node_list(), v );
   END_VISIT( v );
 }
 
 ostream& ftmild_not::put( ostream &o ) const {
   BEGIN_INDENT_PUT( o, ftmild_not );
-  PUT_SEQ( o, ftnode_list_t, list_ );
+  PUT_SEQ( o, ftnode_list_t, get_node_list() );
   OUTDENT_END_PUT( o );
 }
 
 void ftmild_not::serialize( serialization::Archiver &ar ) {
-  serialize_baseclass( ar, (ftnode*)this );
-  ar & list_;
+  serialize_baseclass( ar, (ftnode_list*)this );
 }
 
-ftor::~ftor() {
-  delete_ptr_seq( list_ );
-}
-
-ftor::ftor( QueryLoc const &loc, ftnode_list_t &list ) :
+ftnode_list::ftnode_list( QueryLoc const &loc, ftnode_list_t &list ) :
   ftnode( loc )
 {
   list_.swap( list );
 }
 
+ftnode_list::~ftnode_list() {
+  delete_ptr_seq( list_ );
+}
+
+void ftnode_list::serialize( serialization::Archiver &ar ) {
+  serialize_baseclass( ar, (ftnode*)this );
+  ar & list_;
+}
+
+ftor::ftor( QueryLoc const &loc, ftnode_list_t &list ) :
+  ftnode_list( loc, list )
+{
+}
+
 ft_visit_result::type ftor::accept( ftnode_visitor &v ) {
   BEGIN_VISIT( v );
-  ACCEPT_SEQ( ftnode_list_t, list_, v );
+  ACCEPT_SEQ( ftnode_list_t, get_node_list(), v );
   END_VISIT( v );
 }
 
 ostream& ftor::put( ostream &o ) const {
   BEGIN_INDENT_PUT( o, ftor );
-  PUT_SEQ( o, ftnode_list_t, list_ );
+  PUT_SEQ( o, ftnode_list_t, get_node_list() );
   OUTDENT_END_PUT( o );
 }
 
 void ftor::serialize( serialization::Archiver &ar ) {
-  serialize_baseclass( ar, (ftnode*)this );
-  ar & list_;
+  serialize_baseclass( ar, (ftnode_list*)this );
 }
 
 ftorder_filter::ftorder_filter( QueryLoc const &loc ) :
@@ -573,7 +572,6 @@ ftprimary_with_options::ftprimary_with_options(
   match_options_( new ftmatch_options( loc ) ),
   weight_( NULL )
 {
-  // do nothing else
 }
 
 ftprimary_with_options::~ftprimary_with_options() {
@@ -1070,6 +1068,8 @@ void ftwords_times::serialize( serialization::Archiver &ar ) {
   ar & ftwords_;
   ar & fttimes_;
 }
+
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */
