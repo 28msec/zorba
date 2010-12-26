@@ -80,16 +80,8 @@ private:
   typedef std::stack<ft_all_matches*> matches_stack_t;
   matches_stack_t matches_stack_;
 
-  void push_matches( ft_all_matches* );
-  ft_all_matches* pop_matches();
-  ft_all_matches* top_matches() const;
-
   typedef std::stack<ftmatch_options const*> options_stack_t;
   options_stack_t options_stack_;
-
-  void push_options( ftmatch_options const* );
-  ftmatch_options const* pop_options();
-  ftmatch_options const* top_options() const;
 
   void apply_ftwords( FTQueryItemSeq&, FTToken::int_t, store::Item const*,
                       ft_anyall_mode::type, ftmatch_options const&,

@@ -215,6 +215,16 @@ typename SequenceType::value_type pop_front( SequenceType &seq ) {
   return value;
 }
 
+/**
+ * A less-verbose way to pop an element from a stack.
+ */
+template<class StackType> inline
+typename StackType::value_type pop_stack( StackType &s ) {
+  typename StackType::value_type const value( s.top() );
+  s.pop();
+  return value;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 template<typename T> class stack_generator {
