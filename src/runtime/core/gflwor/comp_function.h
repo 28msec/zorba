@@ -81,7 +81,6 @@ public:
 
   long descAsc(long result, bool desc) const
   {
-    assert(-1 <= result && result <= 1);
     return desc ? -result : result;
   }
 };

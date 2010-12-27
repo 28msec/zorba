@@ -41,11 +41,11 @@ bool SortTupleCmp::operator()(const SortTuple& t1, const SortTuple& t2) const
                         orderSpecIter->theEmptyLeast,
                         orderSpecIter->theNativeCompare,
                         orderSpecIter->theCollator);
-    if (cmp == 1)
+    if (cmp > 0)
     {
       return false;
     }
-    else if (cmp == -1)
+    else if (cmp < 0)
     {
       return true;
     }
@@ -106,11 +106,6 @@ long SortTupleCmp::compare(
                                              theTypeManager,
                                              theTimezone,
                                              collator);
-    }
-
-    if (result > 1 || result < -1) 
-    {
-      ZORBA_ERROR_DESC(XPTY0004, "Non-comparable types found while sorting" );
     }
 
     return descAsc(result , desc);

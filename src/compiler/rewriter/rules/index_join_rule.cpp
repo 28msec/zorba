@@ -212,11 +212,6 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
 
   predInfo.theIsGeneral = (opKind == CompareConsts::GENERAL_EQUAL);
 
-#if 0
-  if (predInfo.theIsGeneral)
-    return false;
-#endif
-
   expr* op1 = foExpr->get_arg(0);
   expr* op2 = foExpr->get_arg(1);
 
