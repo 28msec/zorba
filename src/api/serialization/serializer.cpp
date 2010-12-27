@@ -27,6 +27,7 @@
 #include "api/serialization/serializable.h"
 #include "api/sax2impl.h"
 #include "api/serializerimpl.h"
+#include "api/unmarshaller.h"
 
 #include "util/converters/json_converter.h"
 #include "util/ascii_util.h"
@@ -1443,8 +1444,8 @@ void serializer::sax2_emitter::emit_node(const store::Item* item)
           //aNSList.push_back(local_nsBindings[i].second);
           theNameSpaces.push_back(local_nsBindings[i]);
 
-          String lFirst( local_nsBindings[i].first.str() );
-          String lSecond( local_nsBindings[i].second.str() );
+          String lFirst( Unmarshaller::newString( local_nsBindings[i].first )  );
+          String lSecond( Unmarshaller::newString( local_nsBindings[i].second )  );
           theSAX2ContentHandler->startPrefixMapping( lFirst, lSecond );
           namespaces_emited++;
         }
@@ -1453,9 +1454,9 @@ void serializer::sax2_emitter::emit_node(const store::Item* item)
       //emit_startPrefixMapping( item, local_nsBindings );
 
       item_qname = item->getNodeName();
-      String lNS( item_qname->getNamespace().str() );
-      String lLocalName( item_qname->getLocalName().str() );
-      String lStringValue( item_qname->getStringValue().str() );
+      String lNS( Unmarshaller::newString( item_qname->getNamespace() ) );
+      String lLocalName( Unmarshaller::newString( item_qname->getLocalName() ) );
+      String lStringValue( Unmarshaller::newString( item_qname->getStringValue() ) );
       theSAX2ContentHandler->startElement( lNS, lLocalName, lStringValue, attrs );
     }
 
@@ -1464,15 +1465,15 @@ void serializer::sax2_emitter::emit_node(const store::Item* item)
     if(theSAX2ContentHandler)
     {
 
-      String lNS( item_qname->getNamespace().str() );
-      String lLocalName( item_qname->getLocalName().str() );
-      String lStringValue( item_qname->getStringValue().str() );
+      String lNS( Unmarshaller::newString( item_qname->getNamespace() ) );
+      String lLocalName( Unmarshaller::newString( item_qname->getLocalName() ) );
+      String lStringValue( Unmarshaller::newString( item_qname->getStringValue() ) );
 
       theSAX2ContentHandler->endElement( lNS, lLocalName, lStringValue );
 
       for ( unsigned long i = 0; i < namespaces_emited; i++ )
       {
-        String lFirst( theNameSpaces.back().first.str() );
+        String lFirst( Unmarshaller::newString( theNameSpaces.back().first ) );
         theSAX2ContentHandler->endPrefixMapping( lFirst );
         theNameSpaces.resize(theNameSpaces.size()-1);
       }
@@ -1492,7 +1493,7 @@ void serializer::sax2_emitter::emit_node(const store::Item* item)
   {
     if ( theSAX2LexicalHandler )
     {
-      String lComment ( item->getStringValue().str() );
+      String lComment( Unmarshaller::newString( item->getStringValue() ) );
       theSAX2LexicalHandler->comment( lComment );
     }
   }

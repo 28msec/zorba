@@ -115,8 +115,8 @@ int SAX2AttributesImpl::getIndex(const String &  uri, const String & localPart )
 
   for(i = 0; i < size; i++)
   {
-    String lAttrURI(attrs[i].uri.str());
-    String lLocalName(attrs[i].localname.str());
+    String lAttrURI( Unmarshaller::newString( attrs[i].uri ) );
+    String lLocalName( Unmarshaller::newString( attrs[i].localname ) );
     if((lAttrURI == uri) && (localPart == lLocalName))
       return i;
   }
@@ -132,7 +132,7 @@ int SAX2AttributesImpl::getIndex(const String & qName ) const
 
   for(i = 0; i < size; i++)
   {
-    String lQName( attrs[i].qname.str() );
+    String lQName( Unmarshaller::newString( attrs[i].qname ) );
     if(qName == lQName)
       return i;
   }
@@ -150,12 +150,12 @@ const String SAX2AttributesImpl::getType(
 
   for(i = 0; i < size; i++)
   {
-    String lattruri(attrs[i].uri.str());
-    String llocalname(attrs[i].localname.str());
+    String lattruri( Unmarshaller::newString( attrs[i].uri ) );
+    String llocalname( Unmarshaller::newString( attrs[i].localname ) );
 
     if((uri == lattruri) && (localPart == llocalname))
     {
-      String lType(attrs[i].type.str());
+      String lType( Unmarshaller::newString( attrs[i].type ) );
       return lType;
     }
   }
@@ -170,10 +170,10 @@ const String SAX2AttributesImpl::getType(const String & qName) const
 
   for(i = 0; i < size; i++)
   {
-    String lQName(attrs[i].qname.str());
+    String lQName( Unmarshaller::newString( attrs[i].qname ) );
     if(qName == lQName)
     {
-      String lType(attrs[i].type.str()); 
+      String lType( Unmarshaller::newString( attrs[i].type ) ); 
       return lType;
     }
   }
@@ -190,11 +190,11 @@ const String SAX2AttributesImpl::getValue(
 
   for(i = 0;i < size; i++)
   {
-    String lattruri(attrs[i].uri.str());
-    String llocalname(attrs[i].localname.str());
+    String lattruri( Unmarshaller::newString( attrs[i].uri ) );
+    String llocalname( Unmarshaller::newString( attrs[i].localname ) );
     if((uri == lattruri) && (localPart == llocalname))
     {
-      String lvalue(attrs[i].value.str());
+      String lvalue( Unmarshaller::newString( attrs[i].value ) );
       return lvalue;
     }
   }
@@ -209,10 +209,10 @@ const String SAX2AttributesImpl::getValue(const String & qName) const
 
   for(i = 0; i < size; i++)
   {
-    String lQName(attrs[i].qname.str());
+    String lQName( Unmarshaller::newString( attrs[i].qname ) );
     if(qName == lQName)
     {
-      String lValue(attrs[i].value.str()); 
+      String lValue( Unmarshaller::newString( attrs[i].value ) ); 
       return lValue;
     }
   }

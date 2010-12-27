@@ -269,10 +269,10 @@ void ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, error::ZorbaError& aErr
     Iterator_t lIter = new VectorIterator(lUserError->theErrorObject, aErrorHandler);
 
     UserException lUserException(aError.theErrorCode,
-                                 String(aError.theDescription.c_str()),
-                                 String(aError.theFileName.c_str()),
+                                 Unmarshaller::newString(aError.theDescription),
+                                 Unmarshaller::newString(aError.theFileName),
                                  aError.theLineNumber,
-                                 String(aError.theQueryFileName.c_str()),
+                                 Unmarshaller::newString(aError.theQueryFileName),
                                  aError.theQueryLine,
                                  aError.theQueryColumn,
                                  aError.getStackTrace(),
@@ -282,10 +282,10 @@ void ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, error::ZorbaError& aErr
   else if (aError.isStaticError())
   {
     StaticException lStaticException(aError.theErrorCode,
-                                     String(aError.theDescription.c_str()),
-                                     String(aError.theFileName.c_str()),
+                                     Unmarshaller::newString(aError.theDescription),
+                                     Unmarshaller::newString(aError.theFileName),
                                      aError.theLineNumber,
-                                     String(aError.theQueryFileName.c_str()),
+                                     Unmarshaller::newString(aError.theQueryFileName),
                                      aError.theQueryLine,
                                      aError.theQueryColumn,
                                      aError.getStackTrace());
@@ -294,10 +294,10 @@ void ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, error::ZorbaError& aErr
   else if (aError.isDynamicError())
   {
     DynamicException lDynamicException(aError.theErrorCode,
-                                       String(aError.theDescription.c_str()),
-                                       String(aError.theFileName.c_str()),
+                                       Unmarshaller::newString(aError.theDescription),
+                                       Unmarshaller::newString(aError.theFileName),
                                        aError.theLineNumber,
-                                       String(aError.theQueryFileName.c_str()),
+                                       Unmarshaller::newString(aError.theQueryFileName),
                                        aError.theQueryLine,
                                        aError.theQueryColumn,
                                        aError.getStackTrace());
@@ -306,10 +306,10 @@ void ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, error::ZorbaError& aErr
   else if (aError.isTypeError())
   {
     TypeException lTypeException(aError.theErrorCode,
-                                 String(aError.theDescription.c_str()),
-                                 String(aError.theFileName.c_str()),
+                                 Unmarshaller::newString(aError.theDescription),
+                                 Unmarshaller::newString(aError.theFileName),
                                  aError.theLineNumber,
-                                 String(aError.theQueryFileName.c_str()),
+                                 Unmarshaller::newString(aError.theQueryFileName),
                                  aError.theQueryLine,
                                  aError.theQueryColumn,
                                  aError.getStackTrace());
@@ -319,8 +319,8 @@ void ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, error::ZorbaError& aErr
   {
     SerializationException lSerException(
                             aError.theErrorCode,
-                            String(aError.theDescription.c_str()),
-                            String(aError.theFileName.c_str()),
+                            Unmarshaller::newString(aError.theDescription),
+                            Unmarshaller::newString(aError.theFileName),
                             aError.theLineNumber,
                             aError.getStackTrace());
     aErrorHandler->serializationError(lSerException);
@@ -328,24 +328,24 @@ void ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, error::ZorbaError& aErr
   else if (aError.isStoreError())
   {
     SystemException lSystemException(aError.theErrorCode,
-                                     String(aError.theDescription.c_str()),
-                                     String(aError.theFileName.c_str()),
+                                     Unmarshaller::newString(aError.theDescription),
+                                     Unmarshaller::newString(aError.theFileName),
                                      aError.theLineNumber);
     aErrorHandler->systemError(lSystemException);
   }
   else if (aError.isAPIError())
   {
     SystemException lSystemException(aError.theErrorCode,
-                                     String(aError.theDescription.c_str()),
-                                     String(aError.theFileName.c_str()),
+                                     Unmarshaller::newString(aError.theDescription),
+                                     Unmarshaller::newString(aError.theFileName),
                                      aError.theLineNumber);
     aErrorHandler->systemError(lSystemException);
   }
   else if (aError.isInternalError())
   {
     SystemException lSystemException(aError.theErrorCode,
-                                     String(aError.theDescription.c_str()),
-                                     String(aError.theFileName.c_str()),
+                                     Unmarshaller::newString(aError.theDescription),
+                                     Unmarshaller::newString(aError.theFileName),
                                      aError.theLineNumber,
                                      aError.getStackTrace());
     aErrorHandler->systemError(lSystemException);
@@ -383,3 +383,4 @@ void ZorbaImpl::checkItem(const store::Item_t& aItem)
 
 
 } /* namespace zorba */
+/* vim:set et sw=2 ts=2: */

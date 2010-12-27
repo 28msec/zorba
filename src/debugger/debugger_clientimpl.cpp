@@ -405,15 +405,15 @@ DebuggerClientImpl::getAllVariables(bool data) const
       lVariableReply->getVariables();
     std::map<std::pair<zstring, zstring>, std::list<std::pair<zstring, zstring> > >::iterator it;
     for (it = variables.begin(); it != variables.end(); ++it) {
-      String lName(it->first.first.c_str());
-      String lType(it->first.second.c_str());
+      String lName( Unmarshaller::newString( it->first.first ) );
+      String lType( Unmarshaller::newString( it->first.second ) );
       std::list<std::pair<zstring, zstring> > d = it->second;
       std::list<std::pair<String, String> > data;
       for (std::list<std::pair<zstring, zstring> >::iterator iter = d.begin(); iter != d.end(); iter++) {
         data.push_back(
           std::pair<String,String>(
-            String(iter->first.c_str()),
-            String(iter->second.c_str())
+            Unmarshaller::newString(iter->first),
+            Unmarshaller::newString(iter->second)
           )
         );
       }
@@ -436,15 +436,15 @@ DebuggerClientImpl::getLocalVariables(bool data) const
       lVariableReply->getLocalVariables();
     std::map<std::pair<zstring, zstring>, std::list<std::pair<zstring, zstring> > >::iterator it;
     for (it = variables.begin(); it != variables.end(); ++it) {
-      String lName(it->first.first.c_str());
-      String lType(it->first.second.c_str());
+      String lName( Unmarshaller::newString( it->first.first ) );
+      String lType( Unmarshaller::newString( it->first.second ) );
       std::list<std::pair<zstring, zstring> > d = it->second;
       std::list<std::pair<String, String> > data;
       for (std::list<std::pair<zstring, zstring> >::iterator iter = d.begin(); iter != d.end(); iter++) {
         data.push_back(
           std::pair<String,String>(
-            String(iter->first.c_str()),
-            String(iter->second.c_str())
+            Unmarshaller::newString(iter->first),
+            Unmarshaller::newString(iter->second)
           )
         );
       }
@@ -470,15 +470,15 @@ DebuggerClientImpl::getGlobalVariables(bool data) const
       lVariableReply->getGlobalVariables();
     std::map<std::pair<zstring, zstring>, std::list<std::pair<zstring, zstring> > >::iterator it;
     for (it = variables.begin(); it != variables.end(); ++it) {
-      String lName(it->first.first.c_str());
-      String lType(it->first.second.c_str());
+      String lName( Unmarshaller::newString( it->first.first ) );
+      String lType( Unmarshaller::newString( it->first.second ) );
       std::list<std::pair<zstring, zstring> > d = it->second;
       std::list<std::pair<String, String> > data;
       for (std::list<std::pair<zstring, zstring> >::iterator iter = d.begin(); iter != d.end(); iter++) {
         data.push_back(
           std::pair<String,String>(
-            String(iter->first.c_str()),
-            String(iter->second.c_str()))
+            Unmarshaller::newString(iter->first),
+            Unmarshaller::newString(iter->second))
         );
       }
       Variable lVariable(lName, lType, data);

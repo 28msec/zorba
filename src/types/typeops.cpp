@@ -16,6 +16,8 @@
 #include <zorba/identtypes.h>
 #include <zorba/typeident.h>
 
+#include "api/unmarshaller.h"
+
 #include "system/globalenv.h"
 
 #include "store/api/item.h"
@@ -1017,8 +1019,8 @@ type_ident_ref_t TypeOps::get_type_identifier(
 
     case store::StoreConsts::elementNode:
     {
-      String uri(nodeName->getNamespace().c_str());
-      String local(nodeName->getLocalName().c_str());
+      String uri( Unmarshaller::newString( nodeName->getNamespace() ) );
+      String local( Unmarshaller::newString( nodeName->getLocalName() ) );
 
       return TypeIdentifier::createElementType(uri,
                                                nodeName == NULL,
@@ -1029,8 +1031,8 @@ type_ident_ref_t TypeOps::get_type_identifier(
     }  
     case store::StoreConsts::attributeNode:
     {
-      String uri(nodeName->getNamespace().c_str());
-      String local(nodeName->getLocalName().c_str());
+      String uri( Unmarshaller::newString( nodeName->getNamespace() ) );
+      String local( Unmarshaller::newString( nodeName->getLocalName() ) );
 
       return TypeIdentifier::createAttributeType(uri,
                                                  nodeName == NULL,

@@ -18,6 +18,8 @@
 
 #include <memory>
 
+#include "api/unmarshaller.h"
+
 #include "debugger/socket.h"
 #include "debugger/debugger_clientimpl.h"
 #include "debugger/message_factory.h"
@@ -77,8 +79,8 @@ DebuggerEventListener::run()
         break;
       } else if ((lEvaluatedEvent = dynamic_cast<EvaluatedEvent*>(lMessage.get()))) {
         if (theClient->theEventHandler) {
-          String lExpr(lEvaluatedEvent->getExpr().c_str());
-          String lError(lEvaluatedEvent->getError().c_str());
+          String lExpr( Unmarshaller::newString( lEvaluatedEvent->getExpr() ) );
+          String lError( Unmarshaller::newString( lEvaluatedEvent->getError() ) );
           if (lError.length() > 0) {
             theClient->theEventHandler->evaluated(lExpr, lError);
           } else {
@@ -88,8 +90,8 @@ DebuggerEventListener::run()
             for (it=lMap.begin(); it!=lMap.end(); ++it) {
               zstring temp(it->first);
               ascii::replace_all( temp, "&quot;", "\"" );
-              String lResult(temp.c_str());
-              String lType(it->second.c_str());
+              String lResult( Unmarshaller::newString( temp ) );
+              String lType( Unmarshaller::newString( it->second ) );
               lValuesAndTypes.push_back(std::make_pair(lResult, lType));
             }
             theClient->theEventHandler->evaluated(lExpr, lValuesAndTypes);
