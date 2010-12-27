@@ -28,6 +28,7 @@
 #include "api/serialization/serializer.h"
 #include "api/storeiteratorimpl.h"
 #include "api/iterator_singleton.h"
+#include "api/unmarshaller.h"
 
 #include "store/api/item.h"
 #include "store/api/store.h"
@@ -37,8 +38,9 @@
 namespace zorba {
 
 #define ITEM_TRY try {
-#define ITEM_CATCH } catch ( ::zorba::error::ZorbaError & e) {  \
-  throw SystemException(e.theErrorCode, String(e.theDescription.c_str()), "", 0, e.getStackTrace()); \
+#define ITEM_CATCH \
+  } catch ( ::zorba::error::ZorbaError & e ) { \
+  throw SystemException(e.theErrorCode, String( Unmarshaller::newString( e.theDescription ) ), "", 0, e.getStackTrace()); \
   } catch (std::exception& e) { \
     throw SystemException(XQP0019_INTERNAL_ERROR, e.what(), "", 0); \
   } catch (...) { \

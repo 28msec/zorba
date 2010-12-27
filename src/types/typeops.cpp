@@ -986,9 +986,11 @@ type_ident_ref_t TypeOps::get_type_identifier(
   {
     const AtomicXQType& at = static_cast<const AtomicXQType&>(type);
     store::Item* qname = rtm.m_atomic_typecode_qname_map[at.get_type_code()];
-    return TypeIdentifier::createNamedType(qname->getNamespace().c_str(),
-                                           qname->getLocalName().c_str(),
-                                           q);
+    return TypeIdentifier::createNamedType(
+      Unmarshaller::newString(qname->getNamespace()),
+      Unmarshaller::newString(qname->getLocalName()),
+      q
+    );
   }
   case XQType::NODE_TYPE_KIND:
   {
@@ -1048,22 +1050,28 @@ type_ident_ref_t TypeOps::get_type_identifier(
     }
   }
   case XQType::ANY_TYPE_KIND:
-    return TypeIdentifier::createNamedType(&*rtm.XS_ANY_TYPE_QNAME->getNamespace().c_str(),
-                                           &*rtm.XS_ANY_TYPE_QNAME->getLocalName().c_str(),
-                                           q);
+    return TypeIdentifier::createNamedType(
+      Unmarshaller::newString( rtm.XS_ANY_TYPE_QNAME->getNamespace() ),
+      Unmarshaller::newString( rtm.XS_ANY_TYPE_QNAME->getLocalName() ),
+      q
+    );
 
   case XQType::ITEM_KIND:
     return TypeIdentifier::createItemType(q);
 
   case XQType::ANY_SIMPLE_TYPE_KIND:
-    return TypeIdentifier::createNamedType(&*rtm.XS_ANY_SIMPLE_TYPE_QNAME->getNamespace().c_str(),
-                                           &*rtm.XS_ANY_SIMPLE_TYPE_QNAME->getLocalName().c_str(),
-                                           q);
+    return TypeIdentifier::createNamedType(
+      Unmarshaller::newString( rtm.XS_ANY_SIMPLE_TYPE_QNAME->getNamespace() ),
+      Unmarshaller::newString( rtm.XS_ANY_SIMPLE_TYPE_QNAME->getLocalName() ),
+      q
+    );
 
   case XQType::UNTYPED_KIND:
-    return TypeIdentifier::createNamedType(&*rtm.XS_UNTYPED_QNAME->getNamespace().c_str(),
-                                           &*rtm.XS_UNTYPED_QNAME->getLocalName().c_str(),
-                                           q);
+    return TypeIdentifier::createNamedType(
+      Unmarshaller::newString( rtm.XS_UNTYPED_QNAME->getNamespace() ),
+      Unmarshaller::newString( rtm.XS_UNTYPED_QNAME->getLocalName() ),
+      q
+    );
     
   case XQType::EMPTY_KIND:
     return TypeIdentifier::createEmptyType();
@@ -1119,5 +1127,5 @@ const char* TypeOps::decode_quantifier(TypeConstants::quantifier_t quant)
   }
 }
 
-
-}
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

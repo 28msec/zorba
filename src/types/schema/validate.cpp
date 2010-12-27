@@ -36,12 +36,14 @@
 
 #endif
 
+#include "api/unmarshaller.h"
+
 #include "compiler/parser/query_loc.h"
 
-#include "store/api/item.h"
-#include "store/api/iterator.h"
-#include "store/api/item_factory.h"
 #include "store/api/copymode.h"
+#include "store/api/item.h"
+#include "store/api/item_factory.h"
+#include "store/api/iterator.h"
 #include "store/api/store.h"
 
 #include "context/dynamic_context.h"
@@ -492,8 +494,10 @@ void Validator::processChildren(
         store::Item_t validatedTextNode;
 
         TypeIdentifier_t typeIdentifier =
-          TypeIdentifier::createNamedType(typeQName->getNamespace().c_str(),
-                                          typeQName->getLocalName().c_str());
+          TypeIdentifier::createNamedType(
+            Unmarshaller::newString( typeQName->getNamespace() ),
+            Unmarshaller::newString( typeQName->getLocalName() )
+          );
 
         //xqType is NULL, create_type can't find it
         xqtref_t xqType = typeManager->create_type(*typeIdentifier);
@@ -719,7 +723,7 @@ void Validator::processTextValue (
   }
 }
 
-}
-
+} // namespace zorba
 
 #endif // ifndef ZORBA_NO_XMLSCHEMA
+/* vim:set et sw=2 ts=2: */

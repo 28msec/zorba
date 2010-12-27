@@ -216,7 +216,7 @@ StaticContextImpl::getNamespaceURIByPrefix( const String& aPrefix ) const
     const zstring& lPrefix = Unmarshaller::getInternalString(aPrefix);
     zstring ns;
     theCtx->lookup_ns(ns, lPrefix, loc);
-    return ns.c_str();
+    return Unmarshaller::newString( ns );
   }
   catch (error::ZorbaError& e)
   {
