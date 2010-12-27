@@ -59,17 +59,6 @@ bool equals( char const *s1, typename StringType::size_type s1_n,
 #define ZSTREQ(STRING,LITERAL) \
         zorba::equals( STRING, LITERAL, sizeof( LITERAL ) - 1 )
 
-/**
- * Normalizes the result value of a lexographical 3-way string comparison to be
- * -1, 0, or 1.
- *
- * @param value The result of a lexographical 3-way string comparison.
- * @return Returns -1 only if \a value < 0, 0 only if \a value = 0, or 1 if
- * \a value > 0.
- */
-inline int norm_3way( int value ) {
-  return value < 0 ? -1 : value > 0 ? 1 : 0;
-}
 
 /**
  * Converts an object to its string representation.

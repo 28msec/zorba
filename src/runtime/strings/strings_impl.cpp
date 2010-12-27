@@ -198,9 +198,9 @@ bool CompareStrIterator::nextImpl(
         coll = theSctx->get_default_collator(loc);
       }
 
-      res  = ((coll == NULL || coll->doMemCmp())?
-              n0->getStringValue().compare(n1->getStringValue()):
-              utf8::compare(n0->getStringValue(), n1->getStringValue(), coll));
+      res  = utf8::compare(n0->getStringValue(), n1->getStringValue(), coll);
+      
+      res = (res < 0 ? -1 : (res > 0 ? 1 : 0));
 
       GENV_ITEMFACTORY->createInteger(result, Integer::parseInt(res));
 
