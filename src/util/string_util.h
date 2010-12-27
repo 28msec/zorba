@@ -65,7 +65,7 @@ bool equals( char const *s1, typename StringType::size_type s1_n,
  *
  * @tparam T The object type.
  * @param t The object.
- * @return Returns a string representaion of the object.
+ * @return Returns a string representation of the object.
  */
 template<typename T> inline
 std::string to_string( T const &t ) {
