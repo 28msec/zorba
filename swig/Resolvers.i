@@ -94,6 +94,7 @@
             zorba::XmlDataManager* aXmlDataManager,
             bool validate,
             bool tidying,
+            bool replaceDoc,
             const zorba::Item& aTidyUserOpt) 
     { 
       Item newURI = Item::createEmptyItem();
@@ -107,7 +108,7 @@
       DocumentURIResolverResult* result = 
         resolve(newURI, &newStaticContext, 
                  &newXmlDataManager, validate,
-                 tidying, newTidyUserOpt);
+                 tidying, replaceDoc, newTidyUserOpt);
       
       std::auto_ptr<zorba::DocumentURIResolverResult> myRes ; //=
         (new MyDocumentURIResolverResult(result->getDocument().theItem)); 
@@ -115,19 +116,21 @@
     }
 
   public:
-    /* swig error when using auto_ptr<>
-    virtual std::auto_ptr<DocumentURIResolverResult>
-      resolve2(const Item& aURI,
-            StaticContext* aStaticContext,
-            XmlDataManager* aXmlDataManager,
-            bool validate,
-            bool tidying,
-            const Item& aTidyUserOpt) =0;    */
+    // swig error when using auto_ptr<>
+    //virtual std::auto_ptr<DocumentURIResolverResult>
+    //  resolve2(const Item& aURI,
+    //        StaticContext* aStaticContext,
+    //        XmlDataManager* aXmlDataManager,
+    //        bool validate,
+    //        bool tidying,
+    //        bool replaceDoc,
+    //        const Item& aTidyUserOpt) =0;
     virtual DocumentURIResolverResult* resolve(const Item& aURI,
             StaticContext* aStaticContext,
             XmlDataManager* aXmlDataManager,
             bool validate,
             bool tidying,
+            bool replaceDoc,
             const Item& aTidyUserOpt) = 0;
   };
 
@@ -328,7 +331,8 @@ public:
             StaticContext* aStaticContext,
             XmlDataManager* aXmlDataManager,
             bool validate,
-            bool tidying,
+            bool tidying,       
+            bool replaceDoc,
             const Item& aTidyUserOpt) = 0;
 };
 
