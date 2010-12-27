@@ -214,9 +214,10 @@ filesystem_path::get_path_separator () {
 }
 
 filesystem_path::filesystem_path () {
-  char buf [1024];
 #ifdef WIN32
-  WCHAR wbuf[1024];
+  char buf [MAX_PATH];
+  WCHAR wbuf[MAX_PATH];
+  
   GetCurrentDirectoryW (sizeof (wbuf)/sizeof(WCHAR), wbuf);
   WideCharToMultiByte(CP_UTF8, 0, wbuf, -1, buf, sizeof(buf), NULL, NULL);
 
@@ -224,6 +225,7 @@ filesystem_path::filesystem_path () {
  // GetCurrentDirectory sometimes misses drive letter
   resolve_relative ();
 #else
+  char buf[1024];
   if (getcwd (buf, sizeof (buf)) == NULL) {
     file::error (__FUNCTION__, "current directory path too long");
   }
