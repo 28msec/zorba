@@ -14,23 +14,42 @@
  * limitations under the License.
  */
 #include <sstream>
+
 #include "compiler/rewriter/framework/rewriter_context.h"
 #include "compiler/expression/expr_base.h"
+
+#include "functions/udf.h"
+
 #include "system/globalenv.h"
+
 #include "store/api/item_factory.h"
 
 
 namespace zorba {
 
-RewriterContext::RewriterContext(CompilerCB* aCompilerCB, expr_t root)
+RewriterContext::RewriterContext(
+    CompilerCB* aCompilerCB,
+    expr_t root,
+    user_function* udf,
+    const zstring& msg)
   :
   theCCB(aCompilerCB),
   theRoot(root),
+  theUDF(udf),
+  theMessage(msg),
   m_tempvarCounter(0),
   theVarIdMap(NULL),
   theIdVarMap(NULL),
   theExprVarsMap(NULL)
 {
+  if (msg.empty())
+  {
+    if (udf != NULL)
+    {
+      theMessage = "Optimizing UDF ";
+      theMessage += udf->getName()->getStringValue();
+    }
+  }
 }
 
 

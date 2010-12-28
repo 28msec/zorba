@@ -177,13 +177,17 @@ Item ItemFactoryImpl::createBase64Binary(const char* aBinData, size_t aLength)
   store::Item_t lItem;
   xs_base64Binary n;
   std::string lMessage;
-  if (xs_base64Binary::parseString(aBinData, aLength, n, lMessage)) {
+  if (xs_base64Binary::parseString(aBinData, aLength, n, lMessage))
+  {
     theItemFactory->createBase64Binary(lItem, n);
-  } else {
+  }
+  else
+  {
     ZORBA_ERROR_DESC(STR0040_TYPE_ERROR, lMessage);
   }
   return &*lItem;
 }
+
 
 Item ItemFactoryImpl::createBase64Binary(const unsigned char* aBinData, size_t aLength)
 {
@@ -195,10 +199,12 @@ Item ItemFactoryImpl::createBase64Binary(const unsigned char* aBinData, size_t a
   return &*lItem;
 }
 
+
 Item ItemFactoryImpl::createBase64Binary(std::istream& aEncodedStream)
 {
   std::stringstream lSs;
-  while (aEncodedStream.good()) {
+  while (aEncodedStream.good()) 
+  {
     lSs.put(aEncodedStream.get());
   }
   std::string lContent = lSs.str();
@@ -229,7 +235,8 @@ Item ItemFactoryImpl::createDecimalFromDouble (double aValue)
 {
   store::Item_t lItem;
   Decimal lDecimal;
-  if (Decimal::parseNativeDouble(aValue, lDecimal)) {
+  if (Decimal::parseNativeDouble(aValue, lDecimal)) 
+  {
     theItemFactory->createDecimal(lItem, lDecimal);
     return &*lItem;
   }
@@ -262,13 +269,15 @@ ItemFactoryImpl::createInteger(long long aInteger)
   return &*lItem;
 }
 
+
 Item
 ItemFactoryImpl::createInteger(const String& aInteger)
 {
   zstring const &lString = Unmarshaller::getInternalString( aInteger );
   store::Item_t lItem;
   Integer lInteger;
-  if (Integer::parseString(lString.c_str(), lInteger)) {
+  if (Integer::parseString(lString.c_str(), lInteger))
+  {
     theItemFactory->createInteger(lItem, lInteger);
     return &*lItem;
   }

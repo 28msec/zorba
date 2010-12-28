@@ -252,7 +252,7 @@ PlanIter_t user_function::getPlan(CompilerCB* ccb)
         ccb->theConfig.opt_level > CompilerCB::config::O0)
     {
       expr_t body = getBody();
-      RewriterContext rctx(ccb, body);
+      RewriterContext rctx(ccb, body, this, zstring());
       GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rctx);
       body = rctx.getRoot();
       setBody(body);

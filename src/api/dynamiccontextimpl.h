@@ -118,12 +118,15 @@ public:
 
   virtual bool
   setVariable(
-    const String& aNamespace, const String& aLocalname,
+    const String& aNamespace,
+    const String& aLocalname,
     const Iterator_t& aIterator);
 
   virtual bool
   getVariable(
-    const String& aNamespace, const String& aLocalname, Item& aItem,
+    const String& aNamespace,
+    const String& aLocalname,
+    Item& aItem,
     Iterator_t& aIterator) const;
 
   virtual bool

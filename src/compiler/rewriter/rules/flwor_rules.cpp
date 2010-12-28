@@ -93,7 +93,7 @@ expr_t subst_vars(
     const var_expr* var,
     expr* subst)
 {
-  RewriterContext rCtx(rCtx0.getCompilerCB(), root);
+  RewriterContext rCtx(rCtx0.getCompilerCB(), root, rCtx0.theUDF, rCtx0.theMessage);
 
   SubstVars rule(var, subst);
 
@@ -102,7 +102,8 @@ expr_t subst_vars(
   rule.apply(rCtx, root, modified);
 
 #if 0  // debug substitutions
-  std::cout << "After subst " << var << ":" << std::endl;
+  std::cout << rCtx.theMessage << std::endl
+            << "After subst " << var << " :" << std::endl;
   rCtx.getRoot()->put(std::cout) << std::endl;
 #endif
 

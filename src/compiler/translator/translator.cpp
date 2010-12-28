@@ -4155,7 +4155,7 @@ void* begin_visit(const IndexKeyList& v)
                              domainExpr);
   }
 
-  std::string msg = "domain expr for index " + index->getName()->getStringValue().str();
+  std::string msg = "Domain expr for index " + index->getName()->getStringValue().str();
 
   if (theCCB->theConfig.translate_cb != NULL)
     theCCB->theConfig.translate_cb(domainExpr.getp(), msg);
@@ -4163,7 +4163,7 @@ void* begin_visit(const IndexKeyList& v)
   // Optimize the domain expr. We do this even if the optimizer is off.
   //if (theCCB->theConfig.opt_level == CompilerCB::config::O1)
   {
-    RewriterContext rCtx(theCCB, domainExpr);
+    RewriterContext rCtx(theCCB, domainExpr, NULL, msg);
     GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
     domainExpr = rCtx.getRoot();
 
@@ -4297,7 +4297,7 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
     // Optimize the key expr. We do this even if the optimizer is off.
     // if (theCCB->theConfig.opt_level == CompilerCB::config::O1)
     {
-      RewriterContext rCtx(theCCB, keyExpr);
+      RewriterContext rCtx(theCCB, keyExpr, NULL, msg.str());
       GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
       keyExpr = rCtx.getRoot();
 
@@ -9427,7 +9427,7 @@ void end_visit(const InlineFunction& v, void* aState)
     // begin_visit). We need to add these to the udf obj so that they will bound
     // at runtime. We must do this here (before we optimize the inline function
     // body, because optimization may remove clauses from the flwor expr
-    for (ulong i = 0; i < flwor->num_clauses(); i++)
+    for (ulong i = 0; i < flwor->num_clauses(); ++i)
     {
       const flwor_clause* lClause = (*flwor)[i];
       const let_clause* letClause = dynamic_cast<const let_clause*>(lClause);
@@ -9441,7 +9441,7 @@ void end_visit(const InlineFunction& v, void* aState)
 
   if (theCCB->theConfig.opt_level == CompilerCB::config::O1)
   {
-    RewriterContext rCtx(theCCB, body);
+    RewriterContext rCtx(theCCB, body, NULL, "Inline function");
     GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
     body = rCtx.getRoot();
   }
@@ -9475,6 +9475,7 @@ void end_visit(const InlineFunction& v, void* aState)
                                         body->get_scripting_kind()));
   udf->setArgVars(argVars);
   udf->setDeterministic(deterministic);
+  udf->setOptimized(true);
 
   // Get the function_item_expr and set its function to the udf created above.
   function_item_expr* fiExpr = dynamic_cast<function_item_expr*>(

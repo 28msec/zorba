@@ -192,7 +192,7 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
         // recursive functions, an optimization could be attempted again)
         udf->setOptimized(true);
 
-        RewriterContext rctx(rCtx.theCCB, udf->getBody());
+        RewriterContext rctx(rCtx.theCCB, udf->getBody(), udf, "");
         GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rctx);
         udf->setBody(rctx.getRoot());
       }

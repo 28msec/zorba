@@ -28,6 +28,8 @@
 namespace zorba 
 {
 
+class user_function;
+
 typedef std::map<var_expr *, ulong> VarIdMap;
 typedef std::vector<var_expr*> IdVarMap;
 typedef std::map<const expr *, DynamicBitset> ExprVarsMap;
@@ -65,7 +67,12 @@ class RewriterContext
 {
 public:
   CompilerCB                 * theCCB;
+
   expr_t                       theRoot;
+
+  user_function              * theUDF;
+
+  zstring                      theMessage;
 
   int                          m_tempvarCounter;
 
@@ -75,7 +82,11 @@ public:
   std::vector<expr_t>          theFlworStack;
 
 public:
-  RewriterContext(CompilerCB* cb, expr_t root);
+  RewriterContext(
+        CompilerCB* cb,
+        expr_t root,
+        user_function* udf,
+        const zstring& msg);
 
   ~RewriterContext();
 

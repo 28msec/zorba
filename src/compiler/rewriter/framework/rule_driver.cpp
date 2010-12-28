@@ -70,7 +70,8 @@ bool RuleMajorDriver::rewrite(RewriterContext& rCtx)
 
         if (Properties::instance()->printIntermediateOpt())
         {
-          std::cout << "After " << (*i)->getRuleName() << ":" << std::endl;
+          std::cout << rCtx.theMessage << std::endl
+                    << "After " << (*i)->getRuleName() << " :" << std::endl;
           rCtx.getRoot()->put(std::cout) << std::endl;
         }
 
@@ -100,7 +101,8 @@ bool RuleOnceDriverBase::rewrite(RewriterContext& rCtx)
 
   if (modified && Properties::instance()->printIntermediateOpt())
   {
-    std::cout << "After " << theRule->getRuleName() << ":" << std::endl;
+    std::cout << rCtx.theMessage << std::endl
+              << "After " << theRule->getRuleName() << " :" << std::endl;
     rCtx.getRoot()->put(std::cout) << std::endl;
   }
 

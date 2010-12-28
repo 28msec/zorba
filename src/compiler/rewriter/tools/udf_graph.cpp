@@ -190,6 +190,10 @@ void UDFGraph::optimizeUDFs(CompilerCB* ccb, UDFNode* node, ulong visit)
   user_function* udf = node->theUDF;
   expr_t body = udf->getBody();
 
+  // inline functions are optimized during translation.
+  if (udf->isOptimized())
+    return;
+
   // Note: the body can be NULL when using Plan Serialization
   while (body != NULL)
   {
@@ -197,7 +201,7 @@ void UDFGraph::optimizeUDFs(CompilerCB* ccb, UDFNode* node, ulong visit)
     // recursive functions, an optimization could be attempted again)
     udf->setOptimized(true);
 
-    RewriterContext rctx(ccb, body);
+    RewriterContext rctx(ccb, body, udf, zstring());
     GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rctx);
     body = rctx.getRoot();
 
