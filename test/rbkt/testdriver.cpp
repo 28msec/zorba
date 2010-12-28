@@ -226,6 +226,9 @@ main(int argc, char** argv)
       }
     }
 
+    // Bind any options from the .spec file to the static context
+    setOptions(driverContext, lContext);
+
     // Get the pathnames of the reference-result files found in the .spec
     // file (if any).
     std::vector<zorba::file> lRefFiles;

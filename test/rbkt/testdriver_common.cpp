@@ -422,3 +422,22 @@ void set_var(
   }
 }
 
+/**
+ * Set all options on the provided static context.
+ */
+void setOptions(DriverContext& driverCtx, const zorba::StaticContext_t& sctx)
+{
+  Specification& spec = * (driverCtx.theSpec);
+  std::vector<Specification::Option>::const_iterator lIter;
+  for (lIter = spec.optionsBegin(); lIter != spec.optionsEnd(); ++lIter)
+  {
+    zorba::Item lQName = driverCtx.theEngine->getItemFactory()->createQName
+      (lIter->theOptName);
+    std::string lValue = lIter->theOptValue;
+    zorba::ascii::replace_all(lValue, "$RBKT_SRC_DIR",
+      driverCtx.theRbktSourceDir);
+    zorba::ascii::replace_all(lValue, "$RBKT_BINARY_DIR",
+      driverCtx.theRbktBinaryDir);
+    sctx->declareOption(lQName, lValue);
+  }
+}

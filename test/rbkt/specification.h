@@ -37,6 +37,12 @@ public:
     std::string theVarValue;
   };
 
+  struct Option
+  {
+    std::string theOptName;
+    std::string theOptValue;
+  };
+
   Specification()
     : theInline(false),
       theComparisonMethod("Fragment"),
@@ -50,6 +56,7 @@ private:
   std::string              theVarName;
   std::string              theVarValue;
   std::vector<Variable>    theVariables;
+  std::vector<Option>      theOptions;
   std::vector<std::string> theResultFiles;
   std::vector<std::string> theErrors;
   std::string              theDate;
@@ -74,8 +81,13 @@ private:
   }
 
   void addVariable() {
-    Variable args = { theInline, theVarName, theVarValue};
-    theVariables.push_back(args);
+    Variable var = { theInline, theVarName, theVarValue };
+    theVariables.push_back(var);
+  }
+
+  void addOption() {
+    Option opt = { theVarName, theVarValue };
+    theOptions.push_back(opt);
   }
 
   void addError(iterator_t str, iterator_t end) {
@@ -108,6 +120,12 @@ public:
   std::vector<Variable>::const_iterator
   variablesEnd() const { return theVariables.end(); }
 
+  std::vector<Option>::const_iterator
+  optionsBegin() const { return theOptions.begin(); }
+
+  std::vector<Option>::const_iterator
+  optionsEnd() const { return theOptions.end(); }
+
   std::vector<std::string>::const_iterator
   errorsBegin() const { return theErrors.begin(); }
 
@@ -122,6 +140,9 @@ public:
 
   size_t
   variablesSize() const { return theVariables.size(); }
+
+  size_t
+  optionsSize() const { return theOptions.size(); }
 
   size_t
   errorsSize() const { return theErrors.size(); }
@@ -250,6 +271,18 @@ public:
             {
               return false;
             }
+          }
+          break;
+        }
+        else if ( *lIter == "Options:" )
+        {
+          for (++lIter; lIter != tokens.end(); ++lIter)
+          {
+            if (lIter->find('=') == std::string::npos) { return false; }
+            // Re-use existing setVarName/Value stuff
+            setVarName(lIter->begin(), lIter->begin() + lIter->find('='));
+            setVarValue(lIter->begin() + lIter->find('=') + 1, lIter->end());
+            addOption();
           }
           break;
         }

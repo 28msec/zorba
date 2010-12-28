@@ -138,6 +138,9 @@ void createDynamicContext(
     zorba::XQuery_t& query,
     bool enableDtd);
 
+void setOptions(
+    DriverContext& driverCtx,
+    const zorba::StaticContext_t& sctx);
 
 void slurp_file(
     const char* fname,

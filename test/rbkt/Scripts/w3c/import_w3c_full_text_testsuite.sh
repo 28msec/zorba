@@ -2,19 +2,23 @@
 
 die() {
   echo
-  echo 'Arguments: [--workdir <workdir>] [--builddir <builddir>] [--xqtsurl <xqtsurl>] <zorba_repository>'
-  echo '<zorba_repository> is the top-level SVN working copy'
-  echo '<workdir> is a temp directory to download and unzip XQTS (default: /tmp)'
+  echo 'Arguments: [--workdir <workdir>] [--builddir <builddir>]'
+  echo '           [--xqtsurl <xqtsurl>] [--thesaurusurl <thesaurusurl>]'
+  echo '           <zorba_repository>'
+  echo '<zorba_repository> is the top-level SVN working copy.'
+  echo '<workdir> is a temp directory to download and unzip XQTS (default: /tmp).'
   echo '<builddir> is the directory Zorba has been built in'
   echo '           (default: <zorba_repository>/build)'
   echo '<xqtsurl> is the URL where the XQTS archived version can be found'
   echo '          (default: http://dev.w3.org/2007/xpath-full-text-10-test-suite/XQFTTS_1_0_3.zip)'
-  echo '          (you can use for instance http://www.w3.org/XML/Query/test-suite/XQTS_1_0_2.zip)'
+  echo '<thesaurusurl> is the URL where a WordNet thesaurus can be found'
+  echo '          (default: http://wordnetcode.princeton.edu/3.0/WNdb-3.0.tar.gz)'
   exit 1
 }
 
 WORK=/tmp
 XQTSURL=http://dev.w3.org/2007/xpath-full-text-10-test-suite/XQFTTS_1_0_3.zip
+THESAURUSURL=http://wordnetcode.princeton.edu/3.0/WNdb-3.0.tar.gz
 
 while [ $# -gt 1 ]
 do
@@ -25,8 +29,10 @@ do
   test "$1" = "--builddir" && { BUILD="$2"; shift; shift; }
 
   # xqtsurl to specify the URL where XQTS can be found
-  # default value: http://dev.w3.org/2006/xquery-test-suite/PublicPagesStagingArea/XQTS_current.zip
   test "$1" = "--xqtsurl" && { XQTSURL="$2"; shift; shift; }
+
+  # thesaurusurl to specify the URL where thesaurus can be found
+  test "$" = "--thesaurusurl" && { THESAURUSURL="$2"; shift; shift; }
 done
 
 SRC="$1"
@@ -50,9 +56,12 @@ fi
 #this could be a problem problem because if the version posted on the W3C site as XQTS_current.zip changes, the new version will not be downloaded by the import script.
 #Removing the previous downloaded version first would solve the problem but that would mean that each time the script is run it would download a fresh XQTS_current.zip and this is a problem with the niglies tests.
 ZIP="$WORK/XQFTTS_current.zip"
-
 echo Downloading test suite to zip $ZIP ...
 wget -c -O $ZIP $XQTSURL
+
+THESAURUSTAR="$WORK/thesaurus.tar.gz"
+echo Downloading thesaurus ...
+wget -c -O $THESAURUSTAR $THESAURUSURL
 
 orig_pwd=`pwd`
 
@@ -61,6 +70,15 @@ SRC=$(cd "$SRC" && pwd)
 echo Repository is at $SRC
 BUILD=$(cd "$BUILD" && pwd)
 echo Build dir is at $BUILD
+
+# Compile thesaurus to binary format
+mkdir -p $BUILD/test/rbkt/thesauri
+THESAURUS="$BUILD/test/rbkt/thesauri/wordnet-en.zth"
+echo "Compiling thesaurus to $THESAURUS..."
+untar_dir=`mktemp -d "$WORK/thesaurus.XXXXXX"`
+cd "$untar_dir"
+gzip -dc "$THESAURUSTAR" | tar x
+$SRC/scripts/zt-wordnet "$untar_dir/dict" "$THESAURUS"
 
 echo Unzipping test suite...
 unzip_dir=`mktemp -d "$WORK/xqts.XXXXXX"`
@@ -302,6 +320,16 @@ if (@errs) {
   close (SPECX);
 }
 
+# Add Options: declaration for path to compiled thesaurus. I could not find
+# anything in the catalog which would let me determine whether the test case
+# depended on this, so it is placed into every .spec file.
+open (SPEC, ">>$specfile");
+open (SPECX, ">>$xqueryxspecfile");
+print SPEC "Options: {http://www.zorba-xquery.org/options}thesauri-directory=\$RBKT_BINARY_DIR/thesauri\n";
+print SPECX "Options: {http://www.zorba-xquery.org/options}thesauri-directory=\$RBKT_BINARY_DIR/thesauri\n";
+close (SPEC);
+close (SPECX);
+
 }
 close (URIS);' "$SRC"
 rm -f "$q"
@@ -319,10 +347,11 @@ find "TestSources" -name '*.xq' -exec mv "{}" "$SRC/test/rbkt/Queries/w3c_full_t
 find "TestSources" -type f -exec mv "{}" "$SRC/test/rbkt/Queries/w3c_full_text_testsuite/{}" \;
 mv "ReportingResults" "$SRC/test/rbkt/Scripts/w3c/w3c_full_text_reportingresults"
 
-echo "Cleaning up work directory...$orig_pwd $unzip_dir"
+echo "Cleaning up work directory...$orig_pwd $unzip_dir $untar_dir"
 
 cd "$orig_pwd"
 rm -rf "$unzip_dir"
+rm -rf "$untar_dir"
 
 echo Done.
 

@@ -344,6 +344,7 @@ DWORD WINAPI thread_main(LPVOID param)
     DriverContext driverContext;
     driverContext.theEngine = zorba;
     driverContext.theRbktSourceDir = rbkt_src_dir;
+    driverContext.theRbktBinaryDir = rbkt_bin_dir;
     driverContext.theSpec = &querySpec;
 
     zorba::XQuery_t query;
@@ -463,6 +464,9 @@ DWORD WINAPI thread_main(LPVOID param)
       sctx->setXQueryVersion(xquery_version_1_0);
       sctx->setTraceStream(queries->theOutput);
     }
+
+    // Set any options on the static context
+    setOptions(driverContext, sctx);
 
     // Set the error file to be used by the error handler for the current query
     errHandler.setErrorFile(errorFilePath.file_string());
