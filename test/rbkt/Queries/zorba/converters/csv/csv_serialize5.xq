@@ -2,16 +2,18 @@
 Note that the last node has element names that do not correpond to the header names taken from the first node,
 so it is not processed.
 :)
+import schema namespace csv-options="http://www.zorba-xquery.com/modules/csv-options";
 import module namespace zorba-csv = "http://www.zorba-xquery.com/modules/csv";
 
 
 let $options := 
-<options>
+validate{
+<csv-options:options>
   <first-row-is-header/>
   <csv separator=","
        quote-char="&quot;"
        quote-escape="&quot;&quot;"/>
-</options>
+</csv-options:options>}
 return
 zorba-csv:parse(
 zorba-csv:serialize(

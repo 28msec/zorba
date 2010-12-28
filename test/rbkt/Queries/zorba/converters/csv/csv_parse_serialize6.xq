@@ -4,16 +4,19 @@ then serialize back to the same format.
 Note the character escaping for the QNames. Also the empty line from subheader is ignored.
 The csv has been taken from http://data.gov.
 :)
+import schema namespace csv-options="http://www.zorba-xquery.com/modules/csv-options";
 import module namespace zorba-csv = "http://www.zorba-xquery.com/modules/csv";
 import module namespace file="http://www.zorba-xquery.com/modules/file";
 
-let $options := <options>
+let $options := 
+validate{
+<csv-options:options>
   <first-row-is-header line="5-8"/>
-  <start-from-row line="9 - 75"/>
+  <start-from-row line="    9 - 75 "/>
   <csv separator=","
        quote-char="&quot;"
        quote-escape="&quot;&quot;"/>
-</options>
+</csv-options:options> }
 return
 zorba-csv:serialize(
         zorba-csv:parse(file:read-text(fn:resolve-uri("Hospital Outpatient Payments for 61 Commonly Performed Procedures, CY 2008 Data.csv")),

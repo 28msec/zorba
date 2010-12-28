@@ -2,12 +2,14 @@
 The text file is taken from http://data.gov.
 :)
 
+import schema namespace csv-options="http://www.zorba-xquery.com/modules/csv-options";
 import module namespace zorba-csv = "http://www.zorba-xquery.com/modules/csv";
 import module namespace file="http://www.zorba-xquery.com/modules/file";
 
 zorba-csv:parse(file:read-text(fn:resolve-uri("pusum02a.txt")), 
                     
-<options>
+validate{
+<csv-options:options>
   <column-positions>
      <column-position>                 1 </column-position>
      <column-position>               3</column-position>
@@ -96,7 +98,7 @@ zorba-csv:parse(file:read-text(fn:resolve-uri("pusum02a.txt")),
      <column-position>               506 </column-position>
      <column-position>              508</column-position>
   </column-positions>
-</options>
+</csv-options:options> }
 
 )                 
          

@@ -5,6 +5,7 @@ so it is ignored.
 Also note the truncation of fields.
  :)
 
+import schema namespace csv-options="http://www.zorba-xquery.com/modules/csv-options";
 import module namespace zorba-csv = "http://www.zorba-xquery.com/modules/csv";
 
 zorba-csv:serialize(
@@ -28,7 +29,8 @@ zorba-csv:serialize(
   <f44>value24</f44>
 </row3>), 
 
-<options>
+validate{
+<csv-options:options>
   <first-row-is-header/>
   <column-widths>
     <column-width>10</column-width>
@@ -36,7 +38,7 @@ zorba-csv:serialize(
     <column-width>10</column-width>
     <column-width>7</column-width>
   </column-widths>
-</options>   
+</csv-options:options>   }
 )
 
 (:

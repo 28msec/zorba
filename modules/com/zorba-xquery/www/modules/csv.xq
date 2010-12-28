@@ -24,6 +24,11 @@
 module namespace zorba-csv = "http://www.zorba-xquery.com/modules/csv";
 
 (:~
+ : Namespace for csv options. Same as the namespace for the csv options xsd.
+:)
+declare namespace csv-options="http://www.zorba-xquery.com/modules/csv-options";
+
+(:~
  : Errors namespace URI.
 :)
 declare variable $zorba-csv:csvNS as xs:string := "http://www.zorba-xquery.com/modules/csv";
@@ -35,14 +40,12 @@ declare variable $zorba-csv:csvNS as xs:string := "http://www.zorba-xquery.com/m
 :)
 declare variable $zorba-csv:errWrongParam as xs:QName := fn:QName($zorba-csv:csvNS, "zorba-csv:WrongParam");
 
-
-
 (:~
  : Parse a CSV or fixed size text and convert to XML.<br/>
  : By default each line is converted to a &lt;row> element, and each field to a &lt;column> element inside &lt;row>.<br/>
  : @param $csv the string containing the csv or fixed size text.
  : @param $options having format<br/>
- :    &lt;options><br/>
+ :    &lt;csv-options:options><br/>
  :    &#160;&#160;  &lt;csv  [separator="default comma ,"] ? <br/>
  :    &#160;&#160;    [quote-char="default double quotes &amp;quote;"]? <br/>
  :    &#160;&#160;    [quote-escape="default double double quotes &amp;quote;&amp;quote;"]? /> <br/>
@@ -65,10 +68,10 @@ declare variable $zorba-csv:errWrongParam as xs:QName := fn:QName($zorba-csv:csv
  :    &#160;&#160;&#160;&#160;&#160;&#160;  [&lt;<i>column-name/</i>>]?<br/>
  :    &#160;&#160;&#160;&#160;  &lt;/<i>row-name</i>>]?<br/>
  :    &#160;&#160;  &lt;/xml-nodes>?<br/>
- :    &lt;/options><br/>
+ :    &lt;/csv-options:options><br/>
  :    <br/>
- :    All the parameters are optional.<br/>
- :    All the parameters are case sensitive. They can be in any namespace.<br/>
+ :    All the parameters are optional and can appear in any order.<br/>
+ :    All the parameters are case sensitive. The namespace used is "http://www.zorba-xquery.com/modules/csv-options".<br/>
  :    All strings must have UTF-8 encoding.<br/>
  :    Parameters csv, column-widths, column-positions are mutualy exclusive. If none is specified, 
  :    the input string is assumed to be csv.<br/>
@@ -189,7 +192,7 @@ declare variable $zorba-csv:errWrongParam as xs:QName := fn:QName($zorba-csv:csv
  : @example txt_parse8.xq
 :)
 declare function zorba-csv:parse($csv as xs:string,
-                                 $options as element(options)?) as element()* external;
+                                 $options as element(csv-options:options)?) as element()* external;
                                  
 (:~
  : Convert XML into CSV or fixed size text.<br/>
@@ -200,7 +203,7 @@ declare function zorba-csv:parse($csv as xs:string,
  : @param $xml a sequence of elements, each element representing a row. The name of each row element is ignored.
  :     The childs of each row are the column fields.
  : @param $options having format<br/>
- :    &lt;options><br/>
+ :    &lt;csv-options:options><br/>
  :    &#160;&#160;  &lt;csv  [separator="default comma ,"] ? <br/>
  :    &#160;&#160;    [quote-char="default double quotes &amp;quote;"]? <br/>
  :    &#160;&#160;    [quote-escape="default double double quotes &amp;quote;&amp;quote;"]? /> <br/>
@@ -216,10 +219,10 @@ declare function zorba-csv:parse($csv as xs:string,
  :		&#160;&#160;	&lt;/column-positions><br/>
  :    &#160;&#160;  <br/>
  :    &#160;&#160;  &lt;first-row-is-header/>?<br/>
- :    &lt;/options>
+ :    &lt;/csv-options:options>
  :    <br/>
- :    All the parameters are optional.<br/>
- :    All the parameters are case sensitive. They can be in any namespace.<br/>
+ :    All the parameters are optional and can appear in any order.<br/>
+ :    All the parameters are case sensitive. The namespace used is "http://www.zorba-xquery.com/modules/csv-options".<br/>
  :    All strings must have UTF-8 encoding.<br/>
  :    Parameters csv, column-widths, column-positions are mutualy exclusive. If none is specified, 
  :    the xml is converted to csv.<br/>
@@ -307,5 +310,5 @@ declare function zorba-csv:parse($csv as xs:string,
  : @example txt_parse_serialize6.xq
 :)
 declare function zorba-csv:serialize($xml as element()*,
-									$options as element(options)?) as xs:string external;
+									$options as element(csv-options:options)?) as xs:string external;
 																		

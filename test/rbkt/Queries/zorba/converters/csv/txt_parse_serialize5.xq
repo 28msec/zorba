@@ -1,8 +1,10 @@
+import schema namespace csv-options="http://www.zorba-xquery.com/modules/csv-options";
 import module namespace zorba-csv = "http://www.zorba-xquery.com/modules/csv";
 import module namespace file="http://www.zorba-xquery.com/modules/file";
 
 let $options :=
-<options>
+validate{
+<csv-options:options>
   <column-widths>
     <column-width>20</column-width>
     <column-width>45</column-width>
@@ -13,7 +15,7 @@ let $options :=
     <column-width>2</column-width>
     <column-width>17</column-width>
   </column-widths>
-</options>   
+</csv-options:options>   }
 return
 let $result := 
 zorba-csv:serialize(

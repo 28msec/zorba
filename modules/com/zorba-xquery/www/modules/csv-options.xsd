@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<schema
+   targetNamespace="http://www.zorba-xquery.com/modules/csv-options"
+   xmlns:csv="http://www.zorba-xquery.com/modules/csv-options"
+   xmlns="http://www.w3.org/2001/XMLSchema"
+   version="1.0.0">
+
+
+  <complexType name="csvType">
+    <attribute name="separator" type="string" default=","/>
+    <attribute name="quote-char" type="string" default="&quot;"/>
+    <attribute name="quote-escape" type="string" default="&quot;&quot;"/>
+  </complexType>
+  <complexType name="first-row-is-headerType">
+    <attribute name="line">
+      <simpleType>
+        <restriction base="string">
+          <pattern value="\p{Zs}*[0-9]*\p{Zs}*(-\p{Zs}*[0-9]*)?\p{Zs}*"/>
+        </restriction>
+      </simpleType>
+    </attribute>
+  </complexType>
+  <complexType name="start-from-rowType">
+    <attribute name="line">
+      <simpleType>
+        <restriction base="string">
+          <pattern value="\p{Zs}*[0-9]*\p{Zs}*(-\p{Zs}*[0-9]*)?\p{Zs}*"/>
+        </restriction>
+      </simpleType>
+    </attribute>
+  </complexType>
+  <simpleType name="alignType">
+    <restriction base="string">
+      <enumeration value="left"/>
+      <enumeration value="right"/>
+    </restriction>
+  </simpleType>
+  <attributeGroup name="alignGroup">
+    <attribute name="align" type="csv:alignType"/>
+  </attributeGroup>
+  <complexType name="column-widthsType">
+    <sequence>
+      <element name="column-width" minOccurs="0" maxOccurs="unbounded">
+        <complexType>
+          <simpleContent>
+            <extension base="positiveInteger">
+              <attributeGroup ref="csv:alignGroup"/>
+            </extension>
+          </simpleContent>
+        </complexType>
+      </element>
+    </sequence>
+    <attributeGroup ref="csv:alignGroup"/>
+  </complexType>
+  <complexType name="column-positionsType">
+    <sequence>
+      <element name="column-position" minOccurs="0" maxOccurs="unbounded">
+        <complexType>
+          <simpleContent>
+            <extension base="positiveInteger">
+              <attributeGroup ref="csv:alignGroup"/>
+            </extension>
+          </simpleContent>
+        </complexType>
+      </element>
+    </sequence>
+    <attributeGroup ref="csv:alignGroup"/>
+  </complexType>
+  <complexType name="row-nameType">
+    <sequence>
+      <any minOccurs="0"/>
+    </sequence>
+  </complexType>
+
+  <complexType name="optionsType">
+    <all>
+      <element name="csv" type="csv:csvType" minOccurs="0"/>
+      <element name="column-widths" type="csv:column-widthsType" minOccurs="0"/>
+      <element name="column-positions" type="csv:column-positionsType" minOccurs="0"/>
+      <element name="first-row-is-header" type="csv:first-row-is-headerType" minOccurs="0"/>
+      <element name="start-from-row" type="csv:start-from-rowType" minOccurs="0"/>
+      <element name="add-last-void-columns" minOccurs="0"/>
+      <element name="xml-nodes" minOccurs="0">
+        <complexType>
+          <sequence>
+            <any processContents="skip"/>
+          </sequence>
+        </complexType>
+      </element>
+    </all>
+  </complexType>
+
+  <element name="options" type="csv:optionsType"/>
+  
+</schema>
