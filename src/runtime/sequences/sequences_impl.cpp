@@ -1033,36 +1033,23 @@ static bool DeepEqual(
       case store::StoreConsts::textNode:     /* deliberate fall-through */
       case store::StoreConsts::commentNode:
       {
-        if(collator == NULL || collator->doMemCmp())
-          return (0 == item1->getStringValue().compare(item2->getStringValue()));
-        else
-          return (0 == utf8::compare(item1->getStringValue(),
-                                    item2->getStringValue(),
-                                    collator));
+        return (0 == utf8::compare(item1->getStringValue(),
+                                   item2->getStringValue(),
+                                   collator));
         break;
       }
 
       case store::StoreConsts::piNode:
       {
-        int lCmpRes = ((collator == NULL || collator->doMemCmp())?
-                       item1->getNodeName()->getStringValue().compare(
-                       item2->getNodeName()->getStringValue())
-                       :
-                       utf8::compare(item1->getNodeName()->getStringValue(),
-                                     item2->getNodeName()->getStringValue(),
-                                     collator)
-                       );
+        int lCmpRes = utf8::compare(item1->getNodeName()->getStringValue(),
+                                    item2->getNodeName()->getStringValue(),
+                                    collator);
         if (0 != lCmpRes)
           return false;
 
-        lCmpRes = ((collator == NULL || collator->doMemCmp())?
-                   item1->getStringValue().compare(
-                   item2->getStringValue())
-                   :
-                   utf8::compare(item1->getStringValue(),
-                                 item2->getStringValue(),
-                                 collator)
-                  );
+        lCmpRes = utf8::compare(item1->getStringValue(),
+                                item2->getStringValue(),
+                                collator);
 
         return (0 == lCmpRes);
         break;
@@ -1191,7 +1178,7 @@ bool HashSemiJoinIterator::nextImpl(store::Item_t& result, PlanState& planState)
 ********************************************************************************/
 bool SortSemiJoinIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t item [2];
+  store::Item_t item[2];
   short order;
   int i;
 
@@ -1199,12 +1186,15 @@ bool SortSemiJoinIterator::nextImpl(store::Item_t& result, PlanState& planState)
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
 
-  for (;;) {
-
+  for (;;) 
+  {
     // load items
-    for (i = 0; i < 2; i++) {
-      if (item [i] == NULL) {
-        if (!CONSUME (item[i], i)) {
+    for (i = 0; i < 2; i++) 
+    {
+      if (item [i] == NULL) 
+      {
+        if (!CONSUME (item[i], i))
+        {
           item[i] = NULL;
           goto done;
         }
@@ -1212,13 +1202,16 @@ bool SortSemiJoinIterator::nextImpl(store::Item_t& result, PlanState& planState)
     }
 
     // advance, output
-    order = GENV_STORE.compareNodes (item [0].getp(), item [1].getp());
-    if ( order == 0 ) {
+    order = GENV_STORE.compareNodes(item[0].getp(), item[1].getp());
+    if ( order == 0 ) 
+    {
       result = item[0];
       STACK_PUSH (true, state);
     }
-    else item [(order < 0) ? 0 : 1] = NULL;
-
+    else
+    {
+      item [(order < 0) ? 0 : 1] = NULL;
+    }
   }
 
 done:

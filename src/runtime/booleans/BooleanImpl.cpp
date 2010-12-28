@@ -945,62 +945,67 @@ template<TypeConstants::atomic_type_code_t ATC>
 bool TypedValueCompareIterator<ATC>::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t lItem0, lItem1;
-  bool bRes, neq = false, nonempty = false;
-  int cmp;
+  bool bRes;
+  bool neq = false;
+  bool nonempty = false;
+  long cmp;
 
   PlanIteratorState* state;
-  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (CONSUME (lItem0, 0) && CONSUME (lItem1, 1))
+  if (CONSUME(lItem0, 0) && CONSUME(lItem1, 1))
   {
+    nonempty = true;
+
     switch (theCompType)
     {
     case CompareConsts::VALUE_NOT_EQUAL:
       neq = true;
+
     case CompareConsts::VALUE_EQUAL:
-      nonempty = true;
-      bRes = lItem0->equals (lItem1, theTimezone, theCollation);
-      if (neq) bRes = ! bRes;
+    {
+      bRes = lItem0->equals(lItem1, theTimezone, theCollation);
+      if (neq)
+        bRes = ! bRes;
+
       break;
+    }
 
     default:
+    {
+      cmp = lItem0->compare(lItem1, theTimezone, theCollation);
+
+      switch (theCompType)
       {
-        cmp = lItem0->compare (lItem1, theTimezone, theCollation);
-
-        if (cmp > -2)
-          nonempty = true;
-
-        switch (theCompType)
-        {
-        case CompareConsts::VALUE_LESS:
-          bRes = (cmp == -1);
-          break;
-        case CompareConsts::VALUE_GREATER:
-          bRes = (cmp == 1);
-          break;
-        case CompareConsts::VALUE_LESS_EQUAL:
-          bRes = (cmp == -1 || cmp == 0);
-          break;
-        case CompareConsts::VALUE_GREATER_EQUAL:
-          bRes = (cmp == 0 || cmp == 1);
-          break;
-        default:
-          ZORBA_ASSERT (false);
-        } // switch (theCompType)
-      } // default
+      case CompareConsts::VALUE_LESS:
+        bRes = (cmp < 0);
+        break;
+      case CompareConsts::VALUE_GREATER:
+        bRes = (cmp > 0);
+        break;
+      case CompareConsts::VALUE_LESS_EQUAL:
+        bRes = (cmp <= 0);
+        break;
+      case CompareConsts::VALUE_GREATER_EQUAL:
+        bRes = (cmp >= 0);
+        break;
+      default:
+        ZORBA_ASSERT(false);
+      } // switch (theCompType)
+    } // default
     } // switch (theCompType)
 
     if (nonempty)
-      STACK_PUSH (GENV_ITEMFACTORY->createBoolean (result, bRes), state);
+      STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, bRes), state);
 
-    if (CONSUME (lItem0, 0) || CONSUME (lItem1, 1))
+    if (CONSUME(lItem0, 0) || CONSUME(lItem1, 1))
     {
       ZORBA_ERROR_LOC_DESC(XPTY0004, this->loc,
                            "Value comparisons must not be made with sequences longer than one item.");
     }
   }
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 
