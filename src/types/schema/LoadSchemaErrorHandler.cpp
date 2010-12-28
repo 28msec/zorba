@@ -51,7 +51,16 @@ void LoadSchemaErrorHandler::error(const XERCES_CPP_NAMESPACE::SAXParseException
 {
   theSawErrors = true;
   std::ostringstream os;
-  os << "Error in schema " << StrX(e.getSystemId()) << ", line " << e.getLineNumber() 
+  os << "Error in schema ";
+
+if ( e.getSystemId() != NULL )
+    os << "with system id " << StrX(e.getSystemId());
+  else if ( e.getPublicId() != NULL )
+    os << "with public id " << StrX(e.getPublicId());
+  else 
+    os << "without id"; 
+  
+  os << ", line " << e.getLineNumber() 
      << ", column " << e.getColumnNumber() << "." << std::endl
      << StrX(e.getMessage());
   ZORBA_ERROR_LOC_DESC( XQST0059, theQueryLoc, os.str());
@@ -61,7 +70,16 @@ void LoadSchemaErrorHandler::fatalError(const XERCES_CPP_NAMESPACE::SAXParseExce
 {
   theSawErrors = true;
   std::ostringstream os;
-  os << "Error in schema " << StrX(e.getSystemId()) << ", line " << e.getLineNumber() 
+  os << "Error in schema ";
+
+if ( e.getSystemId() != NULL )
+    os << "with system id " << StrX(e.getSystemId());
+  else if ( e.getPublicId() != NULL )
+    os << "with public id " << StrX(e.getPublicId());
+  else 
+    os << "without id"; 
+  
+  os << ", line " << e.getLineNumber() 
      << ", column " << e.getColumnNumber() << "." << std::endl
      << StrX(e.getMessage());
   ZORBA_ERROR_LOC_DESC( XQST0059, theQueryLoc, os.str());

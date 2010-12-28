@@ -106,6 +106,13 @@ inline XERCES_STD_QUALIFIER ostream& operator<<(
   return target;
 }
 
+inline XERCES_STD_QUALIFIER ostream& operator+(
+    XERCES_STD_QUALIFIER ostream& target, const StrX& toDump)
+{
+  target << (toDump.localForm()==NULL ? "NULL" : toDump.localForm() );
+  return target;
+}
+
 } // namespace zorba
 
 #endif  // ZORBA_NO_XMLSCHEMA
