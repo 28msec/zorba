@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_EMAIL_EMAILMODULE_H
-#define ZORBA_EMAIL_EMAILMODULE_H
+#ifndef ZORBA_EMAILMODULE_EMAILMODULE_H
+#define ZORBA_EMAILMODULE_EMAILMODULE_H
 
 #include <map>
 
@@ -24,7 +24,7 @@
 
 namespace zorba
 {
-  namespace email
+  namespace emailmodule
   {
     class SMTPModule : public ExternalModule
     {
@@ -70,7 +70,7 @@ namespace zorba
                   String aOptionName,
                   String& aOptionValue) const;
     };
-  } /* namespace email */
+  } /* namespace emailmodule */
 } /* namespace zorba */
 
 #endif // ZORBA_EMAIL_EMAILMODULE_H

@@ -21,7 +21,7 @@
 
 namespace zorba
 {
-  namespace email
+  namespace emailmodule
   {
     class SendFunction : public SMTPFunction
     {

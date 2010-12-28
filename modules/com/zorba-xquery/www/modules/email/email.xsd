@@ -74,7 +74,7 @@ xmlns:tns="http://www.zorba-xquery.com/modules/email/email"
 <complexType name="messageType"> 
 <sequence>
 <element name="envelope" type="tns:envelopeType" maxOccurs="1" minOccurs="0"/>
-<element name="mimeVersion" type="string" maxOccurs="1" minOccurs="1" default="1.0"/>
+<element name="mimeVersion" type="string" maxOccurs="1" minOccurs="0" default="1.0"/>
 <element name="body" type="tns:bodyTypeChoice" maxOccurs="1" minOccurs="1"/>
 </sequence>
 </complexType>
@@ -133,8 +133,5 @@ xmlns:tns="http://www.zorba-xquery.com/modules/email/email"
  </choice>
  </sequence>
  </complexType>
-
-
-
 
  </schema>

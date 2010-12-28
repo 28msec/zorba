@@ -30,14 +30,14 @@
 
 namespace zorba
 {
-  namespace email
+  namespace emailmodule
   {
     class MimeHandler
     {
     public:
       virtual void begin(const Item& aMimeItem) = 0;
-      virtual bool envelope(zorba::String& aDiagnostics) = 0;
-      virtual bool body(zorba::String& aDiagnostics) = 0;
+      virtual bool envelope(std::string& aDiagnostics) = 0;
+      virtual bool body(std::string& aDiagnostics) = 0;
       virtual void end() = 0;
     };
 
@@ -50,7 +50,8 @@ namespace zorba
       //http://www.washington.edu/imap/documentation/internal.txt.html
       BODY*         theBody;
       ENVELOPE*     theEnvelope;
-      zorba::Item   theMessageItem;
+      zorba::Item   theEnvelopeItem;
+      zorba::Item   theBodyItem;
 
       //assign a certain message string to the given BODY
       //TODO implement a streaming mechanism for large attachments
@@ -84,23 +85,25 @@ namespace zorba
       parse_multipart(BODY* aBody,
                       const Item aItemMultipart);
 
+      // set contentType, charset and TranferEncoding
+      void
+      set_contentTypeCharsetCTF(BODY* aBody,
+                                const Item& aContentOrMultipartItem);
+
+
+      // parse a xml dateTime string to something cclient will like
+      void 
+      parseXmlDateTime(String& aXmlDateTime, char* aCDateTime);
+
+
     public:
       void begin(const Item& aMimeItem);
-      bool envelope(zorba::String& aDiagnostics);
-      bool body(zorba::String& aDiagnostics);
+      bool envelope(std::string& aDiagnostics);
+      bool body(std::string& aDiagnostics);
       void end();
 
       BODY*     getBody()     {  return theBody; };
       ENVELOPE* getEnvelope() {  return theEnvelope; };
-
-      void
-      CClientEnvelope(char* aFrom,
-                      char* aTo,
-                      char* aCc,
-                      char* aBcc,
-                      char* aSubject,
-                      char* aDate);
-
 
       //destroy theBody and theEnvelope
       ~CClientMimeHandler();

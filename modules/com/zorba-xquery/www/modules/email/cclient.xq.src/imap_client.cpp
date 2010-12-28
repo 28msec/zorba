@@ -18,14 +18,68 @@
 #include <stdio.h>
 #include <iostream>
 #include <sstream>
-#include <algorithm>
+#include <vector>
 #pragma GCC diagnostic ignored "-Wwrite-strings"
 
 
 
 namespace zorba { namespace emailmodule {
 
+  // functions for smtp support
 
+  bool
+  ImapClient::send(const std::string& aHost,
+                   const std::string& aUsername,
+                   const std::string& aPassword,
+                   ENVELOPE* aEnvelope,
+                   BODY* aBody,
+                   std::string& aDiagnostics) {
+    
+    
+    
+    setUserName(aUsername);
+    setPassword(aPassword); 
+
+    std::stringstream out;
+    char tmp[MAILTMPLEN];
+    SENDSTREAM *smtp_stream = NIL;
+    bool res = false;
+
+    char *hostlist[2];
+    hostlist[0] = const_cast<char*>(aHost.c_str());
+    hostlist[1] = NIL;
+
+    #include "linkage.c"
+    #if MACOS
+    {
+      size_t *base = (size_t *) 0x000908;
+      // increase stack size on a Mac
+      SetApplLimit ((Ptr) (*base - (size_t) 65535L));
+    }
+    #endif
+
+    out << "Sending...\n";
+    smtp_stream = smtp_open (hostlist,0);
+    if ( smtp_stream ) {
+        sprintf (tmp, "MAIL");
+        res = true;
+        out << "OK\n";
+        res = smtp_mail ( smtp_stream, tmp, aEnvelope, aBody); 
+        smtp_close(smtp_stream);
+     
+    
+    } else { 
+      out << "Something really went wrong" << std::endl;
+    }
+   
+    aDiagnostics += out.str();
+    return res;
+  
+
+  }
+
+
+  // functions for imap support
   void
   ImapClient::setUserName(const std::string& usr) {
     theUserName = usr; 

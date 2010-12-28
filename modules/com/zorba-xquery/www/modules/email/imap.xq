@@ -242,7 +242,7 @@ declare function imap:fetch-envelope($host-info as element(imaps:hostInfo), $mai
  : @error If any of the specified mailbox does not exist.
  : @error If any of the passed message number does not exist.
  :)
-declare function imap:fetch-message($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long, $uid as xs:boolean) as element(email:Message) {
+declare function imap:fetch-message($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long, $uid as xs:boolean) as element(email:message) {
    validate {imap:fetch-message-impl(validate {$host-info}, $mailbox, $message-number, $uid)} 
 }; 
 

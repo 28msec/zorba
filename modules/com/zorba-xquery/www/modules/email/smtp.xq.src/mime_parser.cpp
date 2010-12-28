@@ -18,9 +18,9 @@
 
 namespace zorba
 {
-  namespace email
+  namespace emailmodule
   {
-    bool MimeParser::parse(const Item& aMimeItem, zorba::String& aDiagnostics)
+    bool MimeParser::parse(const Item& aMimeItem, std::string& aDiagnostics)
     {
       theHandler->begin(aMimeItem);
 

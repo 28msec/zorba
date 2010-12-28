@@ -19,16 +19,16 @@
 #include <windows.h>
 #endif
 
+#include "mime_parser.h"
 #include <zorba/empty_sequence.h>
 #include <zorba/singleton_item_sequence.h>
-
+#include "imap_client.h"
 #include "smtp.h"
-#include "uw_imap.h"
 #include "email_module.h"
 
 namespace zorba
 {
-  namespace email
+  namespace emailmodule
   {
   //SendFunction
   SendFunction::SendFunction(const SMTPModule* aModule)
@@ -42,47 +42,58 @@ namespace zorba
     const StaticContext* aSctxCtx,
     const DynamicContext* aDynCtx) const
   {
-    zorba::Item   itemMessage;
-    bool          res = false, lSMTPServerFound = false;
-    zorba::String SMTPServer, SMTPUser, SMTPPwd, diagnostics;
+    
+    bool res = false; 
 
-    lSMTPServerFound = theModule->getOption(aSctxCtx,"SMTPServer",SMTPServer);
-    theModule->getOption(aSctxCtx,"SMTPUser",SMTPUser);
-    theModule->getOption(aSctxCtx,"SMTPPwd",SMTPPwd);
+    // getting host, username and password 
+    std::string lHostName;
+    std::string lUserName;
+    std::string lPassword;
+    SMTPFunction::getHostUserPassword(args, 0, lHostName, lUserName, lPassword);      
 
-    if( !lSMTPServerFound || SMTPServer.empty() )
+    std::string lDiagnostics = ""; 
+    // getting message as item
+    Item messageItem;
+    args[1]->next(messageItem);
+
+    CClientMimeHandler lHandler;
+    MimeParser lParser(&lHandler);
+    bool lParseOK = lParser.parse(messageItem, lDiagnostics);
+    bool lHasRecipient = (lHandler.getEnvelope()->to ||
+                          lHandler.getEnvelope()->cc ||
+                          lHandler.getEnvelope()->bcc);
+
+ 
+      // if we can't parse the message, then we've got problems
+    if (!lParseOK) { 
+      lDiagnostics +=  "Message could not be parsed.\n";
+      res = false; 
+    } else if (!lHasRecipient) {
+      lDiagnostics +=  "Message has no recipient.\n";
+      res = false;
+    } else {
+      res = ImapClient::Instance().send(lHostName.c_str(),
+                                        lUserName.c_str(),
+                                        lPassword.c_str(),
+                                        lHandler.getEnvelope(),
+                                        lHandler.getBody(),
+                                        lDiagnostics);
+    }
+    if( !res )
     {
       //TODO implement excenption handling via external_function_data
       std::stringstream lErrorMessage;
-      lErrorMessage << "The SMTP server was not set. Please set SMTP username and password also if needed.";
+      lErrorMessage << "Mail could not be sent. Here is the log:" << std::endl;
+      lErrorMessage << lDiagnostics;
       throwError(lErrorMessage.str(), XQP0019_INTERNAL_ERROR);
     }
-    else
-    {
-      //TODO implement check for empty or sequence params
-      args[0]->next(itemMessage);
-
-      res = CClient::Instance().send( itemMessage,
-                  SMTPServer.c_str(),
-                  SMTPUser.c_str(),
-                  SMTPPwd.c_str(),
-                  diagnostics);
-
-      if( !res )
-      {
-        //TODO implement excenption handling via external_function_data
-        std::stringstream lErrorMessage;
-        lErrorMessage << "Mail could not be sent. Here is the log:" << std::endl;
-        lErrorMessage << diagnostics.c_str();
-        throwError(lErrorMessage.str(), XQP0019_INTERNAL_ERROR);
-      }
-    }
+    
 
     return ItemSequence_t(new SingletonItemSequence(
                           theModule->getItemFactory()->createBoolean(res)));
   }
 
-  } // namespace email
+  } // namespace emailmodule
 } // namespace zorba
 
 #ifdef WIN32
@@ -92,5 +103,5 @@ namespace zorba
 #endif
 
   extern "C" DLL_EXPORT zorba::ExternalModule* createModule() {
-    return new zorba::email::SMTPModule();
+    return new zorba::emailmodule::SMTPModule();
   }

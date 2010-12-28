@@ -22,11 +22,11 @@
 #ifdef WIN32
 #include <windows.h>
 #endif
-
 #include "c-client.h"
 #include <string>
-#include <vector>
+#undef max
 #include <list>
+#include <vector>
 
 namespace zorba
 {
@@ -40,8 +40,19 @@ namespace zorba
         static ImapClient lInstance;
         return lInstance;
       }
+       
+      
+      
+      bool
+      send(const std::string& aHost,
+           const std::string& aUsername,
+           const std::string& aPassword,
+           ENVELOPE* aEnvelope,
+           BODY* aBody,
+           std::string& aDiagnostics); 
+  
 
-
+      
       MAILSTREAM* getMailStream(const std::string& aHost,
                                 const std::string& aUsername,
                                 const std::string& aPassword,
@@ -224,14 +235,15 @@ namespace zorba
       };
       ~ImapClient() {
         // make sure that theMailstream is not open! 
-        std::list<Host>::iterator allHostsIterator;
-        for (allHostsIterator = theHosts.begin(); allHostsIterator != theHosts.end(); allHostsIterator++) {
-          MAILSTREAM * lToClose = (*allHostsIterator).lMailStream;
-          if (lToClose) {
-            mail_close(lToClose);
-          }  
+        if (theHosts.size() > 0) {
+          std::list<Host>::iterator allHostsIterator;
+          for (allHostsIterator = theHosts.begin(); allHostsIterator != theHosts.end(); allHostsIterator++) {
+            MAILSTREAM * lToClose = (*allHostsIterator).lMailStream;
+            if (lToClose) {
+              mail_close(lToClose);
+            }  
+          }
         }
- 
       };
 
       struct Host {

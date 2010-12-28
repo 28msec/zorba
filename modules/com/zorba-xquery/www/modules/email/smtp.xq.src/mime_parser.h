@@ -23,7 +23,7 @@
 
 namespace zorba
 {
-  namespace email
+  namespace emailmodule
   {
     class MimeParser
     {
@@ -32,7 +32,7 @@ namespace zorba
     public:
       MimeParser(MimeHandler* aHandler) : theHandler(aHandler) {};
 
-      bool parse(const Item& aMimeItem, zorba::String& aDiagnostics);
+      bool parse(const Item& aMimeItem, std::string& aDiagnostics);
     };
   }//namespace email
 }//namespace zorba
