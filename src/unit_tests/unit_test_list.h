@@ -18,8 +18,6 @@
 #define ZORBA_UNIT_TEST_LIST_H
 
 
-using namespace std;
-
 namespace zorba {
 
   namespace UnitTests {
