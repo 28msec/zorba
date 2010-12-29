@@ -125,6 +125,16 @@ void UDFGraph::build(const expr* curExpr, std::vector<user_function*>& callChain
 
         callChain.pop_back();
       }
+      else
+      {
+        // A recursive function call.
+        std::vector<user_function*>::const_iterator ite = callChain.begin();
+        std::vector<user_function*>::const_iterator end = callChain.end();
+        for (++ite; ite != end; ++ite)
+        {
+          (*ite)->addMutuallyRecursiveUDFs(callChain);
+        }
+      }
     }
   }
 

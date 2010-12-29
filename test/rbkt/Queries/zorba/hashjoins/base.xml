@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<institutions source="create_institutions-years-files.xq">
+  <inst unitid="10017">
+    <year name="1980">
+      <file name="ef1980_a"/>
+      <file name="f1980"/>
+      <file name="ic1980"/>
+    </year>
+    <year name="1986">
+      <file name="ic1986_a"/>
+    </year>
+  </inst>
+  <inst unitid="100636">
+    <year name="1980">
+      <file name="ef1980_a"/>
+      <file name="f1980"/>
+      <file name="ic1980"/>
+    </year>
+    <year name="1984">
+      <file name="ef1984"/>
+      <file name="f1984"/>
+      <file name="ic1984"/>
+    </year>
+    <year name="1985">
+      <file name="ef1985"/>
+      <file name="f1985"/>
+      <file name="ic1985"/>
+    </year>
+    <year name="1986">
+      <file name="ef1986_a"/>
+      <file name="f1986"/>
+      <file name="ic1986_a"/>
+    </year>
+    <year name="1987">
+      <file name="ef1987_a"/>
+      <file name="f1987_a"/>
+      <file name="f1987_e"/>
+      <file name="f1987_ic"/>
+      <file name="ic1987_a"/>
+      <file name="ic1987_b"/>
+    </year>
+    <year name="1988">
+      <file name="ef1988_a"/>
+      <file name="f1988"/>
+      <file name="ic1988_a"/>
+    </year>
+    <year name="1989">
+      <file name="ef1989_a"/>
+      <file name="f1989_ic"/>
+      <file name="ic1989_a"/>
+      <file name="ic1989_b"/>
+    </year>
+    <year name="1990">
+      <file name="ef90_a"/>
+      <file name="f8990_hd"/>
+      <file name="ic90d"/>
+      <file name="ic90hd"/>
+    </year>
+    <year name="1991">
+      <file name="ef1991_a"/>
+      <file name="f1991_a"/>
+      <file name="f1991_hdr"/>
+      <file name="ic1991_d"/>
+      <file name="ic1991_hdr"/>
+    </year>
+    <year name="1992">
+      <file name="ef1992_a"/>
+      <file name="f1992_ic"/>
+      <file name="ic1992_a"/>
+      <file name="ic1992_b"/>
+    </year>
+    <year name="1993">
+      <file name="ef1993_a"/>
+      <file name="f1993_ic"/>
+      <file name="ic1993_a"/>
+      <file name="ic1993_b"/>
+    </year>
+    <year name="1994">
+      <file name="ef1994_anr"/>
+      <file name="f1994_ic"/>
+      <file name="ic1994_a"/>
+      <file name="ic1994_b"/>
+    </year>
+    <year name="1995">
+      <file name="ef95_anr"/>
+      <file name="f9495_ic"/>
+      <file name="ic9596_a"/>
+      <file name="ic9596_b"/>
+    </year>
+    <year name="1996">
+      <file name="ef96_anr"/>
+      <file name="f9596_ic"/>
+      <file name="ic9697_a"/>
+      <file name="ic9697_b"/>
+    </year>
+    <year name="1997">
+      <file name="ef97_anr"/>
+      <file name="ic9798_d"/>
+      <file name="ic9798_hdr"/>
+    </year>
+    <year name="1998">
+      <file name="ic98_d"/>
+      <file name="ic98hdac"/>
+    </year>
+    <year name="2000">
+      <file name="ef2000a"/>
+      <file name="f9900_f1"/>
+      <file name="fa2000hd"/>
+      <file name="ic2000_ay"/>
+    </year>
+    <year name="2001">
+      <file name="fa2001hd"/>
+      <file name="ic2001_ay"/>
+    </year>
+    <year name="2002">
+      <file name="hd2002"/>
+      <file name="ic2002_ay"/>
+    </year>
+    <year name="2003">
+      <file name="hd2003"/>
+      <file name="ic2003_ay"/>
+    </year>
+    <year name="2004">
+      <file name="flags2004"/>
+      <file name="hd2004"/>
+    </year>
+    <year name="2005">
+      <file name="flags2005"/>
+      <file name="hd2005"/>
+      <file name="ic2005_ay"/>
+    </year>
+    <year name="2006">
+      <file name="flags2006"/>
+      <file name="hd2006"/>
+      <file name="ic2006_ay"/>
+    </year>
+    <year name="2007">
+      <file name="flags2007"/>
+      <file name="hd2007"/>
+      <file name="ic2007_ay"/>
+    </year>
+    <year name="2008">
+      <file name="flags2008"/>
+      <file name="hd2008"/>
+      <file name="ic2008_ay"/>
+    </year>
+    <year name="2009">
+      <file name="hd2009"/>
+      <file name="ic2009_ay"/>
+    </year>
+  </inst>
+</institutions>

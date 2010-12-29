@@ -61,17 +61,19 @@ namespace zorba
 class user_function : public function 
 {
 private:
-  QueryLoc                  theLoc;
+  QueryLoc                    theLoc;
 
-  expr_t                    theBodyExpr;
-  std::vector<var_expr_t>   theArgVars;
+  expr_t                      theBodyExpr;
+  std::vector<var_expr_t>     theArgVars;
 
-  expr_script_kind_t        theScriptingKind;
-  bool                      theIsLeaf;
+  expr_script_kind_t          theScriptingKind;
 
-  bool                      theIsOptimized;
-  PlanIter_t                thePlan;
-  std::vector<LetVarIter_t> theArgVarRefs;
+  bool                        theIsLeaf;
+  std::vector<user_function*> theMutuallyRecursiveUDFs;
+
+  bool                        theIsOptimized;
+  PlanIter_t                  thePlan;
+  std::vector<LetVarIter_t>   theArgVarRefs;
 
 public:
   SERIALIZABLE_CLASS(user_function)
@@ -96,6 +98,8 @@ public:
   void setLeaf(bool v) { theIsLeaf = v; }
 
   bool isLeaf() const { return theIsLeaf; }
+
+  void addMutuallyRecursiveUDFs(const std::vector<user_function*>& udfs);
 
   void setOptimized(bool v) { theIsOptimized = v; }
 

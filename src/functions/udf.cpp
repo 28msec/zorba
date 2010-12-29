@@ -160,6 +160,18 @@ xqtref_t user_function::getUDFReturnType(static_context* sctx) const
 }
 #endif
 
+
+/*******************************************************************************
+
+********************************************************************************/
+void user_function::addMutuallyRecursiveUDFs(const std::vector<user_function*>& udfs)
+{
+  theMutuallyRecursiveUDFs.insert(theMutuallyRecursiveUDFs.end(),
+                                  udfs.begin() + 1,
+                                  udfs.end());
+}
+
+
 /*******************************************************************************
 
 ********************************************************************************/

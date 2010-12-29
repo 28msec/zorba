@@ -283,9 +283,6 @@ private:
   std::vector<const var_expr*>   theVarDecls;
   std::vector<const function*>   theFuncDecls;
 
-  void
-  reportCycle(const QueryLoc& loc, const PrologGraphVertex* v);
-
 public:
   static void addEdge(
         GraphImpl& graph,
@@ -340,6 +337,9 @@ public:
   }
 
   void reorder_globals(std::list<global_binding>& prologVarBindings);
+
+private:
+  void reportCycle(const QueryLoc& loc, const PrologGraphVertex* v);
 };
 
 
