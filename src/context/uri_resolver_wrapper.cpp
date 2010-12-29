@@ -184,6 +184,36 @@ std::string SchemaURIResolverWrapper::resolve(
 }
 
 
+#ifndef ZORBA_NO_FULL_TEXT
+/*******************************************************************************
+
+********************************************************************************/
+ThesaurusURIResolverWrapper::ThesaurusURIResolverWrapper(ThesaurusURIResolver* aThesaurusResolver)
+  :
+  theThesaurusResolver(aThesaurusResolver)
+{
+}
+
+
+zstring
+ThesaurusURIResolverWrapper::resolve(
+    const store::Item_t& aURI,
+    static_context* aStaticContext)
+{
+  StaticContextImpl  lOuterStaticContext(aStaticContext, 0);
+  Item               lURIItem(aURI.getp());
+  
+  // we have the ownership; it will be destroyed automatically once we leave this function
+  std::auto_ptr<ThesaurusURIResolverResult> lResult =
+    theThesaurusResolver->resolve(lURIItem, &lOuterStaticContext);
+
+  if (lResult->getError() == URIResolverResult::UR_NOERROR) 
+  {
+    return Unmarshaller::getInternalString(lResult->getResolvedThesaurus()).c_str();
+  }
+  return "";
+}
+#endif
 
 
 /*******************************************************************************

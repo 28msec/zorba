@@ -1363,6 +1363,51 @@ void static_context::remove_schema_uri_resolver(
 }
 
 
+#ifndef ZORBA_NO_FULL_TEXT
+/*******************************************************************************
+
+********************************************************************************/
+void static_context::add_thesaurus_uri_resolver(
+    InternalThesaurusURIResolver* aThesaurusResolver)
+{
+  theThesaurusResolvers.push_back(aThesaurusResolver);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void static_context::get_thesaurus_uri_resolvers(
+    std::vector<InternalThesaurusURIResolver*>& aResolvers) const
+{
+  if (theParent != NULL)
+  {
+    static_cast<static_context*>(theParent)->get_thesaurus_uri_resolvers(aResolvers);
+  }
+
+  aResolvers.insert(aResolvers.end(),
+                    theThesaurusResolvers.begin(),
+                    theThesaurusResolvers.end());
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void static_context::remove_thesaurus_uri_resolver(
+    InternalThesaurusURIResolver* aResolver)
+{
+  std::vector<InternalThesaurusURIResolver*>::iterator ite;
+  for (ite = theThesaurusResolvers.begin(); ite != theThesaurusResolvers.end(); ++ite)
+  {
+    if (aResolver == *ite)
+    {
+      theThesaurusResolvers.erase(ite);
+      return; // no duplicates in the vector
+    }
+  }
+}
+#endif
 
 /*******************************************************************************
 

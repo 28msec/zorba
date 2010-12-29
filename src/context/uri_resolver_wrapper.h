@@ -96,6 +96,29 @@ protected:
 };
 
 
+#ifndef ZORBA_NO_FULL_TEXT
+/*******************************************************************************
+
+********************************************************************************/
+class ThesaurusURIResolverWrapper : public InternalThesaurusURIResolver
+{
+public:
+  ThesaurusURIResolverWrapper(ThesaurusURIResolver*);
+  
+  virtual ~ThesaurusURIResolverWrapper() {}
+      
+  virtual zstring
+  resolve(const store::Item_t& aURI,
+          static_context* aStaticContext);
+
+protected:
+  friend class StaticContextImpl;
+
+  ThesaurusURIResolver* theThesaurusResolver;
+};
+#endif
+
+
 /*******************************************************************************
 
 ********************************************************************************/

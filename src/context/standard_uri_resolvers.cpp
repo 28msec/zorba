@@ -367,6 +367,64 @@ zstring StandardSchemaURIResolver::checkSchemaPath(
 }
 
 
+#ifndef ZORBA_NO_FULL_TEXT
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  StandardThesaurusURIResolver                                               //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/*******************************************************************************
+
+********************************************************************************/
+zstring
+StandardThesaurusURIResolver::resolve(
+    const store::Item_t& aURI,
+    static_context* aStaticContext)
+{
+  // 2. check the user's resolvers
+  std::vector<InternalThesaurusURIResolver*> lResolvers;
+  aStaticContext->get_thesaurus_uri_resolvers(lResolvers);
+  for (std::vector<InternalThesaurusURIResolver*>::const_iterator lIter =
+      lResolvers.begin(); lIter != lResolvers.end(); ++lIter)
+  {
+    zstring lResult = (*lIter)->resolve(aURI, aStaticContext);
+    if (lResult != "")
+    {
+      return lResult;
+    }
+  }
+
+  // 3. treat the URI as URL and check if a file is in the
+  // filesystem or on the web
+  zstring lResolvedURI;
+  aURI->getStringValue2(lResolvedURI);
+
+  if (lResolvedURI.compare(0, 7, "file://") == 0)
+  {
+    // maybe we don't want to allow file access for security reasons (e.g. in a webapp)
+#ifdef ZORBA_WITH_FILE_ACCESS
+    zstring filepath;
+    URI::decode_file_URI(lResolvedURI, filepath);
+
+    std::auto_ptr<std::ifstream> lThesaurusFile(new std::ifstream(filepath.c_str()));
+
+    if (lThesaurusFile->good())
+    {
+      return lResolvedURI.str();
+    }
+    else
+    {
+      ZORBA_ERROR_PARAM(XQST0059, lResolvedURI, aURI->getStringValue().c_str());
+    }
+#endif
+  }
+
+  return aURI->getStringValue().str();
+}
+#endif
+
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  StandardModuleURIResolver                                                  //

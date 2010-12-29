@@ -381,6 +381,14 @@ namespace zorba {
       virtual std::vector<SchemaURIResolver*>
       getSchemaURIResolvers() const = 0;
 
+#ifndef ZORBA_NO_FULL_TEXT
+      virtual void
+      addThesaurusURIResolver(ThesaurusURIResolver* aThesaurusUriResolver) = 0;
+
+      virtual std::vector<ThesaurusURIResolver*>
+      getThesaurusURIResolvers() const = 0;
+#endif
+
       virtual void
       addModuleURIResolver(ModuleURIResolver* aModuleUriResolver) = 0;
 

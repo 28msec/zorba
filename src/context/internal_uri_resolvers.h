@@ -78,6 +78,19 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
+class InternalThesaurusURIResolver
+{
+public:
+  virtual ~InternalThesaurusURIResolver() {}
+      
+  virtual zstring
+  resolve(const store::Item_t& aURI,
+          static_context* aStaticContext) = 0;
+};
+
+/*******************************************************************************
+
+********************************************************************************/
 class InternalModuleURIResolver
 {
 public:

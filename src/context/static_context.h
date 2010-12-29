@@ -253,6 +253,10 @@ public:
   Vector of URI resolvers used for retrieving a schema given the schema's target
   namespace and an optional list of URLs that may store the schema.
 
+  theThesaurusResolvers :
+  -------------------
+  Vector of URI resolvers used for retrieving a thesaurus given the thesaurus's ID
+
   theModuleResolvers :
   -------------------
   Vector of URI resolvers used for retrieving (a) the URIs of the components of
@@ -472,6 +476,10 @@ protected:
 
   std::vector<InternalSchemaURIResolver*> theSchemaResolvers;
 
+#ifndef ZORBA_NO_FULL_TEXT
+  std::vector<InternalThesaurusURIResolver*> theThesaurusResolvers;
+#endif
+
   std::vector<InternalModuleURIResolver*> theModuleResolvers;
 
   checked_vector<std::string>             theModulePaths;
@@ -630,6 +638,14 @@ public:
   void get_schema_uri_resolvers(std::vector<InternalSchemaURIResolver*>& resolvers) const;
 
   void remove_schema_uri_resolver(InternalSchemaURIResolver*);
+
+#ifndef ZORBA_NO_FULL_TEXT
+  void add_thesaurus_uri_resolver(InternalThesaurusURIResolver*);
+
+  void get_thesaurus_uri_resolvers(std::vector<InternalThesaurusURIResolver*>& resolvers) const;
+
+  void remove_thesaurus_uri_resolver(InternalThesaurusURIResolver*);
+#endif
 
   void add_module_uri_resolver(InternalModuleURIResolver*);
 

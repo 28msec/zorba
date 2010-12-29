@@ -30,6 +30,9 @@ namespace zorba {
   class static_context;
   class ModuleURIResolverWrapper;
   class SchemaURIResolverWrapper;
+#ifndef ZORBA_NO_FULL_TEXT
+  class ThesaurusURIResolverWrapper;
+#endif
 
 /*******************************************************************************
 
@@ -62,6 +65,10 @@ protected:
            ModuleURIResolverWrapper*> theModuleWrappers;
   std::map<SchemaURIResolver*,
            SchemaURIResolverWrapper*> theSchemaWrappers;
+#ifndef ZORBA_NO_FULL_TEXT
+  std::map<ThesaurusURIResolver*,
+           ThesaurusURIResolverWrapper*> theThesaurusWrappers;
+#endif
 
 private:
   StaticContextImpl(const StaticContextImpl&);
@@ -190,6 +197,17 @@ public:
 
   virtual std::vector<SchemaURIResolver*>
   getSchemaURIResolvers() const;
+
+#ifndef ZORBA_NO_FULL_TEXT
+  virtual void
+  addThesaurusURIResolver(ThesaurusURIResolver* aThesaurusUriResolver);
+
+  virtual void
+  removeThesaurusURIResolver(ThesaurusURIResolver* aThesaurusUriResolver);
+
+  virtual std::vector<ThesaurusURIResolver*>
+  getThesaurusURIResolvers() const;
+#endif
 
   virtual void
   addModuleURIResolver(ModuleURIResolver* aModuleUriResolver);

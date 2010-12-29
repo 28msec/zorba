@@ -133,6 +133,17 @@ StaticContextImpl::StaticContextImpl(const StaticContextImpl& aStaticContext)
   {
     addSchemaURIResolver(iter2->first);
   }
+
+#ifndef ZORBA_NO_FULL_TEXT
+  std::map<ThesaurusURIResolver*, ThesaurusURIResolverWrapper*>::const_iterator iter3;
+
+  for (iter3 = aStaticContext.theThesaurusWrappers.begin();
+       iter3 != aStaticContext.theThesaurusWrappers.end();
+       ++iter3)
+  {
+    addThesaurusURIResolver(iter3->first);
+  }
+#endif
 }
 
 
@@ -159,6 +170,18 @@ StaticContextImpl::~StaticContextImpl()
   }
 
   theSchemaWrappers.clear();
+
+#ifndef ZORBA_NO_FULL_TEXT
+  for (std::map<ThesaurusURIResolver*, ThesaurusURIResolverWrapper*>::iterator
+        lIter = theThesaurusWrappers.begin();
+        lIter != theThesaurusWrappers.end(); ++lIter)
+  {
+      theCtx->remove_thesaurus_uri_resolver(lIter->second);
+      delete lIter->second;
+  }
+
+  theThesaurusWrappers.clear();
+#endif
 
   if ( ! theUserErrorHandler )
     delete theErrorHandler;
@@ -979,6 +1002,97 @@ void StaticContextImpl::removeSchemaURIResolver(SchemaURIResolver* aSchemaUriRes
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
 }
+
+#ifndef ZORBA_NO_FULL_TEXT
+/*******************************************************************************
+
+********************************************************************************/
+std::vector<ThesaurusURIResolver*>
+StaticContextImpl::getThesaurusURIResolvers() const
+{
+  std::vector<ThesaurusURIResolver*> lResult;
+  std::vector<InternalThesaurusURIResolver*> lResolvers;
+  try {
+    theCtx->get_thesaurus_uri_resolvers(lResolvers);
+    std::vector<InternalThesaurusURIResolver*>::iterator lIter;
+    for (lIter = lResolvers.begin(); lIter != lResolvers.end(); ++lIter) {
+      ThesaurusURIResolverWrapper* lWrapper =
+        dynamic_cast<ThesaurusURIResolverWrapper*>(*lIter);
+      if (lWrapper) { // if it's the user's resolver
+        lResult.push_back(lWrapper->theThesaurusResolver);
+      }
+    }
+  } catch (error::ZorbaError& e) {
+    ZorbaImpl::notifyError(theErrorHandler, e);
+  }
+  return lResult;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void
+StaticContextImpl::addThesaurusURIResolver(
+    ThesaurusURIResolver* aThesaurusUriResolver)
+{
+  try
+  {
+    // do nothing if the resolver is already registered
+    if (theThesaurusWrappers[aThesaurusUriResolver])
+    {
+      return;
+    }
+
+    ThesaurusURIResolverWrapper* lWrapper =
+      new ThesaurusURIResolverWrapper(aThesaurusUriResolver);
+
+    // put the wrapper in the map (ownership of the wrapper belongs to "this")
+    theThesaurusWrappers[aThesaurusUriResolver] = lWrapper;
+
+    // register the wrapper in the internal context
+    theCtx->add_thesaurus_uri_resolver(lWrapper);
+  }
+  catch (error::ZorbaError& e)
+  {
+    ZorbaImpl::notifyError(theErrorHandler, e);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void
+StaticContextImpl::removeThesaurusURIResolver(
+    ThesaurusURIResolver* aThesaurusUriResolver)
+{
+  try
+  {
+    // look for a resolver, if found
+    // (1) remove it from the internal context
+    // (2) delete the wrapper
+    // (3) remove the entry from the map
+    for (std::map<ThesaurusURIResolver*, ThesaurusURIResolverWrapper*>::iterator
+          lIter = theThesaurusWrappers.begin();
+          lIter != theThesaurusWrappers.end(); ++lIter)
+    {
+      if (lIter->first == aThesaurusUriResolver)
+      {
+        // pointer equality
+        theCtx->remove_thesaurus_uri_resolver(lIter->second);
+        delete lIter->second;
+        theThesaurusWrappers.erase(lIter);
+        return;
+      }
+    }
+  }
+  catch (error::ZorbaError& e)
+  {
+    ZorbaImpl::notifyError(theErrorHandler, e);
+  }
+}
+#endif
 
 
 /*******************************************************************************

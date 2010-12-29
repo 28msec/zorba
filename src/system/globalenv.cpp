@@ -129,8 +129,12 @@ void GlobalEnvironment::init(store::Store* store)
     XQueryCompilerSubsystem::create();
   m_globalEnv->m_compilerSubSys = lSubSystem.release();
 
-  m_globalEnv->m_module_resolver = new StandardModuleURIResolver();
-  m_globalEnv->m_schema_resolver = new StandardSchemaURIResolver();
+  m_globalEnv->m_module_resolver    = new StandardModuleURIResolver();
+  m_globalEnv->m_schema_resolver    = new StandardSchemaURIResolver();
+
+#ifndef ZORBA_NO_FULL_TEXT
+  m_globalEnv->m_thesaurus_resolver = new StandardThesaurusURIResolver();
+#endif
 }
 
 

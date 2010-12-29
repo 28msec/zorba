@@ -11943,6 +11943,16 @@ void end_visit (const FTThesaurusID& v, void* /*visit_state*/) {
     v.get_relationship(),
     v.get_levels() ? dynamic_cast<ftrange*>( pop_ftstack() ) : NULL
   );
+
+#if 0
+  InternalThesaurusURIResolver* lResolver = GENV.getThesaurusURIResolver();
+  store::Item_t thesaurusURI = NULL;
+  ITEM_FACTORY->createAnyURI(thesaurusURI, v.get_uri().c_str());
+  zstring thesaurus = lResolver->resolve(thesaurusURI, theSctx);
+
+  std::cout << "resolved thesaurus " << thesaurus << std::endl;
+#endif
+
   push_ftstack( ti );
 #endif /* ZORBA_NO_FULL_TEXT */
 }

@@ -83,6 +83,21 @@ protected:
 };
 
 
+#ifndef ZORBA_NO_FULL_TEXT
+/*******************************************************************************
+
+********************************************************************************/
+class StandardThesaurusURIResolver : public InternalThesaurusURIResolver
+{
+public:
+  virtual ~StandardThesaurusURIResolver() {}
+      
+  virtual zstring
+  resolve(const store::Item_t& aURI,
+          static_context* aStaticContext);
+};
+#endif
+
 /*******************************************************************************
 
 ********************************************************************************/
