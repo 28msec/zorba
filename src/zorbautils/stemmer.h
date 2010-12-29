@@ -29,8 +29,20 @@ class Stemmer {
 public:
   ~Stemmer();
 
-  static Stemmer const* get( locale::iso639_1::type );
+  /**
+   * Gets an instance of a %Stemmer for the given language.
+   *
+   * @param lang The language for the stemmer.
+   * @return Returns said %Stemmer.
+   */
+  static Stemmer const* get( locale::iso639_1::type lang );
 
+  /**
+   * Gets the stem of the given word.
+   *
+   * @param word The word to stem.
+   * @param result A pointer to the result string.
+   */
   void stem( zstring const &word, zstring *result ) const;
 
 private:
