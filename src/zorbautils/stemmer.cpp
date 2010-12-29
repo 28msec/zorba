@@ -26,6 +26,29 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+static bool is_lang_supported( iso639_1::type lang ) {
+  using namespace iso639_1;
+  switch ( lang ) {
+    case da:
+    case de:
+    case en:
+    case es:
+    case fi:
+    case hu:
+    case it:
+    case nl:
+    case no:
+    case pt:
+    case sv:
+    case ru:
+      return true;
+    default:
+      return false;
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 Stemmer::Stemmer( iso639_1::type lang ) :
   stemmer_( sb_stemmer_new( iso639_1::string_of[ lang ], NULL ) )
 {
@@ -42,6 +65,9 @@ Stemmer const* Stemmer::get( iso639_1::type lang ) {
 
   if ( !lang )
     lang = get_host_lang();
+  if ( !is_lang_supported( lang ) )
+    return NULL;
+
   AutoMutex const lock( &mutex );
   auto_ptr<Stemmer> &ptr = cached_stemmers[ lang ];
   if ( !ptr.get() )

@@ -33,7 +33,8 @@ public:
    * Gets an instance of a %Stemmer for the given language.
    *
    * @param lang The language for the stemmer.
-   * @return Returns said %Stemmer.
+   * @return Returns said %Stemmer or NULL if no stemmer is availabe for the
+   * given language.
    */
   static Stemmer const* get( locale::iso639_1::type lang );
 
