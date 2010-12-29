@@ -33,32 +33,30 @@ Iterator tree for main query:
             <ForVarIterator varname="ancestor"/>
           </NodeNameIterator>
         </FnStringIterator>
-        <NodeSortIterator distinct="true" ascending="true">
-          <flwor::FLWORIterator>
-            <ForVariable name="$$dot">
-              <ChildAxisIterator test kind="match_name_test" qname="*" typename="*" nill allowed="0">
-                <ParentAxisIterator test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
-                  <ForVarIterator varname="ancestor"/>
-                </ParentAxisIterator>
-              </ChildAxisIterator>
-            </ForVariable>
-            <WhereClause>
-              <TypedValueCompareIterator_STRING>
-                <FnStringIterator>
-                  <NodeNameIterator>
-                    <ForVarIterator varname="$$dot"/>
-                  </NodeNameIterator>
-                </FnStringIterator>
-                <UnhoistIterator>
-                  <ForVarIterator varname="$$opt_temp_0"/>
-                </UnhoistIterator>
-              </TypedValueCompareIterator_STRING>
-            </WhereClause>
-            <ReturnClause>
-              <ForVarIterator varname="$$dot"/>
-            </ReturnClause>
-          </flwor::FLWORIterator>
-        </NodeSortIterator>
+        <flwor::FLWORIterator>
+          <ForVariable name="$$dot">
+            <ChildAxisIterator test kind="match_name_test" qname="*" typename="*" nill allowed="0">
+              <ParentAxisIterator test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
+                <ForVarIterator varname="ancestor"/>
+              </ParentAxisIterator>
+            </ChildAxisIterator>
+          </ForVariable>
+          <WhereClause>
+            <TypedValueCompareIterator_STRING>
+              <FnStringIterator>
+                <NodeNameIterator>
+                  <ForVarIterator varname="$$dot"/>
+                </NodeNameIterator>
+              </FnStringIterator>
+              <UnhoistIterator>
+                <ForVarIterator varname="$$opt_temp_0"/>
+              </UnhoistIterator>
+            </TypedValueCompareIterator_STRING>
+          </WhereClause>
+          <ReturnClause>
+            <ForVarIterator varname="$$dot"/>
+          </ReturnClause>
+        </flwor::FLWORIterator>
       </FnConcatIterator>
     </ReturnClause>
   </flwor::FLWORIterator>

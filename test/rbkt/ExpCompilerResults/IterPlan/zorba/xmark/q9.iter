@@ -132,27 +132,25 @@ Iterator tree for main query:
                         <ElementIterator>
                           <SingletonIterator value="xs:QName(,,item)"/>
                           <EnclosedIterator attr_cont="false">
-                            <NodeSortIterator distinct="true" ascending="true">
-                              <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
-                                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,name)" typename="*" nill allowed="0">
-                                  <flwor::FLWORIterator>
-                                    <ForVariable name="t2">
-                                      <NodeSortIterator distinct="true" ascending="true">
-                                        <ProbeIndexPointGeneralIterator>
-                                          <SingletonIterator value="xs:QName(,,tempIndex1)"/>
-                                          <UnhoistIterator>
-                                            <LetVarIterator varname="$$opt_temp_1"/>
-                                          </UnhoistIterator>
-                                        </ProbeIndexPointGeneralIterator>
-                                      </NodeSortIterator>
-                                    </ForVariable>
-                                    <ReturnClause>
-                                      <ForVarIterator varname="t2"/>
-                                    </ReturnClause>
-                                  </flwor::FLWORIterator>
-                                </ChildAxisIterator>
+                            <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
+                              <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,name)" typename="*" nill allowed="0">
+                                <flwor::FLWORIterator>
+                                  <ForVariable name="t2">
+                                    <NodeSortIterator distinct="true" ascending="true">
+                                      <ProbeIndexPointGeneralIterator>
+                                        <SingletonIterator value="xs:QName(,,tempIndex1)"/>
+                                        <UnhoistIterator>
+                                          <LetVarIterator varname="$$opt_temp_1"/>
+                                        </UnhoistIterator>
+                                      </ProbeIndexPointGeneralIterator>
+                                    </NodeSortIterator>
+                                  </ForVariable>
+                                  <ReturnClause>
+                                    <ForVarIterator varname="t2"/>
+                                  </ReturnClause>
+                                </flwor::FLWORIterator>
                               </ChildAxisIterator>
-                            </NodeSortIterator>
+                            </ChildAxisIterator>
                           </EnclosedIterator>
                         </ElementIterator>
                       </ReturnClause>

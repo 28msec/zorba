@@ -278,7 +278,108 @@ void DataflowAnnotationsComputer::compute_var_expr(var_expr* e)
 void DataflowAnnotationsComputer::compute_flwor_expr(flwor_expr* e)
 {
   default_walk(e);
-  generic_compute(e);
+
+  if (! generic_compute(e) && !e->is_general())
+  {
+    flwor_expr::clause_list_t::const_iterator ite = e->clause_begin();
+    flwor_expr::clause_list_t::const_iterator end = e->clause_end();
+
+    const forletwin_clause* fc = NULL;
+    ulong numForClauses = 0;
+
+    for (; ite != end; ++ite)
+    {
+      const flwor_clause* clause = *ite;
+
+      switch (clause->get_kind())
+      {
+      case flwor_clause::for_clause:
+      {
+        const forletwin_clause* flc = static_cast<const forletwin_clause*>(clause);
+
+        expr* domainExpr = flc->get_expr();
+        xqtref_t domainType = domainExpr->get_return_type();
+        TypeConstants::quantifier_t domainQuant = domainType->get_quantifier();
+
+        if (domainQuant != TypeConstants::QUANT_ONE &&
+            domainQuant != TypeConstants::QUANT_QUESTION)
+        {
+          fc = flc;
+          ++numForClauses;
+        }
+
+        break;
+      }
+      case flwor_clause::let_clause:
+      case flwor_clause::where_clause:
+      {
+        break;
+      }
+      case flwor_clause::order_clause:
+      case flwor_clause::group_clause:
+      {
+        return;
+      }
+      default:
+      {
+        ZORBA_ASSERT(false);
+      }
+      }
+    }
+
+    if (numForClauses == 1)
+    {
+      expr* retExpr = e->get_return_expr();
+
+      const var_expr* var = retExpr->get_var();
+
+      if (var != NULL && var == fc->get_var())
+      {
+        PROPOGATE_SORTED_NODES(fc->get_expr(), e);
+        PROPOGATE_DISTINCT_NODES(fc->get_expr(), e);
+      }
+    }
+    else if (numForClauses == 0)
+    {
+      expr* retExpr = e->get_return_expr();
+
+      PROPOGATE_SORTED_NODES(retExpr, e);
+      PROPOGATE_DISTINCT_NODES(retExpr, e);
+    }
+
+#if 0
+    ulong numVars = e->num_forlet_clauses();
+
+    if (numVars == 1)
+    {
+      forletwin_clause* cl = static_cast<forletwin_clause*>(e->get_clause(0));
+
+      if (cl->get_kind() == flwor_clause::for_clause)
+      {
+        expr* retExpr = e->get_return_expr();
+
+        const var_expr* var = retExpr->get_var();
+
+        if (var != NULL && var == cl->get_var())
+        {
+          PROPOGATE_SORTED_NODES(cl->get_expr(), e);
+          PROPOGATE_DISTINCT_NODES(cl->get_expr(), e);
+        }
+      }
+      else if (cl->get_kind() == flwor_clause::let_clause)
+      {
+        expr* retExpr = e->get_return_expr();
+
+        PROPOGATE_SORTED_NODES(retExpr, e);
+        PROPOGATE_DISTINCT_NODES(retExpr, e);
+      }
+      else
+      {
+        ZORBA_ASSERT(false);
+      }
+    }
+#endif
+  }
 }
 
 
