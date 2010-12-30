@@ -125,15 +125,32 @@ bool FnNamespaceUriIterator::nextImpl(store::Item_t& result, PlanState& planStat
   STACK_END (state);
 }
 
+
 // 14.5 fn:lang
 //---------------------
+bool
+FnLangIterator::isLangAttr(const store::Item_t& aAttr) const
+{
+  store::Item* lAttrName = aAttr->getNodeName();
+
+  return (ZSTREQ(lAttrName->getLocalName(), "lang") &&
+          ZSTREQ(lAttrName->getNamespace(), XML_NS));
+}
+
+bool
+FnLangIterator::matchesReqLang(
+    const store::Item_t& aAttr,
+    const zstring& aRequestLang) const
+{
+  return utf8::match_whole( 
+            aAttr->getStringValue(), aRequestLang.str() + "(?:-.+)?", "i");
+}
+
 bool FnLangIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t     item, node, attr;
-  store::Item*      attrName;
-  store::Iterator_t theAttributes;
-  bool found = false;
-  bool searchParent = true;
+  store::Item_t     item, attr;
+  store::Iterator_t lAttributes;
+  bool              lLangAttrFound = false, lLangAttrMatched = false;
   zstring reqLang;
 
   PlanIteratorState *state;
@@ -143,49 +160,48 @@ bool FnLangIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     item->getStringValue2(reqLang);
 
-    if (consumeNext(node, theChildren[1].getp(), planState)) 
+    if (consumeNext(item, theChildren[1].getp(), planState)) 
     {
-
-      for(;
-        NULL != node  && ! found && searchParent;
-        node = node->getParent())
+      // nearest ancestor
+      while (item != NULL)
       {
-        if(node->getNodeKind () == store::StoreConsts::elementNode)
+        if(item->getNodeKind () == store::StoreConsts::elementNode)
         {
-          for ((theAttributes = node->getAttributes())->open();
-              ! found && theAttributes->next(attr); )
+          lAttributes = item->getAttributes();
+          lAttributes->open();
+          while (lAttributes->next(attr))
           {
-            attrName = attr->getNodeName();
-
-            searchParent = !(ZSTREQ(attrName->getLocalName(), "lang") &&
-                            ZSTREQ(attrName->getNamespace(), XML_NS));
-            found = !searchParent &&
-              utf8::match_whole(
-                attr->getStringValue().str(), reqLang.str() + "(?:-.+)?", "i"
-              );
+            if (isLangAttr(attr)) {
+              lLangAttrFound = true;
+              if (matchesReqLang(attr, reqLang)) {
+                lLangAttrMatched = true;
+              }
+              break; // inner attribute loop
+            }
           }
-          theAttributes->close();
+          lAttributes->close();
         }
-        else if(node->getNodeKind () == store::StoreConsts::attributeNode)
+        else if(item->getNodeKind () == store::StoreConsts::attributeNode)
         {
-          searchParent = (NULL != node->getParent());
-          if(NULL != node->getParent())
+          if(item->getParent() != NULL)
           {
-            attrName = node->getNodeName();
-
-            searchParent = !(ZSTREQ(attrName->getLocalName(), "lang") &&
-                            ZSTREQ(attrName->getNamespace(), XML_NS));
-            found = !searchParent &&
-              utf8::match_whole(
-                node->getStringValue().str(), reqLang.str() + "(?:-.+)?", "i"
-              );
+            if (isLangAttr(item)) {
+              lLangAttrFound = true;
+              if (matchesReqLang(item, reqLang)) {
+                lLangAttrMatched = true;
+              }
+            }
           }
         }
+        if (lLangAttrFound || lLangAttrMatched ) {
+          break; // break outer loop
+        }
+        item = item->getParent();
       }
     }
   }
 
-  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, found), state);
+  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, lLangAttrMatched), state);
 
   STACK_END (state);
 }

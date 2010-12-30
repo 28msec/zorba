@@ -117,6 +117,14 @@
     </zorba:signature>
   </zorba:function>
 
+  <zorba:method return="bool" name="isLangAttr" const="true">
+    <zorba:param name="aAttr" type="const store::Item_t&amp;"/>
+  </zorba:method>
+  <zorba:method return="bool" name="matchesReqLang" const="true">
+    <zorba:param name="aLangAttr" type="const store::Item_t&amp;"/>
+    <zorba:param name="aRequestLang" type="const zstring&amp;"/>
+  </zorba:method>
+
 </zorba:iterator>
 
 <!--
