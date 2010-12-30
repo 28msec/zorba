@@ -110,7 +110,7 @@ declare function excel:ceiling(
     if ($sig eq 0) then
       fn:error($excel-err:errNum, "Ceiling function does not accept significance 0")
     else if ($num * $sig ge 0) then
-	    fn:ceiling($num div $sig) * $significance
+	    fn:ceiling($num div $sig) * $sig
     else
       fn:error($excel-err:errNum, "Ceiling function: both arguments must have the same sign")
 };
@@ -558,7 +558,7 @@ declare function excel:trunc(
  : @return The sorted sequence as numeric types.
  : @error XQP0021(errValue) if parameters cannot be casted to numeric type.
  :)
-declare %private function excel:sort-numbers($numbers as xs:anyAtomicType*) as xs:anyAtomicType*
+declare function excel:sort-numbers($numbers as xs:anyAtomicType*) as xs:anyAtomicType*
 {
   let $sorted-numbers :=
     (

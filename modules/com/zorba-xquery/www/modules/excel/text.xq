@@ -71,7 +71,7 @@ declare %private function excel-text:value-intersect
  : @param   $arg2 the second sequence.
  : @return  The values in one sequence that do not appear in the second sequence in an implementation-defined order.
  :)
-declare %private function excel-text:value-except 
+declare function excel-text:value-except 
   ( $arg1 as xs:anyAtomicType* ,
     $arg2 as xs:anyAtomicType* )  as xs:anyAtomicType* {
 
@@ -117,7 +117,7 @@ declare %private function excel-text:pad-string-to-length
  : @error   XQP0021(errValue) if the length of the $toPad is greater than the desired length.
  : @return  $toPad appended with enough repetitions of $padChar to make its length $length, the characters are added before the string.
  :)
-declare %private function excel-text:pad-integer-to-length
+declare function excel-text:pad-integer-to-length
   ( $toPad      as xs:anyAtomicType?,
     $padChar    as xs:string ,
     $length     as xs:integer) as xs:string {

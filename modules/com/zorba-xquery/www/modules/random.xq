@@ -24,6 +24,18 @@
 module namespace random = "http://www.zorba-xquery.com/modules/random";
 
 (:~
+ : Errors namespace URI.
+:)
+declare variable $random:randomNS as xs:string := "http://www.zorba-xquery.com/modules/random";
+
+(:~
+ : Error code for wrong parameter situations.<br/>
+ : Possible error messages:<br/>
+ : * Randbetween function: $bottom must be smaller or equal than $up<br/>
+:)
+declare variable $random:errValue as xs:QName := fn:QName($random:randomNS, "random:errValue");
+
+(:~
  : This function returns a pseudo-random integer
  :
  : @return a pseudo-random integer
@@ -49,3 +61,25 @@ declare %nondeterministic function random:random($seed as xs:integer) as xs:inte
  : @return the generated UUID
  :)
 declare %nondeterministic function random:uuid() as xs:string external;
+
+(:~
+ : Returns a random integer number between the numbers you specify.
+ : The seed is based on time in seconds so calling too fast will return the same result.
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052092301033.aspx
+ : @param $bottom the lower limit
+ : @param $up the upper limit
+ : @return the random between bottom and up, as xs:integer
+ : @error XQP0021(errValue) if bottom is bigger than up
+:)
+declare function random:randbetween( $bottom as xs:integer, $up as xs:integer) as xs:integer
+{
+  if($bottom = $up) then
+    $bottom
+  else
+    if($bottom > $up) then
+      fn:error($random:errValue, "Randbetween function: $bottom must be smaller or equal than $up")
+    else
+      xs:integer(random:random() mod ($up - $bottom) + $bottom)
+};
+

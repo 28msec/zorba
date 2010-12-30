@@ -339,7 +339,8 @@ bool static_context::is_non_pure_builtin_module(const zstring& ns)
   if (ns.compare(0, ZORBA_NS_PREFIX.size(), ZORBA_NS_PREFIX) == 0)
   {
     return (ns == ZORBA_MATH_FN_NS ||
-            ns == ZORBA_INTROSP_SCTX_FN_NS);
+            ns == ZORBA_INTROSP_SCTX_FN_NS ||
+            ns == ZORBA_RANDOM_FN_NS);
   }
 
   return false;
