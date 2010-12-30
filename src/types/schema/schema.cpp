@@ -1361,8 +1361,8 @@ bool Schema::parseUserSimpleTypes(
     const xqtref_t& aTargetType,
     std::vector<store::Item_t>& resultList)
 {
-//  cout << "parseUserSimpleTypes: '" << textValue << "' to " <<
-//    aTargetType->toString() << endl; cout.flush();
+  //cout << "parseUserSimpleTypes: '" << textValue << "' to " <<
+  //  aTargetType->toString() << endl; cout.flush();
 
   if ( aTargetType->type_kind() != XQType::USER_DEFINED_KIND )
   {

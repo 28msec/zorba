@@ -682,6 +682,12 @@ void Validator::processTextValue (
           // type which has to be simple
           xqtref_t baseType = udt.getBaseType();
           
+		  while ( baseType->type_kind() == XQType::USER_DEFINED_KIND &&
+			      static_cast<const UserDefinedXQType&>(*baseType).isComplex() )
+		  {
+			const UserDefinedXQType udBaseType = static_cast<const UserDefinedXQType&>(*baseType);
+			baseType = udBaseType.getBaseType();
+		  }
           bool res = GenericCast::castToSimple(textValue, baseType.getp(),
                                                resultList, typeManager);
 
@@ -689,10 +695,11 @@ void Validator::processTextValue (
           // don't follow the same rules
           ZORBA_ASSERT(res);
         }
-        catch(error::ZorbaError&)
+        catch(error::ZorbaError& /*err*/)
         {
           // do nothing here, the validator will throw the right error at end
           // elemet event call
+          //std::cout << "validate.cpp: processTextValue1 '" << textValue << "' err:" << err.toString() << std::endl; std::cout.flush();
         }
       }
     }
@@ -705,9 +712,10 @@ void Validator::processTextValue (
         ZORBA_ASSERT(res);
         resultList.push_back(result);
       }
-      catch(error::ZorbaError&)
+      catch(error::ZorbaError& /*err*/)
       {
         // do nothing here, the validator will throw the right error at end elemet event call
+		//std::cout << "validate.cpp: processTextValue2 '" << textValue << "' err:" << err.toString() << std::endl; std::cout.flush();
       } 
     }
     else
