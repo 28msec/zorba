@@ -144,6 +144,9 @@ void GlobalEnvironment::destroy()
 {
   delete m_globalEnv->m_schema_resolver;
   delete m_globalEnv->m_module_resolver;
+#ifndef ZORBA_NO_FULL_TEXT
+  delete m_globalEnv->m_thesaurus_resolver;
+#endif
 
   serialization::ClassSerializer::getInstance()->destroyArchiverForHardcodedObjects();
 

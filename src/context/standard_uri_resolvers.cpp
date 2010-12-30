@@ -21,6 +21,8 @@
 
 #include <zorba/external_module.h>
 #include <zorba/module_import_checker.h>
+#include <zorba/util/file.h>
+
 
 #include "util/web/web.h"
 #include "util/string_util.h"
@@ -408,14 +410,10 @@ StandardThesaurusURIResolver::resolve(
     zstring filepath;
     URI::decode_file_URI(lResolvedURI, filepath);
 
-    std::auto_ptr<std::ifstream> lThesaurusFile(new std::ifstream(filepath.c_str()));
-
-    if (lThesaurusFile->good())
-    {
+    File_t lFile = File::createFile(filepath.c_str());
+    if (lFile->exists()) {
       return lResolvedURI.str();
-    }
-    else
-    {
+    } else {
       ZORBA_ERROR_PARAM(XQST0059, lResolvedURI, aURI->getStringValue().c_str());
     }
 #endif
