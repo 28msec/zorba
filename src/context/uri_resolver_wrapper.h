@@ -100,12 +100,12 @@ protected:
 /*******************************************************************************
 
 ********************************************************************************/
-class ThesaurusURIResolverWrapper : public InternalThesaurusURIResolver
+class FullTextURIResolverWrapper : public InternalFullTextURIResolver
 {
 public:
-  ThesaurusURIResolverWrapper(ThesaurusURIResolver*);
+  FullTextURIResolverWrapper(FullTextURIResolver*);
   
-  virtual ~ThesaurusURIResolverWrapper() {}
+  virtual ~FullTextURIResolverWrapper() {}
       
   virtual zstring
   resolve(const store::Item_t& aURI,
@@ -114,9 +114,9 @@ public:
 protected:
   friend class StaticContextImpl;
 
-  ThesaurusURIResolver* theThesaurusResolver;
+  FullTextURIResolver* theFullTextResolver;
 };
-#endif
+#endif /* ZORBA_NO_FULL_TEXT */
 
 
 /*******************************************************************************

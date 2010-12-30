@@ -372,7 +372,7 @@ zstring StandardSchemaURIResolver::checkSchemaPath(
 #ifndef ZORBA_NO_FULL_TEXT
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//  StandardThesaurusURIResolver                                               //
+//  StandardFullTextURIResolver                                               //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -381,14 +381,14 @@ zstring StandardSchemaURIResolver::checkSchemaPath(
 
 ********************************************************************************/
 zstring
-StandardThesaurusURIResolver::resolve(
+StandardFullTextURIResolver::resolve(
     const store::Item_t& aURI,
     static_context* aStaticContext)
 {
   // 2. check the user's resolvers
-  std::vector<InternalThesaurusURIResolver*> lResolvers;
+  std::vector<InternalFullTextURIResolver*> lResolvers;
   aStaticContext->get_thesaurus_uri_resolvers(lResolvers);
-  for (std::vector<InternalThesaurusURIResolver*>::const_iterator lIter =
+  for (std::vector<InternalFullTextURIResolver*>::const_iterator lIter =
       lResolvers.begin(); lIter != lResolvers.end(); ++lIter)
   {
     zstring lResult = (*lIter)->resolve(aURI, aStaticContext);
@@ -416,12 +416,12 @@ StandardThesaurusURIResolver::resolve(
     } else {
       ZORBA_ERROR_PARAM(XQST0059, lResolvedURI, aURI->getStringValue().c_str());
     }
-#endif
+#endif /* ZORBA_WITH_FILE_ACCESS */
   }
 
   return aURI->getStringValue().str();
 }
-#endif
+#endif /* ZORBA_NO_FULL_TEXT */
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //

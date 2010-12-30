@@ -69,7 +69,7 @@ namespace zorba {
   class DocumentURIResolver;
   class CollectionURIResolver;
   class SchemaURIResolver;
-  class ThesaurusURIResolver;
+  class FullTextURIResolver;
   class ModuleURIResolver;
 
   class ModuleImportChecker;

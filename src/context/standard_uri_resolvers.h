@@ -87,16 +87,16 @@ protected:
 /*******************************************************************************
 
 ********************************************************************************/
-class StandardThesaurusURIResolver : public InternalThesaurusURIResolver
+class StandardFullTextURIResolver : public InternalFullTextURIResolver
 {
 public:
-  virtual ~StandardThesaurusURIResolver() {}
+  virtual ~StandardFullTextURIResolver() {}
       
   virtual zstring
   resolve(const store::Item_t& aURI,
           static_context* aStaticContext);
 };
-#endif
+#endif /* ZORBA_NO_FULL_TEXT */
 
 /*******************************************************************************
 

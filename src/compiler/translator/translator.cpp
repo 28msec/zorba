@@ -11945,7 +11945,7 @@ void end_visit (const FTThesaurusID& v, void* /*visit_state*/) {
   );
 
 #if 0
-  InternalThesaurusURIResolver* lResolver = GENV.getThesaurusURIResolver();
+  InternalFullTextURIResolver* lResolver = GENV.getFullTextURIResolver();
   store::Item_t thesaurusURI = NULL;
   ITEM_FACTORY->createAnyURI(thesaurusURI, v.get_uri().c_str());
   zstring thesaurus = lResolver->resolve(thesaurusURI, theSctx);

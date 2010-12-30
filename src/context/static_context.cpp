@@ -1369,9 +1369,9 @@ void static_context::remove_schema_uri_resolver(
 
 ********************************************************************************/
 void static_context::add_thesaurus_uri_resolver(
-    InternalThesaurusURIResolver* aThesaurusResolver)
+    InternalFullTextURIResolver* aFullTextResolver)
 {
-  theThesaurusResolvers.push_back(aThesaurusResolver);
+  theFullTextResolvers.push_back(aFullTextResolver);
 }
 
 
@@ -1379,7 +1379,7 @@ void static_context::add_thesaurus_uri_resolver(
 
 ********************************************************************************/
 void static_context::get_thesaurus_uri_resolvers(
-    std::vector<InternalThesaurusURIResolver*>& aResolvers) const
+    std::vector<InternalFullTextURIResolver*>& aResolvers) const
 {
   if (theParent != NULL)
   {
@@ -1387,8 +1387,8 @@ void static_context::get_thesaurus_uri_resolvers(
   }
 
   aResolvers.insert(aResolvers.end(),
-                    theThesaurusResolvers.begin(),
-                    theThesaurusResolvers.end());
+                    theFullTextResolvers.begin(),
+                    theFullTextResolvers.end());
 }
 
 
@@ -1396,14 +1396,14 @@ void static_context::get_thesaurus_uri_resolvers(
 
 ********************************************************************************/
 void static_context::remove_thesaurus_uri_resolver(
-    InternalThesaurusURIResolver* aResolver)
+    InternalFullTextURIResolver* aResolver)
 {
-  std::vector<InternalThesaurusURIResolver*>::iterator ite;
-  for (ite = theThesaurusResolvers.begin(); ite != theThesaurusResolvers.end(); ++ite)
+  std::vector<InternalFullTextURIResolver*>::iterator ite;
+  for (ite = theFullTextResolvers.begin(); ite != theFullTextResolvers.end(); ++ite)
   {
     if (aResolver == *ite)
     {
-      theThesaurusResolvers.erase(ite);
+      theFullTextResolvers.erase(ite);
       return; // no duplicates in the vector
     }
   }

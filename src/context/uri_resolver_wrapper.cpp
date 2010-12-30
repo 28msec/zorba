@@ -188,15 +188,15 @@ std::string SchemaURIResolverWrapper::resolve(
 /*******************************************************************************
 
 ********************************************************************************/
-ThesaurusURIResolverWrapper::ThesaurusURIResolverWrapper(ThesaurusURIResolver* aThesaurusResolver)
+FullTextURIResolverWrapper::FullTextURIResolverWrapper(FullTextURIResolver* aFullTextResolver)
   :
-  theThesaurusResolver(aThesaurusResolver)
+  theFullTextResolver(aFullTextResolver)
 {
 }
 
 
 zstring
-ThesaurusURIResolverWrapper::resolve(
+FullTextURIResolverWrapper::resolve(
     const store::Item_t& aURI,
     static_context* aStaticContext)
 {
@@ -204,12 +204,12 @@ ThesaurusURIResolverWrapper::resolve(
   Item               lURIItem(aURI.getp());
   
   // we have the ownership; it will be destroyed automatically once we leave this function
-  std::auto_ptr<ThesaurusURIResolverResult> lResult =
-    theThesaurusResolver->resolve(lURIItem, &lOuterStaticContext);
+  std::auto_ptr<FullTextURIResolverResult> lResult =
+    theFullTextResolver->resolve(lURIItem, &lOuterStaticContext);
 
   if (lResult->getError() == URIResolverResult::UR_NOERROR) 
   {
-    return Unmarshaller::getInternalString(lResult->getResolvedThesaurus()).c_str();
+    return Unmarshaller::getInternalString(lResult->getResolvedFullText()).c_str();
   }
   return "";
 }

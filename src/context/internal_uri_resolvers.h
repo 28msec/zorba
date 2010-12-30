@@ -75,18 +75,20 @@ public:
 };
 
 
+#ifndef ZORBA_NO_FULL_TEXT
 /*******************************************************************************
 
 ********************************************************************************/
-class InternalThesaurusURIResolver
+class InternalFullTextURIResolver
 {
 public:
-  virtual ~InternalThesaurusURIResolver() {}
+  virtual ~InternalFullTextURIResolver() {}
       
   virtual zstring
   resolve(const store::Item_t& aURI,
           static_context* aStaticContext) = 0;
 };
+#endif /* ZORBA_NO_FULL_TEXT */
 
 /*******************************************************************************
 

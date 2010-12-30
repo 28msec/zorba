@@ -31,7 +31,7 @@ class root_static_context;
 class XQueryXConvertor;
 class StandardModuleURIResolver;
 class StandardSchemaURIResolver;
-class StandardThesaurusURIResolver;
+class StandardFullTextURIResolver;
 
 namespace store {
 class Store;
@@ -59,7 +59,7 @@ private:
   StandardModuleURIResolver   * m_module_resolver;
   StandardSchemaURIResolver   * m_schema_resolver;
 #ifndef ZORBA_NO_FULL_TEXT
-  StandardThesaurusURIResolver* m_thesaurus_resolver;
+  StandardFullTextURIResolver* m_thesaurus_resolver;
 #endif
 
 public:
@@ -107,7 +107,7 @@ public:
   StandardSchemaURIResolver* getSchemaURIResolver() const { return m_schema_resolver; }
 
 #ifndef ZORBA_NO_FULL_TEXT
-  StandardThesaurusURIResolver* getThesaurusURIResolver() const { return m_thesaurus_resolver; }
+  StandardFullTextURIResolver* getFullTextURIResolver() const { return m_thesaurus_resolver; }
 #endif
 
 #ifdef ZORBA_XQUERYX

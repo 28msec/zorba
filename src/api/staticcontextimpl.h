@@ -31,7 +31,7 @@ namespace zorba {
   class ModuleURIResolverWrapper;
   class SchemaURIResolverWrapper;
 #ifndef ZORBA_NO_FULL_TEXT
-  class ThesaurusURIResolverWrapper;
+  class FullTextURIResolverWrapper;
 #endif
 
 /*******************************************************************************
@@ -66,8 +66,8 @@ protected:
   std::map<SchemaURIResolver*,
            SchemaURIResolverWrapper*> theSchemaWrappers;
 #ifndef ZORBA_NO_FULL_TEXT
-  std::map<ThesaurusURIResolver*,
-           ThesaurusURIResolverWrapper*> theThesaurusWrappers;
+  std::map<FullTextURIResolver*,
+           FullTextURIResolverWrapper*> theFullTextWrappers;
 #endif
 
 private:
@@ -200,14 +200,14 @@ public:
 
 #ifndef ZORBA_NO_FULL_TEXT
   virtual void
-  addThesaurusURIResolver(ThesaurusURIResolver* aThesaurusUriResolver);
+  addFullTextURIResolver(FullTextURIResolver* aFullTextUriResolver);
 
   virtual void
-  removeThesaurusURIResolver(ThesaurusURIResolver* aThesaurusUriResolver);
+  removeFullTextURIResolver(FullTextURIResolver* aFullTextUriResolver);
 
-  virtual std::vector<ThesaurusURIResolver*>
-  getThesaurusURIResolvers() const;
-#endif
+  virtual std::vector<FullTextURIResolver*>
+  getFullTextURIResolvers() const;
+#endif /* ZORBA_NO_FULL_TEXT */
 
   virtual void
   addModuleURIResolver(ModuleURIResolver* aModuleUriResolver);

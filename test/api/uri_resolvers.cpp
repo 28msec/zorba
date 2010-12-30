@@ -25,34 +25,34 @@
 
 using namespace zorba;
 
-/** Thesaurus Resolver */
-class MyThesaurusURIResolverResult: public ThesaurusURIResolverResult
+/** FullText Resolver */
+class MyFullTextURIResolverResult: public FullTextURIResolverResult
 {
   public:
-    virtual String getResolvedThesaurus() const { return theThesaurus; }
+    virtual String getResolvedFullText() const { return theFullText; }
 
   protected:
-    friend class MyThesaurusURIResolver;
-    String theThesaurus;
+    friend class MyFullTextURIResolver;
+    String theFullText;
 };
 
-class MyThesaurusURIResolver: public ThesaurusURIResolver
+class MyFullTextURIResolver: public FullTextURIResolver
 {
   public:
-    virtual ~MyThesaurusURIResolver(){}
+    virtual ~MyFullTextURIResolver(){}
 
-    virtual std::auto_ptr<ThesaurusURIResolverResult>
+    virtual std::auto_ptr<FullTextURIResolverResult>
     resolve(
       const Item& aURI,
       StaticContext* aStaticContext)
     {
-      std::auto_ptr<MyThesaurusURIResolverResult> lResult(new MyThesaurusURIResolverResult());
+      std::auto_ptr<MyFullTextURIResolverResult> lResult(new MyFullTextURIResolverResult());
       if(aURI.getStringValue() == "http://bstore1.example.com/UsabilityThesaurus.xml")
       {
-        lResult->theThesaurus = "##default";
+        lResult->theFullText = "##default";
         lResult->setError(URIResolverResult::UR_NOERROR);
       } 
-      return std::auto_ptr<ThesaurusURIResolverResult>(lResult.release());
+      return std::auto_ptr<FullTextURIResolverResult>(lResult.release());
     };
 };
 
@@ -61,9 +61,9 @@ thesaurus_resolver_example_1(Zorba* aZorba)
 {
   StaticContext_t lContext = aZorba->createStaticContext();
 
-  MyThesaurusURIResolver lResolver;
+  MyFullTextURIResolver lResolver;
 
-  lContext->addThesaurusURIResolver(&lResolver);
+  lContext->addFullTextURIResolver(&lResolver);
 
   try {
     std::ostringstream lStr;

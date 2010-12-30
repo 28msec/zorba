@@ -378,39 +378,38 @@ class ZORBA_DLL_PUBLIC SchemaURIResolver
 
 #ifndef ZORBA_NO_FULL_TEXT
 /**
-  * @brief The result of a ThesaurusURIResolver.
+  * @brief The result of a FullTextURIResolver.
   *
   */
-class ZORBA_DLL_PUBLIC ThesaurusURIResolverResult : public URIResolverResult 
+class ZORBA_DLL_PUBLIC FullTextURIResolverResult : public URIResolverResult 
 {
  public:
-  virtual ~ThesaurusURIResolverResult() {}
 
   /**
     */
   virtual String
-  getResolvedThesaurus() const = 0;
+  getResolvedFullText() const = 0;
 };
   
 /**
   * @brief A thesaurus uri resolver.
   *
-  * Maps an arbitrary thesaurus ID (i.e. a URI) to some string that may be either a
-  * URI or a special string like "##default".
+  * Maps an arbitrary thesaurus ID (i.e. a URI) to some string that may be
+  * either a URI or a special string like "##default".
   */
-class ZORBA_DLL_PUBLIC ThesaurusURIResolver
+class ZORBA_DLL_PUBLIC FullTextURIResolver
 {
  public:
-  virtual ~ThesaurusURIResolver() {}
+  virtual ~FullTextURIResolver() {}
 
   /**
     * @brief Resolves a thesaurus uri.
     *
     */
-  virtual std::auto_ptr<ThesaurusURIResolverResult>
+  virtual std::auto_ptr<FullTextURIResolverResult>
   resolve(const Item& aURI, StaticContext* aStaticContext) = 0;
 };
-#endif
+#endif /* ZORBA_NO_FULL_TEXT */
 
 class ZORBA_DLL_PUBLIC ModuleURIResolverResult : public URIResolverResult
 {

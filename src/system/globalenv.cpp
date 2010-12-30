@@ -133,7 +133,7 @@ void GlobalEnvironment::init(store::Store* store)
   m_globalEnv->m_schema_resolver    = new StandardSchemaURIResolver();
 
 #ifndef ZORBA_NO_FULL_TEXT
-  m_globalEnv->m_thesaurus_resolver = new StandardThesaurusURIResolver();
+  m_globalEnv->m_thesaurus_resolver = new StandardFullTextURIResolver();
 #endif
 }
 
