@@ -81,7 +81,7 @@ unicode::code_point next_char( OctetIterator &i ) {
     size_type const len = char_length( c );
     unsigned m = (0x7F >> len) & 0x1F;  // mask
     c = unicode::code_point( 0 );
-    bool b = false;                     // continuation byte?
+    int b = false;                      // continuation byte?
     switch ( len ) {
       case 6: c |= ((assert_valid_byte( *i, !b++ ) & m) << 30); ++i; m = 0x3F;
       case 5: c |= ((assert_valid_byte( *i, !b++ ) & m) << 24); ++i; m = 0x3F;
