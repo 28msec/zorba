@@ -280,6 +280,11 @@ IF (FOUND_XQTS)
       ENDIF(NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
     ENDIF(ZORBA_TEST_XQUERYX)
 
+    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Optional/Serialization/K2-Serialization-7 3145280)
+    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/AssDisassStringFunc/CodepointToStringFunc/K-CodepointToStringFunc-12 3147927)
+    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/AssDisassStringFunc/CodepointToStringFunc/K-CodepointToStringFunc-14 3147927)
+    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/AssDisassStringFunc/CodepointToStringFunc/K-CodepointToStringFunc-15 3147927)
+
   ENDIF (ZORBATEST_TESTDRIVER_MT_AVAILABLE AND ZORBATEST_USE_MT_XQTS)
 
 ENDIF (FOUND_XQTS)
@@ -321,5 +326,5 @@ EXPECTED_FAILURE(test/rbkt/zorba/aleXis/q11 3103700)
 EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_1_0 3106635)
 EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_1_1 3106635)
 
-
 # --------------------------------------------------------------------------
+# vim:set et sw=2 ts=2:

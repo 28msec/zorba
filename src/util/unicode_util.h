@@ -118,10 +118,13 @@ bool is_ucschar( code_point c );
  */
 template<class CodePointType>
 inline bool is_valid( CodePointType c ) {
-  return  c == 0x09 || c == 0x0A || c == 0x0D ||
-          (c >= 0x00020 && c <= 0x00D7FF) ||
-          (c >= 0x0E000 && c <= 0x00FFFD) ||
-          (c >= 0x10000 && c <= 0x10FFFF);
+  //
+  // See "Extensible Markup Language (XML) 1.1 (Second Edition)", section 2.2,
+  // "Characters", [2] Char.
+  //
+  return  (c >= 0x000001 && c <= 0x00D7FF)
+      ||  (c >= 0x00E000 && c <= 0x00FFFD)
+      ||  (c >= 0x010000 && c <= 0x10FFFF);
 }
 
 ////////// case checking & conversion /////////////////////////////////////////
