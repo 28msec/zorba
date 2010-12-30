@@ -34,203 +34,6 @@ namespace zorba {
 /*******************************************************************************
 
 ********************************************************************************/
-bool compareDOMChildren(xmlNode  *child1, xmlNode  *child2);
-bool compareNodeName(xmlNode  *node1, xmlNode  *node2);
-bool compareNS(xmlNode  *node1, xmlNode  *node2);
-bool compareAttr(xmlAttr *attr1, xmlAttr *attr2);
-
-//recursive DOM comparison of XML
-bool compareDOM(xmlNode  *node1, xmlNode  *node2)
-{
-  if((node1==NULL) || (node2==NULL) || (node1->type != node2->type))
-    return false;
-
-
-  switch(node1->type)
-  {
-  case XML_DOCUMENT_NODE:
-  case XML_DOCUMENT_FRAG_NODE:
-    return compareDOMChildren(node1->children, node2->children);
-  case XML_TEXT_NODE:
-  case XML_CDATA_SECTION_NODE:
-  case XML_COMMENT_NODE:
-    if(strcmp((const char*)node1->content, (const char*)node2->content))
-      return false;
-    return true;
-  case XML_ELEMENT_NODE:
-  {
-    //xmlElement *elem1 = static_cast<xmlElement*>(node1);
-    // xmlElement *elem2 = static_cast<xmlElement*>(node2);
-    if(!compareNodeName(node1, node2))
-      return false;
-    if(!compareNS(node1, node2))
-      return false;
-    if(!compareAttr(node1->properties, node2->properties))
-      return false;
-    return compareDOMChildren(node1->children, node2->children);
-  }
-  case XML_PI_NODE:
-    if(strcmp((const char*)node1->name, (const char*)node2->name))
-      return false;
-    if(!node1->content && node2->content)
-      if(node2->content[0])
-        return false;
-      else
-        return true;
-    if(!node2->content && node1->content)
-      if(node1->content[0])
-        return false;
-      else
-        return true;
-    if(!node1->content && !node2->content)
-      return true;
-    if(strcmp((const char*)node1->content, (const char*)node2->content))
-      return false;
-    return true;
-  default:
-    assert(false);//more to implement here
-  }
-  return true;
-}
-
-bool text_is_whitespace(const char *str)
-{
-  while(*str && isascii(*str) && isspace(*str))
-    str++;
-  return str[0] == 0;
-}
-bool compareDOMChildren(xmlNode  *child1, xmlNode  *child2)
-{
-  while(child1 && child2)
-  {
-    if(child1->type == XML_TEXT_NODE && text_is_whitespace((const char*)child1->content))
-    {
-      child1 = child1->next;
-      continue;
-    }
-    if(child2->type == XML_TEXT_NODE && text_is_whitespace((const char*)child2->content))
-    {
-      child2 = child2->next;
-      continue;
-    }
-    if(!compareDOM(child1, child2))
-      return false;
-    child1 = child1->next;
-    child2 = child2->next;
-  }
-  if(child1)
-  {
-    while(child1 && (child1->type == XML_TEXT_NODE) && text_is_whitespace((const char*)child1->content))
-    {
-      child1 = child1->next;
-      continue;
-    }
-    if(child1)
-      return false;
-  }
-  if(child2)
-  {
-    while(child2 && (child2->type == XML_TEXT_NODE) && text_is_whitespace((const char*)child2->content))
-    {
-      child2 = child2->next;
-      continue;
-    }
-    if(child2)
-      return false;
-  }
-  return true;
-}
-bool compareNodeName(xmlNode  *node1, xmlNode  *node2)
-{
-  if(strcmp((const char*)node1->name, (const char*)node2->name))
-    return false;
-  if(node1->ns && !node2->ns)
-    return false;
-  if(!node1->ns && node2->ns)
-    return false;
-  if(node1->ns == node2->ns || !strcmp((const char*)node1->ns->href, (const char*)node2->ns->href))
-    return true;
-  return false;
-}
-
-bool compareAttrName(xmlAttr  *attr1, xmlAttr  *attr2)
-{
-  if(strcmp((const char*)attr1->name, (const char*)attr2->name))
-    return false;
-  if(attr1->ns && !attr2->ns)
-    return false;
-  if(!attr1->ns && attr2->ns)
-    return false;
-  if(attr1->ns == attr2->ns || !strcmp((const char*)attr1->ns->href, (const char*)attr2->ns->href))
-    return true;
-  return false;
-}
-
-bool compareNS(xmlNode  *node1, xmlNode  *node2)
-{
-  xmlNs *ns1 = node1->nsDef;
-  if(ns1 == NULL && node2->nsDef)
-    return false;
-  int nr_ns1 = 0;
-  int nr_ns2 = 0;
-  while(ns1)
-  {
-    xmlNs *ns2 = node2->nsDef;
-    int n = 0;
-    while(ns2)
-    {
-      n++;
-      if(!strcmp((const char*)ns1->href, (const char*)ns2->href))
-        break;
-      ns2 = ns2->next;
-    }
-    if(!ns2)
-      return false;
-    if(n > nr_ns2)
-      nr_ns2 = n;
-    nr_ns1++;
-    ns1 = ns1->next;
-  }
-  if(nr_ns1 != nr_ns2)
-    return false;
-  return true;
-}
-
-bool compareAttr(xmlAttr *attr1, xmlAttr *attr2)
-{
-  if(!attr1 && attr2)
-    return false;
-  if(attr1 && !attr2)
-    return false;
-  int nr_attr1 = 0;
-  int nr_attr2 = 0;
-  while(attr1)
-  {
-    xmlAttr *a2 = attr2;
-    int n = 0;
-    while(a2)
-    {
-      n++;
-      if(compareAttrName(attr1, a2))
-      {
-        if(strcmp((const char*)attr1->children->content, (const char*)a2->children->content))
-          return false;
-        break;
-      }
-      a2 = a2->next;
-    }
-    if(!a2)
-      return false;
-    if(n > nr_attr2)
-      nr_attr2 = n;
-    nr_attr1++;
-    attr1 = attr1->next;
-  }
-  if(nr_attr1 != nr_attr2)
-    return false;
-  return true;
-}
-
 int canonicalizeAndCompare(
     const std::string& aComparisonMethod,
     const char* aRefFile,
@@ -374,9 +177,6 @@ int canonicalizeAndCompare(
     return 8;
   }
 
-  if(compareDOMChildren(lRefResult_ptr->children, lResult_ptr->children))
-    return 0;
-
   std::string lCanonicalRefFile = aRBKTBinDir + "/canonical_ref.xml";
   std::string lCanonicalResFile = aRBKTBinDir + "/canonical_res.xml";
 
@@ -437,8 +237,8 @@ int canonicalizeAndCompare(
     return 8;
   }
   return 0;
+} 
 
-}
 
 /*******************************************************************************
   Return false if the files are not equal.
