@@ -962,27 +962,38 @@ void serializer::html_emitter::emit_declaration_end()
 /*******************************************************************************
 
 ********************************************************************************/
-void serializer::html_emitter::emit_doctype(const zstring& elementName)
+void
+serializer::html_emitter::emit_doctype(const zstring& elementName)
 {
-  if (ser->doctype_system.empty() && ser->doctype_public.empty())
+  if (ser->doctype_system.empty() && ser->doctype_public.empty()) {
     return;
+  }
 
   // The name following <!DOCTYPE MUST be HTML or html.
-  tr << "<!DOCTYPE html";
+  tr << "<!DOCTYPE HTML";
 
-  if (!ser->doctype_public.empty())
-  {
+  // If the doctype-public parameter is specified, then the output method
+  // MUST output PUBLIC followed by the specified public identifier.
+  if (!ser->doctype_public.empty()) {
     tr << " PUBLIC \"" << ser->doctype_public << "\"";
-    if (!ser->doctype_system.empty())
-      tr << " \"" << ser->doctype_system << "\">";
+    // If the doctype-system parameter is also specified, it MUST also output
+    // the specified system identifier following the public identifier.
+    if (!ser->doctype_system.empty()) {
+      tr << " \"" << ser->doctype_system << "\"";
+    }
   }
-  else
-  {
-    tr << " SYSTEM" << " \"" << ser->doctype_system << "\">";
+  // If the doctype-system parameter is specified but the doctype-public
+  // parameter is not specified, then the output method MUST output SYSTEM
+  // followed by the specified system identifier.
+  else {
+    tr << " SYSTEM \"" << ser->doctype_system << "\"";
   }
 
-  if (ser->indent)
+  tr << ">";
+
+  if (ser->indent) {
     tr << ser->END_OF_LINE;
+  }
 }
 
 
