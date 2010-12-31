@@ -33,7 +33,7 @@ namespace zorba {
 class ZORBA_DLL_PUBLIC ZorbaProperties : public ::zorba::PropertiesBase {
 protected:
   const char **get_all_options () const {
-    static const char *result [] = { "--trace-parsing", "--trace-scanning", "--use-serializer", "--optimizer", "--result-file", "--debug-file", "--abort", "--query", "--print-query", "--print-time", "--print-ast", "--print-xqdoc", "--print-translated", "--print-normalized", "--print-optimized", "--print-iterator-tree", "--print-item-flow", "--print-static-types", "--dump-lib", "--stable-iterator-ids", "--no-tree-ids", "--print-intermediate-opt", "--force-gflwor", "--reorder-globals", "--specialize-num", "--specialize-cmp", "--inline-udf", "--loop-hoisting", "--infer-joins", "--trace-translator", "--trace-codegen", "--trace-fulltext", "--debug", "--compile-only", "--tz", "--external-var", "--serializer-param", "--iter-plan-test", "--dot-plan-file", NULL };
+    static const char *result [] = { "--trace-parsing", "--trace-scanning", "--use-serializer", "--optimizer", "--result-file", "--debug-file", "--abort", "--query", "--print-query", "--print-time", "--print-ast", "--print-xqdoc", "--print-translated", "--print-normalized", "--print-optimized", "--print-iterator-tree", "--print-item-flow", "--print-static-types", "--dump-lib", "--stable-iterator-ids", "--no-tree-ids", "--print-intermediate-opt", "--print-locations", "--force-gflwor", "--reorder-globals", "--specialize-num", "--specialize-cmp", "--inline-udf", "--loop-hoisting", "--infer-joins", "--trace-translator", "--trace-codegen", "--trace-fulltext", "--debug", "--compile-only", "--tz", "--external-var", "--serializer-param", "--iter-plan-test", "--dot-plan-file", NULL };
     return result;
   }
   bool theTraceParsing;
@@ -58,6 +58,7 @@ protected:
   bool theStableIteratorIds;
   bool theNoTreeIds;
   bool thePrintIntermediateOpt;
+  bool thePrintLocations;
   bool theForceGflwor;
   bool theReorderGlobals;
   bool theSpecializeNum;
@@ -96,6 +97,7 @@ protected:
     theStableIteratorIds = false;
     theNoTreeIds = false;
     thePrintIntermediateOpt = false;
+    thePrintLocations = false;
     theForceGflwor = false;
     theReorderGlobals = true;
     theSpecializeNum = true;
@@ -133,6 +135,7 @@ public:
   const bool &stableIteratorIds () const { return theStableIteratorIds; }
   const bool &noTreeIds () const { return theNoTreeIds; }
   const bool &printIntermediateOpt () const { return thePrintIntermediateOpt; }
+  const bool &printLocations () const { return thePrintLocations; }
   const bool &forceGflwor () const { return theForceGflwor; }
   const bool &reorderGlobals () const { return theReorderGlobals; }
   const bool &specializeNum () const { return theSpecializeNum; }
@@ -235,6 +238,9 @@ public:
       }
       else if (strcmp (*argv, "--print-intermediate-opt") == 0) {
         thePrintIntermediateOpt = true;
+      }
+      else if (strcmp (*argv, "--print-locations") == 0) {
+        thePrintLocations = true;
       }
       else if (strcmp (*argv, "--force-gflwor") == 0) {
         theForceGflwor = true;
@@ -347,6 +353,7 @@ public:
 "--stable-iterator-ids\nprint the iterator plan with stable ids\n\n"
 "--no-tree-ids\nsuppress ids and locations from compiler tree dumps\n\n"
 "--print-intermediate-opt\nprint intermediate optimizations\n\n"
+"--print-locations\nprint parser locations for compiler expressions\n\n"
 "--force-gflwor\nforce compiler to generate GFLWOR iterators\n\n"
 "--reorder-globals\nreorder global variables (1=enabled (default), 0=off)\n\n"
 "--specialize-num\nspecialize numerics (1=enabled (default), 0=off)\n\n"

@@ -46,12 +46,25 @@ using namespace std;
 
 namespace zorba 
 {
-  
-#define BEGIN_PUT(LABEL) \
+
+#define BEGIN_PUT_NO_LOCATION(LABEL) \
   os << indent << #LABEL << expr_addr(this) << " [\n" << inc_indent
 
+#define BEGIN_PUT(LABEL) \
+  os << indent << #LABEL << expr_addr(this) \
+     << expr_loc(dynamic_cast<const expr*>(this)) << " [\n" << inc_indent
+
+#define BEGIN_PUT2(STRING) \
+  os << indent << STRING << expr_addr(this) \
+     << expr_loc(dynamic_cast<const expr*>(this)) << " [\n" << inc_indent
+
+#define BEGIN_PUT_NO_EOL(LABEL) \
+  os << indent << #LABEL << expr_addr(this) \
+     << expr_loc(dynamic_cast<const expr*>(this)) << " [ "
+
 #define BEGIN_PUT1(LABEL,S1) \
-  os << indent << #LABEL << ' ' << (S1) << expr_addr(this) << " [\n" << inc_indent
+  os << indent << #LABEL << ' ' << (S1) << expr_addr(this) \
+     << expr_loc(dynamic_cast<const expr*>(this)) << " [\n" << inc_indent
 
 #define END_PUT() \
   os << dec_indent << indent << "]\n"; return os;
@@ -98,6 +111,24 @@ static inline string expr_addr(const void* e)
 }
 
 
+static inline string expr_loc(const expr* e) 
+{
+  if (e == NULL)
+    return "";
+
+  if (Properties::instance()->printLocations())
+  {
+    ostringstream os;
+    os << " (loc: " << e->get_loc().getLineBegin() << ", " << e->get_loc().getColumnBegin() << ")";
+    return os.str ();
+  }
+  else 
+  {
+    return "";
+  }
+}
+
+
 std::ostream& debugger_expr::put(std::ostream& os) const
 {
   BEGIN_PUT( debugger_expr );
@@ -115,7 +146,7 @@ std::ostream& wrapper_expr::put(std::ostream& os) const
   {
     const var_expr* varExpr = static_cast<const var_expr*>(get_expr());
 
-    os << indent << "var_ref" << expr_addr(this) << " [ ";
+    BEGIN_PUT_NO_EOL(var_ref) ;
     put_qname(varExpr->get_name(), os);
     os << expr_addr(varExpr) << " ]" << endl;
     return os;
@@ -224,7 +255,7 @@ ostream& window_clause::put(ostream& os) const
 
 ostream& flwor_wincond::vars::put( ostream& os) const
 {
-  BEGIN_PUT( flwor_wincond::vars );
+  BEGIN_PUT_NO_LOCATION( flwor_wincond::vars );
   PUT_SUB( "AT", posvar );
   PUT_SUB( "CURR", curr );
   PUT_SUB( "NEXT", next );
@@ -410,10 +441,7 @@ ostream& if_expr::put( ostream& os) const
 ostream& fo_expr::put( ostream& os) const
 {
   const store::Item* qname = theFunction->getName();
-
-  os << indent << qname->getStringValue() << "/" << num_args()
-     << expr_addr(this) << " [\n" << inc_indent;
-
+  BEGIN_PUT2( qname->getStringValue() << "/" << num_args() );
   ulong numArgs = (ulong)theArgs.size();
 
   for (ulong i = 0; i < numArgs; ++i)
@@ -651,7 +679,7 @@ ostream& match_expr::put(ostream& os) const
 
 ostream& const_expr::put(ostream& os) const
 {
-  os << indent << "const_expr" << expr_addr(this) << " [ ";
+  BEGIN_PUT_NO_EOL( const_expr );
   if (theValue->isFunction())
   {
     os << "functrion item [ " << theValue->show() << " ]";

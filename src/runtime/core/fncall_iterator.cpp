@@ -520,18 +520,29 @@ bool StatelessExtFunctionCallIterator::nextImpl(
                                                 &theDctxWrapper);
     } // if (!theFunction->isContextual())
   }
-  catch(const ZorbaException& e)
+  catch (const ZorbaException& e)
   {
+    QueryLoc err_loc = loc;
+    const DynamicException* de = dynamic_cast<const DynamicException*>(&e);
+    if (de != NULL)
+    {
+      err_loc.setLineBegin(de->getLineBegin());
+      err_loc.setColumnBegin(de->getColumnBegin());
+      err_loc.setFilename(de->getQueryURI().c_str());
+    }
+   
     // take all information from the exception raised in
     // the external function (e.g. file name) + add loc information
-    throw error::ErrorManager::createException(e.getErrorCode(),
-                                               e.getDescription().c_str(),
-                                               e.getFileName().c_str(),
-                                               e.getFileLineNumber(),
-                                               loc.getLineBegin(),
-                                               loc.getColumnBegin(),
-                                               loc.getFilename().str());
+    throw error::ErrorManager::createException(
+      e.getErrorCode(),
+      e.getDescription().c_str(),
+      e.getFileName().c_str(),
+      e.getFileLineNumber(),
+      err_loc.getLineBegin(),
+      err_loc.getColumnBegin(),
+      err_loc.getFilename().str());
   }
+
   while (true)
   {
     try
@@ -544,17 +555,27 @@ bool StatelessExtFunctionCallIterator::nextImpl(
         break;
       }
     }
-    catch(const ZorbaException& e)
+    catch (const ZorbaException& e)
     {
+      QueryLoc err_loc = loc;
+      const DynamicException* de = dynamic_cast<const DynamicException*>(&e);
+      if (de != NULL)
+      {
+        err_loc.setLineBegin(de->getLineBegin());
+        err_loc.setColumnBegin(de->getColumnBegin());
+        err_loc.setFilename(de->getQueryURI().c_str());
+      }
+
       // take all information from the exception raised in
       // the external function (e.g. file name) + add loc information
-      throw error::ErrorManager::createException(e.getErrorCode(),
-                                                 e.getDescription().c_str(),
-                                                 e.getFileName().c_str(),
-                                                 e.getFileLineNumber(),
-                                                 loc.getLineBegin(),
-                                                 loc.getColumnBegin(),
-                                                 loc.getFilename().str());
+      throw error::ErrorManager::createException(
+        e.getErrorCode(),
+        e.getDescription().c_str(),
+        e.getFileName().c_str(),
+        e.getFileLineNumber(),
+        err_loc.getLineBegin(),
+        err_loc.getColumnBegin(),
+        err_loc.getFilename().str());
     }
 
     result = Unmarshaller::getInternalItem(lOutsideItem);

@@ -20,6 +20,7 @@
       ("stable-iterator-ids", "print the iterator plan with stable ids")
       ("no-tree-ids", "suppress ids and locations from compiler tree dumps")
       ("print-intermediate-opt", "print intermediate optimizations")
+      ("print-locations", "print parser locations for compiler expressions")
       ("force-gflwor", "force compiler to generate GFLWOR iterators")
       ("reorder-globals", po::value<bool> ()->default_value (true), "reorder global variables (1=enabled (default), 0=off)")
       ("specialize-num", po::value<bool> ()->default_value (true), "specialize numerics (1=enabled (default), 0=off)")
