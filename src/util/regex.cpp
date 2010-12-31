@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
+#include "zorbaerrors/error_manager.h"
 #include "zorbatypes/zorbatypesError.h"
 
+#include "ascii_util.h"
 #include "regex.h"
 #include "stl_util.h"
 
@@ -34,6 +36,9 @@ void convert_xquery_re( zstring const &xq_re, zstring *lib_re ) {
   lib_re->reserve( xq_re.length() );
 
   bool got_backslash = false;
+  int parens_close = 0;
+  bool in_backreference = false;
+  int backreference_no = 0;
 
   FOR_EACH( zstring, xq_c, xq_re ) {
     if ( got_backslash ) {
@@ -51,6 +56,10 @@ void convert_xquery_re( zstring const &xq_re, zstring *lib_re ) {
           *lib_re += "[^" bs_i "]";
           break;
         default:
+          if ( ascii::is_digit( *xq_c ) ) {
+            in_backreference = true;
+            backreference_no = *xq_c - '0';
+          }
           *lib_re += '\\';
           *lib_re += *xq_c;
           break;
@@ -58,10 +67,23 @@ void convert_xquery_re( zstring const &xq_re, zstring *lib_re ) {
       got_backslash = false;
       continue;
     }
+    if ( in_backreference ) {
+      if ( parens_close > 9 && ascii::is_digit( *xq_c ) )
+        backreference_no = backreference_no * 10 + (*xq_c - '0');
+      else {
+        if ( backreference_no > parens_close )
+          ZORBA_ERROR( FORX0002 );
+        in_backreference = false;
+        backreference_no = 0;
+      }
+    }
     switch ( *xq_c ) {
       case '\\':
         got_backslash = true;
         break;
+      case ')':
+        ++parens_close;
+        // no break;
       default:
         *lib_re += *xq_c;
         break;
