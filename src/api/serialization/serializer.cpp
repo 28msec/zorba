@@ -747,32 +747,34 @@ void serializer::xml_emitter::emit_declaration()
 {
   emitter::emit_declaration();
 
-  if (ser->omit_xml_declaration == PARAMETER_VALUE_NO )
-  {
+  if (ser->omit_xml_declaration == PARAMETER_VALUE_NO) {
     tr << "<?xml version=\"" << ser->version << "\" encoding=\"";
-    if (ser->encoding == PARAMETER_VALUE_UTF_8)
+    if (ser->encoding == PARAMETER_VALUE_UTF_8) {
       tr << "UTF-8";
 #ifndef ZORBA_NO_UNICODE
-    else if (ser->encoding == PARAMETER_VALUE_UTF_16)
+    } else if (ser->encoding == PARAMETER_VALUE_UTF_16) {
       tr << "UTF-16";
 #endif
+    }
     tr << "\"";
 
-    if ( ser->standalone != PARAMETER_VALUE_OMIT )
-    {
-      tr << "standalone=\"";
+    if (ser->standalone != PARAMETER_VALUE_OMIT) {
+      tr << " standalone=\"";
 
-      if ( ser->standalone == PARAMETER_VALUE_YES )
+      if (ser->standalone == PARAMETER_VALUE_YES) {
         tr << "yes";
-      else
+      } else {
         tr << "no";
+      }
 
       tr << "\"";
     }
     tr << "?>";
 
-    tr << END_OF_LINE; // Always output a newline after the XML declaration, although it's not a very good idea
+    // Always output a newline after the XML declaration, although it's not a very good idea
+    tr << END_OF_LINE;
   }
+  // the err:SEPM0009 error is handled in the serializer::validate_parameters() method
 }
 
 
@@ -2095,26 +2097,38 @@ short int serializer::getSerializationMethod() const
 /*******************************************************************************
 
 ********************************************************************************/
-void serializer::validate_parameters(void)
+void
+serializer::validate_parameters(void)
 {
-  if (omit_xml_declaration == PARAMETER_VALUE_YES)
-  {
-    if (standalone != PARAMETER_VALUE_OMIT)
-    {
-      // TODO: throw SEPM0009
+  if (method == PARAMETER_VALUE_XML || method == PARAMETER_VALUE_XHTML) {
+    // XML-only validation
+    if (method == PARAMETER_VALUE_XML) {
     }
+
+    // XHTML-only validation
+    if (method == PARAMETER_VALUE_XHTML) {
+    }
+
+    // XML and XHTML validation
+
+    if (omit_xml_declaration == PARAMETER_VALUE_YES) {
+      if (standalone != PARAMETER_VALUE_OMIT ||
+          (version != "1.0" && !doctype_system.empty())) {
+        ZORBA_ERROR_DESC(SEPM0009,
+          "It is an error if the omit-xml-declaration parameter has the value yes, and the standalone attribute has a value other than omit; or the version parameter has a value other than 1.0 and the doctype-system parameter is specified.");
+      }
+    }
+
   }
 
-  if (method == PARAMETER_VALUE_HTML)
-  {
+  if (method == PARAMETER_VALUE_HTML) {
     // Default value for "version" when method is HTML is "4.0"
-    if (version_has_default_value)
+    if (version_has_default_value) {
       version = "4.0";
-    else if ( !(equals(version, "4.0", 3) || equals(version, "4.01", 4)) )
-    {
+    } else if (!(equals(version, "4.0", 3) || equals(version, "4.01", 4))) {
       // Only HTML versions 4.0 and 4.01 are supported
       ZORBA_ERROR_DESC(SESU0013, 
-                       "Unsupported HTML serialization version. Accepted values are 4.0/4.01 .");
+        "Unsupported HTML serialization version. Accepted values are \"4.0\" and \"4.01\".");
     }
   }
 }
