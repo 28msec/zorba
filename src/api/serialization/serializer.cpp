@@ -2119,6 +2119,10 @@ serializer::validate_parameters(void)
       }
     }
 
+    if (undeclare_prefixes == PARAMETER_VALUE_YES && version == "1.0") {
+      ZORBA_ERROR_DESC(SEPM0010,
+        "It is an error if the output method is xml or xhtml, the value of the undeclare-prefixes parameter is yes, and the value of the version parameter is 1.0.");
+    }
   }
 
   if (method == PARAMETER_VALUE_HTML) {
