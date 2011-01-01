@@ -24,44 +24,54 @@
  :)
 module namespace ser = "http://www.zorba-xquery.com/modules/serialize";
 
-
 (:~
  : Serialize a sequence of items to a string.
  :
- : @param   $content The content to be serialized to the string.
- : @param   $serializer-params Parameters to control the serialization of the content. <br/> 
- : This parameter can either be a string (xml, html, xhtml, text, json, or jsonml) describing the serialization method to
- : be used or a element node as follows: <br/>  
- : output  method="xml|html|text|json|jsonml" <br/>
- : version="string" encoding="string" <br/>
- : omit-xml-declaration="yes|no"<br/>
- : standalone="yes|no"<br/>
- : doctype-public="string" doctype-system="string"<br/>
- : cdata-section-elements="namelist"<br/>
- : indent="yes|no" media-type="string"<br/>
+ : The $serializer-params parameter can be used to control the $content serialization.
+ : This argument can be either a string value or an
+ : <a href="http://www.w3.org/TR/xslt20/#element-output" target="_blank">xsl:output</a>
+ : element as defined in the the XSLT 2.0 specification recommendation. If a string
+ : value is provided, this will be interpreted as: &lt;xsl:output method="string_value"/&gt;.
+ : Currently, Zorba supports the following methods:  xml, html, xhtml, text, json, and jsonml.
+ : 
+ : In this version Zorba supports only the following attributes of the xsl:output element:
+ : <br/>
+ : <pre>&lt;output method="xml|html|xhtml|text|json|jsonml"
+ : doctype-public="string"
+ : doctype-system="string"
+ : encoding="string"
+ : indent="yes|no"
+ : media-type="string"
+ : omit-xml-declaration="yes|no"
+ : standalone="yes|no"
+ : undeclare-prefixes="yes|no"
+ : version="string"/&gt;</pre>
  :
- : @error   An error is thrown if serialization problems occur.
- : @return  Serialize a sequence of items to a string.
+ : @param $content The item sequence to be serialized.
+ : @param $serializer-params Parameter to control the serialization.
+ : @error An error is thrown if serialization problems occur.
+ : @return A string representing the serialized sequence of items.
+ : @see <a href="http://www.w3.org/TR/xslt20/#element-output"
+ :    target="_blank">XSLT 2.0 xsl:output element</a>
  :)
 declare function ser:serialize($content as item()*,
                                $serializer-params as item()) as xs:string external;
 
 (:~
- : Serialize a sequence of items to a string. 
- :
- : @param $content The content to be serialized to the string.
- : @error An error is thrown if serialization problems occur.
- : @return   Serialize a sequence of items to a string. For serialization, the serialization parameters are set as follows:
+ : Serialize a sequence of items to a string. The supported serialization
+ : parameters that require a value are set as follows:
  : <ul>
- :   <li> serialization method: XML</li>
- :   <li> byte-order-mark: NO</li>
- :   <li> esacpe-uri-attributes: NO</li>
- :   <li> include-content-type: NO</li>
- :   <li> indent: NO</li>
- :   <li> normalization-form: none</li>
- :   <li> omit-xml-declaration: NO</li>
- :   <li> standalone: omit</li>
- :   <li> undeclare-prefixes: NO</li>
+ :   <li>method: xml</li>
+ :   <li>encoding: UTF-8</li>
+ :   <li>indent: no</li>
+ :   <li>omit-xml-declaration: no</li>
+ :   <li>standalone: omit</li>
+ :   <li>undeclare-prefixes: no</li>
+ :   <li>version: 1.0</li>
  : </ul>
+ :
+ : @param $content The item sequence to be serialized.
+ : @error An error is thrown if serialization problems occur.
+ : @return A string representing the serialized sequence of items.
  :)
 declare function ser:serialize($content as item()*) as xs:string external;
