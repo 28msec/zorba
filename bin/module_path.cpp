@@ -70,23 +70,6 @@ ModulePath::tokenizeModulePath(
 }
 
 void
-ModulePath::getInstalledModulePath(
-  const std::string&        aInstallPath,
-  std::vector<std::string>& aResult)
-{
-  std::string lSeparator(filesystem_path::get_path_separator());
-  std::string::size_type lLastSep = aInstallPath.find_last_of(lSeparator);
-  // zorba root is one level higher than the zorba executable
-  // -3 = jump over the "bin" directory
-  std::string lZorbaRoot = aInstallPath.substr(0,  lLastSep - 3);
-
-  // in the zorba root directory the modules are in: include/zorba/modules
-  std::stringstream lRes;
-  lRes << lZorbaRoot << "include" << lSeparator << "zorba" << lSeparator << "modules";
-  aResult.push_back(lRes.str());
-}
-
-void
 ModulePath::getModulePaths(
   const ZorbaCMDProperties& aProperties,
   std::vector<String>&      aModulePaths)
@@ -107,9 +90,6 @@ ModulePath::getModulePaths(
   // 3. add the current working directory as module path
   filesystem_path lCWD;
   lModulePaths.push_back(lCWD.get_path());
-
-  // 4. add the modules directory from the installation directory
-  getInstalledModulePath(aProperties.installPath(), lModulePaths);
 
   // convert std::string to zorba::String
   convertVector(lModulePaths, aModulePaths);
