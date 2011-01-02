@@ -31,8 +31,10 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static uint32_t convert_xquery_flags( char const *xq_flags ) {
-  uint32_t icu_flags = 0;
+typedef uint32_t icu_flags_t;
+
+static icu_flags_t convert_xquery_flags( char const *xq_flags ) {
+  icu_flags_t icu_flags = 0;
   for ( char const *f = xq_flags; *f; ++f ) {
     switch ( *f ) {
       case 'i': icu_flags |= UREGEX_CASE_INSENSITIVE; break;
@@ -48,7 +50,7 @@ static uint32_t convert_xquery_flags( char const *xq_flags ) {
 
 void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
                         char const *xq_flags ) {
-  uint32_t icu_flags = convert_xquery_flags( xq_flags );
+  icu_flags_t const icu_flags = convert_xquery_flags( xq_flags );
   bool const remove_ws = icu_flags & UREGEX_COMMENTS;
 
   icu_re->clear();
