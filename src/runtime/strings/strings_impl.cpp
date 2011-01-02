@@ -1306,7 +1306,7 @@ bool FnMatchesIterator::nextImpl(
   try 
   {
     zstring lib_pattern;
-    convert_xquery_re( xquery_pattern, &lib_pattern );
+    convert_xquery_re( xquery_pattern, &lib_pattern, flags.c_str() );
     res = utf8::match_part(input, lib_pattern, flags.c_str());
   }
   catch(zorbatypesException& ex) 

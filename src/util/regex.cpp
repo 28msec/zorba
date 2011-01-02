@@ -31,37 +31,60 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void convert_xquery_re( zstring const &xq_re, zstring *lib_re ) {
-  lib_re->clear();
-  lib_re->reserve( xq_re.length() );
+static uint32_t convert_xquery_flags( char const *xq_flags ) {
+  uint32_t icu_flags = 0;
+  for ( char const *f = xq_flags; *f; ++f ) {
+    switch ( *f ) {
+      case 'i': icu_flags |= UREGEX_CASE_INSENSITIVE; break;
+      case 'm': icu_flags |= UREGEX_MULTILINE       ; break;
+      case 's': icu_flags |= UREGEX_DOTALL          ; break;
+      case 'x': icu_flags |= UREGEX_COMMENTS        ; break;
+      default:
+        throw zorbatypesException( xq_flags, ZorbatypesError::FORX0001 );
+    }
+  }
+  return icu_flags;
+}
+
+void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
+                        char const *xq_flags ) {
+  uint32_t icu_flags = convert_xquery_flags( xq_flags );
+  bool const remove_ws = icu_flags & UREGEX_COMMENTS;
+
+  icu_re->clear();
+  icu_re->reserve( xq_re.length() );    // approximate
 
   bool got_backslash = false;
-  int parens_open = 0, parens_close = 0;
+  bool in_char_class = false;
+
   bool in_backref = false;
   int backref_no = 0;
+  int parens_open = 0, parens_close = 0;
 
   FOR_EACH( zstring, xq_c, xq_re ) {
     if ( got_backslash ) {
+      if ( remove_ws && !in_char_class && ascii::is_space( *xq_c ) )
+        continue;
       got_backslash = false;
       switch ( *xq_c ) {
         case 'c':
-          *lib_re += "[" bs_c "]";
+          *icu_re += "[" bs_c "]";
           continue;
         case 'C':
-          *lib_re += "[^" bs_c "]";
+          *icu_re += "[^" bs_c "]";
           continue;
         case 'i':
-          *lib_re += "[" bs_i "]";
+          *icu_re += "[" bs_i "]";
           continue;
         case 'I':
-          *lib_re += "[^" bs_i "]";
+          *icu_re += "[^" bs_i "]";
           continue;
         default:
           if ( ascii::is_digit( *xq_c ) ) {
             in_backref = true;
             backref_no = *xq_c - '0';
           }
-          *lib_re += '\\';
+          *icu_re += '\\';
           break;
       }
     } else {
@@ -83,25 +106,19 @@ void convert_xquery_re( zstring const &xq_re, zstring *lib_re ) {
         case ')':
           ++parens_close;
           break;
+        case '[':
+          in_char_class = true;
+          break;
+        case ']':
+          in_char_class = false;
+          break;
+        default:
+          if ( remove_ws && !in_char_class && ascii::is_space( *xq_c ) )
+            continue;
       }
     }
-    *lib_re += *xq_c;
+    *icu_re += *xq_c;
   } // FOR_EACH
-}
-
-static uint32_t parse_regex_flags( char const *flags ) {
-  uint32_t icu_flags = 0;
-  for ( char const *f = flags; *f; ++f ) {
-    switch ( *f ) {
-      case 'i': icu_flags |= UREGEX_CASE_INSENSITIVE; break;
-      case 'm': icu_flags |= UREGEX_MULTILINE       ; break;
-      case 's': icu_flags |= UREGEX_DOTALL          ; break;
-      case 'x': icu_flags |= UREGEX_COMMENTS        ; break;
-      default:
-        throw zorbatypesException( flags, ZorbatypesError::FORX0001 );
-    }
-  }
-  return icu_flags;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -113,7 +130,7 @@ namespace unicode {
 bool regex::compile( string const &pattern, char const *flags ) {
   UErrorCode status = U_ZERO_ERROR;
   delete matcher_;
-  matcher_ = new RegexMatcher( pattern, parse_regex_flags( flags ), status );
+  matcher_ = new RegexMatcher( pattern, convert_xquery_flags( flags ), status );
   if ( U_FAILURE( status ) ) {
     delete matcher_;
     matcher_ = 0;
