@@ -36,59 +36,57 @@ void convert_xquery_re( zstring const &xq_re, zstring *lib_re ) {
   lib_re->reserve( xq_re.length() );
 
   bool got_backslash = false;
-  int parens_close = 0;
-  bool in_backreference = false;
-  int backreference_no = 0;
+  int parens_open = 0, parens_close = 0;
+  bool in_backref = false;
+  int backref_no = 0;
 
   FOR_EACH( zstring, xq_c, xq_re ) {
     if ( got_backslash ) {
+      got_backslash = false;
       switch ( *xq_c ) {
         case 'c':
           *lib_re += "[" bs_c "]";
-          break;
+          continue;
         case 'C':
           *lib_re += "[^" bs_c "]";
-          break;
+          continue;
         case 'i':
           *lib_re += "[" bs_i "]";
-          break;
+          continue;
         case 'I':
           *lib_re += "[^" bs_i "]";
-          break;
+          continue;
         default:
           if ( ascii::is_digit( *xq_c ) ) {
-            in_backreference = true;
-            backreference_no = *xq_c - '0';
+            in_backref = true;
+            backref_no = *xq_c - '0';
           }
           *lib_re += '\\';
-          *lib_re += *xq_c;
           break;
       }
-      got_backslash = false;
-      continue;
-    }
-    if ( in_backreference ) {
-      if ( parens_close > 9 && ascii::is_digit( *xq_c ) )
-        backreference_no = backreference_no * 10 + (*xq_c - '0');
-      else {
-        if ( backreference_no > parens_close )
+    } else {
+      if ( in_backref ) {
+        if ( parens_open > 9 && ascii::is_digit( *xq_c ) )
+          backref_no = backref_no * 10 + (*xq_c - '0');
+        else
+          in_backref = false;
+        if ( backref_no > parens_close )
           ZORBA_ERROR( FORX0002 );
-        in_backreference = false;
-        backreference_no = 0;
+      }
+      switch ( *xq_c ) {
+        case '\\':
+          got_backslash = true;
+          continue;
+        case '(':
+          ++parens_open;
+          break;
+        case ')':
+          ++parens_close;
+          break;
       }
     }
-    switch ( *xq_c ) {
-      case '\\':
-        got_backslash = true;
-        break;
-      case ')':
-        ++parens_close;
-        // no break;
-      default:
-        *lib_re += *xq_c;
-        break;
-    }
-  }
+    *lib_re += *xq_c;
+  } // FOR_EACH
 }
 
 static uint32_t parse_regex_flags( char const *flags ) {
