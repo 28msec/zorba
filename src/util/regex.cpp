@@ -117,8 +117,11 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           in_char_class = false;
           break;
         default:
-          if ( remove_ws && !in_char_class && ascii::is_space( *xq_c ) )
-            continue;
+          if ( remove_ws && ascii::is_space( *xq_c ) ) {
+            if ( !in_char_class )
+              continue;
+            *icu_re += '\\';
+          }
       }
     }
     *icu_re += *xq_c;
