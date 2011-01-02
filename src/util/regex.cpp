@@ -81,6 +81,8 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           continue;
         default:
           if ( ascii::is_digit( *xq_c ) ) {
+            if ( in_char_class )
+              ZORBA_ERROR( FORX0002 );
             in_backref = true;
             backref_no = *xq_c - '0';
           }
