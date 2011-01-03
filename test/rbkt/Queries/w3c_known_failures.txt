@@ -3,9 +3,6 @@ test/rbkt/w3c_testsuite/XQuery/FunctX/functx-functx-id-from-element/functx-funct
 test/rbkt/w3c_testsuite/XQuery/FunctX/functx-fn-tokenize/functx-fn-tokenize-all
 test/rbkt/w3c_testsuite/XQuery/FunctX/functx-fn-tokenize/functx-fn-tokenize-7
 test/rbkt/w3c_testsuite/XQuery/FunctX/functx-fn-namespace-uri-for-prefix/functx-fn-namespace-uri-for-prefix-all
-test/rbkt/w3c_testsuite/XQuery/Expressions/PrimaryExpr/Literals/K2-Literals-10
-test/rbkt/w3c_testsuite/XQuery/Expressions/PrimaryExpr/Literals/K2-Literals-9
-test/rbkt/w3c_testsuite/XQuery/Expressions/PrimaryExpr/Literals/K2-Literals-8
 test/rbkt/w3c_testsuite/XQuery/Expressions/Construct/DirectConElem/DirectConElemContent/Constr-cont-nsmode-10
 test/rbkt/w3c_testsuite/XQuery/Expressions/Construct/DirectConElem/DirectConElemContent/Constr-cont-nsmode-8
 test/rbkt/w3c_testsuite/XQuery/Expressions/Construct/DirectConElem/DirectConElemContent/Constr-cont-nsmode-7
@@ -24,7 +21,6 @@ test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/AssDisassStringFunc/Codep
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/AssDisassStringFunc/CodepointToStringFunc/K-CodepointToStringFunc-15
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/AssDisassStringFunc/CodepointToStringFunc/K-CodepointToStringFunc-14
 test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/PrologExpr/VariableProlog/ExternalVariablesWith/K2-ExternalVariablesWith-22
-test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/PrologExpr/BaseURIProlog/K2-BaseURIProlog-5
 test/rbkt/w3c_testsuite/XQuery/StaticTyping/STFLWORExpr/ST-PITest-02
 test/rbkt/w3c_testsuite/XQuery/StaticTyping/STFLWORExpr/ST-WhereExpr001
 test/rbkt/w3c_testsuite/XQuery/StaticTyping/STFLWORExpr/statictyping-24

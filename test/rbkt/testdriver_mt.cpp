@@ -580,7 +580,8 @@ DWORD WINAPI thread_main(LPVOID param)
         goto done;
       }
     }
-    else if (querySpec.errorsSize() > 0 && !refFileSpecified)
+    else if (querySpec.getComparisonMethod() != "Ignore" 
+             && querySpec.errorsSize() > 0 && !refFileSpecified)
     {
       queries->theOutput << "FAILURE : thread " << tno << " query " << queryNo
                          << " : " << queries->theQueryFilenames[queryNo]
