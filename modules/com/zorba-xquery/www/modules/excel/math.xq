@@ -708,8 +708,9 @@ declare function excel:gcd($numbers as xs:integer+) as xs:integer
 };
 
 (:~
- : Returns the least common multiple of integers.
- : LCM is computed by multiplying all the numbers and dividing with GCD.
+ : Returns the least common multiple of integers.<br/>
+ : LCM for two numbers is computed by multiplying them and dividing with GCD. <br/>
+ : The function is applied recursively replacing the first two numbers in the sequence with their LCM.
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052091521033.aspx
  : @param $numbers The sequence of one or more positive integers.
@@ -718,12 +719,19 @@ declare function excel:gcd($numbers as xs:integer+) as xs:integer
  :)
 declare function excel:lcm($numbers as xs:integer+) as xs:integer
 {
-  let $product := excel:product(fn:distinct-values($numbers))
-  return
-    if ($product eq 0) then
-      0
-    else
-      $product idiv excel:gcd($numbers)
+  if(count($numbers) eq 1) then
+    $numbers[1]
+  else
+  if(count($numbers) eq 2) then
+    let $product := excel:product(fn:distinct-values($numbers))
+    return
+      if ($product eq 0) then
+        0
+      else
+        $product idiv excel:gcd($numbers)
+  else
+    excel:lcm((excel:lcm(($numbers[1], $numbers[2])), subsequence($numbers, 3)))
+
 };
 
 (:~
