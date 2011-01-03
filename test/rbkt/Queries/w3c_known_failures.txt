@@ -20,11 +20,6 @@ test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/MatchesFu
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/MatchesFunc/caselessmatch10
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/MatchesFunc/K2-MatchesFunc-6
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/MatchesFunc/caselessmatch09
-test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/ReplaceFunc/K2-ReplaceFunc-3
-test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/ReplaceFunc/K2-ReplaceFunc-4
-test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/ReplaceFunc/K2-ReplaceFunc-5
-test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/ReplaceFunc/K2-ReplaceFunc-7
-test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/ReplaceFunc/K2-ReplaceFunc-6
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/AssDisassStringFunc/CodepointToStringFunc/K-CodepointToStringFunc-12
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/AssDisassStringFunc/CodepointToStringFunc/K-CodepointToStringFunc-15
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/AssDisassStringFunc/CodepointToStringFunc/K-CodepointToStringFunc-14

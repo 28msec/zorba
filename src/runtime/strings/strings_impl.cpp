@@ -1442,7 +1442,9 @@ bool FnReplaceIterator::nextImpl(
 
   try 
   {
-    utf8::replace_all(input, pattern, flags.c_str(), replacement2, &resStr);
+    zstring lib_pattern;
+    convert_xquery_re( pattern, &lib_pattern, flags.c_str() );
+    utf8::replace_all(input, lib_pattern, flags.c_str(), replacement2, &resStr);
   }
   catch(zorbatypesException& ex) 
   {
