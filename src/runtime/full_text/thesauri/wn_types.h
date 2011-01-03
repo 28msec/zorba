@@ -17,6 +17,8 @@
 #ifndef ZORBA_FULL_TEXT_WORDNET_TYPES_H
 #define ZORBA_FULL_TEXT_WORDNET_TYPES_H
 
+#include <iostream>
+
 #include <zorba/config.h>
 #ifndef WIN32
 #include <stdint.h>
@@ -242,6 +244,10 @@ namespace pointer {
    * The string representation of type.
    */
   extern char const *const string_of[];
+
+  inline std::ostream& operator<<( std::ostream &o, type t ) {
+    return o << string_of[ t ];
+  }
 
   /**
    * Given a binary WordNet pointer symbol, find its corresponding type.

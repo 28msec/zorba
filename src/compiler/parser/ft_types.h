@@ -17,6 +17,15 @@
 #ifndef ZORBA_FT_TYPES_H
 #define ZORBA_FT_TYPES_H
 
+#include <iostream>
+
+#define DEF_OSTREAM_INSERT_OPERATOR                             \
+  inline std::ostream& operator<<( std::ostream &o, type t ) {  \
+    return o << string_of[ t ];                                 \
+  }
+
+///////////////////////////////////////////////////////////////////////////////
+
 namespace zorba {
 
   namespace ft_anyall_mode {
@@ -29,6 +38,7 @@ namespace zorba {
     };
     type const DEFAULT = any;
     extern char const *const string_of[];
+    DEF_OSTREAM_INSERT_OPERATOR
   }
 
   namespace ft_big_unit {
@@ -37,6 +47,7 @@ namespace zorba {
       paragraph
     };
     extern char const *const string_of[];
+    DEF_OSTREAM_INSERT_OPERATOR
   }
 
   namespace ft_case_mode {
@@ -48,6 +59,7 @@ namespace zorba {
     };
     type const DEFAULT = insensitive;
     extern char const *const string_of[];
+    DEF_OSTREAM_INSERT_OPERATOR
   }
 
   namespace ft_content_mode {
@@ -57,6 +69,7 @@ namespace zorba {
       entire
     };
     extern char const *const string_of[];
+    DEF_OSTREAM_INSERT_OPERATOR
   };
 
   namespace ft_diacritics_mode {
@@ -66,6 +79,7 @@ namespace zorba {
     };
     type const DEFAULT = insensitive;
     extern char const *const string_of[];
+    DEF_OSTREAM_INSERT_OPERATOR
   }
 
   namespace ft_range_mode {
@@ -76,6 +90,7 @@ namespace zorba {
       from_to
     };
     extern char const *const string_of[];
+    DEF_OSTREAM_INSERT_OPERATOR
   }
 
   namespace ft_scope {
@@ -84,6 +99,7 @@ namespace zorba {
       different
     };
     extern char const *const string_of[];
+    DEF_OSTREAM_INSERT_OPERATOR
   }
 
   namespace ft_stem_mode {
@@ -93,6 +109,7 @@ namespace zorba {
     };
     type const DEFAULT = without;
     extern char const *const string_of[];
+    DEF_OSTREAM_INSERT_OPERATOR
   }
 
   namespace ft_stop_words_mode {
@@ -103,6 +120,7 @@ namespace zorba {
     };
     type const DEFAULT = without;
     extern char const *const string_of[];
+    DEF_OSTREAM_INSERT_OPERATOR
   }
 
   namespace ft_stop_words_unex {
@@ -111,6 +129,7 @@ namespace zorba {
       except
     };
     extern char const *const string_of[];
+    DEF_OSTREAM_INSERT_OPERATOR
   }
 
   namespace ft_unit {
@@ -120,6 +139,7 @@ namespace zorba {
       paragraphs
     };
     extern char const *const string_of[];
+    DEF_OSTREAM_INSERT_OPERATOR
   }
 
   namespace ft_wild_card_mode {
@@ -129,8 +149,14 @@ namespace zorba {
     };
     type const DEFAULT = without;
     extern char const *const string_of[];
+    DEF_OSTREAM_INSERT_OPERATOR
   }
 
 } // namespace zorba
+
+///////////////////////////////////////////////////////////////////////////////
+
+#undef DEF_OSTREAM_INSERT_OPERATOR
+
 #endif /* ZORBA_FT_TYPES_H */
 /* vim:set et sw=2 ts=2: */

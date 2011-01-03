@@ -17,6 +17,15 @@
 #ifndef ZORBA_LOCALE_H
 #define ZORBA_LOCALE_H
 
+#include <iostream>
+
+#define DEF_OSTREAM_INSERT_OPERATOR                             \
+  inline std::ostream& operator<<( std::ostream &o, type t ) {  \
+    return o << string_of[ t ];                                 \
+  }
+
+///////////////////////////////////////////////////////////////////////////////
+
 namespace zorba {
   namespace locale {
 
@@ -274,6 +283,7 @@ namespace zorba {
         NUM_ENTRIES
       };
       extern char const *const string_of[];
+      DEF_OSTREAM_INSERT_OPERATOR
 
       /**
        * Finds the ISO 3166-1 country code enumeration from the given string.
@@ -307,6 +317,7 @@ namespace zorba {
         NUM_ENTRIES
       };
       extern char const *const string_of[];
+      DEF_OSTREAM_INSERT_OPERATOR
 
       /**
        * Finds the ISO 639-1 language code enumeration from the given string.
@@ -344,6 +355,7 @@ namespace zorba {
         NUM_ENTRIES
       };
       extern char const *const string_of[];
+      DEF_OSTREAM_INSERT_OPERATOR
 
       /**
        * Finds the ISO 639-2 language code enumeration from the given string.
@@ -381,5 +393,10 @@ namespace zorba {
 
   } // namespace locale
 } // namespace zorba
+
+///////////////////////////////////////////////////////////////////////////////
+
+#undef DEF_OSTREAM_INSERT_OPERATOR
+
 #endif  /* ZORBA_LOCALE_H */
 /* vim:set et sw=2 ts=2: */

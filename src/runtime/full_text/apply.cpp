@@ -95,16 +95,11 @@ private:
   if ( !TRACE_FULL_TEXT ) ; else                      \
   DOUT << indent << "ARG " #ARG "=" << (ARG) << endl
 
-#define PUT_ENUM(FT_ENUM,ARG)                                             \
-  if ( !TRACE_FULL_TEXT ) ; else                                          \
-  DOUT << indent << "ARG " #ARG "=" << FT_ENUM::string_of[ ARG ] << endl
-
 #else /* NDEBUG */
 
 #define TRACE_APPLY(RESULT)   /* nothing */
 #define PUT_ALL_MATCHES(ARG)  /* nothing */
 #define PUT_ARG(ARG)          /* nothing */
-#define PUT_ENUM(FT_ENUM,ARG) /* nothing */
 
 #endif /* NDEBUG */
 
@@ -467,7 +462,7 @@ inline bool token_covers_pos( ft_token_span const &ts,
 void apply_ftcontent( ft_all_matches &am, ft_content_mode::type mode,
                       ft_int start_pos, ft_int end_pos ) {
   TRACE_APPLY( am );
-  PUT_ENUM( ft_content_mode, mode );
+  PUT_ARG( mode );
   PUT_ARG( start_pos );
   PUT_ARG( end_pos );
   PUT_ALL_MATCHES( am );
@@ -536,7 +531,7 @@ void apply_ftdistance( ft_all_matches const &am,
   TRACE_APPLY( result );
   PUT_ARG( at_least );
   PUT_ARG( at_most );
-  PUT_ENUM( ft_unit, unit );
+  PUT_ARG( unit );
   PUT_ALL_MATCHES( am );
 
   ft_token_span::start_end_ptr const sep = get_sep_for( unit );
@@ -783,8 +778,8 @@ void apply_ftscope( ft_all_matches const &am, ft_scope::type scope,
                     ft_big_unit::type unit, ft_all_matches &result ) {
   TRACE_APPLY( result );
   PUT_ALL_MATCHES( am );
-  PUT_ENUM( ft_scope, scope );
-  PUT_ENUM( ft_big_unit, unit );
+  PUT_ARG( scope );
+  PUT_ARG( unit );
 
   ft_token_span::start_end_ptr sep = 0;
   switch ( unit ) {
@@ -893,7 +888,7 @@ static void form_range( ft_match_seq const &ms, ft_int at_least, ft_int at_most,
 void apply_fttimes( ft_all_matches const &am, ft_range_mode::type mode,
                     ft_int at_least, ft_int at_most, ft_all_matches &result ) {
   TRACE_APPLY( result );
-  PUT_ENUM( ft_range_mode, mode );
+  PUT_ARG( mode );
   PUT_ARG( at_least );
   PUT_ARG( at_most );
   PUT_ALL_MATCHES( am );
@@ -1276,7 +1271,7 @@ void apply_ftwindow( ft_all_matches const &am, ft_int window_size,
                      ft_unit::type unit, ft_all_matches &result ) {
   TRACE_APPLY( result );
   PUT_ARG( window_size );
-  PUT_ENUM( ft_unit, unit );
+  PUT_ARG( unit );
   PUT_ALL_MATCHES( am );
 
   //

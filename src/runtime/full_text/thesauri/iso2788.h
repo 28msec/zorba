@@ -17,6 +17,8 @@
 #ifndef ZORBA_ISO_2788_H
 #define ZORBA_ISO_2788_H
 
+#include <iostream>
+
 #include "zorbautils/locale.h"
 
 namespace zorba {
@@ -54,6 +56,10 @@ namespace iso2788 {
     USE,  ///< Preferred Term
   };
   extern char const *const string_of[];
+
+  inline std::ostream& operator<<( std::ostream &o, rel_type t ) {
+    return o << string_of[ t ];
+  }
 
   /**
    * Attempts to find the ISO-2788 relationship corresponding to the given

@@ -170,14 +170,14 @@ END_SERIALIZABLE_CLASS_VERSIONS(ftwords_times)
 #define PUT_LABEL(OS,LABEL) \
   OS << " " #LABEL "="
 
-#define PUT_ATTR(OS,LABEL,VALUE) \
+#define PUT_ATTR_VALUE(OS,LABEL,VALUE) \
   PUT_LABEL(OS,LABEL) << VALUE
 
-#define PUT_BOOL(OS,LABEL,VALUE) \
-  PUT_ATTR( OS, LABEL, ( (VALUE) ? 'T' : 'F' ) )
+#define PUT_ATTR(OS,LABEL) \
+  PUT_ATTR_VALUE(OS,LABEL,LABEL##_)
 
-#define PUT_ENUM(OS,FT_ENUM,LABEL) \
-  PUT_ATTR( OS, LABEL, FT_ENUM::string_of[ LABEL##_ ] )
+#define PUT_BOOL(OS,LABEL) \
+  PUT_ATTR_VALUE( OS, LABEL, (LABEL##_ ? 'T' : 'F') )
 
 #define PUT_EXPR(OS,EXPR) \
   if ( !(EXPR) ) ; else (EXPR)->put(OS)
@@ -231,7 +231,7 @@ ft_visit_result::type ftcase_option::accept( ftnode_visitor &v ) {
 
 ostream& ftcase_option::put( ostream &o ) const {
   BEGIN_PUT( o, ftcase_option );
-  PUT_ENUM( o, ft_case_mode, mode ) << endl;
+  PUT_ATTR( o, mode ) << endl;
   END_PUT( o );
 }
 
@@ -260,7 +260,7 @@ void ftcontent_filter::serialize( serialization::Archiver &ar ) {
 
 ostream& ftcontent_filter::put( ostream &o ) const {
   BEGIN_PUT( o, ftcontent_filter );
-  PUT_ENUM( o, ft_content_mode, mode ) << endl;
+  PUT_ATTR( o, mode ) << endl;
   END_PUT( o );
 }
 
@@ -280,7 +280,7 @@ ft_visit_result::type ftdiacritics_option::accept( ftnode_visitor &v ) {
 
 ostream& ftdiacritics_option::put( ostream &o ) const {
   BEGIN_PUT( o, ftdiacritics_option );
-  PUT_ENUM( o, ft_diacritics_mode, mode ) << endl;
+  PUT_ATTR( o, mode ) << endl;
   END_PUT( o );
 }
 
@@ -313,7 +313,7 @@ ft_visit_result::type ftdistance_filter::accept( ftnode_visitor &v ) {
 
 ostream& ftdistance_filter::put( ostream &o ) const {
   BEGIN_PUT( o, ftcontent_filter );
-  PUT_ENUM( o, ft_unit, unit );
+  PUT_ATTR( o, unit );
   INDENT_PUT( o );
   PUT_NODE( o, range_ );
   OUTDENT_END_PUT( o );
@@ -411,7 +411,7 @@ ft_visit_result::type ftlanguage_option::accept( ftnode_visitor &v ) {
 
 ostream& ftlanguage_option::put( ostream &o ) const {
   BEGIN_PUT( o, ftlanguage_option );
-  PUT_ENUM( o, locale::iso639_1, lang ) << endl;
+  PUT_ATTR( o, lang ) << endl;
   END_PUT( o );
 }
 
@@ -656,8 +656,8 @@ ft_visit_result::type ftscope_filter::accept( ftnode_visitor &v ) {
 
 ostream& ftscope_filter::put( ostream &o ) const {
   BEGIN_PUT( o, ftscope_filter );
-  PUT_ENUM( o, ft_scope, scope );
-  PUT_ENUM( o, ft_big_unit, unit ) << endl;
+  PUT_ATTR( o, scope );
+  PUT_ATTR( o, unit ) << endl;
   END_PUT( o );
 }
 
@@ -719,7 +719,7 @@ ft_visit_result::type ftstem_option::accept( ftnode_visitor &v ) {
 
 ostream& ftstem_option::put( ostream &o ) const {
   BEGIN_PUT( o, ftstem_option );
-  PUT_ENUM( o, ft_stem_mode, mode ) << endl;
+  PUT_ATTR( o, mode ) << endl;
   END_PUT( o );
 }
 
@@ -750,8 +750,8 @@ ft_visit_result::type ftstop_words::accept( ftnode_visitor &v ) {
 
 ostream& ftstop_words::put( ostream &o ) const {
   BEGIN_PUT( o, ftstop_words );
-  PUT_ATTR( o, uri, uri_ );
-  PUT_ENUM( o, ft_stop_words_unex, mode );
+  PUT_ATTR( o, uri );
+  PUT_ATTR( o, mode );
   PUT_LABEL( o, stop_words ) << flush;
   FOR_EACH( list_t, i, list_ )
     o << *i << ' ';
@@ -798,7 +798,7 @@ ft_visit_result::type ftstop_word_option::accept( ftnode_visitor &v ) {
 
 ostream& ftstop_word_option::put( ostream &o ) const {
   BEGIN_PUT( o, ftstop_word_option );
-  PUT_ENUM( o, ft_stop_words_mode, mode );
+  PUT_ATTR( o, mode );
   if ( stop_words_.empty() )
     o << endl;
   else {
@@ -840,8 +840,8 @@ ft_visit_result::type ftthesaurus_id::accept( ftnode_visitor &v ) {
 
 ostream& ftthesaurus_id::put( ostream &o ) const {
   BEGIN_PUT( o, ftthesaurus_id );
-  PUT_ATTR( o, uri, uri_ );
-  PUT_ATTR( o, relationship, relationship_ );
+  PUT_ATTR( o, uri );
+  PUT_ATTR( o, relationship );
   INDENT_PUT( o );
   PUT_NODE( o, levels_ );
   OUTDENT_END_PUT( o );
@@ -879,8 +879,8 @@ ft_visit_result::type ftthesaurus_option::accept( ftnode_visitor &v ) {
 
 ostream& ftthesaurus_option::put( ostream &o ) const {
   BEGIN_PUT( o, ftthesaurus_option );
-  PUT_BOOL( o, includes_default , includes_default_ );
-  PUT_BOOL( o, no_thesaurus, no_thesaurus_ );
+  PUT_BOOL( o, includes_default );
+  PUT_BOOL( o, no_thesaurus );
   INDENT_PUT( o );
   PUT_SEQ( o, thesaurus_id_list_t, thesaurus_id_list_ );
   OUTDENT_END_PUT( o );
@@ -958,7 +958,7 @@ ft_visit_result::type ftwild_card_option::accept( ftnode_visitor &v ) {
 
 ostream& ftwild_card_option::put( ostream &o ) const {
   BEGIN_PUT( o, ftwild_card_option );
-  PUT_ENUM( o, ft_wild_card_mode, mode ) << endl;
+  PUT_ATTR( o, mode ) << endl;
   END_PUT( o );
 }
 
@@ -987,7 +987,7 @@ ft_visit_result::type ftwindow_filter::accept( ftnode_visitor &v ) {
 
 ostream& ftwindow_filter::put( ostream &o ) const {
   BEGIN_PUT( o, ftwindow_filter );
-  PUT_ENUM( o, ft_unit, unit );
+  PUT_ATTR( o, unit );
   INDENT_PUT( o );
   PUT_EXPR( o, window_expr_ );
   OUTDENT_END_PUT( o );
@@ -1019,7 +1019,7 @@ ft_visit_result::type ftwords::accept( ftnode_visitor &v ) {
 
 ostream& ftwords::put( ostream &o ) const {
   BEGIN_PUT( o, ftwords );
-  PUT_ENUM( o, ft_anyall_mode, mode );
+  PUT_ATTR( o, mode );
   INDENT_PUT( o );
   PUT_EXPR( o, value_expr_ );
   OUTDENT_END_PUT( o );

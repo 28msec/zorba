@@ -21,7 +21,7 @@ namespace zorba {
   namespace ft_anyall_mode {
     char const *const string_of[] = {
       "any",
-      "any_word",
+      "any word",
       "all",
       "all words",
       "phrase",

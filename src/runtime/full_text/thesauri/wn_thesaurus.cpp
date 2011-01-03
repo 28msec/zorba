@@ -383,7 +383,7 @@ thesaurus::thesaurus( zstring const &phrase, zstring const &relationship,
 # if DEBUG_FT_THESAURUS
   cout << "==================================================" << endl;
   cout << "query phrase: " << phrase << endl;
-  cout << "query ptr_type=" << pointer::string_of[ query_ptr_type_ ] << endl;
+  cout << "query ptr_type=" << query_ptr_type_ << endl;
 # endif
   if ( char const *p = find_lemma( phrase ) ) {
     while ( *p++ ) ;                    // skip past lemma
@@ -558,7 +558,7 @@ bool thesaurus::next( zstring *synonym ) {
         continue;
 
 #     if DEBUG_FT_THESAURUS
-      cout << "+ pushing \"" << pointer::string_of[ ptr->type_ ]
+      cout << "+ pushing \"" << ptr->type_
            << "\" synset (ID=" << ptr->synset_id_ << ')' << endl;
       synset const ptr_ss( SYNSETS[ ptr->synset_id_ ] );
       oseparator comma;
