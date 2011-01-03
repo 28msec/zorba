@@ -380,20 +380,19 @@ void expr::setDirectAnnotations()
     fo_expr* fo = static_cast<fo_expr *>(this);
     const function* f = fo->get_func();
 
+    bool isErrorFunc = (dynamic_cast<const fn_error*>(f) != NULL);
+
     // The various fn:error functions are non-discardable. Variable assignment
     // is also non-discardable.
-    if (f->getKind() == FunctionConsts::OP_VAR_ASSIGN_1 ||
-        dynamic_cast<const fn_error*>(f) != NULL)
+    if (f->getKind() == FunctionConsts::OP_VAR_ASSIGN_1 || isErrorFunc)
     {
       setNonDiscardable(ANNOTATION_TRUE_FIXED);
     }
 
     // Do not fold functions that always require access to the dynamic context,
-    // or may need to access the implicit timezone (which is also in the dynamic
-    // constext).
-    if (f->accessesDynCtx () ||
-        dynamic_cast<const fn_error*>(f) != NULL ||
-        //maybe_needs_implicit_timezone(fo, rCtx.getStaticContext(node)) ||
+    // or are not deterministic.
+    if (isErrorFunc ||
+        (!f->isUdf() && f->accessesDynCtx()) ||
         !f->isDeterministic())
     {
       setUnfoldable(ANNOTATION_TRUE_FIXED);
@@ -591,6 +590,9 @@ bool expr::isNonDiscardable() const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 BoolAnnotationValue expr::getUnfoldable() const
 {
   return (BoolAnnotationValue)
@@ -608,6 +610,30 @@ void expr::setUnfoldable(BoolAnnotationValue v)
 bool expr::isUnfoldable() const
 {
   BoolAnnotationValue v = getUnfoldable();
+  return (v == ANNOTATION_TRUE || v == ANNOTATION_TRUE_FIXED);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+BoolAnnotationValue expr::getContainsRecursiveCall() const
+{
+  return (BoolAnnotationValue)
+         ((theFlags1 & CONTAINS_RECURSIVE_CALL_MASK) >> CONTAINS_RECURSIVE_CALL);
+}
+
+
+void expr::setContainsRecursiveCall(BoolAnnotationValue v)
+{
+  theFlags1 &= ~CONTAINS_RECURSIVE_CALL_MASK;
+  theFlags1 |= (v << CONTAINS_RECURSIVE_CALL);
+}
+
+
+bool expr::containsRecursiveCall() const
+{
+  BoolAnnotationValue v = getContainsRecursiveCall();
   return (v == ANNOTATION_TRUE || v == ANNOTATION_TRUE_FIXED);
 }
 

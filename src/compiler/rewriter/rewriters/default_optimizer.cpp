@@ -67,7 +67,6 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
   RuleOnceDriver<MarkConsumerNodeProps> driverMarkConsumerNodeProps;
   RuleOnceDriver<EliminateNodeOps> driverEliminateNodeOps;
   SingletonRuleMajorDriver<SpecializeOperations> driverSpecializeOperations;
-  RuleOnceDriver<HoistExprsOutOfLoops> driverHoistExprsOutOfLoops;
 
   SingletonRuleMajorDriver<MarkFreeVars> driverMarkFreeVars;
   FoldRules driverFoldRules;
@@ -154,11 +153,25 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
   // Loop Hoisting
   if (Properties::instance()->loopHoisting())
   {
-    bool hoist_modified = driverHoistExprsOutOfLoops.rewrite(rCtx);
+    HoistRule rule;
+    bool local_modified = false;
+
+    expr_t e = rule.apply(rCtx, rCtx.getRoot().getp(), local_modified);
+
+    if (e != rCtx.getRoot())
+      rCtx.setRoot(e);
 
     // Mark exprs again time because hoisting may have created new exprs.
-    if (hoist_modified)
+    if (local_modified)
     {
+      modified = true;
+
+      if (Properties::instance()->printIntermediateOpt()) 
+      {
+        std::cout << "After hoisting : " << std::endl;
+        rCtx.getRoot()->put(std::cout) << std::endl;
+      }
+
       RuleOnceDriver<MarkExprs> driverMarkExpr;
       driverMarkExpr.rewrite(rCtx);
     }

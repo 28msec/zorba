@@ -99,12 +99,6 @@ public:
 
   bool isLeaf() const { return theIsLeaf; }
 
-  void addMutuallyRecursiveUDFs(const std::vector<user_function*>& udfs);
-
-  void setOptimized(bool v) { theIsOptimized = v; }
-
-  bool isOptimized() const { return theIsOptimized; }
-
   void setBody(const expr_t& body);
 
   expr_t getBody() const;
@@ -113,15 +107,25 @@ public:
 
   const std::vector<var_expr_t>& getArgVars() const;
 
-  bool accessesDynCtx() const;
+  void setOptimized(bool v) { theIsOptimized = v; }
 
-  PlanIter_t getPlan(CompilerCB *);
-  
-  const std::vector<LetVarIter_t>& getArgVarRefIters() const;
+  bool isOptimized() const { return theIsOptimized; }
+
+  void addMutuallyRecursiveUDFs(const std::vector<user_function*>& udfs);
+
+  bool isMutuallyRecursiveWith(const user_function* udf);
+
+  bool isRecursive() const;
+
+  bool accessesDynCtx() const;
 
   BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const;
 
   BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const;
+
+  PlanIter_t getPlan(CompilerCB *);
+  
+  const std::vector<LetVarIter_t>& getArgVarRefIters() const;
 
   PlanIter_t codegen(
         CompilerCB* cb,

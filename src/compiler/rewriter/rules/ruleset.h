@@ -51,13 +51,14 @@ PREPOST_RULE(EliminateExtraneousPathSteps);
 
 PREPOST_RULE(MarkFreeVars);
 
-PREPOST_RULE(HoistExprsOutOfLoops);
-
 PREPOST_RULE(InlineFunctions);
 
 PREPOST_RULE(PartialEval);
 
 
+/*******************************************************************************
+
+********************************************************************************/
 class FoldConst : public PrePostRewriteRule 
 {
 protected:
@@ -78,7 +79,9 @@ protected:
 };
 
 
+/*******************************************************************************
 
+********************************************************************************/
 class MarkExprs : public RewriteRule 
 {
 public:
@@ -88,6 +91,9 @@ public:
 };
 
 
+/*******************************************************************************
+
+********************************************************************************/
 class MarkConsumerNodeProps : public RewriteRule 
 {
 public:
@@ -101,6 +107,22 @@ public:
 };
 
 
+/*******************************************************************************
+
+********************************************************************************/
+class HoistRule : public RewriteRule 
+{
+public:
+  HoistRule() : RewriteRule(RewriteRule::IndexJoin, "Hoist") {}
+
+  expr_t apply(RewriterContext& rCtx, expr* node, bool& modified);
+};
+
+
+
+/*******************************************************************************
+
+********************************************************************************/
 class IndexJoinRule : public RewriteRule 
 {
 public:

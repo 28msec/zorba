@@ -120,6 +120,8 @@ public:
 
   bool isDeterministic() const
   {
+    // Note: For udfs, the flag is set before the udf is optimized (see call
+    // to inferDeterminism in XQueryCompiler::optimize method).
     return testFlag(FunctionConsts::isDeterministic);
   }
 

@@ -149,10 +149,13 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
 {
   BoolAnnotationValue saveNonDiscardable = node->getNonDiscardable();
   BoolAnnotationValue saveUnfoldable = node->getUnfoldable();
+  BoolAnnotationValue saveContainsRecursiveCall = node->getContainsRecursiveCall();
 
-  // By default, an expr is discardable and foldable
+  // By default, an expr is discardable, foldable, and does not contain
+  // recursive calls
   BoolAnnotationValue curNonDiscardable = ANNOTATION_FALSE;
   BoolAnnotationValue curUnfoldable = ANNOTATION_FALSE;
+  BoolAnnotationValue curContainsRecursiveCall = ANNOTATION_FALSE;
 
   ExprConstIterator iter(node);
   while(!iter.done())
@@ -168,6 +171,10 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
     // If any of the children is unfoldable, then "this" is unfoldable too.
     if (childExpr->isUnfoldable())
       curUnfoldable = ANNOTATION_TRUE;
+
+    // If any of the children contains recursive calls, then "this" does too.
+    if (childExpr->containsRecursiveCall())
+      curContainsRecursiveCall = ANNOTATION_TRUE;
 
     iter.next();
   }
@@ -195,6 +202,12 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
         RewriterContext rctx(rCtx.theCCB, udf->getBody(), udf, "");
         GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rctx);
         udf->setBody(rctx.getRoot());
+      }
+
+      if (rCtx.theUDF != NULL &&
+          rCtx.theUDF->isMutuallyRecursiveWith(udf))
+      {
+        curContainsRecursiveCall = ANNOTATION_TRUE;
       }
     }
 
@@ -274,6 +287,13 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
       saveUnfoldable != ANNOTATION_TRUE_FIXED)
   {
     node->setUnfoldable(curUnfoldable);
+    modified = true;
+  }
+
+  if (saveContainsRecursiveCall != curContainsRecursiveCall &&
+      saveContainsRecursiveCall != ANNOTATION_TRUE_FIXED)
+  {
+    node->setContainsRecursiveCall(curContainsRecursiveCall);
     modified = true;
   }
 

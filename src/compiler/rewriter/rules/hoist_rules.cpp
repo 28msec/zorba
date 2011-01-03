@@ -32,8 +32,6 @@
 #include "zorbaerrors/Assert.h"
 
 
-using namespace std;
-
 namespace zorba
 {
 
@@ -62,7 +60,7 @@ static bool contains_var(
 
 static bool is_enclosed_expr(const expr*);
 
-static bool contains_updates(const expr*);
+static bool containsUpdates(const expr*);
 
 
 /*******************************************************************************
@@ -82,13 +80,15 @@ struct flwor_holder
   This rule looks for exprs that are inside a for loop but do not depend on the
   loop variable, and then moves such exprs outside the loop.
 ********************************************************************************/
-RULE_REWRITE_PRE(HoistExprsOutOfLoops)
+expr_t HoistRule::apply(
+    RewriterContext& rCtx,
+    expr* node,
+    bool& modified)
 {
-  if (node != rCtx.getRoot())
-    return NULL;
+  assert(node == rCtx.getRoot());
 
-  if (contains_updates(node))
-    return NULL;
+  if (containsUpdates(node))
+    return node;
 
   ulong numVars = 0;
   VarIdMap varmap;
@@ -100,26 +100,16 @@ RULE_REWRITE_PRE(HoistExprsOutOfLoops)
   build_expr_to_vars_map(node, varmap, freeset, freevarMap);
 
   struct flwor_holder root;
-  if (hoist_expressions(rCtx, node, varmap, freevarMap, &root))
+  modified = hoist_expressions(rCtx, node, varmap, freevarMap, &root);
+
+  if (modified && root.flwor != NULL)
   {
-    if (root.flwor != NULL)
-    {
-      root.flwor->set_return_expr(node);
-      return root.flwor.getp();
-    }
-    return node;
+    root.flwor->set_return_expr(node);
+    return root.flwor.getp();
   }
 
-  return NULL;
+  return node;
 }
-
-
-RULE_REWRITE_POST(HoistExprsOutOfLoops)
-{
-  return NULL;
-}
-
-
 
 
 /*******************************************************************************
@@ -144,7 +134,7 @@ static bool hoist_expressions(
 
     ulong numForLetClauses = flwor->num_forlet_clauses();
     ulong i = 0;
-    while(i < numForLetClauses)
+    while (i < numForLetClauses)
     {
       forletwin_clause* flc = static_cast<forletwin_clause*>(flwor->get_clause(i));
 
@@ -251,6 +241,7 @@ static expr_t try_hoisting(
 {
   if (non_hoistable(e) ||
       e->contains_node_construction() ||
+      e->containsRecursiveCall() ||
       is_enclosed_expr(e))
   {
     return NULL;
@@ -455,7 +446,7 @@ static bool is_enclosed_expr(const expr* e)
 /*******************************************************************************
 
 ********************************************************************************/
-static bool contains_updates(const expr* e)
+static bool containsUpdates(const expr* e)
 {
   if (e->is_updating())
     return true;
@@ -466,7 +457,7 @@ static bool contains_updates(const expr* e)
     const expr* ce = iter.get_expr();
     if (ce)
     {
-      if (contains_updates(ce))
+      if (containsUpdates(ce))
         return true;
     }
     iter.next();
@@ -474,6 +465,7 @@ static bool contains_updates(const expr* e)
 
   return false;
 }
+
 
 }
 /* vim:set ts=2 sw=2: */

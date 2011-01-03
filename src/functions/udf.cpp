@@ -164,17 +164,6 @@ xqtref_t user_function::getUDFReturnType(static_context* sctx) const
 /*******************************************************************************
 
 ********************************************************************************/
-void user_function::addMutuallyRecursiveUDFs(const std::vector<user_function*>& udfs)
-{
-  theMutuallyRecursiveUDFs.insert(theMutuallyRecursiveUDFs.end(),
-                                  udfs.begin() + 1,
-                                  udfs.end());
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 void user_function::setBody(const expr_t& body)
 {
   theBodyExpr = body;
@@ -211,19 +200,54 @@ const std::vector<var_expr_t>& user_function::getArgVars() const
 /*******************************************************************************
 
 ********************************************************************************/
-bool user_function::accessesDynCtx() const
+void user_function::addMutuallyRecursiveUDFs(const std::vector<user_function*>& udfs)
 {
-  // All undeclared functions unfoldable. TODO: better analysis
-  return (theBodyExpr == NULL || theBodyExpr->isUnfoldable());
+  theMutuallyRecursiveUDFs.insert(theMutuallyRecursiveUDFs.end(),
+                                  udfs.begin() + 1,
+                                  udfs.end());
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-const std::vector<LetVarIter_t>& user_function::getArgVarRefIters() const
+bool user_function::isRecursive() const
 {
-  return theArgVarRefs;
+  assert(isOptimized());
+  return !theMutuallyRecursiveUDFs.empty();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool user_function::isMutuallyRecursiveWith(const user_function* udf)
+{
+  assert(isOptimized());
+
+  if (std::find(theMutuallyRecursiveUDFs.begin(), 
+                theMutuallyRecursiveUDFs.end(),
+                udf) != theMutuallyRecursiveUDFs.end())
+    return true;
+
+  return false;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool user_function::accessesDynCtx() const
+{
+  if (!isOptimized())
+  {
+    std::cerr << "accessesDynCtx invoked on non-optimized UDF"
+              << getName()->getStringValue() << std::endl;
+    assert(isOptimized());
+  }
+
+  // All undeclared functions unfoldable. TODO: better analysis
+  return (theBodyExpr == NULL || theBodyExpr->isUnfoldable());
 }
 
 
@@ -234,6 +258,7 @@ BoolAnnotationValue user_function::ignoresSortedNodes(
     expr* fo,
     ulong input) const
 {
+  assert(isOptimized());
   assert(input < theArgVars.size());
 
   return theArgVars[input]->getIgnoresSortedNodes();
@@ -247,9 +272,19 @@ BoolAnnotationValue user_function::ignoresDuplicateNodes(
     expr* fo,
     ulong input) const
 {
+  assert(isOptimized());
   assert(input < theArgVars.size());
 
   return theArgVars[input]->getIgnoresDuplicateNodes();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+const std::vector<LetVarIter_t>& user_function::getArgVarRefIters() const
+{
+  return theArgVarRefs;
 }
 
 

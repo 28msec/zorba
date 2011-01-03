@@ -121,7 +121,8 @@ public:
     IGNORES_SORTED_NODES    = 4,
     IGNORES_DUPLICATE_NODES = 6,
     NON_DISCARDABLE         = 8,
-    UNFOLDABLE              = 10
+    UNFOLDABLE              = 10,
+    CONTAINS_RECURSIVE_CALL = 12
   } Annotationkey;
 
   typedef enum
@@ -131,7 +132,8 @@ public:
     IGNORES_SORTED_NODES_MASK  = 0x030,
     IGNORES_DUPLICATE_NODES_MASK  = 0x0C0,
     NON_DISCARDABLE_MASK         = 0x300,
-    UNFOLDABLE_MASK              = 0xC00
+    UNFOLDABLE_MASK              = 0xC00,
+    CONTAINS_RECURSIVE_CALL_MASK = 0x3000
   } AnnotationMask;
 
 
@@ -245,11 +247,19 @@ public:
 
   void setNonDiscardable(BoolAnnotationValue v);
 
+  // Annotation : unfoldable
   BoolAnnotationValue getUnfoldable() const;
 
   void setUnfoldable(BoolAnnotationValue v);
 
   bool isUnfoldable() const;
+
+  // Annotation : contains-recursive-call
+  BoolAnnotationValue getContainsRecursiveCall() const;
+
+  void setContainsRecursiveCall(BoolAnnotationValue v);
+
+  bool containsRecursiveCall() const;
 
   void setDirectAnnotations();
 
