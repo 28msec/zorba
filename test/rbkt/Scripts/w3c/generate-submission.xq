@@ -10,7 +10,7 @@ else
   validate {
     <test-suite-result>
        <implementation name="Zorba" 
-         version='1.4.0 (svn rev. 8998)'
+         version='1.5.0 (svn rev. 9658)'
          anonymous-result-column="false">
   
          <organization
@@ -82,11 +82,11 @@ else
 
        <syntax>XQuery</syntax>
 
-       <test-run dateRun="2010-10-11">
+       <test-run dateRun="2011-01-03">
           <test-suite version="current"/>
           <transformation><p>Standard</p></transformation>
           <comparison><p>Standard</p></comparison>
-          <otherComments><p>XQTS taken from W3C CVS as of 2010-10-11.</p></otherComments>
+          <otherComments><p>XQTS taken from W3C CVS as of 2011-01-03.</p></otherComments>
        </test-run>
 
       {
@@ -98,6 +98,13 @@ else
             name="{$testname}"
             result="not applicable"
             comment="Zorba does not support the 'Static Typing Feature'"
+          />
+        else if (fn:contains(fn:data($test),'CastFOCA0001-1') or
+                 fn:contains(fn:data($test),'CastFOCA0003-1')) then
+          <test-case
+            name="{$testname}"
+            result="pass"
+            comment="There is an openened bug #11400 with the W3C for this issue. Please see http://www.w3.org/Bugs/Public/show_bug.cgi?id=11400."
           />
         else
           <test-case
