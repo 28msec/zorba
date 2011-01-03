@@ -42,7 +42,7 @@ Indent output.
 
 --print-query
 Print the queries.
-
+                                                                                                                                                             
 --print-errors-as-xml, -x
 Print the errors as XML.
 
@@ -83,7 +83,7 @@ Provide the value for a variable given a file (name=file) or a value (name:=valu
 Set the context item to the XML document in a given file.
 
 --optimization-level
-Optimization level for the query compiler (O0, O1 or O2)
+Optimization level for the query compiler (O0, O1 or O2 - default: O1)
 
 --lib-module, -l
 Query compiler option to treat the query as a library module. If this is set --compile-only option is also set to true.
@@ -121,9 +121,11 @@ Specify a timeout in seconds. After the specified time, the execution of the que
 --module-path
 Module paths added to the built-in resolver, i.e. where module imports are looking for modules.
 
---install-path
-The path where the modules are searched.
+--option
+Set an XQuery option in the static context. The QName of the option is passed as a string in the notation by James Clark (i.e. {namespace}localname). For example, --option {http://www.zorba-xquery.com}option=value
 
+--trailing-nl
+Output a trailing newline after the result of the query.
 \endverbatim
 
 \section commandlineexamples Examples
