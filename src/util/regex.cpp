@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include <cstring>
+
 #include "zorbaerrors/error_manager.h"
 #include "zorbatypes/zorbatypesError.h"
 
@@ -35,14 +37,16 @@ typedef uint32_t icu_flags_t;
 
 static icu_flags_t convert_xquery_flags( char const *xq_flags ) {
   icu_flags_t icu_flags = 0;
-  for ( char const *f = xq_flags; *f; ++f ) {
-    switch ( *f ) {
-      case 'i': icu_flags |= UREGEX_CASE_INSENSITIVE; break;
-      case 'm': icu_flags |= UREGEX_MULTILINE       ; break;
-      case 's': icu_flags |= UREGEX_DOTALL          ; break;
-      case 'x': icu_flags |= UREGEX_COMMENTS        ; break;
-      default:
-        throw zorbatypesException( xq_flags, ZorbatypesError::FORX0001 );
+  if ( xq_flags ) {
+    for ( char const *f = xq_flags; *f; ++f ) {
+      switch ( *f ) {
+        case 'i': icu_flags |= UREGEX_CASE_INSENSITIVE; break;
+        case 'm': icu_flags |= UREGEX_MULTILINE       ; break;
+        case 's': icu_flags |= UREGEX_DOTALL          ; break;
+        case 'x': icu_flags |= UREGEX_COMMENTS        ; break;
+        default:
+          throw zorbatypesException( xq_flags, ZorbatypesError::FORX0001 );
+      }
     }
   }
   return icu_flags;
@@ -50,41 +54,52 @@ static icu_flags_t convert_xquery_flags( char const *xq_flags ) {
 
 void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
                         char const *xq_flags ) {
-  icu_flags_t const icu_flags = convert_xquery_flags( xq_flags );
-  bool const remove_ws = icu_flags & UREGEX_COMMENTS;
+  bool const x_flag = xq_flags ? ::strchr( xq_flags, 'x' ) : false;
 
   icu_re->clear();
   icu_re->reserve( xq_re.length() );    // approximate
 
   bool got_backslash = false;
-  bool in_char_class = false;
+  bool in_char_class = false;           // within [...]
 
-  bool in_backref = false;
+  bool in_backref = false;              // \[0-9]+
   int backref_no = 0;
   int parens_open = 0, parens_close = 0;
 
   FOR_EACH( zstring, xq_c, xq_re ) {
     if ( got_backslash ) {
-      if ( remove_ws && !in_char_class && ascii::is_space( *xq_c ) )
+      if ( x_flag && !in_char_class && ascii::is_space( *xq_c ) ) {
+        //
+        // XQuery F&O: 7.6.1.1: If [the 'x' flag is] present, whitespace
+        // characters ... in the regular expression are removed prior to
+        // matching with one exception: whitespace characters within character
+        // class expressions ... are not removed.
+        //
         continue;
+      }
       got_backslash = false;
       switch ( *xq_c ) {
-        case 'c':
+        case 'c': // NameChar
           *icu_re += "[" bs_c "]";
           continue;
-        case 'C':
+        case 'C': // ^\c
           *icu_re += "[^" bs_c "]";
           continue;
-        case 'i':
+        case 'i': // initial NameChar
           *icu_re += "[" bs_i "]";
           continue;
-        case 'I':
+        case 'I': // ^\i
           *icu_re += "[^" bs_i "]";
           continue;
         default:
           if ( ascii::is_digit( *xq_c ) ) {
-            if ( in_char_class )
+            if ( in_char_class ) {
+              //
+              // XQuery F&O 7.6.1: Within a character class expression,
+              // \ followed by a digit is invalid.
+              //
               ZORBA_ERROR( FORX0002 );
+            }
             in_backref = true;
             backref_no = *xq_c - '0';
           }
@@ -93,10 +108,23 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
       }
     } else {
       if ( in_backref ) {
+        //
+        // XQuery F&O 7.6.1: The construct \N where N is a single digit is
+        // always recognized as a back-reference; if this is followed by
+        // further digits, these digits are taken to be part of the back-
+        // reference if and only if the resulting number NN is such that the
+        // back-reference is preceded by NN or more unescaped opening
+        // parentheses.
+        //
         if ( parens_open > 9 && ascii::is_digit( *xq_c ) )
           backref_no = backref_no * 10 + (*xq_c - '0');
         else
           in_backref = false;
+        //
+        // XQuery F&O 7.6.1: The regular expression is invalid if a back-
+        // reference refers to a subexpression that does not exist or whose
+        // closing right parenthesis occurs after the back-reference.
+        //
         if ( backref_no > parens_close )
           ZORBA_ERROR( FORX0002 );
       }
@@ -117,9 +145,14 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           in_char_class = false;
           break;
         default:
-          if ( remove_ws && ascii::is_space( *xq_c ) ) {
+          if ( x_flag && ascii::is_space( *xq_c ) ) {
             if ( !in_char_class )
               continue;
+            //
+            // This is similar to the above case for removing whitespace except
+            // ICU removes *all* whitespace (even within character classes)
+            // unless the whitespace is escaped; hence we have to escape it.
+            //
             *icu_re += '\\';
           }
       }
