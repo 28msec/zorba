@@ -156,15 +156,15 @@ FOREACH(TESTFILE ${TESTFILES})
       SET(SKIP_TEST 1)
     ENDIF(NEEDS_FILE)
   ENDIF(NOT ZORBA_WITH_FILE_ACCESS)
-  IF (ZORBATEST_TESTDRIVER_MT_AVAILABLE AND ZORBATEST_USE_MT_XQTS)
-    # If this is an XQTS test and we want to use testdriver_mt instead,
-    # don't add the traditional testdriver version, but remember that
-    # we found some
-    IF (TESTNAME MATCHES "^test/rbkt/w3c_testsuite")
+  IF (TESTNAME MATCHES "^test/rbkt/w3c_testsuite")
+    SET (FOUND_XQTS 1)
+    IF (ZORBATEST_TESTDRIVER_MT_AVAILABLE AND ZORBATEST_USE_MT_XQTS)
+      # If this is an XQTS test and we want to use testdriver_mt instead,
+      # don't add the traditional testdriver version, but remember that
+      # we found some
       SET (SKIP_TEST 1)
-      SET (FOUND_XQTS 1)
-    ENDIF (TESTNAME MATCHES "^test/rbkt/w3c_testsuite")
-  ENDIF (ZORBATEST_TESTDRIVER_MT_AVAILABLE AND ZORBATEST_USE_MT_XQTS)
+    ENDIF (ZORBATEST_TESTDRIVER_MT_AVAILABLE AND ZORBATEST_USE_MT_XQTS)
+  ENDIF (TESTNAME MATCHES "^test/rbkt/w3c_testsuite")
   IF (ZORBA_NO_FULL_TEXT)
     STRING(REGEX MATCH "fulltext/" NEEDS_FULL_TEXT "${TESTNAME}")
     IF (NEEDS_FULL_TEXT)
