@@ -152,7 +152,7 @@ public:
   virtual ~CSVParseFunction() {};
 
   virtual zorba::String
-  getLocalName() const { return "parse"; }
+  getLocalName() const { return "parse-internal"; }
 
   virtual zorba::ItemSequence_t
   evaluate(const Arguments_t&,
@@ -219,7 +219,7 @@ public:
   virtual ~CSVSerializeFunction() {}
 
   virtual zorba::String
-  getLocalName() const { return "serialize"; }
+  getLocalName() const { return "serialize-internal"; }
 
   virtual zorba::ItemSequence_t
   evaluate(const Arguments_t&,

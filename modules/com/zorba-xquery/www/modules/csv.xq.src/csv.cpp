@@ -51,11 +51,11 @@ CSVModule::getExternalFunction(const zorba::String &aLocalname)
 {
   if (1 == 0) {
   }
-  else if (aLocalname.equals("parse")) {
+  else if (aLocalname.equals("parse-internal")) {
     lParseFunc = new CSVParseFunction(this);
     return lParseFunc;
   }
-  else if (aLocalname.equals("serialize")) {
+  else if (aLocalname.equals("serialize-internal")) {
     lSerializeFunc = new CSVSerializeFunction(this);
     return lSerializeFunc;
   }

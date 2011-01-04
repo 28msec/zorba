@@ -24,9 +24,14 @@
 module namespace zorba-csv = "http://www.zorba-xquery.com/modules/csv";
 
 (:~
- : Namespace for csv options. Same as the namespace for the csv options xsd.
-:)
-declare namespace csv-options="http://www.zorba-xquery.com/modules/csv-options";
+ : Import module for checking if csv options element is validated.
+ :)
+import module namespace zorba-schema = "http://www.zorba-xquery.com/modules/schema";
+
+(:~
+ : Contains the definitions of the csv options element.
+  :)
+import schema namespace csv-options = "http://www.zorba-xquery.com/modules/csv-options";
 
 (:~
  : Errors namespace URI.
@@ -192,7 +197,19 @@ declare variable $zorba-csv:errWrongParam as xs:QName := fn:QName($zorba-csv:csv
  : @example txt_parse8.xq
 :)
 declare function zorba-csv:parse($csv as xs:string,
-                                 $options as element(csv-options:options)?) as element()* external;
+                                 $options as element(csv-options:options)?) as element()*
+{
+  if(empty($options)) then
+    zorba-csv:parse-internal($csv, $options)
+  else
+  if(zorba-schema:is-validated($options)) then
+    zorba-csv:parse-internal($csv, $options)
+  else
+    zorba-csv:parse-internal($csv, validate{$options})
+};
+                                 
+declare %private function zorba-csv:parse-internal($csv as xs:string,
+                                 $options as element(csv-options:options, csv-options:optionsType)?) as element()* external;
                                  
 (:~
  : Convert XML into CSV or fixed size text.<br/>
@@ -310,5 +327,16 @@ declare function zorba-csv:parse($csv as xs:string,
  : @example txt_parse_serialize6.xq
 :)
 declare function zorba-csv:serialize($xml as element()*,
-									$options as element(csv-options:options)?) as xs:string external;
+									$options as element(csv-options:options)?) as xs:string
+{
+  if(empty($options)) then
+    zorba-csv:serialize-internal($xml, $options)
+  else
+  if(zorba-schema:is-validated($options)) then
+    zorba-csv:serialize-internal($xml, $options)
+  else
+    zorba-csv:serialize-internal($xml, validate{$options})
+};
 																		
+declare %private function zorba-csv:serialize-internal($xml as element()*,
+									$options as element(csv-options:options, csv-options:optionsType)?) as xs:string external;
