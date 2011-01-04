@@ -35,12 +35,13 @@ namespace zorba {
 
 
 
-#define CHECK_IN_SCOPE(tm, type) \
+#define CHECK_IN_SCOPE(tm, type, loc) \
 if (type.get_manager() != tm && type.get_manager() != &GENV_TYPESYSTEM) \
 {                                                                       \
   if (!TypeOps::is_in_scope(tm, type))                                  \
   {                                                                     \
-    ZORBA_ERROR_DESC_OSS(XPTY0004,                                      \
+    ZORBA_ERROR_LOC_DESC_OSS(XPTY0004,                                  \
+                         loc,                                           \
                          "The type " << type.toString()                 \
                          << " is not among the in-scope schema types"); \
   }                                                                     \
@@ -86,7 +87,7 @@ TypeConstants::quantifier_t TypeOps::union_quant(
 ********************************************************************************/
 int TypeOps::type_max_cnt(const TypeManager* tm, const XQType& type) 
 {
-  CHECK_IN_SCOPE(tm, type);
+  CHECK_IN_SCOPE(tm, type, QueryLoc::null);
 
   return (is_empty(tm, type) ? 0 : RootTypeManager::QUANT_MAX_CNT[quantifier(type)]);
 }
@@ -97,7 +98,7 @@ int TypeOps::type_max_cnt(const TypeManager* tm, const XQType& type)
 ********************************************************************************/
 int TypeOps::type_min_cnt(const TypeManager* tm, const XQType& type)
 {
-  CHECK_IN_SCOPE(tm, type);
+  CHECK_IN_SCOPE(tm, type, QueryLoc::null);
 
   return (is_empty(tm, type) ? 0 : RootTypeManager::QUANT_MIN_CNT[quantifier(type)]);
 }
@@ -108,7 +109,7 @@ int TypeOps::type_min_cnt(const TypeManager* tm, const XQType& type)
 ********************************************************************************/
 int TypeOps::type_cnt(const TypeManager* tm, const XQType& type)
 {
-  CHECK_IN_SCOPE(tm, type);
+  CHECK_IN_SCOPE(tm, type, QueryLoc::null);
 
   if (is_empty(tm, type) || is_none(tm, type))
     return 0;
@@ -220,7 +221,7 @@ bool TypeOps::is_in_scope(const TypeManager* tm, const XQType& type)
 ********************************************************************************/
 bool TypeOps::is_empty(const TypeManager* tm, const XQType& type) 
 {
-  CHECK_IN_SCOPE(tm, type);
+  CHECK_IN_SCOPE(tm, type, QueryLoc::null);
 
   return type.type_kind() == XQType::EMPTY_KIND;
 }
@@ -231,7 +232,7 @@ bool TypeOps::is_empty(const TypeManager* tm, const XQType& type)
 ********************************************************************************/
 bool TypeOps::is_none(const TypeManager* tm, const XQType& type) 
 {
-  CHECK_IN_SCOPE(tm, type);
+  CHECK_IN_SCOPE(tm, type, QueryLoc::null);
 
   return type.type_kind() == XQType::NONE_KIND;
 }
@@ -242,7 +243,7 @@ bool TypeOps::is_none(const TypeManager* tm, const XQType& type)
 ********************************************************************************/
 bool TypeOps::is_atomic(const TypeManager* tm, const XQType& type)
 {
-  CHECK_IN_SCOPE(tm, type);
+  CHECK_IN_SCOPE(tm, type, QueryLoc::null);
 
   if (type.get_quantifier() == TypeConstants::QUANT_ONE)
   {
@@ -265,7 +266,7 @@ bool TypeOps::is_atomic(const TypeManager* tm, const XQType& type)
 ********************************************************************************/
 bool TypeOps::is_builtin_atomic(const TypeManager* tm, const XQType& type)
 {
-  CHECK_IN_SCOPE(tm, type);
+  CHECK_IN_SCOPE(tm, type, QueryLoc::null);
 
   return type.get_quantifier() == TypeConstants::QUANT_ONE &&
          type.type_kind() == XQType::ATOMIC_TYPE_KIND;
@@ -277,7 +278,7 @@ bool TypeOps::is_builtin_atomic(const TypeManager* tm, const XQType& type)
 ********************************************************************************/
 bool TypeOps::is_builtin_simple(const TypeManager* tm, const XQType& type)
 {
-  CHECK_IN_SCOPE(tm, type);
+  CHECK_IN_SCOPE(tm, type, QueryLoc::null);
 
   return type.type_kind() == XQType::ATOMIC_TYPE_KIND;
 }
@@ -288,7 +289,7 @@ bool TypeOps::is_builtin_simple(const TypeManager* tm, const XQType& type)
 ********************************************************************************/
 bool TypeOps::is_numeric(const TypeManager* tm, const XQType& type)
 {
-  CHECK_IN_SCOPE(tm, type);
+  CHECK_IN_SCOPE(tm, type, QueryLoc::null);
 
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
@@ -300,7 +301,7 @@ bool TypeOps::is_numeric(const TypeManager* tm, const XQType& type)
 
 bool TypeOps::is_numeric_or_untyped(const TypeManager* tm, const XQType& type)
 {
-  CHECK_IN_SCOPE(tm, type);
+  CHECK_IN_SCOPE(tm, type, QueryLoc::null);
 
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
@@ -316,7 +317,7 @@ bool TypeOps::is_numeric_or_untyped(const TypeManager* tm, const XQType& type)
 ********************************************************************************/
 bool TypeOps::maybe_date_time(const TypeManager* tm, const XQType& type) 
 {
-  CHECK_IN_SCOPE(tm, type);
+  CHECK_IN_SCOPE(tm, type, QueryLoc::null);
 
   switch (type.type_kind()) 
   {
@@ -357,7 +358,7 @@ bool TypeOps::maybe_date_time(const TypeManager* tm, const XQType& type)
 ********************************************************************************/
 xqtref_t TypeOps::prime_type(const TypeManager* tm, const XQType& type) 
 {
-  CHECK_IN_SCOPE(tm, type);
+  CHECK_IN_SCOPE(tm, type, QueryLoc::null);
 
   switch (type.type_kind()) 
   {
@@ -439,8 +440,8 @@ bool TypeOps::is_equal(
     const XQType& type1,
     const XQType& type2)
 {
-  CHECK_IN_SCOPE(tm, type1);
-  CHECK_IN_SCOPE(tm, type2);
+  CHECK_IN_SCOPE(tm, type1, QueryLoc::null);
+  CHECK_IN_SCOPE(tm, type2, QueryLoc::null);
 
   if (&type1 == &type2)
     return true;
@@ -493,10 +494,11 @@ bool TypeOps::is_equal(
 bool TypeOps::is_subtype(
     const TypeManager* tm,
     const XQType& subtype,
-    const XQType& supertype)
+    const XQType& supertype,
+    const QueryLoc& loc)
 {
-  CHECK_IN_SCOPE(tm, subtype);
-  CHECK_IN_SCOPE(tm, supertype);
+  CHECK_IN_SCOPE(tm, subtype, loc);
+  CHECK_IN_SCOPE(tm, supertype, loc);
 
   if (subtype.type_kind() == XQType::NONE_KIND)
     return true;
@@ -710,9 +712,10 @@ bool TypeOps::is_subtype(
 bool TypeOps::is_treatable(
     const TypeManager* tm,
     const store::Item_t& item,
-    const XQType& targetType)
+    const XQType& targetType,
+    const QueryLoc& loc)
 {
-  return is_subtype(tm, *tm->create_value_type(item.getp()), targetType);
+  return is_subtype(tm, *tm->create_value_type(item.getp(), loc), targetType, loc);
 }
 
 

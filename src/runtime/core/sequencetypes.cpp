@@ -91,7 +91,7 @@ bool InstanceOfIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 
   if (consumeNext(lTreatItem, theChild.getp(), planState))
   {
-    if (TypeOps::is_treatable(tm, lTreatItem, *theSequenceType))
+    if (TypeOps::is_treatable(tm, lTreatItem, *theSequenceType, loc))
     {
       if (consumeNext(lTreatItem, theChild.getp(), planState))
       {
@@ -105,7 +105,7 @@ bool InstanceOfIterator::nextImpl(store::Item_t& result, PlanState& planState) c
           lResult = true;
           do
           {
-            if (!TypeOps::is_treatable(tm, lTreatItem, *theSequenceType))
+            if (!TypeOps::is_treatable(tm, lTreatItem, *theSequenceType, loc))
             {
               lResult = false;
             }

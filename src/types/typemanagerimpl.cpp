@@ -601,7 +601,7 @@ xqtref_t TypeManagerImpl::create_builtin_node_type(
 /***************************************************************************//**
   Create a sequence type based on the kind and content of an item.
 ********************************************************************************/
-xqtref_t TypeManagerImpl::create_value_type(const store::Item* item) const 
+xqtref_t TypeManagerImpl::create_value_type(const store::Item* item, const QueryLoc& loc) const 
 {
   TypeConstants::quantifier_t quant = TypeConstants::QUANT_ONE;
 
@@ -609,7 +609,7 @@ xqtref_t TypeManagerImpl::create_value_type(const store::Item* item) const
   {
     return create_named_atomic_type(item->getType(),
                                     quant,
-                                    QueryLoc::null,
+                                    loc,
                                     XPTY0004);
   }
   else if (item->isNode())
@@ -623,7 +623,7 @@ xqtref_t TypeManagerImpl::create_value_type(const store::Item* item) const
     {
       xqtref_t contentType = create_named_type(item->getType(),
                                                quant,
-                                               QueryLoc::null,
+                                               loc,
                                                XPTY0004);
 
       return create_node_type(nodeKind,

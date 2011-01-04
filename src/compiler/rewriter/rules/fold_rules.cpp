@@ -566,7 +566,7 @@ RULE_REWRITE_PRE(PartialEval)
 
     xqtref_t arg_type = arg->get_return_type();
 
-    if (TypeOps::is_subtype(tm, *arg_type, *cbe->get_target_type()))
+    if (TypeOps::is_subtype(tm, *arg_type, *cbe->get_target_type(), node->get_loc()))
     {
       return new const_expr(node->get_sctx(), LOC(node), true);
     }
@@ -651,7 +651,7 @@ static expr_t partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
   {
     expr_t arg = fo->get_arg(0);
     xqtref_t argType = arg->get_return_type();
-    if (TypeOps::is_subtype(tm, *argType, *GENV_TYPESYSTEM.ANY_NODE_TYPE_PLUS))
+    if (TypeOps::is_subtype(tm, *argType, *GENV_TYPESYSTEM.ANY_NODE_TYPE_PLUS, arg->get_loc()))
     {
       return new const_expr(fo->get_sctx(), fo->get_loc(), true);
     }
@@ -716,7 +716,8 @@ static expr_t partial_eval_logic(
 
     if (! TypeOps::is_subtype(tm,
                               *arg->get_return_type(),
-                              *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE))
+                              *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE,
+                              arg->get_loc()))
     {
       arg = fix_annotations(new fo_expr(fo->get_sctx(),
                                         LOC(fo),
@@ -765,7 +766,8 @@ static expr_t partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
                                                  TypeConstants::QUANT_ONE,
                                                  fo.get_loc(),
                                                  XPTY0004),
-                          *GENV_TYPESYSTEM.INTEGER_TYPE_ONE))
+                          *GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
+                          fo.get_loc()))
   {
     xs_integer ival = val->getIntegerValue();
     xs_integer zero = xs_integer::parseInt(0);

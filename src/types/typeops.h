@@ -22,6 +22,7 @@
 #include "types/typeconstants.h"
 #include "zorba/typeident.h"
 #include "store/api/item.h"
+#include "compiler/parser/query_loc.h"
 
 
 namespace zorba {
@@ -161,7 +162,8 @@ public:
   static bool is_subtype(
         const TypeManager* tm,
         const XQType& subtype,
-        const XQType& supertype);
+        const XQType& supertype,
+        const QueryLoc& loc = QueryLoc::null);
 
   /*
    * Returns true if _item_ is treatable as _type_, false otherwise.
@@ -169,7 +171,8 @@ public:
   static bool is_treatable(
         const TypeManager* tm,
         const store::Item_t& item,
-        const XQType& type);
+        const XQType& type,
+        const QueryLoc& loc = QueryLoc::null);
 
   /**
    * Returns the castability fron the source ItemType to the target ItemType. It

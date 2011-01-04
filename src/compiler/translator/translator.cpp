@@ -1738,7 +1738,7 @@ void normalize_fo(fo_expr* foExpr)
       paramType = sign[i];
     }
 
-    if (TypeOps::is_subtype(tm, *paramType, *theRTM.ANY_ATOMIC_TYPE_STAR))
+    if (TypeOps::is_subtype(tm, *paramType, *theRTM.ANY_ATOMIC_TYPE_STAR, foExpr->get_loc()))
     {
       argExpr = wrap_in_atomization(argExpr);
       argExpr = wrap_in_type_promotion(argExpr, paramType);
@@ -4229,7 +4229,7 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
       type = pop_tstack();
       ptype = TypeOps::prime_type(tm, *type);
 
-      if (!TypeOps::is_subtype(tm, *ptype, *theRTM.ANY_ATOMIC_TYPE_STAR))
+      if (!TypeOps::is_subtype(tm, *ptype, *theRTM.ANY_ATOMIC_TYPE_STAR, keySpec->get_location()))
       {
         ZORBA_ERROR_LOC_PARAM(XDST0027_INDEX_BAD_KEY_TYPE, keySpec->get_location(),
                               index->getName()->getStringValue(), "");
@@ -4243,15 +4243,15 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
       }
 
       if (index->getMethod() == IndexDecl::TREE &&
-          (TypeOps::is_subtype(tm, *ptype, *theRTM.QNAME_TYPE_ONE) ||
-           TypeOps::is_subtype(tm, *ptype, *theRTM.NOTATION_TYPE_ONE) ||
-           TypeOps::is_subtype(tm, *ptype, *theRTM.BASE64BINARY_TYPE_ONE) ||
-           TypeOps::is_subtype(tm, *ptype, *theRTM.HEXBINARY_TYPE_ONE) ||
-           TypeOps::is_subtype(tm, *ptype, *theRTM.GYEAR_MONTH_TYPE_ONE) ||
-           TypeOps::is_subtype(tm, *ptype, *theRTM.GYEAR_TYPE_ONE) ||
-           TypeOps::is_subtype(tm, *ptype, *theRTM.GMONTH_TYPE_ONE) ||
-           TypeOps::is_subtype(tm, *ptype, *theRTM.GMONTH_DAY_TYPE_ONE) ||
-           TypeOps::is_subtype(tm, *ptype, *theRTM.GDAY_TYPE_ONE)))
+          (TypeOps::is_subtype(tm, *ptype, *theRTM.QNAME_TYPE_ONE, keySpec->get_location()) ||
+           TypeOps::is_subtype(tm, *ptype, *theRTM.NOTATION_TYPE_ONE, keySpec->get_location()) ||
+           TypeOps::is_subtype(tm, *ptype, *theRTM.BASE64BINARY_TYPE_ONE, keySpec->get_location()) ||
+           TypeOps::is_subtype(tm, *ptype, *theRTM.HEXBINARY_TYPE_ONE, keySpec->get_location()) ||
+           TypeOps::is_subtype(tm, *ptype, *theRTM.GYEAR_MONTH_TYPE_ONE, keySpec->get_location()) ||
+           TypeOps::is_subtype(tm, *ptype, *theRTM.GYEAR_TYPE_ONE, keySpec->get_location()) ||
+           TypeOps::is_subtype(tm, *ptype, *theRTM.GMONTH_TYPE_ONE, keySpec->get_location()) ||
+           TypeOps::is_subtype(tm, *ptype, *theRTM.GMONTH_DAY_TYPE_ONE, keySpec->get_location()) ||
+           TypeOps::is_subtype(tm, *ptype, *theRTM.GDAY_TYPE_ONE, keySpec->get_location())))
       {
         ZORBA_ERROR_LOC_PARAM(XDST0027_INDEX_BAD_KEY_TYPE, keySpec->get_location(),
                               index->getName()->getStringValue(), "");
@@ -4279,7 +4279,7 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
       if (! theSctx->is_known_collation(collationUri))
         ZORBA_ERROR_LOC(XQST0076, keySpec->get_location());
     }
-    else if (ptype != NULL && TypeOps::is_subtype(tm, *ptype, *theRTM.STRING_TYPE_ONE))
+    else if (ptype != NULL && TypeOps::is_subtype(tm, *ptype, *theRTM.STRING_TYPE_ONE, loc))
     {
       collationUri = theSctx->get_default_collation(loc);
     }
@@ -7167,7 +7167,7 @@ expr_t create_cast_expr(const QueryLoc& loc, expr_t node, xqtref_t type, bool is
       TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION))
     ZORBA_ERROR_LOC(XPST0080, loc);
 
-  if (TypeOps::is_subtype(tm, *type, *GENV_TYPESYSTEM.QNAME_TYPE_QUESTION))
+  if (TypeOps::is_subtype(tm, *type, *GENV_TYPESYSTEM.QNAME_TYPE_QUESTION, loc))
   {
     const const_expr* ce = node.dyn_cast<const_expr>().getp();
 
@@ -8911,7 +8911,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
       if (numArgs == 2)
       {
-        if (TypeOps::is_subtype(tm, *posType, *GENV_TYPESYSTEM.INTEGER_TYPE_STAR))
+        if (TypeOps::is_subtype(tm, *posType, *GENV_TYPESYSTEM.INTEGER_TYPE_STAR, loc))
         {
           f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_2);
         }
@@ -8924,8 +8924,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       {
         xqtref_t lenType = arguments[2]->get_return_type();
 
-        if (TypeOps::is_subtype(tm, *posType, *GENV_TYPESYSTEM.INTEGER_TYPE_STAR) &&
-            TypeOps::is_subtype(tm, *lenType, *GENV_TYPESYSTEM.INTEGER_TYPE_STAR))
+        if (TypeOps::is_subtype(tm, *posType, *GENV_TYPESYSTEM.INTEGER_TYPE_STAR, loc) &&
+            TypeOps::is_subtype(tm, *lenType, *GENV_TYPESYSTEM.INTEGER_TYPE_STAR, loc))
         {
           f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_3);
         }

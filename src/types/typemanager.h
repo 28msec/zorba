@@ -134,7 +134,9 @@ public:
         const XQType& type,
         TypeConstants::quantifier_t quantifier) const = 0;
 
-  virtual xqtref_t create_value_type(const store::Item* item) const = 0;
+  virtual xqtref_t create_value_type(
+        const store::Item* item,
+        const QueryLoc& loc = QueryLoc::null) const = 0;
 
   virtual xqtref_t create_type(const TypeIdentifier& ident) const = 0;
 

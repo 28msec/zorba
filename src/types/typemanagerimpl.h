@@ -139,7 +139,9 @@ public:
 
   xqtref_t create_type(const TypeIdentifier& ident) const;
 
-  xqtref_t create_value_type(const store::Item* item) const;
+  xqtref_t create_value_type(
+        const store::Item* item,
+        const QueryLoc& loc = QueryLoc::null) const;
 
 #ifndef ZORBA_NO_XMLSCHEMA
 
