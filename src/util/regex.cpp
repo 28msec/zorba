@@ -159,6 +159,18 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
     }
     *icu_re += *xq_c;
   } // FOR_EACH
+
+  //
+  // XML Schema Part 2 F.1.1: [Unicode Database] groups code points into a
+  // number of blocks such as Basic Latin (i.e., ASCII), Latin-1 Supplement,
+  // Hangul Jamo, CJK Compatibility, etc. The set containing all characters
+  // that have block name X (with all white space stripped out), can be
+  // identified with a block escape \p{IsX}.
+  //
+  // However, ICU uses \p{InX} rather than \p{IsX}.  Also note that the '5'
+  // below is correct since "\\" represents a single '\'.
+  //
+  ascii::replace_all( *icu_re, "\\p{Is", 5, "\\p{In", 5 );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
