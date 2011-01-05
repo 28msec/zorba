@@ -49,7 +49,7 @@ namespace zorba {
 ********************************************************************************/
 static void toHexString(unsigned char ch, char result[])
 {
-  static const char hex[] = 
+  static const char hex[] =
   { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
   if ((ch >> 4) > 0)
@@ -524,7 +524,7 @@ void serializer::emitter::emit_text_node(
 
             tr << "<![CDATA[";
             tr.write(textp, (std::streamsize)n) << "]]>";
-            pos1 += n; 
+            pos1 += n;
             textp += n;
           }
           else
@@ -813,7 +813,7 @@ void serializer::xml_emitter::emit_doctype(const zstring& elementName)
 /*******************************************************************************
   returns true if there is a META element, as a child of a HEAD element,
   with an attribute "http-equiv" with value "content-type"
-********************************************************************************/ 
+********************************************************************************/
 static int is_content_type_meta(
     const store::Item* item,
     const store::Item* element_parent)
@@ -888,7 +888,7 @@ static bool is_html_empty_content_model_element(const store::Item* item)
   Returns true for those elements which are not allowed under HTML to have
   empty tags (more exactly they are required to have both opening and closing
   tags).
-********************************************************************************/ 
+********************************************************************************/
 static bool is_html_no_empty_tags_element(const store::Item* item)
 {
   if (item == NULL)
@@ -1110,7 +1110,7 @@ void serializer::html_emitter::emit_node(
   else if (item->getNodeKind() == store::StoreConsts::attributeNode)
   {
     // The HTML output method MUST output boolean attributes (that is attributes
-    // with only a single allowed value that is equal to the name of the 
+    // with only a single allowed value that is equal to the name of the
     // attribute) in minimized form.
     zstring qname;
     item->getNodeName()->getStringValue2(qname);
@@ -1256,7 +1256,7 @@ void serializer::xhtml_emitter::emit_node(
 
         tr << "<meta http-equiv=\"content-type\" content=\""
            << ser->media_type << "; charset=";
-        
+
         if (ser->encoding == PARAMETER_VALUE_UTF_8)
           tr << "UTF-8";
 #ifndef ZORBA_NO_UNICODE
@@ -1386,7 +1386,7 @@ void serializer::sax2_emitter::emit_node_children( const store::Item* item )
   store::Iterator_t it;
   store::Item_t child;
   // output all the other nodes
- 
+
   it = item->getChildren();
   it->open();
 
@@ -1444,7 +1444,7 @@ void serializer::sax2_emitter::emit_node(const store::Item* item)
         bool is_declared = false;
         for ( unsigned long j = 0; j < ans_size; j++ )
         {
-          if (theNameSpaces[j].second == local_nsBindings[i].second && 
+          if (theNameSpaces[j].second == local_nsBindings[i].second &&
               theNameSpaces[j].first == local_nsBindings[i].first)
           {
             is_declared = true;
@@ -1843,7 +1843,7 @@ void serializer::binary_emitter::emit_item(const store::Item* item)
   xs_base64Binary lValue;
 
   // First assume the item is a base64Binary item and try to get its value.
-  try 
+  try
   {
     lValue = item->getBase64BinaryValue();
   }
@@ -1861,7 +1861,7 @@ void serializer::binary_emitter::emit_item(const store::Item* item)
 
   for (std::vector<char>::const_iterator lIter = lDecodedData.begin();
        lIter != lDecodedData.end();
-       ++lIter) 
+       ++lIter)
   {
     tr << *lIter;
   }
@@ -2088,7 +2088,7 @@ void serializer::setParameter(const char* aName, const char* aValue)
 /*******************************************************************************
 
 ********************************************************************************/
-short int serializer::getSerializationMethod() const 
+short int serializer::getSerializationMethod() const
 {
   return method;
 }
@@ -2103,6 +2103,8 @@ serializer::validate_parameters(void)
   if (method == PARAMETER_VALUE_XML || method == PARAMETER_VALUE_XHTML) {
     // XML-only validation
     if (method == PARAMETER_VALUE_XML) {
+      if (version != "1.0" && version != "1.1")
+          ZORBA_ERROR_DESC(SESU0013, "Unsupported XML version. Accepted values are \"1.0\" and \"1.1\".");
     }
 
     // XHTML-only validation
@@ -2131,7 +2133,7 @@ serializer::validate_parameters(void)
       version = "4.0";
     } else if (!(equals(version, "4.0", 3) || equals(version, "4.01", 4))) {
       // Only HTML versions 4.0 and 4.01 are supported
-      ZORBA_ERROR_DESC(SESU0013, 
+      ZORBA_ERROR_DESC(SESU0013,
         "Unsupported HTML serialization version. Accepted values are \"4.0\" and \"4.01\".");
     }
   }
@@ -2218,22 +2220,22 @@ void serializer::serialize(
 
   validate_parameters();
 
-  if (!setup(aOStream)) 
+  if (!setup(aOStream))
   {
     return;
   }
 
   // in case we use SAX event notifications
-  if (aHandler) 
+  if (aHandler)
   {
     // only allow XML-based methods for SAX notifications
     if (method != PARAMETER_VALUE_XML &&
       method != PARAMETER_VALUE_XHTML &&
-      method != PARAMETER_VALUE_JSONML) 
+      method != PARAMETER_VALUE_JSONML)
     {
       ZORBA_ERROR(API0070_INVALID_SERIALIZATION_METHOD_FOR_SAX);
     }
-    // it's OK now, build a SAX emmiter  
+    // it's OK now, build a SAX emmiter
     tr = new transcoder(temp_sstream, false);
     e = new sax2_emitter(this, *tr, temp_sstream, aHandler);
   }
@@ -2241,19 +2243,19 @@ void serializer::serialize(
   e->emit_declaration();
 
   store::Item_t lItem;
-  while (aObject->nextSerializableItem(lItem)) 
+  while (aObject->nextSerializableItem(lItem))
   {
     // JSON serialization only alows one single item to be serialized
     // so throw an error if we get to a second item
     if (!firstItem && (
         method == PARAMETER_VALUE_JSON ||
-        method == PARAMETER_VALUE_JSONML)) 
+        method == PARAMETER_VALUE_JSONML))
     {
       ZORBA_ERROR(API0066_JSON_SEQUENCE_CANNOT_BE_SERIALIZED);
     }
 
     // PUL's cannot be serialized
-    if (lItem->isPul()) 
+    if (lItem->isPul())
     {
       ZORBA_ERROR(API0007_CANNOT_SERIALIZE_PUL);
     }
@@ -2278,13 +2280,13 @@ void serializer::serialize(
     void* aHandlerData)
 {
   store::Item_t lItem;
-  if (object->nextSerializableItem(lItem)) 
+  if (object->nextSerializableItem(lItem))
   {
-    // first, we notify the caller, that everything that we wanted to 
+    // first, we notify the caller, that everything that we wanted to
     // (e.g. computed by side-effecting scripting functions is now available).
     //  He can, for example, decide on the serialization method
     Zorba_SerializerOptions_t* lSerParams = aHandler(aHandlerData);
-    if (lSerParams) 
+    if (lSerParams)
     {
       SerializerImpl::setSerializationParameters(*this, *lSerParams);
     }
@@ -2296,7 +2298,7 @@ void serializer::serialize(
 
   validate_parameters();
 
-  if (!setup(stream)) 
+  if (!setup(stream))
   {
     return;
   }
@@ -2306,31 +2308,31 @@ void serializer::serialize(
   // used for Json and JsonML serialization only
   bool firstItem = true;
 
-  do 
+  do
   {
-    if (!firstItem) 
+    if (!firstItem)
     {
       Zorba_SerializerOptions_t* lSerParams = aHandler(aHandlerData);
-      if (lSerParams) 
+      if (lSerParams)
       {
         SerializerImpl::setSerializationParameters(*this, *lSerParams);
-        if (!setup(stream)) 
+        if (!setup(stream))
         {
           return;
         }
       }
-        
+
       // JSON serialization only alows one single item to be serialized
       // so throw an error if we get to a second item
       if (method == PARAMETER_VALUE_JSON ||
-          method == PARAMETER_VALUE_JSONML) 
+          method == PARAMETER_VALUE_JSONML)
       {
         ZORBA_ERROR(API0066_JSON_SEQUENCE_CANNOT_BE_SERIALIZED);
       }
     }
 
     // PUL's cannot be serialized
-    if (lItem->isPul()) 
+    if (lItem->isPul())
     {
       ZORBA_ERROR(API0007_CANNOT_SERIALIZE_PUL);
     }
