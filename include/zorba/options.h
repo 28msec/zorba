@@ -4,7 +4,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -27,7 +27,7 @@
 typedef enum {
   ZORBA_OPT_LEVEL_O0, /**< Don't use any optimization. */
   ZORBA_OPT_LEVEL_O1,  /**< Use basic optimizations
-                           (e.g.\ removing sorting, removing duplicate elimination, 
+                           (e.g.\ removing sorting, removing duplicate elimination,
                            or constant folding). */
   ZORBA_OPT_LEVEL_O2  /** Use basic optimizations (like O1) and some
                         * more optimizations (like not to generate an iterator
@@ -68,7 +68,7 @@ typedef struct Zorba_CompilerHints {
 } Zorba_CompilerHints_t;
 
 typedef enum {
-  ZORBA_SERIALIZATION_METHOD_XML, 
+  ZORBA_SERIALIZATION_METHOD_XML,
   ZORBA_SERIALIZATION_METHOD_HTML,
   ZORBA_SERIALIZATION_METHOD_XHTML,
   ZORBA_SERIALIZATION_METHOD_TEXT,
@@ -78,49 +78,54 @@ typedef enum {
 } Zorba_serialization_method_t;
 
 typedef enum {
-  ZORBA_BYTE_ORDER_MARK_YES, 
+  ZORBA_BYTE_ORDER_MARK_YES,
   ZORBA_BYTE_ORDER_MARK_NO
 } Zorba_byte_order_mark_t;
 
 typedef enum {
-  ZORBA_ESCAPE_URI_ATTRIBUTES_YES, 
+  ZORBA_ESCAPE_URI_ATTRIBUTES_YES,
   ZORBA_ESCAPE_URI_ATTRIBUTES_NO
 } Zorba_escape_uri_attributes_t;
 
 typedef enum {
-  ZORBA_INCLUDE_CONTENT_TYPE_YES, 
+  ZORBA_INCLUDE_CONTENT_TYPE_YES,
   ZORBA_INCLUDE_CONTENT_TYPE_NO
 } Zorba_include_content_type_t;
 
 typedef enum {
-  ZORBA_INDENT_YES, 
+  ZORBA_INDENT_YES,
   ZORBA_INDENT_NO
 } Zorba_indent_t;
 
 typedef enum {
-  ZORBA_NORMALIZATION_FORM_NFC, 
-  ZORBA_NORMALIZATION_FORM_NFD, 
-  ZORBA_NORMALIZATION_FORM_NFKC, 
-  ZORBA_NORMALIZATION_FORM_NFKD, 
-  ZORBA_NORMALIZATION_FORM_FULLY_normalized, 
+  ZORBA_NORMALIZATION_FORM_NFC,
+  ZORBA_NORMALIZATION_FORM_NFD,
+  ZORBA_NORMALIZATION_FORM_NFKC,
+  ZORBA_NORMALIZATION_FORM_NFKD,
+  ZORBA_NORMALIZATION_FORM_FULLY_normalized,
   ZORBA_NORMALIZATION_FORM_NONE
 } Zorba_normalization_form_t;
 
 typedef enum {
-  ZORBA_OMIT_XML_DECLARATION_YES, 
+  ZORBA_OMIT_XML_DECLARATION_YES,
   ZORBA_OMIT_XML_DECLARATION_NO
 } Zorba_omit_xml_declaration_t;
 
 typedef enum {
-  ZORBA_STANDALONE_YES, 
-  ZORBA_STANDALONE_NO, 
+  ZORBA_STANDALONE_YES,
+  ZORBA_STANDALONE_NO,
   ZORBA_STANDALONE_OMIT
 } Zorba_standalone_t;
 
 typedef enum {
-  ZORBA_UNDECLARE_PREFIXES_YES, 
+  ZORBA_UNDECLARE_PREFIXES_YES,
   ZORBA_UNDECLARE_PREFIXES_NO
 } Zorba_undeclare_prefixes_t;
+
+typedef enum {
+  ZORBA_ENCODING_UTF8,
+  ZORBA_ENCODING_UTF16
+} Zorba_encoding_t;
 
 typedef enum {
   ZORBA_USE_BINARY_ARCHIVE,
@@ -141,7 +146,7 @@ typedef enum {
 * the SerializerOptions.
 */
 #ifdef __cplusplus
-typedef struct ZORBA_DLL_PUBLIC Zorba_SerializerOptions 
+typedef struct ZORBA_DLL_PUBLIC Zorba_SerializerOptions
 {
   Zorba_serialization_method_t  ser_method;
   Zorba_byte_order_mark_t       byte_order_mark;
@@ -150,17 +155,18 @@ typedef struct ZORBA_DLL_PUBLIC Zorba_SerializerOptions
   Zorba_indent_t                indent;
   Zorba_normalization_form_t    normalization_form;
   Zorba_omit_xml_declaration_t  omit_xml_declaration;
-  Zorba_standalone_t            standalone; 
+  Zorba_standalone_t            standalone;
   Zorba_undeclare_prefixes_t    undeclare_prefixes;
+  Zorba_encoding_t              encoding;
 
   zorba::String                 media_type;
   zorba::String                 doctype_system;
   zorba::String                 doctype_public;
   zorba::String                 cdata_section_elements;
   zorba::String                 version;
-  
 
-  /** \brief Default constructor for SerializerOptions which assigns default values to all 
+
+  /** \brief Default constructor for SerializerOptions which assigns default values to all
    *         options (C++ only).
    *
    * Default values:
@@ -176,7 +182,7 @@ typedef struct ZORBA_DLL_PUBLIC Zorba_SerializerOptions
    */
 
   Zorba_SerializerOptions();
-  
+
   /** \brief Helper function to set a serializer parameter value from a key / value string pair.
    *
    *
@@ -184,13 +190,13 @@ typedef struct ZORBA_DLL_PUBLIC Zorba_SerializerOptions
    */
   void SetSerializerOption(const char* parameter, const char* value);
 
-  /** \brief Helper function to create a Zorba_SerializerOptions from a vector of key / value 
-   *         string pairs 
+  /** \brief Helper function to create a Zorba_SerializerOptions from a vector of key / value
+   *         string pairs
    *
    * \retval The created Zorba_SerializerOptions structure
    */
   static Zorba_SerializerOptions SerializerOptionsFromStringParams(const std::vector<std::pair<std::string,std::string> >& params);
-  
+
 } Zorba_SerializerOptions_t;
 #endif
 
@@ -207,30 +213,30 @@ extern "C" {
 
 /** \brief Helper function for C to set default values ComplilerHints struct.
  *
- * \retval Zorba_CompilerHints_t with default member values 
+ * \retval Zorba_CompilerHints_t with default member values
  */
 ZORBA_DLL_PUBLIC void Zorba_CompilerHints_default(Zorba_CompilerHints_t*);
 
-/** \brief Helper function to create a Zorba_SerializerOptions_t struct because 
+/** \brief Helper function to create a Zorba_SerializerOptions_t struct because
  *         of missing default constructor. C++ code can delete the
- *         returned Zorba_SerializerOptions_t* struct, while C code 
- *         must call Zorba_SerializerOptions_free().  
+ *         returned Zorba_SerializerOptions_t* struct, while C code
+ *         must call Zorba_SerializerOptions_free().
  *
- * \retval Zorba_CompilerHints_t with default member values 
+ * \retval Zorba_CompilerHints_t with default member values
  */
 ZORBA_DLL_PUBLIC Zorba_SerializerOptions_t* Zorba_SerializerOptions_default();
 
 /** \brief Helper function to delete a Zorba_SerializerOptions_t struct
  *
- * \retval Zorba_CompilerHints_t with default member values 
+ * \retval Zorba_CompilerHints_t with default member values
  */
 ZORBA_DLL_PUBLIC void Zorba_SerializerOptions_free(Zorba_SerializerOptions_t* serializerOptions);
 
 /** \brief Helper function to set an option in a Zorba_SerializerOptions_t structure
- * 
+ *
  * \param parameter the serializer parameter to be configured
  * \param value the value to which the parameter should be set
- * \retval Zorba_CompilerHints_t with default member values 
+ * \retval Zorba_CompilerHints_t with default member values
  */
 ZORBA_DLL_PUBLIC void Zorba_SerializerOptions_set(Zorba_SerializerOptions_t* serializerOptions, const char* parameter, const char* value);
 

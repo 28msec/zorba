@@ -4,7 +4,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -27,7 +27,7 @@
 
 #include "serializerimpl.h"
 
-namespace zorba { 
+namespace zorba {
 
 Serializer_t
 Serializer::createSerializer(const Zorba_SerializerOptions_t& aOptions)
@@ -100,7 +100,7 @@ SerializerImpl::setSerializationParameters(
   serializer&                       aInternalSerializer,
   const Zorba_SerializerOptions_t&  aSerializerOptions)
 {
-  switch (aSerializerOptions.ser_method) 
+  switch (aSerializerOptions.ser_method)
   {
   case ZORBA_SERIALIZATION_METHOD_XML:
     aInternalSerializer.setParameter("method", "xml"); break;
@@ -118,7 +118,7 @@ SerializerImpl::setSerializationParameters(
     aInternalSerializer.setParameter("method", "binary"); break;
   }
 
-  switch (aSerializerOptions.byte_order_mark) 
+  switch (aSerializerOptions.byte_order_mark)
   {
   case ZORBA_BYTE_ORDER_MARK_YES:
     aInternalSerializer.setParameter("byte-order-mark", "yes"); break;
@@ -134,7 +134,7 @@ SerializerImpl::setSerializationParameters(
     aInternalSerializer.setParameter("include-content-type", "no"); break;
   }
 
-  switch (aSerializerOptions.indent) 
+  switch (aSerializerOptions.indent)
   {
   case ZORBA_INDENT_YES:
     aInternalSerializer.setParameter("indent", "yes"); break;
@@ -168,6 +168,14 @@ SerializerImpl::setSerializationParameters(
     aInternalSerializer.setParameter("undeclare-prefixes", "no"); break;
   }
 
+  switch(aSerializerOptions.encoding)
+  {
+  case ZORBA_ENCODING_UTF8:
+    aInternalSerializer.setParameter("encoding", "UTF-8"); break;
+  case ZORBA_ENCODING_UTF16:
+    aInternalSerializer.setParameter("encoding", "UTF-16"); break;
+  }
+
   if (aSerializerOptions.media_type != "")
     aInternalSerializer.setParameter("media-type", aSerializerOptions.media_type.c_str());
 
@@ -176,7 +184,7 @@ SerializerImpl::setSerializationParameters(
 
   if (aSerializerOptions.doctype_public != "")
     aInternalSerializer.setParameter("doctype-public", aSerializerOptions.doctype_public.c_str());
-  
+
   if (aSerializerOptions.cdata_section_elements != "")
     aInternalSerializer.setParameter("cdata-section-elements", aSerializerOptions.cdata_section_elements.c_str());
 

@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,7 +25,7 @@ namespace zorba {
 int get_utf8_length(char ch)
 {
   unsigned char lead = (unsigned char)ch;
-  
+
   if (lead < 0x80)
     return 1;
   else if ((lead >> 5) == 0x6)
@@ -84,10 +84,11 @@ transcoder& transcoder::write_utf16(const char* str, std::streamsize len)
   {
     ZORBA_ASSERT(0);
   }
-  
+
   for (unsigned int i = 0; i < target_size*sizeof(UChar); i++)
     os << target2[i];
 
+  delete[] target;
   return *this;
 #endif
 }
@@ -115,21 +116,21 @@ transcoder& transcoder::write_utf16_char(const char ch)
     UErrorCode status = U_ZERO_ERROR;
     UChar target[20];
     char* target2 = (char*)target;
-    
+
     int target_size = ucnv_toUChars(conv, target, 20, buffer, chars_in_buffer, &status);
-    
+
     if (U_FAILURE(status))
     {
       ZORBA_ASSERT(0);
     }
-  
+
     for (unsigned int i=0; i<target_size*sizeof(UChar); i++)
       os << target2[i];
 
     chars_in_buffer = 0;
     chars_expected = 1;
   }
-  
+
   return *this;
 #endif
 }

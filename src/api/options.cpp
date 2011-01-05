@@ -30,7 +30,8 @@ Zorba_SerializerOptions::Zorba_SerializerOptions()
   normalization_form(ZORBA_NORMALIZATION_FORM_NONE),
   omit_xml_declaration(ZORBA_OMIT_XML_DECLARATION_NO),
   standalone(ZORBA_STANDALONE_OMIT),
-  undeclare_prefixes(ZORBA_UNDECLARE_PREFIXES_NO)
+  undeclare_prefixes(ZORBA_UNDECLARE_PREFIXES_NO),
+  encoding(ZORBA_ENCODING_UTF8)
 {}
 
 void Zorba_SerializerOptions::SetSerializerOption(const char* parameter, const char* value)
@@ -81,6 +82,13 @@ void Zorba_SerializerOptions::SetSerializerOption(const char* parameter, const c
   {
     if (strcmp(value, "yes") == 0) undeclare_prefixes = ZORBA_UNDECLARE_PREFIXES_YES;
     else if (strcmp(value, "no") == 0) undeclare_prefixes = ZORBA_UNDECLARE_PREFIXES_NO;
+  }
+  else if (strcmp(parameter, "encoding") == 0)
+  {
+    if (strcmp(value, "UTF-8") == 0) encoding = ZORBA_ENCODING_UTF8;
+    else if (strcmp(value, "utf-8") == 0) encoding = ZORBA_ENCODING_UTF8;
+    else if (strcmp(value, "utf-16") == 0) encoding = ZORBA_ENCODING_UTF16;
+    else if (strcmp(value, "UTF-16") == 0) encoding = ZORBA_ENCODING_UTF16;
   }
   else if (strcmp(parameter, "media-type") == 0)
   {
