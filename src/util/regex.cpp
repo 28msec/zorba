@@ -55,7 +55,9 @@ static icu_flags_t convert_xquery_flags( char const *xq_flags ) {
 
 void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
                         char const *xq_flags ) {
-  bool const x_flag = xq_flags ? ::strchr( xq_flags, 'x' ) : false;
+  icu_flags_t const icu_flags = convert_xquery_flags( xq_flags );
+  bool const i_flag = icu_flags & UREGEX_CASE_INSENSITIVE;
+  bool const x_flag = icu_flags & UREGEX_COMMENTS;
 
   icu_re->clear();
   icu_re->reserve( xq_re.length() );    // approximate
@@ -170,6 +172,20 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
     *icu_re += *xq_c;
   } // FOR_EACH
 
+  if ( i_flag ) {
+    //
+    // XQuery F&O 7.6.1.1: All other constructs are unaffected by the "i" flag.
+    // For example, "\p{Lu}" continues to match upper-case letters only.
+    //
+    // However, ICU lower-cases everything for the 'i' flag; hence we have to
+    // turn off the 'i' flag for just the \p{Lu}.
+    //
+    // Note that the "6" and "12" below are correct since "\\" represents a
+    // single '\'.
+    //
+    ascii::replace_all( *icu_re, "\\p{Lu}", 6, "(?-i:\\p{Lu})", 12 );
+  }
+
   //
   // XML Schema Part 2 F.1.1: [Unicode Database] groups code points into a
   // number of blocks such as Basic Latin (i.e., ASCII), Latin-1 Supplement,
@@ -177,8 +193,9 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
   // that have block name X (with all white space stripped out), can be
   // identified with a block escape \p{IsX}.
   //
-  // However, ICU uses \p{InX} rather than \p{IsX}.  Also note that the '5'
-  // below is correct since "\\" represents a single '\'.
+  // However, ICU uses \p{InX} rather than \p{IsX}.
+  //
+  // Note that the "5" below is correct since "\\" represents a single '\'.
   //
   ascii::replace_all( *icu_re, "\\p{Is", 5, "\\p{In", 5 );
 }
