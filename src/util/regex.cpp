@@ -63,9 +63,9 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
   bool got_backslash = false;
   bool in_char_class = false;           // within [...]
 
-  bool in_backref = false;              // "\" [1-9][0-9]*
+  bool in_backref = false;              // '\'[1-9][0-9]*
   unsigned backref_no = 0;
-  vector<bool> cap_subexpr;             // true = open; false = closed
+  vector<bool> cap_sub;                 // true = open; false = closed
 
   FOR_EACH( zstring, xq_c, xq_re ) {
     if ( got_backslash ) {
@@ -95,14 +95,12 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
         default:
           if ( ascii::is_digit( *xq_c ) ) {
             backref_no = *xq_c - '0';
-            if ( !backref_no || in_char_class ) {
+            if ( !backref_no )          // \0 is illegal
+              ZORBA_ERROR( FORX0002 );
+            if ( in_char_class ) {
               //
-              // XQuery F&O 7.6.1:
-              //
-              //  [9a] backReference ::= "\" [1-9][0-9]*
-              //
-              //  Note: Within a character class expression, \ followed by a
-              //  digit is invalid.
+              // XQuery F&O 7.6.1: Within a character class expression,
+              // \ followed by a digit is invalid.
               //
               ZORBA_ERROR( FORX0002 );
             }
@@ -121,7 +119,7 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
         // back-reference is preceded by NN or more unescaped opening
         // parentheses.
         //
-        if ( cap_subexpr.size() > 9 && ascii::is_digit( *xq_c ) )
+        if ( cap_sub.size() > 9 && ascii::is_digit( *xq_c ) )
           backref_no = backref_no * 10 + (*xq_c - '0');
         else
           in_backref = false;
@@ -130,9 +128,9 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
         // reference refers to a subexpression that does not exist or whose
         // closing right parenthesis occurs after the back-reference.
         //
-        if ( backref_no > cap_subexpr.size() )
+        if ( backref_no > cap_sub.size() )
           ZORBA_ERROR( FORX0002 );
-        if ( cap_subexpr[ backref_no - 1 ] )
+        if ( cap_sub[ backref_no - 1 ] )
           ZORBA_ERROR( FORX0002 );
       }
       switch ( *xq_c ) {
@@ -140,14 +138,14 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           got_backslash = true;
           continue;
         case '(':
-          cap_subexpr.push_back( true );
+          cap_sub.push_back( true );
           break;
         case ')': {
-          if ( cap_subexpr.empty() )
+          if ( cap_sub.empty() )
             ZORBA_ERROR( FORX0002 );
-          if ( !cap_subexpr.back() )
+          if ( !cap_sub.back() )
             ZORBA_ERROR( FORX0002 );
-          cap_subexpr.back() = false;
+          cap_sub.back() = false;
           break;
         }
         case '[':
