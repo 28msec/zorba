@@ -859,7 +859,7 @@ public:
 
   theScopeDepth :
   ---------------
-  Incremented/Decremented every time a scope is pushed/popped. Used for some 
+  Incremented/Decremented every time a scope is pushed/popped. Used for some
   sanity checking only.
 
   theDotVar            : var_expr for the context item var of the main module
@@ -969,10 +969,10 @@ public:
   op_concatenate       : Cached ptr to the function obj for the concat func
   op_enclosed_expr     : Cached ptr to the function obj for the enclosed_expr op
 
-  theMaxLibModuleVersion  : This specifies the maximum module version for an 
-                         imported library. In case a version 1.0 module tries 
+  theMaxLibModuleVersion  : This specifies the maximum module version for an
+                         imported library. In case a version 1.0 module tries
                          to import a version 1.1 library, an error must be raised.
-                         A value of xquery_version_unknown is interpreted as 
+                         A value of xquery_version_unknown is interpreted as
                          "don't care".
 
 ********************************************************************************/
@@ -2395,9 +2395,9 @@ void* begin_visit(const VersionDecl& v)
       maxversion = "1.1";
     else
       maxversion = "1.0";
-    // TODO: the error code might need to be changed after W3C solves 
+    // TODO: the error code might need to be changed after W3C solves
     // the bug report concerning modules of version 1.0 importing v1.1 libraries.
-    ZORBA_ERROR_LOC_DESC(XQST0031, loc, "An XQuery " + versionStr 
+    ZORBA_ERROR_LOC_DESC(XQST0031, loc, "An XQuery " + versionStr
       + " version library cannot be imported by a " + maxversion + " version module.");
   }
 
@@ -8784,6 +8784,12 @@ void* begin_visit(const FunctionCall& v)
 
   // Note : f maybe NULL if it is a constructor of a builtin type
 
+  if (f != NULL && f->getXQueryVersion() > theSctx->xquery_version())
+  {
+    zstring version = (f->getXQueryVersion() == StaticContextConsts::xquery_version_1_0 ? "1.0" : "1.1");
+    ZORBA_ERROR_LOC_DESC(XPST0017, loc, "The " + f->getName()->getStringValue() + "() function is only available in the XQuery " + version + " processing mode.");
+  }
+
   if (f != NULL && !theCurrentPrologVFDecl.isNull())
   {
     if (f->isSequential() &&
@@ -8897,7 +8903,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     ZORBA_ERROR_LOC_PARAM(XQP0016_RESERVED_MODULE_TARGET_NAMESPACE, loc,
                           fn_ns.c_str(), "");
   }
- 
+
   // Some special processing is required for certain "fn" functions
   if (fn_ns == XQUERY_FN_NS)
   {
@@ -9832,9 +9838,9 @@ void end_visit (const DirElemContent& v, void* /*visit_state*/) {
  * Inserts an entry in theIsWSBoundaryStack and thePossibleWSContentStack to save
  * information during boundary whitespace checking.
  */
-void begin_check_boundary_whitespace() 
+void begin_check_boundary_whitespace()
 {
-  if (theSctx->boundary_space_mode() == StaticContextConsts::strip_space) 
+  if (theSctx->boundary_space_mode() == StaticContextConsts::strip_space)
 {
     theIsWSBoundaryStack.push(true);
     thePossibleWSContentStack.push(0);
@@ -9846,7 +9852,7 @@ void begin_check_boundary_whitespace()
  * only be checked during the next invocation), and if the items saved in thePossibleWSContentStack
  * is really boundary whitespace.
  */
-void check_boundary_whitespace(const DirElemContent& v) 
+void check_boundary_whitespace(const DirElemContent& v)
 {
   v.setIsStripped(false);
   if (theSctx->boundary_space_mode() == StaticContextConsts::strip_space) {
