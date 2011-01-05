@@ -78,13 +78,13 @@
 
     <zorba:function >
 
-      <zorba:signature localname="partial-apply" prefix="fn">
+      <zorba:signature localname="partial-apply" prefix="fn" version="1.1">
         <zorba:param>function()</zorba:param>
         <zorba:param>item()*</zorba:param>
         <zorba:output>function()</zorba:output>
       </zorba:signature>
 
-      <zorba:signature localname="partial-apply" prefix="fn">
+      <zorba:signature localname="partial-apply" prefix="fn" version="1.1">
         <zorba:param>function()</zorba:param>
         <zorba:param>item()*</zorba:param>
         <zorba:param>xs:integer</zorba:param>

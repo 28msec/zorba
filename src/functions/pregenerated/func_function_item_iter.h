@@ -75,6 +75,7 @@ public:
     theKind = (sig.paramCount() == 2 ?
                 FunctionConsts::FN_PARTIAL_APPLY_2 :
                 FunctionConsts::FN_PARTIAL_APPLY_3);
+    theXQueryVersion = StaticContextConsts::xquery_version_1_1;
   }
 
   CODEGEN_DECL();

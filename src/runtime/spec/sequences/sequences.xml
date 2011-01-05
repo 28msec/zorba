@@ -1170,12 +1170,12 @@
   
   <zorba:function>
 
-    <zorba:signature localname="parse" prefix="fn">
+    <zorba:signature localname="parse" prefix="fn" version="1.1">
       <zorba:param>xs:string</zorba:param> <!-- string to parse -->
       <zorba:output>document-node()</zorba:output>
     </zorba:signature>
 
-    <zorba:signature localname="parse" prefix="fn">
+    <zorba:signature localname="parse" prefix="fn" version="1.1">
       <zorba:param>xs:string</zorba:param> <!-- string to parse -->
       <zorba:param>xs:string</zorba:param> <!-- base uri -->
       <zorba:output>document-node()</zorba:output>

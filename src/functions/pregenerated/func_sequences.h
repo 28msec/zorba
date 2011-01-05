@@ -617,6 +617,7 @@ public:
     theKind = (sig.paramCount() == 1 ?
                 FunctionConsts::FN_PARSE_1 :
                 FunctionConsts::FN_PARSE_2);
+    theXQueryVersion = StaticContextConsts::xquery_version_1_1;
   }
 
   bool accessesDynCtx() const { return true; }
