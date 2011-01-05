@@ -142,14 +142,13 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
         case '(':
           cap_sub.push_back( true );
           break;
-        case ')': {
+        case ')':
           if ( cap_sub.empty() )
             ZORBA_ERROR( FORX0002 );
           if ( !cap_sub.back() )
             ZORBA_ERROR( FORX0002 );
           cap_sub.back() = false;
           break;
-        }
         case '[':
           in_char_class = true;
           break;
