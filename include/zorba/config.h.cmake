@@ -91,6 +91,7 @@
 #cmakedefine ZORBA_HAVE_STRCPY_S_FUNCTION
 
 #cmakedefine ZORBA_HAVE_RUSAGE_FUNCTION
+#cmakedefine ZORBA_HAVE_CLOCKGETTIME_FUNCTION
 
 /* Threading mechanism*/
 #cmakedefine ZORBA_FOR_ONE_THREAD_ONLY     

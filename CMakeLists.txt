@@ -61,6 +61,7 @@ ENDIF(NOT CMAKE_BUILD_TYPE)
 INCLUDE(CheckIncludeFiles)
 INCLUDE(CheckSymbolExists)
 INCLUDE(CheckFunctionExists)
+INCLUDE(CheckLibraryExists)
 INCLUDE(CheckVariableExists)
 INCLUDE(CheckIncludeFileCXX)
 INCLUDE(CheckTypeSize)
@@ -95,6 +96,15 @@ SET(CMAKE_REQUIRED_LIBRARIES)
 
 CHECK_INCLUDE_FILES ("sys/time.h;sys/resource.h"  ZORBA_HAVE_RUSAGE_INCLUDES)
 CHECK_FUNCTION_EXISTS (getrusage                  ZORBA_HAVE_RUSAGE_FUNCTION)
+
+# Check for POSIX high-resolution timers - might be in "rt" library
+CHECK_LIBRARY_EXISTS (rt clock_gettime ""  _clock_gettime_in_rt)
+IF (_clock_gettime_in_rt)
+  SET (CMAKE_REQUIRED_LIBS ${CMAKE_REQUIRED_LIBS} rt)
+  SET (ZORBA_HAVE_CLOCKGETTIME_FUNCTION YES CACHE BOOL "Platform has clock_gettime (in librt)")
+ELSE (_clock_gettime_in_rt)
+  CHECK_FUNCTION_EXISTS (clock_gettime   ZORBA_HAVE_CLOCKGETTIME_FUNCTION)
+ENDIF (_clock_gettime_in_rt)
 
 CHECK_TYPE_SIZE("int32_t" ZORBA_HAVE_INT32_T) 
 CHECK_TYPE_SIZE("uint32_t" ZORBA_HAVE_UINT32_T) 

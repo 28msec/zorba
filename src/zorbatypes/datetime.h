@@ -33,8 +33,7 @@ class InvalidTimezoneException : public std::exception
 };
   
 
- // exported for testing only
-class ZORBA_DLL_PUBLIC DateTime : ::zorba::serialization::SerializeBaseClass
+class DateTime : ::zorba::serialization::SerializeBaseClass
 {
 public:
       

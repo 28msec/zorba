@@ -515,7 +515,7 @@ class ZORBA_DLL_PUBLIC XQuery : public SmartObject
   /**
    *
    */
-  virtual long
+  virtual double
   getDocLoadingTime() const = 0;
 };
   

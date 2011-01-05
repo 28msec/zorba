@@ -131,7 +131,7 @@ XQueryImpl::XQueryImpl()
   theUserErrorHandler(false),
   theSAX2Handler(0),
   theDocLoadingUserTime(0.0),
-  theDocLoadingTime(0),
+  theDocLoadingTime(0.0),
   theIsDebugMode(false),
   theProfileName("xquery_profile.out")
 {
@@ -240,7 +240,7 @@ double XQueryImpl::getDocLoadingUserTime() const
 }
 
 
-long XQueryImpl::getDocLoadingTime() const
+double XQueryImpl::getDocLoadingTime() const
 {
   SYNC_CODE(AutoMutex lock(&theMutex);)
 

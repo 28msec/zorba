@@ -197,7 +197,7 @@ class XQueryImpl : public XQuery , public ::zorba::serialization::SerializeBaseC
   SAX2_ContentHandler              * theSAX2Handler;
 
   double                             theDocLoadingUserTime;
-  long                               theDocLoadingTime;
+  double                             theDocLoadingTime;
 
 private:
   bool                               theIsDebugMode;
@@ -221,7 +221,7 @@ public:
 
   double getDocLoadingUserTime() const;
 
-  long getDocLoadingTime() const;
+  double getDocLoadingTime() const;
 
   void setDebugMode(bool aDebugMode);
 

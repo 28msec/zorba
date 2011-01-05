@@ -25,11 +25,6 @@
 #include "zorbatypes/URI.h"
 
 // For timing
-#include <zorbatypes/zorbatypes_decl.h>
-#include <zorbatypes/datetime.h>
-#include <zorbatypes/duration.h>
-#include "zorbatypes/floatimpl.h"
-#include "zorbatypes/numconversions.h"
 #include "util/time.h"
 
 #include "compiler/api/compilercb.h"
@@ -1702,24 +1697,21 @@ OpToIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   15.5.4 fn:doc
 ********************************************************************************/
 static void fillTime (
-    const zorba::DateTime& t0,
-    const zorbatm::timeinfo& t0user,
+    const zorbatm::walltime& t0,
+    const zorbatm::cputime& t0user,
     PlanState& planState)
 {
-  zorba::DateTime   t1;
-  zorbatm::timeinfo t1user;
+  zorbatm::walltime t1;
+  zorbatm::cputime t1user;
 
-  zorba::DateTime::getLocalTime(t1);
-  zorbatm::get_timeinfo (t1user);
-
-  std::auto_ptr<zorba::Duration> diffTime;
-  diffTime.reset(t1.subtractDateTime(&t0, 0));
-
-  planState.theDynamicContext->theDocLoadingTime += diffTime->getTotalMilliseconds();
+  zorbatm::get_current_cputime(t1user);
+  zorbatm::get_current_walltime(t1);
 
   planState.theDynamicContext->theDocLoadingUserTime +=
-    zorbatm::get_time_elapsed(zorbatm::extract_user_time_detail(t0user),
-                              zorbatm::extract_user_time_detail(t1user));
+    zorbatm::get_cputime_elapsed(t0user, t1user);
+
+  planState.theDynamicContext->theDocLoadingTime += 
+    zorbatm::get_walltime_elapsed(t0, t1);
 }
 
 
@@ -1729,8 +1721,8 @@ bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   zstring uriString;
   zstring resolvedURIString;
   store::Item_t resolvedURIItem;
-  zorba::DateTime t0;
-  zorbatm::timeinfo t0user;
+  zorbatm::walltime t0;
+  zorbatm::cputime t0user;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -1771,8 +1763,8 @@ bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
       try
       {
-        zorba::DateTime::getLocalTime(t0);
-        zorbatm::get_timeinfo (t0user);
+        zorbatm::get_current_cputime (t0user);
+        zorbatm::get_current_walltime(t0);
 
         result = theSctx->get_document_uri_resolver()->resolve(resolvedURIItem,
                                                                theSctx,

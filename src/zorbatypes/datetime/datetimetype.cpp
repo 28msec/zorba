@@ -318,12 +318,12 @@ int DateTime::getLocalTime(DateTime& dt)
 {
   // TODO: check code on windows
 #ifndef WIN32
-  timeval tv;
+  struct timeval tv;
   gettimeofday(&tv, NULL);
-  tm curr, *curr_ptr = 0;
-  curr_ptr = localtime_r(&tv.tv_sec, &curr);
-  return createDateTime(curr_ptr->tm_year + 1900, curr_ptr->tm_mon + 1, curr_ptr->tm_mday,
-                        curr_ptr->tm_hour, curr_ptr->tm_min, curr_ptr->tm_sec,
+  struct tm curr;
+  localtime_r(&tv.tv_sec, &curr);
+  return createDateTime(curr.tm_year + 1900, curr.tm_mon + 1, curr.tm_mday,
+                        curr.tm_hour, curr.tm_min, curr.tm_sec,
                         round((tv.tv_usec / 1000000.0) * FRAC_SECONDS_UPPER_LIMIT), dt);
 #else
 #ifndef WINCE
@@ -333,11 +333,10 @@ int DateTime::getLocalTime(DateTime& dt)
   struct timeb   tb;
   ftime(&tb);
 #endif
-  struct  tm  curr, *curr_ptr=0;
+  struct  tm  curr;
   _localtime64_s(&curr, &tb.time);
-  curr_ptr = &curr;
-  return createDateTime(curr_ptr->tm_year + 1900, curr_ptr->tm_mon + 1, curr_ptr->tm_mday,
-                        curr_ptr->tm_hour, curr_ptr->tm_min, curr_ptr->tm_sec,
+  return createDateTime(curr.tm_year + 1900, curr.tm_mon + 1, curr.tm_mday,
+                        curr.tm_hour, curr.tm_min, curr.tm_sec,
                         round((tb.millitm / 1000.0) * FRAC_SECONDS_UPPER_LIMIT), dt);
 #endif
 

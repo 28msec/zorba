@@ -44,17 +44,7 @@
 // For setting the base URI from the current directory
 #include <zorba/util/path.h>
 
-// Non-API includes -- handy, but should be rewritten eventually
-
-// We use zorba::DateTime from the zorbatypes library to measure wallclock time.
-// This is a highly non-portable problem; see zorba::DateTime::getLocalTime().
-#include <zorbatypes/zorbatypes_decl.h>
-#include <zorbatypes/datetime.h>
-#include <zorbatypes/duration.h>
-#include <zorbatypes/floatimpl.h>
-
-// Simple wrappers around get_rusage() / clock() for measuring CPU time.
-// Could be moved to include/util.
+// Timing utilities, including wall-clock timing
 #include "util/time.h"
 
 // toggle this to allow configuration via a system properties file
@@ -247,6 +237,33 @@ parseFileURI (bool asPath, const std::string &str)
 }
 
 
+//
+// Timing utilities and class
+//
+
+#define DECLARE_TIMER(kind)                               \
+  zorbatm::walltime start##kind##Walltime;                    \
+  zorbatm::walltime stop##kind##Walltime;                     \
+  zorbatm::cputime start##kind##Cputime;                    \
+  zorbatm::cputime stop##kind##Cputime;                     \
+  double elapsed##kind##Walltime;                             \
+  double elapsed##kind##Cputime
+
+#define START_TIMER(kind)                             \
+  zorbatm::get_current_walltime(start##kind##Walltime);   \
+  zorbatm::get_current_cputime(start##kind##Cputime);
+  
+#define STOP_TIMER(kind)                                                \
+  zorbatm::get_current_walltime(stop##kind##Walltime);                      \
+  elapsed##kind##Walltime += zorbatm::get_walltime_elapsed(start##kind##Walltime, \
+    stop##kind##Walltime);                                                  \
+                                                                        \
+  zorbatm::get_current_cputime(stop##kind##Cputime);                      \
+  elapsed##kind##Cputime += zorbatm::get_cputime_elapsed(start##kind##Cputime, \
+    stop##kind##Cputime);
+
+
+
 struct TimingInfo
 {
   typedef enum
@@ -258,68 +275,21 @@ struct TimingInfo
     UNLOAD_TIMER,
     TOTAL_TIMER
   } TimerKind;
-
+    
   ulong             numExecs;
 
-  zorba::DateTime   startInitTime;
-  zorba::DateTime   stopInitTime;
-  zorba::DateTime   startDeInitTime;
-  zorba::DateTime   stopDeInitTime;
-  zorba::DateTime   startCompTime;
-  zorba::DateTime   stopCompTime;
-  zorba::DateTime   startExecTime;
-  zorba::DateTime   stopExecTime;
-  zorba::DateTime   startUnloadTime;
-  zorba::DateTime   stopUnloadTime;
-  zorba::DateTime   startTotalTime;
-  zorba::DateTime   stopTotalTime;
-
-  long              initTime;
-  long              deinitTime;
-  long              compTime;
-  long              execTime;
-  long              loadTime;
-  long              unloadTime;
-  long              totalTime;
-
-  zorbatm::timeinfo startInitClock;
-  zorbatm::timeinfo stopInitClock;
-  zorbatm::timeinfo startDeInitClock;
-  zorbatm::timeinfo stopDeInitClock;
-  zorbatm::timeinfo startCompClock;
-  zorbatm::timeinfo stopCompClock;
-  zorbatm::timeinfo startExecClock;
-  zorbatm::timeinfo stopExecClock;
-  zorbatm::timeinfo startUnloadClock;
-  zorbatm::timeinfo stopUnloadClock;
-  zorbatm::timeinfo startTotalClock;
-  zorbatm::timeinfo stopTotalClock;
-
-  double            initClock;
-  double            deinitClock;
-  double            compClock;
-  double            execClock;
-  double            loadClock;
-  double            unloadClock;
-  double            totalClock;
+  DECLARE_TIMER(Init);
+  DECLARE_TIMER(Deinit);
+  DECLARE_TIMER(Comp);
+  DECLARE_TIMER(Exec);
+  DECLARE_TIMER(Load);
+  DECLARE_TIMER(Unload);
+  DECLARE_TIMER(Total);
 
   TimingInfo(ulong num)
     :
     numExecs(num),
-    initTime(0),
-    deinitTime(0),
-    compTime(0),
-    execTime(0),
-    loadTime(0),
-    unloadTime(0),
-    totalTime(0),
-    initClock(0),
-    deinitClock(0),
-    compClock(0),
-    execClock(0),
-    loadClock(0),
-    unloadClock(0),
-    totalClock(0)
+    elapsedUnloadCputime(0) // I have no idea why THIS one needs to be initialized, but it does
   {
   }
 
@@ -327,20 +297,6 @@ struct TimingInfo
   void stopTimer(TimerKind kind, ulong iteration);
 
   std::ostream& print(std::ostream& os);
-
-#define START_TIMER(kind)                             \
-  zorba::DateTime::getLocalTime(start##kind##Time);   \
-  zorbatm::get_timeinfo(start##kind##Clock);
-  
-#define STOP_TIMER(kind)                                                \
-  zorba::DateTime::getLocalTime(stop##kind##Time);                      \
-  std::auto_ptr<zorba::Duration> diffTime;                              \
-  diffTime.reset(stop##kind##Time.subtractDateTime(&start##kind##Time, 0)); \
-                                                                        \
-  zorbatm::get_timeinfo(stop##kind##Clock);                             \
-  double diffClock = zorbatm::get_time_elapsed                          \
-    (zorbatm::extract_user_time_detail(start##kind##Clock),             \
-     zorbatm::extract_user_time_detail(stop##kind##Clock));
 };
 
 
@@ -357,7 +313,7 @@ TimingInfo::startTimer(TimerKind kind, ulong iteration)
     break;
 
   case DEINIT_TIMER:
-    START_TIMER(DeInit);
+    START_TIMER(Deinit);
     break;
 
   case TOTAL_TIMER:
@@ -390,43 +346,31 @@ TimingInfo::stopTimer(TimerKind kind, ulong iteration)
   case INIT_TIMER: 
   {
     STOP_TIMER(Init);
-    initTime += diffTime->getTotalMilliseconds();
-    initClock += diffClock;
     break;
   }
   case DEINIT_TIMER: 
   {
-    STOP_TIMER(DeInit);
-    deinitTime += diffTime->getTotalMilliseconds();
-    deinitClock += diffClock;
+    STOP_TIMER(Deinit);
     break;
   }
   case TOTAL_TIMER: 
   {
     STOP_TIMER(Total);
-    totalTime += diffTime->getTotalMilliseconds();
-    totalClock += diffClock;
     break;
   }
   case COMP_TIMER: 
   {
     STOP_TIMER(Comp);
-    compTime += diffTime->getTotalMilliseconds();
-    compClock += diffClock;
     break;
   }
   case EXEC_TIMER: 
   {
     STOP_TIMER(Exec);
-    execTime += diffTime->getTotalMilliseconds();
-    execClock += diffClock;
     break;
   }
   case UNLOAD_TIMER: 
   {
     STOP_TIMER(Unload);
-    unloadTime += diffTime->getTotalMilliseconds();
-    unloadClock += diffClock;
     break;
   }
   }
@@ -442,40 +386,40 @@ TimingInfo::print(std::ostream& os)
   os << "\nNumber of executions = " << numExecs << std::endl;
 
   ulong timeDiv = numExecs == 1 ? 1 : (numExecs - 1);
-  long cTime = compTime / timeDiv;
-  long eTime = execTime / timeDiv;
-  long lTime = loadTime / timeDiv;
-  long uTime = unloadTime / timeDiv;
-  long tTime = totalTime / timeDiv;
+  double cWalltime = elapsedCompWalltime / timeDiv;
+  double eWalltime = elapsedExecWalltime / timeDiv;
+  double lWalltime = elapsedLoadWalltime / timeDiv;
+  double uWalltime = elapsedUnloadWalltime / timeDiv;
+  double tWalltime = elapsedTotalWalltime / timeDiv;
   
-  double cClock = compClock / timeDiv;
-  double eClock = execClock / timeDiv;
-  double lClock = loadClock / timeDiv;
-  double uClock = unloadClock / timeDiv;
-  double tClock = totalClock / timeDiv;
+  double cCputime = elapsedCompCputime / timeDiv;
+  double eCputime = elapsedExecCputime / timeDiv;
+  double lCputime = elapsedLoadCputime / timeDiv;
+  double uCputime = elapsedUnloadCputime / timeDiv;
+  double tCputime = elapsedTotalCputime / timeDiv;
   
-  os << "Engine Startup Time     : " << initTime
-     << " (user: " << initClock << ")"
+  os << "Engine Startup Time     : " << elapsedInitWalltime
+     << " (user: " << elapsedInitCputime << ")"
      << " milliseconds" << std::endl;
 
-  os << "Average Compilation Time: " << cTime
-     << " (user: " << cClock << ")"
+  os << "Average Compilation Time: " << cWalltime
+     << " (user: " << cCputime << ")"
      << " milliseconds" << std::endl;
   
-  os << "Average Execution Time  : " << eTime - lTime
-     << " (user: " << eClock - lClock  << ")"
+  os << "Average Execution Time  : " << eWalltime - lWalltime
+     << " (user: " << eCputime - lCputime  << ")"
      << " milliseconds" << std::endl;
     
-  os << "Average Loading Time    : " << lTime
-     << " (user: " << lClock << ")"
+  os << "Average Loading Time    : " << lWalltime
+     << " (user: " << lCputime << ")"
      << " milliseconds" << std::endl;
 
-  os << "Average Unloading Time  : " << uTime
-     << " (user: " << uClock << ")"
+  os << "Average Unloading Time  : " << uWalltime
+     << " (user: " << uCputime << ")"
      << " milliseconds" << std::endl;
 
-  os << "Average Total Time      : " << tTime
-     << " (user: " << tClock << ")"
+  os << "Average Total Time      : " << tWalltime
+     << " (user: " << tCputime << ")"
      << " milliseconds" << std::endl;
 
   return os;
@@ -631,8 +575,8 @@ compileAndExecute(
         }
 
         if (i > 0 || lNumExecutions == 1) {
-          timing.loadTime += query->getDocLoadingTime();
-          timing.loadClock += query->getDocLoadingUserTime();
+          timing.elapsedLoadWalltime += query->getDocLoadingTime();
+          timing.elapsedLoadCputime += query->getDocLoadingUserTime();
         }
       }
       catch (zorba::QueryException& qe)
@@ -1010,8 +954,9 @@ _tmain(int argc, _TCHAR* argv[])
   {
     timing.stopTimer(TimingInfo::DEINIT_TIMER, 2);
 
-    std::cout << std::endl << "Engine Shutdown Time     : " << timing.deinitTime
-              << " (user: " << timing.deinitClock << ")"
+    std::cout << std::endl << "Engine Shutdown Time     : "
+              << timing.elapsedDeinitWalltime
+              << " (user: " << timing.elapsedDeinitCputime << ")"
               << " milliseconds" << std::endl;
   }
   return 0;

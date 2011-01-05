@@ -94,7 +94,7 @@ protected:
 
 public:
   double                       theDocLoadingUserTime;
-  long                         theDocLoadingTime;
+  double                       theDocLoadingTime;
 
 public:
   static std::string var_key(const void* var);
