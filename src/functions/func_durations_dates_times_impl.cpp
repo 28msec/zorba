@@ -27,9 +27,9 @@ namespace zorba
 class fn_datetime_ctor : public function
 {
 public:
-  fn_datetime_ctor(const signature& sig) 
+  fn_datetime_ctor(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_DATETIME_CONTRUCTOR) 
+    function(sig, FunctionConsts::FN_DATETIME_CONTRUCTOR)
   {
   }
 
@@ -43,9 +43,9 @@ public:
 class op_ym_durations_add : public function
 {
 public:
-  op_ym_durations_add(const signature& sig) 
+  op_ym_durations_add(const signature& sig)
     :
-    function(sig, FunctionConsts::OP_ADD_YM_DURATIONS) 
+    function(sig, FunctionConsts::OP_ADD_YM_DURATIONS)
   {
   }
 
@@ -59,7 +59,7 @@ public:
 class op_ym_durations_subtract : public function
 {
 public:
-  op_ym_durations_subtract(const signature& sig) 
+  op_ym_durations_subtract(const signature& sig)
     :
     function(sig, FunctionConsts::OP_SUBTRACT_YM_DURATIONS)
   {
@@ -75,7 +75,7 @@ public:
 class op_ym_duration_multiply : public function
 {
 public:
-  op_ym_duration_multiply(const signature& sig) 
+  op_ym_duration_multiply(const signature& sig)
     :
     function(sig,  FunctionConsts::OP_MULTIPLY_YM_DURATION)
   {
@@ -107,7 +107,7 @@ public:
 class op_divide_ymd_by_ymd : public function
 {
 public:
-  op_divide_ymd_by_ymd(const signature& sig) 
+  op_divide_ymd_by_ymd(const signature& sig)
     :
     function(sig, FunctionConsts::OP_DIVIDE_YM_DURATIONS)
   {
@@ -123,7 +123,7 @@ public:
 class op_dt_durations_add : public function
 {
 public:
-  op_dt_durations_add(const signature& sig) 
+  op_dt_durations_add(const signature& sig)
     :
     function(sig, FunctionConsts::OP_ADD_DT_DURATIONS)
   {
@@ -155,7 +155,7 @@ public:
 class op_dt_duration_multiply : public function
 {
 public:
-  op_dt_duration_multiply(const signature& sig) 
+  op_dt_duration_multiply(const signature& sig)
     :
     function(sig, FunctionConsts::OP_MULTIPLY_DT_DURATION)
   {
@@ -171,7 +171,7 @@ public:
 class op_dt_duration_divide : public function
 {
 public:
-  op_dt_duration_divide(const signature& sig) 
+  op_dt_duration_divide(const signature& sig)
     :
     function(sig, FunctionConsts::OP_DIVIDE_DT_DURATION)
   {
@@ -203,7 +203,7 @@ public:
 class op_sub_dt : public function
 {
 public:
-  op_sub_dt(const signature& sig) 
+  op_sub_dt(const signature& sig)
     :
     function(sig, FunctionConsts::OP_SUBTRACT_DATETIMES)
   {
@@ -219,7 +219,7 @@ public:
 class op_sub_d : public function
 {
 public:
-  op_sub_d(const signature& sig) 
+  op_sub_d(const signature& sig)
     :
     function(sig, FunctionConsts::OP_SUBTRACT_DATES)
   {
@@ -235,7 +235,7 @@ public:
 class op_sub_t : public function
 {
 public:
-  op_sub_t(const signature& sig) 
+  op_sub_t(const signature& sig)
     :
     function(sig, FunctionConsts::OP_SUBTRACT_TIMES)
   {
@@ -251,7 +251,7 @@ public:
 class op_add_ymd_to_dt : public function
 {
 public:
-  op_add_ymd_to_dt(const signature& sig) 
+  op_add_ymd_to_dt(const signature& sig)
     :
     function(sig, FunctionConsts::OP_ADD_YMD_TO_DT)
   {
@@ -267,7 +267,7 @@ public:
 class op_add_dtd_to_dt : public function
 {
 public:
-  op_add_dtd_to_dt(const signature& sig) 
+  op_add_dtd_to_dt(const signature& sig)
     :
     function(sig, FunctionConsts::OP_ADD_DTD_TO_DT)
   {
@@ -283,7 +283,7 @@ public:
 class op_sub_ymd_from_dt : public function
 {
 public:
-  op_sub_ymd_from_dt(const signature& sig) 
+  op_sub_ymd_from_dt(const signature& sig)
     :
     function(sig, FunctionConsts::OP_SUBTRACT_YMD_FROM_DT)
   {
@@ -299,9 +299,9 @@ public:
 class op_sub_dtd_from_dt : public function
 {
 public:
-  op_sub_dtd_from_dt(const signature& sig) 
+  op_sub_dtd_from_dt(const signature& sig)
     :
-    function(sig, FunctionConsts::OP_SUBTRACT_DTD_FROM_DT) 
+    function(sig, FunctionConsts::OP_SUBTRACT_DTD_FROM_DT)
   {
   }
 
@@ -315,7 +315,7 @@ public:
 class op_add_ymd_to_d : public function
 {
 public:
-  op_add_ymd_to_d(const signature& sig) 
+  op_add_ymd_to_d(const signature& sig)
     :
     function(sig, FunctionConsts::OP_ADD_YMD_TO_D)
   {
@@ -331,7 +331,7 @@ public:
 class op_add_dtd_to_d : public function
 {
 public:
-  op_add_dtd_to_d(const signature& sig) 
+  op_add_dtd_to_d(const signature& sig)
     :
     function(sig, FunctionConsts::OP_ADD_DTD_TO_D)
   {
@@ -363,7 +363,7 @@ public:
 class op_sub_dtd_from_d : public function
 {
 public:
-  op_sub_dtd_from_d(const signature& sig) 
+  op_sub_dtd_from_d(const signature& sig)
     :
     function(sig, FunctionConsts::OP_SUBTRACT_DTD_FROM_D)
   {
@@ -379,7 +379,7 @@ public:
 class op_add_dtd_to_t : public function
 {
 public:
-  op_add_dtd_to_t(const signature& sig) 
+  op_add_dtd_to_t(const signature& sig)
     :
     function(sig, FunctionConsts::OP_ADD_DTD_TO_T)
   {
@@ -411,7 +411,7 @@ class fn_adjust_dt_to_tz_1 : public function
 public:
   bool accessesDynCtx () const { return true; }
 
-  fn_adjust_dt_to_tz_1(const signature& sig) 
+  fn_adjust_dt_to_tz_1(const signature& sig)
     :
     function(sig, FunctionConsts::OP_ADJUST_DT_TO_TZ_1)
   {
@@ -424,7 +424,7 @@ public:
 class fn_adjust_dt_to_tz_2 : public function
 {
 public:
-  fn_adjust_dt_to_tz_2(const signature& sig) 
+  fn_adjust_dt_to_tz_2(const signature& sig)
     :
     function(sig, FunctionConsts::OP_ADJUST_DT_TO_TZ_2)
   {
@@ -455,7 +455,7 @@ public:
 class fn_adjust_d_to_tz_2 : public function
 {
 public:
-  fn_adjust_d_to_tz_2(const signature& sig) 
+  fn_adjust_d_to_tz_2(const signature& sig)
     :
     function(sig, FunctionConsts::OP_ADJUST_D_TO_TZ_2)
   {
@@ -486,7 +486,7 @@ public:
 class fn_adjust_t_to_tz_2 : public function
 {
 public:
-  fn_adjust_t_to_tz_2(const signature& sig) 
+  fn_adjust_t_to_tz_2(const signature& sig)
     :
     function(sig, FunctionConsts::OP_ADJUST_T_TO_TZ_2)
   {
@@ -503,10 +503,11 @@ public:
 class fn_format_datetime_4 : public function
 {
 public:
-  fn_format_datetime_4(const signature& sig) 
+  fn_format_datetime_4(const signature& sig)
     :
     function(sig, FunctionConsts::OP_FORMAT_DT_4)
   {
+    theXQueryVersion = StaticContextConsts::xquery_version_1_1;
   }
 
   PlanIter_t codegen(
@@ -524,10 +525,11 @@ public:
 class fn_format_datetime_2 : public function
 {
 public:
-  fn_format_datetime_2(const signature& sig) 
+  fn_format_datetime_2(const signature& sig)
     :
     function(sig, FunctionConsts::OP_FORMAT_DT_2)
   {
+    theXQueryVersion = StaticContextConsts::xquery_version_1_1;
   }
 
   PlanIter_t codegen(
@@ -545,10 +547,11 @@ public:
 class fn_format_date_4 : public function
 {
 public:
-  fn_format_date_4(const signature& sig) 
+  fn_format_date_4(const signature& sig)
     :
     function(sig, FunctionConsts::OP_FORMAT_D_4)
   {
+    theXQueryVersion = StaticContextConsts::xquery_version_1_1;
   }
 
   PlanIter_t codegen(
@@ -570,6 +573,7 @@ public:
     :
     function(sig, FunctionConsts::OP_FORMAT_D_2)
   {
+    theXQueryVersion = StaticContextConsts::xquery_version_1_1;
   }
 
   PlanIter_t codegen(
@@ -587,10 +591,11 @@ public:
 class fn_format_time_4 : public function
 {
 public:
-  fn_format_time_4(const signature& sig) 
+  fn_format_time_4(const signature& sig)
     :
     function(sig, FunctionConsts::OP_FORMAT_T_4)
   {
+    theXQueryVersion = StaticContextConsts::xquery_version_1_1;
   }
 
   PlanIter_t codegen(
@@ -612,6 +617,7 @@ public:
     :
     function(sig, FunctionConsts::OP_FORMAT_T_2)
   {
+    theXQueryVersion = StaticContextConsts::xquery_version_1_1;
   }
 
   PlanIter_t codegen(
@@ -777,34 +783,34 @@ DECL(sctx, op_sub_dtd_from_t,
       GENV_TYPESYSTEM.TIME_TYPE_ONE));
 
 DECL(sctx, fn_adjust_dt_to_tz_1,
-     (createQName(XQUERY_FN_NS,"", "adjust-dateTime-to-timezone"),
+     (createQName(XQUERY_FN_NS, "", "adjust-dateTime-to-timezone"),
       GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION));
 
 DECL(sctx, fn_adjust_dt_to_tz_2,
-     (createQName (XQUERY_FN_NS,"", "adjust-dateTime-to-timezone"),
+     (createQName (XQUERY_FN_NS, "", "adjust-dateTime-to-timezone"),
       GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.DT_DURATION_TYPE_QUESTION,
       GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION));
 
 DECL(sctx, fn_adjust_d_to_tz_1,
-     (createQName (XQUERY_FN_NS,"", "adjust-date-to-timezone"),
+     (createQName (XQUERY_FN_NS, "", "adjust-date-to-timezone"),
       GENV_TYPESYSTEM.DATE_TYPE_QUESTION,
       GENV_TYPESYSTEM.DATE_TYPE_QUESTION));
 
 DECL(sctx, fn_adjust_d_to_tz_2,
-     (createQName (XQUERY_FN_NS,"", "adjust-date-to-timezone"),
+     (createQName (XQUERY_FN_NS, "", "adjust-date-to-timezone"),
       GENV_TYPESYSTEM.DATE_TYPE_QUESTION,
       GENV_TYPESYSTEM.DT_DURATION_TYPE_QUESTION,
       GENV_TYPESYSTEM.DATE_TYPE_QUESTION));
 
 DECL(sctx, fn_adjust_t_to_tz_1,
-     (createQName (XQUERY_FN_NS,"", "adjust-time-to-timezone"),
+     (createQName (XQUERY_FN_NS, "", "adjust-time-to-timezone"),
       GENV_TYPESYSTEM.TIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.TIME_TYPE_QUESTION));
 
 DECL(sctx, fn_adjust_t_to_tz_2,
-     (createQName (XQUERY_FN_NS,"", "adjust-time-to-timezone"),
+     (createQName (XQUERY_FN_NS, "", "adjust-time-to-timezone"),
       GENV_TYPESYSTEM.TIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.DT_DURATION_TYPE_QUESTION,
       GENV_TYPESYSTEM.TIME_TYPE_QUESTION));

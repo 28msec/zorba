@@ -75,7 +75,6 @@ public:
     theKind = (sig.paramCount() == 0 ?
                 FunctionConsts::FN_LOCAL_NAME_0 :
                 FunctionConsts::FN_LOCAL_NAME_1);
-  
   }
 
   CODEGEN_DECL();
@@ -91,7 +90,6 @@ public:
     theKind = (sig.paramCount() == 0 ?
                 FunctionConsts::FN_NAMESPACE_URI_0 :
                 FunctionConsts::FN_NAMESPACE_URI_1);
-  
   }
 
   CODEGEN_DECL();
@@ -107,7 +105,6 @@ public:
     theKind = (sig.paramCount() == 1 ?
                 FunctionConsts::FN_LANG_1 :
                 FunctionConsts::FN_LANG_2);
-  
   }
 
   CODEGEN_DECL();
@@ -123,7 +120,6 @@ public:
     theKind = (sig.paramCount() == 0 ?
                 FunctionConsts::FN_NUMBER_0 :
                 FunctionConsts::FN_NUMBER_1);
-  
   }
 
   CODEGEN_DECL();

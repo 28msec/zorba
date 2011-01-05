@@ -107,7 +107,6 @@ public:
     theKind = (sig.paramCount() == 1 ?
                 FunctionConsts::FN_ROUND_HALF_TO_EVEN_1 :
                 FunctionConsts::FN_ROUND_HALF_TO_EVEN_2);
-  
   }
 
   CODEGEN_DECL();
@@ -123,7 +122,7 @@ public:
     theKind = (sig.paramCount() == 2 ?
                 FunctionConsts::FN_FORMAT_NUMBER_2 :
                 FunctionConsts::FN_FORMAT_NUMBER_3);
-  
+    theXQueryVersion = StaticContextConsts::xquery_version_1_1;
   }
 
   CODEGEN_DECL();

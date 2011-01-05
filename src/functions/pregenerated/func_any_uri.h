@@ -47,7 +47,6 @@ public:
     theKind = (sig.paramCount() == 1 ?
                 FunctionConsts::FN_RESOLVE_URI_1 :
                 FunctionConsts::FN_RESOLVE_URI_2);
-  
   }
 
   bool accessesDynCtx() const { return true; }

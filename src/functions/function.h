@@ -28,6 +28,8 @@
 #include "compiler/parser/query_loc.h"
 #include "compiler/expression/expr_consts.h"
 
+#include "context/static_context_consts.h"
+
 
 namespace zorba
 {
@@ -49,6 +51,7 @@ protected:
   FunctionConsts::FunctionKind theKind;
   uint32_t                     theFlags;
   AnnotationList_t             theAnnotationList;
+  StaticContextConsts::xquery_version_t   theXQueryVersion;
 
 
 public:
@@ -90,12 +93,12 @@ public:
     return (theFlags & flag) != 0;
   }
 
-  bool isBuiltin() const 
-  { 
+  bool isBuiltin() const
+  {
     return testFlag(FunctionConsts::isBuiltin);
   }
 
-  bool isUdf() const 
+  bool isUdf() const
   {
     return testFlag(FunctionConsts::isUDF);
   }
@@ -142,6 +145,10 @@ public:
   const AnnotationList* getAnnotationList() const { return theAnnotationList.getp(); }
 
 	bool validate_args(std::vector<PlanIter_t>& argv) const;
+
+  virtual StaticContextConsts::xquery_version_t getXQueryVersion() const { return theXQueryVersion; }
+
+  virtual void setXQueryVersion(StaticContextConsts::xquery_version_t version) { theXQueryVersion = version; }
 
   virtual bool isArithmeticFunction() const { return false; }
 

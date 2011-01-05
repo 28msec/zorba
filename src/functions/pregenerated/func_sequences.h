@@ -69,7 +69,6 @@ public:
     theKind = (sig.paramCount() == 2 ?
                 FunctionConsts::FN_INDEX_OF_2 :
                 FunctionConsts::FN_INDEX_OF_3);
-  
   }
 
   CODEGEN_DECL();
@@ -121,7 +120,6 @@ public:
     theKind = (sig.paramCount() == 2 ?
                 FunctionConsts::FN_DISTINCT_VALUES_2 :
                 FunctionConsts::FN_DISTINCT_VALUES_1);
-  
   }
 
   xqtref_t getReturnType(
@@ -213,7 +211,6 @@ public:
     theKind = (sig.paramCount() == 2 ?
                 FunctionConsts::FN_SUBSEQUENCE_2 :
                 FunctionConsts::FN_SUBSEQUENCE_3);
-  
   }
 
   xqtref_t getReturnType(
@@ -237,7 +234,6 @@ public:
     theKind = (sig.paramCount() == 2 ?
                 FunctionConsts::OP_ZORBA_SUBSEQUENCE_INT_2 :
                 FunctionConsts::OP_ZORBA_SUBSEQUENCE_INT_3);
-  
   }
 
   xqtref_t getReturnType(
@@ -331,7 +327,6 @@ public:
     theKind = (sig.paramCount() == 2 ?
                 FunctionConsts::FN_DEEP_EQUAL_2 :
                 FunctionConsts::FN_DEEP_EQUAL_3);
-  
   }
 
   bool accessesDynCtx() const { return true; }
@@ -381,7 +376,6 @@ public:
     theKind = (sig.paramCount() == 1 ?
                 FunctionConsts::FN_SUM_1 :
                 FunctionConsts::FN_SUM_2);
-  
   }
 
   bool specializable() const { return true; }
@@ -404,7 +398,6 @@ public:
     theKind = (sig.paramCount() == 1 ?
                 FunctionConsts::OP_SUM_DOUBLE_1 :
                 FunctionConsts::OP_SUM_DOUBLE_2);
-  
   }
 
   BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong producer) const;
@@ -422,7 +415,6 @@ public:
     theKind = (sig.paramCount() == 1 ?
                 FunctionConsts::OP_SUM_FLOAT_1 :
                 FunctionConsts::OP_SUM_FLOAT_2);
-  
   }
 
   BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong producer) const;
@@ -440,7 +432,6 @@ public:
     theKind = (sig.paramCount() == 1 ?
                 FunctionConsts::OP_SUM_DECIMAL_1 :
                 FunctionConsts::OP_SUM_DECIMAL_2);
-  
   }
 
   BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong producer) const;
@@ -458,7 +449,6 @@ public:
     theKind = (sig.paramCount() == 1 ?
                 FunctionConsts::OP_SUM_INTEGER_1 :
                 FunctionConsts::OP_SUM_INTEGER_2);
-  
   }
 
   BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong producer) const;
@@ -490,7 +480,6 @@ public:
     theKind = (sig.paramCount() == 1 ?
                 FunctionConsts::FN_ID_1 :
                 FunctionConsts::FN_ID_2);
-  
   }
 
   FunctionConsts::AnnotationValue producesDistinctNodes() const 
@@ -520,7 +509,6 @@ public:
     theKind = (sig.paramCount() == 1 ?
                 FunctionConsts::FN_ELEMENT_WITH_ID_1 :
                 FunctionConsts::FN_ELEMENT_WITH_ID_2);
-  
   }
 
   FunctionConsts::AnnotationValue producesDistinctNodes() const 
@@ -550,7 +538,6 @@ public:
     theKind = (sig.paramCount() == 1 ?
                 FunctionConsts::FN_IDREF_1 :
                 FunctionConsts::FN_IDREF_2);
-  
   }
 
   FunctionConsts::AnnotationValue producesDistinctNodes() const 
@@ -630,7 +617,6 @@ public:
     theKind = (sig.paramCount() == 1 ?
                 FunctionConsts::FN_PARSE_1 :
                 FunctionConsts::FN_PARSE_2);
-  
   }
 
   bool accessesDynCtx() const { return true; }

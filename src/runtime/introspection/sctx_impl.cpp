@@ -600,7 +600,9 @@ bool FunctionNamesIterator::nextImpl(
       }
     }
 
-    if (! already_returned)
+    if (!already_returned
+         &&
+         state->theFunctions[state->thePosition]->getXQueryVersion() <= theSctx->xquery_version())
     {
       STACK_PUSH(true, state);
     }
@@ -628,7 +630,8 @@ bool FunctionArgumentsCountIterator::nextImpl(
   consumeNext(lName, theChildren[0].getp(), aPlanState);
   theSctx->find_functions(lName, funcs);
   for (unsigned int i=0; i<funcs.size(); i++)
-    lState->arities.push_back(funcs[i]->getArity());
+    if (funcs[i]->getXQueryVersion() <= theSctx->xquery_version())
+      lState->arities.push_back(funcs[i]->getArity());
 
   lState->position = 0;
   while (lState->position < lState->arities.size())

@@ -41,7 +41,8 @@ function::function(const signature& sig, FunctionConsts::FunctionKind kind)
   :
   theSignature(sig),
   theKind(kind),
-  theFlags(0)
+  theFlags(0),
+  theXQueryVersion(StaticContextConsts::xquery_version_1_0)
 {
   setFlag(FunctionConsts::isBuiltin);
   setFlag(FunctionConsts::isDeterministic);
@@ -68,6 +69,7 @@ void function::serialize(::zorba::serialization::Archiver& ar)
   SERIALIZE_ENUM(FunctionConsts::FunctionKind, theKind);
   ar & theFlags;
   ar & theAnnotationList;
+  SERIALIZE_ENUM(StaticContextConsts::xquery_version_t, theXQueryVersion);
 }
 
 
@@ -148,11 +150,11 @@ FunctionConsts::AnnotationValue function::producesSortedNodes() const
 
 /*******************************************************************************
   Check whether this function cares whether the sequence bound to the given
-  input parameter is in document order or not. The decision may depend on 
+  input parameter is in document order or not. The decision may depend on
   whether the result of this function, at the point where it is called, must
-  be in doc order or not. 
+  be in doc order or not.
 ********************************************************************************/
-BoolAnnotationValue function::ignoresSortedNodes(expr* fo, ulong input) const 
+BoolAnnotationValue function::ignoresSortedNodes(expr* fo, ulong input) const
 {
   if (isVariadic() && input > 0)
   {
@@ -175,7 +177,7 @@ BoolAnnotationValue function::ignoresSortedNodes(expr* fo, ulong input) const
 /*******************************************************************************
   Check whether this function cares whether the sequence bound to the given
   input parameter contains duplicate nodes or not. The decision may depend on
-  whether the result of this function, at the point where it is called, must 
+  whether the result of this function, at the point where it is called, must
   contain distinct nodes or not.
 ********************************************************************************/
 BoolAnnotationValue function::ignoresDuplicateNodes(expr* fo, ulong input) const

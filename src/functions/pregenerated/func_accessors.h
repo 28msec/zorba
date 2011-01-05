@@ -75,7 +75,6 @@ public:
     theKind = (sig.paramCount() == 0 ?
                 FunctionConsts::FN_STRING_0 :
                 FunctionConsts::FN_STRING_1);
-  
   }
 
   CODEGEN_DECL();
@@ -115,7 +114,6 @@ public:
     theKind = (sig.paramCount() == 0 ?
                 FunctionConsts::FN_BASE_URI_0 :
                 FunctionConsts::FN_BASE_URI_1);
-  
   }
 
   CODEGEN_DECL();
@@ -145,7 +143,6 @@ public:
     theKind = (sig.paramCount() == 0 ?
                 FunctionConsts::FN_ROOT_0 :
                 FunctionConsts::FN_ROOT_1);
-  
   }
 
   CODEGEN_DECL();

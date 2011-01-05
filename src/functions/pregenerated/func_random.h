@@ -61,7 +61,6 @@ public:
     theKind = (sig.paramCount() == 0 ?
                 FunctionConsts::FN_ZORBA_UTIL_RANDOM_0 :
                 FunctionConsts::FN_ZORBA_UTIL_RANDOM_1);
-  
     setDeterministic(false);
   }
 
@@ -78,7 +77,6 @@ public:
     theKind = (sig.paramCount() == 0 ?
                 FunctionConsts::FN_ZORBA_RANDOM_RANDOM_0 :
                 FunctionConsts::FN_ZORBA_RANDOM_RANDOM_1);
-  
     setDeterministic(false);
   }
 
@@ -95,7 +93,6 @@ public:
     theKind = (sig.paramCount() == 0 ?
                 FunctionConsts::FN_ZORBA_UTIL_UUID_0 :
                 FunctionConsts::FN_ZORBA_RANDOM_UUID_0);
-  
     setDeterministic(false);
   }
 

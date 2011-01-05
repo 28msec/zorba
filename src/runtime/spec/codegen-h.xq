@@ -37,6 +37,15 @@ declare function local:process-file($doc) as xs:string
               return local:create-function($iter, $function), $gen:newline)
 };
 
+declare function local:create-func-version($function) as xs:string?
+{
+  if ($function/zorba:signature/@version = "1.0")
+  then concat($gen:newline, $gen:indent, $gen:indent, "theXQueryVersion = StaticContextConsts::xquery_version_1_0;")
+  else 
+    if ($function/zorba:signature/@version = "1.1")
+    then concat($gen:newline, $gen:indent, $gen:indent, "theXQueryVersion = StaticContextConsts::xquery_version_1_1;")
+    else ()    
+};
 
 declare function local:create-function($iter, $function) as xs:string?
 { 
@@ -97,8 +106,9 @@ declare function local:create-function($iter, $function) as xs:string?
                            ')',
                            $gen:newline, $gen:indent,
                            '{',
-                           $gen:newline, $gen:indent,
                            $setNoneDeterministic,
+                           local:create-func-version($function),
+                           $gen:newline, $gen:indent,
                            '}'),
                           '')
             else if ($numSignatures eq 2)
@@ -121,8 +131,8 @@ declare function local:create-function($iter, $function) as xs:string?
                            '                FunctionConsts::',
                            gen:function-kind($signatures[2]),
                            ');',
-                           $gen:newline, $gen:indent,
-                           $setNoneDeterministic,
+                           $setNoneDeterministic,                           
+                           local:create-func-version($function),
                            $gen:newline, $gen:indent,
                            '}'),
                           '')

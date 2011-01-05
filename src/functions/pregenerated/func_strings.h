@@ -75,7 +75,6 @@ public:
     theKind = (sig.paramCount() == 2 ?
                 FunctionConsts::FN_COMPARE_2 :
                 FunctionConsts::FN_COMPARE_3);
-  
   }
 
   CODEGEN_DECL();
@@ -137,7 +136,6 @@ public:
     theKind = (sig.paramCount() == 2 ?
                 FunctionConsts::FN_SUBSTRING_2 :
                 FunctionConsts::FN_SUBSTRING_3);
-  
   }
 
   CODEGEN_DECL();
@@ -153,7 +151,6 @@ public:
     theKind = (sig.paramCount() == 0 ?
                 FunctionConsts::FN_STRING_LENGTH_0 :
                 FunctionConsts::FN_STRING_LENGTH_1);
-  
   }
 
   CODEGEN_DECL();
@@ -169,7 +166,6 @@ public:
     theKind = (sig.paramCount() == 0 ?
                 FunctionConsts::FN_NORMALIZE_SPACE_0 :
                 FunctionConsts::FN_NORMALIZE_SPACE_1);
-  
   }
 
   CODEGEN_DECL();
@@ -185,7 +181,6 @@ public:
     theKind = (sig.paramCount() == 1 ?
                 FunctionConsts::FN_NORMALIZE_UNICODE_1 :
                 FunctionConsts::FN_NORMALIZE_UNICODE_2);
-  
   }
 
   CODEGEN_DECL();
@@ -285,7 +280,6 @@ public:
     theKind = (sig.paramCount() == 2 ?
                 FunctionConsts::FN_CONTAINS_2 :
                 FunctionConsts::FN_CONTAINS_3);
-  
   }
 
   CODEGEN_DECL();
@@ -301,7 +295,6 @@ public:
     theKind = (sig.paramCount() == 2 ?
                 FunctionConsts::FN_STARTS_WITH_2 :
                 FunctionConsts::FN_STARTS_WITH_3);
-  
   }
 
   CODEGEN_DECL();
@@ -317,7 +310,6 @@ public:
     theKind = (sig.paramCount() == 2 ?
                 FunctionConsts::FN_ENDS_WITH_2 :
                 FunctionConsts::FN_ENDS_WITH_3);
-  
   }
 
   CODEGEN_DECL();
@@ -333,7 +325,6 @@ public:
     theKind = (sig.paramCount() == 2 ?
                 FunctionConsts::FN_SUBSTRING_BEFORE_2 :
                 FunctionConsts::FN_SUBSTRING_BEFORE_3);
-  
   }
 
   CODEGEN_DECL();
@@ -349,7 +340,6 @@ public:
     theKind = (sig.paramCount() == 2 ?
                 FunctionConsts::FN_SUBSTRING_AFTER_2 :
                 FunctionConsts::FN_SUBSTRING_AFTER_3);
-  
   }
 
   CODEGEN_DECL();
@@ -365,7 +355,6 @@ public:
     theKind = (sig.paramCount() == 2 ?
                 FunctionConsts::FN_MATCHES_2 :
                 FunctionConsts::FN_MATCHES_3);
-  
   }
 
   CODEGEN_DECL();
@@ -381,7 +370,6 @@ public:
     theKind = (sig.paramCount() == 3 ?
                 FunctionConsts::FN_REPLACE_3 :
                 FunctionConsts::FN_REPLACE_4);
-  
   }
 
   CODEGEN_DECL();
@@ -397,7 +385,6 @@ public:
     theKind = (sig.paramCount() == 2 ?
                 FunctionConsts::FN_TOKENIZE_2 :
                 FunctionConsts::FN_TOKENIZE_3);
-  
   }
 
   CODEGEN_DECL();
