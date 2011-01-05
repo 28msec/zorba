@@ -969,9 +969,7 @@ bool ContainsIterator::nextImpl(
       if (consumeNext(itemColl, theChildren[2].getp(), planState ))
       {
         XQPCollator* coll = theSctx->get_collator(itemColl->getStringValue().str(), loc);
-        resBool = ((coll == NULL || coll->doMemCmp())?
-                  (arg1.find(arg2) != zstring::npos):
-                  (utf8::find(arg1, arg2, coll) != zstring::npos));
+        resBool = (utf8::find(arg1, arg2, coll) != zstring::npos);
       }
     }
     STACK_PUSH( GENV_ITEMFACTORY->createBoolean(result, resBool), state );
@@ -1037,9 +1035,7 @@ bool StartsWithIterator::nextImpl(
         if (consumeNext(itemColl, theChildren[2].getp(), planState ))
         {
           XQPCollator* coll = theSctx->get_collator(itemColl->getStringValue().str(), loc);
-          resBool = ((coll == NULL || coll->doMemCmp())?
-                    (arg1.find(arg2) == 0):
-                    (utf8::find(arg1, arg2, coll) == 0));
+          resBool = (utf8::find(arg1, arg2, coll) == 0);
         }
       }
       STACK_PUSH( GENV_ITEMFACTORY->createBoolean(result, resBool), state );
@@ -1104,9 +1100,7 @@ bool EndsWithIterator::nextImpl(
       {
         XQPCollator* coll = theSctx->get_collator(itemColl->getStringValue().str(), loc);
 
-        resBool = ((coll == NULL || coll->doMemCmp())?
-                  utf8::ends_with(arg1, arg2):
-                  utf8::ends_with(arg1, arg2, coll));
+        resBool = utf8::ends_with(arg1, arg2, coll);
       }
     }
     STACK_PUSH( GENV_ITEMFACTORY->createBoolean(result, resBool), state );
@@ -1170,9 +1164,7 @@ bool SubstringBeforeIterator::nextImpl(
         {
           XQPCollator* coll = 0;
           coll = theSctx->get_collator(itemColl->getStringValue().str(), loc);
-          index = ((coll == NULL || coll->doMemCmp())?
-                  arg1.find(arg2):
-                  utf8::find(arg1, arg2, coll));
+          index = utf8::find(arg1, arg2, coll);
         }
       }
 
@@ -1244,9 +1236,7 @@ bool SubstringAfterIterator::nextImpl(
         if (consumeNext(itemColl, theChildren[2].getp(), planState))
         {
           XQPCollator* coll = theSctx->get_collator(itemColl->getStringValue().str(), loc);
-          startPos = ((coll == NULL || coll->doMemCmp())?
-                      arg1.find(arg2):
-                      utf8::find(arg1, arg2, coll));
+          startPos = utf8::find(arg1, arg2, coll);
         }
       }
 
