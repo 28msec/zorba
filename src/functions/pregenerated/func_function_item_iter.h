@@ -46,6 +46,7 @@ public:
     :
     function(sig, FunctionConsts::FN_FUNCTION_NAME_1)
   {
+    theXQueryVersion = StaticContextConsts::xquery_version_1_1;
   }
 
   CODEGEN_DECL();
@@ -60,6 +61,7 @@ public:
     :
     function(sig, FunctionConsts::FN_FUNCTION_ARITY_1)
   {
+    theXQueryVersion = StaticContextConsts::xquery_version_1_1;
   }
 
   CODEGEN_DECL();

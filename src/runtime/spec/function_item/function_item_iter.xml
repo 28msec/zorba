@@ -35,7 +35,7 @@
 
     <zorba:function >
 
-      <zorba:signature localname="function-name" prefix="fn">
+      <zorba:signature localname="function-name" prefix="fn" version="1.1">
         <zorba:param>function()</zorba:param>
         <zorba:output>xs:QName?</zorba:output>
       </zorba:signature>
@@ -56,7 +56,7 @@
 
     <zorba:function >
 
-      <zorba:signature localname="function-arity" prefix="fn">
+      <zorba:signature localname="function-arity" prefix="fn" version="1.1">
         <zorba:param>function()</zorba:param>
         <zorba:output>xs:integer</zorba:output>
       </zorba:signature>
