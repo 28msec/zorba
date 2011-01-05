@@ -550,7 +550,7 @@ declare function excel:trunc(
 };
  
 (:~
- : This function should not be used outside this module.
+ : Helper function.<br/>
  : Sorts a sequence of numbers or arguments castable to numeric.
  : It first casts all arguments to numeric and then sorts ascending.
  :  
@@ -570,8 +570,6 @@ declare function excel:sort-numbers($numbers as xs:anyAtomicType*) as xs:anyAtom
   return $sorted-numbers
 };
 
-(: priority 1 :)
-
 (:~
  : Converts radians into degrees.
  : 
@@ -581,7 +579,7 @@ declare function excel:sort-numbers($numbers as xs:anyAtomicType*) as xs:anyAtom
  :)
 declare function excel:degrees($radian as xs:double) as xs:integer
 {
-  xs:integer(($radian div excel:pi() * 180) mod 360)
+  xs:integer(($radian * 180 div excel:pi()) mod 360)
 };
 
 (:~

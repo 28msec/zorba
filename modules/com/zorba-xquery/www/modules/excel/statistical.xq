@@ -576,14 +576,14 @@ declare function excel:small($numbers as xs:anyAtomicType*, $k as xs:integer) as
  : @return The result as numeric type.
  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type.
  :)
-declare %private function excel:sumsq_deviations($numbers as xs:anyAtomicType*, $average as xs:anyAtomicType) as xs:anyAtomicType
+declare %private function excel:sumsq-deviations($numbers as xs:anyAtomicType*, $average as xs:anyAtomicType) as xs:anyAtomicType
 {
   if (fn:empty($numbers)) then
     0
   else
     let $val := excel-math:cast-as-numeric($numbers[1]) - $average
     return
-      $val * $val + excel:sumsq_deviations(fn:subsequence($numbers, 2), $average)
+      $val * $val + excel:sumsq-deviations(fn:subsequence($numbers, 2), $average)
 };
 
 (:~
@@ -602,7 +602,7 @@ declare function excel:var($numbers as xs:anyAtomicType+) as xs:anyAtomicType
 {
   let $average := excel:average($numbers)
   return
-    excel:sumsq_deviations($numbers, $average) div (excel:count($numbers) - 1)
+    excel:sumsq-deviations($numbers, $average) div (excel:count($numbers) - 1)
 };
 
 (:~
@@ -620,7 +620,7 @@ declare function excel:var($numbers as xs:anyAtomicType+) as xs:anyAtomicType
 declare function excel:vara($numbers as xs:anyAtomicType+) as xs:anyAtomicType
 {
   let $average := excel:average($numbers) return
-  excel:sumsq_deviations($numbers, $average) div (fn:count($numbers) - 1)
+  excel:sumsq-deviations($numbers, $average) div (fn:count($numbers) - 1)
 };
 
 (:~
@@ -638,7 +638,7 @@ declare function excel:vara($numbers as xs:anyAtomicType+) as xs:anyAtomicType
 declare function excel:varp($numbers as xs:anyAtomicType+) as xs:anyAtomicType
 {
   let $average := excel:average($numbers) return
-  excel:sumsq_deviations($numbers, $average) div excel:count($numbers)
+  excel:sumsq-deviations($numbers, $average) div excel:count($numbers)
 };
 
 (:~
@@ -656,7 +656,7 @@ declare function excel:varp($numbers as xs:anyAtomicType+) as xs:anyAtomicType
 declare function excel:varpa($numbers as xs:anyAtomicType+) as xs:anyAtomicType
 {
   let $average := excel:average($numbers) return
-  excel:sumsq_deviations($numbers, $average) div fn:count($numbers)
+  excel:sumsq-deviations($numbers, $average) div fn:count($numbers)
 };
 
 (:~
@@ -670,7 +670,7 @@ declare function excel:varpa($numbers as xs:anyAtomicType+) as xs:anyAtomicType
  : @error XQP0021(errNum) if any probability is not between 0 and 1.
  : @error XQP0021(errValue) if any parameter is not castable to numeric.
 :)
-declare %private function excel:sum_prob($prob_range as xs:anyAtomicType*) as xs:anyAtomicType
+declare %private function excel:sum-prob($prob_range as xs:anyAtomicType*) as xs:anyAtomicType
 {
   if (fn:empty($prob_range)) then
     0
@@ -680,7 +680,7 @@ declare %private function excel:sum_prob($prob_range as xs:anyAtomicType*) as xs
     if ($prob_num < 0 or $prob_num > 1) then
       fn:error($excel-err:errNum, "Prob function: prob values should be between 0 and 1 ", $prob_num)
     else
-      $prob_num + excel:sum_prob(fn:subsequence($prob_range, 2))
+      $prob_num + excel:sum-prob(fn:subsequence($prob_range, 2))
 };
 
 (:~
@@ -697,7 +697,7 @@ declare %private function excel:sum_prob($prob_range as xs:anyAtomicType*) as xs
  : @error XQP0021(errValue) if any parameter is not castable to numeric.
  : @error XQP0021(errNum) if x_range and prob_range do not have the same number of values.
  :)
-declare %private function excel:sum_prob_x(
+declare %private function excel:sum-prob-x(
   $x_range            as xs:anyAtomicType*,
   $prob_range         as xs:anyAtomicType*,
   $range_lower_limit  as xs:anyAtomicType,
@@ -717,7 +717,7 @@ declare %private function excel:sum_prob_x(
       else
         0 
     return
-      $this_prob + excel:sum_prob_x(
+      $this_prob + excel:sum-prob-x(
         fn:subsequence($x_range, 2),
         fn:subsequence($prob_range, 2),
         $range_lower_limit,
@@ -744,11 +744,11 @@ declare function excel:prob($x_range as xs:anyAtomicType+,
                             $range_lower_limit as xs:anyAtomicType,
                             $upper_limit as xs:anyAtomicType) as xs:anyAtomicType
 {
-  let $prob_sum := excel:sum_prob($prob_range) return
+  let $prob_sum := excel:sum-prob($prob_range) return
   if ($prob_sum != 1) then
     fn:error($excel-err:errNum, "Prob function: prob sum should equal 1")
   else
-    excel:sum_prob_x($x_range, $prob_range, 
+    excel:sum-prob-x($x_range, $prob_range, 
                     excel-math:cast-as-numeric($range_lower_limit), 
                     excel-math:cast-as-numeric($upper_limit))
 };
@@ -790,7 +790,7 @@ declare function excel:prob($x_range as xs:anyAtomicType+,
  : @error XQP0021(errValues) if any parameter cannot be casted to numeric.
  : @error XQP0021(errNA) if there are different numbers of x's and y's.
  :)
-declare %private function excel:sum_x_y_deviations(
+declare %private function excel:sum-x-y-deviations(
   $x_numbers as xs:anyAtomicType*, 
   $x_average as xs:anyAtomicType,
   $y_numbers as xs:anyAtomicType*, 
@@ -805,7 +805,7 @@ declare %private function excel:sum_x_y_deviations(
   else
     (excel-math:cast-as-numeric($x_numbers[1]) - $x_average) * 
     (excel-math:cast-as-numeric($y_numbers[1]) - $y_average) + 
-    excel:sum_x_y_deviations(
+    excel:sum-x-y-deviations(
       fn:subsequence($x_numbers, 2),$x_average,
       fn:subsequence($y_numbers, 2),$y_average)
 };
@@ -837,11 +837,11 @@ declare function excel:slope($known_y as xs:anyAtomicType+,
   else
   let $x_average := excel:average($known_x) 
   let $y_average := excel:average($known_y) 
-  let $xsq_dev := excel:sumsq_deviations($known_x, $x_average) return
+  let $xsq_dev := excel:sumsq-deviations($known_x, $x_average) return
   if ($xsq_dev = 0) then
     fn:error($excel-err:errDiv0, "Slope function: all x's are equal")
   else
-  let $x_y_dev := excel:sum_x_y_deviations($known_x, $x_average, $known_y, $y_average) return
+  let $x_y_dev := excel:sum-x-y-deviations($known_x, $x_average, $known_y, $y_average) return
   $x_y_dev div $xsq_dev
 };
 

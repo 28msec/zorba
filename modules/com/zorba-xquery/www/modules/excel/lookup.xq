@@ -216,7 +216,7 @@ declare function excel:choose(
  :  @return the value found
  :  @error XQP0021(errValue) if range_lookup=0 and the value cannot be found
  :)
-declare %private function excel:lookup_column(
+declare %private function excel:lookup-column(
   $lookup_value         as xs:anyAtomicType,
   $table_header         as xs:anyAtomicType*,
   $range_lookup         as xs:integer,
@@ -236,9 +236,9 @@ declare %private function excel:lookup_column(
         else if ($lookup_value < $table_header[1]) then
           $last_comparable_pos
         else
-          excel:lookup_column($lookup_value, fn:subsequence($table_header, 2), $range_lookup, $pos + 1, $pos + 1)
+          excel:lookup-column($lookup_value, fn:subsequence($table_header, 2), $range_lookup, $pos + 1, $pos + 1)
       else
-        excel:lookup_column($lookup_value, fn:subsequence($table_header, 2), $range_lookup, $pos + 1, $last_comparable_pos)
+        excel:lookup-column($lookup_value, fn:subsequence($table_header, 2), $range_lookup, $pos + 1, $last_comparable_pos)
     else if (excel-math:is-a-number($lookup_value)) then
       if (excel-math:is-a-number($table_header[1])) then
         let $lookup_value_num := excel-math:cast-as-numeric($lookup_value)
@@ -249,9 +249,9 @@ declare %private function excel:lookup_column(
           else if ($lookup_value_num < $table_header_num) then
             $last_comparable_pos
           else
-            excel:lookup_column($lookup_value, fn:subsequence($table_header, 2), $range_lookup, $pos + 1, $pos + 1)
+            excel:lookup-column($lookup_value, fn:subsequence($table_header, 2), $range_lookup, $pos + 1, $pos + 1)
       else
-        excel:lookup_column($lookup_value, fn:subsequence($table_header, 2), $range_lookup, $pos + 1, $last_comparable_pos)
+        excel:lookup-column($lookup_value, fn:subsequence($table_header, 2), $range_lookup, $pos + 1, $last_comparable_pos)
     else
     let $compare := fn:compare(fn:upper-case(fn:string($lookup_value)), 
                                fn:upper-case(fn:string($table_header[1])))
@@ -261,7 +261,7 @@ declare %private function excel:lookup_column(
       else if ($compare lt 0) then
         $last_comparable_pos
       else
-        excel:lookup_column($lookup_value, fn:subsequence($table_header, 2), $range_lookup, $pos + 1, $pos + 1)
+        excel:lookup-column($lookup_value, fn:subsequence($table_header, 2), $range_lookup, $pos + 1, $pos + 1)
   else if ($range_lookup lt 0) then
     if ($lookup_value instance of xs:boolean) then
       if ($table_header[1] instance of xs:boolean) then
@@ -270,9 +270,9 @@ declare %private function excel:lookup_column(
         else if ($lookup_value > $table_header[1]) then
           $last_comparable_pos
         else
-          excel:lookup_column($lookup_value, fn:subsequence($table_header, 2), $range_lookup, $pos + 1, $pos + 1)
+          excel:lookup-column($lookup_value, fn:subsequence($table_header, 2), $range_lookup, $pos + 1, $pos + 1)
       else
-        excel:lookup_column($lookup_value, fn:subsequence($table_header, 2), $range_lookup, $pos + 1, $last_comparable_pos)
+        excel:lookup-column($lookup_value, fn:subsequence($table_header, 2), $range_lookup, $pos + 1, $last_comparable_pos)
     else if (excel-math:is-a-number($lookup_value)) then
       if (excel-math:is-a-number($table_header[1])) then
         let $lookup_value_num := excel-math:cast-as-numeric($lookup_value)
@@ -283,9 +283,9 @@ declare %private function excel:lookup_column(
           else if ($lookup_value_num > $table_header_num) then
             $last_comparable_pos
           else
-            excel:lookup_column($lookup_value, fn:subsequence($table_header, 2), $range_lookup, $pos + 1, $pos + 1)
+            excel:lookup-column($lookup_value, fn:subsequence($table_header, 2), $range_lookup, $pos + 1, $pos + 1)
       else
-        excel:lookup_column($lookup_value, fn:subsequence($table_header, 2), $range_lookup, $pos + 1, $last_comparable_pos)
+        excel:lookup-column($lookup_value, fn:subsequence($table_header, 2), $range_lookup, $pos + 1, $last_comparable_pos)
     else
       let $compare := fn:compare(fn:upper-case(fn:string($lookup_value)), 
                                fn:upper-case(fn:string($table_header[1])))
@@ -295,20 +295,20 @@ declare %private function excel:lookup_column(
         else if ($compare gt 0) then
           $last_comparable_pos
         else
-          excel:lookup_column($lookup_value, fn:subsequence($table_header, 2), $range_lookup, $pos + 1, $pos + 1)
+          excel:lookup-column($lookup_value, fn:subsequence($table_header, 2), $range_lookup, $pos + 1, $pos + 1)
     else if ($lookup_value instance of xs:boolean) then
       if ($table_header[1] instance of xs:boolean) then
         if ($lookup_value = $table_header[1]) then
           $pos + 1
         else
-          excel:lookup_column($lookup_value, fn:subsequence($table_header, 2), $range_lookup, $pos + 1, 0)
+          excel:lookup-column($lookup_value, fn:subsequence($table_header, 2), $range_lookup, $pos + 1, 0)
       else
-        excel:lookup_column($lookup_value, fn:subsequence($table_header, 2), $range_lookup, $pos + 1, 0)
+        excel:lookup-column($lookup_value, fn:subsequence($table_header, 2), $range_lookup, $pos + 1, 0)
     else if (fn:matches(fn:upper-case(fn:string($table_header[1])), 
                   fn:upper-case(fn:string($lookup_value)))) then
       $pos + 1
     else
-      excel:lookup_column($lookup_value, fn:subsequence($table_header, 2), $range_lookup, $pos + 1, 0)
+      excel:lookup-column($lookup_value, fn:subsequence($table_header, 2), $range_lookup, $pos + 1, 0)
 };
 
 (:~
@@ -362,7 +362,7 @@ declare function excel:hlookup(
         return
           $table_array[$i]
       )
-    let $column := excel:lookup_column($lookup_value, $table_header, $range_lookup cast as xs:integer, 0, 0)
+    let $column := excel:lookup-column($lookup_value, $table_header, $range_lookup cast as xs:integer, 0, 0)
     return
       if ($column eq 0) then
         fn:error($excel-err:errValue, "Hlookup function: lookup value is smaller than the first element in header", $lookup_value)
@@ -483,7 +483,7 @@ declare function excel:lookup(
   $lookup_vector  as xs:anyAtomicType+,
   $result_vector  as xs:anyAtomicType+) as xs:anyAtomicType
 {
-  let $pos := excel:lookup_column($lookup_value, $lookup_vector, 1, 0, 0) return
+  let $pos := excel:lookup-column($lookup_value, $lookup_vector, 1, 0, 0) return
   if ($pos eq 0) then
     fn:error($excel-err:errNA, "Lookup function: lookup value is smaller than any vector values ", $lookup_value)
   else if ($pos gt fn:count($result_vector)) then    
@@ -529,7 +529,7 @@ declare function excel:lookup(
         return
           $array[$i]
       )
-    let $pos := excel:lookup_column($lookup_value, $header, 1, 0, 0)
+    let $pos := excel:lookup-column($lookup_value, $header, 1, 0, 0)
     return
       if ($pos eq 0) then
         fn:error($excel-err:errNA, "Lookup function: lookup value is smaller than any vector values in the first row ", $lookup_value)
@@ -541,7 +541,7 @@ declare function excel:lookup(
         return
           $array[($i - 1) * $array_width + 1]
       )
-    let $pos := excel:lookup_column($lookup_value, $header, 1, 0, 0)
+    let $pos := excel:lookup-column($lookup_value, $header, 1, 0, 0)
     return
       if ($pos eq 0) then
         fn:error($excel-err:errNA, "Lookup function: lookup value is smaller than any vector values in the first column ", $lookup_value)
@@ -578,7 +578,7 @@ declare function excel:match(
   $sequence     as xs:anyAtomicType+,
   $match_type   as xs:integer) as xs:anyAtomicType
 {
-  let $pos := excel:lookup_column($lookup_value, $sequence, $match_type, 0, 0)
+  let $pos := excel:lookup-column($lookup_value, $sequence, $match_type, 0, 0)
   return
     if ($pos eq 0) then
       fn:error($excel-err:errNA, "Match function: cannot match lookup value ", $lookup_value)
@@ -762,7 +762,7 @@ declare function excel:vlookup(
         return
           $table_array[($i - 1) * $table_width + 1]
       )
-    let $row := excel:lookup_column($lookup_value, $table_header, $range_lookup cast as xs:integer, 0, 0)
+    let $row := excel:lookup-column($lookup_value, $table_header, $range_lookup cast as xs:integer, 0, 0)
     return
       if ($row eq 0) then
         fn:error($excel-err:errValue, "Vlookup function: lookup value cannot be matched", $lookup_value)
