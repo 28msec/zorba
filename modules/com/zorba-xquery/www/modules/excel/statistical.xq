@@ -244,14 +244,14 @@ declare function excel:percentile( $numbers as xs:anyAtomicType*, $k_at as xs:an
  : @return The result of the formula.
  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type.
  :)
-declare %private function excel:sum_deviations(
+declare %private function excel:sum-deviations(
   $numbers as xs:anyAtomicType*,
   $average as xs:anyAtomicType) as xs:anyAtomicType
 {
   if (fn:empty($numbers)) then
     0
   else
-    fn:abs(excel-math:cast-as-numeric($numbers[1]) - $average) + excel:sum_deviations(fn:subsequence($numbers, 2), $average)
+    fn:abs(excel-math:cast-as-numeric($numbers[1]) - $average) + excel:sum-deviations(fn:subsequence($numbers, 2), $average)
 };
 
 (:~
@@ -267,7 +267,7 @@ declare %private function excel:sum_deviations(
 declare function excel:avedev($numbers as xs:anyAtomicType+) as xs:anyAtomicType
 {
   let $average := excel:average($numbers) return
-  excel:sum_deviations($numbers, $average) div excel:count($numbers)
+  excel:sum-deviations($numbers, $average) div excel:count($numbers)
 };
 
 (:~
@@ -830,7 +830,7 @@ declare %private function excel:sum-x-y-deviations(
  : @error XQP0021(errDiv0) if all x's are equal
 :)
 declare function excel:slope($known_y as xs:anyAtomicType+,
-                       $known_x as xs:anyAtomicType+)
+                       $known_x as xs:anyAtomicType+) as xs:anyAtomicType
 {
   if (fn:empty($known_y) or fn:empty($known_x)) then
     fn:error($excel-err:errNA, "Slope function: known_x and known_y cannot be empty sequences")

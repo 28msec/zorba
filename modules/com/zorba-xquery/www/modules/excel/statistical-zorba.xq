@@ -133,7 +133,7 @@ declare function excel:stdevpa($numbers as xs:anyAtomicType+) as xs:anyAtomicTyp
  : @param %numbers the sequence of numbers or values castable to numeric.
  :     The sequence can be of any length.
  : @return The function result, as numeric type
- : @error depends on the function called
+ : @error ** depends on the function called
  : @error XQP0021(errNum) if $function_num is not a value between 1 .. 11 or 101 .. 111
 :)
 declare function excel:subtotal($function_num as xs:integer, $numbers as xs:anyAtomicType*) as xs:anyAtomicType
