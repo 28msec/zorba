@@ -320,6 +320,7 @@ EXPECTED_FAILURE(test/rbkt/zorba/HigherOrder/hof-101 3071699)
 
 IF(CURL_FOUND AND LIBTIDY_FOUND)
   EXPECTED_FAILURE(test/rbkt/zorba/http_client/http-read-html-tidy2 2958058)
+  EXPECTED_FAILURE(test/rbkt/zorba/http_client/external_variable 3152386)
 ENDIF(CURL_FOUND AND LIBTIDY_FOUND)
 EXPECTED_FAILURE(test/rbkt/zorba/aleXis/q11 3103700)
 
