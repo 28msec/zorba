@@ -371,11 +371,13 @@ ExecFunction::evaluate(
   if (status != 0)
   {
     
-    std::stringstream lErrorMsg;
-    lErrorMsg <<
-        "[FAILURE] command execution failed. Exit code: " << status << "." ;
-    throw zorba::ExternalFunctionData::createZorbaException(
-          XPTY0004,lErrorMsg.str().c_str(), __FILE__, __LINE__);
+  //  std::stringstream lErrorMsg;
+  //  lErrorMsg <<
+  //      "[FAILURE] command execution failed. Exit code: " << status << "." ;
+  //  throw zorba::ExternalFunctionData::createZorbaException(
+  //        XPTY0004,lErrorMsg.str().c_str(), __FILE__, __LINE__);
+    std::cerr << "[FAILURE] command execution failed. Exit code: " << status
+      << std::endl;
   }
 
 #else //not WIN32
