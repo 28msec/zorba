@@ -129,12 +129,17 @@ void read_child_output(HANDLE aOutputPipe, std::ostringstream& aTargetStream)
     }
     
     // remove the windows specific carriage return outputs
-    std::stringstream lTmp;
-    lTmp.write(lBuffer,lBytesRead);
-    std::string lRawString=lTmp.str();
-    std::replace( lRawString.begin(), lRawString.end(), '\r', ' ' );
-    aTargetStream.write(lRawString.c_str(),static_cast<std::streamsize>(lRawString.length()));
-    lBytesRead=NULL;
+   // std::stringstream lTmp;
+   // lTmp.write(lBuffer,lBytesRead);
+   // std::string lRawString=lTmp.str();
+   // std::replace( lRawString.begin(), lRawString.end(), '\r', ' ' );
+   // aTargetStream.write(lRawString.c_str(),static_cast<std::streamsize>(lRawString.length()));
+    for(DWORD i=0;i<lBytesRead;i++)
+    {
+      if(lBuffer[i] != '\r')
+        aTargetStream << lBuffer[i];
+    }
+    lBytesRead = 0;
   }
 }
 
@@ -210,8 +215,8 @@ int run_process(const std::string& aCommand,std::ostringstream& aTargetOutStream
 
   // create output pipes
   if(
-      !CreatePipe(&lOutRead,&lStdOut,&lSecurityAttributes,0) // std::cout >> lOutRead
-      || !CreatePipe(&lErrRead,&lStdErr,&lSecurityAttributes,0) // std::cerr >> lErrRead
+      !CreatePipe(&lOutRead,&lStdOut,&lSecurityAttributes,1024*1024) // std::cout >> lOutRead
+      || !CreatePipe(&lErrRead,&lStdErr,&lSecurityAttributes,1024*1024) // std::cerr >> lErrRead
     ){
     throw zorba::ExternalFunctionData::createZorbaException(
         XPTY0004,"Couldn't create one of std::cout/std::cerr pipe for child process execution.", __FILE__, __LINE__);
@@ -235,22 +240,29 @@ int run_process(const std::string& aCommand,std::ostringstream& aTargetOutStream
       throw zorba::ExternalFunctionData::createZorbaException(
           XPTY0004,lErrorMsg.str().c_str(), __FILE__, __LINE__);
     }
+  
     CloseHandle(lChildProcessInfo.hProcess);
     CloseHandle(lStdOut);
     CloseHandle(lStdErr);
-  
+
     // read child's output
     read_child_output(lOutRead,aTargetOutStream);
     read_child_output(lErrRead,aTargetErrStream);
-  }else{
+
+    // close 
+    CloseHandle(lOutRead);
+    CloseHandle(lErrRead);
+
+ }else{
+    CloseHandle(lStdOut);
+    CloseHandle(lStdErr);
+    CloseHandle(lOutRead);
+    CloseHandle(lErrRead);
   
      // couldn't launch process
      throw_last_error(__FILE__, __LINE__);
   };
   
-  // close 
-  CloseHandle(lOutRead);
-  CloseHandle(lErrRead);
   
   return exitCode;
 }
