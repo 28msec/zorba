@@ -34,7 +34,7 @@
 #include "compiler/api/compilercb.h"
 #include "context/static_context.h"
 #include "zorbaerrors/error_manager.h"
-#include "util/utf8_util.h"
+#include "util/xml_util.h"
 
 namespace zorba
 {
@@ -117,7 +117,7 @@ ZorbaParserError* xquery_driver::invalidCharRef(const char* _message, const loca
   std::string out;
   temp = temp.substr(temp.find("&"));
 
-  while (temp.size()>0 && utf8::parse_xml_entity(temp.c_str(), &out) != -1)
+  while (temp.size()>0 && xml::parse_entity(temp.c_str(), &out) != -1)
   {
     temp = temp.substr(temp.find(";") + 1);
     if (temp.find("&") != std::string::npos)

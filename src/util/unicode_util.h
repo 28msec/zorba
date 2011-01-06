@@ -250,19 +250,6 @@ inline bool to_string( StringType const &in, string *out ) {
   return to_string( in.data(), zorba::unicode::size_type(in.size()), out );
 }
 
-////////// miscellaneous //////////////////////////////////////////////////////
-
-/**
- * Parses an XML entity reference.
- *
- * @param s The C string pointing to the start of the entity reference.
- * @param c A pointer to the code-point result.
- * @return If successful, returns the number of characters parsed; otherwise
- * returns -1.
- */
-ZORBA_DLL_PUBLIC
-int parse_xml_entity( char const *s, code_point *c );
-
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace unicode

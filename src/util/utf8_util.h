@@ -405,24 +405,6 @@ void trim_whitespace( utf8_string<StringType> &s ) {
 }
 
 /**
- * Parses an XML entity reference and appends the UTF-8 encoding of the
- * resulting code-point to the given string.
- *
- * @param s The C string pointing to the start of the entity reference.
- * @param out A string to append to.
- * @return If successful, returns the number of characters parsed; otherwise
- * returns -1.
- */
-template<class StringType> inline
-int parse_xml_entity( char const *s, StringType *out ) {
-  unicode::code_point c;
-  int const result = unicode::parse_xml_entity( s, &c );
-  if ( result != -1 )
-    encode( c, out );
-  return result;
-}
-
-/**
  * Reverses the characters in a string.
  *
  * @tparam InputStringType The input string type.

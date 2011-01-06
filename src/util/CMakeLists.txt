@@ -23,6 +23,7 @@ SET(UTIL_SRCS
     regex.cpp
     unicode_util.cpp
     utf8_util.cpp
+    xml_util.cpp
     uuid/sysdep.cpp
     uuid/uuid.cpp)
 

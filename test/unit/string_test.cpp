@@ -27,6 +27,7 @@
 #include "util/unicode_util.h"
 #include "util/utf8_string.h"
 #include "util/utf8_util.h"
+#include "util/xml_util.h"
 #include "zorbatypes/zstring.h"
 
 using namespace std;
@@ -361,39 +362,39 @@ static void test_next_token() {
   ASSERT_TRUE( !re.next_token( u, &pos, &u_token ) );
 }
 
-static void test_parse_xml_entity() {
+static void test_xml_parse_entity() {
   unicode::code_point c;
 
-  ASSERT_TRUE( unicode::parse_xml_entity( "&amp;", &c ) != -1 );
+  ASSERT_TRUE( xml::parse_entity( "&amp;", &c ) != -1 );
   ASSERT_TRUE( c == '&' );
-  ASSERT_TRUE( unicode::parse_xml_entity( "&lt;", &c ) != -1 );
+  ASSERT_TRUE( xml::parse_entity( "&lt;", &c ) != -1 );
   ASSERT_TRUE( c == '<' );
-  ASSERT_TRUE( unicode::parse_xml_entity( "&gt;", &c ) != -1 );
+  ASSERT_TRUE( xml::parse_entity( "&gt;", &c ) != -1 );
   ASSERT_TRUE( c == '>' );
-  ASSERT_TRUE( unicode::parse_xml_entity( "&apos;", &c ) != -1 );
+  ASSERT_TRUE( xml::parse_entity( "&apos;", &c ) != -1 );
   ASSERT_TRUE( c == '\'' );
-  ASSERT_TRUE( unicode::parse_xml_entity( "&quot;", &c ) != -1 );
+  ASSERT_TRUE( xml::parse_entity( "&quot;", &c ) != -1 );
   ASSERT_TRUE( c == '"' );
 
-  ASSERT_TRUE( unicode::parse_xml_entity( "&#38;", &c ) != -1 );
+  ASSERT_TRUE( xml::parse_entity( "&#38;", &c ) != -1 );
   ASSERT_TRUE( c == '&' );
-  ASSERT_TRUE( unicode::parse_xml_entity( "&#x26;", &c ) != -1 );
+  ASSERT_TRUE( xml::parse_entity( "&#x26;", &c ) != -1 );
   ASSERT_TRUE( c == '&' );
 
-  ASSERT_TRUE( unicode::parse_xml_entity( "&#x301;", &c ) != -1 );
+  ASSERT_TRUE( xml::parse_entity( "&#x301;", &c ) != -1 );
   ASSERT_TRUE( c == 0x301 );
-  ASSERT_TRUE( unicode::parse_xml_entity( "&#x0301;", &c ) != -1 );
+  ASSERT_TRUE( xml::parse_entity( "&#x0301;", &c ) != -1 );
   ASSERT_TRUE( c == 0x301 );
 
-  ASSERT_TRUE( unicode::parse_xml_entity( "&", &c ) == -1 );
-  ASSERT_TRUE( unicode::parse_xml_entity( "&#", &c ) == -1 );
-  ASSERT_TRUE( unicode::parse_xml_entity( "&#x", &c ) == -1 );
-  ASSERT_TRUE( unicode::parse_xml_entity( "&#ZOO;", &c ) == -1 );
-  ASSERT_TRUE( unicode::parse_xml_entity( "&zoo;", &c ) == -1 );
+  ASSERT_TRUE( xml::parse_entity( "&", &c ) == -1 );
+  ASSERT_TRUE( xml::parse_entity( "&#", &c ) == -1 );
+  ASSERT_TRUE( xml::parse_entity( "&#x", &c ) == -1 );
+  ASSERT_TRUE( xml::parse_entity( "&#ZOO;", &c ) == -1 );
+  ASSERT_TRUE( xml::parse_entity( "&zoo;", &c ) == -1 );
 
-  ASSERT_TRUE( unicode::parse_xml_entity( "&amp", &c ) == -1 );
-  ASSERT_TRUE( unicode::parse_xml_entity( "&#38", &c ) == -1 );
-  ASSERT_TRUE( unicode::parse_xml_entity( "&#x26", &c ) == -1 );
+  ASSERT_TRUE( xml::parse_entity( "&amp", &c ) == -1 );
+  ASSERT_TRUE( xml::parse_entity( "&#38", &c ) == -1 );
+  ASSERT_TRUE( xml::parse_entity( "&#x26", &c ) == -1 );
 }
 
 template<class StringType>
@@ -627,7 +628,7 @@ int string_test( int, char*[] ) {
   test_normalize_whitespace<zstring>();
   test_normalize_whitespace<zstring_p>();
 
-  test_parse_xml_entity();
+  test_xml_parse_entity();
 
   test_trim_whitespace<string>();
   test_trim_whitespace<zstring>();

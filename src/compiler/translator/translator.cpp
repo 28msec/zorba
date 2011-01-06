@@ -33,6 +33,7 @@
 #include "util/string_util.h"
 #include "util/tracer.h"
 #include "util/utf8_util.h"
+#include "util/xml_util.h"
 
 #include "types/node_test.h"
 #include "types/casting.h"
@@ -10062,7 +10063,7 @@ void end_visit (const CommonContent& v, void* /*visit_state*/)
 
     while (curRef < end)
     {
-      int d = utf8::parse_xml_entity(curRef, &content);
+      int d = xml::parse_entity(curRef, &content);
       if (d<0)
         ZORBA_ERROR_LOC(XQST0090, loc);
       else
