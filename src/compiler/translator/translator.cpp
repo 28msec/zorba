@@ -11821,7 +11821,9 @@ void end_visit (const FTScope& v, void* /*visit_state*/) {
 
 void *begin_visit (const FTScoreVar& v) {
   TRACE_VISIT ();
-  // TODO
+  ZORBA_ERROR_LOC_DESC(
+    XQP0015_SYSTEM_NOT_YET_IMPLEMENTED, v.get_location(), "score"
+  );
   return no_state;
 }
 
