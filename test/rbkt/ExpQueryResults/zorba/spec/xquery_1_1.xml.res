@@ -1,4 +1,4 @@
 <result>
-  <notImplemented />
-  <notInSpec />
+  <notImplemented></notImplemented>
+  <notInSpec></notInSpec>
 </result>

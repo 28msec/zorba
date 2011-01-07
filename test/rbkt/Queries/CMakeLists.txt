@@ -324,7 +324,6 @@ IF(CURL_FOUND AND LIBTIDY_FOUND)
 ENDIF(CURL_FOUND AND LIBTIDY_FOUND)
 EXPECTED_FAILURE(test/rbkt/zorba/aleXis/q11 3103700)
 
-EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_1_0 3106635)
 EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_1_1 3106635)
 
 # --------------------------------------------------------------------------

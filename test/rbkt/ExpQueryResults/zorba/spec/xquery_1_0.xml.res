@@ -1,4 +1,1 @@
-<result>
-  <notImplemented />
-  <notInSpec />
-</result>
+<result><notImplemented/><notInSpec>put#2</notInSpec></result>

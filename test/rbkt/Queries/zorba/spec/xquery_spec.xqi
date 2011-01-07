@@ -1,12 +1,31 @@
 module namespace util = "http://www.zorba-xquery.com/util";
 
-import module namespace http = "http://expath.org/ns/http-client";
+import module namespace http = "http://www.zorba-xquery.com/modules/http-client";
+import module namespace http-expath = "http://expath.org/ns/http-client";
+
 import module namespace file = "http://www.zorba-xquery.com/modules/file";
 import module namespace sctx = "http://www.zorba-xquery.com/modules/introspection/sctx";
 
-declare sequential function util:download-and-write-spec($specURI as xs:string, $docPath as xs:string) {
-  let $xhtml := http:send-request((), $specURI)[2]
-  return file:write($docPath, $xhtml, <s method="xml" indent="yes" />/@*)
+declare variable $util:xquery_version_1_0 := "1.0";
+declare variable $util:xquery_version_3_0 := "3.0";
+
+(: 
+used local variables instead of passing the specURI defined as an external variable because of 
+opened bug #3152386
+:)
+declare sequential function util:download-and-write-spec($specVersion as xs:string, $docPath as xs:string) {
+  if($specVersion = $util:xquery_version_1_0) then
+    file:write($docPath, http:get( "http://www.w3.org/TR/xpath-functions/" )[2], <s method="xml" indent="yes" />/@*)
+  else
+    (: one has to provide a username & password of a valid W3C account :)
+    let $req := <http-expath:request method="GET"
+               href="http://www.w3.org/XML/Group/qtspecs/specifications/xpath-functions-30/html/"
+               auth-method="Basic"
+               send-authorization="true"
+               username=""
+               password=""/>
+    return
+      file:write($docPath, http-expath:send-request($req, ())[2], <s method="xml" indent="yes" />/@*)
 };
 
 declare sequential function util:create-spec-function-arity-sequence(
@@ -62,7 +81,7 @@ as xs:string* {
                     else
                       fn:count(fn:tokenize(substring-after(xs:string(data($s)), "fn:"),"\$"))-1)
                     )
-(: for  $xquery_version = "1.1":)
+(: for  $xquery_version = "3.0":)
 (: Added the exception from http://www.w3.org/TR/2009/WD-xpath-functions-11-20091215/#func-signatures :)
       else 
         fn:concat(

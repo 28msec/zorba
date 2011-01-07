@@ -8,11 +8,9 @@ import module namespace functx = "http://www.functx.com";
 declare variable $xquery_version as xs:string := "1.0";
 
 declare variable $specPath as xs:string external;
-declare variable $specURI  as xs:string external;
-
 
 (
-(:util:download-and-write-spec($specURI, $specPath), :)
+(:util:download-and-write-spec($xquery_version, $specPath), :)
 
 let $specFuncs := util:create-spec-function-arity-sequence($specPath, $xquery_version),
     $zorbaFuncs := util:create-zorba-function-arity-sequence(sctx:function-names())
