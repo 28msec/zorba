@@ -33,7 +33,7 @@ namespace zorbacmd {
 class ZorbaCMDPropertiesBase : public ::zorba::PropertiesBase {
 protected:
   const char **get_all_options () const {
-    static const char *result [] = { "--timing", "--output-file", "--serialization-parameter", "--serialize-html", "--serialize-text", "--indent", "--print-query", "--print-errors-as-xml", "--byte-order-mark", "--omit-xml-declaration", "--base-uri", "--boundary-space", "--default-collation", "--construction-mode", "--ordering-mode", "--multiple", "--query", "--as-files", "--external-variable", "--context-item", "--optimization-level", "--lib-module", "--parse-only", "--compile-only", "--no-serializer", "--debug-ports", "--debug", "--debug-server", "--debug-server-host", "--no-colors", "--no-logo", "--timeout", "--module-path", "--option", "--trailing-nl", NULL };
+    static const char *result [] = { "--timing", "--output-file", "--serialization-parameter", "--serialize-html", "--serialize-text", "--indent", "--print-query", "--print-errors-as-xml", "--byte-order-mark", "--omit-xml-declaration", "--base-uri", "--boundary-space", "--default-collation", "--construction-mode", "--ordering-mode", "--multiple", "--query", "--as-files", "--external-variable", "--context-item", "--optimization-level", "--lib-module", "--parse-only", "--compile-only", "--no-serializer", "--debug-ports", "--debug", "--debug-server", "--debug-server-host", "--no-colors", "--no-logo", "--timeout", "--module-path", "--option", "--trailing-nl", "--thesaurus", NULL };
     return result;
   }
   bool theTiming;
@@ -71,6 +71,7 @@ protected:
   std::string theModulePath;
   std::vector<std::string> theOption;
   bool theTrailingNl;
+  std::vector<std::string> theThesaurus;
 
   void initialize () {
     theTiming = false;
@@ -132,6 +133,7 @@ public:
   const std::string &modulePath () const { return theModulePath; }
   const std::vector<std::string> &option () const { return theOption; }
   const bool &trailingNl () const { return theTrailingNl; }
+  const std::vector<std::string> &thesaurus () const { return theThesaurus; }
 
   std::string load_argv (int argc, const char **argv) {
     if (argv == NULL) return "";
@@ -281,6 +283,11 @@ public:
       else if (strcmp (*argv, "--trailing-nl") == 0) {
         theTrailingNl = true;
       }
+      else if (strcmp (*argv, "--thesaurus") == 0) {
+        int d = 2;
+        if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
+        if (*argv == NULL) { result = "No value given for --thesaurus option"; break; }        init_val (*argv, theThesaurus, d);
+      }
       else if (strcmp (*argv, "--") == 0) {
         copy_args (++argv);
         break;
@@ -299,7 +306,7 @@ public:
     return
 "--timing, -t\nPrint timing information. In case of multiple queries the timing information is provided per each query. Both wallclock time and user time (which excludes I/O, network delays and other kernel waits) are shown.\n\n"
 "--output-file, -o\nWrite the result to the given file.\n\n"
-"--serialization-parameter, -z\nSet serialization parameter in the form of a parameter=value pair (see http://www.w3.org/TR/xslt-xquery-serialization/#serparam, e.g. -z method=xhtml, -z doctype-system='DTD/xhtml1-strict.dtd', -z indent=yes).\n\n"
+"--serialization-parameter, -z\nSet serialization parameter in the form of a parameter=value pair (see http://www.w3.org/TR/xslt-xquery-serialization/#serparam, e.g.: -z method=xhtml -z doctype-system=DTD/xhtml1-strict.dtd -z indent=yes).\n\n"
 "--serialize-html\nSerialize the result as HTML.\n\n"
 "--serialize-text\nSerialize the result as Text.\n\n"
 "--indent, -i\nIndent output.\n\n"
@@ -332,6 +339,7 @@ public:
 "--module-path\nModule paths added to the built-in resolver, i.e. where module imports are looking for modules.\n\n"
 "--option\nSet an XQuery option in the static context. The QName of the option is passed as a string in the notation by James Clark (i.e. {namespace}localname). For example, --option {http://www.zorba-xquery.com}option=value\n\n"
 "--trailing-nl\nOutput a trailing newline after the result of the query.\n\n"
+"--thesaurus\nMapping specifying a thesaurus URI to a thesaurus ID.\n\n"
 ;
   }
 

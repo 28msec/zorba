@@ -100,6 +100,20 @@ std::string ZorbaCMDProperties::check_args () {
     lOption.value = lValue;
     theStaticContextOptions.push_back(lOption);
   }
+  for (std::vector<std::string>::const_iterator lIter = theThesaurus.begin();
+       lIter != theThesaurus.end(); ++lIter) {
+    size_t lEQual = lIter->find_last_of("=");
+    if (lEQual == std::string::npos)
+      return "Thesaurus mapping must be of the form URI=value";
+
+    std::string lURI   = lIter->substr(0, lEQual);
+    std::string lValue = lIter->substr(lEQual + 1);
+
+    ThesaurusMapping lMapping;
+    lMapping.uri   = lURI;
+    lMapping.value = lValue;
+    theThesaurusMapping.push_back(lMapping);
+  }
        
   return "";
 }

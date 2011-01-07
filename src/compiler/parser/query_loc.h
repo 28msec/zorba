@@ -30,7 +30,7 @@ namespace zorba {
  * dependencies to the parser.
  */
 // exported for unit testing only
-  class ZORBA_DLL_PUBLIC QueryLoc : public ::zorba::serialization::SerializeBaseClass
+  class QueryLoc : public ::zorba::serialization::SerializeBaseClass
   {
 
 public:

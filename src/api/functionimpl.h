@@ -24,7 +24,7 @@ class function;
 class ErrorHandler;
 
 
-class ZORBA_DLL_PUBLIC FunctionImpl : public Function
+class FunctionImpl : public Function
 {
 protected:
   function     * theFunction;

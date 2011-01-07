@@ -35,11 +35,18 @@ public:
   };
   typedef std::vector<StaticContextOption> Options_t;
 
+  struct ThesaurusMapping {
+    std::string uri;
+    std::string value;
+  };
+  typedef std::vector<ThesaurusMapping> Thesaurus_t;
+
   typedef std::vector<std::string>      QueriesOrFiles_t;
 
 protected:
   ExternalVars_t theExternalVars;
   Options_t      theStaticContextOptions;
+  Thesaurus_t    theThesaurusMapping;
 
   unsigned int theRequestPort;
   unsigned int theEventPort;
@@ -56,6 +63,12 @@ public:
 
   Options_t::const_iterator
   optionsEnd() const    { return theStaticContextOptions.end(); }
+
+  Thesaurus_t::const_iterator
+  thesaurusBegin() const  { return theThesaurusMapping.begin(); }
+
+  Thesaurus_t::const_iterator
+  thesaurusEnd() const    { return theThesaurusMapping.end(); }
 
   QueriesOrFiles_t::const_iterator
   queriesOrFilesBegin() const { return theQueriesOrFiles.begin(); }

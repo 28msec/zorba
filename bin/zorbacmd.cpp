@@ -40,6 +40,7 @@
 #include "error_printer.h"
 #include "util.h"
 #include "module_path.h"
+#include "full_text_resolver.h"
 
 // For setting the base URI from the current directory
 #include <zorba/util/path.h>
@@ -64,7 +65,7 @@ const char *copyright_str =
 
 #define PATH_SEP (zorba::filesystem_path::get_path_separator ())
 
-
+ZorbaCMDFullTextURIResolver theThesaurusResolver;
 
 bool
 populateStaticContext(
@@ -121,19 +122,29 @@ populateStaticContext(
     aStaticContext->setDefaultCollation( aProperties.defaultCollation() );
   }
 
-  ZorbaCMDProperties::Options_t::const_iterator lIter = aProperties.optionsBegin();
-  ZorbaCMDProperties::Options_t::const_iterator end = aProperties.optionsEnd();
-  for (; lIter != end; ++lIter)
   {
-    try {
-      zorba::Zorba* lZorba = zorba::Zorba::getInstance(0);
-      Item lQName = lZorba->getItemFactory()->createQName(lIter->clark_qname);
-      aStaticContext->declareOption(lQName, lIter->value);
-    } catch (zorba::ZorbaException& e) {
-      std::cerr << "unable to set static context option with qname "
-                << lIter->clark_qname << std::endl;
-      return false;
+    ZorbaCMDProperties::Options_t::const_iterator lIter = aProperties.optionsBegin();
+    ZorbaCMDProperties::Options_t::const_iterator end = aProperties.optionsEnd();
+    for (; lIter != end; ++lIter)
+    {
+      try {
+        zorba::Zorba* lZorba = zorba::Zorba::getInstance(0);
+        Item lQName = lZorba->getItemFactory()->createQName(lIter->clark_qname);
+        aStaticContext->declareOption(lQName, lIter->value);
+      } catch (zorba::ZorbaException& e) {
+        std::cerr << "unable to set static context option with qname "
+                  << lIter->clark_qname << std::endl;
+        return false;
+      }
     }
+  }
+  {
+    ZorbaCMDProperties::Thesaurus_t::const_iterator lIter = aProperties.thesaurusBegin();
+    ZorbaCMDProperties::Thesaurus_t::const_iterator end = aProperties.thesaurusEnd();
+    for (; lIter != end; ++lIter) {
+      theThesaurusResolver.add_mapping(lIter->uri, lIter->value);
+    }
+    aStaticContext->addFullTextURIResolver(&theThesaurusResolver);
   }
   return true;
 }
