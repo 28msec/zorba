@@ -43,6 +43,7 @@ import module namespace excel-math = "http://www.zorba-xquery.com/modules/excel/
  : @param $array1 the sequence of numbers or arguments castable to numeric
  : @return the sum
  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+ : @example sumproduct1.xq
 :)
 declare function excel:sumproduct( $array1 as xs:anyAtomicType*) as xs:anyAtomicType
  {
@@ -58,6 +59,7 @@ declare function excel:sumproduct( $array1 as xs:anyAtomicType*) as xs:anyAtomic
  : @param $array2 the sequences of numbers or arguments castable to numeric
  : @return the sum of products
  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+ : @example sumproduct2.xq
 :)
  declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
                                     $array2 as xs:anyAtomicType*  ) as xs:anyAtomicType
@@ -82,6 +84,7 @@ declare function excel:sumproduct( $array1 as xs:anyAtomicType*) as xs:anyAtomic
   : @param $array3 the sequences of numbers or arguments castable to numeric
   : @return the sum of products
   : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+  : @example sumproduct3.xq
 :)
 declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
                                     $array2 as xs:anyAtomicType*,
@@ -2783,6 +2786,7 @@ declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
  : @param $numbers the sequence of one or more numbers or arguments castable to numeric
  : @return the sum of squared values, as numeric type
  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+ : @example sumsq1.xq
 :)
  declare function excel:sumsq( $numbers as xs:anyAtomicType+) as xs:anyAtomicType
  {

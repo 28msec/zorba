@@ -43,6 +43,7 @@ import module namespace excel-math="http://www.zorba-xquery.com/modules/excel/ma
  : @param $values The sequence of values.
  : @return The value at the index position.
  : @error XQP0021(errValue) if index is smaller than 1 or bigger than the size of sequence.
+ : @example choose1.xq
  :)
 declare function excel:choose(
   $index_num as xs:integer,
@@ -91,6 +92,7 @@ declare function excel:choose(
  : @param $value_sequence29 a sequence of values. Specify the empty sequence () if you don't need it. 
  : @return The value at the index position
  : @error XQP0021(errValue) if index is smaller than 1 or bigger than 29
+ : @example choose2.xq
  :)
 declare function excel:choose(
   $index_num        as xs:integer,
@@ -343,6 +345,11 @@ declare %private function excel:lookup-column(
  : @error XQP0021(errValue) if range_lookup is true and the value searched is smaller than
  :       the first value in the header
  : @error XQP0021(errValue) if range_lookup=false and the value cannot be found
+ : @example hlookup1.xq
+ : @example hlookup2.xq
+ : @example hlookup3.xq
+ : @example hlookup4.xq
+ : @example hlookup5.xq
  :)
 declare function excel:hlookup(
   $lookup_value   as xs:anyAtomicType,
@@ -423,7 +430,12 @@ declare function excel:hlookup(
  : @return The value from x-y in the array
  : @error XQP0021(errValue) if the array contains less elements than specified by table_height and table_width
  : @error XQP0021(errRef) if row_num is outside the range
- :)
+ : @example index1.xq
+ : @example index2.xq
+ : @example index3.xq
+ : @example index4.xq
+ : @example index5.xq
+:)
 declare function excel:index(
   $array        as xs:anyAtomicType+,
   $array_height as xs:integer,
@@ -477,6 +489,10 @@ declare function excel:index(
  : @return a value from $result_vector
  : @error XQP0021(errNA) if lookup value is smaller than the first value in lookup_vector
  : @error XQP0021(errNA) if position found is outside the result range
+ : @example lookup1.xq
+ : @example lookup2.xq
+ : @example lookup3.xq
+ : @example lookup4.xq
  :)
 declare function excel:lookup(
   $lookup_value   as xs:anyAtomicType,
@@ -514,6 +530,9 @@ declare function excel:lookup(
  : @error XQP0021(errValue) if array contains less values than specified by array_width and array_height
  :           or array_width = 0 or array_height = 0
  : @error XQP0021(errNA) if the lookup_value is smaller than the first value in the row or column
+ : @example lookup5.xq
+ : @example lookup6.xq
+ : @example lookup7.xq
  :)
 declare function excel:lookup(
   $lookup_value as xs:anyAtomicType,
@@ -572,6 +591,8 @@ declare function excel:lookup(
  : @error XQP0021(errNA) for match_type 1 or -1, the lookup_value is smaller or larger than
  :               the first value in sequence
  : @error XQP0021(errValue) if range_lookup=0 and the value cannot be found
+ : @example match2.xq
+ : @example match3.xq
  :)
 declare function excel:match(
   $lookup_value as xs:anyAtomicType,
@@ -596,6 +617,7 @@ declare function excel:match(
  : @error XQP0021(errNA) for match_type 1 or -1, the lookup_value is smaller or larger than
  :               the first value in sequence
  : @error XQP0021(errValue) if range_lookup=0 and the value cannot be found
+ : @example match1.xq
  :)
 declare function excel:match(
   $lookup_value as xs:anyAtomicType,
@@ -626,6 +648,8 @@ declare function excel:match(
  : @error XQP0021(errValue) reference array contains less elements than specified
  :        by reference_height and reference_width
  : @error XQP0021(errNA) the resulted sub-array is not completely contained inside reference array
+ : @example offset3.xq
+ : @example offset4.xq
  :)
 declare function excel:offset(
   $reference        as xs:anyAtomicType+,
@@ -671,6 +695,8 @@ declare function excel:offset(
  : @error XQP0021(errValue) reference array contains less elements than specified
  :        by reference_height and reference_width
  : @error XQP0021(errNA) the resulted sub-array is not completely contained inside reference array
+ : @example offset1.xq
+ : @example offset2.xq
  :)
 declare function excel:offset(
   $reference        as xs:anyAtomicType+,
@@ -695,6 +721,8 @@ declare function excel:offset(
  :       The result width is the input height.
  :       The result height is the input width.
  : @error XQP0021(errValue) the array contains less elements than specified by array_width and array_height
+ : @example transpose1.xq
+ : @example transpose2.xq
  :)
 declare function excel:transpose(
   $array as xs:anyAtomicType+,
@@ -743,6 +771,7 @@ declare function excel:transpose(
  : @error XQP0021(errValue) if range_lookup is true and the value searched is smaller than
  :       the first value in the first column
  : @error XQP0021(errValue) if range_lookup=false and the value cannot be found
+ : @example vlookup4.xq
  :)        
 declare function excel:vlookup(
   $lookup_value   as xs:anyAtomicType,
@@ -793,6 +822,10 @@ declare function excel:vlookup(
  : @error XQP0021(errValue) if range_lookup is true and the value searched is smaller than
  :       the first value in the first column
  : @error XQP0021(errValue) if range_lookup=false and the value cannot be found
+ : @example vlookup1.xq
+ : @example vlookup2.xq
+ : @example vlookup3.xq
+ : @example vlookup5.xq
  :)
 declare function excel:vlookup(
   $lookup_value   as xs:anyAtomicType,

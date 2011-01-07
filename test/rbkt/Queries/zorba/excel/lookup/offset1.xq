@@ -8,3 +8,7 @@ excel:offset(((1, 2, 3),
               (10,11,12)),
               4, 3,
               -1, -1)
+
+(:
+Output: Error [XQP0021] Offset function: rows and cols must be positive or zero 
+:)

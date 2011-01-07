@@ -81,6 +81,12 @@ declare function excel:cast-as-numeric($number as xs:anyAtomicType) as xs:anyAto
  : @param $arg The parameter can be a number, string, boolean value.
  : @return The abs value as a numeric type.
  : @error XQP0021(errValue) if arg cannot be casted to numeric type.
+ : @example abs1.xq
+ : @example abs2.xq
+ : @example abs3.xq
+ : @example abs4.xq
+ : @example abs5.xq
+ : @example abs6.xq
  :)
 declare function excel:abs($arg as xs:anyAtomicType) as xs:anyAtomicType
 {
@@ -99,6 +105,13 @@ declare function excel:abs($arg as xs:anyAtomicType) as xs:anyAtomicType
  : @return The rounded value.
  : @error XQP0021(errValue) if parameters cannot be casted to numeric type.
  : @error XQP0021(errNum) if significance is zero or it doesn't have the same sign as number.
+ : @example ceiling1.xq
+ : @example ceiling2.xq
+ : @example ceiling3.xq
+ : @example ceiling4.xq
+ : @example ceiling5.xq
+ : @example ceiling6.xq
+ : @example ceiling7.xq
  :)
 declare function excel:ceiling(
   $number        as xs:anyAtomicType,
@@ -123,6 +136,12 @@ declare function excel:ceiling(
  : @param $number The value to round.
  : @return The rounded value casted as numeric type.
  : @error XQP0021(errValue) if parameters cannot be casted to numeric type.
+ : @example even1.xq
+ : @example even2.xq
+ : @example even3.xq
+ : @example even4.xq
+ : @example even5.xq
+ : @example even6.xq
  :)
 declare function excel:even($number as xs:anyAtomicType) as xs:anyAtomicType
 {
@@ -166,6 +185,11 @@ declare %private function excel:fact-integer($intnum as xs:integer) as xs:intege
  :        If number is not an integer, it is truncated.
  : @return Returns the factorial of a number. The factorial of a number is equal to 1*2*3*...* number.
  : @error XQP0021(errNum) if the number is smaller than zero
+ : @example fact1.xq
+ : @example fact2.xq
+ : @example fact3.xq
+ : @example fact4.xq
+ : @example fact5.xq
 :)
 declare function excel:fact($number as xs:anyAtomicType) as xs:integer
 {
@@ -189,6 +213,11 @@ declare function excel:fact($number as xs:anyAtomicType) as xs:integer
  : @return The rounded value as numeric type.
  : @error XQP0021(errValue) if parameters cannot be casted to numeric type.
  : @error XQP0021(errNum) if significance is zero or it doesn't have the same sign as number.
+ : @example floor1.xq
+ : @example floor2.xq
+ : @example floor3.xq
+ : @example floor4.xq
+ : @example floor5.xq
 :)
 declare function excel:floor(
   $number as xs:anyAtomicType,
@@ -213,6 +242,10 @@ declare function excel:floor(
  : @param $number The value to be rounded.
  : @return The rounded integer.
  : @error XQP0021(errValue) if parameter cannot be casted to numeric type
+ : @example int1.xq
+ : @example int2.xq
+ : @example int3.xq
+ : @example int4.xq
 :)
 declare function excel:int($number as xs:anyAtomicType) as xs:integer
 {
@@ -230,6 +263,10 @@ declare function excel:int($number as xs:anyAtomicType) as xs:integer
  : @return The remainder from division as numeric type.
  : @error XQP0021(errValue) if parameters cannot be casted to numeric type.
  : @error XQP0021(errDiv0) if divisor is zero after casting to numeric.
+ : @example mod1.xq
+ : @example mod2.xq
+ : @example mod3.xq
+ : @example mod4.xq
  :)
 declare function excel:mod(
   $number as xs:anyAtomicType,
@@ -255,6 +292,12 @@ declare function excel:mod(
  : @param $number The value to round.
  : @return The odd integer.
  : @error XQP0021(errValue) if parameter cannot be casted to numeric type.
+ : @example odd1.xq
+ : @example odd2.xq
+ : @example odd3.xq
+ : @example odd4.xq
+ : @example odd5.xq
+ : @example odd6.xq
  :)
 declare function excel:odd($number as xs:anyAtomicType) as xs:integer
 {
@@ -294,6 +337,10 @@ declare function excel:pi() as xs:decimal
  : @return The result as numeric type.
  : @error XQP0021(errValue) if parameter cannot be casted to numeric type.
  : @error XQP0021(errValue) if power is smaller than zero.
+ : @example power1.xq
+ : @example power3.xq
+ : @example power4.xq
+ : @example power5.xq
  :)
 declare function excel:power(
   $number as xs:anyAtomicType,
@@ -340,6 +387,11 @@ declare %private function excel:product-internal($numbers as xs:anyAtomicType*) 
  :        The sequence can be of any length.
  : @return The multiplication result as numeric type.
  : @error XQP0021(errValue) if parameters cannot be casted to numeric type.
+ : @example product1.xq
+ : @example product2.xq
+ : @example product3.xq
+ : @example product4.xq
+ : @example product5.xq
  :)
 declare function excel:product($numbers as xs:anyAtomicType*) as xs:anyAtomicType
 {
@@ -358,6 +410,10 @@ declare function excel:product($numbers as xs:anyAtomicType*) as xs:anyAtomicTyp
  : @return The result value as numeric type.
  : @error XQP0021(errValue) if parameters cannot be casted to numeric type.
  : @error XQP0021(div0) if denominator casted as numeric type has value zero.
+ : @example quotient1.xq
+ : @example quotient2.xq
+ : @example quotient3.xq
+ : @example quotient4.xq
  :)
 declare function excel:quotient(
   $numerator   as xs:anyAtomicType,
@@ -385,6 +441,10 @@ declare function excel:quotient(
  : @param $precision The number of decimal places to keep.
  : @return The rounded number as numeric type.
  : @error XQP0021(errValue) if parameters cannot be casted to numeric type.
+ : @example round1.xq
+ : @example round2.xq
+ : @example round3.xq
+ : @example round4.xq
  :)
 declare function excel:round(
   $number as xs:anyAtomicType,
@@ -420,6 +480,11 @@ declare function excel:round(
  : @param $precision The number of decimal places to keep.
  : @return the truncated number toward zero, as numeric type.
  : @error XQP0021(errValue) if parameters cannot be casted to numeric type.
+ : @example rounddown1.xq
+ : @example rounddown2.xq
+ : @example rounddown3.xq
+ : @example rounddown4.xq
+ : @example rounddown5.xq
  :)
 declare function excel:rounddown(
   $number     as xs:anyAtomicType,
@@ -455,6 +520,11 @@ declare function excel:rounddown(
  : @param $precision The number of decimal places to keep.
  : @return The truncated number away from zero, as numeric type.
  : @error XQP0021(errValue) if parameters cannot be casted to numeric type.
+ : @example roundup1.xq
+ : @example roundup2.xq
+ : @example roundup3.xq
+ : @example roundup4.xq
+ : @example roundup5.xq
  :)
 declare function excel:roundup(
   $number     as xs:anyAtomicType,
@@ -487,6 +557,9 @@ declare function excel:roundup(
  : @param $number The argument castable to numeric type.
  : @return The sign as (-1, 0, 1).
  : @error XQP0021(errValue) if parameters cannot be casted to numeric type.
+ : @example sign1.xq
+ : @example sign2.xq
+ : @example sign3.xq
  :)
 declare function excel:sign($number as xs:anyAtomicType) as xs:integer
 {
@@ -508,6 +581,9 @@ declare function excel:sign($number as xs:anyAtomicType) as xs:integer
  :        The sequence can be of any length.
  : @return The sum as numeric type.
  : @error XQP0021(errValue) if parameters cannot be casted to numeric type.
+ : @example sum1.xq
+ : @example sum2.xq
+ : @example sum3.xq
  :)
 declare function excel:sum($numbers as xs:anyAtomicType*) as xs:anyAtomicType
 {
@@ -526,6 +602,8 @@ declare function excel:sum($numbers as xs:anyAtomicType*) as xs:anyAtomicType
  : @param $number The argument castable to numeric type.
  : @return The integer value.
  : @error XQP0021(errValue) if parameter cannot be casted to numeric type.
+ : @example trunc1.xq
+ : @example trunc2.xq
  :)
 declare function excel:trunc($number as xs:anyAtomicType ) as xs:integer
 {
@@ -541,6 +619,7 @@ declare function excel:trunc($number as xs:anyAtomicType ) as xs:integer
  : @param $precision The number of decimal places to keep .
  : @return The integer value.
  : @error XQP0021(errValue) if parameter cannot be casted to numeric type.
+ : @example trunc3.xq
  :)
 declare function excel:trunc(
   $number as xs:anyAtomicType,
@@ -590,6 +669,8 @@ declare function excel:degrees($radian as xs:double) as xs:integer
  : @param $number The positive integer value.
  : @return The result as integer.
  : @error XQP0021(errNum) if the number is negative.
+ : @example factdouble1.xq
+ : @example factdouble2.xq
  :)
 declare function excel:factdouble($number as xs:integer) as xs:integer
 {
@@ -689,6 +770,14 @@ declare %private function excel:iterate-all-gcd(
  : @param $numbers The sequence of positive integers.
  : @return The GCD as integer.
  : @error XQP0021(errNum) if any number is smaller than zero.
+ : @example gcd1.xq
+ : @example gcd2.xq
+ : @example gcd3.xq
+ : @example gcd4.xq
+ : @example gcd5.xq
+ : @example gcd6.xq
+ : @example gcd7.xq
+ : @example gcd8.xq
  :)
 declare function excel:gcd($numbers as xs:integer+) as xs:integer
 {
@@ -714,6 +803,11 @@ declare function excel:gcd($numbers as xs:integer+) as xs:integer
  : @param $numbers The sequence of one or more positive integers.
  : @return The LCM as integer.
  : @error XQP0021(errNum) if any number is smaller than zero.
+ : @example lcm1.xq
+ : @example lcm2.xq
+ : @example lcm3.xq
+ : @example lcm4.xq
+ : @example lcm5.xq
  :)
 declare function excel:lcm($numbers as xs:integer+) as xs:integer
 {
@@ -743,6 +837,9 @@ declare function excel:lcm($numbers as xs:integer+) as xs:integer
  : @param $multiple The multiple to which you want to round number.
  : @return The rounded number up to the desired multiple.
  : @error XQP0021(errValue) if parameters cannot be casted to numeric type.
+ : @example mround1.xq
+ : @example mround2.xq
+ : @example mround3.xq
  :)
 declare function excel:mround(
   $number   as xs:anyAtomicType,
@@ -769,6 +866,9 @@ declare function excel:mround(
  : @see http://office.microsoft.com/en-us/excel/HP052092281033.aspx
  : @param $degree An angle in degrees that you want to convert.
  : @return The value in radians.
+ : @example radians1.xq
+ : @example radians2.xq
+ : @example radians3.xq
  :)
 declare function excel:radians($degree as xs:integer) as xs:decimal
 {
@@ -786,6 +886,9 @@ declare function excel:radians($degree as xs:integer) as xs:decimal
  : @param $number A positive integer.
  : @return The roman string representation.
  : @error XQP0021(errNum) if the input integer is negative 
+ : @example roman1.xq
+ : @example roman2.xq
+ : @example roman3.xq
  :)
 declare function excel:roman($number as xs:integer) as xs:string
 {
