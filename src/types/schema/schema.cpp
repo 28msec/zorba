@@ -358,7 +358,7 @@ xqtref_t Schema::createXQTypeFromElementName(
     const QueryLoc& loc)
 {
   TRACE("qn:" << qname->getLocalName() << " @ " <<
-        qname->getNamespace()->str() );
+        qname->getNamespace() );
 
   XSTypeDefinition* typeDef = getTypeDefForElement(qname);
 
@@ -416,8 +416,8 @@ xqtref_t Schema::createXQTypeFromTypeName(
   xqtref_t res;
 
   TRACE("typeManager: " << typeManager << " type qname: "
-        << qname->getLocalName()->c_str() << "@"
-        << qname->getNamespace()->c_str());
+        << qname->getLocalName() << "@"
+        << qname->getNamespace());
 
   if (theGrammarPool == NULL)
         return NULL;
@@ -1435,7 +1435,7 @@ bool Schema::parseUserAtomicTypes(
     store::Item_t& result,
     namespace_context* aNCtx)
 {
-  TRACE("parsing '" << *textValue << "' to " << aTargetType->toString());
+  TRACE("parsing '" << textValue << "' to " << aTargetType->toString());
 
   ZORBA_ASSERT( aTargetType->type_kind() == XQType::USER_DEFINED_KIND );
 

@@ -1051,7 +1051,7 @@ const XMLCh* SchemaValidatorFilter::getTypeName()
 
   if(fValidate)
   {
-    //cout << "  - getTypeQName: _elemDepth: " << _elemDepth << "\n";
+    //cout << "  - getTypeQName: theElemDepth:" << theElemDepth << "\n";
     if (theProcessorStipulatedTypeName && theElemDepth == 0 )
     {
       typeName = theProcessorStipulatedTypeName;
@@ -1567,7 +1567,7 @@ void SchemaValidatorFilter::error(
     }
   }
 
-  //std::cout << XMLString::transcode(exc_msg.getRawBuffer()) << std::endl;
+  //std::cout << "SchemaValidatorFilter::error " << XMLString::transcode(exc_msg.getRawBuffer()) << std::endl;
   ZORBA_ERROR_LOC_DESC( XQDY0027, theLoc,
       StrX(exc_msg.getRawBuffer()).localForm() );
 }

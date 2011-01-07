@@ -60,6 +60,10 @@ EventSchemaValidator::EventSchemaValidator(
                                                      theGrammarResolver,
                                                      memoryManager,
                                                      loc);
+#if _XERCES_VERSION >= 30100
+  // this will enable Integrity Constraint errors
+  theSchemaValidatorFilter->setValidationScheme(XMLScanner::Val_Always);
+#endif
 }
 
 
@@ -88,7 +92,7 @@ void EventSchemaValidator::endDoc()
 
 void EventSchemaValidator::startElem(store::Item_t elemName)
 {
-  //cout << "  sv SElem: " << elemName->getLocalName()->c_str() << "\n";
+  //cout << "  sv SElem: " << elemName->getLocalName() << "\n";
 
   XMLChArray prefix(elemName->getPrefix());
   XMLChArray uri(elemName->getNamespace());
@@ -99,7 +103,7 @@ void EventSchemaValidator::startElem(store::Item_t elemName)
 
 void EventSchemaValidator::endElem(store::Item_t elemName)
 {
-  //cout << "  sv EElem: " << elemName->getLocalName()->c_str() << "\n";
+  //cout << "  sv EElem: " << elemName->getLocalName() << "\n";
 
   XMLChArray prefix(elemName->getPrefix());
   XMLChArray uri(elemName->getNamespace());
@@ -165,8 +169,8 @@ store::Item_t EventSchemaValidator::getTypeQName()
                                 "",
                                 typeName.localFormOrDefault ("untyped"));
 
-  //cout << " : " << typeQName->getLocalName()->c_str() << " @ "
-  //     << typeQName->getNamespace()->c_str() <<"\n";
+  //cout << " : " << typeQName->getLocalName() << " @ "
+  //     << typeQName->getNamespace() <<"\n";
 
   return typeQName;
 }

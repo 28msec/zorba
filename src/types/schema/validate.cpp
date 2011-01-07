@@ -167,8 +167,8 @@ bool Validator::realValidationValue(
 
     if ( validationMode == ParseConstants::val_typename )
     {
-      //cout << "Validate type: " << typeName->getLocalName()->c_str()
-      //     << " @ " << typeName->getNamespace()->c_str() << "\n"; cout.flush();
+      //cout << "Validate type: " << typeName->getLocalName()
+      //     << " @ " << typeName->getNamespace() << "\n"; cout.flush();
       schemaValidator.startType(typeName);
     }
     else
@@ -211,8 +211,8 @@ bool Validator::realValidationValue(
     if ( validationMode == ParseConstants::val_typename )
     {
       schemaValidator.endType();
-      //cout << "End Validate type: " << typeName->getLocalName()->c_str()
-      //     << " @ " << typeName->getNamespace()->c_str() << "\n";
+      //cout << "End Validate type: " << typeName->getLocalName()
+      //     << " @ " << typeName->getNamespace() << "\n";
       //cout.flush();
     }
     else
@@ -230,8 +230,8 @@ bool Validator::realValidationValue(
   {
     if ( validationMode == ParseConstants::val_typename )
     {
-      //cout << "Validate type: " << typeName->getLocalName()->c_str() <<" @ "
-      //     << typeName->getNamespace()->c_str() << "\n"; cout.flush();
+      //cout << "Validate type: " << typeName->getLocalName() <<" @ "
+      //     << typeName->getNamespace() << "\n"; cout.flush();
       
       schemaValidator.startType(typeName);
     }
@@ -258,8 +258,8 @@ bool Validator::realValidationValue(
     if ( validationMode == ParseConstants::val_typename )
     {
       schemaValidator.endType();
-      //cout << "End Validate type: " << typeName->getLocalName()->c_str()
-      //     <<" @ "<< typeName->getNamespace()->c_str() << "\n";cout.flush();
+      //cout << "End Validate type: " << typeName->getLocalName()
+      //     <<" @ "<< typeName->getNamespace() << "\n";cout.flush();
     }
     else
     {
@@ -466,7 +466,7 @@ void Validator::processChildren(
     if ( child->isNode() )
     {
       //cout << "  > child: " << child->getNodeKind() << " " <<
-      // (child->getType() != NULL ? child->getType()->getLocalName()->c_str()
+      // (child->getType() != NULL ? child->getType()->getLocalName()
       // : "type_NULL" ) << "\n"; cout.flush();
 
       switch ( child->getNodeKind() )
