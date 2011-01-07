@@ -29,6 +29,8 @@ import schema namespace xqdoc = "http://www.xqdoc.org/1.0";
 
 declare copy-namespaces preserve, inherit;
 
+declare namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
+
 (:~
  : This variable contains all the modules names part of the left menu
  :)
@@ -1021,7 +1023,40 @@ declare sequential function xqdoc2html:copy-examples(
   return
     if(exists($exampleSource)) then
     (
-      file:copy($exampleSource, $exampleDestination, fn:false())
+      file:copy($exampleSource, $exampleDestination, fn:false()),
+      
+      (:append the expected result if example is .xq, it doesn't contain "output" and it doesn't have a spec file:)
+      let $specSource := fn:replace($exampleSource, "[.]xq$", ".spec")
+      return
+      if(fn:matches($specSource, "[.]spec$") and fn:not(file:is-file($specSource))) then
+        let $exampleContent := file:read-text( $exampleDestination )
+        return
+        if(fn:not(fn:matches($exampleContent, "output", "i"))) then
+          let $search-queries := fn:concat("rbkt[", file:path-separator(), file:path-separator(), "//]Queries")
+          let $replace-exp-result := "rbkt/ExpQueryResults"
+          let $exp-result-path := fn:replace($exampleSource, $search-queries, $replace-exp-result)
+          let $exp-result := fn:replace($exp-result-path, "[.]xq$", ".xml.res")
+          return
+          if(($exp-result-path ne $exampleSource) and file:is-file ( $exp-result )) then
+            let $output-content := file:read-text ( $exp-result )
+            let $new-content := fn:concat ($exampleContent, "
+            
+(:
+Output:
+
+",
+            $output-content,
+"
+:)
+"           )
+            return
+            file:write( $exampleDestination, $new-content, <output:method>text</output:method>)
+          else
+          ()
+        else
+        ()
+      else
+      ()
     )
     else
       ();
