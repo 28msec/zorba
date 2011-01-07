@@ -119,7 +119,8 @@ ftcontains_visitor::ftcontains_visitor( FTTokenIterator_t &search_ctx,
   search_ctx_( search_ctx ),
   static_ctx_( static_ctx ),
   ignore_item_( ignore_item ),
-  plan_state_( state )
+  plan_state_( state ),
+  calc_score_( false )  // TODO
 {
   // do nothing
 }
@@ -227,6 +228,7 @@ DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftstop_word_option )
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftstop_words )
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftthesaurus_id )
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftthesaurus_option )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftweight )
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftwild_card_option )
 
 ////////// The "main" FT nodes ////////////////////////////////////////////////
@@ -330,23 +332,28 @@ ft_visit_result::type V::begin_visit( ftprimary_with_options &pwo ) {
   if ( older_options )
     replace_match_options( older_options, newer_options );
   newer_options->set_missing_defaults();
-
   PUSH( options_stack_, newer_options );
+
+  if ( calc_score_ ) {
+    double weight;
+    if ( ftweight *const w = pwo.get_weight() ) {
+      weight = get_double( w->get_weight_iter() );
+      if ( ::fabs( weight ) > 1000.0 )
+        ZORBA_ERROR_LOC( FTDY0016, w->get_weight_expr()->get_loc() );
+    } else {
+      weight = 1.0;
+    }
+    PUSH( weight_stack_, weight );
+  }
+
   return ft_visit_result::proceed;
 }
 void V::end_visit( ftprimary_with_options &pwo ) {
   delete POP( options_stack_ );
+  if ( calc_score_ )
+    POP( weight_stack_ );
   END_VISIT( ftprimary_with_options );
 }
-
-ft_visit_result::type V::begin_visit( ftweight &w ) {
-  double const weight = get_double( w.get_weight_iter() );
-  if ( fabs( weight ) > 1000.0 )
-    ZORBA_ERROR_LOC( FTDY0016, w.get_weight_expr()->get_loc() );
-  // TODO: do something with weight
-  return ft_visit_result::proceed;
-}
-DEF_FTNODE_VISITOR_END_VISIT( V, ftweight )
 
 ft_visit_result::type V::begin_visit( ftselection& ) {
   BEGIN_VISIT( ftselection );

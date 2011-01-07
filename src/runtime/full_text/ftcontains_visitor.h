@@ -83,6 +83,9 @@ private:
   typedef std::stack<ftmatch_options const*> options_stack_t;
   options_stack_t options_stack_;
 
+  typedef std::stack<double> weight_stack_t;
+  weight_stack_t weight_stack_;
+
   void apply_ftwords( FTQueryItemSeq&, FTToken::int_t, store::Item const*,
                       ft_anyall_mode::type, ftmatch_options const&,
                       ft_all_matches& );
@@ -127,6 +130,7 @@ private:
   store::Item const *const ignore_item_;
   PlanState &plan_state_;
   FTToken::int_t query_pos_;
+  bool calc_score_;
 };
 
 } // namespace zorba
