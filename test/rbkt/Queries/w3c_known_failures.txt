@@ -1,4 +1,3 @@
-test/rbkt/w3c_testsuite/XQuery/Optional/Serialization/K2-Serialization-7
 test/rbkt/w3c_testsuite/XQuery/FunctX/functx-functx-id-from-element/functx-functx-id-from-element-1
 test/rbkt/w3c_testsuite/XQuery/FunctX/functx-fn-tokenize/functx-fn-tokenize-all
 test/rbkt/w3c_testsuite/XQuery/FunctX/functx-fn-tokenize/functx-fn-tokenize-7
@@ -14,9 +13,6 @@ test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/MatchesFu
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/MatchesFunc/caselessmatch10
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/MatchesFunc/K2-MatchesFunc-6
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/MatchesFunc/caselessmatch09
-test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/AssDisassStringFunc/CodepointToStringFunc/K-CodepointToStringFunc-12
-test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/AssDisassStringFunc/CodepointToStringFunc/K-CodepointToStringFunc-15
-test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/AssDisassStringFunc/CodepointToStringFunc/K-CodepointToStringFunc-14
 test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/PrologExpr/VariableProlog/ExternalVariablesWith/K2-ExternalVariablesWith-22
 test/rbkt/w3c_testsuite/XQuery/StaticTyping/STFLWORExpr/ST-PITest-02
 test/rbkt/w3c_testsuite/XQuery/StaticTyping/STFLWORExpr/ST-WhereExpr001

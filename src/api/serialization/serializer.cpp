@@ -33,6 +33,7 @@
 #include "util/ascii_util.h"
 #include "util/utf8_util.h"
 #include "util/string_util.h"
+#include "util/xml_util.h"
 
 #include "system/globalenv.h"
 
@@ -201,6 +202,10 @@ int serializer::emitter::emit_expanded_string(
       }
       else
       {
+        // raise an error iff (1) the serialization format is XML 1.0 and (2) the given character is an invalid XML 1.0 character
+        if (ser->method == PARAMETER_VALUE_XML && ser->version == "1.0" && !xml::is_valid(cp))
+          ZORBA_ERROR_DESC(FOCH0001, "Serialization error: codepoint #" + NumConversions::uintToStr(cp) + " is not allowed in XML version 1.0.");
+
         while (char_length)
         {
           tr << *chars;
@@ -213,6 +218,10 @@ int serializer::emitter::emit_expanded_string(
       continue;
     }
 #endif//ZORBA_NO_UNICODE
+
+    // raise an error iff (1) the serialization format is XML 1.0 and (2) the given character is an invalid XML 1.0 character
+    if (ser->method == PARAMETER_VALUE_XML && ser->version == "1.0" && !xml::is_valid((unsigned int)*chars))
+      ZORBA_ERROR_DESC(FOCH0001, "Serialization error: codepoint #" + NumConversions::uintToStr((unsigned int)*chars) + " is not allowed in XML version 1.0.");
 
     /*
       In addition, the non-whitespace control characters #x1 through #x1F and

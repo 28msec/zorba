@@ -281,9 +281,6 @@ IF (FOUND_XQTS)
     ENDIF(ZORBA_TEST_XQUERYX)
 
     EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Optional/Serialization/K2-Serialization-7 3145280)
-    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/AssDisassStringFunc/CodepointToStringFunc/K-CodepointToStringFunc-12 3147927)
-    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/AssDisassStringFunc/CodepointToStringFunc/K-CodepointToStringFunc-14 3147927)
-    EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/AssDisassStringFunc/CodepointToStringFunc/K-CodepointToStringFunc-15 3147927)
 
   ENDIF (ZORBATEST_TESTDRIVER_MT_AVAILABLE AND ZORBATEST_USE_MT_XQTS)
 
