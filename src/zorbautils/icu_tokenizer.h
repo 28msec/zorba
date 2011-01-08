@@ -26,21 +26,22 @@
 namespace zorba {
 
 /**
- * An ICU_Tokenizer is-a Tokenizer that uses the ICU (International Components
+ * An %ICU_Tokenizer is-a Tokenizer that uses the ICU (International Components
  * for Unicode) library.
  */
 class ICU_Tokenizer : public Tokenizer {
 public:
 
   /**
-   * Constructs an ICU_Tokenizer.
+   * Constructs an %ICU_Tokenizer.
    *
    * @param wildcards If <code>true</code>, allows XQuery wildcard syntax
    * characters to be part of tokens.
    */
   ICU_Tokenizer( bool wildcards = false );
 
-  void tokenize( char const*, size_t, locale::iso639_1::type, Callback&, void* );
+  void tokenize( char const*, size_t, locale::iso639_1::type, Callback&,
+                 void* );
 
 private:
   struct ICU_Iterators {
