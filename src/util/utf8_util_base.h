@@ -94,13 +94,17 @@ size_type byte_pos( storage_type const *s, size_type s_size,
 /**
  * Gets the number of bytes used by a UTF-8 character.
  *
- * @param lead The lead byte of a UTF-8 byte sequence comprising a Unicode
+ * @param start The start byte of a UTF-8 byte sequence comprising a Unicode
  * character.
- * @return Returns a number in the range [1,6].
- * @throws XQP0034_ILLEGAL_UTF8_BYTE if \a lead is invalid.
+ * @param throw_exception If \c true and \a start is invalid, will throw an
+ * exception.
+ * @return Returns a number in the range [1,6] if \a start is valid or 0 if
+ * \a start is invalid and \a throw_exception is \c false.
+ * @throws XQP0034_ILLEGAL_UTF8_BYTE if \a start is invalid and
+ * \a throw_exception is \c true.
  */
 ZORBA_DLL_PUBLIC
-size_type char_length( storage_type lead, bool throw_exception = true );
+size_type char_length( storage_type start, bool throw_exception = true );
 
 /**
  * Converts a pointer into a character offset.

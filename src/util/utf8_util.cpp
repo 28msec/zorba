@@ -68,7 +68,7 @@ size_type byte_pos( storage_type const *s, size_type s_size,
   return p - s;
 }
 
-size_type char_length( storage_type lead, bool throw_exception ) {
+size_type char_length( storage_type start, bool throw_exception ) {
   static char const length_table[] = {
     /*      0 1 2 3 4 5 6 7 8 9 A B C D E F */
     /* 0 */ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
@@ -89,7 +89,7 @@ size_type char_length( storage_type lead, bool throw_exception ) {
     /* F */ 4,4,4,4,4,4,4,4,5,5,5,5,6,6,0,0
   };
 
-  size_type const len = length_table[ static_cast<unsigned>( lead ) & 0xFF ];
+  size_type const len = length_table[ static_cast<unsigned>( start ) & 0xFF ];
   if ( !len && throw_exception )
     ZORBA_ERROR( XQP0034_ILLEGAL_UTF8_BYTE );
   return len;
