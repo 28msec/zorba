@@ -195,6 +195,10 @@ int serializer::emitter::emit_expanded_string(
       const unsigned char* temp = chars;
       unicode::code_point cp = utf8::next_char(temp);
 
+      // raise an error iff (1) the serialization format is XML 1.0 and (2) the given character is an invalid XML 1.0 character
+      if (ser && ser->method == PARAMETER_VALUE_XML && ser->version == "1.0" && !xml::is_valid(cp))
+        ZORBA_ERROR_DESC(FOCH0001, "Serialization error: codepoint #" + NumConversions::uintToStr(cp) + " is not allowed in XML version 1.0.");
+
       if (cp >= 0x10000 && cp <= 0x10FFFF)
       {
         tr << "&#" << NumConversions::uintToStr(cp) << ";";
@@ -220,8 +224,19 @@ int serializer::emitter::emit_expanded_string(
 #endif//ZORBA_NO_UNICODE
 
     // raise an error iff (1) the serialization format is XML 1.0 and (2) the given character is an invalid XML 1.0 character
-    if (ser->method == PARAMETER_VALUE_XML && ser->version == "1.0" && !xml::is_valid((unsigned int)*chars))
+    if (ser && ser->method == PARAMETER_VALUE_XML && ser->version == "1.0" && !xml::is_valid((unsigned int)*chars))
       ZORBA_ERROR_DESC(FOCH0001, "Serialization error: codepoint #" + NumConversions::uintToStr((unsigned int)*chars) + " is not allowed in XML version 1.0.");
+
+    /*
+      Certain characters, specifically the control characters #x7F-#x9F, are
+      legal in XML but not in HTML. It is a serialization error
+      [err:SERE0014] to use the HTML output method when such characters appear
+      in the instance of the data model.
+    */
+    if (ser && ser->method == PARAMETER_VALUE_HTML && *chars >= 0x7F && *chars <= 0x9f)
+      ZORBA_ERROR_DESC(SERE0014, "Serialization error: character #"
+          + NumConversions::uintToStr((unsigned int)*chars)
+          + " is not allowed if the HTML output method is used.");
 
     /*
       In addition, the non-whitespace control characters #x1 through #x1F and
