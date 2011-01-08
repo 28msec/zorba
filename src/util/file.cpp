@@ -58,6 +58,11 @@
 using namespace std;
 namespace zorba {
 
+#ifdef WIN32
+bool
+isValidDriveSegment(
+    zstring& aString);
+#endif
 
 zstring
 _normalize_path
@@ -113,7 +118,7 @@ _normalize_path
 #ifdef WIN32
     // test for a valid drive segment
     zstring lDriveString;
-    int lNext = lFileArg.indexOf("/");
+    int lNext = lFileArg.find("/");
     if (lNext >= 0) {
       lDriveString = lFileArg.substr(0, lNext);
     } else {
@@ -143,8 +148,8 @@ _normalize_path
 #ifdef WIN32
     // the underlying Zorba implementation accepts both separators for WIN32
     // so detect the first occurence of any of them
-    int lIndex = lFileArg.indexOf("\\");
-    int lIndexS = lFileArg.indexOf("/");
+    int lIndex = lFileArg.find("\\");
+    int lIndexS = lFileArg.find("/");
     if (lIndex < 0) {
       lIndex = lIndexS;
     } else if (lIndexS >=0 ) {
@@ -154,9 +159,9 @@ _normalize_path
     // test for a valid drive segment
     zstring lDriveString;
     if (lIndex >= 0) {
-      lDriveString = lFileArg.substring(0, lIndex);
+      lDriveString = lFileArg.substr(0, lIndex);
     } else {
-      lDriveString = lFileArg.substring(0);
+      lDriveString = lFileArg.substr(0);
     }
     lAbsolutePath = isValidDriveSegment(lDriveString);
 #else
@@ -185,7 +190,10 @@ _normalize_path
     unicode::string lResult;
     unicode::regex re;
     re.compile(pattern, "");
-    re.replace_all(lFileArg.c_str(), filesystem_path::get_path_separator(),
+    const char *path_sep = filesystem_path::get_path_separator();
+    if(!strcmp(path_sep, "\\"))
+      path_sep = "\\\\";
+    re.replace_all(lFileArg.c_str(), path_sep,
       &lResult);
     utf8::to_string(lResult, &lFileArg);
   }
@@ -721,10 +729,10 @@ void file::rename(std::string const& newpath) {
 
 #ifdef WIN32
 bool
-filesystem_path::isValidDriveSegment(
+isValidDriveSegment(
     zstring& aString)
 {
-  aString = utf8::to_upper(aString);
+  utf8::to_upper(aString);
   // the drive segment has one of the forms: "C:", "C%3A"
   size_t aStringLen = utf8::length(aString);
   if ((aStringLen != 2 && aStringLen != 4) ||
@@ -733,7 +741,7 @@ filesystem_path::isValidDriveSegment(
     return false;
   }
 
-  char lDrive = aString.charAt(0);
+  char lDrive = aString.at(0);
   // the string is already upper case
   if (lDrive < 65 || lDrive > 90) {
     return false;
