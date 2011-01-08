@@ -74,6 +74,20 @@ ZORBA_DLL_PUBLIC
 int parse_entity( char const *ref, unicode::code_point *c );
 
 /**
+ * Parses an XML entity reference.
+ *
+ * @tparam StringType The type of the input string.
+ * @param ref The string pointing to the start of the entity reference.
+ * @param c A pointer to the code-point result.
+ * @return If successful, returns the number of characters parsed; otherwise
+ * returns -1.
+ */
+template<class StringType> inline
+int parse_entity( StringType const &ref, unicode::code_point *c ) {
+  return parse_entity( ref.c_str(), c );
+}
+
+/**
  * Parses an XML entity reference and appends the UTF-8 encoding of the
  * resulting code-point to the given string.
  *
@@ -90,6 +104,21 @@ int parse_entity( char const *ref, StringType *out ) {
   if ( result != -1 )
     utf8::encode( c, out );
   return result;
+}
+
+/**
+ * Parses an XML entity reference.
+ *
+ * @tparam InputStringType The type of the input string.
+ * @tparam OutputStringType The type of the output string.
+ * @param ref The string pointing to the start of the entity reference.
+ * @param out A string to append to.
+ * @return If successful, returns the number of characters parsed; otherwise
+ * returns -1.
+ */
+template<class InputStringType,class OutputStringType> inline
+int parse_entity( InputStringType const &ref, OutputStringType *out ) {
+  return parse_entity( ref.c_str(), out );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
