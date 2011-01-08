@@ -169,7 +169,7 @@ void serializer::emitter::releaseChildIter(store::ChildrenIterator* iter)
   emit_attribute_value is set to true if the string expansion is performed
   on a value of an attribute
 ********************************************************************************/
-void serializer::emitter::emit_expanded_string(
+int serializer::emitter::emit_expanded_string(
   const char* str,
   zstring::size_type strlen,
   bool emit_attribute_value = false)
@@ -177,46 +177,39 @@ void serializer::emitter::emit_expanded_string(
   const unsigned char* chars = (const unsigned char*)str;
   const unsigned char* chars_end  = chars + strlen;
 
-#ifndef ZORBA_NO_UNICODE
-  int skip = 0;
-#endif // ZORBA_NO_UNICODE
-
   for (; chars < chars_end; chars++ )
   {
-    // the input string is UTF-8
-#ifndef ZORBA_NO_UNICODE
-    if (*chars < 0x80)
-      skip = 0;
-    else if ((*chars >> 5) == 0x6)
-      skip = 2;
-    else if ((*chars >> 4) == 0xe)
-      skip = 3;
-    else if ((*chars >> 3) == 0x1e)
-      skip = 4;
 
-    if (skip)
+#ifndef ZORBA_NO_UNICODE
+    // the input string is UTF-8
+    int char_length = utf8::char_length(*chars, false);
+    if (char_length == 0)
+      char_length = 1;
+
+    if (char_length > chars_end - chars)
+      return chars_end - chars;
+
+    if (char_length > 1)
     {
       const unsigned char* temp = chars;
       unicode::code_point cp = utf8::next_char(temp);
 
       if (cp >= 0x10000 && cp <= 0x10FFFF)
       {
-        temp = chars;
-        tr << "&#" << NumConversions::uintToStr(utf8::next_char(temp))
-                    << ";";
-        chars += (skip-1);
-        skip = 0;
+        tr << "&#" << NumConversions::uintToStr(cp) << ";";
+        chars += (char_length-1);
       }
       else
       {
-        while (skip)
+        while (char_length)
         {
           tr << *chars;
-          if (skip > 1)
+          if (char_length > 1)
             chars++;
-          skip--;
+          char_length--;
         }
       }
+
       continue;
     }
 #endif//ZORBA_NO_UNICODE
@@ -226,7 +219,8 @@ void serializer::emitter::emit_expanded_string(
       #x7F through #x9F in text nodes and attribute nodes MUST be output as
       character references.
     */
-    if ((*chars >= 0x1 && *chars <= 0x1F) ||
+    if ((*chars >= 0x01 && *chars <= 0x1F)
+          ||
         (*chars >= 0x7F && *chars <= 0x9F))
     {
       if ((!emit_attribute_value) && (*chars == 0xA || *chars == 0x9))
@@ -288,8 +282,10 @@ void serializer::emitter::emit_expanded_string(
       default:
         tr << *chars;
         break;
-    }
-  }
+    } // switch
+  } // for
+
+  return 0;
 }
 
 
@@ -347,17 +343,52 @@ void serializer::emitter::emit_doctype(const zstring& elementName)
 /*******************************************************************************
 
 ********************************************************************************/
-void serializer::emitter::emit_item(const store::Item* item)
+void serializer::emitter::emit_item(store::Item* item)
 {
   if (item->isAtomic())
   {
     if (previous_item == PREVIOUS_ITEM_WAS_TEXT)
       tr << " ";
 
-    zstring strval;
-    item->getStringValue2(strval);
+    if (!item->isStreamable())
+    {
+      emit_expanded_string(item->getStringValue().c_str(), item->getStringValue().size());
+    }
+    else
+    {
+      // Streamable item
+      char buffer[1024];
+      int rollover = 0;
+      int read_bytes;
+      std::istream& is = item->getStream();
 
-    emit_expanded_string(strval.c_str(), strval.size());
+      // prepare the stream
+      std::ios::iostate const old_exceptions = is.exceptions();
+      is.exceptions( std::ios::badbit | std::ios::failbit );
+      std::streampos const pos = is.tellg();
+      if (pos)
+        is.seekg(0, std::ios::beg);
+      is.exceptions(is.exceptions() & ~std::ios::failbit);
+
+      // read bytes and do string expansion
+      do
+      {
+        is.read(buffer + rollover, 200 - rollover);
+        read_bytes = is.gcount();
+        rollover = emit_expanded_string(buffer, read_bytes + rollover);
+        memmove(buffer, buffer+200-rollover, rollover);
+      }
+      while (read_bytes > 0);
+
+      // restore stream's state
+      is.clear();                   // clear eofbit
+      if (pos)
+      {
+        is.exceptions(is.exceptions() | std::ios::failbit);
+        is.seekg(pos, std::ios::beg);
+      }
+      is.exceptions(old_exceptions);
+    }
 
     previous_item = PREVIOUS_ITEM_WAS_TEXT;
   }
@@ -590,10 +621,13 @@ int serializer::emitter::emit_node_children(
       closed_parent_tag = 1;
     }
 
-    if (ser->indent &&
-      (child->getNodeKind() == store::StoreConsts::elementNode ||
-        child->getNodeKind() == store::StoreConsts::commentNode) &&
-      (prev_node_kind != store::StoreConsts::textNode))
+    if (ser->indent
+        &&
+        (prev_node_kind != store::StoreConsts::textNode)
+        &&
+        (child->getNodeKind() == store::StoreConsts::elementNode
+          ||
+          child->getNodeKind() == store::StoreConsts::commentNode))
     {
       if (depth > 0)
         tr << ser->END_OF_LINE;
@@ -1534,7 +1568,7 @@ void serializer::sax2_emitter::emit_node(const store::Item* item)
 /*******************************************************************************
 
 ********************************************************************************/
-void serializer::sax2_emitter::emit_item(const store::Item* item)
+void serializer::sax2_emitter::emit_item(store::Item* item)
 {
   if (item->isAtomic())
   {
@@ -1564,18 +1598,22 @@ void serializer::sax2_emitter::emit_item(const store::Item* item)
 /*******************************************************************************
 
 ********************************************************************************/
-void serializer::sax2_emitter::emit_expanded_string(
+int serializer::sax2_emitter::emit_expanded_string(
   const char* str,
   zstring::size_type strlen,
   bool aEmitAttributeValue)
 {
+  int result = 0;
+
   if ( theSAX2ContentHandler )
   {
-    //use xml_emitter to normalize string
+    // use xml_emitter to normalize string
     theSStream.str("");
-    emitter::emit_expanded_string(str, strlen, aEmitAttributeValue );
+    result = emitter::emit_expanded_string(str, strlen, aEmitAttributeValue );
     theSAX2ContentHandler->characters(theSStream.str());
   }
+
+  return result;
 }
 
 
@@ -1609,7 +1647,7 @@ void serializer::text_emitter::emit_declaration()
 /*******************************************************************************
 
 ********************************************************************************/
-void serializer::text_emitter::emit_item(const store::Item* item)
+void serializer::text_emitter::emit_item(store::Item* item)
 {
   if (item->isAtomic())
   {
@@ -1736,7 +1774,7 @@ void serializer::json_emitter::emit_declaration()
 /*******************************************************************************
 
 ********************************************************************************/
-void serializer::json_emitter::emit_item(const store::Item* item)
+void serializer::json_emitter::emit_item(store::Item* item)
 {
   zstring result;
   zstring error_log;
@@ -1791,7 +1829,7 @@ void serializer::jsonml_emitter::emit_declaration()
 /*******************************************************************************
 
 ********************************************************************************/
-void serializer::jsonml_emitter::emit_item(const store::Item* item)
+void serializer::jsonml_emitter::emit_item(store::Item* item)
 {
   zstring result;
   zstring error_log;
@@ -1838,7 +1876,7 @@ serializer::binary_emitter::binary_emitter(
 /*******************************************************************************
 
 ********************************************************************************/
-void serializer::binary_emitter::emit_item(const store::Item* item)
+void serializer::binary_emitter::emit_item(store::Item* item)
 {
   xs_base64Binary lValue;
 
@@ -2213,7 +2251,7 @@ void serializer::serialize(
     std::ostream&         aOStream,
     SAX2_ContentHandler* aHandler)
 {
-  std::stringstream temp_sstream; // used to temporarily hold expanded strings
+  std::stringstream temp_sstream; // used to temporarily hold expanded strings for the SAX serializer
 
   // used for JSON serialization only
   bool firstItem = true;

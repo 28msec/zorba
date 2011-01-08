@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -100,7 +100,7 @@ size_type byte_pos( storage_type const *s, size_type s_size,
  * @throws XQP0034_ILLEGAL_UTF8_BYTE if \a lead is invalid.
  */
 ZORBA_DLL_PUBLIC
-size_type char_length( storage_type lead );
+size_type char_length( storage_type lead, bool throw_exception = true );
 
 /**
  * Converts a pointer into a character offset.

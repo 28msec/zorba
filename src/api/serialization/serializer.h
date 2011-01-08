@@ -31,7 +31,7 @@
 
 namespace zorba
 {
-  
+
 typedef Zorba_SerializerOptions_t* (*itemHandler)(void* aUserData);
 
 
@@ -41,7 +41,7 @@ namespace store
   class AttributesIterator;
 }
 
-  
+
 namespace intern
 {
   class Serializable;
@@ -62,7 +62,7 @@ public:
     PARAMETER_VALUE_NO,
     PARAMETER_VALUE_YES,
     PARAMETER_VALUE_OMIT,
-      
+
     PARAMETER_VALUE_XML,
     PARAMETER_VALUE_HTML,
     PARAMETER_VALUE_XHTML,
@@ -70,7 +70,7 @@ public:
     PARAMETER_VALUE_JSON,
     PARAMETER_VALUE_JSONML,
     PARAMETER_VALUE_BINARY,
-    
+
     PARAMETER_VALUE_UTF_8
 #ifndef ZORBA_NO_UNICODE
     ,PARAMETER_VALUE_UTF_16
@@ -161,14 +161,14 @@ public:
    * @return A value from the PARAMETER_VALUE_TYPE enum.
    */
   short getSerializationMethod() const;
-  
+
 protected:
   void reset();
 
   void validate_parameters();
 
   bool setup(std::ostream& os);
-  
+
 
   ///////////////////////////////////////////////////////////
   //                                                       //
@@ -188,39 +188,39 @@ protected:
      * @param output_stream Target output stream.
      */
     emitter(serializer* the_serializer, transcoder& the_transcoder);
-    
+
     /**
      * Outputs the start of the serialized document, which, depending on
      * the serialization method, can be the XML declaration, the HTML
      * declaration, etc.
      */
     virtual void emit_declaration();
-    
+
     /**
      * Outputs the end of the serialized document.
      */
     virtual void emit_declaration_end();
-    
+
     /**
      * Outputs the doctype declaration. This function is not used by the
      * default emitter, it is intended to be defined by the XML, HTML and XHTML
      * serializers.
      */
     virtual void emit_doctype(const zstring& elementName);
-    
+
     /**
      * Serializes the given item, depending on its type, and its children.
      *
      * @param item the item to serialize
      */
-    virtual void emit_item(const store::Item* item);
+    virtual void emit_item(store::Item* item);
 
     /**
      *  The root function that performs the serialization
      *  of a normalized sequence.
      */
     virtual void emit_node(const store::Item* item, int depth);
-    
+
     /**
      *  Serializes a given text node. Also performs the processing of
      *  cdata-section-elements parameter, if set.
@@ -247,9 +247,10 @@ protected:
 
     /**
      *  Serializes the given string, performing character expansion
-     *  if necessary.
+     *  if necessary. Returns the number of bytes that have not been written. This
+     *  is used only for streamable items expansion.
      */
-    virtual void emit_expanded_string(
+    virtual int emit_expanded_string(
             const char* str,
             zstring::size_type strlen,
             bool emit_attribute_value);
@@ -285,11 +286,11 @@ protected:
       PREVIOUS_ITEM_WAS_TEXT,
       PREVIOUS_ITEM_WAS_NODE
     }                                     previous_item;
-    
+
     std::vector<store::ChildrenIterator*> theChildIters;
     ulong                                 theFirstFreeChildIter;
     store::AttributesIterator           * theAttrIter;
-    
+
     bool                                  isFirstElementNode;
   };
 
@@ -304,7 +305,7 @@ protected:
   {
   public:
     xml_emitter(serializer* the_serializer, transcoder& the_transcoder);
-    
+
     virtual void emit_declaration();
 
     virtual void emit_doctype(const zstring& elementName);
@@ -321,7 +322,7 @@ protected:
   {
   public:
     xhtml_emitter(serializer* the_serializer, transcoder& the_transcoder);
-    
+
     virtual void emit_node(const store::Item* item, int depth);
   };
 
@@ -336,7 +337,7 @@ protected:
   {
   public:
     html_emitter(serializer* the_serializer, transcoder& the_transcoder);
-    
+
     virtual void emit_declaration();
     virtual void emit_declaration_end();
     virtual void emit_doctype(const zstring& elementName);
@@ -364,16 +365,16 @@ protected:
         int depth,
         bool perform_escaping = true);
 
-    virtual void emit_item(const store::Item* item);
+    virtual void emit_item(store::Item* item);
   };
 
-  
+
   ///////////////////////////////////////////////////////////
   //                                                       //
   //  class sax2_emitter                                   //
   //                                                       //
   ///////////////////////////////////////////////////////////
-  
+
   class sax2_emitter : public emitter
   {
   protected:
@@ -381,7 +382,7 @@ protected:
     SAX2_LexicalHandler * theSAX2LexicalHandler;
     store::NsBindings     theNameSpaces;
     std::stringstream&    theSStream;
-    
+
   public:
     sax2_emitter(
           serializer* the_serializer,
@@ -392,7 +393,7 @@ protected:
     void emit_startPrefixMapping(
           const store::Item* item,
           store::NsBindings& nsBindings );
-    
+
     void emit_endPrefixMapping(store::NsBindings& nsBindings );
 
     void emit_declaration();
@@ -403,7 +404,7 @@ protected:
 
     void emit_node(const store::Item* item);
 
-    void emit_expanded_string(
+    int emit_expanded_string(
           const char* str,
           zstring::size_type strlen,
           bool aEmitAttributeValue = false );
@@ -417,7 +418,7 @@ protected:
 
     bool emit_bindings(const store::Item* item);
 
-    void emit_item( const store::Item* item );
+    void emit_item(store::Item* item );
   };
 
 
@@ -431,9 +432,9 @@ protected:
   {
   public:
     json_emitter(serializer* the_serializer, transcoder& the_transcoder);
-    
+
     virtual void emit_declaration();
-    virtual void emit_item(const store::Item* item);
+    virtual void emit_item(store::Item* item);
   };
 
 
@@ -442,16 +443,16 @@ protected:
   //  class jsonml_emitter                                 //
   //                                                       //
   ///////////////////////////////////////////////////////////
-  
+
   class jsonml_emitter : public emitter
   {
   public:
     jsonml_emitter(serializer* the_serializer, transcoder& the_transcoder);
-    
+
     virtual void emit_declaration();
-    virtual void emit_item(const store::Item* item);
+    virtual void emit_item(store::Item* item);
   };
-  
+
 
   ///////////////////////////////////////////////////////////
   //                                                       //
@@ -464,7 +465,7 @@ protected:
   public:
     binary_emitter(serializer* the_serializer, transcoder& the_transcoder);
 
-    void emit_item(const store::Item* item);
+    void emit_item(store::Item* item);
   };
 };
 
