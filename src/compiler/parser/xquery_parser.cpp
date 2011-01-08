@@ -15789,7 +15789,7 @@ const char *the_tumbling = "tumbling", *the_sliding = "sliding",
 void xquery_parser::error(zorba::xquery_parser::location_type const& loc, string const& msg)
 {
   if (driver.parserError != NULL)
-    driver.set_expr(new ParseErrorNode(driver.parserError->loc, XPST0003, driver.parserError->msg));
+    driver.set_expr(new ParseErrorNode(driver.parserError->loc, driver.parserError->err_code, driver.parserError->msg));
   else
   {
     // remove the double quoting "''" from every token description

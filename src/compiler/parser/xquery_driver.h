@@ -36,11 +36,12 @@ class ZorbaParserError
 public:
   std::string msg;
   QueryLoc loc;
+  XQUERY_ERROR err_code;
 
 public:
-  ZorbaParserError(std::string _msg) : msg(_msg) { };
-  ZorbaParserError(std::string _msg, const location& aLoc);
-  ZorbaParserError(std::string _msg, const QueryLoc& aLoc);
+  ZorbaParserError(std::string _msg, XQUERY_ERROR code = XPST0003);
+  ZorbaParserError(std::string _msg, const location& aLoc, XQUERY_ERROR code = XPST0003);
+  ZorbaParserError(std::string _msg, const QueryLoc& aLoc, XQUERY_ERROR code = XPST0003);
 };
 
 
