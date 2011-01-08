@@ -26,6 +26,13 @@ namespace xml {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+char const *const version_string_of[] = {
+  "1.0",
+  "1.1"
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
 int parse_entity( char const *s, unicode::code_point *c ) {
   char const *const s0 = s;
   if ( *s == '&' && !*++s )

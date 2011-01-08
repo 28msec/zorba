@@ -17,6 +17,8 @@
 #ifndef ZORBA_XML_UTIL_H
 #define ZORBA_XML_UTIL_H
 
+#include <iostream>
+
 #include "unicode_util.h"
 #include "utf8_util.h"
 
@@ -32,6 +34,11 @@ enum version {
   v1_0,
   v1_1
 };
+extern char const *const version_string_of[];
+
+inline std::ostream& operator<<( std::ostream &o, version v ) {
+  return o << version_string_of[ v ];
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 
