@@ -44,47 +44,6 @@ namespace zorba {
 ---------------------------------------------------------------------------
   */
 
-/*******************************************************************************
-  is the given char a hex allowed one
-********************************************************************************/
-bool URI::is_hex(uint32_t c)
-{
-  return (is_digit(c) || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F'));
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-bool URI::is_alpha(uint32_t c)
-{
-  if ((( c >= 'a' ) && ( c <= 'z' )) || (( c >= 'A' ) && ( c <= 'Z' )) )
-    return true;
-
-  return false;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-bool URI::is_digit(uint32_t c)
-{
-  if (( c >= '0' ) && ( c <= '9' ))
-    return true;
- 
-  return false;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-bool URI::is_alphanum(uint32_t c)
-{
-  return (is_alpha(c) || is_digit(c));
-}
-
 
 /*******************************************************************************
 
@@ -92,7 +51,7 @@ bool URI::is_alphanum(uint32_t c)
 bool URI::is_unreserved_char(uint32_t c)
 {
   static std::string lMarkCharacter("-_.!~*'{}");
-  return (is_alphanum(c) || (c == ' ') || (c > 127 ) ||
+  return (ascii::is_alnum(c) || (c == ' ') || (c > 127 ) ||
     ((c<128) && lMarkCharacter.find((char)c) != std::string::npos));
 }
 
@@ -113,7 +72,7 @@ bool URI::is_path_character(uint32_t c)
 bool URI::is_reservered_or_unreserved_char(uint32_t c)
 {
   static std::string lMarkOrReservedChars("-_.!~*'();/?:@&=+$,[]");
-  return (is_alphanum(c) ||
+  return (ascii::is_alnum(c) ||
           (c == ' ') ||
           ((c<128) && lMarkOrReservedChars.find((char)c) != std::string::npos));
 }
@@ -237,13 +196,13 @@ bool URI::is_well_formed_address(const char* addr, ulong addrLen)
     wrap2.wrap_memory(addr, lLastPeriodPos);
     lLastPeriodPos = wrap2.rfind(".");
 
-    if ( lLastPeriodPos != zstring::npos && is_digit(addr[lLastPeriodPos + 1]) )
+    if ( lLastPeriodPos != zstring::npos && ascii::is_digit(addr[lLastPeriodPos + 1]) )
     {
       return false;
     }
   }
 
-  if ( lLastPeriodPos != zstring::npos && is_digit(addr[lLastPeriodPos + 1]) ) 
+  if ( lLastPeriodPos != zstring::npos && ascii::is_digit(addr[lLastPeriodPos + 1]) ) 
   {
     return is_well_formed_ipv4_address(addr, addrLen);
   }
@@ -262,15 +221,15 @@ bool URI::is_well_formed_address(const char* addr, ulong addrLen)
 
       if ( c1 == '.' ) 
       {
-        if ( ( i > 0  &&  ! is_alphanum(addr[i-1])) ||
-             ( i + 1 < addrLen  && ! is_alphanum(addr[i+1])) ) 
+        if ( ( i > 0  &&  ! ascii::is_alnum(addr[i-1])) ||
+             ( i + 1 < addrLen  && ! ascii::is_alnum(addr[i+1])) ) 
         {
           return false;
         }
         
         lLabelCharCount = 0;
       }
-      else if ( ! is_alphanum(c1) && c1 != '-' )
+      else if ( ! ascii::is_alnum(c1) && c1 != '-' )
       {
         return false;
       }
@@ -300,10 +259,10 @@ bool URI::is_well_formed_ipv4_address(const char* addr, ulong length)
 
     if (c == '.') 
     {
-      if ( (i == 0) || (i+1 == length) || ! is_digit(addr[i+1]) )
+      if ( (i == 0) || (i+1 == length) || ! ascii::is_digit(addr[i+1]) )
         return false;
     }
-    else if ( ! is_digit(c) )
+    else if ( ! ascii::is_digit(c) )
     {
       return false;
     }
@@ -458,7 +417,7 @@ long URI::scanHexSequence(
 
     // This might be invalid or an IPv4address. If it's potentially an IPv4address,
     // backup to just after the last valid character that matches hexseq.
-    else if (!is_hex(c)) 
+    else if (!ascii::is_xdigit(c)) 
     {
       if (c == '.' && 
           lNumDigits < 4 && 
@@ -963,7 +922,7 @@ void URI::initializePath(const zstring& uri)
           }
           uint32_t lHex1 = lCodepoints[++lIndex];
           uint32_t lHex2 = lCodepoints[++lIndex];
-          if(!is_hex(lHex1) || !is_hex(lHex2))
+          if(!ascii::is_xdigit(lHex1) || !ascii::is_xdigit(lHex2))
           {
             ZORBA_ERROR_DESC_OSS(XQST0046,
                                  "Invalid hex sequence in URI \"" << uri
@@ -1536,7 +1495,7 @@ bool URI::is_conformant_scheme_name(const zstring& scheme)
   {
     char c = scheme[i];
 
-    if ( ! is_alpha(c) && c != '+' && c != '-' && c != '.')
+    if ( ! ascii::is_alpha(c) && c != '+' && c != '-' && c != '.')
     {
       return false; 
     }

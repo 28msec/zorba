@@ -283,26 +283,41 @@ bool ends_with( StringType const &s, SuffixStringType const &ss ) {
 }
 
 /**
- * Converts a \c long to a C string.
+ * Checks whether the given character is an alphabetic character.  This
+ * function exists to make a proper function out of the standard isalpha(3)
+ * that may be implemented as a macro.
  *
- * @param n The \c long to convert.
- * @param buf The buffer for the result.  The caller must ensure it's of
- * sufficient size.
- * @return Returns \a buf for convenience.
+ * @param CharType The character type.
+ * @param c The character to check.
+ * @return Returns \c true only if the character is an alphabetic character.
  */
-ZORBA_DLL_PUBLIC
-char* ltoa( long n, char *buf );
+template<typename CharType> inline
+bool is_alpha( CharType c ) {
+#ifdef WIN32
+  // Windows' isalpha() implementation crashes for non-ASCII characters.
+  return __isascii( c ) && isalpha( c );
+#else
+  return isalpha( c );
+#endif
+}
 
 /**
- * Converts an \c int to a C string.
+ * Checks whether the given character is an alpha-numeric character.  This
+ * function exists to make a proper function out of the standard isalnum(3)
+ * that may be implemented as a macro.
  *
- * @param n The \c int to convert.
- * @param buf The buffer for the result.  The caller must ensure it's of
- * sufficient size.
- * @return Returns \a buf for convenience.
+ * @param CharType The character type.
+ * @param c The character to check.
+ * @return Returns \c true only if the character is an alpha-numeric character.
  */
-inline char* itoa( int n, char *buf ) {
-  return ltoa( n, buf );
+template<typename CharType> inline
+bool is_alnum( CharType c ) {
+#ifdef WIN32
+  // Windows' isalpha() implementation crashes for non-ASCII characters.
+  return __isascii( c ) && isalnum( c );
+#else
+  return isalnum( c );
+#endif
 }
 
 /**
@@ -310,10 +325,12 @@ inline char* itoa( int n, char *buf ) {
  * to make a proper function out of the standard isdigit(3) that may be
  * implemented as a macro.
  *
+ * @param CharType The character type.
  * @param c The character to check.
  * @return Returns \c true only if the character is a decimal digit.
  */
-inline bool is_digit( char c ) {
+template<typename CharType> inline
+bool is_digit( CharType c ) {
 #ifdef WIN32
   // Windows' isdigit() implementation crashes for non-ASCII characters.
   return __isascii( c ) && isdigit( c );
@@ -327,10 +344,12 @@ inline bool is_digit( char c ) {
  * exists to make a proper function out of the standard isspace(3) that may be
  * implemented as a macro.
  *
+ * @param CharType The character type.
  * @param c The character to check.
  * @return Returns \c true only if the character is a whitespace character.
  */
-inline bool is_space( char c ) {
+template<typename CharType> inline
+bool is_space( CharType c ) {
 #ifdef WIN32
   // Windows' isspace() implementation crashes for non-ASCII characters.
   return __isascii( c ) && isspace( c );
@@ -356,6 +375,48 @@ ZORBA_DLL_PUBLIC bool is_whitespace( char const *s );
 template<class StringType> inline
 bool is_whitespace( StringType const &s ) {
   return is_whitespace( s.c_str() );
+}
+
+/**
+ * Checks whether the given character is a hexadecimal decimal digit.  This
+ * function exists to make a proper function out of the standard isxdigit(3)
+ * that may be implemented as a macro.
+ *
+ * @param CharType The character type.
+ * @param c The character to check.
+ * @return Returns \c true only if the character is a hexadecimal digit.
+ */
+template<typename CharType> inline
+bool is_xdigit( CharType c ) {
+#ifdef WIN32
+  // Windows' isxdigit() implementation crashes for non-ASCII characters.
+  return __isascii( c ) && isxdigit( c );
+#else
+  return isxdigit( c );
+#endif
+}
+
+/**
+ * Converts a \c long to a C string.
+ *
+ * @param n The \c long to convert.
+ * @param buf The buffer for the result.  The caller must ensure it's of
+ * sufficient size.
+ * @return Returns \a buf for convenience.
+ */
+ZORBA_DLL_PUBLIC
+char* ltoa( long n, char *buf );
+
+/**
+ * Converts an \c int to a C string.
+ *
+ * @param n The \c int to convert.
+ * @param buf The buffer for the result.  The caller must ensure it's of
+ * sufficient size.
+ * @return Returns \a buf for convenience.
+ */
+inline char* itoa( int n, char *buf ) {
+  return ltoa( n, buf );
 }
 
 /**

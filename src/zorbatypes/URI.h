@@ -26,14 +26,6 @@ class ZORBA_DLL_PUBLIC URI
 {
 public:
 
-  static bool is_hex(uint32_t c);
-
-  static bool is_alpha(uint32_t c);
-
-  static bool is_digit(uint32_t c);
-
-  static bool is_alphanum(uint32_t c);
-
   static bool is_unreserved_char(uint32_t c);
 
   static bool is_path_character(uint32_t c);
