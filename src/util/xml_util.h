@@ -107,7 +107,8 @@ int parse_entity( char const *ref, StringType *out ) {
 }
 
 /**
- * Parses an XML entity reference.
+ * Parses an XML entity reference and appends the UTF-8 encoding of the
+ * resulting code-point to the given string.
  *
  * @tparam InputStringType The type of the input string.
  * @tparam OutputStringType The type of the output string.
