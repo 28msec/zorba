@@ -20,8 +20,8 @@
 #include <map>
 #include <unicode/rbbi.h>               /* for RuleBasedBreakIterator */
 
-#include "zorbautils/locale.h"
-#include "zorbautils/tokenizer.h"
+#include "locale.h"
+#include "tokenizer.h"
 
 namespace zorba {
 
