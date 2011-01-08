@@ -20,7 +20,6 @@
 #include <iostream>
 #include <zorba/config.h>
 #include <zorba/external_function_data.h>
-#include <zorba/zorbastring.h>
 
 namespace zorba {
 
@@ -59,7 +58,7 @@ namespace zorba {
        *             the path.
        * @return Returns a normalized and optionally a resolved path.
        */
-      static String normalize_path(String in, String base = "")
+      static std::string normalize_path(std::string in, std::string base = "")
         throw (ZorbaException);
 
       // from current dir

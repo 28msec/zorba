@@ -50,6 +50,8 @@
 #include <zorba/config.h>
 
 #include "util/ascii_util.h"
+#include "util/utf8_util.h"
+#include "util/regex.h"
 #include "zorbaerrors/error_manager.h"
 
 
@@ -57,32 +59,32 @@ using namespace std;
 namespace zorba {
 
 
-String
-filesystem_path::normalize_path
-(String aIn, String aBase)
+zstring
+_normalize_path
+(zstring aIn, zstring aBase)
   throw (ZorbaException)
 {
   static const std::string FILE_SCHEMA("file://");
 
-  String lFileArg = aIn;
+  zstring lFileArg = aIn;
   std::stringstream lErrorMessage;
 
   // ****************************************************
   // if we have an absolute file URI
   // e.g.: file://localhost/C:/my%20file.txt
-  if(lFileArg.startsWith(FILE_SCHEMA.c_str())) {
+  if(utf8::begins_with(lFileArg, FILE_SCHEMA.c_str())) {
     // make sure the URI is a valid one
     // QQQ not sure how to replicate this without a static context
     //aSctxCtx->resolve("", lFileArg);
 
     // test if we have a valid URI
-    lFileArg = lFileArg.substring(FILE_SCHEMA.length());
-    int lIndex = lFileArg.indexOf("/");
+    lFileArg = lFileArg.substr(FILE_SCHEMA.length());
+    int lIndex = lFileArg.find("/");
 
     if (lIndex > 0) { // if the file URI has a host
                       // e.g.: file://localhost/C:/my%20file.txt
-      String lAuthorityString = lFileArg.substring(0, lIndex);
-      // only allow "localhost" as the authoriry
+      zstring lAuthorityString = lFileArg.substr(0, lIndex);
+      // only allow "localhost" as the authority
       // This makes this implementation the same with the Zorba URI type.
       // If this functionality is changed, please make the same changes
       // in the Zorba URI type.
@@ -106,16 +108,16 @@ filesystem_path::normalize_path
 #endif
 
     // remove the host from the URI
-    lFileArg = lFileArg.substring(lIndex);
+    lFileArg = lFileArg.substr(lIndex);
 
 #ifdef WIN32
     // test for a valid drive segment
-    String lDriveString;
+    zstring lDriveString;
     int lNext = lFileArg.indexOf("/");
     if (lNext >= 0) {
-      lDriveString = lFileArg.substring(0, lNext);
+      lDriveString = lFileArg.substr(0, lNext);
     } else {
-      lDriveString = lFileArg.substring(0);
+      lDriveString = lFileArg.substr(0);
     }
     if(!isValidDriveSegment(lDriveString)) {
       lErrorMessage << "Invalid drive specification: \""
@@ -127,8 +129,7 @@ filesystem_path::normalize_path
 
     // decode the resulting URL encoded path
     // e.g.: C%3A/my%20file.txt, C:/my%20file.txt, /usr/my%20file.xml
-
-    lFileArg = lFileArg.decodeFromUri();
+    ascii::uri_decode(lFileArg);
   }
   
   // ****************************************************
@@ -151,7 +152,7 @@ filesystem_path::normalize_path
     }
 
     // test for a valid drive segment
-    String lDriveString;
+    zstring lDriveString;
     if (lIndex >= 0) {
       lDriveString = lFileArg.substring(0, lIndex);
     } else {
@@ -160,12 +161,13 @@ filesystem_path::normalize_path
     lAbsolutePath = isValidDriveSegment(lDriveString);
 #else
     // only check if the path starts with "/"
-    lAbsolutePath = (lFileArg.indexOf("/") == 0);
+    lAbsolutePath = (lFileArg.find("/") == 0);
 #endif
     // if a relative path, we have to resolve it against the base URI
     if (!lAbsolutePath && aBase != "") {
       // resolve the relative path against the current working directory
       //lFileArg = aSctxCtx->resolve(aSctxCtx->getBaseURI(), lFileArg);
+      // QQQ?!
       lFileArg = aBase + File::getPathSeparator() + lFileArg;
     }
 
@@ -173,36 +175,36 @@ filesystem_path::normalize_path
     // simply return it
   }
 
-  // Replace all occurences of the path-separator with the system specific one
+  // If there are any "foreign" path separators, replace them with native ones
   {
 #ifdef WIN32
-    String separator = "\\";
-    String non_system_separator = "/";
-    String pattern = "/+";
+    zstring pattern = "/+";
 #else
-    String separator = "/";
-    String non_system_separator = "\\";
-    String pattern = "\\\\+";
+    zstring pattern = "\\\\+";
 #endif
-    String flags = "";
-    int32_t startPos = 0;
-    bool has_matched = false;
-    String lResult;
-    lResult = lFileArg.tokenize(pattern, flags, &startPos, &has_matched);
-    if (!has_matched)
-      return lFileArg;
-    while (has_matched) {
-      String token = lFileArg.tokenize(pattern, flags, &startPos, &has_matched);
-      if (token != "")
-        lResult += separator + token;
-    }
-    if (lResult == "") // if lResult is empty, then there was a path separator
-      lResult = separator;
-    lFileArg = lResult;
+    unicode::string lResult;
+    unicode::regex re;
+    re.compile(pattern, "");
+    re.replace_all(lFileArg.c_str(), filesystem_path::get_path_separator(),
+      &lResult);
+    utf8::to_string(lResult, &lFileArg);
   }
 
   return lFileArg;
 }
+
+std::string
+filesystem_path::normalize_path
+(std::string aIn, std::string aBase)
+  throw (ZorbaException)
+{
+  zstring lIn = aIn;
+  zstring lBase = aBase;
+  zstring lResult = _normalize_path(lIn, lBase);
+  return lResult.str();
+}
+
+
 
 const char *
 filesystem_path::get_path_separator () {
@@ -720,13 +722,14 @@ void file::rename(std::string const& newpath) {
 #ifdef WIN32
 bool
 filesystem_path::isValidDriveSegment(
-    String& aString)
+    zstring& aString)
 {
-  aString = aString.uppercase();
+  aString = utf8::to_upper(aString);
   // the drive segment has one of the forms: "C:", "C%3A"
-  if ((aString.length() != 2 && aString.length() != 4) ||
-      (aString.length() == 2 && !aString.endsWith(":")) ||
-      (aString.length() == 4 && !aString.endsWith("%3A"))) {
+  size_t aStringLen = utf8::length(aString);
+  if ((aStringLen != 2 && aStringLen != 4) ||
+    (aStringLen == 2 && !utf8::ends_with(aString, ":")) ||
+    (aStringLen == 4 && !utf8::ends_with(aString, "%3A"))) {
     return false;
   }
 

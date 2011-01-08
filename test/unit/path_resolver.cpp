@@ -15,7 +15,6 @@
  */
 
 #include <zorba/util/path.h>
-#include <zorba/zorbastring.h>
 #include <iostream>
 
 using namespace zorba;
@@ -27,25 +26,27 @@ using namespace std;
 
 #ifdef WIN32
 
-String path_resolver_tests[][3] = {
+std::string path_resolver_tests[][3] = {
   { "C:\\path\\to\\file.xx", "", "C:\\path\\to\\file.xx" },
   { "path\\to\\file.xx", "C:\\base", "C:\\base\\path\\to\\file.xx" },
   { "file:///C:/path/to/file.xx", "", "C:\\path\\to\\file.xx" },
   { "file://localhost/C:/path/to/file.xx", "", "C:\\path\\to\\file.xx" },
+  { "C:/path/to//file.xx", "", "C:\\path\\to\\file.xx" }
 };
 
-#define NUM_PATH_RESOLVER_TESTS 4
+#define NUM_PATH_RESOLVER_TESTS 5
 
 #else /* WIN32 */
 
-String path_resolver_tests[][3] = {
+std::string path_resolver_tests[][3] = {
   { "/path/to/file.xx", "", "/path/to/file.xx" },
   { "path/to/file.xx", "/base", "/base/path/to/file.xx" },
   { "file:///path/to/file.xx", "", "/path/to/file.xx" },
-    { "file://localhost/path/to/file.xx", "", "/path/to/file.xx" }
+  { "file://localhost/path/to/file.xx", "", "/path/to/file.xx" },
+  { "\\path\\to\\\\file.xx", "", "/path/to/file.xx" }
 };
 
-#define NUM_PATH_RESOLVER_TESTS 4
+#define NUM_PATH_RESOLVER_TESTS 5
 
 #endif /* WIN32 */
 
@@ -54,8 +55,8 @@ String path_resolver_tests[][3] = {
  */
 int path_resolver(int argc, char* argv[]) {
   for (int i = 0; i < NUM_PATH_RESOLVER_TESTS; i++) {
-    String *testcase/*[3]*/ = path_resolver_tests[i];
-    String res = filesystem_path::normalize_path(testcase[0], testcase[1]);
+    std::string *testcase/*[3]*/ = path_resolver_tests[i];
+    std::string res = filesystem_path::normalize_path(testcase[0], testcase[1]);
     if (res != testcase[2]) {
       cout << "Path resolver test " << i << " failed: expected '"
            << testcase[2] << "' but got '" << res << "'" << endl;
