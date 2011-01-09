@@ -251,7 +251,7 @@ inline size_type length( StringType const &s ) {
  * @param i An iterator pointing to the first byte of a UTF-8 byte sequence
  * comprising a Unicode character.  The iterator is advanced by the number of
  * bytes comprising the UTF-8 byte sequence.
- * @return Returns said character.
+ * @return Returns the Unicode code-point of the next character.
  * @throws XQP0034_ILLEGAL_UTF8_BYTE if an illegal UTF-8 byte is encountered.
  */
 template<class OctetIterator>
@@ -296,7 +296,7 @@ inline unicode::code_point char_at( storage_type const *s, size_type s_size,
  * @param i An iterator pointing to somewhere within a UTF-8 string.  It is
  * repositioned to the first byte of the UTF-8 byte sequence comprising e
  * previous character.
- * @return Returns said character.
+ * @return Returns the Unicode code-point of previous character.
  * @throws XQP0034_ILLEGAL_UTF8_BYTE if an illegal UTF-8 byte is encountered.
  */
 template<class OctetIterator>
