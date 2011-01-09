@@ -22,7 +22,6 @@
 #include <utility>                      /* for pair */
 
 #include "util/mmap_file.h"
-#include "zorbautils/locale.h"
 
 #include "../ft_thesaurus.h"
 #include "wn_types.h"
