@@ -2273,7 +2273,7 @@ void AtomicItemTokenizer::operator()(
     int para_no,
     void* )
 {
-  FTToken t( utf8_s, utf8_len, token_no, sent_no, lang_ );
+  FTToken const t( utf8_s, utf8_len, token_no, lang_ );
   tokens_.push_back( t );
 }
 

@@ -38,21 +38,19 @@ FTToken::FTToken( char const *utf8_s, int len,
                   iso639_1::type lang ) :
   value_( utf8_s, len )
 {
-  init( pos, sent, para, item, lang );
+  init( lang, pos, sent, para, item );
 }
 
-FTToken::FTToken( char const *utf8_s, int len, int_t pos, int_t sent,
-                  iso639_1::type lang ) :
+FTToken::FTToken( char const *utf8_s, int len, int_t pos, iso639_1::type lang ) :
   value_( utf8_s, len )
 {
-  init( pos, sent, QueryTokenMagicValue, NULL, lang );
+  init( lang, pos );
 }
 
-FTToken::FTToken( string_t const &utf8_s, int_t pos, int_t sent,
-                  iso639_1::type lang ) :
+FTToken::FTToken( string_t const &utf8_s, int_t pos, iso639_1::type lang ) :
   value_( utf8_s )
 {
-  init( pos, sent, QueryTokenMagicValue, NULL, lang );
+  init( lang, pos );
 }
 
 FTToken& FTToken::operator=( FTToken const &from ) {
@@ -64,7 +62,7 @@ FTToken& FTToken::operator=( FTToken const &from ) {
 }
 
 void FTToken::copy( FTToken const &from ) {
-  init( from.pos_, from.sent_, from.para_, from.dt_.item_, from.lang_ );
+  init( from.lang_, from.pos_, from.sent_, from.dt_.para_, from.dt_.item_ );
   value_ = from.value_;
   if ( from.mod_values_ )
     mod_values_ = new mod_values_t( *from.mod_values_ );
@@ -87,23 +85,23 @@ void FTToken::free() {
     delete qt_.wildcard_;
 }
 
-void FTToken::init( int_t pos, int_t sent, int_t para, store::Item const *item,
-                    iso639_1::type lang ) {
+void FTToken::init( iso639_1::type lang, int_t pos, int_t sent, int_t para,
+                    store::Item const *item ) {
   lang_ = lang;
   pos_  = pos ;
-  para_ = para;
   sent_ = sent;
   if ( is_query_token() ) {
-    qt_.wildcard_ = NULL;
     qt_.selector_ = original;
+    qt_.wildcard_ = NULL;
   } else {
+    dt_.para_ = para;
     dt_.item_ = item;
   }
   mod_values_ = NULL;
 }
 
-FTToken::string_t const& FTToken::valueImpl( int selector,
-                                             iso639_1::type alt_lang ) const {
+FTToken::string_t const& FTToken::value_impl( int selector,
+                                              iso639_1::type alt_lang ) const {
   fix_selector( &selector );
   int index;
   switch ( selector ) {
@@ -136,16 +134,16 @@ FTToken::string_t const& FTToken::valueImpl( int selector,
       case stem: {
         iso639_1::type const stem_lang = lang_ ? lang_ : alt_lang;
         if ( Stemmer const *const stemmer = Stemmer::get( stem_lang ) )
-          stemmer->stem( valueImpl( lower ).str(), &mod_value_ref );
+          stemmer->stem( value_impl( lower ).str(), &mod_value_ref );
         else
           ZORBA_ASSERT( false );
         break;
       }
       case ascii | lower:
-        utf8::to_lower( valueImpl( ascii ), &mod_value_ref );
+        utf8::to_lower( value_impl( ascii ), &mod_value_ref );
         break;
       case ascii | upper:
-        utf8::to_upper( valueImpl( ascii ), &mod_value_ref );
+        utf8::to_upper( value_impl( ascii ), &mod_value_ref );
         break;
     }
   }

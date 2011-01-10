@@ -1162,20 +1162,20 @@ namespace {
  */
 class thesaurus_callback : public Tokenizer::Callback {
 public:
-  thesaurus_callback( int token_no, int sent_no, iso639_1::type lang,
+  thesaurus_callback( int token_no, iso639_1::type lang,
                       FTTokenSeqIterator::FTTokens &tokens ) :
-    tokens_( tokens ), token_no_( token_no ), sent_no_( sent_no ), lang_( lang )
+    tokens_( tokens ), token_no_( token_no ), lang_( lang )
   {
   }
 
   void operator()( char const *utf8_s, size_t utf8_len, int, int, int, void* ) {
-    FTToken const t( utf8_s, (int)utf8_len, token_no_, sent_no_, lang_ );
+    FTToken const t( utf8_s, (int)utf8_len, token_no_, lang_ );
     tokens_.push_back( t );
   }
 
 private:
   FTTokenSeqIterator::FTTokens &tokens_;
-  int const token_no_, sent_no_;
+  int const token_no_;
   iso639_1::type const lang_;
 };
 
@@ -1217,7 +1217,7 @@ lookup_thesaurus( zstring const &uri, zstring const &query_phrase,
     ZORBA_ERROR_PARAM( FTST0018, uri, "" );
 
   FTTokenSeqIterator::FTTokens synonyms;
-  thesaurus_callback cb( qt0.pos(), qt0.sent(), qt0.lang(), synonyms );
+  thesaurus_callback cb( qt0.pos(), qt0.lang(), synonyms );
   auto_ptr<Tokenizer> tokenizer( Tokenizer::create() );
 
   for ( zstring synonym; thesaurus->next( &synonym ); ) {

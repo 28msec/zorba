@@ -72,10 +72,9 @@ public:
    *                  null-terminated.
    * @param len       The number of chars in the token string.
    * @param pos_no    The position number.  Position numbers start at 0.
-   * @param sent_no   The sentence number.  Sentence numbers start at 1.
    * @param lang      The language of the token string.
    */
-  FTToken( char const *utf8_s, int len, int_t pos_no, int_t sent_no,
+  FTToken( char const *utf8_s, int len, int_t pos_no,
            locale::iso639_1::type lang = locale::iso639_1::unknown );
 
   /**
@@ -83,10 +82,9 @@ public:
    *
    * @param utf8_s    The token string encoded in UTF-8.
    * @param pos_no    The position number.  Position numbers start at 0.
-   * @param sent_no   The sentence number.  Sentence numbers start at 1.
    * @param lang      The language of the token string.
    */
-  FTToken( string_t const &utf8_s, int_t pos_no, int_t sent_no,
+  FTToken( string_t const &utf8_s, int_t pos_no,
            locale::iso639_1::type lang = locale::iso639_1::unknown );
 
   /**
@@ -136,7 +134,7 @@ public:
    * @return Returns said paragraph number.
    */
   int_t para() const {
-    return is_query_token() ? 0 : para_;
+    return is_query_token() ? 0 : dt_.para_;
   }
 
   /**
@@ -151,12 +149,12 @@ public:
 
   /**
    * Gets the sentence number within the source XML document.  Sentence numbers
-   * start at 1.
+   * start at 1.  For query tokens, this is always 0.
    *
    * @return Returns said sentence number.
    */
   int_t sent() const {
-    return sent_;
+    return is_query_token() ? 0 : sent_;
   }
 
   /**
@@ -185,11 +183,11 @@ public:
          locale::iso639_1::type alt_lang = locale::iso639_1::unknown ) const {
     if ( selector == original )         // optimize this case
       return value_;
-    return valueImpl( selector, alt_lang );
+    return value_impl( selector, alt_lang );
   }
 
   /**
-   * Gets an ft_wildcard TODO
+   * Gets an ft_wildcard for this query token.
    *
    * @param selector The "bit-wise or" of Selectors.
    * @return Returns said ft_wildcard.
@@ -209,19 +207,19 @@ private:
   string_t value_;                      ///< original value
   locale::iso639_1::type lang_;         ///< language (if any)
   int_t pos_;                           ///< position number
-  int_t sent_;                          ///< sentence number
 
   /**
-   * The token's paragraph number.  If this is QueryTokenMagicValue, it means
-   * this token is a query token.  (Query tokens don't have paragraph numbers.)
+   * The token's sentence number.  If this is QueryTokenMagicValue, it means
+   * this token is a query token.  (Query tokens don't have sentence numbers.)
    * A separate \c bool isn't used because that would take more space.
    */
-  int_t para_;
+  int_t sent_;
 
   /**
    * Data only for document tokens.
    */
   struct dt_data {
+    int_t para_;                        ///< paragraph number
     store::Item const *item_;           ///< the Item this token came from
   };
 
@@ -254,17 +252,18 @@ private:
   mutable mod_values_t *mod_values_;
 
   inline bool is_query_token() const {
-    return para_ == QueryTokenMagicValue;
+    return sent_ == QueryTokenMagicValue;
   }
 
   static void fix_selector( int *selector );
 
   void copy( FTToken const& );
   void free();
-  void init( int_t, int_t, int_t, store::Item const*, locale::iso639_1::type );
+  void init( locale::iso639_1::type, int_t, int_t = QueryTokenMagicValue,
+             int_t = 0, store::Item const* = 0 );
 
   string_t const&
-  valueImpl( int, locale::iso639_1::type = locale::iso639_1::unknown ) const;
+  value_impl( int, locale::iso639_1::type = locale::iso639_1::unknown ) const;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
