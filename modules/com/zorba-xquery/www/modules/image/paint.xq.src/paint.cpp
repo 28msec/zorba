@@ -282,7 +282,7 @@ PaintImplFunction::applyStrokedPolyLine(Magick::Blob& aBlob, Item& aLine) const 
     // make sure that we aren't reading in the gap length as point
     if (lCounter >= 3) {
       Item lNodeName;
-      aLine.getNodeName(lNodeName);
+      lPoint.getNodeName(lNodeName);
       String lName = lNodeName.getStringValue();
       if (!lName.endsWith("oint")) {
         break;
