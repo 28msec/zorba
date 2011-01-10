@@ -41,8 +41,15 @@ import schema namespace image = 'http://www.zorba-xquery.com/modules/image/image
  : @param $image is the image to paint to.
  : @param $shapes is a sequence of shapes that should be painted to the image.
  : @return The passed image with the specified shapes painted.
- : @error If the passed xs:base64Binary is not a valid image type.
+ : @error IM001 If the passed xs:base64Binary is not a valid image type.
  : @error If an item of the shapes sequence is not valid.
+ : @example paint_different_lines.xq
+ : @example paint_polyline.xq
+ : @example paint_stroked_polyline.xq
+ : @example paint_polygon.xq
+ : @example paint_rectangles.xq
+ : @example paint_circles.xq
+ : @example paint_text.xq
  :)
 declare function paint:paint($image as xs:base64Binary, $shapes as element()*) as xs:base64Binary  {
   

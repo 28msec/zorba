@@ -32,6 +32,7 @@ import schema namespace image = 'http://www.zorba-xquery.com/modules/image/image
  : @param $image is the image for which we want to know the width.
  : @return The width of the passed image.
  : @error IM001 If the passed xs:base64Binary is not a valid image.
+ : @example basic_width.xq
  :)
 declare function basic:width($image as xs:base64Binary) as xs:unsignedInt external; 
 
@@ -41,6 +42,7 @@ declare function basic:width($image as xs:base64Binary) as xs:unsignedInt extern
  : @param $image is the image for which we want to know the width.
  : @return The height of the passed image.
  : @error IM001 If the passed xs:base64Binary is not a valid image.
+ : @example basic_height.xq
  :)
 declare function basic:height($image as xs:base64Binary) as xs:unsignedInt external; 
 
@@ -53,6 +55,7 @@ declare function basic:height($image as xs:base64Binary) as xs:unsignedInt exter
  : @param $quality is the new quality for the image (a value from 0 to 100 with default 75)
  : @return A new image with the quality set accordingly. 
  : @error IM001 If the passed xs:base64Binary is not a valid image.
+ : @example basic_compress.xq
  :)
 declare function basic:compress($image as xs:base64Binary, $quality as xs:unsignedInt) as xs:base64Binary external; 
 
@@ -62,17 +65,19 @@ declare function basic:compress($image as xs:base64Binary, $quality as xs:unsign
  : Converts an image to another format.
  : If the image already has the specified format, then this function just returns the image without modifying it.
  : Accepted image formats are:
- :
- : GIF
- : PNG
- : TIFF
- : JPEG
- :
+ : <ul>
+ :  <li>GIF</li>
+ :  <li>PNG</li>
+ :  <li>TIFF</li>
+ :  <li>JPEG</li>
+ :  <li>BMP</li>
+ : </ul>
  : @param $image is the image to convert.
  : @param $format is the format in which to convert the image.
  : @return A new image with the same content as the passed image but with the specified file format.
  : @error IM001 If the passed xs:base64Binary is not a valid image.
  : @error If an unsupported image format was passed. 
+ : @example basic_convert.xq
  :)
 declare function basic:convert($image as xs:base64Binary, $format as xs:string) as xs:base64Binary {
   basic:convert-impl($image, image:imageType($format))
@@ -86,23 +91,28 @@ declare function basic:convert($image as xs:base64Binary, $format as xs:string) 
  : @param $image is the image for which the type is requested.
  : @return The type of the passed image. 
  : @error IM001 If the passed xs:base64Binary is not a valid image.
+ : @example basic_type.xq
  :)
 declare function basic:type($image as xs:base64Binary) as xs:string external; 
  
 (:~
  : Creates a new and empty image with white background color and the specified format.
  : Allowed image formats are:
- : 
- : GIF
- : PNG
- : JPEG
- : TIFF
- : 
+ :
+ : <ul>
+ :  <li>GIF</li>
+ :  <li>PNG</li>
+ :  <li>TIFF</li>
+ :  <li>JPEG</li>
+ :  <li>BMP</li>
+ : </ul>
+ :
  : @param $width is the width of the new image.
  : @param $height is the height of the new image.
  : @param $format is the format of the new image.
  : @return A new and empty image with the specified type.
  : @error If an unsupported image format was passed. 
+ : @example basic_create.xq
  :)
 declare function basic:create($width as xs:unsignedInt, $height as xs:unsignedInt, $format as xs:string) as xs:base64Binary {
     basic:create-impl($width, $height, image:imageType($format))
@@ -116,6 +126,7 @@ declare function basic:create($width as xs:unsignedInt, $height as xs:unsignedIn
  : @param $tag is the field name of the tag we want to search for (e.g. DateTime).
  : @return A string containing the content of the matched exif tag or an empty sequence if no such information was found.
  : @error IM001 If the passed xs:base64Binary is not a valid image.
+ : @example basic_exif.xq
  :)
 declare function basic:exif($image as xs:base64Binary, $tag as xs:string) as xs:string? external; 
 
@@ -126,6 +137,7 @@ declare function basic:exif($image as xs:base64Binary, $tag as xs:string) as xs:
  : @param $other is the image we want to compare $image with.
  : @return True if the images are the same.
  : @error IM001 If either of the passed xs:base64Binary is not a valid image.
+ : @example basic_equals.xq
  :)
 declare function basic:equals($image as xs:base64Binary, $other as xs:base64Binary) as xs:boolean external; 
 
@@ -136,6 +148,7 @@ declare function basic:equals($image as xs:base64Binary, $other as xs:base64Bina
  : @param $format is the new format for the SVG image.
  : @error IM002 If the passed xs:base64Binary is not a valid SVG image.
  : @return The passed SVG image converted to an other type.
+ : @example basic_svg.xq
  :)
 declare function basic:convert-svg($image as xs:base64Binary, $type as xs:string) as xs:base64Binary {
   basic:convert-svg-impl($image, image:imageType($type))
@@ -155,7 +168,7 @@ declare function basic:convert-svg-impl($image as xs:base64Binary, $type as xs:s
 (:~
  : Creates a new and empty image with white background color and the specified format.
  : Allowed image formats are:
- : 
+ :  
  : GIF
  : PNG
  : JPEG

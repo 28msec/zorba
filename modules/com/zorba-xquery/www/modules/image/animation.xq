@@ -24,6 +24,7 @@ import module namespace error = 'http://www.zorba-xquery.com/modules/image/error
  : @param $iterations specifies how many times the animation loop should be executed (0 for endless loop).
  : @return A new image that is an animated GIF composed out of the passed images.
  : @error IM001 If any of the passed xs:base64Binary is not a valid image.
+ : @example animation_create.xq
  :)
 declare function anim:create-animated-gif($images as xs:base64Binary+, $delay as xs:unsignedInt, $iterations as xs:unsignedInt) as xs:base64Binary external; 
 
@@ -38,6 +39,7 @@ declare function anim:create-animated-gif($images as xs:base64Binary+, $delay as
  : @param $number-of-added-frames specifies how many frames shall be added to the passed frames for the morph effect.
  : @return A new image that is an animated GIF composed out of the passed images.
  : @error IM001 If any of the passed xs:base64Binary is not a valid image. 
+ : @example animation_create_morphed.xq
  :)
 declare function anim:create-morphed-gif($images as xs:base64Binary+, $delay as xs:unsignedInt, $iterations as xs:unsignedInt, $number-of-added-frames as xs:unsignedInt) as xs:base64Binary external; 
 

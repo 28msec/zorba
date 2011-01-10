@@ -400,7 +400,7 @@ PaintImplFunction::applyCircle(Magick::Blob& aBlob, Item& aCircle) const {
   ImageFunction::getColorFromString(lFillColor.c_str(), lFillColorForMagick);
   lImage.strokeColor(lStrokeColorForMagick);
   lImage.fillColor(lFillColorForMagick);
-  lImage.draw(Magick::DrawableCircle(lOriginCoordinates[0], lOriginCoordinates[1], lPeremeter, lPeremeter));
+  lImage.draw(Magick::DrawableEllipse(lOriginCoordinates[0], lOriginCoordinates[1], lPeremeter, lPeremeter, 0, 360));
   Magick::Blob lBlob;
   lImage.write(&lBlob);
   aBlob = lBlob;
