@@ -15,11 +15,11 @@
  :)
 
 (:~
- : This is a library module offering the same set of statistical functions
- : defined by Microsoft Excel.
+ : This is a library module offering a part of the set of statistical functions
+ : defined by Microsoft Excel 2003.
  :
  : @see <a href="http://office.microsoft.com/en-us/excel/CH062528311033.aspx"
- : target="_blank">Excel Documentation: Statistical Functions</a>
+ : target="_blank">Excel 2003 Documentation: Statistical Functions</a>
  :
  : @spec XQuery Specification: January 2007
  : @author Daniel Turcanu

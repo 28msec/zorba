@@ -15,10 +15,10 @@
  :)
 
 (:~
- : This module implements some Excel lookup functions. 
+ : This module implements some Excel 2003 lookup functions. 
  :
  : @see <a href="http://office.microsoft.com/en-us/excel/CH062528281033.aspx"
- : target="_blank">Excel Documentation: Lookup Functions</a>
+ : target="_blank">Excel 2003 Documentation: Lookup Functions</a>
  :
  : @spec XQuery Specification: January 2007
  : @author Daniel Turcanu

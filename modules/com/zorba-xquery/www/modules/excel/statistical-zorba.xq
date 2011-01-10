@@ -15,7 +15,7 @@
 :)
 
 (:~
- : This module implements some Excel statistical functions
+ : This module implements some Excel 2003 statistical functions
  : that cannot be implemented with standard XQuery functions.
  : It uses Zorba specific functions.
  : 

@@ -15,13 +15,13 @@
 :)
 
 (:~
- : Module implementing the sumproduct functions from Excel math library.
+ : Module implementing the sumproduct functions from Excel 2003 math library.
  : There are 30 functions defined, implementing the same function
  : but with 1 to 30 parameters.
  : Each parameter can be a sequence of infinite length.
  :
  : @see <a href="http://office.microsoft.com/en-us/excel/HP052092931033.aspx"
- : target="_blank">Excel Documentation: Math-sumproduct Functions</a>
+ : target="_blank">Excel 2003 Documentation: Math-sumproduct Functions</a>
  :
  : @spec XQuery Specification: January 2007
  : @author Daniel Turcanu
