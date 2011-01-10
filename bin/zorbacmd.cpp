@@ -152,14 +152,14 @@ populateStaticContext(
 
 bool
 populateDynamicContext(
-    Zorba* zorba,
-    zorba::DynamicContext* aDynamicContext,
-    const ZorbaCMDProperties& aProperties)
+  Zorba* zorba,
+  zorba::DynamicContext* aDynamicContext,
+  const ZorbaCMDProperties& aProperties)
 {
   if ( aProperties.contextItem().size() != 0 ) {
     std::ifstream* lInStream = new std::ifstream(aProperties.contextItem().c_str());
     aDynamicContext->setContextItemAsDocument(aProperties.contextItem(), 
-                                              std::auto_ptr<std::istream>(lInStream));
+      std::auto_ptr<std::istream>(lInStream));
   }
 
   ZorbaCMDProperties::ExternalVars_t::const_iterator lIter;
@@ -168,16 +168,27 @@ populateDynamicContext(
        lIter != end;
        ++lIter)
   {
-    if ((*lIter).inline_file) 
+    try
     {
-      std::ifstream* lInStream = new std::ifstream((*lIter).var_value.c_str());
-      aDynamicContext->setVariableAsDocument((*lIter).var_name, (*lIter).var_value, 
-                                             std::auto_ptr<std::istream>(lInStream));
+      if ((*lIter).inline_file) 
+      {
+        std::ifstream* lInStream = new std::ifstream((*lIter).var_value.c_str());
+        aDynamicContext->setVariableAsDocument((*lIter).var_name, (*lIter).var_value, 
+          std::auto_ptr<std::istream>(lInStream));
+      }
+      else 
+      {
+        zorba::Item lItem = zorba->getItemFactory()->createString((*lIter).var_value);
+        aDynamicContext->setVariable((*lIter).var_name, lItem);
+      }
     }
-    else 
+    catch (...)
     {
-      zorba::Item lItem = zorba->getItemFactory()->createString((*lIter).var_value);
-      aDynamicContext->setVariable((*lIter).var_name, lItem);
+      // Let normal exception handling display the error message; here we
+      // just want to tell the user what variable binding caused the problem
+      std::cerr << "While binding external variable $"
+                << lIter->var_name << ": ";
+      throw;
     }
   }
   return true;
