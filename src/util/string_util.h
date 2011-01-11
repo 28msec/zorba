@@ -59,7 +59,6 @@ bool equals( char const *s1, typename StringType::size_type s1_n,
 #define ZSTREQ(STRING,LITERAL) \
         zorba::equals( STRING, LITERAL, sizeof( LITERAL ) - 1 )
 
-
 /**
  * Converts an object to its string representation.
  *
