@@ -23,15 +23,14 @@
 namespace zorba {
 
 /**
- * An <code>FTTokenIterator</code> iterates over a sequence of full-text
- * tokens.
+ * An %FTTokenIterator iterates over a sequence of full-text tokens.
  */
 class ZORBA_DLL_PUBLIC FTTokenIterator : public SimpleRCObject {
 public:
   typedef unsigned index_t;
 
   /**
-   * A <code>Mark</code> holds the position state of an iterator.
+   * A %Mark holds the position state of an iterator.
    */
   class Mark : public SimpleRCObject {
   protected:
@@ -61,15 +60,14 @@ public:
   /**
    * Checks whether there is a next token.
    *
-   * @return Returns <code>true</code> only if there is a next token.
+   * @return Returns \c true only if there is a next token.
    */
   virtual bool hasNext() const = 0;
 
   /**
    * Obtains the next token and advances the iterator.
    *
-   * @return Returns the next token or <code>NULL</code> if there is no next
-   * token.
+   * @return Returns the next token or \c NULL if there is no next token.
    */
   virtual FTToken const* next() = 0;
 
