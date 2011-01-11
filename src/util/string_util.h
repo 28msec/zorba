@@ -23,6 +23,8 @@
 
 namespace zorba {
 
+////////// String equality /////////////////////////////////////////////////////
+
 /**
  * Faster C string equals.
  *
@@ -59,6 +61,8 @@ bool equals( char const *s1, typename StringType::size_type s1_n,
 #define ZSTREQ(STRING,LITERAL) \
         zorba::equals( STRING, LITERAL, sizeof( LITERAL ) - 1 )
 
+////////// To-string conversion ////////////////////////////////////////////////
+
 /**
  * Converts an object to its string representation.
  *
@@ -86,6 +90,8 @@ void to_string( T const &t, StringType *out ) {
   o << t;
   *out = o.str();
 }
+
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
 #endif  /* ZORBA_STRING_UTIL_H */
