@@ -24,10 +24,28 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+/**
+ * An %ft_wildcard is used to compile an XQuery full-text "wildcard" pattern
+ * into a regular expression and then to match against other tokens.
+ */
 class ft_wildcard {
 public:
+
+  /**
+   * Constructs an %ft_wildcard.
+   *
+   * @param xquery_pattern A string containing an XQuery full-text "wildcard"
+   * pattern.
+   */
   ft_wildcard( zstring const &xquery_pattern );
 
+  /**
+   * Checks whether a given string matches the XQuery "wildcard" pattern
+   * embodied by this %ft_wildcard.
+   *
+   * @param string The string to check.
+   * @return Returns \c true only if the given string matches the pattern.
+   */
   bool matches( zstring const &string ) const {
     return regex_.match_whole( string );
   }
