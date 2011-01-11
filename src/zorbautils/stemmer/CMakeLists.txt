@@ -31,6 +31,7 @@ SET(LIBSTEMMER_SRCS
     src_c/stem_UTF_8_spanish.c
     src_c/stem_UTF_8_swedish.c
     src_c/stem_UTF_8_turkish.c
+    sb_stemmer.cpp
     )
 
 # vim:set et sw=4 ts=4:

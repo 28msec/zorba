@@ -16,8 +16,9 @@
 
 #include <memory>
 
-#include "zorbautils/fatal.h"
-#include "zorbautils/stemmer.h"
+#include "mutex.h"
+#include "stemmer.h"
+#include "stemmer/sb_stemmer.h"
 
 using namespace std;
 using namespace zorba::locale;
@@ -26,66 +27,26 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static bool is_lang_supported( iso639_1::type lang ) {
-  using namespace iso639_1;
-  switch ( lang ) {
-    case da:
-    case de:
-    case en:
-    case es:
-    case fi:
-    case hu:
-    case it:
-    case nl:
-    case no:
-    case pt:
-    case sv:
-    case ru:
-      return true;
-    default:
-      return false;
-  }
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-Stemmer::Stemmer( iso639_1::type lang ) :
-  stemmer_( sb_stemmer_new( iso639_1::string_of[ lang ], NULL ) )
-{
-  ZORBA_FATAL( stemmer_, "out of memory" );
-}
-
 Stemmer::~Stemmer() {
-  sb_stemmer_delete( stemmer_ );
+  // do nothing
 }
 
 Stemmer const* Stemmer::get( iso639_1::type lang ) {
-  static auto_ptr<Stemmer> cached_stemmers[ iso639_1::NUM_ENTRIES ];
+  static auto_ptr<Stemmer const> cached_stemmers[ iso639_1::NUM_ENTRIES ];
   static Mutex mutex;
 
   if ( !lang )
     lang = get_host_lang();
-  if ( !is_lang_supported( lang ) )
-    return NULL;
 
   AutoMutex const lock( &mutex );
-  auto_ptr<Stemmer> &ptr = cached_stemmers[ lang ];
-  if ( !ptr.get() )
-    ptr.reset( new Stemmer( lang ) );
-  return ptr.get();
-}
-
-void Stemmer::stem( zstring const &word, zstring *result ) const {
-  //
-  // We need a mutex since the libstemmer library is not thread-safe.
-  //
-  AutoMutex const lock( &mutex_ );
-
-  sb_symbol const *const sb_word = sb_stemmer_stem(
-    stemmer_, reinterpret_cast<sb_symbol const*>( word.c_str() ), word.length()
-  );
-  ZORBA_FATAL( sb_word, "out of memory" );
-  *result = reinterpret_cast<char const*>( sb_word );
+  auto_ptr<Stemmer const> &ptr_ref = cached_stemmers[ lang ];
+  if ( !ptr_ref.get() ) {
+    if ( Stemmer const *const stemmer = SnowballStemmer::create( lang ) )
+      ptr_ref.reset( stemmer );
+    else
+      return NULL;
+  }
+  return ptr_ref.get();
 }
 
 ///////////////////////////////////////////////////////////////////////////////

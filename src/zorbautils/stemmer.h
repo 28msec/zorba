@@ -17,23 +17,23 @@
 #ifndef ZORBA_STEMMER_H
 #define ZORBA_STEMMER_H
 
-#include "zorbatypes/zstring.h"
-
 #include "locale.h"
-#include "mutex.h"
-#include "stemmer/include/libstemmer.h"
+#include "zorbatypes/zstring.h"
 
 namespace zorba {
 
+/**
+ * A %Stemmer is used to "stem" words.
+ */
 class Stemmer {
 public:
-  ~Stemmer();
+  virtual ~Stemmer();
 
   /**
    * Gets an instance of a %Stemmer for the given language.
    *
    * @param lang The language for the stemmer.
-   * @return Returns said %Stemmer or NULL if no stemmer is availabe for the
+   * @return Returns said %Stemmer or \c NULL if no stemmer is availabe for the
    * given language.
    */
   static Stemmer const* get( locale::iso639_1::type lang );
@@ -44,17 +44,10 @@ public:
    * @param word The word to stem.
    * @param result A pointer to the result string.
    */
-  void stem( zstring const &word, zstring *result ) const;
+  virtual void stem( zstring const &word, zstring *result ) const = 0;
 
-private:
-  sb_stemmer *const stemmer_;
-  mutable Mutex mutex_;
-
-  Stemmer( locale::iso639_1::type );
-
-  // forbid these
-  Stemmer( Stemmer const& );
-  Stemmer& operator=( Stemmer const& );
+protected:
+  Stemmer() { }
 };
 
 } // namespace zorba
