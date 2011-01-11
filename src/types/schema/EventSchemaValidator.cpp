@@ -60,7 +60,7 @@ EventSchemaValidator::EventSchemaValidator(
                                                      theGrammarResolver,
                                                      memoryManager,
                                                      loc);
-#if _XERCES_VERSION >= 30100
+#if _XERCES_VERSION >= 30000
   // this will enable Integrity Constraint errors
   theSchemaValidatorFilter->setValidationScheme(XMLScanner::Val_Always);
 #endif
