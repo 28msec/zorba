@@ -33,6 +33,9 @@
 #define ZORBA_DEF_COLLATION_NS ZORBA_COLLATION_NS_BASE "IDENTICAL/en/US"
 #define W3C_CODEPT_COLLATION_NS "http://www.w3.org/2005/xpath-functions/collation/codepoint"
 
+#define ZORBA_OPTIONS_NS "http://www.zorba-xquery.org/options"
+#define ZORBA_OPTION_ENABLE_DTD "enable-dtd"
+
 #endif
 /*
  * Local variables:

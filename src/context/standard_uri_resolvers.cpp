@@ -28,12 +28,14 @@
 #include "util/string_util.h"
 
 #include "store/api/item.h"
+#include "store/api/item_factory.h"
 #include "store/api/collection.h"
 
 #include "store/api/store.h"
 #include "system/globalenv.h"
 #include "zorbatypes/URI.h"
 #include "zorbaerrors/error_manager.h"
+#include "zorbamisc/ns_consts.h"
 #include "context/static_context.h"
 #include "context/dynamic_loader.h"
 #include "context/get_current_lib_suffix.h"
@@ -66,6 +68,12 @@ store::Item_t StandardDocumentURIResolver::resolve(
   aURI->getStringValue2(lUriString);
 
   store::Store& lStore = GENV.getStore();
+
+  zstring lEnableDtdOptionValue;
+  store::Item_t lEnDtdQName;
+  lStore.getItemFactory()->createQName(lEnDtdQName, ZORBA_OPTIONS_NS, "", ZORBA_OPTION_ENABLE_DTD);
+  aStaticContext->lookup_option(lEnDtdQName, lEnableDtdOptionValue);
+  loadProperties.setEnableDtd( lEnableDtdOptionValue.compare("true")==0 );
 
   zstring baseUri = aStaticContext->get_base_uri();
 

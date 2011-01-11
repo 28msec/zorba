@@ -28,6 +28,7 @@
 #include "util/stl_util.h"
 #include "zorbaerrors/error_manager.h"
 #include "zorbautils/tokenizer.h"
+#include "zorbamisc/ns_consts.h"
 
 #ifndef NDEBUG
 #include "system/properties.h"
@@ -1152,7 +1153,7 @@ apply_ftwords( FTQueryItemSeq &query_items, FTToken::int_t query_pos,
 
 ////////// ApplyThesaurusOption ///////////////////////////////////////////////
 
-#define THESAURI_DIR_OPT_QNAME_NAMESPACE  "http://www.zorba-xquery.org/options"
+#define THESAURI_DIR_OPT_QNAME_NAMESPACE  ZORBA_OPTIONS_NS
 #define THESAURI_DIR_OPT_QNAME_LOCAL_NAME "thesauri-directory"
 
 namespace {

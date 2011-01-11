@@ -19,6 +19,7 @@
 #include <zorba/static_context_consts.h>
 
 #include "util/ascii_util.h"
+#include "zorbamisc/ns_consts.h"
 #include "testdriverconfig.h"
 #include "testdriver_common.h"
 #include "specification.h"
@@ -431,8 +432,8 @@ void setOptions(DriverContext& driverCtx, const zorba::StaticContext_t& sctx)
   std::vector<Specification::Option>::const_iterator lIter;
   for (lIter = spec.optionsBegin(); lIter != spec.optionsEnd(); ++lIter)
   {
-    zorba::Item lQName = driverCtx.theEngine->getItemFactory()->createQName
-      (lIter->theOptName);
+    zorba::Item lQName = driverCtx.theEngine->getItemFactory()->
+      createQName(lIter->theOptName);
     std::string lValue = lIter->theOptValue;
     zorba::ascii::replace_all(lValue, "$RBKT_SRC_DIR",
       driverCtx.theRbktSourceDir);
@@ -440,4 +441,9 @@ void setOptions(DriverContext& driverCtx, const zorba::StaticContext_t& sctx)
       driverCtx.theRbktBinaryDir);
     sctx->declareOption(lQName, lValue);
   }
+  
+  zorba::Item lQName = driverCtx.theEngine->getItemFactory()->
+    createQName(ZORBA_OPTIONS_NS, "", ZORBA_OPTION_ENABLE_DTD);
+  std::string lValue = spec.getEnableDtd() ? "true" : "false";
+  sctx->declareOption(lQName, lValue);
 }
