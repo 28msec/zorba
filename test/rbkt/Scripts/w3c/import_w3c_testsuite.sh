@@ -243,7 +243,8 @@ if ( $inlist ne "noinlist" || $urilist ne "nourilist" || $ctx ne "nocontext" ) {
 
   # enable Dtd loader for tests using Dtd
   if ( $name=~/^fn-id-dtd-/ ||
-       $name=~/^fn-idref-dtd-/
+       $name=~/^fn-idref-dtd-/ ||
+       $name=~/^functx-functx-id-from-element-1/
      )
   {
     print SPEC  " --enable-dtd ";
