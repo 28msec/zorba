@@ -24,6 +24,7 @@
 #include "util/atomic_int.h"
 #include "util/regex.h"
 #include "util/stl_util.h"
+#include "util/string_util.h"
 #include "util/unicode_util.h"
 #include "util/utf8_string.h"
 #include "util/utf8_util.h"
@@ -222,6 +223,33 @@ static void test_ptr_rep() {
     s = csc;
     ASSERT_TRUE( csc != s.data() );
   }
+}
+
+template<class StringType>
+static void test_clark() {
+  StringType result;
+
+  StringType uname = "{foo}bar";
+  ASSERT_TRUE( xml::clark_uri( uname, &result ) );
+  ASSERT_TRUE( result == "foo" );
+  ASSERT_TRUE( xml::clark_localname( uname, &result ) );
+  ASSERT_TRUE( result == "bar" );
+
+  uname = "{a}b";
+  ASSERT_TRUE( xml::clark_uri( uname, &result ) );
+  ASSERT_TRUE( result == "a" );
+  ASSERT_TRUE( xml::clark_localname( uname, &result ) );
+  ASSERT_TRUE( result == "b" );
+
+  ASSERT_TRUE( !xml::clark_uri( StringType( "" ), &result ) );
+  ASSERT_TRUE( !xml::clark_uri( StringType( "{" ), &result ) );
+  ASSERT_TRUE( !xml::clark_uri( StringType( "}" ), &result ) );
+  ASSERT_TRUE( !xml::clark_uri( StringType( "{}" ), &result ) );
+
+  ASSERT_TRUE( !xml::clark_localname( StringType( "" ), &result ) );
+  ASSERT_TRUE( !xml::clark_localname( StringType( "bar" ), &result ) );
+  ASSERT_TRUE( !xml::clark_localname( StringType( "{}" ), &result ) );
+  ASSERT_TRUE( !xml::clark_localname( StringType( "{foo}" ), &result ) );
 }
 
 /**
@@ -614,6 +642,9 @@ int string_test( int, char*[] ) {
   test_utf8_iterator<string>();
   test_utf8_iterator<zstring>();
   test_utf8_iterator<zstring_p>();
+
+  test_clark<string>();
+  test_clark<zstring>();
 
   test_ends_with<string>();
   test_ends_with<zstring>();

@@ -40,7 +40,47 @@ inline std::ostream& operator<<( std::ostream &o, version v ) {
   return o << version_string_of[ v ];
 }
 
-///////////////////////////////////////////////////////////////////////////////
+////////// "James Clark notation" universal name functions ////////////////////
+
+/**
+ * Attempts to extract the local name from a "universal name".
+ * See: http://www.jclark.com/xml/xmlns.htm
+ *
+ * @param uname The universal name.
+ * @param local A pointer to the string to receive the local name.
+ * @return Returns \c true only if the extraction was successful.
+ */
+template<class InputStringType,class OutputStringType> inline
+bool clark_localname( InputStringType const &uname, OutputStringType *local ) {
+  typename InputStringType::size_type const rbrace = uname.find( '}' );
+  if ( rbrace != InputStringType::npos && rbrace + 1 < uname.size() ) {
+    *local = uname.substr( rbrace + 1 );
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Attempts to extract the URI from a "universal name".
+ * See: http://www.jclark.com/xml/xmlns.htm
+ *
+ * @param uname The universal name.
+ * @param uri A pointer to the string to receive the URI.
+ * @return Returns \c true only if the extraction was successful.
+ */
+template<class InputStringType,class OutputStringType> inline
+bool clark_uri( InputStringType const &uname, OutputStringType *uri ) {
+  if ( uname.size() > 2 && uname[0] == '{' ) {
+    typename InputStringType::size_type const rbrace = uname.find( '}', 1 );
+    if ( rbrace != InputStringType::npos ) {
+      *uri = uname.substr( 1, rbrace - 1 );
+      return true;
+    }
+  }
+  return false;
+}
+
+////////// Character validity /////////////////////////////////////////////////
 
 /**
  * Checks whether the given code-point is valid for the given XML version.
@@ -61,6 +101,8 @@ inline bool is_valid( CodePointType c, version v = v1_0 ) {
       ||  (c >= 0x010000 && c <= 0x10FFFF)
       ||  (v == v1_1 && c >= 0x01 && c <= 0x1F);
 }
+
+////////// XML entity reference parsing ///////////////////////////////////////
 
 /**
  * Parses an XML entity reference.
