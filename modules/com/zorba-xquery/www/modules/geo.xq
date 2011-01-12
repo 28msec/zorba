@@ -318,7 +318,7 @@ declare function zorba-geo:is-measured( $geometry as element()) as xs:boolean ex
 
 (:~
  : A boundary is a set that represents the limit of an geometry.<br/>
- : For a Point or MultiPoint, the boundary is an empty geometry collection.<br/>
+ : For a Point or MultiPoint, the boundary is the empty geometry, nothing is returned.<br/>
  : For a LineString, the boundary is the MultiPoint set of start point and end point.<br/>
  : For a LinearRing, the boundary is empty MultiPoint.<br/>
  : For a Curve, it is treated as a MultiCurve.<br/>
@@ -579,7 +579,8 @@ declare function zorba-geo:convex-hull( $geometry as element()) as element() ext
 (:~
  : Returns a geometric object that represents the Point set intersection of
  :    geometry1 and geometry2.<br/>
- : For intersection of two polygons interiors, returns a polygon.
+ : For intersection of two polygons interiors, returns a polygon.<br/>
+ : If intersection is void, empty sequence is returned.
  : <br/>
  :
  : @param $geometry1 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
@@ -608,6 +609,7 @@ declare function zorba-geo:union( $geometry1 as element(),  $geometry2 as elemen
 (:~
  : Returns a geometric object that represents the Point set difference of
  :    geometry1 and geometry2. Points that are in geometry1 and are not in geometry2.<br/>
+ : If difference is empty geometry, empty sequence is returned.
  : <br/>
  :
  : @param $geometry1 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
@@ -623,6 +625,7 @@ declare function zorba-geo:difference( $geometry1 as element(),  $geometry2 as e
  : Returns a geometric object that represents the Point set symmetric difference of
  :    geometry1 and geometry2. Points that are in geometry1 and are not in geometry2
  :    and points that are in geometry2 and are not in geometry1.<br/>
+ : If difference is empty geometry, empty sequence is returned.
  : <br/>
  :
  : @param $geometry1 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 

@@ -65,6 +65,8 @@
 
 #define DONT_CHECK_FOR_CURVE_SURFACE true
 
+#define RETURN_RESULT_ITEM            return result_item.isNull() ? ItemSequence_t(NULL) : ItemSequence_t(new SingletonItemSequence(result_item))
+
 namespace zorba { namespace geomodule {
 
 GeoFunction::GeoFunction(const GeoModule* aModule)
@@ -1784,8 +1786,8 @@ zorba::Item GeoFunction::getGMLItemFromGeosGeometry(zorba::Item &parent,
   case geos::geom::GEOS_GEOMETRYCOLLECTION:
   {
     size_t    nr_geoms = geos_geometry->getNumGeometries();
-    //if(!nr_geoms)
-    //  break;
+    if(!nr_geoms)
+      break;
     item_name = theModule->getItemFactory()->createQName("http://www.opengis.net/gml", "gml", "MultiGeometry");
     result_item = theModule->getItemFactory()->createElementNode(parent, item_name, item_type, false, false, ns_binding);
 
@@ -2369,7 +2371,7 @@ SFGeometryTypeFunction::evaluate(const StatelessExternalFunction::Arguments_t& a
   }
   else
   {
-    return ItemSequence_t(new EmptySequence());
+    return ItemSequence_t(NULL);//new EmptySequence());
   }
 }
 
@@ -2532,7 +2534,7 @@ sfclass_name::evaluate(const StatelessExternalFunction::Arguments_t& args,      
   delete geos_geometry;                                                                 \
   delete geos_result;                                                                   \
                                                                                         \
-  return ItemSequence_t(new SingletonItemSequence(result_item));                        \
+  RETURN_RESULT_ITEM;                                                                   \
 }
 
 //DEFINE_EVALUATE_ONE_GEOMETRY_RETURN_GEOMETRY(SFBoundaryFunction, getBoundary)
@@ -2614,7 +2616,8 @@ void GeoFunction::getMultiGeometryBoundary(geos::geom::Geometry *geos_geometry,
     {
       zorba::Item boundary;
       boundary = getBoundary(geom, srs_uri);
-      boundaries->push_back(boundary);
+      if(!boundary.isNull())
+        boundaries->push_back(boundary);
     }
   }
 }
@@ -2623,7 +2626,7 @@ ItemSequence_t
 SFBoundaryFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,              
          const StaticContext* aSctxCtx,                                                 
          const DynamicContext* aDynCtx) const                                           
-{                                                                                       
+{
   Item lItem;                                                                           
   gmlsf_types   geometric_type;                                                         
   geometric_type = getGeometryNodeType(args, 0, lItem);                                 
@@ -2653,7 +2656,7 @@ SFBoundaryFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
     zorba::Item result_item;
     result_item = getBoundary(geos_geometry, srs_uri);
     delete geos_geometry;                                                                 
-    return ItemSequence_t(new SingletonItemSequence(result_item));                        
+    RETURN_RESULT_ITEM;
   }
   else
   {
@@ -3234,7 +3237,7 @@ sfclass_name::evaluate(const StatelessExternalFunction::Arguments_t& args,      
   delete geos_geometry2;                                                          \
   delete geos_result;                                                             \
                                                                                   \
-  return ItemSequence_t(new SingletonItemSequence(result_item));                  \
+  RETURN_RESULT_ITEM;                                                             \
 }
 
 
@@ -3613,7 +3616,7 @@ SFBufferFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
   delete geos_geometry1;                                                          
   delete geos_result;                                                             
                                                                                   
-  return ItemSequence_t(new SingletonItemSequence(result_item));                  
+  RETURN_RESULT_ITEM;                  
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -4165,7 +4168,7 @@ SFExteriorRingFunction::evaluate(const StatelessExternalFunction::Arguments_t& a
   Item  result_item;
   buildGeosGeometryFromItem(lItem, geometric_type, -1, NULL, GET_EXTERIOR_RING, NULL, &result_item);
                                                                                         
-  return ItemSequence_t(new SingletonItemSequence(result_item));                        
+  RETURN_RESULT_ITEM;                        
 }
 
 ItemSequence_t                                                                          
