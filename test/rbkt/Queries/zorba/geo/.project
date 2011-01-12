@@ -19,5 +19,6 @@
 	<natures>
 		<nature>org.xqdt.core.nature</nature>
 		<nature>org.eclipse.wst.common.project.facet.core.nature</nature>
+		<nature>org.eclipse.wst.xquery.core.nature</nature>
 	</natures>
 </projectDescription>

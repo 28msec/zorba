@@ -1490,7 +1490,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
 
 void GeoFunction::addNewLineIndentText(zorba::Item &parent, unsigned int indent) const 
 {
-  zorba::Item text_item;
+/*  zorba::Item text_item;
   if(indent > 100)
     indent = 100;
   char *strtemp;
@@ -1500,6 +1500,7 @@ void GeoFunction::addNewLineIndentText(zorba::Item &parent, unsigned int indent)
   strtemp[1+indent] = 0;
   text_item = theModule->getItemFactory()->createTextNode(parent, strtemp);
   delete[] strtemp;
+*/
 }
 
 void GeoFunction::appendIndent(char *&strtemp2, unsigned int indent) const
@@ -1782,10 +1783,12 @@ zorba::Item GeoFunction::getGMLItemFromGeosGeometry(zorba::Item &parent,
 	/// a collection of heterogeneus geometries
   case geos::geom::GEOS_GEOMETRYCOLLECTION:
   {
+    size_t    nr_geoms = geos_geometry->getNumGeometries();
+    //if(!nr_geoms)
+    //  break;
     item_name = theModule->getItemFactory()->createQName("http://www.opengis.net/gml", "gml", "MultiGeometry");
     result_item = theModule->getItemFactory()->createElementNode(parent, item_name, item_type, false, false, ns_binding);
 
-    size_t    nr_geoms = geos_geometry->getNumGeometries();
     for(size_t i=0;i<nr_geoms;i++)
     {
       zorba::Item geometryMember_item;
@@ -1798,7 +1801,8 @@ zorba::Item GeoFunction::getGMLItemFromGeosGeometry(zorba::Item &parent,
 
       zorba::Item   geometry_item;
       geometry_item = getGMLItemFromGeosGeometry(geometryMember_item, member, NULL, indent+4 );
-      addNewLineIndentText(geometryMember_item, indent+2);
+      if(!geometry_item.isNull())
+        addNewLineIndentText(geometryMember_item, indent+2);
     }
     if(nr_geoms)
       addNewLineIndentText(result_item, indent);
@@ -1812,7 +1816,7 @@ zorba::Item GeoFunction::getGMLItemFromGeosGeometry(zorba::Item &parent,
   }
   }
 
-  if(srs_uri && !srs_uri->isNull())
+  if(!result_item.isNull() && srs_uri && !srs_uri->isNull())
   {
     item_type = theModule->getItemFactory()->createQName("http://www.w3.org/2001/XMLSchema", "untyped");
     item_name = theModule->getItemFactory()->createQName("", "srsName");
