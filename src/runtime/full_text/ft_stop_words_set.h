@@ -25,6 +25,9 @@
 
 namespace zorba {
 
+/**
+ * An %ft_stop_words_set is (as its name suggests) a set of stop-wors.
+ */
 class ft_stop_words_set {
 public:
   ~ft_stop_words_set() {
@@ -32,9 +35,25 @@ public:
       delete word_set_;
   }
 
-  static ft_stop_words_set const* construct( ftstop_word_option const&,
-                                             locale::iso639_1::type );
+  /**
+   * Constructs an %ft_stop_words_set.
+   *
+   * @param option The ftstop_word_option to use to possibly add or remove
+   * stop-words.
+   * @param lang The language of the stop-words.
+   * @return Returns a new %ft_stop_words_set.
+   */
+  static ft_stop_words_set const* construct( ftstop_word_option const &option,
+                                             locale::iso639_1::type lang );
 
+  /**
+   * Checks whether this %ft_stop_words_set contains the given word.
+   *
+   * @param word The word to check for.  It is assumed to have already been
+   * converted to lower case.
+   * @return Returns \c true only if this %ft_stop_words_set contains the given
+   * word.
+   */
   bool contains( zstring const &word ) const {
     return word_set_->find( word ) != word_set_->end();
   }
