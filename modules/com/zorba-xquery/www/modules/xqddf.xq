@@ -497,7 +497,7 @@ declare function xqddf:check-integrity-constraint(
 
 (:~
  : The probe function retrieves the domain nodes associated with a particular
- : search condition. 
+ : search condition, which is presented as a single key tuple.
  :
  : @param $name The QName of the index.
  : @param $key1 The search condition.
@@ -505,4 +505,39 @@ declare function xqddf:check-integrity-constraint(
  : @error If available indexes does not provide a mapping for
  :        the expanded QName $name.
  :)
-declare function xqddf:probe-index-point($name as xs:QName, $key1 as xs:anyAtomic) as node()+ external;
+declare function xqddf:probe-index-point($name as xs:QName, 
+  $key1 as xs:anyAtomic) as node()+ external;
+
+(:~
+ : The probe function retrieves the domain nodes associated with a particular
+ : search condition, which is presented as a range of key tuples.
+ :
+ : @param $name The QName of the index.
+ : @param $rangeLowerBound1 The lower bound in a range of key values.
+ : @param $rangeUpperBound1 The upper bound in a range of key values.
+ : @param $rangeHaveLowerBound If false, then there is no lower bound, or 
+ :          equivalently, the lower bound is -INFINITY. Otherwise, the lower 
+ :          bound is the one given by the rangeLowerBound value. 
+ : @param $rangeHaveUpperBound If false, then there is no upper bound, or 
+ :          equivalently, the upper bound is +INFINITY. Otherwise, the upper 
+ :          bound is the one given by the rangeUpperBound value. 
+ : @param $rangeLowerBoundIncluded If false, then the range is open from below, 
+ :          i.e., the rangeLowerBound value is not considered part of the 
+ :          range. Otherwise, the range is closed from below, i.e., the 
+ :          rangeLowerBound value is part of the range. 
+ : @param $rangeUpperBoundIncluded If false, then the range is open from above, 
+ :          i.e., the rangeUpperBound value is not considered part of the 
+ :          range. Otherwise, the range is closed from above, i.e., the 
+ :          rangeUpperBound value is part of the range.  
+ : @return The sequence of domain nodes.
+ : @error If available indexes does not provide a mapping for
+ :        the expanded QName $name.
+ :)
+declare function xqddf:probe-index-range($name as xs:QName, 
+  $rangeLowerBound1         as xs:anyAtomic?,
+  $rangeUpperBound1         as xs:anyAtomic?,
+  $rangeHaveLowerBound1     as xs:boolean,
+  $rangeHaveupperBound1     as xs:boolean,
+  $rangeLowerBoundIncluded1 as xs:boolean,
+  $rangeupperBoundIncluded1 as xs:boolean) as node()* external;
+
