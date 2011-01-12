@@ -35,6 +35,8 @@
 #include "api/dynamiccontextimpl.h"
 
 #include "compiler/parser/query_loc.h"
+#include "compiler/parsetree/parsenodes.h"
+#include "compiler/api/compilercb.h"
 
 #include "runtime/util/item_iterator.h"
 
@@ -42,6 +44,8 @@
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 #include "store/api/temp_seq.h"
+
+#include "util/xml_util.h"
 
 #include "zorbaerrors/Assert.h"
 
@@ -82,6 +86,65 @@ DynamicContextImpl::~DynamicContextImpl()
 /****************************************************************************//**
 
 ********************************************************************************/
+
+/**
+ * Utility function: Given a single-string QName, which may be either
+ * lexical (eg. "ns:foo") or a Clark-style universal name (eg.,
+ * "{nsuri}:foo"), return the "expanded varname" which may be used to
+ * add a variable to the underlying dynamic context. In the case of a
+ * lexical QName, it will only attempt to look up the namespace prefix
+ * on the main module's static context. For a universal name, it will
+ * call to the other form of expand_varname().
+ */
+void DynamicContextImpl::expand_varname(
+  const zstring &aQName, zstring* aExpandedName) const
+{
+  // First check for universal name.
+  zstring lNsuri;
+  if (xml::clark_uri(aQName, &lNsuri)) {
+    // Looks like it is a universal name; jump over to other form.
+    zstring lLocalname;
+    xml::clark_localname(aQName, &lLocalname);
+    expand_varname(lNsuri, lLocalname, aExpandedName);
+    return;
+  }
+
+  // Note that this method will throw a ZorbaError if the qname has an
+  // unknown prefix, which is fine. It apparently does not throw any
+  // exception if the variable is not known, however, which is a
+  // little odd and means that you'll get an unbound variable error at
+  // runtime rather than an exception at setVariable() time.
+  *aExpandedName = theCtx->expand_varname(theStaticContext, aQName);
+}
+
+/**
+ * Utility function: Given an expanded QName (that is, a separate
+ * namespace URI and localname), return the "expanded varname" which
+ * may be used to add a variable to the underlying dynamic
+ * context. This method will search through all static contexts,
+ * including library modules, for a matching variable declaration.
+ */
+void DynamicContextImpl::expand_varname(
+  const zstring &aNsuri, const zstring& aLocalname, zstring *aExpandedName)
+  const
+{
+  std::map<short, static_context_t>& lMap = theQuery->theCompilerCB->theSctxMap;
+  std::map<short, static_context_t>::iterator lIter;
+  for (lIter = lMap.begin(); lIter != lMap.end(); lIter++) {
+    // Note that this method will NOT throw any exception if the
+    // variable is unknown - which is useful for us, even though it
+    // probably should
+    *aExpandedName = theCtx->expand_varname(lIter->second, aNsuri, aLocalname);
+    // If it DID return something, we're done
+    if (!aExpandedName->empty()) {
+      return;
+    }
+  }
+  // Consistent with the other form of expand_varname(), we do not
+  // throw an exception if the variable isn't found anywhere; we just
+  // return the empty varname adn let later code handle it.
+}
+
 bool DynamicContextImpl::setVariable(
     const String& aQName,
     const Item& aItem)
@@ -95,7 +158,8 @@ bool DynamicContextImpl::setVariable(
     ZorbaImpl::checkItem(lItem);
 
     const zstring& lString = Unmarshaller::getInternalString(aQName);
-    zstring lExpandedName = theCtx->expand_varname(theStaticContext, lString);
+    zstring lExpandedName;
+    expand_varname(lString, &lExpandedName);
 
     // add it to the internal context
     theCtx->add_variable(lExpandedName.str(), lItem);
@@ -125,7 +189,8 @@ bool DynamicContextImpl::setVariable(
     store::Iterator_t lRes = Unmarshaller::getInternalIterator(lIter);
 
     const zstring& lString = Unmarshaller::getInternalString(aQName);
-    zstring lExpandedName = theCtx->expand_varname(theStaticContext, lString);
+    zstring lExpandedName;
+    expand_varname(lString, &lExpandedName);
 
     theCtx->add_variable(lExpandedName.str(), lRes);
 
@@ -157,10 +222,9 @@ bool DynamicContextImpl::setVariable(
     const zstring& lNamespace = Unmarshaller::getInternalString(aNamespace);
     const zstring& lLocalname = Unmarshaller::getInternalString(aLocalname);
 
-    zstring lExpandedName = theCtx->expand_varname(theStaticContext,
-                                                   lNamespace,
-                                                   lLocalname);
-
+    zstring lExpandedName;
+    expand_varname(lNamespace, lLocalname, &lExpandedName);
+    
     theCtx->add_variable(lExpandedName.str(), lRes);
 
     return true;
@@ -184,9 +248,8 @@ bool DynamicContextImpl::getVariable(
     const zstring& lNamespace = Unmarshaller::getInternalString(aNamespace);
     const zstring& lLocalname = Unmarshaller::getInternalString(aLocalname);
 
-    zstring lExpandedName = theCtx->expand_varname(theStaticContext,
-                                                     lNamespace,
-                                                     lLocalname);
+    zstring lExpandedName;
+    expand_varname(lNamespace, lLocalname, &lExpandedName);
 
     store::Item_t item;
     store::TempSeq_t tempseq;

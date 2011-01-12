@@ -1,0 +1,14 @@
+(:*******************************************************:)
+(: Written By: Chris Hillery                             :)
+(: Date: 2011/01/09                                      :)
+(: Purpose: Library module with external variable        :)
+(:*******************************************************:)
+module namespace zm-B = "http://zorbatest.lambda.nu/modules-B";
+
+import module namespace zm-C = "http://zorbatest.lambda.nu/modules-C"
+at "extvarModule-C.xqlib";
+
+declare function zm-B:getVar ()
+{
+  zm-C:getVar();
+};

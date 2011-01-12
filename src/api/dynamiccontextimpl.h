@@ -197,6 +197,11 @@ protected:
                           const zstring& baseUri,
                           std::auto_ptr<std::istream> aInStream,
                           const XmlDataManager::LoadProperties& aLoadProperties);
+
+private:
+  void expand_varname(const zstring& aQName, zstring* aExpandedName) const;
+  void expand_varname(const zstring& aNsuri, const zstring& aLocalname,
+    zstring* aExpandedName) const;
 };
 
 } /* namespace zorba */
