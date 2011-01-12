@@ -1,6 +1,5 @@
 test/rbkt/w3c_testsuite/XQuery/FunctX/functx-fn-tokenize/functx-fn-tokenize-all
 test/rbkt/w3c_testsuite/XQuery/FunctX/functx-fn-tokenize/functx-fn-tokenize-7
-test/rbkt/w3c_testsuite/XQuery/FunctX/functx-fn-namespace-uri-for-prefix/functx-fn-namespace-uri-for-prefix-all
 test/rbkt/w3c_testsuite/XQuery/Expressions/Construct/DirectConElem/DirectConElemContent/Constr-cont-nsmode-10
 test/rbkt/w3c_testsuite/XQuery/Expressions/Construct/DirectConElem/DirectConElemContent/Constr-cont-nsmode-8
 test/rbkt/w3c_testsuite/XQuery/Expressions/Construct/DirectConElem/DirectConElemContent/Constr-cont-nsmode-7

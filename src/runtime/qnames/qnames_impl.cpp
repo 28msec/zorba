@@ -303,6 +303,11 @@ bool NamespaceUriForPrefixIterator::nextImpl(
           break;
         }
       }
+      if(!found && itemPrefix != NULL && itemPrefix->getStringValue().empty())
+      {
+        resNs = theSctx->default_elem_type_ns();
+        found = true;
+      }
     }
   }
 
