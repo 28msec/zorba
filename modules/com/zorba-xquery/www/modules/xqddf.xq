@@ -494,3 +494,15 @@ declare updating function xqddf:deactivate-integrity-constraint(
  :)
 declare function xqddf:check-integrity-constraint(
   $name as xs:QName) as xs:boolean external;
+
+(:~
+ : The probe function retrieves the domain nodes associated with a particular
+ : search condition. 
+ :
+ : @param $name The QName of the index.
+ : @param $key1 The search condition.
+ : @return The sequence of domain nodes.
+ : @error If available indexes does not provide a mapping for
+ :        the expanded QName $name.
+ :)
+declare function xqddf:probe-index-point($name as xs:QName, $key1 as xs:anyAtomic) as node()+ external;
