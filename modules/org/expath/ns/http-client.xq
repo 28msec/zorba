@@ -191,4 +191,3 @@ declare sequential function http:send-request(
     fn:error($err:HC005, "The request element is not valid.")
   }
 };
-

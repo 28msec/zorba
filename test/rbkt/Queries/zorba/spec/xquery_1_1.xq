@@ -3,7 +3,7 @@ xquery version "1.1";
 import module namespace util = "http://www.zorba-xquery.com/util" at "xquery_spec.xqi";
 
 import module namespace sctx = "http://www.zorba-xquery.com/modules/introspection/sctx";
-import module namespace functx = "http://www.functx.com";
+import module namespace functx = "http://www.functx.com/";
 import module namespace file = "http://www.zorba-xquery.com/modules/file";
 
 declare variable $xquery_version as xs:string := "3.0";
