@@ -198,6 +198,7 @@ class CSVSerializeFunction : public NonePureStatelessExternalFunction
 
     //for StringIteratorStreamBuf
     virtual bool next(std::string &next_string);
+    virtual bool reset();
   private:
     void csv_get_headers(  Item node, 
                            unsigned int level,

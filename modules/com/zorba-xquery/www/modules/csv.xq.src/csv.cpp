@@ -1108,6 +1108,10 @@ bool CSVSerializeFunction::StringStreamSequence::next(std::string &result_string
   return true;
 }
 
+bool CSVSerializeFunction::StringStreamSequence::reset()
+{
+  return false;
+}
  
 zorba::ItemSequence_t
 CSVSerializeFunction::evaluate(const Arguments_t& args,

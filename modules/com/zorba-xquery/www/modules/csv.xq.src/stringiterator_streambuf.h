@@ -43,6 +43,7 @@ public:
 
 public:
   virtual bool next(std::string &next_string) = 0;
+  virtual bool reset() = 0;
 };
 
 }

@@ -77,7 +77,8 @@ int StringIteratorStreamBuf::pbackfail ( int c )
   return 1;
 }
 
-//set a new position, but cannot go too much back
+//set a new position
+//if going too much back, restart the iterator
 streampos StringIteratorStreamBuf::seekoff ( streamoff off, ios_base::seekdir way, ios_base::openmode which )
 {
   if(!(which & ios_base::in))
@@ -107,7 +108,8 @@ streampos StringIteratorStreamBuf::seekoff ( streamoff off, ios_base::seekdir wa
   return seekpos(targetpos, ios_base::in);
 }
 
-//set a new position, but cannot go too much back
+//set a new position
+//if going too much back, restart the iterator
 streampos StringIteratorStreamBuf::seekpos ( streampos sp, ios_base::openmode which )
 {
   if(!(which & ios_base::in))
@@ -118,7 +120,17 @@ streampos StringIteratorStreamBuf::seekpos ( streampos sp, ios_base::openmode wh
     setg(eback(), eback(), egptr());
     pbackfail(EOF);
     if(sp < begin_offset)
-      return -1;//cannot reach older data
+    {
+      //restart the iterator
+      if(!reset())
+        return -1;
+      buffer[0].resize(0);
+      buffer[1].resize(0);
+      current_buffer = last_buffer = 0;
+      begin_offset = 0;
+      is_eof = false;
+      setg(NULL, NULL, NULL);
+    }
   }
   while(sp >= (begin_offset+(streamoff)buffer[current_buffer].length()))
   {

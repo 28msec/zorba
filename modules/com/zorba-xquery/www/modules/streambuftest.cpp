@@ -22,8 +22,9 @@ class TestStreambuf : public zorba::StringIteratorStreamBuf
 {
   std::string strings[3];
   int current_string;
+  int max_repetitions;
 public:
-  TestStreambuf()
+  TestStreambuf(int _max_repetitions = 1) : max_repetitions(_max_repetitions)
   {
     strings[0] = "ab";
     strings[1] = "cde";
@@ -36,8 +37,19 @@ public:
   virtual bool next(std::string &next_string)
   {
     if(current_string >= 3)
-      return false;
+    {
+      max_repetitions--;
+      if(!max_repetitions)
+        return false;
+      else
+        current_string = 0;
+    }
     next_string = strings[current_string++];
+    return true;
+  }
+  virtual bool reset()
+  {
+    current_string = 0;
     return true;
   }
 
@@ -194,6 +206,24 @@ bool test7()
   return true;
 }
 
+bool test8()
+{
+  TestStreambuf sbuf(10 * 1000 * 1000);
+  std::istream *is = new std::istream(&sbuf);
+
+  char result[100];
+  memset(result, 0, sizeof(result));
+  do{
+    is->read(result, 6);
+    if(is->eof())
+      break;
+    if(strcmp(result, "abcdef"))
+      return false;
+  }while(!is->eof());
+  return true;
+}
+
+
 int streambuftest (int argc, char* argv[])
 {
   if(!test1())
@@ -229,6 +259,11 @@ int streambuftest (int argc, char* argv[])
   if(!test7())
   {
     printf("streamable string streambuf test7 failed!\n");
+    return 1;
+  }
+  if(!test8())
+  {
+    printf("streamable string streambuf test8 failed!\n");
     return 1;
   }
   return 0;
