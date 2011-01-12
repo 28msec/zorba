@@ -56,19 +56,54 @@ public:
 
   ////////// compile pattern //////////////////////////////////////////////////
 
+  /**
+   * Compiles a regular expression.  One of the compile functions must be
+   * called prior to calling one of the match functions.
+   *
+   * @param pattern The regular expression pattern to compile.
+   * @param flags The regular expression flags, if any.
+   * @return Returns \c true only if the pattern compiled successfully.
+   */
   bool compile( string const &pattern, char const *flags = "" );
 
+  /**
+   * Compiles a regular expression.  One of the compile functions must be
+   * called prior to calling one of the match functions.
+   *
+   * @param pattern The regular expression pattern to compile.
+   * @param flags The regular expression flags, if any.
+   * @return Returns \c true only if the pattern compiled successfully.
+   */
   bool compile( char const *pattern, char const *flags = "" ) {
     string u_pattern;
     return to_string( pattern, &u_pattern ) && compile( u_pattern, flags );
   }
 
+  /**
+   * Compiles a regular expression.  One of the compile functions must be
+   * called prior to calling one of the match functions.
+   *
+   * @tparam StringType The pattern string type.
+   * @param pattern The regular expression pattern to compile.
+   * @param flags The regular expression flags, if any.
+   * @return Returns \c true only if the pattern compiled successfully.
+   */
   template<class StringType>
   bool compile( StringType const &pattern, char const *flags = "" ) {
     string u_pattern;
     return to_string( pattern, &u_pattern ) && compile( u_pattern, flags );
   }
 
+  /**
+   * Compiles a regular expression.  One of the compile functions must be
+   * called prior to calling one of the match functions.
+   *
+   * @tparam PatternStringType The pattern string type.
+   * @tparam FlagsStringType The flags string type.
+   * @param pattern The regular expression pattern to compile.
+   * @param flags The regular expression flags, if any.
+   * @return Returns \c true only if the pattern compiled successfully.
+   */
   template<class PatternStringType,class FlagsStringType>
   bool compile( PatternStringType const &pattern,
                 FlagsStringType const &flags ) {
@@ -77,18 +112,52 @@ public:
 
   ////////// partial match ////////////////////////////////////////////////////
 
+  /**
+   * Checks whether the given string partially patches the previosuly compiled
+   * regular expression.  A "partial match" means that at least part of the
+   * string matches, e.g., "b" matches the regular expression "aba".
+   *
+   * @param s The Unicode string to attempt to match.
+   * @return Returns \c true only if the string partially matches.
+   */
   bool match_part( string const &s );
 
+  /**
+   * Checks whether the given string partially patches the previosuly compiled
+   * regular expression.  A "partial match" means that at least part of the
+   * string matches, e.g., "b" matches the regular expression "aba".
+   *
+   * @param s The null-terminated UTF-8 C string to attempt to match.
+   * @return Returns \c true only if the string partially matches.
+   */
   bool match_part( char const *s ) {
     string u_s;
     return to_string( s, &u_s ) && match_part( u_s );
   }
 
+  /**
+   * Checks whether the given string partially patches the previosuly compiled
+   * regular expression.  A "partial match" means that at least part of the
+   * string matches, e.g., "b" matches the regular expression "aba".
+   *
+   * @param s The UTF-8 C string to attempt to match.
+   * @param s_len The length of the string in bytes.
+   * @return Returns \c true only if the string partially matches.
+   */
   bool match_part( char const *s, size_type s_len ) {
     string u_s;
     return to_string( s, s_len, &u_s ) && match_part( u_s );
   }
 
+  /**
+   * Checks whether the given string partially patches the previosuly compiled
+   * regular expression.  A "partial match" means that at least part of the
+   * string matches, e.g., "b" matches the regular expression "aba".
+   *
+   * @tparam StringType The string type.
+   * @param s The UTF-8 string to attempt to match.
+   * @return Returns \c true only if the string partially matches.
+   */
   template<class StringType>
   bool match_part( StringType const &s ) {
     string u_s;
@@ -177,12 +246,12 @@ public:
    * successful return, the position is updated to be one past the last
    * character of the token.
    * @param token A pointer to the string that is to be set to the substring
-   * separated by the pattern or NULL if the substring is not needed.
+   * separated by the pattern or \c NULL if the substring is not needed.
    * @param matched A pointer to a \c bool to indicate whether the pattern
-   * matched for the token or NULL if this is not needed.  If not NULL, it is
-   * set to \c false either if there is no token or the token is the final
-   * token after the last separator; it is set to \c true only for non-last
-   * tokens.
+   * matched for the token or \c NULL if this is not needed.  If not \c NULL,
+   * it is set to \c false either if there is no token or the token is the
+   * final token after the last separator; it is set to \c true only for
+   * non-last tokens.
    * @return Returns \c true only if there is a token.
    */
   bool next_token( string const &s, size_type *pos, string *token,
@@ -199,12 +268,12 @@ public:
    * successful return, the position is updated to be one past the last
    * character of the token.
    * @param token A pointer to the string that is to be set to the substring
-   * separated by the pattern or NULL if the substring is not needed.
+   * separated by the pattern or \c NULL if the substring is not needed.
    * @param matched A pointer to a \c bool to indicate whether the pattern
-   * matched for the token or NULL if this is not needed.  If not NULL, it is
-   * set to \c false either if there is no token or the token is the final
-   * token after the last separator; it is set to \c true only for non-last
-   * tokens.
+   * matched for the token or \c NULL if this is not needed.  If not \c NULL,
+   * it is set to \c false either if there is no token or the token is the
+   * final token after the last separator; it is set to \c true only for
+   * non-last tokens.
    * @return Returns \c true only if there is a token.
    */
   bool next_token( char const *s, size_type *pos, string *token,
@@ -223,12 +292,12 @@ public:
    * successful return, the position is updated to be one past the last
    * character of the token.
    * @param token A pointer to the string that is to be set to the substring
-   * separated by the pattern or NULL if the substring is not needed.
+   * separated by the pattern or \c NULL if the substring is not needed.
    * @param matched A pointer to a \c bool to indicate whether the pattern
-   * matched for the token or NULL if this is not needed.  If not NULL, it is
-   * set to \c false either if there is no token or the token is the final
-   * token after the last separator; it is set to \c true only for non-last
-   * tokens.
+   * matched for the token or \c NULL if this is not needed.  If not \c NULL,
+   * it is set to \c false either if there is no token or the token is the
+   * final token after the last separator; it is set to \c true only for
+   * non-last tokens.
    * @return Returns \c true only if there is a token.
    */
   bool next_token( char const *s, size_type s_len, size_type *pos,
@@ -248,7 +317,7 @@ public:
    * successful return, the position is updated to be one past the last
    * character of the token.
    * @param token A pointer to the string that is to be set to the substring
-   * separated by the pattern or NULL if the substring is not needed.
+   * separated by the pattern or \c NULL if the substring is not needed.
    * @return Returns \c true only if there is a token.
    */
   template<class StringType>
@@ -260,18 +329,52 @@ public:
 
   ////////// whole match //////////////////////////////////////////////////////
 
+  /**
+   * Checks whether the given string completely patches the previosuly compiled
+   * regular expression.  A "complete match" means that the entire string must
+   * match the regular expression as if the pattern were "^pattern$".
+   *
+   * @param s The Unicode string to attempt to match.
+   * @return Returns \c true only if the string completely matches.
+   */
   bool match_whole( string const &s );
 
+  /**
+   * Checks whether the given string completely patches the previosuly compiled
+   * regular expression.  A "complete match" means that the entire string must
+   * match the regular expression as if the pattern were "^pattern$".
+   *
+   * @param s The null-terminated UTF-8 C string to attempt to match.
+   * @return Returns \c true only if the string completely matches.
+   */
   bool match_whole( char const *s ) {
     string u_s;
     return to_string( s, &u_s ) && match_whole( u_s );
   }
 
+  /**
+   * Checks whether the given string completely patches the previosuly compiled
+   * regular expression.  A "complete match" means that the entire string must
+   * match the regular expression as if the pattern were "^pattern$".
+   *
+   * @param s The UTF-8 C string to attempt to match.
+   * @param s_len The length of the string in bytes.
+   * @return Returns \c true only if the string completely matches.
+   */
   bool match_whole( char const *s, size_type s_len ) {
     string u_s;
     return to_string( s, s_len, &u_s ) && match_whole( u_s );
   }
 
+  /**
+   * Checks whether the given string completely patches the previosuly compiled
+   * regular expression.  A "complete match" means that the entire string must
+   * match the regular expression as if the pattern were "^pattern$".
+   *
+   * @tparam StringType The string type.
+   * @param s The UTF-8 string to attempt to match.
+   * @return Returns \c true only if the string completely matches.
+   */
   template<class StringType>
   bool match_whole( StringType const &s ) {
     string u_s;
@@ -284,9 +387,9 @@ public:
    * Replaces all occurrences of substrings that match the pattern this %regex
    * was compiled with.
    *
-   * @param in The input string.
+   * @param in The Unicode input string.
    * @param replacement The replacement string.
-   * @param out The output string.
+   * @param out The Unicode output string.
    * @param Returns \c true only if at least one replacement was made.
    */
   bool replace_all( string const &in, string const &replacement, string *out );
@@ -295,7 +398,7 @@ public:
    * Replaces all occurrences of substrings that match the pattern this %regex
    * was compiled with.
    *
-   * @param in The input string.
+   * @param in The UTF-8 input string.
    * @param replacement The replacement string.
    * @param out The output string.
    * @param Returns \c true only if at least one replacement was made.
