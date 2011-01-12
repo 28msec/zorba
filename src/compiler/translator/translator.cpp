@@ -3055,6 +3055,15 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
     // the skipped module, an XQST0093 error will be raised when the translator
     // tries to process that var or function reference.
     std::map<zstring, zstring> modulesStack = theModulesStack;
+#if 0
+    std::map<zstring, zstring>::iterator ite = modulesStack.begin();
+    std::map<zstring, zstring>::iterator end = modulesStack.end();
+    for (; ite != end; ++ite)
+    {
+      std::cout << "[" << (*ite).first << ", " << (*ite).second << "]" << std::endl;
+    }
+    std::cout << std::endl;
+#endif
     if (! modulesStack.insert(std::pair<zstring, zstring>(compURI, targetNS)).second)
     {
       theHaveModuleImportCycle = true;
@@ -3544,6 +3553,8 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
   }
   else
   {
+    // The ve and its associated intExpr will be processed by the translation
+    // of BlockBody.
     push_nodestack(ve.getp());
     push_nodestack(initExpr);
   }
@@ -9131,7 +9142,11 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       {
         std::map<zstring, zstring>::const_iterator ite = theModulesStack.begin();
         std::map<zstring, zstring>::const_iterator end = theModulesStack.end();
-        for (++ite; ite != end; ++ite)
+
+        --end;
+        assert((*end).second == theModuleNamespace);
+
+        for (; ite != end; ++ite)
         {
           if ((*ite).second == fn_ns)
           {
