@@ -298,13 +298,13 @@ PlanIter_t user_function::getPlan(CompilerCB* ccb)
     if (!theIsOptimized && 
         ccb->theConfig.opt_level > CompilerCB::config::O0)
     {
+      theIsOptimized = true;
+
       expr_t body = getBody();
       RewriterContext rctx(ccb, body, this, zstring());
       GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rctx);
       body = rctx.getRoot();
       setBody(body);
-
-      theIsOptimized = true;
     }
 
     std::vector<std::vector<LetVarIter_t> > param_iter_vec(theArgVars.size());
