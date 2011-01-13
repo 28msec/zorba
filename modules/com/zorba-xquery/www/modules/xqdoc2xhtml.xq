@@ -1027,8 +1027,9 @@ declare sequential function xqdoc2html:copy-examples(
       
       (:append the expected result if example is .xq, it doesn't contain "output" and it doesn't have a spec file:)
       let $specSource := fn:replace($exampleSource, "[.]xq$", ".spec")
+	    let $specContent := if(fn:matches($specSource, "[.]spec$") and file:is-file($specSource)) then file:read-text( $specSource ) else ""
       return
-      if(fn:matches($specSource, "[.]spec$") and fn:not(file:is-file($specSource))) then
+      if(fn:not( matches($specContent, "Error")) and fn:not(matches($specContent, "Args")) ) then
         let $exampleContent := file:read-text( $exampleDestination )
         return
         if(fn:not(fn:matches($exampleContent, "output", "i"))) then
