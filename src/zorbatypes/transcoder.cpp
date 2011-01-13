@@ -19,24 +19,9 @@
 #ifndef ZORBA_NO_UNICODE
 #include "zorbatypes/libicu.h"
 #endif
+#include "util/utf8_util.h"
 
 namespace zorba {
-
-int get_utf8_length(char ch)
-{
-  unsigned char lead = (unsigned char)ch;
-
-  if (lead < 0x80)
-    return 1;
-  else if ((lead >> 5) == 0x6)
-    return 2;
-  else if ((lead >> 4) == 0xe)
-    return 3;
-  else if ((lead >> 3) == 0x1e)
-    return 4;
-  else
-    return 0;
-}
 
 
 transcoder::transcoder(std::ostream& output_stream, bool in_utf16)
@@ -102,8 +87,9 @@ transcoder& transcoder::write_utf16_char(const char ch)
 
   if (chars_expected == 1)
   {
-    if (get_utf8_length(ch) > 1)
-      chars_expected = get_utf8_length(ch);
+    utf8::size_type const len = utf8::char_length( ch );
+    if (len > 1)
+      chars_expected = len;
     else
       done = 1;
 
