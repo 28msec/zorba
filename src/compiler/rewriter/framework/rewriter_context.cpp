@@ -29,7 +29,7 @@ namespace zorba {
 
 RewriterContext::RewriterContext(
     CompilerCB* aCompilerCB,
-    expr_t root,
+    const expr_t& root,
     user_function* udf,
     const zstring& msg)
   :

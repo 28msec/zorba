@@ -87,8 +87,8 @@ expr_t HoistRule::apply(
 {
   assert(node == rCtx.getRoot());
 
-  if (containsUpdates(node))
-    return node;
+  //  if (containsUpdates(node))
+  //   return node;
 
   ulong numVars = 0;
   VarIdMap varmap;
@@ -113,7 +113,7 @@ expr_t HoistRule::apply(
 
 
 /*******************************************************************************
-
+  Try to hoist the children of the given expr "e".
 ********************************************************************************/
 static bool hoist_expressions(
     RewriterContext& rCtx,
@@ -148,16 +148,23 @@ static bool hoist_expressions(
       if (unhoistExpr != NULL)
       {
         flc->set_expr(unhoistExpr.getp());
-        numForLetClauses = flwor->num_forlet_clauses();
         status = true;
+
+        numForLetClauses = flwor->num_forlet_clauses();
       }
       else
       {
-        status = hoist_expressions(rCtx, domainExpr, varmap, freevarMap, &curr_holder) ||
-                 status;
+        bool hoisted = hoist_expressions(rCtx,
+                                         domainExpr,
+                                         varmap,
+                                         freevarMap,
+                                         &curr_holder);
+        if (hoisted)
+        {
+          status = true;
 
-        if (status)
           numForLetClauses = flwor->num_forlet_clauses();
+        }
       }
 
       i = ++(curr_holder.clause_count);
@@ -192,9 +199,37 @@ static bool hoist_expressions(
       status = hoist_expressions(rCtx, re, varmap, freevarMap, &curr_holder) || status;
     }
   }
-  else if (e->get_expr_kind() == sequential_expr_kind
-           || e->is_updating()
-           || e->get_expr_kind() == gflwor_expr_kind)
+  else if (e->get_expr_kind() == sequential_expr_kind)
+  {
+    // Note : local vars must also be indexed if they are allowed to be set
+    // inside the for/let clauses of a flwor expr.
+
+    ExprIterator iter(e);
+
+    while(!iter.done())
+    {
+      // TODO: if no updating child exprs have been encountered so far, subexprs
+      // of the current child expr may be hoisted outside the sequential expr as
+      // long as they don't reference any local vars.
+      expr_t ce = *iter;
+
+      struct flwor_holder root;
+      bool nestedModified = hoist_expressions(rCtx, ce, varmap, freevarMap, &root);
+
+      if (nestedModified && root.flwor != NULL)
+      {
+        root.flwor->set_return_expr(ce);
+        (*iter) = root.flwor;
+      }
+
+      status = nestedModified || status;
+
+      iter.next();
+    }
+  }
+  else if (e->is_updating() ||
+           e->get_expr_kind() == gflwor_expr_kind ||
+           e->get_expr_kind() == transform_expr_kind)
   {
     // do nothing
   }
@@ -252,12 +287,16 @@ static expr_t try_hoisting(
   std::map<const expr*, DynamicBitset>::const_iterator fvme = freevarMap.find(e);
   ZORBA_ASSERT(fvme != freevarMap.end());
   const DynamicBitset& varset = fvme->second;
-  bool inloop = false;
-  struct flwor_holder* h = holder;
-  int i = 0;
-  bool found = false;
 
-  while (h->prev != NULL && !found)
+  struct flwor_holder* h = holder;
+
+  bool inloop = false;
+  bool foundReferencedFLWORVar = false;
+  int i = 0;
+
+  // h->prev == NULL means that expr e is not inside any flwor expr, and as a
+  // result, there is nothing to hoist. 
+  while (h->prev != NULL && !foundReferencedFLWORVar)
   {
     group_clause* gc = h->flwor->get_group_clause();
 
@@ -286,7 +325,7 @@ static expr_t try_hoisting(
     // Check whether expr e references any variables from the current flwor. If
     // not, then e can be hoisted out of the current flwor and we repeat the 
     // while-loop to see if e can be hoisted w.r.t. the previous (outer) flwor.
-    // If yes, then let V be the/ inner-most var referenced by e. If there are any
+    // If yes, then let V be the inner-most var referenced by e. If there are any
     // FOR vars after V, e can be hoisted out of any such FOR vars. Otherwise, e
     // cannot be hoisted.
     for (i = h->clause_count - 1; i >= 0; --i)
@@ -298,7 +337,7 @@ static expr_t try_hoisting(
           contains_var(flc->get_pos_var(), varmap, varset) ||
           contains_var(flc->get_score_var(), varmap, varset))
       {
-        found = true;
+        foundReferencedFLWORVar = true;
         break;
       }
 
@@ -307,7 +346,7 @@ static expr_t try_hoisting(
                  TypeOps::type_max_cnt(tm, *flc->get_expr()->get_return_type()) >= 2));
     }
 
-    if (!found)
+    if (!foundReferencedFLWORVar)
       h = h->prev;
   }
 

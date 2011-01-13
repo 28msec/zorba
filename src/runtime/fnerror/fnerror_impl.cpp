@@ -39,7 +39,7 @@ ErrorIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   static const char *err_ns = "http://www.w3.org/2005/xqt-errors";
   store::Item_t err_qname;
-  GENV_ITEMFACTORY->createQName (err_qname, err_ns, "err", "FOER0000");
+  GENV_ITEMFACTORY->createQName(err_qname, err_ns, "err", "FOER0000");
   store::Item_t lTmpQName;
   store::Item_t lTmpErrorObject;
   store::Item_t lTmpDescr;
@@ -49,16 +49,22 @@ ErrorIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (theChildren.size () >= 1) {
+  if (theChildren.size() >= 1) 
+  {
     if (consumeNext(lTmpQName, theChildren[0].getp(), planState))
       err_qname = lTmpQName;
   }
-  if (theChildren.size () >= 2) {
+
+  if (theChildren.size() >= 2) 
+  {
     consumeNext(lTmpDescr, theChildren[1].getp(), planState);
-    description = lTmpDescr->getStringValue().str();
+    description = lTmpDescr->getStringValue();
   }
-  if (theChildren.size() == 3) {
-    while (consumeNext(lTmpErrorObject, theChildren[2].getp(), planState)) {
+
+  if (theChildren.size() == 3) 
+  {
+    while (consumeNext(lTmpErrorObject, theChildren[2].getp(), planState)) 
+    {
       lErrorObject.push_back(lTmpErrorObject);
     }
   }
@@ -69,7 +75,7 @@ ErrorIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     throw lError;
   }
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 } /* namespace zorba */

@@ -11,11 +11,14 @@ declare variable $binary-dir := "@CMAKE_BINARY_DIR@";
 let $cut-path := fn:substring($testfile, 1, fn:string-length($testfile) - 5)
 (: expected result file :)
 let $expected-file := fn:concat($source-dir, '/test/rbkt/ExpCompilerResults/IterPlan/', $cut-path, '.iter')
+let $result-file := fn:concat($binary-dir, '/test/rbkt/CompilerResults/IterPlan/', $cut-path, '.iter')
 (: query file :)
 let $query-file := fn:concat($source-dir, '/test/rbkt/Queries/', $cut-path, '.xq')
 let $apitest-path-normalized := file:normalize-path($apitest-path)
 let $expected-file-normalized := file:normalize-path($expected-file)
+let $result-file-normalized := file:normalize-path($result-file)
 let $query-file-normalized := file:normalize-path($query-file)
+let $params := <method>text</method>
 return
   if (file:exists($query-file-normalized)) then
     let $query-options := ('--iter-plan-test',
@@ -27,6 +30,10 @@ return
     let $query-stdout as xs:string := xs:string($query-result/stdout/text())
     let $expected-text as xs:string := file:read-text($expected-file-normalized)
     return
+    block {
+      file:mkdirs(file:dirname($result-file-normalized), fn:false());
+      file:write($result-file-normalized, $query-stdout, $params);
+      (
       (: compare generated iterator tree with expected result :)
       if ($query-stdout eq $expected-text) then
         "Passed!"
@@ -36,5 +43,7 @@ return
                   "Command to generate iterator tree: ", $apitest-path, " ", fn:string-join($query-options," "), "
 ",
                   "Exected Result: ", $expected-file)
+      );
+    }
   else
     fn:concat("Passed! But only because query file ", $query-file, " not found. Test was not executed!")

@@ -1,0 +1,122 @@
+Iterator tree for main query:
+<flwor::FLWORIterator>
+  <ForVariable name="a">
+    <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,foo)" typename="*" nill allowed="0">
+      <ElementIterator>
+        <SingletonIterator value="xs:QName(,,root)"/>
+        <FnConcatIterator>
+          <ElementIterator>
+            <SingletonIterator value="xs:QName(,,foo)"/>
+            <AttributeIterator qname="xs:QName(,,id)">
+              <SingletonIterator value="xs:string(-1)"/>
+            </AttributeIterator>
+            <FnConcatIterator>
+              <ElementIterator>
+                <SingletonIterator value="xs:QName(,,boo)"/>
+                <AttributeIterator qname="xs:QName(,,id)">
+                  <SingletonIterator value="xs:string(1)"/>
+                </AttributeIterator>
+              </ElementIterator>
+              <ElementIterator>
+                <SingletonIterator value="xs:QName(,,boo)"/>
+                <AttributeIterator qname="xs:QName(,,id)">
+                  <SingletonIterator value="xs:string(2)"/>
+                </AttributeIterator>
+              </ElementIterator>
+            </FnConcatIterator>
+          </ElementIterator>
+          <ElementIterator>
+            <SingletonIterator value="xs:QName(,,foo)"/>
+            <AttributeIterator qname="xs:QName(,,id)">
+              <SingletonIterator value="xs:string(-2)"/>
+            </AttributeIterator>
+            <FnConcatIterator>
+              <ElementIterator>
+                <SingletonIterator value="xs:QName(,,boo)"/>
+                <AttributeIterator qname="xs:QName(,,id)">
+                  <SingletonIterator value="xs:string(3)"/>
+                </AttributeIterator>
+              </ElementIterator>
+              <ElementIterator>
+                <SingletonIterator value="xs:QName(,,boo)"/>
+                <AttributeIterator qname="xs:QName(,,id)">
+                  <SingletonIterator value="xs:string(4)"/>
+                </AttributeIterator>
+              </ElementIterator>
+            </FnConcatIterator>
+          </ElementIterator>
+        </FnConcatIterator>
+      </ElementIterator>
+    </ChildAxisIterator>
+  </ForVariable>
+  <ForVariable name="b">
+    <DescendantAxisIterator test kind="match_name_test" qname="xs:QName(,,boo)" typename="*" nill allowed="0">
+      <ForVarIterator varname="a"/>
+    </DescendantAxisIterator>
+  </ForVariable>
+  <ReturnClause>
+    <SequentialIterator>
+      <SequentialIterator>
+        <CtxVarDeclIterator>
+          <SingletonIterator value="xs:string(4:x)"/>
+        </CtxVarDeclIterator>
+        <CtxVarAssignIterator>
+          <SingletonIterator value="xs:string(4:x)"/>
+          <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill allowed="0">
+            <ForVarIterator varname="b"/>
+          </AttributeAxisIterator>
+        </CtxVarAssignIterator>
+      </SequentialIterator>
+      <flwor::FLWORIterator>
+        <LetVariable name="$$opt_temp_0" materialize="true">
+          <HoistIterator>
+            <GenericArithIterator_AddOperation>
+              <PromoteIterator type="xs:anyAtomicType">
+                <FnDataIterator>
+                  <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill allowed="0">
+                    <ForVarIterator varname="a"/>
+                  </AttributeAxisIterator>
+                </FnDataIterator>
+              </PromoteIterator>
+              <GenericArithIterator_MultiplyOperation>
+                <SingletonIterator value="xs:integer(2)"/>
+                <PromoteIterator type="xs:anyAtomicType">
+                  <FnDataIterator>
+                    <CtxVarIterator>
+                      <SingletonIterator value="xs:string(4:x)"/>
+                    </CtxVarIterator>
+                  </FnDataIterator>
+                </PromoteIterator>
+              </GenericArithIterator_MultiplyOperation>
+            </GenericArithIterator_AddOperation>
+          </HoistIterator>
+        </LetVariable>
+        <ReturnClause>
+          <flwor::FLWORIterator>
+            <ForVariable name="c">
+              <OpToIterator>
+                <SingletonIterator value="xs:integer(1)"/>
+                <PromoteIterator type="xs:integer">
+                  <FnDataIterator>
+                    <CtxVarIterator>
+                      <SingletonIterator value="xs:string(4:x)"/>
+                    </CtxVarIterator>
+                  </FnDataIterator>
+                </PromoteIterator>
+              </OpToIterator>
+            </ForVariable>
+            <ReturnClause>
+              <GenericArithIterator_AddOperation>
+                <UnhoistIterator>
+                  <LetVarIterator varname="$$opt_temp_0"/>
+                </UnhoistIterator>
+                <ForVarIterator varname="c"/>
+              </GenericArithIterator_AddOperation>
+            </ReturnClause>
+          </flwor::FLWORIterator>
+        </ReturnClause>
+      </flwor::FLWORIterator>
+    </SequentialIterator>
+  </ReturnClause>
+</flwor::FLWORIterator>
+

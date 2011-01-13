@@ -124,9 +124,9 @@ void index_flwor_vars(
   {
     const flwor_expr* flwor = static_cast<const flwor_expr *>(e);
 
-    for(flwor_expr::clause_list_t::const_iterator i = flwor->clause_begin();
-        i != flwor->clause_end();
-        ++i) 
+    for (flwor_expr::clause_list_t::const_iterator i = flwor->clause_begin();
+         i != flwor->clause_end();
+         ++i) 
     {
       const flwor_clause* c = *i;
 

@@ -532,117 +532,142 @@ Iterator tree for main query:
       </UDFunctionCallIterator>
     </CtxVarAssignIterator>
   </SequentialIterator>
-  <FnConcatIterator>
-    <StringJoinIterator>
+  <flwor::FLWORIterator>
+    <LetVariable name="$$opt_temp_0" materialize="true">
+      <HoistIterator>
+        <OpToIterator>
+          <SingletonIterator value="xs:integer(1)"/>
+          <CtxVarIterator>
+            <SingletonIterator value="xs:string(932:width)"/>
+          </CtxVarIterator>
+        </OpToIterator>
+      </HoistIterator>
+    </LetVariable>
+    <LetVariable name="$$opt_temp_1" materialize="true">
+      <HoistIterator>
+        <TreatIterator type="[NodeXQType elementNode content=[XQType ANY_TYPE_KIND*]]" quant="">
+          <CtxVarIterator>
+            <SingletonIterator value="xs:string(934:scene)"/>
+          </CtxVarIterator>
+        </TreatIterator>
+      </HoistIterator>
+    </LetVariable>
+    <ReturnClause>
       <FnConcatIterator>
-        <SingletonIterator value="xs:string(P3)"/>
         <StringJoinIterator>
           <FnConcatIterator>
-            <FnStringIterator>
-              <CtxVarIterator>
-                <SingletonIterator value="xs:string(932:width)"/>
-              </CtxVarIterator>
-            </FnStringIterator>
-            <FnStringIterator>
-              <CtxVarIterator>
-                <SingletonIterator value="xs:string(933:height)"/>
-              </CtxVarIterator>
-            </FnStringIterator>
-          </FnConcatIterator>
-          <SingletonIterator value="xs:string( )"/>
-        </StringJoinIterator>
-        <SingletonIterator value="xs:string(255)"/>
-        <flwor::FLWORIterator>
-          <ForVariable name="aspect-ratio">
-            <SpecificNumArithIterator_DivideOperation_DECIMAL>
-              <CtxVarIterator>
-                <SingletonIterator value="xs:string(932:width)"/>
-              </CtxVarIterator>
-              <CtxVarIterator>
-                <SingletonIterator value="xs:string(933:height)"/>
-              </CtxVarIterator>
-            </SpecificNumArithIterator_DivideOperation_DECIMAL>
-          </ForVariable>
-          <ForVariable name="y">
-            <OpToIterator>
-              <SingletonIterator value="xs:integer(1)"/>
-              <CtxVarIterator>
-                <SingletonIterator value="xs:string(933:height)"/>
-              </CtxVarIterator>
-            </OpToIterator>
-          </ForVariable>
-          <ForVariable name="y-recentered">
-            <SpecificNumArithIterator_AddOperation_DECIMAL>
-              <SpecificNumArithIterator_DivideOperation_DECIMAL>
-                <OpNumericUnaryIterator>
-                  <ForVarIterator varname="y"/>
-                </OpNumericUnaryIterator>
-                <CtxVarIterator>
-                  <SingletonIterator value="xs:string(933:height)"/>
-                </CtxVarIterator>
-              </SpecificNumArithIterator_DivideOperation_DECIMAL>
-              <SingletonIterator value="xs:decimal(0.5)"/>
-            </SpecificNumArithIterator_AddOperation_DECIMAL>
-          </ForVariable>
-          <ForVariable name="x">
-            <OpToIterator>
-              <SingletonIterator value="xs:integer(1)"/>
-              <CtxVarIterator>
-                <SingletonIterator value="xs:string(932:width)"/>
-              </CtxVarIterator>
-            </OpToIterator>
-          </ForVariable>
-          <ReturnClause>
+            <SingletonIterator value="xs:string(P3)"/>
             <StringJoinIterator>
-              <flwor::FLWORIterator>
-                <ForVariable name="channel">
-                  <UDFunctionCallIterator>
-                    <TreatIterator type="[NodeXQType elementNode content=[XQType ANY_TYPE_KIND*]]" quant="">
-                      <CtxVarIterator>
-                        <SingletonIterator value="xs:string(934:scene)"/>
-                      </CtxVarIterator>
-                    </TreatIterator>
-                    <PromoteIterator type="xs:double">
-                      <SpecificNumArithIterator_MultiplyOperation_DECIMAL>
-                        <SpecificNumArithIterator_SubtractOperation_DECIMAL>
-                          <SpecificNumArithIterator_DivideOperation_DECIMAL>
-                            <ForVarIterator varname="x"/>
-                            <CtxVarIterator>
-                              <SingletonIterator value="xs:string(932:width)"/>
-                            </CtxVarIterator>
-                          </SpecificNumArithIterator_DivideOperation_DECIMAL>
-                          <SingletonIterator value="xs:decimal(0.5)"/>
-                        </SpecificNumArithIterator_SubtractOperation_DECIMAL>
-                        <ForVarIterator varname="aspect-ratio"/>
-                      </SpecificNumArithIterator_MultiplyOperation_DECIMAL>
-                    </PromoteIterator>
-                    <PromoteIterator type="xs:double">
-                      <ForVarIterator varname="y-recentered"/>
-                    </PromoteIterator>
-                  </UDFunctionCallIterator>
-                </ForVariable>
-                <ReturnClause>
-                  <FnStringIterator>
-                    <FloorIterator>
-                      <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-                        <ForVarIterator varname="channel"/>
-                        <SingletonIterator value="xs:double(255)"/>
-                      </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-                    </FloorIterator>
-                  </FnStringIterator>
-                </ReturnClause>
-              </flwor::FLWORIterator>
+              <FnConcatIterator>
+                <FnStringIterator>
+                  <CtxVarIterator>
+                    <SingletonIterator value="xs:string(932:width)"/>
+                  </CtxVarIterator>
+                </FnStringIterator>
+                <FnStringIterator>
+                  <CtxVarIterator>
+                    <SingletonIterator value="xs:string(933:height)"/>
+                  </CtxVarIterator>
+                </FnStringIterator>
+              </FnConcatIterator>
               <SingletonIterator value="xs:string( )"/>
             </StringJoinIterator>
-          </ReturnClause>
-        </flwor::FLWORIterator>
+            <SingletonIterator value="xs:string(255)"/>
+            <flwor::FLWORIterator>
+              <ForVariable name="aspect-ratio">
+                <SpecificNumArithIterator_DivideOperation_DECIMAL>
+                  <CtxVarIterator>
+                    <SingletonIterator value="xs:string(932:width)"/>
+                  </CtxVarIterator>
+                  <CtxVarIterator>
+                    <SingletonIterator value="xs:string(933:height)"/>
+                  </CtxVarIterator>
+                </SpecificNumArithIterator_DivideOperation_DECIMAL>
+              </ForVariable>
+              <ForVariable name="y">
+                <OpToIterator>
+                  <SingletonIterator value="xs:integer(1)"/>
+                  <CtxVarIterator>
+                    <SingletonIterator value="xs:string(933:height)"/>
+                  </CtxVarIterator>
+                </OpToIterator>
+              </ForVariable>
+              <ForVariable name="y-recentered">
+                <SpecificNumArithIterator_AddOperation_DECIMAL>
+                  <SpecificNumArithIterator_DivideOperation_DECIMAL>
+                    <OpNumericUnaryIterator>
+                      <ForVarIterator varname="y"/>
+                    </OpNumericUnaryIterator>
+                    <CtxVarIterator>
+                      <SingletonIterator value="xs:string(933:height)"/>
+                    </CtxVarIterator>
+                  </SpecificNumArithIterator_DivideOperation_DECIMAL>
+                  <SingletonIterator value="xs:decimal(0.5)"/>
+                </SpecificNumArithIterator_AddOperation_DECIMAL>
+              </ForVariable>
+              <LetVariable name="$$opt_temp_2" materialize="true">
+                <HoistIterator>
+                  <PromoteIterator type="xs:double">
+                    <ForVarIterator varname="y-recentered"/>
+                  </PromoteIterator>
+                </HoistIterator>
+              </LetVariable>
+              <ForVariable name="x">
+                <UnhoistIterator>
+                  <LetVarIterator varname="$$opt_temp_0"/>
+                </UnhoistIterator>
+              </ForVariable>
+              <ReturnClause>
+                <StringJoinIterator>
+                  <flwor::FLWORIterator>
+                    <ForVariable name="channel">
+                      <UDFunctionCallIterator>
+                        <UnhoistIterator>
+                          <LetVarIterator varname="$$opt_temp_1"/>
+                        </UnhoistIterator>
+                        <PromoteIterator type="xs:double">
+                          <SpecificNumArithIterator_MultiplyOperation_DECIMAL>
+                            <SpecificNumArithIterator_SubtractOperation_DECIMAL>
+                              <SpecificNumArithIterator_DivideOperation_DECIMAL>
+                                <ForVarIterator varname="x"/>
+                                <CtxVarIterator>
+                                  <SingletonIterator value="xs:string(932:width)"/>
+                                </CtxVarIterator>
+                              </SpecificNumArithIterator_DivideOperation_DECIMAL>
+                              <SingletonIterator value="xs:decimal(0.5)"/>
+                            </SpecificNumArithIterator_SubtractOperation_DECIMAL>
+                            <ForVarIterator varname="aspect-ratio"/>
+                          </SpecificNumArithIterator_MultiplyOperation_DECIMAL>
+                        </PromoteIterator>
+                        <UnhoistIterator>
+                          <LetVarIterator varname="$$opt_temp_2"/>
+                        </UnhoistIterator>
+                      </UDFunctionCallIterator>
+                    </ForVariable>
+                    <ReturnClause>
+                      <FnStringIterator>
+                        <FloorIterator>
+                          <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                            <ForVarIterator varname="channel"/>
+                            <SingletonIterator value="xs:double(255)"/>
+                          </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                        </FloorIterator>
+                      </FnStringIterator>
+                    </ReturnClause>
+                  </flwor::FLWORIterator>
+                  <SingletonIterator value="xs:string( )"/>
+                </StringJoinIterator>
+              </ReturnClause>
+            </flwor::FLWORIterator>
+          </FnConcatIterator>
+          <SingletonIterator value="xs:string(
+)"/>
+        </StringJoinIterator>
+        <SingletonIterator value="xs:string(
+)"/>
       </FnConcatIterator>
-      <SingletonIterator value="xs:string(
-)"/>
-    </StringJoinIterator>
-    <SingletonIterator value="xs:string(
-)"/>
-  </FnConcatIterator>
+    </ReturnClause>
+  </flwor::FLWORIterator>
 </SequentialIterator>
 
 Iterator tree for scene:prepare-scene:

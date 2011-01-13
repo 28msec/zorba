@@ -70,9 +70,8 @@ protected:
 
   SYNC_CODE(Latch               theLatch;)
 
-  // default constructor added in order to allow
-  // subclasses to instantiate a collection
-  // without name
+  // default constructor added in order to allow subclasses to instantiate
+  // a collection without name
   SimpleCollection();
 
 public:
@@ -89,6 +88,7 @@ public:
 
   // virtual to allow extension by subclasses
   virtual ulong createTreeId() { return theTreeCounter++; }
+
   store::Iterator_t getIterator();
 
   store::Item_t loadDocument(

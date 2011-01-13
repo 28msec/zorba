@@ -84,7 +84,7 @@ public:
 public:
   RewriterContext(
         CompilerCB* cb,
-        expr_t root,
+        const expr_t& root,
         user_function* udf,
         const zstring& msg);
 

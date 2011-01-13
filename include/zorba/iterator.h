@@ -25,7 +25,7 @@ namespace zorba {
 /** \brief Interface for an Iterator over an instance of the XML Data Model
  *  (i.e., a sequence of items).
  *
- * An iterator can be in one of the follwoing two states: open or not-open.
+ * An iterator can be in one of the following two states: open or not-open.
  * When in open state, only methods isOpen(), next() and close() may be called.
  * When in not-open state, only isOpen and open() may be called. The open()
  * method changes the state from non-open to open, and the close() method

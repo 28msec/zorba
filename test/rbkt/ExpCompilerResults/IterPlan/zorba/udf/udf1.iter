@@ -1,0 +1,66 @@
+Iterator tree for main query:
+<SequentialIterator>
+  <SequentialIterator>
+    <CtxVarDeclIterator>
+      <SingletonIterator value="xs:string(1:x)"/>
+    </CtxVarDeclIterator>
+    <CtxVarAssignIterator>
+      <SingletonIterator value="xs:string(1:x)"/>
+      <SingletonIterator value="xs:integer(1)"/>
+    </CtxVarAssignIterator>
+  </SequentialIterator>
+  <UDFunctionCallIterator>
+    <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,price)" typename="*" nill allowed="0">
+      <DescendantAxisIterator test kind="match_name_test" qname="xs:QName(,,book)" typename="*" nill allowed="0">
+        <ElementIterator>
+          <SingletonIterator value="xs:QName(,,books)"/>
+          <FnConcatIterator>
+            <ElementIterator>
+              <SingletonIterator value="xs:QName(,,book)"/>
+              <ElementIterator>
+                <SingletonIterator value="xs:QName(,,price)"/>
+                <TextIterator>
+                  <SingletonIterator value="xs:string(10)"/>
+                </TextIterator>
+              </ElementIterator>
+            </ElementIterator>
+            <ElementIterator>
+              <SingletonIterator value="xs:QName(,,book)"/>
+              <ElementIterator>
+                <SingletonIterator value="xs:QName(,,price)"/>
+                <TextIterator>
+                  <SingletonIterator value="xs:string(20)"/>
+                </TextIterator>
+              </ElementIterator>
+            </ElementIterator>
+          </FnConcatIterator>
+        </ElementIterator>
+      </DescendantAxisIterator>
+    </ChildAxisIterator>
+    <PromoteIterator type="xs:integer">
+      <FnDataIterator>
+        <CtxVarIterator>
+          <SingletonIterator value="xs:string(1:x)"/>
+        </CtxVarIterator>
+      </FnDataIterator>
+    </PromoteIterator>
+  </UDFunctionCallIterator>
+</SequentialIterator>
+
+Iterator tree for local:sum:
+<SpecificNumArithIterator_AddOperation_INTEGER>
+  <FunctionTraceIterator>
+    <SpecificNumArithIterator_AddOperation_INTEGER>
+      <LetVarIterator varname="x"/>
+      <SingletonIterator value="xs:integer(1)"/>
+    </SpecificNumArithIterator_AddOperation_INTEGER>
+  </FunctionTraceIterator>
+  <CastIterator type="xs:integer">
+    <FnSumIterator>
+      <FnDataIterator>
+        <LetVarIterator varname="prices"/>
+      </FnDataIterator>
+    </FnSumIterator>
+  </CastIterator>
+</SpecificNumArithIterator_AddOperation_INTEGER>
+
