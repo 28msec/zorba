@@ -15,6 +15,7 @@
  */
 
 #ifndef WIN32
+# include <cerrno>                      /* for errno */
 # include <cstdio>                      /* for strerror */
 # include <fcntl.h>                     /* for open(2) */
 # include <sys/mman.h>                  /* for mmap(2) */
