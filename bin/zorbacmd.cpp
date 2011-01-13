@@ -667,6 +667,21 @@ _tmain(int argc, _TCHAR* argv[])
   bool compileOnly = (lProperties.compileOnly() || lProperties.libModule() );
 
   // write to file or standard out
+  if(lProperties.outputFile().size() > 0)
+  {
+	  //first create the directory
+	  std::string outputdir = lProperties.outputFile();
+	  int last_slash = outputdir.find_last_of('/');
+	  if(last_slash == std::string::npos)
+		  last_slash = outputdir.find_last_of('\\');
+	  if(last_slash != std::string::npos)
+	  {
+		  outputdir = outputdir.substr(0, last_slash+1);
+	    //_mkdir(outputdir.c_str());
+      File_t dirf = File::createFile(outputdir);
+      dirf->mkdir();
+    }
+  }
   std::auto_ptr<std::ostream> lFileStream(lProperties.outputFile().size() > 0 ?
                                            new std::ofstream(lProperties.outputFile().c_str()) 
                                           : 0 );
