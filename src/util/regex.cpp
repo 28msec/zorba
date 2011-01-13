@@ -17,7 +17,6 @@
 #include <cstring>
 #include <vector>
 
-#include "zorbaerrors/error_manager.h"
 #include "zorbatypes/zorbatypesError.h"
 
 #include "ascii_util.h"
@@ -52,6 +51,9 @@ static icu_flags_t convert_xquery_flags( char const *xq_flags ) {
   }
   return icu_flags;
 }
+
+#define INVALID_RE_EXCEPTION(MSG) \
+  zorbatypesException( MSG, ZorbatypesError::FORX0002 )
 
 void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
                         char const *xq_flags ) {
@@ -98,13 +100,15 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           if ( ascii::is_digit( *xq_c ) ) {
             backref_no = *xq_c - '0';
             if ( !backref_no )          // \0 is illegal
-              ZORBA_ERROR( FORX0002 );
+              throw INVALID_RE_EXCEPTION( "\"\\0\": illegal backreference" );
             if ( in_char_class ) {
               //
               // XQuery F&O 7.6.1: Within a character class expression,
               // \ followed by a digit is invalid.
               //
-              ZORBA_ERROR( FORX0002 );
+              throw INVALID_RE_EXCEPTION(
+                "backreference illegal in character class"
+              );
             }
             in_backref = true;
           }
@@ -131,9 +135,9 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
         // closing right parenthesis occurs after the back-reference.
         //
         if ( backref_no > cap_sub.size() )
-          ZORBA_ERROR( FORX0002 );
+          throw INVALID_RE_EXCEPTION( "non-existent backreference" );
         if ( cap_sub[ backref_no - 1 ] )
-          ZORBA_ERROR( FORX0002 );
+          throw INVALID_RE_EXCEPTION( "non-closed backreference" );
       }
       switch ( *xq_c ) {
         case '\\':
@@ -144,9 +148,9 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           break;
         case ')':
           if ( cap_sub.empty() )
-            ZORBA_ERROR( FORX0002 );
+            throw INVALID_RE_EXCEPTION( "unbalanced ')'" );
           if ( !cap_sub.back() )
-            ZORBA_ERROR( FORX0002 );
+            throw INVALID_RE_EXCEPTION( "unbalanced ')'" );
           cap_sub.back() = false;
           break;
         case '[':
