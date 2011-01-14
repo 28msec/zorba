@@ -18,6 +18,7 @@ SET(UTIL_SRCS
     fx/fxcharheap.cpp
     file.cpp
     dir.cpp
+    fs_util.cpp
     indent.cpp
     mmap_file.cpp
     regex.cpp
