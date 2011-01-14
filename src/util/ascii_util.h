@@ -915,7 +915,7 @@ void uri_decode( StringType &s ) {
 } // namespace ascii
 } // namespace zorba
 
-#include "util/ascii_util.tcc"
+#include "ascii_util.tcc"
 
 #endif /* ZORBA_STRING_UTIL_ASCII_UTIL_H */
 
