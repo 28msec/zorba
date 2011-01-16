@@ -312,13 +312,6 @@ static void test_utf8_string() {
 }
 
 template<class StringType>
-static void test_ends_with() {
-  StringType const s( "hello world" );
-  ASSERT_TRUE( ascii::ends_with( s, "world" ) );
-  ASSERT_TRUE( !ascii::ends_with( s, "foo" ) );
-}
-
-template<class StringType>
 static void test_getline() {
   string const s( "hello world" );
   istringstream is( s );
@@ -476,6 +469,54 @@ static void test_append_codepoints( char const *s ) {
   StringType s2;
   utf8::append_codepoints( code_points.begin(), code_points.end(), &s2 );
   ASSERT_TRUE( s1 == s2 );
+}
+
+template<class StringType>
+static void test_begins_with() {
+  StringType const ab( "ab" );
+  utf8_string<StringType const> const u_ab( ab );
+
+  ASSERT_TRUE(  ascii::begins_with( "ab", 'a' ) );
+  ASSERT_TRUE( !ascii::begins_with( "ab", 'b' ) );
+  ASSERT_TRUE(  ascii::begins_with( "ab", "a" ) );
+  ASSERT_TRUE( !ascii::begins_with( "ab", "b" ) );
+
+  ASSERT_TRUE( !ascii::begins_with( "", 'a' ) );
+  ASSERT_TRUE( !ascii::begins_with( "", "a" ) );
+
+  ASSERT_TRUE(  ascii::begins_with( ab, 'a' ) );
+  ASSERT_TRUE( !ascii::begins_with( ab, 'b' ) );
+  ASSERT_TRUE(  ascii::begins_with( ab, "a" ) );
+  ASSERT_TRUE( !ascii::begins_with( ab, "b" ) );
+
+  ASSERT_TRUE(  utf8::begins_with( u_ab, 'a' ) );
+  ASSERT_TRUE( !utf8::begins_with( u_ab, 'b' ) );
+  ASSERT_TRUE(  utf8::begins_with( u_ab, "a" ) );
+  ASSERT_TRUE( !utf8::begins_with( u_ab, "b" ) );
+}
+
+template<class StringType>
+static void test_ends_with() {
+  StringType const ab( "ab" );
+  utf8_string<StringType const> const u_ab( ab );
+
+  ASSERT_TRUE(  ascii::ends_with( "ab", 'b' ) );
+  ASSERT_TRUE( !ascii::ends_with( "ab", 'a' ) );
+  ASSERT_TRUE(  ascii::ends_with( "ab", "b" ) );
+  ASSERT_TRUE( !ascii::ends_with( "ab", "a" ) );
+
+  ASSERT_TRUE( !ascii::ends_with( "", 'a' ) );
+  ASSERT_TRUE( !ascii::ends_with( "", "a" ) );
+
+  ASSERT_TRUE(  ascii::ends_with( ab, 'b' ) );
+  ASSERT_TRUE( !ascii::ends_with( ab, 'a' ) );
+  ASSERT_TRUE(  ascii::ends_with( ab, "b" ) );
+  ASSERT_TRUE( !ascii::ends_with( ab, "a" ) );
+
+  ASSERT_TRUE(  utf8::ends_with( u_ab, 'b' ) );
+  ASSERT_TRUE( !utf8::ends_with( u_ab, 'a' ) );
+  ASSERT_TRUE(  utf8::ends_with( u_ab, "b" ) );
+  ASSERT_TRUE( !utf8::ends_with( u_ab, "a" ) );
 }
 
 template<class StringType>
@@ -693,6 +734,8 @@ int string_test( int, char*[] ) {
   test_append_codepoints<string>( utf8_aeiou_acute );
   test_append_codepoints<zstring>( "hello" );
   test_append_codepoints<zstring>( utf8_aeiou_acute );
+
+  test_begins_with<zstring>();
 
   test_clark<string>();
   test_clark<zstring>();

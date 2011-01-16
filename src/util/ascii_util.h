@@ -186,10 +186,57 @@ back_xml_inserter( StringType &out ) {
 /**
  * Checks whether a string begins with a given prefix.
  *
+ * @param s The string to check.
+ * @param c The prefix character.
+ * @return Returns \c true only if \a s begins with \a c.
+ */
+inline bool begins_with( char const *s, char c ) {
+  return s[0] == c;
+}
+
+/**
+ * Checks whether a string begins with a given prefix.
+ *
+ * @tparam StringType The string type.
+ * @param s The string to check.
+ * @param c The prefix character.
+ * @return Returns \c true only if \a s begins with \a c.
+ */
+template<class StringType> inline
+bool begins_with( StringType const &s, char c ) {
+  return !s.empty() && s[0] == c;
+}
+
+/**
+ * Checks whether a string begins with a given prefix.
+ *
+ * @param s The string to check.
+ * @param ps The prefix string.
+ * @param n The number of bytes to compare.
+ * @return Returns \c true only if \a s begins with \a ps.
+ */
+inline bool begins_with( char const *s, char const *ps, size_type n ) {
+  return std::strncmp( s, ps, n ) == 0;
+}
+
+/**
+ * Checks whether a string begins with a given prefix.
+ *
+ * @param s The string to check.
+ * @param ps The prefix string.
+ * @return Returns \c true only if \a s begins with \a ps.
+ */
+inline bool begins_with( char const *s, char const *ps ) {
+  return begins_with( s, ps, std::strlen( ps ) );
+}
+
+/**
+ * Checks whether a string begins with a given prefix.
+ *
  * @tparam StringType The string type.
  * @param s The string to check.
  * @param ps The prefix string.
- * @param n The number of characters to compare.
+ * @param n The number of bytes to compare.
  * @return Returns \c true only if \a s begins with \a ps.
  */
 template<class StringType> inline
@@ -229,6 +276,18 @@ bool begins_with( StringType const &s, PrefixStringType const &ps ) {
 /**
  * Checks whether a string ends with a given suffix.
  *
+ * @param s The string to check.
+ * @param c The suffix character.
+ * @return Returns \c true only if \a s ends with \a c.
+ */
+inline bool ends_with( char const *s, char c ) {
+  size_type const len = std::strlen( s );
+  return len > 0 && s[ len - 1 ] == c;
+}
+
+/**
+ * Checks whether a string ends with a given suffix.
+ *
  * @tparam StringType The string type.
  * @param s The string to check.
  * @param c The suffix character.
@@ -237,6 +296,30 @@ bool begins_with( StringType const &s, PrefixStringType const &ps ) {
 template<class StringType> inline
 bool ends_with( StringType const &s, char c ) {
   return !s.empty() && s[ s.size() - 1 ] == c;
+}
+
+/**
+ * Checks whether a string ends with a given suffix.
+ *
+ * @param s The string to check.
+ * @param ss The suffix string.
+ * @param n The number of bytes to compare.
+ * @return Returns \c true only if \a s ends with \a ss.
+ */
+inline bool ends_with( char const *s, char const *ss, size_type n ) {
+  size_type const len = std::strlen( s );
+  return n <= len && std::strncmp( s + len - n, ss, n ) == 0;
+}
+
+/**
+ * Checks whether a string ends with a given suffix.
+ *
+ * @param s The string to check.
+ * @param ss The suffix string.
+ * @return Returns \c true only if \a s ends with \a ss.
+ */
+inline bool ends_with( char const *s, char const *ss ) {
+  return ends_with( s, ss, std::strlen( ss ) );
 }
 
 /**
