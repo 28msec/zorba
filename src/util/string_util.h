@@ -61,6 +61,134 @@ bool equals( char const *s1, typename StringType::size_type s1_n,
 #define ZSTREQ(STRING,LITERAL) \
         zorba::equals( STRING, LITERAL, sizeof( LITERAL ) - 1 )
 
+////////// String splitting ////////////////////////////////////////////////////
+
+/**
+ * Splits a string at the given delimiter.
+ *
+ * @tparam OutputStringType1 The first output string type.
+ * @tparam OutputStringType2 The second output string type.
+ * @param in The string to split.
+ * @param delim The delimiter.
+ * @param out1 A pointer to the output string to receive the substring to the
+ * left of \a delim.
+ * @param out2 A pointer to the output string to receive the substring to the
+ * right of \a delim.
+ * @return Returns \c true only if the string was split (the delimiter was
+ * present in \a in).
+ */
+template<class OutputStringType1,class OutputStringType2>
+bool split( char const *in, char delim, OutputStringType1 *out1,
+            OutputStringType2 *out2 ) {
+  if ( char const *const pos = std::strchr( in, delim ) ) {
+    *out1 = OutputStringType1( in, pos - in );
+    *out2 = OutputStringType2( pos + 1 );
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Splits a string at the given delimiter.
+ *
+ * @tparam InputStringType The input string type.
+ * @tparam OutputStringType1 The first output string type.
+ * @tparam OutputStringType2 The second output string type.
+ * @param in The string to split.
+ * @param delim The delimiter.
+ * @param out1 A pointer to the output string to receive the substring to the
+ * left of \a delim.
+ * @param out2 A pointer to the output string to receive the substring to the
+ * right of \a delim.
+ * @return Returns \c true only if the string was split (the delimiter was
+ * present in \a in).
+ */
+template<class InputStringType,class OutputStringType1,class OutputStringType2>
+inline bool split( InputStringType const &in, char delim,
+                   OutputStringType1 *out1, OutputStringType2 *out2 ) {
+  return split( in.c_str(), delim, out1, out2 );
+}
+
+/**
+ * Splits a string at the given delimiter.
+ *
+ * @tparam OutputStringType1 The first output string type.
+ * @tparam OutputStringType2 The second output string type.
+ * @param in The string to split.
+ * @param delim The delimiter.
+ * @param out1 A pointer to the output string to receive the substring to the
+ * left of \a delim.
+ * @param out2 A pointer to the output string to receive the substring to the
+ * right of \a delim.
+ * @return Returns \c true only if the string was split (the delimiter was
+ * present in \a in).
+ */
+template<class OutputStringType1,class OutputStringType2>
+bool split( char const *in, char const *delim, OutputStringType1 *out1,
+            OutputStringType2 *out2 ) {
+  if ( *delim )
+    if ( char const *const pos = std::strstr( in, delim ) ) {
+      *out1 = OutputStringType1( in, pos - in );
+      *out2 = OutputStringType2( pos + std::strlen( delim ) );
+      return true;
+    }
+  return false;
+}
+
+/**
+ * Splits a string at the given delimiter.
+ *
+ * @tparam InputStringType The input string type.
+ * @tparam OutputStringType1 The first output string type.
+ * @tparam OutputStringType2 The second output string type.
+ * @param in The string to split.
+ * @param delim The delimiter.
+ * @param out1 A pointer to the output string to receive the substring to the
+ * left of \a delim.
+ * @param out2 A pointer to the output string to receive the substring to the
+ * right of \a delim.
+ * @return Returns \c true only if the string was split (the delimiter was
+ * present in \a in).
+ */
+template<class InputStringType,class OutputStringType1,class OutputStringType2>
+inline bool split( InputStringType const &in, char const *delim,
+                   OutputStringType1 *out1, OutputStringType2 *out2 ) {
+  return split( in.c_str(), delim, out1, out2 );
+}
+
+/**
+ * Splits a string at the given delimiter.
+ *
+ * @tparam InputStringType The input string type.
+ * @tparam DelimtStringType The delimiter string type.
+ * @tparam OutputStringType1 The first output string type.
+ * @tparam OutputStringType2 The second output string type.
+ * @param in The string to split.
+ * @param delim The delimiter.
+ * @param out1 A pointer to the output string to receive the substring to the
+ * left of \a delim.
+ * @param out2 A pointer to the output string to receive the substring to the
+ * right of \a delim.
+ * @return Returns \c true only if the string was split (the delimiter was
+ * present in \a in).
+ */
+template<
+  class InputStringType,
+  class DelimStringType,
+  class OutputStringType1,
+  class OutputStringType2
+>
+bool split( InputStringType const &in, DelimStringType const &delim,
+            OutputStringType1 *out1, OutputStringType2 *out2 ) {
+  typename InputStringType::size_type const pos = in.find( delim );
+  if ( pos != InputStringType::npos ) {
+    *out1 = OutputStringType1( in.data(), pos );
+    *out2 = OutputStringType2( in.data() + pos + delim.size() );
+    return true;
+  }
+  return false;
+}
+
 ////////// To-string conversion ////////////////////////////////////////////////
 
 /**

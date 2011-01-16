@@ -479,6 +479,44 @@ static void test_append_codepoints( char const *s ) {
 }
 
 template<class StringType>
+static void test_split( char const *left, char const *right ) {
+  StringType in, out1, out2;
+
+  in = left;
+  in += ':';
+  in += right;
+
+  ASSERT_TRUE( split( in.c_str(), ':', &out1, &out2 ) );
+  ASSERT_TRUE( out1 == left );
+  ASSERT_TRUE( out2 == right );
+
+  ASSERT_TRUE( split( in, ':', &out1, &out2 ) );
+  ASSERT_TRUE( out1 == left );
+  ASSERT_TRUE( out2 == right );
+
+  StringType delim = ":=";
+
+  in = left;
+  in += delim;
+  in += right;
+
+  ASSERT_TRUE( split( in.c_str(), delim.c_str(), &out1, &out2 ) );
+  ASSERT_TRUE( out1 == left );
+  ASSERT_TRUE( out2 == right );
+
+  ASSERT_TRUE( split( in, delim.c_str(), &out1, &out2 ) );
+  ASSERT_TRUE( out1 == left );
+  ASSERT_TRUE( out2 == right );
+
+  ASSERT_TRUE( split( in, delim, &out1, &out2 ) );
+  ASSERT_TRUE( out1 == left );
+  ASSERT_TRUE( out2 == right );
+
+  ASSERT_TRUE( !split( in, '|', &out1, &out2 ) );
+  ASSERT_TRUE( !split( in, "|", &out1, &out2 ) );
+}
+
+template<class StringType>
 static void test_to_codepoints( char const *s ) {
   StringType const s1( s );
 
@@ -629,11 +667,17 @@ static void test_uri_encode() {
 }
 
 int string_test( int, char*[] ) {
+
+  ////////// basic string functionality ///////////////////////////////////////
+
   test<zstring>();
   test<zstring_p>();
 
   test_buf_rep();
   test_ptr_rep();
+
+  test_take<zstring>();
+  test_take<zstring_p>();
 
   test_utf8_string<string>();
   test_utf8_string<zstring>();
@@ -642,6 +686,13 @@ int string_test( int, char*[] ) {
   test_utf8_iterator<string>();
   test_utf8_iterator<zstring>();
   test_utf8_iterator<zstring_p>();
+
+  ////////// string functions /////////////////////////////////////////////////
+
+  test_append_codepoints<string>( "hello" );
+  test_append_codepoints<string>( utf8_aeiou_acute );
+  test_append_codepoints<zstring>( "hello" );
+  test_append_codepoints<zstring>( utf8_aeiou_acute );
 
   test_clark<string>();
   test_clark<zstring>();
@@ -652,17 +703,14 @@ int string_test( int, char*[] ) {
   test_getline<string>();
   test_getline<zstring>();
 
+  test_iri_to_uri();
+
   test_next_match();
   test_next_token();
 
   test_normalize_whitespace<string>();
   test_normalize_whitespace<zstring>();
   test_normalize_whitespace<zstring_p>();
-
-  test_xml_parse_entity();
-
-  test_trim_whitespace<string>();
-  test_trim_whitespace<zstring>();
 
   test_trim_start_char();
   test_trim_end_char();
@@ -677,18 +725,14 @@ int string_test( int, char*[] ) {
   test_reverse<zstring>( utf8_aeiou_acute );
   test_reverse<zstring_p>( utf8_aeiou_acute );
 
-  test_take<zstring>();
-  test_take<zstring_p>();
+  test_split<zstring>( "a", "b" );
+  test_split<zstring>( "", "b" );
+  test_split<zstring>( "a", "" );
 
   test_to_codepoints<string>( "hello" );
   test_to_codepoints<string>( utf8_aeiou_acute );
   test_to_codepoints<zstring>( "hello" );
   test_to_codepoints<zstring>( utf8_aeiou_acute );
-
-  test_append_codepoints<string>( "hello" );
-  test_append_codepoints<string>( utf8_aeiou_acute );
-  test_append_codepoints<zstring>( "hello" );
-  test_append_codepoints<zstring>( utf8_aeiou_acute );
 
   test_to_string_from_utf8<string>();
   test_to_string_from_utf8<zstring>();
@@ -702,11 +746,16 @@ int string_test( int, char*[] ) {
   test_to_upper<zstring>();
   test_to_upper<zstring_p>();
 
-  test_iri_to_uri();
+  test_to_wchar_t();
+
   test_to_xml<string>();
+
+  test_trim_whitespace<string>();
+  test_trim_whitespace<zstring>();
+
   test_uri_encode<string>();
 
-  test_to_wchar_t();
+  test_xml_parse_entity();
 
   cout << failures << " test(s) failed\n";
   return failures ? 1 : 0;
