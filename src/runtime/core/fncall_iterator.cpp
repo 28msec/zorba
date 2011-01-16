@@ -92,9 +92,9 @@ void UDFunctionCallIteratorState::open(PlanState& planState, user_function* udf)
 
   thePlanStateSize = thePlan->getStateSizeOfSubtree();
 
-  // Must allocate new dctx, as child of the "current" dctx, because the udf may
-  // declare local block vars, some of which may hide vars with the same name in
-  // the scope of the caller.
+  // Must allocate new dctx, as child of the "current" dctx, because the udf
+  // may be a recursive udf with local block vars, all of which the the same
+  // dynamic-context id, but they are distinct vars.
   dynamic_context* dctx = new dynamic_context(planState.theDynamicContext);
 
   thePlanState = new PlanState(dctx, thePlanStateSize, planState.theStackDepth + 1);

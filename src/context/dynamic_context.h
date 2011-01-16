@@ -100,11 +100,11 @@ public:
   static std::string var_key(const void* var);
 
   static zstring expand_varname(
-        static_context* sctx,
+        const static_context* sctx,
         const zstring& qname);
 
   static zstring expand_varname(
-        static_context* sctx,
+        const static_context* sctx,
         const zstring& ns,
         const zstring& localname);
 

@@ -84,24 +84,21 @@ DynamicContextImpl::~DynamicContextImpl()
 
 
 /****************************************************************************//**
-
+  Utility function: Given a single-string QName, which may be either lexical
+  (eg. "ns:foo") or a Clark-style universal name (eg., "{nsuri}:foo"), return
+  the "expanded varname" which may be used to add a variable to the underlying
+  dynamic context. In the case of a lexical QName, it will only attempt to look
+  up the namespace prefix on the main module's static context. For a universal
+  name, it will call to the other form of expand_varname().
 ********************************************************************************/
-
-/**
- * Utility function: Given a single-string QName, which may be either
- * lexical (eg. "ns:foo") or a Clark-style universal name (eg.,
- * "{nsuri}:foo"), return the "expanded varname" which may be used to
- * add a variable to the underlying dynamic context. In the case of a
- * lexical QName, it will only attempt to look up the namespace prefix
- * on the main module's static context. For a universal name, it will
- * call to the other form of expand_varname().
- */
 void DynamicContextImpl::expand_varname(
-  const zstring &aQName, zstring* aExpandedName) const
+  const zstring& aQName,
+  zstring* aExpandedName) const
 {
   // First check for universal name.
   zstring lNsuri;
-  if (xml::clark_uri(aQName, &lNsuri)) {
+  if (xml::clark_uri(aQName, &lNsuri)) 
+  {
     // Looks like it is a universal name; jump over to other form.
     zstring lLocalname;
     xml::clark_localname(aQName, &lLocalname);
@@ -109,42 +106,58 @@ void DynamicContextImpl::expand_varname(
     return;
   }
 
-  // Note that this method will throw a ZorbaError if the qname has an
-  // unknown prefix, which is fine. It apparently does not throw any
-  // exception if the variable is not known, however, which is a
-  // little odd and means that you'll get an unbound variable error at
+  // Note that this method will throw a ZorbaError if the qname has an unknown
+  // prefix, which is fine. It apparently does not throw any exception if the
+  // variable is not known (it just returns an empty string), however, which 
+  // is a little odd and means that you'll get an unbound variable error at
   // runtime rather than an exception at setVariable() time.
   *aExpandedName = theCtx->expand_varname(theStaticContext, aQName);
 }
 
-/**
- * Utility function: Given an expanded QName (that is, a separate
- * namespace URI and localname), return the "expanded varname" which
- * may be used to add a variable to the underlying dynamic
- * context. This method will search through all static contexts,
- * including library modules, for a matching variable declaration.
- */
+
+/****************************************************************************//**
+  Utility function: Given an expanded QName (that is, a separate namespace URI
+  and localname), return the "expanded varname" which may be used to add a
+  variable to the underlying dynamic context. This method will search through
+  all static contexts, including library modules, for a matching variable 
+  declaration.
+********************************************************************************/
 void DynamicContextImpl::expand_varname(
-  const zstring &aNsuri, const zstring& aLocalname, zstring *aExpandedName)
-  const
+  const zstring& aNsuri, 
+  const zstring& aLocalname,
+  zstring* aExpandedName) const
 {
-  std::map<short, static_context_t>& lMap = theQuery->theCompilerCB->theSctxMap;
-  std::map<short, static_context_t>::iterator lIter;
-  for (lIter = lMap.begin(); lIter != lMap.end(); lIter++) {
-    // Note that this method will NOT throw any exception if the
-    // variable is unknown - which is useful for us, even though it
-    // probably should
-    *aExpandedName = theCtx->expand_varname(lIter->second, aNsuri, aLocalname);
-    // If it DID return something, we're done
-    if (!aExpandedName->empty()) {
-      return;
+  if (theQuery != NULL)
+  {
+    std::map<short, static_context_t>& lMap = theQuery->theCompilerCB->theSctxMap;
+    std::map<short, static_context_t>::const_iterator lIter;
+    for (lIter = lMap.begin(); lIter != lMap.end(); ++lIter) 
+    {
+      // Note that this method will NOT throw any exception if the
+      // variable is unknown, it just returns an empty string.
+      *aExpandedName = theCtx->expand_varname(lIter->second, aNsuri, aLocalname);
+      
+      // If it DID return something, we're done
+      if (!aExpandedName->empty())
+      {
+        return;
+      }
     }
   }
+  else
+  {
+    *aExpandedName = theCtx->expand_varname(theStaticContext, aNsuri, aLocalname);
+  }
+
   // Consistent with the other form of expand_varname(), we do not
   // throw an exception if the variable isn't found anywhere; we just
-  // return the empty varname adn let later code handle it.
+  // return the empty varname and let later code handle it.
 }
 
+
+/****************************************************************************//**
+
+********************************************************************************/
 bool DynamicContextImpl::setVariable(
     const String& aQName,
     const Item& aItem)
@@ -176,7 +189,7 @@ bool DynamicContextImpl::setVariable(
 ********************************************************************************/
 bool DynamicContextImpl::setVariable(
     const String& aQName,
-    const Iterator_t& aIterator )
+    const Iterator_t& aIterator)
 {
   ZORBA_DCTX_TRY
   {
@@ -207,7 +220,7 @@ bool DynamicContextImpl::setVariable(
 bool DynamicContextImpl::setVariable(
     const String& aNamespace,
     const String& aLocalname,
-    const Iterator_t& aIterator )
+    const Iterator_t& aIterator)
 {
   ZORBA_DCTX_TRY
   {

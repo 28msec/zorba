@@ -72,7 +72,7 @@ std::string dynamic_context::var_key(const void* var)
 
 ********************************************************************************/
 zstring dynamic_context::expand_varname(
-    static_context* sctx,
+    const static_context* sctx,
     const zstring& qnameStr)
 {
   if(!sctx)
@@ -101,7 +101,7 @@ zstring dynamic_context::expand_varname(
 
 ********************************************************************************/
 zstring dynamic_context::expand_varname(
-    static_context* sctx,
+    const static_context* sctx,
     const zstring& ns,
     const zstring& localname)
 {
@@ -318,7 +318,8 @@ void dynamic_context::add_variable(
 ********************************************************************************/
 void dynamic_context::declare_variable(const std::string& var_name)
 {
-  if (var_name.empty()) return;
+  if (var_name.empty()) 
+    return;
 
   dctx_value_t v;
   string key = "var:" + var_name;

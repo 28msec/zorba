@@ -42,8 +42,9 @@ namespace zorba {
 class ZORBA_DLL_PUBLIC DynamicContext
 {
  public:
-  /** \brief Defines the external variable identified by aQName and assigns it
-   *  the value of aItem.
+  /**
+   * \brief Defines the external variable identified by aQName and assigns it
+   * the value of aItem.
    *
    * @param aQName the QName that identifies the external variable.
    * @param aItem the Item that is used as value for the variable.
@@ -51,10 +52,28 @@ class ZORBA_DLL_PUBLIC DynamicContext
    * @throw ZorbaException if an error occured (e.g. the given Item is not valid).
    */
   virtual bool
-  setVariable( const String& aQName, const Item& aItem ) = 0;
+  setVariable(
+      const String& aQName,
+      const Item& aItem) = 0;
 
-  /** \brief Defines the external variable identified by an expanded QName and assigns it the sequence
-   *         that is returned by evaluating aIterator.
+  /**
+   * \brief Defines the external variable identified by aQName and assigns it
+   * the sequence that is returned by evaluating aIterator.
+   *
+   * @param aQName the QName that identifies the external variable.
+   * @param aIterator the Iterator producing the sequence that is assigned
+   *        to the variable.
+   * @return true if the variable has been set successfully, false otherwise.
+   * @throw ZorbaException if an error occured (e.g. the given Iterator is not valid).
+   */
+  virtual bool
+  setVariable( 
+      const String& aQName,
+      const Iterator_t& aIterator) = 0;
+
+  /** 
+   * \brief Defines the external variable identified by an expanded QName and
+   * assigns it the sequence that is returned by evaluating aIterator.
    *
    * @param aNamespace the namespace URI of the variable's expanded QName
    * @param aLocalname the local name of the variable's expanded QName
@@ -64,19 +83,10 @@ class ZORBA_DLL_PUBLIC DynamicContext
    * @throw ZorbaException if an error occured (e.g. the given Iterator is not valid).
    */
   virtual bool
-  setVariable( const String& aNamespace, const String& aLocalname, const Iterator_t& aIterator ) = 0;
-
-  /** \brief Defines the external variable identified by aQName and assigns it the sequence
-   *         that is returned by evaluating aIterator.
-   *
-   * @param aQName the QName that identifies the external variable.
-   * @param aIterator the Iterator producing the sequence that is assigned
-   *        to the variable.
-   * @return true if the variable has been set successfully, false otherwise.
-   * @throw ZorbaException if an error occured (e.g. the given Iterator is not valid).
-   */
-  virtual bool
-  setVariable( const String& aQName, const Iterator_t& aIterator ) = 0;
+  setVariable( 
+      const String& aNamespace,
+      const String& aLocalname,
+      const Iterator_t& aIterator) = 0;
 
   /** \brief Sets the value of the external variable identified by aQName to the
    *         the document node that results from reading and parsing the xml
