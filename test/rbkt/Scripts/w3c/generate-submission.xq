@@ -10,7 +10,7 @@ else
   validate {
     <test-suite-result>
        <implementation name="Zorba" 
-         version='1.5.0 (svn rev. 9658)'
+         version='2.0 (svn rev. 9658)'
          anonymous-result-column="false">
   
          <organization
@@ -98,13 +98,6 @@ else
             name="{$testname}"
             result="not applicable"
             comment="Zorba does not support the 'Static Typing Feature'"
-          />
-        else if (fn:contains(fn:data($test),'CastFOCA0001-1') or
-                 fn:contains(fn:data($test),'CastFOCA0003-1')) then
-          <test-case
-            name="{$testname}"
-            result="pass"
-            comment="There is an openened bug #11400 with the W3C for this issue. Please see http://www.w3.org/Bugs/Public/show_bug.cgi?id=11400."
           />
         else
           <test-case
