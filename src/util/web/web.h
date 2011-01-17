@@ -16,16 +16,12 @@
 #ifndef __WEB_H_INCLUDED__
 #define __WEB_H_INCLUDED__
 
-#include "zorbatypes/representations.h"
-
 #include <iostream>
-#include <sstream>
-#include <string>
-#include <fstream>
+
+#include "zorbatypes/zstring.h"
 
 namespace zorba
 {
-  int http_get(const char* url, std::iostream& result);
 #ifdef ZORBA_WITH_TIDY
   int tidy(const char* input,
            zstring& result,
@@ -36,7 +32,6 @@ namespace zorba
            std::iostream& result,
            zstring& diagnostics,
            const char* userOpt);
-
 #endif
 }
 

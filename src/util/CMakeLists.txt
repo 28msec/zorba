@@ -25,6 +25,7 @@ SET(UTIL_SRCS
     unicode_util.cpp
     utf8_util.cpp
     xml_util.cpp
+    uri_util.cpp
     uuid/sysdep.cpp
     uuid/uuid.cpp)
 

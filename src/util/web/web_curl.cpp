@@ -13,70 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <curl/curl.h>
-#include "util/web/web.h"
+
+#include <string>
+#include <vector>
+
+#include "web.h"
 
 #ifdef ZORBA_WITH_TIDY
-  #include <tidy.h>
-  #include <buffio.h>
+#include <tidy.h>
+#include <buffio.h>
 #endif
 
-#include <iostream>
-#include <sstream>
-#include <string>
-#include <fstream>
-
-#include "system/globalenv.h"
-
-namespace zorba
-{
-
-static size_t
-WriteMemoryCallback(void *ptr, size_t size, size_t nmemb, void* data)
-{
-  size_t realsize = size * nmemb;
-  ((std::iostream*)data)->write((char*)ptr, (std::streamsize)realsize);
-  return realsize;
-}
-
-int http_get(const char* url, std::iostream& result)
-{
-  int result_code;
-  CURL* curl_handle;
-
-  curl_handle = curl_easy_init();                                             /* init the curl session */
-  curl_easy_setopt(curl_handle, CURLOPT_URL, url);                            /* specify URL to get */
-  curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);  /* send all data to this function  */
-  curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&result);            /* we pass our 'result' struct to the callback function */
-  curl_easy_setopt(curl_handle, CURLOPT_FAILONERROR, 1);        /* tells the library to fail silently if the HTTP code returned >= 400*/
-  curl_easy_setopt(curl_handle, CURLOPT_FOLLOWLOCATION, 1); /*Tells cURL to follow redirects. CURLOPT_MAXREDIRS is by default set to -1 thus cURL will do an infinite number of redirects */
-
-#ifndef ZORBA_VERIFY_PEER_SSL_CERTIFICATE//default is to not verify root certif
-  curl_easy_setopt(curl_handle, CURLOPT_SSL_VERIFYPEER, 0);
-  //but CURLOPT_SSL_VERIFYHOST is left default, value 2, meaning verify that the Common Name or Subject Alternate Name field in the certificate matches the name of the server
-  //tested with https://www.npr.org/rss/rss.php?id=1001
-  //about using ssl certs in curl: http://curl.haxx.se/docs/sslcerts.html
-#else
-  #if defined WIN32
-  //set the root CA certificates file path
-  if(GENV.g_curl_root_CA_certificates_path[0])
-    curl_easy_setopt(curl_handle, CURLOPT_CAINFO, GENV.g_curl_root_CA_certificates_path);
-  #endif
-#endif
-
-  /* some servers don't like requests that are made without a user-agent
-    field, so we provide one */
-  curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
-
-  result_code = curl_easy_perform(curl_handle);
-
-  if(0 != result_code) /*warkaround for a problem in cURL: curl_easy_cleanup fails if curl_easy_perform returned an error*/
-    curl_easy_reset(curl_handle);
-
-  curl_easy_cleanup(curl_handle);
-
-  return result_code;
-}
+namespace zorba {
 
 #ifdef ZORBA_WITH_TIDY
 void tokenize(const std::string& str,
@@ -289,5 +237,5 @@ int tidy(const std::istream& stream,
   return rc;
 }
 
-#endif
+#endif /* ZORBA_WITH_TIDY */
 } // namespace zorba

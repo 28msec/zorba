@@ -24,8 +24,9 @@
 #include <zorba/util/file.h>
 
 
-#include "util/web/web.h"
 #include "util/string_util.h"
+#include "util/uri_util.h"
+#include "util/web/web.h"
 
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
@@ -150,11 +151,12 @@ store::Item_t StandardDocumentURIResolver::resolve(
 #ifdef ZORBA_WITH_REST
     // retrieve web file
     std::stringstream iss;
-    int result = http_get(lURI.toString().c_str(), iss);
-
-    if (result != 0)
-      ZORBA_ERROR_DESC_OSS(FODC0002,
-                           "File not found or accessible. Could not make HTTP call");
+    try {
+      uri::fetch(lURI.toString(), iss);
+    }
+    catch ( uri::fetch_exception const &e ) {
+      ZORBA_ERROR_DESC_OSS( FODC0002, e.what() );
+    }
 
     if (tidying)
     {
@@ -549,8 +551,11 @@ std::istream* StandardModuleURIResolver::resolve(
   else
   {
     std::auto_ptr<std::stringstream> code(new std::stringstream());
-    if (http_get(url.c_str(), *code) != 0)
-    {
+
+    try {
+      uri::fetch(url, *code);
+    }
+    catch ( uri::fetch_exception const& ) {
       return NULL;
     }
 
@@ -754,3 +759,4 @@ StandardLibraryModuleURIResolver::resolve(
 }
 
 } /* namespace zorba */
+/* vim:set et sw=2 ts=2: */

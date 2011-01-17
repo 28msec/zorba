@@ -11,14 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-IF(ZORBA_WITH_REST)
 
-  SET(WEB_SRCS
-    web_curl.cpp)
-
-ELSE(ZORBA_WITH_REST)
-
-  SET(WEB_SRCS
-    web_none.cpp)
-
-ENDIF(ZORBA_WITH_REST)
+SET(WEB_SRCS
+  web_curl.cpp)
