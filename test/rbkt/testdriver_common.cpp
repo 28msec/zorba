@@ -89,15 +89,6 @@ void slurp_file (
 }
 
 /*******************************************************************************
-  Check if the passed error is a static error.
-********************************************************************************/
-bool isStaticError(std::string strValue)
-{
-  return  (strValue.find("XPST") != std::string::npos) ||
-          (strValue.find("XQST") != std::string::npos);
-}
-
-/*******************************************************************************
   Check if an error that was repored was expected by the given spec object.
 ********************************************************************************/
 bool isErrorExpected(const TestErrorHandler& errHandler, const Specification* aSpec)
@@ -113,11 +104,6 @@ bool isErrorExpected(const TestErrorHandler& errHandler, const Specification* aS
         ++j)
     {
       if ((i->compare(*j) == 0) || (j->compare(star)) == 0)
-        return true;
-
-      //In case of a static error it is accepted any static error, no matter
-      //the exact error code
-      if (isStaticError(*i) && isStaticError(*j))
         return true;
     }
   }
