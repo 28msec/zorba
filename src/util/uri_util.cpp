@@ -16,7 +16,11 @@
 
 #include <curl/curl.h>
 
+#include <zorba/config.h>
+
+#ifdef WIN32
 #include "system/globalenv.h"
+#endif /* WIN32 */
 
 #ifndef ZORBA_WITH_REST
 #include "zorbaerrors/error_manager.h"
@@ -96,6 +100,22 @@ static size_t curl_write_fn( void *ptr, size_t size, size_t nmemb,
 
 void fetch( char const *uri, iostream &result ) {
 #ifdef ZORBA_WITH_REST
+  //
+  // Having cURL initialization wrapped by a class and using a singleton static
+  // instance guarantees that cURL is initialized exactly once before use and
+  // and also is cleaned-up at program termination (when destructors for static
+  // objects are called).
+  //
+  struct curl_initializer {
+    curl_initializer() {
+      if ( CURLcode curl_code = curl_global_init( CURL_GLOBAL_ALL ) )
+        throw fetch_exception( curl_easy_strerror( curl_code ) );
+    }
+    ~curl_initializer() {
+      curl_global_cleanup();
+    }
+  };
+  static curl_initializer initializer;
 
   CURL *curl = curl_easy_init();
   curl_easy_setopt( curl, CURLOPT_URL, uri );

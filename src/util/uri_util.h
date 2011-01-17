@@ -149,7 +149,8 @@ public:
 };
 
 /**
- * Fetches a resource from the given URI.
+ * Fetches a resource from the given URI.  Supported URI schemes are: "file",
+ * "ftp", "http", and "https".
  *
  * @param uri The URI specifying the resource.
  * @param result The stream to which to write the resource to.
@@ -158,7 +159,8 @@ public:
 void fetch( char const *uri, std::iostream &result );
 
 /**
- * Fetches a resource from the given URI.
+ * Fetches a resource from the given URI.  Supported URI schemes are: "file",
+ * "ftp", "http", and "https".
  *
  * @tparam StringType The URI string type.
  * @param uri The URI specifying the resource.
