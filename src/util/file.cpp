@@ -52,6 +52,7 @@
 #include "util/ascii_util.h"
 #include "util/utf8_util.h"
 #include "util/regex.h"
+#include "util/uri_util.h"
 #include "zorbaerrors/error_manager.h"
 
 
@@ -134,7 +135,7 @@ _normalize_path
 
     // decode the resulting URL encoded path
     // e.g.: C%3A/my%20file.txt, C:/my%20file.txt, /usr/my%20file.xml
-    ascii::uri_decode(lFileArg);
+    uri::decode(lFileArg);
   }
   
   // ****************************************************

@@ -26,6 +26,7 @@
 #include "util/stl_util.h"
 #include "util/string_util.h"
 #include "util/unicode_util.h"
+#include "util/uri_util.h"
 #include "util/utf8_string.h"
 #include "util/utf8_util.h"
 #include "util/xml_util.h"
@@ -670,9 +671,14 @@ static void test_iri_to_uri() {
 template<class StringType>
 static void test_uri_encode() {
   StringType const s( "http://www.example.com/" utf8_aacute );
+
   StringType s2;
-  ascii::uri_encode( s, &s2 , false);
+  uri::encode( s, &s2 , false );
   ASSERT_TRUE( s2 == "http%3A//www.example.com/%C3%A1" );
+
+  StringType s3;
+  uri::decode( s2, &s3 );
+  ASSERT_TRUE( s3 == s );
 }
 
 template<class StringType>

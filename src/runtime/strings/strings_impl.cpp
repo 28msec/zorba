@@ -41,6 +41,7 @@
 #include "util/utf8_util.h"
 #include "util/utf8_string.h"
 #include "util/string_util.h"
+#include "util/uri_util.h"
 
 
 using namespace std;
@@ -839,7 +840,7 @@ bool EncodeForUriIterator::nextImpl(
   if (consumeNext(item, theChildren [0].getp(), planState)) 
   {
     item->getStringValue2(strval);
-    ascii::uri_encode(strval, &resStr, true);
+    uri::encode(strval, &resStr, true);
   }
 
   STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state);

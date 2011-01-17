@@ -21,6 +21,7 @@
 #include "util/regex.h"
 #include "util/static_assert.h"
 #include "util/string_util.h"
+#include "util/uri_util.h"
 #include "util/utf8_util.h"
 #include "util/xml_util.h"
 #include "zorbatypes/zorbatypesError.h"
@@ -231,12 +232,12 @@ String& String::iriToUri() {
 }
 
 String& String::encodeForUri() {
-  ascii::uri_encode( *THIS_STRING );
+  uri::encode( *THIS_STRING );
   return *this;
 }
 
 String& String::decodeFromUri() {
-  ascii::uri_decode( *THIS_STRING );
+  uri::decode( *THIS_STRING );
   return *this;
 }
 

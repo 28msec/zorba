@@ -25,6 +25,7 @@
 
 #include "ascii_util.h"
 #include "fs_util.h"
+#include "uri_util.h"
 
 using namespace std;
 
@@ -69,7 +70,7 @@ zstring get_normalized_path( zstring const &path, zstring const &base ) {
     ++slash;                            // skip leading '/' in "/C:/file.txt"
 #endif
     result = result.substr( slash );
-    ascii::uri_decode( result );
+    uri::decode( result );
 #ifdef WIN32
     if ( !is_absolute( result ) )
       ZORBA_ERROR_DESC( XPTY0004, "missing drive specification" );

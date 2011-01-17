@@ -23,8 +23,9 @@
 #include "URI.h"
 
 #include "util/ascii_util.h"
-#include "util/utf8_util.h"
 #include "util/string_util.h"
+#include "util/uri_util.h"
+#include "util/utf8_util.h"
 #include "zorbautils/string_util.h"
 
 
@@ -93,19 +94,19 @@ void URI::decode_file_URI(const zstring& uri, zstring& filepath)
       ((uri.compare(9, 1, ":") == 0) || (uri.compare(9, 4, "%3A/") == 0))) 
   {
     zstring tmp(uri.c_str() + 8);
-    ascii::uri_decode(tmp, &filepath);
+    uri::decode(tmp, &filepath);
   }
   else
 #endif
     if (uri.compare(0, 8, "file:///") == 0) 
     {
       zstring tmp(uri.c_str() + 7);
-      ascii::uri_decode(tmp, &filepath);
+      uri::decode(tmp, &filepath);
     }
     else if (uri.compare(0, 17, "file://localhost/") == 0)
     {
       zstring tmp(uri.c_str() + 16);
-      ascii::uri_decode(tmp, &filepath);
+      uri::decode(tmp, &filepath);
     }
     else
     {
@@ -135,7 +136,7 @@ void URI::encode_file_URI(const zstring& filepath, zstring& uri)
   ascii::replace_all( tmp1, '\\', '/' );
 
   zstring tmp2;
-  ascii::uri_encode(tmp1, &tmp2, false);
+  uri::encode(tmp1, &tmp2, false);
 
   uri.append(tmp2);
 
@@ -143,7 +144,7 @@ void URI::encode_file_URI(const zstring& filepath, zstring& uri)
   uri = "file:///";
 
   zstring tmp;
-  ascii::uri_encode(filepath, &tmp, false);
+  uri::encode(filepath, &tmp, false);
 
   uri.append(tmp);
 #endif
@@ -1077,7 +1078,7 @@ void URI::set_port(int new_port)
 ********************************************************************************/
 void URI::set_user_info(const zstring& new_user_info)
 {
-  ascii::uri_encode(new_user_info, &theUserInfo, false);
+  uri::encode(new_user_info, &theUserInfo, false);
 
   set_state(UserInfo);
 }
@@ -1128,7 +1129,7 @@ void URI::set_path(const zstring& new_path)
 ********************************************************************************/
 void URI::get_user_info(zstring& result) const
 {
-  ascii::uri_decode(theUserInfo, &result);
+  uri::decode(theUserInfo, &result);
 }
 
 
@@ -1137,7 +1138,7 @@ void URI::get_user_info(zstring& result) const
 ********************************************************************************/
 void URI::get_reg_based_authority(zstring& result) const
 {
-  ascii::uri_decode(theRegBasedAuthority, &result);
+  uri::decode(theRegBasedAuthority, &result);
 }
 
 
@@ -1146,7 +1147,7 @@ void URI::get_reg_based_authority(zstring& result) const
 ********************************************************************************/
 void URI::get_path(zstring& result) const
 {
-  ascii::uri_decode(thePath, &result);
+  uri::decode(thePath, &result);
 }
 
 
@@ -1155,7 +1156,7 @@ void URI::get_path(zstring& result) const
 ********************************************************************************/
 void URI::get_query(zstring& result) const
 {
-  ascii::uri_decode(theQueryString, &result);
+  uri::decode(theQueryString, &result);
 }
 
 
@@ -1164,7 +1165,7 @@ void URI::get_query(zstring& result) const
 ********************************************************************************/
 void URI::get_fragment(zstring& result) const
 {
-  ascii::uri_decode(theFragment, &result);
+  uri::decode(theFragment, &result);
 }
 
 

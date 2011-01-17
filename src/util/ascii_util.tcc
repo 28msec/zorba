@@ -33,20 +33,6 @@ back_ascii_insert_iterator<StringType>::operator=( value_type c ) {
   return *this;
 }
 
-template<class StringType> back_uri_insert_iterator<StringType>&
-back_uri_insert_iterator<StringType>::operator=( value_type c ) {
-  char const dec2hex[] = "0123456789ABCDEF";
-  unsigned const u = c & 0xFF;
-  if ( uri_safe[ u ] || (c == '/' && !encode_slash_) )
-    this->container->push_back( c );
-  else {
-    buf_[1] = dec2hex[ u >> 4 ];
-    buf_[2] = dec2hex[ u & 0x0F ];
-    this->container->append( buf_, 3 );
-  }
-  return *this;
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 
 template<class InputStringType,class OutputStringType>
