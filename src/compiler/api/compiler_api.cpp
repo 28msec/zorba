@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "compiler/api/compiler_api.h"
 
 #include <istream>
@@ -54,6 +55,7 @@
 #endif
 
 #include "runtime/base/plan_iterator.h"
+#include "util/xml_util.h"
 #include "zorbatypes/URI.h"
 
 
@@ -321,7 +323,7 @@ parsenode_t XQueryCompiler::createMainModule(
   // create a dummy main module
   std::stringstream lDocStream;
   zstring tmp;
-  zorba::ascii::to_xml(lib_namespace, &tmp);
+  zorba::xml::escape(lib_namespace, &tmp);
   lDocStream << "import module namespace m = '" << tmp << "'; 1";
 
   aXQuery.clear();

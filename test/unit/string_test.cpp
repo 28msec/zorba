@@ -383,41 +383,6 @@ static void test_next_token() {
   ASSERT_TRUE( !re.next_token( u, &pos, &u_token ) );
 }
 
-static void test_xml_parse_entity() {
-  unicode::code_point c;
-
-  ASSERT_TRUE( xml::parse_entity( "&amp;", &c ) != -1 );
-  ASSERT_TRUE( c == '&' );
-  ASSERT_TRUE( xml::parse_entity( "&lt;", &c ) != -1 );
-  ASSERT_TRUE( c == '<' );
-  ASSERT_TRUE( xml::parse_entity( "&gt;", &c ) != -1 );
-  ASSERT_TRUE( c == '>' );
-  ASSERT_TRUE( xml::parse_entity( "&apos;", &c ) != -1 );
-  ASSERT_TRUE( c == '\'' );
-  ASSERT_TRUE( xml::parse_entity( "&quot;", &c ) != -1 );
-  ASSERT_TRUE( c == '"' );
-
-  ASSERT_TRUE( xml::parse_entity( "&#38;", &c ) != -1 );
-  ASSERT_TRUE( c == '&' );
-  ASSERT_TRUE( xml::parse_entity( "&#x26;", &c ) != -1 );
-  ASSERT_TRUE( c == '&' );
-
-  ASSERT_TRUE( xml::parse_entity( "&#x301;", &c ) != -1 );
-  ASSERT_TRUE( c == 0x301 );
-  ASSERT_TRUE( xml::parse_entity( "&#x0301;", &c ) != -1 );
-  ASSERT_TRUE( c == 0x301 );
-
-  ASSERT_TRUE( xml::parse_entity( "&", &c ) == -1 );
-  ASSERT_TRUE( xml::parse_entity( "&#", &c ) == -1 );
-  ASSERT_TRUE( xml::parse_entity( "&#x", &c ) == -1 );
-  ASSERT_TRUE( xml::parse_entity( "&#ZOO;", &c ) == -1 );
-  ASSERT_TRUE( xml::parse_entity( "&zoo;", &c ) == -1 );
-
-  ASSERT_TRUE( xml::parse_entity( "&amp", &c ) == -1 );
-  ASSERT_TRUE( xml::parse_entity( "&#38", &c ) == -1 );
-  ASSERT_TRUE( xml::parse_entity( "&#x26", &c ) == -1 );
-}
-
 template<class StringType>
 static void test_replace_all() {
   StringType s1( "/a/path/on/the/filesystem/" );
@@ -517,6 +482,17 @@ static void test_ends_with() {
   ASSERT_TRUE( !utf8::ends_with( u_ab, 'a' ) );
   ASSERT_TRUE(  utf8::ends_with( u_ab, "b" ) );
   ASSERT_TRUE( !utf8::ends_with( u_ab, "a" ) );
+}
+
+static void test_skip_whitespace() {
+  char const s[] = "  hello world";
+  ascii::size_type const s_len = ::strlen( s );
+  ascii::size_type pos = 0;
+  ascii::skip_whitespace( s, s_len, &pos );
+  ASSERT_TRUE( pos == 2 );
+  pos = 7;
+  ascii::skip_whitespace( s, s_len, &pos );
+  ASSERT_TRUE( pos == 8 );
 }
 
 template<class StringType>
@@ -633,15 +609,7 @@ static void test_to_wchar_t() {
   delete[] w;
 }
 
-template<class StringType>
-static void test_to_xml() {
-  StringType const s( "&b<de>" );
-  StringType s2;
-  ascii::to_xml( s, &s2 );
-  ASSERT_TRUE( s2 == "&#38;b&#60;de&#62;" );
-}
-
-static void test_trim_start_char() {
+static void test_trim_start() {
   char const *s;
 
   s = "hello";
@@ -661,7 +629,7 @@ static void test_trim_start_char() {
   ASSERT_TRUE( ascii::trim_start( s, ::strlen( s ), whitespace ) == s + 5 );
 }
 
-static void test_trim_end_char() {
+static void test_trim_end() {
   char const *s;
   ascii::size_type len;
 
@@ -705,6 +673,49 @@ static void test_uri_encode() {
   StringType s2;
   ascii::uri_encode( s, &s2 , false);
   ASSERT_TRUE( s2 == "http%3A//www.example.com/%C3%A1" );
+}
+
+template<class StringType>
+static void test_xml_escape() {
+  StringType const s( "&b<de>" );
+  StringType s2;
+  xml::escape( s, &s2 );
+  ASSERT_TRUE( s2 == "&#38;b&#60;de&#62;" );
+}
+
+static void test_xml_parse_entity() {
+  unicode::code_point c;
+
+  ASSERT_TRUE( xml::parse_entity( "&amp;", &c ) != -1 );
+  ASSERT_TRUE( c == '&' );
+  ASSERT_TRUE( xml::parse_entity( "&lt;", &c ) != -1 );
+  ASSERT_TRUE( c == '<' );
+  ASSERT_TRUE( xml::parse_entity( "&gt;", &c ) != -1 );
+  ASSERT_TRUE( c == '>' );
+  ASSERT_TRUE( xml::parse_entity( "&apos;", &c ) != -1 );
+  ASSERT_TRUE( c == '\'' );
+  ASSERT_TRUE( xml::parse_entity( "&quot;", &c ) != -1 );
+  ASSERT_TRUE( c == '"' );
+
+  ASSERT_TRUE( xml::parse_entity( "&#38;", &c ) != -1 );
+  ASSERT_TRUE( c == '&' );
+  ASSERT_TRUE( xml::parse_entity( "&#x26;", &c ) != -1 );
+  ASSERT_TRUE( c == '&' );
+
+  ASSERT_TRUE( xml::parse_entity( "&#x301;", &c ) != -1 );
+  ASSERT_TRUE( c == 0x301 );
+  ASSERT_TRUE( xml::parse_entity( "&#x0301;", &c ) != -1 );
+  ASSERT_TRUE( c == 0x301 );
+
+  ASSERT_TRUE( xml::parse_entity( "&", &c ) == -1 );
+  ASSERT_TRUE( xml::parse_entity( "&#", &c ) == -1 );
+  ASSERT_TRUE( xml::parse_entity( "&#x", &c ) == -1 );
+  ASSERT_TRUE( xml::parse_entity( "&#ZOO;", &c ) == -1 );
+  ASSERT_TRUE( xml::parse_entity( "&zoo;", &c ) == -1 );
+
+  ASSERT_TRUE( xml::parse_entity( "&amp", &c ) == -1 );
+  ASSERT_TRUE( xml::parse_entity( "&#38", &c ) == -1 );
+  ASSERT_TRUE( xml::parse_entity( "&#x26", &c ) == -1 );
 }
 
 int string_test( int, char*[] ) {
@@ -755,9 +766,6 @@ int string_test( int, char*[] ) {
   test_normalize_whitespace<zstring>();
   test_normalize_whitespace<zstring_p>();
 
-  test_trim_start_char();
-  test_trim_end_char();
-
   test_replace_all<string>();
 
   test_reverse<string>( "hello" );
@@ -767,6 +775,8 @@ int string_test( int, char*[] ) {
   test_reverse<string>( utf8_aeiou_acute );
   test_reverse<zstring>( utf8_aeiou_acute );
   test_reverse<zstring_p>( utf8_aeiou_acute );
+
+  test_skip_whitespace();
 
   test_split<zstring>( "a", "b" );
   test_split<zstring>( "", "b" );
@@ -791,13 +801,14 @@ int string_test( int, char*[] ) {
 
   test_to_wchar_t();
 
-  test_to_xml<string>();
-
+  test_trim_start();
+  test_trim_end();
   test_trim_whitespace<string>();
   test_trim_whitespace<zstring>();
 
   test_uri_encode<string>();
 
+  test_xml_escape<string>();
   test_xml_parse_entity();
 
   cout << failures << " test(s) failed\n";

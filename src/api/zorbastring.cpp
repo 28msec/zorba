@@ -22,6 +22,7 @@
 #include "util/static_assert.h"
 #include "util/string_util.h"
 #include "util/utf8_util.h"
+#include "util/xml_util.h"
 #include "zorbatypes/zorbatypesError.h"
 #include "zorbatypes/zstring.h"
 
@@ -215,7 +216,7 @@ String& String::trim() {
 }
 
 String& String::formatAsXML() {
-  ascii::to_xml( *THIS_STRING );
+  xml::escape( *THIS_STRING );
   return *this;
 }
 

@@ -71,28 +71,13 @@ ZORBA_DLL_PUBLIC extern char const uri_safe[256] = {
   /* 7 */ 1,1,1,1, 1,1,1,1, 1,1,1,0, 0,0,1,0,
 };
 
-
 bool is_whitespace( char const *s ) {
   for ( ; *s; ++s ) {
-    unsigned const c = static_cast<unsigned>( *s ) & 0xFF;
-    if ( !isspace( c ) )
+    if ( !is_space( *s ) )
       return false;
   }
   return true;
 }
-
-
-void skip_whitespace(const char* str, size_type str_len, size_type *pos)
-{
-  size_type i = *pos;
-  for ( ; i < str_len; ++i )
-  {
-    if (!isspace(str[i]))
-      break;
-  }
-  *pos = i;
-}
-
 
 char* ltoa( long n, char *buf ) {
   //
@@ -103,7 +88,7 @@ char* ltoa( long n, char *buf ) {
   if ( is_neg ) n = -n;
   char *s = buf;
   do {                                  // generate digits in reverse
-    *s++ = (char)(n % 10 + '0');
+    *s++ = static_cast<char>( n % 10 + '0' );
   } while ( n /= 10 );
   if ( is_neg ) *s++ = '-';
   *s = '\0';

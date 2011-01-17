@@ -102,6 +102,85 @@ inline bool is_valid( CodePointType c, version v = v1_0 ) {
       ||  (v == v1_1 && c >= 0x01 && c <= 0x1F);
 }
 
+////////// XML character escaping /////////////////////////////////////////////
+
+/**
+ * A %back_xml_insert_iterator can be used to append characters to a string
+ * ensuring that illegal characters in XML ('"', '&', '\'', '<', and '>') are
+ * replace by their respective character entity references.
+ *
+ * @tparam StringType The string type.
+ */
+template<class StringType>
+class back_xml_insert_iterator :
+  public
+    back_insert_iterator_base<
+      StringType, back_xml_insert_iterator<StringType>
+    >
+{
+  typedef back_insert_iterator_base<
+    StringType, back_xml_insert_iterator<StringType>
+  > base_type;
+public:
+  typedef typename base_type::container_type container_type;
+  typedef typename StringType::value_type value_type;
+
+  /**
+   * Constructs a %back_xml_insert_iterator.
+   *
+   * @param s The string to append to.
+   */
+  explicit back_xml_insert_iterator( StringType &s ) : base_type( s ) {
+    buf_[0] = '&';
+    buf_[1] = '#';
+  }
+
+  back_xml_insert_iterator& operator=( value_type c );
+
+private:
+  char buf_[5]; // &#xx; -- no need for null at end
+};
+
+/**
+ * This is a convenience function to create a back_xml_insert_iterator.
+ *
+ * @tparam StringType The string type.
+ * @param out The output string.
+ */
+template<class StringType> inline back_xml_insert_iterator<StringType>
+back_xml_inserter( StringType &out ) {
+  return back_xml_insert_iterator<StringType>( out );
+}
+
+/**
+ * Escapes characters in the string for XML, specfically '"', '&', '\'', '<',
+ * and '>'.
+ *
+ * @tparam InputStringType The input string type.
+ * @tparam OutputStringType The output string type.
+ * @param in The input string.
+ * @param out The output string (which must be different from \a in).  Its
+ * contents are appended to.
+ */
+template<class InputStringType,class OutputStringType> inline
+void escape( InputStringType const &in, OutputStringType *out ) {
+  std::copy( in.begin(), in.end(), back_xml_inserter( *out ) );
+}
+
+/**
+ * Escapes characters in the string for XML, specfically '"', '&', '\'', '<',
+ * and '>'.
+ *
+ * @tparam StringType The string type.
+ * @param s The string.
+ */
+template<class StringType> inline
+void escape( StringType &s ) {
+  StringType temp;
+  std::copy( s.begin(), s.end(), back_xml_inserter( temp ) );
+  s = temp;
+}
+
 ////////// XML entity reference parsing ///////////////////////////////////////
 
 /**
@@ -168,6 +247,8 @@ int parse_entity( InputStringType const &ref, OutputStringType *out ) {
 
 } // namespace unicode
 } // namespace zorba
+
+#include "xml_util.tcc"
 
 #endif /* ZORBA_XML_UTIL_H */
 /*

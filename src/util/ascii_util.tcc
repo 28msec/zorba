@@ -28,7 +28,7 @@ namespace ascii {
 
 template<class StringType> back_ascii_insert_iterator<StringType>&
 back_ascii_insert_iterator<StringType>::operator=( value_type c ) {
-  if ( isascii( c ) )
+  if ( is_ascii( c ) )
     this->container->push_back( c );
   return *this;
 }
@@ -43,24 +43,6 @@ back_uri_insert_iterator<StringType>::operator=( value_type c ) {
     buf_[1] = dec2hex[ u >> 4 ];
     buf_[2] = dec2hex[ u & 0x0F ];
     this->container->append( buf_, 3 );
-  }
-  return *this;
-}
-
-template<class StringType> back_xml_insert_iterator<StringType>&
-back_xml_insert_iterator<StringType>::operator=( value_type c ) {
-  switch ( c ) {
-    case '"':
-    case '&':
-    case '\'':
-    case '<':
-    case '>':
-      itoa( c, buf_ + 2 /* skip over "&#" */ );
-      buf_[4] = ';'; // because it gets overwritten with null by itoa()
-      this->container->append( buf_, 5 );
-      break;
-    default:
-      this->container->push_back( c );
   }
   return *this;
 }

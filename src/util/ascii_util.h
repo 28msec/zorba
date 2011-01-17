@@ -36,9 +36,11 @@ namespace ascii {
  */
 typedef std::size_t size_type;
 
-ZORBA_DLL_PUBLIC extern char const uri_safe[];
+////////// constants //////////////////////////////////////////////////////////
 
-////////// classes ////////////////////////////////////////////////////////////
+char const whitespace[] = " \f\n\r\t\v";
+
+////////// Non-ASCII character stripping //////////////////////////////////////
 
 /**
  * A %back_ascii_insert_iterator can be used to append characters to a string
@@ -72,84 +74,6 @@ public:
 };
 
 /**
- * A %back_uri_insert_iterator can be used to append characters to a string
- * ensuring that illegal characters in a URI are escaped.
- *
- * @tparam StringType The string type.
- */
-template<class StringType>
-class back_uri_insert_iterator :
-  public
-    back_insert_iterator_base<
-      StringType, back_uri_insert_iterator<StringType>
-    >
-{
-  typedef back_insert_iterator_base<
-    StringType, back_uri_insert_iterator<StringType>
-  > base_type;
-public:
-  typedef typename base_type::container_type container_type;
-  typedef typename StringType::value_type value_type;
-
-  /**
-   * Constructs a %back_uri_insert_iterator.
-   *
-   * @param s The string to append to.
-   * @param encode_slash If \c true, encodes the '/' character also.
-   */
-  explicit back_uri_insert_iterator( StringType &s, bool encode_slash = false )
-    : base_type( s ), encode_slash_(  encode_slash )
-  {
-    buf_[0] = '%';
-  }
-
-  back_uri_insert_iterator& operator=( value_type c );
-
-private:
-  char buf_[3]; // %xx -- no need for null at end
-  bool encode_slash_;
-};
-
-/**
- * A %back_xml_insert_iterator can be used to append characters to a string
- * ensuring that illegal characters in XML ('"', '&', '\'', '<', and '>') are
- * replace by their respective character entity references.
- *
- * @tparam StringType The string type.
- */
-template<class StringType>
-class back_xml_insert_iterator :
-  public
-    back_insert_iterator_base<
-      StringType, back_xml_insert_iterator<StringType>
-    >
-{
-  typedef back_insert_iterator_base<
-    StringType, back_xml_insert_iterator<StringType>
-  > base_type;
-public:
-  typedef typename base_type::container_type container_type;
-  typedef typename StringType::value_type value_type;
-
-  /**
-   * Constructs a %back_xml_insert_iterator.
-   *
-   * @param s The string to append to.
-   */
-  explicit back_xml_insert_iterator( StringType &s ) : base_type( s ) {
-    buf_[0] = '&';
-    buf_[1] = '#';
-  }
-
-  back_xml_insert_iterator& operator=( value_type c );
-
-private:
-  char buf_[5]; // &#xx; -- no need for null at end
-};
-
-////////// functions //////////////////////////////////////////////////////////
-
-/**
  * This is a convenience function to create a back_ascii_insert_iterator.
  *
  * @tparam StringType The string type.
@@ -160,28 +84,141 @@ back_ascii_inserter( StringType &out ) {
   return back_ascii_insert_iterator<StringType>( out );
 }
 
+////////// Character testing //////////////////////////////////////////////////
+
 /**
- * This is a convenience function to create a back_uri_insert_iterator.
+ * Checks whether the given character is an ASCII character.  This
+ * function exists to make a proper function out of the standard isascii(3)
+ * that may be implemented as a macro.
  *
- * @tparam StringType The string type.
- * @param out The output string.
- * @param encode_slash If \c true, encodes the '/' character also.
+ * @param CharType The character type.
+ * @param c The character to check.
+ * @return Returns \c true only if the character is an ASCII character.
  */
-template<class StringType> inline back_uri_insert_iterator<StringType>
-back_uri_inserter( StringType &out, bool encode_slash = false ) {
-  return back_uri_insert_iterator<StringType>( out, encode_slash );
+template<typename CharType> inline
+bool is_ascii( CharType c ) {
+#ifdef WIN32
+  return __isascii( c );
+#else
+  return isascii( c );
+#endif
 }
 
 /**
- * This is a convenience function to create a back_xml_insert_iterator.
+ * Checks whether the given character is an alphabetic character.  This
+ * function exists to make a proper function out of the standard isalpha(3)
+ * that may be implemented as a macro.
  *
- * @tparam StringType The string type.
- * @param out The output string.
+ * @param CharType The character type.
+ * @param c The character to check.
+ * @return Returns \c true only if the character is an alphabetic character.
  */
-template<class StringType> inline back_xml_insert_iterator<StringType>
-back_xml_inserter( StringType &out ) {
-  return back_xml_insert_iterator<StringType>( out );
+template<typename CharType> inline
+bool is_alpha( CharType c ) {
+#ifdef WIN32
+  // Windows' isalpha() implementation crashes for non-ASCII characters.
+  return __isascii( c ) && isalpha( c );
+#else
+  return isalpha( c );
+#endif
 }
+
+/**
+ * Checks whether the given character is an alpha-numeric character.  This
+ * function exists to make a proper function out of the standard isalnum(3)
+ * that may be implemented as a macro.
+ *
+ * @param CharType The character type.
+ * @param c The character to check.
+ * @return Returns \c true only if the character is an alpha-numeric character.
+ */
+template<typename CharType> inline
+bool is_alnum( CharType c ) {
+#ifdef WIN32
+  // Windows' isalpha() implementation crashes for non-ASCII characters.
+  return __isascii( c ) && isalnum( c );
+#else
+  return isalnum( c );
+#endif
+}
+
+/**
+ * Checks whether the given character is a decimal digit.  This function exists
+ * to make a proper function out of the standard isdigit(3) that may be
+ * implemented as a macro.
+ *
+ * @param CharType The character type.
+ * @param c The character to check.
+ * @return Returns \c true only if the character is a decimal digit.
+ */
+template<typename CharType> inline
+bool is_digit( CharType c ) {
+#ifdef WIN32
+  // Windows' isdigit() implementation crashes for non-ASCII characters.
+  return __isascii( c ) && isdigit( c );
+#else
+  return isdigit( c );
+#endif
+}
+
+/**
+ * Checks whether the given character is a whitespace character.  This function
+ * exists to make a proper function out of the standard isspace(3) that may be
+ * implemented as a macro.
+ *
+ * @param CharType The character type.
+ * @param c The character to check.
+ * @return Returns \c true only if the character is a whitespace character.
+ */
+template<typename CharType> inline
+bool is_space( CharType c ) {
+#ifdef WIN32
+  // Windows' isspace() implementation crashes for non-ASCII characters.
+  return __isascii( c ) && isspace( c );
+#else
+  return isspace( c );
+#endif
+}
+
+/**
+ * Checks whether an entire string is whitespace.
+ *
+ * @param s The NULL-terminated C string to check.
+ * @return Returns \c true only if the entire string is whitespace.
+ */
+ZORBA_DLL_PUBLIC bool is_whitespace( char const *s );
+
+/**
+ * Checks whether an entire string is whitespace.
+ *
+ * @param s The string to check.
+ * @return Returns \c true only if the entire string is whitespace.
+ */
+template<class StringType> inline
+bool is_whitespace( StringType const &s ) {
+  return is_whitespace( s.c_str() );
+}
+
+/**
+ * Checks whether the given character is a hexadecimal decimal digit.  This
+ * function exists to make a proper function out of the standard isxdigit(3)
+ * that may be implemented as a macro.
+ *
+ * @param CharType The character type.
+ * @param c The character to check.
+ * @return Returns \c true only if the character is a hexadecimal digit.
+ */
+template<typename CharType> inline
+bool is_xdigit( CharType c ) {
+#ifdef WIN32
+  // Windows' isxdigit() implementation crashes for non-ASCII characters.
+  return __isascii( c ) && isxdigit( c );
+#else
+  return isxdigit( c );
+#endif
+}
+
+////////// begins/ends_with ///////////////////////////////////////////////////
 
 /**
  * Checks whether a string begins with a given prefix.
@@ -365,423 +402,7 @@ bool ends_with( StringType const &s, SuffixStringType const &ss ) {
   return ends_with( s, ss.data(), ss.size() );
 }
 
-/**
- * Checks whether the given character is an alphabetic character.  This
- * function exists to make a proper function out of the standard isalpha(3)
- * that may be implemented as a macro.
- *
- * @param CharType The character type.
- * @param c The character to check.
- * @return Returns \c true only if the character is an alphabetic character.
- */
-template<typename CharType> inline
-bool is_alpha( CharType c ) {
-#ifdef WIN32
-  // Windows' isalpha() implementation crashes for non-ASCII characters.
-  return __isascii( c ) && isalpha( c );
-#else
-  return isalpha( c );
-#endif
-}
-
-/**
- * Checks whether the given character is an alpha-numeric character.  This
- * function exists to make a proper function out of the standard isalnum(3)
- * that may be implemented as a macro.
- *
- * @param CharType The character type.
- * @param c The character to check.
- * @return Returns \c true only if the character is an alpha-numeric character.
- */
-template<typename CharType> inline
-bool is_alnum( CharType c ) {
-#ifdef WIN32
-  // Windows' isalpha() implementation crashes for non-ASCII characters.
-  return __isascii( c ) && isalnum( c );
-#else
-  return isalnum( c );
-#endif
-}
-
-/**
- * Checks whether the given character is a decimal digit.  This function exists
- * to make a proper function out of the standard isdigit(3) that may be
- * implemented as a macro.
- *
- * @param CharType The character type.
- * @param c The character to check.
- * @return Returns \c true only if the character is a decimal digit.
- */
-template<typename CharType> inline
-bool is_digit( CharType c ) {
-#ifdef WIN32
-  // Windows' isdigit() implementation crashes for non-ASCII characters.
-  return __isascii( c ) && isdigit( c );
-#else
-  return isdigit( c );
-#endif
-}
-
-/**
- * Checks whether the given character is a whitespace character.  This function
- * exists to make a proper function out of the standard isspace(3) that may be
- * implemented as a macro.
- *
- * @param CharType The character type.
- * @param c The character to check.
- * @return Returns \c true only if the character is a whitespace character.
- */
-template<typename CharType> inline
-bool is_space( CharType c ) {
-#ifdef WIN32
-  // Windows' isspace() implementation crashes for non-ASCII characters.
-  return __isascii( c ) && isspace( c );
-#else
-  return isspace( c );
-#endif
-}
-
-/**
- * Checks whether an entire string is whitespace.
- *
- * @param s The NULL-terminated C string to check.
- * @return Returns \c true only if the entire string is whitespace.
- */
-ZORBA_DLL_PUBLIC bool is_whitespace( char const *s );
-
-/**
- * Checks whether an entire string is whitespace.
- *
- * @param s The string to check.
- * @return Returns \c true only if the entire string is whitespace.
- */
-template<class StringType> inline
-bool is_whitespace( StringType const &s ) {
-  return is_whitespace( s.c_str() );
-}
-
-/**
- * Checks whether the given character is a hexadecimal decimal digit.  This
- * function exists to make a proper function out of the standard isxdigit(3)
- * that may be implemented as a macro.
- *
- * @param CharType The character type.
- * @param c The character to check.
- * @return Returns \c true only if the character is a hexadecimal digit.
- */
-template<typename CharType> inline
-bool is_xdigit( CharType c ) {
-#ifdef WIN32
-  // Windows' isxdigit() implementation crashes for non-ASCII characters.
-  return __isascii( c ) && isxdigit( c );
-#else
-  return isxdigit( c );
-#endif
-}
-
-/**
- * Converts a \c long to a C string.
- *
- * @param n The \c long to convert.
- * @param buf The buffer for the result.  The caller must ensure it's of
- * sufficient size.
- * @return Returns \a buf for convenience.
- */
-ZORBA_DLL_PUBLIC
-char* ltoa( long n, char *buf );
-
-/**
- * Converts an \c int to a C string.
- *
- * @param n The \c int to convert.
- * @param buf The buffer for the result.  The caller must ensure it's of
- * sufficient size.
- * @return Returns \a buf for convenience.
- */
-inline char* itoa( int n, char *buf ) {
-  return ltoa( n, buf );
-}
-
-/**
- * Converts sequences of one or more whitespace characters to a single space.
- * Additionally, all leading and trailing whitespace is removed.
- *
- * @tparam InputStringType The input string type.
- * @tparam OutputStringType The output string type.
- * @param in The input string.
- * @param out The output string (which must be different from \a in).
- */
-template<class InputStringType,class OutputStringType>
-void normalize_whitespace( InputStringType const &in, OutputStringType *out );
-
-/**
- * Converts sequences of one or more whitespace characters to a single space.
- * Additionally, all leading and trailing whitespace is removed.
- *
- * @tparam StringType The string type.
- * @param s The string.
- */
-template<class StringType> inline
-void normalize_whitespace( StringType &s ) {
-  StringType temp;
-  normalize_whitespace( s, &temp );
-  s = temp;
-}
-
-/**
- * Removes all leading and trailing specified characters.
- *
- * @tparam InputStringType The input string type.
- * @tparam OutputStringType The output string type.
- * @param in The input string.
- * @param chars The characters to trim.
- * @param out The output string (which must be different from \a in).
- */
-template<class InputStringType,class OutputStringType>
-void trim( InputStringType const &in, char const *chars,
-           OutputStringType *out );
-
-/**
- * Removes all leading and trailing specified characters.
- *
- * @tparam StringType The string type.
- * @param s The string.
- */
-template<class StringType> inline
-void trim( StringType &s, char const *chars ) {
-  StringType temp;
-  trim( s, chars, &temp );
-  s = temp;
-}
-
-/**
- * Skips leading specified characters.
- *
- * @param s The string to trim.
- * @param chars The characters to trim.
- * @return Returns a pointer to the first character in \a s that is not among
- * the characters in \a chars.
- */
-ZORBA_DLL_PUBLIC
-char const* trim_start( char const *s, char const *chars );
-
-/**
- * Skips leading specified characters.
- *
- * @param s The string to trim.
- * @param s_len The length of \a s.
- * @param chars The characters to trim.
- * @return Returns a pointer to the first character in \a s that is not among
- * the characters in \a chars.
- */
-ZORBA_DLL_PUBLIC
-char const* trim_start( char const *s, size_type s_len, char const *chars );
-
-/**
- * Removes all leading specified characters.
- *
- * @tparam InputStringType The input string type.
- * @tparam OutputStringType The output string type.
- * @param in The input string.
- * @param chars The characters to trim.
- * @param out The output string (which must be different from \a in).
- */
-template<class InputStringType,class OutputStringType>
-void trim_start( InputStringType const &in, char const *chars,
-                 OutputStringType *out );
-
-/**
- * Removes all leading specified characters.
- *
- * @tparam StringType The string type.
- * @param s The string.
- */
-template<class StringType> inline
-void trim_start( StringType &s, char const *chars ) {
-  StringType temp;
-  trim_start( s, chars, &temp );
-  s = temp;
-}
-
-/**
- * Skips trailing specified characters.
- *
- * @param s The string to trim.
- * @param s_len The length of \a s.
- * @param chars The characters to trim.
- * @return Returns the new length of \a s.
- */
-ZORBA_DLL_PUBLIC
-size_type trim_end( char const *s, size_type s_len, char const *chars );
-
-/**
- * Skips trailing specified characters.
- *
- * @param s The string to trim.
- * @param chars The characters to trim.
- * @return Returns the new length of \a s.
- */
-inline size_type trim_end( char const *s, char const *chars ) {
-  return trim_end( s, std::strlen( s ), chars );
-}
-
-/**
- * Removes all leading specified characters.
- *
- * @tparam InputStringType The input string type.
- * @tparam OutputStringType The output string type.
- * @param in The input string.
- * @param chars The characters to trim.
- * @param out The output string (which must be different from \a in).
- */
-template<class InputStringType,class OutputStringType>
-void trim_end( InputStringType const &in, char const *chars,
-               OutputStringType *out );
-
-/**
- * Removes all leading specified characters.
- *
- * @tparam StringType The string type.
- * @param s The string.
- */
-template<class StringType> inline
-void trim_end( StringType &s, char const *chars ) {
-  StringType temp;
-  trim_end( s, chars, &temp );
-  s = temp;
-}
-
-/**
- * Removes all leading and trailing whitespace.
- *
- * @tparam InputStringType The input string type.
- * @tparam OutputStringType The output string type.
- * @param in The input string.
- * @param out The output string (which must be different from \a in).
- */
-template<class InputStringType,class OutputStringType> inline
-void trim_whitespace( InputStringType const &in, OutputStringType *out ) {
-  trim( in, " \f\n\r\t\v", out );
-}
-
-/**
- * Removes all leading and trailing whitespace.
- *
- * @tparam StringType The string type.
- * @param s The string.
- */
-template<class StringType> inline
-void trim_whitespace( StringType &s ) {
-  StringType temp;
-  trim_whitespace( s, &temp );
-  s = temp;
-}
-
-/**
- * Skips any consecutive whitespace chars that are found at a given starting
- * position within a given C string.
- *
- * @param str The input C string
- * @param str_len The length of the input C string
- * @param pos The position within str where to start looking for whitespace.
- *        On return, pos is stores the posoition of the 1st non-whitespace 
- *        char.
- */
-void skip_whitespace( const char* str, size_type str_len, size_type *pos );
-
-/**
- * Skips any consecutive whitespace chars that are found at a given starting
- * position within a given C string.
- *
- * @param s The input string.
- * @param pos The position within str where to start looking for whitespace.
- *        On return, pos is stores the posoition of the 1st non-whitespace 
- *        char.
- */
-template<class StringType> inline
-void skip_whitespace( StringType const &s,
-                      typename StringType::size_type *pos ) {
-  skip_whitespace( s.data(), s.size(), pos );
-}
-
-/**
- * Replaces all occurrences of one character with another.
- *
- * @tparam StringType The string type.
- * @param s The string to modify.
- * @param from The character to replace.
- * @param to The character to replace with.
- */
-template<class StringType>
-void replace_all( StringType &s, char from, char to );
-
-/**
- * Replaces all occurrences of one substring with another.
- *
- * @tparam StringType The string type.
- * @param s The string to modify.
- * @param from The substring to replace.
- * @param from_len The length of <code>from</code>.
- * @param to The substring to replace with.
- * @param to_len The length of <code>to</code>.
- */
-template<class StringType>
-void replace_all( StringType &s,
-                  char const *from, typename StringType::size_type from_len,
-                  char const *to, typename StringType::size_type to_len );
-
-/**
- * Replaces all occurrences of one substring with another.
- *
- * @tparam StringType The string type.
- * @param s The string to modify.
- * @param from The substring to replace.
- * @param to The substring to replace with.
- */
-template<class StringType> inline
-void replace_all( StringType &s, char const *from, char const *to ) {
-  replace_all( s, from, std::strlen( from ), to, std::strlen( to ) );
-}
-
-/**
- * Replaces all occurrences of one substring with another.
- *
- * @tparam StringType The string type.
- * @param s The string to modify.
- * @param from The substring to replace.
- * @param to The substring to replace with.
- */
-template<class StringType,class ToStringType> inline
-void replace_all( StringType &s, char const *from, ToStringType const &to ) {
-  replace_all( s, from, std::strlen( from ), to.data(), to.size() );
-}
-
-/**
- * Replaces all occurrences of one substring with another.
- *
- * @tparam StringType The string type.
- * @param s The string to modify.
- * @param from The substring to replace.
- * @param to The substring to replace with.
- */
-template<class StringType,class FromStringType,class ToStringType> inline
-void replace_all( StringType &s, FromStringType const &from,
-                                 ToStringType const &to ) {
-  replace_all( s, from.data(), from.size(), to.data(), to.size() );
-}
-
-/**
- * Reverses the characters in a string.
- *
- * @tparam InputStringType The input string type.
- * @tparam OutputStringType The output string type.
- * @param in The input string.
- * @param out The output string.
- */
-template<class InputStringType,class OutputStringType> inline
-void reverse( InputStringType const &in, OutputStringType *out ) {
-  std::reverse_copy( in.begin(), in.end(), std::back_inserter( *out ) );
-}
+////////// Case conversion ////////////////////////////////////////////////////
 
 /**
  * Converts the given character to lower-case.  This function exists to make a
@@ -909,33 +530,413 @@ void to_upper( InputStringType const &in, OutputStringType *out ) {
   );
 }
 
+////////// Replacement ////////////////////////////////////////////////////////
+
 /**
- * Escapes characters in the string for XML, specfically '"', '&', '\'', '<',
- * and '>'.
+ * Replaces all occurrences of one character with another.
+ *
+ * @tparam StringType The string type.
+ * @param s The string to modify.
+ * @param from The character to replace.
+ * @param to The character to replace with.
+ */
+template<class StringType>
+void replace_all( StringType &s, char from, char to );
+
+/**
+ * Replaces all occurrences of one substring with another.
+ *
+ * @tparam StringType The string type.
+ * @param s The string to modify.
+ * @param from The substring to replace.
+ * @param from_len The length of <code>from</code>.
+ * @param to The substring to replace with.
+ * @param to_len The length of <code>to</code>.
+ */
+template<class StringType>
+void replace_all( StringType &s,
+                  char const *from, typename StringType::size_type from_len,
+                  char const *to, typename StringType::size_type to_len );
+
+/**
+ * Replaces all occurrences of one substring with another.
+ *
+ * @tparam StringType The string type.
+ * @param s The string to modify.
+ * @param from The substring to replace.
+ * @param to The substring to replace with.
+ */
+template<class StringType> inline
+void replace_all( StringType &s, char const *from, char const *to ) {
+  replace_all( s, from, std::strlen( from ), to, std::strlen( to ) );
+}
+
+/**
+ * Replaces all occurrences of one substring with another.
+ *
+ * @tparam StringType The string type.
+ * @param s The string to modify.
+ * @param from The substring to replace.
+ * @param to The substring to replace with.
+ */
+template<class StringType,class ToStringType> inline
+void replace_all( StringType &s, char const *from, ToStringType const &to ) {
+  replace_all( s, from, std::strlen( from ), to.data(), to.size() );
+}
+
+/**
+ * Replaces all occurrences of one substring with another.
+ *
+ * @tparam StringType The string type.
+ * @param s The string to modify.
+ * @param from The substring to replace.
+ * @param to The substring to replace with.
+ */
+template<class StringType,class FromStringType,class ToStringType> inline
+void replace_all( StringType &s, FromStringType const &from,
+                                 ToStringType const &to ) {
+  replace_all( s, from.data(), from.size(), to.data(), to.size() );
+}
+
+////////// Whitespace /////////////////////////////////////////////////////////
+
+/**
+ * Converts sequences of one or more whitespace characters to a single space.
+ * Additionally, all leading and trailing whitespace is removed.
  *
  * @tparam InputStringType The input string type.
  * @tparam OutputStringType The output string type.
  * @param in The input string.
- * @param out The output string (which must be different from \a in).  Its
- * contents are appended to.
+ * @param out The output string (which must be different from \a in).
  */
-template<class InputStringType,class OutputStringType> inline
-void to_xml( InputStringType const &in, OutputStringType *out ) {
-  std::copy( in.begin(), in.end(), back_xml_inserter( *out ) );
-}
+template<class InputStringType,class OutputStringType>
+void normalize_whitespace( InputStringType const &in, OutputStringType *out );
 
 /**
- * Escapes characters in the string for XML, specfically '"', '&', '\'', '<',
- * and '>'.
+ * Converts sequences of one or more whitespace characters to a single space.
+ * Additionally, all leading and trailing whitespace is removed.
  *
  * @tparam StringType The string type.
  * @param s The string.
  */
 template<class StringType> inline
-void to_xml( StringType &s ) {
+void normalize_whitespace( StringType &s ) {
   StringType temp;
-  std::copy( s.begin(), s.end(), back_xml_inserter( temp ) );
+  normalize_whitespace( s, &temp );
   s = temp;
+}
+
+/**
+ * Removes all leading and trailing specified characters.
+ *
+ * @tparam InputStringType The input string type.
+ * @tparam OutputStringType The output string type.
+ * @param in The input string.
+ * @param chars The characters to trim.
+ * @param out The output string (which must be different from \a in).
+ */
+template<class InputStringType,class OutputStringType>
+void trim( InputStringType const &in, char const *chars,
+           OutputStringType *out );
+
+/**
+ * Removes all leading and trailing specified characters.
+ *
+ * @tparam StringType The string type.
+ * @param s The string.
+ */
+template<class StringType> inline
+void trim( StringType &s, char const *chars ) {
+  StringType temp;
+  trim( s, chars, &temp );
+  s = temp;
+}
+
+/**
+ * Skips leading specified characters.
+ *
+ * @param s The string to trim.
+ * @param chars The characters to trim.
+ * @return Returns a pointer to the first character in \a s that is not among
+ * the characters in \a chars.
+ */
+ZORBA_DLL_PUBLIC
+char const* trim_start( char const *s, char const *chars );
+
+/**
+ * Skips leading specified characters.
+ *
+ * @param s The string to trim.
+ * @param s_len The length of \a s.
+ * @param chars The characters to trim.
+ * @return Returns a pointer to the first character in \a s that is not among
+ * the characters in \a chars.
+ */
+ZORBA_DLL_PUBLIC
+char const* trim_start( char const *s, size_type s_len, char const *chars );
+
+/**
+ * Removes all leading specified characters.
+ *
+ * @tparam InputStringType The input string type.
+ * @tparam OutputStringType The output string type.
+ * @param in The input string.
+ * @param chars The characters to trim.
+ * @param out The output string (which must be different from \a in).
+ */
+template<class InputStringType,class OutputStringType>
+void trim_start( InputStringType const &in, char const *chars,
+                 OutputStringType *out );
+
+/**
+ * Removes all leading specified characters.
+ *
+ * @tparam StringType The string type.
+ * @param s The string.
+ */
+template<class StringType> inline
+void trim_start( StringType &s, char const *chars ) {
+  StringType temp;
+  trim_start( s, chars, &temp );
+  s = temp;
+}
+
+/**
+ * Skips leading whitespace chracters.
+ *
+ * @param s The string to trim.
+ * @return Returns a pointer to the first character in \a s that is not a
+ * whitespace character.
+ */
+inline char const* trim_start_whitespace( char const *s ) {
+  return trim_start( s, whitespace );
+}
+
+/**
+ * Skips leading whitespace characters.
+ *
+ * @param s The string to trim.
+ * @param s_len The length of \a s.
+ * @return Returns a pointer to the first character in \a s that is not a
+ * whitespace character.
+ */
+inline char const* trim_start_whitespace( char const *s, size_type s_len ) {
+  return trim_start( s, s_len, whitespace );
+}
+
+/**
+ * Removes all leading whitespace characters.
+ *
+ * @tparam InputStringType The input string type.
+ * @tparam OutputStringType The output string type.
+ * @param in The input string.
+ * @param out The output string (which must be different from \a in).
+ */
+template<class InputStringType,class OutputStringType> inline
+void trim_start_whitespace( InputStringType const &in, OutputStringType *out ) {
+  trim_start( in, whitespace, out );
+}
+
+/**
+ * Removes all leading whitespace characters.
+ *
+ * @tparam StringType The string type.
+ * @param s The string.
+ */
+template<class StringType> inline
+void trim_start_whitespace( StringType &s ) {
+  StringType temp;
+  trim_start_whitespace( s, &temp );
+  s = temp;
+}
+
+/**
+ * Skips trailing specified characters.
+ *
+ * @param s The string to trim.
+ * @param s_len The length of \a s.
+ * @param chars The characters to trim.
+ * @return Returns the new length of \a s.
+ */
+ZORBA_DLL_PUBLIC
+size_type trim_end( char const *s, size_type s_len, char const *chars );
+
+/**
+ * Skips trailing specified characters.
+ *
+ * @param s The string to trim.
+ * @param chars The characters to trim.
+ * @return Returns the new length of \a s.
+ */
+inline size_type trim_end( char const *s, char const *chars ) {
+  return trim_end( s, std::strlen( s ), chars );
+}
+
+/**
+ * Removes all trailing specified characters.
+ *
+ * @tparam InputStringType The input string type.
+ * @tparam OutputStringType The output string type.
+ * @param in The input string.
+ * @param chars The characters to trim.
+ * @param out The output string (which must be different from \a in).
+ */
+template<class InputStringType,class OutputStringType>
+void trim_end( InputStringType const &in, char const *chars,
+               OutputStringType *out );
+
+/**
+ * Removes all trailing specified characters.
+ *
+ * @tparam StringType The string type.
+ * @param s The string.
+ */
+template<class StringType> inline
+void trim_end( StringType &s, char const *chars ) {
+  StringType temp;
+  trim_end( s, chars, &temp );
+  s = temp;
+}
+
+/**
+ * Skips trailing whitespace characters.
+ *
+ * @param s The string to trim.
+ * @param s_len The length of \a s.
+ * @return Returns the new length of \a s.
+ */
+inline size_type trim_end_whitespace( char const *s, size_type s_len ) {
+  return trim_end( s, s_len, whitespace );
+}
+
+/**
+ * Skips trailing whitespace characters.
+ *
+ * @param s The string to trim.
+ * @return Returns the new length of \a s.
+ */
+inline size_type trim_end_whitespace( char const *s ) {
+  return trim_end( s, whitespace );
+}
+
+/**
+ * Removes all trailing whitespace characters.
+ *
+ * @tparam InputStringType The input string type.
+ * @tparam OutputStringType The output string type.
+ * @param in The input string.
+ * @param out The output string (which must be different from \a in).
+ */
+template<class InputStringType,class OutputStringType>
+void trim_end_whitespace( InputStringType const &in, OutputStringType *out ) {
+  return trim_end( in, whitespace, out );
+}
+
+/**
+ * Removes all trailing whitespace characters.
+ *
+ * @tparam StringType The string type.
+ * @param s The string.
+ */
+template<class StringType> inline
+void trim_end_whitespace( StringType &s, char const *chars ) {
+  trim_end( s, whitespace );
+}
+
+/**
+ * Removes all leading and trailing whitespace.
+ *
+ * @tparam InputStringType The input string type.
+ * @tparam OutputStringType The output string type.
+ * @param in The input string.
+ * @param out The output string (which must be different from \a in).
+ */
+template<class InputStringType,class OutputStringType> inline
+void trim_whitespace( InputStringType const &in, OutputStringType *out ) {
+  trim( in, whitespace, out );
+}
+
+/**
+ * Removes all leading and trailing whitespace.
+ *
+ * @tparam StringType The string type.
+ * @param s The string.
+ */
+template<class StringType> inline
+void trim_whitespace( StringType &s ) {
+  StringType temp;
+  trim_whitespace( s, &temp );
+  s = temp;
+}
+
+/**
+ * Skips any consecutive whitespace chars that are found at a given starting
+ * position within a given C string.
+ *
+ * @param s The input C string.
+ * @param s_len The length of the string.
+ * @param pos The position within \a s where to start looking for whitespace.
+ * On return, \a pos is updated with the position of the 1st non-whitespace
+ * char.
+ * @deprecated Use trim_start_whitespace() instead.
+ */
+inline void skip_whitespace( char const *s, size_type s_len, size_type *pos ) {
+  *pos = trim_start_whitespace( s + *pos, s_len - *pos ) - s;
+}
+
+////////// URI ////////////////////////////////////////////////////////////////
+
+ZORBA_DLL_PUBLIC extern char const uri_safe[];
+
+/**
+ * A %back_uri_insert_iterator can be used to append characters to a string
+ * ensuring that illegal characters in a URI are escaped.
+ *
+ * @tparam StringType The string type.
+ */
+template<class StringType>
+class back_uri_insert_iterator :
+  public
+    back_insert_iterator_base<
+      StringType, back_uri_insert_iterator<StringType>
+    >
+{
+  typedef back_insert_iterator_base<
+    StringType, back_uri_insert_iterator<StringType>
+  > base_type;
+public:
+  typedef typename base_type::container_type container_type;
+  typedef typename StringType::value_type value_type;
+
+  /**
+   * Constructs a %back_uri_insert_iterator.
+   *
+   * @param s The string to append to.
+   * @param encode_slash If \c true, encodes the '/' character also.
+   */
+  explicit back_uri_insert_iterator( StringType &s, bool encode_slash = false )
+    : base_type( s ), encode_slash_(  encode_slash )
+  {
+    buf_[0] = '%';
+  }
+
+  back_uri_insert_iterator& operator=( value_type c );
+
+private:
+  char buf_[3]; // %xx -- no need for null at end
+  bool encode_slash_;
+};
+
+/**
+ * This is a convenience function to create a back_uri_insert_iterator.
+ *
+ * @tparam StringType The string type.
+ * @param out The output string.
+ * @param encode_slash If \c true, encodes the '/' character also.
+ */
+template<class StringType> inline back_uri_insert_iterator<StringType>
+back_uri_inserter( StringType &out, bool encode_slash = false ) {
+  return back_uri_insert_iterator<StringType>( out, encode_slash );
 }
 
 /**
@@ -991,6 +992,44 @@ void uri_decode( StringType &s ) {
   StringType temp;
   uri_decode( s, &temp );
   s = temp;
+}
+
+////////// Miscellaneous //////////////////////////////////////////////////////
+
+/**
+ * Converts a \c long to a C string.
+ *
+ * @param n The \c long to convert.
+ * @param buf The buffer for the result.  The caller must ensure it's of
+ * sufficient size.
+ * @return Returns \a buf for convenience.
+ */
+ZORBA_DLL_PUBLIC
+char* ltoa( long n, char *buf );
+
+/**
+ * Converts an \c int to a C string.
+ *
+ * @param n The \c int to convert.
+ * @param buf The buffer for the result.  The caller must ensure it's of
+ * sufficient size.
+ * @return Returns \a buf for convenience.
+ */
+inline char* itoa( int n, char *buf ) {
+  return ltoa( n, buf );
+}
+
+/**
+ * Reverses the characters in a string.
+ *
+ * @tparam InputStringType The input string type.
+ * @tparam OutputStringType The output string type.
+ * @param in The input string.
+ * @param out The output string.
+ */
+template<class InputStringType,class OutputStringType> inline
+void reverse( InputStringType const &in, OutputStringType *out ) {
+  std::reverse_copy( in.begin(), in.end(), std::back_inserter( *out ) );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
