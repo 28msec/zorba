@@ -83,6 +83,8 @@ if (ZORBA_WORKS)
     string(REPLACE ";" "," files "${files}")
     list(APPEND extvarargs "-e" "files:=${files}")
   endif(files)
+  get_filename_component(gen_file_dir "${gen_file}" PATH)
+  file(MAKE_DIRECTORY "${gen_file_dir}")
   execute_process(COMMAND "${zorba_exe}"
     "-q" "${query}" "-f" 
     "-o" "${gen_file}"
