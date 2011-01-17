@@ -18,6 +18,10 @@
 
 #include "system/globalenv.h"
 
+#ifndef ZORBA_WITH_REST
+#include "zorbaerrors/error_manager.h"
+#endif
+
 #include "uri_util.h"
 
 using namespace std;
@@ -28,12 +32,13 @@ namespace uri {
 ///////////////////////////////////////////////////////////////////////////////
 
 static size_t curl_write_fn( void *ptr, size_t size, size_t nmemb,
-              void *data ) {
+                             void *data ) {
   char const *const char_buf = static_cast<char const*>( ptr );
   size_t const real_size = size * nmemb;
   iostream &stream = *static_cast<iostream*>( data );
 
   stream.write( char_buf, static_cast<streamsize>( real_size ) );
+  // TODO: should check to see if write() failed
   return real_size;
 }
 
@@ -45,18 +50,19 @@ void fetch( char const *uri, iostream &result ) {
   curl_easy_setopt( curl, CURLOPT_WRITEFUNCTION, curl_write_fn );
   curl_easy_setopt( curl, CURLOPT_WRITEDATA, static_cast<void*>( &result ) );
 
-  // tells the library to fail silently if the HTTP code returned >= 400
+  // Tells cURL to fail silently if the HTTP code returned >= 400.
   curl_easy_setopt( curl, CURLOPT_FAILONERROR, 1 );
 
-  // Tells cURL to follow redirects. CURLOPT_MAXREDIRS is by default set to -1 thus cURL will do an infinite number of redirects */
-  curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
+  // Tells cURL to follow redirects. CURLOPT_MAXREDIRS is by default set to -1
+  // thus cURL will do an infinite number of redirects.
+  curl_easy_setopt( curl, CURLOPT_FOLLOWLOCATION, 1 );
 
 #ifndef ZORBA_VERIFY_PEER_SSL_CERTIFICATE
   curl_easy_setopt( curl, CURLOPT_SSL_VERIFYPEER, 0 );
   //
   // CURLOPT_SSL_VERIFYHOST is left default, value 2, meaning verify that the
   // Common Name or Subject Alternate Name field in the certificate matches the
-  // name of the server/
+  // name of the server.
   //
   // tested with https://www.npr.org/rss/rss.php?id=1001
   // about using ssl certs in curl: http://curl.haxx.se/docs/sslcerts.html
@@ -68,7 +74,7 @@ void fetch( char const *uri, iostream &result ) {
       curl, CURLOPT_CAINFO, GENV.g_curl_root_CA_certificates_path
     );
 # endif /* WIN32 */
-#endif
+#endif /* ZORBA_VERIFY_PEER_SSL_CERTIFICATE */
 
   //
   // Some servers don't like requests that are made without a user-agent field,
@@ -79,7 +85,7 @@ void fetch( char const *uri, iostream &result ) {
   CURLcode const curl_code = curl_easy_perform( curl );
   if ( curl_code ) {
     //
-    // Warkaround for a problem in cURL: curl_easy_cleanup() fails if
+    // Workaround for a problem in cURL: curl_easy_cleanup() fails if
     // curl_easy_perform() returned an error.
     //
     curl_easy_reset( curl );
