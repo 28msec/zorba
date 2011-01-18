@@ -67,6 +67,7 @@ scheme get_scheme( StringType const &uri ) {
 ////////// Encoding ///////////////////////////////////////////////////////////
 
 ZORBA_DLL_PUBLIC extern char const uri_safe[];
+ZORBA_DLL_PUBLIC extern signed char const hex2dec[];
 
 /**
  * A %back_insert_iterator can be used to append characters to a string

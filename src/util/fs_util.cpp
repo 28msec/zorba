@@ -111,7 +111,7 @@ type get_type( char const *path ) {
 #else
   WCHAR wpath[ MAX_PATH ];
   win32::to_wchar( path, wpath );
-  DWORD const attr = ::GetFileAttributes( wpath );
+  DWORD const attr = ::GetFileAttributesW( wpath );
   if ( attr == INVALID_FILE_ATTRIBUTES )
     return non_existent;
   if ( attr & FILE_ATTRIBUTE_DIRECTORY )
