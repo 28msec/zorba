@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -73,7 +73,7 @@ back_iri_insert_iterator<StringType>::operator=( value_type c ) {
 ///////////////////////////////////////////////////////////////////////////////
 
 template<class OctetIterator>
-unicode::code_point next_char( OctetIterator &i ) {
+unicode::code_point next_char( OctetIterator &i, bool throw_exception ) {
   unicode::code_point c = *i & 0xFFu;   // prevents sign-extension
   if ( c < 0x80 )                       // special-case ASCII
     ++i;
@@ -91,7 +91,7 @@ unicode::code_point next_char( OctetIterator &i ) {
               c |=  (assert_valid_byte( *i, !b   ) & 0x3F)    ; ++i;
     }
   }
-  if ( !unicode::is_valid( c ) )
+  if ( throw_exception && !unicode::is_valid( c ) )
     ZORBA_ERROR( FOCH0001 );
   return c;
 }

@@ -30,9 +30,8 @@
 #include <iostream>
 #include <string>
 
-using namespace std;
-
 #include "compiler/parser/xquery_driver.h"
+#include "util/xml_util.h"
 
 #ifdef __GNUC__
   // disable a warning in location.hh which comes with bison
@@ -52,6 +51,11 @@ using namespace std;
 typedef zorba::xquery_parser::token token;
 typedef zorba::xquery_parser::token_type token_type;
 
+  /*______________________________________________________________________
+   |
+   |  Scanner states management
+   |______________________________________________________________________*/
+
 #define PUSH_STATE(state) \
     do { \
         yy_push_state(state); \
@@ -68,6 +72,12 @@ typedef zorba::xquery_parser::token_type token_type;
         PUSH_STATE(pushed); \
     } while(0)
 
+
+  /*______________________________________________________________________
+   |
+   |  String literals processing
+   |______________________________________________________________________*/
+
 #define TRY_TOKEN_INTERNAL(ttype, put, yytext, err_func)                \
   do {                                                                  \
     off_t res = getDriver()->symtab.put;                                \
@@ -83,7 +93,6 @@ typedef zorba::xquery_parser::token_type token_type;
 #define TRY_SVAL_TOKEN(ttype, put, yytext) \
     TRY_TOKEN_INTERNAL(ttype, put, yytext, unrecognizedToken)
 
-
 #define TRY_CHARREF_LITERAL(ttype, put, yytext, yyleng) \
   TRY_TOKEN_INTERNAL(ttype, put (yytext, yyleng), yytext, unrecognizedToken)
 
@@ -92,6 +101,33 @@ typedef zorba::xquery_parser::token_type token_type;
 
 #define TRY_URI_LITERAL(ttype, yytext, yyleng ) \
   TRY_TOKEN_INTERNAL(ttype, put_uri(yytext, yyleng), yytext, unrecognizedToken)
+
+  // Returns 0 on success, non-zero on error
+int checkXmlRefs(zorba::ZorbaParserError** err, char* yytext, int yyleng, zorba::xquery_scanner* scanner, zorba::xquery_parser::location_type* yylloc)
+{
+  std::string entity;
+  const char* temp;
+  char* pos = yytext;
+
+  while (pos < yytext+yyleng)
+  {
+    if (*pos == '&')
+    {
+      pos += zorba::xml::parse_entity((const char*)pos, &entity);
+      temp = entity.c_str();
+      zorba::unicode::code_point cp = zorba::utf8::next_char(temp, false);
+      if (!zorba::xml::is_valid(cp))
+      {
+        *err = scanner->getDriver()->parserErr(std::string("Invalid XML v1.0 codepoint in the string literal \"") + yytext + "\"", *yylloc, XQST0090);
+        return 1;
+      }
+    }
+    else
+      pos++;
+  }
+
+  return 0;
+}
 
 
 #define COMP_CONSTR_ROLLBACK(invoke_yy_less)                            \
@@ -302,7 +338,7 @@ NonSharpNonParPragmaChar            [\x09\x0A\x0D\x20-\x28\x2A-\xFD]
 PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPragmaChar})*"#"*
 
 	/* Char ranges and definitions used for parsing CDATA contents */
-NonClosingSquareBracketChar					[\x09\x0A\x0D\x20-\x5C\x5E-\xFD] 
+NonClosingSquareBracketChar					[\x09\x0A\x0D\x20-\x5C\x5E-\xFD]
 NonGreaterThenChar									[\x09\x0A\x0D\x20-\x3D\x3F-\xFD]
 NonSqBraNonGTChar				            [\x09\x0A\x0D\x20-\x3D\x3F-\x5C\x5E-\xFD]
 CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]"{NonGreaterThenChar})*"]"*
@@ -672,7 +708,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 
 "*:"{NCName}                  { TRY_SVAL_TOKEN (PREFIX_WILDCARD, put_ncname(yytext+2, yyleng-2), yytext); }
 
-{StringLiteral}               { TRY_STRING_LITERAL(STRING_LITERAL, yytext, yyleng); }
+{StringLiteral}               { if (checkXmlRefs(&yylval->err, yytext, yyleng, this, yylloc)) return token::UNRECOGNIZED; TRY_STRING_LITERAL(STRING_LITERAL, yytext, yyleng); }
 
   /* Invalid string literals */
 {InvalidRefStringLiteral}     { yylval->err = getDriver()->invalidCharRef(yytext, *yylloc); return token::UNRECOGNIZED; }
@@ -984,7 +1020,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
    | recognized.
    |______________________________________________________________________*/
 
-<MODE_CDATA_SECTION>{CDataChars}"]]>" { POP_STATE(); TRY_SVAL_TOKEN (CHAR_LITERAL_AND_CDATA_END, put(yytext, yyleng-3, 1), yytext); } 
+<MODE_CDATA_SECTION>{CDataChars}"]]>" { POP_STATE(); TRY_SVAL_TOKEN (CHAR_LITERAL_AND_CDATA_END, put(yytext, yyleng-3, 1), yytext); }
 
 
   /*______________________________________________________________________

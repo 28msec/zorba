@@ -141,20 +141,20 @@ ZorbaParserError* xquery_driver::invalidCharRef(const char* _message, const loca
   }
 
   parserError = new ZorbaParserError(std::string("syntax error, invalid character or entity reference "
-      + ref + "in the string literal ") + _message + ".", loc, XQST0090);
+      + ref + "in the string literal ") + _message + ".", loc);
   return parserError;
 }
 
 
-ZorbaParserError* xquery_driver::parserErr(const std::string& _message, const location& loc)
+ZorbaParserError* xquery_driver::parserErr(const std::string& _message, const location& loc, XQUERY_ERROR code)
 {
-  parserError = new ZorbaParserError(_message, loc);
+  parserError = new ZorbaParserError(_message, loc, code);
   return parserError;
 }
 
-ZorbaParserError* xquery_driver::parserErr(const std::string& _message, const QueryLoc& loc)
+ZorbaParserError* xquery_driver::parserErr(const std::string& _message, const QueryLoc& loc, XQUERY_ERROR code)
 {
-  parserError = new ZorbaParserError(_message, loc);
+  parserError = new ZorbaParserError(_message, loc, code);
   return parserError;
 }
 

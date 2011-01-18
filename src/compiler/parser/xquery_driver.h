@@ -83,8 +83,8 @@ public:
   ZorbaParserError* noClosingTagForElementConstructor(const location& loc);
   ZorbaParserError* unrecognizedToken(const char* _error_token, const location& loc);
   ZorbaParserError* invalidCharRef(const char* _error_token, const location& loc);
-  ZorbaParserError* parserErr(const std::string& _message, const location& loc);
-  ZorbaParserError* parserErr(const std::string& _message, const QueryLoc& loc);
+  ZorbaParserError* parserErr(const std::string& _message, const location& loc, XQUERY_ERROR code = XPST0003);
+  ZorbaParserError* parserErr(const std::string& _message, const QueryLoc& loc, XQUERY_ERROR code = XPST0003);
 };
 
 }	/* namespace zorba */
