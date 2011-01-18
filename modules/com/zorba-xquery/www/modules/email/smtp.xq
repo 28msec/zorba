@@ -84,5 +84,5 @@ declare sequential function smtp:send($host-info as element(imap:hostInfo), $mes
  : @error If it was not possible to connect to the SMTP host.
  :)
 
-declare sequential function smtp:send-impl($host-info as element(imap:hostInfo), $message as element(email:message)) as xs:boolean external;
+declare %private sequential function smtp:send-impl($host-info as element(imap:hostInfo), $message as element(email:message)) as xs:boolean external;
 

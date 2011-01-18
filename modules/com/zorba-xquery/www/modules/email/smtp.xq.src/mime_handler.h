@@ -36,8 +36,8 @@ namespace zorba
     {
     public:
       virtual void begin(const Item& aMimeItem) = 0;
-      virtual bool envelope(std::string& aDiagnostics) = 0;
-      virtual bool body(std::string& aDiagnostics) = 0;
+      virtual bool envelope(std::stringstream& aDiagnostics) = 0;
+      virtual bool body(std::stringstream& aDiagnostics) = 0;
       virtual void end() = 0;
     };
 
@@ -98,8 +98,8 @@ namespace zorba
 
     public:
       void begin(const Item& aMimeItem);
-      bool envelope(std::string& aDiagnostics);
-      bool body(std::string& aDiagnostics);
+      bool envelope(std::stringstream& aDiagnostics);
+      bool body(std::stringstream& aDiagnostics);
       void end();
 
       BODY*     getBody()     {  return theBody; };

@@ -32,7 +32,7 @@ namespace zorba
     public:
       MimeParser(MimeHandler* aHandler) : theHandler(aHandler) {};
 
-      bool parse(const Item& aMimeItem, std::string& aDiagnostics);
+      bool parse(const Item& aMimeItem, std::stringstream& aDiagnostics);
     };
   }//namespace email
 }//namespace zorba

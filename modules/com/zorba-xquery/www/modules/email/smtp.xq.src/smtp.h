@@ -29,7 +29,7 @@ namespace zorba
       SendFunction(const SMTPModule* aModule);
 
       virtual String
-      getLocalName() const { return "send"; }
+      getLocalName() const { return "send-impl"; }
 
       virtual ItemSequence_t
       evaluate( const StatelessExternalFunction::Arguments_t& args,

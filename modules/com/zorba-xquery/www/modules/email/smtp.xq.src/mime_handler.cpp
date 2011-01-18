@@ -75,7 +75,7 @@ namespace zorba
   }
 
   bool
-  CClientMimeHandler::envelope(std::string& aDiagnostics)
+  CClientMimeHandler::envelope(std::stringstream& aDiagnostics)
   {
     Iterator_t    lChildrenIt;
     zorba::Item   lChild;
@@ -85,7 +85,7 @@ namespace zorba
 
     if( theEnvelopeItem.isNull() )
     {
-      aDiagnostics = "The message could not be parsed.";
+      aDiagnostics << "The message could not be parsed.";
       return false;
     }
 
@@ -213,7 +213,7 @@ namespace zorba
 
   bool
   CClientMimeHandler::body
-      (std::string& aDiagnostics)
+      (std::stringstream& aDiagnostics)
   {
     Iterator_t    lChildrenIt;
     zorba::Item   lChild;

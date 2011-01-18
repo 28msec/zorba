@@ -51,7 +51,7 @@ namespace zorba
     std::string lPassword;
     SMTPFunction::getHostUserPassword(args, 0, lHostName, lUserName, lPassword);      
 
-    std::string lDiagnostics = ""; 
+    std::stringstream lDiagnostics; 
     // getting message as item
     Item messageItem;
     args[1]->next(messageItem);
@@ -66,10 +66,10 @@ namespace zorba
  
       // if we can't parse the message, then we've got problems
     if (!lParseOK) { 
-      lDiagnostics +=  "Message could not be parsed.\n";
+      lDiagnostics <<  "Message could not be parsed." << std::endl;
       res = false; 
     } else if (!lHasRecipient) {
-      lDiagnostics +=  "Message has no recipient.\n";
+      lDiagnostics <<  "Message has no recipient." << std::endl;
       res = false;
     } else {
       res = ImapClient::Instance().send(lHostName.c_str(),
@@ -84,13 +84,12 @@ namespace zorba
       //TODO implement excenption handling via external_function_data
       std::stringstream lErrorMessage;
       lErrorMessage << "Mail could not be sent. Here is the log:" << std::endl;
-      lErrorMessage << lDiagnostics;
+      lErrorMessage << lDiagnostics.str();
       throwError(lErrorMessage.str(), XQP0019_INTERNAL_ERROR);
     }
     
 
-    return ItemSequence_t(new SingletonItemSequence(
-                          theModule->getItemFactory()->createBoolean(res)));
+    return ItemSequence_t(new EmptySequence());
   }
 
   } // namespace emailmodule

@@ -33,7 +33,7 @@ namespace zorba { namespace emailmodule {
                    const std::string& aPassword,
                    ENVELOPE* aEnvelope,
                    BODY* aBody,
-                   std::string& aDiagnostics) {
+                   std::stringstream& aDiagnostics) {
     
     
     
@@ -58,21 +58,24 @@ namespace zorba { namespace emailmodule {
     }
     #endif
 
-    out << "Sending...\n";
+    out << "Sending..." << std::endl;
     smtp_stream = smtp_open (hostlist,0);
     if ( smtp_stream ) {
+      if ( smtp_stream->replycode >= 400 ) {
+        out << smtp_stream->reply << std::endl;
+       }
+      else {
         sprintf (tmp, "MAIL");
         res = true;
-        out << "OK\n";
+        out << "OK" << std::endl;
         res = smtp_mail ( smtp_stream, tmp, aEnvelope, aBody); 
         smtp_close(smtp_stream);
-     
-    
+      } 
     } else { 
-      out << "Something really went wrong" << std::endl;
+      out << "Opening connection to " << aHost << " failed." << std::endl;
     }
    
-    aDiagnostics += out.str();
+    aDiagnostics << out.str();
     return res;
   
 

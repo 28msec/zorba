@@ -49,7 +49,7 @@ namespace zorba
            const std::string& aPassword,
            ENVELOPE* aEnvelope,
            BODY* aBody,
-           std::string& aDiagnostics); 
+           std::stringstream& aDiagnostics); 
   
 
       
