@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include <algorithm>                    /* for lower_bound() */
+#include <cstring>
 #include <curl/curl.h>
 
 #include <zorba/config.h>
@@ -25,13 +27,29 @@
 #ifndef ZORBA_WITH_REST
 #include "zorbaerrors/error_manager.h"
 #endif
+#include "zorbatypes/zstring.h"
 
+#include "less.h"
+#include "string_util.h"
 #include "uri_util.h"
 
 using namespace std;
 
 namespace zorba {
 namespace uri {
+
+///////////////////////////////////////////////////////////////////////////////
+
+// This MUST be sorted.
+char const *const scheme_string[] = {
+  "#none",
+  "#unknown",
+  "file",
+  "ftp",
+  "http",
+  "https",
+  "mailto"
+};
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -168,6 +186,22 @@ void fetch( char const *uri, iostream &result ) {
 #else
   ZORBA_ERROR_PARAM( XQP0004_SYSTEM_NOT_SUPPORTED, "HTTP GET" , "" );
 #endif /* ZORBA_WITH_REST */
+}
+
+scheme get_scheme( char const *uri ) {
+  zstring scheme_name;
+  if ( split( uri, ':', &scheme_name, NULL ) ) {
+    static char const *const *const begin = scheme_string;
+    static char const *const *const end =
+      scheme_string + sizeof( scheme_string ) / sizeof( char* );
+
+    char const *const s = scheme_name.c_str();
+    char const *const *const entry =
+      ::lower_bound( begin, end, s, less<char const*>() );
+    return entry != end && ::strcmp( s, *entry ) == 0 ?
+      static_cast<scheme>( entry - begin ) : unknown;
+  }
+  return none;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

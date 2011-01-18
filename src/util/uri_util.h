@@ -26,6 +26,44 @@
 namespace zorba {
 namespace uri {
 
+////////// Scheme /////////////////////////////////////////////////////////////
+
+/**
+ * A subset of official IANA-registere URI schemes.
+ */
+enum scheme {
+  none,
+  unknown,
+  file,
+  ftp,
+  http,
+  https,
+  mailto
+};
+extern char const *const scheme_string[];
+
+/**
+ * Gets the scheme of the URI.
+ *
+ * @param uri The URI to get the scheme of.
+ * @return Returns the URI's scheme, or scheme::none if none, or
+ * scheme::unknown if unknown.
+ */
+scheme get_scheme( char const *uri );
+
+/**
+ * Gets the scheme of the URI.
+ *
+ * @tparam StringType The URI's string type.
+ * @param uri The URI to get the scheme of.
+ * @return Returns the URI's scheme, or scheme::none if none, or
+ * scheme::unknown if unknown.
+ */
+template<class StringType> inline
+scheme get_scheme( StringType const &uri ) {
+  return get_scheme( uri.c_str() );
+}
+
 ////////// Encoding ///////////////////////////////////////////////////////////
 
 ZORBA_DLL_PUBLIC extern char const uri_safe[];
