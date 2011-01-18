@@ -15,6 +15,7 @@ SET(UTIL_SRCS
     string/empty_rep_base.cpp
     ascii_util.cpp
     dynamic_bitset.cpp
+    error_util.cpp
     fx/fxcharheap.cpp
     file.cpp
     dir.cpp
@@ -23,9 +24,9 @@ SET(UTIL_SRCS
     mmap_file.cpp
     regex.cpp
     unicode_util.cpp
+    uri_util.cpp
     utf8_util.cpp
     xml_util.cpp
-    uri_util.cpp
     uuid/sysdep.cpp
     uuid/uuid.cpp)
 
