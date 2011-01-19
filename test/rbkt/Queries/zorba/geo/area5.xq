@@ -4,7 +4,7 @@ Compute the area of a MultiSurface composed of two polygons.
 Result: 551
 :)
 
-import module namespace geo = "http://www.zorba-xquery.com/modules/geo";
+import module namespace geo = "http://expath.org/ns/geo";
 declare namespace gml="http://www.opengis.net/gml";
 
 geo:area(<gml:MultiSurface>

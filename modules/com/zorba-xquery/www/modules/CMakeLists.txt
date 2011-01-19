@@ -66,19 +66,6 @@ GENERATE_MODULE_LIBRARY(serialize "")
 GENERATE_MODULE_LIBRARY(datetime "")
 GENERATE_MODULE_LIBRARY(os "")
 
-IF(ZORBA_SUPPRESS_GEOS)
-  MESSAGE(STATUS "ZORBA_SUPPRESS_GEOS is true - not search for Geos library")
-ELSE(ZORBA_SUPPRESS_GEOS)
-  FIND_PACKAGE(Geos)
-ENDIF(ZORBA_SUPPRESS_GEOS)
-
-IF(GEOS_FOUND)
-INCLUDE_DIRECTORIES(${GEOS_INCLUDE_DIR})
-GENERATE_MODULE_LIBRARY(geo ${GEOS_LIBRARIES})
-ELSE(GEOS_FOUND)
-MESSAGE(STATUS "Geos Library Not Found. You need to install Geos library in order to compile the Geo Module.")
-ENDIF(GEOS_FOUND)
-
 GENERATE_MODULE_LIBRARY(csv "")
 
 #add unit test for streambuf implementation in csv, related to streamable strings

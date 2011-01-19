@@ -1,4 +1,4 @@
-import module namespace geo = "http://www.zorba-xquery.com/modules/geo";
+import module namespace geo = "http://expath.org/ns/geo";
 declare namespace gml="http://www.opengis.net/gml";
 
 geo:touches(<gml:LineString><gml:posList>0 0 2 1 3 3</gml:posList></gml:LineString>,

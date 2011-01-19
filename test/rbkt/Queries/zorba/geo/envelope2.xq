@@ -1,4 +1,4 @@
-import module namespace geo = "http://www.zorba-xquery.com/modules/geo";
+import module namespace geo = "http://expath.org/ns/geo";
 declare namespace gml="http://www.opengis.net/gml";
 declare default element namespace "http://www.adv-online.de/namespaces/adv/gid/4.0";
 

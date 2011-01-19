@@ -150,7 +150,7 @@
  : @see http://trac.osgeo.org/geos/
  : @library <a href="http://trac.osgeo.org/geos/">GEOS (Geometry Engine - Open Source)</a>
  :)
-module namespace zorba-geo = "http://www.zorba-xquery.com/modules/geo";
+module namespace zorba-geo = "http://expath.org/ns/geo";
 
 (:~
  : Declare the namespace for the gml geometry objects.

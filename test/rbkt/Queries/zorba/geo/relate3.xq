@@ -1,4 +1,4 @@
-import module namespace geo = "http://www.zorba-xquery.com/modules/geo";
+import module namespace geo = "http://expath.org/ns/geo";
 declare namespace gml="http://www.opengis.net/gml";
 
 geo:relate(   <gml:LineString><gml:posList>1 1 10 0</gml:posList></gml:LineString>,
