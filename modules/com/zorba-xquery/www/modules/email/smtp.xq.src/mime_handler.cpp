@@ -243,9 +243,10 @@ namespace zorba
       (BODY* aBody,
        const char* aMessage)
   {
-    aBody->contents.text.data = (unsigned char *) fs_get (8*MAILTMPLEN);   //message body
+    size_t lLen = strlen(aMessage) + 2;
+    aBody->contents.text.size = lLen;
+    aBody->contents.text.data = (unsigned char *) fs_get (lLen);   //message body
     sprintf ((char*)aBody->contents.text.data,"%s\015\012",aMessage);
-    aBody->contents.text.size = strlen (reinterpret_cast<const char*>(aBody->contents.text.data));
   }
 
   PARAMETER *
