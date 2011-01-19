@@ -18,9 +18,11 @@
 #include <cstring>
 #include <fstream>
 
-#include <curl/curl.h>
-
 #include <zorba/config.h>
+
+#ifdef ZORBA_WITH_REST
+#include <curl/curl.h>
+#endif
 
 #ifdef WIN32
 #include "system/globalenv.h"
