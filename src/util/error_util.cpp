@@ -15,6 +15,7 @@
  */
 
 #ifndef WIN32
+# include <cstdio>
 # include <cstring>
 #else
 # include <windows.h>
@@ -33,7 +34,19 @@ using namespace std;
 
 zstring get_os_err_string( char const *what, os_code code ) {
 #ifndef WIN32
-  return zstring( ::strerror( code ) );
+  char err[ 512 ];
+  if ( what ) {
+    snprintf(
+      err, sizeof( err ), "%s failed (error %d): %s",
+      what, code, ::strerror( code )
+    );
+  } else {
+    snprintf(
+      err, sizeof( err ), "error %d: %s",
+      code, ::strerror( code )
+    );
+  }
+  return zstring( err );
 #else
   LPWSTR wmsg;
   FormatMessageW(
