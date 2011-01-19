@@ -94,14 +94,20 @@ void create_result_node(
 */
 void throw_last_error(const zorba::String& aFilename, unsigned int aLineNumber){
   LPVOID lpvMessageBuffer;
-  CHAR lErrorBuffer[512];
+  TCHAR lErrorBuffer[512];
   FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER|FORMAT_MESSAGE_FROM_SYSTEM,
           NULL, GetLastError(),
           MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
           (LPTSTR)&lpvMessageBuffer, 0, NULL);
-  wsprintf(lErrorBuffer,"Process Error Code: %d - Message= %s",GetLastError(), (char *)lpvMessageBuffer);
+  wsprintf(lErrorBuffer,TEXT("Process Error Code: %d - Message= %s"),GetLastError(), (TCHAR *)lpvMessageBuffer);
   LocalFree(lpvMessageBuffer);
+#ifdef UNICODE
+  char error_str[1024];
+  WideCharToMultiByte(CP_UTF8, 0, lErrorBuffer, -1, error_str, sizeof(error_str), NULL, NULL);
+  throw zorba::ExternalFunctionData::createZorbaException(XPTY0004,error_str, aFilename, aLineNumber);
+#else
   throw zorba::ExternalFunctionData::createZorbaException(XPTY0004,lErrorBuffer, aFilename, aLineNumber);
+#endif
 }
 
 /******************************************
@@ -162,15 +168,20 @@ BOOL create_child_process(HANDLE aStdOutputPipe,HANDLE aStdErrorPipe,const std::
 
   // convert from const char* to char*
   size_t length = strlen(aCommand.c_str());
+#ifdef UNICODE
+  WCHAR *tmpCommand = new WCHAR[length+1];
+  MultiByteToWideChar(CP_UTF8, 0, aCommand.c_str(), -1, tmpCommand, length+1);
+#else
   char *tmpCommand=new char[length+1];
   strcpy (tmpCommand,aCommand.c_str());
   tmpCommand[length]='\0';
-  
+#endif
+
   try{
   
     // settings for the child process      
-    LPCSTR lApplicationName=NULL;
-    LPSTR lCommandLine=tmpCommand;
+    LPCTSTR lApplicationName=NULL;
+    LPTSTR lCommandLine=tmpCommand;
     LPSECURITY_ATTRIBUTES lProcessAttributes=NULL;
     LPSECURITY_ATTRIBUTES lThreadAttributes=NULL;
     BOOL lInheritHandles=TRUE; // that's what we want
