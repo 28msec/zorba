@@ -1,0 +1,11 @@
+<csv-options:options xmlns:csv-options="http://www.zorba-xquery.com/modules/csv-options">
+<first-row-is-headers/>
+  <csv separator="&#009;"
+       quote-char="&quot;"
+       quote-escape="&quot;&quot;"/>
+  <xml-nodes>
+    <test7:row xmlns:test7="http://www.zorba-xquery/modules/csv">
+      <column/>
+    </test7:row>
+  </xml-nodes>
+</csv-options:options>
