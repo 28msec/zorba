@@ -897,6 +897,7 @@ declare sequential function xqdoc2html:main(
     <menu title="XQuery Modules Documentation">
       <category name="http://expath.org/ns" uri="http://expath.org/ns" />
       <category name="http://www.zorba-xquery.com/modules" uri="http://www.zorba-xquery.com/modules" >
+        <category name="data-cleaning" uri="http://www.zorba-xquery.com/modules/data-cleaning" />
         <category name="email" uri="http://www.zorba-xquery.com/modules/email" />
         <category name="excel" uri="http://www.zorba-xquery.com/modules/excel" />
         <category name="image" uri="http://www.zorba-xquery.com/modules/image" />
