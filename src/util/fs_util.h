@@ -19,12 +19,19 @@
 
 #include <zorba/config.h>
 
-#ifndef WIN32
+#include <stdexcept>
+#ifdef WIN32
+#include <windows.h>
+#else
 #include <sys/types.h>                  /* for off_t */
-#endif
+#endif /* WIN32 */
 
 #include "ascii_util.h"
 #include "zorbatypes/zstring.h"
+
+#ifndef MAX_PATH
+#define MAX_PATH 1024
+#endif
 
 namespace zorba {
 namespace fs {
@@ -60,32 +67,43 @@ enum type {
   other   // named pipe, character/block special, socket, etc.
 };
 
-////////// functions //////////////////////////////////////////////////////////
+////////// Exceptions /////////////////////////////////////////////////////////
 
 /**
- * Appends a path component onto another path ensuring that exactly one
- * separator is used.
- *
- * @param path1 The path to append to.
- * @param path2 The path to append.
+ * An %fs::exception is-a std::runtime_error for reporting errors with fs
+ * functions.
  */
-template<class StringType1>
-inline void append( StringType1 &path1, char const *path2 ) {
-  if ( !ascii::ends_with( path1, separator ) )
-    path1 += separator;
-  path1 += path2;
-}
+class exception : public std::runtime_error {
+public:
+  explicit exception( char const *what ) : std::runtime_error( what ) { }
+
+  template<class StringType>
+  explicit exception( StringType const &what ) :
+    std::runtime_error( what.c_str() ) { }
+};
+
+////////// File deletion //////////////////////////////////////////////////////
 
 /**
- * Appends a path component onto another path.
+ * Removes the given file or directory.
  *
- * @param path1 The path to append to.
- * @param path2 The path to append.
+ * @param path The path of the file or directory to remove.
+ * @return Returns \c true only if the file or directory was removed.
  */
-template<class StringType1,class StringType2>
-inline void append( StringType1 &path1, StringType2 const &path2 ) {
-  append( path1, path2.c_str() );
+bool remove( char const *path );
+
+/**
+ * Removes the given file or directory.
+ *
+ * @param path The path of the file or directory to remove.
+ * @return Returns \c true only if the file or directory was removed.
+ */
+template<class StringType> inline
+bool remove( StringType const &path ) {
+  return remove( path.c_str() );
 }
+
+////////// File information ///////////////////////////////////////////////////
 
 /**
  * Gets the type of the given file.
@@ -131,6 +149,8 @@ bool is_absolute( StringType const &path ) {
   return is_absolute( path.c_str() );
 }
 
+////////// Path normalization /////////////////////////////////////////////////
+
 /**
  * Gets the normalized path of the given path.
  *
@@ -138,7 +158,13 @@ bool is_absolute( StringType const &path ) {
  * @param base The base path, if any.
  * @return Returns the normalized path.
  */
-zstring get_normalized_path( zstring const &path, zstring const &base = "" );
+zstring get_normalized_path( char const *path, char const *base = 0 );
+
+template<class StringType> inline
+zstring get_normalized_path( StringType const &path,
+                             StringType const &base = "" ) {
+  return get_normalized_path( path.c_str(), base.c_str() );
+}
 
 /**
  * Normalizes the given path.
@@ -147,8 +173,58 @@ zstring get_normalized_path( zstring const &path, zstring const &base = "" );
  * @param base The base path, if any.
  * @return Returns the normalized path.
  */
-inline void normalize_path( zstring &path, zstring const &base = "" ) {
-  path = get_normalized_path( path, base );
+inline void normalize_path( zstring &path, char const *base = 0 ) {
+  path = get_normalized_path( path.c_str(), base );
+}
+
+////////// Path manipulation //////////////////////////////////////////////////
+
+/**
+ * Appends a path component onto another path ensuring that exactly one
+ * separator is used.
+ *
+ * @param path1 The path to append to.
+ * @param path2 The path to append.
+ */
+template<class StringType1>
+inline void append( StringType1 &path1, char const *path2 ) {
+  if ( !ascii::ends_with( path1, separator ) )
+    path1 += separator;
+  path1 += path2;
+}
+
+/**
+ * Appends a path component onto another path.
+ *
+ * @param path1 The path to append to.
+ * @param path2 The path to append.
+ */
+template<class StringType1,class StringType2>
+inline void append( StringType1 &path1, StringType2 const &path2 ) {
+  append( path1, path2.c_str() );
+}
+
+////////// Temporary files ////////////////////////////////////////////////////
+
+/**
+ * Gets a path for a temporary file.
+ *
+ * @param path_buf A buffer to receive the path.  It must be at least \c
+ * MAX_PATH bytes long.
+ */
+void get_temp_file( char *path_buf );
+
+/**
+ * Gets a path for a temporary file.
+ *
+ * @tpatah StringType The string type.
+ * @param path The string to receive the path.
+ */
+template<class StringType> inline
+void get_temp_file( StringType *path ) {
+  char path_buf[ MAX_PATH ];
+  get_temp_file( path_buf );
+  *path = path_buf;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

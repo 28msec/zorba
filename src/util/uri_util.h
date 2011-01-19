@@ -21,6 +21,7 @@
 #include <iostream>
 #include <stdexcept>
 
+#include "fs_util.h"
 #include "stl_util.h"
 
 namespace zorba {
@@ -209,6 +210,41 @@ void fetch( char const *uri, std::iostream &result );
 template<class StringType> inline
 void fetch( StringType const &uri, std::iostream &result ) {
   fetch( uri.c_str(), result );
+}
+
+// Internal use only!
+void fetch_to_path_impl( char const *uri, char *path, bool *is_temp );
+
+/**
+ * Fetches a resource from the given URI to a local file.
+ *
+ * @tparam StringType The path's string type.
+ * @param uri The URI specifying the resouce.
+ * @param path On return, contains the path of the fetched resource.
+ * @param is_temp If not \c NULL, on return this is set to \c true if the local
+ * file is a nrely created temporary file; \c false otherwise.
+ */
+template<class StringType> inline
+void fetch( char const *uri, StringType *path, bool *is_temp = 0 ) {
+  char path_buf[ MAX_PATH ];
+  fetch_to_path_impl( uri, path_buf, is_temp );
+  *path = path_buf;
+}
+
+/**
+ * Fetches a resource from the given URI to a local file.
+ *
+ * @tparam URIStringType The URI's string type.
+ * @tparam PathStringType The path's string type.
+ * @param uri The URI specifying the resouce.
+ * @param path On return, contains the path of the fetched resource.
+ * @param is_temp If not \c NULL, on return this is set to \c true if the local
+ * file is a nrely created temporary file; \c false otherwise.
+ */
+template<class URIStringType,class PathStringType> inline
+void fetch( URIStringType const &uri, PathStringType *file,
+            bool *is_temp = 0 ) {
+  fetch( uri.c_str(), file, is_temp );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

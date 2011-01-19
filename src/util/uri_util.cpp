@@ -16,6 +16,8 @@
 
 #include <algorithm>                    /* for lower_bound() */
 #include <cstring>
+#include <fstream>
+
 #include <curl/curl.h>
 
 #include <zorba/config.h>
@@ -29,6 +31,7 @@
 #endif
 #include "zorbatypes/zstring.h"
 
+#include "fs_util.h"
 #include "less.h"
 #include "string_util.h"
 #include "uri_util.h"
@@ -186,6 +189,27 @@ void fetch( char const *uri, iostream &result ) {
 #else
   ZORBA_ERROR_PARAM( XQP0004_SYSTEM_NOT_SUPPORTED, "HTTP GET" , "" );
 #endif /* ZORBA_WITH_REST */
+}
+
+void fetch_to_path_impl( char const *uri, char *path, bool *is_temp ) {
+  zstring zpath;
+  bool temp = false;
+  switch ( get_scheme( uri ) ) {
+    case file:
+    case none:
+      zpath = fs::get_normalized_path( uri );
+      break;
+    default:
+      fs::get_temp_file( &zpath );
+      fstream stream( zpath.c_str() );
+      fetch( uri, stream );
+      temp = true;
+      break;
+  }
+  ::strncpy( path, zpath.c_str(), MAX_PATH );
+  path[ MAX_PATH - 1 ] = '\0';
+  if ( is_temp )
+    *is_temp = temp;
 }
 
 scheme get_scheme( char const *uri ) {

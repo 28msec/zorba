@@ -50,9 +50,10 @@
 #include <zorba/config.h>
 
 #include "util/ascii_util.h"
-#include "util/utf8_util.h"
+#include "util/fs_util.h"
 #include "util/regex.h"
 #include "util/uri_util.h"
+#include "util/utf8_util.h"
 #include "zorbaerrors/error_manager.h"
 
 
@@ -608,32 +609,11 @@ void file::deep_mkdir () {
 }
 
 void file::remove(bool ignore) {
-#if ! defined (WIN32)
-  if (::remove(c_str())) {
-    if (!ignore) {
+  if ( !fs::remove( c_str() ) ) {
+    if ( !ignore )
       error(__FUNCTION__, "failed to remove " + get_path ());
-    }
     return;
   }
-#else
-  BOOL  retval = TRUE;
-  WCHAR wpath_str[1024];
-  wpath_str[0] = 0;
-  if(MultiByteToWideChar(CP_UTF8,
-                      0, c_str(), -1,
-                      wpath_str, sizeof(wpath_str)/sizeof(WCHAR)) == 0)
-  {//probably there is some invalid utf8 char, try the Windows ACP
-    MultiByteToWideChar(CP_ACP,
-                      0, c_str(), -1,
-                      wpath_str, sizeof(wpath_str)/sizeof(WCHAR));
-  }
-  if(this->type == type_file)
-    retval = DeleteFileW(wpath_str);
-  else if(this->type == type_directory)
-    retval = RemoveDirectoryW(wpath_str);
-  if(!retval && !ignore)
-    error(__FUNCTION__, "failed to remove " + get_path ());
-#endif
   set_filetype(type_non_existent);
 }
 
@@ -753,3 +733,4 @@ isValidDriveSegment(
 
 } /* namespace zorba */
 
+/* vim:set et sw=2 ts=2: */

@@ -15,15 +15,19 @@
  */
 
 #ifndef WIN32
+# include <cstdio>
 # include <sys/types.h>
 # include <sys/stat.h>
 #else
-# include <windows.h>
+# ifndef UNICODE
+#   define UNICODE /* THIS SHOULD BE DONE BY THE BUILD ENVIRONMENT */
+# endif
 #endif /* WIN32 */
 
 #include "zorbaerrors/error_manager.h"
 
 #include "ascii_util.h"
+#include "error_util.h"
 #include "fs_util.h"
 #include "uri_util.h"
 
@@ -32,11 +36,29 @@ using namespace std;
 namespace zorba {
 namespace fs {
 
-///////////////////////////////////////////////////////////////////////////////
+////////// WIndows functions //////////////////////////////////////////////////
 
 #ifdef WIN32
 
 namespace win32 {
+
+static type get_type( LPCWSTR wpath ) {
+  DWORD const attr = ::GetFileAttributes( wpath );
+  if ( attr == INVALID_FILE_ATTRIBUTES )
+    return non_existent;
+  if ( attr & FILE_ATTRIBUTE_DIRECTORY )
+    return directory;
+  if ( attr & FILE_ATTRIBUTE_REPARSE_POINT )
+    return link;
+  return file;
+}
+
+static bool to_char( LPCWSTR wpath, char *path ) {
+  int const result = ::WideCharToMultiByte(
+    CP_UTF8, 0, wpath, -1, path, MAX_PATH, NULL, NULL
+  );
+  return result != 0;
+}
 
 static bool to_wchar( char const *path, LPWSTR wpath ) {
   if ( ::MultiByteToWideChar( CP_UTF8, 0, path, -1, wpath, MAX_PATH ) )
@@ -50,12 +72,12 @@ static bool to_wchar( char const *path, LPWSTR wpath ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-zstring get_normalized_path( zstring const &path, zstring const &base ) {
-  if ( path.empty() )
+zstring get_normalized_path( char const *path, char const *base ) {
+  if ( !path[0] )
     ZORBA_ERROR_DESC( XPTY0004, "empty path" );
   zstring result;
   if ( ascii::begins_with( path, "file://" ) ) {
-    result = path.substr( 7 );
+    result = path + 7;
     if ( result.empty() )
       ZORBA_ERROR_DESC( XPTY0004, "empty path" );
     zstring::size_type slash = result.find( '/' );
@@ -81,7 +103,7 @@ zstring get_normalized_path( zstring const &path, zstring const &base ) {
 #ifdef WIN32
     ascii::replace_all( path2, '/', '\\' );
 #endif /* WIN32 */
-    if ( !is_absolute( path2 ) && !base.empty() ) {
+    if ( !is_absolute( path2 ) && base && base[0] ) {
       result = base;
 #ifdef WIN32
       ascii::replace_all( result, '/', '\\' );
@@ -98,6 +120,24 @@ zstring get_normalized_path( zstring const &path, zstring const &base ) {
   return result;
 }
 
+void get_temp_file( char *path ) {
+#ifndef WIN32
+  if ( !::tmpnam( path ) )
+    throw fs::exception( error::get_os_err_string( "tmpnam()" ) );
+#else
+  WCHAR wtemp[ MAX_PATH ];
+  // GetTempFileName() needs a 14-character cushion.
+  DWORD const dw_result = ::GetTempPath( MAX_PATH - 14, wtemp );
+  if ( !dw_result || dw_result > MAX_PATH )
+    throw fs::exception( error::get_os_err_string( "GetTempPath()" ) );
+  WCHAR wpath[ MAX_PATH ];
+  UINT const u_result = ::GetTempFileName( wtemp, TEXT("zxq"), 0, wpath );
+  if ( !u_result )
+    throw fs::exception( error::get_os_err_string( "GetTempFileName()" ) );
+  win32::to_char( wpath, path );
+#endif /* WIN32 */
+}
+
 type get_type( char const *path ) {
 #ifndef WIN32
   struct stat st_buf;
@@ -111,14 +151,24 @@ type get_type( char const *path ) {
 #else
   WCHAR wpath[ MAX_PATH ];
   win32::to_wchar( path, wpath );
-  DWORD const attr = ::GetFileAttributesW( wpath );
-  if ( attr == INVALID_FILE_ATTRIBUTES )
-    return non_existent;
-  if ( attr & FILE_ATTRIBUTE_DIRECTORY )
-    return directory;
-  if ( attr & FILE_ATTRIBUTE_REPARSE_POINT )
-    return link;
-  return file;
+  return win32::get_type( wpath );
+#endif /* WIN32 */
+}
+
+bool remove( char const *path ) {
+#ifndef WIN32
+  return ::remove( path ) == 0;
+#else
+  WCHAR wpath[ MAX_PATH ];
+  win32::to_wchar( path, wpath );
+  switch ( win32::get_type( wpath ) ) {
+    case directory:
+      return ::RemoveDirectoryW( wpath ) != 0;
+    case non_existent:
+      return false;
+    default:
+      return ::DeleteFileW( wpath ) != 0;
+  }
 #endif /* WIN32 */
 }
 
