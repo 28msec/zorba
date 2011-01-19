@@ -319,6 +319,7 @@ DWORD WINAPI thread_main(LPVOID param)
   std::auto_ptr<zorba::TestSchemaURIResolver>      resolver;
   std::auto_ptr<zorba::TestModuleURIResolver>      mresolver;
   std::auto_ptr<zorba::TestCollectionURIResolver>  cresolver;
+  std::auto_ptr<zorba::TestDocumentURIResolver>    dresolver;
 
   resolver.reset(new zorba::TestSchemaURIResolver(uri_map_file.c_str(), false));
 
@@ -463,6 +464,13 @@ DWORD WINAPI thread_main(LPVOID param)
 
       sctx->setXQueryVersion(xquery_version_1_0);
       sctx->setTraceStream(queries->theOutput);
+    }
+
+    // If --enable-uritestresolver is specified, enable our document
+    // URI resolver for test:// scheme URIs
+    if (querySpec.getEnableUriTestResolver()) {
+      dresolver.reset(new zorba::TestDocumentURIResolver(rbkt_src_dir));
+      sctx->setDocumentURIResolver ( dresolver.get() );
     }
 
     // Set any options on the static context

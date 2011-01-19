@@ -159,6 +159,7 @@ main(int argc, char** argv)
     std::auto_ptr<zorba::TestSchemaURIResolver>      resolver;
     std::auto_ptr<zorba::TestModuleURIResolver>      mresolver;
     std::auto_ptr<zorba::TestCollectionURIResolver>  cresolver;
+    std::auto_ptr<zorba::TestDocumentURIResolver>    dresolver;
     // Create the static context. If this is a w3c query, install special uri
     // resolvers in the static context.
     zorba::StaticContext_t lContext = engine->createStaticContext();
@@ -226,6 +227,13 @@ main(int argc, char** argv)
       }
     }
 
+    // If --enable-uritestresolver is specified, enable our document
+    // URI resolver for test:// scheme URIs
+    if (lSpec.getEnableUriTestResolver()) {
+      dresolver.reset(new zorba::TestDocumentURIResolver(rbkt_src_dir));
+      lContext->setDocumentURIResolver ( dresolver.get() );
+    }
+
     // Bind any options from the .spec file to the static context
     setOptions(driverContext, lContext);
 
@@ -284,6 +292,7 @@ main(int argc, char** argv)
     std::cout << "=== end of Query ===" << std::endl;
 
     // Stopwatch starts now
+    // QQQ this should use util/time.h
 #ifndef WIN32
     struct timeval start_time, end_time;
     gettimeofday(&start_time, NULL);

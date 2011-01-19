@@ -19,6 +19,7 @@
 #include <zorba/zorba.h>
 #include <zorba/zorbastring.h>
 #include "util/ascii_util.h"
+#include "zorba/util/uri.h"
 #include <cassert>
 
 #include <iostream>
@@ -32,9 +33,58 @@ namespace zorba
 
 
 
-/*******************************************************************************
+/******************************************************************************
+ "Document resolver"
+*******************************************************************************/
+TestDocumentURIResolver::TestDocumentURIResolver(zorba::String aBaseFile)
+{
+  theBaseFile = URIHelper::encodeFileURI(aBaseFile);
+}
 
-********************************************************************************/
+TestDocumentURIResolver::~TestDocumentURIResolver()
+{
+}
+
+TestDocumentURIResolverResult::~TestDocumentURIResolverResult()
+{
+}
+
+Item
+TestDocumentURIResolverResult::getDocument() const
+{
+  return theDocument;
+}
+
+std::auto_ptr<DocumentURIResolverResult>
+TestDocumentURIResolver::resolve(const Item& aURI,
+  StaticContext* aStaticContext,
+  XmlDataManager* aXmlDataManager,
+  bool validateUri,
+  bool tidying,
+  bool replaceDoc,
+  const Item& aTidyUserOpt)
+{
+  zorba::String lUri = aURI.getStringValue();
+  if (lUri.startsWith("test://")) {
+    lUri = theBaseFile + lUri.substring(7);
+  }
+  std::auto_ptr<TestDocumentURIResolverResult> lResult
+    (new TestDocumentURIResolverResult());
+  try {
+    lResult->theDocument =
+      aXmlDataManager->loadDocumentFromUri(lUri, replaceDoc);
+  }
+  catch (ZorbaException &e) {
+    lResult->setError(URIResolverResult::UR_FODC0002);
+    lResult->setErrorDescription(e.getDescription());
+  }
+  return std::auto_ptr<DocumentURIResolverResult>(lResult.release());
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
 TestSchemaURIResolverResult::~TestSchemaURIResolverResult()
 {
 }
@@ -121,9 +171,9 @@ TestSchemaURIResolver::resolve (
 }
 
 
-/*******************************************************************************
+/******************************************************************************
 
-********************************************************************************/
+*******************************************************************************/
 void TestModuleURIResolverResult::getComponentURIs(std::vector<std::string>& uris) const
 {
   uris = theComponentURIs;
@@ -302,9 +352,9 @@ std::auto_ptr<ModuleURIResolverResult> TestModuleURIResolver::resolve(
 }
 
 
-/*******************************************************************************
+/******************************************************************************
   Collection Resolver
-********************************************************************************/
+*******************************************************************************/
 Collection_t
 TestCollectionURIResolverResult::getCollection () const
 {

@@ -48,7 +48,8 @@ public:
       theComparisonMethod("Fragment"),
       theSerializationMethod("XML"),
       theUseIndent(false),
-      theEnableDtd(false)
+      theEnableDtd(false),
+      theEnableUriTestResolver(false)
   {}
 
 private:
@@ -67,6 +68,7 @@ private:
   std::string              theSerializationMethod;//"XML" (default), "TXT"(for CSV testing)
   bool                     theUseIndent;
   bool                     theEnableDtd;
+  bool                     theEnableUriTestResolver;
 
   void setInline() {
     theInline = true;
@@ -191,6 +193,10 @@ public:
     return theEnableDtd;
   }
 
+  bool getEnableUriTestResolver() const {
+    return theEnableUriTestResolver;
+  }
+
   void tokenize(const std::string& str,
                 std::vector<std::string>& tokens,
                 const std::string& delimiters)
@@ -266,6 +272,10 @@ public:
             else if (*lIter == "--enable-dtd")
             {
               theEnableDtd = true;
+            }
+            else if (*lIter == "--enable-uritestresolver")
+            {
+              theEnableUriTestResolver = true;
             }
             else
             {

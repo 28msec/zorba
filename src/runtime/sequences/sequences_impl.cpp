@@ -27,6 +27,9 @@
 // For timing
 #include "util/time.h"
 
+#include "util/fs_util.h"
+#include "util/uri_util.h"
+
 #include "compiler/api/compilercb.h"
 
 #include "runtime/sequences/sequences.h"
@@ -56,7 +59,6 @@ namespace zorbatm = zorba::time;
 using namespace std;
 
 namespace zorba {
-
 
 static XQPCollator* getCollator(
     static_context* sctx,
@@ -1750,7 +1752,38 @@ bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     {
       try
       {
-        resolvedURIString = theSctx->resolve_relative_uri(uriString, true);
+        // To support the very common (if technically incorrect) use
+        // case of users passing local filesystem paths to fn:doc(),
+        // we use the following heuristic: IF the base URI has a file:
+        // scheme AND the incoming URI has no scheme, we will assume
+        // the incoming URI is actually a filesystem path.  QQQ For
+        // the moment, we assume any "unknown" schemes are probably
+        // Windows drive letters.
+        zstring baseUri = theSctx->get_base_uri();
+        if ( ( (uri::get_scheme(uriString) == uri::none) ||
+            (uri::get_scheme(uriString) == uri::unknown) ) &&
+          (uri::get_scheme(baseUri) == uri::file) ) {
+          // Ok, we assume it's a filesystem path. First normalize it.
+          zstring normalizedPath =
+            fs::get_normalized_path(uriString, zstring(""));
+          // QQQ For now, get_normalized_path() doesn't do what we
+          // want when base URI represents a file. So, when the
+          // normalized path is relative, we pretend it's a relative
+          // URI and resolve it as such.
+          if (fs::is_absolute(normalizedPath)) {
+            URI::encode_file_URI(normalizedPath, resolvedURIString);
+          }
+          else {
+#ifdef WIN32
+            ascii::replace_all(normalizedPath, '\\', '/');
+#endif
+            resolvedURIString =
+              theSctx->resolve_relative_uri(normalizedPath, true);
+          }
+        }
+        else {
+          resolvedURIString = theSctx->resolve_relative_uri(uriString, true);
+        }
         GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
       }
       catch (error::ZorbaError& e)
@@ -1870,28 +1903,28 @@ bool FnParseIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   URI lValidatedBaseUri;
   zstring docUri;
   std::auto_ptr<std::istringstream> iss;
-	std::istream *is;
+  std::istream *is;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   consumeNext (result, theChildren [0].getp (), planState);
 
-	if ( result->isStreamable() ) {
-		//
-		// The "iss" auto_ptr can NOT be used since it will delete the stream that,
-		// in this case, is a data member inside another object and not dynamically
-		// allocated.
-		//
-		// We can't replace "iss" with "is" since we still need the auto_ptr for
-		// the case when the result is not streamable.
-		//
-		is = &result->getStream();
-	} else {
-		result->getStringValue2(docString);
-		iss.reset (new std::istringstream(docString.c_str()));
-		is = iss.get();
-	}
+  if ( result->isStreamable() ) {
+    //
+    // The "iss" auto_ptr can NOT be used since it will delete the stream that,
+    // in this case, is a data member inside another object and not dynamically
+    // allocated.
+    //
+    // We can't replace "iss" with "is" since we still need the auto_ptr for
+    // the case when the result is not streamable.
+    //
+    is = &result->getStream();
+  } else {
+    result->getStringValue2(docString);
+    iss.reset (new std::istringstream(docString.c_str()));
+    is = iss.get();
+  }
 
   // optional base URI argument
   if (theChildren.size() == 2)
