@@ -58,10 +58,7 @@
  :        </li>
  :      </ul>
  :    </p>
- : \inlineExample copy.xq
- : @author Gabriel Petrovay
- : @author Matthias Brantner
- : @author Markus Pilman
+ : @author Gabriel Petrovay, Matthias Brantner, Markus Pilman
  :
  :)
 module namespace file = "http://www.zorba-xquery.com/modules/file";
@@ -102,7 +99,7 @@ declare sequential function file:copy(
 ) as xs:boolean external;
 
 (:~
- : Tests if a path/URI is already used in the file system
+ : Tests if a path/URI is already used in the file system.
  :
  : @param $fileOrDir The path/URI to test for existance.
  : @return true if the path/URI points to an existing file system item.

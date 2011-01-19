@@ -279,7 +279,7 @@ declare function math:rad-to-deg($rad as xs:double) as xs:double
 declare function math:is_inf($arg as xs:double) as xs:boolean external;
 
 (:~
- : Checks if the double value is Not a Number (NaN)
+ : Checks if the double value is Not a Number (NaN).
  :
  : @param $arg the arg
  : @return boolean true if the double is NaN

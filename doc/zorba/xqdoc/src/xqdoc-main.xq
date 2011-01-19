@@ -1,4 +1,4 @@
-import module namespace xqdoc2html = "http://www.zorba-xquery.com/modules/xqdoc2xhtml";
+import module namespace xqdoc2html = "http://www.zorba-xquery.com/modules/xqdoc2xhtml/";
 
 declare variable $modulesPath         as xs:string external;
 declare variable $xhtmlRequisitesPath as xs:string external;

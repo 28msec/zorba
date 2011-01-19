@@ -36,7 +36,7 @@ declare variable $random:randomNS as xs:string := "http://www.zorba-xquery.com/m
 declare variable $random:errValue as xs:QName := fn:QName($random:randomNS, "random:errValue");
 
 (:~
- : This function returns a pseudo-random integer
+ : This function returns a pseudo-random integer.
  :
  : @return a pseudo-random integer
  :)

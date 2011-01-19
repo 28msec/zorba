@@ -20,10 +20,11 @@
  :
  : @author Gabriel Petrovay, Sorin Nasoi
  :)
-module namespace xqdoc2html = "http://www.zorba-xquery.com/modules/xqdoc2xhtml";
+module namespace xqdoc2html  = "http://www.zorba-xquery.com/modules/xqdoc2xhtml/";
 
 import module namespace file = "http://www.zorba-xquery.com/modules/file";
-import module namespace xqd = "http://www.zorba-xquery.com/modules/xqdoc";
+import module namespace xqd  = "http://www.zorba-xquery.com/modules/xqdoc";
+import module namespace err  = "http://www.zorba-xquery.com/modules/xqdoc2xhtml/error";
 
 import schema namespace xqdoc = "http://www.xqdoc.org/1.0";
 
@@ -81,12 +82,13 @@ declare %private sequential function xqdoc2html:clear-folder(
   $pattern as xs:string)
 {
   if(fn:not(file:exists($folderPath))) then
-    ""
+    ()
   else
     for $file in file:files($folderPath, $pattern, fn:true())
     let $filePath := fn:concat($folderPath, file:path-separator(), $file)
+    let $res := file:remove($filePath)
     return
-      file:remove($filePath)
+      ()
 };
 
 (:~
@@ -105,14 +107,15 @@ declare %private sequential function xqdoc2html:gather-and-copy(
   $pattern          as xs:string)
 {
   if(fn:not(file:exists($destinationPath))) then
-    ""
+    ()
   else
     for $file in file:files($sourcePath, $pattern, fn:true())
     let $fileName := fn:tokenize($file, fn:concat("\",file:path-separator()))[last()]
     let $fileSourcePath := fn:concat($sourcePath, file:path-separator(), $file)
     let $fileDestinationPath := fn:concat($destinationPath, file:path-separator(), $fileName)
+    let $res := file:copy($fileSourcePath, $fileDestinationPath, fn:false())
     return
-      file:copy($fileSourcePath, $fileDestinationPath, fn:false())
+      ()
 };
 
 (:~
@@ -171,8 +174,9 @@ declare %private sequential function xqdoc2html:copy-xqsrc-folders(
     let $xqSrcSourcePath := fn:concat($modulePath, file:path-separator(), $xqSrcFolder, '.xq.src')
     let $xqSrcDestinationPath := fn:concat($xqSrcPath, file:path-separator(),
                                  xqdoc2html:get-filename(xqdoc2html:get-URI-from-location($xqSrcFolder)))
+    let $ret := xqdoc2html:copy-files($xqSrcSourcePath, $xqSrcDestinationPath, "(\.cpp|\.h)$")
     return
-      xqdoc2html:copy-files($xqSrcSourcePath, $xqSrcDestinationPath, "(\.cpp|\.h)$")
+      ()
   )
   else
     error()
@@ -189,6 +193,7 @@ declare %private sequential function xqdoc2html:copy-xqsrc-folders(
  :  <li>css stylesheets</li>
  :  <li>templates</li>
  :  <li>examples</li>
+ :  <li>modules</li>
  : </ul>
  :
  : @param $modulesPath location of the modules.
@@ -204,11 +209,13 @@ declare sequential function xqdoc2html:copy-xhtml-requisites(
 let $xhtmlPath      := fn:concat($xqdocBuildPath, file:path-separator(), "xhtml"),
     $schemasPath    := fn:concat($xhtmlPath,      file:path-separator(), "schemas"),
     $xqSrcPath      := fn:concat($xhtmlPath,      file:path-separator(), "xq.src"),
+    $xqPath         := fn:concat($xhtmlPath,      file:path-separator(), "modules"),
     $imagesPath     := fn:concat($xhtmlPath,      file:path-separator(), "images"),
     $libPath        := fn:concat($xhtmlPath,      file:path-separator(), "lib"),
     $cssPath        := fn:concat($xhtmlPath,      file:path-separator(), "css"),
     $templatesPath  := fn:concat($xhtmlPath,      file:path-separator(), "templates"),
     $examplesPath   := fn:concat($xhtmlPath,      file:path-separator(), "examples")
+
 return
   (: first - create the xhtml folder is it does not exist already :)
   if (file:mkdirs($xhtmlPath, false())) then
@@ -226,6 +233,9 @@ return
 
     xqdoc2html:copy-xqsrc-folders($modulesPath, $xqSrcPath),
 
+    (: only create the 'modules' folder. The .xq module files will be copied later on in the process :)
+    file:mkdirs($xqPath, false()),
+    
     (: only create the examples folder. The examples will be copied later on in the process :)
     file:mkdirs($examplesPath, false())
     )
@@ -253,11 +263,13 @@ declare %private function xqdoc2html:get-URI-from-location($folderPath as xs:str
  :
  :)
 declare %private function xqdoc2html:get-filename($moduleURI as xs:string) as xs:string {
+  let $lmodule := if(fn:ends-with($moduleURI,"/")) then fn:concat($moduleURI,"index") else $moduleURI
+  return
     replace(
-        replace($moduleURI, "/", "_"),
-        "http:__",
-        ""
-    )
+      replace($lmodule, "/", "_"),
+      "http:__",
+      ""
+  )
 };
 
 (:~
@@ -285,16 +297,35 @@ declare sequential function xqdoc2html:generate-xqdoc-xml(
   let $moduleUri := $moduleDoc/xqdoc:uri
   return
     try {
-      file:mkdirs($xqdocXmlPath, false());
       let $x := fn:count(file:files($xqdocXmlPath, "\.xml$", fn:true())) + 1
-      let $xqdocFileName := fn:concat($xqdocXmlPath, file:path-separator(), xqdoc2html:get-filename($moduleUri), ".xml")
-      return          
-      file:write($xqdocFileName, $xqdoc, <s method="xml" indent="yes" />/@*);
-      concat("
-SUCCESS: ", $moduleUri, " (", ()(:$xqdocFileName:), ")");
-    } catch * ($error_code) {
-      concat("
-FAILED: ", $moduleUri, " (", ()(:$xqdocFileName:), ")")
+      let $getFilename := xqdoc2html:get-filename($moduleUri)
+      let $xqdocFileName := fn:concat($xqdocXmlPath, file:path-separator(), $getFilename, ".xml")
+      let $xhtmlRelativeFilePath :=fn:concat($getFilename, ".html")
+      let $ret := file:write($xqdocFileName, $xqdoc, <s method="xml" indent="yes" />/@*)
+      
+      return
+        if($xqdoc/xqdoc:module/@type = "library") then
+        (
+          xqdoc2html:collect-module($moduleUri/text(), $getFilename, $xqdoc2html:indexCollector),
+          
+          xqdoc2html:collect-functions($xqdoc, $xhtmlRelativeFilePath, $xqdoc2html:functionsCollector),
+          
+          (:copy the actual module under xhtml/modules folder but save it under a different name, i.e. $xhtmlRelativeFilePath :)
+          let $ret := file:copy($filePath,
+                                fn:concat($xqdocXhtmlPath,
+                                          file:path-separator(),
+                                          "modules",
+                                          file:path-separator(),
+                                          $getFilename,
+                                          ".xq"), 
+                                fn:false())
+          return ()
+        )
+        else
+         ()    
+    } catch * ($error_code) 
+    {      
+      fn:error($err:UE004, fn:concat("FAILED: ", $moduleUri, " (", fn:concat($xqdocXmlPath, file:path-separator(), xqdoc2html:get-filename($moduleUri), ".xml"), ")"));
     }
 };
 
@@ -345,13 +376,9 @@ declare %private sequential function xqdoc2html:generate-xqdoc-xhtml(
         xqdoc2html:configure-xhtml($xhtml, $modulesPath);
 
         file:write($xhtmlFilePath, $xhtml, <s method="xhtml" indent="yes" />/@*);
-
-        concat("
-SUCCESS: ", $moduleUri, " (", $xhtmlFilePath, ")");
       }
     } catch * ($error_code) {
-      concat("
-FAILED: ", $xhtmlFilePath)
+      fn:error($err:UE007, fn:concat("xqdoc2html:generate-xqdoc-xhtml ", $xmlFilePath, " ", $error_code, " " ,$xhtmlFilePath));
     }
 };
 
@@ -457,63 +484,26 @@ declare %private sequential function xqdoc2html:gather-schemas(
     try {
       let $xqdoc := file:read-xml($xsdFilePath)
       let $xsdUri := $xqdoc/xs:schema/@targetNamespace
-      return block {
+      return
           xqdoc2html:collect-module($xsdUri, $xqdRelFilePath, $xqdoc2html:schemasCollector);
-          concat("
-  SUCCESS: ", $xsdUri, " (", $xsdFilePath, ")");
-        }
-      } catch * ($error_code) {
-        concat("
-  FAILED: ", $xsdFilePath)
-      }  
-};
-
-(:~
- : This function gathers the modules found in the $xqdocXmlPath and fills the $xqdoc2html:indexCollector.
- : @param $xqdocXmlPath the path where the XQDoc XML modules are stored.
- : @return a string sequence indicating the result of every processed XQDoc XML file.
- :)
-declare %private sequential function xqdoc2html:gather-modules(
-  $xqdocXmlPath as xs:string
-){
-  for $file in file:files($xqdocXmlPath, "\.xml$", fn:true())
-  let $xmlFilePath := concat($xqdocXmlPath, file:path-separator(), $file)
-  let $xhtmlRelativeFilePath := fn:replace($file, "\.xml$", ".html")
-  let $xhtmlRelativeFilePathSlash := fn:replace($xhtmlRelativeFilePath, fn:concat("\", file:path-separator()), "/")
-  return
-  try {
-      let $xqdoc := file:read-xml($xmlFilePath)/xqdoc:xqdoc
-      let $moduleDoc := $xqdoc/xqdoc:module
-      let $moduleUri := $moduleDoc/xqdoc:uri
-      return if($moduleDoc/@type = "library") then 
-        block {
-          xqdoc2html:collect-module($moduleUri/text(), $xhtmlRelativeFilePath, $xqdoc2html:indexCollector);
-          
-          xqdoc2html:collect-functions($xqdoc, $xhtmlRelativeFilePath, $xqdoc2html:functionsCollector);
-          concat("
-SUCCESS: ", $moduleUri, " (", $xmlFilePath, ")");
-        }
-       else concat("
-Ignore main module: ", $xmlFilePath) 
     } catch * ($error_code) {
-      concat("
-FAILED: ", $xmlFilePath)
-    }  
+      fn:error($err:UE005, fn:concat("xqdoc2html:gather-schemas ", $xsdFilePath));
+    } 
 };
 
 (:~
  : This function adds a new record into the $collector.
- : @param $moduleDoc the module URI.
+ : @param $moduleURI the module URI.
  : @param $relativeFileName the relative path to the module.
  : @param $collector the name of the collector.
  : @return empty sequence.
  :)
 declare %private sequential function xqdoc2html:collect-module (
-  $moduleDoc as xs:string, 
+  $moduleURI as xs:string, 
   $relativeFileName as xs:string, 
   $collector) 
 {
-  insert node <module uri="{$moduleDoc}" file="{$relativeFileName}" /> as last into $collector;
+  insert node <module uri="{$moduleURI}" file="{$relativeFileName}" /> as last into $collector;
 };
 
 (:~
@@ -642,6 +632,7 @@ declare %private sequential function xqdoc2html:get-example-path (
 (:~
  : This function does some additional processing for the $xml like
  : replacing examples with actual links to files.
+ :
  : @param $xqdoc the node containing the XQDoc XML.
  : @param $examplePath string with the paths where the examples are kept separated by ; .
  : @param $xqdocXhtmlPath where to generate the XQDoc XHTML documents.
@@ -655,8 +646,15 @@ declare %private sequential function xqdoc2html:configure-xml (
   (: copy the example into the 'examples' folder :)
   xqdoc2html:copy-examples($xqdoc, $xqdocXhtmlPath, $examplePath);
 
-  (: replace the @inlineExamples with actual inline code :)
+  (: replace the inlineExamples with actual inline code :)
 
+  for $inlineExample in $xqdoc//*:inlineexample
+  let $exampleSource := xqdoc2html:get-example-path(data($inlineExample/@href),$examplePath)
+  let $exampleContent := file:read-text( $exampleSource )
+  return
+    replace node $inlineExample with
+      <pre class="brush: xquery;">{text{$exampleContent(:$inlineExample/@href:)}}</pre>;
+ 
   $xqdoc;
 };
 
@@ -809,22 +807,26 @@ declare %private sequential function xqdoc2html:create-module-helper(
     insert nodes <li>{data($category/@name)}
     <ul>
     {
-     for $module in $xqdoc2html:indexCollector/module
-      order by fn:data($module/@uri)
+      for $module in $xqdoc2html:indexCollector/module
+      let $lModuleUri := data($module/@uri)
+      let $lCatUri := data($category/@uri)
+      order by $lModuleUri
       return
-        if(fn:starts-with(fn:string($module/@uri),data($category/@uri))
-           and fn:not(fn:contains (fn:substring-after(data($module/@uri),fn:concat(data($category/@uri),'/')),'/'))) then
+        if(fn:starts-with($lModuleUri, $lCatUri)
+           and fn:not(fn:contains (fn:substring-after($lModuleUri,fn:concat($lCatUri,'/')),'/'))) then
         (
-          let $uri := if(fn:substring-after(data($module/@uri),fn:concat(data($category/@uri),'/')) = "") then
-                        fn:substring-before($module/@file,".html")
+          let $uri := if(fn:substring-after($lModuleUri, $lCatUri) = "") then
+                        "index"
+                      else if (fn:ends-with($lCatUri,"/")) then
+                        fn:substring-after($lModuleUri, $lCatUri)
                       else
-                        fn:substring-after(data($module/@uri),fn:concat(data($category/@uri),'/'))
+                        fn:substring-after($lModuleUri, fn:concat($lCatUri,"/"))
           
           return
-            if(fn:string($module/@uri) = $moduleUri) then
+            if($lModuleUri = $moduleUri) then
               <li><span class="leftmenu_active">{$uri}</span></li>
             else 
-              <li><a href="{$module/@file}">{$uri}</a></li>
+              <li><a href="{$module/@file}.html">{$uri}</a></li>
         )
         else ()
     }    
@@ -905,9 +907,10 @@ declare sequential function xqdoc2html:main(
           <category name="google" uri="http://www.zorba-xquery.com/modules/webservices/google" />
           <category name="yahoo" uri="http://www.zorba-xquery.com/modules/webservices/yahoo" />
         </category>
+        <category name="xqdoc2xhtml" uri="http://www.zorba-xquery.com/modules/xqdoc2xhtml/" />
       </category>
       <category name="http://www.w3.org/2005" uri="http://www.w3.org/2005" />
-      <category name="www.functx.com" uri="http://www.functx.com" />
+      <category name="www.functx.com" uri="http://www.functx.com/" />
     </menu>
     let $indexHtmlPath as xs:string := fn:concat($xhtmlRequisitesPath, file:path-separator(), "templates", file:path-separator(), "index.html")
     return xqdoc2html:main($leftMenu, $modulePath, $xqdocBuildPath, $indexHtmlPath, $examplePath, $zorbaVersion)
@@ -941,7 +944,7 @@ declare %private sequential function xqdoc2html:main(
 
   (: if there is no main.html template we can not proceed further :)
   if($templatePath = fn:concat($templatesPath, file:path-separator())) then
-    error()
+    fn:error($err:UE002, "No 'main.html' template was found.")
   else
     ()
   ;
@@ -963,7 +966,6 @@ declare %private sequential function xqdoc2html:main(
   if (file:mkdirs($absoluteXhtmlDir, false())) then
   (
     xqdoc2html:clear-folder($xqdocXhtmlPath,"xqdoc\.html$"),
-    xqdoc2html:gather-modules($xqdocXmlPath),
     xqdoc2html:gather-schemas($xqdocSchemasPath),    
     xqdoc2html:generate-xqdoc-xhtml($xqdocXmlPath, $xqdocXhtmlPath, $xqSrcPath, $leftMenu, $modulePath, $xqdoc2html:functionIndexPageName, $templatePath, $examplePath),
     (
@@ -1119,14 +1121,14 @@ declare sequential function xqdoc2html:doc(
  :)
 declare function xqdoc2html:body(
   $xqdoc, 
-  $indexCollector, 
-  $schemasCollector, 
+  $indexCollector,
+  $schemasCollector,
   $xqSrcPath as xs:string,
   $xqdocXhtmlPath as xs:string)
 {
   (<h1>{xqdoc2html:module-uri($xqdoc)}</h1>,
     xqdoc2html:module-description($xqdoc/xqdoc:module),
-    xqdoc2html:module-resources($xqSrcPath, xqdoc2html:module-uri($xqdoc), $xqdoc/xqdoc:functions),
+    xqdoc2html:module-resources($xqSrcPath, xqdoc2html:module-uri($xqdoc), $indexCollector, $xqdoc/xqdoc:functions),
     xqdoc2html:module-dependencies($xqdoc, $indexCollector, $schemasCollector),
     xqdoc2html:module-external-specifications($xqdoc/xqdoc:module),
     xqdoc2html:module-variables($xqdoc/xqdoc:variables),
@@ -1196,7 +1198,7 @@ declare function xqdoc2html:errors($comment) {
 };
 
 (:~
- : This function groups together all the @see annotations
+ : This function groups together all the @see annotations.
  :
  : @param $comment the part of the XQDoc file holding the function annotations.
  : @return the XHTML for the function 'see' annotations.
@@ -1222,7 +1224,7 @@ declare function xqdoc2html:annotations-see($comment) {
 };
 
 (:~
- : This function groups together all the @example annotations
+ : This function groups together all the @example annotations.
  :
  : @param $comment the part of the XQDoc file holding the function annotations.
  : @param $xqdocXhtmlPath location where the resulting Xhtml will be saved on disk.
@@ -1245,7 +1247,7 @@ declare function xqdoc2html:annotations-example($comment, $xqdocXhtmlPath) {
 
 (:~
  : Create the XHTML for all function annotations except these ones:
- : <ul><li>description</li><li>param</li><li>return</li><li>error</li><li>deprecated</li><li>see</li><li>example</li></ul>
+ : <ul><li>description</li><li>param</li><li>return</li><li>error</li><li>deprecated</li><li>see</li><li>example</li></ul>.
  :
  : @param $comment the part of the XQDoc file holding the function annotations.
  : @return the XHTML for the function annotations.
@@ -1318,24 +1320,27 @@ declare function xqdoc2html:description($comment) {
  :
  : @param $xqSrcPath the path to the xq.src folders.
  : @param $moduleUri the module URI.
+ : @param $indexCollector the modules names part of the left menu.
  : @param $functions the node containing the XQDoc XML functions.
  : @return the XHTML for the 'Module Resources'.
  :)
 declare function xqdoc2html:module-resources(
   $xqSrcPath as xs:string, 
   $moduleUri as xs:string,
+  $indexCollector,
   $functions) {
   let $folder := xqdoc2html:get-filename($moduleUri),
       $path := concat(tokenize($xqSrcPath,fn:concat("\",file:path-separator()))[last()],
                       file:path-separator(), $folder)
   return
-    if(file:exists(fn:concat($xqSrcPath,file:path-separator(),$folder,file:path-separator()))) then
-      (<div class="section"><span id="module_resources">Module Resources</span></div>,
-       <ul>
-       <li>The implementation of the external functions can be found <a href="{$path}">here</a>.</li>
-       </ul>)
+    (<div class="section"><span id="module_resources">Module Resources</span></div>,
+     <ul>
+     <li>the XQuery module can be found <a href="modules/{fn:concat($indexCollector/module[@uri=$moduleUri]/@file,".xq")}">here</a>.</li>
+    {if(file:exists(fn:concat($xqSrcPath,file:path-separator(),$folder,file:path-separator()))) then
+       <li>the implementation of the external functions can be found <a href="{$path}">here</a>.</li>
     else
-      ()
+      ()}
+      </ul>)
 };
 
 (:~
@@ -1377,7 +1382,7 @@ declare %private function xqdoc2html:imports(
       for $import in $xqdoc/xqdoc:imports//xqdoc:import[@type = "library"]
       return
         if (exists($indexCollector/module[@uri=$import/xqdoc:uri/text()])) then
-          <li><a href="{$indexCollector/module[@uri=$import/xqdoc:uri/text()]/@file}">{string($import/xqdoc:uri/text())}</a></li>
+          <li><a href="{$indexCollector/module[@uri=$import/xqdoc:uri/text()]/@file}.html">{string($import/xqdoc:uri/text())}</a></li>
         else
           <li>{string($import/xqdoc:uri/text())}</li>          
     }
@@ -1389,7 +1394,7 @@ declare %private function xqdoc2html:imports(
       for $import in $xqdoc/xqdoc:imports//xqdoc:import[@type = "schema"]
       return
         if (exists($schemasCollector/module[@uri=$import/xqdoc:uri/text()])) then
-          <li><a href="{$schemasCollector/module[@uri=$import/xqdoc:uri/text()]/@file}" target="_blank">{string($import/xqdoc:uri/text())}</a></li>
+          <li><a href="{$schemasCollector/module[@uri=$import/xqdoc:uri/text()]/@file}.html" target="_blank">{string($import/xqdoc:uri/text())}</a></li>
         else
           <li>{string($import/xqdoc:uri/text())}</li>  
     }
@@ -1487,7 +1492,9 @@ declare function xqdoc2html:module-function-summary($functions)
       let $name := $function/xqdoc:name/text(),
         $signature := $function/xqdoc:signature/text(),
         $param-number := $function/@arity,
-        $isDeprecated := fn:exists($function/xqdoc:comment/xqdoc:deprecated)
+        $isDeprecated := fn:exists($function/xqdoc:comment/xqdoc:deprecated),
+        $shortDescription := if(not(fn:substring-before(data($function/xqdoc:comment/xqdoc:description),".") = "")) then
+                             fn:concat(fn:substring-before(data($function/xqdoc:comment/xqdoc:description),"."),".") else ""
       order by $name, $param-number 
       return
         let $type := normalize-space(substring-after(substring-before($signature, "function"), "declare")),
@@ -1507,7 +1514,8 @@ declare function xqdoc2html:module-function-summary($functions)
                   <span class="functName"><del><a href="#{$name}-{$param-number}">{$name}</a></del></span>
                 else
                   <span class="functName"><a href="#{$name}-{$param-number}">{$name}</a></span>
-              }{xqdoc2html:add-colors($paramsAndReturn)}</tt>
+              }{xqdoc2html:add-colors($paramsAndReturn)}<br /><span class="padding">{$shortDescription}</span>
+              </tt>
             </td>
           </tr>
     }</table>
@@ -1591,15 +1599,22 @@ declare function xqdoc2html:functions($functions, $xqdocXhtmlPath) {
  : @return the XHTML for the function signature after reformatting was done.
  :)
 declare function xqdoc2html:add-colors($paramsAndReturn as xs:string) {
-  let $toks := fn:tokenize(fn:substring-after($paramsAndReturn,'('),' ')
+  let $toks := fn:tokenize(fn:substring-after(fn:substring-before($paramsAndReturn,')'),'('),"\$")
   return
-  ("(",
-    for $tok in $toks 
+  ("( ",
+    for $tok at $pos in $toks
+    let $param1 := if(contains($tok,"as")) then fn:substring-before($tok," as ")
+                   else if(contains($tok,",")) then fn:substring-before($tok,",")
+                   else if(contains($tok,")")) then fn:substring-before($tok,")")
+                   else $tok
+    let $param2 := fn:substring-after($tok, $param1)
     return
-      if (fn:contains($tok,'$')) then
-        (<span class="funcParam">{$tok}</span>,' ')
+      if(not(fn:string-length($param1)=0)) then
+        (<span class="funcParam">{fn:concat('$',$param1)}</span>,$param2)
       else
-        $tok)
+        ()
+    ,
+    ")")
 };
 
 (:~
@@ -1637,8 +1652,12 @@ declare function xqdoc2html:split-function-signature($signature as xs:string) {
   return (
     $line11,<span class="functName">{$line12}</span>," (&#0010;",
     for $param at $pos in tokenize($params, "\$")
-    let $param1 := fn:substring-before(normalize-space($param)," as ")
-    let $param2 := fn:substring-after(normalize-space($param), $param1)
+    let $nsParam := normalize-space($param)
+    let $param1 := if(contains($nsParam,"as")) then fn:substring-before($nsParam," as ")
+                   else if(contains($nsParam,",")) then fn:substring-before($nsParam,",")
+                   else if(contains($nsParam,")")) then fn:substring-before($nsParam,")")
+                   else $nsParam
+    let $param2 := fn:substring-after($nsParam, $param1)
     where $pos > 1
     return (
       <span class="funcParam">{concat("            $", $param1)}</span>,$param2,"&#0010;"),

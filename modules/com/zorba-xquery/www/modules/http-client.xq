@@ -34,16 +34,11 @@
  :
  : <b>Simple GET Request (retrieving HTML)</b>
  :
- : <code>
- :   <pre>
- :   http:get( "www.example.com" )
- :   </pre>
- : </code>
+ : <pre class="brush: xquery;">http:get( "www.example.com" )</pre>
  : 
  : returns
  :
- : <code>
- :   <pre>
+ :   <pre class="brush: xml;">
  :   &lt;response xmlns="http://expath.org/ns/http-client" status="200" message="OK">
  :     &lt;header name="Content-Type" value="text/html; charset=UTF-8"/>
  :     &lt;header name="Content-Length" value="574"/>
@@ -67,17 +62,14 @@
  :     &lt;/body&gt;
  :   &lt;/html&gt;
  :   </pre>
- : </code>
  :
  : <b>Simple GET Request (retrieving XHTML)</b>
  :
- : <code>
- :   <pre>
+ :   <pre class="brush: xquery;">
  :   declare namespace xhtml="http://www.w3.org/1999/xhtml";
  :
  :   http:get( "www.w3.org" )[2]//xhtml:body
  :   </pre>
- : </code>
  :
  : <p>
  : This example shows how to retrieve an XHTML resource. Note, that the node test
@@ -92,23 +84,19 @@
  : request.
  : </p>
  :
- : <code>
- :   <pre>
+ :   <pre class="brush: xquery;">
  :   http:post( "...", "Hello World" )
  :   </pre>
- : </code>
  :
  : The response of this request can look as follows:
  : 
- : <pre>
- :   <code>
+ :   <pre class="brush: xml;">
  :   &lt;http:response status="200" message="Ok">
  :      &lt;http:header name="Content-Type" value="text/html"/>
  :      &lt;http:header name="Server" value="Apache ..."/>
  :      ...
  :      &lt;http:body content-type="text/html"/>
  :   &lt;/http:response>
- :   </code>
  : </pre>
  :
  : @author Markus Pilman

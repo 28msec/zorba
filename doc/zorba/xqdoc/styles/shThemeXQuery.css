@@ -1,0 +1,148 @@
+/**
+ * XQuery Brush by Rob Whitby
+ * http://www.xqueryhacker.com
+ * http://www.twitter.com/XQueryHacker
+ *
+ * This file is an extension to SyntaxHighlighter by Alex Gorbatchev
+ * http://alexgorbatchev.com/
+ *
+ * @license
+ * XQuery Brush for SyntaxHighlighter is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * XQuery Brush for SyntaxHighlighter is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * See <http://www.gnu.org/copyleft/lesser.html>.
+ */
+
+.syntaxhighlighter
+{
+	background-color: #fff !important;
+}
+
+.syntaxhighlighter, 
+.syntaxhighlighter div, 
+.syntaxhighlighter code, 
+.syntaxhighlighter table, 
+.syntaxhighlighter table td, 
+.syntaxhighlighter table tr, 
+.syntaxhighlighter table tbody {
+	font-family: "Courier New","Consolas","Bitstream Vera Sans Mono",Courier,monospace !important;
+	font-size: 15px !important;
+}
+
+/* Highlighed line number */
+.syntaxhighlighter .line.highlighted .number
+{
+	color: black !important;
+}
+
+/* Highlighed line */
+.syntaxhighlighter .line.highlighted.alt1,
+.syntaxhighlighter .line.highlighted.alt2
+{
+	background-color: #e0e0e0 !important;
+}
+
+/* Gutter line numbers */
+.syntaxhighlighter .line .number
+{
+	color: #afafaf !important;
+}
+
+/* Add border to the lines */
+.syntaxhighlighter .line .content
+{
+	border-left: 3px solid #6CE26C !important;
+	color: #000 !important;
+}
+
+.syntaxhighlighter.printing .line .content 
+{
+	border: 0 !important;
+}
+
+/* First line */
+.syntaxhighlighter .line.alt1
+{
+	background-color: #fff !important;
+}
+
+/* Second line */
+.syntaxhighlighter .line.alt2
+{
+	background-color: #F8F8F8 !important;
+}
+
+.syntaxhighlighter .toolbar
+{
+	background-color: #F8F8F8 !important;
+	border: #E7E5DC solid 1px !important;
+}
+
+.syntaxhighlighter .toolbar a
+{
+	color: #a0a0a0 !important;
+}
+
+.syntaxhighlighter .toolbar a:hover
+{
+	color: red !important;
+}
+
+/************************************
+ * Actual syntax highlighter colors.
+ ************************************/
+.syntaxhighlighter .plain,
+.syntaxhighlighter .plain a
+{ 
+	color: #000 !important;
+}
+
+.syntaxhighlighter .comments,
+.syntaxhighlighter .comments a
+{ 
+	color: #666 !important;
+}
+
+.syntaxhighlighter .strings,
+.syntaxhighlighter .strings a
+{
+	color: #090 !important; 
+}
+
+.syntaxhighlighter .keywords,
+.syntaxhighlighter .keywords a
+{ 
+	color: #00c !important; 
+}
+
+.syntaxhighlighter .variables,
+.syntaxhighlighter .variables a
+{ 
+	color: #900 !important; 
+}
+
+.syntaxhighlighter .functions,
+.syntaxhighlighter .functions a
+{ 
+	color: #f00 !important; 
+}
+
+.syntaxhighlighter .datatypes,
+.syntaxhighlighter .datatypes a
+{ 
+	color: #06c !important; 
+}
+
+.syntaxhighlighter .xmlelement,
+.syntaxhighlighter .xmlelement a
+{ 
+	color: #c0c !important; 
+}
+

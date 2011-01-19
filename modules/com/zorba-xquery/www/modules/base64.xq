@@ -24,7 +24,7 @@ module namespace base64 = "http://www.zorba-xquery.com/modules/base64";
 
 
 (:~
- : Decode a xs:base64Binary
+ : Decode a xs:base64Binary.
  :
  : @param $base64 The xs:base64Binary item to decode
  : @return the decoded xs:base64Binary item as string
@@ -32,7 +32,7 @@ module namespace base64 = "http://www.zorba-xquery.com/modules/base64";
 declare function base64:decode($base64 as xs:base64Binary) as xs:string external;
 
 (:~
- : Encode a xs:string as xs:base64Binary
+ : Encode a xs:string as xs:base64Binary.
  :
  : @param $string The item whose string-value should be encoded
  : @return the base64 encoded string-value of the item parameter

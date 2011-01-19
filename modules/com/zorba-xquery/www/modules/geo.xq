@@ -26,75 +26,75 @@
  : Possible GMLSF geometric structures are:
  : <dl>
  :  <dt><b>Point</b></dt>
- :  <dd>&lt;gml:Point [srsDimension='2|3']?&gt;<br/>
- :    &#160;&#160;&lt;gml:pos [srsDimension='2|3']?&gt;double_x double_y &lt;/gml:pos&gt;<br/>
- :  &lt;/gml:Point&gt;</dd>
+ :  <pre class="brush: xml;">&lt;gml:Point [srsDimension='2|3']?&gt;
+ :    &#160;&#160;&lt;gml:pos [srsDimension='2|3']?&gt;double_x double_y &lt;/gml:pos&gt;
+ :  &lt;/gml:Point&gt;</pre>
  :  <dt><b>LineString</b></dt>
- :  <dd>&lt;gml:LineString [srsDimension='2|3']?&gt;<br/>
- :    &#160;&#160;&lt;gml:posList [srsDimension='2|3']?&gt; double_x1 double_y1 double_x2 double_y2 ... &lt;/gml:posList&gt;<br/>
- :    &lt;/gml:LineString&gt;</dd>
+ :  <pre class="brush: xml;">&lt;gml:LineString [srsDimension='2|3']?&gt;
+ :    &#160;&#160;&lt;gml:posList [srsDimension='2|3']?&gt; double_x1 double_y1 double_x2 double_y2 ... &lt;/gml:posList&gt;
+ :    &lt;/gml:LineString&gt;</pre>
  :  <dt><b>Curve</b></dt>
- :  <dd>&lt;gml:Curve [srsDimension='2|3']?&gt;<br/>
- :    &lt;gml:segments&gt; <br/>
- :    [&lt;gml:LineStringSegment interpolation="linear" [srsDimension='2|3']?&gt;<br/>
- :     &#160;&#160;&lt;gml:posList [srsDimension='2|3']?&gt; double_x1 double_y1 double_x2 double_y2 ... &lt;/gml:posList&gt;<br/>
- :     &lt;gml:LineStringSegment&gt;]*<br/>
- :    &lt;/gml:segments&gt;<br/>
+ :  <pre class="brush: xml;">&lt;gml:Curve [srsDimension='2|3']?&gt;
+ :    &lt;gml:segments&gt;
+ :    [&lt;gml:LineStringSegment interpolation="linear" [srsDimension='2|3']?&gt;
+ :     &#160;&#160;&lt;gml:posList [srsDimension='2|3']?&gt; double_x1 double_y1 double_x2 double_y2 ... &lt;/gml:posList&gt;
+ :     &lt;gml:LineStringSegment&gt;]*
+ :    &lt;/gml:segments&gt;
  :    &lt;/gml:Curve&gt;
- :   </dd>
+ :   </pre>
  :  <dt><b>LinearRing</b></dt>
- :  <dd>&lt;gml:LinearRing [srsDimension='2|3']?&gt;<br/>
- :   &#160;&#160;&lt;gml:posList [srsDimension='2|3']?&gt; double_x1 double_y1 double_x2 double_y2 ... &lt;/gml:posList&gt;<br/>
- :   &lt;/gml:LinearRing&gt;</dd>
+ :  <pre class="brush: xml;">&lt;gml:LinearRing [srsDimension='2|3']?&gt;
+ :   &#160;&#160;&lt;gml:posList [srsDimension='2|3']?&gt; double_x1 double_y1 double_x2 double_y2 ... &lt;/gml:posList&gt;
+ :   &lt;/gml:LinearRing&gt;</pre>
  :  <dt><b>Surface</b></dt>
- :  <dd>&lt;gml:Surface [srsDimension='2|3']?&gt;<br/>
- :    &lt;gml:patches&gt; <br/>
- :    [&lt;gml:PolygonPatch [srsDimension='2|3']?&gt;<br/>
- :     &#160;&#160;&lt;gml:exterior&gt;<br/>
- :     &#160;&#160;&#160;&#160;&lt;gml:LinearRing&gt; ... &lt;/gml:LinearRing&gt;<br/>
- :     &#160;&#160;&lt;/gml:exterior&gt;<br/>
- :     &#160;&#160;[&lt;gml:interior&gt;<br/>
- :     &#160;&#160;&#160;&#160;&lt;gml:LinearRing&gt; ... &lt;/gml:LinearRing&gt;<br/>
- :     &#160;&#160;&lt;/gml:interior&gt;]*<br/>
- :     &lt;/gml:PolygonPatch&gt;]*<br/>
- :    &lt;/gml:patches&gt;<br/>
+ :  <pre class="brush: xml;">&lt;gml:Surface [srsDimension='2|3']?&gt;
+ :    &lt;gml:patches&gt;
+ :    [&lt;gml:PolygonPatch [srsDimension='2|3']?&gt;
+ :     &#160;&#160;&lt;gml:exterior&gt;
+ :     &#160;&#160;&#160;&#160;&lt;gml:LinearRing&gt; ... &lt;/gml:LinearRing&gt;
+ :     &#160;&#160;&lt;/gml:exterior&gt;
+ :     &#160;&#160;[&lt;gml:interior&gt;
+ :     &#160;&#160;&#160;&#160;&lt;gml:LinearRing&gt; ... &lt;/gml:LinearRing&gt;
+ :     &#160;&#160;&lt;/gml:interior&gt;]*
+ :     &lt;/gml:PolygonPatch&gt;]*
+ :    &lt;/gml:patches&gt;
  :    &lt;/gml:Surface&gt;
- :  </dd>
+ :  </pre>
  :  <dt><b>Polygon</b></dt>
- :  <dd>&lt;gml:Polygon [srsDimension='2|3']?&gt;<br/>
- :     &#160;&#160;&lt;gml:exterior&gt;<br/>
- :     &#160;&#160;&#160;&#160;&lt;gml:LinearRing&gt; ... &lt;/gml:LinearRing&gt;<br/>
- :     &#160;&#160;&lt;/gml:exterior&gt;<br/>
- :     &#160;&#160;[&lt;gml:interior&gt;<br/>
- :     &#160;&#160;&#160;&#160;&lt;gml:LinearRing&gt; ... &lt;/gml:LinearRing&gt;<br/>
- :     &#160;&#160;&lt;/gml:interior&gt;]*<br/>
+ :  <pre class="brush: xml;">&lt;gml:Polygon [srsDimension='2|3']?&gt;
+ :     &#160;&#160;&lt;gml:exterior&gt;
+ :     &#160;&#160;&#160;&#160;&lt;gml:LinearRing&gt; ... &lt;/gml:LinearRing&gt;
+ :     &#160;&#160;&lt;/gml:exterior&gt;
+ :     &#160;&#160;[&lt;gml:interior&gt;
+ :     &#160;&#160;&#160;&#160;&lt;gml:LinearRing&gt; ... &lt;/gml:LinearRing&gt;
+ :     &#160;&#160;&lt;/gml:interior&gt;]*
  :    &lt;/gml:Polygon&gt;
- :  </dd>
+ :  </pre>
  :  <dt><b>MultiPoint</b></dt>
- :  <dd>&lt;gml:MultiPoint [srsDimension='2|3']?&gt;<br/>
- :     &#160;&#160;[&lt;gml:Point&gt; ... &lt;/gml:Point&gt;]*<br/>
+ :  <pre class="brush: xml;">&lt;gml:MultiPoint [srsDimension='2|3']?&gt;
+ :     &#160;&#160;[&lt;gml:Point&gt; ... &lt;/gml:Point&gt;]*
  :    &lt;/gml:MultiPoint&gt;
- :  </dd>
+ :  </pre>
  :  <dt><b>MultiCurve</b></dt>
- :  <dd>&lt;gml:MultiCurve [srsDimension='2|3']?&gt;<br/>
- :     &#160;&#160;[&lt;gml:LineString&gt; ... &lt;/gml:LineString&gt;]*<br/>
+ :  <pre class="brush: xml;">&lt;gml:MultiCurve [srsDimension='2|3']?&gt;
+ :     &#160;&#160;[&lt;gml:LineString&gt; ... &lt;/gml:LineString&gt;]*
  :    &lt;/gml:MultiCurve&gt;
- :  </dd>
+ :  </pre>
  :  <dt><b>MultiSurface</b></dt>
- :  <dd>&lt;gml:MultiSurface [srsDimension='2|3']?&gt;<br/>
- :     &#160;&#160;[&lt;gml:Polygon&gt; ... &lt;/gml:Polygon&gt;]*<br/>
+ :  <pre class="brush: xml;">&lt;gml:MultiSurface [srsDimension='2|3']?&gt;
+ :     &#160;&#160;[&lt;gml:Polygon&gt; ... &lt;/gml:Polygon&gt;]*
  :    &lt;/gml:MultiSurface&gt;
- :  </dd>
+ :  </pre>
  :  <dt><b>MultiGeometry (this is from GML 3 schema)</b></dt>
- :  <dd>&lt;gml:MultiGeometry [srsDimension='2|3']?&gt;<br/>
- :     &#160;&#160;[&lt;gml:geometryMember&gt;<br/>
- :          &#160;&#160;&#160;&#160; ...one geometry...<br/>
- :     &#160;&#160;&lt;/gml:geometryMember&gt;]*<br/>
- :     &#160;&#160;[&lt;gml:geometryMembers&gt;<br/>
- :          &#160;&#160;&#160;&#160; ...a list of geometries...<br/>
- :     &#160;&#160;&lt;/gml:geometryMembers&gt;]?<br/>
+ :  <pre class="brush: xml;">&lt;gml:MultiGeometry [srsDimension='2|3']?&gt;
+ :     &#160;&#160;[&lt;gml:geometryMember&gt;
+ :          &#160;&#160;&#160;&#160; ...one geometry...
+ :     &#160;&#160;&lt;/gml:geometryMember&gt;]*
+ :     &#160;&#160;[&lt;gml:geometryMembers&gt;
+ :          &#160;&#160;&#160;&#160; ...a list of geometries...
+ :     &#160;&#160;&lt;/gml:geometryMembers&gt;]?
  :    &lt;/gml:MultiGeometry&gt;
- :  </dd>
+ :  </pre>
  : </dl><br/><br/>
  : Note: When using gml:posList, it is possible to replace this element with a list of gml:pos.<br/>
  : Note: XLink referencing is not supported.<br/>
@@ -1129,8 +1129,7 @@ declare function zorba-geo:is-ring( $line as element()) as xs:boolean external;
 declare function zorba-geo:num-points( $line as element()) as xs:unsignedInt external;
 
 (:~
- : Return the n-th Point in a line
- : <br/>
+ : Return the n-th Point in a line.
  :
  : @param $line node of one of GMLSF objects: gml:LineString, gml:LinearRing, gml:Curve,
  :    gml:MultiCurve

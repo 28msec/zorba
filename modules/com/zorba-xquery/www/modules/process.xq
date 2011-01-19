@@ -17,9 +17,11 @@
 (:~
  : Module provides funtions to execute a command.
  : Examples:
- :    import module namespace proc = "http://www.zorba-xquery.com/modules/process";
- :    proc:exec("ls"),
- :    proc:exec("md5sum", "file.txt"),
+ :<pre class="brush: xquery;">
+ :  import module namespace proc = "http://www.zorba-xquery.com/modules/process";
+ :  proc:exec("ls"),
+ :  proc:exec("md5sum", "file.txt"),
+ :</pre>
  :
  : @author Cezar Andrei
  :
@@ -27,7 +29,7 @@
 module namespace process = "http://www.zorba-xquery.com/modules/process";
 
 (:~
- : Simple process execution
+ : Simple process execution.
  : @param $cmd   shell commad to be executed (without arguments)
  : @return       the result of the execution
  : @error        An error is thrown if process canot be executed.
@@ -37,7 +39,7 @@ declare sequential function process:exec (
     ) as node() external;
 
 (:~
- :  Process execution with arguments
+ :  Process execution with arguments.
  :  @param $cmd   shell commad to be executed
  :  @param $args  arguments for cmd
  :  @return       the result of the execution
