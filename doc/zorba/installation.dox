@@ -46,4 +46,13 @@
 
   In order to make the installation process easier, we also provide graphical installers for 
   Windows and Mac OS X.
+  
+\subsection UbuntuInstallation Additional notes for Ubuntu systems installations
+  
+  The recommended way of installing the Zorba library on an Ubuntu system is to add the lib directory as a .conf file in /etc/ld.so.conf and 
+  then run "sudo ldconfig". For a personal (non-root non-system wide) installation, employing LD_LIBRARY_PATH is the only valid approach, but
+  it needs to be done in the shell's .rc file, not in the .profile file. Additional information can be found here: 
+  <a href="https://edge.launchpad.net/ubuntu/+bug/366728">LD_LIBRARY_PATH not loading from .profile nor /etc/environment</a>.  
+
+
 */
