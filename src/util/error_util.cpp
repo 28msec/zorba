@@ -60,12 +60,12 @@ zstring get_os_err_string( char const *what, os_code code ) {
   auto_vec<WCHAR> const werr( new WCHAR[ werr_size ] );
   if ( what ) {
     StringCchPrintfW(
-      werr.get(), werr_size, TEXT("%hs failed (error %d): %ls"),
+      werr.get(), werr_size, L"%hs failed (error %d): %ls",
       what, code, wmsg
     );
   } else {
     StringCchPrintfW(
-      werr.get(), werr_size, TEXT("error %d: %ls"), code, wmsg
+      werr.get(), werr_size, L"error %d: %ls", code, wmsg
     );
   }
   LocalFree( wmsg );
