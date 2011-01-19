@@ -199,13 +199,16 @@ declare variable $zorba-csv:errWrongParam as xs:QName := fn:QName($zorba-csv:csv
 declare function zorba-csv:parse($csv as xs:string,
                                  $options as element(csv-options:options)?) as element()*
 {
+  let $validated-options :=
   if(empty($options)) then
-    zorba-csv:parse-internal($csv, $options)
+    $options
   else
   if(zorba-schema:is-validated($options)) then
-    zorba-csv:parse-internal($csv, $options)
+    $options
   else
-    zorba-csv:parse-internal($csv, validate{$options})
+    validate{$options}
+  return
+    zorba-csv:parse-internal($csv, $validated-options)
 };
                                  
 declare %private function zorba-csv:parse-internal($csv as xs:string,
@@ -329,13 +332,16 @@ declare %private function zorba-csv:parse-internal($csv as xs:string,
 declare function zorba-csv:serialize($xml as element()*,
 									$options as element(csv-options:options)?) as xs:string
 {
+  let $validated-options :=
   if(empty($options)) then
-    zorba-csv:serialize-internal($xml, $options)
+    $options
   else
   if(zorba-schema:is-validated($options)) then
-    zorba-csv:serialize-internal($xml, $options)
+    $options
   else
-    zorba-csv:serialize-internal($xml, validate{$options})
+    validate{$options}
+  return
+    zorba-csv:serialize-internal($xml, $validated-options)
 };
 																		
 declare %private function zorba-csv:serialize-internal($xml as element()*,
