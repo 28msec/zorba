@@ -194,6 +194,7 @@ void fetch( char const *uri, iostream &result ) {
 }
 
 void fetch_to_path_impl( char const *uri, char *path, bool *is_temp ) {
+#ifdef ZORBA_WITH_FILE_ACCESS
   zstring zpath;
   bool temp = false;
   switch ( get_scheme( uri ) ) {
@@ -212,6 +213,9 @@ void fetch_to_path_impl( char const *uri, char *path, bool *is_temp ) {
   path[ MAX_PATH - 1 ] = '\0';
   if ( is_temp )
     *is_temp = temp;
+#else
+  ZORBA_ERROR( XQP0017_FILE_ACCESS_DISABLED );
+#endif /* ZORBA_WITH_FILE_ACCESS */
 }
 
 scheme get_scheme( char const *uri ) {
