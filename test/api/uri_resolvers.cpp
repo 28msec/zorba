@@ -49,7 +49,7 @@ class MyFullTextURIResolver: public FullTextURIResolver
       std::auto_ptr<MyFullTextURIResolverResult> lResult(new MyFullTextURIResolverResult());
       if(aURI.getStringValue() == "http://bstore1.example.com/UsabilityThesaurus.xml")
       {
-        lResult->theFullText = "##default";
+        lResult->theFullText = "default";
         lResult->setError(URIResolverResult::UR_NOERROR);
       } 
       return std::auto_ptr<FullTextURIResolverResult>(lResult.release());
@@ -63,7 +63,7 @@ thesaurus_resolver_example_1(Zorba* aZorba)
 
   MyFullTextURIResolver lResolver;
 
-  lContext->addFullTextURIResolver(&lResolver);
+  lContext->addThesaurusURIResolver(&lResolver);
 
   try {
     std::ostringstream lStr;

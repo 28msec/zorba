@@ -65,6 +65,7 @@ const char *copyright_str =
 
 #define PATH_SEP (zorba::filesystem_path::get_path_separator ())
 
+ZorbaCMDFullTextURIResolver theStopWordsResolver;
 ZorbaCMDFullTextURIResolver theThesaurusResolver;
 
 bool
@@ -139,12 +140,20 @@ populateStaticContext(
     }
   }
   {
-    ZorbaCMDProperties::Thesaurus_t::const_iterator lIter = aProperties.thesaurusBegin();
-    ZorbaCMDProperties::Thesaurus_t::const_iterator end = aProperties.thesaurusEnd();
+    ZorbaCMDProperties::FullText_t::const_iterator lIter = aProperties.stopWordsBegin();
+    ZorbaCMDProperties::FullText_t::const_iterator end = aProperties.stopWordsEnd();
+    for (; lIter != end; ++lIter) {
+      theStopWordsResolver.add_mapping(lIter->uri, lIter->value);
+    }
+    aStaticContext->addStopWordsURIResolver(&theStopWordsResolver);
+  }
+  {
+    ZorbaCMDProperties::FullText_t::const_iterator lIter = aProperties.thesaurusBegin();
+    ZorbaCMDProperties::FullText_t::const_iterator end = aProperties.thesaurusEnd();
     for (; lIter != end; ++lIter) {
       theThesaurusResolver.add_mapping(lIter->uri, lIter->value);
     }
-    aStaticContext->addFullTextURIResolver(&theThesaurusResolver);
+    aStaticContext->addThesaurusURIResolver(&theThesaurusResolver);
   }
   return true;
 }

@@ -59,6 +59,7 @@ private:
   StandardModuleURIResolver   * m_module_resolver;
   StandardSchemaURIResolver   * m_schema_resolver;
 #ifndef ZORBA_NO_FULL_TEXT
+  StandardFullTextURIResolver* m_stop_words_resolver;
   StandardFullTextURIResolver* m_thesaurus_resolver;
 #endif
 
@@ -107,7 +108,8 @@ public:
   StandardSchemaURIResolver* getSchemaURIResolver() const { return m_schema_resolver; }
 
 #ifndef ZORBA_NO_FULL_TEXT
-  StandardFullTextURIResolver* getFullTextURIResolver() const { return m_thesaurus_resolver; }
+  StandardFullTextURIResolver* getStopWordsURIResolver() const { return m_stop_words_resolver; }
+  StandardFullTextURIResolver* getThesaurusURIResolver() const { return m_thesaurus_resolver; }
 #endif
 
 #ifdef ZORBA_XQUERYX

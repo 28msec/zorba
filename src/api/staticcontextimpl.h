@@ -67,7 +67,9 @@ protected:
            SchemaURIResolverWrapper*> theSchemaWrappers;
 #ifndef ZORBA_NO_FULL_TEXT
   std::map<FullTextURIResolver*,
-           FullTextURIResolverWrapper*> theFullTextWrappers;
+           FullTextURIResolverWrapper*> theStopWordsWrappers;
+  std::map<FullTextURIResolver*,
+           FullTextURIResolverWrapper*> theThesaurusWrappers;
 #endif
 
 private:
@@ -200,13 +202,22 @@ public:
 
 #ifndef ZORBA_NO_FULL_TEXT
   virtual void
-  addFullTextURIResolver(FullTextURIResolver* aFullTextUriResolver);
+  addThesaurusURIResolver(FullTextURIResolver* aFullTextUriResolver);
 
   virtual void
-  removeFullTextURIResolver(FullTextURIResolver* aFullTextUriResolver);
+  removeThesaurusURIResolver(FullTextURIResolver* aFullTextUriResolver);
 
   virtual std::vector<FullTextURIResolver*>
-  getFullTextURIResolvers() const;
+  getThesaurusURIResolvers() const;
+
+  virtual void
+  addStopWordsURIResolver(FullTextURIResolver* aFullTextUriResolver);
+
+  virtual void
+  removeStopWordsURIResolver(FullTextURIResolver* aFullTextUriResolver);
+
+  virtual std::vector<FullTextURIResolver*>
+  getStopWordsURIResolvers() const;
 #endif /* ZORBA_NO_FULL_TEXT */
 
   virtual void

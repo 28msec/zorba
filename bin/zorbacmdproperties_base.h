@@ -71,6 +71,7 @@ protected:
   std::string theModulePath;
   std::vector<std::string> theOption;
   bool theTrailingNl;
+  std::vector<std::string> theStopWords;
   std::vector<std::string> theThesaurus;
 
   void initialize () {

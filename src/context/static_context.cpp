@@ -1368,16 +1368,35 @@ void static_context::remove_schema_uri_resolver(
 /*******************************************************************************
 
 ********************************************************************************/
+void static_context::add_stop_words_uri_resolver(
+    InternalFullTextURIResolver* aFullTextResolver)
+{
+  theStopWordsResolvers.push_back(aFullTextResolver);
+}
+
 void static_context::add_thesaurus_uri_resolver(
     InternalFullTextURIResolver* aFullTextResolver)
 {
-  theFullTextResolvers.push_back(aFullTextResolver);
+  theThesaurusResolvers.push_back(aFullTextResolver);
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
+void static_context::get_stop_words_uri_resolvers(
+    std::vector<InternalFullTextURIResolver*>& aResolvers) const
+{
+  if (theParent != NULL)
+  {
+    static_cast<static_context*>(theParent)->get_stop_words_uri_resolvers(aResolvers);
+  }
+
+  aResolvers.insert(aResolvers.end(),
+                    theStopWordsResolvers.begin(),
+                    theStopWordsResolvers.end());
+}
+
 void static_context::get_thesaurus_uri_resolvers(
     std::vector<InternalFullTextURIResolver*>& aResolvers) const
 {
@@ -1387,28 +1406,42 @@ void static_context::get_thesaurus_uri_resolvers(
   }
 
   aResolvers.insert(aResolvers.end(),
-                    theFullTextResolvers.begin(),
-                    theFullTextResolvers.end());
+                    theThesaurusResolvers.begin(),
+                    theThesaurusResolvers.end());
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void static_context::remove_thesaurus_uri_resolver(
+void static_context::remove_stop_words_uri_resolver(
     InternalFullTextURIResolver* aResolver)
 {
   std::vector<InternalFullTextURIResolver*>::iterator ite;
-  for (ite = theFullTextResolvers.begin(); ite != theFullTextResolvers.end(); ++ite)
+  for (ite = theStopWordsResolvers.begin(); ite != theStopWordsResolvers.end(); ++ite)
   {
     if (aResolver == *ite)
     {
-      theFullTextResolvers.erase(ite);
+      theStopWordsResolvers.erase(ite);
       return; // no duplicates in the vector
     }
   }
 }
-#endif
+
+void static_context::remove_thesaurus_uri_resolver(
+    InternalFullTextURIResolver* aResolver)
+{
+  std::vector<InternalFullTextURIResolver*>::iterator ite;
+  for (ite = theThesaurusResolvers.begin(); ite != theThesaurusResolvers.end(); ++ite)
+  {
+    if (aResolver == *ite)
+    {
+      theThesaurusResolvers.erase(ite);
+      return; // no duplicates in the vector
+    }
+  }
+}
+#endif /* ZORBA_NO_FULL_TEXT */
 
 /*******************************************************************************
 

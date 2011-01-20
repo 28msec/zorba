@@ -477,7 +477,8 @@ protected:
   std::vector<InternalSchemaURIResolver*> theSchemaResolvers;
 
 #ifndef ZORBA_NO_FULL_TEXT
-  std::vector<InternalFullTextURIResolver*> theFullTextResolvers;
+  std::vector<InternalFullTextURIResolver*> theStopWordsResolvers;
+  std::vector<InternalFullTextURIResolver*> theThesaurusResolvers;
 #endif
 
   std::vector<InternalModuleURIResolver*> theModuleResolvers;
@@ -640,6 +641,12 @@ public:
   void remove_schema_uri_resolver(InternalSchemaURIResolver*);
 
 #ifndef ZORBA_NO_FULL_TEXT
+  void add_stop_words_uri_resolver(InternalFullTextURIResolver*);
+
+  void get_stop_words_uri_resolvers(std::vector<InternalFullTextURIResolver*>& resolvers) const;
+
+  void remove_stop_words_uri_resolver(InternalFullTextURIResolver*);
+
   void add_thesaurus_uri_resolver(InternalFullTextURIResolver*);
 
   void get_thesaurus_uri_resolvers(std::vector<InternalFullTextURIResolver*>& resolvers) const;

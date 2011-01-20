@@ -383,11 +383,17 @@ namespace zorba {
 
 #ifndef ZORBA_NO_FULL_TEXT
       virtual void
-      addFullTextURIResolver(FullTextURIResolver* aFullTextUriResolver) = 0;
+      addStopWordsURIResolver(FullTextURIResolver* aFullTextUriResolver) = 0;
 
       virtual std::vector<FullTextURIResolver*>
-      getFullTextURIResolvers() const = 0;
-#endif
+      getStopWordsURIResolvers() const = 0;
+
+      virtual void
+      addThesaurusURIResolver(FullTextURIResolver* aFullTextUriResolver) = 0;
+
+      virtual std::vector<FullTextURIResolver*>
+      getThesaurusURIResolvers() const = 0;
+#endif /* ZORBA_NO_FULL_TEXT */
 
       virtual void
       addModuleURIResolver(ModuleURIResolver* aModuleUriResolver) = 0;

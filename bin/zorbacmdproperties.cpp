@@ -100,6 +100,20 @@ std::string ZorbaCMDProperties::check_args () {
     lOption.value = lValue;
     theStaticContextOptions.push_back(lOption);
   }
+  for (std::vector<std::string>::const_iterator lIter = theStopWords.begin();
+       lIter != theStopWords.end(); ++lIter) {
+    size_t lEQual = lIter->find(":=");
+    if (lEQual == std::string::npos)
+      return "Stop-words mapping must be of the form URI:=value";
+
+    std::string lURI   = lIter->substr(0, lEQual);
+    std::string lValue = lIter->substr(lEQual + 2);
+
+    FullTextMapping lMapping;
+    lMapping.uri   = lURI;
+    lMapping.value = lValue;
+    theStopWordsMapping.push_back(lMapping);
+  }
   for (std::vector<std::string>::const_iterator lIter = theThesaurus.begin();
        lIter != theThesaurus.end(); ++lIter) {
     size_t lEQual = lIter->find(":=");
@@ -109,7 +123,7 @@ std::string ZorbaCMDProperties::check_args () {
     std::string lURI   = lIter->substr(0, lEQual);
     std::string lValue = lIter->substr(lEQual + 2);
 
-    ThesaurusMapping lMapping;
+    FullTextMapping lMapping;
     lMapping.uri   = lURI;
     lMapping.value = lValue;
     theThesaurusMapping.push_back(lMapping);
