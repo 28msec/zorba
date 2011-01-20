@@ -164,21 +164,33 @@ bool is_absolute( StringType const &path ) {
  */
 zstring get_normalized_path( char const *path, char const *base = 0 );
 
-template<class StringType> inline
-zstring get_normalized_path( StringType const &path,
-                             StringType const &base = "" ) {
+/**
+ * Gets the normalized path of the given path.
+ *
+ * @tparam PathStringType The path's string type.
+ * @tparam BaseStringType The base's string type.
+ * @param path The path to normalize.
+ * @param base The base path, if any.
+ * @return Returns the normalized path.
+ */
+template<class PathStringType,class BaseStringType> inline
+zstring get_normalized_path( PathStringType const &path,
+                             BaseStringType const &base = "" ) {
   return get_normalized_path( path.c_str(), base.c_str() );
 }
 
 /**
  * Normalizes the given path.
  *
+ * @tparam PathStringType The path's string type.
+ * @tparam BaseStringType The base's string type.
  * @param path The path to normalize.
  * @param base The base path, if any.
  * @return Returns the normalized path.
  */
-inline void normalize_path( zstring &path, char const *base = 0 ) {
-  path = get_normalized_path( path.c_str(), base );
+template<class PathStringType,class BaseStringType> inline
+void normalize_path( PathStringType &path, BaseStringType const &base = "" ) {
+  path = get_normalized_path( path, base );
 }
 
 ////////// Path manipulation //////////////////////////////////////////////////
