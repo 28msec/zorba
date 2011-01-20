@@ -251,7 +251,7 @@ inline size_type length( StringType const &s ) {
  * @param i An iterator pointing to the first byte of a UTF-8 byte sequence
  * comprising a Unicode character.  The iterator is advanced by the number of
  * bytes comprising the UTF-8 byte sequence.
- * @param throw_exception If true, the XQP0034 is thrown, otherwise not. The
+ * @param throw_exception If true, the FOCH0001 is thrown, otherwise not. The
  * default value is true.
  * @return Returns the Unicode code-point of the next character.
  * @throws XQP0034_ILLEGAL_UTF8_BYTE if an illegal UTF-8 byte is encountered

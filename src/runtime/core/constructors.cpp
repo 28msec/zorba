@@ -444,6 +444,12 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
     result->finalizeNode();
   }
+  catch (error::ZorbaError& e)
+  {
+    result = NULL;
+    path.pop();
+    ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+  }
   catch (...)
   {
     result = NULL;
@@ -1288,12 +1294,12 @@ bool NameCastIterator::nextImpl(store::Item_t& result, PlanState& planState) con
       zstring name = result->getStringValue();
       if (name.find(":") != zstring::npos && name.substr(0, name.find(":")) == "xmlns")
       {
-        // this needs to be checked and thrown here as the optimizer 
+        // this needs to be checked and thrown here as the optimizer
         // might try to fold a const expression and would return a different error code
         if (theIsAttrName)
           ZORBA_ERROR_LOC(XQDY0044, loc);
         else
-          ZORBA_ERROR_LOC(XQDY0096, loc);  
+          ZORBA_ERROR_LOC(XQDY0096, loc);
       }
       else
         // the returned error codes are wrong for name casting => they must be changed
