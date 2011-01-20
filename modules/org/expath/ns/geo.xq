@@ -15,9 +15,8 @@
 :)
 
 (:~
- : Function library providing geo processing using Simple Features api over
- : GMLSF format. <br/>
- : It uses the GEOS external library, license LGPL. Version 3.2.2 or above is required.<br/>
+ : Function library providing geo processing using Simple Features api API GMLSF format. <br/>
+ : It uses the GEOS third party library, license LGPL. Version 3.2.2 or above is required.<br/>
  : <br/>
  : The data format supported is GML SF profile 0/1.<br/>
  : This is a subset of GML, and covers the basic geometries of Point, Line and Surface and collections of those.<br/>
@@ -143,6 +142,11 @@
  :  - 0, 1, 2 gives the expected dimension of the result (point, curve, surface)<br/>
  : <br/><br/>
  :
+ : How to build geo module:<br/>
+ : - You need GEOS library from here http://trac.osgeo.org/geos/ . Make sure it is version 3.2.2, or better 3.3.0 or above.
+ : - After installing or compiling GEOS, on Windows you need to set the cmake variables GEOS_INCLUDE_DIR and GEOS_LIBRARY.
+ : On Linux the variables are set automatically by cmake.
+ : 
  : @author Daniel Turcanu
  :
  : @see http://expath.org/spec/geo
