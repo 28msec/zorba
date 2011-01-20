@@ -244,6 +244,8 @@ namespace zorba
       (BODY* aBody,
        String& aMessage)
   {
+    
+    String lMessage;
     // special case for encoding of base64 which needs a new line after 64 characters
     if (aBody->encoding == ENCBASE64) {
       std::stringstream lInStream;
@@ -253,26 +255,22 @@ namespace zorba
       char next;
       int counter = 0;
       while (lInStream >> next) {
-        if (counter == 64) {
+        if (++counter == 64) {
           lOutStream << "\r\n";
-          counter = 0;
+          counter = 1;
         }
-        ++counter;
         lOutStream << next;
       }  
-      std::string lMessage = lOutStream.str(); 
-      size_t lLen = strlen(lMessage.c_str()) + 2;
-      aBody->contents.text.size = lLen;
-      aBody->contents.text.data = (unsigned char *) fs_get (lLen);   //message body
-      sprintf ((char*)aBody->contents.text.data,"%s\015\012", const_cast<char*>(lMessage.c_str()));
+      lMessage = lOutStream.str(); 
+    } else {  
+      lMessage = aMessage;
+    }  
+    size_t lLen = strlen(lMessage.c_str()) + 2;
+    aBody->contents.text.size = lLen;
+    aBody->contents.text.data = (unsigned char *) fs_get (lLen);   //message body
+    sprintf ((char*)aBody->contents.text.data,"%s\015\012", const_cast<char*>(lMessage.c_str()));
     
 
-    } else {  
-      size_t lLen = strlen(aMessage.c_str()) + 2;
-      aBody->contents.text.size = lLen;
-      aBody->contents.text.data = (unsigned char *) fs_get (lLen);   //message body
-      sprintf ((char*)aBody->contents.text.data,"%s\015\012", const_cast<char*>(aMessage.c_str()));
-    }
   }
 
   PARAMETER *
