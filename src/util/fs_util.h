@@ -319,29 +319,27 @@ zstring get_normalized_path( char const *path, char const *base = 0 );
 /**
  * Gets the normalized path of the given path.
  *
- * @tparam PathStringType The path's string type.
- * @tparam BaseStringType The base's string type.
+ * @tparam StringType The string type.
  * @param path The path to normalize.
  * @param base The base path, if any.
  * @return Returns the normalized path.
  */
-template<class PathStringType,class BaseStringType> inline
-zstring get_normalized_path( PathStringType const &path,
-                             BaseStringType const &base = "" ) {
+template<class StringType> inline
+zstring get_normalized_path( StringType const &path,
+                             StringType const &base = "" ) {
   return get_normalized_path( path.c_str(), base.c_str() );
 }
 
 /**
  * Normalizes the given path.
  *
- * @tparam PathStringType The path's string type.
- * @tparam BaseStringType The base's string type.
+ * @tparam StringType The string type.
  * @param path The path to normalize.
  * @param base The base path, if any.
  * @return Returns the normalized path.
  */
-template<class PathStringType,class BaseStringType> inline
-void normalize_path( PathStringType &path, BaseStringType const &base = "" ) {
+template<class StringType> inline
+void normalize_path( StringType &path, StringType const &base = "" ) {
   path = get_normalized_path( path, base );
 }
 

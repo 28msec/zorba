@@ -17,6 +17,9 @@
 #ifndef ZORBA_MMAP_FILE_H
 #define ZORBA_MMAP_FILE_H
 
+#include <zorba/config.h>
+#ifdef ZORBA_WITH_FILE_ACCESS
+
 #include <cstddef>                      /* for ptrdiff_t, size_t */
 #include <fstream>                      /* for openmode */
 #include <iterator>
@@ -291,5 +294,6 @@ private:
 };
 
 } // namespace zorba
-#endif  /* ZORBA_MMAP_FILE_H */
+#endif /* ZORBA_WITH_FILE_ACCESS */
+#endif /* ZORBA_MMAP_FILE_H */
 /* vim:set et sw=2 ts=2: */
