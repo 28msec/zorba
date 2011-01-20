@@ -102,12 +102,12 @@ std::string ZorbaCMDProperties::check_args () {
   }
   for (std::vector<std::string>::const_iterator lIter = theThesaurus.begin();
        lIter != theThesaurus.end(); ++lIter) {
-    size_t lEQual = lIter->find_last_of("=");
+    size_t lEQual = lIter->find(":=");
     if (lEQual == std::string::npos)
-      return "Thesaurus mapping must be of the form URI=value";
+      return "Thesaurus mapping must be of the form URI:=value";
 
     std::string lURI   = lIter->substr(0, lEQual);
-    std::string lValue = lIter->substr(lEQual + 1);
+    std::string lValue = lIter->substr(lEQual + 2);
 
     ThesaurusMapping lMapping;
     lMapping.uri   = lURI;
