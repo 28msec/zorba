@@ -57,7 +57,7 @@ namespace zorba
       //TODO implement a streaming mechanism for large attachments
       void
       set_text_body(BODY* aBody,
-                    const char* aMessage);
+                    String& aMessage);
 
       //set the encoding to the given BODY
       void

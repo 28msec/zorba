@@ -227,9 +227,10 @@ namespace zorba
     while (lChildrenIt->next(lChild))
     {
         get_text_value(lChild, lValue);
-
+        // content case
         if(get_nodename(lChild).lowercase().endsWith("tent"))
           parse_content(theBody, lChild);
+        // multipart case
         else if(get_nodename(lChild).lowercase().endsWith("rt"))
           parse_multipart(theBody, lChild);
     }
@@ -241,12 +242,37 @@ namespace zorba
   void
   CClientMimeHandler::set_text_body
       (BODY* aBody,
-       const char* aMessage)
+       String& aMessage)
   {
-    size_t lLen = strlen(aMessage) + 2;
-    aBody->contents.text.size = lLen;
-    aBody->contents.text.data = (unsigned char *) fs_get (lLen);   //message body
-    sprintf ((char*)aBody->contents.text.data,"%s\015\012",aMessage);
+    // special case for encoding of base64 which needs a new line after 64 characters
+    if (aBody->encoding == ENCBASE64) {
+      std::stringstream lInStream;
+      std::stringstream lOutStream;
+      // for loop that counts to 64 and then makes a new line
+      lInStream << const_cast<char*>(aMessage.c_str());
+      char next;
+      int counter = 0;
+      while (lInStream >> next) {
+        if (counter == 64) {
+          lOutStream << "\r\n";
+          counter = 0;
+        }
+        ++counter;
+        lOutStream << next;
+      }  
+      std::string lMessage = lOutStream.str(); 
+      size_t lLen = strlen(lMessage.c_str()) + 2;
+      aBody->contents.text.size = lLen;
+      aBody->contents.text.data = (unsigned char *) fs_get (lLen);   //message body
+      sprintf ((char*)aBody->contents.text.data,"%s\015\012", const_cast<char*>(lMessage.c_str()));
+    
+
+    } else {  
+      size_t lLen = strlen(aMessage.c_str()) + 2;
+      aBody->contents.text.size = lLen;
+      aBody->contents.text.data = (unsigned char *) fs_get (lLen);   //message body
+      sprintf ((char*)aBody->contents.text.data,"%s\015\012", const_cast<char*>(aMessage.c_str()));
+    }
   }
 
   PARAMETER *
@@ -339,20 +365,38 @@ namespace zorba
     while(lAttributes->next(lAttributeItem)) {
       String lName = get_nodename(lAttributeItem); 
       lValue = lAttributeItem.getStringValue();
-      if (lName.endsWith("e")) {
+      if (lName.endsWith("ype")) {
         // contentType ...
         set_content_type_value(aBody, lValue);
-      } else if (lName.endsWith("t")) {
+      } else if (lName.endsWith("set")) {
         // charset ...
         aBody->parameter = create_param("charset", const_cast<char*>(lValue.uppercase().c_str()), NIL);
-      } else if (lName.endsWith("g")) {
+      } else if (lName.endsWith("ing")) {
         // contentTranferEncoding ...
         set_encoding(aBody, lValue);  
-      }
-    }  
+      } else if (lName.endsWith("ion")) {
+        // contentDisposition ..
+        aBody->disposition.type = cpystr(const_cast<char*>(lValue.uppercase().c_str())); 
+      } else if (lName.endsWith("ame")) {
+        // contentDisposition-filename
+        if (!aBody->disposition.parameter) {  
+          aBody->disposition.parameter = create_param("filename", const_cast<char*>(lValue.c_str()), NIL);
+        } else {
+          aBody->disposition.parameter->next = create_param("filename", const_cast<char*>(lValue.c_str()), NIL);
+        }
+      } else if (lName.endsWith("ate")) {
+        // contentDisposition-modification-date
+        char lDate[MAILTMPLEN];
+        parseXmlDateTime(lValue, lDate);      
+        if (!aBody->disposition.parameter) {
+          aBody->disposition.parameter = create_param("modification-date", lDate); 
+        } else {
+          aBody->disposition.parameter->next = create_param("modification-date", lDate);
+        } 
+     }
+    }
+      
     lAttributes->close();
-
-
   }
 
 
@@ -367,7 +411,7 @@ namespace zorba
     set_contentTypeCharsetCTF(aBody, aItemContent);
     
     lValue = aItemContent.getStringValue();
-    set_text_body(aBody, lValue.c_str());
+    set_text_body(aBody, lValue);
         
     return true;
   }

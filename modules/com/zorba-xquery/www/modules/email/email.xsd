@@ -108,8 +108,11 @@ xmlns:tns="http://www.zorba-xquery.com/modules/email/email"
     <extension base="string">
         <attribute name="contentType" type="tns:contentTypeValue" />
         <attribute name="charset" type="string" default="us-ascii" />
-        <attribute name="contentTransferEncoding" type="tns:cteType" default="ENC7BIT" />
-    </extension>
+        <attribute name="contentTransferEncoding" type="tns:cteType" default="ENC7BIT" /> 
+        <attribute name="contentDisposition" type="string" />
+        <attribute name="contentDisposition-filename" type="string" />
+        <attribute name="contentDisposition-modification-date" type="dateTime" />
+     </extension>
   </simpleContent>
 </complexType>
 
