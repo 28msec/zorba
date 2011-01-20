@@ -1673,15 +1673,26 @@ bool Schema::parseUserUnionTypes(
 
     std::vector<xqtref_t> unionItemTypes = udXQType->getUnionItemTypes();
 
+    zstring msg = "No suitable match in union '" + udXQType->toSchemaString() + "' tryed: " ;
+
     for ( unsigned int i = 0; i < unionItemTypes.size(); i++)
     {
-      if (isCastableUserSimpleTypes(textValue, unionItemTypes[i]))
+      try
       {
-        return parseUserSimpleTypes(textValue, unionItemTypes[i], resultList);
+        if (isCastableUserSimpleTypes(textValue, unionItemTypes[i]))
+        {
+          return parseUserSimpleTypes(textValue, unionItemTypes[i], resultList);
+        }
+      }
+      catch(error::ZorbaError& e)
+      {
+        msg += ", " + unionItemTypes[i]->toSchemaString() + " " + e.toString();
       }
     }
 
-    return false;
+    //cout << "parseUserUnionTypes 2 : " << msg << endl; cout.flush();
+    ZORBA_ERROR_DESC_OSS(FORG0001, msg);
+    return false; 
 }
 
 
