@@ -18,10 +18,6 @@
 # include <cstdio>
 # include <sys/types.h>
 # include <sys/stat.h>
-#else
-# ifndef UNICODE
-#   define UNICODE /* THIS SHOULD BE DONE BY THE BUILD ENVIRONMENT */
-# endif
 #endif /* WIN32 */
 
 #include "zorbaerrors/error_manager.h"
@@ -163,11 +159,11 @@ bool remove( char const *path ) {
   win32::to_wchar( path, wpath );
   switch ( win32::get_type( wpath ) ) {
     case directory:
-      return ::RemoveDirectoryW( wpath ) != 0;
+      return ::RemoveDirectory( wpath ) != 0;
     case non_existent:
       return false;
     default:
-      return ::DeleteFileW( wpath ) != 0;
+      return ::DeleteFile( wpath ) != 0;
   }
 #endif /* WIN32 */
 }

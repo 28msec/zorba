@@ -49,7 +49,7 @@ zstring get_os_err_string( char const *what, os_code code ) {
   return zstring( err );
 #else
   LPWSTR wmsg;
-  FormatMessageW(
+  FormatMessage(
     FORMAT_MESSAGE_ALLOCATE_BUFFER
     | FORMAT_MESSAGE_FROM_SYSTEM
     | FORMAT_MESSAGE_IGNORE_INSERTS,
@@ -59,12 +59,12 @@ zstring get_os_err_string( char const *what, os_code code ) {
   int const werr_size = ::wcslen( wmsg ) + 40;
   auto_vec<WCHAR> const werr( new WCHAR[ werr_size ] );
   if ( what ) {
-    StringCchPrintfW(
+    StringCchPrintf(
       werr.get(), werr_size, L"%hs failed (error %d): %ls",
       what, code, wmsg
     );
   } else {
-    StringCchPrintfW(
+    StringCchPrintf(
       werr.get(), werr_size, L"error %d: %ls", code, wmsg
     );
   }

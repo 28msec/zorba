@@ -105,7 +105,7 @@ void mmap_file::open( char const *path, ios::openmode mode ) {
 
 #ifdef UNICODE
   TCHAR wPath[ 1024 ];
-  ::MultiByteToWideChar(
+  MultiByteToWideChar(
     CP_ACP /* or CP_UTF8 */, 0, path, -1, wPath,
     sizeof( wPath ) / sizeof( wPath[0] )
   );
