@@ -145,6 +145,7 @@
  :
  : @author Daniel Turcanu
  :
+ : @see http://expath.org/spec/geo
  : @see http://www.opengeospatial.org/standards/sfa
  : @see http://www.opengeospatial.org/standards/gml
  : @see http://trac.osgeo.org/geos/
@@ -158,12 +159,52 @@ module namespace zorba-geo = "http://expath.org/ns/geo";
 declare namespace gml="http://www.opengis.net/gml";
 
 (:~
+ : Declare the expath errors namespace.
+:)
+declare namespace geo-err="http://expath.org/ns/error";
+
+(:~
+ : Errors namespace URI.
+:)
+declare variable $zorba-geo:errNS as xs:string := "http://expath.org/ns/error";
+
+(:~
+ : Error code for Unrecognized geometric object, or geometry is of improper type, or geometry object is malformed.<br/>
+:)
+declare variable $zorba-geo:UnrecognizedGeoObject as xs:QName := fn:QName($zorba-geo:errNS, "geo-err:UnrecognizedGeoObject");
+
+(:~
+ : Error code for Geo module's supported values for srsDimension in GML are 2 and 3.<br/>
+:)
+declare variable $zorba-geo:UnsupportedSRSDimensionValue as xs:QName := fn:QName($zorba-geo:errNS, "geo-err:UnsupportedSRSDimensionValue");
+
+(:~
+ : Error code for SRS Name is not the same in the two geometries.<br/>
+:)
+declare variable $zorba-geo:SRSNotIdenticalInBothGeometries as xs:QName := fn:QName($zorba-geo:errNS, "geo-err:SRSNotIdenticalInBothGeometries");
+
+(:~
+ : Error code for Index n is outside the range of geometries in collection.<br/>
+:)
+declare variable $zorba-geo:IndexOutsideRange as xs:QName := fn:QName($zorba-geo:errNS, "geo-err:IndexOutsideRange");
+
+(:~
+ : Error code for Errors originated in GEOS library.<br/>
+:)
+declare variable $zorba-geo:GEOSError as xs:QName := fn:QName($zorba-geo:errNS, "geo-err:GEOSError");
+
+(:~
+ : Error code for Errors originated in geo module, that should never occur.<br/>
+:)
+declare variable $zorba-geo:InternalError as xs:QName := fn:QName($zorba-geo:errNS, "geo-err:InternalError");
+
+(:~
  : Return the dimension of the geo object. 
  : 
  : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
  :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return 0 for point, 1 for line, 2 for surface.
- : @error XPTY0004 - unrecognized geometric object
+ : @error geo-err:UnrecognizedGeoObject
  : @example dimension1.xq
  : @example dimension2.xq
  : @example dimension3.xq
@@ -184,7 +225,9 @@ declare function zorba-geo:dimension( $geometry as element()) as xs:integer exte
  : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
  :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return 2 for 2D, 3 for 3D.
- : @error XPTY0004 - unrecognized geometric object
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:GEOSError
  : @example coordinate_dimension1.xq
  : @example coordinate_dimension2.xq
  : @example coordinate_dimension3.xq
@@ -204,7 +247,7 @@ declare function zorba-geo:coordinate-dimension( $geometry as element()) as xs:i
  :     "gml:Surface" for Surface, "gml:Polygon" for Polygon and PolygonPatch, 
  :     "gml:MultiPoint" for MultiPoint, "gml:MultiCurve" for MultiCurve,
  :     "gml:MultiSurface" for MultiSurface, "gml:MultiGeometry" for MultiGeometry
- : @error XPTY0004 - unrecognized geometric object
+ : @error geo-err:UnrecognizedGeoObject
  : @example geometry_type1.xq
  : @example geometry_type2.xq
  : @example geometry_type3.xq
@@ -228,7 +271,9 @@ declare function zorba-geo:geometry-type( $geometry as element()) as xs:QName? e
  : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, 
  :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return the SRID if it is found
- : @error XPTY0004 - unrecognized geometric object
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:GEOSError
  : @example srid1.xq
  : @example srid2.xq
  : @example srid3.xq
@@ -245,7 +290,9 @@ declare function zorba-geo:srid( $geometry as element()) as xs:anyURI? external;
  : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
  :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return number of geometries in collection
- : @error XPTY0004 - unrecognized geometric object
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:GEOSError
  : @example num-geometries1.xq
  : @example num-geometries2.xq
  : @example num-geometries3.xq
@@ -262,7 +309,9 @@ declare function zorba-geo:num-geometries( $geometry as element()) as xs:unsigne
  :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @param $n zero-based index in the collection
  : @return n-th geometry in collection. The node is the original node, not a copy.
- : @error XPTY0004 - unrecognized geometric object
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:GEOSError
  : @example geometry-n1.xq
  : @example geometry-n2.xq
  : @example geometry-n3.xq
@@ -280,7 +329,9 @@ declare function zorba-geo:geometry-n( $geometry as element(), $n as xs:unsigned
  :         &lt;gml:lowerCorner><i>minx miny</i>&lt;/gml:lowerCorner><br/>
  :         &lt;gml:upperCorner><i>maxx maxy</i>&lt;/gml:upperCorner><br/>
  :         &lt;/gml:Envelope>
- : @error XPTY0004 - unrecognized geometric object
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:GEOSError
  : @example envelope1.xq
  : @example envelope2.xq
  : @example envelope3.xq
@@ -305,7 +356,9 @@ declare function zorba-geo:envelope( $geometry as element()) as element(gml:Enve
  : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
  :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return the Well-known Text Representation for the geo object.
- : @error XPTY0004 - unrecognized geometric object
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:GEOSError
  : @example as_text1.xq
  : @example as_text2.xq
  : @example as_text3.xq
@@ -327,7 +380,9 @@ declare function zorba-geo:as-text( $geometry as element()) as xs:string externa
  : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
  :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return the Well-known Binary Representation for the geo object as base64.
- : @error XPTY0004 - unrecognized geometric object
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:GEOSError
  : @example as_binary1.xq
 :)
 declare function zorba-geo:as-binary( $geometry as element()) as xs:base64Binary external;
@@ -339,6 +394,8 @@ declare function zorba-geo:as-binary( $geometry as element()) as xs:base64Binary
  : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
  :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return true if $geometry is not a valid gmlsf object or if is empty.
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:GEOSError
  : @example is_empty1.xq
  : @example is_empty2.xq
  : @example is_empty3.xq
@@ -355,7 +412,9 @@ declare function zorba-geo:is-empty( $geometry as element()?) as xs:boolean exte
  : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString,
  :    gml:LinearRing, gml:Curve, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
  : @return true if $geometry is simple.
- : @error XPTY0004 - unrecognized geometric object
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:GEOSError
  : @example is_simple1.xq
  : @example is_simple2.xq
  : @example is_simple3.xq
@@ -380,7 +439,9 @@ declare function zorba-geo:is-simple( $geometry as element()) as xs:boolean exte
  : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
  :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return true if $geometry is 3D. 
- : @error XPTY0004 - unrecognized geometric object
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:GEOSError
  : @example is_3D1.xq
  : @example is_3D2.xq
 :)
@@ -394,7 +455,7 @@ declare function zorba-geo:is-3d( $geometry as element()) as xs:boolean external
  : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
  :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return false. 
- : @error XPTY0004 - unrecognized geometric object
+ : @error geo-err:UnrecognizedGeoObject
  : @example is_measured1.xq
 :)
 declare function zorba-geo:is-measured( $geometry as element()) as xs:boolean external;
@@ -416,7 +477,9 @@ declare function zorba-geo:is-measured( $geometry as element()) as xs:boolean ex
  : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:LinearRing,
  :    gml:Curve, gml:Polygon, gml:Surface, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return the boundary of a Geometry as a set of Geometries of the next lower dimension.
- : @error XPTY0004 - unrecognized geometric object
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:GEOSError
  : @example boundary1.xq
  : @example boundary2.xq
  : @example boundary3.xq
@@ -448,7 +511,10 @@ declare function zorba-geo:boundary( $geometry as element()) as element()* exter
  : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
  :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return true if the DE-9IM intersection matrix for the two Geometrys is T*F**FFF*.
- : @error XPTY0004 - unrecognized geometric object
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:SRSNotIdenticalInBothGeometries
+ : @error geo-err:GEOSError
  : @example equals1.xq
  : @example equals2.xq
  : @example equals3.xq
@@ -475,7 +541,10 @@ declare function zorba-geo:equals( $geometry1 as element(),  $geometry2 as eleme
  : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
  :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return true if geometry1 covers geometry2.
- : @error XPTY0004 - unrecognized geometric object
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:SRSNotIdenticalInBothGeometries
+ : @error geo-err:GEOSError
  : @example covers6.xq
 :)
 declare function zorba-geo:covers( $geometry1 as element(),  $geometry2 as element()) as xs:boolean external;
@@ -493,7 +562,10 @@ declare function zorba-geo:covers( $geometry1 as element(),  $geometry2 as eleme
  : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
  :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return true if geometry1 and geometry2 are disjoint.
- : @error XPTY0004 - unrecognized geometric object
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:SRSNotIdenticalInBothGeometries
+ : @error geo-err:GEOSError
  : @example disjoint1.xq
  : @example disjoint2.xq
  : @example disjoint3.xq
@@ -516,7 +588,10 @@ declare function zorba-geo:disjoint( $geometry1 as element(),  $geometry2 as ele
  : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
  :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return true if geometry1 and geometry2 are not disjoint.
- : @error XPTY0004 - unrecognized geometric object
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:SRSNotIdenticalInBothGeometries
+ : @error geo-err:GEOSError
  : @example intersects1.xq
  : @example intersects2.xq
  : @example intersects3.xq
@@ -541,7 +616,10 @@ declare function zorba-geo:intersects( $geometry1 as element(),  $geometry2 as e
  : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
  :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return true if geometry1 touches geometry2.
- : @error XPTY0004 - unrecognized geometric object
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:SRSNotIdenticalInBothGeometries
+ : @error geo-err:GEOSError
  : @example touches1.xq
  : @example touches2.xq
  : @example touches3.xq
@@ -571,7 +649,10 @@ declare function zorba-geo:touches( $geometry1 as element(),  $geometry2 as elem
  : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
  :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return true if geometry1 crosses geometry2.
- : @error XPTY0004 - unrecognized geometric object
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:SRSNotIdenticalInBothGeometries
+ : @error geo-err:GEOSError
  : @example crosses1.xq
  : @example crosses2.xq
  : @example crosses3.xq
@@ -596,7 +677,10 @@ declare function zorba-geo:crosses( $geometry1 as element(),  $geometry2 as elem
  : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
  :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return true if geometry1 is within geometry2.
- : @error XPTY0004 - unrecognized geometric object
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:SRSNotIdenticalInBothGeometries
+ : @error geo-err:GEOSError
  : @example within1.xq
  : @example within2.xq
  : @example within3.xq
@@ -619,7 +703,10 @@ declare function zorba-geo:within( $geometry1 as element(),  $geometry2 as eleme
  : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
  :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return true if geometry1 contains geometry2.
- : @error XPTY0004 - unrecognized geometric object
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:SRSNotIdenticalInBothGeometries
+ : @error geo-err:GEOSError
  : @example contains1.xq
  : @example contains2.xq
  : @example contains3.xq
@@ -645,7 +732,10 @@ declare function zorba-geo:contains( $geometry1 as element(),  $geometry2 as ele
  : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
  :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return true if geometry1 overlaps geometry2.
- : @error XPTY0004 - unrecognized geometric object
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:SRSNotIdenticalInBothGeometries
+ : @error geo-err:GEOSError
  : @example overlaps1.xq
  : @example overlaps2.xq
  : @example overlaps3.xq
@@ -706,8 +796,10 @@ declare function zorba-geo:overlaps( $geometry1 as element(),  $geometry2 as ele
  :    gml:LinearRing, gml:Polygon
  : @param $intersection_matrix the DE-9IM matrix, with nine chars, three chars for each line in DE-9IM matrix.
  : @return true if geometry1 relates to geometry2 according to the intersection matrix.
- : @error XPTY0004 - unrecognized geometric object
- : @error XPTY0004 - if any geometry is a collection
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:SRSNotIdenticalInBothGeometries
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:GEOSError
  : @example relate1.xq
  : @example relate2.xq
  : @example relate3.xq
@@ -727,7 +819,10 @@ declare function zorba-geo:relate( $geometry1 as element(),  $geometry2 as eleme
  : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
  :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return minimum distance as xs:double.
- : @error XPTY0004 - unrecognized geometric object
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:SRSNotIdenticalInBothGeometries
+ : @error geo-err:GEOSError
  : @example distance1.xq
 :)
 declare function zorba-geo:distance( $geometry1 as element(),  $geometry2 as element()) as xs:double external;
@@ -741,7 +836,9 @@ declare function zorba-geo:distance( $geometry1 as element(),  $geometry2 as ele
  :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @param $distance the distance from geometry, expressed in units of the current coordinate system
  : @return new geometry surrounding the input geometry.
- : @error XPTY0004 - unrecognized geometric object
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:GEOSError
  : @example buffer1.xq
  : @example buffer2.xq
  : @example buffer3.xq
@@ -763,7 +860,9 @@ declare function zorba-geo:buffer( $geometry as element(),  $distance as xs:doub
  : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
  :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return the convex polygon node.
- : @error XPTY0004 - unrecognized geometric object
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:GEOSError
  : @example convex-hull1.xq
  : @example convex-hull2.xq
  : @example convex-hull3.xq
@@ -790,7 +889,10 @@ declare function zorba-geo:convex-hull( $geometry as element()) as element() ext
  : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
  :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return point set geometry node.
- : @error XPTY0004 - unrecognized geometric object
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:SRSNotIdenticalInBothGeometries
+ : @error geo-err:GEOSError
  : @example intersection1.xq
  : @example intersection2.xq
  : @example intersection3.xq
@@ -815,7 +917,10 @@ declare function zorba-geo:intersection( $geometry1 as element(),  $geometry2 as
  : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
  :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return point set geometry node.
- : @error XPTY0004 - unrecognized geometric object
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:SRSNotIdenticalInBothGeometries
+ : @error geo-err:GEOSError
  : @example union1.xq
  : @example union2.xq
  : @example union3.xq
@@ -840,7 +945,10 @@ declare function zorba-geo:union( $geometry1 as element(),  $geometry2 as elemen
  : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
  :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return point set geometry node.
- : @error XPTY0004 - unrecognized geometric object
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:SRSNotIdenticalInBothGeometries
+ : @error geo-err:GEOSError
  : @example difference1.xq
  : @example difference2.xq
  : @example difference3.xq
@@ -866,7 +974,10 @@ declare function zorba-geo:difference( $geometry1 as element(),  $geometry2 as e
  : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
  :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return point set geometry node.
- : @error XPTY0004 - unrecognized geometric object
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:SRSNotIdenticalInBothGeometries
+ : @error geo-err:GEOSError
  : @example sym-difference1.xq
  : @example sym-difference2.xq
  : @example sym-difference3.xq
@@ -890,7 +1001,9 @@ declare function zorba-geo:sym-difference( $geometry1 as element(),  $geometry2 
  : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
  :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return geometry area as xs:double.
- : @error XPTY0004 - unrecognized geometric object
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:GEOSError
  : @example area1.xq
  : @example area2.xq
  : @example area3.xq
@@ -912,7 +1025,9 @@ declare function zorba-geo:area( $geometry as element()) as xs:double external;
  : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
  :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return geometry length as xs:double.
- : @error XPTY0004 - unrecognized geometric object
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:GEOSError
  : @example length1.xq
  : @example length2.xq
  : @example length3.xq
@@ -936,7 +1051,10 @@ declare function zorba-geo:length( $geometry as element()) as xs:double external
  :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @param $distance the distance from geometry1, expressed in units of the current coordinate system
  : @return true if distance from geometry1 to geometry2 is less than $distance.
- : @error XPTY0004 - unrecognized geometric object
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:SRSNotIdenticalInBothGeometries
+ : @error geo-err:GEOSError
  : @example is-within-distance1.xq
  : @example is-within-distance2.xq
  : @example is-within-distance3.xq
@@ -957,7 +1075,9 @@ declare function zorba-geo:is-within-distance( $geometry1 as element(),  $geomet
  : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
  :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return centroid Point.
- : @error XPTY0004 - unrecognized geometric object
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:GEOSError
  : @example centroid1.xq
  : @example centroid2.xq
  : @example centroid3.xq
@@ -979,7 +1099,9 @@ declare function zorba-geo:centroid( $geometry as element()) as element(gml:Poin
  : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
  :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return a Point inside the geometry.
- : @error XPTY0004 - unrecognized geometric object
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:GEOSError
  : @example interior-point1.xq
  : @example interior-point2.xq
  : @example interior-point3.xq
@@ -1004,7 +1126,8 @@ declare function zorba-geo:point-on-surface( $geometry as element()) as element(
  :
  : @param $point node of one of GMLSF objects: gml:Point
  : @return the X coordinate
- : @error XPTY0004 - unrecognized geometric object or not a gml:Point
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:GEOSError
  : @example point-xyz1.xq
  : @example point-xyz4.xq
 :)
@@ -1015,8 +1138,9 @@ declare function zorba-geo:x( $point as element(gml:Point)) as xs:double externa
  : <br/>
  :
  : @param $point node of one of GMLSF objects: gml:Point
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:GEOSError
  : @return the Y coordinate
- : @error XPTY0004 - unrecognized geometric object or not a gml:Point
  : @example point-xyz2.xq
 :)
 declare function zorba-geo:y( $point as element(gml:Point)) as xs:double external;
@@ -1027,7 +1151,8 @@ declare function zorba-geo:y( $point as element(gml:Point)) as xs:double externa
  :
  : @param $point node of one of GMLSF objects: gml:Point
  : @return the Z coordinate, or empty sequence if 2D
- : @error XPTY0004 - unrecognized geometric object or not a gml:Point
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:GEOSError
  : @example point-xyz3.xq
  : @example point-xyz5.xq
 :)
@@ -1040,7 +1165,7 @@ declare function zorba-geo:z( $point as element(gml:Point)) as xs:double? extern
  :
  : @param $point node of one of GMLSF objects: gml:Point
  : @return always empty sequence
- : @error XPTY0004 - unrecognized geometric object or not a gml:Point
+ : @error geo-err:UnsupportedSRSDimensionValue
  : @example point-xyz6.xq
 :)
 declare function zorba-geo:m( $point as element(gml:Point)) as xs:double? external;
@@ -1057,7 +1182,9 @@ declare function zorba-geo:m( $point as element(gml:Point)) as xs:double? extern
  :
  : @param $line node of one of GMLSF objects: gml:LineString, gml:LinearRing, gml:Curve
  : @return the starting gml:Point, constructed with the first coordinates in the line.
- : @error XPTY0004 - unrecognized geometric object or not a line
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:GEOSError
  : @example start-point1.xq
  : @example start-point2.xq
  : @example start-point3.xq
@@ -1070,7 +1197,9 @@ declare function zorba-geo:start-point( $line as element()) as element(gml:Point
  :
  : @param $line node of one of GMLSF objects: gml:LineString, gml:LinearRing, gml:Curve
  : @return the end gml:Point, constructed with the last coordinates in the line.
- : @error XPTY0004 - unrecognized geometric object or not a line
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:GEOSError
  : @example end-point1.xq
 :)
 declare function zorba-geo:end-point( $line as element()) as element(gml:Point) external;
@@ -1090,7 +1219,9 @@ declare function zorba-geo:end-point( $line as element()) as element(gml:Point) 
  : @param $geom node of one of GMLSF objects: gml:LineString, gml:LinearRing, gml:Curve,
  :      gml:MultiCurve, gml:Surface
  : @return true if the line or surface is closed.
- : @error XPTY0004 - unrecognized geometric object or not a line
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:GEOSError
  : @example is-closed1.xq
  : @example is-closed2.xq
  : @example is-closed3.xq
@@ -1106,7 +1237,9 @@ declare function zorba-geo:is-closed( $geom as element()) as xs:boolean external
  :
  : @param $line node of one of GMLSF objects: gml:LineString, gml:LinearRing, gml:Curve
  : @return true if the line is a closed ring.
- : @error XPTY0004 - unrecognized geometric object or not a line
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:GEOSError
  : @example is-ring1.xq
  : @example is-ring2.xq
  : @example is-ring3.xq
@@ -1121,7 +1254,9 @@ declare function zorba-geo:is-ring( $line as element()) as xs:boolean external;
  : @param $line node of one of GMLSF objects: gml:LineString, gml:LinearRing, gml:Curve,
  :   gml:MultiCurve
  : @return number of points in the line
- : @error XPTY0004 - unrecognized geometric object or not a line
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:GEOSError
  : @example num-points1.xq
  : @example num-points2.xq
  : @example num-points3.xq
@@ -1135,7 +1270,9 @@ declare function zorba-geo:num-points( $line as element()) as xs:unsignedInt ext
  :    gml:MultiCurve
  : @param $n index in the list of coordinates, zero based.
  : @return n-th point in the line, zero-based. The node is gml:Point constructed with n-th coordinate from line.
- : @error XPTY0004 - unrecognized geometric object or not a line
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:GEOSError
  : @example point-n1.xq
  : @example point-n2.xq
  : @example point-n3.xq
@@ -1153,7 +1290,9 @@ declare function zorba-geo:point-n( $line as element(), $n as xs:unsignedInt) as
  :
  : @param $polygon node of one of GMLSF objects: gml:Polygon
  : @return the original gml:LinearRing node for exterior ring
- : @error XPTY0004 - unrecognized geometric object or not a polygon
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:GEOSError
  : @example exterior-ring1.xq
  : @example exterior-ring2.xq
 :)
@@ -1165,7 +1304,9 @@ declare function zorba-geo:exterior-ring( $polygon as element(gml:Polygon)) as e
  :
  : @param $polygon node of one of GMLSF objects: gml:Polygon
  : @return the number of interior rings
- : @error XPTY0004 - unrecognized geometric object or not a polygon
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:GEOSError
  : @example num-interior-ring1.xq
 :)
 declare function zorba-geo:num-interior-ring( $polygon as element(gml:Polygon)) as xs:unsignedInt external;
@@ -1177,8 +1318,10 @@ declare function zorba-geo:num-interior-ring( $polygon as element(gml:Polygon)) 
  : @param $polygon node of one of GMLSF objects: gml:Polygon
  : @param $n index in the list of interior rings, zero based.
  : @return n-th interior ring. The node is the original node, not a copy.
- : @error XPTY0004 - unrecognized geometric object or not a Polygon
- : @error XPTY0004 - if n is outside the range
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:IndexOutsideRange
+ : @error geo-err:GEOSError
  : @example interior-ring-n1.xq
 :)
 declare function zorba-geo:interior-ring-n( $polygon as element(gml:Polygon), $n as xs:unsignedInt) as element(gml:LinearRing) external;
@@ -1190,7 +1333,9 @@ declare function zorba-geo:interior-ring-n( $polygon as element(gml:Polygon), $n
  :
  : @param $polyhedral-surface node of one of GMLSF objects: gml:Surface
  : @return the number of surface patches
- : @error XPTY0004 - unrecognized geometric object or not a Surface
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:GEOSError
  : @example num-patches1.xq
  : @example num-patches2.xq
 :)
@@ -1206,8 +1351,10 @@ declare function zorba-geo:num-patches($polyhedral-surface as element(gml:Surfac
  : @param $polyhedral-surface node of one of GMLSF objects: gml:Surface
  : @param $n index in the list of surface patches, zero based.
  : @return n-th polygon patch. The node is the original node, not a copy.
- : @error XPTY0004 - unrecognized geometric object or not a Surface
- : @error XPTY0004 - if n is outside the range
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:IndexOutsideRange
+ : @error geo-err:GEOSError
  : @example patch-n1.xq
  : @example patch-n2.xq
 :)
@@ -1225,7 +1372,9 @@ declare function zorba-geo:patch-n($polyhedral-surface as element(gml:Surface),
  : @param $polyhedral-surface node of one of GMLSF objects: gml:Surface
  : @param $polygon, of type gml:Polygon or gml:PolygonPatch
  : @return the list of neibourghing gml:PolygonPatch-es
- : @error XPTY0004 - unrecognized geometric object or not a Surface
+ : @error geo-err:UnrecognizedGeoObject
+ : @error geo-err:UnsupportedSRSDimensionValue
+ : @error geo-err:GEOSError
  : @example bounding-polygons1.xq
  : @example bounding-polygons2.xq
  : @example bounding-polygons3.xq

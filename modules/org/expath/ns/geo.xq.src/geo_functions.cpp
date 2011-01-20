@@ -88,11 +88,15 @@ GeoFunction::getURI() const
 
 void
 GeoFunction::throwError(
-    const std::string aErrorMessage,
-    const XQUERY_ERROR& aErrorType)
+    const char *err_localname,
+    const std::string aErrorMessage)
 {
-  throw zorba::ExternalFunctionData::createZorbaException(aErrorType,
-      aErrorMessage.c_str(), __FILE__, __LINE__);
+    Item errWrongParamQName;
+    String errNS("http://expath.org/ns/error");
+    String errName(err_localname);
+    Item errQName = GeoModule::getItemFactory()->createQName(errNS, errName);
+    String errDescription(aErrorMessage);
+    ExternalFunctionData::error(errQName, errDescription);
 }
 
 enum GeoFunction::gmlsf_types GeoFunction::getGmlSFGeometricType(Item item) const
@@ -137,14 +141,14 @@ enum GeoFunction::gmlsf_types GeoFunction::getGeometryNodeType(const StatelessEx
   {
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as parameter";
-    throwError(lErrorMessage.str(), XPTY0004);
+    throwError("UnrecognizedGeoObject", lErrorMessage.str());
   }
 
   if(!lItem.isNode() || (lItem.getNodeKind() != store::StoreConsts::elementNode))
   {
     std::stringstream lErrorMessage;
     lErrorMessage << "Argument must be a geometric node ";
-    throwError(lErrorMessage.str(), XPTY0004);
+    throwError("UnrecognizedGeoObject", lErrorMessage.str());
   }
   return getGmlSFGeometricType(lItem);
 }
@@ -247,7 +251,7 @@ int GeoFunction::get_srsDimension(zorba::Item &item, int prev_srsdimension) cons
     {
       std::stringstream lErrorMessage;
       lErrorMessage << "Geo module's supported values for srsDimension in GML are 2 and 3.";
-      throwError(lErrorMessage.str(), XPTY0004);
+      throwError("UnsupportedSRSDimensionValue", lErrorMessage.str());
     }
     return srs_dim;
   }
@@ -277,7 +281,7 @@ void GeoFunction::readPointPosCoordinates(zorba::Item &lItem,
   {
     std::stringstream lErrorMessage;
     lErrorMessage << "gml node must have a gml:pos child";
-    throwError(lErrorMessage.str(), XPTY0004);
+    throwError("UnrecognizedGeoObject", lErrorMessage.str());
   }
 }
 
@@ -292,7 +296,7 @@ bool GeoFunction::readPointPosCoordinates(zorba::Iterator_t children,
   {//get upset
     //std::stringstream lErrorMessage;
     //lErrorMessage << "gml:Point node must have a gml:pos child";
-    //throwError(lErrorMessage.str(), XPTY0004);
+    //throwError("UnrecognizedGeoObject", lErrorMessage.str());
     return false;
   }
   srs_dim = get_srsDimension(pos_item, srs_dim);
@@ -430,7 +434,7 @@ void GeoFunction::readPosListCoordinates(zorba::Item &lItem,
     zorba::Item item_qname;
     lItem.getNodeName(item_qname);
     lErrorMessage << item_qname.getLocalName() << " node must have a gml:posList child";
-    throwError(lErrorMessage.str(), XPTY0004);
+    throwError("UnrecognizedGeoObject", lErrorMessage.str());
   }
 
 }
@@ -545,7 +549,7 @@ int GeoFunction::getCoordinateDimension(const geos::geom::Geometry *geos_geometr
   {
     std::stringstream lErrorMessage;
     lErrorMessage << "Geometry type " << geos_geometry->getGeometryType() << " is not supported";
-    throwError(lErrorMessage.str(), XPTY0004);
+    throwError("UnrecognizedGeoObject", lErrorMessage.str());
   }
   }
 
@@ -614,7 +618,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
       {                                                                               
         std::stringstream lErrorMessage;                                              
         lErrorMessage << "Error in GEOS function createPoint : " << excep.what();  
-        throwError(lErrorMessage.str(), XPTY0004);                                    
+        throwError("GEOSError", lErrorMessage.str());                                    
       }                                                                               
     }
     else if(what_action == COUNT_CHILDREN)
@@ -628,7 +632,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
     {
       std::stringstream lErrorMessage;                                              
       lErrorMessage << "Error in GMLSF_POINT";  
-      throwError(lErrorMessage.str(), XQP0019_INTERNAL_ERROR);                                    
+      throwError("InternalError", lErrorMessage.str());                                    
     }
   }break;
   case GMLSF_LINESTRING:
@@ -652,7 +656,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
         //delete cl;                                                        
         std::stringstream lErrorMessage;                                              
         lErrorMessage << "Error in GEOS function createLineString : " << excep.what();  
-        throwError(lErrorMessage.str(), XPTY0004);                                    
+        throwError("GEOSError", lErrorMessage.str());                                    
       }                                                                               
     }
     else if((what_action == COUNT_CHILDREN) || (what_action == GET_NUM_POINTS))
@@ -719,7 +723,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
       delete cl;
       std::stringstream lErrorMessage;                                              
       lErrorMessage << "Error in GMLSF_LINESTRING";  
-      throwError(lErrorMessage.str(), XQP0019_INTERNAL_ERROR);                                    
+      throwError("InternalError", lErrorMessage.str());                                    
     }
   }break;
   case GMLSF_CURVE:
@@ -729,7 +733,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
     {//get upset
       std::stringstream lErrorMessage;
       lErrorMessage << "gml:Curve node must have a gml:segments child";
-      throwError(lErrorMessage.str(), XPTY0004);
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());
     }
     if((what_action == COUNT_CHILDREN) || (what_action == GET_NUM_POINTS))
     {
@@ -757,20 +761,20 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
       {
         std::stringstream lErrorMessage;
         lErrorMessage << "Children of gml:Curve/gml:segments must be of type gml:LineStringSegment only";
-        throwError(lErrorMessage.str(), XPTY0004);
+        throwError("UnrecognizedGeoObject", lErrorMessage.str());
       }
       String  local_name = item_qname.getLocalName();
       if(!local_name.byteEqual("LineStringSegment", 17))
       {
         std::stringstream lErrorMessage;
         lErrorMessage << "Children of gml:Curve/gml:segments must be of type gml:LineStringSegment only";
-        throwError(lErrorMessage.str(), XPTY0004);
+        throwError("UnrecognizedGeoObject", lErrorMessage.str());
       }
       if(!checkOptionalAttribute(line_segment_item, "interpolation", "http://www.opengis.net/gml", "linear"))
       {
         std::stringstream lErrorMessage;
         lErrorMessage << "gml:Curve/gml:segments/gml:LineStringSegment supports only linear interpolation";
-        throwError(lErrorMessage.str(), XPTY0004);
+        throwError("UnrecognizedGeoObject", lErrorMessage.str());
       }
   	  
       if(what_action == BUILD_GEOS_GEOMETRY)
@@ -808,7 +812,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
       {
         std::stringstream lErrorMessage;                                              
         lErrorMessage << "Error in GMLSF_CURVE";  
-        throwError(lErrorMessage.str(), XQP0019_INTERNAL_ERROR);                                    
+        throwError("InternalError", lErrorMessage.str());                                    
       }
       child_nr++;
    }
@@ -829,7 +833,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
         delete segments_vector;                                                        
         std::stringstream lErrorMessage;                                              
         lErrorMessage << "Error in GEOS function createGeometryCollection for gml:Curve: " << excep.what();  
-        throwError(lErrorMessage.str(), XPTY0004);                                    
+        throwError("GEOSError", lErrorMessage.str());                                    
       }                                                                               
     }
   }break;
@@ -854,7 +858,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
         //delete cl;                                                        
         std::stringstream lErrorMessage;                                              
         lErrorMessage << "Error in GEOS function createLinearRing : " << excep.what();  
-        throwError(lErrorMessage.str(), XPTY0004);                                    
+        throwError("GEOSError", lErrorMessage.str());                                    
       }  
     }
     else if((what_action == COUNT_CHILDREN) || (what_action == GET_NUM_POINTS))
@@ -920,7 +924,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
       delete cl;
       std::stringstream lErrorMessage;                                              
       lErrorMessage << "Error in GMLSF_LINEARRING";  
-      throwError(lErrorMessage.str(), XQP0019_INTERNAL_ERROR);                                    
+      throwError("InternalError", lErrorMessage.str());                                    
     }
   }break;
   case GMLSF_SURFACE:
@@ -930,7 +934,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
     {//get upset
       std::stringstream lErrorMessage;
       lErrorMessage << "gml:Surface node must have a gml:patches child";
-      throwError(lErrorMessage.str(), XPTY0004);
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());
     }
     if(what_action == COUNT_CHILDREN)
     {
@@ -957,14 +961,14 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
       {
         std::stringstream lErrorMessage;
         lErrorMessage << "Children of gml:Surface/gml:patches must be of type gml:PolygonPatch only";
-        throwError(lErrorMessage.str(), XPTY0004);
+        throwError("UnrecognizedGeoObject", lErrorMessage.str());
       }
       String  item_name = item_qname.getLocalName();
       if(!item_name.byteEqual("PolygonPatch", 12))
       {
         std::stringstream lErrorMessage;
         lErrorMessage << "Children of gml:Surface/gml:patches must be of type gml:PolygonPatch only";
-        throwError(lErrorMessage.str(), XPTY0004);
+        throwError("UnrecognizedGeoObject", lErrorMessage.str());
       }
 
       if(what_action == BUILD_GEOS_GEOMETRY)
@@ -987,7 +991,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
       {
         std::stringstream lErrorMessage;                                              
         lErrorMessage << "Error in GMLSF_CURVE";  
-        throwError(lErrorMessage.str(), XQP0019_INTERNAL_ERROR);                                    
+        throwError("InternalError", lErrorMessage.str());                                    
       }
       child_nr++;
     }
@@ -1008,7 +1012,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
         delete polygon_vector;                                                        
         std::stringstream lErrorMessage;                                              
         lErrorMessage << "Error in GEOS function createGeometryCollection for gml:Surface : " << excep.what();  
-        throwError(lErrorMessage.str(), XPTY0004);                                    
+        throwError("GEOSError", lErrorMessage.str());                                    
       }                                                                               
     }
   }break;
@@ -1040,7 +1044,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
       {
         std::stringstream lErrorMessage;
         lErrorMessage << "Children of gml:Polygon must be gml:exterior or gml:interior";
-        throwError(lErrorMessage.str(), XPTY0004);
+        throwError("UnrecognizedGeoObject", lErrorMessage.str());
       }
       String  item_name = item_qname.getLocalName();
       if(nr_child == 0)
@@ -1049,14 +1053,14 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
         {
           std::stringstream lErrorMessage;
           lErrorMessage << "First child of gml:Polygon must be gml:exterior";
-          throwError(lErrorMessage.str(), XPTY0004);
+          throwError("UnrecognizedGeoObject", lErrorMessage.str());
         }
         zorba::Item   linearring_item;
         if(!getChild(extint_item, "LinearRing", "http://www.opengis.net/gml", linearring_item))
         {//get upset
           std::stringstream lErrorMessage;
           lErrorMessage << "gml:Polygon/gml:exterior node must have a gml:LinearRing child";
-          throwError(lErrorMessage.str(), XPTY0004);
+          throwError("UnrecognizedGeoObject", lErrorMessage.str());
         }
         if(what_action == BUILD_GEOS_GEOMETRY)
         {
@@ -1074,14 +1078,14 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
         {
           std::stringstream lErrorMessage;
           lErrorMessage << "Non-first child of gml:Polygon must be gml:interior";
-          throwError(lErrorMessage.str(), XPTY0004);
+          throwError("UnrecognizedGeoObject", lErrorMessage.str());
         }
         zorba::Item   linearring_item;
         if(!getChild(extint_item, "LinearRing", "http://www.opengis.net/gml", linearring_item))
         {//get upset
           std::stringstream lErrorMessage;
           lErrorMessage << "gml:Polygon/gml:interior node must have a gml:LinearRing child";
-          throwError(lErrorMessage.str(), XPTY0004);
+          throwError("UnrecognizedGeoObject", lErrorMessage.str());
         }
         if(what_action == BUILD_GEOS_GEOMETRY)
         {
@@ -1103,7 +1107,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
         {
           std::stringstream lErrorMessage;                                              
           lErrorMessage << "Error in GMLSF_POLYGON";  
-          throwError(lErrorMessage.str(), XQP0019_INTERNAL_ERROR);                                    
+          throwError("InternalError", lErrorMessage.str());                                    
         }
       }
       nr_child++;
@@ -1125,7 +1129,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
         delete interior_vector;                                                        
         std::stringstream lErrorMessage;                                              
         lErrorMessage << "Error in GEOS function createPolygon : " << excep.what();  
-        throwError(lErrorMessage.str(), XPTY0004);                                    
+        throwError("GEOSError", lErrorMessage.str());                                    
       }                                                                               
     }    
   }break;
@@ -1156,14 +1160,14 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
       {
         std::stringstream lErrorMessage;
         lErrorMessage << "Children of gml:MultiPoint must be gml:Point";
-        throwError(lErrorMessage.str(), XPTY0004);
+        throwError("UnrecognizedGeoObject", lErrorMessage.str());
       }
       String  item_name = item_qname.getLocalName();
       if(!item_name.byteEqual("Point", 5))
       {
         std::stringstream lErrorMessage;
         lErrorMessage << "First child of gml:MultiPoint must be gml:Point";
-        throwError(lErrorMessage.str(), XPTY0004);
+        throwError("UnrecognizedGeoObject", lErrorMessage.str());
       }
       if(what_action == BUILD_GEOS_GEOMETRY)
       {
@@ -1185,7 +1189,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
       {
         std::stringstream lErrorMessage;                                              
         lErrorMessage << "Error in GMLSF_MULTIPOINT";  
-        throwError(lErrorMessage.str(), XQP0019_INTERNAL_ERROR);                                    
+        throwError("InternalError", lErrorMessage.str());                                    
       }
       nr_child++;
     }
@@ -1205,7 +1209,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
         delete point_vector;
         std::stringstream lErrorMessage;                                              
         lErrorMessage << "Error in GEOS function createMultiPoint : " << excep.what();  
-        throwError(lErrorMessage.str(), XPTY0004);                                    
+        throwError("GEOSError", lErrorMessage.str());                                    
       }                                                                               
     }
   }break;
@@ -1236,14 +1240,14 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
       {
         std::stringstream lErrorMessage;
         lErrorMessage << "Children of gml:MultiCurve must be gml:LineString";
-        throwError(lErrorMessage.str(), XPTY0004);
+        throwError("UnrecognizedGeoObject", lErrorMessage.str());
       }
       String  item_name = item_qname.getLocalName();
       if(!item_name.byteEqual("LineString", 10))
       {
         std::stringstream lErrorMessage;
         lErrorMessage << "Children of gml:MultiCurve must be gml:LineString";
-        throwError(lErrorMessage.str(), XPTY0004);
+        throwError("UnrecognizedGeoObject", lErrorMessage.str());
       }
       if(what_action == BUILD_GEOS_GEOMETRY)
       {
@@ -1280,7 +1284,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
       {
         std::stringstream lErrorMessage;                                              
         lErrorMessage << "Error in GMLSF_MULTICURVE";  
-        throwError(lErrorMessage.str(), XQP0019_INTERNAL_ERROR);                                    
+        throwError("InternalError", lErrorMessage.str());                                    
       }
       nr_child++;
     }
@@ -1300,7 +1304,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
         delete curve_vector;
         std::stringstream lErrorMessage;                                              
         lErrorMessage << "Error in GEOS function createMultiLineString : " << excep.what();  
-        throwError(lErrorMessage.str(), XPTY0004);                                    
+        throwError("GEOSError", lErrorMessage.str());                                    
       }                                                                               
     }
   }break;
@@ -1331,14 +1335,14 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
       {
         std::stringstream lErrorMessage;
         lErrorMessage << "Children of gml:MultiSurface must be gml:Polygon";
-        throwError(lErrorMessage.str(), XPTY0004);
+        throwError("UnrecognizedGeoObject", lErrorMessage.str());
       }
       String  item_name = item_qname.getLocalName();
       if(!item_name.byteEqual("Polygon", 7))
       {
         std::stringstream lErrorMessage;
         lErrorMessage << "Children of gml:MultiSurface must be gml:Polygon";
-        throwError(lErrorMessage.str(), XPTY0004);
+        throwError("UnrecognizedGeoObject", lErrorMessage.str());
       }
       if(what_action == BUILD_GEOS_GEOMETRY)
       {
@@ -1360,7 +1364,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
       {
         std::stringstream lErrorMessage;                                              
         lErrorMessage << "Error in GMLSF_MULTICURVE";  
-        throwError(lErrorMessage.str(), XQP0019_INTERNAL_ERROR);                                    
+        throwError("InternalError", lErrorMessage.str());                                    
       }
       nr_child++;
     }
@@ -1380,7 +1384,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
         delete surface_vector;
         std::stringstream lErrorMessage;                                              
         lErrorMessage << "Error in GEOS function createMultiPolygon : " << excep.what();  
-        throwError(lErrorMessage.str(), XPTY0004);                                    
+        throwError("GEOSError", lErrorMessage.str());                                    
       }                                                                               
     }
   }break;
@@ -1411,7 +1415,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
       {
         std::stringstream lErrorMessage;
         lErrorMessage << "Children of gml:MultiGeometry must be gml:geometryMember or gml:geometryMembers";
-        throwError(lErrorMessage.str(), XPTY0004);
+        throwError("UnrecognizedGeoObject", lErrorMessage.str());
       }
       String  item_name = item_qname.getLocalName();
       if(item_name.byteEqual("geometryMember", 14) || item_name.byteEqual("geometryMembers", 15))
@@ -1442,7 +1446,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
           {
             std::stringstream lErrorMessage;                                              
             lErrorMessage << "Error in GMLSF_MULTIGEOMETRY";  
-            throwError(lErrorMessage.str(), XQP0019_INTERNAL_ERROR);                                    
+            throwError("InternalError", lErrorMessage.str());                                    
           }
           nr_child++;
         }
@@ -1451,7 +1455,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
       {
         std::stringstream lErrorMessage;
         lErrorMessage << "Children of gml:MultiGeometry must be gml:geometryMember or gml:geometryMembers";
-        throwError(lErrorMessage.str(), XPTY0004);
+        throwError("UnrecognizedGeoObject", lErrorMessage.str());
       }
     }
     if(what_action == BUILD_GEOS_GEOMETRY)
@@ -1470,7 +1474,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
         delete geometry_vector;
         std::stringstream lErrorMessage;                                              
         lErrorMessage << "Error in GEOS function createGeometryCollection : " << excep.what();  
-        throwError(lErrorMessage.str(), XPTY0004);                                    
+        throwError("GEOSError", lErrorMessage.str());                                    
       }                                                                               
     }
   }break;
@@ -1482,7 +1486,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
     lItem.getNodeName(item_qname);
     lErrorMessage << "Unrecognized geometric type for element " 
          << item_qname.getPrefix() <<":"<<item_qname.getLocalName() << ".";
-    throwError(lErrorMessage.str(), XPTY0004);
+    throwError("UnrecognizedGeoObject", lErrorMessage.str());
   }
   break;
   }
@@ -1814,7 +1818,7 @@ zorba::Item GeoFunction::getGMLItemFromGeosGeometry(zorba::Item &parent,
   {
     std::stringstream lErrorMessage;
     lErrorMessage << "Geometry type " << geos_geometry->getGeometryType() << " is not supported";
-    throwError(lErrorMessage.str(), XPTY0004);
+    throwError("UnrecognizedGeoObject", lErrorMessage.str());
   }
   }
 
@@ -2267,7 +2271,7 @@ SFDimensionFunction::evaluate(const StatelessExternalFunction::Arguments_t& args
     delete geos_geometry;                                                               
     std::stringstream lErrorMessage;                                                    
     lErrorMessage << "Error in GEOS function getDimension : " << excep.what();  
-    throwError(lErrorMessage.str(), XPTY0004);                                          
+    throwError("GEOSError", lErrorMessage.str());                                          
   }                                                                                     
   delete geos_geometry;                                                               
 
@@ -2294,7 +2298,7 @@ SFCoordinateDimensionFunction::evaluate(const StatelessExternalFunction::Argumen
       lItem.getNodeName(item_qname);
       lErrorMessage << "Unrecognized geometric type for element " 
            << item_qname.getPrefix() <<":"<<item_qname.getLocalName() << ".";
-      throwError(lErrorMessage.str(), XPTY0004);
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());
     }
     break;
   default:
@@ -2357,7 +2361,7 @@ SFGeometryTypeFunction::evaluate(const StatelessExternalFunction::Arguments_t& a
       lItem.getNodeName(item_qname);
       lErrorMessage << "Unrecognized geometric type for element " 
            << item_qname.getPrefix() <<":"<<item_qname.getLocalName() << ".";
-      throwError(lErrorMessage.str(), XPTY0004);
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());
     }
   */  break;
   }
@@ -2402,7 +2406,7 @@ SFNumGeometriesFunction::evaluate(const StatelessExternalFunction::Arguments_t& 
       lItem.getNodeName(item_qname);
       lErrorMessage << "Unrecognized geometric type for element " 
            << item_qname.getPrefix() <<":"<<item_qname.getLocalName() << ".";
-      throwError(lErrorMessage.str(), XPTY0004);
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());
     }
     break;
   default:
@@ -2434,7 +2438,7 @@ SFGeometryNFunction::evaluate(const StatelessExternalFunction::Arguments_t& args
       lItem1.getNodeName(item_qname1);
       lErrorMessage << "Unrecognized geometric type for element "                 
            << item_qname1.getPrefix() <<":"<<item_qname1.getLocalName() << " in first parameter.";    
-      throwError(lErrorMessage.str(), XPTY0004);                                  
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                  
     }                                                                             
     break;                                                                        
   default:                                                                        
@@ -2446,7 +2450,7 @@ SFGeometryNFunction::evaluate(const StatelessExternalFunction::Arguments_t& args
   {
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as second parameter";
-    throwError(lErrorMessage.str(), XPTY0004);
+    throwError("UnrecognizedGeoObject", lErrorMessage.str());
   }
 
   uint32_t n;
@@ -2466,7 +2470,7 @@ SFGeometryNFunction::evaluate(const StatelessExternalFunction::Arguments_t& args
     {
       std::stringstream lErrorMessage;                                              
       lErrorMessage << "Index n (" << n << ") is outside the range ";  
-      throwError(lErrorMessage.str(), XPTY0004);                                    
+      throwError("IndexOutsideRange", lErrorMessage.str());                                    
     }
     break;
   default:break;
@@ -2479,7 +2483,7 @@ SFGeometryNFunction::evaluate(const StatelessExternalFunction::Arguments_t& args
   {
     std::stringstream lErrorMessage;                                              
     lErrorMessage << "Index n (" << n << ") is outside the range ";  
-    throwError(lErrorMessage.str(), XPTY0004);                                    
+    throwError("IndexOutsideRange", lErrorMessage.str());                                    
   }
   return ItemSequence_t(new SingletonItemSequence(nth_child));                  
 }
@@ -2506,7 +2510,7 @@ sfclass_name::evaluate(const StatelessExternalFunction::Arguments_t& args,      
       lItem.getNodeName(item_qname);                                                    \
       lErrorMessage << "Unrecognized geometric type for element "                       \
            << item_qname.getPrefix() <<":"<<item_qname.getLocalName() << ".";           \
-      throwError(lErrorMessage.str(), XPTY0004);                                        \
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                        \
     }                                                                                   \
     break;                                                                              \
   default:                                                                              \
@@ -2525,7 +2529,7 @@ sfclass_name::evaluate(const StatelessExternalFunction::Arguments_t& args,      
     delete geos_geometry;                                                               \
     std::stringstream lErrorMessage;                                                    \
     lErrorMessage << "Error in GEOS function " #geos_function_name " : " << excep.what();  \
-    throwError(lErrorMessage.str(), XPTY0004);                                          \
+    throwError("GEOSError", lErrorMessage.str());                                          \
   }                                                                                     \
                                                                                         \
   zorba::Item   null_parent;                                                            \
@@ -2554,7 +2558,7 @@ zorba::Item GeoFunction::getBoundary(geos::geom::Geometry *geos_geometry, zorba:
       delete geos_geometry;                                                               
       std::stringstream lErrorMessage;                                                    
       lErrorMessage << "Error in Surface : the patches do not form a polyhedral surface";  
-      throwError(lErrorMessage.str(), XPTY0004);                                          
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                          
     }
     std::vector<geos::geom::Geometry*> *rings = new std::vector<geos::geom::Geometry*>;
     rings->push_back(exterior_ring);
@@ -2578,7 +2582,7 @@ zorba::Item GeoFunction::getBoundary(geos::geom::Geometry *geos_geometry, zorba:
       delete geos_geometry;                                                               
       std::stringstream lErrorMessage;                                                    
       lErrorMessage << "Error in GEOS function getBoundary : " << excep.what();  
-      throwError(lErrorMessage.str(), XPTY0004);                                          
+      throwError("GEOSError", lErrorMessage.str());                                          
     }         
     delete linestring;
   }
@@ -2592,7 +2596,7 @@ zorba::Item GeoFunction::getBoundary(geos::geom::Geometry *geos_geometry, zorba:
       delete geos_geometry;                                                               
       std::stringstream lErrorMessage;                                                    
       lErrorMessage << "Error in GEOS function getBoundary : " << excep.what();  
-      throwError(lErrorMessage.str(), XPTY0004);                                          
+      throwError("GEOSError", lErrorMessage.str());                                          
     }                                                                                     
   }
 
@@ -2640,7 +2644,7 @@ SFBoundaryFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
       lItem.getNodeName(item_qname);                                                    
       lErrorMessage << "Unrecognized geometric type for element "                       
            << item_qname.getPrefix() <<":"<<item_qname.getLocalName() << ".";           
-      throwError(lErrorMessage.str(), XPTY0004);                                        
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                        
     }                                                                                   
     break;                                                                              
   default:                                                                              
@@ -2687,7 +2691,7 @@ SFSridFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
       lItem.getNodeName(item_qname);
       lErrorMessage << "Unrecognized geometric type for element " 
            << item_qname.getPrefix() <<":"<<item_qname.getLocalName() << ".";
-      throwError(lErrorMessage.str(), XPTY0004);
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());
     }
     break;
   default:
@@ -2725,7 +2729,7 @@ SFEnvelopeFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
       lItem.getNodeName(item_qname);
       lErrorMessage << "Unrecognized geometric type for element " 
            << item_qname.getPrefix() <<":"<<item_qname.getLocalName() << ".";
-      throwError(lErrorMessage.str(), XPTY0004);
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());
     }
     break;
   default:
@@ -2744,7 +2748,7 @@ SFEnvelopeFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
     delete geos_geometry;                                                               
     std::stringstream lErrorMessage;                                                    
     lErrorMessage << "Error in GEOS function getEnvelopeInternal : " << excep.what();  
-    throwError(lErrorMessage.str(), XPTY0004);                                          
+    throwError("GEOSError", lErrorMessage.str());                                          
   }                                                                                     
 
 
@@ -2808,7 +2812,7 @@ SFAsTextFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
       lItem.getNodeName(item_qname);
       lErrorMessage << "Unrecognized geometric type for element " 
            << item_qname.getPrefix() <<":"<<item_qname.getLocalName() << ".";
-      throwError(lErrorMessage.str(), XPTY0004);
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());
     }
     break;
   default:
@@ -2856,7 +2860,7 @@ SFAsBinaryFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
       lItem.getNodeName(item_qname);
       lErrorMessage << "Unrecognized geometric type for element " 
            << item_qname.getPrefix() <<":"<<item_qname.getLocalName() << ".";
-      throwError(lErrorMessage.str(), XPTY0004);
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());
     }
     break;
   default:
@@ -2923,7 +2927,7 @@ SFIsEmptyFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
     delete geos_geometry;                                                               
     std::stringstream lErrorMessage;                                                    
     lErrorMessage << "Error in GEOS function getNumGeometries : " << excep.what();  
-    throwError(lErrorMessage.str(), XPTY0004);                                          
+    throwError("GEOSError", lErrorMessage.str());                                          
   }                                                                                     
 
   return ItemSequence_t(new SingletonItemSequence(
@@ -2949,7 +2953,7 @@ SFIsSimpleFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
       lItem.getNodeName(item_qname);
       lErrorMessage << "Unrecognized geometric type for element " 
            << item_qname.getPrefix() <<":"<<item_qname.getLocalName() << ".";
-      throwError(lErrorMessage.str(), XPTY0004);
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());
     }
     break;
   default:
@@ -2973,7 +2977,7 @@ SFIsSimpleFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
       delete geos_geometry;                                                               
       std::stringstream lErrorMessage;                                                    
       lErrorMessage << "Error in GEOS function isSimple : " << excep.what();  
-      throwError(lErrorMessage.str(), XPTY0004);                                          
+      throwError("GEOSError", lErrorMessage.str());                                          
     }                                                                                     
   }
   delete geos_geometry;
@@ -3001,7 +3005,7 @@ SFIs3DFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
       lItem.getNodeName(item_qname);
       lErrorMessage << "Unrecognized geometric type for element " 
            << item_qname.getPrefix() <<":"<<item_qname.getLocalName() << ".";
-      throwError(lErrorMessage.str(), XPTY0004);
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());
     }
     break;
   default:
@@ -3041,7 +3045,7 @@ SFIsMeasuredFunction::evaluate(const StatelessExternalFunction::Arguments_t& arg
       lItem.getNodeName(item_qname);
       lErrorMessage << "Unrecognized geometric type for element " 
            << item_qname.getPrefix() <<":"<<item_qname.getLocalName() << ".";
-      throwError(lErrorMessage.str(), XPTY0004);
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());
     }
     break;
   default:
@@ -3074,7 +3078,7 @@ sfclass_name::evaluate(const StatelessExternalFunction::Arguments_t& args,      
       lItem1.getNodeName(item_qname1);                                            \
       lErrorMessage << "Unrecognized geometric type for element "                 \
            << item_qname1.getPrefix() <<":"<<item_qname1.getLocalName() << " in first parameter.";    \
-      throwError(lErrorMessage.str(), XPTY0004);                                  \
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                  \
     }                                                                             \
     break;                                                                        \
   default:                                                                        \
@@ -3094,7 +3098,7 @@ sfclass_name::evaluate(const StatelessExternalFunction::Arguments_t& args,      
       lItem2.getNodeName(item_qname2);                                            \
       lErrorMessage << "Unrecognized geometric type for element "                 \
            << item_qname2.getPrefix() <<":"<<item_qname2.getLocalName() << " in second parameter.";   \
-      throwError(lErrorMessage.str(), XPTY0004);                                  \
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                  \
     }                                                                             \
     break;                                                                        \
   default:                                                                        \
@@ -3107,7 +3111,7 @@ sfclass_name::evaluate(const StatelessExternalFunction::Arguments_t& args,      
                                                                                   \
   geos::geom::Geometry  *geos_geometry2;                                          \
   zorba::Item srs_uri2;                                                           \
-  geos_geometry2 = buildGeosGeometryFromItem(lItem2, geometric_type2, -1, &srs_uri1);            \
+  geos_geometry2 = buildGeosGeometryFromItem(lItem2, geometric_type2, -1, &srs_uri2);            \
                                                                                   \
   if(!srs_uri1.isNull() && !srs_uri2.isNull() &&                                  \
     !srs_uri1.getStringValue().equals(srs_uri2.getStringValue()))                 \
@@ -3117,7 +3121,7 @@ sfclass_name::evaluate(const StatelessExternalFunction::Arguments_t& args,      
     std::stringstream lErrorMessage;                                              \
     lErrorMessage << "SrsName is not the same in the two geometries: " <<         \
                   srs_uri1.getStringValue() << " vs. " << srs_uri2.getStringValue();  \
-    throwError(lErrorMessage.str(), XPTY0004);                                    \
+    throwError("SRSNotIdenticalInBothGeometries", lErrorMessage.str());           \
   }                                                                               \
                                                                                   \
   bool retval = false;                                                            \
@@ -3129,7 +3133,7 @@ sfclass_name::evaluate(const StatelessExternalFunction::Arguments_t& args,      
     delete geos_geometry2;                                                        \
     std::stringstream lErrorMessage;                                              \
     lErrorMessage << "Error in GEOS function " #geos_function_name " : " << excep.what();  \
-    throwError(lErrorMessage.str(), XPTY0004);                                    \
+    throwError("GEOSError", lErrorMessage.str());                                    \
   }                                                                               \
                                                                                   \
   delete geos_geometry1;                                                          \
@@ -3169,7 +3173,7 @@ sfclass_name::evaluate(const StatelessExternalFunction::Arguments_t& args,      
       lItem1.getNodeName(item_qname1);                                            \
       lErrorMessage << "Unrecognized geometric type for element "                 \
            << item_qname1.getPrefix() <<":"<<item_qname1.getLocalName() << " in first parameter.";    \
-      throwError(lErrorMessage.str(), XPTY0004);                                  \
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                  \
     }                                                                             \
     break;                                                                        \
   default:                                                                        \
@@ -3189,7 +3193,7 @@ sfclass_name::evaluate(const StatelessExternalFunction::Arguments_t& args,      
       lItem2.getNodeName(item_qname2);                                            \
       lErrorMessage << "Unrecognized geometric type for element "                 \
            << item_qname2.getPrefix() <<":"<<item_qname2.getLocalName() << " in second parameter.";   \
-      throwError(lErrorMessage.str(), XPTY0004);                                  \
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                  \
     }                                                                             \
     break;                                                                        \
   default:                                                                        \
@@ -3212,7 +3216,7 @@ sfclass_name::evaluate(const StatelessExternalFunction::Arguments_t& args,      
     std::stringstream lErrorMessage;                                              \
     lErrorMessage << "SrsName is not the same in the two geometries: " <<         \
                   srs_uri1.getStringValue() << " vs. " << srs_uri2.getStringValue();  \
-    throwError(lErrorMessage.str(), XPTY0004);                                    \
+    throwError("SRSNotIdenticalInBothGeometries", lErrorMessage.str());           \
   }                                                                               \
                                                                                   \
   geos::geom::Geometry  *geos_result = NULL;                                      \
@@ -3224,7 +3228,7 @@ sfclass_name::evaluate(const StatelessExternalFunction::Arguments_t& args,      
     delete geos_geometry2;                                                        \
     std::stringstream lErrorMessage;                                              \
     lErrorMessage << "Error in GEOS function " #geos_function_name " : " << excep.what();  \
-    throwError(lErrorMessage.str(), XPTY0004);                                    \
+    throwError("GEOSError", lErrorMessage.str());                                    \
   }                                                                               \
                                                                                   \
                                                                                   \
@@ -3267,7 +3271,7 @@ sfclass_name::evaluate(const StatelessExternalFunction::Arguments_t& args,      
       lItem.getNodeName(item_qname);                                                    \
       lErrorMessage << "Unrecognized geometric type for element "                       \
            << item_qname.getPrefix() <<":"<<item_qname.getLocalName() << ".";           \
-      throwError(lErrorMessage.str(), XPTY0004);                                        \
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                        \
     }                                                                                   \
     break;                                                                              \
   default:                                                                              \
@@ -3285,7 +3289,7 @@ sfclass_name::evaluate(const StatelessExternalFunction::Arguments_t& args,      
     delete geos_geometry;                                                               \
     std::stringstream lErrorMessage;                                                    \
     lErrorMessage << "Error in GEOS function " #geos_function_name " : " << excep.what();  \
-    throwError(lErrorMessage.str(), XPTY0004);                                          \
+    throwError("GEOSError", lErrorMessage.str());                                          \
   }                                                                                     \
                                                                                         \
   return ItemSequence_t(new SingletonItemSequence(                                      \
@@ -3313,7 +3317,7 @@ SFRelateFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
       lItem1.getNodeName(item_qname1);
       lErrorMessage << "Unrecognized geometric type for element "                 
            << item_qname1.getPrefix() <<":"<<item_qname1.getLocalName() << " in first parameter.";    
-      throwError(lErrorMessage.str(), XPTY0004);                                  
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                  
     }                                                                             
     break;                                                                        
   default:                                                                        
@@ -3333,7 +3337,7 @@ SFRelateFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
       lItem2.getNodeName(item_qname2);
       lErrorMessage << "Unrecognized geometric type for third element "                 
            << item_qname2.getPrefix() <<":"<<item_qname2.getLocalName() << " in second parameter.";   
-      throwError(lErrorMessage.str(), XPTY0004);                                  
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                  
     }                                                                             
     break;                                                                        
   default:                                                                        
@@ -3356,7 +3360,7 @@ SFRelateFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
     std::stringstream lErrorMessage;                                              
     lErrorMessage << "SrsName is not the same in the two geometries: " <<         
                   srs_uri1.getStringValue() << " vs. " << srs_uri2.getStringValue();  
-    throwError(lErrorMessage.str(), XPTY0004);                                    
+    throwError("SRSNotIdenticalInBothGeometries", lErrorMessage.str());                                    
   }                                                                               
                                                                                   
                                                                                         
@@ -3365,7 +3369,7 @@ SFRelateFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
   {
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as parameter";
-    throwError(lErrorMessage.str(), XPTY0004);
+    throwError("UnrecognizedGeoObject", lErrorMessage.str());
   }
 
   zorba::String intersection_matrix;
@@ -3379,8 +3383,8 @@ SFRelateFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
     delete geos_geometry1;
     delete geos_geometry2;
     std::stringstream lErrorMessage;
-    lErrorMessage << "Error in relate function: " << excep.what();
-    throwError(lErrorMessage.str(), XPTY0004);
+    lErrorMessage << "Error in GEOS relate function: " << excep.what();
+    throwError("GEOSError", lErrorMessage.str());
   }
                                                                                         
   return ItemSequence_t(new SingletonItemSequence(
@@ -3405,7 +3409,7 @@ SFIsWithinDistanceFunction::evaluate(const StatelessExternalFunction::Arguments_
       lItem1.getNodeName(item_qname1);
       lErrorMessage << "Unrecognized geometric type for element "                 
            << item_qname1.getPrefix() <<":"<<item_qname1.getLocalName() << " in first parameter.";    
-      throwError(lErrorMessage.str(), XPTY0004);                                  
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                  
     }                                                                             
     break;                                                                        
   default:                                                                        
@@ -3425,7 +3429,7 @@ SFIsWithinDistanceFunction::evaluate(const StatelessExternalFunction::Arguments_
       lItem2.getNodeName(item_qname2);
       lErrorMessage << "Unrecognized geometric type for element "                 
            << item_qname2.getPrefix() <<":"<<item_qname2.getLocalName() << " in second parameter.";   
-      throwError(lErrorMessage.str(), XPTY0004);                                  
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                  
     }                                                                             
     break;                                                                        
   default:                                                                        
@@ -3448,7 +3452,7 @@ SFIsWithinDistanceFunction::evaluate(const StatelessExternalFunction::Arguments_
     std::stringstream lErrorMessage;                                              
     lErrorMessage << "SrsName is not the same in the two geometries: " <<         
                   srs_uri1.getStringValue() << " vs. " << srs_uri2.getStringValue();  
-    throwError(lErrorMessage.str(), XPTY0004);                                    
+    throwError("SRSNotIdenticalInBothGeometries", lErrorMessage.str());                                    
   }                                                                               
                                                                                         
   Item lItem3;                                                                           
@@ -3456,7 +3460,7 @@ SFIsWithinDistanceFunction::evaluate(const StatelessExternalFunction::Arguments_
   {
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as third parameter";
-    throwError(lErrorMessage.str(), XPTY0004);
+    throwError("UnrecognizedGeoObject", lErrorMessage.str());
   }
 
   double distance;
@@ -3471,7 +3475,7 @@ SFIsWithinDistanceFunction::evaluate(const StatelessExternalFunction::Arguments_
     delete geos_geometry2;                                                        
     std::stringstream lErrorMessage;                                              
     lErrorMessage << "Error in GEOS function isWithinDistance : " << excep.what();  
-    throwError(lErrorMessage.str(), XPTY0004);                                    
+    throwError("GEOSError", lErrorMessage.str());                                    
   }                                                                               
                                                                                         
   return ItemSequence_t(new SingletonItemSequence(
@@ -3496,7 +3500,7 @@ SFDistanceFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
       lItem1.getNodeName(item_qname1);
       lErrorMessage << "Unrecognized geometric type for element "                 
            << item_qname1.getPrefix() <<":"<<item_qname1.getLocalName() << " in first parameter.";    
-      throwError(lErrorMessage.str(), XPTY0004);                                  
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                  
     }                                                                             
     break;                                                                        
   default:                                                                        
@@ -3516,7 +3520,7 @@ SFDistanceFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
       lItem2.getNodeName(item_qname2);
       lErrorMessage << "Unrecognized geometric type for element "                 
            << item_qname2.getPrefix() <<":"<<item_qname2.getLocalName() << " in second parameter.";   
-      throwError(lErrorMessage.str(), XPTY0004);                                  
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                  
     }                                                                             
     break;                                                                        
   default:                                                                        
@@ -3539,7 +3543,7 @@ SFDistanceFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
     std::stringstream lErrorMessage;                                              
     lErrorMessage << "SrsName is not the same in the two geometries: " <<         
                   srs_uri1.getStringValue() << " vs. " << srs_uri2.getStringValue();  
-    throwError(lErrorMessage.str(), XPTY0004);                                    
+    throwError("SRSNotIdenticalInBothGeometries", lErrorMessage.str());                                    
   }
                                                                                         
   double min_distance = 0;                                                   
@@ -3551,7 +3555,7 @@ SFDistanceFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
     delete geos_geometry2;                                                        
     std::stringstream lErrorMessage;                                              
     lErrorMessage << "Error in GEOS function distance : " << excep.what();  
-    throwError(lErrorMessage.str(), XPTY0004);                                    
+    throwError("GEOSError", lErrorMessage.str());                                    
   }                                                                               
                                                                                         
   return ItemSequence_t(new SingletonItemSequence(
@@ -3576,7 +3580,7 @@ SFBufferFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
       lItem1.getNodeName(item_qname1);
       lErrorMessage << "Unrecognized geometric type for element "                 
            << item_qname1.getPrefix() <<":"<<item_qname1.getLocalName() << " in first parameter.";    
-      throwError(lErrorMessage.str(), XPTY0004);                                  
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                  
     }                                                                             
     break;                                                                        
   default:                                                                        
@@ -3593,7 +3597,7 @@ SFBufferFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
   {
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as second parameter";
-    throwError(lErrorMessage.str(), XPTY0004);
+    throwError("UnrecognizedGeoObject", lErrorMessage.str());
   }
 
   double distance;
@@ -3607,7 +3611,7 @@ SFBufferFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
     delete geos_geometry1;                                                        
     std::stringstream lErrorMessage;                                              
     lErrorMessage << "Error in GEOS function buffer : " << excep.what();  
-    throwError(lErrorMessage.str(), XPTY0004);                                    
+    throwError("GEOSError", lErrorMessage.str());                                    
   }                                                                               
 
   zorba::Item   null_parent;                                                      
@@ -3639,7 +3643,7 @@ sfclass_name::evaluate(const StatelessExternalFunction::Arguments_t& args,      
       lItem.getNodeName(item_qname);                                                    \
       lErrorMessage << "Unrecognized geometric type for element "                       \
            << item_qname.getPrefix() <<":"<<item_qname.getLocalName() << ".";           \
-      throwError(lErrorMessage.str(), XPTY0004);                                        \
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                        \
     }                                                                                   \
     break;                                                                              \
   case GMLSF_POINT:                                                                     \
@@ -3651,7 +3655,7 @@ sfclass_name::evaluate(const StatelessExternalFunction::Arguments_t& args,      
       lItem.getNodeName(item_qname);                                                    \
       lErrorMessage << "Geometry must be a point: "                                     \
            << item_qname.getPrefix() <<":"<<item_qname.getLocalName() << ".";           \
-      throwError(lErrorMessage.str(), XPTY0004);                                        \
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                        \
     }                                                                                   \
     break;                                                                              \
   }                                                                                     \
@@ -3668,7 +3672,7 @@ sfclass_name::evaluate(const StatelessExternalFunction::Arguments_t& args,      
     delete geos_geometry;                                                               \
     std::stringstream lErrorMessage;                                                    \
     lErrorMessage << "Error in GEOS function " #geos_function_name " : " << excep.what();  \
-    throwError(lErrorMessage.str(), XPTY0004);                                          \
+    throwError("GEOSError", lErrorMessage.str());                                          \
   }                                                                                     \
                                                                                         \
   return ItemSequence_t(new SingletonItemSequence(                                      \
@@ -3696,7 +3700,7 @@ SFZFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
       lItem.getNodeName(item_qname);                                                    
       lErrorMessage << "Unrecognized geometric type for element "                       
            << item_qname.getPrefix() <<":"<<item_qname.getLocalName() << ".";           
-      throwError(lErrorMessage.str(), XPTY0004);                                        
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                        
     }                                                                                   
     break;                                                                              
   case GMLSF_POINT:                                                                     
@@ -3708,7 +3712,7 @@ SFZFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
       lItem.getNodeName(item_qname);                                                    
       lErrorMessage << "Geometry must be a point: "                                     
            << item_qname.getPrefix() <<":"<<item_qname.getLocalName() << ".";           
-      throwError(lErrorMessage.str(), XPTY0004);                                        
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                        
     }                                                                                   
     break;                                                                              
   }                                                                                     
@@ -3754,7 +3758,7 @@ SFMFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
       lItem.getNodeName(item_qname);                                                    
       lErrorMessage << "Unrecognized geometric type for element "                       
            << item_qname.getPrefix() <<":"<<item_qname.getLocalName() << ".";           
-      throwError(lErrorMessage.str(), XPTY0004);                                        
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                        
     }                                                                                   
     break;                                                                              
   case GMLSF_POINT:                                                                     
@@ -3766,7 +3770,7 @@ SFMFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
       lItem.getNodeName(item_qname);                                                    
       lErrorMessage << "Geometry must be a point: "                                     
            << item_qname.getPrefix() <<":"<<item_qname.getLocalName() << ".";           
-      throwError(lErrorMessage.str(), XPTY0004);                                        
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                        
     }                                                                                   
     break;                                                                              
   }                                                                                     
@@ -3795,7 +3799,7 @@ SFStartPointFunction::evaluate(const StatelessExternalFunction::Arguments_t& arg
       lItem1.getNodeName(item_qname1);
       lErrorMessage << "Unrecognized geometric type for element "                 
            << item_qname1.getPrefix() <<":"<<item_qname1.getLocalName() << " in first parameter.";    
-      throwError(lErrorMessage.str(), XPTY0004);                                  
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                  
     }                                                                             
     break;                                                                        
   case GMLSF_LINESTRING:                                                                
@@ -3809,7 +3813,7 @@ SFStartPointFunction::evaluate(const StatelessExternalFunction::Arguments_t& arg
       lItem1.getNodeName(item_qname1);                                                    
       lErrorMessage << "Geometry must be a line: "                                      
            << item_qname1.getPrefix() <<":"<<item_qname1.getLocalName() << ".";           
-      throwError(lErrorMessage.str(), XPTY0004);                                        
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                        
     }                                                                                   
     break;                                                                              
   }                                                                               
@@ -3823,7 +3827,7 @@ SFStartPointFunction::evaluate(const StatelessExternalFunction::Arguments_t& arg
   {
     std::stringstream lErrorMessage;                                              
     lErrorMessage << "LineString has no points ";  
-    throwError(lErrorMessage.str(), XPTY0004);                                    
+    throwError("UnrecognizedGeoObject", lErrorMessage.str());                                    
   }
                                                                                   
   return ItemSequence_t(new SingletonItemSequence(nth_child));                  
@@ -3847,7 +3851,7 @@ SFEndPointFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
       lItem1.getNodeName(item_qname1);
       lErrorMessage << "Unrecognized geometric type for element "                 
            << item_qname1.getPrefix() <<":"<<item_qname1.getLocalName() << " in first parameter.";    
-      throwError(lErrorMessage.str(), XPTY0004);                                  
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                  
     }                                                                             
     break;                                                                        
   case GMLSF_LINESTRING:                                                                
@@ -3861,7 +3865,7 @@ SFEndPointFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
       lItem1.getNodeName(item_qname1);                                                    
       lErrorMessage << "Geometry must be a line: "                                      
            << item_qname1.getPrefix() <<":"<<item_qname1.getLocalName() << ".";           
-      throwError(lErrorMessage.str(), XPTY0004);                                        
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                        
     }                                                                                   
     break;                                                                              
   }                                                                               
@@ -3873,7 +3877,7 @@ SFEndPointFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
   {
     std::stringstream lErrorMessage;                                              
     lErrorMessage << "LineString has no points ";  
-    throwError(lErrorMessage.str(), XPTY0004);                                    
+    throwError("UnrecognizedGeoObject", lErrorMessage.str());                                    
   }
                                                                                   
   return ItemSequence_t(new SingletonItemSequence(nth_child));                  
@@ -3898,7 +3902,7 @@ SFIsClosedFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
       lItem.getNodeName(item_qname);                                                    
       lErrorMessage << "Unrecognized geometric type for element "                       
            << item_qname.getPrefix() <<":"<<item_qname.getLocalName() << ".";           
-      throwError(lErrorMessage.str(), XPTY0004);                                        
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                        
     }                                                                                   
     break;                                                                              
   case GMLSF_LINESTRING:
@@ -3914,7 +3918,7 @@ SFIsClosedFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
       lItem.getNodeName(item_qname);                                                    
       lErrorMessage << "Geometry must be a line or Surface: "                                      
            << item_qname.getPrefix() <<":"<<item_qname.getLocalName() << ".";           
-      throwError(lErrorMessage.str(), XPTY0004);                                        
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                        
     }                                                                                   
     break;                                                                              
   }                                                                                     
@@ -3950,7 +3954,7 @@ SFIsClosedFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
       delete geos_geometry;                                                               
       std::stringstream lErrorMessage;                                                    
       lErrorMessage << "Error in GEOS function SFIsClosedFunction : " << excep.what();  
-      throwError(lErrorMessage.str(), XPTY0004);                                          
+      throwError("GEOSError", lErrorMessage.str());                                          
     }                                                                                     
   }                                                                                     
   delete geos_geometry;                                                                 
@@ -3976,7 +3980,7 @@ SFIsRingFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
       lItem.getNodeName(item_qname);                                                    
       lErrorMessage << "Unrecognized geometric type for element "                       
            << item_qname.getPrefix() <<":"<<item_qname.getLocalName() << ".";           
-      throwError(lErrorMessage.str(), XPTY0004);                                        
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                        
     }                                                                                   
     break;                                                                              
   case GMLSF_LINESTRING:                                                                
@@ -3990,7 +3994,7 @@ SFIsRingFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
       lItem.getNodeName(item_qname);                                                    
       lErrorMessage << "Geometry must be a line: "                                      
            << item_qname.getPrefix() <<":"<<item_qname.getLocalName() << ".";           
-      throwError(lErrorMessage.str(), XPTY0004);                                        
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                        
     }                                                                                   
     break;                                                                              
   }                                                                                     
@@ -4008,8 +4012,8 @@ SFIsRingFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
   {                                                                                     
     delete geos_geometry;                                                               
     std::stringstream lErrorMessage;                                                    
-    lErrorMessage << "Error in GEOS function SFIsRingFunction : " << excep.what();  
-    throwError(lErrorMessage.str(), XPTY0004);                                          
+    lErrorMessage << "Error in GEOS function isClosed : " << excep.what();  
+    throwError("GEOSError", lErrorMessage.str());                                          
   }                                                                                     
   }                                                                                     
   else                                                                                  
@@ -4039,7 +4043,7 @@ SFNumPointsFunction::evaluate(const StatelessExternalFunction::Arguments_t& args
       lItem.getNodeName(item_qname);
       lErrorMessage << "Unrecognized geometric type for element "                 
            << item_qname.getPrefix() <<":"<<item_qname.getLocalName() << " in first parameter.";    
-      throwError(lErrorMessage.str(), XPTY0004);                                  
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                  
     }                                                                             
     break;                                                                        
   case GMLSF_LINESTRING:                                                                
@@ -4054,7 +4058,7 @@ SFNumPointsFunction::evaluate(const StatelessExternalFunction::Arguments_t& args
       lItem.getNodeName(item_qname);                                                    
       lErrorMessage << "Geometry must be a line: "                                      
            << item_qname.getPrefix() <<":"<<item_qname.getLocalName() << ".";           
-      throwError(lErrorMessage.str(), XPTY0004);                                        
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                        
     }                                                                                   
     break;                                                                              
   }                                                                               
@@ -4084,7 +4088,7 @@ SFPointNFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
       lItem1.getNodeName(item_qname1);
       lErrorMessage << "Unrecognized geometric type for element "                 
            << item_qname1.getPrefix() <<":"<<item_qname1.getLocalName() << " in first parameter.";    
-      throwError(lErrorMessage.str(), XPTY0004);                                  
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                  
     }                                                                             
     break;                                                                        
   case GMLSF_LINESTRING:                                                                
@@ -4099,7 +4103,7 @@ SFPointNFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
       lItem1.getNodeName(item_qname1);                                                    
       lErrorMessage << "Geometry must be a line: "                                      
            << item_qname1.getPrefix() <<":"<<item_qname1.getLocalName() << ".";           
-      throwError(lErrorMessage.str(), XPTY0004);                                        
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                        
     }                                                                                   
     break;                                                                              
   }                                                                               
@@ -4110,7 +4114,7 @@ SFPointNFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
   {
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as second parameter";
-    throwError(lErrorMessage.str(), XPTY0004);
+    throwError("UnrecognizedGeoObject", lErrorMessage.str());
   }
 
   uint32_t n;
@@ -4123,7 +4127,7 @@ SFPointNFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
   {
     std::stringstream lErrorMessage;                                              
     lErrorMessage << "Index n (" << n << ") is outside the range ";  
-    throwError(lErrorMessage.str(), XPTY0004);                                    
+    throwError("IndexOutsideRange", lErrorMessage.str());                                    
   }
                                                                                   
   return ItemSequence_t(new SingletonItemSequence(nth_child));                  
@@ -4148,7 +4152,7 @@ SFExteriorRingFunction::evaluate(const StatelessExternalFunction::Arguments_t& a
       lItem.getNodeName(item_qname);                                                    
       lErrorMessage << "Unrecognized geometric type for element "                       
            << item_qname.getPrefix() <<":"<<item_qname.getLocalName() << ".";                
-      throwError(lErrorMessage.str(), XPTY0004);                                        
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                        
     }                                                                                   
     break;                                                                              
   case GMLSF_POLYGON:                                                                
@@ -4160,7 +4164,7 @@ SFExteriorRingFunction::evaluate(const StatelessExternalFunction::Arguments_t& a
       lItem.getNodeName(item_qname);                                                    
       lErrorMessage << "Geometry must be a polygon: "                                      
            << item_qname.getPrefix() <<":"<<item_qname.getLocalName() << ".";           
-      throwError(lErrorMessage.str(), XPTY0004);                                        
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                        
     }                                                                                   
     break;                                                                              
   }                                                                                     
@@ -4189,7 +4193,7 @@ SFNumInteriorRingFunction::evaluate(const StatelessExternalFunction::Arguments_t
       lItem.getNodeName(item_qname);                                                    
       lErrorMessage << "Unrecognized geometric type for element "                       
            << item_qname.getPrefix() <<":"<<item_qname.getLocalName() << ".";           
-      throwError(lErrorMessage.str(), XPTY0004);                                        
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                        
     }                                                                                   
     break;                                                                              
   case GMLSF_POLYGON:                                                                
@@ -4201,7 +4205,7 @@ SFNumInteriorRingFunction::evaluate(const StatelessExternalFunction::Arguments_t
       lItem.getNodeName(item_qname);                                                    
       lErrorMessage << "Geometry must be a polygon: "                                      
            << item_qname.getPrefix() <<":"<<item_qname.getLocalName() << ".";           
-      throwError(lErrorMessage.str(), XPTY0004);                                        
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                        
     }                                                                                   
     break;                                                                              
   }                                                                                     
@@ -4231,7 +4235,7 @@ SFInteriorRingNFunction::evaluate(const StatelessExternalFunction::Arguments_t& 
       lItem1.getNodeName(item_qname1);
       lErrorMessage << "Unrecognized geometric type for element "                 
            << item_qname1.getPrefix() <<":"<<item_qname1.getLocalName() << " in first parameter.";    
-      throwError(lErrorMessage.str(), XPTY0004);                                  
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                  
     }                                                                             
     break;                                                                        
   case GMLSF_POLYGON:                                                                
@@ -4243,7 +4247,7 @@ SFInteriorRingNFunction::evaluate(const StatelessExternalFunction::Arguments_t& 
       lItem1.getNodeName(item_qname1);                                                    
       lErrorMessage << "Geometry must be a polygon: "                                      
            << item_qname1.getPrefix() <<":"<<item_qname1.getLocalName() << ".";           
-      throwError(lErrorMessage.str(), XPTY0004);                                        
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                        
     }                                                                                   
     break;                                                                              
   }                                                                               
@@ -4255,7 +4259,7 @@ SFInteriorRingNFunction::evaluate(const StatelessExternalFunction::Arguments_t& 
   {
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as second parameter";
-    throwError(lErrorMessage.str(), XPTY0004);
+    throwError("UnrecognizedGeoObject", lErrorMessage.str());
   }
 
   uint32_t n;
@@ -4268,7 +4272,7 @@ SFInteriorRingNFunction::evaluate(const StatelessExternalFunction::Arguments_t& 
   {
     std::stringstream lErrorMessage;                                              
     lErrorMessage << "Index n (" << n << ") is outside the range ";  
-    throwError(lErrorMessage.str(), XPTY0004);                                    
+    throwError("IndexOutsideRange", lErrorMessage.str());                                    
   }
                                                                                   
   return ItemSequence_t(new SingletonItemSequence(nth_child));                  
@@ -4292,7 +4296,7 @@ SFNumPatchesFunction::evaluate(const StatelessExternalFunction::Arguments_t& arg
       lItem.getNodeName(item_qname);                                                    
       lErrorMessage << "Unrecognized geometric type for element "                       
            << item_qname.getPrefix() <<":"<<item_qname.getLocalName() << ".";           
-      throwError(lErrorMessage.str(), XPTY0004);                                        
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                        
     }                                                                                   
     break;                                                                              
   case GMLSF_SURFACE:                                                                
@@ -4304,7 +4308,7 @@ SFNumPatchesFunction::evaluate(const StatelessExternalFunction::Arguments_t& arg
       lItem.getNodeName(item_qname);                                                    
       lErrorMessage << "Geometry must be a Surface: "                                      
            << item_qname.getPrefix() <<":"<<item_qname.getLocalName() << ".";           
-      throwError(lErrorMessage.str(), XPTY0004);                                        
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                        
     }                                                                                   
     break;                                                                              
   }                                                                                     
@@ -4334,7 +4338,7 @@ SFPatchNFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
       lItem1.getNodeName(item_qname1);
       lErrorMessage << "Unrecognized geometric type for element "                 
            << item_qname1.getPrefix() <<":"<<item_qname1.getLocalName() << " in first parameter.";    
-      throwError(lErrorMessage.str(), XPTY0004);                                  
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                  
     }                                                                             
     break;                                                                        
   case GMLSF_SURFACE:                                                                
@@ -4346,7 +4350,7 @@ SFPatchNFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
       lItem1.getNodeName(item_qname1);                                                    
       lErrorMessage << "Geometry must be a Surface: "                                      
            << item_qname1.getPrefix() <<":"<<item_qname1.getLocalName() << ".";           
-      throwError(lErrorMessage.str(), XPTY0004);                                        
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                        
     }                                                                                   
     break;                                                                              
   }                                                                               
@@ -4358,7 +4362,7 @@ SFPatchNFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
   {
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as second parameter";
-    throwError(lErrorMessage.str(), XPTY0004);
+    throwError("UnrecognizedGeoObject", lErrorMessage.str());
   }
 
   uint32_t n;
@@ -4371,7 +4375,7 @@ SFPatchNFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
   {
     std::stringstream lErrorMessage;                                              
     lErrorMessage << "Index n (" << n << ") is outside the range ";  
-    throwError(lErrorMessage.str(), XPTY0004);                                    
+    throwError("IndexOutsideRange", lErrorMessage.str());                                    
   }
                                                                                   
   return ItemSequence_t(new SingletonItemSequence(nth_child));                  
@@ -4396,7 +4400,7 @@ SFBoundingPolygonsFunction::evaluate(const StatelessExternalFunction::Arguments_
       lItem1.getNodeName(item_qname1);
       lErrorMessage << "Unrecognized geometric type for element "                 
            << item_qname1.getPrefix() <<":"<<item_qname1.getLocalName() << " in first parameter.";    
-      throwError(lErrorMessage.str(), XPTY0004);                                  
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                  
     }                                                                             
     break;                                                                        
   case GMLSF_SURFACE:                                                                
@@ -4408,7 +4412,7 @@ SFBoundingPolygonsFunction::evaluate(const StatelessExternalFunction::Arguments_
       lItem1.getNodeName(item_qname1);                                                    
       lErrorMessage << "Parameter 1 must be a Surface: "                                      
            << item_qname1.getPrefix() <<":"<<item_qname1.getLocalName() << ".";           
-      throwError(lErrorMessage.str(), XPTY0004);                                        
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                        
     }                                                                                   
     break;                                                                              
   }                                                                               
@@ -4426,7 +4430,7 @@ SFBoundingPolygonsFunction::evaluate(const StatelessExternalFunction::Arguments_
       lItem2.getNodeName(item_qname2);
       lErrorMessage << "Unrecognized geometric type for element "                 
            << item_qname2.getPrefix() <<":"<<item_qname2.getLocalName() << " in first parameter.";    
-      throwError(lErrorMessage.str(), XPTY0004);                                  
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                  
     }                                                                             
     break;                                                                        
   case GMLSF_POLYGON:
@@ -4439,7 +4443,7 @@ SFBoundingPolygonsFunction::evaluate(const StatelessExternalFunction::Arguments_
       lItem2.getNodeName(item_qname2);                                                    
       lErrorMessage << "Parameter 2 must be a Polygon or PolygonPatch: "                                      
            << item_qname2.getPrefix() <<":"<<item_qname2.getLocalName() << ".";           
-      throwError(lErrorMessage.str(), XPTY0004);                                        
+      throwError("UnrecognizedGeoObject", lErrorMessage.str());                                        
     }                                                                                   
     break;                                                                              
   }                                                                               
@@ -4450,7 +4454,7 @@ SFBoundingPolygonsFunction::evaluate(const StatelessExternalFunction::Arguments_
   {//get upset
     std::stringstream lErrorMessage;
     lErrorMessage << "gml:Surface node must have a gml:patches child";
-    throwError(lErrorMessage.str(), XPTY0004);
+    throwError("UnrecognizedGeoObject", lErrorMessage.str());
   }
 
   Iterator_t    patches_children;

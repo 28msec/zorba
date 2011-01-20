@@ -1,1 +1,1 @@
-Error: XPTY0004
+Error: XQP0021

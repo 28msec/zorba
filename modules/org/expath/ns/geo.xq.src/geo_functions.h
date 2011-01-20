@@ -41,9 +41,9 @@ namespace zorba { namespace geomodule {
       //geos::geom::GeometryFactory   *geo_factory;
 
       static void
-      throwError(
-          const std::string errorMessage,
-          const XQUERY_ERROR& errorType);
+        throwError(
+              const char *err_localname,
+              const std::string aErrorMessage);
 
 
     public:
