@@ -32,7 +32,7 @@ return smtp:send($local:sender-host-info,
           <content contentType="text/plain" charset="UTF-8" contentTransferEncoding="ENC8BIT">
             Zorba really rocks. 
           </content>
-          <content contentType="image/gif" charset="UTF-8" contentTransferEncoding="ENCBASE64">
+          <content contentType="image/gif" charset="UTF-8" contentTransferEncoding="ENCBASE64" contentDisposition="attachement" contentDisposition-filename="the-truth.gif">
             {$image}
           </content>
           </multipart>
