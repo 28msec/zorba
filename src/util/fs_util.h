@@ -107,6 +107,158 @@ bool remove( StringType const &path ) {
   return remove( path.c_str() );
 }
 
+/**
+ * An %auto_remover is a simple class to guarantee that a file or directory
+ * referred to by a path is deleted upon the %auto_remover getting destroyed.
+ *
+ * @tparam StringType The type of string to store and return the path as.
+ */
+template<class StringType>
+class auto_remover {
+public:
+  typedef StringType string_type;
+
+  /**
+   * Constructs an %auto_remover.
+   *
+   * @param The path of the file or directory to delete automatically, if any.
+   */
+  explicit auto_remover( char const *path = "" ) : path_( path ) {
+  }
+
+  /**
+   * Constructs an %auto_remover.
+   *
+   * @tparam StringType The path's string type.
+   * @param The path of the file or directory to delete automatically, if any.
+   */
+  explicit auto_remover( StringType const &path ) : path_( path ) {
+  }
+
+  /**
+   * Copy-constructs an %auto_remover from another.  This is a destructive
+   * construction: the other %auto_remover's path will be reset to the empty
+   * string.
+   *
+   * @param a The %auto_remover to copy from.
+   */
+  auto_remover( auto_remover &a ) : path_( a.release() ) {
+  }
+
+  /**
+   * Copy-constructs an %auto_remover from another.  This is a destructive
+   * construction: the other %auto_remover's path will be reset to the empty
+   * string.
+   *
+   * @tparam StringType2 The other %auto_remover's string type.
+   * @param a The %auto_remover to copy from.
+   */
+  template<class StringType2>
+  auto_remover( auto_remover<StringType2> &a ) : path_( a.release() ) {
+  }
+
+  /**
+   * Destroys this %auto_remover.  If its path is not empty, the referred to
+   * file or directory is deleted.
+   */
+  ~auto_remover() {
+    delete_path();
+  }
+
+  /**
+   * Assigns the path of another %auto_remover to this %auto_remover.  This is
+   * a destructive assignment: the other %auto_remover's path will be reset to
+   * the empty string.
+   *
+   * @param a The %auto_remover to assign from.
+   * @return Returns \c *this.
+   */
+  auto_remover& operator=( auto_remover &a ) {
+    reset( a.release() );
+    return *this;
+  }
+
+  /**
+   * Assigns the path of another %auto_remover to this %auto_remover.  This is
+   * a destructive assignment: the other %auto_remover's path will be reset to
+   * the empty string.
+   *
+   * @tparam StringType2 The other %auto_remover's string type.
+   * @param a The %auto_remover to assign from.
+   * @return Returns \c *this.
+   */
+  template<class StringType2>
+  auto_remover& operator=( auto_remover<StringType2> &a ) {
+    reset( a.release() );
+    return *this;
+  }
+
+  /**
+   * Gets the path of the file or directory this %auto_remover will delete upon
+   * destruction.
+   *
+   * @return Returns said path.
+   */
+  StringType const& path() const {
+    return path_;
+  }
+
+  /**
+   * Releases the current file or directory from being deleted automatically.
+   */
+  StringType release() {
+    StringType const temp( path_ );
+    path_.clear();
+    return temp;
+  }
+
+  /**
+   * Resets this %auto_remover to delete a different file or directory upon
+   * destruction.  The previous file or directory is deleted immediately.
+   * (If you don't want it to be deleted, call release() first.)
+   *
+   * @param The path of the file or directory to delete automatically.
+   */
+  void reset( char const *path ) {
+    if ( path != path_ ) {
+      delete_path();
+      path_ = path;
+    }
+  }
+
+  /**
+   * Resets this %auto_remover to delete a different file or directory upon
+   * destruction.  The previous file or directory is deleted immediately.
+   * (If you don't want it to be deleted, call release() first.)
+   *
+   * @param The path of the file or directory to delete automatically.
+   */
+  void reset( StringType const &path ) {
+    reset( path.c_str() );
+  }
+
+  /**
+   * Resets this %auto_remover to delete a different file or directory upon
+   * destruction.  The previous file or directory is deleted immediately.
+   * (If you don't want it to be deleted, call release() first.)
+   *
+   * @tparam StringType2 The path's string type.
+   * @param The path of the file or directory to delete automatically.
+   */
+  template<class StringType2>
+  void reset( StringType2 const &path ) {
+    reset( path.c_str() );
+  }
+
+private:
+  void delete_path() {
+    if ( !path_.empty() )
+      remove( path_ );
+  }
+
+  StringType path_;
+};
+
 ////////// File information ///////////////////////////////////////////////////
 
 /**

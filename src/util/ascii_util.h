@@ -162,6 +162,25 @@ bool is_digit( CharType c ) {
 }
 
 /**
+ * Checks whether the given character is a punctuation character.  This function
+ * exists to make a proper function out of the standard ispunct(3) that may be
+ * implemented as a macro.
+ *
+ * @param CharType The character type.
+ * @param c The character to check.
+ * @return Returns \c true only if the character is a punctuation character.
+ */
+template<typename CharType> inline
+bool is_punct( CharType c ) {
+#ifdef WIN32
+  // Windows' ispunct() implementation crashes for non-ASCII characters.
+  return __isascii( c ) && ispunct( c );
+#else
+  return ispunct( c );
+#endif
+}
+
+/**
  * Checks whether the given character is a whitespace character.  This function
  * exists to make a proper function out of the standard isspace(3) that may be
  * implemented as a macro.
