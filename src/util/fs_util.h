@@ -21,17 +21,21 @@
 
 #include <stdexcept>
 #ifdef WIN32
-#include <windows.h>
+# include <windows.h>
 #else
-#include <sys/types.h>                  /* for off_t */
+# include <sys/types.h>                 /* for off_t */
 #endif /* WIN32 */
 
 #include "ascii_util.h"
 #include "zorbatypes/zstring.h"
 
 #ifndef MAX_PATH
+/**
+ * Maximum path length.  This is defined under Windows to be 1024.  There is no
+ * equivalent constant/macro for *nix systems, so simply borrow Windows' value.
+ */
 #define MAX_PATH 1024
-#endif
+#endif /* MAX_PATH */
 
 namespace zorba {
 namespace fs {
