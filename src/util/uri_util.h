@@ -47,22 +47,30 @@ extern char const *const scheme_string[];
  * Gets the scheme of the URI.
  *
  * @param uri The URI to get the scheme of.
+ * @param colon If not \c NULL, this pointer is set to the position of the ':'
+ * (if any) that follows the scheme name.
  * @return Returns the URI's scheme, or scheme::none if none, or
  * scheme::unknown if unknown.
  */
-scheme get_scheme( char const *uri );
+scheme get_scheme( char const *uri, char const **colon = 0 );
 
 /**
  * Gets the scheme of the URI.
  *
- * @tparam StringType The URI's string type.
+ * @tparam StringType The string type.
  * @param uri The URI to get the scheme of.
+ * @param sname If not \c NULL and the scheme is known, this is set to the
+ * scheme's name.
  * @return Returns the URI's scheme, or scheme::none if none, or
  * scheme::unknown if unknown.
  */
 template<class StringType> inline
-scheme get_scheme( StringType const &uri ) {
-  return get_scheme( uri.c_str() );
+scheme get_scheme( StringType const &uri, StringType *sname = 0 ) {
+  char const *colon;
+  scheme const s = get_scheme( uri.c_str(), &colon );
+  if ( sname && s )
+    *sname = StringType( uri.data(), colon - uri.data() );
+  return s;
 }
 
 ////////// Encoding ///////////////////////////////////////////////////////////

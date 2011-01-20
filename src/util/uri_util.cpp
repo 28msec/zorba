@@ -35,7 +35,6 @@
 
 #include "fs_util.h"
 #include "less.h"
-#include "string_util.h"
 #include "uri_util.h"
 
 using namespace std;
@@ -218,14 +217,16 @@ void fetch_to_path_impl( char const *uri, char *path, bool *is_temp ) {
 #endif /* ZORBA_WITH_FILE_ACCESS */
 }
 
-scheme get_scheme( char const *uri ) {
-  zstring scheme_name;
-  if ( split( uri, ':', &scheme_name, NULL ) ) {
+scheme get_scheme( char const *uri, char const **ppcolon ) {
+  if ( char const *const pcolon = ::strchr( uri, ':' ) ) {
     static char const *const *const begin = scheme_string;
     static char const *const *const end =
       scheme_string + sizeof( scheme_string ) / sizeof( char* );
 
-    char const *const s = scheme_name.c_str();
+    if ( ppcolon )
+      *ppcolon = pcolon;
+    zstring const sname( uri, pcolon - uri );
+    char const *const s = sname.c_str();
     char const *const *const entry =
       ::lower_bound( begin, end, s, less<char const*>() );
     return entry != end && ::strcmp( s, *entry ) == 0 ?
