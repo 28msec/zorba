@@ -1461,12 +1461,6 @@ Iterator tree for raytracer:trace-ray:
 
 Iterator tree for shapes:intersect:
 <flwor::FLWORIterator>
-  <LetVariable name="start" materialize="true">
-    <LetVarIterator varname="start"/>
-  </LetVariable>
-  <LetVariable name="dir" materialize="true">
-    <LetVarIterator varname="dir"/>
-  </LetVariable>
   <ForVariable name="shape">
     <LetVarIterator varname="shape"/>
   </ForVariable>
@@ -2379,9 +2373,6 @@ Iterator tree for vector:sum:
     <LetVariable name="v" materialize="true">
       <LetVarIterator varname="v"/>
     </LetVariable>
-    <ForVariable name="stride">
-      <LetVarIterator varname="stride"/>
-    </ForVariable>
     <ForVariable name="c">
       <FnCountIterator>
         <LetVarIterator varname="v"/>
@@ -2397,7 +2388,7 @@ Iterator tree for vector:sum:
           <ForVariable name="x">
             <OpToIterator>
               <SingletonIterator value="xs:integer(1)"/>
-              <ForVarIterator varname="stride"/>
+              <LetVarIterator varname="stride"/>
             </OpToIterator>
           </ForVariable>
           <ReturnClause>
@@ -2406,7 +2397,7 @@ Iterator tree for vector:sum:
         </flwor::FLWORIterator>
         <UDFunctionCallIterator>
           <LetVarIterator varname="v"/>
-          <ForVarIterator varname="stride"/>
+          <LetVarIterator varname="stride"/>
           <ForVarIterator varname="c"/>
           <SingletonIterator value="xs:integer(0)"/>
         </UDFunctionCallIterator>

@@ -1145,6 +1145,7 @@ void XQueryImpl::serialize(
 PlanWrapper_t XQueryImpl::generateWrapper()
 {
   theDynamicContext->reset_current_date_time();
+
   PlanWrapper_t lPlan = new PlanWrapper(
       static_cast<PlanIterator*>(thePlanProxy->theRootIter.getp()),
       theCompilerCB,

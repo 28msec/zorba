@@ -200,12 +200,13 @@ long dynamic_context::get_implicit_timezone() const
 }
 
 
-void dynamic_context::set_current_date_time( const store::Item_t& aDateTimeItem )
+void dynamic_context::set_current_date_time(const store::Item_t& aDateTimeItem)
 {
   this->current_date_time_item = aDateTimeItem;
 }
 
-void dynamic_context::reset_current_date_time( )
+
+void dynamic_context::reset_current_date_time()
 {
   int lTimeShift = 0;
 #if defined (WIN32)

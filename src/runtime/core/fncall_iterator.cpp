@@ -54,6 +54,9 @@ END_SERIALIZABLE_CLASS_VERSIONS(StatelessExtFunctionCallIterator)
 
 
 
+/*******************************************************************************
+
+********************************************************************************/
 UDFunctionCallIteratorState::UDFunctionCallIteratorState()
   :
   thePlan(NULL),
@@ -64,6 +67,9 @@ UDFunctionCallIteratorState::UDFunctionCallIteratorState()
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 UDFunctionCallIteratorState::~UDFunctionCallIteratorState()
 {
   if (thePlanOpen)
@@ -173,25 +179,42 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
 
   // Create a wrapper over each subplan that computes an argument expr, if the
   // associated param is actually used anywhere in the function body.
-  const std::vector<LetVarIter_t>& argRefs = theUDF->getArgVarRefIters();
+  const std::vector<std::vector<LetVarIter_t> >& argRefs = theUDF->getArgVarRefIters();
 
   state->theArgWrappers.resize(argRefs.size());
 
-  std::vector<LetVarIter_t>::const_iterator argRefsIte = argRefs.begin();
-  std::vector<LetVarIter_t>::const_iterator argRefsEnd = argRefs.end();
+  std::vector<std::vector<LetVarIter_t> >::const_iterator argRefsIte = argRefs.begin();
+  std::vector<std::vector<LetVarIter_t> >::const_iterator argRefsEnd = argRefs.end();
+
   std::vector<PlanIter_t>::const_iterator argsIte = theChildren.begin();
-  std::vector<store::Iterator_t>::iterator argWrapsIte = state->theArgWrappers.begin();
+
+  std::vector<std::vector<store::Iterator_t> >::iterator argWrapsIte = 
+  state->theArgWrappers.begin();
+
   for (; argRefsIte != argRefsEnd; ++argRefsIte, ++argsIte, ++argWrapsIte)
   {
-    const LetVarIter_t& argRef = (*argRefsIte);
-    if (argRef != NULL)
-    {
-      (*argWrapsIte) = new PlanIteratorWrapper((*argsIte), planState);
+    const std::vector<LetVarIter_t>& argVarRefs = (*argRefsIte);
+    std::vector<store::Iterator_t>& argVarWraps = (*argWrapsIte);
 
-      // Cannot do the arg bind here because the state->thePlan has not been
-      // opened yet, and as a result, state->thePlanState has not been
-      // initialized either.
-      //argRef->bind(*argWrapsIte, *state->thePlanState);
+    argVarWraps.resize(argVarRefs.size());
+
+    std::vector<LetVarIter_t>::const_iterator argVarRefsIte = argVarRefs.begin();
+    std::vector<LetVarIter_t>::const_iterator argVarRefsEnd = argVarRefs.end();
+
+    std::vector<store::Iterator_t>::iterator argVarWrapsIte = argVarWraps.begin();
+
+    for (; argVarRefsIte != argVarRefsEnd; ++argVarRefsIte, ++argVarWrapsIte)
+    {
+      const LetVarIter_t& argRef = (*argVarRefsIte);
+      if (argRef != NULL)
+      {
+        (*argVarWrapsIte) = new PlanIteratorWrapper((*argsIte), planState);
+        
+        // Cannot do the arg bind here because the state->thePlan has not been
+        // opened yet, and as a result, state->thePlanState has not been
+        // initialized either.
+        //argRef->bind(*argWrapsIte, *state->thePlanState);
+      }
     }
   }
 }
@@ -239,7 +262,8 @@ void UDFunctionCallIterator::closeImpl(PlanState& planState)
 ********************************************************************************/
 bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  try {
+  try 
+  {
     bool success = true;
 
     UDFunctionCallIteratorState* state;
@@ -257,18 +281,31 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
 
     // Bind the args.
     {
-      const std::vector<LetVarIter_t>& argRefs = theUDF->getArgVarRefIters();
+      const std::vector<std::vector<LetVarIter_t> >& argRefs = 
+      theUDF->getArgVarRefIters();
 
-      std::vector<LetVarIter_t>::const_iterator argRefsIte = argRefs.begin();
-      std::vector<LetVarIter_t>::const_iterator argRefsEnd = argRefs.end();
-      std::vector<store::Iterator_t>::iterator argWrapsIte = state->theArgWrappers.begin();
+      std::vector<std::vector<LetVarIter_t> >::const_iterator argRefsIte;
+      std::vector<std::vector<LetVarIter_t> >::const_iterator argRefsEnd = argRefs.end();
+      std::vector<std::vector<store::Iterator_t> >::iterator argWrapsIte;
 
-      for (; argRefsIte != argRefsEnd; ++argRefsIte, ++argWrapsIte)
+      for (argRefsIte = argRefs.begin(), argWrapsIte = state->theArgWrappers.begin();
+           argRefsIte != argRefsEnd;
+           ++argRefsIte, ++argWrapsIte)
       {
-        const LetVarIter_t& argRef = (*argRefsIte);
-        if (argRef != NULL)
+        const std::vector<LetVarIter_t>& argVarRefs = (*argRefsIte);
+        std::vector<store::Iterator_t>& argVarWraps = (*argWrapsIte);
+
+        std::vector<LetVarIter_t>::const_iterator argVarRefsIte = argVarRefs.begin();
+        std::vector<LetVarIter_t>::const_iterator argVarRefsEnd = argVarRefs.end();
+        std::vector<store::Iterator_t>::iterator argVarWrapsIte = argVarWraps.begin();
+
+        for (; argVarRefsIte != argVarRefsEnd; ++argVarRefsIte)
         {
-          argRef->bind(*argWrapsIte, *state->thePlanState);
+          const LetVarIter_t& argRef = (*argVarRefsIte);
+          if (argRef != NULL)
+          {
+            argRef->bind(*argVarWrapsIte, *state->thePlanState);
+          }
         }
       }
     }
@@ -281,7 +318,7 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
       }
       catch (ExitException &e)
       {
-        state->exitValue = e.val;
+        state->theExitValue = e.val;
         success = false;
       }
 
@@ -295,9 +332,9 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
       }
     }
 
-    if (state->exitValue != NULL)
+    if (state->theExitValue != NULL)
     {
-      while (state->exitValue->next(result))
+      while (state->theExitValue->next(result))
         STACK_PUSH(true, state);
     }
 
@@ -333,10 +370,16 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
 NARY_ACCEPT(UDFunctionCallIterator);
 
 
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  External function invocation                                               //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
 /*******************************************************************************
 
 ********************************************************************************/
-
 class ExtFuncArgItemSequence : public ItemSequence
 {
 private:
@@ -361,6 +404,9 @@ public:
 };
 
 
+/*******************************************************************************
+
+********************************************************************************/
 StatelessExtFunctionCallIteratorState::StatelessExtFunctionCallIteratorState()
 {
 }
@@ -384,6 +430,9 @@ void StatelessExtFunctionCallIteratorState::reset(PlanState& planState)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 StatelessExtFunctionCallIterator::StatelessExtFunctionCallIterator(
     static_context* sctx,
     const QueryLoc& loc,

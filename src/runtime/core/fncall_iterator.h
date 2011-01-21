@@ -47,18 +47,25 @@ class StaticContextImpl;
                      time open() is invoked on thePlan).
   thePlanStateSize : The size of the plan state block.
   thePlanOpen      :
-  theArgWrappers   :
-  exitValue        :
+  theArgWrappers   : For each arg var V and each reference v of V in the body of
+                     the udf, theArgWrappers stores a plan iterator wrapper over
+                     the sub plan that compute the arg expr. Note: If there are
+                     more than one references of V, these references are
+                     "mutually exclusive", ie, at most one of the references 
+                     will actually be reached during each particular execution
+                     of the body. So, it is never the case that the arg expr
+                     will have more than one consumers.
+  theExitValue     :
 ********************************************************************************/
 class UDFunctionCallIteratorState : public PlanIteratorState 
 {
  public:
-  PlanIterator                  * thePlan;
-  PlanState                     * thePlanState;
-  uint32_t                        thePlanStateSize;
-  bool                            thePlanOpen;
-  std::vector<store::Iterator_t>  theArgWrappers;
-  store::Iterator_t               exitValue;
+  PlanIterator                               * thePlan;
+  PlanState                                  * thePlanState;
+  uint32_t                                     thePlanStateSize;
+  bool                                         thePlanOpen;
+  std::vector<std::vector<store::Iterator_t> > theArgWrappers;
+  store::Iterator_t                            theExitValue;
 
   UDFunctionCallIteratorState();
 
@@ -96,7 +103,8 @@ public:
         std::vector<PlanIter_t>& args, 
         const user_function* aUDF)
     :
-    NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>(sctx, loc, args), 
+    NaryBaseIterator<UDFunctionCallIterator,
+                     UDFunctionCallIteratorState>(sctx, loc, args), 
     theUDF(const_cast<user_function*>(aUDF)),
     theIsDynamic(false)
   {

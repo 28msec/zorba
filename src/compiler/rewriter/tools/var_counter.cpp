@@ -39,13 +39,40 @@ bool count_variable_uses_rec(
     return true;
   }
 
-  ExprConstIterator iter(e);
-  while (!iter.done())
+  if (e->get_expr_kind() == if_expr_kind)
   {
-    if (!count_variable_uses_rec(iter.get_expr(), var, rCtx, limit, count))
-      return false;
+    const if_expr* ifExpr = static_cast<const if_expr*>(e);
 
-    iter.next();
+    int thenCount = 0;
+    int elseCount = 0;
+
+    if (!count_variable_uses_rec(ifExpr->get_cond_expr(), var, rCtx, limit, count))
+        return false;
+
+    if (!count_variable_uses_rec(ifExpr->get_then_expr(), var, rCtx, limit, thenCount))
+    {
+      count = thenCount;
+      return false;
+    }
+
+    if (!count_variable_uses_rec(ifExpr->get_else_expr(), var, rCtx, limit, elseCount))
+    {
+      count = elseCount;
+      return false;
+    }
+
+    count += (thenCount > elseCount ? thenCount : elseCount);
+  }
+  else
+  {
+    ExprConstIterator iter(e);
+    while (!iter.done())
+    {
+      if (!count_variable_uses_rec(iter.get_expr(), var, rCtx, limit, count))
+        return false;
+      
+      iter.next();
+    }
   }
 
   return true;

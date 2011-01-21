@@ -584,7 +584,11 @@ static bool safe_to_fold_single_use(
 
 
 /*******************************************************************************
-
+  Given a variable V and an expression E that references V a given number of
+  times (numRemainingRefs), return true if there is at least one reference v
+  of V in E such that:
+  (a) v occurs inside a for-loop within E, or
+  (b) 
 ********************************************************************************/
 static bool var_in_try_block_or_in_loop(
     const var_expr* v,

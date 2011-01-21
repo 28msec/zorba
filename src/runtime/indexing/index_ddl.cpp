@@ -198,7 +198,7 @@ bool CreateInternalIndexIterator::nextImpl(
 
   planState.dctx()->bindIndex(indexDecl->getName(), storeIndex);
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 

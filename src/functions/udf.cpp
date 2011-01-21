@@ -282,7 +282,7 @@ BoolAnnotationValue user_function::ignoresDuplicateNodes(
 /*******************************************************************************
 
 ********************************************************************************/
-const std::vector<LetVarIter_t>& user_function::getArgVarRefIters() const
+const std::vector<std::vector<LetVarIter_t> >& user_function::getArgVarRefIters() const
 {
   return theArgVarRefs;
 }
@@ -307,12 +307,15 @@ PlanIter_t user_function::getPlan(CompilerCB* ccb)
       setBody(body);
     }
 
-    std::vector<std::vector<LetVarIter_t> > param_iter_vec(theArgVars.size());
-    hash64map<std::vector<LetVarIter_t> *> param_map;
+    ulong numArgs = theArgVars.size();
 
-    for (ulong i = 0; i < theArgVars.size(); ++i)
+    hash64map<std::vector<LetVarIter_t> *> argVarToRefsMap;
+
+    theArgVarRefs.resize(numArgs);
+
+    for (ulong i = 0; i < numArgs; ++i)
     {
-      param_map.put((uint64_t)&*theArgVars[i], &param_iter_vec[i]);
+      argVarToRefsMap.put((uint64_t)&*theArgVars[i], &theArgVarRefs[i]);
     }
 
     const store::Item* lName = getName();
@@ -322,26 +325,7 @@ PlanIter_t user_function::getPlan(CompilerCB* ccb)
                               lName->getStringValue().c_str()),
                              &*theBodyExpr,
                              ccb,
-                             &param_map);
-
-    for (ulong i = 0; i < param_iter_vec.size(); ++i)
-    {
-      std::vector<LetVarIter_t>& vec = param_iter_vec[i];
-      switch(vec.size())
-      {
-        case 0:
-          theArgVarRefs.push_back(NULL);
-          break;
-
-        case 1:
-          theArgVarRefs.push_back(vec[0]);
-          break;
-
-        default:
-          ZORBA_ASSERT(false);
-          break;
-      }
-    }
+                             &argVarToRefsMap);
   }
   return thePlan;
 }

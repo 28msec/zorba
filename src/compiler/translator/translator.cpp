@@ -8636,7 +8636,11 @@ void end_visit(const VarRef& v, void* /*visit_state*/)
 
       std::map<zstring, zstring>::const_iterator ite = theModulesStack.begin();
       std::map<zstring, zstring>::const_iterator end = theModulesStack.end();
-      for (++ite; ite != end; ++ite)
+
+      --end;
+      assert((*end).second == theModuleNamespace);
+
+      for (; ite != end; ++ite)
       {
         if ((*ite).second == var_ns)
         {

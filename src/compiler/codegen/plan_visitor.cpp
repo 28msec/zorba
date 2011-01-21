@@ -2964,13 +2964,13 @@ PlanIter_t codegen(
       descr != NULL &&
       Properties::instance()->printIteratorTree())
   {
-    std::ostream &os = Properties::instance()->iterPlanTest ()
-      ? std::cout
-      : Properties::instance()->debug_out();
+    std::ostream& os = (Properties::instance()->iterPlanTest() ?
+                        std::cout :
+                        Properties::instance()->debug_out());
 
     os << "Iterator tree for " << descr << ":\n";
-    XMLIterPrinter vp (os);
-    print_iter_plan (vp, result);
+    XMLIterPrinter vp(os);
+    print_iter_plan(vp, result);
     os << endl;
   }
 
