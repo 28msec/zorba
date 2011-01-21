@@ -78,6 +78,7 @@ ELSE(WIN32)
     string_test.cpp
     main_sequential.cpp
     os_module.cpp
+    datetime.cpp
   # multithread_simple.cpp
   # multithread_stress_test.cpp
  )

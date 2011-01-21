@@ -119,6 +119,8 @@ public:
 
   void set_current_date_time(const store::Item_t&);
 
+  void reset_current_date_time();
+
   store::Item_t get_current_date_time() const;
 
   store::Item_t get_current_time_millis() const;

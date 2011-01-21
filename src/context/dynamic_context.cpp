@@ -134,46 +134,7 @@ dynamic_context::dynamic_context(dynamic_context* parent)
 
   if(parent == NULL)
   {
-    int lTimeShift = 0;
-#if defined (WIN32)
-    struct _timeb timebuffer;
-    _ftime_s( &timebuffer );
-    struct ::tm gmtm;
-    localtime_s(&gmtm, &timebuffer.time); //thread safe localtime on Windows
-    lTimeShift = -timebuffer.timezone*60;
-    if (gmtm.tm_isdst != 0)
-      lTimeShift += 3600;
-#else
-    struct timeb timebuffer;
-    ftime( &timebuffer );
-    struct ::tm gmtm;
-    localtime_r(&timebuffer.time, &gmtm); //thread safe localtime on Linux
-    lTimeShift = gmtm.tm_gmtoff;
-#endif
-
-    set_implicit_timezone(lTimeShift);//in seconds
-
-    GENV_ITEMFACTORY->createDateTime(current_date_time_item,
-                                     gmtm.tm_year + 1900,
-                                     gmtm.tm_mon + 1,
-                                     gmtm.tm_mday,
-                                     gmtm.tm_hour,
-                                     gmtm.tm_min,
-                                     gmtm.tm_sec + timebuffer.millitm/1000.0,
-                                     static_cast<short>(theTimezone/3600));
-
-#if WIN32
-    time_t t0;
-    time(&t0);
-    GENV_ITEMFACTORY->createLong(current_time_millis, t0*1000);
-#else
-    timeval tv;
-    gettimeofday(&tv, 0);
-    long long millis = tv.tv_sec;
-    millis = millis * 1000 + tv.tv_usec/1000;
-    GENV_ITEMFACTORY->createLong(current_time_millis, millis);
-#endif
-
+    reset_current_date_time();
     ctxt_position = 0;
   }
   else
@@ -242,6 +203,49 @@ long dynamic_context::get_implicit_timezone() const
 void dynamic_context::set_current_date_time( const store::Item_t& aDateTimeItem )
 {
   this->current_date_time_item = aDateTimeItem;
+}
+
+void dynamic_context::reset_current_date_time( )
+{
+  int lTimeShift = 0;
+#if defined (WIN32)
+  struct _timeb timebuffer;
+  _ftime_s( &timebuffer );
+  struct ::tm gmtm;
+  localtime_s(&gmtm, &timebuffer.time); //thread safe localtime on Windows
+  lTimeShift = -timebuffer.timezone*60;
+  if (gmtm.tm_isdst != 0)
+    lTimeShift += 3600;
+#else
+  struct timeb timebuffer;
+  ftime( &timebuffer );
+  struct ::tm gmtm;
+  localtime_r(&timebuffer.time, &gmtm); //thread safe localtime on Linux
+  lTimeShift = gmtm.tm_gmtoff;
+#endif
+
+  set_implicit_timezone(lTimeShift);//in seconds
+
+  GENV_ITEMFACTORY->createDateTime(current_date_time_item,
+                                   gmtm.tm_year + 1900,
+                                   gmtm.tm_mon + 1,
+                                   gmtm.tm_mday,
+                                   gmtm.tm_hour,
+                                   gmtm.tm_min,
+                                   gmtm.tm_sec + timebuffer.millitm/1000.0,
+                                   static_cast<short>(theTimezone/3600));
+
+#if WIN32
+  time_t t0;
+  time(&t0);
+  GENV_ITEMFACTORY->createLong(current_time_millis, t0*1000);
+#else
+  timeval tv;
+  gettimeofday(&tv, 0);
+  long long millis = tv.tv_sec;
+  millis = millis * 1000 + tv.tv_usec/1000;
+  GENV_ITEMFACTORY->createLong(current_time_millis, millis);
+#endif
 }
 
 
