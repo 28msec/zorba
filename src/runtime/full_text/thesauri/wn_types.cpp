@@ -15,9 +15,9 @@
  */
 
 #include <algorithm>                    /* for lower_bound */
-#include <cassert>
 
 #include "util/less.h"
+#include "zorbaerrors/Assert.h"
 
 #include "wn_types.h"
 
@@ -147,7 +147,8 @@ namespace pointer {
       case iso2788::TT : return hypernym; // the best we can do
       case iso2788::UF : return unknown;
       case iso2788::USE: return unknown;
-      default          : assert( false ); // ensures all cases are handled
+      // ensures all cases are handled
+      default          : ZORBA_ASSERT( false );
     }
   }
 
