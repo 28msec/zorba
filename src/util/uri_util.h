@@ -43,6 +43,10 @@ enum scheme {
 };
 extern char const *const scheme_string[];
 
+inline std::ostream& operator<<( std::ostream &o, scheme s ) {
+  return o << scheme_string[ s ];
+}
+
 /**
  * Gets the scheme of the URI.
  *
