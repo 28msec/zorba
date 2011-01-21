@@ -33,7 +33,7 @@ namespace zorbacmd {
 class ZorbaCMDPropertiesBase : public ::zorba::PropertiesBase {
 protected:
   const char **get_all_options () const {
-    static const char *result [] = { "--timing", "--output-file", "--serialization-parameter", "--serialize-html", "--serialize-text", "--indent", "--print-query", "--print-errors-as-xml", "--byte-order-mark", "--omit-xml-declaration", "--base-uri", "--boundary-space", "--default-collation", "--construction-mode", "--ordering-mode", "--multiple", "--query", "--as-files", "--external-variable", "--context-item", "--optimization-level", "--lib-module", "--parse-only", "--compile-only", "--no-serializer", "--debug-ports", "--debug", "--debug-server", "--debug-server-host", "--no-colors", "--no-logo", "--timeout", "--module-path", "--option", "--trailing-nl", "--thesaurus", NULL };
+    static const char *result [] = { "--timing", "--output-file", "--serialization-parameter", "--serialize-html", "--serialize-text", "--indent", "--print-query", "--print-errors-as-xml", "--byte-order-mark", "--omit-xml-declaration", "--base-uri", "--boundary-space", "--default-collation", "--construction-mode", "--ordering-mode", "--multiple", "--query", "--as-files", "--external-variable", "--context-item", "--optimization-level", "--lib-module", "--parse-only", "--compile-only", "--no-serializer", "--debug-ports", "--debug", "--debug-server", "--debug-server-host", "--no-colors", "--no-logo", "--timeout", "--module-path", "--option", "--trailing-nl", "--stop-words", "--thesaurus", NULL };
     return result;
   }
   bool theTiming;
@@ -134,6 +134,7 @@ public:
   const std::string &modulePath () const { return theModulePath; }
   const std::vector<std::string> &option () const { return theOption; }
   const bool &trailingNl () const { return theTrailingNl; }
+  const std::vector<std::string> &stopWords () const { return theStopWords; }
   const std::vector<std::string> &thesaurus () const { return theThesaurus; }
 
   std::string load_argv (int argc, const char **argv) {
@@ -284,6 +285,11 @@ public:
       else if (strcmp (*argv, "--trailing-nl") == 0) {
         theTrailingNl = true;
       }
+      else if (strcmp (*argv, "--stop-words") == 0) {
+        int d = 2;
+        if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
+        if (*argv == NULL) { result = "No value given for --stop-words option"; break; }        init_val (*argv, theStopWords, d);
+      }
       else if (strcmp (*argv, "--thesaurus") == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
@@ -340,7 +346,8 @@ public:
 "--module-path\nModule paths added to the built-in resolver, i.e. where module imports are looking for modules.\n\n"
 "--option\nSet an XQuery option in the static context. The QName of the option is passed as a string in the notation by James Clark (i.e. {namespace}localname). For example, --option {http://www.zorba-xquery.com}option=value\n\n"
 "--trailing-nl\nOutput a trailing newline after the result of the query.\n\n"
-"--thesaurus\nMapping specifying a thesaurus URI to a thesaurus ID.\n\n"
+"--stop-words\nMapping specifying a stop-words URI to another.\n\n"
+"--thesaurus\nMapping specifying a thesaurus URI to another.\n\n"
 ;
   }
 
