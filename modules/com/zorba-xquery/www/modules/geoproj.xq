@@ -84,7 +84,7 @@ declare function geoproj:rad-to-deg($rad as xs:double) as xs:double
  :)
 declare %private function geoproj:proj-tsfn($phi as xs:double) as xs:double
 {
-   let $e := 0.0818192
+   let $e as xs:double := 0.0818192E0
    return
    math:tan(math:pi() div 4 - $phi div 2) div math:pow((1 - $e * math:sin($phi)) div (1 + $e * math:sin($phi)), $e div 2)
 };
@@ -127,7 +127,7 @@ declare function geoproj:wgs84-to-omerc( $lat_0 as xs:double,
                                          $k0 as xs:double,
                                          $lat_long_degrees as node()*) as node()*
 {
-  let $e := 0.0818192
+  let $e as xs:double := 0.0818192E0
   let $e2 := $e*$e
   let $phi0 := geoproj:deg-to-rad($lat_0)
   let $lambda0 := geoproj:deg-to-rad($long_c)
@@ -265,7 +265,7 @@ declare function geoproj:omerc-to-wgs84($lat_0 as xs:double,
                                          $k0 as xs:double,
                                          $coords as node()*) as node()*
 {
-  let $e := 0.0818192
+  let $e as xs:double := 0.0818192E0
   let $e2 := $e*$e
   let $phi0 := geoproj:deg-to-rad($lat_0)
   let $lambda0 := geoproj:deg-to-rad($long_c)
