@@ -357,10 +357,10 @@ DEF_ERR_CODE(XQP0032_ERROR_TRANSFORMING_XQUERYX_TO_XQUERY, XQP0032,
              "Error transforming XQueryX to XQuery using XSLT engine.")
 
 DEF_ERR_CODE(XQP0034_ILLEGAL_UTF8_BYTE, XQP0034,
-             "Illegal byte foud in UTF-8 character sequence.")
+             "Illegal byte found in UTF-8 character sequence.")
 
 DEF_ERR_CODE(XQP0035_ILLEGAL_UTF16_BYTE, XQP0035,
-             "Illegal byte foud in UTF-16 character sequence.")
+             "Illegal byte found in UTF-16 character sequence.")
 
 DEF_ERR_CODE(XQP0036_BREAKITERATOR_CREATION_FAILED, XQP0036,
              "ICU::BreakIterator creation failed.")
