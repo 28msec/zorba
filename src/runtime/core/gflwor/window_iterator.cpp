@@ -605,6 +605,24 @@ WindowIterator::~WindowIterator()
 /***************************************************************************//**
 
 ********************************************************************************/
+void WindowIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (Batcher<WindowIterator>*)this);
+  SERIALIZE_ENUM(WindowType, theWindowType);
+  ar & theTupleIter;
+  ar & theInputIter;
+  ar & theVarName;
+  ar & theVarRefs;
+  ar & theStartClause;
+  ar & theEndClause;
+  ar & theLazyEval;
+  ar & theMaxNeededHistory;
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
 uint32_t WindowIterator::getStateSize() const
 {
   return StateTraitsImpl<WindowState>::getStateSize();
@@ -800,26 +818,32 @@ bool WindowIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) con
         // variable that was bound in this step.
         lState->theCurWindow = lState->theOpenWindows.begin();
 
-        while (lState->theCurWindow != lState->theOpenWindows.end() &&
-               lState->theCurWindow->theEndPos != 0)
+        while (lState->theCurWindow != lState->theOpenWindows.end())
         {
-          theStartClause.bindExtern(aPlanState,
+          if (lState->theCurWindow->theEndPos != 0)
+          {
+            theStartClause.bindExtern(aPlanState,
+                                      lState->theDomainSeq,
+                                      lState->theCurWindow->theStartPos);
+
+            theEndClause.bindExtern(aPlanState,
                                     lState->theDomainSeq,
-                                    lState->theCurWindow->theStartPos);
+                                    lState->theCurWindow->theEndPos);
 
-          theEndClause.bindExtern(aPlanState,
-                                  lState->theDomainSeq,
-                                  lState->theCurWindow->theEndPos);
+            bindVariable(aPlanState,
+                         lState->theDomainSeq,
+                         lState->theCurWindow->theStartPos,
+                         lState->theCurWindow->theEndPos);
 
-          bindVariable(aPlanState,
-                       lState->theDomainSeq,
-                       lState->theCurWindow->theStartPos,
-                       lState->theCurWindow->theEndPos);
+            lState->theCurWindow = lState->theOpenWindows.erase(lState->theCurWindow);
+            doGarbageCollection(lState);
 
-          lState->theCurWindow = lState->theOpenWindows.erase(lState->theCurWindow);
-          doGarbageCollection(lState);
-
-          STACK_PUSH(true, lState);
+            STACK_PUSH(true, lState);
+          }
+          else
+          {
+            ++lState->theCurWindow;
+          }
         }
 
         ++lState->theCurInputPos;

@@ -179,6 +179,7 @@ protected:
 class EndClause : public ::zorba::serialization::SerializeBaseClass
 {
   friend class WindowIterator;
+
 protected:
   PlanIter_t  theEndClauseIter;
   WindowVars  theWindowVars;
@@ -340,19 +341,7 @@ public:
     Batcher<WindowIterator>(ar), theStartClause(ar) 
   {}
 
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar, (Batcher<WindowIterator>*)this);
-    SERIALIZE_ENUM(WindowType, theWindowType);
-    ar & theTupleIter;
-    ar & theInputIter;
-    ar & theVarName;
-    ar & theVarRefs;
-    ar & theStartClause;
-    ar & theEndClause;
-    ar & theLazyEval;
-    ar & theMaxNeededHistory;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   WindowIterator(
