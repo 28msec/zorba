@@ -404,7 +404,9 @@ void set_var(
     }
 		else
     {
-			dctx->setContextItemAsDocument(val.c_str(), std::auto_ptr<std::istream>(is), lLoadProperties);
+			dctx->setContextItemAsDocument(val.c_str(),
+                                     std::auto_ptr<std::istream>(is),
+                                     lLoadProperties);
     }
   }
 }

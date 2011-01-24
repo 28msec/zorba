@@ -938,6 +938,10 @@ bool WindowIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) con
                    lState->theOpenWindows[0].theStartPos,
                    lState->theCurInputPos - 1);
 
+      theStartClause.bindExtern(aPlanState,
+                                lState->theDomainSeq,
+                                lState->theOpenWindows[0].theStartPos);
+
       theEndClause.bindExtern(aPlanState,
                               lState->theDomainSeq,
                               lState->theCurInputPos-1);

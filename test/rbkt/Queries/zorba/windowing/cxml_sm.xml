@@ -1,0 +1,9 @@
+<sequence  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="cxml.xsd">
+  <ShipNotice date="2006-01-05T09:00:00-00:00" orderID="OID03"/>
+  <time date="2006-01-06T00:00:00-00:00"/>
+  <OrderRequest billTo="ACME2" date="2006-01-06T08:00:00-00:00"
+    orderID="OID04" total="100" type="new">
+    <Item partID="ID2" quantity="10" unitPrice="10"/>
+  </OrderRequest>
+  <time date="2006-01-07T00:00:00-00:00"/>
+</sequence>
