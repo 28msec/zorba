@@ -50,6 +50,18 @@
  :)
 module namespace geoproj = "http://www.zorba-xquery.com/modules/geoproj";
 import module namespace math = "http://www.zorba-xquery.com/modules/math";
+
+(:~
+ : Import module for checking if geoproj parameters are validated.
+ :)
+import module namespace zorba-schema = "http://www.zorba-xquery.com/modules/schema";
+
+
+(:~
+ : Contains the definitions of the geoproj parameters.
+:)
+import schema namespace geoproj-param = "http://www.zorba-xquery.com/modules/geoproj-param";
+
 declare namespace gml="http://www.opengis.net/gml";
 
 (:~
@@ -89,43 +101,11 @@ declare %private function geoproj:proj-tsfn($phi as xs:double) as xs:double
    math:tan(math:pi() div 4 - $phi div 2) div math:pow((1 - $e * math:sin($phi)) div (1 + $e * math:sin($phi)), $e div 2)
 };
 
-(:~
- : Forward projection from geographic coordinates lat-long on WGS84 ellipsoid to Oblique Mercator cylinder.<br/>
- : The Oblique Mercator projection is like the standard Mercator projection, but you can choose the point of origin.<br/>
- : Specify the coordinates of the center point somewhere near the points being projected, 
- : so the projection deformation is small.<br/>
- : The azimuth in the center point, alpha, is hardcoded to zero, so the true north is preserved.
- : This is a simplification of the standard Oblique Mercator projection. <br/>
- : Gamma, the azimuth of the rectified bearing of center line is also zero, calculated from alpha.<br/>
- : <br/>
- : The radius of the Earth in WGS84 is 6378137 m.<br/>
- : Reverse flatening 298.257223563.<br/>
- : Eccentricity e 0.0818192.<br/>
- :<br/>
- : @param $lat_0 is the latitude for center point, in degrees (-90, 90)
- : @param $long_c is the longitude for center point, in degrees (-180, 180)
- : @param $k0 is the scale in the center point. The scale will increase when going far to north and south.
- :        Use value 1 to get the true distances between points, in meters.
- :        At equator, the distance for 1 degree is aproximately 110 km.
- : @param $lat_long_degrees a sequence of nodes of type <br/>
- :   &lt;latlong&gt;&lt;lat&gt;<i>latitude degree</i>&lt;/lat&gt;&lt;long&gt;<i>longitude degree</i>&lt;/long&gt;&lt;/latlong&gt;
- : @return a sequence of x-y coordinates in format <br/>
- :   &lt;coord&gt;&lt;x&gt;<i>x</i>&lt;/x&gt;&lt;y&gt;<i>y</i>&lt;/y&gt;&lt;/coord&gt; <br/>
- :   Note that the x coordinate corresponds to the longitude, and y coordinate to the latitude.<br/>
- :   The coordinates are expressed in meters.<br/>
- :   The coordinates are relative to the center point.
- : @example geoproj1.xq
- : @example geoproj5.xq
- : @example geoproj6.xq
- : @example geoproj8.xq
- : @example geoproj9.xq
- : @example geoproj10.xq
- : @example geoproj12.xq
- :)
-declare function geoproj:wgs84-to-omerc( $lat_0 as xs:double,
+declare %private function geoproj:wgs84-to-omerc-validated( 
+                                         $lat_0 as xs:double,
                                          $long_c as xs:double,
                                          $k0 as xs:double,
-                                         $lat_long_degrees as node()*) as node()*
+                                         $lat_long_degrees as element(geoproj-param:latlong, geoproj-param:latlongType)*) as element(geoproj-param:coord)*
 {
   let $e as xs:double := 0.0818192E0
   let $e2 := $e*$e
@@ -148,8 +128,8 @@ declare function geoproj:wgs84-to-omerc( $lat_0 as xs:double,
   let $uc := if ($phi0 < 0) then -$uc else $uc
   
   for $latlong in $lat_long_degrees
-  let $phi := geoproj:deg-to-rad(normalize-space(string($latlong/lat)) cast as xs:double)
-  let $lambda := geoproj:deg-to-rad(normalize-space(string($latlong/long)) cast as xs:double)
+  let $phi := geoproj:deg-to-rad($latlong/*:lat)
+  let $lambda := geoproj:deg-to-rad($latlong/*:long)
   let $V := math:sin($B * ($lambda - $lambda0))
 	return
     	if (abs($phi) lt (math:pi() div 2 - 1.e-10)) then
@@ -165,7 +145,7 @@ declare function geoproj:wgs84-to-omerc( $lat_0 as xs:double,
           let $x := $x * 6378137
           let $y := $u
           let $y := $y * 6378137
-          return <coord><x>{$x}</x> <y>{$y}</y></coord>
+          return <geoproj-param:coord><geoproj-param:x>{$x}</geoproj-param:x> <geoproj-param:y>{$y}</geoproj-param:y></geoproj-param:coord>
         else
           let $v := $A div $B * -4.2897288031186085136750723197195
           let $u := $phi * $A div $B
@@ -174,8 +154,60 @@ declare function geoproj:wgs84-to-omerc( $lat_0 as xs:double,
           let $x := $x * 6378137
           let $y := $u
           let $y := $y * 6378137
-          return <coord><x>{$x}</x> <y>{$y}</y></coord>
+          return <geoproj-param:coord><geoproj-param:x>{$x}</geoproj-param:x> <geoproj-param:y>{$y}</geoproj-param:y></geoproj-param:coord>
 };
+
+(:~
+ : Forward projection from geographic coordinates lat-long on WGS84 ellipsoid to Oblique Mercator cylinder.<br/>
+ : The Oblique Mercator projection is like the standard Mercator projection, but you can choose the point of origin.<br/>
+ : Specify the coordinates of the center point somewhere near the points being projected, 
+ : so the projection deformation is small.<br/>
+ : The azimuth in the center point, alpha, is hardcoded to zero, so the true north is preserved.
+ : This is a simplification of the standard Oblique Mercator projection. <br/>
+ : Gamma, the azimuth of the rectified bearing of center line is also zero, calculated from alpha.<br/>
+ : <br/>
+ : The radius of the Earth in WGS84 is 6378137 m.<br/>
+ : Reverse flatening 298.257223563.<br/>
+ : Eccentricity e 0.0818192.<br/>
+ :<br/>
+ : @param $lat_0 is the latitude for center point, in degrees (-90, 90)
+ : @param $long_c is the longitude for center point, in degrees (-180, 180)
+ : @param $k0 is the scale in the center point. The scale will increase when going far to north and south.
+ :        Use value 1 to get the true distances between points, in meters.
+ :        At equator, the distance for 1 degree is aproximately 110 km.
+ : @param $lat_long_degrees a sequence of nodes of type <br/>
+ :   &lt;latlong&gt;&lt;lat&gt;<i>latitude degree</i>&lt;/lat&gt;&lt;long&gt;<i>longitude degree</i>&lt;/long&gt;&lt;/latlong&gt;<br/>
+ :   in namespace "http://www.zorba-xquery.com/modules/geoproj-param"
+ : @return a sequence of x-y coordinates in format <br/>
+ :   &lt;coord&gt;&lt;x&gt;<i>x</i>&lt;/x&gt;&lt;y&gt;<i>y</i>&lt;/y&gt;&lt;/coord&gt; <br/>
+ :   in namespace "http://www.zorba-xquery.com/modules/geoproj-param" <br/>
+ :   Note that the x coordinate corresponds to the longitude, and y coordinate to the latitude.<br/>
+ :   The coordinates are expressed in meters.<br/>
+ :   The coordinates are relative to the center point.
+ : @example geoproj1.xq
+ : @example geoproj5.xq
+ : @example geoproj6.xq
+ : @example geoproj8.xq
+ : @example geoproj9.xq
+ : @example geoproj10.xq
+ : @example geoproj12.xq
+ :)
+declare function geoproj:wgs84-to-omerc( $lat-0 as xs:double,
+                                         $long-c as xs:double,
+                                         $k0 as xs:double,
+                                         $lat-long-degrees as element(geoproj-param:latlong)*) as element(geoproj-param:coord)*
+{
+  let $validated-lat-long :=
+  (for $lat-long-degree in $lat-long-degrees
+  return
+    if(empty($lat-long-degree)) then
+      $lat-long-degrees
+    else
+      validate{$lat-long-degree} )
+  return
+  geoproj:wgs84-to-omerc-validated($lat-0, $long-c, $k0, $validated-lat-long)
+};
+
 
 (:~
  : Forward projection from geographic coordinates lat-long on WGS84 ellipsoid to Oblique Mercator cylinder.<br/>
@@ -187,19 +219,37 @@ declare function geoproj:wgs84-to-omerc( $lat_0 as xs:double,
  : @param $long_c is the longitude for center point, in degrees (-180, 180)
  : @param $k0 is the scale in the center point. 
  : @param $lat_long_degrees a sequence of nodes of type <br/>
- :   &lt;latlong&gt;&lt;lat&gt;<i>latitude degree</i>&lt;/lat&gt;&lt;long&gt;<i>longitude degree</i>&lt;/long&gt;&lt;/latlong&gt;
+ :   &lt;latlong&gt;&lt;lat&gt;<i>latitude degree</i>&lt;/lat&gt;&lt;long&gt;<i>longitude degree</i>&lt;/long&gt;&lt;/latlong&gt;<br/>
+ :   in namespace "http://www.zorba-xquery.com/modules/geoproj-param"
  : @return a sequence of x-y coordinates in format <br/>
  :   &lt;gml:pos&gt;<i>x</i> <i>y</i>&lt;/gml:pos&gt; <br/>
+ :   in namespace "http://www.opengis.net/gml"
  : @example geoproj3.xq
  :)
-declare function geoproj:wgs84-to-omerc-gmlpos( $lat_0 as xs:double,
+declare function geoproj:wgs84-to-omerc-gmlpos( $lat-0 as xs:double,
+                                         $long-c as xs:double,
+                                         $k0 as xs:double,
+                                         $lat-long-degrees as element(geoproj-param:latlong)*) as element(gml:pos)*
+{
+  let $validated-lat-long :=
+  (for $lat-long-degree in $lat-long-degrees
+  return 
+    if(empty($lat-long-degree)) then
+      $lat-long-degrees
+    else
+      validate{$lat-long-degree} )
+  return
+  geoproj:wgs84-to-omerc-gmlpos-validated($lat-0, $long-c, $k0, $validated-lat-long);
+};
+
+declare %private function geoproj:wgs84-to-omerc-gmlpos-validated( $lat_0 as xs:double,
                                          $long_c as xs:double,
                                          $k0 as xs:double,
-                                         $lat_long_degrees as node()*) as node()*
+                                         $lat_long_degrees as element(geoproj-param:latlong, geoproj-param:latlongType)*) as element(gml:pos)*
 {
   for $coord in geoproj:wgs84-to-omerc($lat_0, $long_c, $k0, $lat_long_degrees)
   return
-    <gml:pos>{string($coord/x)}{" "}{string($coord/y)}</gml:pos>
+    <gml:pos>{string($coord/*:x)}{" "}{string($coord/*:y)}</gml:pos>
 };
 
 (:~
@@ -252,18 +302,36 @@ declare %private function geoproj:proj-phi2($ts as xs:double, $e as xs:double) a
  : @param $k0 is the scale in the center point.
  : @param $coords a sequence of nodes of type <br/>
  :   &lt;coord&gt;&lt;x&gt;<i>x</i>&lt;/x&gt;&lt;y&gt;<i>y</i>&lt;/y&gt;&lt;/coord&gt; <br/>
+ :   in namespace "http://www.zorba-xquery.com/modules/geoproj-param"<br/>
  :   The coordinates are expressed in meters.
  : @return a sequence of geographic coordinates in format <br/>
  :   &lt;latlong&gt;&lt;lat&gt;<i>latitude degree</i>&lt;/lat&gt;&lt;long&gt;<i>longitude degree</i>&lt;/long&gt;&lt;/latlong&gt;<br/>
+ :   in namespace "http://www.zorba-xquery.com/modules/geoproj-param"<br/>
  :   Note that the longitude corresponds to the x coordinate, and the latitude to the y coordinate.<br/>
  : @example geoproj2.xq
  : @example geoproj7.xq
  : @example geoproj11.xq
  :)
-declare function geoproj:omerc-to-wgs84($lat_0 as xs:double,
+declare function geoproj:omerc-to-wgs84($lat-0 as xs:double,
+                                         $long-c as xs:double,
+                                         $k0 as xs:double,
+                                         $coords as element(geoproj-param:coord)*) as element(geoproj-param:latlong)*
+{
+  let $validated-coords :=
+  (for $coord in $coords
+  return
+    if(empty($coords)) then
+      $coord
+    else
+      validate{$coord} )
+  return
+  geoproj:omerc-to-wgs84-validated($lat-0, $long-c, $k0, $validated-coords);
+};
+
+declare %private function geoproj:omerc-to-wgs84-validated($lat_0 as xs:double,
                                          $long_c as xs:double,
                                          $k0 as xs:double,
-                                         $coords as node()*) as node()*
+                                         $coords as element(geoproj-param:coord, geoproj-param:coordType)*) as element(geoproj-param:latlong)*
 {
   let $e as xs:double := 0.0818192E0
   let $e2 := $e*$e
@@ -286,8 +354,8 @@ declare function geoproj:omerc-to-wgs84($lat_0 as xs:double,
   let $uc := if ($phi0 < 0) then -$uc else $uc
   
   for $coord in $coords
-  let $x := (normalize-space($coord/x) cast as xs:double) div 6378137
-  let $y := (normalize-space($coord/y) cast as xs:double) div 6378137
+  let $x := $coord/*:x div 6378137
+  let $y := $coord/*:y div 6378137
   let $v := $x
   let $u := $y + $uc
   let $Qp := math:exp(-$B * $v div $A)
@@ -298,15 +366,15 @@ declare function geoproj:omerc-to-wgs84($lat_0 as xs:double,
   return
     if(abs(abs($Up) - 1) lt 1e-10) then
       if ($Up gt 0) then
-        <latlong><lat>90</lat> <long>{$long_c}</long></latlong>
+        <geoproj-param:latlong><geoproj-param:lat>90</geoproj-param:lat> <geoproj-param:long>{$long_c}</geoproj-param:long></geoproj-param:latlong>
       else
-        <latlong><lat>-90</lat> <long>{$long_c}</long></latlong>
+        <geoproj-param:latlong><geoproj-param:lat>-90</geoproj-param:lat> <geoproj-param:long>{$long_c}</geoproj-param:long></geoproj-param:latlong>
     else
       let $phi := $E div math:sqrt((1 + $Up) div (1 - $Up))
       let $phi := geoproj:proj-phi2(math:pow($phi, 1 div $B), $e)
       let $lambda := - 1 div $B * math:atan2($Sp, math:cos($B * $u div $A))
       return
-        <latlong><lat>{geoproj:rad-to-deg($phi)}</lat> <long>{geoproj:rad-to-deg($lambda+$lambda0)}</long></latlong>
+        <geoproj-param:latlong><geoproj-param:lat>{geoproj:rad-to-deg($phi)}</geoproj-param:lat> <geoproj-param:long>{geoproj:rad-to-deg($lambda+$lambda0)}</geoproj-param:long></geoproj-param:latlong>
 };
 
 (:~
@@ -321,14 +389,16 @@ declare function geoproj:omerc-to-wgs84($lat_0 as xs:double,
  : @param $k0 is the scale in the center point. 
  : @param $gmlposs a sequence of nodes of type <br/>
  :   &lt;gml:pos&gt;<i>x</i> <i>y</i>&lt;/gml:pos&gt; <br/>
- : @return a sequence of geographic coordinates in format <br/>
- :   &lt;latlong&gt;&lt;lat&gt;<i>latitude degree</i>&lt;/lat&gt;&lt;long&gt;<i>longitude degree</i>&lt;/long&gt;&lt;/latlong&gt;
+ :   in namespace "http://www.opengis.net/gml"
+ : @return a sequence of geographic coordinates in format <br/>v
+ :   &lt;latlong&gt;&lt;lat&gt;<i>latitude degree</i>&lt;/lat&gt;&lt;long&gt;<i>longitude degree</i>&lt;/long&gt;&lt;/latlong&gt;<br/>
+ :   in namespace "http://www.zorba-xquery.com/modules/geoproj-param"
  : @example geoproj4.xq
  :)
 declare function geoproj:omerc-gmlpos-to-wgs84($lat_0 as xs:double,
                                          $long_c as xs:double,
                                          $k0 as xs:double,
-                                         $gmlposs as node()*) as node()*
+                                         $gmlposs as element(gml:pos)*) as element(geoproj-param:latlong)*
 {
   geoproj:omerc-to-wgs84($lat_0, $long_c, $k0,
                   (for $gmlpos in $gmlposs
@@ -336,7 +406,7 @@ declare function geoproj:omerc-gmlpos-to-wgs84($lat_0 as xs:double,
                   let $xy := tokenize($xystring, "[ \t\r\n]+")
                   let $x := $xy[1]
                   let $y := $xy[2]
-                  return <coord><x>{$x}</x><y>{$y}</y></coord>))
+                  return <geoproj-param:coord><geoproj-param:x>{$x}</geoproj-param:x><geoproj-param:y>{$y}</geoproj-param:y></geoproj-param:coord>))
 };
 
 (:~
