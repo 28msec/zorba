@@ -323,5 +323,10 @@ EXPECTED_FAILURE(test/rbkt/zorba/aleXis/q11 3103700)
 
 EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_1_1 3106635)
 
+EXPECTED_FAILURE(test/rbkt/zorba/windowing/q8 3161546)
+EXPECTED_FAILURE(test/rbkt/zorba/windowing/q17 3161546)
+EXPECTED_FAILURE(test/rbkt/zorba/windowing/q18 3161546)
+EXPECTED_FAILURE(test/rbkt/zorba/windowing/q19 3161546)
+
 # --------------------------------------------------------------------------
 # vim:set et sw=2 ts=2:

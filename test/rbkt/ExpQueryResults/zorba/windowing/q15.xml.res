@@ -1,0 +1,1 @@
+<result><item><date>2003-06-03</date><title xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Extending XQuery with Window Functions</title><title xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">XQueryP: A new programming language is born</title></item><item><date>2003-06-04</date></item></result>
