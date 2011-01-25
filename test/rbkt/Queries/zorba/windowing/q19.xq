@@ -1,14 +1,16 @@
 declare variable $seq := fn:doc("cxml.xml");
 
-<result>{
-  for sliding window $w in $seq/sequence/* 
+<result>
+{
+for sliding window $w in $seq/sequence/* 
     start previous $wSPrev when $wSPrev[self::OrderRequest]
     end next $wENext when $wENext/@orderID eq  $wSPrev/@orderID and
-          ( $wENext[self::ConfirmationRequest] and $wENext/@status eq "reject") 
-            or $wENext[self::ShipNotice]
-  where $wENext[self::ShipNotice]
-  return 
-    <bundleWith orderId="{$wSPrev/@orderID}">{
+        ( $wENext[self::ConfirmationRequest] and $wENext/@status eq "reject") 
+        or $wENext[self::ShipNotice]
+where $wENext[self::ShipNotice]
+return 
+    <bundleWith orderId="{$wSPrev/@orderID}">
+    {
         for sliding window $bundle in $w 
           start  $bSCur 
             when $bSCur[self::OrderRequest] and $bSCur/@shipTo eq $wSPrev/@shipTo
@@ -18,5 +20,7 @@ declare variable $seq := fn:doc("cxml.xml");
               or $bECur[self::ShipNotice]
           where empty($bENext)
           return $bSCur
-    }</bundleWith>
-}</result>
+    }
+    </bundleWith>
+}
+</result>
