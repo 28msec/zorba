@@ -181,6 +181,14 @@ void copy_seq( FromSequenceType const &from, ToSequenceType &to ) {
 }
 
 /**
+ * A less-verbose way to copy the given set.
+ */
+template<class FromSequenceType,class ToSequenceType> inline
+void copy_set( FromSequenceType const &from, ToSequenceType &to ) {
+  std::copy( from.begin(), from.end(), std::inserter( to, to.begin() ) );
+}
+
+/**
  * Given a seq<T*>, deletes all the elements.
  */
 template<class SequenceType> inline
