@@ -50,9 +50,10 @@ static void displayError(std::string& aErrorMsg)
                   L"Failed with error %d: %s", dw, lpMsgBuf);
 
   char *buf;
-  buf = new char[LocalSize(lpDisplayBuf) / sizeof(WCHAR) + 10];
+  int buf_size = LocalSize(lpDisplayBuf) / sizeof(WCHAR) + 10;
+  buf = new char[buf_size];
   //use ACP instead of UTF8 because it is for display on Windows
-  WideCharToMultiByte(CP_ACP, 0, lpDisplayBuf, -1, buf, sizeof(buf), NULL, NULL);
+  WideCharToMultiByte(CP_ACP, 0, lpDisplayBuf, -1, buf, buf_size, NULL, NULL);
 
   aErrorMsg = buf;
   delete[] buf;
