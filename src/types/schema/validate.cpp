@@ -51,6 +51,7 @@
 #include "context/namespace_context.h"
 
 #include "zorbaerrors/Assert.h"
+#include "zorba/store_consts.h"
 
 using namespace std;
 
@@ -81,6 +82,15 @@ bool Validator::effectiveValidationValue(
       e.setQueryLocation(loc.getLineBegin(),
                          loc.getColumnBegin(),
                          loc.getFilename());
+    }
+    
+    if ( sourceNode->isNode() && 
+        sourceNode->getNodeKind()== store::StoreConsts::documentNode )
+    {
+      zstring baseUri;
+      sourceNode->getDocumentURI(baseUri);
+      
+      e.theDescription += " while validating document '" + baseUri + "'";
     }
     throw e;
   }
