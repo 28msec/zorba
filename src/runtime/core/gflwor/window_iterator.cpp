@@ -793,35 +793,43 @@ bool WindowIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) con
 
         while ( lState->theCurWindow != lState->theOpenWindows.end() )
         {
-          theStartClause.bindIntern(aPlanState,
-                                    lState->theDomainSeq,
-                                    lState->theCurWindow->theStartPos);
-
-          ulong lCurPos = lState->theCurInputPos;
-          if ( theEndClause.evaluate(aPlanState,
-                                     lState->theDomainSeq,
-                                     lCurPos))
+          if (lState->theCurWindow->theEndPos == 0)
           {
-            lState->theCurWindow->theEndPos = lCurPos;
+            theStartClause.bindIntern(aPlanState,
+                                      lState->theDomainSeq,
+                                      lState->theCurWindow->theStartPos);
+
+            ulong lCurPos = lState->theCurInputPos;
+            if ( theEndClause.evaluate(aPlanState,
+                                       lState->theDomainSeq,
+                                       lCurPos))
+            {
+              lState->theCurWindow->theEndPos = lCurPos;
+            }
           }
 
-          ++(lState->theCurWindow);
+          ++lState->theCurWindow;
         }
 
-        // For each candidate window that was found to be an actual window in the
-        // previous loop, (a) bind the window var and the external vars of the
-        // start and end conditions, (b) remove the window from the set of
-        // candidate windows, (c) purge from the domain temp seq any item that we
-        // know for sure they will not be needed in subsequent evaluations of the
-        // start and/or end conditions, and (d) return to the caller a new tuple
-        // that consists of the current input tuple augmented with one column per
-        // variable that was bound in this step.
+        // Try to return closed windows to the consumer iterator. Notice that
+        // windows must be sorted according to the position of their starting
+        // items in the domain sequence. So, we can return a closed window only
+        // if it appears as the first window in lState->theOpenWindows.
         lState->theCurWindow = lState->theOpenWindows.begin();
 
-        while (lState->theCurWindow != lState->theOpenWindows.end())
+        while (!lState->theOpenWindows.empty())
         {
           if (lState->theCurWindow->theEndPos != 0)
           {
+            // The current window is closed and its starting item is before the
+            // stating items of all other windows (open or closed) in the domain
+            // sequence. So, (a) bind the window var and the external vars of 
+            // the start and end conditions, (b) remove the window from the set
+            // of candidate windows, (c) purge from the domain temp seq any item
+            // that we know for sure they will not be needed in subsequent 
+            // evaluations of the start and/or end conditions, and (d) return to
+            // the caller a new tuple that consists of the current input tuple
+            // augmented with one column per variable that was bound in this step.
             theStartClause.bindExtern(aPlanState,
                                       lState->theDomainSeq,
                                       lState->theCurWindow->theStartPos);
@@ -842,7 +850,7 @@ bool WindowIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) con
           }
           else
           {
-            ++lState->theCurWindow;
+            break;
           }
         }
 
@@ -930,25 +938,34 @@ bool WindowIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) con
       }
     }
 
-    // Check if we have open windows
-    while(!lState->theOpenWindows.empty() && (!theEndClause.theOnlyEnd))
+    // Check if we have open and/or closed windows
+    lState->theCurWindow = lState->theOpenWindows.begin();
+
+    while (lState->theCurWindow != lState->theOpenWindows.end())
     {
-      bindVariable(aPlanState,
-                   lState->theDomainSeq,
-                   lState->theOpenWindows[0].theStartPos,
-                   lState->theCurInputPos - 1);
+      if (!theEndClause.theOnlyEnd || lState->theCurWindow->theEndPos != 0)
+      {
+        bindVariable(aPlanState,
+                     lState->theDomainSeq,
+                     lState->theOpenWindows[0].theStartPos,
+                     lState->theCurInputPos - 1);
 
-      theStartClause.bindExtern(aPlanState,
+        theStartClause.bindExtern(aPlanState,
+                                  lState->theDomainSeq,
+                                  lState->theOpenWindows[0].theStartPos);
+
+        theEndClause.bindExtern(aPlanState,
                                 lState->theDomainSeq,
-                                lState->theOpenWindows[0].theStartPos);
+                                lState->theCurInputPos-1);
 
-      theEndClause.bindExtern(aPlanState,
-                              lState->theDomainSeq,
-                              lState->theCurInputPos-1);
+        lState->theCurWindow = lState->theOpenWindows.erase(lState->theCurWindow);
 
-      lState->theCurWindow = lState->theOpenWindows.erase(lState->theOpenWindows.begin());
-
-      STACK_PUSH(true, lState);
+        STACK_PUSH(true, lState);
+      }
+      else
+      {
+        ++lState->theCurWindow;
+      }
     }
 
     theInputIter->reset(aPlanState);

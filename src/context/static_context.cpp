@@ -1572,8 +1572,10 @@ bool static_context::validate(
   return validate(rootElement, validatedResult, xsTns, validationMode);
 }
 
+
 bool static_context::validate(
-    store::Item* rootElement, store::Item* validatedResult, 
+    store::Item* rootElement, 
+    store::Item* validatedResult, 
     const zstring& targetNamespace, 
     StaticContextConsts::validation_mode_t validationMode)
 {

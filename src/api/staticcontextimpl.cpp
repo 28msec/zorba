@@ -1516,10 +1516,13 @@ StaticContextImpl::removeModuleImportChecker(ModuleImportChecker* aChecker)
 
 
 bool
-StaticContextImpl::validate(const Item& rootElement, Item& validatedResult,
+StaticContextImpl::validate(
+    const Item& rootElement,
+    Item& validatedResult,
     validation_mode_t validationMode)
 {
-  try {
+  try 
+  {
     StaticContextConsts::validation_mode_t valMode;
     
     switch( validationMode)
@@ -1555,7 +1558,8 @@ StaticContextImpl::validate(
     const String& targetNamespace,
     validation_mode_t validationMode)
 {
-  try {
+  try 
+  {
     StaticContextConsts::validation_mode_t valMode;
     
     switch( validationMode)
