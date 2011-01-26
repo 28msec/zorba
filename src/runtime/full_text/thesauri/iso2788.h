@@ -17,6 +17,7 @@
 #ifndef ZORBA_ISO_2788_H
 #define ZORBA_ISO_2788_H
 
+#include <cstdlib>                      /* for abs(3) */
 #include <iostream>
 
 #include "zorbautils/locale.h"
@@ -33,6 +34,8 @@ namespace zorba {
  * Management of Monolingual Controlled Vocabularies.
  */
 namespace iso2788 {
+
+  /////////////////////////////////////////////////////////////////////////////
 
   /**
    * Relationship abbreviations from ISO 2788 section 4.1 and ANSI Z39.19-2005
@@ -85,10 +88,86 @@ namespace iso2788 {
                      locale::iso639_1::type lang ) {
     return find_rel( relationship.c_str(), lang );
   }
-}
 
-///////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * We bestow a "direction" attribute onto every relationship, one of -1, 0,
+   * or +1 for a relationship that leads to a narrower, neutral, or broader
+   * term, respectively.
+   */
+  enum rel_dir {
+    narrower = -1,
+    neutral,
+    broader
+  };
+
+  /**
+   * Checks whether two relationship directions are "congruous", i.e., they do
+   * not point in opposite directions.
+   *
+   * @param a The first direction.
+   * @param b The second direction.
+   * @return Returns \c true only if the two directions are congruous.
+   */
+  inline bool congruous( rel_dir a, rel_dir b ) {
+    //
+    // Congruity of two directions is defined by this table:
+    //
+    //    a  b result
+    //   -- -- ------
+    //    0  0  T
+    //    0  1  T
+    //    1  0  T
+    //    1  1  T
+    //    0 -1  T
+    //   -1  0  T
+    //   -1 -1  T
+    //    1 -1  F
+    //   -1  1  F
+    //
+    return std::abs( a - b ) <= 1;
+  }
+
+  /**
+   * Gets the "direction" of a relationship, i.e., whether a relationship leads
+   * to a more specific, neutral, or more general term.
+   *
+   * @param rel_type The relationship type to get the direction of.
+   * @return Returns -1, 0, or +1 if \a rel_type leads to a more specific,
+   * neutral, or more general lemma, respectively.
+   */
+  rel_dir get_dir( rel_type t );
+
+  /**
+   * Adds two relationship "directions".
+   *
+   * @param a The first direction.
+   * @param b The second direction.
+   * @return Returns the "sum" of the two directions.
+   */
+  inline rel_dir operator+( rel_dir a, rel_dir b ) {
+    //
+    // Addition of two directions is defined by this table:
+    //
+    //    a  b result
+    //   -- -- ------
+    //    0  0  0
+    //    0  1  1
+    //    1  0  1
+    //    1  1  1
+    //    0 -1 -1
+    //   -1  0 -1
+    //   -1 -1 -1
+    //    1 -1 ERROR
+    //   -1  1 ERROR
+    //
+    return a ? a : b;
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+
+} // namespace iso2788
 } // namespace zorba
 #endif  /* ZORBA_ISO_2788_H */
 /* vim:set et sw=2 ts=2: */

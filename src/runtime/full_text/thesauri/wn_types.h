@@ -32,13 +32,6 @@ namespace wordnet {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-/**
- * We bestow a "direction" attribute onto every WordNet pointer, one of -1, 0,
- * or +1 for a WordNet pointer that leads to a more specific, neutral, or more
- * general lemma, respectively.
- */
-typedef int ptr_direction_t;
-
 typedef uint32_t lemma_id_t;
 typedef uint32_t synset_id_t;
 

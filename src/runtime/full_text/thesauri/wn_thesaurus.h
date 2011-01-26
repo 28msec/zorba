@@ -24,6 +24,7 @@
 #include "util/mmap_file.h"
 
 #include "../ft_thesaurus.h"
+#include "iso2788.h"
 #include "wn_types.h"
 
 namespace zorba {
@@ -44,7 +45,7 @@ public:
   bool next( zstring *synonym );
 
 private:
-  typedef std::pair<synset_id_t,ptr_direction_t> synset_queue_entry;
+  typedef std::pair<synset_id_t,iso2788::rel_dir> synset_queue_entry;
   typedef std::deque<synset_queue_entry> synset_queue;
   typedef std::deque<lemma_id_t> synonym_queue;
   typedef std::set<lemma_id_t> synonym_set;

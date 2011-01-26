@@ -19,6 +19,7 @@
 
 #include "util/less.h"
 #include "iso2788.h"
+#include "zorbaerrors/Assert.h"
 
 #define eacute  "\xC3\xA9"
 #define uuml    "\xC3\xBC"
@@ -175,6 +176,30 @@ rel_type find_rel( char const *relationship, iso639_1::type lang ) {
   range_type const result =
     ::equal_range( begin, end, entry_to_find, less_rel_table_entry() );
   return result.first == result.second ? unknown : result.first->type;
+}
+
+rel_dir get_dir( rel_type t ) {
+  switch ( t ) {
+    case BT :
+    case BTG:
+    case BTI:
+    case BTP:
+    case TT :
+      return broader;
+    case NT :
+    case NTG:
+    case NTI:
+    case NTP:
+      return narrower;
+    case RT :
+    case SN :
+    case UF :
+    case USE:
+    case unknown:
+      return neutral;
+    default:
+      ZORBA_ASSERT( false );
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
