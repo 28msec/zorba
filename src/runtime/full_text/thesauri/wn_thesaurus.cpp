@@ -16,9 +16,6 @@
 
 #define DEBUG_FT_THESAURUS 0
 
-#if DEBUG_FT_THESAURUS
-#include <iostream>
-#endif
 #include <algorithm>                    /* for equal_range() */
 #include <cstring>                      /* for strcmp(3) */
 #include <limits>
@@ -27,6 +24,9 @@
 
 #include "util/ascii_util.h"
 #include "util/less.h"
+#if DEBUG_FT_THESAURUS
+#include "util/oseparator.h"
+#endif
 #include "zorbaerrors/Assert.h"
 #include "zorbaerrors/error_manager.h"
 
@@ -279,43 +279,6 @@ static pointer::type map_xquery_rel( zstring const &relationship,
     return pointer::map_iso_rel( iso_rel );
   return pointer::find( rel_lower );
 }
-
-#if DEBUG_FT_THESAURUS
-class oseparator {
-public:
-  explicit oseparator( char const *sep = ", " ) : sep_( sep ), print_( false ) {
-  }
-
-  char const* sep() const {
-    return sep_.c_str();
-  }
-
-  void sep( char const *s ) {
-    sep_ = s;
-  }
-
-  template<class StringType>
-  void sep( StringType const &s ) {
-    sep_ = s.c_str();
-  }
-
-  void reset() {
-    print_ = false;
-  }
-
-  friend ostream& operator<<( ostream &o, oseparator &sep ) {
-    if ( sep.print_ )
-      o << sep.sep_;
-    else
-      sep.print_ = true;
-    return o;
-  }
-
-private:
-  string sep_;
-  bool print_;
-};
-#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 
