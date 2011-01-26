@@ -42,6 +42,7 @@
 #include "util/utf8_string.h"
 #include "util/string_util.h"
 #include "util/uri_util.h"
+#include "util/xml_util.h"
 
 
 using namespace std;
@@ -74,11 +75,14 @@ CodepointsToStringIterator::nextImpl(store::Item_t& result, PlanState& planState
         xs_uint lCode;
         if (NumConversions::strToUInt(lUtf8Code.c_str(), lCode)) 
         {
-          try
+          if (!xml::is_valid(lCode))
+            ZORBA_ERROR_LOC_DESC(FOCH0001, loc, "Codepoint #" + lUtf8Code + " is not allowed in XML version 1.0.");
+
+          try 
           {
             utf8::encode( lCode, &resStr );
-          }
-          catch(zorbatypesException& ex)
+          } 
+          catch(zorbatypesException& ex) 
           {
             ZORBA_ERROR_LOC_DESC(error::DecodeZorbatypesError(ex.ErrorCode()),
                                  loc, lUtf8Code);
@@ -86,7 +90,7 @@ CodepointsToStringIterator::nextImpl(store::Item_t& result, PlanState& planState
         }
         else
         {
-          ZORBA_ERROR_LOC_DESC(FOCH0001, loc, lUtf8Code);
+          ZORBA_ERROR_LOC_DESC(FOCH0001, loc, "Codepoint #" + lUtf8Code + " is not allowed in XML version 1.0.");
         }
       }
     }
