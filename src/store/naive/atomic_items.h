@@ -353,20 +353,14 @@ protected:
 public:
   ~QNameItem();
 
-  QNameItem* getNormalized() const
-  {
-    return (isNormalized() ? const_cast<QNameItem*>(this) : theNormQName.getp());
-  }
+  QNameItem* getNormalized() const;
 
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
 
   bool equals(
         const store::Item* item,
         long timezone = 0,
-        const XQPCollator* aCollation = 0) const
-  {
-    return (getNormalized() == static_cast<const QNameItem*>(item)->getNormalized());
-  }
+        const XQPCollator* aCollation = 0) const;
 
   const zstring& getNamespace() const { return theNamespace; }
 

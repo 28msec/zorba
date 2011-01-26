@@ -4542,12 +4542,14 @@ void StringLiteral::accept( parsenode_visitor &v ) const
 // -----------
 QName::QName(
   const QueryLoc& loc,
-  const zstring& qname)
+  const zstring& qname,
+  bool isEQName)
   :
   exprnode(loc),
-  theQName(qname)
+  theQName(qname),
+  theIsEQName(isEQName)
 {
-  zstring::size_type n = qname.find(':');
+  zstring::size_type n = qname.rfind(':');
 
   if (n == zstring::npos)
   {
@@ -4558,6 +4560,12 @@ QName::QName(
   {
     theLocalName = qname.substr(n+1);
     thePrefix = qname.substr(0, n);
+  }
+
+  if (theIsEQName)
+  {
+    theNamespace = thePrefix;
+    thePrefix = "";
   }
 }
 

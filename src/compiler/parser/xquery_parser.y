@@ -201,11 +201,13 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token <sval> NCNAME_SVAL                   "'NCName_sval'"
 %token <sval> PRAGMA_LITERAL_AND_END_PRAGMA "'pragma literal'"
 %token <sval> QNAME_SVAL_AND_END_PRAGMA     "'QName #)'"
+%token <sval> EQNAME_SVAL_AND_END_PRAGMA     "'EQName #)'"
 %token <sval> PREFIX_WILDCARD               "'*:QName'"
 %token <sval> COMP_ELEMENT_QNAME_LBRACE     "'element QName {'"
 %token <sval> COMP_ATTRIBUTE_QNAME_LBRACE   "'attribute QName {'"
 %token <sval> COMP_PI_NCNAME_LBRACE         "'processing-instruction NCName {'"
 %token <sval> QNAME_SVAL                    "'QName'"
+%token <sval> EQNAME_SVAL                   "'EQName'"
 %token <sval> ANNOTATION_QNAME_SVAL         "'%QName'"
 
 %token <sval> QUOTE_ATTR_CONTENT            "'quote attribute content'"
@@ -319,6 +321,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token DOLLAR                           "'$'"
 %token DOT                              "'.'"
 %token DOT_DOT                          "'..'"
+%token COLON                            "':'"
 %token DOUBLE_COLON                     "'::'"
 %token DOUBLE_LBRACE                    "'{{'"
 %token <dval> DOUBLE_LITERAL            "'DOUBLE'"
@@ -740,6 +743,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <expr> AssignExpr
 %type <expr> FlowCtlStatement
 %type <expr> QNAME
+%type <expr> EQNAME
 %type <expr> FUNCTION_NAME
 
 %type <expr> FunctionItemExpr
@@ -876,7 +880,7 @@ template<typename T> inline void release_hack( T *ref ) {
 %destructor { release_hack( $$ ); } FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTExtensionOption FTExtensionSelection FTIgnoreOption opt_FTIgnoreOption FTLanguageOption FTMatchOption FTMatchOptions opt_FTMatchOptions FTMildNot FTOptionDecl FTOr FTOrder FTPosFilter FTPrimary FTPrimaryWithOptions FTRange FTScope FTScoreVar FTSelection FTStemOption FTStopWords FTStopWordOption FTStopWordsInclExcl FTThesaurusID FTThesaurusOption FTTimes opt_FTTimes FTUnaryNot FTUnit FTWeight FTWildCardOption FTWindow FTWords FTWordsValue
 
 // exprnodes
-%destructor { release_hack( $$ ); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr Block BlockExpr EnclosedExpr Expr ConcatExpr ApplyExpr ExprSingle ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr SwitchExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr EvalExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignExpr ExitExpr WhileExpr FlowCtlStatement QNAME FUNCTION_NAME FTContainsExpr
+%destructor { release_hack( $$ ); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr Block BlockExpr EnclosedExpr Expr ConcatExpr ApplyExpr ExprSingle ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr SwitchExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr EvalExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignExpr ExitExpr WhileExpr FlowCtlStatement QNAME EQNAME FUNCTION_NAME FTContainsExpr
 
 // internal non-terminals with values
 %destructor { delete $$; } FunctionSig VarNameAndType NameTestList DecimalFormatParam DecimalFormatParamList
@@ -3652,6 +3656,10 @@ Pragma
         {
             $$ = new Pragma( LOC(@$), new QName( LOC(@$), SYMTAB($2) ), "" );
         }
+    |   PRAGMA_BEGIN EQNAME_SVAL_AND_END_PRAGMA
+        {
+            $$ = new Pragma( LOC(@$), new QName( LOC(@$), SYMTAB($2), true ), "" );
+        }
     ;   /* ws: explicit */
 
 // [66] PragmaContents
@@ -6233,7 +6241,8 @@ QNAME
     ;
 
 FUNCTION_NAME
-    :   QNAME_SVAL              { $$ = new QName(LOC(@$), SYMTAB($1)); }
+    :   EQNAME
+    |   QNAME_SVAL              { $$ = new QName(LOC(@$), SYMTAB($1)); }
     |   XQUERY                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("xquery"))); }
     |   _EMPTY                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("empty"))); }
     |   BOUNDARY_SPACE          { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("boundary-space"))); }
@@ -6433,6 +6442,14 @@ FUNCTION_NAME
     |   DESCENDANT_OR_SELF      { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("descendant-or-self"))); }
     |   FOLLOWING_SIBLING       { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("following-sibling"))); }
     |   PRECEDING_SIBLING       { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("preceding-sibling"))); }
+    ;
+
+// [196]
+EQNAME
+    :   URI_LITERAL COLON NCNAME	{ 
+          $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT((SYMTAB($1) + ":" + SYMTAB($3)).c_str())), true); 
+        }
+    |   EQNAME_SVAL	{ $$ = new QName(LOC(@$), SYMTAB($1), true); }
     ;
 
 

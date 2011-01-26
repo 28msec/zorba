@@ -2290,9 +2290,6 @@ void static_context::get_functions(
         {
           if (std::find(disabled.begin(), disabled.end(), f) == disabled.end())
           {
-            // std::cout << "--> adding func: " << f->getName()->getStringValue()
-            //           << ", params: " << f->getSignature().paramCount()
-            //           << " with addr: " << std::hex << f << std::endl;
             if (f->isBuiltin())
             {
               assert(sctx->is_global_root_sctx());
@@ -2349,9 +2346,6 @@ void static_context::get_functions(
           {
             if (std::find(disabled.begin(), disabled.end(), f) == disabled.end())
             {
-              // std::cout << "--> adding func: " << f->getName()->getStringValue()
-              //           << ", params: " << f->getSignature().paramCount()
-              //           << " with addr: " << std::hex << f << std::endl;
               if (f->isBuiltin())
               {
                 assert(sctx->is_global_root_sctx());

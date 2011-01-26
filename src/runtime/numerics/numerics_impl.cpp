@@ -847,7 +847,6 @@ FormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 {
   zstring resultString;
   zstring pictureString;
-  zstring tmp;
   store::Item_t numberItem, pictureItem, formatName;
   FormatNumberInfo info;
   DecimalFormat_t df_t;
@@ -873,7 +872,21 @@ FormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
     if (theChildren.size() >= 3 &&
         consumeNext(formatName, theChildren[2].getp(), planState))
+    {
+    	if (formatName->getType()->equals(GENV_TYPESYSTEM.XS_STRING_QNAME))
+    	{
+    		zstring tmp = formatName->getStringValue();
+    		if (tmp.find(':') ==  zstring::npos)
+    			GENV_ITEMFACTORY->createQName(formatName, "", "", tmp);
+        else
+        {
+          zstring ns;
+          theSctx->lookup_ns(ns, tmp.substr(0, tmp.find(':')), loc);
+          GENV_ITEMFACTORY->createQName(formatName, ns, tmp.substr(0, tmp.find(':')), tmp.substr(tmp.find(':')+1));
+        }
+    	} 
       df_t = planState.theCompilerCB->theRootSctx->get_decimal_format(formatName);
+    }
     else
       df_t = planState.theCompilerCB->theRootSctx->get_decimal_format(NULL);
 
@@ -883,8 +896,7 @@ FormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     parsePicture(pictureString, info);
     formatNumber(resultString, result, info, theSctx->get_typemanager());
 
-    tmp = resultString;
-    STACK_PUSH (GENV_ITEMFACTORY->createString(result, tmp), state);
+    STACK_PUSH (GENV_ITEMFACTORY->createString(result, resultString), state);
   }
   STACK_END (state);
 }

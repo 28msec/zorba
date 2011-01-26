@@ -1424,7 +1424,7 @@ void expand_function_qname(
     const QueryLoc& loc) const
 {
   theSctx->expand_qname(qnameItem,
-                        theSctx->default_function_ns(),
+                        qname->is_eqname()? qname->get_namespace() : theSctx->default_function_ns(),
                         qname->get_prefix(),
                         qname->get_localname(),
                         loc);
@@ -1442,7 +1442,7 @@ void expand_elem_qname(
     const QueryLoc& loc) const
 {
   theSctx->expand_qname(qnameItem,
-                        theSctx->default_elem_type_ns(),
+                        qname->is_eqname()? qname->get_namespace() : theSctx->default_elem_type_ns(),
                         qname->get_prefix(),
                         qname->get_localname(),
                         loc);
@@ -1458,7 +1458,7 @@ void expand_no_default_qname(
     const QueryLoc& loc) const
 {
   theSctx->expand_qname(qnameItem,
-                        zstring(),
+                        qname->get_namespace(),
                         qname->get_prefix(),
                         qname->get_localname(),
                         loc);
@@ -3444,7 +3444,7 @@ void* begin_visit(const OptionDecl& v)
 
   expand_no_default_qname(qnameItem, v.get_qname(), loc);
 
-  if (qnameItem->getPrefix().empty())
+  if (qnameItem->getPrefix().empty() && qnameItem->getNamespace().empty())
   {
     ZORBA_ERROR_LOC(XPST0081, loc);
   }
@@ -7390,8 +7390,11 @@ void end_visit(const Pragma& v, void* /*visit_state*/)
   TRACE_VISIT_OUT();
 
   // may raise XPST0081
-  zstring ns;
-  theSctx->lookup_ns(ns, v.get_name()->get_prefix(), loc);
+  if (!v.get_name()->is_eqname())
+  {
+    zstring ns;
+    theSctx->lookup_ns(ns, v.get_name()->get_prefix(), loc);
+  }
 }
 
 

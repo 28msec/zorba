@@ -399,6 +399,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 "]" { return token::RBRACK; }
 "$" { return token::DOLLAR; }
 "#" { return token::HASH; }
+":" { return token::COLON; }
 "::" { return token::DOUBLE_COLON; }
 "%" { return token::PERCENTAGE; }
 
@@ -863,8 +864,10 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
    | OPERATOR state.
    |______________________________________________________________________*/
 
-<MODE_PRAGMA>{QName}{SPNoComment} { BEGIN MODE_PRAGMACONTENTS; TRY_SVAL_TOKEN(QNAME_SVAL, put_qname(yytext, yyleng, true, true), yytext); }
-<MODE_PRAGMA>{QName}"#)" { BEGIN INITIAL; TRY_SVAL_TOKEN(QNAME_SVAL_AND_END_PRAGMA, put_qname(yytext, yyleng-2), yytext); }
+<MODE_PRAGMA>{QName}{SPNoComment}                    { BEGIN MODE_PRAGMACONTENTS; TRY_SVAL_TOKEN(QNAME_SVAL,  put_qname(yytext, yyleng, true, true), yytext); }
+<MODE_PRAGMA>{StringLiteral}":"{NCName}{SPNoComment} { BEGIN MODE_PRAGMACONTENTS; TRY_SVAL_TOKEN(EQNAME_SVAL, put_qname(yytext, yyleng, true, true), yytext); }
+<MODE_PRAGMA>{QName}"#)"                             { BEGIN INITIAL; TRY_SVAL_TOKEN(QNAME_SVAL_AND_END_PRAGMA,  put_qname(yytext, yyleng-2), yytext); }
+<MODE_PRAGMA>{StringLiteral}":"{NCName}"#)"          { BEGIN INITIAL; TRY_SVAL_TOKEN(EQNAME_SVAL_AND_END_PRAGMA, put_qname(yytext, yyleng-2), yytext); }
 <MODE_PRAGMA>{S} { /* continue lexing */ }
 
 

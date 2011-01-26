@@ -507,6 +507,10 @@ void QNameItem::free()
   GET_STORE().getQNamePool().remove(this);
 }
 
+QNameItem* QNameItem::getNormalized() const
+{
+  return (isNormalized() ? const_cast<QNameItem*>(this) : theNormQName.getp());
+}
 
 uint32_t QNameItem::hash(long timezone, const XQPCollator* aCollation) const
 {
@@ -527,6 +531,13 @@ store::Item_t QNameItem::getEBV() const
   return NULL;
 }
 
+bool QNameItem::equals(
+        const store::Item* item,
+        long timezone,
+        const XQPCollator* aCollation) const
+{
+  return (getNormalized() == static_cast<const QNameItem*>(item)->getNormalized());
+}
 
 zstring QNameItem::getStringValue() const
 {

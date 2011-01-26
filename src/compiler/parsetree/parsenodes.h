@@ -5315,26 +5315,37 @@ public:
 /*******************************************************************************
   [191] QName ::= [http://www.w3.org/TR/REC-xml-names/#NT-QName]
 
+  [196] EQName ::= QName | (URILiteral ":" NCName)
+
   The "qname" data member is either (a) the empty string, or (b) a single NCName,
   or (c) NCName1:NCName2. In cases (a) and (b), get_prefix() returns the empty
   string, and get_localname() returns "qname".
+
+  In case of EQNames, the theIsEQName member is set to true, thePrefix is empty,
+  and the theNamespace member contains the part before the ":".
 
 ********************************************************************************/
 class QName : public exprnode
 {
 protected:
   zstring const theQName;
+  zstring       theNamespace;
   zstring       thePrefix;
   zstring       theLocalName;
+  bool          theIsEQName;
 
 public:
-  QName(const QueryLoc&, const zstring& qname);
+  QName(const QueryLoc&, const zstring& qname, bool isEQName = false);
 
   const zstring& get_qname() const { return theQName; }
 
   const zstring& get_localname() const { return theLocalName; }
 
   const zstring& get_prefix() const { return thePrefix; }
+
+  const zstring& get_namespace() const { return theNamespace; }
+
+  bool is_eqname() const { return theIsEQName; }
 
   void accept(parsenode_visitor&) const;
 };
