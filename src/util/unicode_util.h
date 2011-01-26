@@ -120,8 +120,9 @@ bool is_ucschar( code_point c );
 template<class CodePointType>
 inline bool is_valid( CodePointType c ) {
   //
-  // See "Extensible Markup Language (XML) 1.1 (Second Edition)", section 2.2,
-  // "Characters", [2] Char.
+  // This function is currently slightly wrong; awaiting resolutio of:
+  //
+  // http://sourceforge.net/tracker/?func=detail&aid=3163520&group_id=226244&atid=1067586
   //
   return  (c >= 0x000001 && c <= 0x00D7FF)
       ||  (c >= 0x00E000 && c <= 0x00FFFD)
