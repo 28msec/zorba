@@ -133,20 +133,21 @@ namespace pointer {
   }
 
   type map_iso_rel( iso2788::rel_type iso_rel ) {
+    using namespace iso2788;
     switch ( iso_rel ) {
-      case iso2788::BT : return hypernym;
-      case iso2788::BTG: return hypernym;
-      case iso2788::BTI: return instance_hypernym;
-      case iso2788::BTP: return part_meronym;
-      case iso2788::NT : return hyponym;
-      case iso2788::NTG: return hyponym;
-      case iso2788::NTI: return instance_hyponym;
-      case iso2788::NTP: return part_holonym;
-      case iso2788::RT : return also_see;
-      case iso2788::SN : return unknown;
-      case iso2788::TT : return hypernym; // the best we can do
-      case iso2788::UF : return unknown;
-      case iso2788::USE: return unknown;
+      case BT : return hypernym;
+      case BTG: return hypernym;
+      case BTI: return instance_hypernym;
+      case BTP: return part_meronym;
+      case NT : return hyponym;
+      case NTG: return hyponym;
+      case NTI: return instance_hyponym;
+      case NTP: return part_holonym;
+      case RT : return also_see;
+      case SN : return unknown;
+      case TT : return hypernym;        // the best we can do
+      case UF : return unknown;
+      case USE: return unknown;
       // ensures all cases are handled
       default          : ZORBA_ASSERT( false );
     }
