@@ -33,20 +33,61 @@ class relationship {
 public:
   typedef zstring string_t;
 
+  /**
+   * Constructs a %relationship from a string.
+   *
+   * @param rel_string The string to construct this %relationship from.  If the
+   * string matches an ISO 2788 %relationship, then that is what's stored
+   * internally; otherwise the string is stored as-is.
+   */
   relationship( string_t const &rel_string );
+
+  /**
+   * Copy-constructor.
+   *
+   * @param that The %relationship to copy from.
+   */
   relationship( relationship const &that );
+
+  /**
+   * Destructor.
+   */
   ~relationship();
 
+  /**
+   * Assignment operator.
+   *
+   * @param that The %relationship to assign from.
+   * @return Returns \c *this.
+   */
   relationship& operator=( relationship const &that );
 
+  /**
+   * Checks whether this %relationship is "empty", i.e., no relationship.
+   *
+   * @return Returns \c true only if this %relationship is empty.
+   */
   bool empty() const {
     return is_string_ ? get_string().empty() : !rel_iso2788_;
   }
 
+  /**
+   * Gets the ISO 2788 equivalent for this %relationship.
+   *
+   * @return Returns the ISO 2788 equivalent or \c unknown for all string
+   * relationships.
+   */
   iso2788::rel_type get_iso2788() const {
     return is_string_ ? iso2788::unknown : rel_iso2788_;
   }
 
+  /**
+   * Compares to %relationship objects for equality.
+   *
+   * @param a The first %relationship.
+   * @param b The second %relationship.
+   * @return Returns \c true only if the two relationships are equal.
+   */
   friend bool operator==( relationship const &a, relationship const &b );
 
   // Defined so that relationships can be put into sorted STL containers.
