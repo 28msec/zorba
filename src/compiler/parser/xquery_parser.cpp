@@ -11534,21 +11534,24 @@ namespace zorba {
 /* Line 677 of lalr1.cc  */
 #line 6449 "F:/xquery/src/compiler/parser/xquery_parser.y"
     { 
-          (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT((SYMTAB((yysemantic_stack_[(3) - (1)].sval)) + ":" + SYMTAB((yysemantic_stack_[(3) - (3)].sval))).c_str())), true); 
+          // EQName's namespace URI value is whitespace normalized according to the rules for the xs:anyURI type
+          std::string uri = "\"" + SYMTAB((yysemantic_stack_[(3) - (1)].sval)) + "\"";
+          std::string eqname = SYMTAB(driver.symtab.put_uri(uri.c_str(), uri.size())) + ":" + SYMTAB((yysemantic_stack_[(3) - (3)].sval));
+          (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT(eqname.c_str())), true); 
         }
     break;
 
   case 964:
 
 /* Line 677 of lalr1.cc  */
-#line 6452 "F:/xquery/src/compiler/parser/xquery_parser.y"
+#line 6455 "F:/xquery/src/compiler/parser/xquery_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB((yysemantic_stack_[(1) - (1)].sval)), true); }
     break;
 
 
 
 /* Line 677 of lalr1.cc  */
-#line 11552 "F:/xquery/build_win/src/compiler/parser/xquery_parser.cpp"
+#line 11555 "F:/xquery/build_win/src/compiler/parser/xquery_parser.cpp"
 	default:
           break;
       }
@@ -15704,7 +15707,7 @@ namespace zorba {
     6412,  6413,  6414,  6415,  6416,  6417,  6418,  6419,  6420,  6421,
     6422,  6423,  6424,  6425,  6426,  6427,  6428,  6429,  6430,  6431,
     6432,  6433,  6434,  6435,  6436,  6437,  6438,  6439,  6440,  6441,
-    6442,  6443,  6444,  6449,  6452
+    6442,  6443,  6444,  6449,  6455
   };
 
   // Print the state stack on the debug stream.
@@ -15825,11 +15828,11 @@ namespace zorba {
 } // zorba
 
 /* Line 1053 of lalr1.cc  */
-#line 15829 "F:/xquery/build_win/src/compiler/parser/xquery_parser.cpp"
+#line 15832 "F:/xquery/build_win/src/compiler/parser/xquery_parser.cpp"
 
 
 /* Line 1055 of lalr1.cc  */
-#line 6456 "F:/xquery/src/compiler/parser/xquery_parser.y"
+#line 6459 "F:/xquery/src/compiler/parser/xquery_parser.y"
 
 
 namespace zorba {

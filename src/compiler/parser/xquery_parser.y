@@ -6447,7 +6447,10 @@ FUNCTION_NAME
 // [196]
 EQNAME
     :   URI_LITERAL COLON NCNAME	{ 
-          $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT((SYMTAB($1) + ":" + SYMTAB($3)).c_str())), true); 
+          // EQName's namespace URI value is whitespace normalized according to the rules for the xs:anyURI type
+          std::string uri = "\"" + SYMTAB($1) + "\"";
+          std::string eqname = SYMTAB(driver.symtab.put_uri(uri.c_str(), uri.size())) + ":" + SYMTAB($3);
+          $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT(eqname.c_str())), true); 
         }
     |   EQNAME_SVAL	{ $$ = new QName(LOC(@$), SYMTAB($1), true); }
     ;

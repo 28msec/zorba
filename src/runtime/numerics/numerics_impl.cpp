@@ -32,6 +32,9 @@
 
 #include "context/static_context.h"
 
+// TODO: remove, debugging purposes only
+#include "context/dynamic_context.h"
+
 #include "compiler/api/compilercb.h"
 
 #include "runtime/numerics/numerics.h"
@@ -870,26 +873,54 @@ FormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
     consumeNext(pictureItem, theChildren[1].getp(), planState);
 
-    if (theChildren.size() >= 3 &&
-        consumeNext(formatName, theChildren[2].getp(), planState))
+    if (theChildren.size() < 3)
     {
-    	if (formatName->getType()->equals(GENV_TYPESYSTEM.XS_STRING_QNAME))
-    	{
-    		zstring tmp = formatName->getStringValue();
-    		if (tmp.find(':') ==  zstring::npos)
-    			GENV_ITEMFACTORY->createQName(formatName, "", "", tmp);
-        else
-        {
-          zstring ns;
-          theSctx->lookup_ns(ns, tmp.substr(0, tmp.find(':')), loc);
-          GENV_ITEMFACTORY->createQName(formatName, ns, tmp.substr(0, tmp.find(':')), tmp.substr(tmp.find(':')+1));
-        }
-    	} 
-      df_t = planState.theCompilerCB->theRootSctx->get_decimal_format(formatName);
-    }
-    else
       df_t = planState.theCompilerCB->theRootSctx->get_decimal_format(NULL);
+    }
+    else 
+    {
+      do // use a do/while to avoid a horde of nested if/then/elses
+      {
+        // The formatName is a string, which must be interpreted as a QName -> must resolve the namespace, if any
+        consumeNext(formatName, theChildren[2].getp(), planState);
+        zstring tmp = formatName->getStringValue();
+        formatName = NULL;
+        if (tmp.find(':') ==  zstring::npos)
+        {
+          GENV_ITEMFACTORY->createQName(formatName, "", "", tmp);
+          break;
+        }
 
+        zstring ns;
+        zstring prefix = tmp.substr(0, tmp.find(':'));
+        if (theSctx->lookup_ns(ns, prefix, loc, MAX_ZORBA_ERROR_CODE))
+        {
+          GENV_ITEMFACTORY->createQName(formatName, ns, prefix, tmp.substr(tmp.find(':')+1));
+          break;
+        }
+
+        // The prefix is not in the known namespaces, the only chance to find the binding is to be inside an EnclosedIterator
+        if (planState.theNodeConstuctionPath.empty())
+          ZORBA_ERROR_LOC(FODF1280, loc);
+
+        store::NsBindings bindings;
+        planState.theNodeConstuctionPath.top()->getNamespaceBindings(bindings);
+        for (unsigned int i=0; i<bindings.size(); i++)
+          if (prefix == bindings[i].first)
+          {
+            GENV_ITEMFACTORY->createQName(formatName, bindings[i].second, prefix, tmp.substr(tmp.find(':')+1));
+            break;
+          }
+
+      } while(0);
+
+      if (formatName.isNull()
+          ||
+          ((df_t = planState.theCompilerCB->theRootSctx->get_decimal_format(formatName)).getp() == NULL))
+        ZORBA_ERROR_LOC(FODF1280, loc);
+
+    } // if (theChildren.size() < 3)
+  
     info.readFormat(df_t);
 
     pictureString = pictureItem->getStringValue();
@@ -897,7 +928,8 @@ FormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     formatNumber(resultString, result, info, theSctx->get_typemanager());
 
     STACK_PUSH (GENV_ITEMFACTORY->createString(result, resultString), state);
-  }
+  } // if (!consumeNext(result, theChildren[0].getp(), planState ))
+
   STACK_END (state);
 }
 

@@ -662,6 +662,10 @@ typedef enum
 
   FODT0001, // = 140, //Overflow/underflow in date/time operation.
 
+  FODF1280, // invalid decimal format name supplied to fn:format-number 
+
+  FODF1310, // fn:format-number picture string is invalid
+
   FODT0002, //Overflow/underflow in duration operation.
 
   FODT0003, //Invalid timezone value.

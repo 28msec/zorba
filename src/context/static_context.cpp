@@ -32,7 +32,6 @@
 #include "context/static_context_consts.h"
 #include "context/static_context.h"
 #include "context/root_static_context.h"
-#include "context/namespace_context.h"
 #include "context/uri_resolver_wrapper.h"
 #include "context/standard_uri_resolvers.h"
 #include "context/decimal_format.h"
