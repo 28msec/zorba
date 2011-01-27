@@ -14,7 +14,13 @@
  * limitations under the License.
  */
 
+#include <zorba/config.h>
+
+#include "util/ascii_util.h"
+#include "util/mmap_file.h"
 #include "util/stl_util.h"
+#include "util/uri_util.h"
+#include "zorbaerrors/error_manager.h"
 
 #include "ft_stop_words_set.h"
 
@@ -25,7 +31,7 @@ namespace zorba {
 
 typedef char const *const *ft_stop_table;
 
-///////////////////////////////////////////////////////////////////////////////
+////////// Helper functions ///////////////////////////////////////////////////
 
 #define LANG(CODE)                                \
   iso639_1::CODE:                                 \
@@ -55,12 +61,41 @@ static ft_stop_table get_table_for( iso639_1::type lang ) {
   }
 }
 
+static bool is_word_char( char c ) {
+  switch ( c ) {                        // exceptions to is_punct()
+    case '&':                           // e.g.: "AT&T"
+    case '-':                           // hyphenated words
+      return true;
+  }
+  return !( ascii::is_space( c ) || ascii::is_punct( c ) );
+}
+
 ///////////////////////////////////////////////////////////////////////////////
+
+void ft_stop_words_set::apply_word( zstring const &word, set_t &word_set,
+                                    ft_stop_words_unex::type mode ) {
+  // TODO: should "word" be converted to lower-case?
+  switch ( mode ) {
+    case ft_stop_words_unex::union_:
+      word_set.insert( word );
+      break;
+    case ft_stop_words_unex::except:
+      word_set.erase( word );
+      break;
+  }
+}
+
+void ft_stop_words_set::apply_word( char const *begin, char const *end,
+                                    set_t &word_set,
+                                    ft_stop_words_unex::type mode ) {
+  set_t::value_type const word( begin, end - begin );
+  apply_word( word, word_set, mode );
+}
 
 ft_stop_words_set const*
 ft_stop_words_set::construct( ftstop_word_option const &option,
                               iso639_1::type lang ) {
-  bool must_delete = false;             // pointless init. to stifle warning
+  bool must_delete = false;
   set_t *word_set = 0;                  // pointless init. to stifle warning
 
   switch ( option.get_mode() ) {
@@ -80,28 +115,50 @@ ft_stop_words_set::construct( ftstop_word_option const &option,
   }
 
   FOR_EACH( ftstop_word_option::list_t, ftsw, option.get_stop_words() ) {
-    ftstop_words::list_t const *words = &(*ftsw)->get_list();
-    if ( words->empty() ) {
-      //string const &uri = (*ftsw)->get_uri();
-      // TODO: fetch words from URI
-      //words = ???
-    }
-    if ( words && !words->empty() ) {
+    ft_stop_words_unex::type const mode = (*ftsw)->get_mode();
+    zstring const &uri = (*ftsw)->get_uri();
+
+    if ( !uri.empty() ) {
       if ( !must_delete ) {
         word_set = new set_t( *word_set );
         must_delete = true;
       }
-      ft_stop_words_unex::type const mode = (*ftsw)->get_mode();
-      FOR_EACH( ftstop_words::list_t, word, *words ) {
-        switch ( mode ) {
-          case ft_stop_words_unex::union_:
-            word_set->insert( *word );
-            break;
-          case ft_stop_words_unex::except:
-            word_set->erase( *word );
-            break;
+
+      zstring file_path;
+      bool is_temp_file;
+      uri::fetch( uri, &file_path, &is_temp_file );
+      fs::auto_remover<zstring> file_remover;
+      if ( is_temp_file )
+        file_remover.reset( file_path );
+
+      mmap_file const words_file( file_path.c_str() );
+      mmap_file::const_iterator word_start;
+      bool in_word = false;
+      FOR_EACH( mmap_file, c, words_file ) {
+        if ( is_word_char( *c ) ) {
+          if ( !in_word ) {
+            word_start = c;
+            in_word = true;
+          }
+        } else {
+          if ( in_word ) {
+            apply_word( word_start, c, *word_set, mode );
+            in_word = false;
+          }
         }
       }
+      if ( in_word )
+        apply_word( word_start, words_file.end(), *word_set, mode );
+    }
+
+    ftstop_words::list_t const &word_list = (*ftsw)->get_list();
+    if ( !word_list.empty() ) {
+      if ( !must_delete ) {
+        word_set = new set_t( *word_set );
+        must_delete = true;
+      }
+      FOR_EACH( ftstop_words::list_t, word, word_list )
+        apply_word( *word, *word_set, mode );
     }
   }
   return new ft_stop_words_set( word_set, must_delete );
@@ -116,9 +173,8 @@ ft_stop_words_set::get_default_word_set_for( iso639_1::type lang ) {
   if ( !word_set ) {
     if ( ft_stop_table const table = get_table_for( lang ) ) {
       word_set = new set_t;
-      for ( ft_stop_table word = table; *word; ++word ) {
+      for ( ft_stop_table word = table; *word; ++word )
         word_set->insert( *word );
-      }
     }
   }
   return word_set;

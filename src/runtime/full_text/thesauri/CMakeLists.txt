@@ -19,6 +19,8 @@ SET(THESAURUS_SRCS
     wn_synset.cpp
     wn_db_segment.cpp
     wn_thesaurus.cpp
+    xqftts_relationship.cpp
+    xqftts_thesaurus.cpp
     )
 
 # vim:set et sw=4 ts=4:

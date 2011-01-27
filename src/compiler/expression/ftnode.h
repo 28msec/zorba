@@ -252,8 +252,8 @@ public:
   ftthesaurus_id(
     QueryLoc const&,
     zstring const &uri,
-    zstring const &relationship,
-    ftrange *levels
+    zstring const &relationship = "",
+    ftrange *levels = NULL
   );
   ~ftthesaurus_id();
 
@@ -280,23 +280,26 @@ public:
 
   ftthesaurus_option(
     QueryLoc const&,
+    ftthesaurus_id *default_tid,
     thesaurus_id_list_t&,
-    bool includes_default,
     bool no_thesaurus
   );
   ~ftthesaurus_option();
 
-  thesaurus_id_list_t const& get_thesaurus_id_list() const
-    { return thesaurus_id_list_; }
+  ftthesaurus_id const* get_default_thesaurus_id() const {
+    return default_tid_;
+  }
+  thesaurus_id_list_t const& get_thesaurus_id_list() const {
+    return thesaurus_id_list_;
+  }
 
   ft_visit_result::type accept( ftnode_visitor& );
-  bool includes_default() const { return includes_default_; }
   bool no_thesaurus() const { return no_thesaurus_; }
   std::ostream& put( std::ostream& ) const;
 
 private:
+  ftthesaurus_id *default_tid_;
   thesaurus_id_list_t thesaurus_id_list_;
-  bool includes_default_;
   bool no_thesaurus_;
 };
 typedef rchandle<ftthesaurus_option> ftthesaurus_option_t;

@@ -25,6 +25,7 @@
 
 #include "../ft_thesaurus.h"
 #include "iso2788.h"
+#include "wn_db_segment.h"
 #include "wn_types.h"
 
 namespace zorba {
@@ -38,10 +39,26 @@ namespace wordnet {
  */
 class thesaurus : public ft_thesaurus {
 public:
-  thesaurus( zstring const &phrase, zstring const &relationship,
-             locale::iso639_1::type lang, ft_int at_least, ft_int at_most );
+  /**
+   * Constructs a %thesaurus.
+   *
+   * @param path The path to the Wordnet database file or the directory it's
+   * in.
+   * @param lang The language of the phrase.
+   * @param phrase The phrase to look up.
+   * @param relationship The desired relationship the synonyms are to have.
+   * @param at_least The least number of "levels" the synonyms are to be away
+   * from the phrase.
+   * @param at_most The most number of "levels" the synonyms are to be away
+   * from the phrase.
+   */
+  thesaurus( zstring const &path, locale::iso639_1::type lang,
+             zstring const &phrase, zstring const &relationship,
+             ft_int at_least, ft_int at_most );
+
   ~thesaurus();
 
+  // inherited
   bool next( zstring *synonym );
 
 private:
@@ -50,14 +67,15 @@ private:
   typedef std::deque<lemma_id_t> synonym_queue;
   typedef std::set<lemma_id_t> synonym_set;
 
+  zstring const path_;
+  ft_int const at_least_, at_most_;
+  ft_int level_;
+
   /**
    * The WordNet pointer type that is the closest equivalent of the
    * "relationship" given in the original query, if any.
    */
   pointer::type query_ptr_type_;
-
-  ft_int const at_least_, at_most_;
-  ft_int level_;
 
   synset_queue synset_queue_;
   synonym_queue synonym_queue_;
@@ -65,7 +83,33 @@ private:
 
   static synset_queue::value_type const LevelMarker;
 
-  friend mmap_file const& get_wordnet_file();
+  /**
+   * Attempts to find a lemma within the WordNet thesaurus.
+   *
+   * @param phrase The phrase to search for.
+   * @return Returns said lemma or \c NULL if not found.
+   */
+  char const* find_lemma( zstring const &phrase );
+
+  /**
+   * Gets a reference to a singleton instance of the WordNet thesaurus database
+   * file.
+   *
+   * @param path The file or directory the WordNet thesaurus database is in.
+   * @return Returns said reference.
+   */
+  static mmap_file const& get_wordnet_file( zstring const &path );
+
+  /**
+   * Gets a reference to a singleton instance of a WordNet thesaurus database
+   * segment.
+   *
+   * @tparam SegID The database segment ID of the segment to get.
+   * @param path The file or directory the WordNet thesaurus database is in.
+   * @return Returns said segment.
+   */
+  template<db_segment::id_t SegID>
+  static db_segment const& get_segment( zstring const &path );
 
   // forbid these
   thesaurus( thesaurus const& );

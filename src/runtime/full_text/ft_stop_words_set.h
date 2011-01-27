@@ -69,6 +69,10 @@ private:
   {
   }
 
+  static void apply_word( zstring const&, set_t&, ft_stop_words_unex::type );
+  static void apply_word( char const*, char const*, set_t&,
+                          ft_stop_words_unex::type );
+
   static set_t* get_default_word_set_for( locale::iso639_1::type );
 
   // forbid these

@@ -23,7 +23,7 @@
 #define THROW_DATA_EXCEPTION(CHAR,MSG) {                        \
   ostringstream oss;                                            \
   oss << '\'' << (CHAR) << "': " MSG;                           \
-  ZORBA_ERROR_DESC( XQP8403_THESAURUS_DATA_ERROR, oss.str() );  \
+  ZORBA_ERROR_DESC( XQP8402_THESAURUS_DATA_ERROR, oss.str() );  \
 }
 
 using namespace std;

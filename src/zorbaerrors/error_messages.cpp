@@ -338,6 +338,8 @@ DEF_ERR_CODE (XQP0022_GET_RESULTS_AS_DOM_FAILED, XQP0022, "Couldn't get result a
 
 DEF_ERR_CODE (XQP0023_GET_RESULTS_AS_SAX_FAILED, XQP0023, "Couldn't get result as SAX")
 
+DEF_ERR_CODE (XQP0024_XML_DOES_NOT_MATCH_SCHEMA, XQP0024, "XML does not match schema: \"/s\": /s")
+
 DEF_ERR_CODE (XQP0025_COULD_NOT_CREATE_ITEM, XQP0025, "The item could not be created.")
 
 DEF_ERR_CODE (XQP0026_CANNOT_INIT_STORE, XQP0026, "Failed to initialize store.")

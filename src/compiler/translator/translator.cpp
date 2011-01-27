@@ -11440,6 +11440,18 @@ template<typename FTNodeType> bool flatten( ftnode *n ) {
   }
   return false;
 }
+
+zstring ft_resolve_stop_words( zstring const &uri ) {
+  store::Item_t uri_item = NULL;
+  ITEM_FACTORY->createAnyURI( uri_item, uri.c_str() );
+  return GENV.getStopWordsURIResolver()->resolve( uri_item, theSctx );
+}
+
+zstring ft_resolve_thesaurus( zstring const &uri ) {
+  store::Item_t uri_item = NULL;
+  ITEM_FACTORY->createAnyURI( uri_item, uri.c_str() );
+  return GENV.getThesaurusURIResolver()->resolve( uri_item, theSctx );
+}
 #endif /* ZORBA_NO_FULL_TEXT */
 
 void *begin_visit (const FTAnd& v) {
@@ -11907,8 +11919,9 @@ void *begin_visit (const FTStopWords& v) {
 void end_visit (const FTStopWords& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 #ifndef ZORBA_NO_FULL_TEXT
-  ftstop_words *const sw =
-    new ftstop_words( v.get_location(), v.get_uri(), v.get_stop_words() );
+  ftstop_words *const sw = new ftstop_words(
+    v.get_location(), ft_resolve_stop_words( v.get_uri() ), v.get_stop_words()
+  );
   push_ftstack( sw );
 #endif /* ZORBA_NO_FULL_TEXT */
 }
@@ -11943,7 +11956,11 @@ void end_visit (const FTStopWordOption& v, void* /*visit_state*/) {
   while ( true ) {
     ftnode *const n = top_ftstack();
     if ( ftstop_words *const sw = dynamic_cast<ftstop_words*>( n ) ) {
-      stop_words.push_back( sw );
+      //
+      // We must use push_front() to maintain the original left-to-right order
+      // of the query.
+      //
+      stop_words.push_front( sw );
       pop_ftstack();
     } else
       break;
@@ -11968,23 +11985,18 @@ void *begin_visit (const FTThesaurusID& v) {
 void end_visit (const FTThesaurusID& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 #ifndef ZORBA_NO_FULL_TEXT
-  ftthesaurus_id *const ti = new ftthesaurus_id(
-    v.get_location(),
-    v.get_uri(),
-    v.get_relationship(),
-    v.get_levels() ? dynamic_cast<ftrange*>( pop_ftstack() ) : NULL
+  ftrange *levels;
+  if ( v.get_levels() ) {
+    levels = dynamic_cast<ftrange*>( pop_ftstack() );
+    ZORBA_ASSERT( levels );
+  } else
+    levels = NULL;
+
+  ftthesaurus_id *const tid = new ftthesaurus_id(
+    v.get_location(), ft_resolve_thesaurus( v.get_uri() ),
+    v.get_relationship(), levels
   );
-
-#if 0
-  InternalFullTextURIResolver* lResolver = GENV.getFullTextURIResolver();
-  store::Item_t thesaurusURI = NULL;
-  ITEM_FACTORY->createAnyURI(thesaurusURI, v.get_uri().c_str());
-  zstring thesaurus = lResolver->resolve(thesaurusURI, theSctx);
-
-  std::cout << "resolved thesaurus " << thesaurus << std::endl;
-#endif
-
-  push_ftstack( ti );
+  push_ftstack( tid );
 #endif /* ZORBA_NO_FULL_TEXT */
 }
 
@@ -11999,11 +12011,18 @@ void *begin_visit (const FTThesaurusOption& v) {
 void end_visit (const FTThesaurusOption& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 #ifndef ZORBA_NO_FULL_TEXT
+  ftthesaurus_id *const default_tid = v.includes_default() ?
+    new ftthesaurus_id(
+      v.get_location(), ft_resolve_thesaurus( "default" )
+    )
+  :
+    NULL;
+
   ftthesaurus_option::thesaurus_id_list_t list;
   while ( true ) {
-    ftthesaurus_id *const ti = dynamic_cast<ftthesaurus_id*>( pop_ftstack() );
-    if ( ti )
-      list.push_back( ti );
+    ftthesaurus_id *const tid = dynamic_cast<ftthesaurus_id*>( pop_ftstack() );
+    if ( tid )
+      list.push_back( tid );
     else
       break;
   }
@@ -12012,7 +12031,7 @@ void end_visit (const FTThesaurusOption& v, void* /*visit_state*/) {
   if ( mo->get_thesaurus_option() )
     ZORBA_ERROR_LOC_DESC( FTST0019, v.get_location(), "thesaurus option" );
   ftthesaurus_option *const t = new ftthesaurus_option(
-    v.get_location(), list, v.includes_default(), v.no_thesaurus()
+    v.get_location(), default_tid, list, v.no_thesaurus()
   );
   mo->set_thesaurus_option( t );
 #endif /* ZORBA_NO_FULL_TEXT */

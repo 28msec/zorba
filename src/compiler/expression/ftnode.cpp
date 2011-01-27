@@ -739,8 +739,7 @@ ftstop_words::ftstop_words(
   list_( stop_word_list ),
   mode_( mode )
 {
-  if ( !uri_.empty() )
-    ZORBA_ERROR_LOC_PARAM( FTST0008, loc, uri_, "" );
+  ZORBA_ASSERT( !uri_.empty() || !list_.empty() );
 }
 
 ft_visit_result::type ftstop_words::accept( ftnode_visitor &v ) {
@@ -856,40 +855,42 @@ void ftthesaurus_id::serialize( serialization::Archiver &ar ) {
 
 ftthesaurus_option::ftthesaurus_option(
   QueryLoc const &loc,
+  ftthesaurus_id *default_tid,
   thesaurus_id_list_t &list,
-  bool includes_default,
   bool no_thesaurus_arg
 ) :
   ftmatch_option( loc ),
-  includes_default_( includes_default ),
+  default_tid_( default_tid ),
   no_thesaurus_( no_thesaurus_arg )
 {
   thesaurus_id_list_.swap( list );
 }
 
 ftthesaurus_option::~ftthesaurus_option() {
+  delete default_tid_;
   delete_ptr_seq( thesaurus_id_list_ );
 }
 
 ft_visit_result::type ftthesaurus_option::accept( ftnode_visitor &v ) {
   BEGIN_VISIT( v );
+  ACCEPT( default_tid_, v );
   ACCEPT_SEQ( thesaurus_id_list_t, thesaurus_id_list_, v );
   END_VISIT( v );
 }
 
 ostream& ftthesaurus_option::put( ostream &o ) const {
   BEGIN_PUT( o, ftthesaurus_option );
-  PUT_BOOL( o, includes_default );
   PUT_BOOL( o, no_thesaurus );
   INDENT_PUT( o );
+  PUT_NODE( o, default_tid_ );
   PUT_SEQ( o, thesaurus_id_list_t, thesaurus_id_list_ );
   OUTDENT_END_PUT( o );
 }
 
 void ftthesaurus_option::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (ftmatch_option*)this );
+  ar & default_tid_;
   ar & thesaurus_id_list_;
-  ar & includes_default_;
   ar & no_thesaurus_;
 }
 

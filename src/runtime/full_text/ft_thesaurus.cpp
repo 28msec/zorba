@@ -14,17 +14,21 @@
  * limitations under the License.
  */
 
-#include <algorithm>                    /* for equal_range */
-#include <cassert>
-#include <cstring>
-#include <functional>                   /* for binary_function */
-#include <utility>                      /* for pair */
+#include <map>
 
-#include "util/ascii_util.h"
+#include <zorba/config.h>
+
+#include "util/fs_util.h"
 #include "util/less.h"
+#include "util/string_util.h"
+#include "util/uri_util.h"
+#ifndef ZORBA_WITH_FILE_ACCESS
+#include "zorbaerrors/error_manager.h"
+#endif
 
 #include "ft_thesaurus.h"
 #include "thesauri/wn_thesaurus.h"
+#include "thesauri/xqftts_thesaurus.h"
 
 using namespace std;
 using namespace zorba::locale;
@@ -36,89 +40,99 @@ namespace zorba {
 /**
  * The "statically known thesauri" implementations.
  */
-namespace thesauri_impl {
+namespace thesaurus_impl {
 
   enum type {
-    none,
-    wordnet
+    unknown,
+    wordnet,
+    xqftts
   };
-
-  struct table_entry {
-    char const *te_uri;
-    type te_type;
-  };
-
-  struct less_table_entry :
-    binary_function<table_entry const&,table_entry const&,bool>
-  {
-    less_table_entry() { }
-    result_type operator()( first_argument_type i, second_argument_type j ) {
-      return ::strcmp( i.te_uri, j.te_uri ) < 0;
-    }
-  };
-
-#define ZORBA_W3C_TEST_SUITE_THESAURUS_URIS 1
-
-  static table_entry const table[] = {
-    //
-    // 1. Entries *must* be sorted by URI.
-    // 2. URIs *must* *not* have a trailing '/'.
-    //
-    { "default"                                           , wordnet },
-#if ZORBA_W3C_TEST_SUITE_THESAURUS_URIS
-    { "http://bstore1.example.com/TechnicalThesaurus.xml" , wordnet },
-    { "http://bstore1.example.com/UsabilityThesaurus.xml" , wordnet },
-#endif
-    { "http://wordnet.princeton.edu"                      , wordnet },
-  };
+  type const DEFAULT = wordnet;
 
   /**
-   * Given a thesaurus URI, finds its corresponding thesaurus implementation.
+   * Given a thesaurus implementation name, finds its corresponding type.
    *
-   * @param uri The thesaurus' URI.
-   * @return Returns the implementation's type or \c none.
+   * @param name The thesaurus implementation's name.
+   * @return Returns the implementation's type or \c unknown.
    */
-  static type find( zstring const &uri ) {
-    static table_entry const *const table_end =
-      table + sizeof( table ) / sizeof( table[0] );
-    table_entry entry_to_find;
-    entry_to_find.te_uri = uri.c_str();
-    pair<table_entry const*,table_entry const*> const result =
-      ::equal_range( table, table_end, entry_to_find, less_table_entry() );
-    return result.first == result.second ? none : result.first->te_type;
+  static type find( zstring const &name ) {
+    typedef map<char const*,type> impl_map_t;
+    static impl_map_t impl_map;
+    if ( impl_map.empty() ) {
+      impl_map[ "default" ] = wordnet;
+      impl_map[ "wordnet" ] = wordnet;
+      impl_map[ "xqftts"  ] = xqftts;
+    }
+    impl_map_t::const_iterator const result = impl_map.find( name.c_str() );
+    return result != impl_map.end() ? result->second : unknown;
   }
 
-} // namespace thesauri_impl
+} // namespace thesaurus_impl
 
 ///////////////////////////////////////////////////////////////////////////////
 
-zstring ft_thesaurus::thesauri_directory_;
+/**
+ * Parses a thesaurus mapping string.  A mapping string is of the form:
+ *
+ *  [implementation_name|]URI
+ *
+ * @param mapping The mapping to parse.
+ * @param t A pointer to receive the implementation type.
+ * @param uri A pointer to the string to receive the URI.
+ */
+static void parse_mapping( zstring const &mapping, thesaurus_impl::type *t,
+                           zstring *uri ) {
+  zstring impl_name;
+  if ( split( mapping, '|', &impl_name, uri ) ) {
+    *t = thesaurus_impl::find( impl_name );
+  } else {
+    *t = thesaurus_impl::DEFAULT;
+    *uri = mapping;
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////
 
 ft_thesaurus::~ft_thesaurus() {
   // do nothing
 }
 
-ft_thesaurus* ft_thesaurus::get( zstring const &uri, iso639_1::type lang,
+ft_thesaurus* ft_thesaurus::get( zstring const &mapping, iso639_1::type lang,
                                  zstring const &phrase,
                                  zstring const &relationship,
                                  ft_int at_least, ft_int at_most ) {
-  zstring const uri_no_slash(
-    ascii::ends_with( uri, '/' ) ? uri.substr( 0, uri.size() - 1 ) : uri
-  );
+  thesaurus_impl::type th_impl;
+  zstring uri;
+  parse_mapping( mapping, &th_impl, &uri );
 
-  switch ( thesauri_impl::find( uri_no_slash ) ) {
-    case thesauri_impl::wordnet:
+  zstring th_path;
+  switch ( uri::get_scheme( uri ) ) {
+    case uri::file:
+    case uri::none:
+#     ifdef ZORBA_WITH_FILE_ACCESS
+      th_path = fs::get_normalized_path( uri );
+      break;
+#     else
+      ZORBA_ERROR( XQP0017_FILE_ACCESS_DISABLED );
+#     endif /* ZORBA_WITH_FILE_ACCESS */
+    default:
+      ZORBA_ERROR_DESC(
+        XQP0015_SYSTEM_NOT_YET_IMPLEMENTED, "non-file thesaurus URI"
+      );
+  }
+
+  switch ( th_impl ) {
+    case thesaurus_impl::wordnet:
       return new wordnet::thesaurus(
-        phrase, relationship, lang, at_least, at_most
+        th_path, lang, phrase, relationship, at_least, at_most
+      );
+    case thesaurus_impl::xqftts:
+      return new xqftts::thesaurus(
+        th_path, lang, phrase, relationship, at_least, at_most
       );
     default:
       return NULL;
   }
-}
-
-void ft_thesaurus::set_directory( zstring const &path ) {
-  assert( !path.empty() );
-  thesauri_directory_ = path;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

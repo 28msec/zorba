@@ -44,7 +44,7 @@ public:
   /**
    * Gets an instance of the requested thesaurus and performs a phrase look-up.
    *
-   * @param uri The URI specifying the thesaurus to use.
+   * @param mapping The mapping string specifying the thesaurus to use.
    * @param lang The language of the thesaurus.
    * @param phrase The phrase to look up.
    * @param relationship The relationship the synonyms are to have to the given
@@ -56,7 +56,7 @@ public:
    * @return Returns said thesaurus or \c null if no thesaurus matches the
    * request.  It is the caller's responsibility to \c delete the thesaurus.
    */
-  static ft_thesaurus* get( zstring const &uri, locale::iso639_1::type lang,
+  static ft_thesaurus* get( zstring const &mapping, locale::iso639_1::type lang,
                             zstring const &phrase, zstring const &relationship,
                             ft_int at_least, ft_int at_most );
 
@@ -71,13 +71,7 @@ public:
 protected:
   ft_thesaurus() { }
 
-  static zstring const& get_directory() {
-    return thesauri_directory_;
-  }
-
 private:
-  static zstring thesauri_directory_;
-
   // forbid these
   ft_thesaurus( ft_thesaurus const& );
   ft_thesaurus& operator=( ft_thesaurus const& );

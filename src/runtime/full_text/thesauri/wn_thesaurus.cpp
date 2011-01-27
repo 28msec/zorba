@@ -23,6 +23,7 @@
 #include <zorba/util/path.h>
 
 #include "util/ascii_util.h"
+#include "util/fs_util.h"
 #include "util/less.h"
 #if DEBUG_FT_THESAURUS
 #include "util/oseparator.h"
@@ -50,93 +51,31 @@ uint32_t const Magic_Number = 42;       // same as TIFF -- why not?
 
 ////////// Helper functions ///////////////////////////////////////////////////
 
+#define GET_SEGMENT(SEG_ID) get_segment<db_segment::SEG_ID>( path_ )
+#define LEMMAS              GET_SEGMENT( lemma )
+#define SYNSETS             GET_SEGMENT( synset )
+
+#define THROW_ENDIANNESS_EXCEPTION() \
+  ZORBA_ERROR_DESC( XQP8402_THESAURUS_DATA_ERROR, "wrong endianness" )
+
+#define THROW_FILE_NOT_FOUND_EXCEPTION(FILE) {                          \
+  ostringstream oss;                                                    \
+  oss << '"' << FILE << "\": file not found";                           \
+  ZORBA_ERROR_DESC( API0033_FILE_OR_FOLDER_DOES_NOT_EXIST, oss.str() ); \
+}
+
+#define THROW_NOT_PLAIN_FILE_EXCEPTION(FILE) {            \
+  ostringstream oss;                                      \
+  oss << '"' << FILE << "\": not plain file";             \
+  ZORBA_ERROR_DESC( API0022_NOT_PLAIN_FILE, oss.str() );  \
+}
+
 #define THROW_VERSION_EXCEPTION(FILE_VERSION,OUR_VERSION) {           \
   ostringstream oss;                                                  \
   oss << '"' << FILE_VERSION                                          \
       << "\": wrong WordNet file version; should be \""               \
       << OUR_VERSION << '"';                                          \
-  ZORBA_ERROR_DESC( XQP8402_THESAURUS_VERSION_MISMATCH, oss.str() );  \
-}
-
-#define THROW_ENDIANNESS_EXCEPTION() \
-  ZORBA_ERROR_DESC( XQP8403_THESAURUS_DATA_ERROR, "wrong endianness" )
-
-/**
- * Gets a reference to a singleton instance of the WordNet thesaurus database
- * file.
- *
- * @return Returns said reference.
- */
-mmap_file const& get_wordnet_file() {
-  typedef char version_type[4];
-  static char const our_version[] = "ZW01";
-
-  static mmap_file wordnet_file;
-  if ( !wordnet_file ) {
-    zstring const &dir = thesaurus::get_directory();
-    ZORBA_ASSERT( !dir.empty() );
-
-    zstring wordnet_path = dir;
-    if ( !ascii::ends_with( wordnet_path,
-                            filesystem_path::get_path_separator() ) )
-      wordnet_path += filesystem_path::get_path_separator();
-    wordnet_path += "wordnet-";
-    wordnet_path += iso639_1::string_of[ iso639_1::en ];
-    wordnet_path += ".zth";
-    wordnet_file.open( wordnet_path.c_str() );
-
-    // check version
-    char file_version[ sizeof( version_type ) + 1 ];
-    char const *byte_ptr = wordnet_file.begin();
-    ::strncpy( file_version, byte_ptr, sizeof( version_type ) );
-    file_version[ sizeof( version_type ) ] = '\0';
-    if ( ::strcmp( file_version, our_version ) != 0 )
-      THROW_VERSION_EXCEPTION( file_version, our_version );
-
-    // check endian-ness
-    byte_ptr += sizeof( uint32_t );
-    uint32_t const file_endian = *reinterpret_cast<uint32_t const*>( byte_ptr );
-    if ( file_endian != Magic_Number )
-      THROW_ENDIANNESS_EXCEPTION();
-  }
-  return wordnet_file;
-}
-
-/**
- * Gets a reference to a singleton instance of a WordNet thesaurus database
- * segment.
- *
- * @return Returns said segment.
- */
-template<db_segment::id_t SegID>
-static db_segment const& get_segment() {
-  static db_segment const segment( get_wordnet_file(), SegID );
-  return segment;
-}
-
-#define GET_SEGMENT(SEG_ID) get_segment<db_segment::SEG_ID>()
-#define LEMMAS              GET_SEGMENT( lemma )
-#define SYNSETS             GET_SEGMENT( synset )
-
-/**
- * Attempts to find a lemma within the WordNet thesaurus.
- *
- * @param phrase The phrase to search for.
- * @return Returns said lemma or \c NULL if not found.
- */
-static char const* find_lemma( zstring const &phrase ) {
-  typedef pair<db_segment::const_iterator,db_segment::const_iterator>
-    lemma_range;
-
-  db_segment const &lemmas = LEMMAS;
-  char const *const c_phrase = phrase.c_str();
-  less<char const*> const comparator;
-
-  lemma_range const range =
-    ::equal_range( lemmas.begin(), lemmas.end(), c_phrase, comparator );
-  if ( range.first == lemmas.end() || comparator( c_phrase, *range.first ) )
-    return NULL;
-  return *range.first;
+  ZORBA_ERROR_DESC( XQP8401_THESAURUS_VERSION_MISMATCH, oss.str() );  \
 }
 
 /**
@@ -285,10 +224,12 @@ static pointer::type map_xquery_rel( zstring const &relationship,
 thesaurus::synset_queue::value_type const thesaurus::LevelMarker =
   make_pair( ~0u, iso2788::neutral );
 
-thesaurus::thesaurus( zstring const &phrase, zstring const &relationship,
-                      iso639_1::type lang, ft_int at_least, ft_int at_most ) :
-  query_ptr_type_( map_xquery_rel( relationship, lang ) ),
-  at_least_( at_least ), at_most_( fix_at_most( at_most ) ), level_( 0 )
+thesaurus::thesaurus( zstring const &path, iso639_1::type lang,
+                      zstring const &phrase, zstring const &relationship,
+                      ft_int at_least, ft_int at_most ) :
+  path_( path ),
+  at_least_( at_least ), at_most_( fix_at_most( at_most ) ), level_( 0 ),
+  query_ptr_type_( map_xquery_rel( relationship, lang ) )
 {
 # if DEBUG_FT_THESAURUS
   cout << "==================================================" << endl;
@@ -316,6 +257,76 @@ thesaurus::~thesaurus() {
   // do nothing
 }
 
+template<db_segment::id_t SegID>
+db_segment const& thesaurus::get_segment( zstring const &path ) {
+  static db_segment const segment( get_wordnet_file( path ), SegID );
+  return segment;
+}
+
+char const* thesaurus::find_lemma( zstring const &phrase ) {
+  typedef pair<db_segment::const_iterator,db_segment::const_iterator> range_t;
+
+  db_segment const &lemmas = LEMMAS;
+  char const *const c_phrase = phrase.c_str();
+  less<char const*> const comparator;
+
+  range_t const range =
+    ::equal_range( lemmas.begin(), lemmas.end(), c_phrase, comparator );
+  if ( range.first == lemmas.end() || comparator( c_phrase, *range.first ) )
+    return NULL;
+  return *range.first;
+}
+
+mmap_file const& thesaurus::get_wordnet_file( zstring const &path ) {
+  typedef char version_type[4];
+  static char const our_version[] = "ZW01";
+  static zstring orig_path;
+  static mmap_file wordnet_file;
+
+  ZORBA_ASSERT( !path.empty() );
+  if ( path != orig_path ) {
+    if ( wordnet_file )
+      wordnet_file.close();
+
+    zstring wordnet_path( path );
+    for ( bool loop = true; loop; ) {
+      switch ( fs::get_type( wordnet_path ) ) {
+        case fs::directory:
+          fs::append( wordnet_path, "wordnet-" );
+          wordnet_path += iso639_1::string_of[ iso639_1::en ];
+          wordnet_path += ".zth";
+          break;
+        case fs::file:
+          loop = false;
+          break;
+        case fs::non_existent:
+          THROW_FILE_NOT_FOUND_EXCEPTION( wordnet_path );
+        default:
+          THROW_NOT_PLAIN_FILE_EXCEPTION( wordnet_path );
+      }
+    }
+
+    wordnet_file.open( wordnet_path.c_str() );
+
+    // check version
+    char file_version[ sizeof( version_type ) + 1 ];
+    char const *byte_ptr = wordnet_file.begin();
+    ::strncpy( file_version, byte_ptr, sizeof( version_type ) );
+    file_version[ sizeof( version_type ) ] = '\0';
+    if ( ::strcmp( file_version, our_version ) != 0 )
+      THROW_VERSION_EXCEPTION( file_version, our_version );
+
+    // check endian-ness
+    byte_ptr += sizeof( uint32_t );
+    uint32_t const file_endian = *reinterpret_cast<uint32_t const*>( byte_ptr );
+    if ( file_endian != Magic_Number )
+      THROW_ENDIANNESS_EXCEPTION();
+
+    orig_path = path;
+  }
+  return wordnet_file;
+}
+
 bool thesaurus::next( zstring *synonym ) {
   while ( synonym_queue_.empty() ) {
 #   if DEBUG_FT_THESAURUS
@@ -332,6 +343,7 @@ bool thesaurus::next( zstring *synonym ) {
 
     synset_queue::value_type const synset_entry( pop_front( synset_queue_ ) );
     synset_id_t const synset_id = synset_entry.first;
+    iso2788::rel_dir const synset_ptr_dir = synset_entry.second;
 
     if ( synset_id == LevelMarker.first ) {
 #     if DEBUG_FT_THESAURUS
@@ -462,7 +474,6 @@ bool thesaurus::next( zstring *synonym ) {
       // "rich" ("rich people"), i.e., all the different kinds of people, since
       // none of those are synonyms of "poor".
       //
-      iso2788::rel_dir const synset_ptr_dir = synset_entry.second;
       iso2788::rel_dir const current_ptr_dir = get_ptr_dir( ptr->type_ );
       if ( !iso2788::congruous( synset_ptr_dir, current_ptr_dir ) )
         continue;

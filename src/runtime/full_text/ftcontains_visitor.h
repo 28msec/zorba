@@ -118,12 +118,8 @@ private:
   double get_double( PlanIter_t const& );
   ft_int get_int( PlanIter_t const& );
 
-  void lookup_thesaurus( zstring const &uri, zstring const &query_phrase,
-                         FTToken const &qt0, zstring const &relationship,
-                         ft_int at_least, ft_int at_most,
-                         FTQueryItemSeq &result );
-
-  void set_thesauri_directory();
+  void lookup_thesaurus( ftthesaurus_id const&, zstring const &query_phrase,
+                         FTToken const &qt0, FTQueryItemSeq &result );
 
   FTTokenIterator_t &search_ctx_;
   static_context const &static_ctx_;
