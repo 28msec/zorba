@@ -62,10 +62,10 @@ public:
   bool next( zstring *synonym );
 
 private:
-  typedef std::pair<synset_id_t,iso2788::rel_dir> synset_queue_entry;
-  typedef std::deque<synset_queue_entry> synset_queue;
-  typedef std::deque<lemma_id_t> synonym_queue;
-  typedef std::set<lemma_id_t> synonym_set;
+  typedef std::pair<synset_id_t,iso2788::rel_dir> candidate_t;
+  typedef std::deque<candidate_t> candidate_queue_t;
+  typedef std::deque<lemma_id_t> result_queue_t;
+  typedef std::set<lemma_id_t> seen_set_t;
 
   zstring const path_;
   ft_int const at_least_, at_most_;
@@ -77,11 +77,11 @@ private:
    */
   pointer::type query_ptr_type_;
 
-  synset_queue synset_queue_;
-  synonym_queue synonym_queue_;
-  synonym_set synonyms_seen_;
+  candidate_queue_t candidate_queue_;
+  result_queue_t result_queue_;
+  seen_set_t synonyms_seen_;
 
-  static synset_queue::value_type const LevelMarker;
+  static candidate_queue_t::value_type const LevelMarker;
 
   /**
    * Attempts to find a lemma within the WordNet thesaurus.

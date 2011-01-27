@@ -221,7 +221,7 @@ static pointer::type map_xquery_rel( zstring const &relationship,
 
 ///////////////////////////////////////////////////////////////////////////////
 
-thesaurus::synset_queue::value_type const thesaurus::LevelMarker =
+thesaurus::candidate_queue_t::value_type const thesaurus::LevelMarker =
   make_pair( ~0u, iso2788::neutral );
 
 thesaurus::thesaurus( zstring const &path, iso639_1::type lang,
@@ -239,17 +239,17 @@ thesaurus::thesaurus( zstring const &path, iso639_1::type lang,
   if ( char const *p = find_lemma( phrase ) ) {
     while ( *p++ ) ;                    // skip past lemma
     //
-    // Load the synset_queue_ will all the synsets for the lemma.
+    // Load the candidate_queue_ will all the synsets for the lemma.
     //
     for ( unsigned num_synsets = decode_base128( &p ); num_synsets-- > 0; ) {
       synset_id_t const synset_id = decode_base128( &p );
-      synset_queue_.push_back( make_pair( synset_id, iso2788::neutral ) );
+      candidate_queue_.push_back( make_pair( synset_id, iso2788::neutral ) );
     }
     //
     // The initial synset IDs constitute a "level", so add the sentinel to the
     // queue to increment the level.
     //
-    synset_queue_.push_back( LevelMarker );
+    candidate_queue_.push_back( LevelMarker );
   }
 }
 
@@ -328,22 +328,22 @@ mmap_file const& thesaurus::get_wordnet_file( zstring const &path ) {
 }
 
 bool thesaurus::next( zstring *synonym ) {
-  while ( synonym_queue_.empty() ) {
+  while ( result_queue_.empty() ) {
 #   if DEBUG_FT_THESAURUS
     cout << "--------------------------------------------------" << endl;
-    cout << "synonym_queue is empty" << endl;
+    cout << "result_queue is empty" << endl;
 #   endif
 
-    if ( synset_queue_.empty() ) {
+    if ( candidate_queue_.empty() ) {
 #     if DEBUG_FT_THESAURUS
-      cout << "synset_queue is empty --> no more synonyms" << endl;
+      cout << "candidate_queue is empty --> no more synonyms" << endl;
 #     endif
       return false;
     }
 
-    synset_queue::value_type const synset_entry( pop_front( synset_queue_ ) );
-    synset_id_t const synset_id = synset_entry.first;
-    iso2788::rel_dir const synset_ptr_dir = synset_entry.second;
+    candidate_t const candidate( pop_front( candidate_queue_ ) );
+    synset_id_t const synset_id = candidate.first;
+    iso2788::rel_dir const synset_ptr_dir = candidate.second;
 
     if ( synset_id == LevelMarker.first ) {
 #     if DEBUG_FT_THESAURUS
@@ -366,8 +366,8 @@ bool thesaurus::next( zstring *synonym ) {
       // Note that we do this only if the queue isn't empty, otherwise the
       // queue would never become empty.
       //
-      if ( !synset_queue_.empty() )
-        synset_queue_.push_back( LevelMarker );
+      if ( !candidate_queue_.empty() )
+        candidate_queue_.push_back( LevelMarker );
 
       if ( query_ptr_type_ == pointer::antonym ) {
         //
@@ -421,7 +421,7 @@ bool thesaurus::next( zstring *synonym ) {
           cout << "? " << LEMMAS[ *lemma_id ] << " -> ";
 #         endif
           if ( synonyms_seen_.insert( *lemma_id ).second ) {
-            synonym_queue_.push_back( *lemma_id );
+            result_queue_.push_back( *lemma_id );
 #           if DEBUG_FT_THESAURUS
             cout << "pushed";
 #           endif
@@ -434,9 +434,9 @@ bool thesaurus::next( zstring *synonym ) {
 #         endif
         }
 #       if DEBUG_FT_THESAURUS
-        cout << "  synonym_queue is now: ";
+        cout << "  result_queue is now: ";
         oseparator comma;
-        FOR_EACH( synonym_queue, lemma_id, synonym_queue_ ) {
+        FOR_EACH( result_queue_t, lemma_id, result_queue_ ) {
           cout << comma << LEMMAS[ *lemma_id ];
         }
         cout << endl;
@@ -490,7 +490,7 @@ bool thesaurus::next( zstring *synonym ) {
       cout << endl;
 #     endif
 
-      synset_queue_.push_back(
+      candidate_queue_.push_back(
         make_pair( ptr->synset_id_, synset_ptr_dir + current_ptr_dir )
       );
 
@@ -505,7 +505,7 @@ bool thesaurus::next( zstring *synonym ) {
     } // FOR_EACH
   } // while
 
-  *synonym = LEMMAS[ pop_front( synonym_queue_ ) ];
+  *synonym = LEMMAS[ pop_front( result_queue_ ) ];
 # if DEBUG_FT_THESAURUS
   cout << "--> synonym=" << *synonym << endl;
 # endif
