@@ -8926,7 +8926,26 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
   // Some special processing is required for certain "fn" functions
   if (fn_ns == XQUERY_FN_NS)
   {
-    if (localName == "subsequence" && (numArgs == 2 || numArgs == 3))
+    if (localName == "head")
+    {
+      arguments.push_back(new const_expr(theRootSctx, loc, Integer::parseInt(1)));
+      arguments.push_back(new const_expr(theRootSctx, loc, Integer::parseInt(1)));
+      function* f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_3);
+      fo_expr_t foExpr = new fo_expr(theRootSctx, loc, f, arguments);
+      normalize_fo(foExpr);
+      push_nodestack(foExpr.getp());
+      return;
+    } 
+    else if (localName == "tail")
+    {
+      arguments.push_back(new const_expr(theRootSctx, loc, Integer::parseInt(2)));
+      function* f = GET_BUILTIN_FUNCTION(OP_ZORBA_SUBSEQUENCE_INT_2);
+      fo_expr_t foExpr = new fo_expr(theRootSctx, loc, f, arguments);
+      normalize_fo(foExpr);
+      push_nodestack(foExpr.getp());
+      return;
+    } 
+    else if (localName == "subsequence" && (numArgs == 2 || numArgs == 3))
     {
       function* f = NULL;
 

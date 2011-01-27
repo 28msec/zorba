@@ -1,0 +1,1 @@
+fn:empty(fn:tail(()))
