@@ -72,7 +72,8 @@ namespace iso2788 {
    * @param lang The language of the relationship.
    * @return Returns the corresponding relationship or \c unknown.
    */
-  rel_type find_rel( char const *relationship, locale::iso639_1::type lang );
+  rel_type find_rel( char const *relationship,
+                     locale::iso639_1::type lang = locale::iso639_1::unknown );
 
   /**
    * Attempts to find the ISO-2788 relationship corresponding to the given
@@ -85,7 +86,7 @@ namespace iso2788 {
    */
   template<class StringType> inline
   rel_type find_rel( StringType const &relationship,
-                     locale::iso639_1::type lang ) {
+                     locale::iso639_1::type lang = locale::iso639_1::unknown ) {
     return find_rel( relationship.c_str(), lang );
   }
 
