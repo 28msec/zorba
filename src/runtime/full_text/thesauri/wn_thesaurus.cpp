@@ -86,14 +86,12 @@ uint32_t const Magic_Number = 42;       // same as TIFF -- why not?
  *    phrases written in the query and terms in the thesaurus and the number of
  *    levels to be queried in hierarchical relationships by including an
  *    FTRange "levels". If no levels are specified, the default is to query all
- *    levels in hierarchical relationships.
+ *    levels in hierarchical relationships or to query an implementation-
+ *    defined number of levels in hierarchical relationships.
  *
  * The problem with defaulting to "all levels" is that it makes queries too
  * broad, hence if at_most specifies "all levels" (max int), clamp it at 2
  * (which seems to work well in practice).
- *
- * For more information, see:
- * http://www.w3.org/Bugs/Public/show_bug.cgi?id=11444
  */
 inline ft_int fix_at_most( ft_int at_most ) {
   return at_most == numeric_limits<ft_int>::max() ? 2 : at_most;
