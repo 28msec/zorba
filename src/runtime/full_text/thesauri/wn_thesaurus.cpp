@@ -22,12 +22,12 @@
 
 #include <zorba/util/path.h>
 
-#include "util/ascii_util.h"
 #include "util/fs_util.h"
 #include "util/less.h"
 #if DEBUG_FT_THESAURUS
 #include "util/oseparator.h"
 #endif
+#include "util/utf8_util.h"
 #include "zorbaerrors/Assert.h"
 #include "zorbaerrors/error_manager.h"
 
@@ -213,7 +213,7 @@ static iso2788::rel_dir get_ptr_dir( pointer::type ptr_type ) {
 static pointer::type map_xquery_rel( zstring const &relationship,
                                      iso639_1::type lang ) {
   zstring rel_lower;
-  ascii::to_lower( relationship, &rel_lower );
+  utf8::to_lower( relationship, &rel_lower );
   if ( iso2788::rel_type iso_rel = iso2788::find_rel( rel_lower, lang ) )
     return pointer::map_iso_rel( iso_rel );
   return pointer::find( rel_lower );

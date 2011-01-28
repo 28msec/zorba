@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
+#include "util/utf8_util.h"
 #include "zorbautils/locale.h"
+
 #include "xqftts_relationship.h"
 
 namespace zorba {
@@ -25,12 +27,14 @@ using namespace locale;
 ///////////////////////////////////////////////////////////////////////////////
 
 relationship::relationship( string_t const &rel_string ) {
-  if ( iso2788::rel_type const t = iso2788::find_rel( rel_string ) ) {
+  zstring rel_lower;
+  utf8::to_lower( rel_string, &rel_lower );
+  if ( iso2788::rel_type const t = iso2788::find_rel( rel_lower ) ) {
     is_string_ = false;
     rel_iso2788_ = t;
   } else {
     is_string_ = true;
-    new( &get_string() ) string_t( rel_string );
+    new( &get_string() ) string_t( rel_lower );
   }
 }
 
