@@ -246,8 +246,8 @@ thesaurus::thesaurus( zstring const &path, iso639_1::type lang,
       candidate_queue_.push_back( make_pair( synset_id, iso2788::neutral ) );
     }
     //
-    // The initial synset IDs constitute a "level", so add the sentinel to the
-    // queue to increment the level.
+    // All the candidates just added constitute a "level" so add the
+    // LevelMarker to the queue.
     //
     candidate_queue_.push_back( LevelMarker );
   }
