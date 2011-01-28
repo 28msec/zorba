@@ -27,6 +27,7 @@
 #if DEBUG_THESAURUS || DEBUG_READ_THESAURUS
 #include "util/oseparator.h"
 #endif
+#include "util/stl_util.h"
 #include "util/uri_util.h"
 #include "util/utf8_util.h"
 #include "zorbaerrors/error_manager.h"
@@ -53,12 +54,11 @@ inline bool is_element( store::Item_t const &item ) {
 ///////////////////////////////////////////////////////////////////////////////
 
 thesaurus::candidate_queue_t::value_type const thesaurus::LevelMarker =
-  make_pair( (synonym_t*)0, iso2788::neutral );
+  make_pair( static_cast<synonym*>(0), iso2788::neutral );
 
 thesaurus::thesaurus( zstring const &path, iso639_1::type lang,
-                      zstring const &phrase, zstring const &relationship,
+                      zstring const &phrase, zstring const &query_rel_string,
                       ft_int at_least, ft_int at_most ) :
-  relationship_( relationship_ ),
   at_least_( at_least ), at_most_( at_most ), level_( 0 )
 {
   read_xqftts_file( path );
@@ -66,8 +66,43 @@ thesaurus::thesaurus( zstring const &path, iso639_1::type lang,
   cout << "==================================================" << endl;
   cout << "query phrase: " << phrase << endl;
 # endif
+  //
+  // Always include the original phrase in the results.
+  //
   result_queue_.push_back( phrase );
-  lookup( phrase, iso2788::get_dir( relationship_.get_iso2788() ) );
+  synonyms_seen_.insert( phrase );
+
+  //
+  // Lookup the phrase in the thesaurus.
+  //
+  thesaurus_t::const_iterator const entry = thesaurus_.find( phrase );
+  if ( entry != thesaurus_.end() ) {
+    relationship const query_rel( query_rel_string );
+    iso2788::rel_dir const query_dir =
+      iso2788::get_dir( query_rel.get_iso2788() );
+    FOR_EACH( synonym_set_t, i, entry->second ) {
+      synonym const *const candidate_ptr = *i;
+      //
+      // For each synonym: if either the query didn't specify a relationship or
+      // it did and a candidate's relationship matches, add the synonym as a
+      // candidate result.
+      //
+      FOR_EACH( relationship_set_t, r, candidate_ptr->relationships ) {
+        if ( query_rel.empty() || *r == query_rel ) {
+          candidate_queue_.push_back(
+            make_pair(
+              candidate_ptr, query_dir + iso2788::get_dir( r->get_iso2788() )
+            )
+          );
+        }
+      }
+    }
+    //
+    // All the candidates just added constitute a "level" so add the
+    // LevelMarker to the queue.
+    //
+    candidate_queue_.push_back( LevelMarker );
+  }
 }
 
 thesaurus::~thesaurus() {
@@ -75,37 +110,7 @@ thesaurus::~thesaurus() {
     delete_ptr_seq( entry->second );
 }
 
-void thesaurus::lookup( term_t const &word, iso2788::rel_dir dir ) {
-  thesaurus_t::const_iterator const entry = thesaurus_.find( word );
-  if ( entry != thesaurus_.end() ) {
-    FOR_EACH( synonym_set_t, i, entry->second ) {
-      synonym_t const *const candidate_ptr = *i;
-      iso2788::rel_dir candidate_dir;
-      bool found_congruous = false;
-      FOR_EACH( relationship_set_t, r, candidate_ptr->relationships ) {
-        iso2788::rel_dir const d = iso2788::get_dir( r->get_iso2788() );
-        if ( iso2788::congruous( dir, d ) ) {
-          candidate_dir = d;
-          found_congruous = true;
-          break;
-        }
-      }
-      if ( found_congruous )
-        candidate_queue_.push_back(
-          make_pair( candidate_ptr, dir + candidate_dir )
-        );
-    }
-    if ( !candidate_queue_.empty() ) {
-      //
-      // All the candidates added constitute a "level", so add the sentinel to
-      // the queue to increment the level.
-      //
-      candidate_queue_.push_back( LevelMarker );
-    }
-  }
-}
-
-bool thesaurus::next( zstring *synonym ) {
+bool thesaurus::next( zstring *result ) {
   while ( result_queue_.empty() ) {
 #   if DEBUG_THESAURUS
     cout << "--------------------------------------------------" << endl;
@@ -119,8 +124,16 @@ bool thesaurus::next( zstring *synonym ) {
       return false;
     }
 
+#   if DEBUG_THESAURUS
+    oseparator comma;
+    cout << "candidate_queue is: ";
+    FOR_EACH( candidate_queue_t, i, candidate_queue_ )
+      cout << comma << (i->first ? i->first->term.c_str() : "<LEVEL>");
+    cout << endl;
+#endif
+
     candidate_t const candidate( pop_front( candidate_queue_ ) );
-    synonym_t const *const candidate_ptr = candidate.first;
+    synonym const *const candidate_ptr = candidate.first;
     iso2788::rel_dir const candidate_dir = candidate.second;
 
     if ( candidate_ptr == LevelMarker.first ) {
@@ -134,34 +147,46 @@ bool thesaurus::next( zstring *synonym ) {
 #       endif
         return false;
       }
-
-      //
-      // We've just incremented the level, so all candidates that have been
-      // added to the queue since the last time we were here constitute a
-      // "level": therefore, add the level marker so we know when to increment
-      // the level next time.
-      //
-      // Note that we do this only if the queue isn't empty, otherwise the
-      // queue would never become empty.
-      //
-      if ( !candidate_queue_.empty() )
-        candidate_queue_.push_back( LevelMarker );
-
       continue;
     }
 
-    if ( level_ >= at_least_ ) {
-      zstring const &word = candidate_ptr->term;
-      if ( synonyms_seen_.insert( word ).second )
-        result_queue_.push_back( word );
-    }
+    term_t const &term = candidate_ptr->term;
+    //
+    // Add the candidate's term to the result queue only if we're within the
+    // specified level range and we haven't returned the term before.
+    //
+    if ( level_ >= at_least_ && synonyms_seen_.insert( term ).second )
+      result_queue_.push_back( term );
 
-    lookup( candidate_ptr->term, candidate_dir );
+    //
+    // Look up the current synonym term to do the next "level" of synonyms.
+    //
+    thesaurus_t::const_iterator const entry = thesaurus_.find( term );
+    if ( entry != thesaurus_.end() ) {
+      FOR_EACH( synonym_set_t, i, entry->second ) {
+        synonym const *const next_candidate_ptr = *i;
+        if ( !contains( synonyms_seen_, next_candidate_ptr->term ) ) {
+          FOR_EACH( relationship_set_t, r, next_candidate_ptr->relationships ) {
+            iso2788::rel_dir const d = iso2788::get_dir( r->get_iso2788() );
+            if ( iso2788::congruous( candidate_dir, d ) ) {
+              candidate_queue_.push_back(
+                make_pair( next_candidate_ptr, candidate_dir + d )
+              );
+            }
+          }
+        }
+      }
+      //
+      // All the candidates just added constitute a "level" so add the
+      // LevelMarker to the queue.
+      //
+      candidate_queue_.push_back( LevelMarker );
+    }
   } // while
 
-  *synonym = pop_front( result_queue_ );
+  *result = pop_front( result_queue_ );
 # if DEBUG_THESAURUS
-  cout << "--> synonym=" << *synonym << endl;
+  cout << "--> synonym=" << *result << endl;
 # endif
   return true;
 }
@@ -244,7 +269,7 @@ void thesaurus::read_xqftts_file( zstring const &uri ) {
           // We now have a (possibly) new synonym for the new synonym set
           // being built.
           //
-          auto_ptr<synonym_t> new_syn( new synonym_t( syn_term ) );
+          auto_ptr<synonym> new_syn( new synonym( syn_term ) );
           synonym_set_t::iterator syn_it = new_set.find( new_syn.get() );
           if ( syn_it != new_set.end() )
             (*syn_it)->relationships.insert( syn_relationship );

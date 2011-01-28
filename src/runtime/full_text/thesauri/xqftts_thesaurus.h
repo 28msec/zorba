@@ -32,7 +32,10 @@ namespace xqftts {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * A %xqftts::thesaurus is-a ft_thesaurus TODO
+ * A %xqftts::thesaurus is-an ft_thesaurus for the W3C XQuery Full-Text Test
+ * Suite.  The only reason this implementation was written is to run and pass
+ * the test suite's thesaurus tests.  However, users may find it useful for
+ * their own production thesauri.
  */
 class thesaurus : public ft_thesaurus {
 public:
@@ -70,42 +73,45 @@ private:
   typedef zstring term_t;
   typedef std::set<relationship> relationship_set_t;
 
-  struct synonym_t {
+  /**
+   * An XQFTTS %synonym consists simply of a term and a set of relationships
+   * the term has to some other term that this %synonym is a %synonym for.
+   */
+  struct synonym {
     term_t term;
     relationship_set_t relationships;
 
-    synonym_t( term_t const &t ) : term( t ) { }
+    /**
+     * Constructs a %synonym.
+     *
+     * @param t The term.
+     */
+    synonym( term_t const &t ) : term( t ) { }
 
-    //
-    // Defined so that a synonym_t can be put into a set.
-    //
-    friend bool operator<( synonym_t const &i, synonym_t const &j ) {
-      return i.term < j.term;
-    }
-
-    //
-    // However, to avoid copying synonym_t objects around, we put synonym_t*
-    // into a set.  We therefore need a comparator that compares synonym_t* by
-    // comparing the synonym_t objects they point to.
-    //
-    // FYI: We need to define a comparator class because operator< (and
-    // operators in general) can't be overloaded for pointers.
-    //
-    struct less : std::binary_function<synonym_t const*,synonym_t const*,bool> {
+    /**
+     * Define a comparator for %synonym objects so that they can be put into
+     * sorted STL containers.  However, to avoid copying %synonym objects
+     * around, we use %synonym*.  We therefore need a comparator that compares
+     * %synonym* by comparing the %synonym objects they point to.
+     *
+     * FYI: We need to define a comparator class because \c operator&lt; (and
+     * operators in general) can't be overloaded for pointers.
+     */
+    struct less : std::binary_function<synonym const*,synonym const*,bool> {
       result_type operator()( first_argument_type i,
                               second_argument_type j ) const {
-        return *i < *j;
+        return i->term < j->term;
       }
     };
   };
 
-  typedef std::pair<synonym_t const*,iso2788::rel_dir> candidate_t;
+  typedef std::pair<synonym const*,iso2788::rel_dir> candidate_t;
   typedef std::deque<candidate_t> candidate_queue_t;
 
   typedef std::deque<term_t> result_queue_t;
   typedef std::set<term_t> seen_set_t;
 
-  typedef std::set<synonym_t*,synonym_t::less> synonym_set_t;
+  typedef std::set<synonym*,synonym::less> synonym_set_t;
   typedef std::map<term_t,synonym_set_t> thesaurus_t;
 
   candidate_queue_t candidate_queue_;
@@ -115,11 +121,9 @@ private:
 
   static candidate_queue_t::value_type const LevelMarker;
 
-  relationship const relationship_;
   ft_int const at_least_, at_most_;
   ft_int level_;
 
-  void lookup( term_t const &word, iso2788::rel_dir dir );
   void read_xqftts_file( zstring const &uri );
 
   // forbid these
