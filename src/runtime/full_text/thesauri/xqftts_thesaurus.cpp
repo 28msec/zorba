@@ -147,6 +147,18 @@ bool thesaurus::next( zstring *result ) {
 #       endif
         return false;
       }
+      //
+      // We've just incremented the level, so all candidates that have been
+      // added to the queue since the last time we were here constitute a
+      // "level", therefore add the level marker so we know when to increment
+      // the level next time.
+      //
+      // Note that we do this only if the queue isn't empty, otherwise the
+      // queue would never become empty.
+      //
+      if ( !candidate_queue_.empty() )
+        candidate_queue_.push_back( LevelMarker );
+
       continue;
     }
 
@@ -176,11 +188,6 @@ bool thesaurus::next( zstring *result ) {
           }
         }
       }
-      //
-      // All the candidates just added constitute a "level" so add the
-      // LevelMarker to the queue.
-      //
-      candidate_queue_.push_back( LevelMarker );
     }
   } // while
 
