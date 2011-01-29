@@ -476,6 +476,10 @@ DWORD WINAPI thread_main(LPVOID param)
     // Set any options on the static context
     setOptions(driverContext, sctx);
 
+    // Bind any full-text URI resolvers from the .spec file to the
+    // static context
+    setFullTextResolvers(driverContext, sctx);
+
     // Set the error file to be used by the error handler for the current query
     errHandler.setErrorFile(errorFilePath.file_string());
 

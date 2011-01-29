@@ -478,5 +478,35 @@ TestCollectionURIResolver::resolve(
   return std::auto_ptr<CollectionURIResolverResult>(lResult.release());
 }
 
-
+/******************************************************************************
+  Full-Text URI Resolver
+*******************************************************************************/
+TestFullTextURIResolver::~TestFullTextURIResolver()
+{
 }
+  
+std::auto_ptr<FullTextURIResolverResult>
+TestFullTextURIResolver::resolve(
+  const Item& aURI,
+  StaticContext* aStaticContext)
+{
+  std::auto_ptr<TestFullTextURIResolverResult>
+    lResult(new TestFullTextURIResolverResult());
+  MappingIter_t lIter = theMappings.find(aURI.getStringValue().c_str());
+  if (lIter != theMappings.end()) {
+    lResult->theFullText = lIter->second;
+    lResult->setError(URIResolverResult::UR_NOERROR);
+  } else {
+    lResult->setError(URIResolverResult::UR_XQST0057);
+  }
+  return std::auto_ptr<FullTextURIResolverResult>(lResult.release());
+};
+
+void
+TestFullTextURIResolver::add_mapping(
+  const std::string& aURI, const std::string& aValue)
+{
+  theMappings[aURI] = aValue;
+}
+
+} /* namespace zorba */

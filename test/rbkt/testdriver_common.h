@@ -142,6 +142,10 @@ void setOptions(
     DriverContext& driverCtx,
     const zorba::StaticContext_t& sctx);
 
+void setFullTextResolvers(
+    DriverContext& driverCtx,
+    const zorba::StaticContext_t& sctx);
+
 void slurp_file(
     const char* fname,
     std::string& result,

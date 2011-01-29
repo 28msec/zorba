@@ -435,3 +435,15 @@ void setOptions(DriverContext& driverCtx, const zorba::StaticContext_t& sctx)
   std::string lValue = spec.getEnableDtd() ? "true" : "false";
   sctx->declareOption(lQName, lValue);
 }
+
+
+/**
+ * Set all full-text URI resolvers on the provided static context.
+ */
+void setFullTextResolvers
+(DriverContext& driverCtx, const zorba::StaticContext_t& sctx)
+{
+  Specification& spec = * (driverCtx.theSpec);
+  sctx->addStopWordsURIResolver(spec.getStopWordsResolver());
+  sctx->addThesaurusURIResolver(spec.getThesaurusResolver());
+}

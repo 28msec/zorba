@@ -20,10 +20,13 @@
 #include <string>
 #include <fstream>
 #include <sstream>
-
+#include <testuriresolver.h>
 
 #undef WIN32_LEAN_AND_MEAN
 
+/**
+ * Represents the contents of a testdriver-style .spec file.
+ */
 class Specification
 {
   typedef char char_t;
@@ -69,9 +72,11 @@ private:
   bool                     theUseIndent;
   bool                     theEnableDtd;
   bool                     theEnableUriTestResolver;
+  zorba::TestFullTextURIResolver  theStopWordsResolver;
+  zorba::TestFullTextURIResolver  theThesaurusResolver;
 
-  void setInline() {
-    theInline = true;
+  void setInline(bool inl) {
+    theInline = inl;
   }
 
   void setVarName(iterator_t str, iterator_t end) {
@@ -85,6 +90,14 @@ private:
   void addVariable() {
     Variable var = { theInline, theVarName, theVarValue };
     theVariables.push_back(var);
+  }
+
+  void addStopWords() {
+    theStopWordsResolver.add_mapping(theVarName, theVarValue);
+  }
+
+  void addThesaurus() {
+    theThesaurusResolver.add_mapping(theVarName, theVarValue);
   }
 
   void addOption() {
@@ -148,6 +161,12 @@ public:
 
   size_t
   errorsSize() const { return theErrors.size(); }
+
+  zorba::TestFullTextURIResolver*
+  getThesaurusResolver() { return &theThesaurusResolver; }
+
+  zorba::TestFullTextURIResolver*
+  getStopWordsResolver() { return &theStopWordsResolver; }
 
   bool hasDateSet() const {
     return theDate.size() != 0;
@@ -227,6 +246,9 @@ public:
 
   bool parseFile(std::string str)
   {
+    // QQQ This method should do the substitutions for $RBKT_SRC_DIR
+    // and $RBKT_BINARY_DIR, and we should eliminate all the other
+    // places (several) which do that substitution
     std::ifstream lFile(str.c_str(), std::ifstream::in);
     std::stringstream lContent;
     char c = (char)lFile.get();
@@ -256,24 +278,43 @@ public:
         {
           for(++lIter; lIter!=tokens.end(); ++lIter)
           {
-            if (*lIter == "-x")
+            std::string lArg = *lIter;
+            if ( (lArg == "-x") ||
+              (lArg == "--stop-words") || (lArg == "--thesaurus") )
             {
+              // Argument binding and stop-words/thesaurus URI binding are
+              // very similar, so use the same code path for most of it.
               ++lIter;
-              if(lIter->find(":=") == std::string::npos){ setInline(); }
-              if(lIter->find('=') == std::string::npos){ return false; }
-              if( theInline ){
+              if(lIter->find(":=") == std::string::npos) {
+                setInline(true);
+              }
+              else if(lIter->find('=') == std::string::npos) {
+                return false;
+              }
+              else {
+                setInline(false);
+              }
+              if( theInline ) {
                 setVarName(lIter->begin(), lIter->begin()+lIter->find('='));
               } else {
                 setVarName(lIter->begin(), lIter->begin()+lIter->find(":="));
               }
               setVarValue(lIter->begin()+lIter->find("=")+1, lIter->end());
-              addVariable();
+              if (lArg == "-x") {
+                addVariable();
+              }
+              else if (lArg == "--stop-words") {
+                addStopWords();
+              }
+              else if (lArg == "--thesaurus") {
+                addThesaurus();
+              }
             }
-            else if (*lIter == "--enable-dtd")
+            else if (lArg == "--enable-dtd")
             {
               theEnableDtd = true;
             }
-            else if (*lIter == "--enable-uritestresolver")
+            else if (lArg == "--enable-uritestresolver")
             {
               theEnableUriTestResolver = true;
             }

@@ -90,57 +90,31 @@ rm -rf "$SRC/test/rbkt/Queries/w3c_full_text_testsuite" "$SRC/test/rbkt/ExpQuery
 
 mkdir -p "$SRC/test/rbkt/Queries/w3c_full_text_testsuite/TestSources"
 
-q=`mktemp "$WORK/xq.XXXXXX"`
-cat >"$q" <<"EOF"
-declare default element namespace "http://www.w3.org/2005/02/query-test-full-text";
-string-join (
-  for $sch in //schema
-  return concat ($sch/@uri, "=", $sch/@FileName), "
-")
-EOF
-echo 'Processing URI of catalog (schemas)...'
-"$BUILD/bin/zorba" --context-item XQFTTSCatalog.xml --omit-xml-declaration -o "$SRC/test/rbkt/Queries/w3c_full_text_testsuite/TestSources/uri.txt" --as-files --query "$q"
-
-
-cat >"$q" <<"EOF"
-declare default element namespace "http://www.w3.org/2005/02/query-test-full-text";
-string-join (distinct-values (
-  for $mod in //sources/module
-  for $tmod in //test-case/module [text () = $mod/@ID]
-  let $tc := $tmod/..
-  return concat ($tc/@FilePath, $tc/@name, ":", $tmod/@namespace, "=", $mod/@FileName)), "
-")
-EOF
-echo 'Processing URI of catalog (modules)...'
-"$BUILD/bin/zorba" --context-item XQFTTSCatalog.xml --omit-xml-declaration -o "$SRC/test/rbkt/Queries/w3c_full_text_testsuite/TestSources/module.txt" --as-files --query "$q"
-
-
-cat >"$q" <<"EOF"
-declare default element namespace "http://www.w3.org/2005/02/query-test-full-text";
-for $t in //collection
-return concat ($t/@ID, "=", string-join( for $x in $t/input-document return fn:concat( "$RBKT_SRC_DIR/Queries/w3c_full_text_testsuite/TestSources/", $x, ".xml"), ";" ), "
-")
-EOF
-echo 'Processing URI of catalog (collections)...'
-"$BUILD/bin/zorba" --context-item XQFTTSCatalog.xml --omit-xml-declaration -o "$SRC/test/rbkt/Queries/w3c_full_text_testsuite/TestSources/collection.txt" --as-files --query "$q"
-
-
+q=`mktemp "$WORK/xq.XXXX"`
 cat >"$q" <<"EOF"
 declare default element namespace "http://www.w3.org/2005/02/query-test-full-text";
 string-join ((
 for $sch in //schema return concat ("%uri ", $sch/@uri, " ", $sch/@FileName), 
 for $src in //source return concat ("%src ", $src/@ID, " ", $src/@FileName),
+for $thes in /test-suite/sources/thesaurus
+  return concat ("%thes ", $thes/@ID, " ", $thes/@uri, " ", $thes/@FileName),
+for $stop in /test-suite/sources/stopwords
+  return concat ("%stop ", $stop/@ID, " ", $stop/@uri, " ", $stop/@FileName),
 for $tc in //test-case
 let $out := $tc/output-file
 let $cmp := $tc/output-file[1]/@compare (: assuming that all output-files have to be compared using the same comparison method :)
 let $ctx := $tc/contextItem
 let $dc  := $tc/defaultCollection
+let $thes := $tc/aux-URI[@role eq "thesaurus"]
+let $stop := $tc/aux-URI[@role eq "stopwords"]
 (: assuming only one input-query and x is variable name :)
 let $inq := $tc/input-query/@name
 return string-join ((
-$tc/@name, $tc/@FilePath, $tc/query/@name,
-if ($tc/input-file) then string-join (for $i in $tc/input-file return concat (data ($i/@variable), "=", $i/text ()), ";") else "noinlist",
-if ($tc/input-URI) then 
+  $tc/@name, $tc/@FilePath, $tc/query/@name,
+  if ($tc/input-file) then
+    string-join (for $i in $tc/input-file return concat (data ($i/@variable), "=", $i/text ()), ";")
+  else "noinlist",
+  if ($tc/input-URI) then 
     string-join (
       for $i in $tc/input-URI 
       let $fulluri := /test-suite/sources/source[@ID = $i/text()]
@@ -149,13 +123,15 @@ if ($tc/input-URI) then
           concat (data ($i/@variable), "=$RBKT_SRC_DIR/Queries/w3c_full_text_testsuite/", data($fulluri/@FileName))
         else
           concat (data ($i/@variable), "=", $i/text ()), ";")
-else "nourilist",
-if ($inq) then $inq else "noquery",
-if ($cmp) then $cmp else "nocomparison",
-if ($ctx) then $ctx else "nocontext",
-if ($dc) then $dc else "nodefaultcollection",
-if ($out) then string-join($out/text(), ";") else "",
-string-join ($tc/expected-error/text(), ";")
+  else "nourilist",
+  if ($inq) then $inq else "noquery",
+  if ($cmp) then $cmp else "nocomparison",
+  if ($ctx) then $ctx else "nocontext",
+  if ($dc) then $dc else "nodefaultcollection",
+  string-join($thes/text(), ";"),
+  string-join($stop/text(), ";"),
+  string-join($out/text(), ";"),
+  string-join ($tc/expected-error/text(), ";")
 ), " ")),
 "
 ")
@@ -167,7 +143,8 @@ use strict;
 use File::Copy;
 
 my $repo=shift;
-my %sources;
+my (%sources, %thesauri, %stopwords);
+my $dstrbktpath = "$repo/test/rbkt/Queries/w3c_full_text_testsuite";
 my $test_src_path = "\$RBKT_SRC_DIR/Queries/w3c_full_text_testsuite";
 my $test_uris = "$test_src_path/TestSources/uri.txt\n";
 open (URIS, ">> $test_uris" );
@@ -183,22 +160,41 @@ if (m/^%src /) {
   $sources {$id} = $path;
   next;
 }
+if (m/^%thes /) {
+  my ($info, $id, $uri, $path) = split (/ /);
+  # QQQ This *should* use $test_src_path, but the URI resolver args parsing
+  # does not understand $RBKT_SRC_DIR. Should change specification.h to
+  # do that replacement universally and eliminate the numerous other places
+  # that do it.
+  $thesauri {$id} = "$uri:=xqftts|$dstrbktpath/$path";
+  next;
+}
+if (m/^%stop /) {
+  my ($info, $id, $uri, $path) = split (/ /);
+  $stopwords {$id} = "$uri:=$dstrbktpath/$path";
+  next;
+}
 
-my ($name, $path, $query, $inlist, $urilist, $inpq, $cmp, $ctx, $dc, $out, $errlist) = split (/ /);
+my ($name, $path, $query, $inlist, $urilist, $inpq, $cmp, $ctx, $dc, $thes, $stop, $out, $errlist) = split (/ /);
 my @inbnd = split (/;/, $inlist);
 my @uribnd = split (/;/, $urilist);
 my @errs = split (/;/, $errlist);
+my @thesauri = split (/;/, $thes);
+my @stopwords = split (/;/, $stop);
 my @outfiles = split (/;/, $out);
 my $inpath = "Queries/XQuery/$path";
 my $inxqueryxpath = "Queries/XQueryX/$path";
-my $dstqpath="$repo/test/rbkt/Queries/w3c_full_text_testsuite/XQuery/$path";
-my $dstxqueryxqpath="$repo/test/rbkt/Queries/w3c_full_text_testsuite/XQueryX/$path";
-my $inpqpath="$repo/test/rbkt/Queries/w3c_full_text_testsuite/InputQueries";
+my $dstqpath="$dstrbktpath/XQuery/$path";
+my $dstxqueryxqpath="$dstrbktpath/XQueryX/$path";
+my $inpqpath="$dstrbktpath/InputQueries";
 my $dstrespath = "$repo/test/rbkt/ExpQueryResults/w3c_full_text_testsuite/$path";
 my $fullout = "$dstrespath/$name.xml.res";
 my $specfile = "$dstqpath/$name.spec";
 my $xqueryxspecfile = "$dstxqueryxqpath/$name.spec";
-`mkdir -p $dstqpath`; `mkdir -p $dstxqueryxqpath`; `mkdir -p $dstrespath`; `mkdir -p $inpqpath`;
+`mkdir -p $dstqpath`;
+`mkdir -p $dstxqueryxqpath`;
+`mkdir -p $dstrespath`;
+`mkdir -p $inpqpath`;
 
 sub change_doc {
   my ($filename, $varname) = @_;
@@ -221,8 +217,8 @@ if (@outfiles) {
   if (@outfiles >= 1) {
     open (SPEC, ">>$specfile");
     open (SPECX, ">>$xqueryxspecfile");
-    print SPEC "Result: ";
-    print SPECX "Result: ";
+    print SPEC "Result:";
+    print SPECX "Result:";
   }
 
   foreach (@outfiles) {
@@ -286,6 +282,25 @@ if ( $inlist ne "noinlist" || $urilist ne "nourilist" || $ctx ne "nocontext" ) {
   close (SPECX);
 }
 
+if ( @thesauri >= 1 || @stopwords >= 1 ) {
+  open (SPEC, ">>$specfile");
+  open (SPECX, ">>$xqueryxspecfile");
+
+  print SPEC "Args:";
+  print SPECX "Args:";
+
+  foreach my $thesaurus (@thesauri) {
+    print SPEC " --thesaurus " . $thesauri{$thesaurus};
+  }
+  foreach my $stopword (@stopwords) {
+    print SPEC " --stop-words " . $stopwords{$stopword};
+  }
+  print SPEC "\n";
+  print SPECX "\n";
+  close (SPEC);
+  close (SPECX);
+}
+
 if ( $cmp ne "nocomparison" ) {
    open (SPEC, ">>$specfile");
    open (SPECX, ">>$xqueryxspecfile");
@@ -296,8 +311,8 @@ if ( $cmp ne "nocomparison" ) {
 if ( $inpq ne "noquery" ) {
    open (SPEC, ">>$specfile");
    open (SPECX, ">>$xqueryxspecfile");
-   print SPEC "InputQuery: \$RBKT_SRC_DIR/Queries/w3c_full_text_testsuite/InputQueries/" . $inpq . ".ixq" . "\n";
-   print SPECX "InputQuery: \$RBKT_SRC_DIR/Queries/w3c_full_text_testsuite/InputQueries/" . $inpq . ".ixq" . "\n";
+   print SPEC "InputQuery: $test_src_path/InputQueries/$inpq.ixq\n";
+   print SPECX "InputQuery: $test_src_path/InputQueries/$inpq.ixq\n";
    copy ( "$inpath/$inpq.xq", "$inpqpath/$inpq.ixq" );
    copy ( "$inxqueryxpath/$inpq.xq", "$inpqpath/$inpq.ixqx" );
 }

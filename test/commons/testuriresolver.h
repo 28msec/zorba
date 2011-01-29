@@ -13,6 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#ifndef ZORBA_TESTURIRESOLVER_H
+#define ZORBA_TESTURIRESOLVER_H
+
 #include <zorba/uri_resolvers.h>
 #include <zorba/serialization_callback.h>
 
@@ -213,7 +217,7 @@ class TestSerializationCallback : public zorba::SerializationCallback
                               ModuleURIResolver* my_module_resolver)
     {
       this->my_collection_resolver = my_collection_resolver;
-      this->my_module_resolver = my_module_resolver;                                                                  
+      this->my_module_resolver = my_module_resolver;
     }
                               
     virtual ~TestSerializationCallback() {}
@@ -229,13 +233,48 @@ class TestSerializationCallback : public zorba::SerializationCallback
 
     virtual DocumentURIResolver*
       getDocumentURIResolver() const {return NULL;}
-                                                                                                                      
-    virtual ModuleURIResolver*                                                                                        
-      getModuleURIResolver(size_t /*i*/) const { return my_module_resolver; }                                         
+
+    virtual ModuleURIResolver*
+      getModuleURIResolver(size_t /*i*/) const { return my_module_resolver; }
+};
+
+/******************************************************************************
+
+*******************************************************************************/
+class TestFullTextURIResolverResult: public FullTextURIResolverResult
+{
+  public:
+    virtual String getResolvedFullText() const { return theFullText; }
+  
+  protected:
+    friend class TestFullTextURIResolver;
+    String theFullText;
+};
+
+class TestFullTextURIResolver: public FullTextURIResolver
+{
+  public:
+    virtual ~TestFullTextURIResolver();
+  
+    virtual std::auto_ptr<FullTextURIResolverResult>
+    resolve(
+      const Item& aURI,
+      StaticContext* aStaticContext);
+  
+    public:
+      void
+      add_mapping(const std::string& aURI, const std::string& aValue);
+  
+  protected:
+    typedef std::map<std::string, std::string> Mapping_t;
+    typedef Mapping_t::const_iterator          MappingIter_t;
+    Mapping_t theMappings;
 };
 
 
 } // namespace zorba
+
+#endif /* ZORBA_TESTURIRESOLVER_H */
 
 /*
  * Local variables:

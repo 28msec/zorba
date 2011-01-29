@@ -237,6 +237,10 @@ main(int argc, char** argv)
     // Bind any options from the .spec file to the static context
     setOptions(driverContext, lContext);
 
+    // Bind any full-text URI resolvers from the .spec file to the
+    // static context
+    setFullTextResolvers(driverContext, lContext);
+
     // Get the pathnames of the reference-result files found in the .spec
     // file (if any).
     std::vector<zorba::file> lRefFiles;
