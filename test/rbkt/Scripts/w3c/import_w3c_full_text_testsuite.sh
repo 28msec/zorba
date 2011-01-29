@@ -335,16 +335,6 @@ if (@errs) {
   close (SPECX);
 }
 
-# Add Options: declaration for path to compiled thesaurus. I could not find
-# anything in the catalog which would let me determine whether the test case
-# depended on this, so it is placed into every .spec file.
-open (SPEC, ">>$specfile");
-open (SPECX, ">>$xqueryxspecfile");
-print SPEC "Options: {http://www.zorba-xquery.org/options}thesauri-directory=\$RBKT_BINARY_DIR/thesauri\n";
-print SPECX "Options: {http://www.zorba-xquery.org/options}thesauri-directory=\$RBKT_BINARY_DIR/thesauri\n";
-close (SPEC);
-close (SPECX);
-
 }
 close (URIS);' "$SRC"
 rm -f "$q"
