@@ -359,12 +359,12 @@ bool ends_with( StringType const &s, char c ) {
  *
  * @param s The string to check.
  * @param ss The suffix string.
- * @param n The number of bytes to compare.
+ * @param ss_len The length of the suffix string.
  * @return Returns \c true only if \a s ends with \a ss.
  */
-inline bool ends_with( char const *s, char const *ss, size_type n ) {
+inline bool ends_with( char const *s, char const *ss, size_type ss_len ) {
   size_type const len = std::strlen( s );
-  return n <= len && std::strncmp( s + len - n, ss, n ) == 0;
+  return ss_len <= len && std::strncmp( s + len - ss_len, ss, ss_len ) == 0;
 }
 
 /**
