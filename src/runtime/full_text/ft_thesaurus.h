@@ -34,14 +34,6 @@ public:
   virtual ~ft_thesaurus();
 
   /**
-   * Sets the directory in which thesauri can be found.  This must be called
-   * exactly once prior to calling \c get().
-   *
-   * @param path The full path to the directory where thesauri are kept.
-   */
-  static void set_directory( zstring const &path );
-
-  /**
    * Gets an instance of the requested thesaurus and performs a phrase look-up.
    *
    * @param mapping The mapping string specifying the thesaurus to use.
