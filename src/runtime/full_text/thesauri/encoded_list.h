@@ -68,7 +68,7 @@ public:
   encoded_list( size_type size, mem_ptr_type begin,
                 decoder_type const &decoder = decoder_type() ) :
     size_( size ),
-    begin_( begin ),
+    begin_( size ? begin : 0 ),
     decoder_( decoder )
   {
   }
@@ -80,7 +80,7 @@ public:
   class const_iterator :
     public std::iterator<std::forward_iterator_tag,value_type> {
   public:
-    const_iterator() : size_( 0 ), ptr_( 0 ) { }
+    const_iterator() : remaining_( 0 ), cur_ptr_( 0 ) { }
 
     const_reference operator*() const {
       return value_;
@@ -102,7 +102,7 @@ public:
     }
 
     friend bool operator==( const_iterator const &i, const_iterator const &j ) {
-      return i.ptr_ == j.ptr_;
+      return i.cur_ptr_ == j.cur_ptr_;
     }
 
     friend bool operator!=( const_iterator const &i, const_iterator const &j ) {
@@ -112,21 +112,21 @@ public:
   private:
     const_iterator( size_type size, mem_ptr_type begin,
                     decoder_type const &decoder ) :
-      size_( size ), ptr_( begin ), decoder_( decoder )
+      remaining_( size ), cur_ptr_( begin ), decoder_( decoder )
     {
       advance();
     }
 
     void advance() {
-      if ( size_ ) {
-        decoder_( &ptr_, &value_ );
-        if ( !--size_ )
-          ptr_ = 0;
-      }
+      if ( remaining_ ) {
+        decoder_( &cur_ptr_, &value_ );
+        --remaining_;
+      } else
+        cur_ptr_ = 0;
     }
 
-    size_type size_;
-    mem_ptr_type ptr_;
+    size_type remaining_;
+    mem_ptr_type cur_ptr_;
     decoder_type decoder_;
     value_type value_;
 
