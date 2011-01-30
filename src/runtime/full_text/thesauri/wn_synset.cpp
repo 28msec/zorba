@@ -33,41 +33,60 @@ namespace wordnet {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-synset::synset( char const *p ) {
+void synset::ptr_decoder::operator()( mem_ptr_type *pptr,
+                                      result_type *result ) const {
+  //
+  // The binary format of a ptr is:
+  //
+  //  ptr = {pos}{type}{synset#}{source}[{target}]
+  //
+  result->pos_ = synset::get_pos( pptr );
+
+  char const c = *(*pptr)++;
+  if ( !(result->type_ = zorba::wordnet::pointer::find( c )) )
+    THROW_DATA_EXCEPTION( c, "invalid pointer type" );
+
+  result->synset_id_ = decode_base128( pptr );
+  result->source_    = decode_base128( pptr );
+  result->target_    = result->source_ ? decode_base128( pptr ) : 0;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+synset::synset( mem_ptr_type p ) :
   //
   // The binary format of a synset is:
   //
   //  synset = {pos}{#lemmas}{lemma#}...{#ptrs}{ptr}...
-  //  pos = a | r | n | v
-  //  ptr = {pos}{type}{synset#}{source}[{target}]
   //
+  pos_( get_pos( &p ) ),
+  lemma_ids_( base128_list_args( &p ) ),
+  //
+  // The constructor above leaves p pointing to the first lemma#: we need to
+  // skip all the lemma#s.
+  //
+  ptrs_( base128_list_args( skip_lemmas( lemma_ids_.size(), &p ) ) )
+{
+}
 
-  char c = *p++;
-  if ( (pos_ = part_of_speech::find( c )) == part_of_speech::unknown )
-    THROW_DATA_EXCEPTION( c, "invalid part-of-speech" );
+part_of_speech::type synset::get_pos( mem_ptr_type *pptr ) {
+  //
+  // The binary format of a pos is:
+  //
+  //  pos = a | r | n | v
+  //
+  char const c = *(*pptr)++;
+  if ( part_of_speech::type const pos = part_of_speech::find( c ) )
+    return pos;
+  THROW_DATA_EXCEPTION( c, "invalid part-of-speech" );
+}
 
-  for ( unsigned n_lemmas = decode_base128( &p ); n_lemmas > 0; --n_lemmas )
-    lemma_ids_.push_back( decode_base128( &p ) );
-
-  for ( unsigned n_ptrs = decode_base128( &p ); n_ptrs > 0; --n_ptrs ) {
-    synset::ptr ptr;
-
-    c = *p++;
-    if ( (ptr.pos_ = part_of_speech::find( c )) == part_of_speech::unknown )
-      THROW_DATA_EXCEPTION( c, "invalid part-of-speech" );
-
-    c = *p++;
-    if ( (ptr.type_ = zorba::wordnet::pointer::find( c )) ==
-          zorba::wordnet::pointer::unknown )
-      THROW_DATA_EXCEPTION( c, "invalid pointer type" );
-
-    ptr.synset_id_ = decode_base128( &p );
-    ptr.source_    = decode_base128( &p );
-    if ( ptr.source_ )
-      ptr.target_ = decode_base128( &p );
-
-    ptrs_.push_back( ptr );
-  }
+synset::mem_ptr_type* synset::skip_lemmas( size_type n, mem_ptr_type *pptr ) {
+  unsigned char const *&u = *reinterpret_cast<unsigned char const**>( pptr );
+  while ( n-- > 0 )
+    while ( *u++ & 0x80 )               // faster than decode_base128()
+      ;
+  return pptr;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

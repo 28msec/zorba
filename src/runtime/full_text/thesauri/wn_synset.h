@@ -17,8 +17,8 @@
 #ifndef ZORBA_FULL_TEXT_WORDNET_SYNSET_H
 #define ZORBA_FULL_TEXT_WORDNET_SYNSET_H
 
-#include <vector>
-
+#include "decode_base128.h"
+#include "encoded_list.h"
 #include "wn_types.h"
 
 namespace zorba {
@@ -29,6 +29,11 @@ namespace wordnet {
  */
 class synset {
 public:
+  /**
+   * A %synset is constructed by parsing raw memory.  This is the pointer to
+   * said memory.
+   */
+  typedef char const* mem_ptr_type;
 
   /**
    * A %ptr is a pointer from one synset to another.
@@ -41,15 +46,73 @@ public:
     uint8_t target_;
   };
 
-  typedef std::vector<lemma_id_t> lemma_id_list;
-  typedef std::vector<ptr> ptr_list;
+private:
+  typedef unsigned size_type;
+
+  /**
+   * A %lemma_id_decoder is-a decoder_function for decoding the lemma ID list
+   * portion of a synset.
+   */
+  struct lemma_id_decoder : decoder_function<lemma_id_t> {
+    void operator()( mem_ptr_type *pptr, result_type *result ) const {
+      *result = decode_base128( pptr );
+    }
+  };
+
+  /**
+   * A %ptr_decoder is a decoder_function for decoding the ptr list portion of
+   * a synset.
+   */
+  struct ptr_decoder : decoder_function<ptr> {
+    void operator()( mem_ptr_type *pptr, result_type *result ) const;
+  };
+
+  /**
+   * This class is needed as an intermediate object to guarantee a particular
+   * order of argument evaluation.
+   */
+  struct base128_list_args {
+    base128_list_args( mem_ptr_type *pptr ) :
+      size( decode_base128( pptr ) ),
+      begin( *pptr )
+    {
+    }
+
+    size_type const size;
+    mem_ptr_type const begin;
+  };
+
+public:
+
+  /**
+   * A %lemma_id_list is-an encoded_list of the lemma IDs comprising this
+   * synset.
+   */
+  class lemma_id_list : public encoded_list<lemma_id_decoder> {
+    lemma_id_list( base128_list_args const &args ) :
+      encoded_list<lemma_id_decoder>( args.size, args.begin )
+    {
+    }
+    friend class synset;
+  };
+
+  /**
+   * A %ptr_list is-an encoded_list of the ptrs comprigins this synset.
+   */
+  class ptr_list : public encoded_list<ptr_decoder> {
+    ptr_list( base128_list_args const &args ) :
+      encoded_list<ptr_decoder>( args.size, args.begin )
+    {
+    }
+    friend class synset;
+  };
 
   /**
    * Constructs a %synset.
    *
    * @param p A pointer to the first byte of a binary %synset entry.
    */
-  synset( char const *p );
+  synset( mem_ptr_type p );
 
   /**
    * Gets this %synset's part-of-speech.
@@ -79,9 +142,12 @@ public:
   }
 
 private:
-  part_of_speech::type pos_;
-  lemma_id_list lemma_ids_;
-  ptr_list ptrs_;
+  static part_of_speech::type get_pos( mem_ptr_type* );
+  static mem_ptr_type* skip_lemmas( size_type, mem_ptr_type* );
+
+  part_of_speech::type const pos_;
+  lemma_id_list const lemma_ids_;
+  ptr_list const ptrs_;
 };
 
 } // namespace wordnet
