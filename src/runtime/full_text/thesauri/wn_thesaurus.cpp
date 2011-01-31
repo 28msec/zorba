@@ -192,10 +192,11 @@ static iso2788::rel_dir get_ptr_dir( pointer::type ptr_type ) {
     case participle_of_verb:
     case pertainym:
     case similar_to:
+    case unknown:
     case verb_group:
       return iso2788::neutral;
 
-    case unknown:
+    default:                            // ensures all cases are handled
       ZORBA_ASSERT( false );
   }
   return iso2788::neutral;              // suppesses warning -- never gets here
@@ -239,9 +240,10 @@ thesaurus::thesaurus( zstring const &path, iso639_1::type lang,
     //
     // Load the candidate_queue_ will all the synsets for the lemma.
     //
+    iso2788::rel_dir const query_dir = get_ptr_dir( query_ptr_type_ );
     for ( unsigned num_synsets = decode_base128( &p ); num_synsets-- > 0; ) {
       synset_id_t const synset_id = decode_base128( &p );
-      candidate_queue_.push_back( make_pair( synset_id, iso2788::neutral ) );
+      candidate_queue_.push_back( make_pair( synset_id, query_dir ) );
     }
     //
     // All the candidates just added constitute a "level" so add the
