@@ -59,7 +59,7 @@ thesaurus::candidate_queue_t::value_type const thesaurus::LevelMarker =
 thesaurus::thesaurus( zstring const &path, iso639_1::type lang,
                       zstring const &phrase, zstring const &query_rel_string,
                       ft_int at_least, ft_int at_most ) :
-  at_least_( at_least ), at_most_( at_most ), level_( 0 )
+  at_least_( at_least ), at_most_( at_most ), level_( 1 )
 {
   read_xqftts_file( path );
 # if DEBUG_THESAURUS
