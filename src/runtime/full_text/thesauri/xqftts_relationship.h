@@ -17,6 +17,8 @@
 #ifndef ZORBA_FULL_TEXT_XQFTTS_RELATIONSHIP_H
 #define ZORBA_FULL_TEXT_XQFTTS_RELATIONSHIP_H
 
+#include <iostream>
+
 #include "iso2788.h"
 #include "zorbatypes/zstring.h"
 #include "zorbaerrors/Assert.h"
@@ -68,7 +70,7 @@ public:
    * @return Returns \c true only if this %relationship is empty.
    */
   bool empty() const {
-    return is_string_ ? get_string().empty() : !rel_iso2788_;
+    return is_string_ ? string_value().empty() : !iso2788_value_;
   }
 
   /**
@@ -78,7 +80,17 @@ public:
    * relationships.
    */
   iso2788::rel_type get_iso2788() const {
-    return is_string_ ? iso2788::unknown : rel_iso2788_;
+    return is_string_ ? iso2788::unknown : iso2788_value_;
+  }
+
+  /**
+   * Gets the string equivalent for this %relationship.
+   *
+   * @return Returns said string equivalent.
+   */
+  char const* get_string() const {
+    return is_string_ ?
+      string_value().c_str() : iso2788::string_of[ iso2788_value_ ];
   }
 
   /**
@@ -95,14 +107,14 @@ public:
 
 private:
   union {
-    iso2788::rel_type rel_iso2788_;
+    iso2788::rel_type iso2788_value_;
     // Using a struct guarantees correct struct/class alignment.
     struct { char buf[ sizeof( string_t ) ]; } rel_string_;
   };
 
   bool is_string_;
 
-  string_t& get_string() const {
+  string_t& string_value() const {
     ZORBA_ASSERT( is_string_ );
     return *const_cast<string_t*>(
       reinterpret_cast<string_t const*>( &rel_string_ )
@@ -114,6 +126,10 @@ private:
 
 inline bool operator!=( relationship const &a, relationship const &b ) {
   return !(a == b);
+}
+
+inline std::ostream& operator<<( std::ostream &o, relationship const &r ) {
+  return o << r.get_string();
 }
 
 ///////////////////////////////////////////////////////////////////////////////

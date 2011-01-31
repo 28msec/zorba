@@ -31,26 +31,26 @@ relationship::relationship( string_t const &rel_string ) {
   utf8::to_lower( rel_string, &rel_lower );
   if ( iso2788::rel_type const t = iso2788::find_rel( rel_lower ) ) {
     is_string_ = false;
-    rel_iso2788_ = t;
+    iso2788_value_ = t;
   } else {
     is_string_ = true;
-    new( &get_string() ) string_t( rel_lower );
+    new( &string_value() ) string_t( rel_lower );
   }
 }
 
 relationship::relationship( relationship const &that ) {
   if ( that.is_string_ ) {
     is_string_ = true;
-    new( &get_string() ) string_t( that.get_string() );
+    new( &string_value() ) string_t( that.string_value() );
   } else {
     is_string_ = false;
-    rel_iso2788_ = that.rel_iso2788_;
+    iso2788_value_ = that.iso2788_value_;
   }
 }
 
 relationship::~relationship() {
   if ( is_string_ )
-    get_string().~string_t();
+    string_value().~string_t();
 }
 
 relationship& relationship::operator=( relationship const &that ) {
@@ -63,14 +63,14 @@ relationship& relationship::operator=( relationship const &that ) {
 
 bool operator==( relationship const &a, relationship const &b ) {
   return a.is_string_ ?
-     b.is_string_ && a.get_string() == b.get_string()
-  : !b.is_string_ && a.rel_iso2788_ == b.rel_iso2788_;
+     b.is_string_ && a.string_value() == b.string_value()
+  : !b.is_string_ && a.iso2788_value_ == b.iso2788_value_;
 }
 
 bool operator<( relationship const &a, relationship const &b ) {
   return a.is_string_ ?
-     b.is_string_ && a.get_string() < b.get_string()
-  : !b.is_string_ && a.rel_iso2788_ < b.rel_iso2788_;
+     b.is_string_ && a.string_value() < b.string_value()
+  : !b.is_string_ && a.iso2788_value_ < b.iso2788_value_;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
