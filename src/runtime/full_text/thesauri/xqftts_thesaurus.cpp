@@ -130,7 +130,7 @@ bool thesaurus::next( zstring *result ) {
     FOR_EACH( candidate_queue_t, i, candidate_queue_ )
       cout << comma << (i->first ? i->first->term.c_str() : "<LEVEL>");
     cout << endl;
-#endif
+#   endif
 
     candidate_t const candidate( pop_front( candidate_queue_ ) );
     synonym const *const candidate_ptr = candidate.first;
