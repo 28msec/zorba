@@ -12,6 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+########################################################################
+# ImageMagick
+########################################################################
 FIND_PACKAGE(ImageMagick COMPONENTS Magick++ MagickCore MagickWand)
 
 IF (ImageMagick_FOUND)
@@ -36,3 +40,16 @@ ELSE (ImageMagick_FOUND)
 
   MESSAGE(STATUS "If you want to use image handling functionality please install the ImageMagick library containing these 3 components: Magick++, MagickCore, MagickWand.\n Please note that on some OS\n- ImageMagick and\n- libMagick++ (on OpenSuse) or ImageMagick-c++(on Fedora)\n are 2 different packages and you need to install both of them and additionally their development packages.")
 ENDIF (ImageMagick_FOUND)
+
+########################################################################
+# Graphviz
+########################################################################
+INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/FindGraphviz.cmake)
+IF (GRAPHVIZ_FOUND)
+  INCLUDE_DIRECTORIES(${GRAPHVIZ_INCLUDE_DIR})
+
+  INCLUDE_DIRECTORIES("graphviz.xq.src")
+  GENERATE_MODULE_LIBRARY(graphviz "${GRAPHVIZ_LIBRARIES}")
+ELSE (GRAPHVIZ_FOUND)
+  MESSAGE(STATUS "Could not find Graphviz library or development headers.")
+ENDIF (GRAPHVIZ_FOUND)

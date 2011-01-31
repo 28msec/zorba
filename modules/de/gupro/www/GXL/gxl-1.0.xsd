@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://www.gupro.de/GXL/gxl-1.0.dtd" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.gupro.de/GXL/gxl-1.0.dtd" elementFormDefault="qualified">
+  <!--graph structure -->
+  <xsd:element name="attributedElement" type="AttributedElementType" abstract="true"/>
+  <xsd:complexType name="AttributedElementType">
+    <xsd:attribute name="id" type="xsd:ID"/>
+  </xsd:complexType>
+  <xsd:element name="typedElement" type="TypedElementType" abstract="true"/>
+  <xsd:complexType name="TypedElementType">
+    <xsd:complexContent>
+      <xsd:extension base="AttributedElementType">
+        <xsd:sequence>
+          <xsd:element ref="type" minOccurs="0"/>
+          <xsd:element ref="attr" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <!-- gxl -->
+  <xsd:element name="gxl" type="GxlType"/>
+  <xsd:complexType name="GxlType">
+    <xsd:sequence>
+      <xsd:element ref="graph" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!-- type -->
+  <xsd:element name="type" type="TypeType"/>
+  <xsd:complexType name="TypeType">
+    <xsd:anyAttribute namespace="http://www.w3.org/1999/xlink"/>
+  </xsd:complexType>
+  <!-- graph -->
+  <xsd:element name="graph" type="graphType"/>
+  <xsd:complexType name="graphType">
+    <xsd:complexContent>
+      <xsd:extension base="TypedElementType">
+        <xsd:choice minOccurs="0" maxOccurs="unbounded">
+          <xsd:element ref="node"/>
+          <xsd:element ref="edge"/>
+          <xsd:element ref="rel"/>
+        </xsd:choice>
+        <xsd:attribute name="role" type="xsd:NMTOKEN" use="optional"/>
+        <xsd:attribute name="edgeids" type="xsd:boolean" use="optional"/>
+        <xsd:attribute name="hypergraph" type="xsd:boolean" use="optional"/>
+        <xsd:attribute name="edgemode" type="edgemodeType" use="optional"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:simpleType name="edgemodeType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="directed"/>
+      <xsd:enumeration value="undirected"/>
+      <xsd:enumeration value="defaultdirected"/>
+      <xsd:enumeration value="defaultundirected"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <!-- graph elements -->
+  <xsd:element name="graphElement" type="GraphElementType" abstract="true"/>
+  <xsd:complexType name="GraphElementType">
+    <xsd:complexContent>
+      <xsd:extension base="TypedElementType">
+        <xsd:sequence>
+          <xsd:element ref="graph" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <!-- node -->
+  <xsd:element name="node" type="NodeType"/>
+  <xsd:complexType name="NodeType">
+    <xsd:complexContent>
+      <xsd:extension base="GraphElementType"/>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <!-- local connections -->
+  <xsd:element name="localConnection" type="LocalConnectionType" abstract="true"/>
+  <xsd:complexType name="LocalConnectionType">
+    <xsd:complexContent>
+      <xsd:extension base="GraphElementType">
+        <xsd:attribute name="isDirected" type="xsd:boolean" use="optional"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="edge" type="EdgeType"/>
+  <xsd:complexType name="EdgeType">
+    <xsd:complexContent>
+      <xsd:extension base="LocalConnectionType">
+        <xsd:attribute name="from" type="xsd:IDREF" use="required"/>
+        <xsd:attribute name="to" type="xsd:IDREF" use="required"/>
+        <xsd:attribute name="fromorder" type="xsd:integer" use="optional"/>
+        <xsd:attribute name="toorder" type="xsd:integer" use="optional"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="rel" type="RelType"/>
+  <xsd:complexType name="RelType">
+    <xsd:complexContent>
+      <xsd:extension base="LocalConnectionType">
+        <xsd:sequence>
+          <xsd:element ref="relend" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <!-- relend -->
+  <xsd:element name="relend" type="RelendType"/>
+  <xsd:complexType name="RelendType">
+    <xsd:complexContent>
+      <xsd:extension base="AttributedElementType">
+        <xsd:attribute name="target" type="xsd:IDREF" use="required"/>
+        <xsd:attribute name="role" type="xsd:NMTOKEN" use="optional"/>
+        <xsd:attribute name="direction" type="directionType" use="optional"/>
+        <xsd:attribute name="startorder" type="xsd:integer" use="optional"/>
+        <xsd:attribute name="endorder" type="xsd:integer" use="optional"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:simpleType name="directionType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="in"/>
+      <xsd:enumeration value="out"/>
+      <xsd:enumeration value="none"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <!-- attribute -->
+  <xsd:element name="attr" type="AttrType"/>
+  <xsd:complexType name="AttrType">
+    <xsd:complexContent>
+      <xsd:extension base="AttributedElementType">
+        <xsd:group ref="value"/>
+        <xsd:attribute name="name" type="xsd:string" use="required"/>
+        <xsd:attribute name="kind" type="xsd:string" use="optional"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <!-- value -->
+  <xsd:group name="value">
+    <xsd:choice>
+      <xsd:element ref="bag"/>
+      <xsd:element ref="set"/>
+      <xsd:element ref="seq"/>
+      <xsd:element ref="tup"/>
+      <xsd:element ref="bool"/>
+      <xsd:element ref="int"/>
+      <xsd:element ref="float"/>
+      <xsd:element ref="string"/>
+      <xsd:element ref="locator"/>
+      <xsd:element ref="enum"/>
+    </xsd:choice>
+  </xsd:group>
+  <!-- locator -->
+  <xsd:element name="locator" type="LocatorType"/>
+  <xsd:complexType name="LocatorType">
+    <xsd:anyAttribute namespace="http://www.w3.org/1999/xlink"/>
+  </xsd:complexType>
+  <!-- atomic values -->
+  <xsd:element name="bool" type="xsd:boolean"/>
+  <xsd:element name="int" type="xsd:integer"/>
+  <xsd:element name="float" type="xsd:float"/>
+  <xsd:element name="string" type="xsd:string"/>
+  <xsd:element name="freeType" type="xsd:string"/>
+  <!-- enumeration -->
+  <xsd:element name="enum" type="xsd:string"/>
+  <!-- composite values -->
+  <xsd:element name="compositeValue" type="CompositeValueType" abstract="true"/>
+  <xsd:complexType name="CompositeValueType">
+    <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+      <xsd:group ref="value"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="bag" type="BagType"/>
+  <xsd:complexType name="BagType">
+    <xsd:complexContent>
+      <xsd:extension base="CompositeValueType"/>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="set" type="SetType"/>
+  <xsd:complexType name="SetType">
+    <xsd:complexContent>
+      <xsd:extension base="CompositeValueType"/>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="seq" type="SeqType"/>
+  <xsd:complexType name="SeqType">
+    <xsd:complexContent>
+      <xsd:extension base="CompositeValueType"/>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="tup" type="TupType"/>
+  <xsd:complexType name="TupType">
+    <xsd:complexContent>
+      <xsd:extension base="CompositeValueType"/>
+    </xsd:complexContent>
+  </xsd:complexType>
+</xsd:schema>
