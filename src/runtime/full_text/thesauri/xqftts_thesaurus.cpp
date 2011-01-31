@@ -276,13 +276,14 @@ void thesaurus::read_xqftts_file( zstring const &uri ) {
           // We now have a (possibly) new synonym for the new synonym set
           // being built.
           //
-          auto_ptr<synonym> new_syn( new synonym( syn_term ) );
-          synonym_set_t::iterator syn_it = new_set.find( new_syn.get() );
-          if ( syn_it != new_set.end() )
-            (*syn_it)->relationships.insert( syn_relationship );
-          else {
+          synonym *const new_syn = new synonym( syn_term );
+          synonym_set_t::iterator const old_syn = new_set.find( new_syn );
+          if ( old_syn != new_set.end() ) {
+            (*old_syn)->relationships.insert( syn_relationship );
+            delete new_syn;
+          } else {
             new_syn->relationships.insert( syn_relationship );
-            new_set.insert( new_syn.release() );
+            new_set.insert( new_syn );
           }
         } else
           THROW_BAD_XML_EXCEPTION( element_name, "unexpected element" );
@@ -295,20 +296,21 @@ void thesaurus::read_xqftts_file( zstring const &uri ) {
         // We now have a (possibly) new term and one or more synonyms for it:
         // merge it into the thesaurus.
         //
-        synonym_set_t &cur_set = thesaurus_[ new_term ];
-        if ( cur_set.empty() )
-          cur_set.swap( new_set );
+        synonym_set_t &old_set = thesaurus_[ new_term ];
+        if ( old_set.empty() )
+          old_set.swap( new_set );
         else {
-          FOR_EACH( synonym_set_t, new_it, new_set ) {
-            synonym_set_t::iterator const cur_it = cur_set.find( *new_it );
-            if ( cur_it != cur_set.end() ) {
+          FOR_EACH( synonym_set_t, new_syn, new_set ) {
+            synonym_set_t::iterator const old_syn = old_set.find( *new_syn );
+            if ( old_syn != old_set.end() ) {
               //
               // The same synonym for the term already exists: just add in
               // the relationships.
               //
-              copy_set( (*new_it)->relationships, (*cur_it)->relationships );
+              copy_set( (*new_syn)->relationships, (*old_syn)->relationships );
+              delete *new_syn;
             } else
-              cur_set.insert( *new_it );
+              old_set.insert( *new_syn );
           }
         }
       }

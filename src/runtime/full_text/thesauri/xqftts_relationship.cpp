@@ -39,13 +39,11 @@ relationship::relationship( string_t const &rel_string ) {
 }
 
 relationship::relationship( relationship const &that ) {
-  if ( that.is_string_ ) {
-    is_string_ = true;
+  is_string_ = that.is_string_;
+  if ( is_string_ )
     new( &string_value() ) string_t( that.string_value() );
-  } else {
-    is_string_ = false;
+  else
     iso2788_value_ = that.iso2788_value_;
-  }
 }
 
 relationship::~relationship() {
@@ -68,9 +66,11 @@ bool operator==( relationship const &a, relationship const &b ) {
 }
 
 bool operator<( relationship const &a, relationship const &b ) {
-  return a.is_string_ ?
-     b.is_string_ && a.string_value() < b.string_value()
-  : !b.is_string_ && a.iso2788_value_ < b.iso2788_value_;
+  if ( a.is_string_ )
+    return a.string_value() < b.get_string();
+  if ( b.is_string_ )
+    return a.get_string() < b.string_value();
+  return a.iso2788_value_ < b.iso2788_value_;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
