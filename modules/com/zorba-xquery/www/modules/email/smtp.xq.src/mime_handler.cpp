@@ -265,11 +265,11 @@ namespace zorba
     } else {  
       lMessage = aMessage;
     }  
-    size_t lLen = strlen(lMessage.c_str()) + 2;
-    aBody->contents.text.size = lLen;
-    aBody->contents.text.data = (unsigned char *) fs_get (lLen);   //message body
-    sprintf ((char*)aBody->contents.text.data,"%s\015\012", const_cast<char*>(lMessage.c_str()));
     
+    char *text = (char *) fs_get (strlen(lMessage.c_str()));
+    text = cpystr (lMessage.c_str());
+    aBody->contents.text.size = strlen(text);
+    aBody->contents.text.data = (unsigned char *) text;   //message body
 
   }
 
