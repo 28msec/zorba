@@ -40,6 +40,7 @@ public:
    */
   ICU_Tokenizer( bool wildcards = false );
 
+  // inherited
   void tokenize( char const*, size_t, locale::iso639_1::type, Callback&,
                  void* );
 

@@ -781,27 +781,31 @@ FTTokenIterator_t StringItem::getDocumentTokens(locale::iso639_1::type lang) con
 {
   auto_ptr<Tokenizer> tokenizer( Tokenizer::create() );
 
-  NaiveFTTokenIterator::FTTokens* tokens = new NaiveFTTokenIterator::FTTokens;
+  auto_ptr<NaiveFTTokenIterator::FTTokens> tokens(
+    new NaiveFTTokenIterator::FTTokens
+  );
 
-  AtomicItemTokenizer atomic_tokenizer(*tokenizer, lang, *tokens);
-  atomic_tokenizer.tokenize(theValue.c_str(), theValue.size());
+  AtomicItemTokenizerCallback cb( *tokenizer, lang, *tokens );
+  cb.tokenize( theValue.data(), theValue.size() );
 
-  return FTTokenIterator_t(new NaiveFTTokenIterator(tokens));
+  return FTTokenIterator_t( new NaiveFTTokenIterator( tokens.release() ) );
 }
 
 
 FTTokenIterator_t StringItem::getQueryTokens(
-     locale::iso639_1::type lang,
-     bool wildcards) const
+    locale::iso639_1::type lang,
+    bool wildcards ) const
 {
   auto_ptr<Tokenizer> tokenizer( Tokenizer::create( wildcards ) );
 
-  NaiveFTTokenIterator::FTTokens* tokens = new NaiveFTTokenIterator::FTTokens;
+  auto_ptr<NaiveFTTokenIterator::FTTokens> tokens(
+    new NaiveFTTokenIterator::FTTokens
+  );
 
-  AtomicItemTokenizer atomic_tokenizer( *tokenizer, lang, *tokens );
-  atomic_tokenizer.tokenize( theValue.c_str(), theValue.size() );
+  AtomicItemTokenizerCallback cb( *tokenizer, lang, *tokens );
+  cb.tokenize( theValue.data(), theValue.size() );
 
-  return FTTokenIterator_t( new NaiveFTTokenIterator( tokens ) );
+  return FTTokenIterator_t( new NaiveFTTokenIterator( tokens.release() ) );
 }
 
 #endif /* ZORBA_NO_FULL_TEXT */
@@ -2274,19 +2278,21 @@ zstring ErrorItem::show() const
 
 
 /*******************************************************************************
-  class AtomicItemTokenizer
+  class AtomicItemTokenizerCallback
 ********************************************************************************/
-void AtomicItemTokenizer::operator()(
+#ifndef ZORBA_NO_FULL_TEXT
+void AtomicItemTokenizerCallback::operator()(
     char const *utf8_s,
     size_t utf8_len,
-    int token_no, 
-    int sent_no,
-    int para_no,
+    int_t token_no, 
+    int_t sent_no,
+    int_t para_no,
     void* )
 {
   FTToken const t( utf8_s, utf8_len, token_no, lang_ );
   tokens_.push_back( t );
 }
+#endif /* ZORBA_NO_FULL_TEXT */
 
 
 } // namespace simplestore

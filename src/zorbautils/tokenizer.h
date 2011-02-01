@@ -30,12 +30,15 @@ namespace zorba {
  */
 class Tokenizer {
 public:
+  typedef unsigned int_t;
 
   /**
    * A Callback is called once per token.
    */
   class Callback {
   public:
+    typedef Tokenizer::int_t int_t;
+
     virtual ~Callback();
 
     /**
@@ -49,7 +52,7 @@ public:
      * @param payload   Optional user-defined data.
      */
     virtual void operator()( char const *utf8_s, size_t utf8_len,
-                             int token_no, int sent_no, int para_no,
+                             int_t token_no, int_t sent_no, int_t para_no,
                              void *payload = 0 ) = 0;
   };
 
@@ -68,10 +71,57 @@ public:
   static Tokenizer* create( bool wildcards = false );
 
   /**
-   * Increments the current paragraph number by 1.
+   * Gets the current token number.
+   *
+   * @return Returns said number.
    */
-  void inc_para() {
-    ++para_no_;
+  int_t token() const {
+    return token_no_;
+  }
+
+  /**
+   * Sets the current token number.
+   *
+   * @param n The new number.
+   */
+  void token( int_t n ) {
+    token_no_ = n;
+  }
+
+  /**
+   * Gets the current sentence number.
+   *
+   * @return Returns said number.
+   */
+  int_t sent() const {
+    return sent_no_;
+  }
+
+  /**
+   * Sets the current sentence number.
+   *
+   * @param n The new number.
+   */
+  void sent( int_t n ) {
+    sent_no_ = n;
+  }
+
+  /**
+   * Gets the current paragraph number.
+   *
+   * @return Returns said number.
+   */
+  int_t para() const {
+    return para_no_;
+  }
+
+  /**
+   * Sets the current paragraph number.
+   *
+   * @param n The new number.
+   */
+  void para( int_t n ) {
+    para_no_ = n;
   }
 
   /**
@@ -91,9 +141,9 @@ public:
 protected:
   Tokenizer();
 
-  int token_no_;
-  int sent_no_;
-  int para_no_;
+  int_t token_no_;
+  int_t sent_no_;
+  int_t para_no_;
 };
 
 } // namespace zorba

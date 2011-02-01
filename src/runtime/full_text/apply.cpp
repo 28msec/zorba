@@ -1176,7 +1176,8 @@ public:
   {
   }
 
-  void operator()( char const *utf8_s, size_t utf8_len, int, int, int, void* ) {
+  void operator()( char const *utf8_s, size_t utf8_len, int_t, int_t, int_t,
+                   void* ) {
     FTToken const t( utf8_s, (int)utf8_len, token_no_, lang_ );
     tokens_.push_back( t );
   }

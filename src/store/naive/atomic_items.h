@@ -41,7 +41,7 @@ namespace zorba
 namespace simplestore
 {
 
-class AtomicItemTokenizer;
+class AtomicItemTokenizerCallback;
 class QNameItem;
 typedef rchandle<QNameItem> QNameItem_t;
 
@@ -533,7 +533,7 @@ public:
 class StringItem : public AtomicItem
 {
   friend class BasicItemFactory;
-  friend class AtomicItemTokenizer;
+  friend class AtomicItemTokenizerCallback;
 
 protected:
   zstring theValue;
@@ -2150,15 +2150,17 @@ protected:
 
 #ifndef ZORBA_NO_FULL_TEXT
 /**
- * An <code>AtomicItemTokenizer</code> is-a Tokenizer::Callback TODO
+ * An %AtomicItemTokenizerCallback is-a Tokenizer::Callback for tokenizing
+ * atomic items.
  */
-class AtomicItemTokenizer : public Tokenizer::Callback
+class AtomicItemTokenizerCallback : public Tokenizer::Callback
 {
 public:
   typedef NaiveFTTokenIterator::FTTokens FTTokens;
 
-  AtomicItemTokenizer( Tokenizer &tokenizer, locale::iso639_1::type lang,
-                       FTTokens &tokens ) :
+  AtomicItemTokenizerCallback( Tokenizer &tokenizer,
+                               locale::iso639_1::type lang,
+                               FTTokens &tokens ) :
     tokenizer_( tokenizer ),
     tokens_( tokens ),
     lang_( lang )
@@ -2166,7 +2168,7 @@ public:
   }
 
   void operator()( char const *utf8_s, size_t utf8_len,
-                   int token_no, int sent_no, int para_no, void* = 0 );
+                   int_t token_no, int_t sent_no, int_t para_no, void* = 0 );
 
   void tokenize( char const *utf8_s, size_t len ) {
     tokenizer_.tokenize( utf8_s, len, lang_, *this );

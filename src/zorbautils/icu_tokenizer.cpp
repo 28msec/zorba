@@ -42,8 +42,10 @@ namespace zorba {
 
 namespace {
 
-class token {
+class temp_token {
 public:
+  typedef Tokenizer::int_t int_t;
+
   void append( char const *s, size_t slen ) {
     value_.append( s, slen );
   }
@@ -61,12 +63,12 @@ public:
 #     if DEBUG_TOKENIZER
       cout << "TOKEN: \"" << value_ << "\"\n";
 #     endif
-      callback( value_.c_str(), value_.length(), pos_, sent_, para_, payload );
+      callback( value_.data(), value_.size(), pos_, sent_, para_, payload );
       clear();
     }
   }
 
-  void set( char const *s, size_t slen, int pos, int sent, int para ) {
+  void set( char const *s, size_t slen, int_t pos, int_t sent, int_t para ) {
     clear();
     append( s, slen );
     pos_  = pos;
@@ -76,7 +78,7 @@ public:
 
 private:
   string value_;
-  int pos_, sent_, para_;
+  int_t pos_, sent_, para_;
 };
 
 } // anonymous namespace
@@ -217,7 +219,7 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, size_t utf8_len,
   iters.sent_->setText( utf16_s );
   int32_t sent_start = iters.sent_->first(), sent_end = iters.sent_->next();
 
-  token t;
+  temp_token t;
 
   // True only if the previous token was a backslash ('\').
   bool got_backslash = false;
