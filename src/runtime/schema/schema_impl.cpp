@@ -87,7 +87,8 @@ ZorbaSchemaTypeIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   if (consumeNext(item, theChildren[0].getp(), planState))
   {
     result = item->getType();
-    STACK_PUSH(true, state );
+    if ( result )
+      STACK_PUSH(true, state );
   }
 
   STACK_END (state);

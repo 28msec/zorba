@@ -65,13 +65,13 @@ void populate_context_schema(static_context* sctx)
   DECL(sctx, fn_zorba_util_schema_type,
       (createQName("http://www.zorba-xquery.com/zorba/util-functions","","schema-type"),
       GENV_TYPESYSTEM.ITEM_TYPE_ONE,
-      GENV_TYPESYSTEM.QNAME_TYPE_ONE));
+      GENV_TYPESYSTEM.QNAME_TYPE_QUESTION));
 
 
   DECL(sctx, fn_zorba_schema_schema_type,
       (createQName("http://www.zorba-xquery.com/modules/schema","","schema-type"),
       GENV_TYPESYSTEM.ITEM_TYPE_ONE,
-      GENV_TYPESYSTEM.QNAME_TYPE_ONE));
+      GENV_TYPESYSTEM.QNAME_TYPE_QUESTION));
 
 
   DECL(sctx, fn_zorba_schema_is_validated,
