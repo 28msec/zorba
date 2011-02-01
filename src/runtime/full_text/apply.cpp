@@ -293,8 +293,15 @@ static void join_includes( ft_match::includes_t const &includes,
 /**
  * Joins all the tokens from the given FTTokenIterator into a single string
  * seperated by spaces.
+ *
+ * @param tokens The FTTokenIterator to get the tokens to join.
+ * @param phrase The result string.
+ * @param selector The token value selector to use.
+ * @return Returns a pointer to the first token returned by the iterator or \c
+ * NULL if the iterator returned no tokens.
  */
-static FTToken const* to_string( FTTokenIterator &tokens, zstring *phrase ) {
+static FTToken const* to_string( FTTokenIterator &tokens, zstring *phrase,
+                                 int selector ) {
   FTToken const *t0 = NULL;
   FTTokenIterator::Mark_t const mark( tokens.pos() );
   for ( FTToken const *t; (t = tokens.next()); ) {
@@ -302,7 +309,7 @@ static FTToken const* to_string( FTTokenIterator &tokens, zstring *phrase ) {
       t0 = t;
     else
       *phrase += ' ';
-    *phrase += t->value();
+    *phrase += t->value( selector );
   }
   tokens.pos( mark );
   return t0;
@@ -952,7 +959,9 @@ apply_query_tokens_as_phrase( FTTokenIterator &query_tokens,
   ftthesaurus_option const *const t_option = options.get_thesaurus_option();
   if ( t_option && !t_option->no_thesaurus() ) {
     zstring query_phrase;
-    if ( FTToken const *const qt0 = to_string( query_tokens, &query_phrase ) ) {
+    FTToken const *const qt0 =
+      to_string( query_tokens, &query_phrase, FTToken::lower );
+    if ( qt0 ) {
       FTQueryItemSeq synonyms;
       apply_thesaurus_option( t_option, query_phrase, *qt0, synonyms );
 
