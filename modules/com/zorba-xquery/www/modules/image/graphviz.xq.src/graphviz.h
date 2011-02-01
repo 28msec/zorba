@@ -94,12 +94,25 @@ public:
 protected:
   class LazyDotSequence : public zorba::ItemSequence
   {
+    class InternalIterator : public Iterator
+    {
+    private:
+      LazyDotSequence   *theItemSequence;
+      Iterator_t        arg_iter;
+      bool is_open;
+    public:
+      InternalIterator(LazyDotSequence *item_sequence);
+
+      virtual void open();
+      virtual bool next(Item& aItem);
+      virtual void close();
+      virtual bool isOpen() const;
+    };
     public:
       LazyDotSequence(const DotFunction*,
                       ItemSequence* aArg);
 
-      virtual bool
-      next(zorba::Item& aItem);
+      virtual Iterator_t    getIterator();
 
     protected:
       const DotFunction* theFunc;
@@ -128,12 +141,25 @@ public:
 protected:
   class LazyGxlSequence : public zorba::ItemSequence
   {
+    class InternalIterator : public Iterator
+    {
+    private:
+      LazyGxlSequence   *theItemSequence;
+      Iterator_t        arg_iter;
+      bool is_open;
+    public:
+      InternalIterator(LazyGxlSequence *item_sequence);
+
+      virtual void open();
+      virtual bool next(Item& aItem);
+      virtual void close();
+      virtual bool isOpen() const;
+    };
     public:
       LazyGxlSequence(const GxlFunction*,
                       ItemSequence* aArg);
 
-      virtual bool
-      next(zorba::Item& aItem);
+      Iterator_t  getIterator();
 
     protected:
       const GxlFunction* theFunc;

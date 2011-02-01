@@ -343,16 +343,49 @@ DotFunction::LazyDotSequence::LazyDotSequence(const DotFunction* aFunc,
 
 /******************************************************************************
  *****************************************************************************/
-bool
-DotFunction::LazyDotSequence::next(Item& aItem)
+Iterator_t DotFunction::LazyDotSequence::getIterator()
 {
+  return new DotFunction::LazyDotSequence::InternalIterator(this);
+}
+
+DotFunction::LazyDotSequence::InternalIterator::InternalIterator(LazyDotSequence *item_sequence) :
+  theItemSequence(item_sequence), is_open(false)
+{
+  arg_iter = item_sequence->theArg->getIterator();
+}
+
+void DotFunction::LazyDotSequence::InternalIterator::open()
+{
+  is_open = true;
+  arg_iter->open();
+}
+
+void DotFunction::LazyDotSequence::InternalIterator::close()
+{
+  is_open = false;
+  arg_iter->close();
+}
+
+bool DotFunction::LazyDotSequence::InternalIterator::isOpen() const
+{
+  return is_open;
+}
+
+bool
+DotFunction::LazyDotSequence::InternalIterator::next(Item& aItem)
+{
+  if(!is_open)
+  {
+    throw zorba::ExternalFunctionData::createZorbaException(XQP0019_INTERNAL_ERROR,
+      "DotFunction::LazyDotSequence Iterator consumed without open", __FILE__, __LINE__);  
+  }
   Item          lItem;
   Agraph_t      *lGraph = 0;
   String        lGraphInput;
   GVC_t         *lGvc = 0;
   std::ifstream lSVGFile;
 
-  if (!theArg->next(lItem)) // exhausted
+  if (!arg_iter->next(lItem)) // exhausted
     return false;
 
   lGvc = gvContext();
@@ -371,7 +404,7 @@ DotFunction::LazyDotSequence::next(Item& aItem)
         "could not generate layout", __FILE__, __LINE__);
     }
 
-    std::string lTmpFile = theFunc->getGraphvizTmpFileName();
+    std::string lTmpFile = theItemSequence->theFunc->getGraphvizTmpFileName();
 
     if ( gvRenderFilename(lGvc, lGraph, const_cast<char*>("svg"),
                           const_cast<char*>(lTmpFile.c_str())) != 0 )  {
@@ -412,27 +445,60 @@ DotFunction::LazyDotSequence::next(Item& aItem)
 
 /******************************************************************************
  *****************************************************************************/
-bool
-GxlFunction::LazyGxlSequence::next(Item& aItem)
+Iterator_t GxlFunction::LazyGxlSequence::getIterator()
 {
+  return new GxlFunction::LazyGxlSequence::InternalIterator(this);
+}
+
+GxlFunction::LazyGxlSequence::InternalIterator::InternalIterator(LazyGxlSequence *item_sequence) :
+  theItemSequence(item_sequence), is_open(false)
+{
+  arg_iter = item_sequence->theArg->getIterator();
+}
+
+void GxlFunction::LazyGxlSequence::InternalIterator::open()
+{
+  is_open = true;
+  arg_iter->open();
+}
+
+void GxlFunction::LazyGxlSequence::InternalIterator::close()
+{
+  is_open = false;
+  arg_iter->close();
+}
+
+bool GxlFunction::LazyGxlSequence::InternalIterator::isOpen() const
+{
+  return is_open;
+}
+
+bool
+GxlFunction::LazyGxlSequence::InternalIterator::next(Item& aItem)
+{
+  if(!is_open)
+  {
+    throw zorba::ExternalFunctionData::createZorbaException(XQP0019_INTERNAL_ERROR,
+      "GxlFunction::LazyGxlSequence Iterator consumed without open", __FILE__, __LINE__);  
+  }
   Item              lItem;
   Agraph_t          *lGraph = 0;
   GVC_t             *lGvc = 0;
   std::fstream       lSVGFile;
   FILE              *lFile = 0;
 
-  if (!theArg->next(lItem)) // exhausted
+  if (!arg_iter->next(lItem)) // exhausted
     return false;
 
   lGvc = gvContext();
 
   try {
 
-    std::string lTmpFile = theFunc->getGraphvizTmpFileName();
+    std::string lTmpFile = theItemSequence->theFunc->getGraphvizTmpFileName();
     lSVGFile.open(lTmpFile.c_str(),
         std::fstream::in | std::fstream::out | std::fstream::trunc);
 
-    gxl2dot(theFunc->theModule->getItemFactory(), lItem, lSVGFile);
+    gxl2dot(theItemSequence->theFunc->theModule->getItemFactory(), lItem, lSVGFile);
     lSVGFile.close();
 
     lFile = fopen(lTmpFile.c_str(), "r");

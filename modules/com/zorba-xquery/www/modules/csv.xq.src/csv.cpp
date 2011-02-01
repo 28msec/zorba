@@ -686,7 +686,6 @@ CSVParseFunction::CSVItemSequence::CSVItemSequence()
 {
   is_open = false;
   open_count = 0;
-  addReference();
 }
 
 void CSVParseFunction::CSVItemSequence::open()
@@ -861,7 +860,6 @@ CSVSerializeFunction::StringStreamSequence::StringStreamSequence(ItemSequence* i
   has_next = true;
   is_open = false;
   open_count = 0;
-  addReference();
   input_iter->open();
 }
 

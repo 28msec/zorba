@@ -454,7 +454,7 @@ void StatelessExtFunctionCallIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
   theResultIter = NULL;
-  theResult.reset();
+  theResult = NULL;
 }
 
 

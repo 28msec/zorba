@@ -58,8 +58,7 @@ namespace zorba {
   typedef zorba::SmartPtr<DirectoryIterator>          DirectoryIterator_t;
   typedef zorba::SmartPtr<Serializer>                 Serializer_t;
 
-  // auto pointer (used for transfering ownership of the return type of external functions)
-  typedef std::auto_ptr<ItemSequence>                   ItemSequence_t;
+  typedef zorba::SmartPtr<ItemSequence>               ItemSequence_t;
 
   // data handlers
   class Item;

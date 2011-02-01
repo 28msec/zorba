@@ -150,7 +150,6 @@ FilesFunction::IteratorBackedItemSequence::IteratorBackedItemSequence(
     ItemFactory* aFactory)
   : theIterator(aIter), theItemFactory(aFactory)
 {
-  addReference();
   is_open = false;
   open_count = 0;
 }
