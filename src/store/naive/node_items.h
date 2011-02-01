@@ -993,6 +993,10 @@ public:
   void replaceName(UpdRenameAttr& upd);
   void restoreName(UpdRenameAttr& upd);
 
+#ifndef ZORBA_NO_FULL_TEXT
+  void tokenize( XmlNodeTokenizer& );
+#endif /* ZORBA_NO_FULL_TEXT */
+
 protected:
   ItemVector& getValueVector() 
   {

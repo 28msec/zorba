@@ -3208,6 +3208,16 @@ void XmlNode::tokenize( XmlNodeTokenizer& )
 }
 
 
+void AttributeNode::tokenize( XmlNodeTokenizer &tokenizer ) 
+{
+  tokenizer.beginTokenization( *this );
+  zstring text;
+  getStringValue2( text );
+  tokenizer.tokenize( text.c_str(), text.size() );
+  tokenizer.endTokenization( *this );
+}
+
+
 void InternalNode::tokenize( XmlNodeTokenizer& tokenizer ) 
 {
   tokenizer.inc_para();
@@ -3220,20 +3230,19 @@ void InternalNode::tokenize( XmlNodeTokenizer& tokenizer )
 
 void ElementNode::tokenize( XmlNodeTokenizer& tokenizer ) 
 {
-  store::Iterator_t attributes = getAttributes();
-  attributes->open();
-  store::Item_t at;
   bool found_lang = false;
-  while ( !found_lang && attributes->next( at ) ) 
-  {
+  for ( ulong i = 0; i < numAttributes(); ++i ) {
+    AttributeNode *const at = getAttr( i );
     Item const *const name = at->getNodeName();
-    if ( name->getLocalName() == "lang" && name->getNamespace() == XML_NS ) 
-    {
+    if ( name->getLocalName() == "lang" && name->getNamespace() == XML_NS ) {
       tokenizer.push_lang( locale::find_lang( at->getStringValue().c_str() ) );
       found_lang = true;
+      break;
     }
   }
-  attributes->close();
+
+  for ( ulong i = 0; i < numAttributes(); ++i )
+    getAttr( i )->tokenize( tokenizer );
 
   tokenizer.push_element( this );
   InternalNode::tokenize( tokenizer );
