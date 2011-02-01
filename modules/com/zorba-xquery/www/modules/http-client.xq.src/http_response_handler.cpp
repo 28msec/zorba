@@ -28,7 +28,7 @@ namespace zorba { namespace http_client {
   const char* theNamespace = "http://expath.org/ns/http-client";
 
   HttpResponseIterator::HttpResponseIterator()
-    : theIndex(0), theResponseSet(false)
+    : theResponseSet(false)
   {
     // Set an empty item as the response item
     theItems.push_back(Item());
@@ -38,13 +38,41 @@ namespace zorba { namespace http_client {
   {
   }
 
-  bool HttpResponseIterator::next( Item& aItem )
+  Iterator_t HttpResponseIterator::getIterator()
   {
-    if (!theResponseSet) {
+    return new InternalIterator(this);
+  }
+
+  HttpResponseIterator::InternalIterator::InternalIterator(HttpResponseIterator *item_sequence) : 
+    theItemSequence(item_sequence),
+    theIndex(0)
+  {
+    is_open = false;
+  }
+
+  void HttpResponseIterator::InternalIterator::open()
+  {
+     theIndex = 0;
+    is_open = true;
+  }
+
+  void HttpResponseIterator::InternalIterator::close()
+  {
+    is_open = false;
+  }
+
+  bool HttpResponseIterator::InternalIterator::isOpen() const
+  {
+    return is_open;
+  }
+
+  bool HttpResponseIterator::InternalIterator::next( Item& aItem )
+  {
+    if (!theItemSequence->theResponseSet) {
       return false;
     }
-    if (theIndex < theItems.size()) {
-      aItem = theItems[theIndex];
+    if (theIndex < theItemSequence->theItems.size()) {
+      aItem = theItemSequence->theItems[theIndex];
       ++theIndex;
       return !aItem.isNull();
     }

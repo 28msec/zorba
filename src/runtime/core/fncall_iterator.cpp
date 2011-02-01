@@ -382,6 +382,37 @@ NARY_ACCEPT(UDFunctionCallIterator);
 ********************************************************************************/
 class ExtFuncArgItemSequence : public ItemSequence
 {
+  class InternalIterator : public Iterator
+  {
+  private:
+    ExtFuncArgItemSequence   *theItemSequence;
+    bool is_open;
+    int open_count;
+  public:
+    InternalIterator(ExtFuncArgItemSequence *item_sequence) : theItemSequence(item_sequence), is_open(false), open_count(0) {}
+
+    virtual void open() 
+    {
+      is_open = true; 
+      //if(open_count)
+      //  theItemSequence->theChild->reset(theItemSequence->thePlanState);
+      open_count++;
+    }
+    bool next(Item& item)
+    {
+      ZORBA_ASSERT(is_open);
+      store::Item_t result;
+      bool status = theItemSequence->theChild->consumeNext(result, theItemSequence->theChild.getp(), theItemSequence->thePlanState);
+      item = status ? result : NULL;
+      return status;
+    }
+    virtual void close() 
+    {
+      is_open = false; 
+    //  theItemSequence->theChild->close(theItemSequence->thePlanState);
+    }
+    virtual bool isOpen() const {return is_open;}
+  };
 private:
   PlanIter_t   theChild;
   PlanState  & thePlanState;
@@ -394,13 +425,7 @@ public:
   {
   }
 
-  bool next(Item& item)
-  {
-    store::Item_t result;
-    bool status = theChild->consumeNext(result, theChild.getp(), thePlanState);
-    item = status ? result : NULL;
-    return status;
-  }
+  virtual Iterator_t getIterator() {return new InternalIterator(this);}
 };
 
 
@@ -414,6 +439,8 @@ StatelessExtFunctionCallIteratorState::StatelessExtFunctionCallIteratorState()
 
 StatelessExtFunctionCallIteratorState::~StatelessExtFunctionCallIteratorState()
 {
+  theResultIter = NULL;
+ 
   ulong n = (ulong)m_extArgs.size();
 
   for (ulong i = 0; i < n; ++i)
@@ -426,6 +453,7 @@ StatelessExtFunctionCallIteratorState::~StatelessExtFunctionCallIteratorState()
 void StatelessExtFunctionCallIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
+  theResultIter = NULL;
   theResult.reset();
 }
 
@@ -546,6 +574,8 @@ bool StatelessExtFunctionCallIterator::nextImpl(
       ZORBA_ASSERT(lPureFct);
 
       state->theResult = lPureFct->evaluate(state->m_extArgs);
+      if(state->theResult.get() != NULL)
+        state->theResultIter = state->theResult->getIterator();
     }
     else
     {
@@ -567,6 +597,8 @@ bool StatelessExtFunctionCallIterator::nextImpl(
       state->theResult = lNonePureFct->evaluate(state->m_extArgs,
                                                 &theSctxWrapper,
                                                 &theDctxWrapper);
+      if(state->theResult.get() != NULL)
+        state->theResultIter = state->theResult->getIterator();
     } // if (!theFunction->isContextual())
   }
   catch (const ZorbaException& e)
@@ -592,6 +624,10 @@ bool StatelessExtFunctionCallIterator::nextImpl(
       err_loc.getFilename().str());
   }
 
+  if(state->theResult.get() != NULL)
+  {
+    state->theResultIter->open();
+  }
   while (true)
   {
     try
@@ -599,8 +635,9 @@ bool StatelessExtFunctionCallIterator::nextImpl(
       if (state->theResult.get() == NULL) // This will happen if the user's external function returns a zorba::ItemSequence_t(NULL)
         break;
 
-      if (!state->theResult->next(lOutsideItem))
+      if (!state->theResultIter->next(lOutsideItem))
       {
+        state->theResultIter->close();
         break;
       }
     }

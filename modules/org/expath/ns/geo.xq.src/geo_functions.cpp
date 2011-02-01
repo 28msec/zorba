@@ -136,7 +136,9 @@ enum GeoFunction::gmlsf_types GeoFunction::getGmlSFGeometricType(Item item) cons
 enum GeoFunction::gmlsf_types GeoFunction::getGeometryNodeType(const StatelessExternalFunction::Arguments_t& args,
                                                                int arg_pos, zorba::Item &lItem) const
 {
-  if (!args[arg_pos]->next(lItem)) 
+  Iterator_t args_iter = args[arg_pos]->getIterator();
+  args_iter->open();
+  if (!args_iter->next(lItem)) 
   {
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as parameter";
@@ -149,6 +151,7 @@ enum GeoFunction::gmlsf_types GeoFunction::getGeometryNodeType(const StatelessEx
     lErrorMessage << "Argument must be a geometric node ";
     throwError("UnrecognizedGeoObject", lErrorMessage.str());
   }
+  args_iter->close();
   return getGmlSFGeometricType(lItem);
 }
 
@@ -2440,12 +2443,15 @@ SFGeometryNFunction::evaluate(const StatelessExternalFunction::Arguments_t& args
   }                                                                               
                                                                                   
   Item lItem2;                                                                           
-  if (!args[1]->next(lItem2)) 
+  Iterator_t arg1_iter = args[1]->getIterator();
+  arg1_iter->open();
+  if (!arg1_iter->next(lItem2)) 
   {
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as second parameter";
     throwError("UnrecognizedGeoObject", lErrorMessage.str());
   }
+  arg1_iter->close();
 
   uint32_t n;
   n = lItem2.getUnsignedIntValue();
@@ -2874,11 +2880,14 @@ SFIsEmptyFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
          const DynamicContext* aDynCtx) const
 {
   Item lItem;
-  if (!args[0]->next(lItem)) 
+  Iterator_t arg0_iter = args[0]->getIterator();
+  arg0_iter->open();
+  if (!arg0_iter->next(lItem)) 
   {
     return ItemSequence_t(new SingletonItemSequence(
        theModule->getItemFactory()->createBoolean(true)));
   }
+  arg0_iter->close();
 
   if(!lItem.isNode() || (lItem.getNodeKind() != store::StoreConsts::elementNode))
   {
@@ -3322,12 +3331,15 @@ SFRelateFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
                                                                                   
                                                                                         
   Item lItem3;                                                                           
-  if (!args[2]->next(lItem3)) 
+  Iterator_t arg2_iter = args[2]->getIterator();
+  arg2_iter->open();
+  if (!arg2_iter->next(lItem3)) 
   {
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as parameter";
     throwError("UnrecognizedGeoObject", lErrorMessage.str());
   }
+  arg2_iter->close();
 
   zorba::String intersection_matrix;
   intersection_matrix = lItem3.getStringValue();
@@ -3409,12 +3421,15 @@ SFIsWithinDistanceFunction::evaluate(const StatelessExternalFunction::Arguments_
   }                                                                               
                                                                                         
   Item lItem3;                                                                           
-  if (!args[2]->next(lItem3)) 
+  Iterator_t arg2_iter = args[2]->getIterator();
+  arg2_iter->open();
+  if (!arg2_iter->next(lItem3)) 
   {
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as third parameter";
     throwError("UnrecognizedGeoObject", lErrorMessage.str());
   }
+  arg2_iter->close();
 
   double distance;
   distance = lItem3.getDoubleValue();
@@ -3540,12 +3555,15 @@ SFBufferFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
                                                                                   
                                                                                         
   Item lItem2;                                                                           
-  if (!args[1]->next(lItem2)) 
+  Iterator_t arg1_iter = args[1]->getIterator();
+  arg1_iter->open();
+  if (!arg1_iter->next(lItem2)) 
   {
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as second parameter";
     throwError("UnrecognizedGeoObject", lErrorMessage.str());
   }
+  arg1_iter->close();
 
   double distance;
   distance = lItem2.getDoubleValue();
@@ -4047,12 +4065,15 @@ SFPointNFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
                                                                                   
                                                                                         
   Item lItem2;                                                                           
-  if (!args[1]->next(lItem2)) 
+  Iterator_t arg1_iter = args[1]->getIterator();
+  arg1_iter->open();
+  if (!arg1_iter->next(lItem2)) 
   {
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as second parameter";
     throwError("UnrecognizedGeoObject", lErrorMessage.str());
   }
+  arg1_iter->close();
 
   uint32_t n;
   n = lItem2.getUnsignedIntValue();
@@ -4192,12 +4213,15 @@ SFInteriorRingNFunction::evaluate(const StatelessExternalFunction::Arguments_t& 
                                                                                   
                                                                                         
   Item lItem2;                                                                           
-  if (!args[1]->next(lItem2)) 
+  Iterator_t arg1_iter = args[1]->getIterator();
+  arg1_iter->open();
+  if (!arg1_iter->next(lItem2)) 
   {
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as second parameter";
     throwError("UnrecognizedGeoObject", lErrorMessage.str());
   }
+  arg1_iter->close();
 
   uint32_t n;
   n = lItem2.getUnsignedIntValue();
@@ -4295,12 +4319,15 @@ SFPatchNFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
                                                                                   
                                                                                         
   Item lItem2;                                                                           
-  if (!args[1]->next(lItem2)) 
+  Iterator_t arg1_iter = args[1]->getIterator();
+  arg1_iter->open();
+  if (!arg1_iter->next(lItem2)) 
   {
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as second parameter";
     throwError("UnrecognizedGeoObject", lErrorMessage.str());
   }
+  arg1_iter->close();
 
   uint32_t n;
   n = lItem2.getUnsignedIntValue();

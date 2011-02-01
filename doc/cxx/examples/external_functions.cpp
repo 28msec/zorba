@@ -129,12 +129,14 @@ public:
     ItemVector vec;
     for (int i = 0; i < 2; ++i) 
     {
-      ItemSequence* iseq = args[i];
+      Iterator_t iter = args[i]->getIterator();
+      iter->open();
       Item item;
-      while(iseq->next(item))
+      while(iter->next(item))
       {
         vec.push_back(item);
       }
+      iter->close();
     }
 
     // transfer ownership of the IteratorBackedItemSequence to Zorba (using an auto_ptr)
@@ -147,30 +149,59 @@ private:
 
   class IteratorBackedItemSequence : public ItemSequence
   {
+    class InternalIterator : public Iterator
+    {
+    private:
+      IteratorBackedItemSequence   *theItemSequence;
+      ItemVectorIte  theIte;
+      ItemVectorIte  theEnd;
+      bool is_open;
+    public:
+      InternalIterator(IteratorBackedItemSequence *item_sequence) : 
+          theItemSequence(item_sequence), 
+          is_open(false)
+      {  }
+
+      void open()
+      {
+        is_open = true;
+        theIte = theItemSequence->theItems.begin();
+        theEnd = theItemSequence->theItems.end();
+      }
+
+      void close()
+      {
+        is_open = false;
+      }
+
+      bool isOpen() const
+      {
+        return is_open;
+      }
+
+      bool next(Item& val)
+      {
+        assert(is_open);
+        if (theIte == theEnd) 
+        {
+          return false;
+        }
+        val = *theIte;
+        ++theIte;
+        return true;
+      }
+    };
   private:
     ItemVector     theItems;
-    ItemVectorIte  theIte;
-    ItemVectorIte  theEnd;
 
   public:
     IteratorBackedItemSequence(ItemVector& vec)
       :
-      theItems(vec),
-      theIte(theItems.begin()),
-      theEnd(theItems.end())
+      theItems(vec)
     {
     }
     
-    bool next(Item& val)
-    {
-      if (theIte == theEnd) 
-      {
-        return false;
-      }
-      val = *theIte;
-      ++theIte;
-      return true;
-    }
+      Iterator_t getIterator () {return new InternalIterator(this);}
   };
 };
 
@@ -227,26 +258,68 @@ public:
 private:
   class LazyConcatItemSequence : public ItemSequence 
   {
+    class InternalIterator : public Iterator
+    {
+    private:
+      LazyConcatItemSequence    *theItemSequence;
+      size_t      theCurrentArg;
+      Iterator_t   args_iter;
+      bool is_open;
+    public:
+      InternalIterator(LazyConcatItemSequence *item_sequence) : theItemSequence(item_sequence), is_open(false), theCurrentArg(0)
+      {
+      }
+
+      virtual void open()
+      {
+        is_open = true;
+        theCurrentArg = 0;
+        if(theCurrentArg < theItemSequence->theArgs.size())
+        {
+          args_iter = theItemSequence->theArgs[theCurrentArg]->getIterator();
+          args_iter->open();
+        }
+      }
+      virtual void close()
+      {
+        if(theCurrentArg < theItemSequence->theArgs.size())
+        {
+          args_iter->close();
+        }
+        is_open = false;
+      }
+      virtual bool isOpen() const
+      {
+        return is_open;
+      }
+      bool next(Item& result)
+      {
+        assert(is_open);
+        if(theCurrentArg == theItemSequence->theArgs.size())
+          return false;
+       while(theCurrentArg < 2 && !args_iter->next(result)) 
+        {
+          args_iter->close();
+          ++theCurrentArg;
+          if(theCurrentArg == theItemSequence->theArgs.size())
+            return false;
+          args_iter = theItemSequence->theArgs[theCurrentArg]->getIterator();
+          args_iter->open();
+        }
+        return !result.isNull();
+      }
+    };
   private:
     Arguments_t theArgs;
-    size_t      theCurrentArg;
 
   public:
     LazyConcatItemSequence(const StatelessExternalFunction::Arguments_t& args)
       : 
-      theArgs(args),
-      theCurrentArg(0)
+      theArgs(args)
     {
     }
 
-    bool next(Item& result)
-    {
-      while(theCurrentArg < 2 && !theArgs[theCurrentArg]->next(result)) 
-      {
-        ++theCurrentArg;
-      }
-      return !result.isNull();
-    }
+    Iterator_t    getIterator() {return new InternalIterator(this);}
   };
 };
 
@@ -327,31 +400,60 @@ public:
 private:
   class LazyErrorReportingItemSequence : public ItemSequence 
   {
+    class InternalIterator : public Iterator
+    {
+    private:
+      LazyErrorReportingItemSequence    *theItemSequence;
+      bool                              is_open;
+      bool                              theIsEmpty;
+      Iterator_t                        arg0_iter;
+    public:
+      InternalIterator(LazyErrorReportingItemSequence *item_sequence) : theItemSequence(item_sequence), is_open(false), theIsEmpty(true)
+      {
+      }
+
+      virtual void open()
+      {
+        is_open = true;
+        arg0_iter = theItemSequence->theArgs[0]->getIterator();
+        arg0_iter->open();
+      }
+      virtual void close()
+      {
+        if(is_open)
+          arg0_iter->close();
+        is_open = false;
+      }
+      virtual bool isOpen() const
+      {
+        return is_open;
+      }
+      bool next(Item& result)
+      {
+        assert(is_open);
+        bool done = !arg0_iter->next(result);
+        if (done && theIsEmpty)
+        {
+          throw ExternalFunctionData::createZorbaException(
+                    XPTY0004,
+                    "Argument must not be the empty sequence.",
+                    __FILE__, __LINE__);
+        }
+        theIsEmpty = false;
+        return !done;
+      }
+    };
   private:
     StatelessExternalFunction::Arguments_t  theArgs;
-    bool                                    theIsEmpty;
 
   public:
     LazyErrorReportingItemSequence(const StatelessExternalFunction::Arguments_t& args)
       :
-      theArgs(args),
-      theIsEmpty(true)
+      theArgs(args)
     {
     }
     
-    bool next(Item& result)
-    {
-      bool done = !theArgs[0]->next(result);
-      if (done && theIsEmpty)
-      {
-        throw ExternalFunctionData::createZorbaException(
-                  XPTY0004,
-                  "Argument must not be the empty sequence.",
-                  __FILE__, __LINE__);
-      }
-      theIsEmpty = false;
-      return !done;
-    }
+    Iterator_t  getIterator() {return new InternalIterator(this);}
   };
 };
 

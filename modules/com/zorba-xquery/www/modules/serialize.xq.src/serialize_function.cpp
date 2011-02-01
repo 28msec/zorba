@@ -50,17 +50,20 @@ SerializeFunction::evaluate(
   lOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
   if (args.size() == 2) {
     Item lItem;
-    if (!args[1]->next(lItem)) {
+    Iterator_t arg1_iter = args[1]->getIterator();
+    arg1_iter->open();
+    if (!arg1_iter->next(lItem)) {
       std::stringstream lErrorMessage;
       lErrorMessage << "The serialization options parameter cannot be empty-sequence";
       throwError(lErrorMessage.str(), XPTY0004);
     }
+    arg1_iter->close();
     lOptions = createSerializerOptions(lItem);
   }
   Serializer_t s = Serializer::createSerializer(lOptions);
 
   std::ostringstream lResult;
-  s->serialize( static_cast<Serializable*>(args[0]), lResult );
+  s->serialize( args[0], lResult );
   return ItemSequence_t(new SingletonItemSequence(
     theModule->getItemFactory()->createString(lResult.str())));
 }

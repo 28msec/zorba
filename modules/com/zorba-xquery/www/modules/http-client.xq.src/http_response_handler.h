@@ -27,16 +27,29 @@ class Item;
 class ItemFactory;
 namespace http_client {
   class HttpResponseIterator : public ItemSequence {
+    class InternalIterator : public Iterator
+    {
+    private:
+      HttpResponseIterator*   theItemSequence;
+      std::vector<Item>::size_type theIndex;
+      bool is_open;
+    public:
+      InternalIterator(HttpResponseIterator *item_sequence);
+
+      virtual void open();
+      virtual bool next(Item& aItem);
+      virtual void close();
+      virtual bool isOpen() const;
+    };
   private:
     std::vector<Item> theItems;
-    std::vector<Item>::size_type theIndex;
     bool theResponseSet;
   public:
     HttpResponseIterator();
     virtual ~HttpResponseIterator();
 
   public:
-    virtual bool next(Item& aItem);
+    virtual Iterator_t getIterator();
 
   public: //Implementation specific functions
     void addItem(const Item& aItem);

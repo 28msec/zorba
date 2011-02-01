@@ -74,7 +74,7 @@ namespace zorba {
                const StaticContext* aSctxCtx,
                const DynamicContext* aDynCtx) const;
     private:
-      class IteratorBackedItemSequence : public ItemSequence {
+      class IteratorBackedItemSequence : public ItemSequence , public Iterator{
 
         public:
           IteratorBackedItemSequence(
@@ -83,9 +83,17 @@ namespace zorba {
 
           virtual ~IteratorBackedItemSequence();
 
-          bool next(Item& val);
+          //ItemSequence interface
+          Iterator_t getIterator();
 
+          //Iterator interface
+          virtual void open();
+          virtual bool next(Item& aItem);
+          virtual void close();
+          virtual bool isOpen() const;
         private:
+          bool is_open;
+          int  open_count;
           DirectoryIterator_t theIterator;
           ItemFactory* theItemFactory;
     };

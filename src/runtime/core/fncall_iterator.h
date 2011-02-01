@@ -136,6 +136,7 @@ class StatelessExtFunctionCallIteratorState : public PlanIteratorState
  public:
   std::vector<ItemSequence*> m_extArgs;
   ItemSequence_t             theResult;
+  Iterator_t                 theResultIter;
 
   StatelessExtFunctionCallIteratorState();
 

@@ -15,6 +15,5 @@
 
 LIST(APPEND API_SERIALIZATION_SRCS
     serializer.cpp
-    serializable_wrapper.cpp
 	)
 

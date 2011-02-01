@@ -180,14 +180,4 @@ void PlanWrapper::checkDepth(const QueryLoc& loc)
 }
 
 
-bool PlanWrapper::nextSerializableItem(store::Item_t& aItem)
-{
-  if (!next(aItem)) 
-  {
-    return false;
-  }
-  return true;
-}
-
-
 } /* namespace zorba */

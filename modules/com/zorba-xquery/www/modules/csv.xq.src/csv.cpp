@@ -682,8 +682,42 @@ bool CSVParseFunction::CSVItemSequence::buildNodeTree(zorba::Item parent,
   return true;
 }
 
+CSVParseFunction::CSVItemSequence::CSVItemSequence()
+{
+  is_open = false;
+  open_count = 0;
+  addReference();
+}
+
+void CSVParseFunction::CSVItemSequence::open()
+{
+  is_open = true;
+  if(open_count && !input_stream->reset())
+  {
+    throw zorba::ExternalFunctionData::createZorbaException(XQP0019_INTERNAL_ERROR,
+      "Cannot reset input stream for CSVParseFunction for second iterator open", __FILE__, __LINE__);  
+  }
+  line_index = 1;
+  open_count++;
+}
+
+void CSVParseFunction::CSVItemSequence::close()
+{
+  is_open = false;
+}
+
+bool CSVParseFunction::CSVItemSequence::isOpen() const
+{
+  return is_open;
+}
+
 bool CSVParseFunction::CSVItemSequence::next(Item& result)
 {
+  if(!is_open)
+  {
+    throw zorba::ExternalFunctionData::createZorbaException(XQP0019_INTERNAL_ERROR,
+      "CSVParseFunction::CSVItemSequence Iterator consumed without open", __FILE__, __LINE__);  
+  }
   if(csv_options.first_row_is_header)
   {
     std::vector<std::vector<std::string> > headers;
@@ -787,7 +821,9 @@ CSVParseFunction::evaluate(const Arguments_t& args,
          const zorba::DynamicContext* dctx) const
 {
   Item string_item;
-  if (!args[0]->next(string_item)) 
+  Iterator_t arg0_iter = args[0]->getIterator();
+  arg0_iter->open();
+  if (!arg0_iter->next(string_item)) 
   {
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as first parameter";
@@ -798,9 +834,13 @@ CSVParseFunction::evaluate(const Arguments_t& args,
     String errDescription(lErrorMessage.str());
     ExternalFunctionData::error(errWrongParamQName, errDescription);
   }
-  
+  arg0_iter->close();
+ 
   Item options_item;
-  args[1]->next(options_item);
+  Iterator_t arg1_iter = args[1]->getIterator();
+  arg1_iter->open();
+  arg1_iter->next(options_item);
+  arg1_iter->close();
   
   CSVItemSequence *out_sequence = new CSVItemSequence();
   out_sequence->csv_options.parse(options_item, theModule->getItemFactory());
@@ -814,11 +854,15 @@ CSVParseFunction::evaluate(const Arguments_t& args,
 //////////////////////////////////////////////////////////////////////////////////
 //////////////////serialize
 CSVSerializeFunction::StringStreamSequence::StringStreamSequence(ItemSequence* input) : is(this) ,
-                                                                                        input_nodes(input)
+                                                                                        input_iter(input->getIterator())
 {
 //  input_nodes = input;
   line_index = 0;
   has_next = true;
+  is_open = false;
+  open_count = 0;
+  addReference();
+  input_iter->open();
 }
 
 void CSVSerializeFunction::StringStreamSequence::csv_get_headers(  Item node, 
@@ -1059,10 +1103,53 @@ void CSVSerializeFunction::StringStreamSequence::txt_write_line_to_string(std::v
   result_string.append("\n");
 }
 
+void CSVSerializeFunction::StringStreamSequence::open()
+{
+  is_open = true;
+//  input_iter->open();
+  line_index = 1;
+  if(open_count)
+  {
+    is.seekg(0);
+    if(is.fail())
+    {
+      throw zorba::ExternalFunctionData::createZorbaException(XQP0019_INTERNAL_ERROR,
+        "Cannot reset CSVSerialize streamable string item", __FILE__, __LINE__);  
+    }
+  }
+  open_count++;
+}
+
+void CSVSerializeFunction::StringStreamSequence::close()
+{
+//  input_iter->close();
+  is_open = false;
+}
+
+bool CSVSerializeFunction::StringStreamSequence::isOpen() const
+{
+  return is_open;
+}
+
+bool CSVSerializeFunction::StringStreamSequence::next( Item &result )
+{
+  if(!is_open)
+  {
+    throw zorba::ExternalFunctionData::createZorbaException(XQP0019_INTERNAL_ERROR,
+      "Next called on CSVSerializeFunction::StringStreamSequence iterator that is not open", __FILE__, __LINE__);  
+  }
+  if(!has_next)
+    return false;
+  result = streamable_item;
+  has_next = false;
+  return true;
+}
+
+
 bool CSVSerializeFunction::StringStreamSequence::next(std::string &result_string)
 {
   Item node_item;
-  if(!input_nodes->next(node_item))
+  if(!input_iter->next(node_item))
     return false;
 
   if(csv_options.first_row_is_header > 0)
@@ -1110,7 +1197,9 @@ bool CSVSerializeFunction::StringStreamSequence::next(std::string &result_string
 
 bool CSVSerializeFunction::StringStreamSequence::reset()
 {
-  return false;
+  input_iter->close();
+  input_iter->open();
+  return true;
 }
  
 zorba::ItemSequence_t
@@ -1120,7 +1209,10 @@ CSVSerializeFunction::evaluate(const Arguments_t& args,
 {
   
   Item options_item;
-  args[1]->next(options_item);
+  Iterator_t  arg1_iter = args[1]->getIterator();
+  arg1_iter->open();
+  arg1_iter->next(options_item);
+  arg1_iter->close();
   
   StringStreamSequence  *stream_sequence = new StringStreamSequence((ItemSequence*)args[0]);
   stream_sequence->csv_options.parse(options_item, theModule->getItemFactory());

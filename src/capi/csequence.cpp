@@ -31,8 +31,8 @@ using namespace zorba;
 namespace zorbac {
 
 /**
- * Utility class to turn an ItemSequence into an Iterator; ignores
- * open/close. Performs no memory-management on the ItemSequence it
+ * Utility class to turn an ItemSequence into an Iterator.
+ * Performs no memory-management on the ItemSequence it
  * holds!
  */
 class ItemSequenceWrapper : public Iterator
@@ -40,27 +40,30 @@ class ItemSequenceWrapper : public Iterator
 public:
   ItemSequenceWrapper(ItemSequence* items)
     :
-    theItems(items)
+  theItems(items),
+  theIterator(items->getIterator())
   {
   }
   
   virtual ~ItemSequenceWrapper()
   {
+  //  delete theIterator;
   }
 
-  virtual void open() {}
+  virtual void open() {theIterator->open();}
 
-  virtual void close() {}
+  virtual void close() {theIterator->close();}
   
   virtual bool next(Item& item)
   {
-    return theItems->next(item);
+    return theIterator->next(item);
   }
 
-  bool isOpen() const { return true; }
+  bool isOpen() const { return theIterator->isOpen(); }
 
 protected:
-  ItemSequence* theItems;
+  ItemSequence *theItems;
+  Iterator_t theIterator;
 };
 
 

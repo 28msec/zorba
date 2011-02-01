@@ -882,7 +882,7 @@ void XQueryImpl::executeSAX()
 
       if (theSAX2Handler != NULL)
       {
-        lSerializer.serialize((intern::Serializable*)&*lPlan, std::cerr, theSAX2Handler);
+        lSerializer.serialize(lPlan.getp(), std::cerr, theSAX2Handler);
         std::cerr << std::endl;
       }
       else
@@ -1112,7 +1112,7 @@ void XQueryImpl::serialize(
     SerializerImpl::setSerializationParameters(lSerializer, lOptions);
   }
 
-  lSerializer.serialize((intern::Serializable*)aWrapper, os);
+  lSerializer.serialize(aWrapper.getp(), os);
 }
 
 
@@ -1134,7 +1134,7 @@ void XQueryImpl::serialize(
     SerializerImpl::setSerializationParameters(lSerializer, lOptions);
   }
 
-  lSerializer.serialize((intern::Serializable*)aWrapper,
+  lSerializer.serialize(aWrapper.getp(),
                         os, aHandler, aHandlerData);
 }
 

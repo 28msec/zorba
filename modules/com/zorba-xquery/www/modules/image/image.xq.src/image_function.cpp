@@ -88,19 +88,22 @@ ImageFunction::getOneStringArg(
     int aPos)
 {
   Item lItem;
-  if (!aArgs[aPos]->next(lItem)) {
+  Iterator_t  arg_iter = aArgs[aPos]->getIterator();
+  arg_iter->open();
+  if (!arg_iter->next(lItem)) {
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as "
                   << aPos << ". parameter.";
     throwError(lErrorMessage.str(), XPTY0004);
   }
   zorba::String lTmpString = lItem.getStringValue();
-  if (aArgs[aPos]->next(lItem)) {
+  if (arg_iter->next(lItem)) {
     std::stringstream lErrorMessage;
     lErrorMessage << "A sequence of more then one item is not allowed as "
                   << aPos << ". parameter.";
     throwError(lErrorMessage.str(), XPTY0004);
   }
+  arg_iter->close();
   return lTmpString;
 }
 
@@ -110,19 +113,22 @@ ImageFunction::getOneBoolArg(
     int aPos)
 {
   Item lItem;
-  if (!aArgs[aPos]->next(lItem)) {
+  Iterator_t  arg_iter = aArgs[aPos]->getIterator();
+  arg_iter->open();
+  if (!arg_iter->next(lItem)) {
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as "
                   << aPos << ". parameter.";
     throwError(lErrorMessage.str(), XPTY0004);
   }
   bool lTmpBool = lItem.getBooleanValue();
-  if (aArgs[aPos]->next(lItem)) {
+  if (arg_iter->next(lItem)) {
     std::stringstream lErrorMessage;
     lErrorMessage << "A sequence of more then one item is not allowed as "
                   << aPos << ". parameter.";
     throwError(lErrorMessage.str(), XPTY0004);
   }
+  arg_iter->close();
   return lTmpBool;
 }
 
@@ -133,17 +139,20 @@ ImageFunction::getOneColorArg(
      Magick::ColorRGB& aColor)
 {
   Item lItem;
-  if (!aArgs[aPos]->next(lItem)) {
+  Iterator_t  arg_iter = aArgs[aPos]->getIterator();
+  arg_iter->open();
+  if (!arg_iter->next(lItem)) {
     aColor = Magick::ColorRGB(0.0,0.0,0.0);
     return;
   }
   zorba::String lTmpString = lItem.getStringValue();
-  if (aArgs[aPos]->next(lItem)) {
+  if (arg_iter->next(lItem)) {
     std::stringstream lErrorMessage;
     lErrorMessage << "A sequence of more then one item is not allowed as "
                   << aPos << ". parameter.";
     throwError(lErrorMessage.str(), XPTY0004);
   }
+  arg_iter->close();
   getColorFromString(lTmpString, aColor);
 }
 
@@ -169,19 +178,22 @@ ImageFunction::getOneIntArg(
     int aPos)
 {
   Item lItem;
-  if (!aArgs[aPos]->next(lItem)) {
+  Iterator_t  arg_iter = aArgs[aPos]->getIterator();
+  arg_iter->open();
+  if (!arg_iter->next(lItem)) {
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as "
                   << (aPos + 1)  << ". parameter.";
     throwError(lErrorMessage.str(), XPTY0004);
   }
   int lTmpInt = (int) lItem.getIntValue();
-  if (aArgs[aPos]->next(lItem)) {
+  if (arg_iter->next(lItem)) {
     std::stringstream lErrorMessage;
     lErrorMessage << "A sequence of more then one item is not allowed as "
                   << (aPos + 1)  << ". parameter.";
     throwError(lErrorMessage.str(), XPTY0004);
   }
+  arg_iter->close();
   return lTmpInt;
 
 }
@@ -191,19 +203,22 @@ ImageFunction::getOneUnsignedIntArg(const StatelessExternalFunction::Arguments_t
                                     int aPos)
 {
   Item lItem;
-  if (!aArgs[aPos]->next(lItem)) {
+  Iterator_t  arg_iter = aArgs[aPos]->getIterator();
+  arg_iter->open();
+  if (!arg_iter->next(lItem)) {
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as "
                   << (aPos + 1) << ". parameter.";
     throwError(lErrorMessage.str(), XPTY0004);
   }
   unsigned int lTmpInt = lItem.getUnsignedIntValue();
-  if (aArgs[aPos]->next(lItem)) {
+  if (arg_iter->next(lItem)) {
     std::stringstream lErrorMessage;
     lErrorMessage << "A sequence of more then one item is not allowed as "
                   << (aPos + 1) << ". parameter.";
     throwError(lErrorMessage.str(), XPTY0004);
   }
+  arg_iter->close();
   return lTmpInt;
 
 }
@@ -214,19 +229,22 @@ ImageFunction::getOneDoubleArg(
     int aPos)
 {
   Item lItem;
-  if (!aArgs[aPos]->next(lItem)) {
+  Iterator_t  arg_iter = aArgs[aPos]->getIterator();
+  arg_iter->open();
+  if (!arg_iter->next(lItem)) {
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as "
                   << (aPos + 1)  << ". parameter.";
     throwError(lErrorMessage.str(), XPTY0004);
   }
   double lTmpDouble =  lItem.getDoubleValue();
-  if (aArgs[aPos]->next(lItem)) {
+  if (arg_iter->next(lItem)) {
     std::stringstream lErrorMessage;
     lErrorMessage << "A sequence of more then one item is not allowed as "
                   << (aPos + 1) << ". parameter.";
     throwError(lErrorMessage.str(), XPTY0004);
   }
+  arg_iter->close();
   return lTmpDouble;
 }
 
@@ -277,7 +295,9 @@ ImageFunction::getOneOrMoreImageArg(const DynamicContext* aDynamicContext,
 {
   Item lItem;
   // make sure there is at least one item at the position
-  if (!aArgs[aPos]->next(lItem)) {
+  Iterator_t  arg_iter = aArgs[aPos]->getIterator();
+  arg_iter->open();
+  if (!arg_iter->next(lItem)) {
     throwError("An empty sequence is not allowed as first parameter", XPTY0004);
   }
 
@@ -288,10 +308,11 @@ ImageFunction::getOneOrMoreImageArg(const DynamicContext* aDynamicContext,
   lFirstImage.gifDisposeMethod(3);
   aImages.push_back(lFirstImage);
   Magick::Image lTempImage;
-  while (aArgs[aPos]->next(lItem)) {
+  while (arg_iter->next(lItem)) {
     getImageFromString(aDynamicContext, lItem.getStringValue(), lTempImage);
     aImages.push_back(lTempImage);
   }
+  arg_iter->close();
 
 }
 
@@ -316,16 +337,19 @@ ImageFunction::getAntiAliasingArg(
     int aPos)
 {
   Item lItem;
-  if (!aArgs[aPos]->next(lItem)) {
+  Iterator_t  arg_iter = aArgs[aPos]->getIterator();
+  arg_iter->open();
+  if (!arg_iter->next(lItem)) {
     return false;
   }
   bool lTmpBool = lItem.getBooleanValue();
-  if (aArgs[aPos]->next(lItem)) {
+  if (arg_iter->next(lItem)) {
     std::stringstream lErrorMessage;
     lErrorMessage << "A sequence of more then one item is not allowed as "
                   << (aPos + 1) << ". parameter.";
     throwError(lErrorMessage.str(), XPTY0004);
   }
+  arg_iter->close();
   return lTmpBool;
 }
 
@@ -334,16 +358,19 @@ ImageFunction::getStrokeWidthArg(const StatelessExternalFunction::Arguments_t& a
                                  int aPos)
 {
   Item lItem;
-  if (!aArgs[aPos]->next(lItem)) {
+  Iterator_t  arg_iter = aArgs[aPos]->getIterator();
+  arg_iter->open();
+  if (!arg_iter->next(lItem)) {
     return 1;
   }
   double lTmpDouble = lItem.getDoubleValue();
-  if (aArgs[aPos]->next(lItem)) {
+  if (arg_iter->next(lItem)) {
     std::stringstream lErrorMessage;
     lErrorMessage << "A sequence of more then one item is not allowed as "
                   << (aPos + 1) << ". parameter.";
     throwError(lErrorMessage.str(), XPTY0004);
   }
+  arg_iter->close();
   return lTmpDouble;
 }
 

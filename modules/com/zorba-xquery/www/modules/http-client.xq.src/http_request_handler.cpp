@@ -187,9 +187,12 @@ namespace zorba { namespace http_client {
         return;
       }
       Item lItem;
-      while (theContent->next(lItem)) {
+      Iterator_t content_iter = theContent->getIterator();
+      content_iter->open();
+      while (content_iter->next(lItem)) {
         serializeItem(lItem);
       }
+      content_iter->close();
     }
     thePostDataString = theSerStream->str();
     thePostData = thePostDataString.c_str();

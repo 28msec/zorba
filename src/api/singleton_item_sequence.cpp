@@ -16,26 +16,51 @@
 
 #include <zorba/singleton_item_sequence.h>
 #include <zorba/item.h>
+#include "zorbaerrors/Assert.h"
 
 namespace zorba { 
 
 SingletonItemSequence::SingletonItemSequence(
   const Item& aItem)
-  : theItem(aItem),
-    theFirstCall(true)
+  : theItem(aItem)
 {
 }
 
-bool
-SingletonItemSequence::next(Item& aItem)
+Iterator_t SingletonItemSequence::getIterator()
 {
-  if (!theFirstCall) {
-      return false;
-  }
-  aItem = theItem;
-  theFirstCall = false;
-  return !aItem.isNull();
+  return new InternalIterator(this);
 }
 
+SingletonItemSequence::InternalIterator::InternalIterator(SingletonItemSequence *item_sequence) : theItemSequence(item_sequence)
+{
+  is_open = false;
+  theDone = false;
+}
+
+void SingletonItemSequence::InternalIterator::open()
+{
+  is_open = true;
+  theDone = false;
+}
+
+void SingletonItemSequence::InternalIterator::close()
+{
+  is_open = false;
+}
+
+bool SingletonItemSequence::InternalIterator::isOpen() const
+{
+  return is_open;
+}
+
+bool SingletonItemSequence::InternalIterator::next(Item& aItem)
+{
+  ZORBA_ASSERT(is_open);
+  if(theDone)
+    return false;
+  aItem = theItemSequence->theItem;
+  theDone = true;
+  return !theItemSequence->theItem.isNull();
+}
 
 } // namespace zorba

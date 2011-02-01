@@ -54,7 +54,10 @@ namespace zorba
     std::stringstream lDiagnostics; 
     // getting message as item
     Item messageItem;
-    args[1]->next(messageItem);
+    Iterator_t arg1_iter = args[1]->getIterator();
+    arg1_iter->open();
+    arg1_iter->next(messageItem);
+    arg1_iter->close();
 
     CClientMimeHandler lHandler;
     MimeParser lParser(&lHandler);

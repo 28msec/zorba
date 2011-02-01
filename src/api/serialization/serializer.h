@@ -124,10 +124,10 @@ public:
    *        to be serialized.
    * @param stream The stream to serialize to.
    */
-  void serialize(intern::Serializable* object, std::ostream& stream);
+  void serialize(store::Iterator_t         object, std::ostream& stream);
 
   void serialize(
-        intern::Serializable* object,
+        store::Iterator_t     object,
         std::ostream& stream,
         itemHandler aHandler,
         void* aHandlerData);
@@ -142,7 +142,7 @@ public:
    * @param handler The SAX handler.
    */
   void serialize(
-        intern::Serializable* object,
+        store::Iterator_t     object,
         std::ostream&         stream,
         SAX2_ContentHandler*  handler);
 

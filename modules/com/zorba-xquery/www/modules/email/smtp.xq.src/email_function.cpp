@@ -48,7 +48,10 @@ namespace zorba
                                       std::string& aUserName,
                                       std::string& aPassword) const {
       Item lNode;
-      aArgs[aPos]->next(lNode);
+      Iterator_t args_iter = aArgs[aPos]->getIterator();
+      args_iter->open();
+      args_iter->next(lNode);
+      args_iter->close();
       Iterator_t lChildren = lNode.getChildren();
       lChildren->open();
       Item lChild;

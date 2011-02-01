@@ -77,9 +77,15 @@ StatelessExternalFunction* XSLFOModule::getExternalFunction(const String& localN
 ItemSequence_t GeneratePDFFunction::evaluate(const StatelessExternalFunction::Arguments_t& args) const
 {
   Item classPathItem;
-  args[2]->next(classPathItem);
+  Iterator_t arg2_iter = args[2]->getIterator();
+  arg2_iter->open();
+  arg2_iter->next(classPathItem);
+  arg2_iter->close();
   Item outputFormat;
-  args[0]->next(outputFormat);
+  Iterator_t arg0_iter = args[0]->getIterator();
+  arg0_iter->open();
+  arg0_iter->next(outputFormat);
+  arg0_iter->close();
   jthrowable lException = 0;
   static JNIEnv* env;
   try {
@@ -117,10 +123,13 @@ ItemSequence_t GeneratePDFFunction::evaluate(const StatelessExternalFunction::Ar
     jbyte* dataElements;
 
     Item item;
-    args[1]->next(item);
+    Iterator_t arg1_iter = args[1]->getIterator();
+    arg1_iter->open();
+    arg1_iter->next(item);
+    arg1_iter->close();
     // Searialize Item
     SingletonItemSequence lSequence(item);
-    lSerializer->serialize((Serializable*)&lSequence, os);
+    lSerializer->serialize(&lSequence, os);
     xmlString = os.str();
     xml = xmlString.c_str();
 

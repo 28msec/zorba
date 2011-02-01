@@ -352,10 +352,13 @@ ExecFunction::evaluate(
   if (aArgs.size() > 1)
   {
     zorba::Item lArg;
-    while (aArgs[1]->next(lArg))
+    Iterator_t arg1_iter = aArgs[1]->getIterator();
+    arg1_iter->open();
+    while (arg1_iter->next(lArg))
     {
       lArgs.push_back(lArg.getStringValue().c_str());
     }
+    arg1_iter->close();
   }
 
   std::ostringstream lTmp;
@@ -440,7 +443,9 @@ String ExecFunction::getOneStringArgument (const Arguments_t& aArgs, int aPos)
   const
 {
   Item lItem;
-  if (!aArgs[aPos]->next(lItem))
+  Iterator_t  args_iter = aArgs[aPos]->getIterator();
+  args_iter->open();
+  if (!args_iter->next(lItem))
   {
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as "
@@ -449,13 +454,14 @@ String ExecFunction::getOneStringArgument (const Arguments_t& aArgs, int aPos)
   }
 
   zorba::String lTmpString = lItem.getStringValue();
-  if (aArgs[aPos]->next(lItem))
+  if (args_iter->next(lItem))
   {
     std::stringstream lErrorMessage;
     lErrorMessage << "A sequence of more then one item is not allowed as "
                   << aPos << ". parameter.";
     throwError(lErrorMessage.str(), XPTY0004);
   }
+  args_iter->close();
   return lTmpString;
 }
 

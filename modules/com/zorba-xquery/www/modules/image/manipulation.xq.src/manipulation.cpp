@@ -640,7 +640,10 @@ TransparentFunction::evaluate(
   Magick::ColorRGB lColor;
   ImageFunction::getOneImageArg(aDynCtx, aArgs, 0, lImage);
   Item lItem; 
-  aArgs[1]->next(lItem);
+  Iterator_t arg1_iter = aArgs[1]->getIterator();
+  arg1_iter->open();
+  arg1_iter->next(lItem);
+  arg1_iter->close();
   String lTmpString = lItem.getStringValue();
   int lRed = 0;
   int lGreen = 0;

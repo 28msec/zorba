@@ -34,7 +34,9 @@ namespace zorba {
       virtual ~DirectoryIterator() {}
 
       virtual bool next(std::string& aPathStr) const = 0;
-
+      /** \brief Rewind the file find iterator
+      */
+      virtual void reset() = 0;
   };
 
 

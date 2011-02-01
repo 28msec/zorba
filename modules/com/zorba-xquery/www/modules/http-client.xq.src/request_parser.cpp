@@ -25,9 +25,10 @@
 #include <zorba/zorbastring.h>
 #include <zorba/iterator.h>
 #include <zorba/store_consts.h>
+#include <zorba/vector_item_sequence.h>
 
 namespace zorba { namespace http_client {
-  class AttributesSequence : public ItemSequence {
+  /*class AttributesSequence : public ItemSequence {
     std::vector<Item>& theItems;
     unsigned thePosition;
     unsigned theSize;
@@ -45,6 +46,7 @@ namespace zorba { namespace http_client {
     virtual bool
     nextSerializableItem(Item& item) { return next(item); }
   };
+  */
   bool RequestParser::parse(const Item& aItem)
   {
     theHandler->begin();
@@ -207,7 +209,7 @@ namespace zorba { namespace http_client {
         lItems.push_back(lItem);
       }
     }
-    std::auto_ptr<AttributesSequence> lSequence(new AttributesSequence(lItems));
+    std::auto_ptr<VectorItemSequence> lSequence(new VectorItemSequence(lItems));
     theHandler->beginBody(lContentType, lSrc, lSequence.get());
     lIter = aItem.getChildren();
     lIter->open();

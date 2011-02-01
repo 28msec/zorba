@@ -23,6 +23,7 @@
 #include <zorba/zorbastring.h>
 #include <zorba/iterator.h>
 #include <zorba/query_location.h>
+#include <zorba/item.h>
 
 namespace zorba {
 

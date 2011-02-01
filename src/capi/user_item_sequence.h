@@ -28,6 +28,19 @@ namespace zorbac {
    * the end-user (via Zorba_ItemSetter) and creating Items.
    */
   class UserItemSequence : public ItemSequence {
+    class InternalIterator : public Iterator
+    {
+    private:
+      UserItemSequence      *theItemSequence;
+      bool is_open;
+    public:
+      InternalIterator(UserItemSequence  *item_sequence);
+
+      virtual void open();
+      virtual bool next(Item& aItem);
+      virtual void close();
+      virtual bool isOpen() const;
+    };
     public:
       UserItemSequence
       (XQC_Sequence** args, unsigned int argc,
@@ -40,8 +53,7 @@ namespace zorbac {
       static UserItemSequence*
       get(Zorba_ItemSetter* setter);
 
-      virtual bool
-      next(Item& i);
+      virtual Iterator_t  getIterator();
 
       // Zorba_ItemSetter methods
 

@@ -50,9 +50,12 @@ PaintImplFunction::evaluate(
   lImage.write(&lBlob);
 
   Item lNextPaint;
-  while (aArgs[1]->next(lNextPaint)) {
+  Iterator_t arg1_iter = aArgs[1]->getIterator();
+  arg1_iter->open();
+  while (arg1_iter->next(lNextPaint)) {
     applyShape(lBlob, lNextPaint);
   }
+  arg1_iter->close();
 
   // pass the blob back as base64Binary ...
   String lEncodedContent = ImageFunction::getEncodedStringFromBlob(lBlob);

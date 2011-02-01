@@ -18,7 +18,8 @@
 
 #include <zorba/config.h>
 #include <zorba/item_sequence.h>
-#include <zorba/serializable.h>
+#include <zorba/iterator.h>
+#include <zorba/item.h>
 
 namespace zorba { 
 
@@ -30,6 +31,39 @@ namespace zorba {
    */
   class ZORBA_DLL_PUBLIC SingletonItemSequence : public ItemSequence
   {
+    class InternalIterator : public Iterator
+    {
+    private:
+      SingletonItemSequence   *theItemSequence;
+      bool is_open;
+      bool theDone;
+    public:
+      InternalIterator(SingletonItemSequence *item_sequence);
+
+      /** \brief Start iterating.
+       *
+       * This function needs to be called before calling next().
+       *
+       */
+      virtual void open();
+      /** \brief Get the one Item.
+       *
+       * @param aItem the Item if true is returned by the function.
+       * @return true if the sequence is not exhausted, false otherwise.
+       * @throw ZorbaException if iterator is not open or an error occured.
+       */
+      virtual bool next(Item& aItem);
+      /** \brief Close the iterator.
+       *
+       * You can call close and open to reset the iterator.
+       *
+       */
+      virtual void close();
+      /**
+       * brief Check whether the iterator is open or not
+       */
+      virtual bool isOpen() const;
+    };
     public:
       /** \brief Constructor
        * 
@@ -41,19 +75,14 @@ namespace zorba {
        */
       virtual ~SingletonItemSequence() { }
 
-      /** \brief Get the Item that was passed in the constructor.
-       *
-       * @param aItem the Item if true is returned by the function.
-       * @return true if the sequence is not exhausted, false otherwise.
-       * @throw ZorbaException if an error occured.
-       */
-      virtual bool
-      next(Item& aItem);
+      /** \brief get the Iterator over the single item
+       * @return an iterator over the one item
+      */
+      virtual Iterator_t    getIterator();
 
     protected:
 
       Item theItem;
-      bool theFirstCall;
 
   }; /* class SingletonItemSequence */
 

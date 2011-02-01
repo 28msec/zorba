@@ -43,7 +43,7 @@ public:
     Zorba_SerializerOptions_t lOptions; 
     zorba::Serializer_t lSerializer = zorba::Serializer::createSerializer(lOptions); 
     zorba::SingletonItemSequence lSequence(theItem); 
-    lSerializer->serialize((zorba::Serializable*)&lSequence, lStream); 
+    lSerializer->serialize(&lSequence, lStream); 
     return lStream.str();
   }
   

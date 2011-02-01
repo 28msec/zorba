@@ -103,12 +103,14 @@ public:
 
 class CSVParseFunction : public NonePureStatelessExternalFunction
 {
-  class CSVItemSequence : public ItemSequence
+  class CSVItemSequence : public ItemSequence, public Iterator
   {
   private:
     ItemFactory   *item_factory;
     unsigned int line_index;
     SmartPtr<CharStreamBase>  input_stream;
+    bool is_open;
+    int open_count;
 
     class HeaderNode : public SmartObject
     {
@@ -124,11 +126,18 @@ class CSVParseFunction : public NonePureStatelessExternalFunction
     CSVOptions  csv_options;
 
   public:
+    CSVItemSequence();
     virtual ~CSVItemSequence() {}
     
     void init(Item string_item, ItemFactory   *item_factory);
 
-    bool next(Item& val);
+    Iterator_t getIterator() {return this;}
+
+    //Iterator interface
+    virtual void open();
+    virtual bool next(Item& aItem);
+    virtual void close();
+    virtual bool isOpen() const;
   private:
     void rtrim(std::string &field);
 
@@ -171,13 +180,16 @@ protected:
 
 class CSVSerializeFunction : public NonePureStatelessExternalFunction
 {
-  class StringStreamSequence : public ItemSequence, public StringIteratorStreamBuf
+  class StringStreamSequence : public ItemSequence, public Iterator, public StringIteratorStreamBuf
   {
   private:
-    ItemSequence*  input_nodes;
+    //ItemSequence*  input_nodes;
+    Iterator_t     input_iter;
     std::vector<std::vector<String> > headers;
     int line_index;
     bool has_next;
+    bool is_open;
+    int  open_count;
   public:
     std::istream is;
     CSVOptions csv_options;
@@ -186,15 +198,14 @@ class CSVSerializeFunction : public NonePureStatelessExternalFunction
     StringStreamSequence(ItemSequence* input);
     virtual ~StringStreamSequence() {}
   
+    //for Iterator
+    virtual void open();
+    virtual void close();
+    virtual bool isOpen() const;
+    virtual bool next( Item &result );
+
     //for ItemSequence
-    bool next( Item &result )
-    {
-      if(!has_next)
-        return false;
-      result = streamable_item;
-      has_next = false;
-      return true;
-    }
+    Iterator_t getIterator() {return this;}
 
     //for StringIteratorStreamBuf
     virtual bool next(std::string &next_string);

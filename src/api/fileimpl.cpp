@@ -61,6 +61,13 @@ DirectoryIteratorImpl::next(std::string& aPathStr) const
   return true;
 }
 
+void DirectoryIteratorImpl::reset()
+{
+  std::string aPath = theInternalDirIter->dirpath;
+  delete theInternalDirIter;
+  theInternalDirIter = new dir_iterator(aPath);
+}
+
 FileImpl::FileImpl(std::string const& path)
   : theErrorHandler(new DefaultErrorHandler())
 {

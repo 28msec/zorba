@@ -32,18 +32,12 @@
 #include "runtime/api/plan_iterator_wrapper.h"
 
 #include "api/serialization/serializer.h"
-#include "api/serialization/serializable_wrapper.h"
 #include "api/serializerimpl.h"
+#include "api/unmarshaller.h"
 
 
 namespace zorba {
 
-//// implementing the Serializable interface
-//bool
-//ZorbaDebugIterator::nextSerializableItem(store::Item_t& lItem)
-//{
-  //  return nextImpl(lItem,);
-  //}
 
 // the debug iterator needs to know all variables, their keys
 // and types. this is required for the eval command
@@ -163,8 +157,10 @@ std::list<std::pair<zstring, zstring> >
     // The new serializer interface only accepts Serializable objects.
     const Item lItem(lRes);
     SingletonItemSequence lSequence(lItem);
-    intern::SerializableWrapper lWrapper(&lSequence);
-    ser.serialize(&lWrapper, lResStream);
+    Iterator_t  seq_iter = lSequence.getIterator();
+    seq_iter->open();
+    ser.serialize(Unmarshaller::getInternalIterator(seq_iter.get()), lResStream);
+    seq_iter->close();
 
     // build the result pair and append it to the list
     zstring lTypeStr(lRes->getType()->getStringValue().str());

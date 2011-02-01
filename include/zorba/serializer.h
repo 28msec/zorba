@@ -23,8 +23,6 @@
 
 namespace zorba {
 
-  class Serializable;
-
   class ZORBA_DLL_PUBLIC Serializer : public SmartObject
   {
     public:
@@ -33,7 +31,7 @@ namespace zorba {
 
       virtual void
       serialize(
-        Serializable* object,
+        ItemSequence  *object,
         std::ostream& stream) const = 0;
 
       virtual int

@@ -29,15 +29,27 @@ namespace zorbac {
    * create_singleton_seqeunce().
    */
   class SingleItemSequence : public ItemSequence {
+    class InternalIterator : public Iterator
+    {
+    private:
+      SingleItemSequence   *theItemSequence;
+      bool is_open;
+      bool theDone;
+    public:
+      InternalIterator(SingleItemSequence *item_sequence);
+
+      virtual void open();
+      virtual bool next(Item& aItem);
+      virtual void close();
+      virtual bool isOpen() const;
+    };
     public:
       SingleItemSequence(Item aItem);
 
-      virtual bool
-      next(Item& i);
+      virtual Iterator_t getIterator();
 
     private:
       Item theItem;
-      bool theDone;
   };
 
 } /* namespace zorbac */

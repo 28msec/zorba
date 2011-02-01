@@ -14,16 +14,41 @@
  * limitations under the License.
  */
 
-#include <zorba/item_sequence.h>
-#include <zorba/item.h>
+#include <zorba/singleton_item_sequence.h>
+#include <zorba/empty_sequence.h>
+#include "zorbaerrors/Assert.h"
 
 namespace zorba { 
 
-bool
-ItemSequence::nextSerializableItem(Item& aItem)
+Iterator_t EmptySequence::getIterator()
 {
-  return next(aItem);
+  return new InternalIterator(this);
 }
 
+EmptySequence::InternalIterator::InternalIterator(ItemSequence *item_sequence) : theItemSequence(item_sequence)
+{
+  is_open = false;
+}
+
+void EmptySequence::InternalIterator::open()
+{
+  is_open = true;
+}
+
+void EmptySequence::InternalIterator::close()
+{
+  is_open = false;
+}
+
+bool EmptySequence::InternalIterator::isOpen() const
+{
+  return is_open;
+}
+
+bool EmptySequence::InternalIterator::next(Item& aItem)
+{
+  ZORBA_ASSERT(is_open);
+  return false;
+}
 
 } // namespace zorba

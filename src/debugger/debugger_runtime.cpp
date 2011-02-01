@@ -228,10 +228,10 @@ DebuggerRuntime::runQuery()
     SerializerImpl::setSerializationParameters(
       *theSerializer, theSerializerOptions);
     if (theItemHandler) {
-      theSerializer->serialize((intern::Serializable*)theWrapper, theOStream,
+      theSerializer->serialize(theWrapper.getp(), theOStream,
         theItemHandler, theCallbackData);
     } else {
-      theSerializer->serialize((intern::Serializable*)theWrapper, theOStream);
+      theSerializer->serialize(theWrapper.getp(), theOStream);
     }
     
     theOStream.flush();

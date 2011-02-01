@@ -61,7 +61,10 @@ ImapFunction::getHostUserPassword(const StatelessExternalFunction::Arguments_t& 
                                   std::string& aUserName,
                                   std::string& aPassword) {
   Item lNode;
-  aArgs[aPos]->next(lNode);
+  Iterator_t args_iter = aArgs[aPos]->getIterator();
+  args_iter->open();
+  args_iter->next(lNode);
+  args_iter->close();
   Iterator_t lChildren = lNode.getChildren();
   lChildren->open();
   Item lChild;
@@ -80,19 +83,22 @@ ImapFunction::getOneStringArg(
     int aPos)
 {
   Item lItem;
-  if (!aArgs[aPos]->next(lItem)) {
+  Iterator_t args_iter = aArgs[aPos]->getIterator();
+  args_iter->open();
+  if (!args_iter->next(lItem)) {
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as "
                   << aPos << ". parameter.";
     throwError(lErrorMessage.str(), XPTY0004);
   }
   zorba::String lTmpString = lItem.getStringValue();
-  if (aArgs[aPos]->next(lItem)) {
+  if (args_iter->next(lItem)) {
     std::stringstream lErrorMessage;
     lErrorMessage << "A sequence of more then one item is not allowed as "
                   << aPos << ". parameter.";
     throwError(lErrorMessage.str(), XPTY0004);
   }
+  args_iter->close();
   return lTmpString;
 }
 
@@ -103,11 +109,14 @@ ImapFunction::getMessageNumbers(
 {
   Item lItem;
   std::stringstream lMessageNumbers;
-  aArgs[aPos]->next(lItem);
+  Iterator_t args_iter = aArgs[aPos]->getIterator();
+  args_iter->open();
+  args_iter->next(lItem);
   lMessageNumbers << lItem.getStringValue().c_str();
-  while(aArgs[aPos]->next(lItem)) {
+  while(args_iter->next(lItem)) {
     lMessageNumbers << "," << lItem.getStringValue().c_str();
   }
+  args_iter->close();
   return lMessageNumbers.str(); 
 }
 
@@ -118,7 +127,10 @@ ImapFunction::getOneMessageNumber(
     int aPos)
 {
   Item lItem;
-  aArgs[aPos]->next(lItem);
+  Iterator_t args_iter = aArgs[aPos]->getIterator();
+  args_iter->open();
+  args_iter->next(lItem);
+  args_iter->close();
   return lItem.getLongValue();
 }
 
@@ -129,19 +141,22 @@ ImapFunction::getOneBoolArg(
     int aPos)
 {
   Item lItem;
-  if (!aArgs[aPos]->next(lItem)) {
+  Iterator_t args_iter = aArgs[aPos]->getIterator();
+  args_iter->open();
+  if (!args_iter->next(lItem)) {
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as "
                   << aPos << ". parameter.";
     throwError(lErrorMessage.str(), XPTY0004);
   }
   bool lTmpBool = lItem.getBooleanValue();
-  if (aArgs[aPos]->next(lItem)) {
+  if (args_iter->next(lItem)) {
     std::stringstream lErrorMessage;
     lErrorMessage << "A sequence of more then one item is not allowed as "
                   << aPos << ". parameter.";
     throwError(lErrorMessage.str(), XPTY0004);
   }
+  args_iter->close();
   return lTmpBool;
 }
 

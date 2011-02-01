@@ -38,7 +38,7 @@ namespace zorba {
  * it is the responibility of the client code to synchronize assignments to the
  * SmartPtr holding this object.
  */
-class ZORBA_DLL_PUBLIC Iterator : public ItemSequence, public SmartObject
+class ZORBA_DLL_PUBLIC Iterator : public SmartObject
 {
  public:
   /** \brief Destructor

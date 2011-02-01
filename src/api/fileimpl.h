@@ -39,7 +39,7 @@ namespace zorba {
       ~DirectoryIteratorImpl();
 
       bool next(std::string& aPathStr) const;
-
+      void reset();
   };
 
   class FileImpl : public File

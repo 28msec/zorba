@@ -16,6 +16,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <assert.h>
 
 #include <zorba/zorba.h>
 #include <zorba/external_module.h>
@@ -69,11 +70,13 @@ class MySerializableExternalFunction : public PureStatelessExternalFunction
     {
         iv_t vec;
         for(int i = 0; i < 2; ++i) {
-            ItemSequence* iseq = args[i];
             Item lItem;
-            while(iseq->next(lItem)) {
+            Iterator_t iter = args[i]->getIterator();
+            iter->open();
+            while(iter->next(lItem)) {
                 vec.push_back(lItem);
             }
+            iter->close();
         }
         // transfer ownership of the IteratorBackedItemSequence to Zorba (using an auto_ptr)
         return ItemSequence_t(new IteratorBackedItemSequence(vec));
@@ -84,26 +87,51 @@ class MySerializableExternalFunction : public PureStatelessExternalFunction
     typedef iv_t::iterator ii_t;
 
     class IteratorBackedItemSequence : public ItemSequence {
-        public:
-            IteratorBackedItemSequence(iv_t& vec)
-                : m_vec(vec),
-                m_i(m_vec.begin()),
-                m_end(m_vec.end()) { }
-
-            bool next(Item& val)
-            {
-                if (m_i == m_end) {
-                    return false;
-                }
-                val = *m_i;
-                ++m_i;
-                return true;
-            }
-
-        private:
-            iv_t m_vec;
+          class InternalIterator : public Iterator
+          {
+          private:
+            IteratorBackedItemSequence   *theItemSequence;
             ii_t m_i;
             ii_t m_end;
+            bool is_open;
+          public:
+            InternalIterator(IteratorBackedItemSequence *item_sequence) : theItemSequence(item_sequence), is_open(false)
+            {
+            }
+
+            virtual void open()
+            {
+              m_i = theItemSequence->m_vec.begin();
+              m_end = theItemSequence->m_vec.end();
+              is_open = true;
+            }
+            virtual void close()
+            {
+              is_open = false;
+            }
+            virtual bool isOpen() const
+            {
+              return is_open;
+            }
+            bool next(Item& val)
+            {
+              assert(is_open);
+              if (m_i == m_end) {
+                  return false;
+              }
+              val = *m_i;
+              ++m_i;
+              return true;
+            }
+          };
+        public:
+            IteratorBackedItemSequence(iv_t& vec)
+                : m_vec(vec)
+                 { }
+
+            Iterator_t  getIterator() {return new InternalIterator(this);}
+        private:
+            iv_t m_vec;
     };
 };
 

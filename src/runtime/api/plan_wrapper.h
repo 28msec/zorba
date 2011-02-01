@@ -60,7 +60,7 @@ class dynamic_context;
   store a pointer to it in theDynamicContext, so that it will be deallocated by
   the destructor of "this".
 ********************************************************************************/
-class PlanWrapper : public store::Iterator, public intern::Serializable
+class PlanWrapper : public store::Iterator
 {
   friend class DynamicFunctionInvocationIterator;
   friend class DebuggerRuntime;
@@ -102,7 +102,6 @@ public:
 
   void checkDepth(const QueryLoc& loc);
 
-  bool nextSerializableItem(store::Item_t& item);
 };
 
 } /* namespace zorba */

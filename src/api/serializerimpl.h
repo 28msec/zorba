@@ -46,7 +46,7 @@ namespace zorba {
 
       virtual void
       serialize(
-        Serializable* object,
+        ItemSequence* object,
         std::ostream& stream) const;
 
       virtual int

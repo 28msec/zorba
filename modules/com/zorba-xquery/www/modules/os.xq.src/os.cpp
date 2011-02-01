@@ -109,7 +109,10 @@ namespace zorba { namespace os {
 
   ItemSequence_t GetEnvFunction::evaluate(const StatelessExternalFunction::Arguments_t& args) const {
     Item item;
-    args[0]->next(item);
+    Iterator_t arg0_iter = args[0]->getIterator();
+    arg0_iter->open();
+    arg0_iter->next(item);
+    arg0_iter->close();
     String envS = item.getStringValue();
     char* envC = getenv(envS.c_str());
     if (envC == 0) {

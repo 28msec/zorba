@@ -2260,7 +2260,7 @@ bool serializer::setup(std::ostream& os)
 
 ********************************************************************************/
 void serializer::serialize(
-    intern::Serializable* aObject,
+    store::Iterator_t    aObject,
     std::ostream& aOStream)
 {
   serialize(aObject, aOStream, 0);
@@ -2271,7 +2271,7 @@ void serializer::serialize(
 
 ********************************************************************************/
 void serializer::serialize(
-    intern::Serializable* aObject,
+    store::Iterator_t           aObject,
     std::ostream&         aOStream,
     SAX2_ContentHandler* aHandler)
 {
@@ -2305,7 +2305,8 @@ void serializer::serialize(
   e->emit_declaration();
 
   store::Item_t lItem;
-  while (aObject->nextSerializableItem(lItem))
+//+  aObject->open();
+  while (aObject->next(lItem))
   {
     // JSON serialization only alows one single item to be serialized
     // so throw an error if we get to a second item
@@ -2327,7 +2328,7 @@ void serializer::serialize(
     // used for JSON serialization only
     firstItem = false;
   }
-
+//+  aObject->close();
   e->emit_declaration_end();
 }
 
@@ -2336,13 +2337,14 @@ void serializer::serialize(
 
 ********************************************************************************/
 void serializer::serialize(
-    intern::Serializable* object,
+    store::Iterator_t    object,
     std::ostream& stream,
     itemHandler aHandler,
     void* aHandlerData)
 {
   store::Item_t lItem;
-  if (object->nextSerializableItem(lItem))
+//  object->open();
+  if (object->next(lItem))
   {
     // first, we notify the caller, that everything that we wanted to
     // (e.g. computed by side-effecting scripting functions is now available).
@@ -2404,8 +2406,8 @@ void serializer::serialize(
     // used for Json and JsonML serialization only
     firstItem = false;
   }
-  while (object->nextSerializableItem(lItem));
-
+  while (object->next(lItem));
+  //object->close();
   e->emit_declaration_end();
 }
 

@@ -16,23 +16,50 @@
 #include "capi/error.h"
 #include "capi/single_item_sequence.h"
 #include <zorba/item_sequence.h>
+#include "zorbaerrors/Assert.h"
 
 using namespace zorba;
 
 namespace zorbac {
 
 SingleItemSequence::SingleItemSequence(Item aItem)
-  : theItem(aItem),
-    theDone(false)
+  : theItem(aItem)
 {
 }
 
-bool
-SingleItemSequence::next(Item& i) {
-  if (theDone) {
+Iterator_t SingleItemSequence::getIterator()
+{
+  return new InternalIterator(this);
+}
+
+SingleItemSequence::InternalIterator::InternalIterator(SingleItemSequence *item_sequence) : theItemSequence(item_sequence)
+{
+  is_open = false;
+  theDone = false;
+}
+
+void SingleItemSequence::InternalIterator::open()
+{
+  is_open = true;
+  theDone = false;
+}
+
+void SingleItemSequence::InternalIterator::close()
+{
+  is_open = false;
+}
+
+bool SingleItemSequence::InternalIterator::isOpen() const
+{
+  return is_open;
+}
+
+bool SingleItemSequence::InternalIterator::next(Item& aItem)
+{
+  ZORBA_ASSERT(is_open);
+  if(theDone)
     return false;
-  }
-  i = theItem;
+  aItem = theItemSequence->theItem;
   theDone = true;
   return true;
 }

@@ -307,9 +307,12 @@ SearchFunction::evaluate(
   // get none or one boolean arg
   bool lUid = false;
   Item lItem;
-  if (aArgs[3]->next(lItem)) {
+  Iterator_t arg3_iter = aArgs[3]->getIterator();
+  arg3_iter->open();
+  if (arg3_iter->next(lItem)) {
     lUid = lItem.getBooleanValue();
   }  
+  arg3_iter->close();
   std::vector<long> lFoundSequenceNumbers = ImapClient::Instance().search(lHostName, lUserName, lPassword, lMailbox.c_str(), lCriteria.c_str(), lUid);
    
   // throw zorba exception if we have an error log
@@ -350,15 +353,20 @@ CopyFunction::evaluate(
   // find out if we are working with uid's instead of sequence numbers.
   bool lUid = false;
   Item lItem;
-  if
 
-   (aArgs[4]->next(lItem)) {
+  Iterator_t arg4_iter = aArgs[4]->getIterator();
+  arg4_iter->open();
+  if (arg4_iter->next(lItem)) {
     lUid = lItem.getBooleanValue();
   }
+  arg4_iter->close();
+  Iterator_t arg5_iter = aArgs[5]->getIterator();
+  arg5_iter->open();
   bool lCopy = false;
-  if (aArgs[5]->next(lItem)) {
+  if (arg5_iter->next(lItem)) {
     lCopy = lItem.getBooleanValue();
   }
+  arg5_iter->close();
   
   std::string lMessageNumbers = ImapFunction::getMessageNumbers(aArgs, 3); 
    
@@ -395,10 +403,12 @@ FetchEnvelopeFunction::evaluate(
  
   bool lUid = false;
   Item lItem;
-  if (aArgs[3]->next(lItem)) {
+  Iterator_t arg3_iter = aArgs[3]->getIterator();
+  arg3_iter->open();
+  if (arg3_iter->next(lItem)) {
     lUid = lItem.getBooleanValue();
   }
-
+  arg3_iter->close();
 
   Item lParent; 
   FetchMessageFunction::getMessage(theModule, lParent, lHostName.c_str(), lUserName.c_str(), lPassword.c_str(), lMailbox.c_str(), lMessageNumber, lUid, true);  
@@ -498,9 +508,12 @@ FetchFlagsFunction::evaluate(
   unsigned long lMessageNumber = ImapFunction::getOneMessageNumber(aArgs, 2);
   bool lUid = false;
   Item lItem;
-  if (aArgs[3]->next(lItem)) {
+  Iterator_t arg3_iter = aArgs[3]->getIterator();
+  arg3_iter->open();
+  if (arg3_iter->next(lItem)) {
     lUid = lItem.getBooleanValue();
   }
+  arg3_iter->close();
   
   // null parent
   Item lParent;
@@ -546,9 +559,12 @@ SetFlagsFunction::evaluate(
 
   bool lUid = false;
   Item lItem;
-  if (aArgs[4]->next(lItem)) {
+  Iterator_t arg4_iter = aArgs[4]->getIterator();
+  arg4_iter->open();
+  if (arg4_iter->next(lItem)) {
     lUid = lItem.getBooleanValue();
   }
+  arg4_iter->close();
 
   ImapClient::Instance().setFlags(lHostName, lUserName, lPassword, lMailbox.c_str(), lMessageNumber, lFlags, lUid);
 
@@ -565,7 +581,10 @@ void
 SetFlagsFunction::getFlagsVector(const StatelessExternalFunction::Arguments_t& aArgs, std::vector<int>& aFlags) {
   
   Item lFlagsNode;
-  aArgs[3]->next(lFlagsNode);
+  Iterator_t arg3_iter = aArgs[3]->getIterator();
+  arg3_iter->open();
+  arg3_iter->next(lFlagsNode);
+  arg3_iter->close();
   Iterator_t lChildren = lFlagsNode.getChildren();
   lChildren->open();
   Item lChild;

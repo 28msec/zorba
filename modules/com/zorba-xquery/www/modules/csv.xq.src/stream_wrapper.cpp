@@ -98,6 +98,23 @@ void StreamWrapper::skip(unsigned int nr_chars)
   }
 }
 
+bool StreamWrapper::reset()
+{
+  std::streamoff pos = csv_is->tellg();
+  if(pos == 0)
+    return true;
+  csv_is->seekg(0);
+  if(csv_is->fail())
+  {
+    csv_is->clear();
+    return false;
+  }
+  start_str = tempstr;
+  end_str = start_str;
+  utf8_len = 0;
+  return true;
+}
+
 
 
 
@@ -138,5 +155,12 @@ void CharPtrStream::skip(unsigned int nr_chars)
 {
   str += nr_chars;
 }
+
+bool CharPtrStream::reset()
+{
+  str = csv_string.c_str();
+  return true;
+}
+
 
 }}//end namespace csv/zorba

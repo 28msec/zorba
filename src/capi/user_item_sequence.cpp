@@ -21,6 +21,7 @@
 #include "capi/user_item_sequence.h"
 #include "zorbaerrors/error_manager.h"
 #include <zorba/item_sequence.h>
+#include "zorbaerrors/Assert.h"
 
 using namespace zorba;
 
@@ -83,9 +84,6 @@ namespace zorbac {
     theItemSetter.set_double      = UserItemSequence::set_double;
     theItemSetter.set_typed_value = UserItemSequence::set_typed_value;
 
-    if (theInitFunction) {
-      theInitFunction(&theUserData, theSequenceData);
-    }
   }
 
   UserItemSequence::~UserItemSequence()
@@ -106,11 +104,44 @@ namespace zorbac {
       (((char*)setter) - CLASS_OFFSET(UserItemSequence, theItemSetter));
   }
 
-  bool
-  UserItemSequence::next(Item& i)
+  Iterator_t UserItemSequence::getIterator()
   {
-    XQC_Error lRes = theNextFunction(theArgs, theArgc, &theItemSetter,
-      theUserData, theSequenceData);
+    return new InternalIterator(this);
+  }
+
+  UserItemSequence::InternalIterator::InternalIterator(UserItemSequence  *item_sequence) : theItemSequence(item_sequence)
+  {
+    is_open = false;
+  }
+
+  void UserItemSequence::InternalIterator::open()
+  {
+    is_open = true;
+    if (theItemSequence->theInitFunction) {
+      theItemSequence->theInitFunction(&theItemSequence->theUserData, theItemSequence->theSequenceData);
+    }
+  }
+
+  void UserItemSequence::InternalIterator::close()
+  {
+    is_open = false;
+  }
+
+  bool UserItemSequence::InternalIterator::isOpen() const
+  {
+    return is_open;
+  }
+
+  bool
+  UserItemSequence::InternalIterator::next(Item& i)
+  {
+    ZORBA_ASSERT(is_open);
+    XQC_Error lRes = theItemSequence->theNextFunction(
+                                  theItemSequence->theArgs, 
+                                  theItemSequence->theArgc, 
+                                  &theItemSequence->theItemSetter,
+                                  theItemSequence->theUserData, 
+                                  theItemSequence->theSequenceData);
     if (lRes == XQC_END_OF_SEQUENCE)
       return false;
     if (lRes != XQC_NO_ERROR) {
@@ -119,7 +150,7 @@ namespace zorbac {
 
     // theItem will have been set by the user calling back to one
     // of the Zorba_ItemSetter methods.
-    i = theItem;
+    i = theItemSequence->theItem;
     assert (!i.isNull());
 
     return true;

@@ -47,7 +47,7 @@ test_serialization_error(Zorba* aZorba)
     while ( lIterator->next(lItem) ) {
       // we have to wrap the item in a Serializable object
       SingletonItemSequence lSequence(lItem);
-      lSerializer->serialize((Serializable*)&lSequence, std::cout);
+      lSerializer->serialize(&lSequence, std::cout);
     }
 
     lIterator->close();

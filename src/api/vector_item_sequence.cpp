@@ -13,22 +13,50 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 #include <zorba/vector_item_sequence.h>
 
 #include <zorba/item.h>
+#include "zorbaerrors/Assert.h"
 
 namespace zorba { 
 
 VectorItemSequence::VectorItemSequence(
   const std::vector<Item>& aSequence)
-    : theSequence(aSequence),
-      theIterator(theSequence.begin()),
-      theEnd(theSequence.end()) { }
+    : theSequence(aSequence)
+{ }
+
+
+Iterator_t VectorItemSequence::getIterator()
+{
+  return new InternalIterator(this);
+}
+
+VectorItemSequence::InternalIterator::InternalIterator(VectorItemSequence *item_sequence) : theItemSequence(item_sequence)
+{
+  is_open = false;
+}
+
+void VectorItemSequence::InternalIterator::open()
+{
+  is_open = true;
+  theIterator = theItemSequence->theSequence.begin();
+  theEnd = theItemSequence->theSequence.end();
+}
+
+void VectorItemSequence::InternalIterator::close()
+{
+  is_open = false;
+}
+
+bool VectorItemSequence::InternalIterator::isOpen() const
+{
+  return is_open;
+}
 
 bool
-VectorItemSequence::next(Item& val)
+VectorItemSequence::InternalIterator::next(Item& val)
 {
+  ZORBA_ASSERT(is_open);
   if (theIterator == theEnd) {
       return false;
   }

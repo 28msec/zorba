@@ -57,7 +57,10 @@ CopyFunction::evaluate(
   bool lOverwrite = false;
   if (aArgs.size() == 3) {
     Item lOverwriteItem;
-    aArgs[2]->next(lOverwriteItem);
+    Iterator_t arg2_iter = aArgs[2]->getIterator();
+    arg2_iter->open();
+    arg2_iter->next(lOverwriteItem);
+    arg2_iter->close();
     lOverwrite = lOverwriteItem.getBooleanValue();
   }
 
@@ -147,10 +150,36 @@ FilesFunction::IteratorBackedItemSequence::IteratorBackedItemSequence(
     ItemFactory* aFactory)
   : theIterator(aIter), theItemFactory(aFactory)
 {
+  addReference();
+  is_open = false;
+  open_count = 0;
 }
 
 FilesFunction::IteratorBackedItemSequence::~IteratorBackedItemSequence()
 {
+}
+
+Iterator_t FilesFunction::IteratorBackedItemSequence::getIterator()
+{
+  return this;
+}
+
+void FilesFunction::IteratorBackedItemSequence::open()
+{
+  if(open_count)
+    theIterator->reset();
+  open_count++;
+  is_open = true;
+}
+
+void FilesFunction::IteratorBackedItemSequence::close()
+{
+  is_open = false;
+}
+
+bool FilesFunction::IteratorBackedItemSequence::isOpen() const
+{
+  return is_open;
 }
 
 bool
@@ -278,9 +307,12 @@ MkdirFunction::evaluate(
   bool lCreate = true;
   if (aArgs.size() == 2) {
     Item lCreateItem;
-    if (aArgs[1]->next(lCreateItem)) {
+    Iterator_t arg1_iter = aArgs[1]->getIterator();
+    arg1_iter->open();
+    if (arg1_iter->next(lCreateItem)) {
       lCreate = lCreateItem.getBooleanValue();
     }
+    arg1_iter->close();
   }
 
   bool lStatus = lFile->mkdir();
@@ -308,9 +340,12 @@ MkdirsFunction::evaluate(
   bool lCreate = true;
   if (aArgs.size() == 2) {
     Item lCreateItem;
-    if (aArgs[1]->next(lCreateItem)) {
+    Iterator_t arg1_iter = aArgs[1]->getIterator();
+    arg1_iter->open();
+    if (arg1_iter->next(lCreateItem)) {
       lCreate = lCreateItem.getBooleanValue();
     }
+    arg1_iter->close();
   }
 
   bool lStatus = lFile->mkdirs(lCreate);
@@ -419,23 +454,50 @@ ReadTextFunction::ReadTextFunction(const FileModule* aModule)
 
 struct StreamableItemSequence : ItemSequence {
 
+  class InternalIterator : public Iterator
+  {
+  private:
+    StreamableItemSequence   *theItemSequence;
+    bool is_open;
+    bool has_next;
+  public:
+    InternalIterator(StreamableItemSequence *item_sequence) : theItemSequence(item_sequence), is_open(false), has_next(true)
+    {
+    }
+
+    virtual void open()
+    {
+      is_open = true;
+      has_next = true;
+    }
+    virtual void close()
+    {
+      is_open = false;
+    }
+    virtual bool isOpen() const
+    {
+      return is_open;
+    }
+    bool next( Item &result ) {
+      if(!is_open)
+      {
+        throw zorba::ExternalFunctionData::createZorbaException(XQP0019_INTERNAL_ERROR,
+          "StreamableItemSequence Iterator consumed without open", __FILE__, __LINE__);  
+      }
+      if ( has_next ) {
+        result = theItemSequence->item;
+        has_next = false;
+        return !result.isNull();
+      }
+      return false;
+    }
+  };
   Item          item;
   std::ifstream stream;
 
-  StreamableItemSequence() : has_next( true ) {
-  }
+  StreamableItemSequence() {}
 
-  bool next( Item &result ) {
-    if ( has_next ) {
-      result = item;
-      has_next = false;
-      return !result.isNull();
-    }
-    return false;
-  }
-
-private:
-  bool has_next;
+  Iterator_t  getIterator() {return new InternalIterator(this);}
 };
 
 ItemSequence_t
@@ -523,7 +585,10 @@ WriteFunction::evaluate(
   bool lAppend = false;
   if (aArgs.size() == 4) {
     Item lAppendItem;
-    aArgs[3]->next(lAppendItem);
+    Iterator_t arg3_iter = aArgs[3]->getIterator();
+    arg3_iter->open();
+    arg3_iter->next(lAppendItem);
+    arg3_iter->close();
     lAppend = lAppendItem.getBooleanValue();
   }
 
@@ -539,7 +604,7 @@ WriteFunction::evaluate(
   lFile->openOutputStream(lOutStream, lAppend, lBinary);
 
   // serialize the content
-  lSerializer->serialize((Serializable*)aArgs[1], lOutStream);
+  lSerializer->serialize(aArgs[1], lOutStream);
 
   lOutStream.close();
 
@@ -617,7 +682,10 @@ ItemSequence_t NormalizePathFunction::evaluate(const StatelessExternalFunction::
                                 const DynamicContext* aDynCtx) const
 {
   Item pathItem;
-  args[0]->next(pathItem);
+  Iterator_t arg0_iter = args[0]->getIterator();
+  arg0_iter->open();
+  arg0_iter->next(pathItem);
+  arg0_iter->close();
   String osPath = filesystem_path::normalize_path(pathItem.getStringValue().c_str());
   return ItemSequence_t(new SingletonItemSequence(theModule->getItemFactory()->createString(osPath)));
 }

@@ -18,6 +18,8 @@ public:
   virtual const char *get_utf8_seq() = 0;
   virtual bool compare(std::string &other) = 0;
   virtual void skip(unsigned int nr_chars) = 0;
+
+  virtual bool reset() = 0;
 };
 
 class StreamWrapper : public CharStreamBase
@@ -39,6 +41,8 @@ public:
   virtual const char *get_utf8_seq();
   virtual bool compare(std::string &other);
   virtual void skip(unsigned int nr_chars);
+
+  virtual bool reset();
 private:
   void read_buf();
 };
@@ -59,6 +63,8 @@ public:
   virtual const char *get_utf8_seq();
   virtual bool compare(std::string &other);
   virtual void skip(unsigned int nr_chars);
+
+  virtual bool reset();
 };
 
 }}

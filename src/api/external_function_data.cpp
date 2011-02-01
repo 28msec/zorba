@@ -86,8 +86,14 @@ ExternalFunctionData::error(
 
   if (aErrorObject.get() != 0) {
     Item lTmpItem;
-    while (aErrorObject->next(lTmpItem)) {
-      lErrorObject.push_back(Unmarshaller::getInternalItem(lTmpItem));
+    Iterator_t err_iter = aErrorObject->getIterator();
+    if(err_iter != NULL)
+    {
+      err_iter->open();
+      while (err_iter->next(lTmpItem)) {
+        lErrorObject.push_back(Unmarshaller::getInternalItem(lTmpItem));
+      }
+      err_iter->close();
     }
   }
 

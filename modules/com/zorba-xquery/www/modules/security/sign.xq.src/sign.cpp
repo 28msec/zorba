@@ -32,7 +32,9 @@ namespace zorba { namespace security {
 zorba::String getOneStringArgument(const StatelessExternalFunction::Arguments_t& aArgs, int aIndex)
 {
   zorba::Item lItem;
-  if (!(aArgs[aIndex]->next(lItem))) {
+  Iterator_t args_iter = aArgs[aIndex]->getIterator();
+  args_iter->open();
+  if (!(args_iter->next(lItem))) {
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as "
                   << aIndex << ". parameter.";
@@ -42,7 +44,7 @@ zorba::String getOneStringArgument(const StatelessExternalFunction::Arguments_t&
         __LINE__);
   }
   zorba::String lTmpString = lItem.getStringValue();
-  if (aArgs[aIndex]->next(lItem)) {
+  if (args_iter->next(lItem)) {
     std::stringstream lErrorMessage;
     lErrorMessage << "A sequence of more then one item is not allowed as "
       << aIndex << ". parameter.";
@@ -51,6 +53,7 @@ zorba::String getOneStringArgument(const StatelessExternalFunction::Arguments_t&
         __FILE__,
         __LINE__);
   }
+  args_iter->close();
   return lTmpString;
 }
 
@@ -59,18 +62,21 @@ static zorba::String getNodeText(
     int                 aArgumentIndex)
 {
   zorba::Item lItem;
-  if (!(aArgs[aArgumentIndex]->next(lItem))) {
+  Iterator_t args_iter = aArgs[aArgumentIndex]->getIterator();
+  args_iter->open();
+  if (!(args_iter->next(lItem))) {
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as " << aArgumentIndex << ". parameter.";
     throw zorba::ExternalFunctionData::createZorbaException(XPTY0004, lErrorMessage.str().c_str(), __FILE__, __LINE__);
   }
   std::stringstream lTmpStream;
   zorba::String lText = lItem.getStringValue();
-  if (aArgs[aArgumentIndex]->next(lItem)) {
+  if (args_iter->next(lItem)) {
     std::stringstream lErrorMessage;
     lErrorMessage << "A sequence of more then one item is not allowed as " << aArgumentIndex << ". parameter.";
     throw zorba::ExternalFunctionData::createZorbaException(XPTY0004, lErrorMessage.str().c_str(), __FILE__, __LINE__);
   }
+  args_iter->close();
   return lText;
 }
 

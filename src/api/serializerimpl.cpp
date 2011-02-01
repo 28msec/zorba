@@ -17,12 +17,9 @@
 #include <zorba/item.h>
 #include <zorba/options.h>
 #include <zorba/singleton_item_sequence.h>
-#include <zorba/serializable.h>
 #include <zorba/default_error_handler.h>
 
 #include "api/zorbaimpl.h"
-#include "api/serialization/serializable_wrapper.h"
-#include "api/serialization/serializable.h"
 #include "api/unmarshaller.h"
 
 #include "serializerimpl.h"
@@ -62,11 +59,13 @@ SerializerImpl::SerializerImpl(ItemSequence* aOptions, ErrorHandler* aErrorHandl
 }
 
 void
-SerializerImpl::serialize(Serializable* aObject, std::ostream& aOs) const
+SerializerImpl::serialize(ItemSequence* aObject, std::ostream& aOs) const
 {
   try {
-    intern::SerializableWrapper lWrapper(aObject);
-    theInternalSerializer.serialize((intern::Serializable*)&lWrapper, aOs);
+    Iterator_t  object_iter = aObject->getIterator();
+    object_iter->open();
+    theInternalSerializer.serialize(Unmarshaller::getInternalIterator(object_iter.get()), aOs);
+    object_iter->close();
   } catch (error::ZorbaError& e) {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
@@ -198,11 +197,14 @@ SerializerImpl::setSerializationParameters(
   ItemSequence* aSerializerOptions)
 {
   Item lItem;
-  while (aSerializerOptions->next(lItem)) {
+  Iterator_t  ser_iter = aSerializerOptions->getIterator();
+  ser_iter->open();
+  while (ser_iter->next(lItem)) {
     Item lNodeName;
     lItem.getNodeName(lNodeName);
     aInternalSerializer.setParameter(lNodeName.getLocalName().c_str(), lItem.getStringValue().c_str());
   }
+  ser_iter->close();
 }
 
 } // namespace zorba

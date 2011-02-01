@@ -19,6 +19,7 @@
 #include <zorba/config.h>
 #include <zorba/item_sequence.h>
 #include <zorba/item.h>
+#include <zorba/iterator.h>
 
 namespace zorba { 
 
@@ -28,8 +29,41 @@ namespace zorba {
    *
    * See ItemSequence
    */
-  class EmptySequence : public ItemSequence
+  class ZORBA_DLL_PUBLIC EmptySequence : public ItemSequence
   {
+    class InternalIterator : public Iterator
+    {
+    private:
+      ItemSequence    *theItemSequence;
+      bool is_open;
+    public:
+      InternalIterator(ItemSequence *item_sequence);
+
+      /** \brief Start iterating.
+       *
+       * This function needs to be called before calling next().
+       *
+       */
+      virtual void open();
+      /** \brief Get the next Item of the sequence.
+       *
+       * This function returns false with no item.
+       * @param aItem not used
+       * @return false always
+       * @throw ZorbaException if iterator is not open.
+       *
+       */
+      virtual bool next(Item& aItem);
+      /** \brief Stop iterating.
+       *
+       *  Not mandatory.
+       */
+      virtual void close();
+      /**
+       * brief Check whether the iterator is open or not
+       */
+      virtual bool isOpen() const;
+    };
     public:
       /** \brief Constructor
        */
@@ -39,14 +73,10 @@ namespace zorba {
        */
       virtual ~EmptySequence() { }
 
-      /** \brief Get the Item that was passed in the constructor.
-       *
-       * @param aItem the Item if true is returned by the function.
-       * @return true if the sequence is not exhausted, false otherwise.
-       * @throw ZorbaException if an error occured.
-       */
-      virtual bool
-      next(Item& aItem) { return false; }
+      /** \brief get the void Iterator
+       * @return a void iterator
+      */
+      virtual Iterator_t  getIterator();
 
   }; /* class EmptySequence */
 

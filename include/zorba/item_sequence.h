@@ -18,7 +18,6 @@
 
 #include <zorba/config.h>
 #include <zorba/api_shared_types.h>
-#include <zorba/serializable.h>
 
 namespace zorba { 
 
@@ -26,29 +25,17 @@ namespace zorba {
    *
    * See http://www.w3.org/TR/xpath-datamodel/.
    */
-  class ZORBA_DLL_PUBLIC ItemSequence : public Serializable
+  class ZORBA_DLL_PUBLIC ItemSequence 
   {
     public:
       /** \brief Destructor
        */
       virtual ~ItemSequence() { }
 
-      /** \brief Get the next Item of the sequence.
-       *
-       * @param aItem the next Item of the sequence if true is returned by the function.
-       * @return true if the sequence is not exhausted, false otherwise.
-       * @throw ZorbaException if an error occured.
-       */
-      virtual bool next(Item& aItem) = 0;
-
-      /** \brief The Serializable interface implementation.
-       *
-       * @param item The item returned if this function returns true.
-       * @return true if the sequence is not exhausted, false otherwise.
-       * @throw ZorbaException if an error occured.
-       */
-      virtual bool
-      nextSerializableItem(Item& item);
+      /** \brief get the Iterator over the items
+       * @return an iterator over the items
+      */
+      virtual Iterator_t  getIterator() = 0;
 
   }; /* class ItemSequence */
 

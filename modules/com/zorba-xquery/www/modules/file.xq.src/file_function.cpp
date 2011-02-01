@@ -73,19 +73,22 @@ FileFunction::getOneStringArg(
     int aPos)
 {
   Item lItem;
-  if (!aArgs[aPos]->next(lItem)) {
+  Iterator_t args_iter = aArgs[aPos]->getIterator();
+  args_iter->open();
+  if (!args_iter->next(lItem)) {
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as " 
                   << aPos << ". parameter.";
     throwError(lErrorMessage.str(), XPTY0004);
   }
   zorba::String lTmpString = lItem.getStringValue();
-  if (aArgs[aPos]->next(lItem)) {
+  if (args_iter->next(lItem)) {
     std::stringstream lErrorMessage;
     lErrorMessage << "A sequence of more then one item is not allowed as "
                   << aPos << ". parameter.";
     throwError(lErrorMessage.str(), XPTY0004);
   }
+  args_iter->close();
   return lTmpString;
 }
 

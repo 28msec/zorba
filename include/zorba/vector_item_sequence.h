@@ -21,6 +21,7 @@
 #include <zorba/config.h>
 #include <zorba/api_shared_types.h>
 #include <zorba/item_sequence.h>
+#include <zorba/iterator.h>
 
 namespace zorba { 
 
@@ -32,6 +33,41 @@ namespace zorba {
    */
   class ZORBA_DLL_PUBLIC VectorItemSequence : public ItemSequence
   {
+    class InternalIterator : public Iterator
+    {
+    private:
+      VectorItemSequence   *theItemSequence;
+      std::vector<Item>::iterator theIterator;
+      std::vector<Item>::iterator theEnd;
+      bool is_open;
+    public:
+      InternalIterator(VectorItemSequence *item_sequence);
+
+      /** \brief Start iterating.
+       *
+       * This function needs to be called before calling next().
+       * Initializes the iterator over the items vector.
+       *
+       */
+      virtual void open();
+      /** \brief Get the next Item of the vector of items from ItemSequence.
+       *
+       * @param aItem the next Item of the sequence if true is returned by the function.
+       * @return true if the vector is not exhausted, false otherwise.
+       * @throw ZorbaException if iterator is not open or an error occured.
+       */
+      virtual bool next(Item& aItem);
+      /** \brief Close the iterator.
+       *
+       * You can call close and open to reset the iterator.
+       *
+       */
+      virtual void close();
+      /**
+       * brief Check whether the iterator is open or not
+       */
+      virtual bool isOpen() const;
+    };
     public:
       /** \brief Constructor
        * 
@@ -43,20 +79,13 @@ namespace zorba {
        */
       virtual ~VectorItemSequence() { }
 
-      /** \brief Get the next Item of the vector that was passed
-       *         in the constructor.
-       *
-       * @param aItem the next Item of the sequence if true is returned by the function.
-       * @return true if the sequence is not exhausted, false otherwise.
-       * @throw ZorbaException if an error occured.
-       */
-      virtual bool
-      next(Item& aItem);
+      /** \brief get the Iterator over the items vector
+       * @return an iterator over the items
+      */
+      virtual Iterator_t  getIterator();
 
     protected:
       std::vector<Item> theSequence;
-      std::vector<Item>::iterator theIterator;
-      std::vector<Item>::iterator theEnd;
 
   }; /* class VectorItemSequence */
 

@@ -134,8 +134,14 @@ namespace zorba {
       Item lHref;
       Item lContent;
 
-      bool lReqSet = args[0]->next(lRequest);
-      bool lHrefSet = args[1]->next(lHref);
+      Iterator_t arg0_iter = args[0]->getIterator();
+      arg0_iter->open();
+      bool lReqSet = arg0_iter->next(lRequest);
+      arg0_iter->close();
+      Iterator_t arg1_iter = args[1]->getIterator();
+      arg1_iter->open();
+      bool lHrefSet = arg1_iter->next(lHref);
+      arg1_iter->close();
 
       std::string lData;
 
