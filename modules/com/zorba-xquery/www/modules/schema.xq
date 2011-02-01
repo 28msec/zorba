@@ -32,7 +32,7 @@ module namespace schema = "http://www.zorba-xquery.com/modules/schema";
  :)
 declare function schema:schema-type (
   $item as item()
-) as xs:QName external;
+) as xs:QName? external;
 
 (:~
  : This function returns true if the given node has need validated,
