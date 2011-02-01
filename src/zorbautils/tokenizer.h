@@ -41,9 +41,8 @@ public:
     /**
      * This member-function is called once per token.
      *
-     * @param utf8_s    The token string encoded in UTF-8.  It is not
-     *                  null-terminated.
-     * @param utf8_len  The number of chars in the token string.
+     * @param utf8_s    The UTF-8 token string.  It is not null-terminated.
+     * @param utf8_len  The number of bytes in the token string.
      * @param token_no  The token number.  Token numbers start at 0.
      * @param sent_no   The sentence number.  Sentence numbers start at 1.
      * @param para_no   The paragraph number.  Paragraph numbers start at 1.
@@ -78,9 +77,9 @@ public:
   /**
    * Tokenizes the given string.
    *
-   * @param utf8_s    The string to tokenize encoded in UTF-8.  It need not be
+   * @param utf8_s    The UTF-8 string to tokenize.  It need not be
    *                  null-terminated.
-   * @param len       The number of chars in the token string.
+   * @param len       The number of bytes in the token string.
    * @param lang      The language of the text.
    * @param callback  The Callback to call once per token.
    * @param payload   Optional user-defined data.
