@@ -54,7 +54,6 @@
 #include "functions/func_sequences.h"
 #include "functions/func_sequences_impl.h"
 #include "functions/func_strings.h"
-#include "functions/func_tidy.h"
 #include "functions/func_var_decl.h"
 #include "functions/func_xqdoc.h"
 
@@ -120,8 +119,6 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populateContext_Constructors(sctx);
   populateContext_VarDecl(sctx);
   populateContext_Hoisting(sctx);
-  populateContext_tidy(sctx);
-
   ar.set_loading_hardcoded_objects(false);
 }
 

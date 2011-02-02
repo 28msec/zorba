@@ -205,7 +205,6 @@ Item XmlDataManagerImpl::loadDocumentFromUri(
     docItem = uri_resolver->resolve(uriItem,
                                     &GENV_ROOT_STATIC_CONTEXT,
                                     true,
-                                    false,
                                     aReplaceDoc);
 
     if(docItem.isNull())

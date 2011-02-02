@@ -92,9 +92,7 @@ public:
         StaticContext* aStaticContext,
         XmlDataManager* aXmlDataManager,
         bool validate,
-        bool tidying,
-        bool replaceDoc,
-        const Item& tidyUserOpt)
+        bool replaceDoc)
     {
       std::auto_ptr<MyDocumentURIResolverResult> lResult(new MyDocumentURIResolverResult());
       if (aURI.getStringValue() == "mydoc.xml") 

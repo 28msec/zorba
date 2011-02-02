@@ -27,57 +27,11 @@
 #include <zorba/exception.h>
 #include <zorba/external_function_data.h>
 
-#include <tidy.h>
-#include <buffio.h>
-
 #include "http_response_parser.h"
 #include "http_request_handler.h"
 #include "curl_stream_buffer.h"
 
 namespace zorba { namespace http_client {
-
-  class TidyReader {
-  private:
-    std::istream* theStream;
-    // We need a buffer to support the unget function
-    std::vector<unsigned int> theBuffer;
-  public:
-    TidyReader(std::istream* aStream) : theStream(aStream) {}
-    TidyInputSource getInputSource()
-    {
-      TidyInputSource lResult;
-      lResult.sourceData = this;
-      lResult.getByte = &getByte;
-      lResult.ungetByte = &ungetByte;
-      lResult.eof = &isEof;
-      return lResult;
-    }
-
-  public: // callback functions
-    static int TIDY_CALL getByte(void* aData)
-    {
-      TidyReader* lReader = static_cast<TidyReader*>(aData);
-      if (lReader->theBuffer.empty())
-        return lReader->theStream->get();
-      else {
-        int lResult = lReader->theBuffer.back();
-        lReader->theBuffer.pop_back();
-        return lResult;
-      }
-    }
-
-    static void TIDY_CALL ungetByte(void* aData, byte aByte)
-    {
-      TidyReader* lReader = static_cast<TidyReader*>(aData);
-      lReader->theBuffer.push_back(aByte);
-    }
-
-    static Bool TIDY_CALL isEof(void* aData)
-    {
-      TidyReader* lReader = static_cast<TidyReader*>(aData);
-      return lReader->theStream->eof() ? yes : no;
-    }
-  };
 
   HttpResponseParser::HttpResponseParser(RequestHandler& aHandler, CURL* aCurl,
     CURLM* aCurlM, ErrorThrower& aErrorThrower,

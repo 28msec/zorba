@@ -26,7 +26,6 @@
 
 #include "util/string_util.h"
 #include "util/uri_util.h"
-#include "util/web/web.h"
 
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
@@ -53,9 +52,7 @@ store::Item_t StandardDocumentURIResolver::resolve(
     const store::Item_t& aURI,
     static_context* aStaticContext,
     bool validateUri,
-    bool tidying,
-    bool replaceDoc,
-    const store::Item_t& tidyUserOpt)
+    bool replaceDoc)
 {
   store::LoadProperties loadProperties;
   loadProperties.setStoreDocument(true);
@@ -112,32 +109,8 @@ store::Item_t StandardDocumentURIResolver::resolve(
       ZORBA_ERROR_DESC_OSS(FODC0002, "File not found or accessible " << decodedURI);
     }
 
-    if (tidying)
-    {
-#ifdef ZORBA_WITH_TIDY
-      std::stringstream out;
-      zstring diag;
-      int res = tidy(lInStream,
-                     out,
-                     diag,
-                     (NULL != tidyUserOpt ?
-                      tidyUserOpt->getStringValue().c_str() :
-                      NULL));
-      if( res < 0)
-      {
-        ZORBA_ERROR_DESC_OSS(API0036_TIDY_ERROR, diag.c_str());
-      }
-
-      lResultDoc = lStore.loadDocument(baseUri, lURI.toString(), out, loadProperties);
-#else
-      ZORBA_ASSERT(!tidying);
-#endif
-    }
-    else
-    {
-      // parse exception must be caught by the caller
-      lResultDoc = lStore.loadDocument(baseUri, lURI.toString(), lInStream, loadProperties);
-    }
+    // parse exception must be caught by the caller
+    lResultDoc = lStore.loadDocument(baseUri, lURI.toString(), lInStream, loadProperties);
 
     // result can't be null, because we already asked the store if he has it
     ZORBA_ASSERT(lResultDoc != NULL);
@@ -158,29 +131,8 @@ store::Item_t StandardDocumentURIResolver::resolve(
       ZORBA_ERROR_DESC_OSS( FODC0002, e.what() );
     }
 
-    if (tidying)
-    {
-#ifdef ZORBA_WITH_TIDY
-      std::stringstream out;
-      zstring        diag;
-      int res = tidy(iss, out, diag,
-                     (NULL != tidyUserOpt ? tidyUserOpt->getStringValue().c_str(): NULL));
-
-      if( res < 0)
-      {
-        ZORBA_ERROR_DESC_OSS(API0036_TIDY_ERROR, diag.c_str());
-      }
-
-      lResultDoc = lStore.loadDocument(baseUri, lURI.toString(), out, loadProperties);
-#else
-      ZORBA_ASSERT(!tidying);
-#endif
-    }
-    else
-    {
-      // parse exception must be caught by the caller
-      lResultDoc = lStore.loadDocument(baseUri, lURI.toString(), iss, loadProperties);
-    }
+    // parse exception must be caught by the caller
+    lResultDoc = lStore.loadDocument(baseUri, lURI.toString(), iss, loadProperties);
 
     // result can't be null, because we already asked the store if he has it
     ZORBA_ASSERT(lResultDoc != NULL);

@@ -256,12 +256,6 @@
   DECLARE_VISITOR (PrecedingAxisIterator)
   DECLARE_VISITOR (PrecedingReverseAxisIterator)
   DECLARE_VISITOR (FollowingAxisIterator)
-
-#ifdef ZORBA_WITH_TIDY
-  DECLARE_VISITOR (ZorbaTidyIterator);
-  DECLARE_VISITOR (ZorbaTDocIterator);
-#endif  // ZORBA_WITH_TIDY
-
   DECLARE_VISITOR(ProbeIndexPointValueIterator);
   DECLARE_VISITOR(ProbeIndexPointGeneralIterator);
   DECLARE_VISITOR(ProbeIndexRangeValueIterator);

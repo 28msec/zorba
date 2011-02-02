@@ -215,10 +215,6 @@ DEF_ERR_CODE(API0034_FILE_OR_FOLDER_CANNOT_BE_OPENED, API0034,
 DEF_ERR_CODE(API0035_COLLECTION_CANNOT_BE_SERIALIZED, API0035,
 "Collection {/s} can not be serialized.");
 
-DEF_ERR_CODE(API0036_TIDY_ERROR, API0036, "Error in Tidy library: {/s}.");
-
-DEF_ERR_CODE(API0037_TIDY_ERROR_SET_OPTION, API0037, "Could not set option {/s} with value {/s} in Tidy.");
-
 DEF_ERR_CODE(API0050_REST_ERROR_HEADER, API0050, "Invalid value passed for header parameter.");
 DEF_ERR_CODE(API0051_REST_ERROR_PAYLOAD, API0051, "Invalid value passed for payload parameter.");
 

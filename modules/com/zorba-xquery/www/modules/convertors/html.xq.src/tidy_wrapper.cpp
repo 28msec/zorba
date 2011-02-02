@@ -13,26 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef __WEB_H_INCLUDED__
-#define __WEB_H_INCLUDED__
 
 #include <iostream>
 
-#include "zorbatypes/zstring.h"
+#include <tidy.h>
+#include <buffio.h>
+
+#include "tidy_wrapper.h"
+
+#include <zorba/item_factory.h>
+#include <zorba/item.h>
+#include <zorba/xmldatamanager.h>
 
 namespace zorba
 {
-#ifdef ZORBA_WITH_TIDY
-  int tidy(const char* input,
-           zstring& result,
-           zstring& diagnostics,
-           const char* userOpt) throw();
+  namespace htmlmodule
+  {
 
-  int tidy(const std::istream& stream,
-           std::iostream& result,
-           zstring& diagnostics,
-           const char* userOpt);
-#endif
-}
-
-#endif
+  } /* namespace htmlmodule */
+} /* namespace zorba */

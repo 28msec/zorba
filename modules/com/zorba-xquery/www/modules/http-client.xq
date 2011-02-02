@@ -107,7 +107,9 @@
 module namespace http = "http://www.zorba-xquery.com/modules/http-client";
 
 import module namespace err = "http://expath.org/ns/error";
-import module namespace tidy = "http://www.zorba-xquery.com/modules/tidy";
+
+import module namespace tidy="http://www.zorba-xquery.com/modules/convertors/html";
+import schema namespace tidy-options="http://www.zorba-xquery.com/modules/convertors/html-options";
 
 import schema namespace https = "http://expath.org/ns/http-client";
 
@@ -306,7 +308,7 @@ declare %private function http:tidy-result($result as item()+, $override-media-t
   let $media-type := ($override-media-type, $result[1]//https:body[$pos]/@media-type/fn:data(.))[1]
   return
     if ($media-type eq "text/html") then
-      tidy:tidy($body, '"output-xml=yes","doctype=omit","quote-nbsp=no","char-encoding=utf8","newline=LF","tidy-mark=no"')
+      tidy:parse($body)
     else
       $body
 };

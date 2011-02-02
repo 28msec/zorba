@@ -269,7 +269,6 @@ If you need CURL (e.g. to have REST support) you have to point two CMake variabl
 
 If you additionally want to have support for Tidy in order to syntactically cleanup HTML documents,  you have to set the following CMake variables:
 \code
-- D ZORBA_WITH_TIDY=ON
 - D LIBTIDY_INCLUDE_DIR="path_to_tidy\include"
 - D LIBTIDY_LIBRARIES="path_to_tidy\lib\tidy.lib"
 \endcode

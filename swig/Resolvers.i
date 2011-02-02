@@ -93,22 +93,18 @@
             zorba::StaticContext* aStaticContext,
             zorba::XmlDataManager* aXmlDataManager,
             bool validate,
-            bool tidying,
-            bool replaceDoc,
-            const zorba::Item& aTidyUserOpt) 
+            bool replaceDoc) 
     { 
       Item newURI = Item::createEmptyItem();
       newURI.theItem = aURI;
 
       StaticContext newStaticContext(aStaticContext);
       XmlDataManager newXmlDataManager(aXmlDataManager);
-      Item newTidyUserOpt = Item::createEmptyItem();
-      newTidyUserOpt.theItem = aTidyUserOpt;
 
       DocumentURIResolverResult* result = 
         resolve(newURI, &newStaticContext, 
                  &newXmlDataManager, validate,
-                 tidying, replaceDoc, newTidyUserOpt);
+                 replaceDoc);
       
       std::auto_ptr<zorba::DocumentURIResolverResult> myRes ; //=
         (new MyDocumentURIResolverResult(result->getDocument().theItem)); 
@@ -129,9 +125,7 @@
             StaticContext* aStaticContext,
             XmlDataManager* aXmlDataManager,
             bool validate,
-            bool tidying,
-            bool replaceDoc,
-            const Item& aTidyUserOpt) = 0;
+            bool replaceDoc) = 0;
   };
 
 
@@ -172,9 +166,7 @@
       resolve(const zorba::Item& aURI,
             zorba::StaticContext* aStaticContext,
             zorba::XmlDataManager* aXmlDataManager,
-            bool validate,
-            bool tidying,
-            const zorba::Item& aTidyUserOpt) 
+            bool validate) 
     { 
       Item newURI = Item::createEmptyItem();
       newURI.theItem = aURI;
@@ -324,16 +316,12 @@ public:
     resolve2(const Item& aURI,
     StaticContext* aStaticContext,
     XmlDataManager* aXmlDataManager,
-    bool validate,
-    bool tidying,
-    const Item& aTidyUserOpt) =0;*/
+    bool validate) =0;*/
   virtual DocumentURIResolverResult* resolve(const Item& aURI,
             StaticContext* aStaticContext,
             XmlDataManager* aXmlDataManager,
             bool validate,
-            bool tidying,       
-            bool replaceDoc,
-            const Item& aTidyUserOpt) = 0;
+            bool replaceDoc) = 0;
 };
 
 

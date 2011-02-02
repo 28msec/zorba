@@ -236,25 +236,6 @@ ELSE(ZORBA_SUPPRESS_CURL)
 ENDIF(ZORBA_SUPPRESS_CURL)
 
 #
-# LibTidy
-#
-IF(ZORBA_SUPPRESS_LIBTIDY)
-  MESSAGE(STATUS "ZORBA_SUPPRESS_LIBTIDY is true - not searching for libTidy")
-ELSE(ZORBA_SUPPRESS_LIBTIDY)
-  FIND_PACKAGE(LibTidy)
-
-  IF(LIBTIDY_FOUND)
-    INCLUDE_DIRECTORIES(${LIBTIDY_INCLUDE_DIR})
-
-    SET(requiredlibs ${requiredlibs} ${LIBTIDY_LIBRARIES})
-
-  ELSE(LIBTIDY_FOUND)
-    MESSAGE(STATUS "The LibTidy library was not found.")
-  ENDIF(LIBTIDY_FOUND)
-ENDIF(ZORBA_SUPPRESS_LIBTIDY)
-
-
-#
 # Iconv
 #
 IF (WIN32)
@@ -356,9 +337,7 @@ SET(debian-required-packages "libxml2,libicu38,libxerces28")
 IF(CURL_FOUND)
   SET(debian-required-packages "${debian-required-packages},libcurl3")
 ENDIF(CURL_FOUND)
-IF(LIBTIDY_FOUND)
-  SET(debian-required-packages "${debian-required-packages},tidy")
-ENDIF(LIBTIDY_FOUND)
+
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/ZorbaDebianDependencies.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/ZorbaDebianDependencies.cmake)
 
 ################################################################################

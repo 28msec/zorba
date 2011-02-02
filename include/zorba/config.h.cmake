@@ -75,9 +75,6 @@
 #cmakedefine ZORBA_WITH_SSL
 #cmakedefine ZORBA_VERIFY_PEER_SSL_CERTIFICATE
 
-/* tidy support*/
-#cmakedefine ZORBA_WITH_TIDY
-
 /* fop support */
 #cmakedefine ZORBA_WITH_FOP
 

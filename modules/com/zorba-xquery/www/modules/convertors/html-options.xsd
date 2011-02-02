@@ -1,0 +1,22 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+  xmlns:ho="http://www.zorba-xquery.com/modules/convertors/html-options" 
+  targetNamespace="http://www.zorba-xquery.com/modules/convertors/html-options" 
+  elementFormDefault="qualified" attributeFormDefault="unqualified"
+  >
+  <xs:element name="options">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="tidyParam">
+          <xs:complexType>   
+            <xs:simpleContent>
+              <xs:extension base="xs:string">
+                <xs:attribute name="name" type="xs:string" use="required"/>
+                <xs:attribute name="value" type="xs:string" use="required"/>
+              </xs:extension>
+            </xs:simpleContent>     
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

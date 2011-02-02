@@ -77,22 +77,17 @@ store::Item_t DocumentURIResolverWrapper::resolve(
     const store::Item_t& aURI,
     static_context* aStaticContext,
     bool validateUri,
-    bool tidying,
-    bool replaceDoc,
-    const store::Item_t& aTidyUserOpt)
+    bool replaceDoc)
 {
   StaticContextImpl  lOuterStaticContext(aStaticContext, 0);
   Item               lURIItem(aURI.getp());
-  Item               lTidyUserOpt(aTidyUserOpt.getp());
 
   // we have the ownership; it will be destroyed automatically once we leave this function
   std::auto_ptr<DocumentURIResolverResult> lResult = 
   theDocResolver->resolve(lURIItem, &lOuterStaticContext,
                           &XmlDataManagerSingleton::Instance(),
                           validateUri,
-                          tidying,
-                          replaceDoc,
-                          lTidyUserOpt);
+                          replaceDoc);
   
   if (lResult->getError() == URIResolverResult::UR_NOERROR) 
   {

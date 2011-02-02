@@ -60,9 +60,7 @@ TestDocumentURIResolver::resolve(const Item& aURI,
   StaticContext* aStaticContext,
   XmlDataManager* aXmlDataManager,
   bool validateUri,
-  bool tidying,
-  bool replaceDoc,
-  const Item& aTidyUserOpt)
+  bool replaceDoc)
 {
   zorba::String lUri = aURI.getStringValue();
   if (lUri.startsWith("test://")) {

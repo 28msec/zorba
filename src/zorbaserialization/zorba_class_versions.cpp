@@ -380,10 +380,6 @@ SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(Batcher, Batcher<RenameIterator>)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(Batcher, Batcher<ZorbaSchemaTypeIterator>)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(Batcher, Batcher<ZorbaBase64DecodeIterator>)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(Batcher, Batcher<ZorbaBase64EncodeIterator>)
-#ifdef ZORBA_WITH_TIDY
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(Batcher, Batcher<ZorbaTidyIterator>)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(Batcher, Batcher<ZorbaTDocIterator>)
-#endif
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(Batcher, Batcher<ZorbaRandomIterator>)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(Batcher, Batcher<ZorbaUUIDIterator>)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(Batcher, Batcher<ValidateIterator>)
@@ -594,10 +590,6 @@ SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(NaryBaseIterator, NaryBaseIterator<FnTok
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(NaryBaseIterator, NaryBaseIterator<ZorbaSchemaTypeIterator, PlanIteratorState>)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(NaryBaseIterator, NaryBaseIterator<ZorbaBase64DecodeIterator, PlanIteratorState>)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(NaryBaseIterator, NaryBaseIterator<ZorbaBase64EncodeIterator, PlanIteratorState>)
-#ifdef ZORBA_WITH_TIDY
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(NaryBaseIterator, NaryBaseIterator<ZorbaTidyIterator, PlanIteratorState>)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(NaryBaseIterator, NaryBaseIterator<ZorbaTDocIterator, PlanIteratorState>)
-#endif
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(NaryBaseIterator, NaryBaseIterator<ZorbaRandomIterator, PlanIteratorState>)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(NaryBaseIterator, NaryBaseIterator<ZorbaUUIDIterator, PlanIteratorState>)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(NaryBaseIterator, NaryBaseIterator<, PlanIteratorState>)

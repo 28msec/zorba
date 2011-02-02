@@ -48,7 +48,7 @@
 <table border="0" width="95%" cellpadding="0" cellspacing="0" align="center">
 <tr>
 <td align="left"><a href="portal.php?s=51176e0685fc06c8ae3be0491b4e2b2a"><img src="images/vislook/vishead.jpg" border="0" alt="Inforum"/></a></td>
-<td align="right" id="header_right_cell">Â </td>
+<td align="right" id="header_right_cell"> </td>
 </tr>
 </table>
 <!-- /logo --><!-- content table --><!-- open content container -->
@@ -76,7 +76,7 @@ bleiben?</acronym></label></td>
 <tr>
 <td class="smallfont"><label for="navbar_password">Kennwort</label></td>
 <td><input type="password" class="bginput" style="font-size: 11px" name="vb_login_password" id="navbar_password" size="10" tabindex="102"/></td>
-<td><input type="submit" class="button" value="Anmelden" tabindex="104" title="Geben Sie zur Anmeldung Ihren Benutzernamen und Ihr Kennwort in die dafÃ¼r vorgesehenen Textfelder ein oder klicken Sie auf die 'Registrieren'-SchaltflÃ¤che, um ein neues Benutzerkonto anzulegen." accesskey="s"/></td>
+<td><input type="submit" class="button" value="Anmelden" tabindex="104" title="Geben Sie zur Anmeldung Ihren Benutzernamen und Ihr Kennwort in die dafür vorgesehenen Textfelder ein oder klicken Sie auf die 'Registrieren'-Schaltfläche, um ein neues Benutzerkonto anzulegen." accesskey="s"/></td>
 </tr>
 </table>
 <input type="hidden" name="s" value="51176e0685fc06c8ae3be0491b4e2b2a"/> <input type="hidden" name="securitytoken" value="guest"/> <input type="hidden" name="do" value="login"/> <input type="hidden" name="vb_login_md5password"/> <input type="hidden" name="vb_login_md5password_utf"/></form>
@@ -94,7 +94,7 @@ bleiben?</acronym></label></td>
 <td class="vbmenu_control"><a href="group.php?s=51176e0685fc06c8ae3be0491b4e2b2a&amp;">Interessengemeinschaften</a></td>
 <td class="vbmenu_control"><a href="calendar.php?s=51176e0685fc06c8ae3be0491b4e2b2a">Kalender</a></td>
 <td class="vbmenu_control"><a href="search.php?s=51176e0685fc06c8ae3be0491b4e2b2a" accesskey="4">Suchen</a></td>
-<td class="vbmenu_control"><a href="search.php?s=51176e0685fc06c8ae3be0491b4e2b2a&amp;do=getdaily" accesskey="2">Heutige BeitrÃ¤ge</a></td>
+<td class="vbmenu_control"><a href="search.php?s=51176e0685fc06c8ae3be0491b4e2b2a&amp;do=getdaily" accesskey="2">Heutige Beiträge</a></td>
 <td class="vbmenu_control"><a href="forumdisplay.php?s=51176e0685fc06c8ae3be0491b4e2b2a&amp;do=markread&amp;markreadhash=guest" rel="nofollow">Alle Foren als gelesen markieren</a></td>
 </tr>
 </table>
@@ -106,7 +106,7 @@ bleiben?</acronym></label></td>
 <table id="portalForums" class="tborder" cellspacing="1" cellpadding="4" width="100%">
 <tbody>
 <tr>
-<td class="thead" align="center">ForenÃ¼bersicht</td>
+<td class="thead" align="center">Forenübersicht</td>
 </tr>
 </tbody>
 <tbody>
@@ -137,7 +137,7 @@ VIS</a></div>
 <div class="portalLink"><a href="showthread.php?t=2052">IRC
 Channel</a></div>
 <div class="smallfont portalInfo">Forum IRC Channel</div>
-<div class="portalLink"><a href="https://www.visit.ethz.ch/index.php?v=Job">JobbÃ¶rse</a></div>
+<div class="portalLink"><a href="https://www.visit.ethz.ch/index.php?v=Job">Jobbörse</a></div>
 <div class="smallfont portalInfo">Dienstleistung vom VIS</div>
 <!-- <div class="portalLink"><a href="http://ethz.studentenbuecher.ch/">B&uuml;cherb&ouml;rse</a></div> <div class="smallfont portalInfo">Dienstleistung ohne VSETH</div> --></td>
 </tr>
@@ -153,9 +153,9 @@ Channel</a></div>
 <tbody>
 <tr>
 <td class="alt2" align="center">
-<div class="smallfont portalInfo">17 Mitglieder, 61 GÃ¤ste</div>
+<div class="smallfont portalInfo">17 Mitglieder, 61 Gäste</div>
 <div class="smallfont portalInfo"><a href="member.php?u=2238">-KraBaT^</a>, <a href="member.php?u=1477">daniela</a>, <a href="member.php?u=1174">Exception</a>, <a href="member.php?u=57">ga_thrawn</a>, <a href="member.php?u=1528">Hermi</a>, <a href="member.php?u=2185">Manesh</a>, <a href="member.php?u=2091">Namelezz</a>, <a href="member.php?u=1459">Oxim
-Oresi</a>, <a href="member.php?u=907">Perro</a>, <a href="member.php?u=36">Raistlin</a>, <a href="member.php?u=940">sanakan</a>, <a href="member.php?u=253">sÃ¤ssiphus</a>, <a href="member.php?u=1251">thom</a>, <a href="member.php?u=3639">thomask</a>, <a href="member.php?u=1501">tiradur</a>, <a href="member.php?u=1601">zarzu</a></div>
+Oresi</a>, <a href="member.php?u=907">Perro</a>, <a href="member.php?u=36">Raistlin</a>, <a href="member.php?u=940">sanakan</a>, <a href="member.php?u=253">sässiphus</a>, <a href="member.php?u=1251">thom</a>, <a href="member.php?u=3639">thomask</a>, <a href="member.php?u=1501">tiradur</a>, <a href="member.php?u=1601">zarzu</a></div>
 <div class="smallfont"><a href="online.php">Wer ist wo?</a></div>
 </td>
 </tr>
@@ -189,7 +189,7 @@ Oresi</a>, <a href="member.php?u=907">Perro</a>, <a href="member.php?u=36">Raist
 </tr>
 <tr>
 <td class="alt1" align="center"><img src="images/statusicon/thread_hot.gif" alt=""/></td>
-<td class="alt2" align="center"><img src="images/oldicons/mad.gif" alt="BÃ¶se"/></td>
+<td class="alt2" align="center"><img src="images/oldicons/mad.gif" alt="Böse"/></td>
 <td class="alt1">
 <div><a href="showthread.php?t=6055">Der Pranger</a></div>
 <div class="smallfont">Forum: <a href="forumdisplay.php?f=98">Dauerbrenner</a></div>
@@ -231,7 +231,7 @@ Oresi</a>, <a href="member.php?u=907">Perro</a>, <a href="member.php?u=36">Raist
 </tr>
 <tr>
 <td class="alt1" align="center"><img src="images/statusicon/thread.gif" alt=""/></td>
-<td class="alt2" align="center"><img src="images/oldicons/mad.gif" alt="BÃ¶se"/></td>
+<td class="alt2" align="center"><img src="images/oldicons/mad.gif" alt="Böse"/></td>
 <td class="alt1">
 <div><a href="showthread.php?t=13807">APIs fuer
 Mobile-GUIs</a></div>
@@ -248,7 +248,7 @@ Mobile-GUIs</a></div>
 <td class="alt1" align="center"><img src="images/statusicon/thread.gif" alt=""/></td>
 <td class="alt2" align="center"><img src="clear.gif" width="15" height="15" alt=""/></td>
 <td class="alt1">
-<div><a href="showthread.php?t=13808">Alte PrÃ¼fungen Parallel
+<div><a href="showthread.php?t=13808">Alte Prüfungen Parallel
 Programming</a></div>
 <div class="smallfont">Forum: <a href="forumdisplay.php?f=116">Parallele Programmierung</a></div>
 </td>
@@ -336,11 +336,11 @@ Potenzreihen</a></div>
 <td class="alt2" align="center"><img src="clear.gif" width="15" height="15" alt=""/></td>
 <td class="alt1">
 <div><a href="vis/wiki/go.php?namespace=1&amp;title=L%C3%B6sungsvorschlag_Diskrete_Mathematik_Sommer_2009">
-LÃ¶sungsvorschlag Diskrete Mathematik Sommer 2009</a></div>
-<div class="smallfont">VISki: Diskussion Ã¼ber <a href="vis/wiki/go.php?namespace=0&amp;title=L%C3%B6sungsvorschlag_Diskrete_Mathematik_Sommer_2009">
+Lösungsvorschlag Diskrete Mathematik Sommer 2009</a></div>
+<div class="smallfont">VISki: Diskussion über <a href="vis/wiki/go.php?namespace=0&amp;title=L%C3%B6sungsvorschlag_Diskrete_Mathematik_Sommer_2009">
 Artikel</a></div>
 </td>
-<td class="alt2" align="center"><a href="http://wiki.vis.ethz.ch/Diskussion:L%C3%B6sungsvorschlag_Diskrete_Mathematik_Sommer_2009&amp;action=history" onclick="who_viski('Diskussion:LÃ¶sungsvorschlag_Diskrete_Mathematik_Sommer_2009'); return(false)">
+<td class="alt2" align="center"><a href="http://wiki.vis.ethz.ch/Diskussion:L%C3%B6sungsvorschlag_Diskrete_Mathematik_Sommer_2009&amp;action=history" onclick="who_viski('Diskussion:Lösungsvorschlag_Diskrete_Mathematik_Sommer_2009'); return(false)">
 1</a></td>
 <td class="alt1" align="right">
 <div class="smallfont" style="white-space:nowrap">Gestern
@@ -426,12 +426,12 @@ Co.</a></div>
 <td class="alt2" align="center"><img src="clear.gif" width="15" height="15" alt=""/></td>
 <td class="alt1">
 <div><a href="vis/wiki/go.php?namespace=1&amp;title=L%C3%B6sungsvorschlag_Einf%C3%BChrung_in_die_Programmierung_Herbst_2009">
-LÃ¶sungsvorschlag EinfÃ¼hrung in die Programmierung Herbst
+Lösungsvorschlag Einführung in die Programmierung Herbst
 2009</a></div>
-<div class="smallfont">VISki: Diskussion Ã¼ber <a href="vis/wiki/go.php?namespace=0&amp;title=L%C3%B6sungsvorschlag_Einf%C3%BChrung_in_die_Programmierung_Herbst_2009">
+<div class="smallfont">VISki: Diskussion über <a href="vis/wiki/go.php?namespace=0&amp;title=L%C3%B6sungsvorschlag_Einf%C3%BChrung_in_die_Programmierung_Herbst_2009">
 Artikel</a></div>
 </td>
-<td class="alt2" align="center"><a href="http://wiki.vis.ethz.ch/Diskussion:L%C3%B6sungsvorschlag_Einf%C3%BChrung_in_die_Programmierung_Herbst_2009&amp;action=history" onclick="who_viski('Diskussion:LÃ¶sungsvorschlag_EinfÃ¼hrung_in_die_Programmierung_Herbst_2009'); return(false)">
+<td class="alt2" align="center"><a href="http://wiki.vis.ethz.ch/Diskussion:L%C3%B6sungsvorschlag_Einf%C3%BChrung_in_die_Programmierung_Herbst_2009&amp;action=history" onclick="who_viski('Diskussion:Lösungsvorschlag_Einführung_in_die_Programmierung_Herbst_2009'); return(false)">
 1</a></td>
 <td class="alt1" align="right">
 <div class="smallfont" style="white-space:nowrap">23.06.2010
@@ -445,7 +445,7 @@ Artikel</a></div>
 <td class="alt2" align="center"><img src="images/oldicons/question.gif" alt="Frage"/></td>
 <td class="alt1">
 <div><a href="showthread.php?t=13797">Inheritance</a></div>
-<div class="smallfont">Forum: <a href="forumdisplay.php?f=59">EinfÃ¼hrung in die Programmierung</a></div>
+<div class="smallfont">Forum: <a href="forumdisplay.php?f=59">Einführung in die Programmierung</a></div>
 </td>
 <td class="alt2" align="center"><a href="misc.php?do=whoposted&amp;t=13797" onclick="who(13797);return(false)">18</a></td>
 <td class="alt1" align="right">
@@ -484,7 +484,7 @@ Artikel</a></div>
 </tr>
 <tr>
 <td class="alt1" align="center"><img src="images/statusicon/thread.gif" alt=""/></td>
-<td class="alt2" align="center"><img src="images/oldicons/mad.gif" alt="BÃ¶se"/></td>
+<td class="alt2" align="center"><img src="images/oldicons/mad.gif" alt="Böse"/></td>
 <td class="alt1">
 <div><a href="showthread.php?t=13786">Fahrpruefung und
 Fuehrerschein</a></div>
@@ -529,7 +529,7 @@ Values and Standard Deviations</a></div>
 </tr>
 <tr>
 <td class="alt1" align="center"><img src="images/statusicon/thread_hot.gif" alt=""/></td>
-<td class="alt2" align="center"><img src="images/oldicons/smile.gif" alt="LÃ¤cheln"/></td>
+<td class="alt2" align="center"><img src="images/oldicons/smile.gif" alt="Lächeln"/></td>
 <td class="alt1">
 <div><a href="showthread.php?t=9959">Das Lied des Tages</a></div>
 <div class="smallfont">Forum: <a href="forumdisplay.php?f=98">Dauerbrenner</a></div>
@@ -596,81 +596,81 @@ Jassturnier</a></div>
 </select></div>
 </form>
 <div id="cab_menu" style="display:none">
-<div class="smallfont portalInfo"><i>11:30â€“13:30</i></div>
+<div class="smallfont portalInfo"><i>11:30–13:30</i></div>
 <div class="smallfont"><b>k.A.</b></div>
-<div class="smallfont portalInfo">â€“</div>
+<div class="smallfont portalInfo">–</div>
 <div class="smallfont"><a href="http://www.gastro.ethz.ch/meals/index">Mensa Startseite</a></div>
 </div>
 <div id="cla_menu" style="display:none">
-<div class="smallfont portalInfo"><i>11:00â€“14:00</i></div>
-<div class="smallfont"><b>TagesmenÃ¼</b></div>
+<div class="smallfont portalInfo"><i>11:00–14:00</i></div>
+<div class="smallfont"><b>Tagesmenü</b></div>
 <div class="smallfont portalInfo">Geschnetzeltes Schweinefleisch
 "Laos Kua Style", Nudeln, Karotten</div>
 <div class="smallfont"><b>Snack</b></div>
-<div class="smallfont portalInfo">Gebratenes GemÃ¼se "Kerala Style"
+<div class="smallfont portalInfo">Gebratenes Gemüse "Kerala Style"
 mit 1 Eier Omelette</div>
 <div class="smallfont"><a href="http://www.gastro.ethz.ch/meals/index">Mensa Startseite</a></div>
 </div>
 <div id="etz_menu" style="display:none">
-<div class="smallfont portalInfo"><i>11:15â€“13:30</i></div>
-<div class="smallfont"><b>MenÃ¼ 1</b></div>
+<div class="smallfont portalInfo"><i>11:15–13:30</i></div>
+<div class="smallfont"><b>Menü 1</b></div>
 <div class="smallfont portalInfo">liveEasy, Pouletragout mit
 Rucolarahmsauce, Nudeln, Thymian-Zucchetti</div>
-<div class="smallfont"><b>MenÃ¼ Spezial</b></div>
+<div class="smallfont"><b>Menü Spezial</b></div>
 <div class="smallfont portalInfo">Schweinskotelett, Senfsauce,
-Gebackene Ofenkartoffeln, Ofentomate, TagesgemÃ¼se</div>
-<div class="smallfont"><b>Vegi-MenÃ¼</b></div>
-<div class="smallfont portalInfo">GemÃ¼sewÃ¼rfeli an Pilzsauce, im
-BlÃ¤tterteigpastetli, Salat</div>
+Gebackene Ofenkartoffeln, Ofentomate, Tagesgemüse</div>
+<div class="smallfont"><b>Vegi-Menü</b></div>
+<div class="smallfont portalInfo">Gemüsewürfeli an Pilzsauce, im
+Blätterteigpastetli, Salat</div>
 <div class="smallfont"><a href="http://www.gastro.ethz.ch/meals/index">Mensa Startseite</a></div>
 </div>
 <div id="hph_menu" style="display:none">
-<div class="smallfont portalInfo"><i>11:15â€“13:30</i></div>
-<div class="smallfont"><b>MenÃ¼ 1</b></div>
+<div class="smallfont portalInfo"><i>11:15–13:30</i></div>
+<div class="smallfont"><b>Menü 1</b></div>
 <div class="smallfont portalInfo">Gebratenes Snapperfilet mit
 Kokos-Mango-Sauce, Basmatireis, Kefen</div>
-<div class="smallfont"><b>MenÃ¼ Spezial</b></div>
+<div class="smallfont"><b>Menü Spezial</b></div>
 <div class="smallfont portalInfo">Lammspiess mit provenzalischer
-Sauce, Griessgnocchi, Zwei GemÃ¼se nach Wahl</div>
-<div class="smallfont"><b>Vegi-MenÃ¼</b></div>
+Sauce, Griessgnocchi, Zwei Gemüse nach Wahl</div>
+<div class="smallfont"><b>Vegi-Menü</b></div>
 <div class="smallfont portalInfo">Aelpler Makkronen mit Kartoffeln
-und KÃ¤se, RÃ¶stzwiebeln, Salat</div>
+und Käse, Röstzwiebeln, Salat</div>
 <div class="smallfont"><a href="http://www.gastro.ethz.ch/meals/index">Mensa Startseite</a></div>
 </div>
 <div id="ifw_menu" style="display:none">
-<div class="smallfont portalInfo"><i>11:15â€“13:30</i></div>
-<div class="smallfont"><b>MenÃ¼</b></div>
+<div class="smallfont portalInfo"><i>11:15–13:30</i></div>
+<div class="smallfont"><b>Menü</b></div>
 <div class="smallfont portalInfo">liveEasy, Pouletragout mit
 Rucolarahmsauce, Nudeln, Thymian-Zucchetti</div>
 <div class="smallfont"><a href="http://www.gastro.ethz.ch/meals/index">Mensa Startseite</a></div>
 </div>
 <div id="mm_menu" style="display:none">
-<div class="smallfont portalInfo"><i>11:15â€“13:30</i></div>
-<div class="smallfont"><b>MenÃ¼ 1</b></div>
+<div class="smallfont portalInfo"><i>11:15–13:30</i></div>
+<div class="smallfont"><b>Menü 1</b></div>
 <div class="smallfont portalInfo">liveEasy, Pouletragout mit
 Rucolarahmsauce, Nudeln, Thymian-Zucchetti</div>
-<div class="smallfont"><b>MenÃ¼ Spezial</b></div>
+<div class="smallfont"><b>Menü Spezial</b></div>
 <div class="smallfont portalInfo">Schweinskotelett, Senfsauce,
-Gebackene Ofenkartoffeln, Ofentomate, TagesgemÃ¼se</div>
-<div class="smallfont"><b>Vegi-MenÃ¼</b></div>
-<div class="smallfont portalInfo">GemÃ¼sewÃ¼rfeli an Pilzsauce, im
-BlÃ¤tterteigpastetli, Salat</div>
-<div class="smallfont"><b>Bio-MenÃ¼</b></div>
+Gebackene Ofenkartoffeln, Ofentomate, Tagesgemüse</div>
+<div class="smallfont"><b>Vegi-Menü</b></div>
+<div class="smallfont portalInfo">Gemüsewürfeli an Pilzsauce, im
+Blätterteigpastetli, Salat</div>
+<div class="smallfont"><b>Bio-Menü</b></div>
 <div class="smallfont portalInfo">Risottokroketten auf mediterranem
-GemÃ¼se, Salat</div>
+Gemüse, Salat</div>
 <div class="smallfont"><b>Tagessuppe</b></div>
 <div class="smallfont portalInfo">Kochbananen-Currysuppe
-"ElfenbeinkÃ¼ste"</div>
+"Elfenbeinküste"</div>
 <div class="smallfont"><a href="http://www.gastro.ethz.ch/meals/index">Mensa Startseite</a></div>
 </div>
 <div id="uni_menu" style="display:none">
-<div class="smallfont portalInfo"><i>11:00â€“14:30</i></div>
-<div class="smallfont"><b>MenÃ¼ 1</b></div>
+<div class="smallfont portalInfo"><i>11:00–14:30</i></div>
+<div class="smallfont"><b>Menü 1</b></div>
 <div class="smallfont portalInfo">Gebackene Fischknusperli mit
-Sauce Rouille, Schnittlauchkartoffeln und KrÃ¤utertomate</div>
-<div class="smallfont"><b>Vegi-MenÃ¼</b></div>
+Sauce Rouille, Schnittlauchkartoffeln und Kräutertomate</div>
+<div class="smallfont"><b>Vegi-Menü</b></div>
 <div class="smallfont portalInfo">VEGI PLUS, Bami goreng mit
-GemÃ¼se, Pilzen, Tofu und Curryei, Salat oder Apfelmus</div>
+Gemüse, Pilzen, Tofu und Curryei, Salat oder Apfelmus</div>
 <div class="smallfont"><a href="http://www.zfv.ch/d/business.asp?kat=4">Mensa Startseite</a></div>
 </div>
 </td>
@@ -681,19 +681,19 @@ GemÃ¼se, Pilzen, Tofu und Curryei, Salat oder Apfelmus</div>
 <table id="portalViski" class="tborder" cellspacing="1" cellpadding="4" width="100%">
 <tbody>
 <tr>
-<td class="thead" align="center">VISki â€’ Letzte Ã„nderungen</td>
+<td class="thead" align="center">VISki ‒ Letzte Änderungen</td>
 </tr>
 </tbody>
 <tbody>
 <tr>
 <td class="alt2" align="center">
 <div class="smallfont portalViski"><b><a href="vis/wiki/go.php?namespace=0&amp;title=L%C3%B6sungsvorschlag_Einf%C3%BChrung_in_die_Programmierung_Herbst_2009">
-LÃ¶sungsvorschlag EinfÃ¼hrung in die Programmierung Herbst
+Lösungsvorschlag Einführung in die Programmierung Herbst
 2009</a></b><br/>
 23.06.2010 <span class="time">11:02</span> von <a href="member.php?u=3502">Limi</a> <a href="vis/wiki/go.php?namespace=0&amp;title=L%C3%B6sungsvorschlag_Einf%C3%BChrung_in_die_Programmierung_Herbst_2009&amp;mode=diff">
 <img src="images/buttons/lastpost.gif" class="inlineimg" alt="Vergleiche mit letzter Version" border="0"/></a><br/></div>
 <div class="smallfont portalViski"><b><a href="vis/wiki/go.php?namespace=0&amp;title=L%C3%B6sungsvorschlag_Datenstrukturen_und_Algorithmen_Fr%C3%BChling_2010">
-LÃ¶sungsvorschlag Datenstrukturen und Algorithmen FrÃ¼hling
+Lösungsvorschlag Datenstrukturen und Algorithmen Frühling
 2010</a></b><br/>
 20.06.2010 <span class="time">17:17</span> von <a href="member.php?u=3055">Simon the Sorcerer</a> <a href="vis/wiki/go.php?namespace=0&amp;title=L%C3%B6sungsvorschlag_Datenstrukturen_und_Algorithmen_Fr%C3%BChling_2010&amp;mode=diff">
 <img src="images/buttons/lastpost.gif" class="inlineimg" alt="Vergleiche mit letzter Version" border="0"/></a><br/></div>
@@ -702,7 +702,7 @@ Semester</a></b><br/>
 17.06.2010 <span class="time">16:08</span> von <a href="member.php?u=3502">Limi</a> <a href="vis/wiki/go.php?namespace=0&amp;title=Portal:1._Semester&amp;mode=diff">
 <img src="images/buttons/lastpost.gif" class="inlineimg" alt="Vergleiche mit letzter Version" border="0"/></a><br/></div>
 <div class="smallfont"><a href="http://wiki.vis.ethz.ch/Spezial:Recentchanges">Alle letzten
-Ã„nderungen</a></div>
+Änderungen</a></div>
 <div class="smallfont"><a href="http://wiki.vis.ethz.ch/">VISki
 Startseite</a></div>
 </td>
@@ -727,7 +727,7 @@ Es ist jetzt <span class="time">11:48</span> Uhr.</div>
 <table cellpadding="6" cellspacing="0" border="0" width="95%" class="page" align="center">
 <tr>
 <td class="tfoot"><select name="styleid" onchange="switch_id(this, 'style')">
-<optgroup label="Style auswÃ¤hlen">
+<optgroup label="Style auswählen">
 <option value="1" class="">-- Standard-Style</option>
 <option value="2" class="" selected="selected">----
 VIS-Look</option>
@@ -746,9 +746,9 @@ oben</a></strong></div>
 <br/>
 <div align="center">
 <div class="smallfont" align="center">
-<!-- Do not remove this copyright notice -->Powered by vBulletinÂ®
+<!-- Do not remove this copyright notice -->Powered by vBulletin®
 Version 3.8.5 (Deutsch)<br/>
-Copyright Â©2000 - 2010, Jelsoft Enterprises Ltd. 
+Copyright ©2000 - 2010, Jelsoft Enterprises Ltd. 
 <!-- Do not remove this copyright notice --></div>
 <div class="smallfont" align="center">
 <!-- Do not remove cronimage or your scheduled tasks will cease to function --><!-- Do not remove cronimage or your scheduled tasks will cease to function --></div>

@@ -122,16 +122,6 @@ FOREACH(TESTFILE ${TESTFILES})
   # Skip tests that we don't have the pre-requisites for.
   # This seems like an error-prone manual way to do this...
   SET(SKIP_TEST 0)
-  IF(NOT ZORBA_WITH_TIDY)
-    # These tests require only tidy
-    STRING(REGEX MATCH "aleXis/(q(10|5|6|8|9)|tidy_wrong_options)" NEEDS_TIDY "${TESTNAME}")
-    # These tests require tidy and rest
-    STRING(REGEX MATCH "rest/rest.*tidy" NEEDS_TIDY_AND_REST "${TESTNAME}")
-    STRING(REGEX MATCH "http_client" HTTP_CLIENT "${TESTNAME}")
-    IF(NEEDS_TIDY OR NEEDS_TIDY_AND_REST OR HTTP_CLIENT)
-      SET(SKIP_TEST 1)
-    ENDIF(NEEDS_TIDY OR NEEDS_TIDY_AND_REST OR HTTP_CLIENT)
-  ENDIF(NOT ZORBA_WITH_TIDY)
   IF(NOT ZORBA_WITH_REST)
     # These tests require rest 
     STRING(REGEX MATCH "rest/" NEEDS_REST "${TESTNAME}")
@@ -143,12 +133,12 @@ FOREACH(TESTFILE ${TESTFILES})
   ENDIF(NOT ZORBA_WITH_REST)
   #at the moment we do not check for ZORBA_WITH_REST cmake param
   #also we check for libtidy also because is it is not present HTTP module is not build
-  IF (NOT CURL_FOUND OR NOT LIBTIDY_FOUND)
+  IF (NOT CURL_FOUND)
     STRING(REGEX MATCH "http_client|oauth|webservices" HTTP_CLIENT "${TESTNAME}")
     IF(HTTP_CLIENT)
       SET(SKIP_TEST 1)
     ENDIF(HTTP_CLIENT)
-  ENDIF(NOT CURL_FOUND OR NOT LIBTIDY_FOUND)
+  ENDIF(NOT CURL_FOUND)
   IF(NOT ZORBA_WITH_FILE_ACCESS)
     #these tests require the file module
     STRING(REGEX MATCH "file/" NEEDS_FILE "${TESTNAME}")
@@ -315,10 +305,9 @@ EXPECTED_FAILURE(test/rbkt/zorba/xqddf/ic-uniqueKey-err2 2935047)
 
 EXPECTED_FAILURE(test/rbkt/zorba/HigherOrder/hof-101 3071699)
 
-IF(CURL_FOUND AND LIBTIDY_FOUND)
-  EXPECTED_FAILURE(test/rbkt/zorba/http_client/http-read-html-tidy2 2958058)
+IF(CURL_FOUND)
   EXPECTED_FAILURE(test/rbkt/zorba/http_client/external_variable 3152386)
-ENDIF(CURL_FOUND AND LIBTIDY_FOUND)
+ENDIF(CURL_FOUND)
 EXPECTED_FAILURE(test/rbkt/zorba/aleXis/q11 3103700)
 
 EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_1_1 3106635)

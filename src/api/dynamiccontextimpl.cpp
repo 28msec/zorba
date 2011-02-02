@@ -338,7 +338,7 @@ bool DynamicContextImpl::setVariableAsDocument(
     factory->createAnyURI(docUriItem, tmpDocUri);
 
     store::Item_t docItem;
-    docItem = uriResolver->resolve(docUriItem, theStaticContext, true, false, replaceDoc);
+    docItem = uriResolver->resolve(docUriItem, theStaticContext, true, replaceDoc);
 
     if(docItem.isNull())
       return false;
@@ -492,7 +492,7 @@ bool DynamicContextImpl::setContextItemAsDocument(
     GENV_ITEMFACTORY->createAnyURI(uriItem, tmpDocUri);
 
     store::Item_t docItem;
-    docItem = uri_resolver->resolve(uriItem, theStaticContext, true, false, aReplaceDoc);
+    docItem = uri_resolver->resolve(uriItem, theStaticContext, true, aReplaceDoc);
 
     if(docItem.isNull())
       return false;
@@ -734,7 +734,7 @@ void DynamicContextImpl::validateIfNecesary(
     GENV_STORE.deleteDocument(docUri);
     InternalDocumentURIResolver* uriResolver;
     uriResolver = theStaticContext->get_document_uri_resolver();
-    docItem = uriResolver->resolve(docUriItem, theStaticContext, true, false, false);
+    docItem = uriResolver->resolve(docUriItem, theStaticContext, true, false);
   }
 #endif//ZORBA_NO_XMLSCHEMA
 }

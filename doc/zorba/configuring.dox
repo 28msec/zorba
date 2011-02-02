@@ -122,14 +122,6 @@ External dependency: cURL with SSL
 If you don't have or don't use CURL library with SSL built in, then you can use
 this option to disable SSL access.
 
-\subsection ZORBA_WITH_TIDY ZORBA_WITH_TIDY
-Default ON
-External dependency: TidyLib (http://tidy.sourceforge.net)
-
-TidyLib is used to transform html documents into xml documents before loading
-into Zorba store.
-If you don't need this feature you can disable it.
-
 \subsection ZORBA_XQUERYX ZORBA_XQUERYX
 Default OFF
 External dependency: libxml2, libxslt

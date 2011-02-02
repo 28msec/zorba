@@ -227,13 +227,8 @@ class ZORBA_DLL_PUBLIC DocumentURIResolver
     * @param aXmlDataManager An XmlDataManager, which can be used to load
     *  documents.
     * @param validateUri Tells the resolver, if it should validate the uri.
-    * @param tidying If this is set to true, the document could be HTML and
-    *  should be tidied up before loaded. If tidy is not supported, the module
-    *  should return an error code.
     * @param replaceDoc Inicates, wheter the document should replace the
     *   document with the same namespace, if it was loaded before.
-    * @param aTidyUserOpt If tidying is set to true, this contains the tidy
-    *   options (or NULL, if some default options should be used).
     *
     * @returns An instance of DocumentURIResolverResult, which contains either
     *  the document or an error code and an optional error description.
@@ -243,9 +238,7 @@ class ZORBA_DLL_PUBLIC DocumentURIResolver
           StaticContext* aStaticContext,
           XmlDataManager* aXmlDataManager,
           bool validateUri,
-          bool tidying,
-          bool replaceDoc = false,
-          const Item& aTidyUserOpt = NULL) = 0;
+          bool replaceDoc = false) = 0;
 };
 
 /**

@@ -1,3 +1,0 @@
-import module namespace tidy = "http://www.zorba-xquery.com/zorba/util-functions";
-
-tidy:tdoc('http://tidy.sourceforge.net/libintro.html')

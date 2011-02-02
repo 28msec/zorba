@@ -48,7 +48,6 @@
 #include "runtime/debug/zorba_debug_iterator.h"
 #include "runtime/indexing/index_ddl.h"
 #include "runtime/function_item/dynamic_fncall_iterator.h"
-#include "runtime/util/UtilImpl.h"
 #include "runtime/visitors/iterprinter.h"
 #include "runtime/update/update.h"
 #include "runtime/eval/eval.h"
@@ -1125,11 +1124,6 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
   TYPED_VAL_CMP (STRING)
 
 #undef TYPED_VAL_CMP
-
-#ifdef ZORBA_WITH_TIDY
-  PRINTER_VISITOR_DEFINITION(ZorbaTidyIterator);
-  PRINTER_VISITOR_DEFINITION(ZorbaTDocIterator);
-#endif  // ZORBA_WITH_TIDY
 
   PRINTER_VISITOR_DEFINITION (UDFunctionCallIterator)
   PRINTER_VISITOR_DEFINITION (StatelessExtFunctionCallIterator)

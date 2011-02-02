@@ -81,7 +81,6 @@ LIST(APPEND FUNCTIONS_SRCS
     func_numerics_impl.cpp
     func_sequences_impl.cpp
     func_strings_impl.cpp
-    func_tidy.cpp
     func_var_decl.cpp
 )
 

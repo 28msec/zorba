@@ -121,10 +121,6 @@
   class FTContainsIterator;
 
   class ZorbaSchemaTypeIterator;
-#ifdef ZORBA_WITH_TIDY
-  class ZorbaTidyIterator;
-  class ZorbaTDocIterator;
-#endif  /* ZORBA_WITH_TIDY */
 //   class ZorbaRandomIterator;
 #ifdef ZORBA_WITH_FOP
   class ZorbaFopIterator;

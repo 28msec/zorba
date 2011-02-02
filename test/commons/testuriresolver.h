@@ -55,9 +55,7 @@ class TestDocumentURIResolver : public DocumentURIResolver
           StaticContext* aStaticContext,
           XmlDataManager* aXmlDataManager,
           bool validateUri,
-          bool tidying,
-          bool replaceDoc = false,
-          const Item& aTidyUserOpt = NULL);
+          bool replaceDoc = false);
   private:
     String theBaseFile;
 };

@@ -39,9 +39,7 @@ public:
         const store::Item_t& aURI,
         static_context* aStaticContext,
         bool validate,
-        bool tidying,
-        bool replaceDoc,
-        const store::Item_t& tidyUserOpt = NULL) = 0;
+        bool replaceDoc) = 0;
 };
 
 
