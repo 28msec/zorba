@@ -22,7 +22,7 @@ ADD_CUSTOM_TARGET(xqdoc
     --omit-xml-declaration
     -f
     -q "\"${CMAKE_CURRENT_SOURCE_DIR}/src/xqdoc-main.xq\""
-    -e "\"modulesPath:=${CMAKE_SOURCE_DIR}/modules/com/zorba-xquery/www/modules/convertors\""
+    -e "\"modulesPath:=${CMAKE_SOURCE_DIR}/modules\""
     -e "\"xhtmlRequisitesPath:=${CMAKE_CURRENT_SOURCE_DIR}\""
     -e "\"xqdocBuildPath:=${CMAKE_CURRENT_BINARY_DIR}\""
     -e "\"examplePath:=${CMAKE_SOURCE_DIR}/test/rbkt/Queries;${CMAKE_SOURCE_DIR}/test/update/Queries\""
