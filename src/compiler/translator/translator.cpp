@@ -12030,12 +12030,13 @@ void *begin_visit (const FTThesaurusOption& v) {
 void end_visit (const FTThesaurusOption& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 #ifndef ZORBA_NO_FULL_TEXT
-  ftthesaurus_id *const default_tid = v.includes_default() ?
-    new ftthesaurus_id(
-      v.get_location(), ft_resolve_thesaurus( "default" )
-    )
-  :
-    NULL;
+  ftthesaurus_id *default_tid = NULL;
+  if ( v.includes_default() ) {
+    zstring resolved_uri = ft_resolve_thesaurus( "default" );
+    if ( resolved_uri == "default" )
+      resolved_uri = ft_resolve_thesaurus( "##default" );
+    default_tid = new ftthesaurus_id( v.get_location(), resolved_uri );
+  }
 
   ftthesaurus_option::thesaurus_id_list_t list;
   while ( true ) {

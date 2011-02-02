@@ -5942,9 +5942,9 @@ opt_FTThesaurus_list
         {
             $$ = NULL;
         }
-    |   FTThesaurus_list
+    |   COMMA FTThesaurus_list
         {
-            $$ = $1;
+            $$ = $2;
         }
     ;
 
