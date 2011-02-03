@@ -39,6 +39,7 @@ namespace wordnet {
  */
 class thesaurus : public ft_thesaurus {
 public:
+
   /**
    * Constructs a %thesaurus.
    *
@@ -62,14 +63,28 @@ public:
   bool next( zstring *synonym );
 
 private:
-  typedef std::pair<synset_id_t,iso2788::rel_dir> candidate_t;
-  typedef std::deque<candidate_t> candidate_queue_t;
-  typedef std::deque<lemma_id_t> result_queue_t;
-  typedef std::set<lemma_id_t> seen_set_t;
 
-  zstring const path_;
-  ft_int const at_least_, at_most_;
-  ft_int level_;
+  /**
+   * A %wordnet_file_checker is a dummy class that's used in order to be able
+   * to perform sanity checking on the WordNet binary thesaurus file in the
+   * mem-initializer list of the thesaurus constructor.
+   *
+   * An instance of this class \e must be declared \e after the instance of
+   * mmap_file so that the mmap_file is initialized before the check is
+   * performed.
+   */
+  struct wordnet_file_checker {
+    wordnet_file_checker( mmap_file const& );
+  };
+
+  //
+  // These data members MUST be declared in this order so they're initialized
+  // in this order.
+  //
+  mmap_file const wordnet_file_;
+  wordnet_file_checker const wordnet_file_checker_;
+  db_segment const wn_lemmas_;
+  db_segment const wn_synsets_;
 
   /**
    * The WordNet pointer type that is the closest equivalent of the
@@ -77,39 +92,22 @@ private:
    */
   pointer::type query_ptr_type_;
 
+  ft_int const at_least_, at_most_;
+  ft_int level_;
+
+  typedef std::pair<synset_id_t,iso2788::rel_dir> candidate_t;
+  typedef std::deque<candidate_t> candidate_queue_t;
   candidate_queue_t candidate_queue_;
+
+  typedef std::deque<lemma_id_t> result_queue_t;
   result_queue_t result_queue_;
+
+  typedef std::set<lemma_id_t> seen_set_t;
   seen_set_t synonyms_seen_;
 
   static candidate_queue_t::value_type const LevelMarker;
 
-  /**
-   * Attempts to find a lemma within the WordNet thesaurus.
-   *
-   * @param phrase The phrase to search for.
-   * @return Returns said lemma or \c NULL if not found.
-   */
   char const* find_lemma( zstring const &phrase );
-
-  /**
-   * Gets a reference to a singleton instance of the WordNet thesaurus database
-   * file.
-   *
-   * @param path The file or directory the WordNet thesaurus database is in.
-   * @return Returns said reference.
-   */
-  static mmap_file const& get_wordnet_file( zstring const &path );
-
-  /**
-   * Gets a reference to a singleton instance of a WordNet thesaurus database
-   * segment.
-   *
-   * @tparam SegID The database segment ID of the segment to get.
-   * @param path The file or directory the WordNet thesaurus database is in.
-   * @return Returns said segment.
-   */
-  template<db_segment::id_t SegID>
-  static db_segment const& get_segment( zstring const &path );
 
   // forbid these
   thesaurus( thesaurus const& );
