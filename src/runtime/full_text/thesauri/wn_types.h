@@ -57,7 +57,7 @@ namespace part_of_speech {
    * Attempts to find the WordNet part-of-speech corresponding to the given
    * part-of-speech code.
    *
-   -1@param pos The part-of-speech code.
+   * @param pos The part-of-speech code.
    * @return Returns the corresponding part-of-speech or \c unknown.
    */
   type find( char pos );
