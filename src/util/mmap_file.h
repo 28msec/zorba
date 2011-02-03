@@ -84,7 +84,8 @@ public:
    * @param path The full path of the file to map.
    * @param mode The mode to use for opening/mapping the file.
    */
-  mmap_file( char const *path, std::ios::openmode mode = std::ios::in ) {
+  explicit mmap_file( char const *path,
+                      std::ios::openmode mode = std::ios::in ) {
     init();
     open( path, mode );
   }
@@ -291,6 +292,10 @@ private:
   void        *addr_;
 
   void        init();
+
+  // forbid these
+  mmap_file( mmap_file const& );
+  mmap_file& operator=( mmap_file const& );
 };
 
 } // namespace zorba
