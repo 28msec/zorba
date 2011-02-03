@@ -39,6 +39,18 @@ import module namespace zorba-schema = "http://www.zorba-xquery.com/modules/sche
 import schema namespace html-options = "http://www.zorba-xquery.com/modules/convertors/html-options";
 
 (:~
+ : Errors namespace URI.
+:)
+declare variable $html:htmlNS as xs:string := "http://www.zorba-xquery.com/modules/convertors/html";
+
+(:~
+ : Error code for wrong parameter situations.<br/>
+ : Possible error messages:<br/>
+ : * "Options are not set correctly."<br/>
+:)
+declare variable $html:errWrongParam as xs:QName := fn:QName($html:htmlNS, "zorba-csv:WrongParam");
+
+(:~
  : <p>This function tidies the given HTML string and returns
  : a valid XHTML document node.</p>
  :
@@ -82,6 +94,7 @@ declare function html:parse (
  :        to configure the tidy process that have to be validated against the 
  :        "http://www.zorba-xquery.com/modules/convertors/html-options" schema.
  : @return the tidied XHTML document node
+ : @error $html:errWrongParam if the otions were not set correctly.
  : @example tidy_1.xq
  :)
 declare function html:parse (
@@ -89,15 +102,20 @@ declare function html:parse (
   $options as element(html-options:options)
 ) as document-node()
 {
-  let $validated-options := if(empty($options)) then
-                              $options
-                            else
-                              if(zorba-schema:is-validated($options)) then
+  try {
+    let $validated-options := if(empty($options)) then
                                 $options
                               else
-                                validate{$options} 
-  return
-    html:parse-internal($html, $validated-options)
+                                if(zorba-schema:is-validated($options)) then
+                                  $options
+                                else
+                                  validate{$options} 
+    return
+      html:parse-internal($html, $validated-options)
+  } catch *
+  {
+    fn:error($html:errWrongParam, "The html-options element is not valid.")
+  }
 };
 
 declare %private function html:parse-internal(
