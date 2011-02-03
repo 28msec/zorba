@@ -107,7 +107,7 @@ private:
 
   static candidate_queue_t::value_type const LevelMarker;
 
-  char const* find_lemma( zstring const &phrase );
+  char const* find_lemma( zstring const &phrase ) const;
 
   // forbid these
   thesaurus( thesaurus const& );

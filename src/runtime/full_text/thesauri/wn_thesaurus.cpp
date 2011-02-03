@@ -303,7 +303,7 @@ thesaurus::wordnet_file_checker::wordnet_file_checker( mmap_file const &file ) {
     THROW_ENDIANNESS_EXCEPTION();
 }
 
-char const* thesaurus::find_lemma( zstring const &phrase ) {
+char const* thesaurus::find_lemma( zstring const &phrase ) const {
   typedef pair<db_segment::const_iterator,db_segment::const_iterator> range_t;
 
   char const *const c_phrase = phrase.c_str();
