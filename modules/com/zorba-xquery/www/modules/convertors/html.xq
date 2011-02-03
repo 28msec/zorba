@@ -48,7 +48,7 @@ declare variable $html:htmlNS as xs:string := "http://www.zorba-xquery.com/modul
  : Possible error messages:<br/>
  : * "Options are not set correctly."<br/>
 :)
-declare variable $html:errWrongParam as xs:QName := fn:QName($html:htmlNS, "$html:errWrongParam");
+declare variable $html:errWrongParam as xs:QName := fn:QName($html:htmlNS, "html:errWrongParam");
 
 (:~
  : <p>This function tidies the given HTML string and returns
