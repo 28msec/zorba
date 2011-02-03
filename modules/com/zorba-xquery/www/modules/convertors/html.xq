@@ -16,9 +16,9 @@
 
 (:~
  : <p>
- : This module provides functions to tidy HTML. The functions in this module
- : take an HTML document (a string) as parameter, tidy it in order to result in
- : valid XHTML, and return this XHTML document as a document-node.
+ : This module provides functions to <a href="http://www.w3.org/People/Raggett/tidy/" target="_blank">tidy</a> a HTML document. <br /> 
+ : The functions in this module take an HTML document (a string) as parameter, 
+ : tidy it in order to result in valid XHTML, and return this XHTML document as a document-node.
  : </p>
  :
  :
@@ -48,6 +48,7 @@ import schema namespace html-options = "http://www.zorba-xquery.com/modules/conv
  :
  : @param $html the HTML string to tidy
  : @return the tidied XHTML document node
+ : @example tidy_2.xq
  :)
 declare function html:parse (
   $html as xs:string
@@ -77,22 +78,24 @@ declare function html:parse (
  : http://tidy.sourceforge.net/docs/quickref.html</a>.</p>
  :
  : @param $html the HTML string to tidy
- : @param $options a sequence of name=value pairs that provide options
- :        to configure the tidy process.
+ : @param $options a set of name and value pairs that provide options
+ :        to configure the tidy process that have to be validated against the 
+ :        "http://www.zorba-xquery.com/modules/convertors/html-options" schema.
  : @return the tidied XHTML document node
+ : @example tidy_1.xq
  :)
 declare function html:parse (
   $html as xs:string,
   $options as element(html-options:options)
 ) as document-node()
 {
-  let $validated-options := (:if(empty($options)) then :)
+  let $validated-options := if(empty($options)) then
                               $options
-                            (:else
+                            else
                               if(zorba-schema:is-validated($options)) then
                                 $options
                               else
-                                validate{$options} :)
+                                validate{$options} 
   return
     html:parse-internal($html, $validated-options)
 };

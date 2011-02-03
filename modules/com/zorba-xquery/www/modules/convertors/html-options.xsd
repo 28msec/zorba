@@ -3,10 +3,11 @@
   targetNamespace="http://www.zorba-xquery.com/modules/convertors/html-options" 
   elementFormDefault="qualified" attributeFormDefault="unqualified"
   >
+  
   <xs:element name="options">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="tidyParam">
+        <xs:element name="tidyParam" minOccurs="0" maxOccurs="unbounded">
           <xs:complexType>   
             <xs:simpleContent>
               <xs:extension base="xs:string">

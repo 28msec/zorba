@@ -1396,7 +1396,7 @@ declare %private function xqdoc2html:imports(
       for $import in $xqdoc/xqdoc:imports//xqdoc:import[@type = "schema"]
       return
         if (exists($schemasCollector/module[@uri=$import/xqdoc:uri/text()])) then
-          <li><a href="{$schemasCollector/module[@uri=$import/xqdoc:uri/text()]/@file}.html" target="_blank">{string($import/xqdoc:uri/text())}</a></li>
+          <li><a href="{$schemasCollector/module[@uri=$import/xqdoc:uri/text()]/@file}" target="_blank">{string($import/xqdoc:uri/text())}</a></li>
         else
           <li>{string($import/xqdoc:uri/text())}</li>  
     }
