@@ -956,14 +956,13 @@ apply_query_tokens_as_phrase( FTTokenIterator &query_tokens,
   TRACE_APPLY( result );
   PUT_ARG( query_pos );
 
-  ftthesaurus_option const *const t_option = options.get_thesaurus_option();
-  if ( t_option && !t_option->no_thesaurus() ) {
+  if ( ftthesaurus_option const *topt = get_thesaurus_option( &options ) ) {
     zstring query_phrase;
     FTToken const *const qt0 =
       to_string( query_tokens, &query_phrase, FTToken::lower );
     if ( qt0 ) {
       FTQueryItemSeq synonyms;
-      apply_thesaurus_option( t_option, query_phrase, *qt0, synonyms );
+      apply_thesaurus_option( topt, query_phrase, *qt0, synonyms );
 
       ftmatch_options options_no_thesaurus( options );
       options_no_thesaurus.set_thesaurus_option( NULL );
@@ -1220,27 +1219,23 @@ lookup_thesaurus( ftthesaurus_id const &tid, zstring const &query_phrase,
 }
 
 void ftcontains_visitor::
-apply_thesaurus_option( ftthesaurus_option const *t_option,
+apply_thesaurus_option( ftthesaurus_option const *topt,
                         zstring const &query_phrase, FTToken const &qt0,
                         FTQueryItemSeq &result, bool check_sctx ) {
-  ftthesaurus_id const *const default_tid =
-    t_option->get_default_thesaurus_id();
+  ftthesaurus_id const *const default_tid = topt->get_default_thesaurus_id();
   if ( default_tid ) {
     ftmatch_options const *const sctx_mo = static_ctx_.get_match_options();
     if ( check_sctx && sctx_mo ) {
-      ftthesaurus_option const *const sctx_t_option =
-        sctx_mo->get_thesaurus_option();
-      if ( sctx_t_option && !sctx_t_option->no_thesaurus() )
-        apply_thesaurus_option(
-          sctx_t_option, query_phrase, qt0, result, false
-        );
+      ftthesaurus_option const *sctx_topt = get_thesaurus_option( sctx_mo );
+      if ( sctx_topt )
+        apply_thesaurus_option( sctx_topt, query_phrase, qt0, result, false );
     } else {
       lookup_thesaurus( *default_tid, query_phrase, qt0, result );
     }
   }
 
   FOR_EACH( ftthesaurus_option::thesaurus_id_list_t, pptid,
-            t_option->get_thesaurus_id_list() ) {
+            topt->get_thesaurus_id_list() ) {
     lookup_thesaurus( **pptid, query_phrase, qt0, result );
   }
 }

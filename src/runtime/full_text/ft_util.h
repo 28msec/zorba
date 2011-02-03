@@ -44,10 +44,10 @@ typedef xs_uint ft_int;
 /**
  * Gets the language from the given ftmatch_options, if any.
  *
- * @param options The ftmatch_options to get the language from.  This may be
- * <code>null</code>.
- * @return Returns said language or unknown if either options is
- * <code>NULL</code> or the options have no language option.
+ * @param options The ftmatch_options to get the language from.  This may be \c
+ * NULL.
+ * @return Returns said language or unknown if either options is \c NULL or the
+ * options have no language option.
  */
 inline locale::iso639_1::type get_lang_from( ftmatch_options const *options ) {
   if ( options )
@@ -57,11 +57,27 @@ inline locale::iso639_1::type get_lang_from( ftmatch_options const *options ) {
 }
 
 /**
+ * Gets the ftthesaurus_option from the given ftmatch_options, if any.
+ *
+ * @param options The ftmatch_options to get the ftthesaurus_option from.  This
+ * may be \c NULL.
+ * @return Returns said ftthesaurus_option or \c NULL if none.
+ */
+inline ftthesaurus_option const*
+get_thesaurus_option( ftmatch_options const *options ) {
+  if ( options )
+    if ( ftthesaurus_option const *const t = options->get_thesaurus_option() )
+      if ( !t->no_thesaurus() )
+        return t;
+  return 0;
+}
+
+/**
  * Gets whether wildcards are enabled from the given ftmatch_options, if any.
  *
- * @param options The ftmatch_options to check.  This may be <code>NULL</code>.
- * @return Returns <code>true</code> only if the options is not
- * <code>NULL</code> and the options contain an enabled wildcard option.
+ * @param options The ftmatch_options to check.  This may be \c NULL.
+ * @return Returns \c true only if the options is not \c NULL and the options
+ * contain an enabled wildcard option.
  */
 inline bool get_wildcards_from( ftmatch_options const *options ) {
   if ( options )
