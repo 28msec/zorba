@@ -97,10 +97,8 @@ ft_thesaurus::~ft_thesaurus() {
   // do nothing
 }
 
-ft_thesaurus* ft_thesaurus::get( zstring const &mapping, iso639_1::type lang,
-                                 zstring const &phrase,
-                                 zstring const &relationship,
-                                 ft_int at_least, ft_int at_most ) {
+auto_ptr<ft_thesaurus> ft_thesaurus::get( zstring const &mapping,
+                                          iso639_1::type lang ) {
   thesaurus_impl::type th_impl;
   zstring uri;
   parse_mapping( mapping, &th_impl, &uri );
@@ -121,18 +119,18 @@ ft_thesaurus* ft_thesaurus::get( zstring const &mapping, iso639_1::type lang,
       );
   }
 
+  ft_thesaurus *result;
   switch ( th_impl ) {
     case thesaurus_impl::wordnet:
-      return new wordnet::thesaurus(
-        th_path, lang, phrase, relationship, at_least, at_most
-      );
+      result = new wordnet::thesaurus( th_path, lang );
+      break;
     case thesaurus_impl::xqftts:
-      return new xqftts::thesaurus(
-        th_path, lang, phrase, relationship, at_least, at_most
-      );
+      result = new xqftts::thesaurus( th_path, lang );
+      break;
     default:
-      return NULL;
+      result = 0;
   }
+  return auto_ptr<ft_thesaurus>( result );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

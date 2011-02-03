@@ -17,6 +17,8 @@
 #ifndef ZORBA_FULL_TEXT_FT_THESAURUS_H
 #define ZORBA_FULL_TEXT_FT_THESAURUS_H
 
+#include <memory>
+
 #include "zorbatypes/zstring.h"
 #include "zorbautils/locale.h"
 
@@ -34,10 +36,19 @@ public:
   virtual ~ft_thesaurus();
 
   /**
-   * Gets an instance of the requested thesaurus and performs a phrase look-up.
+   * Gets an instance of the requested thesaurus.
    *
    * @param mapping The mapping string specifying the thesaurus to use.
    * @param lang The language of the thesaurus.
+   * @return Returns said thesaurus or \c null if no thesaurus matches the
+   * request.
+   */
+  static std::auto_ptr<ft_thesaurus> get( zstring const &mapping,
+                                          locale::iso639_1::type lang );
+
+  /**
+   * Looks-up the given phrase.
+   *
    * @param phrase The phrase to look up.
    * @param relationship The relationship the synonyms are to have to the given
    * \a phrase.
@@ -45,12 +56,10 @@ public:
    * traversed.
    * @param at_most The maximum number of levels within the thesaurus to be
    * traversed.
-   * @return Returns said thesaurus or \c null if no thesaurus matches the
-   * request.  It is the caller's responsibility to \c delete the thesaurus.
+   * @return Returns \c true only if \a phrase was found.
    */
-  static ft_thesaurus* get( zstring const &mapping, locale::iso639_1::type lang,
-                            zstring const &phrase, zstring const &relationship,
-                            ft_int at_least, ft_int at_most );
+  virtual bool lookup( zstring const &phrase, zstring const &relationship,
+                       ft_int at_least, ft_int at_most ) = 0;
 
   /**
    * Gets the next synonym.

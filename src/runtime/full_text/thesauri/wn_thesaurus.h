@@ -39,28 +39,12 @@ namespace wordnet {
  */
 class thesaurus : public ft_thesaurus {
 public:
-
-  /**
-   * Constructs a %thesaurus.
-   *
-   * @param path The path to the Wordnet database file or the directory it's
-   * in.
-   * @param lang The language of the phrase.
-   * @param phrase The phrase to look up.
-   * @param relationship The desired relationship the synonyms are to have.
-   * @param at_least The least number of "levels" the synonyms are to be away
-   * from the phrase.
-   * @param at_most The most number of "levels" the synonyms are to be away
-   * from the phrase.
-   */
-  thesaurus( zstring const &path, locale::iso639_1::type lang,
-             zstring const &phrase, zstring const &relationship,
-             ft_int at_least, ft_int at_most );
-
+  thesaurus( zstring const &path, locale::iso639_1::type lang );
   ~thesaurus();
 
   // inherited
-  bool next( zstring *synonym );
+  bool lookup( zstring const&, zstring const&, ft_int, ft_int );
+  bool next( zstring* );
 
 private:
 
@@ -86,14 +70,15 @@ private:
   db_segment const wn_lemmas_;
   db_segment const wn_synsets_;
 
+  locale::iso639_1::type const lang_;
+
   /**
    * The WordNet pointer type that is the closest equivalent of the
    * "relationship" given in the original query, if any.
    */
   pointer::type query_ptr_type_;
 
-  ft_int const at_least_, at_most_;
-  ft_int level_;
+  ft_int at_least_, at_most_, level_;
 
   typedef std::pair<synset_id_t,iso2788::rel_dir> candidate_t;
   typedef std::deque<candidate_t> candidate_queue_t;

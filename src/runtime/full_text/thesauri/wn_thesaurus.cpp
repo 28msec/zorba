@@ -247,37 +247,13 @@ static pointer::type map_xquery_rel( zstring const &relationship,
 thesaurus::candidate_queue_t::value_type const thesaurus::LevelMarker =
   make_pair( ~0u, iso2788::neutral );
 
-thesaurus::thesaurus( zstring const &path, iso639_1::type lang,
-                      zstring const &phrase, zstring const &relationship,
-                      ft_int at_least, ft_int at_most ) :
+thesaurus::thesaurus( zstring const &path, iso639_1::type lang ) :
   wordnet_file_( get_wordnet_path( path ).c_str() ),
   wordnet_file_checker_( wordnet_file_ ),
   wn_lemmas_( wordnet_file_, db_segment::lemma ),
   wn_synsets_( wordnet_file_, db_segment::synset ),
-  query_ptr_type_( map_xquery_rel( relationship, lang ) ),
-  at_least_( at_least ), at_most_( fix_at_most( at_most ) ), level_( 0 )
+  lang_( lang )
 {
-# if DEBUG_FT_THESAURUS
-  cout << "==================================================" << endl;
-  cout << "query phrase: " << phrase << endl;
-  cout << "query ptr_type=" << query_ptr_type_ << endl;
-# endif
-  if ( char const *p = find_lemma( phrase ) ) {
-    while ( *p++ ) ;                    // skip past lemma
-    //
-    // Load the candidate_queue_ will all the synsets for the lemma.
-    //
-    iso2788::rel_dir const query_dir = get_ptr_dir( query_ptr_type_ );
-    for ( unsigned num_synsets = decode_base128( &p ); num_synsets-- > 0; ) {
-      synset_id_t const synset_id = decode_base128( &p );
-      candidate_queue_.push_back( make_pair( synset_id, query_dir ) );
-    }
-    //
-    // All the candidates just added constitute a "level" so add the
-    // LevelMarker to the queue.
-    //
-    candidate_queue_.push_back( LevelMarker );
-  }
 }
 
 thesaurus::~thesaurus() {
@@ -314,6 +290,43 @@ char const* thesaurus::find_lemma( zstring const &phrase ) const {
   if ( range.first == wn_lemmas_.end() || comparator( c_phrase, *range.first ) )
     return NULL;
   return *range.first;
+}
+
+bool thesaurus::lookup( zstring const &phrase, zstring const &relationship,
+                        ft_int at_least, ft_int at_most ) {
+  //
+  // Initialize/clear everything.
+  //
+  query_ptr_type_ = map_xquery_rel( relationship, lang_ );
+  at_least_ = at_least;
+  at_most_ = fix_at_most( at_most );
+  level_ = 0;
+  candidate_queue_.clear();
+  result_queue_.clear();
+  synonyms_seen_.clear();
+
+# if DEBUG_FT_THESAURUS
+  cout << "==================================================" << endl;
+  cout << "query phrase: " << phrase << endl;
+# endif
+  if ( char const *p = find_lemma( phrase ) ) {
+    while ( *p++ ) ;                    // skip past lemma
+    //
+    // Load the candidate_queue_ will all the synsets for the lemma.
+    //
+    iso2788::rel_dir const query_dir = get_ptr_dir( query_ptr_type_ );
+    for ( unsigned num_synsets = decode_base128( &p ); num_synsets-- > 0; ) {
+      synset_id_t const synset_id = decode_base128( &p );
+      candidate_queue_.push_back( make_pair( synset_id, query_dir ) );
+    }
+    //
+    // All the candidates just added constitute a "level" so add the
+    // LevelMarker to the queue.
+    //
+    candidate_queue_.push_back( LevelMarker );
+    return true;
+  }
+  return false;
 }
 
 bool thesaurus::next( zstring *synonym ) {

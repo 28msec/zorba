@@ -1200,13 +1200,12 @@ lookup_thesaurus( ftthesaurus_id const &tid, zstring const &query_phrase,
     at_least = 0, at_most = numeric_limits<ft_int>::max();
 
   auto_ptr<ft_thesaurus> thesaurus(
-    ft_thesaurus::get(
-      tid.get_uri(), qt0.lang(), query_phrase, tid.get_relationship(),
-      at_least, at_most
-    )
+    ft_thesaurus::get( tid.get_uri(), qt0.lang() )
   );
   if ( !thesaurus.get() )
     ZORBA_ERROR_PARAM( FTST0018, tid.get_uri(), "" );
+
+  thesaurus->lookup( query_phrase, tid.get_relationship(), at_least, at_most );
 
   FTTokenSeqIterator::FTTokens synonyms;
   thesaurus_callback cb( qt0.pos(), qt0.lang(), synonyms );

@@ -56,12 +56,24 @@ inline bool is_element( store::Item_t const &item ) {
 thesaurus::candidate_queue_t::value_type const thesaurus::LevelMarker =
   make_pair( static_cast<synonym*>(0), iso2788::neutral );
 
-thesaurus::thesaurus( zstring const &path, iso639_1::type lang,
-                      zstring const &phrase, zstring const &query_rel_string,
-                      ft_int at_least, ft_int at_most ) :
-  at_least_( at_least ), at_most_( at_most ), level_( 1 )
-{
+thesaurus::thesaurus( zstring const &path, iso639_1::type lang ) {
   read_xqftts_file( path );
+}
+
+thesaurus::~thesaurus() {
+  MUTATE_EACH( thesaurus_t, entry, thesaurus_ )
+    delete_ptr_seq( entry->second );
+}
+
+bool thesaurus::lookup( zstring const &phrase, zstring const &query_rel_string,
+                        ft_int at_least, ft_int at_most ) {
+  at_least_ = at_least;
+  at_most_ = at_most;
+  level_ = 1;
+  candidate_queue_.clear();
+  result_queue_.clear();
+  synonyms_seen_.clear();
+
 # if DEBUG_THESAURUS
   cout << "==================================================" << endl;
   cout << "query phrase: " << phrase << endl;
@@ -102,12 +114,9 @@ thesaurus::thesaurus( zstring const &path, iso639_1::type lang,
     // LevelMarker to the queue.
     //
     candidate_queue_.push_back( LevelMarker );
+    return true;
   }
-}
-
-thesaurus::~thesaurus() {
-  MUTATE_EACH( thesaurus_t, entry, thesaurus_ )
-    delete_ptr_seq( entry->second );
+  return false;
 }
 
 bool thesaurus::next( zstring *result ) {

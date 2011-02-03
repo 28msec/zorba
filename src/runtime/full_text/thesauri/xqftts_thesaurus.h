@@ -39,14 +39,12 @@ namespace xqftts {
  */
 class thesaurus : public ft_thesaurus {
 public:
-  thesaurus( zstring const &path, locale::iso639_1::type lang,
-             zstring const &phrase, zstring const &relationship,
-             ft_int at_least, ft_int at_most );
-
+  thesaurus( zstring const &path, locale::iso639_1::type lang );
   ~thesaurus();
 
   // inherited
-  bool next( zstring *synonym );
+  bool lookup( zstring const&, zstring const&, ft_int, ft_int );
+  bool next( zstring* );
 
 private:
   //
@@ -105,24 +103,23 @@ private:
     };
   };
 
+  ft_int at_least_, at_most_, level_;
+
   typedef std::pair<synonym const*,iso2788::rel_dir> candidate_t;
   typedef std::deque<candidate_t> candidate_queue_t;
+  candidate_queue_t candidate_queue_;
 
   typedef std::deque<term_t> result_queue_t;
+  result_queue_t result_queue_;
+
   typedef std::set<term_t> seen_set_t;
+  seen_set_t synonyms_seen_;
 
   typedef std::set<synonym*,synonym::less> synonym_set_t;
   typedef std::map<term_t,synonym_set_t> thesaurus_t;
-
-  candidate_queue_t candidate_queue_;
-  result_queue_t result_queue_;
-  seen_set_t synonyms_seen_;
   thesaurus_t thesaurus_;
 
   static candidate_queue_t::value_type const LevelMarker;
-
-  ft_int const at_least_, at_most_;
-  ft_int level_;
 
   void read_xqftts_file( zstring const &uri );
 
