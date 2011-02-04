@@ -43,11 +43,9 @@ public:
   ~thesaurus();
 
   // inherited
-  bool lookup( zstring const&, zstring const&, ft_int, ft_int );
-  bool next( zstring* );
+  iterator_ptr lookup( zstring const&, zstring const&, ft_int, ft_int ) const;
 
 private:
-
   /**
    * A %wordnet_file_checker is a dummy class that's used in order to be able
    * to perform sanity checking on the WordNet binary thesaurus file in the
@@ -69,34 +67,56 @@ private:
   wordnet_file_checker const wordnet_file_checker_;
   db_segment const wn_lemmas_;
   db_segment const wn_synsets_;
-
   locale::iso639_1::type const lang_;
-
-  /**
-   * The WordNet pointer type that is the closest equivalent of the
-   * "relationship" given in the original query, if any.
-   */
-  pointer::type query_ptr_type_;
-
-  ft_int at_least_, at_most_, level_;
-
-  typedef std::pair<synset_id_t,iso2788::rel_dir> candidate_t;
-  typedef std::deque<candidate_t> candidate_queue_t;
-  candidate_queue_t candidate_queue_;
-
-  typedef std::deque<lemma_id_t> result_queue_t;
-  result_queue_t result_queue_;
-
-  typedef std::set<lemma_id_t> seen_set_t;
-  seen_set_t synonyms_seen_;
-
-  static candidate_queue_t::value_type const LevelMarker;
 
   char const* find_lemma( zstring const &phrase ) const;
 
   // forbid these
   thesaurus( thesaurus const& );
   thesaurus& operator=( thesaurus const& );
+
+  /////////////////////////////////////////////////////////////////////////////
+
+  class iterator : public ft_thesaurus::iterator {
+  public:
+    // inherited
+    bool next( zstring* );
+
+  private:
+    iterator( thesaurus const&, char const *lemma, pointer::type,
+              ft_int at_least, ft_int at_most );
+
+    thesaurus const &thesaurus_;
+
+    /**
+     * The WordNet pointer type that is the closest equivalent of the
+     * "relationship" given in the original query, if any.
+     */
+    pointer::type query_ptr_type_;
+  
+    ft_int const at_least_, at_most_;
+    ft_int level_;
+  
+    typedef std::pair<synset_id_t,iso2788::rel_dir> candidate_t;
+    typedef std::deque<candidate_t> candidate_queue_t;
+    candidate_queue_t candidate_queue_;
+  
+    typedef std::deque<lemma_id_t> result_queue_t;
+    result_queue_t result_queue_;
+  
+    typedef std::set<lemma_id_t> seen_set_t;
+    seen_set_t synonyms_seen_;
+
+    static candidate_queue_t::value_type const LevelMarker;
+
+    // forbid these
+    iterator( iterator const& );
+    iterator& operator=( iterator const& );
+
+    friend class thesaurus;
+  };
+
+  friend class iterator;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

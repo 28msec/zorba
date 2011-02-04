@@ -43,8 +43,7 @@ public:
   ~thesaurus();
 
   // inherited
-  bool lookup( zstring const&, zstring const&, ft_int, ft_int );
-  bool next( zstring* );
+  iterator_ptr lookup( zstring const&, zstring const&, ft_int, ft_int ) const;
 
 private:
   //
@@ -103,29 +102,52 @@ private:
     };
   };
 
-  ft_int at_least_, at_most_, level_;
-
-  typedef std::pair<synonym const*,iso2788::rel_dir> candidate_t;
-  typedef std::deque<candidate_t> candidate_queue_t;
-  candidate_queue_t candidate_queue_;
-
-  typedef std::deque<term_t> result_queue_t;
-  result_queue_t result_queue_;
-
-  typedef std::set<term_t> seen_set_t;
-  seen_set_t synonyms_seen_;
-
   typedef std::set<synonym*,synonym::less> synonym_set_t;
   typedef std::map<term_t,synonym_set_t> thesaurus_t;
   thesaurus_t thesaurus_;
-
-  static candidate_queue_t::value_type const LevelMarker;
 
   void read_xqftts_file( zstring const &uri );
 
   // forbid these
   thesaurus( thesaurus const& );
   thesaurus& operator=( thesaurus const& );
+
+  /////////////////////////////////////////////////////////////////////////////
+
+  class iterator : public ft_thesaurus::iterator {
+  public:
+    // inherited
+    bool next( zstring* );
+
+  private:
+    iterator( thesaurus_t const&, zstring const &phrase,
+              zstring const &relationship, ft_int at_least, ft_int at_most );
+
+    thesaurus_t const &thesaurus_;
+
+    ft_int const at_least_, at_most_;
+    ft_int level_;
+
+    typedef std::pair<synonym const*,iso2788::rel_dir> candidate_t;
+    typedef std::deque<candidate_t> candidate_queue_t;
+    candidate_queue_t candidate_queue_;
+
+    typedef std::deque<term_t> result_queue_t;
+    result_queue_t result_queue_;
+
+    typedef std::set<term_t> seen_set_t;
+    seen_set_t synonyms_seen_;
+
+    static candidate_queue_t::value_type const LevelMarker;
+
+    // forbid these
+    iterator( iterator const& );
+    iterator& operator=( iterator const& );
+
+    friend class thesaurus;
+  };
+
+  friend class iterator;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

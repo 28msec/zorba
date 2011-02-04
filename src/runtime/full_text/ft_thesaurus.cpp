@@ -97,8 +97,8 @@ ft_thesaurus::~ft_thesaurus() {
   // do nothing
 }
 
-auto_ptr<ft_thesaurus> ft_thesaurus::get( zstring const &mapping,
-                                          iso639_1::type lang ) {
+ft_thesaurus::ptr ft_thesaurus::get( zstring const &mapping,
+                                     iso639_1::type lang ) {
   thesaurus_impl::type th_impl;
   zstring uri;
   parse_mapping( mapping, &th_impl, &uri );
@@ -130,7 +130,7 @@ auto_ptr<ft_thesaurus> ft_thesaurus::get( zstring const &mapping,
     default:
       result = 0;
   }
-  return auto_ptr<ft_thesaurus>( result );
+  return ptr( result );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

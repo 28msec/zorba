@@ -17,7 +17,7 @@
 #ifndef ZORBA_FULL_TEXT_FT_THESAURUS_H
 #define ZORBA_FULL_TEXT_FT_THESAURUS_H
 
-#include <memory>
+#include <memory>                       /* for auto_ptr */
 
 #include "zorbatypes/zstring.h"
 #include "zorbautils/locale.h"
@@ -33,6 +33,23 @@ namespace zorba {
  */
 class ft_thesaurus {
 public:
+
+  /**
+   * An %iterator is used to iterate over lookup results.
+   */
+  struct iterator {
+    /**
+     * Gets the next synonym.
+     *
+     * @param synonym A pointer to the string to receive the next synonym.
+     * @return Returns \c true only if there is a next synonym.
+     */
+    virtual bool next( zstring *synonym ) = 0;
+  };
+
+  typedef std::auto_ptr<ft_thesaurus> ptr;
+  typedef std::auto_ptr<iterator> iterator_ptr;
+
   virtual ~ft_thesaurus();
 
   /**
@@ -40,11 +57,10 @@ public:
    *
    * @param mapping The mapping string specifying the thesaurus to use.
    * @param lang The language of the thesaurus.
-   * @return Returns said thesaurus or \c null if no thesaurus matches the
+   * @return Returns said thesaurus or \c NULL if no thesaurus matches the
    * request.
    */
-  static std::auto_ptr<ft_thesaurus> get( zstring const &mapping,
-                                          locale::iso639_1::type lang );
+  static ptr get( zstring const &mapping, locale::iso639_1::type lang );
 
   /**
    * Looks-up the given phrase.
@@ -56,18 +72,12 @@ public:
    * traversed.
    * @param at_most The maximum number of levels within the thesaurus to be
    * traversed.
-   * @return Returns \c true only if \a phrase was found.
+   * @return Returns a pointer to an iterator for the results or \c NULL if the
+   * phrase was not found.
    */
-  virtual bool lookup( zstring const &phrase, zstring const &relationship,
-                       ft_int at_least, ft_int at_most ) = 0;
-
-  /**
-   * Gets the next synonym.
-   *
-   * @param synonym A pointer to the string to receive the next synonym.
-   * @return Returns \c true only if there is a next synonym.
-   */
-  virtual bool next( zstring *synonym ) = 0;
+  virtual iterator_ptr lookup( zstring const &phrase,
+                               zstring const &relationship, ft_int at_least,
+                               ft_int at_most ) const = 0;
 
 protected:
   ft_thesaurus() { }

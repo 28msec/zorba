@@ -53,31 +53,17 @@ inline bool is_element( store::Item_t const &item ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-thesaurus::candidate_queue_t::value_type const thesaurus::LevelMarker =
-  make_pair( static_cast<synonym*>(0), iso2788::neutral );
+thesaurus::iterator::candidate_queue_t::value_type const
+  thesaurus::iterator::LevelMarker =
+    make_pair( static_cast<synonym*>(0), iso2788::neutral );
 
-thesaurus::thesaurus( zstring const &path, iso639_1::type lang ) {
-  read_xqftts_file( path );
-}
+thesaurus::iterator::iterator( thesaurus_t const &t, zstring const &phrase,
+                               zstring const &rel_string, ft_int at_least,
+                               ft_int at_most ) :
+  thesaurus_( t ), at_least_( at_least ), at_most_( at_most ), level_( 1 )
+{
+  using namespace iso2788;
 
-thesaurus::~thesaurus() {
-  MUTATE_EACH( thesaurus_t, entry, thesaurus_ )
-    delete_ptr_seq( entry->second );
-}
-
-bool thesaurus::lookup( zstring const &phrase, zstring const &query_rel_string,
-                        ft_int at_least, ft_int at_most ) {
-  at_least_ = at_least;
-  at_most_ = at_most;
-  level_ = 1;
-  candidate_queue_.clear();
-  result_queue_.clear();
-  synonyms_seen_.clear();
-
-# if DEBUG_THESAURUS
-  cout << "==================================================" << endl;
-  cout << "query phrase: " << phrase << endl;
-# endif
   //
   // Always include the original phrase in the results.
   //
@@ -89,9 +75,8 @@ bool thesaurus::lookup( zstring const &phrase, zstring const &query_rel_string,
   //
   thesaurus_t::const_iterator const entry = thesaurus_.find( phrase );
   if ( entry != thesaurus_.end() ) {
-    relationship const query_rel( query_rel_string );
-    iso2788::rel_dir const query_dir =
-      iso2788::get_dir( query_rel.get_iso2788() );
+    relationship const query_r( rel_string );
+    rel_dir const query_dir = get_dir( query_r.get_iso2788() );
     FOR_EACH( synonym_set_t, i, entry->second ) {
       synonym const *const candidate_ptr = *i;
       //
@@ -100,11 +85,9 @@ bool thesaurus::lookup( zstring const &phrase, zstring const &query_rel_string,
       // candidate result.
       //
       FOR_EACH( relationship_set_t, r, candidate_ptr->relationships ) {
-        if ( query_rel.empty() || *r == query_rel ) {
+        if ( query_r.empty() || *r == query_r ) {
           candidate_queue_.push_back(
-            make_pair(
-              candidate_ptr, query_dir + iso2788::get_dir( r->get_iso2788() )
-            )
+            make_pair( candidate_ptr, query_dir + get_dir( r->get_iso2788() ) )
           );
         }
       }
@@ -114,12 +97,12 @@ bool thesaurus::lookup( zstring const &phrase, zstring const &query_rel_string,
     // LevelMarker to the queue.
     //
     candidate_queue_.push_back( LevelMarker );
-    return true;
   }
-  return false;
 }
 
-bool thesaurus::next( zstring *result ) {
+bool thesaurus::iterator::next( zstring *result ) {
+  using namespace iso2788;
+
   while ( result_queue_.empty() ) {
 #   if DEBUG_THESAURUS
     cout << "--------------------------------------------------" << endl;
@@ -143,7 +126,7 @@ bool thesaurus::next( zstring *result ) {
 
     candidate_t const candidate( pop_front( candidate_queue_ ) );
     synonym const *const candidate_ptr = candidate.first;
-    iso2788::rel_dir const candidate_dir = candidate.second;
+    rel_dir const candidate_dir = candidate.second;
 
     if ( candidate_ptr == LevelMarker.first ) {
 #     if DEBUG_THESAURUS
@@ -188,8 +171,8 @@ bool thesaurus::next( zstring *result ) {
         synonym const *const next_candidate_ptr = *i;
         if ( !contains( synonyms_seen_, next_candidate_ptr->term ) ) {
           FOR_EACH( relationship_set_t, r, next_candidate_ptr->relationships ) {
-            iso2788::rel_dir const d = iso2788::get_dir( r->get_iso2788() );
-            if ( iso2788::congruous( candidate_dir, d ) ) {
+            rel_dir const d = get_dir( r->get_iso2788() );
+            if ( congruous( candidate_dir, d ) ) {
               candidate_queue_.push_back(
                 make_pair( next_candidate_ptr, candidate_dir + d )
               );
@@ -205,6 +188,29 @@ bool thesaurus::next( zstring *result ) {
   cout << "--> synonym=" << *result << endl;
 # endif
   return true;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+thesaurus::thesaurus( zstring const &path, iso639_1::type lang ) {
+  read_xqftts_file( path );
+}
+
+thesaurus::~thesaurus() {
+  MUTATE_EACH( thesaurus_t, entry, thesaurus_ )
+    delete_ptr_seq( entry->second );
+}
+
+thesaurus::iterator_ptr
+thesaurus::lookup( zstring const &phrase, zstring const &relationship,
+                   ft_int at_least, ft_int at_most ) const {
+# if DEBUG_THESAURUS
+  cout << "==================================================" << endl;
+  cout << "query phrase: " << phrase << endl;
+# endif
+  return iterator_ptr(
+    new iterator( thesaurus_, phrase, relationship, at_least, at_most )
+  );
 }
 
 #define THROW_BAD_XML_EXCEPTION(WHAT,MSG) \

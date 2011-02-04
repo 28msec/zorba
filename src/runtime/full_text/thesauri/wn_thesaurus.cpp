@@ -244,92 +244,32 @@ static pointer::type map_xquery_rel( zstring const &relationship,
 
 ///////////////////////////////////////////////////////////////////////////////
 
-thesaurus::candidate_queue_t::value_type const thesaurus::LevelMarker =
-  make_pair( ~0u, iso2788::neutral );
+thesaurus::iterator::candidate_queue_t::value_type const
+  thesaurus::iterator::LevelMarker = make_pair( ~0u, iso2788::neutral );
 
-thesaurus::thesaurus( zstring const &path, iso639_1::type lang ) :
-  wordnet_file_( get_wordnet_path( path ).c_str() ),
-  wordnet_file_checker_( wordnet_file_ ),
-  wn_lemmas_( wordnet_file_, db_segment::lemma ),
-  wn_synsets_( wordnet_file_, db_segment::synset ),
-  lang_( lang )
+thesaurus::iterator::iterator( thesaurus const &t, char const *p,
+                               pointer::type ptr_type, ft_int at_least,
+                               ft_int at_most ) :
+  thesaurus_( t ), query_ptr_type_( ptr_type ),
+  at_least_( at_least ), at_most_( fix_at_most( at_most ) ), level_( 0 )
 {
-}
-
-thesaurus::~thesaurus() {
-  // do nothing
-}
-
-thesaurus::wordnet_file_checker::wordnet_file_checker( mmap_file const &file ) {
-  typedef char version_type[4];
-  static char const our_version[] = "ZW01";
-
-  // check version
-  char file_version[ sizeof( version_type ) + 1 ];
-  char const *byte_ptr = file.begin();
-  ::strncpy( file_version, byte_ptr, sizeof( version_type ) );
-  file_version[ sizeof( version_type ) ] = '\0';
-  if ( ::strcmp( file_version, our_version ) != 0 )
-    THROW_VERSION_EXCEPTION( file_version, our_version );
-
-  // check endian-ness
-  byte_ptr += sizeof( uint32_t );
-  uint32_t const file_endian = *reinterpret_cast<uint32_t const*>( byte_ptr );
-  if ( file_endian != Magic_Number )
-    THROW_ENDIANNESS_EXCEPTION();
-}
-
-char const* thesaurus::find_lemma( zstring const &phrase ) const {
-  typedef pair<db_segment::const_iterator,db_segment::const_iterator> range_t;
-
-  char const *const c_phrase = phrase.c_str();
-  less<char const*> const comparator;
-
-  range_t const range =
-    ::equal_range( wn_lemmas_.begin(), wn_lemmas_.end(), c_phrase, comparator );
-  if ( range.first == wn_lemmas_.end() || comparator( c_phrase, *range.first ) )
-    return NULL;
-  return *range.first;
-}
-
-bool thesaurus::lookup( zstring const &phrase, zstring const &relationship,
-                        ft_int at_least, ft_int at_most ) {
+  while ( *p++ ) ;                      // skip past lemma
   //
-  // Initialize/clear everything.
+  // Load the candidate_queue_ will all the synsets for the lemma.
   //
-  query_ptr_type_ = map_xquery_rel( relationship, lang_ );
-  at_least_ = at_least;
-  at_most_ = fix_at_most( at_most );
-  level_ = 0;
-  candidate_queue_.clear();
-  result_queue_.clear();
-  synonyms_seen_.clear();
-
-# if DEBUG_FT_THESAURUS
-  cout << "==================================================" << endl;
-  cout << "query phrase: " << phrase << endl;
-# endif
-  if ( char const *p = find_lemma( phrase ) ) {
-    while ( *p++ ) ;                    // skip past lemma
-    //
-    // Load the candidate_queue_ will all the synsets for the lemma.
-    //
-    iso2788::rel_dir const query_dir = get_ptr_dir( query_ptr_type_ );
-    for ( unsigned num_synsets = decode_base128( &p ); num_synsets-- > 0; ) {
-      synset_id_t const synset_id = decode_base128( &p );
-      candidate_queue_.push_back( make_pair( synset_id, query_dir ) );
-    }
-    //
-    // All the candidates just added constitute a "level" so add the
-    // LevelMarker to the queue.
-    //
-    candidate_queue_.push_back( LevelMarker );
-    return true;
+  iso2788::rel_dir const query_dir = get_ptr_dir( query_ptr_type_ );
+  for ( unsigned num_synsets = decode_base128( &p ); num_synsets-- > 0; ) {
+    synset_id_t const synset_id = decode_base128( &p );
+    candidate_queue_.push_back( make_pair( synset_id, query_dir ) );
   }
-  return false;
+  //
+  // All the candidates just added constitute a "level" so add the LevelMarker
+  // to the queue.
+  //
+  candidate_queue_.push_back( LevelMarker );
 }
 
-bool thesaurus::next( zstring *synonym ) {
+bool thesaurus::iterator::next( zstring *synonym ) {
   while ( result_queue_.empty() ) {
 #   if DEBUG_FT_THESAURUS
     cout << "--------------------------------------------------" << endl;
@@ -395,7 +335,7 @@ bool thesaurus::next( zstring *synonym ) {
       continue;
     }
 
-    synset const ss( wn_synsets_[ synset_id ] );
+    synset const ss( thesaurus_.wn_synsets_[ synset_id ] );
 
     if ( level_ >= at_least_ ) {
 #     if DEBUG_FT_THESAURUS
@@ -507,11 +447,78 @@ bool thesaurus::next( zstring *synonym ) {
     } // FOR_EACH
   } // while
 
-  *synonym = wn_lemmas_[ pop_front( result_queue_ ) ];
+  *synonym = thesaurus_.wn_lemmas_[ pop_front( result_queue_ ) ];
 # if DEBUG_FT_THESAURUS
   cout << "--> synonym=" << *synonym << endl;
 # endif
   return true;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+thesaurus::wordnet_file_checker::wordnet_file_checker( mmap_file const &file ) {
+  typedef char version_type[4];
+  static char const our_version[] = "ZW01";
+
+  // check version
+  char file_version[ sizeof( version_type ) + 1 ];
+  char const *byte_ptr = file.begin();
+  ::strncpy( file_version, byte_ptr, sizeof( version_type ) );
+  file_version[ sizeof( version_type ) ] = '\0';
+  if ( ::strcmp( file_version, our_version ) != 0 )
+    THROW_VERSION_EXCEPTION( file_version, our_version );
+
+  // check endian-ness
+  byte_ptr += sizeof( uint32_t );
+  uint32_t const file_endian = *reinterpret_cast<uint32_t const*>( byte_ptr );
+  if ( file_endian != Magic_Number )
+    THROW_ENDIANNESS_EXCEPTION();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+thesaurus::thesaurus( zstring const &path, iso639_1::type lang ) :
+  wordnet_file_( get_wordnet_path( path ).c_str() ),
+  wordnet_file_checker_( wordnet_file_ ),
+  wn_lemmas_( wordnet_file_, db_segment::lemma ),
+  wn_synsets_( wordnet_file_, db_segment::synset ),
+  lang_( lang )
+{
+}
+
+thesaurus::~thesaurus() {
+  // do nothing
+}
+
+char const* thesaurus::find_lemma( zstring const &phrase ) const {
+  typedef pair<db_segment::const_iterator,db_segment::const_iterator> range_t;
+
+  char const *const c_phrase = phrase.c_str();
+  less<char const*> const comparator;
+
+  range_t const range =
+    ::equal_range( wn_lemmas_.begin(), wn_lemmas_.end(), c_phrase, comparator );
+  if ( range.first == wn_lemmas_.end() || comparator( c_phrase, *range.first ) )
+    return NULL;
+  return *range.first;
+}
+
+thesaurus::iterator_ptr
+thesaurus::lookup( zstring const &phrase, zstring const &relationship,
+                   ft_int at_least, ft_int at_most ) const {
+  iterator_ptr result;
+# if DEBUG_FT_THESAURUS
+  cout << "==================================================" << endl;
+  cout << "query phrase: " << phrase << endl;
+# endif
+  if ( char const *const p = find_lemma( phrase ) ) {
+    result.reset(
+      new iterator(
+        *this, p, map_xquery_rel( relationship, lang_ ), at_least, at_most
+      )
+    );
+  }
+  return result;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
