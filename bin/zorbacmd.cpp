@@ -320,7 +320,20 @@ struct TimingInfo
   TimingInfo(ulong num)
     :
     numExecs(num),
-    elapsedUnloadCputime(0) // I have no idea why THIS one needs to be initialized, but it does
+    elapsedInitCputime(0), 
+    elapsedDeinitCputime(0), 
+    elapsedCompCputime(0), 
+    elapsedExecCputime(0), 
+    elapsedLoadCputime(0), 
+    elapsedUnloadCputime(0), 
+    elapsedTotalCputime(0),
+    elapsedInitWalltime(0), 
+    elapsedDeinitWalltime(0), 
+    elapsedCompWalltime(0), 
+    elapsedExecWalltime(0), 
+    elapsedLoadWalltime(0), 
+    elapsedUnloadWalltime(0), 
+    elapsedTotalWalltime(0) 
   {
   }
 
