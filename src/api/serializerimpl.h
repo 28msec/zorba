@@ -34,6 +34,7 @@ namespace zorba {
     private:
       error::ErrorManager theErrorManager;
       zorba::ErrorHandler* theErrorHandler;
+      bool                own_error_handler;
       mutable serializer theInternalSerializer;
 
     public:
@@ -42,7 +43,7 @@ namespace zorba {
 
       SerializerImpl(ItemSequence* options, ErrorHandler* aErrorHandler = 0);
 
-      virtual ~SerializerImpl() {}
+      virtual ~SerializerImpl();
 
       virtual void
       serialize(

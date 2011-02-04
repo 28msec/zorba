@@ -43,8 +43,10 @@ SerializerImpl::SerializerImpl(const Zorba_SerializerOptions_t& aOptions, ErrorH
     theInternalSerializer(&theErrorManager)
 {
   setSerializationParameters(theInternalSerializer, aOptions);
+  own_error_handler = false;
   if (!theErrorHandler) {
     theErrorHandler = new DefaultErrorHandler();
+    own_error_handler = true;
   }
 }
 
@@ -53,10 +55,19 @@ SerializerImpl::SerializerImpl(ItemSequence* aOptions, ErrorHandler* aErrorHandl
     theInternalSerializer(&theErrorManager)
 {
   setSerializationParameters(theInternalSerializer, aOptions);
+  own_error_handler = false;
   if (!theErrorHandler) {
     theErrorHandler = new DefaultErrorHandler();
+    own_error_handler = true;
   }
 }
+
+SerializerImpl::~SerializerImpl() 
+{
+  if(own_error_handler)
+    delete theErrorHandler;
+}
+
 
 void
 SerializerImpl::serialize(ItemSequence* aObject, std::ostream& aOs) const

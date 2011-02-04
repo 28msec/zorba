@@ -320,20 +320,20 @@ struct TimingInfo
   TimingInfo(ulong num)
     :
     numExecs(num),
-    elapsedInitCputime(0), 
-    elapsedDeinitCputime(0), 
-    elapsedCompCputime(0), 
-    elapsedExecCputime(0), 
-    elapsedLoadCputime(0), 
-    elapsedUnloadCputime(0), 
-    elapsedTotalCputime(0),
     elapsedInitWalltime(0), 
+    elapsedInitCputime(0), 
     elapsedDeinitWalltime(0), 
+    elapsedDeinitCputime(0), 
     elapsedCompWalltime(0), 
+    elapsedCompCputime(0), 
     elapsedExecWalltime(0), 
+    elapsedExecCputime(0), 
     elapsedLoadWalltime(0), 
+    elapsedLoadCputime(0), 
     elapsedUnloadWalltime(0), 
-    elapsedTotalWalltime(0) 
+    elapsedUnloadCputime(0), 
+    elapsedTotalWalltime(0),
+    elapsedTotalCputime(0)
   {
   }
 
