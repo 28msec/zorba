@@ -115,7 +115,7 @@ my %synsets;
 ########## Functions ##########################################################
 
 ##
-# Assigns each lemma a unique ID starting at 0 since it's ID will be an index
+# Assigns each lemma a unique ID starting at 0 since its ID will be an index
 # into an offset array in the binary format.
 ##
 sub assign_lemma_ids {
@@ -125,7 +125,7 @@ sub assign_lemma_ids {
 }
 
 ##
-# Assigns each synset a unique ID starting at 0 since it's ID will be an index
+# Assigns each synset a unique ID starting at 0 since its ID will be an index
 # into an offset array in the binary format.
 ##
 sub assign_synset_ids {
