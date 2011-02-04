@@ -17,7 +17,7 @@ die() {
 }
 
 WORK=/tmp
-XQTSURL=http://dev.w3.org/2007/xpath-full-text-10-test-suite/XQFTTS_1_0_3.zip
+XQTSURL=http://dev.w3.org/2007/xpath-full-text-10-test-suite/XQFTTS_1_0_4.zip
 THESAURUSURL=http://wordnetcode.princeton.edu/3.0/WNdb-3.0.tar.gz
 
 while [ $# -gt 1 ]
