@@ -393,7 +393,7 @@ DWORD WINAPI thread_main(LPVOID param)
     // exprected errors, or the pathnames of reference-result files.
     specPath = fs::change_extension(queryPath, ".spec");
     if (fs::exists(specPath))
-      querySpec.parseFile(specPath.file_string()); 
+      querySpec.parseFile(specPath.file_string(), rbkt_src_dir, rbkt_bin_dir); 
 
     // Get the pathnames of the ref-result files found in the .spec file (if any).
     // If no ref-results file was specified in the .spec file, create a default
@@ -404,9 +404,7 @@ DWORD WINAPI thread_main(LPVOID param)
          iter != querySpec.resultsEnd();
          ++iter) 
     {
-      std::string tmp = *iter;
-      zorba::ascii::replace_all(tmp, "$RBKT_SRC_DIR", rbkt_src_dir);
-      fs::path refFilePath(tmp);
+      fs::path refFilePath(*iter);
       refFileSpecified = true;
       refFilePaths.push_back(refFilePath);
     }

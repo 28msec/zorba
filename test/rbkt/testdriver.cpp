@@ -219,7 +219,8 @@ main(int argc, char** argv)
                           path_flags);
 
     if ( lSpecFile.exists ()) {
-      bool lParsed = lSpec.parseFile(lSpecFile.get_path());
+      bool lParsed = lSpec.parseFile(lSpecFile.get_path(), rbkt_src_dir,
+        rbkt_bin_dir);
       if (!lParsed) {
         std::cout << "Spec file " << lSpecFile.get_path() << " is malformed!"
                   << std::endl;
@@ -249,9 +250,7 @@ main(int argc, char** argv)
          lIter != lSpec.resultsEnd();
          ++lIter) 
     {
-      std::string lTmp = *lIter;
-      zorba::ascii::replace_all(lTmp, "$RBKT_SRC_DIR", rbkt_src_dir);
-      zorba::file lRefFile(lTmp, path_flags);
+      zorba::file lRefFile(*lIter, path_flags);
       if (lRefFile.exists()) 
       {
         lRefFileExists = true;

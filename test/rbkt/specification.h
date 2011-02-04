@@ -20,6 +20,7 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include "util/ascii_util.h"
 #include <testuriresolver.h>
 
 #undef WIN32_LEAN_AND_MEAN
@@ -244,11 +245,9 @@ public:
     str.erase(notwhite+1); 
   }
 
-  bool parseFile(std::string str)
+  bool parseFile(std::string str, std::string rbkt_src_dir,
+    std::string rbkt_binary_dir)
   {
-    // QQQ This method should do the substitutions for $RBKT_SRC_DIR
-    // and $RBKT_BINARY_DIR, and we should eliminate all the other
-    // places (several) which do that substitution
     std::ifstream lFile(str.c_str(), std::ifstream::in);
     std::stringstream lContent;
     char c = (char)lFile.get();
@@ -266,6 +265,10 @@ public:
 
     for(it = lines.begin(); it != lines.end(); ++it)
     {
+      // Replace $RBKT_SRC_DIR and $RBKT_BINARY_DIR
+      zorba::ascii::replace_all(*it, "$RBKT_SRC_DIR", rbkt_src_dir);
+      zorba::ascii::replace_all(*it, "$RBKT_BINARY_DIR", rbkt_binary_dir);
+
       std::vector<std::string> tokens;
       std::vector<std::string>::iterator lIter;
       trim(*it);

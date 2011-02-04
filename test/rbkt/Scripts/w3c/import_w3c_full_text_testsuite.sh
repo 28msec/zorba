@@ -147,12 +147,12 @@ if (m/^%thes /) {
   # does not understand $RBKT_SRC_DIR. Should change specification.h to
   # do that replacement universally and eliminate the numerous other places
   # that do it.
-  $thesauri {$id} = "$uri:=xqftts|$dstrbktpath/$path";
+  $thesauri {$id} = "$uri:=xqftts|$test_src_path/$path";
   next;
 }
 if (m/^%stop /) {
   my ($info, $id, $uri, $path) = split (/ /);
-  $stopwords {$id} = "$uri:=$dstrbktpath/$path";
+  $stopwords {$id} = "$uri:=$test_src_path/$path";
   next;
 }
 

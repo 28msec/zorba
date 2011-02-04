@@ -301,7 +301,6 @@ void createDynamicContext(
   if (spec.hasInputQuery())
   {
     std::string inputqueryfile = spec.getInputQueryFile ();
-    zorba::ascii::replace_all(inputqueryfile, "$RBKT_SRC_DIR", driverCtx.theRbktSourceDir);
 #ifdef MY_D_WIN32
     zorba::ascii::replace_all(inputqueryfile, "rbkt/Queries/w3c_testsuite/", "w3c_testsuite/Queries/");
 #endif
@@ -361,8 +360,6 @@ void set_var(
     std::string val,
     bool enableDtd)
 {
-  zorba::ascii::replace_all(val, "$RBKT_SRC_DIR", driverCtx.theRbktSourceDir);
-  zorba::ascii::replace_all(val, "$RBKT_BINARY_DIR", driverCtx.theRbktBinaryDir);
 #ifdef MY_D_WIN32
   zorba::ascii::replace_all(val, "rbkt/Queries/w3c_testsuite/", "w3c_testsuite/Queries/");
   //zorba::ascii::replace_all(val, "/", "\\");
@@ -423,10 +420,6 @@ void setOptions(DriverContext& driverCtx, const zorba::StaticContext_t& sctx)
     zorba::Item lQName = driverCtx.theEngine->getItemFactory()->
       createQName(lIter->theOptName);
     std::string lValue = lIter->theOptValue;
-    zorba::ascii::replace_all(lValue, "$RBKT_SRC_DIR",
-      driverCtx.theRbktSourceDir);
-    zorba::ascii::replace_all(lValue, "$RBKT_BINARY_DIR",
-      driverCtx.theRbktBinaryDir);
     sctx->declareOption(lQName, lValue);
   }
   
