@@ -1,0 +1,72 @@
+#! /bin/bash
+
+THESAURUS_URL="http://wordnetcode.princeton.edu/3.0/WNdb-3.0.tar.gz"
+
+die() {
+  echo
+  echo 'Arguments: [--workdir <workdir>] [--builddir <builddir>]'
+  echo '           [--thesaurusurl <thesaurusurl>]'
+  echo '           <zorba_repository>'
+  echo '<zorba_repository> is the top-level SVN working copy.'
+  echo '<workdir> is a temp directory to download and unzip XQTS (default: /tmp).'
+  echo '<builddir> is the directory Zorba has been built in'
+  echo '           (default: <zorba_repository>/build)'
+  echo '<thesaurusurl> is the URL where a WordNet thesaurus can be found'
+  echo "               (default: $THESAURUS_URL)"
+  exit 1
+}
+
+WORK=/tmp
+
+while [ $# -gt 1 ]
+do
+  # --workdir to specify a working directory to download/unzip XQTS
+  test "$1" = "--workdir" && { WORK="$2"; shift; shift; }
+
+  # --builddir to specify Zorba build directory (default: srcdir/build)
+  test "$1" = "--builddir" && { BUILD="$2"; shift; shift; }
+
+  # thesaurusurl to specify the URL where thesaurus can be found
+  test "$" = "--thesaurusurl" && { THESAURUS_URL="$2"; shift; shift; }
+done
+
+SRC="$1"
+if [ -z "$BUILD" ]; then
+  BUILD="$SRC/build"
+fi
+
+if test ! -d "$SRC/test/zorbatest"; then
+  echo "Invalid zorba repository $SRC"
+  die
+fi
+
+if test ! -d "$BUILD"; then
+  echo "Invalid build directory $BUILD"
+  die
+fi
+
+THESAURUS_TAR="$WORK/thesaurus.tar.gz"
+echo Downloading thesaurus ...
+wget -c -O $THESAURUS_TAR $THESAURUS_URL
+
+# Canonicalize SRC and BUILD
+SRC=$(cd "$SRC" && pwd)
+echo Repository is at $SRC
+BUILD=$(cd "$BUILD" && pwd)
+echo Build dir is at $BUILD
+
+# Compile thesaurus to binary format
+mkdir -p $BUILD/test/rbkt/thesauri
+THESAURUS_DEST="$BUILD/test/rbkt/thesauri/wordnet-en.zth"
+echo "Compiling thesaurus to $THESAURUS_DEST..."
+untar_dir=`mktemp -d "$WORK/thesaurus.XXXXXX"`
+cd "$untar_dir"
+gzip -dc "$THESAURUS_TAR" | tar x
+$SRC/scripts/zt-wn-compile "$untar_dir/dict" "$THESAURUS_DEST"
+
+echo "Cleaning up work directory... $untar_dir"
+rm -rf "$untar_dir"
+
+echo Done.
+
+# vim:set et sw=2 ts=2:

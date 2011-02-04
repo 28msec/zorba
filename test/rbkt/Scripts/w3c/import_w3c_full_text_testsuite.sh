@@ -11,14 +11,11 @@ die() {
   echo '           (default: <zorba_repository>/build)'
   echo '<xqtsurl> is the URL where the XQTS archived version can be found'
   echo '          (default: http://dev.w3.org/2007/xpath-full-text-10-test-suite/XQFTTS_1_0_3.zip)'
-  echo '<thesaurusurl> is the URL where a WordNet thesaurus can be found'
-  echo '          (default: http://wordnetcode.princeton.edu/3.0/WNdb-3.0.tar.gz)'
   exit 1
 }
 
 WORK=/tmp
 XQTSURL=http://dev.w3.org/2007/xpath-full-text-10-test-suite/XQFTTS_1_0_4.zip
-THESAURUSURL=http://wordnetcode.princeton.edu/3.0/WNdb-3.0.tar.gz
 
 while [ $# -gt 1 ]
 do
@@ -30,9 +27,6 @@ do
 
   # xqtsurl to specify the URL where XQTS can be found
   test "$1" = "--xqtsurl" && { XQTSURL="$2"; shift; shift; }
-
-  # thesaurusurl to specify the URL where thesaurus can be found
-  test "$" = "--thesaurusurl" && { THESAURUSURL="$2"; shift; shift; }
 done
 
 SRC="$1"
@@ -59,10 +53,6 @@ ZIP="$WORK/XQFTTS_current.zip"
 echo Downloading test suite to zip $ZIP ...
 wget -c -O $ZIP $XQTSURL
 
-THESAURUSTAR="$WORK/thesaurus.tar.gz"
-echo Downloading thesaurus ...
-wget -c -O $THESAURUSTAR $THESAURUSURL
-
 orig_pwd=`pwd`
 
 # Canonicalize SRC and BUILD
@@ -70,15 +60,6 @@ SRC=$(cd "$SRC" && pwd)
 echo Repository is at $SRC
 BUILD=$(cd "$BUILD" && pwd)
 echo Build dir is at $BUILD
-
-# Compile thesaurus to binary format
-mkdir -p $BUILD/test/rbkt/thesauri
-THESAURUS="$BUILD/test/rbkt/thesauri/wordnet-en.zth"
-echo "Compiling thesaurus to $THESAURUS..."
-untar_dir=`mktemp -d "$WORK/thesaurus.XXXXXX"`
-cd "$untar_dir"
-gzip -dc "$THESAURUSTAR" | tar x
-$SRC/scripts/zt-wordnet "$untar_dir/dict" "$THESAURUS"
 
 echo Unzipping test suite...
 unzip_dir=`mktemp -d "$WORK/xqts.XXXXXX"`
