@@ -151,12 +151,14 @@ function (svn_unpackage changefile svndir tmpdir svnlogfile changeslogfile
 
   # De-Windows all text files - this also is currently Linux-specific
   # and depends on "dos2unix" existing.
-  file (GLOB_RECURSE textfiles RELATIVE "${chgdir}"
-    *.c *.cpp *.cxx *.h *.hpp *.hxx *.txt *.cmake *.conf
-    *.xml *.xq *.txt *.res *.spec *.xqlib)
+  file (GLOB_RECURSE textfiles
+        "${chgdir}/*.c" "${chgdir}/*.cpp" "${chgdir}/*.cxx"
+        "${chgdir}/*.h" "${chgdir}/*.hpp" "${chgdir}/*.hxx"
+        "${chgdir}/*.txt" "${chgdir}/*.cmake" "${chgdir}/*.conf"
+        "${chgdir}/*.xml" "${chgdir}/*.xq" "${chgdir}/*.txt"
+        "${chgdir}/*.res" "${chgdir}/*.spec" "${chgdir}/*.xqlib")
   foreach (textfile ${textfiles})
-    execute_process (COMMAND dos2unix -k "${textfile}"
-                     WORKING_DIRECTORY "${chgdir}")
+    execute_process (COMMAND dos2unix -k "${textfile}")
   endforeach (textfile)
 
   # Checkout/update svn from specified URL and rev
