@@ -24,7 +24,7 @@
 #include "runtime/base/plan_iterator.h"
 #include "zorbatypes/zstring.h"
 
-#include "apply.h"                      /* for ft_int */
+#include "ft_query_item.h"
 #include "ft_match.h"
 #include "ft_util.h"
 

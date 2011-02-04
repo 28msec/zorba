@@ -17,13 +17,9 @@
 #ifndef ZORBA_FULL_TEXT_APPLY_H
 #define ZORBA_FULL_TEXT_APPLY_H
 
-#include <list>
-
-#include "compiler/expression/ftnode.h"
 #include "compiler/parser/ft_types.h"
 
 #include "ft_match.h"
-#include "ft_query_item.h"
 #include "ft_util.h"
 
 namespace zorba {

@@ -32,6 +32,7 @@
 #define TRACE_FULL_TEXT Properties::instance()->traceFulltext()
 #endif /* NDEBUG */
 
+#include "apply.h"
 #include "ft_util.h"
 #include "ftcontains_visitor.h"
 
