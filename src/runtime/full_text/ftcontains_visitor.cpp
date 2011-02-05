@@ -380,6 +380,10 @@ void V::end_visit( ftwords &w ) {
   query_item_star_t query_items;
   store::Item_t item;
 
+  //
+  // Get the tokens on the right-hand-side of the "contains text", i.e., the
+  // actual query.
+  //
   while ( PlanIterator::consumeNext( item, plan_iter, plan_state_ ) ) {
     try {
       query_item_t const qi( item->getQueryTokens( lang, wildcards ) );
@@ -393,6 +397,9 @@ void V::end_visit( ftwords &w ) {
   }
 
   if ( !query_items.empty() ) {
+    //
+    // Now that we have the query tokens, evaluate the full-text expression.
+    //
     auto_ptr<ft_all_matches> result( new ft_all_matches );
     try {
       apply_ftwords(
