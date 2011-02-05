@@ -27,49 +27,56 @@ namespace zorba {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * An ft_string_match is a possible match of a sequence of query tokens with a
- * corresponding sequence of tokens in a document.  An ft_string_match may be
+ * An %ft_string_match is a possible match of a sequence of query tokens with a
+ * corresponding sequence of tokens in a document.  An %ft_string_match may be
  * an ft_string_include or ft_string_exclude.
  */
 struct ft_string_match : ft_token_span {
 
   /**
-   * The query_pos attribute specifies the position of the query token in the
-   * query.  This attribute is needed for FTOrder.
+   * This position of the query token in the query.  This is needed for
+   * FTOrder.
    */
   int_t query_pos;
 
+  /**
+   * This is \c true only when the token span si comprised of tokens that are
+   * contiguous with respect to their \c pos, i.e., there are no "holes".
+   */
   bool is_contiguous;
 };
 
+#ifndef NDEBUG
 std::ostream& operator<<( std::ostream&, ft_string_match const& );
+#endif /* NDEBUG */
 
 /**
- * An ft_string_include is an ft_string_match that describes an ft_token_span
+ * An %ft_string_include is an ft_string_match that describes an ft_token_span
  * that must be contained in the document.
  */
 typedef ft_string_match ft_string_include;
 
 /**
- * An ft_string_exclude is an ft_string_match that describes an ft_token_span
+ * An %ft_string_exclude is an ft_string_match that describes an ft_token_span
  * that must not be contained in the document.
  */
 typedef ft_string_match ft_string_exclude;
 
 /**
- * An ft_string_matches contains zero or more ft_string_match objects.
+ * An %ft_string_matches contains zero or more ft_string_match objects.
  */
 typedef std::list<ft_string_match> ft_string_matches;
 
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * An ft_match describes one result to the FTSelection.
+ * An %ft_match describes one result to the FTSelection.
  */
 class ft_match {
 public:
   typedef ft_string_matches includes_t;
   typedef ft_string_matches excludes_t;
+  typedef ft_string_matches ft_match::*string_match_ptr;
 
 #if 0
   includes_t const& includes() const { return includes_; }
@@ -80,35 +87,38 @@ public:
   excludes_t excludes;
 
   void sort_includes() const {
+#if 0
     // TODO: optimize later
-    //if ( !includes_sorted_ ) {
+    if ( !includes_sorted_ ) {
       includes_sorted_ = true;
+#endif
       includes.sort();
-    //}
+#if 0
+    }
+#endif
   }
 
-  typedef ft_string_matches ft_match::*string_match_ptr;
-
+#if 0
 private:
   mutable bool includes_sorted_;
-#if 0
-  includes_t includes_;
-  excludes_t excludes_;
 #endif
 };
 
 /**
- * An ft_match_seq contains zero or more ft_match objects.
+ * An %ft_match_seq contains zero or more ft_match objects.
  */
 typedef std::list<ft_match> ft_match_seq;
 
 /**
- * An ft_all_matches contains zero or more ft_match objects.
+ * An %ft_all_matches contains zero or more ft_match objects.  This type
+ * synonym is defined to use the same name as in the specification.
  */
 typedef ft_match_seq ft_all_matches;
 
+#ifndef NDEBUG
 std::ostream& operator<<( std::ostream&, ft_match const& );
 std::ostream& operator<<( std::ostream&, ft_all_matches const& );
+#endif /* NDEBUG */
 
 ///////////////////////////////////////////////////////////////////////////////
 

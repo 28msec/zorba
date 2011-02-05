@@ -377,12 +377,12 @@ void V::end_visit( ftwords &w ) {
 
   PlanIter_t plan_iter = w.get_value_iter();
   plan_iter->reset( plan_state_ );
-  FTQueryItemSeq query_items;
+  query_item_star_t query_items;
   store::Item_t item;
 
   while ( PlanIterator::consumeNext( item, plan_iter, plan_state_ ) ) {
     try {
-      FTQueryItem const qi( item->getQueryTokens( lang, wildcards ) );
+      query_item_t const qi( item->getQueryTokens( lang, wildcards ) );
       if ( qi->hasNext() )
         query_items.push_back( qi );
     }

@@ -17,7 +17,9 @@
 #ifndef ZORBA_FULL_TEXT_FT_TOKEN_SPAN_H
 #define ZORBA_FULL_TEXT_FT_TOKEN_SPAN_H
 
+#ifndef NDEBUG
 #include <iostream>
+#endif /* NDEBUG */
 #include <list>
 
 #include "zorbatypes/ft_token.h"
@@ -27,7 +29,7 @@ namespace zorba {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * An ft_token_span represents a contiguous collection of tokens from an XML
+ * An %ft_token_span represents a contiguous collection of tokens from an XML
  * document.
  */
 struct ft_token_span {
@@ -47,7 +49,7 @@ struct ft_token_span {
 };
 
 /**
- * An ft_token_spans contains zero or more ft_token_span objects.
+ * An %ft_token_spans contains zero or more ft_token_span objects.
  */
 typedef std::list<ft_token_span> ft_token_spans;
 
@@ -65,6 +67,7 @@ inline bool operator>( ft_token_span const &tsi, ft_token_span const &tsj ) {
 
 ////////// Insertion operators ////////////////////////////////////////////////
 
+#ifndef NDEBUG
 inline std::ostream& operator<<( std::ostream &o,
                                  ft_token_span::start_end const &se ) {
   return o << '[' << se.start << ',' << se.end << ']';
@@ -75,6 +78,7 @@ inline std::ostream& operator<<( std::ostream &o, ft_token_span const &ts ) {
             << " sent=" << ts.sent
             << " para=" << ts.para << '}';
 }
+#endif /* NDEBUG */
 
 ///////////////////////////////////////////////////////////////////////////////
 

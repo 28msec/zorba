@@ -25,6 +25,12 @@
 
 namespace zorba {
 
+///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * An %ft_token_matcher is used to determine whether 2 tokens match accordint
+ * to the query-specified match options.
+ */
 class ft_token_matcher {
 public:
   ft_token_matcher( ftmatch_options const& );
@@ -46,6 +52,8 @@ private:
   ft_stop_words_set const *const stop_words_;
   bool const wildcards_;
 };
+
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
 #endif /* ZORBA_FULL_TEXT_FT_TOKEN_MATCHER_H */

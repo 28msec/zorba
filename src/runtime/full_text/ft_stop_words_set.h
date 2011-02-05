@@ -14,8 +14,8 @@
  * limitations under the License.
  */
  
-#ifndef ZORBA_RUNTIME_FULL_TEXT_FT_STOP_WORD_SET_H
-#define ZORBA_RUNTIME_FULL_TEXT_FT_STOP_WORD_SET_H
+#ifndef ZORBA_FULL_TEXT_FT_STOP_WORD_SET_H
+#define ZORBA_FULL_TEXT_FT_STOP_WORD_SET_H
 
 #include <set>
 
@@ -81,5 +81,5 @@ private:
 };
 
 } // namespace zorba
-#endif /* ZORBA_RUNTIME_FULL_TEXT_FT_STOP_WORD_SET_H */
+#endif /* ZORBA_FULL_TEXT_FT_STOP_WORD_SET_H */
 /* vim:set et sw=2 ts=2: */

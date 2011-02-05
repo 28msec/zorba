@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_FT_QUERY_ITEM_H
-#define ZORBA_FT_QUERY_ITEM_H
+#ifndef ZORBA_FULL_TEXT_FT_QUERY_ITEM_H
+#define ZORBA_FULL_TEXT_FT_QUERY_ITEM_H
 
 #include <list>
 
@@ -26,27 +26,30 @@ namespace zorba {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * This corresponds to <code>element(fts::queryItem)</code>.
+ * This corresponds to <code>element(fts::queryItem)</code>.  Note that the
+ * specification defines \c queryItem to be a sequence of zero or more
+ * <code>queryToken</code>s.
  */
-typedef FTTokenIterator_t FTQueryItem;
+typedef FTTokenIterator_t query_item_t;
 
 /**
  * This corresponds to <code>element(fts::queryItem)*</code>.
  */
-typedef std::list<FTQueryItem> FTQueryItemSeq;
+typedef std::list<query_item_t> query_item_star_t;
 
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * An FTQueryItemSeqIterator is-an FTTokenIterator that iterates over an
- * FTQueryItemSeq.
+ * A %query_item_star_iterator is-an FTTokenIterator that iterates over a
+ * query_item_star_t.
  */
-class FTQueryItemSeqIterator : public FTTokenIterator {
+class query_item_star_iterator : public FTTokenIterator {
 public:
-  FTQueryItemSeqIterator( FTQueryItemSeq& );
-  FTQueryItemSeqIterator( FTQueryItemSeq* );
-  ~FTQueryItemSeqIterator();
+  query_item_star_iterator( query_item_star_t& );
+  query_item_star_iterator( query_item_star_t* );
+  ~query_item_star_iterator();
 
+  // inherited
   index_t begin() const;
   index_t end() const;
   bool hasNext() const;
@@ -61,18 +64,18 @@ private:
 
   struct LocalMark : Mark {
     MarkSeq marks_;
-    FTQueryItemSeq::iterator qi_;
+    query_item_star_t::iterator qi_;
   };
 
   void init();
 
-  FTQueryItemSeq *const qi_seq_;
-  FTQueryItemSeq::iterator qi_;
-  bool const delete_seq_;
+  query_item_star_t *const qi_star_;
+  query_item_star_t::iterator qi_;
+  bool const delete_;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
-#endif  /* ZORBA_FT_QUERY_ITEM_H */
+#endif  /* ZORBA_FULL_TEXT_FT_QUERY_ITEM_H */
 /* vim:set et sw=2 ts=2: */

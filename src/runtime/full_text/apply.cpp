@@ -954,7 +954,7 @@ apply_query_tokens_as_phrase( FTTokenIterator &query_tokens,
     FTToken const *const qt0 =
       to_string( query_tokens, &query_phrase, FTToken::lower );
     if ( qt0 ) {
-      FTQueryItemSeq synonyms;
+      query_item_star_t synonyms;
       apply_thesaurus_option( topt, query_phrase, *qt0, synonyms );
 
       ftmatch_options options_no_thesaurus( options );
@@ -1001,12 +1001,12 @@ static void make_conj_disj( ft_all_matches const &cur_res,
 }
 
 void ftcontains_visitor::
-apply_ftwords_phrase( FTQueryItemSeq &query_items, FTToken::int_t query_pos,
+apply_ftwords_phrase( query_item_star_t &query_items, FTToken::int_t query_pos,
                       store::Item const *ignore_item,
                       ftmatch_options const &options,
                       ft_token_matcher const &matcher,
                       ft_all_matches &result ) {
-  FTQueryItemSeqIterator query_tokens( query_items );
+  query_item_star_iterator query_tokens( query_items );
   if ( query_tokens.hasNext() ) {
     TRACE_APPLY( result );
     PUT_ARG( query_pos );
@@ -1018,7 +1018,7 @@ apply_ftwords_phrase( FTQueryItemSeq &query_items, FTToken::int_t query_pos,
 }
 
 void ftcontains_visitor::
-apply_ftwords_all( FTQueryItemSeq &query_items, FTToken::int_t query_pos,
+apply_ftwords_all( query_item_star_t &query_items, FTToken::int_t query_pos,
                    store::Item const *ignore_item,
                    ftmatch_options const &options,
                    ft_token_matcher const &matcher, ft_all_matches &result ) {
@@ -1026,7 +1026,7 @@ apply_ftwords_all( FTQueryItemSeq &query_items, FTToken::int_t query_pos,
     TRACE_APPLY( result );
     PUT_ARG( query_pos );
 
-    FTQueryItemSeq first_query_item;
+    query_item_star_t first_query_item;
     move_front_to_back( query_items, first_query_item );
 
     ft_all_matches first_am;
@@ -1050,7 +1050,7 @@ apply_ftwords_all( FTQueryItemSeq &query_items, FTToken::int_t query_pos,
 }
 
 void ftcontains_visitor::
-apply_ftwords_any( FTQueryItemSeq &query_items, FTToken::int_t query_pos,
+apply_ftwords_any( query_item_star_t &query_items, FTToken::int_t query_pos,
                    store::Item const *ignore_item,
                    ftmatch_options const &options,
                    ft_token_matcher const &matcher, ft_all_matches &result ) {
@@ -1058,7 +1058,7 @@ apply_ftwords_any( FTQueryItemSeq &query_items, FTToken::int_t query_pos,
     TRACE_APPLY( result );
     PUT_ARG( query_pos );
 
-    FTQueryItemSeq first_query_item;
+    query_item_star_t first_query_item;
     move_front_to_back( query_items, first_query_item );
 
     ft_all_matches first_am;
@@ -1088,12 +1088,13 @@ apply_ftwords_any( FTQueryItemSeq &query_items, FTToken::int_t query_pos,
  * \c MakeConjunction().
  */
 void ftcontains_visitor::
-apply_ftwords_xxx_word( FTQueryItemSeq &query_items, FTToken::int_t query_pos,
+apply_ftwords_xxx_word( query_item_star_t &query_items,
+                        FTToken::int_t query_pos,
                         store::Item const *ignore_item,
                         ftmatch_options const &options,
                         ft_token_matcher const &matcher,
                         apply_binary_fn apply_fn, ft_all_matches &result ) {
-  FTQueryItemSeqIterator query_tokens( query_items );
+  query_item_star_iterator query_tokens( query_items );
   if ( query_tokens.hasNext() ) {
     TRACE_APPLY( result );
     PUT_ARG( query_pos );
@@ -1118,7 +1119,7 @@ apply_ftwords_xxx_word( FTQueryItemSeq &query_items, FTToken::int_t query_pos,
 }
 
 void ftcontains_visitor::
-apply_ftwords( FTQueryItemSeq &query_items, FTToken::int_t query_pos,
+apply_ftwords( query_item_star_t &query_items, FTToken::int_t query_pos,
                store::Item const *ignore_item, ft_anyall_mode::type mode,
                ftmatch_options const &options, ft_all_matches &result ) {
   ft_token_matcher const matcher( options );
@@ -1184,7 +1185,7 @@ private:
 
 void ftcontains_visitor::
 lookup_thesaurus( ftthesaurus_id const &tid, zstring const &query_phrase,
-                  FTToken const &qt0, FTQueryItemSeq &result ) {
+                  FTToken const &qt0, query_item_star_t &result ) {
   ft_int at_least, at_most;
   if ( ftrange const *const levels = tid.get_levels() )
     eval_ftrange( *levels, &at_least, &at_most );
@@ -1208,7 +1209,7 @@ lookup_thesaurus( ftthesaurus_id const &tid, zstring const &query_phrase,
   for ( zstring synonym; tresult->next( &synonym ); ) {
     synonyms.clear();
     tokenizer->tokenize( synonym.data(), synonym.size(), qt0.lang(), cb );
-    FTQueryItem const query_item( new FTTokenSeqIterator( synonyms ) );
+    query_item_t const query_item( new FTTokenSeqIterator( synonyms ) );
     result.push_back( query_item );
   }
 }
@@ -1216,7 +1217,7 @@ lookup_thesaurus( ftthesaurus_id const &tid, zstring const &query_phrase,
 void ftcontains_visitor::
 apply_thesaurus_option( ftthesaurus_option const *topt,
                         zstring const &query_phrase, FTToken const &qt0,
-                        FTQueryItemSeq &result, bool check_sctx ) {
+                        query_item_star_t &result, bool check_sctx ) {
   ftthesaurus_id const *const default_tid = topt->get_default_thesaurus_id();
   if ( default_tid ) {
     ftmatch_options const *const sctx_mo = static_ctx_.get_match_options();

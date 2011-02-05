@@ -86,23 +86,24 @@ private:
   typedef std::stack<double> weight_stack_t;
   weight_stack_t weight_stack_;
 
-  void apply_ftwords( FTQueryItemSeq&, FTToken::int_t, store::Item const*,
+  void apply_ftwords( query_item_star_t&, FTToken::int_t, store::Item const*,
                       ft_anyall_mode::type, ftmatch_options const&,
                       ft_all_matches& );
 
-  void apply_ftwords_all( FTQueryItemSeq&, FTToken::int_t, store::Item const*,
+  void apply_ftwords_all( query_item_star_t&,
+                          FTToken::int_t, store::Item const*,
                           ftmatch_options const&, ft_token_matcher const&,
                           ft_all_matches& );
 
-  void apply_ftwords_any( FTQueryItemSeq&, FTToken::int_t, store::Item const*,
-                          ftmatch_options const&, ft_token_matcher const&,
-                          ft_all_matches& );
+  void apply_ftwords_any( query_item_star_t&, FTToken::int_t,
+                          store::Item const*, ftmatch_options const&,
+                          ft_token_matcher const&, ft_all_matches& );
 
-  void apply_ftwords_phrase( FTQueryItemSeq&, FTToken::int_t,
+  void apply_ftwords_phrase( query_item_star_t&, FTToken::int_t,
                              store::Item const*, ftmatch_options const&,
                              ft_token_matcher const&, ft_all_matches& );
 
-  void apply_ftwords_xxx_word( FTQueryItemSeq&, FTToken::int_t,
+  void apply_ftwords_xxx_word( query_item_star_t&, FTToken::int_t,
                                store::Item const*, ftmatch_options const&,
                                ft_token_matcher const&, apply_binary_fn,
                                ft_all_matches& );
@@ -112,14 +113,15 @@ private:
                                      ft_token_matcher const&, ft_all_matches& );
 
   void apply_thesaurus_option( ftthesaurus_option const*, zstring const&,
-                               FTToken const&, FTQueryItemSeq&, bool = true );
+                               FTToken const&, query_item_star_t&,
+                               bool = true );
 
   void eval_ftrange( ftrange const&, ft_int *at_least, ft_int *at_most );
   double get_double( PlanIter_t const& );
   ft_int get_int( PlanIter_t const& );
 
   void lookup_thesaurus( ftthesaurus_id const&, zstring const &query_phrase,
-                         FTToken const &qt0, FTQueryItemSeq &result );
+                         FTToken const &qt0, query_item_star_t &result );
 
   FTTokenIterator_t &search_ctx_;
   static_context const &static_ctx_;

@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_FT_TOKEN_SEQ_ITERATOR_H
-#define ZORBA_FT_TOKEN_SEQ_ITERATOR_H
+#ifndef ZORBA_FULL_TEXT_FT_TOKEN_SEQ_ITERATOR_H
+#define ZORBA_FULL_TEXT_FT_TOKEN_SEQ_ITERATOR_H
 
 #include <vector>
 
 #include "store/api/ft_token_iterator.h"
 
 namespace zorba {
+
+///////////////////////////////////////////////////////////////////////////////
 
 /**
  * A %FTTokenSeqIterator is-an FTTokenIterator that iterates over a simple
@@ -34,6 +36,7 @@ public:
   FTTokenSeqIterator( FTTokens& );
   ~FTTokenSeqIterator();
 
+  // inherited
   index_t begin() const;
   index_t end() const;
   bool hasNext() const;
@@ -52,6 +55,8 @@ private:
   index_t pos_;
 };
 
+///////////////////////////////////////////////////////////////////////////////
+
 } // namespace zorba
-#endif  /* ZORBA_FT_TOKEN_SEQ_ITERATOR_H */
+#endif  /* ZORBA_FULL_TEXT_FT_TOKEN_SEQ_ITERATOR_H */
 /* vim:set et sw=2 ts=2: */

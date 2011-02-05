@@ -26,13 +26,15 @@ namespace zorba {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * An FTQueryItemSeqIterator is-an FTTokenIterator that iterates over a single
- * token.
+ * An %FTSingleTokenIterator is-an FTTokenIterator that iterates over a single
+ * token.  This might seem pointless, but it allows a single token to be passed
+ * to a function that expects an FTTokenIterator.
  */
 class FTSingleTokenIterator : public FTTokenIterator {
 public:
   FTSingleTokenIterator( FTToken const&, index_t );
 
+  // inherited
   index_t begin() const;
   index_t end() const;
   bool hasNext() const;

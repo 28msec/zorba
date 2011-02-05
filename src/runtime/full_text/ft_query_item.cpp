@@ -23,77 +23,77 @@ namespace zorba {
 
 ////////// Constructors, destructor, initialization, cloning //////////////////
 
-FTQueryItemSeqIterator::FTQueryItemSeqIterator( FTQueryItemSeq &qi_seq ) :
-  qi_seq_( &qi_seq ), delete_seq_( false )
+query_item_star_iterator::query_item_star_iterator( query_item_star_t &qis ) :
+  qi_star_( &qis ), delete_( false )
 {
   init();
 }
 
-FTQueryItemSeqIterator::FTQueryItemSeqIterator( FTQueryItemSeq *qi_seq ) :
-  qi_seq_( qi_seq ), delete_seq_( true )
+query_item_star_iterator::query_item_star_iterator( query_item_star_t *qis ) :
+  qi_star_( qis ), delete_( true )
 {
   init();
 }
 
-FTQueryItemSeqIterator::~FTQueryItemSeqIterator() {
-  if ( delete_seq_ )
-    delete qi_seq_;
+query_item_star_iterator::~query_item_star_iterator() {
+  if ( delete_ )
+    delete qi_star_;
 }
 
-void FTQueryItemSeqIterator::init() {
-  ZORBA_ASSERT( !qi_seq_->empty() );
+void query_item_star_iterator::init() {
+  ZORBA_ASSERT( !qi_star_->empty() );
   reset();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-FTQueryItemSeqIterator::index_t FTQueryItemSeqIterator::begin() const {
-  return qi_seq_->front()->begin();
+query_item_star_iterator::index_t query_item_star_iterator::begin() const {
+  return qi_star_->front()->begin();
 }
 
-FTQueryItemSeqIterator::index_t FTQueryItemSeqIterator::end() const {
-  return qi_seq_->back()->end();
+query_item_star_iterator::index_t query_item_star_iterator::end() const {
+  return qi_star_->back()->end();
 }
 
-bool FTQueryItemSeqIterator::hasNext() const {
-  if ( qi_ == qi_seq_->end() )
+bool query_item_star_iterator::hasNext() const {
+  if ( qi_ == qi_star_->end() )
     return false;
   if ( (*qi_)->hasNext() )
     return true;
-  FTQueryItemSeq::const_iterator qi( qi_ );
-  if ( ++qi == qi_seq_->end() )
+  query_item_star_t::const_iterator qi( qi_ );
+  if ( ++qi == qi_star_->end() )
     return false;
   return (*qi)->hasNext();
 }
 
-FTTokenIterator::Mark_t FTQueryItemSeqIterator::pos() const {
+FTTokenIterator::Mark_t query_item_star_iterator::pos() const {
   LocalMark *const lmark = new LocalMark;
   lmark->qi_ = qi_;
-  FOR_EACH( FTQueryItemSeq, qi, *qi_seq_ ) {
+  FOR_EACH( query_item_star_t, qi, *qi_star_ ) {
     lmark->marks_.push_back( (*qi)->pos() );
   }
   return Mark_t( lmark );
 }
 
-void FTQueryItemSeqIterator::pos( Mark_t const &mark ) {
+void query_item_star_iterator::pos( Mark_t const &mark ) {
   LocalMark const &lm = dynamic_cast<LocalMark const&>( *mark );
-  ZORBA_ASSERT( qi_seq_->size() == lm.marks_.size() );
+  ZORBA_ASSERT( qi_star_->size() == lm.marks_.size() );
   qi_ = lm.qi_;
   MarkSeq::const_iterator m = lm.marks_.begin();
-  MUTATE_EACH( FTQueryItemSeq, qi, *qi_seq_ ) {
+  MUTATE_EACH( query_item_star_t, qi, *qi_star_ ) {
     (*qi)->pos( *m++ );
   }
 }
 
-FTToken const* FTQueryItemSeqIterator::next() {
+FTToken const* query_item_star_iterator::next() {
   FTToken const *result = 0;
-  if ( qi_ != qi_seq_->end() ) {
+  if ( qi_ != qi_star_->end() ) {
     while ( !result ) {
       if ( (result = (*qi_)->next()) ) {
         if ( (*qi_)->hasNext() )
           break;
       }
-      if ( ++qi_ == qi_seq_->end() )
+      if ( ++qi_ == qi_star_->end() )
         break;
       (*qi_)->reset();
     }
@@ -101,8 +101,8 @@ FTToken const* FTQueryItemSeqIterator::next() {
   return result;
 }
 
-void FTQueryItemSeqIterator::reset() {
-  qi_ = qi_seq_->begin();
+void query_item_star_iterator::reset() {
+  qi_ = qi_star_->begin();
   (*qi_)->reset();
 }
 

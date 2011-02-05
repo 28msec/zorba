@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#ifndef NDEBUG
+
 #include "util/indent.h"
 #include "util/omanip.h"
 #include "util/stl_util.h"
@@ -70,4 +72,6 @@ ostream& operator<<( ostream &o, ft_all_matches const &am ) {
 }
 
 } // namespace zorba
+
+#endif /* NDEBUG */
 /* vim:set et sw=2 ts=2: */

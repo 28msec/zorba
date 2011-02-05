@@ -29,7 +29,7 @@ namespace zorba {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * An %ft_thesaurus is the abstact base class for thesaurus implementations.
+ * An %ft_thesaurus is the abstract base class for thesaurus implementations.
  */
 class ft_thesaurus {
 public:

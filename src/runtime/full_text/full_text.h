@@ -14,8 +14,8 @@
  * limitations under the License.
  */
  
-#ifndef ZORBA_RUNTIME_FULL_TEXT_H
-#define ZORBA_RUNTIME_FULL_TEXT_H
+#ifndef ZORBA_FULL_TEXT_FTCONTAINS_ITERATOR_H
+#define ZORBA_FULL_TEXT_FTCONTAINS_ITERATOR_H
 
 /******************************************************************************
  *                                                                            *
@@ -32,8 +32,8 @@
 namespace zorba {
 
 class FTContainsIterator :
-  public BinaryBaseIterator<FTContainsIterator,PlanIteratorState> { 
-private:
+  public BinaryBaseIterator<FTContainsIterator,PlanIteratorState>
+{ 
   typedef BinaryBaseIterator<FTContainsIterator,PlanIteratorState> base_type;
 public:
   SERIALIZABLE_CLASS(FTContainsIterator);
@@ -52,17 +52,19 @@ public:
   );
   virtual ~FTContainsIterator();
 
+  // inherited
   void accept( PlanIterVisitor& ) const;
   uint32_t getStateSizeOfSubtree() const;
   void openImpl( PlanState&, uint32_t& );
   bool nextImpl( store::Item_t&, PlanState& ) const;
   void resetImpl( PlanState& ) const;
   void closeImpl( PlanState& );
+
 private:
   ftnode_t ftselection_;
   sub_iter_list_t sub_iters_;
 };
 
 }
-#endif  /* ZORBA_RUNTIME_FULL_TEXT_H */
+#endif  /* ZORBA_FULL_TEXT_FTCONTAINS_ITERATOR_H */
 /* vim:set et sw=2 ts=2: */
