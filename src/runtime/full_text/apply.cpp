@@ -124,7 +124,7 @@ static bool all_empty( ft_all_matches const &am,
 }
 
 /**
- * Shorthand for calling \c all_empty() with an \c ft_match (N)ame.
+ * Shorthand for calling all_empty() with an ft_match (N)ame.
  */
 #define ALL_EMPTY_N(ALL_MATCHES,SMP_NAME) \
   all_empty( ALL_MATCHES, &ft_match::SMP_NAME )
@@ -197,18 +197,6 @@ ft_token_span::int_t max( FTTokenSpanSequenceType &seq,
 }
 
 /**
- * Shorthand for calling max() with a sep (P)ointer and an ip (N)ame.
- */
-#define MAX_PN(SEQ,SEP,IP_NAME) \
-  max( SEQ, SEP, &ft_token_span::start_end::IP_NAME )
-
-/**
- * Shorthand for calling max() with a sep (N)ame and an ip (N)ame.
- */
-#define MAX_NN(SEQ,SEP_NAME,IP_NAME) \
-  MAX_PN( SEQ, &ft_token_span::SEP_NAME, IP_NAME )
-
-/**
  * Computes min(N) from the given sequence of ft_token_spans where N is
  * specified by the pointers-to-members.
  */
@@ -227,16 +215,21 @@ ft_token_span::int_t min( FTTokenSpanSequenceType &seq,
 }
 
 /**
- * Shorthand for calling min() with a sep (P)ointer and an ip (N)ame.
+ * Shorthand for calling a function with a sep (P)ointer and an ip (N)ame.
  */
-#define MIN_PN(SEQ,SEP,IP_NAME) \
-  min( SEQ, SEP, &ft_token_span::start_end::IP_NAME )
+#define F_PN(FN_NAME,SEQ,SEP,IP_NAME) \
+  FN_NAME( SEQ, SEP, &ft_token_span::start_end::IP_NAME )
 
 /**
- * Shorthand for calling min() with a sep (N)ame and an ip (N)ame.
+ * Shorthand for calling a function with a sep (N)ame and an ip (N)ame.
  */
-#define MIN_NN(SEQ,SEP_NAME,IP_NAME) \
-  MIN_PN( SEQ, &ft_token_span::SEP_NAME, IP_NAME )
+#define F_NN(FN_NAME,SEQ,SEP_NAME,IP_NAME) \
+  F_PN( FN_NAME, SEQ, &ft_token_span::SEP_NAME, IP_NAME )
+
+#define MAX_PN(SEQ,SEP,IP_NAME)       F_PN( max, SEQ, SEP, IP_NAME)
+#define MAX_NN(SEQ,SEP_NAME,IP_NAME)  F_NN( max, SEQ, SEP_NAME, IP_NAME)
+#define MIN_PN(SEQ,SEP,IP_NAME)       F_PN( min, SEQ, SEP, IP_NAME )
+#define MIN_NN(SEQ,SEP_NAME,IP_NAME)  F_NN( min, SEQ, SEP_NAME, IP_NAME )
 
 /**
  * From [1] 4.2.6.8:
