@@ -105,15 +105,19 @@ private:
 };
 
 /**
- * An %ft_match_seq contains zero or more ft_match objects.
+ * An %ft_match_seq is a sequence of zero or more ft_match objects.
  */
 typedef std::list<ft_match> ft_match_seq;
 
 /**
- * An %ft_all_matches contains zero or more ft_match objects.  This type
- * synonym is defined to use the same name as in the specification.
+ * This type synonym is defined to use the same name as in the specification.
  */
 typedef ft_match_seq ft_all_matches;
+
+/**
+ * An ft_all_matches_seq is a sequence of zero or more ft_all_matches objects.
+ */
+typedef std::list<ft_all_matches> ft_all_matches_seq;
 
 #ifndef NDEBUG
 std::ostream& operator<<( std::ostream&, ft_match const& );

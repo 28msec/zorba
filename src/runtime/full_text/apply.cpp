@@ -919,8 +919,6 @@ void apply_ftunary_not( ft_all_matches &am ) {
 
 ////////// ApplyFTWords ///////////////////////////////////////////////////////
 
-typedef list<ft_all_matches> ft_all_matches_seq;
-
 /**
  * Helper function for apply_ftwords(): finds the max query_pos among all the
  * match's include/exclude lists.
