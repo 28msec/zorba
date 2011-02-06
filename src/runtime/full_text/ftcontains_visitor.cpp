@@ -380,37 +380,31 @@ void V::end_visit( ftwords &w ) {
   query_item_star_t query_items;
   store::Item_t item;
 
-  //
-  // Get the tokens on the right-hand-side of the "contains text", i.e., the
-  // actual query.
-  //
-  while ( PlanIterator::consumeNext( item, plan_iter, plan_state_ ) ) {
-    try {
+  try {
+    //
+    // Get the tokens on the right-hand-side of the "contains text", i.e., the
+    // actual query.
+    //
+    while ( PlanIterator::consumeNext( item, plan_iter, plan_state_ ) ) {
       query_item_t const qi( item->getQueryTokens( lang, wildcards ) );
       if ( qi->hasNext() )
         query_items.push_back( qi );
     }
-    catch ( error::ZorbaError &e ) {
-      set_error_query_loc( e, w.get_value_expr()->get_loc() );
-      throw;
-    }
-  }
 
-  if ( !query_items.empty() ) {
-    //
-    // Now that we have the query tokens, evaluate the full-text expression.
-    //
-    auto_ptr<ft_all_matches> result( new ft_all_matches );
-    try {
+    if ( !query_items.empty() ) {
+      //
+      // Now that we have the query tokens, evaluate the full-text expression.
+      //
+      auto_ptr<ft_all_matches> result( new ft_all_matches );
       apply_ftwords(
         query_items, ++query_pos_, ignore_item_, w.get_mode(), options, *result
       );
+      PUSH( matches_stack_, result.release() );
     }
-    catch ( error::ZorbaError &e ) {
-      set_error_query_loc( e, w.get_value_expr()->get_loc() );
-      throw;
-    }
-    PUSH( matches_stack_, result.release() );
+  }
+  catch ( error::ZorbaError &e ) {
+    set_error_query_loc( e, w.get_value_expr()->get_loc() );
+    throw;
   }
   END_VISIT( ftwords );
 }
