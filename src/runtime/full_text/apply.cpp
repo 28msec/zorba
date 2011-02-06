@@ -1151,6 +1151,8 @@ apply_ftwords( query_item_star_t &query_items, FTToken::int_t query_pos,
         query_items, query_pos, ignore_item, options, matcher, result
       );
       break;
+    default:
+      ZORBA_ASSERT( false );
   }
 }
 
