@@ -116,6 +116,8 @@ zstring get_normalized_path( char const *path, char const *base ) {
   return result;
 }
 
+#ifdef ZORBA_WITH_FILE_ACCESS
+
 void get_temp_file( char *path ) {
 #ifndef WIN32
   if ( !::tmpnam( path ) )
@@ -167,6 +169,8 @@ bool remove( char const *path ) {
   }
 #endif /* WIN32 */
 }
+
+#endif /* ZORBA_WITH_FILE_ACCESS */
 
 ///////////////////////////////////////////////////////////////////////////////
 

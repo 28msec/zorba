@@ -88,6 +88,8 @@ public:
 
 ////////// File deletion //////////////////////////////////////////////////////
 
+#ifdef ZORBA_WITH_FILE_ACCESS
+
 /**
  * Removes the given file or directory.
  *
@@ -259,7 +261,11 @@ private:
   StringType path_;
 };
 
+#endif /* ZORBA_WITH_FILE_ACCESS */
+
 ////////// File information ///////////////////////////////////////////////////
+
+#ifdef ZORBA_WITH_FILE_ACCESS
 
 /**
  * Gets the type of the given file.
@@ -279,6 +285,8 @@ template<class StringType> inline
 type get_type( StringType const &path ) {
   return get_type( path.c_str() );
 }
+
+#endif /* ZORBA_WITH_FILE_ACCESS */
 
 /**
  * Checks whether the given path is an absolute path.
@@ -372,6 +380,8 @@ inline void append( StringType1 &path1, StringType2 const &path2 ) {
 
 ////////// Temporary files ////////////////////////////////////////////////////
 
+#ifdef ZORBA_WITH_FILE_ACCESS
+
 /**
  * Gets a path for a temporary file.
  *
@@ -394,6 +404,8 @@ void get_temp_file( StringType *path ) {
   get_temp_file( path_buf );
   *path = path_buf;
 }
+
+#endif /* ZORBA_WITH_FILE_ACCESS */
 
 ///////////////////////////////////////////////////////////////////////////////
 
