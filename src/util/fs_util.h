@@ -375,8 +375,9 @@ inline void append( StringType1 &path1, StringType2 const &path2 ) {
 /**
  * Gets a path for a temporary file.
  *
- * @param path_buf A buffer to receive the path.  It must be at least \c
- * MAX_PATH bytes long.
+ * @param path_buf A buffer to receive the path.  It must be at least
+ * \c MAX_PATH bytes long.
+ * @throws fs::exception if the operation fails.
  */
 void get_temp_file( char *path_buf );
 
@@ -385,6 +386,7 @@ void get_temp_file( char *path_buf );
  *
  * @tpatah StringType The string type.
  * @param path The string to receive the path.
+ * @throws fs::exception if the operation fails.
  */
 template<class StringType> inline
 void get_temp_file( StringType *path ) {
