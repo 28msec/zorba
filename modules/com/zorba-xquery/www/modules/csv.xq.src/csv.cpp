@@ -852,8 +852,9 @@ CSVParseFunction::evaluate(const Arguments_t& args,
 
 //////////////////////////////////////////////////////////////////////////////////
 //////////////////serialize
-CSVSerializeFunction::StringStreamSequence::StringStreamSequence(ItemSequence* input) : is(this) ,
-                                                                                        input_iter(input->getIterator())
+CSVSerializeFunction::StringStreamSequence::StringStreamSequence(ItemSequence* input) : 
+                                                                                        input_iter(input->getIterator()),
+                                                                                        is(this)
 {
 //  input_nodes = input;
   line_index = 0;

@@ -266,7 +266,7 @@ private:
       Iterator_t   args_iter;
       bool is_open;
     public:
-      InternalIterator(LazyConcatItemSequence *item_sequence) : theItemSequence(item_sequence), is_open(false), theCurrentArg(0)
+      InternalIterator(LazyConcatItemSequence *item_sequence) : theItemSequence(item_sequence), theCurrentArg(0), is_open(false)
       {
       }
 
