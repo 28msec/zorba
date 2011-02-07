@@ -20,7 +20,9 @@
 #include "util/mmap_file.h"
 #include "util/stl_util.h"
 #include "util/uri_util.h"
+#ifndef ZORBA_WITH_FILE_ACCESS
 #include "zorbaerrors/error_manager.h"
+#endif
 
 #include "ft_stop_words_set.h"
 
@@ -118,6 +120,7 @@ ft_stop_words_set::construct( ftstop_word_option const &option,
     ft_stop_words_unex::type const mode = (*ftsw)->get_mode();
     zstring const &uri = (*ftsw)->get_uri();
 
+#ifdef ZORBA_WITH_FILE_ACCESS
     if ( !uri.empty() ) {
       if ( !must_delete ) {
         word_set = new set_t( *word_set );
@@ -150,6 +153,9 @@ ft_stop_words_set::construct( ftstop_word_option const &option,
       if ( in_word )
         apply_word( word_start, words_file.end(), *word_set, mode );
     }
+#else
+    ZORBA_ERROR( XQP0017_FILE_ACCESS_DISABLED );
+#endif /* ZORBA_WITH_FILE_ACCESS */
 
     ftstop_words::list_t const &word_list = (*ftsw)->get_list();
     if ( !word_list.empty() ) {
