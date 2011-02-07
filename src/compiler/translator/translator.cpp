@@ -10512,13 +10512,11 @@ void end_visit(const ItemType& v, void* /*visit_state*/)
 
 void *begin_visit (const QName& v) {
   TRACE_VISIT();
-  ZORBA_ASSERT(0);
   return no_state;
 }
 
 
 void end_visit (const QName& v, void* /*visit_state*/) {
-  ZORBA_ASSERT(0);
   TRACE_VISIT_OUT ();
 }
 
