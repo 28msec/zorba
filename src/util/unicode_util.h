@@ -120,11 +120,9 @@ bool is_ucschar( code_point c );
 template<class CodePointType>
 inline bool is_valid( CodePointType c ) {
   //
-  // This function is currently slightly wrong; awaiting resolutio of:
+  // Unicode codepoint validation.
   //
-  // http://sourceforge.net/tracker/?func=detail&aid=3163520&group_id=226244&atid=1067586
-  //
-  return  (c >= 0x000001 && c <= 0x00D7FF)
+  return  (c >= 0x000000 && c <= 0x00D7FF)
       ||  (c >= 0x00E000 && c <= 0x00FFFD)
       ||  (c >= 0x010000 && c <= 0x10FFFF);
 }

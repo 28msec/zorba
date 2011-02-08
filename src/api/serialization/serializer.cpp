@@ -225,7 +225,7 @@ int serializer::emitter::emit_expanded_string(
 
     // raise an error iff (1) the serialization format is XML 1.0 and (2) the given character is an invalid XML 1.0 character
     if (ser && ser->method == PARAMETER_VALUE_XML && ser->version == "1.0" && !xml::is_valid((unsigned int)*chars))
-      ZORBA_ERROR_DESC(FOCH0001, "Serialization error: codepoint #" + NumConversions::uintToStr((unsigned int)*chars) + " is not allowed in XML version 1.0.");
+      ZORBA_ERROR_DESC(XQST0090, "Serialization error: codepoint #" + NumConversions::uintToStr((unsigned int)*chars) + " is not allowed in XML version 1.0.");
 
     /*
       Certain characters, specifically the control characters #x7F-#x9F, are
