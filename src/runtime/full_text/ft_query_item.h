@@ -55,7 +55,6 @@ public:
   bool hasNext() const;
   Mark_t pos() const;
   void pos( Mark_t const& );
-  void pos( FTTokenIterator_t const& );
   FTToken const* next();
   void reset();
 
