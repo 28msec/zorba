@@ -305,9 +305,9 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
         TypeOps::is_equal(tm, *primeInnerType, *rtm.ANY_ATOMIC_TYPE_ONE))
       return false;
 
-    // The type of the outer operand in the join predicate must be a subtype
-    // of the inner operand.
-    if (!TypeOps::is_subtype(tm, *outerType, *innerType))
+    // The prime type of the outer operand in the join predicate must be a
+    // subtype of the prime type of the inner operand.
+    if (!TypeOps::is_subtype(tm, *primeOuterType, *primeInnerType))
       return false;
   }
   else
