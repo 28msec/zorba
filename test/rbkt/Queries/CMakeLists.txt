@@ -112,6 +112,10 @@ IF(NOT ZORBA_SUPPRESS_CCLIENT)
   FIND_PACKAGE(CClient)
 ENDIF(NOT ZORBA_SUPPRESS_CCLIENT)
 
+# Check if WordNet thesaurus is installed in the location tests expect
+IF(EXISTS "${CMAKE_BINARY_DIR}/test/rbkt/thesauri/wordnet-en.zth")
+  SET(ZORBA_WORDNET_FOUND 1)
+ENDIF(EXISTS "${CMAKE_BINARY_DIR}/test/rbkt/thesauri/wordnet-en.zth")
 
 FOREACH(TESTFILE ${TESTFILES})
   # All testfile paths end in .xq or .xqx. Strip that part off to form
@@ -187,6 +191,15 @@ FOREACH(TESTFILE ${TESTFILES})
       SET (SKIP_TEST 1)
     ENDIF (NEEDS_LIBGEOS)
   ENDIF (NOT GEOS_FOUND)
+
+  # If WordNet thesaurus not found, skip ft-thesaurus-true tests
+  IF (NOT ZORBA_WORDNET_FOUND)
+    STRING(REGEX MATCH "zorba/fulltext/ft-thesaurus-true" NEEDS_WORDNET
+      "${TESTNAME}")
+    IF (NEEDS_WORDNET)
+      SET (SKIP_TEST 1)
+    ENDIF (NEEDS_WORDNET)
+  ENDIF (NOT ZORBA_WORDNET_FOUND)
 
   IF(NOT SKIP_TEST)
 
