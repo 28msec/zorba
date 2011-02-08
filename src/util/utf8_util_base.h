@@ -56,19 +56,6 @@ size_type const npos = static_cast<size_type>( -1 );
 ////////// functions //////////////////////////////////////////////////////////
 
 /**
- * Checks whether the given byte is a valid byte in a UTF-8 byte sequence
- * comprising an encoded character.  If not, throws an exception.
- *
- * @param b The byte to check.
- * @param check_start_byte If \c true, checks for a valid start byte; if \a
- * false, checks for a valid continuation byte.
- * @return Returns \a b for convenience.
- * @throws XQP0034_ILLEGAL_UTF8_BYTE if \a b is an illegal UTF-8 byte.
- */
-ZORBA_DLL_PUBLIC
-storage_type assert_valid_byte( storage_type b, bool check_start_byte );
-
-/**
  * Converts a character position into a byte position.
  *
  * @param s A null-terminated UTF-8 encoded C string.
@@ -96,15 +83,11 @@ size_type byte_pos( storage_type const *s, size_type s_size,
  *
  * @param start The start byte of a UTF-8 byte sequence comprising a Unicode
  * character.
- * @param throw_exception If \c true and \a start is invalid, will throw an
- * exception.
  * @return Returns a number in the range [1,6] if \a start is valid or 0 if
- * \a start is invalid and \a throw_exception is \c false.
- * @throws XQP0034_ILLEGAL_UTF8_BYTE if \a start is invalid and
- * \a throw_exception is \c true.
+ * \a start is invalid.
  */
 ZORBA_DLL_PUBLIC
-size_type char_length( storage_type start, bool throw_exception = true );
+size_type char_length( storage_type start );
 
 /**
  * Converts a pointer into a character offset.
@@ -254,11 +237,9 @@ inline size_type length( StringType const &s ) {
  * @param throw_exception If true, the FOCH0001 is thrown, otherwise not. The
  * default value is true.
  * @return Returns the Unicode code-point of the next character.
- * @throws XQP0034_ILLEGAL_UTF8_BYTE if an illegal UTF-8 byte is encountered
- * and throw_exception is true.
  */
 template<class OctetIterator>
-unicode::code_point next_char( OctetIterator &i, bool throw_exception = true );
+unicode::code_point next_char( OctetIterator &i );
 
 /**
  * Gets the Unicode character at the given position.

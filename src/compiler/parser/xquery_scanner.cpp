@@ -3151,7 +3151,7 @@ int checkXmlRefs(zorba::ZorbaParserError** err, char* yytext, int yyleng, zorba:
     {
       pos += zorba::xml::parse_entity((const char*)pos, &entity);
       temp = entity.c_str();
-      zorba::unicode::code_point cp = zorba::utf8::next_char(temp, false);
+      zorba::unicode::code_point cp = zorba::utf8::next_char(temp);
       if (!zorba::xml::is_valid(cp))
       {
         *err = scanner->getDriver()->parserErr(std::string("Invalid XML v1.0 codepoint in the string literal \"") + yytext + "\"", *yylloc, XQST0090);

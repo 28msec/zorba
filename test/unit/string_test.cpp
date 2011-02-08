@@ -681,6 +681,54 @@ static void test_uri_encode() {
   ASSERT_TRUE( s3 == s );
 }
 
+static void test_validate() {
+
+  // valid strings
+  ASSERT_TRUE( utf8::validate( "" ) == 0 );
+  ASSERT_TRUE( utf8::validate( "a" ) == 0 );
+  ASSERT_TRUE( utf8::validate( "ab" ) == 0 );
+  ASSERT_TRUE( utf8::validate( utf8_aacute ) == 0 );
+  ASSERT_TRUE( utf8::validate( utf8_aacute utf8_eacute ) == 0 );
+
+  // invalid start bytes
+  char invalid[3];
+  invalid[1] = '\0';
+  for ( unsigned char c = 0x80; c <= 0xC1; ++c ) {
+    invalid[0] = c;
+    ASSERT_TRUE( utf8::validate( invalid ) == invalid );
+  }
+  invalid[0] = '\xFE';
+  ASSERT_TRUE( utf8::validate( invalid ) == invalid );
+  invalid[0] = '\xFF';
+  ASSERT_TRUE( utf8::validate( invalid ) == invalid );
+
+  // invalid continuation bytes
+  invalid[0] = '\xC3';
+  invalid[2] = '\0';
+  for ( unsigned char c = 0x00; c <= 0x7F; ++c ) {
+    invalid[1] = c;
+    ASSERT_TRUE( utf8::validate( invalid ) == &invalid[1] );
+  }
+  for ( unsigned char c = 0xC0; c < 0xFF; ++c ) {
+    invalid[1] = c;
+    ASSERT_TRUE( utf8::validate( invalid ) == &invalid[1] );
+  }
+}
+
+static void test_validate_with_size() {
+
+  // valid strings
+  ASSERT_TRUE( utf8::validate( "", 0 ) == 0 );
+  ASSERT_TRUE( utf8::validate( "a", 1 ) == 0 );
+  ASSERT_TRUE( utf8::validate( "ab", 2 ) == 0 );
+  ASSERT_TRUE( utf8::validate( utf8_aacute, 2 ) == 0 );
+  ASSERT_TRUE( utf8::validate( utf8_aacute utf8_eacute, 4 ) == 0 );
+
+  // invalid: length too short
+  char const *const invalid = utf8_aacute;
+  ASSERT_TRUE( utf8::validate( invalid, 1 ) == invalid );
+}
+
 template<class StringType>
 static void test_xml_escape() {
   StringType const s( "&b<de>" );
@@ -813,6 +861,9 @@ int string_test( int, char*[] ) {
   test_trim_whitespace<zstring>();
 
   test_uri_encode<string>();
+
+  test_validate();
+  test_validate_with_size();
 
   test_xml_escape<string>();
   test_xml_parse_entity();

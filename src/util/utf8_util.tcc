@@ -73,7 +73,7 @@ back_iri_insert_iterator<StringType>::operator=( value_type c ) {
 ///////////////////////////////////////////////////////////////////////////////
 
 template<class OctetIterator>
-unicode::code_point next_char( OctetIterator &i, bool throw_exception ) {
+unicode::code_point next_char( OctetIterator &i ) {
   unicode::code_point c = *i & 0xFFu;   // prevents sign-extension
   if ( c < 0x80 )                       // special-case ASCII
     ++i;
@@ -81,18 +81,15 @@ unicode::code_point next_char( OctetIterator &i, bool throw_exception ) {
     size_type const len = char_length( c );
     unsigned m = (0x7F >> len) & 0x1F;  // mask
     c = unicode::code_point( 0 );
-    int b = false;                      // continuation byte?
     switch ( len ) {
-      case 6: c |= ((assert_valid_byte( *i, !b++ ) & m) << 30); ++i; m = 0x3F;
-      case 5: c |= ((assert_valid_byte( *i, !b++ ) & m) << 24); ++i; m = 0x3F;
-      case 4: c |= ((assert_valid_byte( *i, !b++ ) & m) << 18); ++i; m = 0x3F;
-      case 3: c |= ((assert_valid_byte( *i, !b++ ) & m) << 12); ++i; m = 0x3F;
-      case 2: c |= ((assert_valid_byte( *i, !b++ ) & m) <<  6); ++i;
-              c |=  (assert_valid_byte( *i, !b   ) & 0x3F)    ; ++i;
+      case 6: c |= ((*i & m   ) << 30); ++i; m = 0x3F;
+      case 5: c |= ((*i & m   ) << 24); ++i; m = 0x3F;
+      case 4: c |= ((*i & m   ) << 18); ++i; m = 0x3F;
+      case 3: c |= ((*i & m   ) << 12); ++i; m = 0x3F;
+      case 2: c |= ((*i & m   ) <<  6); ++i;
+              c |=  (*i & 0x3F)       ; ++i;
     }
   }
-  if ( throw_exception && !unicode::is_valid( c ) )
-    ZORBA_ERROR( FOCH0001 );
   return c;
 }
 

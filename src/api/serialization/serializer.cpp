@@ -183,7 +183,7 @@ int serializer::emitter::emit_expanded_string(
 
 #ifndef ZORBA_NO_UNICODE
     // the input string is UTF-8
-    int char_length = utf8::char_length(*chars, false);
+    int char_length = utf8::char_length(*chars);
     if (char_length == 0)
       char_length = 1;
 

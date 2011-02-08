@@ -36,12 +36,6 @@ unsigned const Mask6Bytes  = 0xFC;
 namespace zorba {
 namespace utf8 {
 
-storage_type assert_valid_byte( storage_type b, bool check_start_byte ) {
-  if ( !is_valid_byte( b, check_start_byte ) )
-    ZORBA_ERROR( XQP0034_ILLEGAL_UTF8_BYTE );
-  return b;
-}
-
 size_type byte_pos( storage_type const *s, size_type char_pos ) {
   if ( char_pos == npos )
     return npos;
@@ -68,7 +62,7 @@ size_type byte_pos( storage_type const *s, size_type s_size,
   return p - s;
 }
 
-size_type char_length( storage_type start, bool throw_exception ) {
+size_type char_length( storage_type start ) {
   static char const length_table[] = {
     /*      0 1 2 3 4 5 6 7 8 9 A B C D E F */
     /* 0 */ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
@@ -88,11 +82,7 @@ size_type char_length( storage_type start, bool throw_exception ) {
     /* E */ 3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
     /* F */ 4,4,4,4,4,4,4,4,5,5,5,5,6,6,0,0
   };
-
-  size_type const len = length_table[ static_cast<unsigned>( start ) & 0xFF ];
-  if ( !len && throw_exception )
-    ZORBA_ERROR( XQP0034_ILLEGAL_UTF8_BYTE );
-  return len;
+  return length_table[ static_cast<unsigned char>( start ) ];
 }
 
 size_type char_pos( storage_type const *s, storage_type const *p ) {
@@ -229,6 +219,37 @@ bool to_wchar_t( storage_type const *in, size_type in_len, wchar_t **out,
 }
 
 #endif /* ZORBA_NO_UNICODE */
+
+storage_type const* validate( storage_type const *s ) {
+  while ( *s ) {
+    size_type c_len = char_length( *s );
+    if ( !c_len )
+      return s;
+    while ( --c_len ) {
+      if ( !is_continuation_byte( *++s ) )
+        return s;
+    }
+    ++s;
+  }
+  return NULL;
+}
+
+storage_type const* validate( storage_type const *s, size_type s_size ) {
+  while ( s_size ) {
+    size_type c_len = char_length( *s );
+    if ( !c_len )
+      return s;
+    while ( --c_len ) {
+      if ( !--s_size )
+        return s;
+      if ( !is_continuation_byte( *++s ) )
+        return s;
+    }
+    ++s;
+    --s_size;
+  }
+  return NULL;
+}
 
 } // namespace utf8
 } // namespace zorba
