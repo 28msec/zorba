@@ -112,6 +112,11 @@ class CSVParseFunction : public NonePureStatelessExternalFunction
     bool is_open;
     int open_count;
 
+    std::vector<std::pair<String, String> >   ns_binding;
+    Item null_parent;
+    zorba::Item   item_type;
+    std::vector<std::string>  line;
+
     class HeaderNode : public SmartObject
     {
     public:
@@ -147,11 +152,11 @@ class CSVParseFunction : public NonePureStatelessExternalFunction
     void buildHeader(std::vector<std::vector<std::string> > &headers);
     bool buildNodeTree(zorba::Item parent, 
                         HeaderNode *current, 
-                        std::vector<std::string>  &line,
-                        unsigned int &line_pos,
-                        unsigned int indent_level,
-                        zorba::Item item_type,
-                        std::vector<std::pair<String, String> >   &ns_binding
+                        //std::vector<std::string>  &line,
+                        unsigned int &line_pos
+                        //unsigned int indent_level,
+                        //zorba::Item item_type,
+                        //std::vector<std::pair<String, String> >   &ns_binding
                         );
 
   };
@@ -190,6 +195,9 @@ class CSVSerializeFunction : public NonePureStatelessExternalFunction
     bool has_next;
     bool is_open;
     int  open_count;
+
+    std::vector<String> line;
+    Item node_item;
   public:
     std::istream is;
     CSVOptions csv_options;

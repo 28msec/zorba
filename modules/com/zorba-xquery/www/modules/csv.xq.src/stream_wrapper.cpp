@@ -64,15 +64,20 @@ const char *StreamWrapper::get_utf8_seq()
 
 bool StreamWrapper::compare(std::string &other)
 {
-  if((end_str-start_str) < (int)other.length())
+  int other_length = (int)other.length();
+  if((end_str-start_str) < other_length)
   {
     read_buf();
   }
-  if((end_str-start_str) < (int)other.length())
+  if((end_str-start_str) < other_length)
   {
     return false;
   }
-  if(!strncmp(other.c_str(), start_str, other.length()))
+  if(other_length == 1)
+  {
+    return (start_str[0] == other.c_str()[0]);
+  }
+  if(!strncmp(other.c_str(), start_str, other_length))
     return true;
   else
     return false;

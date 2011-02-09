@@ -1,2 +1,2 @@
-Serialization: --method TXT
+Serialization: --method TXT --indent
 COMPARISON: Text

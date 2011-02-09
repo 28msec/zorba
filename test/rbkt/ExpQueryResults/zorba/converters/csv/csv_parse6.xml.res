@@ -368,10 +368,11 @@
       <Range_of_Payment_Rates_by_County_>295 - 604</Range_of_Payment_Rates_by_County_>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>California</_STATE>
   <COUNTY>Los Angeles</COUNTY>
-  <HOSPITAL_NAME> </HOSPITAL_NAME>
+  <HOSPITAL_NAME></HOSPITAL_NAME>
   <Removal_of_damaged_skin_and_underlying_tissue>
     <CPT_11042>
       <Allowed_Services_>12,831</Allowed_Services_>
@@ -738,7 +739,8 @@
       <Range_of_Payment_Rates_by_County_>496</Range_of_Payment_Rates_by_County_>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>California</_STATE>
   <COUNTY>Los Angeles</COUNTY>
   <HOSPITAL_NAME>ALHAMBRA HOSPITAL MEDICAL CENTER</HOSPITAL_NAME>
@@ -1108,7 +1110,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>California</_STATE>
   <COUNTY>Los Angeles</COUNTY>
   <HOSPITAL_NAME>ANTELOPE VALLEY HOSPITAL MED CENTER</HOSPITAL_NAME>
@@ -1478,7 +1481,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>California</_STATE>
   <COUNTY>Los Angeles</COUNTY>
   <HOSPITAL_NAME>BARLOW RESPIRATORY HOSPITAL</HOSPITAL_NAME>
@@ -1848,7 +1852,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>California</_STATE>
   <COUNTY>Los Angeles</COUNTY>
   <HOSPITAL_NAME>BELLFLOWER MEDICAL CENTER</HOSPITAL_NAME>
@@ -2218,7 +2223,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>California</_STATE>
   <COUNTY>Los Angeles</COUNTY>
   <HOSPITAL_NAME>BEVERLY HOSPITAL</HOSPITAL_NAME>
@@ -2588,7 +2594,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>California</_STATE>
   <COUNTY>Los Angeles</COUNTY>
   <HOSPITAL_NAME>BROTMAN MEDICAL CENTER</HOSPITAL_NAME>
@@ -2958,7 +2965,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>California</_STATE>
   <COUNTY>Los Angeles</COUNTY>
   <HOSPITAL_NAME>CALIFORNIA HOSPITAL MEDICAL CENTER LA</HOSPITAL_NAME>
@@ -3328,7 +3336,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>California</_STATE>
   <COUNTY>Los Angeles</COUNTY>
   <HOSPITAL_NAME>CASA COLINA HOSP FOR REHAB MEDICINE</HOSPITAL_NAME>
@@ -3698,7 +3707,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>California</_STATE>
   <COUNTY>Los Angeles</COUNTY>
   <HOSPITAL_NAME>CEDARS-SINAI MEDICAL CENTER</HOSPITAL_NAME>
@@ -4068,7 +4078,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>California</_STATE>
   <COUNTY>Los Angeles</COUNTY>
   <HOSPITAL_NAME>CENTINELA HOSPITAL MEDICAL CENTER</HOSPITAL_NAME>
@@ -4438,7 +4449,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>California</_STATE>
   <COUNTY>Los Angeles</COUNTY>
   <HOSPITAL_NAME>CENTURY CITY DOCTORS HOSPITAL</HOSPITAL_NAME>
@@ -4808,7 +4820,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>California</_STATE>
   <COUNTY>Los Angeles</COUNTY>
   <HOSPITAL_NAME>CHILDRENS HOSP OF LOS ANGELES</HOSPITAL_NAME>
@@ -5178,7 +5191,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>California</_STATE>
   <COUNTY>Los Angeles</COUNTY>
   <HOSPITAL_NAME>CITRUS VALLEY MEDICAL CENTER-IC CAMPUS</HOSPITAL_NAME>
@@ -5548,7 +5562,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>California</_STATE>
   <COUNTY>Los Angeles</COUNTY>
   <HOSPITAL_NAME>CITRUS VALLEY MEDICAL CENTER-QV CAMPUS</HOSPITAL_NAME>
@@ -5918,7 +5933,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>California</_STATE>
   <COUNTY>Los Angeles</COUNTY>
   <HOSPITAL_NAME>CITY OF ANGELS MEDICAL CENTER</HOSPITAL_NAME>
@@ -6288,7 +6304,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>California</_STATE>
   <COUNTY>Los Angeles</COUNTY>
   <HOSPITAL_NAME>CITY OF HOPE HELFORD CLINICAL RESEARCH HOSPITAL</HOSPITAL_NAME>
@@ -6658,7 +6675,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>California</_STATE>
   <COUNTY>Los Angeles</COUNTY>
   <HOSPITAL_NAME>COAST PLAZA HOSPITAL</HOSPITAL_NAME>
@@ -7028,7 +7046,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>California</_STATE>
   <COUNTY>Los Angeles</COUNTY>
   <HOSPITAL_NAME>COMMUNITY AND MISSION  HOSPITAL OF HUNTINGTON PARK</HOSPITAL_NAME>
@@ -7398,7 +7417,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>California</_STATE>
   <COUNTY>Los Angeles</COUNTY>
   <HOSPITAL_NAME>COMMUNITY HOSPITAL OF LONG BEACH</HOSPITAL_NAME>
@@ -7768,7 +7788,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>California</_STATE>
   <COUNTY>Los Angeles</COUNTY>
   <HOSPITAL_NAME>DOCTORS HOSPITAL OF WEST COVINA, INC</HOSPITAL_NAME>
@@ -8138,7 +8159,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>California</_STATE>
   <COUNTY>Los Angeles</COUNTY>
   <HOSPITAL_NAME>DOWNEY REGIONAL MEDICAL CENTER</HOSPITAL_NAME>
@@ -8508,7 +8530,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>California</_STATE>
   <COUNTY>Los Angeles</COUNTY>
   <HOSPITAL_NAME>EAST LOS ANGELES DOCTORS HOSPITAL</HOSPITAL_NAME>
@@ -8878,7 +8901,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>California</_STATE>
   <COUNTY>Los Angeles</COUNTY>
   <HOSPITAL_NAME>EAST VALLEY HOSPITAL MEDICAL CENTER</HOSPITAL_NAME>
@@ -9248,7 +9272,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>California</_STATE>
   <COUNTY>Los Angeles</COUNTY>
   <HOSPITAL_NAME>ENCINO HOSPITAL MEDICAL CENTER</HOSPITAL_NAME>
@@ -9618,7 +9643,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>California</_STATE>
   <COUNTY>Los Angeles</COUNTY>
   <HOSPITAL_NAME>ENCINO-TARZANA REG MED CENTER - TARZANA CAMPUS</HOSPITAL_NAME>
@@ -9988,7 +10014,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>California</_STATE>
   <COUNTY>Los Angeles</COUNTY>
   <HOSPITAL_NAME>FOOTHILL PRESBYTERIAN HOSPITAL</HOSPITAL_NAME>
@@ -10358,7 +10385,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>California</_STATE>
   <COUNTY>Los Angeles</COUNTY>
   <HOSPITAL_NAME>GARFIELD MEDICAL CENTER</HOSPITAL_NAME>
@@ -10728,7 +10756,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>California</_STATE>
   <COUNTY>Mendocino</COUNTY>
   <HOSPITAL_NAME>UKIAH VALLEY MEDICAL CENTER/HOSPITAL D</HOSPITAL_NAME>
@@ -11098,10 +11127,11 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>California</_STATE>
   <COUNTY>Merced</COUNTY>
-  <HOSPITAL_NAME> </HOSPITAL_NAME>
+  <HOSPITAL_NAME></HOSPITAL_NAME>
   <Removal_of_damaged_skin_and_underlying_tissue>
     <CPT_11042>
       <Allowed_Services_>1,145</Allowed_Services_>
@@ -11468,7 +11498,8 @@
       <Range_of_Payment_Rates_by_County_>N/A</Range_of_Payment_Rates_by_County_>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>California</_STATE>
   <COUNTY>Merced</COUNTY>
   <HOSPITAL_NAME>MEMORIAL HOSPITAL LOS BANOS</HOSPITAL_NAME>
@@ -11838,7 +11869,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>California</_STATE>
   <COUNTY>Merced</COUNTY>
   <HOSPITAL_NAME>MERCY MEDICAL CENTER MERCED</HOSPITAL_NAME>
@@ -12208,10 +12240,11 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>California</_STATE>
   <COUNTY>Modoc</COUNTY>
-  <HOSPITAL_NAME> </HOSPITAL_NAME>
+  <HOSPITAL_NAME></HOSPITAL_NAME>
   <Removal_of_damaged_skin_and_underlying_tissue>
     <CPT_11042>
       <Allowed_Services_>*</Allowed_Services_>
@@ -12578,7 +12611,8 @@
       <Range_of_Payment_Rates_by_County_>N/A</Range_of_Payment_Rates_by_County_>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>California</_STATE>
   <COUNTY>Modoc</COUNTY>
   <HOSPITAL_NAME>MODOC MEDICAL CENTER</HOSPITAL_NAME>
@@ -12948,10 +12982,11 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>California</_STATE>
   <COUNTY>Monterey</COUNTY>
-  <HOSPITAL_NAME> </HOSPITAL_NAME>
+  <HOSPITAL_NAME></HOSPITAL_NAME>
   <Removal_of_damaged_skin_and_underlying_tissue>
     <CPT_11042>
       <Allowed_Services_>364</Allowed_Services_>
@@ -13318,7 +13353,8 @@
       <Range_of_Payment_Rates_by_County_>573</Range_of_Payment_Rates_by_County_>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>California</_STATE>
   <COUNTY>Monterey</COUNTY>
   <HOSPITAL_NAME>COMMUNITY HOSPITAL OF THE MONTEREY PENINSULA</HOSPITAL_NAME>
@@ -13688,7 +13724,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>California</_STATE>
   <COUNTY>Monterey</COUNTY>
   <HOSPITAL_NAME>GEORGE L MEE MEMORIAL HOSPITAL</HOSPITAL_NAME>
@@ -14058,7 +14095,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>California</_STATE>
   <COUNTY>Monterey</COUNTY>
   <HOSPITAL_NAME>NATIVIDAD MEDICAL CENTER</HOSPITAL_NAME>
@@ -14428,7 +14466,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>California</_STATE>
   <COUNTY>Monterey</COUNTY>
   <HOSPITAL_NAME>SALINAS VALLEY MEMORIAL HOSPITAL</HOSPITAL_NAME>
@@ -14798,7 +14837,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>Kansas</_STATE>
   <COUNTY>Butler</COUNTY>
   <HOSPITAL_NAME>SUSAN B ALLEN MEMORIAL HOSPITAL</HOSPITAL_NAME>
@@ -15168,10 +15208,11 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>Kansas</_STATE>
   <COUNTY>Coffey</COUNTY>
-  <HOSPITAL_NAME> </HOSPITAL_NAME>
+  <HOSPITAL_NAME></HOSPITAL_NAME>
   <Removal_of_damaged_skin_and_underlying_tissue>
     <CPT_11042>
       <Allowed_Services_>0</Allowed_Services_>
@@ -15538,7 +15579,8 @@
       <Range_of_Payment_Rates_by_County_>N/A</Range_of_Payment_Rates_by_County_>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>Kansas</_STATE>
   <COUNTY>Coffey</COUNTY>
   <HOSPITAL_NAME>COFFEY COUNTY HOSPITAL</HOSPITAL_NAME>
@@ -15908,7 +15950,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>Maryland</_STATE>
   <COUNTY>Baltimore City</COUNTY>
   <HOSPITAL_NAME>KENNEDY KREIGER INSTITUTE</HOSPITAL_NAME>
@@ -16278,7 +16321,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>Maryland</_STATE>
   <COUNTY>Baltimore City</COUNTY>
   <HOSPITAL_NAME>LEVINDALE HEBREW GERIATRIC CENTER &amp; HOSPITAL</HOSPITAL_NAME>
@@ -16648,7 +16692,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>New York</_STATE>
   <COUNTY>Erie</COUNTY>
   <HOSPITAL_NAME>ST JOSEPH HOSPITAL OF CHEEKTOWAGA NEW YORK</HOSPITAL_NAME>
@@ -17018,10 +17063,11 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>New York</_STATE>
   <COUNTY>Franklin</COUNTY>
-  <HOSPITAL_NAME> </HOSPITAL_NAME>
+  <HOSPITAL_NAME></HOSPITAL_NAME>
   <Removal_of_damaged_skin_and_underlying_tissue>
     <CPT_11042>
       <Allowed_Services_>12</Allowed_Services_>
@@ -17388,7 +17434,8 @@
       <Range_of_Payment_Rates_by_County_>434</Range_of_Payment_Rates_by_County_>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>New York</_STATE>
   <COUNTY>Franklin</COUNTY>
   <HOSPITAL_NAME>ADIRONDACK MEDICAL CENTER</HOSPITAL_NAME>
@@ -17758,7 +17805,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>New York</_STATE>
   <COUNTY>Franklin</COUNTY>
   <HOSPITAL_NAME>ALICE HYDE MEDICAL CENTER</HOSPITAL_NAME>
@@ -18128,10 +18176,11 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>New York</_STATE>
   <COUNTY>Fulton</COUNTY>
-  <HOSPITAL_NAME> </HOSPITAL_NAME>
+  <HOSPITAL_NAME></HOSPITAL_NAME>
   <Removal_of_damaged_skin_and_underlying_tissue>
     <CPT_11042>
       <Allowed_Services_>0</Allowed_Services_>
@@ -18498,7 +18547,8 @@
       <Range_of_Payment_Rates_by_County_>N/A</Range_of_Payment_Rates_by_County_>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>New York</_STATE>
   <COUNTY>Fulton</COUNTY>
   <HOSPITAL_NAME>NATHAN LITTAUER HOSPITAL</HOSPITAL_NAME>
@@ -18868,10 +18918,11 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>New York</_STATE>
   <COUNTY>Genesee</COUNTY>
-  <HOSPITAL_NAME> </HOSPITAL_NAME>
+  <HOSPITAL_NAME></HOSPITAL_NAME>
   <Removal_of_damaged_skin_and_underlying_tissue>
     <CPT_11042>
       <Allowed_Services_>*</Allowed_Services_>
@@ -19238,7 +19289,8 @@
       <Range_of_Payment_Rates_by_County_>420</Range_of_Payment_Rates_by_County_>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>New York</_STATE>
   <COUNTY>Genesee</COUNTY>
   <HOSPITAL_NAME>UNITED MEMORIAL MEDICAL CENTER</HOSPITAL_NAME>
@@ -19608,7 +19660,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>Oregon</_STATE>
   <COUNTY>Klamath</COUNTY>
   <HOSPITAL_NAME>SKY LAKES MEDICAL CENTER, INC</HOSPITAL_NAME>
@@ -19978,10 +20031,11 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>Oregon</_STATE>
   <COUNTY>Lane</COUNTY>
-  <HOSPITAL_NAME> </HOSPITAL_NAME>
+  <HOSPITAL_NAME></HOSPITAL_NAME>
   <Removal_of_damaged_skin_and_underlying_tissue>
     <CPT_11042>
       <Allowed_Services_>*</Allowed_Services_>
@@ -20348,7 +20402,8 @@
       <Range_of_Payment_Rates_by_County_>476</Range_of_Payment_Rates_by_County_>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>Oregon</_STATE>
   <COUNTY>Lane</COUNTY>
   <HOSPITAL_NAME>MCKENZIE-WILLAMETTE MEDICAL CENTER</HOSPITAL_NAME>
@@ -20718,7 +20773,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>Texas</_STATE>
   <COUNTY>Hidalgo</COUNTY>
   <HOSPITAL_NAME>DOCTORS HOSPITAL AT RENAISSANCE</HOSPITAL_NAME>
@@ -21088,7 +21144,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>Texas</_STATE>
   <COUNTY>Hidalgo</COUNTY>
   <HOSPITAL_NAME>KNAPP MEDICAL CENTER</HOSPITAL_NAME>
@@ -21458,7 +21515,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>Texas</_STATE>
   <COUNTY>Hidalgo</COUNTY>
   <HOSPITAL_NAME>MISSION REGIONAL MEDICAL CENTER</HOSPITAL_NAME>
@@ -21828,10 +21886,11 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>Virginia</_STATE>
   <COUNTY>Danville City</COUNTY>
-  <HOSPITAL_NAME> </HOSPITAL_NAME>
+  <HOSPITAL_NAME></HOSPITAL_NAME>
   <Removal_of_damaged_skin_and_underlying_tissue>
     <CPT_11042>
       <Allowed_Services_>*</Allowed_Services_>
@@ -22198,7 +22257,8 @@
       <Range_of_Payment_Rates_by_County_>403</Range_of_Payment_Rates_by_County_>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>Virginia</_STATE>
   <COUNTY>Danville City</COUNTY>
   <HOSPITAL_NAME>DANVILLE REGIONAL MEDICAL CENTER</HOSPITAL_NAME>
@@ -22568,10 +22628,11 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>Virginia</_STATE>
   <COUNTY>Emporia City</COUNTY>
-  <HOSPITAL_NAME> </HOSPITAL_NAME>
+  <HOSPITAL_NAME></HOSPITAL_NAME>
   <Removal_of_damaged_skin_and_underlying_tissue>
     <CPT_11042>
       <Allowed_Services_>*</Allowed_Services_>
@@ -22938,7 +22999,8 @@
       <Range_of_Payment_Rates_by_County_>429</Range_of_Payment_Rates_by_County_>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>Virginia</_STATE>
   <COUNTY>Emporia City</COUNTY>
   <HOSPITAL_NAME>SOUTHERN VIRGINIA REGIONAL MEDICAL CENTER</HOSPITAL_NAME>
@@ -23308,7 +23370,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>Wisconsin</_STATE>
   <COUNTY>Sauk</COUNTY>
   <HOSPITAL_NAME>ST CLARE HSPTL HLTH SVCS</HOSPITAL_NAME>
@@ -23678,10 +23741,11 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>Wisconsin</_STATE>
   <COUNTY>Sheboygan</COUNTY>
-  <HOSPITAL_NAME> </HOSPITAL_NAME>
+  <HOSPITAL_NAME></HOSPITAL_NAME>
   <Removal_of_damaged_skin_and_underlying_tissue>
     <CPT_11042>
       <Allowed_Services_>*</Allowed_Services_>
@@ -24048,7 +24112,8 @@
       <Range_of_Payment_Rates_by_County_>443</Range_of_Payment_Rates_by_County_>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>Wisconsin</_STATE>
   <COUNTY>Sheboygan</COUNTY>
   <HOSPITAL_NAME>AURORA SHEBOYGAN MEM MED CTR</HOSPITAL_NAME>
@@ -24418,7 +24483,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>Wyoming</_STATE>
   <COUNTY>Uinta</COUNTY>
   <HOSPITAL_NAME>EVANSTON REGIONAL HOSPITAL</HOSPITAL_NAME>
@@ -24788,7 +24854,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE/>
   <COUNTY/>
   <HOSPITAL_NAME/>
@@ -25158,7 +25225,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE/>
   <COUNTY/>
   <HOSPITAL_NAME/>
@@ -25528,7 +25596,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>Field Descriptions</_STATE>
   <COUNTY/>
   <HOSPITAL_NAME/>
@@ -25898,7 +25967,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>#NAME?</_STATE>
   <COUNTY/>
   <HOSPITAL_NAME/>
@@ -26268,7 +26338,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>#NAME?</_STATE>
   <COUNTY/>
   <HOSPITAL_NAME/>
@@ -26638,7 +26709,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>  the Ambulatory Payment Classification (APC) code assigned to the procedure adjusted by the wage index for the hospital that delivered the service. </_STATE>
   <COUNTY/>
   <HOSPITAL_NAME/>
@@ -27008,7 +27080,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>  Providers in the same area can have different wage index values.  In some cases, all of the providers in the data set used to generate these</_STATE>
   <COUNTY/>
   <HOSPITAL_NAME/>
@@ -27378,7 +27451,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>  tables had the same wage index value. Those areas show a single payment rate rather than a payment range.</_STATE>
   <COUNTY/>
   <HOSPITAL_NAME/>
@@ -27748,7 +27822,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE/>
   <COUNTY/>
   <HOSPITAL_NAME/>
@@ -28118,7 +28193,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>Special Notes</_STATE>
   <COUNTY/>
   <HOSPITAL_NAME/>
@@ -28488,7 +28564,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>- Privacy:  An asterisk (*) appears in the table where data cannot be disclosed due to Privacy rules.</_STATE>
   <COUNTY/>
   <HOSPITAL_NAME/>
@@ -28858,7 +28935,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE/>
   <COUNTY/>
   <HOSPITAL_NAME/>
@@ -29228,7 +29306,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>#NAME?</_STATE>
   <COUNTY/>
   <HOSPITAL_NAME/>
@@ -29598,7 +29677,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>  for the area, the range of payment rates could not be calculated and &#x93;N/A&#x94; would be displayed in the cell.</_STATE>
   <COUNTY/>
   <HOSPITAL_NAME/>
@@ -29968,7 +30048,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE/>
   <COUNTY/>
   <HOSPITAL_NAME/>
@@ -30338,7 +30419,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>#NAME?</_STATE>
   <COUNTY/>
   <HOSPITAL_NAME/>
@@ -30708,7 +30790,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE/>
   <COUNTY/>
   <HOSPITAL_NAME/>
@@ -31078,7 +31161,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>#NAME?</_STATE>
   <COUNTY/>
   <HOSPITAL_NAME/>
@@ -31448,7 +31532,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE/>
   <COUNTY/>
   <HOSPITAL_NAME/>
@@ -31818,7 +31903,8 @@
       <Range_of_Payment_Rates_by_County_/>
     </HCPCS_G0260>
   </Injection_of_lower_back_joint>
-</row><row>
+</row>
+<row>
   <_STATE>- CPT only copyright 2008 American Medical Association. All rights reserved.  </_STATE>
   <COUNTY/>
   <HOSPITAL_NAME/>

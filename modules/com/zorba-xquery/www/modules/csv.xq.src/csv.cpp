@@ -153,6 +153,8 @@ bool getAttribute(Item element, const char *lookup_name, String &attr_value)
 void addIndentation(Item parent, unsigned int indent_level,
                     ItemFactory *item_factory)
 {
+  return;
+/*
   if(indent_level > 100)
     indent_level = 100;
   char ws[110];
@@ -160,6 +162,7 @@ void addIndentation(Item parent, unsigned int indent_level,
   memset(ws+1, ' ', indent_level);
   ws[indent_level+1] = 0;
   item_factory->createTextNode(parent, ws);
+*/
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -640,19 +643,19 @@ void CSVParseFunction::CSVItemSequence::buildHeader(std::vector<std::vector<std:
 
 bool CSVParseFunction::CSVItemSequence::buildNodeTree(zorba::Item parent, 
                                                       HeaderNode *current, 
-                                                      std::vector<std::string>  &line,
-                                                      unsigned int &line_pos,
-                                                      unsigned int indent_level,
-                                                      zorba::Item item_type,
-                                                      std::vector<std::pair<String, String> >   &ns_binding
+                                                      //std::vector<std::string>  &line,
+                                                      unsigned int &line_pos
+                                                      //unsigned int indent_level,
+                                                      //zorba::Item item_type,
+                                                      //std::vector<std::pair<String, String> >   &ns_binding
                                                       )
 {
   zorba::Item   fieldNode;
-  zorba::Item   textNode;
+  //zorba::Item   textNode;
 
   if(!csv_options.add_last_void_columns && (line_pos >= line.size()))
     return false;
-  addIndentation(parent, indent_level, item_factory);
+//  addIndentation(parent, indent_level, item_factory);
 
   fieldNode = item_factory->createElementNode(parent, current->name, item_type, false, false, ns_binding);
   
@@ -665,18 +668,18 @@ bool CSVParseFunction::CSVItemSequence::buildNodeTree(zorba::Item parent,
       {
         if(line_pos < line.size() && !line[line_pos].empty())
         {
-          textNode = item_factory->createTextNode(fieldNode, line[line_pos]);
+          item_factory->createTextNode(fieldNode, line[line_pos]);
         }
         line_pos++;
       }
-      buildNodeTree(fieldNode, (*children_it), line, line_pos, indent_level+2, item_type, ns_binding);
+      buildNodeTree(fieldNode, (*children_it), line_pos);
     }
-    addIndentation(fieldNode, indent_level, item_factory);
+//    addIndentation(fieldNode, indent_level, item_factory);
   }
   else
   {
     if(line_pos < line.size() && !line[line_pos].empty())
-      textNode = item_factory->createTextNode(fieldNode, line[line_pos]);
+      item_factory->createTextNode(fieldNode, line[line_pos]);
     line_pos++;
   }
   return true;
@@ -698,6 +701,14 @@ void CSVParseFunction::CSVItemSequence::open()
   }
   line_index = 1;
   open_count++;
+
+  ns_binding.clear();
+  if(!csv_options.row_qname.getNamespace().empty())
+  {
+    ns_binding.push_back(std::pair<String, String>(csv_options.row_qname.getPrefix().c_str(), 
+                                                 csv_options.row_qname.getNamespace().c_str()));
+  }
+  item_type = item_factory->createQName("http://www.w3.org/2001/XMLSchema", "untyped");
 }
 
 void CSVParseFunction::CSVItemSequence::close()
@@ -750,7 +761,6 @@ bool CSVParseFunction::CSVItemSequence::next(Item& result)
     return false;
 
   //now read everything else
-  std::vector<std::string>  line;
   do
   {
     line.clear();
@@ -760,16 +770,7 @@ bool CSVParseFunction::CSVItemSequence::next(Item& result)
   }
   while(line_index <= csv_options.start_from_row);
 
-  std::vector<std::pair<String, String> >   ns_binding;
-  if(!csv_options.row_qname.getNamespace().empty())
-  {
-    ns_binding.push_back(std::pair<String, String>(csv_options.row_qname.getPrefix().c_str(), 
-                                                 csv_options.row_qname.getNamespace().c_str()));
-  }
-  zorba::Item   item_type;
-  item_type = item_factory->createQName("http://www.w3.org/2001/XMLSchema", "untyped");
 
-  Item null_parent;
   result = item_factory->createElementNode(null_parent, csv_options.row_qname, item_type, false, false, ns_binding);
 
   if(header_qnames.size())
@@ -786,7 +787,7 @@ bool CSVParseFunction::CSVItemSequence::next(Item& result)
       if(header_parent == prev_parent)
         continue;
     
-      if(!buildNodeTree(result, header_parent, line, line_pos, 2, item_type, ns_binding))
+      if(!buildNodeTree(result, header_parent, line_pos))
         break;
       prev_parent = header_parent;
     }
@@ -797,19 +798,19 @@ bool CSVParseFunction::CSVItemSequence::next(Item& result)
     for(i = 0; i < line.size(); i++)
     {
       zorba::Item   fieldNode;
-      zorba::Item   textNode;
+      //zorba::Item   textNode;
 
       addIndentation(result, 2, item_factory);
 
       fieldNode = item_factory->createElementNode(result, csv_options.column_qname, item_type, false, false, ns_binding);
 
       if(!line[i].empty())
-        textNode = item_factory->createTextNode(fieldNode, line[i]);
+        item_factory->createTextNode(fieldNode, line[i]);
     }
   }
 
-  if(line.size())
-    item_factory->createTextNode(result, "\n");
+//-  if(line.size())
+//-    item_factory->createTextNode(result, "\n");
 
   return true;
 }
@@ -927,9 +928,7 @@ void CSVSerializeFunction::StringStreamSequence::csv_write_line(
     {
       if(column_kind != store::StoreConsts::elementNode)
         continue;
-      String column_value;
-      column_value = store_column.getStringValue();
-      line.push_back(column_value);
+      line.push_back(store_column.getStringValue());
     }
     else
     {
@@ -946,9 +945,7 @@ void CSVSerializeFunction::StringStreamSequence::csv_write_line(
             line.resize(i);
             if(level == (headers.size()-1))
             {
-              String column_value;
-              column_value = store_column.getStringValue();
-              line.push_back(column_value);
+              line.push_back(store_column.getStringValue());
             }
             else
             {
@@ -994,12 +991,27 @@ void CSVSerializeFunction::StringStreamSequence::csv_write_line(
 
 bool CSVSerializeFunction::StringStreamSequence::needs_quote(String &field)
 {
-  if((field.indexOf(csv_options.separator.c_str()) >= 0) || 
-     (csv_options.quote_char_size && field.indexOf(csv_options.quote_char.c_str()) >= 0) ||
-     (field.indexOf("\n") >= 0) || (field.indexOf("\r") >= 0))
-    return true;
-  else
-    return false;
+//  if((field.indexOf(csv_options.separator.c_str()) >= 0) || 
+//     (csv_options.quote_char_size && field.indexOf(csv_options.quote_char.c_str()) >= 0) ||
+//     (field.indexOf("\n") >= 0) || (field.indexOf("\r") >= 0))
+//    return true;
+//  else
+//    return false;
+  const char *field_str = field.c_str();
+  const char *separator_str = csv_options.separator.c_str();
+  const char *quote_char_str = csv_options.quote_char_size ? csv_options.quote_char.c_str() : "";
+
+  while(*field_str)
+  {
+    if((*field_str == '\n') || (*field_str == '\r'))
+      return true;
+    if((*field_str == *separator_str) && !strncmp(field_str, separator_str, csv_options.separator_size))
+      return true;
+    if((*field_str == *quote_char_str) && !strncmp(field_str, quote_char_str, csv_options.quote_char_size))
+      return true;
+    field_str++;
+  }
+  return false;
 }
 
 std::string CSVSerializeFunction::StringStreamSequence::csv_quote_field(
@@ -1147,7 +1159,6 @@ bool CSVSerializeFunction::StringStreamSequence::next( Item &result )
 
 bool CSVSerializeFunction::StringStreamSequence::next(std::string &result_string)
 {
-  Item node_item;
   if(!input_iter->next(node_item))
     return false;
 
@@ -1175,7 +1186,7 @@ bool CSVSerializeFunction::StringStreamSequence::next(std::string &result_string
     }
     csv_options.first_row_is_header = 0;
   }
-  std::vector<String> line;
+  line.clear();
   csv_write_line(node_item,
                       line, 0);
 
