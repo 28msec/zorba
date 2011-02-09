@@ -28,8 +28,10 @@
 
 #ifdef __GNUC__
 # include <tr1/type_traits>
+# define TR1_NS std::tr1
 #else
 # include <type_traits>
+# define TR1_NS std
 #endif /* __GNUC__ */
 
 namespace zorba {
@@ -253,13 +255,13 @@ struct enable_if<true,T> {
 };
 
 template<typename IntType> inline
-typename enable_if<std::tr1::is_signed<IntType>::value,bool>::type
+typename enable_if<TR1_NS::is_signed<IntType>::value,bool>::type
 ge0( IntType n ) {
   return n >= 0;
 }
 
 template<typename IntType> inline
-typename enable_if<std::tr1::is_unsigned<IntType>::value,bool>::type
+typename enable_if<TR1_NS::is_unsigned<IntType>::value,bool>::type
 ge0( IntType ) {
   return true;
 }
