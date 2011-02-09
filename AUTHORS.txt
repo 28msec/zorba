@@ -26,13 +26,14 @@ The primary authors are:
   * David Graf
   * Chris Hillery
   * Donald Kossmann 
-  * Paul Kunz
   * Tim Kraska
+  * Paul Kunz
+  * Paul Lucas
   * Dan Muresan
   * Sorin Nasoi
   * Paul Pedersen
+  * Gabriel Petrovay
+  * Markus Pilman
   * Sam Rehman
   * Daniel Turcanu
   * Markos Zaharioudakis
-  * Gabriel Petrovay
-  * Markus Pilman
