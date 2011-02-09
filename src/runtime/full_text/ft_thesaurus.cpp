@@ -22,13 +22,13 @@
 #include "util/less.h"
 #include "util/string_util.h"
 #include "util/uri_util.h"
-#ifndef ZORBA_WITH_FILE_ACCESS
 #include "zorbaerrors/error_manager.h"
-#endif
 
 #include "ft_thesaurus.h"
+#ifdef ZORBA_WITH_FILE_ACCESS
 #include "thesauri/wn_thesaurus.h"
 #include "thesauri/xqftts_thesaurus.h"
+#endif
 
 using namespace std;
 using namespace zorba::locale;
@@ -59,7 +59,7 @@ namespace thesaurus_impl {
     typedef map<char const*,type> impl_map_t;
     static impl_map_t impl_map;
     if ( impl_map.empty() ) {
-      impl_map[ "default" ] = wordnet;
+      impl_map[ "default" ] = DEFAULT;
       impl_map[ "wordnet" ] = wordnet;
       impl_map[ "xqftts"  ] = xqftts;
     }
@@ -107,12 +107,8 @@ ft_thesaurus::ptr ft_thesaurus::get( zstring const &mapping,
   switch ( uri::get_scheme( uri ) ) {
     case uri::file:
     case uri::none:
-#     ifdef ZORBA_WITH_FILE_ACCESS
       th_path = fs::get_normalized_path( uri );
       break;
-#     else
-      ZORBA_ERROR( XQP0017_FILE_ACCESS_DISABLED );
-#     endif /* ZORBA_WITH_FILE_ACCESS */
     default:
       ZORBA_ERROR_DESC(
         XQP0015_SYSTEM_NOT_YET_IMPLEMENTED, "non-file thesaurus URI"
@@ -121,12 +117,14 @@ ft_thesaurus::ptr ft_thesaurus::get( zstring const &mapping,
 
   ft_thesaurus *result;
   switch ( th_impl ) {
+#   ifdef ZORBA_WITH_FILE_ACCESS
     case thesaurus_impl::wordnet:
       result = new wordnet::thesaurus( th_path, lang );
       break;
     case thesaurus_impl::xqftts:
       result = new xqftts::thesaurus( th_path, lang );
       break;
+#   endif /* ZORBA_WITH_FILE_ACCESS */
     default:
       result = 0;
   }
