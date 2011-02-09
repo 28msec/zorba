@@ -19,8 +19,6 @@
 #endif /* ZORBA_NO_UNICODE */
 
 #include "utf8_util.h"
-#include "zorbaerrors/error_manager.h"
-#include "zorbatypes/zorbatypesError.h"
 
 #ifndef ZORBA_NO_UNICODE
 U_NAMESPACE_USE
@@ -95,8 +93,6 @@ size_type char_pos( storage_type const *s, storage_type const *p ) {
 }
 
 size_type encode( unicode::code_point c, storage_type **ps ) {
-  if ( !unicode::is_valid( c ) )
-    ZORBA_ERROR( FOCH0001 );
   unsigned const n = c & 0xFFFFFFFF;
   storage_type *&p = *ps, *const p0 = p;
   if ( n < 0x80 ) {
