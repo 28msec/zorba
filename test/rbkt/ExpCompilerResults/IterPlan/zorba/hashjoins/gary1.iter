@@ -1,29 +1,23 @@
 Iterator tree for const-folded expr:
-<LogicIterator>
-  <LogicIterator>
-    <SingletonIterator value="xs:boolean(false)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-  </LogicIterator>
+<OrIterator>
   <SingletonIterator value="xs:boolean(false)"/>
-</LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
 
 Iterator tree for const-folded expr:
-<LogicIterator>
-  <LogicIterator>
-    <SingletonIterator value="xs:boolean(false)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-  </LogicIterator>
+<OrIterator>
   <SingletonIterator value="xs:boolean(false)"/>
-</LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
 
 Iterator tree for const-folded expr:
-<LogicIterator>
-  <LogicIterator>
-    <SingletonIterator value="xs:boolean(false)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-  </LogicIterator>
+<OrIterator>
   <SingletonIterator value="xs:boolean(false)"/>
-</LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
 
 Iterator tree for main query:
 <ElementIterator>
@@ -197,7 +191,7 @@ Iterator tree for main query:
                                 </AttributeIterator>
                                 <EnclosedIterator attr_cont="false">
                                   <IfThenElseIterator>
-                                    <LogicIterator>
+                                    <AndIterator>
                                       <UnhoistIterator>
                                         <LetVarIterator varname="$$opt_temp_0"/>
                                       </UnhoistIterator>
@@ -207,7 +201,7 @@ Iterator tree for main query:
                                         </FnDataIterator>
                                         <SingletonIterator value="xs:string(ic1980)"/>
                                       </CompareIterator>
-                                    </LogicIterator>
+                                    </AndIterator>
                                     <UnhoistIterator>
                                       <LetVarIterator varname="$$opt_temp_1"/>
                                     </UnhoistIterator>

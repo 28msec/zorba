@@ -623,11 +623,11 @@ static expr_t partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
   const function* f = fo->get_func();
   FunctionConsts::FunctionKind fkind = f->getKind();
 
-  if (fkind == FunctionConsts::OP_OR_2)
+  if (fkind == FunctionConsts::OP_OR_N)
   {
     return partial_eval_logic(fo, true, rCtx);
   }
-  else if (fkind == FunctionConsts::OP_AND_2)
+  else if (fkind == FunctionConsts::OP_AND_N)
   {
     return partial_eval_logic(fo, false, rCtx);
   }
@@ -703,7 +703,7 @@ static expr_t partial_eval_logic(
 
   if (nonConst1 < 0)
   {
-    // Both args are constant exprs
+    // All args are constant exprs
     return new const_expr(fo->get_sctx(), LOC(fo), (xs_boolean) ! shortcircuit_val);
   }
 

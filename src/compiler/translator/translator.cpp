@@ -4845,7 +4845,7 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
                                         countDVExpr.getp(), countSecExpr.getp());
       // (...) and (...)
       fo_expr_t andExpr = new fo_expr(theRootSctx, loc,
-                                      GET_BUILTIN_FUNCTION(OP_AND_2),
+                                      GET_BUILTIN_FUNCTION(OP_AND_N),
                                       everyExpr.getp(), equalExpr.getp());
 
       flworExpr->set_return_expr(andExpr.getp());
@@ -6444,33 +6444,47 @@ void* begin_visit(const SwitchExpr& v)
   expr_t retExpr = pop_nodestack();
 
   const SwitchCaseClauseList* clauses = v.get_clause_list();
-  for (std::vector<rchandle<SwitchCaseClause> >::const_reverse_iterator it = clauses->rbegin();
-       it != clauses->rend();
-       ++it)
+  std::vector<rchandle<SwitchCaseClause> >::const_reverse_iterator it;
+
+  for (it = clauses->rbegin(); it != clauses->rend(); ++it)
   {
     const SwitchCaseClause* switchCaseClause = &**it;
     const QueryLoc& loc = switchCaseClause->get_location();
-    expr_t condExpr = NULL;
 
     const SwitchCaseOperandList* operands = switchCaseClause->get_operand_list();
+
+    expr_t condExpr = NULL;
+    std::vector<expr_t> condOperands;
+    condOperands.reserve(operands->size());
+
     for (std::vector<rchandle<exprnode> >::const_iterator it = operands->begin();
          it != operands->end();
          ++it)
     {
       const exprnode* operand = &**it;
       operand->accept(*this);
+
       expr_t operandExpr = pop_nodestack();
       operandExpr = wrap_in_atomization(operandExpr);
-      operandExpr = new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(OP_ATOMIC_VALUES_EQUIVALENT_2), sv, operandExpr);
+      operandExpr = new fo_expr(theRootSctx, loc, 
+                                GET_BUILTIN_FUNCTION(OP_ATOMIC_VALUES_EQUIVALENT_2),
+                                sv,
+                                operandExpr);
 
-      if (condExpr.getp() == NULL)
-        condExpr = operandExpr;
-      else
-      {
-        // condExpr = [$sv = $ci1 or $sv = $ci2 or ...]
-        condExpr = new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(OP_OR_2), condExpr, operandExpr);
-      }
+      condOperands.push_back(operandExpr);
     } // for
+
+    if (condOperands.size() == 1)
+    {
+      condExpr = condOperands[0];
+    }
+    else if (condOperands.size() > 1)
+    {
+      condExpr = new fo_expr(theRootSctx,
+                             loc,
+                             GET_BUILTIN_FUNCTION(OP_OR_N),
+                             condOperands);
+    }
 
     switchCaseClause->get_return_expr()->accept(*this);
     expr_t caseReturnExpr = pop_nodestack();
@@ -6770,7 +6784,50 @@ void end_visit(const OrExpr& v, void* /*visit_state*/)
   rchandle<expr> e1 = pop_nodestack();
   rchandle<expr> e2 = pop_nodestack();
 
-  fo_expr* fo = new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(OP_OR_2), e2, e1);
+  std::vector<expr_t> args;
+  args.reserve(2);
+
+  if (e2->get_expr_kind() == fo_expr_kind)
+  {
+    fo_expr* foArg = static_cast<fo_expr*>(e2.getp());
+
+    if (foArg->get_func()->getKind() == FunctionConsts::OP_OR_N)
+    {
+      ulong numArgs = foArg->num_args();
+      for (ulong i = 0; i < numArgs; ++i)
+        args.push_back(foArg->get_arg(i));
+    }
+    else
+    {
+      args.push_back(e2);
+    }
+  }
+  else
+  {
+    args.push_back(e2);
+  }
+
+  if (e1->get_expr_kind() == fo_expr_kind)
+  {
+    fo_expr* foArg = static_cast<fo_expr*>(e1.getp());
+
+    if (foArg->get_func()->getKind() == FunctionConsts::OP_OR_N)
+    {
+      ulong numArgs = foArg->num_args();
+      for (ulong i = 0; i < numArgs; ++i)
+        args.push_back(foArg->get_arg(i));
+    }
+    else
+    {
+      args.push_back(e1);
+    }
+  }
+  else
+  {
+    args.push_back(e1);
+  }
+
+  fo_expr* fo = new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(OP_OR_N), args);
 
   push_nodestack(fo);
 }
@@ -6789,10 +6846,53 @@ void end_visit(const AndExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  rchandle<expr> e1 = pop_nodestack();
-  rchandle<expr> e2 = pop_nodestack();
+  expr_t e1 = pop_nodestack();
+  expr_t e2 = pop_nodestack();
 
-  fo_expr* fo = new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(OP_AND_2), e2, e1);
+  std::vector<expr_t> args;
+  args.reserve(2);
+
+  if (e2->get_expr_kind() == fo_expr_kind)
+  {
+    fo_expr* foArg = static_cast<fo_expr*>(e2.getp());
+
+    if (foArg->get_func()->getKind() == FunctionConsts::OP_AND_N)
+    {
+      ulong numArgs = foArg->num_args();
+      for (ulong i = 0; i < numArgs; ++i)
+        args.push_back(foArg->get_arg(i));
+    }
+    else
+    {
+      args.push_back(e2);
+    }
+  }
+  else
+  {
+    args.push_back(e2);
+  }
+
+  if (e1->get_expr_kind() == fo_expr_kind)
+  {
+    fo_expr* foArg = static_cast<fo_expr*>(e1.getp());
+
+    if (foArg->get_func()->getKind() == FunctionConsts::OP_AND_N)
+    {
+      ulong numArgs = foArg->num_args();
+      for (ulong i = 0; i < numArgs; ++i)
+        args.push_back(foArg->get_arg(i));
+    }
+    else
+    {
+      args.push_back(e1);
+    }
+  }
+  else
+  {
+    args.push_back(e1);
+  }
+
+  fo_expr* fo = new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(OP_AND_N), args);
 
   push_nodestack(fo);
 }
@@ -8479,13 +8579,13 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
   //   if (fn:boolean($predVar) then $dot else ()
 
   // Check if the pred expr returns a numeric result
-  expr_t e1 = new instanceof_expr(theRootSctx, loc, predvar, rtm.DECIMAL_TYPE_ONE);
-  expr_t e2 = new instanceof_expr(theRootSctx, loc, predvar, rtm.DOUBLE_TYPE_ONE);
-  expr_t e3 = new instanceof_expr(theRootSctx, loc, predvar, rtm.FLOAT_TYPE_ONE);
-
   fo_expr_t condExpr;
-  condExpr = new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(OP_OR_2), e1, e2);
-  condExpr = new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(OP_OR_2), &*condExpr, e3);
+  std::vector<expr_t> condOperands(3);
+  condOperands[0] = new instanceof_expr(theRootSctx, loc, predvar, rtm.DECIMAL_TYPE_ONE);
+  condOperands[1] = new instanceof_expr(theRootSctx, loc, predvar, rtm.DOUBLE_TYPE_ONE);
+  condOperands[2] = new instanceof_expr(theRootSctx, loc, predvar, rtm.FLOAT_TYPE_ONE);
+
+  condExpr = new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(OP_OR_N), condOperands);
 
   // If so: return $dot if the value of the pred expr is equal to the value
   // of $dot_pos var, otherwise return the empty seq.

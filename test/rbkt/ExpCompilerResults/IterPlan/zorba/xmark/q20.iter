@@ -1,29 +1,23 @@
 Iterator tree for const-folded expr:
-<LogicIterator>
-  <LogicIterator>
-    <SingletonIterator value="xs:boolean(false)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-  </LogicIterator>
+<OrIterator>
   <SingletonIterator value="xs:boolean(false)"/>
-</LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
 
 Iterator tree for const-folded expr:
-<LogicIterator>
-  <LogicIterator>
-    <SingletonIterator value="xs:boolean(false)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-  </LogicIterator>
+<OrIterator>
   <SingletonIterator value="xs:boolean(false)"/>
-</LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
 
 Iterator tree for const-folded expr:
-<LogicIterator>
-  <LogicIterator>
-    <SingletonIterator value="xs:boolean(false)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-  </LogicIterator>
+<OrIterator>
   <SingletonIterator value="xs:boolean(false)"/>
-</LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
 
 Iterator tree for main query:
 <flwor::FLWORIterator>
@@ -98,7 +92,7 @@ Iterator tree for main query:
                   </ChildAxisIterator>
                 </ForVariable>
                 <WhereClause>
-                  <LogicIterator>
+                  <AndIterator>
                     <CompareIterator>
                       <FnDataIterator>
                         <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,income)" typename="*" nill allowed="0">
@@ -115,7 +109,7 @@ Iterator tree for main query:
                       </FnDataIterator>
                       <SingletonIterator value="xs:integer(30000)"/>
                     </CompareIterator>
-                  </LogicIterator>
+                  </AndIterator>
                 </WhereClause>
                 <ReturnClause>
                   <ForVarIterator varname="$$dot"/>

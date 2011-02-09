@@ -84,7 +84,7 @@ public:
    * @param negate optinal parameter which negates the effective boolean value (default == false)
    * @return effective boolean value
    */
-  static bool effectiveBooleanValue (
+  static bool effectiveBooleanValue(
         const QueryLoc& loc,
         PlanState& planState,
         const PlanIterator* ,
@@ -95,36 +95,48 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class LogicIterator : public BinaryBaseIterator<LogicIterator, PlanIteratorState>
+class OrIterator : public NaryBaseIterator<OrIterator, PlanIteratorState>
 {
 public:
-  enum LogicType {
-    AND, OR
-  };
-
-private:
-  LogicType theLogicType;
-
-public:
-  SERIALIZABLE_CLASS(LogicIterator);
+  SERIALIZABLE_CLASS(OrIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(
-  LogicIterator,
-  BinaryBaseIterator<LogicIterator, PlanIteratorState>);
+  OrIterator,
+  NaryBaseIterator<OrIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar, (BinaryBaseIterator<LogicIterator, PlanIteratorState>*)this);
-    SERIALIZE_ENUM(LogicType, theLogicType)
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  LogicIterator(
-        static_context* sctx,
-        const QueryLoc& loc,
-        PlanIter_t aChild0,
-        PlanIter_t aChild1,
-        LogicType aLogicType);
+  OrIterator(
+      static_context* sctx,
+      const QueryLoc& loc,
+      std::vector<PlanIter_t>& inChildren);
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class AndIterator : public NaryBaseIterator<AndIterator, PlanIteratorState>
+{
+public:
+  SERIALIZABLE_CLASS(AndIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  AndIterator,
+  NaryBaseIterator<AndIterator, PlanIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  AndIterator(
+      static_context* sctx,
+      const QueryLoc& loc,
+      std::vector<PlanIter_t>& inChildren);
 
   void accept(PlanIterVisitor& v) const;
 

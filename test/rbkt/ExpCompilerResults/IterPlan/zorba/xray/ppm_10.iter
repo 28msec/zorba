@@ -1,146 +1,114 @@
 Iterator tree for const-folded expr:
-<LogicIterator>
-  <LogicIterator>
-    <SingletonIterator value="xs:boolean(true)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-  </LogicIterator>
+<OrIterator>
+  <SingletonIterator value="xs:boolean(true)"/>
   <SingletonIterator value="xs:boolean(false)"/>
-</LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
 
 Iterator tree for const-folded expr:
-<LogicIterator>
-  <LogicIterator>
-    <SingletonIterator value="xs:boolean(true)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-  </LogicIterator>
+<OrIterator>
+  <SingletonIterator value="xs:boolean(true)"/>
   <SingletonIterator value="xs:boolean(false)"/>
-</LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
 
 Iterator tree for const-folded expr:
-<LogicIterator>
-  <LogicIterator>
-    <SingletonIterator value="xs:boolean(true)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-  </LogicIterator>
+<OrIterator>
+  <SingletonIterator value="xs:boolean(true)"/>
   <SingletonIterator value="xs:boolean(false)"/>
-</LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
 
 Iterator tree for const-folded expr:
-<LogicIterator>
-  <LogicIterator>
-    <SingletonIterator value="xs:boolean(true)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-  </LogicIterator>
+<OrIterator>
+  <SingletonIterator value="xs:boolean(true)"/>
   <SingletonIterator value="xs:boolean(false)"/>
-</LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
 
 Iterator tree for const-folded expr:
-<LogicIterator>
-  <LogicIterator>
-    <SingletonIterator value="xs:boolean(true)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-  </LogicIterator>
+<OrIterator>
+  <SingletonIterator value="xs:boolean(true)"/>
   <SingletonIterator value="xs:boolean(false)"/>
-</LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
 
 Iterator tree for const-folded expr:
-<LogicIterator>
-  <LogicIterator>
-    <SingletonIterator value="xs:boolean(true)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-  </LogicIterator>
+<OrIterator>
+  <SingletonIterator value="xs:boolean(true)"/>
   <SingletonIterator value="xs:boolean(false)"/>
-</LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
 
 Iterator tree for const-folded expr:
-<LogicIterator>
-  <LogicIterator>
-    <SingletonIterator value="xs:boolean(true)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-  </LogicIterator>
+<OrIterator>
+  <SingletonIterator value="xs:boolean(true)"/>
   <SingletonIterator value="xs:boolean(false)"/>
-</LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
 
 Iterator tree for const-folded expr:
-<LogicIterator>
-  <LogicIterator>
-    <SingletonIterator value="xs:boolean(true)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-  </LogicIterator>
+<OrIterator>
+  <SingletonIterator value="xs:boolean(true)"/>
   <SingletonIterator value="xs:boolean(false)"/>
-</LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
 
 Iterator tree for const-folded expr:
-<LogicIterator>
-  <LogicIterator>
-    <SingletonIterator value="xs:boolean(true)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-  </LogicIterator>
+<OrIterator>
+  <SingletonIterator value="xs:boolean(true)"/>
   <SingletonIterator value="xs:boolean(false)"/>
-</LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
 
 Iterator tree for const-folded expr:
-<LogicIterator>
-  <LogicIterator>
-    <SingletonIterator value="xs:boolean(true)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-  </LogicIterator>
+<OrIterator>
+  <SingletonIterator value="xs:boolean(true)"/>
   <SingletonIterator value="xs:boolean(false)"/>
-</LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
 
 Iterator tree for const-folded expr:
-<LogicIterator>
-  <LogicIterator>
-    <SingletonIterator value="xs:boolean(true)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-  </LogicIterator>
+<OrIterator>
+  <SingletonIterator value="xs:boolean(true)"/>
   <SingletonIterator value="xs:boolean(false)"/>
-</LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
 
 Iterator tree for const-folded expr:
-<LogicIterator>
-  <LogicIterator>
-    <SingletonIterator value="xs:boolean(true)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-  </LogicIterator>
+<OrIterator>
+  <SingletonIterator value="xs:boolean(true)"/>
   <SingletonIterator value="xs:boolean(false)"/>
-</LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
 
 Iterator tree for const-folded expr:
-<LogicIterator>
-  <LogicIterator>
-    <SingletonIterator value="xs:boolean(true)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-  </LogicIterator>
+<OrIterator>
+  <SingletonIterator value="xs:boolean(true)"/>
   <SingletonIterator value="xs:boolean(false)"/>
-</LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
 
 Iterator tree for const-folded expr:
-<LogicIterator>
-  <LogicIterator>
-    <SingletonIterator value="xs:boolean(true)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-  </LogicIterator>
+<OrIterator>
+  <SingletonIterator value="xs:boolean(true)"/>
   <SingletonIterator value="xs:boolean(false)"/>
-</LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
 
 Iterator tree for const-folded expr:
-<LogicIterator>
-  <LogicIterator>
-    <SingletonIterator value="xs:boolean(true)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-  </LogicIterator>
+<OrIterator>
+  <SingletonIterator value="xs:boolean(true)"/>
   <SingletonIterator value="xs:boolean(false)"/>
-</LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
 
 Iterator tree for const-folded expr:
-<LogicIterator>
-  <LogicIterator>
-    <SingletonIterator value="xs:boolean(true)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-  </LogicIterator>
+<OrIterator>
+  <SingletonIterator value="xs:boolean(true)"/>
   <SingletonIterator value="xs:boolean(false)"/>
-</LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
 
 Iterator tree for const-folded expr:
 <OpNumericUnaryIterator>
@@ -168,31 +136,25 @@ Iterator tree for const-folded expr:
 </NameCastIterator>
 
 Iterator tree for const-folded expr:
-<LogicIterator>
-  <LogicIterator>
-    <SingletonIterator value="xs:boolean(true)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-  </LogicIterator>
+<OrIterator>
+  <SingletonIterator value="xs:boolean(true)"/>
   <SingletonIterator value="xs:boolean(false)"/>
-</LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
 
 Iterator tree for const-folded expr:
-<LogicIterator>
-  <LogicIterator>
-    <SingletonIterator value="xs:boolean(true)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-  </LogicIterator>
+<OrIterator>
+  <SingletonIterator value="xs:boolean(true)"/>
   <SingletonIterator value="xs:boolean(false)"/>
-</LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
 
 Iterator tree for const-folded expr:
-<LogicIterator>
-  <LogicIterator>
-    <SingletonIterator value="xs:boolean(false)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-  </LogicIterator>
+<OrIterator>
   <SingletonIterator value="xs:boolean(false)"/>
-</LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
 
 Iterator tree for const-folded expr:
 <PromoteIterator type="xs:double">
@@ -205,22 +167,18 @@ Iterator tree for const-folded expr:
 </PromoteIterator>
 
 Iterator tree for const-folded expr:
-<LogicIterator>
-  <LogicIterator>
-    <SingletonIterator value="xs:boolean(false)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-  </LogicIterator>
+<OrIterator>
   <SingletonIterator value="xs:boolean(false)"/>
-</LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
 
 Iterator tree for const-folded expr:
-<LogicIterator>
-  <LogicIterator>
-    <SingletonIterator value="xs:boolean(true)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-  </LogicIterator>
+<OrIterator>
+  <SingletonIterator value="xs:boolean(true)"/>
   <SingletonIterator value="xs:boolean(false)"/>
-</LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
 
 Iterator tree for const-folded expr:
 <PromoteIterator type="xs:double">
@@ -228,22 +186,18 @@ Iterator tree for const-folded expr:
 </PromoteIterator>
 
 Iterator tree for const-folded expr:
-<LogicIterator>
-  <LogicIterator>
-    <SingletonIterator value="xs:boolean(true)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-  </LogicIterator>
+<OrIterator>
+  <SingletonIterator value="xs:boolean(true)"/>
   <SingletonIterator value="xs:boolean(false)"/>
-</LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
 
 Iterator tree for const-folded expr:
-<LogicIterator>
-  <LogicIterator>
-    <SingletonIterator value="xs:boolean(true)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-  </LogicIterator>
+<OrIterator>
+  <SingletonIterator value="xs:boolean(true)"/>
   <SingletonIterator value="xs:boolean(false)"/>
-</LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
 
 Iterator tree for const-folded expr:
 <PromoteIterator type="xs:double">
@@ -261,67 +215,53 @@ Iterator tree for const-folded expr:
 </PromoteIterator>
 
 Iterator tree for const-folded expr:
-<LogicIterator>
-  <LogicIterator>
-    <SingletonIterator value="xs:boolean(true)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-  </LogicIterator>
+<OrIterator>
+  <SingletonIterator value="xs:boolean(true)"/>
   <SingletonIterator value="xs:boolean(false)"/>
-</LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
 
 Iterator tree for const-folded expr:
-<LogicIterator>
-  <LogicIterator>
-    <SingletonIterator value="xs:boolean(false)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-  </LogicIterator>
+<OrIterator>
   <SingletonIterator value="xs:boolean(false)"/>
-</LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
 
 Iterator tree for const-folded expr:
-<LogicIterator>
-  <LogicIterator>
-    <SingletonIterator value="xs:boolean(true)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-  </LogicIterator>
+<OrIterator>
+  <SingletonIterator value="xs:boolean(true)"/>
   <SingletonIterator value="xs:boolean(false)"/>
-</LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
 
 Iterator tree for const-folded expr:
-<LogicIterator>
-  <LogicIterator>
-    <SingletonIterator value="xs:boolean(true)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-  </LogicIterator>
+<OrIterator>
+  <SingletonIterator value="xs:boolean(true)"/>
   <SingletonIterator value="xs:boolean(false)"/>
-</LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
 
 Iterator tree for const-folded expr:
-<LogicIterator>
-  <LogicIterator>
-    <SingletonIterator value="xs:boolean(true)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-  </LogicIterator>
+<OrIterator>
+  <SingletonIterator value="xs:boolean(true)"/>
   <SingletonIterator value="xs:boolean(false)"/>
-</LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
 
 Iterator tree for const-folded expr:
-<LogicIterator>
-  <LogicIterator>
-    <SingletonIterator value="xs:boolean(false)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-  </LogicIterator>
+<OrIterator>
   <SingletonIterator value="xs:boolean(false)"/>
-</LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
 
 Iterator tree for const-folded expr:
-<LogicIterator>
-  <LogicIterator>
-    <SingletonIterator value="xs:boolean(false)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-  </LogicIterator>
+<OrIterator>
   <SingletonIterator value="xs:boolean(false)"/>
-</LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
 
 Iterator tree for const-folded expr:
 <PromoteIterator type="xs:double">
@@ -334,31 +274,25 @@ Iterator tree for const-folded expr:
 </PromoteIterator>
 
 Iterator tree for const-folded expr:
-<LogicIterator>
-  <LogicIterator>
-    <SingletonIterator value="xs:boolean(false)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-  </LogicIterator>
+<OrIterator>
   <SingletonIterator value="xs:boolean(false)"/>
-</LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
 
 Iterator tree for const-folded expr:
-<LogicIterator>
-  <LogicIterator>
-    <SingletonIterator value="xs:boolean(true)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-  </LogicIterator>
+<OrIterator>
+  <SingletonIterator value="xs:boolean(true)"/>
   <SingletonIterator value="xs:boolean(false)"/>
-</LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
 
 Iterator tree for const-folded expr:
-<LogicIterator>
-  <LogicIterator>
-    <SingletonIterator value="xs:boolean(false)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-  </LogicIterator>
+<OrIterator>
   <SingletonIterator value="xs:boolean(false)"/>
-</LogicIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
 
 Iterator tree for const-folded expr:
 <PromoteIterator type="xs:double">

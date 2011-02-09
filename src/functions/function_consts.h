@@ -186,8 +186,8 @@ typedef enum
   OP_FORMAT_T_4,
   OP_FORMAT_T_2,
 
-  OP_AND_2,
-  OP_OR_2,
+  OP_AND_N,
+  OP_OR_N,
 
   OP_VAR_ASSIGN_1,
   OP_VAR_DECLARE_1,

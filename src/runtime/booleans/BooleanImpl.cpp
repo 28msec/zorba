@@ -43,8 +43,11 @@ namespace zorba {
 SERIALIZABLE_CLASS_VERSIONS(FnBooleanIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(FnBooleanIterator)
 
-SERIALIZABLE_CLASS_VERSIONS(LogicIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(LogicIterator)
+SERIALIZABLE_CLASS_VERSIONS(OrIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(OrIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(AndIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(AndIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(CompareIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(CompareIterator)
@@ -153,51 +156,101 @@ UNARY_ACCEPT(FnBooleanIterator);
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//  LogicIterator                                                              //
+//  OrIterator                                                                 //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
 
-LogicIterator::LogicIterator (
+OrIterator::OrIterator (
     static_context* sctx,
     const QueryLoc& loc,
-    PlanIter_t theChild0,
-    PlanIter_t theChild1,
-    LogicType aLogicType)
+    std::vector<PlanIter_t>& inChildren)
   :
-  BinaryBaseIterator<LogicIterator, PlanIteratorState>(sctx, loc, theChild0, theChild1),
-  theLogicType(aLogicType)
+  NaryBaseIterator<OrIterator, PlanIteratorState>(sctx, loc, inChildren)
 {
+}
+
+
+void 
+OrIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (NaryBaseIterator<OrIterator, PlanIteratorState>*)this);
 }
 
 
 bool
-LogicIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+OrIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  bool bRes = false;
+  bool res = false;
 
   PlanIteratorState* state;
-  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  switch(theLogicType) 
   {
-  case AND:
-    bRes = FnBooleanIterator::effectiveBooleanValue(this->loc, planState, theChild0)
-        && FnBooleanIterator::effectiveBooleanValue(this->loc, planState, theChild1);
-    break;
-
-  case OR:
-    bRes = FnBooleanIterator::effectiveBooleanValue(this->loc, planState, theChild0)
-        || FnBooleanIterator::effectiveBooleanValue(this->loc, planState, theChild1);
-    break;
+    std::vector<PlanIter_t>::const_iterator ite = theChildren.begin();
+    std::vector<PlanIter_t>::const_iterator end = theChildren.end();
+    for (; res == false && ite != end; ++ite)
+    {
+      res = res ||
+            FnBooleanIterator::effectiveBooleanValue(loc, planState, (*ite));
+    }
   }
 
-  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, bRes), state);
-  STACK_END (state);
+  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, res), state);
+  STACK_END(state);
 }
 
 
-BINARY_ACCEPT(LogicIterator);
+NARY_ACCEPT(OrIterator);
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  AndIterator                                                                //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+AndIterator::AndIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& inChildren)
+  :
+  NaryBaseIterator<AndIterator, PlanIteratorState>(sctx, loc, inChildren)
+{
+}
+
+
+void 
+AndIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (NaryBaseIterator<AndIterator, PlanIteratorState>*)this);
+}
+
+
+bool
+AndIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  bool res = true;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  {
+    std::vector<PlanIter_t>::const_iterator ite = theChildren.begin();
+    std::vector<PlanIter_t>::const_iterator end = theChildren.end();
+    for (; res && ite != end; ++ite)
+    {
+      res = res &&
+            FnBooleanIterator::effectiveBooleanValue(loc, planState, (*ite));
+    }
+  }
+
+  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, res), state);
+  STACK_END(state);
+}
+
+
+NARY_ACCEPT(AndIterator);
 
 
 /////////////////////////////////////////////////////////////////////////////////

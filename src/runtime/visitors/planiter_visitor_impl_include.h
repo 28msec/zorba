@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-  class PlanIterator;
-  typedef rchandle<PlanIterator> PlanIter_t;
+class PlanIterator;
+typedef rchandle<PlanIterator> PlanIter_t;
 
-  class FnBooleanIterator;
+class FnBooleanIterator;
 #ifndef ZORBA_NO_XMLSCHEMA
-  class ValidateIterator;
+class ValidateIterator;
 #endif
-  class LogicIterator;
+class OrIterator;
+class AndIterator;
   class CompareIterator;
   class AtomicValuesEquivalenceIterator;
   class UDFunctionCallIterator;

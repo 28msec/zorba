@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-  PLAN_ITER_VISITOR (FnBooleanIterator);
+PLAN_ITER_VISITOR (FnBooleanIterator);
 
-  PLAN_ITER_VISITOR (LogicIterator);
+PLAN_ITER_VISITOR (OrIterator);
+
+PLAN_ITER_VISITOR (AndIterator);
 
   PLAN_ITER_VISITOR (CompareIterator);
 

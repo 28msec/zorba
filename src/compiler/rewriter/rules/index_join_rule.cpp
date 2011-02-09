@@ -100,9 +100,8 @@ expr_t IndexJoinRule::apply(RewriterContext& rCtx, expr* node, bool& modified)
           return e;
         }
       }
-      else if (whereExpr->get_function_kind() == FunctionConsts::OP_AND_2)
+      else if (whereExpr->get_function_kind() == FunctionConsts::OP_AND_N)
       {
-        // TODO: Flatten the and-tree and test all conjuncts
         // TODO: consider multi-key indices
         ExprIterator iter(whereExpr);
         while (!iter.done())

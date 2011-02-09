@@ -595,7 +595,7 @@ class op_and : public function
 public:
   op_and (const signature& sig)
     :
-    function(sig, FunctionConsts::OP_AND_2)
+    function(sig, FunctionConsts::OP_AND_N)
   {
   }
 
@@ -616,7 +616,8 @@ public:
         std::vector<PlanIter_t>& argv,
         AnnotationHolder& ann) const
   {
-    return new LogicIterator(sctx, loc, argv[0], argv[1], LogicIterator::AND);
+    assert(argv.size() > 0);
+    return new AndIterator(sctx, loc, argv);
   }
 };
 
@@ -626,7 +627,7 @@ class op_or : public function
 public:
   op_or (const signature& sig)
     :
-    function(sig, FunctionConsts::OP_OR_2)
+    function(sig, FunctionConsts::OP_OR_N)
   {
   }
 
@@ -647,7 +648,8 @@ public:
         std::vector<PlanIter_t>& argv,
         AnnotationHolder& ann) const
   {
-    return new LogicIterator(sctx, loc, argv[0], argv[1], LogicIterator::OR);
+    assert(argv.size() > 0);
+    return new OrIterator(sctx, loc, argv);
   }
 };
 
@@ -880,12 +882,14 @@ void populate_context_booleans_impl(static_context* sctx)
   DECL(sctx, op_and,
        (createQName(xquery_op_ns, "", "and"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-        true, GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+        true, 
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
   
   DECL(sctx, op_or,
        (createQName(xquery_op_ns, "", "or"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-        true, GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+        true, 
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 }
 
