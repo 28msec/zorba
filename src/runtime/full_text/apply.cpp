@@ -372,16 +372,24 @@ static void match_tokens( FTTokenIterator &doc_tokens,
     bool ignore = false;                // pointless init. to stifle warning
 
     if ( ignore_item ) {
+      //
+      // We are ignoring some item: see if this document token's item is a
+      // descendant of the ignored item.
+      //
       while ( (dt = doc_tokens.next()) ) {
         if ( dt->item() != dt_item ) {
           dt_item = dt->item();
           ignore = is_decendant( dt_item, ignore_item );
         }
-        if ( !ignore ) {
+        if ( ignore ) {
+          //
+          // The document token is to be ignored: bump up the mark.
+          //
+          mark = doc_tokens.pos();
+        } else {
           doc_tokens.pos( mark );
           break;
         }
-        mark = doc_tokens.pos();
       }
     }
 
@@ -392,6 +400,10 @@ static void match_tokens( FTTokenIterator &doc_tokens,
     query_tokens.reset();
     while ( (dt = doc_tokens.next()) ) {
       if ( ignore_item ) {
+        //
+        // We are ignoring some item: see if this document token's item is a
+        // descendant of the ignored item.
+        //
         if ( dt->item() != dt_item ) {
           dt_item = dt->item();
           ignore = is_decendant( dt_item, ignore_item );
@@ -399,8 +411,8 @@ static void match_tokens( FTTokenIterator &doc_tokens,
         if ( ignore )
           continue;
       }
-      FTToken const *qt;
-      if ( !(qt = query_tokens.next()) )
+      FTToken const *const qt = query_tokens.next();
+      if ( !qt )
         break;
       if ( !matcher.match( *dt, *qt ) ) {
         matched = false;
