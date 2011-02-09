@@ -683,29 +683,6 @@ bool normalize( InputStringType const &in, unicode::normalization::type n,
                 OutputStringType *out );
 #endif /* ZORBA_NO_UNICODE */
 
-////////// Validation /////////////////////////////////////////////////////////
-
-/**
- * Checks an entire UTF-8 string for validity.
- *
- * @param s The null-terminated UTF-8 string to validate.
- * @return Returns \c NULL if the string is valid or a pointer to the first
- * invalid byte if invalid.
- */
-ZORBA_DLL_PUBLIC
-storage_type const* validate( storage_type const *s );
-
-/**
- * Checks an entire UTF-8 string for validity.
- *
- * @param s The UTF-8 string to validate.
- * @param s_size The number of bytes (not characters) to check.
- * @return Returns \c NULL if the string is valid or a pointer to the first
- * invalid byte if invalid.
- */
-ZORBA_DLL_PUBLIC
-storage_type const* validate( storage_type const *s, size_type s_size );
-
 ////////// Whitespace /////////////////////////////////////////////////////////
 
 /**
@@ -784,7 +761,8 @@ void strip_diacritics( InputStringType const &in, OutputStringType *out );
  *
  */
 template<class StringType1,class StringType2> inline
-int compare(const StringType1 &s1, const StringType2 &s2, const XQPCollator* collation)
+int compare(const StringType1 &s1, const StringType2 &s2,
+            const XQPCollator* collation)
 {
   if (collation == NULL || collation->doMemCmp())
     return s1.compare(s2);
@@ -795,10 +773,7 @@ int compare(const StringType1 &s1, const StringType2 &s2, const XQPCollator* col
   unicode::to_string(s1, &us1);
   unicode::to_string(s2, &us2);
 
-  Collator::EComparisonResult result = ::Collator::EQUAL;
-
-  result = static_cast<Collator*>(collation->getCollator())->compare(us1, us2);
-  return result;
+  return static_cast<Collator*>( collation->getCollator() )->compare(us1, us2);
 }
 
 
@@ -844,6 +819,8 @@ uint32_t hash(const StringType& s, const XQPCollator* collation = NULL)
   ZORBA_ASSERT(false);
 #endif
 }
+
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace utf8
 } // namespace zorba

@@ -28,7 +28,7 @@
 namespace zorba {
 namespace utf8 {
 
-////////// types //////////////////////////////////////////////////////////////
+////////// Types //////////////////////////////////////////////////////////////
 
 /**
  * The byte type that variable-length encoded UTF-8 characters use for storage.
@@ -45,7 +45,7 @@ typedef storage_type encoded_char_type[6];
  */
 typedef std::size_t size_type;
 
-////////// constants //////////////////////////////////////////////////////////
+////////// Constants //////////////////////////////////////////////////////////
 
 /**
  * The special value used to denote either (a) the maximum possible number as
@@ -53,7 +53,7 @@ typedef std::size_t size_type;
  */
 size_type const npos = static_cast<size_type>( -1 );
 
-////////// functions //////////////////////////////////////////////////////////
+////////// Byte/Char position conversion //////////////////////////////////////
 
 /**
  * Converts a character position into a byte position.
@@ -79,23 +79,11 @@ size_type byte_pos( storage_type const *s, size_type s_size,
                     size_type char_pos );
 
 /**
- * Gets the number of bytes used by a UTF-8 character.
- *
- * @param start The start byte of a UTF-8 byte sequence comprising a Unicode
- * character.
- * @return Returns a number in the range [1,6] if \a start is valid or 0 if
- * \a start is invalid.
- */
-ZORBA_DLL_PUBLIC
-size_type char_length( storage_type start );
-
-/**
  * Converts a pointer into a character offset.
  *
  * @param s A UTF-8 encoded C string.
  * @param p A pointer to somewhere within \a s.
  * @return Returns said offset.
- * @throws XQP0034_ILLEGAL_UTF8_BYTE if an illegal UTF-8 byte is encountered.
  */
 ZORBA_DLL_PUBLIC
 size_type char_pos( storage_type const *s, storage_type const *p );
@@ -106,11 +94,12 @@ size_type char_pos( storage_type const *s, storage_type const *p );
  * @param s A UTF-8 encoded C string.
  * @param byte_pos The byte position.
  * @return Returns the corresponding character position.
- * @throws XQP0034_ILLEGAL_UTF8_BYTE if an illegal UTF-8 byte is encountered.
  */
 inline size_type char_pos( storage_type const *s, size_type byte_pos ) {
   return byte_pos != npos ? char_pos( s, s + byte_pos ) : npos;
 }
+
+////////// Encoding & Decoding ////////////////////////////////////////////////
 
 /**
  * Encodes a Unicode character into a UTF-8 byte sequence.
@@ -118,7 +107,7 @@ inline size_type char_pos( storage_type const *s, size_type byte_pos ) {
  * @param c The Unicode code-point to encode.
  * @param ps A pointer to a pointer to what will be the first byte of a UTF-8
  * byte sequence.  The pointer is advanced to one byte past the newly encoded
- * chacter.
+ * character.
  * @return Returns the number of bytes required to encode the character.
  */
 ZORBA_DLL_PUBLIC
@@ -147,6 +136,114 @@ void encode( unicode::code_point c, StringType *out ) {
   encoded_char_type ec;
   out->append( ec, encode( c, ec ) );
 }
+
+/**
+ * Decodes the next Unicode character.
+ *
+ * @tparam OctetIterator The iterator to use to iterate over the underlying
+ * byte sequence.
+ * @param i An iterator pointing to the first byte of a UTF-8 byte sequence
+ * comprising a Unicode character.  The iterator is advanced by the number of
+ * bytes comprising the UTF-8 byte sequence.
+ * @return Returns the Unicode code-point of the next character.
+ */
+template<class OctetIterator>
+unicode::code_point next_char( OctetIterator &i );
+
+/**
+ * Decodes the previous Unicode character.
+ *
+ * @tparam OctetIterator The iterator to use to iterate over the underlying
+ * byte sequence.
+ * @param i An iterator pointing to somewhere within a UTF-8 string.  It is
+ * repositioned to the first byte of the UTF-8 byte sequence comprising e
+ * previous character.
+ * @return Returns the Unicode code-point of previous character.
+ */
+template<class OctetIterator>
+unicode::code_point prev_char( OctetIterator &i );
+
+////////// Character access ///////////////////////////////////////////////////
+
+/**
+ * Gets the Unicode character at the given position.
+ *
+ * @param s A pointer to the first byte of a UTF-8 string.
+ * @param char_pos The index of the desired character (not byte).
+ * @return Returns said character.
+ */
+inline unicode::code_point char_at( storage_type const *s,
+                                    size_type char_pos ) {
+  storage_type const *s2 = s + byte_pos( s, char_pos );
+  return next_char( s2 );
+}
+
+/**
+ * Gets the Unicode character at the given position.
+ *
+ * @param s A pointer to the first byte of a UTF-8 string.
+ * @param s_size The size of \a s in bytes.
+ * @param char_pos The index of the desired character (not byte).
+ * @return Returns said character.
+ * @throws std::out_of_range if \a char_pos >= \a s_size.
+ */
+inline unicode::code_point char_at( storage_type const *s, size_type s_size,
+                                    size_type char_pos ) {
+  size_type const b = byte_pos( s, s_size, char_pos );
+  if ( b == npos )
+    throw std::out_of_range( "char_at" );
+  storage_type const *s2 = s + b;
+  return next_char( s2 );
+}
+
+////////// String length //////////////////////////////////////////////////////
+
+/**
+ * Gets the number of bytes used by a UTF-8 character.
+ *
+ * @param start The start byte of a UTF-8 byte sequence comprising a Unicode
+ * character.
+ * @return Returns a number in the range [1,6] if \a start is valid or 0 if
+ * \a start is invalid.
+ */
+ZORBA_DLL_PUBLIC
+size_type char_length( storage_type start );
+
+/**
+ * Gets the number of Unicode characters comprising the NULL-terminated UTF-8
+ * string.
+ *
+ * @param s A pointer to the first byte of a NULL-terminated UTF-8 string.
+ * @return Returns said number of characters.
+ */
+ZORBA_DLL_PUBLIC
+size_type length( storage_type const *s );
+
+/**
+ * Gets the number of Unicode characters between the given pointers.
+ *
+ * @param begin A pointer to the first byte of a UTF-8 byte sequence comprising
+ * a Unicode character.
+ * @param end A pointer to one past the last byte of the same UTF-8 byte
+ * sequence.
+ * @return Returns said number of characters.
+ */
+ZORBA_DLL_PUBLIC
+size_type length( storage_type const *begin, storage_type const *end );
+
+/**
+ * Gets the number of Unicode characters comprising the UTF-8 string.
+ *
+ * @tparam StringType The string type.
+ * @param s The string.
+ * @return Returns said number of characters.
+ */
+template<class StringType>
+inline size_type length( StringType const &s ) {
+  return length( s.c_str() );
+}
+
+////////// Validity checking //////////////////////////////////////////////////
 
 /**
  * Checks whether the given byte is the first byte of a UTF-8 byte sequence
@@ -190,101 +287,25 @@ inline bool is_valid_byte( storage_type b, bool check_start_byte ) {
 }
 
 /**
- * Gets the number of Unicode characters comprising the NULL-terminated UTF-8
- * string.
+ * Checks an entire UTF-8 string for validity.
  *
- * @param s A pointer to the first byte of a NULL-terminated UTF-8 string.
- * @return Returns said number of characters.
- * @throws XQP0034_ILLEGAL_UTF8_BYTE if an illegal UTF-8 byte is encountered.
+ * @param s The null-terminated UTF-8 string to validate.
+ * @return Returns \c NULL if the string is valid or a pointer to the first
+ * invalid byte if invalid.
  */
 ZORBA_DLL_PUBLIC
-size_type length( storage_type const *s );
+storage_type const* validate( storage_type const *s );
 
 /**
- * Gets the number of Unicode characters between the given pointers.
+ * Checks an entire UTF-8 string for validity.
  *
- * @param begin A pointer to the first byte of a UTF-8 byte sequence comprising
- * a Unicode character.
- * @param end A pointer to one past the last byte of the same UTF-8 byte
- * sequence.
- * @return Returns said number of characters.
- * @throws XQP0034_ILLEGAL_UTF8_BYTE if an illegal UTF-8 byte is encountered.
+ * @param s The UTF-8 string to validate.
+ * @param s_size The number of bytes (not characters) to check.
+ * @return Returns \c NULL if the string is valid or a pointer to the first
+ * invalid byte if invalid.
  */
 ZORBA_DLL_PUBLIC
-size_type length( storage_type const *begin, storage_type const *end );
-
-/**
- * Gets the number of Unicode characters comprising the UTF-8 string.
- *
- * @tparam StringType The string type.
- * @param s The string.
- * @return Returns said number of characters.
- * @throws XQP0034_ILLEGAL_UTF8_BYTE if an illegal UTF-8 byte is encountered.
- */
-template<class StringType>
-inline size_type length( StringType const &s ) {
-  return length( s.c_str() );
-}
-
-/**
- * Decodes the next Unicode character.
- *
- * @tparam OctetIterator The iterator to use to iterate over the underlying
- * byte sequence.
- * @param i An iterator pointing to the first byte of a UTF-8 byte sequence
- * comprising a Unicode character.  The iterator is advanced by the number of
- * bytes comprising the UTF-8 byte sequence.
- * @param throw_exception If true, the FOCH0001 is thrown, otherwise not. The
- * default value is true.
- * @return Returns the Unicode code-point of the next character.
- */
-template<class OctetIterator>
-unicode::code_point next_char( OctetIterator &i );
-
-/**
- * Gets the Unicode character at the given position.
- *
- * @param s A pointer to the first byte of a UTF-8 string.
- * @param char_pos The index of the desired character (not byte).
- * @return Returns said character.
- */
-inline unicode::code_point char_at( storage_type const *s,
-                                    size_type char_pos ) {
-  storage_type const *s2 = s + byte_pos( s, char_pos );
-  return next_char( s2 );
-}
-
-/**
- * Gets the Unicode character at the given position.
- *
- * @param s A pointer to the first byte of a UTF-8 string.
- * @param s_size The size of \a s in bytes.
- * @param char_pos The index of the desired character (not byte).
- * @return Returns said character.
- * @throws std::out_of_range if \a char_pos >= \a s_size.
- */
-inline unicode::code_point char_at( storage_type const *s, size_type s_size,
-                                    size_type char_pos ) {
-  size_type const b = byte_pos( s, s_size, char_pos );
-  if ( b == npos )
-    throw std::out_of_range( "char_at" );
-  storage_type const *s2 = s + b;
-  return next_char( s2 );
-}
-
-/**
- * Decodes the previous Unicode character.
- *
- * @tparam OctetIterator The iterator to use to iterate over the underlying
- * byte sequence.
- * @param i An iterator pointing to somewhere within a UTF-8 string.  It is
- * repositioned to the first byte of the UTF-8 byte sequence comprising e
- * previous character.
- * @return Returns the Unicode code-point of previous character.
- * @throws XQP0034_ILLEGAL_UTF8_BYTE if an illegal UTF-8 byte is encountered.
- */
-template<class OctetIterator>
-unicode::code_point prev_char( OctetIterator &i );
+storage_type const* validate( storage_type const *s, size_type s_size );
 
 ////////// iterator ///////////////////////////////////////////////////////////
 
