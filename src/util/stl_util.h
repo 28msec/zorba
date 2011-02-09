@@ -17,13 +17,20 @@
 #ifndef ZORBA_STL_UTIL_H
 #define ZORBA_STL_UTIL_H
 
+#include <zorba/config.h>
+
 #include <algorithm>
 #include <cassert>
 #include <cstring>
 #include <iterator>
 #include <set>
 #include <stack>
-#include <tr1/type_traits>
+
+#ifdef __GNUC__
+# include <tr1/type_traits>
+#else
+# include <type_traits>
+#endif /* __GNUC__ */
 
 namespace zorba {
 
