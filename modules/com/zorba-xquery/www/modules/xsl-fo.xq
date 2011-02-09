@@ -25,6 +25,7 @@
  : be something like "C:\Program Files\Java\jre6\bin\client".
  :
  : @author Markus Pilman
+ : @library <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">JDK - Java Development Kit</a>
  :)
 module namespace xsl-fo = "http://www.zorba-xquery.com/modules/xsl-fo";
 

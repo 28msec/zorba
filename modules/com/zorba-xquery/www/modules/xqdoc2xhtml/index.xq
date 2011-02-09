@@ -1499,31 +1499,27 @@ declare function xqdoc2html:module-function-summary($functions)
     <table class="funclist">{
       for $function in $functions
       let $name := $function/xqdoc:name/text(),
-        $signature := $function/xqdoc:signature/text(),
-        $param-number := $function/@arity,
-        $isDeprecated := fn:exists($function/xqdoc:comment/xqdoc:deprecated),
-        $shortDescription := if(not(fn:substring-before(data($function/xqdoc:comment/xqdoc:description),".") = "")) then
-                             fn:concat(fn:substring-before(data($function/xqdoc:comment/xqdoc:description),"."),".") else ""
+          $signature := $function/xqdoc:signature/text(),
+          $param-number := $function/@arity,
+          $isDeprecated := fn:exists($function/xqdoc:comment/xqdoc:deprecated),
+          $description := data($function/xqdoc:comment/xqdoc:description),
+          $shortDescription := if(not(fn:substring-before($description,".") = "")) then
+                               fn:concat(fn:substring-before($description,"."),".") else ""
       order by $name, $param-number 
       return
         let $type := normalize-space(substring-after(substring-before($signature, "function"), "declare")),
             $isExternal := ends-with($signature, "external"),    
-            $paramsAndReturn :=
-              let $searchCrit := concat(":", $name)
-              return
-                if ($isExternal)
-                  then normalize-space(substring-before(substring-after($signature, $searchCrit), "external"))
-                  else normalize-space(substring-after($signature, $searchCrit))
+            $paramsAndReturn := substring-after($signature,concat(':',$name))
         return
           <tr>
             <td class="type">{$type}</td>
             <td>
               <tt>{
                 if ($isDeprecated) then
-                  <span class="functName"><del><a href="#{$name}-{$param-number}">{$name}</a></del></span>
+                  <span class="functName"><del><a href="#{$name}-{$param-number}" title="{normalize-space($description)}">{$name}</a></del></span>
                 else
-                  <span class="functName"><a href="#{$name}-{$param-number}">{$name}</a></span>
-              }{xqdoc2html:add-colors($paramsAndReturn)}<br /><span class="padding">{$shortDescription}</span>
+                  <span class="functName"><a href="#{$name}-{$param-number}" title="{normalize-space($description)}">{$name}</a></span>
+              }{xqdoc2html:split-function-signature($paramsAndReturn)}<br /><span class="padding">{$shortDescription}</span>
               </tt>
             </td>
           </tr>
@@ -1599,31 +1595,6 @@ declare function xqdoc2html:functions($functions, $xqdocXhtmlPath) {
         <hr />)                
        )
     else ()
-};
-
-(:~
- : Add some colors to the function signatures.
- :
- : @param $paramsAndReturn the function function parameters.
- : @return the XHTML for the function signature after reformatting was done.
- :)
-declare function xqdoc2html:add-colors($paramsAndReturn as xs:string) {
-  let $toks := fn:tokenize(fn:substring-after(fn:substring-before($paramsAndReturn,')'),'('),"\$")
-  return
-  ("( ",
-    for $tok at $pos in $toks
-    let $param1 := if(contains($tok,"as")) then fn:substring-before($tok," as ")
-                   else if(contains($tok,",")) then fn:substring-before($tok,",")
-                   else if(contains($tok,")")) then fn:substring-before($tok,")")
-                   else $tok
-    let $param2 := fn:substring-after($tok, $param1)
-    return
-      if(not(fn:string-length($param1)=0)) then
-        (<span class="funcParam">{fn:concat('$',$param1)}</span>,$param2)
-      else
-        ()
-    ,
-    ")")
 };
 
 (:~
