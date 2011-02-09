@@ -65,6 +65,8 @@ declare function local:test-functions(
 )as xs:string* {
     let $module := $xqdoc/xqdoc:module
     for $function in $xqdoc/xqdoc:functions/xqdoc:function
+    where (not(exists($function/@isPrivate)) or 
+           (exists($function/@isPrivate) and $function/@isPrivate ne "true"))
     return local:test-function($module, $function)
 };
 

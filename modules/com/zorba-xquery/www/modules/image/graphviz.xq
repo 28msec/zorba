@@ -37,7 +37,7 @@
  : platforms (i.e. not on Windows).</p>
  :
  : @author <a href="http://www.28msec.com/home/index">28msec</a>
- : @library <a href="http://www.graphviz.org/">http://www.graphviz.org</a>
+ : @library <a href="http://www.graphviz.org/">Graphviz - Graph Visualization Software</a>
  :)
 module namespace gr = "http://www.zorba-xquery.com/modules/image/graphviz";
 

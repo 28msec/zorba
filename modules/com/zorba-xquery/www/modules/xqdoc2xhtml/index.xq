@@ -525,6 +525,9 @@ declare %private sequential function xqdoc2html:collect-functions (
           $signature := $function/xqdoc:signature/text(),
           $arity := $function/@arity,
           $isDeprecated := fn:exists($function/xqdoc:comment/xqdoc:deprecated)
+      (: use only the functions not marked as %private:)
+      where (not(exists($function/@isPrivate)) or 
+             (exists($function/@isPrivate) and $function/@isPrivate ne "true"))
       order by $name, $arity
       return
         <function moduleUri="{$xqdoc/xqdoc:module/xqdoc:uri/text()}"
@@ -1128,14 +1131,20 @@ declare function xqdoc2html:body(
   $xqSrcPath as xs:string,
   $xqdocXhtmlPath as xs:string)
 {
+  (: use only the functions not marked as %private :)
+  let $functions := for $function in $xqdoc/xqdoc:functions/xqdoc:function 
+                    where (fn:not(exists($function/@isPrivate)) or
+                           (exists($function/@isPrivate) and $function/@isPrivate ne "true"))
+                    return $function
+  return
   (<h1>{xqdoc2html:module-uri($xqdoc)}</h1>,
     xqdoc2html:module-description($xqdoc/xqdoc:module),
-    xqdoc2html:module-resources($xqSrcPath, xqdoc2html:module-uri($xqdoc), $indexCollector, $xqdoc/xqdoc:functions),
+    xqdoc2html:module-resources($xqSrcPath, xqdoc2html:module-uri($xqdoc), $indexCollector),
     xqdoc2html:module-dependencies($xqdoc, $indexCollector, $schemasCollector),
     xqdoc2html:module-external-specifications($xqdoc/xqdoc:module),
     xqdoc2html:module-variables($xqdoc/xqdoc:variables),
-    xqdoc2html:module-function-summary($xqdoc/xqdoc:functions),
-    xqdoc2html:functions($xqdoc/xqdoc:functions, $xqdocXhtmlPath)
+    xqdoc2html:module-function-summary($functions),
+    xqdoc2html:functions($functions, $xqdocXhtmlPath)
   )
 };
 
@@ -1323,14 +1332,12 @@ declare function xqdoc2html:description($comment) {
  : @param $xqSrcPath the path to the xq.src folders.
  : @param $moduleUri the module URI.
  : @param $indexCollector the modules names part of the left menu.
- : @param $functions the node containing the XQDoc XML functions.
  : @return the XHTML for the 'Module Resources'.
  :)
 declare function xqdoc2html:module-resources(
   $xqSrcPath as xs:string, 
   $moduleUri as xs:string,
-  $indexCollector,
-  $functions) {
+  $indexCollector) {
   let $folder := xqdoc2html:get-filename($moduleUri),
       $path := concat(tokenize($xqSrcPath,fn:concat("\",file:path-separator()))[last()],
                       file:path-separator(), $folder)
@@ -1488,9 +1495,9 @@ declare function xqdoc2html:module-variables($variables)
 declare function xqdoc2html:module-function-summary($functions)
 {
   <div class="section"><span id="function_summary">Function Summary</span></div>,
-  if(count($functions/xqdoc:function)) then
+  if(count($functions)) then
     <table class="funclist">{
-      for $function in $functions/xqdoc:function
+      for $function in $functions
       let $name := $function/xqdoc:name/text(),
         $signature := $function/xqdoc:signature/text(),
         $param-number := $function/@arity,
@@ -1555,9 +1562,9 @@ return
  : @return the XHTML for the function details.
  :)
 declare function xqdoc2html:functions($functions, $xqdocXhtmlPath) {
-    if(count($functions/xqdoc:function)) then (
+    if(count($functions)) then (
       <div class="section"><span id="functions">Functions</span></div>,
-      for $function in $functions/xqdoc:function
+      for $function in $functions
       let $name := $function/xqdoc:name/text(),
           $signature := $function/xqdoc:signature/text(),
           $param-number := $function/@arity,

@@ -440,17 +440,16 @@ XQDOC_NO_BEGIN_TAG (FunctionDecl)
 
 void end_visit(const FunctionDecl& n, void* /*visit_state*/)
 {
-  store::Item_t lFuncQName, lNameQName, lSigQName, lArityQName;
+  store::Item_t lFuncQName, lNameQName, lSigQName, lArityQName, lPrivateQName;
   store::Item_t lFuncElem, lNameElem, lSigElem, lFuncText, lNameText, lSigText;
-  store::Item_t lArityAttr, lArityValue;
-
-  if(n.is_private())
-    return;
+  store::Item_t lArityAttr, lArityValue, lPrivateValue;
 
   theFactory->createQName(lFuncQName, theXQDocNS, theXQDocPrefix, "function");
   theFactory->createQName(lNameQName, theXQDocNS, theXQDocPrefix, "name");
   theFactory->createQName(lSigQName, theXQDocNS, theXQDocPrefix, "signature");
   theFactory->createQName(lArityQName, "", "", "arity");
+  if(n.is_private())
+    theFactory->createQName(lPrivateQName, "", "", "isPrivate");
 
   store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
@@ -473,6 +472,14 @@ void end_visit(const FunctionDecl& n, void* /*visit_state*/)
 
   theFactory->createAttributeNode(
       lArityQName, lFuncElem, -1, lArityQName, lTypeName, lArityValue);
+  
+  if(n.is_private())
+  {
+    zstring lPrivateString("true");
+    theFactory->createString(lPrivateValue, lPrivateString);
+    theFactory->createAttributeNode(
+      lPrivateQName, lFuncElem, -1, lPrivateQName, lTypeName, lPrivateValue);
+  }
 
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
