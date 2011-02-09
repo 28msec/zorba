@@ -26,9 +26,35 @@
 #include "http_response_handler.h"
 #include "http_response_parser.h"
 
+#ifdef WIN32
+# include <Windows.h>
+# define MAX_BUF_SIZE 2048
+#endif
+
 namespace zorba {
 
   namespace http_client {
+#ifdef WIN32
+		static void set_cacert(CURL* lCurl, std::string aPath) {
+			TCHAR path[MAX_BUF_SIZE];
+			int r = GetModuleFileName(NULL, path, 2048);
+			if (r == -1)
+				return;
+#	ifdef UNICODE
+			char buf[MAX_BUF_SIZE];
+			memset(buf, 0, MAX_BUF_SIZE);
+			for (int i = 0; i <= r; ++i) {
+				buf[i] = (char) path[i];
+			}
+			std::string lPath(buf);
+#	else
+			std::string lPath(path);
+#	endif
+			aPath = lPath.substr(0, lPath.rfind('\\'));
+			aPath += "\\cacert.pem";
+			curl_easy_setopt(lCurl, CURLOPT_CAINFO, aPath.c_str());
+		}
+#endif //WIN32
 
     class HttpSendFunction : public NonePureStatelessExternalFunction {
     protected:
@@ -160,6 +186,10 @@ namespace zorba {
         curl_easy_setopt(lCURL, CURLOPT_URL, lHref.getStringValue().c_str());
       }
       curl_easy_setopt(lCURL, CURLOPT_USERAGENT, "libcurl-agent/1.0");
+#ifdef WIN32
+      std::string caCertPath;
+      set_cacert(lCURL, caCertPath);
+#endif
       HttpResponseHandler lRespHandler(aFactory);
       //This gives the ownership of lCurl to the HttpResponseParser
       String lOverrideContentType;
@@ -198,7 +228,6 @@ namespace zorba {
       }
       theFunctions.clear();
     }
-
   } // namespace http_request
 } // namespace zorba
 
