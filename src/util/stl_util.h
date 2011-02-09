@@ -23,6 +23,7 @@
 #include <iterator>
 #include <set>
 #include <stack>
+#include <tr1/type_traits>
 
 namespace zorba {
 
@@ -231,6 +232,29 @@ typename StackType::value_type pop_stack( StackType &s ) {
   typename StackType::value_type const value( s.top() );
   s.pop();
   return value;
+}
+
+////////// tr1 ////////////////////////////////////////////////////////////////
+
+template<bool, typename T = void>
+struct enable_if {
+};
+
+template<typename T>
+struct enable_if<true,T> {
+  typedef T type;
+};
+
+template<typename IntType> inline
+typename enable_if<std::tr1::is_signed<IntType>::value,bool>::type
+ge0( IntType n ) {
+  return n >= 0;
+}
+
+template<typename IntType> inline
+typename enable_if<std::tr1::is_unsigned<IntType>::value,bool>::type
+ge0( IntType ) {
+  return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
