@@ -73,8 +73,10 @@ private:
   bool                     theUseIndent;
   bool                     theEnableDtd;
   bool                     theEnableUriTestResolver;
+#ifndef ZORBA_NO_FULL_TEXT
   zorba::TestFullTextURIResolver  theStopWordsResolver;
   zorba::TestFullTextURIResolver  theThesaurusResolver;
+#endif
 
   void setInline(bool inl) {
     theInline = inl;
@@ -93,6 +95,7 @@ private:
     theVariables.push_back(var);
   }
 
+#ifndef ZORBA_NO_FULL_TEXT
   void addStopWords() {
     theStopWordsResolver.add_mapping(theVarName, theVarValue);
   }
@@ -100,6 +103,7 @@ private:
   void addThesaurus() {
     theThesaurusResolver.add_mapping(theVarName, theVarValue);
   }
+#endif
 
   void addOption() {
     Option opt = { theVarName, theVarValue };
@@ -163,11 +167,13 @@ public:
   size_t
   errorsSize() const { return theErrors.size(); }
 
+#ifndef ZORBA_NO_FULL_TEXT
   zorba::TestFullTextURIResolver*
   getThesaurusResolver() { return &theThesaurusResolver; }
 
   zorba::TestFullTextURIResolver*
   getStopWordsResolver() { return &theStopWordsResolver; }
+#endif
 
   bool hasDateSet() const {
     return theDate.size() != 0;
@@ -306,12 +312,14 @@ public:
               if (lArg == "-x") {
                 addVariable();
               }
+#ifndef ZORBA_NO_FULL_TEXT
               else if (lArg == "--stop-words") {
                 addStopWords();
               }
               else if (lArg == "--thesaurus") {
                 addThesaurus();
               }
+#endif
             }
             else if (lArg == "--enable-dtd")
             {

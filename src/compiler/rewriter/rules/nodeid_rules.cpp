@@ -353,7 +353,9 @@ expr_t MarkConsumerNodeProps::apply(RewriterContext& rCtx, expr* node, bool& mod
   case exit_expr_kind :       // TODO
   case extension_expr_kind :  // TODO
   case flowctl_expr_kind :    // TODO
+#ifndef ZORBA_NO_FULL_TEXT
   case ft_expr_kind :         // TODO
+#endif
   case gflwor_expr_kind :     // TODO
   case insert_expr_kind :     // TODO
   case match_expr_kind :

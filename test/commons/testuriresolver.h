@@ -236,6 +236,7 @@ class TestSerializationCallback : public zorba::SerializationCallback
       getModuleURIResolver(size_t /*i*/) const { return my_module_resolver; }
 };
 
+#ifndef ZORBA_NO_FULL_TEXT
 /******************************************************************************
 
 *******************************************************************************/
@@ -268,6 +269,7 @@ class TestFullTextURIResolver: public FullTextURIResolver
     typedef Mapping_t::const_iterator          MappingIter_t;
     Mapping_t theMappings;
 };
+#endif
 
 
 } // namespace zorba

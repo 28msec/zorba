@@ -476,6 +476,7 @@ TestCollectionURIResolver::resolve(
   return std::auto_ptr<CollectionURIResolverResult>(lResult.release());
 }
 
+#ifndef ZORBA_NO_FULL_TEXT
 /******************************************************************************
   Full-Text URI Resolver
 *******************************************************************************/
@@ -506,5 +507,6 @@ TestFullTextURIResolver::add_mapping(
 {
   theMappings[aURI] = aValue;
 }
+#endif
 
 } /* namespace zorba */

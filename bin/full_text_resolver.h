@@ -21,6 +21,7 @@
 
 namespace zorba {
 
+#ifndef ZORBA_NO_FULL_TEXT
   class ZorbaCMDFullTextURIResolverResult: public FullTextURIResolverResult
   {
     public:
@@ -64,6 +65,7 @@ namespace zorba {
       typedef Mapping_t::const_iterator          MappingIter_t;
       Mapping_t theMappings;
   };
+#endif
 
 } /* namespace zorba */
 

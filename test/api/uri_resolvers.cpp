@@ -25,6 +25,7 @@
 
 using namespace zorba;
 
+#ifndef ZORBA_NO_FULL_TEXT
 /** FullText Resolver */
 class MyFullTextURIResolverResult: public FullTextURIResolverResult
 {
@@ -80,6 +81,7 @@ thesaurus_resolver_example_1(Zorba* aZorba)
   }
   return true;
 }
+#endif
 
 int 
 uri_resolvers(int argc, char* argv[])
@@ -88,8 +90,11 @@ uri_resolvers(int argc, char* argv[])
   Zorba* lZorba = Zorba::getInstance(lStore);
   bool res = false;
 
+#ifndef ZORBA_NO_FULL_TEXT
   std::cout << std::endl  << "executing thesaurus uri resolver example test 1" << std::endl;
   res = thesaurus_resolver_example_1(lZorba);
+#endif
+
   if (!res) return 1; 
   std::cout << std::endl;
 

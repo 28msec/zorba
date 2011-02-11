@@ -436,7 +436,9 @@ void setOptions(DriverContext& driverCtx, const zorba::StaticContext_t& sctx)
 void setFullTextResolvers
 (DriverContext& driverCtx, const zorba::StaticContext_t& sctx)
 {
+#ifndef ZORBA_NO_FULL_TEXT
   Specification& spec = * (driverCtx.theSpec);
   sctx->addStopWordsURIResolver(spec.getStopWordsResolver());
   sctx->addThesaurusURIResolver(spec.getThesaurusResolver());
+#endif
 }

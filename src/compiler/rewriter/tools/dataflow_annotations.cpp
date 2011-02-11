@@ -174,7 +174,9 @@ void DataflowAnnotationsComputer::compute(expr* e)
   case rename_expr_kind:        // TODO
   case replace_expr_kind:       // TODO
   case transform_expr_kind:     // TODO
+#ifndef ZORBA_NO_FULL_TEXT
   case ft_expr_kind:            // TODO
+#endif
   case eval_expr_kind:          // TODO
   case exit_expr_kind:          // TODO
   case flowctl_expr_kind:       // TODO
