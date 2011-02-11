@@ -293,6 +293,7 @@ main(int argc, char** argv)
     std::cout << "=== Query: ===" << std::endl;
     zorba::printFile(std::cout, lQueryFile.get_path());
     std::cout << "=== end of Query ===" << std::endl;
+#endif
 
     // Stopwatch starts now
     // QQQ this should use util/time.h
@@ -304,6 +305,7 @@ main(int argc, char** argv)
     start_time = clock();
 #endif
 
+#ifndef ZORBA_TEST_PLAN_SERIALIZATION_EXECUTION_ONLY
     // create and compile the query
     std::string lQueryString;
     slurp_file(lQueryFile.get_path().c_str(), lQueryString, rbkt_src_dir, rbkt_bin_dir);
@@ -349,11 +351,9 @@ main(int argc, char** argv)
     }
 #endif//ZORBA_TEST_PLAN_SERIALIZATION
 
-#ifdef ZORBA_TEST_PLAN_SERIALIZATION_COMPILE_ONLY
-    continue;
-#endif//ZORBA_TEST_PLAN_SERIALIZATION_COMPILE_ONLY
-
 #endif//#ifndef ZORBA_TEST_PLAN_SERIALIZATION_EXECUTION_ONLY
+
+#ifndef ZORBA_TEST_PLAN_SERIALIZATION_COMPILE_ONLY
 
 #ifdef ZORBA_TEST_PLAN_SERIALIZATION
     try
@@ -539,6 +539,8 @@ main(int argc, char** argv)
     long mstime = (long)(((double)(end_time - start_time)) / CLOCKS_PER_SEC * 1000000);
 #endif
     std::cout << "testdriver: test runtime was " << mstime << "us" << std::endl;
+
+#endif//ifndef ZORBA_TEST_PLAN_SERIALIZATION_COMPILE_ONLY
 
   } // for (int testcnt = 1; i < argc; ++i, ++testcnt)
   std::cout << "testdriver: success" << std::endl;
