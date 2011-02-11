@@ -21,7 +21,6 @@ SET(UTIL_SRCS
     dir.cpp
     fs_util.cpp
     indent.cpp
-    mmap_file.cpp
     regex.cpp
     unicode_util.cpp
     uri_util.cpp
@@ -29,6 +28,12 @@ SET(UTIL_SRCS
     xml_util.cpp
     uuid/sysdep.cpp
     uuid/uuid.cpp)
+
+IF (ZORBA_WITH_FILE_ACCESS)
+LIST(APPEND UTIL_SRCS
+    mmap_file.cpp)
+ENDIF (ZORBA_WITH_FILE_ACCESS)
+
 
 ADD_SRC_SUBFOLDER(UTIL_SRCS converters CONV_SRCS)
 
