@@ -54,7 +54,8 @@ SET(ZORBA_STORE_IMPL_SRCS
 )
 
 IF (NOT ZORBA_NO_FULL_TEXT)
-  LIST(APPEND ZORBA_STORE_IMPL_SRCS naive_ft_token_iterator.cpp)
+  LIST(APPEND ZORBA_STORE_IMPL_SRCS
+    ft_token_store.cpp naive_ft_token_iterator.cpp)
 ENDIF (NOT ZORBA_NO_FULL_TEXT)
 
 IF(ZORBA_STORE_MSDOM)

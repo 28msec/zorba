@@ -17,7 +17,6 @@
 #ifndef ZORBA_SIMPLE_STORE_NODE_ITEMS
 #define ZORBA_SIMPLE_STORE_NODE_ITEMS
 
-#include <memory>
 #include <stack>
 #include <vector>
 
@@ -33,7 +32,7 @@
 #include "store/naive/nsbindings.h" // TODO remove by introducing explicit destructors
 
 #ifndef ZORBA_NO_FULL_TEXT
-#include "store/naive/naive_ft_token_iterator.h"
+#include "ft_token_store.h"
 #include "zorbautils/locale.h"
 #endif /* ZORBA_NO_FULL_TEXT */
 
@@ -168,13 +167,6 @@ class XmlTree
   // make sure that only created by the factory
   friend class NodeFactory;
 
-#ifndef ZORBA_NO_FULL_TEXT
-public:
-  typedef NaiveFTTokenIterator::FTTokens FTTokens;
-
-  typedef FTTokens::size_type FTTokenIndex_t;
-#endif
-
 protected:
   mutable long              theRefCount;
   SYNC_CODE(mutable RCLock  theRCLock;)
@@ -195,15 +187,11 @@ protected:
   bool                      theIsRecursive;
 
 #ifndef ZORBA_NO_FULL_TEXT
-  FTTokens                  theTokens;
+  FTTokenStore              theTokens;
 #endif
 
 protected:
   XmlTree(XmlNode* root, ulong id);
-
-#ifndef ZORBA_NO_FULL_TEXT
-  FTTokens& getTokens() { return theTokens; }
-#endif
 
 public:
   XmlTree();
@@ -254,6 +242,10 @@ public:
   GuideNode* getDataGuide() const { return theDataGuideRootNode; }
 
   void setDataGuide(GuideNode* root) { theDataGuideRootNode = root; }
+
+#ifndef ZORBA_NO_FULL_TEXT
+  FTTokenStore& getTokenStore() { return theTokens; }
+#endif
 };
 
 
@@ -265,21 +257,20 @@ public:
 class XmlNodeTokenizerCallback : public Tokenizer::Callback 
 {
 public:
-  typedef XmlTree::FTTokens FTTokens;
+  typedef FTTokenStore::container_type container_type;
+  typedef FTTokenStore::size_type begin_type;
 
-  XmlNodeTokenizerCallback( Tokenizer &tokenizer, FTTokens &tokens,
-                            locale::iso639_1::type lang ) :
-    tokenizer_( tokenizer ),
-    tokens_( tokens )
-  {
-    push_lang( lang );
-  }
+  XmlNodeTokenizerCallback( Tokenizer &tokenizer, FTTokenStore &token_store,
+                            locale::iso639_1::type lang );
+
+  XmlNodeTokenizerCallback( Tokenizer &tokenizer, container_type &tokens,
+                            locale::iso639_1::type lang );
 
   void operator()( char const *utf8_s, size_t utf8_len,
                    int_t pos, int_t sent, int_t para, void* );
 
-  void beginTokenization( XmlNode& );
-  void endTokenization( XmlNode& );
+  begin_type beginTokenization() const;
+  void endTokenization( XmlNode const*, begin_type );
 
   void push_element( ElementNode *element ) { element_stack_.push( element ); }
   void pop_element() { element_stack_.pop(); }
@@ -306,7 +297,8 @@ private:
   }
 
   Tokenizer &tokenizer_;
-  FTTokens &tokens_;
+  FTTokenStore *token_store_;
+  container_type &tokens_;
   element_stack_t element_stack_;
   lang_stack_t lang_stack_;
 };
@@ -372,11 +364,6 @@ protected:
   InternalNode    * theParent;
   uint32_t          theFlags;
 
-#ifndef ZORBA_NO_FULL_TEXT
-  mutable XmlTree::FTTokenIndex_t theBeginTokenIndex;
-  mutable XmlTree::FTTokenIndex_t theEndTokenIndex;
-#endif
-
 protected:
   XmlNode(store::StoreConsts::NodeKind nodeKind)
     :
@@ -384,9 +371,6 @@ protected:
     theParent(NULL)
   {
     theFlags = (uint32_t)nodeKind;
-#ifndef ZORBA_NO_FULL_TEXT
-    initTokens();
-#endif /* ZORBA_NO_FULL_TEXT */
   }
 
   XmlNode(
@@ -399,25 +383,7 @@ protected:
     :
     theParent(0)
   {
-#ifndef ZORBA_NO_FULL_TEXT
-    initTokens();
-#endif /* ZORBA_NO_FULL_TEXT */
   }
-
-#ifndef ZORBA_NO_FULL_TEXT
-  friend class XmlNodeTokenizerCallback;
-
-  void initTokens() 
-  {
-    theBeginTokenIndex = theEndTokenIndex = 0;
-  }
-
-  bool hasTokens() const 
-  {
-    return theBeginTokenIndex != theEndTokenIndex;
-  }
-#endif /* ZORBA_NO_FULL_TEXT */
-
 
 public:
 #ifndef NDEBUG
@@ -892,10 +858,6 @@ public:
 
   void restoreName(UpdRenameElem& upd);
 
-#ifndef ZORBA_NO_FULL_TEXT
-  void tokenize( XmlNodeTokenizerCallback& );
-#endif /* ZORBA_NO_FULL_TEXT */
-
 protected:
   void getBaseURIInternal(zstring& uri, bool& local) const;
 
@@ -905,6 +867,10 @@ protected:
         AttributeNode* attr,
         zstring& absUri,
         zstring& relUri);
+
+#ifndef ZORBA_NO_FULL_TEXT
+  void tokenize( XmlNodeTokenizerCallback& );
+#endif /* ZORBA_NO_FULL_TEXT */
 
 private:
   //disable default copy constructor
@@ -928,15 +894,6 @@ protected:
   store::Item_t   theName;
   store::Item_t   theTypeName;
   store::Item_t   theTypedValue;
-
-#ifndef ZORBA_NO_FULL_TEXT
-public:
-  typedef NaiveFTTokenIterator::FTTokens FTTokens;
-protected:
-  // Use a pointer to take 1/3rd the space for attribute nodes that are not
-  // tokenized.
-  mutable std::auto_ptr<FTTokens> theTokens;
-#endif
 
   AttributeNode(store::Item_t&  attrName);
 
@@ -1005,10 +962,6 @@ public:
   void restoreName(UpdRenameAttr& upd);
 
 #ifndef ZORBA_NO_FULL_TEXT
-  void tokenize( XmlNodeTokenizerCallback& );
-#endif /* ZORBA_NO_FULL_TEXT */
-
-#ifndef ZORBA_NO_FULL_TEXT
   FTTokenIterator_t
   getDocumentTokens( locale::iso639_1::type = locale::iso639_1::unknown ) const;
 #endif /* ZORBA_NO_FULL_TEXT */
@@ -1023,6 +976,10 @@ protected:
   {
     return *reinterpret_cast<ItemVector*>(theTypedValue.getp()); 
   }
+
+#ifndef ZORBA_NO_FULL_TEXT
+  void tokenize( XmlNodeTokenizerCallback& );
+#endif /* ZORBA_NO_FULL_TEXT */
 };
    
 

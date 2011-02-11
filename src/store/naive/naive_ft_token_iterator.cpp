@@ -21,16 +21,18 @@ using namespace std;
 
 namespace zorba {
 
-NaiveFTTokenIterator::NaiveFTTokenIterator( FTTokens const &tokens,
+NaiveFTTokenIterator::NaiveFTTokenIterator( container_type const &tokens,
                                             index_t begin, index_t end ) :
-  tokens_( &tokens ), begin_( begin ), end_( end ), must_delete_( false )
+  tokens_( &tokens ), begin_( begin ), end_( end ),
+  must_delete_( false )
 {
   init();
   pos_ = begin_;
 }
 
-NaiveFTTokenIterator::NaiveFTTokenIterator( FTTokens const *tokens ) :
-  tokens_( tokens ), begin_( 0 ), end_( (index_t)tokens->size() ), must_delete_( true )
+NaiveFTTokenIterator::NaiveFTTokenIterator( container_type const *tokens ) :
+  tokens_( tokens ), begin_( 0 ), end_( (index_t)tokens->size() ),
+  must_delete_( true )
 {
   init();
   pos_ = begin_;

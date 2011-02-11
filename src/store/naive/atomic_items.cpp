@@ -781,8 +781,8 @@ FTTokenIterator_t StringItem::getDocumentTokens(locale::iso639_1::type lang) con
 {
   auto_ptr<Tokenizer> tokenizer( Tokenizer::create() );
 
-  auto_ptr<NaiveFTTokenIterator::FTTokens> tokens(
-    new NaiveFTTokenIterator::FTTokens
+  auto_ptr<NaiveFTTokenIterator::container_type> tokens(
+    new NaiveFTTokenIterator::container_type
   );
 
   AtomicItemTokenizerCallback cb( *tokenizer, lang, *tokens );
@@ -798,8 +798,8 @@ FTTokenIterator_t StringItem::getQueryTokens(
 {
   auto_ptr<Tokenizer> tokenizer( Tokenizer::create( wildcards ) );
 
-  auto_ptr<NaiveFTTokenIterator::FTTokens> tokens(
-    new NaiveFTTokenIterator::FTTokens
+  auto_ptr<NaiveFTTokenIterator::container_type> tokens(
+    new NaiveFTTokenIterator::container_type
   );
 
   AtomicItemTokenizerCallback cb( *tokenizer, lang, *tokens );

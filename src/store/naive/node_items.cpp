@@ -42,8 +42,9 @@
 
 #include "util/string_util.h"
 
-
 namespace zorba { namespace simplestore {
+
+using namespace locale;
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -181,10 +182,6 @@ XmlNode::XmlNode(
     setTree(parent->getTree());
     setOrdPath(parent, pos, nodeKind);
   }
-
-#ifndef ZORBA_NO_FULL_TEXT
-  initTokens();
-#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 
@@ -3176,13 +3173,42 @@ zstring CommentNode::show() const
  *
  ******************************************************************************/
 
-inline void XmlNodeTokenizerCallback::beginTokenization( XmlNode &node ) {
-  node.theBeginTokenIndex = tokens_.size();
+XmlNodeTokenizerCallback::XmlNodeTokenizerCallback( Tokenizer &tokenizer,
+                                                    FTTokenStore &token_store,
+                                                    iso639_1::type lang ) :
+  tokenizer_( tokenizer ),
+  token_store_( &token_store ),
+  tokens_( token_store.getDocumentTokens() )
+{
+  push_lang( lang );
 }
 
-inline void XmlNodeTokenizerCallback::endTokenization( XmlNode &node ) {
-  node.theEndTokenIndex = tokens_.size();
+
+XmlNodeTokenizerCallback::XmlNodeTokenizerCallback( Tokenizer &tokenizer,
+                                                    container_type &tokens,
+                                                    iso639_1::type lang ) :
+  tokenizer_( tokenizer ),
+  token_store_( NULL ),
+  tokens_( tokens )
+{
+  push_lang( lang );
 }
+
+
+inline XmlNodeTokenizerCallback::begin_type
+XmlNodeTokenizerCallback::beginTokenization() const {
+  return token_store_->getDocumentTokens().size();
+}
+
+
+inline void XmlNodeTokenizerCallback::endTokenization(
+  XmlNode const *node, XmlNodeTokenizerCallback::begin_type begin )
+{
+  token_store_->putRange(
+    node, begin, token_store_->getDocumentTokens().size()
+  );
+}
+
 
 void XmlNodeTokenizerCallback::operator()( char const *utf8_s, size_t utf8_len,
                                            int_t pos, int_t sent, int_t para,
@@ -3210,27 +3236,28 @@ void XmlNode::tokenize( XmlNodeTokenizerCallback& )
 
 void AttributeNode::tokenize( XmlNodeTokenizerCallback &cb ) 
 {
-  cb.beginTokenization( *this );
   zstring text;
   getStringValue2( text );
   cb.tokenize( text.data(), text.size() );
-  cb.endTokenization( *this );
 }
 
 
 FTTokenIterator_t
-AttributeNode::getDocumentTokens( locale::iso639_1::type lang ) const 
+AttributeNode::getDocumentTokens( iso639_1::type lang ) const 
 {
-  if ( !theTokens.get() )
-  {
-    theTokens.reset( new FTTokens );
+  FTTokenStore &token_store = getTree()->getTokenStore();
+  while ( true ) {
+    FTTokenStore::container_type const *tokens = token_store.getAttr( this );
+    if ( tokens )
+      return FTTokenIterator_t(
+        new NaiveFTTokenIterator( *tokens, 0, tokens->size() )
+      );
+    FTTokenStore::container_type att_tokens;
     std::auto_ptr<Tokenizer> tokenizer( Tokenizer::create() );
-    XmlNodeTokenizerCallback cb( *tokenizer, *theTokens, lang );
+    XmlNodeTokenizerCallback cb( *tokenizer, att_tokens, lang );
     const_cast<AttributeNode*>( this )->tokenize( cb );
+    token_store.putAttr( this, att_tokens );
   }
-  return FTTokenIterator_t(
-    new NaiveFTTokenIterator( *theTokens, 0, theTokens->size() )
-  );
 }
 
 
@@ -3239,22 +3266,26 @@ void InternalNode::tokenize( XmlNodeTokenizerCallback& cb )
   Tokenizer &tokenizer = cb.tokenizer();
   tokenizer.para( tokenizer.para() + 1 );
 
-  cb.beginTokenization( *this );
+  XmlNodeTokenizerCallback::begin_type const begin = cb.beginTokenization();
   for ( ulong i = 0; i < numChildren(); ++i )
     getChild( i )->tokenize( cb );
-  cb.endTokenization( *this );
+  cb.endTokenization( this, begin );
 }
 
 
 void ElementNode::tokenize( XmlNodeTokenizerCallback& cb ) 
 {
-  bool found_lang = false;
+  //
+  // See if this XML element has an xml:lang attribute: if so, switch to that
+  // language.
+  //
+  bool pushed_lang = false;
   for ( ulong i = 0; i < numAttributes(); ++i ) {
     AttributeNode *const at = getAttr( i );
     Item const *const name = at->getNodeName();
     if ( name->getLocalName() == "lang" && name->getNamespace() == XML_NS ) {
       cb.push_lang( locale::find_lang( at->getStringValue().c_str() ) );
-      found_lang = true;
+      pushed_lang = true;
       break;
     }
   }
@@ -3262,32 +3293,36 @@ void ElementNode::tokenize( XmlNodeTokenizerCallback& cb )
   cb.push_element( this );
   InternalNode::tokenize( cb );
   cb.pop_element();
-  if ( found_lang )
+  if ( pushed_lang )
     cb.pop_lang();
 }
 
 
 void TextNode::tokenize( XmlNodeTokenizerCallback &cb ) 
 {
-  cb.beginTokenization( *this );
+  XmlNodeTokenizerCallback::begin_type const begin = cb.beginTokenization();
   zstring const &s = getText();
   cb.tokenize( s.data(), s.size() );
-  cb.endTokenization( *this );
+  cb.endTokenization( this, begin );
 }
 
 
 FTTokenIterator_t
-XmlNode::getDocumentTokens( locale::iso639_1::type lang ) const 
+XmlNode::getDocumentTokens( iso639_1::type lang ) const 
 {
-  XmlTree::FTTokens &tokens = getTree()->getTokens();
-  if ( !hasTokens() ) 
+  FTTokenStore &token_store = getTree()->getTokenStore();
+  FTTokenStore::container_type &tokens = token_store.getDocumentTokens();
+
+  if ( tokens.empty() ) 
   {
     std::auto_ptr<Tokenizer> tokenizer( Tokenizer::create() );
-    XmlNodeTokenizerCallback cb( *tokenizer, tokens, lang );
+    XmlNodeTokenizerCallback cb( *tokenizer, token_store, lang );
     getRoot()->tokenize( cb );
   }
+
+  FTTokenStore::range_type const &r = token_store.getRange( this );
   return FTTokenIterator_t(
-    new NaiveFTTokenIterator( tokens, theBeginTokenIndex, theEndTokenIndex )
+    new NaiveFTTokenIterator( tokens, r.first, r.second )
   );
 }
 

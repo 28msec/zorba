@@ -2156,11 +2156,11 @@ protected:
 class AtomicItemTokenizerCallback : public Tokenizer::Callback
 {
 public:
-  typedef NaiveFTTokenIterator::FTTokens FTTokens;
+  typedef FTTokenStore::container_type container_type;
 
   AtomicItemTokenizerCallback( Tokenizer &tokenizer,
                                locale::iso639_1::type lang,
-                               FTTokens &tokens ) :
+                               container_type &tokens ) :
     tokenizer_( tokenizer ),
     tokens_( tokens ),
     lang_( lang )
@@ -2176,7 +2176,7 @@ public:
 
 private:
   Tokenizer &tokenizer_;
-  FTTokens &tokens_;
+  container_type &tokens_;
   locale::iso639_1::type const lang_;
 };
 #endif /* ZORBA_NO_FULL_TEXT */

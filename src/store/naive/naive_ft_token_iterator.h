@@ -17,22 +17,20 @@
 #ifndef ZORBA_NAIVE_FT_TOKEN_ITERATOR_H
 #define ZORBA_NAIVE_FT_TOKEN_ITERATOR_H
 
-#include <vector>
-
 #include "store/api/ft_token_iterator.h"
+#include "ft_token_store.h"
 
 namespace zorba {
 
 /**
- * A <code>NaiveFTTokenIterator</code> is-an FTTokenIterator for the naive
- * store.
+ * A %NaiveFTTokenIterator is-an FTTokenIterator for the naive store.
  */
 class ZORBA_DLL_PUBLIC NaiveFTTokenIterator : public FTTokenIterator {
 public:
-  typedef std::vector<FTToken> FTTokens;
+  typedef FTTokenStore::container_type container_type;
 
-  NaiveFTTokenIterator( FTTokens const&, index_t begin, index_t end );
-  NaiveFTTokenIterator( FTTokens const* );
+  NaiveFTTokenIterator( container_type const&, index_t begin, index_t end );
+  NaiveFTTokenIterator( container_type const* );
   ~NaiveFTTokenIterator();
 
   index_t begin() const;
@@ -49,7 +47,7 @@ private:
     index_t const pos_;
   };
 
-  FTTokens const *tokens_;
+  container_type const *tokens_;
   index_t const begin_, end_;
   index_t pos_;
   bool const must_delete_;
