@@ -116,30 +116,31 @@ public:
 bool 
 resolver_example_1(Zorba* aZorba)
 {
-  // load one document into the store
+  try
   {
-    std::stringstream lDocStream;
-    lDocStream << "<mydoc><a>1</a></mydoc>";
+    // load one document into the store
+    {
+      std::stringstream lDocStream;
+      lDocStream << "<mydoc><a>1</a></mydoc>";
 
-    XmlDataManager* lDataManager = aZorba->getXmlDataManager();
+      XmlDataManager* lDataManager = aZorba->getXmlDataManager();
 
-    lDataManager->loadDocument("mydoc.xml", lDocStream);
-  }
+      lDataManager->loadDocument("mydoc.xml", lDocStream);
+    }
 
-  StaticContext_t lContext = aZorba->createStaticContext();
+    StaticContext_t lContext = aZorba->createStaticContext();
 
-  MyDocumentURIResolver lResolver;
+    MyDocumentURIResolver lResolver;
 
-  lContext->setDocumentURIResolver(&lResolver);
+    lContext->setDocumentURIResolver(&lResolver);
 
-  try 
-  {
     XQuery_t lQuery = aZorba->compileQuery("fn:doc('mydoc.xml')", lContext); 
     std::cout << lQuery << std::endl;
   }
   catch (ZorbaException& e)
   {
     std::cerr << e.getDescription() << std::endl;
+    return false;
   }
 
 
@@ -170,9 +171,11 @@ class MyCollectionURIResolver : public  CollectionURIResolver
     resolve(const Item& aURI, StaticContext* aStaticContext, XmlDataManager* aXmlDataManager)
     {
       std::auto_ptr<MyCollectionURIResolverResult> lResult(new MyCollectionURIResolverResult());
-      if (aURI.getStringValue() == "mycollection.xml") {
+      String lURI = aURI.getStringValue();
+      if (lURI == "file:///mycollection.xml") {
         // we have only one document
-        lResult->theCollection = aXmlDataManager->getCollection(aURI.getStringValue());
+        lURI = lURI.substring(8); // strip the "file:///" prefix
+        lResult->theCollection = aXmlDataManager->getCollection(lURI);
         lResult->setError(URIResolverResult::UR_NOERROR);
       } else {
         lResult->setError(URIResolverResult::UR_FODC0002);
@@ -187,28 +190,29 @@ class MyCollectionURIResolver : public  CollectionURIResolver
 bool 
 resolver_example_2(Zorba* aZorba)
 {
-  // load one document into the store
-  {
-    XmlDataManager* lDataManager = aZorba->getXmlDataManager();
-
-    Collection_t lCol = lDataManager->createCollection("mycollection.xml");
-
-    std::stringstream lDoc;
-    lDoc << "<mydoc><b>1</b></mydoc>";
-    lCol->addDocument(lDoc);
-  }
-
-  StaticContext_t lContext = aZorba->createStaticContext();
-
-  MyCollectionURIResolver lResolver;
-
-  lContext->setCollectionURIResolver(&lResolver);
-
   try {
+    // load one document into the store
+    {
+      XmlDataManager* lDataManager = aZorba->getXmlDataManager();
+
+      Collection_t lCol = lDataManager->createCollection("mycollection.xml");
+
+      std::stringstream lDoc;
+      lDoc << "<mydoc><b>1</b></mydoc>";
+      lCol->addDocument(lDoc);
+    }
+
+    StaticContext_t lContext = aZorba->createStaticContext();
+
+    MyCollectionURIResolver lResolver;
+
+    lContext->setCollectionURIResolver(&lResolver);
+
     XQuery_t lQuery = aZorba->compileQuery("fn:collection('mycollection.xml')", lContext); 
     std::cout << lQuery << std::endl;
   } catch (ZorbaException& e) {
     std::cerr << e.getDescription() << std::endl;
+    return false;
   }
 
 	return true;
