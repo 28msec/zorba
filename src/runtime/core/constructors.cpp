@@ -448,7 +448,18 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   {
     result = NULL;
     path.pop();
-    ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+
+    QueryLoc new_loc = loc;
+    if (e.theQueryLine != 0 && e.theQueryColumn != 0 && e.theQueryFileName != "")
+    {
+      new_loc.setLineBegin(e.theQueryLine);
+      new_loc.setLineEnd(e.theQueryLine);
+      new_loc.setColumnBegin(e.theQueryColumn);
+      new_loc.setColumnEnd(e.theQueryColumn);
+      new_loc.setFilename(e.theQueryFileName);
+    }
+
+    ZORBA_ERROR_LOC_DESC(e.theErrorCode, new_loc, e.theDescription);
   }
   catch (...)
   {
