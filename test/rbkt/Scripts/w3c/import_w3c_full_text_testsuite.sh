@@ -3,7 +3,7 @@
 die() {
   echo
   echo 'Arguments: [--workdir <workdir>] [--builddir <builddir>]'
-  echo '           [--xqtsurl <xqtsurl>] [--thesaurusurl <thesaurusurl>]'
+  echo '           [--xqtsurl <xqtsurl>]'
   echo '           <zorba_repository>'
   echo '<zorba_repository> is the top-level SVN working copy.'
   echo '<workdir> is a temp directory to download and unzip XQTS (default: /tmp).'
