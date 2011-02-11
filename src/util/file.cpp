@@ -609,12 +609,14 @@ void file::deep_mkdir () {
 }
 
 void file::remove(bool ignore) {
+#ifdef ZORBA_WITH_FILE_ACCESS
   if ( !fs::remove( c_str() ) ) {
     if ( !ignore )
       error(__FUNCTION__, "failed to remove " + get_path ());
     return;
   }
   set_filetype(type_non_existent);
+#endif
 }
 
 

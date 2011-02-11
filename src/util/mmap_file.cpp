@@ -39,6 +39,8 @@
           ZORBA_ERROR_DESC( XQP0013_SYSTEM_MMFILE_IOEXCEPTION, oss.str() ); \
         }
 
+#ifdef ZORBA_WITH_FILE_ACCESS
+
 using namespace std;
 
 namespace zorba {
@@ -149,4 +151,5 @@ void mmap_file::open( char const *path, ios::openmode mode ) {
 }
 
 } // namespace zorba
+#endif
 /* vim:set et sw=2 ts=2: */

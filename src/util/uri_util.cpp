@@ -28,9 +28,7 @@
 #include "system/globalenv.h"
 #endif /* WIN32 */
 
-#ifndef ZORBA_WITH_REST
 #include "zorbaerrors/error_manager.h"
-#endif
 #include "zorbatypes/zstring.h"
 
 #include "fs_util.h"
