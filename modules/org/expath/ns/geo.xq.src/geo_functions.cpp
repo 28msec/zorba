@@ -2309,7 +2309,7 @@ SFCoordinateDimensionFunction::evaluate(const StatelessExternalFunction::Argumen
 #if GEOS_VERSION_MAJOR > 3 || (GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR > 2)
   int   coord_dim = geos_geometry->getCoordinateDimension();
 #else
-  int coord_dim = getCoordinateDimension(geos_geometry);
+  int coord_dim = getCoordinateDimension(geos_geometry.get());
 #endif
   return ItemSequence_t(new SingletonItemSequence(
       theModule->getItemFactory()->createInteger(coord_dim)));
@@ -3001,7 +3001,7 @@ SFIs3DFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
 #if GEOS_VERSION_MAJOR > 3 || (GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR > 2)
   bool is_3D = (geos_geometry->getCoordinateDimension() == 3);
 #else
-  bool is_3D = (getCoordinateDimension(geos_geometry) == 3);//for GEOS 3.2.2
+  bool is_3D = (getCoordinateDimension(geos_geometry.get()) == 3);//for GEOS 3.2.2
 #endif
 
   return ItemSequence_t(new SingletonItemSequence(
@@ -3685,7 +3685,7 @@ SFZFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
 #if GEOS_VERSION_MAJOR > 3 || (GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR > 2)
   if(geos_geometry->getCoordinateDimension() == 3)
 #else
-  if(getCoordinateDimension(geos_geometry) == 3)
+  if(getCoordinateDimension(geos_geometry.get()) == 3)
 #endif
   {
     double z = c->z;
