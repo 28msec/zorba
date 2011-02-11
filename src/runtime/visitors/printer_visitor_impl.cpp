@@ -1176,10 +1176,82 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
   PRINTER_VISITOR_DEFINITION (flwor::OrderByIterator)
   PRINTER_VISITOR_DEFINITION (flwor::WindowIterator)
   PRINTER_VISITOR_DEFINITION (NameCastIterator)
-  PRINTER_VISITOR_DEFINITION (CtxVarIterator)
-  PRINTER_VISITOR_DEFINITION (CtxVarDeclIterator)
-  PRINTER_VISITOR_DEFINITION (CtxVarAssignIterator)
-  PRINTER_VISITOR_DEFINITION (CtxVarExistsIterator)
+
+  void PrinterVisitor::beginVisit(const CtxVarDeclareIterator& a)
+  {
+    thePrinter.startBeginVisit("CtxVarDeclareIterator", ++theId);
+    thePrinter.addAttribute("varid", a.getVarId());
+    thePrinter.addAttribute("varname", a.getVarName()->getStringValue().str());
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
+  }
+
+  void PrinterVisitor::endVisit(const CtxVarDeclareIterator&)
+  {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+
+  void PrinterVisitor::beginVisit(const CtxVarAssignIterator& a)
+  {
+    thePrinter.startBeginVisit("CtxVarAssignIterator", ++theId);
+    thePrinter.addAttribute("varid", a.getVarId());
+    thePrinter.addAttribute("varname", a.getVarName()->getStringValue().str());
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
+  }
+
+  void PrinterVisitor::endVisit(const CtxVarAssignIterator&)
+  {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+
+  void PrinterVisitor::beginVisit(const CtxVarIsSetIterator& a)
+  {
+    thePrinter.startBeginVisit("CtxVarIsSetIterator", ++theId);
+    thePrinter.addAttribute("varid", a.getVarId());
+    thePrinter.addAttribute("varname", a.getVarName()->getStringValue().str());
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
+  }
+
+  void PrinterVisitor::endVisit(const CtxVarIsSetIterator&)
+  {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+
+  void PrinterVisitor::beginVisit(const PrologVarIterator& a)
+  {
+    thePrinter.startBeginVisit("PrologVarIterator", ++theId);
+    thePrinter.addAttribute("varid", a.getVarId());
+    thePrinter.addAttribute("varname", a.getVarName()->getStringValue().str());
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
+  }
+
+  void PrinterVisitor::endVisit(const PrologVarIterator&)
+  {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+
+  void PrinterVisitor::beginVisit(const LocalVarIterator& a)
+  {
+    thePrinter.startBeginVisit("LocalVarIterator", ++theId);
+    thePrinter.addAttribute("varid", a.getVarId());
+    thePrinter.addAttribute("varname", a.getVarName()->getStringValue().str());
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
+  }
+
+  void PrinterVisitor::endVisit(const LocalVarIterator&)
+  {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+
   PRINTER_VISITOR_DEFINITION(FnAdjustToTimeZoneIterator_1);
   PRINTER_VISITOR_DEFINITION(FnAdjustToTimeZoneIterator_2);
   PRINTER_VISITOR_DEFINITION(FnFormatDateTimeIterator);

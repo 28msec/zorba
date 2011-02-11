@@ -15,6 +15,8 @@
  */
 #include <sstream>
 
+#include "store/api/temp_seq.h"
+
 #include "runtime/eval/eval.h"
 
 #include "runtime/visitors/planiter_visitor.h"
@@ -25,6 +27,7 @@
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/api/compilercb.h"
 #include "compiler/api/compiler_api.h"
+#include "compiler/expression/var_expr.h"
 
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
@@ -39,8 +42,12 @@ SERIALIZABLE_CLASS_VERSIONS(EvalIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(EvalIterator)
 
 
+/****************************************************************************//**
+
+********************************************************************************/
 static PlanIter_t compile(
     CompilerCB* ccb,
+    dynamic_context* evalDctx,
     zstring query,
     checked_vector<store::Item_t> varnames,
     checked_vector<xqtref_t> vartypes)
@@ -72,7 +79,7 @@ static PlanIter_t compile(
     prolog->set_vfo_list(vfo);
   }
 
-  for (int i = (int) varnames.size() - 1; i >= 0; --i)
+  for (long i = (long)varnames.size() - 1; i >= 0; --i)
   {
     vfo->push_front(new VarDecl(loc,
                                 new QName(loc, varnames[i]->getStringValue().str()),
@@ -81,9 +88,75 @@ static PlanIter_t compile(
                                 NULL,
                                 true));
   }
+
   // TODO: give eval'ed code the types of the variables (for optimization)
 
-  return compiler.compile(ast);
+  static_context* outerSctx = ccb->theRootSctx->get_parent();
+  dynamic_context* outerDctx = evalDctx->getParent();
+
+  ulong maxOuterVarId = 0;
+  std::vector<var_expr_t> outerVars;
+  outerSctx->getVariables(outerVars);
+  
+  FOR_EACH(std::vector<var_expr_t>, ite, outerVars)
+  {
+    var_expr* outerVar = (*ite).getp();
+
+    ulong outerVarId = outerVar->get_unique_id();
+
+    if (outerVarId > maxOuterVarId)
+      maxOuterVarId = outerVarId;
+
+    store::Item_t itemValue;
+    store::TempSeq_t seqValue;
+
+    if (!outerDctx->exists_variable(outerVarId))
+      continue;
+
+    outerDctx->get_variable(outerVarId,
+                            outerVar->get_name(),
+                            QueryLoc::null,
+                            itemValue,
+                            seqValue);
+
+    if (itemValue != NULL)
+    {
+      evalDctx->add_variable(outerVarId, itemValue);
+    }
+    else
+    {
+      store::Iterator_t iteValue = seqValue->getIterator();
+      evalDctx->add_variable(outerVarId, iteValue);
+    }
+  }
+
+  ++maxOuterVarId;
+
+  return compiler.compile(ast, maxOuterVarId);
+}
+
+
+/****************************************************************************//**
+
+********************************************************************************/
+static void setEvalVariable(
+    const static_context* evalSctx,
+    dynamic_context* evalDctx,
+    const store::Item_t& varName,
+    store::Iterator_t& value)
+{
+  const var_expr* evalVar = evalSctx->lookup_var(varName,
+                                                 QueryLoc::null,
+                                                 MAX_ZORBA_ERROR_CODE);
+    
+  if (!evalVar)
+  {
+    ZORBA_ASSERT(false);
+  }
+
+  ulong varId = evalVar->get_unique_id();
+
+  evalDctx->add_variable(varId, value);
 }
 
 
@@ -101,14 +174,12 @@ EvalIterator::EvalIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
-    checked_vector<store::Item_t> aVarNames,
-    checked_vector<std::string> aVarKeys,
-    checked_vector<xqtref_t> aVarTypes)
+    const checked_vector<store::Item_t>& aVarNames,
+    const checked_vector<xqtref_t>& aVarTypes)
   : 
   NaryBaseIterator<EvalIterator, EvalIteratorState>(sctx, loc, children),
-  varnames(aVarNames),
-  var_keys(aVarKeys),
-  vartypes(aVarTypes)
+  theVarNames(aVarNames),
+  theVarTypes(aVarTypes)
 {
 }
 
@@ -124,9 +195,8 @@ void EvalIterator::serialize(::zorba::serialization::Archiver& ar)
   serialize_baseclass(ar,
   (NaryBaseIterator<EvalIterator, EvalIteratorState>*)this);
 
-  ar & varnames;
-  ar & var_keys;
-  ar & vartypes;
+  ar & theVarNames;
+  ar & theVarTypes;
 }
 
 
@@ -141,20 +211,24 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   {
     // set up eval state's ccb
-    state->ccb.reset(new CompilerCB(*planState.theCompilerCB));
-    state->ccb->theRootSctx = getStaticContext()->create_child_context();
-    (planState.theCompilerCB->theSctxMap)[1] = state->ccb->theRootSctx;
+    CompilerCB* evalCcb = new CompilerCB(*planState.theCompilerCB);
+    state->ccb.reset(evalCcb);
+    static_context* evalSctx = getStaticContext()->create_child_context();
+    evalCcb->theRootSctx = evalSctx;
+    (evalCcb->theSctxMap)[1] = evalSctx;
 
-    state->dctx.reset(new dynamic_context(planState.dctx()));
+    dynamic_context* evalDctx = new dynamic_context(planState.theGlobalDynCtx);
+    state->dctx.reset(evalDctx);
 
-    state->thePlan = compile(state->ccb.get(),
+    state->thePlan = compile(evalCcb,
+                             evalDctx,
                              item->getStringValue(),
-                             varnames,
-                             vartypes);
+                             theVarNames,
+                             theVarTypes);
 
     state->thePlanWrapper = new PlanWrapper(state->thePlan,
-                                            state->ccb.get(),
-                                            state->dctx.get(),
+                                            evalCcb,
+                                            evalDctx,
                                             planState.theQuery, // HACK/TODO: use the right query (static or dynamic context)
                                             planState.theStackDepth + 1);
 
@@ -168,7 +242,8 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       // TODO: is saving an open iterator efficient?
       // Then again if we close theChildren [1] here,
       // we won't be able to re-open it later via the PlanIteratorWrapper
-      state->dctx->add_variable(dynamic_context::var_key(state->ccb->theRootSctx->lookup_var(varnames[i], loc, XPST0008)), lIter);
+
+      setEvalVariable(evalCcb->theRootSctx, evalDctx, theVarNames[i], lIter);
     }
   }
 

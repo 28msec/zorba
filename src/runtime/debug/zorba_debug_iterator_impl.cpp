@@ -44,11 +44,9 @@ namespace zorba {
 // this function is called by the plan_visitor
 void ZorbaDebugIterator::setVariables(
     checked_vector<store::Item_t> aVarNames,
-    checked_vector<std::string>   aVarKeys,
     checked_vector<xqtref_t>      aVarTypes)
 {
   varnames = aVarNames;
-  var_keys = aVarKeys;
   vartypes = aVarTypes;
 }
   
@@ -188,7 +186,7 @@ void ZorbaDebugIterator::checkBreak(PlanState* planState) const
       // tell everybody that we are the iterator who suspended
       lCommons->setCurrentIterator(this);
       lCommons->setCurrentStaticContext(getStaticContext());
-      lCommons->setCurrentDynamicContext(planState->dctx());
+      lCommons->setCurrentDynamicContext(planState->theLocalDynCtx);
       lCommons->setBreak(false);
       lCommons->setPlanState(planState);
 

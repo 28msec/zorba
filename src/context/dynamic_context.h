@@ -56,20 +56,41 @@ protected:
     typedef enum
     {
       no_val,
-      var_item_val,
-      var_temp_seq_val,
       ext_func_param // params that can be used by ext. functions
     } val_type_t;
-
-    union
-    {
-      store::Item*     var_item;
-      store::TempSeq*  var_temp_seq;
-    } val;
 
     val_type_t  type;
     bool        in_progress;
     void*       func_param;
+  };
+
+
+  struct VarValue
+  {
+    typedef enum
+    {
+      undeclared,
+      declared,
+      item,
+      temp_seq,
+    } ValueState;
+
+    union
+    {
+      store::Item*     item;
+      store::TempSeq*  temp_seq;
+    }          theValue;
+
+    ValueState  theState;
+
+    VarValue() : theState(undeclared)
+    {
+      theValue.item = NULL;
+    }
+
+    VarValue(const VarValue& other);
+
+    ~VarValue(); 
   };
 
   typedef hashmap<dctx_value_t> ValueMap;
@@ -79,14 +100,13 @@ protected:
 protected:
   dynamic_context            * theParent;
 
-  store::Item_t                current_date_time_item;
-  store::Item_t                current_time_millis;
+  store::Item_t                theCurrentDateTime;
+  store::Item_t                theCurrentTimeMillis;
   long                         theTimezone;
-  store::Item_t                default_collection_uri;
 
-  store::Item_t                ctxt_item;
-  unsigned long                ctxt_position;
-  //+context size is determined by fn:last() at runtime
+  store::Item_t                theDefaultCollectionUri;
+
+  std::vector<VarValue>        theVarValues;
 
   ValueMap                     keymap;
 
@@ -97,21 +117,11 @@ public:
   double                       theDocLoadingTime;
 
 public:
-  static std::string var_key(const void* var);
-
-  static zstring expand_varname(
-        const static_context* sctx,
-        const zstring& qname);
-
-  static zstring expand_varname(
-        const static_context* sctx,
-        const zstring& ns,
-        const zstring& localname);
-
-public:
   dynamic_context(dynamic_context* parent = NULL);
 
   ~dynamic_context();
+
+  dynamic_context* getParent() { return theParent; }
 
   store::Item_t get_default_collection() const;
 
@@ -129,41 +139,34 @@ public:
 
   long get_implicit_timezone() const;
 
-  store::Item_t context_item() const;
+  void add_variable(ulong varid, store::Item_t& value);
 
-  unsigned long context_position() const;
+  void add_variable(ulong varid, store::Iterator_t& value);
 
-  xqtref_t context_item_type() const;
+  void declare_variable(ulong varid);
 
-  void set_context_item_type(xqtref_t );
+  void set_variable(
+      ulong varid,
+      const store::Item_t& varname,
+      const QueryLoc& loc,
+      store::Item_t& value);
 
-  void set_context_item(const store::Item_t&, unsigned long position);
+  void set_variable(
+      ulong varid, 
+      const store::Item_t& varname,
+      const QueryLoc& loc,
+      store::Iterator_t& value);
 
-  void declare_variable(const std::string& varname);
-
-  void set_variable(const std::string& varname, store::Item_t& var_item);
-
-  void set_variable(const std::string& varname, store::Iterator_t& var_iterator);
-
-  void add_variable(const std::string& varname, store::Item_t& var_item);
-
-  void add_variable(const std::string& varname, store::Iterator_t& var_iterator);
-
-  bool get_variable(
+  void get_variable(
+        ulong varid,
         const store::Item_t& varname,
         const QueryLoc& loc,
-        store::Item_t& var_item,
-        store::TempSeq_t& var_seq) const;
+        store::Item_t& itemValue,
+        store::TempSeq_t& seqValue) const;
 
-  bool get_variable(
-        const std::string& varname,
-        const QueryLoc& loc,
-        store::Item_t& var_item,
-        store::TempSeq_t& var_seq) const;
+  bool exists_variable(ulong varid);
 
-  bool exists_variable(const store::Item_t& varname);
-
-  bool exists_variable(const std::string& varkey);
+  ulong get_next_var_id() const;
 
   store::Index* getIndex(store::Item* qname) const;
 
@@ -186,7 +189,7 @@ public:
 
   bool getExternalFunctionParam(const std::string& aName, void*& aValue) const;
 
-  std::vector<zstring>* get_all_keymap_keys() const;
+  //std::vector<zstring>* get_all_keymap_keys() const;
 
 protected:
   bool lookup_once(const std::string& key, dctx_value_t& val) const
@@ -214,12 +217,6 @@ protected:
   }
 
   void destroy_dctx_value(dctx_value_t *);
-
-  bool lookup_var_value(
-        const std::string& key,
-        const QueryLoc& loc,
-        store::Item_t& var_item,
-        store::TempSeq_t& var_seq) const;
 };
 
 

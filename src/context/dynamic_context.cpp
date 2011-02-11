@@ -57,66 +57,56 @@ namespace zorba
 /*******************************************************************************
 
 ********************************************************************************/
-std::string dynamic_context::var_key(const void* var) 
+dynamic_context::VarValue::~VarValue() 
 {
-  if (var == NULL)
-    return "";
+  switch (theState)
+  {
+  case VarValue::undeclared:
+  case VarValue::declared:
+    assert(theValue.item == NULL);
+    break;
+  case VarValue::item:
+    assert(theValue.item != NULL);
+    RCHelper::removeReference(theValue.item);
+    theValue.item = NULL;
+    break;
+  case VarValue::temp_seq:
+    assert(theValue.temp_seq != NULL);
+    RCHelper::removeReference(theValue.temp_seq);
+    theValue.temp_seq = NULL;
+    break;
+  default:
+    ZORBA_ASSERT(false);
+  }
 
-  const var_expr* ve = static_cast<const var_expr*>(var);
-
-  return to_string(ve->get_unique_id()) + ":" + ve->get_name()->getStringValue().str();
+  theState = VarValue::undeclared;
 }
 
 
-/*******************************************************************************
-
-********************************************************************************/
-zstring dynamic_context::expand_varname(
-    const static_context* sctx,
-    const zstring& qnameStr)
+dynamic_context::VarValue::VarValue(const VarValue& other) 
 {
-  if(!sctx)
+  switch (other.theState)
   {
-    ///actually the whole static context is missing
-    ZORBA_ERROR_PARAM( XPST0001, "entire static context", "");
-    return (const char*)NULL;
+  case VarValue::undeclared:
+  case VarValue::declared:
+    assert(other.theValue.item == NULL);
+    theValue.item = NULL;
+    break;
+  case VarValue::item:
+    assert(other.theValue.item != NULL);
+    theValue.item = other.theValue.item;
+    RCHelper::addReference(theValue.item);
+    break;
+  case VarValue::temp_seq:
+    assert(other.theValue.temp_seq != NULL);
+    theValue.temp_seq = other.theValue.temp_seq;
+    RCHelper::addReference(theValue.temp_seq);
+    break;
+  default:
+    ZORBA_ASSERT(false);
   }
 
-  rchandle<QName> qname = new QName(QueryLoc::null, qnameStr);
-  store::Item_t qnameItem;
-  sctx->expand_qname(qnameItem,
-                     zstring(),
-                     qname->get_prefix().str(),
-                     qname->get_localname().str(),
-                     QueryLoc::null);
-
-  void* var = static_cast<void*>(sctx->lookup_var(qnameItem,
-                                                  QueryLoc::null,
-                                                  MAX_ZORBA_ERROR_CODE));
-  return var_key(var);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-zstring dynamic_context::expand_varname(
-    const static_context* sctx,
-    const zstring& ns,
-    const zstring& localname)
-{
-  if(!sctx)
-  {
-    ///actually the whole static context is missing
-    ZORBA_ERROR_PARAM(XPST0001, "entire static context", "");
-    return (const char*)NULL;
-  }
-
-  store::Item_t qname;
-  GENV_ITEMFACTORY->createQName(qname, ns, zstring(), localname);
-
-  var_expr* var = sctx->lookup_var(qname, QueryLoc::null, MAX_ZORBA_ERROR_CODE);
-  return var_key(var);
+  theState = other.theState;
 }
 
 
@@ -135,16 +125,12 @@ dynamic_context::dynamic_context(dynamic_context* parent)
   if(parent == NULL)
   {
     reset_current_date_time();
-    ctxt_position = 0;
   }
   else
   {
-    current_date_time_item = parent->current_date_time_item;
+    theCurrentDateTime = parent->theCurrentDateTime;
     theTimezone = parent->theTimezone;
-    default_collection_uri = parent->default_collection_uri;
-    
-    ctxt_item = parent->ctxt_item;
-    ctxt_position = parent->ctxt_position;
+    theDefaultCollectionUri = parent->theDefaultCollectionUri;
   }
 }
 
@@ -154,20 +140,6 @@ dynamic_context::dynamic_context(dynamic_context* parent)
 ********************************************************************************/
 dynamic_context::~dynamic_context()
 {
-  ///free the pointers from ctx_value_t from keymap
-  checked_vector<hashmap<dctx_value_t>::entry>::iterator it;
-  const char* keybuff;;
-
-  for(it = keymap.begin(); it != keymap.end(); it++)
-  {
-    ///it is an entry
-    keybuff = (*it).key.c_str();
-    if(strncmp(keybuff, "var:", 4) == 0)
-    {
-      destroy_dctx_value(&(*it).val);
-    }
-  }
-
   if (theAvailableIndices)
     delete theAvailableIndices;
 }
@@ -178,13 +150,13 @@ dynamic_context::~dynamic_context()
 ********************************************************************************/
 store::Item_t dynamic_context::get_default_collection() const
 {
-  return default_collection_uri;
+  return theDefaultCollectionUri;
 }
 
 
 void dynamic_context::set_default_collection(const store::Item_t& default_collection_uri)
 {
-  this->default_collection_uri = default_collection_uri;
+  theDefaultCollectionUri = default_collection_uri;
 }
 
 
@@ -202,7 +174,7 @@ long dynamic_context::get_implicit_timezone() const
 
 void dynamic_context::set_current_date_time(const store::Item_t& aDateTimeItem)
 {
-  this->current_date_time_item = aDateTimeItem;
+  this->theCurrentDateTime = aDateTimeItem;
 }
 
 
@@ -227,7 +199,7 @@ void dynamic_context::reset_current_date_time()
 
   set_implicit_timezone(lTimeShift);//in seconds
 
-  GENV_ITEMFACTORY->createDateTime(current_date_time_item,
+  GENV_ITEMFACTORY->createDateTime(theCurrentDateTime,
                                    gmtm.tm_year + 1900,
                                    gmtm.tm_mon + 1,
                                    gmtm.tm_mday,
@@ -239,151 +211,118 @@ void dynamic_context::reset_current_date_time()
 #if WIN32
   time_t t0;
   time(&t0);
-  GENV_ITEMFACTORY->createLong(current_time_millis, t0*1000);
+  GENV_ITEMFACTORY->createLong(theCurrentTimeMillis, t0*1000);
 #else
   timeval tv;
   gettimeofday(&tv, 0);
   long long millis = tv.tv_sec;
   millis = millis * 1000 + tv.tv_usec/1000;
-  GENV_ITEMFACTORY->createLong(current_time_millis, millis);
+  GENV_ITEMFACTORY->createLong(theCurrentTimeMillis, millis);
 #endif
 }
 
 
 store::Item_t dynamic_context::get_current_date_time() const
 {
-  return current_date_time_item;
+  return theCurrentDateTime;
 }
 
 
 store::Item_t dynamic_context::get_current_time_millis() const
 {
-  return current_time_millis;
-}
-
-
-void dynamic_context::set_context_item(
-    const store::Item_t& context_item,
-    unsigned long position)
-{
-  this->ctxt_item = context_item;
-  this->ctxt_position = position;
-}
-
-
-store::Item_t dynamic_context::context_item() const
-{
-  return ctxt_item;
-}
-
-
-unsigned long dynamic_context::context_position() const
-{
-  return ctxt_position;
-}
-
-
-xqtref_t dynamic_context::context_item_type() const
-{
-  return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-}
-
-
-void dynamic_context::set_context_item_type(xqtref_t v)
-{
+  return theCurrentTimeMillis;
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void dynamic_context::add_variable(
-    const std::string& varname,
-    store::Iterator_t& var_iterator) 
+void dynamic_context::add_variable(ulong varid, store::Iterator_t& value) 
 {
-  declare_variable(varname);
-  set_variable(varname, var_iterator);
+  declare_variable(varid);
+  set_variable(varid, NULL, QueryLoc::null, value);
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void dynamic_context::add_variable(
-    const std::string& varname,
-    store::Item_t& var_item) 
+void dynamic_context::add_variable(ulong varid, store::Item_t& value) 
 {
-  declare_variable(varname);
-  set_variable(varname, var_item);
+  declare_variable(varid);
+  set_variable(varid, NULL, QueryLoc::null, value);
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void dynamic_context::declare_variable(const std::string& var_name)
+void dynamic_context::declare_variable(ulong varid)
 {
-  if (var_name.empty()) 
-    return;
+  assert(varid > 0);
 
-  dctx_value_t v;
-  string key = "var:" + var_name;
-  if (keymap.get (key, v))
-    destroy_dctx_value (&v);
+  if (varid >= theVarValues.size())
+    theVarValues.resize(varid+1);
 
-  v.type = dynamic_context::dctx_value_t::no_val;
-  v.in_progress = true;
-  v.val.var_item = NULL;
-  keymap.put(key, v);
+  if (theVarValues[varid].theState == VarValue::undeclared)
+    theVarValues[varid].theState = VarValue::declared;
 }
 
 
 /*******************************************************************************
-  var_name is expanded name localname:nsURI
-  constructed by static_context::qname_internal_key( .. )
+
 ********************************************************************************/
 void dynamic_context::set_variable(
-    const std::string& var_name,
-    store::Iterator_t& var_iterator)
+    ulong varid,
+    const store::Item_t& varname,
+    const QueryLoc& loc,
+    store::Iterator_t& valueIter)
 {
-  if (var_name.empty()) return;
+  if (varid >= theVarValues.size() ||
+      theVarValues[varid].theState == VarValue::undeclared)
+  {
+    ZORBA_ERROR_LOC_DESC_OSS(XPDY0002, loc,
+                             "Variable " << varname->getStringValue()
+                             << " has not been declared");
+  }
 
-  string key = "var:" + var_name;
-  dctx_value_t v;
-  hashmap<dctx_value_t>* map;
-  if (! context_value(key, v, &map))
-    ZORBA_ASSERT (false);
+  VarValue& var = theVarValues[varid];
 
-  var_iterator->open();
+  valueIter->open();
 
   // For now, use eager eval because the assignment expression may reference
   // the variable itself, and the current value of the variable is overwriten
   // here by this temp sequence. TODO: use lazy eval if we know the the 
   // assignment expression does not reference the variable itself.
-  store::TempSeq_t seq = GENV_STORE.createTempSeq(var_iterator, 
+  store::TempSeq_t seq = GENV_STORE.createTempSeq(valueIter, 
                                                   false, // no copy
                                                   false); // lazy eval
 
-  var_iterator->close();
+  valueIter->close();
 
   // variables can be set multiple times, so we need to make sure to remove
   // previously set temp sequences
-  if (v.type == dynamic_context::dctx_value_t::var_item_val)
+  if (var.theState == VarValue::item)
   {
-    assert(v.val.var_item != NULL);
-    RCHelper::removeReference(v.val.var_item);
+    assert(var.theValue.item != NULL);
+    RCHelper::removeReference(var.theValue.item);
   }
-  else if (v.type == dynamic_context::dctx_value_t::var_temp_seq_val)
+  else if (var.theState == VarValue::temp_seq)
   {
-    assert(v.val.var_temp_seq != NULL);
-    RCHelper::removeReference(v.val.var_temp_seq);
+    assert(var.theValue.temp_seq != NULL);
+    RCHelper::removeReference(var.theValue.temp_seq);
+  }
+  else if (var.theState == VarValue::declared)
+  {
+    assert(var.theValue.item == NULL);
+  }
+  else
+  {
+    ZORBA_ASSERT(false);
   }
 
-  v.type = dynamic_context::dctx_value_t::var_temp_seq_val;
-  v.in_progress = false;
-  v.val.var_temp_seq = seq.release();
-
-  map->put(key, v);
+  var.theState = VarValue::temp_seq;
+  var.theValue.temp_seq = seq.release();
 }
 
 
@@ -391,91 +330,94 @@ void dynamic_context::set_variable(
 
 ********************************************************************************/
 void dynamic_context::set_variable(
-    const std::string& var_name,
-    store::Item_t& var_item)
+    ulong varid,
+    const store::Item_t& varname,
+    const QueryLoc& loc,
+    store::Item_t& valueItem)
 {
-  if (var_name.empty()) 
-    return;
+  if (varid >= theVarValues.size() ||
+      theVarValues[varid].theState == VarValue::undeclared)
+  {
+    ZORBA_ERROR_LOC_DESC_OSS(XPDY0002, loc,
+                             "Variable " << varname->getStringValue()
+                             << " has not been declared");
+  }
 
-  string key = "var:" + var_name;
-  dctx_value_t v;
-  hashmap<dctx_value_t>* map;
-  if (! context_value(key, v, &map))
-    ZORBA_ASSERT (false);
+  VarValue& var = theVarValues[varid];
 
   // variables can be set multiple times, so we need to make sure to remove
   // previously set temp sequences
-  if (v.type == dynamic_context::dctx_value_t::var_item_val)
+  if (var.theState == VarValue::item)
   {
-    assert(v.val.var_item != NULL);
-    RCHelper::removeReference(v.val.var_item);
+    assert(var.theValue.item != NULL);
+    RCHelper::removeReference(var.theValue.item);
   }
-  else if (v.type == dynamic_context::dctx_value_t::var_temp_seq_val)
+  else if (var.theState == VarValue::temp_seq)
   {
-    assert(v.val.var_temp_seq != NULL);
-    RCHelper::removeReference(v.val.var_temp_seq);
+    assert(var.theValue.temp_seq != NULL);
+    RCHelper::removeReference(var.theValue.temp_seq);
+  }
+  else if (var.theState == VarValue::declared)
+  {
+    assert(var.theValue.item == NULL);
+  }
+  else 
+  {
+    ZORBA_ASSERT(false);
   }
 
-  v.type = dynamic_context::dctx_value_t::var_item_val;
-  v.in_progress = false;
-  v.val.var_item = var_item.release();
-
-  map->put(key, v);
+  var.theState = VarValue::item;
+  var.theValue.item = valueItem.release();
 }
+
 
 /*******************************************************************************
 
 ********************************************************************************/
-bool dynamic_context::get_variable(
+void dynamic_context::get_variable(
+    ulong varid,
     const store::Item_t& varname,
     const QueryLoc& loc,
-    store::Item_t& var_item,
-    store::TempSeq_t& var_seq) const
+    store::Item_t& itemValue,
+    store::TempSeq_t& seqValue) const
 {
-  var_item = NULL;
-  var_seq = NULL;
-  return lookup_var_value("var:" + varname->getStringValue().str(),
-                          loc,
-                          var_item,
-                          var_seq);
-}
+  itemValue = NULL;
+  seqValue = NULL;
 
-
-bool dynamic_context::get_variable(
-    const std::string& varname,
-    const QueryLoc& loc,
-    store::Item_t& var_item,
-    store::TempSeq_t& var_seq) const
-{
-  var_item = NULL;
-  var_seq = NULL;
-  return lookup_var_value("var:" + varname, loc, var_item, var_seq);
-}
-
-
-bool dynamic_context::lookup_var_value(
-    const std::string& key,
-    const QueryLoc& loc,
-    store::Item_t& var_item,
-    store::TempSeq_t& var_seq) const
-{
-  dctx_value_t val;
-
-  if(!keymap.get(key, val))
+  if (varid >= theVarValues.size() ||
+      theVarValues[varid].theState == VarValue::undeclared)
   {
-    if (theParent)
-      return theParent->lookup_var_value(key, loc, var_item, var_seq);
-    else
-      return false;
+    ZORBA_ERROR_LOC_DESC_OSS(XPDY0002, loc,
+                             "Variable " << varname->getStringValue()
+                             << " has not been declared");
   }
 
-  if (val.in_progress)
-    ZORBA_ERROR_LOC_DESC_OSS(XPDY0002, loc, "Variable does not have a value");
+  if (theVarValues[varid].theState == VarValue::declared)
+  {
+    ZORBA_ERROR_LOC_DESC_OSS(XPDY0002, loc,
+                             "Variable " << varname->getStringValue()
+                             << " does not have a value");
+  }
 
-  if (val.type == dynamic_context::dctx_value_t::var_item_val)
-    var_item = val.val.var_item;
+  const VarValue& var = theVarValues[varid];
+
+  if (var.theState == VarValue::item)
+    itemValue = var.theValue.item;
   else
-    var_seq = val.val.var_temp_seq;
+    seqValue = var.theValue.temp_seq;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool dynamic_context::exists_variable(ulong varid)
+{
+  if (varid >= theVarValues.size() ||
+      theVarValues[varid].theState == VarValue::undeclared)
+  {
+    return false; // variable not found
+  }
 
   return true;
 }
@@ -484,25 +426,11 @@ bool dynamic_context::lookup_var_value(
 /*******************************************************************************
 
 ********************************************************************************/
-bool dynamic_context::exists_variable(const store::Item_t& varname)
+ulong dynamic_context::get_next_var_id() const
 {
-  return exists_variable("var:" + varname->getStringValue().str());
-}
-
-
-bool dynamic_context::exists_variable(const std::string& key)
-{
-  dctx_value_t val;
-
-  if(!keymap.get(key, val))
-  {
-    if (theParent)
-      return theParent->exists_variable(key);
-    else
-      return false; // variable not found
-  }
-
-  return true;
+  // 0 is reserved as an invalide var id, and 1 is taken by the context item
+  // in the main module.
+  return (theVarValues.empty() ? 2 : theVarValues.size());
 }
 
 
@@ -514,14 +442,6 @@ void dynamic_context::destroy_dctx_value(dctx_value_t* val)
   switch (val->type)
   {
   case dynamic_context::dctx_value_t::no_val:
-    break;
-  case dynamic_context::dctx_value_t::var_item_val:
-    RCHelper::removeReference(val->val.var_item);
-    val->val.var_item = NULL;
-    break;
-  case dynamic_context::dctx_value_t::var_temp_seq_val:
-    RCHelper::removeReference(val->val.var_temp_seq);
-    val->val.var_temp_seq = NULL;
     break;
   default:
     ZORBA_ASSERT (false);
@@ -645,6 +565,7 @@ bool dynamic_context::getExternalFunctionParam (
 }
 
 
+/*
 std::vector<zstring>* dynamic_context::get_all_keymap_keys() const
 {
   std::auto_ptr<std::vector<zstring> > keys;
@@ -658,5 +579,7 @@ std::vector<zstring>* dynamic_context::get_all_keymap_keys() const
 
   return keys.release();
 }
+*/
+
 
 } /* namespace zorba */

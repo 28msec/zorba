@@ -104,10 +104,14 @@ class AndIterator;
   class NameCastIterator;
   class CastableIterator;
   class PromoteIterator;
-  class CtxVarIterator;
-  class CtxVarDeclIterator;
+
+  class CtxVarRefIterator;
+  class PrologVarIterator;
+  class LocalVarIterator;
+  class CtxVarDeclareIterator;
   class CtxVarAssignIterator;
-  class CtxVarExistsIterator;
+  class CtxVarIsSetIterator;
+
   class EvalIterator;
   class FnDateTimeConstructorIterator;
   class FnAdjustToTimeZoneIterator_1;

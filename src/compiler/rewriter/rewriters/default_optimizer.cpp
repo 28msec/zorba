@@ -20,9 +20,12 @@
 #include "compiler/rewriter/rewriters/default_optimizer.h"
 #include "compiler/rewriter/tools/expr_tools.h"
 //#include "compiler/rewriter/tools/udf_graph.h"
+#include "compiler/api/compilercb.h"
+
+#include "functions/udf.h"
 
 #include "system/properties.h"
-#include "compiler/api/compilercb.h"
+
 
 namespace zorba 
 {
@@ -176,6 +179,8 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
       driverMarkExpr.rewrite(rCtx);
     }
   }
+
+  // formatSparqlXml getSparqlResult optional matches
 
   // Index Joins
   if (Properties::instance()->inferJoins())

@@ -31,7 +31,15 @@ namespace zorba
 SERIALIZABLE_CLASS_VERSIONS(fo_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(fo_expr)
 
-DEF_EXPR_ACCEPT (fo_expr)
+void fo_expr::accept(expr_visitor& v)
+{
+  if (v.begin_visit(*this))
+  {
+    accept_children(v); 
+  }
+
+  v.end_visit(*this);
+}
 
 
 

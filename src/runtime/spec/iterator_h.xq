@@ -380,6 +380,8 @@ declare function local:includes($XMLdoc) as xs:string*
 };
 
 
+declare variable $files external;
+
 declare variable $input external;
 
 declare variable $name  as xs:string external;

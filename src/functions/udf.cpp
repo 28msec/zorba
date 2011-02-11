@@ -318,6 +318,7 @@ PlanIter_t user_function::getPlan(CompilerCB* ccb)
       argVarToRefsMap.put((uint64_t)&*theArgVars[i], &theArgVarRefs[i]);
     }
 
+    ulong nextVarId = 1;
     const store::Item* lName = getName();
     //lName may be null of inlined functions
     thePlan = zorba::codegen((lName == 0 ?
@@ -325,6 +326,7 @@ PlanIter_t user_function::getPlan(CompilerCB* ccb)
                               lName->getStringValue().c_str()),
                              &*theBodyExpr,
                              ccb,
+                             nextVarId,
                              &argVarToRefsMap);
   }
   return thePlan;

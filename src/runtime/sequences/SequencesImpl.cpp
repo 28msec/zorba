@@ -119,7 +119,7 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   const TypeManager* tm = theSctx->get_typemanager();
   const RootTypeManager& rtm = GENV_TYPESYSTEM;
 
-  long timezone = planState.theDynamicContext->get_implicit_timezone();
+  long timezone = planState.theLocalDynCtx->get_implicit_timezone();
   XQPCollator*  lCollator = 0;
   unsigned elems_in_seq = 0;
   result = NULL;

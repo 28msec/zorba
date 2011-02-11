@@ -74,6 +74,10 @@ typedef rchandle<StaticallyKnownCollection> StaticallyKnownCollection_t;
   is set explicitly from the C++/C api. If both thePrologBaseUri and
   theApplicationBaseUri are set, thePrologBaseUri hides theApplicationBaseUri.
 
+  theEncapsulatingEntityUri is currently not used, except in one special case:
+  to make the baseURI property of the file module sctx be the full pathname of
+  the query file (see translator.cpp).
+
   theEntityRetrievalUri is set by default to the full pathname of the file
   containing the query we are running (for the main module) or the url of
   the module component (for lib modules). It may also be set explicitly
@@ -83,15 +87,15 @@ struct BaseUriInfo : public ::zorba::serialization::SerializeBaseClass
 {
   zstring thePrologBaseUri;
   zstring theApplicationBaseUri;
-  zstring theEntityRetrievalUri;
   zstring theEncapsulatingEntityUri;
+  zstring theEntityRetrievalUri;
 
   zstring theBaseUri;
 
   bool    theHavePrologBaseUri;
   bool    theHaveApplicationBaseUri;
-  bool    theHaveEntityRetrievalUri;
   bool    theHaveEncapsulatingEntityUri;
+  bool    theHaveEntityRetrievalUri;
   bool    theHaveBaseUri;
 
 public:
@@ -104,8 +108,8 @@ public:
     :
     theHavePrologBaseUri(false),
     theHaveApplicationBaseUri(false),
-    theHaveEntityRetrievalUri(false),
     theHaveEncapsulatingEntityUri(false),
+    theHaveEntityRetrievalUri(false),
     theHaveBaseUri(false)
   {
   }
@@ -427,6 +431,9 @@ public:
   typedef serializable_HashMapZString<ctx_module_t> ExternalModuleMap;
 
 public:
+  static const zstring DOT_VAR_NAME;
+  static const zstring DOT_POS_VAR_NAME;
+
   static const zstring ZORBA_NS_PREFIX;
 
   //

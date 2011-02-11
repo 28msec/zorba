@@ -518,7 +518,7 @@ void FlworState::init(
  
   if (groupingSpecs != 0)
   {
-    GroupTupleCmp cmp(groupbyLoc, planState.theDynamicContext, tm, groupingSpecs);
+    GroupTupleCmp cmp(groupbyLoc, planState.theLocalDynCtx, tm, groupingSpecs);
     theGroupMap = new GroupHashMap(cmp, 1024, false);
   }
 }
@@ -708,7 +708,7 @@ bool FLWORIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
             {
               SortTupleCmp cmp(theOrderByClause->theLocation,
-                               planState.theDynamicContext,
+                               planState.theLocalDynCtx,
                                theSctx->get_typemanager(),
                                &theOrderByClause->theOrderSpecs);
 

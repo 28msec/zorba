@@ -44,7 +44,7 @@ public:
 
   ~DocIndexer();
 
-  void setup(CompilerCB* ccb, dynamic_context* dctx);
+  void setup(CompilerCB* ccb);
 
   void createIndexEntries(store::Item* docNode, store::IndexDelta& delta);
 };

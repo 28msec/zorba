@@ -75,7 +75,8 @@ static expr_t execute (
     expr_t node,
     vector<store::Item_t>& result)
 {
-  PlanIter_t plan = codegen ("const-folded expr", node, compilercb);
+  ulong nextVarId = 1;
+  PlanIter_t plan = codegen ("const-folded expr", node, compilercb, nextVarId);
   QueryLoc loc = LOC (node);
   store::Item_t item;
 
@@ -214,6 +215,7 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
     // The various fn:error functions are non-discardable. Variable assignment
     // is also non-discardable.
     if (f->getKind() == FunctionConsts::OP_VAR_ASSIGN_1 ||
+        f->getKind() == FunctionConsts::FN_TRACE_2 ||
         dynamic_cast<const fn_error*>(f) != NULL)
     {
       curNonDiscardable = ANNOTATION_TRUE_FIXED;

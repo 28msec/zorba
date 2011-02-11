@@ -41,19 +41,33 @@ public:
     
   virtual ~XQueryCompiler();
 
-  void parseOnly(std::istream& aXQuery, const zstring& aFileName);
+  void
+  parseOnly(
+      std::istream& aXQuery,
+      const zstring& aFileName);
 
-  void xqdoc(
-        std::istream& aXQuery,
-        const zstring& aFileName,
-        store::Item_t& aResult,
-        const store::Item_t& aDateTime);
+  void
+  xqdoc(
+      std::istream& aXQuery,
+      const zstring& aFileName,
+      store::Item_t& aResult,
+      const store::Item_t& aDateTime);
 
-  parsenode_t parse(std::istream& aXQuery, const zstring& aFileName);
+  parsenode_t
+  parse(
+      std::istream& aXQuery,
+      const zstring& aFileName);
 
-  PlanIter_t compile(parsenode_t ast);
+  PlanIter_t
+  compile(
+      std::istream& aXQuery,
+      const zstring& aFileName,
+      ulong& nextDynamicVarId);
 
-  PlanIter_t compile(std::istream& aXQuery, const zstring& aFileName);
+  PlanIter_t
+  compile(
+      parsenode_t ast,
+      ulong& nextDynamicVarId);
 
 protected:
   expr_t normalize(parsenode_t ast);
@@ -61,10 +75,11 @@ protected:
   expr_t optimize(expr_t lExpr);
 
 private:
-  parsenode_t createMainModule(
-        parsenode_t aLibraryModule,
-        std::istream& aXQuery,
-        const zstring& aFileName);
+  parsenode_t 
+  createMainModule(
+      parsenode_t aLibraryModule,
+      std::istream& aXQuery,
+      const zstring& aFileName);
 };
 
 

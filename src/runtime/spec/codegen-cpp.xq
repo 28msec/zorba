@@ -10,6 +10,7 @@ declare variable $mappings as xs:string external;
 declare variable $mappings_doc := "";
 declare variable $file_doc := "";
 
+declare variable $files external;
 
 declare function local:includes($doc) as xs:string
 {

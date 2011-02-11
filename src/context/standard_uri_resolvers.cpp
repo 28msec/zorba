@@ -444,7 +444,8 @@ std::istream* StandardModuleURIResolver::resolve(
 {
   std::vector<ModuleImportChecker*> lCheckers = sctx.getAllModuleImportCheckers();
   std::vector<ModuleImportChecker*>::iterator lIter = lCheckers.begin();
-  for (; lIter != lCheckers.end(); ++lIter) {
+  for (; lIter != lCheckers.end(); ++lIter) 
+  {
     if (!(*lIter)->checkModuleUri(uri.c_str()))
     {
       std::string lErrorStr("It is forbidden to import the module");

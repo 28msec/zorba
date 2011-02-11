@@ -21,6 +21,7 @@
 
 #include "compiler/api/compilercb.h"
 #include "compiler/expression/fo_expr.h"
+#include "compiler/expression/var_expr.h"
 
 #include "runtime/core/var_iterators.h"
 
@@ -29,12 +30,12 @@ namespace zorba
 {
 
 /*******************************************************************************
-  ctxvar-declare(varName)
+  ctxvar-declare(varExpr)
 
   This internal function is used to declare block-local and prolog variables
-  (including the context item, if it is declared in the prolog), except for
-  external vars without an initalizing expr. During runtime, the function
-  registers the varName into the dynamic context.
+  (including the context item, if it is declared in the prolog). During runtime,
+  the function creates and initializes in the dynamic context a binding between
+  the variable id and the variable value.
 ********************************************************************************/
 class ctx_var_declare : public function
 {
@@ -47,19 +48,38 @@ public:
 
   bool accessesDynCtx() const { return true; }
 
-  DEFAULT_NARY_CODEGEN(CtxVarDeclIterator);
+  CODEGEN_DECL();
 };
 
 
-/*******************************************************************************
-  ctxvar-assign(varName, initExpr)
+PlanIter_t ctx_var_declare::codegen(
+    CompilerCB* cb,
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    AnnotationHolder& ann) const
+{
+  const fo_expr& foExpr = static_cast<const fo_expr&>(ann);
 
-  This internal function is used to initialize prolog variables that do have an
-  initializing expr, or to assign a value to a prolog or block-local var. For
-  the context item var, the function creates, during runtime, a binding in the
-  dynamic ctx between the varName (".") and the actual context item. Otherwise,
-  the function creates a binding in the dynamic ctx between the varName and an
-  iterator plan that computes the initExpr. 
+  assert(foExpr.get_arg(0)->get_expr_kind() == var_expr_kind);
+
+  const var_expr* varExpr = static_cast<const var_expr*>(foExpr.get_arg(0));
+
+  return new CtxVarDeclareIterator(sctx,
+                                   loc,
+                                   varExpr->get_unique_id(),
+                                   varExpr->get_name());  
+}
+
+
+/*******************************************************************************
+  ctxvar-assign(varExpr, initExpr)
+
+  This internal function is used to initialize prolog variables (including the
+  context item, if it is declared in the prolog) that do have an initializing
+  expr, or to assign a value to a prolog or block-local var. During runtime,
+  the function computes the initExpr and stores the resulting value inside the
+  dynamic ctx, at the location that is identified by the variable id.
 ********************************************************************************/
 class ctx_var_assign : public function
 {
@@ -85,12 +105,22 @@ PlanIter_t ctx_var_assign::codegen(
     std::vector<PlanIter_t>& argv,
     AnnotationHolder& ann) const
 {
-  CtxVarAssignIterator* iter = new CtxVarAssignIterator(sctx, loc, argv);
+  const fo_expr& foExpr = static_cast<const fo_expr&>(ann);
 
-  const fo_expr& expr = reinterpret_cast<const fo_expr&>(ann);
+  assert(foExpr.get_arg(0)->get_expr_kind() == var_expr_kind);
 
-  xqtref_t exprType = expr.get_arg(1)->get_return_type();
+  const var_expr* varExpr = static_cast<const var_expr*>(foExpr.get_arg(0));
 
+  xqtref_t exprType = foExpr.get_arg(1)->get_return_type();
+
+  CtxVarAssignIterator* iter = 
+  new CtxVarAssignIterator(sctx,
+                           loc,
+                           varExpr->get_unique_id(),
+                           varExpr->get_name(),
+                           (varExpr->get_kind() == var_expr::local_var),
+                           argv[1]);
+  
   if (exprType->get_quantifier() == TypeConstants::QUANT_ONE)
     iter->setSingleItem();
 
@@ -99,82 +129,116 @@ PlanIter_t ctx_var_assign::codegen(
 
 
 /*******************************************************************************
-  ctxvar-exists(varName)
+  ctxvar-is-set(varExpr)
 
   This internal function is used to check if a prolog of block-local variable
-  has been declared. During runtime, it checks if an entry exists for variable
+  has been declared. During runtime, it checks if a value exists for variable
   in the dynamic ctx.
 ********************************************************************************/
-class ctx_var_exists : public function
+class ctx_var_is_set : public function
 {
 public:
-  ctx_var_exists(const signature& sig) 
+  ctx_var_is_set(const signature& sig)
     :
-    function(sig, FunctionConsts::OP_VAR_EXISTS_1)
+    function(sig, FunctionConsts::OP_VAR_IS_SET_1)
   {
   }
 
   bool accessesDynCtx() const { return true; }
 
-  DEFAULT_NARY_CODEGEN(CtxVarExistsIterator);
+  CODEGEN_DECL();
 };
+
+
+PlanIter_t ctx_var_is_set::codegen(
+    CompilerCB* cb,
+    static_context* sctx, 
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    AnnotationHolder& ann) const
+{
+  const fo_expr& foExpr = static_cast<const fo_expr&>(ann);
+
+  assert(foExpr.get_arg(0)->get_expr_kind() == var_expr_kind);
+
+  const var_expr* varExpr = static_cast<const var_expr*>(foExpr.get_arg(0));
+
+  return new CtxVarIsSetIterator(sctx,
+                                 loc,
+                                 varExpr->get_unique_id(), 
+                                 varExpr->get_name()); 
+}
 
 
 /*******************************************************************************
-  ctxvariable(varName)
+  ctxvar-get(varExpr)
 
-  This internal function is used to represent references to prolog or block-local
-  variables. During runtime, it retrieves from the dymanic context the temp seq
-  (or single item) that is associated with varName and returns, one-at-a-time,
-  the items stored in that temp seq..
-********************************************************************************/ 
-class ctx_variable : public function
+  This internal function is used to check if a prolog of block-local variable
+  has been declared. During runtime, it checks if a value exists for variable
+  in the dynamic ctx.
+********************************************************************************/
+class ctx_var_get : public function
 {
 public:
-  ctx_variable(const signature& sig) 
+  ctx_var_get(const signature& sig)
     :
-    function(sig, FunctionConsts::OP_VAR_REF_1)
+    function(sig, FunctionConsts::OP_VAR_GET_1)
   {
   }
 
   bool accessesDynCtx() const { return true; }
 
-  PlanIter_t codegen(
-        CompilerCB* cb,
-        static_context* sctx, 
-        const QueryLoc& loc,
-        std::vector<PlanIter_t>& argv,
-        AnnotationHolder& ann) const
-  {
-    return new CtxVarIterator(sctx, loc, argv[0]); 
-  }
+  CODEGEN_DECL();
 };
 
 
+PlanIter_t ctx_var_get::codegen(
+    CompilerCB* cb,
+    static_context* sctx, 
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    AnnotationHolder& ann) const
+{
+  const fo_expr& foExpr = static_cast<const fo_expr&>(ann);
+
+  assert(foExpr.get_arg(0)->get_expr_kind() == var_expr_kind);
+
+  const var_expr* varExpr = static_cast<const var_expr*>(foExpr.get_arg(0));
+
+  return new PrologVarIterator(sctx,
+                               loc,
+                               varExpr->get_unique_id(), 
+                               varExpr->get_name()); 
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void populateContext_VarDecl(static_context* sctx)
 {
   const char* zorba_op_ns = static_context::ZORBA_OP_NS.c_str();
 
-  DECL(sctx, ctx_variable,
-       (createQName(zorba_op_ns, "", "ctxvar-ref"),
-        GENV_TYPESYSTEM.STRING_TYPE_ONE,
-        GENV_TYPESYSTEM.ITEM_TYPE_STAR));
-
   DECL(sctx, ctx_var_declare,
        (createQName(zorba_op_ns, "", "ctxvar-declare"),
-        GENV_TYPESYSTEM.STRING_TYPE_ONE,
+        GENV_TYPESYSTEM.ITEM_TYPE_ONE,
         GENV_TYPESYSTEM.EMPTY_TYPE));
 
   DECL(sctx, ctx_var_assign,
        (createQName(zorba_op_ns, "", "ctxvar-assign"),
-        GENV_TYPESYSTEM.STRING_TYPE_ONE,
+        GENV_TYPESYSTEM.ITEM_TYPE_ONE,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
         GENV_TYPESYSTEM.EMPTY_TYPE));
 
-  DECL(sctx, ctx_var_exists,
-       (createQName(zorba_op_ns, "", "ctxvar-exists"),
-        GENV_TYPESYSTEM.STRING_TYPE_ONE,
+  DECL(sctx, ctx_var_is_set,
+       (createQName(zorba_op_ns, "", "ctxvar-is-set"),
+        GENV_TYPESYSTEM.ITEM_TYPE_ONE,
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+
+  DECL(sctx, ctx_var_get,
+       (createQName(zorba_op_ns, "", "ctxvar-get"),
+        GENV_TYPESYSTEM.ITEM_TYPE_ONE,
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 }
 
 

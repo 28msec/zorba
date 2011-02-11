@@ -2736,7 +2736,8 @@ EvalVarDecl :
     {
       $$ = new VarGetsDecl(LOC(@$),
                            static_cast<QName*>($1),
-                           NULL, NULL,
+                           NULL, // no type
+                           NULL, // no ftscore var
                            new VarRef(LOC(@$), static_cast<QName*>($1)),
                            VarGetsDecl::eval_var);
     }

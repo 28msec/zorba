@@ -306,7 +306,7 @@ PlanIter_t op_zorba_subsequence_int::codegen(
   const expr* lenExpr = (subseqExpr.num_args() > 2 ? subseqExpr.get_arg(2) : NULL);
 
   LetVarIterator* letVarIter;
-  CtxVarIterator* prologVarIter;
+  CtxVarRefIterator* prologVarIter;
 
   if (inputExpr->get_expr_kind() == relpath_expr_kind &&
       posExpr->get_expr_kind() == const_expr_kind && 
@@ -344,7 +344,7 @@ PlanIter_t op_zorba_subsequence_int::codegen(
       return aArgs[0];
     }
   }
-  else if ((prologVarIter = dynamic_cast<CtxVarIterator*>(aArgs[0].getp())) != NULL)
+  else if ((prologVarIter = dynamic_cast<CtxVarRefIterator*>(aArgs[0].getp())) != NULL)
   {
     const var_expr* inputVar = inputExpr->get_var();
     if (inputVar != NULL &&
@@ -387,7 +387,7 @@ PlanIter_t op_zorba_sequence_point_access::codegen(
   const expr* posExpr = subseqExpr.get_arg(1);
 
   LetVarIterator* inputVarIter;
-  CtxVarIterator* prologVarIter;
+  CtxVarRefIterator* prologVarIter;
 
   if (posExpr->get_expr_kind() == const_expr_kind)
   {
@@ -414,6 +414,11 @@ PlanIter_t op_zorba_sequence_point_access::codegen(
       if (inputVarIter->setTargetPos(pos))
         return aArgs[0];
     }
+    else if ((prologVarIter = dynamic_cast<CtxVarRefIterator*>(aArgs[0].getp())) != NULL)
+    {
+      if (prologVarIter->setTargetPos(pos))
+        return aArgs[0];
+    }
   }
   else if ((inputVarIter = dynamic_cast<LetVarIterator*>(aArgs[0].getp())) != NULL)
   {
@@ -424,16 +429,10 @@ PlanIter_t op_zorba_sequence_point_access::codegen(
         inputVarIter->setTargetPosIter(aArgs[1]))
       return aArgs[0];
   }
-  else if ((prologVarIter = dynamic_cast<CtxVarIterator*>(aArgs[0].getp())) != NULL)
+  else if ((prologVarIter = dynamic_cast<CtxVarRefIterator*>(aArgs[0].getp())) != NULL)
   {
-    const var_expr* inputVar = inputExpr->get_var();
-
-    if (inputVar != NULL &&
-        !inputVar->is_context_item() &&
-        prologVarIter->setTargetPosIter(aArgs[1]))
-    {
+    if (prologVarIter->setTargetPosIter(aArgs[1]))
       return aArgs[0];
-    }
   }
 
   return new SequencePointAccessIterator(aSctx, aLoc, aArgs);

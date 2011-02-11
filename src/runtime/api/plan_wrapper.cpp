@@ -54,7 +54,7 @@ PlanWrapper::PlanWrapper(
 
   uint32_t lStateSize = theIterator->getStateSizeOfSubtree();
 
-  thePlanState = new PlanState(aDynamicContext, lStateSize, aStackDepth);
+  thePlanState = new PlanState(aDynamicContext, aDynamicContext, lStateSize, aStackDepth);
 
   // set the compiler cb in the state
   thePlanState->theCompilerCB = aCompilerCB;

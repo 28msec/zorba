@@ -225,10 +225,11 @@
   DECLARE_VISITOR (flwor::OrderByIterator)
   DECLARE_VISITOR (flwor::WindowIterator)
   DECLARE_VISITOR (NameCastIterator)
-  DECLARE_VISITOR (CtxVarIterator)
-  DECLARE_VISITOR (CtxVarDeclIterator)
+  DECLARE_VISITOR (PrologVarIterator)
+  DECLARE_VISITOR (LocalVarIterator)
+  DECLARE_VISITOR (CtxVarDeclareIterator)
   DECLARE_VISITOR (CtxVarAssignIterator)
-  DECLARE_VISITOR (CtxVarExistsIterator)
+  DECLARE_VISITOR (CtxVarIsSetIterator)
   DECLARE_VISITOR (FnAdjustToTimeZoneIterator_1);
   DECLARE_VISITOR (FnAdjustToTimeZoneIterator_2);
   DECLARE_VISITOR (FnFormatDateTimeIterator);

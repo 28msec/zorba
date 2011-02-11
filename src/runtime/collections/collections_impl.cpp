@@ -132,7 +132,7 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
   }
   else 
   {
-    resolvedURIItem = planState.theDynamicContext->get_default_collection();
+    resolvedURIItem = planState.theGlobalDynCtx->get_default_collection();
 
     if( NULL == resolvedURIItem)
       ZORBA_ERROR_LOC_DESC(FODC0002, loc,

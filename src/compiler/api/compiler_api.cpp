@@ -104,27 +104,6 @@ void XQueryCompiler::parseOnly(
 /*******************************************************************************
 
 ********************************************************************************/
-PlanIter_t XQueryCompiler::compile(parsenode_t ast)
-{
-  expr_t lExpr = normalize(ast); // also does the translation
-  lExpr = optimize(lExpr);
-
-#if 0
-  lExpr = lExpr->clone();
-#endif
-
-  // TODO we might pass the CompilerCB here, however, we also need it in the runtime
-  // because codegeneration for udfs is triggered there
-  // then however, the compilercb can not be const in the runtime?!
-  PlanIter_t plan = codegen ("main query", lExpr, theCompilerCB);
-
-  return plan;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 void XQueryCompiler::xqdoc(
     std::istream&         aXQuery,
     const zstring&        aFileName,
@@ -134,21 +113,6 @@ void XQueryCompiler::xqdoc(
   parsenode_t lAST = parse(aXQuery, aFileName);
 
   print_parsetree_xqdoc(aResult, lAST.getp(), aFileName.c_str(), aDateTime);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-PlanIter_t XQueryCompiler::compile(std::istream& aXQuery, const zstring& aFileName)
-{
-  parsenode_t lAST = parse(aXQuery, aFileName);
-
-  if (theCompilerCB->theConfig.lib_module &&
-      dynamic_cast<LibraryModule*>(lAST.getp()) != NULL)
-    lAST = createMainModule(lAST, aXQuery, aFileName);
-
-  return compile(lAST);
 }
 
 
@@ -224,6 +188,42 @@ parsenode_t XQueryCompiler::parse(std::istream& aXQuery, const zstring& aFileNam
   }
 
   return node;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t XQueryCompiler::compile(
+    std::istream& aXQuery,
+    const zstring& aFileName,
+    ulong& nextDynamicVarId)
+{
+  parsenode_t lAST = parse(aXQuery, aFileName);
+
+  if (theCompilerCB->theConfig.lib_module &&
+      dynamic_cast<LibraryModule*>(lAST.getp()) != NULL)
+    lAST = createMainModule(lAST, aXQuery, aFileName);
+
+  return compile(lAST, nextDynamicVarId);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t XQueryCompiler::compile(parsenode_t ast, ulong& nextDynamicVarId)
+{
+  expr_t lExpr = normalize(ast); // also does the translation
+  lExpr = optimize(lExpr);
+
+#if 0
+  lExpr = lExpr->clone();
+#endif
+
+  PlanIter_t plan = codegen("main query", lExpr, theCompilerCB, nextDynamicVarId);
+
+  return plan;
 }
 
 

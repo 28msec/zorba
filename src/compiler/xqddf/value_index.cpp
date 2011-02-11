@@ -514,16 +514,20 @@ PlanIterator* IndexDecl::getBuildPlan(CompilerCB* ccb, const QueryLoc& loc)
 
   expr* buildExpr = getBuildExpr(ccb, loc);
 
-  theBuildPlan = codegen("index", buildExpr, ccb);
+  ulong nextVarId = 1;
+  theBuildPlan = codegen("index", buildExpr, ccb, nextVarId);
 
   return theBuildPlan.getp();
 }
 
 
 /*******************************************************************************
-
+  Called from ApplyIterator::nextImpl before it actually starts applying the
+  updates.
 ********************************************************************************/
-DocIndexer* IndexDecl::getDocIndexer(CompilerCB* ccb, const QueryLoc& loc)
+DocIndexer* IndexDecl::getDocIndexer(
+    CompilerCB* ccb,
+    const QueryLoc& loc)
 {
   if (theDocIndexer != NULL)
     return theDocIndexer.getp();
@@ -544,19 +548,23 @@ DocIndexer* IndexDecl::getDocIndexer(CompilerCB* ccb, const QueryLoc& loc)
 
   //
   // Clone the domain expr and replace the reference to the collection with a
-  // reference to a new temp variable that will be bound to a set of docs
+  // reference to a new prolog variable that will be bound to a set of docs
   // during the apply-updates.
   //
 
   std::stringstream ss;
-  ss << "$$idx_temp_" << this;
+  ss << "$$idx_doc_var_" << this;
   std::string varname = ss.str();
   store::Item_t qname;
   GENV_ITEMFACTORY->createQName(qname, "", "", varname.c_str());
-  var_expr_t tempVar = new var_expr(sctx, dot->get_loc(), var_expr::prolog_var, qname);
-  expr_t wrapperExpr = new wrapper_expr(sctx, dot->get_loc(), tempVar.getp());
 
-  tempVar->set_type(domainExpr->get_return_type());
+  var_expr_t docVar = new var_expr(sctx, dot->get_loc(), var_expr::prolog_var, qname);
+  docVar->set_unique_id(1);
+  ulong nextVarId = 2;
+
+  expr_t wrapperExpr = new wrapper_expr(sctx, dot->get_loc(), docVar.getp());
+
+  docVar->set_type(domainExpr->get_return_type());
 
   expr::substitution_t subst;
 
@@ -584,7 +592,7 @@ DocIndexer* IndexDecl::getDocIndexer(CompilerCB* ccb, const QueryLoc& loc)
   // Clone the key exprs, replacing their references to the 2 domain variables
   // with the clones of these variables.
   //
-  for(ulong i = 0; i < numKeys; ++i)
+  for (ulong i = 0; i < numKeys; ++i)
   {
     subst.clear();
     subst[dot] = newdot;
@@ -631,12 +639,12 @@ DocIndexer* IndexDecl::getDocIndexer(CompilerCB* ccb, const QueryLoc& loc)
   //
   // Generate the runtime plan for theDocIndexerExpr
   //
-  theDocIndexerPlan = codegen("doc indexer", flworExpr, ccb);
+  theDocIndexerPlan = codegen("doc indexer", flworExpr, ccb, nextVarId);
 
   //
   // Create theDocIndexer obj
   //
-  theDocIndexer = new DocIndexer(numKeys, theDocIndexerPlan, tempVar);
+  theDocIndexer = new DocIndexer(numKeys, theDocIndexerPlan, docVar);
 
   return theDocIndexer.getp();
 }

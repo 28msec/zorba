@@ -193,10 +193,10 @@ bool CreateInternalIndexIterator::nextImpl(
     ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
   }
 
-  if (planState.dctx()->getIndex(indexDecl->getName()))
-    planState.dctx()->unbindIndex(indexDecl->getName());
+  if (planState.theLocalDynCtx->getIndex(indexDecl->getName()))
+    planState.theLocalDynCtx->unbindIndex(indexDecl->getName());
 
-  planState.dctx()->bindIndex(indexDecl->getName(), storeIndex);
+  planState.theLocalDynCtx->bindIndex(indexDecl->getName(), storeIndex);
 
   STACK_END(state);
 }
@@ -230,7 +230,6 @@ bool CreateIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   store::Iterator_t planWrapper;
 
   CompilerCB* ccb = planState.theCompilerCB;
-  dynamic_context* dctx = planState.dctx();
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -252,7 +251,7 @@ bool CreateIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 
   buildPlan = indexDecl->getBuildPlan(ccb, loc); 
   
-  planWrapper = new PlanWrapper(buildPlan, ccb, dctx, NULL); 
+  planWrapper = new PlanWrapper(buildPlan, ccb, NULL, NULL); 
 
   createIndexSpec(indexDecl, spec);
 
@@ -346,7 +345,7 @@ bool RefreshIndexIterator::nextImpl(
   PlanIter_t buildPlan;
   store::Iterator_t planWrapper;
 
-  dynamic_context* dctx = planState.dctx();
+  dynamic_context* dctx = planState.theGlobalDynCtx;
   CompilerCB* ccb = planState.theCompilerCB;
 
   PlanIteratorState* state;
@@ -618,7 +617,7 @@ bool ProbeIndexPointValueIterator::nextImpl(
     }
 
     state->theIndex = (state->theIndexDecl->isTemp() ?
-                       planState.dctx()->getIndex(qnameItem) :
+                       planState.theLocalDynCtx->getIndex(qnameItem) :
                        GENV_STORE.getIndex(state->theQname));
 
     if (state->theIndex == NULL)
@@ -769,7 +768,7 @@ bool ProbeIndexPointGeneralIterator::nextImpl(
     }
 
     state->theIndex = (state->theIndexDecl->isTemp() ?
-                       planState.dctx()->getIndex(qnameItem) :
+                       planState.theLocalDynCtx->getIndex(qnameItem) :
                        GENV_STORE.getIndex(state->theQname));
 
     if (state->theIndex == NULL)
@@ -939,7 +938,7 @@ bool ProbeIndexRangeValueIterator::nextImpl(
     }
 
     state->theIndex = (indexDecl->isTemp() ?
-                       planState.dctx()->getIndex(qname) :
+                       planState.theLocalDynCtx->getIndex(qname) :
                        GENV_STORE.getIndex(state->theQname));
 
     if (state->theIndex == NULL)

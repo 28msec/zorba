@@ -35,17 +35,23 @@
 
 namespace zorba
 {
-SERIALIZABLE_CLASS_VERSIONS(CtxVarIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(CtxVarIterator)
+SERIALIZABLE_CLASS_VERSIONS(CtxVarRefIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(CtxVarRefIterator)
 
-SERIALIZABLE_CLASS_VERSIONS(CtxVarDeclIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(CtxVarDeclIterator)
+SERIALIZABLE_CLASS_VERSIONS(PrologVarIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(PrologVarIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(LocalVarIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(LocalVarIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(CtxVarDeclareIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(CtxVarDeclareIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(CtxVarAssignIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(CtxVarAssignIterator)
 
-SERIALIZABLE_CLASS_VERSIONS(CtxVarExistsIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(CtxVarExistsIterator)
+SERIALIZABLE_CLASS_VERSIONS(CtxVarIsSetIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(CtxVarIsSetIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(ForVarIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(ForVarIterator)
@@ -59,23 +65,28 @@ END_SERIALIZABLE_CLASS_VERSIONS(LetVarIterator)
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-bool CtxVarDeclIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+void CtxVarDeclareIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-  store::Item_t varName;
-  store::Item_t item;
-
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  CONSUME (varName, 0);
-
-  planState.theDynamicContext->declare_variable(varName->getStringValue().str());
-
-  STACK_END (state);
+  serialize_baseclass(ar, 
+                      (NoaryBaseIterator<CtxVarDeclareIterator, PlanIteratorState>*)this);
+  
+  ar & theVarId;
+  ar & theVarName;
 }
 
 
-NARY_ACCEPT(CtxVarDeclIterator);
+bool CtxVarDeclareIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  planState.theLocalDynCtx->declare_variable(theVarId);
+
+  STACK_END(state);
+}
+
+
+NOARY_ACCEPT(CtxVarDeclareIterator);
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -84,50 +95,54 @@ NARY_ACCEPT(CtxVarDeclIterator);
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
+
+void CtxVarAssignIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, 
+  (UnaryBaseIterator<CtxVarAssignIterator, PlanIteratorState>*)this);
+  
+  ar & theVarId;
+  ar & theVarName;
+  ar & theIsLocal;
+  ar & theSingleItem;
+}
+
+
 bool CtxVarAssignIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t varName;
   store::Item_t item;
-  zstring varNameStr;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  CONSUME(varName, 0);
-
-  varName->getStringValue2(varNameStr);
-
-	if (equals(varNameStr, ".", 1)) 
+  if (theSingleItem)
   {
-    if (! CONSUME (item, 1))
-			ZORBA_ERROR_LOC_DESC( XPTY0004, loc, "context item must be a single item");
-
-    planState.theDynamicContext->set_context_item(item, 0);
-
-    if (CONSUME (item, 1))
-      ZORBA_ERROR_LOC_DESC( XPTY0004, loc, "context item must be a single item");
-  }
-  else if (theSingleItem)
-  {
-    if (! CONSUME (item, 1))
+    if (! consumeNext(item, theChild, planState))
 			ZORBA_ERROR_LOC_DESC(XPTY0004, loc, "variable value must be a single item");
 
-    planState.theDynamicContext->set_variable(varNameStr.str(), item);
+    if (theIsLocal)
+      planState.theLocalDynCtx->set_variable(theVarId, theVarName, loc, item);
+    else
+      planState.theGlobalDynCtx->set_variable(theVarId, theVarName, loc, item);
 
-    if (CONSUME (item, 1))
-      ZORBA_ERROR_LOC_DESC( XPTY0004, loc, "variable value must be a single item");
+    if (consumeNext(item, theChild, planState))
+      ZORBA_ERROR_LOC_DESC(XPTY0004, loc, "variable value must be a single item");
   }
   else
   {
-    store::Iterator_t planIter = new PlanIteratorWrapper(theChildren[1], planState);
-    planState.theDynamicContext->set_variable(varNameStr.str(), planIter);
+    store::Iterator_t planIter = new PlanIteratorWrapper(theChild, planState);
+
+    if (theIsLocal)
+      planState.theLocalDynCtx->set_variable(theVarId, theVarName, loc, planIter);
+    else
+      planState.theGlobalDynCtx->set_variable(theVarId, theVarName, loc, planIter);
   }
 
   STACK_END (state);
 }
 
 
-NARY_ACCEPT(CtxVarAssignIterator);
+UNARY_ACCEPT(CtxVarAssignIterator);
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -136,33 +151,32 @@ NARY_ACCEPT(CtxVarAssignIterator);
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-bool CtxVarExistsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+
+void CtxVarIsSetIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-  store::Item_t varName;
-  store::Item_t varItem;
-  store::Iterator_t varIter;
-  dynamic_context* dctx = planState.theDynamicContext;
+  serialize_baseclass(ar, 
+  (NoaryBaseIterator<CtxVarIsSetIterator, PlanIteratorState>*)this);
+
+  ar & theVarId;
+  ar & theVarName;
+}
+
+
+bool CtxVarIsSetIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  dynamic_context* dctx = planState.theGlobalDynCtx;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  CONSUME(varName, 0);
+  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, dctx->exists_variable(theVarId)),
+             state);
 
-	if(equals(varName->getStringValue(), ".", 1)) 
-  {
-    STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, dctx->context_item() != NULL),
-               state);
-	}
-  else
-  {
-    STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, dctx->exists_variable(varName)),
-               state);
-  }
-  STACK_END (state);
+  STACK_END(state);
 }
 
 
-NARY_ACCEPT(CtxVarExistsIterator);
+NOARY_ACCEPT(CtxVarIsSetIterator);
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -192,20 +206,24 @@ void CtxVarState::reset(PlanState& planState)
 }
 
 
-CtxVarIterator::CtxVarIterator(
+CtxVarRefIterator::CtxVarRefIterator(
     static_context* sctx,
     const QueryLoc& loc, 
-    PlanIter_t& varnameIter)
+    ulong varid,
+    const store::Item_t& varName)
   :
-  UnaryBaseIterator<CtxVarIterator, CtxVarState>(sctx, loc, varnameIter),
+  NoaryBaseIterator<CtxVarRefIterator, CtxVarState>(sctx, loc),
+  theVarId(varid),
+  theVarName(varName),
   theTargetPos(0)
 {
 }
 
 
-void CtxVarIterator::serialize(::zorba::serialization::Archiver& ar)
+void CtxVarRefIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-  serialize_baseclass(ar, (UnaryBaseIterator<CtxVarIterator, CtxVarState>*)this);
+  serialize_baseclass(ar, (NoaryBaseIterator<CtxVarRefIterator, CtxVarState>*)this);
+  ar & theVarId;
   ar & theVarName;
   ar & theTargetPos;
   ar & theTargetPosIter;
@@ -213,7 +231,19 @@ void CtxVarIterator::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-bool CtxVarIterator::setTargetPos(xs_long v) 
+void PrologVarIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (CtxVarRefIterator*)this);
+}
+
+
+void LocalVarIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (CtxVarRefIterator*)this);
+}
+
+
+bool CtxVarRefIterator::setTargetPos(xs_long v) 
 {
   if (theTargetPos == 0 && theTargetPosIter == NULL)
   {
@@ -224,7 +254,7 @@ bool CtxVarIterator::setTargetPos(xs_long v)
 }
 
 
-bool CtxVarIterator::setTargetPosIter(const PlanIter_t& v) 
+bool CtxVarRefIterator::setTargetPosIter(const PlanIter_t& v) 
 {
   if (theTargetPos == 0 && theTargetPosIter == NULL)
   {
@@ -235,7 +265,7 @@ bool CtxVarIterator::setTargetPosIter(const PlanIter_t& v)
 }
 
 
-bool CtxVarIterator::setTargetLenIter(const PlanIter_t& v) 
+bool CtxVarRefIterator::setTargetLenIter(const PlanIter_t& v) 
 {
   if (theTargetPos == 0 && theTargetLenIter == NULL)
   {
@@ -246,11 +276,31 @@ bool CtxVarIterator::setTargetLenIter(const PlanIter_t& v)
 }
 
 
-void CtxVarIterator::openImpl(
+uint32_t CtxVarRefIterator::getStateSizeOfSubtree() const
+{
+  uint32_t size = 0;
+
+  if (theTargetPosIter != NULL)
+  {
+    size += theTargetPosIter->getStateSizeOfSubtree() + getStateSize();
+
+   if (theTargetLenIter != NULL)
+     size += theTargetLenIter->getStateSizeOfSubtree();
+
+    return size;
+  }
+  else
+  {
+    return size + getStateSize(); 
+  }
+}
+
+
+void CtxVarRefIterator::openImpl(
     PlanState& planState,
     uint32_t& offset)
 {
-  UnaryBaseIterator<CtxVarIterator, CtxVarState>::openImpl(planState, offset);
+  NoaryBaseIterator<CtxVarRefIterator, CtxVarState>::openImpl(planState, offset);
 
   if (theTargetPosIter != NULL)
   {
@@ -262,9 +312,9 @@ void CtxVarIterator::openImpl(
 }
 
 
-void CtxVarIterator::resetImpl(PlanState& planState) const
+void CtxVarRefIterator::resetImpl(PlanState& planState) const
 {
-  UnaryBaseIterator<CtxVarIterator, CtxVarState>::resetImpl(planState);
+  NoaryBaseIterator<CtxVarRefIterator, CtxVarState>::resetImpl(planState);
 
   if (theTargetPosIter != NULL)
   {
@@ -276,9 +326,9 @@ void CtxVarIterator::resetImpl(PlanState& planState) const
 }
 
 
-void CtxVarIterator::closeImpl(PlanState& planState)
+void CtxVarRefIterator::closeImpl(PlanState& planState)
 {
-  UnaryBaseIterator<CtxVarIterator, CtxVarState>::closeImpl(planState);
+  NoaryBaseIterator<CtxVarRefIterator, CtxVarState>::closeImpl(planState);
 
   if (theTargetPosIter != NULL)
   {
@@ -291,9 +341,8 @@ void CtxVarIterator::closeImpl(PlanState& planState)
 
 
 
-bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool PrologVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t varName;
   store::Item_t varSingleItem;
   store::Item_t posItem;
   store::Item_t lenItem;
@@ -303,18 +352,7 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   CtxVarState* state;
   DEFAULT_STACK_INIT(CtxVarState, state, planState);
 
-  consumeNext(varName, theChild, planState);
-
-  // looking for context item?
-	if(equals(varName->getStringValue(), ".", 1)) 
-  {  
-    result = planState.theDynamicContext->context_item();
-		if(result == NULL)
-			ZORBA_ERROR_LOC_PARAM(XPDY0002, loc, "context item", "");
-
-		STACK_PUSH(true, state);
-	}
-  else if (theTargetPosIter != NULL && theTargetLenIter == NULL)
+  if (theTargetPosIter != NULL && theTargetLenIter == NULL)
   {
     result = NULL;
 
@@ -325,10 +363,11 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     startPos = posItem->getLongValue();
 
-    planState.theDynamicContext->get_variable(varName,
-                                              loc,
-                                              varSingleItem,
-                                              state->theTempSeq);
+    planState.theGlobalDynCtx->get_variable(theVarId,
+                                            theVarName,
+                                            loc,
+                                            varSingleItem,
+                                            state->theTempSeq);
 
     if (varSingleItem != NULL)
     {
@@ -350,8 +389,7 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
     else
     {
-      std::string var_key = varName->getStringValue().str();
-			ZORBA_ERROR_LOC_PARAM(XPDY0002, loc, var_key.substr(var_key.find(":") + 1), "");
+			ZORBA_ERROR_LOC_PARAM(XPDY0002, loc, theVarName->getStringValue().c_str(), "");
     }
   } // if (theTargetPosIter != NULL && theTargetLenIter == NULL)
 
@@ -382,10 +420,11 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     state->theLastPos = (ulong)(startPos + len);
     state->thePos = (ulong)startPos;
 
-    planState.theDynamicContext->get_variable(varName,
-                                              loc,
-                                              varSingleItem,
-                                              state->theTempSeq);
+    planState.theGlobalDynCtx->get_variable(theVarId,
+                                            theVarName,
+                                            loc,
+                                            varSingleItem,
+                                            state->theTempSeq);
     if (varSingleItem != NULL)
     {
       if (state->thePos == 1 && state->thePos < state->theLastPos)
@@ -408,17 +447,53 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
     else
     {
-      std::string var_key = varName->getStringValue().str();
-			ZORBA_ERROR_LOC_PARAM(XPDY0002, loc, var_key.substr(var_key.find(":") + 1), "");
+			ZORBA_ERROR_LOC_PARAM(XPDY0002, loc, theVarName->getStringValue().c_str(), "");
     }
   } // if (theTargetPosIter != NULL && theTargetLenIter != NULL)
 
+  else if (theTargetPos > 0)
+  {
+    result = NULL;
+
+    startPos = theTargetPos;
+
+    planState.theGlobalDynCtx->get_variable(theVarId,
+                                            theVarName,
+                                            loc,
+                                            varSingleItem,
+                                            state->theTempSeq);
+
+    if (varSingleItem != NULL)
+    {
+      if (startPos == 1)
+      {
+        result.transfer(varSingleItem);
+        STACK_PUSH(true, state);
+      }
+    }
+    else if (state->theTempSeq != NULL)
+    {
+      if (startPos > 0)
+      {
+        state->theTempSeq->getItem((ulong)startPos, result);
+      }
+      
+      if (result)
+        STACK_PUSH(true, state);
+    }
+    else
+    {
+			ZORBA_ERROR_LOC_PARAM(XPDY0002, loc, theVarName->getStringValue().c_str(), "");
+    }
+  } // if (theTargetPosIter != NULL && theTargetLenIter == NULL)
+
   else
   {
-    planState.theDynamicContext->get_variable(varName,
-                                              loc,
-                                              result,
-                                              state->theTempSeq);
+    planState.theGlobalDynCtx->get_variable(theVarId,
+                                            theVarName,
+                                            loc,
+                                            result,
+                                            state->theTempSeq);
     if (result != NULL)
     {
       STACK_PUSH(true, state);
@@ -438,8 +513,7 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
     else
     {
-      std::string var_key = varName->getStringValue().str();
-			ZORBA_ERROR_LOC_PARAM(XPDY0002, loc, var_key.substr(var_key.find(":") + 1), "");
+			ZORBA_ERROR_LOC_PARAM(XPDY0002, loc, theVarName->getStringValue().c_str(), "");
     }
 	}
 
@@ -447,31 +521,9 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 }
 
 
-uint32_t CtxVarIterator::getStateSizeOfSubtree() const
-{
-  uint32_t size = theChild->getStateSizeOfSubtree();
-
-  if (theTargetPosIter != NULL)
-  {
-    size += theTargetPosIter->getStateSizeOfSubtree() + getStateSize();
-
-   if (theTargetLenIter != NULL)
-     size += theTargetLenIter->getStateSizeOfSubtree();
-
-    return size;
-  }
-  else
-  {
-    return size + getStateSize(); 
-  }
-}
-
-
-void CtxVarIterator::accept(PlanIterVisitor& v) const
+void PrologVarIterator::accept(PlanIterVisitor& v) const
 {
   v.beginVisit(*this);
-
-  theChild->accept(v);
 
   if (theTargetPosIter != NULL)
     theTargetPosIter->accept(v);
@@ -482,6 +534,199 @@ void CtxVarIterator::accept(PlanIterVisitor& v) const
   v.endVisit(*this);
 }
 
+
+bool LocalVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t varSingleItem;
+  store::Item_t posItem;
+  store::Item_t lenItem;
+  xs_long startPos;
+  xs_long len;
+
+  CtxVarState* state;
+  DEFAULT_STACK_INIT(CtxVarState, state, planState);
+
+  if (theTargetPosIter != NULL && theTargetLenIter == NULL)
+  {
+    result = NULL;
+
+    if (!consumeNext(posItem, theTargetPosIter, planState))
+    {
+      ZORBA_ASSERT(false);
+    }
+
+    startPos = posItem->getLongValue();
+
+    planState.theLocalDynCtx->get_variable(theVarId,
+                                           theVarName,
+                                           loc,
+                                           varSingleItem,
+                                           state->theTempSeq);
+
+    if (varSingleItem != NULL)
+    {
+      if (startPos == 1)
+      {
+        result.transfer(varSingleItem);
+        STACK_PUSH(true, state);
+      }
+    }
+    else if (state->theTempSeq != NULL)
+    {
+      if (startPos > 0)
+      {
+        state->theTempSeq->getItem((ulong)startPos, result);
+      }
+      
+      if (result)
+        STACK_PUSH(true, state);
+    }
+    else
+    {
+			ZORBA_ERROR_LOC_PARAM(XPDY0002, loc, theVarName->getStringValue().c_str(), "");
+    }
+  } // if (theTargetPosIter != NULL && theTargetLenIter == NULL)
+
+  else if (theTargetPosIter != NULL && theTargetLenIter != NULL)
+  {
+    result = NULL;
+
+    if (!consumeNext(posItem, theTargetPosIter, planState))
+    {
+      ZORBA_ASSERT(false);
+    }
+
+    startPos = posItem->getLongValue();
+
+    if (!consumeNext(lenItem, theTargetLenIter, planState))
+    {
+      ZORBA_ASSERT(false);
+    }
+
+    len = lenItem->getLongValue();
+
+    if (startPos <= 0)
+    {
+      len += startPos - 1;
+      startPos = 1;
+    }
+
+    state->theLastPos = (ulong)(startPos + len);
+    state->thePos = (ulong)startPos;
+
+    planState.theLocalDynCtx->get_variable(theVarId,
+                                           theVarName,
+                                           loc,
+                                           varSingleItem,
+                                           state->theTempSeq);
+    if (varSingleItem != NULL)
+    {
+      if (state->thePos == 1 && state->thePos < state->theLastPos)
+      {
+        result.transfer(varSingleItem);
+        STACK_PUSH(true, state);
+      }
+    }
+    else if (state->theTempSeq != NULL)
+    {
+      while (state->thePos < state->theLastPos)
+      {
+        state->theTempSeq->getItem(state->thePos++, result);
+        
+        if (result)
+          STACK_PUSH(true, state);
+        else
+          break;
+        }
+    }
+    else
+    {
+			ZORBA_ERROR_LOC_PARAM(XPDY0002, loc, theVarName->getStringValue().c_str(), "");
+    }
+  } // if (theTargetPosIter != NULL && theTargetLenIter != NULL)
+
+  if (theTargetPos > 0)
+  {
+    result = NULL;
+
+    startPos = theTargetPos;
+
+    planState.theLocalDynCtx->get_variable(theVarId,
+                                           theVarName,
+                                           loc,
+                                           varSingleItem,
+                                           state->theTempSeq);
+
+    if (varSingleItem != NULL)
+    {
+      if (startPos == 1)
+      {
+        result.transfer(varSingleItem);
+        STACK_PUSH(true, state);
+      }
+    }
+    else if (state->theTempSeq != NULL)
+    {
+      if (startPos > 0)
+      {
+        state->theTempSeq->getItem((ulong)startPos, result);
+      }
+      
+      if (result)
+        STACK_PUSH(true, state);
+    }
+    else
+    {
+			ZORBA_ERROR_LOC_PARAM(XPDY0002, loc, theVarName->getStringValue().c_str(), "");
+    }
+  } // if (theTargetPosIter != NULL && theTargetLenIter == NULL)
+
+  else
+  {
+    planState.theLocalDynCtx->get_variable(theVarId,
+                                           theVarName,
+                                           loc,
+                                           result,
+                                           state->theTempSeq);
+    if (result != NULL)
+    {
+      STACK_PUSH(true, state);
+    }
+    else if (state->theTempSeq != NULL)
+    {
+      state->theSourceIter = state->theTempSeq->getIterator();
+      state->theSourceIter->open();
+
+      while (state->theSourceIter->next(result))
+      {
+        STACK_PUSH(true, state);
+      }
+
+      state->theSourceIter->close();
+      state->theSourceIter = NULL;
+    }
+    else
+    {
+			ZORBA_ERROR_LOC_PARAM(XPDY0002, loc, theVarName->getStringValue().c_str(), "");
+    }
+	}
+
+  STACK_END (state);
+}
+
+
+void LocalVarIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  if (theTargetPosIter != NULL)
+    theTargetPosIter->accept(v);
+
+  if (theTargetLenIter != NULL)
+    theTargetLenIter->accept(v);
+
+  v.endVisit(*this);
+}
 
 
 /////////////////////////////////////////////////////////////////////////////////

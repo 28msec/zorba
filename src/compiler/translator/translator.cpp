@@ -168,9 +168,10 @@ do { if (state) ZORBA_ERROR(err); state = true; } while (0)
 #define DOT_POS_VARNAME getDotPosVarName()
 #define LAST_IDX_VARNAME getLastIdxVarName()
 
-#define DOT_VAR lookup_ctx_var(DOT_VARNAME, loc).getp()
-
-#define DOT_REF new wrapper_expr(theRootSctx, loc, DOT_VAR)
+#define DOT_REF                                             \
+  new wrapper_expr(theRootSctx,                             \
+                   loc,                                     \
+                   lookup_ctx_var(DOT_VARNAME, loc).getp())
 
 
 /*******************************************************************************
@@ -863,8 +864,6 @@ public:
   Incremented/Decremented every time a scope is pushed/popped. Used for some
   sanity checking only.
 
-  theDotVar            : var_expr for the context item var of the main module
-
   thePrologVars :
   ---------------
   thePrologVars vector contains one entry for each var V declared in the prolog
@@ -1012,10 +1011,6 @@ protected:
   ulong                                  thePrintDepth;
   int                                    theScopeDepth;
 
-  var_expr_t                             theDotVar;
-
-  xqtref_t                               ctx_item_type;
-
   std::list<global_binding>              thePrologVars;
 
   PrologGraph                            thePrologGraph;
@@ -1056,10 +1051,6 @@ protected:
 
   function                           * op_concatenate;
   function                           * op_enclosed;
-  function                           * var_decl;
-  function                           * var_set;
-  function                           * var_get;
-  function                           * var_exists;
 
   rchandle<QName>                      theDotVarName;
   rchandle<QName>                      theDotPosVarName;
@@ -1121,19 +1112,11 @@ TranslatorImpl(
   op_enclosed = GET_BUILTIN_FUNCTION(OP_ENCLOSED_1);
   assert(op_enclosed != NULL);
 
-  var_decl = GET_BUILTIN_FUNCTION(OP_VAR_DECLARE_1);
-  var_set = GET_BUILTIN_FUNCTION(OP_VAR_ASSIGN_1);
-  var_get = GET_BUILTIN_FUNCTION(OP_VAR_REF_1);
-  var_exists = GET_BUILTIN_FUNCTION(OP_VAR_EXISTS_1);
-  assert(var_decl != NULL && var_set != NULL && var_get != NULL && var_exists != NULL);
-
-  ctx_item_type = GENV_TYPESYSTEM.ITEM_TYPE_ONE;
-
   if (rootTranslator == NULL)
   {
     QueryLoc loc;
-    theDotVarName = new QName(loc, "$$dot");
-    theDotPosVarName = new QName(loc, "$$pos");
+    theDotVarName = new QName(loc, static_context::DOT_VAR_NAME);
+    theDotPosVarName = new QName(loc, static_context::DOT_POS_VAR_NAME);
     theLastIdxVarName = new QName(loc, "$$last-idx");
 
     theRootTranslator = this;
@@ -1578,11 +1561,14 @@ var_expr_t bind_var(
 
 
 /*******************************************************************************
-  Lookup variable by qname (expanded or not). Search starts from the "current"
-  ctx and moves upwards the ancestor path until the first instance (if any) of
-  the variable is found.
+  Lookup a context variable, i.e., the var (if any) representing the context 
+  item, or the context position, or the context size. The variable is identified
+  by its lexical qname (DOT_VARNAME, or DOT_POS_VARNAME, or LAST_IDX_VARNAME).
 
-  The first method raises error if var not found, the other 2 methods return NULL.
+  Search starts from the "current" sctx and moves upwards the ancestor path
+  until the first instance (if any) of the variable is found.
+
+  If var is not found, the method raises appropriate error.
 ********************************************************************************/
 var_expr_t lookup_ctx_var(const QName* qname, const QueryLoc& loc)
 {
@@ -1610,6 +1596,17 @@ var_expr_t lookup_ctx_var(const QName* qname, const QueryLoc& loc)
 }
 
 
+/*******************************************************************************
+  Lookup variable by lexical qname. Search starts from the "current" ctx and
+  moves upwards the ancestor path until the first instance (if any) of the var
+  is found.
+
+  If the lexical qname has a prefix for which no namespace binding exists, the
+  method raises error.
+
+  If var is not found, the method raises the given error, unless the given error
+  is MAX_ZORBA_ERROR_CODE, in which case it returns NULL.
+********************************************************************************/
 var_expr* lookup_var(
     const QName* qname,
     const QueryLoc& loc,
@@ -1622,6 +1619,14 @@ var_expr* lookup_var(
 }
 
 
+/*******************************************************************************
+  Lookup variable by expanded qname. Search starts from the "current" sctx and
+  moves upwards the ancestor path until the first instance (if any) of the var
+  is found.
+
+  If var is not found, the method raises the given error, unless the given error
+  is MAX_ZORBA_ERROR_CODE, in which case it returns NULL.
+********************************************************************************/
 var_expr* lookup_var(
     const store::Item* qname,
     const QueryLoc& loc,
@@ -2090,7 +2095,7 @@ void wrap_in_debugger_expr(expr_t& aExpr)
       expr_t val = new wrapper_expr(theRootSctx,
                                     lLocation.theQueryLocation,
                                     rchandle<expr>(lVe));
-      lExpr->add_var(eval_expr::eval_var(&*ve), val);
+      lExpr->add_var(ve, val);
     }
 
     aExpr = lExpr.release();
@@ -2249,72 +2254,84 @@ expr_t wrap_in_globalvar_assign(expr_t e)
 
   The corresponding expr created here (and added to stmts) are:
 
-  1. sequential(ctxvar-declare(varName), ctxvar-assign(varName, initExpr))
+  1. sequential(ctxvar-declare(varExpr), ctxvar-assign(varExpr, initExpr))
 
-  2. if (ctxvar-exists(varName))
+  2. if (ctxvar-is-set(varExpr))
      then fn:concatenate()
-     else sequential(ctxvar-declare(varName), ctxvar-assign(varName, initExpr))
+     else sequential(ctxvar-declare(varExpr), ctxvar-assign(varExpr, initExpr))
 
-     In this case, the ctxvar-exists function checks if a value has been assigned
+     In this case, the ctxvar-is-set function checks if a value has been assigned
      to the extranal value via the c++ api. If so, this value overrides the
      initializing expr in the prolog.
 
-  3. ctxvar-declare(varName)
+  3. ctxvar-declare(varExpr)
 
-  4. nothing
+  4. ctxvar-declare(varExpr)
 
-     In this case, the variable must be initialized via the c++ api, and it is
-     this intialization that will add an entry for the var in the dynamic ctx.
+     In this case, the variable must be initialized via the c++ api before the
+     query is executed, and it is this external intialization that will declare
+     the var, ie, add an entry for the var in the dynamic ctx. Nevertheless, we
+     need to generate the ctxvar-declare expr because it is when this expr is
+     encounered during codegen that an id will be assigned to the var (and 
+     stored in the var_expr). This id is needed in order to register the var
+     in the dyn ctx.
 
   If the var declaration includes a type declaration, then the following expr
   is also created and added to stmts:
 
-  treat(ctxvariable(varName), type)
+  treat(ctxvar-get(varName), type)
+
 ********************************************************************************/
 void declare_var(const global_binding& b, std::vector<expr_t>& stmts)
 {
-  var_expr_t var = b.first;
+  function* varDeclare = GET_BUILTIN_FUNCTION(OP_VAR_DECLARE_1);
+  function* varAssign = GET_BUILTIN_FUNCTION(OP_VAR_ASSIGN_1);
+  function* varIsSet = GET_BUILTIN_FUNCTION(OP_VAR_IS_SET_1);
+  function* varGet = GET_BUILTIN_FUNCTION(OP_VAR_GET_1);
+
+  var_expr_t varExpr = b.first;
+
+  const QueryLoc& loc = varExpr->get_loc();
+
+  xqtref_t varType = varExpr->get_type();
+
+  if (varType == NULL && 
+      varExpr->get_name()->getLocalName() == static_context::DOT_VAR_NAME)
+  {
+    varType = GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE;
+  }
+
+  expr_t declExpr = new fo_expr(theRootSctx, loc, varDeclare, varExpr);
+
   expr_t initExpr = b.second;
-
-  const QueryLoc& loc = var->get_loc();
-
-  expr_t qnameExpr = new const_expr(theRootSctx,
-                                    loc,
-                                    var->get_name()->getStringValue() == "." ?
-                                    "." : dynamic_context::var_key(&*var).c_str());
-
-  expr_t declExpr = new fo_expr(theRootSctx, loc, var_decl, qnameExpr->clone());
 
   if (initExpr != NULL)
   {
     if (initExpr->is_updating())
       ZORBA_ERROR_LOC(XUST0001, initExpr->get_loc());
 
-    initExpr = new fo_expr(theRootSctx, loc, var_set, qnameExpr->clone(), initExpr);
+    initExpr = new fo_expr(theRootSctx, loc, varAssign, varExpr, initExpr);
 
-    initExpr = new sequential_expr(theRootSctx, var->get_loc(), declExpr, initExpr);
+    initExpr = new sequential_expr(theRootSctx, loc, declExpr, initExpr);
 
     if (b.is_extern())
     {
-      expr_t existsExpr = new fo_expr(theRootSctx, loc, var_exists, qnameExpr->clone());
+      expr_t isSetExpr = new fo_expr(theRootSctx, loc, varIsSet, varExpr);
 
-      initExpr = new if_expr(theRootSctx, loc, existsExpr, create_seq(loc), initExpr);
+      initExpr = new if_expr(theRootSctx, loc, isSetExpr, create_seq(loc), initExpr);
     }
 
     stmts.push_back(initExpr);
   }
   else
   {
-    if (! b.is_extern())
-      stmts.push_back(declExpr);
+    stmts.push_back(declExpr);
   }
 
-  xqtref_t varType = var->get_type();
-
+  // check type for vars that are external or have an init expr
   if (varType != NULL && (b.is_extern() || b.second != NULL))
   {
-    // check type for vars that are external or have an init expr
-    expr_t getExpr = new fo_expr(theRootSctx, loc, var_get, qnameExpr->clone());
+    expr_t getExpr = new fo_expr(theRootSctx, loc, varGet, varExpr);
 
     stmts.push_back(new treat_expr(theRootSctx, loc, getExpr, varType, XPTY0004));
   }
@@ -2349,6 +2366,7 @@ void end_visit(const exprnode& v, void* /*visit_state*/)
 void* begin_visit(const Module& v)
 {
   TRACE_VISIT();
+
   return no_state;
 }
 
@@ -2426,7 +2444,15 @@ void* begin_visit(const MainModule & v)
 {
   TRACE_VISIT();
 
-  theDotVar = bind_var(loc, DOT_VARNAME, var_expr::prolog_var, ctx_item_type);
+  // Make sure that the context item is always declared for the main module
+  var_expr_t var = bind_var(loc,
+                            DOT_VARNAME,
+                            var_expr::prolog_var,
+                            GENV_TYPESYSTEM.ITEM_TYPE_ONE);
+
+  var->set_unique_id(1);
+  //global_binding b(var, NULL, true);
+  //declare_var(b, theModulesInfo->init_exprs);
 
   return no_state;
 }
@@ -3659,22 +3685,24 @@ void end_visit(const CtxItemDecl& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  expr_t ctx_item_default;
+  expr_t initExpr;
   if (v.get_expr() != NULL)
-    ctx_item_default = pop_nodestack();
+    initExpr = pop_nodestack();
 
-  if (v.get_type () != NULL)
-    ctx_item_type = pop_tstack();
+  xqtref_t type = GENV_TYPESYSTEM.ITEM_TYPE_ONE;
+  if (v.get_type() != NULL)
+    type = pop_tstack();
 
-  if (v.get_type() != NULL || v.get_expr() != NULL)
-  {
-    store::Item_t dotname;
-    GENV_ITEMFACTORY->createQName(dotname, "", "", ".");
-    var_expr_t var = create_var(loc, dotname, var_expr::prolog_var, ctx_item_type);
-    global_binding b(var, ctx_item_default, true);
+  var_expr_t var;
 
-    declare_var(b, theModulesInfo->init_exprs);
-  }
+  if (inLibraryModule())
+    var = bind_var(loc, DOT_VARNAME, var_expr::prolog_var, type);
+  else
+    var = lookup_ctx_var(DOT_VARNAME, loc);
+
+  global_binding b(var, initExpr, true);
+  
+  declare_var(b, theModulesInfo->init_exprs);
 }
 
 
@@ -4963,7 +4991,8 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
   if (theCCB->theConfig.optimize_cb != NULL)
     theCCB->theConfig.optimize_cb(body.getp(), msg.str());
 
-  PlanIter_t icIter = codegen("integrity constraint", body, theCCB);
+  ulong nextVarId = 1;
+  PlanIter_t icIter = codegen("integrity constraint", body, theCCB, nextVarId);
 
   // Update static context
   store::Item_t qnameItem;
@@ -11398,7 +11427,14 @@ void end_visit(const CatchExpr& v, void* visit_state)
 }
 
 
+/***************************************************************************//**
+  EvalExpr := ("using" "$" VarName ("," "$" VarName)*)? "eval" { Expr }
 
+  Note: each variable declaration in the "using" clause is actually parsed
+  like a LET variable declaration, ie, like $VarName := $VarName, where the
+  left-hand-side var is an eval var and the right hand side var is a var of
+  any kind, and both variables have the same name.
+********************************************************************************/
 void* begin_visit(const EvalExpr& v)
 {
   TRACE_VISIT();
@@ -11414,9 +11450,9 @@ void end_visit(const EvalExpr& v, void* visit_state)
   TRACE_VISIT_OUT();
 
   rchandle<eval_expr> result =
-    new eval_expr(theRootSctx,
-                  loc,
-                  create_cast_expr(loc, pop_nodestack(), theRTM.STRING_TYPE_ONE, true));
+  new eval_expr(theRootSctx,
+                loc,
+                create_cast_expr(loc, pop_nodestack(), theRTM.STRING_TYPE_ONE, true));
 
   rchandle<VarGetsDeclList> vgdl = v.get_vars();
 
@@ -11424,16 +11460,20 @@ void end_visit(const EvalExpr& v, void* visit_state)
   {
     var_expr_t ve = pop_nodestack().dyn_cast<var_expr> ();
     ve->set_kind(var_expr::eval_var);
-    expr_t val = pop_nodestack();
+
+    // At this point, the domain expr of an eval var is always another var.
+    // However, that other var may be later inlined, so in general, the domain
+    // expr of an eval var may be any expr.
+    expr_t valueExpr = pop_nodestack();
 
     if (ve->get_type() != NULL)
-      val = new treat_expr(theRootSctx,
-                           val->get_loc(),
-                           val,
-                           ve->get_type(),
-                           XPTY0004);
+      valueExpr = new treat_expr(theRootSctx,
+                                 valueExpr->get_loc(),
+                                 valueExpr,
+                                 ve->get_type(),
+                                 XPTY0004);
 
-    result->add_var(eval_expr::eval_var(&*ve), val);
+    result->add_var(ve, valueExpr);
 
     pop_scope();
   }
@@ -11459,11 +11499,18 @@ void end_visit(const AssignExpr& v, void* visit_state)
   if (ve->get_kind() != var_expr::local_var && ve->get_kind() != var_expr::prolog_var)
     ZORBA_ERROR_LOC(XPST0003, loc);
 
-  expr_t qname_expr = new const_expr(theRootSctx,
-                                     ve->get_loc(),
-                                     dynamic_context::var_key(&*ve));
+  xqtref_t varType = ve->get_type();
 
-  push_nodestack(new fo_expr(theRootSctx, loc, var_set, qname_expr, pop_nodestack()));
+  expr_t setExpr = pop_nodestack();
+
+  if (varType != NULL)
+    setExpr = new treat_expr(theRootSctx, loc, setExpr, varType, XPTY0004);;
+
+  push_nodestack(new fo_expr(theRootSctx,
+                             loc,
+                             GET_BUILTIN_FUNCTION(OP_VAR_ASSIGN_1),
+                             ve,
+                             setExpr));
 }
 
 

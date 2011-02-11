@@ -286,13 +286,15 @@ PLAN_ITER_VISITOR (AndIterator);
 
   PLAN_ITER_VISITOR (FnDateTimeConstructorIterator);
 
-  PLAN_ITER_VISITOR (CtxVarIterator);
+  PLAN_ITER_VISITOR (PrologVarIterator);
 
-  PLAN_ITER_VISITOR (CtxVarDeclIterator);
+  PLAN_ITER_VISITOR (LocalVarIterator);
+
+  PLAN_ITER_VISITOR (CtxVarDeclareIterator);
 
   PLAN_ITER_VISITOR (CtxVarAssignIterator);
 
-  PLAN_ITER_VISITOR (CtxVarExistsIterator);
+  PLAN_ITER_VISITOR (CtxVarIsSetIterator);
 
   PLAN_ITER_VISITOR(FnAdjustToTimeZoneIterator_1);
 

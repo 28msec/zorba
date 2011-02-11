@@ -249,6 +249,12 @@ void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
 #define NS_PRE static_context::ZORBA_NS_PREFIX
 
 const zstring
+static_context::DOT_VAR_NAME = "$$dot";
+
+const zstring
+static_context::DOT_POS_VAR_NAME = "$$pos";
+
+const zstring
 static_context::ZORBA_NS_PREFIX = "http://www.zorba-xquery.com/";
 
 const zstring
@@ -1771,7 +1777,7 @@ void static_context::bind_ns(
   Search the static-context tree, starting from "this" and moving upwards,
   looking for the 1st namespace binding for the given prefix. If no such
   binding is found, either raise an error (if the given error code is not
-  MAX_ZORBA_ERROR_CODE) or return false. Otherwise, it return true and the
+  MAX_ZORBA_ERROR_CODE) or return false. Otherwise, return true and the
   associated namespace uri.
 ********************************************************************************/
 bool static_context::lookup_ns(
@@ -1813,7 +1819,8 @@ bool static_context::lookup_ns(
 
 /***************************************************************************//**
   Convert a [prefix, localName] pair to an expanded QName item, using the given
-  default namespace if the prefix is empty.
+  default namespace if the prefix is empty. Raise error if the prefix is non-
+  empty and there is no associated namespace uri.
 ********************************************************************************/
 void static_context::expand_qname(
     store::Item_t& qname,
@@ -1906,7 +1913,12 @@ void static_context::bind_var(
 
 
 /***************************************************************************//**
+  Lookup variable by expanded qname. Search starts from the "current" sctx and
+  moves upwards the ancestor path until the first instance (if any) of the var
+  is found.
 
+  If var is not found, the method raises the given error, unless the given error
+  is MAX_ZORBA_ERROR_CODE, in which case it returns NULL.
 ********************************************************************************/
 var_expr* static_context::lookup_var(
     const store::Item* qname,

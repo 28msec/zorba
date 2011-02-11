@@ -96,7 +96,7 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       lCompiler.xqdoc(*lFile.get(),
                       lFileName,
                       result,
-                      planState.dctx()->get_current_date_time());
+                      planState.theLocalDynCtx->get_current_date_time());
     }
     catch (error::ZorbaError& e)
     {
@@ -146,7 +146,7 @@ XQDocContentIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     lCompiler.xqdoc(is,
                     lFileName,
                     result,
-                    planState.dctx()->get_current_date_time());
+                    planState.theLocalDynCtx->get_current_date_time());
   }
   catch (error::ZorbaError& e) 
   {

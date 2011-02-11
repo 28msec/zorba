@@ -104,7 +104,7 @@ bool GenericArithIterator<Operation>::nextImpl(
     if (this->consumeNext(n1, this->theChild1.getp(), planState))
     {
       status = compute(result,
-                       planState.theDynamicContext,
+                       planState.theLocalDynCtx,
                        this->theSctx->get_typemanager(),
                        this->loc,
                        n0,

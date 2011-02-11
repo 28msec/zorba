@@ -27,10 +27,11 @@ class expr;
 class CompilerCB;
 template <class T> class hash64map;
 
-PlanIter_t codegen (
+PlanIter_t codegen(
         const char* descr,
         expr* root,
         CompilerCB* ccb,
+        ulong& nextDynamicVarId,
         hash64map<std::vector<LetVarIter_t> *>* param_var_map = NULL);
 
 } /* namespace zorba */

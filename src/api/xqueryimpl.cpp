@@ -448,7 +448,7 @@ void XQueryImpl::compile(
     // below will create a child sctx and set theStaticContext to that child.
 
     // If the static context results from loadProlog, we need all the contexts
-    // that were created when compiling the query
+    // that were created when compiling the load-prolog query
     theCompilerCB->theSctxMap =
     static_cast<StaticContextImpl*>(aStaticContext.get())->theSctxMap;
 
@@ -478,7 +478,7 @@ void XQueryImpl::compile(
     theStaticContext = Unmarshaller::getInternalStaticContext(aStaticContext);
 
     // if the static context results from loadProlog, we need all the context
-    // that were created when compiling the query
+    // that were created when compiling the load-prolog query
     theCompilerCB->theSctxMap = 
     static_cast<StaticContextImpl*>(aStaticContext.get())->theSctxMap;
 
@@ -547,8 +547,12 @@ void XQueryImpl::doCompile(
     theCompilerCB->theConfig.opt_level = CompilerCB::config::O0;
   }
 
+  // 0 is reserved as an invalid var id, and 1 is taken by the context item
+  // in the main module.
+  ulong nextDynamicVarId = 2;
+
   // let's compile
-  PlanIter_t planRoot = lCompiler.compile(aQuery, theFileName);
+  PlanIter_t planRoot = lCompiler.compile(aQuery, theFileName, nextDynamicVarId);
 
   thePlanProxy = new PlanProxy(planRoot);
 }

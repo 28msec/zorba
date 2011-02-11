@@ -1009,37 +1009,19 @@ public:
 
 
 /***************************************************************************//**
-
+  theExpr : The expr that computes the query string to be evaluated by eval.
+  theVars :
+  theArgs :
 ********************************************************************************/
 class eval_expr : public expr 
 {
   friend class ExprIterator;
   friend class expr;
 
-public:
-  class eval_var : public ::zorba::serialization::SerializeBaseClass
-  {
-  public:
-    store::Item_t varname;
-    std::string var_key;
-    xqtref_t type;
-
-  public:
-    SERIALIZABLE_CLASS(eval_var)
-    SERIALIZABLE_CLASS_CONSTRUCTOR(eval_var)
-    void serialize(::zorba::serialization::Archiver& ar);
-
-    eval_var() {}
-
-    eval_var(var_expr* ve);
-
-    virtual ~eval_var() {}
-  };
-
 protected:
-  expr_t                   theExpr;
-  checked_vector<eval_var> vars;
-  std::vector<expr_t>      theArgs;
+  expr_t                     theExpr;
+  checked_vector<var_expr_t> theVars;
+  std::vector<expr_t>        theArgs;
 
 public:
   SERIALIZABLE_CLASS(eval_expr)
@@ -1059,13 +1041,13 @@ public:
 
   expr* get_arg_expr(ulong i) { return theArgs[i].getp(); }
 
-  unsigned var_count() const { return (unsigned)vars.size (); }
+  ulong var_count() const { return (ulong)theVars.size(); }
 
-  eval_var& get_var(ulong i) { return vars[i]; }
+  const var_expr* get_var(ulong i) const { return theVars[i]; }
 
-  void add_var(eval_var var, expr_t arg) 
+  void add_var(const var_expr_t& var, const expr_t& arg) 
   {
-    vars.push_back(var);
+    theVars.push_back(var);
     theArgs.push_back(arg);
   }
 
@@ -1077,6 +1059,7 @@ public:
 
   std::ostream& put(std::ostream&) const;
 };
+
 
 /***************************************************************************//**
   dummy expression for call stack traces

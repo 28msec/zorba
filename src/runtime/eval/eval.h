@@ -41,15 +41,14 @@ public:
 class EvalIterator : public NaryBaseIterator<EvalIterator, EvalIteratorState>
 { 
 protected:
-  checked_vector<store::Item_t>  varnames;
-  checked_vector<std::string>    var_keys;
-  checked_vector<xqtref_t>       vartypes;
+  checked_vector<store::Item_t>  theVarNames;
+  checked_vector<xqtref_t>       theVarTypes;
 
 public:
   SERIALIZABLE_CLASS(EvalIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(EvalIterator,
-    NaryBaseIterator<EvalIterator, EvalIteratorState>);
+  NaryBaseIterator<EvalIterator, EvalIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
@@ -57,9 +56,8 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& children,
-        checked_vector<store::Item_t> aVarNames,
-        checked_vector<std::string> aVarKeys,
-        checked_vector<xqtref_t> aVarTypes);
+        const checked_vector<store::Item_t>& aVarNames,
+        const checked_vector<xqtref_t>& aVarTypes);
 
   ~EvalIterator();
 

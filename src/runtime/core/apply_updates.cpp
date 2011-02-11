@@ -56,10 +56,10 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   rchandle<store::PUL> indexPul;
   std::vector<store::Index*> indexes;
 
-  dynamic_context* dctx = planState.dctx();
+  dynamic_context* gdctx = planState.theGlobalDynCtx;
   CompilerCB* ccb = planState.theCompilerCB;
 
-  ICCheckerImpl icChecker(theSctx, dctx);
+  ICCheckerImpl icChecker(theSctx, gdctx);
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -103,7 +103,7 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         DocIndexer* docIndexer = zorbaIndex->getDocIndexer(ccb, loc);
         assert(docIndexer != NULL);
 
-        docIndexer->setup(ccb, dctx);
+        docIndexer->setup(ccb);
 
         pul->addIndexEntryCreator(zorbaIndex->getSourceName(0), indexes[i], docIndexer);
       }
@@ -132,7 +132,7 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
           {
             PlanIter_t buildPlan = zorbaIndex->getBuildPlan(ccb, loc);
 
-            PlanWrapper_t planWrapper = new PlanWrapper(buildPlan, ccb, dctx, NULL);
+            PlanWrapper_t planWrapper = new PlanWrapper(buildPlan, ccb, NULL, NULL);
 
             indexPul->addRefreshIndex(zorbaIndex->getName(), planWrapper);
           }

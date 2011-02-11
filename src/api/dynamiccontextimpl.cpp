@@ -37,6 +37,7 @@
 #include "compiler/parser/query_loc.h"
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/api/compilercb.h"
+#include "compiler/expression/var_expr.h"
 
 #include "runtime/util/item_iterator.h"
 
@@ -84,166 +85,99 @@ DynamicContextImpl::~DynamicContextImpl()
 
 
 /****************************************************************************//**
-  Utility function: Given a single-string QName, which may be either lexical
-  (eg. "ns:foo") or a Clark-style universal name (eg., "{nsuri}:foo"), return
-  the "expanded varname" which may be used to add a variable to the underlying
-  dynamic context. In the case of a lexical QName, it will only attempt to look
-  up the namespace prefix on the main module's static context. For a universal
-  name, it will call to the other form of expand_varname().
+  Utility function: Given a single-string var name, which may be either a lexical
+  qname (eg. "ns:foo") or a Clark-style universal name (eg., "{nsuri}:foo"),
+  return the var_expr node that represents this variable within the expression
+  tree. The var_expr can be found within the static context that the variable 
+  belongs to. In the case of a lexical QName, this method will only attempt to 
+  look up the namespace prefix in the main module's static context. For a clark
+  name, it will call to the other form of get_var_expr().
 ********************************************************************************/
-void DynamicContextImpl::expand_varname(
-  const zstring& aQName,
-  zstring* aExpandedName) const
+var_expr* DynamicContextImpl::get_var_expr(const zstring& inVarName)
 {
   // First check for universal name.
-  zstring lNsuri;
-  if (xml::clark_uri(aQName, &lNsuri)) 
+  zstring nsUri;
+  if (xml::clark_uri(inVarName, &nsUri)) 
   {
     // Looks like it is a universal name; jump over to other form.
-    zstring lLocalname;
-    xml::clark_localname(aQName, &lLocalname);
-    expand_varname(lNsuri, lLocalname, aExpandedName);
-    return;
+    zstring localname;
+    xml::clark_localname(inVarName, &localname);
+    return get_var_expr(nsUri, localname);
   }
 
-  // Note that this method will throw a ZorbaError if the qname has an unknown
-  // prefix, which is fine. It apparently does not throw any exception if the
-  // variable is not known (it just returns an empty string), however, which 
-  // is a little odd and means that you'll get an unbound variable error at
-  // runtime rather than an exception at setVariable() time.
-  *aExpandedName = theCtx->expand_varname(theStaticContext, aQName);
+  ZORBA_ASSERT(theStaticContext);
+
+  // Note: expand_qname will throw an error if the qname has a non-empty
+  // prefix and there is no associated namespace uri in theStaticContext.
+  rchandle<QName> qname = new QName(QueryLoc::null, inVarName);
+  store::Item_t qnameItem;
+  theStaticContext->expand_qname(qnameItem,
+                                 zstring(),
+                                 qname->get_prefix(),
+                                 qname->get_localname(),
+                                 QueryLoc::null);
+
+  // Note: lookup_var will return NULL if the variable is not known.
+  var_expr* var = theStaticContext->lookup_var(qnameItem,
+                                               QueryLoc::null,
+                                               MAX_ZORBA_ERROR_CODE);
+
+  if (var == NULL)
+  {
+    ZORBA_ERROR_DESC_OSS(XPST0008,
+                         "Failed to set the value of variable {" 
+                         << qnameItem->getNamespace() << "}"
+                         << qnameItem->getLocalName()
+                         << " because no such variable was found");
+  }
+
+  return var;
 }
 
 
 /****************************************************************************//**
   Utility function: Given an expanded QName (that is, a separate namespace URI
-  and localname), return the "expanded varname" which may be used to add a
-  variable to the underlying dynamic context. This method will search through
-  all static contexts, including library modules, for a matching variable 
+  and localname), return the var_expr node that represents this variable within
+  the expression tree. The var_expr can be found within the static context that
+  the variable  belongs to. This method will search through all static contexts,
+  including library modules, for a matching variable 
   declaration.
 ********************************************************************************/
-void DynamicContextImpl::expand_varname(
-  const zstring& aNsuri, 
-  const zstring& aLocalname,
-  zstring* aExpandedName) const
+var_expr* DynamicContextImpl::get_var_expr(
+    const zstring& inVarUri, 
+    const zstring& inVarLocalName) const
 {
+  var_expr* var = NULL;
+
+  store::Item_t qname;
+  GENV_ITEMFACTORY->createQName(qname, inVarUri, zstring(), inVarLocalName);
+
   if (theQuery != NULL)
   {
     std::map<short, static_context_t>& lMap = theQuery->theCompilerCB->theSctxMap;
-    std::map<short, static_context_t>::const_iterator lIter;
-    for (lIter = lMap.begin(); lIter != lMap.end(); ++lIter) 
+    std::map<short, static_context_t>::const_iterator ite;
+    for (ite = lMap.begin(); ite != lMap.end(); ++ite) 
     {
-      // Note that this method will NOT throw any exception if the
-      // variable is unknown, it just returns an empty string.
-      *aExpandedName = theCtx->expand_varname(lIter->second, aNsuri, aLocalname);
-      
-      // If it DID return something, we're done
-      if (!aExpandedName->empty())
-      {
-        return;
-      }
+      var = ite->second->lookup_var(qname, QueryLoc::null, MAX_ZORBA_ERROR_CODE);
+
+      if (var)
+        break;
     }
   }
   else
   {
-    *aExpandedName = theCtx->expand_varname(theStaticContext, aNsuri, aLocalname);
+    var = theStaticContext->lookup_var(qname, QueryLoc::null, MAX_ZORBA_ERROR_CODE);
   }
 
-  // Consistent with the other form of expand_varname(), we do not
-  // throw an exception if the variable isn't found anywhere; we just
-  // return the empty varname and let later code handle it.
-}
-
-
-/****************************************************************************//**
-
-********************************************************************************/
-bool DynamicContextImpl::setVariable(
-    const String& aQName,
-    const Item& aItem)
-{
-  ZORBA_DCTX_TRY
+  if (var == NULL)
   {
-    checkNoIterators();
-
-    // unmarshall the string and the item
-    store::Item_t lItem(Unmarshaller::getInternalItem(aItem));
-    ZorbaImpl::checkItem(lItem);
-
-    const zstring& lString = Unmarshaller::getInternalString(aQName);
-    zstring lExpandedName;
-    expand_varname(lString, &lExpandedName);
-
-    // add it to the internal context
-    theCtx->add_variable(lExpandedName.str(), lItem);
-
-    return true;
+    ZORBA_ERROR_DESC_OSS(XPST0008,
+                         "Failed to set the value of variable {" 
+                         << inVarUri << "}" << inVarLocalName
+                         << " because no such variable was found");
   }
-  ZORBA_DCTX_CATCH
-  return false;
-}
 
-
-/****************************************************************************//**
-
-********************************************************************************/
-bool DynamicContextImpl::setVariable(
-    const String& aQName,
-    const Iterator_t& aIterator)
-{
-  ZORBA_DCTX_TRY
-  {
-    checkNoIterators();
-
-    Iterator* lIter = aIterator.get();
-    if (!lIter)
-      ZORBA_ERROR_DESC(API0014_INVALID_ARGUMENT, "Invalid Iterator given");
-
-    store::Iterator_t lRes = Unmarshaller::getInternalIterator(lIter);
-
-    const zstring& lString = Unmarshaller::getInternalString(aQName);
-    zstring lExpandedName;
-    expand_varname(lString, &lExpandedName);
-
-    theCtx->add_variable(lExpandedName.str(), lRes);
-
-    return true;
-  }
-  ZORBA_DCTX_CATCH
-  return false;
-}
-
-
-/****************************************************************************//**
-
-********************************************************************************/
-bool DynamicContextImpl::setVariable(
-    const String& aNamespace,
-    const String& aLocalname,
-    const Iterator_t& aIterator)
-{
-  ZORBA_DCTX_TRY
-  {
-    checkNoIterators();
-
-    Iterator* lIter = aIterator.get();
-    if (!lIter)
-      ZORBA_ERROR_DESC(API0014_INVALID_ARGUMENT, "Invalid Iterator given");
-
-    store::Iterator_t lRes = Unmarshaller::getInternalIterator(lIter);
-
-    const zstring& lNamespace = Unmarshaller::getInternalString(aNamespace);
-    const zstring& lLocalname = Unmarshaller::getInternalString(aLocalname);
-
-    zstring lExpandedName;
-    expand_varname(lNamespace, lLocalname, &lExpandedName);
-    
-    theCtx->add_variable(lExpandedName.str(), lRes);
-
-    return true;
-  }
-  ZORBA_DCTX_CATCH
-  return false;
+  return var;
 }
 
 
@@ -251,32 +185,175 @@ bool DynamicContextImpl::setVariable(
 
 ********************************************************************************/
 bool DynamicContextImpl::getVariable(
-  const String& aNamespace,
-  const String& aLocalname,
-  Item& aItem,
-  Iterator_t& aIterator) const
+  const String& inNamespace,
+  const String& inLocalname,
+  Item& outItem,
+  Iterator_t& outIterator) const
 {
   ZORBA_DCTX_TRY
   {
-    const zstring& lNamespace = Unmarshaller::getInternalString(aNamespace);
-    const zstring& lLocalname = Unmarshaller::getInternalString(aLocalname);
+    const zstring& nameSpace = Unmarshaller::getInternalString(inNamespace);
+    const zstring& localName = Unmarshaller::getInternalString(inLocalname);
 
-    zstring lExpandedName;
-    expand_varname(lNamespace, lLocalname, &lExpandedName);
+    var_expr* var = get_var_expr(nameSpace, localName);
+    ulong varId = var->get_unique_id();
 
     store::Item_t item;
     store::TempSeq_t tempseq;
-    theCtx->get_variable(lExpandedName.str(), QueryLoc::null, item, tempseq);
+
+    theCtx->get_variable(varId, var->get_name(), QueryLoc::null, item, tempseq);
+
     if (! item.isNull())
     {
-      aItem = item;
+      outItem = item;
     }
     else if (! tempseq.isNull())
     {
       store::Iterator_t seqIter = tempseq->getIterator();
       Iterator_t lIt(new StoreIteratorImpl(seqIter, theQuery->theErrorHandler));
-      aIterator = lIt;
+      outIterator = lIt;
     }
+
+    return true;
+  }
+  ZORBA_DCTX_CATCH
+  return false;
+}
+
+
+/****************************************************************************//**
+
+********************************************************************************/
+bool DynamicContextImpl::setVariable(
+    const String& inNamespace,
+    const String& inLocalname,
+    const Iterator_t& inValue)
+{
+  ZORBA_DCTX_TRY
+  {
+    checkNoIterators();
+
+    if (!inValue.get())
+      ZORBA_ERROR_DESC(API0014_INVALID_ARGUMENT, "Invalid Iterator given");
+
+    const zstring& nameSpace = Unmarshaller::getInternalString(inNamespace);
+    const zstring& localName = Unmarshaller::getInternalString(inLocalname);
+    store::Iterator_t value = Unmarshaller::getInternalIterator(inValue.get());
+
+    var_expr* var;
+
+    try
+    {
+      var = get_var_expr(nameSpace, localName);
+    }
+    catch (error::ZorbaError& e)
+    {
+      // Normally, we should be throwing an exception if the variable has not
+      // been declared inside the xquery program, but this cases many failures
+      // with the w3c XQTS.
+      if (e.theErrorCode == XPST0008)
+      {
+        return false;
+      }
+
+      throw e;
+    }
+
+    ulong varId = var->get_unique_id();
+    
+    theCtx->add_variable(varId, value);
+
+    return true;
+  }
+  ZORBA_DCTX_CATCH
+  return false;
+}
+
+
+/****************************************************************************//**
+
+********************************************************************************/
+bool DynamicContextImpl::setVariable(
+    const String& inVarName,
+    const Item& inValue)
+{
+  ZORBA_DCTX_TRY
+  {
+    checkNoIterators();
+
+    // unmarshall the string and the item
+    const zstring& varName = Unmarshaller::getInternalString(inVarName);
+    store::Item_t value(Unmarshaller::getInternalItem(inValue));
+    ZorbaImpl::checkItem(value);
+    var_expr* var;
+
+    try
+    {
+      var = get_var_expr(varName);
+    }
+    catch (error::ZorbaError& e)
+    {
+      // Normally, we should be throwing an exception if the variable has not
+      // been declared inside the xquery program, but this cases many failures
+      // with the w3c XQTS.
+      if (e.theErrorCode == XPST0008)
+      {
+        return false;
+      }
+
+      throw e;
+    }
+
+    ulong varId = var->get_unique_id();
+
+    // add it to the internal context
+    theCtx->add_variable(varId, value);
+
+    return true;
+  }
+  ZORBA_DCTX_CATCH
+  return false;
+}
+
+
+/****************************************************************************//**
+
+********************************************************************************/
+bool DynamicContextImpl::setVariable(
+    const String& inVarName,
+    const Iterator_t& inValue)
+{
+  ZORBA_DCTX_TRY
+  {
+    checkNoIterators();
+
+    if (!inValue.get())
+      ZORBA_ERROR_DESC(API0014_INVALID_ARGUMENT, "Invalid Iterator given");
+
+    const zstring& varName = Unmarshaller::getInternalString(inVarName);
+    store::Iterator_t value = Unmarshaller::getInternalIterator(inValue.get());
+    var_expr* var;
+
+    try
+    {
+      var = get_var_expr(varName);
+    }
+    catch (error::ZorbaError& e)
+    {
+      // Normally, we should be throwing an exception if the variable has not
+      // been declared inside the xquery program, but this cases many failures
+      // with the w3c XQTS.
+      if (e.theErrorCode == XPST0008)
+      {
+        return false;
+      }
+
+      throw e;
+    }
+
+    ulong varId = var->get_unique_id();
+
+    theCtx->add_variable(varId, value);
 
     return true;
   }
@@ -289,13 +366,13 @@ bool DynamicContextImpl::getVariable(
   @deprecated Use setVariableAsDocument(... LoadProperties)
 ********************************************************************************/
 bool DynamicContextImpl::setVariableAsDocument(
-    const String& aVarName,
-    const String& aDocUri,
-    validation_mode_t aMode)
+    const String& inVarName,
+    const String& inDocUri,
+    validation_mode_t inMode)
 {
-  XmlDataManager::LoadProperties lLoadProperties;
-  lLoadProperties.setValidationMode(aMode);
-  return setVariableAsDocument(aVarName, aDocUri, lLoadProperties, false);
+  XmlDataManager::LoadProperties loadProperties;
+  loadProperties.setValidationMode(inMode);
+  return setVariableAsDocument(inVarName, inDocUri, loadProperties, false);
 }
 
 
@@ -303,14 +380,14 @@ bool DynamicContextImpl::setVariableAsDocument(
   @deprecated Use setVariableAsDocument(... LoadProperties)
 ********************************************************************************/
 bool DynamicContextImpl::setVariableAsDocument(
-    const String& aVarName,
-    const String& aDocUri,
-    std::auto_ptr<std::istream> aStream,
-    validation_mode_t aMode)
+    const String& inVarName,
+    const String& inDocUri,
+    std::auto_ptr<std::istream> inStream,
+    validation_mode_t inMode)
 {
-  XmlDataManager::LoadProperties lLoadProperties;
-  lLoadProperties.setValidationMode(aMode);
-  return setVariableAsDocument(aVarName, aDocUri, aStream, lLoadProperties, false);
+  XmlDataManager::LoadProperties loadProperties;
+  loadProperties.setValidationMode(inMode);
+  return setVariableAsDocument(inVarName, inDocUri, inStream, loadProperties, false);
 }
 
 
@@ -318,10 +395,10 @@ bool DynamicContextImpl::setVariableAsDocument(
 
 ********************************************************************************/
 bool DynamicContextImpl::setVariableAsDocument(
-    const String& aVarName,
-    const String& aDocUri,
-    const XmlDataManager::LoadProperties& aLoadProperties,
-    bool replaceDoc)
+    const String& inVarName,
+    const String& inDocUri,
+    const XmlDataManager::LoadProperties& inLoadProperties,
+    bool inReplaceDoc)
 {
   ZORBA_DCTX_TRY
   {
@@ -331,21 +408,21 @@ bool DynamicContextImpl::setVariableAsDocument(
     InternalDocumentURIResolver* uriResolver;
     uriResolver = theStaticContext->get_document_uri_resolver();
 
-    const zstring& docUri = Unmarshaller::getInternalString(aDocUri);
+    const zstring& docUri = Unmarshaller::getInternalString(inDocUri);
 
     zstring tmpDocUri(docUri);
     store::Item_t docUriItem;
     factory->createAnyURI(docUriItem, tmpDocUri);
 
     store::Item_t docItem;
-    docItem = uriResolver->resolve(docUriItem, theStaticContext, true, replaceDoc);
+    docItem = uriResolver->resolve(docUriItem, theStaticContext, true, inReplaceDoc);
 
     if(docItem.isNull())
       return false;
 
-    validateIfNecesary(docItem, docUri, docUriItem, aLoadProperties);
+    validateIfNecesary(docItem, docUri, docUriItem, inLoadProperties);
 
-    return setVariable(aVarName, Item(docItem));
+    return setVariable(inVarName, Item(docItem));
   }
   ZORBA_DCTX_CATCH
   return false;
@@ -356,33 +433,33 @@ bool DynamicContextImpl::setVariableAsDocument(
 
 ********************************************************************************/
 bool DynamicContextImpl::setVariableAsDocument(
-    const String& aVarName,
-    const String& aDocUri,
-    std::auto_ptr<std::istream> aStream,
-    const XmlDataManager::LoadProperties& aLoadProperties,
-    bool replaceDoc)
+    const String& inVarName,
+    const String& inDocUri,
+    std::auto_ptr<std::istream> inStream,
+    const XmlDataManager::LoadProperties& inLoadProperties,
+    bool inReplaceDoc)
 {
   ZORBA_DCTX_TRY
   {
     checkNoIterators();
 
-    zstring const &docUri = Unmarshaller::getInternalString(aDocUri);
+    const zstring& docUri = Unmarshaller::getInternalString(inDocUri);
     zstring baseUri = theStaticContext->get_base_uri();
 
-    if (replaceDoc)
+    if (inReplaceDoc)
       GENV_STORE.deleteDocument(docUri);
 
-    store::LoadProperties lLoadProperties;
-    lLoadProperties.setEnableDtd(aLoadProperties.getEnableDtd());
+    store::LoadProperties storeLoadProperties;
+    storeLoadProperties.setEnableDtd(inLoadProperties.getEnableDtd());
 
     store::Item_t docItem = GENV_STORE.loadDocument(baseUri,
                                                     docUri,
-                                                    *(aStream.get()),
-                                                    lLoadProperties);
+                                                    *(inStream.get()),
+                                                    storeLoadProperties);
 
-    validateIfNecesary(docItem, docUri, baseUri, aStream, aLoadProperties);
+    validateIfNecesary(docItem, docUri, baseUri, inStream, inLoadProperties);
 
-    setVariable(aVarName, Item(docItem));
+    setVariable(inVarName, Item(docItem));
     return true;
   }
   ZORBA_DCTX_CATCH
@@ -393,21 +470,10 @@ bool DynamicContextImpl::setVariableAsDocument(
 /****************************************************************************//**
 
 ********************************************************************************/
-bool DynamicContextImpl::setContextItem(const Item& aItem)
+bool DynamicContextImpl::setContextItem(const Item& inValue)
 {
-  ZORBA_DCTX_TRY
-  {
-    checkNoIterators();
-
-    store::Item_t lItem(Unmarshaller::getInternalItem(aItem));
-    ZorbaImpl::checkItem(lItem);
-
-    theCtx->set_context_item(lItem, 0);
-
-    return true;
-  }
-  ZORBA_DCTX_CATCH
-  return false;
+  String varName = Unmarshaller::newString(static_context::DOT_VAR_NAME);
+  return setVariable(varName, inValue);
 }
 
 
@@ -415,21 +481,21 @@ bool DynamicContextImpl::setContextItem(const Item& aItem)
   @deprecated Use setContextItemAsDocument(... LoadProperties)
 ********************************************************************************/
 bool DynamicContextImpl::setContextItemAsDocument(
-    const String& aDocURI,
-    std::auto_ptr<std::istream> aInStream)
+    const String& inDocURI,
+    std::auto_ptr<std::istream> inStream)
 {
-  XmlDataManager::LoadProperties aLoadProperties;
-  return setContextItemAsDocument(aDocURI, aInStream, aLoadProperties, false);
+  XmlDataManager::LoadProperties loadProperties;
+  return setContextItemAsDocument(inDocURI, inStream, loadProperties, false);
 }
 
 
 /****************************************************************************//**
   @deprecated Use setContextItemAsDocument(... LoadProperties)
 ********************************************************************************/
-bool DynamicContextImpl::setContextItemAsDocument(const String& aDocURI)
+bool DynamicContextImpl::setContextItemAsDocument(const String& inDocURI)
 {
-  XmlDataManager::LoadProperties aLoadProperties;
-  return setContextItemAsDocument(aDocURI, aLoadProperties, false);
+  XmlDataManager::LoadProperties loadProperties;
+  return setContextItemAsDocument(inDocURI, loadProperties, false);
 }
 
 
@@ -437,36 +503,24 @@ bool DynamicContextImpl::setContextItemAsDocument(const String& aDocURI)
 
 ********************************************************************************/
 bool DynamicContextImpl::setContextItemAsDocument(
-    const String& aDocURI,
-    std::auto_ptr<std::istream> aInStream,
-    const XmlDataManager::LoadProperties& aLoadProperties,
-    bool aReplaceDoc)
+    const String& inDocURI,
+    std::auto_ptr<std::istream> inStream,
+    const XmlDataManager::LoadProperties& inLoadProperties,
+    bool inReplaceDoc)
 {
+  String varName;
+
   ZORBA_DCTX_TRY
   {
-    checkNoIterators();
-
-    const zstring& docUri = Unmarshaller::getInternalString(aDocURI);
-    zstring const &baseUri = theStaticContext->get_base_uri();
-
-    store::LoadProperties lLoadProperties;
-    lLoadProperties.setEnableDtd(aLoadProperties.getEnableDtd());
-
-    if (aReplaceDoc)
-      GENV_STORE.deleteDocument(docUri);
-
-    store::Item_t docItem = GENV_STORE.loadDocument(baseUri,
-                                                    docUri,
-                                                    *(aInStream.get()),
-                                                    lLoadProperties);
-
-    // todo cezar should enable validation even for context items
-    validateIfNecesary(docItem, docUri, baseUri, aInStream, aLoadProperties);
-    setContextItem(Item(docItem));
-    return true;
+    varName = Unmarshaller::newString(static_context::DOT_VAR_NAME);
   }
   ZORBA_DCTX_CATCH
-  return false;
+
+  return setVariableAsDocument(varName,
+                               inDocURI,
+                               inStream,
+                               inLoadProperties,
+                               inReplaceDoc);
 }
 
 
@@ -474,56 +528,41 @@ bool DynamicContextImpl::setContextItemAsDocument(
 
 ********************************************************************************/
 bool DynamicContextImpl::setContextItemAsDocument(
-    const String& aDocURI,
-    const XmlDataManager::LoadProperties& aLoadProperties,
-    bool aReplaceDoc)
+    const String& inDocURI,
+    const XmlDataManager::LoadProperties& inLoadProperties,
+    bool inReplaceDoc)
 {
+  String varName;
+
   ZORBA_DCTX_TRY
   {
-    checkNoIterators();
-
-    zstring docUri = Unmarshaller::getInternalString(aDocURI);
-
-    InternalDocumentURIResolver* uri_resolver;
-    uri_resolver = theStaticContext->get_document_uri_resolver();
-
-    store::Item_t uriItem;
-    zstring tmpDocUri(docUri);
-    GENV_ITEMFACTORY->createAnyURI(uriItem, tmpDocUri);
-
-    store::Item_t docItem;
-    docItem = uri_resolver->resolve(uriItem, theStaticContext, true, aReplaceDoc);
-
-    if(docItem.isNull())
-      return false;
-
-    // todo cezar should enable validation even for context items
-    validateIfNecesary(docItem, docUri, uriItem, aLoadProperties);
-
-    return setContextItem(Item(docItem));
+    varName = Unmarshaller::newString(static_context::DOT_VAR_NAME);
   }
   ZORBA_DCTX_CATCH
-  return false;
+
+  return setVariableAsDocument(varName,
+                               inDocURI,
+                               inLoadProperties,
+                               inReplaceDoc);
 }
 
 
 /****************************************************************************//**
 
 ********************************************************************************/
-bool DynamicContextImpl::getContextItem(Item& aItem) const
+bool DynamicContextImpl::getContextItem(Item& outValue) const
 {
+  String varName;
+
   ZORBA_DCTX_TRY
   {
-    checkNoIterators();
-
-    store::Item_t lItem = theCtx->context_item();
-    if (! lItem.isNull()) {
-      aItem = lItem;
-      return true;
-    }
+    varName = Unmarshaller::newString(static_context::DOT_VAR_NAME);
   }
   ZORBA_DCTX_CATCH
-  return false;
+
+  Iterator_t dummy;
+
+  return getVariable("", varName, outValue, dummy);
 }
 
 
@@ -657,8 +696,8 @@ Item DynamicContextImpl::getDefaultCollection() const
 
 ********************************************************************************/
 bool DynamicContextImpl::addExternalFunctionParam(
-  const String& aName,
-  void* aValue)
+    const String& aName,
+    void* aValue)
 {
   ZORBA_DCTX_TRY
   {
@@ -674,8 +713,8 @@ bool DynamicContextImpl::addExternalFunctionParam(
 
 ********************************************************************************/
 bool DynamicContextImpl::getExternalFunctionParam(
-  const String& aName,
-  void*& aValue) const
+    const String& aName,
+    void*& aValue) const
 {
   ZORBA_DCTX_TRY
   {

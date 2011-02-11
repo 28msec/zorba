@@ -80,131 +80,133 @@ protected:
 
 public:
   virtual bool
-  setVariable(
-        const String& aQName,
-        const Item& aItem );
-
-  /** @deprecated Use setVariableAsDocument(... LoadProperties) */
-  virtual bool
-  setVariableAsDocument(
-        const String& aQName,
-        const String& xml_uri,
-        validation_mode_t mode);
-
-  /** @deprecated Use setVariableAsDocument(... LoadProperties) */
-  virtual bool
-  setVariableAsDocument(
-        const String& aQName,
-        const String& aDocURI,
-        std::auto_ptr<std::istream> aStream,
-        validation_mode_t mode);
-
-  virtual bool
-  setVariableAsDocument(
-        const String& aQName,
-        const String& xml_uri,
-        const XmlDataManager::LoadProperties& aLoadProperties,
-        bool aReplaceDoc);
-
-  virtual bool
-  setVariableAsDocument(
-        const String& aQName,
-        const String& aDocURI,
-        std::auto_ptr<std::istream> aStream,
-        const XmlDataManager::LoadProperties& aLoadProperties,
-        bool aReplaceDoc);
-
-  virtual bool
-  setVariable(
-        const String& aQName,
-        const Iterator_t& aIterator);
-
-  virtual bool
-  setVariable(
-    const String& aNamespace,
-    const String& aLocalname,
-    const Iterator_t& aIterator);
-
-  virtual bool
   getVariable(
-    const String& aNamespace,
-    const String& aLocalname,
-    Item& aItem,
-    Iterator_t& aIterator) const;
+    const String& inNamespace,
+    const String& inLocalname,
+    Item& outItem,
+    Iterator_t& outIterator) const;
 
   virtual bool
-  setContextItem(const Item& aItem);
+  setVariable(
+        const String& inVarName,
+        const Item& inValue);
+
+  virtual bool
+  setVariable(
+        const String& inVarName,
+        const Iterator_t& inValue);
+
+  virtual bool
+  setVariable(
+    const String& inNamespace,
+    const String& inLocalname,
+    const Iterator_t& inValue);
+
+  /** @deprecated Use setVariableAsDocument(... LoadProperties) */
+  virtual bool
+  setVariableAsDocument(
+        const String& inVarName,
+        const String& inDocUri,
+        validation_mode_t inMode);
+
+  /** @deprecated Use setVariableAsDocument(... LoadProperties) */
+  virtual bool
+  setVariableAsDocument(
+        const String& inVarName,
+        const String& inDocURI,
+        std::auto_ptr<std::istream> inStream,
+        validation_mode_t inMode);
+
+  virtual bool
+  setVariableAsDocument(
+        const String& inVarName,
+        const String& inDocUri,
+        const XmlDataManager::LoadProperties& inLoadProperties,
+        bool inReplaceDoc);
+
+  virtual bool
+  setVariableAsDocument(
+        const String& inVarName,
+        const String& inDocURI,
+        std::auto_ptr<std::istream> inStream,
+        const XmlDataManager::LoadProperties& inLoadProperties,
+        bool inReplaceDoc);
+
+  virtual bool
+  setContextItem(const Item& inValue);
 
   /** @deprecated Use setVariableAsDocument(... LoadProperties) */
   virtual bool
   setContextItemAsDocument(
-        const String& aDocURI,
-        std::auto_ptr<std::istream> aInStream);
+        const String& inDocURI,
+        std::auto_ptr<std::istream> inStream);
 
   /** @deprecated Use setVariableAsDocument(... LoadProperties) */
   virtual bool
-  setContextItemAsDocument(const String& aDocURI);
+  setContextItemAsDocument(const String& inDocURI);
 
   virtual bool
   setContextItemAsDocument(
-        const String& aDocURI,
-        std::auto_ptr<std::istream> aInStream,
-        const XmlDataManager::LoadProperties& aLoadProperties,
-        bool aReplaceDoc);
+        const String& inDocURI,
+        std::auto_ptr<std::istream> inStream,
+        const XmlDataManager::LoadProperties& inLoadProperties,
+        bool inReplaceDoc);
 
   virtual bool
   setContextItemAsDocument(
-        const String& aDocURI,
-        const XmlDataManager::LoadProperties& aLoadProperties,
-        bool aReplaceDoc);
+        const String& inDocURI,
+        const XmlDataManager::LoadProperties& inLoadProperties,
+        bool inReplaceDoc);
 
   virtual bool
-  getContextItem(Item& aItem) const;
+  getContextItem(Item& outValue) const;
 
   virtual bool
-  setCurrentDateTime( const Item& aDateTimeItem );
+  setCurrentDateTime(const Item& aDateTimeItem);
 
   virtual Item
   getCurrentDateTime() const;
 
   // In minutes
   virtual bool
-  setImplicitTimezone( int aTimezoneMinutes );
+  setImplicitTimezone(int aTimezoneMinutes);
 
   // In minutes
   virtual int
   getImplicitTimezone() const;
 
   virtual bool
-  setDefaultCollection( const Item& aCollectionUri );
+  setDefaultCollection(const Item& aCollectionUri);
 
   virtual Item
   getDefaultCollection() const;
 
   virtual bool
-  addExternalFunctionParam( const String& aName, void* aValue );
+  addExternalFunctionParam(const String& aName, void* aValue);
 
   virtual bool
-  getExternalFunctionParam ( const String& aName, void*& ) const;
+  getExternalFunctionParam(const String& aName, void*&) const;
 
 protected:
   void checkNoIterators() const;
 
-  void validateIfNecesary(store::Item_t& docItem,
-                          const zstring& docUri,
-                          store::Item_t& docUriItem,
-                          const XmlDataManager::LoadProperties& aLoadProperties);
+  void validateIfNecesary(
+      store::Item_t& docItem,
+      const zstring& docUri,
+      store::Item_t& docUriItem,
+      const XmlDataManager::LoadProperties& aLoadProperties);
 
-  void validateIfNecesary(store::Item_t& docItem,
-                          const zstring& docUri,
-                          const zstring& baseUri,
-                          std::auto_ptr<std::istream> aInStream,
-                          const XmlDataManager::LoadProperties& aLoadProperties);
+  void validateIfNecesary(
+      store::Item_t& docItem,
+      const zstring& docUri,
+      const zstring& baseUri,
+      std::auto_ptr<std::istream> aInStream,
+      const XmlDataManager::LoadProperties& aLoadProperties);
 
 private:
-  void expand_varname(const zstring& aQName, zstring* aExpandedName) const;
-  void expand_varname(const zstring& aNsuri, const zstring& aLocalname,
-    zstring* aExpandedName) const;
+  var_expr* get_var_expr(const zstring& inVarName);
+
+  var_expr* get_var_expr(const zstring& inVarUri, const zstring& inVarLocalName) const;
 };
 
 } /* namespace zorba */

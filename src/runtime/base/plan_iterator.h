@@ -108,11 +108,6 @@ class XQueryImpl;
   theBlock        : Pointer to the memory block that stores the local state of
                     each individual plan iterator.
   theBlockSize    : Size (in bytes) of the block.
-  theRuntimeCB    : A runtime control block which contains all the information
-                    required during query processing. Specifically, it contains
-                    the dynamic context. Additionally, at a later time, it might
-                    contain some kind of memory manager or other infrastructure
-                    that is needed.
   theHasToQuit    : Boolean that indicates if the query execution has to quit.
                     Checking this value is done in each consumeNext call,
                     i.e. between every two iterator next calls. This value is
@@ -135,7 +130,9 @@ public:
 
   XQueryImpl              * theQuery;
 
-  dynamic_context         * theDynamicContext;
+  dynamic_context         * theGlobalDynCtx;
+
+  dynamic_context         * theLocalDynCtx;
 
   std::stack<store::Item*>  theNodeConstuctionPath;
 
@@ -144,13 +141,15 @@ public:
   bool                      theHasToQuit;
 
 public:
-  PlanState(dynamic_context* dctx, uint32_t blockSize, uint32_t aStackDepth = 0);
+  PlanState(
+      dynamic_context* globalDctx,
+      dynamic_context* localDctx,
+      uint32_t blockSize,
+      uint32_t aStackDepth = 0);
 
   ~PlanState();
 
   void checkDepth(const QueryLoc& loc);
-
-  dynamic_context* dctx() { return theDynamicContext; }
 };
 
 

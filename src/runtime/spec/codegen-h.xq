@@ -328,6 +328,9 @@ declare variable $file as xs:string external;
 declare variable $doc := "";
 
 
+declare variable $files external;
+
+
 let $pieces as xs:string* := tokenize($file,'/')
 let $name := substring($pieces[count($pieces)],1,string-length($pieces[count($pieces)])-4)
 return

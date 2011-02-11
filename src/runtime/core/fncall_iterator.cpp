@@ -80,8 +80,8 @@ UDFunctionCallIteratorState::~UDFunctionCallIteratorState()
 
   if (thePlanState != NULL)
   {
-    if (thePlanState->theDynamicContext)
-      delete thePlanState->theDynamicContext;
+    if (thePlanState->theLocalDynCtx)
+      delete thePlanState->theLocalDynCtx;
 
     delete thePlanState;
     thePlanState = NULL;
@@ -101,9 +101,13 @@ void UDFunctionCallIteratorState::open(PlanState& planState, user_function* udf)
   // Must allocate new dctx, as child of the "current" dctx, because the udf
   // may be a recursive udf with local block vars, all of which the the same
   // dynamic-context id, but they are distinct vars.
-  dynamic_context* dctx = new dynamic_context(planState.theDynamicContext);
+  dynamic_context* localDCtx = new dynamic_context(planState.theGlobalDynCtx);
 
-  thePlanState = new PlanState(dctx, thePlanStateSize, planState.theStackDepth + 1);
+  thePlanState = new PlanState(planState.theGlobalDynCtx,
+                               localDCtx, 
+                               thePlanStateSize,
+                               planState.theStackDepth + 1);
+
   thePlanState->theCompilerCB = planState.theCompilerCB;
   thePlanState->theDebuggerCommons = planState.theDebuggerCommons;
   thePlanState->theQuery = planState.theQuery;
@@ -591,7 +595,7 @@ bool StatelessExtFunctionCallIterator::nextImpl(
                                         planState.theQuery->getRegisteredErrorHandlerNoSync()));
 
       DynamicContextImpl theDctxWrapper(NULL,
-                                        planState.theDynamicContext,
+                                        planState.theGlobalDynCtx,
                                         theModuleSctx);
 
       state->theResult = lNonePureFct->evaluate(state->m_extArgs,

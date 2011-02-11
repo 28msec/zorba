@@ -28,7 +28,6 @@
     </zorba:state>
 
     <zorba:member type="checked_vector&lt;store::Item_t&gt;" name="varnames" brief=""/>
-    <zorba:member type="checked_vector&lt;std::string&gt;" name="var_keys" brief=""/>
     <zorba:member type="checked_vector&lt;xqtref_t&gt;" name="vartypes" brief=""/>
     <zorba:member type="std::vector&lt;ZorbaDebugIterator*&gt;" name="theDebuggerChildren" brief=""/>
     <zorba:member type="ZorbaDebugIterator*" name="theDebuggerParent" brief=""/>
@@ -61,7 +60,6 @@
 
     <zorba:method return="void" name="setVariables">
       <zorba:param type="checked_vector&lt;store::Item_t&gt;" name="aVarNames"/>
-      <zorba:param type="checked_vector&lt;std::string&gt;" name="aVarKeys"/>
       <zorba:param type="checked_vector&lt;xqtref_t&gt;" name="aVarTypes"/>
     </zorba:method>
   </zorba:iterator>

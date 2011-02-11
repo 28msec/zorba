@@ -46,16 +46,21 @@ END_SERIALIZABLE_CLASS_VERSIONS(PlanIterator)
 /*******************************************************************************
   class PlanState
 ********************************************************************************/
-PlanState::PlanState(dynamic_context* dctx, uint32_t blockSize, uint32_t aStackDepth)
+PlanState::PlanState(
+    dynamic_context* globalDctx,
+    dynamic_context* localDctx,
+    uint32_t blockSize,
+    uint32_t aStackDepth)
   :
   theBlockSize(blockSize),
   theStackDepth(aStackDepth),
   theCompilerCB(0),
   theQuery(0),
-  theDynamicContext(dctx),
+  theGlobalDynCtx(globalDctx),
+  theLocalDynCtx(localDctx),
   theHasToQuit(false)
 {
-  assert(dctx != NULL);
+  assert(globalDctx != NULL && localDctx != NULL);
   theBlock = new int8_t[theBlockSize];
 }
 

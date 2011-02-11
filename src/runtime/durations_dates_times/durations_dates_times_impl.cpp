@@ -624,7 +624,7 @@ bool TimestampIterator::nextImpl(
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  result = planState.dctx()->get_current_time_millis();
+  result = planState.theLocalDynCtx->get_current_time_millis();
   STACK_PUSH (true, state);
 
   STACK_END (state);

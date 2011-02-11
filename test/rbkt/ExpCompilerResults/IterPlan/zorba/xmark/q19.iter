@@ -1,55 +1,56 @@
 Iterator tree for main query:
-<flwor::FLWORIterator>
-  <ForVariable name="b">
-    <DescendantAxisIterator test kind="match_name_test" qname="xs:QName(,,item)" typename="*" nill allowed="0">
-      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,regions)" typename="*" nill allowed="0">
-        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill allowed="0">
-          <FnDocIterator>
-            <PromoteIterator type="xs:string">
-              <FnDataIterator>
-                <CtxVarIterator>
-                  <SingletonIterator value="xs:string(1:input-context)"/>
-                </CtxVarIterator>
-              </FnDataIterator>
-            </PromoteIterator>
-          </FnDocIterator>
-        </ChildAxisIterator>
-      </ChildAxisIterator>
-    </DescendantAxisIterator>
-  </ForVariable>
-  <OrderByClause>
-    <CastIterator type="xs:string">
-      <FnDataIterator>
-        <FnZeroOrOneIterator>
-          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,location)" typename="*" nill allowed="0">
-            <ForVarIterator varname="b"/>
+<SequentialIterator>
+  <CtxVarDeclareIterator varid="2" varname="input-context"/>
+  <flwor::FLWORIterator>
+    <ForVariable name="b">
+      <DescendantAxisIterator test kind="match_name_test" qname="xs:QName(,,item)" typename="*" nill allowed="0">
+        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,regions)" typename="*" nill allowed="0">
+          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill allowed="0">
+            <FnDocIterator>
+              <PromoteIterator type="xs:string">
+                <FnDataIterator>
+                  <PrologVarIterator varid="2" varname="input-context"/>
+                </FnDataIterator>
+              </PromoteIterator>
+            </FnDocIterator>
           </ChildAxisIterator>
-        </FnZeroOrOneIterator>
-      </FnDataIterator>
-    </CastIterator>
-  </OrderByClause>
-  <ReturnClause>
-    <ElementIterator>
-      <SingletonIterator value="xs:QName(,,item)"/>
-      <AttributeIterator qname="xs:QName(,,name)">
-        <EnclosedIterator attr_cont="true">
-          <FnDataIterator>
-            <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
-              <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,name)" typename="*" nill allowed="0">
-                <ForVarIterator varname="b"/>
-              </ChildAxisIterator>
+        </ChildAxisIterator>
+      </DescendantAxisIterator>
+    </ForVariable>
+    <OrderByClause>
+      <CastIterator type="xs:string">
+        <FnDataIterator>
+          <FnZeroOrOneIterator>
+            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,location)" typename="*" nill allowed="0">
+              <ForVarIterator varname="b"/>
             </ChildAxisIterator>
-          </FnDataIterator>
-        </EnclosedIterator>
-      </AttributeIterator>
-      <EnclosedIterator attr_cont="false">
-        <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
-          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,location)" typename="*" nill allowed="0">
-            <ForVarIterator varname="b"/>
+          </FnZeroOrOneIterator>
+        </FnDataIterator>
+      </CastIterator>
+    </OrderByClause>
+    <ReturnClause>
+      <ElementIterator>
+        <SingletonIterator value="xs:QName(,,item)"/>
+        <AttributeIterator qname="xs:QName(,,name)">
+          <EnclosedIterator attr_cont="true">
+            <FnDataIterator>
+              <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
+                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,name)" typename="*" nill allowed="0">
+                  <ForVarIterator varname="b"/>
+                </ChildAxisIterator>
+              </ChildAxisIterator>
+            </FnDataIterator>
+          </EnclosedIterator>
+        </AttributeIterator>
+        <EnclosedIterator attr_cont="false">
+          <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
+            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,location)" typename="*" nill allowed="0">
+              <ForVarIterator varname="b"/>
+            </ChildAxisIterator>
           </ChildAxisIterator>
-        </ChildAxisIterator>
-      </EnclosedIterator>
-    </ElementIterator>
-  </ReturnClause>
-</flwor::FLWORIterator>
+        </EnclosedIterator>
+      </ElementIterator>
+    </ReturnClause>
+  </flwor::FLWORIterator>
+</SequentialIterator>
 

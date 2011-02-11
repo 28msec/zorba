@@ -58,6 +58,10 @@ typedef rchandle<var_expr> var_expr_t;
   For vars declared in FOR, LET, or WINDOW clauses, their defining expr is
   stored in the associated clause (see theForletClause data member below).
 
+  theUniqueId    : A unique numeric id for variales whose value is stored in
+                   the dynamic context, ie, prolog and local vars. It is used
+                   as an index into an array that stores the values.
+
   theKind        : The kind of the variable (see var_kind enum below)
   theVarName     : The fully expanded qname of the var (qname item)
   theStaticType  : The static type of the variable
@@ -106,9 +110,6 @@ public:
   };
 
 protected:
-  static ulong   theVarCounter;
-  static Mutex   theVarCounterMutex;
-
   ulong          theUniqueId;
 
   var_kind       theKind;
@@ -136,6 +137,8 @@ public:
         store::Item* name);
 
   ulong get_unique_id() const { return theUniqueId; }
+
+  void set_unique_id(ulong v) { assert(theUniqueId == 0); theUniqueId = v; }
 
   store::Item* get_name() const;
 

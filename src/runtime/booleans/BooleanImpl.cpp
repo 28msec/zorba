@@ -305,7 +305,7 @@ void CompareIterator::openImpl(PlanState& planState, uint32_t& offset)
 
   theTypeManager = theSctx->get_typemanager();
   theCollation = theSctx->get_default_collator(loc);
-  theTimezone = planState.theDynamicContext->get_implicit_timezone();
+  theTimezone = planState.theLocalDynCtx->get_implicit_timezone();
 }
 
 
@@ -989,7 +989,7 @@ void TypedValueCompareIterator<ATC>::openImpl(PlanState& planState, uint32_t& of
   NaryBaseIterator<TypedValueCompareIterator, PlanIteratorState>
   ::openImpl(planState, offset);
 
-  theTimezone = planState.theDynamicContext->get_implicit_timezone();
+  theTimezone = planState.theLocalDynCtx->get_implicit_timezone();
   theCollation = this->theSctx->get_default_collator(this->loc);
 }
 
@@ -1079,12 +1079,12 @@ template class TypedValueCompareIterator<TypeConstants::XS_STRING>;
 /////////////////////////////////////////////////////////////////////////////////
 
 AtomicValuesEquivalenceIterator::AtomicValuesEquivalenceIterator(
-                                 static_context* sctx,
-                                 const QueryLoc& loc,
-                                 PlanIter_t aChild0,
-                                 PlanIter_t aChild1)
-    :
-  BinaryBaseIterator<AtomicValuesEquivalenceIterator, PlanIteratorState> ( sctx, loc, aChild0, aChild1 ),
+    static_context* sctx,
+    const QueryLoc& loc,
+    PlanIter_t aChild0,
+    PlanIter_t aChild1)
+  :
+  BinaryBaseIterator<AtomicValuesEquivalenceIterator, PlanIteratorState>(sctx, loc, aChild0, aChild1),
   theTypeManager(NULL),
   theTimezone(0),
   theCollation(NULL)
@@ -1097,11 +1097,12 @@ BINARY_ACCEPT(AtomicValuesEquivalenceIterator);
 
 void AtomicValuesEquivalenceIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
-  BinaryBaseIterator<AtomicValuesEquivalenceIterator, PlanIteratorState>::openImpl(planState, offset);
+  BinaryBaseIterator<AtomicValuesEquivalenceIterator, PlanIteratorState>::
+  openImpl(planState, offset);
 
   theTypeManager = theSctx->get_typemanager();
   theCollation = theSctx->get_default_collator(loc);
-  theTimezone = planState.theDynamicContext->get_implicit_timezone();
+  theTimezone = planState.theLocalDynCtx->get_implicit_timezone();
 }
 
 

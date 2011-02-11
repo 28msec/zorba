@@ -102,6 +102,8 @@ public:
 
   void checkDepth(const QueryLoc& loc);
 
+  dynamic_context* dctx() { return theDynamicContext; }
+
 };
 
 } /* namespace zorba */

@@ -66,7 +66,6 @@ class ZorbaDebugIterator : public NaryBaseIterator<ZorbaDebugIterator, ZorbaDebu
 { 
 protected:
   checked_vector<store::Item_t> varnames; //
-  checked_vector<std::string> var_keys; //
   checked_vector<xqtref_t> vartypes; //
   std::vector<ZorbaDebugIterator*> theDebuggerChildren; //
   ZorbaDebugIterator* theDebuggerParent; //
@@ -82,7 +81,6 @@ public:
     (NaryBaseIterator<ZorbaDebugIterator, ZorbaDebugIteratorState>*)this);
 
     ar & varnames;
-    ar & var_keys;
     ar & vartypes;
     ar & theDebuggerChildren;
     ar & theDebuggerParent;
@@ -95,7 +93,6 @@ public:
     : 
     NaryBaseIterator<ZorbaDebugIterator, ZorbaDebugIteratorState>(sctx, loc, children),
     varnames(),
-    var_keys(),
     vartypes(),
     theDebuggerChildren(),
     theDebuggerParent()
@@ -112,7 +109,7 @@ public:
   void setParent(ZorbaDebugIterator* aParent);
   void addChild(ZorbaDebugIterator* aChild);
   void setChildren(std::vector<PlanIter_t>* args);
-  void setVariables(checked_vector<store::Item_t> aVarNames, checked_vector<std::string> aVarKeys, checked_vector<xqtref_t> aVarTypes);
+  void setVariables(checked_vector<store::Item_t> aVarNames, checked_vector<xqtref_t> aVarTypes);
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;

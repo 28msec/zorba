@@ -26,6 +26,7 @@
 namespace zorba 
 {
 
+class dynamic_context;
 class DocIndexer;
 typedef rchandle<DocIndexer> DocIndexer_t;
 

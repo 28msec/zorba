@@ -69,9 +69,6 @@ END_SERIALIZABLE_CLASS_VERSIONS(catch_clause)
 SERIALIZABLE_CLASS_VERSIONS(trycatch_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(trycatch_expr)
 
-SERIALIZABLE_CLASS_VERSIONS(eval_expr::eval_var)
-END_SERIALIZABLE_CLASS_VERSIONS(eval_expr::eval_var)
-
 SERIALIZABLE_CLASS_VERSIONS(function_trace_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(function_trace_expr)
 
@@ -1271,6 +1268,7 @@ void trycatch_expr::compute_scripting_kind()
   }
 }
 
+
 catch_clause_t catch_clause::clone(expr::substitution_t& subst) const
 {
   catch_clause_t lClause(new catch_clause());
@@ -1293,6 +1291,7 @@ catch_clause_t catch_clause::clone(expr::substitution_t& subst) const
   return lClause.getp();
 }
 
+
 expr_t trycatch_expr::clone(substitution_t& subst) const
 {
   std::auto_ptr<trycatch_expr> lTryCatch(
@@ -1311,39 +1310,37 @@ expr_t trycatch_expr::clone(substitution_t& subst) const
 /*******************************************************************************
 
 ********************************************************************************/
+#if 0
 eval_expr::eval_var::eval_var(var_expr* ve)
   :
   varname(ve->get_name()),
-  var_key(dynamic_context::var_key(ve)),
   type(ve->get_type())
 {
 }
-
-void eval_expr::eval_var::serialize(::zorba::serialization::Archiver& ar)
-{
-  ar & varname;
-  ar & var_key;
-  ar & type;
-}
+#endif
 
 void eval_expr::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (expr*)this);
   ar & theExpr;
-  ar & vars;
+  ar & theVars;
   ar & theArgs;
 }
+
 
 void eval_expr::compute_scripting_kind()
 {
   theScriptingKind = theExpr->get_scripting_kind();
 }
 
+
 expr_t eval_expr::clone(substitution_t& s) const
 {
   rchandle<eval_expr> new_eval = new eval_expr(theSctx, theLoc, theExpr->clone(s));
-  for (unsigned int i=0; i<vars.size(); i++)
-    new_eval->add_var(vars[i], theArgs[i]->clone(s));
+
+  for (unsigned int i = 0; i < theVars.size(); ++i)
+    new_eval->add_var(theVars[i]->clone(s), theArgs[i]->clone(s));
+
   return new_eval.release();
 }
 
@@ -1393,10 +1390,12 @@ void function_trace_expr::serialize(::zorba::serialization::Archiver& ar)
   ar & theFunctionArity;
 }
 
+
 void function_trace_expr::compute_scripting_kind()
 {
   theScriptingKind = theExpr->get_scripting_kind();
 }
+
 
 expr_t function_trace_expr::clone(substitution_t& s) const
 {
@@ -1421,7 +1420,7 @@ void debugger_expr::store_local_variables(checked_vector<varref_t>& aScopedVaria
                                       var_expr::eval_var,
                                       lValue->get_name() ) );
       lVariable->set_type( lValue->get_type() );
-      add_var(eval_expr::eval_var(&*lVariable), lValue.getp());
+      add_var(lVariable, lValue.getp());
     }
   }
 }

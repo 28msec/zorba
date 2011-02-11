@@ -193,6 +193,8 @@ declare function local:end-serializable-class-versions($name as xs:string) as xs
   ,'')
 };
 
+declare variable $files external;
+
 declare variable $input external;
 declare variable $name as xs:string external;
 

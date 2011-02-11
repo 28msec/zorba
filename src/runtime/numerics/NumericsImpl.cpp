@@ -551,7 +551,7 @@ bool NumArithIterator<Operation>::nextImpl(
     if (this->consumeNext(n1, this->theChild1.getp(), planState))
     {
       res = compute(result,
-                    planState.theDynamicContext,
+                    planState.theLocalDynCtx,
                     this->theSctx->get_typemanager(),
                     this->loc,
                     n0,
@@ -737,7 +737,7 @@ bool SpecificNumArithIterator<Operation, Type>::nextImpl(
     if (this->consumeNext( n1, this->theChild1.getp(), planState ))
     {
       res = compute(result,
-                    planState.theDynamicContext,
+                    planState.theLocalDynCtx,
                     this->theSctx->get_typemanager(),
                     this->loc,
                     n0.getp(),

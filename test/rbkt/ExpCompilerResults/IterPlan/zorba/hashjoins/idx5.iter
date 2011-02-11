@@ -15,11 +15,8 @@ Iterator tree for const-folded expr:
 Iterator tree for main query:
 <SequentialIterator>
   <SequentialIterator>
-    <CtxVarDeclIterator>
-      <SingletonIterator value="xs:string(1:tests)"/>
-    </CtxVarDeclIterator>
-    <CtxVarAssignIterator>
-      <SingletonIterator value="xs:string(1:tests)"/>
+    <CtxVarDeclareIterator varid="2" varname="tests"/>
+    <CtxVarAssignIterator varid="2" varname="tests">
       <ElementIterator>
         <SingletonIterator value="xs:QName(,,tests)"/>
       </ElementIterator>
@@ -30,9 +27,7 @@ Iterator tree for main query:
       <HoistIterator>
         <flwor::FLWORIterator>
           <ForVariable name="$$dot">
-            <CtxVarIterator>
-              <SingletonIterator value="xs:string(1:tests)"/>
-            </CtxVarIterator>
+            <PrologVarIterator varid="2" varname="tests"/>
           </ForVariable>
           <WhereClause>
             <FnBooleanIterator>
@@ -54,9 +49,7 @@ Iterator tree for main query:
         <CreateInternalIndexIterator name="xs:QName(,,tempIndex0)">
           <flwor::FLWORIterator>
             <ForVariable name="$$opt_temp_2">
-              <CtxVarIterator>
-                <SingletonIterator value="xs:string(1:tests)"/>
-              </CtxVarIterator>
+              <PrologVarIterator varid="2" varname="tests"/>
             </ForVariable>
             <ReturnClause>
               <ValueIndexEntryBuilderIterator>
@@ -78,9 +71,7 @@ Iterator tree for main query:
         </CreateInternalIndexIterator>
         <flwor::FLWORIterator>
           <ForVariable name="test">
-            <CtxVarIterator>
-              <SingletonIterator value="xs:string(1:tests)"/>
-            </CtxVarIterator>
+            <PrologVarIterator varid="2" varname="tests"/>
           </ForVariable>
           <LetVariable name="$$opt_temp_0" materialize="true">
             <HoistIterator>

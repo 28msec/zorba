@@ -55,15 +55,15 @@ DocIndexer::~DocIndexer()
 /*******************************************************************************
 
 ********************************************************************************/
-void DocIndexer::setup(CompilerCB* ccb, dynamic_context* dctx)
+void DocIndexer::setup(CompilerCB* ccb)
 {
   if (thePlanWrapper == NULL)
   {
-    theDctx = dctx;
+    thePlanWrapper = new PlanWrapper(theIndexerPlan, ccb, NULL, NULL);
 
-    thePlanWrapper = new PlanWrapper(theIndexerPlan, ccb, dctx, NULL);
+    theDctx = static_cast<PlanWrapper*>(thePlanWrapper.getp())->dctx();
 
-    theDctx->declare_variable(dctx->var_key(theNodeVar));
+    theDctx->declare_variable(theNodeVar->get_unique_id());
 
     thePlanWrapper->open();
   }
@@ -78,7 +78,10 @@ void DocIndexer::createIndexEntries(
     store::IndexDelta& delta)
 {
   store::Item_t tmp = docNode;
-  theDctx->set_variable(theDctx->var_key(theNodeVar), tmp);
+  theDctx->set_variable(theNodeVar->get_unique_id(),
+                        theNodeVar->get_name(),
+                        QueryLoc::null,
+                        tmp);
 
   ulong numEntries = 0;
   store::Item_t domainNode;

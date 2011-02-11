@@ -291,12 +291,12 @@ bool FnDistinctValuesIterator::nextImpl(
   {
     lCollator = getCollator(theSctx, loc, planState, theChildren[1].getp());
 
-    theValueCompare = new ValueCompareParam(loc, planState.theDynamicContext, theSctx);
+    theValueCompare = new ValueCompareParam(loc, planState.theLocalDynCtx, theSctx);
     theValueCompare->theCollator = lCollator;
   }
   else
   {
-    theValueCompare = new ValueCompareParam(loc, planState.theDynamicContext, theSctx);
+    theValueCompare = new ValueCompareParam(loc, planState.theLocalDynCtx, theSctx);
   }
 
   // theValueCompare managed by state->theAlreadySeenMap
@@ -1096,7 +1096,7 @@ bool FnDeepEqualIterator::nextImpl(
 
     equal = equal && DeepEqual(loc,
                                theSctx,
-                               planState.theDynamicContext,
+                               planState.theLocalDynCtx,
                                arg1,
                                arg2,
                                collator);
@@ -1330,7 +1330,7 @@ bool FnAvgIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       // DO NOT short-circuit for INF and NaN!
       // Must check all items in case FORG0006 is needed
       GenericArithIterator<AddOperation>::compute(lSumItem,
-                                                  planState.theDynamicContext,
+                                                  planState.theLocalDynCtx,
                                                   tm,
                                                   loc,
                                                   lSumItem,
@@ -1342,7 +1342,7 @@ bool FnAvgIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     GENV_ITEMFACTORY->createInteger(countItem, Integer::parseInt (lCount));
     GenericArithIterator<DivideOperation>::compute(result,
-                                                   planState.theDynamicContext,
+                                                   planState.theLocalDynCtx,
                                                    tm,
                                                    loc,
                                                    lSumItem,
@@ -1413,7 +1413,7 @@ bool FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const
           TypeOps::is_subtype(tm, *lRunningType, *rtm.DT_DURATION_TYPE_ONE)))
       {
         GenericArithIterator<AddOperation>::compute(result,
-                                                    planState.theDynamicContext,
+                                                    planState.theLocalDynCtx,
                                                     tm,
                                                     loc,
                                                     result,
@@ -1709,10 +1709,10 @@ static void fillTime (
   zorbatm::get_current_cputime(t1user);
   zorbatm::get_current_walltime(t1);
 
-  planState.theDynamicContext->theDocLoadingUserTime +=
+  planState.theGlobalDynCtx->theDocLoadingUserTime +=
     zorbatm::get_cputime_elapsed(t0user, t1user);
 
-  planState.theDynamicContext->theDocLoadingTime += 
+  planState.theGlobalDynCtx->theDocLoadingTime += 
     zorbatm::get_walltime_elapsed(t0, t1);
 }
 
