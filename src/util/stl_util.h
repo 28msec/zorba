@@ -26,13 +26,35 @@
 #include <set>
 #include <stack>
 
-#ifdef __GNUC__
+////////// Determine tr1 include directory & namespace ////////////////////////
+
+#if defined( __GNUC__ ) && (__GNUC__ * 100 + __GNUC_MINOR__ < 430)
+# define GCC_OLDER_THAN_430 1
+#endif
+
+#if defined( _MSC_VER ) && (_MSC_VER < 1600 /* 2010 */)
+# define MSC_OLDER_THAN_2010 1
+#endif
+
+#if defined( GCC_OLDER_THAN_430 )
+# define TR1_IN_TR1_SUBDIRECTORY 1
+#endif
+
+#if defined( GCC_OLDER_THAN_430 ) || defined( MSC_OLDER_THAN_2010 )
+# define TR1_NAMESPACE_IS_STD_TR1 1
+#endif
+
+#ifdef TR1_IN_TR1_SUBDIRECTORY
 # include <tr1/type_traits>
-# define TR1_NS std::tr1
 #else
 # include <type_traits>
+#endif
+
+#ifdef TR1_NAMESPACE_IS_STD_TR1
+# define TR1_NS std::tr1
+#else
 # define TR1_NS std
-#endif /* __GNUC__ */
+#endif
 
 namespace zorba {
 
