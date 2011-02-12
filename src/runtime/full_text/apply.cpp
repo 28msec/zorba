@@ -278,7 +278,7 @@ static void join_includes( ft_match::includes_t const &includes,
   si.sent.end      = MAX_NN( includes, sent, end   );
   si.para.start    = MIN_NN( includes, para, start );
   si.para.end      = MAX_NN( includes, para, end   );
-  si.query_pos     = includes.begin()->query_pos;
+  si.query_pos     = includes.front().query_pos;
   si.is_contiguous = is_contiguous;
   result.push_back( si );
 }
