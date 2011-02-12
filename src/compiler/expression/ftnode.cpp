@@ -16,14 +16,15 @@
 
 #include <zorba/error.h>
 
-#include "compiler/expression/expr_visitor.h"
-#include "compiler/expression/ftnode.h"
-#include "compiler/expression/ftnode_visitor.h"
 #include "types/casting.h"
 #include "util/ascii_util.h"
 #include "util/indent.h"
 #include "util/stl_util.h"
 #include "zorbaerrors/error_manager.h"
+
+#include "expr_visitor.h"
+#include "ftnode.h"
+#include "ftnode_visitor.h"
 
 using namespace std;
 
@@ -670,12 +671,29 @@ void ftscope_filter::serialize( serialization::Archiver &ar ) {
 ftselection::ftselection(
   QueryLoc const &loc,
   ftnode *ftor,
-  ftpos_filter_list_t &list
+  ftpos_filter_list_t const &list
 ) :
   ftprimary( loc ),
   ftor_( ftor )
 {
-  list.swap( list_ );
+  //
+  // From the spec, section 3.6:
+  //
+  //  In a group of multiple adjacent positional filters, FTOrder filters are
+  //  applied first, and then the other positional filters are applied from
+  //  left to right, skipping the FTOrder filters.
+  //
+  // Hence we push the FTOrder filter(s) first followed by the non-FTOrder
+  // filter(s).
+  //
+  FOR_EACH( ftpos_filter_list_t, i, list ) {
+    if ( dynamic_cast<ftorder_filter*>( *i ) )
+      list_.push_back( *i );
+  }
+  FOR_EACH( ftpos_filter_list_t, i, list ) {
+    if ( !dynamic_cast<ftorder_filter*>( *i ) )
+      list_.push_back( *i );
+  }
 }
 
 ftselection::~ftselection() {

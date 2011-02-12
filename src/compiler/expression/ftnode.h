@@ -514,7 +514,7 @@ public:
   ftselection(
     QueryLoc const&,
     ftnode *ftor,
-    ftpos_filter_list_t&
+    ftpos_filter_list_t const&
   );
   ~ftselection();
 
