@@ -1018,9 +1018,6 @@ apply_ftwords_phrase( query_item_star_t &query_items, FTToken::int_t query_pos,
                       ft_all_matches &result ) {
   query_item_star_iterator query_tokens( query_items );
   if ( query_tokens.hasNext() ) {
-    TRACE_APPLY( result );
-    PUT_ARG( query_pos );
-
     apply_query_tokens_as_phrase(
       query_tokens, query_pos, ignore_item, options, matcher, result
     );
