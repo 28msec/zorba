@@ -151,6 +151,8 @@ void ftcontains_visitor::eval_ftrange( ftrange const &range,
       *at_least = int1;
       *at_most = get_int( range.get_plan_iter2() );
       break;
+    default:
+      ZORBA_ASSERT( false );
   }
 }
 
