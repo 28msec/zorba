@@ -1339,7 +1339,11 @@ expr_t eval_expr::clone(substitution_t& s) const
   rchandle<eval_expr> new_eval = new eval_expr(theSctx, theLoc, theExpr->clone(s));
 
   for (unsigned int i = 0; i < theVars.size(); ++i)
-    new_eval->add_var(theVars[i]->clone(s), theArgs[i]->clone(s));
+  {
+    var_expr_t cloneVar = dynamic_cast<var_expr*>(theVars[i]->clone(s).getp());
+    assert(cloneVar != NULL);
+    new_eval->add_var(cloneVar, theArgs[i]->clone(s));
+  }
 
   return new_eval.release();
 }
