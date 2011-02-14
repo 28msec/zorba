@@ -26,6 +26,7 @@ namespace zorba { namespace xslfo {
   class JavaVMSingelton {
   public:
     static JavaVMSingelton* getInstance(const char* classPath);
+    static void destroyInstance();
     virtual ~JavaVMSingelton();
     JavaVM* getVM();
     JNIEnv* getEnv();

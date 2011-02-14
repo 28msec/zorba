@@ -77,6 +77,10 @@ JavaVMSingelton* JavaVMSingelton::getInstance(const char* classPath)
   return instance;
 }
 
+void JavaVMSingelton::destroyInstance() {
+  delete instance;
+}
+
 JavaVM* JavaVMSingelton::getVM()
 {
   return m_vm;

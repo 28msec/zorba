@@ -48,6 +48,9 @@ class GeneratePDFFunction : public PureStatelessExternalFunction {
   public:
     GeneratePDFFunction(const ExternalModule* aModule) :
       theModule(aModule), theFactory(Zorba::getInstance(0)->getItemFactory()) {}
+    ~GeneratePDFFunction() {
+      JavaVMSingelton::destroyInstance();
+    }
 
   public:
     virtual String getURI() const { return theModule->getURI(); }
@@ -104,6 +107,11 @@ class XSLFOModule : public ExternalModule {
       findFop(new FindApacheFopFunction(this)),
       pathSeparator(new PathSeparatorFunction(this))
   {}
+    ~XSLFOModule() {
+      delete generatePDF;
+      delete findFop;
+      delete pathSeparator;
+    }
 
     virtual String getURI() const { return XSL_MODULE_NAMESPACE; }
 
