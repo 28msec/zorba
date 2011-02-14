@@ -15,14 +15,12 @@
  */
 #include <cstdlib>
 #include <map>
+#include <sstream>
 
 #ifdef WIN32
 # include <Windows.h>
 #else
 # include <sys/utsname.h>
-#endif
-#ifdef APPLE
-# include <crt_externs.h>
 #endif
 
 #include <zorba/zorba.h>
@@ -38,6 +36,8 @@
 
 #ifdef LINUX
 extern char** environ;
+#elif defined APPLE
+# include <crt_externs.h>
 #endif
 
 namespace zorba { namespace system {
@@ -67,10 +67,14 @@ namespace zorba { namespace system {
 #ifdef WIN32
         theProperties.insert(std::make_pair("os.name", "Windows"));
         {
-          long nodeNameLength = MAX_COMPUTERNAME_LENGTH + 1;
-          char nodeName[nodeNameLength];
-          GetComputerName(nodeName, nodeNameLength);
-          theProperties.insert(std::make_pair("os.node.name", nodeName));
+          DWORD nodeNameLength = MAX_COMPUTERNAME_LENGTH + 1;
+          TCHAR nodeName[MAX_COMPUTERNAME_LENGTH + 1];
+          char nodeNameC[MAX_COMPUTERNAME_LENGTH + 1];
+          GetComputerName(nodeName, &nodeNameLength);
+          for (DWORD i = 0; i < nodeNameLength; ++i) {
+            nodeNameC[i] = nodeName[i];
+          }
+          theProperties.insert(std::make_pair("os.node.name", nodeNameC));
         }
         {
           DWORD dwVersion = 0; 
@@ -111,10 +115,14 @@ namespace zorba { namespace system {
           theProperties.insert(std::make_pair("os.version", major + "." + minor + "." + build));
         }
         {
-          long userNameLength = MAX_COMPUTERNAME_LENGTH + 1;
-          char userName[nodeNameLength];
-          GetUserName(nodeName, nodeNameLength);
-          theProperties.insert(std::make_pair("user.name", userName));
+          DWORD userNameLength = 1023;
+          TCHAR userName[1024];
+          char userNameC[1024];
+          GetUserName(userName, &userNameLength);
+          for (DWORD i = 0; i < userNameLength; ++i) {
+            userNameC[i] = userName[i];
+          }
+          theProperties.insert(std::make_pair("user.name", userNameC));
         }
         {
           SYSTEM_INFO info;
@@ -129,7 +137,7 @@ namespace zorba { namespace system {
         }
         {
           // put in the environment variables
-          char *l_EnvStr;
+          TCHAR *l_EnvStr;
           l_EnvStr = GetEnvironmentStrings();
 
           LPTSTR l_str = l_EnvStr;
@@ -145,7 +153,12 @@ namespace zorba { namespace system {
 
           for (int i = 0; i < count; i++)
           {
-            std::string e(l_EnvStr);
+            char lStr[1024];
+            memset(lStr, 0, 1024);
+            for (int i =0; i<1023 && l_EnvStr[i]; ++i) {
+              lStr[i] = (char) l_EnvStr[i];
+            }
+            std::string e(lStr);
             std::string name("env.");
             name += e.substr(0, e.find('='));
             std::string value = e.substr(e.find('=') + 1);
@@ -154,7 +167,7 @@ namespace zorba { namespace system {
               l_EnvStr++;
             l_EnvStr++;
           }
-          FreeEnvironmentStrings(l_EnvStr);
+          //FreeEnvironmentStrings(l_EnvStr);
         }
 #else
         struct utsname osname;
@@ -193,7 +206,7 @@ namespace zorba { namespace system {
       virtual String getLocalName() const { return "properties"; }
 
       virtual ItemSequence_t 
-      evaluate(const StatelessExternalFunction::Arguments_t& args) const;
+        evaluate(const StatelessExternalFunction::Arguments_t& args) const;
   };
 
   class PropertyFunction : public SystemFunction {
@@ -206,7 +219,7 @@ namespace zorba { namespace system {
       virtual String getLocalName() const { return "property"; }
 
       virtual ItemSequence_t 
-      evaluate(const StatelessExternalFunction::Arguments_t& args) const;
+        evaluate(const StatelessExternalFunction::Arguments_t& args) const;
   };
 
   SystemModule::~SystemModule() {
@@ -245,10 +258,7 @@ namespace zorba { namespace system {
     String envS = item.getStringValue();
     String lRes;
     std::map<std::string, std::string>::const_iterator i;
-    if (envS.startsWith("env.")) {
-      String lStr = envS.substring(4);
-      lRes = getenv(lStr.c_str());
-    } else if ((i = theProperties.find(envS.c_str())) != theProperties.end()) {
+    if ((i = theProperties.find(envS.c_str())) != theProperties.end()) {
       lRes = i->second;
     }
     return ItemSequence_t(new SingletonItemSequence(theFactory->createString(lRes)));
