@@ -18,19 +18,16 @@
  : several output formats. See <a href="http://xmlgraphics.apache.org/fop/">the Apache FOP
  : documentation</a> for further information.
  :
- : Not for Windows users: Under Windows, this module won't work out of the box, since
- : this module uses Java and the Java VM dll is not in the system path by default. To make
+ : Note for Windows users: Under Windows, this module won't work out of the box, since
+ : this module uses Java. But the Java VM dll is not in the system path by default. To make
  : this module work, you need to add the directory where the jvm.dll is located to the
- : system path. This dll is in JRE_DIR\bin\client. On a standard installation, this would
- : be something like "C:\Program Files\Java\jre6\bin\client".
+ : system path. This dll is located at JRE_DIR\bin\client. On a standard installation, this would
+ : be something a path like "C:\Program Files\Java\jre6\bin\client".
  :
  : @author Markus Pilman
  : @library <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">JDK - Java Development Kit</a>
  :)
 module namespace xsl-fo = "http://www.zorba-xquery.com/modules/xsl-fo";
-
-import module namespace file = "http://www.zorba-xquery.com/modules/file";
-import module namespace os = "http://www.zorba-xquery.com/modules/os";
 
 (:~
  : This is the name of the error which gets thrown, if zorba is unable
@@ -91,12 +88,12 @@ declare variable $xsl-fo:TIFF as xs:string := "image/tiff";
  : variables can be used - like $xsl-fo:PDF. Please refer to the Apache FOP documentation for documentation
  : about the supported ouput formats.
  :
- : Apache FOP does not support 100% of the XSL-FO standard. Please consult the official documentation,
+ : Apache FOP does not support 100% of the XSL-FO standard. Please consult the official documentation
  : for further information.
  :
- : @param $output-format The mime of the output format, to tell Apache FOP which kind of document it should
+ : @param $output-format The mime of the output format. To tell Apache FOP which kind of document it should
  :        create.
- : @param $xsl-fo-document The xsl-fo node, from which the document should be generated.
+ : @param $xsl-fo-document The xsl-fo node from which the document should be generated.
  : @param $classpath The classpath which has to contain Apache FOP and all its dependencies. If you don't
  :        want to set this programmatically, use the generator function without this parameter instead.
  : @return The generated output document.
@@ -104,8 +101,7 @@ declare variable $xsl-fo:TIFF as xs:string := "image/tiff";
  : @error JAVA-EXCEPTION If Apache FOP throws an exception - i.e. if the input format is not correct/supported.
  :)
 declare function xsl-fo:generator($output-format as xs:string, $xsl-fo-document as node(), $classpath as xs:string+) as xs:base64Binary {
-  let $os as xs:string := os:operating-system()
-  let $dir-separator as xs:string := if ($os eq "Windows") then ";" else ":"
+  let $dir-separator as xs:string := xsl-fo:path-separator()
   return xsl-fo:generator-impl($output-format, $xsl-fo-document, fn:string-join($classpath, $dir-separator))
 };
 
@@ -128,64 +124,36 @@ declare function xsl-fo:generator($output-format as xs:string, $xsl-fo-document 
  : @error JAR-NOT-FOUND If a needed Java library could not be found.
  :)
 declare function xsl-fo:generator($output-format as xs:string, $xsl-fo-document as node()) as xs:base64Binary {
-  let $os as xs:string := os:operating-system()
-  let $fop-home as xs:string? :=
-    if (fn:not(os:get-env("FOP_HOME"))) then
-      if ($os eq "Mac OS X") then
-        let $f := fn:concat("/opt/local/share/java/fop/", xs:string((
-          for $d in
-              for $dir in file:files("/opt/local/share/java/fop", "[0-9]+\.[0-9]+")
-              where file:is-directory(fn:concat("/opt/local/share/java/fop/", $dir))
-              return $dir
-          order by xs:decimal($d) descending
-          return $d)[1]))
-        return
-          if (file:exists($f) and file:is-directory($f)) then
-            $f
-          else
-            ()
-      else ()
-    else os:get-env("FOP_HOME") 
-  let $fop-lib-dir as xs:string? :=
-    if (os:get-env("FOP_LIB_DIR")) then
-      os:get-env("FOP_LIB_DIR")
-    else if ($os eq "Linux") then
-      "/usr/share/java"
-    else ()
-  let $fop-jar-file as xs:string :=
-    if ($fop-home or $fop-lib-dir) then 
-      if (file:exists(fn:concat($fop-home, file:path-separator(), "build", file:path-separator(), "fop.jar"))) then
-        fn:concat($fop-home, file:path-separator(), "build", file:path-separator(), "fop.jar")
-      else if (file:exists(fn:concat($fop-lib-dir, file:path-separator(), "fop.jar"))) then
-        fn:concat($fop-lib-dir, file:path-separator(), "fop.jar")
-      else
-        fn:error($xsl-fo:JAR-NOT-FOUND,
-          fn:concat("Could not find fop.jar. If you are using Ubuntu or Mac OS X, please make sure,
-           that you have installed it, else make sure, that you have set the envroinment variable
-           FOP_HOME or FOP_LIB_DIR correctly.
-           tried ", fn:concat($fop-home, file:path-separator(), "build",
-           file:path-separator(), "fop.jar"), "
-           and ",
-           fn:concat($fop-lib-dir, file:path-separator(), "fop.jar"), " with FOP_HOME=",
-           $fop-home, " and FOP_LIB_DIR=", $fop-lib-dir))
-    else
-      fn:error($xsl-fo:JAR-NOT-FOUND,
-        "None of the envroinment variables FOP_HOME and FOP_LIB_DIR has bin set.")
-  let $classpath as xs:string* :=
-    ($fop-jar-file, for $jar in ("avalon-framework", "batik-all", "commons-io", "commons-logging", "serializer",
-                 "xalan", "xmlgraphics-commons")
-    let $jar-dir as xs:string :=
-      if ($fop-home) then
-        fn:concat($fop-home, file:path-separator(), "lib")
-      else
-        $fop-lib-dir
-    let $res as xs:string := fn:concat($jar-dir, file:path-separator(), file:files($jar-dir, fn:concat($jar, ".*\.jar"))[1])
-    return
-      if (file:exists($res) and fn:not(file:is-directory($res))) then
-        $res
-      else
-        fn:error($xsl-fo:JAR-NOT-FOUND, fn:concat("Could not find ", $jar)))
-  return xsl-fo:generator($output-format, $xsl-fo-document, $classpath)
+  let $classpath := try { xsl-fo:find-apache-fop() } catch * ($errcode, $errdesc, $errval) { fn:error($xsl-fo:JAR-NOT-FOUND, $errdesc) }
+  return
+    try {
+      xsl-fo:generator($output-format, $xsl-fo-document, $classpath)
+    } catch * ($errcode, $errdesc, $errval) {
+      fn:error(fn:QName('http://www.zorba-xquery.com', fn:substring-before($errdesc, '|')), fn:substring-after($errdesc, '|'))
+    }
 };
 
-declare %private function xsl-fo:generator-impl($output-format as xs:string, $xsl-fo-document as node(), $classpath as xs:string) external;
+(:~
+ : WARNING: This is an internally used function and will not be available for future versions of Sausalito. Do not use this
+ : function!
+ : @return The path separator of the OS - so ';' on Windows and ':' on Linux and Mac OS X
+ :)
+declare %private function xsl-fo:path-separator() as xs:string external;
+
+(:~
+ : WARNING: This is an internally used function and will not be available for future versions of Sausalito. Do not use this
+ : function!
+ : @return The class path for apache fop and its dependencies.
+ :)
+declare %private function xsl-fo:find-apache-fop() as xs:string+ external;
+
+(:~
+ : WARNING: This is an internally used function and will not be available for future versions of Sausalito. Do not use this
+ : function!
+ :
+ : @param $output-format the mime type of the output format.
+ : @param $xsl-fo-document is the xsl-fo representation of the document.
+ : @param $classpath The Java classpath with apache fop and all its dependencies.
+ : @return The base64Binary representation of document.
+ :)
+declare %private function xsl-fo:generator-impl($output-format as xs:string, $xsl-fo-document as node(), $classpath as xs:string) as xs:base64Binary external;

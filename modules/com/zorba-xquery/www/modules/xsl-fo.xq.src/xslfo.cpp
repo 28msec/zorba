@@ -15,6 +15,8 @@
  */
 #include <sstream>
 #include <iostream>
+#include <cstdlib>
+#include <list>
 
 #include <zorba/zorba.h>
 #include <zorba/zorbastring.h>
@@ -24,6 +26,9 @@
 #include <zorba/singleton_item_sequence.h>
 #include <zorba/empty_sequence.h>
 #include <zorba/item_factory.h>
+#include <zorba/base64.h>
+#include <zorba/file.h>
+#include <zorba/vector_item_sequence.h>
 
 #include "JavaVMSingelton.h"
 
@@ -53,11 +58,52 @@ class GeneratePDFFunction : public PureStatelessExternalFunction {
     evaluate(const StatelessExternalFunction::Arguments_t& args) const;
 };
 
+class FindApacheFopFunction : public PureStatelessExternalFunction {
+  private:
+    const ExternalModule* theModule;
+    ItemFactory* theFactory;
+  private:
+    void throwError(std::string aName) const;
+  public:
+    FindApacheFopFunction(const ExternalModule* aModule) :
+      theModule(aModule), theFactory(Zorba::getInstance(0)->getItemFactory()) {}
+
+    virtual String getURI() const { return theModule->getURI(); }
+
+    virtual String getLocalName() const { return "find-apache-fop"; }
+
+    virtual ItemSequence_t 
+    evaluate(const StatelessExternalFunction::Arguments_t& args) const;
+};
+
+class PathSeparatorFunction : public PureStatelessExternalFunction {
+  private:
+    const ExternalModule* theModule;
+    ItemFactory* theFactory;
+  public:
+    PathSeparatorFunction(const ExternalModule* aModule) :
+      theModule(aModule), theFactory(Zorba::getInstance(0)->getItemFactory()) {}
+
+  public:
+    virtual String getURI() const { return theModule->getURI(); }
+
+    virtual String getLocalName() const { return "path-separator"; }
+
+    virtual ItemSequence_t 
+    evaluate(const StatelessExternalFunction::Arguments_t& args) const;
+};
+
 class XSLFOModule : public ExternalModule {
   private:
     StatelessExternalFunction* generatePDF;
+    StatelessExternalFunction* findFop;
+    StatelessExternalFunction* pathSeparator;
   public:
-    XSLFOModule() : generatePDF(0) {}
+    XSLFOModule() :
+      generatePDF(new GeneratePDFFunction(this)),
+      findFop(new FindApacheFopFunction(this)),
+      pathSeparator(new PathSeparatorFunction(this))
+  {}
 
     virtual String getURI() const { return XSL_MODULE_NAMESPACE; }
 
@@ -69,23 +115,175 @@ class XSLFOModule : public ExternalModule {
 };
 
 StatelessExternalFunction* XSLFOModule::getExternalFunction(const String& localName) {
-  if (!generatePDF)
-    generatePDF = new GeneratePDFFunction(this);
-  return generatePDF;
+  if (localName == "generator-impl") {
+    return generatePDF;
+  }
+  if (localName == "find-apache-fop") {
+    return findFop;
+  }
+  if (localName == "path-separator")
+    return pathSeparator;
+  return 0;
+}
+
+ItemSequence_t PathSeparatorFunction::evaluate(const StatelessExternalFunction::Arguments_t& args) const
+{
+#ifdef WIN32
+  String lSeparator = ";";
+#else
+  String lSeparator = ":";
+#endif
+  return ItemSequence_t(new SingletonItemSequence(theFactory->createString(lSeparator)));
+}
+
+void FindApacheFopFunction::throwError(std::string aName) const {
+  ZorbaException e = createZorbaException(XQP0021_USER_ERROR, aName, __FILE__, __LINE__);
+  throw e;
+}
+
+ItemSequence_t FindApacheFopFunction::evaluate(const StatelessExternalFunction::Arguments_t& args) const
+{
+  std::string lPathSeparator(File::getPathSeparator());
+  std::string lFopHome;
+  {
+    char* lFopHomeEnv = getenv("FOP_HOME");
+    if (lFopHomeEnv != 0) {
+      lFopHome = lFopHomeEnv;
+    }
+#ifdef APPLE
+    else {
+      // If Apache FOP is installed with Mac Ports, FOP
+      // is typicaly installed in /opt/local/share/java/fop,
+      // so we check here, if the installation directory can
+      // be found in this directory.
+      std::string lFopPath("/opt/local/share/java/fop/");
+      File_t lRootDir = File::createFile(lFopPath);
+      if (lRootDir->exists() && lRootDir->isDirectory()) {
+        DirectoryIterator_t lFiles = lRootDir->files();
+        std::string lFileName;
+        // The FOP directory is in a subdirectory with the version
+        // number - so we check all subdirectories to get the final
+        // path.
+        while (lFiles->next(lFileName)) {
+          File_t lFile = File::createFile(lFopPath + lFileName);
+          if (lFile->isDirectory()) {
+            std::stringstream lStr(lFileName);
+            double lDirDouble = 0.0;
+            if (lStr >> lDirDouble) {
+              if (lDirDouble != 0.0) {
+                lFopHome = lFopPath + lFileName;
+                break;
+              }
+            }
+          }
+        }
+      }
+    }
+#endif
+  }
+  std::string lFopLibDir;
+  {
+    char* lEnv = getenv("FOP_LIB_DIR");
+    if (lEnv != 0) {
+      lFopLibDir = lEnv;
+    }
+#ifdef LINUX
+    // on a Ubuntu installation, all required
+    // jar files should be in /usr/share/java
+    // if Apache FOP is installed.
+    else {
+      lFopLibDir = "/usr/share/java";
+    }
+#endif
+  }
+  // If neither a path to the fop install dir, nor a path
+  // to the jar files was found so far, we throw an exception.
+  if (lFopHome == "" && lFopLibDir == "") {
+    throwError("None of the envroinment variables FOP_HOME and FOP_LIB_DIR has bin set.");
+  }
+  std::string lFopJarFile;
+  {
+    // Here we look for the fop.jar file, which should be either in $FOP_HOME/build or 
+    // in the directory, where all jar files are.
+    lFopJarFile = lFopHome + lPathSeparator + "build" + lPathSeparator + "fop.jar";
+    std::string lFopJarFile1 = lFopJarFile;
+    File_t lJarFile = File::createFile(lFopJarFile);
+    if (!lJarFile->exists()) {
+      lFopJarFile = lFopLibDir + lPathSeparator + "fop.jar";
+      lJarFile = File::createFile(lFopJarFile);
+      if (!lJarFile->exists()) {
+        std::string errmsg = "Could not find fop.jar. If you are using Ubuntu or Mac OS X, please make sure, ";
+        errmsg += "that you have installed it, else make sure, that you have set the envroinment variable ";
+        errmsg += "FOP_HOME or FOP_LIB_DIR correctly. Tried '";
+        errmsg +=  lFopJarFile1;
+        errmsg += "' and '";
+        errmsg += lFopJarFile;
+        errmsg += "'.";
+        throwError(errmsg);
+      }
+    }
+  }
+  std::vector<Item> lClassPath;
+  lClassPath.push_back(theFactory->createString(lFopJarFile));
+  {
+    std::string lJarDir = lFopLibDir;
+    if (lFopHome != "")
+      lJarDir = lFopHome + lPathSeparator + "lib";
+    // This is a list of all jar files, Apache Fop depends on.
+    std::list<std::string> lDeps;
+    lDeps.push_back("avalon-framework");
+    lDeps.push_back("batik-all");
+    lDeps.push_back("commons-io");
+    lDeps.push_back("commons-logging");
+    lDeps.push_back("serializer");
+    lDeps.push_back("xalan");
+    lDeps.push_back("xmlgraphics-commons");
+
+    File_t lJarDirF = File::createFile(lJarDir);
+    DirectoryIterator_t lFiles = lJarDirF->files();
+    std::string lFile; size_t count = 0;
+    // We check for all files, if it is a potential dependency and add it to
+    // the result
+    while (lFiles->next(lFile)) {
+      // If the file is not a jar file, we don't do anything
+      if (lFile.substr(lFile.size() - 4, std::string::npos) != ".jar")
+        continue;
+      for (std::list<std::string>::iterator i = lDeps.begin(); i != lDeps.end(); ++i) {
+        std::string lSub = lFile.substr(0, i->size());
+        if (lSub == *i) {
+          std::string lFull = lJarDir + lPathSeparator + lFile;
+          File_t f = File::createFile(lFull);
+          if (f->exists() && !f->isDirectory()) {
+            lClassPath.push_back(theFactory->createString(lFull));
+            // We count all jar files we add to the dependencies.
+            ++count;
+            break;
+          }
+        }
+      }
+    }
+    // Last, we check if all dependencies are found
+    if (count < lDeps.size()) {
+      std::string errmsg = "Could not find ";
+      errmsg += lDeps.front();
+      throwError(errmsg);
+    }
+  }
+  return ItemSequence_t(new VectorItemSequence(lClassPath));
 }
 
 ItemSequence_t GeneratePDFFunction::evaluate(const StatelessExternalFunction::Arguments_t& args) const
 {
   Item classPathItem;
-  Iterator_t arg2_iter = args[2]->getIterator();
-  arg2_iter->open();
-  arg2_iter->next(classPathItem);
-  arg2_iter->close();
+  Iterator_t lIter = args[2]->getIterator();
+  lIter->open();
+  lIter->next(classPathItem);
+  lIter->close();
+  lIter = args[0]->getIterator();
+  lIter->open();
   Item outputFormat;
-  Iterator_t arg0_iter = args[0]->getIterator();
-  arg0_iter->open();
-  arg0_iter->next(outputFormat);
-  arg0_iter->close();
+  lIter->next(outputFormat);
+  lIter->close();
   jthrowable lException = 0;
   static JNIEnv* env;
   try {
@@ -123,10 +321,10 @@ ItemSequence_t GeneratePDFFunction::evaluate(const StatelessExternalFunction::Ar
     jbyte* dataElements;
 
     Item item;
-    Iterator_t arg1_iter = args[1]->getIterator();
-    arg1_iter->open();
-    arg1_iter->next(item);
-    arg1_iter->close();
+    lIter = args[1]->getIterator();
+    lIter->open();
+    lIter->next(item);
+    lIter->close();
     // Searialize Item
     SingletonItemSequence lSequence(item);
     lSerializer->serialize(&lSequence, os);
@@ -216,11 +414,13 @@ ItemSequence_t GeneratePDFFunction::evaluate(const StatelessExternalFunction::Ar
     dataSize = env->GetArrayLength(res);
     dataElements = env->GetByteArrayElements(res, &isCopy);
 
-    Item lRes = theFactory->createBase64Binary((const unsigned char*) dataElements, dataSize);
+    std::string lBinaryString((const char*) dataElements, dataSize);
+    std::stringstream lStream(lBinaryString);
+    String base64S = encoding::Base64::encode(lStream);
+    Item lRes = theFactory->createBase64Binary(base64S.c_str(), base64S.length());
     return ItemSequence_t(new SingletonItemSequence(lRes));
   } catch (VMOpenException&) {
-    Item error = theFactory->createQName(XSL_MODULE_NAMESPACE, "VM001");
-    ExternalFunctionData::error(error, "ERROR: Could not start the Java VM (is the classpath set?)");
+    throw ExternalFunctionData::createZorbaException(XQP0021_USER_ERROR, "xsl-fo:VM001|ERROR: Could not start the Java VM (is the classpath set?)", __FILE__, __LINE__);
   } catch (JavaException&) {
     jclass stringWriterClass = env->FindClass("java/io/StringWriter");
     jclass printWriterClass = env->FindClass("java/io/PrintWriter");
@@ -240,8 +440,10 @@ ItemSequence_t GeneratePDFFunction::evaluate(const StatelessExternalFunction::Ar
     std::stringstream s;
     s << "A Java Exception was thrown:" << std::endl << errMsg;
     env->ReleaseStringUTFChars(errorMessage, errMsg);
-    Item error = theFactory->createQName(XSL_MODULE_NAMESPACE, "JAVA-EXCEPTION");
-    ExternalFunctionData::error(error, s.str());
+    std::string err("JAVA_ERROR|");
+    err += s.str();
+    env->ExceptionClear();
+    throw ExternalFunctionData::createZorbaException(XQP0021_USER_ERROR, err, __FILE__, __LINE__);
   }
   return ItemSequence_t(new EmptySequence());
 }
