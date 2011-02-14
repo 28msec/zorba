@@ -489,16 +489,18 @@ public:
 
   ftextension_selection(
     QueryLoc const&,
-    /* TODO: pragma_list, */
+    rchandle<PragmaList> const&,
     ftselection*
   );
   ~ftextension_selection();
 
   ft_visit_result::type accept( ftnode_visitor& );
+  rchandle<PragmaList> const& get_pragmas() const { return pragmas_; }
   ftselection const* get_ftselection() const { return ftselection_; }
   std::ostream& put( std::ostream& ) const;
 
 private:
+  rchandle<PragmaList> pragmas_;
   ftselection *ftselection_;
 };
 

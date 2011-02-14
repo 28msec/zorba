@@ -328,11 +328,11 @@ void ftdistance_filter::serialize( serialization::Archiver &ar ) {
 
 ftextension_selection::ftextension_selection(
   QueryLoc const &loc,
-  /* TODO: pragma_list, */
+  rchandle<PragmaList> const &pragmas,
   ftselection *selection
 ) :
   ftprimary( loc ),
-  /* TODO: pragma_list_( pragma_list ), */
+  pragmas_( pragmas ),
   ftselection_( selection )
 {
 }

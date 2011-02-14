@@ -2850,12 +2850,12 @@ void ValidateExpr::accept( parsenode_visitor &v ) const
 // [65]
 ExtensionExpr::ExtensionExpr(
   const QueryLoc& loc_,
-  rchandle<PragmaList> _pragma_list_h,
-  rchandle<exprnode> _expr_h)
+  rchandle<PragmaList> const &pragmas,
+  rchandle<exprnode> const &expr)
 :
   exprnode(loc_),
-  pragma_list_h(_pragma_list_h),
-  expr_h(_expr_h)
+  pragmas_(pragmas),
+  expr_(expr)
 {}
 
 
@@ -2864,8 +2864,8 @@ ExtensionExpr::ExtensionExpr(
 void ExtensionExpr::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
-  ACCEPT (pragma_list_h);
-  ACCEPT (expr_h);
+  ACCEPT (pragmas_);
+  ACCEPT (expr_);
   END_VISITOR();
 }
 
@@ -2884,10 +2884,10 @@ PragmaList::PragmaList(
 void PragmaList::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
-  vector<rchandle<Pragma> >::const_reverse_iterator it = pragma_hv.rbegin();
-  for (; it!=pragma_hv.rend(); ++it) {
-    const parsenode *e_p = &**it;
-    ACCEPT_CHK (e_p);
+  list_t::const_reverse_iterator it = pragmas_.rbegin();
+  for ( ; it != pragmas_.rend(); ++it ) {
+    const parsenode *const p = *it;
+    ACCEPT_CHK(p);
   }
   END_VISITOR();
 }
@@ -2898,12 +2898,13 @@ void PragmaList::accept( parsenode_visitor &v ) const
 Pragma::Pragma(
   const QueryLoc& loc_,
   rchandle<QName> _name_h,
-  zstring _pragma_lit)
+  zstring const &_pragma_lit)
 :
   parsenode(loc_),
   name_h(_name_h),
   pragma_lit(_pragma_lit)
-{}
+{
+}
 
 
 //-Pragma::
@@ -5428,25 +5429,24 @@ void FTExtensionOption::accept( parsenode_visitor &v ) const
 
 FTExtensionSelection::FTExtensionSelection(
   QueryLoc const &loc,
-  PragmaList const *pragma_list,
+  rchandle<PragmaList> const &pragmas,
   FTSelection const *ftselection
 ) :
   FTPrimary( loc ),
-  pragma_list_( pragma_list ),
+  pragmas_( pragmas ),
   ftselection_( ftselection )
 {
-  ZORBA_ASSERT( pragma_list );
+  ZORBA_ASSERT( pragmas_.getp() );
 }
 
 FTExtensionSelection::~FTExtensionSelection() {
-  delete pragma_list_;
   delete ftselection_;
 }
 
 void FTExtensionSelection::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
-  ACCEPT( pragma_list_ );
+  ACCEPT( pragmas_ );
   ACCEPT( ftselection_ );
   END_VISITOR();
 }

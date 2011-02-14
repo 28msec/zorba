@@ -11797,8 +11797,10 @@ void end_visit (const FTExtensionSelection& v, void* /*visit_state*/) {
   ftselection *const s = dynamic_cast<ftselection*>( top_ftstack() );
   if ( s )
     pop_ftstack();
+  else
+    ZORBA_ERROR_LOC_DESC( XQST0079, v.get_location(), "" );
   ftextension_selection *const es = new ftextension_selection(
-    v.get_location(), /* TODO: pragma_list, */ s
+    v.get_location(), v.get_pragma_list(), s
   );
   push_ftstack( es );
 #endif /* ZORBA_NO_FULL_TEXT */

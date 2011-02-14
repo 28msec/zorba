@@ -3424,20 +3424,21 @@ public:
 ********************************************************************************/
 class ExtensionExpr : public exprnode
 {
-protected:
-  rchandle<PragmaList> pragma_list_h;
-  rchandle<exprnode> expr_h;
 
 public:
   ExtensionExpr(
     const QueryLoc&,
-    rchandle<PragmaList>,
-    rchandle<exprnode>);
+    rchandle<PragmaList> const&,
+    rchandle<exprnode> const&);
 
-  rchandle<PragmaList> get_pragma_list() const { return pragma_list_h; }
-  rchandle<exprnode> get_expr() const { return expr_h; }
+  rchandle<PragmaList> const& get_pragma_list() const { return pragmas_; }
+  rchandle<exprnode> const& get_expr() const { return expr_; }
 
   void accept(parsenode_visitor&) const;
+
+private:
+  rchandle<PragmaList> pragmas_;
+  rchandle<exprnode> expr_;
 };
 
 
@@ -3446,16 +3447,18 @@ public:
 ********************************************************************************/
 class PragmaList : public parsenode
 {
-protected:
-  std::vector<rchandle<Pragma> > pragma_hv;
-
 public:
+  typedef std::list< rchandle<Pragma> > list_t;
+
   PragmaList(const QueryLoc&);
 
-  void push_back(rchandle<Pragma> pragma_h) { pragma_hv.push_back(pragma_h); }
-  rchandle<Pragma> operator[](int i) const { return pragma_hv[i]; }
+  void push_back( Pragma *p ) { pragmas_.push_back( p ); }
+  list_t const& get_pragmas() const { return pragmas_; }
 
   void accept(parsenode_visitor&) const;
+
+private:
+  list_t pragmas_;
 };
 
 
@@ -3473,7 +3476,7 @@ public:
   Pragma(
     const QueryLoc&,
     rchandle<QName>,
-    zstring pragma_lit);
+    zstring const &pragma_lit);
 
   rchandle<QName> get_name() const { return name_h; }
   zstring const& get_pragma_lit() const { return pragma_lit; }
@@ -6225,18 +6228,18 @@ class FTExtensionSelection : public FTPrimary {
 public:
   FTExtensionSelection(
     QueryLoc const&,
-    PragmaList const*,
+    rchandle<PragmaList> const&,
     FTSelection const*
   );
   ~FTExtensionSelection();
 
-  PragmaList const* get_pragma_list() const { return pragma_list_; }
+  rchandle<PragmaList> const& get_pragma_list() const { return pragmas_; }
   FTSelection const* get_selectionI() const { return ftselection_; }
 
   void accept( parsenode_visitor& ) const;
 
 private:
-  PragmaList const *const pragma_list_;
+  rchandle<PragmaList> pragmas_;
   FTSelection const *const ftselection_;
 };
 
