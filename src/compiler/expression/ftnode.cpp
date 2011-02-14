@@ -355,6 +355,7 @@ ostream& ftextension_selection::put( ostream &o ) const {
 
 void ftextension_selection::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (ftprimary*)this );
+  ar & pragmas_;
   ar & ftselection_;
 }
 
