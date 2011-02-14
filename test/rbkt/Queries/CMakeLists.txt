@@ -107,10 +107,6 @@ IF(NOT ZORBA_SUPPRESS_IMAGEMAGICK)
   FIND_PACKAGE(ImageMagick COMPONENTS Magick++ MagickCore MagickWand)
 ENDIF(NOT ZORBA_SUPPRESS_IMAGEMAGICK)
 
-# Check if the C-Client is installed (needed for imap module tests)
-IF(NOT ZORBA_SUPPRESS_CCLIENT)
-  FIND_PACKAGE(CClient)
-ENDIF(NOT ZORBA_SUPPRESS_CCLIENT)
 
 # Check if WordNet thesaurus is installed in the location tests expect
 IF(EXISTS "${CMAKE_BINARY_DIR}/test/rbkt/thesauri/wordnet-en.zth")
@@ -176,13 +172,6 @@ FOREACH(TESTFILE ${TESTFILES})
          NOT ImageMagick_MagickCore_FOUND OR
          NOT ImageMagick_MagickWand_FOUND)
 
-  # Check if CClient libraries are found, if not then skip the imap tests
-  IF (NOT CCLIENT_FOUND) 
-    STRING(REGEX MATCH "imap/" NEEDS_CCLIENT "${TESTNAME}")
-    IF (NEEDS_CCLIENT)
-      SET (SKIP_TEST 1)
-    ENDIF (NEEDS_CCLIENT)
-  ENDIF (NOT CCLIENT_FOUND)
 
   # check if libgeos is found; skip the tests if not found
   IF (NOT GEOS_FOUND)
