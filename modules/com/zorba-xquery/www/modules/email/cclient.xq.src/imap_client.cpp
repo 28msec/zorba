@@ -496,7 +496,7 @@ namespace zorba { namespace emailmodule {
     mail_fetchflags_full(lSource, lSequence, (aUid ? FT_UID : NIL));  
     
     if (aUid) {
-      aMessageNumber = mail_uid(lSource, aMessageNumber); 
+      aMessageNumber = mail_msgno(lSource, aMessageNumber); 
     }     
 
     MESSAGECACHE* lCache = mail_elt(lSource, aMessageNumber);
