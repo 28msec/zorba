@@ -16,7 +16,7 @@ Iterator tree for main query:
 <SequentialIterator>
   <SequentialIterator>
     <CtxVarDeclareIterator varid="2" varname="tests"/>
-    <CtxVarAssignIterator varid="2" varname="tests">
+    <CtxVarAssignIterator varid="2" varname="tests" varkind="global">
       <ElementIterator>
         <SingletonIterator value="xs:QName(,,tests)"/>
       </ElementIterator>
@@ -27,7 +27,7 @@ Iterator tree for main query:
       <HoistIterator>
         <flwor::FLWORIterator>
           <ForVariable name="$$dot">
-            <PrologVarIterator varid="2" varname="tests"/>
+            <CtxVarIterator varid="2" varname="tests" varkind="global"/>
           </ForVariable>
           <WhereClause>
             <FnBooleanIterator>
@@ -49,7 +49,7 @@ Iterator tree for main query:
         <CreateInternalIndexIterator name="xs:QName(,,tempIndex0)">
           <flwor::FLWORIterator>
             <ForVariable name="$$opt_temp_2">
-              <PrologVarIterator varid="2" varname="tests"/>
+              <CtxVarIterator varid="2" varname="tests" varkind="global"/>
             </ForVariable>
             <ReturnClause>
               <ValueIndexEntryBuilderIterator>
@@ -71,7 +71,7 @@ Iterator tree for main query:
         </CreateInternalIndexIterator>
         <flwor::FLWORIterator>
           <ForVariable name="test">
-            <PrologVarIterator varid="2" varname="tests"/>
+            <CtxVarIterator varid="2" varname="tests" varkind="global"/>
           </ForVariable>
           <LetVariable name="$$opt_temp_0" materialize="true">
             <HoistIterator>

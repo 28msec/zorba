@@ -1197,6 +1197,7 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
     thePrinter.startBeginVisit("CtxVarAssignIterator", ++theId);
     thePrinter.addAttribute("varid", a.getVarId());
     thePrinter.addAttribute("varname", a.getVarName()->getStringValue().str());
+    thePrinter.addAttribute("varkind", (a.isLocal() ? "local" : "global"));
     printCommons( &a, theId );
     thePrinter.endBeginVisit(theId);
   }
@@ -1222,31 +1223,17 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
     thePrinter.endEndVisit();
   }
 
-  void PrinterVisitor::beginVisit(const PrologVarIterator& a)
+  void PrinterVisitor::beginVisit(const CtxVarIterator& a)
   {
-    thePrinter.startBeginVisit("PrologVarIterator", ++theId);
+    thePrinter.startBeginVisit("CtxVarIterator", ++theId);
     thePrinter.addAttribute("varid", a.getVarId());
     thePrinter.addAttribute("varname", a.getVarName()->getStringValue().str());
+    thePrinter.addAttribute("varkind", (a.isLocal() ? "local" : "global"));
     printCommons( &a, theId );
     thePrinter.endBeginVisit(theId);
   }
 
-  void PrinterVisitor::endVisit(const PrologVarIterator&)
-  {
-    thePrinter.startEndVisit();
-    thePrinter.endEndVisit();
-  }
-
-  void PrinterVisitor::beginVisit(const LocalVarIterator& a)
-  {
-    thePrinter.startBeginVisit("LocalVarIterator", ++theId);
-    thePrinter.addAttribute("varid", a.getVarId());
-    thePrinter.addAttribute("varname", a.getVarName()->getStringValue().str());
-    printCommons( &a, theId );
-    thePrinter.endBeginVisit(theId);
-  }
-
-  void PrinterVisitor::endVisit(const LocalVarIterator&)
+  void PrinterVisitor::endVisit(const CtxVarIterator&)
   {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();

@@ -20,7 +20,7 @@ Iterator tree for main query:
       <FnDocIterator>
         <PromoteIterator type="xs:string">
           <FnDataIterator>
-            <PrologVarIterator varid="2" varname="input-context"/>
+            <CtxVarIterator varid="2" varname="input-context" varkind="global"/>
           </FnDataIterator>
         </PromoteIterator>
       </FnDocIterator>

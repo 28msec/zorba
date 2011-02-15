@@ -34,8 +34,8 @@ namespace zorba
 
   This internal function is used to declare block-local and prolog variables
   (including the context item, if it is declared in the prolog). During runtime,
-  the function creates and initializes in the dynamic context a binding between
-  the variable id and the variable value.
+  the function creates and initializes in the local dynamic context a binding
+  between the variable id and the variable value.
 ********************************************************************************/
 class ctx_var_declare : public function
 {
@@ -79,7 +79,8 @@ PlanIter_t ctx_var_declare::codegen(
   context item, if it is declared in the prolog) that do have an initializing
   expr, or to assign a value to a prolog or block-local var. During runtime,
   the function computes the initExpr and stores the resulting value inside the
-  dynamic ctx, at the location that is identified by the variable id.
+  appropriate dynamic ctx (global or local), at the location that is identified
+  by the variable id.
 ********************************************************************************/
 class ctx_var_assign : public function
 {
@@ -131,9 +132,9 @@ PlanIter_t ctx_var_assign::codegen(
 /*******************************************************************************
   ctxvar-is-set(varExpr)
 
-  This internal function is used to check if a prolog of block-local variable
-  has been declared. During runtime, it checks if a value exists for variable
-  in the dynamic ctx.
+  This internal function is used to check if an external prolog variable has
+  been declared and set. During runtime, it checks if a value exists for variable
+  in the global dynamic ctx.
 ********************************************************************************/
 class ctx_var_is_set : public function
 {
@@ -173,9 +174,13 @@ PlanIter_t ctx_var_is_set::codegen(
 /*******************************************************************************
   ctxvar-get(varExpr)
 
-  This internal function is used to check if a prolog of block-local variable
-  has been declared. During runtime, it checks if a value exists for variable
-  in the dynamic ctx.
+  An "artificial" function that is needed by the optimizer only. During runtime,
+  it acts as a var reference for a prolog or local var, ie, its associated
+  runtime iterator is CtxVarIterator. During translation, the expr 
+  treat(ctxvar-get(varExpr), type) is created if a prolog/local var declaration
+  has an associated type declaration. The purpose of the ctxvar-get is to "hide"
+  the type of the variable from the treat expr (the type of ctxvar-get(varExpr)
+  is item()*), so that the optimizer will not remove the treat expr. 
 ********************************************************************************/
 class ctx_var_get : public function
 {
@@ -205,10 +210,11 @@ PlanIter_t ctx_var_get::codegen(
 
   const var_expr* varExpr = static_cast<const var_expr*>(foExpr.get_arg(0));
 
-  return new PrologVarIterator(sctx,
-                               loc,
-                               varExpr->get_unique_id(), 
-                               varExpr->get_name()); 
+  return new CtxVarIterator(sctx,
+                            loc,
+                            varExpr->get_unique_id(), 
+                            varExpr->get_name(),
+                            (varExpr->get_kind() == var_expr::local_var)); 
 }
 
 

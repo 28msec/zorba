@@ -105,9 +105,7 @@ class AndIterator;
   class CastableIterator;
   class PromoteIterator;
 
-  class CtxVarRefIterator;
-  class PrologVarIterator;
-  class LocalVarIterator;
+  class CtxVarIterator;
   class CtxVarDeclareIterator;
   class CtxVarAssignIterator;
   class CtxVarIsSetIterator;

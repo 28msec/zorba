@@ -286,9 +286,7 @@ PLAN_ITER_VISITOR (AndIterator);
 
   PLAN_ITER_VISITOR (FnDateTimeConstructorIterator);
 
-  PLAN_ITER_VISITOR (PrologVarIterator);
-
-  PLAN_ITER_VISITOR (LocalVarIterator);
+  PLAN_ITER_VISITOR (CtxVarIterator);
 
   PLAN_ITER_VISITOR (CtxVarDeclareIterator);
 

@@ -52,6 +52,7 @@ public:
   virtual void addAttribute(const std::string& aName, xs_long aValue) = 0;
 
   virtual void startEndVisit() = 0;
+
   virtual void endEndVisit() = 0;
 
 protected:  
@@ -71,12 +72,15 @@ private:
       
 public:
   XMLIterPrinter(std::ostream& aOStream);
+
   virtual ~XMLIterPrinter(){}
 
   virtual void start();
+
   virtual void stop();
 
   virtual void startBeginVisit(const std::string& aName, int aAddr);
+
   virtual void endBeginVisit(int aAddr);
 
   virtual void addAttribute(const std::string& aName, const std::string& aValue);
@@ -84,6 +88,7 @@ public:
   virtual void addAttribute(const std::string& aName, xs_long aValue);
 
   virtual void startEndVisit();
+
   virtual void endEndVisit();
 }; /* class XMLVisitorPrinter */
 
@@ -95,16 +100,19 @@ class DOTIterPrinter : public IterPrinter
 {
 private:
   std::stack<int> theNameStack;
-  uint32_t theIndent;
+  uint32_t        theIndent;
       
 public:
   DOTIterPrinter(std::ostream& aOStream);
+
   virtual ~DOTIterPrinter(){}
       
   virtual void start();
+
   virtual void stop();
 
   virtual void startBeginVisit(const std::string& aName, int aAddr);
+
   virtual void endBeginVisit(int aAddr);
 
   virtual void addAttribute(const std::string& aName, const std::string& aValue);
@@ -112,6 +120,7 @@ public:
   virtual void addAttribute(const std::string& aName, xs_long aValue);
 
   virtual void startEndVisit();
+
   virtual void endEndVisit();
   
 }; /* class XMLVisitorPrinter */

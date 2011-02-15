@@ -333,82 +333,82 @@ Iterator tree for main query:
 <SequentialIterator>
   <SequentialIterator>
     <CtxVarDeclareIterator varid="2" varname="math:errNS"/>
-    <CtxVarAssignIterator varid="2" varname="math:errNS">
+    <CtxVarAssignIterator varid="2" varname="math:errNS" varkind="global">
       <SingletonIterator value="xs:string(http://www.zorba-xquery.com/modules/math)"/>
     </CtxVarAssignIterator>
   </SequentialIterator>
   <TreatIterator type="xs:string" quant="">
-    <PrologVarIterator varid="2" varname="math:errNS"/>
+    <CtxVarIterator varid="2" varname="math:errNS" varkind="global"/>
   </TreatIterator>
   <SequentialIterator>
     <CtxVarDeclareIterator varid="3" varname="math:errValue"/>
-    <CtxVarAssignIterator varid="3" varname="math:errValue">
+    <CtxVarAssignIterator varid="3" varname="math:errValue" varkind="global">
       <QNameIterator>
-        <PrologVarIterator varid="2" varname="math:errNS"/>
+        <CtxVarIterator varid="2" varname="math:errNS" varkind="global"/>
         <SingletonIterator value="xs:string(math:Value)"/>
       </QNameIterator>
     </CtxVarAssignIterator>
   </SequentialIterator>
   <TreatIterator type="xs:QName" quant="">
-    <PrologVarIterator varid="3" varname="math:errValue"/>
+    <CtxVarIterator varid="3" varname="math:errValue" varkind="global"/>
   </TreatIterator>
   <SequentialIterator>
     <CtxVarDeclareIterator varid="4" varname="math:errNum"/>
-    <CtxVarAssignIterator varid="4" varname="math:errNum">
+    <CtxVarAssignIterator varid="4" varname="math:errNum" varkind="global">
       <QNameIterator>
-        <PrologVarIterator varid="2" varname="math:errNS"/>
+        <CtxVarIterator varid="2" varname="math:errNS" varkind="global"/>
         <SingletonIterator value="xs:string(math:Num)"/>
       </QNameIterator>
     </CtxVarAssignIterator>
   </SequentialIterator>
   <TreatIterator type="xs:QName" quant="">
-    <PrologVarIterator varid="4" varname="math:errNum"/>
+    <CtxVarIterator varid="4" varname="math:errNum" varkind="global"/>
   </TreatIterator>
   <SequentialIterator>
     <CtxVarDeclareIterator varid="5" varname="math:errDiv0"/>
-    <CtxVarAssignIterator varid="5" varname="math:errDiv0">
+    <CtxVarAssignIterator varid="5" varname="math:errDiv0" varkind="global">
       <QNameIterator>
-        <PrologVarIterator varid="2" varname="math:errNS"/>
+        <CtxVarIterator varid="2" varname="math:errNS" varkind="global"/>
         <SingletonIterator value="xs:string(math:Div0)"/>
       </QNameIterator>
     </CtxVarAssignIterator>
   </SequentialIterator>
   <TreatIterator type="xs:QName" quant="">
-    <PrologVarIterator varid="5" varname="math:errDiv0"/>
+    <CtxVarIterator varid="5" varname="math:errDiv0" varkind="global"/>
   </TreatIterator>
   <SequentialIterator>
     <CtxVarDeclareIterator varid="6" varname="math:errNA"/>
-    <CtxVarAssignIterator varid="6" varname="math:errNA">
+    <CtxVarAssignIterator varid="6" varname="math:errNA" varkind="global">
       <QNameIterator>
-        <PrologVarIterator varid="2" varname="math:errNS"/>
+        <CtxVarIterator varid="2" varname="math:errNS" varkind="global"/>
         <SingletonIterator value="xs:string(math:NA)"/>
       </QNameIterator>
     </CtxVarAssignIterator>
   </SequentialIterator>
   <TreatIterator type="xs:QName" quant="">
-    <PrologVarIterator varid="6" varname="math:errNA"/>
+    <CtxVarIterator varid="6" varname="math:errNA" varkind="global"/>
   </TreatIterator>
   <SequentialIterator>
     <CtxVarDeclareIterator varid="7" varname="width"/>
-    <CtxVarAssignIterator varid="7" varname="width">
+    <CtxVarAssignIterator varid="7" varname="width" varkind="global">
       <SingletonIterator value="xs:integer(10)"/>
     </CtxVarAssignIterator>
   </SequentialIterator>
   <TreatIterator type="xs:integer" quant="">
-    <PrologVarIterator varid="7" varname="width"/>
+    <CtxVarIterator varid="7" varname="width" varkind="global"/>
   </TreatIterator>
   <SequentialIterator>
     <CtxVarDeclareIterator varid="8" varname="height"/>
-    <CtxVarAssignIterator varid="8" varname="height">
+    <CtxVarAssignIterator varid="8" varname="height" varkind="global">
       <SingletonIterator value="xs:integer(10)"/>
     </CtxVarAssignIterator>
   </SequentialIterator>
   <TreatIterator type="xs:integer" quant="">
-    <PrologVarIterator varid="8" varname="height"/>
+    <CtxVarIterator varid="8" varname="height" varkind="global"/>
   </TreatIterator>
   <SequentialIterator>
     <CtxVarDeclareIterator varid="9" varname="scene"/>
-    <CtxVarAssignIterator varid="9" varname="scene">
+    <CtxVarAssignIterator varid="9" varname="scene" varkind="global">
       <UDFunctionCallIterator>
         <TreatIterator quant="">
           <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,scene)" typename="*" nill allowed="0">
@@ -425,14 +425,14 @@ Iterator tree for main query:
       <HoistIterator>
         <OpToIterator>
           <SingletonIterator value="xs:integer(1)"/>
-          <PrologVarIterator varid="7" varname="width"/>
+          <CtxVarIterator varid="7" varname="width" varkind="global"/>
         </OpToIterator>
       </HoistIterator>
     </LetVariable>
     <LetVariable name="$$opt_temp_1" materialize="true">
       <HoistIterator>
         <TreatIterator type="[NodeXQType elementNode content=[XQType ANY_TYPE_KIND*]]" quant="">
-          <PrologVarIterator varid="9" varname="scene"/>
+          <CtxVarIterator varid="9" varname="scene" varkind="global"/>
         </TreatIterator>
       </HoistIterator>
     </LetVariable>
@@ -444,10 +444,10 @@ Iterator tree for main query:
             <StringJoinIterator>
               <FnConcatIterator>
                 <FnStringIterator>
-                  <PrologVarIterator varid="7" varname="width"/>
+                  <CtxVarIterator varid="7" varname="width" varkind="global"/>
                 </FnStringIterator>
                 <FnStringIterator>
-                  <PrologVarIterator varid="8" varname="height"/>
+                  <CtxVarIterator varid="8" varname="height" varkind="global"/>
                 </FnStringIterator>
               </FnConcatIterator>
               <SingletonIterator value="xs:string( )"/>
@@ -456,14 +456,14 @@ Iterator tree for main query:
             <flwor::FLWORIterator>
               <ForVariable name="aspect-ratio">
                 <SpecificNumArithIterator_DivideOperation_DECIMAL>
-                  <PrologVarIterator varid="7" varname="width"/>
-                  <PrologVarIterator varid="8" varname="height"/>
+                  <CtxVarIterator varid="7" varname="width" varkind="global"/>
+                  <CtxVarIterator varid="8" varname="height" varkind="global"/>
                 </SpecificNumArithIterator_DivideOperation_DECIMAL>
               </ForVariable>
               <ForVariable name="y">
                 <OpToIterator>
                   <SingletonIterator value="xs:integer(1)"/>
-                  <PrologVarIterator varid="8" varname="height"/>
+                  <CtxVarIterator varid="8" varname="height" varkind="global"/>
                 </OpToIterator>
               </ForVariable>
               <ForVariable name="y-recentered">
@@ -472,7 +472,7 @@ Iterator tree for main query:
                     <OpNumericUnaryIterator>
                       <ForVarIterator varname="y"/>
                     </OpNumericUnaryIterator>
-                    <PrologVarIterator varid="8" varname="height"/>
+                    <CtxVarIterator varid="8" varname="height" varkind="global"/>
                   </SpecificNumArithIterator_DivideOperation_DECIMAL>
                   <SingletonIterator value="xs:decimal(0.5)"/>
                 </SpecificNumArithIterator_AddOperation_DECIMAL>
@@ -502,7 +502,7 @@ Iterator tree for main query:
                             <SpecificNumArithIterator_SubtractOperation_DECIMAL>
                               <SpecificNumArithIterator_DivideOperation_DECIMAL>
                                 <ForVarIterator varname="x"/>
-                                <PrologVarIterator varid="7" varname="width"/>
+                                <CtxVarIterator varid="7" varname="width" varkind="global"/>
                               </SpecificNumArithIterator_DivideOperation_DECIMAL>
                               <SingletonIterator value="xs:decimal(0.5)"/>
                             </SpecificNumArithIterator_SubtractOperation_DECIMAL>

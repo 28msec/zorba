@@ -306,7 +306,7 @@ PlanIter_t op_zorba_subsequence_int::codegen(
   const expr* lenExpr = (subseqExpr.num_args() > 2 ? subseqExpr.get_arg(2) : NULL);
 
   LetVarIterator* letVarIter;
-  CtxVarRefIterator* prologVarIter;
+  CtxVarIterator* ctxVarIter;
 
   if (inputExpr->get_expr_kind() == relpath_expr_kind &&
       posExpr->get_expr_kind() == const_expr_kind && 
@@ -344,14 +344,14 @@ PlanIter_t op_zorba_subsequence_int::codegen(
       return aArgs[0];
     }
   }
-  else if ((prologVarIter = dynamic_cast<CtxVarRefIterator*>(aArgs[0].getp())) != NULL)
+  else if ((ctxVarIter = dynamic_cast<CtxVarIterator*>(aArgs[0].getp())) != NULL)
   {
     const var_expr* inputVar = inputExpr->get_var();
     if (inputVar != NULL &&
         lenExpr != NULL &&
         !inputVar->is_context_item() &&
-        prologVarIter->setTargetPosIter(aArgs[1]) &&
-        prologVarIter->setTargetLenIter(aArgs[2]))
+        ctxVarIter->setTargetPosIter(aArgs[1]) &&
+        ctxVarIter->setTargetLenIter(aArgs[2]))
     {
       return aArgs[0];
     }
@@ -387,7 +387,7 @@ PlanIter_t op_zorba_sequence_point_access::codegen(
   const expr* posExpr = subseqExpr.get_arg(1);
 
   LetVarIterator* inputVarIter;
-  CtxVarRefIterator* prologVarIter;
+  CtxVarIterator* ctxVarIter;
 
   if (posExpr->get_expr_kind() == const_expr_kind)
   {
@@ -414,9 +414,9 @@ PlanIter_t op_zorba_sequence_point_access::codegen(
       if (inputVarIter->setTargetPos(pos))
         return aArgs[0];
     }
-    else if ((prologVarIter = dynamic_cast<CtxVarRefIterator*>(aArgs[0].getp())) != NULL)
+    else if ((ctxVarIter = dynamic_cast<CtxVarIterator*>(aArgs[0].getp())) != NULL)
     {
-      if (prologVarIter->setTargetPos(pos))
+      if (ctxVarIter->setTargetPos(pos))
         return aArgs[0];
     }
   }
@@ -429,9 +429,9 @@ PlanIter_t op_zorba_sequence_point_access::codegen(
         inputVarIter->setTargetPosIter(aArgs[1]))
       return aArgs[0];
   }
-  else if ((prologVarIter = dynamic_cast<CtxVarRefIterator*>(aArgs[0].getp())) != NULL)
+  else if ((ctxVarIter = dynamic_cast<CtxVarIterator*>(aArgs[0].getp())) != NULL)
   {
-    if (prologVarIter->setTargetPosIter(aArgs[1]))
+    if (ctxVarIter->setTargetPosIter(aArgs[1]))
       return aArgs[0];
   }
 

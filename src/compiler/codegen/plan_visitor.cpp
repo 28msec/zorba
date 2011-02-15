@@ -762,18 +762,20 @@ void general_var_codegen(const var_expr& var)
 
   case var_expr::prolog_var:
   {
-    push_itstack(new PrologVarIterator(sctx,
-                                       qloc,
-                                       var.get_unique_id(),
-                                       var.get_name()));
+    push_itstack(new CtxVarIterator(sctx,
+                                    qloc,
+                                    var.get_unique_id(),
+                                    var.get_name(),
+                                    false));
     break;
   }
   case var_expr::local_var:
   {
-    push_itstack(new LocalVarIterator(sctx,
-                                      qloc,
-                                      var.get_unique_id(),
-                                      var.get_name()));
+    push_itstack(new CtxVarIterator(sctx,
+                                    qloc,
+                                    var.get_unique_id(),
+                                    var.get_name(),
+                                    true));
     break;
   }
 

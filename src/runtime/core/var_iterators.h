@@ -134,6 +134,8 @@ public:
 
   const store::Item* getVarName() const { return theVarName.getp(); }
 
+  bool isLocal() const { return theIsLocal; }
+
   void setSingleItem() { theSingleItem = true; }
 
   void accept(PlanIterVisitor& v) const;
@@ -144,8 +146,8 @@ public:
 
 /*******************************************************************************
   This iterator implements the ctxvar-is-set(varName) function. Its purpose is
-  to check if a prolog or block-local variable has been declared. It does so
-  by checking whether an entry exists for variable in the dynamic ctx.
+  to check if an external prolog variable has been set. It does so by checking
+  whether an entry exists for variable in the global dynamic ctx.
 ********************************************************************************/
 class CtxVarIsSetIterator : public NoaryBaseIterator<CtxVarIsSetIterator,
                                                        PlanIteratorState>
@@ -227,37 +229,41 @@ public:
 };
 
 
-class CtxVarRefIterator : public NoaryBaseIterator<CtxVarRefIterator, CtxVarState>
+class CtxVarIterator : public NoaryBaseIterator<CtxVarIterator, CtxVarState>
 {
 protected:
   ulong          theVarId;
   store::Item_t  theVarName;
+  bool           theIsLocal;
 
   xs_long        theTargetPos;
   PlanIter_t     theTargetPosIter;
   PlanIter_t     theTargetLenIter;
 
 public:
-  SERIALIZABLE_ABSTRACT_CLASS(CtxVarRefIterator);
+  SERIALIZABLE_CLASS(CtxVarIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(
-  CtxVarRefIterator, 
-  NoaryBaseIterator<CtxVarRefIterator, CtxVarState>);
+  CtxVarIterator, 
+  NoaryBaseIterator<CtxVarIterator, CtxVarState>);
 
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  CtxVarRefIterator(
+  CtxVarIterator(
       static_context* sctx,
       const QueryLoc& loc,
       ulong varid,
-      const store::Item_t& varName);
+      const store::Item_t& varName,
+      bool local);
 
-  virtual ~CtxVarRefIterator() {}
+  virtual ~CtxVarIterator() {}
 
   ulong getVarId() const { return theVarId; }
 
   const store::Item* getVarName() const { return theVarName.getp(); }
+
+  bool isLocal() const { return theIsLocal; }
 
   bool setTargetPos(xs_long v);
 
@@ -273,71 +279,16 @@ public:
 
   uint32_t getStateSizeOfSubtree() const;
 
+  void accept(PlanIterVisitor& v) const;
+
   void openImpl(PlanState& planState, uint32_t& offset);
 
   void resetImpl(PlanState& planState) const;
 
   void closeImpl(PlanState& planState);
 
-  virtual bool nextImpl(store::Item_t& result, PlanState& planState) const = 0;
-};
-
-
-class PrologVarIterator : public CtxVarRefIterator
-{
-public:
-  SERIALIZABLE_CLASS(PrologVarIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(PrologVarIterator, CtxVarRefIterator);
-
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
-  PrologVarIterator(
-      static_context* sctx,
-      const QueryLoc& loc,
-      ulong varid,
-      const store::Item_t& varName)
-    :
-    CtxVarRefIterator(sctx, loc, varid, varName)
-  {
-  }    
-
-  ~PrologVarIterator() {}
-
-  void accept(PlanIterVisitor& v) const;
-
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
-
-
-class LocalVarIterator : public CtxVarRefIterator
-{
-public:
-  SERIALIZABLE_CLASS(LocalVarIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(LocalVarIterator, CtxVarRefIterator);
-
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
-  LocalVarIterator(
-      static_context* sctx,
-      const QueryLoc& loc,
-      ulong varid,
-      const store::Item_t& varName)
-    :
-    CtxVarRefIterator(sctx, loc, varid, varName)
-  {
-  }
-
-  ~LocalVarIterator() {}
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
-};
-
 
 
 /*******************************************************************************

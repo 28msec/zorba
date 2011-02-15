@@ -35,14 +35,9 @@
 
 namespace zorba
 {
-SERIALIZABLE_CLASS_VERSIONS(CtxVarRefIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(CtxVarRefIterator)
 
-SERIALIZABLE_CLASS_VERSIONS(PrologVarIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(PrologVarIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(LocalVarIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(LocalVarIterator)
+SERIALIZABLE_CLASS_VERSIONS(CtxVarIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(CtxVarIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(CtxVarDeclareIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(CtxVarDeclareIterator)
@@ -68,7 +63,7 @@ END_SERIALIZABLE_CLASS_VERSIONS(LetVarIterator)
 void CtxVarDeclareIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, 
-                      (NoaryBaseIterator<CtxVarDeclareIterator, PlanIteratorState>*)this);
+  (NoaryBaseIterator<CtxVarDeclareIterator, PlanIteratorState>*)this);
   
   ar & theVarId;
   ar & theVarName;
@@ -206,44 +201,36 @@ void CtxVarState::reset(PlanState& planState)
 }
 
 
-CtxVarRefIterator::CtxVarRefIterator(
+CtxVarIterator::CtxVarIterator(
     static_context* sctx,
     const QueryLoc& loc, 
     ulong varid,
-    const store::Item_t& varName)
+    const store::Item_t& varName,
+    bool isLocal)
   :
-  NoaryBaseIterator<CtxVarRefIterator, CtxVarState>(sctx, loc),
+  NoaryBaseIterator<CtxVarIterator, CtxVarState>(sctx, loc),
   theVarId(varid),
   theVarName(varName),
+  theIsLocal(isLocal),
   theTargetPos(0)
 {
 }
 
 
-void CtxVarRefIterator::serialize(::zorba::serialization::Archiver& ar)
+void CtxVarIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-  serialize_baseclass(ar, (NoaryBaseIterator<CtxVarRefIterator, CtxVarState>*)this);
+  serialize_baseclass(ar, 
+  (NoaryBaseIterator<CtxVarIterator, CtxVarState>*)this);
   ar & theVarId;
   ar & theVarName;
+  ar & theIsLocal;
   ar & theTargetPos;
   ar & theTargetPosIter;
   ar & theTargetLenIter;
 }
 
 
-void PrologVarIterator::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (CtxVarRefIterator*)this);
-}
-
-
-void LocalVarIterator::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (CtxVarRefIterator*)this);
-}
-
-
-bool CtxVarRefIterator::setTargetPos(xs_long v) 
+bool CtxVarIterator::setTargetPos(xs_long v) 
 {
   if (theTargetPos == 0 && theTargetPosIter == NULL)
   {
@@ -254,7 +241,7 @@ bool CtxVarRefIterator::setTargetPos(xs_long v)
 }
 
 
-bool CtxVarRefIterator::setTargetPosIter(const PlanIter_t& v) 
+bool CtxVarIterator::setTargetPosIter(const PlanIter_t& v) 
 {
   if (theTargetPos == 0 && theTargetPosIter == NULL)
   {
@@ -265,7 +252,7 @@ bool CtxVarRefIterator::setTargetPosIter(const PlanIter_t& v)
 }
 
 
-bool CtxVarRefIterator::setTargetLenIter(const PlanIter_t& v) 
+bool CtxVarIterator::setTargetLenIter(const PlanIter_t& v) 
 {
   if (theTargetPos == 0 && theTargetLenIter == NULL)
   {
@@ -276,7 +263,7 @@ bool CtxVarRefIterator::setTargetLenIter(const PlanIter_t& v)
 }
 
 
-uint32_t CtxVarRefIterator::getStateSizeOfSubtree() const
+uint32_t CtxVarIterator::getStateSizeOfSubtree() const
 {
   uint32_t size = 0;
 
@@ -296,11 +283,11 @@ uint32_t CtxVarRefIterator::getStateSizeOfSubtree() const
 }
 
 
-void CtxVarRefIterator::openImpl(
+void CtxVarIterator::openImpl(
     PlanState& planState,
     uint32_t& offset)
 {
-  NoaryBaseIterator<CtxVarRefIterator, CtxVarState>::openImpl(planState, offset);
+  NoaryBaseIterator<CtxVarIterator, CtxVarState>::openImpl(planState, offset);
 
   if (theTargetPosIter != NULL)
   {
@@ -312,9 +299,9 @@ void CtxVarRefIterator::openImpl(
 }
 
 
-void CtxVarRefIterator::resetImpl(PlanState& planState) const
+void CtxVarIterator::resetImpl(PlanState& planState) const
 {
-  NoaryBaseIterator<CtxVarRefIterator, CtxVarState>::resetImpl(planState);
+  NoaryBaseIterator<CtxVarIterator, CtxVarState>::resetImpl(planState);
 
   if (theTargetPosIter != NULL)
   {
@@ -326,9 +313,9 @@ void CtxVarRefIterator::resetImpl(PlanState& planState) const
 }
 
 
-void CtxVarRefIterator::closeImpl(PlanState& planState)
+void CtxVarIterator::closeImpl(PlanState& planState)
 {
-  NoaryBaseIterator<CtxVarRefIterator, CtxVarState>::closeImpl(planState);
+  NoaryBaseIterator<CtxVarIterator, CtxVarState>::closeImpl(planState);
 
   if (theTargetPosIter != NULL)
   {
@@ -341,13 +328,17 @@ void CtxVarRefIterator::closeImpl(PlanState& planState)
 
 
 
-bool PrologVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t varSingleItem;
   store::Item_t posItem;
   store::Item_t lenItem;
   xs_long startPos;
   xs_long len;
+
+  dynamic_context* dctx = (theIsLocal ? 
+                           planState.theLocalDynCtx :
+                           planState.theGlobalDynCtx);
 
   CtxVarState* state;
   DEFAULT_STACK_INIT(CtxVarState, state, planState);
@@ -363,11 +354,7 @@ bool PrologVarIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 
     startPos = posItem->getLongValue();
 
-    planState.theGlobalDynCtx->get_variable(theVarId,
-                                            theVarName,
-                                            loc,
-                                            varSingleItem,
-                                            state->theTempSeq);
+    dctx->get_variable(theVarId, theVarName, loc, varSingleItem, state->theTempSeq);
 
     if (varSingleItem != NULL)
     {
@@ -420,11 +407,8 @@ bool PrologVarIterator::nextImpl(store::Item_t& result, PlanState& planState) co
     state->theLastPos = (ulong)(startPos + len);
     state->thePos = (ulong)startPos;
 
-    planState.theGlobalDynCtx->get_variable(theVarId,
-                                            theVarName,
-                                            loc,
-                                            varSingleItem,
-                                            state->theTempSeq);
+    dctx->get_variable(theVarId, theVarName, loc, varSingleItem, state->theTempSeq);
+
     if (varSingleItem != NULL)
     {
       if (state->thePos == 1 && state->thePos < state->theLastPos)
@@ -457,11 +441,7 @@ bool PrologVarIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 
     startPos = theTargetPos;
 
-    planState.theGlobalDynCtx->get_variable(theVarId,
-                                            theVarName,
-                                            loc,
-                                            varSingleItem,
-                                            state->theTempSeq);
+    dctx->get_variable(theVarId, theVarName, loc, varSingleItem, state->theTempSeq);
 
     if (varSingleItem != NULL)
     {
@@ -489,11 +469,8 @@ bool PrologVarIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 
   else
   {
-    planState.theGlobalDynCtx->get_variable(theVarId,
-                                            theVarName,
-                                            loc,
-                                            result,
-                                            state->theTempSeq);
+    dctx->get_variable(theVarId, theVarName, loc, result, state->theTempSeq);
+
     if (result != NULL)
     {
       STACK_PUSH(true, state);
@@ -521,7 +498,7 @@ bool PrologVarIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 }
 
 
-void PrologVarIterator::accept(PlanIterVisitor& v) const
+void CtxVarIterator::accept(PlanIterVisitor& v) const
 {
   v.beginVisit(*this);
 
@@ -534,199 +511,6 @@ void PrologVarIterator::accept(PlanIterVisitor& v) const
   v.endVisit(*this);
 }
 
-
-bool LocalVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  store::Item_t varSingleItem;
-  store::Item_t posItem;
-  store::Item_t lenItem;
-  xs_long startPos;
-  xs_long len;
-
-  CtxVarState* state;
-  DEFAULT_STACK_INIT(CtxVarState, state, planState);
-
-  if (theTargetPosIter != NULL && theTargetLenIter == NULL)
-  {
-    result = NULL;
-
-    if (!consumeNext(posItem, theTargetPosIter, planState))
-    {
-      ZORBA_ASSERT(false);
-    }
-
-    startPos = posItem->getLongValue();
-
-    planState.theLocalDynCtx->get_variable(theVarId,
-                                           theVarName,
-                                           loc,
-                                           varSingleItem,
-                                           state->theTempSeq);
-
-    if (varSingleItem != NULL)
-    {
-      if (startPos == 1)
-      {
-        result.transfer(varSingleItem);
-        STACK_PUSH(true, state);
-      }
-    }
-    else if (state->theTempSeq != NULL)
-    {
-      if (startPos > 0)
-      {
-        state->theTempSeq->getItem((ulong)startPos, result);
-      }
-      
-      if (result)
-        STACK_PUSH(true, state);
-    }
-    else
-    {
-			ZORBA_ERROR_LOC_PARAM(XPDY0002, loc, theVarName->getStringValue().c_str(), "");
-    }
-  } // if (theTargetPosIter != NULL && theTargetLenIter == NULL)
-
-  else if (theTargetPosIter != NULL && theTargetLenIter != NULL)
-  {
-    result = NULL;
-
-    if (!consumeNext(posItem, theTargetPosIter, planState))
-    {
-      ZORBA_ASSERT(false);
-    }
-
-    startPos = posItem->getLongValue();
-
-    if (!consumeNext(lenItem, theTargetLenIter, planState))
-    {
-      ZORBA_ASSERT(false);
-    }
-
-    len = lenItem->getLongValue();
-
-    if (startPos <= 0)
-    {
-      len += startPos - 1;
-      startPos = 1;
-    }
-
-    state->theLastPos = (ulong)(startPos + len);
-    state->thePos = (ulong)startPos;
-
-    planState.theLocalDynCtx->get_variable(theVarId,
-                                           theVarName,
-                                           loc,
-                                           varSingleItem,
-                                           state->theTempSeq);
-    if (varSingleItem != NULL)
-    {
-      if (state->thePos == 1 && state->thePos < state->theLastPos)
-      {
-        result.transfer(varSingleItem);
-        STACK_PUSH(true, state);
-      }
-    }
-    else if (state->theTempSeq != NULL)
-    {
-      while (state->thePos < state->theLastPos)
-      {
-        state->theTempSeq->getItem(state->thePos++, result);
-        
-        if (result)
-          STACK_PUSH(true, state);
-        else
-          break;
-        }
-    }
-    else
-    {
-			ZORBA_ERROR_LOC_PARAM(XPDY0002, loc, theVarName->getStringValue().c_str(), "");
-    }
-  } // if (theTargetPosIter != NULL && theTargetLenIter != NULL)
-
-  if (theTargetPos > 0)
-  {
-    result = NULL;
-
-    startPos = theTargetPos;
-
-    planState.theLocalDynCtx->get_variable(theVarId,
-                                           theVarName,
-                                           loc,
-                                           varSingleItem,
-                                           state->theTempSeq);
-
-    if (varSingleItem != NULL)
-    {
-      if (startPos == 1)
-      {
-        result.transfer(varSingleItem);
-        STACK_PUSH(true, state);
-      }
-    }
-    else if (state->theTempSeq != NULL)
-    {
-      if (startPos > 0)
-      {
-        state->theTempSeq->getItem((ulong)startPos, result);
-      }
-      
-      if (result)
-        STACK_PUSH(true, state);
-    }
-    else
-    {
-			ZORBA_ERROR_LOC_PARAM(XPDY0002, loc, theVarName->getStringValue().c_str(), "");
-    }
-  } // if (theTargetPosIter != NULL && theTargetLenIter == NULL)
-
-  else
-  {
-    planState.theLocalDynCtx->get_variable(theVarId,
-                                           theVarName,
-                                           loc,
-                                           result,
-                                           state->theTempSeq);
-    if (result != NULL)
-    {
-      STACK_PUSH(true, state);
-    }
-    else if (state->theTempSeq != NULL)
-    {
-      state->theSourceIter = state->theTempSeq->getIterator();
-      state->theSourceIter->open();
-
-      while (state->theSourceIter->next(result))
-      {
-        STACK_PUSH(true, state);
-      }
-
-      state->theSourceIter->close();
-      state->theSourceIter = NULL;
-    }
-    else
-    {
-			ZORBA_ERROR_LOC_PARAM(XPDY0002, loc, theVarName->getStringValue().c_str(), "");
-    }
-	}
-
-  STACK_END (state);
-}
-
-
-void LocalVarIterator::accept(PlanIterVisitor& v) const
-{
-  v.beginVisit(*this);
-
-  if (theTargetPosIter != NULL)
-    theTargetPosIter->accept(v);
-
-  if (theTargetLenIter != NULL)
-    theTargetLenIter->accept(v);
-
-  v.endVisit(*this);
-}
 
 
 /////////////////////////////////////////////////////////////////////////////////
