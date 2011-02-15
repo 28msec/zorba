@@ -16,6 +16,7 @@ SET(ZORBASERIALIZATION_SRCS
   archiver.cpp
   base64impl.cpp
   class_serializer.cpp
+  zorba_classes_version.cpp
   mem_archiver.cpp
   xml_archiver.cpp
   bin_archiver.cpp

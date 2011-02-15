@@ -21,6 +21,7 @@
 #include "zorbaerrors/error_manager.h"
 #include <zorba/error.h>
 #include "zorbaserialization/mem_archiver.h"
+#include "zorbaserialization/class_serializer.h"
 
 #include "functions/function.h"
 #include "store/api/item.h"
@@ -33,8 +34,6 @@ namespace zorba
 
 namespace serialization
 {
-
-#define  ARCHIVER_LATEST_VERSION   0x3 //current latest version
 
 
 /////////////////////////////////////////
@@ -98,7 +97,7 @@ Archiver::Archiver(bool is_serializing_out, bool internal_archive)
   : serializing_out(is_serializing_out),
     serialize_base_class(false),
     all_reference_list(0),
-    archive_version(ARCHIVER_LATEST_VERSION),
+    archive_version(g_zorba_classes_version),
     out_fields(0),
     current_compound_field(0),
     simple_hashout_fields(0),
@@ -734,9 +733,9 @@ void Archiver::set_class_version(int new_class_version)
 
 void Archiver::root_tag_is_read()
 {
-  if(archive_version != ARCHIVER_LATEST_VERSION)
+  if(archive_version != g_zorba_classes_version)
   {
-    ZORBA_SER_ERROR_DESC_OSS(SRL0012_INCOMPATIBLE_ARCHIVE_VERSION, "Archive version is " << archive_version << " but expected " << ARCHIVER_LATEST_VERSION);
+    ZORBA_SER_ERROR_DESC_OSS(SRL0012_INCOMPATIBLE_ARCHIVE_VERSION, "Archive version is " << archive_version << " but expected " << g_zorba_classes_version);
   }
   all_reference_list = new hash32map<void*>(nr_ids*2, 0.6f);
 }
