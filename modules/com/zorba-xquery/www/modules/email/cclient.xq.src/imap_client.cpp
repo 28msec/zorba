@@ -109,7 +109,7 @@ namespace zorba { namespace emailmodule {
                             const std::string& aPassword,                                
                             const std::string& aMailbox,
                             const bool aFullOpen) {
-      std::string lHostAndMailbox = "{" + aHost + "}"; 
+      std::string lHostAndMailbox = "{" + aHost + "}" + aMailbox; 
 
       // check if there is a mailstream that is already open with the same parameters, if true then take it (this is the ideal case)
       
