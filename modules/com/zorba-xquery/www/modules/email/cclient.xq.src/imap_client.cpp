@@ -280,7 +280,7 @@ namespace zorba { namespace emailmodule {
  
     std::string lHost = "{" + aHost + "}" + aMailboxFrom;
     MAILSTREAM* lSource = getMailStream(aHost, aUserName, aPassword, aMailboxFrom, true); 
-    long  lLongResult =  mail_copy_full(lSource,  const_cast<char*>(aMessageNumbers.c_str()),  const_cast<char*>(aMailboxTo.c_str()), (aUid ? SE_UID : NIL) | (aCopy ? CP_MOVE : NIL));
+    long  lLongResult =  mail_copy_full(lSource,  const_cast<char*>(aMessageNumbers.c_str()),  const_cast<char*>(aMailboxTo.c_str()), (aUid ? SE_UID : NIL) | (aCopy ? NIL : CP_MOVE));
     return (lLongResult == T);
   }
 
@@ -297,7 +297,7 @@ namespace zorba { namespace emailmodule {
     /* IMPORTANT: make sure that the vector of found sequence numbers is empty! */
     theFoundSequenceNumbers.clear();
 
-    MAILSTREAM* lSource = getMailStream(aHost, aUsername, aPassword, "", true); 
+    MAILSTREAM* lSource = getMailStream(aHost, aUsername, aPassword, aMailbox, true); 
     /* First, tokenize the criteria so that we can work on it */
     std::stringstream lToTokenize(aCriteria);
     std::string lBuffer;
