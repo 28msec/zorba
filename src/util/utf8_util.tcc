@@ -116,6 +116,8 @@ bool normalize( InputStringType const &in, unicode::normalization::type n,
   if ( !utf8::to_string( u_out.getBuffer(), u_out.length(), &temp, &temp_len ) )
     return false;
   out->assign( temp, temp_len );
+  if ( !string_traits<OutputStringType>::takes_pointer_ownership )
+    delete[] temp;
   return true;
 }
 
@@ -137,7 +139,7 @@ bool to_string( unicode::char_type const *in, size_type in_len,
   storage_type *temp;
   size_type temp_len;
   if ( to_string( in, in_len, &temp, &temp_len ) ) {
-    out->assign(temp, temp_len);
+    out->assign( temp, temp_len );
     if ( !string_traits<StringType>::takes_pointer_ownership )
       delete[] temp;
     return true;
