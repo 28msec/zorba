@@ -328,7 +328,7 @@ namespace zorba { namespace emailmodule {
     MAILSTREAM* lSource = getMailStream(aHost, aUsername, aPassword, aMailbox, true); 
     
     if (aUid) {
-      aMessageNumber = mail_uid(lSource, aMessageNumber);
+      aMessageNumber = mail_msgno(lSource, aMessageNumber);
     }
  
     ENVELOPE* lResult = mail_fetchenvelope(lSource, aMessageNumber);
@@ -429,7 +429,7 @@ namespace zorba { namespace emailmodule {
     ENVELOPE * lResult = mail_fetchstructure_full (lSource, aMessageNumber, aBody, (aUid ? FT_UID : NIL));
       
     if (aUid) {
-      aMessageNumber = mail_uid(lSource, aMessageNumber);
+      aMessageNumber = mail_msgno(lSource, aMessageNumber);
     }
 
     MESSAGECACHE* lCache = mail_elt(lSource, aMessageNumber);
