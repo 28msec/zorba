@@ -1043,7 +1043,8 @@ void serialize_node_tree(Archiver &ar, store::Item *&obj, bool all_tree)
     store::Item *parent = NULL;
     if(ar.is_serializing_out())
     {
-      parent = obj->getParent();
+      if(obj != NULL)
+        parent = obj->getParent();
       if(parent)
       {
         while(parent->getParent())
@@ -1063,6 +1064,16 @@ void serialize_node_tree(Archiver &ar, store::Item *&obj, bool all_tree)
   bool is_ref;
   if(ar.is_serializing_out())
   {
+    if((obj == NULL))
+    {
+      ar.add_compound_field("NULL", 
+                            1 ,//class_version
+                            !FIELD_IS_CLASS, "NULL", 
+                            NULL,//(SerializeBaseClass*)obj, 
+                            ARCHIVE_FIELD_IS_NULL);
+      ar.set_is_temp_field(true);
+      return;
+    }
     is_ref = ar.add_compound_field("store::Item*", 0, FIELD_IS_CLASS, "", obj, ARCHIVE_FIELD_IS_PTR);
   }
   else
@@ -1076,14 +1087,14 @@ void serialize_node_tree(Archiver &ar, store::Item *&obj, bool all_tree)
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
     if(!retval && ar.get_read_optional_field())
       return;
-    ar.check_class_field(retval, type, "store::Item*", is_simple, is_class, field_treat, (enum  ArchiveFieldTreat)-1, id);
     if(field_treat == ARCHIVE_FIELD_IS_NULL)
     {
-      obj = NULL;//unreachable
+      obj = NULL;
       ar.read_end_current_level();
       ar.set_is_temp_field(true);
       return;
     }
+    ar.check_class_field(retval, type, "store::Item*", is_simple, is_class, field_treat, (enum  ArchiveFieldTreat)-1, id);
     //ar.register_reference(id, &obj);
     if((field_treat != ARCHIVE_FIELD_IS_PTR) && (field_treat != ARCHIVE_FIELD_IS_REFERENCING))
     {
