@@ -70,7 +70,6 @@ module namespace file = "http://www.zorba-xquery.com/modules/file";
  :
  : @param $sourceFile The path/URI of the file to copy.
  : @param $destinationFile The detination path/URI.
- : @example copy.xq
  : @return true if the copy operation was successful.
  : @error An error is thrown if IO or Security problems occur.
  :)
@@ -88,7 +87,7 @@ declare sequential function file:copy(
  : @param $destinationFile The destination path/URI.
  : @param $overwrite Flag to control if the operation should succeed if a the
  :        destination file already exists.
- : @example files_pattern1.xq
+ : @example rbkt/Queries/zorba/file/files_pattern1.xq
  : @return true if the copy operation was successful
  : @error An error is thrown if IO or Security problems occur.
  :)
@@ -153,10 +152,10 @@ declare function file:files(
  : @param $recursive A boolean flag indicating whether directories
  :        should be searched recursively.
  : @return A sequence of file names matching the pattern.
- : @example files_pattern1.xq
- : @example files_pattern2.xq
- : @example files_pattern_rec1.xq
- : @example files_pattern_rec2.xq
+ : @example rbkt/Queries/zorba/file/files_pattern1.xq
+ : @example rbkt/Queries/zorba/file/files_pattern2.xq
+ : @example rbkt/Queries/zorba/file/files_pattern_rec1.xq
+ : @example rbkt/Queries/zorba/file/files_pattern_rec2.xq
  :)
 declare function file:files(
   $path as xs:string,
@@ -357,7 +356,7 @@ declare %nondeterministic function file:read-text(
  : @return An XML document containing the content of the file.
  : @error An error is thrown if the does not contain a valid XML, or if IO or
  :        Security problems occur.
- : @example validate.xq
+ : @example rbkt/Queries/zorba/file/validate.xq
  :)
 declare sequential function file:read-xml(
   $file as xs:string

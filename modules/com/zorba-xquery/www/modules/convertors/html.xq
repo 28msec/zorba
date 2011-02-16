@@ -60,7 +60,7 @@ declare variable $html:errWrongParam as xs:QName := fn:QName($html:htmlNS, "html
  :
  : @param $html the HTML string to tidy
  : @return the tidied XHTML document node
- : @example tidy_2.xq
+ : @example rbkt/Queries/zorba/converters/html/tidy_2.xq
  :)
 declare function html:parse (
   $html as xs:string
@@ -95,7 +95,7 @@ declare function html:parse (
  :        "http://www.zorba-xquery.com/modules/convertors/html-options" schema.
  : @return the tidied XHTML document node
  : @error $html:errWrongParam if the otions were not set correctly.
- : @example tidy_1.xq
+ : @example rbkt/Queries/zorba/converters/html/tidy_1.xq
  :)
 declare function html:parse (
   $html as xs:string,

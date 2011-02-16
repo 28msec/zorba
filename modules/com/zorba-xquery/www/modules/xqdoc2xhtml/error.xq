@@ -61,3 +61,8 @@ declare variable $err:UE006 as xs:QName := fn:QName($err:errNS, "err:UE006");
  : Error encountered while processing a XQDoc XML for generating the XHTML.
  :)
 declare variable $err:UE007 as xs:QName := fn:QName($err:errNS, "err:UE007");
+
+(:~
+ : The example was not found.
+ :)
+declare variable $err:UE008 as xs:QName := fn:QName($err:errNS, "err:UE008");

@@ -344,13 +344,13 @@ declare function math:cast-as-numeric($number as xs:anyAtomicType) as xs:anyAtom
  : @param $significance The multiple to which you want to round.
  : @return The rounded value.
  : @error XQP0021(errNum) if significance is zero or it doesn't have the same sign as number.
- : @example excel_ceiling1.xq
- : @example excel_ceiling2.xq
- : @example excel_ceiling3.xq
- : @example excel_ceiling4.xq
- : @example excel_ceiling5.xq
- : @example excel_ceiling6.xq
- : @example excel_ceiling7.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_ceiling1.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_ceiling2.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_ceiling3.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_ceiling4.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_ceiling5.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_ceiling6.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_ceiling7.xq
  :)
 declare function math:ceiling(
   $number        as xs:double,
@@ -372,12 +372,12 @@ declare function math:ceiling(
  : @see http://office.microsoft.com/en-us/excel/HP052090801033.aspx
  : @param $number The value to round.
  : @return The rounded value casted as numeric type.
- : @example excel_even1.xq
- : @example excel_even2.xq
- : @example excel_even3.xq
- : @example excel_even4.xq
- : @example excel_even5.xq
- : @example excel_even6.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_even1.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_even2.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_even3.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_even4.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_even5.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_even6.xq
  :)
 declare function math:even($number as xs:double) as xs:integer
 {
@@ -422,11 +422,11 @@ declare %private function math:fact-integer($intnum as xs:integer) as xs:integer
  : @param $number The nonnegative number you want the factorial of.
  : @return Returns the factorial of a number. The factorial of a number is equal to 1*2*3*...* number.
  : @error XQP0021(errNum) if the number is smaller than zero
- : @example excel_fact1.xq
- : @example excel_fact2.xq
- : @example excel_fact3.xq
- : @example excel_fact4.xq
- : @example excel_fact5.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_fact1.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_fact2.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_fact3.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_fact4.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_fact5.xq
 :)
 declare function math:fact($number as xs:integer) as xs:integer
 {
@@ -450,11 +450,11 @@ declare function math:fact($number as xs:integer) as xs:integer
  : @param $significance The multiple to which you want to round.
  : @return The rounded value as numeric type.
  : @error XQP0021(errNum) if significance is zero or it doesn't have the same sign as number.
- : @example excel_floor1.xq
- : @example excel_floor2.xq
- : @example excel_floor3.xq
- : @example excel_floor4.xq
- : @example excel_floor5.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_floor1.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_floor2.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_floor3.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_floor4.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_floor5.xq
 :)
 declare function math:floor(
   $number as xs:double,
@@ -479,10 +479,10 @@ declare function math:floor(
  : @see http://office.microsoft.com/en-us/excel/HP052091421033.aspx
  : @param $number The value to be rounded.
  : @return The rounded integer.
- : @example excel_int1.xq
- : @example excel_int2.xq
- : @example excel_int3.xq
- : @example excel_int4.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_int1.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_int2.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_int3.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_int4.xq
 :)
 declare function math:int($number as xs:double) as xs:integer
 {
@@ -500,10 +500,10 @@ declare function math:int($number as xs:double) as xs:integer
  :        This cannot be zero.
  : @return The remainder from division as numeric type.
  : @error XQP0021(errDiv0) if divisor is zero after casting to numeric.
- : @example excel_mod1.xq
- : @example excel_mod2.xq
- : @example excel_mod3.xq
- : @example excel_mod4.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_mod1.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_mod2.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_mod3.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_mod4.xq
  :)
 declare function math:mod(
   $number as xs:double,
@@ -529,12 +529,12 @@ declare function math:mod(
  : @see  http://office.microsoft.com/en-us/excel/HP052092031033.aspx
  : @param $number The value to round.
  : @return The odd integer.
- : @example excel_odd1.xq
- : @example excel_odd2.xq
- : @example excel_odd3.xq
- : @example excel_odd4.xq
- : @example excel_odd5.xq
- : @example excel_odd6.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_odd1.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_odd2.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_odd3.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_odd4.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_odd5.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_odd6.xq
  :)
 declare function math:odd($number as xs:double) as xs:integer
 {
@@ -580,11 +580,11 @@ declare %private function math:product-internal($numbers as xs:double*) as xs:do
  : @param $numbers The sequence of arguments convertable to numeric types.
  :        The sequence can be of any length.
  : @return The multiplication result as numeric type.
- : @example excel_product1.xq
- : @example excel_product2.xq
- : @example excel_product3.xq
- : @example excel_product4.xq
- : @example excel_product5.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_product1.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_product2.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_product3.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_product4.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_product5.xq
  :)
 declare function math:product($numbers as xs:double*) as xs:double
 {
@@ -603,10 +603,10 @@ declare function math:product($numbers as xs:double*) as xs:double
  : @param $denominator The divisor. It cannot be zero.
  : @return The result value as numeric type.
  : @error XQP0021(div0) if denominator casted as numeric type has value zero.
- : @example excel_quotient1.xq
- : @example excel_quotient2.xq
- : @example excel_quotient3.xq
- : @example excel_quotient4.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_quotient1.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_quotient2.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_quotient3.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_quotient4.xq
  :)
 declare function math:quotient(
   $numerator   as xs:double,
@@ -634,10 +634,10 @@ declare function math:quotient(
  : @param $number The number to round.
  : @param $precision The number of decimal places to keep.
  : @return The rounded number as numeric type.
- : @example excel_round1.xq
- : @example excel_round2.xq
- : @example excel_round3.xq
- : @example excel_round4.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_round1.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_round2.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_round3.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_round4.xq
  :)
 declare function math:round(
   $number as xs:double,
@@ -673,11 +673,11 @@ declare function math:round(
  : @param $number The number to round
  : @param $precision The number of decimal places to keep.
  : @return the truncated number toward zero, as numeric type.
- : @example excel_rounddown1.xq
- : @example excel_rounddown2.xq
- : @example excel_rounddown3.xq
- : @example excel_rounddown4.xq
- : @example excel_rounddown5.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_rounddown1.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_rounddown2.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_rounddown3.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_rounddown4.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_rounddown5.xq
  :)
 declare function math:rounddown(
   $number     as xs:double,
@@ -713,11 +713,11 @@ declare function math:rounddown(
  : @param $number The number to round
  : @param $precision The number of decimal places to keep.
  : @return The truncated number away from zero, as numeric type.
- : @example excel_roundup1.xq
- : @example excel_roundup2.xq
- : @example excel_roundup3.xq
- : @example excel_roundup4.xq
- : @example excel_roundup5.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_roundup1.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_roundup2.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_roundup3.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_roundup4.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_roundup5.xq
  :)
 declare function math:roundup(
   $number     as xs:double,
@@ -750,9 +750,9 @@ declare function math:roundup(
  : @see http://office.microsoft.com/en-us/excel/HP052092551033.aspx
  : @param $number The argument
  : @return The sign as (-1, 0, 1).
- : @example excel_sign1.xq
- : @example excel_sign2.xq
- : @example excel_sign3.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_sign1.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_sign2.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_sign3.xq
  :)
 declare function math:sign($number as xs:double) as xs:integer
 {
@@ -773,8 +773,8 @@ declare function math:sign($number as xs:double) as xs:integer
  : @see http://office.microsoft.com/en-us/excel/HP052093241033.aspx
  : @param $number The argument .
  : @return The integer value.
- : @example excel_trunc1.xq
- : @example excel_trunc2.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_trunc1.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_trunc2.xq
  :)
 declare function math:trunc($number as xs:double ) as xs:integer
 {
@@ -790,7 +790,7 @@ declare function math:trunc($number as xs:double ) as xs:integer
  : @param $number The argument castable to numeric type.
  : @param $precision The number of decimal places to keep .
  : @return The integer value.
- : @example excel_trunc3.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_trunc3.xq
  :)
 declare function math:trunc(
   $number as xs:double,
@@ -829,8 +829,8 @@ declare function math:sort-numbers($numbers as xs:double*) as xs:double*
  : @param $number The positive integer value.
  : @return The result as integer.
  : @error XQP0021(errNum) if the number is negative.
- : @example excel_factdouble1.xq
- : @example excel_factdouble2.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_factdouble1.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_factdouble2.xq
  :)
 declare function math:factdouble($number as xs:integer) as xs:integer
 {
@@ -934,14 +934,14 @@ declare %private function math:iterate-all-gcd(
  : @param $numbers The sequence of positive integers.
  : @return The GCD as integer.
  : @error XQP0021(errNum) if any number is smaller than zero.
- : @example excel_gcd1.xq
- : @example excel_gcd2.xq
- : @example excel_gcd3.xq
- : @example excel_gcd4.xq
- : @example excel_gcd5.xq
- : @example excel_gcd6.xq
- : @example excel_gcd7.xq
- : @example excel_gcd8.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_gcd1.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_gcd2.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_gcd3.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_gcd4.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_gcd5.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_gcd6.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_gcd7.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_gcd8.xq
  :)
 declare function math:gcd($numbers as xs:integer+) as xs:integer
 {
@@ -968,11 +968,11 @@ declare function math:gcd($numbers as xs:integer+) as xs:integer
  : @param $numbers The sequence of one or more positive integers.
  : @return The LCM as integer.
  : @error XQP0021(errNum) if any number is smaller than zero.
- : @example excel_lcm1.xq
- : @example excel_lcm2.xq
- : @example excel_lcm3.xq
- : @example excel_lcm4.xq
- : @example excel_lcm5.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_lcm1.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_lcm2.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_lcm3.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_lcm4.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_lcm5.xq
  :)
 declare function math:lcm($numbers as xs:integer+) as xs:integer
 {
@@ -1002,9 +1002,9 @@ declare function math:lcm($numbers as xs:integer+) as xs:integer
  : @param $number The value to round, 
  : @param $multiple The multiple to which you want to round number.
  : @return The rounded number up to the desired multiple.
- : @example excel_mround1.xq
- : @example excel_mround2.xq
- : @example excel_mround3.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_mround1.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_mround2.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_mround3.xq
  :)
 declare function math:mround(
   $number   as xs:decimal,
@@ -1037,9 +1037,9 @@ declare function math:mround(
  : @param $number A positive integer.
  : @return The roman string representation.
  : @error XQP0021(errNum) if the input integer is negative 
- : @example excel_roman1.xq
- : @example excel_roman2.xq
- : @example excel_roman3.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_roman1.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_roman2.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_roman3.xq
  :)
 declare function math:roman($number as xs:integer) as xs:string
 {
@@ -1114,7 +1114,7 @@ declare function math:roman($number as xs:integer) as xs:string
  : @param $array1 the sequences of numbers
  : @param $array2 the sequences of numbers
  : @return the sum of products
- : @example excel_sumproduct2.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_sumproduct2.xq
 :)
  declare function math:sumproduct( $array1 as xs:double*,
                                     $array2 as xs:double*  ) as xs:double
@@ -1136,7 +1136,7 @@ declare function math:roman($number as xs:integer) as xs:string
  : @see http://office.microsoft.com/en-us/excel/HP052092951033.aspx
  : @param $numbers the sequence of one or more numbers
  : @return the sum of squared values, as numeric type
- : @example excel_sumsq1.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_sumsq1.xq
 :)
  declare function math:sumsq( $numbers as xs:double+) as xs:double
  {
@@ -1159,8 +1159,8 @@ declare function math:roman($number as xs:integer) as xs:string
  : @param $numbers the sequence of numbers, of any length
  : @return for odd count of numbers return the number in the middle of the sorted sequence.
  :       For even count of numbers return the average of the two numbers in the middle.
- : @example excel_median1.xq
- : @example excel_median2.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_median1.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_median2.xq
 :)
 declare function math:median( $numbers as xs:double* ) as xs:double
 {
@@ -1183,9 +1183,9 @@ declare function math:median( $numbers as xs:double* ) as xs:double
  : @param $numbers the sequence of numbers, of any length
  : @return The most occuring number
  : @error XQP0021(errNA) if there are no duplicate numbers
- : @example excel_mode1.xq
- : @example excel_mode2.xq
- : @example excel_mode3.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_mode1.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_mode2.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_mode3.xq
 :)
 declare function math:mode( $numbers as xs:double* ) as xs:double
 {
@@ -1218,9 +1218,9 @@ declare function math:mode( $numbers as xs:double* ) as xs:double
  : @param $k_at the percentile, with value between 0 .. 1 inclusive
  : @return The computed percentile
  : @error XQP0021(errNum) if percentile is not between 0 .. 1
- : @example excel_percentile1.xq
- : @example excel_percentile2.xq
- : @example excel_percentile3.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_percentile1.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_percentile2.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_percentile3.xq
 :)
 declare function math:percentile( $numbers as xs:double*, $k_at as xs:double) as xs:double
 {
@@ -1265,7 +1265,7 @@ declare %private function math:sum-deviations(
  : @param $numbers the sequence of numbers.
  :     Sequence can be of any length from 1 up.
  : @return The formula result
- : @example excel_avedev1.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_avedev1.xq
 :)
 declare function math:avedev($numbers as xs:double+) as xs:double
 {
@@ -1287,9 +1287,9 @@ declare function math:avedev($numbers as xs:double+) as xs:double
  : @return The k-th largest value as numeric type
  : @error XQP0021(errNum) if the sequence is empty
  : @error XQP0021(errNum) if k is not a value between 1 and the sequence size
- : @example excel_large1.xq
- : @example excel_large2.xq
- : @example excel_large3.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_large1.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_large2.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_large3.xq
 :)
 declare function math:large($numbers as xs:double+, $k as xs:integer) as xs:double
 {
@@ -1322,9 +1322,9 @@ declare function math:large($numbers as xs:double+, $k as xs:integer) as xs:doub
  :        <dt>false</dt><dd>then rank the number as if the sequence was sorted in descending order.</dd>
  :        <dt>true</dt> <dd>then rank the number as if the sequence was sorted in ascending order.</dd></dl>
  : @return The rank of $x.
- : @example excel_rank1.xq
- : @example excel_rank2.xq
- : @example excel_rank4.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_rank1.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_rank2.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_rank4.xq
  :)
 declare function math:rank(
   $x                as xs:double, 
@@ -1373,8 +1373,8 @@ declare function math:rank(
  : @param $numbers the sequence of numbers.
  :        The sequence can be of any length.
  : @return The rank of $x.
- : @example excel_rank3.xq
- : @example excel_rank5.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_rank3.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_rank5.xq
 :)
 declare function math:rank(
   $x        as xs:double, 
@@ -1396,11 +1396,11 @@ declare function math:rank(
  : @param $x is the value for which you want to know the rank
  : @return The percentage of rank. 
  : @error XQP0021(errNum) if the sequence is zero length
- : @example excel_percentrank1.xq
- : @example excel_percentrank2.xq
- : @example excel_percentrank3.xq
- : @example excel_percentrank4.xq
- : @example excel_percentrank5.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_percentrank1.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_percentrank2.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_percentrank3.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_percentrank4.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_percentrank5.xq
 :)
 declare function math:percentrank($numbers as xs:double*, $x as xs:double) as xs:double
 {
@@ -1430,11 +1430,11 @@ declare function math:percentrank($numbers as xs:double*, $x as xs:double) as xs
  :  @return the computed quartile, as numeric type
  : @error XQP0021(errNum) if the sequence is zero length
  : @error XQP0021(errNum) if $quart is not one of the values 0, 1, 2, 3, 4
- : @example excel_quartile1.xq
- : @example excel_quartile2.xq
- : @example excel_quartile3.xq
- : @example excel_quartile4.xq
- : @example excel_quartile5.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_quartile1.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_quartile2.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_quartile3.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_quartile4.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_quartile5.xq
 :)
 declare function math:quartile($numbers as xs:double*, $quart as xs:integer) as xs:double
 {
@@ -1482,8 +1482,8 @@ declare function math:quartile($numbers as xs:double*, $quart as xs:integer) as 
  : @return The k-th smallest value of $numbers.
  : @error XQP0021(errNum) if the sequence is zero length.
  : @error XQP0021(errNum) if $k is not a value between 1 and the size of sequence.
- : @example excel_small1.xq
- : @example excel_small2.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_small1.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_small2.xq
 :)
 declare function math:small($numbers as xs:double*, $k as xs:integer) as xs:double
 {
@@ -1535,7 +1535,7 @@ declare %private function math:sumsq-deviations($numbers as xs:double*, $average
  : @param $numbers the sequence of numbers.
  :       The sequence can be of any length, from 1 up.
  : @return The variance, as numeric type
- : @example excel_var1.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_var1.xq
  :)
 declare function math:var($numbers as xs:double+) as xs:double
 {
@@ -1555,7 +1555,7 @@ declare function math:var($numbers as xs:double+) as xs:double
  : @param $numbers the sequence of numbers.
  :       The sequence can be of any length, from 1 up.
  : @return The variance, as numeric type
- : @example excel_vara1.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_vara1.xq
 :)
 declare function math:vara($numbers as xs:double+) as xs:double
 {
@@ -1574,7 +1574,7 @@ declare function math:vara($numbers as xs:double+) as xs:double
  : @param $numbers the sequence of numbers.
  :       The sequence can be of any length, from 1 up.
  : @return The variance, as numeric type
- : @example excel_varp1.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_varp1.xq
 :)
 declare function math:varp($numbers as xs:double+) as xs:double
 {
@@ -1593,7 +1593,7 @@ declare function math:varp($numbers as xs:double+) as xs:double
  : @param $numbers the sequence of numbers.
  :       The sequence can be of any length, from 1 up.
  : @return The variance, as numeric type
- : @example excel_varpa1.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_varpa1.xq
 :)
 declare function math:varpa($numbers as xs:double+) as xs:double
 {
@@ -1681,7 +1681,7 @@ declare %private function math:sum-prob-x(
  : @error XQP0021(errNum) if any probability is not between 0 and 1
  : @error XQP0021(errNum) if the sum of probabilities is not equal to 1
  : @error XQP0021(errNum) if x_range and prob_range do not have the same number of values
- : @example excel_prob2.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_prob2.xq
 :)
 declare function math:prob($x_range as xs:double+,
                             $prob_range as xs:double+,
@@ -1711,7 +1711,7 @@ declare function math:prob($x_range as xs:double+,
  : @error XQP0021(errNum) if any probability is not between 0 and 1
  : @error XQP0021(errNum) if the sum of probabilities is not equal to 1
  : @error XQP0021(errNum) if x_range and prob_range do not have the same number of values
- : @example excel_prob1.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_prob1.xq
  :)
 declare function math:prob($x_range as xs:double+,
                             $prob_range as xs:double+,
@@ -1773,7 +1773,7 @@ declare %private function math:sum-x-y-deviations(
  : @error XQP0021(errNA) if there are different numbers of x's and y's
  : @error XQP0021(errNA) if any sequence is empty
  : @error XQP0021(errDiv0) if all x's are equal
- : @example excel_slope1.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_slope1.xq
 :)
 declare function math:slope($known_y as xs:double+,
                        $known_x as xs:double+) as xs:double
@@ -1802,7 +1802,7 @@ declare function math:slope($known_y as xs:double+,
  : @param $standard_dev is the standard deviation of the distribution.
  : @return The normalized x, as numeric type
  : @error XQP0021(errNum) if standard_dev is a value smaller than zero or equal
- : @example excel_standardize1.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_standardize1.xq
 :)
 declare function math:standardize($x as xs:double,
                                    $mean as xs:double,
@@ -1828,7 +1828,7 @@ declare function math:standardize($x as xs:double,
  :    The sequence can be of any length, from 1 up.
  : @return the standard deviation, as numeric type
  : @error the errors returned by VAR function
- : @example excel_stdev1.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_stdev1.xq
 :)
 declare function math:stdev($numbers as xs:double+) as xs:double
 {
@@ -1848,7 +1848,7 @@ declare function math:stdev($numbers as xs:double+) as xs:double
  :    The sequence can be of any length, from 1 up.
  : @return the standard deviation, as numeric type
  : @error the errors returned by VARA function
- : @example excel_stdeva1.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_stdeva1.xq
 :)
 declare function math:stdeva($numbers as xs:double+) as xs:double
 {
@@ -1868,7 +1868,7 @@ declare function math:stdeva($numbers as xs:double+) as xs:double
  :    The sequence can be of any length, from 1 up.
  : @return the standard deviation, as numeric type
  : @error the errors returned by VARP function
- : @example excel_stdevp1.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_stdevp1.xq
 :)
 declare function math:stdevp($numbers as xs:double+) as xs:double
 {
@@ -1888,7 +1888,7 @@ declare function math:stdevp($numbers as xs:double+) as xs:double
  :    The sequence can be of any length, from 1 up.
  : @return the standard deviation, as numeric type
  : @error the errors returned by VARPA function
- : @example excel_stdevpa1.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_stdevpa1.xq
 :)
 declare function math:stdevpa($numbers as xs:double+) as xs:double
 {
@@ -1921,17 +1921,17 @@ declare function math:stdevpa($numbers as xs:double+) as xs:double
  : @return The function result, as numeric type
  : @error ** depends on the function called
  : @error XQP0021(errNum) if $function_num is not a value between 1 .. 11 or 101 .. 111
- : @example excel_subtotal1.xq
- : @example excel_subtotal2.xq
- : @example excel_subtotal3.xq
- : @example excel_subtotal4.xq
- : @example excel_subtotal5.xq
- : @example excel_subtotal6.xq
- : @example excel_subtotal7.xq
- : @example excel_subtotal8.xq
- : @example excel_subtotal9.xq
- : @example excel_subtotal10.xq
- : @example excel_subtotal11.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_subtotal1.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_subtotal2.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_subtotal3.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_subtotal4.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_subtotal5.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_subtotal6.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_subtotal7.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_subtotal8.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_subtotal9.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_subtotal10.xq
+ : @example rbkt/Queries/zorba/math/from_excel/excel_subtotal11.xq
 :)
 declare function math:subtotal($function_num as xs:integer, $numbers as xs:double*) as xs:double
 {

@@ -187,14 +187,14 @@ declare variable $zorba-csv:errWrongParam as xs:QName := fn:QName($zorba-csv:csv
  :    </dl>
  : @return a sequence of row elements, one for each line in csv
  : @error zorba-csv:WrongParam if the options parameter doesn't have the name "options".
- : @example csv_parse1.xq
- : @example csv_parse2.xq
- : @example csv_parse3.xq
- : @example csv_parse6.xq
- : @example csv_parse11.xq
- : @example csv_parse_utf8_11.xq
- : @example txt_parse5.xq
- : @example txt_parse8.xq
+ : @example rbkt/Queries/zorba/converters/csv/csv_parse1.xq
+ : @example rbkt/Queries/zorba/converters/csv/csv_parse2.xq
+ : @example rbkt/Queries/zorba/converters/csv/csv_parse3.xq
+ : @example rbkt/Queries/zorba/converters/csv/csv_parse6.xq
+ : @example rbkt/Queries/zorba/converters/csv/csv_parse11.xq
+ : @example rbkt/Queries/zorba/converters/csv/csv_parse_utf8_11.xq
+ : @example rbkt/Queries/zorba/converters/csv/txt_parse5.xq
+ : @example rbkt/Queries/zorba/converters/csv/txt_parse8.xq
 :)
 declare function zorba-csv:parse($csv as xs:string,
                                  $options as element(csv-options:options)?) as element()*
@@ -319,15 +319,15 @@ declare %private function zorba-csv:parse-internal($csv as xs:string,
  :     </dd>
  :    </dl>
  : @return the csv or fixed size text as string containing all the lines
- : @example csv_serialize1.xq
- : @example csv_serialize2.xq
- : @example csv_serialize3.xq
- : @example csv_serialize5.xq
- : @example csv_serialize6.xq
- : @example csv_parse_serialize6.xq
- : @example txt_serialize4.xq
- : @example txt_serialize6.xq
- : @example txt_parse_serialize6.xq
+ : @example rbkt/Queries/zorba/converters/csv/csv_serialize1.xq
+ : @example rbkt/Queries/zorba/converters/csv/csv_serialize2.xq
+ : @example rbkt/Queries/zorba/converters/csv/csv_serialize3.xq
+ : @example rbkt/Queries/zorba/converters/csv/csv_serialize5.xq
+ : @example rbkt/Queries/zorba/converters/csv/csv_serialize6.xq
+ : @example rbkt/Queries/zorba/converters/csv/csv_parse_serialize6.xq
+ : @example rbkt/Queries/zorba/converters/csv/txt_serialize4.xq
+ : @example rbkt/Queries/zorba/converters/csv/txt_serialize6.xq
+ : @example rbkt/Queries/zorba/converters/csv/txt_parse_serialize6.xq
 :)
 declare function zorba-csv:serialize($xml as element()*,
 									$options as element(csv-options:options)?) as xs:string

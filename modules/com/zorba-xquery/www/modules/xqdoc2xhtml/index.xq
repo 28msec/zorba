@@ -272,6 +272,17 @@ declare %private function xqdoc2html:get-filename($moduleURI as xs:string) as xs
   )
 };
 
+declare  %private function xqdoc2html:get-example-filename($examplePath as xs:string) as xs:string 
+{
+  fn:replace($examplePath,fn:concat("\",file:path-separator()),"_")
+};
+
+declare  %private function xqdoc2html:get-example-filename-link($examplePath as xs:string) as xs:string 
+{
+  fn:tokenize($examplePath,fn:concat("\",file:path-separator()))[last()]
+};
+
+
 (:~
  : This function generates the XQDoc XML for all the modules found in $modulesPath
  : and writes the resulting XML documents in $targetPath. The hierarchy is not preserved.
@@ -621,15 +632,14 @@ declare function xqdoc2html:generate-function-index()
 declare %private sequential function xqdoc2html:get-example-path (
   $filename as xs:string,
   $examplePath as xs:string
-) as xs:string* {
-  let $paths := tokenize($examplePath,';')
-  for $path in $paths
-  let $test := file:files($path,concat("^",$filename,"$"),fn:true())[1]
+) as xs:string {
+  (: $examplePath is zorba_folder/test:)
+  let $test := fn:concat($examplePath,file:path-separator(),$filename)
   return
     if (fn:exists($test)) then
-      fn:concat($path,file:path-separator(),$test)
+      $test
     else 
-      ()
+      fn:error($err:UE008, fn:concat("The example '", $test, "' was not found."));
 };
 
 (:~
@@ -647,7 +657,12 @@ declare %private sequential function xqdoc2html:configure-xml (
   $xqdocXhtmlPath as xs:string) {
     
   (: copy the example into the 'examples' folder :)
-  xqdoc2html:copy-examples($xqdoc, $xqdocXhtmlPath, $examplePath);
+  try {
+    xqdoc2html:copy-examples($xqdoc, $xqdocXhtmlPath, $examplePath);
+  } catch * ($error_code) 
+  {      
+    fn:error($err:UE008,  "soso");
+  };
 
   (: replace the inlineExamples with actual inline code :)
 
@@ -1024,14 +1039,14 @@ declare sequential function xqdoc2html:copy-examples(
   let $xqdocExamplesPath := fn:concat($xqdocXhtmlPath, file:path-separator(), "examples")
   return block {
   for $example in $xqdoc/xqdoc:functions/xqdoc:function/xqdoc:comment/xqdoc:example
-  let $exampleText := $example/text()
-  let $exampleSource := xqdoc2html:get-example-path($exampleText,$examplePath)
+  let $exampleText := xqdoc2html:get-example-filename($example/text())
+  let $exampleSource := xqdoc2html:get-example-path($example/text(),$examplePath)
   let $exampleDestination := fn:concat($xqdocExamplesPath, file:path-separator(), $exampleText)
   return
     if(exists($exampleSource)) then
     (
-      file:copy($exampleSource, $exampleDestination, fn:false()),
-      
+      file:copy($exampleSource, $exampleDestination, fn:false())
+ (:     
       (:append the expected result if example is .xq, it doesn't contain "output" and it doesn't have a spec file:)
       let $specSource := fn:replace($exampleSource, "[.]xq$", ".spec")
 	    let $specContent := if(fn:matches($specSource, "[.]spec$") and file:is-file($specSource)) then file:read-text( $specSource ) else ""
@@ -1048,14 +1063,6 @@ declare sequential function xqdoc2html:copy-examples(
           if(($exp-result-path ne $exampleSource) and file:is-file ( $exp-result )) then
             let $output-content := file:read-text ( $exp-result )
             let $new-content := fn:concat ($exampleContent, "
-            
-(:
-Output:
-
-",
-            $output-content,
-"
-:)
 "           )
             return
             file:write( $exampleDestination, $new-content, <output:method>text</output:method>)
@@ -1064,10 +1071,10 @@ Output:
         else
         ()
       else
-      ()
+      ():)
     )
     else
-      ();
+      fn:error($err:UE008, fn:concat("The example '", $exampleSource, "' was not found."));
   }
 };
 
@@ -1249,8 +1256,9 @@ declare function xqdoc2html:annotations-example($comment, $xqdocXhtmlPath) {
     (<div class="subsubsection">Examples:</div>,<ul>
     {for $annotation in $example
     return
-      if(file:exists(fn:concat($xqdocXhtmlPath, file:path-separator(), "examples", file:path-separator(), $annotation/node()))) then
-        <li><a href="{fn:concat('examples',file:path-separator(), $annotation/node())}" target="_blank">{$annotation/node()}</a></li>
+      if(file:exists(fn:concat($xqdocXhtmlPath, file:path-separator(), "examples", file:path-separator(), 
+         xqdoc2html:get-example-filename($annotation/node())))) then
+        <li><a href="{fn:concat('examples',file:path-separator(), xqdoc2html:get-example-filename($annotation/node()))}" target="_blank">{xqdoc2html:get-example-filename-link($annotation/node())}</a></li>
       else
         <li>{fn:concat("The example with filename '",$annotation/node(), "' was not found.")}</li>}</ul>
     )

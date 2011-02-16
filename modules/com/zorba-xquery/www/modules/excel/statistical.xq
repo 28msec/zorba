@@ -65,9 +65,9 @@ declare %private function excel:count-non-empty($numbers as xs:anyAtomicType*) a
  : @param $numbers The sequence of numbers or empty values.
  : @return The sum of all numbers divided by the number of non-empty values.
  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type.
- : @example average1.xq
- : @example average2.xq
- : @example average3.xq
+ : @example rbkt/Queries/zorba/excel/statistical/average1.xq
+ : @example rbkt/Queries/zorba/excel/statistical/average2.xq
+ : @example rbkt/Queries/zorba/excel/statistical/average3.xq
  :)
 declare function excel:average($numbers as xs:anyAtomicType*) as xs:anyAtomicType
 {
@@ -85,7 +85,7 @@ declare function excel:average($numbers as xs:anyAtomicType*) as xs:anyAtomicTyp
  : @see http://office.microsoft.com/en-us/excel/HP052090261033.aspx
  : @param $numbers The sequence of values, of any length.
  : @return The count of numbers.
- : @example count1.xq
+ : @example rbkt/Queries/zorba/excel/statistical/count1.xq
  :)
 declare function excel:count( $numbers as xs:anyAtomicType* )  as xs:integer
 {
@@ -106,7 +106,7 @@ declare function excel:count( $numbers as xs:anyAtomicType* )  as xs:integer
  : @see http://office.microsoft.com/en-us/excel/HP052090281033.aspx
  : @param $cells the sequence of values, of any length
  : @return The count
- : @example countblank1.xq
+ : @example rbkt/Queries/zorba/excel/statistical/countblank1.xq
 :)
 declare function excel:countblank( $cells as xs:anyAtomicType* ) as xs:integer
 {
@@ -127,9 +127,9 @@ declare function excel:countblank( $cells as xs:anyAtomicType* ) as xs:integer
  :           The sequence can be of any length.
  : @return The max
  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type 
- : @example max1.xq
- : @example max2.xq
- : @example max3.xq
+ : @example rbkt/Queries/zorba/excel/statistical/max1.xq
+ : @example rbkt/Queries/zorba/excel/statistical/max2.xq
+ : @example rbkt/Queries/zorba/excel/statistical/max3.xq
 :)
 declare function excel:max ( $numbers as xs:anyAtomicType* ) as xs:anyAtomicType
 {
@@ -149,8 +149,8 @@ declare function excel:max ( $numbers as xs:anyAtomicType* ) as xs:anyAtomicType
  :           The sequence can be of any length.
  : @return The min
  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type 
- : @example min1.xq
- : @example min2.xq
+ : @example rbkt/Queries/zorba/excel/statistical/min1.xq
+ : @example rbkt/Queries/zorba/excel/statistical/min2.xq
 :)
 declare function excel:min ( $numbers as xs:anyAtomicType* ) as xs:anyAtomicType
 {
@@ -174,8 +174,8 @@ declare function excel:min ( $numbers as xs:anyAtomicType* ) as xs:anyAtomicType
  : @return for odd count of numbers return the number in the middle of the sorted sequence.
  :       For even count of numbers return the average of the two numbers in the middle.
  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type 
- : @example median1.xq
- : @example median2.xq
+ : @example rbkt/Queries/zorba/excel/statistical/median1.xq
+ : @example rbkt/Queries/zorba/excel/statistical/median2.xq
 :)
 declare function excel:median( $numbers as xs:anyAtomicType* ) as xs:anyAtomicType
 {
@@ -199,9 +199,9 @@ declare function excel:median( $numbers as xs:anyAtomicType* ) as xs:anyAtomicTy
  : @return The most occuring number
  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
  : @error XQP0021(errNA) if there are no duplicate numbers
- : @example mode1.xq
- : @example mode2.xq
- : @example mode3.xq
+ : @example rbkt/Queries/zorba/excel/statistical/mode1.xq
+ : @example rbkt/Queries/zorba/excel/statistical/mode2.xq
+ : @example rbkt/Queries/zorba/excel/statistical/mode3.xq
 :)
 declare function excel:mode( $numbers as xs:anyAtomicType* ) as xs:anyAtomicType
 {
@@ -234,9 +234,9 @@ declare function excel:mode( $numbers as xs:anyAtomicType* ) as xs:anyAtomicType
  : @return The computed percentile
  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
  : @error XQP0021(errNum) if percentile is not between 0 .. 1
- : @example percentile1.xq
- : @example percentile2.xq
- : @example percentile3.xq
+ : @example rbkt/Queries/zorba/excel/statistical/percentile1.xq
+ : @example rbkt/Queries/zorba/excel/statistical/percentile2.xq
+ : @example rbkt/Queries/zorba/excel/statistical/percentile3.xq
 :)
 declare function excel:percentile( $numbers as xs:anyAtomicType*, $k_at as xs:anyAtomicType) as xs:anyAtomicType
 {
@@ -281,7 +281,7 @@ declare %private function excel:sum-deviations(
  :     Sequence can be of any length from 1 up.
  : @return The formula result
  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
- : @example avedev1.xq
+ : @example rbkt/Queries/zorba/excel/statistical/priority1/avedev1.xq
 :)
 declare function excel:avedev($numbers as xs:anyAtomicType+) as xs:anyAtomicType
 {
@@ -319,7 +319,7 @@ declare %private function excel:add-all-cells($numbers as xs:anyAtomicType*) as 
  : @param $numbers the sequence of values of any type.
  :    The sequence can be of any length, from 1 up.
  : @return The result
- : @example averagea1.xq
+ : @example rbkt/Queries/zorba/excel/statistical/priority1/averagea1.xq
 :)
 declare function excel:averagea($numbers as xs:anyAtomicType+) as xs:anyAtomicType
 {
@@ -333,7 +333,7 @@ declare function excel:averagea($numbers as xs:anyAtomicType+) as xs:anyAtomicTy
  : @see http://office.microsoft.com/en-us/excel/HP052090271033.aspx
  : @param $numbers the sequence of values of any type, any length
  : @return The count of non-empty values
- : @example counta1.xq
+ : @example rbkt/Queries/zorba/excel/statistical/priority1/counta1.xq
 :)
 declare function excel:counta($numbers as xs:anyAtomicType*) as xs:integer
 {
@@ -360,9 +360,9 @@ declare function excel:counta($numbers as xs:anyAtomicType*) as xs:integer
  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
  : @error XQP0021(errNum) if the sequence is empty
  : @error XQP0021(errNum) if k is not a value between 1 and the sequence size
- : @example large1.xq
- : @example large2.xq
- : @example large3.xq
+ : @example rbkt/Queries/zorba/excel/statistical/priority1/large1.xq
+ : @example rbkt/Queries/zorba/excel/statistical/priority1/large2.xq
+ : @example rbkt/Queries/zorba/excel/statistical/priority1/large3.xq
 :)
 declare function excel:large($numbers as xs:anyAtomicType*, $k as xs:integer) as xs:anyAtomicType
 {
@@ -389,7 +389,7 @@ declare function excel:large($numbers as xs:anyAtomicType*, $k as xs:integer) as
  :           The sequence can be of any length.
  : @return The max
  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type 
- : @example maxa1.xq
+ : @example rbkt/Queries/zorba/excel/statistical/priority1/maxa1.xq
 :)
 declare function excel:maxa($numbers as xs:anyAtomicType*) as xs:anyAtomicType
 {
@@ -405,7 +405,7 @@ declare function excel:maxa($numbers as xs:anyAtomicType*) as xs:anyAtomicType
  :           The sequence can be of any length.
  : @return The min
  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type 
- : @example mina1.xq
+ : @example rbkt/Queries/zorba/excel/statistical/priority1/mina1.xq
 :)
 declare function excel:mina($numbers as xs:anyAtomicType*) as xs:anyAtomicType
 {
@@ -427,9 +427,9 @@ declare function excel:mina($numbers as xs:anyAtomicType*) as xs:anyAtomicType
  :        <dt>true</dt> <dd>then rank the number as if the sequence was sorted in ascending order.</dd></dl>
  : @return The rank of $x.
  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type.
- : @example rank1.xq
- : @example rank2.xq
- : @example rank4.xq
+ : @example rbkt/Queries/zorba/excel/statistical/priority1/rank1.xq
+ : @example rbkt/Queries/zorba/excel/statistical/priority1/rank2.xq
+ : @example rbkt/Queries/zorba/excel/statistical/priority1/rank4.xq
  :)
 declare function excel:rank(
   $x                as xs:anyAtomicType, 
@@ -478,8 +478,8 @@ declare function excel:rank(
  :        The sequence can be of any length.
  : @return The rank of $x.
  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type.
- : @example rank3.xq
- : @example rank5.xq
+ : @example rbkt/Queries/zorba/excel/statistical/priority1/rank3.xq
+ : @example rbkt/Queries/zorba/excel/statistical/priority1/rank5.xq
 :)
 declare function excel:rank(
   $x        as xs:anyAtomicType, 
@@ -501,11 +501,11 @@ declare function excel:rank(
  : @return The percentage of rank. 
  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type 
  : @error XQP0021(errNum) if the sequence is zero length
- : @example percentrank1.xq
- : @example percentrank2.xq
- : @example percentrank3.xq
- : @example percentrank4.xq
- : @example percentrank5.xq
+ : @example rbkt/Queries/zorba/excel/statistical/priority1/percentrank1.xq
+ : @example rbkt/Queries/zorba/excel/statistical/priority1/percentrank2.xq
+ : @example rbkt/Queries/zorba/excel/statistical/priority1/percentrank3.xq
+ : @example rbkt/Queries/zorba/excel/statistical/priority1/percentrank4.xq
+ : @example rbkt/Queries/zorba/excel/statistical/priority1/percentrank5.xq
 :)
 declare function excel:percentrank($numbers as xs:anyAtomicType*, $x as xs:anyAtomicType) as xs:decimal
 {
@@ -535,11 +535,11 @@ declare function excel:percentrank($numbers as xs:anyAtomicType*, $x as xs:anyAt
  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type 
  : @error XQP0021(errNum) if the sequence is zero length
  : @error XQP0021(errNum) if $quart is not one of the values 0, 1, 2, 3, 4
- : @example quartile1.xq
- : @example quartile2.xq
- : @example quartile3.xq
- : @example quartile4.xq
- : @example quartile5.xq
+ : @example rbkt/Queries/zorba/excel/statistical/priority1/quartile1.xq
+ : @example rbkt/Queries/zorba/excel/statistical/priority1/quartile2.xq
+ : @example rbkt/Queries/zorba/excel/statistical/priority1/quartile3.xq
+ : @example rbkt/Queries/zorba/excel/statistical/priority1/quartile4.xq
+ : @example rbkt/Queries/zorba/excel/statistical/priority1/quartile5.xq
 :)
 declare function excel:quartile($numbers as xs:anyAtomicType*, $quart as xs:integer) as xs:anyAtomicType
 {
@@ -587,8 +587,8 @@ declare function excel:quartile($numbers as xs:anyAtomicType*, $quart as xs:inte
  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type.
  : @error XQP0021(errNum) if the sequence is zero length.
  : @error XQP0021(errNum) if $k is not a value between 1 and the size of sequence.
- : @example small1.xq
- : @example small2.xq
+ : @example rbkt/Queries/zorba/excel/statistical/priority1/small1.xq
+ : @example rbkt/Queries/zorba/excel/statistical/priority1/small2.xq
 :)
 declare function excel:small($numbers as xs:anyAtomicType*, $k as xs:integer) as xs:anyAtomicType
 {
@@ -640,7 +640,7 @@ declare %private function excel:sumsq-deviations($numbers as xs:anyAtomicType*, 
  :       The sequence can be of any length, from 1 up.
  : @return The variance, as numeric type
  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
- : @example var1.xq
+ : @example rbkt/Queries/zorba/excel/statistical/priority1/var1.xq
  :)
 declare function excel:var($numbers as xs:anyAtomicType+) as xs:anyAtomicType
 {
@@ -660,7 +660,7 @@ declare function excel:var($numbers as xs:anyAtomicType+) as xs:anyAtomicType
  :       The sequence can be of any length, from 1 up.
  : @return The variance, as numeric type
  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
- : @example vara1.xq
+ : @example rbkt/Queries/zorba/excel/statistical/priority1/vara1.xq
 :)
 declare function excel:vara($numbers as xs:anyAtomicType+) as xs:anyAtomicType
 {
@@ -679,7 +679,7 @@ declare function excel:vara($numbers as xs:anyAtomicType+) as xs:anyAtomicType
  :       The sequence can be of any length, from 1 up.
  : @return The variance, as numeric type
  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
- : @example varp1.xq
+ : @example rbkt/Queries/zorba/excel/statistical/priority1/varp1.xq
 :)
 declare function excel:varp($numbers as xs:anyAtomicType+) as xs:anyAtomicType
 {
@@ -698,7 +698,7 @@ declare function excel:varp($numbers as xs:anyAtomicType+) as xs:anyAtomicType
  :       The sequence can be of any length, from 1 up.
  : @return The variance, as numeric type
  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
- : @example varpa1.xq
+ : @example rbkt/Queries/zorba/excel/statistical/priority1/varpa1.xq
 :)
 declare function excel:varpa($numbers as xs:anyAtomicType+) as xs:anyAtomicType
 {
@@ -785,7 +785,7 @@ declare %private function excel:sum-prob-x(
  : @error XQP0021(errNum) if the sum of probabilities is not equal to 1
  : @error XQP0021(errValue) if any parameter is not castable to numeric
  : @error XQP0021(errNum) if x_range and prob_range do not have the same number of values
- : @example prob2.xq
+ : @example rbkt/Queries/zorba/excel/statistical/priority2/prob2.xq
 :)
 declare function excel:prob($x_range as xs:anyAtomicType+,
                             $prob_range as xs:anyAtomicType+,
@@ -815,7 +815,7 @@ declare function excel:prob($x_range as xs:anyAtomicType+,
  : @error XQP0021(errNum) if the sum of probabilities is not equal to 1
  : @error XQP0021(errValue) if any parameter is not castable to numeric
  : @error XQP0021(errNum) if x_range and prob_range do not have the same number of values
- : @example prob1.xq
+ : @example rbkt/Queries/zorba/excel/statistical/priority2/prob1.xq
  :)
 declare function excel:prob($x_range as xs:anyAtomicType+,
                             $prob_range as xs:anyAtomicType+,
@@ -877,7 +877,7 @@ declare %private function excel:sum-x-y-deviations(
  : @error XQP0021(errNA) if there are different numbers of x's and y's
  : @error XQP0021(errNA) if any sequence is empty
  : @error XQP0021(errDiv0) if all x's are equal
- : @example slope1.xq
+ : @example rbkt/Queries/zorba/excel/statistical/priority2/slope1.xq
 :)
 declare function excel:slope($known_y as xs:anyAtomicType+,
                        $known_x as xs:anyAtomicType+) as xs:anyAtomicType
@@ -906,7 +906,7 @@ declare function excel:slope($known_y as xs:anyAtomicType+,
  : @return The normalized x, as numeric type
  : @error XQP0021(errValues) if any parameter cannot be casted to numeric
  : @error XQP0021(errNum) if standard_dev is a value smaller than zero or equal
- : @example standardize1.xq
+ : @example rbkt/Queries/zorba/excel/statistical/priority2/standardize1.xq
 :)
 declare function excel:standardize($x as xs:anyAtomicType,
                                    $mean as xs:anyAtomicType,

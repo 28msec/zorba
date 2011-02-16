@@ -25,7 +25,7 @@ ELSE(NOT ZORBA_WITH_FILE_ACCESS)
       -e "\"modulesPath:=${CMAKE_SOURCE_DIR}/modules\""
       -e "\"xhtmlRequisitesPath:=${CMAKE_CURRENT_SOURCE_DIR}\""
       -e "\"xqdocBuildPath:=${CMAKE_CURRENT_BINARY_DIR}\""
-      -e "\"examplePath:=${CMAKE_SOURCE_DIR}/test/rbkt/Queries;${CMAKE_SOURCE_DIR}/test/update/Queries\""
+      -e "\"examplePath:=${CMAKE_SOURCE_DIR}/test\""
       -e "\"zorbaVersion:=${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}\""
       --module-path "\"${CMAKE_CURRENT_SOURCE_DIR}/src\""
   )

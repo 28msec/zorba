@@ -183,13 +183,13 @@ declare %private function geoproj:wgs84-to-omerc-validated(
  :   Note that the x coordinate corresponds to the longitude, and y coordinate to the latitude.<br/>
  :   The coordinates are expressed in meters.<br/>
  :   The coordinates are relative to the center point.
- : @example geoproj1.xq
- : @example geoproj5.xq
- : @example geoproj6.xq
- : @example geoproj8.xq
- : @example geoproj9.xq
- : @example geoproj10.xq
- : @example geoproj12.xq
+ : @example rbkt/Queries/zorba/geo/geoproj1.xq
+ : @example rbkt/Queries/zorba/geo/geoproj5.xq
+ : @example rbkt/Queries/zorba/geo/geoproj6.xq
+ : @example rbkt/Queries/zorba/geo/geoproj8.xq
+ : @example rbkt/Queries/zorba/geo/geoproj9.xq
+ : @example rbkt/Queries/zorba/geo/geoproj10.xq
+ : @example rbkt/Queries/zorba/geo/geoproj12.xq
  :)
 declare function geoproj:wgs84-to-omerc( $lat-0 as xs:double,
                                          $long-c as xs:double,
@@ -223,7 +223,7 @@ declare function geoproj:wgs84-to-omerc( $lat-0 as xs:double,
  : @return a sequence of x-y coordinates in format <br/>
  :   &lt;gml:pos&gt;<i>x</i> <i>y</i>&lt;/gml:pos&gt; <br/>
  :   in namespace "http://www.opengis.net/gml"
- : @example geoproj3.xq
+ : @example rbkt/Queries/zorba/geo/geoproj3.xq
  :)
 declare function geoproj:wgs84-to-omerc-gmlpos( $lat-0 as xs:double,
                                          $long-c as xs:double,
@@ -307,9 +307,9 @@ declare %private function geoproj:proj-phi2($ts as xs:double, $e as xs:double) a
  :   &lt;latlong&gt;&lt;lat&gt;<i>latitude degree</i>&lt;/lat&gt;&lt;long&gt;<i>longitude degree</i>&lt;/long&gt;&lt;/latlong&gt;<br/>
  :   in namespace "http://www.zorba-xquery.com/modules/geoproj-param"<br/>
  :   Note that the longitude corresponds to the x coordinate, and the latitude to the y coordinate.<br/>
- : @example geoproj2.xq
- : @example geoproj7.xq
- : @example geoproj11.xq
+ : @example rbkt/Queries/zorba/geo/geoproj2.xq
+ : @example rbkt/Queries/zorba/geo/geoproj7.xq
+ : @example rbkt/Queries/zorba/geo/geoproj11.xq
  :)
 declare function geoproj:omerc-to-wgs84($lat-0 as xs:double,
                                          $long-c as xs:double,
@@ -392,7 +392,7 @@ declare %private function geoproj:omerc-to-wgs84-validated($lat_0 as xs:double,
  : @return a sequence of geographic coordinates in format <br/>v
  :   &lt;latlong&gt;&lt;lat&gt;<i>latitude degree</i>&lt;/lat&gt;&lt;long&gt;<i>longitude degree</i>&lt;/long&gt;&lt;/latlong&gt;<br/>
  :   in namespace "http://www.zorba-xquery.com/modules/geoproj-param"
- : @example geoproj4.xq
+ : @example rbkt/Queries/zorba/geo/geoproj4.xq
  :)
 declare function geoproj:omerc-gmlpos-to-wgs84($lat_0 as xs:double,
                                          $long_c as xs:double,
@@ -423,7 +423,7 @@ declare function geoproj:omerc-gmlpos-to-wgs84($lat_0 as xs:double,
  :<br/>
  : @param $dms the degree-minutes-seconds string expressed in the format described above
  : @return the value in degrees 
- : @example dms1.xq
+ : @example rbkt/Queries/zorba/geo/dms1.xq
  :)
 declare function geoproj:dms-to-deg($dms as xs:string) as xs:double
 {
@@ -472,7 +472,7 @@ declare function geoproj:dms-to-deg($dms as xs:string) as xs:double
  : <br/>
  : @param $deg the degree value
  : @return the value in DMS format, <i>[-]degree</i><b>d</b><i>minutes</i><b>'</b><i>seconds</i> 
- : @example dms2.xq
+ : @example rbkt/Queries/zorba/geo/dms2.xq
  :)
 declare function geoproj:deg-to-dms($deg as xs:double) as xs:string
 {
