@@ -35,7 +35,7 @@ namespace zorba {
       StatusFunction(const ImapModule* aModule);
 
       virtual String
-      getLocalName() const { return "status"; }
+      getLocalName() const { return "status-impl"; }
   
       virtual ItemSequence_t 
       evaluate(const StatelessExternalFunction::Arguments_t& args,
@@ -53,7 +53,7 @@ namespace zorba {
       CreateFunction(const ImapModule* aModule);
 
       virtual String
-      getLocalName() const { return "create"; }
+      getLocalName() const { return "create-impl"; }
   
       virtual ItemSequence_t 
       evaluate(const StatelessExternalFunction::Arguments_t& args,
@@ -71,7 +71,7 @@ namespace zorba {
       DeleteFunction(const ImapModule* aModule);
 
       virtual String
-      getLocalName() const { return "delete"; }
+      getLocalName() const { return "delete-impl"; }
   
       virtual ItemSequence_t 
       evaluate(const StatelessExternalFunction::Arguments_t& args,
@@ -89,7 +89,7 @@ namespace zorba {
       RenameFunction(const ImapModule* aModule);
 
       virtual String
-      getLocalName() const { return "rename"; }
+      getLocalName() const { return "rename-impl"; }
 
       virtual ItemSequence_t
       evaluate(const StatelessExternalFunction::Arguments_t& args,
@@ -107,7 +107,7 @@ namespace zorba {
       ListFunction(const ImapModule* aModule);
 
       virtual String
-      getLocalName() const { return "list"; }
+      getLocalName() const { return "list-impl"; }
 
       virtual ItemSequence_t
       evaluate(const StatelessExternalFunction::Arguments_t& args,
@@ -124,7 +124,7 @@ namespace zorba {
       SubscribeFunction(const ImapModule* aModule);
 
       virtual String
-      getLocalName() const { return "subscribe"; }
+      getLocalName() const { return "subscribe-impl"; }
 
       virtual ItemSequence_t
       evaluate(const StatelessExternalFunction::Arguments_t& args,
@@ -140,7 +140,7 @@ namespace zorba {
       UnsubscribeFunction(const ImapModule* aModule);
 
       virtual String
-      getLocalName() const { return "unsubscribe"; }
+      getLocalName() const { return "unsubscribe-impl"; }
 
       virtual ItemSequence_t
       evaluate(const StatelessExternalFunction::Arguments_t& args,
@@ -157,7 +157,7 @@ namespace zorba {
       ExpungeFunction(const ImapModule* aModule);
 
       virtual String
-      getLocalName() const { return "expunge"; }
+      getLocalName() const { return "expunge-impl"; }
 
       virtual ItemSequence_t
       evaluate(const StatelessExternalFunction::Arguments_t& args,
@@ -173,7 +173,7 @@ namespace zorba {
       SearchFunction(const ImapModule* aModule);
 
       virtual String
-      getLocalName() const { return "search"; }
+      getLocalName() const { return "search-impl"; }
 
       virtual ItemSequence_t
       evaluate(const StatelessExternalFunction::Arguments_t& args,
@@ -189,7 +189,7 @@ namespace zorba {
       CopyFunction(const ImapModule* aModule);
 
       virtual String
-      getLocalName() const { return "copy"; }
+      getLocalName() const { return "copy-impl"; }
 
       virtual ItemSequence_t
       evaluate(const StatelessExternalFunction::Arguments_t& args,
@@ -205,7 +205,7 @@ namespace zorba {
       FetchEnvelopeFunction(const ImapModule* aModule);
 
       virtual String
-      getLocalName() const { return "fetch-envelope"; }
+      getLocalName() const { return "fetch-envelope-impl"; }
 
       virtual ItemSequence_t
       evaluate(const StatelessExternalFunction::Arguments_t& args,
@@ -224,7 +224,7 @@ namespace zorba {
       FetchFlagsFunction(const ImapModule* aModule);
 
       virtual String
-      getLocalName() const { return "fetch-flags"; }
+      getLocalName() const { return "fetch-flags-impl"; }
 
       virtual ItemSequence_t
       evaluate(const StatelessExternalFunction::Arguments_t& args,
@@ -243,7 +243,7 @@ namespace zorba {
       SetFlagsFunction(const ImapModule* aModule);
 
       virtual String
-      getLocalName() const { return "set-flags"; }
+      getLocalName() const { return "set-flags-impl"; }
 
       virtual ItemSequence_t
       evaluate(const StatelessExternalFunction::Arguments_t& args,
@@ -262,7 +262,7 @@ namespace zorba {
       FetchSubjectFunction(const ImapModule* aModule);
 
       virtual String
-      getLocalName() const { return "fetch-subject"; }
+      getLocalName() const { return "fetch-subject-impl"; }
 
       virtual ItemSequence_t
       evaluate(const StatelessExternalFunction::Arguments_t& args,
@@ -280,7 +280,7 @@ namespace zorba {
       FetchFromFunction(const ImapModule* aModule);
 
       virtual String
-      getLocalName() const { return "fetch-from"; }
+      getLocalName() const { return "fetch-from-impl"; }
 
       virtual ItemSequence_t
       evaluate(const StatelessExternalFunction::Arguments_t& args,
@@ -299,7 +299,7 @@ namespace zorba {
       FetchUidFunction(const ImapModule* aModule);
 
       virtual String
-      getLocalName() const { return "fetch-uid"; }
+      getLocalName() const { return "fetch-uid-impl"; }
 
       virtual ItemSequence_t
       evaluate(const StatelessExternalFunction::Arguments_t& args,
@@ -316,7 +316,7 @@ namespace zorba {
       FetchMessageSequenceNumberFunction(const ImapModule* aModule);
 
       virtual String
-      getLocalName() const { return "fetch-message-sequence-number"; }
+      getLocalName() const { return "fetch-message-sequence-number-impl"; }
 
       virtual ItemSequence_t
       evaluate(const StatelessExternalFunction::Arguments_t& args,
@@ -337,7 +337,7 @@ namespace zorba {
       FetchMessageFunction(const ImapModule* aModule);
 
       virtual String
-      getLocalName() const { return "fetch-message"; }
+      getLocalName() const { return "fetch-message-impl"; }
 
       virtual ItemSequence_t
       evaluate(const StatelessExternalFunction::Arguments_t& args,

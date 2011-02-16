@@ -3410,6 +3410,17 @@ void* begin_visit(const VFO_DeclList& v)
                               loc,
                               qnameItem->getNamespace().str(),
                               qnameItem->getLocalName().str());
+      } 
+      else
+      {
+        if (ef->getLocalName().compare(qnameItem->getLocalName().str()) != 0)
+        {
+          ZORBA_ERROR_LOC_DESC_OSS(XQP0028_FUNCTION_IMPL_NOT_FOUND,
+              loc,
+              "The external function referred to by the localname \"" << qnameItem->getLocalName()
+              << "\" claims to have the localname " << ef->getLocalName()
+              << " which is not consistent.");
+        }
       }
 
       ZORBA_ASSERT(ef != NULL);

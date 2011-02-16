@@ -308,7 +308,7 @@ class EqualizeFunction : public ImageFunction
   {
     public:
       EqualizeFunction(const ImageModule* aModule);
-      virtual String getLocalName() const { return "despeckle";}
+      virtual String getLocalName() const { return "equalize";}
 
       virtual ItemSequence_t
       evaluate(const StatelessExternalFunction::Arguments_t& args,

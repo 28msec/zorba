@@ -446,6 +446,25 @@ ReadFunction::evaluate(
 
 //*****************************************************************************
 
+ReadHtmlFunction::ReadHtmlFunction(const FileModule* aModule)
+  : FileFunction(aModule)
+{
+}
+
+ItemSequence_t
+ReadHtmlFunction::evaluate(
+  const StatelessExternalFunction::Arguments_t& aArgs,
+  const StaticContext*                          aSctxCtx,
+  const DynamicContext*                         aDynCtx) const
+{
+  throw ExternalFunctionData::createZorbaException(XPTY0004,
+      "Function read-html not implemented.", __FILE__, __LINE__);
+}
+
+//*****************************************************************************
+
+//*****************************************************************************
+
 ReadTextFunction::ReadTextFunction(const FileModule* aModule)
   : FileFunction(aModule)
 {

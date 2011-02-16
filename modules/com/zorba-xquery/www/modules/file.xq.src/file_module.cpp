@@ -64,7 +64,7 @@ FileModule::getExternalFunction(const String& aLocalname)
     } else if (aLocalname.equals("read")) {
       lFunc = new ReadFunction(this);
     } else if (aLocalname.equals("read-html")) {
-      lFunc = new MkdirsFunction(this);
+      lFunc = new ReadHtmlFunction(this);
     } else if (aLocalname.equals("read-text")) {
       lFunc = new ReadTextFunction(this);
     } else if (aLocalname.equals("read-xml")) {
