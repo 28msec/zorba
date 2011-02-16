@@ -45,11 +45,15 @@ declare variable $z:typeExternalLibrary := 'library';
 declare variable $z:typeSchema          := 'schema';
 
 (: these will be used to highlite a nodule label smth. like $z:colors($z:pureZorba) :)
-declare variable $z:pureZorba     as xs:integer := 1;
-declare variable $z:nonPureXQuery as xs:integer := 2;
-declare variable $z:pureXQuery    as xs:integer := 3;
-declare variable $z:colors      as xs:string* := ('red'       , 'darkorange'     , 'green');
-declare variable $z:moduleTypes as xs:string* := ('pure Zorba', 'non-pure XQuery', 'pure XQuery');
+
+(: There are external functions declared in the current module :)
+declare variable $z:ZorbaXQuery as xs:integer := 1;
+
+(: All the functions of the  current module are written 100% in XQuery, independently of what it imports. :)
+declare variable $z:XQueryOnly  as xs:integer := 2;
+
+declare variable $z:colors      as xs:string* := ('red'         , 'green');
+declare variable $z:moduleTypes as xs:string* := ('Zorba-XQuery', 'XQuery only');
 
 declare %private sequential function z:collect-module (
   $moduleURI as xs:string, 
@@ -107,12 +111,11 @@ declare function z:get_temp_module_type($xqdoc) as xs:integer
   (: does it contain functions? :)
   let $func := count ($xqdoc/xqdoc:functions/xqdoc:function/xqdoc:signature)
   return
-    if(($func gt 0) and ($ext gt 0) and ($func ne $ext)) then
-      $z:nonPureXQuery
-    else if(($func gt 0) and ($ext gt 0) and ($func eq $ext)) then
-      $z:pureZorba
+    if(($func gt 0) and ($ext gt 0) and ($func ne $ext) or
+       ($func gt 0) and ($ext gt 0) and ($func eq $ext)) then
+      $z:ZorbaXQuery
     else
-      $z:pureXQuery
+      $z:XQueryOnly
 };
 
 (:~
@@ -122,17 +125,23 @@ declare function z:get_temp_module_type($xqdoc) as xs:integer
  :)
 declare function z:get_module_type($moduleUri as xs:string) as xs:integer
 {
-
+(:
   let $tmpType := xs:integer($z:indexCollector//module[@uri eq $moduleUri]/@type)
   let $importedModulesType as xs:integer* := distinct-values(
                           for $edge in $z:edgesCollector//edge
                           where (data($edge/@uriFrom) eq $moduleUri) and  data($edge/@type) eq $z:typeModule
                           return xs:integer($z:indexCollector//module[@uri eq data($edge/@uriTo)]/@type))
   return
-    if( ($tmpType eq $z:pureXQuery) and
-        (functx:is-value-in-sequence($z:pureZorba,    $importedModulesType) or
-         functx:is-value-in-sequence($z:nonPureXQuery,$importedModulesType))) then $z:nonPureXQuery
-    else $tmpType  
+    if( ($tmpType eq $z:StandardXQuery) and
+        (functx:is-value-in-sequence($z:ZorbaXQuery,    $importedModulesType))) then 
+      $z:ZorbaXQuery
+    else 
+      $tmpType
+      :)
+  if( $moduleUri eq "http://www.w3.org/2005/xpath-functions") then
+    $z:XQueryOnly
+  else
+    xs:integer($z:indexCollector//module[@uri eq $moduleUri]/@type)
 };
 
 (:~
