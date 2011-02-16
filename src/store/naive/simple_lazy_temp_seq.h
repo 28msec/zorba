@@ -193,7 +193,7 @@ inline void SimpleLazyTempSeq::matNextItem()
     if (theCopy && lLocation->isNode()) 
     {
       store::CopyMode lCopyMode;
-      lLocation = lLocation->copy(NULL, 0, lCopyMode);
+      lLocation = lLocation->copy(NULL, lCopyMode);
     }
   }
   else 

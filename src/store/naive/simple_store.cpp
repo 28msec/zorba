@@ -1456,7 +1456,7 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
     {
       ElementNode* elemParent = reinterpret_cast<ElementNode*>(parent);
 
-      ulong numAttrs = elemParent->numAttributes();
+      ulong numAttrs = elemParent->numAttrs();
       for (i = 0; i < numAttrs; i++)
       {
         XmlNode* child = elemParent->getAttr(i);

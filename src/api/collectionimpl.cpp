@@ -95,7 +95,7 @@ CollectionImpl::addNode(Item& aNode)
     SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
     store::CopyMode lCopyMode;
-    store::Item* lCopy = lItem->copy(0, 0, lCopyMode);
+    store::Item* lCopy = lItem->copy(NULL, lCopyMode);
 
     theCollection->addNode(lCopy);
 
@@ -125,7 +125,7 @@ CollectionImpl::addNodes(const Iterator_t& aIterator)
     store::Item_t node;
     while (lRes->next(node))
     {
-      store::Item* lCopy = node->copy(0, 0, lCopyMode);
+      store::Item* lCopy = node->copy(NULL, lCopyMode);
       theCollection->addNode(lCopy, -1);
     }
 

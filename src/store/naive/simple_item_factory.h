@@ -226,7 +226,18 @@ public:
   bool createElementNode(
         store::Item_t&              result,
         store::Item*                parent,
-        long                        pos,
+        store::Item_t&              nodeName,
+        store::Item_t&              typeName,
+        bool                        haveTypedValue,
+        bool                        haveEmptyValue,
+        const store::NsBindings&    localBindings,
+        zstring&                    baseURI,
+        bool                        isInSubstitutionGroup = false);
+
+  bool createElementNode(
+        store::Item_t&              result,
+        store::Item*                parent,
+        ulong                       pos,
         store::Item_t&              nodeName,
         store::Item_t&              typeName,
         bool                        haveTypedValue,
@@ -238,7 +249,6 @@ public:
   bool createAttributeNode(
         store::Item_t&              result,
         store::Item*                parent,
-        long                        pos,
         store::Item_t&              nodeName,
         store::Item_t&              typeName,
         store::Item_t&              typedValue);
@@ -246,7 +256,23 @@ public:
   bool createAttributeNode(
         store::Item_t&              result,
         store::Item*                parent,
-        long                        pos,
+        store::Item_t&              nodeName,
+        store::Item_t&              typeName,
+        std::vector<store::Item_t>& typedValueV);
+
+
+  bool createAttributeNode(
+        store::Item_t&              result,
+        store::Item*                parent,
+        ulong                       pos,
+        store::Item_t&              nodeName,
+        store::Item_t&              typeName,
+        store::Item_t&              typedValue);
+
+  bool createAttributeNode(
+        store::Item_t&              result,
+        store::Item*                parent,
+        ulong                       pos,
         store::Item_t&              nodeName,
         store::Item_t&              typeName,
         std::vector<store::Item_t>& typedValueV);
@@ -254,7 +280,12 @@ public:
   bool createTextNode(
         store::Item_t&    result,
         store::Item*      parent,
-        long              pos,
+        zstring&          content);
+
+  bool createTextNode(
+        store::Item_t&    result,
+        store::Item*      parent,
+        ulong             pos,
         zstring&          content);
 
   bool createTextNode(
@@ -270,7 +301,14 @@ public:
   bool createPiNode (
         store::Item_t& result,
         store::Item*   parent,
-        long           pos,
+        zstring&       target,
+        zstring&       content,
+        zstring&       baseUri);
+
+  bool createPiNode (
+        store::Item_t& result,
+        store::Item*   parent,
+        ulong          pos,
         zstring&       target,
         zstring&       content,
         zstring&       baseUri);
@@ -278,22 +316,16 @@ public:
   bool createCommentNode (
         store::Item_t& result,
         store::Item*   parent,
-        long           pos,
+        zstring&       content);
+
+  bool createCommentNode (
+        store::Item_t& result,
+        store::Item*   parent,
+        ulong          pos,
         zstring&       content);
 
 
   store::PUL* createPendingUpdateList();
-
-#if 0
-  virtual bool createTuple(
-          store::Item_t& result,
-          std::vector<store::TupleField>& fields);
-
-  virtual bool createTuple(
-          store::Item_t& result,
-          store::Item *inTuple,
-          std::vector<int>& permutation);
-#endif
 
   bool createError(
           store::Item_t& result,

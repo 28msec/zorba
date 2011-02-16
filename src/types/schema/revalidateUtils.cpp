@@ -431,14 +431,12 @@ void processAttributes(
       if ( typedValues.size()==1 ) // hack around serialization bug
         GENV_ITEMFACTORY->createAttributeNode( defaultAttNode,
                                                NULL,
-                                               -1,
                                                attQName,
                                                typeQName,
                                                typedValues[0]);
       else
         GENV_ITEMFACTORY->createAttributeNode( defaultAttNode,
                                                NULL,
-                                               -1,
                                                attQName,
                                                typeQName,
                                                typedValues);

@@ -125,7 +125,7 @@ void NodeTypeInfo::transfer(NodeTypeInfo& other)
 ********************************************************************************/
 void XmlNode::attach(
     InternalNode*   parent,
-    long            pos) 
+    vsize           pos) 
 {
   ZORBA_ASSERT(theParent == NULL);
   ZORBA_ASSERT(parent != NULL);
@@ -147,33 +147,33 @@ void XmlNode::attach(
   {
     ElementNode* elemParent = reinterpret_cast<ElementNode*>(parent);
 
-    setOrdPath(parent, pos, store::StoreConsts::attributeNode);
+    setOrdPath(parent, false, pos, store::StoreConsts::attributeNode);
 
-    elemParent->attributes().insert(this, pos);
+    elemParent->insertAttr(this, pos);
 
     break;
   }
   case store::StoreConsts::commentNode:
   {
-    setOrdPath(parent, pos, getNodeKind());
+    setOrdPath(parent, false, pos, getNodeKind());
     
-    parent->children().insert(this, pos);
+    parent->insertChild(this, pos);
 
     break;
   }
   case store::StoreConsts::piNode:
   {
-    setOrdPath(parent, pos, getNodeKind());
+    setOrdPath(parent, false, pos, getNodeKind());
     
-    parent->children().insert(this, pos);
+    parent->insertChild(this, pos);
 
     break;
   }
   case store::StoreConsts::textNode:
   {
-    setOrdPath(parent, pos, getNodeKind());
+    setOrdPath(parent, false, pos, getNodeKind());
     
-    parent->children().insert(this, pos);
+    parent->insertChild(this, pos);
 
     break;
   }
@@ -181,9 +181,9 @@ void XmlNode::attach(
   {
     ElementNode* elemRoot = reinterpret_cast<ElementNode*>(this);
 
-    setOrdPath(parent, pos, getNodeKind());
+    setOrdPath(parent, false, pos, getNodeKind());
     
-    parent->children().insert(this, pos);
+    parent->insertChild(this, pos);
 
     std::stack<XmlNode*> nodes;
     nodes.push(this);
@@ -217,11 +217,14 @@ void XmlNode::attach(
       // Attach the attributes of this node to the new tree.
       AttributeNode* baseUriAttr = NULL;
       AttributeNode* hiddenBaseUriAttr = NULL;
-      ulong numAttrs = elem->numAttributes();
+      ulong numAttrs = elem->numAttrs();
 
-      for (ulong i = 0; i < numAttrs; i++)
+      InternalNode::iterator ite = elem->attrsBegin();
+      InternalNode::iterator end = elem->attrsEnd();
+
+      for (ulong i = 0; ite != end; ++i, ++ite)
       {
-        AttributeNode* attr = elem->getAttr(i);
+        AttributeNode* attr = static_cast<AttributeNode*>(*ite);
 
         attr->setTree(newTree);
         attr->theOrdPath = elem->theOrdPath;
@@ -257,17 +260,20 @@ void XmlNode::attach(
         else
         {
           ZORBA_ASSERT(elem == elemRoot);
-          hiddenBaseUriAttr->disconnect();
+          vsize pos;
+          hiddenBaseUriAttr->disconnect(pos);
           hiddenBaseUriAttr->destroy();
           elem->resetHaveBaseUri();
         }
       }
 
       // Attach the children of this node to the new tree.
-      ulong numChildren = elem->numChildren();
-      for (ulong i = 0; i < numChildren; i++)
+      ite = elem->childrenBegin();
+      end = elem->childrenEnd();
+
+      for (ulong i = 0; ite != end; ++i, ++ite)
       {
-        XmlNode* child = elem->getChild(i);
+        XmlNode* child = (*ite);
 
         child->setTree(newTree);
         child->theOrdPath = elem->theOrdPath;
@@ -388,8 +394,10 @@ void XmlNode::detach() throw()
           NsBindingsContext* parentNsContext = NULL;
 
           if (elemNode->theParent->getNodeKind() == store::StoreConsts::elementNode)
+          {
             parentNsContext = reinterpret_cast<ElementNode*>(elemNode->theParent)->
                               getNsContext();
+          }
 
           // If the current node is N, or a node in NT that does not inherit ns
           // bindings directly from its parent (but may inherit from some other
@@ -427,20 +435,23 @@ void XmlNode::detach() throw()
           }
 
           // Detach the attributes of the current node
-          ulong numAttrs = elemNode->numAttributes();
-
-          for (ulong i = 0; i < numAttrs; i++)
+          InternalNode::iterator ite = elemNode->attrsBegin();
+          InternalNode::iterator end = elemNode->attrsEnd();
+          
+          for (; ite != end; ++ite)
           {
-            AttributeNode* attr = elemNode->getAttr(i);
+            XmlNode* attr = (*ite);
             refcount += attr->theRefCount;
             attr->setTree(newTree);
           }
 
           // Detach the children of the current node
-          ulong numChildren = elemNode->numChildren();
-          for (ulong i = 0; i < numChildren; i++)
+          ite = elemNode->childrenBegin();
+          end = elemNode->childrenEnd();
+
+          for (; ite != end; ++ite)
           {
-            XmlNode* child = elemNode->getChild(i);
+            XmlNode* child = (*ite);
             refcount += child->theRefCount;
             child->setTree(newTree);
             
@@ -493,13 +504,11 @@ void XmlNode::detach() throw()
 /*******************************************************************************
   This method is used by the undo of UpdInsertChildren and UpdReplaceChild.
 ********************************************************************************/
-void InternalNode::removeChildren(
-    ulong  pos,
-    ulong  numChildren)
+void InternalNode::removeChildren(vsize pos, vsize numChildren)
 {
   ZORBA_FATAL(pos + numChildren <= this->numChildren(), "");
 
-  for (ulong i = 0; i < numChildren; i++)
+  for (vsize i = 0; i < numChildren; ++i)
   {
     XmlNode* child = getChild(pos);
     child->detach();
@@ -510,13 +519,11 @@ void InternalNode::removeChildren(
 /*******************************************************************************
   This method is used by the undo of UpdInsertAttributes, and UpdReplaceAttribute.
 ********************************************************************************/
-void ElementNode::removeAttributes(
-    ulong  pos,
-    ulong  numAttrs)
+void ElementNode::removeAttributes(vsize pos, vsize numAttrs)
 {
-  ZORBA_FATAL(pos + numAttrs <= this->numAttributes(), "");
+  ZORBA_FATAL(pos + numAttrs <= this->numAttrs(), "");
 
-  for (ulong i = 0; i < numAttrs; i++)
+  for (vsize i = 0; i < numAttrs; ++i)
   {
     XmlNode* attr = getAttr(pos);
     attr->detach();
@@ -724,12 +731,9 @@ void InternalNode::deleteChild(UpdDelete& upd)
   // easy as we just have to connect the child back to it parent. The child will
   // be detached later, after all updates have been applied with no errors (see.
   // applyUpdates() method). 
-  long pos1 = child->disconnect();
-
-  if (pos1 < 0)
+  vsize pos;
+  if (! child->disconnect(pos))
     return;
-
-  ulong pos = pos1;
 
   upd.thePos = pos;
   upd.theIsApplied = true;
@@ -776,7 +780,7 @@ void InternalNode::restoreChild(UpdDelete& upd)
     return;
 
   XmlNode* child = BASE_NODE(upd.theTarget);
-  ulong pos = upd.thePos;
+  vsize pos = upd.thePos;
 
   child->connect(this, pos);
 
@@ -811,9 +815,11 @@ void InternalNode::restoreChild(UpdDelete& upd)
   Note: L and R cannot both be text nodes, so at most one merging of text nodes
   will be performed.
 ********************************************************************************/
-void InternalNode::insertChildren(UpdInsertChildren& upd, ulong pos)
+void InternalNode::insertChildren(UpdInsertChildren& upd, vsize pos)
 {
-  ulong numNewChildren = (ulong)upd.theNewChildren.size();
+  assert(pos <= numChildren());
+
+  vsize numNewChildren = upd.theNewChildren.size();
   XmlNode* rsib = (pos < numChildren() ? getChild(pos) : NULL);
   XmlNode* lsib = (pos > 0 ? getChild(pos-1) : NULL);
 
@@ -849,8 +855,8 @@ void InternalNode::insertChildren(UpdInsertChildren& upd, ulong pos)
       lsib->getNodeKind() == store::StoreConsts::textNode &&
       firstNew->getNodeKind() == store::StoreConsts::textNode)
   {
-    TextNode* textNode1 = reinterpret_cast<TextNode*>(lsib);
-    TextNode* textNode2 = reinterpret_cast<TextNode*>(firstNew);
+    TextNode* textNode1 = static_cast<TextNode*>(lsib);
+    TextNode* textNode2 = static_cast<TextNode*>(firstNew);
 
     zstring content1;
     textNode1->getStringValue2(content1);
@@ -897,9 +903,9 @@ void XmlNode::insertSiblingsBefore(UpdInsertChildren& upd)
 {
   ZORBA_FATAL(theParent, "");
 
-  InternalNode* parent = reinterpret_cast<InternalNode*>(upd.theSibling->getParent());
+  InternalNode* parent = static_cast<InternalNode*>(upd.theSibling->getParent());
 
-  ulong pos = parent->children().find(this);
+  vsize pos = parent->findChild(this);
 
   parent->insertChildren(upd, pos);
 }
@@ -912,9 +918,9 @@ void XmlNode::insertSiblingsAfter(UpdInsertChildren& upd)
 {
   ZORBA_FATAL(theParent, "");
 
-  InternalNode* parent = reinterpret_cast<InternalNode*>(upd.theSibling->getParent());
+  InternalNode* parent = static_cast<InternalNode*>(upd.theSibling->getParent());
 
-  ulong pos = parent->children().find(this);
+  vsize pos = parent->findChild(this);
   pos++;
 
   parent->insertChildren(upd, pos);
@@ -929,9 +935,9 @@ void InternalNode::undoInsertChildren(UpdInsertChildren& upd)
   if (upd.theNumApplied == 0)
     return;
 
-  ulong pos = children().find(BASE_NODE(upd.theNewChildren[0]));
+  vsize pos = findChild(BASE_NODE(upd.theNewChildren[0]));
 
-  ZORBA_FATAL(pos < children().size(), "");
+  ZORBA_FATAL(pos < numChildren(), "");
 
   removeChildren(pos, upd.theNumApplied);
 
@@ -947,12 +953,12 @@ void InternalNode::undoInsertChildren(UpdInsertChildren& upd)
 ********************************************************************************/
 void ElementNode::insertAttributes(UpdInsertAttributes& upd)
 {
-  ulong numAttrs = numAttributes();
-  ulong numNewAttrs = (ulong)upd.theNewAttrs.size();
+  vsize numAttrs = this->numAttrs();
+  vsize numNewAttrs = upd.theNewAttrs.size();
 
   removeType(upd);
 
-  for (ulong i = 0; i < numNewAttrs; i++)
+  for (vsize i = 0; i < numNewAttrs; i++)
   {
     AttributeNode* attr = reinterpret_cast<AttributeNode*>(
                           upd.theNewAttrs[i].getp());
@@ -977,9 +983,9 @@ void ElementNode::insertAttributes(UpdInsertAttributes& upd)
 
     if (!upd.thePul->inheritNSBindings())
     {
-      ulong numChildren = this->numChildren();
+      vsize numChildren = this->numChildren();
 
-      for (ulong i = 0; i < numChildren; ++i)
+      for (vsize i = 0; i < numChildren; ++i)
       {
         if (getChild(i)->getNodeKind() == store::StoreConsts::elementNode)
         {
@@ -999,14 +1005,14 @@ void ElementNode::undoInsertAttributes(UpdInsertAttributes& upd)
   if (upd.theNumApplied == 0)
     return;
 
-  ulong pos = attributes().find(BASE_NODE(upd.theNewAttrs[0]));
+  vsize pos = findAttr(BASE_NODE(upd.theNewAttrs[0]));
 
-  ZORBA_FATAL(pos < attributes().size(), "");
+  ZORBA_FATAL(pos < numAttrs(), "");
 
   removeAttributes(pos, upd.theNumApplied);
 
-  ulong numBindings = (ulong)upd.theNewBindings.size();
-  for (ulong i = 0; i < numBindings; ++i)
+  vsize numBindings = upd.theNewBindings.size();
+  for (vsize i = 0; i < numBindings; ++i)
   {
     removeLocalBinding(upd.theNewBindings[i]->getPrefix(),
                        upd.theNewBindings[i]->getNamespace());
@@ -1025,16 +1031,16 @@ void ElementNode::replaceAttribute(UpdReplaceAttribute& upd)
 
   AttributeNode* oldAttr = ATTR_NODE(upd.theAttr);
 
-  ulong pos = oldAttr->disconnect();
+  vsize pos;
+  oldAttr->disconnect(pos);
 
   upd.thePos = pos;
 
-  ulong numNewAttrs = (ulong)upd.theNewAttrs.size();
+  vsize numNewAttrs = upd.theNewAttrs.size();
 
-  for (ulong i = 0; i < numNewAttrs; i++)
+  for (vsize i = 0; i < numNewAttrs; ++i)
   {
-    AttributeNode* attr = reinterpret_cast<AttributeNode*>(
-                          upd.theNewAttrs[i].getp());
+    AttributeNode* attr = static_cast<AttributeNode*>(upd.theNewAttrs[i].getp());
     try
     {
       checkUniqueAttr(attr->getNodeName());
@@ -1056,13 +1062,14 @@ void ElementNode::replaceAttribute(UpdReplaceAttribute& upd)
 
     if (newBinding && !upd.thePul->inheritNSBindings())
     {
-      ulong numChildren = this->numChildren();
+      iterator ite = childrenBegin();
+      iterator end = childrenEnd();
 
-      for (ulong i = 0; i < numChildren; ++i)
+      for (; ite != end; ++ite)
       {
-        if (getChild(i)->getNodeKind() == store::StoreConsts::elementNode)
+        if ((*ite)->getNodeKind() == store::StoreConsts::elementNode)
         {
-          static_cast<ElementNode*>(getChild(i))->
+          static_cast<ElementNode*>((*ite))->
           uninheritBinding(theNsContext, attr->theName->getPrefix());
         }
       }  
@@ -1089,14 +1096,14 @@ void ElementNode::restoreAttribute(UpdReplaceAttribute& upd)
 
   XmlNode* attr = BASE_NODE(upd.theAttr);
 
-  ulong pos = attributes().find(BASE_NODE(upd.theNewAttrs[0]));
+  vsize pos = findAttr(BASE_NODE(upd.theNewAttrs[0]));
 
-  ZORBA_FATAL(pos < attributes().size(), "");
+  ZORBA_FATAL(pos < numAttrs(), "");
 
   removeAttributes(pos, upd.theNumApplied);
 
-  ulong numBindings = (ulong)upd.theNewBindings.size();
-  for (ulong i = 0; i < numBindings; i++)
+  vsize numBindings = upd.theNewBindings.size();
+  for (vsize i = 0; i < numBindings; ++i)
     removeLocalBinding(upd.theNewBindings[i]->getPrefix(),
                        upd.theNewBindings[i]->getNamespace());
 
@@ -1116,16 +1123,16 @@ void InternalNode::replaceChild(UpdReplaceChild& upd)
 
   XmlNode* child = BASE_NODE(upd.theChild);
 
-  ulong pos = children().find(child);
+  vsize pos = findChild(child);
 
-  ZORBA_FATAL(pos < children().size(), "");
+  ZORBA_FATAL(pos < numChildren(), "");
 
-  ulong numNewChildren = (ulong)upd.theNewChildren.size();
+  vsize numNewChildren = upd.theNewChildren.size();
   XmlNode* rsib = (pos < numChildren() - 1 ? getChild(pos+1) : NULL);
   XmlNode* lsib = (pos > 0 ? getChild(pos-1) : NULL);
 
   // Insert the new children without merging text nodes
-  for (ulong i = 0; i < numNewChildren; i++)
+  for (vsize i = 0; i < numNewChildren; ++i)
   {
     XmlNode* child = BASE_NODE(upd.theNewChildren[i]);
 
@@ -1200,9 +1207,9 @@ void InternalNode::restoreChild(UpdReplaceChild& upd)
 
   XmlNode* child = BASE_NODE(upd.theChild);
 
-  ulong pos = children().find(BASE_NODE(upd.theNewChildren[0]));
+  vsize pos = findChild(BASE_NODE(upd.theNewChildren[0]));
 
-  ZORBA_FATAL(pos < children().size(), "");
+  ZORBA_FATAL(pos < numChildren(), "");
 
   removeChildren(pos, upd.theNumApplied);
 
@@ -1230,8 +1237,11 @@ void InternalNode::restoreChild(UpdReplaceChild& upd)
 ********************************************************************************/
 void ElementNode::replaceContent(UpdReplaceElemContent& upd)
 {
-  upd.theOldChildren = theChildren.theNodes;
-  theChildren.clear();
+  upd.theOldChildren.insert(upd.theOldChildren.begin(),
+                            childrenBegin(),
+                            childrenEnd());
+
+  theNodes.resize(theNumAttrs);
 
   if (upd.theNewChild == NULL || upd.theNewChild->getStringValue().empty())
     return;
@@ -1249,7 +1259,7 @@ void ElementNode::replaceContent(UpdReplaceElemContent& upd)
   SYNC_CODE(newTree->getRCLock().release());
 
   newChild->setTree(newTree);
-  newChild->setOrdPath(this, 0, store::StoreConsts::textNode);
+  newChild->setOrdPath(this, true, 0, store::StoreConsts::textNode);
   newChild->connect(this, 0);
 
   upd.theNewChild = NULL;
@@ -1270,7 +1280,9 @@ void ElementNode::restoreContent(UpdReplaceElemContent& upd)
   }
 
   ElementNode* target1 = reinterpret_cast<ElementNode*>(this);
-  target1->theChildren.theNodes = upd.theOldChildren; 
+  target1->theNodes.insert(childrenBegin(),
+                           upd.theOldChildren.begin(),
+                           upd.theOldChildren.end()); 
 
   restoreType(upd.theTypeUndoList);
 }
@@ -1292,14 +1304,15 @@ void ElementNode::replaceName(UpdRenameElem& upd)
   if (upd.theNewBinding && 
       (!upd.thePul->inheritNSBindings() ||  theName->getPrefix().empty()))
   {
-    ulong numChildren = this->numChildren();
+    iterator ite = childrenBegin();
+    iterator end = childrenEnd();
 
-    for (ulong i = 0; i < numChildren; ++i)
+    for (; ite != end; ++ite)
     {
-      if (getChild(i)->getNodeKind() == store::StoreConsts::elementNode)
+      if ((*ite)->getNodeKind() == store::StoreConsts::elementNode)
       {
-        static_cast<ElementNode*>(getChild(i))->
-          uninheritBinding(theNsContext, theName->getPrefix());
+        static_cast<ElementNode*>((*ite))->
+        uninheritBinding(theNsContext, theName->getPrefix());
       }
     }  
   }
@@ -1391,13 +1404,14 @@ void AttributeNode::replaceName(UpdRenameAttr& upd)
 
     if (upd.theNewBinding && !upd.thePul->inheritNSBindings())
     {
-      ulong numChildren = parent->numChildren();
+      InternalNode::iterator ite = parent->childrenBegin();
+      InternalNode::iterator end = parent->childrenEnd();
 
-      for (ulong i = 0; i < numChildren; ++i)
+      for (; ite != end; ++ite)
       {
-        if (parent->getChild(i)->getNodeKind() == store::StoreConsts::elementNode)
+        if ((*ite)->getNodeKind() == store::StoreConsts::elementNode)
         {
-          static_cast<ElementNode*>(parent->getChild(i))->
+          static_cast<ElementNode*>((*ite))->
           uninheritBinding(parent->theNsContext, upd.theNewName->getPrefix());
         }
       }

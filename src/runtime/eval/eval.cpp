@@ -49,8 +49,8 @@ static PlanIter_t compile(
     CompilerCB* ccb,
     dynamic_context* evalDctx,
     zstring query,
-    checked_vector<store::Item_t> varnames,
-    checked_vector<xqtref_t> vartypes)
+    std::vector<store::Item_t> varnames,
+    std::vector<xqtref_t> vartypes)
 {
   QueryLoc loc;
   XQueryCompiler compiler(ccb);
@@ -174,8 +174,8 @@ EvalIterator::EvalIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
-    const checked_vector<store::Item_t>& aVarNames,
-    const checked_vector<xqtref_t>& aVarTypes)
+    const std::vector<store::Item_t>& aVarNames,
+    const std::vector<xqtref_t>& aVarTypes)
   : 
   NaryBaseIterator<EvalIterator, EvalIteratorState>(sctx, loc, children),
   theVarNames(aVarNames),

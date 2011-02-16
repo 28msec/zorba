@@ -1147,7 +1147,7 @@ void serialize_node_tree(Archiver &ar, store::Item *&obj, bool all_tree)
         obj->getNamespaceBindings(ns_bindings, store::StoreConsts::ONLY_LOCAL_NAMESPACES);
       ar & ns_bindings;
       SERIALIZE_FIELD2(zstring, baseUri, getBaseURI);
-      FINALIZE_SERIALIZE(createElementNode, (result, parent, -1, nodename, name_of_type, haveTypedValue, haveEmptyValue, ns_bindings, baseUri, isInSubstGroup));
+      FINALIZE_SERIALIZE(createElementNode, (result, parent, nodename, name_of_type, haveTypedValue, haveEmptyValue, ns_bindings, baseUri, isInSubstGroup));
 
       serialize_my_children2(ar, obj->getAttributes());
 
@@ -1171,18 +1171,18 @@ void serialize_node_tree(Archiver &ar, store::Item *&obj, bool all_tree)
       ar & val_vector;
       if(val != NULL)
       {
-        FINALIZE_SERIALIZE(createAttributeNode, (result, parent, -1, nodename, name_of_type, val));
+        FINALIZE_SERIALIZE(createAttributeNode, (result, parent, nodename, name_of_type, val));
       }
       else
       {
-        FINALIZE_SERIALIZE(createAttributeNode, (result, parent, -1, nodename, name_of_type, val_vector));
+        FINALIZE_SERIALIZE(createAttributeNode, (result, parent, nodename, name_of_type, val_vector));
       }
     }break;
     case store::StoreConsts::textNode:
     {
       SERIALIZE_PARENT;
       SERIALIZE_FIELD(zstring, content, getStringValue());
-      FINALIZE_SERIALIZE(createTextNode, (result, parent, -1, content));
+      FINALIZE_SERIALIZE(createTextNode, (result, parent, content));
     }break;
     case store::StoreConsts::piNode:
     {
@@ -1190,13 +1190,13 @@ void serialize_node_tree(Archiver &ar, store::Item *&obj, bool all_tree)
       SERIALIZE_FIELD(zstring, target, getTarget());
       SERIALIZE_FIELD(zstring, content, getStringValue());
       SERIALIZE_FIELD2(zstring, baseUri, getBaseURI);
-      FINALIZE_SERIALIZE(createPiNode, (result, parent, -1, target, content, baseUri));
+      FINALIZE_SERIALIZE(createPiNode, (result, parent, target, content, baseUri));
     }break;
     case store::StoreConsts::commentNode:
     {
       SERIALIZE_PARENT;
       SERIALIZE_FIELD(zstring, content, getStringValue());
-      FINALIZE_SERIALIZE(createCommentNode, (result, parent, -1, content));
+      FINALIZE_SERIALIZE(createCommentNode, (result, parent, content));
     }break;
     default:
       ZORBA_SER_ERROR_DESC_OSS(SRL0010_ITEM_TYPE_NOT_SERIALIZABLE, "unknown");

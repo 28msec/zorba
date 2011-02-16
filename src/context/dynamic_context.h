@@ -60,7 +60,6 @@ protected:
     } val_type_t;
 
     val_type_t  type;
-    bool        in_progress;
     void*       func_param;
   };
 

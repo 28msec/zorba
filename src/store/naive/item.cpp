@@ -709,9 +709,19 @@ void Item::finalizeNode()
 }
 
 
+#if 0
 Item* Item::copy(
     store::Item* parent,
-    long pos,
+    vsize_t pos,
+    const CopyMode& copymode) const
+{
+  ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+                        __FUNCTION__, getType()->getStringValue());
+}
+#endif
+
+Item* Item::copy(
+    store::Item* parent,
     const CopyMode& copymode) const
 {
   ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,

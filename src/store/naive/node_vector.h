@@ -38,34 +38,35 @@ class XmlNode;
 class NodeVector
 {
 public:
+  typedef std::vector<XmlNode*>::iterator iterator;
+
+public:
   std::vector<XmlNode*> theNodes;
 
 public:
   NodeVector() { }
 
-  NodeVector(ulong size) : theNodes(size) { }
+  NodeVector(vsize_t size) : theNodes(size) { }
 
   bool empty() const { return theNodes.empty(); }
 
   void clear() { theNodes.clear(); }
 
-  ulong size() const { return (ulong)theNodes.size(); }
+  vsize_t size() const { return theNodes.size(); }
 
-  void resize(ulong size) { theNodes.resize(size); }
+  void resize(vsize_t size) { theNodes.resize(size); }
 
-  XmlNode* get(ulong pos) const { return theNodes[pos]; } 
+  XmlNode* get(vsize_t pos) const { return theNodes[pos]; } 
 
-  ulong find(XmlNode* n);
+  void set(XmlNode* n, vsize_t pos) { theNodes[pos] = n; }
 
-  void set(XmlNode* n, ulong pos) { theNodes[pos] = n; }
+  void push_back(XmlNode* n) { theNodes.push_back(n); }
 
-  void push_back(XmlNode* n)  { theNodes.push_back(n); }
+  void insert(XmlNode* n, vsize_t pos);
 
-  void insert(XmlNode* n, long pos);
+  void remove(vsize_t pos);
 
-  void remove(ulong pos);
-
-  bool remove(XmlNode* n);
+  iterator remove(XmlNode* n);
 
   void compact();
 
@@ -79,3 +80,10 @@ private:
 }
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
+/* vim:set et sw=2 ts=2: */

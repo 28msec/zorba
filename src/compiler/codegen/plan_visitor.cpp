@@ -528,8 +528,8 @@ void end_visit (debugger_expr& v)
 
   ulong numVars = v.var_count();
 
-  checked_vector<store::Item_t> varnames(numVars);
-  checked_vector<xqtref_t> vartypes(numVars);
+  std::vector<store::Item_t> varnames(numVars);
+  std::vector<xqtref_t> vartypes(numVars);
   std::vector<PlanIter_t> argvEvalIter;
   std::vector<PlanIter_t> argv;
 

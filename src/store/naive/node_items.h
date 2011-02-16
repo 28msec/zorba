@@ -27,7 +27,6 @@
 #include "store/naive/text_node_content.h"
 #include "store/naive/item_vector.h"
 #include "store/naive/ordpath.h"
-#include "store/naive/node_vector.h"
 #include "store/naive/store_config.h"
 #include "store/naive/nsbindings.h" // TODO remove by introducing explicit destructors
 
@@ -94,7 +93,7 @@ typedef std::vector<NodeTypeInfo> TypeUndoList;
 
 typedef rchandle<NsBindingsContext> NsBindingsContext_t;
 
-extern NodeVector dummyVector;
+  //extern NodeVector dummyVector;
 
 
 #define NODE_STOP \
@@ -338,7 +337,7 @@ class XmlNode : public store::Item
   friend class BasicItemFactory;
   friend class FastXmlLoader;
   friend class DtdXmlLoader;
- 
+
 public:
   enum NodeFlags
   {
@@ -365,25 +364,21 @@ protected:
   uint32_t          theFlags;
 
 protected:
-  XmlNode(store::StoreConsts::NodeKind nodeKind)
-    :
-    Item(),
-    theParent(NULL)
+  XmlNode() : theParent(NULL)
+  {
+  }
+
+  XmlNode(store::StoreConsts::NodeKind nodeKind) : theParent(NULL)
   {
     theFlags = (uint32_t)nodeKind;
   }
 
   XmlNode(
-        XmlTree*                     tree,
-        InternalNode*                parent,
-        long                         pos,
-        store::StoreConsts::NodeKind nodeKind);
-
-  XmlNode()
-    :
-    theParent(0)
-  {
-  }
+      XmlTree* tree,
+      InternalNode* parent,
+      bool append,
+      vsize pos,
+      store::StoreConsts::NodeKind nodeKind);
 
 public:
 #ifndef NDEBUG
@@ -392,7 +387,11 @@ public:
   virtual ~XmlNode() {}
 #endif
 
-  void free() { if (getTree() != NULL) getTree()->free(); }
+  void free() 
+  {
+    if (getTree() != NULL)
+      getTree()->free();
+  }
 
   //
   // Item methods
@@ -427,16 +426,16 @@ public:
   }
 
   bool equals(
-        const store::Item* other,
-        long timezone = 0,
-        const XQPCollator* aCollation = 0) const
+      const store::Item* other,
+      long timezone = 0,
+      const XQPCollator* aCollation = 0) const
   {
     return this == other;
   }
 
   uint32_t hash(
-        long timezone = 0,
-        const XQPCollator* aCollation = 0) const;
+      long timezone = 0,
+      const XQPCollator* aCollation = 0) const;
 
   inline long compare2(const XmlNode* other) const;
 
@@ -449,9 +448,13 @@ public:
   store::Item_t getEBV() const;
 
   store::Item* copy(
-        store::Item* parent,
-        long pos,
-        const store::CopyMode& copymode) const;
+      store::Item* parent,
+      const store::CopyMode& copymode) const;
+
+  store::Item* copy(
+      store::Item* parent,
+      vsize pos,
+      const store::CopyMode& copymode) const;
 
   virtual store::Item_t getNilled() const { return 0; }
 
@@ -467,7 +470,7 @@ public:
     getTree()->markValidated();
   }
 
-  virtual void finalizeNode() { return; }
+  virtual void finalizeNode() { }
 
   //
   // SimpleStore Methods
@@ -496,7 +499,8 @@ public:
 
   void setOrdPath(
         InternalNode* parent,
-        long pos,
+        bool append,
+        vsize pos,
         store::StoreConsts::NodeKind nodeKind);
 
   void setParent(InternalNode* p) { theParent = p; }
@@ -512,17 +516,20 @@ public:
   void setDocUri(const zstring& uri) { getTree()->setDocUri(uri); }
 
   virtual XmlNode* copyInternal(
-        InternalNode*          rootParent,
-        InternalNode*          parent,
-        long                   pos,
-        const XmlNode*         rootCopy,
-        const store::CopyMode& copyMode) const = 0;
+      InternalNode* rootParent,
+      InternalNode* parent,
+      vsize pos,
+      const XmlNode* rootCopy,
+      const store::CopyMode& copyMode) const = 0;
 
   void setToUntyped();
+
   void removeType(UpdatePrimitive& upd);
+
   void restoreType(TypeUndoList& undoList);
 
   void insertSiblingsBefore(UpdInsertChildren& upd);
+
   void insertSiblingsAfter(UpdInsertChildren& upd);
 
   uint32_t getFlags() const { return theFlags; }
@@ -531,21 +538,21 @@ public:
 
 #ifndef ZORBA_NO_FULL_TEXT
   FTTokenIterator_t
-  getDocumentTokens( locale::iso639_1::type = locale::iso639_1::unknown ) const;
+  getDocumentTokens(locale::iso639_1::type = locale::iso639_1::unknown) const;
 #endif /* ZORBA_NO_FULL_TEXT */
 
 protected:
   virtual void getBaseURIInternal(zstring& uri, bool& local) const;
 
-  void attach(InternalNode* parent, long pos);
+  void attach(InternalNode* parent, vsize pos);
 
   void detach() throw();
 
   void destroy() throw();
 
-  long disconnect() throw();
+  bool disconnect(vsize& pos) throw();
 
-  void connect(InternalNode* node, ulong pos) throw();
+  void connect(InternalNode* node, vsize pos) throw();
 
 #ifndef ZORBA_NO_FULL_TEXT
   virtual void tokenize( XmlNodeTokenizerCallback& );
@@ -562,22 +569,43 @@ private:
 class InternalNode : public XmlNode
 {
   friend class XmlNode;
+  friend class ElementNode;
+  friend class AttributeNode;
+  friend class TextNode;
+  friend class PiNode;
+  friend class CommentNode;
   friend class UpdPut;
 
+public:
+  typedef std::vector<XmlNode*> NodeVector;
+
+  typedef std::vector<XmlNode*>::iterator iterator;
+
+  typedef std::vector<XmlNode*>::const_iterator const_iterator;
+
+  typedef std::vector<XmlNode*>::reverse_iterator reverse_iterator;
+
 protected:
-  NodeVector  theChildren;
-  NodeVector  theAttributes;
+  std::vector<XmlNode*> theNodes;
+  vsize                 theNumAttrs;
 
   // make sure that only created by subclasses
-  InternalNode(store::StoreConsts::NodeKind nodeKind) : XmlNode(nodeKind) { }
+  InternalNode(store::StoreConsts::NodeKind nodeKind) 
+    :
+    XmlNode(nodeKind),
+    theNumAttrs(0)
+  { 
+  }
 
   InternalNode(
-        XmlTree*                     tree,
-        InternalNode*                parent,
-        long                         pos,
-        store::StoreConsts::NodeKind nodeKind)
+      XmlTree* tree,
+      InternalNode* parent,
+      bool append,
+      vsize pos,
+      store::StoreConsts::NodeKind nodeKind)
     :
-    XmlNode(tree, parent, pos, nodeKind)
+    XmlNode(tree, parent, append, pos, nodeKind),
+    theNumAttrs(0)
   {
   }
 
@@ -588,38 +616,71 @@ public:
   // SimpleStore Methods
   // 
 
-  ulong numChildren() const          { return theChildren.size(); }
-  NodeVector& children()             { return theChildren; }
-  const NodeVector& children() const { return theChildren; }
-  XmlNode* getChild(ulong i) const   { return theChildren.get(i); }
+  NodeVector& nodes() { return theNodes; }
 
-  ulong numAttributes() const          { return theAttributes.size(); }
-  NodeVector& attributes()             { return theAttributes; }
-  const NodeVector& attributes() const { return theAttributes; }
+  vsize numChildren() const { return theNodes.size() - theNumAttrs; }
 
-  AttributeNode* getAttr(ulong i) const
+  iterator childrenBegin() { return theNodes.begin() + theNumAttrs; }
+
+  const_iterator childrenBegin() const { return theNodes.begin() + theNumAttrs; }
+
+  iterator childrenEnd() { return theNodes.end(); }
+
+  const_iterator childrenEnd() const { return theNodes.end(); }
+
+  reverse_iterator childrenRBegin() { return theNodes.rbegin(); }
+
+  reverse_iterator childrenREnd() { return theNodes.rend() - theNumAttrs; }
+
+  XmlNode* getChild(vsize i) const { return theNodes[theNumAttrs + i]; }
+
+  vsize numAttrs() const { return theNumAttrs; }
+
+  iterator attrsBegin() { return theNodes.begin(); }
+
+  const_iterator attrsBegin() const { return theNodes.begin(); }
+
+  iterator attrsEnd() { return theNodes.begin() + theNumAttrs; }
+
+  const_iterator attrsEnd() const { return theNodes.begin() + theNumAttrs; }
+
+  AttributeNode* getAttr(vsize i) const
   {
-    return reinterpret_cast<AttributeNode*>(theAttributes.get(i));
+    return reinterpret_cast<AttributeNode*>(theNodes[i]);
   }
 
   void deleteChild(UpdDelete& upd);
+
   void restoreChild(UpdDelete& upd);
 
-  void insertChildren(UpdInsertChildren& upd, ulong pos);
+  void insertChildren(UpdInsertChildren& upd, vsize pos);
+
   void undoInsertChildren(UpdInsertChildren& upd);
 
   void replaceChild(UpdReplaceChild& upd);
+
   void restoreChild(UpdReplaceChild& upd);
 
+  void finalizeNode();
+
 protected:
-  void insertChild(XmlNode* child, ulong pos);
-  bool removeChild(ulong pos);
-  bool removeChild(XmlNode* child);
+  vsize findChild(XmlNode* child) const;
 
-  void removeChildren(ulong pos, ulong numChildren);
+  void insertChild(XmlNode* child, vsize pos);
 
-  void removeAttr(ulong pos);
-  bool removeAttr(XmlNode* attr);
+  void removeChild(vsize pos);
+
+  vsize removeChild(XmlNode* child);
+
+  void removeChildren(vsize pos, vsize numChildren);
+
+  vsize findAttr(XmlNode* attr) const;
+
+  void insertAttr(XmlNode* child, vsize pos);
+
+  void removeAttr(vsize pos);
+
+  vsize removeAttr(XmlNode* attr);
 
 #ifndef ZORBA_NO_FULL_TEXT
   void tokenize( XmlNodeTokenizerCallback& );
@@ -636,9 +697,9 @@ class DocumentNode : public InternalNode
 
 protected:
   DocumentNode(
-        XmlTree* tree,
-        zstring& baseUri,
-        zstring& docUri);
+      XmlTree* tree,
+      zstring& baseUri,
+      zstring& docUri);
 
   DocumentNode();
 
@@ -674,13 +735,11 @@ public:
   // 
 
   XmlNode* copyInternal(
-        InternalNode*          rootParent,
-        InternalNode*          parent,
-        long                   pos,
-        const XmlNode*         rootCopy,
+        InternalNode* rootParent,
+        InternalNode* parent,
+        vsize pos,
+        const XmlNode* rootCopy,
         const store::CopyMode& copyMode) const;
-
-  void finalizeNode() { theChildren.compact(); }
 
 protected:
   void getBaseURIInternal(zstring& uri, bool& local) const;
@@ -709,13 +768,14 @@ protected:
 
   ElementNode(
         store::Item_t& nodeName,
-        ulong          numBindings,
-        ulong          numAttributes);
+        vsize numBindings,
+        vsize numAttributes);
 
   ElementNode(
         XmlTree*                  tree,
         InternalNode*             parent,
-        long                      pos,
+        bool                      append,
+        vsize                     pos,
         store::Item_t&            nodeName,
         store::Item_t&            typeName,
         bool                      haveTypedValue,
@@ -796,12 +856,6 @@ public:
     return (theFlags & HaveLocalBindings) != 0;
   }
 
-  void finalizeNode()
-  {
-    theChildren.compact();
-    theAttributes.compact();
-  }
-
   NsBindingsContext* getNsContext() const { return theNsContext.getp(); }
 
   void setNsContext(NsBindingsContext* ctx);
@@ -815,32 +869,30 @@ public:
   void removeLocalBinding(const zstring& prefix, const zstring& ns);
 
   bool addBindingForQName(
-        store::Item_t& qname,
-        bool           isAttr,
-        bool           replacePrefix);
-
+      store::Item_t& qname,
+      bool           isAttr,
+      bool           replacePrefix);
+  
   void addBindingForQName2(const store::Item* qname);
 
-  void checkNamespaceConflict(
-        const store::Item* qname,
-        XQUERY_ERROR       ecode) const;
+  void checkNamespaceConflict(const store::Item* qname, XQUERY_ERROR ecode) const;
 
   void uninheritBinding(
-        NsBindingsContext* rootNSCtx,
-        const zstring& prefix);
+      NsBindingsContext* rootNSCtx,
+      const zstring& prefix);
 
   void checkUniqueAttr(const store::Item* attrName) const;
 
   void checkUniqueAttrs() const;
 
   XmlNode* copyInternal(
-        InternalNode*          rootParent,
-        InternalNode*          parent,
-        long                   pos,
-        const XmlNode*         rootCopy,
-        const store::CopyMode& copymode) const;
+      InternalNode* rootParent,
+      InternalNode* parent,
+      vsize pos,
+      const XmlNode* rootCopy,
+      const store::CopyMode& copymode) const;
 
-  void removeAttributes(ulong pos, ulong numAttributes);
+  void removeAttributes(vsize pos, vsize numAttributes);
 
   void insertAttributes(UpdInsertAttributes& upd);
 
@@ -898,14 +950,15 @@ protected:
   AttributeNode(store::Item_t&  attrName);
 
   AttributeNode(
-        XmlTree*                    tree,
-        ElementNode*                parent,
-        long                        pos,
-        store::Item_t&              attrName,
-        store::Item_t&              typeName,
-        store::Item_t&              typedValue,
-        bool                        isListValue,
-        bool                        hidden);
+        XmlTree* tree,
+        ElementNode* parent,
+        bool append,
+        vsize pos,
+        store::Item_t& attrName,
+        store::Item_t& typeName,
+        store::Item_t& typedValue,
+        bool isListValue,
+        bool hidden);
 
   AttributeNode() {}
 
@@ -940,10 +993,10 @@ public:
   // 
 
   XmlNode* copyInternal(
-        InternalNode*          rootParent,
-        InternalNode*          parent,
-        long                   pos,
-        const XmlNode*         rootCopy,
+        InternalNode* rootParent,
+        InternalNode* parent,
+        vsize pos,
+        const XmlNode* rootCopy,
         const store::CopyMode& copymode) const;
 
   bool haveListValue() const  { return (theFlags & HaveListValue) != 0; }
@@ -1006,10 +1059,11 @@ protected:
   TextNode(zstring& content);
 
   TextNode(
-        XmlTree*      tree,
+        XmlTree* tree,
         InternalNode* parent,
-        long          pos,
-        zstring&      content);
+        bool append,
+        vsize pos,
+        zstring& content);
 
   TextNode(
         InternalNode*  parent,
@@ -1056,10 +1110,10 @@ public:
   // 
 
   XmlNode* copyInternal(
-        InternalNode*          rootParent,
-        InternalNode*          parent,
-        long                   pos,
-        const XmlNode*         rootCopy,
+        InternalNode* rootParent,
+        InternalNode* parent,
+        vsize pos,
+        const XmlNode* rootCopy,
         const store::CopyMode& copymode) const;
 
   bool isTyped() const;
@@ -1121,20 +1175,21 @@ protected:
   PiNode(zstring& target, zstring& content);
 
   PiNode(
-        XmlTree*       tree,
-        InternalNode*  parent,
-        long           pos,
-        zstring&       target,
-        zstring&       content);
+        XmlTree* tree,
+        InternalNode* parent,
+        bool append,
+        vsize pos,
+        zstring& target,
+        zstring& content);
 
   PiNode() {}
 
 public:
   XmlNode* copyInternal(
-        InternalNode*          rootParent,
-        InternalNode*          parent,
-        long                   pos,
-        const XmlNode*         rootCopy,
+        InternalNode* rootParent,
+        InternalNode* parent,
+        vsize pos,
+        const XmlNode* rootCopy,
         const store::CopyMode& copymode) const;
 
   store::Item* getType() const;
@@ -1182,19 +1237,20 @@ protected:
   CommentNode(zstring& content);
 
   CommentNode(
-        XmlTree*      tree,
+        XmlTree* tree,
         InternalNode* parent,
-        long          pos,
-        zstring&      content);
+        bool append,
+        vsize pos,
+        zstring& content);
 
   CommentNode() {}
 
 public:
   XmlNode* copyInternal(
-        InternalNode*          rootParent,
-        InternalNode*          parent,
-        long                   pos,
-        const XmlNode*         rootCopy,
+        InternalNode* rootParent,
+        InternalNode* parent,
+        vsize pos,
+        const XmlNode* rootCopy,
         const store::CopyMode& copymode) const;
 
   store::Item* getType() const;

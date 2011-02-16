@@ -16,9 +16,12 @@
 #ifndef ZORBA_SIMPLESTORE_NODE_FACTORY_H
 #define ZORBA_SIMPLESTORE_NODE_FACTORY_H
 
+#include <vector>
+
 #include "zorbamisc/config/platform.h"
 #include "common/shared_types.h"
-#include <vector>
+
+#include "store/naive/shared_types.h"
 
 
 namespace zorba 
@@ -76,7 +79,8 @@ public:
   virtual ElementNode* createElementNode(
         XmlTree*                    tree,
         InternalNode*               parent,
-        long                        pos,
+        bool                        append,
+        vsize                       pos,
         store::Item_t&              nodeName,
         store::Item_t&              typeName,
         bool                        haveTypedValue,
@@ -91,7 +95,8 @@ public:
   virtual AttributeNode* createAttributeNode(
         XmlTree*         tree,
         ElementNode*     parent,
-        long             pos,
+        bool             append,
+        vsize            pos,
         store::Item_t&   attrName,
         store::Item_t&   typeName,
         store::Item_t&   typedValue,
@@ -103,7 +108,8 @@ public:
   virtual TextNode* createTextNode(
         XmlTree*       tree,
         InternalNode*  parent,
-        long           pos,
+        bool           aqppend,
+        vsize          pos,
         zstring&       content);
 
   virtual TextNode* createTextNode(
@@ -118,7 +124,8 @@ public:
   virtual PiNode* createPiNode(
         XmlTree*      tree,
         InternalNode* parent,
-        long          pos,
+        bool          append,
+        vsize         pos,
         zstring&      target,
         zstring&      content);
 
@@ -128,7 +135,8 @@ public:
   virtual CommentNode* createCommentNode(
         XmlTree*      tree,
         InternalNode* parent,
-        long          pos,
+        bool          append,
+        vsize         pos,
         zstring&      content);
 }; /* class NodeFactory */
 

@@ -615,7 +615,7 @@ void UpdPut::apply()
     // a parent already.
     store::CopyMode copymode;
     copymode.set(true, true, true, true);
-    theTarget = theTarget->copy(NULL, 0, copymode);
+    theTarget = theTarget->copy(NULL, copymode);
 
     if (theTarget->getNodeKind() != store::StoreConsts::documentNode)
     {
@@ -623,7 +623,7 @@ void UpdPut::apply()
 
       DocumentNode* doc = GET_STORE().getNodeFactory().createDocumentNode();
       doc->setTree(target->getTree());
-      doc->setOrdPath(NULL, 1, store::StoreConsts::documentNode);
+      doc->setOrdPath(NULL, true, 1, store::StoreConsts::documentNode);
 
       doc->insertChild(target, 0);
       doc->getTree()->setRoot(doc);

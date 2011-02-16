@@ -129,7 +129,7 @@ bool DocumentIterator::nextImpl(store::Item_t& result, PlanState& planState) con
           continue;
         }
 
-        child->copy(result, -1, copymode);
+        child->copy(result, copymode);
       }
     }
 
@@ -352,7 +352,6 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     // Create the element node and push it to the construction path.
     GENV_ITEMFACTORY->createElementNode(result,
                                         parent,
-                                        -1,
                                         nodeName,
                                         typeName,
                                         true,
@@ -365,7 +364,6 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     // Create the element node and push it to the construction path.
     GENV_ITEMFACTORY->createElementNode(result,
                                         parent,
-                                        -1,
                                         nodeName,
                                         typeName,
                                         true,
@@ -389,7 +387,7 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
         assert(attr->getNodeKind() == store::StoreConsts::attributeNode);
 
         if (attr->getParent() != result.getp())
-          attr->copy(result, -1, copymode);
+          attr->copy(result, copymode);
       }
     }
 
@@ -402,7 +400,7 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
         if (!child->isNode())
         {
           child->getStringValue2(content);
-          factory->createTextNode(child, result, -1, content);
+          factory->createTextNode(child, result, content);
         }
 
         assert(child->getNodeKind() != store::StoreConsts::documentNode);
@@ -411,7 +409,7 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
           break;
 
         if (child->getParent() != result.getp())
-          child->copy(result, -1, copymode);
+          child->copy(result, copymode);
       }
 
       while (valid)
@@ -419,7 +417,7 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
         if (!child->isNode())
         {
           child->getStringValue2(content);
-          factory->createTextNode(child, result, -1, content);
+          factory->createTextNode(child, result, content);
         }
 
         assert(child->getNodeKind() != store::StoreConsts::documentNode);
@@ -436,7 +434,7 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
         // Else copy the child node if it was not a node constructed by a
         // directly nested constructor
         else if (child->getParent() != result.getp())
-          child->copy(result, -1, copymode);
+          child->copy(result, copymode);
 
         valid = consumeNext(child, theChildrenIter, planState);
       }
@@ -649,7 +647,6 @@ bool AttributeIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 
   GENV_ITEMFACTORY->createAttributeNode(result,
                                         parent,
-                                        -1,
                                         qname,
                                         typeName,
                                         typedValue);
@@ -764,7 +761,7 @@ bool TextIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     parent = (theIsRoot ? NULL : path.top());
 
-    STACK_PUSH(GENV_ITEMFACTORY->createTextNode(result, parent, -1, content),
+    STACK_PUSH(GENV_ITEMFACTORY->createTextNode(result, parent, content),
                state);
   }
   else
@@ -868,7 +865,7 @@ bool PiIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   parent = (theIsRoot ? NULL : path.top());
 
-  GENV_ITEMFACTORY->createPiNode(result, parent, -1, target, content, baseUri);
+  GENV_ITEMFACTORY->createPiNode(result, parent, target, content, baseUri);
   STACK_PUSH(true, state);
 
   STACK_END (state);
@@ -927,7 +924,7 @@ bool CommentIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
   parent = (theIsRoot ? NULL : path.top());
 
-  GENV_ITEMFACTORY->createCommentNode(result, parent, -1, content);
+  GENV_ITEMFACTORY->createCommentNode(result, parent, content);
   STACK_PUSH(true, state);
 
   STACK_END(state);
@@ -1216,7 +1213,6 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
           {
             STACK_PUSH(factory->createTextNode(result,
                                                (path.empty() ? NULL : path.top()),
-                                               -1,
                                                strval),
                        state);
           }

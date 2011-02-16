@@ -36,15 +36,15 @@ namespace simplestore
 
 bool ChildrenIteratorImpl::next(store::Item_t& result)
 {
-  if (theCurrentPos >= theNumChildren) 
+  if (theIte == theEnd) 
   {
     result = NULL;
     return false;
   }
 
-  result = theParentNode->getChild(theCurrentPos);
+  result = (*theIte);
 
-  ++theCurrentPos;
+  ++theIte;
 
   return true;
 }
@@ -59,15 +59,15 @@ bool ChildrenIteratorImpl::next(store::Item_t& result)
 
 bool ChildrenReverseIteratorImpl::next(store::Item_t& result)
 {
-  if (theCurrentPos < 0) 
+  if (theIte == theEnd) 
   {
     result = NULL;
     return false;
   }
 
-  result = theParentNode->getChild(theCurrentPos);
+  result = (*theIte);
 
-  --theCurrentPos;
+  ++theIte;
 
   return true;
 }
@@ -82,31 +82,30 @@ bool ChildrenReverseIteratorImpl::next(store::Item_t& result)
 
 bool AttributesIteratorImpl::next(store::Item_t& result)
 {
-  if (theCurrentPos >= theNumAttributes) 
+  if (theIte == theEnd) 
   {
     result = NULL;
     return false;
   }
 
-  AttributeNode* cnode =
-    reinterpret_cast<AttributeNode*>(theParentNode->getAttr(theCurrentPos));
+  AttributeNode* attr = static_cast<AttributeNode*>(*theIte);
 
-  while (cnode->isHidden())
+  while (attr->isHidden())
   {
-    theCurrentPos++;
+    ++theIte;
 
-    if (theCurrentPos >= theNumAttributes) 
+    if (theIte == theEnd) 
     {
       result = NULL;
       return false;
     }
 
-    cnode = reinterpret_cast<AttributeNode*>(theParentNode->getAttr(theCurrentPos));
+    attr = static_cast<AttributeNode*>(*theIte);
   }
 
-  theCurrentPos++;
+  ++theIte;
 
-  result = cnode;
+  result = attr;
   return true;
 }
 

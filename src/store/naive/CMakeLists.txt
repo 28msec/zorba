@@ -21,7 +21,6 @@ SET(ZORBA_MSDOM_IN_NATIVE_STORE_CACHING ON CACHE BOOL "select if all info in msd
 SET(ZORBA_STORE_IMPL_SRCS
     item.cpp
     item_vector.cpp
-    node_vector.cpp
     node_items.cpp
     node_factory.cpp
     node_updates.cpp

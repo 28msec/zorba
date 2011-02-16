@@ -607,7 +607,7 @@ void DtdXmlLoader::endDocument(void * ctx)
     ZORBA_ASSERT(docNode != NULL);
 
     // For each child, make this doc node its parent.
-    NodeVector& children = docNode->children();
+    InternalNode::NodeVector& children = docNode->nodes();
     numChildren = nodeStack.size() - firstChildPos - 1;
     children.resize(numChildren);
 
@@ -615,7 +615,7 @@ void DtdXmlLoader::endDocument(void * ctx)
     for (i = firstChildPos + 1; i < stackSize; ++i)
     {
       currChild = nodeStack[i];
-      children.set(currChild, numActualChildren);
+      children[numActualChildren] = currChild;
       currChild->setParent(docNode);
       ++numActualChildren;
     }
@@ -677,8 +677,8 @@ void DtdXmlLoader::startElement(
   //std::cout << "StartElement, name: " << node->name << std::endl; std::cout.flush();
 
   const xmlChar * lname =  node->name;
-  const xmlChar * prefix = node->ns!=NULL ? node->ns->prefix : NULL;
-  const xmlChar * uri =    node->ns!=NULL ? node->ns->href   : NULL;
+  const xmlChar * prefix = node->ns != NULL ? node->ns->prefix : NULL;
+  const xmlChar * uri =    node->ns != NULL ? node->ns->href   : NULL;
 
   int numAttrs = 0;
   for (xmlAttrPtr attr = node->properties; attr != NULL; attr = attr->next )
@@ -699,8 +699,8 @@ void DtdXmlLoader::startElement(
 
   try
   {
-    ulong numAttributes = (ulong)numAttrs;
-    ulong numBindings = (ulong)numNamespaces;
+    vsize numAttributes = static_cast<vsize>(numAttrs);
+    vsize numBindings = static_cast<vsize>(numNamespaces);
 
     // Construct node name
     store::Item_t nodeName = qnpool.insert(reinterpret_cast<const char*>(uri),
@@ -821,10 +821,9 @@ void DtdXmlLoader::startElement(
 
     // Process attributes
     i = 0;
-    NodeVector& attrNodes = elemNode->attributes();
+    InternalNode::NodeVector& attrNodes = elemNode->nodes();
 
-    for (xmlAttrPtr attr = node->properties; attr != NULL;
-        attr = attr->next )
+    for (xmlAttrPtr attr = node->properties; attr != NULL; attr = attr->next )
     {
       //std::cout << "  att: " << attr->name << std::endl; std::cout.flush();
 
@@ -898,7 +897,7 @@ void DtdXmlLoader::startElement(
       attrNode->theTypedValue.transfer(typedValue);
       attrNode->theTypeName.transfer(typeName);
 
-      attrNodes.set(attrNode, i);
+      attrNodes[i] = attrNode;
 
       if (attrNode->isBaseUri())
       {
@@ -974,11 +973,11 @@ void  DtdXmlLoader::endElement(
 
   zorba::Stack<PathStepInfo>& pathStack = loader.thePathStack;
   zorba::Stack<XmlNode*>& nodeStack = loader.theNodeStack;
-  ulong stackSize = nodeStack.size();
-  ulong firstChildPos;
-  ulong numChildren;
-  ulong numActualChildren;
-  ulong i;
+  vsize stackSize = nodeStack.size();
+  vsize firstChildPos;
+  vsize numChildren;
+  vsize numActualNodes;
+  vsize i;
   ElementNode* elemNode;
   XmlNode* prevChild = NULL;
   XmlNode* currChild;
@@ -1004,11 +1003,14 @@ void  DtdXmlLoader::endElement(
 
     // For each child, make this element node its parent and fix its namespace
     // bindings context.
-    NodeVector& children = elemNode->children();
-    numChildren = nodeStack.size() - firstChildPos - 1;
-    children.resize(numChildren);
+    InternalNode::NodeVector& nodes = elemNode->nodes();
 
-    numActualChildren = 0;
+    numChildren = nodeStack.size() - firstChildPos - 1;
+
+    numActualNodes = nodes.size();
+
+    nodes.resize(numActualNodes + numChildren);
+
     for (i = firstChildPos + 1; i < stackSize; ++i)
     {
       currChild = nodeStack[i];
@@ -1030,7 +1032,7 @@ void  DtdXmlLoader::endElement(
       }
       else
       {
-        children.set(currChild, numActualChildren);
+        nodes[numActualNodes] = currChild;
         currChild->setParent(elemNode);
 
         if (currChild->getNodeKind() == store::StoreConsts::elementNode &&
@@ -1041,11 +1043,11 @@ void  DtdXmlLoader::endElement(
         }
 
         prevChild = currChild;
-        ++numActualChildren;
+        ++numActualNodes;
       }
     }
 
-    children.resize(numActualChildren);
+    nodes.resize(numActualNodes);
 
     nodeStack.pop(numChildren+1);
     pathStack.pop();

@@ -17,7 +17,7 @@
 #include "zorbautils/fatal.h"
 
 #include "store/naive/node_vector.h"
-//#include "store/naive/node_items.h"
+
 
 namespace zorba 
 {
@@ -26,19 +26,6 @@ namespace simplestore
 {
 
 NodeVector dummyVector;
-
-
-ulong NodeVector::find(XmlNode* n)
-{
-  ulong size = (ulong)theNodes.size();
-  ulong i;
-  for (i = 0; i < size; i++)
-  {
-    if (theNodes[i] == n)
-      return i;
-  }
-  return i;
-}
 
 
 void NodeVector::insert(XmlNode* n, long pos)
@@ -62,16 +49,15 @@ void NodeVector::remove(ulong pos)
 }
 
 
-bool NodeVector::remove(XmlNode* n)
+NodeVector::iterator NodeVector::remove(XmlNode* n)
 {
-  ulong pos = find(n);
+  NodeVector::iterator pos = std::find(theNodes, n);
 
-  if (pos < theNodes.size())
+  if (pos != theNodes.end())
   {
-    theNodes.erase(theNodes.begin() + pos);
-    return true;
+    theNodes.erase(pos);
   }
-  return false;
+  return pos;
 }
 
 

@@ -587,6 +587,7 @@ public:
   virtual const Item_t
   getFunctionName() const;
 
+#if 0
   /**
    * Make a copy of the xml tree rooted at this node and place the copied
    * tree at a given position under a given node.
@@ -607,7 +608,24 @@ public:
    */
   virtual Item* copy(
         Item* parent,
-        long pos,
+        vsize_t pos,
+        const CopyMode& copymode) const;
+#endif
+
+  /**
+   * Make a copy of the xml tree rooted at this node and place the copied
+   * tree as the last child of a given node.
+   *
+   * @param parent   The node P under which the copied tree is to be placed.
+   *                 P may be NULL, in which case the copied tree becomes a
+   *                 new standalone xml tree.
+   * @param copymode Encapsulates the construction-mode and copy-namespace-mode
+   *                 components of the query's static context. 
+   * @return         A pointer to the root node of the copied tree, or to this
+   *                 node if no copy was actually done. 
+   */
+  virtual Item* copy(
+        Item* parent,
         const CopyMode& copymode) const;
 
   /**

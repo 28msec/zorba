@@ -127,11 +127,12 @@ void zorba::SAXParser::startElement(
 	store::Item_t typeName;
   zstring baseuri = lParser.theBaseUri;
 
-	factory.createElementNode(result, parent, -1, nodeName, typeName, false, false, bindings, baseuri);
+	factory.createElementNode(result, parent, nodeName, typeName, false, false, bindings, baseuri);
   unsigned int index = 0;
   for (int indexAttribute = 0;
-    indexAttribute < nb_attributes;
-    ++indexAttribute, index += 5) {
+       indexAttribute < nb_attributes;
+       ++indexAttribute, index += 5) 
+  {
       store::Item_t res;
       store::Item_t anAttrName;
       store::Item_t aTypedValue;
@@ -145,7 +146,7 @@ void zorba::SAXParser::startElement(
 
       factory.createUntypedAtomic(aTypedValue, aValue);
 
-      factory.createAttributeNode(res, result.getp(), indexAttribute, anAttrName, typeName, aTypedValue);
+      factory.createAttributeNode(res, result.getp(), anAttrName, typeName, aTypedValue);
   }
 	lParser.theStack.push_back(result);
 }
@@ -180,7 +181,7 @@ void zorba::SAXParser::cdataBlock( void * ctx, const xmlChar * ch, int len )
   std::ostringstream os;
   os.write(reinterpret_cast<const char*>(ch), len);
   zstring s(os.str());
-  lParser.theFactory.createTextNode(result, lParser.theStack.back().getp(), -1, s);
+  lParser.theFactory.createTextNode(result, lParser.theStack.back().getp(), s);
 }
 
 
@@ -190,7 +191,7 @@ void zorba::SAXParser::comment( void * ctx, const xmlChar * ch )
   lParser.createTextNodeFromBuffer();
 	store::Item_t result;
 	zstring data(reinterpret_cast<const char*>(ch));
-	lParser.theFactory.createCommentNode(result, lParser.theStack.back(), -1, data);
+	lParser.theFactory.createCommentNode(result, lParser.theStack.back(), data);
 }
 
 
@@ -205,7 +206,7 @@ void zorba::SAXParser::processingInstruction(
 	zstring data(reinterpret_cast<const char*>(content));
 	zstring t = reinterpret_cast<const char*>(target);
   zstring baseuri = lParser.theBaseUri;
-	lParser.theFactory.createPiNode(result, lParser.theStack.back(), -1, t, data, baseuri);
+	lParser.theFactory.createPiNode(result, lParser.theStack.back(), t, data, baseuri);
 }
 
 
@@ -238,7 +239,7 @@ void zorba::SAXParser::createTextNodeFromBuffer()
 {
   store::Item_t result;
   zstring s(m_stream->str());
-  theFactory.createTextNode(result, theStack.back().getp(), -1, s);
+  theFactory.createTextNode(result, theStack.back().getp(), s);
   delete m_stream;
   m_stream = new std::ostringstream();
 }

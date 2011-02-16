@@ -677,14 +677,13 @@ zorba::Item ItemFactoryImpl::createElementNode(
 
   zstring lBaseUri;
   theItemFactory->createElementNode(lItem,
-    Unmarshaller::getInternalItem(aParent),
-    -1,
-    lNodeName,
-    lTypeName,
-    aHasTypedValue,
-    aHasEmptyValue,
-    lNsBindings,
-    lBaseUri);
+                                    Unmarshaller::getInternalItem(aParent),
+                                    lNodeName,
+                                    lTypeName,
+                                    aHasTypedValue,
+                                    aHasEmptyValue,
+                                    lNsBindings,
+                                    lBaseUri);
   return &*lItem;
 }
 
@@ -700,11 +699,10 @@ zorba::Item ItemFactoryImpl::createAttributeNode(
   store::Item_t lTypeName = Unmarshaller::getInternalItem(aTypeName);
   store::Item_t lTypedValue = Unmarshaller::getInternalItem(aTypedValue);
   theItemFactory->createAttributeNode(lItem,
-                                    Unmarshaller::getInternalItem(aParent),
-                                    -1,
-                                    lNodeName,
-                                    lTypeName,
-    lTypedValue);
+                                      Unmarshaller::getInternalItem(aParent),
+                                      lNodeName,
+                                      lTypeName,
+                                      lTypedValue);
   return &*lItem;
 }
 
@@ -727,11 +725,10 @@ zorba::Item ItemFactoryImpl::createAttributeNode(
   }
 
   theItemFactory->createAttributeNode(lItem,
-                                    Unmarshaller::getInternalItem(aParent),
-                                    -1,
-                                    lNodeName,
-                                    lTypeName,
-                                    lTypedValue);
+                                      Unmarshaller::getInternalItem(aParent),
+                                      lNodeName,
+                                      lTypeName,
+                                      lTypedValue);
   return &*lItem;
 }
 
@@ -742,7 +739,6 @@ zorba::Item ItemFactoryImpl::createTextNode(Item parent, String content)
   zstring lContent = Unmarshaller::getInternalString(content);
   theItemFactory->createTextNode(lItem,
                                  Unmarshaller::getInternalItem(parent),
-                                 -1,
                                  lContent);
   return &*lItem;
 }

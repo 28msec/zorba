@@ -453,7 +453,7 @@ void FastXmlLoader::endDocument(void * ctx)
     ZORBA_ASSERT(docNode != NULL);
 
     // For each child, make this doc node its parent.
-    NodeVector& children = docNode->children();
+    InternalNode::NodeVector& children = docNode->nodes();
     numChildren = nodeStack.size() - firstChildPos - 1;
     children.resize(numChildren);
 
@@ -461,7 +461,7 @@ void FastXmlLoader::endDocument(void * ctx)
     for (i = firstChildPos + 1; i < stackSize; ++i)
     {
       currChild = nodeStack[i];
-      children.set(currChild, numActualChildren);
+      children[numActualChildren] = currChild;
       currChild->setParent(docNode);
       ++numActualChildren;
     }
@@ -538,8 +538,8 @@ void FastXmlLoader::startElement(
 
   try
   {
-    ulong numAttributes = (ulong)numAttrs;
-    ulong numBindings = (ulong)numNamespaces;
+    vsize numAttributes = static_cast<vsize>(numAttrs);
+    vsize numBindings = static_cast<vsize>(numNamespaces);
 
     // Construct node name 
     store::Item_t nodeName = qnpool.insert(reinterpret_cast<const char*>(uri),
@@ -630,7 +630,7 @@ void FastXmlLoader::startElement(
     {
       store::NsBindings& bindings = elemNode->getNsContext()->getBindings();
 
-      for (ulong i = 0; i < numBindings; ++i)
+      for (vsize i = 0; i < numBindings; ++i)
       {
         const char* prefix = reinterpret_cast<const char*>(namespaces[i * 2]);
         const char* nsuri = reinterpret_cast<const char*>(namespaces[i * 2 + 1]);
@@ -660,10 +660,10 @@ void FastXmlLoader::startElement(
     // Process attributes
     if (numAttributes > 0)
     {
-      NodeVector& attrNodes = elemNode->attributes();
+      InternalNode::NodeVector& attrNodes = elemNode->nodes();
 
-      ulong index = 0;
-      for (ulong i = 0; i < numAttributes; ++i, index += 5)
+      vsize index = 0;
+      for (vsize i = 0; i < numAttributes; ++i, index += 5)
       {
         const char* lname = reinterpret_cast<const char*>(attributes[index]);
         const char* prefix = reinterpret_cast<const char*>(attributes[index+1]);
@@ -682,7 +682,7 @@ void FastXmlLoader::startElement(
         attrNode->setId(loader.theTree, &loader.theOrdPath);
         attrNode->theTypedValue.transfer(typedValue);
 
-        attrNodes.set(attrNode, i);
+        attrNodes[i] = attrNode;
 
         if (attrNode->isBaseUri())
         {
@@ -751,11 +751,11 @@ void  FastXmlLoader::endElement(
 
   zorba::Stack<PathStepInfo>& pathStack = loader.thePathStack;
   zorba::Stack<XmlNode*>& nodeStack = loader.theNodeStack;
-  ulong stackSize = nodeStack.size();
-  ulong firstChildPos;
-  ulong numChildren;
-  ulong numActualChildren;
-  ulong i;
+  vsize stackSize = nodeStack.size();
+  vsize firstChildPos;
+  vsize numChildren;
+  vsize numActualNodes;
+  vsize i;
   ElementNode* elemNode;
   XmlNode* prevChild = NULL;
   XmlNode* currChild;
@@ -781,11 +781,14 @@ void  FastXmlLoader::endElement(
 
     // For each child, make this element node its parent and fix its namespace
     // bindings context.
-    NodeVector& children = elemNode->children();
-    numChildren = nodeStack.size() - firstChildPos - 1;
-    children.resize(numChildren);
+    InternalNode::NodeVector& nodes = elemNode->nodes();
 
-    numActualChildren = 0;
+    numChildren = nodeStack.size() - firstChildPos - 1;
+
+    numActualNodes = nodes.size();
+
+    nodes.resize(numActualNodes + numChildren);
+
     for (i = firstChildPos + 1; i < stackSize; ++i)
     {
       currChild = nodeStack[i];
@@ -807,7 +810,7 @@ void  FastXmlLoader::endElement(
       }
       else
       {
-        children.set(currChild, numActualChildren);
+        nodes[numActualNodes] = currChild;
         currChild->setParent(elemNode);
 
         if (currChild->getNodeKind() == store::StoreConsts::elementNode &&
@@ -818,13 +821,13 @@ void  FastXmlLoader::endElement(
         }
 
         prevChild = currChild;
-        ++numActualChildren;
+        ++numActualNodes;
       }
     }
 
-    children.resize(numActualChildren);
+    nodes.resize(numActualNodes);
 
-    nodeStack.pop(numChildren+1);
+    nodeStack.pop(numChildren + 1);
     pathStack.pop();
 
     if (elemNode->getNsContext() != NULL)

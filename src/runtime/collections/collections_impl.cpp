@@ -370,7 +370,7 @@ bool ZorbaCreateCollectionIterator::nextImpl(
     {
       checkNodeType(theSctx, node, collectionDecl, loc);
 
-      copyNode = node->copy(NULL, 0, copymode);
+      copyNode = node->copy(NULL, copymode);
 
       nodes.resize(numNodes+1);
       nodes[numNodes++].transfer(copyNode);
@@ -489,7 +489,7 @@ bool ZorbaInsertNodesIterator::nextImpl(
   while (consumeNext(node, theChildren[theChildren.size()-1].getp(), planState))
   {
     checkNodeType(theSctx, node, collectionDecl, loc);
-    copyNode = node->copy(NULL, 0, lCopyMode);
+    copyNode = node->copy(NULL, lCopyMode);
     nodes.push_back(copyNode);
   }
 
@@ -584,7 +584,7 @@ bool ZorbaInsertNodesFirstIterator::nextImpl(
   while (consumeNext(node, theChildren[theChildren.size()-1].getp(), planState))
   {
     checkNodeType(theSctx, node, collectionDecl, loc);
-    copyNode = node->copy(NULL, 0, lCopyMode);
+    copyNode = node->copy(NULL, lCopyMode);
     nodes.push_back(copyNode);
   }
 
@@ -681,7 +681,7 @@ bool ZorbaInsertNodesLastIterator::nextImpl(
   while (consumeNext(node, theChildren[theChildren.size()-1].getp(), planState))
   {
     checkNodeType(theSctx, node, collectionDecl, loc);
-    copyNode = node->copy(NULL, 0, lCopyMode);
+    copyNode = node->copy(NULL, lCopyMode);
     nodes.push_back(copyNode);
   }
 
@@ -796,7 +796,7 @@ bool ZorbaInsertNodesBeforeIterator::nextImpl(
   {
     checkNodeType(theSctx, node, collectionDecl, loc);
 
-    copyNode = node->copy(NULL, 0, lCopyMode);
+    copyNode = node->copy(NULL, lCopyMode);
     nodes.push_back(copyNode);
   }
 
@@ -915,7 +915,7 @@ bool ZorbaInsertNodesAfterIterator::nextImpl(
   {
     checkNodeType(theSctx, node, collectionDecl, loc);
 
-    copyNode = node->copy(NULL, 0, lCopyMode);
+    copyNode = node->copy(NULL, lCopyMode);
     nodes.push_back(copyNode);
   }
 

@@ -211,7 +211,7 @@ bool InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) cons
       attrs.resize(numAttrs);
 
       for (ulong i = 0; i < numAttrs; ++i)
-        attrs[i] = attrs[i]->copy(NULL, 0, lCopyMode);
+        attrs[i] = attrs[i]->copy(NULL, lCopyMode);
 
       pul->addInsertAttributes(parent, attrs);
     }
@@ -221,7 +221,7 @@ bool InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) cons
       nodes.resize(numNodes);
 
       for (ulong i = 0; i < numNodes; ++i)
-        nodes[i] = nodes[i]->copy(NULL, 0, lCopyMode);
+        nodes[i] = nodes[i]->copy(NULL, lCopyMode);
 
       if (theType == store::UpdateConsts::BEFORE)
         pul->addInsertBefore(target, nodes);
@@ -286,7 +286,7 @@ bool InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) cons
       attrs.resize(numAttrs);
 
       for (ulong i = 0; i < numAttrs; ++i)
-        attrs[i] = attrs[i]->copy(NULL, 0, lCopyMode);
+        attrs[i] = attrs[i]->copy(NULL, lCopyMode);
 
       pul->addInsertAttributes(target, attrs);
     }
@@ -296,7 +296,7 @@ bool InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) cons
       nodes.resize(numNodes);
 
       for (ulong i = 0; i < numNodes; ++i)
-        nodes[i] = nodes[i]->copy(NULL, 0, lCopyMode);
+        nodes[i] = nodes[i]->copy(NULL, lCopyMode);
 
       if (theType == store::UpdateConsts::INTO)
         pul->addInsertInto(target, nodes);
@@ -457,7 +457,7 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
           ZORBA_ERROR_LOC(XUTY0011, loc);
         }
 
-        lWith = lWith->copy(NULL, 0, lCopyMode);
+        lWith = lWith->copy(NULL, lCopyMode);
 
         lNodes[lNumNodes++].transfer(lWith);
 
@@ -482,7 +482,7 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
           ZORBA_ERROR_LOC(XUTY0010, loc);
         }
 
-        lWith = lWith->copy(NULL, 0, lCopyMode);
+        lWith = lWith->copy(NULL, lCopyMode);
 
         lNodes[lNumNodes++].transfer(lWith);
 
@@ -582,7 +582,7 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
     if (lTargetKind == store::StoreConsts::elementNode)
     {
       if (haveContent)
-        GENV_ITEMFACTORY->createTextNode(lWith, NULL, 0, content);
+        GENV_ITEMFACTORY->createTextNode(lWith, NULL, content);
       else
         lWith = NULL;
 
@@ -846,7 +846,7 @@ TransformIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
         ZORBA_ERROR_LOC(XUTY0013, loc);
       }
 
-      copyNodes[i] = lCopyNode->copy(NULL, 0, lCopyMode);
+      copyNodes[i] = lCopyNode->copy(NULL, lCopyMode);
 
       lVarRefIter = copyClause.theCopyVars.begin();
       lVarRefEnd = copyClause.theCopyVars.end();

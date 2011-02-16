@@ -98,8 +98,8 @@ void print_comment(store::Item_t& result, const XQDocComment* aComment)
     theFactory->createQName(lCommentQName, theXQDocNS, theXQDocPrefix, "comment");
 
     store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-    theFactory->createElementNode(
-                                  lCommentElem, result, -1, lCommentQName, lTypeName,
+    theFactory->createElementNode(lCommentElem, result,
+                                  lCommentQName, lTypeName,
                                   true, false, theNSBindings, theBaseURI);
     
     // description
@@ -173,7 +173,7 @@ void printCommentFragment(store::Item_t& aParent, string aString, string aTag)
 
   store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createQName(lQName, theXQDocNS, theXQDocPrefix, aTag.c_str());
-  theFactory->createElementNode(lElem, aParent, -1, lQName, lTypeName,
+  theFactory->createElementNode(lElem, aParent, lQName, lTypeName,
                                 true, false, theNSBindings, theBaseURI);
 
   // parse the contents of the description in order
@@ -199,13 +199,12 @@ void printCommentFragment(store::Item_t& aParent, string aString, string aTag)
     {
       store::Iterator_t lIter2 = lRootElem->getChildren();
       lIter2->open();
-      long i = 0;
       store::Item_t lTmp;
       while (lIter2->next(lTmp))
       {
         store::CopyMode lMode;
         // insert every element into the that that we create
-        lTmp->copy(lElem, i++, lMode);
+        lTmp->copy(lElem, lMode);
       }
     }
   }
@@ -285,53 +284,53 @@ void print(const parsenode* p, const store::Item_t& aDateTime)
 
   // create the prolog
   // <xqdoc><control><date/><version/></control>
-  theFactory->createElementNode(
-      theResult, NULL, -1, lXQDocQName, lTypeName,
-      true, false, theNSBindings, theBaseURI);
+  theFactory->createElementNode(theResult, NULL,
+                                lXQDocQName, lTypeName,
+                                true, false, theNSBindings, theBaseURI);
 
   // control, module, imports, functions
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-  theFactory->createElementNode(
-      lControlElem, theResult, -1, lControlQName, lTypeName,
-      true, false, theNSBindings, theBaseURI);
+  theFactory->createElementNode(lControlElem, theResult,
+                                lControlQName, lTypeName,
+                                true, false, theNSBindings, theBaseURI);
 
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-  theFactory->createElementNode(
-      theModule, theResult, -1, lModuleQName, lTypeName,
-      true, false, theNSBindings, theBaseURI);
+  theFactory->createElementNode(theModule, theResult,
+                                lModuleQName, lTypeName,
+                                true, false, theNSBindings, theBaseURI);
 
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-  theFactory->createElementNode(
-      theImports, theResult, -1, lImportsQName, lTypeName,
-      true, false, theNSBindings, theBaseURI);
+  theFactory->createElementNode(theImports, theResult, 
+                                lImportsQName, lTypeName,
+                                true, false, theNSBindings, theBaseURI);
 
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-  theFactory->createElementNode(
-      theVariables, theResult, -1, lVariablesQName, lTypeName,
-      true, false, theNSBindings, theBaseURI);
+  theFactory->createElementNode(theVariables, theResult, 
+                                lVariablesQName, lTypeName,
+                                true, false, theNSBindings, theBaseURI);
 
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-  theFactory->createElementNode(
-      theFunctions, theResult, -1, lFunctionsQName, lTypeName,
-      true, false, theNSBindings, theBaseURI);
+  theFactory->createElementNode(theFunctions, theResult, 
+                                lFunctionsQName, lTypeName,
+                                true, false, theNSBindings, theBaseURI);
 
   // date version
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-  theFactory->createElementNode(
-      lDateElem, lControlElem, -1, lDateQName, lTypeName,
-      true, false, theNSBindings, theBaseURI);
+  theFactory->createElementNode(lDateElem, lControlElem, 
+                                lDateQName, lTypeName,
+                                true, false, theNSBindings, theBaseURI);
 
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-  theFactory->createElementNode(
-      lVersionElem, lControlElem, -1, lVersionQName, lTypeName,
-      true, false, theNSBindings, theBaseURI);
+  theFactory->createElementNode(lVersionElem, lControlElem, 
+                                lVersionQName, lTypeName,
+                                true, false, theNSBindings, theBaseURI);
 
   zstring lDate;
   aDateTime->getStringValue2(lDate);
 
-  theFactory->createTextNode(lDateText, lDateElem.getp(), -1, lDate);
+  theFactory->createTextNode(lDateText, lDateElem.getp(), lDate);
 
-  theFactory->createTextNode(lVersionText, lVersionElem, -1, theVersion);
+  theFactory->createTextNode(lVersionText, lVersionElem, theVersion);
 
   p->accept(*this);
 
@@ -382,16 +381,16 @@ void end_visit(const MainModule& n, void* /*visit_state*/)
   theFactory->createString(lAttrValue, lAttrString);
 
   store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-  theFactory->createAttributeNode(
-      lTypeAttr, theModule, -1, lTypeQName, lTypeName, lAttrValue);
+  theFactory->createAttributeNode(lTypeAttr, theModule,
+                                  lTypeQName, lTypeName, lAttrValue);
 
   // <uri>filename</uri>
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-  theFactory->createElementNode(
-      lURIElem, theModule, -1, lURIQName, lTypeName,
-      true, false, theNSBindings, theBaseURI);
+  theFactory->createElementNode(lURIElem, theModule, 
+                                lURIQName, lTypeName,
+                                true, false, theNSBindings, theBaseURI);
 
-  theFactory->createTextNode(lURIText, lURIElem.getp(), -1, theFileName);
+  theFactory->createTextNode(lURIText, lURIElem.getp(), theFileName);
 
   //print_comment(theModule, n.getComment());
 }
@@ -416,22 +415,23 @@ void end_visit(const ModuleDecl& n, void* /*visit_state*/)
   theFactory->createString(lAttrValue, lAttrString);
 
   store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-  theFactory->createAttributeNode(
-      lTypeAttr, theModule, -1, lTypeQName, lTypeName, lAttrValue);
+  theFactory->createAttributeNode(lTypeAttr, theModule, 
+                                  lTypeQName, lTypeName, lAttrValue);
 
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-  theFactory->createElementNode(
-      lURIElem, theModule, -1, lURIQName, lTypeName,
-      true, false, theNSBindings, theBaseURI);
-
-  zstring lTargetNS = n.get_target_namespace();
-  theFactory->createTextNode(lURIText, lURIElem.getp(), -1, lTargetNS);
-
-  lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-  theFactory->createElementNode(lNameElem, theModule, -1, lNameQName, lTypeName,
+  theFactory->createElementNode(lURIElem, theModule, 
+                                lURIQName, lTypeName,
                                 true, false, theNSBindings, theBaseURI);
 
-  theFactory->createTextNode(lNameText, lNameElem, -1, theFileName);
+  zstring lTargetNS = n.get_target_namespace();
+  theFactory->createTextNode(lURIText, lURIElem.getp(), lTargetNS);
+
+  lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  theFactory->createElementNode(lNameElem, theModule,
+                                lNameQName, lTypeName,
+                                true, false, theNSBindings, theBaseURI);
+
+  theFactory->createTextNode(lNameText, lNameElem, theFileName);
 
   print_comment(theModule, n.getComment());
 }
@@ -453,14 +453,14 @@ void end_visit(const FunctionDecl& n, void* /*visit_state*/)
 
   store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
-      lFuncElem, theFunctions, -1, lFuncQName, lTypeName,
+      lFuncElem, theFunctions, lFuncQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
 
   print_comment(lFuncElem, n.getComment());
 
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
-      lNameElem, lFuncElem, -1, lNameQName, lTypeName,
+      lNameElem, lFuncElem, lNameQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
 
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
@@ -471,46 +471,46 @@ void end_visit(const FunctionDecl& n, void* /*visit_state*/)
   theFactory->createString(lArityValue, lAttrString);
 
   theFactory->createAttributeNode(
-      lArityQName, lFuncElem, -1, lArityQName, lTypeName, lArityValue);
+      lArityQName, lFuncElem, lArityQName, lTypeName, lArityValue);
   
   if(n.is_private())
   {
     zstring lPrivateString("true");
     theFactory->createString(lPrivateValue, lPrivateString);
     theFactory->createAttributeNode(
-      lPrivateQName, lFuncElem, -1, lPrivateQName, lTypeName, lPrivateValue);
+      lPrivateQName, lFuncElem, lPrivateQName, lTypeName, lPrivateValue);
   }
 
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-  theFactory->createElementNode(
-      lSigElem, lFuncElem, -1, lSigQName, lTypeName,
-      true, false, theNSBindings, theBaseURI);
+  theFactory->createElementNode(lSigElem, lFuncElem, lSigQName, lTypeName,
+                                true, false, theNSBindings, theBaseURI);
 
   zstring lNameString = n.get_name()->get_localname();
-  theFactory->createTextNode(lNameText, lNameElem, -1, lNameString);
+  theFactory->createTextNode(lNameText, lNameElem, lNameString);
 
   ostringstream lSig;
 
-  FunctionDecl lFunctionDeclClone(n.get_location(), n.get_name(),
-      n.get_paramlist(),
-      n.get_return_type(),
-      0,
-      n.get_kind(),
-      n.get_annotations());
+  FunctionDecl lFunctionDeclClone(n.get_location(),
+                                  n.get_name(),
+                                  n.get_paramlist(),
+                                  n.get_return_type(),
+                                  0,
+                                  n.get_kind(),
+                                  n.get_annotations());
 
   FunctionIndex lIndex = print_parsetree_xquery(lSig, &lFunctionDeclClone);
 
   zstring lSigString = lSig.str();
-  theFactory->createTextNode(lSigText, lSigElem, -1, lSigString);
+  theFactory->createTextNode(lSigText, lSigElem, lSigString);
 
   // add all invoked function elements as children to the end of the current
   // function element. After this, clear the set of invoked functions
   // to be prepared for the next function declaration
-  long i = 3;
   for (map<string, store::Item_t>::const_iterator lIter = theInvokedFunc.begin();
-       lIter != theInvokedFunc.end(); ++lIter) {
+       lIter != theInvokedFunc.end(); ++lIter) 
+  {
     store::CopyMode lCopyMode;
-    (*lIter).second->copy(lFuncElem.getp(), i++, lCopyMode);
+    (*lIter).second->copy(lFuncElem.getp(), lCopyMode);
   }
   theInvokedFunc.clear();
 }
@@ -545,12 +545,12 @@ void add_invoked_function (
 
   store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
-      lInvokedElem, NULL, -1, lInvokedQName, lTypeName,
+      lInvokedElem, NULL, lInvokedQName, lTypeName,
       false, false, theNSBindings, theBaseURI);
 
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
-      lUriElem, lInvokedElem, -1, lUriQName, lTypeName,
+      lUriElem, lInvokedElem, lUriQName, lTypeName,
       false, false, theNSBindings, theBaseURI);
 
   map<zstring, zstring>::iterator ite = theNamespaces.find(aPrefix);
@@ -568,11 +568,11 @@ void add_invoked_function (
   ostringstream lKey;
   lKey << lNS << aLocalName << "#" << aArity;
 
-  theFactory->createTextNode(lUriText, lUriElem.getp(), -1, lNS);
+  theFactory->createTextNode(lUriText, lUriElem.getp(), lNS);
 
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
-      lNameElem, lInvokedElem, -1, lNameQName, lTypeName,
+      lNameElem, lInvokedElem, lNameQName, lTypeName,
       false, false, theNSBindings, theBaseURI);
 
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
@@ -583,10 +583,10 @@ void add_invoked_function (
   theFactory->createString(lAttrValue, lAttrString);
 
   theFactory->createAttributeNode(
-      lArityQName, lInvokedElem, -1, lArityQName, lTypeName, lAttrValue);
+      lArityQName, lInvokedElem, lArityQName, lTypeName, lAttrValue);
 
   zstring aLocalName2 = aLocalName;
-  theFactory->createTextNode(lNameText, lNameElem.getp(), -1, aLocalName2);
+  theFactory->createTextNode(lNameText, lNameElem.getp(), aLocalName2);
 
   // collect distinct invocation elements
   theInvokedFunc[lKey.str()] = lInvokedElem;
@@ -608,28 +608,28 @@ void end_visit(const VarDecl& n, void*)
 
   store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
-      lVariableElem, theVariables, -1, lVariableQName, lTypeName,
+      lVariableElem, theVariables, lVariableQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
 
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
-      lUriElem, lVariableElem, -1, lUriQName, lTypeName,
+      lUriElem, lVariableElem, lUriQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
 
   zstring lUriString(n.get_name()->get_localname());
 
-  theFactory->createTextNode(lUriText, lUriElem, -1, lUriString);
+  theFactory->createTextNode(lUriText, lUriElem, lUriString);
 
   print_comment(lVariableElem, n.getComment());
 
   // add all invoked function elements as children to the end of the current
   // function element. After this, clear the set of invoked functions
   // to be prepared for the next function declaration
-  long i = 3;
   for (std::map<std::string, store::Item_t>::const_iterator lIter = theInvokedFunc.begin();
-       lIter != theInvokedFunc.end(); ++lIter) {
+       lIter != theInvokedFunc.end(); ++lIter) 
+  {
     store::CopyMode lCopyMode;
-    (*lIter).second->copy(lVariableElem.getp(), i++, lCopyMode);
+    (*lIter).second->copy(lVariableElem.getp(), lCopyMode);
   }
   theInvokedFunc.clear();
 }
@@ -648,17 +648,17 @@ void end_visit(const ModuleImport& n, void*)
 
   store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
-      lImportElem, theImports, -1, lImportQName, lTypeName,
+      lImportElem, theImports, lImportQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
 
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
-      lUriElem, lImportElem, -1, lUriQName, lTypeName,
+      lUriElem, lImportElem, lUriQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
 
   zstring lUriString(n.get_uri());
 
-  theFactory->createTextNode(lUriText, lUriElem, -1, lUriString);
+  theFactory->createTextNode(lUriText, lUriElem, lUriString);
 
   theFactory->createQName(lTypeQName, "", "", "type");
 
@@ -667,7 +667,7 @@ void end_visit(const ModuleImport& n, void*)
   theFactory->createString(lAttrValue, lAttrString);
 
   theFactory->createAttributeNode(
-      lTypeAttr, lImportElem, -1, lTypeQName, lTypeName, lAttrValue);
+      lTypeAttr, lImportElem, lTypeQName, lTypeName, lAttrValue);
 
   print_comment(lImportElem, n.getComment());
 
@@ -690,16 +690,16 @@ void end_visit(const SchemaImport& n, void*)
 
   store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
-      lImportElem, theImports, -1, lImportQName, lTypeName,
+      lImportElem, theImports, lImportQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
 
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
-      lUriElem, lImportElem, -1, lUriQName, lTypeName,
+      lUriElem, lImportElem, lUriQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
 
   zstring lUriString = n.get_uri();
-  theFactory->createTextNode(lUriText, lUriElem, -1, lUriString);
+  theFactory->createTextNode(lUriText, lUriElem, lUriString);
 
   theFactory->createQName(lTypeQName, "", "", "type");
 
@@ -708,7 +708,7 @@ void end_visit(const SchemaImport& n, void*)
   theFactory->createString(lAttrValue, lAttrString);
 
   theFactory->createAttributeNode(
-      lTypeAttr, lImportElem, -1, lTypeQName, lTypeName, lAttrValue);
+      lTypeAttr, lImportElem, lTypeQName, lTypeName, lAttrValue);
 
   print_comment(lImportElem, n.getComment());
 

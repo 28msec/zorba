@@ -75,7 +75,8 @@ ElementNode* NodeFactory::createElementNode(
 ElementNode* NodeFactory::createElementNode(
     XmlTree*                    tree,
     InternalNode*               parent,
-    long                        pos,
+    bool                        append,
+    vsize                       pos,
     store::Item_t&              nodeName,
     store::Item_t&              typeName,
     bool                        haveTypedValue,
@@ -84,7 +85,7 @@ ElementNode* NodeFactory::createElementNode(
     const store::NsBindings*    localBindings,
     zstring&                    baseUri)
 {
-  return new ElementNode(tree, parent, pos, nodeName, typeName,
+  return new ElementNode(tree, parent, append, pos, nodeName, typeName,
                          haveTypedValue, haveEmptyValue, isInSubstGroup,
                          localBindings, baseUri);
 }
@@ -100,14 +101,15 @@ AttributeNode* NodeFactory::createAttributeNode(
 AttributeNode* NodeFactory::createAttributeNode(
     XmlTree*                    tree,
     ElementNode*                parent,
-    long                        pos,
+    bool                        append,
+    vsize                       pos,
     store::Item_t&              attrName,
     store::Item_t&              typeName,
     store::Item_t&              typedValue,
     bool                        isListValue,
     bool                        hidden)
 {
-  return new AttributeNode(tree, parent, pos, attrName,
+  return new AttributeNode(tree, parent, append, pos, attrName,
                            typeName, typedValue, isListValue, hidden);
 }
   
@@ -121,10 +123,11 @@ TextNode* NodeFactory::createTextNode(zstring& content)
 TextNode* NodeFactory::createTextNode(
     XmlTree*          tree,
     InternalNode*     parent,
-    long              pos,
+    bool              append,
+    vsize             pos,
     zstring&          content)
 {
-  return new TextNode(tree, parent, pos, content);
+  return new TextNode(tree, parent, append, pos, content);
 }
 
 
@@ -148,11 +151,12 @@ PiNode* NodeFactory::createPiNode(
 PiNode* NodeFactory::createPiNode(
     XmlTree*      tree,
     InternalNode* parent,
-    long          pos,
+    bool          append,
+    vsize         pos,
     zstring&      target,
     zstring&      content)
 {
-  return new PiNode(tree, parent, pos, target, content);
+  return new PiNode(tree, parent, append, pos, target, content);
 }
   
   
@@ -166,10 +170,11 @@ CommentNode* NodeFactory::createCommentNode(
 CommentNode* NodeFactory::createCommentNode(
     XmlTree*      tree,
     InternalNode* parent,
-    long          pos,
+    bool          append,
+    vsize         pos,
     zstring&      content)
 {
-  return new CommentNode(tree, parent, pos, content);
+  return new CommentNode(tree, parent, append, pos, content);
 }
   
 

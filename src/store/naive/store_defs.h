@@ -29,6 +29,9 @@ namespace simplestore {
 #define GET_FACTORY() \
   (*(reinterpret_cast<BasicItemFactory*>(GET_STORE().getItemFactory())))
 
+#define GET_NODE_FACTORY() \
+  (GET_STORE().getNodeFactory())
+
 
 #define BASE_NODE(item) (reinterpret_cast<XmlNode*>((item).getp()))
 

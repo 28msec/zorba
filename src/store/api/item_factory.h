@@ -501,6 +501,42 @@ public:
         zstring& docUri) = 0;
 
   /**
+   * Create a new element node N and place it as the last child of a given 
+   * parent node. If no parent is given, N becomes the root (and single node)
+   * of a new XML tree.
+   *
+   * @param result         The new node N created by this method
+   * @param parent         The parent P of the new node; may be NULL.
+   * @param nodeName       The fully qualified name of the new node.
+   * @param typeName       The fully qualified name of the new node's type.
+   *                       Not allowed to be NULL, use xsd:untyped instead.
+   * @param haveTypedValue Whether the node has a typed value or not (element
+   *                       nodes with complex type and element-only content do
+   *                       not have typed value).
+   * @param haveEmptyValue True if the typed value of the node is the empty
+   *                       sequence. This is the case if the element has a
+   *                       complex type with empty content.
+   * @param localBindings  A set of namespace bindings. The namespaces property
+   *                       of N will be the union of this set and the namespaces
+   *                       property of P.
+   * @param baseUri        The base uri of N. It may be NULL, in which case, the
+   *                       base-uri property of N is the same as that of P.
+   * @return               Always true (if any errors occur, the method throws
+   *                       exceptions)
+   */
+  virtual bool createElementNode(
+        Item_t&             result,
+        Item*               parent,
+        Item_t&             nodeName,
+        Item_t&             typeName,
+        bool                haveTypedValue,
+        bool                haveEmptyValue,
+        const NsBindings&   localBindings,
+        zstring&            baseURI,
+        bool                isInSubstitutionGroup = false) = 0;
+
+#ifdef USE_POS
+  /**
    * Create a new element node N and place it at a given position among the
    * children of a given parent node. If no parent is given, N becomes the
    * root (and single node) of a new XML tree.
@@ -508,7 +544,7 @@ public:
    * @param result         The new node N created by this method
    * @param parent         The parent P of the new node; may be NULL.
    * @param pos            The position, among the children of P, that N will
-   *                       occupy. If pos < 0 or pos >= current number of P's
+   *                       occupy. If pos == current number of P's
    *                       children, then N is appended to the list of children.
    * @param nodeName       The fully qualified name of the new node.
    * @param typeName       The fully qualified name of the new node's type.
@@ -530,7 +566,7 @@ public:
  virtual bool createElementNode(
         Item_t&             result,
         Item*               parent,
-        long                pos,
+        ulong               pos,
         Item_t&             nodeName,
         Item_t&             typeName,
         bool                haveTypedValue,
@@ -538,17 +574,15 @@ public:
         const NsBindings&   localBindings,
         zstring&            baseURI,
         bool                isInSubstitutionGroup = false) = 0;
+#endif
 
   /**
-   * Create a new attribute node N and place it at a given position among the
-   * attributes of a given parent node. If no parent is given, N becomes the
-   * root (and single node) of a new XML tree.
+   * Create a new attribute node N and place it as the last attribute of a given
+   * parent node. If no parent is given, N becomes the root (and single node) of
+   * a new XML tree.
    *
    * @param result     The new node N created by this method
    * @param parent     The parent P of the new node; may be NULL.
-   * @param pos        The position, among the attributes of P, that N will occupy.
-   *                   If pos < 0 or pos >= current number of P's attributes, then
-   *                   N is appended to the list of attributes.
    * @param nodeName   The fully qualified name of the new node. The nemaspace
    *                   binding implied by this name will be added to the namespaces
    *                   of P. If the name prefix is "xml" and the local name is
@@ -561,7 +595,6 @@ public:
   virtual bool createAttributeNode(
         Item_t&              result,
         Item*                parent,
-        long                 pos,
         Item_t&              nodeName,
         Item_t&              typeName,
         Item_t&              typedValue) = 0;
@@ -569,11 +602,63 @@ public:
   virtual bool createAttributeNode(
         Item_t&              result,
         Item*                parent,
-        long                 pos,
         Item_t&              nodeName,
         Item_t&              typeName,
         std::vector<Item_t>& typedValue) = 0;
 
+#ifdef USE_POS
+  /**
+   * Create a new attribute node N and place it at a given position among the
+   * attributes of a given parent node. If no parent is given, N becomes the
+   * root (and single node) of a new XML tree.
+   *
+   * @param result     The new node N created by this method
+   * @param parent     The parent P of the new node; may be NULL.
+   * @param pos        The position, among the attributes of P, that N will occupy.
+   *                   If pos == current number of P's attributes, then N is
+   *                   appended to the list of attributes.
+   * @param nodeName   The fully qualified name of the new node. The nemaspace
+   *                   binding implied by this name will be added to the namespaces
+   *                   of P. If the name prefix is "xml" and the local name is
+   *                   "base", then the base-uri property of P will be set or
+   *                   updated accordingly.
+   * @param typeName   The fully qualified name of the new node's type.
+   * @param typedValue The typed value of the new node.
+   * @return           Always true (if any errors occur, the method throws exceptions)
+   */
+  virtual bool createAttributeNode(
+        Item_t&              result,
+        Item*                parent,
+        ulong                pos,
+        Item_t&              nodeName,
+        Item_t&              typeName,
+        Item_t&              typedValue) = 0;
+
+  virtual bool createAttributeNode(
+        Item_t&              result,
+        Item*                parent,
+        ulong                pos,
+        Item_t&              nodeName,
+        Item_t&              typeName,
+        std::vector<Item_t>& typedValue) = 0;
+#endif
+
+  /**
+   * Create a new text node N and place it as the last child of a given parent
+   * node. If no parent is given, N becomes the root (and single node) of a new
+   * XML tree.
+   *
+   * @param result  The new node N created by this method
+   * @param parent  The parent P of the new node; may be NULL.
+   * @param content The content of the new node.
+   * @return        Always true (if any errors occur, the method throws exceptions)
+   */
+  virtual bool createTextNode(
+        Item_t&  result,
+        Item*    parent,
+        zstring& content) = 0;
+
+#ifdef USE_POS
   /**
    * Create a new text node N and place it at a given position among the
    * children of a given parent node. If no parent is given, N becomes the
@@ -582,17 +667,27 @@ public:
    * @param result  The new node N created by this method
    * @param parent  The parent P of the new node; may be NULL.
    * @param pos     The position, among the children of P, that N will occupy.
-   *                If pos < 0 or pos >= current number of P's children, then
-   *                N is appended to the list of children.
+   *                If pos == current number of P's children, then N is appended
+   *                to the list of children.
    * @param content The content of the new node.
    * @return        Always true (if any errors occur, the method throws exceptions)
    */
   virtual bool createTextNode(
         Item_t&  result,
         Item*    parent,
-        long     pos,
+        ulong    pos,
         zstring& content) = 0;
+#endif
 
+  /**
+   * Create a new text node N to store the typed value of an element node P.
+   * In this case, N can be the only child of P. 
+   *
+   * @param result  The new node N created by this method
+   * @param parent  The parent P of the new node; may NOT be NULL.
+   * @param content The content of the new node.
+   * @return        Always true (if any errors occur, the method throws exceptions)
+   */
   virtual bool createTextNode(
         Item_t&  result,
         Item*    parent,
@@ -604,6 +699,26 @@ public:
         std::vector<Item_t>& content) = 0;
 
   /**
+   * Create a new processing instruction node N and place it as the last child
+   * of a given parent node. If no parent is given, N becomes the root (and
+   * single node) of a new XML tree.
+   *
+   * @param result  The new node N created by this method
+   * @param parent  The parent P of the new node; may be NULL.
+   * @param target  The target of the new node.
+   * @param content The content of the new node.
+   * @param baseUri The base uri of the new node. May be NULL.
+   * @return        Always true (if any errors occur, the method throws exceptions)
+   */
+  virtual bool createPiNode (
+        Item_t&  result,
+        Item*    parent,
+        zstring& target,
+        zstring& content,
+        zstring& baseUri) = 0;
+
+#ifdef USE_POS
+  /**
    * Create a new processing instruction node N and place it at a given position
    * among the children of a given parent node. If no parent is given, N becomes
    * the root (and single node) of a new XML tree.
@@ -611,7 +726,7 @@ public:
    * @param result  The new node N created by this method
    * @param parent  The parent P of the new node; may be NULL.
    * @param pos     The position, among the children of P, that N will occupy.
-   *                If pos < 0 or pos >= current number of P's children, then
+   *                If pos == current number of P's children, then
    *                N is appended to the list of children.
    * @param target  The target of the new node.
    * @param content The content of the new node.
@@ -621,11 +736,28 @@ public:
   virtual bool createPiNode (
         Item_t&  result,
         Item*    parent,
-        long     pos,
+        ulong    pos,
         zstring& target,
         zstring& content,
         zstring& baseUri) = 0;
+#endif
 
+  /**
+   * Create a new comment node N and place it as the last child of a given
+   * parent node. If no parent is given, N becomes the root (and single node)
+   * of a new XML tree.
+   *
+   * @param result  The new node N created by this method
+   * @param parent  The parent P of the new node; may be NULL.
+   * @param content The content of the new node.
+   * @return        Always true (if any errors occur, the method throws exceptions)
+   */
+  virtual bool createCommentNode (
+        Item_t&  result,
+        Item*    parent,
+        zstring& content) = 0;
+
+#ifdef USE_POS
   /**
    * Create a new comment node N and place it at a given position among the
    * children of a given parent node. If no parent is given, N becomes the
@@ -634,7 +766,7 @@ public:
    * @param result  The new node N created by this method
    * @param parent  The parent P of the new node; may be NULL.
    * @param pos     The position, among the children of P, that N will occupy.
-   *                If pos < 0 or pos >= current number of P's children, then
+   *                If pos == current number of P's children, then
    *                N is appended to the list of children.
    * @param content The content of the new node.
    * @return        Always true (if any errors occur, the method throws exceptions)
@@ -642,31 +774,14 @@ public:
   virtual bool createCommentNode (
         Item_t&  result,
         Item*    parent,
-        long     pos,
+        ulong    pos,
         zstring& content) = 0;
-
+#endif
 
   /**
    * Create a pending updates list.
    */
   virtual PUL* createPendingUpdateList() = 0;
-
-#if 0
-  /**
-   * Create a new tuple.
-   */
-  virtual bool createTuple(
-          store::Item_t& result,
-          std::vector<store::TupleField>& fields) = 0;
-
-  /**
-   * Create a new tuple from an existing one.
-   */
-  virtual bool createTuple(
-          store::Item_t& result,
-          store::Item *inTuple,
-          std::vector<int>& permutation) = 0;
-#endif
 
   /**
    * Create an ErrorItem encapsulating a pointer to a ZorbaError obj (or to

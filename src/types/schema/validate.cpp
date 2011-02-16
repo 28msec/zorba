@@ -351,7 +351,7 @@ store::Item_t Validator::processElement(
   }
 
   store::Item_t elemName = element->getNodeName();
-  GENV_ITEMFACTORY->createElementNode(newElem, parent, -1, elemName,
+  GENV_ITEMFACTORY->createElementNode(newElem, parent, elemName,
                                       typeName, haveTypedValue, haveEmptyValue,
                                       bindings, baseUri, isSubstitutionGroup);
 
@@ -445,14 +445,12 @@ void Validator::processAttributes(
     if ( typedValues.size()==1 ) // hack around serialization bug
       GENV_ITEMFACTORY->createAttributeNode(validatedAttNode,
                                             parent,
-                                            -1,
                                             attQName,
                                             typeQName,
                                             typedValues[0]);
     else
       GENV_ITEMFACTORY->createAttributeNode(validatedAttNode,
                                             parent,
-                                            -1,
                                             attQName,
                                             typeQName,
                                             typedValues);
@@ -468,8 +466,6 @@ void Validator::processChildren(
     store::Iterator_t children)
 {
   store::Item_t child;
-
-  int childIndex = 0;
 
   while ( children->next(child) )
   {
@@ -563,7 +559,6 @@ void Validator::processChildren(
             zstring empty;
             GENV_ITEMFACTORY->createTextNode(validatedTextNode,
                                              parent,
-                                             childIndex,
                                              empty);
             //cout << "      -- create empty text : ElementOnly || Empty" << endl;
           }
@@ -580,7 +575,6 @@ void Validator::processChildren(
           // thrown an error
           GENV_ITEMFACTORY->createTextNode(validatedTextNode,
                                            parent,
-                                           childIndex,
                                            childStringValue);
           //cout << "      -- create empty text: Mixed" << endl;
         }
@@ -597,7 +591,7 @@ void Validator::processChildren(
         zstring childBaseUri;
         child->getBaseURI(childBaseUri);
 
-        GENV_ITEMFACTORY->createPiNode(piNode, parent, -1, piTarget,
+        GENV_ITEMFACTORY->createPiNode(piNode, parent, piTarget,
                                        childStringValue, childBaseUri);
       }
       break;
@@ -609,8 +603,7 @@ void Validator::processChildren(
         store::Item_t commentNode;
         zstring childStringValue;
         child->getStringValue2(childStringValue);
-        GENV_ITEMFACTORY->createCommentNode(commentNode, parent, -1,
-                                            childStringValue);
+        GENV_ITEMFACTORY->createCommentNode(commentNode, parent, childStringValue);
       }
       break;
 
@@ -623,8 +616,6 @@ void Validator::processChildren(
         ZORBA_ASSERT(false);
       }
     }
-
-    childIndex++;
   }
 }
 

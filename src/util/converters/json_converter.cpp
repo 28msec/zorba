@@ -208,7 +208,6 @@ bool create_Node_Helper(
 
   bool lStatus = GENV_ITEMFACTORY->createElementNode(lTempResult,
                                                      aParent,
-                                                     -1,
                                                      lQname,
                                                      lTypeQname,
                                                      true,
@@ -239,7 +238,6 @@ bool create_Attribute_Helper(
 
   GENV_ITEMFACTORY->createAttributeNode(lTempResult,
                                         aParent,
-                                        -1,
                                         lQname,
                                         lTypeQname,
                                         lStrItem);
@@ -275,7 +273,7 @@ bool create_Pair_Helper(
   if (haveValue)
   {
     store::Item_t lTextValue;
-    GENV_ITEMFACTORY->createTextNode(lTextValue, *aResult, -1, aValue);
+    GENV_ITEMFACTORY->createTextNode(lTextValue, *aResult, aValue);
   }
 
   return lRet;
@@ -455,7 +453,7 @@ void parse_Json_ML_value(
       delete lWtmp;
 
       if( ! equals(lText, "null", 4) )
-        GENV_ITEMFACTORY->createTextNode(lTextValue, aParent, -1, lText);
+        GENV_ITEMFACTORY->createTextNode(lTextValue, aParent, lText);
       break;
     }
   }

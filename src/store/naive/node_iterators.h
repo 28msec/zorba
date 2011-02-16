@@ -50,67 +50,71 @@ class ChildrenIteratorImpl : public store::ChildrenIterator
 protected:
   rchandle<InternalNode>  theParentNode;
 
-  ulong                   theNumChildren;
-  ulong                   theInitPos;
-  ulong                   theCurrentPos;
+  InternalNode::iterator  theEnd;
+  InternalNode::iterator  theStart;
+  InternalNode::iterator  theIte;
 
 public:
-  ChildrenIteratorImpl() : theNumChildren(0), theInitPos(0), theCurrentPos(0) { }
+  ChildrenIteratorImpl() { }
 
   void init(store::Item_t& parent, const store::Item* child = NULL)
   {
     theParentNode.transfer(parent);
-    theNumChildren = theParentNode->numChildren();
-    theInitPos = 0;
+    theEnd = theParentNode->childrenEnd();
+    theStart = theParentNode->childrenBegin();
 
-    if (child != NULL && theNumChildren > 0)
+    if (child != NULL && theStart != theEnd)
     {
       assert(child->getParent() == theParentNode);
 
-      while (theParentNode->getChild(theInitPos++) != child)
+      while ((*theStart) != child)
       {
-        ;
+        ++theStart;
       }
+
+      ++theStart;
     }
 
-    theCurrentPos = theInitPos;
+    theIte = theStart;
   }
 
 
   void init(const store::Item* parent, const store::Item* child = NULL)
   {
     theParentNode = parent;
-    theNumChildren = theParentNode->numChildren();
-    theInitPos = 0;
+    theEnd = theParentNode->childrenEnd();
+    theStart = theParentNode->childrenBegin();
 
-    if (child != NULL && theNumChildren > 0)
+    if (child != NULL && theStart != theEnd)
     {
       assert(child->getParent() == theParentNode);
 
-      while (theParentNode->getChild(theInitPos++) != child)
+      while ((*theStart) != child)
       {
-        ;
+        ++theStart;
       }
+
+      ++theStart;
     }
 
-    theCurrentPos = theInitPos;
+    theIte = theStart;
   }
 
 
   store::Item* next()
   {
-    if (theCurrentPos >= theNumChildren) 
+    if (theIte == theEnd) 
       return NULL;
 
-    return theParentNode->getChild(theCurrentPos++);
+    return *theIte++;
   }
 
 
-  void open() { theCurrentPos = theInitPos; }
+  void open() { theIte = theStart; }
 
-  void reset() { theCurrentPos = theInitPos; }
+  void reset() { theIte = theStart; }
 
-  void close() { theCurrentPos = theNumChildren; theParentNode = NULL; }
+  void close() { theIte = theEnd; theParentNode = NULL; }
 
   bool next(store::Item_t& result);
 };
@@ -139,73 +143,81 @@ class ChildrenReverseIteratorImpl : public store::ChildrenReverseIterator
 protected:
   rchandle<InternalNode>  theParentNode;
 
-  ulong                   theNumChildren;
-  long                    theInitPos;
-  long                    theCurrentPos;
+  InternalNode::reverse_iterator  theEnd;
+  InternalNode::reverse_iterator  theStart;
+  InternalNode::reverse_iterator  theIte;
 
 public:
-  ChildrenReverseIteratorImpl() 
-    :
-    theNumChildren(0),
-    theInitPos(-1),
-    theCurrentPos(-1)
-  {
-  }
+  ChildrenReverseIteratorImpl() { }
 
   void init(store::Item_t& parent, const store::Item* child = NULL)
   {
     theParentNode.transfer(parent);
-    theNumChildren = theParentNode->numChildren();
-    theInitPos = theNumChildren - 1;
+    theEnd = theParentNode->childrenREnd();
+    theStart = theParentNode->childrenRBegin();
 
-    if (child != NULL && theNumChildren > 0)
+    if (child != NULL && theStart != theEnd)
     {
       assert(child->getParent() == theParentNode);
 
-      while (theParentNode->getChild(theInitPos--) != child)
+      while ((*theStart) != child)
       {
-        ;
+        ++theStart;
       }
+
+      ++theStart;
     }
 
-    theCurrentPos = theInitPos;
+    theIte = theStart;
   }
 
 
   void init(const store::Item* parent, const store::Item* child = NULL)
   {
     theParentNode = parent;
-    theNumChildren = theParentNode->numChildren();
-    theInitPos = theNumChildren - 1;
+    theEnd = theParentNode->childrenREnd();
+    theStart = theParentNode->childrenRBegin();
 
-    if (child != NULL && theNumChildren > 0)
+    if (child != NULL && theStart != theEnd)
     {
       assert(child->getParent() == theParentNode);
 
-      while (theParentNode->getChild(theInitPos--) != child)
+      while ((*theStart) != child)
       {
-        ;
+        ++theStart;
       }
+
+      ++theStart;
     }
 
-    theCurrentPos = theInitPos;
+    theIte = theStart;
   }
 
 
   store::Item* next()
   {
-    if (theCurrentPos < 0) 
+    if (theIte == theEnd) 
       return NULL;
 
-    return theParentNode->getChild(theCurrentPos--);
+    return *theIte++;
   }
 
 
-  void open() { theCurrentPos = theInitPos; }
+  void open() 
+  {
+    theIte = theStart;
+  }
 
-  void reset() { theCurrentPos = theInitPos; }
+  void reset()
+  {
+    theIte = theStart;
+  }
 
-  void close() { theCurrentPos = -1; theParentNode = NULL; }
+  void close()
+  {
+    theIte = theEnd;
+    theParentNode = NULL;
+  }
 
   bool next(store::Item_t& result);
 };
@@ -224,55 +236,64 @@ class AttributesIteratorImpl : public store::AttributesIterator
 protected:
   rchandle<ElementNode>  theParentNode;
 
-  ulong                  theNumAttributes;
-  ulong                  theCurrentPos;
+  InternalNode::iterator  theEnd;
+  InternalNode::iterator  theIte;
 
 public:
-  AttributesIteratorImpl() : theNumAttributes(0), theCurrentPos(0) { }
+  AttributesIteratorImpl() { }
 
   void init(store::Item_t& parent)
   {
     theParentNode.transfer(parent);
-    theNumAttributes = theParentNode->numAttributes();
-    theCurrentPos = 0;
+    theEnd = theParentNode->attrsEnd();
+    theIte = theParentNode->attrsBegin();
   }
 
   void init(const store::Item* parent)
   {
     theParentNode = parent;
-    theNumAttributes = theParentNode->numAttributes();
-    theCurrentPos = 0;
+    theEnd = theParentNode->attrsEnd();
+    theIte = theParentNode->attrsBegin();
   }
 
   store::Item* next()
   {
-    if (theCurrentPos >= theNumAttributes) 
+    if (theIte == theEnd) 
       return NULL;
 
-    AttributeNode* attr =
-      reinterpret_cast<AttributeNode*>(theParentNode->getAttr(theCurrentPos));
+    AttributeNode* attr = static_cast<AttributeNode*>(*theIte);
 
     while (attr->isHidden())
     {
-      theCurrentPos++;
+      ++theIte;
 
-      if (theCurrentPos >= theNumAttributes) 
+      if (theIte == theEnd) 
         return NULL;
 
-      attr = reinterpret_cast<AttributeNode*>(theParentNode->getAttr(theCurrentPos));
+      attr = static_cast<AttributeNode*>(*theIte);
     }
 
-    theCurrentPos++;
+    ++theIte;
 
     return attr;
   }
 
 
-  void open() { theCurrentPos = 0; }
+  void open() 
+  {
+    theIte = theParentNode->attrsBegin();
+  }
 
-  void reset() { theCurrentPos = 0; }
+  void reset() 
+  {
+    if (theParentNode)
+      theIte = theParentNode->attrsBegin();
+  }
 
-  void close() { theParentNode = NULL; }
+  void close() 
+  {
+    theParentNode = NULL;
+  }
 
   bool next(store::Item_t& result);
 };
