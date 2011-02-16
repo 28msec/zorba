@@ -206,10 +206,6 @@ int serializer::emitter::emit_expanded_string(
       }
       else
       {
-        // raise an error iff (1) the serialization format is XML 1.0 and (2) the given character is an invalid XML 1.0 character
-        if (ser->method == PARAMETER_VALUE_XML && ser->version == "1.0" && !xml::is_valid(cp))
-          ZORBA_ERROR_DESC(FOCH0001, "Serialization error: codepoint #" + NumConversions::uintToStr(cp) + " is not allowed in XML version 1.0.");
-
         while (char_length)
         {
           tr << *chars;
@@ -367,6 +363,46 @@ void serializer::emitter::emit_doctype(const zstring& elementName)
 /*******************************************************************************
 
 ********************************************************************************/
+void serializer::emitter::emit_streamable_item(store::Item* item)
+{
+  // Streamable item
+  char buffer[1024];
+  int rollover = 0;
+  int read_bytes;
+  std::istream& is = item->getStream();
+
+  // prepare the stream
+  std::ios::iostate const old_exceptions = is.exceptions();
+  is.exceptions( std::ios::badbit | std::ios::failbit );
+  std::streampos const pos = is.tellg();
+  if (pos)
+    is.seekg(0, std::ios::beg);
+  is.exceptions(is.exceptions() & ~std::ios::failbit);
+
+  // read bytes and do string expansion
+  do
+  {
+    is.read(buffer + rollover, 1024 - rollover);
+    read_bytes = is.gcount();
+    rollover = emit_expanded_string(buffer, read_bytes + rollover);
+    memmove(buffer, buffer + 1024 - rollover, rollover);
+  }
+  while (read_bytes > 0);
+
+  // restore stream's state
+  is.clear();                   // clear eofbit
+  if (pos)
+  {
+    is.exceptions(is.exceptions() | std::ios::failbit);
+    is.seekg(pos, std::ios::beg);
+  }
+  is.exceptions(old_exceptions);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void serializer::emitter::emit_item(store::Item* item)
 {
   if (item->isAtomic())
@@ -374,60 +410,22 @@ void serializer::emitter::emit_item(store::Item* item)
     if (previous_item == PREVIOUS_ITEM_WAS_TEXT)
       tr << " ";
 
-    if (!item->isStreamable())
-    {
-      emit_expanded_string(item->getStringValue().c_str(), item->getStringValue().size());
-    }
+    if (item->isStreamable())
+      emit_streamable_item(item);
     else
-    {
-      // Streamable item
-      char buffer[1024];
-      int rollover = 0;
-      int read_bytes;
-      std::istream& is = item->getStream();
-
-      // prepare the stream
-      std::ios::iostate const old_exceptions = is.exceptions();
-      is.exceptions( std::ios::badbit | std::ios::failbit );
-      std::streampos const pos = is.tellg();
-      if (pos)
-        is.seekg(0, std::ios::beg);
-      is.exceptions(is.exceptions() & ~std::ios::failbit);
-
-      // read bytes and do string expansion
-      do
-      {
-        is.read(buffer + rollover, 1024 - rollover);
-        read_bytes = is.gcount();
-        rollover = emit_expanded_string(buffer, read_bytes + rollover);
-        memmove(buffer, buffer + 1024 - rollover, rollover);
-      }
-      while (read_bytes > 0);
-
-      // restore stream's state
-      is.clear();                   // clear eofbit
-      if (pos)
-      {
-        is.exceptions(is.exceptions() | std::ios::failbit);
-        is.seekg(pos, std::ios::beg);
-      }
-      is.exceptions(old_exceptions);
-    }
+      emit_expanded_string(item->getStringValue().c_str(), item->getStringValue().size());
 
     previous_item = PREVIOUS_ITEM_WAS_TEXT;
   }
-  else
+  else if (item->getNodeKind() == store::StoreConsts::attributeNode)
   {
-    if (item->getNodeKind() == store::StoreConsts::attributeNode)
-    {
-      ZORBA_ERROR_DESC_OSS(SENR0001,
+    ZORBA_ERROR_DESC_OSS(SENR0001,
                            "Attribute <" << item->getStringValue()
                            << "> can not be serialized.");
-    }
-    else
-    {
-      emit_node(item, 0);
-    }
+  }
+  else
+  {
+    emit_node(item, 0);
   }
 }
 
@@ -1601,20 +1599,17 @@ void serializer::sax2_emitter::emit_item(store::Item* item)
 
     emit_expanded_string(strval.c_str(), strval.size());
   }
+  else if (item->getNodeKind() == store::StoreConsts::attributeNode)
+  {
+    //TODO: unimplemented error handling
+    //SAX2_ParseException   saxx("Node is attribute or namespace", &theLocator);
+    //if(error_handler)
+    //  error_handler->fatalError(saxx);
+    //throw saxx;
+  }
   else
   {
-    if (item->getNodeKind() == store::StoreConsts::attributeNode)
-    {
-      //TODO: unimplemented error handling
-      //SAX2_ParseException   saxx("Node is attribute or namespace", &theLocator);
-      //if(error_handler)
-      //  error_handler->fatalError(saxx);
-      //throw saxx;
-    }
-    else
-    {
-      emit_node(item);
-    }
+    emit_node(item);
   }
 }
 
@@ -1661,7 +1656,6 @@ serializer::text_emitter::text_emitter(
 
 
 /*******************************************************************************
-
 ********************************************************************************/
 void serializer::text_emitter::emit_declaration()
 {
@@ -1669,7 +1663,42 @@ void serializer::text_emitter::emit_declaration()
 
 
 /*******************************************************************************
+********************************************************************************/
+void serializer::text_emitter::emit_streamable_item(store::Item* item)
+{
+  // Streamable item
+  char buffer[1024];
+  int read_bytes;
+  std::istream& is = item->getStream();
 
+  // prepare the stream
+  std::ios::iostate const old_exceptions = is.exceptions();
+  is.exceptions( std::ios::badbit | std::ios::failbit );
+  std::streampos const pos = is.tellg();
+  if (pos)
+    is.seekg(0, std::ios::beg);
+  is.exceptions(is.exceptions() & ~std::ios::failbit);
+
+  // read bytes and do string expansion
+  do
+  {
+    is.read(buffer, 1024);
+    read_bytes = is.gcount();
+    tr.write(buffer, read_bytes);
+  }
+  while (read_bytes > 0);
+
+  // restore stream's state
+  is.clear();                   // clear eofbit
+  if (pos)
+  {
+    is.exceptions(is.exceptions() | std::ios::failbit);
+    is.seekg(pos, std::ios::beg);
+  }
+  is.exceptions(old_exceptions);
+}
+
+/*******************************************************************************
 ********************************************************************************/
 void serializer::text_emitter::emit_item(store::Item* item)
 {
@@ -1678,22 +1707,22 @@ void serializer::text_emitter::emit_item(store::Item* item)
     if (previous_item == PREVIOUS_ITEM_WAS_TEXT)
       tr << " ";
 
-    tr << item->getStringValue();
+    if (item->isStreamable())
+      emit_streamable_item(item);
+    else
+      tr << item->getStringValue();
 
     previous_item = PREVIOUS_ITEM_WAS_TEXT;
   }
+  else if (item->getNodeKind() == store::StoreConsts::attributeNode)
+  {
+    ZORBA_ERROR_DESC_OSS(SENR0001,
+      "Attribute <" << item->getStringValue()
+      << "> can not be serialized.");
+  }
   else
   {
-    if (item->getNodeKind() == store::StoreConsts::attributeNode)
-    {
-      ZORBA_ERROR_DESC_OSS(SENR0001,
-                           "Attribute <" << item->getStringValue()
-                           << "> can not be serialized.");
-    }
-    else
-    {
-      emit_node(item, 0);
-    }
+    emit_node(item, 0);
   }
 }
 

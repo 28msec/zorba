@@ -216,6 +216,13 @@ protected:
     virtual void emit_item(store::Item* item);
 
     /**
+     * Serializes the given streamable item.
+     *
+     * @param item the item to serialize
+     */
+    virtual void emit_streamable_item(store::Item* item);
+
+    /**
      *  The root function that performs the serialization
      *  of a normalized sequence.
      */
@@ -247,8 +254,10 @@ protected:
 
     /**
      *  Serializes the given string, performing character expansion
-     *  if necessary. Returns the number of bytes that have not been written. This
-     *  is used only for streamable items expansion.
+     *  if necessary. 
+     *
+     *  @return returns the number of bytes that have not been written. This
+     *          info is used only for streamable items expansion.
      */
     virtual int emit_expanded_string(
             const char* str,
@@ -366,6 +375,8 @@ protected:
         bool perform_escaping = true);
 
     virtual void emit_item(store::Item* item);
+
+    virtual void emit_streamable_item(store::Item* item);
   };
 
 
