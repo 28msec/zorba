@@ -3467,9 +3467,57 @@ void ElementNode::tokenize( XmlNodeTokenizerCallback& cb )
 
 void TextNode::tokenize( XmlNodeTokenizerCallback &cb ) 
 {
+  const zstring* text;
+  zstring listText;
+
+  if (isTyped())
+  {
+    const store::Item* value = getValue();
+
+    assert(value->isAtomic() || value->isList());
+
+    if (value->isAtomic())
+    {
+      const AtomicItem* avalue = static_cast<const AtomicItem*>(value);
+
+      if (avalue->getTypeCode() < XS_STRING ||
+          avalue->getTypeCode() > XS_ENTITY)
+        return;
+
+      text = &getString();
+    }
+    else
+    {
+      const ItemVector* lvalue = static_cast<const ItemVector*>(value);
+
+      ulong numItems = lvalue->size();
+
+      for (ulong i = 0; i < numItems; ++i)
+      {
+        assert(lvalue->getItem(i)->isAtomic());
+
+        const AtomicItem* avalue = static_cast<const AtomicItem*>(lvalue->getItem(i));
+
+        if (avalue->getTypeCode() < XS_STRING ||
+            avalue->getTypeCode() > XS_ENTITY)
+          continue;
+
+        listText += avalue->getString();
+      }
+
+      if (listText.empty())
+        return;
+
+      text = &listText;
+    }
+  }
+  else
+  {
+    text = &getText();
+  }
+
   XmlNodeTokenizerCallback::begin_type const begin = cb.beginTokenization();
-  zstring const &s = getText();
-  cb.tokenize( s.data(), s.size() );
+  cb.tokenize( text->data(), text->size() );
   cb.endTokenization( this, begin );
 }
 
