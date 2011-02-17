@@ -178,7 +178,7 @@ void operator&(Archiver &ar, int &obj)
     char  strtemp[30];
     sprintf(strtemp, "%d", obj);
 
-    ar.add_simple_field("int", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
+    ar.add_simple_field("number", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
   }
   else
   {
@@ -194,7 +194,7 @@ void operator&(Archiver &ar, int &obj)
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
     if(!retval && ar.get_read_optional_field())
       return;
-    ar.check_simple_field(retval, type, "int", is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
+    ar.check_simple_field(retval, type, "number", is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
     sscanf(value.c_str(), "%d", &obj);
 
     ar.register_reference(id, field_treat, &obj);
@@ -209,7 +209,7 @@ void operator&(Archiver &ar, uint32_t &obj)
     char  strtemp[30];
     sprintf(strtemp, "%u", obj);
 
-    ar.add_simple_field("uint32_t", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
+    ar.add_simple_field("unsigned number", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
   }
   else
   {
@@ -225,7 +225,7 @@ void operator&(Archiver &ar, uint32_t &obj)
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
     if(!retval && ar.get_read_optional_field())
       return;
-    ar.check_simple_field(retval, type, "uint32_t", is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
+    ar.check_simple_field(retval, type, "unsigned number", is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
     sscanf(value.c_str(), "%u", &obj);
 
     ar.register_reference(id, field_treat, &obj);
@@ -239,7 +239,7 @@ void operator&(Archiver &ar, long &obj)
     char  strtemp[30];
     sprintf(strtemp, "%ld", obj);
 
-    ar.add_simple_field("long", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
+    ar.add_simple_field("number", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
   }
   else
   {
@@ -255,7 +255,7 @@ void operator&(Archiver &ar, long &obj)
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
     if(!retval && ar.get_read_optional_field())
       return;
-    ar.check_simple_field(retval, type, "long", is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
+    ar.check_simple_field(retval, type, "number", is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
     sscanf(value.c_str(), "%ld", &obj);
 
     ar.register_reference(id, field_treat, &obj);
@@ -269,7 +269,7 @@ void operator&(Archiver &ar, unsigned long &obj)
     char  strtemp[30];
     sprintf(strtemp, "%lu", obj);
 
-    ar.add_simple_field("unsigned long", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
+    ar.add_simple_field("unsigned number", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
   }
   else
   {
@@ -285,7 +285,7 @@ void operator&(Archiver &ar, unsigned long &obj)
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
     if(!retval && ar.get_read_optional_field())
       return;
-    ar.check_simple_field(retval, type, "unsigned long", is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
+    ar.check_simple_field(retval, type, "unsigned number", is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
     sscanf(value.c_str(), "%lu", &obj);
 
     ar.register_reference(id, field_treat, &obj);
@@ -299,7 +299,7 @@ void operator&(Archiver &ar, long long &obj)
     char  strtemp[30];
     sprintf(strtemp, "%lld", obj);
 
-    ar.add_simple_field("long long", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
+    ar.add_simple_field("number", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
   }
   else
   {
@@ -315,7 +315,7 @@ void operator&(Archiver &ar, long long &obj)
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
     if(!retval && ar.get_read_optional_field())
       return;
-    ar.check_simple_field(retval, type, "long long", is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
+    ar.check_simple_field(retval, type, "number", is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
     sscanf(value.c_str(), "%lld", &obj);
 
     ar.register_reference(id, field_treat, &obj);
@@ -329,7 +329,7 @@ void operator&(Archiver &ar, unsigned long long &obj)
     char  strtemp[30];
     sprintf(strtemp, "%llu", obj);
 
-    ar.add_simple_field("unsigned long long", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
+    ar.add_simple_field("unsigned number", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
   }
   else
   {
@@ -345,7 +345,7 @@ void operator&(Archiver &ar, unsigned long long &obj)
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
     if(!retval && ar.get_read_optional_field())
       return;
-    ar.check_simple_field(retval, type, "unsigned long long", is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
+    ar.check_simple_field(retval, type, "unsigned number", is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
     sscanf(value.c_str(), "%llu", &obj);
 
     ar.register_reference(id, field_treat, &obj);
@@ -359,7 +359,7 @@ void operator&(Archiver &ar, short &obj)
     char  strtemp[30];
     sprintf(strtemp, "%hd", obj);
 
-    ar.add_simple_field("short", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
+    ar.add_simple_field("number", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
   }
   else
   {
@@ -375,7 +375,7 @@ void operator&(Archiver &ar, short &obj)
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
     if(!retval && ar.get_read_optional_field())
       return;
-    ar.check_simple_field(retval, type, "short", is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
+    ar.check_simple_field(retval, type, "number", is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
     sscanf(value.c_str(), "%hd", &obj);
 
     ar.register_reference(id, field_treat, &obj);
@@ -389,7 +389,7 @@ void operator&(Archiver &ar, unsigned short &obj)
     char  strtemp[30];
     sprintf(strtemp, "%hu", obj);
 
-    ar.add_simple_field("unsigned short", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
+    ar.add_simple_field("unsigned number", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
   }
   else
   {
@@ -405,7 +405,7 @@ void operator&(Archiver &ar, unsigned short &obj)
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
     if(!retval && ar.get_read_optional_field())
       return;
-    ar.check_simple_field(retval, type, "unsigned short", is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
+    ar.check_simple_field(retval, type, "unsigned number", is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
     sscanf(value.c_str(), "%hu", &obj);
 
     ar.register_reference(id, field_treat, &obj);

@@ -19,6 +19,6 @@
 namespace zorba{
   namespace serialization{
 
-const unsigned long g_zorba_classes_version = 16;
+const unsigned long g_zorba_classes_version = 17;
 
 }}
