@@ -80,6 +80,12 @@ declare variable $system:os-arch as xs:string := "os.arch";
 declare variable $system:user-name as xs:string := "user.name";
 
 (:~
+ : The zorba module path, that is the paths in which zorba looks
+ : for modules.
+ :)
+declare variable $system:zorba-module-path as xs:string := "zorba.module.path";
+
+(:~
  : Gets a property with a given name. If the property is not found, the function
  : will return an empty string. To access a environment variable, the user needs
  : to prefix the name of the variable with "env.". For example: to get the PATH,

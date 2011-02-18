@@ -58,7 +58,7 @@ namespace zorba { namespace system {
       }
   };
 
-  class SystemFunction : public PureStatelessExternalFunction {
+  class SystemFunction : public NonePureStatelessExternalFunction {
     protected:
       ItemFactory* theFactory;
       std::map<std::string, std::string> theProperties;
@@ -194,6 +194,8 @@ namespace zorba { namespace system {
         }
 #endif
       }
+
+      virtual bool isContextual() { return false; }
   };
 
   class PropertiesFunction : public SystemFunction {
@@ -206,7 +208,9 @@ namespace zorba { namespace system {
       virtual String getLocalName() const { return "properties"; }
 
       virtual ItemSequence_t 
-        evaluate(const StatelessExternalFunction::Arguments_t& args) const;
+      evaluate(const StatelessExternalFunction::Arguments_t& args,
+               const StaticContext* sctx,
+               const DynamicContext* dctx) const;
   };
 
   class PropertyFunction : public SystemFunction {
@@ -219,7 +223,9 @@ namespace zorba { namespace system {
       virtual String getLocalName() const { return "property"; }
 
       virtual ItemSequence_t 
-        evaluate(const StatelessExternalFunction::Arguments_t& args) const;
+      evaluate(const StatelessExternalFunction::Arguments_t& args,
+               const StaticContext* sctx,
+               const DynamicContext* dctx) const;
   };
 
   SystemModule::~SystemModule() {
@@ -240,16 +246,24 @@ namespace zorba { namespace system {
     return 0;
   }
 
-  ItemSequence_t PropertiesFunction::evaluate(const StatelessExternalFunction::Arguments_t& args) const {
+  ItemSequence_t PropertiesFunction::evaluate(
+      const StatelessExternalFunction::Arguments_t& args,
+      const StaticContext* sctx,
+      const DynamicContext* dctx) const {
     std::vector<Item> lRes;
     for (std::map<std::string, std::string>::const_iterator i = theProperties.begin(); i != theProperties.end(); ++i) {
       Item lItem = theFactory->createString(i->first.c_str());
       lRes.push_back(lItem);
     }
+    // insert the zorba module path
+    lRes.push_back(theFactory->createString("zorba.module.path"));
     return ItemSequence_t(new VectorItemSequence(lRes));
   }
 
-  ItemSequence_t PropertyFunction::evaluate(const StatelessExternalFunction::Arguments_t& args) const {
+  ItemSequence_t PropertyFunction::evaluate(
+      const StatelessExternalFunction::Arguments_t& args,
+      const StaticContext* sctx,
+      const DynamicContext* dctx) const {
     Item item;
     Iterator_t arg0_iter = args[0]->getIterator();
     arg0_iter->open();
@@ -257,9 +271,25 @@ namespace zorba { namespace system {
     arg0_iter->close();
     String envS = item.getStringValue();
     String lRes;
-    std::map<std::string, std::string>::const_iterator i;
-    if ((i = theProperties.find(envS.c_str())) != theProperties.end()) {
-      lRes = i->second;
+    if (envS == "zorba.module.path") {
+      std::vector<String> lModulePaths;
+      sctx->getFullModulePaths(lModulePaths);
+      if (lModulePaths.size() == 0)
+        return ItemSequence_t(new SingletonItemSequence(theFactory->createString("")));
+      lRes = lModulePaths[0];
+      for (std::vector<String>::iterator i = lModulePaths.begin() + 1; i != lModulePaths.end(); ++i) {
+#ifdef WIN32
+        lRes += ";";
+#else
+        lRes += ":";
+#endif
+        lRes += *i;
+      }
+    } else {
+      std::map<std::string, std::string>::const_iterator i;
+      if ((i = theProperties.find(envS.c_str())) != theProperties.end()) {
+        lRes = i->second;
+      }
     }
     return ItemSequence_t(new SingletonItemSequence(theFactory->createString(lRes)));
   }
