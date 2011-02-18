@@ -17,6 +17,8 @@
 #define ZORBA_STORE_ITERATOR_H
 
 #include "zorbamisc/config/platform.h"
+
+#include "store/api/shared_types.h"
 #include "store/api/item.h"
 
 

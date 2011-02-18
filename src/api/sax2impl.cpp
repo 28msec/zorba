@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "api/sax2impl.h"
+#include "store/api/shared_types.h"
 #include "store/api/iterator.h"
 #include "store/api/item.h"
+
+#include "api/sax2impl.h"
 #include "api/unmarshaller.h"
 #include <zorba/zorbastring.h>
 #include <zorba/default_content_handler.h>

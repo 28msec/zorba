@@ -54,7 +54,7 @@ Item::Item(const store::Item* other)
 {
   if (!isNull())
   {
-    RCHelper::addReference(m_item);
+    m_item->addReference();
   }
 }
 
@@ -72,7 +72,7 @@ Item::Item(const Item& other)
 {
   if (!isNull())
   {
-    RCHelper::addReference(m_item);
+    m_item->addReference();
   }
 }
 
@@ -88,7 +88,7 @@ Item::close()
 {
   if (!isNull())
   {
-    RCHelper::removeReference(m_item);
+    m_item->removeReference();
     m_item = NULL;
   }
 }
@@ -102,7 +102,7 @@ const Item& Item::operator =(const Item& rhs)
     m_item = rhs.m_item;
     if (!isNull())
     {
-      RCHelper::addReference(m_item);
+      m_item->addReference();
     }
   }
   return *this;
@@ -117,7 +117,7 @@ const Item& Item::operator =(const store::Item* rhs)
     m_item = const_cast<store::Item*>(rhs);
     if (!isNull())
     {
-      RCHelper::addReference(m_item);
+      m_item->addReference();
     }
   }
   return *this;

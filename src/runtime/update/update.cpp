@@ -803,7 +803,7 @@ TransformIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 {
   std::vector<ForVarIter_t>::const_iterator lVarRefIter; 
   std::vector<ForVarIter_t>::const_iterator lVarRefEnd;
-  rchandle<store::PUL> lPul;
+  store::ItemHandle<store::PUL> lPul;
   store::Item_t validationPul;
   store::Item_t temp;
   store::Item_t lItem;

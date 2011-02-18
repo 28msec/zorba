@@ -203,7 +203,6 @@ XmlNode::~XmlNode()
 void XmlNode::setTree(const XmlTree* t)
 {
   theTreeRCPtr = (long*)t;
-  SYNC_CODE(theRCLockPtr = &(t->getRCLock());)
 }
 
 

@@ -109,9 +109,7 @@ public:
   void setValue(store::Item_t& val)
   {
     if (theContent.value != NULL)
-      theContent.value->removeReference(
-                                NULL
-                                SYNC_PARAM2(theContent.value->getRCLock()));
+      theContent.value->removeReference();
 
     theContent.value = val.release();
   }
@@ -119,9 +117,7 @@ public:
   void setValue(store::Item* val)
   {
     if (theContent.value != NULL)
-      theContent.value->removeReference(
-                                NULL
-                                SYNC_PARAM2(theContent.value->getRCLock()));
+      theContent.value->removeReference();
 
     theContent.value = val;
   }
@@ -129,14 +125,12 @@ public:
   void copyValue(store::Item* val)
   {
     if (theContent.value != NULL)
-      theContent.value->removeReference(NULL
-                                        SYNC_PARAM2(theContent.value->getRCLock()));
+      theContent.value->removeReference();
 
     theContent.value = val;
 
     if (val)
-      theContent.value->addReference(NULL
-                                     SYNC_PARAM2(theContent.value->getRCLock()));
+      theContent.value->addReference();
   }
 
 private:

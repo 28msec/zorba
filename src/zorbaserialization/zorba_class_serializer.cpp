@@ -22,6 +22,7 @@
 #include "system/globalenv.h"
 
 #include "store/api/item.h"
+#include "store/api/item_handle.h"
 #include "store/api/iterator.h"
 #include "store/api/item_factory.h"
 //#include "store/api/tuples.h"
@@ -51,16 +52,19 @@ public:
     /*register this class into plan serializer*/  
     ::zorba::serialization::ClassSerializer::getInstance()->register_class_factory("store::Item*", this);
   }
+
   virtual ::zorba::serialization::SerializeBaseClass *create_new(::zorba::serialization::Archiver &ar)
   {
     return NULL;
   }
+
   virtual void cast_ptr(::zorba::serialization::SerializeBaseClass* ptr, void **class_ptr)
   {
     *class_ptr = (void*)dynamic_cast<store::Item*>(ptr);
   }
 
 };
+
 store_item_class_factory    g_store_item_class_factory;
 
 class xqpcollator_class_factory : public ::zorba::serialization::class_deserializer
@@ -81,6 +85,7 @@ public:
   }
 
 };
+
 xqpcollator_class_factory    g_xqpcollator_class_factory;
 
 
@@ -569,18 +574,18 @@ void serialize_my_children2(Archiver &ar, store::Iterator_t iter)
       ar.dont_allow_delay();                      \
       serialize_node_tree(ar, parent, false);
 
-#define FINALIZE_SERIALIZE(create_func, func_params)    \
-      if(!ar.is_serializing_out())                      \
-      {                                                 \
-        store::Item_t result;                           \
-        GENV_ITEMFACTORY->create_func func_params;      \
-        obj = result.getp();                            \
-        if(obj)                                         \
-          obj->addReference(obj->getSharedRefCounter() SYNC_PARAM2(obj->getRCLock()));     \
-        ar.set_is_temp_field(false);                    \
-        ar.register_reference(id, ARCHIVE_FIELD_IS_PTR, obj);                \
-        ar.set_is_temp_field(true);                    \
-      }                                                 
+#define FINALIZE_SERIALIZE(create_func, func_params)                    \
+    if(!ar.is_serializing_out())                                        \
+    {                                                                   \
+      store::Item_t result;                                             \
+      GENV_ITEMFACTORY->create_func func_params;                        \
+      obj = result.getp();                                              \
+      if(obj)                                                           \
+        obj->addReference();                                            \
+      ar.set_is_temp_field(false);                                      \
+      ar.register_reference(id, ARCHIVE_FIELD_IS_PTR, obj);             \
+      ar.set_is_temp_field(true);                                       \
+    }      
 
 
 void operator&(Archiver &ar, store::Item* &obj)
@@ -589,7 +594,6 @@ void operator&(Archiver &ar, store::Item* &obj)
   int  is_node = 0;
   int  is_atomic = 0;
   int  is_pul = 0;
-  int  is_tuple = 0;
   int  is_error = 0;
   int  is_function = 0;
   
@@ -612,12 +616,11 @@ void operator&(Archiver &ar, store::Item* &obj)
     is_node = obj->isNode();
     is_atomic = obj->isAtomic();
     is_pul = obj->isPul();
-    is_tuple = obj->isTuple();
     is_error = obj->isError();
     is_function = obj->isFunction();
-    assert(is_node || is_atomic || is_pul || is_tuple || is_error || is_function);
-    sprintf(strtemp, "n%da%dp%dt%de%df%d",
-                    is_node, is_atomic, is_pul, is_tuple, is_error, is_function);
+    assert(is_node || is_atomic || is_pul || is_error || is_function);
+    sprintf(strtemp, "n%da%dp%de%df%d",
+                    is_node, is_atomic, is_pul, is_error, is_function);
     if(is_node || is_function)
       ar.set_is_temp_field(true);
     is_ref = ar.add_compound_field("store::Item*", 0, FIELD_IS_CLASS, strtemp, obj, ARCHIVE_FIELD_IS_PTR);
@@ -651,8 +654,8 @@ void operator&(Archiver &ar, store::Item* &obj)
     is_ref = (field_treat == ARCHIVE_FIELD_IS_REFERENCING);
     if(!is_ref)
     {
-      sscanf(value.c_str(), "n%da%dp%dt%de%df%d",
-                    &is_node, &is_atomic, &is_pul, &is_tuple, &is_error, &is_function);
+      sscanf(value.c_str(), "n%da%dp%de%df%d",
+                    &is_node, &is_atomic, &is_pul, &is_error, &is_function);
     }
   }
 
@@ -965,13 +968,6 @@ EndAtomicItem:;
       SERIALIZE_FIELD(error::ZorbaError*, value, getError());
       FINALIZE_SERIALIZE(createError, (result, value));
     }
-#if 0
-    else if(is_tuple)
-    {
-      SERIALIZE_REF_FIELD(std::vector<zorba::store::TupleField>, tuple_fields, getTupleFields());
-      FINALIZE_SERIALIZE(createTuple, (result, tuple_fields_in));
-    }
-#endif
     else if(is_function)
     {
       FunctionItem   *fitem = NULL;
@@ -987,14 +983,15 @@ EndAtomicItem:;
         assert(fitem);
         obj = fitem;
         if(obj)                                         
-          obj->addReference(obj->getSharedRefCounter() SYNC_PARAM2(obj->getRCLock()));     
+          obj->addReference();     
         ar.register_reference(id, ARCHIVE_FIELD_IS_PTR, obj);                
       }
-      ar.set_is_temp_field(true);                    
+      ar.set_is_temp_field(true);    
     }
     else
     {
-      ZORBA_SER_ERROR_DESC_OSS(SRL0010_ITEM_TYPE_NOT_SERIALIZABLE, "Not atomic, node, tuple, pul or error");
+      ZORBA_SER_ERROR_DESC_OSS(SRL0010_ITEM_TYPE_NOT_SERIALIZABLE,
+                               "Not atomic, node, pul or error");
     }
 
     ar.set_is_temp_field(false);
@@ -1016,8 +1013,8 @@ EndAtomicItem:;
     }
     else
     {
-      SerializeBaseClass  *new_obj = NULL;
-      if((new_obj = (SerializeBaseClass*)ar.get_reference_value(referencing)))// ARCHIVE_FIELD_IS_REFERENCING
+      store::Item  *new_obj = NULL;
+      if((new_obj = (store::Item*)ar.get_reference_value(referencing)))// ARCHIVE_FIELD_IS_REFERENCING
       {
         obj = dynamic_cast<store::Item*>(new_obj);
         if(!obj)

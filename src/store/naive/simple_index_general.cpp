@@ -267,7 +267,7 @@ longmap:
   {
     bool found = false;
 
-    rchandle<UntypedAtomicItem> untypedItem = 
+    store::ItemHandle<UntypedAtomicItem> untypedItem = 
     static_cast<UntypedAtomicItem*>((*key)[0].getp());
 
     node2 = node;
@@ -279,7 +279,7 @@ longmap:
     // try casting to xs:long
     if (untypedItem->castToLong(castItem))
     {
-      rchandle<LongItem> longItem = static_cast<LongItem*>(castItem.getp());
+      store::ItemHandle<LongItem> longItem = static_cast<LongItem*>(castItem.getp());
 
       ADD_IN_MAP(XS_LONG, true);
 
@@ -304,7 +304,8 @@ longmap:
     // try casting to xs:decimal
     else if (untypedItem->castToDecimal(castItem))
     {
-      rchandle<DecimalItem> decimalItem = static_cast<DecimalItem*>(castItem.getp());
+      store::ItemHandle<DecimalItem> decimalItem = 
+      static_cast<DecimalItem*>(castItem.getp());
 
       ADD_IN_MAP(XS_DOUBLE, true);
 
@@ -690,7 +691,8 @@ void ProbeHashGeneralIndexIterator::init(const store::IndexCondition_t& cond)
     {
       ZORBA_ASSERT(theProbeKind == store::IndexCondition::POINT_GENERAL);
 
-      rchandle<UntypedAtomicItem> untypedItem = static_cast<UntypedAtomicItem*>(keyItem);
+      store::ItemHandle<UntypedAtomicItem> untypedItem = 
+      static_cast<UntypedAtomicItem*>(keyItem);
 
       // cast to xs:string
       if (theIndex->theMaps[XS_STRING])
@@ -704,7 +706,8 @@ void ProbeHashGeneralIndexIterator::init(const store::IndexCondition_t& cond)
            theIndex->theMaps[XS_DOUBLE]) &&
           (untypedItem->castToLong(castItem), castItem != NULL))
       {
-        rchandle<LongItem> longItem = static_cast<LongItem*>(castItem.getp());
+        store::ItemHandle<LongItem> longItem = 
+        static_cast<LongItem*>(castItem.getp());
 
         if (theIndex->theMaps[XS_LONG])
           PROBE_MAP(XS_LONG);
@@ -735,7 +738,8 @@ void ProbeHashGeneralIndexIterator::init(const store::IndexCondition_t& cond)
                 theIndex->theMaps[XS_DOUBLE]) &&
                untypedItem->castToDecimal(castItem))
       {
-        rchandle<DecimalItem> decimalItem = static_cast<DecimalItem*>(castItem.getp());
+        store::ItemHandle<DecimalItem> decimalItem = 
+        static_cast<DecimalItem*>(castItem.getp());
 
         decimalItem->coerceToDouble(castItem, true, lossy);
 
@@ -767,7 +771,8 @@ void ProbeHashGeneralIndexIterator::init(const store::IndexCondition_t& cond)
       else if ((theIndex->theMaps[XS_LONG] || theIndex->theMaps[XS_DOUBLE]) &&
                untypedItem->castToDouble(castItem))
       {
-        rchandle<DoubleItem> doubleItem = static_cast<DoubleItem*>(castItem.getp());
+        store::ItemHandle<DoubleItem> doubleItem = 
+        static_cast<DoubleItem*>(castItem.getp());
 
         if (theIndex->theMaps[XS_DOUBLE])
           PROBE_MAP(XS_DOUBLE);

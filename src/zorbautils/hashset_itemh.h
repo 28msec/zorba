@@ -75,8 +75,7 @@ public:
 
     if (inserted) 
     {
-      key->addReference(key->getSharedRefCounter() 
-                        SYNC_PARAM2(key->getRCLock()));
+      key->addReference();
     }
     return inserted;
   }

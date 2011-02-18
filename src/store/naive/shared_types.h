@@ -41,7 +41,7 @@ class XmlTree;
 typedef rchandle<XmlTree> XmlTree_t;
 
 class XmlNode;
-typedef rchandle<class XmlNode> XmlNode_t;
+typedef store::ItemHandle<class XmlNode> XmlNode_t;
 
 class IndexImpl;
 typedef rchandle<IndexImpl> IndexImpl_t;

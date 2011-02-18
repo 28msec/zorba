@@ -22,7 +22,9 @@
 #include <vector>
 
 #include "store/api/item.h"
+#include "store/api/item_handle.h"
 #include "store/naive/store_defs.h"
+
 #ifndef ZORBA_NO_FULL_TEXT
 #include "store/naive/naive_ft_token_iterator.h"
 #endif /* ZORBA_NO_FULL_TEXT */
@@ -42,38 +44,26 @@ namespace simplestore
 {
 
 class AtomicItemTokenizerCallback;
+
 class QNameItem;
-typedef rchandle<QNameItem> QNameItem_t;
+typedef store::ItemHandle<QNameItem> QNameItem_t;
 
 
-/*****************************************************************************
+/******************************************************************************
 
- *****************************************************************************/
+*******************************************************************************/
 
 class AtomicItem : public store::Item
 {
-#ifdef ZORBA_FOR_ONE_THREAD_ONLY
-public:
-  AtomicItem() : store::Item() { }
-
-#else
-
 protected:
-  SYNC_CODE(RCLock  theRCLock;)
+  SYNC_CODE(mutable RCLock  theRCLock;)
 
 public:
-  AtomicItem() : store::Item() { SYNC_CODE(theRCLockPtr = &theRCLock;) }
-#endif
+  AtomicItem() : store::Item(ATOMIC) { }
 
   ~AtomicItem() {}
 
-  bool isNode() const     { return false; }
-  bool isAtomic() const   { return true;  }
-  bool isList() const     { return false; }
-  bool isPul() const      { return false; }
-  bool isTuple() const    { return false; }
-  bool isError() const    { return false; }
-  bool isFunction() const { return false; }
+  SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
   store::Item_t getAtomizationValue() const;
 
@@ -87,7 +77,7 @@ public:
 };
 
 
-typedef rchandle<AtomicItem> AtomicItem_t;
+typedef store::ItemHandle<AtomicItem> AtomicItem_t;
 
 
 /*******************************************************************************
@@ -2128,12 +2118,13 @@ protected:
   error::ZorbaError * theError;
 
 protected:
-  ErrorItem(error::ZorbaError* error) : theError(error) {}
+  ErrorItem(error::ZorbaError* error) : theError(error) 
+  {
+    *reinterpret_cast<ItemKind*>(&theTreeRCPtr) = ERROR_;
+  }
 
 public:
   ~ErrorItem();
-
-  bool isError() const  { return true; }
 
   error::ZorbaError* getError() const { return theError; }
 
@@ -2158,26 +2149,34 @@ class AtomicItemTokenizerCallback : public Tokenizer::Callback
 public:
   typedef FTTokenStore::container_type container_type;
 
-  AtomicItemTokenizerCallback( Tokenizer &tokenizer,
-                               locale::iso639_1::type lang,
-                               container_type &tokens ) :
+  AtomicItemTokenizerCallback( 
+      Tokenizer &tokenizer,
+      locale::iso639_1::type lang,
+      container_type &tokens )
+    :
     tokenizer_( tokenizer ),
     tokens_( tokens ),
     lang_( lang )
   {
   }
 
-  void operator()( char const *utf8_s, size_t utf8_len,
-                   int_t token_no, int_t sent_no, int_t para_no, void* = 0 );
+  void operator()(
+      char const *utf8_s,
+      size_t utf8_len,
+      int_t token_no,
+      int_t sent_no,
+      int_t para_no,
+      void* = 0 );
 
-  void tokenize( char const *utf8_s, size_t len ) {
+  void tokenize( char const *utf8_s, size_t len ) 
+  {
     tokenizer_.tokenize( utf8_s, len, lang_, *this );
   }
 
 private:
-  Tokenizer &tokenizer_;
-  container_type &tokens_;
-  locale::iso639_1::type const lang_;
+  Tokenizer                    & tokenizer_;
+  container_type               & tokens_;
+  locale::iso639_1::type const   lang_;
 };
 #endif /* ZORBA_NO_FULL_TEXT */
 

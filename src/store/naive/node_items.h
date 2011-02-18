@@ -200,9 +200,10 @@ public:
   void free() throw();
 
   long getRefCount() const { return theRefCount; }
+
   long& getRefCount()      { return theRefCount; }
 
-  SYNC_CODE(RCLock& getRCLock() const { return theRCLock; })
+  SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
   void setId(ulong id) { theId = id; }
 
@@ -368,9 +369,9 @@ protected:
   {
   }
 
-  XmlNode(store::StoreConsts::NodeKind nodeKind) : theParent(NULL)
+  XmlNode(store::StoreConsts::NodeKind k) : Item(), theParent(NULL)
   {
-    theFlags = (uint32_t)nodeKind;
+    theFlags = (uint32_t)k;
   }
 
   XmlNode(
@@ -387,23 +388,13 @@ public:
   virtual ~XmlNode() {}
 #endif
 
-  void free() 
-  {
-    if (getTree() != NULL)
-      getTree()->free();
-  }
+  SYNC_CODE(RCLock* getRCLock() const { return getTree()->getRCLock(); })
+
+  void free() { if (getTree() != NULL) getTree()->free(); }
 
   //
   // Item methods
   //
-
-  bool isNode() const     { return true; }
-  bool isAtomic() const   { return false; }
-  bool isList() const     { return false; }
-  bool isPul() const      { return false; }
-  bool isTuple() const    { return false; }
-  bool isError() const    { return false; }
-  bool isFunction() const { return false; }
 
   store::StoreConsts::NodeKind getNodeKind() const
   {

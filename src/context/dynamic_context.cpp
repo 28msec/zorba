@@ -67,7 +67,7 @@ dynamic_context::VarValue::~VarValue()
     break;
   case VarValue::item:
     assert(theValue.item != NULL);
-    RCHelper::removeReference(theValue.item);
+    theValue.item->removeReference();
     theValue.item = NULL;
     break;
   case VarValue::temp_seq:
@@ -95,7 +95,7 @@ dynamic_context::VarValue::VarValue(const VarValue& other)
   case VarValue::item:
     assert(other.theValue.item != NULL);
     theValue.item = other.theValue.item;
-    RCHelper::addReference(theValue.item);
+    theValue.item->addReference();
     break;
   case VarValue::temp_seq:
     assert(other.theValue.temp_seq != NULL);
@@ -305,7 +305,7 @@ void dynamic_context::set_variable(
   if (var.theState == VarValue::item)
   {
     assert(var.theValue.item != NULL);
-    RCHelper::removeReference(var.theValue.item);
+    var.theValue.item->removeReference();
   }
   else if (var.theState == VarValue::temp_seq)
   {
@@ -350,7 +350,7 @@ void dynamic_context::set_variable(
   if (var.theState == VarValue::item)
   {
     assert(var.theValue.item != NULL);
-    RCHelper::removeReference(var.theValue.item);
+    var.theValue.item->removeReference();
   }
   else if (var.theState == VarValue::temp_seq)
   {

@@ -29,23 +29,19 @@ namespace zorba { namespace simplestore {
 class ItemVector : public store::Item
 {
 private:
+  SYNC_CODE(mutable RCLock   theRCLock;)
+
   std::vector<store::Item_t> theItems;
 
 public:
-  ItemVector() {}
+  ItemVector() : Item(LIST) {}
 
   ItemVector(std::vector<store::Item_t>& items);
 
   ~ItemVector() {}
 
-  bool isNode() const     { return false; }
-  bool isAtomic() const   { return false; }
-  bool isList() const     { return true;  }
-  bool isPul() const      { return false; }
-  bool isTuple() const    { return false; }
-  bool isError() const    { return false; }
-  bool isFunction() const { return false; }
-  
+  SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
+
   zstring getStringValue() const;
 
   void getStringValue2(zstring& val) const;
@@ -69,3 +65,10 @@ public:
 } // namespace zorba
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
+ /* vim:set et sw=2 ts=2: */

@@ -1530,7 +1530,7 @@ bool SimpleStore::getPathInfo(
   zstring docUri;
   docUriItem->getStringValue2(docUri);
 
-  rchandle<XmlNode> docRoot = BASE_NODE(getDocument(docUri));
+  XmlNode_t docRoot = BASE_NODE(getDocument(docUri));
 
   if (docRoot == NULL)
     return false;

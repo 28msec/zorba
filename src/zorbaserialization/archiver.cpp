@@ -689,7 +689,7 @@ void Archiver::finalize_input_serialization()
       }
       else if ((rcobj2 = dynamic_cast<store::Item*>((SerializeBaseClass*)ptr)) != NULL)
       {
-        RCHelper::addReference(rcobj2); //this can lead to memory leaks
+        rcobj2->addReference(); //this can lead to memory leaks
       }
       //else if ((rcobj3 = dynamic_cast<zStringStore*>((SerializeBaseClass*)ptr)) != NULL)
       //{
@@ -708,16 +708,15 @@ void Archiver::finalize_input_serialization()
   for(item_it = registered_items.begin(); item_it != registered_items.end(); item_it++)
   {
     j++;
-    long *rc = (*item_it)->getSharedRefCounter();
-    if(rc)
+    if((*item_it)->isNode())
     {
-      assert(*rc > 1);
+      assert(*(*item_it)->getSharedRefCounter() > 1);
     }
     else
     {
       assert((*item_it)->getRefCount() > 1);
     }
-    (*item_it)->removeReference((*item_it)->getSharedRefCounter() SYNC_PARAM2((*item_it)->getRCLock()));
+    (*item_it)->removeReference();
   }
 }
 

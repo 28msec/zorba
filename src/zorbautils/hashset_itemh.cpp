@@ -30,7 +30,7 @@ void ItemHandleHashSet::clear()
   for (; ite != end; ++ite)
   {
     store::Item* n = (*ite).first;
-    n->removeReference(n->getSharedRefCounter() SYNC_PARAM2(n->getRCLock()));
+    n->removeReference();
   }
 
   theSet.clear(); 

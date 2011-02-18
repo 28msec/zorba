@@ -53,7 +53,7 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   store::Item_t pulItem;
   store::PUL* pul;
   SchemaValidatorImpl validator(loc, theSctx);
-  rchandle<store::PUL> indexPul;
+  store::ItemHandle<store::PUL> indexPul;
   std::vector<store::Index*> indexes;
 
   dynamic_context* gdctx = planState.theGlobalDynCtx;

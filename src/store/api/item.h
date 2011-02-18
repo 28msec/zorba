@@ -22,14 +22,15 @@
 #include <zorba/config.h>
 #include <zorba/store_consts.h>
 
+#include "zorbatypes/rclock.h"
 #include "zorbatypes/representations.h"
+
+#include "store/api/shared_types.h"
 
 #ifndef ZORBA_NO_FULL_TEXT
 #include "store/api/ft_token_iterator.h"
 #include "zorbautils/locale.h"
 #endif /* ZORBA_NO_FULL_TEXT */
-
-#include "store/api/shared_types.h"
 
 namespace zorba 
 {
@@ -39,111 +40,100 @@ namespace error
   class ZorbaError;
 };
 
-class signature;
-class serializer;
-
 namespace store
 {
 
 typedef StoreConsts::NodeKind NodeKind;
 
-class TupleField;
-
-
 /**
- *
- *  'item' - top of the XQuery value hierarchy,
- *         union of node types and atomic types
+ *  Class Item represents an "item" as defined by the XQuery Data Model (XDM)
  *  [http://www.w3.org/TR/xquery-semantics/doc-fs-Item]
  */
-class Item : public RCObject
+class ZORBA_DLL_PUBLIC Item
 {
-#ifdef ZORBA_FOR_ONE_THREAD_ONLY
+protected:
+  enum ItemKind
+  {
+    NODE       = 0x10,
+    ATOMIC     = 0x21,
+    PUL        = 0x41, 
+    FUNCTION   = 0x81,
+    LIST       = 0x101,
+    ERROR_     = 0x201
+  };
 
 protected:
-  mutable long  * theTreeRCPtr;
+  mutable long      theRefCount;
 
-  Item() : theTreeRCPtr(0) { }
-
-public:
-
-  long* 
-  getSharedRefCounter() const { return theTreeRCPtr; }
-
-  SYNC_CODE(virtual RCLock* getRCLock() const { return NULL; })
-
-#else
+  mutable long    * theTreeRCPtr;
 
 protected:
-  mutable long             * theTreeRCPtr;
-  SYNC_CODE(mutable RCLock * theRCLockPtr;)
 
-  Item() : theTreeRCPtr(0), theRCLockPtr(0) { }
+  Item() : theRefCount(0), theTreeRCPtr(0) { }
+
+  Item(ItemKind k) : theRefCount(0)
+  {
+    *reinterpret_cast<ItemKind*>(&theTreeRCPtr) = k;
+  }
 
 public:
-  long* getSharedRefCounter() const { return theTreeRCPtr; }
-
-  SYNC_CODE(RCLock* getRCLock() const { return theRCLockPtr; })
-
-#endif
 
   virtual ~Item() {}
+
+  virtual void free() { delete this; }
+
+  long getRefCount() const { return theRefCount; }
+
+  long* getSharedRefCounter() const { return theTreeRCPtr; }
+
+  void addReference() const;
+
+  void removeReference();
+
 
   /* -------------------   General Methods for Items ------------------------- */
 
   /**
    *  @return  "true" if the item is a node
-   * Use cast to XmlNode class
    */
-  virtual bool 
-  isNode() const = 0;
+  bool 
+  isNode() const;
 
   /**
    *  @return  "true" if the item is an atomic value
-   * Use cast to AtomicItem class
    */
-  virtual bool 
-  isAtomic() const = 0;
+  bool 
+  isAtomic() const;
 
   /**
    * @return  "true" if the item is an list of atomic values
-   * Use cast to ItemVector class
    */
-  virtual bool 
-  isList() const = 0;
+  bool 
+  isList() const;
 
   /**
    *  @return  "true" if the item is a pending update list
-   * Use cast to PUL class
    */
-  virtual bool 
-  isPul() const = 0;
-
-  /**
-   * @return "true" if the item is a tuple.
-   * Use cast to TupleItem class
-   */
-  virtual bool
-  isTuple() const = 0;
+  bool 
+  isPul() const;
 
   /**
    * @return "true" if the item is an error.
    */
-  virtual bool
-  isError() const = 0;
+  bool
+  isError() const;
 
   /**
    * @return "true" if the item is a function.
-   * Use cast to FunctionItem class
    */
-  virtual bool
-  isFunction() const = 0;
+  bool
+  isFunction() const;
 
   /**
    *  @return  (dynamic) XQuery type of the item
    */
   virtual Item*
-  getType( ) const;
+  getType() const;
 
   /**
    * Get a hash value computed from the value of this item.
@@ -196,7 +186,7 @@ public:
    *  @return  result of Effective Boolean Value
    */
   virtual Item_t 
-  getEBV( ) const;
+  getEBV() const;
 
   /**
    *  @return string value of the item as defined in XQuery data model
@@ -680,8 +670,7 @@ public:
    * @return Returns an iterator over the document tokens.
    */
   virtual FTTokenIterator_t
-  getDocumentTokens( locale::iso639_1::type lang = locale::iso639_1::unknown )
-    const;
+  getDocumentTokens(locale::iso639_1::type lang = locale::iso639_1::unknown) const;
 
   /**
    * Gets the query tokens for this item.
@@ -691,11 +680,19 @@ public:
    * @return Returns an iterator over the query tokens.
    */
   virtual FTTokenIterator_t
-  getQueryTokens( locale::iso639_1::type lang = locale::iso639_1::unknown,
-                  bool wildcards = false ) const;
+  getQueryTokens( 
+      locale::iso639_1::type lang = locale::iso639_1::unknown,
+      bool wildcards = false) const;
 
 #endif /* ZORBA_NO_FULL_TEXT */
+
+private:
+  Item(const Item& other);
+  Item& operator=(const Item&);
 }; 
+
+
+
 
 
 } // namespace store

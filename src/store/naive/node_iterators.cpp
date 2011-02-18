@@ -279,7 +279,7 @@ void StoreNodeSortIterator::reset()
   for (ulong i = 0; i < numNodes; i++)
   {
     XmlNode* n = theNodes[i];
-    n->removeReference(n->getSharedRefCounter() SYNC_PARAM2(n->getRCLock()));
+    n->removeReference();
   }
 
   theNodes.clear();
@@ -296,7 +296,7 @@ void StoreNodeSortIterator::close()
   for (ulong i = 0; i < numNodes; i++)
   {
     XmlNode* n = theNodes[i];
-    n->removeReference(n->getSharedRefCounter() SYNC_PARAM2(n->getRCLock()));
+    n->removeReference();
   }
 
   theNodes.clear();

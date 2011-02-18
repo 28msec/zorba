@@ -62,8 +62,6 @@ class BasicItemFactory;
 class NodeFactory;
 class PULPrimitiveFactory;
 
-typedef rchandle<XmlNode> XmlNode_t;
-
 typedef store::StringBufHashMap<XmlNode_t> DocumentSet;
 typedef store::StringBufHashMap<store::Collection_t> UriCollectionSet;
 typedef ItemPointerHashMap<store::Index_t> IndexSet;

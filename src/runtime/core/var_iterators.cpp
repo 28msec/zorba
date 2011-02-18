@@ -221,6 +221,7 @@ void CtxVarIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, 
   (NoaryBaseIterator<CtxVarIterator, CtxVarState>*)this);
+
   ar & theVarId;
   ar & theVarName;
   ar & theIsLocal;

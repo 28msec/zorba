@@ -128,6 +128,83 @@ void operator&(Archiver &ar, checked_vector<T> &obj)
   }
 }
 
+
+template<class T>
+void operator&(Archiver &ar, store::ItemHandle<T>& obj)
+{ 
+  if(ar.is_serializing_out())
+  {
+    bool is_ref;
+    ENUM_ALLOW_DELAY allow_delay = ar.get_allow_delay();
+    is_ref = ar.add_compound_field("ItemHandle<T>", 0, !FIELD_IS_CLASS, "", &obj, ARCHIVE_FIELD_NORMAL);
+    if(!is_ref)
+    {
+      T *p = obj.getp();
+      if(allow_delay != ALLOW_DELAY)
+        ar.dont_allow_delay(allow_delay);
+      bool is_temp = false;
+      if(ar.get_is_temp_field_one_level())
+      {
+        is_temp = true;
+        ar.set_is_temp_field_one_level(true, ar.get_is_temp_field_also_for_ptr());
+        if(!ar.get_is_temp_field_also_for_ptr() && (allow_delay == ALLOW_DELAY))
+          ar.dont_allow_delay();
+      }
+      ar & p;
+      if(is_temp)
+        ar.set_is_temp_field_one_level(false);
+      ar.add_end_compound_field();
+    }
+    else
+    {
+      assert(false);
+    }
+  }
+  else
+  {
+    char  *type;
+    std::string value;
+    int   id;
+    int   version;
+    bool  is_simple;
+    bool  is_class;
+    enum  ArchiveFieldTreat field_treat;
+    int   referencing;
+    bool  retval;
+    retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
+    if(!retval && ar.get_read_optional_field())
+      return;
+    ar.check_nonclass_field(retval, type, "ItemHandle<T>", is_simple, is_class, field_treat, ARCHIVE_FIELD_NORMAL, id);
+    //ar.register_reference(id, field_treat, &obj);
+
+    bool is_temp = false;
+    if(ar.get_is_temp_field_one_level())
+    {
+      is_temp = true;
+      ar.set_is_temp_field_one_level(true, ar.get_is_temp_field_also_for_ptr());
+    }
+    T *p;
+    ar & p;
+    if(is_temp)
+      ar.set_is_temp_field_one_level(false);
+    obj = p;
+    if(p == NULL)
+    {
+      //workaround for the strict_aliasing warning in gcc
+      union 
+      {
+        T **t;
+        void **v;
+      }u_p;
+      u_p.t = &p;
+      ar.reconf_last_delayed_rcobject(u_p.v, obj.getp_ref().v, true);
+    }
+    ar.read_end_current_level();
+
+  }
+}
+
+
 template<class T>
 void operator&(Archiver &ar, zorba::rchandle<T> &obj)
 {

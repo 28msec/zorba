@@ -120,6 +120,7 @@ NodeToUpdatesMap::~NodeToUpdatesMap()
 ********************************************************************************/
 PULImpl::PULImpl() 
   :
+  PUL(),
   theNoCollectionPul(NULL),
   theLastPul(NULL),
   theLastCollection(NULL),
@@ -1777,8 +1778,8 @@ void CollectionPul::applyUpdates()
     // Revalidate the updated docs
     if (thePul->theValidator != NULL)
     {
-      rchandle<store::PUL> validationPul =
-          GET_STORE().getItemFactory()->createPendingUpdateList();
+      store::PUL_t validationPul =
+      GET_STORE().getItemFactory()->createPendingUpdateList();
       
       thePul->theValidator->validate(theValidationNodes, *validationPul.getp());
 

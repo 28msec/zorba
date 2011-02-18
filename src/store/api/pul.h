@@ -49,16 +49,11 @@ class SchemaValidator;
 ********************************************************************************/
 class PUL : public Item
 {
+protected:
+  PUL() : Item(Item::PUL) { }
+
 public:
   virtual ~PUL() { }
-
-  bool isNode() const     { return false; }
-  bool isAtomic() const   { return false; }
-  bool isList() const     { return false; }
-  bool isPul() const      { return true; }
-  bool isTuple() const    { return false; }
-  bool isError() const    { return false; }
-  bool isFunction() const { return false; }
 
   virtual void addDelete(Item_t& node) = 0;
 

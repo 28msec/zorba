@@ -552,7 +552,6 @@ void DtdXmlLoader::startDocument(void * ctx)
     }
 #endif
 
-    SYNC_CODE(docNode->theRCLockPtr = &loader.theTree->getRCLock();)
     docNode->setId(loader.theTree, &loader.theOrdPath);
     loader.theOrdPath.pushChild();
 
@@ -778,8 +777,6 @@ void DtdXmlLoader::startElement(
     elemNode->setId(loader.theTree, &loader.theOrdPath);
     loader.theOrdPath.pushChild();
 
-    SYNC_CODE(elemNode->theRCLockPtr = &loader.theTree->getRCLock();)
-
     LOADER_TRACE1("Start Element: node = " << elemNode << " name = ["
                   << (prefix != NULL ? prefix : (xmlChar*)"") << ":" << lname
                   << " (" << (uri != NULL ? uri : (xmlChar*)"NULL") << ")]"
@@ -917,8 +914,6 @@ void DtdXmlLoader::startElement(
       }
 
       loader.theOrdPath.nextChild();
-
-      SYNC_CODE(attrNode->theRCLockPtr = &loader.theTree->getRCLock();)
 
       LOADER_TRACE2("Attribute: node = " << attrNode << " name ["
                     << (prefix != NULL ? prefix : "") << ":" << lname << " ("
@@ -1109,8 +1104,6 @@ void DtdXmlLoader::characters(void * ctx, const xmlChar * ch, int len)
     textNode->setId(loader.theTree, &loader.theOrdPath);
     loader.theOrdPath.nextChild();
 
-    SYNC_CODE(textNode->theRCLockPtr = &loader.theTree->getRCLock();)
-
     LOADER_TRACE2("Text Node = " << textNode << " content = "
                   << std::string(charp, len) << std::endl << " ordpath = "
                   << textNode->getOrdPath().show() << std::endl);
@@ -1156,8 +1149,6 @@ void DtdXmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
 
     cdataNode->setId(loader.theTree, &loader.theOrdPath);
     loader.theOrdPath.nextChild();
-
-    SYNC_CODE(cdataNode->theRCLockPtr = &loader.theTree->getRCLock();)
 
     LOADER_TRACE2("CDATA Node = " << cdataNode << " content = "
                   << std::string(charp, len) << std::endl << " ordpath = "
@@ -1209,8 +1200,6 @@ void DtdXmlLoader::processingInstruction(
     piNode->setId(loader.theTree, &loader.theOrdPath);
     loader.theOrdPath.nextChild();
 
-    SYNC_CODE(piNode->theRCLockPtr = &loader.theTree->getRCLock();)
-
     LOADER_TRACE2("Pi Node = " << piNode << " target = "
                   << targetp << std::endl << " ordpath = "
                   << piNode->getOrdPath().show() << std::endl);
@@ -1253,8 +1242,6 @@ void DtdXmlLoader::comment(void * ctx, const xmlChar * ch)
 
     commentNode->setId(loader.theTree, &loader.theOrdPath);
     loader.theOrdPath.nextChild();
-
-    SYNC_CODE(commentNode->theRCLockPtr = &loader.theTree->getRCLock();)
 
     LOADER_TRACE2("Comment Node = " << commentNode << " content = "
                   << charp << std::endl << " ordpath = "

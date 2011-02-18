@@ -17,13 +17,18 @@
 #define ZORBA_TYPEIMPL_H
 
 #include "common/shared_types.h"
+
 #include "types/node_test.h"
 #include "types/typeconstants.h"
-#include "zorbatypes/rchandle.h"
-#include "store/api/item.h"
 #include "types/typemanager.h"
 
+#include "zorbatypes/rchandle.h"
+
+#include "store/api/item_handle.h"
+#include "store/api/item.h"
+
 #include "system/globalenv.h"
+
 #include "zorbaserialization/serialization_engine.h"
 
 namespace zorba
@@ -314,7 +319,7 @@ public:
 
   virtual content_kind_t content_kind() const { return MIXED_CONTENT_KIND; };
 
-  virtual store::Item_t get_qname() const { return rchandle<store::Item>(); }
+  virtual store::Item_t get_qname() const { return store::ItemHandle<store::Item>(); }
 
   virtual xqtref_t getBaseBuiltinType() const { return this; }
 

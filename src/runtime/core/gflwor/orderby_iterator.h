@@ -130,7 +130,7 @@ public:
     {
       if (theKeyValues[i] != NULL)
       {
-        RCHelper::removeReference(theKeyValues[i]);
+        theKeyValues[i]->removeReference();
         theKeyValues[i] = NULL;
       }
     }

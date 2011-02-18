@@ -22,13 +22,15 @@
 #include <sstream>
 #include <memory>
 
+#include "store/api/item.h"
+#include "store/api/item_handle.h"
+
 // tests are allowed to use internals
 #include "api/unmarshaller.h"
 #include "system/properties.h"
 
 #include <zorba/util/path.h>
 
-#include "store/api/item.h"
 #include "zorba/exception.h"
 
 #include <zorba/store_manager.h>

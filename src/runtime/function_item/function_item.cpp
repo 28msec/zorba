@@ -29,15 +29,15 @@
 namespace zorba 
 {
 
-
 SERIALIZABLE_CLASS_VERSIONS(FunctionItem)
 END_SERIALIZABLE_CLASS_VERSIONS(FunctionItem)
 
 
-FunctionItem::FunctionItem(::zorba::serialization::Archiver& ar)
+FunctionItem::FunctionItem(::zorba::serialization::Archiver& ar) :
+  store::Item(store::Item::FUNCTION)
 {
 }
-    
+   
 
 FunctionItem::FunctionItem(
     CompilerCB* ccb, 
@@ -45,6 +45,7 @@ FunctionItem::FunctionItem(
     function_item_expr* expr,
     const std::vector<PlanIter_t>& varValues)
   :
+  store::Item(store::Item::FUNCTION),
   theCCB(ccb),
   theSctx(sctx),
   theExpr(expr),
@@ -58,6 +59,7 @@ FunctionItem::FunctionItem(
     static_context* sctx,
     function_item_expr* expr)
   :
+  store::Item(store::Item::FUNCTION),
   theCCB(ccb),
   theSctx(sctx),
   theExpr(expr)
@@ -69,7 +71,6 @@ FunctionItem::~FunctionItem()
 {
 }
 
-  
 void FunctionItem::serialize(::zorba::serialization::Archiver& ar)
 {
   ar & theCCB;
@@ -77,7 +78,6 @@ void FunctionItem::serialize(::zorba::serialization::Archiver& ar)
   ar & theExpr;
   ar & theVariableValues;
 }
-    
 
 const store::Item_t FunctionItem::getFunctionName() const 
 {

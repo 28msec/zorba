@@ -212,7 +212,7 @@ retry:
 
   if (normVictim != NULL)
   {
-    normVictim->removeReference(NULL SYNC_PARAM2(normVictim->getRCLock()));
+    normVictim->removeReference();
   }
 
   return qn;
@@ -308,7 +308,7 @@ retry:
 
   if (normVictim != NULL)
   {
-    normVictim->removeReference(NULL SYNC_PARAM2(normVictim->getRCLock()));
+    normVictim->removeReference();
   }
 
   return qn;

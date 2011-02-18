@@ -23,6 +23,7 @@
 #include "zorbatypes/rchandle.h"
 #include "zorbatypes/zstring.h"
 
+#include "store/api/item_handle.h"
 
 namespace zorba 
 { 
@@ -36,13 +37,18 @@ typedef std::vector<std::pair<zstring, zstring> > NsBindings;
 class CopyMode;
 
 class ItemFactory;
+
 class Item;
-typedef rchandle<Item> Item_t;
+typedef ItemHandle<Item> Item_t;
 
 class AnyUriItem;
-typedef rchandle<AnyUriItem> AnyUriItem_t;
+typedef ItemHandle<AnyUriItem> AnyUriItem_t;
+
+class PUL;
+typedef ItemHandle<PUL> PUL_t;
 
 class IteratorFactory;
+
 class Iterator;
 typedef rchandle<Iterator> Iterator_t;
 
@@ -51,9 +57,6 @@ typedef rchandle<ItemIterator> ItemIterator_t;
 
 class TempSeq;
 typedef rchandle<TempSeq> TempSeq_t;
-
-class PUL;
-typedef rchandle<PUL> PUL_t;
 
 class Collection;
 typedef rchandle<Collection> Collection_t;

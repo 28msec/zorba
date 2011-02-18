@@ -23,8 +23,11 @@
 #include "store/api/item.h"
 #include "store/api/iterator.h"
 #include "store/naive/store_defs.h"
+#include "store/naive/atomic_items.h"
+#include "store/naive/node_items.h"
 
-#include "functions/signature.h"
+#include "runtime/function_item/function_item.h"
+
 
 namespace zorba
 {
@@ -33,13 +36,181 @@ namespace store
 {
 
 
+void Item::addReference() const
+{
+#if defined WIN32 && !defined CYGWIN && !defined ZORBA_FOR_ONE_THREAD_ONLY
+  if (isNode())
+  {
+    InterlockedIncrement(theTreeRCPtr);
+    InterlockedIncrement(&theRefCount);
+  }
+  else
+  {
+    InterlockedIncrement(&theRefCount);
+  }
+
+#else
+
+  if (isNode())
+  {
+    SYNC_CODE(static_cast<const simplestore::XmlNode*>(this)->getRCLock()->acquire());
+    ++(*theTreeRCPtr);
+    ++theRefCount;
+    SYNC_CODE(static_cast<const simplestore::XmlNode*>(this)->getRCLock()->release());
+  }
+  else if (isAtomic() || isError())
+  {
+    SYNC_CODE(static_cast<const simplestore::AtomicItem*>(this)->getRCLock()->acquire());
+    ++theRefCount;
+    SYNC_CODE(static_cast<const simplestore::AtomicItem*>(this)->getRCLock()->release());
+  }
+  else if (isList())
+  {
+    SYNC_CODE(static_cast<const simplestore::ItemVector*>(this)->getRCLock()->acquire());
+    ++theRefCount;
+    SYNC_CODE(static_cast<const simplestore::ItemVector*>(this)->getRCLock()->release());
+  }
+  else if (isFunction())
+  {
+    SYNC_CODE(static_cast<const FunctionItem*>(this)->getRCLock()->acquire());
+    ++theRefCount;
+    SYNC_CODE(static_cast<const FunctionItem*>(this)->getRCLock()->release());
+  }
+  else
+  {
+    ++theRefCount;
+  }
+
+#endif
+}
+
+
+void Item::removeReference()
+{
+#if defined WIN32 && !defined CYGWIN && !defined ZORBA_FOR_ONE_THREAD_ONLY
+  if (isNode())
+  {
+    InterlockedDecrement(&theRefCount);
+    if (!InterlockedDecrement(theTreeRCPtr))
+    {
+      free();
+      return;
+    }
+  }
+  else if (!InterlockedDecrement(&theRefCount))
+  {
+    free();
+    return;
+  }
+
+#else
+
+  if (isNode())
+  {
+    SYNC_CODE(static_cast<const simplestore::XmlNode*>(this)->getRCLock()->acquire());
+
+    --theRefCount;
+    if (--(*theTreeRCPtr) == 0)
+    {
+      SYNC_CODE(static_cast<const simplestore::XmlNode*>(this)->getRCLock()->release());
+      free();
+      return;
+    }
+
+    SYNC_CODE(static_cast<const simplestore::XmlNode*>(this)->getRCLock()->release());
+  }
+  else if (isAtomic() || isError())
+  {
+    SYNC_CODE(static_cast<const simplestore::AtomicItem*>(this)->getRCLock()->acquire());
+
+    if (--theRefCount == 0)
+    {
+      SYNC_CODE(static_cast<const simplestore::AtomicItem*>(this)->getRCLock()->release());
+      free();
+      return;
+    }
+
+    SYNC_CODE(static_cast<const simplestore::AtomicItem*>(this)->getRCLock()->release());
+  }
+  else if (isList())
+  {
+    SYNC_CODE(static_cast<const simplestore::ItemVector*>(this)->getRCLock()->acquire());
+
+    if (--theRefCount == 0)
+    {
+      SYNC_CODE(static_cast<const simplestore::ItemVector*>(this)->getRCLock()->release());
+      free();
+      return;
+    }
+
+    SYNC_CODE(static_cast<const simplestore::ItemVector*>(this)->getRCLock()->release());
+  }
+  else if (isFunction())
+  {
+    SYNC_CODE(static_cast<const FunctionItem*>(this)->getRCLock()->acquire());
+
+    if (--theRefCount == 0)
+    {
+      SYNC_CODE(static_cast<const FunctionItem*>(this)->getRCLock()->release());
+      free();
+      return;
+    }
+
+    SYNC_CODE(static_cast<const FunctionItem*>(this)->getRCLock()->release());
+  }
+  else // PUL
+  {
+    if (--theRefCount == 0)
+      free();
+  }
+
+#endif
+}
+
+
+bool Item::isNode() const
+{
+  return ((reinterpret_cast<long>(theTreeRCPtr) & 0x1) == 0 && theTreeRCPtr != 0);
+}
+
+
+bool Item::isAtomic() const
+{
+  return ((reinterpret_cast<long>(theTreeRCPtr) & ATOMIC) == ATOMIC); 
+}
+
+
+bool Item::isList() const
+{
+  return ((reinterpret_cast<long>(theTreeRCPtr) & LIST) == LIST); 
+}
+
+
+bool Item::isPul() const
+{
+  return ((reinterpret_cast<long>(theTreeRCPtr) & PUL) == PUL);
+}
+
+
+bool Item::isError() const
+{
+  return ((reinterpret_cast<long>(theTreeRCPtr) & ERROR_) == ERROR_);
+}
+
+
+bool Item::isFunction() const
+{
+  return ((reinterpret_cast<long>(theTreeRCPtr) & FUNCTION) == FUNCTION);
+}
+
+
 Item* Item::getBaseItem() const
 {
   return NULL;
 }
 
 
-Item* Item::getType( ) const
+Item* Item::getType() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, typeid (*this).name ());

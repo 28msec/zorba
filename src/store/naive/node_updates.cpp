@@ -295,9 +295,9 @@ void XmlNode::attach(
   oldTree->getRefCount() = 0;
   oldTree->free();
 
-  SYNC_CODE(newTree->getRCLock().acquire());
+  SYNC_CODE(newTree->getRCLock()->acquire());
   newTree->getRefCount() += refcount;
-  SYNC_CODE(newTree->getRCLock().release());
+  SYNC_CODE(newTree->getRCLock()->release());
 }
 
 
@@ -331,8 +331,8 @@ void XmlNode::detach() throw()
     // new tree while holding the lock of the old tree. In fact, the setTree()
     // method istself is not safe (if T2 tries to copy rc2 after T1 has returned
     // from setTree(), then things are ok).
-    SYNC_CODE(oldTree->getRCLock().acquire());
-    SYNC_CODE(newTree->getRCLock().acquire());
+    SYNC_CODE(oldTree->getRCLock()->acquire());
+    SYNC_CODE(newTree->getRCLock()->acquire());
 
     setTree(newTree);
 
@@ -474,23 +474,23 @@ void XmlNode::detach() throw()
     newTree->getRefCount() += refcount;
     if (newTree->getRefCount() == 0)
     {
-      SYNC_CODE(newTree->getRCLock().release());
+      SYNC_CODE(newTree->getRCLock()->release());
       newTree->free();
     }
     else
     {
-      SYNC_CODE(newTree->getRCLock().release());
+      SYNC_CODE(newTree->getRCLock()->release());
     }
 
     oldTree->getRefCount() -= refcount;
     if (oldTree->getRefCount() == 0)
     {
-      SYNC_CODE(oldTree->getRCLock().release());
+      SYNC_CODE(oldTree->getRCLock()->release());
       oldTree->free();
     }
     else
     {
-      SYNC_CODE(oldTree->getRCLock().release());
+      SYNC_CODE(oldTree->getRCLock()->release());
     }
   }
   catch(...)
@@ -1254,9 +1254,9 @@ void ElementNode::replaceContent(UpdReplaceElemContent& upd)
   oldTree->setRoot(NULL);
   delete oldTree;
 
-  SYNC_CODE(newTree->getRCLock().acquire());
+  SYNC_CODE(newTree->getRCLock()->acquire());
   newTree->getRefCount() += 1;
-  SYNC_CODE(newTree->getRCLock().release());
+  SYNC_CODE(newTree->getRCLock()->release());
 
   newChild->setTree(newTree);
   newChild->setOrdPath(this, true, 0, store::StoreConsts::textNode);

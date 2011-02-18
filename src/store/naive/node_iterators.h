@@ -48,11 +48,11 @@ namespace zorba { namespace simplestore {
 class ChildrenIteratorImpl : public store::ChildrenIterator
 {
 protected:
-  rchandle<InternalNode>  theParentNode;
+  store::ItemHandle<InternalNode>  theParentNode;
 
-  InternalNode::iterator  theEnd;
-  InternalNode::iterator  theStart;
-  InternalNode::iterator  theIte;
+  InternalNode::iterator           theEnd;
+  InternalNode::iterator           theStart;
+  InternalNode::iterator           theIte;
 
 public:
   ChildrenIteratorImpl() { }
@@ -141,11 +141,11 @@ public:
 class ChildrenReverseIteratorImpl : public store::ChildrenReverseIterator
 {
 protected:
-  rchandle<InternalNode>  theParentNode;
+  store::ItemHandle<InternalNode>  theParentNode;
 
-  InternalNode::reverse_iterator  theEnd;
-  InternalNode::reverse_iterator  theStart;
-  InternalNode::reverse_iterator  theIte;
+  InternalNode::reverse_iterator   theEnd;
+  InternalNode::reverse_iterator   theStart;
+  InternalNode::reverse_iterator   theIte;
 
 public:
   ChildrenReverseIteratorImpl() { }
@@ -234,10 +234,10 @@ public:
 class AttributesIteratorImpl : public store::AttributesIterator
 {
 protected:
-  rchandle<ElementNode>  theParentNode;
+  store::ItemHandle<ElementNode>  theParentNode;
 
-  InternalNode::iterator  theEnd;
-  InternalNode::iterator  theIte;
+  InternalNode::iterator          theEnd;
+  InternalNode::iterator          theIte;
 
 public:
   AttributesIteratorImpl() { }

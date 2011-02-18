@@ -20,11 +20,6 @@
 
 #include "store/api/item.h"
 
-//#include "compiler/parser/query_loc.h"
-
-//#include "functions/signature.h"
-
-//#include "store/api/iterator.h"
 
 namespace zorba
 {
@@ -34,14 +29,9 @@ class function_item_expr;
 
 
 /*******************************************************************************
-  theLocation       : Location of the function refered to by this function item.
-  theName           : The name of the function, if not generated from an inline 
-                      function item.
-  theArity          : necessary for variadic functions
-  theFunction       :
   theVariableValues : (in-scope) variable values for inline function items
 ********************************************************************************/
-class FunctionItem : public store::Item
+class FunctionItem : public store::Item, public zorba::serialization::SerializeBaseClass
 {
 protected:
   CompilerCB                   * theCCB;
@@ -52,7 +42,7 @@ protected:
 
   std::vector<PlanIter_t>        theVariableValues;
 
-  SYNC_CODE(RCLock               theRCLock;)
+  SYNC_CODE(mutable RCLock       theRCLock;)
 
 public:
   SERIALIZABLE_CLASS(FunctionItem)
@@ -73,6 +63,8 @@ public:
 
   ~FunctionItem();
 
+  SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
+
   const store::Item_t getFunctionName() const;
 
   uint32_t getArity() const;
@@ -84,14 +76,6 @@ public:
   PlanIter_t getImplementation(std::vector<PlanIter_t>& args) const;
 
   zstring show() const;
-
-  bool isNode() const     { return false; }
-  bool isAtomic() const   { return false; }
-  bool isList() const     { return false; }
-  bool isPul() const      { return false; }
-  bool isTuple() const    { return false; }
-  bool isError() const    { return false; }
-  bool isFunction() const { return true; }
 };
 
 
