@@ -332,6 +332,8 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(ftmatch_options,ftnode)
   void serialize( serialization::Archiver& );
 
+  typedef std::list<ftextension_option_t> ftextension_option_list_t;
+
   ftmatch_options( QueryLoc const& );
 
   ft_visit_result::type accept( ftnode_visitor& );
@@ -341,8 +343,11 @@ public:
   ftdiacritics_option const* get_diacritics_option() const
     { return diacritics_option_.getp(); }
 
-  ftextension_option const* get_extension_option() const
-    { return extension_option_.getp(); }
+  ftextension_option_list_t* get_extension_options()
+    { return extension_options_.empty() ? NULL : &extension_options_; }
+
+  ftextension_option_list_t const* get_extension_options() const
+    { return extension_options_.empty() ? NULL : &extension_options_; }
 
   ftlanguage_option const* get_language_option() const
     { return language_option_.getp(); }
@@ -358,6 +363,10 @@ public:
   ftwild_card_option const* get_wild_card_option() const
     { return wild_card_option_.getp(); }
 
+  void add_extension_option( ftextension_option *o ) {
+    extension_options_.push_back( o );
+  }
+
   void set_case_option( ftcase_option const *o ) {
     case_option_ = o;
   }
@@ -366,8 +375,8 @@ public:
     diacritics_option_ = o;
   }
 
-  void set_extension_option( ftextension_option const *o ) {
-    extension_option_ = o;
+  void set_extension_options( ftextension_option_list_t const *o ) {
+    current_extension_options_ = o;
   }
 
   void set_language_option( ftlanguage_option const *o ) {
@@ -397,7 +406,8 @@ public:
 private:
   ftcase_option_t case_option_;
   ftdiacritics_option_t diacritics_option_;
-  ftextension_option_t extension_option_;
+  ftextension_option_list_t extension_options_;
+  ftextension_option_list_t const *current_extension_options_;
   ftlanguage_option_t language_option_;
   ftstem_option_t stem_option_;
   ftstop_word_option_t stop_word_option_;

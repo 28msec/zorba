@@ -421,10 +421,9 @@ void ftmatch_option::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (ftnode*)this );
 }
 
-ftmatch_options::ftmatch_options(
-  QueryLoc const &loc
-) :
-  ftnode( loc )
+ftmatch_options::ftmatch_options( QueryLoc const &loc ) :
+  ftnode( loc ),
+  current_extension_options_( &extension_options_ )
 {
 }
 
@@ -432,7 +431,7 @@ ft_visit_result::type ftmatch_options::accept( ftnode_visitor &v ) {
   BEGIN_VISIT( v );
   ACCEPT( case_option_, v );
   ACCEPT( diacritics_option_, v );
-  ACCEPT( extension_option_, v );
+  ACCEPT_SEQ( ftextension_option_list_t, *current_extension_options_, v );
   ACCEPT( language_option_, v );
   ACCEPT( stem_option_, v );
   ACCEPT( stop_word_option_, v );
@@ -445,7 +444,7 @@ ostream& ftmatch_options::put( ostream &o ) const {
   BEGIN_INDENT_PUT( o, ftmatch_options );
   PUT_NODE( o, case_option_ );
   PUT_NODE( o, diacritics_option_ );
-  PUT_NODE( o, extension_option_ );
+  PUT_SEQ ( o, ftextension_option_list_t, *current_extension_options_ );
   PUT_NODE( o, language_option_ );
   PUT_NODE( o, stem_option_ );
   PUT_NODE( o, stop_word_option_ );
@@ -458,7 +457,7 @@ void ftmatch_options::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (ftnode*)this );
   ar & case_option_;
   ar & diacritics_option_;
-  ar & extension_option_;
+  ar & extension_options_;
   ar & language_option_;
   ar & stem_option_;
   ar & stop_word_option_;

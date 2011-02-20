@@ -50,15 +50,19 @@ namespace zorba {
 
 #define GET_OPTION(O) get_##O##_option()
 
-#define REPLACE_OPTION(O)                                                     \
-  if ( newer_options->GET_OPTION(O) || !older_options->GET_OPTION(O) ) ; else \
-    newer_options->set_##O##_option( older_options->GET_OPTION(O) )
+#define REPLACE_OPTION(O)                                     \
+  if ( newer->GET_OPTION(O) || !older->GET_OPTION(O) ) ; else \
+    newer->set_##O##_option( older->GET_OPTION(O) )
 
-static void replace_match_options( ftmatch_options const *older_options,
-                                   ftmatch_options *newer_options ) {
+static void replace_match_options( ftmatch_options const *older,
+                                   ftmatch_options *newer ) {
   REPLACE_OPTION( case );
   REPLACE_OPTION( diacritics );
-  REPLACE_OPTION( extension );
+
+  // special case
+  if ( !newer->get_extension_options() && older->get_extension_options() )
+    newer->set_extension_options( older->get_extension_options() );
+
   REPLACE_OPTION( language );
   REPLACE_OPTION( stem );
   REPLACE_OPTION( stop_word );
