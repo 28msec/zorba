@@ -86,6 +86,26 @@ declare variable $system:user-name as xs:string := "user.name";
 declare variable $system:zorba-module-path as xs:string := "zorba.module.path";
 
 (:~
+ : Helper variable to get the zorba version in the format Major.Minor.Path
+ :)
+declare variable $system:zorba-version as xs:string := "zorba.version";
+
+(:~
+ : Helper variable to get the zorba major version
+ :)
+declare variable $system:zorba-version-major as xs:string := "zorba.version.major";
+
+(:~
+ : Helper variable to get the zorba minor version
+ :)
+declare variable $system:zorba-version-minor as xs:string := "zorba.version.minor";
+
+(:~
+ : Helper variable to get the zorba patch version
+ :)
+declare variable $system:zorba-version-patch as xs:string := "zorba.version.path";
+
+(:~
  : Gets a property with a given name. If the property is not found, the function
  : will return an empty string. To access a environment variable, the user needs
  : to prefix the name of the variable with "env.". For example: to get the PATH,
@@ -94,7 +114,7 @@ declare variable $system:zorba-module-path as xs:string := "zorba.module.path";
  : @param $name The name of the property.
  : @return The value of the asked property.
  :)
-declare function system:property($name as xs:string) as xs:string external;
+declare %nondeterministic function system:property($name as xs:string) as xs:string? external;
 
 (:~
  : This function retrieves all names of all defined properties. These are
@@ -103,5 +123,5 @@ declare function system:property($name as xs:string) as xs:string external;
  :
  : @return A list of all property names.
  :)
-declare function system:properties() as xs:string* external;
+declare %nondeterministic function system:properties() as xs:string* external;
 
