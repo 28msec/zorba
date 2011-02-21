@@ -469,7 +469,7 @@ public:
 
   void setTree(const XmlTree* t);
 
-  XmlTree* getTree() const { return (XmlTree*)theTreeRCPtr; }
+  XmlTree* getTree() const { return (XmlTree*)theUnion.treeRCPtr; }
 
   ulong getTreeId() const { return getTree()->getId(); }
 

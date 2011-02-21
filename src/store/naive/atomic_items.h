@@ -2120,7 +2120,7 @@ protected:
 protected:
   ErrorItem(error::ZorbaError* error) : theError(error) 
   {
-    *reinterpret_cast<ItemKind*>(&theTreeRCPtr) = ERROR_;
+    theUnion.itemKind = ERROR_;
   }
 
 public:

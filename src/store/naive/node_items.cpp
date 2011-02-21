@@ -202,7 +202,7 @@ XmlNode::~XmlNode()
 ********************************************************************************/
 void XmlNode::setTree(const XmlTree* t)
 {
-  theTreeRCPtr = (long*)t;
+  theUnion.treeRCPtr = (long*)t;
 }
 
 

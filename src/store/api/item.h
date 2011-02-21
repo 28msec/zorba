@@ -62,18 +62,28 @@ protected:
     ERROR_     = 0x201
   };
 
+  typedef union 
+  {
+    long    * treeRCPtr;
+    long      itemKind;
+  }
+  ItemUnion;
+
+
 protected:
   mutable long      theRefCount;
-
-  mutable long    * theTreeRCPtr;
+  mutable ItemUnion theUnion;
 
 protected:
 
-  Item() : theRefCount(0), theTreeRCPtr(0) { }
+  Item() : theRefCount(0)
+  {
+    theUnion.treeRCPtr = 0;
+  }
 
   Item(ItemKind k) : theRefCount(0)
   {
-    *reinterpret_cast<ItemKind*>(&theTreeRCPtr) = k;
+    theUnion.itemKind = k;
   }
 
 public:
@@ -84,7 +94,7 @@ public:
 
   long getRefCount() const { return theRefCount; }
 
-  long* getSharedRefCounter() const { return theTreeRCPtr; }
+  long* getSharedRefCounter() const { return theUnion.treeRCPtr; }
 
   void addReference() const;
 

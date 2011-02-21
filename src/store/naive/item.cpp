@@ -41,7 +41,7 @@ void Item::addReference() const
 #if defined WIN32 && !defined CYGWIN && !defined ZORBA_FOR_ONE_THREAD_ONLY
   if (isNode())
   {
-    InterlockedIncrement(theTreeRCPtr);
+    InterlockedIncrement(theUnion.treeRCPtr);
     InterlockedIncrement(&theRefCount);
   }
   else
@@ -54,7 +54,7 @@ void Item::addReference() const
   if (isNode())
   {
     SYNC_CODE(static_cast<const simplestore::XmlNode*>(this)->getRCLock()->acquire());
-    ++(*theTreeRCPtr);
+    ++(*theUnion.treeRCPtr);
     ++theRefCount;
     SYNC_CODE(static_cast<const simplestore::XmlNode*>(this)->getRCLock()->release());
   }
@@ -91,7 +91,7 @@ void Item::removeReference()
   if (isNode())
   {
     InterlockedDecrement(&theRefCount);
-    if (!InterlockedDecrement(theTreeRCPtr))
+    if (!InterlockedDecrement(theUnion.treeRCPtr))
     {
       free();
       return;
@@ -110,7 +110,7 @@ void Item::removeReference()
     SYNC_CODE(static_cast<const simplestore::XmlNode*>(this)->getRCLock()->acquire());
 
     --theRefCount;
-    if (--(*theTreeRCPtr) == 0)
+    if (--(*theUnion.treeRCPtr) == 0)
     {
       SYNC_CODE(static_cast<const simplestore::XmlNode*>(this)->getRCLock()->release());
       free();
@@ -170,37 +170,38 @@ void Item::removeReference()
 
 bool Item::isNode() const
 {
-  return ((reinterpret_cast<long>(theTreeRCPtr) & 0x1) == 0 && theTreeRCPtr != 0);
+  return ((reinterpret_cast<uint64_t>(theUnion.treeRCPtr) & 0x1) == 0 &&
+          theUnion.treeRCPtr != 0);
 }
 
 
 bool Item::isAtomic() const
 {
-  return ((reinterpret_cast<long>(theTreeRCPtr) & ATOMIC) == ATOMIC); 
+  return ((theUnion.itemKind & ATOMIC) == ATOMIC); 
 }
 
 
 bool Item::isList() const
 {
-  return ((reinterpret_cast<long>(theTreeRCPtr) & LIST) == LIST); 
+  return ((theUnion.itemKind & LIST) == LIST); 
 }
 
 
 bool Item::isPul() const
 {
-  return ((reinterpret_cast<long>(theTreeRCPtr) & PUL) == PUL);
+  return ((theUnion.itemKind & PUL) == PUL);
 }
 
 
 bool Item::isError() const
 {
-  return ((reinterpret_cast<long>(theTreeRCPtr) & ERROR_) == ERROR_);
+  return ((theUnion.itemKind & ERROR_) == ERROR_);
 }
 
 
 bool Item::isFunction() const
 {
-  return ((reinterpret_cast<long>(theTreeRCPtr) & FUNCTION) == FUNCTION);
+  return ((theUnion.itemKind & FUNCTION) == FUNCTION);
 }
 
 
