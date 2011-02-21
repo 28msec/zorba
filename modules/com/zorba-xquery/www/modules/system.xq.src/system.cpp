@@ -156,7 +156,7 @@ namespace zorba { namespace system {
     theProperties.insert(std::make_pair("zorba.version", Zorba::version().getVersion()));
     theProperties.insert(std::make_pair("zorba.version.major", intToString(Zorba::version().getMajorVersion())));
     theProperties.insert(std::make_pair("zorba.version.minor", intToString(Zorba::version().getMinorVersion())));
-    theProperties.insert(std::make_pair("zorba.version.path", intToString(Zorba::version().getPatchVersion())));
+    theProperties.insert(std::make_pair("zorba.version.patch", intToString(Zorba::version().getPatchVersion())));
   }
 
   String SystemFunction::intToString(int v) {
@@ -268,6 +268,8 @@ namespace zorba { namespace system {
       std::map<String, String>::const_iterator i;
       if ((i = theProperties.find(envS.c_str())) != theProperties.end()) {
         lRes = i->second;
+      } else {
+        return ItemSequence_t(new EmptySequence());
       }
     }
     return ItemSequence_t(new SingletonItemSequence(theFactory->createString(lRes)));

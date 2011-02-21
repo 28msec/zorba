@@ -86,7 +86,7 @@ declare variable $system:user-name as xs:string := "user.name";
 declare variable $system:zorba-module-path as xs:string := "zorba.module.path";
 
 (:~
- : Helper variable to get the zorba version in the format Major.Minor.Path
+ : Helper variable to get the zorba version in the format Major.Minor.Patch
  :)
 declare variable $system:zorba-version as xs:string := "zorba.version";
 
@@ -103,11 +103,11 @@ declare variable $system:zorba-version-minor as xs:string := "zorba.version.mino
 (:~
  : Helper variable to get the zorba patch version
  :)
-declare variable $system:zorba-version-patch as xs:string := "zorba.version.path";
+declare variable $system:zorba-version-patch as xs:string := "zorba.version.patch";
 
 (:~
  : Gets a property with a given name. If the property is not found, the function
- : will return an empty string. To access a environment variable, the user needs
+ : will return an empty sequence. To access a environment variable, the user needs
  : to prefix the name of the variable with "env.". For example: to get the PATH,
  : one can use system:property("env.PATH").
  :
