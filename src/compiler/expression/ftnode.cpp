@@ -361,7 +361,7 @@ void ftextension_selection::serialize( serialization::Archiver &ar ) {
 
 ftextension_option::ftextension_option(
   QueryLoc const &loc,
-  rchandle<QName> qname,
+  rchandle<QName> const &qname,
   zstring const &val
 ) :
   ftmatch_option( loc ),

@@ -120,12 +120,12 @@ public:
 
   ftextension_option(
     QueryLoc const&,
-    rchandle<QName>,
+    rchandle<QName> const&,
     zstring const &val
   );
 
   ft_visit_result::type accept( ftnode_visitor& );
-  rchandle<QName> get_qname() const { return qname_; }
+  rchandle<QName> const& get_qname() const { return qname_; }
   zstring const& get_val() const { return val_; }
   std::ostream& put( std::ostream& ) const;
 
