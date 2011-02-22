@@ -2133,11 +2133,14 @@ bool is_case( code_point c ) {
 
 template<case_type Case>
 code_point to_case( code_point c ) {
+  typedef pair<case_table_entry const*, case_table_entry const*> range_type;
+
   case_table_entry const *const begin = case_tables[ !Case ][0];
   case_table_entry const *const end   = case_tables[ !Case ][1];
   case_table_entry entry_to_find;
   entry_to_find[0] = c;
-  pair<case_table_entry const*, case_table_entry const*> const result =
+
+  range_type const result =
     ::equal_range( begin, end, entry_to_find, less_case_table_entry() );
   return result.first == result.second ? c : (*result.first)[1];
 }
