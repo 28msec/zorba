@@ -23,6 +23,30 @@
 
 namespace zorba {
 
+////////// c_str() /////////////////////////////////////////////////////////////
+
+/**
+ * Gets the \c char* to the given string.
+ * 
+ * @tparam StringType The string's type.
+ * @param s The string to get the \c char* of.
+ * @return Returns said \c char*.
+ */
+template<class StringType> inline
+typename StringType::const_pointer c_str( StringType const &s ) {
+  return s.c_str();
+}
+
+/**
+ * Specialization of global c_str() for \c char* argument.
+ *
+ * @param s The C string to get the \c char* of.
+ * @return Returns said \c char*.
+ */
+inline char const* c_str( char const *s ) {
+  return s;
+}
+
 ////////// String equality /////////////////////////////////////////////////////
 
 /**
