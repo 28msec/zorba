@@ -137,7 +137,7 @@ namespace zorba {
         IE,   // Ireland
         IL,   // Israel
         IM,   // Isle of Man
-        _IN,   // India
+        IN_,  // India [without '_', it clashes with an identifier on Windows]
         IO,   // British Indian Ocean Territory
         IQ,   // Iraq
         IR,   // Iran
