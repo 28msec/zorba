@@ -17,9 +17,10 @@
 #ifndef ZORBA_FULL_TEXT_UTIL_H
 #define ZORBA_FULL_TEXT_UTIL_H
 
+#include <zorba/locale.h>
+
 #include "compiler/expression/ftnode.h"
 #include "zorbatypes/representations.h"
-#include "zorbautils/locale.h"
 
 #include "ft_match.h"
 

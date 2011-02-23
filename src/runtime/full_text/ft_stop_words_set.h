@@ -19,9 +19,10 @@
 
 #include <set>
 
+#include <zorba/locale.h>
+
 #include "compiler/expression/ftnode.h"
 #include "zorbatypes/zstring.h"
-#include "zorbautils/locale.h"
 
 namespace zorba {
 

@@ -17,7 +17,8 @@
 #ifndef ZORBA_STEMMER_H
 #define ZORBA_STEMMER_H
 
-#include "locale.h"
+#include <zorba/locale.h>
+
 #include "zorbatypes/zstring.h"
 
 namespace zorba {

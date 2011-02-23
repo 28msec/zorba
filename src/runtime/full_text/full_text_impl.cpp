@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
+#include <zorba/locale.h>
+
 #include "common/common.h"
 #include "store/api/ft_token_iterator.h"
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
 #include "system/globalenv.h"
 #include "util/stl_util.h"
-#include "zorbautils/locale.h"
 
 #include "ft_util.h"
 #include "ftcontains_visitor.h"

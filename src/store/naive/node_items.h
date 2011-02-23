@@ -31,8 +31,8 @@
 #include "store/naive/nsbindings.h" // TODO remove by introducing explicit destructors
 
 #ifndef ZORBA_NO_FULL_TEXT
+#include <zorba/locale.h>
 #include "ft_token_store.h"
-#include "zorbautils/locale.h"
 #endif /* ZORBA_NO_FULL_TEXT */
 
 #ifdef ZORBA_STORE_MSDOM

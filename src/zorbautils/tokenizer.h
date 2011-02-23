@@ -17,7 +17,7 @@
 #ifndef ZORBA_TOKENIZER_H
 #define ZORBA_TOKENIZER_H
 
-#include "locale.h"
+#include <zorba/locale.h>
 
 namespace zorba {
 

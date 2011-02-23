@@ -17,6 +17,8 @@
 #ifndef ZORBA_COMPILER_FTNODE_H
 #define ZORBA_COMPILER_FTNODE_H
 
+#include <zorba/locale.h>
+
 #include "common/shared_types.h"
 
 #include "compiler/expression/expr_base.h"
@@ -27,7 +29,6 @@
 #include "runtime/base/plan_iterator.h"
 #include "zorbatypes/rchandle.h"
 #include "zorbatypes/zstring.h"
-#include "zorbautils/locale.h"
 
 namespace zorba {
 

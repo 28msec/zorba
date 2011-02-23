@@ -18,7 +18,6 @@ SET(ZORBAUTILS_SRCS
     mutex.cpp
     condition.cpp
     latch.cpp
-    locale.cpp
     lock.cpp
     runnable.cpp
     string_util.cpp)

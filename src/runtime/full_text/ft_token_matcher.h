@@ -17,9 +17,10 @@
 #ifndef ZORBA_FULL_TEXT_FT_TOKEN_MATCHER_H
 #define ZORBA_FULL_TEXT_FT_TOKEN_MATCHER_H
 
+#include <zorba/locale.h>
+
 #include "compiler/expression/ftnode.h"
 #include "zorbatypes/ft_token.h"
-#include "zorbautils/locale.h"
 
 #include "ft_stop_words_set.h"
 

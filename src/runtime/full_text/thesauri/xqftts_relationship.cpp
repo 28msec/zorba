@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
+#include <zorba/locale.h>
+
 #include "util/utf8_util.h"
-#include "zorbautils/locale.h"
 
 #include "xqftts_relationship.h"
 

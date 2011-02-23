@@ -28,8 +28,8 @@
 #include "store/api/shared_types.h"
 
 #ifndef ZORBA_NO_FULL_TEXT
+#include <zorba/locale.h>
 #include "store/api/ft_token_iterator.h"
-#include "zorbautils/locale.h"
 #endif /* ZORBA_NO_FULL_TEXT */
 
 namespace zorba 

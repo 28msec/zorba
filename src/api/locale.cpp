@@ -25,9 +25,10 @@
 #include <algorithm>
 #include <cstring>
 
+#include <zorba/locale.h>
+
 #include "util/less.h"
 #include "util/stl_util.h"
-#include "zorbautils/locale.h"
 
 #define DEF_END(CHAR_ARRAY)                             \
   static char const *const *const end =                 \

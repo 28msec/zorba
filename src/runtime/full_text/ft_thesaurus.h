@@ -19,8 +19,9 @@
 
 #include <memory>                       /* for auto_ptr */
 
+#include <zorba/locale.h>
+
 #include "zorbatypes/zstring.h"
-#include "zorbautils/locale.h"
 
 #include "ft_util.h"                    /* for ft_int */
 
