@@ -51,7 +51,7 @@ declare variable $xqdoc2html:functionsCollector := <functions/>;
  : This variable contains the links appearing in the first part of the left menu
  : of every XHTML page
  :)
-declare variable $xqdoc2html:externalLinks :=   
+ declare variable $xqdoc2html:externalLinks := 
   <links>
     <a href="http://www.zorba-xquery.com/index.php/tutorials/" 
        title="Tutorials" target="_blank">Tutorials</a>
@@ -694,12 +694,7 @@ declare %private sequential function xqdoc2html:configure-xml (
   $xqdocXhtmlPath as xs:string) {
     
   (: copy the example into the 'examples' folder :)
-  try {
-    xqdoc2html:copy-examples($xqdoc, $xqdocXhtmlPath, $examplePath);
-  } catch * ($error_code) 
-  {      
-    fn:error($err:UE008,  "soso");
-  };
+  xqdoc2html:copy-examples($xqdoc, $xqdocXhtmlPath, $examplePath);
 
   (: replace the inlineExamples with actual inline code :)
 
