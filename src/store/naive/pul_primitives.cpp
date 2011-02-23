@@ -416,7 +416,7 @@ void UpdSetElementType::apply()
 {
   ElementNode* target = ELEM_NODE(theTarget);
 
-  target->theTypeName.transfer(theTypeName);
+  target->setType(theTypeName);
 
   if (target->haveTypedTypedValue())
   {
@@ -510,7 +510,7 @@ void UpdSetAttributeType::apply()
 {
   AttributeNode* target = ATTR_NODE(theTarget);
 
-  target->theTypeName.transfer(theTypeName);
+  target->setType(theTypeName);
   target->theTypedValue.transfer(theTypedValue);
 
   if (theHaveListValue)

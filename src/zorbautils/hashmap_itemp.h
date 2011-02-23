@@ -19,13 +19,18 @@
 #include "zorbautils/hashfun.h"
 #include "zorbautils/hashmap.h"
 
-#include "zorbaserialization/serialization_engine.h"
 #include "zorbatypes/collation_manager.h"
+
+#ifdef ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
+#include "zorbaserialization/serialization_engine.h"
+#endif
 
 #include "store/api/item.h"
 
 namespace zorba 
 { 
+
+#ifdef ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
 
 /***************************************************************************//**
   Class to privide the equality and hash functions for the ItemPointerHashMap
@@ -82,8 +87,6 @@ public:
   A hash-based map container mapping item pointers to values of type V. 
   Equality is based on the Item::equals() method.
 *******************************************************************************/
-#ifdef ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
-
 template <class V>
 class serializable_ItemPointerHashMap : public serializable_HashMap<store::Item*,
                                                                     V,
@@ -115,6 +118,48 @@ public:
 };
 
 #else
+
+/***************************************************************************//**
+  Class to privide the equality and hash functions for the ItemPointerHashMap
+  class defined below.
+*******************************************************************************/
+class ItemPointerHashMapCmp
+{
+protected:
+  long          theTimeZone;
+  XQPCollator * theCollator;
+
+public:
+  ItemPointerHashMapCmp()
+    :
+    theTimeZone(0),
+    theCollator(NULL)
+  {
+  }
+
+  ItemPointerHashMapCmp(long tmz, XQPCollator* collator) 
+    :
+    theTimeZone(tmz),
+    theCollator(collator)
+  {
+  }
+
+  bool equal(const store::Item* t1, const store::Item* t2)
+  {
+    return t1->equals(t2, theTimeZone, theCollator);
+  }
+
+  uint32_t hash(const store::Item* t)
+  {
+    return t->hash(theTimeZone, theCollator);
+  }
+
+  long get_timezone() { return theTimeZone; }
+  
+  const XQPCollator* get_collator() { return theCollator; }
+};
+
+
 
 template <class V>
 class ItemPointerHashMap : public HashMap<store::Item*,

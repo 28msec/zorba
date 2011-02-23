@@ -133,6 +133,10 @@ void XmlNode::attach(
   XmlTree* newTree = parent->getTree();
   XmlTree* oldTree = getTree();
 
+#ifndef EMBEDED_TYPE
+  newTree->copyTypesMap(oldTree);
+#endif
+
   oldTree->setRoot(NULL);
 
   setTree(newTree);
@@ -262,7 +266,7 @@ void XmlNode::attach(
           ZORBA_ASSERT(elem == elemRoot);
           vsize pos;
           hiddenBaseUriAttr->disconnect(pos);
-          hiddenBaseUriAttr->destroy();
+          hiddenBaseUriAttr->destroy(true);
           elem->resetHaveBaseUri();
         }
       }
@@ -560,20 +564,26 @@ void XmlNode::removeType(UpdatePrimitive& upd)
     {
       ElementNode* n = reinterpret_cast<ElementNode*>(currNode);
 
-      if (n->theTypeName == NULL ||
-          n->theTypeName->equals(GET_STORE().theSchemaTypeNames[XS_UNTYPED]))
+      if (n->getType()->equals(GET_STORE().theSchemaTypeNames[XS_UNTYPED]))
       {
         revalidationNode = currNode;
         break;
       }
 
-      if (n->theTypeName->equals(GET_STORE().theSchemaTypeNames[XS_ANY]))
+      if (n->getType()->equals(GET_STORE().theSchemaTypeNames[XS_ANY]))
       {
         revalidationNode = currNode;
         break;
       }
 
+#ifdef EMBEDED_TYPE
       tinfo.theTypeName.transfer(n->theTypeName);
+      n->theTypeName = GET_STORE().theSchemaTypeNames[XS_ANY];
+#else
+      assert(n->haveType());
+      tinfo.theTypeName = n->getType();
+      n->setType(GET_STORE().theSchemaTypeNames[XS_ANY]);
+#endif
       tinfo.theFlags = n->theFlags;
 
       if (n->haveTypedTypedValue())
@@ -593,7 +603,6 @@ void XmlNode::removeType(UpdatePrimitive& upd)
       undoList.resize(++undoSize);
       undoList[undoSize - 1].transfer(tinfo);
 
-      n->theTypeName = GET_STORE().theSchemaTypeNames[XS_ANY];
       n->setHaveValue();
       n->resetHaveEmptyValue();
       n->resetInSubstGroup();
@@ -604,21 +613,27 @@ void XmlNode::removeType(UpdatePrimitive& upd)
     {
       AttributeNode* n = reinterpret_cast<AttributeNode*>(currNode);
 
-      if (n->theTypeName == NULL ||
-          n->theTypeName->equals(GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC]))
+      if (n->getType()->equals(GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC]))
       {
         undoList.resize(++undoSize);
         undoList[undoSize - 1].transfer(tinfo);
       }
       else
       {
+#ifdef EMBEDED_TYPE
         tinfo.theTypeName.transfer(n->theTypeName);
+        n->theTypeName = GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC];
+#else
+        assert(n->haveType());
+        tinfo.theTypeName = n->getType();
+        n->setType(GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC]);
+#endif
+
         tinfo.theFlags = n->theFlags;
 
         undoList.resize(++undoSize);
         undoList[undoSize - 1].transfer(tinfo);
 
-        n->theTypeName = GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC];
         n->resetHaveListValue();
       }
     }
@@ -669,7 +684,7 @@ void XmlNode::restoreType(TypeUndoList& undoList)
     {
       ElementNode* n = reinterpret_cast<ElementNode*>(currNode);
 
-      n->theTypeName = tinfo.theTypeName;
+      n->setType(tinfo.theTypeName);
       n->theFlags = tinfo.theFlags;
 
       if (tinfo.theChildFlags & IsTyped)
@@ -698,7 +713,7 @@ void XmlNode::restoreType(TypeUndoList& undoList)
 
       if (tinfo.theTypeName != NULL)
       {
-        n->theTypeName.transfer(tinfo.theTypeName);
+        n->setType(tinfo.theTypeName);
         n->theFlags = tinfo.theFlags;
       }
     }
@@ -1276,7 +1291,7 @@ void ElementNode::restoreContent(UpdReplaceElemContent& upd)
 
     XmlNode* child = getChild(0);
  
-    child->destroy();
+    child->destroy(true);
   }
 
   ElementNode* target1 = reinterpret_cast<ElementNode*>(this);
@@ -1317,10 +1332,11 @@ void ElementNode::replaceName(UpdRenameElem& upd)
     }  
   }
 
+  store::Item* typeName = getType();
+
   if (theParent &&
-      (theTypeName == NULL ||
-       theTypeName->equals(GET_STORE().theSchemaTypeNames[XS_UNTYPED]) ||
-       theTypeName->equals(GET_STORE().theSchemaTypeNames[XS_ANY])))
+      (typeName->equals(GET_STORE().theSchemaTypeNames[XS_UNTYPED]) ||
+       typeName->equals(GET_STORE().theSchemaTypeNames[XS_ANY])))
   {
     // Even if "this" is untyped, we must call removeType() on the parent
     // because renaming of an elelemt may require revalidation of the ancestors.
@@ -1421,8 +1437,7 @@ void AttributeNode::replaceName(UpdRenameAttr& upd)
   upd.theOldName.transfer(theName);
   theName.transfer(upd.theNewName);
 
-  if (theTypeName == NULL ||
-      theTypeName->equals(GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC]))
+  if (getType()->equals(GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC]))
   {
     // We must call removeType() even if "this" is untyped, because renaming
     // of an attribute may require revalidation of the ancestors.

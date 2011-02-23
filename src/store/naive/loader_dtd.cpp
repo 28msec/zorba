@@ -144,7 +144,7 @@ void DtdXmlLoader::abortload()
     XmlNode* node = theNodeStack.top();
     theNodeStack.pop();
     if (node != NULL)
-      node->destroy();
+      node->destroy(true);
   }
 
   thePathStack.clear();
@@ -842,15 +842,15 @@ void DtdXmlLoader::startElement(
         case 0:                       // libxml2 bug
         case XML_ATTRIBUTE_CDATA:
           GET_STORE().getItemFactory()->createUntypedAtomic(typedValue, value);
-          GET_STORE().getItemFactory()->createQName(typeName, SimpleStore::XS_URI, "xs", "anySimpleType");
+          typeName = GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC];
           break;
         case XML_ATTRIBUTE_ID:
           GET_STORE().getItemFactory()->createID(typedValue, value);
-          GET_STORE().getItemFactory()->createQName(typeName, SimpleStore::XS_URI, "xs", "ID");
+          typeName = GET_STORE().theSchemaTypeNames[XS_ID];
           break;
         case XML_ATTRIBUTE_IDREF:
           GET_STORE().getItemFactory()->createIDREF(typedValue, value);
-          GET_STORE().getItemFactory()->createQName(typeName, SimpleStore::XS_URI, "xs", "IDREF");
+          typeName = GET_STORE().theSchemaTypeNames[XS_IDREF];
           break;
         case XML_ATTRIBUTE_IDREFS:
           GET_STORE().getItemFactory()->createIDREFS(typedValue, value);
@@ -859,7 +859,7 @@ void DtdXmlLoader::startElement(
           break;
         case XML_ATTRIBUTE_ENTITY:
           GET_STORE().getItemFactory()->createENTITY(typedValue, value);
-          GET_STORE().getItemFactory()->createQName(typeName, SimpleStore::XS_URI, "xs", "ENTITY");
+          typeName = GET_STORE().theSchemaTypeNames[XS_ENTITY];
           break;
         case XML_ATTRIBUTE_ENTITIES:
           GET_STORE().getItemFactory()->createENTITIES(typedValue, value);
@@ -868,7 +868,7 @@ void DtdXmlLoader::startElement(
           break;
         case XML_ATTRIBUTE_NMTOKEN:
           GET_STORE().getItemFactory()->createNMTOKEN(typedValue, value);
-          GET_STORE().getItemFactory()->createQName(typeName, SimpleStore::XS_URI, "xs", "NMTOKEN");
+          typeName = GET_STORE().theSchemaTypeNames[XS_NMTOKEN];
           break;
         case XML_ATTRIBUTE_NMTOKENS:
           GET_STORE().getItemFactory()->createNMTOKENS(typedValue, value);
@@ -881,7 +881,7 @@ void DtdXmlLoader::startElement(
           break;
         case XML_ATTRIBUTE_ENUMERATION:
           GET_STORE().getItemFactory()->createUntypedAtomic(typedValue, value);
-          //GET_STORE().getItemFactory()->createQName(typeName, SimpleStore::XS_URI, "xs", "ENUM");
+          GET_STORE().getItemFactory()->createQName(typeName, SimpleStore::XS_URI, "xs", "anySimpleType");
           break;
         default:
           std::cout << "AssertError: unknown libxml2 attribute type: " <<
@@ -892,7 +892,7 @@ void DtdXmlLoader::startElement(
       attrNode->theParent = elemNode;
       attrNode->setId(loader.theTree, &loader.theOrdPath);
       attrNode->theTypedValue.transfer(typedValue);
-      attrNode->theTypeName.transfer(typeName);
+      attrNode->setType(typeName);
 
       attrNodes[i] = attrNode;
 

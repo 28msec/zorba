@@ -23,6 +23,9 @@ namespace zorba {
 namespace simplestore {
 
 
+//#define EMBEDED_TYPE
+
+
 #define GET_STORE() \
   (*zorba::simplestore::StoreManagerImpl::getStoreInternal())
 

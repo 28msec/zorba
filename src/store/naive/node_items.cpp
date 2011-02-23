@@ -58,6 +58,19 @@ using namespace locale;
 
 ********************************************************************************/
 XmlTree::XmlTree()
+  :
+  theRefCount(0),
+  theId(0),
+  thePos(0),
+  theCollection(NULL),
+  theRootNode(NULL),
+  theDataGuideRootNode(NULL),
+  theIsValidated(false),
+  theIsRecursive(false)
+#ifndef EMBEDED_TYPE
+  ,
+  theTypesMap(NULL)
+#endif
 {
 }
 
@@ -72,6 +85,10 @@ XmlTree::XmlTree(XmlNode* root, ulong id)
   theDataGuideRootNode(NULL),
   theIsValidated(false),
   theIsRecursive(false)
+#ifndef EMBEDED_TYPE
+  ,
+  theTypesMap(NULL)
+#endif
 {
 }
 
@@ -112,7 +129,7 @@ void XmlTree::free() throw()
 
   if (theRootNode != 0)
   {
-    theRootNode->destroy();
+    theRootNode->destroy(false);
     theRootNode = NULL;
   }
 
@@ -122,8 +139,112 @@ void XmlTree::free() throw()
     theDataGuideRootNode = NULL;
   }
 
+#ifndef EMBEDED_TYPE
+  if (theTypesMap)
+    delete theTypesMap;
+#endif
+
   delete this;
 }
+
+
+#ifndef EMBEDED_TYPE
+
+/*******************************************************************************
+
+********************************************************************************/
+store::Item* XmlTree::getType(const XmlNode* n) const
+{
+  assert(theTypesMap != NULL);
+
+  NodeTypeMap::iterator ite = theTypesMap->get(n);
+
+  assert(ite != theTypesMap->end());
+
+  return ite.getValue().getp();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void XmlTree::addType(const XmlNode* n, store::Item_t& type)
+{
+  if (theTypesMap == NULL)
+  {
+    theTypesMap = new NodeTypeMap(32, false);
+  }
+
+  if (! theTypesMap->insert(n, type))
+  {
+    assert(false);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void XmlTree::setType(const XmlNode* n, store::Item_t& type)
+{
+  if (theTypesMap == NULL)
+  {
+    theTypesMap = new NodeTypeMap(32, false);
+  }
+
+  NodeTypeMap::iterator ite = theTypesMap->get(n);
+
+  if (ite == theTypesMap->end())
+  {
+    theTypesMap->insert(n, type);
+  }
+  else
+  {
+    ite.setValue(type);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void XmlTree::removeType(const XmlNode* n)
+{
+  assert(theTypesMap != NULL);
+
+  if (! theTypesMap->remove(n))
+  {
+    assert(false);
+  }
+}
+
+
+/*******************************************************************************
+  This method is called frpm XmlNode::attach(), i.e., when one tree is attached
+  to another tree.
+********************************************************************************/
+void XmlTree::copyTypesMap(const XmlTree* source)
+{
+  if (source->theTypesMap == NULL || source->theTypesMap->empty())
+    return;
+
+  if (theTypesMap == NULL)
+  {
+    theTypesMap = new NodeTypeMap(source->theTypesMap->object_count(), false);
+  }
+
+  NodeTypeMap::iterator ite = source->theTypesMap->begin();
+  NodeTypeMap::iterator end = source->theTypesMap->end();
+
+  for (; ite != end; ++ite)
+  {
+    store::Item_t type = ite.getValue();
+    theTypesMap->insert(ite.getKey(), type);
+  }
+}
+
+
+#endif // #ifndef EMBEDED_TYPE
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -554,14 +675,14 @@ bool XmlNode::disconnect(vsize& pos) throw()
 /*******************************************************************************
   Deallocate all nodes in the subtree rooted at "this".
 ********************************************************************************/
-void XmlNode::destroy() throw()
+void XmlNode::destroy(bool removeType) throw()
 {
   try
   {
     vsize pos;
     disconnect(pos);
 
-    destroyInternal();
+    destroyInternal(removeType);
   }
   catch (...)
   {
@@ -570,10 +691,12 @@ void XmlNode::destroy() throw()
 }
 
 
-void XmlNode::destroyInternal() throw()
+void XmlNode::destroyInternal(bool removeType) throw()
 {
-  if (getNodeKind() == store::StoreConsts::elementNode ||
-      getNodeKind() == store::StoreConsts::documentNode)
+  store::StoreConsts::NodeKind kind = getNodeKind();
+
+  if (kind == store::StoreConsts::elementNode ||
+      kind == store::StoreConsts::documentNode)
   {
     InternalNode* node = static_cast<InternalNode*>(this);
 
@@ -582,7 +705,7 @@ void XmlNode::destroyInternal() throw()
 
     for (; ite != end; ++ite)
     {
-      (*ite)->destroyInternal();
+      (*ite)->destroyInternal(removeType);
     }
 
     ite = node->attrsBegin();
@@ -590,9 +713,27 @@ void XmlNode::destroyInternal() throw()
 
     for (; ite != end; ++ite)
     {
-      (*ite)->destroyInternal();
+      (*ite)->destroyInternal(removeType);
     }
   }
+
+#ifndef EMBEDED_TYPE
+  if (removeType)
+  { 
+    if (kind == store::StoreConsts::elementNode)
+    {
+      ElementNode* elem = static_cast<ElementNode*>(this);
+      if (elem->haveType())
+        getTree()->removeType(this);
+    }
+    else if (kind == store::StoreConsts::attributeNode)
+    {
+      AttributeNode* attr = static_cast<AttributeNode*>(this);
+      if (attr->haveType())
+        getTree()->removeType(this);
+    }
+  }
+#endif
 
   delete this;
 }
@@ -1057,7 +1198,7 @@ ElementNode::ElementNode(
   try
   {
     theName.transfer(nodeName);
-    theTypeName.transfer(typeName);
+    setType(typeName);
 
     if (haveTypedValue)
     {
@@ -1136,7 +1277,8 @@ ElementNode::ElementNode(
   catch (...)
   {
     theName = NULL;
-    theTypeName = NULL;
+    store::Item_t null;
+    setType(null);
     theNsContext = NULL;
 
     if (numAttrs() != 0)
@@ -1155,9 +1297,7 @@ ElementNode::ElementNode(
               << " tree = " << getTree()->getId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show()
               << " name = " << theName->getStringValue()
-              << " type = " << (theTypeName ?
-                                theTypeName->getStringValue().c_str() :
-                                "untyped"));
+              << " type = " << getType()->getStringValue());
 }
 
 
@@ -1210,7 +1350,7 @@ XmlNode* ElementNode::copyInternal(
 
   if (copymode.theTypePreserve)
   {
-    typeName = theTypeName;
+    typeName = getType();
     haveValue = this->haveValue();
     haveEmptyValue = this->haveEmptyValue();
     inSubstGroup = this->isInSubstitutionGroup();
@@ -1304,12 +1444,16 @@ XmlNode* ElementNode::copyInternal(
     }
     else // ! nsPreserve
     {
-      if (copymode.theTypePreserve &&
-          theTypeName != NULL &&
-          (theTypeName->equals(GET_STORE().theSchemaTypeNames[XS_QNAME]) ||
-           theTypeName->equals(GET_STORE().theSchemaTypeNames[XS_NOTATION])))
+      if (copymode.theTypePreserve)
       {
-        ZORBA_ERROR(XQTY0086);
+        store::Item* typeName = getType();
+
+        if (typeName != NULL &&
+            (typeName->equals(GET_STORE().theSchemaTypeNames[XS_QNAME]) ||
+             typeName->equals(GET_STORE().theSchemaTypeNames[XS_NOTATION])))
+        {
+          ZORBA_ERROR(XQTY0086);
+        }
       }
 
       const zstring& prefix = theName->getPrefix();
@@ -1460,7 +1604,7 @@ XmlNode* ElementNode::copyInternal(
     }
     else if (copyNode && (parent == rootParent))
     {
-      copyNode->destroy();
+      copyNode->destroy(true);
     }
 
     throw;
@@ -1478,12 +1622,54 @@ XmlNode* ElementNode::copyInternal(
 /*******************************************************************************
 
 ********************************************************************************/
+#ifdef EMBEDED_TYPE
 store::Item* ElementNode::getType() const
 {
   return (theTypeName != NULL ?
           theTypeName.getp() :
           GET_STORE().theSchemaTypeNames[XS_UNTYPED].getp());
 }
+
+
+void ElementNode::setType(store::Item_t& type)
+{
+  theTypeName.transfer(type);
+}
+
+#else
+
+store::Item* ElementNode::getType() const
+{
+  return (haveType() ?
+          getTree()->getType(this) : 
+          GET_STORE().theSchemaTypeNames[XS_UNTYPED].getp());
+}
+
+
+void ElementNode::setType(store::Item_t& type)
+{
+  if (haveType())
+  {
+    if (type == NULL ||
+        type == GET_STORE().theSchemaTypeNames[XS_UNTYPED])
+    {
+      getTree()->removeType(this);
+      resetHaveType();
+    }
+    else
+    {
+      getTree()->setType(this, type);
+    }
+  }
+  else if (type != NULL &&
+           type != GET_STORE().theSchemaTypeNames[XS_UNTYPED])
+  {
+    getTree()->addType(this, type);
+    setHaveType();
+  }
+}
+
+#endif
 
 
 /*******************************************************************************
@@ -1574,8 +1760,7 @@ void ElementNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) con
     ZORBA_ERROR_DESC_OSS(FOTY0012,
                          "The element node " << theName->getStringValue()
                          << " with type "
-                         << (theTypeName ?
-                             theTypeName->getStringValue().c_str() : "untyped") 
+                         << getType()->getStringValue() 
                          << " does not have a typed value");
   }
 }
@@ -1652,8 +1837,7 @@ store::Item_t ElementNode::getNilled() const
 {
   store::Item_t val;
 
-  if (theTypeName == NULL ||
-      theTypeName->equals(GET_STORE().theSchemaTypeNames[XS_UNTYPED])) 
+  if (getType()->equals(GET_STORE().theSchemaTypeNames[XS_UNTYPED])) 
   {
     GET_STORE().getItemFactory()->createBoolean(val, false);
     return val;
@@ -2326,8 +2510,8 @@ AttributeNode::AttributeNode(
     }
 
     theName.transfer(attrName);
-    theTypeName.transfer(typeName);
     theTypedValue.transfer(typedValue);
+    setType(typeName);
 
     if (isListValue)
       setHaveListValue();
@@ -2363,7 +2547,7 @@ AttributeNode::AttributeNode(
 
             if (attr->isBaseUri() && attr->isHidden())
             {
-              attr->destroy();
+              attr->destroy(true);
               break;
             }
           }
@@ -2394,8 +2578,9 @@ AttributeNode::AttributeNode(
   catch (...)
   {
     theName = NULL;
-    theTypeName = NULL;
     theTypedValue = NULL;
+    store::Item_t null;
+    setType(null);
 
     throw;
   }
@@ -2434,7 +2619,7 @@ XmlNode* AttributeNode::copyInternal(
 
   if (copymode.theTypePreserve)
   {
-    typeName = theTypeName;
+    typeName = getType();
     typedValue = theTypedValue;
 
     isListValue = haveListValue();
@@ -2495,6 +2680,7 @@ XmlNode* AttributeNode::copyInternal(
 /*******************************************************************************
 
 ********************************************************************************/
+#ifdef EMBEDED_TYPE
 store::Item* AttributeNode::getType() const
 {
   return (theTypeName != NULL ?
@@ -2502,6 +2688,46 @@ store::Item* AttributeNode::getType() const
           GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC].getp());
 }
 
+
+void AttributeNode::setType(store::Item_t& type)
+{
+  theTypeName.transfer(type);
+}
+
+#else
+
+store::Item* AttributeNode::getType() const
+{
+  return (haveType() ?
+          getTree()->getType(this) : 
+          GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC].getp());
+}
+
+
+void AttributeNode::setType(store::Item_t& type)
+{
+  if (haveType())
+  {
+    if (type == NULL || 
+        type == GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC])
+    {
+      getTree()->removeType(this);
+      resetHaveType();
+    }
+    else
+    {
+      getTree()->setType(this, type);
+    }
+  }
+  else if (type != NULL &&
+           type != GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC])
+  {
+    getTree()->addType(this, type);
+    setHaveType();
+  }
+}
+
+#endif
 
 /*******************************************************************************
 

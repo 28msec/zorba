@@ -23,12 +23,17 @@
 #include <zorba/config.h>
 #include <zorba/error.h>
 
+#include "store/naive/store_defs.h"
 #include "store/naive/shared_types.h"
 #include "store/naive/text_node_content.h"
 #include "store/naive/item_vector.h"
 #include "store/naive/ordpath.h"
 #include "store/naive/store_config.h"
 #include "store/naive/nsbindings.h" // TODO remove by introducing explicit destructors
+
+#ifndef EMBEDED_TYPE
+#include "store/naive/hashmap_nodep.h"
+#endif
 
 #ifndef ZORBA_NO_FULL_TEXT
 #include <zorba/locale.h>
@@ -93,7 +98,7 @@ typedef std::vector<NodeTypeInfo> TypeUndoList;
 
 typedef rchandle<NsBindingsContext> NsBindingsContext_t;
 
-  //extern NodeVector dummyVector;
+class XmlNodeTokenizerCallback;
 
 
 #define NODE_STOP \
@@ -121,7 +126,6 @@ typedef rchandle<NsBindingsContext> NsBindingsContext_t;
 #define NODE_TRACE3(msg)
 
 #endif
-
 
 
 /*******************************************************************************
@@ -166,6 +170,10 @@ class XmlTree
   // make sure that only created by the factory
   friend class NodeFactory;
 
+#ifndef EMBEDED_TYPE
+  typedef NodePointerHashMap<store::Item_t> NodeTypeMap;
+#endif
+
 protected:
   mutable long              theRefCount;
   SYNC_CODE(mutable RCLock  theRCLock;)
@@ -184,6 +192,10 @@ protected:
 
   bool                      theIsValidated;
   bool                      theIsRecursive;
+
+#ifndef EMBEDED_TYPE
+  NodeTypeMap             * theTypesMap;
+#endif
 
 #ifndef ZORBA_NO_FULL_TEXT
   FTTokenStore              theTokens;
@@ -243,66 +255,22 @@ public:
 
   void setDataGuide(GuideNode* root) { theDataGuideRootNode = root; }
 
+#ifndef EMBEDED_TYPE
+  store::Item* getType(const XmlNode* n) const;
+
+  void addType(const XmlNode* n, store::Item_t& type);
+
+  void setType(const XmlNode* n, store::Item_t& type);
+
+  void removeType(const XmlNode* n);
+
+  void copyTypesMap(const XmlTree* source);
+#endif
+
 #ifndef ZORBA_NO_FULL_TEXT
   FTTokenStore& getTokenStore() { return theTokens; }
 #endif
 };
-
-
-#ifndef ZORBA_NO_FULL_TEXT
-/**
- * An %XmlNodeTokenizerCallback is-a Tokenizer::Callback for tokenizing XML
- * nodes.
- */
-class XmlNodeTokenizerCallback : public Tokenizer::Callback 
-{
-public:
-  typedef FTTokenStore::container_type container_type;
-  typedef FTTokenStore::size_type begin_type;
-
-  XmlNodeTokenizerCallback( Tokenizer &tokenizer, FTTokenStore &token_store,
-                            locale::iso639_1::type lang );
-
-  XmlNodeTokenizerCallback( Tokenizer &tokenizer, container_type &tokens,
-                            locale::iso639_1::type lang );
-
-  void operator()( char const *utf8_s, size_t utf8_len,
-                   int_t pos, int_t sent, int_t para, void* );
-
-  begin_type beginTokenization() const;
-  void endTokenization( XmlNode const*, begin_type );
-
-  void push_element( ElementNode *element ) { element_stack_.push( element ); }
-  void pop_element() { element_stack_.pop(); }
-
-  void push_lang( locale::iso639_1::type lang ) { lang_stack_.push( lang ); }
-  void pop_lang() { lang_stack_.pop(); }
-
-  void tokenize( char const *utf8_s, size_t len );
-
-  Tokenizer& tokenizer() const {
-    return tokenizer_;
-  }
-
-private:
-  typedef std::stack<locale::iso639_1::type> lang_stack_t;
-  typedef std::stack<ElementNode*> element_stack_t;
-
-  ElementNode* get_element() const {
-    return element_stack_.top();
-  }
-
-  locale::iso639_1::type get_lang() const {
-    return lang_stack_.top();
-  }
-
-  Tokenizer &tokenizer_;
-  FTTokenStore *token_store_;
-  container_type &tokens_;
-  element_stack_t element_stack_;
-  lang_stack_t lang_stack_;
-};
-#endif /* ZORBA_NO_FULL_TEXT */
 
 
 /******************************************************************************
@@ -356,7 +324,16 @@ public:
     IsHidden          =   0x1000,  // for attribute nodes only
     IsInSubstGroup    =   0x2000,  // for element nodes only
 
-    IsRecursive       =   0x4000   // for element nodes only
+    // For element nodes only. The flag is set for a node N if there is another
+    // node M in its subtree such that N and M have the same name.
+    IsRecursive       =   0x4000
+
+#ifndef EMBEDED_TYPE
+    ,
+    // For element and attribute nodes only. The flag is set if the node has
+    // a type other than untyped (for elements) or untypedAtomic (for attributes)
+    HaveType  =   0x8000
+#endif
   };
 
 protected:
@@ -539,7 +516,7 @@ protected:
 
   void detach() throw();
 
-  void destroy() throw();
+  void destroy(bool removeType) throw();
 
   bool disconnect(vsize& pos) throw();
 
@@ -550,7 +527,7 @@ protected:
 #endif /* ZORBA_NO_FULL_TEXT */
 
 private:
-  void destroyInternal() throw();
+  void destroyInternal(bool removeType) throw();
 };
 
 
@@ -752,7 +729,9 @@ class ElementNode : public InternalNode
 
 protected:
   store::Item_t         theName;
+#ifdef EMBEDED_TYPE
   store::Item_t         theTypeName;
+#endif
   NsBindingsContext_t   theNsContext;
 
 protected:
@@ -833,6 +812,12 @@ public:
   void setInSubstGroup()        { theFlags |= IsInSubstGroup; }
   void resetInSubstGroup()      { theFlags &= ~IsInSubstGroup; }
 
+#ifndef EMBEDED_TYPE
+  bool haveType() const         { return (theFlags & HaveType) != 0; }
+  void setHaveType()            { theFlags |= HaveType; }
+  void resetHaveType()          { theFlags &= ~HaveType; }
+#endif
+
   bool isRecursive() const      { return (theFlags & IsRecursive) != 0; }
   void resetRecursive()         { theFlags &= ~IsRecursive; }
 
@@ -902,6 +887,8 @@ public:
   void restoreName(UpdRenameElem& upd);
 
 protected:
+  void setType(store::Item_t& type);
+
   void getBaseURIInternal(zstring& uri, bool& local) const;
 
   void addBaseUriProperty(zstring& absUri, zstring& relUri);
@@ -935,7 +922,9 @@ class AttributeNode : public XmlNode
 
 protected:
   store::Item_t   theName;
+#ifdef EMBEDED_TYPE
   store::Item_t   theTypeName;
+#endif
   store::Item_t   theTypedValue;
 
   AttributeNode(store::Item_t&  attrName);
@@ -963,6 +952,7 @@ public:
   store::Item* getType() const;
 
   void setTypedValue(store::Item_t& val);
+
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
 
   zstring getStringValue() const;
@@ -999,10 +989,18 @@ public:
 
   bool isBaseUri() const      { return (theFlags & IsBaseUri) != 0; }
 
+#ifndef EMBEDED_TYPE
+  bool haveType() const       { return (theFlags & HaveType) != 0; }
+  void setHaveType()          { theFlags |= HaveType; }
+  void resetHaveType()        { theFlags &= ~HaveType; }
+#endif
+
   void replaceValue(UpdReplaceAttrValue& upd);
+
   void restoreValue(UpdReplaceAttrValue& upd);
 
   void replaceName(UpdRenameAttr& upd);
+
   void restoreName(UpdRenameAttr& upd);
 
 #ifndef ZORBA_NO_FULL_TEXT
@@ -1011,6 +1009,8 @@ public:
 #endif /* ZORBA_NO_FULL_TEXT */
 
 protected:
+  void setType(store::Item_t& type);
+
   ItemVector& getValueVector() 
   {
     return *reinterpret_cast<ItemVector*>(theTypedValue.getp()); 
@@ -1310,6 +1310,63 @@ inline long XmlNode::compare2(const XmlNode* other) const
 
   return 1;
 }
+
+
+#ifndef ZORBA_NO_FULL_TEXT
+/**
+ * An %XmlNodeTokenizerCallback is-a Tokenizer::Callback for tokenizing XML
+ * nodes.
+ */
+class XmlNodeTokenizerCallback : public Tokenizer::Callback 
+{
+public:
+  typedef FTTokenStore::container_type container_type;
+  typedef FTTokenStore::size_type begin_type;
+
+  XmlNodeTokenizerCallback( Tokenizer &tokenizer, FTTokenStore &token_store,
+                            locale::iso639_1::type lang );
+
+  XmlNodeTokenizerCallback( Tokenizer &tokenizer, container_type &tokens,
+                            locale::iso639_1::type lang );
+
+  void operator()( char const *utf8_s, size_t utf8_len,
+                   int_t pos, int_t sent, int_t para, void* );
+
+  begin_type beginTokenization() const;
+  void endTokenization( XmlNode const*, begin_type );
+
+  void push_element( ElementNode *element ) { element_stack_.push( element ); }
+  void pop_element() { element_stack_.pop(); }
+
+  void push_lang( locale::iso639_1::type lang ) { lang_stack_.push( lang ); }
+  void pop_lang() { lang_stack_.pop(); }
+
+  void tokenize( char const *utf8_s, size_t len );
+
+  Tokenizer& tokenizer() const {
+    return tokenizer_;
+  }
+
+private:
+  typedef std::stack<locale::iso639_1::type> lang_stack_t;
+
+  typedef std::stack<ElementNode*> element_stack_t;
+
+  ElementNode* get_element() const {
+    return element_stack_.top();
+  }
+
+  locale::iso639_1::type get_lang() const {
+    return lang_stack_.top();
+  }
+
+  Tokenizer &tokenizer_;
+  FTTokenStore *token_store_;
+  container_type &tokens_;
+  element_stack_t element_stack_;
+  lang_stack_t lang_stack_;
+};
+#endif /* ZORBA_NO_FULL_TEXT */
 
 } // namespace store
 } // namespace zorba

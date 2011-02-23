@@ -154,11 +154,11 @@ public:
     friend class HASHMAP;
 
   protected:
-    const checked_vector<HASHENTRY<T, V> >*  theHashTab;
-    size_t                                    thePos;
+    checked_vector<HASHENTRY<T, V> >*  theHashTab;
+    size_t                             thePos;
 
   protected:
-    iterator(const checked_vector<HASHENTRY<T, V> >* ht, size_t pos)
+    iterator(checked_vector<HASHENTRY<T, V> >* ht, size_t pos)
       :
       theHashTab(ht),
       thePos(pos)
@@ -228,6 +228,15 @@ public:
       const HASHENTRY<T, V>& entry = (*theHashTab)[thePos];
 
       return entry.theValue;
+    }
+
+    void setValue(const V& val)
+    {
+      ZORBA_FATAL(thePos < theHashTab->size(), "");
+
+      HASHENTRY<T, V>& entry = (*theHashTab)[thePos];
+
+      entry.theValue = val;
     }
   };
 
@@ -452,13 +461,14 @@ void clear()
 ********************************************************************************/
 iterator begin() const
 {
-  return iterator(&theHashTab, 0);
+  return iterator(const_cast<checked_vector<HASHENTRY<T, V> >*>(&theHashTab), 0);
 }
 
 
 iterator end() const
 {
-  return iterator(&theHashTab, theHashTab.size());
+  return iterator(const_cast<checked_vector<HASHENTRY<T, V> >*>(&theHashTab),
+                  theHashTab.size());
 }
 
 

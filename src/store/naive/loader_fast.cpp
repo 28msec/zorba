@@ -143,7 +143,7 @@ void FastXmlLoader::abortload()
     XmlNode* node = theNodeStack.top();
     theNodeStack.pop();
     if (node != NULL)
-      node->destroy();
+      node->destroy(true);
   }
 
   thePathStack.clear();
