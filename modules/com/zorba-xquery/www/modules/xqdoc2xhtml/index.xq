@@ -57,7 +57,9 @@ declare variable $xqdoc2html:externalLinks :=
        title="Tutorials" target="_blank">Tutorials</a>
     <a href="http://experimental.zorba-xquery.org/" 
        title="Get started with XQuery using Zorba"
-       target="_blank">Experiment XQuery with Zorba</a>   
+       target="_blank">Experiment XQuery with Zorba</a>
+    <a href="modules.svg" 
+       title="Module dependencies SVG graph">Module dependencies SVG graph</a>
   </links>;
 
 (:~
