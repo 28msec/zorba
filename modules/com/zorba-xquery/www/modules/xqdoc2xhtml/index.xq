@@ -313,11 +313,12 @@ declare sequential function xqdoc2html:generate-xqdoc-xml(
       let $xqdocFileName := fn:concat($xqdocXmlPath, file:path-separator(), $getFilename, ".xml")
       let $xhtmlRelativeFilePath :=fn:concat($getFilename, ".html")
       let $ret := file:write($xqdocFileName, $xqdoc, <s method="xml" indent="yes" />/@*)
+      let $hasExtFuncs := xqdoc2html:contains-external-functions($xqdoc)
       
       return
         if($xqdoc/xqdoc:module/@type = "library") then
         (
-          xqdoc2html:collect-module($moduleUri/text(), $getFilename, $xqdoc2html:indexCollector),
+          xqdoc2html:collect-module($moduleUri/text(), $getFilename, $hasExtFuncs, $xqdoc2html:indexCollector),
           
           xqdoc2html:collect-functions($xqdoc, $xhtmlRelativeFilePath, $xqdoc2html:functionsCollector),
           
@@ -496,7 +497,7 @@ declare %private sequential function xqdoc2html:gather-schemas(
       let $xqdoc := file:read-xml($xsdFilePath)
       let $xsdUri := $xqdoc/xs:schema/@targetNamespace
       return
-          xqdoc2html:collect-module($xsdUri, $xqdRelFilePath, $xqdoc2html:schemasCollector);
+          xqdoc2html:collect-schema($xsdUri, $xqdRelFilePath, $xqdoc2html:schemasCollector);
     } catch * ($error_code) {
       fn:error($err:UE005, fn:concat("xqdoc2html:gather-schemas ", $xsdFilePath));
     } 
@@ -509,12 +510,46 @@ declare %private sequential function xqdoc2html:gather-schemas(
  : @param $collector the name of the collector.
  : @return empty sequence.
  :)
-declare %private sequential function xqdoc2html:collect-module (
+declare %private sequential function xqdoc2html:collect-schema (
   $moduleURI as xs:string, 
   $relativeFileName as xs:string, 
   $collector) 
 {
   insert node <module uri="{$moduleURI}" file="{$relativeFileName}" /> as last into $collector;
+};
+
+(:~
+ : This function returns true if there are external functions declared.
+ : @param $xqdoc the xqdoc functions.
+ : @return a xs:boolean if there are external functions declared.
+ :)
+declare %private sequential function xqdoc2html:contains-external-functions (
+  $xqdoc) as xs:boolean 
+{
+  let $ext := count(for $sig in $xqdoc/xqdoc:functions/xqdoc:function/xqdoc:signature
+                    return
+                      if(ends-with($sig/text(),'external')) then 1
+                      else ())
+  let $func := count ($xqdoc/xqdoc:functions/xqdoc:function/xqdoc:signature)
+  return
+    (($func gt 0) and ($ext gt 0))  
+};
+
+(:~
+ : This function adds a new record into the $collector.
+ : @param $moduleURI the module URI.
+ : @param $relativeFileName the relative path to the module.
+ : @param $collector the name of the collector.
+ : @param $containsExternalFuncs true is the module contails external functions.
+ : @return empty sequence.
+ :)
+declare %private sequential function xqdoc2html:collect-module (
+  $moduleURI as xs:string, 
+  $relativeFileName as xs:string, 
+  $containsExternalFuncs as xs:boolean,
+  $collector) 
+{
+  insert node <module uri="{$moduleURI}" file="{$relativeFileName}" pureXQuery="{not($containsExternalFuncs)}"/> as last into $collector;
 };
 
 (:~
@@ -692,7 +727,8 @@ declare sequential function xqdoc2html:configure-xhtml (
   (: replace the function type description with images :)
   let $xquSpec := "http://www.w3.org/TR/xquery-update-10/",
       $xqsSpec := "http://www.w3.org/TR/xquery-sx-10/#dt-sequential-function",
-      $xq11Spec := "http://www.w3.org/TR/xquery-11/#FunctionDeclns"
+      $xq11Spec := "http://www.w3.org/TR/xquery-11/#FunctionDeclns",
+      $xqExternal := "http://www.w3.org/TR/xquery-30/#dt-external-function"
   let $imagesPath := "images/"
   for $typeTd in $xhtml//*:td
   where $typeTd/@class eq "type"
@@ -707,13 +743,17 @@ declare sequential function xqdoc2html:configure-xhtml (
     else if (matches($type, "nondeterministic")) then
       replace node $typeTd/text() with
         <a href="{$xq11Spec}" title="{$type}" target="_blank"><img src="{concat($imagesPath, "N.gif")}" /></a>
+    else if (matches($type, "external")) then
+      replace node $typeTd/text() with
+        <a href="{$xqExternal}" title="{$type}" target="_blank"><img src="{concat($imagesPath, "E.gif")}" /></a>    
     else ();
   };
   
   (: replace the function names description with images+name of the functions :) 
-  let $xquSpec := "http://www.w3.org/TR/xquery-update-10/",
-      $xqsSpec := "http://www.w3.org/TR/xquery-sx-10/#dt-sequential-function",
-      $xq11Spec := "http://www.w3.org/TR/xquery-11/#FunctionDeclns"
+  let $xquSpec :=  "http://www.w3.org/TR/xquery-update-10/",
+      $xqsSpec :=  "http://www.w3.org/TR/xquery-sx-10/#dt-sequential-function",
+      $xq11Spec := "http://www.w3.org/TR/xquery-11/#FunctionDeclns",
+      $xqExternal := "http://www.w3.org/TR/xquery-30/#dt-external-function"
   let $imagesPath := "images/"
   for $func in $xhtml//*:div
   where $func/@class eq "subsection"
@@ -721,18 +761,39 @@ declare sequential function xqdoc2html:configure-xhtml (
   return block {
     if (starts-with($funcName, "updating")) then
       replace node $func/text() with
-        <span class="no_underline"><a href="{$xquSpec}" title="updating" target="_blank">
-        <img src="{concat($imagesPath, "U.gif")}" /></a>{text {substring-after($funcName, "updating")}}</span>
+        <span class="no_underline">
+          <a href="{$xquSpec}" title="updating" target="_blank"><img src="{concat($imagesPath, "U.gif")}" /></a>
+          {text {substring-after(substring-before($funcName," external"), "updating")}}
+          {if(ends-with($funcName, " external")) then
+            <a href="{$xqExternal}" title="external" target="_blank"><img src="{concat($imagesPath, "E.gif")}" /></a>
+          else ()}
+        </span>
         
     else if (starts-with($funcName, "sequential")) then
       replace node $func/text() with
-        <span class="no_underline"><a href="{$xqsSpec}" title="sequential" target="_blank">
-        <img src="{concat($imagesPath, "S.gif")}" /></a>{text {substring-after($funcName, "sequential")}}</span>
+        <span class="no_underline">
+          <a href="{$xqsSpec}" title="sequential" target="_blank"><img src="{concat($imagesPath, "S.gif")}" /></a>
+          {text {substring-after(substring-before($funcName," external"), "sequential")}}
+          {if(ends-with($funcName, " external")) then
+            <a href="{$xqExternal}" title="external" target="_blank"><img src="{concat($imagesPath, "E.gif")}" /></a>
+          else ()}
+        </span>
         
     else if (starts-with($funcName, "nondeterministic")) then
       replace node $func/text() with
-        <span class="no_underline"><a href="{$xq11Spec}" title="nondeterministic" target="_blank">
-        <img src="{concat($imagesPath, "N.gif")}" /></a>{text {substring-after($funcName, "nondeterministic")}}</span>
+        <span class="no_underline">
+          <a href="{$xq11Spec}" title="nondeterministic" target="_blank"><img src="{concat($imagesPath, "N.gif")}" /></a>
+          {text {substring-after(substring-before($funcName," external"), "nondeterministic")}}
+          {if(ends-with($funcName, " external")) then
+            <a href="{$xqExternal}" title="external" target="_blank"><img src="{concat($imagesPath, "E.gif")}" /></a>
+          else ()}
+        </span>
+    else if(ends-with($funcName, " external")) then
+      replace node $func/text() with
+        <span class="no_underline">
+          {text {substring-before($funcName," external")}}
+          <a href="{$xqExternal}" title="external" target="_blank"><img src="{concat($imagesPath, "E.gif")}" /></a>
+        </span>
     else ();
   };
    
@@ -828,6 +889,7 @@ declare %private sequential function xqdoc2html:create-module-helper(
       for $module in $xqdoc2html:indexCollector/module
       let $lModuleUri := data($module/@uri)
       let $lCatUri := data($category/@uri)
+      let $lPureXquery := xs:boolean(data($module/@pureXQuery))
       order by $lModuleUri
       return
         if(fn:starts-with($lModuleUri, $lCatUri)
@@ -842,9 +904,24 @@ declare %private sequential function xqdoc2html:create-module-helper(
           
           return
             if($lModuleUri = $moduleUri) then
-              <li><span class="leftmenu_active">{$uri}</span></li>
+              <li>
+                <span class="leftmenu_active">{$uri}
+                {
+                  if($lPureXquery) then  ()
+                  else
+                    <span class="superscript"><a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a></span>
+                }
+                </span>
+              </li>
             else 
-              <li><a href="{$module/@file}.html">{$uri}</a></li>
+              <li>
+                <a href="{$module/@file}.html">{$uri}</a>
+                {
+                  if($lPureXquery) then ()
+                  else
+                    <span class="superscript"><a href="http://www.w3.org/TR/xquery-30/#dt-external-function" target="_blank" title="There are external functions (either private or public) declared in this module.">(E)</a></span>
+                }
+              </li>
         )
         else ()
     }    
@@ -1352,7 +1429,7 @@ declare function xqdoc2html:module-resources(
   return
     (<div class="section"><span id="module_resources">Module Resources</span></div>,
      <ul>
-     <li>the XQuery module can be found <a href="modules/{fn:concat($indexCollector/module[@uri=$moduleUri]/@file,".xq")}">here</a>.</li>
+     <li>the XQuery module can be found <a href="modules/{fn:concat($indexCollector/module[@uri=$moduleUri]/@file,".xq")}" target="_blank">here</a>.</li>
     {if(file:exists(fn:concat($xqSrcPath,file:path-separator(),$folder,file:path-separator()))) then
        <li>the implementation of the external functions can be found <a href="{$path}">here</a>.</li>
     else
@@ -1517,7 +1594,8 @@ declare function xqdoc2html:module-function-summary($functions)
       return
         let $type := normalize-space(substring-after(substring-before($signature, "function"), "declare")),
             $isExternal := ends-with($signature, "external"),    
-            $paramsAndReturn := substring-after($signature,concat(':',$name))
+            $paramsAndReturn := substring-after($signature,concat(':',$name)),
+            $external := if(ends-with($signature,"external")) then "external" else ""
         return
           <tr>
             <td class="type">{$type}</td>
@@ -1530,6 +1608,7 @@ declare function xqdoc2html:module-function-summary($functions)
               }{xqdoc2html:split-function-signature($paramsAndReturn)}<br /><span class="padding">{$shortDescription}</span>
               </tt>
             </td>
+            <td class="type">{$external}</td>
           </tr>
     }</table>
   else
@@ -1547,15 +1626,16 @@ declare function xqdoc2html:module-function-summary($functions)
 declare %private function xqdoc2html:module-function-link($name as xs:string, $signature) {
 
 let $lcSignature := fn:lower-case($signature)
+let $lname := if(ends-with($signature, 'external')) then concat($name, ' external') else $name
 return
   if(contains($lcSignature, 'updating')) then
-    concat('updating ',$name)
+    concat('updating ',$lname)
   else if(contains($lcSignature, 'sequential')) then
-    concat('sequential ',$name)
+    concat('sequential ',$lname)
   else if(contains($lcSignature, 'nondeterministic')) then
-    concat('nondeterministic ',$name)
+    concat('nondeterministic ',$lname)
   else 
-    $name
+    $lname
 };
 
 (:~

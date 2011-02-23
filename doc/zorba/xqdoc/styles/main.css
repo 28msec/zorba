@@ -164,6 +164,18 @@ ul.leftMenu li{
   font-weight: bolder;
 }
 
+.superscript{
+  font-size:xx-small; 
+  vertical-align:top;
+  text-decoration: none;
+}
+
+.subscript{
+  font-size:xx-small; 
+  vertical-align:bottom;
+  text-decoration: none;
+}
+
 /****************
  MAIN CONTENT
  *****************/
