@@ -15,7 +15,7 @@
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/zorba/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/zorba/config.h)
 MESSAGE(STATUS "configured ${CMAKE_CURRENT_SOURCE_DIR}/zorba/config.h.cmake -->${CMAKE_CURRENT_BINARY_DIR}/zorba/config.h")
 
-INSTALL(DIRECTORY zorba DESTINATION include/zorba
+INSTALL(DIRECTORY zorba DESTINATION include
  PATTERN "*.svn" EXCLUDE
  PATTERN "*.txt" EXCLUDE
  PATTERN "*.cmake" EXCLUDE)
@@ -27,5 +27,5 @@ INSTALL(DIRECTORY simplestore DESTINATION include/zorba
 INSTALL(FILES xqc.h DESTINATION include) 
 
 INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba/config.h DESTINATION
-include/zorba/zorba)
+include/zorba)
 

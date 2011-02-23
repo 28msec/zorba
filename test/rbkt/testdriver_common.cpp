@@ -17,7 +17,7 @@
 
 #include <zorbatypes/URI.h>
 #include <zorba/static_context_consts.h>
-
+#include "util/string_util.h"
 #include "util/ascii_util.h"
 #include "zorbamisc/ns_consts.h"
 #include "testdriverconfig.h"
@@ -441,4 +441,29 @@ void setFullTextResolvers
   sctx->addStopWordsURIResolver(spec.getStopWordsResolver());
   sctx->addThesaurusURIResolver(spec.getThesaurusResolver());
 #endif
+}
+
+
+/**
+ * Set the module paths based on a :- or ;-separated list of paths.
+ */
+void setModulePaths
+(std::string paths, zorba::StaticContext_t& sctx)
+{
+  std::vector<zorba::String> lModulePaths;
+  std::string lPath;
+#ifdef WIN32
+  char lDelim = ';';
+#else
+  char lDelim = ':';
+#endif
+
+  while (zorba::split(paths, lDelim, &lPath, &paths)) {
+    lModulePaths.push_back(lPath);
+    std::cout << "Hello " << lPath << std::endl;
+  }
+  lModulePaths.push_back(paths);
+  std::cout << "Goodbyte " << paths << std::endl;
+
+  sctx->setModulePaths(lModulePaths);
 }

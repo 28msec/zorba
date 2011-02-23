@@ -1,4 +1,4 @@
-# Copyright 2006-2008 The FLWOR Foundation.
+# Copyright 2006-2010 The FLWOR Foundation.
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,6 +21,9 @@ INCLUDE(CTest)
 # this is usefull for other projects reusing zorba as a subcomponent
 SET(CMAKE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 SET(CMAKE_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
+
+# Enable RPaths in installed binaries
+SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 
 INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/CMakeCompareVersionStrings.cmake)
 
@@ -331,15 +334,6 @@ IF(WIN32)
   SET(requiredlibs ${requiredlibs} wsock32)
 ENDIF(WIN32)
 
-###############################################################################
-# Debian package dependencies
-SET(debian-required-packages "libxml2,libicu38,libxerces28")
-IF(CURL_FOUND)
-  SET(debian-required-packages "${debian-required-packages},libcurl3")
-ENDIF(CURL_FOUND)
-
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/ZorbaDebianDependencies.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/ZorbaDebianDependencies.cmake)
-
 ################################################################################
 # Variables
 SET(DEFINITIONS)
@@ -362,11 +356,8 @@ INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/include)
 SET(ZORBA_MAJOR_NUMBER "1")
 SET(ZORBA_MINOR_NUMBER "5")
 SET(ZORBA_PATCH_NUMBER "0")
-
-CONFIGURE_FILE ( "${CMAKE_SOURCE_DIR}/zorba.spec.in"
-                 "${CMAKE_BINARY_DIR}/zorba.spec" @ONLY )
-
-MESSAGE(STATUS "Zorba version number: " ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})
+SET(ZORBA_VERSION ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})
+MESSAGE(STATUS "Zorba version number: ${ZORBA_VERSION}")
 
 # add compiler variables
 ADD_DEFINITIONS(${DEFINITIONS})
@@ -406,6 +397,7 @@ ELSE (ZORBA_STORE_DIRS MATCHES "src/store/naive")
 ENDIF (ZORBA_STORE_DIRS MATCHES "src/store/naive")
 
 ADD_SUBDIRECTORY(scripts)
+ADD_SUBDIRECTORY(cmake_modules)
 # add this here because we need the file target
 # later for the generation of runtime and functions
 ADD_SUBDIRECTORY(modules)
@@ -426,8 +418,10 @@ ENDIF(ZORBA_USE_SWIG AND BUILDING_SIMPLESTORE)
 ADD_SUBDIRECTORY(bin)
 ADD_SUBDIRECTORY(test)
 ADD_SUBDIRECTORY(doc)
+ADD_SUBDIRECTORY(config)
 
 # add the uninstall support
+# QQQ move to config/
 CONFIGURE_FILE(
     "${CMAKE_CURRENT_SOURCE_DIR}/CMakeUninstall.cmake.in"
     "${CMAKE_CURRENT_BINARY_DIR}/CMakeUninstall.cmake"
@@ -438,6 +432,7 @@ ADD_CUSTOM_TARGET(uninstall
 INCLUDE(InstallRequiredSystemLibraries)
 
 IF (NOT ZORBA_SKIP_CPACK)
+  # QQQ move to config/ ?
   INCLUDE(CMakeCPack.cmake)
 ENDIF (NOT ZORBA_SKIP_CPACK)
 
@@ -450,36 +445,30 @@ IF( APPLE AND UNIVERSAL )
   MESSAGE( "Building Apple universal binaries" )
 ENDIF( APPLE AND UNIVERSAL )
 
-# Create config (build settings, library dependencies, etc.) files
-# that are needed by cmake projects which extend the zorba project
-INCLUDE(CMakeExportBuildSettings)
-CMAKE_EXPORT_BUILD_SETTINGS(${CMAKE_BINARY_DIR}/ZorbaBuildSettings.cmake)
-EXPORT_LIBRARY_DEPENDENCIES(${CMAKE_BINARY_DIR}/ZorbaLibraryDepends.cmake)
-CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/ZorbaConfig.cmake.in ${CMAKE_BINARY_DIR}/ZorbaConfig.cmake)
-
 IF(WIN32)
 #automatic detection of external dll dependencies
-	FIND_PROGRAM(DEPENDS_EXE depends 
-							PATHS "C:\\Program Files\\Microsoft Visual Studio 8\\Common7\\Tools\\Bin"
-										"C:\\Program Files\\Microsoft Visual Studio 9.0\\Common7\\Tools\\Bin"
-										"C:\\Program Files\\Microsoft Visual Studio 10.0\\Common7\\Tools\\Bin"
-							)
+#QQQ move to config/ ?
+  FIND_PROGRAM(DEPENDS_EXE depends 
+              PATHS "C:\\Program Files\\Microsoft Visual Studio 8\\Common7\\Tools\\Bin"
+                    "C:\\Program Files\\Microsoft Visual Studio 9.0\\Common7\\Tools\\Bin"
+                    "C:\\Program Files\\Microsoft Visual Studio 10.0\\Common7\\Tools\\Bin"
+              )
 
-	IF(DEPENDS_EXE)
-	FILE(TO_CMAKE_PATH ${DEPENDS_EXE} DEPENDS_EXE)
-	ENDIF(DEPENDS_EXE)
+  IF(DEPENDS_EXE)
+  FILE(TO_CMAKE_PATH ${DEPENDS_EXE} DEPENDS_EXE)
+  ENDIF(DEPENDS_EXE)
 
-	GET_TARGET_PROPERTY(ZORBA_EXE_PATH zorbacmd LOCATION)
+  GET_TARGET_PROPERTY(ZORBA_EXE_PATH zorbacmd LOCATION)
 
-	#script to be executed before CPack
-	CONFIGURE_FILE(
-			"${CMAKE_CURRENT_SOURCE_DIR}/install_external_dll_script.txt.in"
-			"${CMAKE_CURRENT_BINARY_DIR}/install_external_dll_script.txt"
-			@ONLY)
-	INSTALL(SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/install_external_dll_script.txt)
+  #script to be executed before CPack
+  CONFIGURE_FILE(
+      "${CMAKE_CURRENT_SOURCE_DIR}/install_external_dll_script.txt.in"
+      "${CMAKE_CURRENT_BINARY_DIR}/install_external_dll_script.txt"
+      @ONLY)
+  INSTALL(SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/install_external_dll_script.txt)
 
-	FILE(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/external_dlls")
-	INSTALL(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/external_dlls/" DESTINATION bin)
+  FILE(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/external_dlls")
+  INSTALL(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/external_dlls/" DESTINATION bin)
 
 
 ENDIF(WIN32)

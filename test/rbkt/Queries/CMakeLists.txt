@@ -94,11 +94,6 @@ SET(FOUND_XQTS 0)
 # way to do the lookup just once - ideally by moving those tests which
 # depend on module features into the modules themselves.
 
-# Check if libgeos is found in order to determine whether
-# we have to skip the geo module tests
-IF(NOT ZORBA_SUPPRESS_GEOS)
-  FIND_PACKAGE(Geos)
-ENDIF (NOT ZORBA_SUPPRESS_GEOS)
 
 # Check if ImageMagick is found with all the 3 needed components:
 # Magick++ MagickCore MagickWand in order to determine whether we have
@@ -171,15 +166,6 @@ FOREACH(TESTFILE ${TESTFILES})
   ENDIF (NOT ImageMagick_Magick++_FOUND OR
          NOT ImageMagick_MagickCore_FOUND OR
          NOT ImageMagick_MagickWand_FOUND)
-
-
-  # check if libgeos is found; skip the tests if not found
-  IF (NOT GEOS_FOUND)
-    STRING(REGEX MATCH "geo/" NEEDS_LIBGEOS "${TESTNAME}")
-    IF (NEEDS_LIBGEOS)
-      SET (SKIP_TEST 1)
-    ENDIF (NEEDS_LIBGEOS)
-  ENDIF (NOT GEOS_FOUND)
 
   # If WordNet thesaurus not found, skip ft-thesaurus-true tests
   IF (NOT ZORBA_WORDNET_FOUND)

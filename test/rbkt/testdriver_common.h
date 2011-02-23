@@ -165,6 +165,10 @@ void printErrors(
     bool printInFile,
     std::ostream& output = std::cout);
 
+void setModulePaths(
+    std::string paths,
+    zorba::StaticContext_t& sctx);
+
 Zorba_CompilerHints getCompilerHints();
 
 zorba::Item createItem(

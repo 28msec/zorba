@@ -97,7 +97,7 @@ main(int argc, char** argv)
 
   int errors;
   Specification lSpec;
-
+  std::string lModulePath;
   loadProperties ();
 
   // Instantiate the store and the zorba query processor
@@ -115,6 +115,9 @@ main(int argc, char** argv)
       i += 2;
     } else if (strcmp (argv [i], "--rbkt-bin") == 0) {
       rbkt_bin_dir = argv [i + 1];
+      i += 2;
+    } else if (strcmp (argv [i], "--module-path") == 0) {
+      lModulePath = argv [i + 1];
       i += 2;
     } else break;
   }
@@ -241,6 +244,9 @@ main(int argc, char** argv)
     // Bind any full-text URI resolvers from the .spec file to the
     // static context
     setFullTextResolvers(driverContext, lContext);
+
+    // If command-line argument --module-path passed, set up module paths.
+    setModulePaths(lModulePath, lContext);
 
     // Get the pathnames of the reference-result files found in the .spec
     // file (if any).

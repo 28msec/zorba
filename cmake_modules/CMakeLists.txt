@@ -12,4 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Nothing to do in this directory.
+INSTALL(FILES ZorbaModule.cmake
+  DESTINATION share/zorba-${ZORBA_VERSION}/cmake)

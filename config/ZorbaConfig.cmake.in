@@ -1,0 +1,45 @@
+# Copyright 2006-2010 The FLWOR Foundation.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+# http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# - Config file for the Zorba package
+# It defines the following variables
+#  Zorba_INCLUDE_DIRS - include directories for Zorba
+#  Zorba_LIBRARY_DIRS - library directories for Zorba (normally not used!)
+#  Zorba_LIBRARIES    - libraries to link against QQQ
+#  Zorba_EXECUTABLE   - the Zorba executable QQQ
+#  Zorba_TESTDRIVER   - the Zorba testdriver executable
+#  ZORBA_STORE_NAMES  - all available store implementations
+#  Zorba_USE_FILE     - file which projects depending on Zorba should INCLUDE()
+
+
+# Tell the user project where to find our headers, libraries, and
+# CMake modules
+SET(Zorba_INCLUDE_DIRS "@Zorba_INCLUDE_DIRS@")
+SET(Zorba_LIBRARY_DIRS "@Zorba_LIBRARY_DIRS@")
+SET(Zorba_CMAKE_MODULES_DIR "@Zorba_CMAKE_MODULES_DIR@")
+SET(Zorba_TESTDRIVER "@Zorba_TESTDRIVER@")
+
+# Pass through some variables from main Zorba CMake configuration.
+SET(ZORBA_STORE_NAMES "@ZORBA_STORE_NAMES@")
+SET(ZORBA_VERSION "@ZORBA_VERSION@")
+
+# Tell the user project where to find the "USE" file.
+# This file uses the above settings to configure the user project.
+SET(Zorba_USE_FILE "@Zorba_USE_FILE@")
+
+IF(NOT Zorba_FIND_QUIETLY)
+  MESSAGE(STATUS "Found Zorba @ZORBA_VERSION@ (stores: ${ZORBA_STORE_NAMES})")
+  MESSAGE(STATUS " - Include dirs: ${Zorba_INCLUDE_DIRS}")
+  MESSAGE(STATUS " - Library dirs: ${Zorba_LIBRARY_DIRS}")
+ENDIF(NOT Zorba_FIND_QUIETLY)

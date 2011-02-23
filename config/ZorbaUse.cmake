@@ -1,4 +1,4 @@
-# Copyright 2006-2008 The FLWOR Foundation.
+# Copyright 2006-2010 The FLWOR Foundation.
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,4 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Nothing to do in this directory.
+
+# Projects which utilize Zorba should INCLUDE() this file (after
+# calling FIND_PACKAGE(Zorba)) to configure their builds
+# appropriately, and to gain access to useful macros.
+
+
+# Tell the compiler where to find Zorba's header files.
+INCLUDE_DIRECTORIES(${Zorba_INCLUDE_DIRS})
+
+# Tell the linker where to find Zorba's libraries
+LINK_DIRECTORIES(${Zorba_LIBRARY_DIRS})
+
+# Load Zorba module support macros.
+INCLUDE("${Zorba_CMAKE_MODULES_DIR}/ZorbaModule.cmake")

@@ -1,4 +1,4 @@
-# Copyright 2006-2008 The FLWOR Foundation.
+# Copyright 2006-2010 The FLWOR Foundation.
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,91 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# macro which should be used for generating module libraries
-# this macro will create a shared library in the (build) directory
-# from which the macro was invoked. Also, it will generate
-# an install command which installs the library in the corresponding
-# module directory of the installation directory
-MACRO(GENERATE_MODULE_LIBRARY MODULE_NAME LINK_LIBRARIES)
-
-  # all the cpp files found in the ${MODULE_NAME}.xq.src
-  # directory are added to the sources list
-  FILE(GLOB_RECURSE SRC_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "${CMAKE_CURRENT_SOURCE_DIR}/${MODULE_NAME}.xq.src/*.cpp")
-
-  #only for smtp library set -Wno-write-strings in order to remove the
-  #warning "deprecated conversion from string constant to char*"
-  #we need to set it to both GNUCC and GNUCXX because of linkage.c and c-client.h
-  IF(${MODULE_NAME} STREQUAL "smtp")
-    IF (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-      FOREACH(SMTP_SRC ${SRC_FILES})
-        SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/smtp.xq.src/${SMTP_SRC} PROPERTIES COMPILE_FLAGS "-Wno-write-strings")
-      ENDFOREACH(SMTP_SRC)
-    ENDIF (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-  ENDIF(${MODULE_NAME} STREQUAL "smtp")
-
-  # Each library name is module name without ending prefixed by the path of the module 
-  # (slashes replaced by underscores)
-  # E.g. 'com/zorba-xquery/www/modules/file.xq' -> com_zorba-xquery_www_modules_file
-  STRING(LENGTH "${CMAKE_SOURCE_DIR}/modules/" ZORBA_MODULE_DIR_LENGTH)
-  STRING(LENGTH "${CMAKE_CURRENT_SOURCE_DIR}" ZORBA_CURRENT_SOURCE_DIR_LENGTH)
-  MATH(EXPR ZORBA_MODULE_PREFIX_LENGTH ${ZORBA_CURRENT_SOURCE_DIR_LENGTH}-${ZORBA_MODULE_DIR_LENGTH}) 
-  STRING(SUBSTRING ${CMAKE_CURRENT_SOURCE_DIR} ${ZORBA_MODULE_DIR_LENGTH} ${ZORBA_MODULE_PREFIX_LENGTH}
-    ZORBA_MODULE_PREFIX)
-  STRING(REPLACE "/" "_" ZORBA_MODULE_PREFIX ${ZORBA_MODULE_PREFIX})
-
-  MESSAGE(STATUS "Add library " ${MODULE_NAME})
-  FOREACH(ZORBA_STORE_NAME ${ZORBA_STORE_NAMES})
-    SET(SUFFIX)
-    # simplestore executable doesn't need an extension
-    IF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
-      SET(SUFFIX "_${ZORBA_STORE_NAME}")
-    ENDIF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
-
-    SET(ZORBA_LIB_NAME "${ZORBA_MODULE_PREFIX}_${MODULE_NAME}${SUFFIX}")
-
-    ADD_LIBRARY(${ZORBA_LIB_NAME} SHARED ${SRC_FILES})
-    SET_TARGET_PROPERTIES(${ZORBA_LIB_NAME} PROPERTIES 
-                  OUTPUT_NAME "${MODULE_NAME}${SUFFIX}")
-    TARGET_LINK_LIBRARIES(${ZORBA_LIB_NAME} zorba_${ZORBA_STORE_NAME} ${LINK_LIBRARIES})
-
-    # the shared libraries are considered RUNTIME on WIN32 platforms
-    # and LIBRARY on UNIX-based platforms
-    IF (WIN32)
-      SET_TARGET_PROPERTIES(${ZORBA_LIB_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY
-                          ${CMAKE_CURRENT_BINARY_DIR})
-      # in VS, the dll's are generated in the $(ConfigurationName) directory,
-      # so we have to copy these dll's one level up in the ${CMAKE_CURRENT_BINARY_DIR}
-      # the commands below use VS macro expansions $(...)
-      IF (MSVC_IDE)
-        # if we change something in the project generating this target, make
-        # sure we don't have a zombie DLL hanging around from an older build
-        ADD_CUSTOM_COMMAND(TARGET ${ZORBA_LIB_NAME} PRE_BUILD COMMAND
-            if exist "\"$(ProjectDir)\\$(TargetFileName)\"" del "\"$(ProjectDir)\\$(TargetFileName)\"")
-        ADD_CUSTOM_COMMAND(TARGET ${ZORBA_LIB_NAME} POST_BUILD COMMAND
-            copy "\"$(TargetPath)\"" "\"$(ProjectDir)\"")
-      ENDIF (MSVC_IDE)
-    ELSE (WIN32)
-      SET_TARGET_PROPERTIES(${ZORBA_LIB_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY
-                          ${CMAKE_CURRENT_BINARY_DIR})
-    ENDIF (WIN32)
-    SET_TARGET_PROPERTIES(${ZORBA_LIB_NAME} PROPERTIES VERSION
-                          ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})  
-    SET_TARGET_PROPERTIES(${ZORBA_LIB_NAME} PROPERTIES CLEAN_DIRECT_OUTPUT 0)
-  ENDFOREACH(ZORBA_STORE_NAME ${ZORBA_STORE_NAMES})
-
-  # install to include/zorba/modules/com/zorba-xquery/www/modules (simplestore libs only)
-  # the include/zorba/modules directory needs to belong to the set of Zorba Module Paths
-  FILE(RELATIVE_PATH RELATIVE_MODULE_PATH "${CMAKE_SOURCE_DIR}/modules" "${CMAKE_CURRENT_SOURCE_DIR}")
-  IF (WIN32)
-    INSTALL(TARGETS "${ZORBA_MODULE_PREFIX}_${MODULE_NAME}"
-            RUNTIME
-            DESTINATION "include/zorba/modules/${RELATIVE_MODULE_PATH}")
-  ELSE (WIN32)
-    INSTALL(TARGETS "${ZORBA_MODULE_PREFIX}_${MODULE_NAME}"
-            LIBRARY
-            DESTINATION "include/zorba/modules/${RELATIVE_MODULE_PATH}")
-  ENDIF (WIN32)
-ENDMACRO(GENERATE_MODULE_LIBRARY)
+INCLUDE (ZorbaModule)
 
 # all external module libraries are generated in the directory
 # of the corresponding .xq file
@@ -105,6 +21,9 @@ ADD_SUBDIRECTORY(com)
 MESSAGE(STATUS "Add org")
 ADD_SUBDIRECTORY(org)
 
+# QQQ This install logic should be part of a more fully-feature macro
+# that is used for ALL modules (whether or not they have C++ code);
+# merge with GENERATE_MODULE_LIBRARY()
 IF (CMAKE_MINOR_VERSION STREQUAL "4")
   INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
           DESTINATION include/zorba

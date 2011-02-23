@@ -54,7 +54,7 @@ namespace fs = boost::filesystem;
 
 std::string rbkt_src_dir = zorba::RBKT_SRC_DIR;
 std::string rbkt_bin_dir = zorba::RBKT_BINARY_DIR;
-
+std::string module_path;
 
 /*******************************************************************************
   theQueriesDir      : The full pathname of the dir that contains the queries
@@ -478,6 +478,9 @@ DWORD WINAPI thread_main(LPVOID param)
     // static context
     setFullTextResolvers(driverContext, sctx);
 
+    // If command-line argument --module-path passed, set up module paths.
+    setModulePaths(module_path, sctx);
+
     // Set the error file to be used by the error handler for the current query
     errHandler.setErrorFile(errorFilePath.file_string());
 
@@ -708,6 +711,7 @@ _tmain(int argc, _TCHAR* argv[])
   std::string queriesDir;
   std::string resultsDir;
   std::string refsDir;
+  std::string modulePath;
   std::string reportFilename = "mt.log";
   std::string reportFilepath;
   std::string knownFailuresFilepath;
@@ -772,6 +776,11 @@ _tmain(int argc, _TCHAR* argv[])
     else if (!strcmp(argv[arg], "-q"))
     {
       quiet = true;
+    }
+    else if (!strcmp(argv[arg], "--module-path"))
+    {
+      arg++;
+      module_path = argv[arg];
     }
     else
     {
