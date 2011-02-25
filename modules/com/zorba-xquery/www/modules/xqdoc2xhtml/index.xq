@@ -265,7 +265,12 @@ declare %private function xqdoc2html:get-filename($moduleURI as xs:string) as xs
 
 declare  %private function xqdoc2html:get-example-filename($examplePath as xs:string) as xs:string 
 {
-  fn:replace($examplePath,fn:concat("\",file:path-separator()),"_")
+  if(contains($examplePath,"/")) then
+    fn:replace($examplePath,"/","_")
+  else if (contains($examplePath,"\")) then
+    fn:replace($examplePath,"\","_")
+  else
+    $examplePath
 };
 
 declare  %private function xqdoc2html:get-example-filename-link($examplePath as xs:string) as xs:string 
@@ -1096,6 +1101,7 @@ declare sequential function xqdoc2html:copy-examples(
   let $exampleSource := xqdoc2html:get-example-path($example/text(),$examplePath)
   let $exampleDestination := fn:concat($xqdocExamplesPath, file:path-separator(), $exampleText)
   return
+    try {
     if(exists($exampleSource)) then
     (
       file:copy($exampleSource, $exampleDestination, fn:false())
@@ -1126,8 +1132,13 @@ declare sequential function xqdoc2html:copy-examples(
       else
       ():)
     )
-    else
-      fn:error($err:UE008, fn:concat("The example '", $exampleSource, "' was not found."));
+      else
+        fn:error($err:UE008, fn:concat("Example <'", $exampleSource,"> does not exist."));
+    }
+    catch * ($error_code)
+    {
+      fn:error($err:UE008, fn:concat("Copy example from <", $exampleSource,"> to <", $exampleDestination, "> failed."));
+    }
   }
 };
 
