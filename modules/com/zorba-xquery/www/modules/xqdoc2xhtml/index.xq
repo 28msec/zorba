@@ -201,38 +201,38 @@ declare sequential function xqdoc2html:copy-xhtml-requisites(
   $xhtmlRequisitesPath  as xs:string,
   $xqdocBuildPath       as xs:string)
 {
-let $xhtmlPath      := fn:concat($xqdocBuildPath, file:path-separator(), "xhtml"),
-    $schemasPath    := fn:concat($xhtmlPath,      file:path-separator(), "schemas"),
-    $xqSrcPath      := fn:concat($xhtmlPath,      file:path-separator(), "xq.src"),
-    $xqPath         := fn:concat($xhtmlPath,      file:path-separator(), "modules"),
-    $imagesPath     := fn:concat($xhtmlPath,      file:path-separator(), "images"),
-    $libPath        := fn:concat($xhtmlPath,      file:path-separator(), "lib"),
-    $cssPath        := fn:concat($xhtmlPath,      file:path-separator(), "css"),
-    $templatesPath  := fn:concat($xhtmlPath,      file:path-separator(), "templates"),
-    $examplesPath   := fn:concat($xhtmlPath,      file:path-separator(), "examples")
+  let $xhtmlPath      := fn:concat($xqdocBuildPath, file:path-separator(), "xhtml"),
+      $schemasPath    := fn:concat($xhtmlPath,      file:path-separator(), "schemas"),
+      $xqSrcPath      := fn:concat($xhtmlPath,      file:path-separator(), "xq.src"),
+      $xqPath         := fn:concat($xhtmlPath,      file:path-separator(), "modules"),
+      $imagesPath     := fn:concat($xhtmlPath,      file:path-separator(), "images"),
+      $libPath        := fn:concat($xhtmlPath,      file:path-separator(), "lib"),
+      $cssPath        := fn:concat($xhtmlPath,      file:path-separator(), "css"),
+      $templatesPath  := fn:concat($xhtmlPath,      file:path-separator(), "templates"),
+      $examplesPath   := fn:concat($xhtmlPath,      file:path-separator(), "examples")
+  return
+    block {
+      (: first - create the xhtml folder is it does not exist already :)
+      file:mkdir($xhtmlPath);
 
-return
-  (: first - create the xhtml folder is it does not exist already :)
-  file:mkdir($xhtmlPath);
+      (: second - clear the folder of all the files with these extensions :)
+      xqdoc2html:clear-folder($xhtmlPath,"(\.xsd|\.gif|\.js|\.css|\.html|\.cpp|\.h|\.xq)$");
+      
+      (: third - re-copy these files :)
+      xqdoc2html:copy-files($modulesPath, $schemasPath, "\.xsd$");
+      xqdoc2html:copy-files($xhtmlRequisitesPath, $imagesPath, "\.gif$");
+      xqdoc2html:copy-files($xhtmlRequisitesPath, $libPath, "\.js$");
+      xqdoc2html:copy-files($xhtmlRequisitesPath, $cssPath, "\.css$");
+      xqdoc2html:copy-files($xhtmlRequisitesPath, $templatesPath, "\.html$");
 
-  (: second - clear the folder of all the files with these extensions :)
-  let $clear := xqdoc2html:clear-folder($xhtmlPath,"(\.xsd|\.gif|\.js|\.css|\.html|\.cpp|\.h|\.xq)$")
-  return (
-    (: third - re-copy these files :)
-    xqdoc2html:copy-files($modulesPath, $schemasPath, "\.xsd$"),
-    xqdoc2html:copy-files($xhtmlRequisitesPath, $imagesPath, "\.gif$"),
-    xqdoc2html:copy-files($xhtmlRequisitesPath, $libPath, "\.js$"),
-    xqdoc2html:copy-files($xhtmlRequisitesPath, $cssPath, "\.css$"),
-    xqdoc2html:copy-files($xhtmlRequisitesPath, $templatesPath, "\.html$"),
+      xqdoc2html:copy-xqsrc-folders($modulesPath, $xqSrcPath);
 
-    xqdoc2html:copy-xqsrc-folders($modulesPath, $xqSrcPath),
-
-    (: only create the 'modules' folder. The .xq module files will be copied later on in the process :)
-    file:mkdir($xqPath),
-  
-    (: only create the examples folder. The examples will be copied later on in the process :)
-    file:mkdir($examplesPath)
-  );
+      (: only create the 'modules' folder. The .xq module files will be copied later on in the process :)
+      file:mkdir($xqPath);
+      
+      (: only create the examples folder. The examples will be copied later on in the process :)
+      file:mkdir($examplesPath);
+    }
 };
 
 (:~ Returns the URI of the module given the passed $folderPath using the Zorba URI resolving mechanism.
