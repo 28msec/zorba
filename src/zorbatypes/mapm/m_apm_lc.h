@@ -301,6 +301,7 @@ extern   void   memory_free(void *);
 #endif
 
 #define	M_APM_IDENT 0x6BCC9AE5
+
 #define	M_APM_RETURN 0
 #define	M_APM_FATAL 1
 

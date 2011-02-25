@@ -349,12 +349,16 @@ m_apm_copy(MM_lc_PI, MM_PI);
 m_apm_copy(MM_lc_HALF_PI, MM_HALF_PI);
 m_apm_copy(MM_lc_2_PI, MM_2_PI);
 }
+
+
 /****************************************************************************/
 void	m_apm_cpp_precision(int digits)
 {
-if (MM_lc_PI_digits == 0)
+  if (MM_lc_PI_digits == 0)
   {
-   m_apm_free(m_apm_init());
+    // This is done just to init some global var, if not done already
+    // (m_apm_init() invokes M_init_trig_globals())
+    m_apm_free(m_apm_init());
   }
 
 if (digits >= 2)

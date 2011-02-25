@@ -89,22 +89,22 @@ SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_Ha
 
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_HashEntry<store::Item*, PrologOption>, 8)
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, StaticallyKnownCollection_t, ItemPointerHashMapCmp>, 1)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, StaticallyKnownCollection_t, ser_ItemPointerHashMapCmp>, 1)
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, IndexDecl_t, ItemPointerHashMapCmp>, 2)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, IndexDecl_t, ser_ItemPointerHashMapCmp>, 2)
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, ValueIC_t, ItemPointerHashMapCmp>, 3)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, ValueIC_t, ser_ItemPointerHashMapCmp>, 3)
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, FunctionInfo, ItemPointerHashMapCmp>, 4)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, FunctionInfo, ser_ItemPointerHashMapCmp>, 4)
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, std::vector<FunctionInfo>*, ItemPointerHashMapCmp>, 5)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, std::vector<FunctionInfo>*, ser_ItemPointerHashMapCmp>, 5)
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, var_expr_t, ItemPointerHashMapCmp>, 7)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, var_expr_t, ser_ItemPointerHashMapCmp>, 7)
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, PrologOption, ItemPointerHashMapCmp>, 8)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, PrologOption, ser_ItemPointerHashMapCmp>, 8)
 
-SERIALIZABLE_CLASS_VERSIONS(ItemPointerHashMapCmp)
-END_SERIALIZABLE_CLASS_VERSIONS(ItemPointerHashMapCmp)
+SERIALIZABLE_CLASS_VERSIONS(ser_ItemPointerHashMapCmp)
+END_SERIALIZABLE_CLASS_VERSIONS(ser_ItemPointerHashMapCmp)
 
 SERIALIZABLE_TEMPLATE_VERSIONS(serializable_ItemPointerHashMap)
 END_SERIALIZABLE_TEMPLATE_VERSIONS(serializable_ItemPointerHashMap)

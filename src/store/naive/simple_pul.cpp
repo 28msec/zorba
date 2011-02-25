@@ -836,7 +836,9 @@ void PULImpl::addCreateIndex(
 
 void PULImpl::addDeleteIndex(const store::Item_t& qname)
 {
-  UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdDeleteIndex(this, qname);
+  UpdatePrimitive* upd = 
+  GET_STORE().getPULFactory().createUpdDeleteIndex(this, qname);
+
   theDeleteIndexList.push_back(upd);
 }
 
@@ -845,7 +847,9 @@ void PULImpl::addRefreshIndex(
     const store::Item_t& qname,
     store::Iterator* sourceIter)
 {
-  UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdRefreshIndex(this, qname, sourceIter);
+  UpdatePrimitive* upd = 
+  GET_STORE().getPULFactory().createUpdRefreshIndex(this, qname, sourceIter);
+
   theRefreshIndexList.push_back(upd);
 }
 
@@ -857,7 +861,9 @@ void PULImpl::addActivateIC(
       const store::Item_t& qname,
       const store::Item_t& aCollectionName)
 {
-  UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdActivateIC(this, qname, aCollectionName);
+  UpdatePrimitive* upd = 
+  GET_STORE().getPULFactory().createUpdActivateIC(this, qname, aCollectionName);
+
   theICActivationList.push_back(upd);
 }
 

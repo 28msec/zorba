@@ -84,49 +84,66 @@
 
 #include "m_apm_lc.h"
 
-static	char *M_buf  = NULL;
-static  int   M_lbuf = 0;
-static  char *M_set_string_error_msg = "\'m_apm_set_string\', Out of memory";
+static  char* M_set_string_error_msg = "\'m_apm_set_string\', Out of memory";
 
-/****************************************************************************/
+
+/******************************************************************************
+  M_lbuf  : size of the dynamically allocated M_buf array
+  M_buf   : A dynamically allocated array used when casting a string to an mamp
+            number. It stores a copy of the given string. Such a copy is needed
+            because the string may be written upon during the casting (see the
+            m_apm_set_string function below).
+*******************************************************************************/
+static	char* M_buf  = NULL;
+static  int M_lbuf = 0;
+
+
+/******************************************************************************
+
+*******************************************************************************/
 void	M_free_all_set()
 {
-if (M_lbuf != 0)
+  if (M_lbuf != 0)
   {
-   MAPM_FREE(M_buf);
-   M_buf  = NULL;
-   M_lbuf = 0;
+    MAPM_FREE(M_buf);
+    M_buf  = NULL;
+    M_lbuf = 0;
   }
 }
-/****************************************************************************/
-void	m_apm_set_long(M_APM atmp, long mm)
+
+
+/******************************************************************************
+
+*******************************************************************************/
+void m_apm_set_long(M_APM atmp, long mm)
 {
-int     len, ii, nbytes;
-char	*p, *buf, ch, buf2[64];
+  int len, ii, nbytes;
+  char* p;
+  char* buf;
+  char ch, buf2[64];
 
-/* if zero, return right away */
-
-if (mm == 0)
+  // if zero, return right away 
+  if (mm == 0)
   {
-   M_set_to_zero(atmp);
-   return;
+    M_set_to_zero(atmp);
+    return;
   }
 
-M_long_2_ascii(buf2, mm);     /* convert long -> ascii in base 10 */
-buf = buf2;
+  M_long_2_ascii(buf2, mm);     /* convert long -> ascii in base 10 */
+  buf = buf2;
 
-if (mm < 0)
+  if (mm < 0)
   {
-   atmp->m_apm_sign = -1;
-   buf++;                     /* get past '-' sign */
+    atmp->m_apm_sign = -1;
+    buf++;                     /* get past '-' sign */
   }
-else
+  else
   {
-   atmp->m_apm_sign = 1;
+    atmp->m_apm_sign = 1;
   }
-
-len = (int)strlen(buf);
-atmp->m_apm_exponent = len;
+  
+  len = (int)strlen(buf);
+  atmp->m_apm_exponent = len;
 
 /* least significant nibble of ODD data-length must be 0 */
 
@@ -154,233 +171,274 @@ for (ii=0; ii < nbytes; ii++)
    atmp->m_apm_data[ii] = 10 * ch + *p++ - '0';
   }
 }
-/****************************************************************************/
-void	m_apm_set_string(M_APM ctmp, char *s_in)
+
+
+/******************************************************************************
+  This function parses a null-terminated string of the following form:
+
+  String := (space | tab)* Sign? Digit* (".")? Digit* Exponent
+
+  Exponent := (("E" | "e") Sign? digit* anyChar*)?
+
+  Sign := "+" | "-"
+
+  and creates an mapm number out of it. If the given string does not conform
+  to the above foramt, an error is raised.
+
+  NOTE:  the mapm number is set to 0, and no error is raised, if the part before
+  the (optional) exponent contains no digits.
+*******************************************************************************/
+void m_apm_set_string(M_APM ctmp, char* s_in)
 {
-char	ch, *cp, *s, *p;
-void	*vp;
-int	i, j, zflag, exponent, sign;
+  char ch;
+  char* cp;
+  char* s;
+  char* p;
+  void* vp;
+  int	i, j, zflag, exponent, sign;
 
-if (M_lbuf == 0)
+  if (M_lbuf == 0)
   {
-   M_lbuf = 256;
-   if ((M_buf = (char *)MAPM_MALLOC(256)) == NULL)
-     {
-      /* fatal, this does not return */
-
+    M_lbuf = 256;
+    if ((M_buf = (char *)MAPM_MALLOC(256)) == NULL)
+    {
       M_apm_log_error_msg(M_APM_FATAL, M_set_string_error_msg);
-     }
+    }
   }
 
-if ((i = (int)strlen(s_in)) > (M_lbuf - 4))
+  // Note: We may need at least 2 bytes more than strlen(s_in): to insert
+  // a "." if none exists, and to insert a "0" if the number of digits is
+  // not even (see below).
+  if ((i = (int)strlen(s_in)) > (M_lbuf - 4))
   {
-   M_lbuf = i + 32;
-   if ((vp = MAPM_REALLOC(M_buf, M_lbuf)) == NULL)
-     {
-      /* fatal, this does not return */
-
+    M_lbuf = i + 32;
+    if ((vp = MAPM_REALLOC(M_buf, M_lbuf)) == NULL)
+    {
       M_apm_log_error_msg(M_APM_FATAL, M_set_string_error_msg);
-     }
+    }
 
-   M_buf = (char *)vp;
+    M_buf = (char *)vp;
   }
 
-s = M_buf;
-strcpy(s,s_in);
+  s = M_buf;
+  strcpy(s, s_in);
 
-/* default == zero ... */
+  // default == zero ...
+  M_set_to_zero(ctmp);
 
-M_set_to_zero(ctmp);
+  p = s;
 
-p = s;
-
-while (TRUE)
+  // skip leading spaces and tabs
+  while (TRUE)
   {
-   if (*p == ' ' || *p == '\t')
-     p++;
-   else
-     break;
-  }
-
-if (*p == '\0')
-  return;
-
-sign = 1;             /* assume number is positive */
-
-if (*p == '+')        /* scan by optional '+' sign */
-  p++;
-else
-  {
-   if (*p == '-')     /* check if number negative */
-     {
-      sign = -1;
+    if (*p == ' ' || *p == '\t')
       p++;
-     }
+    else
+      break;
   }
 
-M_lowercase(p);       /* convert string to lowercase */
-exponent = 0;         /* default */
+  if (*p == '\0')
+    return;
+
+  // Check if the number is positive or negative.
+  sign = 1;
+
+  if (*p == '+')
+  {
+    p++;
+  }
+  else if (*p == '-')
+  {
+    sign = -1;
+    p++;
+  }
+
+  // Convert all ascii capital letters to their lowercase equivalent.
+  M_lowercase(p);
+
+  exponent = 0;
    
-if ((cp = strstr(p,"e")) != NULL)
+  if ((cp = strstr(p,"e")) != NULL)
   {
-   exponent = atoi(cp + sizeof(char));
-   *cp = '\0';          /* erase the exponent now */
+    exponent = atoi(cp + sizeof(char));
+
+    // erase the exponent and everything after it.
+    *cp = '\0';
   }
 
-j = M_strposition(p,".");        /* is there a decimal point ?? */
-if (j == -1)
+  j = M_strposition(p,".");        /* is there a decimal point ?? */
+  if (j == -1)
   {
-   strcat(p,".");                /* if not, append one */
-   j = M_strposition(p,".");     /* now find it ... */
+    strcat(p,".");                /* if not, append one */
+    j = M_strposition(p,".");     /* now find it ... */
   }
-
-if (j > 0)                       /* normalize number and adjust exponent */
-  {
-   exponent += j;
-   memmove((p+1),p,(j * sizeof(char)));
-  }
-
-p++;        /* scan past implied decimal point now in column 1 (index 0) */
-
-i = (int)strlen(p);
-ctmp->m_apm_datalength = i;
-
-if ((i & 1) != 0)   /* if odd number of digits, append a '0' to make it even */
-  strcat(p,"0");    
-
-j = (int)strlen(p) >> 1;  /* number of bytes in encoded M_APM number */
-
-/* do we need more memory to hold this number */
-
-if (j > ctmp->m_apm_malloclength)
-  {
-   if ((vp = MAPM_REALLOC(ctmp->m_apm_data, (j + 32))) == NULL)
-     {
-      /* fatal, this does not return */
-
-      M_apm_log_error_msg(M_APM_FATAL, M_set_string_error_msg);
-     }
   
-   ctmp->m_apm_malloclength = j + 28;
-   ctmp->m_apm_data = (UCHAR *)vp;
+  // Normalize number and adjust exponent. Eg, 3.25 --> 0.325E1. Then overwrite
+  // the "." by moving all char that are before the "." one pos to the right.
+  if (j > 0)
+  {
+    exponent += j;
+    memmove((p+1), p, (j * sizeof(char)));
   }
 
-zflag = TRUE;
+  p++; // scan past implied decimal point now in column 1 (index 0)
 
-for (i=0; i < j; i++)
+  i = (int)strlen(p);
+  ctmp->m_apm_datalength = i;
+
+  // if odd number of digits, append a '0' to make it even
+  if ((i & 1) != 0) 
+    strcat(p,"0");    
+
+  // number of bytes in encoded M_APM number 
+  j = (int)strlen(p) >> 1;
+
+  // do we need more memory to hold this number?
+  if (j > ctmp->m_apm_malloclength)
   {
-   ch = *p++ - '0';
-   if ((ch = (10 * ch + *p++ - '0')) != 0)
-     zflag = FALSE;
+    if ((vp = MAPM_REALLOC(ctmp->m_apm_data, (j + 32))) == NULL)
+    {
+      M_apm_log_error_msg(M_APM_FATAL, M_set_string_error_msg);
+    }
+  
+    ctmp->m_apm_malloclength = j + 28;
+    ctmp->m_apm_data = (UCHAR *)vp;
+  }
 
-   if (((int)ch & 0xFF) >= 100)
-     {
+  zflag = TRUE;
+
+  // Encode each pair of digits into one byte inside m_amp_data. For example,
+  // the number 345674 is encoded by putting the numbers 34, 56, and 74 inside
+  // m_amp_data[0], m_amp_data[1], and m_amp_data[2], respectively.
+  for (i = 0; i < j; i++)
+  {
+    ch = *p++ - '0';  // what if *p < '0' ?????
+
+    if ((ch = (10 * ch + *p++ - '0')) != 0)
+      zflag = FALSE;
+    
+    if (((int)ch & 0xFF) >= 100)
+    {
       M_apm_log_error_msg(M_APM_RETURN,
-      "\'m_apm_set_string\', Non-digit char found in parse");
+                          "\'m_apm_set_string\', Non-digit char found in parse");
 
       M_apm_log_error_msg(M_APM_RETURN, "Text =");
       M_apm_log_error_msg(M_APM_RETURN, s_in);
-
+      
       M_set_to_zero(ctmp);
       return;
-     }
+    }
 
-   ctmp->m_apm_data[i]   = ch;
-   ctmp->m_apm_data[i+1] = 0;
+    ctmp->m_apm_data[i]   = ch;
+    ctmp->m_apm_data[i+1] = 0;
   }
+  
+  ctmp->m_apm_exponent = exponent;
+  ctmp->m_apm_sign = sign;
 
-ctmp->m_apm_exponent = exponent;
-ctmp->m_apm_sign     = sign;
-
-if (zflag)
+  if (zflag)
   {
-   ctmp->m_apm_exponent   = 0;
-   ctmp->m_apm_sign       = 0;
-   ctmp->m_apm_datalength = 1;
+    ctmp->m_apm_exponent   = 0;
+    ctmp->m_apm_sign       = 0;
+    ctmp->m_apm_datalength = 1;
   }
-else
+  else
   {
-   M_apm_normalize(ctmp);
+    M_apm_normalize(ctmp);
   }
-
-/*
- *  if our local temp string is getting too big,
- *  release it's memory and start over next time.
- *  (this 1000 byte threshold is quite arbitrary,
- *  it may be more efficient in your app to make
- *  this number bigger).
- */
-
-if (M_lbuf > 1000)
+  
+  // if our local temp string is getting too big, release it's memory and start
+  // over next time. (this 1000 byte threshold is quite arbitrary, it may be
+  // more efficient in your app to make this number bigger).
+  if (M_lbuf > 1000)
   {
-   MAPM_FREE(M_buf);
-   M_buf  = NULL;
-   M_lbuf = 0;
+    MAPM_FREE(M_buf);
+    M_buf  = NULL;
+    M_lbuf = 0;
   }
 }
-/****************************************************************************/
-void	m_apm_to_string(char *s, int places, M_APM mtmp)
+
+
+/******************************************************************************
+  Rounds the given mapm number to the nearest mapm number with "places" + 1
+  significant digits, and then prints that mapm number as a string of the
+  following format:
+
+  digit "." digit* "E" ("+" | "-") digit*
+
+  Note: if places is < 0, no rounding is done.
+*******************************************************************************/
+void m_apm_to_string(char* s, int places, M_APM mtmp)
 {
-M_APM   ctmp;
-char	*cp;
-int	i, index, first, max_i, num_digits, dec_places;
-UCHAR	numdiv, numrem;
+  M_APM ctmp;
+  char * cp;
+  int	i, index, first, max_i, num_digits, dec_places;
+  UCHAR	numdiv, numrem;
 
-ctmp = M_get_stack_var();
-dec_places = places;
+  // Get a pointer to an M_APM_struct from a pool of pre-allocated M_APM_structs
+  // (see mapmstck.c)
+  ctmp = M_get_stack_var();
 
-if (dec_places < 0)
-  m_apm_copy(ctmp, mtmp);
-else
-  m_apm_round(ctmp, dec_places, mtmp);
+  dec_places = places;
 
-if (ctmp->m_apm_sign == 0)
+  if (dec_places < 0)
+    m_apm_copy(ctmp, mtmp);
+  else
+    m_apm_round(ctmp, dec_places, mtmp);
+
+  if (ctmp->m_apm_sign == 0)
   {
-   if (dec_places < 0)
+    if (dec_places < 0)
+    {
       strcpy(s,"0.0E+0");
-   else
-     {
+    }
+    else
+    {
       strcpy(s,"0");
 
       if (dec_places > 0)
         strcat(s,".");
 
-      for (i=0; i < dec_places; i++)
+      for (i = 0; i < dec_places; i++)
         strcat(s,"0");
 
       strcat(s,"E+0");
-     }
+    }
 
-   M_restore_stack(1);
-   return;
+    M_restore_stack(1);
+    return;
   }
 
-max_i = (ctmp->m_apm_datalength + 1) >> 1;
+  max_i = (ctmp->m_apm_datalength + 1) >> 1;
 
-if (dec_places < 0)
-  num_digits = ctmp->m_apm_datalength;
-else
-  num_digits = dec_places + 1;
+  if (dec_places < 0)
+    num_digits = ctmp->m_apm_datalength;
+  else
+    num_digits = dec_places + 1;
 
-cp = s;
+  cp = s;
 
-if (ctmp->m_apm_sign == -1)
-  *cp++ = '-';
+  if (ctmp->m_apm_sign == -1)
+    *cp++ = '-';
 
-first = TRUE;
+  first = TRUE;
 
-i = 0;
-index = 0;
+  i = 0;      // counts the number of digits that have been printed
+  index = 0;  // index into m_apm_data array
 
-while (TRUE)
+  while (TRUE)
   {
-   if (index >= max_i)
-     {
+    // We may want to print more digits than the number of significant digits
+    // in the number. In such a case, the extra digits are 0s.
+    if (index >= max_i)
+    {
       numdiv = 0;
       numrem = 0;
-     }
-   else
-      M_get_div_rem_10((int)ctmp->m_apm_data[index],&numdiv,&numrem);
+    }
+    else
+    {
+      M_get_div_rem_10((int)ctmp->m_apm_data[index], &numdiv, &numrem);
+    }
 
    index++;
 
@@ -390,10 +448,10 @@ while (TRUE)
      break;
 
    if (first)
-     {
-      first = FALSE;
-      *cp++ = '.';
-     }
+   {
+     first = FALSE;
+     *cp++ = '.';
+   }
 
    *cp++ = numrem + '0';
 
@@ -401,12 +459,12 @@ while (TRUE)
      break;
   }
 
-i = ctmp->m_apm_exponent - 1;
-if (i >= 0)
-  sprintf(cp,"E+%d",i);
-else
-  sprintf(cp,"E%d",i);
-
-M_restore_stack(1);
+  i = ctmp->m_apm_exponent - 1;
+  if (i >= 0)
+    sprintf(cp,"E+%d",i);
+  else
+    sprintf(cp,"E%d",i);
+  
+  M_restore_stack(1);
 }
-/****************************************************************************/
+

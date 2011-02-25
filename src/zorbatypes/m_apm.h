@@ -184,11 +184,75 @@ extern
 #ifdef APM_CONVERT_FROM_C
 "C" 
 #endif
+
+// Initialized in mapmcnst.c (to 30)
 int MM_cpp_min_precision;
 
 
+/******************************************************************************
+
+  The M_APM structure stores decimal numbers of unbounded sise and precision.
+  Numbers are stored in a normalized and encoded format. Normalization involves
+  moving the "." all the way to the left, and then, removing any leading and/or
+  trailing zeros. Examples:
+
+  4.234  --> .4234E1
+  3.25E2 --> .325E3
+  003500 --> .35E4
+  0.5    --> .5E0
+
+  After normalization, the digits before the exponent part are called the
+  "siginificant" digits.
+
+  Encoding involves storing each pair of significant digits as an 8-bit integer 
+  number. For example:
+
+  4234 is encoded in 2 bytes, storing the numbers 42 and 34 respectively.
+  (42 is stored in byte 0 of the m_apm_data array, and 34 is stored in byte 1).
+  325 is is encoded in 2 bytes, storing the numbers 32 and 50 respectively.
+  (If the number of significant digits is odd, the last (right-most) digit
+  is encoded as the number 10*N, where N is the actual digit.)
+
+  The M_APM structure is implemented as a reference-counted, copy-on-write data
+  structure. This makes copies very fast, but that's why it's so ugly. A MAPM
+  obj is basically just a wrapper around a (possibly shared) M_APM_struct.
+
+
+  m_apm_id           : A sanity mark to check whether the struct has been
+                       corrupted.
+  m_apm_refcount     : Ref counter for memory management. Initialized to 1.
+  m_apm_data         : uchar array that stores the encoded significant digits
+                       of the number.
+  m_apm_malloclength : If N is the number of allocated bytes for the m_apm_data
+                       array, then m_apm_malloclength is set to N - 4. Why the
+                       -4 ????
+  m_apm_datalength   : Number of significant digits in the number.
+  m_apm_exponent     : The exponent part of the number, after normalization.
+  m_apm_sign         : +1 means the number is positive, -1 means the number is
+                       negative, and 0 means the number is 0.
+
+  typedef struct  
+  {
+    UCHAR * m_apm_data;
+    long    m_apm_id;
+    int     m_apm_refcount;
+    int     m_apm_malloclength;
+    int     m_apm_datalength;
+    int     m_apm_exponent;
+    int     m_apm_sign;
+  } M_APM_struct;
+
+  typedef M_APM_struct* M_APM;
+
+
+  m_apm_lc.h mapmutl1.c mapmutl2.c mapmcnst.c mapmutil.c mapm_set.c
+*******************************************************************************/
 class MAPM 
 {
+protected:
+
+	M_APM myVal;  /* myVal is a pointer to a ref-counted M_APM_struct */
+
 public:
   static MAPM& getMaxUInt64()
   {
@@ -236,9 +300,10 @@ protected:
 
 	static M_APM makeNew(void) 
 	{
+		// Allocate M_APM_struct plus 84 bytes of "data" within this struct.
+    // Initialize refcount to 1.
 		M_APM val = m_apm_init();
-		/* refcount initialized to 1 by 'm_apm_init' */
-		return val;
+		return val;  
 	}
 
 	static void ref(M_APM val) 
@@ -254,24 +319,20 @@ protected:
 	}
 
 protected:
+	void create(void) 
+  {
+    myVal = makeNew();
+  }
 
-  /*
-    The M_APM structure here is implemented as a reference-counted, copy-on-write
-    data structure. This makes copies very fast, but that's why it's so ugly. A
-    MAPM obj is basically just a wrapper around a (possibly shared) M_APM_struct.
-  */
-
-	M_APM myVal;  /* myVal is a pointer to a ref-counted M_APM_struct */
-
-protected:
-	void create(void) { myVal = makeNew(); }
-
-	void destroy(void) { unref(myVal); myVal = 0;}
+	void destroy(void)
+  {
+    unref(myVal); myVal = 0;
+  }
 
 	void copyFrom(M_APM Nval) 
 	{
-		 M_APM oldVal=myVal;
-		 myVal=Nval;
+		 M_APM oldVal = myVal;
+		 myVal = Nval;
 		 ref(myVal);
 		 unref(oldVal);
 	}
@@ -287,8 +348,10 @@ protected:
 
 		/* Otherwise, our copy of myVal is shared-- we need to make a new private copy. */
 		M_APM oldVal = myVal;
+
 		myVal = makeNew();
 		m_apm_copy(myVal, oldVal);
+
 		unref(oldVal);
 		return myVal;
 	}
@@ -305,52 +368,96 @@ protected:
 	}
 
 
-	/*
-    This is the default number of digits to use for 
-    1-ary functions like sin, cos, tan, etc.
-    It's the larger of my digits and cpp_min_precision.
-  */
+	/**
+   * This is the default number of digits to use for 1-ary functions like sin,
+   * cos, tan, etc. It's the larger of my digits and cpp_min_precision.
+   */
 	int myDigits(void) const 
 	{
 		int maxd = m_apm_significant_digits(cval());
-		if (maxd < MM_cpp_min_precision) maxd = MM_cpp_min_precision;
+		if (maxd < MM_cpp_min_precision)
+      maxd = MM_cpp_min_precision;
 		return maxd;
 	}
 
 
-	/*
-    This is the default number of digits to use for 
-    2-ary functions like divide, atan2, etc.
-    It's the larger of my digits, his digits, and cpp_min_precision.
+	/**
+   * This is the default number of digits to use for 2-ary functions like divide,
+   * atan2, etc. It's the larger of my digits, his digits, and cpp_min_precision.
   */
 	int digits(const MAPM &otherVal) const 
 	{
-		int maxd=myDigits();
-		int his=m_apm_significant_digits(otherVal.cval());
-		if (maxd<his) maxd=his;
+		int maxd = myDigits();
+		int his = m_apm_significant_digits(otherVal.cval());
+		if (maxd < his)
+      maxd = his;
 		return maxd;
 	}
 
 public:
-	MAPM(void) { create(); }
+  /**
+   * Create an mapm number and set it to 0. This takes 2 memory allocations!
+   */
+	MAPM(void) 
+  {
+    create();
+  }
 
-	MAPM(const MAPM& m) { myVal = (M_APM)m.cval(); ref(myVal); }
+  /** 
+   * Make a "shallow" copy of an mapm number. Only the ref count of the
+   * undelying mapm object is inceremented.
+   */
+	MAPM(const MAPM& m) 
+  {
+    myVal = (M_APM)m.cval(); 
+    ref(myVal); 
+  }
 
-	MAPM(M_APM m) { myVal = (M_APM)m; ref(myVal);}
+  /** 
+   * Make a "shallow" copy of an mapm number. Only the ref count of the
+   * undelying mapm object is inceremented.
+   */
+	MAPM(M_APM m) 
+  {
+    myVal = (M_APM)m; 
+    ref(myVal);
+  }
 
-	MAPM(const char* s) { create(); m_apm_set_string(val(),(char *)s); }
+  /**
+   * Create an mapm number from a string. This takes at least 2 memory
+   * allocations!
+   */
+	MAPM(const char* s) 
+  { 
+    create();
+    m_apm_set_string(val(), (char*)s); 
+  }
 
-	MAPM(double d)  { create(); m_apm_set_double(val(),d); }
+	MAPM(double d)
+  {
+    create();
+    m_apm_set_double(val(), d);
+  }
 
-	MAPM(int l) { create(); m_apm_set_long(val(),l); }
+	MAPM(int l) 
+  { 
+    create();
+    m_apm_set_long(val(), l); 
+  }
 
-	MAPM(long l) { create(); m_apm_set_long(val(),l); }
+	MAPM(long l) 
+  { 
+    create(); 
+    m_apm_set_long(val(), l); 
+  }
 
 	~MAPM() { destroy(); }
 	
 	/* Extracting string descriptions: */
 	void toString(char* dest, int decimalPlaces) const
-  {m_apm_to_string(dest, decimalPlaces, cval());}
+  {
+    m_apm_to_string(dest, decimalPlaces, cval());
+  }
 
 	void toFixPtString(char* dest, int decimalPlaces) const
   {m_apm_to_fixpt_string(dest, decimalPlaces, cval());}

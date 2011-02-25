@@ -26,14 +26,12 @@
 #endif
 
 #include "zorbatypes/zorbatypes_decl.h"
+
 #include "zorbaserialization/class_serializer.h"
 
 
 namespace zorba {
 
-#ifdef ZORBA_NO_BIGNUMBERS
-typedef double    MAPM;
-#endif
 
 // exported for testing only
 class ZORBA_DLL_PUBLIC  Decimal  : public ::zorba::serialization::SerializeBaseClass
@@ -66,18 +64,14 @@ public:
 
   static Decimal parseUInt(uint32_t val);
 
-#ifndef ZORBA_NO_BIGNUMBERS
   static MAPM round(const MAPM& aValue, const MAPM& aPrecision);
+
   static MAPM roundHalfToEven(const MAPM& aValue, const MAPM& aPrecision);
-#else
-  static MAPM round(MAPM aValue, int aPrecision);
-  static MAPM roundHalfToEven(MAPM aValue, int aPrecision);
-#endif
 
 private:
   static zstring decimalToString(
-        MAPM,
-        int precision = ZORBA_FLOAT_POINT_PRECISION);
+      MAPM,
+      int precision = ZORBA_FLOAT_POINT_PRECISION);
 
   static void reduceFloatingPointString(char* str);
 
@@ -136,13 +130,9 @@ public:
 
   Decimal operator-() const; 
 
-#ifndef ZORBA_NO_BIGNUMBERS
   Decimal floor() const { return Decimal(theDecimal.floor()); }
+
   Decimal ceil() const { return Decimal(theDecimal.ceil()); }
-#else
-  Decimal floor() const { return Decimal(::floor(theDecimal)); }
-  Decimal ceil() const { return Decimal(::ceil(theDecimal)); }
-#endif
 
   Decimal round() const;
 
@@ -154,13 +144,7 @@ public:
 
   long compare(const Decimal& other) const
   {
-#ifndef ZORBA_NO_BIGNUMBERS
     return theDecimal.compare(other.theDecimal);
-#else
-    return (theDecimal < other.theDecimal ?
-            -1 :
-            (theDecimal == other.theDecimal ? 0 : 1)); 
-#endif
   }
 
   bool operator==(const Decimal& aDecimal) const 
@@ -213,64 +197,40 @@ public:
 
   bool isInteger() const
   {
-#ifndef ZORBA_NO_BIGNUMBERS
     return theDecimal.is_integer() != 0;
-#else
-    return false;
-#endif
   }
 
   bool isULong() const
   {
-#ifndef ZORBA_NO_BIGNUMBERS
     return (theDecimal.is_integer() &&
             theDecimal.sign() >= 0 &&
             theDecimal < MAPM::getMaxUInt64());
-#else
-    return false;
-#endif
   }
 
   bool isLong() const
   {
-#ifndef ZORBA_NO_BIGNUMBERS
     return (theDecimal.is_integer() && 
             theDecimal < MAPM::getMaxInt64() &&
             theDecimal > MAPM::getMinInt64());
-#else
-    return false;
-#endif
   }
 
   bool isUInt() const
   {
-#ifndef ZORBA_NO_BIGNUMBERS
     return (theDecimal.is_integer() &&
             theDecimal.sign() >= 0 &&
             theDecimal < MAPM::getMaxUInt32());
-#else
-    return false;
-#endif
   }
 
   bool isInt() const
   {
-#ifndef ZORBA_NO_BIGNUMBERS
     return (theDecimal.is_integer() && 
             theDecimal < MAPM::getMaxInt32() &&
             theDecimal > MAPM::getMinInt32());
-#else
-    return false;
-#endif
   }
 
   bool isNegative() const
   {
-#ifndef ZORBA_NO_BIGNUMBERS
     return theDecimal.sign() < 0;
-#else
-    return theDecimal < 0;
-#endif
   }
 
   int getValueAsInt() const;

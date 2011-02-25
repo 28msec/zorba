@@ -36,15 +36,15 @@ namespace zorba
   Class to privide the equality and hash functions for the ItemPointerHashMap
   class defined below.
 *******************************************************************************/
-class ItemPointerHashMapCmp : public ::zorba::serialization::SerializeBaseClass
+class ser_ItemPointerHashMapCmp : public ::zorba::serialization::SerializeBaseClass
 {
 protected:
   long          theTimeZone;
   XQPCollator * theCollator;
 
 public:
-  SERIALIZABLE_CLASS(ItemPointerHashMapCmp);
-  SERIALIZABLE_CLASS_CONSTRUCTOR(ItemPointerHashMapCmp);
+  SERIALIZABLE_CLASS(ser_ItemPointerHashMapCmp);
+  SERIALIZABLE_CLASS_CONSTRUCTOR(ser_ItemPointerHashMapCmp);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
@@ -53,14 +53,14 @@ public:
   }
 
 public:
-  ItemPointerHashMapCmp()
+  ser_ItemPointerHashMapCmp()
     :
     theTimeZone(0),
     theCollator(NULL)
   {
   }
 
-  ItemPointerHashMapCmp(long tmz, XQPCollator* collator) 
+  ser_ItemPointerHashMapCmp(long tmz, XQPCollator* collator) 
     :
     theTimeZone(tmz),
     theCollator(collator)
@@ -90,7 +90,7 @@ public:
 template <class V>
 class serializable_ItemPointerHashMap : public serializable_HashMap<store::Item*,
                                                                     V,
-                                                                    ItemPointerHashMapCmp>
+                                                                    ser_ItemPointerHashMapCmp>
 {
 public:
 
@@ -98,7 +98,7 @@ public:
 
   serializable_ItemPointerHashMap(::zorba::serialization::Archiver& ar)
     :
-    serializable_HashMap<store::Item*, V, ItemPointerHashMapCmp>(ar)
+    serializable_HashMap<store::Item*, V, ser_ItemPointerHashMapCmp>(ar)
   {
   }
 
@@ -109,8 +109,8 @@ public:
         ulong size,
         bool sync) 
     :
-    serializable_HashMap<store::Item*, V, ItemPointerHashMapCmp>(
-           ItemPointerHashMapCmp(timezone, collation),
+    serializable_HashMap<store::Item*, V, ser_ItemPointerHashMapCmp>(
+           ser_ItemPointerHashMapCmp(timezone, collation),
            size,
            sync)
   {
@@ -158,7 +158,6 @@ public:
   
   const XQPCollator* get_collator() { return theCollator; }
 };
-
 
 
 template <class V>

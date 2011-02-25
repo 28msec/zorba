@@ -168,13 +168,7 @@ bool Decimal::parseString(const char* aCharStar, Decimal& aDecimal)
   }
   else
   {
-#ifndef ZORBA_NO_BIGNUMBERS
     aDecimal.theDecimal = aCharStar;
-#else
-    aDecimal.theDecimal = atof(aCharStar);
-    if(aDecimal.theDecimal == -0)
-      aDecimal.theDecimal = 0;
-#endif
 
 #ifdef ZORBA_NUMERIC_OPTIMIZATION
     hashed_decimal = new Decimal(aDecimal);

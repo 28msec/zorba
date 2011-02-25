@@ -48,179 +48,233 @@
 
 #include "m_apm_lc.h"
 
-/****************************************************************************/
+
+/******************************************************************************
+
+*******************************************************************************/
 int	m_apm_sign(M_APM atmp)
 {
-return(atmp->m_apm_sign);
+  return(atmp->m_apm_sign);
 }
-/****************************************************************************/
+
+
+/******************************************************************************
+  This function considers the number M stored in m_apm_data as an integer,
+  instead of 0.M, and returns the exponent e such that M * 10^e = actual number
+*******************************************************************************/
 int	m_apm_exponent(M_APM atmp)
 {
-if (atmp->m_apm_sign == 0)
-  return(0);
-else
-  return(atmp->m_apm_exponent - 1);
+  if (atmp->m_apm_sign == 0)
+  {
+    return(0);
+  }
+  else
+  {
+    return(atmp->m_apm_exponent - 1);
+  }
 }
-/****************************************************************************/
+
+
+/******************************************************************************
+
+*******************************************************************************/
 int	m_apm_significant_digits(M_APM atmp)
 {
-return(atmp->m_apm_datalength);
+  return(atmp->m_apm_datalength);
 }
-/****************************************************************************/
+
+
+/******************************************************************************
+
+*******************************************************************************/
 int	m_apm_is_integer(M_APM atmp)
 {
-if (atmp->m_apm_sign == 0)
-  return(1);
+  if (atmp->m_apm_sign == 0)
+    return(1);
 
-if (atmp->m_apm_exponent >= atmp->m_apm_datalength)
-  return(1);
-else
-  return(0);
+  if (atmp->m_apm_exponent >= atmp->m_apm_datalength)
+    return(1);
+  else
+    return(0);
 }
-/****************************************************************************/
-int 	m_apm_is_even(M_APM aa)
+
+
+/******************************************************************************
+  Return 1 if the given mapm number is an even integer, otherwise return 0.
+*******************************************************************************/
+int m_apm_is_even(M_APM aa)
 {
-int     ii, jj;
+  int ii, jj;
 
-if (aa->m_apm_sign == 0)
-  return(1);
+  if (aa->m_apm_sign == 0)
+    return(1);
 
-ii = aa->m_apm_datalength;
-jj = aa->m_apm_exponent;
-
-if (jj < ii)
+  ii = aa->m_apm_datalength;
+  jj = aa->m_apm_exponent;
+  
+  if (jj < ii)
   {
-   M_apm_log_error_msg(M_APM_RETURN, "\'m_apm_is_even\', Non-integer input");
-   return(0);
+    M_apm_log_error_msg(M_APM_RETURN, "\'m_apm_is_even\', Non-integer input");
+    return(0);
   }
 
-if (jj > ii)
-  return(1);
+  if (jj > ii)
+    return(1);
 
-ii = ((ii + 1) >> 1) - 1;
-ii = (int)aa->m_apm_data[ii];
+  // exponent == num significant digits
 
-if ((jj & 1) != 0)      /* exponent is odd */
-  ii = ii / 10;
+  // Compute the position of the last used byte in m_apm_data.
+  // ii is even : ii --> ii/2 - 1
+  // ii is odd  : ii --> ii/2
+  ii = ((ii + 1) >> 1) - 1;
 
-if ((ii & 1) == 0)
-  return(1);
-else
-  return(0);
+  // read the last used byte from m_apm_dat
+  ii = (int)aa->m_apm_data[ii];
+
+  if ((jj & 1) != 0) // num significant digits is odd
+    ii = ii / 10;
+
+  if ((ii & 1) == 0)
+    return(1);
+  else
+    return(0);
 }
-/****************************************************************************/
-int 	m_apm_is_odd(M_APM bb)
+
+
+/******************************************************************************
+
+*******************************************************************************/
+int m_apm_is_odd(M_APM bb)
 {
-if (m_apm_is_even(bb))
-  return(0);
-else
-  return(1);
+  if (m_apm_is_even(bb))
+    return(0);
+  else
+    return(1);
 }
-/****************************************************************************/
-void	M_set_to_zero(M_APM z)
+
+
+/******************************************************************************
+
+*******************************************************************************/
+void M_set_to_zero(M_APM z)
 {
-z->m_apm_datalength = 1;
-z->m_apm_sign       = 0;
-z->m_apm_exponent   = 0;
-z->m_apm_data[0]    = 0;
+  z->m_apm_datalength = 1;
+  z->m_apm_sign       = 0;
+  z->m_apm_exponent   = 0;
+  z->m_apm_data[0]    = 0;
 }
-/****************************************************************************/
-void	m_apm_negate(M_APM d, M_APM s)
+
+
+/******************************************************************************
+
+*******************************************************************************/
+void m_apm_negate(M_APM d, M_APM s)
 {
-m_apm_copy(d,s);
-if (d->m_apm_sign != 0)
+  m_apm_copy(d, s);
+  if (d->m_apm_sign != 0)
     d->m_apm_sign = -(d->m_apm_sign);
 }
-/****************************************************************************/
-void	m_apm_absolute_value(M_APM d, M_APM s)
+
+
+/******************************************************************************
+
+*******************************************************************************/
+void m_apm_absolute_value(M_APM d, M_APM s)
 {
-m_apm_copy(d,s);
-if (d->m_apm_sign != 0)
+  m_apm_copy(d,s);
+  if (d->m_apm_sign != 0)
     d->m_apm_sign = 1;
 }
-/****************************************************************************/
-void	m_apm_copy(M_APM dest, M_APM src)
+
+
+/******************************************************************************
+
+*******************************************************************************/
+void m_apm_copy(M_APM dest, M_APM src)
 {
-int	j;
-void	*vp;
+  int	j;
+  void	*vp;
 
-j = (src->m_apm_datalength + 1) >> 1;
-if (j > dest->m_apm_malloclength)
+  j = (src->m_apm_datalength + 1) >> 1;
+
+  if (j > dest->m_apm_malloclength)
   {
-   if ((vp = MAPM_REALLOC(dest->m_apm_data, (j + 32))) == NULL)
-     {
-      /* fatal, this does not return */
-
-      M_apm_log_error_msg(M_APM_FATAL, "\'m_apm_copy\', Out of memory");
-     }
-   
-   dest->m_apm_malloclength = j + 28;
-   dest->m_apm_data = (UCHAR *)vp;
+    if ((vp = MAPM_REALLOC(dest->m_apm_data, (j + 32))) == NULL)
+    {
+       M_apm_log_error_msg(M_APM_FATAL, "\'m_apm_copy\', Out of memory");
+    }
+    
+    dest->m_apm_malloclength = j + 28;
+    dest->m_apm_data = (UCHAR *)vp;
   }
-
-dest->m_apm_datalength = src->m_apm_datalength;
-dest->m_apm_exponent   = src->m_apm_exponent;
-dest->m_apm_sign       = src->m_apm_sign;
-
-memcpy(dest->m_apm_data, src->m_apm_data, j);
+  
+  dest->m_apm_datalength = src->m_apm_datalength;
+  dest->m_apm_exponent   = src->m_apm_exponent;
+  dest->m_apm_sign       = src->m_apm_sign;
+  
+  memcpy(dest->m_apm_data, src->m_apm_data, j);
 }
-/****************************************************************************/
+
+
+/******************************************************************************
+  Return -1 if ltmp < rtmp, 0 if ltmp == rtmp, and +1 if ltmp > rtmp 
+*******************************************************************************/
 int	m_apm_compare(M_APM ltmp, M_APM rtmp)
 {
-int	llen, rlen, lsign, rsign, i, j, lexp, rexp;
+  int	llen, rlen, lsign, rsign, i, j, lexp, rexp;
 
-llen  = ltmp->m_apm_datalength;
-rlen  = rtmp->m_apm_datalength;
+  llen  = ltmp->m_apm_datalength;
+  rlen  = rtmp->m_apm_datalength;
 
-lsign = ltmp->m_apm_sign;
-rsign = rtmp->m_apm_sign;
+  lsign = ltmp->m_apm_sign;
+  rsign = rtmp->m_apm_sign;
+ 
+  lexp  = ltmp->m_apm_exponent;
+  rexp  = rtmp->m_apm_exponent;
 
-lexp  = ltmp->m_apm_exponent;
-rexp  = rtmp->m_apm_exponent;
+  if (rsign == 0)
+    return(lsign);
 
-if (rsign == 0)
-  return(lsign);
+  if (lsign == 0)
+    return(-rsign);
 
-if (lsign == 0)
-  return(-rsign);
+  if (lsign == -rsign)
+    return(lsign);
 
-if (lsign == -rsign)
-  return(lsign);
+  // signs are the same, check the exponents
 
-/* signs are the same, check the exponents */
+  if (lexp > rexp)
+    goto E1;
 
-if (lexp > rexp)
-  goto E1;
+  if (lexp < rexp)
+    goto E2;
 
-if (lexp < rexp)
-  goto E2;
+  // signs and exponents are the same, check the data
 
-/* signs and exponents are the same, check the data */
-
-if (llen < rlen)
-  j = (llen + 1) >> 1;
-else
-  j = (rlen + 1) >> 1;
-
-for (i=0; i < j; i++)
+  if (llen < rlen)
+    j = (llen + 1) >> 1;
+  else
+    j = (rlen + 1) >> 1;
+ 
+  for (i = 0; i < j; i++)
   {
-   if (ltmp->m_apm_data[i] > rtmp->m_apm_data[i])
-     goto E1;
+    if (ltmp->m_apm_data[i] > rtmp->m_apm_data[i])
+      goto E1;
 
-   if (ltmp->m_apm_data[i] < rtmp->m_apm_data[i])
-     goto E2;
+    if (ltmp->m_apm_data[i] < rtmp->m_apm_data[i])
+      goto E2;
   }
 
-if (llen == rlen)
-   return(0);
-else
+  if (llen == rlen)
+    return(0);
+  else
   {
-   if (llen > rlen)
-     goto E1;
-   else
-     goto E2;
+    if (llen > rlen)
+      goto E1;
+    else
+      goto E2;
   }
-
+  
 E1:
 
 if (lsign == 1)
@@ -235,116 +289,131 @@ if (lsign == 1)
 else
   return(1);
 }
-/****************************************************************************/
-/*
- *
- *	convert a signed long int to ASCII in base 10
- *
- */
-void    M_long_2_ascii(char *output, long input)
+
+
+/******************************************************************************
+  convert a signed long int to ASCII in base 10
+*******************************************************************************/
+void M_long_2_ascii(char* output, long input)
 {
-long    t, m;
-int     i, j;
-char    *p, tbuf[64];
+  long t, m;
+  int i, j;
+  char* p;
+  char tbuf[64];
 
-m = input;
-p = output;
-i = 0;
-t = 2147000000L;          /* something < 2^31 */
+  m = input;
+  p = output;
+  i = 0;
+  t = 2147000000L; // something < 2^31
 
-if ((m > t) || (m < -t))  /* handle the bigger numbers with 'sprintf'. */
-  {			  /* let them worry about wrap-around problems */
-   sprintf(p, "%ld", m);  /* at 'LONG_MIN', etc.                       */
-  }
-else
+  // handle the bigger numbers with 'sprintf'. Let them worry about wrap-around
+  // problems at 'LONG_MIN', etc
+  if ((m > t) || (m < -t))
   {
-   if (m < 0)             /* handle the sign */
-     {
+    sprintf(p, "%ld", m);
+  }
+  else
+  {
+    if (m < 0)             /* handle the sign */
+    {
       *p++ = '-';
       m = -m;
-     }
+    }
    
-   while (TRUE)           /* build the digits in reverse order */
-     {
+    while (TRUE)           /* build the digits in reverse order */
+    {
       t = m / 10;
       j = (int)(m - (10 * t));
       tbuf[i++] = (char)(j + '0');
       m = t;
-
+      
       if (t == 0)  
         break;
-     }
-   
-   while (TRUE)           /* fill output string in the correct order */
-     {
+    }
+    
+    while (TRUE)           /* fill output string in the correct order */
+    {
       *p++ = tbuf[--i];
       if (i == 0)  
         break;
-     }
-   
-   *p = '\0';
+    }
+    
+    *p = '\0';
   }
 }
-/****************************************************************************/
-/*
- *      this function will convert a string to lowercase
- */
-char    *M_lowercase(char *s)
+
+
+/******************************************************************************
+  This function will convert all capital ascii letters in a string to their
+  corresponding lowercase letters
+*******************************************************************************/
+char* M_lowercase(char* s)
 {
-char    *p;
+  char* p;
 
-p = s;
+  p = s;
 
-while (TRUE)
+  while (TRUE)
   {
-   if (*p >= 'A' && *p <= 'Z')
-     *p += 'a' - 'A';
-
-   if (*p++ == '\0')  break;
+    if (*p >= 'A' && *p <= 'Z')
+      *p += 'a' - 'A';
+    
+    if (*p++ == '\0')  break;
   }
-return(s);
+  return(s);
 }
-/****************************************************************************/
-/*    returns char position of first occurence of s2 in s1
-	  or -1 if no match found
-*/
-int     M_strposition(char *s1, char *s2)
+
+
+/******************************************************************************
+  Returns char position of first occurence of s2 in s1, or -1 if no match found
+*******************************************************************************/
+int M_strposition(char* s1, char* s2)
 {
-register char  ch1, ch2;
-char           *p0, *p1, *p2;
-int            ct;
+  register char  ch1, ch2;
+  char *p0, *p1, *p2;
+  int ct;
+  
+  ct = -1;
+  p0 = s1;
 
-ct = -1;
-p0 = s1;
+  if (*s2 == '\0')
+    return(-1);
 
-if (*s2 == '\0')  return(-1);
-
-while (TRUE)
+  while (TRUE)
   {
-   ct++;
-   p1  = p0;
-   p2  = s2;
-   ch2 = *p2;
+    ct++;
+    p1  = p0;
+    p2  = s2;
+    ch2 = *p2;
    
-   while (TRUE)                    /* scan until first char matches */
-     {
-      if ((ch1 = *p1) == '\0')  return(-1);
-      if (ch1 == ch2)           break;
+    while (TRUE)                    /* scan until first char matches */
+    {
+      if ((ch1 = *p1) == '\0')
+        return(-1);
+
+      if (ch1 == ch2)
+        break;
+
       p1++;
       ct++;
-     }
+    }
 
-   p2++;                           /* check remainder of 2 strings */
-   p1++;
-   p0 = p1;
+    p2++;                           /* check remainder of 2 strings */
+    p1++;
+    p0 = p1;
 
-   while (TRUE)
-     {
-      if ((ch2 = *p2) == '\0')  return(ct);
-      if (*p1 != ch2)           break;
+    while (TRUE)
+    {
+      if ((ch2 = *p2) == '\0')
+        return(ct);
+
+      if (*p1 != ch2)
+        break;
+
       p1++;
       p2++;
-     }
+    }
   }
 }
-/****************************************************************************/
+
+

@@ -45,14 +45,14 @@
 /****************************************************************************/
 void	M_apm_log_error_msg(int fatal, char *message)
 {
-if (fatal)
+  if (fatal)
   {
-   fprintf(stderr, "MAPM Error: %s\n", message);
-   exit(100);
+    fprintf(stderr, "MAPM Error: %s\n", message);
+    exit(100);
   }
-else
+  else
   {
-   fprintf(stderr, "MAPM Warning: %s\n", message);
+    fprintf(stderr, "MAPM Warning: %s\n", message);
   }
 }
 /****************************************************************************/
