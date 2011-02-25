@@ -46,6 +46,11 @@ namespace zorba { namespace filemodule {
           const StatelessExternalFunction::Arguments_t& args,
           int pos);
 
+      static bool
+      getOneBooleanArg(
+          const StatelessExternalFunction::Arguments_t& args,
+          int pos);
+
       static String
       getFilePathString(
           const StaticContext* context,

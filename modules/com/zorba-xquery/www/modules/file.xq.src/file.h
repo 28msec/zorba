@@ -29,6 +29,22 @@ namespace zorba {
 
 //*****************************************************************************
 
+  class MkdirFunction : public FileFunction
+  {
+    public:
+      MkdirFunction(const FileModule* aModule);
+
+      virtual String
+      getLocalName() const { return "mkdir"; }
+  
+      virtual ItemSequence_t 
+      evaluate(const StatelessExternalFunction::Arguments_t& args,
+               const StaticContext* aSctxCtx,
+               const DynamicContext* aDynCtx) const;
+  };
+
+//*****************************************************************************
+
   class CopyFunction : public FileFunction
   {
     public:
@@ -152,38 +168,38 @@ namespace zorba {
 
   };
 
-//*****************************************************************************
-
-  class MkdirFunction : public FileFunction
-  {
-    public:
-      MkdirFunction(const FileModule* aModule);
-
-      virtual String
-      getLocalName() const { return "mkdir"; }
-  
-      virtual ItemSequence_t 
-      evaluate(const StatelessExternalFunction::Arguments_t& args,
-               const StaticContext* aSctxCtx,
-               const DynamicContext* aDynCtx) const;
-  };
-
-//*****************************************************************************
-
-  class MkdirsFunction : public FileFunction
-  {
-    public:
-      MkdirsFunction(const FileModule* aModule);
-
-      virtual String
-      getLocalName() const { return "mkdirs"; }
-  
-      virtual ItemSequence_t 
-      evaluate(const StatelessExternalFunction::Arguments_t& args,
-               const StaticContext* aSctxCtx,
-               const DynamicContext* aDynCtx) const;
-  };
-
+////*****************************************************************************
+//
+//  class MkdirFunction : public FileFunction
+//  {
+//    public:
+//      MkdirFunction(const FileModule* aModule);
+//
+//      virtual String
+//      getLocalName() const { return "mkdir"; }
+//  
+//      virtual ItemSequence_t 
+//      evaluate(const StatelessExternalFunction::Arguments_t& args,
+//               const StaticContext* aSctxCtx,
+//               const DynamicContext* aDynCtx) const;
+//  };
+//
+////*****************************************************************************
+//
+//  class MkdirsFunction : public FileFunction
+//  {
+//    public:
+//      MkdirsFunction(const FileModule* aModule);
+//
+//      virtual String
+//      getLocalName() const { return "mkdirs"; }
+//  
+//      virtual ItemSequence_t 
+//      evaluate(const StatelessExternalFunction::Arguments_t& args,
+//               const StaticContext* aSctxCtx,
+//               const DynamicContext* aDynCtx) const;
+//  };
+//
 //*****************************************************************************
 
   class PathSeparator : public FileFunction

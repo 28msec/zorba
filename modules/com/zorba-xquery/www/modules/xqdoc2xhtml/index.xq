@@ -134,14 +134,11 @@ declare %private sequential function xqdoc2html:copy-files(
   $destinationPath  as xs:string, 
   $pattern          as xs:string)
 {
-  if(file:mkdirs($destinationPath, false())) then
-  (
-    let $clear := xqdoc2html:clear-folder($destinationPath, $pattern)
-    let $clear := xqdoc2html:gather-and-copy($sourcePath, $destinationPath, $pattern)
-      return ()
-  )
-  else
-    error()
+  file:mkdir($destinationPath);
+
+  let $clear := xqdoc2html:clear-folder($destinationPath, $pattern)
+  let $clear := xqdoc2html:gather-and-copy($sourcePath, $destinationPath, $pattern)
+  return ();
 };
 
 (:~
@@ -157,31 +154,27 @@ declare %private sequential function xqdoc2html:copy-xqsrc-folders(
   $modulePath as xs:string,
   $xqSrcPath as xs:string)
 {
-  if (file:mkdirs($xqSrcPath, false())) then
-  (
-    xqdoc2html:clear-folder($xqSrcPath,"(\.cpp|\.h)$"),
+  file:mkdir($xqSrcPath);
+
+  xqdoc2html:clear-folder($xqSrcPath,"(\.cpp|\.h)$");
     
-    (: gather all .xq.src folders :)
-    let $xqSrcFolders :=  fn:distinct-values(
-                            for $file in file:files($modulePath, "(\.cpp|\.h)$", fn:true())
-                            where ends-with(fn:tokenize($file, fn:concat("\",file:path-separator()))[last()-1],'xq.src')
-                            return
-                              substring-before($file,'.xq.src'))
-    
-    (: 
-      create the needed folders in $xqSrcPath and copy all the .cpp and .h into them
-      the folder name is the same as the name of the .xml file (without the .xml extension) for that module
-    :)
-    for $xqSrcFolder in $xqSrcFolders
-    let $xqSrcSourcePath := fn:concat($modulePath, file:path-separator(), $xqSrcFolder, '.xq.src')
-    let $xqSrcDestinationPath := fn:concat($xqSrcPath, file:path-separator(),
-                                 xqdoc2html:get-filename(xqdoc2html:get-URI-from-location($xqSrcFolder)))
-    let $ret := xqdoc2html:copy-files($xqSrcSourcePath, $xqSrcDestinationPath, "(\.cpp|\.h)$")
+  (: gather all .xq.src folders :)
+  let $xqSrcFolders := fn:distinct-values(
+    for $file in file:files($modulePath, "(\.cpp|\.h)$", fn:true())
+    where ends-with(fn:tokenize($file, fn:concat("\",file:path-separator()))[last()-1],'xq.src')
     return
-      ()
+      substring-before($file,'.xq.src')
   )
-  else
-    error()
+  (: create the needed folders in $xqSrcPath and copy all the .cpp and .h into them
+    the folder name is the same as the name of the .xml file (without the .xml extension) for that module :)
+  for $xqSrcFolder in $xqSrcFolders
+  let $xqSrcSourcePath := fn:concat($modulePath, file:path-separator(), $xqSrcFolder, '.xq.src')
+  let $xqSrcDestinationPath :=
+    fn:concat($xqSrcPath, file:path-separator(),
+              xqdoc2html:get-filename(xqdoc2html:get-URI-from-location($xqSrcFolder)))
+  let $ret := xqdoc2html:copy-files($xqSrcSourcePath, $xqSrcDestinationPath, "(\.cpp|\.h)$")
+  return
+    ();
 };
 
 (:~
@@ -220,12 +213,11 @@ let $xhtmlPath      := fn:concat($xqdocBuildPath, file:path-separator(), "xhtml"
 
 return
   (: first - create the xhtml folder is it does not exist already :)
-  if (file:mkdirs($xhtmlPath, false())) then
-  (
-    (: second - clear the folder of all the files with these extensions :)
-    let $clear := xqdoc2html:clear-folder($xhtmlPath,"(\.xsd|\.gif|\.js|\.css|\.html|\.cpp|\.h|\.xq)$")
+  file:mkdir($xhtmlPath);
 
-    return(
+  (: second - clear the folder of all the files with these extensions :)
+  let $clear := xqdoc2html:clear-folder($xhtmlPath,"(\.xsd|\.gif|\.js|\.css|\.html|\.cpp|\.h|\.xq)$")
+  return (
     (: third - re-copy these files :)
     xqdoc2html:copy-files($modulesPath, $schemasPath, "\.xsd$"),
     xqdoc2html:copy-files($xhtmlRequisitesPath, $imagesPath, "\.gif$"),
@@ -236,14 +228,11 @@ return
     xqdoc2html:copy-xqsrc-folders($modulesPath, $xqSrcPath),
 
     (: only create the 'modules' folder. The .xq module files will be copied later on in the process :)
-    file:mkdirs($xqPath, false()),
-    
+    file:mkdir($xqPath),
+  
     (: only create the examples folder. The examples will be copied later on in the process :)
-    file:mkdirs($examplesPath, false())
-    )
-  )
-  else
-    error()
+    file:mkdir($examplesPath)
+  );
 };
 
 (:~ Returns the URI of the module given the passed $folderPath using the Zorba URI resolving mechanism.
@@ -385,7 +374,7 @@ declare %private sequential function xqdoc2html:generate-xqdoc-xhtml(
       let $menu := xqdoc2html:create-module-table($leftMenu, $menu, $moduleUri)
       let $xhtml := xqdoc2html:doc($xqdoc, $menu, $xqdoc2html:indexCollector, $xqdoc2html:schemasCollector, $xqSrcPath, $templatePath, $xqdocXhtmlPath, $examplePath)
       return block {
-        file:mkdirs($xhtmlFileDir, false());
+        file:mkdir($xhtmlFileDir);
 
         xqdoc2html:configure-xhtml($xhtml, $modulesPath);
 
@@ -1034,35 +1023,29 @@ declare %private sequential function xqdoc2html:main(
   declare $xqdocSchemasPath as xs:string := fn:concat($xqdocXhtmlPath, file:path-separator(), "schemas");
   declare $xqSrcPath        as xs:string := fn:concat($xqdocXhtmlPath, file:path-separator(), "xq.src");
   declare $templatesPath    as xs:string := fn:concat($xqdocXhtmlPath, file:path-separator(), "templates");
-  declare $templatePath     as xs:string := fn:concat($templatesPath, file:path-separator(), file:files($templatesPath, "(main\.html)$", fn:true()));
+  declare $templatePath     as xs:string :=
+    fn:concat($templatesPath, file:path-separator(), file:files($templatesPath, "(main\.html)$", fn:true()));
 
   (: if there is no main.html template we can not proceed further :)
   if($templatePath = fn:concat($templatesPath, file:path-separator())) then
     fn:error($err:UE002, "No 'main.html' template was found.")
   else
-    ()
-  ;
+    ();
   
   (: generate the XQDoc XML for all the modules :)
-  if (file:mkdirs($xqdocXmlPath, false())) then
-  (
-    xqdoc2html:clear-folder($xqdocXmlPath,"\.xml$"),
-    xqdoc2html:generate-xqdoc-xml($modulePath, $xqdocXmlPath, $xqdocXhtmlPath, $examplePath)
-  )
-  else
-    error()
-  ;
-  
+  file:mkdir($xqdocXmlPath);
+  xqdoc2html:clear-folder($xqdocXmlPath,"\.xml$");
+  xqdoc2html:generate-xqdoc-xml($modulePath, $xqdocXmlPath, $xqdocXhtmlPath, $examplePath);
     
   (: generate the XQDoc XHTML for all the modules :) 
   let $absoluteXhtmlDir := concat($xqdocBuildPath, "/xhtml")
   return
-  if (file:mkdirs($absoluteXhtmlDir, false())) then
-  (
-    xqdoc2html:clear-folder($xqdocXhtmlPath,"xqdoc\.html$"),
-    xqdoc2html:gather-schemas($xqdocSchemasPath),    
-    xqdoc2html:generate-xqdoc-xhtml($xqdocXmlPath, $xqdocXhtmlPath, $xqSrcPath, $leftMenu, $modulePath, $xqdoc2html:functionIndexPageName, $templatePath, $examplePath),
-    (
+    block {
+      file:mkdir($absoluteXhtmlDir);
+      xqdoc2html:clear-folder($xqdocXhtmlPath,"xqdoc\.html$");
+      xqdoc2html:gather-schemas($xqdocSchemasPath);
+      xqdoc2html:generate-xqdoc-xhtml($xqdocXmlPath, $xqdocXhtmlPath, $xqSrcPath, $leftMenu, $modulePath, $xqdoc2html:functionIndexPageName, $templatePath, $examplePath);
+
       let $leftMenuFunction := xqdoc2html:create-left-menu($leftMenu, $xqdoc2html:functionIndexPageName)
       let $indexFunctionLeft := xqdoc2html:create-module-table($leftMenu, $leftMenuFunction, $xqdoc2html:functionIndexPageName)
       let $leftMenuSearch := xqdoc2html:create-left-menu($leftMenu, $xqdoc2html:searchPageName)
@@ -1074,12 +1057,8 @@ declare %private sequential function xqdoc2html:main(
       let $writeFuncIndex := file:write(fn:concat($xqdocXhtmlPath, file:path-separator(), $xqdoc2html:functionIndexPageName), $functionIndex, <s method="xhtml" indent="yes" />/@*)
       let $writeFuncIndex := file:write(fn:concat($xqdocXhtmlPath, file:path-separator(), $xqdoc2html:searchPageName), $search, <s method="xhtml" indent="yes" />/@*)
       return
-        ()
-     )
-  )
-  else
-    error()
-  ;  
+        ();
+    };  
   
   let $left := xqdoc2html:create-left-menu($leftMenu, "index.html")
   let $indexLeft := xqdoc2html:create-module-table($leftMenu, $left, "index.html")
@@ -1729,4 +1708,3 @@ declare function xqdoc2html:split-function-signature($signature as xs:string) {
     concat(")", $after)
   )
 };
-

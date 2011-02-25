@@ -37,7 +37,7 @@ declare sequential function local:main() as xs:string* {
     if (fn:not(commons:isSuccess($s))) then
       exit returning commons:error(("DIRECTORY INIT - failed:
 ", $s))
-    else ();  
+    else ();
 
 (: ========================= :)
 (: ====== THIS TEST ======== :)

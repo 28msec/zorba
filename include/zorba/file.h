@@ -81,8 +81,9 @@ namespace zorba {
 
       virtual FileSize_t getSize() const = 0;
 
-      virtual bool mkdir(bool create = true) = 0;
-      virtual bool mkdirs(bool create = true) = 0;
+      virtual void mkdir(bool recursive = true, bool failIfExists = false) = 0;
+      //virtual bool mkdir(bool create = true) = 0;
+      //virtual bool mkdirs(bool create = true) = 0;
 
       virtual DirectoryIterator_t files() const = 0;
 

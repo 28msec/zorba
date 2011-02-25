@@ -69,8 +69,8 @@ FileFunction::getURI() const
 
 String
 FileFunction::getOneStringArg(
-    const StatelessExternalFunction::Arguments_t& aArgs,
-    int aPos)
+  const StatelessExternalFunction::Arguments_t& aArgs,
+  int aPos)
 {
   Item lItem;
   Iterator_t args_iter = aArgs[aPos]->getIterator();
@@ -91,6 +91,25 @@ FileFunction::getOneStringArg(
   args_iter->close();
   return lTmpString;
 }
+
+bool
+FileFunction::getOneBooleanArg(
+  const StatelessExternalFunction::Arguments_t& aArgs,
+  int aPos)
+{
+  bool lResult = false;
+
+  Item lCreateItem;
+  Iterator_t arg1_iter = aArgs[aPos]->getIterator();
+  arg1_iter->open();
+  if (arg1_iter->next(lCreateItem)) {
+    lResult = lCreateItem.getBooleanValue();
+  }
+  arg1_iter->close();
+
+  return lResult;
+}
+
 
 String
 FileFunction::getFilePathString(

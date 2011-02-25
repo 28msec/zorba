@@ -24,8 +24,10 @@ SET (API_EXAMPLES
   chaining.cpp
   external_functions.cpp
   datamanager.cpp
-  uri_resolvers.cpp
-  execution_plans.cpp
+# SF#3191795
+#  uri_resolvers.cpp
+# SF#3191795
+#  execution_plans.cpp
   item_handler.cpp
   callback.cpp
   binary.cpp

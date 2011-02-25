@@ -24,11 +24,13 @@ declare sequential function commons:testExists($path as xs:string) as xs:string*
     ("testExists failed for path:", $path)
 };
 
-declare sequential function commons:testMkdirs($path as xs:string) as xs:string* {
-  if (file:mkdirs($path)) then
-    "SUCCESS"
-  else
-    ("testMkdirs failed for path:", $path)  
+declare sequential function commons:testMkdir($path as xs:string) as xs:string* {
+  try {
+    file:mkdir($path);
+    "SUCCESS";
+  } catch * {
+    exit returning ("testMkdir failed for path:", $path)
+  }
 };
 
 declare sequential function commons:testWriteXml($path as xs:string, $xml as item()) as xs:string* {
@@ -96,10 +98,11 @@ declare sequential function commons:testInitDir($dir as xs:string) as xs:string*
   (: ==================================================================== :)
   (: it must be able to create the test directory :)
   (: ========= :)
-  let $s := commons:testMkdirs($dir)
+  let $s := commons:testMkdir($dir)
   return 
     if (fn:not(commons:isSuccess($s))) then
-      exit returning ("testInitDir failed - could not create directory:", $dir)
+      (: exit returning ("testInitDir failed - could not create directory:", $dir) :)
+      ()
     else ();
 
   (: ==================================================================== :)
@@ -141,7 +144,7 @@ declare sequential function commons:testUnInitDir($dir as xs:string, $file as xs
 (: ******************************* COMMON EXTRAS ******************************** :)
 
 declare function commons:isSuccess($status as xs:string*) as xs:boolean {
-  if (fn:count($status) eq 1 and $status eq "SUCCESS") then
+  if (fn:count($status) eq 0 or (fn:count($status) eq 1 and $status eq "SUCCESS")) then
     fn:true()
   else
     fn:false()    

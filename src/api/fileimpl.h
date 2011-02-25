@@ -75,8 +75,9 @@ namespace zorba {
 
       FileSize_t getSize() const;
 
-      bool mkdir(bool create = true);
-      bool mkdirs(bool create = true);
+      void mkdir(bool recursive = true, bool failIfExists = false);
+      //bool mkdir(bool create = true);
+      //bool mkdirs(bool create = true);
 
       DirectoryIterator_t files() const;
 

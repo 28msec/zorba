@@ -53,8 +53,6 @@ FileModule::getExternalFunction(const String& aLocalname)
       lFunc = new LastModifiedFunction(this);
     } else if (aLocalname.equals("mkdir")) {
       lFunc = new MkdirFunction(this);
-    } else if (aLocalname.equals("mkdirs")) {
-      lFunc = new MkdirsFunction(this);
     } else if (aLocalname.equals("path-separator")) {
       lFunc = new PathSeparator(this);
     } else if (aLocalname.equals("path-to-full-path")) {

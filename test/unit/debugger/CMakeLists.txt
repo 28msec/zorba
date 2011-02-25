@@ -19,7 +19,8 @@ CREATE_TEST_SOURCELIST(DebuggerTests
     DebuggerTests.cpp
     test_debugger_endianness.cpp
     test_debugger_server.cpp
-    test_debugger_serialization.cpp
+# SF#3191795
+#    test_debugger_serialization.cpp
 )
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/bin)

@@ -35,6 +35,36 @@ namespace zorba { namespace filemodule {
 
 //*****************************************************************************
 
+MkdirFunction::MkdirFunction(const FileModule* aModule)
+  : FileFunction(aModule)
+{
+}
+
+ItemSequence_t
+MkdirFunction::evaluate(
+  const StatelessExternalFunction::Arguments_t& aArgs,
+  const StaticContext*                          aSctxCtx,
+  const DynamicContext*                         aDynCtx) const
+{
+  String lFileStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
+  File_t lFile = File::createFile(lFileStr.c_str());
+
+  bool lRecursive = true;
+  bool lFailIfExists = false;
+  if (aArgs.size() > 1) {
+    lRecursive = FileFunction::getOneBooleanArg(aArgs, 1);
+    if (aArgs.size() > 2) {
+      lFailIfExists = FileFunction::getOneBooleanArg(aArgs, 2);
+    }
+  }
+
+  lFile->mkdir(lRecursive, lFailIfExists);
+
+  return ItemSequence_t(new EmptySequence());
+}
+
+//*****************************************************************************
+
 CopyFunction::CopyFunction(const FileModule* aModule)
   : FileFunction(aModule)
 {
@@ -287,71 +317,71 @@ LastModifiedFunction::getGmtOffset()
   return (int)(a - b)/3600; 
 }
 
-//*****************************************************************************
-
-MkdirFunction::MkdirFunction(const FileModule* aModule)
-  : FileFunction(aModule)
-{
-}
-
-ItemSequence_t
-MkdirFunction::evaluate(
-  const StatelessExternalFunction::Arguments_t& aArgs,
-  const StaticContext*                          aSctxCtx,
-  const DynamicContext*                         aDynCtx) const
-{
-  String lFileStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
-  File_t lFile = File::createFile(lFileStr.c_str());
-
-  bool lCreate = true;
-  if (aArgs.size() == 2) {
-    Item lCreateItem;
-    Iterator_t arg1_iter = aArgs[1]->getIterator();
-    arg1_iter->open();
-    if (arg1_iter->next(lCreateItem)) {
-      lCreate = lCreateItem.getBooleanValue();
-    }
-    arg1_iter->close();
-  }
-
-  bool lStatus = lFile->mkdir();
-
-  return ItemSequence_t(new SingletonItemSequence(
-      theModule->getItemFactory()->createBoolean(lStatus)));
-}
-
-//*****************************************************************************
-
-MkdirsFunction::MkdirsFunction(const FileModule* aModule)
-  : FileFunction(aModule)
-{
-}
-
-ItemSequence_t
-MkdirsFunction::evaluate(
-  const StatelessExternalFunction::Arguments_t& aArgs,
-  const StaticContext*                          aSctxCtx,
-  const DynamicContext*                         aDynCtx) const
-{
-  String lFileStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
-  File_t lFile = File::createFile(lFileStr.c_str());
-
-  bool lCreate = true;
-  if (aArgs.size() == 2) {
-    Item lCreateItem;
-    Iterator_t arg1_iter = aArgs[1]->getIterator();
-    arg1_iter->open();
-    if (arg1_iter->next(lCreateItem)) {
-      lCreate = lCreateItem.getBooleanValue();
-    }
-    arg1_iter->close();
-  }
-
-  bool lStatus = lFile->mkdirs(lCreate);
-
-  return ItemSequence_t(new SingletonItemSequence(
-    theModule->getItemFactory()->createBoolean(lStatus)));
-}
+////*****************************************************************************
+//
+//MkdirFunction::MkdirFunction(const FileModule* aModule)
+//  : FileFunction(aModule)
+//{
+//}
+//
+//ItemSequence_t
+//MkdirFunction::evaluate(
+//  const StatelessExternalFunction::Arguments_t& aArgs,
+//  const StaticContext*                          aSctxCtx,
+//  const DynamicContext*                         aDynCtx) const
+//{
+//  String lFileStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
+//  File_t lFile = File::createFile(lFileStr.c_str());
+//
+//  bool lCreate = true;
+//  if (aArgs.size() == 2) {
+//    Item lCreateItem;
+//    Iterator_t arg1_iter = aArgs[1]->getIterator();
+//    arg1_iter->open();
+//    if (arg1_iter->next(lCreateItem)) {
+//      lCreate = lCreateItem.getBooleanValue();
+//    }
+//    arg1_iter->close();
+//  }
+//
+//  bool lStatus = lFile->mkdir();
+//
+//  return ItemSequence_t(new SingletonItemSequence(
+//      theModule->getItemFactory()->createBoolean(lStatus)));
+//}
+//
+////*****************************************************************************
+//
+//MkdirsFunction::MkdirsFunction(const FileModule* aModule)
+//  : FileFunction(aModule)
+//{
+//}
+//
+//ItemSequence_t
+//MkdirsFunction::evaluate(
+//  const StatelessExternalFunction::Arguments_t& aArgs,
+//  const StaticContext*                          aSctxCtx,
+//  const DynamicContext*                         aDynCtx) const
+//{
+//  String lFileStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
+//  File_t lFile = File::createFile(lFileStr.c_str());
+//
+//  bool lCreate = true;
+//  if (aArgs.size() == 2) {
+//    Item lCreateItem;
+//    Iterator_t arg1_iter = aArgs[1]->getIterator();
+//    arg1_iter->open();
+//    if (arg1_iter->next(lCreateItem)) {
+//      lCreate = lCreateItem.getBooleanValue();
+//    }
+//    arg1_iter->close();
+//  }
+//
+//  bool lStatus = lFile->mkdirs(lCreate);
+//
+//  return ItemSequence_t(new SingletonItemSequence(
+//    theModule->getItemFactory()->createBoolean(lStatus)));
+//}
 
 //*****************************************************************************
 

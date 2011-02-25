@@ -303,41 +303,33 @@ FileImpl::getSize() const
   return -1;
 }
 
-bool
-FileImpl::mkdir(bool aCreate)
+void
+FileImpl::mkdir(bool aRecursive, bool aFailIfExists)
 {
-  bool lResult = false;
-
   ZORBA_TRY
-    // if the dir/file already exists, return false
-    if (theInternalFile->exists()) {
-      return aCreate ? false : theInternalFile->is_directory();
+    //TODO: Throw proper errors
+
+    // precondition
+    if (theInternalFile->exists() && !theInternalFile->is_directory()) {
+      throw "A file already exists at this path.";
     }
 
-    theInternalFile->mkdir();
-
-    lResult = true;
-  ZORBA_CATCH
-
-  return lResult;
-}
-
-bool
-FileImpl::mkdirs(bool aCreate)
-{
-  bool lResult = false;
-
-  ZORBA_TRY
-    // if the dir/file already exists, return false
-    if (theInternalFile->exists()) {
-      return aCreate ? false : theInternalFile->is_directory();
+    if (aFailIfExists && theInternalFile->exists()) {
+      throw "A directory already exists at this path.";
     }
 
-    theInternalFile->deep_mkdir();
-    lResult = true;
-  ZORBA_CATCH
+    if (aRecursive) {
+      theInternalFile->deep_mkdir();
+    } else {
+      theInternalFile->mkdir();
+    }
 
-  return lResult;
+    // postcondition
+    if (!(theInternalFile->exists())) {
+      throw "The directory could not be created.";
+    }
+
+  ZORBA_CATCH
 }
 
 DirectoryIterator_t

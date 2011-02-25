@@ -65,11 +65,15 @@ ELSE(WIN32)
     UnitTests.cpp
     path_resolver.cpp
     userdefined_uri_resolver.cpp
-    plan_serializer.cpp
+# SF#3191795
+#    plan_serializer.cpp
     call_stack.cpp
-    external_function.cpp
-    no_folding.cpp
-    debug_iter_serialization.cpp
+# SF#3191795
+#    external_function.cpp
+# SF#3191795
+#    no_folding.cpp
+# SF#3191795
+#    debug_iter_serialization.cpp
     ordpath_big.cpp
     uri_file_decoding_test.cpp
     ext_in_opt.cpp
