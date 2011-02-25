@@ -28,8 +28,23 @@ ELSE(NOT ZORBA_WITH_FILE_ACCESS)
       -e "\"examplePath:=${CMAKE_SOURCE_DIR}/test\""
       -e "\"zorbaVersion:=${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}\""
       --module-path "\"${CMAKE_CURRENT_SOURCE_DIR}/src\""
+      COMMENT "Building XQDoc documentation for the modules..."
   )
   SET_TARGET_PROPERTIES(xqdoc PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD 1)
+
+  ADD_TEST(doc/zorba/make_xqdoc 
+      ${ZORBA_EXE_SCRIPT}
+      --omit-xml-declaration
+      -f
+      -q "${CMAKE_CURRENT_SOURCE_DIR}/src/xqdoc-main.xq"
+      -e "modulesPath:=${CMAKE_SOURCE_DIR}/modules"
+      -e "xhtmlRequisitesPath:=${CMAKE_CURRENT_SOURCE_DIR}"
+      -e "xqdocBuildPath:=${CMAKE_CURRENT_BINARY_DIR}"
+      -e "examplePath:=${CMAKE_SOURCE_DIR}/test"
+      -e "zorbaVersion:=${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}"
+      --module-path "${CMAKE_CURRENT_SOURCE_DIR}/src")
+
+  EXPECTED_FAILURE(doc/zorba/make_xqdoc 3192595)
 
   # Add the modules_svg command for which a working zorba cmd is required.
   ADD_CUSTOM_TARGET(modules_svg
