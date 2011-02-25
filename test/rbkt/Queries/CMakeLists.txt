@@ -274,11 +274,6 @@ EXPECTED_FAILURE(test/rbkt/zorba/utf-8/utf8inDataEn 3132686)
 EXPECTED_FAILURE(test/rbkt/zorba/utf-8/utf8inDataFr 3132686)
 EXPECTED_FAILURE(test/rbkt/zorba/utf-8/utf8inDataNo 3132686)
 EXPECTED_FAILURE(test/rbkt/zorba/utf-8/utf8inDataRo 3132686)
-EXPECTED_FAILURE(test/rbkt/zorba/utf-8/utf8inPathDe 3132686)
-EXPECTED_FAILURE(test/rbkt/zorba/utf-8/utf8inPathEn 3132686)
-EXPECTED_FAILURE(test/rbkt/zorba/utf-8/utf8inPathFr 3132686)
-EXPECTED_FAILURE(test/rbkt/zorba/utf-8/utf8inPathNo 3132686)
-EXPECTED_FAILURE(test/rbkt/zorba/utf-8/utf8inPathRo 3132686)
 
 # This is not a bug, this is working per spec
 # The ##other means any other namespace but it MUST have a namespace

@@ -1,1 +1,0 @@
-﻿<data>Pot sa citesc nume de fișiere românești.</data>
