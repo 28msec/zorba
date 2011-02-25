@@ -29,6 +29,28 @@ IF(ZORBA_TEST_XQUERYX)
   ENDIF (TESTFILES_XQX)
 ENDIF(ZORBA_TEST_XQUERYX)
 
+IF(WIN32)
+  # Remove when bug #3192723 is fixed
+  LIST(REMOVE_ITEM TESTFILES
+    zorba/image/basic.xq
+    zorba/image/basic_equals.xq
+    zorba/image/basic_exif.xq
+    zorba/image/basic_height.xq
+    zorba/image/basic_width.xq
+    zorba/image/manipulation_1.xq
+    zorba/image/manipulation_2.xq
+    zorba/image/manipulation_3.xq
+    zorba/image/manipulation_4.xq
+    zorba/image/manipulation_5.xq
+    zorba/image/paint_1.xq
+    zorba/image/paint_2.xq
+    zorba/image/paint_3.xq
+    zorba/image/paint_4.xq
+    zorba/image/paint_5.xq
+    zorba/image/paint_6.xq
+  )
+ENDIF(WIN32)
+
 # collect all chained test queries (suffix .cxq) in all subdirectories
 # of this dir
 FILE(GLOB_RECURSE CHAINED_TESTFILES FOLLOW_SYMLINKS
