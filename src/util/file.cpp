@@ -606,6 +606,7 @@ void file::deep_mkdir () {
     // cout << "mkdir " << files [i] << endl;
     files [i].mkdir ();
   }
+  set_filetype(file::type_directory);
 }
 
 void file::remove(bool ignore) {

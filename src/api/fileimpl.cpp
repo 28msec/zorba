@@ -325,7 +325,7 @@ FileImpl::mkdir(bool aRecursive, bool aFailIfExists)
     }
 
     // postcondition
-    if (!(theInternalFile->exists())) {
+    if (!(theInternalFile->is_directory())) {
       throw "The directory could not be created.";
     }
 
