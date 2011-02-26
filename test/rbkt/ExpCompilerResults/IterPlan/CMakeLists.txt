@@ -37,10 +37,6 @@ FOREACH(ZORBA_STORE_NAME ${ZORBA_STORE_NAMES})
     SET(APITEST_PATH ${CMAKE_BINARY_DIR}/test/apitest${SUFFIX})
   ENDIF()
 
-  # disabled those test that are failing in the remote queue
-  # remove after bug #3192214 is fixed
-  SET (TESTFILES "")
-
   FOREACH (TESTFILE ${TESTFILES})
     STRING (REPLACE w3c_testsuite official_ts TESTNAME "${TESTFILE}")
     ADD_TEST (
