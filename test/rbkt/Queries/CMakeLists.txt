@@ -29,6 +29,10 @@ IF(ZORBA_TEST_XQUERYX)
   ENDIF (TESTFILES_XQX)
 ENDIF(ZORBA_TEST_XQUERYX)
 
+# Remove when bug #3071699 is fixed
+LIST(REMOVE_ITEM TESTFILES
+  zorba/HigherOrder/hof-101.xq)
+
 IF(WIN32)
   # Remove when bug #3192723 is fixed
   LIST(REMOVE_ITEM TESTFILES
@@ -299,15 +303,19 @@ EXPECTED_FAILURE(test/rbkt/zorba/utf-8/utf8inDataRo 3132686)
 
 # This is not a bug, this is working per spec
 # The ##other means any other namespace but it MUST have a namespace
-# todo: comment next line after remote queue fixed
-EXPECTED_FAILURE(test/rbkt/zorba/schemas/any 3137594)
+# todo: comment next lines after remote queue fixed
+IF(NOT WIN32)
+  EXPECTED_FAILURE(test/rbkt/zorba/schemas/any 3137594)
+ENDIF(NOT WIN32)
 
 EXPECTED_FAILURE(test/rbkt/zorba/modules/schema 3131554)
 
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/admin 2935047)
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/ic-uniqueKey-err2 2935047)
 
-EXPECTED_FAILURE(test/rbkt/zorba/HigherOrder/hof-101 3071699)
+IF(WIN32)
+  EXPECTED_FAILURE(test/rbkt/zorba/converters/json/json_parse7 3193250)
+ENDIF(WIN32)
 
 IF(CURL_FOUND)
   EXPECTED_FAILURE(test/rbkt/zorba/http_client/external_variable 3152386)

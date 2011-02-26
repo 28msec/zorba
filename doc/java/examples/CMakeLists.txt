@@ -13,19 +13,17 @@
 # limitations under the License.
 # install path determined from where Python lives 
 
-SET ( JAVA_SRCS
-    Test_Zorba.java )
+SET(JAVA_SRCS
+  Test_Zorba.java)
 
-FIND_PACKAGE ( Java )
+FIND_PACKAGE(Java)
 
+STRING(COMPARE NOTEQUAL ${JAVA_RUNTIME} "JAVA_RUNTIME-NOTFOUND" JAVA_FOUND) 
+IF(JAVA_FOUND)
+  SET(Java_Load_Path ${CMAKE_BINARY_DIR}/swig/java)
+  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/java_test.sh.in ${CMAKE_CURRENT_BINARY_DIR}/java_test.sh)
+  MESSAGE(STATUS "Seting path for java tests ${Java_Load_Path}")
+  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/Test_Zorba.java ${CMAKE_CURRENT_BINARY_DIR}/Test_Zorba.java COPYONLY)
 
-STRING ( COMPARE NOTEQUAL ${JAVA_RUNTIME} "JAVA_RUNTIME-NOTFOUND" JAVA_FOUND ) 
-IF ( JAVA_FOUND )
-   SET ( Java_Load_Path ${CMAKE_BINARY_DIR}/swig/java )
-   CONFIGURE_FILE ( ${CMAKE_CURRENT_SOURCE_DIR}/java_test.sh.in
-   		    ${CMAKE_CURRENT_BINARY_DIR}/java_test.sh )
-   MESSAGE ( STATUS "Seting path for java tests ${Java_Load_Path}" )
-   CONFIGURE_FILE ( ${CMAKE_CURRENT_SOURCE_DIR}/Test_Zorba.java
-   		    ${CMAKE_CURRENT_BINARY_DIR}/Test_Zorba.java COPYONLY )
-   ADD_TEST( "java" java_test.sh Test_Zorba )
-ENDIF ( JAVA_FOUND )
+  ADD_TEST("java" java_test.sh Test_Zorba)
+ENDIF(JAVA_FOUND)

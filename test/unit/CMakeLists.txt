@@ -57,7 +57,8 @@ IF(WIN32)
     ext_in_opt.cpp
     collection.cpp
     string_instantiate.cpp
-    string_test.cpp
+# SF#3191791
+#    string_test.cpp
     main_sequential.cpp
   )
 ELSE(WIN32)

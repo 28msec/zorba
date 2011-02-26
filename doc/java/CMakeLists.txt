@@ -12,7 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-ADD_SUBDIRECTORY(examples)
+# This subdirectory is only made to work on non-Windows platforms. Why? See bug #3193268
+IF(NOT WIN32)
+  ADD_SUBDIRECTORY(examples)
+ENDIF(NOT WIN32)
 
 ZORBA_DOXYGEN("${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_BINARY_DIR}" "javadocs")
 
