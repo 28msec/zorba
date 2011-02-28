@@ -209,7 +209,7 @@ declare function z:get_shape_properties(
   let $file := $z:indexCollector//module[@uri eq $ModuleUri]/@file
   let $type := z:get_module_type($ModuleUri)
   return
-    fn:concat('[URL="',$file,'" tooltip="(',$z:moduleTypes[$type],') module uri=', $ModuleUri,'" label="',$lLabel,'" fontcolor="', $z:colors[$type] ,'"]')
+    fn:concat('[URL="$',$file,'" tooltip="(',$z:moduleTypes[$type],') module uri=', $ModuleUri,'" label="',$lLabel,'" fontcolor="', $z:colors[$type] ,'"]')
 };
 
 (:~
@@ -227,7 +227,7 @@ declare function z:nodes_modules(
     where $node[@catUri=data($category/@uri)]
     order by $lModuleUri
     return
-      $lName,",
+      $lName,";
     ")
   return
     if($nodes eq '') then ''
@@ -249,7 +249,7 @@ declare function z:nodes_external_libraries() as xs:string
   let $lName := concat($nodeLabel,'[URL="',$link,'" tooltip="', $tok[1],'" label="',$nodeLabel,'"]')
   where data($edge/@type) eq $z:typeExternalLibrary
     return
-      $lName,",
+      $lName,";
     ")
   return
     if($nodes eq '') then ''
@@ -306,7 +306,7 @@ let $edges :=
     for $edge in $z:edgesCollector//edge    
     where $lcatUri eq $edge/@catUri
     return concat($edge/@nameFrom,'->',$edge/@nameTo),
-  ',
+  ';
 ')
 return
   if($edges eq '') then ''
@@ -323,7 +323,7 @@ let $edges :=
     for $edge in $z:edgesCollector//edge
     where data($edge/@type) eq $z:typeModule
     return concat('    ',$edge/@nameFrom,'->',$edge/@nameTo),
-  ',
+  ';
 ')
 return
   if($edges eq '') then ''
@@ -342,7 +342,7 @@ let $edges :=
     let $nodeLabel := replace(tokenize($tok[1],' ')[1],'\+','')
     where data($edge/@type) eq $z:typeExternalLibrary
     return concat('    ',$edge/@nameFrom,'->',$nodeLabel,'[color="red"]'),
-  ',
+  ';
 ')
 return
   if($edges eq '') then ''
