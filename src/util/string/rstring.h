@@ -331,7 +331,7 @@ public:
   /**
    * Checks whether the string is empty.
    *
-   * @return Returns <code>true</code> only if it is.
+   * @return Returns \c true only if it is.
    */
   bool empty() const {
     return size() == 0;
@@ -419,7 +419,6 @@ public:
     return data()[ pos ];
   }
 
-
   ////////// append ///////////////////////////////////////////////////////////
 
   // RSTRING_APPEND_RS_X
@@ -478,6 +477,7 @@ public:
   rstring& operator+=( rstring<RepType2> const &s ) {
     return append( s );
   }
+
   /**
    * Appends the given std::string to this string.
    *
@@ -1274,7 +1274,7 @@ private:
   }
 
   /**
-   * Checks that the given \a pos <= the given \c size().
+   * Checks that the given \a pos <= the given \a size.
    *
    * @param pos The position to check.
    * @param size The size to check against.
@@ -1328,7 +1328,7 @@ private:
    * Checks whether the given pointer is out of the range of the current
    * string.
    *
-   * @return Returns <code>true</code> only if it is.
+   * @return Returns \c true only if it is.
    */
   bool disjunct( const_pointer s ) const {
     const_pointer const d = data();
@@ -1350,8 +1350,7 @@ private:
   }
 
   /**
-   * Limits \a n to be no greater than the number of characters remaining in a
-   * string.
+   * Limits \a n to be no greater than the given \a size.
    *
    * @param pos The position to calculate the limited value of \n relative to.
    * @param size The size of the string.
@@ -1364,8 +1363,7 @@ private:
   }
 
   /**
-   * Limits \a n to be no greater than the number of characters remaining in
-   * this string.
+   * Limits \a n to be no greater than \c size().
    *
    * @param pos The position to calculate the limited value of \n relative to.
    * @param n The initial value of \a n.
@@ -1520,9 +1518,9 @@ rstring<Rep>::rstring( rstring<Rep2> const &s, size_type pos, size_type n,
                        allocator_type const &a ) :
   data_( a )
 {
-  rep().construct(s.data() + s.check_pos( pos, "rstring" ),
-                  s.data() + pos + s.limit_n( pos, n ),
-                  a);
+  rep().construct( s.data() + s.check_pos( pos, "rstring" ),
+                   s.data() + pos + s.limit_n( pos, n ),
+                   a );
 }
 
 // RSTRING_C_SS_X
@@ -1566,7 +1564,7 @@ template<class Rep> inline
 rstring<Rep>::rstring( pointer s, allocator_type const &a ) :
   data_( a )
 {
-// TODO: calls length unnecessarily when doing ptr_rep
+  // TODO: calls length unnecessarily when doing ptr_rep
   rep().construct( s, s + (s ? traits_type::length( s ) : 0), a );
 }
 
