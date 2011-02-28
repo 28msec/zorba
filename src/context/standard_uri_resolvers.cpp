@@ -291,7 +291,7 @@ StandardSchemaURIResolver::resolve(
 #endif
   }
 
-  return aURI->getStringValue().str();
+  return lResolvedURI.str();
 }
 
 
