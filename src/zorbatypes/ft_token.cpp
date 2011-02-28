@@ -41,7 +41,8 @@ FTToken::FTToken( char const *utf8_s, int len,
   init( lang, pos, sent, para, item );
 }
 
-FTToken::FTToken( char const *utf8_s, int len, int_t pos, iso639_1::type lang ) :
+FTToken::FTToken( char const *utf8_s, int len, int_t pos,
+                  iso639_1::type lang ) :
   value_( utf8_s, len )
 {
   init( lang, pos );

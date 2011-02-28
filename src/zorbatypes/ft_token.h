@@ -55,7 +55,7 @@ public:
    *
    * @param utf8_s    The token string encoded in UTF-8.  It need not be
    *                  null-terminated.
-   * @param len       The number of chars in the token string.
+   * @param len       The number of bytes in the token string.
    * @param pos_no    The position number.  Position numbers start at 0.
    * @param sent_no   The sentence number.  Sentence numbers start at 1.
    * @param para_no   The paragraph number.  Paragraph numbers start at 1.
@@ -71,7 +71,7 @@ public:
    *
    * @param utf8_s    The token string encoded in UTF-8.  It need not be
    *                  null-terminated.
-   * @param len       The number of chars in the token string.
+   * @param len       The number of bytes in the token string.
    * @param pos_no    The position number.  Position numbers start at 0.
    * @param lang      The language of the token string.
    */
@@ -179,7 +179,7 @@ public:
    *                  have a language.
    * @return Returns said value.
    */
-  zstring const&
+  string_t const&
   value( int selector = original,
          locale::iso639_1::type alt_lang = locale::iso639_1::unknown ) const {
     if ( selector == original )         // optimize this case
