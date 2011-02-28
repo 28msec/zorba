@@ -76,6 +76,8 @@ public:
 
   int                          m_tempvarCounter;
 
+  bool                         theIsInOrderedMode;
+
   VarIdMap                   * theVarIdMap;
   IdVarMap                   * theIdVarMap;
   ExprVarsMap                * theExprVarsMap;
@@ -86,7 +88,8 @@ public:
         CompilerCB* cb,
         const expr_t& root,
         user_function* udf,
-        const zstring& msg);
+        const zstring& msg,
+        bool orderedMode);
 
   ~RewriterContext();
 

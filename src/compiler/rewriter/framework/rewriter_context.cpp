@@ -31,13 +31,15 @@ RewriterContext::RewriterContext(
     CompilerCB* aCompilerCB,
     const expr_t& root,
     user_function* udf,
-    const zstring& msg)
+    const zstring& msg,
+    bool orderedMode)
   :
   theCCB(aCompilerCB),
   theRoot(root),
   theUDF(udf),
   theMessage(msg),
   m_tempvarCounter(0),
+  theIsInOrderedMode(orderedMode),
   theVarIdMap(NULL),
   theIdVarMap(NULL),
   theExprVarsMap(NULL)

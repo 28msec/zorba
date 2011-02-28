@@ -266,7 +266,12 @@ expr_t XQueryCompiler::optimize(expr_t lExpr)
   udfGraph.optimizeUDFs(theCompilerCB);
 
   // Optimize the main expr (i.e., the top expr of the main module).
-  RewriterContext rCtx(theCompilerCB, lExpr, NULL, "Optimizing main program");
+  RewriterContext rCtx(theCompilerCB,
+                       lExpr,
+                       NULL,
+                       "Optimizing main program",
+                       lExpr->get_sctx()->is_in_ordered_mode());
+
   GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
 
   lExpr = rCtx.getRoot();

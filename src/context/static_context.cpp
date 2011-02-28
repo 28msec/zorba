@@ -3376,6 +3376,15 @@ StaticContextConsts::ordering_mode_t static_context::ordering_mode() const
 /***************************************************************************//**
 
 ********************************************************************************/
+bool static_context::is_in_ordered_mode() const
+{
+  return ordering_mode() == StaticContextConsts::ordered;
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
 void static_context::set_ordering_mode(StaticContextConsts::ordering_mode_t v)
 {
   theOrderingMode = v;
@@ -3672,9 +3681,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
   if (module->theCollectionMap)
   {
     if (theCollectionMap == 0)
-    {
       theCollectionMap = new CollectionMap(0, 0, 8, false);
-    }
 
     CollectionMap::iterator coll_iter = module->theCollectionMap->begin();
     CollectionMap::iterator coll_end = module->theCollectionMap->end();
@@ -3694,9 +3701,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
   if (module->theIndexMap)
   {
     if (theIndexMap == NULL)
-    {
       theIndexMap = new IndexMap(0, NULL, 8, false);
-    }
 
     IndexMap::iterator idx_iter = module->theIndexMap->begin();
     IndexMap::iterator idx_end = module->theIndexMap->end();
@@ -3704,11 +3709,16 @@ void static_context::import_module(const static_context* module, const QueryLoc&
     {
       std::pair<store::Item*, rchandle<IndexDecl> > pair = (*idx_iter);
 
-      if (!theIndexMap->insert(pair.first, pair.second))
+      if (lookup_index(pair.first) != NULL)
       {
         ZORBA_ERROR_LOC_PARAM(XDST0022_INDEX_ALREADY_IMPORTED, loc,
                               pair.first->getStringValue(),
                               module->get_module_namespace().c_str());
+      }
+
+      if (!theIndexMap->insert(pair.first, pair.second))
+      {
+        ZORBA_ASSERT(false);
       }
     }
   }

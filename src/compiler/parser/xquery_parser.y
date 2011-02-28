@@ -997,7 +997,9 @@ bool validate_index_properties(
     parsenode* qname,
     xquery_driver& driver)
 {
-  XQUERY_ERROR err = AST_IndexDecl::validatePropertyList(static_cast<DeclPropertyList*>(props));
+  XQUERY_ERROR err = 
+  AST_IndexDecl::validatePropertyList(static_cast<DeclPropertyList*>(props));
+
   if (err != XQ_NO_ERROR)
   {
     driver.set_expr(new ParseErrorNode(driver.createQueryLoc(loc),

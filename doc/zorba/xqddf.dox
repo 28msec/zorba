@@ -42,7 +42,7 @@
 \section intro The Zorba 1.0 Data Definition Facility
 
 Zorba 1.0 extends the XQuery language with support for collections, indexes, and
- integrity constraints. This is accomplished via a combination of new Prolog
+integrity constraints. This is accomplished via a combination of new Prolog
 declarations, new kinds of expressions or extensions to existing expressions,
 and new built-in functions. Furthermore, both the static and the dynamic
 contexts are extended with new components that store information about
@@ -64,7 +64,8 @@ this document, we will refer to this module as the "xqddf" module, and the
 functions in it as the "xqddf" functions. As usual, the xqddf module must be
 imported by any other module that wants to invoke any xqddf functions.
 
-\section collections 1 Collections in Zorba 1.0
+
+\section collections 1 Collections
 
 The current W3C XQuery specification defines collections simply as sequences of
 nodes that are accessible via the fn:collection function. Everything else about
@@ -982,75 +983,128 @@ collections table.</li>
 
 \subsection w3c_collections 1.7 W3C Collections
 
-\section indexes 2 Indexes in Zorba 1.0
 
-Zorba 1.0 introduces support for value indexes. A <strong>value index</strong>
-is a set whose contents (called <strong>index entries</strong>) are defined by a
-"domain" expression and a number of "key" expressions. Informally, an index is
-created by evaluating its domain expression first, resulting in a sequence of
-nodes (called the index <strong>domain sequence</strong>). Then, for each node D
-in the domain sequence, the key expressions are evaluated with node D serving as
-their context node. Each key expression must not return more than one value. If
-a value returned by a key expression is not atomic, it is converted to an atomic
-value via atomization. Thus, for each domain node D, an associated <strong>key
-tuple</strong> K of N atomic values is constructed, where N is the number of key
-expressions. The purpose of the index is to map key tuples to domain nodes. In
-general, the relationship from key tuples to domain nodes is 1:N (i.e., a key
-tuple may be produced from more than one domain nodes). As a result, each index
-entry is a pair consisting of a key tuple and the set of domain nodes that
+
+\section indexes 2 Indexes
+
+
+Zorba supports two kinds of indexes, <strong>value indexes</strong> and 
+<strong>general indexes</strong>. As shown in \ref indexes_in_action, value
+indexes can be used to optimize queries involving value comparisons, whereas 
+general indexes can be used to optimize queries involving
+value and/or general comparisons. Although general indexes can handle both kinds of
+comparisons, value indexes are more compact and efficient, and as a result, they
+should be preferred over general indexes for data on which no general comparisons
+are expected.
+
+A value index is a set whose contents (called <strong>index entries</strong>) 
+are defined by a "domain" expression and a number of "key" expressions. 
+Informally, a value index is created by evaluating its domain expression first, 
+resulting in a sequence of nodes (called the index <strong>domain sequence</strong>). 
+Then, for each node D in the domain
+sequence, the key expressions are evaluated with node D serving as their
+context node. A key expression must not return more than one value. If a
+value returned by a key expression is not atomic, it is converted to an atomic
+value via atomization. Thus, if N is the number of key expressions, then for
+each domain node, an associated <strong>key tuple</strong> of N atomic values
+is constructed. The purpose of the index is to map key tuples to domain nodes. In
+general, several domain nodes may produce the same key tuple. As a result, each
+index entry is a pair consisting of a key tuple and the set of domain nodes that
 produced the key tuple.
 
-Zorba 1.0 supports five index-related operations:
-<a href="#index_declaration" title="index declaration">index declaration</a>,
-<a href="#index_creation" title="index creation">index creation</a>,
-<a href="#index_deletion" title="index deletion">index deletion</a>,
-<a href="#index_probing" title="index probing">index probing</a> and
-<a href="#index_maintenance" title="index maintenance">index maintenance</a>.
+General comaprison operators accept operands that are sequences potentially
+containing more than one item. As a result, the main difference between value
+and general indexes is the the later allow a key expression to return multiple
+values with potentially different data types. On the other hand, for simplicity,
+the current Zorba implementation restricts the number of key expressions for
+general indexes to one expression only. 
+
+Like value indexes, general indexes are sets of index entries, where each index
+entry is a pair consisting of an atomic key value and the set of associated 
+domain nodes. Informally, the set of entries for a general index is created 
+by evaluating its domain expression first, resulting in a sequence of domain 
+nodes. Then, for each node D in the domain sequence, the key expression is
+evaluated with node D serving as its context node. A key expression may return
+a sequence of arbitrary number of items, called the <strong>key sequence</strong>.
+Items in the key sequence may have different data types. If an item in the key
+sequence is a node, it is converted to one or more atomic values via atomization,
+and the atomic values replace the node in the key sequence. If an item in the
+key sequence has type xs:untypedAtomic, it is removed from the key sequence and
+is cast to every other atomic built-in type. Then, for each successful cast,
+the resulting atomic value is put into the key sequence. Thus, for each domain
+node D, a key sequence is constructed that contains atomic values none of which
+has type xs:untypedAtomic. For each value K in this key sequence, the pair
+[K, D] is inserted in the index. If an entry for K exists already, D is inserted
+in the associated set of domain nodes; otherwise a new index entry is created,
+mapping K to the set { D }.
+  
+Zorba supports the following five operations on indexes:
+<a href="#index_declaration">declaration</a>,
+<a href="#index_creation">creation</a>,
+<a href="#index_deletion">deletion</a>,
+<a href="#index_probing">probing</a> and
+<a href="#index_maintenance">maintenance</a>.
 These are explained briefly in the following simple example. Full details for
-each operation are provided in the subsequent chapters.
+each operation are provided in the subsections after the example.
+
 
 \subsection indexes_in_action 2.1 Indexes in action - A simple example
 
-Let us assume the same news application we used in \ref collections_in_action.
-In this section, we will show how to create and use indexes on the collections of the
-news organization. First, let us assume that each employee has a city where
+
+Let us consider the same news application we used in \ref collections_in_action.
+In this example, we will show how to create and use indexes on the collections of
+the news organization. First, let us assume that each employee has a city where
 he/she is currently stationed at. We want to create an index that maps city
 names to the employees that are stationed in those cities. The index will
 contain one entry for each city where at least one employee is stationed in. Let
 us also assume that we want to search for journalists based on the number of
 articles they have written. For this, we will create an index that maps article
 counts to the employees who are journalists and have produced that number of
-articles.
+articles. Finally, we want to be able to quickly find the manager of any given
+employee. For this, we will create an index that maps employee ids to the
+manager of the associated employee.
 
-Before an index can be created, it must be declared. An <a
-href="#index_declaration" title="index declaration">index declaration</a>
-describes the index by providing its domain expression, its key expressions, and
-certain index properties; it also specifies a name for referencing the index in
-subsequent operations. Like collections, indexes must be declared inside the
-prolog of library modules. In terms of the XQuery language, index declarations
-become part of a module's static context.
+Before an index can be created, it must be declared. An <a href="#index_declaration">
+index declaration</a> describes the index by providing its domain expression, 
+its key expressions, and certain index properties; it also specifies a name for 
+referencing the index in subsequent operations. Like collections, indexes must 
+be declared inside the prolog of library modules. In terms of the XQuery language,
+index declarations become part of a module's static context.
 
-In this example, the index declaration is placed inside the <a
-href="#lib_module_news_data_indexes" title="news-data">"news-data"</a> library
+In this example, the index declarations are placed inside the 
+<a href="#lib_module_news_data_indexes">"news-data"</a> library
 module shown below (same as the module we saw in \ref collections_in_action,
 except for the additional index declarations). The first index declaration
 assigns the name news-data:CityEmp to the index. It uses the "on nodes" and "by"
 keywords to specify the domain and key expressions respectively. The "as"
-keyword specifies a target atomic data type which the results of the key
+keyword specifies a target atomic data type which the result of the key
 expression must match with (after atomization). The index is declared as a
 "value equality" index. This means that it can be used to find the employees in
 a particular city, but not in a "range" of cities. In other words, the index is
 not aware of any ordering among city names. Finally, the maintenance property of
 the index is set to "automatically maintained". Briefly, an automatically
 maintained index is one whose maintenance is the responsibility of Zorba rather
-than the xquery programmers. The second index declaration assigns the name
+than the xquery programmers. 
+
+The second index declaration assigns the name
 news-data:ArtCountEmp to the index. Its domain expression selects all employees
 who are journalists. Its key expression computes the number of articles written
 by the "current" journalist. This index is declared as a "value range" index,
 which means that it can be used to find journalists whose article count is
 within a given range. Finally, the index is also declared as "manually
 maintained", which means that programmers must explicitly request that the index
-be synchronized with the underlying data.
+be synchronized with the underlying data. 
+
+The last index declaration assigns the name news-data:EmpMgr to the index. 
+The index is decalred as a "general equality" index, which, like "value equality"
+means that the index does not maintain its keys in any order. The index key
+expression selects, for each employee E, the ids of the employees managed by E. 
+Notice that this set of ids may be empty. The index will contain an entry mapping 
+the empty sequence to the employees who do not manage anybody. Notice also that 
+no type declaration is required for the key expression. Typically, the employee 
+ids will all be integers or strings or untypedAtomic. All of these cases can be 
+handled by the news-data:EmpMgr index, as well as the not very likely scenario 
+where different kinds of employees have ids of different data types.
 
 <a name="lib_module_news_data_indexes" id="lib_module_news_data_indexes"></a>
 \code
@@ -1073,33 +1127,38 @@ be synchronized with the underlying data.
   declare manually maintained value range index news-data:ArtCountEmp
   on nodes xqddf:collection(xs:QName("news-data:employees"))/employee[./position/@kind eq "journalist"]
   by count(for $art in xqddf:collection(xs:QName("news-data:articles"))//article
-           where $art/empid eq ./id
+           where $art/empid = ./id
            return $art) as xs:integer;
+
+  declare automatically maintained general equality index news-data:EmpMgr
+  on nodes xqddf:collection(xs:QName("news-data:employees"))/employee
+  by ./manages//@empid;
 
   declare variable $news-data:employees := xs:QName("news-data:employees");
   declare variable $news-data:articles := xs:QName("news-data:articles");
   declare variable $news-data:months := xs:QName("news-data:months");
   declare variable $news-data:CityEmp := xs:QName("news-data:CityEmp");
   declare variable $news-data:ArtCountEmp := xs:QName("news-data:ArtCountEmp");
+  declare variable $news-data:EmpMgr := xs:QName("news-data:EmpMgr");
+
 \endcode
 
 Having declared the indexes in a library module, they can now be created. This
-is done by the <a href="#admin_script_3"
-title="admin-script-3">"admin-script-3"</a> script shown below. The script must
-first import the <a href="#lib_module_news_data_indexes"
-title="news-data">"news-data"</a> module. As far as indexes are concerned, the
-effect of this import is to create two entries in the static context of the main
+is done by the <a href="#admin_script_3">"admin-script-3"</a> script shown below.
+The script must first import the <a href="#lib_module_news_data_indexes">
+"news-data"</a> module. As far as indexes are concerned, the
+effect of this import is to create three entries in the static context of the main
 module, mapping the index names to the index definitions (domain expression, key
 specification, and properties). Then, the query creates the indexes by invoking
-the <a href="#create_index" title="xqddf:create-index">xqddf:create-index</a>
+the <a href="#create_index">xqddf:create-index</a>
 function, passing the name of the index as input.
 
-Let us consider the creation of the CityEmp index (the process is the same for
-the ArtCountEmp index). <a href="#index_creation" title="index creation">Index
-creation</a> starts with retrieving the index definition from the static
+Let us consider the creation of the CityEmp index (the process is the similar
+for the ArtCountEmp and EmpMgr indexes). <a href="#index_creation">Index creation</a> 
+starts with retrieving the index definition from the static
 context, using the index name. Then, an index container is created, whose
 entries will be pairs associating a city name with a set of employees. Next, the
-index container is populated using the process outlined above: The domain
+index container is populated using the process outlined earlier: The domain
 expression is evaluated, and for each employee node E in the domain sequence,
 the name of the city C where the employee is currently stationed in is retrieved
 by evaluating the key expression, atomizing its result, and checking that the
@@ -1109,8 +1168,8 @@ set associated with C; otherwise, an new entry is created mapping C to the set {
 E }. The last step in index creation involves registering the index inside an
 <strong>indexes table</strong> that maps index names to index containers. The
 index container will remain registered until it is destroyed by a call to the <a
-href="#delete_index" title="xqddf:delete-index">xqddf:delete-index</a> function
-(see the <a href="#admin_script_4" title="admin-script-4">"admin-script-4"</a>
+href="#delete_index">xqddf:delete-index</a> function
+(see the <a href="#admin_script_4">"admin-script-4"</a>
 script below).
 
 <a name="admin_script_3" id="admin_script_3"></a>
@@ -1124,31 +1183,34 @@ script below).
   xqddf:create-index($news-data:CityEmp);
 
   xqddf:create-index($news-data:ArtCountEmp);
+
+  xqddf:create-index($news-data:EmpMgr);
 \endcode
 
 The next step in this example is to show how the index can be used to to
 optimize query performance, which of course, is the primary motivation for
-supporting indexes in any data-processing system. XQDDF provides two functions
-for <a href="#index_probing" title="index probing">index probing</a>: <a
-href="#probe_index_point"
-title="xqddf:probe-index-point">xqddf:probe-index-point</a> and <a
-href="#probe_index_range"
-title="xqddf:probe-index-range">xqddf:probe-index-range</a>. The <a
-href="#probe_index_range"
-title="xqddf:probe-index-range">xqddf:probe-index-range</a> function is
-available only for indexes declared as "value range".
+supporting indexes in any data-processing system. XQDDF provides four functions
+for <a href="#index_probing">index probing</a>:
+<a href="#probe_index_point_value">xqddf:probe-index-point-value</a>, 
+<a href="#probe_index_range_value">xqddf:probe-index-range-value</a>,
+<a href="#probe_index_point_general">xqddf:probe-index-point-general</a>, and 
+<a href="#probe_index_range_general">xqddf:probe-index-range-general</a>.
+xqddf:probe-index-point-value is supported by all kind of indexes,
+xqddf:probe-index-point-general is supported by general indexes (equality and range),
+xqddf:probe-index-range-value is supported by value and general range indexes,
+and xqddf:probe-index-range-general is supported by general range indexes only.
 
-The <a href="#query_probe_1" title="probe-1">"probe-1"</a> query illustrates the
-use of xqddf:probe-index-point. The query returns the names of all employees
-stationed in Paris. As shown, the xqddf:probe-index-point function takes the
+The <a href="#query_probe_1">"probe-1"</a> query illustrates the
+use of xqddf:probe-index-point-value. The query returns the names of all employees
+stationed in Paris. As shown, the xqddf:probe-index-point-value function takes the
 index name and the keyword "Paris" as inputs. It uses the index name to find the
 index container via the indexes tables, looks-up the entry for "Paris" inside
 this container, and returns all the associated employee nodes.
 
-The <a href="#query_probe_2" title="probe-2">"probe-2"</a> query illustrates
-index probing via the xqddf:probe-index-range function. The query returns all
-journalists who have written more than 100 articles. As shown, the first
-parameter of the xqddf:probe-index-range function is the index name, followed by
+The <a href="#query_probe_2">"probe-2"</a> query illustrates
+index probing via the xqddf:probe-index-range-value function. The query returns all
+journalists who have written at least 100 articles. As shown, the first
+parameter of the xqddf:probe-index-range-value function is the index name, followed by
 6 parameters per key expression. The 6 parameters specify a range of value for
 the key values: the first 2 are the lower and upper values of the range, the
 next two are booleans that specify whether the range does indeed have a lower
@@ -1156,33 +1218,37 @@ and/or upper bound, and the last 2 are also booleans that specify whether the
 range is open or closed from below or above (i.e., whether the lower/upper bound
 are included in the range or not).
 
-The <a href="#query_no_probe_1" title="no-probe-1">"no-probe-1"</a> and
-<a href="#query_no_probe_2" title="no-probe-2">"no-probe-2"</a> queries return
-the same results as the
-<a href="#query_probe_1" title="probe-1">"probe-1"</a> and
-<a href="#query_probe_2" title="probe-2">"probe-2"</a> queries, respectively,
+The <a href="#query_probe_3">"probe-3"</a> query illustrates the use of
+xqddf:probe-index-point-general. The query returns the managers of the employees 
+whose id is of type string (or subtype) and its value is "100" or "200".
+It will also return the managers of the employees whose id is of type untypedAtomic
+and its value, when cast to string, is "100" or "200".
+
+The <a href="#query_no_probe_1">"no-probe-1"</a>, <a href="#query_no_probe_2">
+"no-probe-2"</a>, <a href="#query_no_probe_3">"no-probe-3"</a> queries return the
+same results as <a href="#query_probe_1">"probe-1"</a>, <a href="#query_probe_2">
+"probe-2"</a>, and <a href="#query_probe_3">"probe-3"</a>, respectively,
 but without using any index. Normally, the performance of the probe queries will
 be much better than that of the corresponding no-probe queries. This is because,
 in general, indexes organize their entries in ways that make the execution of
 the probe functions very efficient. Typically, some kind of a hash table (for
 value equality indexes) or ordered tree (for value range indexes) data structure
 is employed, and as we will see, Zorba support both kinds of indexes. So, for
-example, the <a href="#query_probe_1" title="probe-1">"probe-1"</a> query does
+example, the <a href="#query_probe_1">"probe-1"</a> query does
 not have to access every entry in the index until it finds the one for Paris,
-whereas the <a href="#query_no_probe_1" title="no-probe-1">"no-probe-1"</a>
+whereas the <a href="#query_no_probe_1">"no-probe-1"</a>
 query has to access every employee in the collection and check his/her city.
 
-People familiar with SQL and modern relational DBMSs would probably expect the
-query optimizer to be able to automatically rewrite queries like <a
-href="#query_no_probe_1" title="no-probe-1">"no-probe-1"</a> and <a
-href="#query_no_probe_2" title="no-probe-2">"no-probe-2"</a> to queries like <a
-href="#query_probe_1" title="probe-1">"probe-1"</a> and <a href="#query_probe_2"
-title="probe-2">"probe-2"</a>. Unfortunately, in Zorba 1.0 the query optimizer
-is not yet smart enough with respect to indexes. Although we do plan to offer
-automatic index-related rewrites in the near future, we also expect the probing
-functions to remain useful for manual rewrites because both the XQuery language
-and the kind of indexes that are allowed in Zorba 1.0 can be much more complex
-than their relational counterparts.
+People familiar with SQL and modern relational DBMSs would probably expect
+the query optimizer to be able to automatically rewrite queries like 
+<a href="#query_no_probe_1">"no-probe-1"</a> to queries like 
+<a href="#query_probe_1">"probe-1"</a>.
+Unfortunately, the Zorba query optimizer is not yet smart enough with respect
+to indexes. Although we do plan to offer automatic index-related rewrites 
+in the near future, we also expect the probing functions to remain useful 
+for manual rewrites because both the XQuery language and the kind of indexes 
+that are allowed in Zorba can be much more complex than their relational 
+counterparts.
 
 <a name="query_probe_1" id="query_probe_1"></a>
 \code
@@ -1192,7 +1258,7 @@ than their relational counterparts.
 
   import module namespace news-data = "http://www.news.org/data" at "news_data.xqlib";
 
-  xqddf:probe-index-point($news-data:CityEmp, "Paris")
+  xqddf:probe-index-point-value($news-data:CityEmp, "Paris")
 \endcode
 
 <a name="query_probe_2" id="query_probe_2"></a>
@@ -1203,7 +1269,18 @@ than their relational counterparts.
 
   import module namespace news-data = "http://www.news.org/data" at "news_data.xqlib";
 
-  xqddf:probe-index-range($news-data:ArtCountEmp, 100, (), true, false, true, false)
+  xqddf:probe-index-range-value($news-data:ArtCountEmp, 100, (), true, false, true, false)
+\endcode
+
+<a name="query_probe_3" id="query_probe_3"></a>
+\code
+  (: The "probe-3" query :)
+
+  import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
+
+  import module namespace news-data = "http://www.news.org/data" at "news_data.xqlib";
+
+  xqddf:probe-index-point-general($news-data:EmpMgr, ("100", "200"))
 \endcode
 
 <a name="query_no_probe_1" id="query_no_probe_1"></a>
@@ -1226,30 +1303,40 @@ than their relational counterparts.
   import module namespace news-data = "http://www.news.org/data" at "news_data.xqlib";
 
   for $emp in xqddf:collection($news-data:employees)/employee[./position/@kind eq "journalist"]
-  where 100 <= count(for $art in xqddf:collection(xs:QName("news-data:articles"))//article
+  where 100 le count(for $art in xqddf:collection(xs:QName("news-data:articles"))//article
                      where $art/empid eq $emp/id
                      return $art)
   return $emp
+
+<a name="query_no_probe_3" id="query_no_probe_3"></a>
+\code
+  (: The "probe-3" query :)
+
+  import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
+
+  import module namespace news-data = "http://www.news.org/data" at "news_data.xqlib";
+
+  for $mgr in xqddf:collection($news-data:employees)/employee
+  where $mgr/manages//@empid = ("100", "200")
+  return $mgr
 \endcode
 
 Now, let us consider what happens when the data on which an index is built gets
-updated. In general, <a href="#index_maintenance" title="index
-maintenance">index maintenance</a> is the operation where the index contents are
+updated. In general, <a href="#index_maintenance">index maintenance</a> 
+is the operation where the index contents are
 updated so that they reflect the index definition with respect to the current
-snapshot of the data. Zorba 1.0 offers two maintenance modes: manual and
+snapshot of the data. Zorba offers two maintenance modes: manual and
 automatic. If an index is declared as "manually maintained", index maintenance
-is done only when the function <a href="#refresh_index"
-title="xqddf:refresh-index">xqddf:refresh-index</a> (described in \ref
-index_maintenance) is invoked inside a query. Essentially, in manual mode
+is done only when the function <a href="#refresh_index">xqddf:refresh-index</a> 
+is invoked inside a query. Essentially, in manual mode
 maintenance is in the control of the query programmers, and the index may become
-stale between two consecutive calls to the <a href="#refresh_index"
-title="xqddf:refresh-index">xqddf:refresh-index</a> function. In contrast, if an
+stale between two consecutive calls to the <a href="#refresh_index">
+xqddf:refresh-index</a> function. In contrast, if an
 index is declared as "automatically maintained", Zorba guarantees that the index
 stays up-to-date at any given time.
 
 In this example, the CityEmp index was declared as automatic. The <a
-href="#query_index_maintenance"
-title="index-maintenance">"index-maintenance"</a> query shown below transfers
+href="#query_index_maintenance">"index-maintenance"</a> query shown below transfers
 the employee with id "007" from his current city, say Paris, to Beijing. Since
 index CityEmp is automatic, after the update is applied, Zorba will initiate a
 maintenance operation on the index, whereby the employee node will be removed
@@ -1285,10 +1372,9 @@ index was declared as "manually maintained".
 \endcode
 
 Finally, we conclude this example with a query that shows how to destroy an
-index. As shown in
-<a href="#admin_script_4" title="admin-script-4">"admin-script-4"</a> below,
-<a href="#index_deletion" title="index deletion">index deletion</a> is done via
-the <a href="#delete_index" title="xqddf:delete-index">xqddf:delete-index</a>
+index. As shown in <a href="#admin_script_4">"admin-script-4"</a> below,
+<a href="#index_deletion">index deletion</a> is done via
+the <a href="#delete_index">xqddf:delete-index</a>
 function. The function simply destroys the index container and removes the
 mapping between the index name and the index container from the indexes table.
 After the index is deleted, any query that tries to access the index will
@@ -1306,11 +1392,13 @@ receive an error.
 \endcode
 
 
-\subsection index_declaration  2.2 Index declaration
+\subsection index_declaration  2.2 Value Index declaration
+
 
 \code
   Prolog ::= ((DefaultNamespaceDecl | Setter | NamespaceDecl | Import) Separator)*
-             ((VarDecl | ContextItemDecl | FunctionDecl | OptionDecl | CollectionDecl | IndexDecl | ICDecl) Separator)*
+             ((VarDecl | ContextItemDecl | FunctionDecl | OptionDecl | 
+               CollectionDecl | IndexDecl | ICDecl) Separator)*
 
   IndexDecl ::= 'declare' IndexProperties 'index' IndexName
                'on' 'nodes' IndexDomainExpr
@@ -1329,7 +1417,7 @@ receive an error.
 
   IndexDomainExpr ::= PathExpr
 
-  IndexKeySpec ::= IndexKeyExpr IndexKeyTypeDecl IndexKeyCollation
+  IndexKeySpec ::= IndexKeyExpr IndexKeyTypeDecl? IndexKeyCollation?
 
   IndexKeyExpr ::= PathExpr
 
@@ -1337,145 +1425,161 @@ receive an error.
 
   AtomicType ::= QName
 
-  IndexKeyCollation ::= ('collation' UriLiteral)?
+  IndexKeyCollation ::= 'collation' UriLiteral
 \endcode
 
-Syntactically, each index is defined by an <a href="#index_declaration"
-title="index declaration">index declaration</a> statement, which specifies a
-unique name for the index as a QName, the index domain expression, a number of
-key specifications, and a set of index properties. Index declarations must be
-placed inside module prologs. The Prolog syntax is extended accordingly, as
-shown above. An additional constraint (not expressible syntactically) is that
-only library modules may contain index declarations [<a href="#ERRXDST0023"
-title="err:XDST0023">err:XDST0023</a>]. The reasons for this rule are the same
-as those for collections (see \ref collection_declaration).
+Syntactically, each index is defined by an <a href="#index_declaration">
+index declaration</a> statement, which specifies a unique name for the index 
+as a QName, the index domain expression, a number of key specifications, and 
+a set of index properties. The IndexDecl syntax shown above is common to both 
+value indexes and general indexes. Whether an index is a value or a general 
+index is determined by the value of the usage property, which is explained below.
 
-To accommodate index declarations, XQDDF extends the static context with a
-component called the <strong>statically known indexes</strong>. This is a map
-whose entries associate an expanded QName with an implementation-dependent
+Index declarations (for both value and general indexes) must be placed inside 
+module prologs. The Prolog syntax is extended accordingly, as shown above. 
+An additional constraint (not expressible syntactically) is that only library 
+modules may contain index declarations  [<a href="#ERRXDST0023">err:XDST0023</a>]. 
+The reasons for this rule are the same as those for collections (see \ref 
+collection_declaration). Furthermore, the qname of an index must have the same
+namespace URI as the target namespace URI of the declaring library module
+[<a href="#ERRXDST0036">err:XDST0036</a>].
+
+To accommodate index declarations, XQDDF extends the static context with a 
+component called the <strong>statically known indexes</strong>. This is a 
+map whose entries associate an expanded QName with an implementation-dependent
 representation of the information contained in an index declaration with the
 same QName. Each index declaration adds an entry to the statically known indexes
 of the module containing the declaration. If the expanded QName of the index is
-equal (as defined by the eq operator) to the expanded QName of another index in
-the statically known indexes of the same module, a static error is raised [<a
-href="#ERRXDST0021" title="err:XDST0021">err:XDST0021</a>]. Like the statically
-known collections, the statically known indexes of a module that is imported by
-another module are copied into the statically known indexes of the importing
-module. It is a static error [<a href="#ERRXDST0022"
-title="err:XDST0022">err:XDST0022</a>] if the expanded QName of an index
-declared in an imported module is equal (as defined by the eq operator) to the
-expanded QName of an index declared in the importing module or in another
-imported module (even if the declarations are consistent).
+equal to the expanded QName of another index in the statically known indexes 
+of the same module, a static error is raised [<a href="#ERRXDST0021">err:XDST0021</a>]. 
+Like the statically known collections, the statically known indexes of 
+a module that is imported by another module are copied into the statically 
+known indexes of the importing module. It is a static error [<a href="#ERRXDST0022">
+err:XDST0022</a>] if the expanded QName of an index declared in an imported module
+is equal to the expanded QName of an index declared in the importing module 
+or in another imported module (even if the declarations are consistent).
 
-Zorba 1.0 defines three index properties: <strong>uniqueness</strong> (with
-possible values 'unique' or 'non unique'), <strong>usage</strong> (with possible
-values 'value range', 'value equality', 'general range', or 'general equality'),
-and <strong>maintenance mode</strong>
-(with possible values 'manually maintained' or 'automatically maintained'). The
-syntax allows the values for these properties to be listed in any order or not
-be specified at all. If not specified, the default values for uniqueness, usage,
-and maintenance mode are 'non unique', 'value equality', and 'automatically
-maintained', respectively. It is a static error [<a href="#ERRXDST0024"
-title="err:XDST0024">err:XDST0024</a>] if more than one value is listed in an
-index declaration for any of these properties.
+Zorba defines three index properties: <strong>uniqueness</strong> (with possible 
+values 'unique' or 'non unique'), <strong>usage</strong> (with possible values 
+'value range', 'value equality', 'general range', or 'general equality'), and 
+<strong>maintenance mode</strong> (with possible values 'manually maintained' 
+or 'automatically maintained'). The syntax allows the values for these properties
+to be listed in any order or not be specified at all. If not specified, the 
+default values for uniqueness, usage, and maintenance mode are 'non unique', 
+'value equality', and 'automatically maintained', respectively. It is a 
+static error [<a href="#ERRXDST0024">err:XDST0024</a>] if more than one value 
+is listed in an index declaration for any of these properties.
 
-The uniqueness property determines the kind of relationship between keys (or key
-tuples, more generaly) and domain nodes: if the relationship is one-to-one, the
-index may be declared as unique; otherwise (one-to-N relationship), the index
-must be declared as non-unique. As we will see, a unique index actually enforces
-the one-to-one relationship between keys and domain nodes.
+The uniqueness property determines the kind of relationship between keys and
+domain nodes: if the index is declared as unique, Zorba makes sure that the
+relationship is one-to-one, that is, each index entry associates a key value
+(or key tuple in the case of value indexs) with exactly one domain node. 
+Otherwise, if the index is non-unique, multiple domain nodes may have the 
+same key value, and as a result, each index entry associates a key with a 
+set of domain nodes.
 
-The usage property specifies the kind of query expressions that may be optimized
-by using the index. A <strong>value equality index</strong> can optimize
-expressions involving value equality predicates only. The <a
-href="#query_probe_1" title="probe-1">"probe-1"</a> and <a
-href="#query_no_probe_1" title="no-probe-1">"no-probe-1"</a> queries in \ref
-indexes_in_action are an example of such usage. As shown there, a value equality
-index supports the <a href="#probe_index_point"
-title="xqddf:probe-index-point">xqddf:probe-index-point</a> function.  A <strong>value
-range index</strong> can optimize expressions involving any kind of value comparison. The
-<a href="#query_probe_2" title="probe-2">"probe-2"</a> and <a
-href="#query_no_probe_2" title="no-probe-2">"no-probe-2"</a> queries in \ref
-indexes_in_action are an example of such usage. A value range index supports
-both the <a href="#probe_index_point" title="xqddf:probe-index-point">
-xqddf:probe-index-point</a> and the <a href="#probe_index_range"
-title="xqddf:probe-index-range">xqddf:probe-index-range</a> functions.
-A <strong>general equality index</strong> can optimize expressions involving
-either value equality or general equality predicates. Finally, a <strong>general
-range index</strong> can optimize expressions involving any kind of value general
-comparison predicates.
+The usage property specifies the kind of the index based on the query expressions 
+that may be optimized by using the index. A <strong>value equality index</strong> 
+can optimize expressions involving value equality predicates only. The 
+<a href="#query_probe_1">"probe-1"</a> and <a href="#query_no_probe_1">
+"no-probe-1"</a> queries in \ref indexes_in_action are an example of
+such usage. As shown there, a value equality index supports the 
+<a href="#probe_index_point_value">xqddf:probe-index-point-value</a> function.
+A <strong>value range index</strong> can optimize expressions involving any kind
+of value comparison. The <a href="#query_probe_2">"probe-2"</a> and <a
+href="#query_no_probe_2">"no-probe-2"</a> queries in \ref indexes_in_action 
+are an example of such usage. A value range index supports both the 
+<a href="#probe_index_point_value">xqddf:probe-index-point-value</a> 
+and the <a href="#probe_index_range_value">xqddf:probe-index-range-value</a>
+functions. A <strong>general equality index</strong> can optimize expressions 
+involving either value equality or general equality predicates. Finally, a 
+<strong>general range index</strong> can optimize expressions involving any
+kind of value or general comparison predicates. 
 
-The maintenance mode specifies how index maintenance is done. Zorba 1.0 offers
-two maintenance modes: manual and automatic. For a <strong>manual
-index</strong>, maintenance is done only when the function <a
-href="#refresh_index" title="xqddf:refresh-index">xqddf:refresh-index</a>
-(described in \ref index_maintenance) is invoked inside a query. Essentially, in
-manual mode maintenance is in the control of the query programmers, and the
-index may become stale between two consecutive calls to the <a
-href="#refresh_index" title="xqddf:refresh-index">xqddf:refresh-index</a>
+The maintenance mode specifies how index maintenance is done. The current Zorba
+implementation offers two maintenance modes: manual and automatic. For a 
+<strong>manual index</strong>, maintenance is done only when the function <a
+href="#refresh_index">xqddf:refresh-index</a> (described in \ref index_maintenance)
+is invoked inside a query. Essentially, in manual mode maintenance is in the
+control of the query programmers, and the index may become stale between two
+consecutive calls to the <a href="#refresh_index">xqddf:refresh-index</a>
 function. In contrast, for an <strong>automatic index</strong>, Zorba guarantees
 that the index stays up-to-date at any given time.
 
 The index declaration syntax is very liberal with respect to the expressions
 that can appear as domain or key expressions. However, the following semantic
-restrictions are imposed by Zorba 1.0 on the domain expression and each of the
+restrictions are imposed on the domain expression and each of the
 key expressions:
+
   <ul>
-  <li>They must be deterministic expressions [<a href="#ERRXDST0028"
-title="err:XDST0028">err:XDST0028</a>].</li>
+  <li>They must be deterministic expressions [<a href="#ERRXDST0028">
+      err:XDST0028</a>].</li>
+
   <li>They must be simple expressions (i.e., not updating or sequential)
-      [<a href="#ERRXDST0033" title="err:XDST0033">err:XDST0033</a>].</li>
-  <li>They must not invoke any input functions other than <a
-href="#xqddf_collection" title="xqddf:collection">xqddf:collection</a>
-      [<a href="#ERRXDST0029" title="err:XDST0029">err:XDST0029</a>]. Moreover,
-the argument to each <a href="#xqddf_collection"
-title="xqddf:collection">xqddf:collection</a> call must
-      be a constant expression returning a QName value [<a href="#ERRXDST0030"
-title="err:XDST0030">err:XDST0030</a>]. (A constant
-      expression is an expression that doesn't access the dynamic context).</li>
+      [<a href="#ERRXDST0033">err:XDST0033</a>].</li>
+
+  <li>They must not invoke any input functions other than <a href="#xqddf_collection">
+      xqddf:collection</a> [<a href="#ERRXDST0029">err:XDST0029</a>]. Moreover,
+      the argument to each <a href="#xqddf_collection">xqddf:collection</a> 
+      call must be a constant expression returning a QName
+      value [<a href="#ERRXDST0030">err:XDST0030</a>]. (A
+      constant expression is an expression that doesn't access the dynamic
+      context).</li>
+
   <li>They must not reference and variables other than the ones defined inside
-the
-      expressions themselves [<a href="#ERRXDST0031"
-title="err:XDST0031">err:XDST0031</a>].</li>
+      the expressions themselves [<a href="#ERRXDST0031">err:XDST0031</a>].</li>
+
   <li>If the index is declared as "automatically maintained", an error is raised
-      [<a href="#ERRXDST0034" title="err:XDST0034">err:XDST0034</a>] if the
-domain and/or the key expressions are too complex for
-      Zorba to perform index maintenance in an efficient manner (see \ref 
-      index_maintenance for details)
+      [<a href="#ERRXDST0034">err:XDST0034</a>] if the domain and/or the key 
+      expressions are too complex for Zorba to perform index maintenance in an 
+      efficient manner (see \ref index_maintenance for details)</li>
   </ul>
 
 Furthermore, the domain expression must satisfy the following additional
-semantic
-restrictions:
+semantic restrictions:
 
   <ul>
   <li>Its context item, context position, and context size are considered
-undefined, and as a result they must not be referenced [<a href="#ERRXDST0032"
-title="err:XDST0032">err:XDST0032</a>].</li>
-  <li>It must generate a sequence of nodes [<a href="#ERRXDTY0010"
-title="err:XDTY0010">err:XDTY0010</a>].</li>
+      undefined, and as a result they must not be referenced [<a href="#ERRXDST0032">
+      err:XDST0032</a>].</li>
+
+  <li>It must generate a sequence of nodes [<a href="#ERRXDTY0010">
+      err:XDTY0010</a>].</li>
+
   <li>Each node in the domain sequence must belong to a collection that appears
-in the available collections of the module that contains the index declaration
-[<a href="#ERRXDDY0020" title="err:XDDY0020">err:XDDY0020</a>].</li>
+      in the available collections of the module that contains the index declaration
+      [<a href="#ERRXDDY0020">err:XDDY0020</a>].</li>
+
+  <li>For general indexes only, the domain expression should not return any
+      duplicate nodes [<a href="#ERRXDDY0028">err:XDDY0028</a>]</li>
   </ul>
 
 With each key expression, an index declaration associates a key type and a key
-collation. The triplet IndexKeyExpr, IndexKeyTypeDecl, IndexKeyCollation is
-called a <strong>keyspec</strong>. The IndexKeyTypeDecl provides an atomic type
-that the result of the associated key expression (for each domain node) must
-match with according to the rules of sequence type matching. This atomic type
-must not be xs:untypedAtomic or xs:anyAtomicType [<a href="#ERRXDST0027"
-title="err:XDST0027">err:XDST0027</a>]. Furthermore, if the index is a value
-range one, an ordering must exist among the values in the type domain [<a
-href="#ERRXDST0027" title="err:XDST0027">err:XDST0027</a>] (this rules excludes
+collation. The triplet IndexKeyExpr, IndexKeyTypeDecl, IndexKeyCollation is 
+called a <strong>keyspec</strong>. For general indexes, the number of keyspecs 
+must be exectly one [<a href="#ERRXDST0035">err:XDST0035</a>]. The IndexKeyTypeDecl 
+is optional for general indexes, but is required for value indexes 
+[<a href="#ERRXDST0027">err:XDST0027</a>]. If present, IndexKeyTypeDecl provides  
+a sequence type that the atomized result of the associated key expression (for 
+each domain node) must match with according to the rules of sequence type 
+matching. The atomic type specified in IndexKeyTypeDecl must not be xs:anyAtomicType,
+and in the case of value indexes, it must not be xs:untypedAtomic either 
+[<a href="#ERRXDST0027">err:XDST0027</a>]. For value indexes, the occurrence 
+indicator specified in IndexKeyTypeDecl must be either absent or equal to '?' 
+[<a href="#ERRXDST0027">err:XDST0027</a>]. Finally, if the index is a value 
+range or general range index, an ordering must exist among the values in the 
+type domain [<a href="#ERRXDST0027">err:XDST0027</a>] (this rules excludes
 the following atomic types and their subtypes: QName, NOTATION, hexBinary,
-hex64Binary, gYearMonth, gYear, gMonthDay, gMonth, and gDay). If the key type in
-a keyspec is xs:string (or subtype of), the IndexKeyCollation specifies the
-collation to use when comparing key values from this keyspec. If no collation is
-specified, the default collation from the static context of the declaring module
-is used.
+hex64Binary, gYearMonth, gYear, gMonthDay, gMonth, and gDay). 
+
+If the key type in a keyspec is xs:string (or subtype of), the IndexKeyCollation 
+specifies the collation to use when comparing key values from this keyspec. If 
+no collation is specified, the default collation from the static context of the 
+declaring module is used.
+
 
 \subsection index_creation 2.3 Index creation
+
 
 As explained already, indexes are just sets of index entries, mapping key tuples
 to domain nodes. In terms of the XQuery language, these sets "live" in the
@@ -1580,7 +1684,9 @@ index.</li>
     the index to the index entry container.</li>
 </ul>
 
+
 \subsection index_deletion 2.4 Index deletion
+
 
 To destroy an index, XQDDF provides the delete-index updating function. The
 function itself and its associated update primitive are described below.
@@ -1617,7 +1723,9 @@ table.</li>
 from the indexes table.</li>
   </ul>
 
+
 \subsection index_probing 2.5 Index probing
+
 
 Probing an index means retrieving the domain nodes associated with a particular
 search condition, which is either a single key tuple, or a "range" of key
@@ -1628,37 +1736,37 @@ specify the search condition. For both functions, the index must exist in both
 the statically known indexes and the available indexes of the invoking module;
 otherwise error XDDY0021 or XDDY0023 is raised, respectively.
 
-<a name="probe_index_point" id="probe_index_point"></a>
+<a name="probe_index_point_value" id="probe_index_point_value"></a>
 \code
-  xqddf:probe-index-point($indexUri as xs:QName,
-                          $key1     as xs:anyAtomic,
-                          ...,
-                          $keyM     as xs:anyAtomic) as node()*
+  xqddf:probe-index-point-value($indexUri as xs:QName,
+                                $key1     as xs:anyAtomic,
+                                ...,
+                                $keyM     as xs:anyAtomic) as node()*
 \endcode
 
-For the probe-index-point function, the search condition is specified as a
+For the probe-index-point-value function, the search condition is specified as a
 number of atomic items comprising a key tuple. This number must be equal to the
 number of indexspecs found in the index declaration [<a href="#ERRXDDY0025"
 title="err:XDDY0025">err:XDDY0025</a>]. If the index contains an entry with the
 given key tuple, the associated domain nodes are returned. Otherwise, the empty
 sequence is returned.
 
-<a name="probe_index_range" id="probe_index_range"></a>
+<a name="probe_index_range_value" id="probe_index_range_value"></a>
 \code
-  probe-index-range($indexUri                 as xs:QName,
-                    $rangeLowerBound1         as xs:anyAtomic?,
-                    $rangeUpperBound1         as xs:anyAtomic?,
-                    $rangeHaveLowerBound1     as xs:boolean,
-                    $rangeHaveupperBound1     as xs:boolean,
-                    $rangeLowerBoundIncluded1 as xs:boolean,
-                    $rangeupperBoundIncluded1 as xs:boolean,
-                    ....,
-                    $rangeLowerBoundM         as xs:anyAtomic?,
-                    $rangeUpperBoundM         as xs:anyAtomic?,
-                    $rangeHaveLowerBoundM     as xs:boolean,
-                    $rangeHaveupperBoundM     as xs:boolean,
-                    $rangeLowerBoundIncludedM as xs:boolean,
-                    $rangeupperBoundIncludedM as xs:boolean) as node()*
+  probe-index-range-value($indexUri                 as xs:QName,
+                          $rangeLowerBound1         as xs:anyAtomic?,
+                          $rangeUpperBound1         as xs:anyAtomic?,
+                          $rangeHaveLowerBound1     as xs:boolean,
+                          $rangeHaveupperBound1     as xs:boolean,
+                          $rangeLowerBoundIncluded1 as xs:boolean,
+                          $rangeupperBoundIncluded1 as xs:boolean,
+                          ....,
+                          $rangeLowerBoundM         as xs:anyAtomic?,
+                          $rangeUpperBoundM         as xs:anyAtomic?,
+                          $rangeHaveLowerBoundM     as xs:boolean,
+                          $rangeHaveupperBoundM     as xs:boolean,
+                          $rangeLowerBoundIncludedM as xs:boolean,
+                          $rangeupperBoundIncludedM as xs:boolean) as node()*
 \endcode
 
 The probe-index-range function can be invoked on value range indices only [<a
@@ -1789,7 +1897,9 @@ function populates an empty index container).</li>
   </ul>
 
 
+
 \section integrity_constraints 3 Integrity Constraints in Zorba 1.0
+
 
 Analogously to collections and indexes, XQDDF defines an additional extension to
 XQuery library modules which allows the declaration of (static) integrity
@@ -2014,7 +2124,7 @@ index specifies conflicting property values.
 index contains an invalid property value.
 
   <a name="ERRXDST0027" id="ERRXDST0027"></a>err:XDST0027, The index has an
-invalid index key type.
+invalid key type declaration.
 
   <a name="ERRXDST0028" id="ERRXDST0028"></a>err:XDST0028, The index has a non
 deterministic definition.
@@ -2036,6 +2146,9 @@ index contains a non-simple expression.
 
   <a name="ERRXDST0034" id="ERRXDST0034"></a>err:XDST0034, Index cannot be
 automatically maintained.
+
+  <a name="ERRXDST0036" id="ERRXDST0036"></a>err:XDST0036, Index qname does not
+have the same namespace URI as the target namespace of the declaring module.
 
   <a name="ERRXDST0041" id="ERRXDST0041"></a>err:XDST0041, An integrity
 constraint with URI is declared already.

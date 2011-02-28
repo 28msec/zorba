@@ -889,6 +889,8 @@ public:
 
 	StaticContextConsts::ordering_mode_t ordering_mode() const;
 
+  bool is_in_ordered_mode() const;
+
 	void set_ordering_mode(StaticContextConsts::ordering_mode_t v);
 
 	StaticContextConsts::empty_order_mode_t empty_order_mode() const;

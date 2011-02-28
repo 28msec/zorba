@@ -162,6 +162,13 @@ void StoreNodeDistinctIterator::close()
 }
 
 
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  class NodeDistinctOrAtomicIterator                                         //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
 bool StoreNodeDistinctOrAtomicIterator::next(store::Item_t& result)
 {
   store::Item_t contextNode;

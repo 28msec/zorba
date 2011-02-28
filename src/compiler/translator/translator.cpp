@@ -4198,6 +4198,37 @@ void* begin_visit(const IndexKeyList& v)
                                   theRTM.ANY_NODE_TYPE_STAR,
                                   XDTY0010_INDEX_DOMAIN_TYPE_ERROR);
 
+  // For general indexes, the domain expression must not return duplicate nodes.
+  // To see why, consider the following examples:
+  //
+  // for $book in collection("books")
+  // where $book//price > 10
+  // return $book 
+  //
+  // An index to optimize the above query would have collection("books") as
+  // its domain expr, and .//price as its key expr. In this case, the donaim
+  // expr does not return duplicate nodes, but if books are allowed to have
+  // multiple  prices, then probing the index for, say prices > 10, may return
+  // a book B multiple times, if B has more than one price that is > 10. So,
+  // to get the same result as with no index use, the probe function must do
+  // duplicate elimination.
+  //
+  // Now, consider the following query:
+  // 
+  // let $xBook := <book>....</book>
+  // for $book in ($xBook, $xBook, $xBook)
+  // where $book//price > 10
+  // return $book 
+  //
+  // If $xBook has a price > 10, the result of this query will be $xBook 3
+  // times. If we were using an index for this query, and the probe does 
+  // duplicate as required by the previous example, we would get $xBook only
+  // once.
+  //
+  // So, to decide whether the probe function should do duplicate elimination
+  // or not, we must be able to distinguish between the above 2 cases. This 
+  // is not easy/possible, so we decide to err in favor of the first example
+  // and not allow the domain expr to return duplicate nodes.
   if (index->isGeneral())
   {
     domainExpr = new fo_expr(theRootSctx,
@@ -4214,7 +4245,7 @@ void* begin_visit(const IndexKeyList& v)
   // Optimize the domain expr. We do this even if the optimizer is off.
   //if (theCCB->theConfig.opt_level == CompilerCB::config::O1)
   {
-    RewriterContext rCtx(theCCB, domainExpr, NULL, msg);
+    RewriterContext rCtx(theCCB, domainExpr, NULL, msg, false);
     GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
     domainExpr = rCtx.getRoot();
 
@@ -4279,30 +4310,42 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
     {
       type = pop_tstack();
       ptype = TypeOps::prime_type(tm, *type);
+      TypeConstants::quantifier_t quant = type->get_quantifier();
 
-      if (!TypeOps::is_subtype(tm, *ptype, *theRTM.ANY_ATOMIC_TYPE_STAR, keySpec->get_location()))
+      const QueryLoc& kloc = keySpec->get_location();
+
+      if (!TypeOps::is_subtype(tm, *ptype, *theRTM.ANY_ATOMIC_TYPE_STAR, kloc))
       {
-        ZORBA_ERROR_LOC_PARAM(XDST0027_INDEX_BAD_KEY_TYPE, keySpec->get_location(),
+        ZORBA_ERROR_LOC_PARAM(XDST0027_INDEX_BAD_KEY_TYPE, kloc,
                               index->getName()->getStringValue(), "");
       }
 
       if (TypeOps::is_equal(tm, *ptype, *theRTM.ANY_ATOMIC_TYPE_ONE) ||
-          TypeOps::is_equal(tm, *ptype, *theRTM.UNTYPED_ATOMIC_TYPE_ONE))
+          (!index->isGeneral() &&
+           TypeOps::is_equal(tm, *ptype, *theRTM.UNTYPED_ATOMIC_TYPE_ONE)))
       {
-        ZORBA_ERROR_LOC_PARAM(XDST0027_INDEX_BAD_KEY_TYPE, keySpec->get_location(),
+        ZORBA_ERROR_LOC_PARAM(XDST0027_INDEX_BAD_KEY_TYPE, kloc,
+                              index->getName()->getStringValue(), "");
+      }
+
+      if (!index->isGeneral() && 
+          quant != TypeConstants::QUANT_ONE && 
+          quant != TypeConstants::QUANT_QUESTION)
+      {
+        ZORBA_ERROR_LOC_PARAM(XDST0027_INDEX_BAD_KEY_TYPE, kloc,
                               index->getName()->getStringValue(), "");
       }
 
       if (index->getMethod() == IndexDecl::TREE &&
-          (TypeOps::is_subtype(tm, *ptype, *theRTM.QNAME_TYPE_ONE, keySpec->get_location()) ||
-           TypeOps::is_subtype(tm, *ptype, *theRTM.NOTATION_TYPE_ONE, keySpec->get_location()) ||
-           TypeOps::is_subtype(tm, *ptype, *theRTM.BASE64BINARY_TYPE_ONE, keySpec->get_location()) ||
-           TypeOps::is_subtype(tm, *ptype, *theRTM.HEXBINARY_TYPE_ONE, keySpec->get_location()) ||
-           TypeOps::is_subtype(tm, *ptype, *theRTM.GYEAR_MONTH_TYPE_ONE, keySpec->get_location()) ||
-           TypeOps::is_subtype(tm, *ptype, *theRTM.GYEAR_TYPE_ONE, keySpec->get_location()) ||
-           TypeOps::is_subtype(tm, *ptype, *theRTM.GMONTH_TYPE_ONE, keySpec->get_location()) ||
-           TypeOps::is_subtype(tm, *ptype, *theRTM.GMONTH_DAY_TYPE_ONE, keySpec->get_location()) ||
-           TypeOps::is_subtype(tm, *ptype, *theRTM.GDAY_TYPE_ONE, keySpec->get_location())))
+          (TypeOps::is_subtype(tm, *ptype, *theRTM.QNAME_TYPE_ONE, kloc) ||
+           TypeOps::is_subtype(tm, *ptype, *theRTM.NOTATION_TYPE_ONE, kloc) ||
+           TypeOps::is_subtype(tm, *ptype, *theRTM.BASE64BINARY_TYPE_ONE, kloc) ||
+           TypeOps::is_subtype(tm, *ptype, *theRTM.HEXBINARY_TYPE_ONE, kloc) ||
+           TypeOps::is_subtype(tm, *ptype, *theRTM.GYEAR_MONTH_TYPE_ONE, kloc) ||
+           TypeOps::is_subtype(tm, *ptype, *theRTM.GYEAR_TYPE_ONE, kloc) ||
+           TypeOps::is_subtype(tm, *ptype, *theRTM.GMONTH_TYPE_ONE, kloc) ||
+           TypeOps::is_subtype(tm, *ptype, *theRTM.GMONTH_DAY_TYPE_ONE, kloc) ||
+           TypeOps::is_subtype(tm, *ptype, *theRTM.GDAY_TYPE_ONE, kloc)))
       {
         ZORBA_ERROR_LOC_PARAM(XDST0027_INDEX_BAD_KEY_TYPE, keySpec->get_location(),
                               index->getName()->getStringValue(), "");
@@ -4315,6 +4358,8 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
 
     if (index->isGeneral())
     {
+      // Eliminate duplicate key values, as they don't play any role in a
+      // general comparison predicate.
       keyExpr = new fo_expr(theRootSctx,
                             keyExpr->get_loc(),
                             GET_BUILTIN_FUNCTION(FN_DISTINCT_VALUES_1),
@@ -4330,7 +4375,8 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
       if (! theSctx->is_known_collation(collationUri))
         ZORBA_ERROR_LOC(XQST0076, keySpec->get_location());
     }
-    else if (ptype != NULL && TypeOps::is_subtype(tm, *ptype, *theRTM.STRING_TYPE_ONE, loc))
+    else if (ptype != NULL && 
+             TypeOps::is_subtype(tm, *ptype, *theRTM.STRING_TYPE_ONE, loc))
     {
       collationUri = theSctx->get_default_collation(loc);
     }
@@ -4348,7 +4394,7 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
     // Optimize the key expr. We do this even if the optimizer is off.
     // if (theCCB->theConfig.opt_level == CompilerCB::config::O1)
     {
-      RewriterContext rCtx(theCCB, keyExpr, NULL, msg.str());
+      RewriterContext rCtx(theCCB, keyExpr, NULL, msg.str(), false);
       GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
       keyExpr = rCtx.getRoot();
 
@@ -8891,7 +8937,8 @@ void end_visit (const ContextItemExpr& v, void* /*visit_state*/)
 ********************************************************************************/
 void* begin_visit(const OrderedExpr& v)
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
+
   return no_state;
 }
 
@@ -8912,10 +8959,11 @@ void end_visit(const OrderedExpr& v, void* /*visit_state*/)
 void* begin_visit(const UnorderedExpr& v)
 {
   TRACE_VISIT();
+
   return no_state;
 }
 
-void end_visit (const UnorderedExpr& v, void* /*visit_state*/)
+void end_visit(const UnorderedExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
@@ -9629,7 +9677,11 @@ void end_visit(const InlineFunction& v, void* aState)
 
   if (theCCB->theConfig.opt_level == CompilerCB::config::O1)
   {
-    RewriterContext rCtx(theCCB, body, NULL, "Inline function");
+    RewriterContext rCtx(theCCB,
+                         body,
+                         NULL,
+                         "Inline function",
+                         (theSctx->ordering_mode() == StaticContextConsts::ordered));
     GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
     body = rCtx.getRoot();
   }

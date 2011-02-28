@@ -93,7 +93,11 @@ expr_t subst_vars(
     const var_expr* var,
     expr* subst)
 {
-  RewriterContext rCtx(rCtx0.getCompilerCB(), root, rCtx0.theUDF, rCtx0.theMessage);
+  RewriterContext rCtx(rCtx0.getCompilerCB(),
+                       root,
+                       rCtx0.theUDF,
+                       rCtx0.theMessage,
+                       rCtx0.theIsInOrderedMode);
 
   SubstVars rule(var, subst);
 

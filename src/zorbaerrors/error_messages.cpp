@@ -30,12 +30,12 @@ namespace zorba { namespace error {
 
 struct err_msg_wrapper
 {
-  private:
-    const char *canonical_err_names[MAX_ZORBA_ERROR_CODE + 1];
+private:
+  const char *canonical_err_names[MAX_ZORBA_ERROR_CODE + 1];
 
-    const char *err_msg[MAX_ZORBA_ERROR_CODE + 1];
+  const char *err_msg[MAX_ZORBA_ERROR_CODE + 1];
 
-  public:
+public:
   err_msg_wrapper ()
   {
 #ifdef WIN32
@@ -48,11 +48,11 @@ struct err_msg_wrapper
   err_msg [code] = strdup(msg);
 #endif
 
-    for (int i = 0; i < MAX_ZORBA_ERROR_CODE; i++)
-    {
-      canonical_err_names [i] = NULL;
-      err_msg [i] = NULL;
-    }
+  for (int i = 0; i < MAX_ZORBA_ERROR_CODE; i++)
+  {
+    canonical_err_names [i] = NULL;
+    err_msg [i] = NULL;
+  }
 
 
 DEF_ERR_CODE (FOAR0001, FOAR0001, "Division by zero.")
@@ -748,6 +748,8 @@ DEF_ERR_CODE(XDST0036_INDEX_DECL_IN_FOREIGN_MODULE, XDST0036,
 "The declaration for index /s specifies a qname whose namespace is not the same as the target namespace of the containing library module.")
 
 
+
+
 DEF_ERR_CODE(XDST0041_IC_IS_ALREADY_DECLARED, XDST0041,
              "An integrity constraint with URI /s is declared already.")
 
@@ -929,6 +931,7 @@ DEF_ERR_CODE(XDDY0033_IC_NOT_MET, XDDY0033,
     return err_msg[code];
   }
 };
+
 
 static const struct err_msg_wrapper& get_err_msg_wrapper()
 {

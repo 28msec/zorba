@@ -95,70 +95,96 @@ typedef rchandle<DocIndexer> DocIndexer_t;
   Data members:
   -------------
 
-  theSctx           : The root static context of the data module containing the
-                      index declaration.
+  - theSctx :
+  The root static context of the data module containing the index declaration.
 
-  theName           : The qname that identifies the index.
+  - theName :
+  The qname that identifies the index.
 
-  theIsGeneral      :
-  theIsUnique       : Whether it is a unique index or not. 
-  theIsTemp         : Whether it is a temp index or not. A temp index is an index
-                      that is created on-the-fly to optimize a query by converting
-                      a nested-lopp join to a hashjoin (see index_join_rule.cpp).
-                      Such an index is destroyed at the end of the query that 
-                      created it.
+  - theIsGeneral :
 
-  theMaintenanceMode: If and how to maintain the index during/after each apply-
-                      updates or not.
+  - theIsUnique :
+  Whether it is a unique index or not. 
 
-  theContainerKind  : The kind if container used to implement the index. 
-                      Currently, there are 2 kinds: a tree-based container 
-                      (std::map) for ordered indexes, or hash-based container
-                      for unordered indexes.
+  - theIsTemp :
+  Whether it is a temp index or not. A temp index is an index that is created
+  on-the-fly to optimize a query by converting a nested-lopp join to a hashjoin
+  (see index_join_rule.cpp). Such an index is destroyed at the end of the query
+  that created it.
 
-  theDomainClause   : A FOR-clause that associates the domain expr with a FOR var
-                      that is referenced by the key exprs and acts as the domain
-                      node for those exprs.
+  - theMaintenanceMode: 
+  If and how to maintain the index during/after each apply-updates or not.
 
-  theKeyExprs       :
+  - theContainerKind : 
+  The kind if container used to implement the index. Currently, there are 2 
+  kinds: a tree-based container (std::map) for ordered indexes, or hash-based
+  container for unordered indexes.
 
-  theOrderModifiers :
+  - theDomainClause : 
+  A FOR-clause that associates the domain expr with a FOR var that is referenced
+  by the key exprs and acts as the domain node for those exprs.
 
-  theSourceNames    : The qnames of the collections referenced in the domain and
-                      key exprs.
-  theDomainSourceExprs : A vector containing pointers to the dc:collection() exprs
-                         within the domain expr.    
+  - theKeyExprs :
 
-  theBuildExpr      : The expr that computes the index entries. It is used to
-                      create or rebuild the full index from scratch. The expr
-                      is a flwor expr of the following form :
+  - theOrderModifiers :
 
-                      for $$dot at $$pos in domainExpr
-                      return index-entry-builder($$dot, fieldExpr1, ..., fieldExprN);
+  - theSourceNames :
+  The qnames of the collections referenced in the domain and key expressions.
+  Currently, it is required that the arg given to every xqddf:collection()
+  invocation within the domain expr or any of the key exprs is a contant expr.
+  This guarantees that the set of collections that participate in the index
+  definition is stable. This is required for efficient automatic index
+  maintenance, because if the collection set for an index changes between 2
+  applyUpdates (by potentially different queries), all we can do is to always
+  rebuild the index unconditionally. Furthermore, this restriction means that
+  the collection set for an index is known at compile time. As a result, the
+  compiler may be able, if the index definition is "simple enough", to generate
+  explicit pul primitives, thus making index maintenance even more efficient.
 
-  theBuildPlan      : The runtime plan corresponding to theBuildExpr. During
-                      runtime (see CreateIndexIterator and RebuildIndexIterator),
-                      this plan is wrapper into a PlanWrapper and then passed to
-                      the store, which uses it to create or re-build the full
-                      index.
+  Notice that if we eliminate this restriction, we may still enforce via other
+  means the more general restriction that the set of collections for an index
+  is stable. For example, we may say that it is the set of collection that were
+  accessed when the index was first created. For index maintenance, we must
+  still make sure that the store knows for each index its collection set.
+  With the above restriction, this is easy, because it is the compiler who
+  gives to the store this info. Without the restriction, the runtime must
+  determine the collection set of an index as the index is being created, and
+  then give this info to the store.
+                   
+  - theDomainSourceExprs :
+  A vector containing pointers to the xqddf:collection() exprs within the
+  domain expr.    
 
-  theDocIndexerExpr : This is an expr that builds the index over a single xml 
-                      tree, which is provided as an external var to this expr.
-                      It is basically the same as theBuildExpr except that a 
-                      reference to a collection inside the domainExpr is replaced
-                      with a reference to an external var that can be bound
-                      dynamically to some xml tree.
+  -theBuildExpr :
+  The expr that computes the index entries. It is used to create or rebuild
+  the full index from scratch. The expr is a flwor expr of the following form :
+
+  for $$dot at $$pos in domainExpr
+  return index-entry-builder($$dot, fieldExpr1, ..., fieldExprN);
+
+  - theBuildPlan :
+  The runtime plan corresponding to theBuildExpr. During runtime (see
+  CreateIndexIterator and RebuildIndexIterator), this plan is wrapper into a 
+  PlanWrapper and then passed to the store, which uses it to create or 
+  re-build the full index.
+
+  - theDocIndexerExpr : 
+  This is an expr that builds the index over a single xml tree, which is
+  provided as an external var to this expr. It is basically the same as
+  theBuildExpr except that a reference to a collection inside the domainExpr
+  is replaced with a reference to an external var that can be bound dynamically
+  to some xml tree.
                                             
-  theDocIndexerVar  : The external var appearing in theDocIndexerExpr.
+  - theDocIndexerVar :
+  The external var appearing in theDocIndexerExpr.
 
-  theDocIndexer     : If the index domain expr is a map over a collection C,
-                      then theDocIndexer obj is not NULL and it provides a
-                      method that takes as input a document D in C and produces
-                      all the index entries for D. theDocIndexer obj is passed
-                      to the store during an apply-updates, so that the store
-                      can obtain the index entries corresponding to a document
-                      that is being updated within collection C, and using these
-                      entries, maintain the index appropriately.
+  - theDocIndexer : 
+  If the index domain expr is a map over a collection C, then theDocIndexer obj
+  is not NULL and it provides a method that takes as input a document D in C 
+  and produces all the index entries for D. theDocIndexer obj is passed to the
+  store during an apply-updates, so that the store can obtain the index entries 
+  corresponding to a document that is being updated within collection C, and 
+  using these entries, maintain the index appropriately.
 ********************************************************************************/
 class IndexDecl : public SimpleRCObject 
 {
@@ -193,7 +219,7 @@ private:
   std::vector<xqtref_t>           theKeyTypes;
   std::vector<OrderModifier>      theOrderModifiers;
 
-  std::vector</*const*/ store::Item*> theSourceNames;
+  std::vector<store::Item*>       theSourceNames;
 
   std::vector<expr*>              theDomainSourceExprs;
 

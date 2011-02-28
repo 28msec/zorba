@@ -301,7 +301,11 @@ PlanIter_t user_function::getPlan(CompilerCB* ccb)
       theIsOptimized = true;
 
       expr_t body = getBody();
-      RewriterContext rctx(ccb, body, this, zstring());
+      RewriterContext rctx(ccb,
+                           body,
+                           this,
+                           zstring(),
+                           body->get_sctx()->is_in_ordered_mode());
       GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rctx);
       body = rctx.getRoot();
       setBody(body);

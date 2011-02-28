@@ -231,7 +231,8 @@ void IndexDecl::setOrderModifiers(const std::vector<OrderModifier>& modifiers)
 
 /******************************************************************************
   Check that the domain and key exprs satisfy the constraints specified by the
-  XQDDF spec.
+  XQDDF spec. This method is called from the translator, after the domain and
+  key exprs have been translated and optimized.
 *******************************************************************************/
 void IndexDecl::analyze()
 {
@@ -242,7 +243,7 @@ void IndexDecl::analyze()
   // Get the var_expr representing the context item, if it is defined
   try
   {
-    theSctx->lookup_var(dotQName, QueryLoc::null, XPST0008);
+    dotVar = theSctx->lookup_var(dotQName, QueryLoc::null, XPST0008);
   }
   catch (error::ZorbaError& e)
   {

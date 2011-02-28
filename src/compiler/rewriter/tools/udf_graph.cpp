@@ -211,7 +211,9 @@ void UDFGraph::optimizeUDFs(CompilerCB* ccb, UDFNode* node, ulong visit)
     // recursive functions, an optimization could be attempted again)
     udf->setOptimized(true);
 
-    RewriterContext rctx(ccb, body, udf, zstring());
+    RewriterContext rctx(ccb, body, udf,
+                         zstring(),
+                         body->get_sctx()->is_in_ordered_mode());
     GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rctx);
     body = rctx.getRoot();
 
