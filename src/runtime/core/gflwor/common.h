@@ -101,7 +101,7 @@ class GroupingSpec : public ::zorba::serialization::SerializeBaseClass
   friend class GroupByIterator;
   friend class GroupByClause;//Just for older gcc's
   
-protected:
+public:
   PlanIter_t                theInput;
   std::vector<ForVarIter_t> theVarRefs;
   std::string               theCollation;

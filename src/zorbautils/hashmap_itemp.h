@@ -13,8 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_ZORBAUTILS_ITEM_POINTER_HASHMAP
+#if !defined ZORBA_ZORBAUTILS_ITEM_POINTER_HASHMAP && !defined ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION || !defined ZORBA_SERIALIZABLE_ZORBAUTILS_ITEM_POINTER_HASHMAP && defined ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
+#ifdef ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
+#define ZORBA_SERIALIZABLE_ZORBAUTILS_ITEM_POINTER_HASHMAP
+#else
 #define ZORBA_ZORBAUTILS_ITEM_POINTER_HASHMAP
+#endif
 
 #include "zorbautils/hashfun.h"
 #include "zorbautils/hashmap.h"

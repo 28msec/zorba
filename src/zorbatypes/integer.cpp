@@ -21,6 +21,10 @@
 
 #include <stdlib.h>
 
+#undef  IS_ZERO
+#undef  IS_POSITIVE
+#undef  IS_POSITIVE_OR_ZERO
+#undef  IS_NEGATIVE
 #ifndef ZORBA_NO_BIGNUMBERS
 #define IS_ZERO(mapm_obj)                 (mapm_obj.sign() == 0)
 #define IS_POSITIVE(mapm_obj)             (mapm_obj.sign() > 0)

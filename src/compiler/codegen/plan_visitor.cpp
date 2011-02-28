@@ -151,7 +151,7 @@ typedef rchandle<LetVarIterator> LetVarIter_t;
 
 #define ITEM_FACTORY (GENV.getStore().getItemFactory())
 
-
+namespace plan_visitor_ns{
 template <typename T> T pop_stack(std::stack<T> &stk)
 {
   assert (! stk.empty ());
@@ -160,11 +160,11 @@ template <typename T> T pop_stack(std::stack<T> &stk)
   return x;
 }
 
-
 template<class T> T& peek_stack(std::stack<T> &stk)
 {
   ZORBA_ASSERT (! stk.empty ());
   return stk.top ();
+}
 }
 
 
@@ -383,7 +383,7 @@ ftnode_visitor* get_ftnode_visitor()
 
 PlanIter_t pop_itstack()
 {
-  return pop_stack(itstack);
+  return plan_visitor_ns::pop_stack(itstack);
 }
 
 
@@ -402,7 +402,7 @@ void print_stack()
   else
   {
     XMLIterPrinter vp(std::cout);
-    print_iter_plan(vp, peek_stack(itstack));
+    print_iter_plan(vp, plan_visitor_ns::peek_stack(itstack));
   }
 }
 
@@ -1994,7 +1994,7 @@ void end_visit (transform_expr& v)
   std::vector<rchandle<copy_clause> >::const_iterator lEnd  = v.end();
   for(; lIter != lEnd; ++lIter)
   {
-    PlanIter_t lInput = pop_stack(lInputs);
+    PlanIter_t lInput = plan_visitor_ns::pop_stack(lInputs);
     std::vector<ForVarIter_t>* lVarIters = 0;
     var_expr* lVar = (*lIter)->getVar();
     ZORBA_ASSERT(copy_var_iter_map.get((uint64_t)lVar, lVarIters));
@@ -2118,7 +2118,7 @@ void end_visit(fo_expr& v)
 
     if (is_enclosed_expr(&v))
     {
-      expr* e = pop_stack(theConstructorsStack);
+      expr* e = plan_visitor_ns::pop_stack(theConstructorsStack);
       ZORBA_ASSERT(e == &v);
 
       if (!theEnclosedContextStack.empty())
@@ -2302,7 +2302,7 @@ bool begin_visit (axis_step_expr& v)
   store::ItemFactory& factory = *(GENV.getStore().getItemFactory());
   store::Item_t qname;
 
-  PlanIter_t& ite = peek_stack(itstack);
+  PlanIter_t& ite = plan_visitor_ns::peek_stack(itstack);
   PathIterator* pathIte = dynamic_cast<PathIterator*>(ite.getp());
 
   if (pathIte == NULL)
@@ -2616,7 +2616,7 @@ void end_visit (doc_expr& v)
   push_itstack(lDocIter);
 
   theEnclosedContextStack.pop();
-  expr* e = pop_stack(theConstructorsStack);
+  expr* e = plan_visitor_ns::pop_stack(theConstructorsStack);
   ZORBA_ASSERT(e == &v);
 }
 
@@ -2650,7 +2650,7 @@ void end_visit(elem_expr& v)
 
   bool isRoot = false;
   theEnclosedContextStack.pop();
-  expr* e = pop_stack(theConstructorsStack);
+  expr* e = plan_visitor_ns::pop_stack(theConstructorsStack);
   ZORBA_ASSERT(e == &v);
 
   // Handling of the special case where the QName expression of a direct element constructor
@@ -2719,7 +2719,7 @@ void end_visit(attr_expr& v)
 
   bool isRoot = false;
   theEnclosedContextStack.pop();
-  expr* e = pop_stack(theConstructorsStack);
+  expr* e = plan_visitor_ns::pop_stack(theConstructorsStack);
   ZORBA_ASSERT(e = &v);
 
   if (theConstructorsStack.empty() || is_enclosed_expr(theConstructorsStack.top()))
@@ -2761,7 +2761,7 @@ void end_visit(text_expr& v)
 
   bool isRoot = false;
   theEnclosedContextStack.pop();
-  expr* e = pop_stack(theConstructorsStack);
+  expr* e = plan_visitor_ns::pop_stack(theConstructorsStack);
   ZORBA_ASSERT(e = &v);
   if (theConstructorsStack.empty() || is_enclosed_expr(theConstructorsStack.top()))
   {
@@ -2801,7 +2801,7 @@ void end_visit(pi_expr& v)
 
   bool isRoot = false;
   theEnclosedContextStack.pop();
-  expr* e = pop_stack(theConstructorsStack);
+  expr* e = plan_visitor_ns::pop_stack(theConstructorsStack);
   ZORBA_ASSERT(e = &v);
   if (theConstructorsStack.empty() || is_enclosed_expr(theConstructorsStack.top()))
   {

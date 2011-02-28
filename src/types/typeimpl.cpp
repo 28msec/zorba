@@ -29,6 +29,7 @@ namespace zorba
 
 //#define DO_TRACE
 
+#undef TRACE
 #ifdef DO_TRACE
 #define TRACE(msg)                                                            \
   {std::cout << __FUNCTION__ << ": " << msg << std::endl; std::cout.flush(); }

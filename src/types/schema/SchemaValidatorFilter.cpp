@@ -299,7 +299,7 @@ void SchemaValidatorFilter::processStartElement()
       XMLContentModel* cm = currType->getContentModel();
       currentScope = theParentStack->fCurrentScope;
 
-      QName element(thePrefix.getRawBuffer(),
+      XERCES_CPP_NAMESPACE::QName element(thePrefix.getRawBuffer(),
                     theLocalname.getRawBuffer(),
                     uriId,
                     fMemoryManager);
@@ -632,7 +632,7 @@ void SchemaValidatorFilter::processAttrs(XMLElementDecl *elemDecl)
     {
       SchemaAttDef *curDef = (SchemaAttDef*)&attDefList.getAttDef(i);
       XMLAttDef::DefAttTypes defType = curDef->getDefaultType();
-      QName* attName = curDef->getAttName();
+      XERCES_CPP_NAMESPACE::QName* attName = curDef->getAttName();
 
       unsigned int curUriId = attName->getURI();
       const XMLCh *curName = attName->getLocalPart();
@@ -1181,7 +1181,7 @@ bool SchemaValidatorFilter::switchGrammar(const XMLCh* uri)
 
 
 bool SchemaValidatorFilter::laxElementValidation(
-    QName* element,
+    XERCES_CPP_NAMESPACE::QName* element,
     ContentLeafNameTypeVector* cv,
     const XMLContentModel* cm,
     unsigned int parentElemDepth)
@@ -1207,7 +1207,7 @@ bool SchemaValidatorFilter::laxElementValidation(
 
     for (; i < leafCount; ++i)
     {
-      QName* fElemMap = cv->getLeafNameAt(i);
+      XERCES_CPP_NAMESPACE::QName* fElemMap = cv->getLeafNameAt(i);
       unsigned int uri = fElemMap->getURI();
       unsigned int nextState;
       bool anyEncountered = false;

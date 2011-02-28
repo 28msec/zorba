@@ -1,8 +1,12 @@
+#ifndef ZORBAUTILS_STEMMER_RUNTIME_HEADER_H
+#define ZORBAUTILS_STEMMER_RUNTIME_HEADER_H
 
 #include <limits.h>
 
 #include "api.h"
 
+#undef  MAXINT
+#undef  MININT
 #define MAXINT INT_MAX
 #define MININT INT_MIN
 
@@ -56,3 +60,4 @@ extern symbol * assign_to(struct SN_env * z, symbol * p);
 
 extern void debug(struct SN_env * z, int number, int line_count);
 
+#endif

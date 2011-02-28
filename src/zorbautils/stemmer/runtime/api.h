@@ -1,4 +1,7 @@
 
+#ifndef ZORBAUTILS_STEMMER_RUNTIME_API_H
+#define ZORBAUTILS_STEMMER_RUNTIME_API_H
+
 typedef unsigned char symbol;
 
 /* Or replace 'char' above with 'short' for 16 bit characters.
@@ -24,3 +27,4 @@ extern void SN_close_env(struct SN_env * z, int S_size);
 
 extern int SN_set_current(struct SN_env * z, int size, const symbol * s);
 
+#endif

@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#ifndef ZORBA_UTIL_DIR_H
+#define ZORBA_UTIL_DIR_H
 
 #include "zorba/util/file.h"
 #include "zorbatypes/rchandle.h"
@@ -93,3 +95,4 @@ namespace zorba {
   };
 
 }
+#endif

@@ -173,7 +173,7 @@ do { if (state) ZORBA_ERROR(err); state = true; } while (0)
                    loc,                                     \
                    lookup_ctx_var(DOT_VARNAME, loc).getp())
 
-
+namespace translator_ns{
 /*******************************************************************************
 
 ********************************************************************************/
@@ -196,11 +196,11 @@ template<class T> T& peek_stack(std::stack<T> &stk)
 
 template <typename T> T pop_stack(std::stack<T> &stk)
 {
-  T x = peek_stack(stk);
+  T x = translator_ns::peek_stack(stk);
   stk.pop();
   return x;
 }
-
+}
 
 /*******************************************************************************
   Class to represent a vertex in the dependency graph among var and udfs decls
@@ -1256,7 +1256,7 @@ rchandle<axis_step_expr> expect_axis_step_top()
 ********************************************************************************/
 xqtref_t pop_tstack()
 {
-  return pop_stack(theTypeStack);
+  return translator_ns::pop_stack(theTypeStack);
 }
 
 
@@ -10038,8 +10038,8 @@ void check_boundary_whitespace(const DirElemContent& v)
 {
   v.setIsStripped(false);
   if (theSctx->boundary_space_mode() == StaticContextConsts::strip_space) {
-    bool lPrevIsBoundary = pop_stack (theIsWSBoundaryStack);
-    const DirElemContent* lPrev = peek_stack(thePossibleWSContentStack);
+    bool lPrevIsBoundary = translator_ns::pop_stack (theIsWSBoundaryStack);
+    const DirElemContent* lPrev = translator_ns::peek_stack(thePossibleWSContentStack);
     thePossibleWSContentStack.pop();
 
     if (v.get_direct_cons() != 0 || (v.get_common_content() != 0 && v.get_common_content()->get_expr() != 0)) {
@@ -10078,7 +10078,7 @@ void check_boundary_whitespace(const DirElemContent& v)
  */
 void end_check_boundary_whitespace() {
   if (theSctx->boundary_space_mode() == StaticContextConsts::strip_space) {
-    const DirElemContent* lPrev = pop_stack (thePossibleWSContentStack);
+    const DirElemContent* lPrev = translator_ns::pop_stack (thePossibleWSContentStack);
     if (lPrev != 0) {
       lPrev->setIsStripped(true);
     }

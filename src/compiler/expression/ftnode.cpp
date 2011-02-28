@@ -142,16 +142,19 @@ END_SERIALIZABLE_CLASS_VERSIONS(ftwords_times)
   if ( !DO_END_VISIT( vr0 ) ) ; else (V).end_visit( *this ); \
   return vr0
 
+#undef  EV_ACCEPT
 #define EV_ACCEPT( EXPR, V )                          \
   {                                                   \
     expr_visitor *const ev = (V).get_expr_visitor();  \
     if ( ev && (EXPR) ) (EXPR)->accept( *ev );        \
   }
 
+#undef  ACCEPT
 #define ACCEPT( FTNODE, V ) \
   if ( !(FTNODE) ) ; else   \
   vr0 = (ft_visit_result::type)(vr0 | (FTNODE)->accept( V ))
 
+#undef  ACCEPT_SEQ
 #define ACCEPT_SEQ( T, S, V )                 \
   for ( T::const_iterator i = (S).begin();    \
         DO_CHILDREN( vr0 ) && i != (S).end(); \
@@ -161,10 +164,12 @@ END_SERIALIZABLE_CLASS_VERSIONS(ftwords_times)
 ////////// PUT() macros ///////////////////////////////////////////////////////
 
 #define PUT(OS)                     OS << indent
+#undef  BEGIN_PUT
 #define BEGIN_PUT(OS,LABEL)         PUT(OS) << #LABEL
 #define INDENT_PUT(OS)              OS << " [\n" << inc_indent
 #define BEGIN_INDENT_PUT(OS,LABEL)  BEGIN_PUT(OS,LABEL); INDENT_PUT(OS)
 #define OUTDENT_PUT(OS)             OS << dec_indent << indent << "]\n"
+#undef  END_PUT
 #define END_PUT(OS)                 return OS
 #define OUTDENT_END_PUT(OS)         OUTDENT_PUT(OS); END_PUT(OS)
 

@@ -61,6 +61,7 @@ END_SERIALIZABLE_CLASS_VERSIONS(FnMinMaxIterator)
 
 NARY_ACCEPT(FnMinMaxIterator);
 
+namespace sequences_impl_ns{
 static XQPCollator* getCollator(
     static_context* sctx,
     const QueryLoc& loc,
@@ -82,7 +83,7 @@ static XQPCollator* getCollator(
 
   return sctx->get_collator(lCollationItem->getStringValue().str(), loc);
 }
-
+}
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
@@ -130,7 +131,7 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (theChildren.size() == 2)
-    lCollator = getCollator(theSctx, loc, planState, theChildren[1].getp());
+    lCollator = sequences_impl_ns::getCollator(theSctx, loc, planState, theChildren[1].getp());
   else
     lCollator = theSctx->get_default_collator(loc);
 

@@ -26,9 +26,13 @@
 #include "zorbaserialization/serialization_engine.h"
 
 
+#undef  IS_ZERO
 #define IS_ZERO(mapm_obj)                 (mapm_obj == 0)
+#undef  IS_POSITIVE
 #define IS_POSITIVE(mapm_obj)             (mapm_obj > 0)
+#undef  IS_POSITIVE_OR_ZERO
 #define IS_POSITIVE_OR_ZERO(mapm_obj)     (mapm_obj >= 0)
+#undef  IS_NEGATIVE
 #define IS_NEGATIVE(mapm_obj)             (mapm_obj < 0)
 
 float acosh( float z)

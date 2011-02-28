@@ -199,10 +199,12 @@ ft_int ftcontains_visitor::get_int( PlanIter_t const &iter ) {
 
 #ifndef NDEBUG
 
+#undef BEGIN_VISIT
 #define BEGIN_VISIT(LABEL)                                \
   if ( !TRACE_FULL_TEXT ); else                           \
   cout << indent << "BEGIN " #LABEL << endl << inc_indent
 
+#undef END_VISIT
 #define END_VISIT(LABEL)                                \
   if ( !TRACE_FULL_TEXT ); else                         \
   cout << dec_indent << indent << "END " #LABEL << endl

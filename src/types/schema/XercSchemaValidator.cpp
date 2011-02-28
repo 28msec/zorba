@@ -103,7 +103,7 @@ XercSchemaValidator::~XercSchemaValidator()
 //  XercSchemaValidator: Implementation of the XMLValidator interface
 // ---------------------------------------------------------------------------
 bool XercSchemaValidator::checkContent (XMLElementDecl* const elemDecl
-                                 , QName** const          children
+                                 , XERCES_CPP_NAMESPACE::QName** const          children
                                  , XMLSize_t              childCount
                                  , XMLSize_t*             indexFailingChild)
 {
@@ -347,7 +347,7 @@ void XercSchemaValidator::faultInAttr (XMLAttr&    toFill, const XMLAttDef&  att
     //  prefix we stored (if any), resolve it, and store the URL id if any.
     //
     SchemaAttDef* schemaAttDef = (SchemaAttDef*) &attDef;
-    QName* attName = schemaAttDef->getAttName();
+    XERCES_CPP_NAMESPACE::QName* attName = schemaAttDef->getAttName();
 
     toFill.set
     (

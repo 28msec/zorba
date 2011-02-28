@@ -52,6 +52,7 @@ void *parsenode_visitor::no_state = (void *) &dummy;
 int printdepth = 0;
 ostringstream __oss;
 
+#undef  INDENT
 #define INDENT      std::string(++printdepth, ' ')
 #define OUTDENT     std::string(printdepth--, ' ')
 #define UNDENT      printdepth--
