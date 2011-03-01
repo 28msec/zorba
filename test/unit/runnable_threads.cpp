@@ -30,22 +30,58 @@ class MyThread : public zorba::Runnable {
     virtual void
     run()
     {
-      std::cout << __FUNCTION__ << " suspending" << std::endl;
+  //    std::cout << __FUNCTION__ << " suspending" << std::endl;
       suspend();
-      std::cout << __FUNCTION__ << " hicks" << std::endl;
+  //    std::cout << __FUNCTION__ << " hicks" << std::endl;
     }
 
-    
+
     virtual void
     finish()
     {
       std::cout << __FUNCTION__ << std::endl;
     }
-}; 
+};
+
+class MyBusyThread : public zorba::Runnable {
+
+  public:
+    virtual void
+    run()
+    {
+//      std::cout << __FUNCTION__ << " sleeping" << std::endl;
+      sleep(5);
+//      std::cout << __FUNCTION__ << " sleeping done" << std::endl;
+    }
+
+
+    virtual void
+    finish()
+    {
+      std::cout << __FUNCTION__ << std::endl;
+    }
+};
 
 int
-runnable(int argc, char* argv[])
+runnable_threads(int argc, char* argv[])
 {
+  std::cout << "Busy Thread:" << std::endl;
+  {
+    MyBusyThread lThread;
+    lThread.start();
+    sleep(1);
+    lThread.terminate();
+  }
+
+  std::cout << "Suspended Thread:" << std::endl;
+  {
+    MyThread lThread;
+    lThread.start();
+    sleep(2);
+    lThread.terminate();
+  }
+
+  std::cout << "2 Suspendend Thread:" << std::endl;
   {
     MyThread lThread1;
     MyThread lThread2;
@@ -59,6 +95,8 @@ runnable(int argc, char* argv[])
       lThread2.terminate();
     }
   }
+
+  std::cout << "Resumed Thread:" << std::endl;
   {
     MyThread lThread;
     {
@@ -71,6 +109,4 @@ runnable(int argc, char* argv[])
     }
   }
   return 0;
-
 }
-

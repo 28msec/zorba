@@ -46,7 +46,7 @@ IF(WIN32)
     path_resolver.cpp
     userdefined_uri_resolver.cpp
     multiple_runs.cpp
-    runnable.cpp
+    runnable_threads.cpp
     plan_serializer.cpp
     call_stack.cpp
     external_function.cpp
@@ -66,6 +66,8 @@ ELSE(WIN32)
     UnitTests.cpp
     path_resolver.cpp
     userdefined_uri_resolver.cpp
+    multiple_runs.cpp
+    runnable_threads.cpp
 # SF#3191795
 #    plan_serializer.cpp
     call_stack.cpp
