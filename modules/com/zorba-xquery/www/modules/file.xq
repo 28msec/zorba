@@ -116,6 +116,45 @@ declare sequential function file:mkdir(
   $failIfExists as xs:boolean
 ) as empty-sequence() external;
 
+(:~
+ : Deletes a file or an empty directory from the file system.
+ :
+ : @param $fileOrDir The path/URI of the file or directory to delete.
+ : @return The empty sequence.
+ :)
+declare sequential function file:delete(
+  $fileOrDir as xs:string
+) as empty-sequence() external;
+
+(:~
+ : Deletes a file or a directory from the file system. If $fileOrDir denotes a
+ : directory and $recursive evaluates to <pre>fn:true()</pre>, the directory
+ : will be deleted recursively.
+ :
+ : @param $fileOrDir The path/URI of the file or directory to delete.
+ : @param $recursive If the operation should recursively delete the given
+ :	  directory.
+ : @return The empty sequence.
+ :)
+declare sequential function file:delete(
+  $fileOrDir as xs:string,
+  $recursive as xs:boolean
+) as empty-sequence()
+{
+  if ($recursive) then
+    for $item in file:files($fileOrDir)
+    let $fullPath := fn:concat($fileOrDir, file:path-separator(), $item)
+    return
+      if (file:is-directory($fullPath)) then
+        file:delete($fullPath, fn:true())
+      else
+        file:delete($fullPath)
+  else
+    ();
+    
+  file:delete($fileOrDir);
+};
+
 (: ********************************************************************** :)
 
 (:~
@@ -356,18 +395,6 @@ declare %nondeterministic function file:read-text(
 declare sequential function file:read-xml(
   $file as xs:string
 ) as node() external;
-
-(:~
- : Delete a file or a directory from the file system. This operation is not
- : recursive and it will fail for non-emty directories.
- :
- : @param $fileOrDir The path/URI of the file or directory to delete.
- : @return true is the operation is succeeds.
- : @error An error is thrown if IO or Security problems occur.
- :)
-declare sequential function file:remove(
-  $fileOrDir as xs:string
-) as xs:boolean external;
 
 (:~
  : Write a sequence of items to a file. This operation creates a new file

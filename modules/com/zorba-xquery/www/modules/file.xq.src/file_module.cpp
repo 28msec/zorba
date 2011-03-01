@@ -39,6 +39,13 @@ FileModule::getExternalFunction(const String& aLocalname)
   if (!lFunc) {
     if (1 == 0) {
 
+    // Update done to new FileAPI spec for the following:
+    // TODO: errors
+    } else if (aLocalname.equals("mkdir")) {
+      lFunc = new MkdirFunction(this);
+    } else if (aLocalname.equals("delete")) {
+      lFunc = new DeleteFunction(this);
+    // ****************************************************
     } else if (aLocalname.equals("copy")) {
       lFunc = new CopyFunction(this);
     } else if (aLocalname.equals("exists")) {
@@ -51,8 +58,6 @@ FileModule::getExternalFunction(const String& aLocalname)
       lFunc = new IsFileFunction(this);
     } else if (aLocalname.equals("last-modified")) {
       lFunc = new LastModifiedFunction(this);
-    } else if (aLocalname.equals("mkdir")) {
-      lFunc = new MkdirFunction(this);
     } else if (aLocalname.equals("path-separator")) {
       lFunc = new PathSeparator(this);
     } else if (aLocalname.equals("path-to-full-path")) {
@@ -67,8 +72,6 @@ FileModule::getExternalFunction(const String& aLocalname)
       lFunc = new ReadTextFunction(this);
     } else if (aLocalname.equals("read-xml")) {
       lFunc = new ReadXmlFunction(this);
-    } else if (aLocalname.equals("remove")) {
-      lFunc = new RemoveFunction(this);
     } else if (aLocalname.equals("write")) {
       lFunc = new WriteFunction(this);
     } else if (aLocalname.equals("normalize-path")) {

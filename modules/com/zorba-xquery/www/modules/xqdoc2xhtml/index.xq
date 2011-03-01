@@ -88,7 +88,7 @@ declare %private sequential function xqdoc2html:clear-folder(
   else
     for $file in file:files($folderPath, $pattern, fn:true())
     let $filePath := fn:concat($folderPath, file:path-separator(), $file)
-    let $res := file:remove($filePath)
+    let $res := file:delete($filePath)
     return
       ()
 };

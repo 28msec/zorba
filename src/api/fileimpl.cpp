@@ -224,9 +224,9 @@ FileImpl::remove()
     }
 
     if (theInternalFile->is_directory()) {
-      theInternalFile->rmdir();
+      theInternalFile->rmdir(false);
     } else {
-      theInternalFile->remove();
+      theInternalFile->remove(false);
     }
 
     // postcondition

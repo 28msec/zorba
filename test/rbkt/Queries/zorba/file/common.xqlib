@@ -52,34 +52,18 @@ declare sequential function commons:testReadBinary($path as xs:string) as xs:bas
   file:read($path)
 };
 
-declare sequential function commons:testRemoveNonEmptyDir($path as xs:string) as xs:string* {
+declare sequential function commons:testDelete($path as xs:string, $recursive as xs:boolean) as xs:string* {
   try {
-    if (file:remove($path)) then
-      "SUCCESS"
-    else
-      ("testRemoveNonEmptyDir failed for path:", $path)
+    file:delete($path, $recursive);
+    "SUCCESS";
   } catch * {
-    exit returning ("testRemoveNonEmptyDir failed (exception caught) for path:", $path)
+    exit returning ("testDelete failed for path:", $path)
   };
-};
-
-declare sequential function commons:testRemoveFile($path as xs:string) as xs:string* {
-  if (file:remove($path)) then
-    "SUCCESS"
-  else
-    ("testRemoveFile failed for path:", $path)
 };
 
 declare sequential function commons:testWriteSerializeXml($path as xs:string, $xml as item()) as xs:string* {
   file:write($path, $xml, <options method="xml" />/@*);
   "SUCCESS";
-};
-
-declare sequential function commons:testRemoveDir($path as xs:string) as xs:string* {
-  if (file:remove($path)) then
-    "SUCCESS"
-  else
-    ("testRemoveDir failed for path:", $path)
 };
 
 
@@ -120,18 +104,9 @@ declare sequential function commons:testInitDir($dir as xs:string) as xs:string*
 
 declare sequential function commons:testUnInitDir($dir as xs:string, $file as xs:string) as xs:string* {
   (: ==================================================================== :)
-  (: delete the file first :)
-  (: ========= :)
-  let $s := commons:testRemoveFile($file)
-  return
-    if (fn:not(commons:isSuccess($s))) then
-      exit returning ("testUnInitDir failed - could not delete file:", $file)
-    else ();
-
-  (: ==================================================================== :)
   (: delete the directory :)
   (: ========= :)
-  let $s := commons:testRemoveDir($dir)
+  let $s := commons:testDelete($dir, fn:true())
   return
     if (fn:not(commons:isSuccess($s))) then
       exit returning ("testUnInitDir failed - could not delete directory:", $dir)

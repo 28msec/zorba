@@ -45,6 +45,22 @@ namespace zorba {
 
 //*****************************************************************************
 
+  class DeleteFunction : public FileFunction
+  {
+    public:
+      DeleteFunction(const FileModule* aModule);
+
+      virtual String
+      getLocalName() const { return "delete"; }
+  
+      virtual ItemSequence_t 
+      evaluate(const StatelessExternalFunction::Arguments_t& args,
+               const StaticContext* aSctxCtx,
+               const DynamicContext* aDynCtx) const;
+  };
+
+//*****************************************************************************
+
   class CopyFunction : public FileFunction
   {
     public:
@@ -305,22 +321,6 @@ namespace zorba {
 
       virtual String
       getLocalName() const { return "read-xml"; }
-  
-      virtual ItemSequence_t 
-      evaluate(const StatelessExternalFunction::Arguments_t& args,
-               const StaticContext* aSctxCtx,
-               const DynamicContext* aDynCtx) const;
-  };
-
-//*****************************************************************************
-
-  class RemoveFunction : public FileFunction
-  {
-    public:
-      RemoveFunction(const FileModule* aModule);
-
-      virtual String
-      getLocalName() const { return "remove"; }
   
       virtual ItemSequence_t 
       evaluate(const StatelessExternalFunction::Arguments_t& args,

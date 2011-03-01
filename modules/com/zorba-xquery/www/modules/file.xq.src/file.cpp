@@ -65,6 +65,27 @@ MkdirFunction::evaluate(
 
 //*****************************************************************************
 
+DeleteFunction::DeleteFunction(const FileModule* aModule)
+  : FileFunction(aModule)
+{
+}
+
+ItemSequence_t
+DeleteFunction::evaluate(
+  const StatelessExternalFunction::Arguments_t& aArgs,
+  const StaticContext*                          aSctxCtx,
+  const DynamicContext*                         aDynCtx) const
+{
+  String lFileStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
+  File_t lFile = File::createFile(lFileStr.c_str());
+
+  lFile->remove();
+
+  return ItemSequence_t(new EmptySequence());
+}
+
+//*****************************************************************************
+
 CopyFunction::CopyFunction(const FileModule* aModule)
   : FileFunction(aModule)
 {
@@ -589,28 +610,6 @@ ReadXmlFunction::evaluate(
   Item lItem = lDataManager->parseDocument(lInStream);
 
   return ItemSequence_t(new SingletonItemSequence(lItem));
-}
-
-//*****************************************************************************
-
-RemoveFunction::RemoveFunction(const FileModule* aModule)
-  : FileFunction(aModule)
-{
-}
-
-ItemSequence_t
-RemoveFunction::evaluate(
-  const StatelessExternalFunction::Arguments_t& aArgs,
-  const StaticContext*                          aSctxCtx,
-  const DynamicContext*                         aDynCtx) const
-{
-  String lFileStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
-  File_t lFile = File::createFile(lFileStr.c_str());
-
-  lFile->remove();
-
-  return ItemSequence_t(new SingletonItemSequence(
-      theModule->getItemFactory()->createBoolean(true)));
 }
 
 //*****************************************************************************
