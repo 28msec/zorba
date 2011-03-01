@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 #include <cstdlib>
+#include <cstdio>
 #include <sstream>
 
 #ifdef WIN32
@@ -40,6 +41,47 @@ extern char** environ;
 namespace zorba { namespace system {
 
   const String SystemModule::SYSTEM_MODULE_NAMESPACE = "http://www.zorba-xquery.com/modules/system";
+
+#ifdef LINUX
+
+  static void trim(std::string& str, char delim)
+  {
+    std::string::size_type pos = str.find_last_not_of(delim);
+    if(pos != std::string::npos) {
+      str.erase(pos + 1);
+      pos = str.find_first_not_of(delim);
+      if(pos != std::string::npos) str.erase(0, pos);
+    }
+    else str.erase(str.begin(), str.end());
+  }
+
+
+  static std::pair<std::string, std::string> getDistribution() {
+    std::pair<std::string, std::string> lRes;
+    FILE *pipe;
+    const char* command = "lsb_release -r -i";
+    pipe = (FILE*) popen(command, "r");
+
+    char line[1024];
+    while (fgets(line, sizeof(line), pipe)) {
+      std::stringstream s(line);
+      std::string name, value;
+      getline(s, name, ':');
+      trim(name, ' ');
+      trim(name, '\t');
+      getline(s, value, ':');
+      trim(value, ' ');
+      trim(value, '\t');
+      trim(value, '\n');
+      if (name == "Distributor ID") {
+        lRes.first = value;
+      } else {
+        lRes.second = value;
+      }
+    }
+    return lRes;
+  }
+#endif
 
   SystemModule::SystemModule()
     : thePropertyFunction(0), thePropertiesFunction(0)
@@ -153,6 +195,10 @@ namespace zorba { namespace system {
     theProperties.insert(std::make_pair("os.arch", osname.machine));
     theProperties.insert(std::make_pair("user.name", getenv("USER")));
 #endif
+#ifdef LINUX
+    theProperties.insert(std::make_pair("linux.distributor", ""));
+    theProperties.insert(std::make_pair("linux.distributor.version", ""));
+#endif
     theProperties.insert(std::make_pair("zorba.version", Zorba::version().getVersion()));
     theProperties.insert(std::make_pair("zorba.version.major", intToString(Zorba::version().getMajorVersion())));
     theProperties.insert(std::make_pair("zorba.version.minor", intToString(Zorba::version().getMinorVersion())));
@@ -264,6 +310,12 @@ namespace zorba { namespace system {
       if (!getEnv(envS.substring(4), lRes)) {
         return ItemSequence_t(new EmptySequence());
       }
+#ifdef LINUX
+    } else if (envS == "linux.distributor") {
+      lRes = getDistribution().first;
+    } else if (envS == "linux.distributor.version") {
+      lRes = getDistribution().second;
+#endif
     } else {
       std::map<String, String>::const_iterator i;
       if ((i = theProperties.find(envS.c_str())) != theProperties.end()) {

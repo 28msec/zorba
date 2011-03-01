@@ -75,6 +75,18 @@ declare variable $system:os-version as xs:string := "os.version";
 declare variable $system:os-arch as xs:string := "os.arch";
 
 (:~
+ : The linux distribution, zorba is running on. This of course is only
+ : available under Linux.
+ :)
+declare variable $system:linux-distributor as xs:string := "linux.distributor";
+
+(:~
+ : The version of the linux distribution, zorba is running on. This of course is only
+ : available under Linux.
+ :)
+declare variable $system:linux-distributor-version as xs:string := "linux.distributor.version";
+
+(:~
  : The username, with which this process was started.
  :)
 declare variable $system:user-name as xs:string := "user.name";
