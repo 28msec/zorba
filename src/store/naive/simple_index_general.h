@@ -160,6 +160,49 @@ public:
 };
 
 
+#if 0
+/******************************************************************************
+
+*******************************************************************************/
+class GeneralTreeIndex : public GeneralIndex
+{
+  friend class SimpleStore;
+  friend class ProbeHashGeneralIndexIterator;
+
+  typedef std::map<const store::IndexKey*,
+                   GeneralIndexValue*,
+                   IndexCompareFunction> IndexMap;
+
+private:
+  IndexCompareFunction   theCompFunction;
+  IndexMap             * theMaps[XS_LAST];
+  IndexMap             * theSingleMap;
+
+protected:
+  GeneralTreeIndex(
+        const store::Item_t& qname,
+        const store::IndexSpecification& spec);
+
+  ~GeneralTreeIndex();
+
+  bool insert(
+        store::IndexKey*& key,
+        store::Item_t& item,
+        bool multikey);
+
+  bool insertInMap(
+        store::IndexKey*& key,
+        store::Item_t& node,
+        IndexMap*& targetMap,
+        bool multikey,
+        bool untyped);
+
+  bool remove(
+        const store::IndexKey* key,
+        store::Item_t& item);
+};
+#endif
+
 
 }
 }

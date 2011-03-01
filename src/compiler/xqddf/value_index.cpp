@@ -457,7 +457,7 @@ expr* IndexDecl::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
   // Clone the key exprs, replacing their references to the 2 domain variables
   // with the clones of these variables.
   //
-  for(ulong i = 0; i < numKeys; ++i)
+  for (ulong i = 0; i < numKeys; ++i)
   {
     subst.clear();
     subst[dot] = newdot;

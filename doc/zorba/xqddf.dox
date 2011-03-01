@@ -1594,24 +1594,20 @@ system. To begin with, each index entry set is implemented by some appropriate
 data structure that acts as an index entry container. The description of
 potential data structures is beyond the scope of this document, but the typical
 choices are either some sort of hash table (for equality indexes) or some kind
-of ordered tree (for range indexes). In addition to managing the index entry
-containers, the store maintains an <strong>indexes table</strong>, which maps
-index names to index entry containers. The indexes table is accessible by all
-queries, so once an entry is added to the table, the associated index is assumed
-to be available to every query and every module that participates in the
-execution of that query.
+of ordered tree (for range indexes). To manage the index entry containers, the 
+store maintains an <strong>indexes table</strong>, which maps index names to 
+index entry containers. The indexes table is accessible by all queries, so once 
+an entry is added to the table, the associated index is assumed to be available 
+to every query and every module that participates in the execution of that query.
 
 Creation of an index involves creating an initially empty index entry container,
 populating that container with the entries computed by the domain and key
 expressions of the index, and "registering" that container in the indexes table.
-All this is done by the <a href="#create_index"
-title="xqddf:create-index">xqddf:create-index</a> function that is described
-below. In fact, <a href="#create_index"
-title="xqddf:create-index">xqddf:create-index</a> is an updating function, so
-instead of actually creating the index, it generates a pending update primitive
-that becomes part of a pending update list (PUL) to be applied at a later time
-(see Extensions to the XQUF updates routines). The update primitive is also
-described below.
+All this is done by the <a href="#create_index">xqddf:create-index</a> function 
+that is described below. In fact, <a href="#create_index">xqddf:create-index</a> 
+is an updating function, so instead of actually creating the index, it generates 
+a pending update primitive that becomes part of a pending update list (PUL) to 
+be applied at a later time. The update primitive is also described below.
 
 <a name="create_index" id="create_index"></a>
 \code

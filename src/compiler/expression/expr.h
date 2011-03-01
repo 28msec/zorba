@@ -1237,9 +1237,11 @@ public:
         const QueryLoc&,
         checked_vector<expr_t>& seq);
 
-  unsigned size() const { return (unsigned)theArgs.size(); }
+  ulong size() const { return (ulong)theArgs.size(); }
 
-  const expr_t& operator[](int i) const { return theArgs[i]; }
+  const expr_t& operator[](ulong i) const { return theArgs[i]; }
+
+  expr_t& operator[](ulong i) { return theArgs[i]; }
 
   void push_back(expr_t e) 
   {

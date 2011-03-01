@@ -31,23 +31,22 @@ namespace zorba
 class IndexDecl;
 
 
-/**
- * 
- *  create-internal-index($indexName as xs:QName) as ()
- *
- *  This is an intenal function that is used by the hashjoins rule to create and
- *  populate a temp index. There are 3 reasons why we need a different function
- *  than the regular create-index, which is defined below:
- *
- *  1. create-index assumes that the domain and key expressions do not reference
- *     any free variables. This is not true for the temp index created by the
- *     hashjoin rule.
- *  2. The argument to create-index can be any arbitrary expression that returns
- *     a QName. In the case of create-internal-index we know that the arg is a
- *     const expr holding a qname item.
- *  3. create-internal-index is a "simple" function, whereas create-index is an
- *     updating function.
- */
+/*******************************************************************************
+  create-internal-index($indexName as xs:QName) as ()
+
+  This is an intenal function that is used by the hashjoins rule to create and
+  populate a temp index. There are 3 reasons why we need a different function
+  than the regular create-index, which is defined below:
+
+  1. create-index assumes that the domain and key expressions do not reference
+     any free variables. This is not true for the temp index created by the
+     hashjoin rule.
+  2. The argument to create-index can be any arbitrary expression that returns
+     a QName. In the case of create-internal-index we know that the arg is a
+     const expr holding a qname item.
+  3. create-internal-index is a "simple" function, whereas create-index is an
+     updating function.
+********************************************************************************/
 class CreateInternalIndexIterator : public UnaryBaseIterator<CreateInternalIndexIterator,
                                                              PlanIteratorState>
 { 
@@ -76,9 +75,10 @@ public:
     :
     UnaryBaseIterator<CreateInternalIndexIterator, PlanIteratorState>(sctx, loc, child),
     theQName(aName)
-  {}
+  {
+  }
 
-  virtual ~CreateInternalIndexIterator();
+  ~CreateInternalIndexIterator();
 
   store::Item_t getName() const { return theQName; }
 
@@ -88,30 +88,29 @@ public:
 };
 
 
-/**
- *  create-index($indexName as xs:QName) as pul()
- *
- *  This is an updating function. During normal runtime (see CreateIndexIterator),
- *  it checks that index does not exist already (in the store) and generates an
- *  update primitive. During applyUpdates(), it creates the index container in
- *  the store and populates it according to the index definition.
- *
- *  The specification for the index to create is taken from the static context,
- *  which stores a mapping from the index uri to IndexDecl obj (defined in
- *  indexing/value_index.h).
- *
- *  The population of the index is done by a runtime plan that implements
- *  the following flwor expr:
- *
- *    for $$dot at $$pos in domainExpr
- *    return index-entry-builder($$dot, fieldExpr1, ..., fieldExprN);
- *
- *  This plan is generated "on-the-fly" by the CreateIndexIterator. The generated
- *  plan is stored in the update primitive, and during applyUpdates(), it is given
- *  as an arg to the SimpleStore::createIndex() method. 
- *    
- */
-class CreateIndexIterator : public UnaryBaseIterator<CreateIndexIterator, 
+/*******************************************************************************
+  create-index($indexName as xs:QName) as pul()
+ 
+  This is an updating function. During normal runtime (see CreateIndexIterator),
+  it checks that index does not exist already (in the store) and generates an
+  update primitive. During applyUpdates(), it creates the index container in
+  the store and populates it according to the index definition.
+ 
+  The specification for the index to create is taken from the static context,
+  which stores a mapping from the index uri to IndexDecl obj (defined in
+  indexing/value_index.h).
+ 
+  The population of the index is done by a runtime plan that implements
+  the following flwor expr:
+ 
+    for $$dot at $$pos in domainExpr
+    return index-entry-builder($$dot, fieldExpr1, ..., fieldExprN);
+ 
+  This plan is generated "on-the-fly" by the CreateIndexIterator. The generated
+  plan is stored in the update primitive, and during applyUpdates(), it is given
+  as an arg to the SimpleStore::createIndex() method. 
+********************************************************************************/
+class CreateIndexIterator : public UnaryBaseIterator<CreateIndexIterator,
                                                      PlanIteratorState>
 { 
 public:
@@ -127,15 +126,15 @@ public:
   }
 
   CreateIndexIterator(
-        static_context* sctx,
-        const QueryLoc& loc,
-        PlanIter_t& child)
+      static_context* sctx,
+      const QueryLoc& loc,
+      PlanIter_t& child)
     :
     UnaryBaseIterator<CreateIndexIterator, PlanIteratorState>(sctx, loc, child)
   {
   }
 
-  virtual ~CreateIndexIterator();
+  ~CreateIndexIterator();
 
   void accept(PlanIterVisitor& v) const;
 
@@ -168,12 +167,13 @@ public:
   }
 
   DeleteIndexIterator(
-        static_context* sctx,
-        const QueryLoc& loc,
-        PlanIter_t& child)
+      static_context* sctx,
+      const QueryLoc& loc,
+      PlanIter_t& child)
     :
     UnaryBaseIterator<DeleteIndexIterator, PlanIteratorState>(sctx, loc, child)
-  {}
+  {
+  }
 
   virtual ~DeleteIndexIterator();
 
