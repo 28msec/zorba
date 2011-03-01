@@ -209,7 +209,7 @@ declare function z:get_shape_properties(
   let $file := $z:indexCollector//module[@uri eq $ModuleUri]/@file
   let $type := z:get_module_type($ModuleUri)
   return
-    fn:concat('[URL="$',$file,'" tooltip="(',$z:moduleTypes[$type],') module uri=', $ModuleUri,'" label="',$lLabel,'" fontcolor="', $z:colors[$type] ,'"]')
+    fn:concat('[URL="../',$file,'" tooltip="(',$z:moduleTypes[$type],') module uri=', $ModuleUri,'" label="',$lLabel,'" fontcolor="', $z:colors[$type] ,'"]')
 };
 
 (:~

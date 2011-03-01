@@ -58,7 +58,7 @@ declare variable $xqdoc2html:functionsCollector := <functions/>;
     <a href="http://experimental.zorba-xquery.org/" 
        title="Get started with XQuery using Zorba"
        target="_blank">Experiment XQuery with Zorba</a>
-    <a href="modules.svg" 
+    <a href="images/modules.svg" 
        title="Module dependencies SVG graph">Module dependencies SVG graph</a>
   </links>;
 
@@ -216,11 +216,11 @@ declare sequential function xqdoc2html:copy-xhtml-requisites(
       file:mkdir($xhtmlPath);
 
       (: second - clear the folder of all the files with these extensions :)
-      xqdoc2html:clear-folder($xhtmlPath,"(\.xsd|\.gif|\.js|\.css|\.html|\.cpp|\.h|\.xq)$");
+      xqdoc2html:clear-folder($xhtmlPath,"(\.xsd|\.gif|\.svg|\.js|\.css|\.html|\.cpp|\.h|\.xq)$");
       
       (: third - re-copy these files :)
       xqdoc2html:copy-files($modulesPath, $schemasPath, "\.xsd$");
-      xqdoc2html:copy-files($xhtmlRequisitesPath, $imagesPath, "\.gif$");
+      xqdoc2html:copy-files($xhtmlRequisitesPath, $imagesPath, "(\.gif|\.svg)$");
       xqdoc2html:copy-files($xhtmlRequisitesPath, $libPath, "\.js$");
       xqdoc2html:copy-files($xhtmlRequisitesPath, $cssPath, "\.css$");
       xqdoc2html:copy-files($xhtmlRequisitesPath, $templatesPath, "\.html$");

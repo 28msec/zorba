@@ -51,7 +51,8 @@ ELSE(NOT ZORBA_WITH_FILE_ACCESS)
       -f
       -q "\"${CMAKE_CURRENT_SOURCE_DIR}/src/generate-module-dependencies-svg.xq\""
       -e "\"xqdocXMLPath:=${CMAKE_CURRENT_BINARY_DIR}/xml\""
-      -o "\"${CMAKE_CURRENT_BINARY_DIR}/xhtml/modules.svg\""
+      -o "\"${CMAKE_CURRENT_BINARY_DIR}/xhtml/images/modules.svg\""
+      COMMENT "Building module dependencies SVG..."
   )
   SET_TARGET_PROPERTIES(modules_svg PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD 1)
   

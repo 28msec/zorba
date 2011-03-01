@@ -20,19 +20,39 @@
 
 MACRO (ZORBA_DOXYGEN DOXYGEN_SOURCE DOXYGEN_BINARY DOXYGEN_TARGET_NAME)
   IF (DOXYGEN_FOUND)
-  # the FindDoxygen module doesn't set DOXYGEN_DOT_FOUND like it is
-  # supposed to, so here we have a workaround.
+    # the FindDoxygen module doesn't set DOXYGEN_DOT_FOUND like it is
+    # supposed to, so here we have a workaround.
     IF ( DOXYGEN_DOT_EXECUTABLE )
-       SET ( DOXYGEN_DOT_FOUND "YES" )
+
+      FIND_PROGRAM(DOXYGEN_DOT_EXECUTABLE_PATH
+        NAMES dot
+        PATHS 
+          "$ENV{ProgramFiles}/Graphviz 2.21/bin"
+          "C:/Program Files/Graphviz 2.21/bin"
+          "$ENV{ProgramFiles}/ATT/Graphviz/bin"
+          "C:/Program Files/ATT/Graphviz/bin"
+          [HKEY_LOCAL_MACHINE\\SOFTWARE\\ATT\\Graphviz;InstallPath]/bin
+          /Applications/Graphviz.app/Contents/MacOS
+          /Applications/Doxygen.app/Contents/Resources
+          /Applications/Doxygen.app/Contents/MacOS
+          DOC "Graphviz Dot tool for using Doxygen"
+      )
+
+      IF(DOXYGEN_DOT_EXECUTABLE)
+        SET(DOXYGEN_DOT_FOUND "YES")
+        # The Doxyfile wants the path to Dot, not the entire path and executable
+        GET_FILENAME_COMPONENT(DOXYGEN_DOT_PATH "${DOXYGEN_DOT_EXECUTABLE}" PATH CACHE)
+      ENDIF()
+
     ENDIF ( DOXYGEN_DOT_EXECUTABLE )
-  
+
     # click+jump in Emacs and Visual Studio (for doxy.config) (jw)
     IF    (CMAKE_BUILD_TOOL MATCHES "(msdev|devenv)")
       SET(DOXY_WARN_FORMAT "\"$file($line) : $text \"")
     ELSE  (CMAKE_BUILD_TOOL MATCHES "(msdev|devenv)")
       SET(DOXY_WARN_FORMAT "\"$file:$line: $text \"")
     ENDIF (CMAKE_BUILD_TOOL MATCHES "(msdev|devenv)")
-    
+
     # we need latex for doxygen because of the formulas
     FIND_PACKAGE(LATEX)
     IF    (NOT LATEX_COMPILER)
@@ -44,7 +64,7 @@ MACRO (ZORBA_DOXYGEN DOXYGEN_SOURCE DOXYGEN_BINARY DOXYGEN_TARGET_NAME)
     IF    (NOT DVIPS_CONVERTER)
       MESSAGE(STATUS "dvips command DVIPS_CONVERTER not found but usually required.")
     ENDIF (NOT DVIPS_CONVERTER)
-    
+
     IF   (EXISTS "${DOXYGEN_SOURCE}/doxy.config.in")
       MESSAGE(STATUS "configured ${DOXYGEN_SOURCE}/doxy.config.in --> ${DOXYGEN_BINARY}/doxy.config")
       CONFIGURE_FILE(${DOXYGEN_SOURCE}/doxy.config.in 
@@ -69,14 +89,14 @@ MACRO (ZORBA_DOXYGEN DOXYGEN_SOURCE DOXYGEN_BINARY DOXYGEN_TARGET_NAME)
           # failed completely...
           MESSAGE(SEND_ERROR "Please create ${DOXYGEN_SOURCE}/doxy.config.in (or doxy.config as fallback)")
         ENDIF(EXISTS "${CMAKE_MODULE_PATH}/doxy.config.in")
-  
+
       ENDIF(EXISTS "${DOXYGEN_SOURCE}/doxy.config")
     ENDIF(EXISTS "${DOXYGEN_SOURCE}/doxy.config.in")
-    
+
     SET(DOXY_CONFIG_NATIVE)
     FILE(TO_NATIVE_PATH ${DOXY_CONFIG} DOXY_CONFIG_NATIVE)
     ADD_CUSTOM_TARGET("${DOXYGEN_TARGET_NAME}" "${DOXYGEN_EXECUTABLE}" "${DOXY_CONFIG_NATIVE}")
-    
+
     # create a windows help .chm file using hhc.exe
     # HTMLHelp DLL must be in path!
     # fallback: use hhw.exe interactively
@@ -88,7 +108,7 @@ MACRO (ZORBA_DOXYGEN DOXYGEN_SOURCE DOXYGEN_BINARY DOXYGEN_TARGET_NAME)
         # MESSAGE(SEND_ERROR "DBG  HHP_FILE=${HHP_FILE}")
         ADD_CUSTOM_TARGET(winhelp_${DOXYGEN_TARGET_NAME} ${HTML_HELP_COMPILER} ${HHP_FILE})
         ADD_DEPENDENCIES (winhelp_${DOXYGEN_TARGET_NAME} ${DOXYGEN_TARGET_NAME})
-       
+
         IF (NOT TARGET_DOC_SKIP_INSTALL)
         # install windows help?
         # determine useful name for output file 
@@ -111,7 +131,7 @@ MACRO (ZORBA_DOXYGEN DOXYGEN_SOURCE DOXYGEN_BINARY DOXYGEN_TARGET_NAME)
           ENDIF(${PROJECT_NAME}_VERSION_MAJOR)
           # keep suffix
           SET(OUT  "${OUT}.chm")
-          
+
           #MESSAGE("DBG ${PROJECT_BINARY_DIR}/Doc/html/index.chm \n${OUT}")
           # create target used by install and package commands 
           INSTALL(FILES "${PROJECT_BINARY_DIR}/Doc/html/index.chm"
@@ -120,7 +140,7 @@ MACRO (ZORBA_DOXYGEN DOXYGEN_SOURCE DOXYGEN_BINARY DOXYGEN_TARGET_NAME)
           )
         ENDIF(EXISTS "${PROJECT_BINARY_DIR}/Doc/html/index.chm")
         ENDIF(NOT TARGET_DOC_SKIP_INSTALL)
-  
+
       ENDIF(HTML_HELP_COMPILER)
       # MESSAGE(SEND_ERROR "HTML_HELP_COMPILER=${HTML_HELP_COMPILER}")
     ENDIF (WIN32) 

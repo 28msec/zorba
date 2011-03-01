@@ -1,0 +1,8 @@
+/*! \mainpage Zorba Code Documentation
+
+  Here are some os the SVG graphs available: \n
+    - header dependencies in Zorba: <a href="../headers_svg/headers.svg" title="Header dependencies SVG Graph">headers.svg</a>.\n
+    - Zorba components dependencies: <a href="../headers_svg/components.svg" title="Zorba components dependencies SVG Graph">components.svg</a>.\n
+    - dependencies between the XQuery modules in Zorba: <a href="../../zorba/xqdoc/xhtml/images/modules.svg" title="XQuery modules dependencies SVG Graph">modules.svg</a>.\n
+ */
+
