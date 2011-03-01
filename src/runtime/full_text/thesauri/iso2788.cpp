@@ -142,7 +142,9 @@ static rel_table_entry rel_table_fr[] = {
 };
 REL_TABLE_END(fr);
 
-#undef LANG
+#ifdef LANG
+# undef LANG
+#endif
 #define LANG(CODE)                    \
   iso639_1::CODE:                     \
     *begin = rel_table_##CODE;        \

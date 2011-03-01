@@ -1,12 +1,20 @@
-#ifndef ZORBAUTILS_STEMMER_RUNTIME_HEADER_H
-#define ZORBAUTILS_STEMMER_RUNTIME_HEADER_H
+// BEGIN ZORBA PATCH
+#ifndef STEMMER_HEADER_H
+#define STEMMER_HEADER_H
+// END ZORBA PATCH
 
 #include <limits.h>
 
 #include "api.h"
 
-#undef  MAXINT
-#undef  MININT
+// BEGIN ZORBA PATCH
+#ifdef MAXINT
+#undef MAXINT
+#endif
+#ifdef MININT
+#undef MININT
+#endif
+// END ZORBA PATCH
 #define MAXINT INT_MAX
 #define MININT INT_MIN
 
@@ -60,4 +68,6 @@ extern symbol * assign_to(struct SN_env * z, symbol * p);
 
 extern void debug(struct SN_env * z, int number, int line_count);
 
-#endif
+// BEGIN ZORBA PATCH
+#endif /* STEMMER_HEADER_H */
+// END ZORBA PATCH

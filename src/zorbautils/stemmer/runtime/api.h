@@ -1,6 +1,7 @@
-
-#ifndef ZORBAUTILS_STEMMER_RUNTIME_API_H
-#define ZORBAUTILS_STEMMER_RUNTIME_API_H
+// BEGIN ZORBA PATCH
+#ifndef STEMMER_API_H
+#define STEMMER_API_H
+// END ZORBA PATCH
 
 typedef unsigned char symbol;
 
@@ -27,4 +28,6 @@ extern void SN_close_env(struct SN_env * z, int S_size);
 
 extern int SN_set_current(struct SN_env * z, int size, const symbol * s);
 
-#endif
+// BEGIN ZORBA PATCH
+#endif /* STEMMER_API_H */
+// END ZORBA PATCH
