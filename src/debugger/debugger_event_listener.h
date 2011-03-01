@@ -21,6 +21,8 @@
 namespace zorba {
 
 class DebuggerClientImpl;
+class TCPSocket;
+class Mutex;
 
 class DebuggerEventListener : public Runnable {
 
@@ -36,9 +38,15 @@ class DebuggerEventListener : public Runnable {
 
     void finish();
 
+    void closeSocket();
+
   private:
 
     DebuggerClientImpl* theClient;
+
+    TCPSocket* theSocket;
+
+    Mutex* theSocketCloseMutex;
 
 };
 }

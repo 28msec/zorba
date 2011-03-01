@@ -47,8 +47,8 @@ public:
   void
   eval(std::string anExpr);
 
-  DebuggerTestHandler::DebuggerState
-  getStateAfterRun();
+  bool
+  waitUntil(DebuggerTestHandler::DebuggerState aDesiredState, int aSeconds);
 
   std::pair<String, std::list<std::pair<String, String> > >
   getLastEvent();

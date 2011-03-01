@@ -32,25 +32,31 @@ DebuggerTestHandler::DebuggerTestHandler(zorba::DebuggerClient* client)
 {
 }
 
-DebuggerTestHandler::DebuggerState DebuggerTestHandler::getStateAfterRun()
+bool
+DebuggerTestHandler::waitUntil(DebuggerTestHandler::DebuggerState aDesiredState, int aSeconds)
 {
-	synchronous_logger::cout << "getStateAfterRun()\n";
+  bool result = false;
+  do {
+    switch (aDesiredState) {
+    case IDLE:
+      result = m_client->isQueryIdle();
+      break;
+    case RUNNING:
+      result = m_client->isQueryRunning();
+      break;
+    case SUSPENDED:
+      result = m_client->isQuerySuspended();
+      break;
+    case TERMINATED:
+      result = m_client->isQueryTerminated();
+      break;
+    }
+    if (!result) {
+      sleep(1);
+    }
+  } while (aSeconds-- > 0 && !result);
 
-	while (m_client->isQueryRunning()) {
-		synchronous_logger::cout << "Query is running. Waiting...\n";
-		sleep(1);
-	}
-
-	if (m_client->isQueryTerminated()) {
-		synchronous_logger::cout << "Query is TERMINATED\n";
-		return TERMINATED;
-	} else if (m_client->isQuerySuspended()) {
-		synchronous_logger::cout << "Query is SUSPENDED\n";
-		return SUSPENDED;
-	} else {
-		synchronous_logger::cout << "Query is IDLE\n";
-		return IDLE;
-	}
+  return result;
 }
 
 DebuggerTestHandler::~DebuggerTestHandler()
@@ -74,4 +80,4 @@ DebuggerTestHandler::getLastEvent() {
   return theLastValuesAndTypes;
 }
 
-}
+} /* namespace zorba */

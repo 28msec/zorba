@@ -86,16 +86,6 @@ public:
     */
     virtual void reset();
 
-    /**
-    * @brief Indicates if the object should be deleted after run.
-    *
-    * When the run methods finished, it checks if it has to delete
-    * the object. With this method, this deletion status can be set.
-    *
-    * @post theDeleteAfterRun == aDeleteAfterRun
-    */
-    void setDeleteAfterRun(bool aDeleteAfterRun);
-
 protected: // To be implemented by the user
     
     virtual void run() = 0;
@@ -115,12 +105,17 @@ private:
 
     Mutex             theMutex;
 
-    Condition         theCondition;
-
-    bool              theDeleteAfterRun;
-    bool              theJoining;
+    /**
+     * This mutex is only used to synchronize the join and finishImpl calls.
+     */
+    Mutex             theFinishMutex;
+    /**
+     * This condition is only used to synchronize the join and finishImpl calls.
+     */
+    Condition         theFinishCondition;
 
 #ifdef ZORBA_HAVE_PTHREAD_H
+    Condition         theCondition;
     bool              theCalledTerminate;
     pthread_t         theThread;
 

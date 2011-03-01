@@ -33,14 +33,15 @@ public:
 
 public:
 	enum DebuggerState {
-		TERMINATED,
+		IDLE,
+    RUNNING,
 		SUSPENDED,
-		IDLE
+    TERMINATED
 	};
 
 public:
-	DebuggerState
-  getStateAfterRun();
+  bool
+  waitUntil(DebuggerState aDesiredState, int aSeconds);
 
   std::pair<String, std::list<std::pair<String, String> > >
   getLastEvent();

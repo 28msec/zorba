@@ -32,21 +32,21 @@ zorba::DebuggerCommunicator::DebuggerCommunicator(
   unsigned short aCommandPort,
   unsigned short aEventPort)
 :
-m_commandSocket(0), m_eventSocket(0)
+theCommandSocket(0), theEventSocket(0)
 {
-	std::auto_ptr<TCPServerSocket> srvSocket(
+	std::auto_ptr<TCPServerSocket> lServerSocket(
     new TCPServerSocket(aHost, aCommandPort));
-	m_commandSocket = srvSocket->accept();
-	ZORBA_ASSERT(m_commandSocket);
+	theCommandSocket = lServerSocket->accept();
+	ZORBA_ASSERT(theCommandSocket);
 #ifndef NDEBUG
 	synchronous_logger::clog << "[Server Thread] Client connected\n";
 #endif
-	for ( unsigned int i = 0; i < 3 && ! m_eventSocket; i++ ) {
+	for ( unsigned int i = 0; i < 3 && ! theEventSocket; i++ ) {
 		try {
 			//Wait one second before trying to reconnect
 			sleep(1);
 			//Connect the client to the event server
-			m_eventSocket = new TCPSocket( m_commandSocket->getForeignAddress(), aEventPort );
+			theEventSocket = new TCPSocket( theCommandSocket->getForeignAddress(), aEventPort );
 			break;
 		} catch ( DebuggerSocketException &e )  {
 			if ( i < 2 ) continue;
@@ -62,8 +62,8 @@ void zorba::DebuggerCommunicator::handshake()
 	auto_vec<Byte> msg(new Byte[11]);
 	try
 	{
-		m_commandSocket->recv( msg.get(), 11 );
-		m_commandSocket->send( msg.get(), 11 );
+		theCommandSocket->recv( msg.get(), 11 );
+		theCommandSocket->send( msg.get(), 11 );
 	} catch( DebuggerSocketException &e ) {
 		synchronous_logger::clog << "[Server Thread] handshake failed\n";
 		synchronous_logger::clog << "[Server Thread]" << e.what() << "\n";
@@ -76,7 +76,7 @@ zorba::AbstractCommandMessage* zorba::DebuggerCommunicator::handleTCPClient()
   std::auto_ptr<AbstractMessage> lMessage;
   try
   {
-    lMessage.reset(MessageFactory::buildMessage( m_commandSocket ));
+    lMessage.reset(MessageFactory::buildMessage(theCommandSocket));
     if (lMessage.get() == 0) {
 #ifdef DEBUG
       synchronous_logger::clog << "[Server Thread] The connection with the client is closed\n";
@@ -127,7 +127,7 @@ void zorba::DebuggerCommunicator::sendEvent( AbstractCommandMessage* aMessage )
 			break;
 		}
 #endif
-		m_eventSocket->send( lMessage.get(), length );
+		theEventSocket->send( lMessage.get(), length );
 #ifndef NDEBUG
 		synchronous_logger::clog << "[Server Thread] event sent\n";
 #endif
@@ -138,8 +138,8 @@ void zorba::DebuggerCommunicator::sendEvent( AbstractCommandMessage* aMessage )
 
 zorba::DebuggerCommunicator::~DebuggerCommunicator()
 {
-	delete m_eventSocket;
-	delete m_commandSocket;
+	delete theEventSocket;
+	delete theCommandSocket;
 }
 
 void zorba::DebuggerCommunicator::sendReplyMessage( AbstractCommandMessage* aMessage )
@@ -148,5 +148,5 @@ void zorba::DebuggerCommunicator::sendReplyMessage( AbstractCommandMessage* aMes
 	auto_vec<Byte> lByteMessage;
 	std::auto_ptr<ReplyMessage> lReply(aMessage->getReplyMessage());
 	lByteMessage.reset(lReply->serialize( length ));
-	m_commandSocket->send( lByteMessage.get(), length );
+	theCommandSocket->send( lByteMessage.get(), length );
 }

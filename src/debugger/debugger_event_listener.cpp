@@ -24,30 +24,34 @@
 #include "debugger/debugger_clientimpl.h"
 #include "debugger/message_factory.h"
 #include "debugger/query_locationimpl.h"
+#include "debugger/synchronous_logger.h"
+
+#include "zorbautils/mutex.h"
 
 #include "util/ascii_util.h"
 
 namespace zorba {
 
 DebuggerEventListener::DebuggerEventListener(DebuggerClientImpl* aClient)
-  : theClient(aClient)
+  : theClient(aClient), theSocket(0), theSocketCloseMutex(0)
 {
+  theSocketCloseMutex = new Mutex();
 }
 
 DebuggerEventListener::~DebuggerEventListener()
 {
+  delete theSocketCloseMutex;
 }
 
 void
 DebuggerEventListener::run()
 {
-  std::cout << "Running event listener (" << Runnable::self() << ")" << std::endl;
   assert(theClient != 0);
 
   try {
-    std::auto_ptr<TCPSocket> lSocket(theClient->theEventServerSocket->accept());
+    theSocket = theClient->theEventServerSocket->accept();
     while (theClient->getExecutionStatus() != QUERY_TERMINATED) {
-      std::auto_ptr<AbstractMessage> lMessage(MessageFactory::buildMessage(lSocket.get()));
+      std::auto_ptr<AbstractMessage> lMessage(MessageFactory::buildMessage(theSocket));
       SuspendedEvent* lSuspendedMsg;
       EvaluatedEvent* lEvaluatedEvent;
       if ((lSuspendedMsg = dynamic_cast<SuspendedEvent*> (lMessage.get()))) {
@@ -73,8 +77,6 @@ DebuggerEventListener::run()
           if (theClient->theEventHandler) {
             theClient->theEventHandler->terminated();
           }
-          // Why was that here? Did XQDT need this?
-          //theClient->theRequestSocket->send("quit", 5);
         }
         break;
       } else if ((lEvaluatedEvent = dynamic_cast<EvaluatedEvent*>(lMessage.get()))) {
@@ -107,6 +109,19 @@ DebuggerEventListener::run()
 void
 DebuggerEventListener::finish()
 {
+  theSocketCloseMutex->lock();
+  delete theSocket;
+  theSocketCloseMutex->unlock();
+}
+
+void
+DebuggerEventListener::closeSocket()
+{
+  theSocketCloseMutex->lock();
+  if (theSocket) {
+    theSocket->close();
+  }
+  theSocketCloseMutex->unlock();
 }
 
 

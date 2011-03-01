@@ -17,7 +17,7 @@
 #define ZORBA_STORE_LOCK_H
 
 #include <zorba/config.h>
-#include<vector>
+#include <vector>
 
 #include "zorbamisc/config/platform.h"
 

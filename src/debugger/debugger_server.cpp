@@ -61,9 +61,7 @@ DebuggerServer::run()
          if (theRuntime->getExecutionStatus() == QUERY_SUSPENDED) {
            theRuntime->setNotSendTerminateEvent();
            theRuntime->terminate();
-           theRuntime->join();
            theRuntime->resetRuntime();
-
          }
          theRuntime->start();
        } else {

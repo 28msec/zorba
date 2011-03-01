@@ -32,6 +32,7 @@
 #include "debugger/socket.h"
 #include "debugger/message_factory.h"
 #include "debugger/stackimpl.h"
+#include "debugger/synchronous_logger.h"
 
 
 #ifdef WIN32
@@ -56,7 +57,6 @@ DebuggerClientImpl::DebuggerClientImpl(std::string aServerAddress, unsigned shor
 		do {
 			theRequestSocket.reset(new TCPSocket(aServerAddress, aRequestPortno));
 			theEventServerSocket.reset(new TCPServerSocket(aEventPortno));
-			sleep(1);
 			//Perform the handshake with the server
 		} while (!handshake());
 		//Start the event listener thread
@@ -69,8 +69,8 @@ DebuggerClientImpl::DebuggerClientImpl(std::string aServerAddress, unsigned shor
 
 DebuggerClientImpl::~DebuggerClientImpl()
 {
+  theEventListener->closeSocket();
   theEventListener->join();
-  theEventListener->terminate();
   delete theEventListener;
 }
 
@@ -162,7 +162,8 @@ DebuggerClientImpl::send(AbstractCommandMessage* aMessage) const
       return lReplyMessage.release();
     } 
   } catch(DebuggerSocketException& e) {
-    synchronous_logger::cerr << "Request client:" << e.what() << "\n";
+    std::stringstream lSs; lSs << "Request client:" << e.what() << "\n";
+    synchronous_logger::cerr << lSs.str();
   }
   return 0;
 }
@@ -300,7 +301,8 @@ DebuggerClientImpl::addBreakpoint(QueryLoc& aLocation)
       return location;
     }
   } else {
-    synchronous_logger::cerr << "An error occured\n";
+    std::stringstream lSs; lSs << "An error occured\n";
+    synchronous_logger::cerr << lSs.str();
   }
   return 0;  
 }

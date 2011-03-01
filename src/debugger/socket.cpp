@@ -16,20 +16,26 @@
 #include "debugger/socket.h"
 
 #include <sstream>
+
+
 #if defined WIN32 || defined WINCE
-#include <winsock2.h>
+# include <winsock2.h>
   typedef int socklen_t;
   typedef char raw_type;
-#else
-  #include <sys/types.h>
-  #include <sys/socket.h>
-  #include <netdb.h>
-  #include <arpa/inet.h>
-  #include <unistd.h>
-  #include <netinet/in.h>
 
-#include <cstring>
-#include <cstdlib>
+#ifdef WIN32
+static bool initialized = false;
+#endif
+#else
+# include <sys/types.h>
+# include <sys/socket.h>
+# include <netdb.h>
+# include <arpa/inet.h>
+# include <unistd.h>
+# include <netinet/in.h>
+
+# include <cstring>
+# include <cstdlib>
 
   typedef void raw_type;
 #endif
@@ -38,15 +44,10 @@
 
 #include "zorbautils/lock.h"
 
-using namespace std;
-
-#ifdef WIN32
-static bool initialized = false;
-#endif
-namespace zorba{
+namespace zorba {
 
 // Function to fill in address structure given an address and port
-static void fillAddr(const string &address, unsigned short port, 
+static void fillAddr(const std::string &address, unsigned short port, 
                      sockaddr_in &addr) {
   // we have to lock calls to gethostbyname because
   // it's not thread-safe
@@ -70,44 +71,51 @@ static void fillAddr(const string &address, unsigned short port,
 
 // Socket Code
 
-Socket::Socket(int type, int protocol) {
+Socket::Socket(int aType, int aProtocol)
+{
 #ifdef WIN32
-    if (!initialized) {
-      WORD wVersionRequested;
-      WSADATA wsaData;
+  if (!initialized) {
+    WORD wVersionRequested;
+    WSADATA wsaData;
 
-      wVersionRequested = MAKEWORD(2, 0);              // Request WinSock v2.0
-      if (WSAStartup(wVersionRequested, &wsaData) != 0) {  // Load WinSock DLL
-        throw DebuggerSocketException("Unable to load WinSock DLL");
-      }
-      initialized = true;
+    wVersionRequested = MAKEWORD(2, 0);              // Request WinSock v2.0
+    if (WSAStartup(wVersionRequested, &wsaData) != 0) {  // Load WinSock DLL
+      throw DebuggerSocketException("Unable to load WinSock DLL");
     }
+    initialized = true;
+  }
 #endif
 
   // Make a new socket
-  if ((sockDesc = socket(PF_INET, type, protocol)) < 0) {
-    throw DebuggerSocketException("Socket creation failed (socket())", true);
+  theDescriptor = socket(PF_INET, aType, aProtocol);
+  if (theDescriptor == INVALID_SOCKET) {
+      throw DebuggerSocketException("Socket creation failed (socket())", true);
   }
 }
 
-Socket::Socket(int sockDesc) {
-  this->sockDesc = sockDesc;
+Socket::Socket(SOCKET aDescriptor)
+{
+  this->theDescriptor = aDescriptor;
 }
 
 Socket::~Socket() {
-#ifdef WIN32
-    ::closesocket(sockDesc);
-#else
-    ::close(sockDesc);
-#endif
-  sockDesc = -1;
+  close();
 }
 
-string Socket::getLocalAddress() {
+void
+Socket::close() {
+#ifdef WIN32
+  ::closesocket(theDescriptor);
+#else
+  ::close(theDescriptor);
+#endif
+}
+
+std::string Socket::getLocalAddress() {
   sockaddr_in addr;
   unsigned int addr_len = sizeof(addr);
 
-  if (getsockname(sockDesc, (sockaddr *) &addr, (socklen_t *) &addr_len) < 0) {
+  if (getsockname(theDescriptor, (sockaddr *) &addr, (socklen_t *) &addr_len) < 0) {
     throw DebuggerSocketException("Fetch of local address failed (getsockname())", true);
   }
   return inet_ntoa(addr.sin_addr);
@@ -117,7 +125,7 @@ unsigned short Socket::getLocalPort() {
   sockaddr_in addr;
   unsigned int addr_len = sizeof(addr);
 
-  if (getsockname(sockDesc, (sockaddr *) &addr, (socklen_t *) &addr_len) < 0) {
+  if (getsockname(theDescriptor, (sockaddr *) &addr, (socklen_t *) &addr_len) < 0) {
     throw DebuggerSocketException("Fetch of local port failed (getsockname())", true);
   }
   return ntohs(addr.sin_port);
@@ -131,22 +139,22 @@ void Socket::setLocalPort(unsigned short localPort) {
   localAddr.sin_addr.s_addr = htonl(INADDR_ANY);
   localAddr.sin_port = htons(localPort);
   int opt = 1;
-  setsockopt(sockDesc, SOL_SOCKET,SO_REUSEADDR, (char *)&opt, (socklen_t)sizeof(opt)); 
-  if (bind(sockDesc, (sockaddr *) &localAddr, sizeof(sockaddr_in)) < 0) {
-    stringstream lMsg;
+  setsockopt(theDescriptor, SOL_SOCKET,SO_REUSEADDR, (char *)&opt, (socklen_t)sizeof(opt)); 
+  if (bind(theDescriptor, (sockaddr *) &localAddr, sizeof(sockaddr_in)) < 0) {
+    std::stringstream lMsg;
     lMsg << "Set of local port failed: " << localPort;
     throw DebuggerSocketException(lMsg.str(), true);
   }
 }
 
-void Socket::setLocalAddressAndPort(const string &localAddress,
+void Socket::setLocalAddressAndPort(const std::string &localAddress,
     unsigned short localPort) {
   // Get the address of the requested host
   sockaddr_in localAddr;
   fillAddr(localAddress, localPort, localAddr);
   int opt = 1;
-  setsockopt(sockDesc, SOL_SOCKET,SO_REUSEADDR, (char *)&opt, (socklen_t)sizeof(opt)); 
-  if (bind(sockDesc, (sockaddr *) &localAddr, sizeof(sockaddr_in)) < 0) {
+  setsockopt(theDescriptor, SOL_SOCKET,SO_REUSEADDR, (char *)&opt, (socklen_t)sizeof(opt)); 
+  if (bind(theDescriptor, (sockaddr *) &localAddr, sizeof(sockaddr_in)) < 0) {
     throw DebuggerSocketException("Set of local address and port failed (bind())", true);
   }
 }
@@ -159,8 +167,8 @@ void Socket::cleanUp() {
 #endif
 }
 
-unsigned short Socket::resolveService(const string &service,
-                                      const string &protocol) {
+unsigned short Socket::resolveService(const std::string &service,
+                                      const std::string &protocol) {
   struct servent *serv;        /* Structure containing service information */
 
   if ((serv = getservbyname(service.c_str(), protocol.c_str())) == NULL)
@@ -175,18 +183,18 @@ CommunicatingSocket::CommunicatingSocket(int type, int protocol):
   Socket(type, protocol) {
 }
 
-CommunicatingSocket::CommunicatingSocket(int newConnSD) : Socket(newConnSD) {
+CommunicatingSocket::CommunicatingSocket(SOCKET newConnSD) : Socket(newConnSD) {
 }
 
-void CommunicatingSocket::connect(const string &foreignAddress,
+void CommunicatingSocket::connect(const std::string &foreignAddress,
     unsigned short foreignPort) {
   // Get the address of the requested host
   sockaddr_in destAddr;
   fillAddr(foreignAddress, foreignPort, destAddr);
 
   // Try to connect to the given port
-  if (::connect(sockDesc, (sockaddr *) &destAddr, sizeof(destAddr)) < 0) {
-    stringstream lMsg;
+  if (::connect(theDescriptor, (sockaddr *) &destAddr, sizeof(destAddr)) < 0) {
+    std::stringstream lMsg;
     lMsg << "Connection @" << foreignAddress << ":" << foreignPort << " failed.";
     throw DebuggerSocketException( lMsg.str(), true);
   }
@@ -194,25 +202,25 @@ void CommunicatingSocket::connect(const string &foreignAddress,
 
 void CommunicatingSocket::send(const void *buffer, int bufferLen) 
 {
-  if (::send(sockDesc, (raw_type *) buffer, bufferLen, 0) < 0) {
+  if (::send(theDescriptor, (raw_type *) buffer, bufferLen, 0) < 0) {
     throw DebuggerSocketException("Send failed (send())", true);
   }
 }
 
 int CommunicatingSocket::recv(void *buffer, int bufferLen) {
   int rtn;
-  if ((rtn = ::recv(sockDesc, (raw_type *) buffer, bufferLen, 0)) < 0) {
+  if ((rtn = ::recv(theDescriptor, (raw_type *) buffer, bufferLen, 0)) < 0) {
     throw DebuggerSocketException("Received failed (recv())", true);
   }
   
   return rtn;
 }
 
-string CommunicatingSocket::getForeignAddress() {
+std::string CommunicatingSocket::getForeignAddress() {
   sockaddr_in addr;
   unsigned int addr_len = sizeof(addr);
 
-  if (getpeername(sockDesc, (sockaddr *) &addr,(socklen_t *) &addr_len) < 0) {
+  if (getpeername(theDescriptor, (sockaddr *) &addr,(socklen_t *) &addr_len) < 0) {
     throw DebuggerSocketException("Fetch of foreign address failed (getpeername())", true);
   }
   return inet_ntoa(addr.sin_addr);
@@ -222,7 +230,7 @@ unsigned short CommunicatingSocket::getForeignPort() {
   sockaddr_in addr;
   unsigned int addr_len = sizeof(addr);
 
-  if (getpeername(sockDesc, (sockaddr *) &addr, (socklen_t *) &addr_len) < 0) {
+  if (getpeername(theDescriptor, (sockaddr *) &addr, (socklen_t *) &addr_len) < 0) {
     throw DebuggerSocketException("Fetch of foreign port failed (getpeername())", true);
   }
   return ntohs(addr.sin_port);
@@ -233,11 +241,11 @@ unsigned short CommunicatingSocket::getForeignPort() {
 TCPSocket::TCPSocket(): CommunicatingSocket(SOCK_STREAM, IPPROTO_TCP) {
 }
 
-TCPSocket::TCPSocket(const string &foreignAddress, unsigned short foreignPort): CommunicatingSocket(SOCK_STREAM, IPPROTO_TCP) {
+TCPSocket::TCPSocket(const std::string &foreignAddress, unsigned short foreignPort): CommunicatingSocket(SOCK_STREAM, IPPROTO_TCP) {
   connect(foreignAddress, foreignPort);
 }
 
-TCPSocket::TCPSocket(int newConnSD) : CommunicatingSocket(newConnSD) {
+TCPSocket::TCPSocket(SOCKET newConnSD) : CommunicatingSocket(newConnSD) {
 }
 
 // TCPServerSocket Code
@@ -247,15 +255,15 @@ TCPServerSocket::TCPServerSocket(unsigned short localPort, int queueLen): Socket
   setListen(queueLen);
 }
 
-TCPServerSocket::TCPServerSocket(const string &localAddress, 
+TCPServerSocket::TCPServerSocket(const std::string &localAddress, 
     unsigned short localPort, int queueLen): Socket(SOCK_STREAM, IPPROTO_TCP) {
   setLocalAddressAndPort(localAddress, localPort);
   setListen(queueLen);
 }
 
 TCPSocket *TCPServerSocket::accept() {
-  int newConnSD;
-  if ((newConnSD = ::accept(sockDesc, NULL, 0)) < 0) {
+  SOCKET newConnSD = ::accept(theDescriptor, NULL, 0);
+  if (newConnSD == INVALID_SOCKET) {
     throw DebuggerSocketException("Accept failed (accept())", true);
   }
 
@@ -263,8 +271,9 @@ TCPSocket *TCPServerSocket::accept() {
 }
 
 void TCPServerSocket::setListen(int queueLen) {
-  if (listen(sockDesc, queueLen) < 0) {
+  if (listen(theDescriptor, queueLen) < 0) {
     throw DebuggerSocketException("Set listening socket failed (listen())", true);
   }
 }
+
 }//end of namespace

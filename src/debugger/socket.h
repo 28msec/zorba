@@ -21,7 +21,14 @@
 
 #include <zorba/debugger_exception.h>
 
-namespace zorba{
+#ifdef WIN32
+  typedef unsigned int __w64 SOCKET;
+#else
+# define INVALID_SOCKET -1
+typedef int SOCKET;
+#endif
+
+namespace zorba {
 
 class DebuggerDebuggerSocketException;
 
@@ -34,6 +41,11 @@ public:
    *   Close and deallocate this socket
    */
   ~Socket();
+
+  /**
+   *
+   */
+  void close();
 
   /**
    *   Get the local address
@@ -91,10 +103,8 @@ public:
    */
   static unsigned short resolveService(const std::string &service,
                                        const std::string &protocol = "tcp");
-  
 
-
-  int sockDesc;  
+  SOCKET theDescriptor;
 
 private:
   // Prevent the user from trying to use value semantics on this object
@@ -102,8 +112,8 @@ private:
   void operator=(const Socket &sock);
 
 protected:            // Socket descriptor
-  Socket(int type, int protocol);
-  Socket(int sockDesc);
+  Socket(int aType, int aProtocol);
+  Socket(SOCKET aDescriptor);
 };
 
 /**
@@ -155,7 +165,7 @@ public:
 
 protected:
   CommunicatingSocket(int type, int protocol);
-  CommunicatingSocket(int newConnSD);
+  CommunicatingSocket(SOCKET newConnSD);
 };
 
 /**
@@ -181,7 +191,7 @@ public:
 private:
   // Access for TCPServerSocket::accept() connection creation
   friend class TCPServerSocket;
-  TCPSocket(int newConnSD);
+  TCPSocket(SOCKET newConnSD);
 };
 
 /**

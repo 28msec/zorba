@@ -28,14 +28,13 @@
 #    define ZORBA_THREAD_RETURN DWORD WINAPI
 #endif
 
-//#define TRACING_ON
+#include "debugger/synchronous_logger.h"
 
-#ifdef TRACING_ON
-#define TRACE(msg) std::cout << msg << std::endl;
+#ifdef WIN32
+#define THREAD_ID " theThreadID: " << theThreadId
 #else
-#define TRACE(msg)
+#define THREAD_ID ""
 #endif
-
 
 zorba::Runnable::~Runnable()
 {
@@ -45,30 +44,22 @@ zorba::Runnable::Runnable()
   : theStatus(IDLE),
     theFinishCalled(false),
     theMutex(),
-    theCondition(theMutex),
-    theDeleteAfterRun(false),
-    theJoining(false)
+    theFinishMutex(),
+    theFinishCondition(theFinishMutex)
 #ifdef ZORBA_HAVE_PTHREAD_H
-    ,theCalledTerminate(false)
+    ,
+    theCondition(theMutex),
+    theCalledTerminate(false)
 #endif
 {
 }
 
 
 /*******************************************************************************
-
-********************************************************************************/
-void zorba::Runnable::reset()
-{
-  theFinishCalled = false;
-  theStatus = IDLE;
-}
-
-
-/*******************************************************************************
   This method is invoked by the parent thread and starts a child thread.
 ********************************************************************************/
-void zorba::Runnable::start()
+void
+zorba::Runnable::start()
 {
   theStatus = RUNNING;
 #ifdef WIN32
@@ -77,45 +68,34 @@ void zorba::Runnable::start()
   if (pthread_create(&theThread, NULL, &startImpl, (void *) this))
     assert(false);
 #endif
-
-  TRACE("Created child thread " << theThread << std::endl);
 }
 
 
 /*******************************************************************************
   This method is invoked by the parent thread
 ********************************************************************************/
-void zorba::Runnable::terminate()
+void
+zorba::Runnable::terminate()
 {
-  TRACE("Terminating child thread " << theThread << std::endl);
-
 retry:
-
   theMutex.lock();
 
 #ifdef ZORBA_HAVE_PTHREAD_H
   theCalledTerminate = true;
 #endif
 
-  if (theStatus == SUSPENDED)
-  {
+  if (theStatus == SUSPENDED) {
 #ifdef WIN32
     TerminateThread(theThread, 0);
 #else
-
     pthread_cancel(theThread);
-
     theCondition.signal();
-
 #endif
-  }
-  else if (theStatus == TERMINATED)
-  {
+  } else if (theStatus == TERMINATED) {
     theMutex.unlock();
     return;
   }
-  else if (theStatus == RUNNING)
-  {
+  else if (theStatus == RUNNING) {
     // busy wait until the child thread terminates or suspends itself.
     theMutex.unlock();
 #ifndef WIN32
@@ -124,47 +104,55 @@ retry:
     Sleep(1);
 #endif
     goto retry;
-  }
-  else
-  {
+  } else {
     assert(theStatus == IDLE);
   }
 
   theMutex.unlock();
 
-  join();
-
   finishImpl();
-
-  TRACE("Terminating child thread " << theThread << std::endl);
 }
 
 
 /*******************************************************************************
   This method is invoked by the parent thread
 ********************************************************************************/
-void zorba::Runnable::join()
+void
+zorba::Runnable::join()
 {
   theMutex.lock();
 
-  if (theStatus == TERMINATED || theStatus == IDLE)
-  {
+  if (theStatus == TERMINATED || theStatus == IDLE) {
     theMutex.unlock();
     return;
   }
 
-  theJoining = true;
-
+  // the finish condition will wait on this mutex until finishImpl
+  // will signal the finish condition.
+  theFinishMutex.lock();
   theMutex.unlock();
 
-#ifdef WIN32
-  WaitForSingleObject( theThread, INFINITE );
-#else
-  if (pthread_join( theThread, 0 ))
-    assert(false);
-#endif
+  // wait for the Runnable to finish executing the user code
+  // only finishImpl will signal this as the last thing to to
+  theFinishCondition.wait();
+  theFinishMutex.unlock();
 
-  theStatus = TERMINATED;
+  theMutex.lock();
+  // wait for the real thread to terminate
+#ifdef WIN32
+  DWORD lExitCode;
+  if (GetExitCodeThread(theThread, &lExitCode) && lExitCode == STILL_ACTIVE) {
+    WaitForSingleObject(theThread, INFINITE);
+  }
+#else
+  if (!theFinishCalled) {
+    int status = pthread_join(theThread, 0);
+    if (status != EINVAL && status != 0) {
+       assert(false);
+    }
+  }
+#endif
+  theMutex.unlock();
 }
 
 
@@ -172,22 +160,18 @@ void zorba::Runnable::join()
   This method is called by the child thread to suspend itself for a given
   amount of time.
 ********************************************************************************/
-void zorba::Runnable::suspend(unsigned long aTimeInMs /*= 0*/)
+void
+zorba::Runnable::suspend(unsigned long aTimeInMs /*= 0*/)
 {
 #ifdef WIN32
   theStatus = SUSPENDED;
-  if (aTimeInMs != 0)
-  {
+  if (aTimeInMs != 0) {
     DWORD lTime = aTimeInMs;
     WaitForSingleObject(theThread, lTime);
-  }
-  else
-  {
+  } else {
     SuspendThread(theThread);
   }
 #else
-
-  // std::cout << "Suspending child thread " << theThread << std::endl << std::endl;
 
   theMutex.lock();
 
@@ -197,12 +181,11 @@ void zorba::Runnable::suspend(unsigned long aTimeInMs /*= 0*/)
 
   theStatus = SUSPENDED;
 
-  if (aTimeInMs != 0)
+  if (aTimeInMs != 0) {
     theCondition.timedWait(aTimeInMs);
-  else
+  } else {
     theCondition.wait();
-
-  TRACE("Resuming child thread " << theThread << std::endl);
+  }
 
   theStatus = RUNNING;
 
@@ -214,7 +197,8 @@ void zorba::Runnable::suspend(unsigned long aTimeInMs /*= 0*/)
 
 
 #ifdef ZORBA_HAVE_PTHREAD_H
-void zorba::Runnable::mutexCleanupHandler(void* param)
+void
+zorba::Runnable::mutexCleanupHandler(void* param)
 {
   Mutex* lMutex = static_cast<Mutex*>(param);
   lMutex->unlock();
@@ -225,7 +209,8 @@ void zorba::Runnable::mutexCleanupHandler(void* param)
 /*******************************************************************************
 
 ********************************************************************************/
-void zorba::Runnable::resume()
+void
+zorba::Runnable::resume()
 {
   theMutex.lock();
 
@@ -244,20 +229,20 @@ void zorba::Runnable::resume()
 }
 
 
-
 /*******************************************************************************
   This method is the "main" method of the child thread.
 ********************************************************************************/
 ZORBA_THREAD_RETURN
 zorba::Runnable::startImpl( void* params )
 {
-  // run the users function in the thread
   Runnable* r = static_cast<Runnable*>(params);
+
+  // run the users function in the thread
   r->run();
 
-  // finish if the thread reaches the end
-  // of the control flow
+  // finish if the thread reaches the end of the control flow
   r->finishImpl();
+
   return NULL;
 }
 
@@ -266,7 +251,8 @@ zorba::Runnable::startImpl( void* params )
   Called if the child thread reaches the end of the control flow or terminate
   is requested
 ********************************************************************************/
-void zorba::Runnable::finishImpl()
+void
+zorba::Runnable::finishImpl()
 {
   theMutex.lock();
 
@@ -274,35 +260,32 @@ void zorba::Runnable::finishImpl()
   assert (!theFinishCalled);
 #endif
 
+  // call the user defined finish
   finish();
 
   theFinishCalled = true;
-
   theStatus = TERMINATED;
 
-  theMutex.unlock();
-
-#ifdef ZORBA_HAVE_PTHREAD_H
-  if (!theCalledTerminate && !theJoining)
-  {
+#ifndef WIN32
+  if (!theCalledTerminate) {
     pthread_detach(theThread);
   }
 #endif
 
-  if (theDeleteAfterRun)
-  {
-    delete this;
-  }
+  // the last thing to do is to signal a possible join waiting
+  // for this Runnable to terminate
+  theFinishCondition.signal();
+
+  theMutex.unlock();
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void zorba::Runnable::setDeleteAfterRun( bool aDeleteAfterRun )
+void
+zorba::Runnable::reset()
 {
-  theDeleteAfterRun = aDeleteAfterRun;
-
-  // Check postconditions
-  ZORBA_ASSERT(theDeleteAfterRun == aDeleteAfterRun);
+  theFinishCalled = false;
+  theStatus = IDLE;
 }

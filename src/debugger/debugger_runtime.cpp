@@ -493,7 +493,7 @@ DebuggerRuntime::evalCommand()
     theWrapper->thePlanState->theDebuggerCommons,
     theCommunicator, lExpr.c_str(), theSerializerOptions,
     theCurrentMessage->getId());
-  lCommand->setDeleteAfterRun(true);
+  //lCommand->setDeleteAfterRun(true);
   lCommand->start();
 }
 

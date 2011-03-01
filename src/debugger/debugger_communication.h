@@ -20,23 +20,36 @@
 #include "socket.h"
 
 namespace zorba {
-	class DebuggerCommunicator {
-	public:
-    DebuggerCommunicator(std::string aHost, unsigned short aCommandPort,
-      unsigned short aEventPort);
+
+class DebuggerCommunicator {
+
+  public:
+    DebuggerCommunicator(
+      std::string     aHost,
+      unsigned short  aCommandPort,
+      unsigned short  aEventPort);
+
 		virtual ~DebuggerCommunicator();
 
 	public:
-		void handshake();
-		AbstractCommandMessage* handleTCPClient();
-		void sendEvent(AbstractCommandMessage* aMessage);
-		void sendReplyMessage(AbstractCommandMessage* aMessage);
+
+    void handshake();
+		
+    AbstractCommandMessage* handleTCPClient();
+		
+    void sendEvent(AbstractCommandMessage* aMessage);
+		
+    void sendReplyMessage(AbstractCommandMessage* aMessage);
 
 	private:
-		TCPSocket* m_commandSocket;
-		TCPSocket* m_eventSocket;
-	};
-}
+
+    TCPSocket* theCommandSocket;
+		
+    TCPSocket* theEventSocket;
+
+};
+
+}//end of namespace
 
 #endif // DEBUGGER_COMMUNICATION_H
 

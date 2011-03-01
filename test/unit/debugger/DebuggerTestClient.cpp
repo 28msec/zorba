@@ -61,10 +61,10 @@ DebuggerTestClient::eval(std::string anExpr)
   m_client->eval(lStr);
 }
 
-DebuggerTestHandler::DebuggerState
-DebuggerTestClient::getStateAfterRun()
+bool
+DebuggerTestClient::waitUntil(DebuggerTestHandler::DebuggerState aDesiredState, int aSeconds)
 {
-	return m_handler->getStateAfterRun();
+	return m_handler->waitUntil(aDesiredState, aSeconds);
 }
 
 std::pair<String, std::list<std::pair<String, String> > >
