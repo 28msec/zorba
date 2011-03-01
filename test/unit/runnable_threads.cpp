@@ -21,7 +21,7 @@
 #include "zorbautils/runnable.h"
 
 #ifdef WIN32
-#define sleep(n) Sleep(100*n)
+#define sleep(n) Sleep(1000*n)
 #endif // WIN32
 
 class MyThread : public zorba::Runnable {
