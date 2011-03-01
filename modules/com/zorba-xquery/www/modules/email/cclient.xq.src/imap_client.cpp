@@ -298,6 +298,9 @@ namespace zorba { namespace emailmodule {
     theFoundSequenceNumbers.clear();
 
     MAILSTREAM* lSource = getMailStream(aHost, aUsername, aPassword, aMailbox, true); 
+    mail_ping(lSource);
+    
+    
     /* First, tokenize the criteria so that we can work on it */
     std::stringstream lToTokenize(aCriteria);
     std::string lBuffer;
