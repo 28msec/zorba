@@ -607,10 +607,10 @@ RemoveFunction::evaluate(
   String lFileStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
 
-  bool lStatus = lFile->remove();
+  lFile->remove();
 
   return ItemSequence_t(new SingletonItemSequence(
-      theModule->getItemFactory()->createBoolean(lStatus)));
+      theModule->getItemFactory()->createBoolean(true)));
 }
 
 //*****************************************************************************

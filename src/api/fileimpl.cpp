@@ -212,32 +212,29 @@ FileImpl::exists() const
   return lResult;
 }
 
-bool
+void
 FileImpl::remove()
 {
-  bool lResult = false;
-
   ZORBA_TRY
-    // if the file/dir does not exist, return false
+    //TODO: Throw proper errors
+
+    // precondition
     if (!theInternalFile->exists()) {
-      return false;
+      throw "A the file or directory does not exist at this path.";
     }
 
     if (theInternalFile->is_directory()) {
-      theInternalFile->rmdir(false);
+      theInternalFile->rmdir();
     } else {
       theInternalFile->remove();
     }
 
-    // if the file/dir still exist, return false
+    // postcondition
+    // if the file/dir still exists
     if (theInternalFile->exists()) {
-      return false;
+      throw "The file or directory at this path could not be deleted.";
     }
-
-    lResult = true;
   ZORBA_CATCH
-
-  return lResult;
 }
 
 bool

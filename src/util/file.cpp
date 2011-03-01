@@ -633,17 +633,16 @@ void file::rmdir(bool ignore) {
   BOOL  retval;
   WCHAR wpath_str[1024];
   wpath_str[0] = 0;
-  if(MultiByteToWideChar(CP_UTF8,
-                      0, c_str(), -1,
-                      wpath_str, sizeof(wpath_str)/sizeof(WCHAR)) == 0)
-  {//probably there is some invalid utf8 char, try the Windows ACP
-    MultiByteToWideChar(CP_ACP,
-                      0, c_str(), -1,
-                      wpath_str, sizeof(wpath_str)/sizeof(WCHAR));
+  if (MultiByteToWideChar(CP_UTF8, 0, c_str(), -1,
+        wpath_str, sizeof(wpath_str)/sizeof(WCHAR)) == 0) {
+    //probably there is some invalid utf8 char, try the Windows ACP
+    MultiByteToWideChar(CP_ACP, 0, c_str(), -1,
+      wpath_str, sizeof(wpath_str)/sizeof(WCHAR));
   }
   retval = RemoveDirectoryW(wpath_str);
-  if(!retval && !ignore)
+  if (!retval && !ignore) {
     error(__FUNCTION__, "rmdir failed on " + get_path ());
+  }
 #endif
   set_filetype(file::type_non_existent);
 }

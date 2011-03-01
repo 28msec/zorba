@@ -75,15 +75,13 @@ namespace zorba {
       virtual bool isInvalid() const = 0;
       virtual bool exists() const = 0;
 
-      virtual bool remove () = 0;
+      virtual void remove() = 0;
       virtual bool create() = 0;
       virtual bool rename(std::string const& newpath) = 0;
 
       virtual FileSize_t getSize() const = 0;
 
       virtual void mkdir(bool recursive = true, bool failIfExists = false) = 0;
-      //virtual bool mkdir(bool create = true) = 0;
-      //virtual bool mkdirs(bool create = true) = 0;
 
       virtual DirectoryIterator_t files() const = 0;
 

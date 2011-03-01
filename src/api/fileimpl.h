@@ -69,15 +69,13 @@ namespace zorba {
       bool isInvalid() const;
       bool exists() const;
 
-      bool remove();
+      void remove();
       bool create();
       bool rename(std::string const& newpath);
 
       FileSize_t getSize() const;
 
       void mkdir(bool recursive = true, bool failIfExists = false);
-      //bool mkdir(bool create = true);
-      //bool mkdirs(bool create = true);
 
       DirectoryIterator_t files() const;
 
