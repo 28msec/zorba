@@ -104,8 +104,15 @@ public:
   the following flwor expr:
  
     for $$dot at $$pos in domainExpr
-    return index-entry-builder($$dot, fieldExpr1, ..., fieldExprN);
+    return value-index-entry-builder($$dot, fieldExpr1, ..., fieldExprN);
  
+  for value indexes, or
+
+    for $$dot at $$pos in domainExpr
+    return general-index-entry-builder($$dot, fieldExpr);
+
+  for general indexes.
+
   This plan is generated "on-the-fly" by the CreateIndexIterator. The generated
   plan is stored in the update primitive, and during applyUpdates(), it is given
   as an arg to the SimpleStore::createIndex() method. 

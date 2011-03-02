@@ -92,9 +92,10 @@ class GeneralHashIndex : public GeneralIndex
                   IndexCompareFunction> IndexMap;
 
 private:
-  IndexCompareFunction   theCompFunction;
-  IndexMap             * theMaps[XS_LAST];
-  IndexMap             * theSingleMap;
+  IndexCompareFunction        theCompFunction;
+  IndexMap                  * theMaps[XS_LAST];
+  IndexMap                  * theSingleMap;
+  std::vector<store::Item_t>  theEmptyKeyNodes;
 
 protected:
   GeneralHashIndex(

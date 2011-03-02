@@ -4332,8 +4332,8 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
                               index->getName()->getStringValue(), "");
       }
 
-      if (TypeOps::is_equal(tm, *ptype, *theRTM.ANY_ATOMIC_TYPE_ONE) ||
-          (!index->isGeneral() &&
+      if (!index->isGeneral() &&
+          (TypeOps::is_equal(tm, *ptype, *theRTM.ANY_ATOMIC_TYPE_ONE) ||
            TypeOps::is_equal(tm, *ptype, *theRTM.UNTYPED_ATOMIC_TYPE_ONE)))
       {
         ZORBA_ERROR_LOC_PARAM(XDST0027_INDEX_BAD_KEY_TYPE, kloc,

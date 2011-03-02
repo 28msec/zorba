@@ -1558,14 +1558,14 @@ With each key expression, an index declaration associates a key type and a key
 collation. The triplet IndexKeyExpr, IndexKeyTypeDecl, IndexKeyCollation is 
 called a <strong>keyspec</strong>. For general indexes, the number of keyspecs 
 must be exectly one [<a href="#ERRXDST0035">err:XDST0035</a>]. The IndexKeyTypeDecl 
-is optional for general indexes, but is required for value indexes 
-[<a href="#ERRXDST0027">err:XDST0027</a>]. If present, IndexKeyTypeDecl provides  
-a sequence type that the atomized result of the associated key expression (for 
-each domain node) must match with according to the rules of sequence type 
-matching. The atomic type specified in IndexKeyTypeDecl must not be xs:anyAtomicType,
-and in the case of value indexes, it must not be xs:untypedAtomic either 
-[<a href="#ERRXDST0027">err:XDST0027</a>]. For value indexes, the occurrence 
-indicator specified in IndexKeyTypeDecl must be either absent or equal to '?' 
+is optional for general indexes (in which case it is assumed to be item()*), but 
+is required for value indexes [<a href="#ERRXDST0027">err:XDST0027</a>]. If 
+present, IndexKeyTypeDecl provides a sequence type that the atomized result of 
+the associated key expression (for each domain node) must match with according 
+to the rules of sequence type matching. For value indexes, the atomic type 
+specified in IndexKeyTypeDecl must not be xs:anyAtomicType or xs:untypedAtomic 
+[<a href="#ERRXDST0027">err:XDST0027</a>]. Furthermore, for value indexes, 
+the occurrence indicator must be either absent or equal to '?' 
 [<a href="#ERRXDST0027">err:XDST0027</a>]. Finally, if the index is a value 
 range or general range index, an ordering must exist among the values in the 
 type domain [<a href="#ERRXDST0027">err:XDST0027</a>] (this rules excludes

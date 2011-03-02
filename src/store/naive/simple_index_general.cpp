@@ -140,6 +140,14 @@ bool GeneralHashIndex::insert(
 
   AtomicItem* keyItem = static_cast<AtomicItem*>((*key)[0].getp());
 
+  if (keyItem == NULL)
+  {
+    vsize numNodes = theEmptyKeyNodes.size();
+    theEmptyKeyNodes.resize(numNodes + 1);
+    theEmptyKeyNodes[numNodes].transfer(node);
+    return true;
+  }
+
   if (keyItem->getBaseItem() != NULL)
   {
     keyItem = static_cast<AtomicItem*>(keyItem->getBaseItem());

@@ -600,6 +600,8 @@ void SimpleStore::populateGeneralIndex(
     {
       bool more = true;
 
+      assert(domainNode->isNode());
+
       while (more)
       {
         if (domainNode->getCollection() == NULL && !index->isTemporary())
@@ -612,21 +614,26 @@ void SimpleStore::populateGeneralIndex(
         // the domain node has more than one key, before we do any insertions
         // in the index.
 
+        if (key == NULL)
+          key = new store::IndexKey(numColumns);
+
         // Compute 1st key, or next domain node
         more = sourceIter->next(firstKeyItem);
 
         if (!more || firstKeyItem->isNode())
         {
-          // Current node has no keys, so we skip it
-          domainNode.transfer(firstKeyItem);
+          // Current node has no keys
+          (*key)[0] = NULL;
+          index->insert(key, domainNode, false);
+
+          if (more)
+            domainNode.transfer(firstKeyItem);
+
           continue;
         }
 
         // Prepare to insert the 1st key. Note: we have to copy domainNode 
         // rchandle because index->insert() will transfer the given node.
-        if (key == NULL)
-          key = new store::IndexKey(numColumns);
-            
         store::Item_t node = domainNode;
         (*key)[0].transfer(firstKeyItem);
 

@@ -122,9 +122,18 @@ typedef rchandle<DocIndexer> DocIndexer_t;
 
   - theDomainClause : 
   A FOR-clause that associates the domain expr with a FOR var that is referenced
-  by the key exprs and acts as the domain node for those exprs.
+  by the key exprs and acts as the domain node for those exprs. If dexpr is the
+  domain expr specified in the index declaration, the actual domain expr is:
+
+  for value indexes   : domainExpr := dexpr treat as node()*
+  for general indexes : domainExpr := check-distinct-nodes(dexpr treat as node()*)
 
   - theKeyExprs :
+  The key expressions of the index. If kexpr is a key expr specified in the 
+  index declaration, the actual domain expr is:
+
+  for value indexes   : keyExpr := fn:data(kexpr) treat as typeDecl
+  for general indexes : distinct-values(fn:data(kexpr) treat as typeDecl)
 
   - theOrderModifiers :
 
@@ -157,10 +166,14 @@ typedef rchandle<DocIndexer> DocIndexer_t;
 
   -theBuildExpr :
   The expr that computes the index entries. It is used to create or rebuild
-  the full index from scratch. The expr is a flwor expr of the following form :
+  the full index from scratch. The expr is a flwor expr of the following form,
+  for value and general indexes, respectively:
 
   for $$dot at $$pos in domainExpr
-  return index-entry-builder($$dot, fieldExpr1, ..., fieldExprN);
+  return value-index-entry-builder($$dot, fieldExpr1, ..., fieldExprN);
+
+  for $$dot at $$pos in domainExpr
+  return general-index-entry-builder($$dot, fieldExpr);
 
   - theBuildPlan :
   The runtime plan corresponding to theBuildExpr. During runtime (see

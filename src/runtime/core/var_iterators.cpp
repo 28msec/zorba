@@ -650,6 +650,9 @@ void LetVarIterator::bind(store::Iterator_t& it, PlanState& planState)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void LetVarIterator::bind(store::TempSeq_t& value, PlanState& planState)
 {
   LetVarState* state;
@@ -672,6 +675,9 @@ void LetVarIterator::bind(store::TempSeq_t& value, PlanState& planState)
 }
 
 
+/*******************************************************************************
+  This method is used to bind a window variable.
+********************************************************************************/
 void LetVarIterator::bind(
     store::TempSeq_t& value,
     PlanState& planState,
@@ -698,6 +704,9 @@ void LetVarIterator::bind(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void LetVarIterator::openImpl(
     PlanState& planState,
     uint32_t& offset)
@@ -714,6 +723,9 @@ void LetVarIterator::openImpl(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void LetVarIterator::resetImpl(PlanState& planState) const
 {
   NoaryBaseIterator<LetVarIterator, LetVarState>::resetImpl(planState);
@@ -728,6 +740,9 @@ void LetVarIterator::resetImpl(PlanState& planState) const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void LetVarIterator::closeImpl(PlanState& planState)
 {
   NoaryBaseIterator<LetVarIterator, LetVarState>::closeImpl(planState);
@@ -742,6 +757,9 @@ void LetVarIterator::closeImpl(PlanState& planState)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 bool LetVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t posItem;
@@ -819,6 +837,9 @@ bool LetVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 uint32_t LetVarIterator::getStateSizeOfSubtree() const
 {
   if (theTargetPosIter != NULL)

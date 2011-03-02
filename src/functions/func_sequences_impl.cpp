@@ -335,9 +335,12 @@ PlanIter_t op_zorba_subsequence_int::codegen(
   else if ((letVarIter = dynamic_cast<LetVarIterator*>(aArgs[0].getp())) != NULL)
   {
     const var_expr* inputVar = inputExpr->get_var();
+
     if (inputVar != NULL &&
         lenExpr != NULL &&
-        inputVar->get_kind() != var_expr::win_var &&
+        (inputVar->get_kind() == var_expr::let_var ||
+         inputVar->get_kind() == var_expr::win_var ||
+         inputVar->get_kind() == var_expr::non_groupby_var) &&
         letVarIter->setTargetPosIter(aArgs[1]) &&
         letVarIter->setTargetLenIter(aArgs[2]))
     {
@@ -347,6 +350,7 @@ PlanIter_t op_zorba_subsequence_int::codegen(
   else if ((ctxVarIter = dynamic_cast<CtxVarIterator*>(aArgs[0].getp())) != NULL)
   {
     const var_expr* inputVar = inputExpr->get_var();
+
     if (inputVar != NULL &&
         lenExpr != NULL &&
         !inputVar->is_context_item() &&
@@ -411,8 +415,16 @@ PlanIter_t op_zorba_sequence_point_access::codegen(
     }
     else if ((inputVarIter = dynamic_cast<LetVarIterator*>(aArgs[0].getp())) != NULL)
     {
-      if (inputVarIter->setTargetPos(pos))
+      const var_expr* inputVar = inputExpr->get_var();
+
+      if (inputVar != NULL &&
+          (inputVar->get_kind() == var_expr::let_var ||
+           inputVar->get_kind() == var_expr::win_var ||
+           inputVar->get_kind() == var_expr::non_groupby_var) &&
+          inputVarIter->setTargetPos(pos))
+      {
         return aArgs[0];
+      }
     }
     else if ((ctxVarIter = dynamic_cast<CtxVarIterator*>(aArgs[0].getp())) != NULL)
     {
@@ -425,9 +437,13 @@ PlanIter_t op_zorba_sequence_point_access::codegen(
     const var_expr* inputVar = inputExpr->get_var();
       
     if (inputVar != NULL &&
-        inputVar->get_kind() != var_expr::win_var &&
+        (inputVar->get_kind() == var_expr::let_var ||
+         inputVar->get_kind() == var_expr::win_var ||
+         inputVar->get_kind() == var_expr::non_groupby_var) &&
         inputVarIter->setTargetPosIter(aArgs[1]))
+    {
       return aArgs[0];
+    }
   }
   else if ((ctxVarIter = dynamic_cast<CtxVarIterator*>(aArgs[0].getp())) != NULL)
   {
