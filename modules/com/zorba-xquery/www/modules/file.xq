@@ -467,6 +467,8 @@ declare function file:dirname($file as xs:string) as xs:string
   return
     if (matches($file, concat("^", $delim-escaped, "+$"))) then
       $delim
+    else if ($normalized-file eq $delim) then
+      $delim
     else if (file:path-separator() eq '\' and matches($file, "^[a-zA-Z]:\\$")) then
       $file
     else if (file:path-separator() eq '\' and matches($file, "^[a-zA-Z]:$")) then
@@ -532,6 +534,11 @@ declare %private function file:prepare-for-dirname-and-basename($path as xs:stri
 {
   let $delim := file:path-separator()
   let $delim-escaped := replace($delim, '(\.|\[|\]|\\|\||\-|\^|\$|\?|\*|\+|\{|\}|\(|\))','\\$1')
-  let $normalized := replace(file:normalize-path($path), concat($delim-escaped, '+$'), '')
+  let $normalize-path := file:normalize-path($path)
+  let $normalized :=
+    if ($normalize-path eq $delim) then
+      $normalize-path
+    else
+      replace($normalize-path, concat($delim-escaped, '+$'), '')
   return $normalized
 };

@@ -59,10 +59,9 @@ else
    local:do($path4) eq "/a/b-c" and 
    local:do($path5) eq "/a/b-c" and 
    local:do($path6) eq "/a/b-c" and 
-   local:do($path7) eq "/-" (: and
+   local:do($path7) eq "/-"  and
    local:do($path8) eq "/-" and 
    local:do($path9) eq "/-" and 
    local:do($path10) eq "/-"
-   :)  
  )
 
