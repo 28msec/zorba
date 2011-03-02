@@ -263,6 +263,7 @@
       <xs:enumeration value="fn-zorba-introspect-dctx"/>
       <xs:enumeration value="fn-zorba-introspect-sctx"/>
       <xs:enumeration value="fn-zorba-ddl"/>
+			<xs:enumeration value="fn-zorba-reflection"/>
       <xs:enumeration value="zorba-csv"/>
     </xs:restriction>
   </xs:simpleType>

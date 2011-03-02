@@ -190,6 +190,9 @@ declare function local:iterator($iter, $name as xs:string, $state as xs:string) 
     if ($iter/zorba:method) then
       local:add-methods($iter)
     else (),
+    if ($iter/@generateGetStateSize eq 'true') 
+      then concat(gen:indent(), 'uint32_t getStateSizeOfSubtree() const;', $gen:newline, $gen:newline)
+      else (),
     $gen:indent,'void accept(PlanIterVisitor&amp; v) const;',$gen:newline,$gen:newline,
     $gen:indent,'bool nextImpl(store::Item_t&amp; result, PlanState&amp; aPlanState) const;',$gen:newline,
     if( $iter/@generateOpenImpl eq 'true') then

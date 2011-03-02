@@ -450,6 +450,7 @@ public:
   static const zstring ZORBA_RANDOM_FN_NS;
   static const zstring ZORBA_INTROSP_SCTX_FN_NS;
   static const zstring ZORBA_INTROSP_DCTX_FN_NS;
+  static const zstring ZORBA_REFLECTION_FN_NS;
 
   //
   // Namespaces of virtual modules declaring zorba builtin functions

@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,7 +20,7 @@
 #include <iterator>
 
 
-namespace zorba 
+namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(signature)
@@ -133,7 +133,7 @@ signature::signature(
   theTypes.push_back(paramType2);
   theTypes.push_back(paramType3);
   theTypes.push_back(paramType4);
-  theTypes.push_back(paramType5);  
+  theTypes.push_back(paramType5);
 }
 
 
@@ -245,14 +245,14 @@ bool signature::equals(const TypeManager* tm, const signature& s) const
   //std::cout << return_type()->toString() << std::endl;
   //std::cout << s.return_type()->toString() << std::endl;
 
-  if (!TypeOps::is_equal(tm, *returnType().getp(), *s.returnType().getp())) 
+  if (!TypeOps::is_equal(tm, *returnType().getp(), *s.returnType().getp()))
   {
     return false;
   }
 
-  for (size_t i = 0; i < theTypes.size(); ++i) 
+  for (size_t i = 0; i < theTypes.size(); ++i)
   {
-    if (!TypeOps::is_equal(tm, *theTypes[i].getp(), *s.theTypes[i].getp())) 
+    if (!TypeOps::is_equal(tm, *theTypes[i].getp(), *s.theTypes[i].getp()))
     {
       return false;
     }

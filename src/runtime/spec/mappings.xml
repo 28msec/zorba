@@ -52,6 +52,10 @@
                      define="ZORBA_INTROSPECT_SCTX_FN_NS" 
                      prefix="fn-zorba-introspect-sctx"/>
 
+		<zorba:namespace uri="http://www.zorba-xquery.com/modules/reflection"
+                     define="ZORBA_REFLECTION_FN_NS" 
+                     prefix="fn-zorba-reflection"/>
+
     <zorba:namespace uri="http://www.zorba-xquery.com/zorba/util-functions"
                      define="ZORBA_UTIL_FN_NS"
                      prefix="fn-zorba-util"/>

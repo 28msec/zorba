@@ -104,7 +104,7 @@ void UDFunctionCallIteratorState::open(PlanState& planState, user_function* udf)
   dynamic_context* localDCtx = new dynamic_context(planState.theGlobalDynCtx);
 
   thePlanState = new PlanState(planState.theGlobalDynCtx,
-                               localDCtx, 
+                               localDCtx,
                                thePlanStateSize,
                                planState.theStackDepth + 1);
 
@@ -192,7 +192,7 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
 
   std::vector<PlanIter_t>::const_iterator argsIte = theChildren.begin();
 
-  std::vector<std::vector<store::Iterator_t> >::iterator argWrapsIte = 
+  std::vector<std::vector<store::Iterator_t> >::iterator argWrapsIte =
   state->theArgWrappers.begin();
 
   for (; argRefsIte != argRefsEnd; ++argRefsIte, ++argsIte, ++argWrapsIte)
@@ -213,7 +213,7 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
       if (argRef != NULL)
       {
         (*argVarWrapsIte) = new PlanIteratorWrapper((*argsIte), planState);
-        
+
         // Cannot do the arg bind here because the state->thePlan has not been
         // opened yet, and as a result, state->thePlanState has not been
         // initialized either.
@@ -266,10 +266,8 @@ void UDFunctionCallIterator::closeImpl(PlanState& planState)
 ********************************************************************************/
 bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  try 
+  try
   {
-    bool success = true;
-
     UDFunctionCallIteratorState* state;
     DEFAULT_STACK_INIT(UDFunctionCallIteratorState, state, planState);
 
@@ -285,7 +283,7 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
 
     // Bind the args.
     {
-      const std::vector<std::vector<LetVarIter_t> >& argRefs = 
+      const std::vector<std::vector<LetVarIter_t> >& argRefs =
       theUDF->getArgVarRefIters();
 
       std::vector<std::vector<LetVarIter_t> >::const_iterator argRefsIte;
@@ -316,6 +314,7 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
 
     for (;;)
     {
+      bool success;
       try
       {
         success = consumeNext(result, state->thePlan, *state->thePlanState);
@@ -395,9 +394,9 @@ class ExtFuncArgItemSequence : public ItemSequence
   public:
     InternalIterator(ExtFuncArgItemSequence *item_sequence) : theItemSequence(item_sequence), is_open(false), open_count(0) {}
 
-    virtual void open() 
+    virtual void open()
     {
-      is_open = true; 
+      is_open = true;
       //if(open_count)
       //  theItemSequence->theChild->reset(theItemSequence->thePlanState);
       open_count++;
@@ -410,9 +409,9 @@ class ExtFuncArgItemSequence : public ItemSequence
       item = status ? result : NULL;
       return status;
     }
-    virtual void close() 
+    virtual void close()
     {
-      is_open = false; 
+      is_open = false;
     //  theItemSequence->theChild->close(theItemSequence->thePlanState);
     }
     virtual bool isOpen() const {return is_open;}
@@ -444,7 +443,7 @@ StatelessExtFunctionCallIteratorState::StatelessExtFunctionCallIteratorState()
 StatelessExtFunctionCallIteratorState::~StatelessExtFunctionCallIteratorState()
 {
   theResultIter = NULL;
- 
+
   ulong n = (ulong)m_extArgs.size();
 
   for (ulong i = 0; i < n; ++i)
@@ -590,7 +589,7 @@ bool StatelessExtFunctionCallIterator::nextImpl(
       // of global variable expressions
 
       StaticContextImpl theSctxWrapper(theModuleSctx,
-                                       (planState.theQuery == NULL? 
+                                       (planState.theQuery == NULL?
                                         NULL :
                                         planState.theQuery->getRegisteredErrorHandlerNoSync()));
 
@@ -615,7 +614,7 @@ bool StatelessExtFunctionCallIterator::nextImpl(
       err_loc.setColumnBegin(de->getColumnBegin());
       err_loc.setFilename(de->getQueryURI().c_str());
     }
-   
+
     // take all information from the exception raised in
     // the external function (e.g. file name) + add loc information
     throw error::ErrorManager::createException(

@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,14 +27,14 @@ namespace zorba {
 #define VARIADIC_SIG_SIZE 1000000
 
 /*******************************************************************************
-  
+
   By convention, theTypes[0]    = return type
                  theTypes[1]    = first param type
                  theTypes[2]    = second param type
-                  ...       =  ...  
+                  ...       =  ...
 
 ********************************************************************************/
-class signature: public SimpleRCObject 
+class signature: public SimpleRCObject
 {
  protected:
   store::Item_t            theQName;
@@ -52,29 +52,29 @@ public:
         const xqtref_t& paramType1,
         bool variadic,
         const xqtref_t& returnType);
-  
+
   signature(
         const store::Item_t& name,
         const xqtref_t& returnType);
-  
+
   signature(
         const store::Item_t& name,
         const xqtref_t& paramType1,
         const xqtref_t& returnType);
-  
+
   signature(
         const store::Item_t& name,
         const xqtref_t& paramType1,
         const xqtref_t& paramType2,
         const xqtref_t& returnType);
-  
+
   signature(
         const store::Item_t& name,
         const xqtref_t& paramType1,
         const xqtref_t& paramType2,
         const xqtref_t& paramType3,
         const xqtref_t& returnType);
-  
+
   signature(
         const store::Item_t& name,
         const xqtref_t& paramType1,
@@ -89,8 +89,8 @@ public:
         const xqtref_t& paramType2,
         const xqtref_t& paramType3,
         const xqtref_t& paramType4,
-        const xqtref_t& paramType5,            
-        const xqtref_t& returnType);  
+        const xqtref_t& paramType5,
+        const xqtref_t& returnType);
 
   signature(
         const store::Item_t& name,
@@ -101,7 +101,7 @@ public:
         const xqtref_t& paramType5,
         const xqtref_t& paramType6,
         const xqtref_t& returnType);
-  
+
   signature(
         const store::Item_t& name,
         const xqtref_t& paramType1,
@@ -134,19 +134,19 @@ public:
 
   bool isVariadic() const { return theIsVariadic; }
 
-  size_t paramCount() const 
+  size_t paramCount() const
   {
     return isVariadic() ? VARIADIC_SIG_SIZE : (uint32_t)(theTypes.size() - 1);
   }
 
-  xqtref_t const& operator[](int i) const 
+  xqtref_t const& operator[](int i) const
   {
     return theTypes[theIsVariadic ? 1 : (i + 1)];
   }
 
-  xqtref_t& operator[](int i) 
+  xqtref_t& operator[](int i)
   {
-    return theTypes[theIsVariadic ? 1 : (i + 1)]; 
+    return theTypes[theIsVariadic ? 1 : (i + 1)];
   }
 
   const xqtref_t& returnType() const { return theTypes[0]; }

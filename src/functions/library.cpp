@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -49,6 +49,7 @@
 #include "functions/func_numerics_impl.h"
 #include "functions/func_qnames.h"
 #include "functions/func_random.h"
+#include "functions/func_reflection.h"
 #include "functions/func_schema.h"
 #include "functions/func_sctx.h"
 #include "functions/func_sequences.h"
@@ -61,7 +62,7 @@
 
 
 
-namespace zorba 
+namespace zorba
 {
 
 function**  BuiltinFunctionLibrary::theFunctions = NULL;
@@ -104,6 +105,7 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populate_context_numerics(sctx);
   populate_context_qnames(sctx);
   populate_context_random(sctx);
+  populate_context_reflection(sctx);
   populate_context_schema(sctx);
   populate_context_sctx(sctx);
   populate_context_strings(sctx);

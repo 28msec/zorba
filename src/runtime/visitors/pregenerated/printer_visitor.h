@@ -503,6 +503,9 @@ namespace zorba {
     void beginVisit( const UuidIterator& );
     void endVisit  ( const UuidIterator& );
 
+    void beginVisit( const InvokeIterator& );
+    void endVisit  ( const InvokeIterator& );
+
 #ifndef ZORBA_NO_XMLSCHEMA
     void beginVisit( const ValidateIterator& );
     void endVisit  ( const ValidateIterator& );

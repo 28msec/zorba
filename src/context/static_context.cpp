@@ -291,6 +291,9 @@ const zstring
 static_context::ZORBA_INTROSP_DCTX_FN_NS = NS_PRE + "modules/introspection/dctx";
 
 const zstring
+static_context::ZORBA_REFLECTION_FN_NS = NS_PRE + "modules/reflection";
+
+const zstring
 static_context::ZORBA_UTIL_FN_NS = NS_PRE + "zorba/util-functions";
 
 const zstring
@@ -326,6 +329,7 @@ bool static_context::is_builtin_module(const zstring& ns)
             ns == ZORBA_RANDOM_FN_NS ||
             ns == ZORBA_INTROSP_SCTX_FN_NS ||
             ns == ZORBA_INTROSP_DCTX_FN_NS ||
+            ns == ZORBA_REFLECTION_FN_NS ||
             ns == ZORBA_UTIL_FN_NS ||
             ns == ZORBA_FOP_FN_NS);
   }

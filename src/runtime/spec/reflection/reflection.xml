@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+-->
+<zorba:iterators
+  xmlns:zorba="http://www.zorba-xquery.com"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
+    
+<zorba:source>
+    <zorba:include  form="Quoted">store/api/iterator.h</zorba:include>
+</zorba:source>
+  
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="InvokeIterator" arity="nary" generateGetStateSize="true">
+
+    <zorba:description author="Zorba Team">
+      reflection:invoke
+    </zorba:description>
+
+    <zorba:function isDeterministic="false">
+      <zorba:signature localname="invoke"
+                       prefix="fn-zorba-reflection">
+        <zorba:param>xs:QName</zorba:param>               
+        <zorba:param>true</zorba:param>
+        <zorba:output>item()*</zorba:output>
+      </zorba:signature>
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+      </zorba:methods>
+    </zorba:function>
+
+    <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
+      <zorba:member type="PlanIter_t" name="thePlan" brief="the function's plan"/>
+      <zorba:member type="PlanState*" name="thePlanState" brief="the function's plan state"/>
+      <zorba:member type="store::Iterator_t" name ="theExitValue" brief="the exit value"/>
+      <zorba:member type="uint32_t" name="theUDFStateOffset" brief="the UDF state offset"/>
+    </zorba:state>
+
+</zorba:iterator>
+
+</zorba:iterators>

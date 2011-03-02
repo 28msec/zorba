@@ -1561,7 +1561,7 @@ var_expr_t bind_var(
 
 
 /*******************************************************************************
-  Lookup a context variable, i.e., the var (if any) representing the context 
+  Lookup a context variable, i.e., the var (if any) representing the context
   item, or the context position, or the context size. The variable is identified
   by its lexical qname (DOT_VARNAME, or DOT_POS_VARNAME, or LAST_IDX_VARNAME).
 
@@ -1739,19 +1739,31 @@ void normalize_fo(fo_expr* foExpr)
       else
         paramType = theRTM.BOOLEAN_TYPE_ONE;
     }
+    else if (func->getKind() == FunctionConsts::FN_ZORBA_REFLECTION_INVOKE_N)
+    {
+      if (i==0)
+        paramType = sign[i];
+      else
+        paramType = NULL; // Nothing to check as the target function is not known
+    }
     else
     {
       paramType = sign[i];
     }
 
-    if (TypeOps::is_subtype(tm, *paramType, *theRTM.ANY_ATOMIC_TYPE_STAR, foExpr->get_loc()))
+    // A NULL value for the parameter's type to signal that no type promotion
+    // or match should be added. This is used by the reflection:invoke() function,
+    if (paramType != NULL)
     {
-      argExpr = wrap_in_atomization(argExpr);
-      argExpr = wrap_in_type_promotion(argExpr, paramType);
-    }
-    else
-    {
-      argExpr = wrap_in_type_match(argExpr, paramType);
+      if (TypeOps::is_subtype(tm, *paramType, *theRTM.ANY_ATOMIC_TYPE_STAR, foExpr->get_loc()))
+      {
+        argExpr = wrap_in_atomization(argExpr);
+        argExpr = wrap_in_type_promotion(argExpr, paramType);
+      }
+      else
+      {
+        argExpr = wrap_in_type_match(argExpr, paramType);
+      }
     }
 
     foExpr->set_arg(i, argExpr);
@@ -2272,7 +2284,7 @@ expr_t wrap_in_globalvar_assign(expr_t e)
      query is executed, and it is this external intialization that will declare
      the var, ie, add an entry for the var in the dynamic ctx. Nevertheless, we
      need to generate the ctxvar-declare expr because it is when this expr is
-     encounered during codegen that an id will be assigned to the var (and 
+     encounered during codegen that an id will be assigned to the var (and
      stored in the var_expr). This id is needed in order to register the var
      in the dyn ctx.
 
@@ -2295,7 +2307,7 @@ void declare_var(const global_binding& b, std::vector<expr_t>& stmts)
 
   xqtref_t varType = varExpr->get_type();
 
-  if (varType == NULL && 
+  if (varType == NULL &&
       varExpr->get_name()->getLocalName() == static_context::DOT_VAR_NAME)
   {
     varType = GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE;
@@ -3410,7 +3422,7 @@ void* begin_visit(const VFO_DeclList& v)
                               loc,
                               qnameItem->getNamespace().str(),
                               qnameItem->getLocalName().str());
-      } 
+      }
       else
       {
         if (ef->getLocalName().compare(qnameItem->getLocalName().str()) != 0)
@@ -3712,7 +3724,7 @@ void end_visit(const CtxItemDecl& v, void* /*visit_state*/)
     var = lookup_ctx_var(DOT_VARNAME, loc);
 
   global_binding b(var, initExpr, true);
-  
+
   declare_var(b, theModulesInfo->init_exprs);
 }
 
@@ -4203,7 +4215,7 @@ void* begin_visit(const IndexKeyList& v)
   //
   // for $book in collection("books")
   // where $book//price > 10
-  // return $book 
+  // return $book
   //
   // An index to optimize the above query would have collection("books") as
   // its domain expr, and .//price as its key expr. In this case, the donaim
@@ -4214,19 +4226,19 @@ void* begin_visit(const IndexKeyList& v)
   // duplicate elimination.
   //
   // Now, consider the following query:
-  // 
+  //
   // let $xBook := <book>....</book>
   // for $book in ($xBook, $xBook, $xBook)
   // where $book//price > 10
-  // return $book 
+  // return $book
   //
   // If $xBook has a price > 10, the result of this query will be $xBook 3
-  // times. If we were using an index for this query, and the probe does 
+  // times. If we were using an index for this query, and the probe does
   // duplicate as required by the previous example, we would get $xBook only
   // once.
   //
   // So, to decide whether the probe function should do duplicate elimination
-  // or not, we must be able to distinguish between the above 2 cases. This 
+  // or not, we must be able to distinguish between the above 2 cases. This
   // is not easy/possible, so we decide to err in favor of the first example
   // and not allow the domain expr to return duplicate nodes.
   if (index->isGeneral())
@@ -4328,8 +4340,8 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
                               index->getName()->getStringValue(), "");
       }
 
-      if (!index->isGeneral() && 
-          quant != TypeConstants::QUANT_ONE && 
+      if (!index->isGeneral() &&
+          quant != TypeConstants::QUANT_ONE &&
           quant != TypeConstants::QUANT_QUESTION)
       {
         ZORBA_ERROR_LOC_PARAM(XDST0027_INDEX_BAD_KEY_TYPE, kloc,
@@ -4375,7 +4387,7 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
       if (! theSctx->is_known_collation(collationUri))
         ZORBA_ERROR_LOC(XQST0076, keySpec->get_location());
     }
-    else if (ptype != NULL && 
+    else if (ptype != NULL &&
              TypeOps::is_subtype(tm, *ptype, *theRTM.STRING_TYPE_ONE, loc))
     {
       collationUri = theSctx->get_default_collation(loc);
@@ -6552,7 +6564,7 @@ void* begin_visit(const SwitchExpr& v)
 
       expr_t operandExpr = pop_nodestack();
       operandExpr = wrap_in_atomization(operandExpr);
-      operandExpr = new fo_expr(theRootSctx, loc, 
+      operandExpr = new fo_expr(theRootSctx, loc,
                                 GET_BUILTIN_FUNCTION(OP_ATOMIC_VALUES_EQUIVALENT_2),
                                 sv,
                                 operandExpr);
@@ -9123,7 +9135,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       normalize_fo(foExpr);
       push_nodestack(foExpr.getp());
       return;
-    } 
+    }
     else if (localName == "tail")
     {
       arguments.push_back(new const_expr(theRootSctx, loc, Integer::parseInt(2)));
@@ -9132,7 +9144,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       normalize_fo(foExpr);
       push_nodestack(foExpr.getp());
       return;
-    } 
+    }
     else if (localName == "subsequence" && (numArgs == 2 || numArgs == 3))
     {
       function* f = NULL;
