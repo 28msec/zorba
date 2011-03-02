@@ -37,6 +37,9 @@ namespace zorba {
         String lFileName = lLocation->getFileName();
         if (lFileName.startsWith("file:")) {
           lFileName = URIHelper::decodeFileURI(lFileName);
+          while (lFileName.startsWith("//")) {
+            lFileName = lFileName.substring(1);
+          }
         }
         if(aAsXml) {
           aOut << "<call ";
