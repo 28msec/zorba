@@ -53,7 +53,7 @@ ImageFunction::throwImageError(const DynamicContext* aDynamicContext, const char
   std::stringstream lErrorMessage;
   // constuct error QName
   String lNamespace = "http://www.zorba-xquery.com/modules/image/error";
-  String lLocalname = "err:IM001";
+  String lLocalname = "IM001";
   Item lQName;
   Iterator_t lDummyIterator;
   aDynamicContext->getVariable(lNamespace, lLocalname, lQName, lDummyIterator); 
