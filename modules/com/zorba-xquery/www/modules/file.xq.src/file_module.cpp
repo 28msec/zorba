@@ -41,8 +41,8 @@ FileModule::getExternalFunction(const String& aLocalname)
 
     // Update done to new FileAPI spec for the following:
     // TODO: errors
-    } else if (aLocalname.equals("mkdir")) {
-      lFunc = new MkdirFunction(this);
+    } else if (aLocalname.equals("create-directory")) {
+      lFunc = new CreateDirectoryFunction(this);
     } else if (aLocalname.equals("delete")) {
       lFunc = new DeleteFunction(this);
     // ****************************************************

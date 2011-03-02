@@ -68,15 +68,15 @@ module namespace file = "http://www.zorba-xquery.com/modules/file";
  : Creates a directory.
  :
  : The operation is equivalent to calling:
- : <pre>file:mkdir($dir, fn:true(), fn:false())</pre>.
+ : <pre>file:create-directory($dir, fn:true(), fn:false())</pre>.
  :
  : @param $dir The path/URI denoting the directory to be created.
  : @return The empty sequence.
  :)
-declare sequential function file:mkdir(
+declare sequential function file:create-directory(
   $dir as xs:string) as empty-sequence()
 {
-  file:mkdir($dir, fn:true(), fn:false())
+  file:create-directory($dir, fn:true(), fn:false())
 };
 
 (:~
@@ -85,18 +85,18 @@ declare sequential function file:mkdir(
  : also created.
  :
  : The operation is equivalent to calling:
- : <pre>file:mkdir($dir, $recursive, fn:false())</pre>.
+ : <pre>file:create-directory($dir, $recursive, fn:false())</pre>.
  :
  : @param $dir The path/URI denoting the directory to be created.
  : @param $recursive If the operation should create all the missing parrent
  :    directories.
  : @return The empty sequence.
  :)
-declare sequential function file:mkdir(
+declare sequential function file:create-directory(
   $dir as xs:string,
   $recursive as xs:boolean) as empty-sequence()
 {
-  file:mkdir($dir, $recursive, fn:false())
+  file:create-directory($dir, $recursive, fn:false())
 };
 
 (:~
@@ -110,7 +110,7 @@ declare sequential function file:mkdir(
  : @param $failIfExists Flag indicating whether the directory must be created or not.
  : @return The empty sequence.
  :)
-declare sequential function file:mkdir(
+declare sequential function file:create-directory(
   $dir as xs:string,
   $recursive as xs:boolean,
   $failIfExists as xs:boolean

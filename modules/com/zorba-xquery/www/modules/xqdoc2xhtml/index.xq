@@ -134,7 +134,7 @@ declare %private sequential function xqdoc2html:copy-files(
   $destinationPath  as xs:string, 
   $pattern          as xs:string)
 {
-  file:mkdir($destinationPath);
+  file:create-directory($destinationPath);
 
   let $clear := xqdoc2html:clear-folder($destinationPath, $pattern)
   let $clear := xqdoc2html:gather-and-copy($sourcePath, $destinationPath, $pattern)
@@ -154,7 +154,7 @@ declare %private sequential function xqdoc2html:copy-xqsrc-folders(
   $modulePath as xs:string,
   $xqSrcPath as xs:string)
 {
-  file:mkdir($xqSrcPath);
+  file:create-directory($xqSrcPath);
 
   xqdoc2html:clear-folder($xqSrcPath,"(\.cpp|\.h)$");
     
@@ -213,7 +213,7 @@ declare sequential function xqdoc2html:copy-xhtml-requisites(
   return
     block {
       (: first - create the xhtml folder is it does not exist already :)
-      file:mkdir($xhtmlPath);
+      file:create-directory($xhtmlPath);
 
       (: second - clear the folder of all the files with these extensions :)
       xqdoc2html:clear-folder($xhtmlPath,"(\.xsd|\.gif|\.svg|\.js|\.css|\.html|\.cpp|\.h|\.xq)$");
@@ -228,10 +228,10 @@ declare sequential function xqdoc2html:copy-xhtml-requisites(
       xqdoc2html:copy-xqsrc-folders($modulesPath, $xqSrcPath);
 
       (: only create the 'modules' folder. The .xq module files will be copied later on in the process :)
-      file:mkdir($xqPath);
+      file:create-directory($xqPath);
       
       (: only create the examples folder. The examples will be copied later on in the process :)
-      file:mkdir($examplesPath);
+      file:create-directory($examplesPath);
     }
 };
 
@@ -379,7 +379,7 @@ declare %private sequential function xqdoc2html:generate-xqdoc-xhtml(
       let $menu := xqdoc2html:create-module-table($leftMenu, $menu, $moduleUri)
       let $xhtml := xqdoc2html:doc($xqdoc, $menu, $xqdoc2html:indexCollector, $xqdoc2html:schemasCollector, $xqSrcPath, $templatePath, $xqdocXhtmlPath, $examplePath)
       return block {
-        file:mkdir($xhtmlFileDir);
+        file:create-directory($xhtmlFileDir);
 
         xqdoc2html:configure-xhtml($xhtml, $modulesPath);
 
@@ -1038,7 +1038,7 @@ declare %private sequential function xqdoc2html:main(
     ();
   
   (: generate the XQDoc XML for all the modules :)
-  file:mkdir($xqdocXmlPath);
+  file:create-directory($xqdocXmlPath);
   xqdoc2html:clear-folder($xqdocXmlPath,"\.xml$");
   xqdoc2html:generate-xqdoc-xml($modulePath, $xqdocXmlPath, $xqdocXhtmlPath, $examplePath);
     
@@ -1046,7 +1046,7 @@ declare %private sequential function xqdoc2html:main(
   let $absoluteXhtmlDir := concat($xqdocBuildPath, "/xhtml")
   return
     block {
-      file:mkdir($absoluteXhtmlDir);
+      file:create-directory($absoluteXhtmlDir);
       xqdoc2html:clear-folder($xqdocXhtmlPath,"xqdoc\.html$");
       xqdoc2html:gather-schemas($xqdocSchemasPath);
       xqdoc2html:generate-xqdoc-xhtml($xqdocXmlPath, $xqdocXhtmlPath, $xqSrcPath, $leftMenu, $modulePath, $xqdoc2html:functionIndexPageName, $templatePath, $examplePath);

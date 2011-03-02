@@ -24,12 +24,12 @@ declare sequential function commons:testExists($path as xs:string) as xs:string*
     ("testExists failed for path:", $path)
 };
 
-declare sequential function commons:testMkdir($path as xs:string) as xs:string* {
+declare sequential function commons:testCreateDirectory($path as xs:string) as xs:string* {
   try {
-    file:mkdir($path);
+    file:create-directory($path);
     "SUCCESS";
   } catch * {
-    exit returning ("testMkdir failed for path:", $path)
+    exit returning ("testCreateDirectory failed for path:", $path)
   }
 };
 
@@ -82,7 +82,7 @@ declare sequential function commons:testInitDir($dir as xs:string) as xs:string*
   (: ==================================================================== :)
   (: it must be able to create the test directory :)
   (: ========= :)
-  let $s := commons:testMkdir($dir)
+  let $s := commons:testCreateDirectory($dir)
   return 
     if (fn:not(commons:isSuccess($s))) then
       (: exit returning ("testInitDir failed - could not create directory:", $dir) :)

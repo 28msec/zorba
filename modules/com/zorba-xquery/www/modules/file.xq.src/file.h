@@ -29,13 +29,13 @@ namespace zorba {
 
 //*****************************************************************************
 
-  class MkdirFunction : public FileFunction
+  class CreateDirectoryFunction : public FileFunction
   {
     public:
-      MkdirFunction(const FileModule* aModule);
+      CreateDirectoryFunction(const FileModule* aModule);
 
       virtual String
-      getLocalName() const { return "mkdir"; }
+      getLocalName() const { return "create-directory"; }
   
       virtual ItemSequence_t 
       evaluate(const StatelessExternalFunction::Arguments_t& args,
@@ -183,40 +183,6 @@ namespace zorba {
       getGmtOffset();
 
   };
-
-////*****************************************************************************
-//
-//  class MkdirFunction : public FileFunction
-//  {
-//    public:
-//      MkdirFunction(const FileModule* aModule);
-//
-//      virtual String
-//      getLocalName() const { return "mkdir"; }
-//  
-//      virtual ItemSequence_t 
-//      evaluate(const StatelessExternalFunction::Arguments_t& args,
-//               const StaticContext* aSctxCtx,
-//               const DynamicContext* aDynCtx) const;
-//  };
-//
-////*****************************************************************************
-//
-//  class MkdirsFunction : public FileFunction
-//  {
-//    public:
-//      MkdirsFunction(const FileModule* aModule);
-//
-//      virtual String
-//      getLocalName() const { return "mkdirs"; }
-//  
-//      virtual ItemSequence_t 
-//      evaluate(const StatelessExternalFunction::Arguments_t& args,
-//               const StaticContext* aSctxCtx,
-//               const DynamicContext* aDynCtx) const;
-//  };
-//
-//*****************************************************************************
 
   class PathSeparator : public FileFunction
   {
