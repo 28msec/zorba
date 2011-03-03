@@ -149,7 +149,7 @@ namespace pointer {
       case UF : return unknown;
       case USE: return unknown;
       // ensures all cases are handled
-      default          : ZORBA_ASSERT( false );
+      default : ZORBA_ASSERT( false );
     }
   }
 
