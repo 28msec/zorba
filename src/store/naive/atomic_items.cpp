@@ -814,116 +814,131 @@ FTTokenIterator_t StringItem::getQueryTokens(
 /*******************************************************************************
   class StreamableStringItem
 ********************************************************************************/
-void StreamableStringItem::appendStringValue(zstring& buf) const 
+void StreamableStringItem::appendStringValue(zstring& aBuf) const
 {
-  materialize_if_necessary();
-  buf += theValue;
+  if (!theIsMaterialized) {
+    materialize();
+  }
+  aBuf += theValue;
 }
 
 
 long StreamableStringItem::compare( 
-    const Item* other,
-    long timezone,
-    const XQPCollator* collator) const 
+    const Item* aOther,
+    long aTimezone,
+    const XQPCollator* aCollator) const
 {
-  materialize_if_necessary();
-  return StringItem::compare(other, timezone, collator);
+  if (!theIsMaterialized) {
+    materialize();
+  }
+  return StringItem::compare(aOther, aTimezone, aCollator);
 }
 
 
 bool StreamableStringItem::equals( 
-    store::Item const *item,
-    long timezone,
-    XQPCollator const *collator ) const 
+    store::Item const* aItem,
+    long aTimezone,
+    XQPCollator const* aCollator) const 
 {
-  materialize_if_necessary();
-  return equals( item, timezone, collator );
+  if (!theIsMaterialized) {
+    materialize();
+  }
+  return equals(aItem, aTimezone, aCollator);
 }
 
-store::Item_t StreamableStringItem::getEBV() const 
+
+store::Item_t StreamableStringItem::getEBV() const
 {
-  materialize_if_necessary();
+  if (!theIsMaterialized) {
+    materialize();
+  }
   return StringItem::getEBV();
 }
 
 
-std::istream& StreamableStringItem::getStream() 
+std::istream& StreamableStringItem::getStream()
 {
-  return istream_;
+  return theIstream;
 }
 
 
-zstring const& StreamableStringItem::getString() const 
+zstring const& StreamableStringItem::getString() const
 {
-  materialize_if_necessary();
+  if (!theIsMaterialized) {
+    materialize();
+  }
   return theValue;
 }
 
 
-zstring StreamableStringItem::getStringValue() const 
+zstring StreamableStringItem::getStringValue() const
 {
-  materialize_if_necessary();
+  if (!theIsMaterialized) {
+    materialize();
+  }
   return theValue;
 }
 
 
-void StreamableStringItem::getStringValue2( zstring &val ) const 
+void StreamableStringItem::getStringValue2(zstring &val) const
 {
-  materialize_if_necessary();
+  materialize();
   val = theValue;
 }
 
 
-uint32_t StreamableStringItem::hash( long timezone,
-                                     XQPCollator const *collator ) const 
+uint32_t StreamableStringItem::hash(
+    long aTimezone,
+    XQPCollator const* aCollator) const
 {
-  materialize_if_necessary();
-  return utf8::hash( theValue, collator );
+  if (!theIsMaterialized) {
+    materialize();
+  }
+  return utf8::hash(theValue, aCollator);
 }
 
 
-bool StreamableStringItem::isStreamable() const 
+bool StreamableStringItem::isStreamable() const
 {
   return true;
 }
 
 
-zstring StreamableStringItem::show() const 
+zstring StreamableStringItem::show() const
 {
-  materialize_if_necessary();
+  if (!theIsMaterialized) {
+    materialize();
+  }
   return StringItem::show();
 }
 
 
-void StreamableStringItem::materialize_if_necessary() const 
+void StreamableStringItem::materialize() const
 {
-  if ( theValue.empty() ) 
-  {
-    ios::iostate const old_exceptions = istream_.exceptions();
-    istream_.exceptions( std::ios::badbit | std::ios::failbit );
+  ios::iostate const lOldExceptions = theIstream.exceptions();
+  theIstream.exceptions(std::ios::badbit | std::ios::failbit);
 
-    streampos const pos = istream_.tellg();
-    if ( pos )
-      istream_.seekg( 0, ios::beg );
-
-    char buf[ 4096 ];
-    StreamableStringItem *const ssi = const_cast<StreamableStringItem*>( this );
-    istream_.exceptions( istream_.exceptions() & ~ios::failbit );
-    while ( istream_ ) 
-    {
-      istream_.read( buf, sizeof( buf ) );
-      ssi->theValue.append( buf, istream_.gcount() );
-    }
-    istream_.clear();                   // clear eofbit
-
-    if ( pos ) 
-    {
-      istream_.exceptions( istream_.exceptions() | ios::failbit );
-      istream_.seekg( pos, ios::beg );
-    }
-
-    istream_.exceptions( old_exceptions );
+  streampos const lPos = theIstream.tellg();
+  if (lPos) {
+    theIstream.seekg(0, ios::beg);
   }
+
+  char lBuf[4096];
+  StreamableStringItem* const lSsi = const_cast<StreamableStringItem*>(this);
+  theIstream.exceptions(theIstream.exceptions() & ~ios::failbit);
+  while (theIstream) {
+    theIstream.read(lBuf, sizeof(lBuf));
+    lSsi->theValue.append(lBuf, theIstream.gcount());
+  }
+  // clear eofbit
+  theIstream.clear();
+
+  if (lPos) {
+    theIstream.exceptions(theIstream.exceptions() | ios::failbit);
+    theIstream.seekg(lPos, ios::beg);
+  }
+
+  theIstream.exceptions(lOldExceptions);
 }
 
 

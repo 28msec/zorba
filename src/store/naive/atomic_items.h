@@ -582,7 +582,9 @@ class StreamableStringItem : public StringItem
   friend class BasicItemFactory;
 
 protected:
-  std::istream & istream_;
+  std::istream & theIstream;
+
+  bool theIsMaterialized;
 
 public:
   bool equals(
@@ -614,11 +616,13 @@ public:
   zstring show() const;
 
 protected:
-  StreamableStringItem(std::istream& stream) : istream_(stream) 
+  StreamableStringItem(std::istream& aStream)
+    : theIstream(aStream),
+      theIsMaterialized(false)
   {
   }
 
-  void materialize_if_necessary() const;
+  void materialize() const;
 };
 
 /*******************************************************************************
@@ -2190,4 +2194,3 @@ private:
  * mode: c++
  * End:
  */
- /* vim:set et sw=2 ts=2: */
