@@ -102,7 +102,8 @@ namespace zorba { namespace emailmodule {
                    const std::string& contentTransferEncoding,
                    const std::string& aContentDisposition,
                    const std::string& aContentDispositionFilename,
-                   const std::string& aContentDispositionModificationDate);
+                   const std::string& aContentDispositionModificationDate,
+                   const std::string& aContentId);
 
 
 

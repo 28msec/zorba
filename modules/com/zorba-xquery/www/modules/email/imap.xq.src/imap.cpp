@@ -881,14 +881,22 @@ FetchMessageFunction::getMessage(const ImapModule* aModule,
     }  
 
     if (lCurrentBody->type != TYPEMULTIPART) {
+      std::string lContentId = "";
+      char * lId = lCurrentBody->id;
+     
+      if (lId != NIL) {
+        lContentId = cpystr(lId);
+      }
+      
       std::string lSubType(lCurrentBody->subtype);                                                                  
       std::transform(lSubType.begin(), lSubType.end(), lSubType.begin(), tolower);
       // make sure that we haven't got a empty string (happens if there is no multipart in this message)
       if (lCurrentSection.size() != 0) {
         lCurrentSection.erase(lCurrentSection.end() - 1);
       }
+  
       std::string lBodyContent = ImapClient::Instance().fetchBodyFull(aHostName, aUserName, aPassword, aMailbox, aMessageNumber, lNoMultipart ? "1" : lCurrentSection, aUid);  
-      ImapFunction::createContentNode(aModule, lCurrentParent, lBodyContent, lContentType, "us-ascii", lEncoding, lContentDisposition, lContentDispositionFilename, lContentDispositionModificationDate); 
+      ImapFunction::createContentNode(aModule, lCurrentParent, lBodyContent, lContentType, "us-ascii", lEncoding, lContentDisposition, lContentDispositionFilename, lContentDispositionModificationDate, lContentId); 
  
     } else {
       lMultipartParent = aModule->getItemFactory()->createElementNode(lCurrentParent, lMultipartParentName, lMultipartParentType, false, false, ns_binding);

@@ -112,6 +112,7 @@ xmlns:tns="http://www.zorba-xquery.com/modules/email/email"
         <attribute name="contentDisposition" type="string" />
         <attribute name="contentDisposition-filename" type="string" />
         <attribute name="contentDisposition-modification-date" type="dateTime" />
+        <attribute name="content-id" type="string" />
      </extension>
   </simpleContent>
 </complexType>

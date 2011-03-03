@@ -350,7 +350,8 @@ ImapFunction::createContentNode(const ImapModule* aModule,
                    const std::string& aContentTransferEncoding,
                    const std::string& aContentDisposition,
                    const std::string& aContentDispositionFilename,
-                   const std::string& aContentDispositionModificationDate)
+                   const std::string& aContentDispositionModificationDate,
+                   const std::string& aContentId)
 
 {  
 
@@ -362,6 +363,13 @@ ImapFunction::createContentNode(const ImapModule* aModule,
   Item lItem = aModule->getItemFactory()->createElementNode(aParent, lName, lType, false, false, null_binding);
   
   createContentTypeAttributes(aModule, lItem, aContentType, aCharset, aContentTransferEncoding, aContentDisposition, aContentDispositionFilename, aContentDispositionModificationDate);
+
+  if (aContentId.length() > 1) {
+    static Item lContentIdName = aModule->getItemFactory()->createQName("", "", "content-id");
+    static Item lContentIdType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "string");
+    Item lContentIdText = aModule->getItemFactory()->createTextNode(lNullItem, String(aContentId));
+    aModule->getItemFactory()->createAttributeNode(lItem, lContentIdName, lContentIdType, lContentIdText);
+  }  
 
   aModule->getItemFactory()->createTextNode(lItem, String(aContent));
 
