@@ -1378,7 +1378,12 @@ bool Schema::parseUserSimpleTypes(
     }
     else
     {
-      resultList.push_back(atomicResult);
+      // use resultList.resize() and resultList[x].transfer(atomicResult)
+      //resultList.push_back(atomicResult);
+      std::size_t s = resultList.size();
+      resultList.resize(s+1);
+      resultList[s].transfer(atomicResult);
+      
       return true;
     }
   }
@@ -1401,7 +1406,10 @@ bool Schema::parseUserSimpleTypes(
       return false;
     else
     {
-      resultList.push_back(atomicResult);
+      //resultList.push_back(atomicResult);
+      std::size_t s = resultList.size();
+      resultList.resize(s+1);
+      resultList[s].transfer(atomicResult);
       return true;
     }
   }

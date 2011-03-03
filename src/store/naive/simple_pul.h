@@ -413,6 +413,7 @@ public:
         store::IndexEntryCreator* creator);
 
   void setValidator(store::SchemaValidator* validator);
+  store::SchemaValidator* getValidator() const { return theValidator; }
 
   bool inheritNSBindings() const { return theInheritNSBindings; }
 

@@ -36,6 +36,8 @@
 #include "store/naive/simple_item_factory.h"
 #include "store/naive/node_factory.h"
 
+#include "store/api/validator.h"
+
 
 namespace zorba { namespace simplestore {
 
@@ -1261,25 +1263,37 @@ void ElementNode::replaceContent(UpdReplaceElemContent& upd)
   if (upd.theNewChild == NULL || upd.theNewChild->getStringValue().empty())
     return;
 
-  TextNode* newChild = TEXT_NODE(upd.theNewChild);
-
-  XmlTree* oldTree = newChild->getTree();
-  XmlTree* newTree = getTree();
-
-  oldTree->setRoot(NULL);
-  delete oldTree;
-
-  SYNC_CODE(newTree->getRCLock()->acquire());
-  newTree->getRefCount() += 1;
-  SYNC_CODE(newTree->getRCLock()->release());
-
-  newChild->setTree(newTree);
-  newChild->setOrdPath(this, true, 0, store::StoreConsts::textNode);
-  newChild->connect(this, 0);
-
-  upd.theNewChild = NULL;
-
-  removeType(upd);
+  if ( upd.thePul->getValidator()->isPossibleSimpleContentRevalidation(getType()) )
+  {
+    std::vector<store::Item_t> result;
+    upd.thePul->getValidator()->validateSimpleContent(getType(), 
+                                                      upd.theNewChild->getStringValue(),
+                                                      result);
+    
+    GENV_ITEMFACTORY->createTextNode(upd.theNewChild, this, result);
+  }
+  else
+  {
+    TextNode* newChild = TEXT_NODE(upd.theNewChild);
+    
+    XmlTree* oldTree = newChild->getTree();
+    XmlTree* newTree = getTree();
+    
+    oldTree->setRoot(NULL);
+    delete oldTree;
+    
+    SYNC_CODE(newTree->getRCLock()->acquire());
+    newTree->getRefCount() += 1;
+    SYNC_CODE(newTree->getRCLock()->release());
+    
+    newChild->setTree(newTree);
+    newChild->setOrdPath(this, true, 0, store::StoreConsts::textNode);
+    newChild->connect(this, 0);
+    
+    upd.theNewChild = NULL;
+    
+    removeType(upd);
+  }
 }
 
 
@@ -1376,11 +1390,27 @@ void AttributeNode::replaceValue(UpdReplaceAttrValue& upd)
 {
   upd.theOldValue.transfer(theTypedValue);
 
-  store::Item_t newValue;
-  GET_STORE().getItemFactory()->createUntypedAtomic(newValue, upd.theNewValue);
-  theTypedValue.transfer(newValue);
-
-  removeType(upd);
+  if ( upd.thePul->getValidator()->isPossibleSimpleContentRevalidation(getType()) )
+  {
+    std::vector<store::Item_t> result;
+    upd.thePul->getValidator()->validateSimpleContent(getType(), 
+                                                      upd.theNewValue,
+                                                      result);
+    
+    if ( result.size()==1 )
+      theTypedValue.transfer(result[0]);
+    else
+    {
+      theTypedValue = new ItemVector(result) ;
+    }
+  }
+  else
+  {
+    store::Item_t newValue;
+    GET_STORE().getItemFactory()->createUntypedAtomic(newValue, upd.theNewValue);
+    theTypedValue.transfer(newValue);
+    removeType(upd);
+  }
 }
 
 
@@ -1484,21 +1514,47 @@ void TextNode::replaceValue(UpdReplaceTextValue& upd)
 {
   InternalNode* parent = theParent;
 
-  if (parent)
-    parent->removeType(upd);
-
-  if (isTyped())
+  if ( upd.thePul->getValidator()->isPossibleSimpleContentRevalidation(getType()) )
   {
-    assert(parent);
-    upd.theIsTyped = true;
+    if (isTyped())
+    {
+      assert(parent);
+      upd.theIsTyped = true;
+    }
+    else
+    {
+      upd.theIsTyped = false;
+      upd.theOldContent.setText(theContent);
+    }
+
+    std::vector<store::Item_t> result;
+    upd.thePul->getValidator()->validateSimpleContent(getType(), 
+                                                      upd.theNewContent,
+                                                      result);
+    
+    if ( result.size()==1 )
+      setValue(result[0]);
+    else
+      setValue( new ItemVector(result) );
   }
   else
   {
-    upd.theIsTyped = false;
-    upd.theOldContent.setText(theContent);
-  }
+    if (parent)
+      parent->removeType(upd);
+    
+    if (isTyped())
+    {
+      assert(parent);
+      upd.theIsTyped = true;
+    }
+    else
+    {
+      upd.theIsTyped = false;
+      upd.theOldContent.setText(theContent);
+    }
 
-  setText(upd.theNewContent);
+    setText(upd.theNewContent);
+  }
 }
 
 

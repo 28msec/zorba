@@ -39,6 +39,12 @@ public:
   virtual ~SchemaValidator() {}
 
   virtual void validate(const std::set<Item*>& nodes, PUL& pul) = 0;
+  
+  virtual bool isPossibleSimpleContentRevalidation(store::Item *typeQName) = 0;
+  
+  virtual void validateSimpleContent(store::Item *typeQName, 
+                             zstring newValue, 
+                             std::vector<store::Item_t> &resultList) = 0;
 };
 
 

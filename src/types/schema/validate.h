@@ -23,6 +23,10 @@
 
 #include "compiler/parser/parse_constants.h"
 
+#include "types/typeimpl.h"
+#include "types/typeops.h"
+#include "types/root_typemanager.h"
+#include "system/globalenv.h"
 #include "store/api/item.h"
 
 
@@ -53,6 +57,42 @@ class Validator
         const store::Item_t& typeQName,
         zstring& textValue, 
         std::vector<store::Item_t>& resultList);
+  
+  /**
+   - haveValue : True if the element has a typed value.
+   The only case when an element node N does not have a typed value is when the type
+   of N is a complex type with element-only content. So, this flag is a function 
+   of the element's type only; not of the actual content of an element instance.
+   */
+  static bool typeHasValue(xqtref_t t)
+  {
+    return (t->content_kind() == XQType::MIXED_CONTENT_KIND ||
+            t->content_kind() == XQType::SIMPLE_CONTENT_KIND ||
+            t->content_kind() == XQType::EMPTY_CONTENT_KIND);
+  }
+  
+  /**
+   - haveTypedValue : True if the element has a non-empty typed value and the type of that
+   value is something other than untypedAtomic. This can happen only if the type of the
+   element node is a simple type or a complex type with simple content (i.e., the element
+   has no sub-elements). Again this flag is a function of the element's type only; not of
+   the actual content of an element instance.
+   */
+  static bool typeHasTypedValue(const TypeManager* tm, xqtref_t t)
+  {
+    return (t->content_kind() == XQType::SIMPLE_CONTENT_KIND &&
+            !TypeOps::is_equal(tm, *t, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE));
+  }
+  
+  /**
+   - haveEmptyValue : True if the typed value of the element is the empty sequence.
+   This can happen only if "the element has a complex type with empty content"
+   (quote from the spec). This flag also is a function of the element's type only.
+   */
+  static bool typeHasEmptyValue(xqtref_t t)
+  {
+    return t->content_kind() == XQType::EMPTY_CONTENT_KIND;
+  }
 
 private:
   static bool realValidationValue (

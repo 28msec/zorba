@@ -21,13 +21,14 @@
 #include "common/shared_types.h"
 
 #include "store/api/validator.h"
-
+#include "types/schema/EventSchemaValidator.h"
+#include "types/schema/StrX.h"
 
 namespace zorba
 {
-bool typeHasValue(xqtref_t t);
-bool typeHasTypedValue(xqtref_t t);
-bool typeHasEmptyValue(xqtref_t t);
+//bool typeHasValue(xqtref_t t);
+//bool typeHasTypedValue(xqtref_t t);
+//bool typeHasEmptyValue(xqtref_t t);
 
 
 class QueryLoc;
@@ -54,16 +55,83 @@ public:
   }
 
 #ifndef ZORBA_NO_XMLSCHEMA
+  /**
+   * Validates entire documents. nodes is a set of root documents or elements.
+   * An error is thrown in case of invalid content.
+   */
   void validate(const std::set<store::Item*>& nodes, store::PUL& pul);
+  
+  bool isPossibleSimpleContentRevalidation(store::Item *typeQName);
+  
+  void validateSimpleContent(store::Item *typeQName, 
+                             zstring newValue, 
+                             std::vector<store::Item_t> &resultList);
+  
 #else
   void validate(const std::set<store::Item*>& nodes, store::PUL& pul) {}
-#endif
+
+  bool isPossibleSimpleContentRevalidation()
+  { 
+    return false;
+  }
+
+  void validateSimpleContent(const xqtref_t& targetType, 
+                             zstring newValue, 
+                             std::vector<store::Item_t> &resultList)
+  {}
+#endif //ZORBA_NO_XMLSCHEMA
+  
+private:
+#ifndef ZORBA_NO_XMLSCHEMA
+  void validateAfterUpdate(store::Item* item, 
+                           zorba::store::PUL* pul);
+
+  void processElement(store::PUL* pul,
+                      TypeManager* typeManager,
+                      EventSchemaValidator& schemaValidator,
+                      store::Item_t element);
+  
+  void validateAttributes(EventSchemaValidator& schemaValidator,
+                          store::Iterator_t attributes);
+  
+  void processAttributes(store::PUL* pul,
+                         namespace_context& nsCtx,
+                         TypeManager* typeManager,
+                         EventSchemaValidator& schemaValidator,
+                         store::Item* parent,
+                         store::Iterator_t attributes);
+  
+  int processChildren(store::PUL* pul,
+                      namespace_context& nsCtx,
+                      TypeManager* typeManager,
+                      EventSchemaValidator& schemaValidator,
+                      store::Iterator_t children,
+                      std::vector<store::Item_t>& typedValues);
+  
+  void processNamespaces(EventSchemaValidator& schemaValidator, 
+                         const store::Item *item);
+  
+  void processTextValue (store::PUL* pul,
+                         TypeManager* typeManager,
+                         namespace_context &nsCtx,
+                         store::Item_t typeQName,
+                         zstring& textValue,
+                         store::Item_t& originalChild,
+                         std::vector<store::Item_t>& resultList);
+
+  store::Item_t findAttributeItem(const store::Item *parent, 
+                                  store::Item_t &attQName);
+
+  bool isPossibleSimpleContentRevalImpl(xqtref_t schemaType);
+
+#endif //ifndef ZORBA_NO_XMLSCHEMA
+
 };
 
 
 }
 
-#endif
+#endif //ifndef ZORBA_TYPES_SCHEMA_REVALIDATION
 
 /*
  * Local variables:
