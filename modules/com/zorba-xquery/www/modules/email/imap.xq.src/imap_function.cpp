@@ -347,7 +347,10 @@ ImapFunction::createContentNode(const ImapModule* aModule,
                    const std::string& aContent,
                    const std::string& aContentType,
                    const std::string& aCharset,
-                   const std::string& aContentTransferEncoding)
+                   const std::string& aContentTransferEncoding,
+                   const std::string& aContentDisposition,
+                   const std::string& aContentDispositionFilename,
+                   const std::string& aContentDispositionModificationDate)
 
 {  
 
@@ -358,7 +361,7 @@ ImapFunction::createContentNode(const ImapModule* aModule,
   static Item lType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "contentType" );
   Item lItem = aModule->getItemFactory()->createElementNode(aParent, lName, lType, false, false, null_binding);
   
-  createContentTypeAttributes(aModule, lItem, aContentType, aCharset, aContentTransferEncoding);
+  createContentTypeAttributes(aModule, lItem, aContentType, aCharset, aContentTransferEncoding, aContentDisposition, aContentDispositionFilename, aContentDispositionModificationDate);
 
   aModule->getItemFactory()->createTextNode(lItem, String(aContent));
 
@@ -417,7 +420,13 @@ ImapFunction::createContentTypeAttributes(const ImapModule* aModule,
                                           Item& aParent,
                                           const std::string& aContentType,
                                           const std::string& aCharset,
-                                          const std::string& aContentTransferEncoding) {
+                                          const std::string& aContentTransferEncoding,
+                                          const std::string& aContentDisposition,
+                                          const std::string& aContentDispositionFilename,
+                                          const std::string& aContentDispositionModificationDate)
+{
+
+
 
   static Item lNullItem;
   /* build the value attribute */
@@ -437,7 +446,29 @@ ImapFunction::createContentTypeAttributes(const ImapModule* aModule,
   static Item lContentTransferType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "cteType");
   Item lContentTransferText = aModule->getItemFactory()->createTextNode(lNullItem, String(aContentTransferEncoding));
   aModule->getItemFactory()->createAttributeNode(aParent, lContentTransferName, lContentTransferType, lContentTransferText);
- 
+  /* build the contentDisposition attribute */
+  
+  if (aContentDisposition.length() > 2) {
+  
+    static Item lContentDispositionName = aModule->getItemFactory()->createQName("", "", "contentDisposition");
+    static Item lContentDispositionType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "string");
+    Item lContentDispositionText = aModule->getItemFactory()->createTextNode(lNullItem, String(aContentDisposition));
+    aModule->getItemFactory()->createAttributeNode(aParent, lContentDispositionName, lContentDispositionType, lContentDispositionText);
+    if (aContentDispositionFilename.length() > 1) {
+    /* build the contentDispositionFilename attribute */
+      static Item lContentDispositionFilenameName = aModule->getItemFactory()->createQName("", "", "contentDisposition-filename");
+      static Item lContentDispositionFilenameType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "string");
+      Item lContentDispositionFilenameText = aModule->getItemFactory()->createTextNode(lNullItem, String(aContentDispositionFilename));
+      aModule->getItemFactory()->createAttributeNode(aParent, lContentDispositionFilenameName, lContentDispositionFilenameType, lContentDispositionFilenameText);
+    }
+    if (aContentDispositionModificationDate.length() > 2) { 
+      /* build the contentDispositionModificationDate attribute */ 
+      static Item lContentDispositionModificationDateName = aModule->getItemFactory()->createQName("", "", "contentDispostion-modification-date");
+      static Item lContentDispositionModificationDateType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "string");
+      Item lContentDispositionModificationDateText = aModule->getItemFactory()->createTextNode(lNullItem, String(getDateTime(aContentDispositionModificationDate)));
+      aModule->getItemFactory()->createAttributeNode(aParent, lContentDispositionModificationDateName, lContentDispositionModificationDateType, lContentDispositionModificationDateText);
+    }
+  }
 
 }
 

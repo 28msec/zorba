@@ -99,7 +99,12 @@ namespace zorba { namespace emailmodule {
                    const std::string& aContent,
                    const std::string& contentType,
                    const std::string& charset,
-                   const std::string& contentTransferEncoding);
+                   const std::string& contentTransferEncoding,
+                   const std::string& aContentDisposition,
+                   const std::string& aContentDispositionFilename,
+                   const std::string& aContentDispositionModificationDate);
+
+
 
 
 
@@ -124,10 +129,13 @@ namespace zorba { namespace emailmodule {
 
     static void
     createContentTypeAttributes(const ImapModule* aModule,
-                          Item& aParent,
-                          const std::string& aValue,
-                          const std::string& aCharset,
-                          const std::string& aTransferEncoding);
+                                Item& aParent,
+                                const std::string& aValue,
+                                const std::string& aCharset,
+                                const std::string& aTransferEncoding,
+                                const std::string& aContentDisposition,
+                                const std::string& aContentDispositionFilename,
+                                const std::string& aContentDispositionModificationDate);
 
 
     public:

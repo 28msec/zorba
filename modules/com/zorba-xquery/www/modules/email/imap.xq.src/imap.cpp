@@ -858,6 +858,28 @@ FetchMessageFunction::getMessage(const ImapModule* aModule,
     lSections.erase(lSections.begin());
     lParents.erase(lParents.begin()); 
     lBodies.erase(lBodies.begin());
+    /* get different attributes that we will need in any case, regardless if this is a content or multipart item */
+    std::string lContentType = ImapFunction::getContentType(lCurrentBody->type, lCurrentBody->subtype);
+    std::string lEncoding = ImapFunction::getEncoding(lCurrentBody->encoding);
+    std::string lContentDisposition = "";
+    if (lCurrentBody->disposition.type != NIL) {
+      lContentDisposition = cpystr(lCurrentBody->disposition.type);
+    }  
+    std::string lContentDispositionFilename = "";
+    std::string lContentDispositionModificationDate = "";
+    
+    PARAMETER* lCurrentParameter = lCurrentBody->disposition.parameter;
+    while (lCurrentParameter != NIL) {
+      
+      if (!std::string("filename").compare(lCurrentParameter->attribute)) {
+        lContentDispositionFilename = cpystr(lCurrentParameter->value);
+      }  else if (!std::string("modification-date").compare(lCurrentParameter->attribute)) {
+        lContentDispositionModificationDate = cpystr(lCurrentParameter->value);
+      }  
+      
+      lCurrentParameter = lCurrentParameter->next;
+    }  
+
     if (lCurrentBody->type != TYPEMULTIPART) {
       std::string lSubType(lCurrentBody->subtype);                                                                  
       std::transform(lSubType.begin(), lSubType.end(), lSubType.begin(), tolower);
@@ -866,11 +888,11 @@ FetchMessageFunction::getMessage(const ImapModule* aModule,
         lCurrentSection.erase(lCurrentSection.end() - 1);
       }
       std::string lBodyContent = ImapClient::Instance().fetchBodyFull(aHostName, aUserName, aPassword, aMailbox, aMessageNumber, lNoMultipart ? "1" : lCurrentSection, aUid);  
-      ImapFunction::createContentNode(aModule, lCurrentParent, lBodyContent, ImapFunction::getContentType(lCurrentBody->type, lCurrentBody->subtype), "us-ascii", ImapFunction::getEncoding(lCurrentBody->encoding)); 
+      ImapFunction::createContentNode(aModule, lCurrentParent, lBodyContent, lContentType, "us-ascii", lEncoding, lContentDisposition, lContentDispositionFilename, lContentDispositionModificationDate); 
  
     } else {
       lMultipartParent = aModule->getItemFactory()->createElementNode(lCurrentParent, lMultipartParentName, lMultipartParentType, false, false, ns_binding);
-      ImapFunction::createContentTypeAttributes(aModule, lMultipartParent, ImapFunction::getContentType(lCurrentBody->type, lCurrentBody->subtype), "us-ascii", ImapFunction::getEncoding(lCurrentBody->encoding)); 
+      ImapFunction::createContentTypeAttributes(aModule, lMultipartParent, lContentType, "us-ascii", lEncoding, lContentDisposition, lContentDispositionFilename, lContentDispositionModificationDate); 
       PART* lPart = lCurrentBody->nested.part;
       lBodies.insert(lBodies.begin(), &lPart->body);
       lParents.insert(lParents.begin(), lMultipartParent);      
