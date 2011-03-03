@@ -28,15 +28,14 @@ if (os:operating-system() eq "Windows") then
    local:do($path3) eq "d:\a\b-c" and 
    local:do($path4) eq "E:\a\b-c" and 
    local:do($path5) eq "e:\a\b-c" and 
-   local:do($path6) eq "F:\a\b-c" (: and 
+   local:do($path6) eq "F:\a\b-c" and 
    local:do($path7) eq "f:\-" and
-   local:do($path8) eq "G:\-" :) and 
+   local:do($path8) eq "G:\-" and 
    local:do($path9) eq "g:\-" and 
-   local:do($path10) eq "H:\-" (: and 
+   local:do($path10) eq "H:\-" and 
    local:do($path11) eq "h:\-" and 
    local:do($path12) eq "I:\-" and
    local:do($path13) eq "i:\-"
-   :)  
  )
 else
  let $path0 := "/a/b/abcd///"
