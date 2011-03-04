@@ -1122,10 +1122,10 @@ protected:
   store::Index_t             theIndex;
 
   UpdCreateIndex(
-        PULImpl* pul,
-        const store::Item_t& qname,
-        const store::IndexSpecification& spec,
-        store::Iterator* sourceIter);
+      PULImpl* pul,
+      const store::Item_t& qname,
+      const store::IndexSpecification& spec,
+      store::Iterator* sourceIter);
 
 public:
   store::UpdateConsts::UpdPrimKind getKind() const

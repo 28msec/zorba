@@ -30,7 +30,7 @@ namespace store
 namespace simplestore 
 {
 
-typedef std::vector<char>::size_type vsize;
+typedef std::vector<char>::size_type csize;
 
 
 class CollectionSet;

@@ -135,6 +135,15 @@ typedef rchandle<DocIndexer> DocIndexer_t;
   for value indexes   : keyExpr := fn:data(kexpr) treat as typeDecl
   for general indexes : distinct-values(fn:data(kexpr) treat as typeDecl)
 
+  - theKeyTypes :
+  The atomic item type that each key value must match with according to the 
+  rules of sequence type matching. For value indexes, their index declaration
+  must always specify a type T, and the item type of T may not be xs:anyAtomicType
+  or xs:untypedAtomic. For general indexes, the key type declaration may be 
+  absent, or its item type may be xs:anyAtomicType or xs:untypedAtomic. If
+  absent, the associated entry in theKeyTypes will be NULL, but this is treated
+  the same as xs:anyAtomicType.
+
   - theOrderModifiers :
 
   - theSourceNames :

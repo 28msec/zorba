@@ -355,7 +355,7 @@ protected:
       XmlTree* tree,
       InternalNode* parent,
       bool append,
-      vsize pos,
+      csize pos,
       store::StoreConsts::NodeKind nodeKind);
 
 public:
@@ -421,7 +421,7 @@ public:
 
   store::Item* copy(
       store::Item* parent,
-      vsize pos,
+      csize pos,
       const store::CopyMode& copymode) const;
 
   virtual store::Item_t getNilled() const { return 0; }
@@ -468,7 +468,7 @@ public:
   void setOrdPath(
         InternalNode* parent,
         bool append,
-        vsize pos,
+        csize pos,
         store::StoreConsts::NodeKind nodeKind);
 
   void setParent(InternalNode* p) { theParent = p; }
@@ -486,7 +486,7 @@ public:
   virtual XmlNode* copyInternal(
       InternalNode* rootParent,
       InternalNode* parent,
-      vsize pos,
+      csize pos,
       const XmlNode* rootCopy,
       const store::CopyMode& copyMode) const = 0;
 
@@ -512,15 +512,15 @@ public:
 protected:
   virtual void getBaseURIInternal(zstring& uri, bool& local) const;
 
-  void attach(InternalNode* parent, vsize pos);
+  void attach(InternalNode* parent, csize pos);
 
   void detach() throw();
 
   void destroy(bool removeType) throw();
 
-  bool disconnect(vsize& pos) throw();
+  bool disconnect(csize& pos) throw();
 
-  void connect(InternalNode* node, vsize pos) throw();
+  void connect(InternalNode* node, csize pos) throw();
 
 #ifndef ZORBA_NO_FULL_TEXT
   virtual void tokenize( XmlNodeTokenizerCallback& );
@@ -555,7 +555,7 @@ public:
 
 protected:
   std::vector<XmlNode*> theNodes;
-  vsize                 theNumAttrs;
+  csize                 theNumAttrs;
 
   // make sure that only created by subclasses
   InternalNode(store::StoreConsts::NodeKind nodeKind) 
@@ -569,7 +569,7 @@ protected:
       XmlTree* tree,
       InternalNode* parent,
       bool append,
-      vsize pos,
+      csize pos,
       store::StoreConsts::NodeKind nodeKind)
     :
     XmlNode(tree, parent, append, pos, nodeKind),
@@ -586,7 +586,7 @@ public:
 
   NodeVector& nodes() { return theNodes; }
 
-  vsize numChildren() const { return theNodes.size() - theNumAttrs; }
+  csize numChildren() const { return theNodes.size() - theNumAttrs; }
 
   iterator childrenBegin() { return theNodes.begin() + theNumAttrs; }
 
@@ -600,9 +600,9 @@ public:
 
   reverse_iterator childrenREnd() { return theNodes.rend() - theNumAttrs; }
 
-  XmlNode* getChild(vsize i) const { return theNodes[theNumAttrs + i]; }
+  XmlNode* getChild(csize i) const { return theNodes[theNumAttrs + i]; }
 
-  vsize numAttrs() const { return theNumAttrs; }
+  csize numAttrs() const { return theNumAttrs; }
 
   iterator attrsBegin() { return theNodes.begin(); }
 
@@ -612,7 +612,7 @@ public:
 
   const_iterator attrsEnd() const { return theNodes.begin() + theNumAttrs; }
 
-  AttributeNode* getAttr(vsize i) const
+  AttributeNode* getAttr(csize i) const
   {
     return reinterpret_cast<AttributeNode*>(theNodes[i]);
   }
@@ -621,7 +621,7 @@ public:
 
   void restoreChild(UpdDelete& upd);
 
-  void insertChildren(UpdInsertChildren& upd, vsize pos);
+  void insertChildren(UpdInsertChildren& upd, csize pos);
 
   void undoInsertChildren(UpdInsertChildren& upd);
 
@@ -632,23 +632,23 @@ public:
   void finalizeNode();
 
 protected:
-  vsize findChild(XmlNode* child) const;
+  csize findChild(XmlNode* child) const;
 
-  void insertChild(XmlNode* child, vsize pos);
+  void insertChild(XmlNode* child, csize pos);
 
-  void removeChild(vsize pos);
+  void removeChild(csize pos);
 
-  vsize removeChild(XmlNode* child);
+  csize removeChild(XmlNode* child);
 
-  void removeChildren(vsize pos, vsize numChildren);
+  void removeChildren(csize pos, csize numChildren);
 
-  vsize findAttr(XmlNode* attr) const;
+  csize findAttr(XmlNode* attr) const;
 
-  void insertAttr(XmlNode* child, vsize pos);
+  void insertAttr(XmlNode* child, csize pos);
 
-  void removeAttr(vsize pos);
+  void removeAttr(csize pos);
 
-  vsize removeAttr(XmlNode* attr);
+  csize removeAttr(XmlNode* attr);
 
 #ifndef ZORBA_NO_FULL_TEXT
   void tokenize( XmlNodeTokenizerCallback& );
@@ -705,7 +705,7 @@ public:
   XmlNode* copyInternal(
         InternalNode* rootParent,
         InternalNode* parent,
-        vsize pos,
+        csize pos,
         const XmlNode* rootCopy,
         const store::CopyMode& copyMode) const;
 
@@ -738,14 +738,14 @@ protected:
 
   ElementNode(
         store::Item_t& nodeName,
-        vsize numBindings,
-        vsize numAttributes);
+        csize numBindings,
+        csize numAttributes);
 
   ElementNode(
         XmlTree*                  tree,
         InternalNode*             parent,
         bool                      append,
-        vsize                     pos,
+        csize                     pos,
         store::Item_t&            nodeName,
         store::Item_t&            typeName,
         bool                      haveTypedValue,
@@ -864,11 +864,11 @@ public:
   XmlNode* copyInternal(
       InternalNode* rootParent,
       InternalNode* parent,
-      vsize pos,
+      csize pos,
       const XmlNode* rootCopy,
       const store::CopyMode& copymode) const;
 
-  void removeAttributes(vsize pos, vsize numAttributes);
+  void removeAttributes(csize pos, csize numAttributes);
 
   void insertAttributes(UpdInsertAttributes& upd);
 
@@ -933,7 +933,7 @@ protected:
         XmlTree* tree,
         ElementNode* parent,
         bool append,
-        vsize pos,
+        csize pos,
         store::Item_t& attrName,
         store::Item_t& typeName,
         store::Item_t& typedValue,
@@ -976,7 +976,7 @@ public:
   XmlNode* copyInternal(
         InternalNode* rootParent,
         InternalNode* parent,
-        vsize pos,
+        csize pos,
         const XmlNode* rootCopy,
         const store::CopyMode& copymode) const;
 
@@ -1053,7 +1053,7 @@ protected:
         XmlTree* tree,
         InternalNode* parent,
         bool append,
-        vsize pos,
+        csize pos,
         zstring& content);
 
   TextNode(
@@ -1103,7 +1103,7 @@ public:
   XmlNode* copyInternal(
         InternalNode* rootParent,
         InternalNode* parent,
-        vsize pos,
+        csize pos,
         const XmlNode* rootCopy,
         const store::CopyMode& copymode) const;
 
@@ -1169,7 +1169,7 @@ protected:
         XmlTree* tree,
         InternalNode* parent,
         bool append,
-        vsize pos,
+        csize pos,
         zstring& target,
         zstring& content);
 
@@ -1179,7 +1179,7 @@ public:
   XmlNode* copyInternal(
         InternalNode* rootParent,
         InternalNode* parent,
-        vsize pos,
+        csize pos,
         const XmlNode* rootCopy,
         const store::CopyMode& copymode) const;
 
@@ -1231,7 +1231,7 @@ protected:
         XmlTree* tree,
         InternalNode* parent,
         bool append,
-        vsize pos,
+        csize pos,
         zstring& content);
 
   CommentNode() {}
@@ -1240,7 +1240,7 @@ public:
   XmlNode* copyInternal(
         InternalNode* rootParent,
         InternalNode* parent,
-        vsize pos,
+        csize pos,
         const XmlNode* rootCopy,
         const store::CopyMode& copymode) const;
 

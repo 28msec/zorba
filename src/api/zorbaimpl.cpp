@@ -83,11 +83,11 @@ ZorbaImpl::~ZorbaImpl()
   shutdownInternal(false);
 }
 
-/**
- * Protected function to initialize the Zorba Engine.
- * It's called once during static initialization or
- * when calling getInstance after a former shutdown.
- */
+
+/*******************************************************************************
+  Protected function to initialize the Zorba Engine.
+  It's called from the static Zorba::getInstance() method.
+********************************************************************************/
 void ZorbaImpl::init(store::Store* store)
 {
   SYNC_CODE(AutoMutex lock(&theUsersMutex);)
@@ -104,12 +104,14 @@ void ZorbaImpl::init(store::Store* store)
 }
 
 
-/**
- * Implements Zorba::shutdown in the API.
- *
- * The function is either called explicitly by the user
- * or implicitly at destruction of the singleton instance.
- */
+/*******************************************************************************
+  Implements Zorba::shutdown in the API.
+ 
+  The function is either called explicitly by the user or implicitly at
+  destruction of the singleton instance. The "soft" param differentiates
+  between these 2 cases: if "true", then it's a user-requested shutdown,
+  else it's a shutdown invoked from the destructor.
+********************************************************************************/
 void ZorbaImpl::shutdownInternal(bool soft)
 {
   SYNC_CODE(AutoMutex lock(&theUsersMutex);)

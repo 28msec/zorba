@@ -698,8 +698,8 @@ void DtdXmlLoader::startElement(
 
   try
   {
-    vsize numAttributes = static_cast<vsize>(numAttrs);
-    vsize numBindings = static_cast<vsize>(numNamespaces);
+    csize numAttributes = static_cast<csize>(numAttrs);
+    csize numBindings = static_cast<csize>(numNamespaces);
 
     // Construct node name
     store::Item_t nodeName = qnpool.insert(reinterpret_cast<const char*>(uri),
@@ -968,11 +968,11 @@ void  DtdXmlLoader::endElement(
 
   zorba::Stack<PathStepInfo>& pathStack = loader.thePathStack;
   zorba::Stack<XmlNode*>& nodeStack = loader.theNodeStack;
-  vsize stackSize = nodeStack.size();
-  vsize firstChildPos;
-  vsize numChildren;
-  vsize numActualNodes;
-  vsize i;
+  csize stackSize = nodeStack.size();
+  csize firstChildPos;
+  csize numChildren;
+  csize numActualNodes;
+  csize i;
   ElementNode* elemNode;
   XmlNode* prevChild = NULL;
   XmlNode* currChild;

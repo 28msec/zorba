@@ -1453,7 +1453,7 @@ bool BasicItemFactory::createTextNode(
     }
     else
     {
-      vsize numChildren = pnode->numChildren();
+      csize numChildren = pnode->numChildren();
 
       XmlNode* lsib = (pos > 0 ? pnode->getChild(pos-1) : NULL);
       XmlNode* rsib = (pos + 1 < numChildren ? pnode->getChild(pos) : NULL);
@@ -1541,7 +1541,7 @@ bool BasicItemFactory::createTextNode(
     }
     else
     {
-      vsize pos = pnode->numChildren();
+      csize pos = pnode->numChildren();
 
       XmlNode* lsib = ( pos > 0 ? pnode->getChild(pos-1) : NULL);
 

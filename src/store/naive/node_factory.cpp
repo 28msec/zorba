@@ -76,7 +76,7 @@ ElementNode* NodeFactory::createElementNode(
     XmlTree*                    tree,
     InternalNode*               parent,
     bool                        append,
-    vsize                       pos,
+    csize                       pos,
     store::Item_t&              nodeName,
     store::Item_t&              typeName,
     bool                        haveTypedValue,
@@ -102,7 +102,7 @@ AttributeNode* NodeFactory::createAttributeNode(
     XmlTree*                    tree,
     ElementNode*                parent,
     bool                        append,
-    vsize                       pos,
+    csize                       pos,
     store::Item_t&              attrName,
     store::Item_t&              typeName,
     store::Item_t&              typedValue,
@@ -124,7 +124,7 @@ TextNode* NodeFactory::createTextNode(
     XmlTree*          tree,
     InternalNode*     parent,
     bool              append,
-    vsize             pos,
+    csize             pos,
     zstring&          content)
 {
   return new TextNode(tree, parent, append, pos, content);
@@ -152,7 +152,7 @@ PiNode* NodeFactory::createPiNode(
     XmlTree*      tree,
     InternalNode* parent,
     bool          append,
-    vsize         pos,
+    csize         pos,
     zstring&      target,
     zstring&      content)
 {
@@ -171,7 +171,7 @@ CommentNode* NodeFactory::createCommentNode(
     XmlTree*      tree,
     InternalNode* parent,
     bool          append,
-    vsize         pos,
+    csize         pos,
     zstring&      content)
 {
   return new CommentNode(tree, parent, append, pos, content);

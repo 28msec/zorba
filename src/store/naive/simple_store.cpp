@@ -493,7 +493,8 @@ store::Index_t SimpleStore::createIndex(
 
   if (spec.theIsGeneral && spec.theIsSorted)
   {
-    ZORBA_ASSERT(false);
+    index = new GeneralTreeIndex(qname, spec);
+    populateGeneralIndex(index, sourceIter, spec.getNumColumns());
   }
   else if (spec.theIsSorted)
   {

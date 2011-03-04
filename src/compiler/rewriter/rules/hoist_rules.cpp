@@ -434,7 +434,8 @@ static bool non_hoistable(const expr* e)
       k == const_expr_kind ||
       k == axis_step_expr_kind ||
       k == match_expr_kind ||
-      (k == wrapper_expr_kind && non_hoistable(static_cast<const wrapper_expr*>(e)->get_expr())) ||
+      (k == wrapper_expr_kind && 
+       non_hoistable(static_cast<const wrapper_expr*>(e)->get_expr())) ||
       is_already_hoisted(e) ||
       e->is_nondeterministic() ||
       e->get_scripting_kind() == SEQUENTIAL_EXPR)

@@ -127,7 +127,7 @@ void createIndexSpec(
 
   spec.resize(numColumns);
 
-  for(ulong i = 0; i < numColumns; ++i) 
+  for (ulong i = 0; i < numColumns; ++i) 
   {
     if (keyTypes[i] != NULL)
     {

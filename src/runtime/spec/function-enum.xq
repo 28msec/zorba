@@ -6,13 +6,15 @@ import module namespace gen = "http://www.zorba-xquery.com/internal/gen" at "uti
 
 declare variable $files as xs:string external;
 
-let $funcs := distinct-values
-  (
-    for $sig in
-      for $doc in tokenize($files,',')
-      return file:read-xml($doc)//zorba:signature
-    return gen:function-kind($sig)
-  )
+declare variable $signatures := 
+    for $doc in tokenize($files,',')
+    return file:read-xml($doc)//zorba:signature;
+
+let $funcs := 
+    distinct-values(
+                for $sig in $signatures
+                return gen:function-kind($sig)
+    )
 return
   string-join(
     (

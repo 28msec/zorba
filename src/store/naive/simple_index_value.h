@@ -120,7 +120,7 @@ class STLMapIndex : public ValueIndex
   friend class SimpleStore;
   friend class ProbeTreeValueIndexIterator;
 
-  typedef std::pair<const store::IndexKey*, ValueIndexValue*> STLMapPair;
+  typedef std::pair<const store::IndexKey*, ValueIndexValue*> IndexMapPair;
 
   typedef std::map<const store::IndexKey*,
                    ValueIndexValue*,

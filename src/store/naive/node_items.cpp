@@ -278,7 +278,7 @@ XmlNode::XmlNode(
     XmlTree* tree,
     InternalNode* parent,
     bool append,
-    vsize pos,
+    csize pos,
     store::StoreConsts::NodeKind nodeKind)
   :
   theParent(parent),
@@ -333,7 +333,7 @@ void XmlNode::setTree(const XmlTree* t)
 void XmlNode::setOrdPath(
     InternalNode* parent,
     bool append,
-    vsize pos,
+    csize pos,
     store::StoreConsts::NodeKind nodeKind)
 {
   if (parent == NULL)
@@ -345,8 +345,8 @@ void XmlNode::setOrdPath(
   if (!parent->theOrdPath.isValid())
     return;
 
-  vsize numChildren = parent->numChildren();
-  vsize numAttrs = 0;
+  csize numChildren = parent->numChildren();
+  csize numAttrs = 0;
   ElementNode* elemParent = NULL;
 
   if (parent->getNodeKind() == store::StoreConsts::elementNode)
@@ -554,7 +554,7 @@ store::Item* XmlNode::copy(
     const store::CopyMode& copymode) const
 {
   InternalNode* parent = NULL;
-  vsize pos = 0;
+  csize pos = 0;
 
   if (inParent)
   {
@@ -597,7 +597,7 @@ store::Item* XmlNode::copy(
 ********************************************************************************/
 store::Item* XmlNode::copy(
     store::Item* inParent,
-    vsize pos,
+    csize pos,
     const store::CopyMode& copymode) const
 {
   InternalNode* parent = NULL;
@@ -625,7 +625,7 @@ store::Item* XmlNode::copy(
 /*******************************************************************************
   Connect "this" to the given parent at the given position.
 ********************************************************************************/
-void XmlNode::connect(InternalNode* parent, vsize pos) throw()
+void XmlNode::connect(InternalNode* parent, csize pos) throw()
 {
   ZORBA_FATAL(theParent == NULL, "");
 
@@ -643,7 +643,7 @@ void XmlNode::connect(InternalNode* parent, vsize pos) throw()
 /*******************************************************************************
   Disconnect "this" node from its parent, if any.
 ********************************************************************************/
-bool XmlNode::disconnect(vsize& pos) throw()
+bool XmlNode::disconnect(csize& pos) throw()
 {
   if (theParent == NULL)
     return false;
@@ -652,13 +652,13 @@ bool XmlNode::disconnect(vsize& pos) throw()
   {
     if (getNodeKind() == store::StoreConsts::attributeNode)
     {
-      vsize numAttrs = theParent->numAttrs();
+      csize numAttrs = theParent->numAttrs();
       pos = theParent->removeAttr(this);
       ZORBA_FATAL(pos <= numAttrs, "");
     }
     else
     {
-      vsize numChildren = theParent->numChildren();
+      csize numChildren = theParent->numChildren();
       pos = theParent->removeChild(this);
       ZORBA_FATAL(pos <= numChildren, "");
     }
@@ -679,7 +679,7 @@ void XmlNode::destroy(bool removeType) throw()
 {
   try
   {
-    vsize pos;
+    csize pos;
     disconnect(pos);
 
     destroyInternal(removeType);
@@ -750,7 +750,7 @@ void XmlNode::destroyInternal(bool removeType) throw()
   Return the position of the given node among the children of "this". If the
   given node is not a child of "this", return the number of children of "this".
 ********************************************************************************/
-vsize InternalNode::findChild(XmlNode* child) const
+csize InternalNode::findChild(XmlNode* child) const
 {
   const_iterator begin = childrenBegin();
   const_iterator end = childrenEnd();
@@ -765,7 +765,7 @@ vsize InternalNode::findChild(XmlNode* child) const
   Insert a new child node as the i-th child of "this". If i > theChildren2.size()
   the new child is inserted as the last child.
 ********************************************************************************/
-void InternalNode::insertChild(XmlNode* child, vsize pos)
+void InternalNode::insertChild(XmlNode* child, csize pos)
 {
   assert(pos <= numChildren());
 
@@ -783,7 +783,7 @@ void InternalNode::insertChild(XmlNode* child, vsize pos)
 /*******************************************************************************
   Remove the i-th child of "this", if it exists, ie, if i < numChildren.
 ********************************************************************************/
-void InternalNode::removeChild(vsize pos)
+void InternalNode::removeChild(csize pos)
 {
   if (pos < numChildren())
   {
@@ -800,7 +800,7 @@ void InternalNode::removeChild(vsize pos)
   the position of N among the children of "this". Else, return the number of
   children.
 ********************************************************************************/
-vsize InternalNode::removeChild(XmlNode* child)
+csize InternalNode::removeChild(XmlNode* child)
 {
   iterator begin = childrenBegin();
   iterator end = childrenEnd();
@@ -811,7 +811,7 @@ vsize InternalNode::removeChild(XmlNode* child)
   {
     assert(child->theParent == this);
 
-    vsize pos = (ite - begin);
+    csize pos = (ite - begin);
 
     child->theParent = NULL;
 
@@ -831,7 +831,7 @@ vsize InternalNode::removeChild(XmlNode* child)
   given node is not an attribute of "this", return the number of attribute of
   "this".
 ********************************************************************************/
-vsize InternalNode::findAttr(XmlNode* attr) const
+csize InternalNode::findAttr(XmlNode* attr) const
 {
   const_iterator begin = attrsBegin();
   const_iterator end = attrsEnd();
@@ -845,7 +845,7 @@ vsize InternalNode::findAttr(XmlNode* attr) const
 /*******************************************************************************
 
 ********************************************************************************/
-void InternalNode::insertAttr(XmlNode* attr, vsize pos)
+void InternalNode::insertAttr(XmlNode* attr, csize pos)
 {
   assert(pos <= numAttrs());
   assert(attr->theParent == NULL || attr->theParent == this);
@@ -860,7 +860,7 @@ void InternalNode::insertAttr(XmlNode* attr, vsize pos)
 /*******************************************************************************
   Remove the i-th attribute of "this", if it exists, ie, if i < numAttributes.
 ********************************************************************************/
-void InternalNode::removeAttr(vsize pos)
+void InternalNode::removeAttr(csize pos)
 {
   if (pos < numAttrs())
   {
@@ -878,7 +878,7 @@ void InternalNode::removeAttr(vsize pos)
   the position of N among the attributes of "this". Else, return the number of
   attributes.
 ********************************************************************************/
-vsize InternalNode::removeAttr(XmlNode* attr)
+csize InternalNode::removeAttr(XmlNode* attr)
 {
   iterator begin = attrsBegin();
   iterator end = attrsEnd();
@@ -889,7 +889,7 @@ vsize InternalNode::removeAttr(XmlNode* attr)
   {
     assert(attr->theParent == this);
 
-    vsize pos = (ite - begin);
+    csize pos = (ite - begin);
 
     attr->theParent = NULL;
     theNodes.erase(ite);
@@ -963,7 +963,7 @@ DocumentNode::DocumentNode(
 XmlNode* DocumentNode::copyInternal(
     InternalNode*          rootParent,
     InternalNode*          parent,
-    vsize                pos,
+    csize                pos,
     const XmlNode*         rootCopy,
     const store::CopyMode& copymode) const
 {
@@ -1147,8 +1147,8 @@ zstring DocumentNode::show() const
 ********************************************************************************/
 ElementNode::ElementNode(
     store::Item_t& nodeName,
-    vsize numBindings,
-    vsize numAttributes)
+    csize numBindings,
+    csize numAttributes)
   :
   InternalNode(store::StoreConsts::elementNode)
 {
@@ -1184,7 +1184,7 @@ ElementNode::ElementNode(
     XmlTree*                    tree,
     InternalNode*               parent,
     bool                        append,
-    vsize                       pos,
+    csize                       pos,
     store::Item_t&              nodeName,
     store::Item_t&              typeName,
     bool                        haveTypedValue,
@@ -1320,7 +1320,7 @@ ElementNode::ElementNode(
 XmlNode* ElementNode::copyInternal(
     InternalNode* rootParent,
     InternalNode* parent,
-    vsize pos,
+    csize pos,
     const XmlNode* rootCopy,
     const store::CopyMode& copymode) const
 {
@@ -1934,14 +1934,14 @@ void ElementNode::getNamespaceBindings(
   while (parentContext != NULL)
   {
     const store::NsBindings& parentBindings = parentContext->getBindings();
-    vsize parentSize = parentBindings.size();
-    vsize currSize = bindings.size();
+    csize parentSize = parentBindings.size();
+    csize currSize = bindings.size();
 
     // for each parent binding, add it to the result, if it doesn't have the
     // same prefix as another binding that is already in the result.
-    for (vsize i = 0; i < parentSize; ++i)
+    for (csize i = 0; i < parentSize; ++i)
     {
-      vsize j;
+      csize j;
       for (j = 0; j < currSize; ++j)
       {
         if (bindings[j].first == parentBindings[i].first)
@@ -2479,7 +2479,7 @@ AttributeNode::AttributeNode(
     XmlTree* tree,
     ElementNode* parent,
     bool append,
-    vsize pos,
+    csize pos,
     store::Item_t& attrName,
     store::Item_t& typeName,
     store::Item_t& typedValue,
@@ -2600,7 +2600,7 @@ AttributeNode::AttributeNode(
 XmlNode* AttributeNode::copyInternal(
     InternalNode* rootParent,
     InternalNode* parent,
-    vsize pos,
+    csize pos,
     const XmlNode* rootCopy,
     const store::CopyMode& copymode) const
 {
@@ -2926,7 +2926,7 @@ TextNode::TextNode(
     XmlTree* tree,
     InternalNode* parent,
     bool append,
-    vsize pos,
+    csize pos,
     zstring& content)
   :
   XmlNode(tree, parent, append, pos, store::StoreConsts::textNode)
@@ -2997,7 +2997,7 @@ TextNode::TextNode(
 XmlNode* TextNode::copyInternal(
     InternalNode* rootParent,
     InternalNode* parent,
-    vsize pos,
+    csize pos,
     const XmlNode* rootCopy,
     const store::CopyMode& copymode) const
 {
@@ -3330,7 +3330,7 @@ PiNode::PiNode(
     XmlTree*      tree,
     InternalNode* parent,
     bool append,
-    vsize pos,
+    csize pos,
     zstring& target,
     zstring& content)
   :
@@ -3364,7 +3364,7 @@ PiNode::PiNode(
 XmlNode* PiNode::copyInternal(
     InternalNode* rootParent,
     InternalNode* parent,
-    vsize pos,
+    csize pos,
     const XmlNode* rootCopy,
     const store::CopyMode& copymode) const
 {
@@ -3461,7 +3461,7 @@ CommentNode::CommentNode(
     XmlTree*      tree,
     InternalNode* parent,
     bool          append,
-    vsize         pos,
+    csize         pos,
     zstring&      content)
   :
   XmlNode(tree, parent, append, pos, store::StoreConsts::commentNode)
@@ -3490,7 +3490,7 @@ CommentNode::CommentNode(
 XmlNode* CommentNode::copyInternal(
     InternalNode* rootParent,
     InternalNode* parent,
-    vsize pos,
+    csize pos,
     const XmlNode* rootCopy,
     const store::CopyMode& copymode) const
 {

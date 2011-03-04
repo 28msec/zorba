@@ -16,6 +16,8 @@
 #ifndef ZORBA_SIMPLE_STORE_INDEX_HASH_GENERAL
 #define ZORBA_SIMPLE_STORE_INDEX_HASH_GENERAL
 
+#include <map>
+
 #include "store/naive/simple_index.h"
 #include "store/naive/store_defs.h"
 
@@ -64,18 +66,15 @@ class GeneralIndex : public IndexImpl
   friend class SimpleStore;
 
 protected:
-  store::Item   * theLastNode;
+  IndexCompareFunction        theCompFunction;
+  std::vector<store::Item_t>  theEmptyKeyNodes;
 
 protected:
   GeneralIndex(
-        const store::Item_t& qname,
-        const store::IndexSpecification& spec);
+      const store::Item_t& qname,
+      const store::IndexSpecification& spec);
 
   bool isTyped() const { return (theSpec.theKeyTypes[0] != NULL); }
-
-  void startInsertSession() { theLastNode = NULL; }
-
-  void stopInsertSession()  { theLastNode = NULL; }
 };
 
 
@@ -92,33 +91,31 @@ class GeneralHashIndex : public GeneralIndex
                   IndexCompareFunction> IndexMap;
 
 private:
-  IndexCompareFunction        theCompFunction;
-  IndexMap                  * theMaps[XS_LAST];
-  IndexMap                  * theSingleMap;
-  std::vector<store::Item_t>  theEmptyKeyNodes;
+  IndexMap  * theMaps[XS_LAST];
+  IndexMap  * theSingleMap;
 
 protected:
   GeneralHashIndex(
-        const store::Item_t& qname,
-        const store::IndexSpecification& spec);
+      const store::Item_t& qname,
+      const store::IndexSpecification& spec);
 
   ~GeneralHashIndex();
 
   bool insert(
-        store::IndexKey*& key,
-        store::Item_t& item,
-        bool multikey);
+      store::IndexKey*& key,
+      store::Item_t& node,
+      bool multikey);
 
   bool insertInMap(
-        store::IndexKey*& key,
-        store::Item_t& node,
-        IndexMap*& targetMap,
-        bool multikey,
-        bool untyped);
+      store::IndexKey*& key,
+      store::Item_t& node,
+      IndexMap*& targetMap,
+      bool multikey,
+      bool untyped);
 
   bool remove(
-        const store::IndexKey* key,
-        store::Item_t& item);
+      const store::IndexKey* key,
+      store::Item_t& item);
 };
 
 
@@ -161,7 +158,6 @@ public:
 };
 
 
-#if 0
 /******************************************************************************
 
 *******************************************************************************/
@@ -170,39 +166,40 @@ class GeneralTreeIndex : public GeneralIndex
   friend class SimpleStore;
   friend class ProbeHashGeneralIndexIterator;
 
+  typedef std::pair<const store::IndexKey*, GeneralIndexValue*> IndexMapPair;
+
   typedef std::map<const store::IndexKey*,
                    GeneralIndexValue*,
                    IndexCompareFunction> IndexMap;
 
 private:
-  IndexCompareFunction   theCompFunction;
-  IndexMap             * theMaps[XS_LAST];
-  IndexMap             * theSingleMap;
+  IndexMap       * theMaps[XS_LAST];
+  IndexMap       * theSingleMap;
+  SYNC_CODE(Mutex  theMapMutex;)
 
 protected:
   GeneralTreeIndex(
-        const store::Item_t& qname,
-        const store::IndexSpecification& spec);
+      const store::Item_t& qname,
+      const store::IndexSpecification& spec);
 
   ~GeneralTreeIndex();
 
   bool insert(
-        store::IndexKey*& key,
-        store::Item_t& item,
-        bool multikey);
-
+      store::IndexKey*& key,
+      store::Item_t& node,
+      bool multikey);
+  
   bool insertInMap(
-        store::IndexKey*& key,
-        store::Item_t& node,
-        IndexMap*& targetMap,
-        bool multikey,
-        bool untyped);
+      store::IndexKey*& key,
+      store::Item_t& node,
+      IndexMap*& targetMap,
+      bool multikey,
+      bool untyped);
 
   bool remove(
-        const store::IndexKey* key,
-        store::Item_t& item);
+      const store::IndexKey* key,
+      store::Item_t& item);
 };
-#endif
 
 
 }

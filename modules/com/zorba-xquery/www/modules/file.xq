@@ -155,6 +155,35 @@ declare sequential function file:delete(
   file:delete($fileOrDir);
 };
 
+
+(:~
+ : Deletes a file or a directory from the file system. If $fileOrDir denotes a
+ : directory and $recursive evaluates to <pre>fn:true()</pre>, the directory
+ : will be deleted recursively.
+ :
+ : @param $fileOrDir The path/URI of the file or directory to delete.
+ : @param $recursive If the operation should recursively delete the given
+ :	  directory.
+ : @return The empty sequence.
+ :)
+declare sequential function file:delete-rec-simple(
+  $fileOrDir as xs:string,
+  $recursive as xs:boolean
+) as empty-sequence()
+{
+  if (fn:not($recursive) or fn:not(file:exists($fileOrDir)) or fn:not(file:is-directory($fileOrDir))) then
+    file:delete($fileOrDir)
+  else
+    for $item in file:files($fileOrDir)
+    let $fullPath := fn:concat($fileOrDir, file:path-separator(), $item)
+	return
+	  if (file:is-directory($fullPath)) then
+	    file:delete-rec-simple($fullPath, fn:true())
+	  else
+      file:delete($fileOrDir)
+};
+
+
 (: ********************************************************************** :)
 
 (:~

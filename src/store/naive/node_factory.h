@@ -80,7 +80,7 @@ public:
         XmlTree*                    tree,
         InternalNode*               parent,
         bool                        append,
-        vsize                       pos,
+        csize                       pos,
         store::Item_t&              nodeName,
         store::Item_t&              typeName,
         bool                        haveTypedValue,
@@ -96,7 +96,7 @@ public:
         XmlTree*         tree,
         ElementNode*     parent,
         bool             append,
-        vsize            pos,
+        csize            pos,
         store::Item_t&   attrName,
         store::Item_t&   typeName,
         store::Item_t&   typedValue,
@@ -109,7 +109,7 @@ public:
         XmlTree*       tree,
         InternalNode*  parent,
         bool           aqppend,
-        vsize          pos,
+        csize          pos,
         zstring&       content);
 
   virtual TextNode* createTextNode(
@@ -125,7 +125,7 @@ public:
         XmlTree*      tree,
         InternalNode* parent,
         bool          append,
-        vsize         pos,
+        csize         pos,
         zstring&      target,
         zstring&      content);
 
@@ -136,7 +136,7 @@ public:
         XmlTree*      tree,
         InternalNode* parent,
         bool          append,
-        vsize         pos,
+        csize         pos,
         zstring&      content);
 }; /* class NodeFactory */
 

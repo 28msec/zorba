@@ -357,7 +357,7 @@ bool STLMapIndex::insert(
   ValueIndexValue* valueSet = new ValueIndexValue(1);
   (*valueSet)[0].transfer(value);
 
-  theMap.insert(STLMapPair(key, valueSet));
+  theMap.insert(IndexMapPair(key, valueSet));
   key = NULL; // ownership of the key obj passes to the index.
 
   return false;

@@ -537,8 +537,8 @@ void FastXmlLoader::startElement(
 
   try
   {
-    vsize numAttributes = static_cast<vsize>(numAttrs);
-    vsize numBindings = static_cast<vsize>(numNamespaces);
+    csize numAttributes = static_cast<csize>(numAttrs);
+    csize numBindings = static_cast<csize>(numNamespaces);
 
     // Construct node name 
     store::Item_t nodeName = qnpool.insert(reinterpret_cast<const char*>(uri),
@@ -627,7 +627,7 @@ void FastXmlLoader::startElement(
     {
       store::NsBindings& bindings = elemNode->getNsContext()->getBindings();
 
-      for (vsize i = 0; i < numBindings; ++i)
+      for (csize i = 0; i < numBindings; ++i)
       {
         const char* prefix = reinterpret_cast<const char*>(namespaces[i * 2]);
         const char* nsuri = reinterpret_cast<const char*>(namespaces[i * 2 + 1]);
@@ -659,8 +659,8 @@ void FastXmlLoader::startElement(
     {
       InternalNode::NodeVector& attrNodes = elemNode->nodes();
 
-      vsize index = 0;
-      for (vsize i = 0; i < numAttributes; ++i, index += 5)
+      csize index = 0;
+      for (csize i = 0; i < numAttributes; ++i, index += 5)
       {
         const char* lname = reinterpret_cast<const char*>(attributes[index]);
         const char* prefix = reinterpret_cast<const char*>(attributes[index+1]);
@@ -746,11 +746,11 @@ void  FastXmlLoader::endElement(
 
   zorba::Stack<PathStepInfo>& pathStack = loader.thePathStack;
   zorba::Stack<XmlNode*>& nodeStack = loader.theNodeStack;
-  vsize stackSize = nodeStack.size();
-  vsize firstChildPos;
-  vsize numChildren;
-  vsize numActualNodes;
-  vsize i;
+  csize stackSize = nodeStack.size();
+  csize firstChildPos;
+  csize numChildren;
+  csize numActualNodes;
+  csize i;
   ElementNode* elemNode;
   XmlNode* prevChild = NULL;
   XmlNode* currChild;

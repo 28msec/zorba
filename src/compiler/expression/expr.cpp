@@ -216,7 +216,7 @@ static inline void checkNonUpdating(const expr* e)
 
 static inline void checkSimpleExpr(const expr* e)
 {
-  if (e != 0 && !e->is_simple() && !e->is_vacuous() && !e->is_sequential())
+  if (e != 0 && !e->is_simple() && !e->is_vacuous())
     ZORBA_ERROR_LOC(XUST0001, e->get_loc());
 }
 
@@ -418,9 +418,9 @@ void cast_or_castable_base_expr::set_target_type(xqtref_t target)
 
 void cast_or_castable_base_expr::compute_scripting_kind()
 {
-  theScriptingKind = SIMPLE_EXPR;
+  theScriptingKind = theInputExpr->get_scripting_kind();
 
-  checkSimpleExpr(theInputExpr);
+  checkNonUpdating(theInputExpr);
 }
 
 
@@ -973,7 +973,7 @@ void wrapper_expr::serialize(::zorba::serialization::Archiver& ar)
 
 void wrapper_expr::compute_scripting_kind()
 {
-  theScriptingKind = theWrappedExpr->get_scripting_kind();;
+  theScriptingKind = theWrappedExpr->get_scripting_kind();
 }
 
 

@@ -127,7 +127,7 @@ void NodeTypeInfo::transfer(NodeTypeInfo& other)
 ********************************************************************************/
 void XmlNode::attach(
     InternalNode*   parent,
-    vsize           pos) 
+    csize           pos) 
 {
   ZORBA_ASSERT(theParent == NULL);
   ZORBA_ASSERT(parent != NULL);
@@ -266,7 +266,7 @@ void XmlNode::attach(
         else
         {
           ZORBA_ASSERT(elem == elemRoot);
-          vsize pos;
+          csize pos;
           hiddenBaseUriAttr->disconnect(pos);
           hiddenBaseUriAttr->destroy(true);
           elem->resetHaveBaseUri();
@@ -510,11 +510,11 @@ void XmlNode::detach() throw()
 /*******************************************************************************
   This method is used by the undo of UpdInsertChildren and UpdReplaceChild.
 ********************************************************************************/
-void InternalNode::removeChildren(vsize pos, vsize numChildren)
+void InternalNode::removeChildren(csize pos, csize numChildren)
 {
   ZORBA_FATAL(pos + numChildren <= this->numChildren(), "");
 
-  for (vsize i = 0; i < numChildren; ++i)
+  for (csize i = 0; i < numChildren; ++i)
   {
     XmlNode* child = getChild(pos);
     child->detach();
@@ -525,11 +525,11 @@ void InternalNode::removeChildren(vsize pos, vsize numChildren)
 /*******************************************************************************
   This method is used by the undo of UpdInsertAttributes, and UpdReplaceAttribute.
 ********************************************************************************/
-void ElementNode::removeAttributes(vsize pos, vsize numAttrs)
+void ElementNode::removeAttributes(csize pos, csize numAttrs)
 {
   ZORBA_FATAL(pos + numAttrs <= this->numAttrs(), "");
 
-  for (vsize i = 0; i < numAttrs; ++i)
+  for (csize i = 0; i < numAttrs; ++i)
   {
     XmlNode* attr = getAttr(pos);
     attr->detach();
@@ -748,7 +748,7 @@ void InternalNode::deleteChild(UpdDelete& upd)
   // easy as we just have to connect the child back to it parent. The child will
   // be detached later, after all updates have been applied with no errors (see.
   // applyUpdates() method). 
-  vsize pos;
+  csize pos;
   if (! child->disconnect(pos))
     return;
 
@@ -797,7 +797,7 @@ void InternalNode::restoreChild(UpdDelete& upd)
     return;
 
   XmlNode* child = BASE_NODE(upd.theTarget);
-  vsize pos = upd.thePos;
+  csize pos = upd.thePos;
 
   child->connect(this, pos);
 
@@ -832,11 +832,11 @@ void InternalNode::restoreChild(UpdDelete& upd)
   Note: L and R cannot both be text nodes, so at most one merging of text nodes
   will be performed.
 ********************************************************************************/
-void InternalNode::insertChildren(UpdInsertChildren& upd, vsize pos)
+void InternalNode::insertChildren(UpdInsertChildren& upd, csize pos)
 {
   assert(pos <= numChildren());
 
-  vsize numNewChildren = upd.theNewChildren.size();
+  csize numNewChildren = upd.theNewChildren.size();
   XmlNode* rsib = (pos < numChildren() ? getChild(pos) : NULL);
   XmlNode* lsib = (pos > 0 ? getChild(pos-1) : NULL);
 
@@ -922,7 +922,7 @@ void XmlNode::insertSiblingsBefore(UpdInsertChildren& upd)
 
   InternalNode* parent = static_cast<InternalNode*>(upd.theSibling->getParent());
 
-  vsize pos = parent->findChild(this);
+  csize pos = parent->findChild(this);
 
   parent->insertChildren(upd, pos);
 }
@@ -937,7 +937,7 @@ void XmlNode::insertSiblingsAfter(UpdInsertChildren& upd)
 
   InternalNode* parent = static_cast<InternalNode*>(upd.theSibling->getParent());
 
-  vsize pos = parent->findChild(this);
+  csize pos = parent->findChild(this);
   pos++;
 
   parent->insertChildren(upd, pos);
@@ -952,7 +952,7 @@ void InternalNode::undoInsertChildren(UpdInsertChildren& upd)
   if (upd.theNumApplied == 0)
     return;
 
-  vsize pos = findChild(BASE_NODE(upd.theNewChildren[0]));
+  csize pos = findChild(BASE_NODE(upd.theNewChildren[0]));
 
   ZORBA_FATAL(pos < numChildren(), "");
 
@@ -970,12 +970,12 @@ void InternalNode::undoInsertChildren(UpdInsertChildren& upd)
 ********************************************************************************/
 void ElementNode::insertAttributes(UpdInsertAttributes& upd)
 {
-  vsize numAttrs = this->numAttrs();
-  vsize numNewAttrs = upd.theNewAttrs.size();
+  csize numAttrs = this->numAttrs();
+  csize numNewAttrs = upd.theNewAttrs.size();
 
   removeType(upd);
 
-  for (vsize i = 0; i < numNewAttrs; i++)
+  for (csize i = 0; i < numNewAttrs; i++)
   {
     AttributeNode* attr = reinterpret_cast<AttributeNode*>(
                           upd.theNewAttrs[i].getp());
@@ -1000,9 +1000,9 @@ void ElementNode::insertAttributes(UpdInsertAttributes& upd)
 
     if (!upd.thePul->inheritNSBindings())
     {
-      vsize numChildren = this->numChildren();
+      csize numChildren = this->numChildren();
 
-      for (vsize i = 0; i < numChildren; ++i)
+      for (csize i = 0; i < numChildren; ++i)
       {
         if (getChild(i)->getNodeKind() == store::StoreConsts::elementNode)
         {
@@ -1022,14 +1022,14 @@ void ElementNode::undoInsertAttributes(UpdInsertAttributes& upd)
   if (upd.theNumApplied == 0)
     return;
 
-  vsize pos = findAttr(BASE_NODE(upd.theNewAttrs[0]));
+  csize pos = findAttr(BASE_NODE(upd.theNewAttrs[0]));
 
   ZORBA_FATAL(pos < numAttrs(), "");
 
   removeAttributes(pos, upd.theNumApplied);
 
-  vsize numBindings = upd.theNewBindings.size();
-  for (vsize i = 0; i < numBindings; ++i)
+  csize numBindings = upd.theNewBindings.size();
+  for (csize i = 0; i < numBindings; ++i)
   {
     removeLocalBinding(upd.theNewBindings[i]->getPrefix(),
                        upd.theNewBindings[i]->getNamespace());
@@ -1048,14 +1048,14 @@ void ElementNode::replaceAttribute(UpdReplaceAttribute& upd)
 
   AttributeNode* oldAttr = ATTR_NODE(upd.theAttr);
 
-  vsize pos;
+  csize pos;
   oldAttr->disconnect(pos);
 
   upd.thePos = pos;
 
-  vsize numNewAttrs = upd.theNewAttrs.size();
+  csize numNewAttrs = upd.theNewAttrs.size();
 
-  for (vsize i = 0; i < numNewAttrs; ++i)
+  for (csize i = 0; i < numNewAttrs; ++i)
   {
     AttributeNode* attr = static_cast<AttributeNode*>(upd.theNewAttrs[i].getp());
     try
@@ -1113,14 +1113,14 @@ void ElementNode::restoreAttribute(UpdReplaceAttribute& upd)
 
   XmlNode* attr = BASE_NODE(upd.theAttr);
 
-  vsize pos = findAttr(BASE_NODE(upd.theNewAttrs[0]));
+  csize pos = findAttr(BASE_NODE(upd.theNewAttrs[0]));
 
   ZORBA_FATAL(pos < numAttrs(), "");
 
   removeAttributes(pos, upd.theNumApplied);
 
-  vsize numBindings = upd.theNewBindings.size();
-  for (vsize i = 0; i < numBindings; ++i)
+  csize numBindings = upd.theNewBindings.size();
+  for (csize i = 0; i < numBindings; ++i)
     removeLocalBinding(upd.theNewBindings[i]->getPrefix(),
                        upd.theNewBindings[i]->getNamespace());
 
@@ -1140,16 +1140,16 @@ void InternalNode::replaceChild(UpdReplaceChild& upd)
 
   XmlNode* child = BASE_NODE(upd.theChild);
 
-  vsize pos = findChild(child);
+  csize pos = findChild(child);
 
   ZORBA_FATAL(pos < numChildren(), "");
 
-  vsize numNewChildren = upd.theNewChildren.size();
+  csize numNewChildren = upd.theNewChildren.size();
   XmlNode* rsib = (pos < numChildren() - 1 ? getChild(pos+1) : NULL);
   XmlNode* lsib = (pos > 0 ? getChild(pos-1) : NULL);
 
   // Insert the new children without merging text nodes
-  for (vsize i = 0; i < numNewChildren; ++i)
+  for (csize i = 0; i < numNewChildren; ++i)
   {
     XmlNode* child = BASE_NODE(upd.theNewChildren[i]);
 
@@ -1224,7 +1224,7 @@ void InternalNode::restoreChild(UpdReplaceChild& upd)
 
   XmlNode* child = BASE_NODE(upd.theChild);
 
-  vsize pos = findChild(BASE_NODE(upd.theNewChildren[0]));
+  csize pos = findChild(BASE_NODE(upd.theNewChildren[0]));
 
   ZORBA_FATAL(pos < numChildren(), "");
 

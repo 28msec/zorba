@@ -26,65 +26,67 @@ namespace zorba {
   class DefaultErrorHandler;
 
 
-  class DirectoryIteratorImpl : public DirectoryIterator
-  {
-    private:
+class DirectoryIteratorImpl : public DirectoryIterator
+{
+private:
 
-      dir_iterator*     theInternalDirIter;
+  dir_iterator*     theInternalDirIter;
 
-    public:
+public:
 
-      DirectoryIteratorImpl(std::string const& aPath);
+  DirectoryIteratorImpl(std::string const& aPath);
 
-      ~DirectoryIteratorImpl();
+  ~DirectoryIteratorImpl();
 
-      bool next(std::string& aPathStr) const;
-      void reset();
-  };
+  bool next(std::string& aPathStr) const;
+  void reset();
+};
+  
 
-  class FileImpl : public File
-  {
-    private:
+class FileImpl : public File
+{
+private:
 
-      zorba::file*          theInternalFile;
+  zorba::file*          theInternalFile;
 
-      DefaultErrorHandler*  theErrorHandler; 
+  DefaultErrorHandler*  theErrorHandler; 
     
-    public:
+public:
 
-      FileImpl(std::string const& _path);
+  FileImpl(std::string const& _path);
 
-      ~FileImpl();
+  ~FileImpl();
 
 
-    public: // public methods
+public: // public methods
 
-      const std::string getFilePath() const;
-      const std::string getFileUri() const;
+  const std::string getFilePath() const;
+  const std::string getFileUri() const;
 
-      bool isDirectory() const;
-      bool isFile() const;
-      bool isLink() const;
-      bool isVolume() const;
-      bool isInvalid() const;
-      bool exists() const;
+  bool isDirectory() const;
+  bool isFile() const;
+  bool isLink() const;
+  bool isVolume() const;
+  bool isInvalid() const;
+  bool exists() const;
 
-      void remove();
-      bool create();
-      bool rename(std::string const& newpath);
+  void remove();
+  bool create();
+  bool rename(std::string const& newpath);
 
-      FileSize_t getSize() const;
+  FileSize_t getSize() const;
 
-      void mkdir(bool recursive = true, bool failIfExists = false);
+  void mkdir(bool recursive = true, bool failIfExists = false);
 
-      DirectoryIterator_t files() const;
+  DirectoryIterator_t files() const;
 
-      void openInputStream(std::ifstream& aInStream, bool binary = false) const;
-      void openOutputStream(std::ofstream& aOutStream, bool append = false, bool binary = false) const;
+  void openInputStream(std::ifstream& aInStream, bool binary = false) const;
 
-      time_t lastModified() const;
+  void openOutputStream(std::ofstream& aOutStream, bool append = false, bool binary = false) const;
 
-  };
+  time_t lastModified() const;
+};
+
 
 } /* namespace zorba */
 

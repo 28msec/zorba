@@ -28,12 +28,6 @@ namespace zorba
 namespace simplestore 
 {
 
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  Hash Map General Index                                                     //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
-
 
 /******************************************************************************
 
@@ -56,9 +50,16 @@ GeneralIndex::GeneralIndex(
     const store::IndexSpecification& spec)
   :
   IndexImpl(qname, spec),
-  theLastNode(NULL)
+  theCompFunction(getNumColumns(), spec.theTimezone, theCollators)
 {
 }
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  Hash Map General Index                                                     //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
 
 /******************************************************************************
@@ -69,17 +70,17 @@ GeneralHashIndex::GeneralHashIndex(
     const store::IndexSpecification& spec)
   :
   GeneralIndex(qname, spec),
-  theCompFunction(getNumColumns(), spec.theTimezone, theCollators),
   theSingleMap(NULL)
 {
   assert(getNumColumns() == 1);
 
-  for (ulong i = 0; i < XS_LAST; ++i)
-  {
-    theMaps[i] = NULL;
-  }
+  memset(reinterpret_cast<void*>(theMaps), 0, XS_LAST * sizeof(IndexMap*));
 
-  if (spec.theKeyTypes[0] != NULL)
+  store::Item* typeName = spec.theKeyTypes[0].getp();
+
+  if (typeName != NULL &&
+      typeName != GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC] &&
+      typeName != GET_STORE().theSchemaTypeNames[XS_ANY_ATOMIC])
   {
     theSingleMap = new IndexMap(theCompFunction, 1024, spec.theIsThreadSafe);
 
@@ -142,7 +143,7 @@ bool GeneralHashIndex::insert(
 
   if (keyItem == NULL)
   {
-    vsize numNodes = theEmptyKeyNodes.size();
+    csize numNodes = theEmptyKeyNodes.size();
     theEmptyKeyNodes.resize(numNodes + 1);
     theEmptyKeyNodes[numNodes].transfer(node);
     return true;
@@ -954,6 +955,361 @@ bool ProbeHashGeneralIndexIterator::next(store::Item_t& result)
 
   return false;
 }
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  Tree General Index                                                         //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/******************************************************************************
+
+*******************************************************************************/
+GeneralTreeIndex::GeneralTreeIndex(
+    const store::Item_t& qname,
+    const store::IndexSpecification& spec)
+  :
+  GeneralIndex(qname, spec),
+  theSingleMap(NULL)
+{
+  assert(getNumColumns() == 1);
+
+  memset(reinterpret_cast<void*>(theMaps), 0, XS_LAST * sizeof(IndexMap*));
+
+  store::Item* typeName = spec.theKeyTypes[0].getp();
+
+  if (typeName != NULL &&
+      typeName != GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC] &&
+      typeName != GET_STORE().theSchemaTypeNames[XS_ANY_ATOMIC])
+  {
+    theSingleMap = new IndexMap(theCompFunction);
+
+    theMaps[GET_STORE().theSchemaTypeCodes[spec.theKeyTypes[0].getp()]] = theSingleMap;
+  }
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+GeneralTreeIndex::~GeneralTreeIndex()
+{
+  for (ulong i = 0; i < XS_LAST; ++i)
+  {
+    if (theMaps[i] == NULL)
+      continue;
+
+    IndexMap::iterator ite = theMaps[i]->begin();
+    IndexMap::iterator end = theMaps[i]->end();
+ 
+    for (; ite != end; ++ite)
+    {
+      //std::cout << "Index Entry Delete [" << (*ite).first << "," 
+      //          << (*ite).second << "]" << std::endl;
+      
+      delete (*ite).first;
+      delete (*ite).second;
+    }
+
+    delete theMaps[i];
+  }
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+bool GeneralTreeIndex::insert(
+    store::IndexKey*& key,
+    store::Item_t& node,
+    bool multikey)
+{
+  bool found = false;
+  store::Item_t castItem;
+  store::Item_t node2;
+
+  AtomicItem* keyItem = static_cast<AtomicItem*>((*key)[0].getp());
+
+  if (keyItem == NULL)
+  {
+    csize numNodes = theEmptyKeyNodes.size();
+    theEmptyKeyNodes.resize(numNodes + 1);
+    theEmptyKeyNodes[numNodes].transfer(node);
+    return true;
+  }
+
+  if (keyItem->getBaseItem() != NULL)
+  {
+    keyItem = static_cast<AtomicItem*>(keyItem->getBaseItem());
+    (*key)[0] = keyItem;
+  }
+
+  SchemaTypeCode keyType = keyItem->getTypeCode();
+
+  if (isTyped())
+  {
+    return insertInMap(key, node, theSingleMap, multikey, false);
+  }
+
+  switch (keyType)
+  {
+  case XS_ANY_URI:
+  case XS_DATETIME:
+  case XS_DATE:
+  case XS_TIME:
+  case XS_BOOLEAN:
+  {
+    return insertInMap(key, node, theMaps[keyType], multikey, false);
+  }
+
+  case XS_DURATION:
+  case XS_YM_DURATION:
+  case XS_DT_DURATION:
+  {
+    return insertInMap(key, node, theMaps[XS_DURATION], multikey, false);
+  }
+
+  case XS_STRING:
+  case XS_NORMALIZED_STRING:
+  case XS_TOKEN:
+  case XS_NMTOKEN:
+  case XS_LANGUAGE:
+  case XS_NAME:
+  case XS_NCNAME:
+  case XS_ID:
+  case XS_IDREF:
+  case XS_ENTITY:
+  {
+    return insertInMap(key, node, theMaps[XS_STRING], multikey, false);
+  }
+
+  case XS_DOUBLE:
+  case XS_FLOAT:
+  {
+    return insertInMap(key, node, theMaps[XS_DOUBLE], multikey, false);
+  }
+
+  case XS_DECIMAL:
+  case XS_INTEGER:
+  case XS_NON_POSITIVE_INTEGER:
+  case XS_NEGATIVE_INTEGER:
+  case XS_NON_NEGATIVE_INTEGER:
+  case XS_POSITIVE_INTEGER:
+  case XS_UNSIGNED_LONG:
+  {
+    keyItem->castToLong(castItem);
+    if (castItem != NULL)
+    {
+      keyItem = static_cast<AtomicItem*>(castItem.getp());
+      (*key)[0].transfer(castItem);
+      goto longmap;
+    }
+
+    bool lossy;
+    keyItem->coerceToDouble(castItem, true, lossy);
+
+    if (lossy)
+    {
+      node2 = node;
+      found = insertInMap(key, node2, theMaps[XS_DECIMAL], multikey, false);
+    }
+
+    if (key == NULL) key = new store::IndexKey(1);
+    (*key)[0].transfer(castItem);
+
+    found = found || insertInMap(key, node, theMaps[XS_DOUBLE], multikey, false);
+
+    return found;
+  }
+
+  case XS_LONG:
+  case XS_INT:
+  case XS_SHORT:
+  case XS_BYTE:
+  case XS_UNSIGNED_INT:
+  case XS_UNSIGNED_SHORT:
+  case XS_UNSIGNED_BYTE:
+  {
+longmap:
+    bool lossy;
+    keyItem->coerceToDouble(castItem, false, lossy);
+
+    if (lossy)
+    {
+      node2 = node;
+      found = insertInMap(key, node2, theMaps[XS_LONG], multikey, false);
+
+      if (key == NULL) key = new store::IndexKey(1);
+      (*key)[0].transfer(castItem);
+
+      found = found || insertInMap(key, node, theMaps[XS_DOUBLE], multikey, false);
+    }
+    else
+    {
+      found = insertInMap(key, node, theMaps[XS_LONG], multikey, false);
+    }
+
+    return found;
+  }
+
+  case XS_UNTYPED_ATOMIC:
+  {
+    bool found = false;
+
+    store::ItemHandle<UntypedAtomicItem> untypedItem = 
+    static_cast<UntypedAtomicItem*>((*key)[0].getp());
+
+    node2 = node;
+
+    // cast to xs:string
+    untypedItem->castToString(castItem);
+    ADD_IN_MAP(XS_STRING, false);
+
+    // try casting to xs:long
+    if (untypedItem->castToLong(castItem))
+    {
+      store::ItemHandle<LongItem> longItem = static_cast<LongItem*>(castItem.getp());
+
+      ADD_IN_MAP(XS_LONG, true);
+
+      bool lossy;
+      longItem->coerceToDouble(castItem, false, lossy);
+      if (lossy)
+      {
+        ADD_IN_MAP(XS_DOUBLE, true);
+      }
+
+      // may also be gYear, hexBinary, base64Binary, or boolean
+      if (untypedItem->castToGYear(castItem))
+        ADD_IN_MAP(XS_GYEAR, true);
+
+      if (untypedItem->castToHexBinary(castItem))
+        ADD_IN_MAP(XS_HEXBINARY, true);
+
+      if (untypedItem->castToBase64Binary(castItem))
+        ADD_IN_MAP(XS_BASE64BINARY, true);
+    }
+
+    // try casting to xs:decimal
+    else if (untypedItem->castToDecimal(castItem))
+    {
+      store::ItemHandle<DecimalItem> decimalItem = 
+      static_cast<DecimalItem*>(castItem.getp());
+
+      ADD_IN_MAP(XS_DOUBLE, true);
+
+      bool lossy;
+      decimalItem->coerceToDouble(castItem, true, lossy);
+      if (lossy)
+      {
+        ADD_IN_MAP(XS_DECIMAL, true);
+      }
+
+      // may also be hexBinary or base64Binary
+      if (untypedItem->castToHexBinary(castItem))
+        ADD_IN_MAP(XS_HEXBINARY, true);
+
+      if (untypedItem->castToBase64Binary(castItem))
+        ADD_IN_MAP(XS_BASE64BINARY, true);
+    }
+
+    // try casting to xs:double
+    else if (untypedItem->castToDouble(castItem))
+    {
+      ADD_IN_MAP(XS_DOUBLE, true);
+    }
+
+    // try casting to xs:datetime
+    else if (untypedItem->castToDateTime(castItem))
+    {
+      ADD_IN_MAP(XS_DATETIME, true);
+    }
+
+    // try casting to xs:date
+    else if (untypedItem->castToDate(castItem))
+    {
+      ADD_IN_MAP(XS_DATE, true);
+    }
+
+    // try casting to xs:time
+    else if (untypedItem->castToTime(castItem))
+    {
+      ADD_IN_MAP(XS_TIME, true);
+    }
+
+    // try casting to xs:duration
+    else if (untypedItem->castToDuration(castItem))
+    {
+      ADD_IN_MAP(XS_DURATION, true);
+    }
+
+    return found;
+  }
+
+  default:
+  {
+    ZORBA_ASSERT(false);
+    return false;
+  }
+  }
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+bool GeneralTreeIndex::insertInMap(
+    store::IndexKey*& key,
+    store::Item_t& node,
+    IndexMap*& targetMap,
+    bool multikey,
+    bool untyped)
+{
+  GeneralIndexValue* valueSet = NULL;
+
+  if (targetMap == NULL)
+    targetMap = new IndexMap(theCompFunction);
+
+  IndexMap::iterator pos = targetMap->find(key);
+
+  if (pos != targetMap->end())
+  {
+    if (isUnique())
+    {
+      ZORBA_ERROR_PARAM(XDDY0024_INDEX_UNIQUE_VIOLATION,
+                        theQname->getStringValue(), "");
+    }
+    
+    pos->second->addNode(node, multikey, untyped);
+
+    return true;
+  }
+
+  valueSet = new GeneralIndexValue();
+  valueSet->addNode(node, multikey, untyped);
+  
+  //std::cout << "Index Entry Insert [" << key << "," 
+  //          << valueSet << "]" << std::endl;
+  
+  targetMap->insert(IndexMapPair(key, valueSet));
+  key = NULL; // ownership of the key obj passes to the index.
+
+  return false;
+}
+
+
+/******************************************************************************
+
+*******************************************************************************/
+bool GeneralTreeIndex::remove(
+    const store::IndexKey* key,
+    store::Item_t& item)
+{
+  return true;
+}
+
 
 
 }

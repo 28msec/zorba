@@ -54,9 +54,9 @@ DEF_EXPR_ACCEPT (match_expr)
 ********************************************************************************/
 relpath_expr::relpath_expr(static_context* sctx, const QueryLoc& loc)
   :
-expr(sctx, loc, relpath_expr_kind)
+  expr(sctx, loc, relpath_expr_kind)
 {
-  compute_scripting_kind();
+  theScriptingKind = SIMPLE_EXPR;
 }
 
 
@@ -69,9 +69,32 @@ void relpath_expr::serialize(::zorba::serialization::Archiver& ar)
 
 void relpath_expr::add_back(expr_t step)
 {
-  if (!step->is_simple() && !step->is_vacuous())
+  if (step->is_simple() || step->is_vacuous())
   {
-    ZORBA_ERROR_LOC(XUST0001, step->get_loc());
+    // leave theScriptingKind as it is.
+    ;
+  }
+  else if (step->is_updating())
+  {
+    if (theScriptingKind == SEQUENTIAL_EXPR)
+    {
+      ZORBA_ERROR_LOC(XUST0001, get_loc());
+    }
+    else
+    {
+      theScriptingKind = UPDATE_EXPR;
+    }
+  }
+  else if (step->is_sequential())
+  {
+    if (theScriptingKind == UPDATE_EXPR)
+    {
+      ZORBA_ERROR_LOC(XUST0001, get_loc());
+    }
+    else
+    {
+      theScriptingKind = SEQUENTIAL_EXPR;
+    }
   }
 
   theSteps.push_back(step);
@@ -81,6 +104,39 @@ void relpath_expr::add_back(expr_t step)
 void relpath_expr::compute_scripting_kind()
 {
   theScriptingKind = SIMPLE_EXPR;
+
+  for (unsigned i = 0; i < size(); ++i)
+  {
+    expr* step = theSteps[i].getp();
+
+    if (step->is_simple() || step->is_vacuous())
+    {
+      // leave theScriptingKind as it is.
+      ;
+    }
+    else if (step->is_updating())
+    {
+      if (theScriptingKind == SEQUENTIAL_EXPR)
+      {
+        ZORBA_ERROR_LOC(XUST0001, get_loc());
+      }
+      else
+      {
+        theScriptingKind = UPDATE_EXPR;
+      }
+    }
+    else if (step->is_sequential())
+    {
+      if (theScriptingKind == UPDATE_EXPR)
+      {
+        ZORBA_ERROR_LOC(XUST0001, get_loc());
+      }
+      else
+      {
+        theScriptingKind = SEQUENTIAL_EXPR;
+      }
+    }
+  }
 }
 
 
