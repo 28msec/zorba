@@ -1129,7 +1129,7 @@ void ftcontains_visitor::
 apply_ftwords( query_item_star_t &query_items, FTToken::int_t query_pos,
                store::Item const *ignore_item, ft_anyall_mode::type mode,
                ftmatch_options const &options, ft_all_matches &result ) {
-  ft_token_matcher const matcher( options );
+  ft_token_matcher const matcher( options, static_ctx_ );
   switch ( mode ) {
     case ft_anyall_mode::any:
       apply_ftwords_any(

@@ -33,6 +33,7 @@
 #include "context/static_context.h"
 #include "context/static_context_consts.h"
 #include "context/uri_resolver_wrapper.h"
+#include "context/stemmer_wrappers.h"
 
 #include "compiler/parser/query_loc.h"
 #include "compiler/api/compilercb.h"
@@ -1099,6 +1100,24 @@ StaticContextImpl::addThesaurusURIResolver(
   }
 }
 
+void StaticContextImpl::addStemmerProvider( zorba::StemmerProvider const *p ) {
+  if ( !theStemmerProviders[ p ] ) {
+    core::StemmerProviderWrapper *w = new core::StemmerProviderWrapper( p );
+    theStemmerProviders[ p ] = w;
+    theCtx->add_stemmer_provider( w );
+  }
+}
+
+void StaticContextImpl::removeStemmerProvider( StemmerProvider const *p ) {
+  stemmer_providers_t::iterator const i = theStemmerProviders.find( p );
+  if ( i != theStemmerProviders.end() ) {
+    core::StemmerProviderWrapper const *w = i->second;
+    theStemmerProviders.erase( i );
+    theCtx->remove_stemmer_provider( w );
+    delete w;
+  }
+}
+
 void
 StaticContextImpl::addStopWordsURIResolver(
     FullTextURIResolver* aFullTextUriResolver)
@@ -1624,3 +1643,4 @@ StaticContextImpl::validateSimpleContent(
 }
 
 } /* namespace zorba */
+/* vim:set et sw=2 ts=2: */

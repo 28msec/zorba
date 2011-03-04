@@ -51,8 +51,14 @@ SET(API_SRCS
     uriimpl.cpp
     )
 
+IF (NOT ZORBA_NO_FULL_TEXT)
+	LIST(APPEND API_SRCS stemmer.cpp)
+ENDIF (NOT ZORBA_NO_FULL_TEXT)
+
 ADD_SRC_SUBFOLDER(API_SRCS serialization API_SERIALIZATION_SRCS)
 
 SET(API_BUILD_SRCS
   ${CMAKE_CURRENT_BINARY_DIR}/api/version.cpp
   )
+
+# vim:set sw=2 ts=2:

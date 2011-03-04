@@ -20,6 +20,7 @@
 #include <zorba/locale.h>
 
 #include "compiler/expression/ftnode.h"
+#include "context/static_context.h"
 #include "zorbatypes/ft_token.h"
 
 #include "ft_stop_words_set.h"
@@ -29,12 +30,12 @@ namespace zorba {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * An %ft_token_matcher is used to determine whether 2 tokens match accordint
+ * An %ft_token_matcher is used to determine whether 2 tokens match according
  * to the query-specified match options.
  */
 class ft_token_matcher {
 public:
-  ft_token_matcher( ftmatch_options const& );
+  ft_token_matcher( ftmatch_options const&, static_context const& );
   ~ft_token_matcher();
 
   /**
@@ -46,10 +47,20 @@ public:
   bool match( FTToken const &dt, FTToken const &qt ) const;
 
 private:
+
+  class match_stemmer : public FTToken::Stemmer {
+  public:
+    match_stemmer( static_context const &sctx ) : sctx_( sctx ) { }
+    void operator()( string_t const&, locale::iso639_1::type, string_t* ) const;
+  private:
+    static_context const &sctx_;
+  };
+
   ftcase_option const *const case_option_;
   bool const diacritics_insensitive_;
   locale::iso639_1::type const lang_;
   bool const stemming_;
+  match_stemmer const stemmer_;
   ft_stop_words_set const *const stop_words_;
   bool const wildcards_;
 };

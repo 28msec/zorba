@@ -32,6 +32,9 @@ namespace zorba {
   class SchemaURIResolverWrapper;
 #ifndef ZORBA_NO_FULL_TEXT
   class FullTextURIResolverWrapper;
+  namespace core {
+    class StemmerProviderWrapper;
+  }
 #endif
 
 /*******************************************************************************
@@ -70,6 +73,11 @@ protected:
            FullTextURIResolverWrapper*> theStopWordsWrappers;
   std::map<FullTextURIResolver*,
            FullTextURIResolverWrapper*> theThesaurusWrappers;
+
+  typedef std::map<StemmerProvider const*,core::StemmerProviderWrapper const*>
+          stemmer_providers_t;
+
+  stemmer_providers_t theStemmerProviders;
 #endif
 
 private:
@@ -218,6 +226,12 @@ public:
 
   virtual std::vector<FullTextURIResolver*>
   getStopWordsURIResolvers() const;
+
+  virtual void
+  addStemmerProvider( StemmerProvider const* );
+
+  virtual void
+  removeStemmerProvider( StemmerProvider const* );
 #endif /* ZORBA_NO_FULL_TEXT */
 
   virtual void
@@ -306,11 +320,11 @@ public:
           std::vector<Item>& resultList);
 };
 
-} /* namespace zorba */
+} // namespace zorba
 #endif
-
 /*
  * Local variables:
  * mode: c++
  * End:
  */
+ /* vim:set et sw=2 ts=2: */

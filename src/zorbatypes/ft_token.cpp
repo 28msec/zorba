@@ -32,6 +32,12 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+FTToken::Stemmer::~Stemmer() {
+  // out-of-line because it's virtual
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 FTToken::FTToken( char const *utf8_s, int len,
                   int_t pos, int_t sent, int_t para,
                   store::Item const *item,
@@ -69,21 +75,28 @@ void FTToken::copy( FTToken const &from ) {
     mod_values_ = new mod_values_t( *from.mod_values_ );
 }
 
-inline void FTToken::fix_selector( int *selector ) {
-  if ( *selector & stem ) {
-    //
-    // The stemmer we use operates on lower-case, non-diacritics-stripped words
-    // only: therefore if stemming and any other selector is on, turn off all
-    // but stemming.
-    //
-    *selector = stem;
-  }
-}
-
 void FTToken::free() {
   delete mod_values_;
   if ( is_query_token() )
     delete qt_.wildcard_;
+}
+
+FTToken::string_t& FTToken::get_mod_value( int selector ) const {
+  int index;
+  switch ( selector ) {
+    case ascii         : index = 0; break;
+    case lower         : index = 1; break;
+    case upper         : index = 2; break;
+    case ascii | lower : index = 3; break;
+    case ascii | upper : index = 4; break;
+    case stem          : index = 5; break;
+    default:
+      cerr << "BAD SELECTOR: 0x" << hex << selector << endl;
+      ZORBA_ASSERT( false );
+  }
+  if ( !mod_values_ )
+    mod_values_ = new mod_values_t( 6 );
+  return (*mod_values_)[ index ];
 }
 
 void FTToken::init( iso639_1::type lang, int_t pos, int_t sent, int_t para,
@@ -101,26 +114,19 @@ void FTToken::init( iso639_1::type lang, int_t pos, int_t sent, int_t para,
   mod_values_ = NULL;
 }
 
+FTToken::string_t const& FTToken::value( Stemmer const &stemmer,
+                                         iso639_1::type alt_lang ) const {
+  string_t &mod_value_ref = get_mod_value( stem );
+  if ( mod_value_ref.empty() ) {
+    iso639_1::type const stem_lang = lang_ ? lang_ : alt_lang;
+    stemmer( value_impl( lower ).str(), stem_lang, &mod_value_ref );
+  }
+  return mod_value_ref;
+}
+
 FTToken::string_t const& FTToken::value_impl( int selector,
                                               iso639_1::type alt_lang ) const {
-  fix_selector( &selector );
-  int index;
-  switch ( selector ) {
-    case ascii         : index = 0; break;
-    case lower         : index = 1; break;
-    case upper         : index = 2; break;
-    case stem          : index = 3; break;
-    case ascii | lower : index = 4; break;
-    case ascii | upper : index = 5; break;
-    default:
-      cerr << "BAD SELECTOR: 0x" << hex << selector << endl;
-      ZORBA_ASSERT( false );
-  }
-
-  if ( !mod_values_ )
-    mod_values_ = new mod_values_t( 6 );
-
-  string_t &mod_value_ref = (*mod_values_)[ index ];
+  string_t &mod_value_ref = get_mod_value( selector );
   if ( mod_value_ref.empty() ) {
     switch ( selector ) {
       case ascii:
@@ -132,14 +138,6 @@ FTToken::string_t const& FTToken::value_impl( int selector,
       case upper:
         utf8::to_upper( value_, &mod_value_ref );
         break;
-      case stem: {
-        iso639_1::type const stem_lang = lang_ ? lang_ : alt_lang;
-        if ( Stemmer const *const stemmer = Stemmer::get( stem_lang ) )
-          stemmer->stem( value_impl( lower ).str(), &mod_value_ref );
-        else
-          ZORBA_ASSERT( false );
-        break;
-      }
       case ascii | lower:
         utf8::to_lower( value_impl( ascii ), &mod_value_ref );
         break;

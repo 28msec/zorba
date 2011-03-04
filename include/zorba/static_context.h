@@ -26,6 +26,9 @@
 #include <zorba/function.h>
 #include <zorba/annotation.h>
 #include <zorba/smart_ptr.h>
+#ifndef ZORBA_NO_FULL_TEXT
+#include <zorba/stemmer.h>
+#endif /* ZORBA_NO_FULL_TEXT */
 
 namespace zorba {
 
@@ -393,6 +396,12 @@ namespace zorba {
 
       virtual std::vector<FullTextURIResolver*>
       getThesaurusURIResolvers() const = 0;
+
+      virtual void
+      addStemmerProvider( StemmerProvider const* ) = 0;
+
+      virtual void
+      removeStemmerProvider( StemmerProvider const* ) = 0;
 #endif /* ZORBA_NO_FULL_TEXT */
 
       virtual void

@@ -72,6 +72,7 @@
 
 
 using namespace std;
+using namespace zorba::locale;
 
 namespace zorba
 {
@@ -1375,9 +1376,10 @@ void static_context::remove_schema_uri_resolver(
 
 
 #ifndef ZORBA_NO_FULL_TEXT
-/*******************************************************************************
+/******************************************************************************
 
-********************************************************************************/
+ ******************************************************************************/
+
 void static_context::add_stop_words_uri_resolver(
     InternalFullTextURIResolver* aFullTextResolver)
 {
@@ -1390,17 +1392,20 @@ void static_context::add_thesaurus_uri_resolver(
   theThesaurusResolvers.push_back(aFullTextResolver);
 }
 
+core::Stemmer const* static_context::get_stemmer( iso639_1::type lang ) const {
+  FOR_EACH( stemmer_providers_t, provider, theStemmerProviders )
+    if ( core::Stemmer const *const stemmer = (*provider)->get_stemmer( lang ) )
+      return stemmer;
+  return theParent ?
+    theParent->get_stemmer( lang ) :
+    core::StemmerProvider::get_default_provider().get_stemmer( lang );
+}
 
-/*******************************************************************************
-
-********************************************************************************/
 void static_context::get_stop_words_uri_resolvers(
     std::vector<InternalFullTextURIResolver*>& aResolvers) const
 {
-  if (theParent != NULL)
-  {
-    static_cast<static_context*>(theParent)->get_stop_words_uri_resolvers(aResolvers);
-  }
+  if (theParent)
+    theParent->get_stop_words_uri_resolvers(aResolvers);
 
   aResolvers.insert(aResolvers.end(),
                     theStopWordsResolvers.begin(),
@@ -1410,10 +1415,8 @@ void static_context::get_stop_words_uri_resolvers(
 void static_context::get_thesaurus_uri_resolvers(
     std::vector<InternalFullTextURIResolver*>& aResolvers) const
 {
-  if (theParent != NULL)
-  {
-    static_cast<static_context*>(theParent)->get_thesaurus_uri_resolvers(aResolvers);
-  }
+  if (theParent)
+    theParent->get_thesaurus_uri_resolvers(aResolvers);
 
   aResolvers.insert(aResolvers.end(),
                     theThesaurusResolvers.begin(),
@@ -1421,21 +1424,19 @@ void static_context::get_thesaurus_uri_resolvers(
 }
 
 
-/*******************************************************************************
+void static_context::remove_stemmer_provider( core::StemmerProvider const *p ) {
+  erase_1st_if(
+    theStemmerProviders, bind2nd( equal_to<core::StemmerProvider const*>(), p )
+  );
+}
 
-********************************************************************************/
 void static_context::remove_stop_words_uri_resolver(
     InternalFullTextURIResolver* aResolver)
 {
-  std::vector<InternalFullTextURIResolver*>::iterator ite;
-  for (ite = theStopWordsResolvers.begin(); ite != theStopWordsResolvers.end(); ++ite)
-  {
-    if (aResolver == *ite)
-    {
-      theStopWordsResolvers.erase(ite);
-      return; // no duplicates in the vector
-    }
-  }
+  erase_1st_if(
+    theStopWordsResolvers, 
+    bind2nd( equal_to<InternalFullTextURIResolver*>(), aResolver )
+  );
 }
 
 void static_context::remove_thesaurus_uri_resolver(
@@ -3753,4 +3754,4 @@ void static_context::import_module(const static_context* module, const QueryLoc&
 
 
 } /* namespace zorba */
-
+/* vim:set et sw=2 ts=2: */

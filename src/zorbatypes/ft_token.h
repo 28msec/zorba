@@ -51,6 +51,27 @@ public:
   typedef zstring string_t;
 
   /**
+   * A %Stemmer is a function object for stemming words.
+   */
+  struct Stemmer {
+    typedef FTToken::string_t string_t;
+
+    virtual ~Stemmer();
+
+    /**
+     * Stems the given word in the given language.
+     *
+     * @param word The word to stem.
+     * @param lang The language of the word.
+     * @param result A pointer to the result.
+     */
+    virtual void operator()( string_t const &word, locale::iso639_1::type lang,
+                             string_t *result ) const = 0;
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
+
+  /**
    * Constructs an %FTToken for a token from an XML document.
    *
    * @param utf8_s    The token string encoded in UTF-8.  It need not be
@@ -168,7 +189,6 @@ public:
     ascii     = 0x01, ///< diacritics stripped
     lower     = 0x02, ///< lower-case
     upper     = 0x04, ///< upper-case
-    stem      = 0x08, ///< stemmed
   };
 
   /**
@@ -182,10 +202,19 @@ public:
   string_t const&
   value( int selector = original,
          locale::iso639_1::type alt_lang = locale::iso639_1::unknown ) const {
-    if ( selector == original )         // optimize this case
-      return value_;
-    return value_impl( selector, alt_lang );
+    return selector == original ? value_ : value_impl( selector, alt_lang );
   }
+
+  /**
+   * TODO
+   *
+   * @param stemmer   The stemmer to use.
+   * @param alt_lang  The language to use only if the token doesn't already
+   *                  have a language.
+   */
+  string_t const&
+  value( Stemmer const &stemmer,
+         locale::iso639_1::type alt_lang = locale::iso639_1::unknown ) const;
 
   /**
    * Gets an ft_wildcard for this query token.
@@ -202,6 +231,10 @@ private:
    * The smallest possible type to store a Selectors value.
    */
   typedef char selector_t;
+
+  enum private_selectors {
+    stem = 0x08
+  };
 
   static int_t const QueryTokenMagicValue = static_cast<int_t>( ~0 );
 
@@ -256,10 +289,9 @@ private:
     return sent_ == QueryTokenMagicValue;
   }
 
-  static void fix_selector( int *selector );
-
   void copy( FTToken const& );
   void free();
+  string_t& get_mod_value( int selector ) const;
   void init( locale::iso639_1::type, int_t, int_t = QueryTokenMagicValue,
              int_t = 0, store::Item const* = 0 );
 

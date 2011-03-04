@@ -60,6 +60,7 @@ IF(WIN32)
 # SF#3191791
 #    string_test.cpp
     main_sequential.cpp
+    stemmer_provider.cpp
   )
 ELSE(WIN32)
   CREATE_TEST_SOURCELIST(UnitTests
@@ -82,6 +83,7 @@ ELSE(WIN32)
     main_sequential.cpp
     os_module.cpp
     datetime.cpp
+    stemmer_provider.cpp
   # multithread_simple.cpp
   # multithread_stress_test.cpp
  )

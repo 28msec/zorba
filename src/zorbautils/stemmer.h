@@ -17,11 +17,18 @@
 #ifndef ZORBA_STEMMER_H
 #define ZORBA_STEMMER_H
 
+#include <zorba/config.h>
+
+#ifndef ZORBA_NO_FULL_TEXT
+
 #include <zorba/locale.h>
 
 #include "zorbatypes/zstring.h"
 
 namespace zorba {
+namespace core {
+
+///////////////////////////////////////////////////////////////////////////////
 
 /**
  * A %Stemmer is used to "stem" words.
@@ -31,26 +38,42 @@ public:
   virtual ~Stemmer();
 
   /**
-   * Gets an instance of a %Stemmer for the given language.
-   *
-   * @param lang The language for the stemmer.
-   * @return Returns said %Stemmer or \c NULL if no stemmer is availabe for the
-   * given language.
-   */
-  static Stemmer const* get( locale::iso639_1::type lang );
-
-  /**
    * Gets the stem of the given word.
    *
    * @param word The word to stem.
    * @param result A pointer to the result string.
    */
   virtual void stem( zstring const &word, zstring *result ) const = 0;
-
-protected:
-  Stemmer() { }
 };
 
+/**
+ * A %StemmerProvider provides a Stemmer for a particular language.
+ */
+class StemmerProvider {
+public:
+  virtual ~StemmerProvider();
+
+  /**
+   * Gets the default %StemmerProvider.
+   *
+   * @return Returns said %StemmerProvider.
+   */
+  static StemmerProvider const& get_default_provider();
+
+  /**
+   * Gets an instance of a %Stemmer for the given language.
+   *
+   * @param lang The language for the stemmer.
+   * @return Returns said %Stemmer or \c NULL if no stemmer is availabe for the
+   * given language.
+   */
+  virtual Stemmer const* get_stemmer( locale::iso639_1::type lang ) const;
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
+} // namespace core
 } // namespace zorba
+#endif  /* ZORBA_NO_FULL_TEXT */
 #endif  /* ZORBA_STEMMER_H */
 /* vim:set et sw=2 ts=2: */

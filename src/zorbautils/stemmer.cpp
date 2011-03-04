@@ -24,6 +24,7 @@ using namespace std;
 using namespace zorba::locale;
 
 namespace zorba {
+namespace core {
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -31,7 +32,16 @@ Stemmer::~Stemmer() {
   // do nothing
 }
 
-Stemmer const* Stemmer::get( iso639_1::type lang ) {
+StemmerProvider::~StemmerProvider() {
+  // do nothing
+}
+
+StemmerProvider const& StemmerProvider::get_default_provider() {
+  static StemmerProvider default_provider;
+  return default_provider;
+}
+
+Stemmer const* StemmerProvider::get_stemmer( iso639_1::type lang ) const {
   static auto_ptr<Stemmer const> cached_stemmers[ iso639_1::NUM_ENTRIES ];
   static Mutex mutex;
 
@@ -51,5 +61,6 @@ Stemmer const* Stemmer::get( iso639_1::type lang ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+} // namespace core
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

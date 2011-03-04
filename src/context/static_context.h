@@ -16,8 +16,10 @@
 #ifndef ZORBA_CONTEXT_STATIC_CONTEXT_H
 #define ZORBA_CONTEXT_STATIC_CONTEXT_H
 
+#include <deque>
 #include <memory>
 #include <set>
+#include <vector>
 
 #include <zorba/config.h>
 #include <zorba/api_shared_types.h>
@@ -33,8 +35,10 @@
 #include "context/internal_uri_resolvers.h"
 
 #include "zorbautils/hashmap_zstring.h"
+#include "zorbautils/stemmer.h"
 
 #include "common/shared_types.h"
+#include "util/stl_util.h"
 
 
 namespace zorba
@@ -486,7 +490,12 @@ protected:
 
 #ifndef ZORBA_NO_FULL_TEXT
   std::vector<InternalFullTextURIResolver*> theStopWordsResolvers;
-  std::vector<InternalFullTextURIResolver*> theThesaurusResolvers;
+
+  typedef std::vector<InternalFullTextURIResolver*> thesaurus_resolvers_t;
+  thesaurus_resolvers_t theThesaurusResolvers;
+
+  typedef std::deque<core::StemmerProvider const*> stemmer_providers_t;
+  stemmer_providers_t                     theStemmerProviders;
 #endif
 
   std::vector<InternalModuleURIResolver*> theModuleResolvers;
@@ -660,6 +669,14 @@ public:
   void get_thesaurus_uri_resolvers(std::vector<InternalFullTextURIResolver*>& resolvers) const;
 
   void remove_thesaurus_uri_resolver(InternalFullTextURIResolver*);
+
+  void add_stemmer_provider( core::StemmerProvider const *p ) {
+    theStemmerProviders.push_front( p );
+  }
+
+  core::Stemmer const* get_stemmer( locale::iso639_1::type lang ) const;
+
+  void remove_stemmer_provider( core::StemmerProvider const *p );
 #endif
 
   void add_module_uri_resolver(InternalModuleURIResolver*);

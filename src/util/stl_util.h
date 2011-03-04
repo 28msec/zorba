@@ -230,6 +230,27 @@ void delete_ptr_seq( SequenceType &seq ) {
 }
 
 /**
+ * Erases the first element in the given sequence for which the given predicate
+ * is \c true.
+ *
+ * @tparam SequenceType The sequence type.
+ * @tparam PredicateType The predicate type.
+ * @param seq The sequence to modify.
+ * @param pred The predicate to use.
+ * @return Returns \c true only if an element was erased; \a false otherwise.
+ */
+template<class SequenceType,class PredicateType> inline
+bool erase_1st_if( SequenceType &seq, PredicateType pred ) {
+  MUTATE_EACH( typename SequenceType, i, seq ) {
+    if ( pred( *i ) ) {
+      seq.erase( i );
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
  * Moves the first element of the first sequence to the back of the second.
  */
 template<class FromSequenceType,class ToSequenceType> inline
@@ -239,7 +260,8 @@ void move_front_to_back( FromSequenceType &from, ToSequenceType &to ) {
 }
 
 /**
- * Same as std::strdup(3) except it uses C++'s new[] rather than malloc(3).
+ * Same as std::strdup(3) except it uses C++'s <code>new[]</code> rather than
+ * malloc(3).
  */
 inline char* new_strdup( char const *s ) {
   return std::strcpy( new char[ std::strlen( s ) + 1 ], s );

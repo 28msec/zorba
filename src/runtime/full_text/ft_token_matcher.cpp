@@ -52,11 +52,13 @@ inline ft_stop_words_set const* get_stop_words( ftmatch_options const &options,
 
 ///////////////////////////////////////////////////////////////////////////////
 
-ft_token_matcher::ft_token_matcher( ftmatch_options const &options ) :
+ft_token_matcher::ft_token_matcher( ftmatch_options const &options,
+                                    static_context const &sctx ) :
   case_option_( options.get_case_option() ),
   diacritics_insensitive_( get_diacritics_insensitive( options ) ),
   lang_( get_lang_from( &options ) ),
   stemming_( get_stemming( options ) ),
+  stemmer_( sctx ),
   stop_words_( get_stop_words( options, lang_ ) ),
   wildcards_( get_wildcards_from( &options ) )
 {
@@ -64,6 +66,17 @@ ft_token_matcher::ft_token_matcher( ftmatch_options const &options ) :
 
 ft_token_matcher::~ft_token_matcher() {
   delete stop_words_;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void ft_token_matcher::match_stemmer::
+operator()( string_t const &word, iso639_1::type lang,
+            string_t *result ) const {
+  if ( core::Stemmer const *const stemmer = sctx_.get_stemmer( lang ) )
+    stemmer->stem( word, result );
+  else
+    *result = word;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -84,6 +97,9 @@ bool ft_token_matcher::match( FTToken const &dt, FTToken const &qt ) const {
       return true;
   }
 
+  if ( stemming_ )
+    return dt.value( stemmer_, lang_ ) == qt.value( stemmer_, lang_ );
+
   if ( case_option_ ) {
     switch ( case_option_->get_mode() ) {
       case ft_case_mode::insensitive:
@@ -100,11 +116,6 @@ bool ft_token_matcher::match( FTToken const &dt, FTToken const &qt ) const {
         qt_selector |= FTToken::upper;
         break;
     }
-  }
-
-  if ( stemming_ ) {
-    dt_selector |= FTToken::stem;
-    qt_selector |= FTToken::stem;
   }
 
   if ( diacritics_insensitive_ ) {
