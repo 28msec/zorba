@@ -473,6 +473,7 @@ static_context::static_context(static_context* parent)
 static_context::static_context(::zorba::serialization::Archiver& ar)
   :
   SimpleRCObject(ar),
+  theParent(NULL),
   theTraceStream(NULL),
   theImportedBuiltinModules(NULL),
   theBaseUriInfo(NULL),

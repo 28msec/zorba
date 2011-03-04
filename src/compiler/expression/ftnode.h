@@ -247,7 +247,7 @@ typedef rchandle<ftstop_word_option> ftstop_word_option_t;
 class ftthesaurus_id : public ftnode {
 public:
   SERIALIZABLE_CLASS(ftthesaurus_id)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftthesaurus_id,ftnode)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2_NULL_PARAM1(ftthesaurus_id,ftnode,levels_)
   void serialize( serialization::Archiver& );
 
   ftthesaurus_id(
@@ -274,7 +274,7 @@ private:
 class ftthesaurus_option : public ftmatch_option {
 public:
   SERIALIZABLE_CLASS(ftthesaurus_option)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftthesaurus_option,ftmatch_option)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2_NULL_PARAM1(ftthesaurus_option,ftmatch_option,default_tid_)
   void serialize( serialization::Archiver& );
 
   typedef std::list<ftthesaurus_id*> thesaurus_id_list_t;
@@ -458,7 +458,7 @@ protected:
 class ftprimary_with_options : public ftnode {
 public:
   SERIALIZABLE_CLASS(ftprimary_with_options)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftprimary_with_options,ftnode)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2_NULL_PARAM3(ftprimary_with_options,ftnode,primary_,match_options_,weight_)
   void serialize( serialization::Archiver& );
 
   ftprimary_with_options( QueryLoc const& );
@@ -495,7 +495,7 @@ private:
 class ftextension_selection : public ftprimary {
 public:
   SERIALIZABLE_CLASS(ftextension_selection)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftextension_selection,ftprimary)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2_NULL_PARAM1(ftextension_selection,ftprimary,ftselection_)
   void serialize( serialization::Archiver& );
 
   ftextension_selection(
@@ -519,7 +519,7 @@ private:
 class ftselection : public ftprimary {
 public:
   SERIALIZABLE_CLASS(ftselection)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftselection,ftprimary)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2_NULL_PARAM1(ftselection,ftprimary,ftor_)
   void serialize( serialization::Archiver& );
 
   typedef std::list<ftpos_filter*> ftpos_filter_list_t;
@@ -545,7 +545,7 @@ private:
 class ftwords_times : public ftprimary {
 public:
   SERIALIZABLE_CLASS(ftwords_times)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftwords_times,ftprimary)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2_NULL_PARAM2(ftwords_times,ftprimary,ftwords_,fttimes_)
   void serialize( serialization::Archiver& );
 
   ftwords_times(
@@ -598,7 +598,7 @@ private:
 class ftdistance_filter : public ftpos_filter {
 public:
   SERIALIZABLE_CLASS(ftdistance_filter)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftdistance_filter,ftpos_filter)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2_NULL_PARAM1(ftdistance_filter,ftpos_filter, range_)
   void serialize( serialization::Archiver& );
 
   ftdistance_filter( QueryLoc const&, ftrange*, ft_unit::type );
@@ -738,7 +738,7 @@ public:
 class ftunary_not : public ftnode {
 public:
   SERIALIZABLE_CLASS(ftunary_not)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftunary_not,ftnode)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2_NULL_PARAM1(ftunary_not,ftnode,subnode_)
   void serialize( serialization::Archiver& );
 
   ftunary_not( QueryLoc const&, ftnode *subnode );

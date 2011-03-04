@@ -68,15 +68,11 @@ ELSE(WIN32)
     userdefined_uri_resolver.cpp
     multiple_runs.cpp
     runnable_threads.cpp
-# SF#3191795
-#    plan_serializer.cpp
+    plan_serializer.cpp
     call_stack.cpp
-# SF#3191795
-#    external_function.cpp
-# SF#3191795
-#    no_folding.cpp
-# SF#3191795
-#    debug_iter_serialization.cpp
+    external_function.cpp
+    no_folding.cpp
+    debug_iter_serialization.cpp
     ordpath_big.cpp
     uri_file_decoding_test.cpp
     ext_in_opt.cpp

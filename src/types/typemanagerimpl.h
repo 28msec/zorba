@@ -64,7 +64,7 @@ protected:
 
 public:
   SERIALIZABLE_CLASS(TypeManagerImpl)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(TypeManagerImpl, TypeManager)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2_NULL_PARAM1(TypeManagerImpl, TypeManager,m_schema)
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:

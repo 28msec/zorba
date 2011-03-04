@@ -463,6 +463,8 @@ void ftmatch_options::serialize( serialization::Archiver &ar ) {
   ar & case_option_;
   ar & diacritics_option_;
   ar & extension_options_;
+  if(!ar.is_serializing_out())
+    current_extension_options_ = &extension_options_;
   ar & language_option_;
   ar & stem_option_;
   ar & stop_word_option_;

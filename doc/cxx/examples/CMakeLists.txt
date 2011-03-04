@@ -16,8 +16,7 @@
 INCLUDE_DIRECTORIES(AFTER ${CMAKE_SOURCE_DIR}/src/)
 
 SET (API_EXAMPLES
-# SF#3191795
-#	simple.cpp
+	simple.cpp
   sax2.cpp
   errors.cpp
   context.cpp
@@ -25,10 +24,8 @@ SET (API_EXAMPLES
   chaining.cpp
   external_functions.cpp
   datamanager.cpp
-# SF#3191795
-#  uri_resolvers.cpp
-# SF#3191795
-#  execution_plans.cpp
+  uri_resolvers.cpp
+  execution_plans.cpp
   item_handler.cpp
   callback.cpp
   binary.cpp

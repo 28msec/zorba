@@ -138,6 +138,8 @@ CompilerCB::CompilerCB(const CompilerCB& cb)
 CompilerCB::CompilerCB(::zorba::serialization::Archiver& ar)
   :
   ::zorba::serialization::SerializeBaseClass(),
+  theErrorManager(NULL),
+  theRootSctx(NULL),
   theDebuggerCommons(NULL)
 {
 }

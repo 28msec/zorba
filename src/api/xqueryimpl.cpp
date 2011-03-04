@@ -169,7 +169,7 @@ void XQueryImpl::serialize(::zorba::serialization::Archiver& ar)
   if (!ar.is_serializing_out())
   {
     delete theCompilerCB;
-    //ar.xquery_impl = this;
+    theCompilerCB = NULL;
   }
   else
   {

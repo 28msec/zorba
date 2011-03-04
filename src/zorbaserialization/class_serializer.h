@@ -339,6 +339,33 @@ class_name(::zorba::serialization::Archiver &ar)                \
 {                                                               \
 }
 
+#define SERIALIZABLE_CLASS_CONSTRUCTOR2_NULL_PARAM1(class_name, base_class, param1) \
+class_name(::zorba::serialization::Archiver &ar)                \
+  :                                                             \
+  base_class(ar),                                               \
+  param1(NULL)                                                  \
+{                                                               \
+}
+
+#define SERIALIZABLE_CLASS_CONSTRUCTOR2_NULL_PARAM2(class_name, base_class, param1, param2) \
+class_name(::zorba::serialization::Archiver &ar)                \
+  :                                                             \
+  base_class(ar),                                               \
+  param1(NULL),                                                 \
+  param2(NULL)                                                  \
+{                                                               \
+}
+
+#define SERIALIZABLE_CLASS_CONSTRUCTOR2_NULL_PARAM3(class_name, base_class, param1, param2, param3) \
+class_name(::zorba::serialization::Archiver &ar)                \
+  :                                                             \
+  base_class(ar),                                               \
+  param1(NULL),                                                 \
+  param2(NULL),                                                 \
+  param3(NULL)                                                  \
+{                                                               \
+}
+
 #define SERIALIZABLE_CLASS_CONSTRUCTOR3(class_name, base_class1, base_class2) \
 class_name(::zorba::serialization::Archiver &ar)                      \
   :                                                                   \

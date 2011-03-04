@@ -123,7 +123,7 @@ protected:
 
 public:
   SERIALIZABLE_CLASS(var_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(var_expr, expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2_NULL_PARAM2(var_expr, expr,theFlworClause,theCopyClause)
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
