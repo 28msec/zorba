@@ -605,15 +605,15 @@ public:
 
   void appendStringValue(zstring& buf) const;
 
-  std::istream& getStream();
-
   const zstring& getString() const;
 
   uint32_t hash(long timezone = 0, const XQPCollator* collator = 0) const;
 
+  zstring show() const;
+
   bool isStreamable() const;
 
-  zstring show() const;
+  std::istream& getStream();
 
 protected:
   StreamableStringItem(std::istream& aStream)

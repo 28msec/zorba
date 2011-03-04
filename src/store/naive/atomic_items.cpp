@@ -843,7 +843,7 @@ bool StreamableStringItem::equals(
   if (!theIsMaterialized) {
     materialize();
   }
-  return equals(aItem, aTimezone, aCollator);
+  return StringItem::equals(aItem, aTimezone, aCollator);
 }
 
 
@@ -853,12 +853,6 @@ store::Item_t StreamableStringItem::getEBV() const
     materialize();
   }
   return StringItem::getEBV();
-}
-
-
-std::istream& StreamableStringItem::getStream()
-{
-  return theIstream;
 }
 
 
@@ -882,7 +876,9 @@ zstring StreamableStringItem::getStringValue() const
 
 void StreamableStringItem::getStringValue2(zstring &val) const
 {
-  materialize();
+  if (!theIsMaterialized) {
+    materialize();
+  }
   val = theValue;
 }
 
@@ -894,13 +890,7 @@ uint32_t StreamableStringItem::hash(
   if (!theIsMaterialized) {
     materialize();
   }
-  return utf8::hash(theValue, aCollator);
-}
-
-
-bool StreamableStringItem::isStreamable() const
-{
-  return true;
+  return StringItem::hash(aTimezone, aCollator);
 }
 
 
@@ -913,8 +903,23 @@ zstring StreamableStringItem::show() const
 }
 
 
+bool StreamableStringItem::isStreamable() const
+{
+  return true;
+}
+
+
+std::istream& StreamableStringItem::getStream()
+{
+  return theIstream;
+}
+
+
 void StreamableStringItem::materialize() const
 {
+  StreamableStringItem* const lSsi = const_cast<StreamableStringItem*>(this);
+  lSsi->theIsMaterialized = true;
+
   ios::iostate const lOldExceptions = theIstream.exceptions();
   theIstream.exceptions(std::ios::badbit | std::ios::failbit);
 
@@ -924,7 +929,6 @@ void StreamableStringItem::materialize() const
   }
 
   char lBuf[4096];
-  StreamableStringItem* const lSsi = const_cast<StreamableStringItem*>(this);
   theIstream.exceptions(theIstream.exceptions() & ~ios::failbit);
   while (theIstream) {
     theIstream.read(lBuf, sizeof(lBuf));
@@ -2187,8 +2191,6 @@ zstring BooleanItem::show() const
 }
 
 
-
-
 /*******************************************************************************
   class Base64BinaryItem
 ********************************************************************************/
@@ -2312,4 +2314,3 @@ void AtomicItemTokenizerCallback::operator()(
 
 } // namespace simplestore
 } // namespace zorba
-/* vim:set et sw=2 ts=2: */
