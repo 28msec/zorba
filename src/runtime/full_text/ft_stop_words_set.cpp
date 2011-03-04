@@ -23,6 +23,7 @@
 #ifndef ZORBA_WITH_FILE_ACCESS
 #include "zorbaerrors/error_manager.h"
 #endif
+#include "zorbautils/locale.h"
 
 #include "ft_stop_words_set.h"
 

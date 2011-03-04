@@ -16,6 +16,8 @@
 
 #include <memory>
 
+#include "zorbautils/locale.h"
+
 #include "mutex.h"
 #include "stemmer.h"
 #include "stemmer/sb_stemmer.h"

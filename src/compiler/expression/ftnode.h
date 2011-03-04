@@ -20,7 +20,6 @@
 #include <zorba/locale.h>
 
 #include "common/shared_types.h"
-
 #include "compiler/expression/expr_base.h"
 #include "compiler/expression/ftnode_classes.h"
 #include "compiler/parser/parse_constants.h"

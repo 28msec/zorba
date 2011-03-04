@@ -23,6 +23,7 @@
 #include "zorbaerrors/error_manager.h"
 #include "zorbatypes/URI.h"
 #ifndef ZORBA_NO_FULL_TEXT
+#include "zorbautils/locale.h"
 #include "zorbautils/tokenizer.h"
 #endif /* ZORBA_NO_FULL_TEXT */
 

@@ -21,6 +21,7 @@
 #include "util/unicode_util.h"
 #include "util/utf8_util.h"
 #include "zorbaerrors/Assert.h"
+#include "zorbautils/locale.h"
 #include "zorbautils/stemmer.h"
 
 #include "ft_token.h"

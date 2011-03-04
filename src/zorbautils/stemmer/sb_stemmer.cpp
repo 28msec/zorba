@@ -17,6 +17,8 @@
 #include <memory>
 
 #include "zorbautils/fatal.h"
+#include "zorbautils/locale.h"
+
 #include "sb_stemmer.h"
 
 using namespace std;
