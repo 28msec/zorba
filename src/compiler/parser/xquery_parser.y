@@ -1046,7 +1046,7 @@ UnrecognizedToken
           if ($1 != NULL) {
             error(@$, $1->msg);
           } else
-            error(@$, string("syntax error, unexpected character"));
+            error(@$, string("syntax error, unexpected character."));
           YYERROR;
         }
     ;
@@ -1128,32 +1128,28 @@ MainModule
         {
           $$ = $1; $$ = $3; // to prevent the Bison warning
           @1.step();
-          driver.parserErr("syntax error, missing semicolon \";\" after statement", @1);
-          error(@$, ""); // The error message will be taken from the driver
+          error(@1, "syntax error, missing semicolon \";\" after statement."); 
           YYERROR;
         }
     |   VFO_DeclList ERROR QueryBody
         {
           $$ = $1; $$ = $3; // to prevent the Bison warning
           @1.step();
-          driver.parserErr("syntax error, missing semicolon \";\" after declaration", @1);
-          error(@$, ""); // The error message will be taken from the driver
+          error(@1, "syntax error, missing semicolon \";\" after declaration."); 
           YYERROR;
         }
      |  SIND_DeclList SEMI VFO_DeclList ERROR QueryBody
         {
           $$ = $1; $$ = $3; $$ = $5; // to prevent the Bison warning
           @3.step();
-          driver.parserErr("syntax error, missing semicolon \";\" after declaration", @3);
-          error(@$, ""); // The error message will be taken from the driver
+          error(@3, "syntax error, missing semicolon \";\" after declaration.");
           YYERROR;
         }
      |  SIND_DeclList ERROR VFO_DeclList SEMI QueryBody
         {
           $$ = $1; $$ = $3; $$ = $5; // to prevent the Bison warning
           @1.step();
-          driver.parserErr("syntax error, missing semicolon \";\" after statement", @1);
-          error(@$, ""); // The error message will be taken from the driver
+          error(@1, "syntax error, missing semicolon \";\" after statement.");
           YYERROR;
         }
     ;
@@ -1209,8 +1205,7 @@ SIND_DeclList
             // error
             $$ = $1; $$ = $3; // to prevent the Bison warning
             @1.step();
-            driver.parserErr("syntax error, missing semicolon \";\" after declaration", @1);
-            error(@$, ""); // The error message will be taken from the driver
+            error(@1, "syntax error, missing semicolon \";\" after declaration."); 
             YYERROR;
         }
     ;
@@ -1233,8 +1228,7 @@ VFO_DeclList
         {
             $$ = $1; $$ = $3; // to prevent the Bison warning
             @1.step();
-            driver.parserErr("syntax error, missing semicolon \";\" after declaration", @1);
-            error(@$, ""); // The error message will be taken from the driver
+            error(@1, "syntax error, missing semicolon \";\" after declaration.");
             YYERROR;
         }
     ;
@@ -1331,6 +1325,13 @@ Setter
 Import
     :   SchemaImport
     |   ModuleImport
+        //  ============================ Improved error messages ============================
+    |   IMPORT QNAME_SVAL error
+        {
+          $$ = $$; // to prevent the Bison warning
+          error(@2, "syntax error, \"import\" should be followed by either \"schema\" or \"module\".");
+          YYERROR;
+        }
     ;
 
 // [10]
@@ -1540,12 +1541,12 @@ SchemaPrefix
 
 // [23]
 ModuleImport :
-    IMPORT MODULE  URI_LITERAL
+    IMPORT MODULE URI_LITERAL
     {
       $$ = new ModuleImport(LOC(@$), SYMTAB($3), NULL);
       dynamic_cast<ModuleImport *>($$)->setComment(SYMTAB($2));
     }
-  | IMPORT MODULE  NAMESPACE  NCNAME  EQUALS  URI_LITERAL
+  | IMPORT MODULE NAMESPACE  NCNAME  EQUALS  URI_LITERAL
     {
       $$ = new ModuleImport(LOC(@$), SYMTAB($4), SYMTAB($6), NULL);
       dynamic_cast<ModuleImport *>($$)->setComment(SYMTAB($2));
@@ -1557,7 +1558,7 @@ ModuleImport :
                             dynamic_cast<URILiteralList*>($5));
       dynamic_cast<ModuleImport *>($$)->setComment(SYMTAB($2));
     }
-  | IMPORT MODULE  NAMESPACE  NCNAME  EQUALS  URI_LITERAL  AT  URILiteralList
+  | IMPORT MODULE NAMESPACE  NCNAME  EQUALS  URI_LITERAL  AT  URILiteralList
     {
       $$ = new ModuleImport(LOC(@$),
                             SYMTAB($4),
@@ -2407,7 +2408,7 @@ ConcatExpr
             // error
             $$ = $1; $$ = $2; // to prevent the Bison warning
             @1.step();
-            driver.parserErr("syntax error, missing comma \",\" between expressions", @1);
+            driver.parserErr("syntax error, missing comma \",\" between expressions.", @1);
             error(@$, ""); // The error message will be taken from the driver
             // YYERROR;
             YYABORT;
@@ -6242,9 +6243,9 @@ QNAME
     |   EMPTY_SEQUENCE          { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("empty-sequence"))); }
     |   WHILE                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("while"))); }
     ;
-
-FUNCTION_NAME
-    :   EQNAME
+    
+FUNCTION_NAME :    
+        EQNAME
     |   QNAME_SVAL              { $$ = new QName(LOC(@$), SYMTAB($1)); }
     |   XQUERY                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("xquery"))); }
     |   _EMPTY                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("empty"))); }

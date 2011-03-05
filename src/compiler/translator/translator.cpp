@@ -3330,7 +3330,7 @@ void* begin_visit(const VFO_DeclList& v)
     const zstring& ns = qnameItem->getNamespace();
 
     // function must be declared in a non-NULL namespace
-    if(ns.empty())
+    if (ns.empty())
       ZORBA_ERROR_LOC (XQST0060, loc);
 
     // Function must not be in any of the reserved namespaces
@@ -3345,7 +3345,7 @@ void* begin_visit(const VFO_DeclList& v)
       ZORBA_ERROR_LOC(XQST0048, loc);
 
     // Create the function object.
-    signature sig(qnameItem, arg_types, return_type);
+    signature sig(qnameItem, arg_types, return_type, func_decl->is_variadic());
 
     // Get the scripting kind of the function
     expr_script_kind_t scriptKind;

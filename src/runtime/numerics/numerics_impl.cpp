@@ -857,9 +857,6 @@ FormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   PlanIteratorState* state;
   DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
 
-  if (planState.theCompilerCB->theRootSctx->xquery_version() == StaticContextConsts::xquery_version_1_0)
-    ZORBA_ERROR_LOC_DESC(XPST0017, loc, "The format-number() function is only available in the XQuery 1.1 processing mode.");
-
   if (!consumeNext(result, theChildren[0].getp(), planState ))
   {
     // Got void, returning void
@@ -899,7 +896,7 @@ FormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
           break;
         }
 
-        // The prefix is not in the known namespaces, the only chance to find the binding is to be inside an EnclosedIterator
+        // The prefix is not in the known namespaces, the only posibility left is to be invoked from an EnclosedIterator
         if (planState.theNodeConstuctionPath.empty())
           ZORBA_ERROR_LOC(FODF1280, loc);
 

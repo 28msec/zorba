@@ -726,6 +726,15 @@ bool AnnotationListParsenode::has_nondeterministic() const
   return false;
 }
 
+bool AnnotationListParsenode::has_annotation(const char* annotation) const
+{
+  for (unsigned int i=0; i<annotations_hv.size(); i++)
+    if (annotations_hv[i]->get_qname()->get_localname() == annotation)
+      return true;
+
+  return false;
+}
+
 void AnnotationListParsenode::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
@@ -890,18 +899,34 @@ void FunctionDecl::set_annotations(rchandle<AnnotationListParsenode> annotations
 
 void FunctionDecl::parse_annotations()
 {
-  if (annotations_h != NULL)
+  if (annotations_h == NULL)
+    return;
+  
+  for (unsigned int i = 0; i < annotations_h->size(); i++)
   {
-    for (unsigned int i = 0; i < annotations_h->size(); i++)
-    {
-      if (annotations_h->operator[](i)->get_qname()->get_qname() == "nondeterministic")
-        theDeterministic = false;
-      if (annotations_h->operator[](i)->get_qname()->get_qname() == "private")
-        thePrivate = true;
-    }
+    if (annotations_h->operator[](i)->get_qname()->get_qname() == "nondeterministic")
+      theDeterministic = false;
+    if (annotations_h->operator[](i)->get_qname()->get_qname() == "private")
+      thePrivate = true;
   }
 }
 
+bool FunctionDecl::has_annotation(const char* annotation) const
+{
+  if (annotations_h == NULL)
+    return false;
+
+  for (unsigned int i = 0; i < annotations_h->size(); i++)
+    if (annotations_h->operator[](i)->get_qname()->get_qname() == annotation)
+      return true;
+
+  return false;
+}
+
+bool FunctionDecl::is_variadic() const
+{
+  return has_annotation("variadic");
+}
 
 /*******************************************************************************
   [34] ParamList ::= Param ("," Param)*

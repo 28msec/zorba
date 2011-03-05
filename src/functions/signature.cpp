@@ -215,10 +215,11 @@ signature::signature(
 signature::signature(
     const store::Item_t& name,
     const std::vector<xqtref_t>& types,
-    const xqtref_t& returnType)
+    const xqtref_t& returnType,
+    bool isVariadic)
   :
   theQName(name),
-  theIsVariadic(false)
+  theIsVariadic(isVariadic)
 {
   theTypes.push_back(returnType);
   std::copy(types.begin(), types.end(), std::back_inserter(theTypes));
@@ -241,9 +242,6 @@ bool signature::equals(const TypeManager* tm, const signature& s) const
 
   if (!theQName->equals(s.theQName.getp()))
     return false;
-
-  //std::cout << return_type()->toString() << std::endl;
-  //std::cout << s.return_type()->toString() << std::endl;
 
   if (!TypeOps::is_equal(tm, *returnType().getp(), *s.returnType().getp()))
   {

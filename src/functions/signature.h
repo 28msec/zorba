@@ -128,7 +128,8 @@ public:
   signature(
         const store::Item_t& name,
         const std::vector<xqtref_t>& paramTypes,
-        const xqtref_t& returnType);
+        const xqtref_t& returnType,
+        bool isVariadic = false);
 
   store::Item* getName() const   { return theQName.getp(); }
 

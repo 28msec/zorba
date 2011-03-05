@@ -33,13 +33,6 @@ ENDIF(ZORBA_TEST_XQUERYX)
 LIST(REMOVE_ITEM TESTFILES
   zorba/HigherOrder/hof-101.xq)
 
-# Remove when bug #3200371 is fixed
-LIST(REMOVE_ITEM TESTFILES
-  zorba/reflection/reflection-invoke-01.xq
-  zorba/reflection/reflection-invoke-02.xq
-  zorba/reflection/reflection-invoke-90.xq
-  zorba/reflection/reflection-invoke-91.xq)
-
 IF(WIN32)
   # Remove when bug #3192723 is fixed
   LIST(REMOVE_ITEM TESTFILES

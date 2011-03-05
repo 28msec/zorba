@@ -1104,6 +1104,8 @@ public:
 
   bool has_nondeterministic() const;
 
+  bool has_annotation(const char* annotation) const;
+
   void accept(parsenode_visitor&) const;
 };
 
@@ -1187,6 +1189,8 @@ protected:
 
   void parse_annotations();
 
+  bool has_annotation(const char* annotation) const;
+
 public:
   FunctionDecl(
         const QueryLoc&,
@@ -1218,6 +1222,8 @@ public:
   bool is_deterministic() const { return theDeterministic; }
 
   bool is_private() const { return thePrivate; }
+
+  bool is_variadic() const;
 
   void accept(parsenode_visitor&) const;
 };
