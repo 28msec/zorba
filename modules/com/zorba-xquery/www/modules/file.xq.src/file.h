@@ -232,13 +232,13 @@ namespace zorba {
 
 //*****************************************************************************
 
-  class ReadFunction : public FileFunction
+  class ReadBinaryFunction : public FileFunction
   {
     public:
-      ReadFunction(const FileModule* aModule);
+      ReadBinaryFunction(const FileModule* aModule);
 
       virtual String
-      getLocalName() const { return "read"; }
+      getLocalName() const { return "read-binary"; }
   
       virtual ItemSequence_t 
       evaluate(const StatelessExternalFunction::Arguments_t& args,
@@ -248,23 +248,7 @@ namespace zorba {
 
 //*****************************************************************************
 
-  class ReadHtmlFunction : public FileFunction
-  {
-    public:
-      ReadHtmlFunction(const FileModule* aModule);
-
-      virtual String
-      getLocalName() const { return "read-html"; }
-  
-      virtual ItemSequence_t 
-      evaluate(const StatelessExternalFunction::Arguments_t& args,
-               const StaticContext* aSctxCtx,
-               const DynamicContext* aDynCtx) const;
-  };
-
-//*****************************************************************************
-
-  class ReadTextFunction : public FileFunction
+  class ReadTextFunction : public StreamableFileFunction
   {
     public:
       ReadTextFunction(const FileModule* aModule);

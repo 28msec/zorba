@@ -49,7 +49,7 @@ declare sequential function commons:testReadAndCompareXml($path as xs:string, $x
 };
 
 declare sequential function commons:testReadBinary($path as xs:string) as xs:base64Binary {
-  file:read($path)
+  file:read-binary($path)
 };
 
 declare sequential function commons:testDelete($path as xs:string, $recursive as xs:boolean) as xs:string* {

@@ -36,7 +36,7 @@ ERROR:
  :)
 declare function local:test-draw-polygon() as xs:boolean {
     let $draw := paint:paint($local:jpg, <image:polygon><point><x>10</x><y>10</y></point><point><x>40</x><y>80</y></point><point><x>50</x><y>30</y></point></image:polygon>)
-    let $draw-ref := file:read(concat($local:image-dir, "paint/polygon.jpg"))
+    let $draw-ref := file:read-binary(concat($local:image-dir, "paint/polygon.jpg"))
     return basic:equals($draw, $draw-ref)
 };
 
@@ -45,7 +45,7 @@ declare function local:test-draw-polygon() as xs:boolean {
  :)
 declare function local:test-draw-polygon-red() as xs:boolean {
     let $draw := paint:paint($local:jpg, <image:polygon><strokeColor>#FF0000</strokeColor><point><x>10</x><y>10</y></point><point><x>40</x><y>80</y></point><point><x>50</x><y>30</y></point></image:polygon>)
-    let $draw-ref := file:read(concat($local:image-dir, "paint/polygonRed.jpg"))
+    let $draw-ref := file:read-binary(concat($local:image-dir, "paint/polygonRed.jpg"))
     return basic:equals($draw, $draw-ref)
 };
 
@@ -54,7 +54,7 @@ declare function local:test-draw-polygon-red() as xs:boolean {
  :)
 declare function local:test-draw-polygon-red-green() as xs:boolean {
     let $draw := paint:paint($local:jpg, <image:polygon><strokeColor>#FF0000</strokeColor><fillColor>#00FF00</fillColor><point><x>10</x><y>10</y></point><point><x>40</x><y>80</y></point><point><x>50</x><y>30</y></point></image:polygon>)
-    let $draw-ref := file:read(concat($local:image-dir, "paint/polygonRedGreen.jpg"))
+    let $draw-ref := file:read-binary(concat($local:image-dir, "paint/polygonRedGreen.jpg"))
     return basic:equals($draw, $draw-ref)
 };
 
@@ -63,7 +63,7 @@ declare function local:test-draw-polygon-red-green() as xs:boolean {
  :)
 declare function local:test-draw-polygon-wide() as xs:boolean {
     let $draw := paint:paint($local:jpg, <image:polygon><strokeWidth>3</strokeWidth><strokeColor>#FF0000</strokeColor><fillColor>#00FF00</fillColor><point><x>10</x><y>10</y></point><point><x>40</x><y>80</y></point><point><x>50</x><y>30</y></point></image:polygon>)
-    let $draw-ref := file:read(concat($local:image-dir, "paint/polygonWide.jpg"))
+    let $draw-ref := file:read-binary(concat($local:image-dir, "paint/polygonWide.jpg"))
     return basic:equals($draw, $draw-ref)
 };
 
@@ -73,7 +73,7 @@ declare function local:test-draw-polygon-wide() as xs:boolean {
  :)
 declare function local:test-draw-polygon-anti-aliased() as xs:boolean {
     let $draw := paint:paint($local:jpg, <image:polygon><strokeWidth>3</strokeWidth><strokeColor>#FF0000</strokeColor><fillColor>#00FF00</fillColor><antiAliasing>true</antiAliasing><point><x>10</x><y>10</y></point><point><x>40</x><y>80</y></point><point><x>50</x><y>30</y></point></image:polygon>)
-    let $draw-ref := file:read(concat($local:image-dir, "paint/polygonAntiAliased.jpg"))
+    let $draw-ref := file:read-binary(concat($local:image-dir, "paint/polygonAntiAliased.jpg"))
     return basic:equals($draw, $draw-ref)
 };
 

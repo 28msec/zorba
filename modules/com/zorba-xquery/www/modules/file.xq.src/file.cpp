@@ -86,6 +86,96 @@ DeleteFunction::evaluate(
 
 //*****************************************************************************
 
+ReadBinaryFunction::ReadBinaryFunction(const FileModule* aModule)
+  : FileFunction(aModule)
+{
+}
+
+ItemSequence_t
+ReadBinaryFunction::evaluate(
+  const StatelessExternalFunction::Arguments_t& aArgs,
+  const StaticContext*                          aSctxCtx,
+  const DynamicContext*                         aDynCtx) const
+{
+  String lFileStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
+  File_t lFile = File::createFile(lFileStr.c_str());
+
+  std::ifstream lInStream;
+  lFile->openInputStream(lInStream, true);
+
+  std::stringstream lStrStream;
+  char lBuf[1024];
+  while (!lInStream.eof()) {
+    lInStream.read(lBuf, 1024);
+    lStrStream.write(lBuf, lInStream.gcount());
+  }  
+
+  String lContent(lStrStream.str());
+  String lEncodedContent = encoding::Base64::encode(lContent);
+  Item lItem = theModule->getItemFactory()->createBase64Binary(lEncodedContent.c_str(), lEncodedContent.bytes());
+
+  if (lItem.isNull()) {
+    throw ExternalFunctionData::createZorbaException(XPTY0004, "Error while building the base64binary item.", __FILE__, __LINE__);
+  }
+
+  return ItemSequence_t(new SingletonItemSequence(lItem));
+}
+
+//*****************************************************************************
+
+ReadTextFunction::ReadTextFunction(const FileModule* aModule)
+  : StreamableFileFunction(aModule)
+{
+}
+
+ItemSequence_t
+ReadTextFunction::evaluate(
+  const StatelessExternalFunction::Arguments_t& aArgs,
+  const StaticContext*                          aSctxCtx,
+  const DynamicContext*                         aDynCtx) const
+{
+  String lFileStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
+  File_t lFile = File::createFile(lFileStr.c_str());
+
+  std::auto_ptr<StreamableItemSequence> lSeq(new StreamableItemSequence);
+  lFile->openInputStream(lSeq->theStream);
+
+  lSeq->theItem = theModule->getItemFactory()->createStreamableString(lSeq->theStream);
+
+  return ItemSequence_t(lSeq.release());
+}
+
+//*****************************************************************************
+
+ReadXmlFunction::ReadXmlFunction(const FileModule* aModule)
+  : FileFunction(aModule)
+{
+}
+
+ItemSequence_t
+ReadXmlFunction::evaluate(
+  const StatelessExternalFunction::Arguments_t& aArgs,
+  const StaticContext*                          aSctxCtx,
+  const DynamicContext*                         aDynCtx) const
+{
+  String lFileStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
+  File_t lFile = File::createFile(lFileStr.c_str());
+
+  std::ifstream lInStream;
+  lFile->openInputStream(lInStream);
+
+  XmlDataManager* lDataManager = Zorba::getInstance(0)->getXmlDataManager();
+  Item lItem = lDataManager->parseDocument(lInStream);
+
+  return ItemSequence_t(new SingletonItemSequence(lItem));
+}
+
+//*****************************************************************************
+//*****************************************************************************
+// the functions above have been updated to the new file API spec
+//*****************************************************************************
+//*****************************************************************************
+
 CopyFunction::CopyFunction(const FileModule* aModule)
   : FileFunction(aModule)
 {
@@ -390,160 +480,6 @@ PathToUriFunction::evaluate(
   String lResult = FileFunction::pathToUriString(lPathStr);
 
   return ItemSequence_t(new SingletonItemSequence(theModule->getItemFactory()->createAnyURI(lResult)));
-}
-
-//*****************************************************************************
-
-ReadFunction::ReadFunction(const FileModule* aModule)
-  : FileFunction(aModule)
-{
-}
-
-ItemSequence_t
-ReadFunction::evaluate(
-  const StatelessExternalFunction::Arguments_t& aArgs,
-  const StaticContext*                          aSctxCtx,
-  const DynamicContext*                         aDynCtx) const
-{
-  String lFileStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
-  File_t lFile = File::createFile(lFileStr.c_str());
-
-  std::ifstream lInStream;
-  lFile->openInputStream(lInStream, true);
-
-  std::stringstream lStrStream;
-  char lBuf[1024];
-  while (!lInStream.eof()) {
-    lInStream.read(lBuf, 1024);
-    lStrStream.write(lBuf, lInStream.gcount());
-  }  
-
-  String lContent(lStrStream.str());
-  String lEncodedContent = encoding::Base64::encode(lContent);
-  Item lItem = theModule->getItemFactory()->createBase64Binary(lEncodedContent.c_str(), lEncodedContent.bytes());
-
-  if (lItem.isNull()) {
-    throw ExternalFunctionData::createZorbaException(XPTY0004, "Error while building the base64binaty item.", __FILE__, __LINE__);
-  }
-
-  return ItemSequence_t(new SingletonItemSequence(lItem));
-}
-
-//*****************************************************************************
-
-ReadHtmlFunction::ReadHtmlFunction(const FileModule* aModule)
-  : FileFunction(aModule)
-{
-}
-
-ItemSequence_t
-ReadHtmlFunction::evaluate(
-  const StatelessExternalFunction::Arguments_t& aArgs,
-  const StaticContext*                          aSctxCtx,
-  const DynamicContext*                         aDynCtx) const
-{
-  throw ExternalFunctionData::createZorbaException(XPTY0004,
-      "Function read-html not implemented.", __FILE__, __LINE__);
-}
-
-//*****************************************************************************
-
-//*****************************************************************************
-
-ReadTextFunction::ReadTextFunction(const FileModule* aModule)
-  : FileFunction(aModule)
-{
-}
-
-struct StreamableItemSequence : ItemSequence {
-
-  class InternalIterator : public Iterator
-  {
-  private:
-    StreamableItemSequence   *theItemSequence;
-    bool is_open;
-    bool has_next;
-  public:
-    InternalIterator(StreamableItemSequence *item_sequence) : theItemSequence(item_sequence), is_open(false), has_next(true)
-    {
-    }
-
-    virtual void open()
-    {
-      is_open = true;
-      has_next = true;
-    }
-    virtual void close()
-    {
-      is_open = false;
-    }
-    virtual bool isOpen() const
-    {
-      return is_open;
-    }
-    bool next( Item &result ) {
-      if(!is_open)
-      {
-        throw zorba::ExternalFunctionData::createZorbaException(XQP0019_INTERNAL_ERROR,
-          "StreamableItemSequence Iterator consumed without open", __FILE__, __LINE__);  
-      }
-      if ( has_next ) {
-        result = theItemSequence->item;
-        has_next = false;
-        return !result.isNull();
-      }
-      return false;
-    }
-  };
-  Item          item;
-  std::ifstream stream;
-
-  StreamableItemSequence() {}
-
-  Iterator_t  getIterator() {return new InternalIterator(this);}
-};
-
-ItemSequence_t
-ReadTextFunction::evaluate(
-  const StatelessExternalFunction::Arguments_t& aArgs,
-  const StaticContext*                          aSctxCtx,
-  const DynamicContext*                         aDynCtx) const
-{
-  String lFileStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
-  File_t lFile = File::createFile(lFileStr.c_str());
-
-  std::auto_ptr<StreamableItemSequence> seq( new StreamableItemSequence );
-  lFile->openInputStream( seq->stream );
-
-  seq->item =
-    theModule->getItemFactory()->createStreamableString( seq->stream );
-
-  return ItemSequence_t( seq.release() );
-}
-
-//*****************************************************************************
-
-ReadXmlFunction::ReadXmlFunction(const FileModule* aModule)
-  : FileFunction(aModule)
-{
-}
-
-ItemSequence_t
-ReadXmlFunction::evaluate(
-  const StatelessExternalFunction::Arguments_t& aArgs,
-  const StaticContext*                          aSctxCtx,
-  const DynamicContext*                         aDynCtx) const
-{
-  String lFileStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
-  File_t lFile = File::createFile(lFileStr.c_str());
-
-  std::ifstream lInStream;
-  lFile->openInputStream(lInStream);
-
-  XmlDataManager* lDataManager = Zorba::getInstance(0)->getXmlDataManager();
-  Item lItem = lDataManager->parseDocument(lInStream);
-
-  return ItemSequence_t(new SingletonItemSequence(lItem));
 }
 
 //*****************************************************************************

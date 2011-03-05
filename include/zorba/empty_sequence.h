@@ -82,6 +82,4 @@ namespace zorba {
 
 } // namespace zorba
 
-#endif
-
-
+#endif /* ZORBA_EMPTY_SEQUENCE_API_H */

@@ -11,7 +11,7 @@ import module namespace basic = 'http://www.zorba-xquery.com/modules/image/basic
 declare variable $local:image-dir := fn:concat(file:dirname(fn:static-base-uri()), "/images/");
 
 
-let $bird as xs:base64Binary := file:read(concat($local:image-dir, "/bird.jpg"))
+let $bird as xs:base64Binary := file:read-binary(concat($local:image-dir, "/bird.jpg"))
 (: double the image size by zooming :)
 let $sub-image := manipulation:sub-image($bird, xs:unsignedInt(10), xs:unsignedInt(10), xs:unsignedInt(40), xs:unsignedInt(40))
 return not(empty($sub-image))

@@ -17,8 +17,8 @@ declare sequential function fct:test-copy($rbktPath as xs:string, $file as xs:st
   file:copy($fileSrc, $fileDest);
 
   (: read both files back and compare :)
-  let $src := file:read($fileSrc)
-  let $dest := file:read($fileDest)
+  let $src := file:read-binary($fileSrc)
+  let $dest := file:read-binary($fileDest)
   return block {
     declare $result := $src eq $dest;
 

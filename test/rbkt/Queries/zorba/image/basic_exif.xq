@@ -7,7 +7,7 @@ import module namespace basic = 'http://www.zorba-xquery.com/modules/image/basic
 
 declare variable $local:image-dir := fn:concat(file:dirname(fn:static-base-uri()), "/images/");
 
-let $exif-image as xs:base64Binary := file:read(concat($local:image-dir, "/exif.jpg"))
+let $exif-image as xs:base64Binary := file:read-binary(concat($local:image-dir, "/exif.jpg"))
 return basic:exif($exif-image, "ExifImageWidth")
 
 

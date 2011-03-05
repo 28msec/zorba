@@ -12,7 +12,7 @@ import module namespace manipulation = 'http://www.zorba-xquery.com/modules/imag
 declare variable $local:image-dir := fn:concat(file:dirname(fn:static-base-uri()), "/images/");
 
 
-let $bird as xs:base64Binary := file:read(concat($local:image-dir, "/bird.jpg"))
+let $bird as xs:base64Binary := file:read-binary(concat($local:image-dir, "/bird.jpg"))
 let $edged-image := manipulation:edge($bird, xs:unsignedInt(0))
 return not(empty($edged-image))
 

@@ -11,7 +11,7 @@ import module namespace basic = 'http://www.zorba-xquery.com/modules/image/basic
 declare variable $local:image-dir := fn:concat(file:dirname(fn:static-base-uri()), "/images/");                    
 
                                                                                                                    
-let $bird as xs:base64Binary := file:read(concat($local:image-dir, "/bird.jpg"))
-let $bird-to-overlay as xs:base64Binary := file:read(concat($local:image-dir, "/subBird.jpg"))
+let $bird as xs:base64Binary := file:read-binary(concat($local:image-dir, "/bird.jpg"))
+let $bird-to-overlay as xs:base64Binary := file:read-binary(concat($local:image-dir, "/subBird.jpg"))
 let $overlayed-image := manipulation:overlay($bird, $bird-to-overlay, xs:unsignedInt(30), xs:unsignedInt(40), "OverCompositeOp")
 return not(empty($overlayed-image))

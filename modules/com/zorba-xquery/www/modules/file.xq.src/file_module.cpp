@@ -45,6 +45,12 @@ FileModule::getExternalFunction(const String& aLocalname)
       lFunc = new CreateDirectoryFunction(this);
     } else if (aLocalname.equals("delete")) {
       lFunc = new DeleteFunction(this);
+    } else if (aLocalname.equals("read-binary")) {
+      lFunc = new ReadBinaryFunction(this);
+    } else if (aLocalname.equals("read-text")) {
+      lFunc = new ReadTextFunction(this);
+    } else if (aLocalname.equals("read-xml")) {
+      lFunc = new ReadXmlFunction(this);
     // ****************************************************
     } else if (aLocalname.equals("copy")) {
       lFunc = new CopyFunction(this);
@@ -64,14 +70,6 @@ FileModule::getExternalFunction(const String& aLocalname)
       lFunc = new PathToFullPathFunction(this);
     } else if (aLocalname.equals("path-to-uri")) {
       lFunc = new PathToUriFunction(this);
-    } else if (aLocalname.equals("read")) {
-      lFunc = new ReadFunction(this);
-    } else if (aLocalname.equals("read-html")) {
-      lFunc = new ReadHtmlFunction(this);
-    } else if (aLocalname.equals("read-text")) {
-      lFunc = new ReadTextFunction(this);
-    } else if (aLocalname.equals("read-xml")) {
-      lFunc = new ReadXmlFunction(this);
     } else if (aLocalname.equals("write")) {
       lFunc = new WriteFunction(this);
     } else if (aLocalname.equals("normalize-path")) {

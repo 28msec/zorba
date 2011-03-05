@@ -53,7 +53,7 @@ static zorba::String getCurrentPath()
 namespace zorba { namespace filemodule {
 
 FileFunction::FileFunction(const FileModule* aModule)
-        : theModule(aModule)
+  : theModule(aModule)
 {
 }
 
@@ -191,5 +191,29 @@ FileFunction::isValidDriveSegment(
   return true;
 }
 #endif
+
+StreamableFileFunction::StreamableFileFunction(const FileModule* aModule)
+  : FileFunction(aModule)
+{
+}
+
+StreamableFileFunction::~StreamableFileFunction()
+{
+}
+
+bool
+StreamableFileFunction::StreamableItemSequence::InternalIterator::next(Item& aResult)
+{
+  if(!theIsOpen) {
+    throw zorba::ExternalFunctionData::createZorbaException(XQP0019_INTERNAL_ERROR, 
+      "StreamableItemSequence Iterator consumed without open", __FILE__, __LINE__);  
+  }
+  if (theHasNext) {
+    aResult = theItemSequence->theItem;
+    theHasNext = false;
+    return !aResult.isNull();
+  }
+  return false;
+}
 
 } /* namespace filemodule */ } /* namespace zorba */

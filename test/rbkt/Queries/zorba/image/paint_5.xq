@@ -39,7 +39,7 @@ ERROR:
  :)
 declare  function local:test-draw-circle() as xs:boolean {
     let $draw := paint:paint($local:jpg, <image:circle><origin><x>20</x><y>20</y></origin><perimeter>5</perimeter></image:circle>)
-    let $draw-ref := file:read(concat($local:image-dir, "paint/circle.jpg"))
+    let $draw-ref := file:read-binary(concat($local:image-dir, "paint/circle.jpg"))
     return basic:equals($draw, $draw-ref)
 };
 
@@ -49,7 +49,7 @@ declare  function local:test-draw-circle() as xs:boolean {
  :)
 declare  function local:test-draw-ellipse() as xs:boolean {
     let $draw := paint:paint($local:jpg, <image:ellipse><origin><x>50</x><y>50</y></origin><perimeterX>30</perimeterX><perimeterY>20</perimeterY></image:ellipse>)
-    let $draw-ref := file:read(concat($local:image-dir, "paint/ellipse.jpg"))
+    let $draw-ref := file:read-binary(concat($local:image-dir, "paint/ellipse.jpg"))
     return basic:equals($draw, $draw-ref)
 };
 
@@ -58,7 +58,7 @@ declare  function local:test-draw-ellipse() as xs:boolean {
  :)
 declare  function local:test-draw-arc() as xs:boolean {
     let $draw := paint:paint($local:jpg, <image:arc><origin><x>50</x><y>50</y></origin><perimeterX>10</perimeterX><perimeterY>20</perimeterY><startDegrees>180</startDegrees><endDegrees>270</endDegrees></image:arc>)
-    let $draw-ref := file:read(concat($local:image-dir, "paint/arc.jpg"))
+    let $draw-ref := file:read-binary(concat($local:image-dir, "paint/arc.jpg"))
     return basic:equals($draw, $draw-ref)
 };
 
@@ -67,7 +67,7 @@ declare  function local:test-draw-arc() as xs:boolean {
  :)
 declare  function local:test-draw-red-arc() as xs:boolean {
     let $draw := paint:paint($local:jpg, <image:arc><strokeColor>#FF0000</strokeColor><origin><x>50</x><y>50</y></origin><perimeterX>10</perimeterX><perimeterY>20</perimeterY><startDegrees>180</startDegrees><endDegrees>270</endDegrees></image:arc>)
-    let $draw-ref := file:read(concat($local:image-dir, "paint/arcRed.jpg"))
+    let $draw-ref := file:read-binary(concat($local:image-dir, "paint/arcRed.jpg"))
     return basic:equals($draw, $draw-ref)
 };
 
@@ -76,7 +76,7 @@ declare  function local:test-draw-red-arc() as xs:boolean {
  :)
 declare  function local:test-draw-red-green-arc() as xs:boolean {
     let $draw := paint:paint($local:jpg, <image:arc><strokeColor>#FF0000</strokeColor><fillColor>#00AF00</fillColor><origin><x>50</x><y>50</y></origin><perimeterX>10</perimeterX><perimeterY>20</perimeterY><startDegrees>180</startDegrees><endDegrees>270</endDegrees></image:arc>)
-    let $draw-ref := file:read(concat($local:image-dir, "paint/arcRedGreen.jpg"))
+    let $draw-ref := file:read-binary(concat($local:image-dir, "paint/arcRedGreen.jpg"))
     return basic:equals($draw, $draw-ref)
 };
 
@@ -85,7 +85,7 @@ declare  function local:test-draw-red-green-arc() as xs:boolean {
  :)
 declare  function local:test-draw-wide-arc() as xs:boolean {
     let $draw := paint:paint($local:jpg, <image:arc><strokeWidth>5</strokeWidth><strokeColor>#FF0000</strokeColor><fillColor>#00AF00</fillColor><origin><x>50</x><y>50</y></origin><perimeterX>10</perimeterX><perimeterY>20</perimeterY><startDegrees>180</startDegrees><endDegrees>270</endDegrees></image:arc>)
-    let $draw-ref := file:read(concat($local:image-dir, "paint/arcWide.jpg"))
+    let $draw-ref := file:read-binary(concat($local:image-dir, "paint/arcWide.jpg"))
     return basic:equals($draw, $draw-ref)
 };
 
@@ -96,7 +96,7 @@ declare  function local:test-draw-wide-arc() as xs:boolean {
  :)
 declare  function local:test-draw-anti-aliased-arc() as xs:boolean {
     let $draw := paint:paint($local:jpg, <image:arc><strokeWidth>5</strokeWidth><strokeColor>#FF0000</strokeColor><fillColor>#00AF00</fillColor><antiAliasing>true</antiAliasing><origin><x>50</x><y>50</y></origin><perimeterX>10</perimeterX><perimeterY>20</perimeterY><startDegrees>180</startDegrees><endDegrees>270</endDegrees></image:arc>)
-    let $draw-ref := file:read(concat($local:image-dir, "paint/arcAntiAliased.jpg"))
+    let $draw-ref := file:read-binary(concat($local:image-dir, "paint/arcAntiAliased.jpg"))
     return basic:equals($draw, $draw-ref)
 };
 

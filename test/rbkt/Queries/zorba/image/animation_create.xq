@@ -9,8 +9,8 @@ import module namespace animation = 'http://www.zorba-xquery.com/modules/image/a
 
 declare variable $local:image-dir := fn:concat(file:dirname(fn:static-base-uri()), "/images/");
 
-let $gif1 := file:read(concat($local:image-dir, "bird.gif"))
-let $gif2 := file:read(concat($local:image-dir, "bird2.gif"))
+let $gif1 := file:read-binary(concat($local:image-dir, "bird.gif"))
+let $gif2 := file:read-binary(concat($local:image-dir, "bird2.gif"))
 let $animatedGif := animation:create-animated-gif(($gif1, $gif2), xs:unsignedInt(10), xs:unsignedInt(0))
 return not(empty($animatedGif))
 

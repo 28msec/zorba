@@ -58,8 +58,8 @@
  :        </li>
  :      </ul>
  :    </p>
- : @author Gabriel Petrovay, Matthias Brantner, Markus Pilman
  :
+ : @author Gabriel Petrovay, Matthias Brantner, Markus Pilman
  :)
 module namespace file = "http://www.zorba-xquery.com/modules/file";
 
@@ -155,34 +155,59 @@ declare sequential function file:delete(
   file:delete($fileOrDir);
 };
 
+(:~
+ : Reads the content of a file and returns a Base64 representation of the
+ : content.
+ :
+ : @param $file The file to read.
+ : @return The content of the file as Base64.
+ :)
+declare %nondeterministic function file:read-binary(
+  $file as xs:string
+) as xs:base64Binary external;
 
 (:~
- : Deletes a file or a directory from the file system. If $fileOrDir denotes a
- : directory and $recursive evaluates to <pre>fn:true()</pre>, the directory
- : will be deleted recursively.
+ : Reads the content of a file and returns a sequence of strings representing
+ : the lines in the content of the file.
  :
- : @param $fileOrDir The path/URI of the file or directory to delete.
- : @param $recursive If the operation should recursively delete the given
- :	  directory.
- : @return The empty sequence.
+ : The default implementation considers the LF (&#xA;) character as the line
+ : separator. If a resulting line ends with the CR (&#xD;) character, this is
+ : trimmed as well. This implementation will treat uniformly LF and CRLF as
+ : line separators.
+ :
+ : @param $file The file to read.
+ : @return The content of the file as a sequence of strings.
  :)
-declare sequential function file:delete-rec-simple(
-  $fileOrDir as xs:string,
-  $recursive as xs:boolean
-) as empty-sequence()
+declare sequential function file:read-text-lines(
+  $file as xs:string
+) as xs:string*
 {
-  if (fn:not($recursive) or fn:not(file:exists($fileOrDir)) or fn:not(file:is-directory($fileOrDir))) then
-    file:delete($fileOrDir)
-  else
-    for $item in file:files($fileOrDir)
-    let $fullPath := fn:concat($fileOrDir, file:path-separator(), $item)
-	return
-	  if (file:is-directory($fullPath)) then
-	    file:delete-rec-simple($fullPath, fn:true())
-	  else
-      file:delete($fileOrDir)
+  let $content := file:read-text($file)
+  return fn:tokenize($content, "\n")
 };
 
+(:~
+ : Reads the content of a file and returns a string representation of the
+ : content.
+ :
+ : @param $file The file to read.
+ : @return The content of the file as string.
+ :)
+declare %nondeterministic function file:read-text(
+  $file as xs:string
+) as xs:string external;
+
+(:~
+ : Reads a file as an XML file and returns an XML document. The file content
+ : must be a valid XML otherwise an error will be thrown.
+ :
+ : @param $file The file to read.
+ : @return An XML document containing the content of the file.
+ : @example rbkt/Queries/zorba/file/validate.xq
+ :)
+declare sequential function file:read-xml(
+  $file as xs:string
+) as node() external;
 
 (: ********************************************************************** :)
 
@@ -369,61 +394,6 @@ declare function file:path-to-full-path(
 declare function file:path-to-uri(
   $path as xs:string
 ) as xs:anyURI external;
-
-(:~
- : Reads the content of a file and returns a Base64 representation of the
- : content.
- :
- : @param $file The file to read.
- : @return The content of the file as Base64.
- : @error An error is thrown if IO or Security problems occur.
- :)
-declare %nondeterministic function file:read(
-  $file as xs:string
-) as xs:base64Binary external;
-
-(:~
- : NOT IMPLEMENTED YET!
- : This function reads the content of an HTML file, uses the Tidy library to
- : clean the HTML content and obtain a valid XML document.
- :
- : @param 
- : @param 
- : @return An XML document containing the tidy-ed HTML from $file
- : @error The function returns an error if it cannot build a valid XML document
- :        after trying to "tidy" the file content. An error is also thrown if
- :        IO or Security problems occur.
- :)
-declare sequential function file:read-html(
-  $file as xs:string,
-  $tidyOptions as xs:string
-) as xs:string external;
-
-(:~
- : Reads the content of a file and returns a string representation of the
- : content.
- :
- : @param $file The file to read.
- : @return The content of the file as string.
- : @error An error is thrown if IO or Security problems occur.
- :)
-declare %nondeterministic function file:read-text(
-  $file as xs:string
-) as xs:string external;
-
-(:~
- : Reads a file as an XML file and returns an XML document. The file content
- : must be a valid XML otherwise an error will be thrown.
- :
- : @param $file The file path/URI to be read.
- : @return An XML document containing the content of the file.
- : @error An error is thrown if the does not contain a valid XML, or if IO or
- :        Security problems occur.
- : @example rbkt/Queries/zorba/file/validate.xq
- :)
-declare sequential function file:read-xml(
-  $file as xs:string
-) as node() external;
 
 (:~
  : Write a sequence of items to a file. This operation creates a new file

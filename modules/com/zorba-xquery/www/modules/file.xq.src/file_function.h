@@ -19,6 +19,8 @@
 
 #include <zorba/external_function.h>
 
+#include <fstream>
+
 namespace zorba { namespace filemodule {
 
   class FileModule;
@@ -76,6 +78,57 @@ namespace zorba { namespace filemodule {
       virtual String
       getURI() const;
 
+  };
+
+  class StreamableFileFunction : public FileFunction
+  {
+    protected:
+      struct StreamableItemSequence : ItemSequence {
+
+        class InternalIterator : public Iterator
+        {
+          private:
+            StreamableItemSequence *theItemSequence;
+            bool theIsOpen;
+            bool theHasNext;
+
+          public:
+            InternalIterator(StreamableItemSequence* aItemSequence)
+              : theItemSequence(aItemSequence),
+                theIsOpen(false),
+                theHasNext(true)
+            { }
+
+            virtual void open()
+            {
+              theIsOpen = true;
+              theHasNext = true;
+            }
+            virtual void close()
+            {
+              theIsOpen = false;
+            }
+            virtual bool isOpen() const
+            {
+              return theIsOpen;
+            }
+            bool next(Item& aResult);
+        };
+
+        Item          theItem;
+        std::ifstream theStream;
+
+        StreamableItemSequence() {}
+
+        Iterator_t  getIterator()
+        {
+          return new InternalIterator(this);
+        }
+};
+
+    public:
+      StreamableFileFunction(const FileModule* module);
+      ~StreamableFileFunction();
   };
 
 } /* namespace filemodule */

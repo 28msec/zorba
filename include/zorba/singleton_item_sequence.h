@@ -23,9 +23,11 @@
 
 namespace zorba { 
 
-  /** \brief This class is an implementation of the ItemSequence.
-   *         Objects of this class return, on the first next call, the
-   *         Item that is passed to this object.
+  /** \brief A sequence that contains only one item.
+   *
+   * This class is an implementation of the ItemSequence. Objects of this class
+   * are backed by an iterator that returns on the first next call, the Item
+   * that is passed to this class' constructor.
    *
    * See ItemSequence
    */
@@ -87,6 +89,5 @@ namespace zorba {
   }; /* class SingletonItemSequence */
 
 } // namespace zorba
-#endif
 
-
+#endif /* ZORBA_SINGLETON_ITEM_SEQUENCE_API_H */

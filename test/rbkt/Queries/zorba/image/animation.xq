@@ -32,10 +32,10 @@ ERROR:
  : @return true if the ani:create-animated-gif function works.
  :)
 declare function local:test-create-animated-gif() as xs:boolean {
-    let $gif1 := file:read(concat($local:image-dir, "bird.gif"))
-    let $gif2 := file:read(concat($local:image-dir, "bird2.gif"))
+    let $gif1 := file:read-binary(concat($local:image-dir, "bird.gif"))
+    let $gif2 := file:read-binary(concat($local:image-dir, "bird2.gif"))
     let $animatedGif := ani:create-animated-gif(($gif1, $gif2), xs:unsignedInt(10), xs:unsignedInt(0))
-    let $animatedRef := file:read(concat($local:image-dir, "animation/simple.gif"))
+    let $animatedRef := file:read-binary(concat($local:image-dir, "animation/simple.gif"))
     return basic:equals($animatedGif, $animatedRef)
 };
 
@@ -43,10 +43,10 @@ declare function local:test-create-animated-gif() as xs:boolean {
  : @return true if the ani:create-morphed-gif function works.
  :)
 declare function local:test-create-morphed-gif() as xs:boolean {
-    let $gif1 := file:read(concat($local:image-dir, "bird.gif"))
-    let $gif2 := file:read(concat($local:image-dir, "bird2.gif"))
+    let $gif1 := file:read-binary(concat($local:image-dir, "bird.gif"))
+    let $gif2 := file:read-binary(concat($local:image-dir, "bird2.gif"))
     let $animatedGif := ani:create-morphed-gif(($gif1, $gif2), xs:unsignedInt(10), xs:unsignedInt(0), xs:unsignedInt(2  ))
-    let $animatedRef := file:read(concat($local:image-dir, "animation/morph.gif"))
+    let $animatedRef := file:read-binary(concat($local:image-dir, "animation/morph.gif"))
     return basic:equals($animatedGif, $animatedRef)
 };
 
