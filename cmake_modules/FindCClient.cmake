@@ -11,8 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+# - Find the C-CLIENT library that is part of the UW IMAP toolkit
 #
-# Finds the C-CLIENT library that is part of the UW IMAP toolkit
+# Once done this will define
 #
 #  CCLIENT_FOUND        - True if C-CLIENT library found.
 #  CCLIENT_INCLUDE      - Directory to include to get C-CLIENT headers

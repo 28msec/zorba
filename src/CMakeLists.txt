@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-INCLUDE(${CMAKE_MODULE_PATH}/AddSrcSubfolder.cmake)
+INCLUDE(AddSrcSubfolder)
 
 INCLUDE_DIRECTORIES(BEFORE ${CMAKE_CURRENT_SOURCE_DIR})
 # the current binary dir must be before the current source dir in the list of included directories.

@@ -11,8 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
-# Try to find the HTML Tidy lib
+
+# - Try to find the HTML Tidy lib
 #
 #  LIBTIDY_FOUND        - true if LIBTIDY was found
 #  LIBTIDY_INCLUDE_DIRS - Directory to include to get LIBTIDY headers

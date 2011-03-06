@@ -11,18 +11,18 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
+
 # - Try to find Xerces-C
-# Once done this will define
 #
+# Once done this will define:
 #  XERCESC_FOUND - system has Xerces-C
 #  XERCESC_INCLUDE - the Xerces-C include directory
 #  XERCESC_LIBRARY - Link these to use Xerces-C
 #  XERCESC_VERSION - Xerces-C found version
 
 IF (XERCESC_INCLUDE AND XERCESC_LIBRARY)
-   # in cache already
-   SET(XERCESC_FIND_QUIETLY TRUE)
+  # in cache already
+  SET(XERCESC_FIND_QUIETLY TRUE)
 ENDIF (XERCESC_INCLUDE AND XERCESC_LIBRARY)
 
 FIND_PATH(

@@ -40,7 +40,7 @@ SET (TESTDRIVER_SRCS
   )
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
-INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaGenerateStoreSpecificExes.cmake)
+INCLUDE(ZorbaGenerateStoreSpecificExes)
 ZORBA_GENERATE_STORE_SPECIFIC_EXES("testdriver" "${TESTDRIVER_SRCS}" "" ""
   "bin")
 
@@ -50,7 +50,6 @@ ZORBA_GENERATE_STORE_SPECIFIC_EXES("testdriver" "${TESTDRIVER_SRCS}" "" ""
 # available
 #
 
-INCLUDE(${CMAKE_MODULE_PATH}/FindBoost.cmake)
 FIND_PACKAGE(Boost COMPONENTS filesystem)
 IF (NOT Boost_FILESYSTEM_FOUND)
   MESSAGE(STATUS "Boost filesystem or system component not found - not building multithreaded test driver")

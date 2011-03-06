@@ -186,6 +186,17 @@ declare sequential function file:read-text-lines(
   return fn:tokenize($content, "\n")
 };
 
+(:
+declare sequential function file:read-text-lines(
+  $file as xs:string,
+  $encoding as xs:string
+) as xs:string*
+{
+  let $content := file:read-text($file, $encoding)
+  return fn:tokenize($content, "\n")
+};
+:)
+
 (:~
  : Reads the content of a file and returns a string representation of the
  : content.
@@ -196,6 +207,13 @@ declare sequential function file:read-text-lines(
 declare %nondeterministic function file:read-text(
   $file as xs:string
 ) as xs:string external;
+
+(:
+declare %nondeterministic function file:read-text(
+  $file as xs:string,
+  $encoding as xs:string
+) as xs:string external;
+:)
 
 (:~
  : Reads a file as an XML file and returns an XML document. The file content
@@ -208,6 +226,13 @@ declare %nondeterministic function file:read-text(
 declare sequential function file:read-xml(
   $file as xs:string
 ) as node() external;
+
+(:
+declare sequential function file:read-xml(
+  $file as xs:string,
+  $encoding as xs:string
+) as xs:string external;
+:)
 
 (: ********************************************************************** :)
 

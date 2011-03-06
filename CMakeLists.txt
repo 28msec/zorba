@@ -28,34 +28,59 @@ SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/CMakeCompareVersionStrings.cmake)
 
 cmake_minimum_required(VERSION 2.4)
-IF (CMAKE_VERSION STREQUAL "2.6.3")
+IF(CMAKE_VERSION STREQUAL "2.6.3")
   MESSAGE(FATAL_ERROR "You are running a buggy CMake version (2.6.3). Please install a different CMake version and execute CMake again.")
-ENDIF (CMAKE_VERSION STREQUAL "2.6.3")
+ENDIF(CMAKE_VERSION STREQUAL "2.6.3")
 IF(COMMAND cmake_policy)
   cmake_policy(SET CMP0003 NEW)
   cmake_policy(SET CMP0002 OLD)
 ENDIF(COMMAND cmake_policy)
 
 IF("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
-    SET(LINUX "${CMAKE_SYSTEM}")
+  SET(LINUX "${CMAKE_SYSTEM}")
 ENDIF("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
 
 # custom ctest options
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/CTestCustom.cmake ${CMAKE_CURRENT_BINARY_DIR}/CTestCustom.cmake)
 
 # prohibit in-source-builds
-IF (${CMAKE_BINARY_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
-    MESSAGE(STATUS "In-source-builds are not allowed")
-    MESSAGE(STATUS "Clean your source directory (e.g. delete the CMakeCache.txt file)")
-    MESSAGE(FATAL_ERROR "Please create a separate build directory and call CMake again")
-ENDIF (${CMAKE_BINARY_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
+IF(${CMAKE_BINARY_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
+  MESSAGE(STATUS "In-source-builds are not allowed")
+  MESSAGE(STATUS "Clean your source directory (e.g. delete the CMakeCache.txt file)")
+  MESSAGE(FATAL_ERROR "Please create a separate build directory and call CMake again")
+ENDIF(${CMAKE_BINARY_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
 
 # set the default build type to release
+# NOTE: the "NMake Makefiles" generator will always set the default build type to "Debug"
 IF(NOT CMAKE_BUILD_TYPE)
   SET(CMAKE_BUILD_TYPE Release CACHE STRING
       "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel."
       FORCE)
 ENDIF(NOT CMAKE_BUILD_TYPE)
+
+# this is needed for the next step: we clear the default value of CMAKE_INSTALL_DIR
+# this happens only with the NMake generator
+# this happens only with the NMake generator
+IF(CMAKE_GENERATOR STREQUAL "NMake Makefiles")
+  FILE(TO_CMAKE_PATH $ENV{ProgramFiles} PROGRAM_FILES)
+  IF(CMAKE_INSTALL_PREFIX STREQUAL "${PROGRAM_FILES}/${CMAKE_PROJECT_NAME}")
+    MESSAGE(STATUS "Clearing the default CMAKE_INSTALL_PREFIX for generator: ${CMAKE_GENERATOR}")
+    SET(CMAKE_INSTALL_PREFIX "" CACHE STRING
+      "Set the defalt installation directory to \"dist\" in the binary directory." FORCE)
+  ENDIF(CMAKE_INSTALL_PREFIX STREQUAL "${PROGRAM_FILES}/${CMAKE_PROJECT_NAME}")
+ELSEIF(CMAKE_GENERATOR STREQUAL "Unix Makefiles")
+  IF(CMAKE_INSTALL_PREFIX STREQUAL "/usr/local")
+    MESSAGE(STATUS "Clearing the default CMAKE_INSTALL_PREFIX for generator: ${CMAKE_GENERATOR}")
+    SET(CMAKE_INSTALL_PREFIX "" CACHE STRING
+      "Set the defalt installation directory to \"dist\" in the binary directory." FORCE)
+  ENDIF(CMAKE_INSTALL_PREFIX STREQUAL "/usr/local")
+ENDIF(CMAKE_GENERATOR STREQUAL "NMake Makefiles")
+
+# set the default installation directory to "dist" in the build directory
+IF(NOT CMAKE_INSTALL_PREFIX)
+  SET(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/dist CACHE STRING
+      "Set the defalt installation directory to \"dist\" in the binary directory." FORCE)
+ENDIF(NOT CMAKE_INSTALL_PREFIX)
 
 
 ###############################################################################
@@ -80,14 +105,14 @@ CHECK_INCLUDE_FILES ("limits.h"                     ZORBA_HAVE_LIMITS_H)
 CHECK_INCLUDE_FILES ("sys/types.h"                  ZORBA_HAVE_SYS_TYPES_H)
 CHECK_INCLUDE_FILES ("iconv.h"                      ZORBA_HAVE_ICONV_H)
 IF (NOT APPLE)
-  # execinfo is found by this macro when cross compiling for Mac OS X 10.4. although it shouldn't be found for this platform
+  # execinfo is found by this macro when cross compiling for Mac OS X 10.4
+  # although it shouldn't be found for this platform
   CHECK_INCLUDE_FILES ("execinfo.h"                   ZORBA_HAVE_EXECINFO_H)
 ENDIF (NOT APPLE)
 CHECK_INCLUDE_FILE_CXX ("FlexLexer.h"               ZORBA_HAVE_FLEXLEXER_H)
 
 CHECK_FUNCTION_EXISTS (strtof                     ZORBA_HAVE_STRTOF_FUNCTION)
 CHECK_FUNCTION_EXISTS (_stricmp                   ZORBA_HAVE_STRICMP_FUNCTION)
-#   CHECK_FUNCTION_EXISTS (strcasecmp                 ZORBA_HAVE_STRCASECMP_FUNCTION)
 CHECK_FUNCTION_EXISTS (strcat_s                   ZORBA_HAVE_STRCAT_S_FUNCTION)
 CHECK_FUNCTION_EXISTS (strcpy_s                   ZORBA_HAVE_STRCPY_S_FUNCTION)
 
@@ -111,6 +136,14 @@ CHECK_TYPE_SIZE("int64_t" ZORBA_HAVE_INT64_T)
 # Various cmake macros
 
 SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules)
+IF(WIN32)
+  # On Windows we use proxy modules that try to guess first the location
+  # of the required third party libraries. This will first search in the path
+  # pointed by ZORBA_THIRD_PARTY_REQUIREMENTS and then in the Program Files
+  # directory available on the users computer.
+  SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules/Windows ${CMAKE_MODULE_PATH})
+  INCLUDE(ProxyFindModule)
+ENDIF(WIN32)
 
 # Include this now (very early) to ensure the "expected_failure()" function
 # is available to anyone who might add tests.
@@ -119,102 +152,97 @@ INCLUDE(ExpectedFailure)
 ################################################################################
 #                                                                              #
 # Search for all the external libraries that any library or executable under   #
-#  this CMake depends on.                                                      #
+# this CMake depends on.                                                       #
 #                                                                              #
 ################################################################################
 
-FOREACH (path "${CMAKE_PREFIX_PATH}")
-  IF (EXISTS "${path}")
+FOREACH(path "${CMAKE_PREFIX_PATH}")
+  IF(EXISTS "${path}")
     MESSAGE("path entry: ${path}")
-  ELSE (EXISTS "${path}")
+  ELSE(EXISTS "${path}")
     # Ignore non-existing paths
-    #   MESSAGE("Non-existing path!: ${path}")
-  ENDIF (EXISTS "${path}")
-ENDFOREACH (path)
+    #MESSAGE("Non-existing path!: ${path}")
+  ENDIF(EXISTS "${path}")
+ENDFOREACH(path)
 
 SET(requiredlibs)
 SET(requiredlibs-store)
 
 # Check for POSIX high-resolution timers - might be in "rt" library
-CHECK_LIBRARY_EXISTS (rt clock_gettime ""  _clock_gettime_in_rt)
-IF (_clock_gettime_in_rt)
+CHECK_LIBRARY_EXISTS(rt clock_gettime ""  _clock_gettime_in_rt)
+IF(_clock_gettime_in_rt)
   SET(requiredlibs ${requiredlibs} rt)
   SET(ZORBA_HAVE_CLOCKGETTIME_FUNCTION YES CACHE BOOL "Platform has clock_gettime (in librt)")
-ELSE (_clock_gettime_in_rt)
-  CHECK_FUNCTION_EXISTS (clock_gettime   ZORBA_HAVE_CLOCKGETTIME_FUNCTION)
-ENDIF (_clock_gettime_in_rt)
+ELSE(_clock_gettime_in_rt)
+  CHECK_FUNCTION_EXISTS(clock_gettime   ZORBA_HAVE_CLOCKGETTIME_FUNCTION)
+ENDIF(_clock_gettime_in_rt)
 
 #
 # TcMalloc support
 #
-IF (ZORBA_USE_TCMALLOC)
-    MESSAGE (STATUS "Looking for TcMalloc")
+IF(ZORBA_USE_TCMALLOC)
+  MESSAGE (STATUS "Looking for TcMalloc")
 
-    FIND_PACKAGE(TcMalloc)
-    IF (Tcmalloc_FOUND)
-        SET(requiredlibs ${requiredlibs} ${Tcmalloc_LIBRARIES})
-    ELSE (Tcmalloc_FOUND)
-        MESSAGE (FATAL_ERROR "TcMalloc not found")
-    ENDIF (Tcmalloc_FOUND)
-
-ENDIF (ZORBA_USE_TCMALLOC)
+  FIND_PACKAGE(TcMalloc)
+  IF(Tcmalloc_FOUND)
+    SET(requiredlibs ${requiredlibs} ${Tcmalloc_LIBRARIES})
+  ELSE(Tcmalloc_FOUND)
+    MESSAGE(FATAL_ERROR "TcMalloc not found")
+  ENDIF(Tcmalloc_FOUND)
+ENDIF(ZORBA_USE_TCMALLOC)
 
 #
 # GooglePerfTools support
 #
-IF (ZORBA_WITH_CPU_PROFILE)
-    MESSAGE (STATUS "Looking for GooglePerfTools")
+IF(ZORBA_WITH_CPU_PROFILE)
+  MESSAGE(STATUS "Looking for GooglePerfTools")
 
-    FIND_PACKAGE(GooglePerfTools)
-    IF (GooglePerfTools_FOUND)
-        SET(requiredlibs ${requiredlibs} ${GooglePerfTools_LIBRARIES})
-    ELSE (GooglePerfTools_FOUND)
-        MESSAGE(FATAL_ERROR "GooglePerfTools not found. Cannot build with CPU
-        profiling")
-    ENDIF (GooglePerfTools_FOUND)
-ENDIF (ZORBA_WITH_CPU_PROFILE)
-
+  FIND_PACKAGE(GooglePerfTools)
+  IF(GooglePerfTools_FOUND)
+    SET(requiredlibs ${requiredlibs} ${GooglePerfTools_LIBRARIES})
+  ELSE(GooglePerfTools_FOUND)
+    MESSAGE(FATAL_ERROR "GooglePerfTools not found. Cannot build with CPU profiling")
+  ENDIF(GooglePerfTools_FOUND)
+ENDIF(ZORBA_WITH_CPU_PROFILE)
 
 #
 #  LibXml2
 #
+MESSAGE(STATUS "Looking for LibXml2")
 FIND_PACKAGE(LibXml2)
 IF(LIBXML2_FOUND)
-
-    MESSAGE(STATUS "Found  LIBXML2 library -- " ${LIBXML2_LIBRARIES})
-    INCLUDE_DIRECTORIES(${LIBXML2_INCLUDE_DIR})
-
-    SET(requiredlibs-store ${requiredlibs-store} ${LIBXML2_LIBRARIES})
-    SET(CXXFLAGS ${CXXFLAGS} ${LIBXML2_DEFINITONS})
-
+  MESSAGE(STATUS "Found LIBXML2 library -- " ${LIBXML2_LIBRARIES})
+    
+  INCLUDE_DIRECTORIES(${LIBXML2_INCLUDE_DIR})
+  SET(requiredlibs-store ${requiredlibs-store} ${LIBXML2_LIBRARIES})
+  SET(CXXFLAGS ${CXXFLAGS} ${LIBXML2_DEFINITONS})
 ELSE(LIBXML2_FOUND)
-    MESSAGE(FATAL_ERROR "The libxml2 library and headers are required in order to build simple store.")
+  MESSAGE(FATAL_ERROR "The libxml2 library and headers are required in order to build simple store.")
 ENDIF(LIBXML2_FOUND)
 
 #
 #  LibXslt
 #
 IF(ZORBA_XQUERYX)
-FIND_PACKAGE(LibXslt)
-IF(LIBXSLT_FOUND)
+  MESSAGE(STATUS "Looking for LibXslt")
+  FIND_PACKAGE(LibXslt)
+  IF(LIBXSLT_FOUND)
+    MESSAGE(STATUS "Found LIBXSLT library -- " ${LIBXSLT_LIBRARIES})
 
-    MESSAGE(STATUS "Found  LIBXSLT library -- " ${LIBXSLT_LIBRARIES})
     INCLUDE_DIRECTORIES(${LIBXSLT_INCLUDE_DIR})
-
     SET(requiredlibs ${requiredlibs} ${LIBXSLT_LIBRARIES})
     SET(CXXFLAGS ${CXXFLAGS} ${LIBXSLT_DEFINITONS})
-
-ELSE(LIBXSLT_FOUND)
+  ELSE(LIBXSLT_FOUND)
     MESSAGE(FATAL_ERROR "The libxslt library is required in order to build zorba with xqueryx capabilities.")
-ENDIF(LIBXSLT_FOUND)
+  ENDIF(LIBXSLT_FOUND)
 ENDIF(ZORBA_XQUERYX)
 
 #
 # Pthreads
 #
-IF (ZORBA_HAVE_PTHREAD_H AND NOT ZORBA_FOR_ONE_THREAD_ONLY)
+IF(ZORBA_HAVE_PTHREAD_H AND NOT ZORBA_FOR_ONE_THREAD_ONLY)
   SET(requiredlibs ${requiredlibs} pthread)
-ENDIF (ZORBA_HAVE_PTHREAD_H AND NOT ZORBA_FOR_ONE_THREAD_ONLY)
+ENDIF(ZORBA_HAVE_PTHREAD_H AND NOT ZORBA_FOR_ONE_THREAD_ONLY)
 
 #
 # cURL
@@ -222,6 +250,7 @@ ENDIF (ZORBA_HAVE_PTHREAD_H AND NOT ZORBA_FOR_ONE_THREAD_ONLY)
 IF(ZORBA_SUPPRESS_CURL)
   MESSAGE(STATUS "ZORBA_SUPPRESS_CURL is true - not searching for cURL library")
 ELSE(ZORBA_SUPPRESS_CURL)
+  MESSAGE(STATUS "Looking for cURL")
   FIND_PACKAGE(CURL)
 
   IF(CURL_FOUND)
@@ -229,10 +258,8 @@ ELSE(ZORBA_SUPPRESS_CURL)
     INCLUDE_DIRECTORIES(${CURL_INCLUDE_DIR})
 
     SET(CMAKE_REQUIRED_INCLUDES ${CMAKE_REQUIRED_INCLUDES} ${CURL_INCLUDE_DIR})
-
     SET(requiredlibs ${requiredlibs} ${CURL_LIBRARIES})
     SET(ZORBA_WITH_REST ON)
-
   ELSE(CURL_FOUND)
     MESSAGE(STATUS "The cURL library was not found.")
   ENDIF(CURL_FOUND)
@@ -241,41 +268,39 @@ ENDIF(ZORBA_SUPPRESS_CURL)
 #
 # Iconv
 #
-IF (WIN32)
-    #INCLUDE(${CMAKE_MODULE_PATH}/FindIconv.cmake)
-    FIND_PACKAGE(Iconv REQUIRED)
+IF(WIN32)
+  MESSAGE(STATUS "Looking for Iconv")
+  FIND_PACKAGE(Iconv REQUIRED)
 
-    IF (Iconv_FOUND)
-
-      MESSAGE(STATUS "Found Iconv library -- " ${ICONV_LIBRARY})
-      INCLUDE_DIRECTORIES(${ICONV_INCLUDE_DIR})
-
-      SET(requiredlibs ${requiredlibs} ${ICONV_LIBRARY})
-
-    ELSE(Iconv_FOUND)
-      MESSAGE(STATUS "The Iconv library was not found.")
-    ENDIF (Iconv_FOUND)
-ENDIF (WIN32)
+  IF (Iconv_FOUND)
+    MESSAGE(STATUS "Found Iconv library -- " ${ICONV_LIBRARY})
+    INCLUDE_DIRECTORIES(${ICONV_INCLUDE_DIR})
+    SET(requiredlibs ${requiredlibs} ${ICONV_LIBRARY})
+  ELSE(Iconv_FOUND)
+    MESSAGE(STATUS "The Iconv library was not found.")
+  ENDIF(Iconv_FOUND)
+ENDIF(WIN32)
 
 #
 # ICU
 #
-INCLUDE(${CMAKE_MODULE_PATH}/FindICU.cmake)
+MESSAGE(STATUS "Looking for ICU")
+FIND_PACKAGE(ICU)
   
-IF (ICU_FOUND AND ICU_I18N_FOUND AND ICU_DATA_FOUND)
+IF(ICU_FOUND AND ICU_I18N_FOUND AND ICU_DATA_FOUND)
+  MESSAGE(STATUS "Found ICU library -- " ${ICU_LIBRARIES})
 
   INCLUDE_DIRECTORIES(${ICU_INCLUDE_DIRS})
-
   SET(requiredlibs ${requiredlibs} ${ICU_LIBRARIES} ${ICU_I18N_LIBRARIES} ${ICU_DATA_LIBRARIES}) 
-
-ELSE (ICU_FOUND AND ICU_I18N_FOUND AND ICU_DATA_FOUND)
+ELSE(ICU_FOUND AND ICU_I18N_FOUND AND ICU_DATA_FOUND)
   MESSAGE(FATAL_ERROR "The ICU library is required in order to build Zorba.")
-ENDIF (ICU_FOUND AND ICU_I18N_FOUND AND ICU_DATA_FOUND)       
+ENDIF(ICU_FOUND AND ICU_I18N_FOUND AND ICU_DATA_FOUND)       
 
 #
 # Xerces-C part 1 - finding in default locations
 #
-INCLUDE(${CMAKE_MODULE_PATH}/FindXercesC.cmake)
+MESSAGE(STATUS "Looking for Xerces-C")
+FIND_PACKAGE(XercesC)
 
 
 LIST(APPEND requiredlibs ${requiredlibs-store})
@@ -293,7 +318,7 @@ INCLUDE(CMakeCompiler.txt)
 #
 IF (NOT ZORBA_NO_XMLSCHEMA)
   # Find XercesC Version based on ${XERCESC_INCLUDE}
-  INCLUDE(${CMAKE_MODULE_PATH}/FindXercesCVersion.cmake)
+  FIND_PACKAGE(XercesCVersion)
   
   IF (XERCESC_FOUND)
     COMPARE_VERSION_STRINGS("${XERCESC_VERSION}" 2.8.0 result)
@@ -304,7 +329,7 @@ IF (NOT ZORBA_NO_XMLSCHEMA)
 	or
 	Use -D ZORBA_NO_XMLSCHEMA=ON option for building without XMLSchema support.")
     ELSE (result LESS 0)
-      MESSAGE(STATUS "Found Xerces ${XERCESC_VERSION} -- ${XERCESC_INCLUDE}  ${XERCESC_LIBRARY}")
+      MESSAGE(STATUS "Found Xerces ${XERCESC_VERSION} -- " ${XERCESC_INCLUDE}  ${XERCESC_LIBRARY})
       INCLUDE_DIRECTORIES(${XERCESC_INCLUDE})
       SET(requiredlibs ${requiredlibs} ${XERCESC_LIBRARY})
     ENDIF (result LESS 0)
@@ -346,8 +371,6 @@ INCLUDE ("CMakeUser.txt" OPTIONAL)
 ################################################################################
 # Compiler setup
 
-MESSAGE(STATUS "Build type -- " ${CMAKE_BUILD_TYPE})
-
 # add the include dir (i.e. the library) to the include path
 INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_BINARY_DIR}/include)
 INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -366,20 +389,26 @@ ADD_DEFINITIONS(${DEFINITIONS})
 ################################################################################
 # find all dylib files (i.e. transitive closure of the library files
 # that are linked)
-IF (APPLE )
-  EXECUTE_PROCESS(COMMAND ${CMAKE_SOURCE_DIR}/scripts/find_macosx_libraries.sh ${ICU_LIBRARIES}
-                    OUTPUT_VARIABLE Zorba_ICUUC)
-  EXECUTE_PROCESS(COMMAND ${CMAKE_SOURCE_DIR}/scripts/find_macosx_libraries.sh ${ICU_I18N_LIBRARIES}
-                    OUTPUT_VARIABLE Zorba_ICUI18N)
-  EXECUTE_PROCESS(COMMAND ${CMAKE_SOURCE_DIR}/scripts/find_macosx_libraries.sh ${ICU_DATA_LIBRARIES}
-                    OUTPUT_VARIABLE Zorba_ICU_DATA)
-  EXECUTE_PROCESS(COMMAND ${CMAKE_SOURCE_DIR}/scripts/find_macosx_libraries.sh ${XERCESC_LIBRARY}
-                    OUTPUT_VARIABLE Zorba_XERCESC)
-  EXECUTE_PROCESS(COMMAND ${CMAKE_SOURCE_DIR}/scripts/find_macosx_libraries.sh ${CURL_LIBRARIES}
-                    OUTPUT_VARIABLE Zorba_CURL)
-  EXECUTE_PROCESS(COMMAND ${CMAKE_SOURCE_DIR}/scripts/find_macosx_libraries.sh ${LIBXML2_LIBRARIES}
-                    OUTPUT_VARIABLE Zorba_XML2)
-ENDIF (APPLE )
+IF(APPLE)
+  EXECUTE_PROCESS(
+    COMMAND ${CMAKE_SOURCE_DIR}/scripts/find_macosx_libraries.sh ${ICU_LIBRARIES}
+    OUTPUT_VARIABLE Zorba_ICUUC)
+  EXECUTE_PROCESS(
+    COMMAND ${CMAKE_SOURCE_DIR}/scripts/find_macosx_libraries.sh ${ICU_I18N_LIBRARIES}
+    OUTPUT_VARIABLE Zorba_ICUI18N)
+  EXECUTE_PROCESS(
+    COMMAND ${CMAKE_SOURCE_DIR}/scripts/find_macosx_libraries.sh ${ICU_DATA_LIBRARIES}
+    OUTPUT_VARIABLE Zorba_ICU_DATA)
+  EXECUTE_PROCESS(
+    COMMAND ${CMAKE_SOURCE_DIR}/scripts/find_macosx_libraries.sh ${XERCESC_LIBRARY}
+    OUTPUT_VARIABLE Zorba_XERCESC)
+  EXECUTE_PROCESS(
+    COMMAND ${CMAKE_SOURCE_DIR}/scripts/find_macosx_libraries.sh ${CURL_LIBRARIES}
+    OUTPUT_VARIABLE Zorba_CURL)
+  EXECUTE_PROCESS(
+    COMMAND ${CMAKE_SOURCE_DIR}/scripts/find_macosx_libraries.sh ${LIBXML2_LIBRARIES}
+    OUTPUT_VARIABLE Zorba_XML2)
+ENDIF(APPLE)
 
 
 ################################################################################
@@ -446,21 +475,16 @@ IF( APPLE AND UNIVERSAL )
 ENDIF( APPLE AND UNIVERSAL )
 
 IF(WIN32)
-#automatic detection of external dll dependencies
-#QQQ move to config/ ?
-  FIND_PROGRAM(DEPENDS_EXE depends 
-              PATHS "C:\\Program Files\\Microsoft Visual Studio 8\\Common7\\Tools\\Bin"
-                    "C:\\Program Files\\Microsoft Visual Studio 9.0\\Common7\\Tools\\Bin"
-                    "C:\\Program Files\\Microsoft Visual Studio 10.0\\Common7\\Tools\\Bin"
-              )
+  # automatic detection of external dll dependencies
+  FIND_PACKAGE(DependencyWalker)
 
   IF(DEPENDS_EXE)
-  FILE(TO_CMAKE_PATH ${DEPENDS_EXE} DEPENDS_EXE)
+    FILE(TO_CMAKE_PATH ${DEPENDS_EXE} DEPENDS_EXE)
   ENDIF(DEPENDS_EXE)
 
   GET_TARGET_PROPERTY(ZORBA_EXE_PATH zorbacmd LOCATION)
 
-  #script to be executed before CPack
+  # script to be executed before CPack
   CONFIGURE_FILE(
       "${CMAKE_CURRENT_SOURCE_DIR}/install_external_dll_script.txt.in"
       "${CMAKE_CURRENT_BINARY_DIR}/install_external_dll_script.txt"
@@ -469,13 +493,9 @@ IF(WIN32)
 
   FILE(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/external_dlls")
   INSTALL(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/external_dlls/" DESTINATION bin)
-
-
 ENDIF(WIN32)
 
-
 # inlcude FindImageMagick.cmake if cmake version is smaller than 2.8
-
 IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} LESS 2.8)
   MESSAGE(STATUS "Including FindImageMagick.cmake for cmake version < 2.8")
   INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/FindImageMagick.cmake)     
