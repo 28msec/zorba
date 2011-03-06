@@ -57,7 +57,7 @@ zstring get_os_err_string( char const *what, os_code code ) {
     reinterpret_cast<LPWSTR>( &wmsg ), 0, NULL
   );
   int const werr_size = ::wcslen( wmsg ) + 40;
-  auto_vec<WCHAR> const werr( new WCHAR[ werr_size ] );
+  ztd::auto_vec<WCHAR> const werr( new WCHAR[ werr_size ] );
   if ( what ) {
     StringCchPrintf(
       werr.get(), werr_size, L"%hs failed (error %d): %ls",
@@ -71,7 +71,7 @@ zstring get_os_err_string( char const *what, os_code code ) {
   LocalFree( wmsg );
 
   int const err_size = ::wcslen( werr.get() ) * 2;
-  auto_vec<char> const err( new char[ err_size ] );
+  ztd::auto_vec<char> const err( new char[ err_size ] );
   WideCharToMultiByte(
     CP_UTF8, 0, werr.get(), -1, err.get(), err_size, NULL, NULL
   );
