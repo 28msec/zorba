@@ -524,11 +524,11 @@ bool to_wchar_t( StringType const &in, wchar_t **out,
 template<class StringType>
 class back_html_uri_insert_iterator :
   public
-    back_insert_iterator_base<
+    ztd::back_insert_iterator_base<
       StringType, back_html_uri_insert_iterator<StringType>
     >
 {
-  typedef back_insert_iterator_base<
+  typedef ztd::back_insert_iterator_base<
     StringType, back_html_uri_insert_iterator<StringType>
   > base_type;
 public:
@@ -600,11 +600,11 @@ void to_html_uri( StringType &s ) {
 template<class StringType>
 class back_iri_insert_iterator :
   public
-    back_insert_iterator_base<
+    ztd::back_insert_iterator_base<
       StringType, back_iri_insert_iterator<StringType>
     >
 {
-  typedef back_insert_iterator_base<
+  typedef ztd::back_insert_iterator_base<
     StringType, back_iri_insert_iterator<StringType>
   > base_type;
 public:

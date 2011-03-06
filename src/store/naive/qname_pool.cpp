@@ -417,9 +417,9 @@ QNamePool::QNHashEntry* QNamePool::hashFind(
   {
     QNameItem* qn = entry->theItem;
 
-    if (equals(qn->getLocalName(), ln, lnlen) &&
-        equals(qn->getNamespace(), ns, nslen) &&
-        equals(qn->getPrefix(), pre, prelen))
+    if (ztd::equals(qn->getLocalName(), ln, lnlen) &&
+        ztd::equals(qn->getNamespace(), ns, nslen) &&
+        ztd::equals(qn->getPrefix(), pre, prelen))
       return entry;
 
     entry = entry->getNext();

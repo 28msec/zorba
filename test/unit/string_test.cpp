@@ -504,11 +504,11 @@ static void test_split( char const *left, char const *right ) {
   in += ':';
   in += right;
 
-  ASSERT_TRUE( split( in.c_str(), ':', &out1, &out2 ) );
+  ASSERT_TRUE( ztd::split( in.c_str(), ':', &out1, &out2 ) );
   ASSERT_TRUE( out1 == left );
   ASSERT_TRUE( out2 == right );
 
-  ASSERT_TRUE( split( in, ':', &out1, &out2 ) );
+  ASSERT_TRUE( ztd::split( in, ':', &out1, &out2 ) );
   ASSERT_TRUE( out1 == left );
   ASSERT_TRUE( out2 == right );
 
@@ -518,20 +518,20 @@ static void test_split( char const *left, char const *right ) {
   in += delim;
   in += right;
 
-  ASSERT_TRUE( split( in.c_str(), delim.c_str(), &out1, &out2 ) );
+  ASSERT_TRUE( ztd::split( in.c_str(), delim.c_str(), &out1, &out2 ) );
   ASSERT_TRUE( out1 == left );
   ASSERT_TRUE( out2 == right );
 
-  ASSERT_TRUE( split( in, delim.c_str(), &out1, &out2 ) );
+  ASSERT_TRUE( ztd::split( in, delim.c_str(), &out1, &out2 ) );
   ASSERT_TRUE( out1 == left );
   ASSERT_TRUE( out2 == right );
 
-  ASSERT_TRUE( split( in, delim, &out1, &out2 ) );
+  ASSERT_TRUE( ztd::split( in, delim, &out1, &out2 ) );
   ASSERT_TRUE( out1 == left );
   ASSERT_TRUE( out2 == right );
 
-  ASSERT_TRUE( !split( in, '|', &out1, &out2 ) );
-  ASSERT_TRUE( !split( in, "|", &out1, &out2 ) );
+  ASSERT_TRUE( !ztd::split( in, '|', &out1, &out2 ) );
+  ASSERT_TRUE( !ztd::split( in, "|", &out1, &out2 ) );
 }
 
 template<class StringType>

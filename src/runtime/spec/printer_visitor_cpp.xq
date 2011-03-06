@@ -61,7 +61,7 @@ declare function local:create-class() as xs:string
   $gen:indent,'lStream << a->nilledAllowed();',$gen:newline,
   $gen:indent,'thePrinter.addAttribute("nill allowed", lStream.str());',$gen:newline,$gen:newline,
   $gen:indent,'if (a->getTargetPos() >= 0)',$gen:newline,
-  gen:indent(2),'thePrinter.addAttribute("target_position", to_string(a->getTargetPos()));',$gen:newline,'}'
+  gen:indent(2),'thePrinter.addAttribute("target_position", ztd::to_string(a->getTargetPos()));',$gen:newline,'}'
   ),'')
 };
 

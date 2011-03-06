@@ -158,7 +158,7 @@ bool JSON_serialize(
   zstring lName;
   aElement->getNodeName()->getStringValue2(lName);
 
-  if( ! equals(lName, "json", 4) )
+  if( ! ZSTREQ(lName, "json") )
   {
     aErrorLog = "This is not a JSON element.";
     return false;
@@ -366,7 +366,7 @@ void parse_Json_value(
       }
       else if ((*aValue)->getdatatype() == json::datatype::_literal)
       {
-        if( equals(lVal, "null", 4) )
+        if( ZSTREQ(lVal, "null") )
         {
           haveVal = false;
           lType = "null";
@@ -452,7 +452,7 @@ void parse_Json_ML_value(
       replace_special_chars(lText);
       delete lWtmp;
 
-      if( ! equals(lText, "null", 4) )
+      if( ! ZSTREQ(lText, "null") )
         GENV_ITEMFACTORY->createTextNode(lTextValue, aParent, lText);
       break;
     }
@@ -479,9 +479,9 @@ bool parse_element(
   {
     if (lAttr->getNodeKind() == store::StoreConsts::attributeNode)
     {
-      if(equals(lAttr->getNodeName()->getStringValue(), "type", 4))
+      if(ZSTREQ(lAttr->getNodeName()->getStringValue(), "type"))
         lAttr->getStringValue2(lType);
-      else if(equals(lAttr->getNodeName()->getStringValue(), "name", 4))
+      else if(ZSTREQ(lAttr->getNodeName()->getStringValue(), "name"))
         lAttr->getStringValue2(lName);
     }
   }
@@ -493,7 +493,7 @@ bool parse_element(
     return false;
   }
 
-  if(equals(lType, "object", 6))
+  if(ZSTREQ(lType, "object"))
   {
     if(!lName.empty())
     {
@@ -507,7 +507,7 @@ bool parse_element(
     lResult = parse_child(aElement, aJsonString, aErrorLog, "object");
     aJsonString.append("}");
   }
-  else if(equals(lType, "array", 5))
+  else if(ZSTREQ(lType, "array"))
   {
     if(!lName.empty())
     {
@@ -521,12 +521,12 @@ bool parse_element(
     lResult = parse_child(aElement, aJsonString, aErrorLog, "array");
     aJsonString.append("]");
   }
-  else if(equals(lType, "string", 6))
+  else if(ZSTREQ(lType, "string"))
   {
     zstring lValue;
     get_value(aElement, lValue);
 
-    if(equals(aElement->getNodeName()->getStringValue(), "pair", 4))
+    if(ZSTREQ(aElement->getNodeName()->getStringValue(), "pair"))
     {
       if(lName.empty())
       {
@@ -534,7 +534,7 @@ bool parse_element(
         return false;
       }
 
-      if(!equals(aParentType, "object", 6))
+      if(!ZSTREQ(aParentType, "object"))
       {
         aErrorLog = "'Pair' is allowed only into as part of an object.";
         return false;
@@ -548,9 +548,9 @@ bool parse_element(
     aJsonString.append(lValue);
     aJsonString.append("\"");
   }
-  else if(equals(lType, "null", 4))
+  else if(ZSTREQ(lType, "null"))
   {
-    if(equals(aElement->getNodeName()->getStringValue(), "pair", 4))
+    if(ZSTREQ(aElement->getNodeName()->getStringValue(), "pair"))
     {
       aJsonString.append("\"");
       aJsonString.append(lName);
@@ -558,12 +558,12 @@ bool parse_element(
     }
     aJsonString.append("null");
   }
-  else if (equals(lType, "number", 6) ||
-           equals(lType, "boolean", 7))
+  else if (ZSTREQ(lType, "number") ||
+           ZSTREQ(lType, "boolean"))
   {
     zstring lValue;
     get_value(aElement, lValue);
-    if(equals(aElement->getNodeName()->getStringValue(), "pair", 4))
+    if(ZSTREQ(aElement->getNodeName()->getStringValue(), "pair"))
     {
       aJsonString.append("\"");
       aJsonString.append(lName);
@@ -744,7 +744,7 @@ bool JSON_ML_serialize(
   zstring lName;
   aElement->getNodeName()->getStringValue2(lName);
 
-  if( equals(lName, "json", 4) )
+  if( ZSTREQ(lName, "json") )
   {
     aErrorLog = "This is not a Json ML element.";
     return false;

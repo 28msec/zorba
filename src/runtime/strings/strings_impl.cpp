@@ -634,19 +634,19 @@ bool NormalizeUnicodeIterator::nextImpl(
     {
       normType = unicode::normalization::none;
     }
-    else if (equals(normForm, "NFC", 3))
+    else if (ZSTREQ(normForm, "NFC"))
     {
       normType = unicode::normalization::NFC;
     }
-    else if (equals(normForm, "NFKC", 4))
+    else if (ZSTREQ(normForm, "NFKC"))
     {
       normType = unicode::normalization::NFKC;
     }
-    else if (equals(normForm, "NFD", 3))
+    else if (ZSTREQ(normForm, "NFD"))
     {
       normType = unicode::normalization::NFD;
     }
-    else if (equals(normForm, "NFKD", 4))
+    else if (ZSTREQ(normForm, "NFKD"))
     {
       normType = unicode::normalization::NFKD;
     }

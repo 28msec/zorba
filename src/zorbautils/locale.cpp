@@ -103,7 +103,7 @@ static char* get_unix_locale() {
     //
     loc = filter_useless_locale( ::getenv( "LANG" ) );
   }
-  return loc ? new_strdup( loc ) : NULL;
+  return loc ? ztd::new_strdup( loc ) : NULL;
 }
 
 #endif /* WIN32 */
@@ -471,7 +471,7 @@ iso3166_1::type get_host_country() {
   // ICU's Locale::getDefault().getLanguage() should be used here, but it
   // sometimes returns "root" which isn't useful.
   //
-  static auto_vec<char> country_name;
+  static ztd::auto_vec<char> country_name;
   static iso3166_1::type country_code;
 
   if ( !country_name ) {
@@ -492,8 +492,8 @@ iso3166_1::type get_host_country() {
         // can't point to a character that isn't the first otherwise its call
         // to delete[] will be undefined.
         //
-        auto_vec<char> const old_loc_info( loc_info );
-        loc_info = new_strdup( sep + 1 );
+        ztd::auto_vec<char> const old_loc_info( loc_info );
+        loc_info = ztd::new_strdup( sep + 1 );
       }
     }
 #   endif /* WIN32 */
@@ -511,7 +511,7 @@ iso639_1::type get_host_lang() {
   // ICU's Locale::getDefault().getLanguage() should be used here, but it
   // sometimes returns "root" which isn't useful.
   //
-  static auto_vec<char> lang_name;
+  static ztd::auto_vec<char> lang_name;
   static iso639_1::type lang_code = iso639_1::en;
 
   if ( !lang_name ) {

@@ -83,7 +83,7 @@ namespace thesaurus_impl {
 static void parse_mapping( zstring const &mapping, thesaurus_impl::type *t,
                            zstring *uri ) {
   zstring impl_name;
-  if ( split( mapping, '|', &impl_name, uri ) ) {
+  if ( ztd::split( mapping, '|', &impl_name, uri ) ) {
     *t = thesaurus_impl::find( impl_name );
   } else {
     *t = thesaurus_impl::DEFAULT;

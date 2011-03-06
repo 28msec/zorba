@@ -96,7 +96,7 @@ bool InvokeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   func = theSctx->lookup_fn(func_name, theChildren.size()-1);
   if (func == NULL)
   {
-    ZORBA_ERROR_LOC_PARAM(XPST0017, loc, func_name->getStringValue(), to_string(theChildren.size()-1));
+    ZORBA_ERROR_LOC_PARAM(XPST0017, loc, func_name->getStringValue(), ztd::to_string(theChildren.size()-1));
   }
 
   {

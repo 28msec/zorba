@@ -533,33 +533,33 @@ AttributeIterator::AttributeIterator(
                            "Attribute name must not have an empty local part.");
     }
 
-    if (equals(theQName->getNamespace(), "http://www.w3.org/2000/xmlns/", 29) ||
+    if (ZSTREQ(theQName->getNamespace(), "http://www.w3.org/2000/xmlns/") ||
         (theQName->getNamespace().empty() &&
-         equals(theQName->getLocalName(), "xmlns", 5)))
+         ZSTREQ(theQName->getLocalName(), "xmlns")))
     {
       ZORBA_ERROR_LOC(XQDY0044, loc);
     }
 
-    if ((equals(theQName->getNamespace(), "http://www.w3.org/XML/1998/namespace", 36) &&
+    if ((ZSTREQ(theQName->getNamespace(), "http://www.w3.org/XML/1998/namespace") &&
          !theQName->getPrefix().empty() &&
-         !equals(theQName->getPrefix(), "xml", 3)) ||
-        (equals(theQName->getPrefix(), "xml", 3) &&
-         !equals(theQName->getNamespace(), "http://www.w3.org/XML/1998/namespace", 36)))
+         !ZSTREQ(theQName->getPrefix(), "xml")) ||
+        (ZSTREQ(theQName->getPrefix(), "xml") &&
+         !ZSTREQ(theQName->getNamespace(), "http://www.w3.org/XML/1998/namespace")))
     {
       ZORBA_ERROR_LOC(XQDY0044, loc);
     }
 
-    if ((equals(theQName->getNamespace(), "http://www.w3.org/2000/xmlns/", 29) &&
+    if ((ZSTREQ(theQName->getNamespace(), "http://www.w3.org/2000/xmlns/") &&
          !theQName->getPrefix().empty() &&
-         !equals(theQName->getPrefix(), "xmlns", 5)) ||
-        (equals(theQName->getPrefix(), "xmlns", 5) &&
-         !equals(theQName->getNamespace(), "http://www.w3.org/2000/xmlns/", 29)))
+         !ZSTREQ(theQName->getPrefix(), "xmlns")) ||
+        (ZSTREQ(theQName->getPrefix(), "xmlns") &&
+         !ZSTREQ(theQName->getNamespace(), "http://www.w3.org/2000/xmlns/")))
     {
       ZORBA_ERROR_LOC(XQDY0044, loc);
     }
 
-    if (equals(theQName->getPrefix(), "xml", 3) &&
-        equals(theQName->getLocalName(), "id", 2))
+    if (ZSTREQ(theQName->getPrefix(), "xml") &&
+        ZSTREQ(theQName->getLocalName(), "id"))
       theIsId = true;
   }
 }
@@ -597,8 +597,8 @@ bool AttributeIterator::nextImpl(store::Item_t& result, PlanState& planState) co
     // around the name expression.
     consumeNext(qname, theChild0, planState);
 
-    if (equals(qname->getPrefix(), "xml", 3) &&
-        equals(qname->getLocalName(), "id", 2))
+    if (ZSTREQ(qname->getPrefix(), "xml") &&
+        ZSTREQ(qname->getLocalName(), "id"))
     {
       isId = true;
     }
@@ -609,9 +609,9 @@ bool AttributeIterator::nextImpl(store::Item_t& result, PlanState& planState) co
                            "Attribute name must not have an empty local part.");
     }
 
-    if (equals(qname->getNamespace(), "http://www.w3.org/2000/xmlns/", 29) ||
+    if (ZSTREQ(qname->getNamespace(), "http://www.w3.org/2000/xmlns/") ||
         (qname->getNamespace().empty() &&
-         equals(qname->getLocalName(), "xmlns", 5)))
+         ZSTREQ(qname->getLocalName(), "xmlns")))
     {
       ZORBA_ERROR_LOC(XQDY0044, loc);
     }
@@ -837,7 +837,7 @@ bool PiIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     zstring upper;
     utf8::to_upper(target, &upper);
 
-    if (equals(upper, "XML", 3))
+    if (ZSTREQ(upper, "XML"))
       ZORBA_ERROR_LOC(XQDY0064, loc);
   }
 

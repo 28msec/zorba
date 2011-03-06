@@ -51,11 +51,11 @@ char const whitespace[] = " \f\n\r\t\v";
 template<class StringType>
 class back_ascii_insert_iterator :
   public
-    back_insert_iterator_base<
+    ztd::back_insert_iterator_base<
       StringType, back_ascii_insert_iterator<StringType>
     >
 {
-  typedef back_insert_iterator_base<
+  typedef ztd::back_insert_iterator_base<
     StringType, back_ascii_insert_iterator<StringType>
   > base_type;
 public:

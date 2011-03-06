@@ -264,7 +264,7 @@ static void join_includes( ft_match::includes_t const &includes,
     ft_pos_set pos_set;
     covered_include_positions( includes, pos_set );
     for ( int_t pos = min_pos; pos <= max_pos; ++pos ) {
-      if ( !contains( pos_set, pos ) ) {
+      if ( !ztd::contains( pos_set, pos ) ) {
         is_contiguous = false;
         break;
       }
@@ -452,10 +452,10 @@ void apply_ftand( ft_all_matches const &ami, ft_all_matches const &amj,
     FOR_EACH( ft_all_matches, mi, ami ) {
       FOR_EACH( ft_all_matches, mj, amj ) {
         ft_match m_new;
-        copy_seq( mi->includes, m_new.includes );
-        copy_seq( mi->excludes, m_new.excludes );
-        copy_seq( mj->includes, m_new.includes );
-        copy_seq( mj->excludes, m_new.excludes );
+        ztd::copy_seq( mi->includes, m_new.includes );
+        ztd::copy_seq( mi->excludes, m_new.excludes );
+        ztd::copy_seq( mj->includes, m_new.includes );
+        ztd::copy_seq( mj->excludes, m_new.excludes );
         result.push_back( m_new );
       }
     }
@@ -611,7 +611,7 @@ void apply_ftmild_not( ft_all_matches const &ami, ft_all_matches const &amj,
       FOR_EACH( ft_pos_set_cache_t, psj, psj_cache ) {
         bool some_satisfies = false;
         FOR_EACH( ft_pos_set, pos, psi ) {
-          if ( !contains( *psj, *pos ) ) {
+          if ( !ztd::contains( *psj, *pos ) ) {
             some_satisfies = true;
             break;
           }
@@ -635,8 +635,8 @@ void apply_ftor( ft_all_matches const &ami, ft_all_matches const &amj,
   PUT_ALL_MATCHES( ami );
   PUT_ALL_MATCHES( amj );
 
-  copy_seq( ami, result );
-  copy_seq( amj, result );
+  ztd::copy_seq( ami, result );
+  ztd::copy_seq( amj, result );
 }
 
 ////////// ApplyFTOrder ///////////////////////////////////////////////////////
@@ -667,7 +667,7 @@ void apply_ftorder( ft_all_matches const &am, ft_all_matches &result ) {
     }
     if ( every_satisfies ) {
       ft_match m_new;
-      copy_seq( m->includes, m_new.includes );
+      ztd::copy_seq( m->includes, m_new.includes );
       FOR_EACH( ft_match::excludes_t, e, m->excludes ) {
         FOR_EACH( ft_match::includes_t, i, m->includes ) {
           if ( ordered( *e, *i ) )
@@ -718,7 +718,7 @@ static void apply_ftscope_diff( ft_all_matches const &am,
     }
     if ( every_satisfies ) {
       ft_match m_new;
-      copy_seq( m->includes, m_new.includes );
+      ztd::copy_seq( m->includes, m_new.includes );
       FOR_EACH( ft_match::excludes_t, e, m->excludes ) {
         FOR_EACH( ft_match::includes_t, i, m->includes ) {
           if ( different( *i, *e, sep ) )
@@ -775,7 +775,7 @@ static void apply_ftscope_same( ft_all_matches const &am,
     }
     if ( every_satisfies ) {
       ft_match m_new;
-      copy_seq( m->includes, m_new.includes );
+      ztd::copy_seq( m->includes, m_new.includes );
       FOR_EACH( ft_match::excludes_t, e, m->excludes ) {
         if ( ((*e).*sep).start == 0 ||
               (((*e).*sep).start == ((*e).*sep).end &&
@@ -837,20 +837,20 @@ static void form_combinations( ft_match_seq const &ms, ft_int k,
   if ( count < k )
     return;
   if ( count == k )
-    copy_seq( ms, result );
+    ztd::copy_seq( ms, result );
   else {
     ft_match_seq rest( ms );
-    ft_match const first( pop_front( rest ) );
+    ft_match const first( ztd::pop_front( rest ) );
     form_combinations( rest, k, result );
 
     ft_match_seq temp;
     form_combinations( rest, k - 1, temp );
     FOR_EACH( ft_match_seq, combination, temp ) {
       ft_match m_new;
-      copy_seq( first.includes, m_new.includes );
-      copy_seq( first.excludes, m_new.excludes );
-      copy_seq( combination->includes, m_new.includes );
-      copy_seq( combination->excludes, m_new.excludes );
+      ztd::copy_seq( first.includes, m_new.includes );
+      ztd::copy_seq( first.excludes, m_new.excludes );
+      ztd::copy_seq( combination->includes, m_new.includes );
+      ztd::copy_seq( combination->excludes, m_new.excludes );
       result.push_back( m_new );
     }
   }
@@ -1003,7 +1003,7 @@ static void make_conj_disj( ft_all_matches const &cur_res,
   if ( rest.empty() )
     result = cur_res;
   else {
-    ft_all_matches const first_am( pop_front( rest ) );
+    ft_all_matches const first_am( ztd::pop_front( rest ) );
     ft_all_matches new_cur_res;
     apply_fn( cur_res, first_am, new_cur_res );
     make_conj_disj( new_cur_res, rest, apply_fn, result );
@@ -1034,7 +1034,7 @@ apply_ftwords_all( query_item_star_t &query_items, FTToken::int_t query_pos,
     PUT_ARG( query_pos );
 
     query_item_star_t first_query_item;
-    move_front_to_back( query_items, first_query_item );
+    ztd::move_front_to_back( query_items, first_query_item );
 
     ft_all_matches first_am;
     apply_ftwords_phrase(
@@ -1066,7 +1066,7 @@ apply_ftwords_any( query_item_star_t &query_items, FTToken::int_t query_pos,
     PUT_ARG( query_pos );
 
     query_item_star_t first_query_item;
-    move_front_to_back( query_items, first_query_item );
+    ztd::move_front_to_back( query_items, first_query_item );
 
     ft_all_matches first_am;
     apply_ftwords_phrase(
@@ -1120,7 +1120,7 @@ apply_ftwords_xxx_word( query_item_star_t &query_items,
 
     ft_all_matches first_am;
     if ( !all_am_seq.empty() )
-      first_am = pop_front( all_am_seq );
+      first_am = ztd::pop_front( all_am_seq );
     make_conj_disj( first_am, all_am_seq, apply_fn, result );
   }
 }

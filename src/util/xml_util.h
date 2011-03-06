@@ -114,11 +114,11 @@ inline bool is_valid( CodePointType c, version v = v1_0 ) {
 template<class StringType>
 class back_xml_insert_iterator :
   public
-    back_insert_iterator_base<
+    ztd::back_insert_iterator_base<
       StringType, back_xml_insert_iterator<StringType>
     >
 {
-  typedef back_insert_iterator_base<
+  typedef ztd::back_insert_iterator_base<
     StringType, back_xml_insert_iterator<StringType>
   > base_type;
 public:

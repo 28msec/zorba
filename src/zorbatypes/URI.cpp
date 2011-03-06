@@ -647,8 +647,8 @@ void URI::initialize(const zstring& uri, bool have_base)
         // This makes this implementation the same with the file module.
         // If this functionality is changed, please make the same changes
         // in the file module.
-        if (equals(theScheme, "file", 4) &&
-            !equals(lAuthUri, "localhost", 9)) 
+        if (ZSTREQ(theScheme, "file") &&
+            !ZSTREQ(lAuthUri, "localhost")) 
         {
           ZORBA_ERROR_DESC_OSS(XQST0046,
                                "Invalid authority value for the \"file\" scheme: \""
@@ -666,9 +666,9 @@ void URI::initialize(const zstring& uri, bool have_base)
     }
     // do not allow constructs like: file:D:/myFile or http:myFile
   }
-  else if (equals(theScheme, "file", 4) ||
-           equals(theScheme, "http", 4) ||
-           equals(theScheme, "https", 5)) 
+  else if (ZSTREQ(theScheme, "file") ||
+           ZSTREQ(theScheme, "http") ||
+           ZSTREQ(theScheme, "https")) 
   {
     if (valid)
     {
@@ -939,7 +939,7 @@ void URI::initializePath(const zstring& uri)
         ++lIndex;
       }
     #ifdef WIN32
-      if (equals(theScheme, "file", 4) &&
+      if (ZSTREQ(theScheme, "file") &&
           (lCodepoints[lStart] == '/') &&
           (lEnd > (lStart+2)) &&
           ((lCodepoints[lStart+2] == ':') || !uri.compare(lStart+2, 4, "%3A/")))//jump over first '/' of path
@@ -1628,7 +1628,7 @@ void URI::build_full_text() const
   if ( is_set(Path) )
   {
   #ifdef WIN32
-    if(equals(theScheme, "file", 4) && !thePath.empty() && (thePath[0] != '/'))
+    if(ZSTREQ(theScheme, "file") && !thePath.empty() && (thePath[0] != '/'))
         lURI << "/";
   #endif
     lURI << thePath;
@@ -1679,7 +1679,7 @@ void URI::build_ascii_full_text() const
   if ( is_set(Path) )
   {
   #ifdef WIN32
-    if(equals(theScheme, "file", 4) && !thePath.empty() && (thePath[0] != '/'))
+    if(ZSTREQ(theScheme, "file") && !thePath.empty() && (thePath[0] != '/'))
         lURI << "/";
   #endif
     lURI << thePath;

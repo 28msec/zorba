@@ -445,11 +445,11 @@ bool UntypedAtomicItem::castToBoolean(store::Item_t& result) const
   ascii::trim_whitespace(theValue, &str);
   bool value = true;
 
-  if (zorba::equals(str, "false", 5) || zorba::equals(str, "0", 1))
+  if (ZSTREQ(str, "false") || ZSTREQ(str, "0"))
   {
     value = false;
   }
-  else if (!zorba::equals(str, "true", 4) && !zorba::equals(str, "1", 1))
+  else if (!ZSTREQ(str, "true") && !ZSTREQ(str, "1"))
   {
     result = NULL;
     return false;
@@ -586,10 +586,10 @@ void QNameItem::appendStringValue(zstring& buf) const
 
 bool QNameItem::isIdQName() const
 {
-  if (zorba::equals(getLocalName(), "id", 2))
+  if (ZSTREQ(getLocalName(), "id"))
   {
-    if (zorba::equals(getPrefix(), "xml", 3) ||
-        zorba::equals(theNamespace, SimpleStore::XML_URI, SimpleStore::XML_URI_LEN))
+    if (ZSTREQ(getPrefix(), "xml") ||
+        ztd::equals(theNamespace, SimpleStore::XML_URI, SimpleStore::XML_URI_LEN))
       return true;
   }
 
@@ -599,10 +599,10 @@ bool QNameItem::isIdQName() const
 
 bool QNameItem::isBaseUri() const
 {
-  if (zorba::equals(getLocalName(), "base", 4))
+  if (ZSTREQ(getLocalName(), "base"))
   {
-    if (zorba::equals(getPrefix(), "xml", 3) ||
-        zorba::equals(getNamespace(), SimpleStore::XML_URI, SimpleStore::XML_URI_LEN))
+    if (ZSTREQ(getPrefix(), "xml") ||
+        ztd::equals(getNamespace(), SimpleStore::XML_URI, SimpleStore::XML_URI_LEN))
       return true;
   }
 

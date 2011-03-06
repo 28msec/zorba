@@ -124,7 +124,7 @@ bool thesaurus::iterator::next( zstring *result ) {
     cout << endl;
 #   endif
 
-    candidate_t const candidate( pop_front( candidate_queue_ ) );
+    candidate_t const candidate( ztd::pop_front( candidate_queue_ ) );
     synonym const *const candidate_ptr = candidate.first;
     rel_dir const candidate_dir = candidate.second;
 
@@ -169,7 +169,7 @@ bool thesaurus::iterator::next( zstring *result ) {
     if ( entry != thesaurus_.end() ) {
       FOR_EACH( synonym_set_t, i, entry->second ) {
         synonym const *const next_candidate_ptr = *i;
-        if ( !contains( synonyms_seen_, next_candidate_ptr->term ) ) {
+        if ( !ztd::contains( synonyms_seen_, next_candidate_ptr->term ) ) {
           FOR_EACH( relationship_set_t, r, next_candidate_ptr->relationships ) {
             rel_dir const d = get_dir( r->get_iso2788() );
             if ( congruous( candidate_dir, d ) ) {
@@ -183,7 +183,7 @@ bool thesaurus::iterator::next( zstring *result ) {
     }
   } // while
 
-  *result = pop_front( result_queue_ );
+  *result = ztd::pop_front( result_queue_ );
 # if DEBUG_THESAURUS
   cout << "--> synonym=" << *result << endl;
 # endif
@@ -198,7 +198,7 @@ thesaurus::thesaurus( zstring const &path, iso639_1::type lang ) {
 
 thesaurus::~thesaurus() {
   MUTATE_EACH( thesaurus_t, entry, thesaurus_ )
-    delete_ptr_seq( entry->second );
+    ztd::delete_ptr_seq( entry->second );
 }
 
 thesaurus::iterator_ptr
@@ -322,7 +322,9 @@ void thesaurus::read_xqftts_file( zstring const &uri ) {
               // The same synonym for the term already exists: just add in
               // the relationships.
               //
-              copy_set( (*new_syn)->relationships, (*old_syn)->relationships );
+              ztd::copy_set(
+                (*new_syn)->relationships, (*old_syn)->relationships
+              );
               delete *new_syn;
             } else
               old_set.insert( *new_syn );

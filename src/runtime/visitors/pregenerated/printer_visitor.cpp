@@ -102,7 +102,7 @@ void PrinterVisitor::printNameOrKindTest(const AxisIteratorHelper* a) {
   thePrinter.addAttribute("nill allowed", lStream.str());
 
   if (a->getTargetPos() >= 0)
-    thePrinter.addAttribute("target_position", to_string(a->getTargetPos()));
+    thePrinter.addAttribute("target_position", ztd::to_string(a->getTargetPos()));
 }
 
 

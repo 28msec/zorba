@@ -202,7 +202,7 @@ ReplyMessage::ReplyMessage( Byte * aMessage, const unsigned int aLength ):  Abst
   memcpy( theReplyContent, lmsg, SIZE_OF_REPLY_CONTENT );
   if ( aLength - MESSAGE_HEADER_SIZE > 0 )
   {
-    auto_vec<char> lData(new char[ aLength - MESSAGE_HEADER_SIZE + 1 ]);
+    ztd::auto_vec<char> lData(new char[ aLength - MESSAGE_HEADER_SIZE + 1 ]);
     memset(lData.get(), '\0', aLength - MESSAGE_HEADER_SIZE + 1);
     memcpy(lData.get(), aMessage + MESSAGE_HEADER_SIZE, aLength - MESSAGE_HEADER_SIZE );
     theData = lData.get();
@@ -421,7 +421,7 @@ StepMessage::~StepMessage(){}
 
 Byte* StepMessage::serialize(Length& aLength) const
 {
-  auto_vec<Byte> lHeader(AbstractCommandMessage::serialize(aLength));
+  ztd::auto_vec<Byte> lHeader(AbstractCommandMessage::serialize(aLength));
   std::string lJSONString = getData();
   Byte* lMsg = new Byte[getLength() + 1];
   memset(lMsg, '\0', getLength() + 1);
@@ -502,7 +502,7 @@ SetMessage::~SetMessage(){}
 
 Byte * SetMessage::serialize( Length & aLength ) const
 {
-  auto_vec<Byte> lHeader(AbstractCommandMessage::serialize(aLength));
+  ztd::auto_vec<Byte> lHeader(AbstractCommandMessage::serialize(aLength));
   std::string lJSONString = getData();
   Byte * lMsg = new Byte[ getLength() + 1 ];
   memset(lMsg, '\0', getLength()+1);
@@ -566,7 +566,7 @@ ClearMessage::~ClearMessage(){}
 
 Byte * ClearMessage::serialize( Length & aLength ) const
 {
-  auto_vec<Byte> lHeader(AbstractCommandMessage::serialize(aLength));
+  ztd::auto_vec<Byte> lHeader(AbstractCommandMessage::serialize(aLength));
   std::string lJSONString = getData();
   Byte * lMsg = new Byte[ getLength() + 1 ];
   memset(lMsg, '\0', getLength()+1);
@@ -658,7 +658,7 @@ SuspendedEvent::~SuspendedEvent(){}
 
 Byte * SuspendedEvent::serialize( Length & aLength ) const
 {
-  auto_vec<Byte> lHeader(AbstractCommandMessage::serialize(aLength));
+  ztd::auto_vec<Byte> lHeader(AbstractCommandMessage::serialize(aLength));
   std::string lJSONString = getData();
   Byte * lMsg = new Byte[ getLength() + 1 ];
   memset(lMsg, '\0', getLength()+1);
@@ -826,7 +826,7 @@ zstring const& EvaluatedEvent::getError() const
 
 Byte * EvaluatedEvent::serialize( Length &aLength ) const
 {
-  auto_vec<Byte> lHeader(AbstractCommandMessage::serialize(aLength));
+  ztd::auto_vec<Byte> lHeader(AbstractCommandMessage::serialize(aLength));
   zstring lJSONString = getData();
   Byte * lMsg = new Byte[ getLength() + 1 ];
   memset(lMsg, '0', getLength()+1);
@@ -925,7 +925,7 @@ zstring EvalMessage::getData() const
 
 Byte * EvalMessage::serialize( Length & aLength ) const
 {
-  auto_vec<Byte> lHeader(AbstractCommandMessage::serialize(aLength));
+  ztd::auto_vec<Byte> lHeader(AbstractCommandMessage::serialize(aLength));
   zstring lJSONString = getData();
   Byte * lMsg = new Byte[ getLength() + 1 ];
   memset(lMsg, '0', getLength()+1);
@@ -1032,7 +1032,7 @@ zstring FrameReply::getData() const
 
 Byte* FrameReply::serialize(Length& aLength) const
 {
-  auto_vec<Byte> lHeader(ReplyMessage::serialize(aLength));
+  ztd::auto_vec<Byte> lHeader(ReplyMessage::serialize(aLength));
   zstring lJSON = getData();
   const char* s = lJSON.c_str();
   size_t l = lJSON.length();
@@ -1107,7 +1107,7 @@ zstring SetReply::getData() const
 
 Byte* SetReply::serialize(Length& aLength) const
 {
-  auto_vec<Byte> lHeader(ReplyMessage::serialize( aLength ));
+  ztd::auto_vec<Byte> lHeader(ReplyMessage::serialize( aLength ));
   zstring lJSONString = getData();
   const char * s = lJSONString.c_str();
   size_t l = lJSONString.length();
@@ -1316,7 +1316,7 @@ zstring VariableReply::getData() const
 
 Byte * VariableReply::serialize( Length & aLength ) const
 {
-  auto_vec<Byte> lHeader(ReplyMessage::serialize( aLength ));
+  ztd::auto_vec<Byte> lHeader(ReplyMessage::serialize( aLength ));
   zstring lJSONString = getData();
   const char * s = lJSONString.c_str();
   size_t l = lJSONString.length();
@@ -1472,7 +1472,7 @@ ListCommand::~ListCommand()
 
 Byte* ListCommand::serialize( Length& aLength ) const
 {
-  auto_vec<Byte> lHeader(
+  ztd::auto_vec<Byte> lHeader(
     AbstractCommandMessage::serialize(aLength));
   std::string lJSONString = getData();
   Byte* lMsg = new Byte[getLength() + 1];
@@ -1553,7 +1553,7 @@ ListReply::~ListReply() {}
 
 Byte* ListReply::serialize( Length &aLength ) const
 {
-  auto_vec<Byte> lHeader(ReplyMessage::serialize( aLength ));
+  ztd::auto_vec<Byte> lHeader(ReplyMessage::serialize( aLength ));
   zstring lJSONString = getData();
   const char * s = lJSONString.c_str();
   size_t l = lJSONString.length();

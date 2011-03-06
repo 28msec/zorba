@@ -128,7 +128,7 @@ namespace zorba {
 
 AbstractMessage* MessageFactory::buildMessage(TCPSocket * aSocket)
 {
-  auto_vec<Byte> lBody(new Byte[MESSAGE_HEADER_SIZE]);
+  ztd::auto_vec<Byte> lBody(new Byte[MESSAGE_HEADER_SIZE]);
   memset(lBody.get(), '\0', MESSAGE_HEADER_SIZE);
   AbstractMessage* lMessage = 0;
   try {
@@ -156,7 +156,7 @@ AbstractMessage* MessageFactory::buildMessage(TCPSocket * aSocket)
           lBody[3] << 24;
     }
     // allocate memory for the whole packet
-    auto_vec<Byte> lPacket(new Byte[length + 1]);
+    ztd::auto_vec<Byte> lPacket(new Byte[length + 1]);
     memset(lPacket.get(), '\0', length + 1);
     memcpy(lPacket.get(), lBody.get(), MESSAGE_HEADER_SIZE);
 

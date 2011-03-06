@@ -517,7 +517,7 @@ ftnode_list::ftnode_list( QueryLoc const &loc, ftnode_list_t &list ) :
 }
 
 ftnode_list::~ftnode_list() {
-  delete_ptr_seq( list_ );
+  ztd::delete_ptr_seq( list_ );
 }
 
 void ftnode_list::serialize( serialization::Archiver &ar ) {
@@ -706,7 +706,7 @@ ftselection::ftselection(
 
 ftselection::~ftselection() {
   delete ftor_;
-  delete_ptr_seq( list_ );
+  ztd::delete_ptr_seq( list_ );
 }
 
 ft_visit_result::type ftselection::accept( ftnode_visitor &v ) {
@@ -812,7 +812,7 @@ ftstop_word_option::ftstop_word_option(
 }
 
 ftstop_word_option::~ftstop_word_option() {
-  delete_ptr_seq( stop_words_ );
+  ztd::delete_ptr_seq( stop_words_ );
 }
 
 ft_visit_result::type ftstop_word_option::accept( ftnode_visitor &v ) {
@@ -894,7 +894,7 @@ ftthesaurus_option::ftthesaurus_option(
 
 ftthesaurus_option::~ftthesaurus_option() {
   delete default_tid_;
-  delete_ptr_seq( thesaurus_id_list_ );
+  ztd::delete_ptr_seq( thesaurus_id_list_ );
 }
 
 ft_visit_result::type ftthesaurus_option::accept( ftnode_visitor &v ) {

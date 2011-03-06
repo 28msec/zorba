@@ -458,7 +458,7 @@ void setModulePaths
   char lDelim = ':';
 #endif
 
-  while (zorba::split(paths, lDelim, &lPath, &paths)) {
+  while (zorba::ztd::split(paths, lDelim, &lPath, &paths)) {
     lModulePaths.push_back(lPath);
     std::cout << "Hello " << lPath << std::endl;
   }

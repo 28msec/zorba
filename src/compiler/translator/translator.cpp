@@ -1495,7 +1495,7 @@ var_expr_t create_var(
 ********************************************************************************/
 var_expr_t create_temp_var(const QueryLoc& loc, var_expr::var_kind kind)
 {
-  std::string localName = "$$temp" + to_string(theTempVarCounter++);
+  std::string localName = "$$temp" + ztd::to_string(theTempVarCounter++);
 
   store::Item_t qnameItem;
   GENV_ITEMFACTORY->createQName(qnameItem, "", "", localName.c_str());
@@ -9309,7 +9309,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     else if (localName == "concat")
     {
       if (numArgs < 2)
-        ZORBA_ERROR_LOC_PARAM (XPST0017, loc, "concat", to_string(numArgs));
+        ZORBA_ERROR_LOC_PARAM (XPST0017, loc, "concat", ztd::to_string(numArgs));
     }
     else if (localName == "doc")
     {
@@ -9381,7 +9381,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         }
       }
 
-      ZORBA_ERROR_LOC_PARAM(XPST0017, loc, qname->get_qname(), to_string(numArgs));
+      ZORBA_ERROR_LOC_PARAM(XPST0017, loc, qname->get_qname(), ztd::to_string(numArgs));
     }
 
     // If this is a udf that is invoked from another udf, mark that other udf
@@ -9404,7 +9404,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     {
       if (! theSctx->is_imported_builtin_module(fn_ns))
       {
-        ZORBA_ERROR_LOC_PARAM(XPST0017, loc, qname->get_qname(), to_string(numArgs));
+        ZORBA_ERROR_LOC_PARAM(XPST0017, loc, qname->get_qname(), ztd::to_string(numArgs));
       }
     }
 
@@ -9530,7 +9530,7 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
   // raise XPST0017 if function could not be found
   if (fn == 0)
   {
-    ZORBA_ERROR_LOC_PARAM(XPST0017, loc, qname->get_qname(), to_string(arity));
+    ZORBA_ERROR_LOC_PARAM(XPST0017, loc, qname->get_qname(), ztd::to_string(arity));
   }
 
   if (!fn->isUdf())
@@ -9918,7 +9918,7 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
     if (qname->get_qname() != "xmlns")
     {
       prefix = qname->get_localname();
-      if (equals(prefix, "xmlns", 5))
+      if (ZSTREQ(prefix, "xmlns"))
         ZORBA_ERROR_LOC(XQST0070, loc);
     }
 
@@ -9953,10 +9953,10 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
 
     if (have_uri)
     {
-      if ((equals(prefix, "xml", 3) && !equals(uri, XML_NS, strlen(XML_NS))) ||
-           (equals(uri, XML_NS, strlen(XML_NS)) && !equals(prefix, "xml", 3)) ||
-           (equals(prefix, "xmlns", 5) && !equals(uri, XMLNS_NS, strlen(XMLNS_NS))) ||
-           (equals(uri, XMLNS_NS, strlen(XML_NS)) && !equals(prefix, "xmlns", 5)))
+      if ((ZSTREQ(prefix, "xml") && !ZSTREQ(uri, XML_NS)) ||
+           (ZSTREQ(uri, XML_NS) && !ZSTREQ(prefix, "xml")) ||
+           (ZSTREQ(prefix, "xmlns") && !ZSTREQ(uri, XMLNS_NS)) ||
+           (ZSTREQ(uri, XMLNS_NS) && !ZSTREQ(prefix, "xmlns")))
         ZORBA_ERROR_LOC (XQST0070, loc);
 
       theSctx->bind_ns(prefix, uri, loc, XQST0071);
@@ -9967,7 +9967,7 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
     }
     else if (valueExpr == NULL)
     {
-      if (equals(prefix, "xml", 3))
+      if (ZSTREQ(prefix, "xml"))
         ZORBA_ERROR_LOC(XQST0070, loc);
 
       // unbind the prefix

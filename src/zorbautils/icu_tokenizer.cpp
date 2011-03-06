@@ -199,7 +199,7 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, size_t utf8_len,
   if ( !unicode::to_string( utf8_s, (unicode::size_type)utf8_len, &utf16_buf, &utf16_len ) ) {
     // TODO
   }
-  auto_vec<unicode::char_type> const auto_utf16_buf( utf16_buf );
+  ztd::auto_vec<unicode::char_type> const auto_utf16_buf( utf16_buf );
 
   //
   // ICU bizarrely treats newline and carriage-return as sentence terminators
@@ -240,7 +240,7 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, size_t utf8_len,
     if ( !utf8::to_string( word, word_len, &utf8_buf, &utf8_len ) ) {
       // TODO
     }
-    auto_vec<utf8::storage_type> const auto_utf8_buf( utf8_buf );
+    ztd::auto_vec<utf8::storage_type> const auto_utf8_buf( utf8_buf );
 
     int32_t const rule_status = iters.word_->getRuleStatus();
 

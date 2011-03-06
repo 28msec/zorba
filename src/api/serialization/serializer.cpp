@@ -885,7 +885,7 @@ static int is_content_type_meta(
   utf8::to_lower(element_parent->getNodeName()->getStringValue(), &pname);
   utf8::to_lower(item->getNodeName()->getStringValue(), &iname);
 
-  if (equals(pname, "head", 4) && equals(iname, "meta", 4))
+  if (ztd::equals(pname, "head", 4) && ztd::equals(iname, "meta", 4))
   {
     // iterate through attributes
     store::Item_t child;
@@ -901,7 +901,8 @@ static int is_content_type_meta(
       utf8::to_lower(child->getNodeName()->getStringValue(), &cname);
       utf8::to_lower(child->getStringValue(), &cvalue);
 
-      if (equals(cname, "http-equiv", 10) && equals(cvalue, "content-type", 12))
+      if (ztd::equals(cname, "http-equiv", 10) &&
+          ztd::equals(cvalue, "content-type", 12))
         return 1;
     }
   }
@@ -921,19 +922,19 @@ static bool is_html_empty_content_model_element(const store::Item* item)
   zstring nodename;
   utf8::to_lower(item->getNodeName()->getStringValue(), &nodename);
 
-  if (equals(nodename, "area", 4) ||
-      equals(nodename, "base", 4) ||
-      equals(nodename, "basefont", 8) ||
-      equals(nodename, "br", 2) ||
-      equals(nodename, "col", 3) ||
-      equals(nodename, "frame", 5) ||
-      equals(nodename, "hr", 2) ||
-      equals(nodename, "img", 3) ||
-      equals(nodename, "input", 5) ||
-      equals(nodename, "isindex", 7) ||
-      equals(nodename, "link", 4) ||
-      equals(nodename, "meta", 4) ||
-      equals(nodename, "param", 5))
+  if (ztd::equals(nodename, "area", 4) ||
+      ztd::equals(nodename, "base", 4) ||
+      ztd::equals(nodename, "basefont", 8) ||
+      ztd::equals(nodename, "br", 2) ||
+      ztd::equals(nodename, "col", 3) ||
+      ztd::equals(nodename, "frame", 5) ||
+      ztd::equals(nodename, "hr", 2) ||
+      ztd::equals(nodename, "img", 3) ||
+      ztd::equals(nodename, "input", 5) ||
+      ztd::equals(nodename, "isindex", 7) ||
+      ztd::equals(nodename, "link", 4) ||
+      ztd::equals(nodename, "meta", 4) ||
+      ztd::equals(nodename, "param", 5))
     return true;
   else
     return false;
@@ -953,9 +954,9 @@ static bool is_html_no_empty_tags_element(const store::Item* item)
   zstring nodename;
   utf8::to_lower(item->getNodeName()->getStringValue(), &nodename);
 
-  if (equals(nodename, "script", 6) ||
-      equals(nodename, "textarea", 8) ||
-      equals(nodename, "div", 3))
+  if (ztd::equals(nodename, "script", 6) ||
+      ztd::equals(nodename, "textarea", 8) ||
+      ztd::equals(nodename, "div", 3))
     return true;
   else
     return false;
@@ -970,18 +971,18 @@ static bool is_html_boolean_attribute(const zstring& attribute)
   zstring str;
   utf8::to_lower(attribute, &str);
 
-  if (equals(str, "compact", 7) ||
-      equals(str, "nowrap", 6) ||
-      equals(str, "ismap", 5) ||
-      equals(str, "declare", 7) ||
-      equals(str, "noshade", 7) ||
-      equals(str, "checked", 7) ||
-      equals(str, "disabled", 8) ||
-      equals(str, "readonly", 8) ||
-      equals(str, "multiple", 8) ||
-      equals(str, "selected", 8) ||
-      equals(str, "noresize", 8) ||
-      equals(str, "defer", 5))
+  if (ztd::equals(str, "compact", 7) ||
+      ztd::equals(str, "nowrap", 6) ||
+      ztd::equals(str, "ismap", 5) ||
+      ztd::equals(str, "declare", 7) ||
+      ztd::equals(str, "noshade", 7) ||
+      ztd::equals(str, "checked", 7) ||
+      ztd::equals(str, "disabled", 8) ||
+      ztd::equals(str, "readonly", 8) ||
+      ztd::equals(str, "multiple", 8) ||
+      ztd::equals(str, "selected", 8) ||
+      ztd::equals(str, "noresize", 8) ||
+      ztd::equals(str, "defer", 5))
     return true;
   else
     return false;
@@ -1154,7 +1155,8 @@ void serializer::html_emitter::emit_node(
         // frame, hr, img, input, isindex, link, meta and param. For example,
         // an element written as <br/> or <br></br> in an XSLT stylesheet MUST
         // be output as <br>.
-        if (is_html_empty_content_model_element(item) && equals(ser->version, "4.0", 3))
+        if (is_html_empty_content_model_element(item) &&
+            ztd::equals(ser->version, "4.0", 3))
           tr << ">";
         else
           tr << "/>";
@@ -2222,7 +2224,7 @@ serializer::validate_parameters(void)
     // Default value for "version" when method is HTML is "4.0"
     if (version_has_default_value) {
       version = "4.0";
-    } else if (!(equals(version, "4.0", 3) || equals(version, "4.01", 4))) {
+    } else if (!(ztd::equals(version, "4.0", 3) || ztd::equals(version, "4.01", 4))) {
       // Only HTML versions 4.0 and 4.01 are supported
       ZORBA_ERROR_DESC(SESU0013,
         "Unsupported HTML serialization version. Accepted values are \"4.0\" and \"4.01\".");

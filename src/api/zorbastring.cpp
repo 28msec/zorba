@@ -112,7 +112,7 @@ bool String::equals( String const &s ) const {
 }
 
 bool String::byteEqual( char const *s, unsigned s_n ) const {
-  return zorba::equals( *THIS_STRING, s, s_n );
+  return ztd::equals( *THIS_STRING, s, s_n );
 }
 
 bool String::operator==( String const &s ) const {

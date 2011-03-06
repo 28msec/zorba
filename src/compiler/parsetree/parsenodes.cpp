@@ -4869,7 +4869,7 @@ FTSelection::FTSelection(
 
 FTSelection::~FTSelection() {
   delete ftor_;
-  delete_ptr_seq( pos_filter_list_ );
+  ztd::delete_ptr_seq( pos_filter_list_ );
 }
 
 void FTSelection::accept( parsenode_visitor &v ) const
@@ -5022,7 +5022,7 @@ FTMatchOptions::FTMatchOptions(
 }
 
 FTMatchOptions::~FTMatchOptions() {
-  delete_ptr_seq( match_options_ );
+  ztd::delete_ptr_seq( match_options_ );
 }
 
 void FTMatchOptions::accept( parsenode_visitor &v ) const
@@ -5206,7 +5206,7 @@ FTThesaurusOption::FTThesaurusOption(
 }
 
 FTThesaurusOption::~FTThesaurusOption() {
-  delete_ptr_seq( thesaurus_id_list_ );
+  ztd::delete_ptr_seq( thesaurus_id_list_ );
 }
 
 
@@ -5260,7 +5260,7 @@ FTStopWordOption::FTStopWordOption(
 
 FTStopWordOption::~FTStopWordOption() {
   delete stop_words_;
-  delete_ptr_seq( incl_excl_list_ );
+  ztd::delete_ptr_seq( incl_excl_list_ );
 }
 
 

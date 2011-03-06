@@ -104,12 +104,13 @@ inline void pop_trace( char const *stack, int line ) {
     STACK.push( OBJ );                                                         \
   } while (0)
 
-#define POP(STACK)      ( pop_trace( #STACK, __LINE__ ), pop_stack( STACK ) )
+#define POP(STACK) \
+  ( pop_trace( #STACK, __LINE__ ), ztd::pop_stack( STACK ) )
 
 #else /* NDEBUG */
 
 #define PUSH(STACK,OBJ) STACK.push( OBJ )
-#define POP(STACK)      pop_stack( STACK )
+#define POP(STACK)      ztd::pop_stack( STACK )
 
 #endif /* NDEBUG */
 

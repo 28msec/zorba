@@ -103,7 +103,7 @@ bool
 DebuggerClientImpl::handshake()
 {
   bool result = false;
-  auto_vec<char> msg(new char[ 12 ]);
+  ztd::auto_vec<char> msg(new char[ 12 ]);
   memset(msg.get(), '\0', 12);
   try {
     theRequestSocket->send("XQHandshake", 11);
@@ -151,7 +151,7 @@ DebuggerClientImpl::send(AbstractCommandMessage* aMessage) const
 {
   //Connect the client
   Length length;
-  auto_vec<Byte> lMessage(aMessage->serialize(length));
+  ztd::auto_vec<Byte> lMessage(aMessage->serialize(length));
   try {
     //send the command
     theRequestSocket->send(lMessage.get(), length);

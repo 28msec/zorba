@@ -91,11 +91,11 @@ ZORBA_DLL_PUBLIC extern signed char const hex2dec[];
 template<class StringType>
 class back_insert_iterator :
   public
-    back_insert_iterator_base<
+    ztd::back_insert_iterator_base<
       StringType, back_insert_iterator<StringType>
     >
 {
-  typedef back_insert_iterator_base<
+  typedef ztd::back_insert_iterator_base<
     StringType, back_insert_iterator<StringType>
   > base_type;
 public:

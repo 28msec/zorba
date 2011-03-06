@@ -2106,7 +2106,7 @@ void end_visit(fo_expr& v)
   std::vector<PlanIter_t> argv;
 
   argv.resize(v.num_args());
-  generate (argv.rbegin(), argv.rend(), stack_to_generator(itstack));
+  generate (argv.rbegin(), argv.rend(), ztd::stack_to_generator(itstack));
   
   const QueryLoc& loc = qloc;
 

@@ -121,7 +121,7 @@ bool is_ucschar( code_point c );
  */
 template<class CodePointType>
 inline bool is_valid( CodePointType c ) {
-  return  (ge0( c )      && c <= 0x00D7FF)
+  return  (ztd::ge0( c ) && c <= 0x00D7FF)
       ||  (c >= 0x00E000 && c <= 0x00FFFD)
       ||  (c >= 0x010000 && c <= 0x10FFFF);
 }

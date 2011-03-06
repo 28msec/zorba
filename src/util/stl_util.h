@@ -57,6 +57,7 @@
 #endif
 
 namespace zorba {
+namespace ztd {
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -237,7 +238,7 @@ void delete_ptr_seq( SequenceType &seq ) {
  * @tparam PredicateType The predicate type.
  * @param seq The sequence to modify.
  * @param pred The predicate to use.
- * @return Returns \c true only if an element was erased; \a false otherwise.
+ * @return Returns \c true only if an element was erased; \c false otherwise.
  */
 template<class SequenceType,class PredicateType> inline
 bool erase_1st_if( SequenceType &seq, PredicateType pred ) {
@@ -329,6 +330,7 @@ stack_generator<T> stack_to_generator(std::stack<T> &stk) {
   return stack_generator<T>( stk );
 }
 
+} // namespace ztd
 } // namespace zorba
 #endif  /* ZORBA_STL_UTIL_H */
 /* vim:set et sw=2 ts=2: */

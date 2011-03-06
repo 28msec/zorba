@@ -22,6 +22,7 @@
 #include <string>
 
 namespace zorba {
+namespace ztd {
 
 ////////// c_str() /////////////////////////////////////////////////////////////
 
@@ -83,7 +84,7 @@ bool equals( char const *s1, typename StringType::size_type s1_n,
  * A macro for calling equals() with a second argument of a string literal.
  */
 #define ZSTREQ(STRING,LITERAL) \
-        zorba::equals( STRING, LITERAL, sizeof( LITERAL ) - 1 )
+        zorba::ztd::equals( STRING, LITERAL, sizeof( LITERAL ) - 1 )
 
 ////////// String splitting ////////////////////////////////////////////////////
 
@@ -327,6 +328,7 @@ void to_string( T const &t, StringType *out ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+} // namespace ztd
 } // namespace zorba
 #endif  /* ZORBA_STRING_UTIL_H */
 /* vim:set et sw=2 ts=2: */

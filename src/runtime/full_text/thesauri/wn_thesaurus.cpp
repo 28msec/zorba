@@ -284,7 +284,7 @@ bool thesaurus::iterator::next( zstring *synonym ) {
       return false;
     }
 
-    candidate_t const candidate( pop_front( candidate_queue_ ) );
+    candidate_t const candidate( ztd::pop_front( candidate_queue_ ) );
     synset_id_t const synset_id = candidate.first;
     iso2788::rel_dir const synset_ptr_dir = candidate.second;
 
@@ -448,7 +448,7 @@ bool thesaurus::iterator::next( zstring *synonym ) {
     } // FOR_EACH
   } // while
 
-  *synonym = thesaurus_.wn_lemmas_[ pop_front( result_queue_ ) ];
+  *synonym = thesaurus_.wn_lemmas_[ ztd::pop_front( result_queue_ ) ];
 # if DEBUG_FT_THESAURUS
   cout << "--> synonym=" << *synonym << endl;
 # endif

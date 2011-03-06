@@ -85,7 +85,7 @@ store::Item_t StandardDocumentURIResolver::resolve(
   if (lResultDoc != NULL)
     return lResultDoc;
 
-  if (equals(lURI.get_scheme(), "file", 4))
+  if (ZSTREQ(lURI.get_scheme(), "file"))
   {
 #ifdef ZORBA_WITH_FILE_ACCESS // maybe we don't want to allow file access for security reasons (e.g. in a webapp)
     std::ifstream lInStream;
@@ -118,8 +118,8 @@ store::Item_t StandardDocumentURIResolver::resolve(
     ZORBA_ERROR_DESC_OSS(FODC0002, "Unable to retrieve " << lURI.toString());
 #endif
   }
-  else if (equals(lURI.get_scheme(), "http", 4) ||
-           equals(lURI.get_scheme(), "https", 5))
+  else if (ZSTREQ(lURI.get_scheme(), "http") ||
+           ZSTREQ(lURI.get_scheme(), "https"))
   {
 #ifdef ZORBA_WITH_REST
     // retrieve web file

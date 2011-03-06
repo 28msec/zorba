@@ -1133,8 +1133,8 @@ void serialize_node_tree(Archiver &ar, store::Item *&obj, bool all_tree)
       //  store::simplestore::ElementNode *elem_node = dynamic_cast<store::simplestore::ElementNode*>(obj);
       //  haveTypedValue = elem_node->haveTypedValue();
       //  haveEmptyValue = elem_node->haveEmptyValue();
-        if(!equals(name_of_type->getNamespace(), "http://www.w3.org/2001/XMLSchema", 32) ||
-           !equals(name_of_type->getLocalName(), "untyped", 7))
+        if(!ZSTREQ(name_of_type->getNamespace(), "http://www.w3.org/2001/XMLSchema") ||
+           !ZSTREQ(name_of_type->getLocalName(), "untyped"))
           haveTypedValue = true;
       }
       ar & haveTypedValue;

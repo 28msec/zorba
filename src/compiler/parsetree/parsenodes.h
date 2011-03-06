@@ -3980,7 +3980,7 @@ protected:
 
     Value (const T& x) : data (x) {}
 
-    std::string toString () const { return to_string (data); }
+    std::string toString () const { return ztd::to_string (data); }
   };
 
 protected:

@@ -1876,8 +1876,8 @@ store::Item_t ElementNode::getNilled() const
   for (; ite != end; ++ite)
   {
     AttributeNode* attr = static_cast<AttributeNode*>(*ite);
-    if (zorba::equals(attr->getNodeName()->getNamespace(), "xsi", 3) &&
-        zorba::equals(attr->getNodeName()->getLocalName(), "nil", 3))
+    if (ZSTREQ(attr->getNodeName()->getNamespace(), "xsi") &&
+        ZSTREQ(attr->getNodeName()->getLocalName(), "nil"))
     {
       nilled = true;
       break;

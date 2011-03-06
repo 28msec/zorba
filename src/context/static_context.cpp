@@ -1425,17 +1425,18 @@ void static_context::get_thesaurus_uri_resolvers(
 
 
 void static_context::remove_stemmer_provider( core::StemmerProvider const *p ) {
-  erase_1st_if(
-    theStemmerProviders, bind2nd( equal_to<core::StemmerProvider const*>(), p )
+  ztd::erase_1st_if(
+    theStemmerProviders,
+    std::bind2nd( std::equal_to<core::StemmerProvider const*>(), p )
   );
 }
 
 void static_context::remove_stop_words_uri_resolver(
     InternalFullTextURIResolver* aResolver)
 {
-  erase_1st_if(
+  ztd::erase_1st_if(
     theStopWordsResolvers, 
-    bind2nd( equal_to<InternalFullTextURIResolver*>(), aResolver )
+    std::bind2nd( std::equal_to<InternalFullTextURIResolver*>(), aResolver )
   );
 }
 

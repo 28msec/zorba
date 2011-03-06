@@ -63,7 +63,7 @@ bool StringPool::insertc(const char* str, zstring& outStr)
     {
       while (entry != NULL)
       {
-        if (equals(entry->theItem, str, len))
+        if (ztd::equals(entry->theItem, str, len))
         {
           found = true;
           break;

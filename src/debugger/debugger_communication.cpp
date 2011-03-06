@@ -59,7 +59,7 @@ theCommandSocket(0), theEventSocket(0)
 
 void zorba::DebuggerCommunicator::handshake()
 {
-	auto_vec<Byte> msg(new Byte[11]);
+	ztd::auto_vec<Byte> msg(new Byte[11]);
 	try
 	{
 		theCommandSocket->recv( msg.get(), 11 );
@@ -72,7 +72,7 @@ void zorba::DebuggerCommunicator::handshake()
 
 zorba::AbstractCommandMessage* zorba::DebuggerCommunicator::handleTCPClient()
 {
-  auto_vec<Byte> lByteMessage;
+  ztd::auto_vec<Byte> lByteMessage;
   std::auto_ptr<AbstractMessage> lMessage;
   try
   {
@@ -103,7 +103,7 @@ zorba::AbstractCommandMessage* zorba::DebuggerCommunicator::handleTCPClient()
 void zorba::DebuggerCommunicator::sendEvent( AbstractCommandMessage* aMessage )
 {
 	Length length;
-	auto_vec<Byte> lMessage(aMessage->serialize(length));
+	ztd::auto_vec<Byte> lMessage(aMessage->serialize(length));
 	try
 	{
 #ifndef NDEBUG
@@ -145,7 +145,7 @@ zorba::DebuggerCommunicator::~DebuggerCommunicator()
 void zorba::DebuggerCommunicator::sendReplyMessage( AbstractCommandMessage* aMessage )
 {
 	Length length;
-	auto_vec<Byte> lByteMessage;
+	ztd::auto_vec<Byte> lByteMessage;
 	std::auto_ptr<ReplyMessage> lReply(aMessage->getReplyMessage());
 	lByteMessage.reset(lReply->serialize( length ));
 	theCommandSocket->send( lByteMessage.get(), length );
