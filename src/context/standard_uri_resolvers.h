@@ -124,7 +124,7 @@ protected:
         const std::string& uri,
         zstring& url);
 
-  static std::string computeLibraryName(const URI& aURI);
+  static std::string computeLibraryName(const URI& aURI, bool aUseDebugDir = false);
 };
 
 

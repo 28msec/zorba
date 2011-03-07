@@ -574,6 +574,7 @@ ExternalModule* StandardModuleURIResolver::getExternalModule(
     URI lURI(fileURL);
 
     std::string lLibraryName = computeLibraryName(lURI);
+    std::string lLibraryNameDebug = computeLibraryName(lURI, true);
 
     // check all module path in the according order
     // the higher in the hirarchy the static context is
@@ -583,9 +584,16 @@ ExternalModule* StandardModuleURIResolver::getExternalModule(
          ++ite)
     {
       std::string potentialModuleFile = (*ite);
+      std::string potentialModuleFile2 = potentialModuleFile;
       potentialModuleFile += lLibraryName;
+      potentialModuleFile2 += lLibraryNameDebug;
 
       std::auto_ptr<std::istream> modfile(new std::ifstream(potentialModuleFile.c_str()));
+      
+      if (!modfile->good()) {
+        modfile.reset(new std::ifstream(potentialModuleFile2.c_str()));
+        potentialModuleFile = potentialModuleFile2;
+      }
 
       if (modfile->good())
       {
@@ -614,7 +622,7 @@ ExternalModule* StandardModuleURIResolver::getExternalModule(
 /*******************************************************************************
 
 ********************************************************************************/
-std::string StandardModuleURIResolver::computeLibraryName(const URI& aURI)
+std::string StandardModuleURIResolver::computeLibraryName(const URI& aURI, bool aUseDebugDir /* = false */)
 {
   zstring lPathNotation = aURI.toPathNotation();
 
@@ -656,14 +664,20 @@ std::string StandardModuleURIResolver::computeLibraryName(const URI& aURI)
   // apple: libmodule.dylib
   // other unix: libmodule.so
   std::ostringstream lLibraryName;
-  lLibraryName << lBranchPath
+  lLibraryName << lBranchPath;
 #ifdef WIN32
-      << lFileName << get_current_lib_suffix() << ".dll";
+  if (aUseDebugDir) {
+    lLibraryName << "Debug\\";
+  }
+  lLibraryName << lFileName << get_current_lib_suffix() << ".dll";
 #else
+  if (aUseDebugDir) {
+    lLibraryName << "Debug/";
+  }
 #ifdef APPLE
-      << "lib" << lFileName << get_current_lib_suffix() << ".dylib";
+  lLibraryName << "lib" << lFileName << get_current_lib_suffix() << ".dylib";
 #else
-      << "lib" << lFileName << get_current_lib_suffix() << ".so";
+  lLibraryName << "lib" << lFileName << get_current_lib_suffix() << ".so";
 #endif
 #endif
 
