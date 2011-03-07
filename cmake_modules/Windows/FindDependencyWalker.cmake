@@ -33,22 +33,34 @@ ENDIF(NOT WIN32)
 
 PRINT_FIND_TITLE(FindDependencyWalker)
 
-IF(NOT ZORBA_THIRD_PARTY_REQUIREMENTS)
-  MESSAGE (STATUS "ZORBA_THIRD_PARTY_REQUIREMENTS variable is not available. I will try to find Depenmdency Walker in: $ENV{ProgramFiles}")
-  SET(ZORBA_THIRD_PARTY_REQUIREMENTS $ENV{ProgramFiles})
-ENDIF(NOT ZORBA_THIRD_PARTY_REQUIREMENTS)
+SET(SEARCH_PATHS ${ZORBA_THIRD_PARTY_REQUIREMENTS})
+LIST(FIND SEARCH_PATHS "$ENV{ProgramFiles}" PRORAM_FILES_FOUND)
+IF(PRORAM_FILES_FOUND EQUAL -1)
+  SET(SEARCH_PATHS ${SEARCH_PATHS} $ENV{ProgramFiles})
+ENDIF(PRORAM_FILES_FOUND EQUAL -1)
 
-# search for a folders containing "depend" in the name in the ZORBA_THIRD_PARTY_REQUIREMENTS path
-FILE(GLOB MATCHED_DIRS "${ZORBA_THIRD_PARTY_REQUIREMENTS}/*depend*")
+SET(PATH_REGEX)
+FOREACH(PATH ${SEARCH_PATHS})
+  FILE(TO_CMAKE_PATH ${PATH} CMPATH)
+  SET(PATH_REGEX ${PATH_REGEX} "${CMPATH}/*depend*")
+ENDFOREACH(PATH)
 
-IF(NOT MATCHED_DIRS)
-  MESSAGE (STATUS "No candidate Dependency Walker directory was found in ZORBA_THIRD_PARTY_REQUIREMENTS (${ZORBA_THIRD_PARTY_REQUIREMENTS})")
-ENDIF(NOT MATCHED_DIRS)
+# search for folders containing "depend" in the name in the SEARCH_PATHS paths
+FILE(GLOB MATCHED_DIRS ${PATH_REGEX})
 
 FOREACH(DIR ${MATCHED_DIRS})
-  MESSAGE (STATUS "DependencyWalker will be searched for in: ${DIR}")
+  MESSAGE (STATUS "Dependency Walker will be searched for in: [ZORBA_THIRD_PARTY_REQUIREMENTS] ${DIR}")
 ENDFOREACH(DIR)
 
+# try to find depends.exe; this will also search in the PATH environment variable
 FIND_PROGRAM(DEPENDS_EXE depends PATHS ${MATCHED_DIRS})
 MESSAGE(STATUS "Found DependencyWalker: ${DEPENDS_EXE}")
 MESSAGE(STATUS "Found DependencyWalker executable -- ${DEPENDS_EXE}")
+
+# print some help
+IF(NOT DEPENDS_EXE)
+  MESSAGE (STATUS "Dependency Walker directory was not found in the paths: ${SEARCH_PATHS};%PATH%")
+  MESSAGE (STATUS "You might wanna check:")
+  MESSAGE (STATUS "  1. Did you set ZORBA_THIRD_PARTY_REQUIREMENTS properly?")
+  MESSAGE (STATUS "  2. Is the Dependency Walker directory in the PATH environment variable?")
+ENDIF(NOT DEPENDS_EXE)

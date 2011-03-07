@@ -17,49 +17,64 @@
 # Once done this will define
 #
 #  CCLIENT_FOUND        - True if C-CLIENT library found.
-#  CCLIENT_INCLUDE      - Directory to include to get C-CLIENT headers
-#  CCLIENT_LIBRARY      - Libraries to link against for the C-CLIENT library
+#  CCLIENT_INCLUDE_DIRS - Directory to include to get C-CLIENT headers
+#  CCLIENT_LIBRARIES    - Libraries to link against for the C-CLIENT library
 #
 
-if (CCLIENT_INCLUDE_DIRS AND CCLIENT_LIBRARIES)
+IF(CCLIENT_INCLUDE_DIRS AND CCLIENT_LIBRARIES)
   # Already in cache, be silent
- set(CCLIENT_FIND_QUIETLY TRUE)
-endif (CCLIENT_INCLUDE_DIRS AND CCLIENT_LIBRARIES)
+  SET(CCLIENT_FIND_QUIETLY TRUE)
+ENDIF(CCLIENT_INCLUDE_DIRS AND CCLIENT_LIBRARIES)
 
-find_path(
+# Look for the headers.
+FIND_PATH(
   CCLIENT_INCLUDE
-  NAMES linkage.c
-  PATHS ${CCLIENT_LIBRARY_DIRS} /usr/include/imap /usr/include/c-client /opt/local/include/c-client
-  DOC "Include directory for the CCLient library linkage (the path to 'linkage.c' file)")
-mark_as_advanced(CCLIENT_INCLUDE)
+  NAMES c-client.h c-client/c-client.h
+  PATHS ${CCLIENT_INCLUDE_DIR} /usr/include/imap /usr/include/c-client /opt/local/include/c-client
+  DOC "Include directory for the CCLient library headers (the path to 'c-client.h' file)")
+
+IF(CCLIENT_INCLUDE)
+  IF(WIN32)
+    IF(EXISTS "${CCLIENT_INCLUDE}/c-client/c-client.h")
+      SET(CCLIENT_INCLUDE "${CCLIENT_INCLUDE}/c-client" CACHE PATH "Path to a file." FORCE)
+    ENDIF(EXISTS "${CCLIENT_INCLUDE}/c-client/c-client.h")  
+  ENDIF(WIN32)
+  MESSAGE(STATUS "Found CCLIENT include directory -- " ${CCLIENT_INCLUDE})
+ELSE(CCLIENT_INCLUDE)
+  MESSAGE(STATUS "Could not find CCLIENT include directory")
+ENDIF(CCLIENT_INCLUDE)
+
+# only for GUI purposes
+MARK_AS_ADVANCED(CCLIENT_INCLUDE)
 
 # Look for the library.
-find_library(
+FIND_LIBRARY(
   CCLIENT_LIBRARY
-  NAMES c-client c-client4
-  PATHS ${CCLIENT_LIBRARY_DIRS} /opt/local/lib /usr/lib
+  NAMES c-client c-client4 cclient.lib c-client/cclient.lib c-client/Release/cclient.lib
+  PATHS ${CCLIENT_LIBRARY_DIR} /opt/local/lib /usr/lib
   DOC "Library to link against for the email support (c-client, libc-client or cclient.lib)")
 
-if (CCLIENT_LIBRARY)
+IF(CCLIENT_LIBRARY)
   MESSAGE(STATUS "Found CCLIENT library -- " ${CCLIENT_LIBRARY})
-else (CCLIENT_LIBRARY)
+ELSE(CCLIENT_LIBRARY)
   MESSAGE(STATUS "Could not find CCLIENT library")
-endif (CCLIENT_LIBRARY)
+ENDIF(CCLIENT_LIBRARY)
 
 # Copy the results to the output variables.
-if(CCLIENT_INCLUDE AND CCLIENT_LIBRARY)
-  set(CCLIENT_FOUND 1)
+IF(CCLIENT_INCLUDE AND CCLIENT_LIBRARY)
+  SET(CCLIENT_FOUND 1)
+  SET(CCLIENT_LIBRARIES ${CCLIENT_LIBRARY})
+  SET(CCLIENT_INCLUDE_DIRS ${CCLIENT_INCLUDE})
 
   # Do not treat the operator name keywords and, bitand, bitor, compl, not, or and xor
   # as synonyms as keywords. Needed in order to include C-CLIENT library
-  IF (CMAKE_COMPILER_IS_GNUCXX)
+  IF(CMAKE_COMPILER_IS_GNUCXX)
     IF(NOT CMAKE_CXX_FLAGS MATCHES "-fno-operator-names")
       SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-operator-names")
     ENDIF(NOT CMAKE_CXX_FLAGS MATCHES "-fno-operator-names")
-  ENDIF (CMAKE_COMPILER_IS_GNUCXX)
-
-else(CCLIENT_INCLUDE AND CCLIENT_LIBRARY)
-  set(CCLIENT_FOUND 0)
-  set(CCLIENT_LIBRARY)
-  set(CCLIENT_INCLUDE)
-endif(CCLIENT_INCLUDE AND CCLIENT_LIBRARY)
+  ENDIF(CMAKE_COMPILER_IS_GNUCXX)
+ELSE(CCLIENT_INCLUDE AND CCLIENT_LIBRARY)
+  SET(CCLIENT_FOUND 0)
+  SET(CCLIENT_LIBRARIES)
+  SET(CCLIENT_INCLUDE_DIRS)
+ENDIF(CCLIENT_INCLUDE AND CCLIENT_LIBRARY)

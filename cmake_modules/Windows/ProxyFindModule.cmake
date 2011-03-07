@@ -34,7 +34,7 @@ MACRO(PRINT_FIND_TITLE MODULE_NAME)
 ENDMACRO(PRINT_FIND_TITLE MODULE_NAME)
 
 
-MACRO(FIND_PACKAGE_WIN32 MODULE_NAME SEARCH_NAME)
+MACRO(FIND_PACKAGE_WIN32 MODULE_NAME SEARCH_NAMES)
 
   IF(NOT WIN32)
     MESSAGE(FATAL_ERROR "This module is intended only for Windows platforms.")
@@ -42,26 +42,60 @@ MACRO(FIND_PACKAGE_WIN32 MODULE_NAME SEARCH_NAME)
 
   PRINT_FIND_TITLE(${MODULE_NAME})
 
-  IF(NOT ZORBA_THIRD_PARTY_REQUIREMENTS)
-    MESSAGE (STATUS "ZORBA_THIRD_PARTY_REQUIREMENTS variable is not available. I will try to find ${MODULE_NAME} in: $ENV{ProgramFiles}")
-    SET(ZORBA_THIRD_PARTY_REQUIREMENTS $ENV{ProgramFiles})
-  ENDIF(NOT ZORBA_THIRD_PARTY_REQUIREMENTS)
+  # if not already provided add the program files directory
+  SET(SEARCH_PATHS ${ZORBA_THIRD_PARTY_REQUIREMENTS})
+  LIST(FIND SEARCH_PATHS "$ENV{ProgramFiles}" PRORAM_FILES_FOUND)
+  IF(PRORAM_FILES_FOUND EQUAL -1)
+    SET(SEARCH_PATHS "${SEARCH_PATHS}" "$ENV{ProgramFiles}")
+  ENDIF(PRORAM_FILES_FOUND EQUAL -1)
 
-  # search for a folder containing SEARCH_NAME in the name in the ZORBA_THIRD_PARTY_REQUIREMENTS path
-  FILE(GLOB MATCHED_DIRS "${ZORBA_THIRD_PARTY_REQUIREMENTS}/*${SEARCH_NAME}*")
+  SET(PATH_REGEX)
+  FOREACH(PATH ${SEARCH_PATHS})
+    FILE(TO_CMAKE_PATH "${PATH}" PATH)
+    FOREACH(NAME ${SEARCH_NAMES})
+      SET(PATH_REGEX ${PATH_REGEX} "${PATH}/*${NAME}*")
+    ENDFOREACH(NAME)
+  ENDFOREACH(PATH)
+
+  # search the SEARCH_PATHS for folders containing one of the names in SEARCH_NAMES
+  FILE(GLOB MATCHED_DIRS ${PATH_REGEX})
 
   # the list of found directories will be added to the paths CMAKE_PREFIX_PATH and
   # thus will be used by the real Find${MODULE_NAME}.cmake module
   SET(CMAKE_PREFIX_PATH)
   FOREACH(DIR ${MATCHED_DIRS})
-    MESSAGE (STATUS "${MODULE_NAME} will be searched for in: ${DIR}")
+    MESSAGE (STATUS "${MODULE_NAME} will be searched for in: [ZORBA_THIRD_PARTY_REQUIREMENTS] ${DIR}")
     SET(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ${DIR})
   ENDFOREACH(DIR)
 
-  IF(NOT CMAKE_PREFIX_PATH)
-    MESSAGE (STATUS "No candidate ${MODULE_NAME} directory was found in ZORBA_THIRD_PARTY_REQUIREMENTS (${ZORBA_THIRD_PARTY_REQUIREMENTS})")
-  ENDIF(NOT CMAKE_PREFIX_PATH)
+  # add all the paths from the PATH environment variable that contain one of the names in SEARCH_NAMES
+  FOREACH(PATH $ENV{PATH})
+    FILE(TO_CMAKE_PATH "${PATH}" PATH)
+    STRING(TOLOWER "${PATH}" LC_PATH)
 
+    # now iterate over all the possible names
+    FOREACH(NAME ${SEARCH_NAMES})
+      STRING(TOLOWER "${NAME}" LC_NAME)
+      IF("${LC_PATH}" MATCHES ".*${LC_NAME}.*")
+        IF(EXISTS "${PATH}/include")
+          MESSAGE (STATUS "${MODULE_NAME} will be searched for in: [PATH environment variable] ${PATH}")
+          SET(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ${PATH})
+        ELSEIF(EXISTS "${PATH}/../include")
+          MESSAGE (STATUS "${MODULE_NAME} will be searched for in: [PATH environment variable] ${PATH}/..")
+          SET(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ${PATH}/..)
+        ENDIF(EXISTS "${PATH}/include")
+      ENDIF("${LC_PATH}" MATCHES ".*${LC_NAME}.*")
+    ENDFOREACH(NAME)
+  ENDFOREACH(PATH)
+
+  # print some help
+  IF(NOT CMAKE_PREFIX_PATH)
+    MESSAGE (STATUS "No candidate ${MODULE_NAME} directory was found in the paths: ${SEARCH_PATHS};%PATH%")
+    MESSAGE (STATUS "You might wanna check:")
+    MESSAGE (STATUS "  1. Did you set ZORBA_THIRD_PARTY_REQUIREMENTS properly?")
+    MESSAGE (STATUS "  2. Is your ${MODULE_NAME} directory matching one of the search names: ${SEARCH_NAMES} ?")
+    MESSAGE (STATUS "  3. Is ${MODULE_NAME} or its \"bin\" directory in the PATH environment variable?")
+  ENDIF(NOT CMAKE_PREFIX_PATH)
 
   # remove the Windows module path to avoid infinite recursion
   LIST(REMOVE_ITEM CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules/Windows)

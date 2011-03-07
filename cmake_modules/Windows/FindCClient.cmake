@@ -25,6 +25,6 @@
 # -D CCLIENT_INCLUDE="path_to_3rd_party_dir\*imap*\c-client"
 # -D CCLIENT_LIBRARY="path_to_3rd_party_dir\*imap*\c-client\Release\cclient.lib"
 #
-# See the FindLibTidy.cmake module shipped with Zorba for more information.
+# See the FindCClient.cmake module shipped with Zorba for more information.
 
-FIND_PACKAGE_WIN32(CClient imap)
+FIND_PACKAGE_WIN32(CClient "imap;cclient;c-client")
