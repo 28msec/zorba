@@ -27,11 +27,22 @@
 #undef max
 #include <list>
 #include <vector>
+#include <exception>
 
 namespace zorba
 {
   namespace emailmodule
   {
+    class ImapException : std::exception {
+    public:
+      explicit ImapException(const std::string& message) throw();
+      virtual ~ImapException() throw();
+      virtual const char* what() const throw();
+      const std::string& get_message() const;
+    private:
+      std::string theMessage;
+    };
+    
     class ImapClient
     {
     public:

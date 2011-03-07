@@ -24,6 +24,28 @@
 
 
 namespace zorba { namespace emailmodule {
+  
+  // exception handling
+  ImapException::ImapException(const std::string& msg) throw()
+  {
+    theMessage = msg;
+  }
+  
+  ImapException::~ImapException() throw()
+  {
+  }
+  
+  const char*
+  ImapException::what() const throw()
+  {
+    return theMessage.c_str();
+  }
+  
+  const std::string&
+  ImapException::get_message() const
+  {
+    return theMessage;
+  }
 
   // functions for smtp support
 
@@ -67,8 +89,24 @@ namespace zorba { namespace emailmodule {
       else {
         sprintf (tmp, "MAIL");
         res = true;
-        out << "OK" << std::endl;
-        res = smtp_mail ( smtp_stream, tmp, aEnvelope, aBody); 
+        res = smtp_mail ( smtp_stream, tmp, aEnvelope, aBody);
+        if (res) {
+          out << "Ok.";
+        } else {
+          out << "Failed.";
+          out << std::endl << "Reply: " << smtp_stream->reply;
+          // Check if it was a problem with the reciptients
+          ADDRESS* lAdresses[4] = {aEnvelope->from, aEnvelope->to, aEnvelope->cc, aEnvelope->bcc};
+          for (int i = 0; i < 4; ++i) {
+            ADDRESS* lAddress = lAdresses[i];
+            while (lAddress) {
+              if (lAddress->error) {
+                out << std::endl << "\tProblem with address " << lAddress->mailbox << "@" << lAddress->host << ": " << aEnvelope->to->error;
+              }
+              lAddress = lAddress->next;
+            }
+          }
+        }
         smtp_close(smtp_stream);
       } 
     } else { 
@@ -336,6 +374,11 @@ namespace zorba { namespace emailmodule {
  
     ENVELOPE* lResult = mail_fetchenvelope(lSource, aMessageNumber);
     
+    if (!lResult)
+    {
+      throw ImapException("Could not get message - wrong message id");
+    }
+    
 
     MESSAGECACHE* lCache = mail_elt(lSource, aMessageNumber);
 
@@ -430,6 +473,10 @@ namespace zorba { namespace emailmodule {
     MAILSTREAM* lSource = getMailStream(aHost, aUserName, aPassword, aMailbox, true);    
  
     ENVELOPE * lResult = mail_fetchstructure_full (lSource, aMessageNumber, aBody, (aUid ? FT_UID : NIL));
+    
+    if (!lResult) {
+      throw ImapException("Wrong message id");
+    }
       
     if (aUid) {
       aMessageNumber = mail_msgno(lSource, aMessageNumber);

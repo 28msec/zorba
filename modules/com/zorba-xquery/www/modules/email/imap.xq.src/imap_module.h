@@ -47,7 +47,7 @@ public:
   virtual ~ImapModule();
   
   virtual String
-  getURI() const { return "http://www.zorba-xquery.com/modules/email/imap"; }
+  getURI() const { return ImapModule::getURIString(); }
   
   virtual StatelessExternalFunction*
   getExternalFunction(const String& aLocalname);
@@ -64,6 +64,12 @@ public:
     }
     
     return theFactory;
+  }
+  
+  static String
+  getURIString() {
+    static String lURI = "http://www.zorba-xquery.com/modules/email/imap";
+    return lURI;
   }
 };
 

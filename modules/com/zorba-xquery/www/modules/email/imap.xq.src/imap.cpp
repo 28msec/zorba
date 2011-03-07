@@ -713,12 +713,18 @@ FetchMessageFunction::getMessage(const ImapModule* aModule,
   std::vector<int> lFlags(6,0);
   ENVELOPE* lEnvelope;
   BODY* lBody;
-  if (aOnlyEnvelope) {
-    // only fetch envelope
-    lEnvelope =  ImapClient::Instance().fetchEnvelope(aHostName, aUserName, aPassword, aMailbox, aMessageNumber, lFlags, aUid);
-  } else {
-    // the flags vector in the imap client will be filled by this call, so clear it
-    lEnvelope = ImapClient::Instance().fetchStructure(aHostName, aUserName, aPassword, aMailbox, &lBody, aMessageNumber, aUid, lFlags);
+  try {
+    if (aOnlyEnvelope) {
+      // only fetch envelope
+      lEnvelope =  ImapClient::Instance().fetchEnvelope(aHostName, aUserName, aPassword, aMailbox, aMessageNumber, lFlags, aUid);
+    } else {
+      // the flags vector in the imap client will be filled by this call, so clear it
+      lEnvelope = ImapClient::Instance().fetchStructure(aHostName, aUserName, aPassword, aMailbox, &lBody, aMessageNumber, aUid, lFlags);
+    }
+  } catch (ImapException& e) {
+    std::string lErrorMessage = e.get_message();
+    Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", "WRONG_ID");
+    error(lQName, lErrorMessage);
   }
  
   std::vector<std::pair<String, String> >   ns_binding;
