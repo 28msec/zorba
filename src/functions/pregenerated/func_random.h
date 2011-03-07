@@ -38,20 +38,6 @@ void populate_context_random(static_context* sctx);
 
 
 
-//op-zorba:numgen
-class op_zorba_numgen : public function
-{
-public:
-  op_zorba_numgen(const signature& sig)
-    :
-    function(sig, FunctionConsts::OP_ZORBA_NUMGEN_0)
-  {
-  }
-
-  CODEGEN_DECL();
-};
-
-
 //fn-zorba-util:random
 class fn_zorba_util_random : public function
 {

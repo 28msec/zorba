@@ -27,59 +27,11 @@
 #include "common/shared_types.h"
 
 
-#include "runtime/base/noarybase.h"
+
 #include "runtime/base/narybase.h"
 
 
 namespace zorba {
-
-/**
- * 
- *Helper Iterator to produce a defined amount of integer items for testing purposes
- *
- * Author: Zorba Team
- */
-class NumGenIteratorState : public PlanIteratorState
-{
-public:
-  int32_t theCurNumber; //the current number
-
-  NumGenIteratorState();
-
-  ~NumGenIteratorState();
-
-  void init(PlanState&);
-  void reset(PlanState&);
-};
-
-class NumGenIterator : public NoaryBaseIterator<NumGenIterator, NumGenIteratorState>
-{ 
-public:
-  SERIALIZABLE_CLASS(NumGenIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(NumGenIterator,
-    NoaryBaseIterator<NumGenIterator, NumGenIteratorState>);
-
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NoaryBaseIterator<NumGenIterator, NumGenIteratorState>*)this);
-  }
-
-  NumGenIterator(
-    static_context* sctx,
-    const QueryLoc& loc)
-    : 
-    NoaryBaseIterator<NumGenIterator, NumGenIteratorState>(sctx, loc)
-  {}
-
-  virtual ~NumGenIterator();
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
 
 /**
  * Function for generating a random integer.

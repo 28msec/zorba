@@ -28,22 +28,6 @@
 namespace zorba {
 
 bool
-NumGenIterator::nextImpl ( store::Item_t& result, PlanState& planState ) const
-{
-  NumGenIteratorState* state;
-  DEFAULT_STACK_INIT ( NumGenIteratorState, state, planState );
-
-  while ( state->theCurNumber < 100 )
-  {
-    STACK_PUSH (
-                GENV_ITEMFACTORY->createInteger (result, Integer::parseInt(state->theCurNumber) ),
-                state );
-    state->theCurNumber ++;
-  }
-  STACK_END (state);
-}
-
-bool
 PseudoRandomIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t    item;

@@ -491,9 +491,6 @@ namespace zorba {
     void beginVisit( const InScopePrefixesIterator& );
     void endVisit  ( const InScopePrefixesIterator& );
 
-    void beginVisit( const NumGenIterator& );
-    void endVisit  ( const NumGenIterator& );
-
     void beginVisit( const RandomIterator& );
     void endVisit  ( const RandomIterator& );
 

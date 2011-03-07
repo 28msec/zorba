@@ -2178,20 +2178,6 @@ void PrinterVisitor::endVisit ( const InScopePrefixesIterator& ) {
 // </InScopePrefixesIterator>
 
 
-// <NumGenIterator>
-void PrinterVisitor::beginVisit ( const NumGenIterator& a) {
-  thePrinter.startBeginVisit("NumGenIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const NumGenIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </NumGenIterator>
-
-
 // <RandomIterator>
 void PrinterVisitor::beginVisit ( const RandomIterator& a) {
   thePrinter.startBeginVisit("RandomIterator", ++theId);

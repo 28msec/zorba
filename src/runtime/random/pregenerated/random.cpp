@@ -29,44 +29,6 @@
 
 namespace zorba {
 
-// <NumGenIterator>
-const char* NumGenIterator::class_name_str = "NumGenIterator";
-NumGenIterator::class_factory<NumGenIterator>
-NumGenIterator::g_class_factory;
-
-const serialization::ClassVersion 
-NumGenIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int NumGenIterator::class_versions_count =
-sizeof(NumGenIterator::class_versions)/sizeof(struct serialization::ClassVersion);
-
-void NumGenIterator::accept(PlanIterVisitor& v) const {
-  v.beginVisit(*this);
-
-  
-
-  v.endVisit(*this);
-}
-
-NumGenIterator::~NumGenIterator() {}
-
-NumGenIteratorState::NumGenIteratorState() {}
-
-NumGenIteratorState::~NumGenIteratorState() {}
-
-
-void NumGenIteratorState::init(PlanState& planState) {
-  PlanIteratorState::init(planState);
-  theCurNumber = 0;
-}
-
-void NumGenIteratorState::reset(PlanState& planState) {
-  PlanIteratorState::reset(planState);
-  theCurNumber = 0;
-}
-// </NumGenIterator>
-
-
 // <RandomIterator>
 const char* RandomIterator::class_name_str = "RandomIterator";
 RandomIterator::class_factory<RandomIterator>

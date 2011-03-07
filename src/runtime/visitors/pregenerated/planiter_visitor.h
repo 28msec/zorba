@@ -324,8 +324,6 @@ namespace zorba{
 
     class InScopePrefixesIterator;
 
-    class NumGenIterator;
-
     class RandomIterator;
 
     class PseudoRandomIterator;
@@ -916,9 +914,6 @@ public:
 
     virtual void beginVisit ( const InScopePrefixesIterator& ) = 0;
     virtual void endVisit   ( const InScopePrefixesIterator& ) = 0;
-
-    virtual void beginVisit ( const NumGenIterator& ) = 0;
-    virtual void endVisit   ( const NumGenIterator& ) = 0;
 
     virtual void beginVisit ( const RandomIterator& ) = 0;
     virtual void endVisit   ( const RandomIterator& ) = 0;

@@ -30,16 +30,6 @@ namespace zorba{
 
 
 
-PlanIter_t op_zorba_numgen::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
-{
-  return new NumGenIterator(sctx, loc);
-}
-
 PlanIter_t fn_zorba_util_random::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -72,11 +62,6 @@ PlanIter_t fn_zorba_util_uuid::codegen(
 
 void populate_context_random(static_context* sctx)
 {
-  DECL(sctx, op_zorba_numgen,
-      (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","numgen"),
-      GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
-
-
   DECL(sctx, fn_zorba_util_random,
       (createQName("http://www.zorba-xquery.com/zorba/util-functions","","random"),
       GENV_TYPESYSTEM.INTEGER_TYPE_ONE));
