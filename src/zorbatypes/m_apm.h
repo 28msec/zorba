@@ -337,16 +337,16 @@ protected:
 		 unref(oldVal);
 	}
 	
-	/*
-    This routine is called to get a private (mutable) copy of our current value. 
-  */
+	/**
+   * This routine is used to implement copy-on-write: If there are more than 1
+   * references to the underlying M_APM_struct, a copy of the struct is created 
+   * and myVal is set to point to that copy; otherwise nothing is done.
+   */
 	M_APM val(void) 
 	{
 		if (myVal->m_apm_refcount == 1) 
-		/* Return my private myVal */
 			return myVal;
 
-		/* Otherwise, our copy of myVal is shared-- we need to make a new private copy. */
 		M_APM oldVal = myVal;
 
 		myVal = makeNew();
@@ -359,7 +359,6 @@ protected:
 	/*
     BAD: C M_APM routines doesn't use "const" where they should--
 	  hence we have to cast to a non-const type here (FIX THIS!).
-
 	  (in due time.... MCR)
 	*/
 	M_APM cval(void) const 
@@ -724,3 +723,8 @@ inline MAPM lcm(const MAPM &u,const MAPM &v)
 #endif
 #endif
 
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

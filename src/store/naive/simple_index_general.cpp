@@ -130,6 +130,9 @@ if (castItem !=  NULL)                                                         \
 }
 
 
+/******************************************************************************
+
+*******************************************************************************/
 bool GeneralHashIndex::insert(
     store::IndexKey*& key,
     store::Item_t& node,
@@ -1180,16 +1183,6 @@ longmap:
       {
         ADD_IN_MAP(XS_DOUBLE, true);
       }
-
-      // may also be gYear, hexBinary, base64Binary, or boolean
-      if (untypedItem->castToGYear(castItem))
-        ADD_IN_MAP(XS_GYEAR, true);
-
-      if (untypedItem->castToHexBinary(castItem))
-        ADD_IN_MAP(XS_HEXBINARY, true);
-
-      if (untypedItem->castToBase64Binary(castItem))
-        ADD_IN_MAP(XS_BASE64BINARY, true);
     }
 
     // try casting to xs:decimal
@@ -1206,13 +1199,6 @@ longmap:
       {
         ADD_IN_MAP(XS_DECIMAL, true);
       }
-
-      // may also be hexBinary or base64Binary
-      if (untypedItem->castToHexBinary(castItem))
-        ADD_IN_MAP(XS_HEXBINARY, true);
-
-      if (untypedItem->castToBase64Binary(castItem))
-        ADD_IN_MAP(XS_BASE64BINARY, true);
     }
 
     // try casting to xs:double

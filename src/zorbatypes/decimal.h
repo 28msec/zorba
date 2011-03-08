@@ -19,11 +19,7 @@
 #include <zorba/config.h>
 #include "common/common.h"
 
-#ifndef ZORBA_NO_BIGNUMBERS
 #include "zorbatypes/m_apm.h"
-#else
-#include <math.h>
-#endif
 
 #include "zorbatypes/zorbatypes_decl.h"
 
@@ -33,7 +29,6 @@
 namespace zorba {
 
 
-// exported for testing only
 class ZORBA_DLL_PUBLIC  Decimal  : public ::zorba::serialization::SerializeBaseClass
 {
   friend class Integer;

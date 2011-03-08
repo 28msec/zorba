@@ -8,6 +8,7 @@ declare variable $auctions:PersonId := xs:QName("auctions:PersonId");
 declare variable $auctions:PersonCity := xs:QName("auctions:PersonCity");
 declare variable $auctions:PersonWatches := xs:QName("auctions:PersonWatches");
 declare variable $auctions:PersonWatches2 := xs:QName("auctions:PersonWatches2");
+declare variable $auctions:AuctionDates := xs:QName("auctions:AuctionDates");
 
 declare collection auctions:auctions as node()*;
 
@@ -50,6 +51,16 @@ by (for $x in ./watches/watch/@open_auction return $x);
 
 
 (:
+  The AuctionDates index maps dates to the open auctions that had a biding on the
+  associated date.
+:)
+
+declare general range manually maintained index auctions:AuctionDates
+on nodes xqddf:collection(xs:QName("auctions:auctions"))//open_auction
+by (for $x in ./bidder/date return xs:date($x)) as xs:date*;
+
+
+(:
   Create and populate the collection, and then create the indexes
 :)
 
@@ -66,6 +77,8 @@ declare sequential function auctions:create-db()
   xqddf:create-index($auctions:PersonWatches);
 
   xqddf:create-index($auctions:PersonWatches2);
+
+  xqddf:create-index($auctions:AuctionDates);
 };
 
 
