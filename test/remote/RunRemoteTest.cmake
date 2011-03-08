@@ -34,7 +34,7 @@ endif(NOT SVN_EXECUTABLE)
 set (svn "${SVN_EXECUTABLE}")
 
 # SVN path for submissions
-set (svn_path "svn://zorbatest.lambda.nu/zorbatest/remotequeue")
+set (svn_path "http://zorbatest.lambda.nu:8080/svn/zorbatest/remotequeue")
 
 # Figure out what directory we're running in
 get_filename_component (cwd ${CMAKE_CURRENT_LIST_FILE} PATH)
