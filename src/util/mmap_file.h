@@ -30,6 +30,8 @@
 # include <windows.h>                   /* for HANDLE */
 #endif /* WIN32 */
 
+#include "fs_util.h"
+
 //
 // Some C headers on some implementations define open/close as macros to remap
 // them to functions that handle files larger than 2 GB.  This works fine in C,
@@ -61,7 +63,7 @@ public:
   typedef value_type const* const_pointer;
   typedef value_type& reference;
   typedef value_type const& const_reference;
-  typedef size_t size_type;
+  typedef fs::size_type size_type;
   typedef ptrdiff_t difference_type;
 
   typedef pointer iterator;
