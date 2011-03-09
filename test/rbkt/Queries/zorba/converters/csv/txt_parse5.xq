@@ -25,12 +25,15 @@ validate{
 
 
 (:
-<b>Input:</b>
+
+Example txt input:
 
 501-000             Jefferson County Library System              2100 Park Place                    Birmingham       3523700232052263615HQMJAOJefferson        NAL0089AL0196                                                         
 511-000             Pickens County Cooperative Library           Post Office Bldg Highway 17 S      Carrollton       3544704892053678407HQCOAOPickens          YAL0139AL0196                                                         
 
-<b>Output:</b>
+--------------------------------------------------------------------------------
+
+Expected output:
 
 <?xml version="1.0" encoding="UTF-8"?>
 <row>

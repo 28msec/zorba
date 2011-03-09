@@ -31,14 +31,3 @@ validate{
 </csv-options:options>}
 )
 
-
-
-(:
-<b>Output:</b>
-
-<?xml version="1.0" encoding="UTF-8"?>
-f1,f2,f3,f4
-value1,"""value2""","value3,value33",value4
-value11,value12,value13,value14
-
-:)

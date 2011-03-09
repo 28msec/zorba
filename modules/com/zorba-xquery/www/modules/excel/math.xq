@@ -669,8 +669,8 @@ declare function excel:degrees($radian as xs:double) as xs:integer
  : @param $number The positive integer value.
  : @return The result as integer.
  : @error XQP0021(errNum) if the number is negative.
- : @example rbkt/Queries/zorba/excel/math/factdouble1.xq
- : @example rbkt/Queries/zorba/excel/math/factdouble2.xq
+ : @example rbkt/Queries/zorba/excel/math/priority1/factdouble1.xq
+ : @example rbkt/Queries/zorba/excel/math/priority1/factdouble2.xq
  :)
 declare function excel:factdouble($number as xs:integer) as xs:integer
 {
@@ -770,14 +770,14 @@ declare %private function excel:iterate-all-gcd(
  : @param $numbers The sequence of positive integers.
  : @return The GCD as integer.
  : @error XQP0021(errNum) if any number is smaller than zero.
- : @example rbkt/Queries/zorba/excel/math/gcd1.xq
- : @example rbkt/Queries/zorba/excel/math/gcd2.xq
- : @example rbkt/Queries/zorba/excel/math/gcd3.xq
- : @example rbkt/Queries/zorba/excel/math/gcd4.xq
- : @example rbkt/Queries/zorba/excel/math/gcd5.xq
- : @example rbkt/Queries/zorba/excel/math/gcd6.xq
- : @example rbkt/Queries/zorba/excel/math/gcd7.xq
- : @example rbkt/Queries/zorba/excel/math/gcd8.xq
+ : @example rbkt/Queries/zorba/excel/math/priority1/gcd1.xq
+ : @example rbkt/Queries/zorba/excel/math/priority1/gcd2.xq
+ : @example rbkt/Queries/zorba/excel/math/priority1/gcd3.xq
+ : @example rbkt/Queries/zorba/excel/math/priority1/gcd4.xq
+ : @example rbkt/Queries/zorba/excel/math/priority1/gcd5.xq
+ : @example rbkt/Queries/zorba/excel/math/priority1/gcd6.xq
+ : @example rbkt/Queries/zorba/excel/math/priority1/gcd7.xq
+ : @example rbkt/Queries/zorba/excel/math/priority1/gcd8.xq
  :)
 declare function excel:gcd($numbers as xs:integer+) as xs:integer
 {
@@ -803,11 +803,11 @@ declare function excel:gcd($numbers as xs:integer+) as xs:integer
  : @param $numbers The sequence of one or more positive integers.
  : @return The LCM as integer.
  : @error XQP0021(errNum) if any number is smaller than zero.
- : @example rbkt/Queries/zorba/excel/math/lcm1.xq
- : @example rbkt/Queries/zorba/excel/math/lcm2.xq
- : @example rbkt/Queries/zorba/excel/math/lcm3.xq
- : @example rbkt/Queries/zorba/excel/math/lcm4.xq
- : @example rbkt/Queries/zorba/excel/math/lcm5.xq
+ : @example rbkt/Queries/zorba/excel/math/priority1/lcm1.xq
+ : @example rbkt/Queries/zorba/excel/math/priority1/lcm2.xq
+ : @example rbkt/Queries/zorba/excel/math/priority1/lcm3.xq
+ : @example rbkt/Queries/zorba/excel/math/priority1/lcm4.xq
+ : @example rbkt/Queries/zorba/excel/math/priority1/lcm5.xq
  :)
 declare function excel:lcm($numbers as xs:integer+) as xs:integer
 {
@@ -837,9 +837,9 @@ declare function excel:lcm($numbers as xs:integer+) as xs:integer
  : @param $multiple The multiple to which you want to round number.
  : @return The rounded number up to the desired multiple.
  : @error XQP0021(errValue) if parameters cannot be casted to numeric type.
- : @example rbkt/Queries/zorba/excel/math/mround1.xq
- : @example rbkt/Queries/zorba/excel/math/mround2.xq
- : @example rbkt/Queries/zorba/excel/math/mround3.xq
+ : @example rbkt/Queries/zorba/excel/math/priority1/mround1.xq
+ : @example rbkt/Queries/zorba/excel/math/priority1/mround2.xq
+ : @example rbkt/Queries/zorba/excel/math/priority1/mround3.xq
  :)
 declare function excel:mround(
   $number   as xs:anyAtomicType,
@@ -866,9 +866,9 @@ declare function excel:mround(
  : @see http://office.microsoft.com/en-us/excel/HP052092281033.aspx
  : @param $degree An angle in degrees that you want to convert.
  : @return The value in radians.
- : @example rbkt/Queries/zorba/excel/math/radians1.xq
- : @example rbkt/Queries/zorba/excel/math/radians2.xq
- : @example rbkt/Queries/zorba/excel/math/radians3.xq
+ : @example rbkt/Queries/zorba/excel/math/priority1/radians1.xq
+ : @example rbkt/Queries/zorba/excel/math/priority1/radians2.xq
+ : @example rbkt/Queries/zorba/excel/math/priority1/radians3.xq
  :)
 declare function excel:radians($degree as xs:integer) as xs:decimal
 {
@@ -886,9 +886,9 @@ declare function excel:radians($degree as xs:integer) as xs:decimal
  : @param $number A positive integer.
  : @return The roman string representation.
  : @error XQP0021(errNum) if the input integer is negative 
- : @example rbkt/Queries/zorba/excel/math/roman1.xq
- : @example rbkt/Queries/zorba/excel/math/roman2.xq
- : @example rbkt/Queries/zorba/excel/math/roman3.xq
+ : @example rbkt/Queries/zorba/excel/math/priority1/roman1.xq
+ : @example rbkt/Queries/zorba/excel/math/priority1/roman2.xq
+ : @example rbkt/Queries/zorba/excel/math/priority1/roman3.xq
  :)
 declare function excel:roman($number as xs:integer) as xs:string
 {

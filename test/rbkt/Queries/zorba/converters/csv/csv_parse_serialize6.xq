@@ -25,7 +25,9 @@ zorba-csv:serialize(
 
 
 (:
-<b>Input:</b>
+
+Example csv input:
+
 OUTPATIENT HOSPITAL PAYMENTS FOR 61 COMMONLY PERFORMED PROCEDURES,,,,,,
 2008 CALENDAR YEAR CLAIMS PROCESSED THROUGH JUNE 2009,,,,,,
 SOURCE:  NATIONAL CLAIMS HISTORY,,,,,,
@@ -38,7 +40,10 @@ NATIONAL,,,"622,289",102 - 228,"60,717"
 California,Los Angeles, ,"12,831",187,"1,037",955
 California,Los Angeles,ALHAMBRA HOSPITAL MEDICAL CENTER,0,,0,
 
-<b>Intermediate output from parsing:</b>
+---------------------------------------------------------------
+
+Intermediate output from parsing:
+
 <row>
   <_STATE>NATIONAL</_STATE>
   <COUNTY/>
@@ -89,7 +94,9 @@ California,Los Angeles,ALHAMBRA HOSPITAL MEDICAL CENTER,0,,0,
   </Breast_biopsy_through_skin_with_sampling_device>
 </row>
 
-<b>Final output from serialization:</b>
+-----------------------------------------------------------------------
+
+Final output from serialization:
 
 _STATE,COUNTY,HOSPITAL_NAME,Removal_of_damaged_skin_and_underlying_tissue,,Breast_biopsy_through_skin_with_sampling_device,
 ,,,CPT_11042,,CPT_19103,

@@ -19,7 +19,9 @@ validate{
 )
 
 (:
-<b>Input:</b>
+
+Example input:
+
 OUTPATIENT HOSPITAL PAYMENTS FOR 61 COMMONLY PERFORMED PROCEDURES,,,,,,
 2008 CALENDAR YEAR CLAIMS PROCESSED THROUGH JUNE 2009,,,,,,
 SOURCE:  NATIONAL CLAIMS HISTORY,,,,,,
@@ -32,7 +34,9 @@ NATIONAL,,,"622,289",102 - 228,"60,717"
 California,Los Angeles, ,"12,831",187,"1,037",955
 California,Los Angeles,ALHAMBRA HOSPITAL MEDICAL CENTER,0,,0,
 
-<b>Output:</b>
+----------------------------------------------------------------------------------------------
+Expected output:
+
 <row>
   <_STATE>NATIONAL</_STATE>
   <COUNTY/>

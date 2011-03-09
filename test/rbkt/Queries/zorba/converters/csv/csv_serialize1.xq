@@ -10,10 +10,3 @@ zorba-csv:serialize(
   <column>f4</column>
 </row>, ())
 
-
-(:
-<b>Output:</b>
-
-<?xml version="1.0" encoding="UTF-8"?>
-f1,f2,f3,f4
-:)

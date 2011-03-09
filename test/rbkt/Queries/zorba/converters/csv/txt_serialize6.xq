@@ -32,15 +32,18 @@ zorba-csv:parse(
     </csv-options:options> }  )
 
     
- (:
- <b>Intermediate result from serialization:</b>
+(:
+
+Intermediate result from serialization:
  
 <?xml version="1.0" encoding="UTF-8"?>
 f1     f2     f3     f4     
 value1 value2 value3 value4 
 value11value12value13value14
 
-<b>Final output from re-parsing:</b>
+-------------------------------------------------------------
+
+Final output from re-parsing:
  
 <?xml version="1.0" encoding="UTF-8"?>
 <row>
@@ -54,4 +57,5 @@ value11value12value13value14
   <f3>value13</f3>
   <f4>value14</f4>
 </row>
- :)
+ 
+:)
