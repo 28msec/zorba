@@ -465,10 +465,6 @@ store::Index* dynamic_context::getIndex(store::Item* qname) const
   {
     return index.getp();
   }
-  else if (theParent != NULL)
-  {
-    return theParent->getIndex(qname);
-  }
   else
   {
     return NULL;
@@ -498,13 +494,8 @@ void dynamic_context::bindIndex(
 ********************************************************************************/
 void dynamic_context::unbindIndex(store::Item* qname)
 {
-  if (!theAvailableIndices->remove(qname))
-  {
-    if (theParent != NULL)
-    {
-      theParent->unbindIndex(qname);
-    }
-  }
+  if (theAvailableIndices != NULL)
+    theAvailableIndices->remove(qname);
 }
 
 

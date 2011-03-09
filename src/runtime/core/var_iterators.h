@@ -173,7 +173,8 @@ public:
         const store::Item_t& varName) 
     :
     NoaryBaseIterator<CtxVarIsSetIterator, PlanIteratorState>(sctx, loc),
-    theVarId(varid)
+    theVarId(varid),
+    theVarName(varName)
   {
   }
 
