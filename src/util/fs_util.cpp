@@ -38,15 +38,18 @@ namespace fs {
 
 namespace win32 {
 
-static type get_type( LPCWSTR wpath ) {
-  DWORD const attr = ::GetFileAttributes( wpath );
-  if ( attr == INVALID_FILE_ATTRIBUTES )
-    return non_existent;
-  if ( attr & FILE_ATTRIBUTE_DIRECTORY )
-    return directory;
-  if ( attr & FILE_ATTRIBUTE_REPARSE_POINT )
-    return link;
-  return file;
+static type get_type( LPCWSTR wpath, size_type *size ) {
+  WIN32_FILE_ATTRIBUTE_DATA data;
+  if ( ::GetFileAttributesEx( wpath, GetFileExInfoStandard, (void*)&data ) ) {
+    if ( data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY )
+      return directory;
+    if ( data.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT )
+      return link;
+    if ( size )
+      *size = (data.nFileSizeHigh << 32) | data.nFileSizeLow;
+    return file;
+  }
+  return non_existent;
 }
 
 static bool to_char( LPCWSTR wpath, char *path ) {
@@ -136,20 +139,22 @@ void get_temp_file( char *path ) {
 #endif /* WIN32 */
 }
 
-type get_type( char const *path ) {
+type get_type( char const *path, size_type *size ) {
 #ifndef WIN32
   struct stat st_buf;
   if ( ::stat( path, &st_buf ) == -1 )
     return non_existent;
-  if ( S_ISREG( st_buf.st_mode ) )
-    return file;
   if ( S_ISDIR( st_buf.st_mode ) )
     return directory;
+  if ( size )
+    *size = st_buf.st_size;
+  if ( S_ISREG( st_buf.st_mode ) )
+    return file;
   return other;
 #else
   WCHAR wpath[ MAX_PATH ];
   win32::to_wchar( path, wpath );
-  return win32::get_type( wpath );
+  return win32::get_type( wpath, size );
 #endif /* WIN32 */
 }
 

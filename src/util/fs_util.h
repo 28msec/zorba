@@ -271,19 +271,23 @@ private:
  * Gets the type of the given file.
  *
  * @param path The path to check.
+ * @param size A pointer to a receive the size of the file in bytes.  The size
+ * is set only if it's not \c NULL and the file's type is \c file.
  * @return Returns said type.
  */
-type get_type( char const *path );
+type get_type( char const *path, size_type *size = 0 );
 
 /**
  * Gets the type of the given file.
  *
  * @param path The path to check.
+ * @param size A pointer to a receive the size of the file in bytes.  The size
+ * is set only if it's not \c NULL and the file's type is \c file.
  * @return Returns said type.
  */
 template<class StringType> inline
-type get_type( StringType const &path ) {
-  return get_type( path.c_str() );
+type get_type( StringType const &path, size_type *size = 0 ) {
+  return get_type( path.c_str(), size );
 }
 
 #endif /* ZORBA_WITH_FILE_ACCESS */
