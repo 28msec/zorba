@@ -38,7 +38,7 @@ namespace fs {
 
 namespace win32 {
 
-static type get_type( LPCWSTR wpath, size_type *size ) {
+static type get_type( LPCWSTR wpath, size_type *size = 0 ) {
   WIN32_FILE_ATTRIBUTE_DATA data;
   if ( ::GetFileAttributesEx( wpath, GetFileExInfoStandard, (void*)&data ) ) {
     if ( data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY )
