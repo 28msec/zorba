@@ -509,7 +509,6 @@ namespace zorba
 
 
       MESSAGECACHE * lDummyCache = mail_new_cache_elt (0);
-      std::stringstream lConverter;
       unsigned int lTempDatePart;
      
 
@@ -537,31 +536,49 @@ namespace zorba
         }
       }      
  
-      // now we convert them and throw them into a dummy message cache 
-      lConverter << lYearString.c_str();
-      lConverter >> lTempDatePart;      
-      lTempDatePart -= 1970;
-      lDummyCache->year = lTempDatePart;
-            
-      lConverter << lMonthString.c_str();
-      lConverter >> lTempDatePart;
-      lDummyCache->month = lTempDatePart;
-      
-      lConverter << lDayString.c_str();
-      lConverter >> lTempDatePart;
-      lDummyCache->day = lTempDatePart;
+      // now we convert them and throw them into a dummy message cache
+      {
+        std::stringstream lConverter;
+        lConverter << lYearString.c_str();
+        lConverter >> lTempDatePart;      
+        lTempDatePart -= 1970;
+        lDummyCache->year = lTempDatePart;
+      }
 
-      lConverter << lHourString.c_str();
-      lConverter >> lTempDatePart;
-      lDummyCache->hours = lTempDatePart;
+      {
+        std::stringstream lConverter;
+        lConverter << lMonthString.c_str();
+        lConverter >> lTempDatePart;
+        lDummyCache->month = lTempDatePart;
+      }
 
-      lConverter << lMinutesString.c_str();
-      lConverter >> lTempDatePart;
-      lDummyCache->minutes = lTempDatePart;
+      {
+        std::stringstream lConverter;
+        lConverter << lDayString.c_str();
+        lConverter >> lTempDatePart;
+        lDummyCache->day = lTempDatePart;
+      }
       
-      lConverter << lSecondsString.c_str();
-      lConverter >> lTempDatePart;
-      lDummyCache->seconds = lTempDatePart;
+      {
+        std::stringstream lConverter;
+        lConverter << lHourString.c_str();
+        lConverter >> lTempDatePart;
+        lDummyCache->hours = lTempDatePart;
+      }
+
+      {
+        std::stringstream lConverter;
+        lConverter << lMinutesString.c_str();
+        lConverter >> lTempDatePart;
+        lDummyCache->minutes = lTempDatePart;
+      }
+      
+      {
+        std::stringstream lConverter;
+        lConverter << lSecondsString.c_str();
+        lConverter >> lTempDatePart;
+        lDummyCache->seconds = lTempDatePart;
+      }
           
       mail_cdate(aCDateTime, lDummyCache); 
   
