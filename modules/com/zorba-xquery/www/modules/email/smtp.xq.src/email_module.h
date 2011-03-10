@@ -49,7 +49,10 @@ namespace zorba
         virtual ~SMTPModule();
 
         virtual String
-        getURI() const { return "http://www.zorba-xquery.com/modules/email/smtp"; }
+        getURI() const { return SMTPModule::getURIString(); }
+      
+        static String
+        getURIString();
 
         static ItemFactory*
         getItemFactory()

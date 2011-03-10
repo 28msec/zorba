@@ -28,6 +28,7 @@
 #include <list>
 #include <vector>
 #include <exception>
+#include <sstream>
 
 namespace zorba
 {
@@ -35,11 +36,14 @@ namespace zorba
   {
     class ImapException : std::exception {
     public:
-      explicit ImapException(const std::string& message) throw();
+      explicit ImapException(const std::string& aLocalName,
+                             const std::string& message) throw();
       virtual ~ImapException() throw();
       virtual const char* what() const throw();
       const std::string& get_message() const;
+      const std::string& get_localname() const;
     private:
+      std::string theLocalName;
       std::string theMessage;
     };
     
@@ -228,6 +232,8 @@ namespace zorba
       std::string getPassword();
       std::string getError();
       void addError(const std::string& aError);
+      
+      void addLogEntry(const std::string& aLogEntry);
 
       void setStatus(unsigned long aMessages, unsigned long aRecent, unsigned long aUnseen, unsigned long aUIDNext, unsigned long aUIDValidity);
   
@@ -256,6 +262,9 @@ namespace zorba
           }
         }
       };
+      
+      void
+      checkMailStream(MAILSTREAM* aStream);
 
       struct Host {
         MAILSTREAM * lMailStream;
@@ -273,7 +282,8 @@ namespace zorba
       // the Host of the current mailstream
       
       // string containing error message
-      std::string theErrorMessage;
+      std::stringstream theErrorMessage;
+      std::stringstream theLog;
       std::string theUserName;
       std::string thePassword;
 

@@ -36,6 +36,13 @@ namespace zorba {
       theFunctions.clear();
     }
 
+    String
+    SMTPModule::getURIString()
+    {
+      static String res = "http://www.zorba-xquery.com/modules/email/smtp";
+      return res;
+    }
+    
     StatelessExternalFunction*
     SMTPModule::getExternalFunction(const String& aLocalname)
     {
