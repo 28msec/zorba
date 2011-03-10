@@ -98,6 +98,7 @@ namespace zorba
         Item lQName = SMTPModule::getItemFactory()->createQName(SMTPModule::getURIString(), "imap", e.get_localname());
         error(lQName, lErrorMessage);
       }
+      return ItemSequence_t(NULL);
     }
     
   } // namespace emailmodule
