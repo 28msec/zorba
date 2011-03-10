@@ -14,10 +14,12 @@ import module namespace smtp = 'http://www.zorba-xquery.com/modules/email/smtp';
 import schema namespace imaps = 'http://www.zorba-xquery.com/modules/email/imap';
 import schema namespace email = 'http://www.zorba-xquery.com/modules/email/email';
 
-declare variable $local:host-info as element(imaps:hostInfo) := (<imaps:hostInfo><hostName>mail.28msec.com/novalidate-cert</hostName><userName>imaptest</userName><password>cclient</password></imaps:hostInfo>);
+declare default element namespace 'http://www.zorba-xquery.com/modules/email/email';
 
-declare variable $local:sender-host-info as element(imaps:hostInfo) := (<imaps:hostInfo><hostName>smtp.gmail.com:587/tls/novalidate-cert</hostName><userName
->zorba.smtp.sender</userName><password>1openssl!</password></imaps:hostInfo>);
+declare variable $local:host-info as element(imaps:hostInfo) := (<imaps:hostInfo><imaps:hostName>mail.28msec.com/novalidate-cert</imaps:hostName><imaps:userName>imaptest</imaps:userName><imaps:password>cclient</imaps:password></imaps:hostInfo>);
+
+declare variable $local:sender-host-info as element(imaps:hostInfo) := (<imaps:hostInfo><imaps:hostName>smtp.gmail.com:587/tls/novalidate-cert</imaps:hostName><imaps:userName
+>zorba.smtp.sender</imaps:userName><imaps:password>1openssl!</imaps:password></imaps:hostInfo>);
 
 let $complying-unique-ids as xs:long* := imap:search($local:host-info, "INBOX", "SUBJECT delete", true())
     (: if there are no emails to delete, then the send function of the smtp library is probably not working, or the expunge is working excellently ... :)
@@ -28,7 +30,7 @@ let $complying-unique-ids as xs:long* := imap:search($local:host-info, "INBOX", 
               return empty(imap:search($local:host-info, "INBOX", "SUBJECT delete", true()));
 
 smtp:send($local:sender-host-info,
-      <email:message>
+      <message>
         <envelope>
           <date>2010-11-26T15:50:39-04:01</date>
           <subject>delete</subject>
@@ -39,6 +41,6 @@ smtp:send($local:sender-host-info,
             Oh yeah
           </content>
         </body>
-      </email:message>);
+      </message>);
 
 

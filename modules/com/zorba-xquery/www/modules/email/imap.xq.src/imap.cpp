@@ -73,6 +73,7 @@ StatusFunction::evaluate(
     Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
     error(lQName, lErrorMessage);
   }
+  return ItemSequence_t(NULL);
 }
 
 //*****************************************************************************
@@ -107,6 +108,7 @@ CreateFunction::evaluate(
     Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
     error(lQName, lErrorMessage);
   }
+  return ItemSequence_t(NULL);
 }
 
 
@@ -143,6 +145,7 @@ DeleteFunction::evaluate(
     Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
     error(lQName, lErrorMessage);
   }
+  return ItemSequence_t(NULL);
 }
 
 //*****************************************************************************
@@ -178,6 +181,7 @@ RenameFunction::evaluate(
     Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
     error(lQName, lErrorMessage);
   }
+  return ItemSequence_t(NULL);
 }
 
 
@@ -225,6 +229,7 @@ ListFunction::evaluate(
     Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
     error(lQName, lErrorMessage);
   }
+  return ItemSequence_t(NULL);
 }
 
 
@@ -261,6 +266,7 @@ SubscribeFunction::evaluate(
     Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
     error(lQName, lErrorMessage);
   }
+  return ItemSequence_t(NULL);
 }
 
 //*****************************************************************************
@@ -296,6 +302,7 @@ UnsubscribeFunction::evaluate(
     Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
     error(lQName, lErrorMessage);
   }
+  return ItemSequence_t(NULL);
 }
 
 //*****************************************************************************
@@ -331,6 +338,7 @@ ExpungeFunction::evaluate(
     Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
     error(lQName, lErrorMessage);
   }
+  return ItemSequence_t(NULL);
 }
 
 //*****************************************************************************
@@ -382,6 +390,7 @@ SearchFunction::evaluate(
     Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
     error(lQName, lErrorMessage);
   }
+  return ItemSequence_t(NULL);
 }
 
 //*****************************************************************************
@@ -437,6 +446,7 @@ CopyFunction::evaluate(
     Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
     error(lQName, lErrorMessage);
   }
+  return ItemSequence_t(NULL);
 }
 
 //*****************************************************************************
@@ -486,6 +496,7 @@ FetchEnvelopeFunction::evaluate(
     Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
     error(lQName, lErrorMessage);
   }
+  return ItemSequence_t(NULL);
 }
 
 
@@ -524,6 +535,7 @@ FetchSubjectFunction::evaluate(
     Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
     error(lQName, lErrorMessage);
   }
+  return ItemSequence_t(NULL);
 }
 
 //*****************************************************************************
@@ -561,6 +573,7 @@ FetchFromFunction::evaluate(
     Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
     error(lQName, lErrorMessage);
   }
+  return ItemSequence_t(NULL);
 }
 
 
@@ -614,6 +627,7 @@ FetchFlagsFunction::evaluate(
     Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
     error(lQName, lErrorMessage);
   }
+  return ItemSequence_t(NULL);
 }
 
 
@@ -664,6 +678,7 @@ SetFlagsFunction::evaluate(
     Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
     error(lQName, lErrorMessage);
   }
+  return ItemSequence_t(NULL);
 }
 
 void
@@ -731,6 +746,7 @@ FetchUidFunction::evaluate(
     Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
     error(lQName, lErrorMessage);
   }
+  return ItemSequence_t(NULL);
 }
 
 //*****************************************************************************
@@ -762,6 +778,7 @@ FetchMessageSequenceNumberFunction::evaluate(
     Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
     error(lQName, lErrorMessage);
   }
+  return ItemSequence_t(NULL);
 }
 
 
@@ -800,6 +817,7 @@ FetchMessageFunction::evaluate(
     Item lQName = ImapModule::getItemFactory()->createQName(ImapModule::getURIString(), "imap", e.get_localname());
     error(lQName, lErrorMessage);
   }
+  return ItemSequence_t(NULL);
 }
 
 
@@ -842,7 +860,7 @@ FetchMessageFunction::getMessage(const ImapModule* aModule,
     if (aOnlyEnvelope) {
       lEnvelopeName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "envelope");
     } else {
-      lEnvelopeName = aModule->getItemFactory()->createQName("", "", "envelope");
+      lEnvelopeName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "envelope");
     }  
     Item lEnvelopeType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "envelopeType");
     
@@ -859,11 +877,11 @@ FetchMessageFunction::getMessage(const ImapModule* aModule,
     
     // create the remail node if needed 
     if (lEnvelope->remail) {
-      ImapFunction::createInnerNodeWithText(aModule, lEnvelopeItem, "", "email",  "remail", "string", lEnvelope->remail);
+      ImapFunction::createInnerNodeWithText(aModule, lEnvelopeItem, "http://www.zorba-xquery.com/modules/email/email", "email",  "remail", "http://www.w3.org/2001/XMLSchema", "string", lEnvelope->remail);
     }
     /* create the date node if needed */
     if (lEnvelope->date) {
-      ImapFunction::createInnerNodeWithText(aModule, lEnvelopeItem, "", "",  "date", "string", ImapFunction::getDateTime(reinterpret_cast<const char*>(lEnvelope->date)));
+      ImapFunction::createInnerNodeWithText(aModule, lEnvelopeItem, "http://www.zorba-xquery.com/modules/email/email", "email",  "date", "http://www.w3.org/2001/XMLSchema", "string", ImapFunction::getDateTime(reinterpret_cast<const char*>(lEnvelope->date)));
     }
     // create from node if needed
     if (lEnvelope->from) {
@@ -877,7 +895,7 @@ FetchMessageFunction::getMessage(const ImapModule* aModule,
     }
     // create subject node
     if (lEnvelope->subject) {
-      ImapFunction::createInnerNodeWithText(aModule, lEnvelopeItem, "", "",  "subject", "string", lEnvelope->subject);
+      ImapFunction::createInnerNodeWithText(aModule, lEnvelopeItem, "http://www.zorba-xquery.com/modules/email/email", "email",  "subject", "http://www.w3.org/2001/XMLSchema", "string", lEnvelope->subject);
     }
     
     ADDRESS* lRecipents;
@@ -906,7 +924,7 @@ FetchMessageFunction::getMessage(const ImapModule* aModule,
     
     // create messageId node
     if (lEnvelope->message_id) {
-      ImapFunction::createInnerNodeWithText(aModule, lEnvelopeItem,  "", "",  "messageId", "string", lEnvelope->message_id);
+      ImapFunction::createInnerNodeWithText(aModule, lEnvelopeItem,  "http://www.zorba-xquery.com/modules/email/email", "email",  "messageId", "http://www.w3.org/2001/XMLSchema", "string", lEnvelope->message_id);
     }
     Item lFlagsItem;
     // create flags node
@@ -921,7 +939,7 @@ FetchMessageFunction::getMessage(const ImapModule* aModule,
     /* if we want the whole message, then build it together */
     
     /* <email:mimeVersion>1.0</email:mimeVersion> */
-    ImapFunction::createInnerNodeWithText(aModule, aParent,  "", "", "mimeVersion", "string", "1.0");
+    ImapFunction::createInnerNodeWithText(aModule, aParent,  "http://www.zorba-xquery.com/modules/email/email", "email", "mimeVersion", "http://www.w3.org/2001/XMLSchema", "string", "1.0");
     
     
     // make a tolower version of the subtype
@@ -930,12 +948,12 @@ FetchMessageFunction::getMessage(const ImapModule* aModule,
     std::transform(lSubType.begin(), lSubType.end(), lSubType.begin(), tolower);
     
     /* creating the <body> node */ 
-    static Item lBodyName = aModule->getItemFactory()->createQName("", "", "body");
+    static Item lBodyName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "body");
     static Item lBodyType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "bodyTypeChoice");
     static Item lBodyItem = aModule->getItemFactory()->createElementNode(aParent, lBodyName, lBodyType, false, false, ns_binding); 
     /* in case of non-multipart, just add the body to the message */
     
-    static Item lMultipartParentName = aModule->getItemFactory()->createQName("", "", "multipart");
+    static Item lMultipartParentName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "multipart");
     static Item lMultipartParentType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "multipartType");
     Item lMultipartParent; 
     // using a vector instead of a stack, because including stack will clash with the c-client include ... 

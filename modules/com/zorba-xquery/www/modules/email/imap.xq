@@ -34,11 +34,11 @@ declare function imap:status($host-info as element(imaps:hostInfo), $mailbox as 
   return
       validate {
         <imaps:status>
-          <messages>{$status-sequence[1]}</messages>
-          <recent>{$status-sequence[2]}</recent>
-          <unseen>{$status-sequence[3]}</unseen>
-          <uidnext>{$status-sequence[4]}</uidnext>
-          <uidvalidity>{$status-sequence[5]}</uidvalidity>
+          <imaps:messages>{$status-sequence[1]}</imaps:messages>
+          <imaps:recent>{$status-sequence[2]}</imaps:recent>
+          <imaps:unseen>{$status-sequence[3]}</imaps:unseen>
+          <imaps:uidnext>{$status-sequence[4]}</imaps:uidnext>
+          <imaps:uidvalidity>{$status-sequence[5]}</imaps:uidvalidity>
         </imaps:status> 
       
       }
@@ -107,8 +107,8 @@ declare function imap:list($host-info as element(imaps:hostInfo), $mailbox-ref a
   return
   validate {
     <imaps:mailbox>
-      <hostName>{$host-info/imaps:hostName/text()}</hostName>
-      <mailboxName>{fn:substring-after($mailbox, '}')}</mailboxName>
+      <imaps:hostName>{$host-info/imaps:hostName/text()}</imaps:hostName>
+      <imaps:mailboxName>{fn:substring-after($mailbox, '}')}</imaps:mailboxName>
     </imaps:mailbox>
   }
 };

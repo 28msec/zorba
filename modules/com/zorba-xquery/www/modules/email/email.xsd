@@ -2,6 +2,7 @@
 <schema xmlns="http://www.w3.org/2001/XMLSchema" 
 targetNamespace="http://www.zorba-xquery.com/modules/email/email"
 xmlns:tns="http://www.zorba-xquery.com/modules/email/email" 
+elementFormDefault="qualified"
 >
 
 

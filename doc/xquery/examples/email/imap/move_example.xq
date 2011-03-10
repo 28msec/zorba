@@ -11,14 +11,16 @@ import module namespace imap = 'http://www.zorba-xquery.com/modules/email/imap';
 import schema namespace imaps = 'http://www.zorba-xquery.com/modules/email/imap';
 import schema namespace email = 'http://www.zorba-xquery.com/modules/email/email';
 
+declare default element namespace 'http://www.zorba-xquery.com/modules/email/imap';
+
 declare variable $local:host-info as element(imaps:hostInfo) := (<imaps:hostInfo><hostName>mail.28msec.com/novalidate-cert</hostName><userName>imaptest</userName><password>cclient</password></imaps:hostInfo>);
 
 let $uids := imap:search($local:host-info, "INBOX", "SUBJECT move", true())
 return
  (: if $uids are empty, then probably the message with subject move is already in the move folder and was not copied back last time :)
-  if (empty($uids)) then
-    let $uids-in-move := ($local:host-info, "INBOX.MoveFolder", true())
-    return imap:move($local:host-info, "INBOX.MoveFolder", "INBOX", $uids-in-move, true())
-  else
+  if ($uids) then
     let $sucessfully-moved := imap:move($local:host-info, "INBOX", "INBOX.MoveFolder", $uids, true())
     return imap:move($local:host-info, "INBOX.MoveFolder", "INBOX", $uids, true())
+  else
+    let $uids-in-move := imap:search($local:host-info, "INBOX.MoveFolder", "ALL", true())
+    return imap:move($local:host-info, "INBOX.MoveFolder", "INBOX", $uids-in-move, true())

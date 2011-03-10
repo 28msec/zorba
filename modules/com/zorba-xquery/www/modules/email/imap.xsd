@@ -2,7 +2,8 @@
 
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
   xmlns:imap="http://www.zorba-xquery.com/modules/email/imap"
-    targetNamespace="http://www.zorba-xquery.com/modules/email/imap"> 
+  targetNamespace="http://www.zorba-xquery.com/modules/email/imap"
+  elementFormDefault="qualified"> 
 
 
     <xs:annotation>

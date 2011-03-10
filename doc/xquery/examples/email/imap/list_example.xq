@@ -18,6 +18,8 @@ import module namespace imap = 'http://www.zorba-xquery.com/modules/email/imap';
 import schema namespace imaps = 'http://www.zorba-xquery.com/modules/email/imap';
 import schema namespace email = 'http://www.zorba-xquery.com/modules/email/email';
 
+declare default element namespace 'http://www.zorba-xquery.com/modules/email/imap';
+
 declare variable $local:host-info as element(imaps:hostInfo) := (<imaps:hostInfo><hostName>mail.28msec.com/novalidate-cert</hostName><userName>imaptest</userName><password>cclient</password></imaps:hostInfo>);
 
 let $list := imap:list($local:host-info, "", "INBOX.Dra*", false())

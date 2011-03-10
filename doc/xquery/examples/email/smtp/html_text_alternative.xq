@@ -10,11 +10,12 @@ import module namespace serialize = 'http://www.zorba-xquery.com/modules/seriali
 import schema namespace email = 'http://www.zorba-xquery.com/modules/email/email';
 import schema namespace imaps = 'http://www.zorba-xquery.com/modules/email/imap';
 
+declare default element namespace 'http://www.zorba-xquery.com/modules/email/email';
 
 (:~
  : This variable contains the information on the account from which the email should be sent.
  :) 
-declare variable $local:sender-host-info as element(imaps:hostInfo) := (<imaps:hostInfo><hostName>smtp.gmail.com:587/tls/novalidate-cert</hostName><userName>zorba.smtp.sender</userName><password>1openssl!</password></imaps:hostInfo>); 
+declare variable $local:sender-host-info as element(imaps:hostInfo) := (<imaps:hostInfo><imaps:hostName>smtp.gmail.com:587/tls/novalidate-cert</imaps:hostName><imaps:userName>zorba.smtp.sender</imaps:userName><imaps:password>1openssl!</imaps:password></imaps:hostInfo>); 
 
 
 
@@ -22,7 +23,7 @@ declare variable $local:sender-host-info as element(imaps:hostInfo) := (<imaps:h
 
 
 smtp:send($local:sender-host-info, 
-      <email:message>
+      <message>
         <envelope>
           <date>2010-11-26T15:50:39-04:01</date>
           <subject>An important message</subject>
@@ -41,4 +42,4 @@ smtp:send($local:sender-host-info,
             </content>
           </multipart>  
         </body>
-      </email:message>);
+      </message>);

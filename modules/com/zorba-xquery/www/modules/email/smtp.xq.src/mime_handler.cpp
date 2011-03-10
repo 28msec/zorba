@@ -33,7 +33,7 @@ namespace zorba
   {
     Item lNodeName;
     aElement.getNodeName(lNodeName);
-    return lNodeName.getStringValue();
+    return lNodeName.getLocalName();
   }
 
   //helper function for retrieving the string value of a Text Node

@@ -90,6 +90,7 @@ namespace zorba { namespace emailmodule {
                             const std::string& aNamespace,
                             const std::string& aPrefix,
                             const std::string& aName,
+                            const std::string& aTypeNamespace,
                             const std::string& aType,
                             const std::string& aContent);
 

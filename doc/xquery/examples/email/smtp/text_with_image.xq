@@ -11,17 +11,18 @@ import schema namespace image = 'http://www.zorba-xquery.com/modules/image/image
 import schema namespace email = 'http://www.zorba-xquery.com/modules/email/email';
 import schema namespace imaps = 'http://www.zorba-xquery.com/modules/email/imap';
 
+declare default element namespace 'http://www.zorba-xquery.com/modules/email/email';
 
 (:~
  : This variable contains the information on the account from which the email should be sent.
  :) 
-declare variable $local:sender-host-info as element(imaps:hostInfo) := (<imaps:hostInfo><hostName>smtp.gmail.com:587/tls/novalidate-cert</hostName><userName>zorba.smtp.sender</userName><password>1openssl!</password></imaps:hostInfo>); 
+declare variable $local:sender-host-info as element(imaps:hostInfo) := (<imaps:hostInfo><imaps:hostName>smtp.gmail.com:587/tls/novalidate-cert</imaps:hostName><imaps:userName>zorba.smtp.sender</imaps:userName><imaps:password>1openssl!</imaps:password></imaps:hostInfo>); 
 
 (: the send function takes the host info and a xml representation of the email to be sent as arguments, the schema describing the email xml can be found at http://www.zorba-xquery.com/modules/email/email. :) 
 
 let $image as xs:base64Binary := paint:paint(basic:create(xs:unsignedInt(200), xs:unsignedInt(200), "GIF"), <image:text><origin><x>20</x><y>50</y></origin><text>Zorba really rocks.</text><font>Arial</font><font-size>14</font-size></image:text>)
 return smtp:send($local:sender-host-info, 
-      <email:message>
+      <message>
         <envelope>
           <date>2010-11-26T15:50:39-04:01</date>
           <subject>An important message</subject>
@@ -37,4 +38,4 @@ return smtp:send($local:sender-host-info,
           </content>
           </multipart>
         </body>
-      </email:message>);
+      </message>);
