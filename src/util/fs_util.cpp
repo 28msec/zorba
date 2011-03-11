@@ -164,7 +164,7 @@ bool remove( char const *path ) {
 #else
   WCHAR wpath[ MAX_PATH ];
   win32::to_wchar( path, wpath );
-  switch ( win32::get_type( wpath ) ) {
+  switch ( win32::get_type( wpath, NULL) ) {
     case directory:
       return ::RemoveDirectory( wpath ) != 0;
     case non_existent:
