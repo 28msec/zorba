@@ -235,11 +235,12 @@ declare sequential function xqdoc2html:copy-xhtml-requisites(
     }
 };
 
-(:~ Returns the URI of the module given the passed $folderPath using the Zorba URI resolving mechanism.
+(:~
+ : Returns the URI of the module given the passed <pre>$folderPath</pre> using
+ : the Zorba URI resolving mechanism.
  :
  : @param $folderPath the folder path.
  : @return the URI of the module.
- :
  :)
 declare %private function xqdoc2html:get-URI-from-location($folderPath as xs:string) as xs:string {
   let $tok := tokenize($folderPath, fn:concat("\",file:path-separator()))
@@ -263,11 +264,11 @@ declare %private function xqdoc2html:get-filename($moduleURI as xs:string) as xs
   )
 };
 
-declare  %private function xqdoc2html:get-example-filename($examplePath as xs:string) as xs:string 
+declare %private function xqdoc2html:get-example-filename($examplePath as xs:string) as xs:string 
 {
-  if(contains($examplePath,"/")) then
+  if (fn:contains($examplePath,"/")) then
     fn:replace($examplePath,"/","_")
-  else if (contains($examplePath,"\")) then
+  else if (fn:contains($examplePath,"\")) then
     fn:replace($examplePath,"\","_")
   else
     $examplePath
@@ -277,7 +278,6 @@ declare  %private function xqdoc2html:get-example-filename-link($examplePath as 
 {
   fn:tokenize($examplePath,fn:concat("\",file:path-separator()))[last()]
 };
-
 
 (:~
  : This function generates the XQDoc XML for all the modules found in $modulesPath
@@ -318,7 +318,7 @@ declare sequential function xqdoc2html:generate-xqdoc-xml(
           
           xqdoc2html:collect-functions($xqdoc, $xhtmlRelativeFilePath, $xqdoc2html:functionsCollector),
           
-          (:copy the actual module under xhtml/modules folder but save it under a different name, i.e. $xhtmlRelativeFilePath :)
+          (: copy the actual module under xhtml/modules folder but save it under a different name, i.e. $xhtmlRelativeFilePath :)
           let $ret := file:copy($filePath,
                                 fn:concat($xqdocXhtmlPath,
                                           file:path-separator(),
@@ -336,7 +336,6 @@ declare sequential function xqdoc2html:generate-xqdoc-xml(
       fn:error($err:UE004, fn:concat("FAILED: ", $moduleUri, " (", fn:concat($xqdocXmlPath, file:path-separator(), xqdoc2html:get-filename($moduleUri), ".xml"), ")"));
     }
 };
-
 
 (:~
  : This function generates the XQDoc XHTML pages for all the XQDoc XML
@@ -655,22 +654,31 @@ declare function xqdoc2html:generate-function-index()
 };
 
 (:~
- : This function returns the file path of the provided file name.
- : @param $filename the module file name.
- : @param $examplePath string with the paths where the examples are kept separated by ; .
- : @return the file path to the provided file name or the empty sequence if the file name was not found.
+ : This function resolves a relative file path given a directory path. The
+ : function will fail throwing an error if the destination directory does not
+ : exist or if the resulting path does not point to an existing file.
+ :
+ : @param $relativeFilePath the module file name.
+ : @param $directoryPath string with the paths where the examples are kept
+ :        separated by <pre>;</pre>.
+ : @return The full path of the file to be resolved.
  :)
-declare %private sequential function xqdoc2html:get-example-path (
-  $filename as xs:string,
-  $examplePath as xs:string
-) as xs:string {
-  (: $examplePath is zorba_folder/test:)
-  let $test := fn:concat($examplePath,file:path-separator(),$filename)
-  return
-    if (fn:exists($test)) then
-      $test
-    else 
-      fn:error($err:UE008, fn:concat("The example '", $test, "' was not found."));
+declare %private sequential function xqdoc2html:resolve-file-path(
+  $relativeFilePath as xs:string,
+  $directoryPath as xs:string
+) as xs:string
+{
+  (: $directoryPath is zorba_folder/test :)
+  if (file:is-directory($directoryPath)) then
+    let $fullPath := fn:concat($directoryPath, file:path-separator(), $relativeFilePath)
+    return
+      if (file:is-file($fullPath)) then
+        $fullPath
+      else
+        fn:error($err:UE008, fn:concat("The file <", $relativeFilePath, "> ",
+          "was not found in the directory <", $directoryPath, ">"))
+  else
+    fn:error($err:UE010, fn:concat("The path <", $directoryPath, "> must point to an existing directory:"))
 };
 
 (:~
@@ -678,23 +686,24 @@ declare %private sequential function xqdoc2html:get-example-path (
  : replacing examples with actual links to files.
  :
  : @param $xqdoc the node containing the XQDoc XML.
- : @param $examplePath string with the paths where the examples are kept separated by ; .
+ : @param $examplePath string with the paths where the examples are kept
+ :        separated by <pre>;</pre>.
  : @param $xqdocXhtmlPath where to generate the XQDoc XHTML documents.
  : @return the processed $xhtml.
  :)
 declare %private sequential function xqdoc2html:configure-xml (
   $xqdoc,
   $examplePath as xs:string,
-  $xqdocXhtmlPath as xs:string) {
-    
+  $xqdocXhtmlPath as xs:string)
+{    
   (: copy the example into the 'examples' folder :)
   xqdoc2html:copy-examples($xqdoc, $xqdocXhtmlPath, $examplePath);
 
   (: replace the inlineExamples with actual inline code :)
 
   for $inlineExample in $xqdoc//*:inlineexample
-  let $exampleSource := xqdoc2html:get-example-path(data($inlineExample/@href),$examplePath)
-  let $exampleContent := file:read-text( $exampleSource )
+  let $exampleSource := xqdoc2html:resolve-file-path(fn:data($inlineExample/@href), $examplePath)
+  let $exampleContent := file:read-text($exampleSource)
   return
     replace node $inlineExample with
       <pre class="brush: xquery;">{text{$exampleContent(:$inlineExample/@href:)}}</pre>;
@@ -712,9 +721,8 @@ declare %private sequential function xqdoc2html:configure-xml (
  :)
 declare sequential function xqdoc2html:configure-xhtml (
   $xhtml,
-  $modulesPath as xs:string 
-) {
-
+  $modulesPath as xs:string)
+{
   (: replace the function type description with images :)
   let $xquSpec := "http://www.w3.org/TR/xquery-update-10/",
       $xqsSpec := "http://www.w3.org/TR/xquery-sx-10/#dt-sequential-function",
@@ -936,7 +944,8 @@ declare %private sequential function xqdoc2html:generate-index-html(
   $templatePath as xs:string, 
   $menu, 
   $modules,
-  $zorbaVersion as xs:string) as document-node() {
+  $zorbaVersion as xs:string) as document-node()
+{
     let $indexHtmlDoc := file:read-xml($templatePath)
     return block {
         insert node <title>XQuery Modules Documentation</title>
@@ -961,7 +970,6 @@ declare %private sequential function xqdoc2html:generate-index-html(
     }
 };
 
-
 (:~
  : This function creates the XQDoc XMLs and from them the XQDoc XHTMLs.
  :
@@ -977,8 +985,8 @@ declare sequential function xqdoc2html:main(
   $xqdocBuildPath as xs:string,
   $xhtmlRequisitesPath as xs:string,
   $examplePath as xs:string,
-  $zorbaVersion as xs:string
-) {
+  $zorbaVersion as xs:string)
+{
     let $leftMenu :=
     <menu title="XQuery Modules Documentation">
       <category name="http://expath.org/ns" uri="http://expath.org/ns" />
@@ -1021,8 +1029,8 @@ declare %private sequential function xqdoc2html:main(
   $xqdocBuildPath as xs:string,
   $indexHtmlPath as xs:string,
   $examplePath as xs:string,
-  $zorbaVersion as xs:string
-) {  
+  $zorbaVersion as xs:string)
+{  
   declare $xqdocXmlPath     as xs:string := fn:concat($xqdocBuildPath, file:path-separator(), "xml");
   declare $xqdocXhtmlPath   as xs:string := fn:concat($xqdocBuildPath, file:path-separator(), "xhtml");
   declare $xqdocSchemasPath as xs:string := fn:concat($xqdocXhtmlPath, file:path-separator(), "schemas");
@@ -1163,116 +1171,6 @@ declare %private sequential function xqdoc2html:parse-spec-results(
 
 };
 
-declare %private sequential function xqdoc2html:copy-example(
-  $exampleSource as xs:string,
-  $exampleDestination as xs:string,
-  $examplePath as xs:string)
-{
-  if(exists($exampleSource)) then
-    let $search-queries := fn:concat("rbkt[", file:path-separator(), file:path-separator(), "//]Queries")
-    return
-    if(fn:not(fn:matches($exampleSource, "[.]xq$")) or fn:not(fn:matches($exampleSource, $search-queries))) then
-      file:copy($exampleSource, $exampleDestination, fn:false())
-    else 
-      let $exampleContent := file:read-text( $exampleSource )
-      return
-      if(fn:matches($exampleContent, "output", "i")) then
-        file:copy($exampleSource, $exampleDestination, fn:false())
-      else
-        let $specSource := fn:replace($exampleSource, "[.]xq$", ".spec")
-        return
-        if(fn:matches($specSource, "[.]spec$") and file:is-file($specSource)) then
-	        let $specContent :=  file:read-text( $specSource )
-          let $specContent := fn:replace($specContent, "\$RBKT_SRC_DIR", fn:concat($examplePath,"/rbkt"))
-          let $specLines := fn:tokenize($specContent, "[\n\r]+")
-          let $specArgs := xqdoc2html:parse-spec-args($exampleSource, $specLines)
-          let $specResults := xqdoc2html:parse-spec-results($exampleSource, $specLines)
-          let $exampleContent := fn:concat($exampleContent,"
-
-
-
-(: Example configuration (taken from zorba testsuite):
-          
-",
-$specContent,"
-          
----------------------------------------------------------------------------------------
-",
-$specArgs,"
-          
----------------------------------------------------------------------------------------
-
-",
-$specResults,"
-")
-          return
-          if(fn:string-length($specResults) eq 0) then
-            if(fn:not( matches($specContent, "Error"))) then
-              let $replace-exp-result := "rbkt/ExpQueryResults"
-              let $exp-result-path := fn:replace($exampleSource, $search-queries, $replace-exp-result)
-              let $exp-result := fn:replace($exp-result-path, "[.]xq$", ".xml.res")
-              return
-              if(($exp-result-path ne $exampleSource) and file:is-file ( $exp-result )) then
-                let $output-content := file:read-text ( $exp-result )
-                let $exampleContent := fn:concat ($exampleContent, "
-Expected output:
-
-",
-$output-content,
-"
-                
-:)
-"
-                )
-                return
-                file:write( $exampleDestination, $exampleContent, <output:method>text</output:method>)
-              else
-                fn:error($err:UE008, fn:concat("The example <", $exampleSource,"> does not have expected output.
-                Add the example input and expected output by hand in the example, in a commentary that should also include the word 'output'."))
-            else
-              let $exampleContent := fn:concat( $exampleContent, "
-
-Test returns an error code.
-:)
-")
-              return
-              file:write( $exampleDestination, $exampleContent, <output:method>text</output:method>)
-          else
-            let $exampleContent := fn:concat( $exampleContent, "
-
-:)
-")
-            return
-            file:write( $exampleDestination, $exampleContent, <output:method>text</output:method>)
-        else
-          let $replace-exp-result := "rbkt/ExpQueryResults"
-          let $exp-result-path := fn:replace($exampleSource, $search-queries, $replace-exp-result)
-          let $exp-result := fn:replace($exp-result-path, "[.]xq$", ".xml.res")
-          return
-          if(($exp-result-path ne $exampleSource) and file:is-file ( $exp-result )) then
-            let $output-content := file:read-text ( $exp-result )
-            let $exampleContent := fn:concat ($exampleContent, "
-
-(:
-            
-Expected output:
-
-",
-$output-content,
-"
-                
-:)
-"
-            )
-            return
-            file:write( $exampleDestination, $exampleContent, <output:method>text</output:method>)
-          else
-            fn:error($err:UE008, fn:concat("The example <", $exampleSource,"> does not have expected output.
-            Add the example input and expected output by hand in the example, in a commentary that should also include the word 'output'."))
-  else
-    fn:error($err:UE008, fn:concat("The example <", $exampleSource,"> does not exist!"))
-};
-
 (:~
  : This method copies all the examples and inlineexamples to the $xqdocXhtmlPath/examples folder.
  :
@@ -1284,18 +1182,122 @@ $output-content,
 declare sequential function xqdoc2html:copy-examples(
   $xqdoc, 
   $xqdocXhtmlPath as xs:string,
-  $examplePath as xs:string) {
-  
+  $examplePath as xs:string)
+{
   (:copy the @examples:)
   let $xqdocExamplesPath := fn:concat($xqdocXhtmlPath, file:path-separator(), "examples")
-  return block {
-  for $example in $xqdoc/xqdoc:functions/xqdoc:function/xqdoc:comment/xqdoc:example
-  let $exampleText := xqdoc2html:get-example-filename($example/text())
-  let $exampleSource := xqdoc2html:get-example-path($example/text(),$examplePath)
-  let $exampleDestination := fn:concat($xqdocExamplesPath, file:path-separator(), $exampleText)
   return
-    xqdoc2html:copy-example($exampleSource, $exampleDestination, $examplePath)
-  }
+    block {
+      for $example in $xqdoc/xqdoc:functions/xqdoc:function/xqdoc:comment/xqdoc:example
+      let $exampleText := xqdoc2html:get-example-filename($example/text())
+      let $exampleSource := xqdoc2html:resolve-file-path($example/text(), $examplePath)
+      let $exampleDestination := fn:concat($xqdocExamplesPath, file:path-separator(), $exampleText)
+      return
+        try {
+          xqdoc2html:copy-example($exampleSource, $exampleDestination, $examplePath)
+        } catch * ($error_code, $error_message) {
+          fn:error($err:UE009, fn:concat("Copy example from <", $exampleSource,"> to <", $exampleDestination, "> failed. Error code: ", $error_code, " Message: ", $error_message));
+        }
+    }
+};
+
+declare %private sequential function xqdoc2html:copy-example(
+  $exampleSource as xs:string,
+  $exampleDestination as xs:string,
+  $examplePath as xs:string)
+{
+  let $search-queries := fn:concat("rbkt[", file:path-separator(), file:path-separator(), "//]Queries")
+  return
+    if (fn:not(fn:matches($exampleSource, "[.]xq$")) or
+        fn:not(fn:matches($exampleSource, $search-queries))) then
+      file:copy($exampleSource, $exampleDestination, fn:false())
+    else 
+      let $exampleContent := file:read-text( $exampleSource )
+      return
+      if (fn:matches($exampleContent, "output", "i")) then
+        file:copy($exampleSource, $exampleDestination, fn:false())
+      else
+        let $specSource := fn:replace($exampleSource, "[.]xq$", ".spec")
+        return
+        if (fn:matches($specSource, "[.]spec$") and file:is-file($specSource)) then
+          let $specContent :=  file:read-text( $specSource )
+          let $specContent := fn:replace($specContent, "\$RBKT_SRC_DIR", fn:concat($examplePath,"/rbkt"))
+          let $specLines := fn:tokenize($specContent, "[\n\r]+")
+          let $specArgs := xqdoc2html:parse-spec-args($exampleSource, $specLines)
+          let $specResults := xqdoc2html:parse-spec-results($exampleSource, $specLines)
+          let $exampleContent := fn:concat($exampleContent, "
+
+
+
+(: Example configuration (taken from zorba testsuite):
+
+", $specContent, "
+
+---------------------------------------------------------------------------------------
+", $specArgs, "
+
+---------------------------------------------------------------------------------------
+
+", $specResults, "
+")
+          return
+            if (fn:string-length($specResults) eq 0) then
+              if (fn:not(matches($specContent, "Error"))) then
+                let $replace-exp-result := "rbkt/ExpQueryResults"
+                let $exp-result-path := fn:replace($exampleSource, $search-queries, $replace-exp-result)
+                let $exp-result := fn:replace($exp-result-path, "[.]xq$", ".xml.res")
+                return
+                  if (($exp-result-path ne $exampleSource) and file:is-file($exp-result)) then
+                    let $output-content := file:read-text ($exp-result)
+                    let $exampleContent := fn:concat ($exampleContent, "
+Expected output:
+
+",
+$output-content,
+"
+
+:)
+")
+                    return
+                      file:write($exampleDestination, $exampleContent, <output:method>text</output:method>)
+                  else
+                    fn:error($err:UE008, fn:concat("The example <", $exampleSource,"> does not have expected output. Add the example input and expected output by hand in the example, in a commentary that should also include the word 'output'."))
+              else
+                let $exampleContent := fn:concat($exampleContent, "
+
+Test returns an error code.
+:)
+")
+                return
+                  file:write($exampleDestination, $exampleContent, <output:method>text</output:method>)
+            else
+              let $exampleContent := fn:concat($exampleContent, "
+
+:)
+")
+              return
+                file:write($exampleDestination, $exampleContent, <output:method>text</output:method>)
+        else
+          let $replace-exp-result := "rbkt/ExpQueryResults"
+          let $exp-result-path := fn:replace($exampleSource, $search-queries, $replace-exp-result)
+          let $exp-result := fn:replace($exp-result-path, "[.]xq$", ".xml.res")
+          return
+            if (($exp-result-path ne $exampleSource) and file:is-file ($exp-result)) then
+              let $output-content := file:read-text ($exp-result)
+              let $exampleContent := fn:concat ($exampleContent, "
+
+(:
+
+Expected output:
+
+", $output-content, "
+                
+:)
+")
+              return
+                file:write($exampleDestination, $exampleContent, <output:method>text</output:method>)
+            else
+              fn:error($err:UE008, fn:concat("The example <", $exampleSource,"> does not have expected output. Add the example input and expected output by hand in the example, in a commentary that should also include the word 'output'."))
 };
 
 (:~

@@ -113,7 +113,6 @@ FileFunction::getOneBooleanArg(
 
 String
 FileFunction::getFilePathString(
-    const StaticContext* aSctxCtx,
     const StatelessExternalFunction::Arguments_t& aArgs,
     int aPos)
 {
@@ -134,6 +133,33 @@ FileFunction::pathToFullOSPath(const String& aPath) {
   std::string lPath = lFile->getFilePath();
 
   return String(lPath);
+}
+
+String
+FileFunction::getEncodingArg(
+    const StatelessExternalFunction::Arguments_t& aArgs,
+    unsigned int aPos)
+{
+  // the default file encoding
+  zorba::String lEncoding("UTF-8");
+  if (aArgs.size() > aPos) {
+    Item lEncodingItem;
+    Iterator_t arg_iter = aArgs[aPos]->getIterator();
+    arg_iter->open();
+    if (arg_iter->next(lEncodingItem)) {
+      lEncoding = lEncodingItem.getStringValue().uppercase();
+    }
+    arg_iter->close();
+  }
+
+  if (!(lEncoding == "UTF-8" || lEncoding == "UTF8")) {
+    // the rest are not supported encodings
+    std::stringstream lErrorMessage;
+    lErrorMessage << "Unsupported encoding: " << lEncoding;
+    throwError(lErrorMessage.str(), XQP0019_INTERNAL_ERROR);
+  }
+
+  return lEncoding;
 }
 
 String

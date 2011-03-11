@@ -184,6 +184,8 @@ namespace zorba {
 
   };
 
+//*****************************************************************************
+
   class PathSeparator : public FileFunction
   {
     public:

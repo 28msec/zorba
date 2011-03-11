@@ -336,7 +336,7 @@ FileImpl::files() const
 }
 
 void
-FileImpl::openInputStream(std::ifstream& aInStream, bool binary) const
+FileImpl::openInputStream(std::ifstream& aInStream, bool binary, bool trimByteOrderMark) const
 {
   ZORBA_TRY
     std::string lPath(theInternalFile->get_path());
@@ -371,11 +371,19 @@ FileImpl::openInputStream(std::ifstream& aInStream, bool binary) const
     if (aInStream.is_open() == false) {
       ZORBA_ERROR_DESC_OSS(FODC0002, "File not accessible: " << lPath);
     }
+
+    if (trimByteOrderMark) {
+      char lBuf[3];
+      aInStream.read(lBuf, 3);
+      if (!aInStream.good() || lBuf[0] != (char)0xEF || lBuf[1] != (char)0xBB || lBuf[2] != (char)0xBF ) {
+        aInStream.seekg(0);
+      }
+    }
   ZORBA_CATCH
 }
 
 void
-FileImpl::openOutputStream(std::ofstream& aOutStream, bool append, bool binary) const
+FileImpl::openOutputStream(std::ofstream& aOutStream, bool binary, bool append) const
 {
   ZORBA_TRY
     std::string lPath(theInternalFile->get_path());

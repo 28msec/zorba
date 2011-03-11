@@ -51,17 +51,17 @@ FileModule::getExternalFunction(const String& aLocalname)
       lFunc = new ReadTextFunction(this);
     } else if (aLocalname.equals("read-xml")) {
       lFunc = new ReadXmlFunction(this);
-    // ****************************************************
-    } else if (aLocalname.equals("copy")) {
-      lFunc = new CopyFunction(this);
     } else if (aLocalname.equals("exists")) {
       lFunc = new ExistsFunction(this);
-    } else if (aLocalname.equals("files")) {
-      lFunc = new FilesFunction(this);
     } else if (aLocalname.equals("is-directory")) {
       lFunc = new IsDirectoryFunction(this);
     } else if (aLocalname.equals("is-file")) {
       lFunc = new IsFileFunction(this);
+    } else if (aLocalname.equals("copy")) {
+      lFunc = new CopyFunction(this);
+    // ****************************************************
+    } else if (aLocalname.equals("files")) {
+      lFunc = new FilesFunction(this);
     } else if (aLocalname.equals("last-modified")) {
       lFunc = new LastModifiedFunction(this);
     } else if (aLocalname.equals("path-separator")) {

@@ -905,7 +905,7 @@ zstring StreamableStringItem::show() const
 
 bool StreamableStringItem::isStreamable() const
 {
-  return true;
+  return theIsMaterialized;
 }
 
 

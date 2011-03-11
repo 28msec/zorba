@@ -89,7 +89,7 @@ declare sequential function file:create-directory(
  :
  : @param $dir The path/URI denoting the directory to be created.
  : @param $recursive If the operation should create all the missing parrent
- :    directories.
+ :	      directories.
  : @return The empty sequence.
  :)
 declare sequential function file:create-directory(
@@ -106,7 +106,7 @@ declare sequential function file:create-directory(
  :
  : @param $dir The path/URI denoting the directory to be created.
  : @param $recursive If the operation should create all the missing parrent
- :    directories.
+ :        directories.
  : @param $failIfExists Flag indicating whether the directory must be created or not.
  : @return The empty sequence.
  :)
@@ -133,7 +133,7 @@ declare sequential function file:delete(
  :
  : @param $fileOrDir The path/URI of the file or directory to delete.
  : @param $recursive If the operation should recursively delete the given
- :	  directory.
+ :	      directory.
  : @return The empty sequence.
  :)
 declare sequential function file:delete(
@@ -170,24 +170,36 @@ declare %nondeterministic function file:read-binary(
  : Reads the content of a file and returns a sequence of strings representing
  : the lines in the content of the file.
  :
- : The default implementation considers the LF (&#xA;) character as the line
- : separator. If a resulting line ends with the CR (&#xD;) character, this is
- : trimmed as well. This implementation will treat uniformly LF and CRLF as
- : line separators.
+ : The operation is equivalent to calling:
+ : <pre>file:read-text-lines($file, "UTF-8")</pre>.
  :
  : @param $file The file to read.
  : @return The content of the file as a sequence of strings.
  :)
-declare sequential function file:read-text-lines(
+declare function file:read-text-lines(
   $file as xs:string
 ) as xs:string*
 {
-  let $content := file:read-text($file)
-  return fn:tokenize($content, "\n")
+  file:read-text-lines($file, "UTF-8")
 };
 
-(:
-declare sequential function file:read-text-lines(
+(:~
+ : Reads the content of a file using the specified encoding and returns a
+ : sequence of strings representing the lines in the content of the file.
+ :
+ : This implementation considers the LF (&#xA;) character as the line
+ : separator. If a resulting line ends with the CR (&#xD;) character, this is
+ : trimmed as well. This implementation will uniformly treat LF and CRLF as
+ : line separators.
+ :
+ : In Zorba only the following encodings are currently supported: "UTF-8",
+ : "UTF8". The encoding parameter is case insensitive.
+ :
+ : @param $file The file to read.
+ : @param $encoding The encoding used when reading the file.
+ : @return The content of the file as a sequence of strings.
+ :)
+declare function file:read-text-lines(
   $file as xs:string,
   $encoding as xs:string
 ) as xs:string*
@@ -195,91 +207,235 @@ declare sequential function file:read-text-lines(
   let $content := file:read-text($file, $encoding)
   return fn:tokenize($content, "\n")
 };
-:)
 
 (:~
  : Reads the content of a file and returns a string representation of the
  : content.
  :
+ : The operation is equivalent to calling:
+ : <pre>file:read-text($file, "UTF-8")</pre>.
+ :
  : @param $file The file to read.
  : @return The content of the file as string.
  :)
-declare %nondeterministic function file:read-text(
+declare function file:read-text(
   $file as xs:string
-) as xs:string external;
+) as xs:string
+{
+  file:read-text($file, "UTF-8")
+};
 
-(:
-declare %nondeterministic function file:read-text(
+(:~
+ : Reads the content of a file using the specified encoding and returns a
+ : string representation of the content.
+ :
+ : In Zorba only the following encodings are currently supported: "UTF-8",
+ : "UTF8". The encoding parameter is case insensitive.
+ :
+ : @param $file The file to read.
+ : @param $encoding The encoding used when reading the file.
+ : @return The content of the file as string.
+ :)
+declare function file:read-text(
   $file as xs:string,
   $encoding as xs:string
 ) as xs:string external;
-:)
 
 (:~
  : Reads a file as an XML file and returns an XML document. The file content
  : must be a valid XML otherwise an error will be thrown.
  :
+ : The operation is equivalent to calling:
+ : <pre>file:read-xml($file, "UTF-8")</pre>.
+ :
  : @param $file The file to read.
  : @return An XML document containing the content of the file.
- : @example rbkt/Queries/zorba/file/validate.xq
  :)
-declare sequential function file:read-xml(
+declare function file:read-xml(
   $file as xs:string
-) as node() external;
+) as node()
+{
+  file:read-xml($file, "UTF-8")
+};
 
-(:
-declare sequential function file:read-xml(
+(:~
+ : Reads a file as an XML file using the specified encoding and returns an XML
+ : document. The file content must be a valid XML otherwise an error will be
+ : thrown.
+ :
+ : In Zorba only the following encodings are currently supported: "UTF-8",
+ : "UTF8". The encoding parameter is case insensitive.
+ :
+ : @param $file The file to read.
+ : @param $encoding The encoding used when reading the file.
+ : @return An XML document containing the content of the file.
+ :)
+declare %nondeterministic function file:read-xml(
   $file as xs:string,
   $encoding as xs:string
-) as xs:string external;
-:)
-
-(: ********************************************************************** :)
-
-(:~
- : Copies a file given a source and a destination paths/URIs. The operation
- : fails if the source path/URI does not point to a file or the destination
- : path/URI is already used.
- :
- : @param $sourceFile The path/URI of the file to copy.
- : @param $destinationFile The detination path/URI.
- : @return true if the copy operation was successful.
- : @error An error is thrown if IO or Security problems occur.
- :)
-declare sequential function file:copy(
-  $sourceFile as xs:string,
-  $destinationFile as xs:string
-) as xs:boolean external;
-
-(:~
- : Copies a file given a source and a destination paths/uris. The operation
- : fails if the source path/URI does not point to a file or the destination
- : path/URI is already used if the overwrite flag is se to false.
- :
- : @param $sourceFile The path/URI of the file to copy.
- : @param $destinationFile The destination path/URI.
- : @param $overwrite Flag to control if the operation should succeed if a the
- :        destination file already exists.
- : @example rbkt/Queries/zorba/file/files_pattern1.xq
- : @return true if the copy operation was successful
- : @error An error is thrown if IO or Security problems occur.
- :)
-declare sequential function file:copy(
-  $sourceFile as xs:string,
-  $destinationFile as xs:string,
-  $overwrite as xs:boolean
-) as xs:boolean external;
+) as node() external;
 
 (:~
  : Tests if a path/URI is already used in the file system.
  :
  : @param $fileOrDir The path/URI to test for existance.
  : @return true if the path/URI points to an existing file system item.
- : @error An error is thrown if IO or Security problems occur.
  :)
 declare %nondeterministic function file:exists(
   $fileOrDir as xs:string
 ) as xs:boolean external;
+
+(:~
+ : Tests if a path/URI points to a directory. On UNIX-based systems, the root
+ : and the volume roots are considered directories.
+ :
+ : @param $dir The path/URI to test.
+ : @return true if the path/URI points to a directory.
+ :)
+declare %nondeterministic function file:is-directory(
+  $dir as xs:string
+) as xs:boolean external;
+
+(:~
+ : Tests if a path/URI points to a file.
+ :
+ : @param $dir The path/URI to test.
+ : @return true if the path/URI points to a file.
+ :)
+declare %nondeterministic function file:is-file(
+  $file as xs:string
+) as xs:boolean external;
+
+(:~
+ : Copies a file given a source and a destination paths/URIs. The operation
+ : fails if the source path/URI does not point to a file or the destination
+ : path/URI is already used by a file.
+ :
+ : The operation is equivalent to calling:
+ : <pre>file:copy($sourceFile, $destination, fn:false())</pre>.
+ :
+ : @param $sourceFile The path/URI of the file to copy.
+ : @param $destination The detination path/URI.
+ : @return The empty sequence.
+ :)
+declare sequential function file:copy(
+  $sourceFile as xs:string,
+  $destination as xs:string
+) as empty-sequence()
+{
+  file:copy($sourceFile, $destination, fn:false())
+};
+
+(:~
+ : Copies a file given a source and a destination paths/URIs. The operation
+ : fails if the source path/URI does not point to a file or the destination
+ : path/URI is already used by a file and the overwrite flag evaluates to
+ : <pre>fn:false()</pre>.
+ :
+ : @param $sourceFile The path/URI of the file to copy.
+ : @param $destination The destination path/URI.
+ : @param $overwrite Flag to control if the operation should overwrite the
+ :        destination file.
+ : @return The empty sequence.
+ :)
+declare sequential function file:copy(
+  $sourceFile as xs:string,
+  $destination as xs:string,
+  $overwrite as xs:boolean
+) as empty-sequence() external;
+
+(:~
+ : Copies a file or directory given a source and a destination paths/URIs.
+ : The operation fails if the source path/URI does not point to a file and the
+ : recursive flag evaluates to <pre>fn:false()</pre>. The operation also fails
+ : if in at any time one destination file already exists and the overwrite flag
+ : evaluates to <pre>fn:false()</pre>.
+ :
+ : @param $source The path/URI of the file or directory to copy.
+ : @param $destination The destination path/URI.
+ : @param $overwrite Flag to control if the operation should overwrite any
+ :        files that already exist at destination.
+ : @param $recursive If the operation should recursively copy a directory.
+ : @return The empty sequence.
+ :)
+declare sequential function file:copy(
+  $source as xs:string,
+  $destination as xs:string,
+  $overwrite as xs:boolean,
+  $recursive as xs:boolean
+) as empty-sequence()
+{
+  (: for non-recursive and file copy use the external implementation :)
+  if (fn:not($recursive) or fn:not(file:is-directory($source))) then
+    file:copy($source, $destination, $overwrite)
+
+  (: we are sure we want to copy a directory :)
+  else
+    (: we copy it into an existing directory :)
+    if (file:exists($destination)) then
+      if (file:is-directory($destination)) then
+        file:copy-directory($source, $destination, $overwrite)
+      else
+        (: the destination is a file :)
+        fn:error()
+
+    (: the destination does not exist, that means the copied directory is renamed :)
+    else
+      (: but only if it's parent directory exists :)
+      let $dir := file:dirname($destination)
+      return
+        if (file:is-directory($dir)) then
+          block {
+            file:create-directory($destination, fn:true());
+          
+            for $item in file:files($source)
+            let $fullSrcPath := fn:concat($source, file:path-separator(), $item)
+            let $fullDestPath := fn:concat($destination, file:path-separator(), $item)
+            return
+              if (file:is-directory($fullSrcPath)) then
+                file:copy-directory($fullSrcPath, $fullDestPath, $overwrite)
+              else
+                file:copy($fullSrcPath, $fullDestPath, $overwrite);
+          }
+        else
+          fn:error()
+};
+
+(:~
+ : This is an internal function that copies an entire source directory to an
+ : destination directory. The caller to this function must make sure that both
+ : the source and destination point to existing directories.
+ :
+ : @param $sourceDir The existing source directory.
+ : @param $destinationDir The existing destination directory.
+ : @param $overwrite Flag to control if the operation should overwrite any
+ :        files that already exist at destination.
+ : @return The empty sequence.
+ :)
+declare %private sequential function file:copy-directory(
+  $sourceDir as xs:string,
+  $destinationDir as xs:string,
+  $overwrite as xs:boolean
+) as empty-sequence()
+{
+  let $name := file:basename($sourceDir)
+  let $destDir := fn:concat($destinationDir, file:path-separator(), $name)
+  return
+    block {
+      file:create-directory($destDir);
+
+      for $item in file:files($sourceDir)
+      let $fullSrcPath := fn:concat($sourceDir, file:path-separator(), $item)
+      let $fullDestPath := fn:concat($destDir, file:path-separator(), $item)
+      return
+        if (file:is-directory($fullSrcPath)) then
+          file:copy-directory($fullSrcPath, $fullDestPath, $overwrite)
+        else
+          file:copy($fullSrcPath, $fullDestPath, $overwrite);
+    }
+};
+
+(: ********************************************************************** :)
 
 (:~
  : Lists the file system items in a certain directory.
@@ -352,29 +508,6 @@ declare function file:files(
   )
   return $result
 };
-
-(:~
- : Tests if a path/URI points to a directory. On UNIX-based systems, the root
- : and the volumes roots are considered directories.
- :
- : @param $dir The path/URI to test.
- : @return true if the path/URI points to a directory.
- : @error An error is thrown if IO or Security problems occur.
- :)
-declare %nondeterministic function file:is-directory(
-  $dir as xs:string
-) as xs:boolean external;
-
-(:~
- : Tests if a path/URI points to a file.
- :
- : @param $dir The path/URI to test.
- : @return true if the path/URI points to a file.
- : @error An error is thrown if IO or Security problems occur.
- :)
-declare %nondeterministic function file:is-file(
-  $file as xs:string
-) as xs:boolean external;
 
 (:~
  : Retrieves the timestamp of the last modification of the file system item

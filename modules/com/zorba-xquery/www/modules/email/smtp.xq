@@ -65,9 +65,9 @@ import schema namespace email = 'http://www.zorba-xquery.com/modules/email/email
  : @return true if the message was sent successfully. 
  : @error If the message is not correctly formed.
  : @error If it was not possible to connect to the SMTP host.
- : @example simple_text.xq
- : @example text_with_image.xq
- : @example html.xq
+ : @example ../doc/xquery/examples/email/smtp/simple_text.xq
+ : @example ../doc/xquery/examples/email/smtp/text_with_image.xq
+ : @example ../doc/xquery/examples/email/smtp/html.xq
  :)
 declare sequential function smtp:send($host-info as element(imap:hostInfo), $message as element(email:message))  {
   smtp:send-impl(validate{$host-info}, validate{$message})

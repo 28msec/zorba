@@ -55,9 +55,13 @@ namespace zorba { namespace filemodule {
 
       static String
       getFilePathString(
-          const StaticContext* context,
           const StatelessExternalFunction::Arguments_t& args,
           int pos);
+
+      static String
+      getEncodingArg(
+          const StatelessExternalFunction::Arguments_t& args,
+          unsigned int pos);
 
       static String
       pathSeparator();

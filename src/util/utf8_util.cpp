@@ -144,7 +144,12 @@ size_type length( storage_type const *s ) {
 size_type length( storage_type const *begin, storage_type const *end ) {
   size_type len = 0;
   while ( begin < end && *begin ) {
-    begin += char_length( *begin );
+    int cl = char_length( *begin );
+    if (cl == 3 && (unsigned char)begin[0] == 0xEF &&
+      (unsigned char)begin[1] == 0xBB && (unsigned char)begin[0] == 0xEF) {
+      --len;
+    }
+    begin += cl;
     ++len;
   }
   return len;

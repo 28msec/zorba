@@ -372,12 +372,12 @@ void serializer::emitter::emit_streamable_item(store::Item* item)
   std::istream& is = item->getStream();
 
   // prepare the stream
-  std::ios::iostate const old_exceptions = is.exceptions();
-  is.exceptions( std::ios::badbit | std::ios::failbit );
-  std::streampos const pos = is.tellg();
-  if (pos)
-    is.seekg(0, std::ios::beg);
-  is.exceptions(is.exceptions() & ~std::ios::failbit);
+  //std::ios::iostate const old_exceptions = is.exceptions();
+  //is.exceptions( std::ios::badbit | std::ios::failbit );
+  //std::streampos const pos = is.tellg();
+  //if (pos)
+  //  is.seekg(0, std::ios::beg);
+  //is.exceptions(is.exceptions() & ~std::ios::failbit);
 
   // read bytes and do string expansion
   do
@@ -390,13 +390,13 @@ void serializer::emitter::emit_streamable_item(store::Item* item)
   while (read_bytes > 0);
 
   // restore stream's state
-  is.clear();                   // clear eofbit
-  if (pos)
-  {
-    is.exceptions(is.exceptions() | std::ios::failbit);
-    is.seekg(pos, std::ios::beg);
-  }
-  is.exceptions(old_exceptions);
+  //is.clear();                   // clear eofbit
+  //if (pos)
+  //{
+  //  is.exceptions(is.exceptions() | std::ios::failbit);
+  //  is.seekg(pos, std::ios::beg);
+  //}
+  //is.exceptions(old_exceptions);
 }
 
 

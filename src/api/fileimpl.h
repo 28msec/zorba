@@ -80,9 +80,9 @@ public: // public methods
 
   DirectoryIterator_t files() const;
 
-  void openInputStream(std::ifstream& aInStream, bool binary = false) const;
+  void openInputStream(std::ifstream& aInStream, bool binary, bool trimByteOrderMark) const;
 
-  void openOutputStream(std::ofstream& aOutStream, bool append = false, bool binary = false) const;
+  void openOutputStream(std::ofstream& aOutStream, bool binary, bool append) const;
 
   time_t lastModified() const;
 };

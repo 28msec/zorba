@@ -46,7 +46,7 @@ CreateDirectoryFunction::evaluate(
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  String lFileStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
+  String lFileStr = FileFunction::getFilePathString(aArgs, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
 
   bool lRecursive = true;
@@ -76,7 +76,7 @@ DeleteFunction::evaluate(
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  String lFileStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
+  String lFileStr = FileFunction::getFilePathString(aArgs, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
 
   lFile->remove();
@@ -97,11 +97,11 @@ ReadBinaryFunction::evaluate(
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  String lFileStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
+  String lFileStr = FileFunction::getFilePathString(aArgs, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
 
   std::ifstream lInStream;
-  lFile->openInputStream(lInStream, true);
+  lFile->openInputStream(lInStream, true, false);
 
   std::stringstream lStrStream;
   char lBuf[1024];
@@ -134,11 +134,17 @@ ReadTextFunction::evaluate(
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  String lFileStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
+  String lFileStr = FileFunction::getFilePathString(aArgs, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
 
+  if (aArgs.size() == 2) {
+    // since Zorba currently only supports UTF-8 we only call this function
+    // to reject any other encoding requested bu the user
+    getEncodingArg(aArgs, 1);
+  }
+  
   std::auto_ptr<StreamableItemSequence> lSeq(new StreamableItemSequence);
-  lFile->openInputStream(lSeq->theStream);
+  lFile->openInputStream(lSeq->theStream, false, true);
 
   lSeq->theItem = theModule->getItemFactory()->createStreamableString(lSeq->theStream);
 
@@ -158,83 +164,22 @@ ReadXmlFunction::evaluate(
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  String lFileStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
+  String lFileStr = FileFunction::getFilePathString(aArgs, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
 
+  if (aArgs.size() == 2) {
+    // since Zorba currently only supports UTF-8 we only call this function
+    // to reject any other encoding requested bu the user
+    getEncodingArg(aArgs, 1);
+  }
+
   std::ifstream lInStream;
-  lFile->openInputStream(lInStream);
+  lFile->openInputStream(lInStream, false, true);
 
   XmlDataManager* lDataManager = Zorba::getInstance(0)->getXmlDataManager();
   Item lItem = lDataManager->parseDocument(lInStream);
 
   return ItemSequence_t(new SingletonItemSequence(lItem));
-}
-
-//*****************************************************************************
-//*****************************************************************************
-// the functions above have been updated to the new file API spec
-//*****************************************************************************
-//*****************************************************************************
-
-CopyFunction::CopyFunction(const FileModule* aModule)
-  : FileFunction(aModule)
-{
-}
-
-ItemSequence_t
-CopyFunction::evaluate(
-  const StatelessExternalFunction::Arguments_t& aArgs,
-  const StaticContext*                          aSctxCtx,
-  const DynamicContext*                         aDynCtx) const
-{
-  bool lResult = false;
-
-  String lSrcFileStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
-  File_t lSrcFile = File::createFile(lSrcFileStr.c_str());
-  String lDstFileStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 1);
-  File_t lDstFile = File::createFile(lDstFileStr.c_str());
-
-  // do we have overwrite existing files?
-  bool lOverwrite = false;
-  if (aArgs.size() == 3) {
-    Item lOverwriteItem;
-    Iterator_t arg2_iter = aArgs[2]->getIterator();
-    arg2_iter->open();
-    arg2_iter->next(lOverwriteItem);
-    arg2_iter->close();
-    lOverwrite = lOverwriteItem.getBooleanValue();
-  }
-
-  // only continue if we have a file to copy
-  // AND (
-  //  if the destination is not present
-  //    OR
-  //  if the overwrite flag, but, in this case, the desfination must be a file
-  // )
-  if (lSrcFile->isFile() && (!lDstFile->exists() || (lOverwrite && lDstFile->isFile()))) {
-
-    // open the output stream in the desired write mode
-    std::ifstream lInStream;
-    std::ofstream lOutStream;
-    lSrcFile->openInputStream(lInStream, true);
-    lDstFile->openOutputStream(lOutStream, false, true);
-
-    // copy the data
-    char lBuf[1024];
-    while (!lInStream.eof()) {
-      lInStream.read(lBuf, 1024);
-      lOutStream.write(lBuf, lInStream.gcount());
-    }  
-
-    // close the streams
-    lInStream.close();
-    lOutStream.close();
-
-    lResult = true;
-  }
-
-  return ItemSequence_t(new SingletonItemSequence(
-      theModule->getItemFactory()->createBoolean(lResult)));
 }
 
 //*****************************************************************************
@@ -251,7 +196,7 @@ ExistsFunction::evaluate(
   const DynamicContext*                         aDynCtx) const
 {
   bool   lFileExists = false;
-  String lFileStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
+  String lFileStr = FileFunction::getFilePathString(aArgs, 0);
 
   File_t lFile = File::createFile(lFileStr.c_str());
   if (lFile->exists()) {
@@ -262,6 +207,132 @@ ExistsFunction::evaluate(
       theModule->getItemFactory()->createBoolean(lFileExists)));
 }
 
+//*****************************************************************************
+
+IsDirectoryFunction::IsDirectoryFunction(const FileModule* aModule)
+  : FileFunction(aModule)
+{
+}
+
+ItemSequence_t
+IsDirectoryFunction::evaluate(
+  const StatelessExternalFunction::Arguments_t& aArgs,
+  const StaticContext*                          aSctxCtx,
+  const DynamicContext*                         aDynCtx) const
+{
+  bool   lResult = false;
+  String lFileStr = FileFunction::getFilePathString(aArgs, 0);
+
+  File_t lFile = File::createFile(lFileStr.c_str());
+  if (lFile->isDirectory()) {
+    lResult = true;
+  }
+  return ItemSequence_t(new SingletonItemSequence(
+      theModule->getItemFactory()->createBoolean(lResult)));
+}
+
+//*****************************************************************************
+
+IsFileFunction::IsFileFunction(const FileModule* aModule)
+  : FileFunction(aModule)
+{
+}
+
+ItemSequence_t
+IsFileFunction::evaluate(
+  const StatelessExternalFunction::Arguments_t& aArgs,
+  const StaticContext*                          aSctxCtx,
+  const DynamicContext*                         aDynCtx) const
+{
+  bool   lResult = false;
+  String lFileStr = FileFunction::getFilePathString(aArgs, 0);
+
+  File_t lFile = File::createFile(lFileStr.c_str());
+  if (lFile->isFile()) {
+    lResult = true;
+  }
+  return ItemSequence_t(new SingletonItemSequence(
+      theModule->getItemFactory()->createBoolean(lResult)));
+}
+
+//*****************************************************************************
+
+CopyFunction::CopyFunction(const FileModule* aModule)
+  : FileFunction(aModule)
+{
+}
+
+ItemSequence_t
+CopyFunction::evaluate(
+  const StatelessExternalFunction::Arguments_t& aArgs,
+  const StaticContext*                          aSctxCtx,
+  const DynamicContext*                         aDynCtx) const
+{
+  bool lResult = false;
+
+  String lSrcFileStr = FileFunction::getFilePathString(aArgs, 0);
+  File_t lSrcFile = File::createFile(lSrcFileStr.c_str());
+  String lDstStr = FileFunction::getFilePathString(aArgs, 1);
+  File_t lDst = File::createFile(lDstStr.c_str());
+
+  // only continue if we have a file to copy
+  if (!(lSrcFile->isFile())) {
+    std::stringstream lSs;
+    lSs << "The source argument does not point to a file path: " << lDst->getFilePath();
+    throw ExternalFunctionData::createZorbaException(XPTY0004, lSs.str(), __FILE__, __LINE__);
+  }
+
+  // do we have to overwrite existing files?
+  bool lOverwrite = false;
+  if (aArgs.size() == 3) {
+    lOverwrite = getOneBooleanArg(aArgs, 2);
+  }
+
+  if (lDst->isDirectory()) {
+    lDstStr = lDst->getFilePath();
+    String lSrcPath = lSrcFile->getFilePath();
+    int lLastSep = lSrcPath.lastIndexOf(File::getPathSeparator());
+    String lName = lSrcPath.substring(lLastSep);
+    lDstStr = lDstStr.append(lName.c_str());
+    lDst = File::createFile(lDstStr.c_str());
+  }
+
+  if (lDst->isDirectory()) {
+    std::stringstream lSs;
+    lSs << "The destination file path denotes an existing directory: " << lDst->getFilePath();
+    throw ExternalFunctionData::createZorbaException(XPTY0004, lSs.str(), __FILE__, __LINE__);
+  } else if (lDst->isFile() && !lOverwrite) {
+    std::stringstream lSs;
+    lSs << "The destination file already exists: " << lDst->getFilePath();
+    throw ExternalFunctionData::createZorbaException(XPTY0004, lSs.str(), __FILE__, __LINE__);
+  }
+
+  // open the output stream in the desired write mode
+  std::ifstream lInStream;
+  std::ofstream lOutStream;
+  lSrcFile->openInputStream(lInStream, true, false);
+  lDst->openOutputStream(lOutStream, true, false);
+
+  // copy the data
+  char lBuf[1024];
+  while (!lInStream.eof()) {
+    lInStream.read(lBuf, 1024);
+    lOutStream.write(lBuf, lInStream.gcount());
+  }  
+
+  // close the streams
+  lInStream.close();
+  lOutStream.close();
+
+  lResult = true;
+
+  return ItemSequence_t(new EmptySequence());
+}
+
+//*****************************************************************************
+//*****************************************************************************
+// the functions above have been updated to the new file API spec
+//*****************************************************************************
 //*****************************************************************************
 
 FilesFunction::FilesFunction(const FileModule* aModule)
@@ -275,7 +346,7 @@ FilesFunction::evaluate(
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  String lFileStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
+  String lFileStr = FileFunction::getFilePathString(aArgs, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
 
   if (!lFile->isDirectory()) {
@@ -337,54 +408,6 @@ FilesFunction::IteratorBackedItemSequence::next(Item& lItem)
 
 //*****************************************************************************
 
-IsDirectoryFunction::IsDirectoryFunction(const FileModule* aModule)
-  : FileFunction(aModule)
-{
-}
-
-ItemSequence_t
-IsDirectoryFunction::evaluate(
-  const StatelessExternalFunction::Arguments_t& aArgs,
-  const StaticContext*                          aSctxCtx,
-  const DynamicContext*                         aDynCtx) const
-{
-  bool   lResult = false;
-  String lFileStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
-
-  File_t lFile = File::createFile(lFileStr.c_str());
-  if (lFile->isDirectory()) {
-    lResult = true;
-  }
-  return ItemSequence_t(new SingletonItemSequence(
-      theModule->getItemFactory()->createBoolean(lResult)));
-}
-
-//*****************************************************************************
-
-IsFileFunction::IsFileFunction(const FileModule* aModule)
-  : FileFunction(aModule)
-{
-}
-
-ItemSequence_t
-IsFileFunction::evaluate(
-  const StatelessExternalFunction::Arguments_t& aArgs,
-  const StaticContext*                          aSctxCtx,
-  const DynamicContext*                         aDynCtx) const
-{
-  bool   lResult = false;
-  String lFileStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
-
-  File_t lFile = File::createFile(lFileStr.c_str());
-  if (lFile->isFile()) {
-    lResult = true;
-  }
-  return ItemSequence_t(new SingletonItemSequence(
-      theModule->getItemFactory()->createBoolean(lResult)));
-}
-
-//*****************************************************************************
-
 LastModifiedFunction::LastModifiedFunction(const FileModule* aModule)
   : FileFunction(aModule)
 {
@@ -396,7 +419,7 @@ LastModifiedFunction::evaluate(
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  String lFileStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
+  String lFileStr = FileFunction::getFilePathString(aArgs, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
 
   if(!lFile->exists()) {
@@ -457,7 +480,7 @@ PathToFullPathFunction::evaluate(
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  String lPathStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
+  String lPathStr = FileFunction::getFilePathString(aArgs, 0);
   String lResult = FileFunction::pathToOSPath(lPathStr);
 
   return ItemSequence_t(new SingletonItemSequence(theModule->getItemFactory()->createString(lResult)));
@@ -476,7 +499,7 @@ PathToUriFunction::evaluate(
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  String lPathStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
+  String lPathStr = FileFunction::getFilePathString(aArgs, 0);
   String lResult = FileFunction::pathToUriString(lPathStr);
 
   return ItemSequence_t(new SingletonItemSequence(theModule->getItemFactory()->createAnyURI(lResult)));
@@ -495,7 +518,7 @@ WriteFunction::evaluate(
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  String lFileStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
+  String lFileStr = FileFunction::getFilePathString(aArgs, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
 
   // do we have an "append" or a "write new" operation?
@@ -518,7 +541,7 @@ WriteFunction::evaluate(
 
   // open the output stream in the desired write mode
   std::ofstream lOutStream;
-  lFile->openOutputStream(lOutStream, lAppend, lBinary);
+  lFile->openOutputStream(lOutStream, lBinary, lAppend);
 
   // serialize the content
   lSerializer->serialize(aArgs[1], lOutStream);

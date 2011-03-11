@@ -66,3 +66,13 @@ declare variable $err:UE007 as xs:QName := fn:QName($err:errNS, "err:UE007");
  : The example was not found.
  :)
 declare variable $err:UE008 as xs:QName := fn:QName($err:errNS, "err:UE008");
+
+(:~
+ : Copying an example source file failed.
+ :)
+declare variable $err:UE009 as xs:QName := fn:QName($err:errNS, "err:UE009");
+
+(:~
+ : A path does not point to an existing directory.
+ :)
+declare variable $err:UE010 as xs:QName := fn:QName($err:errNS, "err:UE010");
