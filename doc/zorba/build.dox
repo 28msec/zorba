@@ -241,37 +241,16 @@ libraries.  It will also add some symbolic links to the libraries.
 
 \subsection nmake Building Zorba using a NMake Project
 -# Start a Visual Studio Command Line
--# Change the current working directory into the <tt>[ZORBA]</tt> directory.
+-# Change the current working directory to the <tt>[ZORBA]</tt> directory.
 -# It is not allowed to have <a href="http://www.cmake.org/Wiki/CMake_FAQ#What_is_an_.22out-of-source.22_build.3F" target="_blank">in-source builds</a>. So you must create a build directory (e.q. <tt>[ZORBA]/build</tt>). We refer to this directory as <tt>[ZORBABUILD]</tt> in the following steps.
--# Change the current working directory into the <tt>[ZORBABUILD]</tt> directory.
--# Execute CMake as follows <tt>cmake -G "NMake Makefiles" [ZORBA]</tt>. This will fail (unlike UNIX-based systems) because CMake does not find all the development headers and libraries itself on Windows platforms. Hence, you need to tell CMake where they are located. This can be done by the following command (<strong>Note</strong> that you might not need all the arguments if you don't use certain optional Zorba features):
+-# Change the current working directory to the <tt>[ZORBABUILD]</tt> directory.
+-# Execute CMake as follows <tt>cmake -G "NMake Makefiles" [ZORBA]</tt>. CMake will try to find the necessary packages in the program files directory on your system and in the <tt>PATH</tt> environment variable. If one of the required dependencies were not found, CMake will stop with an error. See the next step only if this step did not find the required third party dependencies on your system.
+-# If the command above fails or if you see that some optional packages were not found, you can help CMake a little by providing the lists of path where it should look for the libraries you need. In this case the CMake command should look like:
 \code
-"cmake" -G "NMake Makefiles"
-  -D ICU_LIBRARY="path_to_icu\lib\icuuc.lib" 
-  -D ICU_DATA_LIBRARY="path_to_icu\lib\icudt.lib" 
-  -D ICU_I18N_LIBRARY="path_to_icu\lib\icuin.lib" 
-  -D ICU_INCLUDE="path_to_icu\include" 
-  -D ICONV_INCLUDE_DIR="path_to_iconv\include" 
-  -D ICONV_LIBRARY="path_to_iconv\lib\iconv.lib" 
-  -D LIBXML2_INCLUDE_DIR="path_to_libxml2\include" 
-  -D LIBXML2_LIBRARIES="path_to_libxml2\lib\libxml2.lib" 
-  -D XERCESC_INCLUDE="path_to_xerces\include" 
-  -D XERCESC_LIBRARY="path_to_xerces\lib\xerces-c_2.lib"
-  ..
+"cmake" -G "NMake Makefiles" -D ZORBA_THIRD_PARTY_REQUIREMENTS "path/to/dir1;path/to/dir2/..."
 \endcode
 
-If you need CURL (e.g. to have REST support) you have to point two CMake variables to CURL's include directory and the CURL library.
-\code
-- D ZORBA_WITH_REST=ON
-- D CURL_INCLUDE_DIR="path_to_curl\include"
-- D CURL_LIBRARY="path_to_curl\lib\curllib.lib"
-\endcode
-
-If you additionally want to have support for Tidy in order to syntactically cleanup HTML documents,  you have to set the following CMake variables:
-\code
-- D LIBTIDY_INCLUDE_DIR="path_to_tidy\include"
-- D LIBTIDY_LIBRARIES="path_to_tidy\lib\tidy.lib"
-\endcode
+But you can also manually set the paths to individual libraries and include directory by directly providing the variables set by each find package module (in the <tt>cmake_modules</tt> directory).
 
 In order to add XQueryX support you have to add ZORBA_XQUERYX=ON and add the paths to libxslt
 \code
@@ -280,18 +259,12 @@ In order to add XQueryX support you have to add ZORBA_XQUERYX=ON and add the pat
 -D LIBXSLT_LIBRARIES="path_to_libxslt\lib\libxslt.lib"
 \endcode
 
-For using the email functionality you have to add the cclient lib:
-\code
--D CCLIENT_INCLUDE="path_to_imap_2007e\c-client"
--D CCLIENT_LIBRARY="path_to_imap_2007e\c-client\release\cclient.lib"
-\endcode
-
-After you've provided all of the required variables, you are ready to call <tt>nmake</tt> from the <tt>[ZORBABUILD]</tt> directory.
+Now you are ready to call <tt>nmake</tt> from the <tt>[ZORBABUILD]</tt> directory.
 
 \subsection visualstudio Building Visual Studio Project
 -# Start Visual Studio Command Line
 -# Change the current working directory into the <tt>[ZORBA]</tt> directory.
--# Execute CMake as described above but with the <tt> -G "Visual Studio X 200Y" </tt> option instead of <tt> -G "NMake Makefiles"</tt>.
+-# Execute CMake as described above but with the appropriate CMake Visual Studio generator (<tt>-G "Visual Studio ..."</tt> instead of <tt>-G "NMake Makefiles"</tt>.
 -# Start Visual Studio, open the generated <tt>zorba.sln</tt> project file, and start compilation.
 
 \subsection https_support HTTPS support
