@@ -27,7 +27,6 @@
 #include "zorbaserialization/class_serializer.h"
 #include "zorbaserialization/archiver.h"
 
-
 namespace zorba
 {
 namespace serialization
@@ -56,9 +55,9 @@ void operator&(Archiver &ar, zorba::rstring<RepType> &obj)
     std::string value;
     int   id;
     int   version;
-    bool  is_simple;
-    bool  is_class;
-    enum  ArchiveFieldTreat field_treat;
+    bool  is_simple = true;
+    bool  is_class = false;
+    enum  ArchiveFieldTreat field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
     bool  retval;
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
@@ -99,9 +98,9 @@ void operator&(Archiver &ar, std::list<T> &obj)
     std::string value;
     int   id;
     int   version;
-    bool  is_simple;
-    bool  is_class;
-    enum  ArchiveFieldTreat field_treat;
+    bool  is_simple = false;
+    bool  is_class = false;
+    enum  ArchiveFieldTreat field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
     bool  retval;
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
@@ -152,9 +151,9 @@ void operator&(Archiver &ar, std::vector<T> &obj)
     std::string value;
     int   id;
     int   version;
-    bool  is_simple;
-    bool  is_class;
-    enum  ArchiveFieldTreat field_treat;
+    bool  is_simple = false;
+    bool  is_class = false;
+    enum  ArchiveFieldTreat field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
     bool  retval;
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
@@ -216,9 +215,9 @@ void operator&(Archiver &ar, std::vector<T> *&obj)
     std::string value;
     int   id;
     int   version;
-    bool  is_simple;
-    bool  is_class;
-    enum  ArchiveFieldTreat field_treat;
+    bool  is_simple = false;
+    bool  is_class = false;
+    enum  ArchiveFieldTreat field_treat = ARCHIVE_FIELD_IS_PTR;
     int   referencing;
     bool  retval;
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
@@ -239,6 +238,18 @@ void operator&(Archiver &ar, std::vector<T> *&obj)
       obj = new std::vector<T>;
       ar.register_reference(id, field_treat, obj);
 
+      int size;
+      sscanf(value.c_str(), "%d", &size);
+      obj->resize(size);
+      typename std::vector<T>::iterator  it;
+      for(it=obj->begin(); it != obj->end(); it++)
+      {
+        ar & (*it);
+      }
+      ar.read_end_current_level();
+    }
+    else if(field_treat == ARCHIVE_FIELD_IS_BASECLASS)
+    {
       int size;
       sscanf(value.c_str(), "%d", &size);
       obj->resize(size);
@@ -291,9 +302,9 @@ void operator&(Archiver &ar, std::vector<T*> &obj)
     std::string value;
     int   id;
     int   version;
-    bool  is_simple;
-    bool  is_class;
-    enum  ArchiveFieldTreat field_treat;
+    bool  is_simple = false;
+    bool  is_class = false;
+    enum  ArchiveFieldTreat field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
     bool  retval;
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
@@ -335,9 +346,9 @@ void operator&(Archiver &ar, std::pair<T1, T2> &obj)
     std::string value;
     int   id;
     int   version;
-    bool  is_simple;
-    bool  is_class;
-    enum  ArchiveFieldTreat field_treat;
+    bool  is_simple = false;
+    bool  is_class = false;
+    enum  ArchiveFieldTreat field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
     bool  retval;
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
@@ -384,9 +395,9 @@ void operator&(Archiver &ar, std::pair<T1, T2> *&obj)
     std::string value;
     int   id;
     int   version;
-    bool  is_simple;
-    bool  is_class;
-    enum  ArchiveFieldTreat field_treat;
+    bool  is_simple = false;
+    bool  is_class = false;
+    enum  ArchiveFieldTreat field_treat = ARCHIVE_FIELD_IS_PTR;
     int   referencing;
     bool  retval;
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
@@ -473,9 +484,9 @@ void operator&(Archiver &ar, std::map<T1, T2> *&obj)
     std::string value;
     int   id;
     int   version;
-    bool  is_simple;
-    bool  is_class;
-    enum  ArchiveFieldTreat field_treat;
+    bool  is_simple = false;
+    bool  is_class = false;
+    enum  ArchiveFieldTreat field_treat = ARCHIVE_FIELD_IS_PTR;
     int   referencing;
     bool  retval;
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
@@ -572,9 +583,9 @@ void operator&(Archiver &ar, std::map<T1, T2, Tcomp> &obj)
     std::string value;
     int   id;
     int   version;
-    bool  is_simple;
-    bool  is_class;
-    enum  ArchiveFieldTreat field_treat;
+    bool  is_simple = false;
+    bool  is_class = false;
+    enum  ArchiveFieldTreat field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
     bool  retval;
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
@@ -626,9 +637,9 @@ void operator&(Archiver &ar, T &obj)
     std::string value;
     int   id;
     int   version;
-    bool  is_simple;
-    bool  is_class;
-    enum  ArchiveFieldTreat field_treat;
+    bool  is_simple = false;
+    bool  is_class = true;
+    enum  ArchiveFieldTreat field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
     bool  retval;
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
@@ -641,6 +652,7 @@ void operator&(Archiver &ar, T &obj)
     ar.set_class_version(version);
     ar.register_reference(id, field_treat, (SerializeBaseClass*)&obj);
 
+#ifndef NDEBUG
     //check the version
     int v;
     if(version > T::class_versions[T::class_versions_count-1].class_version)
@@ -669,7 +681,7 @@ void operator&(Archiver &ar, T &obj)
       }
               
     }
-
+#endif
     obj.serialize_internal(ar);
 
     ar.read_end_current_level();
@@ -723,9 +735,9 @@ void operator&(Archiver &ar, T *&obj)
     std::string value;
     int   id;
     int   version;
-    bool  is_simple;
-    bool  is_class;
-    enum  ArchiveFieldTreat field_treat;
+    bool  is_simple = false;
+    bool  is_class = true;
+    enum  ArchiveFieldTreat field_treat = ARCHIVE_FIELD_IS_PTR;
     int   referencing;
     bool  retval;
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
@@ -745,10 +757,12 @@ void operator&(Archiver &ar, T *&obj)
 
     if(ar.is_serialize_base_class())
     {
+#ifndef NDEBUG
       if(strcmp(type, T::get_class_name_str_static()))
       {
         ZORBA_SER_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
       }
+#endif
       if(field_treat != ARCHIVE_FIELD_IS_BASECLASS)
       {
         ZORBA_SER_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
@@ -780,6 +794,7 @@ void operator&(Archiver &ar, T *&obj)
       }
 
       //check the version
+#ifndef NDEBUG
       int v;
       if(version > obj->get_classversion(obj->get_version_count()-1).class_version)
       {
@@ -810,7 +825,7 @@ void operator&(Archiver &ar, T *&obj)
         }
                 
       }
-
+#endif
 
       ar.register_reference(id, field_treat, new_obj);
       try{
@@ -825,6 +840,7 @@ void operator&(Archiver &ar, T *&obj)
     else if(field_treat == ARCHIVE_FIELD_IS_BASECLASS)
     {
       //check the version
+#ifndef NDEBUG
       int v;
       if(version > obj->T::get_classversion(obj->T::get_version_count()-1).class_version)
       {
@@ -852,6 +868,7 @@ void operator&(Archiver &ar, T *&obj)
         }
                 
       }
+#endif
 
       obj->T::serialize_internal(ar);
       ar.read_end_current_level();

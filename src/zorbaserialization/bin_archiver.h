@@ -38,7 +38,19 @@ class BinArchiver : public Archiver
   bool  is_compound_field_without_children;
 
   HashCharPtrObj<int>    string_pool;
-  std::vector<std::string>    strings;
+  typedef struct
+  {
+    std::string   str;
+    unsigned int  count;
+    unsigned int  final_pos;//1 based
+  }STRING_POS;
+  std::vector<STRING_POS>    strings;
+  std::vector<unsigned int>  strings_pos;
+
+  unsigned int last_id;
+  unsigned char current_byte;
+  unsigned char bitfill;
+
 public:
   BinArchiver(std::istream *is);
   BinArchiver(std::ostream *os);
@@ -69,21 +81,21 @@ protected:
   //void encode_string(const char *value);
   //const char *get_field_treat_string(enum ArchiveFieldTreat field_treat);
   void write_string(const char *str);
+  void write_bit(unsigned char bit);
+  void write_bits(unsigned int value, unsigned int bits);
   void write_int(unsigned int intval);
+  void write_int_exp(unsigned int intval);
+  void write_int_exp2(unsigned int intval);
 
   //reading
   void read_string(std::string &str);
   void read_string(char* str);
+  unsigned char read_bit();
+  unsigned int  read_bits(unsigned int bits);
   unsigned int  read_int();
+  unsigned int  read_int_exp();
+  unsigned int  read_int_exp2();
   void read_string_pool();
-  //bool match_string(char c, const char *match);
-  bool read_root_tag(char c);
-  //bool read_attrib_name(char *attrib_name);
-  //void read_attrib_value(char *attrib_value);
-  //void read_attrib_value(std::string *attrib_value);
-
-  //void skip_tag();
-  //void skip_comment_tag();
 };
 
 }}

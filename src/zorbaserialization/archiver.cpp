@@ -28,7 +28,6 @@
 
 #include "zorbautils/hashmap.h"
 
-
 namespace zorba
 {
 
@@ -479,16 +478,20 @@ void Archiver::check_simple_field(bool retval,
   {
     ZORBA_ERROR(SRL0001_INEXISTENT_INPUT_FIELD);
   }
+#ifndef NDEBUG
   if(!is_simple)
   {
     ZORBA_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
   }
+#endif
   if(field_treat == ARCHIVE_FIELD_IS_NULL)
     return;
+#ifndef NDEBUG
   if(strcmp(type, required_type))
   {
     ZORBA_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
   }
+#endif
   if((required_field_treat != (enum ArchiveFieldTreat)-1) && (field_treat != required_field_treat))
   {
     ZORBA_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
@@ -508,16 +511,20 @@ void Archiver::check_nonclass_field(bool retval,
   {
     ZORBA_ERROR(SRL0001_INEXISTENT_INPUT_FIELD);
   }
+#ifndef NDEBUG
   if(is_simple || is_class)
   {
     ZORBA_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
   }
+#endif
   if(field_treat == ARCHIVE_FIELD_IS_NULL)
     return;
+#ifndef NDEBUG
   if(strcmp(type, required_type))
   {
     ZORBA_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
   }
+#endif
   if((required_field_treat != (enum ArchiveFieldTreat)-1) && (field_treat != required_field_treat))
   {
     ZORBA_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
@@ -537,16 +544,20 @@ void Archiver::check_class_field(bool retval,
   {
     ZORBA_ERROR(SRL0001_INEXISTENT_INPUT_FIELD);
   }
+#ifndef NDEBUG
   if(is_simple || !is_class)
   {
     ZORBA_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
   }
+#endif
   if(field_treat == ARCHIVE_FIELD_IS_NULL)
     return;
+#ifndef NDEBUG
   if(strcmp(type, required_type))
   {
     ZORBA_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
   }
+#endif
   if((required_field_treat != (enum ArchiveFieldTreat)-1) && (field_treat != required_field_treat))
   {
     ZORBA_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);

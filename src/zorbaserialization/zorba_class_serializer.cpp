@@ -89,299 +89,6 @@ public:
 xqpcollator_class_factory    g_xqpcollator_class_factory;
 
 
-
-/*
-void operator&(Archiver &ar, XQType *&obj)
-#define T XQType
-{
-  if(ar.is_serializing_out())
-  {
-    if(obj == NULL)
-    {
-      ar.add_compound_field("NULL", 
-                            1 ,//class_version
-                            FIELD_IS_CLASS, "NULL", 
-                            NULL,//(SerializeBaseClass*)obj, 
-                            ARCHIVE_FIELD_IS_NULL);
-      return;
-    }
-    //char  strtemp[20];
-    //sprintf(strtemp, "%d", 0);
-    bool is_ref;
-    
-    is_ref = ar.add_compound_field(ar.is_serialize_base_class() ? obj->T::get_class_name_str() : obj->get_class_name_str(), 
-                                    ar.is_serialize_base_class() ? T::class_versions[T::class_versions_count-1].class_version : obj->get_classversion(obj->get_version_count()-1).class_version , 
-                                    FIELD_IS_CLASS, "0",//strtemp, 
-                                    (SerializeBaseClass*)obj, 
-                                    ar.is_serialize_base_class() ? ARCHIVE_FIELD_IS_BASECLASS : ARCHIVE_FIELD_IS_PTR);
-    if(!is_ref)
-    {
-      if(!ar.is_serialize_base_class())
-      {
-        obj->serialize_internal(ar);
-      }
-      else
-      {
-        obj->T::serialize_internal(ar);
-      }
-      ar.add_end_compound_field();
-    }
-  }
-  else
-  {
-    int prev_class_version = ar.get_class_version();
-    char  *type;
-    std::string value;
-    int   id;
-    int   version;
-    bool  is_simple;
-    bool  is_class;
-    enum  ArchiveFieldTreat field_treat;
-    int   referencing;
-    bool  retval;
-    retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
-    if(!retval && ar.get_read_optional_field())
-      return;
-    ar.check_class_field(retval, "", "", is_simple, is_class, field_treat, (ArchiveFieldTreat)-1, id);
-    if(field_treat == ARCHIVE_FIELD_IS_NULL)
-    {
-      obj = NULL;
-      ar.read_end_current_level();
-      return;
-    }
-    ar.set_class_version(version);
-
-
-
-    if(ar.is_serialize_base_class())
-    {
-      if(strcmp(type, T::get_class_name_str_static()))
-      {
-        ZORBA_SER_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
-      }
-      if(field_treat != ARCHIVE_FIELD_IS_BASECLASS)
-      {
-        ZORBA_SER_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
-      }
-    }
-    else
-    {
-      if((field_treat != ARCHIVE_FIELD_IS_PTR) && (field_treat != ARCHIVE_FIELD_IS_REFERENCING))
-      {
-        ZORBA_SER_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
-      }
-    }
-
-    SerializeBaseClass  *new_obj = NULL;
-    if(field_treat == ARCHIVE_FIELD_IS_PTR)
-    {
-      class_deserializer  *cls_factory;
-      cls_factory = g_class_serializer->get_class_factory(type);
-      if(cls_factory == NULL)
-      {
-         ZORBA_SER_ERROR_DESC_OSS(SRL0003_UNRECOGNIZED_CLASS_FIELD, type);
-      }
-      new_obj = cls_factory->create_new(ar);
-      obj = dynamic_cast<T*>(new_obj);
-      if(!obj)
-      {
-        ZORBA_SER_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
-      }
-
-      //check the version
-      int v;
-      if(version > obj->get_classversion(obj->get_version_count()-1).class_version)
-      {
-        ZORBA_SER_ERROR_DESC_OSS(SRL0005_CLASS_VERSION_IS_TOO_NEW, "Class version for " << obj->get_class_name_str() << " is " << version  << "while the version supported is " << obj->get_classversion(obj->get_version_count()-1).class_version);
-      }
-      for(v = obj->get_version_count()-1; v >= 0; v--)
-      {
-        const ClassVersion  &ver = obj->get_classversion(v);
-        if(version == ver.class_version)
-          break;//supported version
-        else if((version < ver.class_version) && !ver.is_backward_compatible)
-        {
-          int oldv;
-          for(oldv = v; oldv >= 0; oldv--)
-          {
-            if(version == obj->get_classversion(oldv).class_version)
-              break;
-          }
-          if(oldv < 0)
-            oldv = 0;
-          
-          ZORBA_SER_ERROR_DESC_OSS(SRL0006_CLASS_VERSION_IS_TOO_OLD, 
-                          "Class version for " << obj->get_class_name_str() << " is " << version 
-                          << " while the minimal supported version is " << ver.class_version 
-                          << ". Use Zorba 0x" << std::hex << obj->get_classversion(oldv).zorba_version << "instead.");
-        }
-                
-      }
-
-
-      new_obj->serialize_internal(ar);
-      ar.read_end_current_level();
-
-      //check if XQType is hardcoded in TypeManager
-      if(obj->get_isBuiltin())
-      {
-        RootTypeManager *root_type_mng = &GENV_TYPESYSTEM;
-        switch(obj->type_kind())
-        {
-        case XQType::ATOMIC_TYPE_KIND:  // Atomic builtin type
-          {
-            AtomicXQType  *atomic;
-            atomic = dynamic_cast<AtomicXQType*>(obj);
-            assert(atomic);
-            obj = (XQType*)root_type_mng->create_atomic_type(atomic->get_type_code(), atomic->get_quantifier()).getp();
-            delete atomic;
-          }break;
-        case XQType::NODE_TYPE_KIND:
-          {
-            NodeXQType  *node;
-            node = dynamic_cast<NodeXQType*>(obj);
-            assert(node);
-
-
-#define LINK_NODE_ITEM_XQTYPE(basename, suffix)                              \
-  switch(obj->get_quantifier())                                         \
-  {                                                                     \
-  case TypeConstants::QUANT_ONE:                                        \
-    delete obj;                                                         \
-    obj = (XQType*)root_type_mng->basename##suffix##TYPE_ONE.getp();           \
-    break;                                                              \
-  case TypeConstants::QUANT_QUESTION:                                   \
-    delete obj;                                                         \
-    obj = (XQType*)root_type_mng->basename##suffix##TYPE_QUESTION.getp();      \
-    break;                                                              \
-  case TypeConstants::QUANT_STAR:                                       \
-    delete obj;                                                         \
-    obj = (XQType*)root_type_mng->basename##suffix##TYPE_STAR.getp();          \
-    break;                                                              \
-  case TypeConstants::QUANT_PLUS:                                       \
-    delete obj;                                                         \
-    obj = (XQType*)root_type_mng->basename##suffix##TYPE_PLUS.getp();          \
-    break;                                                              \
-  default:                                                              \
-    break;                                                              \
-  }
-
-#define LINK_NODE(basename)                                                             \
-  {                                                                                     \
-    xqtref_t  content_type = node->get_content_type();                                  \
-    switch(content_type->type_kind())                                                   \
-    {                                                                                   \
-    case XQType::ANY_TYPE_KIND : LINK_NODE_ITEM_XQTYPE(basename,_);break;               \
-    case XQType::UNTYPED_KIND : LINK_NODE_ITEM_XQTYPE(basename,_UNTYPED_CONT_);break;   \
-    }                                                                                   \
-  }
-
-            switch(node->get_nodetest()->get_node_kind())
-            {
-              case zorba::store::StoreConsts::anyNode:
-                LINK_NODE(ANY_NODE)
-                break;
-              case zorba::store::StoreConsts::elementNode:
-                LINK_NODE(ELEMENT)
-                break;
-              case zorba::store::StoreConsts::attributeNode:
-                LINK_NODE(ATTRIBUTE)
-                break;
-              case zorba::store::StoreConsts::piNode:
-                LINK_NODE(PI)
-                break;
-              case zorba::store::StoreConsts::textNode:
-                LINK_NODE(TEXT)
-                break;
-              case zorba::store::StoreConsts::commentNode:
-                LINK_NODE(COMMENT)
-                break;
-              case zorba::store::StoreConsts::documentNode:
-                LINK_NODE(DOCUMENT)
-                break;
-            }
-          }break;
-        case XQType::ANY_TYPE_KIND:
-          delete obj;
-          obj = (XQType*)root_type_mng->ANY_TYPE.getp();
-          break;
-        case XQType::ITEM_KIND:
-          LINK_NODE_ITEM_XQTYPE(ITEM, _)
-          break;
-        case XQType::ANY_SIMPLE_TYPE_KIND:
-          delete obj;
-          obj = (XQType*)root_type_mng->ANY_SIMPLE_TYPE.getp();
-          break;
-        case XQType::UNTYPED_KIND:
-          delete obj;
-          obj = (XQType*)root_type_mng->UNTYPED_TYPE.getp();
-          break;
-        case XQType::EMPTY_KIND:
-          delete obj;
-          obj = (XQType*)root_type_mng->EMPTY_TYPE.getp();
-          break;
-        case XQType::NONE_KIND:
-          delete obj;
-          obj = (XQType*)root_type_mng->NONE_TYPE.getp();
-          break;
-        default:
-          //unknown, unreachable
-          break;//just leave it as is
-        }
-#undef LINK_NODE_XQTYPE
-      }
-      new_obj = dynamic_cast<SerializeBaseClass*>(obj);
-      ar.register_reference(id, field_treat, new_obj);
-    }
-    else if(field_treat == ARCHIVE_FIELD_IS_BASECLASS)
-    {
-      //check the version
-      int v;
-      if(version > obj->T::get_classversion(obj->T::get_version_count()-1).class_version)
-      {
-        ZORBA_SER_ERROR_DESC_OSS(SRL0005_CLASS_VERSION_IS_TOO_NEW, "Class version for " << obj->T::get_class_name_str() << " is " << version  << "while the version supported is " << obj->T::get_classversion(obj->T::get_version_count()-1).class_version);
-      }
-      for(v = obj->T::get_version_count()-1; v >= 0; v--)
-      {
-        if(version == obj->T::get_classversion(v).class_version)
-          break;//supported version
-        else if((version < obj->T::get_classversion(v).class_version) && !obj->T::get_classversion(v).is_backward_compatible)
-        {
-          int oldv;
-          for(oldv = v; oldv >= 0; oldv--)
-          {
-            if(version == obj->T::get_classversion(oldv).class_version)
-              break;
-          }
-          if(oldv < 0)
-            oldv = 0;
-          
-          ZORBA_SER_ERROR_DESC_OSS(SRL0006_CLASS_VERSION_IS_TOO_OLD, 
-                          "Class version for " << obj->T::get_class_name_str() << " is " << version 
-                          << " while the minimal supported version is " << obj->T::get_classversion(v).class_version 
-                          << ". Use Zorba 0x" << std::hex << obj->T::get_classversion(oldv).zorba_version << "instead.");
-        }
-                
-      }
-
-      obj->T::serialize_internal(ar);
-      ar.read_end_current_level();
-    }
-    else if((new_obj = (SerializeBaseClass*)ar.get_reference_value(referencing)))// ARCHIVE_FIELD_IS_REFERENCING
-    {
-      obj = dynamic_cast<T*>(new_obj);
-      if(!obj)
-      {
-        ZORBA_SER_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
-      }
-    }
-    else
-      ar.register_delay_reference((void**)&obj, FIELD_IS_CLASS, obj->T::get_class_name_str(), referencing);
-    ar.set_class_version(prev_class_version);
-  }
-}
-#undef T
-*/
 void operator&(Archiver &ar, const XQType *&obj)
 {
   XQType *obj2 = (XQType*)obj;
@@ -412,9 +119,9 @@ void operator&(Archiver &ar, XQPCollator*& obj)
     std::string value;
     int   id;
     int   version;
-    bool  is_simple;
-    bool  is_class;
-    enum  ArchiveFieldTreat field_treat;
+    bool  is_simple = true;
+    bool  is_class = false;
+    enum  ArchiveFieldTreat field_treat = ARCHIVE_FIELD_IS_PTR;
     int   referencing;
     bool  retval;
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
@@ -473,9 +180,9 @@ void operator&(Archiver &ar, MAPM &obj)
     std::string value;
     int   id;
     int   version;
-    bool  is_simple;
-    bool  is_class;
-    enum  ArchiveFieldTreat field_treat;
+    bool  is_simple = true;
+    bool  is_class = false;
+    enum  ArchiveFieldTreat field_treat = ARCHIVE_FIELD_NORMAL;
     int   referencing;
     bool  retval;
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
@@ -598,7 +305,7 @@ void operator&(Archiver &ar, store::Item* &obj)
   int  is_function = 0;
   
   int   id;
-  enum  ArchiveFieldTreat field_treat;
+  enum  ArchiveFieldTreat field_treat = ARCHIVE_FIELD_IS_PTR;
   int   referencing;
 
   if(ar.is_serializing_out())
@@ -633,8 +340,8 @@ void operator&(Archiver &ar, store::Item* &obj)
     char  *type;
     std::string value;
     int   version;
-    bool  is_simple;
-    bool  is_class;
+    bool  is_simple = false;
+    bool  is_class = true;
     bool  retval;
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
     if(!retval && ar.get_read_optional_field())
@@ -1056,7 +763,7 @@ void serialize_node_tree(Archiver &ar, store::Item *&obj, bool all_tree)
   }
   ar.set_is_temp_field(false);
   int   id;
-  enum  ArchiveFieldTreat field_treat;
+  enum  ArchiveFieldTreat field_treat = ARCHIVE_FIELD_IS_PTR;
   int   referencing;
   bool is_ref;
   if(ar.is_serializing_out())
@@ -1078,8 +785,8 @@ void serialize_node_tree(Archiver &ar, store::Item *&obj, bool all_tree)
     char  *type;
     std::string value;
     int   version;
-    bool  is_simple;
-    bool  is_class;
+    bool  is_simple = false;
+    bool  is_class = true;
     bool  retval;
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
     if(!retval && ar.get_read_optional_field())

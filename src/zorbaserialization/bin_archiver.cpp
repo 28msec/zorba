@@ -27,6 +27,9 @@ BinArchiver::BinArchiver(std::istream *is) : Archiver(false)
   //open archiver for input
   this->is = is;
   this->os = NULL;
+  this->last_id = 0;
+  current_byte = 0;
+  bitfill = 0;
 
   //read the plan serializer info
   char	preface_string[200];
@@ -51,6 +54,18 @@ BinArchiver::BinArchiver(std::istream *is) : Archiver(false)
   read_string(archive_info);
   archive_version = read_int();
   nr_ids = read_int();
+  unsigned int is_release = read_int();
+#ifndef NDEBUG
+  if(is_release)
+  {
+    ZORBA_ERROR(SRL0012_INCOMPATIBLE_ARCHIVE_VERSION);
+  }
+#else
+  if(!is_release)
+  {
+    ZORBA_ERROR(SRL0012_INCOMPATIBLE_ARCHIVE_VERSION);
+  }
+#endif
 
   read_string_pool();
 
@@ -63,6 +78,9 @@ BinArchiver::BinArchiver(std::ostream *os) : Archiver(true)
   //open archiver for output
   this->is = NULL;
   this->os = os;
+  this->last_id = 0;
+  current_byte = 0;
+  bitfill = 0;
 }
 
 BinArchiver::~BinArchiver()
@@ -84,6 +102,11 @@ void BinArchiver::serialize_out()
   os->write(archive_info.c_str(), (std::streamsize)archive_info.length()+1);
   write_int(archive_version);
   write_int(nr_ids);
+#ifndef NDEBUG
+  write_int(0);//for debug
+#else
+  write_int(1);//for release
+#endif
 
   //first gather all strings in a string pool
   collect_strings(out_fields);
@@ -91,7 +114,11 @@ void BinArchiver::serialize_out()
   serialize_out_string_pool();
   //now serialize the fields
   serialize_compound_fields(out_fields);
-
+  if(bitfill)
+  {
+    current_byte <<= (8-bitfill);
+    os->write((char*)&current_byte, 1);
+  }
 }
 
 int BinArchiver::add_to_string_pool(const char *str)
@@ -100,9 +127,18 @@ int BinArchiver::add_to_string_pool(const char *str)
     return 0;
   int   str_pos = 0;
   if(string_pool.get(str, str_pos))
+  {
+    STRING_POS &str_struct = strings.at(str_pos-1);
+    str_struct.count++;
     return str_pos;
-  strings.push_back(str);
+  }
+  STRING_POS  str_struct;
+  str_struct.str = str;
+  str_struct.count = 1;
+  str_struct.final_pos = (unsigned int)strings.size()+1;
+  strings.push_back(str_struct);
   str_pos = (int)strings.size();
+  strings_pos.push_back(str_pos-1);
   const char *str_dup = strdup(str);
   string_pool.insert(str_dup, str_pos);
   return str_pos;
@@ -115,7 +151,10 @@ void BinArchiver::collect_strings(archive_field   *parent_field)
   {
     if(current_field->field_treat != ARCHIVE_FIELD_IS_NULL)
     {
-      current_field->type_str_pos_in_pool = add_to_string_pool(current_field->type);
+#ifdef NDEBUG
+      if(current_field->is_class && (current_field->field_treat == ARCHIVE_FIELD_IS_PTR))
+#endif
+        current_field->type_str_pos_in_pool = add_to_string_pool(current_field->type);
       if(current_field->field_treat != ARCHIVE_FIELD_IS_REFERENCING)
       {
         current_field->value_str_pos_in_pool = add_to_string_pool(current_field->value);
@@ -134,33 +173,78 @@ void BinArchiver::collect_strings(archive_field   *parent_field)
 
 void   BinArchiver::serialize_out_string_pool()
 {
-  write_int((unsigned int)strings.size());
-  std::vector<std::string>::iterator  strings_it;
-  for(strings_it = strings.begin(); strings_it != strings.end(); strings_it++)
+  //sort strings based on use count
+  unsigned int i,j;
+  for(i=0;i<strings_pos.size();i++)
   {
-    write_string((*strings_it).c_str());
+    for(j=i+1;j<strings_pos.size();j++)
+    {
+      if(strings.at(strings_pos[i]).count < strings.at(strings_pos[j]).count)
+      {
+        unsigned int temp;
+        temp = strings_pos[i];
+        strings_pos[i] = strings_pos[j];
+        strings_pos[j] = temp;
+        strings.at(strings_pos[i]).final_pos = i+1;
+        strings.at(strings_pos[j]).final_pos = j+1;
+      }
+    }
+  }
+
+  write_int((unsigned int)strings.size());
+  std::vector<unsigned int>::iterator  strings_pos_it;
+  for(strings_pos_it = strings_pos.begin(); strings_pos_it != strings_pos.end(); strings_pos_it++)
+  {
+    write_string(strings.at(*strings_pos_it).str.c_str());
   }
 }
 
 void BinArchiver::serialize_compound_fields(archive_field   *parent_field)
 {
   archive_field   *current_field = parent_field->first_child;
-  unsigned char tempbyte;
   while(current_field)
   {
+#ifndef NDEBUG
+    unsigned char tempbyte;
     tempbyte = 0;
     tempbyte |= current_field->is_simple ? 1 : 0;
     tempbyte |= current_field->is_class ? 1<<1 : 0;
     tempbyte |= (current_field->field_treat&0x0F)<<4;
-    os->write((char*)&tempbyte, 1);
+    write_bits(tempbyte, 8);
+#else
+    //write_bit(current_field->is_class ? 1 : 0);
+    //write_bits(current_field->field_treat, 3);
+    unsigned char small_treat = 0;
+    switch(current_field->field_treat)
+    {
+    case ARCHIVE_FIELD_IS_NULL:          small_treat = 1;break;
+    case ARCHIVE_FIELD_IS_REFERENCING:   small_treat = 2;break;
+    case ARCHIVE_FIELD_IS_BASECLASS:     small_treat = 3;break;//??
+    }
+    write_bits(small_treat, 2);
+#endif
     if(current_field->field_treat != ARCHIVE_FIELD_IS_NULL)
     {
-      write_int(current_field->type_str_pos_in_pool);
-      write_int(current_field->id);
+#ifdef NDEBUG
+      if(current_field->is_class && (current_field->field_treat == ARCHIVE_FIELD_IS_PTR))
+#endif
+      {
+        if(!current_field->type_str_pos_in_pool)
+          write_int_exp2(current_field->type_str_pos_in_pool);
+        else
+          write_int_exp2(strings.at(current_field->type_str_pos_in_pool-1).final_pos);
+      }
+      write_int_exp(current_field->id - this->last_id);
+      last_id = current_field->id;
       if(current_field->field_treat != ARCHIVE_FIELD_IS_REFERENCING)
       {
+#ifndef NDEBUG
         write_int(current_field->version);
-        write_int(current_field->value_str_pos_in_pool);
+#endif
+        if(!current_field->value_str_pos_in_pool)
+          write_int_exp2(current_field->value_str_pos_in_pool);
+        else
+          write_int_exp2(strings.at(current_field->value_str_pos_in_pool-1).final_pos);
       }
       else
         write_int(current_field->referencing);
@@ -171,8 +255,11 @@ void BinArchiver::serialize_compound_fields(archive_field   *parent_field)
       if(current_field->field_treat != ARCHIVE_FIELD_IS_REFERENCING)
       {
         serialize_compound_fields(current_field);
+#ifndef NDEBUG
+        unsigned char tempbyte;
         tempbyte = 0xFF;
-        os->write((char*)&tempbyte, 1);
+        write_bits(tempbyte, 8);
+#endif
       }
     }
     current_field = current_field->next;
@@ -184,6 +271,28 @@ void BinArchiver::write_string(const char *str)
   os->write(str, (std::streamsize)strlen(str)+1);
 }
 
+void BinArchiver::write_bit(unsigned char bit)
+{
+  current_byte <<= 1;
+  current_byte |= bit&0x01;
+  bitfill++;
+  if(bitfill == 8)
+  {
+    os->write((char*)&current_byte, 1);
+    current_byte = 0;
+    bitfill = 0;
+  }
+}
+
+void BinArchiver::write_bits(unsigned int value, unsigned int bits)
+{
+  while(bits)
+  {
+    write_bit((value>>(bits-1)) & 0x01);
+    bits--;
+  }
+}
+
 void BinArchiver::write_int(unsigned int intval)
 {
   //write 7 bits per byte, only significant bits
@@ -192,26 +301,73 @@ void BinArchiver::write_int(unsigned int intval)
   while(shifted_int)
   {//little endian
     tmp = intval & 0x7F;
-    os->write((char*)&tmp, 1);
+    //os->write((char*)&tmp, 1);
+    write_bits(tmp, 8);
     intval = shifted_int;
     shifted_int = (intval >> 7);
   }
   tmp = (intval & 0x7F) | 0x80;
-  os->write((char*)&tmp, 1);
+  //os->write((char*)&tmp, 1);
+  write_bits(tmp, 8);
 
-/*  
-  //big endian
-  tmp = (intval>>24) & 0xFF;
-  os->write((char*)&tmp, 1);
-  tmp = (intval>>16) & 0xFF;
-  os->write((char*)&tmp, 1);
-  tmp = (intval>>8) & 0xFF;
-  os->write((char*)&tmp, 1);
-  tmp = intval & 0xFF;
-  os->write((char*)&tmp, 1);
-*/
 }
 
+void BinArchiver::write_int_exp(unsigned int intval)
+{
+  if(intval == 1)
+  {
+    write_bit(0);
+  }
+  else if(intval < (1<<4))
+  {
+    write_bit(1);
+    write_bit(0);
+    write_bits(intval, 4);
+  }
+  else if(intval < (1<<13))
+  {
+    write_bit(1);
+    write_bit(1);
+    write_bit(0);
+    write_bits(intval, 13);
+  }
+  else
+  {
+    write_bit(1);
+    write_bit(1);
+    write_bit(1);
+    write_bits(intval, 32);
+  }
+}
+
+void BinArchiver::write_int_exp2(unsigned int intval)
+{
+  if(intval < (1<<4))
+  {
+    write_bit(0);
+    write_bits(intval, 4);
+  }
+  else if(intval < (1<<12))
+  {
+    write_bit(1);
+    write_bit(0);
+    write_bits(intval, 12);
+  }
+  else if(intval < (1<<20))
+  {
+    write_bit(1);
+    write_bit(1);
+    write_bit(0);
+    write_bits(intval, 20);
+  }
+  else
+  {
+    write_bit(1);
+    write_bit(1);
+    write_bit(1);
+    write_bits(intval, 32);
+  }
+}
 
 ////////////reading archive
 
@@ -249,6 +405,31 @@ void BinArchiver::read_string(char* str)
   }
 }
 
+unsigned char BinArchiver::read_bit()
+{
+  if(bitfill == 0)
+  {
+    is->read((char*)&current_byte, 1);
+    bitfill = 8;
+  }
+  bitfill--;
+  unsigned char result = (current_byte & 0x80) ? 1 : 0;
+  current_byte <<= 1;
+  return result;
+}
+
+unsigned int BinArchiver::read_bits(unsigned int bits)
+{
+  unsigned int result = 0;
+  while(bits)
+  {
+    result <<= 1;
+    result |= read_bit();
+    bits--;
+  }
+  return result;
+}
+
 unsigned int BinArchiver::read_int()
 {
   unsigned int outval = 0;
@@ -256,22 +437,50 @@ unsigned int BinArchiver::read_int()
   int   i = 0;
   
   do{
-    is->read((char*)&tmp, 1);
+    //is->read((char*)&tmp, 1);
+    tmp = read_bits(8);
     outval |= ((unsigned int)(tmp&0x7F) << (7*i));
     i++;
   }while(!(tmp & 0x80));
 
-/*  //big endian
-  is->read((char*)&tmp, 1);
-  outval = (outval<<8) + tmp;
-  is->read((char*)&tmp, 1);
-  outval = (outval<<8) + tmp;
-  is->read((char*)&tmp, 1);
-  outval = (outval<<8) + tmp;
-  is->read((char*)&tmp, 1);
-  outval = (outval<<8) + tmp;
-*/
   return outval;
+}
+
+unsigned int BinArchiver::read_int_exp()
+{
+  unsigned char bit;
+  bit = read_bit();
+  if(!bit)
+  {
+    return 1;
+  }
+  bit = read_bit();
+  if(!bit)
+    return read_bits(4);
+  bit = read_bit();
+  if(!bit)
+    return read_bits(13);
+  else
+    return read_bits(32);
+}
+
+unsigned int BinArchiver::read_int_exp2()
+{
+  unsigned char bit;
+  bit = read_bit();
+  if(!bit)
+  {
+    return read_bits(4);
+  }
+  bit = read_bit();
+  if(!bit)
+    return read_bits(12);
+  bit = read_bit();
+  if(!bit)
+    return read_bits(20);
+  else
+    return read_bits(32);
+
 }
 
 void BinArchiver::read_string_pool()
@@ -284,7 +493,9 @@ void BinArchiver::read_string_pool()
   {
     str.clear();
     read_string(str);
-    strings.push_back(str);
+    STRING_POS str_pos;
+    str_pos.str = str;
+    strings.push_back(str_pos);
   }
 }
 
@@ -305,39 +516,59 @@ bool BinArchiver::read_next_field_impl( char **type,
   *type = NULL;
   *id = -1; 
   *version = -1; 
+#ifndef NDEBUG 
   *is_simple = false; 
-  *is_class = false,
+  *is_class = false;
   *field_treat = (enum ArchiveFieldTreat)-1;
+#endif
   *referencing = -1;
 
+#ifndef NDEBUG
   unsigned char  tempbyte;
 
-  is->read((char*)&tempbyte, 1);
+  tempbyte = read_bits(8);
   if(tempbyte == 0xFF)
     return false;
   *is_simple = tempbyte & 0x01 ? true : false;
   *is_class = tempbyte & 0x02 ? true : false;
   *field_treat = (enum ArchiveFieldTreat)((tempbyte>>4)&0x0F);
-
+#else
+  //*is_class = read_bit();
+  //*field_treat = (enum ArchiveFieldTreat)read_bits(3);
+  unsigned char small_treat = read_bits(2);
+  switch(small_treat)
+  {
+  case 1: *field_treat = ARCHIVE_FIELD_IS_NULL;break;
+  case 2: *field_treat = ARCHIVE_FIELD_IS_REFERENCING;break;
+  case 3: *field_treat = ARCHIVE_FIELD_IS_BASECLASS;break;//??
+  }
+#endif
   assert(*field_treat <= ARCHIVE_FIELD_IS_REFERENCING);
   if(*field_treat != ARCHIVE_FIELD_IS_NULL)
   {
-    unsigned int field_type_pos;
-    //read_string(field_type);
-    field_type_pos = read_int();
-    if(field_type_pos)
-      *type = (char*)strings[field_type_pos-1].c_str();
-    else
-      *type = NULL;
-    *id = read_int();
+#ifdef NDEBUG
+    if(*is_class && (*field_treat == ARCHIVE_FIELD_IS_PTR))
+#endif
+    {
+      unsigned int field_type_pos;
+      //read_string(field_type);
+      field_type_pos = read_int_exp2();
+      if(field_type_pos)
+        *type = (char*)strings.at(field_type_pos-1).str.c_str();
+      else
+        *type = NULL;
+    }
+    *id = read_int_exp() + this->last_id;
+    this->last_id = *id;
     if(*field_treat != ARCHIVE_FIELD_IS_REFERENCING)
     {
+#ifndef NDEBUG
       *version = read_int();
-    //  read_string(*value);
+#endif
       unsigned int value_pos;
-      value_pos = read_int();
+      value_pos = read_int_exp2();
       if(value_pos)
-       *value = strings[value_pos-1];
+       *value = strings.at(value_pos-1).str;
     }
     else
      *referencing = read_int();
@@ -351,13 +582,15 @@ bool BinArchiver::read_next_field_impl( char **type,
 
 void BinArchiver::read_end_current_level_impl()
 {
+#ifndef NDEBUG
   unsigned char  tempbyte = 0;
 
-  is->read((char*)&tempbyte, 1);
+  tempbyte = read_bits(8);
   if(tempbyte != 0xFF)
   {
     ZORBA_ERROR(SRL0002_INCOMPATIBLE_INPUT_FIELD);
   }
+#endif
 }
 
 
