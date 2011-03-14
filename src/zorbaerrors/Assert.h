@@ -13,65 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 // ZORBA_ASSERT (and the deprecated Assert) survive in release mode
 // and raise errors via the Zorba error API
 
 #ifndef ZORBA_ASSERT_H
 #define ZORBA_ASSERT_H
 
-#include <string>
-#include <iostream>
-#include <zorba/config.h>
-
-#ifdef ZORBA_HAVE_EXECINFO_H
-#include <execinfo.h>
-#include <stdlib.h>
-#endif
-
-#include "zorbaerrors/errors.h"
-#include "zorbaerrors/error_manager.h"
-
-#ifdef WIN32
-#include "zorbaerrors/StackWalker.h"
-#endif // WIN32
-
 namespace zorba {
 
-// exported function for debugging purposes
-class ZORBA_DLL_PUBLIC StackTracePrinter {
-public:
-  StackTracePrinter(std::ostream *is)
-  {
-#ifdef ZORBA_HAVE_EXECINFO_H
-#define TRACE_SIZE 25
-    void *trace[TRACE_SIZE];
-    int sz = backtrace(trace, TRACE_SIZE);
-    char **syms = backtrace_symbols(trace, sz);
-    for(int i = 0; i < sz; ++i)
-      *is << syms[i] << std::endl;
-    free(syms);
-#undef TRACE_SIZE
-#endif
-#ifdef WIN32
-	StackWalker sw;
-	sw.ShowCallstack();
-#endif // WIN32
-  }
-};
+void assertion_failed( char const *condition, char const *file, int line );
 
-#define __ZORBA_ASSERT_aux3( line ) #line
-#define __ZORBA_ASSERT_aux2( line ) __ZORBA_ASSERT_aux3( line )
-#define __ZORBA_ASSERT_aux1( cond, line )                               \
-  do {                                                                  \
-    if (! (cond)) {                                                     \
-      zorba::StackTracePrinter p (&std::cerr);                                 \
-      ZORBA_ERROR_PARAM(XQP0005_SYSTEM_ASSERT_FAILED, #cond, __FILE__ ":" __ZORBA_ASSERT_aux2 (line)); \
-    }                                                                   \
-  } while(0)
-  
-#define ZORBA_ASSERT( cond ) __ZORBA_ASSERT_aux1 (cond, __LINE__)
+#define ZORBA_ASSERT(COND)                                  \
+  do {                                                      \
+    if ( !(COND) ) {                                        \
+      assertion_failed( #COND, __FILE__, __LINE__ );        \
+      throw 0; /* never gets here but suppresses warning */ \
+    }                                                       \
+  } while (0)
 
-
-}	/* namespace zorba */
-#endif	/* ZORBA_ASSERT_H */
-
+} // namespace zorba
+#endif /* ZORBA_ASSERT_H */
+/* vim:set et sw=2 ts=2: */

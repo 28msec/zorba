@@ -23,6 +23,8 @@
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
 
+#include "zorbaerrors/error_manager.h"
+
 namespace zorba {
 
 //14.6 op:is-same-node

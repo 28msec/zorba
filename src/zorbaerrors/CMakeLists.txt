@@ -13,6 +13,7 @@
 # limitations under the License.
 
 SET(ZORBAERRORS_SRCS
+   assert.cpp
    errors.cpp
    error_manager.cpp
    error_messages.cpp)
