@@ -1,4 +1,4 @@
-/*
+  /*
  * Copyright 2006-2008 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -1104,12 +1104,16 @@ void DtdXmlLoader::characters(void * ctx, const xmlChar * ch, int len)
     textNode->setId(loader.theTree, &loader.theOrdPath);
     loader.theOrdPath.nextChild();
 
-    LOADER_TRACE2("Text Node = " << textNode << " content = "
-                  << std::string(charp, len) << std::endl 
+#ifndef NDEBUG  
+    std::stringstream lSs;
+    lSs << "Text Node = " << textNode << " content = "
+        << std::string(charp, len) << std::endl
 #ifdef TEXT_ORDPATH
-                  << " ordpath = " << textNode->getOrdPath().show()
+        << " ordpath = " << textNode->getOrdPath().show()
 #endif
-                  << std::endl);
+        << std::endl;
+    LOADER_TRACE2(lSs.str());
+#endif
   }
   catch (error::ZorbaError& e)
   {
@@ -1153,12 +1157,16 @@ void DtdXmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
     cdataNode->setId(loader.theTree, &loader.theOrdPath);
     loader.theOrdPath.nextChild();
 
-    LOADER_TRACE2("CDATA Node = " << cdataNode << " content = "
-                  << std::string(charp, len) << std::endl 
+#ifndef NDEBUG  
+    std::stringstream lSs;
+    lSs << "CDATA Node = " << cdataNode << " content = "
+        << std::string(charp, len) << std::endl
 #ifdef TEXT_ORDPATH
-                  << " ordpath = " << cdataNode->getOrdPath().show()
+        << " ordpath = " << cdataNode->getOrdPath().show()
 #endif
-                  << std::endl);
+        << std::endl;
+  LOADER_TRACE2(lSs.str());
+#endif
   }
   catch (error::ZorbaError& e)
   {
