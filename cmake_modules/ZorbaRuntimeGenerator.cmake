@@ -48,6 +48,7 @@ MACRO(ZORBA_RUNTIME_GENERATOR GEN_QUERY EXTVARS SPEC_FILES EXTRA_DEPS OUTPUT)
   # testing purposes that the arguments to CMAKE_COMMAND in both
   # ADD_CUSTOM_COMMAND() and ADD_TEST() here be the same, except for
   # -Dtest_only.
+  STRING(REPLACE " " "_" TEST_NAME "${OUTPUT}")
   ADD_CUSTOM_COMMAND(OUTPUT "${OUTPUT}"
     COMMAND "${CMAKE_COMMAND}"
     -D "source_dir=\"${CMAKE_SOURCE_DIR}\""
@@ -60,7 +61,7 @@ MACRO(ZORBA_RUNTIME_GENERATOR GEN_QUERY EXTVARS SPEC_FILES EXTRA_DEPS OUTPUT)
     -P "${GEN_SCRIPT}"
     DEPENDS ${GEN_QUERY} ${ABSOLUTE_SPEC_FILES} ${EXTRA_DEPS}
     ${GEN_SCRIPT} ${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaRuntimeGenerator.cmake)
-  ADD_TEST("RuntimeGeneratorTest-${OUTPUT}" "${CMAKE_COMMAND}"
+  ADD_TEST("RuntimeGeneratorTest-${TEST_NAME}" "${CMAKE_COMMAND}"
     -D "source_dir=${CMAKE_SOURCE_DIR}"
     -D "binary_dir=${CMAKE_BINARY_DIR}"
     -D "ZORBA_EXE=${ZORBA_EXE_SCRIPT_CMAKE}" 
