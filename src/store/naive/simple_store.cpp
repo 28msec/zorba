@@ -1247,8 +1247,9 @@ bool SimpleStore::getReference(store::Item_t& result, const store::Item* node)
 {
   std::ostringstream stream;
 
-  const XmlNode* n = reinterpret_cast<const XmlNode*>(node);
+  const XmlNode* n = static_cast<const XmlNode*>(node);
 
+#ifdef TEXT_ORDPATH
   if (n->getNodeKind() == store::StoreConsts::attributeNode)
   {
     stream << "zorba://node_reference/"
@@ -1265,6 +1266,33 @@ bool SimpleStore::getReference(store::Item_t& result, const store::Item* node)
            << n->getTree()->getPosition() + 1 << "/c/"
            << n->getOrdPath().serialize();
   }
+#else
+  if (n->getNodeKind() == store::StoreConsts::attributeNode)
+  {
+    stream << "zorba://node_reference/"
+           << n->getCollectionId() << "/"
+           << n->getTreeId() << "/"
+           << n->getTree()->getPosition() + 1 << "/a/"
+           << static_cast<const OrdPathNode*>(n)->getOrdPath().serialize();
+  }
+  else if (n->getNodeKind() == store::StoreConsts::textNode)
+  {
+    stream << "zorba://node_reference/"
+           << n->getCollectionId() << "/"
+           << n->getTreeId() << "/"
+           << n->getTree()->getPosition() + 1 << "/a/"
+           << static_cast<const OrdPathNode*>(n->getParent())->getOrdPath().serialize()
+           << n;
+  }
+  else
+  {
+    stream << "zorba://node_reference/"
+           << n->getCollectionId() << "/"
+           << n->getTreeId() << "/"
+           << n->getTree()->getPosition() + 1 << "/c/"
+           << static_cast<const OrdPathNode*>(n)->getOrdPath().serialize();
+  }
+#endif
 
   zstring str(stream.str());
 
@@ -1391,7 +1419,7 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
     store::Collection_t lCollection;
     bool lFound = false;
 
-    // earch the collection
+    // search the collection
     while (lIter->next(lCollection))
     {
       collection = static_cast<SimpleCollection*>(lCollection.getp());
@@ -1441,11 +1469,24 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
 
   OrdPath op((unsigned char*)start, (ulong)strlen(start));
 
+#ifdef TEXT_ORDPATH
   if (rootNode->getOrdPath() == op)
   {
     result = rootNode;
     return true;
   }
+#else
+  if (rootNode->getNodeKind() == store::StoreConsts::textNode)
+  {
+    result = NULL;
+    return false;
+  }
+  else if (static_cast<OrdPathNode*>(rootNode)->getOrdPath() == op)
+  {
+    result = rootNode;
+    return true;
+  }
+#endif
 
   XmlNode* parent = rootNode;
 
@@ -1467,7 +1508,7 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
       ulong numAttrs = elemParent->numAttrs();
       for (i = 0; i < numAttrs; i++)
       {
-        XmlNode* child = elemParent->getAttr(i);
+        AttributeNode* child = elemParent->getAttr(i);
 
         OrdPath::RelativePosition pos =  child->getOrdPath().getRelativePosition(op);
 
@@ -1475,11 +1516,6 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
         {
           result = child;
           return true;
-        }
-        else if (pos == OrdPath::DESCENDANT)
-        {
-          parent = child;
-          break;
         }
         else if (pos != OrdPath::FOLLOWING)
         {
@@ -1494,8 +1530,18 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
     ulong numChildren = parent2->numChildren();
     for (i = 0; i < numChildren; i++)
     {
+#ifdef TEXT_ORDPATH
       XmlNode* child = parent2->getChild(i);
+#else
+      XmlNode* c = parent2->getChild(i);
 
+      if (c->getNodeKind() == store::StoreConsts::textNode)
+        continue;
+
+      OrdPathNode* child = static_cast<OrdPathNode*>(c);
+#endif
+
+      
       OrdPath::RelativePosition pos =  child->getOrdPath().getRelativePosition(op);
 
       if (pos == OrdPath::SELF)

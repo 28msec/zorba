@@ -125,9 +125,7 @@ void NodeTypeInfo::transfer(NodeTypeInfo& other)
   Make the tree rooted at "this" node a subtree of the given parent node at the
   given position among the children of the parent node.
 ********************************************************************************/
-void XmlNode::attach(
-    InternalNode*   parent,
-    csize           pos) 
+void XmlNode::attach(InternalNode* parent, csize pos) 
 {
   ZORBA_ASSERT(theParent == NULL);
   ZORBA_ASSERT(parent != NULL);
@@ -153,6 +151,7 @@ void XmlNode::attach(
   {
     ElementNode* elemParent = reinterpret_cast<ElementNode*>(parent);
 
+    static_cast<AttributeNode*>(this)->
     setOrdPath(parent, false, pos, store::StoreConsts::attributeNode);
 
     elemParent->insertAttr(this, pos);
@@ -161,6 +160,7 @@ void XmlNode::attach(
   }
   case store::StoreConsts::commentNode:
   {
+    static_cast<CommentNode*>(this)->
     setOrdPath(parent, false, pos, getNodeKind());
     
     parent->insertChild(this, pos);
@@ -169,6 +169,7 @@ void XmlNode::attach(
   }
   case store::StoreConsts::piNode:
   {
+    static_cast<PiNode*>(this)->
     setOrdPath(parent, false, pos, getNodeKind());
     
     parent->insertChild(this, pos);
@@ -177,8 +178,10 @@ void XmlNode::attach(
   }
   case store::StoreConsts::textNode:
   {
+#ifdef TEXT_ORDPATH
     setOrdPath(parent, false, pos, getNodeKind());
-    
+#endif
+
     parent->insertChild(this, pos);
 
     break;
@@ -187,6 +190,7 @@ void XmlNode::attach(
   {
     ElementNode* elemRoot = reinterpret_cast<ElementNode*>(this);
 
+    static_cast<ElementNode*>(this)->
     setOrdPath(parent, false, pos, getNodeKind());
     
     parent->insertChild(this, pos);
@@ -282,8 +286,19 @@ void XmlNode::attach(
         XmlNode* child = (*ite);
 
         child->setTree(newTree);
+
+#ifndef TEXT_ORDPATH
+        if (child->getNodeKind() != store::StoreConsts::textNode)
+        {
+          OrdPathNode* child2 = static_cast<OrdPathNode*>(child);
+          
+          child2->theOrdPath = elem->theOrdPath;
+          child2->theOrdPath.appendComp(2 * (numAttrs + i) + 1);
+        }
+#else
         child->theOrdPath = elem->theOrdPath;
         child->theOrdPath.appendComp(2 * (numAttrs + i) + 1);
+#endif
 
         nodes.push(child);
       }
@@ -1287,7 +1302,9 @@ void ElementNode::replaceContent(UpdReplaceElemContent& upd)
     SYNC_CODE(newTree->getRCLock()->release());
     
     newChild->setTree(newTree);
+#ifdef TEXT_ORDPATH
     newChild->setOrdPath(this, true, 0, store::StoreConsts::textNode);
+#endif
     newChild->connect(this, 0);
     
     upd.theNewChild = NULL;

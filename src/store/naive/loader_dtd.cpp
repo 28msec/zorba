@@ -1105,8 +1105,11 @@ void DtdXmlLoader::characters(void * ctx, const xmlChar * ch, int len)
     loader.theOrdPath.nextChild();
 
     LOADER_TRACE2("Text Node = " << textNode << " content = "
-                  << std::string(charp, len) << std::endl << " ordpath = "
-                  << textNode->getOrdPath().show() << std::endl);
+                  << std::string(charp, len) << std::endl 
+#ifdef TEXT_ORDPATH
+                  << " ordpath = " << textNode->getOrdPath().show()
+#endif
+                  << std::endl);
   }
   catch (error::ZorbaError& e)
   {
@@ -1151,8 +1154,11 @@ void DtdXmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
     loader.theOrdPath.nextChild();
 
     LOADER_TRACE2("CDATA Node = " << cdataNode << " content = "
-                  << std::string(charp, len) << std::endl << " ordpath = "
-                  << cdataNode->getOrdPath().show() << std::endl);
+                  << std::string(charp, len) << std::endl 
+#ifdef TEXT_ORDPATH
+                  << " ordpath = " << cdataNode->getOrdPath().show()
+#endif
+                  << std::endl);
   }
   catch (error::ZorbaError& e)
   {
@@ -1190,7 +1196,7 @@ void DtdXmlLoader::processingInstruction(
 
     zstring target = reinterpret_cast<const char*>(targetp);
 
-    XmlNode* piNode = GET_STORE().getNodeFactory().createPiNode(target, content);
+    PiNode* piNode = GET_STORE().getNodeFactory().createPiNode(target, content);
 
     if (loader.theNodeStack.empty())
       loader.setRoot(piNode);
@@ -1233,7 +1239,7 @@ void DtdXmlLoader::comment(void * ctx, const xmlChar * ch)
     const char* charp = reinterpret_cast<const char*>(ch);
     zstring content(charp);
 
-    XmlNode* commentNode = GET_STORE().getNodeFactory().createCommentNode(content);
+    CommentNode* commentNode = GET_STORE().getNodeFactory().createCommentNode(content);
 
     if (loader.theNodeStack.empty())
       loader.setRoot(commentNode);

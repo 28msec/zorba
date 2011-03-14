@@ -31,6 +31,7 @@
 #include "store/naive/store_config.h"
 #include "store/naive/nsbindings.h" // TODO remove by introducing explicit destructors
 
+// Note: whether the EMBEDED_TYPE is defined or not is done in store_defs.h 
 #ifndef EMBEDED_TYPE
 #include "store/naive/hashmap_nodep.h"
 #endif
@@ -40,15 +41,12 @@
 #include "ft_token_store.h"
 #endif /* ZORBA_NO_FULL_TEXT */
 
-#ifdef ZORBA_STORE_MSDOM
-#include "msdom_addon/msdom_node_items.h"
-#else
-
 #include "store/api/item.h"
 
 #include "zorbaerrors/Assert.h"
 #include "zorbautils/fatal.h"
 #include "zorbautils/tokenizer.h"
+#include "zorbautils/hashfun.h"
 
 #include "zorbatypes/zstring.h"
 
@@ -337,7 +335,9 @@ public:
   };
 
 protected:
+#ifdef TEXT_ORDPATH
   OrdPath           theOrdPath;
+#endif
   InternalNode    * theParent;
   uint32_t          theFlags;
 
@@ -351,12 +351,19 @@ protected:
     theFlags = (uint32_t)k;
   }
 
+#ifdef TEXT_ORDPATH
   XmlNode(
       XmlTree* tree,
       InternalNode* parent,
       bool append,
       csize pos,
       store::StoreConsts::NodeKind nodeKind);
+#else
+  XmlNode(
+      XmlTree* tree,
+      InternalNode* parent,
+      store::StoreConsts::NodeKind nodeKind);
+#endif
 
 public:
 #ifndef NDEBUG
@@ -367,7 +374,11 @@ public:
 
   SYNC_CODE(RCLock* getRCLock() const { return getTree()->getRCLock(); })
 
-  void free() { if (getTree() != NULL) getTree()->free(); }
+  void free() 
+  {
+    if (getTree() != NULL)
+      getTree()->free(); 
+  }
 
   //
   // Item methods
@@ -401,9 +412,11 @@ public:
     return this == other;
   }
 
-  uint32_t hash(
-      long timezone = 0,
-      const XQPCollator* aCollation = 0) const;
+  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const
+  {
+    XmlNode* node = const_cast<XmlNode*>(this);
+    return hashfun::h32((void*)(&node), sizeof(node), FNV_32_INIT);
+  }
 
   inline long compare2(const XmlNode* other) const;
 
@@ -444,8 +457,6 @@ public:
   // SimpleStore Methods
   //
 
-  void setTree(const XmlTree* t);
-
   XmlTree* getTree() const { return (XmlTree*)theUnion.treeRCPtr; }
 
   ulong getTreeId() const { return getTree()->getId(); }
@@ -459,17 +470,19 @@ public:
 
   ulong getCollectionId() const { return getTree()->getCollectionId(); }
 
+#ifdef TEXT_ORDPATH
   const OrdPath& getOrdPath() const { return theOrdPath; }
 
   OrdPath& getOrdPath() { return theOrdPath; }
-
-  void setId(XmlTree* tree, const OrdPathStack* op);
 
   void setOrdPath(
         InternalNode* parent,
         bool append,
         csize pos,
         store::StoreConsts::NodeKind nodeKind);
+#endif
+
+  void setId(XmlTree* tree, const OrdPathStack* op);
 
   void setParent(InternalNode* p) { theParent = p; }
 
@@ -527,16 +540,80 @@ protected:
 #endif /* ZORBA_NO_FULL_TEXT */
 
 private:
+  void setTree(const XmlTree* t);
+
+#ifndef TEXT_ORDPATH
+  long compareInSameTree(const XmlNode* n1, const XmlNode* n2) const;
+#endif
+
   void destroyInternal(bool removeType) throw();
 };
+
+
+#ifndef TEXT_ORDPATH
+/******************************************************************************
+
+*******************************************************************************/
+class OrdPathNode : public XmlNode
+{
+  friend class XmlTree;
+  friend class NodeFactory;
+
+  friend class XmlNode;
+  friend class InternalNode;
+  friend class DocumentNode;
+  friend class ElementNode;
+  friend class AttributeNode;
+  friend class TextNode;
+  friend class PiNode;
+  friend class CommentNode;
+
+protected:
+  OrdPath           theOrdPath;
+
+protected:
+  OrdPathNode() : XmlNode()
+  {
+  }
+
+  OrdPathNode(store::StoreConsts::NodeKind k) : XmlNode(k)
+  {
+  }
+
+  OrdPathNode(
+      XmlTree* tree,
+      InternalNode* parent,
+      bool append,
+      csize pos,
+      store::StoreConsts::NodeKind nodeKind);
+
+  virtual ~OrdPathNode() {}
+
+public:
+  const OrdPath& getOrdPath() const { return theOrdPath; }
+
+  OrdPath& getOrdPath() { return theOrdPath; }
+
+  void setOrdPath(
+        InternalNode* parent,
+        bool append,
+        csize pos,
+        store::StoreConsts::NodeKind nodeKind);
+};
+#endif // TEXT_ORDPATH
 
 
 /*******************************************************************************
   Base class for element and document nodes
 ********************************************************************************/
+#ifdef TEXT_ORDPATH
 class InternalNode : public XmlNode
+#else
+class InternalNode : public OrdPathNode
+#endif
 {
   friend class XmlNode;
+  friend class OrdPathNode;
   friend class ElementNode;
   friend class AttributeNode;
   friend class TextNode;
@@ -553,11 +630,15 @@ public:
 
   typedef std::vector<XmlNode*>::reverse_iterator reverse_iterator;
 
+  typedef std::vector<XmlNode*>::const_reverse_iterator const_reverse_iterator;
+
 protected:
   std::vector<XmlNode*> theNodes;
   csize                 theNumAttrs;
 
-  // make sure that only created by subclasses
+  InternalNode() {}
+
+#ifdef TEXT_ORDPATH
   InternalNode(store::StoreConsts::NodeKind nodeKind) 
     :
     XmlNode(nodeKind),
@@ -577,7 +658,27 @@ protected:
   {
   }
 
-  InternalNode() {}
+#else
+
+  InternalNode(store::StoreConsts::NodeKind nodeKind) 
+    :
+    OrdPathNode(nodeKind),
+    theNumAttrs(0)
+  { 
+  }
+
+  InternalNode(
+      XmlTree* tree,
+      InternalNode* parent,
+      bool append,
+      csize pos,
+      store::StoreConsts::NodeKind nodeKind)
+    :
+    OrdPathNode(tree, parent, append, pos, nodeKind),
+    theNumAttrs(0)
+  {
+  }
+#endif
 
 public:
   //
@@ -598,7 +699,11 @@ public:
 
   reverse_iterator childrenRBegin() { return theNodes.rbegin(); }
 
+  const_reverse_iterator childrenRBegin() const { return theNodes.rbegin(); }
+
   reverse_iterator childrenREnd() { return theNodes.rend() - theNumAttrs; }
+
+  const_reverse_iterator childrenREnd() const { return theNodes.rend() - theNumAttrs; }
 
   XmlNode* getChild(csize i) const { return theNodes[theNumAttrs + i]; }
 
@@ -649,6 +754,12 @@ protected:
   void removeAttr(csize pos);
 
   csize removeAttr(XmlNode* attr);
+
+#ifndef TEXT_ORDPATH
+  const OrdPath* getFirstChildOrdPathAfter(csize pos) const;
+
+  const OrdPath* getFirstChildOrdPathBefore(csize pos) const;
+#endif
 
 #ifndef ZORBA_NO_FULL_TEXT
   void tokenize( XmlNodeTokenizerCallback& );
@@ -911,7 +1022,11 @@ private:
 /*******************************************************************************
 
 ********************************************************************************/
+#ifdef TEXT_ORDPATH
 class AttributeNode : public XmlNode
+#else
+class AttributeNode : public OrdPathNode
+#endif
 {
   friend class XmlNode;
   friend class ElementNode;
@@ -1149,7 +1264,11 @@ protected:
 /*******************************************************************************
 
 ********************************************************************************/
+#ifdef TEXT_ORDPATH
 class PiNode : public XmlNode
+#else
+class PiNode : public OrdPathNode
+#endif
 {
   friend class XmlNode;
   friend class FastXmlLoader;
@@ -1214,7 +1333,11 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
+#ifdef TEXT_ORDPATH
 class CommentNode : public XmlNode
+#else
+class CommentNode : public OrdPathNode
+#endif
 {
   friend class XmlNode;
   friend class FastXmlLoader;
@@ -1266,7 +1389,7 @@ public:
 };
 
 
-
+#ifdef TEXT_ORDPATH
 /*******************************************************************************
   Do a doc-order comparison of "this" nodes and the "other" node. Return -1 if
   this < other, 0, if this == other, or 1 if this > other.
@@ -1310,6 +1433,51 @@ inline long XmlNode::compare2(const XmlNode* other) const
 
   return 1;
 }
+#else
+/*******************************************************************************
+  Do a doc-order comparison of "this" nodes and the "other" node. Return -1 if
+  this < other, 0, if this == other, or 1 if this > other.
+********************************************************************************/
+inline long XmlNode::compare2(const XmlNode* other) const
+{
+  if (this == other)
+    return 0;
+
+  ulong col1 = this->getCollectionId();
+  ulong col2 = other->getCollectionId();
+
+  if (col1 < col2)
+    return -1;
+
+  if (col1 == col2)
+  {
+    if (col1 == 0)
+    {
+      ulong tree1 = this->getTreeId();
+      ulong tree2 = other->getTreeId();
+
+      if (tree1 < tree2)
+        return -1;
+
+      if (tree1 == tree2)
+        return compareInSameTree(this, other);
+    }
+    else
+    {
+      ulong pos1 = this->getTree()->getPosition();
+      ulong pos2 = other->getTree()->getPosition();
+
+      if (pos1 < pos2)
+        return -1;
+
+      if (pos1 == pos2)
+        return compareInSameTree(this, other);
+    }
+  }
+
+  return 1;
+}
+#endif // TEXT_ORDPATH
 
 
 #ifndef ZORBA_NO_FULL_TEXT
@@ -1371,7 +1539,6 @@ private:
 } // namespace store
 } // namespace zorba
 
-#endif//#ifdef ZORBA_STORE_MSDOM
 
 #endif
 /*

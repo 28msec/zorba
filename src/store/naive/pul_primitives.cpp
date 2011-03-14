@@ -622,9 +622,7 @@ void UpdPut::apply()
       XmlNode* target =  BASE_NODE(theTarget);
 
       DocumentNode* doc = GET_STORE().getNodeFactory().createDocumentNode();
-      doc->setTree(target->getTree());
-      doc->setOrdPath(NULL, true, 1, store::StoreConsts::documentNode);
-
+      doc->setId(target->getTree(), NULL);
       doc->insertChild(target, 0);
       doc->getTree()->setRoot(doc);
 
