@@ -1832,8 +1832,17 @@ void Schema::serialize(::zorba::serialization::Archiver &ar)
    bool is_grammar_NULL = (theGrammarPool == NULL);
    ar.set_is_temp_field_one_level(true, true);
    ar & is_grammar_NULL;
+   unsigned long size_of_size_t = sizeof(size_t);
+   union
+   {
+     unsigned long lvalue;
+     unsigned char cvalue[4];
+   }le_be_value;
+   le_be_value.lvalue = 0x11223344;
    if(ar.is_serializing_out())
    {
+     ar & size_of_size_t;
+     ar & le_be_value.cvalue[0];
      if(!is_grammar_NULL)
      {
        BinMemOutputStream    binmemoutputstream;
@@ -1856,6 +1865,14 @@ void Schema::serialize(::zorba::serialization::Archiver &ar)
    }
    else
    {
+     unsigned long size_of_size_t2;
+     unsigned char le_be_value_first_char;
+     ar & size_of_size_t2;
+     ar & le_be_value_first_char;
+     if((size_of_size_t2 != size_of_size_t) || (le_be_value_first_char != le_be_value.cvalue[0]))
+     {
+       ZORBA_ERROR(SRL0015_INCOMPATIBLE_BETWEEN_32_AND_64_BITS_OR_LE_AND_BE);
+     }
      if(!is_grammar_NULL)
      {
        unsigned int  size;

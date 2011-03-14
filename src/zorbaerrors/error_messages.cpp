@@ -672,6 +672,7 @@ DEF_ERR_CODE(SRL0013_UNABLE_TO_LOAD_QUERY, SRL0013, "Plan serialization error: U
 
 DEF_ERR_CODE(SRL0014_INFINITE_CIRCULAR_DEPENDENCIES, SRL0014, "Plan serialization error: Unable to solve delayed serialization of object references")
 
+DEF_ERR_CODE(SRL0015_INCOMPATIBLE_BETWEEN_32_AND_64_BITS_OR_LE_AND_BE, SRL0015, "Plan serialization error: Unable to load data saved from 32 bits into 64 bits machine, or from Little Endian to Big Endian machine")
 
 //
 // XQuery Data Definition Facility - Static Errors
