@@ -3415,13 +3415,17 @@ TextNode::TextNode(
     parent->insertChild(this, pos);
   }
 
-  NODE_TRACE1("Constructed text node " << this << " parent = "
-              << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
-              << " tree = " << getTree()->getId() << ":" << getTree()
+#ifndef NDEBUG  
+  std::stringstream lSs;
+  lSs << "Constructed text node " << this << " parent = "
+      << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
+      << " tree = " << getTree()->getId() << ":" << getTree()
 #ifdef TEXT_ORDPATH
-              << " ordpath = " << theOrdPath.show() 
+      << " ordpath = " << theOrdPath.show()
 #endif
-              << " content = " << getText());
+      << " content = " << getText();
+  NODE_TRACE1(lSs.str());
+#endif
 }
 
 
@@ -3454,12 +3458,16 @@ TextNode::TextNode(
 
   p->insertChild(this, 0);
 
-  NODE_TRACE1("Constructed text node " << this << " parent = "
-              << std::hex << (parent ? (ulong)parent : 0)
+#ifndef NDEBUG  
+  std::stringstream lSs;
+  lSs << "Constructed text node " << this << " parent = "
+      << std::hex << (parent ? (ulong)parent : 0)
 #ifdef TEXT_ORDPATH
-              << " ordpath = " << theOrdPath.show() 
+      << " ordpath = " << theOrdPath.show() 
 #endif
-              << " content = " << getValue()->getStringValue());
+      << " content = " << getValue()->getStringValue();
+  NODE_TRACE1(lSs.str());
+#endif
 }
 
 
