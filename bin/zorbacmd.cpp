@@ -770,14 +770,14 @@ _tmain(int argc, _TCHAR* argv[])
     //
     // Print the query if requested
     //
-    if ( lProperties.printQuery() ) 
-    {
+    if (lProperties.printQuery()) {
       *lOutputStream << "\nQuery number " << queryNo << " :\n";
       std::copy (std::istreambuf_iterator<char> (*qfile),
                  std::istreambuf_iterator<char> (),
                  std::ostreambuf_iterator<char> (*lOutputStream));
       *lOutputStream << std::endl;
-      qfile->seekg(0); // go back to the beginning
+      // go back to the beginning
+      qfile->seekg(0);
     }
 
     //
