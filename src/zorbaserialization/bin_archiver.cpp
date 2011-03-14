@@ -423,9 +423,29 @@ unsigned int BinArchiver::read_bits(unsigned int bits)
   unsigned int result = 0;
   while(bits)
   {
-    result <<= 1;
-    result |= read_bit();
-    bits--;
+  //  result <<= 1;
+  //  result |= read_bit();
+  //  bits--;
+    if(!bitfill)
+    {
+      is->read((char*)&current_byte, 1);
+      bitfill = 8;
+    }
+    if(bitfill <= bits)
+    {
+      result <<= bitfill;
+      result |= current_byte>>(8-bitfill);
+      bits -= bitfill;
+      bitfill = 0;
+    }
+    else
+    {
+      result <<= bits;
+      result |= current_byte>>(8-bits);
+      bitfill -= bits;
+      current_byte <<= bits;
+      bits = 0;
+    }
   }
   return result;
 }
