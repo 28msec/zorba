@@ -169,7 +169,8 @@ protected:
   int  serialize_base_class;
 
   //std::list<struct field_ptr_vs_id>   all_reference_list;
-  hash32map<void*>       *all_reference_list;//key is id, value is assoc_ptr
+  //hash32map<void*>       *all_reference_list;//key is id, value is assoc_ptr
+  void*                      *all_reference_list;
   
   std::list<struct fwd_ref>   fwd_reference_list;
 

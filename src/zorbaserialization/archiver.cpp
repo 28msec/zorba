@@ -147,7 +147,7 @@ Archiver::Archiver(bool is_serializing_out, bool internal_archive)
 Archiver::~Archiver()
 {
   delete out_fields;
-  delete all_reference_list;
+  delete []all_reference_list;
   delete simple_hashout_fields;
   delete hash_out_fields;
 
@@ -575,12 +575,8 @@ void Archiver::register_reference(int id, enum ArchiveFieldTreat field_treat, co
   if(get_is_temp_field_one_level() && ((field_treat != ARCHIVE_FIELD_IS_PTR) || get_is_temp_field_also_for_ptr()))
     return;
 
-//  struct field_ptr_vs_id    fid;
-//  fid.field_id = id;
-//  fid.assoc_ptr = ptr;
-//  all_reference_list->push_back(fid);
-  all_reference_list->put((uint32_t)id, (void*)ptr);
-
+//  all_reference_list->put((uint32_t)id, (void*)ptr);
+  all_reference_list[id] = (void*)ptr;
 
 }
 void Archiver::register_item(store::Item* i)
@@ -639,15 +635,6 @@ void Archiver::register_pointers_internal(archive_field *fields)
 
 void *Archiver::get_reference_value(int refid)
 {
-/*
-  std::list<field_ptr_vs_id>::iterator    all_it;
-  for(all_it=all_reference_list->begin(); all_it != all_reference_list->end(); all_it++)
-  {
-    if((*all_it).field_id == refid)
-      return (*all_it).assoc_ptr;
-  }
-  return NULL;
-*/
   if(internal_archive && !all_reference_list)
   {
     //construct all_reference_list
@@ -655,7 +642,8 @@ void *Archiver::get_reference_value(int refid)
     register_pointers_internal(out_fields);
   }
   void *assoc_ptr = NULL;
-  if(!all_reference_list->get((uint32_t)refid, assoc_ptr))
+  //if(!all_reference_list->get((uint32_t)refid, assoc_ptr))
+  if(!(assoc_ptr=all_reference_list[refid]))
   {
     Archiver *har = ::zorba::serialization::ClassSerializer::getInstance()->getArchiverForHardcodedObjects();
     if(har != this)
@@ -751,7 +739,9 @@ void Archiver::root_tag_is_read()
   {
     ZORBA_SER_ERROR_DESC_OSS(SRL0012_INCOMPATIBLE_ARCHIVE_VERSION, "Archive version is " << archive_version << " but expected " << g_zorba_classes_version);
   }
-  all_reference_list = new hash32map<void*>(nr_ids*2, 0.6f);
+  //all_reference_list = new hash32map<void*>(nr_ids*2, 0.6f);
+  all_reference_list = new void*[nr_ids+1];
+  memset(all_reference_list, 0, sizeof(void*)*(nr_ids+1));
 }
 
 int Archiver::get_nr_ids()
