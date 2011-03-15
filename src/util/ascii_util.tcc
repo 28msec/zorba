@@ -56,24 +56,30 @@ void normalize_whitespace( InputStringType const &in, OutputStringType *out ) {
 }
 
 template<class StringType>
-void replace_all( StringType &s, char from, char to ) {
+bool replace_all( StringType &s, char from, char to ) {
+  bool replaced_any = false;
   for ( typename StringType::size_type pos = 0; pos < s.size(); ++pos ) {
     if ( (pos = s.find( from, pos )) == StringType::npos )
       break;
     s.replace( pos, 1, 1, to );
+    replaced_any = true;
   }
+  return replaced_any;
 }
 
 template<class StringType>
-void replace_all( StringType &s,
+bool replace_all( StringType &s,
                   char const *from, typename StringType::size_type from_len,
                   char const *to, typename StringType::size_type to_len ) {
+  bool replaced_any = false;
   for ( typename StringType::size_type pos = 0;
         pos + from_len <= s.size(); pos += to_len ) {
     if ( (pos = s.find( from, pos, from_len )) == StringType::npos )
       break;
     s.replace( pos, from_len, to, to_len );
+    replaced_any = true;
   }
+  return replaced_any;
 }
 
 template<class InputStringType,class OutputStringType>

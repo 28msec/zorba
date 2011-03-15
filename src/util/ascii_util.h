@@ -558,9 +558,10 @@ void to_upper( InputStringType const &in, OutputStringType *out ) {
  * @param s The string to modify.
  * @param from The character to replace.
  * @param to The character to replace with.
+ * @return Returns \c true only if at least one replacement is performed.
  */
 template<class StringType>
-void replace_all( StringType &s, char from, char to );
+bool replace_all( StringType &s, char from, char to );
 
 /**
  * Replaces all occurrences of one substring with another.
@@ -568,12 +569,13 @@ void replace_all( StringType &s, char from, char to );
  * @tparam StringType The string type.
  * @param s The string to modify.
  * @param from The substring to replace.
- * @param from_len The length of <code>from</code>.
+ * @param from_len The length of \a from.
  * @param to The substring to replace with.
- * @param to_len The length of <code>to</code>.
+ * @param to_len The length of \a to.
+ * @return Returns \c true only if at least one replacement is performed.
  */
 template<class StringType>
-void replace_all( StringType &s,
+bool replace_all( StringType &s,
                   char const *from, typename StringType::size_type from_len,
                   char const *to, typename StringType::size_type to_len );
 
@@ -584,10 +586,11 @@ void replace_all( StringType &s,
  * @param s The string to modify.
  * @param from The substring to replace.
  * @param to The substring to replace with.
+ * @return Returns \c true only if at least one replacement is performed.
  */
 template<class StringType> inline
-void replace_all( StringType &s, char const *from, char const *to ) {
-  replace_all( s, from, std::strlen( from ), to, std::strlen( to ) );
+bool replace_all( StringType &s, char const *from, char const *to ) {
+  return replace_all( s, from, std::strlen( from ), to, std::strlen( to ) );
 }
 
 /**
@@ -597,10 +600,11 @@ void replace_all( StringType &s, char const *from, char const *to ) {
  * @param s The string to modify.
  * @param from The substring to replace.
  * @param to The substring to replace with.
+ * @return Returns \c true only if at least one replacement is performed.
  */
 template<class StringType,class ToStringType> inline
-void replace_all( StringType &s, char const *from, ToStringType const &to ) {
-  replace_all( s, from, std::strlen( from ), to.data(), to.size() );
+bool replace_all( StringType &s, char const *from, ToStringType const &to ) {
+  return replace_all( s, from, std::strlen( from ), to.data(), to.size() );
 }
 
 /**
@@ -610,11 +614,12 @@ void replace_all( StringType &s, char const *from, ToStringType const &to ) {
  * @param s The string to modify.
  * @param from The substring to replace.
  * @param to The substring to replace with.
+ * @return Returns \c true only if at least one replacement is performed.
  */
 template<class StringType,class FromStringType,class ToStringType> inline
-void replace_all( StringType &s, FromStringType const &from,
+bool replace_all( StringType &s, FromStringType const &from,
                                  ToStringType const &to ) {
-  replace_all( s, from.data(), from.size(), to.data(), to.size() );
+  return replace_all( s, from.data(), from.size(), to.data(), to.size() );
 }
 
 ////////// Whitespace /////////////////////////////////////////////////////////
