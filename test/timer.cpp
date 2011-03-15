@@ -15,6 +15,7 @@
  */
 #include "timer.h"
 #include <iostream>
+#include <stdio.h>
 
 
 //#define DEBUG

@@ -35,6 +35,12 @@ ADD_SUBDIRECTORY(parser)
 ADD_SUBDIRECTORY(update)
 ADD_SUBDIRECTORY(sax2)
 
+SET (TEST_PLAN_SERIALIZER_SRCS
+    test_plan_serializer.cpp
+    timer.cpp)
+
+ZORBA_GENERATE_STORE_SPECIFIC_EXES("test_plan_serializer" "${TEST_PLAN_SERIALIZER_SRCS}" "" "" "")
+
 
 #
 # apitest
