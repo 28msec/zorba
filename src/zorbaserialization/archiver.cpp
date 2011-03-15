@@ -71,6 +71,10 @@ archive_field::archive_field(const char *type, bool is_simple, bool is_class,
   this->allow_delay2 = allow_delay;
 
   this->level = level;
+#ifdef ZORBA_PLAN_SERIALIZER_STATISTICS
+  bytes_saved = 0;
+  objects_saved = 0;
+#endif
 }
 
 archive_field::~archive_field()

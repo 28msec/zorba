@@ -18,7 +18,7 @@
 
 #include "zorba/config.h"
 #include "zorba/zorbastring.h"
-#include "zorbatypes/rchandle.h"
+//#include "zorbatypes/rchandle.h"
 #include "zorbautils/lock.h"
 
 #include <iostream>

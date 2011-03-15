@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 #include "zorbaserialization/bin_archiver.h"
 #include "zorbaerrors/error_manager.h"
+#include <fstream>
 
 namespace zorba{
   namespace serialization{
@@ -87,6 +87,64 @@ BinArchiver::~BinArchiver()
 {
 }
 
+#ifdef ZORBA_PLAN_SERIALIZER_STATISTICS
+void add_indentation(std::ostream &os, unsigned int indent)
+{
+  while(indent--)
+  {
+    os << " ";
+  }
+}
+
+void write_xml_name(std::ostream &os, const char *type)
+{
+  if(!type || !*type)
+  {
+    os << "unknown";
+    return;
+  }
+  while(*type)
+  {
+    if(isalpha(*type))
+      os << *type;
+    else if(*type == '*')
+      os << "_ptr";
+    type++;
+  }
+}
+
+void output_statistics_archive_field(std::ostream &os, unsigned int indent, archive_field *parent)
+{
+  add_indentation(os, indent);
+  os << "<";
+  write_xml_name(os, parent->type);
+  os << " n=\"" << parent->objects_saved << "\"";
+  os << " s=\"" << parent->bytes_saved << "\"";
+  if(parent->field_treat == ARCHIVE_FIELD_IS_REFERENCING)
+      os << " t=\"ref\"";
+  else if(parent->field_treat == ARCHIVE_FIELD_IS_PTR)
+      os << " t=\"ptr\"";
+  if((!parent->is_simple) && (parent->field_treat != ARCHIVE_FIELD_IS_REFERENCING))
+  {
+    os << ">" << std::endl;
+    archive_field   *current_field = parent->first_child;
+    while(current_field)
+    {
+      output_statistics_archive_field(os, indent+2, current_field);
+      current_field = current_field->next;
+    }
+    add_indentation(os, indent);
+    os << "</";
+    write_xml_name(os, parent->type);
+    os << ">" << std::endl;
+  }
+  else
+  {
+    os << "/>" << std::endl;
+  }
+}
+#endif
+
 void BinArchiver::serialize_out()
 {
   if(!os)
@@ -95,6 +153,13 @@ void BinArchiver::serialize_out()
   }
 
   prepare_serialize_out();
+
+#ifdef ZORBA_PLAN_SERIALIZER_STATISTICS
+  bytes_saved = 0;
+  objects_saved = 0;
+  nr_ptrs = 0;
+  strings_saved = 0;
+#endif
 
   os->write(ZORBA_BIN_SERIALIZED_PLAN_STRING, sizeof(ZORBA_BIN_SERIALIZED_PLAN_STRING));
 
@@ -112,6 +177,7 @@ void BinArchiver::serialize_out()
   collect_strings(out_fields);
   //now serialize the string pool
   serialize_out_string_pool();
+
   //now serialize the fields
   serialize_compound_fields(out_fields);
   if(bitfill)
@@ -119,6 +185,23 @@ void BinArchiver::serialize_out()
     current_byte <<= (8-bitfill);
     os->write((char*)&current_byte, 1);
   }
+#ifdef ZORBA_PLAN_SERIALIZER_STATISTICS
+  std::ofstream   plan_xml("plan.xml");
+  plan_xml << "<plan objects_saved=\"" << objects_saved << "\""
+           << " nr_ptrs=\"" << nr_ptrs << "\""
+           << " string_count=\"" << strings.size() << "\""
+           << " string_pool_size=\"" << strings_saved << "\" >"
+           << std::endl;
+  output_statistics_archive_field(plan_xml, 2, out_fields);
+  plan_xml << "</plan>" << std::endl;
+  std::cout << "Plan serialized:" << std::endl
+            << "string count = " << strings.size() << std::endl
+            << "size occupied by strings = " << strings_saved  << std::endl
+            << "obj_count = " << objects_saved << std::endl
+            << "objs that are ptr = " << nr_ptrs << std::endl
+            << "size occupied by objects = " << bytes_saved << std::endl;
+  std::cout << "Get some other details in plan.xml" << std::endl;
+#endif
 }
 
 int BinArchiver::add_to_string_pool(const char *str)
@@ -201,6 +284,10 @@ void   BinArchiver::serialize_out_string_pool()
 
 void BinArchiver::serialize_compound_fields(archive_field   *parent_field)
 {
+#ifdef ZORBA_PLAN_SERIALIZER_STATISTICS
+  unsigned int    bytes_saved1 = bytes_saved;
+  unsigned int    objects_saved1 = objects_saved;
+#endif
   archive_field   *current_field = parent_field->first_child;
   while(current_field)
   {
@@ -249,6 +336,11 @@ void BinArchiver::serialize_compound_fields(archive_field   *parent_field)
       else
         write_int(current_field->referencing);
     }
+#ifdef ZORBA_PLAN_SERIALIZER_STATISTICS
+    objects_saved++;
+    if(current_field->field_treat == ARCHIVE_FIELD_IS_PTR)
+      nr_ptrs++;
+#endif
 
     if(!current_field->is_simple)
     {
@@ -264,11 +356,20 @@ void BinArchiver::serialize_compound_fields(archive_field   *parent_field)
     }
     current_field = current_field->next;
   }
+
+#ifdef ZORBA_PLAN_SERIALIZER_STATISTICS
+  //gather statistics for this node
+  parent_field->bytes_saved = bytes_saved - bytes_saved1;
+  parent_field->objects_saved = objects_saved - objects_saved1;
+#endif
 }
 
 void BinArchiver::write_string(const char *str)
 {
   os->write(str, (std::streamsize)strlen(str)+1);
+#ifdef ZORBA_PLAN_SERIALIZER_STATISTICS
+  strings_saved += strlen(str)+1;
+#endif
 }
 
 void BinArchiver::write_bit(unsigned char bit)
@@ -281,6 +382,9 @@ void BinArchiver::write_bit(unsigned char bit)
     os->write((char*)&current_byte, 1);
     current_byte = 0;
     bitfill = 0;
+#ifdef ZORBA_PLAN_SERIALIZER_STATISTICS
+    bytes_saved++;
+#endif
   }
 }
 

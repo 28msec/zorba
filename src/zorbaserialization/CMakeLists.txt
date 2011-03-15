@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+SET(ZORBA_PLAN_SERIALIZER_STATISTICS OFF CACHE BOOL "Set to ON to get some statistics on saved plan")
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/zorbaserialization/plan_settings.h.in ${CMAKE_CURRENT_BINARY_DIR}/zorbaserialization/plan_settings.h)
 SET(ZORBASERIALIZATION_SRCS 
   archiver.cpp
   base64impl.cpp

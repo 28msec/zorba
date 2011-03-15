@@ -51,6 +51,13 @@ class BinArchiver : public Archiver
   unsigned char current_byte;
   unsigned char bitfill;
 
+#ifdef ZORBA_PLAN_SERIALIZER_STATISTICS
+  unsigned int    bytes_saved;
+  unsigned int    objects_saved;
+  unsigned int    nr_ptrs;
+  unsigned int    strings_saved;
+#endif
+
 public:
   BinArchiver(std::istream *is);
   BinArchiver(std::ostream *os);

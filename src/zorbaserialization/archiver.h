@@ -22,6 +22,7 @@
 #include <stack>
 
 #include "zorbaserialization/class_serializer.h"
+#include "zorbaserialization/plan_settings.h"
 
 namespace zorba{
 
@@ -110,6 +111,10 @@ public:
 
   int  only_for_eval;
   ENUM_ALLOW_DELAY  allow_delay2;
+#ifdef ZORBA_PLAN_SERIALIZER_STATISTICS
+  unsigned int    bytes_saved;
+  unsigned int    objects_saved;
+#endif
 public:
   archive_field(const char *type, bool is_simple, bool is_class, 
                 const void *value, const void *assoc_ptr,

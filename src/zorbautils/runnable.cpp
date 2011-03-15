@@ -16,6 +16,7 @@
 #include "runnable.h"
 
 #include <cassert>
+#include <errno.h>
 
 #include "zorbaerrors/Assert.h"
 
