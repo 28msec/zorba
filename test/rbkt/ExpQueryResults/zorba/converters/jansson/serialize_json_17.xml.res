@@ -1,0 +1,1 @@
+{"special-chars": {"backslash": "\\", "formfeed": "\f", "quote": "\\"", "horizontal tab": "\t", "carriage return": "\r", "backspace": "\b", "newline": "\n", "solidus": "\/"}}

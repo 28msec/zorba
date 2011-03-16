@@ -126,6 +126,9 @@ IF(EXISTS "${CMAKE_BINARY_DIR}/test/rbkt/thesauri/wordnet-en.zth")
   SET(ZORBA_WORDNET_FOUND 1)
 ENDIF(EXISTS "${CMAKE_BINARY_DIR}/test/rbkt/thesauri/wordnet-en.zth")
 
+# TODO : this has to be removed after the converters modules are taken outside Zorba
+INCLUDE (${CMAKE_SOURCE_DIR}/cmake_modules/FindJansson.cmake)
+
 FOREACH(TESTFILE ${TESTFILES})
   # All testfile paths end in .xq or .xqx. Strip that part off to form
   # the test name.
@@ -151,6 +154,14 @@ FOREACH(TESTFILE ${TESTFILES})
       SET(SKIP_TEST 1)
     ENDIF(HTTP_CLIENT)
   ENDIF(NOT CURL_FOUND)
+  
+  IF(NOT Jansson_FOUND)
+    STRING(REGEX MATCH "jansson" JANSSON "${TESTNAME}")
+    IF(JANSSON)
+      SET(SKIP_TEST 1)
+    ENDIF(JANSSON)
+  ENDIF(NOT Jansson_FOUND)
+
   IF(NOT ZORBA_WITH_FILE_ACCESS)
     #these tests require the file module
     STRING(REGEX MATCH "file/" NEEDS_FILE "${TESTNAME}")
@@ -305,9 +316,10 @@ EXPECTED_FAILURE(test/rbkt/zorba/modules/schema 3131554)
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/admin 2935047)
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/ic-uniqueKey-err2 2935047)
 
-IF(WIN32)
-  EXPECTED_FAILURE(test/rbkt/zorba/converters/json/json_parse7 3193250)
-ENDIF(WIN32)
+# removed temporarely
+#IF(WIN32)
+#  EXPECTED_FAILURE(test/rbkt/zorba/converters/json/json_parse7 3193250)
+#ENDIF(WIN32)
 
 IF(CURL_FOUND)
   EXPECTED_FAILURE(test/rbkt/zorba/http_client/external_variable 3152386)

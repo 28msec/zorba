@@ -14,9 +14,9 @@
 
 # libTidy is required
 IF(ZORBA_SUPPRESS_LIBTIDY)
-  MESSAGE(STATUS "ZORBA_SUPPRESS_LIBTIDY is true - not searching for libTidy")
+  MESSAGE(STATUS "ZORBA_SUPPRESS_LIBTIDY is true - not searching for libTidy.")
 ELSE(ZORBA_SUPPRESS_LIBTIDY)
-  FIND_PACKAGE(LibTidy)
+  INCLUDE (${CMAKE_SOURCE_DIR}/cmake_modules/FindLibTidy.cmake)
 
   IF(LIBTIDY_FOUND)
     SET(HTML_LINK_LIBRARIES ${LIBTIDY_LIBRARIES})
@@ -32,6 +32,30 @@ ELSE(ZORBA_SUPPRESS_LIBTIDY)
     ENDIF (BUILD_MODULE)
 
   ELSE(LIBTIDY_FOUND)
-    MESSAGE(STATUS "LibTidy library not found -- if you want to use HTML Tidy functionality please set LIBTIDY_INCLUDE_DIR and LIBTIDY_LIBRARIES parameters.")
+    MESSAGE(STATUS "LibTidy library not found -- if you want to use HTML Tidy functionality please set LIBTIDY_INCLUDE_DIR and LIBTIDY_LIBRARIES cmake parameters.")
   ENDIF(LIBTIDY_FOUND)
 ENDIF(ZORBA_SUPPRESS_LIBTIDY)
+
+# Jansson is required
+IF(ZORBA_SUPPRESS_JANSSON)
+  MESSAGE(STATUS "ZORBA_SUPPRESS_JANSSON is true - not searching for Jansson.")
+ELSE(ZORBA_SUPPRESS_JANSSON)
+  INCLUDE (${CMAKE_SOURCE_DIR}/cmake_modules/FindJansson.cmake)
+
+  IF(Jansson_FOUND)
+    SET(JSON_LINK_LIBRARIES ${Jansson_LIBRARIES})
+
+    SET(BUILD_MODULE 1)
+
+    INCLUDE_DIRECTORIES(${Jansson_INCLUDE_DIRS})
+
+    INCLUDE_DIRECTORIES("json.xq.src")
+
+    IF (BUILD_MODULE)
+      GENERATE_MODULE_LIBRARY(json "${Jansson_LIBRARIES}")
+    ENDIF (BUILD_MODULE)
+
+  ELSE(Jansson_FOUND)
+    MESSAGE(STATUS "Jansson library not found -- if you want to use Json functionality please set Jansson_INCLUDE_DIRS and Jansson_LIBRARIES cmake parameters.")
+  ENDIF(Jansson_FOUND)
+ENDIF(ZORBA_SUPPRESS_JANSSON)

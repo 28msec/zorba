@@ -39,7 +39,6 @@
 #include "runtime/booleans/booleans.h"
 #include "runtime/collections/collections.h"
 #include "runtime/context/context.h"
-#include "runtime/convertors/convertors.h"
 #include "runtime/core/function_trace_iterator.h"
 #include "runtime/debug/debug.h"
 #include "runtime/debug/zorba_debug_iterator.h"
@@ -538,62 +537,6 @@ void PrinterVisitor::endVisit ( const DefaultCollationIterator& ) {
   thePrinter.endEndVisit();
 }
 // </DefaultCollationIterator>
-
-
-// <ZorbaJsonParseIterator>
-void PrinterVisitor::beginVisit ( const ZorbaJsonParseIterator& a) {
-  thePrinter.startBeginVisit("ZorbaJsonParseIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const ZorbaJsonParseIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </ZorbaJsonParseIterator>
-
-
-// <ZorbaJsonSerializeIterator>
-void PrinterVisitor::beginVisit ( const ZorbaJsonSerializeIterator& a) {
-  thePrinter.startBeginVisit("ZorbaJsonSerializeIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const ZorbaJsonSerializeIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </ZorbaJsonSerializeIterator>
-
-
-// <ZorbaJsonParseMLIterator>
-void PrinterVisitor::beginVisit ( const ZorbaJsonParseMLIterator& a) {
-  thePrinter.startBeginVisit("ZorbaJsonParseMLIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const ZorbaJsonParseMLIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </ZorbaJsonParseMLIterator>
-
-
-// <ZorbaJsonSerializeMLIterator>
-void PrinterVisitor::beginVisit ( const ZorbaJsonSerializeMLIterator& a) {
-  thePrinter.startBeginVisit("ZorbaJsonSerializeMLIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const ZorbaJsonSerializeMLIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </ZorbaJsonSerializeMLIterator>
 
 
 // <FunctionTraceIterator>

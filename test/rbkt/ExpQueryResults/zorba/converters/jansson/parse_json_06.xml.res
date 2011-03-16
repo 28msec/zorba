@@ -1,0 +1,1 @@
+<json type="object"><pair name="web-app" type="string">!_\\"-\\?*.$+</pair></json>

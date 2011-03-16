@@ -1,2 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<json type="object"><pair name="special-numbers" type="object"><pair name="decimal" type="number">2.89</pair><pair name="e" type="number">2E+06</pair><pair name="negative" type="number">-1.89</pair></pair></json>

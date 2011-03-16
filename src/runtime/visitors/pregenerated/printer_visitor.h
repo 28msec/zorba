@@ -140,18 +140,6 @@ namespace zorba {
     void beginVisit( const DefaultCollationIterator& );
     void endVisit  ( const DefaultCollationIterator& );
 
-    void beginVisit( const ZorbaJsonParseIterator& );
-    void endVisit  ( const ZorbaJsonParseIterator& );
-
-    void beginVisit( const ZorbaJsonSerializeIterator& );
-    void endVisit  ( const ZorbaJsonSerializeIterator& );
-
-    void beginVisit( const ZorbaJsonParseMLIterator& );
-    void endVisit  ( const ZorbaJsonParseMLIterator& );
-
-    void beginVisit( const ZorbaJsonSerializeMLIterator& );
-    void endVisit  ( const ZorbaJsonSerializeMLIterator& );
-
     void beginVisit( const FunctionTraceIterator& );
     void endVisit  ( const FunctionTraceIterator& );
 

@@ -30,7 +30,6 @@
 #include "functions/func_booleans.h"
 #include "functions/func_booleans_impl.h"
 #include "functions/func_collections.h"
-#include "functions/func_convertors.h"
 #include "functions/func_context.h"
 #include "functions/func_dctx.h"
 #include "functions/func_debug.h"
@@ -91,7 +90,6 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populate_context_booleans_impl(sctx);
   populate_context_collections(sctx);
   populate_context_context(sctx);
-  populate_context_convertors(sctx);
   populate_context_dctx(sctx);
   populate_context_debug(sctx);
   populate_context_durations_dates_times(sctx);

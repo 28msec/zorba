@@ -90,14 +90,6 @@ namespace zorba{
 
     class DefaultCollationIterator;
 
-    class ZorbaJsonParseIterator;
-
-    class ZorbaJsonSerializeIterator;
-
-    class ZorbaJsonParseMLIterator;
-
-    class ZorbaJsonSerializeMLIterator;
-
     class FunctionTraceIterator;
 
     class TraceIterator;
@@ -563,18 +555,6 @@ public:
 
     virtual void beginVisit ( const DefaultCollationIterator& ) = 0;
     virtual void endVisit   ( const DefaultCollationIterator& ) = 0;
-
-    virtual void beginVisit ( const ZorbaJsonParseIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaJsonParseIterator& ) = 0;
-
-    virtual void beginVisit ( const ZorbaJsonSerializeIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaJsonSerializeIterator& ) = 0;
-
-    virtual void beginVisit ( const ZorbaJsonParseMLIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaJsonParseMLIterator& ) = 0;
-
-    virtual void beginVisit ( const ZorbaJsonSerializeMLIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaJsonSerializeMLIterator& ) = 0;
 
     virtual void beginVisit ( const FunctionTraceIterator& ) = 0;
     virtual void endVisit   ( const FunctionTraceIterator& ) = 0;

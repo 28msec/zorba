@@ -1,0 +1,29 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:json="http://www.zorba-xquery.com/modules/convertors/json-options"
+  targetNamespace="http://www.zorba-xquery.com/modules/convertors/json-options"
+  elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+  <xs:element name="options">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="jsonParam" minOccurs="1" maxOccurs="1">
+          <xs:complexType>
+            <xs:simpleContent>
+              <xs:extension base="xs:string">
+                <xs:attribute name="name" type="xs:string" use="required"/>
+                <xs:attribute name="value" use="required">
+                  <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                      <xs:enumeration value="simple-json"/>
+                      <xs:enumeration value="jsonML"/>
+                    </xs:restriction>
+                  </xs:simpleType>
+                </xs:attribute>
+              </xs:extension>
+            </xs:simpleContent>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

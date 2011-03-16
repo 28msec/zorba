@@ -1,0 +1,1 @@
+<json type="object"><pair name="mdash" type="string">–</pair></json>
