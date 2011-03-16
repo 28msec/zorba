@@ -108,8 +108,9 @@ main(int argc, char** argv)
   if (engine == NULL) return 21;
 
   int i = 1;
-  for (;;) 
+  while (i < argc)
   {
+    std::cout << "i: " << i << ", argc: " << argc << std::endl;
     if (strcmp (argv [i], "--rbkt-src") == 0) {
       rbkt_src_dir = argv [i + 1];
       i += 2;
