@@ -21,6 +21,7 @@ namespace zorba{
   namespace serialization{
 
 #define ZORBA_BIN_SERIALIZED_PLAN_STRING    "ZORBA-XQUERY BINARY SERIALIZED PLAN"
+#define BUFFER_SEGMENT_SIZE  2*1024*1024
 
 BinArchiver::BinArchiver(std::istream *is) : Archiver(false)
 {
@@ -29,7 +30,7 @@ BinArchiver::BinArchiver(std::istream *is) : Archiver(false)
   this->os = NULL;
   this->last_id = 0;
   current_byte = 0;
-  bitfill = 0;
+  bitfill = 8;
 
   //read the plan serializer info
   char	preface_string[200];
@@ -49,6 +50,21 @@ BinArchiver::BinArchiver(std::istream *is) : Archiver(false)
   {
     ZORBA_ERROR(SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
   }
+
+  in_buffer = (unsigned char*)malloc(BUFFER_SEGMENT_SIZE);
+  size_read = 0;
+  while(1)
+  {
+    is->read((char*)in_buffer + size_read, BUFFER_SEGMENT_SIZE);
+    size_read += (size_t)is->gcount();
+    if(is->gcount() == BUFFER_SEGMENT_SIZE)
+    {
+      in_buffer = (unsigned char*)realloc(in_buffer, size_read + BUFFER_SEGMENT_SIZE);
+    }
+    else
+      break;
+  }
+  in_current = in_buffer;
 
   read_string(archive_name);
   read_string(archive_info);
@@ -81,10 +97,14 @@ BinArchiver::BinArchiver(std::ostream *os) : Archiver(true)
   this->last_id = 0;
   current_byte = 0;
   bitfill = 0;
+  
+  in_buffer = NULL;
 }
 
 BinArchiver::~BinArchiver()
 {
+  if(in_buffer)
+    free(in_buffer);
 }
 
 #ifdef ZORBA_PLAN_SERIALIZER_STATISTICS
@@ -184,6 +204,9 @@ void BinArchiver::serialize_out()
   {
     current_byte <<= (8-bitfill);
     os->write((char*)&current_byte, 1);
+#ifdef ZORBA_PLAN_SERIALIZER_STATISTICS
+    bytes_saved++;
+#endif
   }
 #ifdef ZORBA_PLAN_SERIALIZER_STATISTICS
   std::ofstream   plan_xml("plan.xml");
@@ -275,6 +298,16 @@ void   BinArchiver::serialize_out_string_pool()
   }
 
   write_int((unsigned int)strings.size());
+  if(bitfill)
+  {
+    current_byte <<= (8-bitfill);
+    os->write((char*)&current_byte, 1);
+    bitfill = 0;
+    current_byte = 0;
+#ifdef ZORBA_PLAN_SERIALIZER_STATISTICS
+    bytes_saved++;
+#endif
+  }
   std::vector<unsigned int>::iterator  strings_pos_it;
   for(strings_pos_it = strings_pos.begin(); strings_pos_it != strings_pos.end(); strings_pos_it++)
   {
@@ -316,8 +349,8 @@ void BinArchiver::serialize_compound_fields(archive_field   *parent_field)
       if(current_field->is_class && (current_field->field_treat == ARCHIVE_FIELD_IS_PTR))
 #endif
       {
-        if(!current_field->type_str_pos_in_pool)
-          write_int_exp2(current_field->type_str_pos_in_pool);
+        if(!current_field->type)
+          write_int_exp2(0);
         else
           write_int_exp2(strings.at(current_field->type_str_pos_in_pool-1).final_pos);
       }
@@ -477,48 +510,61 @@ void BinArchiver::write_int_exp2(unsigned int intval)
 
 void BinArchiver::read_string(std::string &str)
 {
-  char c;
-  while(1)
-  {
-    is->read(&c, 1);
-    if(is->gcount() < 1)
-    {
-      ZORBA_ERROR(SRL0002_INCOMPATIBLE_INPUT_FIELD);
-    }
-    if(c)
-      str += c;
-    else
-      break;
-  }
+  //char c;
+  //while(1)
+  //{
+  //  is->read(&c, 1);
+  //  if(is->gcount() < 1)
+  //  {
+  //    ZORBA_ERROR(SRL0002_INCOMPATIBLE_INPUT_FIELD);
+  //  }
+  //  
+  //  if(c)
+  //    str += c;
+  //  else
+  //    break;
+  //}
+  str = (char*)in_current;
+  while(*in_current) in_current++;
+  in_current++;
 }
 
 void BinArchiver::read_string(char* str)
 {
-  char c;
-  while(1)
+  //char c;
+  //while(1)
+  //{
+  //  is->read(&c, 1);
+  //  if(is->gcount() < 1)
+  //  {
+  //    ZORBA_ERROR(SRL0002_INCOMPATIBLE_INPUT_FIELD);
+  //  }
+  //  *str = c;
+  //  if(!c)
+  //    break;
+  //  str++;
+  //}
+  while(*in_current)
   {
-    is->read(&c, 1);
-    if(is->gcount() < 1)
-    {
-      ZORBA_ERROR(SRL0002_INCOMPATIBLE_INPUT_FIELD);
-    }
-    *str = c;
-    if(!c)
-      break;
+    *str = *in_current;
+    in_current++;
     str++;
   }
+  *str = 0;
+  in_current++;
 }
 
 unsigned char BinArchiver::read_bit()
 {
   if(bitfill == 0)
   {
-    is->read((char*)&current_byte, 1);
+    //is->read((char*)&current_byte, 1);
+    in_current++;
     bitfill = 8;
   }
   bitfill--;
-  unsigned char result = (current_byte & 0x80) ? 1 : 0;
-  current_byte <<= 1;
+  unsigned char result = (*in_current & 0x80) ? 1 : 0;
+  *in_current <<= 1;
   return result;
 }
 
@@ -532,22 +578,23 @@ unsigned int BinArchiver::read_bits(unsigned int bits)
   //  bits--;
     if(!bitfill)
     {
-      is->read((char*)&current_byte, 1);
+      //is->read((char*)&current_byte, 1);
+      in_current++;
       bitfill = 8;
     }
     if(bitfill <= bits)
     {
       result <<= bitfill;
-      result |= current_byte>>(8-bitfill);
+      result |= *in_current>>(8-bitfill);
       bits -= bitfill;
       bitfill = 0;
     }
     else
     {
       result <<= bits;
-      result |= current_byte>>(8-bits);
+      result |= *in_current>>(8-bits);
       bitfill -= bits;
-      current_byte <<= bits;
+      *in_current <<= bits;
       bits = 0;
     }
   }
@@ -610,17 +657,22 @@ unsigned int BinArchiver::read_int_exp2()
 void BinArchiver::read_string_pool()
 {
   strings.clear();
-  std::string   str;
+  //std::string   str;
+  STRING_POS str_pos;
   int   count;
   count = read_int();
+  if(bitfill != 8)
+  {
+    in_current++;
+    bitfill = 8;
+  }
   for(int i=0;i<count;i++)
   {
-    str.clear();
-    read_string(str);
-    STRING_POS str_pos;
-    str_pos.str = str;
+    str_pos.str.clear();
+    read_string(str_pos.str);
     strings.push_back(str_pos);
   }
+  bitfill = 8;
 }
 
 bool BinArchiver::read_next_field_impl( char **type, 

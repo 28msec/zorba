@@ -51,6 +51,10 @@ class BinArchiver : public Archiver
   unsigned char current_byte;
   unsigned char bitfill;
 
+  unsigned char *in_buffer;
+  unsigned char *in_current;
+  size_t        size_read;
+
 #ifdef ZORBA_PLAN_SERIALIZER_STATISTICS
   unsigned int    bytes_saved;
   unsigned int    objects_saved;
