@@ -1755,7 +1755,10 @@ void normalize_fo(fo_expr* foExpr)
     // or match should be added. This is used by the reflection:invoke() function,
     if (paramType != NULL)
     {
-      if (TypeOps::is_subtype(tm, *paramType, *theRTM.ANY_ATOMIC_TYPE_STAR, foExpr->get_loc()))
+      if (TypeOps::is_subtype(tm,
+                              *paramType,
+                              *theRTM.ANY_ATOMIC_TYPE_STAR, 
+                              foExpr->get_loc()))
       {
         argExpr = wrap_in_atomization(argExpr);
         argExpr = wrap_in_type_promotion(argExpr, paramType);

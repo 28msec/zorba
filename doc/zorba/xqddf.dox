@@ -1392,7 +1392,7 @@ receive an error.
 \endcode
 
 
-\subsection index_declaration  2.2 Value Index declaration
+\subsection index_declaration  2.2 Index declaration
 
 
 \code
@@ -1581,11 +1581,11 @@ declaring module is used.
 \subsection index_creation 2.3 Index creation
 
 
-As explained already, indexes are just sets of index entries, mapping key tuples
-to domain nodes. In terms of the XQuery language, these sets "live" in the
-dynamic context. In particular, XQDDF extends the dynamic context with a
-component called the <strong>available indexes</strong>. This is a map whose
-entries associate the expanded QName of an index with the entry set of the
+As explained already, indexes are just sets of index entries, mapping key items
+or key tuples to domain nodes. In terms of the XQuery language, these sets 
+"live" in the dynamic context. In particular, XQDDF extends the dynamic context 
+with a component called the <strong>available indexes</strong>. This is a map 
+whose entries associate the expanded QName of an index with the entry set of the
 index. If an entry for an index appears in the available indexes of a module,
 the index is said to be available to that module.
 
@@ -1593,8 +1593,8 @@ In practice, the available indexes component is implemented by Zorba's storage
 system. To begin with, each index entry set is implemented by some appropriate
 data structure that acts as an index entry container. The description of
 potential data structures is beyond the scope of this document, but the typical
-choices are either some sort of hash table (for equality indexes) or some kind
-of ordered tree (for range indexes). To manage the index entry containers, the 
+choices are either some sort of hash table(s) (for equality indexes) or some kind
+of ordered tree(s) (for range indexes). To manage these containers, the 
 store maintains an <strong>indexes table</strong>, which maps index names to 
 index entry containers. The indexes table is accessible by all queries, so once 
 an entry is added to the table, the associated index is assumed to be available 
@@ -1604,10 +1604,10 @@ Creation of an index involves creating an initially empty index entry container,
 populating that container with the entries computed by the domain and key
 expressions of the index, and "registering" that container in the indexes table.
 All this is done by the <a href="#create_index">xqddf:create-index</a> function 
-that is described below. In fact, <a href="#create_index">xqddf:create-index</a> 
-is an updating function, so instead of actually creating the index, it generates 
-a pending update primitive that becomes part of a pending update list (PUL) to 
-be applied at a later time. The update primitive is also described below.
+that is described below. In fact, xqddf:create-index is an updating function, 
+so instead of actually creating the index, it generates a pending update 
+primitive that becomes part of a pending update list (PUL) to be applied at a 
+later time. The update primitive is also described below.
 
 <a name="create_index" id="create_index"></a>
 \code
@@ -1621,10 +1621,11 @@ The create-index function is evaluated as follows:
   <ul>
   <li>If the given expanded QName does not identify an index among the
 statically known indexes in the static context of the invoking module, an error
-is raised [<a href="#ERRXDDY0021" title="err:XDDY0021">err:XDDY0021</a>].</li>
+is raised [<a href="#ERRXDDY0021">err:XDDY0021</a>].</li>
+
   <li>If the given expanded QName identifies an index that is available
-already, an error is raised [<a href="#ERRXDDY0022"
-title="err:XDDY0022">err:XDDY0022</a>].</li>
+already, an error is raised [<a href="#ERRXDDY0022">err:XDDY0022</a>].</li>
+
   <li>The result of the function is an empty XDM instance and a pending update
 list that consists of a single update primitive:
 upd:createIndex($indexName).</li>
@@ -1633,51 +1634,157 @@ upd:createIndex($indexName).</li>
 The update primitive is applied as follows:
 
 <ul>
-<li>An empty index entry container is created.</li>
-<li>The domain expression is evaluated first. If the result of the domain
-    expression contains an item that is not a node, an error is raised 
-    [<a href="#ERRXDTY0010" title="err:XDTY0010">err:XDTY0010</a>]. This result
-    is then filtered to remove any duplicate nodes. The result of the domain
-    expression after duplicate elimination is called the <strong>domain sequence
-    </strong>. If the domain sequence contains a node that does not belong to a
-    collection, an error is raised [<a href="#ERRXDDY0020" title="err:XDDY0020">
-    err:XDDY0020</a>] (the purpose of this rule is to prevent nodes constructed
-    by node construction expression to appear as domain nodes).</li>
-<li>For each node D in the domain sequence, the IndexKeySpecs are evaluated in
-     some implementation dependent order. An IndexKeySpec is evaluated as
-follows:</li>
-    <ul>
-    <li>The key expression in the IndexKeySpec is evaluated, with D serving as
-its context item.</li>
-    <li>Atomization is applied to the result of the key expression.</li>
-    <li>The result of atomization is matched against the atomic type in the
-IndexKeyTypeDecl. In other words, the result of atomization is treated as the
-input to a "treat as" expression whose target type is type declared in the
-IndexKeyTypeDecl. If the type match fails, an error is raised [<a
-href="#ERRXDTY0011" title="err:XDTY0011">err:XDTY0011</a>]. Otherwise, the
-result of this step will be a single atomic item. We call this item a
-<strong>key item</strong>.</li>
-  <li>Let D<sub>i</sub> be the i-th domain node, and K<sub>ij</sub> be the key
-item computed for D<sub>i</sub> by the j-th IndexKeySpec (where the numbering of
-the IndexKeySpecs is done using their order of appearance in the index
-declaration). Let K<sub>i</sub> be the tuple [K<sub>i1</sub>, ...,
-K<sub>iM</sub>], where M is the number of IndexKeySpecs. The next step is to
-insert in the index a mapping from K<sub>i</sub> to D<sub>i</sub>. This step
-will be performed for each node in the domain sequence. The order in which the
-domain sequence is processed is implementation dependent.</li>
-    <li>If the index is declared as unique, the relationship between between key
-tuples and domain nodes is one-to-one. In this case, if the index already
-contains an entry whose key tuple is equal to K<sub>i</sub>, an error is raised
-[<a href="#ERRXDDY0024" title="err:XDDY0024">err:XDDY0024</a>]. Otherwise, the
-entry [K<sub>i</sub>, D<sub>i</sub>] is inserted in the index container.</li>
-    <li>If the index is non-unique, it maps key tuples to sets of domain items.
-In this case, if the index already contains an entry whose key is equal to
-K<sub>i</sub>, D<sub>i</sub> is added to the set associated with K<sub>i</sub>.
-Otherwise, the entry [K<sub>i</sub>, { D<sub>i</sub> }] is inserted in the
-index.</li>
-    </ul>
-<li>A entry is added to the indexes table. The entry maps the expanded QName of
-    the index to the index entry container.</li>
+
+<li>
+An empty index entry container is created.
+</li>
+
+<li>
+The domain expression is evaluated first. If the result of the domain expression 
+contains an item that is not a node, an error is raised [<a href="#ERRXDTY0010">
+err:XDTY0010</a>]. If the result of the domain expression contains any duplicate
+nodes, then for value indexes, the duplicate nodes are removed, but for general 
+indexes, an error is raised [<a href="#ERRXDDY0028">err:XDDY0028</a>]. The result
+of the domain expression after duplicate elimination is called the <strong>domain
+sequence</strong>. If the domain sequence contains a node that does not belong to 
+a collection, an error is raised [<a href="#ERRXDDY0020">err:XDDY0020</a>] (the 
+purpose of this rule is to prevent nodes constructed by node construction 
+expression to appear as domain nodes).</li>
+
+<li>
+For each node D in the domain sequence, the IndexKeySpecs are evaluated in some 
+implementation dependent order. An IndexKeySpec is evaluated as follows:
+</li>
+
+  <ul>
+  <li>
+  The key expression in the IndexKeySpec is evaluated, with D serving as its 
+  context item.
+  </li>
+
+  <li>Atomization is applied to the result of the key expression.</li>
+
+  <li>
+  The result of atomization is matched against the associated IndexKeyTypeDecl,
+  according to the rules of sequence type matching. If the type match fails, 
+  an error is raised [<a href="#ERRXDTY0011">err:XDTY0011</a>].
+  </li>
+
+  <li>
+  Duplicate values, which may arise in the case of general indexes only, are 
+  eliminated from the key sequence.
+  </li>
+  </ul>
+
+<li>
+If the index is a value index:
+</li>
+
+  <ul>
+  <li>
+  The result of each IndexKeySpec is a single atomic item. We call this 
+  item a <strong>key item</strong>.
+  </li>
+
+  <li>
+  Let D<sub>i</sub> be the i-th domain node, and K<sub>ij</sub> be the key item
+  computed for D<sub>i</sub> by the j-th IndexKeySpec (where the numbering of
+  the IndexKeySpecs is done using their order of appearance in the index
+  declaration). Let K<sub>i</sub> be the tuple [K<sub>i1</sub>, ...,
+  K<sub>iM</sub>], where M is the number of IndexKeySpecs. The next step is to
+  insert in the index a mapping from K<sub>i</sub> to D<sub>i</sub>. This step
+  is performed for each node in the domain sequence. The order in which the
+  domain sequence is processed is implementation dependent.
+  </li>
+
+  <li>
+  If the index is declared as unique, the relationship between between key
+  tuples and domain nodes is one-to-one. In this case, if the index already
+  contains an entry whose key tuple is equal to K<sub>i</sub>, an error is 
+  raised [<a href="#ERRXDDY0024">err:XDDY0024</a>]. Otherwise, the entry 
+  [K<sub>i</sub>, D<sub>i</sub>] is inserted in the index container (to be very
+  precise, the entry contains a "pointer" to the node, not the node itself).
+  </li>
+
+  <li>
+  If the index is non-unique, it maps key tuples to sets of domain nodes. In 
+  this case, if the index already contains an entry whose key is equal to
+  K<sub>i</sub>, D<sub>i</sub> is added to the set associated with K<sub>i</sub>.
+  Otherwise, the entry [K<sub>i</sub>, { D<sub>i</sub> }] is inserted in the
+  index.
+  </li>
+  </ul>
+
+<li>
+If the index is a general index:
+</li>
+
+  <ul>
+  <li>
+  In the current implementation, there can be only one IndexKeySpec, but contrary
+  to value indexes, the result of this IndexKeySpec may be a sequence of any
+  number of atomic items, and the items may have different data types. We call 
+  this sequence a <strong>key sequence</strong>, and each atomic item in it a 
+  <strong>key item</strong>. 
+  </li>
+
+  <li>
+  Let D<sub>i</sub> be the i-th domain node, and K<sub>i</sub> be the key 
+  sequence computed for D<sub>i</sub>. If any key item in K<sub>i</sub> has
+  type xs:untypedAtomic, the item is removed from K<sub>i</sub> and is cast 
+  to every primitive builtin data type. For each successfull cast, the resulting
+  item is inserted back into K<sub>i</sub>. Thus, for each domain node, an
+  <strong>expanded key sequence</strong> is constructed. If any item in this 
+  sequence has a data type that is not a primitive builtin type, this data type
+  is changed to the nearest base type that is a primitive builtin type. For
+  example, xs:token is changed to xs:string, and xs:long is changed to xs:decimal.
+  (Note: this is a conceptual description of the index creation process. The
+  actual implementation may differ from this description as long as the results
+  of <a href="#index_probing">probe functions</a> are always the same as those 
+  implied by this conceptual description.)
+  </li>
+
+  <li>
+  The next step is to insert in the index a mapping from K<sub>ij</sub> to 
+  D<sub>i</sub>, for each key item K<sub>ij</sub> in the expanded key sequence
+  K<sub>i</sub>. This step is performed for each node in the domain sequence. 
+  The order in which the domain sequence is processed is implementation 
+  dependent.
+  </li>
+
+  <li>
+  If the index is declared as unique, the relationship between between key
+  items and domain nodes is one-to-one. In this case, if the index already
+  contains an entry whose key item has the same type as K<sub>ij</sub> and
+  its value is equal to K<sub>ij</sub>, an error is raised 
+  [<a href="#ERRXDDY0024">err:XDDY0024</a>]. Otherwise, the entry 
+  [K<sub>ij</sub>, D<sub>i</sub>] is inserted in the index container.
+  <li>
+
+  <li>
+  If the index is non-unique, it maps key items to sets of domain nodes. In 
+  this case, if the index already contains an entry whose key K has the same
+  type as K<sub>ij</sub> and its value is equal to K<sub>ij</sub>, D<sub>i</sub>
+  is added to the set associated with K. Otherwise, the entry [K<sub>ij</sub>, 
+  { D<sub>i</sub> }] is inserted into the index.  
+  </li>
+
+  <li>
+  In addition to the key item K and its associated domain nodes, each general
+  index entry stores 2 extra flags per domain node D: The <strong>multi-key 
+  flag</strong> is set to true if the unexpanded key sequence of D contained more 
+  than 1 items; otherwise the flag is false. The <strong>untyped flag</strong> 
+  is true if the association between K and D resulted from the casting of an 
+  untyped item in the un-expanded sequence of D; otherwise the flag is false. 
+  As we will see later, these flags are needed during <a href="#index_probing">
+  index probing</a>.
+  </li>
+  </ul>
+
+<li>
+A entry is added to the indexes table. The entry maps the expanded QName of
+the index to the index entry container.
+</li>
 </ul>
 
 
@@ -1699,7 +1806,7 @@ The delete-index function is evaluated as follows:
   <ul>
   <li>If the given expanded QName does not identify an index among the
 statically known indexes in the static context of the invoking module, an error
-is raised [<a href="#ERRXDDY0021" title="err:XDDY0021">err:XDDY0021</a>].</li>
+is raised [<a href="#ERRXDDY0021">err:XDDY0021</a>].</li>
   <li>If the given expanded QName does not identify an index among the available
 indexes in the dynamic context of the invoking module, an error is raised [<a
 href="#ERRXDDY0023" title="err:XDDY0023">err:XDDY0023</a>].</li>
@@ -1724,28 +1831,64 @@ from the indexes table.</li>
 
 
 Probing an index means retrieving the domain nodes associated with a particular
-search condition, which is either a single key tuple, or a "range" of key
-tuples. Probing can be done via the xqddf functions xqddf:probe-index-point or
-probe-index-range. Both functions accept a variable number of arguments. The
-first argument is always a QName identifying an index. The rest of the arguments
-specify the search condition. For both functions, the index must exist in both
+search condition, which is either a single key item/tuple, or a "range" of key
+items/tuples. Probing can be done via the xqddf functions 
+xqddf:probe-index-point-value, xqddf:probe-index-point-general, 
+xqddf:probe-index-range-value, or xqddf:probe-index-range-general.
+Each of these functions accepts a variable number of arguments. The first 
+argument is always a QName identifying an index. The rest of the arguments
+specify the search condition. For all functions, the index must exist in both
 the statically known indexes and the available indexes of the invoking module;
-otherwise error XDDY0021 or XDDY0023 is raised, respectively.
+otherwise error XDDY0021 or XDDY0023 is raised, respectively. All of the
+functions return their result sorted in document order and without duplicate
+nodes. (For general probes, duplicate node elimination is performed as part 
+of the function implementation; for value probes, duplicate nodes cannot 
+appear in the result, so no duplicate elimination is needed.)
 
 <a name="probe_index_point_value" id="probe_index_point_value"></a>
 \code
   xqddf:probe-index-point-value($indexUri as xs:QName,
-                                $key1     as xs:anyAtomic,
+                                $key1     as xs:anyAtomicType,
                                 ...,
-                                $keyM     as xs:anyAtomic) as node()*
+                                $keyM     as xs:anyAtomicType) as node()*
 \endcode
 
 For the probe-index-point-value function, the search condition is specified as a
-number of atomic items comprising a key tuple. This number must be equal to the
-number of indexspecs found in the index declaration [<a href="#ERRXDDY0025"
-title="err:XDDY0025">err:XDDY0025</a>]. If the index contains an entry with the
-given key tuple, the associated domain nodes are returned. Otherwise, the empty
-sequence is returned.
+number of atomic items comprising a search key tuple. This number must be equal 
+to the number of IndexKeySpecs found in the index declaration [<a href="#ERRXDDY0025">
+err:XDDY0025</a>]. Furthermore, the type of each search key item must match the
+atomic type specified in the corresponding IndexKeyTypeDecl [err:XPTY0004].
+
+For value indexes, if the index contains an entry with the given key tuple, 
+the associated domain nodes are returned. Otherwise, the empty sequence is 
+returned.
+
+For general indexes, there is only one search key item. If the type of the 
+search key item is xs:untypedAtomic, the item is cast to a string item. Then,
+the function looks for index entries whose key is equal to the search key 
+according to the rules of the eq operator. For example, if the search key is 
+an item with type xs:int and value 10, and the index contains two entries 
+with key 10 as xs:decimal and as xs:double, both of these entries will match 
+the search key. Let E be a matching entry. If the multi-key flag associated 
+with any of the nodes in the node set of E is set to true, a type error is 
+raised [err:XPTY0004]. The same type error is also raised if the untyped 
+flag associated with any of the nodes in the node set of E is set to true
+and the type of E's key is not xs:string or xs:anyUri. Raising the type
+error is done because value probes are supposed to optimize value comparison 
+predicates, which raise an error if any operands of the comparison operator 
+is a sequence of more than one items or if one operand has type xs:untypedAtomic 
+and the other operand has a type other than xs:string or xs:anyUri, or subtype
+of these. If no error is raised, the final result is the union of the node 
+sets of each matching entry.
+
+<a name="probe_index_point_general" id="probe_index_point_general"></a>
+\code
+  xqddf:probe-index-point-genral($indexUri as xs:QName,
+                                 $key      as xs:anyAtomicType) as node()*
+\endcode
+
+This method is supported by general indexes only [<a href="#ERRXDDY0029">
+err:XDDY0029</a>].
 
 <a name="probe_index_range_value" id="probe_index_range_value"></a>
 \code

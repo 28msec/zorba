@@ -1,0 +1,134 @@
+<xcr:config for="xcaserve-1" xmlns:xcr="http://xcruciate.co.uk">
+  <xcr:daemon id="xcaserve-1">
+    <provides-service direction="input" version="0.1">users</provides-service>
+    <provides-service direction="input" version="0.1">threads</provides-service>
+    <provides-service direction="input" version="0.1">pages</provides-service>
+    <local-directory-prefix>/home/mark/xcr_sites/vanilla2_demo/xcaserve</local-directory-prefix>
+    <library-directory-prefix>/home/mark/xcr_sites/vanilla2_demo/xcaserve</library-directory-prefix>
+    <share-directory-prefix>/home/mark/docserver/xiguous</share-directory-prefix>
+    <processor type="threaded-docserver" version="0.1">
+      <wrapper-queries-directory>!SHAREDIR!/docserver_queries</wrapper-queries-directory>
+      <xquery-modules>
+        <xquery-module>/usr/local/include/zorba/modules/com/zorba-xquery/www/modules</xquery-module>
+	      <xquery-module>!SHAREDIR!/shared_modules</xquery-module>
+      </xquery-modules>
+      <nthreads>1</nthreads>
+      <ip-count-resolution>10seconds</ip-count-resolution>
+      <ip-count-limit>500</ip-count-limit>
+      <enable-docroot>yes</enable-docroot>
+      <docroot>!LOCALDIR!/docroot</docroot>
+      <enable-debug>yes</enable-debug>
+      <debug-docroot>!LOCALDIR!/debug_docroot</debug-docroot>
+      <log id="access">
+	      <directory>!LOCALDIR!/log</directory>
+        <filename>access.txt</filename>
+      </log>
+      <log id="error">
+	      <directory>!LOCALDIR!/log</directory>
+        <filename>error.txt</filename>
+      </log>
+      <log id="debug">
+        <directory>!LOCALDIR!/log</directory>
+        <filename>debug.txt</filename>
+      </log>
+    </processor>
+    <application type="zorba-xquery" version="0.1">
+      <xquery-modules>
+	      <xquery-module>!LOCALDIR!/modules</xquery-module>
+      </xquery-modules>
+      <utility-queries-directory>!SHAREDIR!/utility_queries</utility-queries-directory>
+      <service-queries-directory>!LOCALDIR!/application_queries</service-queries-directory>
+      <clean-data-directory>!LOCALDIR!/data/clean</clean-data-directory>
+      <current-data-directory>!LOCALDIR!/data/current</current-data-directory>
+      <backup-data-directory>!LOCALDIR!/data/backup</backup-data-directory>
+      <dump-data-directory>!LOCALDIR!/data/dump</dump-data-directory>
+      <virtualized-documents-directory>!LOCALDIR!/virtualized</virtualized-documents-directory>
+      <virtualized-documents-directory-depth>3</virtualized-documents-directory-depth>
+      <document type="filesystem" name="combined_threads">
+        <thread_title/>
+	      <thread_embargo_date/>
+	      <author/>
+        <forum/>
+        <summary/>
+	      <last-addition>
+	        <id/>
+          <date/>
+          <author/>
+	      </last-addition>
+	      <tag/>
+	      <comment>
+	        <id/>
+	        <author/>
+	        <date/>
+	      </comment>
+      </document>
+      <document type="resident" name="users"/>
+      <document type="resident" name="groups"/>
+      <document type="resident" name="pages"/>
+      <document type="resident" name="combined_castes"/>
+      <document type="resident" name="thread_urls"/>
+    </application>
+    <connection type="http" version="0.1">
+      <public-url>http://cyberporte.dyndns.org:8089</public-url>
+      <local-transport>http</local-transport>
+      <local-host>127.0.0.1</local-host>
+      <local-port>8089</local-port>
+    </connection>
+    <authentication type="shared-secret-0.1">
+      <pass-string>ea7c8b6f-8252-4b7c-a7f1-9ccf8dd2a45e</pass-string>
+    </authentication>
+    <validate-output>no</validate-output>
+    <validate-input>no</validate-input>
+  </xcr:daemon>
+  <xcr:service id="threads" name="threads" direction="input" version="0.1">
+    <xcr:event-payload payload-element="threads">
+      <schema type="xsd">xcruciate/docserver/threads/input/v0.1/threads.xsd</schema>
+      <blocking-allowed/>
+    </xcr:event-payload>
+    <xcr:event-payload payload-element="thread_comments_by_author">
+      <schema type="xsd">xcruciate/docserver/threads/input/v0.1/thread_comments_by_author.xsd</schema>
+      <blocking-allowed/>
+    </xcr:event-payload>
+    <xcr:event-payload payload-element="threads_user_can_view">
+      <schema type="xsd">xcruciate/docserver/threads/input/v0.1/threads_user_can_view.xsd</schema>
+      <blocking-allowed/>
+    </xcr:event-payload>
+  </xcr:service>
+  <xcr:service id="users" name="users" direction="input" version="0.1">
+    <xcr:event-payload payload-element="user_by_id">
+      <schema type="xsd">xcruciate/docserver/notes/input/v0.1/user_by_id.xsd</schema>
+      <blocking-allowed/>
+    </xcr:event-payload>
+    <xcr:event-payload payload-element="user_forum_rights">
+      <schema type="xsd">xcruciate/docserver/notes/input/v0.1/user_forum_rights.xsd</schema>
+      <blocking-allowed/>
+    </xcr:event-payload>
+    <xcr:event-payload payload-element="users_by_id_substring">
+      <schema type="xsd">xcruciate/docserver/notes/input/v0.1/users_by_id_substring.xsd</schema>
+      <blocking-allowed/>
+    </xcr:event-payload>
+    <xcr:event-payload payload-element="users_by_email">
+      <schema type="xsd">xcruciate/docserver/notes/input/v0.1/users_by_email.xsd</schema>
+      <blocking-allowed/>
+    </xcr:event-payload>
+    <xcr:event-payload payload-element="users_by_status">
+      <schema type="xsd">xcruciate/docserver/notes/input/v0.1/users_by_status.xsd</schema>
+      <blocking-allowed/>
+    </xcr:event-payload>
+    <xcr:event-payload payload-element="user_can_view_url">
+      <schema type="xsd">xcruciate/docserver/notes/input/v0.1/user_can_view_url.xsd</schema>
+      <blocking-allowed/>
+    </xcr:event-payload>
+  </xcr:service>
+  <xcr:service id="pages" name="pages" direction="input" version="0.1">
+    <xcr:event-payload payload-element="page_by_url">
+      <schema type="xsd">xcruciate/docserver/threads/input/v0.1/page_by_url.xsd</schema>
+      <blocking-allowed/>
+    </xcr:event-payload>
+    <xcr:event-payload payload-element="page_by_thread">
+      <schema type="xsd">xcruciate/docserver/threads/input/v0.1/page_by_thread.xsd</schema>
+      <blocking-allowed/>
+    </xcr:event-payload>
+  </xcr:service>
+</xcr:config>
+ 

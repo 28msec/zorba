@@ -1,0 +1,1 @@
+<thread xmlns:v="v" id="fe1bcfa6-d055-4dfb-9aae-d2ef20d68aab" v:path="/f/fe/fe1/fe1b/"><thread_title>I still like to blog</thread_title><thread_embargo_date>2010-09-24T21:31:23+02:00</thread_embargo_date><author>julian</author><summary>Proin consequat feugiat viverra. Donec et dapibus ipsum.</summary><tag>blog_entry</tag><tag>new_item</tag></thread>

@@ -498,7 +498,7 @@ store::Index_t SimpleStore::createIndex(
   }
   else if (spec.theIsSorted)
   {
-    index = new STLMapIndex(qname, spec);
+    index = new ValueTreeIndex(qname, spec);
     populateValueIndex(index, sourceIter, spec.getNumColumns());
   }
   else if (spec.theIsGeneral)

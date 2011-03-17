@@ -404,7 +404,7 @@ ostream& trycatch_expr::put( ostream& os) const
     os << "\n";
     theCatchExprs[i]->put(os);
   }
-  os << indent << "]\n";
+  os << dec_indent << indent << "]\n";
   return os;
 }
 

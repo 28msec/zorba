@@ -130,9 +130,10 @@ public:
 ********************************************************************************/
 class IndexPointCondition : public store::IndexCondition
 {
-  friend class ProbeTreeValueIndexIterator;
-  friend class ProbeHashValueIndexIterator;
-  friend class ProbeHashGeneralIndexIterator;
+  friend class ProbeValueTreeIndexIterator;
+  friend class ProbeValueHashIndexIterator;
+  friend class ProbeGeneralHashIndexIterator;
+  friend class ProbeGeneralTreeIndexIterator;
 
 protected:
   rchandle<IndexImpl>   theIndex;
@@ -175,10 +176,6 @@ std::ostream& operator<<(std::ostream& os, const IndexPointCondition& cond);
 ********************************************************************************/
 class IndexPointValueCondition : public IndexPointCondition
 {
-  friend class ProbeTreeValueIndexIterator;
-  friend class ProbeHashValueIndexIterator;
-  friend class ProbeHashGeneralIndexIterator;
-
 public:
   IndexPointValueCondition(IndexImpl* idx) : IndexPointCondition(idx) { }
 
@@ -193,10 +190,6 @@ public:
 ********************************************************************************/
 class IndexPointGeneralCondition : public IndexPointCondition
 {
-  friend class ProbeTreeValueIndexIterator;
-  friend class ProbeHashValueIndexIterator;
-  friend class ProbeHashGeneralIndexIterator;
-
 public:
   IndexPointGeneralCondition(IndexImpl* idx) : IndexPointCondition(idx) { }
 
@@ -211,8 +204,8 @@ public:
 ********************************************************************************/
 class IndexBoxCondition : public store::IndexCondition
 {
-  friend class STLMapIndex;
-  friend class ProbeTreeValueIndexIterator;
+  friend class ValueTreeIndex;
+  friend class ProbeValueTreeIndexIterator;
 
   friend std::ostream& operator<<(std::ostream& os, const IndexBoxCondition& cond);
 
@@ -265,7 +258,7 @@ std::ostream& operator<<(std::ostream& os, const IndexBoxCondition& cond);
 ********************************************************************************/
 class IndexBoxValueCondition : public IndexBoxCondition
 {
-  friend class STLMapIndex;
+  friend class ValueTreeIndex;
   friend class ProbeTreeValueIndexIterator;
 
 public:
@@ -274,6 +267,20 @@ public:
   store::IndexCondition::Kind getKind() const { return BOX_VALUE; }
 
   std::string getKindString() const { return "BOX_VALUE"; }
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class IndexBoxGeneralCondition : public IndexBoxCondition
+{
+public:
+  IndexBoxGeneralCondition(IndexImpl* idx) : IndexBoxCondition(idx) { }
+
+  store::IndexCondition::Kind getKind() const { return BOX_GENERAL; }
+
+  std::string getKindString() const { return "BOX_GENERAL"; }
 };
  
 

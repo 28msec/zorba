@@ -179,7 +179,7 @@ bool ValueHashIndex::remove(const store::IndexKey* key, store::Item_t& value)
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//  ProdeHashValueIndexIterator                                                //
+//  ProdeValueHashIndexIterator                                                //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -187,7 +187,7 @@ bool ValueHashIndex::remove(const store::IndexKey* key, store::Item_t& value)
 /******************************************************************************
 
 ********************************************************************************/
-void ProbeHashValueIndexIterator::init(const store::IndexCondition_t& cond)
+void ProbeValueHashIndexIterator::init(const store::IndexCondition_t& cond)
 {
   if (cond->getKind() != store::IndexCondition::POINT_VALUE)
   {
@@ -220,7 +220,7 @@ void ProbeHashValueIndexIterator::init(const store::IndexCondition_t& cond)
 /******************************************************************************
 
 ********************************************************************************/
-void ProbeHashValueIndexIterator::open()
+void ProbeValueHashIndexIterator::open()
 {
   if (theResultSet)
     theIte = theResultSet->begin();
@@ -230,7 +230,7 @@ void ProbeHashValueIndexIterator::open()
 /******************************************************************************
 
 ********************************************************************************/
-void ProbeHashValueIndexIterator::reset()
+void ProbeValueHashIndexIterator::reset()
 {
   if (theResultSet)
     theIte = theResultSet->begin(); 
@@ -240,7 +240,7 @@ void ProbeHashValueIndexIterator::reset()
 /******************************************************************************
 
 ********************************************************************************/
-void ProbeHashValueIndexIterator::close()
+void ProbeValueHashIndexIterator::close()
 {
   theCondition = NULL;
   theResultSet = NULL;
@@ -250,7 +250,7 @@ void ProbeHashValueIndexIterator::close()
 /******************************************************************************
   TODO : need sync on result vector
 ********************************************************************************/
-bool ProbeHashValueIndexIterator::next(store::Item_t& result)
+bool ProbeValueHashIndexIterator::next(store::Item_t& result)
 {
   if (theResultSet && theIte != theEnd)
   {
@@ -265,7 +265,7 @@ bool ProbeHashValueIndexIterator::next(store::Item_t& result)
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//  STL Map Value Index                                                        //
+//  Value Tree Index                                                           //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -273,7 +273,7 @@ bool ProbeHashValueIndexIterator::next(store::Item_t& result)
 /******************************************************************************
 
 ********************************************************************************/
-STLMapIndex::STLMapIndex(
+ValueTreeIndex::ValueTreeIndex(
     const store::Item_t& qname,
     const store::IndexSpecification& spec)
   :
@@ -287,7 +287,7 @@ STLMapIndex::STLMapIndex(
 /******************************************************************************
 
 ********************************************************************************/
-STLMapIndex::~STLMapIndex()
+ValueTreeIndex::~ValueTreeIndex()
 {
   IndexMap::iterator ite = theMap.begin();
   IndexMap::iterator end = theMap.end();
@@ -303,7 +303,7 @@ STLMapIndex::~STLMapIndex()
 /******************************************************************************
 
 ********************************************************************************/
-void STLMapIndex::clear()
+void ValueTreeIndex::clear()
 {
   theMap.clear();
 }
@@ -312,7 +312,7 @@ void STLMapIndex::clear()
 /******************************************************************************
 
 ********************************************************************************/
-bool STLMapIndex::insert(
+bool ValueTreeIndex::insert(
     store::IndexKey*& key, 
     store::Item_t& value,
     bool multikey)
@@ -367,7 +367,7 @@ bool STLMapIndex::insert(
 /******************************************************************************
 
 ********************************************************************************/
-bool STLMapIndex::remove(const store::IndexKey* key, store::Item_t& value)
+bool ValueTreeIndex::remove(const store::IndexKey* key, store::Item_t& value)
 {
   if (key->size() != getNumColumns())
   {
@@ -407,7 +407,7 @@ bool STLMapIndex::remove(const store::IndexKey* key, store::Item_t& value)
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//  ProbeTreeValueIndexIterator                                                //
+//  ProbeValueTreeIndexIterator                                                //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -415,7 +415,7 @@ bool STLMapIndex::remove(const store::IndexKey* key, store::Item_t& value)
 /******************************************************************************
 
 ********************************************************************************/
-void ProbeTreeValueIndexIterator::init(const store::IndexCondition_t& cond)
+void ProbeValueTreeIndexIterator::init(const store::IndexCondition_t& cond)
 {
   if (cond->getKind() != store::IndexCondition::BOX_VALUE &&
       cond->getKind() != store::IndexCondition::POINT_VALUE)
@@ -443,7 +443,7 @@ void ProbeTreeValueIndexIterator::init(const store::IndexCondition_t& cond)
 /******************************************************************************
 
 ********************************************************************************/
-void ProbeTreeValueIndexIterator::initExact()
+void ProbeValueTreeIndexIterator::initExact()
 {
   const store::IndexKey& key = thePointCond->theKey;
 
@@ -471,7 +471,7 @@ void ProbeTreeValueIndexIterator::initExact()
 /******************************************************************************
 
 ********************************************************************************/
-void ProbeTreeValueIndexIterator::initBox()
+void ProbeValueTreeIndexIterator::initBox()
 {
   ulong numRanges = theBoxCond->numRanges();
 
@@ -620,7 +620,7 @@ void ProbeTreeValueIndexIterator::initBox()
 /******************************************************************************
 
 ********************************************************************************/
-void ProbeTreeValueIndexIterator::open()
+void ProbeValueTreeIndexIterator::open()
 {
   if (theMapBegin != theIndex->theMap.end())
   {
@@ -636,7 +636,7 @@ void ProbeTreeValueIndexIterator::open()
 /******************************************************************************
 
 ********************************************************************************/
-void ProbeTreeValueIndexIterator::reset()
+void ProbeValueTreeIndexIterator::reset()
 {
   if (theMapBegin != theIndex->theMap.end())
   {
@@ -652,7 +652,7 @@ void ProbeTreeValueIndexIterator::reset()
 /******************************************************************************
 
 ********************************************************************************/
-void ProbeTreeValueIndexIterator::close()
+void ProbeValueTreeIndexIterator::close()
 {
   thePointCond = NULL;
   theBoxCond = NULL;
@@ -663,7 +663,7 @@ void ProbeTreeValueIndexIterator::close()
 /******************************************************************************
   TODO : need sync on result vector
 ********************************************************************************/
-bool ProbeTreeValueIndexIterator::next(store::Item_t& result)
+bool ProbeValueTreeIndexIterator::next(store::Item_t& result)
 {
   while (theResultSet != NULL)
   {

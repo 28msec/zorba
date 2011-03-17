@@ -40,7 +40,7 @@ public:
     bool          theUntyped;
   };
 
-  typedef std::vector<NodeInfo>::const_iterator iterator;
+  typedef std::vector<NodeInfo>::const_iterator const_iterator;
 
 protected:
   std::vector<NodeInfo> theNodes;
@@ -52,9 +52,9 @@ public:
 
   void clear() { theNodes.clear(); }
 
-  iterator begin() { return theNodes.begin(); }
+  const_iterator begin() { return theNodes.begin(); }
 
-  iterator end()   { return theNodes.end(); }
+  const_iterator end()   { return theNodes.end(); }
 };
 
 
@@ -84,7 +84,7 @@ protected:
 class GeneralHashIndex : public GeneralIndex
 {
   friend class SimpleStore;
-  friend class ProbeHashGeneralIndexIterator;
+  friend class ProbeGeneralHashIndexIterator;
 
   typedef HashMap<const store::IndexKey*,
                   GeneralIndexValue*,
@@ -123,13 +123,17 @@ protected:
   Iterator to probe a hash-based, general index. The probe itself may be a
   value probe or a general probe.
 
-  theIndex      : The index to probe
-  theCondition  : The condition to satisfy. May be a POINT_VALUE or POINT_GENERAL
-                  condition.
-  theResultSets : The node sets associated with the keys that match the condition
- 
+  theIndex         : The index to probe
+  theCondition     : The condition to satisfy. May be a POINT_VALUE or 
+                      POINT_GENERAL condition.
+  theProbeKind     : 
+
+  theResultSets    : The node sets associated with the keys that match the 
+                     condition
+  theResultSetsIte :
+  theResultSetsEnd :
 ********************************************************************************/
-class ProbeHashGeneralIndexIterator : public store::IndexProbeIterator
+class ProbeGeneralHashIndexIterator : public store::IndexProbeIterator
 {
 protected:
   rchandle<GeneralHashIndex>                 theIndex;
@@ -140,11 +144,11 @@ protected:
   std::vector<GeneralIndexValue*>            theResultSets;
   std::vector<GeneralIndexValue*>::iterator  theResultSetsIte;
   std::vector<GeneralIndexValue*>::iterator  theResultSetsEnd;
-  GeneralIndexValue::iterator                theIte;
-  GeneralIndexValue::iterator                theEnd;
+  GeneralIndexValue::const_iterator          theIte;
+  GeneralIndexValue::const_iterator          theEnd;
 
 public:
-  ProbeHashGeneralIndexIterator(const store::Index_t& index);
+  ProbeGeneralHashIndexIterator(const store::Index_t& index);
 
   void init(const store::IndexCondition_t& cond);
 
@@ -164,7 +168,7 @@ public:
 class GeneralTreeIndex : public GeneralIndex
 {
   friend class SimpleStore;
-  friend class ProbeHashGeneralIndexIterator;
+  friend class ProbeGeneralTreeIndexIterator;
 
   typedef std::pair<const store::IndexKey*, GeneralIndexValue*> IndexMapPair;
 
@@ -199,6 +203,72 @@ protected:
   bool remove(
       const store::IndexKey* key,
       store::Item_t& item);
+};
+
+
+/******************************************************************************
+  Iterator to probe a tree-based, general index. The probe itself may be a
+  value probe or a general probe.
+
+  theIndex         : The index to probe
+  theCondition     : The condition to satisfy. May be a POINT_VALUE, or 
+                      POINT_GENERAL, or BOX_VALUE, or BOX_GENERAL condition.
+  theProbeKind     : 
+
+  theResultSets    : The node sets associated with the keys that match the 
+                     condition. This is used for point probes only.
+  theResultSetsIte : Iterator over theResultSets; points to the "current" result
+                     set. This is used for point probes only.
+  theResultSetsEnd : The "end" iterator of theResultSets. This is used for 
+                     point probes only.
+  theIte           : Iterator over the "current" result set. This is used for 
+                     point probes only.
+  theEnd           : The "end" iterator of the "current" result set. This is 
+                     used for point probes only.
+********************************************************************************/
+class ProbeGeneralTreeIndexIterator : public store::IndexProbeIterator
+{
+  typedef std::vector<GeneralIndexValue*> ResultSets;
+
+protected:
+  rchandle<GeneralTreeIndex>                       theIndex;
+
+  rchandle<IndexPointCondition>                    thePointCondition;
+  rchandle<IndexBoxCondition>                      theBoxCondition;
+  store::IndexCondition::Kind                      theProbeKind;
+
+  ResultSets                                 theResultSets;
+  ResultSets::const_iterator                 theResultSetsIte;
+  ResultSets::const_iterator                 theResultSetsEnd;
+  GeneralIndexValue::const_iterator          theIte;
+  GeneralIndexValue::const_iterator          theEnd;
+#if 0
+  GeneralTreeIndex::IndexMap::const_iterator  theMapBegin;
+  GeneralTreeIndex::IndexMap::const_iterator  theMapEnd;
+  GeneralTreeIndex::IndexMap::const_iterator  theMapIte;
+
+  GeneralIndexValue                         * theResultSet;
+  GeneralIndexValue::const_iterator           theIte;
+  GeneralIndexValue::const_iterator           theEnd;
+#endif
+
+public:
+  ProbeGeneralTreeIndexIterator(const store::Index_t& index);
+
+  void init(const store::IndexCondition_t& cond);
+
+  void open();
+
+  bool next(store::Item_t& result);
+  
+  void reset();
+
+  void close();
+
+protected:
+  void initPoint(const store::IndexCondition_t& cond);
+
+  void initBox(const store::IndexCondition_t& cond);
 };
 
 

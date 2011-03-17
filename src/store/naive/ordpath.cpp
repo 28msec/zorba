@@ -963,6 +963,8 @@ void OrdPath::insertInto(
   }
 
   ZORBA_ASSERT((isLocal && result.isLocal()) || (!isLocal && !result.isLocal()));
+  assert(sib1 < result);
+  assert(result < sib2);
 }
 
 

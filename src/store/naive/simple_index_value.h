@@ -55,7 +55,7 @@ protected:
 class ValueHashIndex : public ValueIndex
 {
   friend class SimpleStore;
-  friend class ProbeHashValueIndexIterator;
+  friend class ProbeValueHashIndexIterator;
 
   typedef HashMap<const store::IndexKey*,
                   ValueIndexValue*,
@@ -83,7 +83,7 @@ protected:
 /******************************************************************************
   Iterator to probe a hash-based value index
 ********************************************************************************/
-class ProbeHashValueIndexIterator : public store::IndexProbeIterator
+class ProbeValueHashIndexIterator : public store::IndexProbeIterator
 {
 protected:
   rchandle<ValueHashIndex>               theIndex;
@@ -95,7 +95,7 @@ protected:
   ValueIndexValue::const_iterator        theEnd;
 
 public:
-  ProbeHashValueIndexIterator(const store::Index_t& index) : theResultSet(NULL)
+  ProbeValueHashIndexIterator(const store::Index_t& index) : theResultSet(NULL)
   {
     theIndex = static_cast<ValueHashIndex*>(index.getp());
   }
@@ -115,10 +115,10 @@ public:
 /******************************************************************************
 
 ********************************************************************************/
-class STLMapIndex : public ValueIndex
+class ValueTreeIndex : public ValueIndex
 {
   friend class SimpleStore;
-  friend class ProbeTreeValueIndexIterator;
+  friend class ProbeValueTreeIndexIterator;
 
   typedef std::pair<const store::IndexKey*, ValueIndexValue*> IndexMapPair;
 
@@ -139,42 +139,42 @@ public:
   bool remove(const store::IndexKey* key, store::Item_t& item);
 
 protected:
-  STLMapIndex(
+  ValueTreeIndex(
         const store::Item_t& qname,
         const store::IndexSpecification& spec);
 
-  ~STLMapIndex();
+  ~ValueTreeIndex();
 };
 
 
 /*******************************************************************************
   Iterator to probe a tree-based value index
 ********************************************************************************/
-class ProbeTreeValueIndexIterator : public store::IndexProbeIterator
+class ProbeValueTreeIndexIterator : public store::IndexProbeIterator
 {
 protected:
-  rchandle<STLMapIndex>                    theIndex;
+  rchandle<ValueTreeIndex>                  theIndex;
 
-  rchandle<IndexPointValueCondition>       thePointCond;
-  rchandle<IndexBoxValueCondition>         theBoxCond;
+  rchandle<IndexPointValueCondition>        thePointCond;
+  rchandle<IndexBoxValueCondition>          theBoxCond;
 
-  bool                                     theDoExtraFiltering;
+  bool                                      theDoExtraFiltering;
 
-  STLMapIndex::IndexMap::const_iterator    theMapBegin;
-  STLMapIndex::IndexMap::const_iterator    theMapEnd;
-  STLMapIndex::IndexMap::const_iterator    theMapIte;
+  ValueTreeIndex::IndexMap::const_iterator  theMapBegin;
+  ValueTreeIndex::IndexMap::const_iterator  theMapEnd;
+  ValueTreeIndex::IndexMap::const_iterator  theMapIte;
 
-  ValueIndexValue                        * theResultSet;
-  ValueIndexValue::const_iterator          theIte;
-  ValueIndexValue::const_iterator          theEnd;
+  ValueIndexValue                         * theResultSet;
+  ValueIndexValue::const_iterator           theIte;
+  ValueIndexValue::const_iterator           theEnd;
 
 public:
-  ProbeTreeValueIndexIterator(const store::Index_t& index)
+  ProbeValueTreeIndexIterator(const store::Index_t& index)
     :
     theDoExtraFiltering(true),
     theResultSet(NULL)
   {
-    theIndex = reinterpret_cast<STLMapIndex*>(index.getp());
+    theIndex = reinterpret_cast<ValueTreeIndex*>(index.getp());
   }
 
   void init(const store::IndexCondition_t& cond);

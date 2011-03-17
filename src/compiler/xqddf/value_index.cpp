@@ -408,10 +408,13 @@ void IndexDecl::analyzeExprInternal(
 
 /******************************************************************************
   Create the expression that "builds" the index, if not done already. The expr
-  to build is the following:
+  to build is the following, for value and general indexes, respectively:
 
   for $newdot at $newpos in cloned_domain_expr
-  return index-entry-builder($$newdot, cloned_key1_expr, ..., cloned_keyN_expr)
+  return value-index-entry-builder($$newdot, cloned_key1_expr, ..., cloned_keyN_expr)
+
+  for $$newdot at $$newpos in cloned_domain_expr
+  return general-index-entry-builder($$newdot, cloned_key_expr);
 
   The runtime plan corresponding to this expr is given to the store, which
   then populates the index by creating entries out of the items returned by

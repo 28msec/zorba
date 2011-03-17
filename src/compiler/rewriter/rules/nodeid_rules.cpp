@@ -97,7 +97,7 @@ expr_t MarkConsumerNodeProps::apply(
     expr* node,
     bool& modified)
 {
-  bool saveInOrderedMode;
+  bool saveInOrderedMode = false;
 
   if (!rCtx.theIsInOrderedMode)
   {
@@ -254,9 +254,11 @@ expr_t MarkConsumerNodeProps::apply(
   case relpath_expr_kind : 
   {
     expr_t arg = (*static_cast<relpath_expr *>(node))[0];
+    pushdown_ignores_sorted_nodes(node, arg);
+    pushdown_ignores_duplicate_nodes(node, arg);
 
-    set_ignores_sorted_nodes(arg, ANNOTATION_TRUE);
-    set_ignores_duplicate_nodes(arg, ANNOTATION_TRUE);
+    //set_ignores_sorted_nodes(arg, ANNOTATION_TRUE);
+    //set_ignores_duplicate_nodes(arg, ANNOTATION_TRUE);
       
     break;
   }

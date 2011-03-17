@@ -65,7 +65,5 @@ ZORBA_SET_TEST_PROPERTY_ALLSTORES (test/fspath2 PASS_REGULAR_EXPRESSION ../../d3
 # External testsuites
 ADD_SUBDIRECTORY(testsuites)
 
-
 #SET (ORDPATH_SRCS test_ordpath.cpp)
-#ADD_EXECUTABLE(ordpath ${ORDPATH_SRCS})
-#TARGET_LINK_LIBRARIES(ordpath zorba_simplestore)
+#ZORBA_GENERATE_STORE_SPECIFIC_EXES("ordpath" "${ORDPATH_SRCS}" "" "" "bin")

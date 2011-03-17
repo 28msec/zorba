@@ -124,3 +124,10 @@
 <watch open_auction="open_auction7"/>
 </watches>
 </person>
+
+<open_auction id="open_auction2"/>
+
+<exception>Got exception, as expected</exception>
+
+<open_auction id="open_auction2"/><open_auction id="open_auction3"/>
+

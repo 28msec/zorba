@@ -61,21 +61,21 @@ store::IndexProbeIterator* SimpleIteratorFactory::createIndexProbeIterator(
 {
   IndexImpl* idx = reinterpret_cast<IndexImpl*>(index.getp());
 
+  // general, tree index
   if (idx->isGeneral() && idx->isSorted())
-    ZORBA_ASSERT(false);
-    //return new ProbeTreeGeneralIndexIterator(index);
+    return new ProbeGeneralTreeIndexIterator(index);
 
   // general, hash index
   else if (idx->isGeneral())
-    return new ProbeHashGeneralIndexIterator(index);
+    return new ProbeGeneralHashIndexIterator(index);
 
   // value, tree index
   else if (idx->isSorted())
-    return new ProbeTreeValueIndexIterator(index);
+    return new ProbeValueTreeIndexIterator(index);
 
   // value, hash
   else
-    return new ProbeHashValueIndexIterator(index);
+    return new ProbeValueHashIndexIterator(index);
 }
 
 

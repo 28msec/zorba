@@ -65,6 +65,38 @@ catch *
 
 ",
 
-xqddf:probe-index-point-value(xs:QName("auctions:PersonWatches2"), "open_auction7")
+xqddf:probe-index-point-value(xs:QName("auctions:PersonWatches2"), "open_auction7"),
+
+"
+
+",
+
+<open_auction>
+{ xqddf:probe-index-point-value($auctions:AuctionDates, xs:date("2000-12-04"))/@id }
+</open_auction>,
+
+"
+
+",
+
+try
+{
+  xqddf:probe-index-point-value($auctions:AuctionDates, xs:date("2000-01-03"))
+}
+catch *
+{
+  <exception>Got exception, as expected</exception>
+},
+
+"
+
+",
+
+for $id in xqddf:probe-index-point-general($auctions:AuctionDates, 
+                                           (xs:date("2000-12-04"),
+                                            xs:date("2000-01-03"),
+                                            xs:date("1998-08-18")))/@id
+return <open_auction>{$id}</open_auction>
+
 
 );

@@ -24,7 +24,7 @@ namespace simplestore {
 
 
 //#define EMBEDED_TYPE
-//#define TEXT_ORDPATHS
+//#define TEXT_ORDPATH
 
 
 #define GET_STORE() \

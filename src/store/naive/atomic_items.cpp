@@ -312,7 +312,7 @@ bool UntypedAtomicItem::castToString(store::Item_t& result) const
 
 bool UntypedAtomicItem::castToDateTime(store::Item_t& result) const
 {
-   return GET_FACTORY().createDateTime(result, theValue.c_str(), theValue.size());
+  return GET_FACTORY().createDateTime(result, theValue.c_str(), theValue.size());
 }
 
 

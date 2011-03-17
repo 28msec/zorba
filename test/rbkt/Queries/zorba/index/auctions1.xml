@@ -1239,63 +1239,63 @@ powerful evil language awhile importeth modern lip froth profession finger opini
   <increase>12.00</increase>
 </bidder>
 <bidder>
-<date>1998-01-07</date>
-<time>10:23:59</time>
-<personref person="person14"/>
-<increase>18.00</increase>
+  <date>1998-01-07</date>
+  <time>10:23:59</time>
+  <personref person="person14"/>
+  <increase>18.00</increase>
 </bidder>
 <bidder>
-<date>2001-07-10</date>
-<time>14:00:39</time>
-<personref person="person16"/>
-<increase>4.50</increase>
+  <date>2001-07-10</date>
+  <time>14:00:39</time>
+  <personref person="person16"/>
+  <increase>4.50</increase>
 </bidder>
 <current>263.12</current>
 <privacy>No</privacy>
 <itemref item="item0"/>
 <seller person="person11"/>
 <annotation>
-<author person="person10"/>
-<description>
-<parlist>
-<listitem>
-<parlist>
-<listitem>
-<text>
+  <author person="person10"/>
+  <description>
+  <parlist>
+  <listitem>
+  <parlist>
+  <listitem>
+  <text>
 boldly welcome heal takes break frequents eyes surest fond fortinbras great ear noon deep carve ignorant sweetheart eleven tightly varlet not banishment butt formerly juice knee treacherous speech acts seel although took misenum little conclusion malice confident shut incur pride years same spotted youngest off trample expedition noted names anything word blocks cur editions daughters gesture advised nevils trust descry humbled glittering choose cassio scruple doing thou pieces fated teeth winter wealth slay lives instruction malefactors mistrust usurp methinks 
-</text>
-</listitem>
-<listitem>
-<text>
+  </text>
+  </listitem>
+  <listitem>
+  <text>
 bruise grievously hand majesty octavia maiden kites south cressid brief war meek utter urg <keyword> antonius </keyword> unseal forgot requires enforced <bold> signal villain mood </bold> discovering create root serve thee cover gear cornwall naked trouble ventur run monument impediment thick strangely wishes base county chastity capulet harm companion plautus halt field remembrance pol fright <emph> foul record </emph> thyself good waking capt wiltshire faults wounds pierce forfeit stealing page mew second fox qualify rook kneels least beg sham roman clothes <bold> newness distinction disaster prefers witness </bold> chief <keyword> watchful domain painter feet glad bodies trot week fishes strengths pursu </keyword> procure occupation <emph> fouler </emph> credo letter shield arabian suggestions mortal display preventions follow vain woful prophet conclusions whit gave capitol tenth forsook tent restraint cable trade vexed juliet nestor excellent lack affairs mortality children mutton suck 
-</text>
-</listitem>
-<listitem>
-<text>
+  </text>
+  </listitem>
+  <listitem>
+  <text>
 twice wildest howl cyprus say force unking 
-</text>
-</listitem>
-<listitem>
-<text>
+  </text>
+  </listitem>
+  <listitem>
+  <text>
 hundred further troyan steel neglected upward claim harder disgorge names wanton cor paper game pin meg realm vaughan foe botchy slower slave frown bethink soon descend wandering rosencrantz whence knock despite lance smiles nest scribbled tailor chaste mourning holds penetrable rashness couple mix sides merrily libya mother <bold> counsel beadles </bold> moons his spiders known outlawry beginning breeches sweet way horse apothecary reechy possesses mowbray yes tame grace him hatch cried needful oratory bend sicilia looking why released wait story <bold> stirs cockatrice antic churlish </bold> view threads trophies filthy contains saves <emph> bounty again rear spacious catching none withstand mistresses collection moved </emph> anjou unpossess knows thanks shown found ease meed dreadful presentation beards betimes teen bids esteem knife villains dislik would serv salve edward justices signify sociable fools good dennis true belief unlook reprobate foul attempts judgments impatient rub right nice who northern moor ridiculous <emph> hurt outward sex thankful starting dim drawing props </emph> tucket sure <keyword> surely thief kin everything aid derive ventidius briber lips inheritance thronged discontented chaste sallets brace meet vein wealth evermore </keyword> books disgrace comely monstrous linen dismay workman 
-</text>
-</listitem>
-</parlist>
-</listitem>
-<listitem>
-<text>
-<keyword> loss flows wears town surge worthies needful </keyword> stings complain despise semblance abused accent confusion heaven walk dane sorrows more those foolish parish prove poet find <emph> sustain foreward spain exit war rhyme </emph> otherwise belov seeming dates expressly hourly waiting elements snowy persever wolves beating 
-</text>
-</listitem>
-</parlist>
-</description>
-<happiness>1</happiness>
+  </text>
+  </listitem>
+  </parlist>
+  </listitem>
+  <listitem>
+  <text>
+  <keyword> loss flows wears town surge worthies needful </keyword> stings complain despise semblance abused accent confusion heaven walk dane sorrows more those foolish parish prove poet find <emph> sustain foreward spain exit war rhyme </emph> otherwise belov seeming dates expressly hourly waiting elements snowy persever wolves beating 
+  </text>
+  </listitem>
+  </parlist>
+  </description>
+  <happiness>1</happiness>
 </annotation>
 <quantity>1</quantity>
 <type>Regular</type>
 <interval>
-<start>02/27/1998</start>
-<end>03/09/1999</end>
+  <start>02/27/1998</start>
+  <end>03/09/1999</end>
 </interval>
 </open_auction>
 
@@ -1505,6 +1505,7 @@ purpose loathed appointment livers recantation briefly giving sear crows fellow 
 <end>07/22/1999</end>
 </interval>
 </open_auction>
+
 <open_auction id="open_auction4">
 <initial>38.21</initial>
 <reserve>116.91</reserve>
@@ -1837,6 +1838,7 @@ loins limbs worthy devil files direct rash plunge reason
 <end>02/04/2001</end>
 </interval>
 </open_auction>
+
 <open_auction id="open_auction9">
 <initial>9.88</initial>
 <bidder>
@@ -1939,6 +1941,7 @@ determine believe scarcity ascend well disports storm print welshman rosencrantz
 <end>12/05/2000</end>
 </interval>
 </open_auction>
+
 <open_auction id="open_auction10">
 <initial>86.28</initial>
 <bidder>

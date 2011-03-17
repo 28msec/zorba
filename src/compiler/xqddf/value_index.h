@@ -149,7 +149,7 @@ typedef rchandle<DocIndexer> DocIndexer_t;
   - theSourceNames :
   The qnames of the collections referenced in the domain and key expressions.
   Currently, it is required that the arg given to every xqddf:collection()
-  invocation within the domain expr or any of the key exprs is a contant expr.
+  invocation within the domain expr or any of the key exprs is a constant expr.
   This guarantees that the set of collections that participate in the index
   definition is stable. This is required for efficient automatic index
   maintenance, because if the collection set for an index changes between 2
