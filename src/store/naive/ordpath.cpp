@@ -687,6 +687,16 @@ void OrdPath::insertAfter(
     OrdPath&       result)
 {
   insertBeforeOrAfter(false, parent, sibling, result);
+
+#ifndef NDEBUG
+  if (! (sibling < result))
+  {
+    std::cerr << "sibling is not less than result" << std::endl
+              << "sibling : " << sibling.show() << std::endl
+              << "result  : " << result.show() << std::endl;
+    assert(false);
+  }
+#endif
 }
 
 
@@ -696,6 +706,16 @@ void OrdPath::insertBefore(
     OrdPath&       result)
 {
   insertBeforeOrAfter(true, parent, sibling, result);
+
+#ifndef NDEBUG
+  if (! (result < sibling))
+  {
+    std::cerr << "result is not less than sibling" << std::endl
+              << "result  : " << result.show() << std::endl
+              << "sibling : " << sibling.show() << std::endl;
+    assert(false);
+  }
+#endif
 }
 
 
@@ -816,7 +836,7 @@ void OrdPath::insertInto(
   ulong compPos = 0;
   while (dewey1[compPos] == dewey2[compPos])
   {
-    compPos++;
+    ++compPos;
     ZORBA_ASSERT(compPos < numComps1 && compPos < numComps2);
   }
 
@@ -963,8 +983,24 @@ void OrdPath::insertInto(
   }
 
   ZORBA_ASSERT((isLocal && result.isLocal()) || (!isLocal && !result.isLocal()));
-  assert(sib1 < result);
-  assert(result < sib2);
+#ifndef NDEBUG
+  if (!(sib1 < result))
+  {
+    std::cerr << "sib1 is not less than result" << std::endl
+              << "sib1   : " << sib1.show() << std::endl
+              << "result : " << result.show() << std::endl;
+    assert(false);
+  }
+
+
+  if (! (result < sib2))
+  {
+    std::cerr << "result is not less than sib2" << std::endl
+              << "result : " << result.show() << std::endl
+              << "sib2   : " << sib2.show() << std::endl;
+    assert(false);
+  }
+#endif
 }
 
 
@@ -2770,7 +2806,7 @@ void OrdPath::decodeByte(
   case 133:   // 1000 0101   10,0 + 001 + 01 ...   (3/2,1 + 3/3,0 + 2/2,0)
   {
     compOffsets[numComps+1] = bitLen + 3;
-    compOffsets[numComps+2] = bitLen + 3;
+    compOffsets[numComps+2] = bitLen + 6;
     deweyid[numComps] = 2;
     deweyid[numComps + 1] = 0;
     deweyid[numComps + 1] = 1;
@@ -2781,7 +2817,7 @@ void OrdPath::decodeByte(
   case 134:   // 1000 0110   10,0 + 001 + 10, ...   (3/2,1 + 3/3,0 + 3/2,1)
   {
     compOffsets[numComps+1] = bitLen + 3;
-    compOffsets[numComps+2] = bitLen + 3;
+    compOffsets[numComps+2] = bitLen + 6;
     deweyid[numComps] = 2;
     deweyid[numComps+1] = 0;
     ADVANCE(bitLen, byteIndex, bitIndex, 8);
@@ -2811,7 +2847,7 @@ void OrdPath::decodeByte(
   case 137:   // 1000 1001   10,0 + 01 + 001 +      (3/2,1 + 2/2,0 + 3/3,0)
   {
     compOffsets[numComps+1] = bitLen + 3;
-    compOffsets[numComps+2] = bitLen + 2;
+    compOffsets[numComps+2] = bitLen + 5;
     deweyid[numComps] = 2;
     deweyid[numComps + 1] = 1;
     deweyid[numComps + 1] = 0;
@@ -2822,7 +2858,7 @@ void OrdPath::decodeByte(
   case 138:   // 1000 1010   10,0 + 01 + 01 + 0 ... (3/2,1 + 2/2,0 + 2/2,0)
   {
     compOffsets[numComps+1] = bitLen + 3;
-    compOffsets[numComps+2] = bitLen + 2;
+    compOffsets[numComps+2] = bitLen + 5;
     deweyid[numComps] = 2;
     deweyid[numComps + 1] = 1;
     deweyid[numComps + 1] = 1;
@@ -2833,7 +2869,7 @@ void OrdPath::decodeByte(
   case 139:   // 1000 1011   10,0 + 01 + 01 + 1 ... (3/2,1 + 2/2,0 + 2/2,0)
   {
     compOffsets[numComps+1] = bitLen + 3;
-    compOffsets[numComps+2] = bitLen + 2;
+    compOffsets[numComps+2] = bitLen + 5;
     deweyid[numComps] = 2;
     deweyid[numComps + 1] = 1;
     deweyid[numComps + 1] = 1;
@@ -2844,7 +2880,7 @@ void OrdPath::decodeByte(
   case 140:   // 1000 1100   10,0 + 01 + 10,0 +     (3/2,1 + 2/2,0 + 3/2,1)
   {
     compOffsets[numComps+1] = bitLen + 3;
-    compOffsets[numComps+2] = bitLen + 2;
+    compOffsets[numComps+2] = bitLen + 5;
     deweyid[numComps] = 2;
     deweyid[numComps + 1] = 1;
     deweyid[numComps + 1] = 2;
@@ -2855,7 +2891,7 @@ void OrdPath::decodeByte(
   case 141:   // 1000 1101   10,0 + 01 + 10,1 +     (3/2,1 + 2/2,0 + 3/2,1)
   {
     compOffsets[numComps+1] = bitLen + 3;
-    compOffsets[numComps+2] = bitLen + 2;
+    compOffsets[numComps+2] = bitLen + 5;
     deweyid[numComps] = 2;
     deweyid[numComps + 1] = 1;
     deweyid[numComps + 1] = 3;
@@ -2866,7 +2902,7 @@ void OrdPath::decodeByte(
   case 142:   // 1000 1110   10,0 + 01 + 110 ...    (3/2,1 + 2/2,0 + 5/3,2)
   {
     compOffsets[numComps+1] = bitLen + 3;
-    compOffsets[numComps+2] = bitLen + 2;
+    compOffsets[numComps+2] = bitLen + 5;
     deweyid[numComps] = 2;
     deweyid[numComps + 1] = 1;
     ADVANCE(bitLen, byteIndex, bitIndex, 8);
@@ -2896,7 +2932,7 @@ void OrdPath::decodeByte(
   case 145:   // 1001 0001   10,0 + 10,0 + 01 +     (3/2,1 + 3/2,1 + 2/2,0)
   {
     compOffsets[numComps+1] = bitLen + 3;
-    compOffsets[numComps+2] = bitLen + 3;
+    compOffsets[numComps+2] = bitLen + 6;
     deweyid[numComps] = 2;
     deweyid[numComps + 1] = 2;
     deweyid[numComps + 2] = 1;
@@ -2907,7 +2943,7 @@ void OrdPath::decodeByte(
   case 146:   // 1001 0010   10,0 + 10,0 + 10, ...  (3/2,1 + 3/2,1 + 3/2,1)
   {
     compOffsets[numComps+1] = bitLen + 3;
-    compOffsets[numComps+2] = bitLen + 3;
+    compOffsets[numComps+2] = bitLen + 6;
     deweyid[numComps] = 2;
     deweyid[numComps + 1] = 2;
     ADVANCE(bitLen, byteIndex, bitIndex, 8);
@@ -2936,7 +2972,7 @@ void OrdPath::decodeByte(
   case 149:   // 1001 0101   10,0 + 10,1 + 01 +     (3/2,1 + 3/2,1 + 2/2,0)
   {
     compOffsets[numComps+1] = bitLen + 3;
-    compOffsets[numComps+2] = bitLen + 3;
+    compOffsets[numComps+2] = bitLen + 6;
     deweyid[numComps] = 2;
     deweyid[numComps + 1] = 3;
     deweyid[numComps + 2] = 1;
@@ -2947,7 +2983,7 @@ void OrdPath::decodeByte(
   case 150:   // 1001 0110   10,0 + 10,1 + 10, ...  (3/2,1 + 3/2,1 + 3/2,1)
   {
     compOffsets[numComps+1] = bitLen + 3;
-    compOffsets[numComps+2] = bitLen + 3;
+    compOffsets[numComps+2] = bitLen + 6;
     deweyid[numComps] = 2;
     deweyid[numComps + 1] = 3;
     ADVANCE(bitLen, byteIndex, bitIndex, 8);
@@ -3086,7 +3122,7 @@ void OrdPath::decodeByte(
   case 165:   // 1010 0101   10,1 + 001 + 01 +      (3/2,1 + 3/3,0 + 2/2,0)
   {
     compOffsets[numComps+1] = bitLen + 3;
-    compOffsets[numComps+2] = bitLen + 3;
+    compOffsets[numComps+2] = bitLen + 6;
     deweyid[numComps] = 3;
     deweyid[numComps + 1] = 0;
     deweyid[numComps + 2] = 1;
@@ -3097,7 +3133,7 @@ void OrdPath::decodeByte(
   case 166:   // 1010 0110   10,1 + 001 + 10, ...   (3/2,1 + 3/3,0 + 3/2,1)
   {
     compOffsets[numComps+1] = bitLen + 3;
-    compOffsets[numComps+2] = bitLen + 3;
+    compOffsets[numComps+2] = bitLen + 6;
     deweyid[numComps] = 3;
     deweyid[numComps + 1] = 0;
     ADVANCE(bitLen, byteIndex, bitIndex, 8);
@@ -3127,7 +3163,7 @@ void OrdPath::decodeByte(
   case 169:   // 1010 1001   10,1 + 01 + 001 +      (3/2,1 + 2/2,0 + 3/3,0)
   {
     compOffsets[numComps+1] = bitLen + 3;
-    compOffsets[numComps+2] = bitLen + 2;
+    compOffsets[numComps+2] = bitLen + 5;
     deweyid[numComps] = 3;
     deweyid[numComps + 1] = 1;
     deweyid[numComps + 2] = 0;
@@ -3138,7 +3174,7 @@ void OrdPath::decodeByte(
   case 170:   // 1010 1010   10,1 + 01 + 01 + 0 ... (3/2,1 + 2/2,0 + 2/2,0)
   {
     compOffsets[numComps+1] = bitLen + 3;
-    compOffsets[numComps+2] = bitLen + 2;
+    compOffsets[numComps+2] = bitLen + 5;
     deweyid[numComps] = 3;
     deweyid[numComps + 1] = 1;
     deweyid[numComps + 2] = 1;
@@ -3149,7 +3185,7 @@ void OrdPath::decodeByte(
   case 171:   // 1010 1011   10,1 + 01 + 01 + 1 ... (3/2,1 + 2/2,0 + 2/2,0)
   {
     compOffsets[numComps+1] = bitLen + 3;
-    compOffsets[numComps+2] = bitLen + 2;
+    compOffsets[numComps+2] = bitLen + 5;
     deweyid[numComps] = 3;
     deweyid[numComps + 1] = 1;
     deweyid[numComps + 2] = 1;
@@ -3160,7 +3196,7 @@ void OrdPath::decodeByte(
   case 172:   // 1010 1100   10,1 + 01 + 10,0 +     (3/2,1 + 2/2,0 + 3/2,1)
   {
     compOffsets[numComps+1] = bitLen + 3;
-    compOffsets[numComps+2] = bitLen + 2;
+    compOffsets[numComps+2] = bitLen + 5;
     deweyid[numComps] = 3;
     deweyid[numComps + 1] = 1;
     deweyid[numComps + 2] = 2;
@@ -3171,7 +3207,7 @@ void OrdPath::decodeByte(
   case 173:   // 1010 1101   10,1 + 01 + 10,1 +     (3/2,1 + 2/2,0 + 3/2,1)
   {
     compOffsets[numComps+1] = bitLen + 3;
-    compOffsets[numComps+2] = bitLen + 2;
+    compOffsets[numComps+2] = bitLen + 5;
     deweyid[numComps] = 3;
     deweyid[numComps + 1] = 1;
     deweyid[numComps + 2] = 3;
@@ -3182,7 +3218,7 @@ void OrdPath::decodeByte(
   case 174:   // 1010 1110   10,1 + 01 + 110, ...   (3/2,1 + 2/2,0 + 5/3,2)
   {
     compOffsets[numComps+1] = bitLen + 3;
-    compOffsets[numComps+2] = bitLen + 2;
+    compOffsets[numComps+2] = bitLen + 5;
     deweyid[numComps] = 3;
     deweyid[numComps + 1] = 1;
     ADVANCE(bitLen, byteIndex, bitIndex, 8);
@@ -3211,7 +3247,7 @@ void OrdPath::decodeByte(
   case 177:   // 1011 0001   10,1 + 10,0 + 01 +     (3/2,1 + 3/2,1 + 2/2,0)
   {
     compOffsets[numComps+1] = bitLen + 3;
-    compOffsets[numComps+2] = bitLen + 3;
+    compOffsets[numComps+2] = bitLen + 6;
     deweyid[numComps] = 3;
     deweyid[numComps + 1] = 2;
     deweyid[numComps + 2] = 1;
@@ -3222,7 +3258,7 @@ void OrdPath::decodeByte(
   case 178:   // 1011 0010   10,1 + 10,0 + 10, ...  (3/2,1 + 3/2,1 + 3/2,1)
   {
     compOffsets[numComps+1] = bitLen + 3;
-    compOffsets[numComps+2] = bitLen + 3;
+    compOffsets[numComps+2] = bitLen + 6;
     deweyid[numComps] = 3;
     deweyid[numComps + 1] = 2;
     ADVANCE(bitLen, byteIndex, bitIndex, 8);
@@ -3251,7 +3287,7 @@ void OrdPath::decodeByte(
   case 181:   // 1011 0101   10,1 + 10,1 + 01 +     (3/2,1 + 3/2,1 + 2/2,0)
   {
     compOffsets[numComps+1] = bitLen + 3;
-    compOffsets[numComps+2] = bitLen + 3;
+    compOffsets[numComps+2] = bitLen + 6;
     deweyid[numComps] = 3;
     deweyid[numComps + 1] = 3;
     deweyid[numComps + 2] = 1;
@@ -3262,7 +3298,7 @@ void OrdPath::decodeByte(
   case 182:   // 1011 0110   10,1 + 10,1 + 10, ...  (3/2,1 + 3/2,1 + 3/2,1)
   {
     compOffsets[numComps+1] = bitLen + 3;
-    compOffsets[numComps+2] = bitLen + 3;
+    compOffsets[numComps+2] = bitLen + 6;
     deweyid[numComps] = 3;
     deweyid[numComps + 1] = 3;
     ADVANCE(bitLen, byteIndex, bitIndex, 8);
