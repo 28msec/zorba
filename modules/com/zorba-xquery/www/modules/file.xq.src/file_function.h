@@ -18,6 +18,7 @@
 #define ZORBA_FILEMODULE_FILEFUNCTION_H
 
 #include <zorba/external_function.h>
+#include <zorba/options.h>
 
 #include <fstream>
 
@@ -86,7 +87,14 @@ namespace zorba { namespace filemodule {
 
   class StreamableFileFunction : public FileFunction
   {
+    public:
+
+      StreamableFileFunction(const FileModule* module);
+
+      ~StreamableFileFunction();
+
     protected:
+
       struct StreamableItemSequence : ItemSequence {
 
         class InternalIterator : public Iterator
@@ -128,11 +136,29 @@ namespace zorba { namespace filemodule {
         {
           return new InternalIterator(this);
         }
-};
+      };
+  };
 
+  class WriterFileFunction : public FileFunction
+  {
     public:
-      StreamableFileFunction(const FileModule* module);
-      ~StreamableFileFunction();
+
+      WriterFileFunction(const FileModule* module);
+
+      ~WriterFileFunction();
+
+      virtual ItemSequence_t 
+      evaluate(const StatelessExternalFunction::Arguments_t& args,
+               const StaticContext* aSctxCtx,
+               const DynamicContext* aDynCtx) const;
+
+    protected:
+
+      virtual bool
+      isAppend() const = 0;
+
+      virtual bool
+      isBinary() const = 0;
   };
 
 } /* namespace filemodule */

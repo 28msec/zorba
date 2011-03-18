@@ -53,7 +53,6 @@
 #include "context/static_context.h"
 #include "context/internal_uri_resolvers.h"
 
-
 namespace zorbatm = zorba::time;
 
 using namespace std;
@@ -82,13 +81,11 @@ static XQPCollator* getCollator(
   return sctx->get_collator(lCollationItem->getStringValue().str(), loc);
 }
 
-
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  15.1 General Functions and Operators on Sequences                          //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
-
 
 /*******************************************************************************
   15.1.2 op:concatenate
@@ -105,7 +102,6 @@ void FnConcatIterator::openImpl(PlanState& planState, uint32_t& offset)
   state->theCurIter = theChildren.begin();
 }
 
-
 void FnConcatIterator::resetImpl(PlanState& planState) const
 {
   NaryBaseIterator<FnConcatIterator, FnConcatIteratorState>::resetImpl(planState);
@@ -115,7 +111,6 @@ void FnConcatIterator::resetImpl(PlanState& planState) const
 
   state->theCurIter = theChildren.begin();
 }
-
 
 bool FnConcatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -152,7 +147,6 @@ bool FnConcatIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 
   STACK_END(state);
 }
-
 
 /*******************************************************************************
   15.1.3 fn:index-of
@@ -217,7 +211,6 @@ FnIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END(state);
 }
 
-
 /*******************************************************************************
   15.1.4 fn:empty
 ********************************************************************************/
@@ -239,7 +232,6 @@ FnEmptyIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
 
   STACK_END (state);
 }
-
 
 /*******************************************************************************
   15.1.5 fn:exists
@@ -273,7 +265,6 @@ void FnDistinctValuesIteratorState::reset(PlanState& planState)
   if (theAlreadySeenMap.get () != NULL)
     theAlreadySeenMap->clear();
 }
-
 
 bool FnDistinctValuesIterator::nextImpl(
     store::Item_t& result,
@@ -344,7 +335,6 @@ FnInsertBeforeIterator::nextImpl(store::Item_t& result, PlanState& planState) co
  if (state->thePosition < xs_integer::parseInt(1))
    state->thePosition = xs_integer::parseInt(1);
 
-
  while (consumeNext(result, theChildren[0].getp(), planState))
  {
     if ( state->theCurrentPos == state->thePosition-xs_integer::parseInt(1) ) // position found => insert sequence
@@ -370,7 +360,6 @@ FnInsertBeforeIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 
   STACK_END (state);
 }
-
 
 /*******************************************************************************
   15.1.8 fn:remove
@@ -410,7 +399,6 @@ FnRemoveIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END (state);
 }
 
-
 /*******************************************************************************
   15.1.9 fn:reverse
 ********************************************************************************/
@@ -419,14 +407,12 @@ void FnReverseIteratorState::init(PlanState& planState)
   PlanIteratorState::init(planState);
 }
 
-
 void FnReverseIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
   while (!theStack.empty())
     theStack.pop();
 }
-
 
 bool FnReverseIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -450,7 +436,6 @@ bool FnReverseIterator::nextImpl(store::Item_t& result, PlanState& planState) co
   STACK_END (state);
 }
 
-
 /*******************************************************************************
   15.1.10 fn:subsequence
 ********************************************************************************/
@@ -473,7 +458,6 @@ void FnSubsequenceIterator::resetImpl(PlanState& planState) const
     resetImpl(planState);
   }
 }
-
 
 bool FnSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -532,8 +516,6 @@ done:
   STACK_END(state);
 }
 
-
-
 /*******************************************************************************
   15.1.10 fn:subsequence
 ********************************************************************************/
@@ -556,7 +538,6 @@ void SubsequenceIntIterator::resetImpl(PlanState& planState) const
     resetImpl(planState);
   }
 }
-
 
 bool SubsequenceIntIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -613,7 +594,6 @@ done:
   STACK_END(state);
 }
 
-
 /*******************************************************************************
   zorbaop:sequence-point-access
 ********************************************************************************/
@@ -634,7 +614,6 @@ void SequencePointAccessIterator::resetImpl(PlanState& planState) const
     resetImpl(planState);
   }
 }
-
 
 bool SequencePointAccessIterator::nextImpl(
     store::Item_t& result,
@@ -675,14 +654,11 @@ done:
   STACK_END(state);
 }
 
-
-
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  15.2 Functions That Test the Cardinality of Sequences                      //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
-
 
 /*******************************************************************************
   15.2.1 fn:zero-or-one
@@ -722,7 +698,6 @@ FnZeroOrOneIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END(state);
 }
 
-
 /*******************************************************************************
   15.2.2 fn:one-or-more
 ********************************************************************************/
@@ -744,7 +719,6 @@ FnOneOrMoreIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   STACK_END (state);
 }
-
 
 /*******************************************************************************
   15.2.3 fn:exactly-one
@@ -794,18 +768,15 @@ FnExactlyOneIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   STACK_END (state);
 }
 
-
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  15.3 Deepe Equal, Union, Intersection, and Except                          //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-
 /*******************************************************************************
   15.3.1 fn:deep-equal
 ********************************************************************************/
-
 // Forward declaration
 static bool DeepEqual(
     const QueryLoc& loc,
@@ -859,7 +830,6 @@ static bool DeepEqual(
   return true;
 }
 
-
 static bool DeepEqualAttributes(
   const QueryLoc& loc,
   static_context* sctx,
@@ -899,7 +869,6 @@ static bool DeepEqualAttributes(
 
   return true;
 }
-
 
 static bool DeepEqual(
     const QueryLoc& loc,
@@ -1058,7 +1027,6 @@ static bool DeepEqual(
   }
 }
 
-
 bool FnDeepEqualIterator::nextImpl(
     store::Item_t& result, 
     PlanState& planState) const
@@ -1106,7 +1074,6 @@ bool FnDeepEqualIterator::nextImpl(
 
   STACK_END (state);
 }
-
 
 /*******************************************************************************
 
@@ -1169,7 +1136,6 @@ bool HashSemiJoinIterator::nextImpl(store::Item_t& result, PlanState& planState)
   STACK_END (state);
 }
 
-
 /*******************************************************************************
   Sortmerge based semijoin iterator.
 ********************************************************************************/
@@ -1215,13 +1181,11 @@ done:
   STACK_END (state);
 }
 
-
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 // 15.4 Aggregate Functions                                                    //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
-
 
 /*******************************************************************************
   15.4.1 fn:count
@@ -1244,7 +1208,6 @@ bool FnCountIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
   STACK_END(state);
 }
-
 
 /*******************************************************************************
   15.4.2 fn:avg
@@ -1355,7 +1318,6 @@ bool FnAvgIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END (state);
 }
 
-
 /*******************************************************************************
   15.4.5 fn:sum - Generic
 ********************************************************************************/
@@ -1451,8 +1413,6 @@ bool FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END (state);
 }
 
-
-
 /*******************************************************************************
   15.4.5 fn:sum - Double
 ********************************************************************************/
@@ -1500,7 +1460,6 @@ bool FnSumDoubleIterator::nextImpl(
 
   STACK_END (state);
 }
-
 
 /*******************************************************************************
   15.4.5 fn:sum - Float
@@ -1550,7 +1509,6 @@ bool FnSumFloatIterator::nextImpl(
   STACK_END (state);
 }
 
-
 /*******************************************************************************
   15.4.5 fn:sum - Decimal
 ********************************************************************************/
@@ -1598,7 +1556,6 @@ bool FnSumDecimalIterator::nextImpl(
 
   STACK_END (state);
 }
-
 
 /*******************************************************************************
   15.4.5 fn:sum - Integer
@@ -1692,9 +1649,6 @@ OpToIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   STACK_END (state);
 }
 
-
-
-
 /*******************************************************************************
   15.5.4 fn:doc
 ********************************************************************************/
@@ -1715,7 +1669,6 @@ static void fillTime (
   planState.theGlobalDynCtx->theDocLoadingTime += 
     zorbatm::get_walltime_elapsed(t0, t1);
 }
-
 
 bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -1817,7 +1770,6 @@ bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END (state);
 }
 
-
 /*******************************************************************************
   15.5.5 fn:doc-available
 ********************************************************************************/
@@ -1855,119 +1807,4 @@ bool FnDocAvailableIterator::nextImpl(store::Item_t& result, PlanState& planStat
   STACK_END (state);
 }
 
-/*******************************************************************************
-  Zorba-defined parse function
-********************************************************************************/
-bool UtilsParseIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  store::Store& lStore = GENV.getStore();
-  zstring docString;
-  zstring baseUri = theSctx->get_base_uri();
-  zstring docUri;
-  std::auto_ptr<std::istringstream> iss;
-
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  consumeNext(result, theChildren[0].getp(), planState);
-
-  result->getStringValue2(docString);
-  iss.reset(new std::istringstream(docString.c_str()));
-
-  try 
-  {
-    store::LoadProperties loadProps;
-    loadProps.setStoreDocument(false);
-    result = lStore.loadDocument(baseUri, docUri, *iss, loadProps);
-  }
-  catch (error::ZorbaError& e)
-  {
-    ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
-  }
-
-  STACK_PUSH(true, state);
-  STACK_END (state);
-}
-
-
-/*******************************************************************************
-  fn:parse function defined in XQuery 1.1 Functions & Operators
-********************************************************************************/
-bool FnParseIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  store::Store& lStore = GENV.getStore();
-  zstring docString;
-  zstring baseUri;
-  URI lValidatedBaseUri;
-  zstring docUri;
-  std::auto_ptr<std::istringstream> iss;
-  std::istream *is;
-
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  consumeNext (result, theChildren [0].getp (), planState);
-
-  if ( result->isStreamable() ) {
-    //
-    // The "iss" auto_ptr can NOT be used since it will delete the stream that,
-    // in this case, is a data member inside another object and not dynamically
-    // allocated.
-    //
-    // We can't replace "iss" with "is" since we still need the auto_ptr for
-    // the case when the result is not streamable.
-    //
-    is = &result->getStream();
-  } else {
-    result->getStringValue2(docString);
-    iss.reset (new std::istringstream(docString.c_str()));
-    is = iss.get();
-  }
-
-  // optional base URI argument
-  if (theChildren.size() == 2)
-  {
-    consumeNext(result, theChildren[1].getp(), planState);
-    ZORBA_ASSERT(result);
-
-    try 
-    {
-      lValidatedBaseUri = URI(result->getStringValue());
-    }
-    catch (error::ZorbaError& e)
-    {
-      ZORBA_ERROR_LOC_DESC_OSS(FODC0007, loc,
-          "Base URI passed as second argument to fn:parse is not a valid URI; "
-          << e.theDescription);
-    }
-
-    if (!lValidatedBaseUri.is_absolute())
-    {
-      ZORBA_ERROR_LOC_DESC(FODC0007, loc,
-          "Base URI passed as second argument to fn:parse is not an absolute URI.");
-    }
-
-    result->getStringValue2(baseUri);
-  }
-  else
-  {
-    baseUri = theSctx->get_base_uri();
-  }
-
-  try 
-  {
-    store::LoadProperties loadProps;
-    loadProps.setStoreDocument(false);
-    result = lStore.loadDocument(baseUri, docUri, *is, loadProps);
-  }
-  catch (error::ZorbaError& e)
-  {
-    ZORBA_ERROR_LOC_DESC(FODC0006, loc, e.theDescription);
-  }
-  STACK_PUSH(true, state);
-  STACK_END (state);
-}
-
-
 } /* namespace zorba */
-/* vim:set ts=2 sw=2: */

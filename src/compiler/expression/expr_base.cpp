@@ -24,7 +24,7 @@
 
 #include "functions/function.h"
 #include "functions/library.h"
-#include "functions/func_fnerror.h"
+#include "functions/func_errors_and_diagnostics.h"
 
 #include "types/root_typemanager.h"
 #include "types/typeops.h"

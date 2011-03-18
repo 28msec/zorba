@@ -297,13 +297,6 @@ ENDIF (FOUND_XQTS)
 # the list of tests that are failing but can be accepted by the commit queue
 # !!! do not abuse this list or you will be prosecuted !!!
 
-# check the bug 3132686 for missing the xml_files: attached in test.zip
-EXPECTED_FAILURE(test/rbkt/zorba/utf-8/utf8inDataDe 3132686)
-EXPECTED_FAILURE(test/rbkt/zorba/utf-8/utf8inDataEn 3132686)
-EXPECTED_FAILURE(test/rbkt/zorba/utf-8/utf8inDataFr 3132686)
-EXPECTED_FAILURE(test/rbkt/zorba/utf-8/utf8inDataNo 3132686)
-EXPECTED_FAILURE(test/rbkt/zorba/utf-8/utf8inDataRo 3132686)
-
 # This is not a bug, this is working per spec
 # The ##other means any other namespace but it MUST have a namespace
 # todo: comment next lines after remote queue fixed

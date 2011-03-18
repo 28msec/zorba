@@ -19,7 +19,7 @@
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/expr_iter.h"
 
-#include "functions/func_fnerror.h"
+#include "functions/func_errors_and_diagnostics.h"
 
 #include "types/typeops.h"
 

@@ -71,10 +71,9 @@ LIST(APPEND FUNCTIONS_SRCS
     func_arithmetic.cpp
     func_booleans_impl.cpp
     func_collections_impl.cpp
-    func_debug_impl.cpp
     func_durations_dates_times_impl.cpp
     func_enclosed.cpp
-    func_fnerror_impl.cpp
+    func_errors_and_diagnostics_impl.cpp
     func_hoist.cpp
     func_index_ddl.cpp
     func_node_sort_distinct.cpp
@@ -83,4 +82,3 @@ LIST(APPEND FUNCTIONS_SRCS
     func_strings_impl.cpp
     func_var_decl.cpp
 )
-

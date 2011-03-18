@@ -1,1 +1,1 @@
-﻿Ich kann deutsche Buchstaben lesen: ü ö ä ß Ü Ö Ä
+Ich kann deutsche Buchstaben lesen: ü ö ä ß Ü Ö Ä

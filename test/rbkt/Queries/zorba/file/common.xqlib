@@ -1,7 +1,8 @@
 module namespace commons = "http://www.zorba-xquery.com/modules/file/tests/commons";
 
 import module namespace file = "http://www.zorba-xquery.com/modules/file";
-import module namespace ser = "http://www.zorba-xquery.com/modules/serialize";
+
+import schema namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
 
 declare function commons:error($messages as xs:string*) as xs:string* {
   "
@@ -45,7 +46,7 @@ declare sequential function commons:testReadAndCompareXml($path as xs:string, $x
       "SUCCESS"
     else
       ("testReadXml failed for path:", $path, "compared with the reference xml:
-", ser:serialize($xml))
+", fn:serialize($xml))
 };
 
 declare sequential function commons:testReadBinary($path as xs:string) as xs:base64Binary {
@@ -62,7 +63,13 @@ declare sequential function commons:testDelete($path as xs:string, $recursive as
 };
 
 declare sequential function commons:testWriteSerializeXml($path as xs:string, $xml as item()) as xs:string* {
-  file:write($path, $xml, <options method="xml" />/@*);
+  file:write(
+    $path,
+    $xml,
+    <output:serialization-parameters>
+      <output:method value="xml"/>
+    </output:serialization-parameters>);
+
   "SUCCESS";
 };
 

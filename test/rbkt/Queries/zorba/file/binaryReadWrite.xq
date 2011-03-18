@@ -2,6 +2,8 @@ import module namespace file = "http://www.zorba-xquery.com/modules/file";
 import module namespace base64 = "http://www.zorba-xquery.com/modules/base64";
 import module namespace commons = "http://www.zorba-xquery.com/modules/file/tests/commons" at "common.xqlib";
 
+import schema namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
+
 declare variable $inFile as xs:string := fn:concat(file:dirname(fn:static-base-uri()), "/../image/images/bird.gif");
 declare variable $testDir as xs:string := fn:concat(file:dirname(fn:static-base-uri()),"/tmpBinaryReadWrite");
 declare variable $outFile as xs:string := fn:concat($testDir, file:path-separator(), "bird.gif");
@@ -12,7 +14,9 @@ declare sequential function local:thisTest() as xs:string* {
   (: ========= :)
   let $base64In := commons:testReadBinary($inFile)
   return block {
-    file:write($outFile, base64:decode($base64In), <method>binary</method>);
+    file:write-binary(
+      $outFile,
+      $base64In);
     let $base64Out := commons:testReadBinary($outFile)
     return
       if ($base64In ne $base64Out) then
@@ -35,7 +39,7 @@ declare sequential function local:main() as xs:string* {
   let $s := commons:testInitDir($testDir)
   return
     if (fn:not(commons:isSuccess($s))) then
-      exit returning commons:error(("DIRECTORY INIT - failed:
+      exit returning commons:error(("DIRECTORY INIT - failed: 
 ", $s))
     else ();
 

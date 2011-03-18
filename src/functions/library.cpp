@@ -32,11 +32,11 @@
 #include "functions/func_collections.h"
 #include "functions/func_context.h"
 #include "functions/func_dctx.h"
-#include "functions/func_debug.h"
+#include "functions/func_other_diagnostics.h"
 #include "functions/func_durations_dates_times.h"
 #include "functions/func_durations_dates_times_impl.h"
 #include "functions/func_enclosed.h"
-#include "functions/func_fnerror.h"
+#include "functions/func_errors_and_diagnostics.h"
 #include "functions/func_fnput.h"
 #include "functions/func_hoist.h"
 #include "functions/func_index_ddl.h"
@@ -46,6 +46,7 @@
 #include "functions/func_node_sort_distinct.h"
 #include "functions/func_numerics.h"
 #include "functions/func_numerics_impl.h"
+#include "functions/func_parsing_and_serializing.h"
 #include "functions/func_qnames.h"
 #include "functions/func_random.h"
 #include "functions/func_reflection.h"
@@ -91,16 +92,17 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populate_context_collections(sctx);
   populate_context_context(sctx);
   populate_context_dctx(sctx);
-  populate_context_debug(sctx);
   populate_context_durations_dates_times(sctx);
   populate_context_durations_dates_times_impl(sctx);
-  populate_context_fnerror(sctx);
+  populate_context_errors_and_diagnostics(sctx);
   populate_context_fnput(sctx);
   populate_context_index_ddl(sctx);
   populate_context_ic_ddl(sctx);
   populate_context_maths(sctx);
   populate_context_nodes(sctx);
   populate_context_numerics(sctx);
+  populate_context_other_diagnostics(sctx);
+  populate_context_parsing_and_serializing(sctx);
   populate_context_qnames(sctx);
   populate_context_random(sctx);
   populate_context_reflection(sctx);

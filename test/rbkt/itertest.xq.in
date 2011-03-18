@@ -2,6 +2,8 @@ import module namespace file = "http://www.zorba-xquery.com/modules/file";
 import module namespace process = "http://www.zorba-xquery.com/modules/process";
 import module namespace zorba-util = "http://www.zorba-xquery.com/zorba/util-functions"; 
 
+import schema namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
+
 declare variable $testfile external;  
 declare variable $apitest-path external;
 declare variable $source-dir := "@CMAKE_SOURCE_DIR@";
@@ -18,7 +20,10 @@ let $apitest-path-normalized := file:normalize-path($apitest-path)
 let $expected-file-normalized := file:normalize-path($expected-file)
 let $result-file-normalized := file:normalize-path($result-file)
 let $query-file-normalized := file:normalize-path($query-file)
-let $params := <method>text</method>
+let $params :=
+  <output:serialization-parameters>
+    <output:method value="text"/>
+  </output:serialization-parameters>
 return
   if (file:exists($query-file-normalized)) then
     let $query-options := (

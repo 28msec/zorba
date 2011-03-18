@@ -59,6 +59,14 @@ FileModule::getExternalFunction(const String& aLocalname)
       lFunc = new IsFileFunction(this);
     } else if (aLocalname.equals("copy")) {
       lFunc = new CopyFunction(this);
+    } else if (aLocalname.equals("write-text")) {
+      lFunc = new WriteTextFunction(this);
+    } else if (aLocalname.equals("write-binary")) {
+      lFunc = new WriteBinaryFunction(this);
+    } else if (aLocalname.equals("append-text")) {
+      lFunc = new AppendTextFunction(this);
+    } else if (aLocalname.equals("append-binary")) {
+      lFunc = new AppendBinaryFunction(this);
     // ****************************************************
     } else if (aLocalname.equals("files")) {
       lFunc = new FilesFunction(this);
@@ -70,8 +78,6 @@ FileModule::getExternalFunction(const String& aLocalname)
       lFunc = new PathToFullPathFunction(this);
     } else if (aLocalname.equals("path-to-uri")) {
       lFunc = new PathToUriFunction(this);
-    } else if (aLocalname.equals("write")) {
-      lFunc = new WriteFunction(this);
     } else if (aLocalname.equals("normalize-path")) {
       lFunc = new NormalizePathFunction(this);
     }

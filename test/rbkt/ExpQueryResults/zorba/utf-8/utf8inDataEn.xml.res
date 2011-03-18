@@ -1,1 +1,1 @@
-﻿I can read English characters: who couldn't?
+I can read English characters: who couldn't?

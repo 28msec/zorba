@@ -4,7 +4,7 @@
  : This equivalent to doing sub-image($bird, 0, 0, 50, 50).
  : As it is, the example just asserts that the resulting xs:base64Binary is not empty, 
  : in a real application one could further process the image, or write it 
- : to disk using file:write(a_path, $cropped-image, <method>binary</method>), send it in an email etc.
+ : to disk using file:write-binary(a_path, $cropped-image), send it in an email etc.
  :)
 import module namespace file = 'http://www.zorba-xquery.com/modules/file';
 import module namespace manipulation = 'http://www.zorba-xquery.com/modules/image/manipulation';

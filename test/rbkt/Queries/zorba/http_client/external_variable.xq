@@ -6,6 +6,11 @@ declare variable $specPath as xs:string external;
 declare variable $specURI  as xs:string external;
 
 $specURI;
-file:write($specPath, http:get($specURI)[2], <s method="xml" indent="yes" />/@*);
+file:write(
+  $specPath,
+  http:get($specURI)[2],
+  <output:serialization-parameters>
+    <output:method value="xml"/>
+  </output:serialization-parameters>);
 :)
 http:get("http://www.google.com")

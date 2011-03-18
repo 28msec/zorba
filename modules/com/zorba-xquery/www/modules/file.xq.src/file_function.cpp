@@ -21,6 +21,9 @@
 #include <zorba/zorba.h>
 #include <zorba/file.h>
 #include <zorba/util/path.h>
+#include <zorba/store_consts.h>
+#include <zorba/empty_sequence.h>
+#include <zorba/serializer.h>
 
 #include "file_module.h"
 
@@ -218,6 +221,8 @@ FileFunction::isValidDriveSegment(
 }
 #endif
 
+//*****************************************************************************
+
 StreamableFileFunction::StreamableFileFunction(const FileModule* aModule)
   : FileFunction(aModule)
 {
@@ -240,6 +245,81 @@ StreamableFileFunction::StreamableItemSequence::InternalIterator::next(Item& aRe
     return !aResult.isNull();
   }
   return false;
+}
+
+//*****************************************************************************
+
+WriterFileFunction::WriterFileFunction(const FileModule* aModule)
+  : FileFunction(aModule)
+{
+}
+
+WriterFileFunction::~WriterFileFunction()
+{
+}
+
+ItemSequence_t
+WriterFileFunction::evaluate(
+  const StatelessExternalFunction::Arguments_t& aArgs,
+  const StaticContext*                          aSctxCtx,
+  const DynamicContext*                         aDynCtx) const
+{
+  String lFileStr = getFilePathString(aArgs, 0);
+  File_t lFile = File::createFile(lFileStr.c_str());
+
+  if (lFile->isDirectory()) {
+    throw ExternalFunctionData::createZorbaException(XPTY0004, "The file path denotes an existing directory: " + lFile->getFilePath(), __FILE__, __LINE__);
+  }
+
+  bool lBinary = isBinary();
+  bool lAppend = isAppend();
+
+  // throw an error if the file exists and we don't want to overwrite,
+  // but if we append, we don't care because we always write
+  if (!lAppend && lFile->exists() && aArgs.size() == 3 && !getOneBooleanArg(aArgs, 2)) {
+    throw ExternalFunctionData::createZorbaException(XPTY0004, "The file already exists: " + lFile->getFilePath(), __FILE__, __LINE__);
+  }
+
+  // open the output stream in the desired write mode
+  std::ofstream lOutStream;
+  lFile->openOutputStream(lOutStream, lBinary, isAppend());
+
+  // if this is a binary write
+  if (lBinary) {
+    Zorba_SerializerOptions lOptions;
+    lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_BINARY;
+    Serializer_t lSerializer = Serializer::createSerializer(lOptions);
+    lSerializer->serialize(aArgs[1], lOutStream);
+  }
+  // if we only write text
+  else {
+    Item lStringItem;
+    Iterator_t lContentSeq = aArgs[1]->getIterator();
+    lContentSeq->open();
+    // for each item (string or base64Binary) in the content sequence
+    while (lContentSeq->next(lStringItem)) {
+      // if the item is streamable make use of the stream
+      if (lStringItem.isStreamable()) {
+        std::istream& lInStream = lStringItem.getStream();
+        char lBuf[1024];
+        while (!lInStream.eof()) {
+          lInStream.read(lBuf, 1024);
+          lOutStream.write(lBuf, lInStream.gcount());
+        }
+      }
+      // else write the string value
+      else {
+        zorba::String lString = lStringItem.getStringValue();
+        lOutStream.write(lString.c_str(), lString.bytes());
+      }
+    }
+    lContentSeq->close();
+  }
+
+  // close the file stream
+  lOutStream.close();
+
+  return ItemSequence_t(new EmptySequence());
 }
 
 } /* namespace filemodule */ } /* namespace zorba */

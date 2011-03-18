@@ -6,6 +6,8 @@ import module namespace http-expath = "http://expath.org/ns/http-client";
 import module namespace file = "http://www.zorba-xquery.com/modules/file";
 import module namespace sctx = "http://www.zorba-xquery.com/modules/introspection/sctx";
 
+import schema namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
+
 declare variable $util:xquery_version_1_0 := "1.0";
 declare variable $util:xquery_version_3_0 := "3.0";
 
@@ -14,8 +16,14 @@ used local variables instead of passing the specURI defined as an external varia
 opened bug #3152386
 :)
 declare sequential function util:download-and-write-spec($specVersion as xs:string, $docPath as xs:string) {
-  if($specVersion = $util:xquery_version_1_0) then
-    file:write($docPath, http:get( "http://www.w3.org/TR/xpath-functions/" )[2], <s method="xml" indent="yes" />/@*)
+  let $serParams := 
+    <output:serialization-parameters>
+        <output:method value="xml"/>
+        <output:indent value="yes"/>
+      </output:serialization-parameters>
+  return
+  if ($specVersion = $util:xquery_version_1_0) then
+    file:write($docPath, http:get("http://www.w3.org/TR/xpath-functions/")[2], $serParams)
   else
     (: one has to provide a username & password of a valid W3C account :)
     let $req := <http-expath:request method="GET"
@@ -25,7 +33,7 @@ declare sequential function util:download-and-write-spec($specVersion as xs:stri
                username=""
                password=""/>
     return
-      file:write($docPath, http-expath:send-request($req, ())[2], <s method="xml" indent="yes" />/@*)
+      file:write($docPath, http-expath:send-request($req, ())[2], $serParams)
 };
 
 declare sequential function util:create-spec-function-arity-sequence(

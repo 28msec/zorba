@@ -6,6 +6,8 @@ import module namespace sctx = "http://www.zorba-xquery.com/modules/introspectio
 import module namespace functx = "http://www.functx.com/";
 import module namespace file = "http://www.zorba-xquery.com/modules/file";
 
+import schema namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
+
 declare variable $xquery_version as xs:string := "3.0";
 
 declare variable $specPath as xs:string external;
@@ -54,7 +56,14 @@ return
     <notInSpec>{functx:value-except($zorbaFuncs,$specFuncs)}</notInSpec>
   </result>
 (:
-file:write($reportPath, local:generate-report(functx:value-except($specFuncs,$zorbaFuncs),
-                                              functx:value-except($zorbaFuncs,$specFuncs)), <s method="xml" indent="yes" />/@*)
+  file:write(
+    $reportPath,
+    local:generate-report(
+      functx:value-except($specFuncs, $zorbaFuncs),
+      functx:value-except($zorbaFuncs, $specFuncs)),
+    <output:serialization-parameters>
+      <output:method value="xml"/>
+      <output:indent value="yes"/>
+    </output:serialization-parameters>)
 :)
 )

@@ -16,14 +16,11 @@
 #ifndef ZORBA_FILEMODULE_FILE_H
 #define ZORBA_FILEMODULE_FILE_H
 
-#include <zorba/options.h>
-
 #include "file_function.h"
 
 namespace zorba { 
   
   class ItemFactory;
-  class SerializationItemProvider;
 
   namespace filemodule {
 
@@ -282,28 +279,77 @@ namespace zorba {
 
 //*****************************************************************************
 
-  class WriteFunction : public FileFunction
+  class WriteTextFunction : public WriterFileFunction
   {
     public:
-      WriteFunction(const FileModule* aModule);
+      WriteTextFunction(const FileModule* aModule);
 
       virtual String
-      getLocalName() const { return "write"; }
+      getLocalName() const { return "write-text"; }
   
-      virtual ItemSequence_t 
-      evaluate(const StatelessExternalFunction::Arguments_t& args,
-               const StaticContext* aSctxCtx,
-               const DynamicContext* aDynCtx) const;
+    protected:
+      virtual bool
+      isAppend() const;
 
-      virtual const Zorba_SerializerOptions_t
-      createSerializerOptions(const Item& aItem) const;
-
-    private:
-
-      virtual void
-      throwInvalidSerializationOptionValue() const;
-
+      virtual bool
+      isBinary() const;
   };
+
+//*****************************************************************************
+
+  class WriteBinaryFunction : public WriterFileFunction
+  {
+    public:
+      WriteBinaryFunction(const FileModule* aModule);
+
+      virtual String
+      getLocalName() const { return "write-binary"; }
+  
+    protected:
+      virtual bool
+      isAppend() const;
+
+      virtual bool
+      isBinary() const;
+  };
+
+//*****************************************************************************
+
+  class AppendTextFunction : public WriterFileFunction
+  {
+    public:
+      AppendTextFunction(const FileModule* aModule);
+
+      virtual String
+      getLocalName() const { return "append-text"; }
+  
+    protected:
+      virtual bool
+      isAppend() const;
+
+      virtual bool
+      isBinary() const;
+  };
+
+//*****************************************************************************
+
+  class AppendBinaryFunction : public WriterFileFunction
+  {
+    public:
+      AppendBinaryFunction(const FileModule* aModule);
+
+      virtual String
+      getLocalName() const { return "append-binary"; }
+  
+    protected:
+      virtual bool
+      isAppend() const;
+
+      virtual bool
+      isBinary() const;
+  };
+
+//*****************************************************************************
 
   class NormalizePathFunction : public FileFunction
   {

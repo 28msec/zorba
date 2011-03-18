@@ -37,7 +37,7 @@
 #include "types/casting.h"
 
 #include "functions/udf.h"
-#include "functions/func_fnerror.h"
+#include "functions/func_errors_and_diagnostics.h"
 #include "functions/library.h"
 
 #include "runtime/util/plan_wrapper_holder.h"

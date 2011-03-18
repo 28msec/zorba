@@ -13,6 +13,13 @@ version 2.0
   * Changed the singature of ExternalModule::getExternalFunction. The const modified was removed
     to allow for lazy instantiation of the function objects. Also, the localname is passed as
     as a const reference.
+  * renamed the fn:parse function (XQuery Functions and Operators 1.1) to fn:parse-xml
+    (XQuery Functions and Operators 3.0)
+  * added the fn:serialize function (XQuery Functions and Operators 3.0)
+  * removed the serialize module (http://www.zorba-xquery.com/modules/serialize) since this
+    functionality is now covered by the built-in function fn:serialize
+  * updated the file module (http://www.zorba-xquery.com/modules/file) to the new http://expath.org/
+    file module specification
 
 version 1.4
   * added a datetime library module with nondeterministic functions

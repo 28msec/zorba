@@ -63,7 +63,7 @@
 #include "runtime/core/nodeid_iterators.h"
 #include "runtime/core/flwor_iterator.h"
 #include "runtime/core/trycatch.h"
-#include "runtime/core/function_trace_iterator.h"
+#include "runtime/errors_and_diagnostics/other_diagnostics.h"
 #include "runtime/core/gflwor/common.h"
 #include "runtime/core/gflwor/groupby_iterator.h"
 #include "runtime/core/gflwor/tuplestream_iterator.h"

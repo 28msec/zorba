@@ -140,18 +140,6 @@ namespace zorba {
     void beginVisit( const DefaultCollationIterator& );
     void endVisit  ( const DefaultCollationIterator& );
 
-    void beginVisit( const FunctionTraceIterator& );
-    void endVisit  ( const FunctionTraceIterator& );
-
-    void beginVisit( const TraceIterator& );
-    void endVisit  ( const TraceIterator& );
-
-    void beginVisit( const ReadLineIterator& );
-    void endVisit  ( const ReadLineIterator& );
-
-    void beginVisit( const PrintIterator& );
-    void endVisit  ( const PrintIterator& );
-
     void beginVisit( const ZorbaDebugIterator& );
     void endVisit  ( const ZorbaDebugIterator& );
 
@@ -223,6 +211,18 @@ namespace zorba {
 
     void beginVisit( const ErrorIterator& );
     void endVisit  ( const ErrorIterator& );
+
+    void beginVisit( const TraceIterator& );
+    void endVisit  ( const TraceIterator& );
+
+    void beginVisit( const ReadLineIterator& );
+    void endVisit  ( const ReadLineIterator& );
+
+    void beginVisit( const PrintIterator& );
+    void endVisit  ( const PrintIterator& );
+
+    void beginVisit( const FunctionTraceIterator& );
+    void endVisit  ( const FunctionTraceIterator& );
 
     void beginVisit( const FnPutIterator& );
     void endVisit  ( const FnPutIterator& );
@@ -455,6 +455,12 @@ namespace zorba {
     void beginVisit( const FormatNumberIterator& );
     void endVisit  ( const FormatNumberIterator& );
 
+    void beginVisit( const FnParseXmlIterator& );
+    void endVisit  ( const FnParseXmlIterator& );
+
+    void beginVisit( const FnSerializeIterator& );
+    void endVisit  ( const FnSerializeIterator& );
+
     void beginVisit( const ResolveQNameIterator& );
     void endVisit  ( const ResolveQNameIterator& );
 
@@ -600,12 +606,6 @@ namespace zorba {
 
     void beginVisit( const FnDocAvailableIterator& );
     void endVisit  ( const FnDocAvailableIterator& );
-
-    void beginVisit( const UtilsParseIterator& );
-    void endVisit  ( const UtilsParseIterator& );
-
-    void beginVisit( const FnParseIterator& );
-    void endVisit  ( const FnParseIterator& );
 
     void beginVisit( const CodepointsToStringIterator& );
     void endVisit  ( const CodepointsToStringIterator& );

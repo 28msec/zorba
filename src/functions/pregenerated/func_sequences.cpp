@@ -267,26 +267,6 @@ PlanIter_t fn_doc_available::codegen(
   return new FnDocAvailableIterator(sctx, loc, argv);
 }
 
-PlanIter_t fn_zorba_util_parse::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
-{
-  return new UtilsParseIterator(sctx, loc, argv);
-}
-
-PlanIter_t fn_parse::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
-{
-  return new FnParseIterator(sctx, loc, argv);
-}
-
 void populate_context_sequences(static_context* sctx)
 {
   DECL(sctx, op_concatenate,
@@ -554,25 +534,6 @@ void populate_context_sequences(static_context* sctx)
       (createQName("http://www.w3.org/2005/xpath-functions","","doc-available"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
-
-
-  DECL(sctx, fn_zorba_util_parse,
-      (createQName("http://www.zorba-xquery.com/zorba/util-functions","","parse"),
-      GENV_TYPESYSTEM.STRING_TYPE_ONE,
-      GENV_TYPESYSTEM.DOCUMENT_UNTYPED_TYPE_ONE));
-
-
-  DECL(sctx, fn_parse,
-      (createQName("http://www.w3.org/2005/xpath-functions","","parse"),
-      GENV_TYPESYSTEM.STRING_TYPE_ONE,
-      GENV_TYPESYSTEM.DOCUMENT_UNTYPED_TYPE_ONE));
-
-
-  DECL(sctx, fn_parse,
-      (createQName("http://www.w3.org/2005/xpath-functions","","parse"),
-      GENV_TYPESYSTEM.STRING_TYPE_ONE,
-      GENV_TYPESYSTEM.STRING_TYPE_ONE,
-      GENV_TYPESYSTEM.DOCUMENT_UNTYPED_TYPE_ONE));
 
 }
 

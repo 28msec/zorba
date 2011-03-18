@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+/*******************************************************************************
+* Other diagnostics iterators:
+  - read-line
+  - print
+  - a dummy iterator for dynamic exception stack traces
+********************************************************************************/
+-->
+
+<zorba:iterators
+  xmlns:zorba="http://www.zorba-xquery.com"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
+    
+<zorba:source>
+    <zorba:include form="Quoted">store/api/item.h</zorba:include>
+</zorba:source>
+
+<!--
+/*******************************************************************************
+ * Diagnostics iterators: read-line
+********************************************************************************/
+-->
+  <zorba:iterator name="ReadLineIterator">
+  
+    <zorba:description author="Zorba Team">op-zorba:read-line</zorba:description>
+    
+    <zorba:function>
+
+      <zorba:signature localname="read-line" prefix="op-zorba">
+        <zorba:output>xs:string</zorba:output>
+      </zorba:signature>
+
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+      </zorba:methods>
+
+    </zorba:function>
+    
+  </zorba:iterator>
+
+<!--
+/*******************************************************************************
+ * Diagnostics iterators: print
+********************************************************************************/
+-->
+  <zorba:iterator name="PrintIterator">
+    
+    <zorba:description author="Zorba Team">op-zorba:print</zorba:description>
+    
+    <zorba:function>
+
+      <zorba:signature localname="print" prefix="fn-zorba-util">
+        <zorba:param>item()*</zorba:param>
+        <zorba:output>empty-sequence()</zorba:output>
+      </zorba:signature>
+
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+      </zorba:methods>
+
+    </zorba:function>
+
+    <zorba:constructor>
+      <zorba:parameter type="bool" name="aPrintToConsole" defaultValue="true"/>
+    </zorba:constructor>
+    
+    <zorba:member type="bool" name="thePrintToConsole" brief=""/>
+    
+  </zorba:iterator>
+
+<!--
+/*******************************************************************************
+ * A dummy iterator to allow catch the stack in case of a dynamic exception
+********************************************************************************/
+-->
+  <zorba:iterator name="FunctionTraceIterator">
+    <zorba:description author="Zorba Team">
+      This is just a dummy iterator, which calls
+      its children. This iterator is used to wrap
+      inlined expressions to be able to add the call
+      to the call stack in case of an exception.
+    </zorba:description>
+
+    <zorba:member type="store::Item_t" name="theFunctionName"
+      brief="stores the name of the function it substitutes"/>
+    <zorba:member type="QueryLoc" name="theFunctionLocation"
+      brief="stores the location of the function call"/>
+    <zorba:member type="QueryLoc" name="theFunctionCallLocation"
+      brief="stores the location of the function which it calls"/>
+    <zorba:member type="unsigned int" name="theFunctionArity"
+      brief="stores the arity of the function being called" />
+
+    <zorba:method return="void" name="setFunctionName" const="false">
+      <zorba:param type="const store::Item_t&amp;" name="aFunctionName"/>
+    </zorba:method>
+
+    <zorba:method return="void" name="setFunctionCallLocation" const="false">
+      <zorba:param type="const QueryLoc&amp;" name="aFunctionLocation"/> 
+    </zorba:method>
+
+    <zorba:method return="void" name="setFunctionLocation" const="false">
+      <zorba:param type="const QueryLoc&amp;" name="aFunctionLocation"/> 
+    </zorba:method>
+  
+    <zorba:method return="void" name="setFunctionArity" const="false">
+      <zorba:param type="unsigned int" name="arity" />
+    </zorba:method>
+
+  </zorba:iterator>
+
+</zorba:iterators>

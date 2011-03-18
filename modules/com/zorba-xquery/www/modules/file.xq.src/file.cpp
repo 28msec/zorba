@@ -24,7 +24,6 @@
 #include <zorba/empty_sequence.h>
 #include <zorba/singleton_item_sequence.h>
 #include <zorba/serializer.h>
-#include <zorba/store_consts.h>
 #include <zorba/base64.h>
 #include <zorba/util/path.h>
 
@@ -507,111 +506,74 @@ PathToUriFunction::evaluate(
 
 //*****************************************************************************
 
-WriteFunction::WriteFunction(const FileModule* aModule)
-  : FileFunction(aModule)
+WriteTextFunction::WriteTextFunction(const FileModule* aModule)
+  : WriterFileFunction(aModule)
 {
 }
 
-ItemSequence_t
-WriteFunction::evaluate(
-  const StatelessExternalFunction::Arguments_t& aArgs,
-  const StaticContext*                          aSctxCtx,
-  const DynamicContext*                         aDynCtx) const
-{
-  String lFileStr = FileFunction::getFilePathString(aArgs, 0);
-  File_t lFile = File::createFile(lFileStr.c_str());
-
-  // do we have an "append" or a "write new" operation?
-  bool lAppend = false;
-  if (aArgs.size() == 4) {
-    Item lAppendItem;
-    Iterator_t arg3_iter = aArgs[3]->getIterator();
-    arg3_iter->open();
-    arg3_iter->next(lAppendItem);
-    arg3_iter->close();
-    lAppend = lAppendItem.getBooleanValue();
-  }
-
-  Serializer_t lSerializer = Serializer::createSerializer(aArgs.at(2));
-
-  bool lBinary = false;
-  if (lSerializer->getSerializationMethod() == ZORBA_SERIALIZATION_METHOD_BINARY) {
-    lBinary = true;
-  }
-
-  // open the output stream in the desired write mode
-  std::ofstream lOutStream;
-  lFile->openOutputStream(lOutStream, lBinary, lAppend);
-
-  // serialize the content
-  lSerializer->serialize(aArgs[1], lOutStream);
-
-  lOutStream.close();
-
-  return ItemSequence_t(new EmptySequence());
+bool
+WriteTextFunction::isAppend() const {
+  return false;
 }
 
-const Zorba_SerializerOptions_t
-WriteFunction::createSerializerOptions(const Item& aItem) const
-{
-  Zorba_SerializerOptions_t lOptions;
-
-  // in case the parameter is a string
-  if (aItem.isAtomic()) {
-    zorba::String lMethod = aItem.getStringValue();
-    if (lMethod == "xml") {
-      lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_XML;
-    } else if (lMethod == "html") {
-      lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_HTML;
-    } else if (lMethod == "xhtml") {
-      lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_XHTML;
-    } else if (lMethod == "text") {
-      lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_TEXT;
-    } else if (lMethod == "json") {
-      lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_JSON;
-    } else if (lMethod == "jsonml") {
-      lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_JSONML;
-    } else {
-      throwInvalidSerializationOptionValue();
-    }
-  // if we have an element node
-  } else if (aItem.isNode() && aItem.getNodeKind() == store::StoreConsts::elementNode) {
-    // and must have "output" as local name
-    Item lQName;
-    aItem.getNodeName(lQName);
-    zorba::String lLocalName = lQName.getLocalName();
-    if(lLocalName != "output") {
-      throwInvalidSerializationOptionValue();
-    }
-    // iterate all the atributes and set the serialization options accordingly
-    // NOTE: Extra attributes and invalid values for attributes are ignored.
-    Iterator_t lIter = aItem.getAttributes();
-    lIter->open();
-    Item lAttribute;
-    while (lIter->next(lAttribute)) {
-      Item lAttributeQName;
-      lAttribute.getNodeName(lAttributeQName);
-      lOptions.SetSerializerOption(lAttributeQName.getLocalName().c_str(), lAttribute.getStringValue().c_str());
-    }
-    lIter->close();
-  } else {
-    throwInvalidSerializationOptionValue();
-  }
-
-  return lOptions;
+bool
+WriteTextFunction::isBinary() const {
+  return false;
 }
-
-void
-WriteFunction::throwInvalidSerializationOptionValue() const
-{
-  std::stringstream lErrorMessage;
-  lErrorMessage << "Invalid serialization options parameter. "
-      << "Please see the documentation for valid values.";
-  throwError(lErrorMessage.str(), XPTY0004);
-}
-
 
 //*****************************************************************************
+
+WriteBinaryFunction::WriteBinaryFunction(const FileModule* aModule)
+  : WriterFileFunction(aModule)
+{
+}
+
+bool
+WriteBinaryFunction::isAppend() const {
+  return false;
+}
+
+bool
+WriteBinaryFunction::isBinary() const {
+  return true;
+}
+
+//*****************************************************************************
+
+AppendTextFunction::AppendTextFunction(const FileModule* aModule)
+  : WriterFileFunction(aModule)
+{
+}
+
+bool
+AppendTextFunction::isAppend() const {
+  return true;
+}
+
+bool
+AppendTextFunction::isBinary() const {
+  return false;
+}
+
+//*****************************************************************************
+
+AppendBinaryFunction::AppendBinaryFunction(const FileModule* aModule)
+  : WriterFileFunction(aModule)
+{
+}
+
+bool
+AppendBinaryFunction::isAppend() const {
+  return true;
+}
+
+bool
+AppendBinaryFunction::isBinary() const {
+  return true;
+}
+
+//*****************************************************************************
+
 NormalizePathFunction::NormalizePathFunction(const FileModule* aModule)
   : FileFunction(aModule)
 {

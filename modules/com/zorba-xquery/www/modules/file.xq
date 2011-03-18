@@ -63,6 +63,7 @@
  :)
 module namespace file = "http://www.zorba-xquery.com/modules/file";
 
+import schema namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
 
 (:~
  : Creates a directory.
@@ -435,6 +436,173 @@ declare %private sequential function file:copy-directory(
     }
 };
 
+(:~
+ : Writes a sequence of items to a file.
+ :
+ : The operation is equivalent to calling:
+ : <pre>file:write($file, $content, $serializer-params, fn:true())</pre>.
+ :
+ : @param $file The path/URI of the file to write the content to.
+ : @param $content The content to be serialized to the file.
+ : @param $serializer-params Parameter to control the serialization of the
+ :        content.
+ : @return The empty sequence.
+ :)
+declare sequential function file:write(
+  $file as xs:string,
+  $content as item()*,
+  $serializer-params as item()*
+) as empty-sequence()
+{
+  file:write($file, $content, $serializer-params, fn:true())
+};
+
+(:~
+ : Writes a sequence of items to a file. Before writing to the file, the items
+ : are serialized according to the <pre>$serializer-params</pre>.
+ :
+ : The semantics of <pre>$serializer-params</pre> is the same as for the
+ : <pre>$params</pre> parameter of the <a target="_blank"
+ : href="http://www.w3.org/TR/xpath-functions-11/#func-serialize">fn:serialize</a>
+ : function.
+ :
+ : @param $file The path/URI of the file to write the content to.
+ : @param $content The content to be serialized to the file.
+ : @param $serializer-params Parameter to control the serialization of the
+ :        content.
+ : @param $overwrite Flag to specify if an existing file should be overwritten.
+ : @return The empty sequence.
+ :)
+declare sequential function file:write(
+  $file as xs:string,
+  $content as item()*,
+  $serializer-params as element(output:serialization-parameters)?,
+  $overwrite as xs:boolean
+) as empty-sequence()
+{
+  file:write-text($file, fn:serialize($content, $serializer-params), $overwrite)
+};
+
+(:~
+ : Writes a sequence of Base64 items as binary to a file.
+ :
+ : The operation is equivalent to calling:
+ : <pre>file:write-binary($file, $content, fn:true())</pre>.
+ :
+ : @param $file The path/URI of the file to write the content to.
+ : @param $content The content to be serialized to the file.
+ : @return The empty sequence.
+ :)
+declare sequential function file:write-binary(
+  $file as xs:string,
+  $content as xs:base64Binary*
+) as empty-sequence()
+{
+  file:write-binary($file, $content, fn:true())
+};
+
+(:~
+ : Writes a sequence of Base64 items as binary to a file.
+ :
+ : @param $file The path/URI of the file to write the content to.
+ : @param $content The content to be serialized to the file.
+ : @param $overwrite Flag to specify if an existing file should be overwritten.
+ : @return The empty sequence.
+ :)
+declare sequential function file:write-binary(
+  $file as xs:string,
+  $content as xs:base64Binary*,
+  $overwrite as xs:boolean
+) as empty-sequence() external;
+
+(:~
+ : Writes a sequence of string items to a file.
+ :
+ : @param $file The path/URI of the file to write the content to.
+ : @param $content The content to be serialized to the file.
+ : @return The empty sequence.
+ :)
+declare sequential function file:write-text(
+  $file as xs:string,
+  $content as xs:string*
+) as empty-sequence()
+{
+  file:write-text($file, $content, fn:true())
+};
+
+(:~
+ : Writes a sequence of string items to a file.
+ :
+ : The operation is equivalent to calling:
+ : <pre>file:write-text($file, $content, fn:true())</pre>.
+ :
+ : @param $file The path/URI of the file to write the content to.
+ : @param $content The content to be serialized to the file.
+ : @param $overwrite Flag to specify if an existing file should be overwritten.
+ : @return The empty sequence.
+ :)
+declare sequential function file:write-text(
+  $file as xs:string,
+  $content as xs:string*,
+  $overwrite as xs:boolean
+) as empty-sequence() external;
+
+(:~
+ : Appends a sequence of items to a file. Before writing to the file, the items
+ : are serialized according to the <pre>$serializer-params</pre>.
+ :
+ : The semantics of <pre>$serializer-params</pre> is the same as for the
+ : <pre>$params</pre> parameter of the <a target="_blank"
+ : href="http://www.w3.org/TR/xpath-functions-11/#func-serialize">fn:serialize</a>
+ : function.
+ :
+ : @param $file The path/URI of the file to write the content to.
+ : @param $content The content to be serialized to the file.
+ : @param $serializer-params Parameter to control the serialization of the
+ :        content.
+ : @return The empty sequence.
+ :)
+declare sequential function file:append(
+  $file as xs:string,
+  $content as item()*,
+  $serializer-params as element(output:serialization-parameters)?
+) as empty-sequence()
+{
+  file:append-text(
+    $file,
+    fn:serialize($content, $serializer-params))
+};
+
+(:~
+ : Appends a sequence of Base64 items as binary to a file.
+ :
+ : @param $file The path/URI of the file to write the content to.
+ : @param $content The content to be serialized to the file.
+ : @return The empty sequence.
+ :)
+declare sequential function file:append-binary(
+  $file as xs:string,
+  $content as xs:base64Binary*
+) as empty-sequence() external;
+
+(:~
+ : Appends a sequence of string items to a file.
+ :
+ : The operation is equivalent to calling:
+ : <pre>file:append-text($file, $content, fn:true())</pre>.
+ :
+ : @param $file The path/URI of the file to write the content to.
+ : @param $content The content to be serialized to the file.
+ : @return The empty sequence.
+ :)
+declare sequential function file:append-text(
+  $file as xs:string,
+  $content as xs:string*
+) as empty-sequence() external;
+
+
+
+
 (: ********************************************************************** :)
 
 (:~
@@ -444,7 +612,7 @@ declare %private sequential function file:copy-directory(
  : The file paths are relative to the provided $path.
  :
  : @param $path The path/URI to retrieve the children from.
- : @return The sequence of names of the direct children. 
+ : @return The sequence of names of the direct children.
  : @error An error is thrown if IO or Security problems occur.
  :)
 declare %nondeterministic function file:files(
@@ -552,50 +720,6 @@ declare function file:path-to-full-path(
 declare function file:path-to-uri(
   $path as xs:string
 ) as xs:anyURI external;
-
-(:~
- : Write a sequence of items to a file. This operation creates a new file
- : regardless if the given path/URI points to an existing file or not.
- :
- : @param $file The file to write the content to.
- : @param $content The content to be serialized to the file.
- : @param $serializer-params Parameter to control the serialization of the
- :        content. The semantics is the same with the $params
- :        parameter of the <a target="_blank"
- :        href="http://www.w3.org/TR/xpath-functions-11/#func-serialize"
- :        >fn:serialize</a> function.
- : @return The empty sequence
- : @error An error is thrown if IO or Security problems occur.
- :)
-declare sequential function file:write(
-  $file as xs:string,
-  $content as item()*,
-  $serializer-params as node()*
-) external;
-
-(:~
- : Write a sequence of items to a file. This operation creates a new file or
- : appends the serialized content to the file pointed by the given path/URI
- : If the append flag is true and the file does not exist, a new one is
- : created.
- :
- : @param $file The file to write the content to.
- : @param $content The content to be serialized to the file.
- : @param $serializer-params Parameter to control the serialization of the
- :        content. The semantics is the same with the $params
- :        parameter of the <a target="_blank"
- :        href="http://www.w3.org/TR/xpath-functions-11/#func-serialize"
- :        >fn:serialize</a> function.
- : @param $append Flag to specify if this is an append operation or not.
- : @return The empty sequence
- : @error An error is thrown if IO or Security problems occur.
- :)
-declare sequential function file:write(
-  $file as xs:string,
-  $content as item()*,
-  $serializer-params as node()*,
-  $append as xs:boolean
-) external;
 
 (:~
  : file:normalize-path takes a path as a uri, a absolute path or relative path

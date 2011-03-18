@@ -27,10 +27,9 @@ import module namespace xqd  = "http://www.zorba-xquery.com/modules/xqdoc";
 import module namespace err  = "http://www.zorba-xquery.com/modules/xqdoc2xhtml/error";
 
 import schema namespace xqdoc = "http://www.xqdoc.org/1.0";
+import schema namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
 
 declare copy-namespaces preserve, inherit;
-
-declare namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
 
 (:~
  : This variable contains all the modules names part of the left menu
@@ -46,6 +45,30 @@ declare variable $xqdoc2html:schemasCollector := <schemas/>;
  : This variable contains all the functions from all imported modules
  :)
 declare variable $xqdoc2html:functionsCollector := <functions/>;
+
+(:~
+ : The serialization parameters for XML serialization.
+ :)
+declare variable $xqdoc2html:serParamXml :=
+  <output:serialization-parameters>
+    <output:method value="xml"/>
+    <output:indent value="yes"/>
+  </output:serialization-parameters>;
+(:~
+ : The serialization parameters for XHTML serialization.
+ :)
+declare variable $xqdoc2html:serParamXhtml:=
+  <output:serialization-parameters>
+    <output:method value="xhtml"/>
+    <output:indent value="yes"/>
+  </output:serialization-parameters>;
+(:~
+ : The serialization parameters for text serialization.
+ :)
+declare variable $xqdoc2html:serParamText :=
+  <output:serialization-parameters>
+    <output:method value="text"/>
+  </output:serialization-parameters>;
 
 (:~
  : This variable contains the links appearing in the first part of the left menu
@@ -308,7 +331,7 @@ declare sequential function xqdoc2html:generate-xqdoc-xml(
       let $getFilename := xqdoc2html:get-filename($moduleUri)
       let $xqdocFileName := fn:concat($xqdocXmlPath, file:path-separator(), $getFilename, ".xml")
       let $xhtmlRelativeFilePath :=fn:concat($getFilename, ".html")
-      let $ret := file:write($xqdocFileName, $xqdoc, <s method="xml" indent="yes" />/@*)
+      let $ret := file:write($xqdocFileName, $xqdoc, $xqdoc2html:serParamXml)
       let $hasExtFuncs := xqdoc2html:contains-external-functions($xqdoc)
       
       return
@@ -331,9 +354,9 @@ declare sequential function xqdoc2html:generate-xqdoc-xml(
         )
         else
          ()    
-    } catch * ($error_code) 
+    } catch * ($error_code, $error_message) 
     {      
-      fn:error($err:UE004, fn:concat("FAILED: ", $moduleUri, " (", fn:concat($xqdocXmlPath, file:path-separator(), xqdoc2html:get-filename($moduleUri), ".xml"), ")"));
+      fn:error($err:UE004, fn:concat("FAILED: ", $moduleUri, " (", fn:concat($xqdocXmlPath, file:path-separator(), xqdoc2html:get-filename($moduleUri), ".xml"), ") Message: ", $error_message));
     }
 };
 
@@ -382,10 +405,10 @@ declare %private sequential function xqdoc2html:generate-xqdoc-xhtml(
 
         xqdoc2html:configure-xhtml($xhtml, $modulesPath);
 
-        file:write($xhtmlFilePath, $xhtml, <s method="xhtml" indent="yes" />/@*);
+        file:write($xhtmlFilePath, $xhtml, $xqdoc2html:serParamXhtml);
       }
-    } catch * ($error_code) {
-      fn:error($err:UE007, fn:concat("xqdoc2html:generate-xqdoc-xhtml ", $xmlFilePath, " ", $error_code, " " ,$xhtmlFilePath));
+    } catch * ($error_code, $error_message) {
+      fn:error($err:UE007, fn:concat("xqdoc2html:generate-xqdoc-xhtml ", $xmlFilePath, " ", $error_code, " ", $xhtmlFilePath, " Message: ", $error_message));
     }
 };
 
@@ -493,8 +516,8 @@ declare %private sequential function xqdoc2html:gather-schemas(
       let $xsdUri := $xqdoc/xs:schema/@targetNamespace
       return
           xqdoc2html:collect-schema($xsdUri, $xqdRelFilePath, $xqdoc2html:schemasCollector);
-    } catch * ($error_code) {
-      fn:error($err:UE005, fn:concat("xqdoc2html:gather-schemas ", $xsdFilePath));
+    } catch * ($error_code, $error_message) {
+      fn:error($err:UE005, fn:concat("xqdoc2html:gather-schemas ", $xsdFilePath, " Message: ", $error_message));
     } 
 };
 
@@ -1067,8 +1090,8 @@ declare %private sequential function xqdoc2html:main(
       let $functionIndex := xqdoc2html:generate-function-index-xhtml($indexFunctionLeft, $templatePath)
       let $search := xqdoc2html:generate-search-xhtml($indexSearchLeft, $templatePath, $zorbaVersion)
       
-      let $writeFuncIndex := file:write(fn:concat($xqdocXhtmlPath, file:path-separator(), $xqdoc2html:functionIndexPageName), $functionIndex, <s method="xhtml" indent="yes" />/@*)
-      let $writeFuncIndex := file:write(fn:concat($xqdocXhtmlPath, file:path-separator(), $xqdoc2html:searchPageName), $search, <s method="xhtml" indent="yes" />/@*)
+      let $writeFuncIndex := file:write(fn:concat($xqdocXhtmlPath, file:path-separator(), $xqdoc2html:functionIndexPageName), $functionIndex, $xqdoc2html:serParamXhtml)
+      let $writeFuncIndex := file:write(fn:concat($xqdocXhtmlPath, file:path-separator(), $xqdoc2html:searchPageName), $search, $xqdoc2html:serParamXhtml)
       return
         ();
     };  
@@ -1079,7 +1102,7 @@ declare %private sequential function xqdoc2html:main(
   let $indexRight := xqdoc2html:create-module-table($leftMenu, $right, "index.html")
   let $doc := xqdoc2html:generate-index-html($templatePath, $indexLeft, $indexRight, $zorbaVersion)
   let $index := xqdoc2html:configure-xhtml($doc/*:html, $modulePath)
-  let $writeIndex := file:write(fn:concat($xqdocXhtmlPath, file:path-separator(), "index.html"), $index, <s method="xhtml" indent="yes" />/@*)
+  let $writeIndex := file:write(fn:concat($xqdocXhtmlPath, file:path-separator(), "index.html"), $index, $xqdoc2html:serParamXhtml)
   return
     ()
   ;
@@ -1259,7 +1282,7 @@ $output-content,
 :)
 ")
                     return
-                      file:write($exampleDestination, $exampleContent, <output:method>text</output:method>)
+                      file:write($exampleDestination, $exampleContent, $xqdoc2html:serParamText)
                   else
                     fn:error($err:UE008, fn:concat("The example <", $exampleSource,"> does not have expected output. Add the example input and expected output by hand in the example, in a commentary that should also include the word 'output'."))
               else
@@ -1269,14 +1292,14 @@ Test returns an error code.
 :)
 ")
                 return
-                  file:write($exampleDestination, $exampleContent, <output:method>text</output:method>)
+                  file:write($exampleDestination, $exampleContent, $xqdoc2html:serParamText)
             else
               let $exampleContent := fn:concat($exampleContent, "
 
 :)
 ")
               return
-                file:write($exampleDestination, $exampleContent, <output:method>text</output:method>)
+                file:write($exampleDestination, $exampleContent, $xqdoc2html:serParamText)
         else
           let $replace-exp-result := "rbkt/ExpQueryResults"
           let $exp-result-path := fn:replace($exampleSource, $search-queries, $replace-exp-result)
@@ -1295,7 +1318,7 @@ Expected output:
 :)
 ")
               return
-                file:write($exampleDestination, $exampleContent, <output:method>text</output:method>)
+                file:write($exampleDestination, $exampleContent, $xqdoc2html:serParamText)
             else
               fn:error($err:UE008, fn:concat("The example <", $exampleSource,"> does not have expected output. Add the example input and expected output by hand in the example, in a commentary that should also include the word 'output'."))
 };

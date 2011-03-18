@@ -39,11 +39,10 @@
 #include "runtime/booleans/booleans.h"
 #include "runtime/collections/collections.h"
 #include "runtime/context/context.h"
-#include "runtime/core/function_trace_iterator.h"
-#include "runtime/debug/debug.h"
 #include "runtime/debug/zorba_debug_iterator.h"
 #include "runtime/durations_dates_times/durations_dates_times.h"
-#include "runtime/fnerror/fnerror.h"
+#include "runtime/errors_and_diagnostics/errors_and_diagnostics.h"
+#include "runtime/errors_and_diagnostics/other_diagnostics.h"
 #include "runtime/fnput/fnput.h"
 #include "runtime/function_item/function_item_iter.h"
 #include "runtime/indexing/ic_ddl.h"
@@ -52,6 +51,7 @@
 #include "runtime/maths/maths.h"
 #include "runtime/nodes/nodes.h"
 #include "runtime/numerics/numerics.h"
+#include "runtime/parsing_and_serializing/parsing_and_serializing.h"
 #include "runtime/qnames/qnames.h"
 #include "runtime/random/random.h"
 #include "runtime/reflection/reflection.h"
@@ -539,62 +539,6 @@ void PrinterVisitor::endVisit ( const DefaultCollationIterator& ) {
 // </DefaultCollationIterator>
 
 
-// <FunctionTraceIterator>
-void PrinterVisitor::beginVisit ( const FunctionTraceIterator& a) {
-  thePrinter.startBeginVisit("FunctionTraceIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const FunctionTraceIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </FunctionTraceIterator>
-
-
-// <TraceIterator>
-void PrinterVisitor::beginVisit ( const TraceIterator& a) {
-  thePrinter.startBeginVisit("TraceIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const TraceIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </TraceIterator>
-
-
-// <ReadLineIterator>
-void PrinterVisitor::beginVisit ( const ReadLineIterator& a) {
-  thePrinter.startBeginVisit("ReadLineIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const ReadLineIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </ReadLineIterator>
-
-
-// <PrintIterator>
-void PrinterVisitor::beginVisit ( const PrintIterator& a) {
-  thePrinter.startBeginVisit("PrintIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const PrintIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </PrintIterator>
-
-
 // <ZorbaDebugIterator>
 void PrinterVisitor::beginVisit ( const ZorbaDebugIterator& a) {
   thePrinter.startBeginVisit("ZorbaDebugIterator", ++theId);
@@ -929,6 +873,62 @@ void PrinterVisitor::endVisit ( const ErrorIterator& ) {
   thePrinter.endEndVisit();
 }
 // </ErrorIterator>
+
+
+// <TraceIterator>
+void PrinterVisitor::beginVisit ( const TraceIterator& a) {
+  thePrinter.startBeginVisit("TraceIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const TraceIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </TraceIterator>
+
+
+// <ReadLineIterator>
+void PrinterVisitor::beginVisit ( const ReadLineIterator& a) {
+  thePrinter.startBeginVisit("ReadLineIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const ReadLineIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </ReadLineIterator>
+
+
+// <PrintIterator>
+void PrinterVisitor::beginVisit ( const PrintIterator& a) {
+  thePrinter.startBeginVisit("PrintIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const PrintIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </PrintIterator>
+
+
+// <FunctionTraceIterator>
+void PrinterVisitor::beginVisit ( const FunctionTraceIterator& a) {
+  thePrinter.startBeginVisit("FunctionTraceIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FunctionTraceIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FunctionTraceIterator>
 
 
 // <FnPutIterator>
@@ -2009,6 +2009,34 @@ void PrinterVisitor::endVisit ( const FormatNumberIterator& ) {
 // </FormatNumberIterator>
 
 
+// <FnParseXmlIterator>
+void PrinterVisitor::beginVisit ( const FnParseXmlIterator& a) {
+  thePrinter.startBeginVisit("FnParseXmlIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnParseXmlIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnParseXmlIterator>
+
+
+// <FnSerializeIterator>
+void PrinterVisitor::beginVisit ( const FnSerializeIterator& a) {
+  thePrinter.startBeginVisit("FnSerializeIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnSerializeIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnSerializeIterator>
+
+
 // <ResolveQNameIterator>
 void PrinterVisitor::beginVisit ( const ResolveQNameIterator& a) {
   thePrinter.startBeginVisit("ResolveQNameIterator", ++theId);
@@ -2680,34 +2708,6 @@ void PrinterVisitor::endVisit ( const FnDocAvailableIterator& ) {
   thePrinter.endEndVisit();
 }
 // </FnDocAvailableIterator>
-
-
-// <UtilsParseIterator>
-void PrinterVisitor::beginVisit ( const UtilsParseIterator& a) {
-  thePrinter.startBeginVisit("UtilsParseIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const UtilsParseIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </UtilsParseIterator>
-
-
-// <FnParseIterator>
-void PrinterVisitor::beginVisit ( const FnParseIterator& a) {
-  thePrinter.startBeginVisit("FnParseIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const FnParseIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </FnParseIterator>
 
 
 // <CodepointsToStringIterator>

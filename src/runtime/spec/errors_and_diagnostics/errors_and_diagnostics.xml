@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+// 3 Errors and diagnostics                                                    //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+-->
+<zorba:iterators
+  xmlns:zorba="http://www.zorba-xquery.com"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
+    
+<!--
+/*******************************************************************************
+ * 3.1.1 fn:error
+********************************************************************************/
+-->
+  
+  <zorba:iterator name="ErrorIterator">
+    
+    <zorba:description author="Zorba Team">fn:error</zorba:description>
+    
+    <zorba:function>
+
+      <zorba:signature localname="error" prefix="fn">
+        <zorba:output>none</zorba:output>
+      </zorba:signature>
+
+      <zorba:signature localname="error" prefix="fn">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:output>none</zorba:output>
+      </zorba:signature>
+
+      <zorba:signature localname="error" prefix="fn">
+        <zorba:param>xs:QName?</zorba:param>
+        <zorba:param>xs:string</zorba:param>
+        <zorba:output>none</zorba:output>
+      </zorba:signature>
+
+      <zorba:signature localname="error" prefix="fn">
+        <zorba:param>xs:QName?</zorba:param>
+        <zorba:param>xs:string</zorba:param>
+        <zorba:param>item()*</zorba:param>
+        <zorba:output>none</zorba:output>
+      </zorba:signature>
+
+      <zorba:methods>
+        <zorba:getUpdateType returnValue="VACUOUS_EXPR"/>
+      </zorba:methods>
+
+    </zorba:function>
+    
+  </zorba:iterator>
+
+<!--
+/*******************************************************************************
+ * 3.2.1 fn:trace
+********************************************************************************/
+-->
+  <zorba:iterator name="TraceIterator">
+
+    <zorba:description author="Zorba Team">fn:trace</zorba:description>
+
+    <zorba:function generateCodegen="false">
+
+      <zorba:signature localname="trace" prefix="fn">
+        <zorba:param>item()*</zorba:param>
+        <zorba:param>xs:string</zorba:param>
+        <zorba:output>item()*</zorba:output>
+      </zorba:signature>
+
+      <zorba:methods>
+        <zorba:isMap producer="0"/>
+        <zorba:propagatesDistinctNodes producer="0"/>
+        <zorba:propagatesSortedNodes producer="0"/>
+        <zorba:ignoresSortedNodes/>
+        <zorba:ignoresDuplicateNodes/>
+      </zorba:methods>
+
+    </zorba:function>
+
+    <zorba:state>
+      <zorba:member type="store::Item_t" name="theTagItem" defaultValue="NULL" brief=""/>
+      <zorba:member type="uint32_t" name="theIndex" defaultValue="0" brief=""/>
+      <zorba:member type="std::ostream*" name="theOS" defaultValue="0" brief=""/>
+    </zorba:state>
+    
+  </zorba:iterator>
+  
+</zorba:iterators>

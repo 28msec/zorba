@@ -65,7 +65,6 @@ ELSE ()
   MESSAGE(STATUS "Building Zorba without XSL-FO support.")
 ENDIF ()
 
-GENERATE_MODULE_LIBRARY(serialize "")
 GENERATE_MODULE_LIBRARY(datetime "")
 GENERATE_MODULE_LIBRARY(os "")
 GENERATE_MODULE_LIBRARY(system "")

@@ -90,14 +90,6 @@ namespace zorba{
 
     class DefaultCollationIterator;
 
-    class FunctionTraceIterator;
-
-    class TraceIterator;
-
-    class ReadLineIterator;
-
-    class PrintIterator;
-
     class ZorbaDebugIterator;
 
     class YearsFromDurationIterator;
@@ -145,6 +137,14 @@ namespace zorba{
     class TimestampIterator;
 
     class ErrorIterator;
+
+    class TraceIterator;
+
+    class ReadLineIterator;
+
+    class PrintIterator;
+
+    class FunctionTraceIterator;
 
     class FnPutIterator;
 
@@ -300,6 +300,10 @@ namespace zorba{
 
     class FormatNumberIterator;
 
+    class FnParseXmlIterator;
+
+    class FnSerializeIterator;
+
     class ResolveQNameIterator;
 
     class QNameIterator;
@@ -396,10 +400,6 @@ namespace zorba{
     class FnDocIterator;
 
     class FnDocAvailableIterator;
-
-    class UtilsParseIterator;
-
-    class FnParseIterator;
 
     class CodepointsToStringIterator;
 
@@ -556,18 +556,6 @@ public:
     virtual void beginVisit ( const DefaultCollationIterator& ) = 0;
     virtual void endVisit   ( const DefaultCollationIterator& ) = 0;
 
-    virtual void beginVisit ( const FunctionTraceIterator& ) = 0;
-    virtual void endVisit   ( const FunctionTraceIterator& ) = 0;
-
-    virtual void beginVisit ( const TraceIterator& ) = 0;
-    virtual void endVisit   ( const TraceIterator& ) = 0;
-
-    virtual void beginVisit ( const ReadLineIterator& ) = 0;
-    virtual void endVisit   ( const ReadLineIterator& ) = 0;
-
-    virtual void beginVisit ( const PrintIterator& ) = 0;
-    virtual void endVisit   ( const PrintIterator& ) = 0;
-
     virtual void beginVisit ( const ZorbaDebugIterator& ) = 0;
     virtual void endVisit   ( const ZorbaDebugIterator& ) = 0;
 
@@ -639,6 +627,18 @@ public:
 
     virtual void beginVisit ( const ErrorIterator& ) = 0;
     virtual void endVisit   ( const ErrorIterator& ) = 0;
+
+    virtual void beginVisit ( const TraceIterator& ) = 0;
+    virtual void endVisit   ( const TraceIterator& ) = 0;
+
+    virtual void beginVisit ( const ReadLineIterator& ) = 0;
+    virtual void endVisit   ( const ReadLineIterator& ) = 0;
+
+    virtual void beginVisit ( const PrintIterator& ) = 0;
+    virtual void endVisit   ( const PrintIterator& ) = 0;
+
+    virtual void beginVisit ( const FunctionTraceIterator& ) = 0;
+    virtual void endVisit   ( const FunctionTraceIterator& ) = 0;
 
     virtual void beginVisit ( const FnPutIterator& ) = 0;
     virtual void endVisit   ( const FnPutIterator& ) = 0;
@@ -871,6 +871,12 @@ public:
     virtual void beginVisit ( const FormatNumberIterator& ) = 0;
     virtual void endVisit   ( const FormatNumberIterator& ) = 0;
 
+    virtual void beginVisit ( const FnParseXmlIterator& ) = 0;
+    virtual void endVisit   ( const FnParseXmlIterator& ) = 0;
+
+    virtual void beginVisit ( const FnSerializeIterator& ) = 0;
+    virtual void endVisit   ( const FnSerializeIterator& ) = 0;
+
     virtual void beginVisit ( const ResolveQNameIterator& ) = 0;
     virtual void endVisit   ( const ResolveQNameIterator& ) = 0;
 
@@ -1015,12 +1021,6 @@ public:
 
     virtual void beginVisit ( const FnDocAvailableIterator& ) = 0;
     virtual void endVisit   ( const FnDocAvailableIterator& ) = 0;
-
-    virtual void beginVisit ( const UtilsParseIterator& ) = 0;
-    virtual void endVisit   ( const UtilsParseIterator& ) = 0;
-
-    virtual void beginVisit ( const FnParseIterator& ) = 0;
-    virtual void endVisit   ( const FnParseIterator& ) = 0;
 
     virtual void beginVisit ( const CodepointsToStringIterator& ) = 0;
     virtual void endVisit   ( const CodepointsToStringIterator& ) = 0;
