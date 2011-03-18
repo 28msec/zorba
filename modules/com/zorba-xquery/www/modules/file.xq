@@ -66,246 +66,59 @@ module namespace file = "http://www.zorba-xquery.com/modules/file";
 import schema namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
 
 (:~
- : Creates a directory.
+ : Appends a sequence of items to a file. If the file pointed by <pre>$file</pre>
+ : does not exist, a new file will be created. Before writing to the file, the items
+ : are serialized according to the <pre>$serializer-params</pre>.
  :
- : The operation is equivalent to calling:
- : <pre>file:create-directory($dir, fn:true(), fn:false())</pre>.
+ : The semantics of <pre>$serializer-params</pre> is the same as for the
+ : <pre>$params</pre> parameter of the <a target="_blank"
+ : href="http://www.w3.org/TR/xpath-functions-11/#func-serialize">fn:serialize</a>
+ : function.
  :
- : @param $dir The path/URI denoting the directory to be created.
+ : @param $file The path/URI of the file to write the content to.
+ : @param $content The content to be serialized to the file.
+ : @param $serializer-params Parameter to control the serialization of the
+ :        content.
  : @return The empty sequence.
  :)
-declare sequential function file:create-directory(
-  $dir as xs:string) as empty-sequence()
-{
-  file:create-directory($dir, fn:true(), fn:false())
-};
-
-(:~
- : Creates a directory. If the $recursive argument evaluates to
- : <pre>fn:true()</pre> all the missing parent directories from the path are
- : also created.
- :
- : The operation is equivalent to calling:
- : <pre>file:create-directory($dir, $recursive, fn:false())</pre>.
- :
- : @param $dir The path/URI denoting the directory to be created.
- : @param $recursive If the operation should create all the missing parrent
- :	      directories.
- : @return The empty sequence.
- :)
-declare sequential function file:create-directory(
-  $dir as xs:string,
-  $recursive as xs:boolean) as empty-sequence()
-{
-  file:create-directory($dir, $recursive, fn:false())
-};
-
-(:~
- : Creates a directory. If the $failIfExists argument  evaluates to
- : <pre>fn:true()</pre> the operation will fail if the firectory already
- : exists.
- :
- : @param $dir The path/URI denoting the directory to be created.
- : @param $recursive If the operation should create all the missing parrent
- :        directories.
- : @param $failIfExists Flag indicating whether the directory must be created or not.
- : @return The empty sequence.
- :)
-declare sequential function file:create-directory(
-  $dir as xs:string,
-  $recursive as xs:boolean,
-  $failIfExists as xs:boolean
-) as empty-sequence() external;
-
-(:~
- : Deletes a file or an empty directory from the file system.
- :
- : @param $fileOrDir The path/URI of the file or directory to delete.
- : @return The empty sequence.
- :)
-declare sequential function file:delete(
-  $fileOrDir as xs:string
-) as empty-sequence() external;
-
-(:~
- : Deletes a file or a directory from the file system. If $fileOrDir denotes a
- : directory and $recursive evaluates to <pre>fn:true()</pre>, the directory
- : will be deleted recursively.
- :
- : @param $fileOrDir The path/URI of the file or directory to delete.
- : @param $recursive If the operation should recursively delete the given
- :	      directory.
- : @return The empty sequence.
- :)
-declare sequential function file:delete(
-  $fileOrDir as xs:string,
-  $recursive as xs:boolean
+declare sequential function file:append(
+  $file as xs:string,
+  $content as item()*,
+  $serializer-params as element(output:serialization-parameters)?
 ) as empty-sequence()
 {
-  if ($recursive) then
-    for $item in file:files($fileOrDir)
-    let $fullPath := fn:concat($fileOrDir, file:path-separator(), $item)
-    return
-      if (file:is-directory($fullPath)) then
-        file:delete($fullPath, fn:true())
-      else
-        file:delete($fullPath)
-  else
-    ();
-    
-  file:delete($fileOrDir);
+  file:append-text(
+    $file,
+    fn:serialize($content, $serializer-params))
 };
 
 (:~
- : Reads the content of a file and returns a Base64 representation of the
- : content.
+ : Appends a sequence of Base64 items as binary to a file. If the file pointed
+ : by <pre>$file</pre> does not exist, a new file will be created.
  :
- : @param $file The file to read.
- : @return The content of the file as Base64.
+ : @param $file The path/URI of the file to write the content to.
+ : @param $content The content to be serialized to the file.
+ : @return The empty sequence.
  :)
-declare %nondeterministic function file:read-binary(
-  $file as xs:string
-) as xs:base64Binary external;
+declare sequential function file:append-binary(
+  $file as xs:string,
+  $content as xs:base64Binary*
+) as empty-sequence() external;
 
 (:~
- : Reads the content of a file and returns a sequence of strings representing
- : the lines in the content of the file.
+ : Appends a sequence of string items to a file.
  :
  : The operation is equivalent to calling:
- : <pre>file:read-text-lines($file, "UTF-8")</pre>.
+ : <pre>file:append-text($file, $content, fn:true())</pre>.
  :
- : @param $file The file to read.
- : @return The content of the file as a sequence of strings.
+ : @param $file The path/URI of the file to write the content to.
+ : @param $content The content to be serialized to the file.
+ : @return The empty sequence.
  :)
-declare function file:read-text-lines(
-  $file as xs:string
-) as xs:string*
-{
-  file:read-text-lines($file, "UTF-8")
-};
-
-(:~
- : Reads the content of a file using the specified encoding and returns a
- : sequence of strings representing the lines in the content of the file.
- :
- : This implementation considers the LF (&#xA;) character as the line
- : separator. If a resulting line ends with the CR (&#xD;) character, this is
- : trimmed as well. This implementation will uniformly treat LF and CRLF as
- : line separators.
- :
- : In Zorba only the following encodings are currently supported: "UTF-8",
- : "UTF8". The encoding parameter is case insensitive.
- :
- : @param $file The file to read.
- : @param $encoding The encoding used when reading the file.
- : @return The content of the file as a sequence of strings.
- :)
-declare function file:read-text-lines(
+declare sequential function file:append-text(
   $file as xs:string,
-  $encoding as xs:string
-) as xs:string*
-{
-  let $content := file:read-text($file, $encoding)
-  return fn:tokenize($content, "\n")
-};
-
-(:~
- : Reads the content of a file and returns a string representation of the
- : content.
- :
- : The operation is equivalent to calling:
- : <pre>file:read-text($file, "UTF-8")</pre>.
- :
- : @param $file The file to read.
- : @return The content of the file as string.
- :)
-declare function file:read-text(
-  $file as xs:string
-) as xs:string
-{
-  file:read-text($file, "UTF-8")
-};
-
-(:~
- : Reads the content of a file using the specified encoding and returns a
- : string representation of the content.
- :
- : In Zorba only the following encodings are currently supported: "UTF-8",
- : "UTF8". The encoding parameter is case insensitive.
- :
- : @param $file The file to read.
- : @param $encoding The encoding used when reading the file.
- : @return The content of the file as string.
- :)
-declare function file:read-text(
-  $file as xs:string,
-  $encoding as xs:string
-) as xs:string external;
-
-(:~
- : Reads a file as an XML file and returns an XML document. The file content
- : must be a valid XML otherwise an error will be thrown.
- :
- : The operation is equivalent to calling:
- : <pre>file:read-xml($file, "UTF-8")</pre>.
- :
- : @param $file The file to read.
- : @return An XML document containing the content of the file.
- :)
-declare function file:read-xml(
-  $file as xs:string
-) as node()
-{
-  file:read-xml($file, "UTF-8")
-};
-
-(:~
- : Reads a file as an XML file using the specified encoding and returns an XML
- : document. The file content must be a valid XML otherwise an error will be
- : thrown.
- :
- : In Zorba only the following encodings are currently supported: "UTF-8",
- : "UTF8". The encoding parameter is case insensitive.
- :
- : @param $file The file to read.
- : @param $encoding The encoding used when reading the file.
- : @return An XML document containing the content of the file.
- :)
-declare %nondeterministic function file:read-xml(
-  $file as xs:string,
-  $encoding as xs:string
-) as node() external;
-
-(:~
- : Tests if a path/URI is already used in the file system.
- :
- : @param $fileOrDir The path/URI to test for existance.
- : @return true if the path/URI points to an existing file system item.
- :)
-declare %nondeterministic function file:exists(
-  $fileOrDir as xs:string
-) as xs:boolean external;
-
-(:~
- : Tests if a path/URI points to a directory. On UNIX-based systems, the root
- : and the volume roots are considered directories.
- :
- : @param $dir The path/URI to test.
- : @return true if the path/URI points to a directory.
- :)
-declare %nondeterministic function file:is-directory(
-  $dir as xs:string
-) as xs:boolean external;
-
-(:~
- : Tests if a path/URI points to a file.
- :
- : @param $dir The path/URI to test.
- : @return true if the path/URI points to a file.
- :)
-declare %nondeterministic function file:is-file(
-  $file as xs:string
-) as xs:boolean external;
+  $content as xs:string*
+) as empty-sequence() external;
 
 (:~
  : Copies a file given a source and a destination paths/URIs. The operation
@@ -403,6 +216,313 @@ declare sequential function file:copy(
 };
 
 (:~
+ : Creates a directory.
+ :
+ : The operation is equivalent to calling:
+ : <pre>file:create-directory($dir, fn:true(), fn:false())</pre>.
+ :
+ : @param $dir The path/URI denoting the directory to be created.
+ : @return The empty sequence.
+ :)
+declare sequential function file:create-directory(
+  $dir as xs:string) as empty-sequence()
+{
+  file:create-directory($dir, fn:true(), fn:false())
+};
+
+(:~
+ : Creates a directory. If the $recursive argument evaluates to
+ : <pre>fn:true()</pre> all the missing parent directories from the path are
+ : also created.
+ :
+ : The operation is equivalent to calling:
+ : <pre>file:create-directory($dir, $recursive, fn:false())</pre>.
+ :
+ : @param $dir The path/URI denoting the directory to be created.
+ : @param $recursive If the operation should create all the missing parrent
+ :	      directories.
+ : @return The empty sequence.
+ :)
+declare sequential function file:create-directory(
+  $dir as xs:string,
+  $recursive as xs:boolean) as empty-sequence()
+{
+  file:create-directory($dir, $recursive, fn:false())
+};
+
+(:~
+ : Creates a directory. If the $failIfExists argument  evaluates to
+ : <pre>fn:true()</pre> the operation will fail if the firectory already
+ : exists.
+ :
+ : @param $dir The path/URI denoting the directory to be created.
+ : @param $recursive If the operation should create all the missing parrent
+ :        directories.
+ : @param $failIfExists Flag indicating whether the directory must be created or not.
+ : @return The empty sequence.
+ :)
+declare sequential function file:create-directory(
+  $dir as xs:string,
+  $recursive as xs:boolean,
+  $failIfExists as xs:boolean
+) as empty-sequence() external;
+
+(:~
+ : Deletes a file or an empty directory from the file system.
+ :
+ : @param $fileOrDir The path/URI of the file or directory to delete.
+ : @return The empty sequence.
+ :)
+declare sequential function file:delete(
+  $fileOrDir as xs:string
+) as empty-sequence() external;
+
+(:~
+ : Deletes a file or a directory from the file system. If $fileOrDir denotes a
+ : directory and $recursive evaluates to <pre>fn:true()</pre>, the directory
+ : will be deleted recursively.
+ :
+ : @param $fileOrDir The path/URI of the file or directory to delete.
+ : @param $recursive If the operation should recursively delete the given
+ :	      directory.
+ : @return The empty sequence.
+ :)
+declare sequential function file:delete(
+  $fileOrDir as xs:string,
+  $recursive as xs:boolean
+) as empty-sequence()
+{
+  if ($recursive) then
+    for $item in file:files($fileOrDir)
+    let $fullPath := fn:concat($fileOrDir, file:path-separator(), $item)
+    return
+      if (file:is-directory($fullPath)) then
+        file:delete($fullPath, fn:true())
+      else
+        file:delete($fullPath)
+  else
+    ();
+    
+  file:delete($fileOrDir);
+};
+
+(:~
+ : Tests if a path/URI is already used in the file system.
+ :
+ : @param $fileOrDir The path/URI to test for existance.
+ : @return true if the path/URI points to an existing file system item.
+ :)
+declare %nondeterministic function file:exists(
+  $fileOrDir as xs:string
+) as xs:boolean external;
+
+(:~
+ : Tests if a path/URI points to a directory. On UNIX-based systems, the root
+ : and the volume roots are considered directories.
+ :
+ : @param $dir The path/URI to test.
+ : @return true if the path/URI points to a directory.
+ :)
+declare %nondeterministic function file:is-directory(
+  $dir as xs:string
+) as xs:boolean external;
+
+(:~
+ : Tests if a path/URI points to a file.
+ :
+ : @param $dir The path/URI to test.
+ : @return true if the path/URI points to a file.
+ :)
+declare %nondeterministic function file:is-file(
+  $file as xs:string
+) as xs:boolean external;
+
+(:~
+ : Moves a file given a source and a destination paths/URIs. The operation
+ : fails if the source path/URI does not point to a file or the destination
+ : path/URI is already used by a file.
+ :
+ : The operation is equivalent to calling:
+ : <pre>file:move($sourceFile, $destination, fn:false())</pre>.
+ :
+ : @param $sourceFile The path/URI of the file to move.
+ : @param $destination The detination path/URI.
+ : @return The empty sequence.
+ :)
+declare sequential function file:move(
+  $sourceFile as xs:string,
+  $destination as xs:string
+) as empty-sequence()
+{
+  file:move($sourceFile, $destination, fn:false())
+};
+
+(:~
+ : Moves a file given a source and a destination paths/URIs. The operation
+ : fails if the source path/URI does not point to a file or the destination
+ : path/URI is already used by a file and the overwrite flag evaluates to
+ : <pre>fn:false()</pre>.
+ :
+ : @param $sourceFile The path/URI of the file to move.
+ : @param $destination The destination path/URI.
+ : @param $overwrite Flag to control if the operation should overwrite the
+ :        destination file.
+ : @return The empty sequence.
+ :)
+declare sequential function file:move(
+  $sourceFile as xs:string,
+  $destination as xs:string,
+  $overwrite as xs:boolean
+) as empty-sequence()
+{
+  file:move($sourceFile, $destination, $overwrite, fn:false())
+};
+
+(:~
+ : Moves a file or directory given a source and a destination paths/URIs.
+ : The operation fails if the source path/URI does not point to a file and the
+ : recursive flag evaluates to <pre>fn:false()</pre>. The operation also fails
+ : if in at any time one destination file already exists and the overwrite flag
+ : evaluates to <pre>fn:false()</pre>.
+ :
+ : @param $source The path/URI of the file or directory to move.
+ : @param $destination The destination path/URI.
+ : @param $overwrite Flag to control if the operation should overwrite any
+ :        files that already exist at destination.
+ : @param $recursive If the operation should recursively copy a directory.
+ : @return The empty sequence.
+ :)
+declare sequential function file:move(
+  $source as xs:string,
+  $destination as xs:string,
+  $overwrite as xs:boolean,
+  $recursive as xs:boolean
+) as empty-sequence()
+{
+  file:copy($source, $destination, $overwrite, $recursive);
+  file:delete($source, $recursive);
+};
+
+(:~
+ : Reads the content of a file and returns a Base64 representation of the
+ : content.
+ :
+ : @param $file The file to read.
+ : @return The content of the file as Base64.
+ :)
+declare %nondeterministic function file:read-binary(
+  $file as xs:string
+) as xs:base64Binary external;
+
+(:~
+ : Reads the content of a file and returns a string representation of the
+ : content.
+ :
+ : The operation is equivalent to calling:
+ : <pre>file:read-text($file, "UTF-8")</pre>.
+ :
+ : @param $file The file to read.
+ : @return The content of the file as string.
+ :)
+declare function file:read-text(
+  $file as xs:string
+) as xs:string
+{
+  file:read-text($file, "UTF-8")
+};
+
+(:~
+ : Reads the content of a file using the specified encoding and returns a
+ : string representation of the content.
+ :
+ : In Zorba only the following encodings are currently supported: "UTF-8",
+ : "UTF8". The encoding parameter is case insensitive.
+ :
+ : @param $file The file to read.
+ : @param $encoding The encoding used when reading the file.
+ : @return The content of the file as string.
+ :)
+declare %nondeterministic function file:read-text(
+  $file as xs:string,
+  $encoding as xs:string
+) as xs:string external;
+
+(:~
+ : Reads the content of a file and returns a sequence of strings representing
+ : the lines in the content of the file.
+ :
+ : The operation is equivalent to calling:
+ : <pre>file:read-text-lines($file, "UTF-8")</pre>.
+ :
+ : @param $file The file to read.
+ : @return The content of the file as a sequence of strings.
+ :)
+declare function file:read-text-lines(
+  $file as xs:string
+) as xs:string*
+{
+  file:read-text-lines($file, "UTF-8")
+};
+
+(:~
+ : Reads the content of a file using the specified encoding and returns a
+ : sequence of strings representing the lines in the content of the file.
+ :
+ : This implementation considers the LF (&#xA;) character as the line
+ : separator. If a resulting line ends with the CR (&#xD;) character, this is
+ : trimmed as well. This implementation will uniformly treat LF and CRLF as
+ : line separators.
+ :
+ : In Zorba only the following encodings are currently supported: "UTF-8",
+ : "UTF8". The encoding parameter is case insensitive.
+ :
+ : @param $file The file to read.
+ : @param $encoding The encoding used when reading the file.
+ : @return The content of the file as a sequence of strings.
+ :)
+declare function file:read-text-lines(
+  $file as xs:string,
+  $encoding as xs:string
+) as xs:string*
+{
+  let $content := file:read-text($file, $encoding)
+  return fn:tokenize($content, "\n")
+};
+
+(:~
+ : Reads a file as an XML file and returns an XML document representing the
+ : content of the file. The file must be a valid XML document.
+ :
+ : The operation is equivalent to calling:
+ : <pre>file:read-xml($file, "UTF-8")</pre>.
+ :
+ : @param $file The file to read.
+ : @return An XML document containing the content of the file.
+ :)
+declare function file:read-xml(
+  $file as xs:string
+) as node()
+{
+  file:read-xml($file, "UTF-8")
+};
+
+(:~
+ : Reads a file as an XML file and returns an XML document representing the
+ : content of the file. The file must be a valid XML document.
+ :
+ : In Zorba only the following encodings are currently supported: "UTF-8",
+ : "UTF8". The encoding parameter is case insensitive.
+ :
+ : @param $file The file to read.
+ : @param $encoding The encoding used when reading the file.
+ : @return An XML document containing the content of the file.
+ :)
+declare %nondeterministic function file:read-xml(
+  $file as xs:string,
+  $encoding as xs:string
+) as node() external;
+
+(:~
  : This is an internal function that copies an entire source directory to an
  : destination directory. The caller to this function must make sure that both
  : the source and destination point to existing directories.
@@ -451,7 +571,7 @@ declare %private sequential function file:copy-directory(
 declare sequential function file:write(
   $file as xs:string,
   $content as item()*,
-  $serializer-params as item()*
+  $serializer-params as element(output:serialization-parameters)?
 ) as empty-sequence()
 {
   file:write($file, $content, $serializer-params, fn:true())
@@ -547,69 +667,15 @@ declare sequential function file:write-text(
   $overwrite as xs:boolean
 ) as empty-sequence() external;
 
-(:~
- : Appends a sequence of items to a file. Before writing to the file, the items
- : are serialized according to the <pre>$serializer-params</pre>.
- :
- : The semantics of <pre>$serializer-params</pre> is the same as for the
- : <pre>$params</pre> parameter of the <a target="_blank"
- : href="http://www.w3.org/TR/xpath-functions-11/#func-serialize">fn:serialize</a>
- : function.
- :
- : @param $file The path/URI of the file to write the content to.
- : @param $content The content to be serialized to the file.
- : @param $serializer-params Parameter to control the serialization of the
- :        content.
- : @return The empty sequence.
- :)
-declare sequential function file:append(
-  $file as xs:string,
-  $content as item()*,
-  $serializer-params as element(output:serialization-parameters)?
-) as empty-sequence()
-{
-  file:append-text(
-    $file,
-    fn:serialize($content, $serializer-params))
-};
 
-(:~
- : Appends a sequence of Base64 items as binary to a file.
- :
- : @param $file The path/URI of the file to write the content to.
- : @param $content The content to be serialized to the file.
- : @return The empty sequence.
- :)
-declare sequential function file:append-binary(
-  $file as xs:string,
-  $content as xs:base64Binary*
-) as empty-sequence() external;
-
-(:~
- : Appends a sequence of string items to a file.
- :
- : The operation is equivalent to calling:
- : <pre>file:append-text($file, $content, fn:true())</pre>.
- :
- : @param $file The path/URI of the file to write the content to.
- : @param $content The content to be serialized to the file.
- : @return The empty sequence.
- :)
-declare sequential function file:append-text(
-  $file as xs:string,
-  $content as xs:string*
-) as empty-sequence() external;
-
-
-
-
+(: ********************************************************************** :)
+(: The functions above have been updated to the new file API spec         :)
 (: ********************************************************************** :)
 
 (:~
- : Lists the file system items in a certain directory.
- : The order of the items in the result is not defined.
- : The "." and ".." items are not returned.
- : The file paths are relative to the provided $path.
+ : Lists the file system items in a certain directory. The order of the items
+ : in the resulting sequence is not defined. The "." and ".." items are not
+ : returned. The returned paths are relative to the provided <pre>$path</pre>.
  :
  : @param $path The path/URI to retrieve the children from.
  : @return The sequence of names of the direct children.
@@ -620,12 +686,13 @@ declare %nondeterministic function file:files(
 ) as xs:string* external;
 
 (:~
- : Lists all files matching the given pattern in a given directory.
- : The order of the items in the result is not defined.
- : The "." and ".." items are not considered for the match.
- : The result of this function is equivalent to the following call:
- : file:files($path, $pattern, fn:false())
- : The file paths are relative to the provided $path.
+ : Lists all files matching the given pattern in a given directory. The order
+ : of the items in the resulting sequence is not defined. The "." and ".."
+ : items are not considered for the match. The returned paths are relative to
+ : the provided <pre>$path</pre>.
+ :
+ : The operation is equivalent to calling:
+ : <pre>file:append-text($file, $content, fn:true())</pre>.
  : 
  : @param $path The path/URI to retrieve the children from.
  : @param $pattern The file name condition to be checked.
