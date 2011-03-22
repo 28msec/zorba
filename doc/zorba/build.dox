@@ -17,6 +17,11 @@
         <li> \ref cclientunix
         <li> \ref cclientwindows
       </ul>
+      <li> \ref buildjansson
+      <ul>
+        <li> \ref janssonunix
+        <li> \ref janssonwindows
+      </ul> 
       <li> \ref buildimagemagick
       <ul>
         <li> \ref imagemagickunix
@@ -147,6 +152,41 @@ Use the following extra CMake arguments when building Zorba:
 -D "CCLIENT_LIBRARY=path_to_imap-2007e\c-client\release\cclient.lib"
 \endverbatim
 
+\section buildjansson Building Jansson
+
+Zorba provides Json manipulation support using the Jansson Library (http://www.digip.org/jansson/)
+
+\subsection janssonunix Unix/Linux/Mac OSX
+
+For Linux/Unix systems, just download the Jansson library from http://www.digip.org/jansson/releases/. \n
+Then follow the instructions from http://www.digip.org/jansson/doc/2.0/gettingstarted.html#compiling-and-installing-jansson.
+
+The source use GNU Autotools (autoconf, automake, libtool), so compiling and installing is extremely simple:
+\verbatim
+./configure
+make
+make check
+make install
+\endverbatim
+
+On Fedora, starting with version 12 Jansson is also available as a package, so (as root) you can simply run: 
+\verbatim
+yum install -y jansson-devel
+\endverbatim
+
+Ubuntu packages are available from PPA of https://launchpad.net/~petri/+archive/ppa
+
+\subsection janssonwindows Windows
+
+For Windows please follow these steps:
+- download Jansson from https://github.com/akheron/jansson/zipball/master
+- rename src/jansson_config.h.win32 to src/jansson_config.h
+- replace 'snprintf' with '_snprintf' in src/dump.c lines 188 and 202 and load.c lines 96 and 108
+- replace 'json_strtoint' with 'strtol' in load.c line 481
+- add all headers and source files in src folder and create a static library
+
+There will be a new Jansson 2.0.1 release that will include the fixed described above.
+
 \section buildimagemagick Building ImageMagick
 
 Zorba provides image manipulation support using the ImageMagick Library (http://www.imagemagick.org)
@@ -159,8 +199,8 @@ On OSX, use macports to install imagemagick.
 
 \subsection imagemagickwindows Windows
 
-For windows, just download the ImageMagick windows binary (Q8-windows-dll) and install it.
 
+For Windows, just download the ImageMagick windows binary (Q8-windows-dll) and install it.
 
 
 \section mac Note for Mac OS Users 
