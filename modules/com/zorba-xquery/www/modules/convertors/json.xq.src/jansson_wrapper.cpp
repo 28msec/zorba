@@ -36,7 +36,7 @@ static void serialize_child(
 
 bool replace_all( std::string &s, char from, char to ) {
   bool replaced_any = false;
-  for ( typename std::string::size_type pos = 0; pos < s.size(); ++pos ) {
+  for ( std::string::size_type pos = 0; pos < s.size(); ++pos ) {
     if ( (pos = s.find( from, pos )) == std::string::npos )
       break;
     s.replace( pos, 1, 1, to );
@@ -46,10 +46,10 @@ bool replace_all( std::string &s, char from, char to ) {
 }
 
 bool replace_all( std::string &s,
-                  char const *from, typename std::string::size_type from_len,
-                  char const *to, typename std::string::size_type to_len ) {
+                  char const *from, std::string::size_type from_len,
+                  char const *to, std::string::size_type to_len ) {
   bool replaced_any = false;
-  for ( typename std::string::size_type pos = 0;
+  for ( std::string::size_type pos = 0;
         pos + from_len <= s.size(); pos += to_len ) {
     if ( (pos = s.find( from, pos, from_len )) == std::string::npos )
       break;
@@ -198,7 +198,7 @@ void JSON_parse(
   json_error_t lerror;
   json_t *ljson;
 
-  #if JANSSON_VERSION_HEX < 0x020000
+  #if JANSSON_MAJOR_VERSION < 2
     ljson = json_loads(aJsonString, &lerror);
   #else
     ljson = json_loads(aJsonString, 0, &lerror);
@@ -206,7 +206,7 @@ void JSON_parse(
 
   if(!ljson)
   {
-    #if JANSSON_VERSION_HEX < 0x020000
+    #if JANSSON_MAJOR_VERSION < 2
       aErrorLogSs << "Error at line: " << lerror.line << std::endl;
       aErrorLogSs << lerror.text << std::endl;
     #else
@@ -615,14 +615,14 @@ void JSON_ML_parse(
   json_t *ljson;
   zorba::String lEmptyStr("");
 
-  #if JANSSON_VERSION_HEX < 0x020000
+  #if JANSSON_MAJOR_VERSION < 2
     ljson = json_loads(aJsonString, &lerror);
   #else
     ljson = json_loads(aJsonString, 0, &lerror);
   #endif
   if(!ljson)
   {
-    #if JANSSON_VERSION_HEX < 0x020000
+    #if JANSSON_MAJOR_VERSION < 2
       aErrorLogSs << "Error at line: " << lerror.line << std::endl;
       aErrorLogSs << lerror.text << std::endl;
     #else
