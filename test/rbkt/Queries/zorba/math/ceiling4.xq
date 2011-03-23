@@ -1,0 +1,1 @@
+fn:ceiling(xs:double("NaN"))

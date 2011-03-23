@@ -353,8 +353,14 @@ namespace zorba {
     void beginVisit( const ExpIterator& );
     void endVisit  ( const ExpIterator& );
 
+    void beginVisit( const Exp10Iterator& );
+    void endVisit  ( const Exp10Iterator& );
+
     void beginVisit( const LogIterator& );
     void endVisit  ( const LogIterator& );
+
+    void beginVisit( const Log10Iterator& );
+    void endVisit  ( const Log10Iterator& );
 
     void beginVisit( const SinIterator& );
     void endVisit  ( const SinIterator& );
@@ -388,9 +394,6 @@ namespace zorba {
 
     void beginVisit( const LdexpIterator& );
     void endVisit  ( const LdexpIterator& );
-
-    void beginVisit( const Log10Iterator& );
-    void endVisit  ( const Log10Iterator& );
 
     void beginVisit( const PowIterator& );
     void endVisit  ( const PowIterator& );

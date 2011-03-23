@@ -25,9 +25,6 @@
 module namespace  excel = "http://www.zorba-xquery.com/modules/excel/statistical-zorba" ;
 
 import module namespace
-math="http://www.zorba-xquery.com/modules/math";
-
-import module namespace
 excel-math="http://www.zorba-xquery.com/modules/excel/math";
 
 import module namespace

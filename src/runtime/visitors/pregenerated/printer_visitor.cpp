@@ -1533,6 +1533,20 @@ void PrinterVisitor::endVisit ( const ExpIterator& ) {
 // </ExpIterator>
 
 
+// <Exp10Iterator>
+void PrinterVisitor::beginVisit ( const Exp10Iterator& a) {
+  thePrinter.startBeginVisit("Exp10Iterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const Exp10Iterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </Exp10Iterator>
+
+
 // <LogIterator>
 void PrinterVisitor::beginVisit ( const LogIterator& a) {
   thePrinter.startBeginVisit("LogIterator", ++theId);
@@ -1545,6 +1559,20 @@ void PrinterVisitor::endVisit ( const LogIterator& ) {
   thePrinter.endEndVisit();
 }
 // </LogIterator>
+
+
+// <Log10Iterator>
+void PrinterVisitor::beginVisit ( const Log10Iterator& a) {
+  thePrinter.startBeginVisit("Log10Iterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const Log10Iterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </Log10Iterator>
 
 
 // <SinIterator>
@@ -1699,20 +1727,6 @@ void PrinterVisitor::endVisit ( const LdexpIterator& ) {
   thePrinter.endEndVisit();
 }
 // </LdexpIterator>
-
-
-// <Log10Iterator>
-void PrinterVisitor::beginVisit ( const Log10Iterator& a) {
-  thePrinter.startBeginVisit("Log10Iterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const Log10Iterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </Log10Iterator>
 
 
 // <PowIterator>

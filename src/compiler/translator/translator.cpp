@@ -9403,7 +9403,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
     // It's not a udf. Check if it is a zorba builtin function, and if so,
     // make sure that the module it belongs to has been imported.
-    else if (f->isBuiltin() && fn_ns != XQUERY_FN_NS && fn_ns != theModuleNamespace)
+    else if (f->isBuiltin() && fn_ns != XQUERY_FN_NS && fn_ns != XQUERY_MATH_FN_NS && fn_ns != theModuleNamespace)
     {
       if (! theSctx->is_imported_builtin_module(fn_ns))
       {

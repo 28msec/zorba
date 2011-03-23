@@ -1,1 +1,1 @@
-Error: XPST0017
+Error: XPTY0004

@@ -25,6 +25,7 @@
 
 #define XQUERY_FN_NS  "http://www.w3.org/2005/xpath-functions"
 #define XQUERY_LOCAL_FN_NS "http://www.w3.org/2005/xquery-local-functions"
+#define XQUERY_MATH_FN_NS  "http://www.w3.org/2005/xpath-functions/math"
 
 //
 //

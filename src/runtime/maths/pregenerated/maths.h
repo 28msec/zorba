@@ -103,6 +103,40 @@ public:
 
 
 /**
+ * math:exp10
+ * Author: Zorba Team
+ */
+class Exp10Iterator : public UnaryBaseIterator<Exp10Iterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(Exp10Iterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(Exp10Iterator,
+    UnaryBaseIterator<Exp10Iterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (UnaryBaseIterator<Exp10Iterator, PlanIteratorState>*)this);
+  }
+
+  Exp10Iterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    PlanIter_t& child)
+    : 
+    UnaryBaseIterator<Exp10Iterator, PlanIteratorState>(sctx, loc, child)
+  {}
+
+  virtual ~Exp10Iterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
  * math:log
  * Author: Zorba Team
  */
@@ -129,6 +163,40 @@ public:
   {}
 
   virtual ~LogIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * math:log10
+ * Author: Zorba Team
+ */
+class Log10Iterator : public UnaryBaseIterator<Log10Iterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(Log10Iterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(Log10Iterator,
+    UnaryBaseIterator<Log10Iterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (UnaryBaseIterator<Log10Iterator, PlanIteratorState>*)this);
+  }
+
+  Log10Iterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    PlanIter_t& child)
+    : 
+    UnaryBaseIterator<Log10Iterator, PlanIteratorState>(sctx, loc, child)
+  {}
+
+  virtual ~Log10Iterator();
 
   void accept(PlanIterVisitor& v) const;
 
@@ -375,7 +443,7 @@ public:
 
 
 /**
- * math:cosh
+ * zorba-math:cosh
  * Author: Zorba Team
  */
 class CoshIterator : public UnaryBaseIterator<CoshIterator, PlanIteratorState>
@@ -409,7 +477,7 @@ public:
 
 
 /**
- * math:acosh
+ * zorba-math:acosh
  * Author: Zorba Team
  */
 class AcoshIterator : public UnaryBaseIterator<AcoshIterator, PlanIteratorState>
@@ -443,7 +511,7 @@ public:
 
 
 /**
- * math:fmod
+ * zorba-math:fmod
  * Author: Zorba Team
  */
 class FmodIterator : public BinaryBaseIterator<FmodIterator, PlanIteratorState>
@@ -477,7 +545,7 @@ public:
 
 
 /**
- * math:ldexp
+ * zorba-math:ldexp
  * Author: Zorba Team
  */
 class LdexpIterator : public BinaryBaseIterator<LdexpIterator, PlanIteratorState>
@@ -503,40 +571,6 @@ public:
   {}
 
   virtual ~LdexpIterator();
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
-
-/**
- * math:log10
- * Author: Zorba Team
- */
-class Log10Iterator : public UnaryBaseIterator<Log10Iterator, PlanIteratorState>
-{ 
-public:
-  SERIALIZABLE_CLASS(Log10Iterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(Log10Iterator,
-    UnaryBaseIterator<Log10Iterator, PlanIteratorState>);
-
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (UnaryBaseIterator<Log10Iterator, PlanIteratorState>*)this);
-  }
-
-  Log10Iterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    PlanIter_t& child)
-    : 
-    UnaryBaseIterator<Log10Iterator, PlanIteratorState>(sctx, loc, child)
-  {}
-
-  virtual ~Log10Iterator();
 
   void accept(PlanIterVisitor& v) const;
 
@@ -579,7 +613,7 @@ public:
 
 
 /**
- * math:sinh
+ * zorba-math:sinh
  * Author: Zorba Team
  */
 class SinhIterator : public UnaryBaseIterator<SinhIterator, PlanIteratorState>
@@ -613,7 +647,7 @@ public:
 
 
 /**
- * math:asinh
+ * zorba-math:asinh
  * Author: Zorba Team
  */
 class AsinhIterator : public UnaryBaseIterator<AsinhIterator, PlanIteratorState>
@@ -647,7 +681,7 @@ public:
 
 
 /**
- * math:tanh
+ * zorba-math:tanh
  * Author: Zorba Team
  */
 class TanhIterator : public UnaryBaseIterator<TanhIterator, PlanIteratorState>
@@ -681,7 +715,7 @@ public:
 
 
 /**
- * math:atanh
+ * zorba-math:atanh
  * Author: Zorba Team
  */
 class AtanhIterator : public UnaryBaseIterator<AtanhIterator, PlanIteratorState>
@@ -748,7 +782,7 @@ public:
 
 
 /**
- * math:is_inf
+ * zorba-math:is_inf
  * Author: Zorba Team
  */
 class IsInfIterator : public UnaryBaseIterator<IsInfIterator, PlanIteratorState>
@@ -782,7 +816,7 @@ public:
 
 
 /**
- * math:is_nan
+ * zorba-math:is_nan
  * Author: Zorba Team
  */
 class IsNaNIterator : public UnaryBaseIterator<IsNaNIterator, PlanIteratorState>
@@ -816,7 +850,7 @@ public:
 
 
 /**
- * math:modf
+ * zorba-math:modf
  * Author: Zorba Team
  */
 class ModfIteratorState : public PlanIteratorState
@@ -863,7 +897,7 @@ public:
 
 
 /**
- * math:frexp
+ * zorba-math:frexp
  * Author: Zorba Team
  */
 class FrexpIteratorState : public PlanIteratorState

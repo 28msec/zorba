@@ -332,83 +332,26 @@ Iterator tree for const-folded expr:
 Iterator tree for main query:
 <SequentialIterator>
   <SequentialIterator>
-    <CtxVarDeclareIterator varid="2" varname="math:errNS"/>
-    <CtxVarAssignIterator varid="2" varname="math:errNS" varkind="global">
-      <SingletonIterator value="xs:string(http://www.zorba-xquery.com/modules/math)"/>
-    </CtxVarAssignIterator>
-  </SequentialIterator>
-  <TreatIterator type="xs:string" quant="">
-    <CtxVarIterator varid="2" varname="math:errNS" varkind="global"/>
-  </TreatIterator>
-  <SequentialIterator>
-    <CtxVarDeclareIterator varid="3" varname="math:errValue"/>
-    <CtxVarAssignIterator varid="3" varname="math:errValue" varkind="global">
-      <QNameIterator>
-        <CtxVarIterator varid="2" varname="math:errNS" varkind="global"/>
-        <SingletonIterator value="xs:string(math:Value)"/>
-      </QNameIterator>
-    </CtxVarAssignIterator>
-  </SequentialIterator>
-  <TreatIterator type="xs:QName" quant="">
-    <CtxVarIterator varid="3" varname="math:errValue" varkind="global"/>
-  </TreatIterator>
-  <SequentialIterator>
-    <CtxVarDeclareIterator varid="4" varname="math:errNum"/>
-    <CtxVarAssignIterator varid="4" varname="math:errNum" varkind="global">
-      <QNameIterator>
-        <CtxVarIterator varid="2" varname="math:errNS" varkind="global"/>
-        <SingletonIterator value="xs:string(math:Num)"/>
-      </QNameIterator>
-    </CtxVarAssignIterator>
-  </SequentialIterator>
-  <TreatIterator type="xs:QName" quant="">
-    <CtxVarIterator varid="4" varname="math:errNum" varkind="global"/>
-  </TreatIterator>
-  <SequentialIterator>
-    <CtxVarDeclareIterator varid="5" varname="math:errDiv0"/>
-    <CtxVarAssignIterator varid="5" varname="math:errDiv0" varkind="global">
-      <QNameIterator>
-        <CtxVarIterator varid="2" varname="math:errNS" varkind="global"/>
-        <SingletonIterator value="xs:string(math:Div0)"/>
-      </QNameIterator>
-    </CtxVarAssignIterator>
-  </SequentialIterator>
-  <TreatIterator type="xs:QName" quant="">
-    <CtxVarIterator varid="5" varname="math:errDiv0" varkind="global"/>
-  </TreatIterator>
-  <SequentialIterator>
-    <CtxVarDeclareIterator varid="6" varname="math:errNA"/>
-    <CtxVarAssignIterator varid="6" varname="math:errNA" varkind="global">
-      <QNameIterator>
-        <CtxVarIterator varid="2" varname="math:errNS" varkind="global"/>
-        <SingletonIterator value="xs:string(math:NA)"/>
-      </QNameIterator>
-    </CtxVarAssignIterator>
-  </SequentialIterator>
-  <TreatIterator type="xs:QName" quant="">
-    <CtxVarIterator varid="6" varname="math:errNA" varkind="global"/>
-  </TreatIterator>
-  <SequentialIterator>
-    <CtxVarDeclareIterator varid="7" varname="width"/>
-    <CtxVarAssignIterator varid="7" varname="width" varkind="global">
+    <CtxVarDeclareIterator varid="2" varname="width"/>
+    <CtxVarAssignIterator varid="2" varname="width" varkind="global">
       <SingletonIterator value="xs:integer(10)"/>
     </CtxVarAssignIterator>
   </SequentialIterator>
   <TreatIterator type="xs:integer" quant="">
-    <CtxVarIterator varid="7" varname="width" varkind="global"/>
+    <CtxVarIterator varid="2" varname="width" varkind="global"/>
   </TreatIterator>
   <SequentialIterator>
-    <CtxVarDeclareIterator varid="8" varname="height"/>
-    <CtxVarAssignIterator varid="8" varname="height" varkind="global">
+    <CtxVarDeclareIterator varid="3" varname="height"/>
+    <CtxVarAssignIterator varid="3" varname="height" varkind="global">
       <SingletonIterator value="xs:integer(10)"/>
     </CtxVarAssignIterator>
   </SequentialIterator>
   <TreatIterator type="xs:integer" quant="">
-    <CtxVarIterator varid="8" varname="height" varkind="global"/>
+    <CtxVarIterator varid="3" varname="height" varkind="global"/>
   </TreatIterator>
   <SequentialIterator>
-    <CtxVarDeclareIterator varid="9" varname="scene"/>
-    <CtxVarAssignIterator varid="9" varname="scene" varkind="global">
+    <CtxVarDeclareIterator varid="4" varname="scene"/>
+    <CtxVarAssignIterator varid="4" varname="scene" varkind="global">
       <UDFunctionCallIterator>
         <TreatIterator quant="">
           <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,scene)" typename="*" nill allowed="0">
@@ -425,14 +368,14 @@ Iterator tree for main query:
       <HoistIterator>
         <OpToIterator>
           <SingletonIterator value="xs:integer(1)"/>
-          <CtxVarIterator varid="7" varname="width" varkind="global"/>
+          <CtxVarIterator varid="2" varname="width" varkind="global"/>
         </OpToIterator>
       </HoistIterator>
     </LetVariable>
     <LetVariable name="$$opt_temp_1" materialize="true">
       <HoistIterator>
         <TreatIterator type="[NodeXQType elementNode content=[XQType ANY_TYPE_KIND*]]" quant="">
-          <CtxVarIterator varid="9" varname="scene" varkind="global"/>
+          <CtxVarIterator varid="4" varname="scene" varkind="global"/>
         </TreatIterator>
       </HoistIterator>
     </LetVariable>
@@ -444,10 +387,10 @@ Iterator tree for main query:
             <StringJoinIterator>
               <FnConcatIterator>
                 <FnStringIterator>
-                  <CtxVarIterator varid="7" varname="width" varkind="global"/>
+                  <CtxVarIterator varid="2" varname="width" varkind="global"/>
                 </FnStringIterator>
                 <FnStringIterator>
-                  <CtxVarIterator varid="8" varname="height" varkind="global"/>
+                  <CtxVarIterator varid="3" varname="height" varkind="global"/>
                 </FnStringIterator>
               </FnConcatIterator>
               <SingletonIterator value="xs:string( )"/>
@@ -456,14 +399,14 @@ Iterator tree for main query:
             <flwor::FLWORIterator>
               <ForVariable name="aspect-ratio">
                 <SpecificNumArithIterator_DivideOperation_DECIMAL>
-                  <CtxVarIterator varid="7" varname="width" varkind="global"/>
-                  <CtxVarIterator varid="8" varname="height" varkind="global"/>
+                  <CtxVarIterator varid="2" varname="width" varkind="global"/>
+                  <CtxVarIterator varid="3" varname="height" varkind="global"/>
                 </SpecificNumArithIterator_DivideOperation_DECIMAL>
               </ForVariable>
               <ForVariable name="y">
                 <OpToIterator>
                   <SingletonIterator value="xs:integer(1)"/>
-                  <CtxVarIterator varid="8" varname="height" varkind="global"/>
+                  <CtxVarIterator varid="3" varname="height" varkind="global"/>
                 </OpToIterator>
               </ForVariable>
               <ForVariable name="y-recentered">
@@ -472,7 +415,7 @@ Iterator tree for main query:
                     <OpNumericUnaryIterator>
                       <ForVarIterator varname="y"/>
                     </OpNumericUnaryIterator>
-                    <CtxVarIterator varid="8" varname="height" varkind="global"/>
+                    <CtxVarIterator varid="3" varname="height" varkind="global"/>
                   </SpecificNumArithIterator_DivideOperation_DECIMAL>
                   <SingletonIterator value="xs:decimal(0.5)"/>
                 </SpecificNumArithIterator_AddOperation_DECIMAL>
@@ -502,7 +445,7 @@ Iterator tree for main query:
                             <SpecificNumArithIterator_SubtractOperation_DECIMAL>
                               <SpecificNumArithIterator_DivideOperation_DECIMAL>
                                 <ForVarIterator varname="x"/>
-                                <CtxVarIterator varid="7" varname="width" varkind="global"/>
+                                <CtxVarIterator varid="2" varname="width" varkind="global"/>
                               </SpecificNumArithIterator_DivideOperation_DECIMAL>
                               <SingletonIterator value="xs:decimal(0.5)"/>
                             </SpecificNumArithIterator_SubtractOperation_DECIMAL>
@@ -1156,7 +1099,7 @@ Iterator tree for vector:normalize:
   <LetVariable name="v" materialize="true">
     <LetVarIterator varname="v"/>
   </LetVariable>
-  <ForVariable name="length">
+  <LetVariable name="length" materialize="true">
     <FunctionTraceIterator>
       <SqrtIterator>
         <FnSumDoubleIterator>
@@ -1174,14 +1117,14 @@ Iterator tree for vector:normalize:
         </FnSumDoubleIterator>
       </SqrtIterator>
     </FunctionTraceIterator>
-  </ForVariable>
+  </LetVariable>
   <ForVariable name="x">
     <LetVarIterator varname="v"/>
   </ForVariable>
   <ReturnClause>
     <SpecificNumArithIterator_DivideOperation_DOUBLE>
       <ForVarIterator varname="x"/>
-      <ForVarIterator varname="length"/>
+      <LetVarIterator varname="length"/>
     </SpecificNumArithIterator_DivideOperation_DOUBLE>
   </ReturnClause>
 </flwor::FLWORIterator>
@@ -1832,19 +1775,9 @@ Iterator tree for shapes:intersect-sphere:
   <ReturnClause>
     <flwor::FLWORIterator>
       <LetVariable name="sqrt" materialize="true">
-        <FunctionTraceIterator>
-          <IfThenElseIterator>
-            <FnBooleanIterator>
-              <LetVarIterator varname="descriminant"/>
-            </FnBooleanIterator>
-            <SqrtIterator>
-              <PromoteIterator type="xs:double">
-                <LetVarIterator varname="descriminant"/>
-              </PromoteIterator>
-            </SqrtIterator>
-            <FnConcatIterator/>
-          </IfThenElseIterator>
-        </FunctionTraceIterator>
+        <SqrtIterator>
+          <LetVarIterator varname="descriminant"/>
+        </SqrtIterator>
       </LetVariable>
       <ReturnClause>
         <SequencePointAccessIterator>
@@ -1973,7 +1906,7 @@ Iterator tree for raytracer:light:
   </LetVariable>
   <ForVariable name="$$opt_temp_0">
     <HoistIterator>
-      <PromoteIterator type="xs:double">
+      <PromoteIterator type="xs:anyAtomicType">
         <LetVarIterator varname="material" targetPos="5"/>
       </PromoteIterator>
     </HoistIterator>

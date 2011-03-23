@@ -735,7 +735,16 @@ FloatImpl<FloatType> FloatImpl<FloatType>::sqrt() const
 template <typename FloatType>
 FloatImpl<FloatType> FloatImpl<FloatType>::pow(FloatImpl<FloatType> p) const
 {
-  return FloatImpl (::pow(theFloating, p.theFloating));
+  if(!p.isNaN())
+    return FloatImpl (::pow(theFloating, p.theFloating));
+  else
+    return FloatImpl(theFloating);
+}
+
+template <typename FloatType>
+FloatImpl<FloatType> FloatImpl<FloatType>::pow(int p) const
+{
+  return FloatImpl (::pow(theFloating, p));
 }
 
 
@@ -796,6 +805,12 @@ FloatImpl<FloatType> FloatImpl<FloatType>::log10() const
   return FloatImpl (::log10(theFloating));
 }
 
+template <typename FloatType>
+FloatImpl<FloatType> FloatImpl<FloatType>::exp10() const
+{
+  return FloatImpl (::pow(10, theFloating));
+}
+
 
 template <typename FloatType>
 FloatImpl<FloatType> FloatImpl<FloatType>::asin() const
@@ -811,7 +826,10 @@ FloatImpl<FloatType> FloatImpl<FloatType>::acos() const
 {
   if (*this < one_neg() || *this > one())
     return nan();
-  return FloatImpl (::acos(theFloating));
+  if(!isNegZero())
+    return FloatImpl (::acos(theFloating));
+  else
+    return FloatImpl (-::acos(theFloating));
 }
 
 

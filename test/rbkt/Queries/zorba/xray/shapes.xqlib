@@ -1,7 +1,5 @@
 module namespace shapes="http://www.xqsharp.com/raytracer/shapes";
 
-import module namespace math="http://www.w3.org/2005/xpath-functions/math" at "math.xqlib";
-
 import module namespace vector="http://www.xqsharp.com/raytracer/vector"
   at "vector.xqlib";
 

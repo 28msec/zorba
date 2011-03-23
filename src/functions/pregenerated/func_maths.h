@@ -38,13 +38,13 @@ void populate_context_maths(static_context* sctx);
 
 
 
-//fn-zorba-math:sqrt
-class fn_zorba_math_sqrt : public function
+//math:sqrt
+class math_sqrt : public function
 {
 public:
-  fn_zorba_math_sqrt(const signature& sig)
+  math_sqrt(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_MATH_SQRT_1)
+    function(sig, FunctionConsts::MATH_SQRT_1)
   {
   }
 
@@ -52,13 +52,13 @@ public:
 };
 
 
-//fn-zorba-math:exp
-class fn_zorba_math_exp : public function
+//math:exp
+class math_exp : public function
 {
 public:
-  fn_zorba_math_exp(const signature& sig)
+  math_exp(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_MATH_EXP_1)
+    function(sig, FunctionConsts::MATH_EXP_1)
   {
   }
 
@@ -66,13 +66,13 @@ public:
 };
 
 
-//fn-zorba-math:log
-class fn_zorba_math_log : public function
+//math:exp10
+class math_exp10 : public function
 {
 public:
-  fn_zorba_math_log(const signature& sig)
+  math_exp10(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_MATH_LOG_1)
+    function(sig, FunctionConsts::MATH_EXP10_1)
   {
   }
 
@@ -80,13 +80,13 @@ public:
 };
 
 
-//fn-zorba-math:sin
-class fn_zorba_math_sin : public function
+//math:log
+class math_log : public function
 {
 public:
-  fn_zorba_math_sin(const signature& sig)
+  math_log(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_MATH_SIN_1)
+    function(sig, FunctionConsts::MATH_LOG_1)
   {
   }
 
@@ -94,13 +94,13 @@ public:
 };
 
 
-//fn-zorba-math:cos
-class fn_zorba_math_cos : public function
+//math:log10
+class math_log10 : public function
 {
 public:
-  fn_zorba_math_cos(const signature& sig)
+  math_log10(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_MATH_COS_1)
+    function(sig, FunctionConsts::MATH_LOG10_1)
   {
   }
 
@@ -108,13 +108,13 @@ public:
 };
 
 
-//fn-zorba-math:tan
-class fn_zorba_math_tan : public function
+//math:sin
+class math_sin : public function
 {
 public:
-  fn_zorba_math_tan(const signature& sig)
+  math_sin(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_MATH_TAN_1)
+    function(sig, FunctionConsts::MATH_SIN_1)
   {
   }
 
@@ -122,13 +122,13 @@ public:
 };
 
 
-//fn-zorba-math:asin
-class fn_zorba_math_asin : public function
+//math:cos
+class math_cos : public function
 {
 public:
-  fn_zorba_math_asin(const signature& sig)
+  math_cos(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_MATH_ASIN_1)
+    function(sig, FunctionConsts::MATH_COS_1)
   {
   }
 
@@ -136,13 +136,13 @@ public:
 };
 
 
-//fn-zorba-math:acos
-class fn_zorba_math_acos : public function
+//math:tan
+class math_tan : public function
 {
 public:
-  fn_zorba_math_acos(const signature& sig)
+  math_tan(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_MATH_ACOS_1)
+    function(sig, FunctionConsts::MATH_TAN_1)
   {
   }
 
@@ -150,13 +150,13 @@ public:
 };
 
 
-//fn-zorba-math:atan
-class fn_zorba_math_atan : public function
+//math:asin
+class math_asin : public function
 {
 public:
-  fn_zorba_math_atan(const signature& sig)
+  math_asin(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_MATH_ATAN_1)
+    function(sig, FunctionConsts::MATH_ASIN_1)
   {
   }
 
@@ -164,13 +164,41 @@ public:
 };
 
 
-//fn-zorba-math:atan2
-class fn_zorba_math_atan2 : public function
+//math:acos
+class math_acos : public function
 {
 public:
-  fn_zorba_math_atan2(const signature& sig)
+  math_acos(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_MATH_ATAN2_2)
+    function(sig, FunctionConsts::MATH_ACOS_1)
+  {
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//math:atan
+class math_atan : public function
+{
+public:
+  math_atan(const signature& sig)
+    :
+    function(sig, FunctionConsts::MATH_ATAN_1)
+  {
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//math:atan2
+class math_atan2 : public function
+{
+public:
+  math_atan2(const signature& sig)
+    :
+    function(sig, FunctionConsts::MATH_ATAN2_2)
   {
   }
 
@@ -234,27 +262,13 @@ public:
 };
 
 
-//fn-zorba-math:log10
-class fn_zorba_math_log10 : public function
+//math:pow
+class math_pow : public function
 {
 public:
-  fn_zorba_math_log10(const signature& sig)
+  math_pow(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_MATH_LOG10_1)
-  {
-  }
-
-  CODEGEN_DECL();
-};
-
-
-//fn-zorba-math:pow
-class fn_zorba_math_pow : public function
-{
-public:
-  fn_zorba_math_pow(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_MATH_POW_2)
+    function(sig, FunctionConsts::MATH_POW_2)
   {
   }
 
@@ -318,13 +332,13 @@ public:
 };
 
 
-//fn-zorba-math:pi
-class fn_zorba_math_pi : public function
+//math:pi
+class math_pi : public function
 {
 public:
-  fn_zorba_math_pi(const signature& sig)
+  math_pi(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_MATH_PI_0)
+    function(sig, FunctionConsts::MATH_PI_0)
   {
   }
 

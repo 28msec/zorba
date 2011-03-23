@@ -1,7 +1,5 @@
 module namespace vector="http://www.xqsharp.com/raytracer/vector";
 
-import module namespace zorba-math = "http://www.zorba-xquery.com/modules/math";
-
 
 declare function vector:add($v1 as xs:double*, $v2 as xs:double*) as xs:double*
 {
@@ -49,7 +47,7 @@ declare function vector:blend($v1 as xs:double*, $v2 as xs:double*) as xs:double
 
 declare function vector:length($v as xs:double*) as xs:double?
 {
-  zorba-math:sqrt(sum(for $x in $v return $x * $x))
+  math:sqrt(sum(for $x in $v return $x * $x))
 };
 
 

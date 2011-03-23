@@ -16,6 +16,8 @@
 
 #include <vector>
 
+#include "context/static_context.h"
+
 #include "runtime/maths/maths.h"
 
 #include "types/casting.h"
@@ -27,6 +29,7 @@
 #include "store/api/item.h"
 
 #include "zorbaerrors/error_manager.h"
+#include "zorbatypes/numconversions.h"
 
 namespace zorba {
 
@@ -64,6 +67,23 @@ ExpIterator::nextImpl (store::Item_t& result, PlanState& planState) const
   STACK_END (state);
 }
 
+//math:exp10
+
+bool
+Exp10Iterator::nextImpl (store::Item_t& result, PlanState& planState) const
+{
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+
+  if (consumeNext(result, this->theChild.getp(), planState )) 
+  {
+    GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().exp10());
+    STACK_PUSH (true, state);
+  }
+  STACK_END (state);
+}
+
+
 //math:log
 bool
 LogIterator::nextImpl (store::Item_t& result, PlanState& planState) const
@@ -74,6 +94,21 @@ LogIterator::nextImpl (store::Item_t& result, PlanState& planState) const
   if (consumeNext(result, this->theChild.getp(), planState )) 
   {
     GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().log());
+    STACK_PUSH (true, state);
+  }
+  STACK_END (state);
+}
+
+//math:log10
+bool
+Log10Iterator::nextImpl (store::Item_t& result, PlanState& planState) const
+{
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+
+  if (consumeNext(result, this->theChild.getp(), planState )) 
+  {
+    GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().log10());
     STACK_PUSH (true, state);
   }
   STACK_END (state);
@@ -293,21 +328,6 @@ LdexpIterator::nextImpl (store::Item_t& result, PlanState& planState) const
   STACK_END(state);
 }
 
-//math:log10
-bool
-Log10Iterator::nextImpl (store::Item_t& result, PlanState& planState) const
-{
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
-
-  if (consumeNext(result, theChild.getp(), planState )) 
-  {
-    GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().log10());
-    STACK_PUSH (true, state);
-  }
-  STACK_END (state);
-}
-
 //math:pow
 bool
 PowIterator::nextImpl (store::Item_t& result, PlanState& planState) const
@@ -323,16 +343,64 @@ PowIterator::nextImpl (store::Item_t& result, PlanState& planState) const
     if (consumeNext(n1, this->theChild1.getp(), planState))
     {
       {
-        xs_double doub1 = n0->getDoubleValue();
-        xs_double  doub2 = n1->getDoubleValue();
+        xqtref_t type;
 
-        GENV_ITEMFACTORY->createDouble(result, doub1.pow(doub2));
+        const TypeManager* tm = theSctx->get_typemanager();
+
+        const RootTypeManager& rtm = GENV_TYPESYSTEM;
+        xs_double doub1 = n0->getDoubleValue();
+        //xs_double  doub2 = n1->getDoubleValue();
+
+        //GENV_ITEMFACTORY->createDouble(result, doub1.pow(doub2));
+
+        assert(n1->isAtomic());
+
+        type = tm->create_value_type(n1);
+
+        if (TypeOps::is_subtype(tm, *type, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+        {
+          GenericCast::castToAtomic(result, result, &*rtm.DOUBLE_TYPE_ONE, tm);
+          type = tm->create_value_type(result);
+        }
+
+        if (TypeOps::is_subtype(tm, *type, *rtm.DOUBLE_TYPE_ONE))
+        {
+          GENV_ITEMFACTORY->createDouble (result, doub1.pow(n1->getDoubleValue()));
+        }
+        else if (TypeOps::is_subtype(tm, *type, *rtm.FLOAT_TYPE_ONE))
+        {
+          store::Item_t n1_double;
+          GenericCast::castToAtomic(n1_double, n1, rtm.DOUBLE_TYPE_ONE.getp(), tm);
+          GENV_ITEMFACTORY->createDouble (result, doub1.pow(n1_double->getDoubleValue()));
+        }
+        else if (TypeOps::is_subtype(tm, *type, *rtm.INTEGER_TYPE_ONE))
+        {
+          xs_int  n1_int;
+          xs_integer n1_integer = n1->getIntegerValue();
+          if(!NumConversions::integerToInt(n1_integer, n1_int))
+          {
+            ZORBA_ERROR_LOC_DESC( XPTY0004,
+                                  loc, "Second operator cannot be casted from Integer to C language int.");
+          }
+          GENV_ITEMFACTORY->createDouble(result, doub1.pow(n1_int));
+        }
+        else if (TypeOps::is_subtype(tm, *type, *rtm.DECIMAL_TYPE_ONE))
+        {
+          store::Item_t n1_double;
+          GenericCast::castToAtomic(n1_double, n1, rtm.DOUBLE_TYPE_ONE.getp(), tm);
+          GENV_ITEMFACTORY->createDouble(result, doub1.pow(n1_double->getDoubleValue()));
+        }
+        else
+        {
+          ZORBA_ERROR_LOC_DESC( XPTY0004,
+                                loc, "Wrong second operand type for math:pow.");
+        }
       }
 
       if (consumeNext(n0, this->theChild0.getp(), planState) ||
           consumeNext(n1, this->theChild1.getp(), planState))
         ZORBA_ERROR_DESC(XPTY0004,
-                         "Pow function has a sequence longer than one as an operand.");
+                         "math:pow function has a sequence longer than one as an operand.");
       STACK_PUSH(true, state);
     }
   }
@@ -407,7 +475,7 @@ PiNumberIterator::nextImpl (store::Item_t& result, PlanState& planState) const
   PlanIteratorState* state;
   DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
 
-  GENV_ITEMFACTORY->createDouble(result, 3.1415926535897932384626433832795);
+  GENV_ITEMFACTORY->createDouble(result, 3.141592653589793e0);
   STACK_PUSH (true, state);
 
   STACK_END (state);

@@ -8,6 +8,10 @@
                      define="XQUERY_FN_NS"
                      prefix="fn"/>
 
+    <zorba:namespace uri="http://www.w3.org/2005/xpath-functions/math"
+                     define="XQUERY_MATH_FN_NS"
+                     prefix="math"/>
+
     <zorba:namespace uri="http://www.zorba-xquery.com/modules/math"
                      define="ZORBA_MATH_FN_NS"
                      prefix="fn-zorba-math"/>

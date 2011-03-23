@@ -77,6 +77,30 @@ ExpIterator::~ExpIterator() {}
 // </ExpIterator>
 
 
+// <Exp10Iterator>
+const char* Exp10Iterator::class_name_str = "Exp10Iterator";
+Exp10Iterator::class_factory<Exp10Iterator>
+Exp10Iterator::g_class_factory;
+
+const serialization::ClassVersion 
+Exp10Iterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int Exp10Iterator::class_versions_count =
+sizeof(Exp10Iterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void Exp10Iterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  theChild->accept(v);
+
+  v.endVisit(*this);
+}
+
+Exp10Iterator::~Exp10Iterator() {}
+
+// </Exp10Iterator>
+
+
 // <LogIterator>
 const char* LogIterator::class_name_str = "LogIterator";
 LogIterator::class_factory<LogIterator>
@@ -99,6 +123,30 @@ void LogIterator::accept(PlanIterVisitor& v) const {
 LogIterator::~LogIterator() {}
 
 // </LogIterator>
+
+
+// <Log10Iterator>
+const char* Log10Iterator::class_name_str = "Log10Iterator";
+Log10Iterator::class_factory<Log10Iterator>
+Log10Iterator::g_class_factory;
+
+const serialization::ClassVersion 
+Log10Iterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int Log10Iterator::class_versions_count =
+sizeof(Log10Iterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void Log10Iterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  theChild->accept(v);
+
+  v.endVisit(*this);
+}
+
+Log10Iterator::~Log10Iterator() {}
+
+// </Log10Iterator>
 
 
 // <SinIterator>
@@ -366,30 +414,6 @@ theChild1->accept(v);
 LdexpIterator::~LdexpIterator() {}
 
 // </LdexpIterator>
-
-
-// <Log10Iterator>
-const char* Log10Iterator::class_name_str = "Log10Iterator";
-Log10Iterator::class_factory<Log10Iterator>
-Log10Iterator::g_class_factory;
-
-const serialization::ClassVersion 
-Log10Iterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int Log10Iterator::class_versions_count =
-sizeof(Log10Iterator::class_versions)/sizeof(struct serialization::ClassVersion);
-
-void Log10Iterator::accept(PlanIterVisitor& v) const {
-  v.beginVisit(*this);
-
-  theChild->accept(v);
-
-  v.endVisit(*this);
-}
-
-Log10Iterator::~Log10Iterator() {}
-
-// </Log10Iterator>
 
 
 // <PowIterator>

@@ -30,7 +30,7 @@ namespace zorba{
 
 
 
-PlanIter_t fn_zorba_math_sqrt::codegen(
+PlanIter_t math_sqrt::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -40,7 +40,7 @@ PlanIter_t fn_zorba_math_sqrt::codegen(
   return new SqrtIterator(sctx, loc, argv[0]);
 }
 
-PlanIter_t fn_zorba_math_exp::codegen(
+PlanIter_t math_exp::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -50,7 +50,17 @@ PlanIter_t fn_zorba_math_exp::codegen(
   return new ExpIterator(sctx, loc, argv[0]);
 }
 
-PlanIter_t fn_zorba_math_log::codegen(
+PlanIter_t math_exp10::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new Exp10Iterator(sctx, loc, argv[0]);
+}
+
+PlanIter_t math_log::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -60,7 +70,17 @@ PlanIter_t fn_zorba_math_log::codegen(
   return new LogIterator(sctx, loc, argv[0]);
 }
 
-PlanIter_t fn_zorba_math_sin::codegen(
+PlanIter_t math_log10::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new Log10Iterator(sctx, loc, argv[0]);
+}
+
+PlanIter_t math_sin::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -70,7 +90,7 @@ PlanIter_t fn_zorba_math_sin::codegen(
   return new SinIterator(sctx, loc, argv[0]);
 }
 
-PlanIter_t fn_zorba_math_cos::codegen(
+PlanIter_t math_cos::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -80,7 +100,7 @@ PlanIter_t fn_zorba_math_cos::codegen(
   return new CosIterator(sctx, loc, argv[0]);
 }
 
-PlanIter_t fn_zorba_math_tan::codegen(
+PlanIter_t math_tan::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -90,7 +110,7 @@ PlanIter_t fn_zorba_math_tan::codegen(
   return new TanIterator(sctx, loc, argv[0]);
 }
 
-PlanIter_t fn_zorba_math_asin::codegen(
+PlanIter_t math_asin::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -100,7 +120,7 @@ PlanIter_t fn_zorba_math_asin::codegen(
   return new ArcSinIterator(sctx, loc, argv[0]);
 }
 
-PlanIter_t fn_zorba_math_acos::codegen(
+PlanIter_t math_acos::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -110,7 +130,7 @@ PlanIter_t fn_zorba_math_acos::codegen(
   return new ArcCosIterator(sctx, loc, argv[0]);
 }
 
-PlanIter_t fn_zorba_math_atan::codegen(
+PlanIter_t math_atan::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -120,7 +140,7 @@ PlanIter_t fn_zorba_math_atan::codegen(
   return new ArcTanIterator(sctx, loc, argv[0]);
 }
 
-PlanIter_t fn_zorba_math_atan2::codegen(
+PlanIter_t math_atan2::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -170,17 +190,7 @@ PlanIter_t fn_zorba_math_ldexp::codegen(
   return new LdexpIterator(sctx, loc, argv[0], argv[1]);
 }
 
-PlanIter_t fn_zorba_math_log10::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
-{
-  return new Log10Iterator(sctx, loc, argv[0]);
-}
-
-PlanIter_t fn_zorba_math_pow::codegen(
+PlanIter_t math_pow::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -230,7 +240,7 @@ PlanIter_t fn_zorba_math_atanh::codegen(
   return new AtanhIterator(sctx, loc, argv[0]);
 }
 
-PlanIter_t fn_zorba_math_pi::codegen(
+PlanIter_t math_pi::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -282,62 +292,74 @@ PlanIter_t fn_zorba_math_frexp::codegen(
 
 void populate_context_maths(static_context* sctx)
 {
-  DECL(sctx, fn_zorba_math_sqrt,
-      (createQName("http://www.zorba-xquery.com/modules/math","","sqrt"),
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
+  DECL(sctx, math_sqrt,
+      (createQName("http://www.w3.org/2005/xpath-functions/math","","sqrt"),
+      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION,
+      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION));
 
 
-  DECL(sctx, fn_zorba_math_exp,
-      (createQName("http://www.zorba-xquery.com/modules/math","","exp"),
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
+  DECL(sctx, math_exp,
+      (createQName("http://www.w3.org/2005/xpath-functions/math","","exp"),
+      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION,
+      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION));
 
 
-  DECL(sctx, fn_zorba_math_log,
-      (createQName("http://www.zorba-xquery.com/modules/math","","log"),
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
+  DECL(sctx, math_exp10,
+      (createQName("http://www.w3.org/2005/xpath-functions/math","","exp10"),
+      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION,
+      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION));
 
 
-  DECL(sctx, fn_zorba_math_sin,
-      (createQName("http://www.zorba-xquery.com/modules/math","","sin"),
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
+  DECL(sctx, math_log,
+      (createQName("http://www.w3.org/2005/xpath-functions/math","","log"),
+      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION,
+      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION));
 
 
-  DECL(sctx, fn_zorba_math_cos,
-      (createQName("http://www.zorba-xquery.com/modules/math","","cos"),
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
+  DECL(sctx, math_log10,
+      (createQName("http://www.w3.org/2005/xpath-functions/math","","log10"),
+      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION,
+      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION));
 
 
-  DECL(sctx, fn_zorba_math_tan,
-      (createQName("http://www.zorba-xquery.com/modules/math","","tan"),
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
+  DECL(sctx, math_sin,
+      (createQName("http://www.w3.org/2005/xpath-functions/math","","sin"),
+      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION,
+      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION));
 
 
-  DECL(sctx, fn_zorba_math_asin,
-      (createQName("http://www.zorba-xquery.com/modules/math","","asin"),
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
+  DECL(sctx, math_cos,
+      (createQName("http://www.w3.org/2005/xpath-functions/math","","cos"),
+      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION,
+      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION));
 
 
-  DECL(sctx, fn_zorba_math_acos,
-      (createQName("http://www.zorba-xquery.com/modules/math","","acos"),
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
+  DECL(sctx, math_tan,
+      (createQName("http://www.w3.org/2005/xpath-functions/math","","tan"),
+      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION,
+      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION));
 
 
-  DECL(sctx, fn_zorba_math_atan,
-      (createQName("http://www.zorba-xquery.com/modules/math","","atan"),
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
+  DECL(sctx, math_asin,
+      (createQName("http://www.w3.org/2005/xpath-functions/math","","asin"),
+      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION,
+      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION));
 
 
-  DECL(sctx, fn_zorba_math_atan2,
-      (createQName("http://www.zorba-xquery.com/modules/math","","atan2"),
+  DECL(sctx, math_acos,
+      (createQName("http://www.w3.org/2005/xpath-functions/math","","acos"),
+      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION,
+      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION));
+
+
+  DECL(sctx, math_atan,
+      (createQName("http://www.w3.org/2005/xpath-functions/math","","atan"),
+      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION,
+      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION));
+
+
+  DECL(sctx, math_atan2,
+      (createQName("http://www.w3.org/2005/xpath-functions/math","","atan2"),
       GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
       GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
       GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
@@ -369,17 +391,11 @@ void populate_context_maths(static_context* sctx)
       GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
 
 
-  DECL(sctx, fn_zorba_math_log10,
-      (createQName("http://www.zorba-xquery.com/modules/math","","log10"),
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
-
-
-  DECL(sctx, fn_zorba_math_pow,
-      (createQName("http://www.zorba-xquery.com/modules/math","","pow"),
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
+  DECL(sctx, math_pow,
+      (createQName("http://www.w3.org/2005/xpath-functions/math","","pow"),
+      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE,
+      GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION));
 
 
   DECL(sctx, fn_zorba_math_sinh,
@@ -406,8 +422,8 @@ void populate_context_maths(static_context* sctx)
       GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
 
 
-  DECL(sctx, fn_zorba_math_pi,
-      (createQName("http://www.zorba-xquery.com/modules/math","","pi"),
+  DECL(sctx, math_pi,
+      (createQName("http://www.w3.org/2005/xpath-functions/math","","pi"),
       GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
 
 

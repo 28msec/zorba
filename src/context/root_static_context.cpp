@@ -37,6 +37,7 @@ static const char* default_ns_initializers [] =
   "xsi", XSI_NS,
   "local", XQUERY_LOCAL_FN_NS,
   "err", XQUERY_ERR_NS,
+  "math", XQUERY_MATH_FN_NS,
   NULL, NULL
 };
 

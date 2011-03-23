@@ -1,7 +1,5 @@
 module namespace raytracer="http://www.xqsharp.com/raytracer";
 
-import module namespace zorba-math = "http://www.zorba-xquery.com/modules/math";
-
 import module namespace vector="http://www.xqsharp.com/raytracer/vector" at "vector.xqlib";
 import module namespace shapes="http://www.xqsharp.com/raytracer/shapes" at "shapes.xqlib";
 import module namespace materials="http://www.xqsharp.com/raytracer/materials" at "materials.xqlib";
@@ -137,7 +135,7 @@ declare function raytracer:light($scene as element(),
                      
         vector:scale(
           $light-color,
-          zorba-math:pow($specular, $surface-smoothness) * $surface-reflectiveness
+          math:pow($specular, $surface-smoothness) * $surface-reflectiveness
         )[$specular gt 0]
       ),
       3

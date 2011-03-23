@@ -24,8 +24,6 @@
 
 module namespace sim = "http://www.zorba-xquery.com/modules/data-cleaning/string-similarity";
 
-import module namespace math = "http://www.zorba-xquery.com/modules/math";
-
 import module namespace set  = "http://www.zorba-xquery.com/modules/data-cleaning/set-similarity";
 
 (:~

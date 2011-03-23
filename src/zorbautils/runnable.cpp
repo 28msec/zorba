@@ -178,7 +178,7 @@ zorba::Runnable::suspend(unsigned long aTimeInMs /*= 0*/)
 
   pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
   pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
-  pthread_cleanup_push(mutexCleanupHandler, &theMutex);
+  pthread_cleanup_push(mutexCleanupHandler, &theCondition);
 
   theStatus = SUSPENDED;
 
@@ -193,6 +193,7 @@ zorba::Runnable::suspend(unsigned long aTimeInMs /*= 0*/)
   pthread_testcancel();
   pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
   pthread_cleanup_pop(1);
+  theMutex.unlock();
 #endif
 }
 
@@ -201,8 +202,10 @@ zorba::Runnable::suspend(unsigned long aTimeInMs /*= 0*/)
 void
 zorba::Runnable::mutexCleanupHandler(void* param)
 {
-  Mutex* lMutex = static_cast<Mutex*>(param);
-  lMutex->unlock();
+  //Mutex* lMutex = static_cast<Mutex*>(param);
+  //lMutex->unlock();
+  Condition *lCondition = static_cast<Condition*>(param);
+  lCondition->signal();
 }
 #endif
 

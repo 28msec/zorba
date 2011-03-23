@@ -1,4 +1,4 @@
 import module namespace
-math="http://www.zorba-xquery.com/modules/math";
+zorba-math="http://www.zorba-xquery.com/modules/math";
 
-math:trunc(math:pi(), 2)
+zorba-math:trunc(math:pi(), 2)

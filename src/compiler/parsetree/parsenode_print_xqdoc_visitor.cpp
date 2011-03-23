@@ -257,6 +257,7 @@ ParseNodePrintXQDocVisitor(store::Item_t& aResult, const string& aFileName)
   theFactory(GENV_ITEMFACTORY)
 {
   theNamespaces["fn"] = "http://www.w3.org/2005/xpath-functions";
+  theNamespaces["math"] = "http://www.w3.org/2005/xpath-functions/math";
   theNamespaces[""] = "http://www.w3.org/2005/xpath-functions";
   theNamespaces["xs"] = "http://www.w3.org/2001/XMLSchema";
   theNamespaces["local"] = "http://www.w3.org/2005/xquery-local-functions";

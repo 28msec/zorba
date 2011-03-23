@@ -1,0 +1,1 @@
+math:exp(math:pi())

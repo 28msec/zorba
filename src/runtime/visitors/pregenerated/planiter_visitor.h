@@ -232,7 +232,11 @@ namespace zorba{
 
     class ExpIterator;
 
+    class Exp10Iterator;
+
     class LogIterator;
+
+    class Log10Iterator;
 
     class SinIterator;
 
@@ -255,8 +259,6 @@ namespace zorba{
     class FmodIterator;
 
     class LdexpIterator;
-
-    class Log10Iterator;
 
     class PowIterator;
 
@@ -771,8 +773,14 @@ public:
     virtual void beginVisit ( const ExpIterator& ) = 0;
     virtual void endVisit   ( const ExpIterator& ) = 0;
 
+    virtual void beginVisit ( const Exp10Iterator& ) = 0;
+    virtual void endVisit   ( const Exp10Iterator& ) = 0;
+
     virtual void beginVisit ( const LogIterator& ) = 0;
     virtual void endVisit   ( const LogIterator& ) = 0;
+
+    virtual void beginVisit ( const Log10Iterator& ) = 0;
+    virtual void endVisit   ( const Log10Iterator& ) = 0;
 
     virtual void beginVisit ( const SinIterator& ) = 0;
     virtual void endVisit   ( const SinIterator& ) = 0;
@@ -806,9 +814,6 @@ public:
 
     virtual void beginVisit ( const LdexpIterator& ) = 0;
     virtual void endVisit   ( const LdexpIterator& ) = 0;
-
-    virtual void beginVisit ( const Log10Iterator& ) = 0;
-    virtual void endVisit   ( const Log10Iterator& ) = 0;
 
     virtual void beginVisit ( const PowIterator& ) = 0;
     virtual void endVisit   ( const PowIterator& ) = 0;

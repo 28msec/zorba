@@ -88,10 +88,11 @@ public:
 class fn_round : public function
 {
 public:
-  fn_round(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ROUND_1)
+  fn_round(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
+    theKind = (sig.paramCount() == 1 ?
+                FunctionConsts::FN_ROUND_1 :
+                FunctionConsts::FN_ROUND_2);
   }
 
   CODEGEN_DECL();

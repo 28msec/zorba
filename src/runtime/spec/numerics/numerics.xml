@@ -82,6 +82,11 @@
       <zorba:param>xs:anyAtomicType?</zorba:param>
       <zorba:output>xs:anyAtomicType?</zorba:output>
     </zorba:signature>
+    <zorba:signature localname="round" prefix="fn">
+      <zorba:param>xs:anyAtomicType?</zorba:param>
+      <zorba:param>xs:integer</zorba:param>
+      <zorba:output>xs:anyAtomicType?</zorba:output>
+    </zorba:signature>
   </zorba:function>
 </zorba:iterator>
 

@@ -481,12 +481,15 @@ void operator&(Archiver &ar, float &obj)
 {
   if(ar.is_serializing_out())
   {
-    //+char  strtemp[100];
-    //+sprintf(strtemp, "%.7e", (double)obj);
+    char  strtemp[100];
     FloatImpl<float> zorba_float(obj);
     zstring float_str = zorba_float.toString();
+    if(isdigit(float_str.c_str()[0]))
+      sprintf(strtemp, "%.7e", (double)obj);
+    else
+      strcpy(strtemp, float_str.c_str());
 
-    ar.add_simple_field("float", float_str.c_str(), &obj, ARCHIVE_FIELD_NORMAL);
+    ar.add_simple_field("float", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
   }
   else
   {
@@ -516,12 +519,19 @@ void operator&(Archiver &ar, double &obj)
 {
   if(ar.is_serializing_out())
   {
-    //+char  strtemp[100];
-    //+sprintf(strtemp, "%.16e", obj);
+    char  strtemp[100];
     FloatImpl<double>    zorba_double(obj);
     zstring   double_str = zorba_double.toString();
+    if(isdigit(double_str.c_str()[0]))
+      sprintf(strtemp, "%.16e", obj);
+    else
+      strcpy(strtemp, double_str.c_str());
 
-    ar.add_simple_field("double", double_str.c_str(), &obj, ARCHIVE_FIELD_NORMAL);
+    if((obj < 2.1) && (obj > 2))
+    {
+      int i=0;
+    }
+    ar.add_simple_field("double", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
   }
   else
   {

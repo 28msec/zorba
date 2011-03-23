@@ -271,6 +271,8 @@ public:
 
   FloatImpl<FloatType> exp() const;
 
+  FloatImpl<FloatType> exp10() const;
+
   FloatImpl<FloatType> log() const;
 
   FloatImpl<FloatType> log10() const;
@@ -302,6 +304,8 @@ public:
   FloatImpl<FloatType> atan2(FloatImpl<FloatType> x) const;
 
   FloatImpl<FloatType> pow(FloatImpl<FloatType> p) const;
+
+  FloatImpl<FloatType> pow(int p) const;
 
   FloatImpl<FloatType> fmod(FloatImpl<FloatType> p) const;
 

@@ -254,13 +254,14 @@ FloorIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END (state);
 }
 
-//6.4.4 fn:round
 bool
 RoundIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item;
   store::Item_t res;
   xqtref_t type;
+  store::Item_t precision;
+  Integer precision_integer = Integer::parseInt((int32_t)0);
 
   const TypeManager* tm = theSctx->get_typemanager();
   const RootTypeManager& rtm = GENV_TYPESYSTEM;
@@ -270,6 +271,14 @@ RoundIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   if (consumeNext(result, theChildren[0].getp(), planState))
   {
+    if (theChildren.size() == 2) 
+    {
+      consumeNext(precision, theChildren[1].getp(), planState);
+      assert(precision->isAtomic());
+
+      precision_integer = precision->getIntegerValue();
+    }
+
     //get the value and the type of the item
     assert(result->isAtomic());
 
@@ -284,19 +293,22 @@ RoundIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     //item type is subtype of DOUBLE
     if ( TypeOps::is_subtype(tm, *type, *rtm.DOUBLE_TYPE_ONE))
-      GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().round());
+      GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().round(precision_integer));
 
     //item type is subtype of FLOAT
     else if ( TypeOps::is_subtype(tm, *type, *rtm.FLOAT_TYPE_ONE))
-      GENV_ITEMFACTORY->createFloat(result, result->getFloatValue().round());
+      GENV_ITEMFACTORY->createFloat(result, result->getFloatValue().round(precision_integer));
 
     //item type is subtype of INTEGER 
     else if(TypeOps::is_subtype(tm, *type, *rtm.INTEGER_TYPE_ONE))
-    { /* do nothing */ }
+    { 
+      if(precision_integer < zorba::Integer::zero())
+        GENV_ITEMFACTORY->createInteger(result, result->getIntegerValue().round(precision_integer));
+    }
 
     //item type is subtype of DECIMAL
     else if (TypeOps::is_subtype(tm, *type, *rtm.DECIMAL_TYPE_ONE))
-      GENV_ITEMFACTORY->createDecimal(result, result->getDecimalValue().round());
+      GENV_ITEMFACTORY->createDecimal(result, result->getDecimalValue().round(precision_integer));
 
     else
     {

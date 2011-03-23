@@ -116,6 +116,13 @@ void populate_context_numerics(static_context* sctx)
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
 
+  DECL(sctx, fn_round,
+      (createQName("http://www.w3.org/2005/xpath-functions","","round"),
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+
+
   DECL(sctx, fn_round_half_to_even,
       (createQName("http://www.w3.org/2005/xpath-functions","","round-half-to-even"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,

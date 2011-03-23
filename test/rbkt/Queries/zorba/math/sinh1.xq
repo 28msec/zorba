@@ -1,3 +1,3 @@
 import module namespace fn-zorba-math = "http://www.zorba-xquery.com/modules/math";
 
-fn-zorba-math:sinh(fn-zorba-math:pi() div 2)
+fn-zorba-math:sinh(math:pi() div 2)

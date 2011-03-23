@@ -1,0 +1,1 @@
+fn:floor(xs:double("NaN"))
