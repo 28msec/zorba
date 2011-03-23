@@ -32,7 +32,7 @@ ELSE(NOT ZORBA_WITH_FILE_ACCESS)
   )
   SET_TARGET_PROPERTIES(xqdoc PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD 1)
 
-  ADD_TEST(doc/zorba/make_xqdoc
+  ADD_TEST(doc/stress_tests/make_xqdoc
       ${ZORBA_EXE_SCRIPT}
       --omit-xml-declaration
       -f
