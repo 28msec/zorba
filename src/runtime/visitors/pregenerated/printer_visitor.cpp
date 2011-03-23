@@ -2220,6 +2220,20 @@ void PrinterVisitor::endVisit ( const ValidateIterator& ) {
 
 #endif
 
+// <ZorbaValidateInPlaceIterator>
+void PrinterVisitor::beginVisit ( const ZorbaValidateInPlaceIterator& a) {
+  thePrinter.startBeginVisit("ZorbaValidateInPlaceIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const ZorbaValidateInPlaceIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </ZorbaValidateInPlaceIterator>
+
+
 // <ZorbaSchemaTypeIterator>
 void PrinterVisitor::beginVisit ( const ZorbaSchemaTypeIterator& a) {
   thePrinter.startBeginVisit("ZorbaSchemaTypeIterator", ++theId);

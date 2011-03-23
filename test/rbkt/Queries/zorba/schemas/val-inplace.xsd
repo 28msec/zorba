@@ -1,0 +1,24 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+           xmlns:tns="http://www.w3.org/XQueryTest/val-inplace" 
+           targetNamespace="http://www.w3.org/XQueryTest/val-inplace" 
+           elementFormDefault="qualified" attributeFormDefault="qualified"
+>
+    <xs:element name="d" type="xs:duration"/>
+    <xs:element name="dd" type="tns:DDType" />
+
+    <xs:complexType name="DDType">
+      <xs:sequence>
+        <xs:element ref="tns:d" />
+      </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:element name="int" type="xs:int"/>
+    <xs:element name="ii">
+      <xs:complexType>
+        <xs:sequence>
+          <xs:element ref="tns:int" />
+        </xs:sequence>
+      </xs:complexType>
+    </xs:element>
+</xs:schema>

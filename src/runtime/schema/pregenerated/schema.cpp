@@ -57,6 +57,30 @@ ValidateIterator::~ValidateIterator() {}
 // </ValidateIterator>
 
 #endif
+// <ZorbaValidateInPlaceIterator>
+const char* ZorbaValidateInPlaceIterator::class_name_str = "ZorbaValidateInPlaceIterator";
+ZorbaValidateInPlaceIterator::class_factory<ZorbaValidateInPlaceIterator>
+ZorbaValidateInPlaceIterator::g_class_factory;
+
+const serialization::ClassVersion 
+ZorbaValidateInPlaceIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int ZorbaValidateInPlaceIterator::class_versions_count =
+sizeof(ZorbaValidateInPlaceIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void ZorbaValidateInPlaceIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  theChild->accept(v);
+
+  v.endVisit(*this);
+}
+
+ZorbaValidateInPlaceIterator::~ZorbaValidateInPlaceIterator() {}
+
+// </ZorbaValidateInPlaceIterator>
+
+
 // <ZorbaSchemaTypeIterator>
 const char* ZorbaSchemaTypeIterator::class_name_str = "ZorbaSchemaTypeIterator";
 ZorbaSchemaTypeIterator::class_factory<ZorbaSchemaTypeIterator>

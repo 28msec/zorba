@@ -331,6 +331,8 @@ namespace zorba{
 #ifndef ZORBA_NO_XMLSCHEMA
     class ValidateIterator;
 #endif
+    class ZorbaValidateInPlaceIterator;
+
     class ZorbaSchemaTypeIterator;
 
     class ZorbaIsValidatedIterator;
@@ -917,6 +919,9 @@ public:
     virtual void beginVisit ( const ValidateIterator& ) = 0;
     virtual void endVisit   ( const ValidateIterator& ) = 0;
 #endif
+    virtual void beginVisit ( const ZorbaValidateInPlaceIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaValidateInPlaceIterator& ) = 0;
+
     virtual void beginVisit ( const ZorbaSchemaTypeIterator& ) = 0;
     virtual void endVisit   ( const ZorbaSchemaTypeIterator& ) = 0;
 

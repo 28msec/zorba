@@ -502,6 +502,9 @@ namespace zorba {
     void endVisit  ( const ValidateIterator& );
 #endif
 
+    void beginVisit( const ZorbaValidateInPlaceIterator& );
+    void endVisit  ( const ZorbaValidateInPlaceIterator& );
+
     void beginVisit( const ZorbaSchemaTypeIterator& );
     void endVisit  ( const ZorbaSchemaTypeIterator& );
 

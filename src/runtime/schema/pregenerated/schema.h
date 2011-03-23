@@ -77,7 +77,41 @@ public:
 #endif
 
 /**
- * iterator backing the validate expression
+ * iterator backing the validate-updating function
+ * Author: Zorba Team
+ */
+class ZorbaValidateInPlaceIterator : public UnaryBaseIterator<ZorbaValidateInPlaceIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(ZorbaValidateInPlaceIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaValidateInPlaceIterator,
+    UnaryBaseIterator<ZorbaValidateInPlaceIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (UnaryBaseIterator<ZorbaValidateInPlaceIterator, PlanIteratorState>*)this);
+  }
+
+  ZorbaValidateInPlaceIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    PlanIter_t& child)
+    : 
+    UnaryBaseIterator<ZorbaValidateInPlaceIterator, PlanIteratorState>(sctx, loc, child)
+  {}
+
+  virtual ~ZorbaValidateInPlaceIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * iterator backing the schema-type function
  * Author: Zorba Team
  */
 class ZorbaSchemaTypeIterator : public NaryBaseIterator<ZorbaSchemaTypeIterator, PlanIteratorState>

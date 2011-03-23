@@ -44,3 +44,18 @@ declare function schema:schema-type (
 declare function schema:is-validated(
   $node as node()
 ) as xs:boolean external;
+
+(:~
+ : Updating function that validates the document in place. After the updating 
+ : query is applied the $node will contain the validated content.
+ :
+ : @param $node the document or element to be validated, otherwise error
+ : @return The result of the function is an empty XDM instance and a 
+ :         pending update list that consists the schema:validate-in-place($node))
+ :         primitive.
+ : @throws validation errors if not valid
+ :)
+declare updating function schema:validate-in-place(
+  $node as node()
+) external;
+

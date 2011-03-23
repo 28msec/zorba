@@ -14,6 +14,13 @@
   <zorba:include form="Quoted">types/schema/schema.h</zorba:include>
   <zorba:include form="Quoted">types/schema/validate.h</zorba:include>
 </zorba:source>
+<!--
+/*******************************************************************************
+  This file describes the implementation of module:
+  module namespace schema = "http://www.zorba-xquery.com/modules/schema";
+  modules/com/zorba-xquery/www/modules/schema.xq
+********************************************************************************/
+-->
 
 <!--
 /*******************************************************************************
@@ -43,9 +50,31 @@
 /*******************************************************************************
 ********************************************************************************/
 -->
+<zorba:iterator name="ZorbaValidateInPlaceIterator"
+                arity="unary">
+
+  <zorba:description author="Zorba Team">iterator backing the validate-updating function</zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="validate-in-place" prefix="fn-zorba-schema">
+      <zorba:param>node()</zorba:param>
+      <zorba:output>empty-sequence()</zorba:output>
+    </zorba:signature>
+    <zorba:methods>
+      <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
+      <zorba:accessesDynCtx returnValue="true"/>
+    </zorba:methods>
+  </zorba:function>
+ 
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
 <zorba:iterator name="ZorbaSchemaTypeIterator" arity="nary">
 
-  <zorba:description author="Zorba Team">iterator backing the validate expression</zorba:description>
+  <zorba:description author="Zorba Team">iterator backing the schema-type function</zorba:description>
 
   <zorba:function>
     <zorba:signature localname="schema-type" prefix="fn-zorba-util">

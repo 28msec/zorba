@@ -13,8 +13,11 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+#include <set>
+
 #include "runtime/schema/schema.h"
 
+#include "types/schema/revalidateUtils.h"
 #include "types/schema/schema.h"
 #include "types/schema/validate.h"
 #include "types/typemanager.h"
@@ -23,6 +26,7 @@
 #include "zorbaerrors/errors.h"
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
+#include "store/api/pul.h"
 
 namespace zorba {
 
@@ -74,7 +78,35 @@ ValidateIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   STACK_END (aState);
 }
-#endif
+#endif // ZORBA_NO_XMLSCHEMA
+
+
+bool
+ZorbaValidateInPlaceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t item;
+
+  PlanIteratorState *state;
+  std::auto_ptr<store::PUL> pul;
+  std::set<store::Item*> nodes;
+  SchemaValidatorImpl validator(loc, theSctx);
+
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+      
+  if (consumeNext(item, theChild.getp(), planState))
+  {
+    pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
+
+    nodes.insert(item.getp());
+    
+    validator.validate(nodes, *pul);    
+    result = pul.release();
+    STACK_PUSH(true, state);
+  }
+
+  STACK_END (state);
+}
+
 
 bool
 ZorbaSchemaTypeIterator::nextImpl(store::Item_t& result, PlanState& planState) const

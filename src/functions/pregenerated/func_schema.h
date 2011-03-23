@@ -38,6 +38,24 @@ void populate_context_schema(static_context* sctx);
 
 
 
+//fn-zorba-schema:validate-in-place
+class fn_zorba_schema_validate_in_place : public function
+{
+public:
+  fn_zorba_schema_validate_in_place(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_ZORBA_SCHEMA_VALIDATE_IN_PLACE_1)
+  {
+  }
+
+  expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
 //fn-zorba-util:schema-type
 class fn_zorba_util_schema_type : public function
 {
