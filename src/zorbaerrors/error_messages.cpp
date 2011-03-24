@@ -789,6 +789,9 @@ DEF_ERR_CODE(XDTY0010_INDEX_DOMAIN_TYPE_ERROR, XDTY0010,
 DEF_ERR_CODE(XDTY0011_INDEX_KEY_TYPE_ERROR, XDTY0011,
 "The result of some key expression of index /s does not match its declared type.")
 
+DEF_ERR_CODE(XDTY0012_INDEX_KEY_TYPE_ERROR, XDTY0012,
+"A key item for the general range index /s has a type for which no ordering relationship exists.")
+
 //
 // XQuery Data Definition Facility - Dynamic Errors
 //

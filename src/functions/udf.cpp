@@ -139,7 +139,7 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
   //ar.set_is_temp_field(false);
   //if(save_plan)
   ar & thePlan;
-  ar & theArgVarRefs;
+  ar & theArgVarsRefs;
 }
 
 
@@ -282,9 +282,9 @@ BoolAnnotationValue user_function::ignoresDuplicateNodes(
 /*******************************************************************************
 
 ********************************************************************************/
-const std::vector<std::vector<LetVarIter_t> >& user_function::getArgVarRefIters() const
+const std::vector<user_function::ArgVarRefs>& user_function::getArgVarsRefs() const
 {
-  return theArgVarRefs;
+  return theArgVarsRefs;
 }
 
 
@@ -315,11 +315,11 @@ PlanIter_t user_function::getPlan(CompilerCB* ccb)
 
     hash64map<std::vector<LetVarIter_t> *> argVarToRefsMap;
 
-    theArgVarRefs.resize(numArgs);
+    theArgVarsRefs.resize(numArgs);
 
     for (ulong i = 0; i < numArgs; ++i)
     {
-      argVarToRefsMap.put((uint64_t)&*theArgVars[i], &theArgVarRefs[i]);
+      argVarToRefsMap.put((uint64_t)&*theArgVars[i], &theArgVarsRefs[i]);
     }
 
     ulong nextVarId = 1;

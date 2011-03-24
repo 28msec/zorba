@@ -730,18 +730,18 @@ struct NodeSortInfo
 class ModulesInfo
 {
 public:
-  CompilerCB                * theCCB;
-  hashmap<static_context_t>   mod_sctx_map;
-  hashmap<std::string>        mod_ns_map;
-  checked_vector<expr_t>      init_exprs;
-  std::auto_ptr<static_context>    globals;
+  CompilerCB                   * theCCB;
+  hashmap<static_context_t>      mod_sctx_map;
+  hashmap<std::string>           mod_ns_map;
+  checked_vector<expr_t>         init_exprs;
+  std::auto_ptr<static_context>  globalSctx;
 
 public:
   ModulesInfo(CompilerCB* topCompilerCB)
     :
     theCCB(topCompilerCB),
-    globals(static_cast<static_context *>
-            (topCompilerCB->theRootSctx->get_parent())->create_child_context())
+    globalSctx(static_cast<static_context *>
+               (topCompilerCB->theRootSctx->get_parent())->create_child_context())
   {
   }
 };
@@ -1651,7 +1651,7 @@ void bind_fn(
 {
   theSctx->bind_fn(f, nargs, loc);
 
-  theModulesInfo->globals->bind_fn(f, nargs, loc);
+  theModulesInfo->globalSctx->bind_fn(f, nargs, loc);
 
   if (export_sctx != NULL)
   {
@@ -3247,8 +3247,8 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 
     // Merge the exported sctx of the imported module into the sctx of the
     // current module. Note: We catch duplicate functions / vars in
-    // theModulesInfo->globals. We can safely ignore the return value. We might even
-    // be able to assert() here (not sure though).
+    // theModulesInfo->globalSctx. We can safely ignore the return value. 
+    // We might even be able to assert() here (not sure though).
     theSctx->import_module(importedSctx.getp(), loc);
 
   } // for (vector<std::string>::iterator ite = lURIs.begin();
@@ -3595,7 +3595,7 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
 
     // Make sure that there is no other prolog var with the same name in any of
     // modules transalted so far.
-    bind_var(ve, theModulesInfo->globals.get());
+    bind_var(ve, theModulesInfo->globalSctx.get());
 
     // If this is a library module, register the var in the exported sctx as well.
     if (export_sctx != NULL)
@@ -3791,12 +3791,15 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
 
   if (!is_external && v.get_annotations() != NULL
       &&
-      (v.get_annotations()->has_deterministic() || v.get_annotations()->has_nondeterministic()))
+      (v.get_annotations()->has_deterministic() ||
+       v.get_annotations()->has_nondeterministic()))
   {
     if (v.get_annotations()->has_deterministic())
-      ZORBA_ERROR_LOC_DESC(XPST0003, loc, "Only external functions may be declared deterministic");
+      ZORBA_ERROR_LOC_DESC(XPST0003, loc,
+                           "Only external functions may be declared deterministic");
     else
-      ZORBA_ERROR_LOC_DESC(XPST0003, loc, "Only external functions may be declared nondeterministic");
+      ZORBA_ERROR_LOC_DESC(XPST0003, loc,
+                           "Only external functions may be declared nondeterministic");
   }
 
   if (!is_external)
@@ -3984,6 +3987,10 @@ void end_visit(const Param& v, void* /*visit_state*/)
 
   flwor->add_clause(lc);
 
+  // Set the decalred type of the arg and let vars. Note: we do this after
+  // creating the let clause, so the let clause itself does not do any type
+  // checking. Type checking will be done by other means before the args
+  // are bound to the params.
   if (v.get_typedecl() != NULL)
   {
     arg_var->set_type(pop_tstack());
@@ -4352,7 +4359,8 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
       }
 
       if (index->getMethod() == IndexDecl::TREE &&
-          (TypeOps::is_subtype(tm, *ptype, *theRTM.QNAME_TYPE_ONE, kloc) ||
+          (TypeOps::is_subtype(tm, *ptype, *theRTM.UNTYPED_ATOMIC_TYPE_ONE, kloc) ||
+           TypeOps::is_subtype(tm, *ptype, *theRTM.QNAME_TYPE_ONE, kloc) ||
            TypeOps::is_subtype(tm, *ptype, *theRTM.NOTATION_TYPE_ONE, kloc) ||
            TypeOps::is_subtype(tm, *ptype, *theRTM.BASE64BINARY_TYPE_ONE, kloc) ||
            TypeOps::is_subtype(tm, *ptype, *theRTM.HEXBINARY_TYPE_ONE, kloc) ||
@@ -9536,6 +9544,8 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
     ZORBA_ERROR_LOC_PARAM(XPST0017, loc, qname->get_qname(), ztd::to_string(arity));
   }
 
+  // If it is a builtin function F with signature (R, T1, ..., TN) , wrap it 
+  // in a udf UF: function UF(x1 as T1, ..., xN as TN) as R { F(x1, ... xN) }
   if (!fn->isUdf())
   {
     std::vector<expr_t> foArgs(arity);
@@ -9588,7 +9598,13 @@ void* begin_visit(const InlineFunction& v)
   flwor_expr_t flwor;
 
   // Handle function parameters. Translation of the params, if any, results to
-  // a flwor expr with one let binding for each function parameter.
+  // a flwor expr with one let binding for each function parameter:
+  //
+  // let $x1 as T1 := _x1
+  // .....
+  // let $xN as TN := _xN
+  //
+  // where each _xi is an arg var.
   rchandle<ParamList> params = v.getParamList();
   if (params)
   {
@@ -9627,6 +9643,8 @@ void* begin_visit(const InlineFunction& v)
     flwor->add_clause(lc);
 
     fiExpr->add_variable((*ite).getp());
+
+    // ???? What about inscope vars that are hidden by param vars ???
   }
 
   if (flwor->num_clauses() > 0)
@@ -10096,11 +10114,12 @@ void begin_check_boundary_whitespace()
   }
 }
 
-/**
- * Whitespace checking. Checks if v might be a whitespace (check of the following boundary can
- * only be checked during the next invocation), and if the items saved in thePossibleWSContentStack
- * is really boundary whitespace.
- */
+
+/*******************************************************************************
+  Whitespace checking. Checks if v might be a whitespace (check of the following
+  boundary can only be checked during the next invocation), and if the items 
+  saved in thePossibleWSContentStack is really boundary whitespace.
+********************************************************************************/
 void check_boundary_whitespace(const DirElemContent& v)
 {
   v.setIsStripped(false);
@@ -11544,6 +11563,7 @@ void end_visit(const EvalExpr& v, void* visit_state)
     // expr of an eval var may be any expr.
     expr_t valueExpr = pop_nodestack();
 
+    // ???? Why do we need this treat expr?
     if (ve->get_type() != NULL)
       valueExpr = new treat_expr(theRootSctx,
                                  valueExpr->get_loc(),

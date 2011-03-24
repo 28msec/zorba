@@ -68,6 +68,8 @@ class GeneralIndex : public IndexImpl
 protected:
   IndexCompareFunction        theCompFunction;
   std::vector<store::Item_t>  theEmptyKeyNodes;
+  bool                        theUntypedFlag;
+  bool                        theMultiKeyFlag;
 
 protected:
   GeneralIndex(
@@ -220,37 +222,48 @@ protected:
   theResultSetsIte : Iterator over theResultSets; points to the "current" result
                      set. This is used for point probes only.
   theResultSetsEnd : The "end" iterator of theResultSets. This is used for 
-                     point probes only.
-  theIte           : Iterator over the "current" result set. This is used for 
-                     point probes only.
-  theEnd           : The "end" iterator of the "current" result set. This is 
-                     used for point probes only.
+                     point probes only. 
+
+  theMapBegins     :  A vector that stores an itarator pointing to the 1st 
+                      qualifying entry in each tree that has at least one
+                      qualifying entry. This is used for range probes only.
+  theMapEnds       :  A vector that stores an itarator pointing to the last 
+                      qualifying entry in each tree that has at least one
+                      qualifying entry. This is used for range probes only.
+  theMapIte        :
+
+  theIte           : Iterator over the "current" result set. 
+  theEnd           : The "end" iterator of the "current" result set. 
+
 ********************************************************************************/
 class ProbeGeneralTreeIndexIterator : public store::IndexProbeIterator
 {
   typedef std::vector<GeneralIndexValue*> ResultSets;
 
+  typedef GeneralTreeIndex::IndexMap::const_iterator EntryIterator;
+
+  typedef std::vector<EntryIterator> EntryIterators;
+
 protected:
-  rchandle<GeneralTreeIndex>                       theIndex;
+  rchandle<GeneralTreeIndex>                  theIndex;
 
-  rchandle<IndexPointCondition>                    thePointCondition;
-  rchandle<IndexBoxCondition>                      theBoxCondition;
-  store::IndexCondition::Kind                      theProbeKind;
+  rchandle<IndexPointCondition>               thePointCondition;
+  rchandle<IndexBoxCondition>                 theBoxCondition;
+  store::IndexCondition::Kind                 theProbeKind;
 
-  ResultSets                                 theResultSets;
-  ResultSets::const_iterator                 theResultSetsIte;
-  ResultSets::const_iterator                 theResultSetsEnd;
-  GeneralIndexValue::const_iterator          theIte;
-  GeneralIndexValue::const_iterator          theEnd;
-#if 0
-  GeneralTreeIndex::IndexMap::const_iterator  theMapBegin;
-  GeneralTreeIndex::IndexMap::const_iterator  theMapEnd;
+  ResultSets                                  theResultSets;
+  ResultSets::const_iterator                  theResultSetsIte;
+  ResultSets::const_iterator                  theResultSetsEnd;
+
+  EntryIterators                              theMapBegins;
+  EntryIterators                              theMapEnds;
   GeneralTreeIndex::IndexMap::const_iterator  theMapIte;
 
   GeneralIndexValue                         * theResultSet;
+
+
   GeneralIndexValue::const_iterator           theIte;
   GeneralIndexValue::const_iterator           theEnd;
-#endif
 
 public:
   ProbeGeneralTreeIndexIterator(const store::Index_t& index);

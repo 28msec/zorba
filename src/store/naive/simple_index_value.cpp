@@ -524,8 +524,6 @@ void ProbeValueTreeIndexIterator::initBox()
   //
   if (!haveLowerBound && !haveUpperBound)
   {
-    theMapBegin = theIndex->theMap.begin();
-    theMapEnd = theIndex->theMap.end();
     return;
   }
 

@@ -37,27 +37,38 @@
 #define THREAD_ID ""
 #endif
 
-zorba::Runnable::~Runnable()
-{
-}
 
+/*******************************************************************************
+
+********************************************************************************/
 zorba::Runnable::Runnable()
-  : theStatus(IDLE),
-    theFinishCalled(false),
-    theMutex(),
-    theFinishMutex(),
-    theFinishCondition(theFinishMutex)
+  : 
+  theStatus(IDLE),
+  theFinishCalled(false),
+  theMutex(),
+  theFinishMutex(),
+  theFinishCondition(theFinishMutex)
 #ifdef ZORBA_HAVE_PTHREAD_H
-    ,
-    theCondition(theMutex),
-    theCalledTerminate(false)
+  ,
+  theCondition(theMutex),
+  theCalledTerminate(false)
 #endif
 {
 }
 
 
 /*******************************************************************************
-  This method is invoked by the parent thread and starts a child thread.
+
+********************************************************************************/
+zorba::Runnable::~Runnable()
+{
+}
+
+
+/*******************************************************************************
+  This method is invoked by the parent thread. It creates and starts a child 
+  thread. The child thread will use the static method startImpl as its "main"
+  function.
 ********************************************************************************/
 void
 zorba::Runnable::start()
@@ -182,9 +193,12 @@ zorba::Runnable::suspend(unsigned long aTimeInMs /*= 0*/)
 
   theStatus = SUSPENDED;
 
-  if (aTimeInMs != 0) {
+  if (aTimeInMs != 0) 
+  {
     theCondition.timedWait(aTimeInMs);
-  } else {
+  }
+  else 
+  {
     theCondition.wait();
   }
 
@@ -199,6 +213,9 @@ zorba::Runnable::suspend(unsigned long aTimeInMs /*= 0*/)
 
 
 #ifdef ZORBA_HAVE_PTHREAD_H
+/*******************************************************************************
+  Static private method
+********************************************************************************/
 void
 zorba::Runnable::mutexCleanupHandler(void* param)
 {
@@ -234,7 +251,9 @@ zorba::Runnable::resume()
 
 
 /*******************************************************************************
-  This method is the "main" method of the child thread.
+  This is a private static method that serves as the "main" method of the child 
+  thread. It is called by the start() method, and is given the Runnable obj as
+  input.
 ********************************************************************************/
 ZORBA_THREAD_RETURN
 zorba::Runnable::startImpl( void* params )

@@ -50,7 +50,7 @@ class dynamic_context;
   NOTE: theIterator MUST be a RAW pointer, NOT an rchandle. This is because
   several PlanWrappers (created from different clones of the same query) may
   be accessing the same plan iterator, but PlanIterator does not do sunchronized
-  ref counting. It is the responsibility of the user a plan wrapper to do
+  ref counting. It is the responsibility of the user of a plan wrapper to do
   memory management for the actual plan (the plan wrapper does not assume
   ownership of the plan).
 

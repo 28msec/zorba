@@ -90,7 +90,7 @@ UDFunctionCallIteratorState::~UDFunctionCallIteratorState()
 
 
 /*******************************************************************************
-
+  Called by the openImpl method of UDFunctionCallIterator.
 ********************************************************************************/
 void UDFunctionCallIteratorState::open(PlanState& planState, user_function* udf)
 {
@@ -99,7 +99,7 @@ void UDFunctionCallIteratorState::open(PlanState& planState, user_function* udf)
   thePlanStateSize = thePlan->getStateSizeOfSubtree();
 
   // Must allocate new dctx, as child of the "current" dctx, because the udf
-  // may be a recursive udf with local block vars, all of which the the same
+  // may be a recursive udf with local block vars, all of which have the same
   // dynamic-context id, but they are distinct vars.
   dynamic_context* localDCtx = new dynamic_context(planState.theGlobalDynCtx);
 
@@ -183,42 +183,28 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
 
   // Create a wrapper over each subplan that computes an argument expr, if the
   // associated param is actually used anywhere in the function body.
-  const std::vector<std::vector<LetVarIter_t> >& argRefs = theUDF->getArgVarRefIters();
+  ulong numArgs = (ulong)theChildren.size();
 
-  state->theArgWrappers.resize(argRefs.size());
-
-  std::vector<std::vector<LetVarIter_t> >::const_iterator argRefsIte = argRefs.begin();
-  std::vector<std::vector<LetVarIter_t> >::const_iterator argRefsEnd = argRefs.end();
+  state->theArgWrappers.resize(numArgs);
 
   std::vector<PlanIter_t>::const_iterator argsIte = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator argsEnd = theChildren.end();
+  std::vector<store::Iterator_t>::iterator argWrapsIte = state->theArgWrappers.begin();
+  const std::vector<ArgVarRefs>& argsRefs = theUDF->getArgVarsRefs();
+  std::vector<ArgVarRefs>::const_iterator argsRefsIte = argsRefs.begin();
 
-  std::vector<std::vector<store::Iterator_t> >::iterator argWrapsIte =
-  state->theArgWrappers.begin();
-
-  for (; argRefsIte != argRefsEnd; ++argRefsIte, ++argsIte, ++argWrapsIte)
+  for (; argsIte != argsEnd; ++argsIte, ++argWrapsIte, ++argsRefsIte)
   {
-    const std::vector<LetVarIter_t>& argVarRefs = (*argRefsIte);
-    std::vector<store::Iterator_t>& argVarWraps = (*argWrapsIte);
+    const ArgVarRefs& argVarRefs = (*argsRefsIte);
 
-    argVarWraps.resize(argVarRefs.size());
-
-    std::vector<LetVarIter_t>::const_iterator argVarRefsIte = argVarRefs.begin();
-    std::vector<LetVarIter_t>::const_iterator argVarRefsEnd = argVarRefs.end();
-
-    std::vector<store::Iterator_t>::iterator argVarWrapsIte = argVarWraps.begin();
-
-    for (; argVarRefsIte != argVarRefsEnd; ++argVarRefsIte, ++argVarWrapsIte)
+    if (!argVarRefs.empty())
     {
-      const LetVarIter_t& argRef = (*argVarRefsIte);
-      if (argRef != NULL)
-      {
-        (*argVarWrapsIte) = new PlanIteratorWrapper((*argsIte), planState);
+      (*argWrapsIte) = new PlanIteratorWrapper((*argsIte), planState);
 
-        // Cannot do the arg bind here because the state->thePlan has not been
-        // opened yet, and as a result, state->thePlanState has not been
-        // initialized either.
-        //argRef->bind(*argWrapsIte, *state->thePlanState);
-      }
+      // Cannot do the arg bind here because the state->thePlan has not been
+      // opened yet, and as a result, state->thePlanState has not been
+      // initialized either.
+      //argRef->bind(*argWrapsIte, *state->thePlanState);
     }
   }
 }
@@ -283,30 +269,28 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
 
     // Bind the args.
     {
-      const std::vector<std::vector<LetVarIter_t> >& argRefs =
-      theUDF->getArgVarRefIters();
+      const std::vector<ArgVarRefs>& argsRefs = theUDF->getArgVarsRefs();
+      std::vector<ArgVarRefs>::const_iterator argsRefsIte = argsRefs.begin();
+      std::vector<ArgVarRefs>::const_iterator argsRefsEnd = argsRefs.end();
 
-      std::vector<std::vector<LetVarIter_t> >::const_iterator argRefsIte;
-      std::vector<std::vector<LetVarIter_t> >::const_iterator argRefsEnd = argRefs.end();
-      std::vector<std::vector<store::Iterator_t> >::iterator argWrapsIte;
+      std::vector<store::Iterator_t>::iterator argWrapsIte = 
+      state->theArgWrappers.begin();
 
-      for (argRefsIte = argRefs.begin(), argWrapsIte = state->theArgWrappers.begin();
-           argRefsIte != argRefsEnd;
-           ++argRefsIte, ++argWrapsIte)
+      for (; argsRefsIte != argsRefsEnd; ++argsRefsIte, ++argWrapsIte)
       {
-        const std::vector<LetVarIter_t>& argVarRefs = (*argRefsIte);
-        std::vector<store::Iterator_t>& argVarWraps = (*argWrapsIte);
-
-        std::vector<LetVarIter_t>::const_iterator argVarRefsIte = argVarRefs.begin();
-        std::vector<LetVarIter_t>::const_iterator argVarRefsEnd = argVarRefs.end();
-        std::vector<store::Iterator_t>::iterator argVarWrapsIte = argVarWraps.begin();
+       store::Iterator_t& argWrapper = (*argWrapsIte);
+        const ArgVarRefs& argVarRefs = (*argsRefsIte);
+        ArgVarRefs::const_iterator argVarRefsIte = argVarRefs.begin();
+        ArgVarRefs::const_iterator argVarRefsEnd = argVarRefs.end();
 
         for (; argVarRefsIte != argVarRefsEnd; ++argVarRefsIte)
         {
           const LetVarIter_t& argRef = (*argVarRefsIte);
+          assert(argRef != NULL);
+
           if (argRef != NULL)
           {
-            argRef->bind(*argVarWrapsIte, *state->thePlanState);
+            argRef->bind(argWrapper, *state->thePlanState);
           }
         }
       }
@@ -355,6 +339,7 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
         theUDF->getName(),
         (unsigned int)theUDF->getArgVars().size(),
         &uerr);
+
     throw uerr;
   }
   catch (error::ZorbaError& err)
@@ -365,6 +350,7 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
         theUDF->getName(),
         (unsigned int)theUDF->getArgVars().size(),
         &err);
+
     throw err;
   }
 }

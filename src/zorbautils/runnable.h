@@ -49,97 +49,93 @@ namespace zorba {
  */
 class ZORBA_DLL_PUBLIC Runnable
 {
-
-protected:
-  Runnable();
-
  public:
-  enum ThreadState {
+  enum ThreadState 
+  {
     RUNNING,
     TERMINATED,
     SUSPENDED,
     IDLE
   };
 
+private:
+  volatile ThreadState theStatus;
+
+  bool              theFinishCalled;
+
+  Mutex             theMutex;
+
+  /**
+   * This mutex is only used to synchronize the join and finishImpl calls.
+   */
+  Mutex             theFinishMutex;
+  /**
+   * This condition is only used to synchronize the join and finishImpl calls.
+   */
+  Condition         theFinishCondition;
+
+#ifdef ZORBA_HAVE_PTHREAD_H
+  Condition         theCondition;
+  bool              theCalledTerminate;
+  pthread_t         theThread;
+#else
+  ThreadId          theThreadId;
+  HANDLE            theThread;
+#endif
+
+public:
+  static ThreadId self()
+  {
+#ifdef ZORBA_HAVE_PTHREAD_H
+    return pthread_self();
+#else
+    return GetCurrentThreadId();
+#endif
+  }
+
 public:
   virtual ~Runnable();
 
-public:
-    void start();
+  void start();
 
-    // can only be called if the thread is suspended
-    void terminate();
+  // can only be called if the thread is suspended
+  void terminate();
 
-    void suspend(unsigned long aTimeInMs = 0);
+  void suspend(unsigned long aTimeInMs = 0);
 
-    void resume();
+  void resume();
 
-    void join();
+  void join();
 
-    ThreadState status() const { return theStatus; }
+  ThreadState status() const { return theStatus; }
 
-    /**
-    * Resets the Thread, so that it can be started again.
-    *
-    * @pre theStatus == TERMINATED || theStatus == IDLE
-    * @post theStatus == IDLE
-    */
-    virtual void reset();
-
-protected: // To be implemented by the user
+  /**
+   * Resets the Thread, so that it can be started again.
+   *
+   * @pre theStatus == TERMINATED || theStatus == IDLE
+   * @post theStatus == IDLE
+   */
+  virtual void reset();
+  
+protected: 
     
-    virtual void run() = 0;
+  Runnable();
 
-    virtual void finish() = 0;
+  virtual void run() = 0; // To be implemented by the user
+
+  virtual void finish() = 0; // To be implemented by the user
 
 private:
-    static ZORBA_THREAD_RETURN startImpl(void* params);
+  static void mutexCleanupHandler(void *);
 
-    static void cleanupHandler(void *arg);
+  static ZORBA_THREAD_RETURN startImpl(void* params);
 
-    void finishImpl();
+  static void cleanupHandler(void *arg);
 
-    volatile ThreadState theStatus;
-
-    bool              theFinishCalled;
-
-    Mutex             theMutex;
-
-    /**
-     * This mutex is only used to synchronize the join and finishImpl calls.
-     */
-    Mutex             theFinishMutex;
-    /**
-     * This condition is only used to synchronize the join and finishImpl calls.
-     */
-    Condition         theFinishCondition;
-
-#ifdef ZORBA_HAVE_PTHREAD_H
-    Condition         theCondition;
-    bool              theCalledTerminate;
-    pthread_t         theThread;
-
-    static void
-    mutexCleanupHandler(void *);
-#else
-    ThreadId theThreadId;
-    HANDLE   theThread;
-
-#endif
-
-
-public:
-
-    static ThreadId self()
-    {
-#ifdef ZORBA_HAVE_PTHREAD_H
-      return pthread_self();
-#else
-      return GetCurrentThreadId();
-#endif
-    }
-
+  void finishImpl();
 };
+
+
 } /* namespace zorba */
 
 #endif // ZORBA_RUNNABLE_H

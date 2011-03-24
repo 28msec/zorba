@@ -1569,8 +1569,8 @@ the occurrence indicator must be either absent or equal to '?'
 [<a href="#ERRXDST0027">err:XDST0027</a>]. Finally, if the index is a value 
 range or general range index, an ordering must exist among the values in the 
 type domain [<a href="#ERRXDST0027">err:XDST0027</a>] (this rules excludes
-the following atomic types and their subtypes: QName, NOTATION, hexBinary,
-hex64Binary, gYearMonth, gYear, gMonthDay, gMonth, and gDay). 
+the following atomic types and their subtypes: untypedAtomic, QName, NOTATION, 
+hexBinary, hex64Binary, gYearMonth, gYear, gMonthDay, gMonth, and gDay). 
 
 If the key type in a keyspec is xs:string (or subtype of), the IndexKeyCollation 
 specifies the collation to use when comparing key values from this keyspec. If 
@@ -1667,7 +1667,7 @@ implementation dependent order. An IndexKeySpec is evaluated as follows:
   <li>
   The result of atomization is matched against the associated IndexKeyTypeDecl,
   according to the rules of sequence type matching. If the type match fails, 
-  an error is raised [<a href="#ERRXDTY0011">err:XDTY0011</a>].
+  an error is raised [<a href="#ERRXDTY0011">err:XDTY0011</a>]. 
   </li>
 
   <li>
@@ -1725,22 +1725,34 @@ If the index is a general index:
   to value indexes, the result of this IndexKeySpec may be a sequence of any
   number of atomic items, and the items may have different data types. We call 
   this sequence a <strong>key sequence</strong>, and each atomic item in it a 
-  <strong>key item</strong>. 
+  <strong>key item</strong>.
   </li>
 
   <li>
-  Let D<sub>i</sub> be the i-th domain node, and K<sub>i</sub> be the key 
-  sequence computed for D<sub>i</sub>. If any key item in K<sub>i</sub> has
-  type xs:untypedAtomic, the item is removed from K<sub>i</sub> and is cast 
-  to every primitive builtin data type. For each successfull cast, the resulting
-  item is inserted back into K<sub>i</sub>. Thus, for each domain node, an
-  <strong>expanded key sequence</strong> is constructed. If any item in this 
-  sequence has a data type that is not a primitive builtin type, this data type
-  is changed to the nearest base type that is a primitive builtin type. For
-  example, xs:token is changed to xs:string, and xs:long is changed to xs:decimal.
-  (Note: this is a conceptual description of the index creation process. The
-  actual implementation may differ from this description as long as the results
-  of <a href="#index_probing">probe functions</a> are always the same as those 
+  An error is raised [<a href="#ERRXDDY0024">err:XDDY0024</a>] if the index is 
+  a range index and any of the key items has a type that is not xs:untypedAtomic 
+  and for which no ordering relationship exists.
+  </li>
+
+  <li>
+  In this step, an <strong>expanded key sequence</strong> is constructed for
+  each domain node. If the atomic type specified in the IndexKeyTypeDecl is
+  not xs:anyAtomicType, the expanded key sequence is the same as the original
+  key sequence. Otherwise, let D<sub>i</sub> be the i-th domain node, and 
+  K<sub>i</sub> be the key sequence computed for D<sub>i</sub>. If any key 
+  item in K<sub>i</sub> has type xs:untypedAtomic, the item is removed from 
+  K<sub>i</sub> and is cast to every primitive builtin data type. For each 
+  successfull cast, the resulting item is inserted back into K<sub>i</sub>.
+  </li>
+
+  <li> 
+  If any item in the expanded key sequence has a data type that is not a 
+  primitive builtin type, this data type is changed to the nearest base type 
+  that is a primitive builtin type. For example, xs:token is changed to 
+  xs:string, and xs:long is changed to xs:decimal. (Note: this is a conceptual 
+  description of the index creation process. The actual implementation may 
+  differ from this description as long as the results of 
+  <a href="#index_probing">probe functions</a> are always the same as those 
   implied by this conceptual description.)
   </li>
 
@@ -1770,12 +1782,12 @@ If the index is a general index:
   </li>
 
   <li>
-  In addition to the key item K and its associated domain nodes, each general
-  index entry stores 2 extra flags per domain node D: The <strong>multi-key 
-  flag</strong> is set to true if the unexpanded key sequence of D contained more 
-  than 1 items; otherwise the flag is false. The <strong>untyped flag</strong> 
-  is true if the association between K and D resulted from the casting of an 
-  untyped item in the un-expanded sequence of D; otherwise the flag is false. 
+  In addition to its entry set, each general index entry stores 2 extra flags: 
+  The <strong>multi-key flag</strong> is set to true if there is any domain
+  node whose unexpanded key sequence contained more than 1 items; otherwise the 
+  flag is false. The <strong>untyped flag</strong> is set to true if during the 
+  expansion of a key sequence, an untyped key was successfully cast to an item
+  with a type other than xs:string or xs:anyURI.; otherwise the flag is false. 
   As we will see later, these flags are needed during <a href="#index_probing">
   index probing</a>.
   </li>
@@ -1856,39 +1868,44 @@ appear in the result, so no duplicate elimination is needed.)
 For the probe-index-point-value function, the search condition is specified as a
 number of atomic items comprising a search key tuple. This number must be equal 
 to the number of IndexKeySpecs found in the index declaration [<a href="#ERRXDDY0025">
-err:XDDY0025</a>]. Furthermore, the type of each search key item must match the
-atomic type specified in the corresponding IndexKeyTypeDecl [err:XPTY0004].
+err:XDDY0025</a>]. (Remember that for general indexes, there can be only one 
+IndexKeySpec, and as a result, for general indexes, the probe-index-point-value 
+function takes only one search key item as input). Furthermore, the type of 
+each search key item must match the atomic type specified in the corresponding 
+IndexKeyTypeDecl; otherwise, a type error is raised [err:XPTY0004].
 
 For value indexes, if the index contains an entry with the given key tuple, 
 the associated domain nodes are returned. Otherwise, the empty sequence is 
 returned.
 
-For general indexes, there is only one search key item. If the type of the 
-search key item is xs:untypedAtomic, the item is cast to a string item. Then,
-the function looks for index entries whose key is equal to the search key 
-according to the rules of the eq operator. For example, if the search key is 
-an item with type xs:int and value 10, and the index contains two entries 
-with key 10 as xs:decimal and as xs:double, both of these entries will match 
-the search key. Let E be a matching entry. If the multi-key flag associated 
-with any of the nodes in the node set of E is set to true, a type error is 
-raised [err:XPTY0004]. The same type error is also raised if the untyped 
-flag associated with any of the nodes in the node set of E is set to true
-and the type of E's key is not xs:string or xs:anyUri. Raising the type
-error is done because value probes are supposed to optimize value comparison 
-predicates, which raise an error if any operands of the comparison operator 
-is a sequence of more than one items or if one operand has type xs:untypedAtomic 
-and the other operand has a type other than xs:string or xs:anyUri, or subtype
-of these. If no error is raised, the final result is the union of the node 
-sets of each matching entry.
+For general indexes, if the multi-key or untyped flag of the index is true, a
+type error is raised [err:XPTY0004]. This is because value probes are supposed 
+to optimize value comparison predicates, which raise [err:XPTY0004] if any 
+operand of the comparison operator is a sequence of more than one items or if 
+one operand has type xs:untypedAtomic and the other operand has a type other 
+than xs:string or xs:anyUri, or subtype of these. If no error is raised, 
+execution of the function proceeds as follows: If the type of the search key 
+item is xs:untypedAtomic, the item is cast to a string item. Then, the function
+looks for index entries whose key is equal to the search key according to the 
+rules of the eq operator. For example, if the search key is an item with type 
+xs:int and value 10, and the index contains two entries with key 10 as 
+xs:decimal and as xs:double, both of these entries will match the search key. 
+The final result is the union of the node sets stored in each matching entry.
 
 <a name="probe_index_point_general" id="probe_index_point_general"></a>
 \code
   xqddf:probe-index-point-genral($indexUri as xs:QName,
-                                 $key      as xs:anyAtomicType) as node()*
+                                 $keys     as xs:anyAtomicType*) as node()*
 \endcode
 
 This method is supported by general indexes only [<a href="#ERRXDDY0029">
-err:XDDY0029</a>].
+err:XDDY0029</a>]. The search condition is specified as a sequence of
+atomic search items. The type of each search item must match the atomic 
+type specified in the IndexKeyTypeDecl of the index; otherwise, a type 
+error is raised [err:XPTY0004]. For each search item, the function looks 
+for index entries whose key is equal to the search key according to the 
+rules of the eq operator. The final result is the union of the node sets 
+stored in each matching entry.
 
 <a name="probe_index_range_value" id="probe_index_range_value"></a>
 \code
@@ -1908,8 +1925,8 @@ err:XDDY0029</a>].
                           $rangeupperBoundIncludedM as xs:boolean) as node()*
 \endcode
 
-The probe-index-range function can be invoked on value range indices only [<a
-href="#ERRXDDY0026" title="err:XDDY0026">err:XDDY0026</a>]. To describe the
+The probe-index-range-vaalue function can be invoked on range indices only 
+(value or general) [<a href="#ERRXDDY0026">err:XDDY0026</a>]. To describe the
 semantics of this function, we start by defining the i<sup>th</sup> <strong>key
 column</strong> of an index as the set of key items produced by evaluating the
 i<sup>th</sup> keyspec of the index for every domain node. Then, the search

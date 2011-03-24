@@ -53,7 +53,7 @@ namespace zorba
   theIsLeaf        : True if this udf does not invoke any other udfs
 
   thePlan          :
-  theArgVarRefs    : For each arg var, this vector stores the LetVarIterators 
+  theArgVarsRefs   : For each arg var, this vector stores the LetVarIterators 
                      that represent the references to that var within the udf
                      body. If there are more than one references of an arg var,
                      these references are "mutually exclusive", ie, at most one
@@ -62,6 +62,9 @@ namespace zorba
 ********************************************************************************/
 class user_function : public function 
 {
+public:
+  typedef std::vector<LetVarIter_t> ArgVarRefs;
+
 private:
   QueryLoc                    theLoc;
 
@@ -73,10 +76,10 @@ private:
   bool                        theIsLeaf;
   std::vector<user_function*> theMutuallyRecursiveUDFs;
 
-  bool                                     theIsOptimized;
+  bool                        theIsOptimized;
 
-  PlanIter_t                               thePlan;
-  std::vector<std::vector<LetVarIter_t> >  theArgVarRefs;
+  PlanIter_t                  thePlan;
+  std::vector<ArgVarRefs>     theArgVarsRefs;
 
 public:
   SERIALIZABLE_CLASS(user_function)
@@ -128,7 +131,7 @@ public:
 
   PlanIter_t getPlan(CompilerCB *);
   
-  const std::vector<std::vector<LetVarIter_t> >& getArgVarRefIters() const;
+  const std::vector<ArgVarRefs>& getArgVarsRefs() const;
 
   PlanIter_t codegen(
         CompilerCB* cb,

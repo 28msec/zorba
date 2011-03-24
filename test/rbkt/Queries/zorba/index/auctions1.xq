@@ -36,7 +36,7 @@ return <person id = "{$x/@id}">{$x//city}</person>,
 
 ",
 
-for $x in auctions:probe-point-watch(xs:QName("auctions:PersonWatches"),
+for $x in auctions:probe-point-watch($auctions:PersonWatches,
                                      ("open_auction6", "open_auction2"))
 return <person id = "{$x/@id}">{$x//watches}</person>,
 
@@ -44,8 +44,8 @@ return <person id = "{$x/@id}">{$x//watches}</person>,
 
 ",
 
-for $x in auctions:probe-point-watch(xs:QName("auctions:PersonWatches2"),
-                                     ("open_auction6", "open_auction2"))
+for $x in xqddf:probe-index-point-general($auctions:PersonWatches2, 
+                                          ("open_auction6", "open_auction2"))
 return <person id = "{$x/@id}">{$x//watches}</person>,
 
 "
@@ -54,38 +54,41 @@ return <person id = "{$x/@id}">{$x//watches}</person>,
 
 try
 {
-   xqddf:probe-index-point-value(xs:QName("auctions:PersonWatches2"), "open_auction3")
+   xqddf:probe-index-point-value(xs:QName("auctions:PersonWatches2"), "open_auction7")
 }
-catch *
+catch * ($code, $desc)
 {
-  <exception>Got exception, as expected</exception>
+  <exception>{$code} : {$desc}</exception>
+},
+
+"
+
+---------------------------------------------------
+Probing the typed AuctionDates sorted general index
+---------------------------------------------------
+
+",
+
+try
+{ 
+  xqddf:probe-index-point-value($auctions:AuctionDates, xs:date("2000-12-04"))
+}
+catch * ($code, $desc)
+{
+  <exception>{$code} : {$desc}</exception>
 },
 
 "
 
 ",
 
-xqddf:probe-index-point-value(xs:QName("auctions:PersonWatches2"), "open_auction7"),
-
-"
-
-",
-
-<open_auction>
-{ xqddf:probe-index-point-value($auctions:AuctionDates, xs:date("2000-12-04"))/@id }
-</open_auction>,
-
-"
-
-",
-
 try
 {
-  xqddf:probe-index-point-value($auctions:AuctionDates, xs:date("2000-01-03"))
+  xqddf:probe-index-point-value($auctions:AuctionDates, 10)
 }
-catch *
+catch * ($code, $desc)
 {
-  <exception>Got exception, as expected</exception>
+  <exception>{$code} : {$desc}</exception>
 },
 
 "
@@ -96,7 +99,77 @@ for $id in xqddf:probe-index-point-general($auctions:AuctionDates,
                                            (xs:date("2000-12-04"),
                                             xs:date("2000-01-03"),
                                             xs:date("1998-08-18")))/@id
-return <open_auction>{$id}</open_auction>
+return <open_auction>{$id}</open_auction>,
 
+"
+
+",
+
+try
+{
+  xqddf:probe-index-point-general($auctions:AuctionDates, 
+                                  (xs:date("2000-12-04"), "2000-12-04"))
+}
+catch * ($code, $desc)
+{
+  <exception>{$code} : {$desc}</exception>
+},
+
+"
+
+-------------------------------------------------------
+Probing the untyped AuctionDates2 sorted general index
+-------------------------------------------------------
+
+",
+
+try
+{
+  xqddf:probe-index-point-value($auctions:AuctionDates2, xs:date("2000-12-04"))
+}
+catch * ($code, $desc)
+{
+  <exception>{$code} : {$desc}</exception>
+},
+
+"
+
+",
+
+try
+{
+  xqddf:probe-index-point-value($auctions:AuctionDates2, 10)
+}
+catch * ($code, $desc)
+{
+  <exception>{$code} : {$desc}</exception>
+},
+
+"
+
+",
+
+
+
+for $id in xqddf:probe-index-point-general($auctions:AuctionDates2, 
+                                           (xs:date("2000-12-04"),
+                                            xs:date("2000-01-03"),
+                                            xs:date("1998-08-18")))/@id
+return <open_auction>{$id}</open_auction>,
+
+"
+
+",
+
+for $id in xqddf:probe-index-point-general($auctions:AuctionDates2, 
+                                           ("2000-12-04",
+                                            "2000-01-03",
+                                            10.23,
+                                            xs:date("2000-01-03"),
+                                            "1998-08-18"))/@id
+return <open_auction>{$id}</open_auction>,
+
+"
+"
 
 );

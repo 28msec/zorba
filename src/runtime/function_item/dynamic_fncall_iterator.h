@@ -31,11 +31,11 @@ namespace zorba
 class DynamicFnCallIteratorState : public PlanIteratorState
 {
 public:
-  PlanState* thePlanState;
-  PlanIter_t thePlan;
-  bool       theIsOpen;
+  PlanState  * thePlanState;
+  PlanIter_t   thePlan;
+  bool         theIsOpen;
 
-  uint32_t   theUDFStateOffset;
+  uint32_t     theUDFStateOffset;
 
   DynamicFnCallIteratorState();
 
@@ -47,7 +47,8 @@ public:
 
 
 /*******************************************************************************
-
+  The 1st child iterator returns the functionItem obj to invoke. The rest of
+  the child iterators compute the args to pass to the invocation.
 ********************************************************************************/
 class DynamicFnCallIterator : public NaryBaseIterator<DynamicFnCallIterator,
                                                       DynamicFnCallIteratorState>

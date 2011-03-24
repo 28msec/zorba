@@ -582,84 +582,97 @@ bool ProbeIndexPointValueIterator::nextImpl(
   TypeManager* tm = theSctx->get_typemanager();
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
-  ProbeIndexPointValueIteratorState* state;
-  DEFAULT_STACK_INIT(ProbeIndexPointValueIteratorState, state, planState);
-
-  status = consumeNext(qnameItem, theChildren[0], planState);
-  ZORBA_ASSERT(status);
-
-  if (state->theQname == NULL || !state->theQname->equals(qnameItem)) 
+  try
   {
-    state->theQname = qnameItem;
+    ProbeIndexPointValueIteratorState* state;
+    DEFAULT_STACK_INIT(ProbeIndexPointValueIteratorState, state, planState);
 
-    if ((state->theIndexDecl = theSctx->lookup_index(qnameItem)) == NULL)
+    status = consumeNext(qnameItem, theChildren[0], planState);
+    ZORBA_ASSERT(status);
+
+    if (state->theQname == NULL || !state->theQname->equals(qnameItem)) 
     {
-      ZORBA_ERROR_LOC_PARAM(XDDY0021_INDEX_IS_NOT_DECLARED, loc,
-                            qnameItem->getStringValue().c_str(), "");
-    }
+      state->theQname = qnameItem;
 
-    if (state->theIndexDecl->getKeyExpressions().size() != numChildren-1)
-    {
-      ZORBA_ERROR_LOC_PARAM(XDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
-                            qnameItem->getStringValue().c_str(), "");
-    }
-
-    state->theIndex = (state->theIndexDecl->isTemp() ?
-                       planState.theLocalDynCtx->getIndex(qnameItem) :
-                       GENV_STORE.getIndex(state->theQname));
-
-    if (state->theIndex == NULL)
-    {
-      ZORBA_ERROR_LOC_PARAM(XDDY0023_INDEX_DOES_NOT_EXIST, loc,
-                            qnameItem->getStringValue().c_str(), "");
-    }
-
-    state->theIterator = GENV_STORE.getIteratorFactory()->
-                         createIndexProbeIterator(state->theIndex);
-  }
-
-  cond = state->theIndex->createCondition(store::IndexCondition::POINT_VALUE);
-
-  for (i = 1; i < numChildren; ++i) 
-  {
-    if (!consumeNext(keyItem, theChildren[i], planState)) 
-    {
-      // We may reach here in the case of internally-generated hashjoins
-      break;
-    }
-
-    if (theCheckKeyType)
-    {
-      checkKeyType(loc, tm, state->theIndexDecl, i-1, keyItem);
-    }
-
-    if (state->theIndexDecl->isGeneral() &&
-        (state->theIndexDecl->getKeyTypes())[i-1] == NULL)
-    {
-      xqtref_t searchKeyType = tm->create_value_type(keyItem);
-
-      if (TypeOps::is_equal(tm, *searchKeyType, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+      if ((state->theIndexDecl = theSctx->lookup_index(qnameItem)) == NULL)
       {
-        zstring str = keyItem->getStringValue();
-        GENV_ITEMFACTORY->createString(keyItem, str);
+        ZORBA_ERROR_LOC_PARAM(XDDY0021_INDEX_IS_NOT_DECLARED, loc,
+                              qnameItem->getStringValue().c_str(), "");
+      }
+
+      if (state->theIndexDecl->getKeyExpressions().size() != numChildren-1)
+      {
+        ZORBA_ERROR_LOC_PARAM(XDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
+                              qnameItem->getStringValue().c_str(), "");
+      }
+
+      state->theIndex = (state->theIndexDecl->isTemp() ?
+                         planState.theLocalDynCtx->getIndex(qnameItem) :
+                         GENV_STORE.getIndex(state->theQname));
+      
+      if (state->theIndex == NULL)
+      {
+        ZORBA_ERROR_LOC_PARAM(XDDY0023_INDEX_DOES_NOT_EXIST, loc,
+                              qnameItem->getStringValue().c_str(), "");
+      }
+      
+      state->theIterator = GENV_STORE.getIteratorFactory()->
+        createIndexProbeIterator(state->theIndex);
+    }
+
+    cond = state->theIndex->createCondition(store::IndexCondition::POINT_VALUE);
+
+    for (i = 1; i < numChildren; ++i) 
+    {
+      if (!consumeNext(keyItem, theChildren[i], planState)) 
+      {
+        // We may reach here in the case of internally-generated hashjoins
+        break;
+      }
+
+      if (theCheckKeyType)
+      {
+        checkKeyType(loc, tm, state->theIndexDecl, i-1, keyItem);
+      }
+
+      if (state->theIndexDecl->isGeneral() &&
+          (state->theIndexDecl->getKeyTypes())[i-1] == NULL)
+      {
+        xqtref_t searchKeyType = tm->create_value_type(keyItem);
+        
+        if (TypeOps::is_equal(tm, *searchKeyType, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+        {
+          zstring str = keyItem->getStringValue();
+          GENV_ITEMFACTORY->createString(keyItem, str);
+        }
+      }
+      
+      cond->pushItem(keyItem);
+    }
+    
+    if (i == numChildren)
+    {
+      state->theIterator->init(cond);
+      state->theIterator->open();
+      
+      while(state->theIterator->next(result)) 
+      {
+        STACK_PUSH(true, state);
       }
     }
-
-    cond->pushItem(keyItem);
+    
+    STACK_END(state);
   }
-
-  if (i == numChildren)
+  catch (error::ZorbaError& e)
   {
-    state->theIterator->init(cond);
-    state->theIterator->open();
-
-    while(state->theIterator->next(result)) 
+    if (!e.hasQueryLocation())
     {
-      STACK_PUSH(true, state);
+      e.setQueryLocation(loc.getLineBegin(),
+                         loc.getColumnBegin(),
+                         loc.getFilename());
     }
+    throw e;
   }
-
-  STACK_END(state);
 }
 
 
@@ -726,81 +739,94 @@ bool ProbeIndexPointGeneralIterator::nextImpl(
   ulong numChildren = (ulong)theChildren.size();
   bool status;
 
-  ProbeIndexPointGeneralIteratorState* state;
-  DEFAULT_STACK_INIT(ProbeIndexPointGeneralIteratorState, state, planState);
-
-  status = consumeNext(qnameItem, theChildren[0], planState);
-  ZORBA_ASSERT(status);
-
-  if (state->theQname == NULL || !state->theQname->equals(qnameItem)) 
+  try
   {
-    state->theQname = qnameItem;
+    ProbeIndexPointGeneralIteratorState* state;
+    DEFAULT_STACK_INIT(ProbeIndexPointGeneralIteratorState, state, planState);
 
-    if ((state->theIndexDecl = theSctx->lookup_index(qnameItem)) == NULL)
+    status = consumeNext(qnameItem, theChildren[0], planState);
+    ZORBA_ASSERT(status);
+
+    if (state->theQname == NULL || !state->theQname->equals(qnameItem)) 
     {
-      ZORBA_ERROR_LOC_PARAM(XDDY0021_INDEX_IS_NOT_DECLARED, loc,
-                            qnameItem->getStringValue().c_str(), "");
+      state->theQname = qnameItem;
+      
+      if ((state->theIndexDecl = theSctx->lookup_index(qnameItem)) == NULL)
+      {
+        ZORBA_ERROR_LOC_PARAM(XDDY0021_INDEX_IS_NOT_DECLARED, loc,
+                              qnameItem->getStringValue().c_str(), "");
+      }
+
+      if (!state->theIndexDecl->isGeneral())
+      {
+        ZORBA_ERROR_LOC_PARAM(XDDY0029_INDEX_GENERAL_PROBE_NOT_ALLOWED, loc,
+                              qnameItem->getStringValue().c_str(), "");
+      }
+
+      if (state->theIndexDecl->getKeyExpressions().size() != numChildren-1 ||
+          numChildren != 2)
+      {
+        ZORBA_ERROR_LOC_PARAM(XDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
+                              qnameItem->getStringValue().c_str(), "");
+      }
+
+      state->theIndex = (state->theIndexDecl->isTemp() ?
+                         planState.theLocalDynCtx->getIndex(qnameItem) :
+                         GENV_STORE.getIndex(state->theQname));
+
+      if (state->theIndex == NULL)
+      {
+        ZORBA_ERROR_LOC_PARAM(XDDY0023_INDEX_DOES_NOT_EXIST, loc,
+                              qnameItem->getStringValue().c_str(), "");
+      }
+
+      state->theIterator = GENV_STORE.getIteratorFactory()->
+                           createIndexProbeIterator(state->theIndex);
+    }
+    
+    if (state->theCondition == NULL)
+    {
+      state->theCondition = 
+      state->theIndex->createCondition(store::IndexCondition::POINT_GENERAL);
     }
 
-    if (!state->theIndexDecl->isGeneral())
+    while (consumeNext(keyItem, theChildren[1], planState)) 
     {
-      ZORBA_ERROR_LOC_PARAM(XDDY0029_INDEX_GENERAL_PROBE_NOT_ALLOWED, loc,
-                            qnameItem->getStringValue().c_str(), "");
+      if (keyItem == NULL)
+        // We may reach here in the case of internally-generated hashjoins
+        continue;
+      
+      if (theCheckKeyType)
+      {
+        checkKeyType(loc, theSctx->get_typemanager(), state->theIndexDecl, 0, keyItem);
+      }
+
+      state->theCondition->clear();
+      state->theCondition->pushItem(keyItem);
+      
+      state->theIterator->init(state->theCondition.getp());
+      state->theIterator->open();
+      
+      while (state->theIterator->next(result)) 
+      {
+        STACK_PUSH(true, state);
+      }
+
+      state->theIterator->close();
     }
 
-    if (state->theIndexDecl->getKeyExpressions().size() != numChildren-1 ||
-        numChildren != 2)
-    {
-      ZORBA_ERROR_LOC_PARAM(XDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
-                            qnameItem->getStringValue().c_str(), "");
-    }
-
-    state->theIndex = (state->theIndexDecl->isTemp() ?
-                       planState.theLocalDynCtx->getIndex(qnameItem) :
-                       GENV_STORE.getIndex(state->theQname));
-
-    if (state->theIndex == NULL)
-    {
-      ZORBA_ERROR_LOC_PARAM(XDDY0023_INDEX_DOES_NOT_EXIST, loc,
-                            qnameItem->getStringValue().c_str(), "");
-    }
-
-    state->theIterator = GENV_STORE.getIteratorFactory()->
-                         createIndexProbeIterator(state->theIndex);
+    STACK_END(state);
   }
-
-  if (state->theCondition == NULL)
+  catch (error::ZorbaError& e)
   {
-    state->theCondition = 
-    state->theIndex->createCondition(store::IndexCondition::POINT_GENERAL);
-  }
-
-  while (consumeNext(keyItem, theChildren[1], planState)) 
-  {
-    if (keyItem == NULL)
-      // We may reach here in the case of internally-generated hashjoins
-      continue;
-
-    if (theCheckKeyType)
+    if (!e.hasQueryLocation())
     {
-      checkKeyType(loc, theSctx->get_typemanager(), state->theIndexDecl, 0, keyItem);
+      e.setQueryLocation(loc.getLineBegin(),
+                         loc.getColumnBegin(),
+                         loc.getFilename());
     }
-
-    state->theCondition->clear();
-    state->theCondition->pushItem(keyItem);
-
-    state->theIterator->init(state->theCondition.getp());
-    state->theIterator->open();
-
-    while (state->theIterator->next(result)) 
-    {
-      STACK_PUSH(true, state);
-    }
-
-    state->theIterator->close();
+    throw e;
   }
-
-  STACK_END(state);
 }
 
 

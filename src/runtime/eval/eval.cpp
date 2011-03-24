@@ -79,18 +79,37 @@ static PlanIter_t compile(
     prolog->set_vfo_list(vfo);
   }
 
+  // Add the "using" vars to the prolog of the eval query as external var 
+  // declarations. An error will be raised when we try to translate the AST
+  // if the prolog of the eval query declares or imports any variable with
+  // the same name as the name of a "using" variable.
   for (long i = (long)varnames.size() - 1; i >= 0; --i)
   {
-    vfo->push_front(new VarDecl(loc,
-                                new QName(loc, varnames[i]->getStringValue().str()),
-                                NULL,
-                                NULL,
-                                NULL,
-                                true));
+    QName* name = new QName(loc, varnames[i]->getStringValue().str());
+
+    if (vfo->findVarDecl(*name) == NULL)
+    {
+      vfo->push_front(new VarDecl(loc,
+                                  name,
+                                  NULL,   // no type decl
+                                  NULL,   // no init expr
+                                  NULL,   // no annotations
+                                  true)); // external
+    }
+    else
+    {
+      delete name;
+    }
   }
 
   // TODO: give eval'ed code the types of the variables (for optimization)
 
+  // Copy the values of all the "outer variables" to the evalDctx. We call 
+  // "outer variables" the global vars that are in-scope where the eval expr
+  // appears at. Also compute the max varid of all the outer vars and pass 
+  // this max varid to the compiler of the eval query so that the varids that 
+  // will be generated for the eval query will not conflict with the varids 
+  // of the outer vars.
   static_context* outerSctx = ccb->theRootSctx->get_parent();
   dynamic_context* outerDctx = evalDctx->getParent();
 
@@ -160,16 +179,25 @@ static void setEvalVariable(
 }
 
 
+/****************************************************************************//**
+
+********************************************************************************/
 EvalIteratorState::EvalIteratorState() 
 {
 }
 
 
+/****************************************************************************//**
+
+********************************************************************************/
 EvalIteratorState::~EvalIteratorState() 
 {
 }
 
 
+/****************************************************************************//**
+
+********************************************************************************/
 EvalIterator::EvalIterator(
     static_context* sctx,
     const QueryLoc& loc,
@@ -184,11 +212,17 @@ EvalIterator::EvalIterator(
 }
 
 
+/****************************************************************************//**
+
+********************************************************************************/
 EvalIterator::~EvalIterator() 
 {
 }
 
 
+/****************************************************************************//**
+
+********************************************************************************/
 void EvalIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   ar.set_serialize_everything();
@@ -200,6 +234,9 @@ void EvalIterator::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
+/****************************************************************************//**
+
+********************************************************************************/
 bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item;
@@ -236,12 +273,12 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     state->thePlanWrapper->open();
 
+    // For each of the "using" vars, place its value into the evalDctx. The var
+    // value is represented as a PlanIteratorWrapper over the subplan that
+    // evaluates the domain expr of the "using" var.
     for (unsigned i = 0; i < theChildren.size() - 1; ++i)
     {
       store::Iterator_t lIter = new PlanIteratorWrapper(theChildren[i + 1], planState);
-      // TODO: is saving an open iterator efficient?
-      // Then again if we close theChildren [1] here,
-      // we won't be able to re-open it later via the PlanIteratorWrapper
 
       setEvalVariable(evalCcb->theRootSctx, evalDctx, theVarNames[i], lIter);
     }

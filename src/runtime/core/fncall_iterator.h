@@ -46,26 +46,30 @@ class StaticContextImpl;
                      that UDFunctionCallIterator::nextImpl() is called (at that
                      time open() is invoked on thePlan).
   thePlanStateSize : The size of the plan state block.
-  thePlanOpen      :
-  theArgWrappers   : For each arg var V and each reference v of V in the body of
-                     the udf, theArgWrappers stores a plan iterator wrapper over
-                     the sub plan that compute the arg expr. Note: If there are
-                     more than one references of V, these references are
-                     "mutually exclusive", ie, at most one of the references 
-                     will actually be reached during each particular execution
-                     of the body. So, it is never the case that the arg expr
-                     will have more than one consumers.
+  thePlanOpen      : Whether thePlan has been opened already or not.
+  theArgWrappers   : For each argument of this function call, theArgWrappers 
+                     stores a plan iterator wrapper over the sub plan that 
+                     computes the arg expr. This wrapping is needed because
+                     the body plan and the arg sub plans operate in different
+                     plan states. Note: Withinh the function body, there may 
+                     exist more than one references to an arg var V, but these 
+                     references are "mutually exclusive", ie, at most one of 
+                     the references will actually be reached during each 
+                     particular execution of the body. So, it is never the case 
+                     that the arg expr will have more than one consumers, and as
+                     a result we can bind all those V references to the same
+                     arg wrapper.
   theExitValue     :
 ********************************************************************************/
 class UDFunctionCallIteratorState : public PlanIteratorState 
 {
- public:
-  PlanIterator                               * thePlan;
-  PlanState                                  * thePlanState;
-  uint32_t                                     thePlanStateSize;
-  bool                                         thePlanOpen;
-  std::vector<std::vector<store::Iterator_t> > theArgWrappers;
-  store::Iterator_t                            theExitValue;
+public:
+  PlanIterator                 * thePlan;
+  PlanState                    * thePlanState;
+  uint32_t                       thePlanStateSize;
+  bool                           thePlanOpen;
+  std::vector<store::Iterator_t> theArgWrappers;
+  store::Iterator_t              theExitValue;
 
   UDFunctionCallIteratorState();
 
@@ -78,11 +82,14 @@ class UDFunctionCallIteratorState : public PlanIteratorState
 
 
 /*******************************************************************************
-
+  theUDF       : Pointer to the udf object.
+  theIsDynamic :
 ********************************************************************************/
 class UDFunctionCallIterator : public NaryBaseIterator<UDFunctionCallIterator, 
                                                        UDFunctionCallIteratorState> 
 {
+  typedef std::vector<LetVarIter_t> ArgVarRefs;
+
 protected:
   user_function  * theUDF;
   bool             theIsDynamic;

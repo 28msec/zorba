@@ -62,8 +62,8 @@ by (for $x in ./bidder/date return xs:date($x)) as xs:date*;
 
 
 (:
-  The AuctionDates2 index maps dates to the open auctions that had a biding on the
-  associated date.
+  The AuctionDates2 index is the same as AuctionDates except that its key  
+  expression produces untyped items.
 :)
 
 declare general range manually maintained index auctions:AuctionDates2

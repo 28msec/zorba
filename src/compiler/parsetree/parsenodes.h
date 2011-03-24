@@ -868,6 +868,8 @@ public:
 
   std::vector<rchandle<parsenode> >::const_iterator end() const { return vfo_hv.end(); }
 
+  const VarDecl* findVarDecl(const QName& varname);
+
   void accept(parsenode_visitor&) const;
 };
 
@@ -5355,6 +5357,8 @@ public:
   const zstring& get_namespace() const { return theNamespace; }
 
   bool is_eqname() const { return theIsEQName; }
+
+  bool operator==(const QName& other) const;
 
   void accept(parsenode_visitor&) const;
 };

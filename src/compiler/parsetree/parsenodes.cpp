@@ -656,6 +656,27 @@ void VFO_DeclList::accept( parsenode_visitor &v ) const
 }
 
 
+const VarDecl* VFO_DeclList::findVarDecl(const QName& varName)
+{
+  std::vector<rchandle<parsenode> >::iterator ite = begin();
+  std::vector<rchandle<parsenode> >::iterator end = this->end();
+
+  for (; ite != end; ++ite)
+  {
+    VarDecl* varDecl = dynamic_cast<VarDecl*>(ite->getp());
+
+    if (varDecl != NULL && 
+        varDecl->is_extern() && 
+        *varDecl->get_name() == varName)
+    {
+      return varDecl;
+    }
+  }
+
+  return NULL;
+}
+
+
 /*******************************************************************************
   [13] OptionDecl ::= DECLARE_OPTION  QNAME  STRING_LITERAL
 ********************************************************************************/
@@ -4580,19 +4601,21 @@ QName::QName(
 
   if (n == zstring::npos)
   {
-    theLocalName = qname;
+    theNamespace = "";
     thePrefix = "";
+    theLocalName = qname;
+  }
+  else if (theIsEQName)
+  {
+    theNamespace = qname.substr(0, n);
+    thePrefix = "";
+    theLocalName = qname.substr(n+1);
   }
   else
   {
-    theLocalName = qname.substr(n+1);
+    theNamespace = "";
     thePrefix = qname.substr(0, n);
-  }
-
-  if (theIsEQName)
-  {
-    theNamespace = thePrefix;
-    thePrefix = "";
+    theLocalName = qname.substr(n+1);
   }
 }
 
@@ -4601,6 +4624,24 @@ void QName::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   END_VISITOR();
+}
+
+
+bool QName::operator==(const QName& other) const
+{
+  if (theIsEQName != other.theIsEQName)
+    return false;
+
+  if (theIsEQName)
+  {
+    return (theLocalName == other.theLocalName &&
+            theNamespace == other.theNamespace);
+  }
+  else
+  {
+    return (theLocalName == other.theLocalName &&
+            thePrefix == other.thePrefix);
+  }
 }
 
 

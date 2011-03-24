@@ -38,6 +38,16 @@ public:
 };
 
 
+/****************************************************************************//**
+  The 1st child iterator computes the query string, and the next N child
+  iterators compute the domain expression of each of the "using" variables.
+
+  theVarNames : The names of the "using" vars. These will be added to the prolog
+                of the eval query as external var declarations. An error will be
+                raised if the prolog of the eval query declares or imports any 
+                variable with the same name as the name of a "using" variable.
+  theVarTypes : The data types of the "using" vars.
+********************************************************************************/
 class EvalIterator : public NaryBaseIterator<EvalIterator, EvalIteratorState>
 { 
 protected:

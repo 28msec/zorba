@@ -31,7 +31,11 @@ protected:
 
 public:
   InvokeAnnotationHolder(function* func) : theFunction(func) {  };
-  virtual bool is_updating() const { return theFunction == NULL? false : theFunction->isUpdating(); }
+
+  virtual bool is_updating() const 
+  {
+    return theFunction == NULL? false : theFunction->isUpdating(); 
+  }
 };
 
 /*******************************************************************************
@@ -43,16 +47,19 @@ void InvokeIteratorState::init(PlanState &planState)
   thePlanState = NULL;
 }
 
+
 void InvokeIteratorState::reset(PlanState &planState)
 {
   if (thePlanState != NULL)
   {
     if (thePlanState->theLocalDynCtx)
       delete thePlanState->theLocalDynCtx;
+
     delete thePlanState;
     thePlanState = NULL;
   }
 }
+
 
 InvokeIteratorState::~InvokeIteratorState()
 {
@@ -60,20 +67,24 @@ InvokeIteratorState::~InvokeIteratorState()
   {
     if (thePlanState->theLocalDynCtx)
       delete thePlanState->theLocalDynCtx;
+
     delete thePlanState;
     thePlanState = NULL;
   }
 }
+
 
 /*******************************************************************************
 
 ********************************************************************************/
 uint32_t InvokeIterator::getStateSizeOfSubtree() const
 {
-   uint32_t size = NaryBaseIterator<InvokeIterator, InvokeIteratorState>::getStateSizeOfSubtree();
+   uint32_t size = NaryBaseIterator<InvokeIterator, InvokeIteratorState>::
+   getStateSizeOfSubtree();
 
    return size + sizeof(UDFunctionCallIteratorState);
 }
+
 
 bool InvokeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -87,20 +98,22 @@ bool InvokeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   if (theChildren.size() == 0)
   {
-    ZORBA_ERROR_LOC_DESC(XPST0017, loc, "the first parameter to invoke() must a QName denoting an existing function.");
+    ZORBA_ERROR_LOC_DESC(XPST0017, loc,
+         "the first parameter to invoke() must a QName denoting an existing function.");
   }
 
   consumeNext(func_name, theChildren[0].getp(), planState);
 
-
   func = theSctx->lookup_fn(func_name, theChildren.size()-1);
   if (func == NULL)
   {
-    ZORBA_ERROR_LOC_PARAM(XPST0017, loc, func_name->getStringValue(), ztd::to_string(theChildren.size()-1));
+    ZORBA_ERROR_LOC_PARAM(XPST0017, loc,
+                          func_name->getStringValue(),
+                          ztd::to_string(theChildren.size()-1));
   }
 
   {
-    for (unsigned int i=1; i<theChildren.size(); i++)
+    for (unsigned int i = 1; i < theChildren.size(); i++)
     {
       // theChildren[i]->open(planState, state_offset);
       args.push_back(theChildren[i]);

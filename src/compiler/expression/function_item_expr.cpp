@@ -64,6 +64,7 @@ expr_t dynamic_function_invocation_expr::clone(substitution_t& s) const
                 theSctx, get_loc(), theExpr->clone(s), lNewArgs);
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -89,10 +90,6 @@ function_item_expr::function_item_expr(
   compute_scripting_kind();
 }
 
-function_item_expr::function_item_expr(::zorba::serialization::Archiver &ar)
-  : expr(ar)
-{
-}
 
 function_item_expr::function_item_expr(
     static_context* sctx,
@@ -104,6 +101,13 @@ function_item_expr::function_item_expr(
   theArity(0)
 {
   compute_scripting_kind();
+}
+
+
+function_item_expr::function_item_expr(::zorba::serialization::Archiver &ar)
+  :
+  expr(ar)
+{
 }
 
 
@@ -140,6 +144,7 @@ void function_item_expr::compute_scripting_kind()
   theScriptingKind = SIMPLE_EXPR;
 }
 
+
 expr_t function_item_expr::clone(substitution_t& s) const
 {
   std::auto_ptr<function_item_expr> lNewExpr(
@@ -151,12 +156,16 @@ expr_t function_item_expr::clone(substitution_t& s) const
         theArity
       )
   );
+
   std::vector<expr_t> lNewVariables;
   for (std::vector<expr_t>::const_iterator lIter = theScopedVariables.begin();
-       lIter != theScopedVariables.end(); ++lIter) {
+       lIter != theScopedVariables.end(); ++lIter) 
+  {
     lNewExpr->add_variable((*lIter)->clone(s));
   }
+
   return lNewExpr.release();
 }
+
 
 }//end of namespace

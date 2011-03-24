@@ -29,7 +29,13 @@ class function_item_expr;
 
 
 /*******************************************************************************
-  theVariableValues : (in-scope) variable values for inline function items
+  A FunctionItem is created during codegen, when a function_item_expr is reached.
+
+  theCCB            :
+  theSctx           : The static context of the function_item_expr.
+  theExpr           : The associated function_item_expr.
+  theVariableValues : Vector of var iterators representing the values of the
+                      in-scope FLWOR variables for inline function items.
 ********************************************************************************/
 class FunctionItem : public store::Item, public zorba::serialization::SerializeBaseClass
 {

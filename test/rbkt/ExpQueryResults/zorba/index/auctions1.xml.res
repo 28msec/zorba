@@ -104,30 +104,28 @@
 <watch open_auction="open_auction4"/>
 </watches></person>
 
-<exception>Got exception, as expected</exception>
+<exception>err:XPTY0004 : During a value probe on index auctions:PersonWatches2 a node was found that has more than one key values</exception>
 
-<person id="person13">
-<name>Martti Halgason</name>
-<emailaddress>mailto:Halgason@bell-labs.com</emailaddress>
-<city>Havana</city>
-<phone>+0 (778) 41220156</phone>
-<profile income="41407.27">
-<interest category="category0"/>
-<interest category="category0"/>
-<interest category="category0"/>
-<interest category="category0"/>
-<gender>female</gender>
-<business>Yes</business>
-<age>20</age>
-</profile>
-<watches>
-<watch open_auction="open_auction7"/>
-</watches>
-</person>
+---------------------------------------------------
+Probing the typed AuctionDates sorted general index
+---------------------------------------------------
 
-<open_auction id="open_auction2"/>
+<exception>err:XPTY0004 : During a value probe on index auctions:AuctionDates a node was found that has more than one key values</exception>
 
-<exception>Got exception, as expected</exception>
+<exception>err:XPTY0004 : The type of a search key does not mathch the type of the corresponding index key for index auctions:AuctionDates. The search key has type xs:integer and the expected key type is xs:date</exception>
 
 <open_auction id="open_auction2"/><open_auction id="open_auction3"/>
 
+<exception>err:XPTY0004 : The type of a search key does not mathch the type of the corresponding index key for index auctions:AuctionDates. The search key has type xs:string and the expected key type is xs:date</exception>
+
+-------------------------------------------------------
+Probing the untyped AuctionDates2 sorted general index
+-------------------------------------------------------
+
+<exception>err:XPTY0004 : During a value probe on index auctions:AuctionDates2 a node was found that has more than one key values</exception>
+
+<exception>err:XPTY0004 : During a value probe on index auctions:AuctionDates2 a node was found that has more than one key values</exception>
+
+<open_auction id="open_auction2"/><open_auction id="open_auction3"/>
+
+<open_auction id="open_auction2"/><open_auction id="open_auction3"/>

@@ -1010,8 +1010,8 @@ public:
 
 /***************************************************************************//**
   theExpr : The expr that computes the query string to be evaluated by eval.
-  theVars :
-  theArgs :
+  theVars : There is one eval var for each "using" clause.
+  theArgs : The domain expr of each eval var.
 ********************************************************************************/
 class eval_expr : public expr 
 {

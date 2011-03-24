@@ -50,7 +50,9 @@ GeneralIndex::GeneralIndex(
     const store::IndexSpecification& spec)
   :
   IndexImpl(qname, spec),
-  theCompFunction(getNumColumns(), spec.theTimezone, theCollators)
+  theCompFunction(getNumColumns(), spec.theTimezone, theCollators),
+  theUntypedFlag(false),
+  theMultiKeyFlag(false)
 {
 }
 
@@ -433,6 +435,12 @@ bool GeneralHashIndex::insertInMap(
   if (targetMap == NULL)
     targetMap = new IndexMap(theCompFunction, 1024, theSpec.theIsThreadSafe);
 
+  if (untyped)
+    theUntypedFlag = true;
+
+  if (multikey)
+    theMultiKeyFlag = true;
+
   if (targetMap->get(key, valueSet))
   {
     if (isUnique())
@@ -527,6 +535,25 @@ void ProbeGeneralHashIndexIterator::init(const store::IndexCondition_t& cond)
                       key->toString());
   }
 
+  if (theProbeKind == store::IndexCondition::POINT_VALUE)
+  {
+    if (theIndex->theMultiKeyFlag)
+    {
+      ZORBA_ERROR_DESC_OSS(XPTY0004,
+                           "During a value probe on index "
+                           << theIndex->getName()->getStringValue()
+                           << " a node was found that has more than one key values");
+    }
+
+    if (theIndex->theUntypedFlag)
+    {
+      ZORBA_ERROR_DESC_OSS(XPTY0004,
+                           "During a value probe on index "
+                           << theIndex->getName()->getStringValue()
+                           << " a node was found that has an untyped key value");
+    }
+  }
+  
   theResultSets.resize(1);
   theResultSets[0] = NULL;
 
@@ -937,7 +964,7 @@ bool ProbeGeneralHashIndexIterator::next(store::Item_t& result)
     while (theIte != theEnd)
     {
       result = (*theIte).theNode;
-
+#if 0
       if (theProbeKind == store::IndexCondition::POINT_VALUE)
       {
         if ((*theIte).theMultiKey)
@@ -956,6 +983,7 @@ bool ProbeGeneralHashIndexIterator::next(store::Item_t& result)
                                << " a node was found that has an untyped key value");
         }
       }
+#endif
 
       ++theIte;
       return true;
@@ -1250,7 +1278,8 @@ longmap:
 
   default:
   {
-    ZORBA_ASSERT(false);
+    ZORBA_ERROR_PARAM(XDTY0012_INDEX_KEY_TYPE_ERROR, 
+                      getName()->getStringValue(), "");
     return false;
   }
   }
@@ -1271,6 +1300,12 @@ bool GeneralTreeIndex::insertInMap(
 
   if (targetMap == NULL)
     targetMap = new IndexMap(theCompFunction);
+
+  if (untyped)
+    theUntypedFlag = true;
+
+  if (multikey)
+    theMultiKeyFlag = true;
 
   IndexMap::iterator pos = targetMap->find(key);
 
@@ -1386,6 +1421,25 @@ void ProbeGeneralTreeIndexIterator::initPoint(const store::IndexCondition_t& con
     ZORBA_ERROR_PARAM(STR0005_INDEX_PARTIAL_KEY_PROBE,
                       theIndex->getName()->getStringValue().c_str(),
                       key->toString());
+  }
+
+  if (theProbeKind == store::IndexCondition::POINT_VALUE)
+  {
+    if (theIndex->theMultiKeyFlag)
+    {
+      ZORBA_ERROR_DESC_OSS(XPTY0004,
+                           "During a value probe on index "
+                           << theIndex->getName()->getStringValue()
+                           << " a node was found that has more than one key values");
+    }
+
+    if (theIndex->theUntypedFlag)
+    {
+      ZORBA_ERROR_DESC_OSS(XPTY0004,
+                           "During a value probe on index "
+                           << theIndex->getName()->getStringValue()
+                           << " a node was found that has an untyped key value");
+    }
   }
 
   theResultSets.resize(1);
@@ -1656,6 +1710,36 @@ void ProbeGeneralTreeIndexIterator::initPoint(const store::IndexCondition_t& con
 ********************************************************************************/
 void ProbeGeneralTreeIndexIterator::initBox(const store::IndexCondition_t& cond)
 {
+#if 0
+  theBoxCondition = reinterpret_cast<IndexBoxCondition*>(cond.getp());
+
+  long timezone = theIndex->getTimezone();
+
+  bool haveLowerBound = true;
+  bool haveUpperBound = true;
+  bool lowIncl = true;
+  bool highIncl = true;
+
+  ulong numRanges = theBoxCond->numRanges();
+
+  if (numRanges == 0)
+  {
+    haveLowerBound = false;
+    haveUpperBound = false;
+  }
+
+  if (numRanges > theIndex->getNumColumns())
+  {
+    ZORBA_ERROR_PARAM(STR0006_INDEX_INVALID_BOX_PROBE, 
+                      theIndex->getName()->getStringValue().c_str(),
+                      "The box condition has more columns than the index");
+  }
+
+  store::IndexKey& lowerBounds = theBoxCondition->theLowerBounds;
+  store::IndexKey& upperBounds = theBoxCondition->theUpperBounds;
+
+  RangeFlags& rangeFlags = theBoxCondition->theRangeFlags[0];
+#endif
 }
 
 

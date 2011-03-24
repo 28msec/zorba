@@ -155,8 +155,8 @@ bool DynamicFnCallIterator::nextImpl(
 
   // first child must return exactly one item which is a function item
   // otherwise XPTY0004 is raised
-  if (!consumeNext(funcItem, theChildren[0], planState) &&
-      !funcItem->isFunction() &&
+  if (!consumeNext(funcItem, theChildren[0], planState) ||
+      !funcItem->isFunction() ||
       consumeNext(item, theChildren[0], planState)) 
   {
     ZORBA_ERROR_LOC(XPTY0004, loc);
