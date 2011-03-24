@@ -48,7 +48,6 @@
  : @author Daniel Turcanu
  :)
 module namespace geoproj = "http://www.zorba-xquery.com/modules/geoproj";
-import module namespace math = "http://www.zorba-xquery.com/modules/math";
 
 (:~
  : Import module for checking if geoproj parameters are validated.
