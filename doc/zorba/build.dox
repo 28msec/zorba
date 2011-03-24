@@ -52,7 +52,7 @@ build. You can download CMake from http://www.cmake.org/.
 \subsection compilers Compilers
 Zorba is tested with the following compilers:
 - GNU Compiler: GCC 3.4.x (32-bit & 64-bit) and GCC 4.x.x
-- Microsoft Compiler: MS VC++ 2005, MS VC++ 2008, and MS VC++ 2010
+- Microsoft Compiler: MS VC++ 2008, and MS VC++ 2010
 
 
 \subsection required Required Packages
@@ -263,7 +263,8 @@ This will remove the build path from the installed executables and
 libraries.  It will also add some symbolic links to the libraries.
 
 \section windows Notes for Windows Users
-- In order to compile Zorba on Windows, you need a working Visual Studio (Express) installation (2005, 2008, 2010).
+- In order to compile Zorba on Windows, you need a working Visual Studio (Express) installation (2008, 2010).
+- If you want to compile Zorba using Visual Studio 2008 you will need to install the <a href="http://www.microsoft.com/downloads/en/details.aspx?FamilyId=D466226B-8DAB-445F-A7B4-448B326C48E7&displaylang=en" target="_blank">Visual C++ 2008 Feature Pack Release</a>.
 - Make sure that the libraries required for Zorba are built with the same version of Visual Studio that you use.
 - the Windows version of some required packages are distributed by other web sites (all of them are pointed to from the main package web sites indicated in the \ref required section):
   - Libxml2 and Iconv: http://www.zlatkovic.com/libxml.en.html
