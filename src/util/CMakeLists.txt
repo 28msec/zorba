@@ -23,6 +23,7 @@ SET(UTIL_SRCS
     indent.cpp
     regex.cpp
     unicode_util.cpp
+    unicode_categories.cpp
     uri_util.cpp
     utf8_util.cpp
     xml_util.cpp
