@@ -129,10 +129,17 @@ MACRO(ADD_TEST_DIRECTORY TEST_DIR)
   FOREACH(TESTFILE ${TESTFILES})
     SET(TESTNAME "${CMAKE_PROJECT_NAME}/${TESTFILE}")
     # QQQ hard-coded src/ directory
+    IF(WIN32)
+    ADD_TEST(${TESTNAME} "${Zorba_TESTDRIVER}"
+      --rbkt-src "${CMAKE_SOURCE_DIR}/test"
+      --module-path "${CMAKE_SOURCE_DIR}/src/;${CMAKE_BINARY_DIR}/src/"
+      "${TESTFILE}")
+    ELSE(WIN32)
     ADD_TEST(${TESTNAME} "${Zorba_TESTDRIVER}"
       --rbkt-src "${CMAKE_SOURCE_DIR}/test"
       --module-path "${CMAKE_SOURCE_DIR}/src:${CMAKE_BINARY_DIR}/src"
       "${TESTFILE}")
+    ENDIF(WIN32)
     MATH(EXPR TESTCOUNTER ${TESTCOUNTER}+1)
     MATH(EXPR TESTMOD "${TESTCOUNTER}%100")
     IF (${TESTMOD} EQUAL 0)
