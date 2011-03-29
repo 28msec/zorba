@@ -972,7 +972,7 @@ bool validate_collection_properties(
     parsenode* qname,
     xquery_driver& driver)
 {
-  XQUERY_ERROR const &error = CollectionDecl::validatePropertyList(static_cast<DeclPropertyList*>(props));
+  Error const &error = CollectionDecl::validatePropertyList(static_cast<DeclPropertyList*>(props));
   if (error != zorba::err::XQP0000_NO_ERROR)
   {
     driver.set_expr(new ParseErrorNode(driver.createQueryLoc(loc),
@@ -991,7 +991,7 @@ bool validate_index_properties(
     parsenode* qname,
     xquery_driver& driver)
 {
-  XQUERY_ERROR const &error = 
+  Error const &error = 
   AST_IndexDecl::validatePropertyList(static_cast<DeclPropertyList*>(props));
 
   if (error != zorba::err::XQP0000_NO_ERROR)
