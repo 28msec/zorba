@@ -1,8 +1,12 @@
-declare function local:eval($query as xs:string, $someparam as xs:integer) {
-  
-  let $x := $someparam return
-  using $x, $query eval { $query  }
+
+import module namespace util = "http://www.zorba-xquery.com/modules/reflection";
+
+declare function local:eval($query as xs:string, $someparam as xs:integer) 
+{
+  let $x := $someparam 
+  return util:eval-simple($query)
 };
+
 
 for $y in 1 to 6
 return 

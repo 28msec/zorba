@@ -1,3 +1,6 @@
+
+import module namespace util = "http://www.zorba-xquery.com/modules/reflection";
+
 <population>
 {
 for $i in fn:doc("gary_meta.xml")/data/file[@type = "xml"]
@@ -9,7 +12,7 @@ return <survey year="{$year}">
        let $unitid := $j/@unitid,
            $control := xs:integer($j/@control),
            $rControl := for $cond in doc("gary_control.xml")//condition[@year eq $year]
-                        return using $control eval { $cond/@expression }
+                        return util:eval-simple($cond/@expression)
        return <inst unitid="{$unitid}" control="{$control}" rControl="{$rControl}" />
        }
        </survey>

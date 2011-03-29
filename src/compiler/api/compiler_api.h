@@ -66,7 +66,9 @@ public:
 
   PlanIter_t
   compile(
-      parsenode_t ast,
+      const parsenode_t& ast,
+      bool applyPUL,
+      expr_t& rootExpr,
       ulong& nextDynamicVarId);
 
 protected:

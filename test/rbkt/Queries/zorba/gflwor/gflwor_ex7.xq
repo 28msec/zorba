@@ -1,8 +1,13 @@
+
+import module namespace util = "http://www.zorba-xquery.com/modules/reflection";
+
 import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
 
 import module namespace data = "http://www.28msec.com/WindyCityDBDemo/lib/data" at "data.xqlib";
 
+
 declare variable $local:error := xs:QName('data:error');
+
 
 declare function local:get($collection as xs:QName, $query as xs:string?) 
 {
@@ -11,16 +16,20 @@ declare function local:get($collection as xs:QName, $query as xs:string?)
                          ""
                         )
   return
-    try{
-      using $collection eval {
+    try
+    {
+      util:eval-simple 
+      (
         concat(
           'import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";',
           $expr
         )
-      }
-  } catch * ($ecode, $desc){
-    error($local:error, concat("Invalid Query: ", $expr, ". ", $desc))
-  }
+      )
+    } 
+    catch * ($ecode, $desc)
+    {
+      error($local:error, concat("Invalid Query: ", $expr, ". ", $desc))
+    }
 };
 
 

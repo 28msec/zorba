@@ -205,23 +205,33 @@ PlanIter_t XQueryCompiler::compile(
       dynamic_cast<LibraryModule*>(lAST.getp()) != NULL)
     lAST = createMainModule(lAST, aXQuery, aFileName);
 
-  return compile(lAST, nextDynamicVarId);
+  expr_t rootExpr;
+
+  return compile(lAST, true, rootExpr, nextDynamicVarId);
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-PlanIter_t XQueryCompiler::compile(parsenode_t ast, ulong& nextDynamicVarId)
+PlanIter_t XQueryCompiler::compile(
+    const parsenode_t& ast,
+    bool applyPUL,
+    expr_t& rootExpr,
+    ulong& nextDynamicVarId)
 {
-  expr_t lExpr = normalize(ast); // also does the translation
-  lExpr = optimize(lExpr);
+  rootExpr = normalize(ast); // also does the translation
+  rootExpr = optimize(rootExpr);
 
 #if 0
-  lExpr = lExpr->clone();
+  rootExpr = rootExpr->clone();
 #endif
 
-  PlanIter_t plan = codegen("main query", lExpr, theCompilerCB, nextDynamicVarId);
+  PlanIter_t plan = codegen("main query",
+                            rootExpr,
+                            theCompilerCB,
+                            applyPUL,
+                            nextDynamicVarId);
 
   return plan;
 }

@@ -1,21 +1,63 @@
 /** \page eval Eval
 
-\section evalgrammar Eval Grammar
+ 
+\section evalgrammar Eval Function Signatures
+
 <pre>
-EvalExpr ::= UsingClause? "eval" "{" ExprSingle "}"
-UsingClause ::= "using " "$" VarName ("," "$" VarName)*
+
+declare function reflection:eval-simple($query as xs:string) as item()*
+
+declare updating function reflection:eval-simple($query as xs:string)
+
+declare sequential function reflection:eval-simple($query as xs:string) as item()*
+
 </pre>
+
 
 \section evalsemantics Eval Semantics
 
+As shown above, there are three variants of the eval function. Their purpose is 
+to execute an xquery program from inside another xquery program. The xquery 
+program that invokes an eval function will be referred to as the "outer" 
+program, and the xquery program that is executed by the eval invocation will 
+be referred to as the "inner" program. The inner program is given as a string 
+argument to the eval function. Typically, the outer program constructs this 
+string dynamically, e.g., based on data extracted from documents and/or the 
+values of external variables. The eval function treats this string as the 
+"source code" of an xquery main module; it parses the string, compiles the 
+resulting parse tree, executes the resulting execution plan, and finally 
+returns the result (if any) to the outer program.
 
-The Eval expression first computes the value of its target expression in the context of the surrounding query. The result of this computation is atomized and cast as a string, then parsed and evaluated in a new static context and dynamic context derived from the contexts of the enclosing query at the global (top-level) scope. The derived contexts contain declarations for, and values of, the variables bound by the optional UsingClause. The values are taken from the innermost in-scope variable in the enclosing query with the same QName as the variable being declared.
+The inner program "inherits" the static and dynamic contextes of the outer
+program. Specifically, evaluation of the inner program is done in static and 
+dynamic contextes that are initialized as copies of the static and dynamic 
+contextes of the outer program at the place where the eval invocation appears 
+at. This means that, for example, all variables that are in-scope at the place 
+where the eval function is called from, are also in-scope inside the inner
+program and can referenced there without having to be re-declared. On the other
+hand, declarations that appear in the prolog of the inner main module or are
+imported by the main module from library modules, hide their corresponding
+inherited declarations. For example, if the inner main module declares 
+a variable or function with the same name as an inherited variable or function, 
+the inner variable/function hides the inherited one. 
 
-The evaluated query may contain its own prolog, but may not be a library module, may not contain schema imports, and may not declare external variables. In all other respects, the evaluated query behaves like a regular query.
+If the inner program declares an external variable with the same name as an 
+inherited variable, the value of the inherited variable is used to initialize 
+the inner external variable. If, however, an inner external variable has no 
+default initializer and no corresponding inherited variable, it will remain 
+uninitialized, causing the inner program to raise an error when executed.  
+ 
+The three variants of eval differ in their expectation about the category of 
+the QueryBody expression of the given query: eval-simple expects the QueryBody 
+expression to be a simple expression; eval-updating expects the QueryBody 
+expression to be an updating expression and returns the resulting PUL to the
+outer program; eval-simple expects the QueryBody expression to be a sequential
+expression. If the inner QueryBody turns out having a category other than the
+expected one, an error is raised [err:???]. 
 
-As eval introduces a distinct static context, it is not an error if the prolog of the evaluated query declares variables and/or functions shadowing components with the same name of the original query. However, the evaluated query may not declare global and/or external variables with names conflicting with the bindings specified by the UsingClause (which are implicitly declared in the evaluated query's static context).
 
 \section evalexamples Eval Examples
+
 
 \subsection example1 Example 1
 \include eval_spec_ex_1.xq

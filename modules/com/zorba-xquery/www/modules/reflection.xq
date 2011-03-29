@@ -43,3 +43,38 @@ module namespace reflection = "http://www.zorba-xquery.com/modules/reflection";
  :)
 declare %variadic function reflection:invoke($name as xs:QName) as item()* external;
 
+
+(:~
+ : Eval
+ :
+ : @param $query the query string to be evaluated.
+ : @return the result of evaluating the query (the result is not supposed to
+ :         contain any PUL).
+ :)
+declare function reflection:eval-simple(
+    $query as xs:string
+) as item()* external;
+
+
+(:~
+ : Eval
+ :
+ : @param $query the query string to be evaluated.
+ : @return the PUL resulting from evaluating the query
+ :)
+declare updating function reflection:eval-updating(
+    $query as xs:string
+) external;
+
+
+(:~
+ : Eval
+ :
+ : @param $query the query string to be evaluated.
+ : @return the result of evaluating the query (the result is not supposed to
+ :         contain any PUL).
+ :)
+declare sequential function reflection:eval-sequential(
+    $query as xs:string
+) as item()* external;
+

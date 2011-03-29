@@ -129,24 +129,26 @@ public:
     void serialize(::zorba::serialization::Archiver& ar);
   };
 
+  typedef std::map<short, static_context_t> SctxMap;
+
 public:  
-  error::ErrorManager               * theErrorManager;
+  error::ErrorManager     * theErrorManager;
 
-  std::map<short, static_context_t>   theSctxMap;
+  SctxMap                   theSctxMap;
 
-  static_context                    * theRootSctx;
+  static_context          * theRootSctx;
 
-  DebuggerCommons                   * theDebuggerCommons;
+  DebuggerCommons         * theDebuggerCommons;
 
-  bool                                theIsLoadProlog;
+  bool                      theIsLoadProlog;
 
-  bool                                theIsUpdating;
+  bool                      theIsUpdating;
 
-  long                                theTimeout;
+  long                      theTimeout;
 
-  ulong                               theTempIndexCounter;
+  ulong                     theTempIndexCounter;
 
-  config                              theConfig;
+  config                    theConfig;
 
 public:
   SERIALIZABLE_CLASS(CompilerCB);

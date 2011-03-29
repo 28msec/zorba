@@ -2,13 +2,15 @@
 
 module namespace extern = "urn:extern";
 
+import module namespace refl = "http://www.zorba-xquery.com/modules/reflection";
+
 declare namespace ns2 = 'myns';
 
 
 declare function extern:test() as xs:string
 {
-  eval {"
+  refl:eval-simple("
     declare function extern:bar() external;
     extern:bar()"
-  }
+  )
 };

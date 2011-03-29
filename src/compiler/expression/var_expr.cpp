@@ -79,7 +79,8 @@ var_expr::var_expr(
   theDeclaredType(NULL),
   theFlworClause(NULL),
   theCopyClause(NULL),
-  theIsPrivate(false)
+  theIsPrivate(false),
+  theIsExternal(false)
 {
   compute_scripting_kind();
 
@@ -100,6 +101,7 @@ void var_expr::serialize(::zorba::serialization::Archiver& ar)
   ar & theFlworClause;
   ar & theCopyClause;
   ar & theIsPrivate;
+  ar & theIsExternal;
 }
 
 

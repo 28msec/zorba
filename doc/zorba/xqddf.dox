@@ -1559,8 +1559,8 @@ collation. The triplet IndexKeyExpr, IndexKeyTypeDecl, IndexKeyCollation is
 called a <strong>keyspec</strong>. For general indexes, the number of keyspecs 
 must be exectly one [<a href="#ERRXDST0035">err:XDST0035</a>]. The IndexKeyTypeDecl 
 is optional for general indexes (in which case it is assumed to be xs:anyAtomicItem*), 
-but is required for value indexes [<a href="#ERRXDST0027">err:XDST0027</a>]. If 
-present, IndexKeyTypeDecl provides a sequence type that the atomized result of 
+but is required for value indexes [<a href="#ERRXDST0027">err:XDST0027</a>].  
+The IndexKeyTypeDecl provides a sequence type that the atomized result of 
 the associated key expression (for each domain node) must match with according 
 to the rules of sequence type matching. For value indexes, the atomic type 
 specified in IndexKeyTypeDecl must not be xs:anyAtomicType or xs:untypedAtomic 
@@ -1569,7 +1569,7 @@ the occurrence indicator must be either absent or equal to '?'
 [<a href="#ERRXDST0027">err:XDST0027</a>]. Finally, if the index is a value 
 range or general range index, an ordering must exist among the values in the 
 type domain [<a href="#ERRXDST0027">err:XDST0027</a>] (this rules excludes
-the following atomic types and their subtypes: untypedAtomic, QName, NOTATION, 
+the following atomic types and their subtypes: QName, NOTATION, 
 hexBinary, hex64Binary, gYearMonth, gYear, gMonthDay, gMonth, and gDay). 
 
 If the key type in a keyspec is xs:string (or subtype of), the IndexKeyCollation 
@@ -1729,7 +1729,7 @@ If the index is a general index:
   </li>
 
   <li>
-  An error is raised [<a href="#ERRXDDY0024">err:XDDY0024</a>] if the index is 
+  An error is raised [<a href="#ERRXDTY0012">err:XDTY0012</a>] if the index is 
   a range index and any of the key items has a type that is not xs:untypedAtomic 
   and for which no ordering relationship exists.
   </li>
@@ -1737,12 +1737,13 @@ If the index is a general index:
   <li>
   In this step, an <strong>expanded key sequence</strong> is constructed for
   each domain node. If the atomic type specified in the IndexKeyTypeDecl is
-  not xs:anyAtomicType, the expanded key sequence is the same as the original
-  key sequence. Otherwise, let D<sub>i</sub> be the i-th domain node, and 
-  K<sub>i</sub> be the key sequence computed for D<sub>i</sub>. If any key 
-  item in K<sub>i</sub> has type xs:untypedAtomic, the item is removed from 
-  K<sub>i</sub> and is cast to every primitive builtin data type. For each 
-  successfull cast, the resulting item is inserted back into K<sub>i</sub>.
+  neither xs:untypedAtomic nor xs:anyAtomicType, the expanded key sequence 
+  is the same as the original key sequence. Otherwise, let D<sub>i</sub> be 
+  the i-th domain node, and K<sub>i</sub> be the key sequence computed for 
+  D<sub>i</sub>. If any key item in K<sub>i</sub> has type xs:untypedAtomic, 
+  the item is removed from K<sub>i</sub> and is cast to every primitive builtin 
+  data type. For each successfull cast, the resulting item is inserted back 
+  into K<sub>i</sub>.
   </li>
 
   <li> 
@@ -1900,10 +1901,14 @@ The final result is the union of the node sets stored in each matching entry.
 
 This method is supported by general indexes only [<a href="#ERRXDDY0029">
 err:XDDY0029</a>]. The search condition is specified as a sequence of
-atomic search items. The type of each search item must match the atomic 
-type specified in the IndexKeyTypeDecl of the index; otherwise, a type 
-error is raised [err:XPTY0004]. For each search item, the function looks 
-for index entries whose key is equal to the search key according to the 
+atomic search items. The search sequence must match the sequence type 
+specified by the IndexKeyTypeDecl of the index; otherwise, a type error 
+is raised [err:XPTY0004]. If the type of any item in the search sequence 
+is xs:untypedAtomic, the item is removed from the search sequence and is
+cast to every other primitive builtin type for which an order relationship
+exists. For each such successful cast, the result item is added back to the
+search sequence. Then, for each item in the search sequence, the function 
+looks for index entries whose key is equal to the search key according to the 
 rules of the eq operator. The final result is the union of the node sets 
 stored in each matching entry.
 

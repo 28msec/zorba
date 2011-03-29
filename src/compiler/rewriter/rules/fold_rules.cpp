@@ -76,7 +76,7 @@ static expr_t execute (
     vector<store::Item_t>& result)
 {
   ulong nextVarId = 1;
-  PlanIter_t plan = codegen ("const-folded expr", node, compilercb, nextVarId);
+  PlanIter_t plan = codegen ("const-folded expr", node, compilercb, false, nextVarId);
   QueryLoc loc = LOC (node);
   store::Item_t item;
 
@@ -481,7 +481,7 @@ RULE_REWRITE_PRE(FoldConst)
 
   if (standalone_expr(node) &&
       ! already_folded(node, rCtx) &&
-      get_varset_annotation (node, Annotations::FREE_VARS).empty() &&
+      get_varset_annotation(node, Annotations::FREE_VARS).empty() &&
       ! node->isUnfoldable() &&
       isDeterministicFunc &&
       TypeOps::type_max_cnt(tm, *rtype) <= 1)

@@ -330,6 +330,7 @@ PlanIter_t user_function::getPlan(CompilerCB* ccb)
                               lName->getStringValue().c_str()),
                              &*theBodyExpr,
                              ccb,
+                             false,
                              nextVarId,
                              &argVarToRefsMap);
   }

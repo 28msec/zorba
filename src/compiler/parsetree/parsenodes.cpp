@@ -4880,13 +4880,6 @@ void CatchExpr::accept( parsenode_visitor &v ) const
 }
 
 
-void EvalExpr::accept( parsenode_visitor &v ) const
-{
-  BEGIN_VISITOR();
-  ACCEPT (vgdl);
-  ACCEPT (expr_h);
-  END_VISITOR();
-}
 
 /*
  *

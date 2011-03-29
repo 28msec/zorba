@@ -1,12 +1,17 @@
 module namespace evaltest = "www.zorba-xquery.com/Test/eval";
 
+import module namespace util = "http://www.zorba-xquery.com/modules/reflection";
+
+declare variable $evaltest:x := 10;
+
 declare function evaltest:test1($x)
 {
-  <result>$x</result>
+  <result>{$x}</result>
 };
+
 
 declare function evaltest:test2($x)
 {
-  using $x eval { "evaltest:test1($x)" }
+  util:eval-simple("evaltest:test1($x)")
 };
 

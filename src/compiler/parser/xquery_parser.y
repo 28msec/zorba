@@ -662,8 +662,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> WindowVars2
 %type <node> WindowVars3
 %type <node> FLWORWinCond
-%type <node> EvalVarDecl
-%type <node> EvalVarDeclList
 %type <node> VersionDecl
 %type <node> VFO_Decl
 %type <node> VFO_DeclList
@@ -772,10 +770,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <expr> CatchListExpr
 %type <expr> CatchExpr
 
-/* eval-related      */
-/* ----------------- */
-%type <expr> EvalExpr
-
 /* collection-reladed */
 %type <node> CollectionDecl
 %type <node> DeclProperty
@@ -874,13 +868,13 @@ template<typename T> inline void release_hack( T *ref ) {
 %}
 
 // parsenodes
-%destructor { release_hack( $$ ); } AbbrevForwardStep AnyKindTest Annotation AnnotationList AnnotationLiteralList AposAttrContentList opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl FunctionDecl2 FunctionDeclSimple FunctionDeclUpdating FunctionDeclSequential Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma Pragma_list PredicateList QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp CollectionDecl DeclProperty DeclPropertyList NodeModifier IndexDecl IndexKeySpec IndexKeyList IntegrityConstraintDecl CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList BlockDecls BlockVarDeclList BlockVarDecl WhereClause CountClause Wildcard DecimalFormatDecl TypedFunctionTest AnyFunctionTest TypeList SwitchCaseClause SwitchCaseClauseList SwitchCaseOperandList
+%destructor { release_hack( $$ ); } AbbrevForwardStep AnyKindTest Annotation AnnotationList AnnotationLiteralList AposAttrContentList opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl FunctionDecl2 FunctionDeclSimple FunctionDeclUpdating FunctionDeclSequential Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma Pragma_list PredicateList QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp CollectionDecl DeclProperty DeclPropertyList NodeModifier IndexDecl IndexKeySpec IndexKeyList IntegrityConstraintDecl CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond VersionDecl VFO_Decl VFO_DeclList BlockDecls BlockVarDeclList BlockVarDecl WhereClause CountClause Wildcard DecimalFormatDecl TypedFunctionTest AnyFunctionTest TypeList SwitchCaseClause SwitchCaseClauseList SwitchCaseOperandList
 
 // parsenodes: Full-Text
 %destructor { release_hack( $$ ); } FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTExtensionOption FTExtensionSelection FTIgnoreOption opt_FTIgnoreOption FTLanguageOption FTMatchOption FTMatchOptions opt_FTMatchOptions FTMildNot FTOptionDecl FTOr FTOrder FTPosFilter FTPrimary FTPrimaryWithOptions FTRange FTScope FTScoreVar FTSelection FTStemOption FTStopWords FTStopWordOption FTStopWordsInclExcl FTThesaurusID FTThesaurusOption FTTimes opt_FTTimes FTUnaryNot FTUnit FTWeight FTWildCardOption FTWindow FTWords FTWordsValue
 
 // exprnodes
-%destructor { release_hack( $$ ); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr Block BlockExpr EnclosedExpr Expr ConcatExpr ApplyExpr ExprSingle ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr SwitchExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr EvalExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignExpr ExitExpr WhileExpr FlowCtlStatement QNAME EQNAME FUNCTION_NAME FTContainsExpr
+%destructor { release_hack( $$ ); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr Block BlockExpr EnclosedExpr Expr ConcatExpr ApplyExpr ExprSingle ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr SwitchExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignExpr ExitExpr WhileExpr FlowCtlStatement QNAME EQNAME FUNCTION_NAME FTContainsExpr
 
 // internal non-terminals with values
 %destructor { delete $$; } FunctionSig VarNameAndType NameTestList DecimalFormatParam DecimalFormatParamList
@@ -2433,7 +2427,6 @@ ExprSingle
     |   TransformExpr
 
     |   TryExpr
-    |   EvalExpr
 
     /* scripting */
     |   ExitExpr
@@ -2718,33 +2711,6 @@ VarGetsDeclList
             $$ = $1;
         }
     ;
-
-EvalVarDeclList :
-        EvalVarDecl
-        {
-            VarGetsDeclList *vgdl = new VarGetsDeclList( LOC(@$) );
-            vgdl->push_back( dynamic_cast<VarGetsDecl*>($1) );
-            $$ = vgdl;
-        }
-    |   EvalVarDeclList COMMA DOLLAR EvalVarDecl
-        {
-            if ( VarGetsDeclList *vgdl = dynamic_cast<VarGetsDeclList*>($1) )
-                vgdl->push_back( dynamic_cast<VarGetsDecl*>($4) );
-            $$ = $1;
-        }
-    ;
-
-EvalVarDecl :
-    QNAME
-    {
-      $$ = new VarGetsDecl(LOC(@$),
-                           static_cast<QName*>($1),
-                           NULL, // no type
-                           NULL, // no ftscore var
-                           new VarRef(LOC(@$), static_cast<QName*>($1)),
-                           VarGetsDecl::eval_var);
-    }
-;
 
 
 // [36b] VarGetsDecl
@@ -5439,24 +5405,6 @@ NameTestList
                 static_cast<CatchExpr::NameTestList*>($1);
             ntl->push_back( static_cast<NameTest*>($3) );
             $$ = ntl;
-        }
-    ;
-
-
-/*_______________________________________________________________________
- *                                                                       *
- *  Eval productions                                                     *
- *                                                                       *
- *_______________________________________________________________________*/
-
-EvalExpr
-    :   USING DOLLAR EvalVarDeclList EVAL LBRACE ExprSingle RBRACE
-        {
-          $$ = new EvalExpr(LOC(@$), dynamic_cast<VarGetsDeclList *> ($3), $6);
-        }
-    |   EVAL LBRACE ExprSingle RBRACE
-        {
-          $$ = new EvalExpr( LOC(@$), new VarGetsDeclList( LOC(@$) ), $3 );
         }
     ;
 

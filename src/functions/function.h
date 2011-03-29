@@ -64,6 +64,16 @@ public:
 
 	virtual ~function() {}
 
+  StaticContextConsts::xquery_version_t getXQueryVersion() const 
+  {
+    return theXQueryVersion; 
+  }
+
+  void setXQueryVersion(StaticContextConsts::xquery_version_t version) 
+  {
+    theXQueryVersion = version;
+  }
+
   FunctionConsts::FunctionKind getKind() const { return theKind; }
 
 	store::Item* getName() const { return theSignature.getName(); }
@@ -145,10 +155,6 @@ public:
   const AnnotationList* getAnnotationList() const { return theAnnotationList.getp(); }
 
 	bool validate_args(std::vector<PlanIter_t>& argv) const;
-
-  virtual StaticContextConsts::xquery_version_t getXQueryVersion() const { return theXQueryVersion; }
-
-  virtual void setXQueryVersion(StaticContextConsts::xquery_version_t version) { theXQueryVersion = version; }
 
   virtual bool isArithmeticFunction() const { return false; }
 

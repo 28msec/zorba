@@ -5453,46 +5453,6 @@ public:
 };
 
 
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  Eval                                                                       //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
-
-
-/*******************************************************************************
-  Eval := "using" EvalVarDeclList? "eval" { ExprSingle }
-
-  EvalVarDeclList := EvalVarDecl+
-
-  EvalVarDecl := "$" VarName
-
-  Note: EvalVarDeclList is actually represented by a VarGetsDeclList parsenode
-        and EvalVarDecls are  represented by VarGetsDec parsenodes.
-********************************************************************************/
-class EvalExpr : public exprnode
-{
-protected:
-  rchandle <VarGetsDeclList> vgdl;
-  rchandle <exprnode> expr_h;
-
-public:
-  EvalExpr(
-        const QueryLoc& loc_,
-        rchandle <VarGetsDeclList> vgdl_,
-        rchandle <parsenode> expr_)
-    : exprnode(loc_),
-      vgdl(vgdl_),
-      expr_h(expr_.dyn_cast<exprnode> ())
-  {}
-
-  rchandle<VarGetsDeclList> get_vars () const { return vgdl; }
-
-  rchandle<exprnode> get_expr () const { return expr_h; }
-
-  void accept(parsenode_visitor&) const;
-};
-
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //

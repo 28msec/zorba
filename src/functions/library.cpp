@@ -57,6 +57,7 @@
 #include "functions/func_strings.h"
 #include "functions/func_var_decl.h"
 #include "functions/func_xqdoc.h"
+#include "functions/func_eval.h"
 
 #include "functions/func_function_item_iter.h"
 
@@ -121,6 +122,8 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populateContext_Constructors(sctx);
   populateContext_VarDecl(sctx);
   populateContext_Hoisting(sctx);
+  populate_context_eval(sctx);
+
   ar.set_loading_hardcoded_objects(false);
 }
 

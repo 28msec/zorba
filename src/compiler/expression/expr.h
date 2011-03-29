@@ -1009,9 +1009,14 @@ public:
 
 
 /***************************************************************************//**
-  theExpr : The expr that computes the query string to be evaluated by eval.
-  theVars : There is one eval var for each "using" clause.
-  theArgs : The domain expr of each eval var.
+  There is no syntax corresponding to the eval_expr. Instead, an eval_expr is
+  created by the translator whenever a call to the eval() function is reached.
+
+  theExpr  : The expr that computes the query string to be evaluated by eval.
+  theVars  : There is one eval var for each non-global var that is in scope
+             where the call to the eval function appears at.
+  theArgs  : The domain expr of each eval var.
+  theNSCtx : Expression-level namespace bindings.
 ********************************************************************************/
 class eval_expr : public expr 
 {
@@ -1019,9 +1024,10 @@ class eval_expr : public expr
   friend class expr;
 
 protected:
-  expr_t                     theExpr;
-  checked_vector<var_expr_t> theVars;
-  std::vector<expr_t>        theArgs;
+  expr_t                      theExpr;
+  checked_vector<var_expr_t>  theVars;
+  std::vector<expr_t>         theArgs;
+  rchandle<namespace_context> theNSCtx;
 
 public:
   SERIALIZABLE_CLASS(eval_expr)
@@ -1029,11 +1035,18 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  eval_expr(static_context* sctx, const QueryLoc& loc, expr_t e)
+  eval_expr(
+      static_context* sctx,
+      const QueryLoc& loc, 
+      expr_t e,
+      expr_script_kind_t scriptingKind,
+      namespace_context* nsCtx)
     :
     expr(sctx, loc, eval_expr_kind),
-    theExpr(e)
+    theExpr(e),
+    theNSCtx(nsCtx)
   {
+    theScriptingKind = scriptingKind;
     compute_scripting_kind();
   }
 
@@ -1051,6 +1064,8 @@ public:
     theArgs.push_back(arg);
   }
 
+  const namespace_context* getNSCtx() const;
+
   void compute_scripting_kind();
 
   void accept(expr_visitor&);
@@ -1058,6 +1073,63 @@ public:
   expr_t clone(substitution_t& s) const;
 
   std::ostream& put(std::ostream&) const;
+};
+
+
+/***************************************************************************//**
+  debugger expression
+********************************************************************************/
+class debugger_expr: public eval_expr
+{
+  friend class ExprIterator;
+  friend class expr;
+
+private:
+  std::list<global_binding> theGlobals;
+  bool                      theForExpr;
+
+public:
+  SERIALIZABLE_CLASS(debugger_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(debugger_expr, eval_expr)
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  debugger_expr(
+        static_context* sctx,
+        const QueryLoc& loc,
+        expr_t aChild,
+        std::list<global_binding> aGlobals)
+    :
+    eval_expr(sctx, loc, aChild, SIMPLE_EXPR, NULL),
+    theGlobals(aGlobals)
+  {
+  }
+
+  debugger_expr(
+        static_context* sctx,
+        const QueryLoc& loc,
+        expr_t aChild,
+        checked_vector<varref_t> aScopedVariables,
+        std::list<global_binding> aGlobals,
+        bool aForExpr = false)
+    :
+    eval_expr(sctx, loc, aChild, SIMPLE_EXPR, NULL),
+    theGlobals( aGlobals ),
+    theForExpr(aForExpr)
+  {
+    store_local_variables(aScopedVariables);
+  }
+
+  std::list<global_binding> getGlobals() const { return theGlobals; }
+
+  bool isForExpr() const { return theForExpr; }
+
+  void accept(expr_visitor&);
+
+  std::ostream& put(std::ostream&) const;
+
+private:
+  void store_local_variables(checked_vector<varref_t>& aScopedVariables);
 };
 
 
@@ -1140,62 +1212,6 @@ public:
   }
 };
 
-/***************************************************************************//**
-  debugger expression
-********************************************************************************/
-class debugger_expr: public eval_expr
-{
-  friend class ExprIterator;
-  friend class expr;
-
-private:
-  std::list<global_binding> theGlobals;
-  bool                      theForExpr;
-
-public:
-  SERIALIZABLE_CLASS(debugger_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(debugger_expr, eval_expr)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
-  debugger_expr(
-        static_context* sctx,
-        const QueryLoc& loc,
-        expr_t aChild,
-        std::list<global_binding> aGlobals)
-    :
-    eval_expr(sctx, loc, aChild),
-    theGlobals(aGlobals)
-  {
-  }
-
-  debugger_expr(
-        static_context* sctx,
-        const QueryLoc& loc,
-        expr_t aChild,
-        checked_vector<varref_t> aScopedVariables,
-        std::list<global_binding> aGlobals,
-        bool aForExpr = false)
-    :
-    eval_expr(sctx, loc, aChild ),
-    theGlobals( aGlobals ),
-    theForExpr(aForExpr)
-  {
-    store_local_variables( aScopedVariables );
-  }
-
-  std::list<global_binding> getGlobals() const { return theGlobals; }
-
-  bool isForExpr() const { return theForExpr; }
-
-  void accept(expr_visitor&);
-
-  std::ostream& put(std::ostream&) const;
-
-private:
-  void store_local_variables(checked_vector<varref_t>& aScopedVariables);
-};
-
 
 /////////////////////////////////////////////////////////////////////////
 //                                                                     //
@@ -1215,6 +1231,7 @@ class sequential_expr : public expr
 
 protected:
   checked_vector<expr_t> theArgs;
+  bool                   theApplyLast;
 
 public:
   SERIALIZABLE_CLASS(sequential_expr)
@@ -1222,20 +1239,32 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  sequential_expr(static_context*, const QueryLoc&);
+  sequential_expr(
+      static_context*,
+      const QueryLoc&,
+      bool applyLast);
 
-  sequential_expr(static_context*, const QueryLoc&, expr_t first, expr_t second);
+  sequential_expr(
+      static_context*,
+      const QueryLoc&,
+      expr_t first,
+      expr_t second,
+      bool applyLast);
 
   sequential_expr(
         static_context*,
         const QueryLoc&,
         checked_vector<expr_t>& seq,
-        expr_t result);
+        expr_t result,
+        bool applyLast);
 
   sequential_expr(
         static_context*,
         const QueryLoc&,
-        checked_vector<expr_t>& seq);
+        checked_vector<expr_t>& seq,
+        bool applyLast);
+
+  bool get_apply_last() const { return theApplyLast; }
 
   ulong size() const { return (ulong)theArgs.size(); }
 

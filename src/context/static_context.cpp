@@ -2057,6 +2057,33 @@ void static_context::getVariables(std::vector<var_expr_t>& vars) const
 /***************************************************************************//**
 
 ********************************************************************************/
+void static_context::getLocalVariables(std::vector<var_expr_t>& vars) const
+{
+  if (theVariablesMap != NULL)
+  {
+    VariableMap::iterator ite = theVariablesMap->begin();
+    VariableMap::iterator end = theVariablesMap->end();
+
+    for (; ite != end; ++ite)
+    {
+      ulong numVars = (ulong)vars.size();
+      ulong i = 0;
+      for (; i < numVars; ++i)
+      {
+        if (vars[i]->get_name()->equals((*ite).first))
+          break;
+      }
+      
+      if (i == numVars)
+        vars.push_back((*ite).second);
+    }
+  }
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
 void static_context::set_context_item_type(xqtref_t& t)
 {
   theCtxItemType = t;
@@ -2098,7 +2125,7 @@ void static_context::bind_fn(
 {
   store::Item* qname = f->getName();
 
-  if (!is_global_root_sctx() && lookup_fn(qname, arity) != NULL)
+  if (!is_global_root_sctx() && lookup_local_fn(qname, arity) != NULL)
   {
     ZORBA_ERROR_LOC_PARAM(XQST0034, loc,
                           qname->getStringValue(),
@@ -2270,6 +2297,44 @@ function* static_context::lookup_fn(
     sctx = sctx->theParent;
   }
 
+  return NULL;
+}
+
+
+/***************************************************************************//**
+  Search "this" static context a function with the given qname and arity. If no 
+  such function binding is found return NULL. Otherwise, return the associated 
+  function object (which may be NULL if the function was disabled).
+********************************************************************************/
+function* static_context::lookup_local_fn(
+    const store::Item* qname,
+    ulong arity)
+{
+  FunctionInfo fi;
+  store::Item* qname2 = const_cast<store::Item*>(qname);
+
+  if (theFunctionMap != NULL && theFunctionMap->get(qname2, fi))
+  {
+    function* f = fi.theFunction.getp();
+    
+    if (f->getArity() == arity || f->isVariadic())
+    {
+      return (fi.theIsDisabled ? NULL : f);
+    }
+
+    std::vector<FunctionInfo>* fv = NULL;
+
+    if (theFunctionArityMap != NULL && theFunctionArityMap->get(qname2, fv))
+    {
+      ulong numFunctions = (ulong)fv->size();
+      for (ulong i = 0; i < numFunctions; ++i)
+      {
+        if ((*fv)[i].theFunction->getArity() == arity)
+          return ((*fv)[i].theIsDisabled ? NULL : (*fv)[i].theFunction.getp());
+      }
+    }
+  }
+  
   return NULL;
 }
 

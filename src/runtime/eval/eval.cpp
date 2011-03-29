@@ -45,143 +45,6 @@ END_SERIALIZABLE_CLASS_VERSIONS(EvalIterator)
 /****************************************************************************//**
 
 ********************************************************************************/
-static PlanIter_t compile(
-    CompilerCB* ccb,
-    dynamic_context* evalDctx,
-    zstring query,
-    std::vector<store::Item_t> varnames,
-    std::vector<xqtref_t> vartypes)
-{
-  QueryLoc loc;
-  XQueryCompiler compiler(ccb);
-  std::stringstream os;
-
-  os.write(query.data(), (std::streamsize)query.size());
-
-  zstring dummyname;
-  parsenode_t ast = compiler.parse(os, dummyname);
-
-  rchandle<MainModule> mm = ast.dyn_cast<MainModule>();
-  if (mm == NULL)
-    ZORBA_ERROR_LOC(XPST0003, loc);
-
-  rchandle<Prolog> prolog = mm->get_prolog();
-  if (prolog == NULL)
-  {
-    prolog = new Prolog(loc, NULL, NULL);
-    mm->set_prolog(prolog);
-  }
-
-  rchandle<VFO_DeclList> vfo = prolog->get_vfo_list();
-  if (vfo == NULL)
-  {
-    vfo = new VFO_DeclList(loc);
-    prolog->set_vfo_list(vfo);
-  }
-
-  // Add the "using" vars to the prolog of the eval query as external var 
-  // declarations. An error will be raised when we try to translate the AST
-  // if the prolog of the eval query declares or imports any variable with
-  // the same name as the name of a "using" variable.
-  for (long i = (long)varnames.size() - 1; i >= 0; --i)
-  {
-    QName* name = new QName(loc, varnames[i]->getStringValue().str());
-
-    if (vfo->findVarDecl(*name) == NULL)
-    {
-      vfo->push_front(new VarDecl(loc,
-                                  name,
-                                  NULL,   // no type decl
-                                  NULL,   // no init expr
-                                  NULL,   // no annotations
-                                  true)); // external
-    }
-    else
-    {
-      delete name;
-    }
-  }
-
-  // TODO: give eval'ed code the types of the variables (for optimization)
-
-  // Copy the values of all the "outer variables" to the evalDctx. We call 
-  // "outer variables" the global vars that are in-scope where the eval expr
-  // appears at. Also compute the max varid of all the outer vars and pass 
-  // this max varid to the compiler of the eval query so that the varids that 
-  // will be generated for the eval query will not conflict with the varids 
-  // of the outer vars.
-  static_context* outerSctx = ccb->theRootSctx->get_parent();
-  dynamic_context* outerDctx = evalDctx->getParent();
-
-  ulong maxOuterVarId = 0;
-  std::vector<var_expr_t> outerVars;
-  outerSctx->getVariables(outerVars);
-  
-  FOR_EACH(std::vector<var_expr_t>, ite, outerVars)
-  {
-    var_expr* outerVar = (*ite).getp();
-
-    ulong outerVarId = outerVar->get_unique_id();
-
-    if (outerVarId > maxOuterVarId)
-      maxOuterVarId = outerVarId;
-
-    store::Item_t itemValue;
-    store::TempSeq_t seqValue;
-
-    if (!outerDctx->exists_variable(outerVarId))
-      continue;
-
-    outerDctx->get_variable(outerVarId,
-                            outerVar->get_name(),
-                            QueryLoc::null,
-                            itemValue,
-                            seqValue);
-
-    if (itemValue != NULL)
-    {
-      evalDctx->add_variable(outerVarId, itemValue);
-    }
-    else
-    {
-      store::Iterator_t iteValue = seqValue->getIterator();
-      evalDctx->add_variable(outerVarId, iteValue);
-    }
-  }
-
-  ++maxOuterVarId;
-
-  return compiler.compile(ast, maxOuterVarId);
-}
-
-
-/****************************************************************************//**
-
-********************************************************************************/
-static void setEvalVariable(
-    const static_context* evalSctx,
-    dynamic_context* evalDctx,
-    const store::Item_t& varName,
-    store::Iterator_t& value)
-{
-  const var_expr* evalVar = evalSctx->lookup_var(varName,
-                                                 QueryLoc::null,
-                                                 MAX_ZORBA_ERROR_CODE);
-    
-  if (!evalVar)
-  {
-    ZORBA_ASSERT(false);
-  }
-
-  ulong varId = evalVar->get_unique_id();
-
-  evalDctx->add_variable(varId, value);
-}
-
-
-/****************************************************************************//**
-
-********************************************************************************/
 EvalIteratorState::EvalIteratorState() 
 {
 }
@@ -203,11 +66,15 @@ EvalIterator::EvalIterator(
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
     const std::vector<store::Item_t>& aVarNames,
-    const std::vector<xqtref_t>& aVarTypes)
+    const std::vector<xqtref_t>& aVarTypes,
+    expr_script_kind_t scriptingKind,
+    const store::NsBindings& localBindings)
   : 
   NaryBaseIterator<EvalIterator, EvalIteratorState>(sctx, loc, children),
   theVarNames(aVarNames),
-  theVarTypes(aVarTypes)
+  theVarTypes(aVarTypes),
+  theScriptingKind(scriptingKind),
+  theLocalBindings(localBindings)
 {
 }
 
@@ -231,6 +98,7 @@ void EvalIterator::serialize(::zorba::serialization::Archiver& ar)
 
   ar & theVarNames;
   ar & theVarTypes;
+  ar & theLocalBindings;
 }
 
 
@@ -247,41 +115,69 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   CONSUME(item, 0);
 
   {
-    // set up eval state's ccb
-    CompilerCB* evalCcb = new CompilerCB(*planState.theCompilerCB);
-    state->ccb.reset(evalCcb);
-    static_context* evalSctx = getStaticContext()->create_child_context();
-    evalCcb->theRootSctx = evalSctx;
-    (evalCcb->theSctxMap)[1] = evalSctx;
+    ulong numEvalVars = theVarNames.size();
 
+    // Create an "outer" sctx and register into it (a) global vars corresponding
+    // to the eval vars and (b) the expression-level ns bindings at the place 
+    // where the eval call appears at.
+    static_context* outerSctx = theSctx->create_child_context();
+
+    for (ulong i = 0; i < numEvalVars; ++i)
+    {
+      var_expr_t ve = new var_expr(outerSctx,
+                                   loc,
+                                   var_expr::prolog_var,
+                                   theVarNames[i].getp());
+
+      ve->set_type(theVarTypes[i]);
+
+      outerSctx->bind_var(ve, loc, XQST0049);
+    }
+
+    store::NsBindings::const_iterator ite = theLocalBindings.begin();
+    store::NsBindings::const_iterator end = theLocalBindings.end();
+
+    for (; ite != end; ++ite)
+    {
+      outerSctx->bind_ns(ite->first, ite->second, loc);
+    }
+
+    // Create the root sctx for the eval query
+    static_context* evalSctx = outerSctx->create_child_context();
+
+    // Create the ccb for the eval query
+    CompilerCB* evalCCB = new CompilerCB(*planState.theCompilerCB);
+    evalCCB->theRootSctx = evalSctx;
+    (evalCCB->theSctxMap)[1] = evalSctx;
+
+    state->ccb.reset(evalCCB);
+
+    // Create the dynamic context for the eval query
     dynamic_context* evalDctx = new dynamic_context(planState.theGlobalDynCtx);
     state->dctx.reset(evalDctx);
 
-    state->thePlan = compile(evalCcb,
-                             evalDctx,
-                             item->getStringValue(),
-                             theVarNames,
-                             theVarTypes);
+    // Copy the values of outer vars into the evalDctx
+    ulong maxOuterVarId;
+    copyOuterVariables(planState, outerSctx, evalDctx, maxOuterVarId);
 
+    // Compile
+    state->thePlan = compile(evalCCB,
+                             item->getStringValue(),
+                             maxOuterVarId);
+
+    // Set external vars
+    setExternalVariables(evalCCB, outerSctx, evalSctx, evalDctx);
+
+    // Execute
     state->thePlanWrapper = new PlanWrapper(state->thePlan,
-                                            evalCcb,
+                                            evalCCB,
                                             evalDctx,
-                                            planState.theQuery, // HACK/TODO: use the right query (static or dynamic context)
+                                            planState.theQuery,
                                             planState.theStackDepth + 1);
 
     state->thePlanWrapper->checkDepth(loc);
 
     state->thePlanWrapper->open();
-
-    // For each of the "using" vars, place its value into the evalDctx. The var
-    // value is represented as a PlanIteratorWrapper over the subplan that
-    // evaluates the domain expr of the "using" var.
-    for (unsigned i = 0; i < theChildren.size() - 1; ++i)
-    {
-      store::Iterator_t lIter = new PlanIteratorWrapper(theChildren[i + 1], planState);
-
-      setEvalVariable(evalCcb->theRootSctx, evalDctx, theVarNames[i], lIter);
-    }
   }
 
   while (state->thePlanWrapper->next(result))
@@ -292,6 +188,188 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   state->thePlanWrapper = NULL;
 
   STACK_END(state);
+}
+
+
+/****************************************************************************//**
+  Copy the values of all the "outer" vars (i.e., global and eval vars) to the 
+  evalDctx. Also, compute the max varid of all these vars and pass this max varid
+  to the compiler of the eval query so that the varids that will be generated for
+  the eval query will not conflict with the varids of the global and eval vars.
+********************************************************************************/
+void EvalIterator::copyOuterVariables(
+    PlanState& planState,
+    static_context* outerSctx,
+    dynamic_context* evalDctx,
+    ulong& maxOuterVarId) const
+{
+  maxOuterVarId = 1;
+
+  dynamic_context* outerDctx = evalDctx->getParent();
+
+  std::vector<var_expr_t> globalVars;
+  outerSctx->get_parent()->getVariables(globalVars);
+  
+  FOR_EACH(std::vector<var_expr_t>, ite, globalVars)
+  {
+    var_expr* globalVar = (*ite).getp();
+
+    ulong globalVarId = globalVar->get_unique_id();
+
+    if (globalVarId > maxOuterVarId)
+      maxOuterVarId = globalVarId;
+
+    store::Item_t itemValue;
+    store::TempSeq_t seqValue;
+
+    if (!outerDctx->exists_variable(globalVarId))
+      continue;
+
+    outerDctx->get_variable(globalVarId,
+                            globalVar->get_name(),
+                            loc,
+                            itemValue,
+                            seqValue);
+
+    if (itemValue != NULL)
+    {
+      evalDctx->add_variable(globalVarId, itemValue);
+    }
+    else
+    {
+      store::Iterator_t iteValue = seqValue->getIterator();
+      evalDctx->add_variable(globalVarId, iteValue);
+    }
+  }
+
+  ++maxOuterVarId;
+
+  // For each of the eval vars, place its value into the evalDctx. The var
+  // value is represented as a PlanIteratorWrapper over the subplan that
+  // evaluates the domain expr of the eval var.
+  for (ulong i = 0; i < theChildren.size() - 1; ++i)
+  {
+    var_expr* evalVar = outerSctx->lookup_var(theVarNames[i],
+                                              loc,
+                                              MAX_ZORBA_ERROR_CODE);
+    ZORBA_ASSERT(evalVar);
+
+    evalVar->set_unique_id(maxOuterVarId);
+
+    store::Iterator_t iter = new PlanIteratorWrapper(theChildren[i + 1], planState);
+
+    evalDctx->add_variable(maxOuterVarId, iter);
+
+    ++maxOuterVarId;
+  }
+}
+
+
+/****************************************************************************//**
+
+********************************************************************************/
+void EvalIterator::setExternalVariables(
+    CompilerCB* ccb,
+    static_context* outerSctx,
+    static_context* evalSctx,
+    dynamic_context* evalDctx) const
+{
+  std::vector<var_expr_t> innerVars;
+
+  CompilerCB::SctxMap::const_iterator sctxIte = ccb->theSctxMap.begin();
+  CompilerCB::SctxMap::const_iterator sctxEnd = ccb->theSctxMap.end();
+
+  for (; sctxIte != sctxEnd; ++sctxIte)
+  {
+    sctxIte->second->getLocalVariables(innerVars);
+  }
+
+  FOR_EACH(std::vector<var_expr_t>, ite, innerVars)
+  {
+    var_expr* innerVar = (*ite).getp();
+
+    if (!innerVar->is_external())
+      continue;
+
+    ulong innerVarId = innerVar->get_unique_id();
+
+    var_expr* globalVar = outerSctx->lookup_var(innerVar->get_name(),
+                                                loc, 
+                                                MAX_ZORBA_ERROR_CODE);
+    store::Item_t itemValue;
+    store::TempSeq_t seqValue;
+
+    evalDctx->get_variable(globalVar->get_unique_id(),
+                           globalVar->get_name(),
+                           loc,
+                           itemValue,
+                           seqValue);
+
+    if (itemValue != NULL)
+    {
+      evalDctx->add_variable(innerVarId, itemValue);
+    }
+    else
+    {
+      store::Iterator_t iteValue = seqValue->getIterator();
+      evalDctx->add_variable(innerVarId, iteValue);
+    }
+  }
+}
+
+
+/****************************************************************************//**
+
+********************************************************************************/
+PlanIter_t EvalIterator::compile(
+    CompilerCB* ccb,
+    const zstring& query,
+    ulong maxOuterVarId) const
+{
+  std::stringstream os;
+
+  XQueryCompiler compiler(ccb);
+
+  os.write(query.data(), (std::streamsize)query.size());
+
+  std::stringstream evalname;
+  evalname << "eval@" << loc.getFilename()
+           << "-" << loc.getLineBegin()
+           << "-" << loc.getColumnBegin();
+
+  parsenode_t ast = compiler.parse(os, evalname.str());
+
+  rchandle<MainModule> mm = ast.dyn_cast<MainModule>();
+  if (mm == NULL)
+    ZORBA_ERROR_LOC(XPST0003, loc);
+
+  expr_t rootExpr;
+  PlanIter_t rootIter = compiler.compile(ast, false, rootExpr, maxOuterVarId);
+
+#if 0
+  if (theScriptingKind == SIMPLE_EXPR)
+  {
+    if (!rootExpr->is_simple())
+    {
+      ZORBA_ERROR_LOC(XUST0001, loc);
+    }
+  }
+  else if (theScriptingKind == UPDATE_EXPR)
+  {
+    if (!rootExpr->is_updating())
+    {
+      ZORBA_ERROR_LOC(XUST0001, loc);
+    }
+  }
+  else if (theScriptingKind == SEQUENTIAL_EXPR)
+  {
+    if (!rootExpr->is_sequential())
+    {
+      ZORBA_ERROR_LOC(XUST0001, loc);
+    }
+  }
+#endif
+  return rootIter;
 }
 
 

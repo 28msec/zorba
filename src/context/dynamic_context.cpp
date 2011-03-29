@@ -296,7 +296,7 @@ void dynamic_context::set_variable(
   // assignment expression does not reference the variable itself.
   store::TempSeq_t seq = GENV_STORE.createTempSeq(valueIter, 
                                                   false, // no copy
-                                                  false); // lazy eval
+                                                  false); // no lazy eval
 
   valueIter->close();
 

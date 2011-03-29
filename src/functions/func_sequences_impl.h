@@ -303,6 +303,42 @@ public:
   CODEGEN_DECL();
 };
 
+
+/*******************************************************************************
+  Fuction is implemented by translator, who turns it into subsequence(arg, 1, 1)
+********************************************************************************/
+class fn_head : public function 
+{
+public:
+  fn_head(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_HEAD_1)
+  {
+    theXQueryVersion = StaticContextConsts::xquery_version_1_1;
+  }
+
+  CODEGEN_DECL();
+};
+
+
+/*******************************************************************************
+  Fuction is implemented by translator, who turns it into subsequence(arg, 2)
+********************************************************************************/
+class fn_tail : public function 
+{
+public:
+  fn_tail(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_TAIL_1)
+  {
+    theXQueryVersion = StaticContextConsts::xquery_version_1_1;
+  }
+
+  CODEGEN_DECL();
+};
+
+
+
 } /* namespace zorba */
 #endif
 

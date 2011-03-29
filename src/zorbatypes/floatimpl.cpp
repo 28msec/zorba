@@ -1038,6 +1038,7 @@ zstring FloatImpl<FloatType>::toString(bool no_scientific_format) const
         lE++;
 
       strcpy(lZeros+2, lE);
+      //memmove((void*)(lZeros+2), lE, strlen(lE) + 1);
     }
     else
     {

@@ -511,7 +511,7 @@ static void rewriteJoin(
 
       nestedFlwor->set_return_expr(innerFlwor->get_return_expr());
 
-      sequential_expr* seqExpr = new sequential_expr(sctx, loc);
+      sequential_expr* seqExpr = new sequential_expr(sctx, loc, false);
 
       seqExpr->push_back(createExpr.getp());
       seqExpr->push_back(nestedFlwor.getp());
@@ -547,7 +547,7 @@ static void rewriteJoin(
       }
       else
       {
-        sequential_expr* seqExpr = new sequential_expr(sctx, loc);
+        sequential_expr* seqExpr = new sequential_expr(sctx, loc, false);
         seqExpr->push_back(createExpr.getp());
         seqExpr->push_back(returnExpr);
 
@@ -570,7 +570,7 @@ static void rewriteJoin(
                     outerPosInStack);
 
     //  Build outer sequential expr
-    sequential_expr* seqExpr = new sequential_expr(sctx, loc);
+    sequential_expr* seqExpr = new sequential_expr(sctx, loc, false);
 
     seqExpr->push_back(createExpr.getp());
     seqExpr->push_back(outerFlworExpr);

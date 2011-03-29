@@ -320,3 +320,5 @@ ENDIF(CURL_FOUND)
 EXPECTED_FAILURE(test/rbkt/zorba/aleXis/q11 3103700)
 
 EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_1_1 3106635)
+
+EXPECTED_FAILURE(test/rbkt/zorba/eval/eval_schema2 00001)

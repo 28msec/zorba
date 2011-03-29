@@ -519,7 +519,7 @@ PlanIterator* IndexDecl::getBuildPlan(CompilerCB* ccb, const QueryLoc& loc)
   expr* buildExpr = getBuildExpr(ccb, loc);
 
   ulong nextVarId = 1;
-  theBuildPlan = codegen("index", buildExpr, ccb, nextVarId);
+  theBuildPlan = codegen("index", buildExpr, ccb, false, nextVarId);
 
   return theBuildPlan.getp();
 }
@@ -643,7 +643,7 @@ DocIndexer* IndexDecl::getDocIndexer(
   //
   // Generate the runtime plan for theDocIndexerExpr
   //
-  theDocIndexerPlan = codegen("doc indexer", flworExpr, ccb, nextVarId);
+  theDocIndexerPlan = codegen("doc indexer", flworExpr, ccb, false, nextVarId);
 
   //
   // Create theDocIndexer obj

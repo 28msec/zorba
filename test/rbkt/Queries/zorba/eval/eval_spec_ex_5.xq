@@ -1,3 +1,5 @@
 (: Invalid (wrong use in FLWOR) :)
 
-let $x := 42 return eval { "$x" }
+import module namespace util = "http://www.zorba-xquery.com/modules/reflection";
+
+let $x := 42 return util:eval-simple("$x")

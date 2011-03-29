@@ -1,3 +1,5 @@
 (: Invalid (Expecting single Item) :)
 
-eval { 1 to 2 }
+import module namespace util = "http://www.zorba-xquery.com/modules/reflection";
+
+util:eval-simple(1 to 2)

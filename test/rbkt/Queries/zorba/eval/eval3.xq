@@ -1,4 +1,6 @@
+import module namespace util = "http://www.zorba-xquery.com/modules/reflection";
+
 for $y in 1 to 10
 return 
-  eval { "1+1" }
+  util:eval-simple("1+1")
 

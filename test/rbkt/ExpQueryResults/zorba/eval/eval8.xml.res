@@ -1,1 +1,1 @@
-<result>$x</result>
+<result>12</result>

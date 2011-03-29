@@ -823,6 +823,36 @@ BoolAnnotationValue fn_idref::ignoresDuplicateNodes(expr* fo, ulong input) const
 /*******************************************************************************
 
 ********************************************************************************/
+PlanIter_t fn_head::codegen(
+    CompilerCB* /*cb*/,
+    static_context* aSctx,
+    const QueryLoc& aLoc,
+    std::vector<PlanIter_t>& aArgs,
+    AnnotationHolder& /*aAnn*/) const
+{
+  ZORBA_ASSERT(false);
+  return NULL;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t fn_tail::codegen(
+    CompilerCB* /*cb*/,
+    static_context* aSctx,
+    const QueryLoc& aLoc,
+    std::vector<PlanIter_t>& aArgs,
+    AnnotationHolder& /*aAnn*/) const
+{
+  ZORBA_ASSERT(false);
+  return NULL;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void populate_context_sequences_impl(static_context* sctx)
 {
   const char* xquery_op_ns = static_context::XQUERY_OP_NS.c_str();
@@ -882,6 +912,16 @@ void populate_context_sequences_impl(static_context* sctx)
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+
+  DECL(sctx, fn_head,
+       (createQName(XQUERY_FN_NS,"","head"),
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+
+  DECL(sctx, fn_tail,
+       (createQName(XQUERY_FN_NS,"","tail"),
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR));
 
 }
 

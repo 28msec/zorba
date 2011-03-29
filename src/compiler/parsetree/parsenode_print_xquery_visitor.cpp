@@ -1831,20 +1831,6 @@ DEFAULT_END_VISIT (ReverseAxis);
     }
     DEFAULT_END_VISIT (CatchExpr);
 
-    // eval
-    void* begin_visit(const EvalExpr& n)
-    {
-      if(n.get_vars())
-      {
-        os << "using $";
-        n.get_vars()->accept(*this);
-        os << "eval {";
-        n.get_expr()->accept(*this);
-        os << "}";
-      }
-      return 0;
-    }
-    DEFAULT_END_VISIT (EvalExpr);
 
   /* full-text-related */
   DEFAULT_VISIT (FTAnd);

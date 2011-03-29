@@ -1,6 +1,8 @@
 import module namespace zorba =
   "http://www.zorba-xquery.com/zorba/internal-functions";
 
+import module namespace refl = "http://www.zorba-xquery.com/modules/reflection";
+
 declare variable $nl := "
 ";
 
@@ -8,7 +10,7 @@ declare sequential function local:calc-one ($s as xs:string) as xs:boolean {
   if (string-length ($s) = 0) then
     exit returning false ()
   else block {
-    zorba:print (("Result: ", eval { $s }, $nl));
+    zorba:print (("Result: ", refl:eval-simple($s), $nl));
     exit returning true();
   };
 };

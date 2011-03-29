@@ -75,8 +75,6 @@ protected:
   GeneralIndex(
       const store::Item_t& qname,
       const store::IndexSpecification& spec);
-
-  bool isTyped() const { return (theSpec.theKeyTypes[0] != NULL); }
 };
 
 
@@ -102,6 +100,8 @@ protected:
       const store::IndexSpecification& spec);
 
   ~GeneralHashIndex();
+
+  bool isTyped() const { return (theSingleMap != NULL); }
 
   bool insert(
       store::IndexKey*& key,
@@ -189,6 +189,8 @@ protected:
       const store::IndexSpecification& spec);
 
   ~GeneralTreeIndex();
+
+  bool isTyped() const { return (theSingleMap != NULL); }
 
   bool insert(
       store::IndexKey*& key,

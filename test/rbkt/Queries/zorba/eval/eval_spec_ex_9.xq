@@ -1,4 +1,5 @@
 (: Var Access :)
 
-let $x := "21" return
-using $x eval { concat ($x, " + xs:double ($x)") }
+import module namespace util = "http://www.zorba-xquery.com/modules/reflection";
+
+let $x := "21" return util:eval-simple(concat($x, " + xs:double ($x)"))

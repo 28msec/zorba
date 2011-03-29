@@ -510,63 +510,6 @@ void end_visit(function_trace_expr& v)
   push_itstack(lDummyIter.release());
 }
 
-bool begin_visit (debugger_expr& v)
-{
-  CODEGEN_TRACE_IN("");
-
-  // already create the debugger iterator here
-  // because it's used for connecting all debugger
-  // iterators in the tree (see end_visit below)
-  std::vector<PlanIter_t> aTmpVec;
-  theDebuggerStack.push(new ZorbaDebugIterator(sctx, qloc, aTmpVec));
-  return true;
-}
-
-void end_visit (debugger_expr& v)
-{
-  CODEGEN_TRACE_OUT("");
-
-  ulong numVars = v.var_count();
-
-  std::vector<store::Item_t> varnames(numVars);
-  std::vector<xqtref_t> vartypes(numVars);
-  std::vector<PlanIter_t> argvEvalIter;
-  std::vector<PlanIter_t> argv;
-
-  for (ulong i = 0; i < numVars; i++)
-  {
-    varnames[i] = v.get_var(i)->get_name();
-    vartypes[i] = v.get_var(i)->get_type();
-    argvEvalIter.push_back(pop_itstack());
-  }
-
-  //create the eval iterator children
-  argvEvalIter.push_back(new DebuggerSingletonIterator(sctx,
-                                                       qloc,
-                                                       theCCB->theDebuggerCommons));
-  reverse(argvEvalIter.begin(), argvEvalIter.end());
-
-  // get the debugger iterator from the debugger stack
-  std::auto_ptr<ZorbaDebugIterator> aDebugIterator(theDebuggerStack.top());
-  theDebuggerStack.pop();
-
-  // set the child of the debugger iterator
-  argv.push_back(pop_itstack ());
-  argv.push_back(new EvalIterator(sctx, qloc, argvEvalIter, varnames, vartypes));
-  aDebugIterator->setChildren(&argv);
-
-  aDebugIterator->setVariables(varnames, vartypes);
-
-  // link all debugger iterators in the tree
-  if (!theDebuggerStack.empty()) 
-  {
-    theDebuggerStack.top()->addChild(aDebugIterator.get());
-    aDebugIterator->setParent(theDebuggerStack.top());
-  }
-  push_itstack(aDebugIterator.release());
-}
-
-
 bool begin_visit(wrapper_expr& v)
 {
   CODEGEN_TRACE_IN("");
@@ -595,14 +538,18 @@ void end_visit(sequential_expr& v)
   ulong numArgs = v.size();
   checked_vector<PlanIter_t> args(numArgs);
 
-  for (long i = numArgs-1; i >= 0; --i)
+  for (ulong i = numArgs; i > 0; --i)
   {
     PlanIter_t arg = pop_itstack();
 
-    if (v[i]->is_updating())
-      args[i] = new ApplyIterator(sctx, arg->loc, arg);
+    if (v[i-1]->is_updating() && (i < numArgs || v.get_apply_last()))
+    {
+      args[i-1] = new ApplyIterator(sctx, arg->loc, arg);
+    }
     else
-      args[i] = arg;
+    {
+      args[i-1] = arg;
+    }
   }
 
   push_itstack(new SequentialIterator(sctx, qloc, args));
@@ -1740,7 +1687,85 @@ void end_visit(eval_expr& v)
   args[numVars] = pop_itstack();
   reverse(args.begin(), args.end());
 
-  push_itstack(new EvalIterator(sctx, qloc, args, varnames, vartypes));
+  store::NsBindings localBindings;
+  v.getNSCtx()->getAllBindings(localBindings);
+
+  push_itstack(new EvalIterator(sctx,
+                                qloc,
+                                args,
+                                varnames,
+                                vartypes, 
+                                v.get_scripting_kind(),
+                                localBindings));
+}
+
+
+bool begin_visit(debugger_expr& v)
+{
+  CODEGEN_TRACE_IN("");
+
+  // already create the debugger iterator here
+  // because it's used for connecting all debugger
+  // iterators in the tree (see end_visit below)
+  std::vector<PlanIter_t> aTmpVec;
+  theDebuggerStack.push(new ZorbaDebugIterator(sctx, qloc, aTmpVec));
+  return true;
+}
+
+void end_visit(debugger_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+
+  ulong numVars = v.var_count();
+
+  std::vector<store::Item_t> varnames(numVars);
+  std::vector<xqtref_t> vartypes(numVars);
+  std::vector<PlanIter_t> argvEvalIter;
+  std::vector<PlanIter_t> argv;
+
+  for (ulong i = 0; i < numVars; i++)
+  {
+    varnames[i] = v.get_var(i)->get_name();
+    vartypes[i] = v.get_var(i)->get_type();
+    argvEvalIter.push_back(pop_itstack());
+  }
+
+  //create the eval iterator children
+  argvEvalIter.push_back(new DebuggerSingletonIterator(sctx,
+                                                       qloc,
+                                                       theCCB->theDebuggerCommons));
+  reverse(argvEvalIter.begin(), argvEvalIter.end());
+
+  // get the debugger iterator from the debugger stack
+  std::auto_ptr<ZorbaDebugIterator> aDebugIterator(theDebuggerStack.top());
+  theDebuggerStack.pop();
+
+  // set the child of the debugger iterator
+  argv.push_back(pop_itstack());
+
+  store::NsBindings localBindings;
+  if (v.getNSCtx())
+    v.getNSCtx()->getAllBindings(localBindings);
+
+  argv.push_back(new EvalIterator(sctx, 
+                                  qloc, 
+                                  argvEvalIter, 
+                                  varnames, 
+                                  vartypes,
+                                  v.get_scripting_kind(),
+                                  localBindings));
+
+  aDebugIterator->setChildren(&argv);
+
+  aDebugIterator->setVariables(varnames, vartypes);
+
+  // link all debugger iterators in the tree
+  if (!theDebuggerStack.empty()) 
+  {
+    theDebuggerStack.top()->addChild(aDebugIterator.get());
+    aDebugIterator->setParent(theDebuggerStack.top());
+  }
+  push_itstack(aDebugIterator.release());
 }
 
 
@@ -1998,7 +2023,7 @@ void end_visit (transform_expr& v)
     std::vector<ForVarIter_t>* lVarIters = 0;
     var_expr* lVar = (*lIter)->getVar();
     ZORBA_ASSERT(copy_var_iter_map.get((uint64_t)lVar, lVarIters));
-    lClauses.push_back(CopyClause (*lVarIters, lInput));
+    lClauses.push_back(CopyClause(*lVarIters, lInput));
   }
 
   TransformIterator* transformIter = new TransformIterator(sctx,
@@ -2978,6 +3003,7 @@ PlanIter_t codegen(
     const char* descr,
     expr* root,
     CompilerCB* ccb,
+    bool applyPUL,
     ulong& nextDynamicVarId,
     hash64map<std::vector<LetVarIter_t> *>* arg_var_map)
 {
@@ -2985,7 +3011,7 @@ PlanIter_t codegen(
   root->accept(c);
   PlanIter_t result = c.result();
 
-  if (root->is_updating())
+  if (root->is_updating() && applyPUL)
   {
     result = new ApplyIterator(result->theSctx, result->loc, result);
   }

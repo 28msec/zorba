@@ -19,6 +19,8 @@
 
 #include "common/shared_types.h"
 
+#include "compiler/expression/expr_consts.h"
+
 #include "runtime/base/narybase.h"
 
 namespace zorba {
@@ -53,6 +55,8 @@ class EvalIterator : public NaryBaseIterator<EvalIterator, EvalIteratorState>
 protected:
   std::vector<store::Item_t>  theVarNames;
   std::vector<xqtref_t>       theVarTypes;
+  expr_script_kind_t          theScriptingKind;
+  store::NsBindings           theLocalBindings;
 
 public:
   SERIALIZABLE_CLASS(EvalIterator);
@@ -67,13 +71,33 @@ public:
       const QueryLoc& loc,
       std::vector<PlanIter_t>& children,
       const std::vector<store::Item_t>& aVarNames,
-      const std::vector<xqtref_t>& aVarTypes);
+      const std::vector<xqtref_t>& aVarTypes,
+      expr_script_kind_t scriptingKind,
+      const store::NsBindings& localBindings);
 
   ~EvalIterator();
 
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+
+private:
+  void copyOuterVariables(
+      PlanState& planState,
+      static_context* outerSctx,
+      dynamic_context* evalDctx,
+      ulong& maxOuterVarId) const;
+
+void setExternalVariables(
+      CompilerCB* ccb,
+      static_context* outerSctx,
+      static_context* evalSctx,
+      dynamic_context* evalDctx) const;
+
+  PlanIter_t compile(
+      CompilerCB* ccb,
+      const zstring& query,
+      ulong maxOuterVarId) const;
 };
 
 

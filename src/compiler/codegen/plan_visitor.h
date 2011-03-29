@@ -31,6 +31,7 @@ PlanIter_t codegen(
         const char* descr,
         expr* root,
         CompilerCB* ccb,
+        bool applyPUL,
         ulong& nextDynamicVarId,
         hash64map<std::vector<LetVarIter_t> *>* param_var_map = NULL);
 

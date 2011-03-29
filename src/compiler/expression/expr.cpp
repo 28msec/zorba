@@ -1310,33 +1310,45 @@ expr_t trycatch_expr::clone(substitution_t& subst) const
 /*******************************************************************************
 
 ********************************************************************************/
-#if 0
-eval_expr::eval_var::eval_var(var_expr* ve)
-  :
-  varname(ve->get_name()),
-  type(ve->get_type())
-{
-}
-#endif
-
 void eval_expr::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (expr*)this);
   ar & theExpr;
   ar & theVars;
   ar & theArgs;
+  ar & theNSCtx;
+}
+
+
+const namespace_context* eval_expr::getNSCtx() const
+{
+  return theNSCtx.getp(); 
 }
 
 
 void eval_expr::compute_scripting_kind()
 {
-  theScriptingKind = theExpr->get_scripting_kind();
+  checkNonUpdating(theExpr);
+
+  if (theExpr->is_sequential())
+  {
+    if (theScriptingKind == UPDATE_EXPR)
+    {
+      ZORBA_ERROR_LOC(XUST0001, get_loc());
+    }
+
+    theScriptingKind = SEQUENTIAL_EXPR;
+  }
 }
 
 
 expr_t eval_expr::clone(substitution_t& s) const
 {
-  rchandle<eval_expr> new_eval = new eval_expr(theSctx, theLoc, theExpr->clone(s));
+  rchandle<eval_expr> new_eval = new eval_expr(theSctx, 
+                                               theLoc, 
+                                               theExpr->clone(s),
+                                               get_scripting_kind(),
+                                               theNSCtx.getp());
 
   for (unsigned int i = 0; i < theVars.size(); ++i)
   {
@@ -1346,6 +1358,37 @@ expr_t eval_expr::clone(substitution_t& s) const
   }
 
   return new_eval.release();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void debugger_expr::store_local_variables(checked_vector<varref_t>& aScopedVariables)
+{
+  std::set<const store::Item*> lQNames;
+  checked_vector<varref_t>::reverse_iterator it;
+  for ( it = aScopedVariables.rbegin(); it != aScopedVariables.rend(); ++it )
+  {
+    if ( lQNames.find((*it)->get_name()) == lQNames.end() )
+    {
+      lQNames.insert( (*it)->get_name() );
+      varref_t lValue = (*it);
+      varref_t lVariable(new var_expr(theSctx,
+                                      theLoc,
+                                      var_expr::eval_var,
+                                      lValue->get_name() ) );
+      lVariable->set_type( lValue->get_type() );
+      add_var(lVariable, lValue.getp());
+    }
+  }
+}
+
+void debugger_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (eval_expr*)this);
+  ar & theGlobals;
+  ar & theForExpr;
 }
 
 
@@ -1406,37 +1449,6 @@ expr_t function_trace_expr::clone(substitution_t& s) const
   return new function_trace_expr(theExpr->clone(s));
 }
 
-/*******************************************************************************
-
-********************************************************************************/
-void debugger_expr::store_local_variables(checked_vector<varref_t>& aScopedVariables)
-{
-  std::set<const store::Item*> lQNames;
-  checked_vector<varref_t>::reverse_iterator it;
-  for ( it = aScopedVariables.rbegin(); it != aScopedVariables.rend(); ++it )
-  {
-    if ( lQNames.find((*it)->get_name()) == lQNames.end() )
-    {
-      lQNames.insert( (*it)->get_name() );
-      varref_t lValue = (*it);
-      varref_t lVariable(new var_expr(theSctx,
-                                      theLoc,
-                                      var_expr::eval_var,
-                                      lValue->get_name() ) );
-      lVariable->set_type( lValue->get_type() );
-      add_var(lVariable, lValue.getp());
-    }
-  }
-}
-
-void debugger_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (eval_expr*)this);
-  ar & theGlobals;
-  ar & theForExpr;
-}
-
-
 
 /////////////////////////////////////////////////////////////////////////
 //                                                                     //
@@ -1449,9 +1461,13 @@ void debugger_expr::serialize(::zorba::serialization::Archiver& ar)
 /*******************************************************************************
 
 ********************************************************************************/
-sequential_expr::sequential_expr(static_context* sctx, const QueryLoc& loc)
+sequential_expr::sequential_expr(
+    static_context* sctx,
+    const QueryLoc& loc,
+    bool applyLast)
   :
-  expr(sctx, loc, sequential_expr_kind)
+  expr(sctx, loc, sequential_expr_kind),
+  theApplyLast(applyLast)
 {
   compute_scripting_kind();
 }
@@ -1461,9 +1477,11 @@ sequential_expr::sequential_expr(
     static_context* sctx,
     const QueryLoc& loc,
     expr_t first,
-    expr_t second)
+    expr_t second,
+    bool applyLast)
   :
-  expr(sctx, loc, sequential_expr_kind)
+  expr(sctx, loc, sequential_expr_kind),
+  theApplyLast(applyLast)
 {
   theArgs.push_back(first);
   theArgs.push_back(second);
@@ -1475,10 +1493,12 @@ sequential_expr::sequential_expr(
     static_context* sctx,
     const QueryLoc& loc,
     checked_vector<expr_t>& seq,
-    expr_t result)
+    expr_t result,
+    bool applyLast)
   :
   expr(sctx, loc, sequential_expr_kind),
-  theArgs(seq)
+  theArgs(seq),
+  theApplyLast(applyLast)
 {
   theArgs.push_back(result);
   compute_scripting_kind();
@@ -1488,10 +1508,12 @@ sequential_expr::sequential_expr(
 sequential_expr::sequential_expr(
     static_context* sctx,
     const QueryLoc& loc,
-    checked_vector<expr_t>& seq)
+    checked_vector<expr_t>& seq,
+    bool applyLast)
   :
   expr(sctx, loc, sequential_expr_kind),
-  theArgs(seq)
+  theArgs(seq),
+  theApplyLast(applyLast)
 {
   compute_scripting_kind();
 }
@@ -1501,6 +1523,7 @@ void sequential_expr::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (expr*)this);
   ar & theArgs;
+  ar & theApplyLast;
 }
 
 
@@ -1515,9 +1538,19 @@ void sequential_expr::compute_scripting_kind()
   {
     expr_script_kind_t kind = theArgs[i]->get_scripting_kind();
 
-    if (kind == SEQUENTIAL_EXPR || kind == UPDATE_EXPR)
+    if (kind == SEQUENTIAL_EXPR)
     {
       theScriptingKind = SEQUENTIAL_EXPR;
+      vacuous = false;
+      break;
+    }
+    else if (kind == UPDATE_EXPR)
+    {
+      if (i < numChildren - 1 || theApplyLast)
+        theScriptingKind = SEQUENTIAL_EXPR;
+      else
+        theScriptingKind = UPDATE_EXPR;
+
       vacuous = false;
       break;
     }
@@ -1538,7 +1571,7 @@ expr_t sequential_expr::clone(substitution_t& subst) const
   for (unsigned i = 0; i < theArgs.size(); ++i)
     seq2.push_back(theArgs[i]->clone(subst));
 
-  return new sequential_expr(theSctx, get_loc(), seq2);
+  return new sequential_expr(theSctx, get_loc(), seq2, theApplyLast);
 }
 
 

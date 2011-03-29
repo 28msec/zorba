@@ -776,6 +776,8 @@ public:
 
   void getVariables(std::vector<var_expr_t>& aVarialeList) const;
 
+  void getLocalVariables(std::vector<var_expr_t>& aVarialeList) const;
+
 	void set_context_item_type(xqtref_t& t);
 
 	const XQType* get_context_item_type() const;
@@ -789,6 +791,8 @@ public:
   void unbind_fn(const store::Item* qname, ulong arity);
 
   function* lookup_fn(const store::Item* qname, ulong arity);
+
+  function* lookup_local_fn(const store::Item* qname, ulong arity);
 
   void get_functions(std::vector<function*>& functions) const;
 
