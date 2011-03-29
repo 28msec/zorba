@@ -38,9 +38,15 @@ ostream& operator<<( ostream &o, QName const &qn ) {
   char const *const prefix = qn.prefix();
   if ( prefix && *prefix )
     o << prefix << ':';
-  else
-    o << '{' << qn.ns() << '}';
-  return o << qn.localname();
+  else {
+    char const *const ns = qn.ns();
+    if ( ns && *ns )
+      o << '{' << ns << '}';
+  }
+  char const *const local = qn.localname();
+  if ( local && *local )
+    o << local;
+  return o;
 }
 
 bool operator==( QName const &q1, QName const &q2 ) {
