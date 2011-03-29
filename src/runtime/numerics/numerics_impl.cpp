@@ -17,7 +17,7 @@
 
 #include "common/shared_types.h"
 
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 #include "zorbaerrors/error_manager.h"
 #include "zorbatypes/zorbatypes_decl.h"
 

@@ -38,7 +38,7 @@
 #include "zorbatypes/URI.h"
 
 #include "zorbaerrors/error_manager.h"
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 
 
 namespace zorba { namespace simplestore {

@@ -20,7 +20,7 @@
 #include "store/api/iterator.h"
 #include "store/api/shared_types.h"
 
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 
 
 

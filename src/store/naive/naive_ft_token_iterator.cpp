@@ -15,7 +15,7 @@
  */
 
 #include "store/naive/naive_ft_token_iterator.h"
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 
 using namespace std;
 

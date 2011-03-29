@@ -21,7 +21,7 @@
 #include "capi/user_item_sequence.h"
 #include "zorbaerrors/error_manager.h"
 #include <zorba/item_sequence.h>
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 
 using namespace zorba;
 

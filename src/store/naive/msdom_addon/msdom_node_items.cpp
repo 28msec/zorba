@@ -20,7 +20,7 @@
 #include <atlbase.h>
 
 #include "zorbaerrors/error_manager.h"
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 #include "zorbatypes/URI.h"
 
 #include "store/api/copymode.h"

@@ -18,7 +18,7 @@
 
 #include "system/globalenv.h"
 #include "zorbaerrors/error_manager.h"
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/duration.h"
 

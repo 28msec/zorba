@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "zorbaerrors/Assert.h"
+
+#include "zorbaerrors/assert.h"
 
 #include "runtime/core/item_iterator.h"
 #include "runtime/booleans/BooleanImpl.h"

@@ -21,7 +21,7 @@
 
 #include "iso2788.h"
 #include "zorbatypes/zstring.h"
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 
 namespace zorba {
 namespace xqftts {

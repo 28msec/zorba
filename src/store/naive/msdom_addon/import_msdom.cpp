@@ -21,7 +21,7 @@
 #include "store/naive/store_defs.h"
 #include "store/naive/simple_store.h"
 
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 
 namespace zorba {
 namespace simplestore 

@@ -25,7 +25,7 @@
 #include "util/hashmap32.h"
 #include "util/string_util.h"
 
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 
 
 namespace zorba {

@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include <sstream>
 
-
 #include "zorbaerrors/error_manager.h"
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 #include "zorbaerrors/dict.h"
 
 #include "zorbatypes/datetime.h"

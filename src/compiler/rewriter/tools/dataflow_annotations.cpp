@@ -31,7 +31,7 @@
 #include "functions/function.h"
 #include "functions/library.h"
 
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 
 
 namespace zorba 

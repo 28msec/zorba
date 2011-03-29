@@ -19,7 +19,7 @@
 #ifdef PATH_ITERATOR
 
 #include "zorbaerrors/error_manager.h"
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 
 #include "system/globalenv.h"
 #include "context/static_context.h"

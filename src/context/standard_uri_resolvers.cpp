@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "context/standard_uri_resolvers.h"
 
 #include <istream>
@@ -40,7 +41,7 @@
 #include "context/dynamic_loader.h"
 #include "context/get_current_lib_suffix.h"
 
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 
 namespace zorba
 {

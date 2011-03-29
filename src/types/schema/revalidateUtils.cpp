@@ -35,7 +35,7 @@
 #include "context/namespace_context.h"
 
 #include "zorbaerrors/error_manager.h"
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 
 
 //using namespace std;

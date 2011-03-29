@@ -20,7 +20,7 @@
 #include "common/shared_types.h"
 #include "store/api/item.h"
 #include "store/api/temp_seq.h"
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 
 #include "zorbaserialization/serialization_engine.h"
 

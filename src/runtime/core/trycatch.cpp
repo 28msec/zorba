@@ -15,7 +15,7 @@
  */
 
 #include "zorbaerrors/error_manager.h"
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 #include "zorbaerrors/user_exception.h"
 
 #include "runtime/core/trycatch.h"

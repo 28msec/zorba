@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "system/globalenv.h"
 
 #include "debugger_commons.h"
@@ -20,7 +21,7 @@
 #include "compiler/api/compilercb.h"
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 
 #include "runtime/debug/zorba_debug_iterator.h"
 #include "runtime/visitors/planiter_visitor.h"

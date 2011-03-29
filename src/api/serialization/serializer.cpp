@@ -20,7 +20,7 @@
 
 #include "zorbatypes/numconversions.h"
 #include "zorbaerrors/error_manager.h"
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 
 #include "api/serialization/serializer.h"
 #include "api/serialization/serializable.h"

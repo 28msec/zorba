@@ -15,7 +15,7 @@
  */
 
 #include "util/stl_util.h"
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 
 #include "ft_query_item.h"
 

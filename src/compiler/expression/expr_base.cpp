@@ -32,7 +32,7 @@
 #include "system/globalenv.h"
 
 #include "zorbaerrors/error_manager.h"
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 
 #include "zorbaserialization/serialization_engine.h"
 

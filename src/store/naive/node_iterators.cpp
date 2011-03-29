@@ -16,7 +16,7 @@
 
 #include <algorithm>
 
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 #include "zorbaerrors/error_manager.h"
 
 #include "store/naive/node_items.h"

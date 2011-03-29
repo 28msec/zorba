@@ -16,7 +16,7 @@
 
 #include <memory>
 
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 #include "zorbaerrors/error_manager.h"
 
 #include "zorbatypes/collation_manager.h"

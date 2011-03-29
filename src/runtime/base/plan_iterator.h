@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #ifndef ZORBA_RUNTIME_PLAN_ITERATOR
 #define ZORBA_RUNTIME_PLAN_ITERATOR
 
@@ -20,7 +21,7 @@
 
 #include "common/shared_types.h"
 
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 
 #include "runtime/util/flowctl_exception.h"
 

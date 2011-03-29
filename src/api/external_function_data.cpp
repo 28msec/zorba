@@ -23,7 +23,7 @@
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
 #include "system/globalenv.h"
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 #include "zorbaerrors/user_exception.h"
 #include "zorbatypes/zstring.h"
 

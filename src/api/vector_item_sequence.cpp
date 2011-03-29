@@ -16,7 +16,7 @@
 #include <zorba/vector_item_sequence.h>
 
 #include <zorba/item.h>
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 
 namespace zorba { 
 

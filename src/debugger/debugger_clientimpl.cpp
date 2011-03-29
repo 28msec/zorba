@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-
 #include "debugger/debugger_clientimpl.h"
 
 #include <iostream>
 #include <memory>
 
-#include <zorbaerrors/Assert.h>
+#include <zorbaerrors/assert.h>
 
 #include "api/unmarshaller.h"
 

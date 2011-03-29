@@ -19,7 +19,7 @@
 #include <zorba/zorba_exception.h>
 #include <zorba/user_exception.h>
 #include <zorba/error_list.h>
-#include "Assert.h"
+#include "assert.h"
 
 #include "user_exception.h"
 #include "xquery_exception.h"

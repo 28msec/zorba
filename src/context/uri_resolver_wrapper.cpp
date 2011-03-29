@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include <zorba/uri_resolvers.h>
 #include <zorba/zorbastring.h>
 #include <zorba/collection.h>
@@ -23,7 +24,7 @@
 #include "store/api/collection.h"
 
 #include "zorbaerrors/error_manager.h"
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 
 #include "api/staticcontextimpl.h"
 #include "api/unmarshaller.h"

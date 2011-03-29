@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "runnable.h"
 
 #include <cassert>
 #include <errno.h>
 
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 
 #ifdef ZORBA_HAVE_PTHREAD_H
 #include <unistd.h>

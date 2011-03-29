@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 
 #include "store/api/item.h"
 #include "store/naive/simple_lazy_temp_seq.h"

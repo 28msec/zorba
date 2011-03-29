@@ -16,7 +16,7 @@
 
 #include <zorba/internal/qname.h>
 
-#include "Assert.h"
+#include "assert.h"
 #include "util/ascii_util.h"
 #include "zorbamisc/ns_consts.h"
 

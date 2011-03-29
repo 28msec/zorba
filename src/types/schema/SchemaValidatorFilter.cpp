@@ -36,7 +36,7 @@
 #include <iostream>
 #include <sstream>
 
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 #include "zorbaerrors/error_manager.h"
 #include "zorbatypes/xerces_xmlcharray.h"
 

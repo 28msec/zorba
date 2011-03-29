@@ -28,7 +28,7 @@
 #include "util/oseparator.h"
 #endif
 #include "util/utf8_util.h"
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 #include "zorbaerrors/error_manager.h"
 #include "zorbautils/locale.h"
 

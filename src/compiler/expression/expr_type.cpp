@@ -16,7 +16,7 @@
 
 #include <zorba/config.h>
 
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 #include "zorbaerrors/error_manager.h"
 
 #include "system/globalenv.h"

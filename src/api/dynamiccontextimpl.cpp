@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include <zorba/default_error_handler.h>
 #include <zorba/zorba.h>
 
@@ -48,7 +49,7 @@
 
 #include "util/xml_util.h"
 
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 
 
 namespace zorba {

@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "zorbaerrors/Assert.h"
+
+#include "zorbaerrors/assert.h"
 #include "zorbaerrors/error_manager.h"
 
 #include "zorbatypes/URI.h"

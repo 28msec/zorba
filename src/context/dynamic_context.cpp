@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "common/common.h"
 #include <assert.h>
 #include <time.h>
@@ -46,7 +47,7 @@
 #include "zorbautils/hashmap_itemp.h"
 #include "util/string_util.h"
 
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 
 using namespace std;
 

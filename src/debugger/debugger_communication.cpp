@@ -20,7 +20,7 @@
 #include "message_factory.h"
 #include "util/stl_util.h"
 
-#include <zorbaerrors/Assert.h>
+#include <zorbaerrors/assert.h>
 #include <memory>
 
 #ifdef WIN32

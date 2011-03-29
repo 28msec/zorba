@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 
 #include "system/globalenv.h"
 

@@ -19,7 +19,7 @@
 #include "context/namespace_context.h"
 
 #include "zorbamisc/ns_consts.h"
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 
 #include "types/typeimpl.h"
 #include "types/root_typemanager.h"

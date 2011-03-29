@@ -18,7 +18,7 @@
 
 #include "zorbaerrors/error_manager.h"
 #include "zorbaerrors/dict.h"
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 
 #include <zorba/util/path.h>
 

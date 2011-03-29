@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "zorbatypes/transcoder.h"
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 
 #ifndef ZORBA_NO_UNICODE
 #include "zorbatypes/libicu.h"

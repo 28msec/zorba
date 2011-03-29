@@ -21,7 +21,7 @@
 
 #include <zorba/config.h>
 #include <zorba/error_list.h>
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 
 #include "util/tracer.h"
 #include "util/stl_util.h"

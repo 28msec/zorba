@@ -52,7 +52,7 @@
 #endif
 
 
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 //#include "StrX.h"
 
 using namespace XERCES_CPP_NAMESPACE;

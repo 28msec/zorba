@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 
 #include "runtime/visitors/planiter_visitor.h"
 #include "runtime/core/gflwor/let_iterator.h"

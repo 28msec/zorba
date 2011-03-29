@@ -17,7 +17,7 @@
 #include "zorbamisc/config/platform.h"
 
 #include "zorbaerrors/error_manager.h"
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 
 //#include "zorbatypes/datetime.h"
 

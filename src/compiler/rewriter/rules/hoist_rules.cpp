@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include <map>
 
 #include "context/static_context.h"
@@ -29,7 +30,7 @@
 
 #include "util/dynamic_bitset.h"
 
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 
 
 namespace zorba

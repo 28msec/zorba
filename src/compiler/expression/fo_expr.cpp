@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include <vector>
 
 #include "compiler/expression/fo_expr.h"
@@ -23,7 +24,7 @@
 #include "functions/library.h"
 #include "functions/function.h"
 
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 
 namespace zorba
 {

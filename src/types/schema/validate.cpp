@@ -49,7 +49,7 @@
 #include "context/static_context.h"
 #include "context/namespace_context.h"
 
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 #include "zorba/store_consts.h"
 
 using namespace std;

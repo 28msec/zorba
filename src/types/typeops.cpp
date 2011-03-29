@@ -28,7 +28,7 @@
 #include "types/root_typemanager.h"
 #include "types/schema/schema.h"
 
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 
 
 namespace zorba {

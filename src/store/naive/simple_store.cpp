@@ -23,7 +23,7 @@
 #include "zorbautils/fatal.h"
 #include "zorbatypes/rchandle.h"
 #include "zorbaerrors/error_manager.h"
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 
 #include "store/api/pul.h"
 

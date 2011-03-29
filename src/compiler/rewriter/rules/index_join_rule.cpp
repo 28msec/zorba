@@ -28,7 +28,7 @@
 
 #include "system/properties.h"
 
-#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/assert.h"
 
 
 namespace zorba
