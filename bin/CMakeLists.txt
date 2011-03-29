@@ -54,10 +54,10 @@ ZORBA_ADD_TEST_ALLSTORES(bin/zorba_jsonml1 zorbacmd -q "<ul>1</ul>" -z method=js
 ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba_jsonml1 PASS_REGULAR_EXPRESSION "ul.*1")
 
 ZORBA_ADD_TEST_ALLSTORES(bin/zorba_json1 zorbacmd -q "<ul>1</ul>" -z method=json)
-ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba_json1 PASS_REGULAR_EXPRESSION ".*API0061.* Could not serialize the element with string representation .*1.*")
+ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba_json1 PASS_REGULAR_EXPRESSION ".*API0061.*")
 
 ZORBA_ADD_TEST_ALLSTORES(bin/zorba_jsonml2 zorbacmd -q "(<!--comment-->)" -z method=jsonml)
-ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba_jsonml2 PASS_REGULAR_EXPRESSION ".*API0065.* Parameter with string representation .*comment.* is not an element node.")
+ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba_jsonml2 PASS_REGULAR_EXPRESSION ".*API0065.*")
 
 ZORBA_ADD_TEST_ALLSTORES(bin/zorba_jsonml3 zorbacmd -q "(<ul>1</ul>,<ul>2</ul>)" -z method=jsonml)
 ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba_jsonml3 PASS_REGULAR_EXPRESSION ".*API0066.*")
@@ -67,19 +67,19 @@ ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba5 PASS_REGULAR_EXPRESSION ".*Extra ar
 
 # test the compile-only option of the command line tool which is used for semantic checking in eclipse
 ZORBA_ADD_TEST_ALLSTORES(bin/zorba_compilechk1 zorbacmd -q "${CMAKE_CURRENT_SOURCE_DIR}/test/mymod.xq" -f -l)
-ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba_compilechk1 PASS_REGULAR_EXPRESSION ".*mymod.xq.*line 6, column 8:.*XPST0008.*")
+ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba_compilechk1 PASS_REGULAR_EXPRESSION ".*mymod.xq:6,8:.*:XPST0008.*")
 
 ZORBA_ADD_TEST_ALLSTORES(bin/zorba_compilechk2 zorbacmd -q "${CMAKE_CURRENT_SOURCE_DIR}/test/mymod.xq" -f -l -x)
-ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba_compilechk2 PASS_REGULAR_EXPRESSION ".*XPST0008.*mymod.xq' lineStart='6' columnStart='8' lineEnd='6' columnEnd='8'.*")
+ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba_compilechk2 PASS_REGULAR_EXPRESSION ".*XPST0008.*mymod.xq' line='6' column='8'.*")
 
 # test compile checking to work with library modules that have an invalid target namespace uri
 # test for bug #2934414
 ZORBA_ADD_TEST_ALLSTORES(bin/zorba_compilechk3 zorbacmd -q "${CMAKE_CURRENT_SOURCE_DIR}/test/mymod2.xq" -f -l -x)
-ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba_compilechk3 PASS_REGULAR_EXPRESSION ".*XQST0046.*mymod2.xq' lineStart='1' columnStart='1' lineEnd='1' columnEnd='1'.*")
+ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba_compilechk3 PASS_REGULAR_EXPRESSION ".*XQST0046.*mymod2.xq' line='1' column='1'.*")
 
 # check error message for sequential expressions used in a wrong location
 ZORBA_ADD_TEST_ALLSTORES(bin/zorba_sequential_err_msg zorbacmd -q "${CMAKE_CURRENT_SOURCE_DIR}/test/sequential_expr_err.xq" -f -l -x)
-ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba_sequential_err_msg PASS_REGULAR_EXPRESSION ".*XUST0001.*lineStart='6' columnStart='7' lineEnd='6' columnEnd='7'.*>.*")
+ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba_sequential_err_msg PASS_REGULAR_EXPRESSION ".*XUST0001.*line='6' column='7'.*>.*")
 
 # test the --option option to set an option in the static context
 ZORBA_ADD_TEST_ALLSTORES(bin/zorba_option zorbacmd -q "${CMAKE_CURRENT_SOURCE_DIR}/test/option.xq" -f --option "{http://www.zorba-xquery.com}option=value")

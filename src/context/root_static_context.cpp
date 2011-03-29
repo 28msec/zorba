@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "context/root_static_context.h"
 #include "context/namespace_context.h"
 #include "context/uri_resolver_wrapper.h"
@@ -25,19 +26,21 @@
 #include "compiler/parser/query_loc.h"
 
 #include "common/common.h"
+#include "zorbamisc/ns_consts.h"
 
 namespace zorba 
 {
 
-static const char* default_ns_initializers [] = 
+static const char *const default_ns_initializers [] = 
 {
+  "err", XQUERY_ERR_NS,
   "fn", XQUERY_FN_NS,
+  "local", XQUERY_LOCAL_FN_NS,
+  "math", XQUERY_MATH_FN_NS,
   "xml", XML_NS,
   "xs", XML_SCHEMA_NS,
   "xsi", XSI_NS,
-  "local", XQUERY_LOCAL_FN_NS,
-  "err", XQUERY_ERR_NS,
-  "math", XQUERY_MATH_FN_NS,
+  "zerr", ZORBA_ERR_NS,
   NULL, NULL
 };
 
@@ -52,22 +55,21 @@ void root_static_context::init()
 {
   QueryLoc loc;
 
-  theImplementationBaseUri = "http://www.zorba-xquery.com/";
+  theImplementationBaseUri = ZORBA_NS;
   compute_base_uri();
 
   // default xquery version is 1.1
   set_xquery_version(StaticContextConsts::xquery_version_1_1);
   set_xpath_compatibility(StaticContextConsts::xpath2_0);
 
-  const char** p = default_ns_initializers;
-  for (; *p != NULL; p += 2)
+  for (const char *const *p = default_ns_initializers; *p != NULL; p += 2)
   {
     zstring pfx(p[0]);
     zstring ns (p[1]);
     bind_ns(pfx, ns, loc);
   }
 
-  set_default_elem_type_ns(zstring(), loc);		
+  set_default_elem_type_ns(zstring(), loc);   
 
   set_default_function_ns(XQUERY_FN_NS, loc);
 
@@ -132,4 +134,4 @@ root_static_context::~root_static_context()
 }
 
 }
-/* vim:set ts=2 sw=2: */
+/* vim:set et ts=2 sw=2: */

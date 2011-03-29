@@ -29,7 +29,7 @@ private:
   std::vector<store::Item_t>::iterator theIterator;
 
 public:
-  ItemIterator(std::vector<store::Item_t> aItems);
+  ItemIterator(std::vector<store::Item_t> const &aItems);
   ItemIterator(store::Item_t aItem);
   ItemIterator(); // construct the empty sequence
 

@@ -767,16 +767,6 @@ void serialize_array(Archiver &ar, unsigned char *obj, int len)//like char p[20]
   }
 }
 
-
-void report_error(   XQUERY_ERROR        aErrorCode,
-                      const std::string& aDesc, 
-                      const std::string& aFileName,
-                      int                aLineNumber)
-{
-  throw error::ErrorManager::createException(aErrorCode,                    
-                                             aDesc,  "",  
-                                             aFileName, aLineNumber,
-                                             0, 0, "");     
-}
-
-}}
+} // namespace serialization
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

@@ -26,6 +26,7 @@
 #include <zorba/external_function.h>
 #include <zorba/serialization_callback.h>
 #include <zorba/empty_sequence.h>
+#include <zorba/xquery_exception.h>
 
 
 using namespace zorba;
@@ -155,7 +156,7 @@ external_function(int argc, char* argv[])
         std::cout << lQuery << std::endl;
       }
     }
-  } catch (QueryException& qe) {
+  } catch (XQueryException& qe) {
     std::cerr << qe << std::endl;
     return 1;
   } catch (ZorbaException& e) {

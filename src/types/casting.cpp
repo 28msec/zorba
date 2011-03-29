@@ -66,9 +66,9 @@ struct ErrorInfo
 };
 
 
-inline void throwError(XQUERY_ERROR aErrorCode, const ErrorInfo& aInfo, zstring additional_info = "")
+inline void throwError(Error const &aErrorCode, const ErrorInfo& aInfo, zstring additional_info = "")
 {
-  ZORBA_ERROR_DESC_OSS(aErrorCode,
+  ZORBA_ERROR_VAR_DESC_OSS(aErrorCode,
                        "Passed item (of type " << TypeOps::toString(*aInfo.theSourceType)
                        << ") is not castable to passed target type ("
                        << TypeOps::toString (*aInfo.theTargetType) << ")." + additional_info);
@@ -143,7 +143,7 @@ T1_TO_T2(str, flt)
   if (Float::parseString(strval.c_str(), n))
     return aFactory->createFloat(result, n);
 
-  throwError(FORG0001, aErrorInfo);
+  throwError(err::FORG0001, aErrorInfo);
   return false;
 }
 
@@ -154,7 +154,7 @@ T1_TO_T2(str, dbl)
   if (Double::parseString(strval.c_str(), n))
     return aFactory->createDouble(result, n);
 
-  throwError(FORG0001, aErrorInfo);
+  throwError(err::FORG0001, aErrorInfo);
   return false;
 }
 
@@ -165,7 +165,7 @@ T1_TO_T2(str, dec)
   if (NumConversions::strToDecimal(strval.c_str(), n))
     return aFactory->createDecimal(result, n);
 
-  throwError(FORG0001, aErrorInfo);
+  throwError(err::FORG0001, aErrorInfo);
   return false;
 }
 
@@ -176,7 +176,7 @@ T1_TO_T2(str, int)
   if (NumConversions::strToInteger(strval.c_str(), n))
     return aFactory->createInteger(result, n);
 
-  throwError(FORG0001, aErrorInfo);
+  throwError(err::FORG0001, aErrorInfo);
   return false;
 }
 
@@ -196,7 +196,7 @@ T1_TO_T2(str, dur)
         << TypeOps::toString(*aErrorInfo.theTargetType) << ") as a component exceedes the maximum supported value (2^31 = 2147483648).");
   }
 
-  throwError(FORG0001, aErrorInfo);
+  throwError(err::FORG0001, aErrorInfo);
   return false;
 }
 
@@ -216,7 +216,7 @@ T1_TO_T2(str, yMD)
         << TypeOps::toString(*aErrorInfo.theTargetType) << ") as a component exceedes the maximum supported value (2^31 = 2147483648).");
   }
 
-  throwError(FORG0001, aErrorInfo);
+  throwError(err::FORG0001, aErrorInfo);
   return false;
 }
 
@@ -236,7 +236,7 @@ T1_TO_T2(str, dTD)
         << TypeOps::toString(*aErrorInfo.theTargetType) << ") as a component exceedes the maximum supported value (2^31 = 2147483648).");
   }
 
-  throwError(FORG0001, aErrorInfo);
+  throwError(err::FORG0001, aErrorInfo);
   return false;
 }
 
@@ -247,7 +247,7 @@ T1_TO_T2(str, dT)
   if (0 == DateTime::parseDateTime(strval.c_str(), strval.size(), dt))
     return aFactory->createDateTime(result, &dt);
 
-  throwError(FORG0001, aErrorInfo);
+  throwError(err::FORG0001, aErrorInfo);
   return false;
 }
 
@@ -258,7 +258,7 @@ T1_TO_T2(str, tim)
   if (0 == DateTime::parseTime(strval.c_str(), strval.size(), t))
     return aFactory->createTime(result, &t);
 
-  throwError(FORG0001, aErrorInfo);
+  throwError(err::FORG0001, aErrorInfo);
   return false;
 }
 
@@ -269,7 +269,7 @@ T1_TO_T2(str, dat)
   if (0 == DateTime::parseDate(strval.c_str(), strval.size(), d))
     return aFactory->createDate(result, &d);
 
-  throwError(FORG0001, aErrorInfo);
+  throwError(err::FORG0001, aErrorInfo);
   return false;
 }
 
@@ -280,7 +280,7 @@ T1_TO_T2(str, gYM)
   if (0 == DateTime::parseGYearMonth(strval.c_str(), strval.size(), ym))
     return aFactory->createGYearMonth(result, &ym);
 
-  throwError(FORG0001, aErrorInfo);
+  throwError(err::FORG0001, aErrorInfo);
   return false;
 }
 
@@ -291,7 +291,7 @@ T1_TO_T2(str, gYr)
   if (0 == DateTime::parseGYear(strval.c_str(), strval.size(), y))
     return aFactory->createGYear(result, &y);
 
-  throwError(FORG0001, aErrorInfo);
+  throwError(err::FORG0001, aErrorInfo);
   return false;
 }
 
@@ -302,7 +302,7 @@ T1_TO_T2(str, gMD)
   if (0 == DateTime::parseGMonthDay(strval.c_str(), strval.size(), md))
     return aFactory->createGMonthDay(result, &md);
 
-  throwError(FORG0001, aErrorInfo);
+  throwError(err::FORG0001, aErrorInfo);
   return false;
 }
 
@@ -313,7 +313,7 @@ T1_TO_T2(str, gDay)
   if (0 == DateTime::parseGDay(strval.c_str(), strval.size(), d))
     return aFactory->createGDay(result, &d);
 
-  throwError(FORG0001, aErrorInfo);
+  throwError(err::FORG0001, aErrorInfo);
   return false;
 }
 
@@ -324,7 +324,7 @@ T1_TO_T2(str, gMon)
   if (0 == DateTime::parseGMonth(strval.c_str(), strval.size(), m))
     return aFactory->createGMonth(result, &m);
 
-  throwError(FORG0001, aErrorInfo);
+  throwError(err::FORG0001, aErrorInfo);
   return false;
 }
 
@@ -362,14 +362,14 @@ T1_TO_T2(str, bool)
   }
   else
   {
-    throwError(FORG0001, aErrorInfo);
+    throwError(err::FORG0001, aErrorInfo);
   }
 
   pos = str - strval.c_str();
   ascii::skip_whitespace(strval.c_str(), len, &pos);
 
   if (pos != len)
-    throwError(FORG0001, aErrorInfo);
+    throwError(err::FORG0001, aErrorInfo);
 
   return aFactory->createBoolean(result, lRetValue);
 }
@@ -381,7 +381,7 @@ T1_TO_T2(str, b64)
   if (xs_base64Binary::parseString(strval, n))
     return aFactory->createBase64Binary(result, n);
 
-  throwError(FORG0001, aErrorInfo);
+  throwError(err::FORG0001, aErrorInfo);
   return false;
 }
 
@@ -392,7 +392,7 @@ T1_TO_T2(str, hxB)
   if (xs_hexBinary::parseString(strval, n))
     return aFactory->createHexBinary(result, n);
 
-  throwError(FORG0001, aErrorInfo);
+  throwError(err::FORG0001, aErrorInfo);
   return false;
 }
 
@@ -405,9 +405,9 @@ T1_TO_T2(str, aURI)
     zstring resolvedUri = uriVal.toString();
     return aFactory->createAnyURI(result, resolvedUri);
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const & e)
   {
-    ZORBA_ERROR_DESC_OSS(FORG0001, e.theDescription);
+    ZORBA_ERROR_DESC_OSS(FORG0001, e.what());
     return false;
   }
 }
@@ -421,7 +421,7 @@ T1_TO_T2(str, QN)
   zstring::size_type lidx = strval.rfind(":", strval.size(), 1);
 
   if (idx != lidx)
-    throwError(FORG0001, aErrorInfo);
+    throwError(err::FORG0001, aErrorInfo);
 
   zstring nsuri;
   zstring prefix;
@@ -441,13 +441,13 @@ T1_TO_T2(str, QN)
     prefix = strval.substr(0, idx);
 
     if (!GenericCast::instance()->castableToNCName(prefix))
-      throwError(FORG0001, aErrorInfo);
+      throwError(err::FORG0001, aErrorInfo);
 
     if (nsCtx)
     {
       if (!nsCtx->findBinding(prefix, nsuri))
       {
-        throwError(FONS0004, aErrorInfo);
+        throwError(err::FONS0004, aErrorInfo);
       }
     }
 
@@ -455,7 +455,7 @@ T1_TO_T2(str, QN)
   }
 
   if (!GenericCast::instance()->castableToNCName(local))
-    throwError(FORG0001, aErrorInfo);
+    throwError(err::FORG0001, aErrorInfo);
 
   return aFactory->createQName(result, nsuri, prefix, local);
 }
@@ -673,7 +673,7 @@ T1_TO_T2(flt, dec)
   if (xs_decimal::parseFloat(aItem->getFloatValue(), n))
     return aFactory->createDecimal(result, n);
 
-  throwError(FOCA0002, aErrorInfo);
+  throwError(err::FOCA0002, aErrorInfo);
   return false;
 }
 
@@ -684,7 +684,7 @@ T1_TO_T2(flt, int)
   if (xs_integer::parseFloat(aItem->getFloatValue(), n))
     return aFactory->createInteger(result, n);
 
-  throwError(FOCA0002, aErrorInfo);
+  throwError(err::FOCA0002, aErrorInfo);
   return false;
 }
 
@@ -723,7 +723,7 @@ T1_TO_T2(dbl, dec)
   if (xs_decimal::parseDouble(aItem->getDoubleValue(), n))
     return aFactory->createDecimal(result, n);
 
-  throwError(FOCA0002, aErrorInfo);
+  throwError(err::FOCA0002, aErrorInfo);
   return false;
 }
 
@@ -734,7 +734,7 @@ T1_TO_T2(dbl, int)
   if (xs_integer::parseDouble(aItem->getDoubleValue(), n))
     return aFactory->createInteger(result, n);
 
-  throwError(FOCA0002, aErrorInfo);
+  throwError(err::FOCA0002, aErrorInfo);
   return false;
 }
 
@@ -1356,7 +1356,7 @@ bool str_down(
     ZORBA_ASSERT(false);
   }
 
-  throwError(FORG0001, aErrorInfo);
+  throwError(err::FORG0001, aErrorInfo);
   return 0;
 }
 
@@ -1477,7 +1477,7 @@ bool int_down(
   default:
     ZORBA_ASSERT (false);
   }
-  throwError(FORG0001, aErrorInfo);
+  throwError(err::FORG0001, aErrorInfo);
   return 0;
 }
 
@@ -1663,7 +1663,7 @@ bool GenericCast::castToAtomic(
   ErrorInfo lErrorInfo = {&*sourceType, aTargetType};
 
   if (!TypeOps::is_atomic(tm, *aTargetType))
-    throwError(XPST0051, lErrorInfo);
+    throwError(err::XPST0051, lErrorInfo);
 
 #ifndef ZORBA_NO_XMLSCHEMA
   if (aTargetType->type_kind() == XQType::USER_DEFINED_KIND)
@@ -1701,7 +1701,7 @@ bool GenericCast::castToAtomic(
     CastFunc lCastFunc = theCastMatrix[theMapping[sourceTypeCode]]
                                       [theMapping[targetTypeCode]];
     if (lCastFunc == 0)
-      throwError(XPTY0004, lErrorInfo);
+      throwError(err::XPTY0004, lErrorInfo);
 
     valid = (*lCastFunc)(result,
                          lItem,
@@ -1746,7 +1746,7 @@ bool GenericCast::castToAtomic(
   xqtref_t lSourceType = tm->create_named_type(aItem->getType(),
                                                TypeConstants::QUANT_ONE,
                                                QueryLoc::null,
-                                               XPTY0004);
+                                               err::XPTY0004);
 
   ZORBA_ASSERT(aItem->isAtomic());
   ZORBA_ASSERT(lSourceType != NULL);
@@ -1761,7 +1761,7 @@ bool GenericCast::castToAtomic(
   ErrorInfo lErrorInfo = {&*lSourceType, aTargetType};
 
   if (!TypeOps::is_atomic(tm, *aTargetType))
-    throwError(XPST0051, lErrorInfo);
+    throwError(err::XPST0051, lErrorInfo);
 
 #ifndef ZORBA_NO_XMLSCHEMA
   if (aTargetType->type_kind() == XQType::USER_DEFINED_KIND)
@@ -1794,22 +1794,22 @@ bool GenericCast::castToAtomic(
 
   if (lSourceTypeCode == TypeConstants::XS_NOTATION ||
       lTargetTypeCode == TypeConstants::XS_NOTATION)
-    throwError(XPST0080, lErrorInfo);
+    throwError(err::XPST0080, lErrorInfo);
 
   if (lSourceTypeCode == TypeConstants::XS_ANY_ATOMIC ||
       lTargetTypeCode == TypeConstants::XS_ANY_ATOMIC)
-    throwError(XPST0080, lErrorInfo);
+    throwError(err::XPST0080, lErrorInfo);
 
   if (lTargetTypeCode == TypeConstants::XS_NCNAME &&
       lSourceTypeCode != TypeConstants::XS_STRING &&
       lSourceTypeCode != TypeConstants::XS_NCNAME &&
       lSourceTypeCode != TypeConstants::XS_UNTYPED_ATOMIC)
-    throwError(XPTY0004, lErrorInfo);
+    throwError(err::XPTY0004, lErrorInfo);
 
   CastFunc lCastFunc = theCastMatrix[theMapping[lSourceTypeCode]]
                                     [theMapping[lTargetTypeCode]];
   if (lCastFunc == 0)
-    throwError(XPTY0004, lErrorInfo);
+    throwError(err::XPTY0004, lErrorInfo);
 
   bool valid = (*lCastFunc)(result,
                             aItem,
@@ -1860,7 +1860,7 @@ void castToUserDefinedType(
   if (aSourceType->type_kind() != XQType::ATOMIC_TYPE_KIND ||
       (TypeOps::get_atomic_type_code(*aSourceType) != TypeConstants::XS_STRING))
   {
-    throwError(FORG0001, lErrorInfo);
+    throwError(err::FORG0001, lErrorInfo);
   }
 
   const UserDefinedXQType* udt =
@@ -1928,7 +1928,7 @@ bool GenericCast::castToQName(
   xqtref_t sourceType = tm->create_named_type(item->getType(),
                                               TypeConstants::QUANT_ONE,
                                               loc,
-                                              XPTY0004);
+                                              err::XPTY0004);
 
   ZORBA_ASSERT(item->isAtomic());
   ZORBA_ASSERT(sourceType != NULL);
@@ -1955,7 +1955,7 @@ bool GenericCast::castToQName(
   zstring::size_type idx = strval.find(":");
   zstring::size_type lidx = strval.rfind(":", strval.size(), 1);
   if (idx != lidx)
-    throwError(FORG0001, errorInfo);
+    throwError(err::FORG0001, errorInfo);
 
   zstring prefix;
   zstring nsuri;
@@ -1975,13 +1975,13 @@ bool GenericCast::castToQName(
     prefix = strval.substr(0, idx);
 
     if (!GenericCast::instance()->castableToNCName(prefix))
-      throwError(FORG0001, errorInfo);
+      throwError(err::FORG0001, errorInfo);
 
     if (nsCtx)
     {
       if (!nsCtx->findBinding(prefix, nsuri))
       {
-        throwError(FONS0004, errorInfo, " Prefix \"" + prefix + "\" has not been declared.");
+        throwError(err::FONS0004, errorInfo, " Prefix \"" + prefix + "\" has not been declared.");
       }
     }
 
@@ -1989,7 +1989,7 @@ bool GenericCast::castToQName(
   }
 
   if (!GenericCast::instance()->castableToNCName(local.c_str()))
-    throwError(FORG0001, errorInfo);
+    throwError(err::FORG0001, errorInfo);
 
   return GENV_ITEMFACTORY->createQName(result, nsuri, prefix, local);
 }
@@ -2270,7 +2270,7 @@ bool GenericCast::isCastable(
   xqtref_t lSourceType = tm->create_named_type(aItem->getType(),
                                                TypeConstants::QUANT_ONE,
                                                QueryLoc::null,
-                                               XPTY0004);
+                                               err::XPTY0004);
 
   TypeConstants::castable_t lIsCastable = TypeOps::castability(*lSourceType,
                                                                *aTargetType);
@@ -2289,7 +2289,7 @@ bool GenericCast::isCastable(
       store::Item_t temp = aItem;
       return castToAtomic(temp, temp, aTargetType, tm);
     }
-    catch (error::ZorbaError&)
+    catch (ZorbaException const&)
     {
       return false;
     }
@@ -2344,7 +2344,7 @@ bool GenericCast::isCastable(
       zstring copyStr = str;
       return castToAtomic(dummy, copyStr, aTargetType, tm, NULL);
     }
-    catch (error::ZorbaError&)
+    catch (ZorbaException const&)
     {
       return false;
     }

@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #define  __STDC_LIMIT_MACROS
 #include <zorba/item.h>
 #include <zorba/zorbastring.h>
-#include "zorbaerrors/errors.h"
 #include "zorbaerrors/error_manager.h"
 #include "api/itemfactoryimpl.h"
-
 
 #include "zorbatypes/duration.h"
 #include "system/globalenv.h"

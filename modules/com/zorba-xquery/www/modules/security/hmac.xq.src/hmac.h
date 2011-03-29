@@ -20,6 +20,7 @@
 #include <map>
 
 #include <zorba/zorba.h>
+#include <zorba/error.h>
 #include <zorba/external_module.h>
 #include <zorba/external_function.h>
 
@@ -74,7 +75,7 @@ namespace zorba { namespace security {
       static void
       throwError(
           const std::string aErrorMessage,
-          const XQUERY_ERROR& aErrorType);
+          const Error& aErrorType);
 
     private:
 

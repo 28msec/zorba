@@ -20,11 +20,14 @@
 
 #include <zorba/item.h>
 #include <zorba/item_sequence.h>
+#include <zorba/iterator.h>
 #include <zorba/pure_stateless_function.h>
 #include <zorba/nonepure_stateless_function.h>
-#include <zorba/exception.h>
 
 #include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/user_exception.h"
+#include "zorbaerrors/xquery_exception.h"
+#include "zorbaerrors/xquery_stack_trace.h"
 
 #include "context/dynamic_context.h"
 
@@ -41,8 +44,6 @@
 #include "api/xqueryimpl.h"
 #include "api/staticcontextimpl.h"
 #include "api/dynamiccontextimpl.h"
-#include "errors/user_error.h"
-
 
 namespace zorba {
 
@@ -327,31 +328,15 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
 
     STACK_END(state);
   }
-  catch (error::ZorbaUserError& uerr)
+  catch (ZorbaException& err)
   {
-     // bugfix: for #3107911
-     // it's important to not loose the information about the fact
-     // that it's a user error here; otherwise, later catch clauses will
-     // not be able to handle user errors anymore (e.g. try-catch expressions)
-    error::ZorbaError::recordStackTrace(
+    recordStackTrace(
         theUDF->getLoc(),
         loc,
         theUDF->getName(),
         (unsigned int)theUDF->getArgVars().size(),
-        &uerr);
-
-    throw uerr;
-  }
-  catch (error::ZorbaError& err)
-  {
-    error::ZorbaError::recordStackTrace(
-        theUDF->getLoc(),
-        loc,
-        theUDF->getName(),
-        (unsigned int)theUDF->getArgVars().size(),
-        &err);
-
-    throw err;
+        err);
+    throw;
   }
 }
 
@@ -504,7 +489,6 @@ void StatelessExtFunctionCallIterator::serialize(serialization::Archiver& ar)
 
     if (!theNamespace.empty())
     {
-      QueryLoc loc;
       theFunction = theSctx->lookup_external_function(theNamespace, lLocalname);
       if (!theFunction)
       {
@@ -590,27 +574,10 @@ bool StatelessExtFunctionCallIterator::nextImpl(
         state->theResultIter = state->theResult->getIterator();
     } // if (!theFunction->isContextual())
   }
-  catch (const ZorbaException& e)
+  catch (XQueryException& e)
   {
-    QueryLoc err_loc = loc;
-    const DynamicException* de = dynamic_cast<const DynamicException*>(&e);
-    if (de != NULL)
-    {
-      err_loc.setLineBegin(de->getLineBegin());
-      err_loc.setColumnBegin(de->getColumnBegin());
-      err_loc.setFilename(de->getQueryURI().c_str());
-    }
-
-    // take all information from the exception raised in
-    // the external function (e.g. file name) + add loc information
-    throw error::ErrorManager::createException(
-      e.getErrorCode(),
-      e.getDescription().c_str(),
-      e.getFileName().c_str(),
-      e.getFileLineNumber(),
-      err_loc.getLineBegin(),
-      err_loc.getColumnBegin(),
-      err_loc.getFilename().str());
+		set_source( e, loc );
+		throw;
   }
 
   if(state->theResult.get() != NULL)
@@ -630,27 +597,10 @@ bool StatelessExtFunctionCallIterator::nextImpl(
         break;
       }
     }
-    catch (const ZorbaException& e)
+    catch (XQueryException& e)
     {
-      QueryLoc err_loc = loc;
-      const DynamicException* de = dynamic_cast<const DynamicException*>(&e);
-      if (de != NULL)
-      {
-        err_loc.setLineBegin(de->getLineBegin());
-        err_loc.setColumnBegin(de->getColumnBegin());
-        err_loc.setFilename(de->getQueryURI().c_str());
-      }
-
-      // take all information from the exception raised in
-      // the external function (e.g. file name) + add loc information
-      throw error::ErrorManager::createException(
-        e.getErrorCode(),
-        e.getDescription().c_str(),
-        e.getFileName().c_str(),
-        e.getFileLineNumber(),
-        err_loc.getLineBegin(),
-        err_loc.getColumnBegin(),
-        err_loc.getFilename().str());
+			set_source( e, loc );
+			throw;
     }
 
     result = Unmarshaller::getInternalItem(lOutsideItem);
@@ -679,6 +629,6 @@ bool StatelessExtFunctionCallIterator::nextImpl(
 NARY_ACCEPT(StatelessExtFunctionCallIterator);
 
 
-} /* namespace zorba */
+} // namespace zorba
 
 /* vim:set ts=2 sw=2: */

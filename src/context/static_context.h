@@ -742,13 +742,13 @@ public:
         const zstring& prefix,
         const zstring& ns,
         const QueryLoc& loc,
-        const XQUERY_ERROR& err = XQST0033);
+        const Error& err = err::XQST0033);
 
   bool lookup_ns(
         zstring& ns,
         const zstring& prefix,
         const QueryLoc& loc,
-        const XQUERY_ERROR& err = XPST0081) const;
+        const Error& err = err::XPST0081) const;
 
   void expand_qname(
         store::Item_t& qname,
@@ -765,12 +765,12 @@ public:
   void bind_var(
         var_expr_t& expr,
         const QueryLoc& loc,
-        const XQUERY_ERROR& err);
+        const Error& err);
 
   var_expr* lookup_var(
         const store::Item* qname,
         const QueryLoc& loc,
-        const XQUERY_ERROR& err) const;
+        const Error& err) const;
 
   void getVariables(std::vector<std::string>& aVarialeList) const;
 

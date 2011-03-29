@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include <cassert>
 #include <cstdlib>
 #include <iostream>
@@ -22,6 +23,7 @@
 
 #include <zorba/zorba.h>
 #include <zorba/store_manager.h>
+#include <zorba/zorba_exception.h>
 
 
 

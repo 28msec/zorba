@@ -25,6 +25,7 @@
 #include "zorbatypes/URI.h"
 #include "zorbatypes/numconversions.h"
 #include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/dict.h"
 
 #include "common/common.h"
 
@@ -349,27 +350,13 @@ void PrologGraph::reportCycle(const QueryLoc& loc, const PrologGraphVertex* v)
 {
   std::string moduleNS = theModuleSctx->get_module_namespace();
   std::ostringstream msg;
-  msg << "Cyclic dendencies found among the declaration in the prolog of ";
-  if (!moduleNS.empty())
-  {
-    msg << "module " << moduleNS;
-  }
+  if ( v )
+    msg << '$' << v->getVarExpr()->get_name()->getStringValue();
   else
-  {
-    msg << "the main module";
-  }
-
-  if (v)
-  {
-    msg << " (variable $" << v->getVarExpr()->get_name()->getStringValue()
-        << " is using a function which depends on this variable).";
-  }
-  else
-  {
-    msg << ".";
-  }
-
-  ZORBA_ERROR_LOC_DESC(XQST0054, loc, msg.str());
+    msg << '-';
+  throw XQUERY_EXCEPTION(
+    XQST0054, ERROR_PARAMS( msg.str() ), ERROR_LOC( loc )
+  );
 }
 
 
@@ -1515,11 +1502,11 @@ void bind_var(var_expr_t e, static_context* sctx)
 
   if(e->get_kind() == var_expr::let_var)
   {
-    sctx->bind_var(e, e->get_loc(), XQST0039);
+    sctx->bind_var(e, e->get_loc(), err::XQST0039);
   }
   else
   {
-    sctx->bind_var(e, e->get_loc(), XQST0049);
+    sctx->bind_var(e, e->get_loc(), err::XQST0049);
   }
 }
 
@@ -1576,22 +1563,22 @@ var_expr_t lookup_ctx_var(const QName* qname, const QueryLoc& loc)
   {
     try
     {
-      return lookup_var(qname, loc, XPDY0002);
+      return lookup_var(qname, loc, err::XPDY0002);
     }
-    catch (error::ZorbaError& e)
+    catch (ZorbaException const& e)
     {
-      if (e.theErrorCode == XPDY0002)
+      if (e.error() == err::XPDY0002)
       {
         ZORBA_ERROR_LOC_PARAM(XDST0032_INDEX_REFERENCES_CTX_ITEM, loc,
                               theIndexDecl->getName()->getStringValue(), "");
       }
 
-      throw e;
+      throw;
     }
   }
   else
   {
-    return lookup_var(qname, loc, XPDY0002);
+    return lookup_var(qname, loc, err::XPDY0002);
   }
 }
 
@@ -1610,7 +1597,7 @@ var_expr_t lookup_ctx_var(const QName* qname, const QueryLoc& loc)
 var_expr* lookup_var(
     const QName* qname,
     const QueryLoc& loc,
-    const XQUERY_ERROR& err)
+    const Error& err)
 {
   store::Item_t qnameItem;
   expand_no_default_qname(qnameItem, qname, loc);
@@ -1630,7 +1617,7 @@ var_expr* lookup_var(
 var_expr* lookup_var(
     const store::Item* qname,
     const QueryLoc& loc,
-    const XQUERY_ERROR& err)
+    const Error& err)
 {
   return theSctx->lookup_var(qname, loc, err);
 }
@@ -1822,7 +1809,7 @@ expr_t wrap_in_type_promotion(expr_t e, xqtref_t type, store::Item_t fnQName = N
 /*******************************************************************************
 
 ********************************************************************************/
-expr_t wrap_in_type_match(expr_t e, xqtref_t type, XQUERY_ERROR errorCode = XPTY0004, store::Item_t fnQName = NULL)
+expr_t wrap_in_type_match(expr_t e, xqtref_t type, Error const &errorCode = err::XPTY0004, store::Item_t fnQName = NULL)
 {
   TypeManager* tm = e->get_type_manager();
 
@@ -2105,7 +2092,7 @@ void wrap_in_debugger_expr(expr_t& aExpr)
                                  var_expr::eval_var,
                                  NULL).dyn_cast<var_expr>();
 
-      var_expr* lVe = lookup_var(ve->get_name(), QueryLoc::null, XPST0008);
+      var_expr* lVe = lookup_var(ve->get_name(), QueryLoc::null, err::XPST0008);
 
       expr_t val = new wrapper_expr(theRootSctx,
                                     lLocation.theQueryLocation,
@@ -2153,7 +2140,7 @@ void collect_flwor_vars (
       const VarInDeclList& lV = *(static_cast<const ForClause*>(&c)->get_vardecl_list());
       for (int j =  (int)lV.size() - 1; j >= 0; --j)
       {
-        vars.insert(lookup_var(lV[j]->get_name(), loc, XPST0008));
+        vars.insert(lookup_var(lV[j]->get_name(), loc, err::XPST0008));
       }
     }
     else if (typeid (c) == typeid (LetClause))
@@ -2161,13 +2148,13 @@ void collect_flwor_vars (
       const VarGetsDeclList& lV = *(static_cast<const LetClause*>(&c)->get_vardecl_list());
       for (int j =  (int)lV.size() - 1; j >= 0; --j)
       {
-        vars.insert(lookup_var(lV[j]->get_name(), loc, XPST0008));
+        vars.insert(lookup_var(lV[j]->get_name(), loc, err::XPST0008));
       }
     }
     else if (typeid(c) == typeid(WindowClause))
     {
       const WindowClause& wc = *static_cast<const WindowClause *>(&c);
-      vars.insert(lookup_var(wc.get_var()->get_name(), loc, XPST0008));
+      vars.insert(lookup_var(wc.get_var()->get_name(), loc, err::XPST0008));
       for (int j = 1; j >= 0; j--)
       {
         const FLWORWinCond* cond = &*wc[j];
@@ -2177,13 +2164,13 @@ void collect_flwor_vars (
           if (wv != NULL)
           {
             if (wv->get_next())
-              vars.insert(lookup_var(wv->get_next(), loc, XPST0008));
+              vars.insert(lookup_var(wv->get_next(), loc, err::XPST0008));
             if (wv->get_prev())
-              vars.insert(lookup_var(wv->get_prev(), loc, XPST0008));
+              vars.insert(lookup_var(wv->get_prev(), loc, err::XPST0008));
             if (wv->get_curr())
-              vars.insert(lookup_var(wv->get_curr(), loc, XPST0008));
+              vars.insert(lookup_var(wv->get_curr(), loc, err::XPST0008));
             if (wv->get_posvar() != NULL)
-              vars.insert(lookup_var(wv->get_posvar()->get_name(), loc, XPST0008));
+              vars.insert(lookup_var(wv->get_posvar()->get_name(), loc, err::XPST0008));
           }
         }
       }
@@ -2192,7 +2179,7 @@ void collect_flwor_vars (
     {
       vars.insert(lookup_var(static_cast<const CountClause*>(&c)->get_varname(),
                              loc,
-                             XPST0008));
+                             err::XPST0008));
     }
     else if (typeid(c) == typeid(OrderByClause))
     {
@@ -2351,7 +2338,7 @@ void declare_var(const global_binding& b, std::vector<expr_t>& stmts)
   {
     expr_t getExpr = new fo_expr(theRootSctx, loc, varGet, varExpr);
 
-    stmts.push_back(new treat_expr(theRootSctx, loc, getExpr, varType, XPTY0004));
+    stmts.push_back(new treat_expr(theRootSctx, loc, getExpr, varType, err::XPTY0004));
   }
 }
 
@@ -2762,7 +2749,7 @@ void* begin_visit(const BaseURIDecl& v)
     zstring uri(v.get_base_uri());
     theSctx->set_base_uri(uri);
   }
-  catch (error::ZorbaError&)
+  catch (ZorbaException const&)
   {
     ZORBA_ERROR_LOC(XQST0046, loc);
   }
@@ -2886,7 +2873,7 @@ void* begin_visit(const SchemaImport& v)
       theSctx->set_default_elem_type_ns(targetNS, loc);
 
     if (! pfx.empty())
-      theSctx->bind_ns(pfx, targetNS, loc, XQST0033);
+      theSctx->bind_ns(pfx, targetNS, loc, err::XQST0033);
   }
 
   store::Item_t targetNSItem = NULL;
@@ -2936,9 +2923,10 @@ void* begin_visit(const SchemaImport& v)
                           lSchemaUri,
                           loc);
   }
-  catch (error::ZorbaError& e)
+  catch (XQueryException& e)
   {
-    ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+    set_source( e, loc );
+    throw;
   }
 
   return no_state;
@@ -3034,7 +3022,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       ! (pfx == theModulePrefix &&
          targetNS == theModuleNamespace))
   {
-    theSctx->bind_ns(pfx, targetNS, loc, XQST0033);
+    theSctx->bind_ns(pfx, targetNS, loc, err::XQST0033);
   }
 
   const URILiteralList* atlist = v.get_at_list();
@@ -3146,9 +3134,10 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       {
         modfile.reset(standardModuleResolver->resolve(compURI, *theSctx, compURL));
       }
-      catch (error::ZorbaError& e)
+      catch (XQueryException& e)
       {
-        ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+        set_source( e, loc );
+        throw;
       }
 
       if (modfile.get() == NULL || ! *modfile)
@@ -3337,7 +3326,7 @@ void* begin_visit(const VFO_DeclList& v)
 
     // function must be declared in a non-NULL namespace
     if (ns.empty())
-      ZORBA_ERROR_LOC (XQST0060, loc);
+      ZORBA_ERROR_LOC(XQST0060, loc);
 
     // Function must not be in any of the reserved namespaces
     if (ns == XQUERY_FN_NS || ns == XML_NS || ns == XML_SCHEMA_NS || ns == XSI_NS)
@@ -3415,9 +3404,10 @@ void* begin_visit(const VFO_DeclList& v)
         ef = theSctx->lookup_external_function(qnameItem->getNamespace(),
                                                qnameItem->getLocalName());
       }
-      catch (error::ZorbaError& e)
+      catch (XQueryException& e)
       {
-        ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+        set_source( e, loc );
+        throw;
       }
 
       // The external function must be registered already in the static context
@@ -3709,7 +3699,7 @@ void* begin_visit(const CtxItemDecl& v)
   TRACE_VISIT();
 
   if (theSctx->xquery_version() <= StaticContextConsts::xquery_version_1_0)
-    ZORBA_ERROR_LOC (XPST0003, loc);
+    ZORBA_ERROR_LOC(XPST0003, loc);
 
   return no_state;
 }
@@ -3802,11 +3792,14 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
        v.get_annotations()->has_nondeterministic()))
   {
     if (v.get_annotations()->has_deterministic())
-      ZORBA_ERROR_LOC_DESC(XPST0003, loc,
-                           "Only external functions may be declared deterministic");
+      throw XQUERY_EXCEPTION(
+        XPST0003, ERROR_PARAMS( ZED( ExternFnDeterministic ) ), ERROR_LOC( loc )
+      );
     else
-      ZORBA_ERROR_LOC_DESC(XPST0003, loc,
-                           "Only external functions may be declared nondeterministic");
+      throw XQUERY_EXCEPTION(
+        XPST0003, ERROR_PARAMS( ZED( ExternFnNondeterministic ) ),
+        ERROR_LOC( loc )
+      );
   }
 
   if (!is_external)
@@ -3855,11 +3848,9 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
     assert(body != NULL);
 
     if (body->is_sequential() && lFuncType != ParseConstants::fn_sequential)
-    {
-      ZORBA_ERROR_LOC_DESC_OSS(XPST0003, loc,
-                               "Only a function that is declared as sequential can"
-                               << " have a body that is a sequential expression");
-    }
+      throw XQUERY_EXCEPTION(
+        XPST0003, ERROR_PARAMS( ZED( SeqFnBody ) ), ERROR_LOC( loc )
+      );
 
     // Under section 2.2.2 "Category Rules", it states: If the body of a
     // sequential function is a Block it must be either a sequential or
@@ -3868,8 +3859,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
     if ( lFuncType == ParseConstants::fn_sequential && body->is_updating() )
     {
       ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, loc,
-                               "A sequential function cannot have a body that "
-                               << "returns a pending update list");
+                               "A sequential function cannot have a body that returns a pending update list");
     }
 
     if (lFuncType == ParseConstants::fn_read)
@@ -3897,7 +3887,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
     }
     else
     {
-      body = wrap_in_type_match(body, returnType, XPTY0004, udf->getName());
+      body = wrap_in_type_match(body, returnType, err::XPTY0004, udf->getName());
     }
 
     if (theCCB->theConfig.translate_cb != NULL)
@@ -4225,7 +4215,7 @@ void* begin_visit(const IndexKeyList& v)
 
   domainExpr = wrap_in_type_match(domainExpr,
                                   theRTM.ANY_NODE_TYPE_STAR,
-                                  XDTY0010_INDEX_DOMAIN_TYPE_ERROR);
+                                  err::XDTY0010_INDEX_DOMAIN_TYPE_ERROR);
 
   // For general indexes, the domain expression must not return duplicate nodes.
   // To see why, consider the following examples:
@@ -4381,7 +4371,7 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
                               index->getName()->getStringValue(), "");
       }
 
-      keyExpr = wrap_in_type_match(keyExpr, type, XDTY0011_INDEX_KEY_TYPE_ERROR);
+      keyExpr = wrap_in_type_match(keyExpr, type, err::XDTY0011_INDEX_KEY_TYPE_ERROR);
 
       keyTypes[i] = ptype->getBaseBuiltinType();
     }
@@ -5516,8 +5506,9 @@ void* begin_visit(const ForClause& v)
   if (v.has_allowing_empty())
   {
     if (theSctx->xquery_version() < StaticContextConsts::xquery_version_1_1)
-      ZORBA_ERROR_LOC_DESC(XPST0003, loc,
-        "The outer-for clause is available in XQuery 1.1 or later.");
+      throw XQUERY_EXCEPTION(
+        XPST0003, ERROR_PARAMS( ZED( OuterForClause11 ) ), ERROR_LOC( loc )
+      );
 
     theFlworClausesStack.push_back(NULL);
   }
@@ -5719,8 +5710,9 @@ void* begin_visit(const WindowClause& v)
   TRACE_VISIT();
 
   if (theSctx->xquery_version() < StaticContextConsts::xquery_version_1_1)
-    ZORBA_ERROR_LOC_DESC (XPST0003, loc,
-      "The window clause is a feature that is available in XQuery 1.1 or later.");
+    throw XQUERY_EXCEPTION(
+      XPST0003, ERROR_PARAMS( ZED( WindowClause11 ) ), ERROR_LOC( loc )
+    );
 
   return no_state;
 }
@@ -5994,7 +5986,7 @@ void* begin_visit(const GroupByClause& v)
   {
     GroupSpec* spec = (*lList)[i];
     const QName* varname = spec->get_var_name();
-    const var_expr* ve = lookup_var(varname, loc, XPST0008);
+    const var_expr* ve = lookup_var(varname, loc, err::XPST0008);
     group_vars.insert(ve);
   }
 
@@ -6112,7 +6104,7 @@ void* begin_visit(const GroupSpec& v)
 {
   TRACE_VISIT();
 
-  var_expr* e = lookup_var(v.get_var_name(), loc, XPST0008);
+  var_expr* e = lookup_var(v.get_var_name(), loc, err::XPST0008);
 
   // Create a new var_expr gX, corresponding to the input-stream var X that
   // is referenced by this group spec. gX represents X in the output stream.
@@ -6337,8 +6329,9 @@ void *begin_visit (const CountClause& v)
   TRACE_VISIT ();
 
   if (theSctx->xquery_version() < StaticContextConsts::xquery_version_1_1)
-    ZORBA_ERROR_LOC_DESC (XPST0003, loc,
-      "The count clause is a feature that is only available in XQuery 1.1 or later.");
+    throw XQUERY_EXCEPTION(
+      XPST0003, ERROR_PARAMS( ZED( CountClause11 ) ), ERROR_LOC( loc )
+    );
 
   return no_state;
 }
@@ -6505,8 +6498,9 @@ void* begin_visit(const SwitchExpr& v)
   TRACE_VISIT();
 
   if (theSctx->xquery_version() < StaticContextConsts::xquery_version_1_1)
-    ZORBA_ERROR_LOC_DESC(XPST0003, loc,
-                         "Switch expressions are a feature that is only available in XQuery 1.1 or later.");
+    throw XQUERY_EXCEPTION(
+      XPST0003, ERROR_PARAMS( ZED( SwitchExpr11 ) ), ERROR_LOC( loc )
+    );
 
   v.get_switch_expr()->accept(*this);
   expr_t se = pop_nodestack();
@@ -6768,7 +6762,7 @@ void* begin_visit(const TypeswitchExpr& v)
                                         loc,
                                         sv.getp(),
                                         type,
-                                        XPDY0050);
+                                        err::XPDY0050);
 
       // clauseExpr = [let $caseVar := treat_as($sv, caseType) return NULL]
       clauseExpr = wrap_in_let_flwor(treatExpr, caseVar, NULL);
@@ -7359,7 +7353,7 @@ void end_visit(const TreatExpr& v, void* /*visit_state*/)
                                 loc,
                                 pop_nodestack(),
                                 pop_tstack(),
-                                XPDY0050));
+                                err::XPDY0050));
 }
 
 
@@ -7409,17 +7403,18 @@ expr_t create_cast_expr(const QueryLoc& loc, expr_t node, xqtref_t type, bool is
                                              CTX_TM,
                                              loc);
       }
-      catch (error::ZorbaError& e)
+      catch (ZorbaException& e)
       {
         if (isCast)
         {
           // bugfix: report error location for invalid casts,
           // e.g. xs:QName("foo:bar") where foo is not defined
-          ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+          set_source( e, loc );
+          throw;
         }
         else
         {
-          if (e.theErrorCode == FORG0001)
+          if (e.error() == err::FORG0001)
             ZORBA_ERROR_LOC(XPST0003, loc);
           else
             ZORBA_ERROR_LOC(XPST0081, loc);
@@ -7442,7 +7437,7 @@ expr_t create_cast_expr(const QueryLoc& loc, expr_t node, xqtref_t type, bool is
       // when casting to type T, where T is QName or subtype of, and the input
       // is not a const expr, then the input MUST be of type T or subtype of.
       if (isCast)
-        return new treat_expr(theRootSctx, loc, node, qnameType, XPTY0004);
+        return new treat_expr(theRootSctx, loc, node, qnameType, err::XPTY0004);
       else
         return new instanceof_expr(theRootSctx, loc, node, qnameType);
     }
@@ -7784,7 +7779,7 @@ void* begin_visit(const PathExpr& v)
                                        loc,
                                        DOT_REF,
                                        GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
-                                       XPTY0020);
+                                       err::XPTY0020);
 
     ctx_path_expr->add_back(sourceExpr);
 
@@ -7817,7 +7812,7 @@ void* begin_visit(const PathExpr& v)
                                      loc,
                                      fnroot.getp(),
                                      GENV_TYPESYSTEM.DOCUMENT_TYPE_ONE,
-                                     XPDY0050);
+                                     err::XPDY0050);
       push_nodestack(result.getp());
     }
   }
@@ -7908,7 +7903,7 @@ void* begin_visit(const RelativePathExpr& v)
                                          loc,
                                          DOT_REF,
                                          GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
-                                         XPTY0020);
+                                         err::XPTY0020);
       pathExpr->add_back(sourceExpr);
 
       if (axisStep->get_predicate_list() == NULL)
@@ -7981,21 +7976,21 @@ void intermediate_visit(const RelativePathExpr& rpe, void* /*visit_state*/)
 #ifdef NODE_SORT_OPT
     if (pathExpr->size() == 0)
     {
-      XQUERY_ERROR errCode = XPTY0019;
+      Error const *errCode = &err::XPTY0019;
 
       if (stepExpr->get_expr_kind() == wrapper_expr_kind)
       {
         wrapper_expr* tmp = static_cast<wrapper_expr*>(stepExpr.getp());
-        var_expr* dotVar = lookup_var(DOT_VARNAME, loc, MAX_ZORBA_ERROR_CODE);
+        var_expr* dotVar = lookup_var(DOT_VARNAME, loc, err::XQP0000_NO_ERROR);
         if (tmp->get_expr() == dotVar)
-          errCode = XPTY0020;
+          errCode = &err::XPTY0020;
       }
 
       expr_t sourceExpr = new treat_expr(theRootSctx,
                                          stepExpr->get_loc(),
                                          stepExpr,
                                          GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
-                                         errCode);
+                                         *errCode);
 
       if (TypeOps::type_max_cnt(pathExpr->get_type_manager(),
                                 *sourceExpr->get_return_type()) > 1)
@@ -8837,11 +8832,11 @@ void end_visit(const VarRef& v, void* /*visit_state*/)
 
   try
   {
-    ve = lookup_var(v.get_name(), loc, XPST0008);
+    ve = lookup_var(v.get_name(), loc, err::XPST0008);
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
-    if (e.theErrorCode == XPST0008 && theHaveModuleImportCycle)
+    if (e.error() == err::XPST0008 && theHaveModuleImportCycle)
     {
       store::Item_t qnameItem;
       expand_no_default_qname(qnameItem, v.get_name(), loc);
@@ -8863,7 +8858,7 @@ void end_visit(const VarRef& v, void* /*visit_state*/)
       }
     }
 
-    throw e;
+    throw;
   }
 
   if (ve->get_kind() == var_expr::prolog_var)
@@ -8874,14 +8869,12 @@ void end_visit(const VarRef& v, void* /*visit_state*/)
 
     if (declaredType != NULL && !TypeOps::is_in_scope(tm, *declaredType))
     {
-      XQUERY_ERROR err = XQST0036;
-
-      if (declaredType->get_manager() == tm)
-        err = XPTY0004;
+      Error const &error =
+        declaredType->get_manager() == tm ? err::XPTY0004 : err::XQST0036;
 
       if (theModuleNamespace.empty())
       {
-        ZORBA_ERROR_LOC_DESC_OSS(err, loc,
+        ZORBA_ERROR_VAR_LOC_DESC_OSS(error, loc,
                                  "The variable "
                                  << ve->get_name()->getStringValue()
                                  << " has type " << declaredType->toString()
@@ -8890,7 +8883,7 @@ void end_visit(const VarRef& v, void* /*visit_state*/)
       }
       else
       {
-        ZORBA_ERROR_LOC_DESC_OSS(err, loc,
+        ZORBA_ERROR_VAR_LOC_DESC_OSS(error, loc,
                                  "The variable "
                                  << ve->get_name()->getStringValue()
                                  << " has type " << declaredType->toString()
@@ -9243,7 +9236,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
                                                         loc,
                                                         data_expr,
                                                         theRTM.ANY_ATOMIC_TYPE_QUESTION,
-                                                        XPTY0004),
+                                                        err::XPTY0004),
                                          tv,
                                          ret));
       return;
@@ -9327,7 +9320,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     else if (localName == "concat")
     {
       if (numArgs < 2)
-        ZORBA_ERROR_LOC_PARAM (XPST0017, loc, "concat", ztd::to_string(numArgs));
+        ZORBA_ERROR_LOC_PARAM(XPST0017, loc, "concat", ztd::to_string(numArgs));
     }
     else if (localName == "doc")
     {
@@ -9349,9 +9342,10 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
               URI docURI(uri_string, true);//with validate
             }
           }
-          catch(error::ZorbaError &e)
+          catch(XQueryException &e)
           {
-            ZORBA_ERROR_LOC_PARAM(FODC0005, loc, e.toString(), "");
+            set_source( e, loc );
+            throw;
           }
         }
       }
@@ -9398,7 +9392,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         }
       }
 
-      ZORBA_ERROR_LOC_PARAM(XPST0017, loc, qname->get_qname(), ztd::to_string(numArgs));
+      ZORBA_ERROR_LOC_PARAM(XPST0017, loc, qname->get_qname(), numArgs);
     }
 
     // If this is a udf that is invoked from another udf, mark that other udf
@@ -9853,9 +9847,13 @@ void end_visit(const DirElemConstructor& v, void* /*visit_state*/)
   rchandle<QName> start_tag = v.get_elem_name();
 
   if (end_tag != NULL && start_tag->get_qname() != end_tag->get_qname ())
-    ZORBA_ERROR_LOC_DESC_OSS(XPST0003, loc,
-                             "Start tag " << start_tag->get_qname()
-                             << " does not match end tag " << end_tag->get_qname());
+    throw XQUERY_EXCEPTION(
+      XPST0003,
+      ERROR_PARAMS(
+        ZED( StartEndTagMismatch ), start_tag->get_qname(), end_tag->get_qname()
+      ),
+      ERROR_LOC( loc )
+    );
 
   if (v.get_dir_content_list() != NULL)
     contentExpr = pop_nodestack();
@@ -10030,9 +10028,9 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
            (ZSTREQ(uri, XML_NS) && !ZSTREQ(prefix, "xml")) ||
            (ZSTREQ(prefix, "xmlns") && !ZSTREQ(uri, XMLNS_NS)) ||
            (ZSTREQ(uri, XMLNS_NS) && !ZSTREQ(prefix, "xmlns")))
-        ZORBA_ERROR_LOC (XQST0070, loc);
+        ZORBA_ERROR_LOC(XQST0070, loc);
 
-      theSctx->bind_ns(prefix, uri, loc, XQST0071);
+      theSctx->bind_ns(prefix, uri, loc, err::XQST0071);
       theNSCtx->bind_ns(prefix, uri);
 
       if (prefix.empty())
@@ -10045,7 +10043,7 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
 
       // unbind the prefix
       zstring empty;
-      theSctx->bind_ns(prefix, empty, loc, XQST0071);
+      theSctx->bind_ns(prefix, empty, loc, err::XQST0071);
       theNSCtx->bind_ns(prefix, empty);
 
       if (prefix.empty())
@@ -10458,7 +10456,7 @@ void end_visit(const DirPIConstructor& v, void* /*visit_state*/)
   utf8::to_upper(target_str, &target_upper);
 
   if (target_upper == "XML")
-    ZORBA_ERROR_LOC ( XPST0003, loc);
+    ZORBA_ERROR_LOC(XPST0003, loc);
 
   expr_t target = new const_expr(theRootSctx, loc, target_str);
   expr_t content = new const_expr(theRootSctx, loc, v.get_pi_content().str());
@@ -10762,7 +10760,7 @@ void end_visit(const AtomicType& v, void* /*visit_state*/)
   // some types that should never be parsed, like xs:untyped, are;
   // we catch them with is_simple()
   if (t == NULL)
-    ZORBA_ERROR_LOC_PARAM (XPST0051, loc, qname->get_qname (), "");
+    ZORBA_ERROR_LOC_PARAM(XPST0051, loc, qname->get_qname (), "");
   else
     theTypeStack.push (t);
 }
@@ -10993,13 +10991,14 @@ void* begin_visit(const SchemaElementTest& v)
                                                              loc);
       theTypeStack.push(seqmatch);
     }
-    catch (error::ZorbaError& e)
+    catch (XQueryException& e)
     {
-      ZORBA_ERROR_LOC_DESC(e.theErrorCode, v.get_location(), e.theDescription);
+      set_source( e, v.get_location() );
+      throw;
     }
   }
 #else//ZORBA_NO_XMLSCHEMA
-    ZORBA_ERROR_LOC(XQP0004_SYSTEM_NOT_SUPPORTED, v.get_location());
+    ZORBA_ERROR_LOC(XQP0005_SYSTEM_NOT_SUPPORTED, v.get_location());
 #endif
   return no_state;
 }
@@ -11110,7 +11109,7 @@ void* begin_visit(const SchemaAttributeTest& v)
   }
 
 #else//ZORBA_NO_XMLSCHEMA
-  ZORBA_ERROR_LOC(XQP0004_SYSTEM_NOT_SUPPORTED, v.get_location());
+  ZORBA_ERROR_LOC(XQP0005_SYSTEM_NOT_SUPPORTED, v.get_location());
 #endif
   return no_state;
 }
@@ -11463,8 +11462,9 @@ void* begin_visit(const TryExpr& v)
   TRACE_VISIT();
 
   if (theSctx->xquery_version() < StaticContextConsts::xquery_version_1_1)
-    ZORBA_ERROR_LOC_DESC(XPST0003, loc,
-                         "try/catch expressions are a feature that is only available in XQuery 1.1 or later.");
+    throw XQUERY_EXCEPTION(
+      XPST0003, ERROR_PARAMS( ZED( TryCatchExpr11 ) ), ERROR_LOC( loc )
+    );
 
   theTryStack.push_back(&v);
 
@@ -11587,7 +11587,7 @@ void end_visit(const AssignExpr& v, void* visit_state)
   TRACE_VISIT_OUT();
 
   // TODO: add treat_expr to check var type
-  var_expr_t ve = lookup_var(v.get_name(), loc, XPST0008);
+  var_expr_t ve = lookup_var(v.get_name(), loc, err::XPST0008);
 
   if (ve->get_kind() != var_expr::local_var && ve->get_kind() != var_expr::prolog_var)
     ZORBA_ERROR_LOC(XPST0003, loc);
@@ -11597,7 +11597,7 @@ void end_visit(const AssignExpr& v, void* visit_state)
   expr_t setExpr = pop_nodestack();
 
   if (varType != NULL)
-    setExpr = new treat_expr(theRootSctx, loc, setExpr, varType, XPTY0004);;
+    setExpr = new treat_expr(theRootSctx, loc, setExpr, varType, err::XPTY0004);
 
   push_nodestack(new fo_expr(theRootSctx,
                              loc,
@@ -11781,8 +11781,8 @@ void end_visit (const FTCaseOption& v, void* /*visit_state*/) {
 void *begin_visit (const FTContainsExpr& v) {
   TRACE_VISIT ();
 #ifdef ZORBA_NO_FULL_TEXT
-  ZORBA_ERROR_LOC_DESC(
-    XPST0003, loc, "full-text is not enabled in this build"
+  throw XQUERY_EXCEPTION(
+    XPST0003, ERROR_PARAMS( ZED( FullTextNotEnabled ) ), ERROR_LOC( loc )
   );
 #endif /* ZORBA_NO_FULL_TEXT */
   return no_state;
@@ -12565,11 +12565,10 @@ expr_t translate(const parsenode& root, CompilerCB* ccb)
   std::map<zstring, zstring> modulesStack;
 
   if (typeid(root) != typeid(MainModule))
-  {
-    ZORBA_ERROR_LOC_DESC(XPST0003,
-                         root.get_location(),
-                         "Module declaration must not be used in a main module");
-  }
+    throw XQUERY_EXCEPTION(
+      XPST0003, ERROR_PARAMS( ZED( ModuleDeclNotInMain ) ),
+      ERROR_LOC( root.get_location() )
+    );
 
   ModulesInfo minfo(ccb);
 
@@ -12582,5 +12581,5 @@ expr_t translate(const parsenode& root, CompilerCB* ccb)
                        false);
 }
 
-} /* namespace zorba */
+} // namespace zorba
 /* vim:set et sw=2 ts=2: */

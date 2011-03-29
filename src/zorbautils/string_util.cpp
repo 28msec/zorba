@@ -20,6 +20,7 @@
 #include "util/unicode_util.h"
 #include "zorbautils/string_util.h"
 #include "zorbatypes/zstring.h"
+#include "zorbaerrors/error_manager.h"
 
 using namespace std;
 U_NAMESPACE_USE
@@ -105,14 +106,14 @@ size_t rfind(
 bool match_part( char const *in, char const *pattern, char const *flags ) {
   unicode::regex re;
   if ( !re.compile( pattern, flags ) )
-    throw zorbatypesException( pattern, ZorbatypesError::FORX0002 );
+    throw XQUERY_EXCEPTION( FORX0002, ERROR_PARAMS( pattern ) );
   return re.match_part( in );
 }
 
 bool match_whole( char const *in, char const *pattern, char const *flags ) {
   unicode::regex re;
   if ( !re.compile( pattern, flags ) )
-    throw zorbatypesException( pattern, ZorbatypesError::FORX0002 );
+    throw XQUERY_EXCEPTION( FORX0002, ERROR_PARAMS( pattern ) );
   return re.match_whole( in );
 }
 

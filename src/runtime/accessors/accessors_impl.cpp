@@ -149,9 +149,9 @@ bool FnDataIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       itemNode.transfer(result);
       try {
         itemNode->getTypedValue(result, state->theTypedValueIter);
-      } catch (error::ZorbaError& e) {
-        // throw error with query location
-        ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+      } catch (XQueryException& e) {
+				set_source( e, loc );
+				throw;
       }
 
       if (state->theTypedValueIter == NULL)

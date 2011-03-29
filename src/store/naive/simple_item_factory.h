@@ -329,7 +329,7 @@ public:
 
   bool createError(
           store::Item_t& result,
-          error::ZorbaError* inError);
+          ZorbaException* ze);
 
   bool createFunction(
           store::Item_t&,

@@ -21,6 +21,7 @@
 #include <zorba/store_manager.h>
 #include <zorba/serializer.h>
 #include <zorba/singleton_item_sequence.h>
+#include <zorba/zorba_exception.h>
 
 
 using namespace zorba;
@@ -63,7 +64,7 @@ example_3(Zorba* aZorba)
 	XQuery_t lQuery = aZorba->compileQuery("1 div 0"); 
   try {
     std::cout << lQuery << std::endl;
-  } catch ( DynamicException& e ) {
+  } catch ( ZorbaException& e ) {
     std::cerr <<  e << std::endl;
     return true;
   }
@@ -78,7 +79,7 @@ example_4(Zorba* aZorba)
 
   try {
     XQuery_t lQuery = aZorba->compileQuery("for $x in (1, 2, 3)");
-  } catch ( StaticException& e ) {
+  } catch ( ZorbaException& e ) {
     std::cerr <<  e << std::endl;
     return true;
   }
@@ -97,11 +98,9 @@ example_5(Zorba* aZorba)
     XQuery_t lQuery = aZorba->compileQuery(lInStream);
 
     std::cout << lQuery << std::endl;
-  } catch ( StaticException& se ) {
-    std::cerr << se << std::endl;
-    return true;
-  } catch ( DynamicException& de ) {
-    std::cerr << de << std::endl;
+  } catch ( ZorbaException const &ze ) {
+    std::cerr << ze << std::endl;
+    return ze.error().type() == err::XQUERY_STATIC;
   }
 
   return false;
@@ -150,7 +149,7 @@ example_9( Zorba * aZorba )
   try {
     XQuery_t lQuery = aZorba->compileQuery("1+1");
     lQuery->compile("1+2");
-  } catch (SystemException & e) {
+  } catch (ZorbaException & e) {
     std::cout << e << std::endl;
     return true;
   }
@@ -212,9 +211,9 @@ example_10( Zorba * aZorba )
 
     lIterator1->close();
   }
-  catch (zorba::ZorbaException& e)
+  catch (ZorbaException& e)
   {
-    std::cout << e.getDescription() << std::endl;
+    std::cout << e.what() << std::endl;
     throw;
   }
   catch (...)
@@ -297,7 +296,7 @@ example_13(Zorba* aZorba)
     lQuery->compile("while (fn:true()) {()};");
     std::cout << lQuery << std::endl;
   }
-  catch (zorba::SystemException&) 
+  catch (ZorbaException&) 
   {
     std::cout << "query interrputed after 1 second" << std::endl;
     return true;
@@ -311,7 +310,7 @@ example_13(Zorba* aZorba)
 bool
 example_14()
 {
-  zorba::String str( "a" );
+  String str( "a" );
   str += "b";
   str += "c";
 
@@ -329,14 +328,14 @@ example_15(Zorba* zorba)
 
   try
   {
-    zorba::StaticContext_t sctx = zorba->createStaticContext();
+    StaticContext_t sctx = zorba->createStaticContext();
 
-    zorba::XQuery_t query = zorba->compileQuery(queryString, sctx);
+    XQuery_t query = zorba->compileQuery(queryString, sctx);
 
     std::stringstream ss;
     ss << "<parent/>";
-    zorba::Item context_item = zorba->getXmlDataManager()->parseDocument(ss);
-    zorba::DynamicContext* dctx = query->getDynamicContext();
+    Item context_item = zorba->getXmlDataManager()->parseDocument(ss);
+    DynamicContext* dctx = query->getDynamicContext();
     dctx->setContextItem(context_item);
 
     if( query->isUpdating() )
@@ -344,8 +343,8 @@ example_15(Zorba* zorba)
       query->execute();
 
       Zorba_SerializerOptions_t options;
-      zorba::Serializer_t serializer = zorba::Serializer::createSerializer(options);
-      zorba::SingletonItemSequence seq(context_item);
+      Serializer_t serializer = Serializer::createSerializer(options);
+      SingletonItemSequence seq(context_item);
       serializer->serialize(&seq, std::cout);
     }
     else
@@ -368,7 +367,7 @@ example_15(Zorba* zorba)
 int 
 simple(int argc, char* argv[])
 {
-  void* lStore = zorba::StoreManager::getStore();
+  void* lStore = StoreManager::getStore();
   Zorba *lZorba = Zorba::getInstance(lStore);
 
   bool res = false;
@@ -449,7 +448,7 @@ simple(int argc, char* argv[])
   std::cout << std::endl;
 
   lZorba->shutdown();
-  zorba::StoreManager::shutdownStore(lStore);
+  StoreManager::shutdownStore(lStore);
   return 0;
 }
 

@@ -22,7 +22,7 @@
   try {
     $action
   }
-  catch (zorba::QueryException& e) {
+  catch (zorba::XQueryException& e) {
     std::stringstream lStream;
     lStream << e;
     SWIG_exception(SWIG_RuntimeError, lStream.str().c_str());
@@ -41,7 +41,7 @@
 #include <string>
 #include <sstream>
 #include <iostream>
-#include <zorba/exception.h>
+#include <zorba/zorba_exception.h>
 #include <zorba/error_handler.h>
 #include <zorba/options.h>
 #include <zorba/singleton_item_sequence.h>
@@ -57,7 +57,7 @@
   class Zorba;
 
   class DynamicException;
-  class QueryException;
+  class XQueryException;
   class SerializationException;
   class StaticException;
   class SystemException;

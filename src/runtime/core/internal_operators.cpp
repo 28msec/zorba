@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "store/api/store.h"
 #include "store/api/iterator.h"
 #include "store/api/item_factory.h"
@@ -23,7 +24,7 @@
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "runtime/visitors/planiter_visitor.h"
 
-#include "zorbaerrors/errors.h"
+#include "zorbaerrors/error_manager.h"
 
 namespace zorba {
 
@@ -58,13 +59,13 @@ HoistIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     {
       state->theDone = !consumeNext(result, theChildren[0].getp(), planState);
     }
-    catch(error::ZorbaError& e) 
+    catch(ZorbaException const& e) 
     {
       error = true;
       state->theDone = true;
-      std::auto_ptr<error::ZorbaError> error = e.clone();
+      std::auto_ptr<ZorbaException> ze = e.clone();
 
-      GENV_ITEMFACTORY->createError(result, error.release());
+      GENV_ITEMFACTORY->createError(result, ze.release());
     }
     STACK_PUSH(error || !state->theDone, state);
   }
@@ -85,8 +86,7 @@ UnhoistIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     if (result->isError()) 
     {
-      error::ZorbaError *err = result->getError();
-      err->raise();
+      result->getError()->polymorphic_throw();
     }
     STACK_PUSH(true, state);
   }

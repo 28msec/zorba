@@ -20,17 +20,13 @@
 #include <vector>
 
 #include <zorba/config.h>
-#include "zorbatypes/representations.h"
+#include <zorba/zorba_exception.h>
 
 #include "store/api/shared_types.h"
+#include "zorbatypes/representations.h"
 
 
 namespace zorba {
-
-namespace error
-{
-  class ZorbaError;
-}
 
 class signature;
 
@@ -784,13 +780,13 @@ public:
   virtual PUL* createPendingUpdateList() = 0;
 
   /**
-   * Create an ErrorItem encapsulating a pointer to a ZorbaError obj (or to
-   * subclasses of ZorbaError). The new ErrorItem assumes ownership of the
-   * ZorbaError obj
+   * Create an ErrorItem encapsulating a pointer to a ZorbaException obj (or to
+   * subclasses of ZorbaException). The new ErrorItem assumes ownership of the
+   * ZorbaException obj
    */
   virtual bool createError(
           store::Item_t& result,
-          error::ZorbaError* inError) = 0;
+          ZorbaException* ze) = 0;
 };
 
 } // namespace store

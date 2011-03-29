@@ -18,17 +18,19 @@
 #include <cstdlib>
 #include <list>
 
-#include <zorba/zorba.h>
-#include <zorba/zorbastring.h>
-#include <zorba/external_module.h>
+#include <zorba/base64.h>
+#include <zorba/empty_sequence.h>
+#include <zorba/error_list.h>
 #include <zorba/external_function.h>
+#include <zorba/external_module.h>
+#include <zorba/file.h>
+#include <zorba/item_factory.h>
 #include <zorba/serializer.h>
 #include <zorba/singleton_item_sequence.h>
-#include <zorba/empty_sequence.h>
-#include <zorba/item_factory.h>
-#include <zorba/base64.h>
-#include <zorba/file.h>
 #include <zorba/vector_item_sequence.h>
+#include <zorba/zorba.h>
+#include <zorba/zorba_exception.h>
+#include <zorba/zorbastring.h>
 
 #include "JavaVMSingelton.h"
 
@@ -145,8 +147,7 @@ ItemSequence_t PathSeparatorFunction::evaluate(const StatelessExternalFunction::
 }
 
 void FindApacheFopFunction::throwError(std::string aName) const {
-  ZorbaException e = createZorbaException(XQP0021_USER_ERROR, aName, __FILE__, __LINE__);
-  throw e;
+  throw ZORBA_EXCEPTION( XQP0021_USER_ERROR, ERROR_PARAMS( aName ) );
 }
 
 ItemSequence_t FindApacheFopFunction::evaluate(const StatelessExternalFunction::Arguments_t& args) const
@@ -428,7 +429,7 @@ ItemSequence_t GeneratePDFFunction::evaluate(const StatelessExternalFunction::Ar
     Item lRes = theFactory->createBase64Binary(base64S.c_str(), base64S.length());
     return ItemSequence_t(new SingletonItemSequence(lRes));
   } catch (VMOpenException&) {
-    throw ExternalFunctionData::createZorbaException(XQP0021_USER_ERROR, "xsl-fo:VM001|ERROR: Could not start the Java VM (is the classpath set?)", __FILE__, __LINE__);
+    throw ZORBA_EXCEPTION(XQP0021_USER_ERROR, ERROR_PARAMS("xsl-fo:VM001|ERROR: Could not start the Java VM (is the classpath set?)") );
   } catch (JavaException&) {
     jclass stringWriterClass = env->FindClass("java/io/StringWriter");
     jclass printWriterClass = env->FindClass("java/io/PrintWriter");
@@ -451,7 +452,7 @@ ItemSequence_t GeneratePDFFunction::evaluate(const StatelessExternalFunction::Ar
     std::string err("JAVA_ERROR|");
     err += s.str();
     env->ExceptionClear();
-    throw ExternalFunctionData::createZorbaException(XQP0021_USER_ERROR, err, __FILE__, __LINE__);
+    throw ZORBA_EXCEPTION(XQP0021_USER_ERROR, ERROR_PARAMS( err ));
   }
   return ItemSequence_t(new EmptySequence());
 }

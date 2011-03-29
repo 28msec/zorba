@@ -17,7 +17,10 @@
 #ifndef ZORBA_FILEMODULE_FILEFUNCTION_H
 #define ZORBA_FILEMODULE_FILEFUNCTION_H
 
+#include <zorba/error.h>
 #include <zorba/external_function.h>
+#include <zorba/item.h>
+#include <zorba/iterator.h>
 #include <zorba/options.h>
 
 #include <fstream>
@@ -42,7 +45,7 @@ namespace zorba { namespace filemodule {
       static void
       throwError(
           const std::string errorMessage,
-          const XQUERY_ERROR& errorType);
+          const Error& errorType);
 
       static String
       getOneStringArg(

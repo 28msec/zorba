@@ -17,11 +17,15 @@
 
 #include <cassert>
 #include <string.h>
-#include <zorbatypes/numconversions.h>
+
 #include <zorba/zorba.h>
+#include <zorba/error_list.h>
+#include <zorba/iterator.h>
 #include <zorba/store_consts.h>
 #include <zorbamisc/ns_consts.h>
-#include "capi/error.h"
+#include <zorbatypes/numconversions.h>
+
+#include "error.h"
 
 using namespace zorba;
 
@@ -374,12 +378,12 @@ CSequence::integer_value(const XQC_Sequence* seq, int* value)
     try {
       (*value) = static_cast<int> (me->theItem.getIntValue());
     }
-    catch (ZorbaException &qe) {
+    catch (ZorbaException const &qe) {
       // TODO test case for this conversion
       // The store API only supports getIntValue() for xs:int and
       // derivative types. For other types, we attempt to convert
       // the string value to an int manually.
-      if (qe.getErrorCode() == STR0040_TYPE_ERROR) {
+      if (qe.error() == err::STR0040_TYPE_ERROR) {
         // Note: The return value of getStringValue() is a
         // reference-counted object. The return value of c_str() is
         // a pointer to internals of this reference-counted
@@ -396,7 +400,7 @@ CSequence::integer_value(const XQC_Sequence* seq, int* value)
         (*value) = static_cast<int> (intvalue);
       }
       else {
-        throw qe;
+        throw;
       }
     }
   }
@@ -414,12 +418,12 @@ CSequence::double_value(const XQC_Sequence* seq, double* value)
     try {
       (*value) = static_cast<double>(me->theItem.getDoubleValue());
     }
-    catch (ZorbaException &qe) {
+    catch (ZorbaException const &qe) {
       // TODO test case for this conversion
       // The store API only supports getDoubleValue() for xs:double
       // and derivative types. For other types, we attempt to
       // convert the string value to a double manually.
-      if (qe.getErrorCode() == STR0040_TYPE_ERROR) {
+      if (qe.error() == err::STR0040_TYPE_ERROR) {
         // Note: The return value of getStringValue() is a
         // reference-counted object. The return value of c_str() is
         // a pointer to internals of this reference-counted
@@ -436,7 +440,7 @@ CSequence::double_value(const XQC_Sequence* seq, double* value)
         (*value) = static_cast<double> (doublevalue.getNumber());
       }
       else {
-        throw qe;
+        throw;
       }
     }
   }
@@ -484,7 +488,7 @@ CSequence::free(XQC_Sequence* seq)
   try {
     CSequence* me = CSequence::get(seq);
     delete me;
-  } catch (ZorbaException&) {
+  } catch (ZorbaException const&) {
     assert(false);
   } catch (...) {
     assert(false);

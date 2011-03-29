@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include <iostream>
 #include <sstream>
 
 #include <zorba/zorba.h>
 #include <zorba/store_manager.h>
+#include <zorba/zorba_exception.h>
 
 using namespace zorba;
 
@@ -32,7 +34,7 @@ test_1()
 
       XQuery_t lQuery = lZorba->compileQuery(q.str());
       std::cout << lQuery << std::endl;
-    } catch (ZorbaException &e) {
+    } catch (ZorbaException const &e) {
       std::cerr << "an exception occured: " << e  << std::endl;
       return false;
     }
@@ -56,12 +58,11 @@ test_2()
 
       XQuery_t lQuery = lZorba->compileQuery(q.str());
       std::cout << lQuery << std::endl;
-    } catch (StaticException &e) {
-      std::cerr << "an exception occured: " << e  << std::endl;
+    } catch (ZorbaException const& e) {
+      std::cerr << "an exception occured: " << e << std::endl;
+      if ( e.error().type() != err::XQUERY_STATIC )
+        return false;
       std::cerr << "this is on purpose" << std::endl;
-    } catch (ZorbaException& e) {
-      std::cerr << "an exception occured: " << e  << std::endl;
-      return false;
     }
     lZorba->shutdown();
     zorba::StoreManager::shutdownStore(zorba::StoreManager::getStore());
@@ -80,3 +81,4 @@ multiple_runs(int argc, char* argv[])
 
   return 0;
 }
+/* vim:set et sw=2 ts=2: */

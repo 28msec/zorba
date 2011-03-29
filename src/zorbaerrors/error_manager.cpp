@@ -14,212 +14,26 @@
  * limitations under the License.
  */
 
+#include "util/stl_util.h"
 #include "zorbaerrors/error_manager.h"
-#include "zorbaerrors/error_messages.h"
 
 #ifndef NDEBUG
 ZORBA_DLL_PUBLIC bool g_abort_on_error = false;
 #define ERROR_ABORT()   do { if (g_abort_on_error) abort(); } while(0)
 #else
 #define ERROR_ABORT()   ((void)0)
-#endif
+#endif /* NDEBUG */
 
-namespace zorba { namespace error {
+namespace zorba {
+namespace error {
 
-
-ErrorManager::ErrorManager() 
-{
+ErrorManager::ErrorManager() {
 }
 
-
-ErrorManager::~ErrorManager() 
-{
+ErrorManager::~ErrorManager() {
+  ztd::delete_ptr_seq( errors_ );
 }
 
-
-ZorbaError
-ErrorManager::createException(
-    XQUERY_ERROR        aErrorCode, 
-    const std::string&  aFileName,
-    int                 aLineNumber)
-{
-  ERROR_ABORT();
-  std::string lDesc = ErrorMessages::getMessageForErrorCode(aErrorCode);
-
-  ZorbaError lError(aErrorCode, lDesc , 0, 0, "", aFileName, aLineNumber);
-
-  return ZorbaError(lError);
-}
-
-
-
-ZorbaError
-ErrorManager::createException(
-    XQUERY_ERROR        aErrorCode,
-    const std::string&  aFileName,
-    int                 aLineNumber,
-    unsigned int        aQueryLine,
-    unsigned int        aQueryColumn,
-    const std::string&  aQueryFileName)
-{
-  ERROR_ABORT();
-  std::string lDesc = ErrorMessages::getMessageForErrorCode(aErrorCode);
-
-  ZorbaError lError(aErrorCode, lDesc,
-                    aQueryLine, aQueryColumn, aQueryFileName,
-                    aFileName, aLineNumber);
-
-  return ZorbaError(lError);
-}
-
-
-ZorbaError
-ErrorManager::createException(
-    XQUERY_ERROR        aErrorCode, 
-    const std::string&  aParam1,
-    const std::string&  aParam2,
-    const std::string&  aFileName,
-    int                 aLineNumber,
-    unsigned int        aQueryLine,
-    unsigned int        aQueryColumn,
-    const std::string&  aQueryFileName)
-{
-  ERROR_ABORT();
-  std::string lDesc = ErrorMessages::getMessageForErrorCode(aErrorCode);
-  applyParams(&lDesc, &aParam1, &aParam2);
-
-  ZorbaError lError(aErrorCode, lDesc,
-                    aQueryLine, aQueryColumn, aQueryFileName,
-                    aFileName, aLineNumber);
-  return ZorbaError(lError);
-}
-
-
-ZorbaError
-ErrorManager::createException(
-    XQUERY_ERROR        aErrorCode,
-    const std::string&  aDesc, 
-    const std::string&  aFileName,
-    int                 aLineNumber)
-{
-  ERROR_ABORT();
-  ZorbaError lError(aErrorCode, aDesc, 0, 0, "", aFileName, aLineNumber);
-
-  return ZorbaError(lError);
-}
-
-
-ZorbaError
-ErrorManager::createException(
-    XQUERY_ERROR        aErrorCode,
-    const zstring&      aDescription,
-    const std::string&  aFileName,
-    int                 aLineNumber,
-    unsigned int        aQueryLine,
-    unsigned int        aQueryColumn,
-    const std::string&  aQueryFileName)
-{
-  ERROR_ABORT();
-  ZorbaError lError(aErrorCode, aDescription,
-                    aQueryLine, aQueryColumn, aQueryFileName,
-                    aFileName, aLineNumber);
-
-  return ZorbaError(lError);
-}
-
-
-void
-ErrorManager::addError(
-    XQUERY_ERROR        aErrorCode,
-    const zstring&      aDescription,
-    const std::string&  aFileName,
-    int                 aLineNumber,
-    unsigned int        aQueryLine,
-    unsigned int        aQueryColumn,
-    const std::string&  aQueryFileName)
-{
-  ZorbaError lError(aErrorCode, aDescription,
-                    aQueryLine, aQueryColumn, aQueryFileName,
-                    aFileName, aLineNumber);
-  theErrors.push_back(lError);
-}
-
-
-void
-ErrorManager::addError(
-    XQUERY_ERROR        aErrorCode, 
-    const std::string&  aParam1,
-    const std::string&  aParam2,
-    const std::string&  aFileName,
-    int                 aLineNumber,
-    unsigned int        aQueryLine,
-    unsigned int        aQueryColumn,
-    const std::string&  aQueryFileName)
-{
-  std::string lDesc = ErrorMessages::getMessageForErrorCode(aErrorCode);
-  applyParams(&lDesc, &aParam1, &aParam2);
-
-  ZorbaError lError(aErrorCode, lDesc,
-                    aQueryLine, aQueryColumn, aQueryFileName,
-                    aFileName, aLineNumber);
-  theErrors.push_back(lError);
-}
-
-
-void
-ErrorManager::addWarning(
-    ZorbaWarning::WarningCode aWarningCode,
-    const zstring&            aDescription,
-    const std::string&        aFileName,
-    int                       aLineNumber,
-    unsigned int              aQueryLine,
-    unsigned int              aQueryColumn,
-    const std::string&        aQueryFileName)
-{
-  assert(false);
-}
-
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void ErrorManager::applyParams(
-    std::string*       errorMsg,
-    const std::string* param1,
-    const std::string* param2)
-{
-  std::string::size_type off = applyParam(errorMsg, param1, 0);
-  applyParam(errorMsg, param2, off);
-}
-
-
-/*******************************************************************************
-  Finds next place for param in errorMsg, and puts the param in that place.
-  A place for param looks like "/s".
-********************************************************************************/
-std::string::size_type ErrorManager::applyParam(
-    std::string*           errorMsg,
-    const std::string*     param1,
-    std::string::size_type start)
-{
-  std::string::size_type off;
-  const static std::string empty;
-
-  off = errorMsg->find ("/s", start);
-
-  if (off == std::string::npos)
-    return errorMsg->length();
-
-  if (param1 == NULL)
-    param1 = &empty;
-
-  errorMsg->replace(off, 2, *param1);
-
-  return off + param1->length ();
-}
-
-
-} /* namespace error */
-} /* namespace zorba */
-
+} // namespace error
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

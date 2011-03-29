@@ -24,10 +24,6 @@
 namespace zorba
 {
 
-
-
-
-
 int uri() 
 {
   zstring foo("/b");
@@ -700,9 +696,9 @@ int uri()
       std::cout << "--------------------------------------------------" << std::endl;
     }
   }
-  catch (zorba::error::ZorbaError & e)
+  catch (ZorbaException const& e)
   {
-    std::cerr << e.theDescription << std::endl;
+    std::cerr << e << std::endl;
     return 11;
   }
 

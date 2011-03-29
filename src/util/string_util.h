@@ -51,6 +51,17 @@ inline char const* c_str( char const *s ) {
 ////////// String equality /////////////////////////////////////////////////////
 
 /**
+ * Equals that works even when either argument is the \c NULL pointer.
+ *
+ * @param s1 The first NULL-terminated C string or the \c NULL pointer.
+ * @param s2 The second NULL-terminated C string or the \c NULL pointer.
+ * @return Returns \c true only if \a s1 \c == \a s2.
+ */
+inline bool equals( char const *s1, char const *s2 ) {
+  return s1 ? s2 && std::strcmp( s1, s2 ) == 0 : !s2;
+}
+
+/**
  * Faster C string equals.
  *
  * @param s1 The first string.

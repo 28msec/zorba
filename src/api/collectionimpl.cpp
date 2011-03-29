@@ -19,9 +19,6 @@
 #include <istream>
 #include "api/zorbaimpl.h"
 
-#include <zorba/exception.h>
-
-#include "zorbaerrors/errors.h"
 #include "zorbaerrors/error_manager.h"
 #include "zorbautils/lock.h"
 

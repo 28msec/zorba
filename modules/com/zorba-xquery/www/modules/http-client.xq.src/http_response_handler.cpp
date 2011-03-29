@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <zorba/exception.h>
+
+#include <zorba/xquery_exception.h>
 #include <zorba/item.h>
 #include <zorba/item_factory.h>
+#include <zorba/zorbastring.h>
 
 #include "http_response_handler.h"
 

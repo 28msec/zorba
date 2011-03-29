@@ -70,12 +70,6 @@ static void replace_match_options( ftmatch_options const *older,
   REPLACE_OPTION( wild_card );
 }
 
-inline void set_error_query_loc( error::ZorbaError &e, QueryLoc const &loc ) {
-  e.setQueryLocation(
-    loc.getLineBegin(), loc.getColumnBegin(), loc.getFilename()
-  );
-}
-
 inline double to_double( xs_double const &d ) {
   return d.getNumber();
 }
@@ -307,8 +301,8 @@ void V::end_visit( ftmild_not &mn ) {
       apply_ftmild_not( *am_left, *am_right, *result );
       PUSH( matches_stack_, result.release() );
     }
-    catch ( error::ZorbaError &e ) {
-      set_error_query_loc( e, mn.get_loc() );
+    catch ( XQueryException &e ) {
+      set_source( e, mn.get_loc() );
       throw;
     }
   }
@@ -416,8 +410,8 @@ void V::end_visit( ftwords &w ) {
       PUSH( matches_stack_, result.release() );
     }
   }
-  catch ( error::ZorbaError &e ) {
-    set_error_query_loc( e, w.get_value_expr()->get_loc() );
+  catch ( XQueryException &e ) {
+    set_source( e, w.get_value_expr()->get_loc() );
     throw;
   }
   END_VISIT( ftwords );
@@ -434,8 +428,8 @@ void V::end_visit( ftwords_times &wt ) {
       apply_fttimes( *am, range->get_mode(), at_least, at_most, *result );
       PUSH( matches_stack_, result.release() );
     }
-    catch ( error::ZorbaError &e ) {
-      set_error_query_loc( e, wt.get_loc() );
+    catch ( XQueryException &e ) {
+      set_source( e, wt.get_loc() );
       throw;
     }
   }

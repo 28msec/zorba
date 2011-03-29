@@ -41,10 +41,10 @@ using namespace zorba;
   try
 
 #define CIMPL_CATCH \
-  catch (QueryException& qe) {                                          \
+  catch (XQueryException const& qe) {                                   \
     return Error::handle_and_convert_queryexception(handler, qe);       \
-  } catch (ZorbaException &ze) {                                        \
-    return Error::convert_xquery_error(ze.getErrorCode());              \
+  } catch (ZorbaException const &ze) {                                  \
+    return Error::convert_xquery_error(ze.error());                     \
   } catch (...) {                                                       \
     return XQC_INTERNAL_ERROR;                                          \
   }                                                                     \
@@ -507,7 +507,7 @@ namespace zorbac {
     try {
       CImplementation* me = CImplementation::get(impl);
       delete me;
-    } catch (ZorbaException&) {
+    } catch (ZorbaException const&) {
       assert(false);
     } catch (...) {
       assert(false);

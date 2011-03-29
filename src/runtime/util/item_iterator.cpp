@@ -19,7 +19,7 @@
 
 namespace zorba { 
 
-ItemIterator::ItemIterator(std::vector<store::Item_t> aItems) 
+ItemIterator::ItemIterator(std::vector<store::Item_t> const &aItems) 
   :
   theItems(aItems)
 {

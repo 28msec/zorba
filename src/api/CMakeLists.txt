@@ -21,7 +21,6 @@ SET(API_SRCS
     sax2impl.cpp
     default_error_handler.cpp
     printer_error_handler.cpp
-    exception.cpp
     staticcontextimpl.cpp
     dynamiccontextimpl.cpp
     resultiteratorimpl.cpp

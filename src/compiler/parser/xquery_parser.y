@@ -972,11 +972,11 @@ bool validate_collection_properties(
     parsenode* qname,
     xquery_driver& driver)
 {
-  XQUERY_ERROR err = CollectionDecl::validatePropertyList(static_cast<DeclPropertyList*>(props));
-  if (err != XQ_NO_ERROR)
+  XQUERY_ERROR const &error = CollectionDecl::validatePropertyList(static_cast<DeclPropertyList*>(props));
+  if (error != zorba::err::XQP0000_NO_ERROR)
   {
     driver.set_expr(new ParseErrorNode(driver.createQueryLoc(loc),
-                                       err,
+                                       error,
                                        static_cast<QName*>(qname)->get_qname(),
                                        true));
     return false;
@@ -991,13 +991,13 @@ bool validate_index_properties(
     parsenode* qname,
     xquery_driver& driver)
 {
-  XQUERY_ERROR err = 
+  XQUERY_ERROR const &error = 
   AST_IndexDecl::validatePropertyList(static_cast<DeclPropertyList*>(props));
 
-  if (err != XQ_NO_ERROR)
+  if (error != zorba::err::XQP0000_NO_ERROR)
   {
     driver.set_expr(new ParseErrorNode(driver.createQueryLoc(loc),
-                                       err,
+                                       error,
                                        static_cast<QName*>(qname)->get_qname(),
                                        true));
     return false;
@@ -6434,7 +6434,7 @@ void xquery_parser::error(zorba::xquery_parser::location_type const& loc, string
     int pos;
     while ((pos = message.find("\"'")) != -1 || (pos = message.find("'\"")) != -1)
       message.replace(pos, 2, "\"");
-    driver.set_expr(new ParseErrorNode(driver.createQueryLoc(loc), XPST0003, message));
+    driver.set_expr(new ParseErrorNode(driver.createQueryLoc(loc), err::XPST0003, message));
   }
 }
 

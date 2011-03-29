@@ -24,7 +24,7 @@
 #include <zorba/base64.h>
 #include <zorba/config.h>
 #include <zorba/error.h>
-#include <zorba/exception.h>
+#include <zorba/xquery_exception.h>
 #include <zorba/external_function_data.h>
 
 #include "http_response_parser.h"

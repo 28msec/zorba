@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "process.h"
+
 #include <sstream>
 #include <stdlib.h>
 #include <stdio.h>
@@ -37,8 +37,12 @@
 
 #include <zorba/item_factory.h>
 #include <zorba/singleton_item_sequence.h>
+#include <zorba/error_list.h>
+#include <zorba/xquery_exception.h>
 #include <zorba/empty_sequence.h>
 #include <zorba/file.h>
+
+#include "process.h"
 
 namespace zorba {
 namespace processmodule {
@@ -450,7 +454,7 @@ String ExecFunction::getOneStringArgument (const Arguments_t& aArgs, int aPos)
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as "
                   << aPos << ". parameter.";
-    throwError(lErrorMessage.str(), XPTY0004);
+    throwError(lErrorMessage.str(), err::XPTY0004);
   }
 
   zorba::String lTmpString = lItem.getStringValue();
@@ -459,7 +463,7 @@ String ExecFunction::getOneStringArgument (const Arguments_t& aArgs, int aPos)
     std::stringstream lErrorMessage;
     lErrorMessage << "A sequence of more then one item is not allowed as "
                   << aPos << ". parameter.";
-    throwError(lErrorMessage.str(), XPTY0004);
+    throwError(lErrorMessage.str(), err::XPTY0004);
   }
   args_iter->close();
   return lTmpString;
@@ -467,10 +471,9 @@ String ExecFunction::getOneStringArgument (const Arguments_t& aArgs, int aPos)
 
 void ExecFunction::throwError(
     const std::string aErrorMessage,
-    const XQUERY_ERROR& aErrorType)
+    const Error& aErrorType)
 {
-  throw zorba::ExternalFunctionData::createZorbaException(aErrorType,
-      aErrorMessage.c_str(), __FILE__, __LINE__);
+  throw XQUERY_EXCEPTION_VAR(aErrorType, ERROR_PARAMS( aErrorMessage.c_str() ));
 }
 
 /******************************************************************************

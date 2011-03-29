@@ -673,10 +673,11 @@ bool NumArithIterator<Operation>::computeAtomic(
     }
     }
   }
-  catch(error::ZorbaError& e)
+  catch(XQueryException& e)
   {
     // rethrow casting errors but with location
-    ZORBA_ERROR_LOC_DESC(e.theErrorCode , aLoc, e.theDescription);
+    set_source( e, aLoc );
+    throw;
   }
 
   return res;

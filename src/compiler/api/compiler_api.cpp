@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-#include "compiler/api/compiler_api.h"
-
 #include <istream>
 #include <memory>
+
+#include "compiler/api/compiler_api.h"
+#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/dict.h"
 
 #include "system/globalenv.h"
 #include "system/properties.h"
@@ -180,11 +182,11 @@ parsenode_t XQueryCompiler::parse(std::istream& aXQuery, const zstring& aFileNam
 
   if (typeid (*node) == typeid (ParseErrorNode))
   {
-    ParseErrorNode* err = static_cast<ParseErrorNode *>(&*node);
-    if (err->useParam)
-      ZORBA_ERROR_LOC_PARAM(err->err, err->get_location(), err->msg, "");
+    ParseErrorNode* pen = static_cast<ParseErrorNode *>(&*node);
+    if (pen->useParam)
+      ZORBA_ERROR_VAR_LOC_PARAM(pen->err, pen->get_location(), pen->msg, "");
     else
-      ZORBA_ERROR_LOC_DESC(err->err, err->get_location(), err->msg);
+      ZORBA_ERROR_VAR_LOC_DESC(pen->err, pen->get_location(), pen->msg);
   }
 
   return node;
@@ -321,18 +323,17 @@ parsenode_t XQueryCompiler::createMainModule(
     URI lURI(lib_namespace);
     if(!lURI.is_absolute())
     {
-      zstring lURIstr = lURI.toString();
-
-      ZORBA_ERROR_LOC_DESC(XQST0046,
-                           mod_ast->get_decl()->get_location(),
-                           "The passed URI is not absolute, it's relative.");
+			throw XQUERY_EXCEPTION(
+				XQST0046, ERROR_PARAMS( lURI.toString(), ZED( MustBeAbsoluteURI ) ),
+				ERROR_LOC( mod_ast->get_decl()->get_location() )
+			);
     }
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
     ZORBA_ERROR_LOC_DESC(XQST0046,
                          mod_ast->get_decl()->get_location(),
-                         e.theDescription);
+                         e.what());
   }
 
   // create a dummy main module

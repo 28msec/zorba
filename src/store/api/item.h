@@ -35,10 +35,7 @@
 namespace zorba 
 {
 
-namespace error 
-{
-  class ZorbaError;
-};
+class ZorbaException;
 
 namespace store
 {
@@ -650,7 +647,7 @@ public:
 
   /* -------------------- Methods for ErrorItem --------------------- */
 
-  virtual error::ZorbaError* getError() const;
+  virtual ZorbaException* getError() const;
 
   /* -------------------- Methods for streamability ----------------- */
 

@@ -26,6 +26,8 @@
 #include <zorba/external_function.h>
 #include <zorba/serialization_callback.h>
 #include <zorba/empty_sequence.h>
+#include <zorba/xquery_exception.h>
+#include <zorba/error_list.h>
 
 #include "system/properties.h"
 
@@ -128,9 +130,9 @@ ext_in_opt(int argc, char* argv[])
       std::cout << lQuery << std::endl;
     }
   }
-  catch (QueryException& qe)
+  catch (XQueryException& qe)
   {
-    if (qe.getErrorCode() == XPTY0004)
+    if (qe.error() == err::XPTY0004)
     {
       // the error XPTY0004 is the correct result of the query
       lCorrectError = true;

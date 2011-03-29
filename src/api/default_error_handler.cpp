@@ -13,46 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <zorba/default_error_handler.h>
 
-#include <zorba/exception.h>
+#include <zorba/default_error_handler.h>
+#include <zorba/zorba_exception.h>
 
 namespace zorba {
 
-  void
-  DefaultErrorHandler::staticError ( const StaticException& aStaticException )
-  {
-    throw aStaticException;
-  }
+DefaultErrorHandler::~DefaultErrorHandler() {
+  // out-of-line since it's virtual
+}
 
-  void
-  DefaultErrorHandler::dynamicError ( const DynamicException& aDynamicException )
-  {
-    throw aDynamicException;
-  }
+void DefaultErrorHandler::error( ZorbaException const& ) {
+  throw; // MUST NOT THROW 'e' OR THE OBJECT WILL BE SLICED!
+}
 
-  void
-  DefaultErrorHandler::typeError ( const TypeException& aTypeException )
-  {
-    throw aTypeException;
-  }
-
-  void
-  DefaultErrorHandler::serializationError ( const SerializationException& aSerializationException )
-  {
-    throw aSerializationException;
-  }
-
-  void
-  DefaultErrorHandler::userError ( const  UserException& aUserError )
-  {
-    throw aUserError;
-  }
-
-  void
-  DefaultErrorHandler::systemError ( const SystemException& aSystemException )
-  {
-    throw aSystemException;
-  }
-
-} /* namespace zorba */
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

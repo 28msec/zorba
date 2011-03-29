@@ -21,6 +21,8 @@
 // *                                        *
 // ******************************************
 
+#include "zorbatypes/rchandle.h"
+#include "zorbatypes/zstring.h"
 #include "runtime/visitors/planiter_visitor.h"
 #include "runtime/indexing/ic_ddl.h"
 #include "system/globalenv.h"

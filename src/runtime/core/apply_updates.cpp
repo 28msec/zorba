@@ -141,15 +141,10 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         indexPul->applyUpdates(inherit);
       }
     }
-    catch (error::ZorbaError& e)
+    catch (XQueryException& e)
     {
-      if (!e.hasQueryLocation())
-      {
-        e.setQueryLocation(loc.getLineBegin(),
-                           loc.getColumnBegin(),
-                           loc.getFilename());
-      }
-      throw e;
+      set_source( e, loc );
+      throw;
     }
   }
 

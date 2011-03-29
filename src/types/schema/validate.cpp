@@ -15,8 +15,7 @@
 */
 #include "validate.h"
 
-#include "zorbaerrors/errors.h"
-#include "zorbaerrors/error_messages.h"
+#include "zorbaerrors/error_manager.h"
 
 #include "system/globalenv.h"
 
@@ -75,24 +74,19 @@ bool Validator::effectiveValidationValue(
     return realValidationValue(result, sourceNode, typeName,
                                typeManager, validationMode, sctx, loc);
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException& e)
   {
-    if (!e.hasQueryLocation())
-    {
-      e.setQueryLocation(loc.getLineBegin(),
-                         loc.getColumnBegin(),
-                         loc.getFilename());
-    }
+    set_source( e, loc );
     
     if ( sourceNode->isNode() && 
-        sourceNode->getNodeKind()== store::StoreConsts::documentNode )
+        sourceNode->getNodeKind() == store::StoreConsts::documentNode )
     {
       zstring baseUri;
       sourceNode->getDocumentURI(baseUri);
-      
-      e.theDescription += " while validating document '" + baseUri + "'";
+
+      //e.theDescription += " while validating document '" + baseUri + "'";
     }
-    throw e;
+    throw;
   }
 }
 
@@ -696,7 +690,7 @@ void Validator::processTextValue (
           // don't follow the same rules
           ZORBA_ASSERT(res);
         }
-        catch(error::ZorbaError& /*err*/)
+        catch(ZorbaException const& /*err*/)
         {
           // do nothing here, the validator will throw the right error at end
           // elemet event call
@@ -713,7 +707,7 @@ void Validator::processTextValue (
         ZORBA_ASSERT(res);
         resultList.push_back(result);
       }
-      catch(error::ZorbaError& /*err*/)
+      catch(ZorbaException const& /*err*/)
       {
         // do nothing here, the validator will throw the right error at end elemet event call
 		//std::cout << "validate.cpp: processTextValue2 '" << textValue << "' err:" << err.toString() << std::endl; std::cout.flush();

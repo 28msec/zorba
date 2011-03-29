@@ -26,6 +26,8 @@
 #include "common/common.h"
 #include "zorbatypes/zorbatypes_decl.h"
 #include "types/typeconstants.h"
+#include "zorbatypes/rchandle.h"
+#include "zorbatypes/zstring.h"
 
 namespace zorba{
     class NodeNameIterator;

@@ -442,22 +442,12 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
     result->finalizeNode();
   }
-  catch (error::ZorbaError& e)
+  catch (XQueryException& e)
   {
     result = NULL;
     path.pop();
-
-    QueryLoc new_loc = loc;
-    if (e.theQueryLine != 0 && e.theQueryColumn != 0 && e.theQueryFileName != "")
-    {
-      new_loc.setLineBegin(e.theQueryLine);
-      new_loc.setLineEnd(e.theQueryLine);
-      new_loc.setColumnBegin(e.theQueryColumn);
-      new_loc.setColumnEnd(e.theQueryColumn);
-      new_loc.setFilename(e.theQueryFileName);
-    }
-
-    ZORBA_ERROR_LOC_DESC(e.theErrorCode, new_loc, e.theDescription);
+    set_source( e, loc, false );
+    throw;
   }
   catch (...)
   {
@@ -814,12 +804,12 @@ bool PiIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     if (!consumeNext(lItem, theChild0, planState))
       ZORBA_ERROR_LOC(XPTY0004, loc);
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
-    if (e.theErrorCode == FORG0001)
+    if (e.error() == err::FORG0001)
       ZORBA_ERROR_LOC(XQDY0041, loc);
     else
-      throw e;
+      throw;
   }
 
   if (consumeNext(temp, theChild0, planState))
@@ -1294,9 +1284,9 @@ bool NameCastIterator::nextImpl(store::Item_t& result, PlanState& planState) con
                                                  theSctx->get_typemanager(),
                                                  loc);
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
-    if (e.theErrorCode != XPTY0004)
+    if (e.error() != err::XPTY0004)
     {
       zstring name = result->getStringValue();
       if (name.find(":") != zstring::npos && name.substr(0, name.find(":")) == "xmlns")
@@ -1314,7 +1304,7 @@ bool NameCastIterator::nextImpl(store::Item_t& result, PlanState& planState) con
     }
     else
     {
-      throw e;
+      throw;
     }
   }
 

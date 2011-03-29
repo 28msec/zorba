@@ -18,12 +18,14 @@
 
 #include <sstream>
 
-#include <zorba/zorba.h>
-#include <zorba/file.h>
-#include <zorba/util/path.h>
-#include <zorba/store_consts.h>
 #include <zorba/empty_sequence.h>
+#include <zorba/error_list.h>
+#include <zorba/file.h>
 #include <zorba/serializer.h>
+#include <zorba/store_consts.h>
+#include <zorba/util/path.h>
+#include <zorba/xquery_exception.h>
+#include <zorba/zorba.h>
 
 #include "file_module.h"
 
@@ -82,14 +84,14 @@ FileFunction::getOneStringArg(
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as " 
                   << aPos << ". parameter.";
-    throwError(lErrorMessage.str(), XPTY0004);
+    throwError(lErrorMessage.str(), err::XPTY0004);
   }
   zorba::String lTmpString = lItem.getStringValue();
   if (args_iter->next(lItem)) {
     std::stringstream lErrorMessage;
     lErrorMessage << "A sequence of more then one item is not allowed as "
                   << aPos << ". parameter.";
-    throwError(lErrorMessage.str(), XPTY0004);
+    throwError(lErrorMessage.str(), err::XPTY0004);
   }
   args_iter->close();
   return lTmpString;
@@ -159,7 +161,7 @@ FileFunction::getEncodingArg(
     // the rest are not supported encodings
     std::stringstream lErrorMessage;
     lErrorMessage << "Unsupported encoding: " << lEncoding;
-    throwError(lErrorMessage.str(), XQP0019_INTERNAL_ERROR);
+    throwError(lErrorMessage.str(), err::XQP0019_INTERNAL_ERROR);
   }
 
   return lEncoding;
@@ -179,7 +181,7 @@ FileFunction::pathToUriString(const String& aPath) {
 
   if(aPath.startsWith("file://")) {
     lErrorMessage << "Please provide a path, not a URI";
-    throwError(lErrorMessage.str(), XPTY0004);
+    throwError(lErrorMessage.str(), err::XPTY0004);
   }
 
   File_t lFile = File::createFile(aPath.c_str());
@@ -193,10 +195,9 @@ FileFunction::pathToUriString(const String& aPath) {
 void
 FileFunction::throwError(
     const std::string aErrorMessage,
-    const XQUERY_ERROR& aErrorType)
+    const Error& aErrorType)
 {
-  throw zorba::ExternalFunctionData::createZorbaException(aErrorType,
-      aErrorMessage.c_str(), __FILE__, __LINE__);
+  throw XQUERY_EXCEPTION_VAR(aErrorType, ERROR_PARAMS( aErrorMessage.c_str() ));
 }
 
 #ifdef WIN32
@@ -236,8 +237,8 @@ bool
 StreamableFileFunction::StreamableItemSequence::InternalIterator::next(Item& aResult)
 {
   if(!theIsOpen) {
-    throw zorba::ExternalFunctionData::createZorbaException(XQP0019_INTERNAL_ERROR, 
-      "StreamableItemSequence Iterator consumed without open", __FILE__, __LINE__);  
+    throw XQUERY_EXCEPTION(XQP0019_INTERNAL_ERROR, ERROR_PARAMS(
+      "StreamableItemSequence Iterator consumed without open" ) );  
   }
   if (theHasNext) {
     aResult = theItemSequence->theItem;
@@ -268,7 +269,7 @@ WriterFileFunction::evaluate(
   File_t lFile = File::createFile(lFileStr.c_str());
 
   if (lFile->isDirectory()) {
-    throw ExternalFunctionData::createZorbaException(XPTY0004, "The file path denotes an existing directory: " + lFile->getFilePath(), __FILE__, __LINE__);
+    throw XQUERY_EXCEPTION(XPTY0004, ERROR_PARAMS( "The file path denotes an existing directory: " + lFile->getFilePath() ) );
   }
 
   bool lBinary = isBinary();
@@ -277,7 +278,7 @@ WriterFileFunction::evaluate(
   // throw an error if the file exists and we don't want to overwrite,
   // but if we append, we don't care because we always write
   if (!lAppend && lFile->exists() && aArgs.size() == 3 && !getOneBooleanArg(aArgs, 2)) {
-    throw ExternalFunctionData::createZorbaException(XPTY0004, "The file already exists: " + lFile->getFilePath(), __FILE__, __LINE__);
+    throw XQUERY_EXCEPTION(XPTY0004, ERROR_PARAMS("The file already exists: " + lFile->getFilePath()) );
   }
 
   // open the output stream in the desired write mode

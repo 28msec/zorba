@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include <assert.h>
 #include <iostream>
 #include <sstream>
 
 #include <zorba/zorba.h>
 #include <zorba/store_manager.h>
+#include <zorba/zorba_exception.h>
 
 using namespace zorba;
 

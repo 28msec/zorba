@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "zorbaerrors/errors.h"
+
+#include "zorbaerrors/error_manager.h"
 #include "zorbaerrors/Assert.h"
-#include "errors/user_error.h"
+#include "zorbaerrors/user_exception.h"
 
 #include "runtime/core/trycatch.h"
 #include "runtime/api/plan_iterator_wrapper.h"
@@ -145,7 +146,7 @@ TryCatchIterator::getStateSizeOfSubtree() const
 // check if/which catch matches and bind the state's catch iterator to the matching catch clause
 bool
 TryCatchIterator::matchedCatch(
-    error::ZorbaError& e,
+    ZorbaException const& e,
     TryCatchIteratorState* state,
     PlanState& planState) const
 {
@@ -159,7 +160,8 @@ TryCatchIterator::matchedCatch(
     for(i = nts.begin(); i != nts.end(); ++i)
     {
       const NodeNameTest& nt = **i;
-      if (nt.matches(e.theLocalName.c_str(), e.theNamespace.c_str()))
+			err::QName const &err_name = e.error().qname();
+      if (nt.matches(err_name.localname(), err_name.ns()))
       {
         state->theCatchIterator = cc.catch_expr;
         bindErrorVars(e, &cc, planState);
@@ -173,7 +175,7 @@ TryCatchIterator::matchedCatch(
 
 void
 TryCatchIterator::bindErrorVars(
-    error::ZorbaError& e,
+    ZorbaException const& e,
     const CatchClause* clause,
     PlanState& planState) const
 {
@@ -182,11 +184,12 @@ TryCatchIterator::bindErrorVars(
 
   // bind the error code (always)
   store::Item_t lErrorCodeItem;
+	err::QName const &err_name = e.error().qname();
   GENV_ITEMFACTORY->createQName(
       lErrorCodeItem,
-      e.ns().c_str(),
-      e.prefix().c_str(),
-      e.localName().c_str());
+      err_name.ns(),
+      err_name.prefix(),
+      err_name.localname());
 
   typedef std::vector<LetVarIter_t>::const_iterator LetVarConstIter;
 
@@ -207,9 +210,10 @@ TryCatchIterator::bindErrorVars(
   {
     // bind the description or the empty sequence
     store::Iterator_t lErrorDescIter;
-    if (!e.theDescription.empty())
+		char const *const what = e.what();
+    if (what && *what)
     {
-      zstring errDescr = e.theDescription;
+      zstring errDescr = what;
       store::Item_t errDescItem;
       GENV_ITEMFACTORY->createString(errDescItem, errDescr);
       lErrorDescIter = new ItemIterator(errDescItem);
@@ -226,13 +230,17 @@ TryCatchIterator::bindErrorVars(
   // bind the error object if exists
   LetVarConstIter lErrorObjVarIter = clause->errorobj_var.begin();
   LetVarConstIter lErrorObjVarIterEnd = clause->errorobj_var.end();
-  error::ZorbaUserError *ue = dynamic_cast<error::ZorbaUserError *>(&e);
-  std::vector<store::Item_t> *eObjs = NULL;
-  if (ue != NULL && !ue->theErrorObject.empty()) {
-    eObjs = &ue->theErrorObject;
-  }
+	std::vector<store::Item_t> eObjs;
+
+	if ( UserException const *ue = dynamic_cast<UserException const*>( &e ) ) {
+		UserException::error_object_type const &eo = ue->getErrorObject();
+		if ( !eo.empty() )
+			convert_error_object( eo, &eObjs );
+	}
+
   for ( ; lErrorObjVarIter != lErrorObjVarIterEnd; lErrorObjVarIter++ ) {
-    store::Iterator_t lErrorObjIter = eObjs == NULL ? new ItemIterator() : new ItemIterator(*eObjs);
+    store::Iterator_t lErrorObjIter = eObjs.empty() ?
+			new ItemIterator() : new ItemIterator(eObjs);
     lErrorObjIter->open();
     state->theErrorIters.push_back(lErrorObjIter);
     (*lErrorObjVarIter)->bind(lErrorObjIter, planState);
@@ -258,21 +266,11 @@ TryCatchIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     state->theTempIterator = state->theTargetSequence->getIterator();
     state->theTempIterator->open();
   }
-  catch (error::ZorbaUserError& e)
-  {
-    // bugfix: for #3107911
-    // it's important to not loose the information about the fact
-    // that it's a user error here;
-    if (!matchedCatch(e, state, planState))
-    {
-      throw e;
-    }
-  }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
     if (!matchedCatch(e, state, planState))
     {
-      throw e;
+      throw;
     }
   }
 

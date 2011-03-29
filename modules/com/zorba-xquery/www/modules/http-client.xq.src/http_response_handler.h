@@ -19,6 +19,7 @@
 #include <vector>
 
 #include <zorba/item_sequence.h>
+#include <zorba/iterator.h>
 
 #include "request_handler.h"
 

@@ -19,8 +19,6 @@
 #include <set>
 #include <vector>
 
-#include <zorba/error.h>
-
 #include "compiler/expression/ftnode.h"
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
@@ -590,7 +588,7 @@ void apply_ftmild_not( ft_all_matches const &ami, ft_all_matches const &amj,
   PUT_ALL_MATCHES( amj );
 
   if ( !ALL_EMPTY_N( ami, excludes ) || !ALL_EMPTY_N( amj, excludes ) )
-    ZORBA_ERROR( FTDY0017 );
+    throw XQUERY_EXCEPTION( FTDY0017 );
 
   if ( ALL_EMPTY_N( amj, includes ) )
     result = ami;
@@ -908,7 +906,7 @@ void apply_fttimes( ft_all_matches const &am, ft_range_mode::type mode,
   PUT_ALL_MATCHES( am );
 
   if ( !ALL_EMPTY_N( am, excludes ) )
-    ZORBA_ERROR( XPST0003 );
+    throw XQUERY_EXCEPTION( XPST0003 );
 
   if ( mode == ft_range_mode::at_least )
     form_combinations_at_least( am, at_least, result );
@@ -1203,7 +1201,7 @@ lookup_thesaurus( ftthesaurus_id const &tid, zstring const &query_phrase,
 
   ft_thesaurus::ptr thesaurus( ft_thesaurus::get( tid.get_uri(), qt0.lang() ) );
   if ( !thesaurus.get() )
-    ZORBA_ERROR_PARAM( FTST0018, tid.get_uri(), "" );
+    throw XQUERY_EXCEPTION( FTST0018, ERROR_PARAMS( tid.get_uri() ) );
 
   ft_thesaurus::iterator_ptr tresult(
     thesaurus->lookup( query_phrase, tid.get_relationship(), at_least, at_most )

@@ -131,7 +131,7 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
       ve->set_type(theVarTypes[i]);
 
-      outerSctx->bind_var(ve, loc, XQST0049);
+      outerSctx->bind_var(ve, loc, err::XQST0049);
     }
 
     store::NsBindings::const_iterator ite = theLocalBindings.begin();
@@ -251,7 +251,7 @@ void EvalIterator::copyOuterVariables(
   {
     var_expr* evalVar = outerSctx->lookup_var(theVarNames[i],
                                               loc,
-                                              MAX_ZORBA_ERROR_CODE);
+                                              err::XQP0000_NO_ERROR);
     ZORBA_ASSERT(evalVar);
 
     evalVar->set_unique_id(maxOuterVarId);
@@ -295,7 +295,7 @@ void EvalIterator::setExternalVariables(
 
     var_expr* globalVar = outerSctx->lookup_var(innerVar->get_name(),
                                                 loc, 
-                                                MAX_ZORBA_ERROR_CODE);
+                                                err::XQP0000_NO_ERROR);
     store::Item_t itemValue;
     store::TempSeq_t seqValue;
 

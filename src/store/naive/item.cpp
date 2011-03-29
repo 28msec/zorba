@@ -923,7 +923,7 @@ const TupleField& Item::getTupleField(int index) const
 #endif
 
 
-error::ZorbaError* Item::getError() const
+ZorbaException* Item::getError() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, "ErrorItem");

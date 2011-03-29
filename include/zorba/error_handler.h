@@ -13,84 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #ifndef ZORBA_ERROR_HANDLER_API_H
 #define ZORBA_ERROR_HANDLER_API_H
 
 #include <zorba/config.h>
-#include <zorba/exception.h>
 
 namespace zorba {
 
-  /** \brief ErrorHandler defines an interface. Classes that implement this interface
-   *         can be used as callback classes.
+class ZorbaException;
+
+/** \brief ErrorHandler defines an interface. Classes that implement this interface
+ *         can be used as callback classes.
+ *
+ * Specifically, they can be registered with an XQuery object. This way, all 
+ * errors that would have been reported by throwing an exception are reported 
+ * by calling the according function of this interface. Subclasses of the 
+ * ZorbaException class that would have been thrown are passed as parameter
+ * to the callback function.
+ */
+class ZORBA_DLL_PUBLIC ErrorHandler {
+public:
+  virtual ~ErrorHandler() {}
+
+  /** \brief Callback function that is called for static errors 
+   *         as defined in the XQuery 1.0 Specification 
+   *         (see http://www.w3.org/TR/xquery/#id-kinds-of-errors 
    *
-   * Specifically, they can be registered with an XQuery object. This way, all 
-   * errors that would have been reported by throwing an exception are reported 
-   * by calling the according function of this interface. Subclasses of the 
-   * ZorbaException class that would have been thrown are passed as parameter
-   * to the callback function.
+   * @param exception information about the error.
    */
-  class ZORBA_DLL_PUBLIC ErrorHandler 
-  {
-    public:
-      /** \brief Destructor
-       *
-       */
-      virtual ~ErrorHandler() {}
+  virtual void error( ZorbaException const &exception ) = 0;
+};
 
-      /** \brief Callback function that is called for static errors 
-       *         as defined in the XQuery 1.0 Specification 
-       *         (see http://www.w3.org/TR/xquery/#id-kinds-of-errors 
-       *
-       * @param aStaticError information about the error.
-       */
-      virtual void
-      staticError ( const StaticException& aStaticError ) = 0;
+} // namespace zorba
 
-      /** \brief Callback function that is called for dynamic errors 
-       *         as defined in the XQuery 1.0 Specification 
-       *         (see http://www.w3.org/TR/xquery/#id-kinds-of-errors 
-       *
-       * @param aDynamicError information about the error.
-       */
-      virtual void
-      dynamicError ( const DynamicException& aDynamicError ) = 0;
-
-      /** \brief Callback function that is called for type errors 
-       *         as defined in the XQuery 1.0 Specification 
-       *         (see http://www.w3.org/TR/xquery/#id-kinds-of-errors 
-       *
-       * @param aTypeError information about the error.
-       */
-      virtual void
-      typeError ( const TypeException& aTypeError ) = 0;
-
-      /** \brief Callback function that is called for errors that occur during
-       *         serialization of a query result.
-       *         (see http://www.w3.org/TR/2005/CR-xslt-xquery-serialization-20051103/)
-       *
-       * @param aSerializationError information about the error.
-       */
-      virtual void
-      serializationError ( const  SerializationException& aSerializationError ) = 0;
-
-      /** \brief Callback function that is called for errors that are raised by
-       *         the user using the fn:error function.
-       *         (see http://www.w3.org/TR/xpath-functions/#func-error)
-       *
-       * @param aUserError information about the error.
-       */
-      virtual void
-      userError ( const  UserException& aUserError ) = 0;
-
-      /** \brief Callback function that is called for errors that occur in the system.
-       *
-       * @param aSystemError information about the error.
-       */
-      virtual void
-      systemError ( const SystemException& aSystemError ) = 0;
-   };
-
-} /* namespace zorba */
-
-#endif
+#endif /* ZORBA_ERROR_HANDLER_API_H */
+/* vim:set et sw=2 ts=2: */

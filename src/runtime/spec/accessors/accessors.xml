@@ -12,6 +12,9 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
     
+<zorba:header>
+</zorba:header>
+
 <zorba:source>
     <zorba:include form="Quoted">store/api/iterator.h</zorba:include>
 </zorba:source>

@@ -218,11 +218,11 @@ StaticContext_t StaticContextImpl::createChildContext() const
     StaticContext_t lContext(new StaticContextImpl(*this));
     return lContext;
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
-  catch (std::exception& e)
+  catch (std::exception const& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e.what());
   }
@@ -261,11 +261,11 @@ StaticContextImpl::getNamespaceURIByPrefix( const String& aPrefix ) const
     theCtx->lookup_ns(ns, lPrefix, loc);
     return Unmarshaller::newString( ns );
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
-  catch (std::exception& e)
+  catch (std::exception const& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e.what());
   }
@@ -299,11 +299,11 @@ StaticContextImpl::getDefaultElementAndTypeNamespace( ) const
   {
     return theCtx->default_elem_type_ns().str();
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
-  catch (std::exception& e)
+  catch (std::exception const& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e.what());
   }
@@ -337,11 +337,11 @@ StaticContextImpl::getDefaultFunctionNamespace( ) const
   {
     return theCtx->default_function_ns().str();
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
-  catch (std::exception& e)
+  catch (std::exception const& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e.what());
   }
@@ -383,11 +383,11 @@ String StaticContextImpl::getDefaultCollation() const
   {
     return theCtx->get_default_collation(QueryLoc::null);
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
-  catch (std::exception& e)
+  catch (std::exception const& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e.what());
   }
@@ -419,9 +419,9 @@ xquery_version_t StaticContextImpl::getXQueryVersion() const
   try {
     return theCtx->xquery_version()==StaticContextConsts::xquery_version_1_0?
       xquery_version_1_0:xquery_version_1_1;
-  } catch (error::ZorbaError& e) {
+  } catch (ZorbaException const& e) {
     ZorbaImpl::notifyError(theErrorHandler, e);
-  } catch (std::exception& e) {
+  } catch (std::exception const& e) {
     ZorbaImpl::notifyError(theErrorHandler, e.what());
   }
   return xquery_version_1_0;
@@ -455,11 +455,11 @@ xpath1_0compatib_mode_t StaticContextImpl::getXPath1_0CompatibMode( ) const
             xpath1_0 :
             xpath2_0);
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
-  catch (std::exception& e)
+  catch (std::exception const& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e.what());
   }
@@ -490,9 +490,9 @@ StaticContextImpl::getConstructionMode( ) const
   try {
     return theCtx->construction_mode()==StaticContextConsts::cons_preserve?
       preserve_cons:strip_cons;
-  } catch (error::ZorbaError& e) {
+  } catch (ZorbaException const& e) {
     ZorbaImpl::notifyError(theErrorHandler, e);
-  } catch (std::exception& e) {
+  } catch (std::exception const& e) {
     ZorbaImpl::notifyError(theErrorHandler, e.what());
   }
   return preserve_cons;
@@ -518,9 +518,9 @@ StaticContextImpl::getOrderingMode( ) const
 {
   try {
     return theCtx->ordering_mode()==StaticContextConsts::ordered?ordered:unordered;
-  } catch (error::ZorbaError& e) {
+  } catch (ZorbaException const& e) {
     ZorbaImpl::notifyError(theErrorHandler, e);
-  } catch (std::exception& e) {
+  } catch (std::exception const& e) {
     ZorbaImpl::notifyError(theErrorHandler, e.what());
   }
   return ordered;
@@ -547,9 +547,9 @@ StaticContextImpl::getDefaultOrderForEmptySequences( ) const
   try {
     return theCtx->empty_order_mode()==StaticContextConsts::empty_greatest?
       empty_greatest:empty_least;
-  } catch (error::ZorbaError& e) {
+  } catch (ZorbaException const& e) {
     ZorbaImpl::notifyError(theErrorHandler, e);
-  } catch (std::exception& e) {
+  } catch (std::exception const& e) {
     ZorbaImpl::notifyError(theErrorHandler, e.what());
   }
   return empty_greatest;
@@ -576,9 +576,9 @@ StaticContextImpl::getBoundarySpacePolicy( ) const
   try {
     return theCtx->boundary_space_mode()==StaticContextConsts::preserve_space?
       preserve_space:strip_space;
-  } catch (error::ZorbaError& e) {
+  } catch (ZorbaException const& e) {
     ZorbaImpl::notifyError(theErrorHandler, e);
-  } catch (std::exception& e) {
+  } catch (std::exception const& e) {
     ZorbaImpl::notifyError(theErrorHandler, e.what());
   }
   return preserve_space;
@@ -635,12 +635,12 @@ StaticContextImpl::setBaseURI( const String& aBaseURI )
 
     theCtx->set_base_uri(baseURI, false);
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
     return false;
   }
-  catch (std::exception& e)
+  catch (std::exception const& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e.what());
     return false;
@@ -660,11 +660,11 @@ StaticContextImpl::getBaseURI( ) const
     zstring lBaseURI = theCtx->get_base_uri();
     return lBaseURI.str();
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
-  catch (std::exception& e)
+  catch (std::exception const& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e.what());
   }
@@ -709,7 +709,7 @@ StaticContextImpl::registerModule(ExternalModule* aModule)
   {
     theCtx->bind_external_module(aModule);
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
     return false;
@@ -728,7 +728,7 @@ StaticContextImpl::setDocumentURIResolver(DocumentURIResolver* aDocumentURIResol
   {
     theCtx->set_document_uri_resolver(new DocumentURIResolverWrapper(aDocumentURIResolver));
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
@@ -793,7 +793,7 @@ StaticContextImpl::setCollectionURIResolver(CollectionURIResolver* aCollectionUr
   {
     theCtx->set_collection_uri_resolver(new CollectionURIResolverWrapper(aCollectionUriResolver));
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
@@ -871,7 +871,7 @@ StaticContextImpl::addModuleURIResolver(ModuleURIResolver* aModuleUriResolver)
     // register the wrapper in the internal context
     theCtx->add_module_uri_resolver(lWrapper);
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
@@ -903,7 +903,7 @@ StaticContextImpl::getModuleURIResolvers() const
       lResolvers.push_back(lWrapper->theModuleResolver);
     }
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
@@ -932,7 +932,7 @@ StaticContextImpl::removeModuleURIResolver(ModuleURIResolver* aModuleUriResolver
         return;
       }
     }
-  } catch (error::ZorbaError& e) {
+  } catch (ZorbaException const& e) {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
 }
@@ -956,7 +956,7 @@ StaticContextImpl::getSchemaURIResolvers() const
         lResult.push_back(lWrapper->theSchemaResolver);
       }
     }
-  } catch (error::ZorbaError& e) {
+  } catch (ZorbaException const& e) {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
   return lResult;
@@ -985,7 +985,7 @@ void StaticContextImpl::addSchemaURIResolver(SchemaURIResolver* aSchemaUriResolv
     // register the wrapper in the internal context
     theCtx->add_schema_uri_resolver(lWrapper);
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
@@ -1017,7 +1017,7 @@ void StaticContextImpl::removeSchemaURIResolver(SchemaURIResolver* aSchemaUriRes
       }
     }
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
@@ -1042,7 +1042,7 @@ StaticContextImpl::getThesaurusURIResolvers() const
         lResult.push_back(lWrapper->theFullTextResolver);
       }
     }
-  } catch (error::ZorbaError& e) {
+  } catch (ZorbaException const& e) {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
   return lResult;
@@ -1063,7 +1063,7 @@ StaticContextImpl::getStopWordsURIResolvers() const
         lResult.push_back(lWrapper->theFullTextResolver);
       }
     }
-  } catch (error::ZorbaError& e) {
+  } catch (ZorbaException const& e) {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
   return lResult;
@@ -1094,7 +1094,7 @@ StaticContextImpl::addThesaurusURIResolver(
     // register the wrapper in the internal context
     theCtx->add_thesaurus_uri_resolver(lWrapper);
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
@@ -1139,7 +1139,7 @@ StaticContextImpl::addStopWordsURIResolver(
     // register the wrapper in the internal context
     theCtx->add_thesaurus_uri_resolver(lWrapper);
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
@@ -1173,7 +1173,7 @@ StaticContextImpl::removeThesaurusURIResolver(
       }
     }
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
@@ -1203,7 +1203,7 @@ StaticContextImpl::removeStopWordsURIResolver(
       }
     }
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
@@ -1255,7 +1255,7 @@ void StaticContextImpl::findFunctions(
 
     assert ( aFunctions.size() == lInternalFunctions.size() );
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
@@ -1292,7 +1292,7 @@ StaticContextImpl::getFunctionAnnotations(const Item& aQName, int arity, std::ve
     for (unsigned int i=0; i<ann_list->size(); i++)
       aAnnotations.push_back(new AnnotationImpl(ann_list->getAnnotation(i)));
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
@@ -1352,7 +1352,7 @@ StaticContextImpl::getOption(const Item& aQName, String& aOptionValue) const
       return false;
     }
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
@@ -1369,7 +1369,7 @@ StaticContextImpl::declareOption(const Item& aQName, const String& aOptionValue)
     const zstring& lOptionValue = Unmarshaller::getInternalString(aOptionValue);
     theCtx->bind_option(lQName, lOptionValue);
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
@@ -1415,7 +1415,7 @@ void StaticContextImpl::setModulePaths(const std::vector<String>& aModulePaths)
 
     theCtx->set_module_paths(lModulePaths);
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
@@ -1436,7 +1436,7 @@ void StaticContextImpl::getModulePaths(std::vector<String>& aModulePaths) const
       aModulePaths.push_back(lIter->c_str());
     }
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
@@ -1458,7 +1458,7 @@ StaticContextImpl::getFullModulePaths( std::vector<String>& aFullModulePaths ) c
       aFullModulePaths.push_back(lIter->c_str());
     }
   }
-  catch (error::ZorbaError& e) 
+  catch (ZorbaException const& e) 
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
@@ -1474,7 +1474,7 @@ StaticContextImpl::resolve(const String& aRelativeUri) const
     const zstring& lRelativeUri = Unmarshaller::getInternalString(aRelativeUri);
     lResolved = theCtx->resolve_relative_uri(lRelativeUri, true);
   }
-  catch (error::ZorbaError& e) 
+  catch (ZorbaException const& e) 
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
     return "";
@@ -1493,7 +1493,7 @@ StaticContextImpl::resolve(const String& aRelativeUri, const String& aBaseUri) c
     const zstring& lBaseUri = Unmarshaller::getInternalString(aBaseUri);
     lResolved = theCtx->resolve_relative_uri(lRelativeUri, lBaseUri, true);
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
     return "";
@@ -1562,7 +1562,7 @@ StaticContextImpl::validate(
                             Unmarshaller::getInternalItem(validatedResult),
                             valMode);
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
     return false;
@@ -1601,7 +1601,7 @@ StaticContextImpl::validate(
                             lTns,
                             valMode);  
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
     return false;
@@ -1635,7 +1635,7 @@ StaticContextImpl::validateSimpleContent(
     
     return true;
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
     return false;

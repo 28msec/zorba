@@ -21,8 +21,8 @@
 #include <zorba/zorba.h>
 #include <zorba/store_manager.h>
 #include <zorba/serialization_callback.h>
-
 #include <zorba/uri_resolvers.h>
+#include <zorba/zorba_exception.h>
 
 using namespace zorba;
 
@@ -139,7 +139,7 @@ resolver_example_1(Zorba* aZorba)
   }
   catch (ZorbaException& e)
   {
-    std::cerr << e.getDescription() << std::endl;
+    std::cerr << e.what() << std::endl;
     return false;
   }
 
@@ -211,7 +211,7 @@ resolver_example_2(Zorba* aZorba)
     XQuery_t lQuery = aZorba->compileQuery("fn:collection('mycollection.xml')", lContext); 
     std::cout << lQuery << std::endl;
   } catch (ZorbaException& e) {
-    std::cerr << e.getDescription() << std::endl;
+    std::cerr << e.what() << std::endl;
     return false;
   }
 
@@ -310,7 +310,7 @@ resolver_example_3(Zorba* aZorba)
     XQuery_t lQuery = aZorba->compileQuery("import module namespace lm='http://www.zorba-xquery.com/mymodule'; lm:foo()", lContext); 
     std::cout << lQuery << std::endl;
   } catch (ZorbaException& e) {
-    std::cerr << e.getDescription() << std::endl;
+    std::cerr << e.what() << std::endl;
     return false;
   }
 
@@ -329,7 +329,7 @@ resolver_example_3(Zorba* aZorba)
     lQuery2->loadExecutionPlan(lSerializedQuery, &lCallback);
     return false;
   } catch (ZorbaException& e) {
-    std::cerr << e.getDescription() << std::endl;
+    std::cerr << e.what() << std::endl;
     return true;
   }
 }
@@ -347,7 +347,7 @@ resolver_example_4(Zorba* aZorba)
     XQuery_t lQuery = aZorba->compileQuery("import schema namespace lm='http://www.zorba-xquery.com/schemas/helloworld'; validate{ <p>Hello World!</p> }", lContext); 
     std::cout << lQuery << std::endl;
   } catch (ZorbaException& e) {
-    std::cerr << e.getDescription() << std::endl;
+    std::cerr << e.what() << std::endl;
     return false;
   }
   return true;

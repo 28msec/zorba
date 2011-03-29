@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "csv.h"
+
 #include <sstream>
 #include <stdlib.h>
 #include <stdio.h>
@@ -25,11 +25,15 @@
 
 #include <zorba/zorba.h>
 #include <zorba/store_consts.h>
+#include <zorba/error_list.h>
+#include <zorba/zorba_exception.h>
 #include <zorba/stateless_function.h>
 #include <zorba/item_factory.h>
 #include <zorba/singleton_item_sequence.h>
 #include <zorba/empty_sequence.h>
 #include <zorba/file.h>
+
+#include "csv.h"
 
 namespace zorba{
 String encodeStringToQNameString(std::string &str);
@@ -696,8 +700,8 @@ void CSVParseFunction::CSVItemSequence::open()
   is_open = true;
   if(open_count && !input_stream->reset())
   {
-    throw zorba::ExternalFunctionData::createZorbaException(XQP0019_INTERNAL_ERROR,
-      "Cannot reset input stream for CSVParseFunction for second iterator open", __FILE__, __LINE__);  
+    throw ZORBA_EXCEPTION( XQP0019_INTERNAL_ERROR, ERROR_PARAMS(
+      "Cannot reset input stream for CSVParseFunction for second iterator open" ) );
   }
   line_index = 1;
   open_count++;
@@ -725,8 +729,8 @@ bool CSVParseFunction::CSVItemSequence::next(Item& result)
 {
   if(!is_open)
   {
-    throw zorba::ExternalFunctionData::createZorbaException(XQP0019_INTERNAL_ERROR,
-      "CSVParseFunction::CSVItemSequence Iterator consumed without open", __FILE__, __LINE__);  
+    throw ZORBA_EXCEPTION(XQP0019_INTERNAL_ERROR, ERROR_PARAMS(
+      "CSVParseFunction::CSVItemSequence Iterator consumed without open" ) );  
   }
   if(csv_options.first_row_is_header)
   {
@@ -1124,8 +1128,8 @@ void CSVSerializeFunction::StringStreamSequence::open()
     is.seekg(0);
     if(is.fail())
     {
-      throw zorba::ExternalFunctionData::createZorbaException(XQP0019_INTERNAL_ERROR,
-        "Cannot reset CSVSerialize streamable string item", __FILE__, __LINE__);  
+      throw ZORBA_EXCEPTION(XQP0019_INTERNAL_ERROR, ERROR_PARAMS(
+        "Cannot reset CSVSerialize streamable string item" ));  
     }
   }
   open_count++;
@@ -1146,8 +1150,8 @@ bool CSVSerializeFunction::StringStreamSequence::next( Item &result )
 {
   if(!is_open)
   {
-    throw zorba::ExternalFunctionData::createZorbaException(XQP0019_INTERNAL_ERROR,
-      "Next called on CSVSerializeFunction::StringStreamSequence iterator that is not open", __FILE__, __LINE__);  
+    throw ZORBA_EXCEPTION(XQP0019_INTERNAL_ERROR, ERROR_PARAMS(
+      "Next called on CSVSerializeFunction::StringStreamSequence iterator that is not open"));  
   }
   if(!has_next)
     return false;

@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "debugger_server_runnable.h"
 
 #include <iostream>
 #include "zorba/xquery.h"
-#include "zorba/exception.h"
+#include <zorba/xquery_exception.h>
 #include "error_printer.h"
 
 namespace zorba {
@@ -52,9 +53,9 @@ DebuggerServerRunnable::run()
       theSerializerOptions,
       theRequestPort,
       theEventPort);
-  } catch (zorba::QueryException& qe) {
+  } catch (zorba::XQueryException const& qe) {
     ErrorPrinter::print(qe, std::cerr, false, true);
-  } catch (zorba::ZorbaException& ze) {
+  } catch (zorba::ZorbaException const& ze) {
     std::cerr << ze << std::endl;
   }
 }

@@ -24,6 +24,8 @@
 #include <zorba/external_function.h>
 #include <zorba/empty_sequence.h>
 #include <zorba/singleton_item_sequence.h>
+#include <zorba/zorba_exception.h>
+#include <zorba/error_list.h>
 #include <zorba/uri_resolvers.h>
 #include <zorba/store_manager.h>
 
@@ -227,7 +229,7 @@ MyExternalModule::~MyExternalModule()
 bool
 external_function_errors_1(Zorba* aZorba)
 {
-	StaticContext_t sctx = aZorba->createStaticContext();
+  StaticContext_t sctx = aZorba->createStaticContext();
 
   MyExternalModule module(aZorba->getItemFactory());
   sctx->registerModule(&module);
@@ -237,7 +239,7 @@ external_function_errors_1(Zorba* aZorba)
             << "declare function foo:func1() external;" << std::endl
             << "foo:func1()" << std::endl;
     
-	XQuery_t query = aZorba->compileQuery(queryText.str(), sctx); 
+  XQuery_t query = aZorba->compileQuery(queryText.str(), sctx); 
 
   try 
   {
@@ -246,18 +248,18 @@ external_function_errors_1(Zorba* aZorba)
   catch (ZorbaException& ex) 
   {
     std::cerr << ex << std::endl;
-    if (!(ex.getErrorCode() == FOER0000))
+    if (!(ex.error() == err::FOER0000))
       return false;
     return true; // type exception expected
   }
 
-	return false;
+  return false;
 }
 
 bool
 external_function_errors_2(Zorba* aZorba)
 {
-	StaticContext_t sctx = aZorba->createStaticContext();
+  StaticContext_t sctx = aZorba->createStaticContext();
 
   MyExternalModule module(aZorba->getItemFactory());
   sctx->registerModule(&module);
@@ -267,7 +269,7 @@ external_function_errors_2(Zorba* aZorba)
             << "declare function foo:func2() external;" << std::endl
             << "foo:func2()" << std::endl;
     
-	XQuery_t query = aZorba->compileQuery(queryText.str(), sctx); 
+  XQuery_t query = aZorba->compileQuery(queryText.str(), sctx); 
 
   try 
   {
@@ -279,27 +281,27 @@ external_function_errors_2(Zorba* aZorba)
     return true; // type exception expected
   }
 
-	return false;
+  return false;
 }
 
 bool
 external_function_errors_3(Zorba* aZorba)
 {
-	StaticContext_t sctx = aZorba->createStaticContext();
+  StaticContext_t sctx = aZorba->createStaticContext();
 
   MyExternalModule module(aZorba->getItemFactory());
   sctx->registerModule(&module);
 
   std::ostringstream queryText;
-  queryText << "declare namespace foo=\"urn:foo\";" << std::endl
-            << "declare function foo:func3() external;" << std::endl
-            << "try {" << std::endl
-            << "foo:func3()" << std::endl
-            << " } catch * ($errcode, $errdesc) {" << std::endl
-            << "  $errcode, $errdesc" << std::endl
-            << "}" << std::endl;
+  queryText << "declare namespace foo=\"urn:foo\";" "\n"
+            << "declare function foo:func3() external;" "\n"
+            << "try {" "\n"
+            << "foo:func3()" "\n"
+            << "} catch * ($errcode, $errdesc) {" "\n"
+            << "  $errcode, $errdesc" "\n"
+            << "}" "\n";
     
-	XQuery_t query = aZorba->compileQuery(queryText.str(), sctx); 
+  XQuery_t query = aZorba->compileQuery(queryText.str(), sctx); 
 
   std::ostringstream lResult;
   lResult << query << std::endl;
@@ -313,21 +315,21 @@ external_function_errors_3(Zorba* aZorba)
 bool
 external_function_errors_4(Zorba* aZorba)
 {
-	StaticContext_t sctx = aZorba->createStaticContext();
+  StaticContext_t sctx = aZorba->createStaticContext();
 
   MyExternalModule module(aZorba->getItemFactory());
   sctx->registerModule(&module);
 
   std::ostringstream queryText;
-  queryText << "declare namespace foo=\"urn:foo\";" << std::endl
-            << "declare function foo:func4() external;" << std::endl
-            << "try {" << std::endl
-            << "foo:func4()" << std::endl
-            << " } catch * ($errcode, $errdesc, $errval) {" << std::endl
-            << "  $errcode, $errdesc, $errval" << std::endl
-            << "}" << std::endl;
+  queryText << "declare namespace foo=\"urn:foo\";" "\n"
+            << "declare function foo:func4() external;" "\n"
+            << "try {" "\n"
+            << "foo:func4()" "\n"
+            << "} catch * ($errcode, $errdesc, $errval) {" "\n"
+            << "  $errcode, $errdesc, $errval" "\n"
+            << "}" "\n";
     
-	XQuery_t query = aZorba->compileQuery(queryText.str(), sctx); 
+  XQuery_t query = aZorba->compileQuery(queryText.str(), sctx); 
 
   std::ostringstream lResult;
   lResult << query << std::endl;
@@ -373,4 +375,4 @@ external_function_errors(int argc, char* argv[])
   return 0;
 }
 
-
+/* vim:set et sw=2 ts=2: */

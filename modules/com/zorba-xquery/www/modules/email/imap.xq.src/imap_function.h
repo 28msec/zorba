@@ -33,7 +33,7 @@ namespace zorba { namespace emailmodule {
       static void
       throwError(
           const std::string errorMessage,
-          const XQUERY_ERROR& errorType);
+          const Error& errorType);
 
       static void throwImapError(const std::string aErrorMessage);
 

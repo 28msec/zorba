@@ -21,6 +21,7 @@
 #include "zorbaerrors/Assert.h"
 
 #include "system/globalenv.h"
+#include "zorbamisc/ns_consts.h"
 
 #include "types/node_test.h"
 #include "types/typemanagerimpl.h"
@@ -204,7 +205,7 @@ xqtref_t TypeManagerImpl::create_named_atomic_type(
     store::Item* qname,
     TypeConstants::quantifier_t quantifier,
     const QueryLoc& loc,
-    const XQUERY_ERROR& err) const
+    const Error& error) const
 {
   // Try to resolve the type name as a builtin atomic type
   RootTypeManager::qnametype_map_t& myMap = GENV_TYPESYSTEM.m_atomic_qnametype_map;
@@ -218,9 +219,9 @@ xqtref_t TypeManagerImpl::create_named_atomic_type(
   // type (because, otherwise it would have been found above). So we return NULL.
   if (ZSTREQ(qname->getNamespace(), XML_SCHEMA_NS))
   {
-    if (err != MAX_ZORBA_ERROR_CODE)
+    if (error != err::XQP0000_NO_ERROR)
     {
-      ZORBA_ERROR_LOC_DESC_OSS(err, loc,
+      ZORBA_ERROR_VAR_LOC_DESC_OSS(error, loc,
                                "A type with qname "
                                << qname->getStringValue()
                                << " is not in the in-scope schema definitions");
@@ -240,9 +241,9 @@ xqtref_t TypeManagerImpl::create_named_atomic_type(
 
     if (namedType == NULL)
     {
-      if (err != MAX_ZORBA_ERROR_CODE)
+      if (error != err::XQP0000_NO_ERROR)
       {
-        ZORBA_ERROR_LOC_DESC_OSS(err, loc,
+        ZORBA_ERROR_VAR_LOC_DESC_OSS(error, loc,
                                  "A type with qname "
                                  << qname->getStringValue()
                                  << " is not in the in-scope schema definitions");
@@ -263,9 +264,9 @@ xqtref_t TypeManagerImpl::create_named_atomic_type(
   }
 #endif
 
-  if (err != MAX_ZORBA_ERROR_CODE)
+  if (error != err::XQP0000_NO_ERROR)
   {
-    ZORBA_ERROR_LOC_DESC_OSS(err, loc,
+    ZORBA_ERROR_VAR_LOC_DESC_OSS(error, loc,
                              "A type with qname "
                              << qname->getStringValue()
                              << " is not in the in-scope schema definitions");
@@ -286,7 +287,7 @@ xqtref_t TypeManagerImpl::create_named_type(
     store::Item* qname,
     TypeConstants::quantifier_t quant,
     const QueryLoc& loc,
-    const XQUERY_ERROR& err) const
+    const Error& error) const
 {
   RootTypeManager& RTM = GENV_TYPESYSTEM;
 
@@ -325,9 +326,9 @@ xqtref_t TypeManagerImpl::create_named_type(
 
       if (namedType == NULL)
       {
-        if (err != MAX_ZORBA_ERROR_CODE)
+        if (error != err::XQP0000_NO_ERROR)
         {
-          ZORBA_ERROR_LOC_DESC_OSS(err, loc,
+          ZORBA_ERROR_VAR_LOC_DESC_OSS(error, loc,
                                    "A type with qname "
                                    << qname->getStringValue()
                                    << " is not in the in-scope schema definitions");
@@ -344,9 +345,9 @@ xqtref_t TypeManagerImpl::create_named_type(
     }
 #endif
 
-    if (err != MAX_ZORBA_ERROR_CODE)
+    if (error != err::XQP0000_NO_ERROR)
     {
-      ZORBA_ERROR_LOC_DESC_OSS(err, loc,
+      ZORBA_ERROR_VAR_LOC_DESC_OSS(error, loc,
                                "A type with qname " 
                                << qname->getStringValue()
                                << " is not in the in-scope schema definitions");
@@ -610,7 +611,7 @@ xqtref_t TypeManagerImpl::create_value_type(const store::Item* item, const Query
     return create_named_atomic_type(item->getType(),
                                     quant,
                                     loc,
-                                    XPTY0004);
+                                    err::XPTY0004);
   }
   else if (item->isNode())
   {
@@ -624,7 +625,7 @@ xqtref_t TypeManagerImpl::create_value_type(const store::Item* item, const Query
       xqtref_t contentType = create_named_type(item->getType(),
                                                quant,
                                                loc,
-                                               XPTY0004);
+                                               err::XPTY0004);
 
       return create_node_type(nodeKind,
                               item->getNodeName(),
@@ -946,7 +947,7 @@ xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
                                   ident.getUri().c_str(),
                                   NULL,
                                   ident.getLocalName().c_str());
-    return create_named_type(i, q, QueryLoc::null, XPTY0004);
+    return create_named_type(i, q, QueryLoc::null, err::XPTY0004);
   }
 
   case IdentTypes::ELEMENT_TYPE:

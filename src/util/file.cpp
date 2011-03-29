@@ -101,12 +101,10 @@ _normalize_path
         // QQQ I think it's weird that I need to include
         // ExternalFunctionData to do this, but couldn't find an
         // alternative.
-        throw ExternalFunctionData::createZorbaException
-          (XPTY0004, lErrorMessage.str(), __FILE__, __LINE__);
+        throw XQUERY_EXCEPTION(XPTY0004, ERROR_PARAMS( lErrorMessage.str() ) );
       }
     } else if (lIndex < 0) { // if the file URI doesn't have a path: file://abc
-      throw ExternalFunctionData::createZorbaException
-        (XPTY0004, "The file URI contains no path.", __FILE__, __LINE__);
+      throw XQUERY_EXCEPTION(XPTY0004, ERROR_PARAMS( "The file URI contains no path." ) );
     }
 
 #ifdef WIN32
@@ -204,9 +202,7 @@ _normalize_path
 }
 
 std::string
-filesystem_path::normalize_path
-(std::string aIn, std::string aBase)
-  throw (ZorbaException)
+filesystem_path::normalize_path(std::string aIn, std::string aBase)
 {
   zstring lIn = aIn;
   zstring lBase = aBase;
@@ -536,7 +532,7 @@ void file::error(
   string const& location,
   string const& msg)
 {
-  ZORBA_ERROR_DESC( XQP0011_SYSTEM_FILE_ERROR_IN_FUNCTION, msg);
+  ZORBA_ERROR_DESC( XQP0012_SYSTEM_FILE_ERROR_IN_FUNCTION, msg);
 }
 
 

@@ -20,9 +20,11 @@
 
 #include <zorba/zorba.h>
 #include <zorba/external_module.h>
+#include <zorba/iterator.h>
 #include <zorba/external_function.h>
 #include <zorba/serialization_callback.h>
 #include <zorba/store_manager.h>
+#include <zorba/zorba_exception.h>
 
 using namespace zorba;
 

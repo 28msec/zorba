@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include <zorba/item.h>
+
 #include "annotation.h"
 #include "store/api/item.h"
 #include "system/globalenv.h"

@@ -998,12 +998,12 @@ void ElementNode::insertAttributes(UpdInsertAttributes& upd)
     {
       checkUniqueAttr(attr->getNodeName());
     }
-    catch (error::ZorbaError& e)
+    catch (ZorbaException const& e)
     {
-      if (e.theErrorCode == XQDY0025)
+      if (e.error() == err::XQDY0025)
         upd.theCollectionPul->thePrimitivesToRecheck.push_back(&upd);
       else
-        throw e;
+        throw;
     }
 
     if (addBindingForQName(attr->theName, true, false))
@@ -1077,12 +1077,12 @@ void ElementNode::replaceAttribute(UpdReplaceAttribute& upd)
     {
       checkUniqueAttr(attr->getNodeName());
     }
-    catch (error::ZorbaError& e)
+    catch (ZorbaException const& e)
     {
-      if (e.theErrorCode == XQDY0025)
+      if (e.error() == err::XQDY0025)
         upd.theCollectionPul->thePrimitivesToRecheck.push_back(&upd);
       else
-        throw e;
+        throw;
     }
 
     bool newBinding = addBindingForQName(attr->theName, true, false);
@@ -1455,12 +1455,12 @@ void AttributeNode::replaceName(UpdRenameAttr& upd)
     {
       parent->checkUniqueAttr(upd.theNewName);
     }
-    catch (error::ZorbaError& e)
+    catch (ZorbaException const& e)
     {
-      if (e.theErrorCode == XQDY0025)
+      if (e.error() == err::XQDY0025)
         upd.theCollectionPul->thePrimitivesToRecheck.push_back(&upd);
       else
-        throw e;
+        throw;
     }
 
     upd.theNewBinding = parent->addBindingForQName(upd.theNewName, true, false);

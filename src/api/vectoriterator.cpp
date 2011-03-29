@@ -30,11 +30,11 @@
 namespace zorba {
 
 #define VECTOR_ITERATOR_CATCH                                  \
-catch (error::ZorbaError& e)                                   \
+catch (ZorbaException const& e)                                \
 {                                                              \
   ZorbaImpl::notifyError(theErrorHandler, e);                  \
 }                                                              \
-catch (std::exception& e)                                      \
+catch (std::exception const& e)                                \
 {                                                              \
   ZorbaImpl::notifyError(theErrorHandler, e.what());           \
 }                                                              \

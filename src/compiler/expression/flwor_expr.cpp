@@ -179,7 +179,7 @@ for_clause::for_clause(
                                      <<" as " << declaredType->toString());
           }
 
-          domainExpr = new treat_expr(sctx, loc, domainExpr, declaredType, XPTY0004);
+          domainExpr = new treat_expr(sctx, loc, domainExpr, declaredType, err::XPTY0004);
 
           set_expr(domainExpr);
         }
@@ -306,7 +306,7 @@ let_clause::let_clause(
                                    <<" as " << declaredType->toString());
         }
 
-        domainExpr = new treat_expr(sctx, loc, domainExpr, declaredType, XPTY0004);
+        domainExpr = new treat_expr(sctx, loc, domainExpr, declaredType, err::XPTY0004);
 
         set_expr(domainExpr);
       }
@@ -403,7 +403,7 @@ window_clause::window_clause(
       if (!TypeOps::is_subtype(tm, *GENV_TYPESYSTEM.ITEM_TYPE_STAR, *varType) &&
           !TypeOps::is_subtype(tm, *domainType, *varType))
       {
-        domainExpr = new treat_expr(sctx, loc, domainExpr, varType, XPTY0004);
+        domainExpr = new treat_expr(sctx, loc, domainExpr, varType, err::XPTY0004);
 
         set_expr(domainExpr);
       }

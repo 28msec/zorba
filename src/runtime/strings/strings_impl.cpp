@@ -18,9 +18,8 @@
 #include "common/common.h"
 
 #include "zorbaerrors/Assert.h"
-#include "zorbaerrors/error_messages.h"
+#include "zorbaerrors/error_manager.h"
 
-#include "zorbatypes/zorbatypesError.h"
 #include "zorbatypes/numconversions.h"
 
 #include "system/globalenv.h"
@@ -82,10 +81,10 @@ CodepointsToStringIterator::nextImpl(store::Item_t& result, PlanState& planState
           {
             utf8::encode( lCode, &resStr );
           } 
-          catch(zorbatypesException& ex) 
+          catch(XQueryException& e) 
           {
-            ZORBA_ERROR_LOC_DESC(error::DecodeZorbatypesError(ex.ErrorCode()),
-                                 loc, lUtf8Code);
+            set_source( e, loc );
+            throw;
           }
         }
         else
@@ -1304,10 +1303,10 @@ bool FnMatchesIterator::nextImpl(
     convert_xquery_re( xquery_pattern, &lib_pattern, flags.c_str() );
     res = utf8::match_part(input, lib_pattern, flags.c_str());
   }
-  catch(zorbatypesException& ex) 
+  catch(XQueryException& ex) 
   {
-    ZORBA_ERROR_LOC_PARAM(error::DecodeZorbatypesError(ex.ErrorCode()),
-                          loc, ex.what(), "");
+    set_source( ex, loc );
+    throw;
   }
 
   STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, res), state); 
@@ -1369,10 +1368,10 @@ bool FnReplaceIterator::nextImpl(
   {
     tmp = utf8::match_part(zstring(), pattern, flags.c_str());
   }
-  catch(zorbatypesException& ex) 
+  catch(XQueryException& ex) 
   {
-    ZORBA_ERROR_LOC_PARAM(error::DecodeZorbatypesError(ex.ErrorCode()),
-                          loc, ex.what(), "");
+    set_source( ex, loc );
+    throw;
   }
   
   if (tmp)
@@ -1441,10 +1440,10 @@ bool FnReplaceIterator::nextImpl(
     convert_xquery_re( pattern, &lib_pattern, flags.c_str() );
     utf8::replace_all(input, lib_pattern, flags.c_str(), replacement2, &resStr);
   }
-  catch(zorbatypesException& ex) 
+  catch(XQueryException& ex) 
   {
-    ZORBA_ERROR_LOC_PARAM(error::DecodeZorbatypesError(ex.ErrorCode()),
-                          loc, ex.what(), "");
+    set_source( ex, loc );
+    throw;
   }
   
   STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state);
@@ -1516,10 +1515,10 @@ bool FnTokenizeIterator::nextImpl(
     static zstring const empty;
     tmp = utf8::match_part( empty, state->thePattern, state->theFlags );
   }
-  catch(zorbatypesException& ex)
+  catch(XQueryException& ex)
   {
-    ZORBA_ERROR_LOC_PARAM(error::DecodeZorbatypesError(ex.ErrorCode()),
-                          loc, ex.what(), "");
+    set_source( ex, loc );
+    throw;
   }
 
   if(tmp)
@@ -1536,9 +1535,7 @@ bool FnTokenizeIterator::nextImpl(
       // The RE needs to be compiled every time due to the weird stack macros.
       //
       if ( !re.compile( state->thePattern, state->theFlags ) )
-        throw zorbatypesException(
-          state->thePattern, ZorbatypesError::FORX0002
-        );
+        throw XQUERY_EXCEPTION( FORX0002, ERROR_PARAMS( state->thePattern ) );
       unicode::string u_token;
       bool const got_next = re.next_token(
         state->theString, &state->start_pos, &u_token, &state->hasmatched
@@ -1547,10 +1544,10 @@ bool FnTokenizeIterator::nextImpl(
       if ( !got_next )
         break;
     }
-    catch(zorbatypesException& ex) 
+    catch(XQueryException& ex) 
     {
-      ZORBA_ERROR_LOC_PARAM(error::DecodeZorbatypesError(ex.ErrorCode()),
-                            loc, ex.what(), "");
+      set_source( ex, loc );
+      throw;
     }
 
     STACK_PUSH(GENV_ITEMFACTORY->createString(result, token), state);

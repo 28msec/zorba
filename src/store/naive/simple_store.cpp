@@ -1053,8 +1053,8 @@ store::Item_t SimpleStore::loadDocument(
 
   if (lErrorManager.hasErrors())
   {
-    ZORBA_ERROR_PARAM(lErrorManager.getErrors().front().theErrorCode,
-                      lErrorManager.getErrors().front().theDescription, "");
+    ZORBA_ERROR_VAR_PARAM(lErrorManager.getErrors().front()->error(),
+                      lErrorManager.getErrors().front()->what(), "");
   }
 
   if (root != NULL && loadProperties.getStoreDocument())

@@ -16,8 +16,6 @@
 
 #include <algorithm>
 
-#include <zorba/exception.h>
-
 #include "zorbaerrors/error_manager.h"
 
 #include "store/naive/store_defs.h"
@@ -36,7 +34,8 @@
 #include "store/api/ic.h"
 
 
-namespace zorba { namespace simplestore {
+namespace zorba {
+namespace simplestore {
 
 
 /*******************************************************************************
@@ -368,7 +367,7 @@ void PULImpl::addInsertAttributes(
   ulong numAttrs = (ulong)attrs.size();
   for (ulong i = 0; i < numAttrs; i++)
   {
-    n->checkNamespaceConflict(attrs[i]->getNodeName(), XUDY0023);
+    n->checkNamespaceConflict(attrs[i]->getNodeName(), err::XUDY0023);
   }
 
   NodeUpdates* updates = 0;
@@ -419,7 +418,7 @@ void PULImpl::addReplaceNode(
       ulong numNewAttrs = (ulong)newNodes.size();
       for (ulong i = 0; i < numNewAttrs; ++i)
       {
-        elemParent->checkNamespaceConflict(newNodes[i]->getNodeName(), XUDY0023); 
+        elemParent->checkNamespaceConflict(newNodes[i]->getNodeName(), err::XUDY0023); 
       }
     }
 
@@ -575,7 +574,7 @@ void PULImpl::addRename(store::Item_t& target, store::Item_t& newName)
   case store::StoreConsts::elementNode:
   {
     ElementNode* elemTarget = ELEM_NODE(target);
-    elemTarget->checkNamespaceConflict(newName.getp(), XUDY0023);
+    elemTarget->checkNamespaceConflict(newName.getp(), err::XUDY0023);
 
     upd = GET_STORE().getPULFactory().createUpdRenameElem(pul, target, newName);
     break;
@@ -585,7 +584,7 @@ void PULImpl::addRename(store::Item_t& target, store::Item_t& newName)
     ElementNode* elemParent = reinterpret_cast<ElementNode*>(n->theParent);
 
     if (elemParent != NULL)
-      elemParent->checkNamespaceConflict(newName.getp(), XUDY0023);
+      elemParent->checkNamespaceConflict(newName.getp(), err::XUDY0023);
 
     upd = GET_STORE().getPULFactory().createUpdRenameAttr(pul, target, newName);
     break;
@@ -1812,7 +1811,13 @@ void CollectionPul::applyUpdates()
     // deltas. 
     refreshIndices();
   }
-  catch(...)
+  catch ( std::exception const &e ) {
+#ifndef NDEBUG
+    std::cerr << "Exception thrown during pul::applyUpdates: " << e.what() << std::endl;
+#endif
+    throw;
+  }
+  catch (...)
   {
 #ifndef NDEBUG
     std::cerr << "Exception thrown during pul::applyUpdates " << std::endl;
@@ -1983,5 +1988,6 @@ void CollectionPul::undoUpdates()
 }
 
 
-}
-}
+} // namespace simplestore
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

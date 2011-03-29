@@ -20,8 +20,6 @@
 
 #include "zorbautils/fatal.h"
 #include "zorbaerrors/error_manager.h"
-#include "zorbatypes/zorbatypesError.h"
-#include "zorbaerrors/error_messages.h"
 #include "zorbatypes/URI.h"
 
 // For timing
@@ -192,12 +190,12 @@ FnIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const
                                           timezone,
                                           state->theCollator);
     }
-    catch (error::ZorbaError& e)
+    catch (ZorbaException const& e)
     {
-      if (e.theErrorCode == XPTY0004)
+      if (e.error() == err::XPTY0004)
         found = false;
       else
-        throw e;
+        throw;
     }
 
     if (found)
@@ -923,12 +921,11 @@ static bool DeepEqual(
     {
       return CompareIterator::valueEqual(loc, item1, item2, tm, timezone, collator);
     }
-    catch (error::ZorbaError& e)
+    catch (ZorbaException const& e)
     {
-      if (e.theErrorCode == XPTY0004)
+      if (e.error() == err::XPTY0004)
         return false;
-      else
-        throw e;
+      throw;
     }
   }
   else
@@ -1691,9 +1688,10 @@ bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       // maybe the document is stored with the uri that is given by the user
       result = GENV_STORE.getDocument(uriString);
     }
-    catch (error::ZorbaError& e)
+    catch (XQueryException& e)
     {
-      ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+      set_source( e, loc );
+      throw;
     }
 
     if (result != NULL)
@@ -1739,12 +1737,12 @@ bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         }
         GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
       }
-      catch (error::ZorbaError& e)
+      catch (ZorbaException const& e)
       {
-        if(e.theErrorCode == XQST0046) //the value of a URILiteral is of nonzero length and is not in the lexical space of xs:anyURI.
-          ZORBA_ERROR_LOC_DESC(FODC0005, loc, e.theDescription);
+        if(e.error() == err::XQST0046) //the value of a URILiteral is of nonzero length and is not in the lexical space of xs:anyURI.
+          ZORBA_ERROR_LOC_DESC(FODC0005, loc, e.what());
         else
-          ZORBA_ERROR_LOC_DESC(FODC0002, loc, e.theDescription);
+          ZORBA_ERROR_LOC_DESC(FODC0002, loc, e.what());
       }
 
       try
@@ -1758,9 +1756,9 @@ bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
                                                                false);
         fillTime(t0, t0user, planState);
       }
-      catch (error::ZorbaError& e)
+      catch (ZorbaException const& e)
       {
-        ZORBA_ERROR_LOC_DESC(FODC0002, loc, e.theDescription);
+        ZORBA_ERROR_LOC_DESC(FODC0002, loc, e.what());
       }
 
       STACK_PUSH(true, state);
@@ -1790,11 +1788,12 @@ bool FnDocAvailableIterator::nextImpl(store::Item_t& result, PlanState& planStat
                                                           false,
                                                           false);
     }
-    catch (error::ZorbaError& e)
+    catch (ZorbaException& e)
     {
-      if (e.theErrorCode == FODC0005)
+      if (e.error() == err::FODC0005)
       {
-        ZORBA_ERROR_LOC_DESC(FODC0005, loc, e.theDescription);
+        set_source( e, loc );
+        throw;
       }
       // other errors fall through and make the function return false
     }
@@ -1807,4 +1806,5 @@ bool FnDocAvailableIterator::nextImpl(store::Item_t& result, PlanState& planStat
   STACK_END (state);
 }
 
-} /* namespace zorba */
+} // namespace zorba
+/* vim:se sw=2 ts=2: */

@@ -31,7 +31,7 @@
 #include <zorba/zorba.h>
 #include <zorba/default_content_handler.h>
 #include <zorba/error_handler.h>
-#include <zorba/exception.h>
+#include <zorba/zorba_exception.h>
 
 #include <zorba/store_manager.h>
 
@@ -175,34 +175,9 @@ class TestContentHandler: public DefaultContentHandler
 
 class TestErrorHandler : public zorba::ErrorHandler {
   public:
-    void staticError(const zorba::StaticException& aStaticError)
+    void error(const zorba::ZorbaException& aStaticError)
     {
       registerError(aStaticError);
-    }
-
-    void dynamicError(const zorba::DynamicException& aDynamicError)
-    {
-      registerError(aDynamicError);
-    }
-
-    void typeError(const zorba::TypeException& aTypeError)
-    {
-      registerError(aTypeError);
-    }
-
-    void serializationError(const zorba::SerializationException& aSerializationError)
-    {
-      registerError(aSerializationError);
-    }
-
-    void systemError(const zorba::SystemException& aSystemError)
-    {
-      registerError(aSystemError);
-    }
-
-    void userError(const zorba::UserException& aUserError)
-    {
-      registerError(aUserError);
     }
 
     bool errors()
@@ -225,8 +200,10 @@ class TestErrorHandler : public zorba::ErrorHandler {
 
     void registerError(const zorba::ZorbaException& e)
     {
-      m_errors.push_back(ZorbaException::getErrorCodeAsString(e.getErrorCode()).c_str());
-      m_desc.push_back(e.getDescription());
+      std::ostringstream oss;
+      oss << e.error().qname();
+      m_errors.push_back(oss.str());
+      m_desc.push_back(e.what());
     }
 };
 

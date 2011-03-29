@@ -63,7 +63,7 @@ DebuggerClientImpl::DebuggerClientImpl(std::string aServerAddress, unsigned shor
 		theEventListener = new DebuggerEventListener(this);
     theEventListener->start();
 	} catch(DebuggerSocketException& e) {
-		throw e;
+		throw;
   }
 }
 

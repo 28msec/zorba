@@ -902,7 +902,7 @@ FormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
         zstring ns;
         zstring prefix = tmp.substr(0, tmp.find(':'));
-        if (theSctx->lookup_ns(ns, prefix, loc, MAX_ZORBA_ERROR_CODE))
+        if (theSctx->lookup_ns(ns, prefix, loc, err::XQP0000_NO_ERROR))
         {
           GENV_ITEMFACTORY->createQName(formatName, ns, prefix, tmp.substr(tmp.find(':')+1));
           break;

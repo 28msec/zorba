@@ -962,7 +962,7 @@ public:
   
   void addBindingForQName2(const store::Item* qname);
 
-  void checkNamespaceConflict(const store::Item* qname, XQUERY_ERROR ecode) const;
+  void checkNamespaceConflict(const store::Item* qname, Error const &ecode) const;
 
   void uninheritBinding(
       NsBindingsContext* rootNSCtx,

@@ -55,9 +55,9 @@ namespace zorba {
 
 #define ZORBA_DCTX_TRY try
 
-#define ZORBA_DCTX_CATCH  catch (error::ZorbaError& e) { \
+#define ZORBA_DCTX_CATCH  catch (ZorbaException const& e) { \
     ZorbaImpl::notifyError(theQuery->theErrorHandler, e); \
-  } catch (std::exception& e) { \
+  } catch (std::exception const& e) { \
     ZorbaImpl::notifyError(theQuery->theErrorHandler, e.what()); \
   } catch (...) { \
     ZorbaImpl::notifyError(theQuery->theErrorHandler); \
@@ -120,7 +120,7 @@ var_expr* DynamicContextImpl::get_var_expr(const zstring& inVarName)
   // Note: lookup_var will return NULL if the variable is not known.
   var_expr* var = theStaticContext->lookup_var(qnameItem,
                                                QueryLoc::null,
-                                               MAX_ZORBA_ERROR_CODE);
+                                               err::XQP0000_NO_ERROR);
 
   if (var == NULL)
   {
@@ -158,7 +158,7 @@ var_expr* DynamicContextImpl::get_var_expr(
     std::map<short, static_context_t>::const_iterator ite;
     for (ite = lMap.begin(); ite != lMap.end(); ++ite) 
     {
-      var = ite->second->lookup_var(qname, QueryLoc::null, MAX_ZORBA_ERROR_CODE);
+      var = ite->second->lookup_var(qname, QueryLoc::null, err::XQP0000_NO_ERROR);
 
       if (var)
         break;
@@ -166,7 +166,7 @@ var_expr* DynamicContextImpl::get_var_expr(
   }
   else
   {
-    var = theStaticContext->lookup_var(qname, QueryLoc::null, MAX_ZORBA_ERROR_CODE);
+    var = theStaticContext->lookup_var(qname, QueryLoc::null, err::XQP0000_NO_ERROR);
   }
 
   if (var == NULL)
@@ -246,17 +246,17 @@ bool DynamicContextImpl::setVariable(
     {
       var = get_var_expr(nameSpace, localName);
     }
-    catch (error::ZorbaError& e)
+    catch (ZorbaException const& e)
     {
       // Normally, we should be throwing an exception if the variable has not
       // been declared inside the xquery program, but this cases many failures
       // with the w3c XQTS.
-      if (e.theErrorCode == XPST0008)
+      if (e.error() == err::XPST0008)
       {
         return false;
       }
 
-      throw e;
+      throw;
     }
 
     ulong varId = var->get_unique_id();
@@ -291,17 +291,17 @@ bool DynamicContextImpl::setVariable(
     {
       var = get_var_expr(varName);
     }
-    catch (error::ZorbaError& e)
+    catch (ZorbaException const& e)
     {
       // Normally, we should be throwing an exception if the variable has not
       // been declared inside the xquery program, but this cases many failures
       // with the w3c XQTS.
-      if (e.theErrorCode == XPST0008)
+      if (e.error() == err::XPST0008)
       {
         return false;
       }
 
-      throw e;
+      throw;
     }
 
     ulong varId = var->get_unique_id();
@@ -338,17 +338,17 @@ bool DynamicContextImpl::setVariable(
     {
       var = get_var_expr(varName);
     }
-    catch (error::ZorbaError& e)
+    catch (ZorbaException const& e)
     {
       // Normally, we should be throwing an exception if the variable has not
       // been declared inside the xquery program, but this cases many failures
       // with the w3c XQTS.
-      if (e.theErrorCode == XPST0008)
+      if (e.error() == err::XPST0008)
       {
         return false;
       }
 
-      throw e;
+      throw;
     }
 
     ulong varId = var->get_unique_id();

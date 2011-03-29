@@ -5,7 +5,7 @@
 #include <zorba/store_manager.h>
 #include <zorba/zorba.h>
 #include <zorba/xquery.h>
-#include <zorba/exception.h>
+#include <zorba/xquery_exception.h>
 
 
 int collection(int argc, char* argv[])
@@ -32,15 +32,15 @@ int collection(int argc, char* argv[])
       std::cout << lQuery << std::endl;
     }
   }
-  catch (zorba::SystemException &e)
-  {
-    std::cerr << "Error: " << e << std::endl;
-    return 1;
-  }
-  catch (zorba::QueryException &e)
+  catch (zorba::XQueryException &e)
   {
     std::cerr << "Error: " << e << std::endl;
     return 0;
+  }
+  catch (zorba::ZorbaException &e)
+  {
+    std::cerr << "Error: " << e << std::endl;
+    return 1;
   }
 
   return 1;

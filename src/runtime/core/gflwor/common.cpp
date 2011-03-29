@@ -238,12 +238,12 @@ bool GroupTupleCmp::equal(const GroupTuple* t1, const GroupTuple* t2) const
           return false;                                 
         }
       }
-      catch (error::ZorbaError& e)
+      catch (ZorbaException const& e)
       {
-        if (e.theErrorCode == XPTY0004)
+        if (e.error() == err::XPTY0004)
           return false;
         else
-          throw e;
+          throw;
       }
     }
     

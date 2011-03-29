@@ -320,9 +320,10 @@ bool GroupByIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) co
     {
       matVarsAndGroupBy(lState, aPlanState);
     }
-    catch (error::ZorbaError& lError)
+    catch (XQueryException& lError)
     {
-      ZORBA_ERROR_LOC_DESC(lError.theErrorCode, loc, lError.theDescription);
+      set_source( lError, loc );
+      throw;
     }
   }
 

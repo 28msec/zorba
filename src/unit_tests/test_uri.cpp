@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-#include "unit_test_list.h"
-
-#include "zorbatypes/URI.h"
-
-#include "zorbaerrors/errors.h"
+#include <zorba/zorba_exception.h>
 
 #include "util/ascii_util.h"
+#include "zorbatypes/URI.h"
 
+#include "unit_test_list.h"
 
 namespace zorba {
 
@@ -744,9 +742,9 @@ int runUriTest(int argc, char* argv[])
       std::cout << "--------------------------------------------------" << std::endl;
     }
   }
-  catch (error::ZorbaError & e)
+  catch (ZorbaException const& e)
   {
-    std::cerr << e.theDescription << std::endl;
+    std::cerr << e << std::endl;
     return 11;
   }
 

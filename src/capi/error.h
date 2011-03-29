@@ -18,8 +18,7 @@
 
 #include <xqc.h>
 #include <zorba/zorbac.h>
-#include <zorba/error.h>
-#include <zorba/exception.h>
+#include <zorba/xquery_exception.h>
 
 #if defined(_MSC_VER)
 #include <BaseTsd.h>
@@ -40,11 +39,11 @@
   try
 
 #define CAPI_CATCH                                                      \
-  catch (QueryException &qe) {                                          \
+  catch (XQueryException const &qe) {                                   \
     return Error::handle_and_convert_queryexception(me->theErrorHandler, qe); \
   }                                                                     \
-  catch (ZorbaException &e) {                                           \
-    return Error::convert_xquery_error(e.getErrorCode());               \
+  catch (ZorbaException const &e) {                                     \
+    return Error::convert_xquery_error(e.error());                      \
   } catch (...) {                                                       \
     return XQC_INTERNAL_ERROR;                                          \
   }                                                                     \
@@ -52,20 +51,16 @@
 
 #define CLASS_OFFSET(class, impl) (((ssize_t)&(((class*)1000)->impl)) - 1000)
 
-using namespace zorba;
-
 namespace zorbac {
 
-  class Error
-  {
-    public:
-      static XQC_Error
-      convert_xquery_error(XQUERY_ERROR error);
+class Error {
+public:
+  static XQC_Error convert_xquery_error(zorba::Error const& error);
 
-      static XQC_Error
-      handle_and_convert_queryexception
-      (XQC_ErrorHandler* handler, QueryException &qe);
-  };
+  static XQC_Error handle_and_convert_queryexception
+  (XQC_ErrorHandler* handler, zorba::XQueryException const &qe);
+};
 
 } /* namespace zorbac */
 #endif
+/* vim:set et sw=2 ts=2: */

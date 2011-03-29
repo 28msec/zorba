@@ -18,12 +18,14 @@
 #include <memory>
 #include <cassert>
 #include <sstream>
+
 #include <zorba/zorba.h>
-#include "capi/cdynamic_context.h"
-#include "capi/cstatic_context.h"
-#include "capi/csequence.h"
-#include "capi/error.h"
-#include "zorbaerrors/errors.h"
+#include <zorba/iterator.h>
+
+#include "cdynamic_context.h"
+#include "csequence.h"
+#include "cstatic_context.h"
+#include "error.h"
 
 using namespace zorba;
 
@@ -225,7 +227,7 @@ namespace zorbac {
     try {
       CExpression* me = CExpression::get(expr);
       delete me;
-    } catch (ZorbaException&) {
+    } catch (ZorbaException const&) {
       assert(false);
     } catch (...) {
       assert(false);

@@ -17,6 +17,7 @@
 
 #include <zorbatypes/URI.h>
 #include <zorba/static_context_consts.h>
+#include <zorba/iterator.h>
 #include "util/string_util.h"
 #include "util/ascii_util.h"
 #include "zorbamisc/ns_consts.h"

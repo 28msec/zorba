@@ -403,10 +403,9 @@ void FastXmlLoader::startDocument(void * ctx)
 
     LOADER_TRACE1("Start Doc Node = " << docNode);
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
-    ZORBA_ERROR_DESC_CONTINUE(loader.theErrorManager,
-                              e.theErrorCode, e.theDescription);
+    loader.theErrorManager->addError( e );
   }
   catch (...)
   {
@@ -485,10 +484,9 @@ void FastXmlLoader::endDocument(void * ctx)
 
     LOADER_TRACE2("End Doc Node = " << docNode);
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
-    ZORBA_ERROR_DESC_CONTINUE(loader.theErrorManager,
-                              e.theErrorCode, e.theDescription);
+    loader.theErrorManager->addError( e );
   }
   catch (...)
   {
@@ -713,10 +711,9 @@ void FastXmlLoader::startElement(
     nodeStack.push(NULL);
     pathStack.push(PathStepInfo(elemNode, baseUri));
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
-    ZORBA_ERROR_DESC_CONTINUE(loader.theErrorManager,
-                              e.theErrorCode, e.theDescription);
+    loader.theErrorManager->addError( e );
   }
   catch (...)
   {
@@ -842,10 +839,9 @@ void  FastXmlLoader::endElement(
     }
 #endif
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
-    ZORBA_ERROR_DESC_CONTINUE(loader.theErrorManager,
-                              e.theErrorCode, e.theDescription);
+    loader.theErrorManager->addError( e );
   }
   catch (...)
   {
@@ -893,10 +889,9 @@ void FastXmlLoader::characters(void * ctx, const xmlChar * ch, int len)
     LOADER_TRACE2(lSs.str());
 #endif
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
-    ZORBA_ERROR_DESC_CONTINUE(loader.theErrorManager,
-                              e.theErrorCode, e.theDescription);
+    loader.theErrorManager->addError( e );
   }
   catch (...)
   {
@@ -946,10 +941,9 @@ void FastXmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
     LOADER_TRACE2(lSs.str());
 #endif
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
-    ZORBA_ERROR_DESC_CONTINUE(loader.theErrorManager,
-                              e.theErrorCode, e.theDescription);
+    loader.theErrorManager->addError( e );
   }
   catch (...)
   {
@@ -996,10 +990,9 @@ void FastXmlLoader::processingInstruction(
                   << targetp << std::endl << " ordpath = "
                   << piNode->getOrdPath().show() << std::endl);
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
-    ZORBA_ERROR_DESC_CONTINUE(loader.theErrorManager,
-                              e.theErrorCode, e.theDescription);
+    loader.theErrorManager->addError( e );
   }
   catch (...)
   {
@@ -1041,10 +1034,9 @@ void FastXmlLoader::comment(void * ctx, const xmlChar * ch)
                   << charp << std::endl << " ordpath = "
                   << commentNode->getOrdPath().show() << std::endl);
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
-    ZORBA_ERROR_DESC_CONTINUE(loader.theErrorManager,
-                              e.theErrorCode, e.theDescription);
+    loader.theErrorManager->addError( e );
   }
   catch (...)
   {

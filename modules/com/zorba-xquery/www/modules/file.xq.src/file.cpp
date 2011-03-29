@@ -20,12 +20,14 @@
 #include <fstream>
 #include <sstream>
 
-#include <zorba/file.h>
-#include <zorba/empty_sequence.h>
-#include <zorba/singleton_item_sequence.h>
-#include <zorba/serializer.h>
 #include <zorba/base64.h>
+#include <zorba/empty_sequence.h>
+#include <zorba/error_list.h>
+#include <zorba/file.h>
+#include <zorba/serializer.h>
+#include <zorba/singleton_item_sequence.h>
 #include <zorba/util/path.h>
+#include <zorba/xquery_exception.h>
 
 #include "file_module.h"
 
@@ -114,7 +116,7 @@ ReadBinaryFunction::evaluate(
   Item lItem = theModule->getItemFactory()->createBase64Binary(lEncodedContent.c_str(), lEncodedContent.bytes());
 
   if (lItem.isNull()) {
-    throw ExternalFunctionData::createZorbaException(XPTY0004, "Error while building the base64binary item.", __FILE__, __LINE__);
+    throw XQUERY_EXCEPTION(XPTY0004, ERROR_PARAMS( "Error while building the base64binary item." ) );
   }
 
   return ItemSequence_t(new SingletonItemSequence(lItem));
@@ -278,7 +280,7 @@ CopyFunction::evaluate(
   if (!(lSrcFile->isFile())) {
     std::stringstream lSs;
     lSs << "The source argument does not point to a file path: " << lDst->getFilePath();
-    throw ExternalFunctionData::createZorbaException(XPTY0004, lSs.str(), __FILE__, __LINE__);
+    throw XQUERY_EXCEPTION(XPTY0004, ERROR_PARAMS( lSs.str() ) );
   }
 
   // do we have to overwrite existing files?
@@ -299,11 +301,11 @@ CopyFunction::evaluate(
   if (lDst->isDirectory()) {
     std::stringstream lSs;
     lSs << "The destination file path denotes an existing directory: " << lDst->getFilePath();
-    throw ExternalFunctionData::createZorbaException(XPTY0004, lSs.str(), __FILE__, __LINE__);
+    throw XQUERY_EXCEPTION(XPTY0004, ERROR_PARAMS( lSs.str() ) );
   } else if (lDst->isFile() && !lOverwrite) {
     std::stringstream lSs;
     lSs << "The destination file already exists: " << lDst->getFilePath();
-    throw ExternalFunctionData::createZorbaException(XPTY0004, lSs.str(), __FILE__, __LINE__);
+    throw XQUERY_EXCEPTION(XPTY0004, ERROR_PARAMS( lSs.str() ));
   }
 
   // open the output stream in the desired write mode
@@ -424,7 +426,7 @@ LastModifiedFunction::evaluate(
   if(!lFile->exists()) {
     std::stringstream lErrorMessage;
     lErrorMessage << "The provided path/URI does not point to a file system item.";
-    throwError(lErrorMessage.str(), XPTY0004);
+    throwError(lErrorMessage.str(), err::XPTY0004);
   }
 
   time_t lTime = lFile->lastModified();

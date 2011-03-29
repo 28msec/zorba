@@ -28,7 +28,6 @@ namespace zorba
 namespace error 
 {
   class ErrorManager;
-  class ZorbaError;
 }
   
 namespace types 
@@ -156,13 +155,12 @@ class InternalCollectionURIResolver;
 class InternalSchemaURIResolver;
 class InternalModuleURIResolver;
 
-}
+} // namespace zorba
 
 #endif /* ZORBA_SHARED_TYPES_H */
-/* vim:set ts=2 sw=2: */
-
 /*
  * Local variables:
  * mode: c++
  * End:
  */
+/* vim:set ts=2 sw=2: */

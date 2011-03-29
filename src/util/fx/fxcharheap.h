@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #ifndef XQP_FXCHARHEAP_H
 #define XQP_FXCHARHEAP_H
 
-#include "common/common.h"
-
-#include "util/fx/fxarray.h"
 #include <string>
+
+#include "zorbatypes/rchandle.h"
+#include "common/common.h"
+#include "util/fx/fxarray.h"
 
 
 namespace zorba {

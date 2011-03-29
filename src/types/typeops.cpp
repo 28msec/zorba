@@ -422,7 +422,7 @@ xqtref_t TypeOps::prime_type(const TypeManager* tm, const XQType& type)
     return tm->create_named_type(udType.get_qname(),
                                  TypeConstants::QUANT_ONE,
                                  QueryLoc::null,
-                                 XPTY0004);
+                                 err::XPTY0004);
   }
 
   default:

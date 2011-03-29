@@ -20,6 +20,7 @@
 #include <zorba/zorba.h>
 #include <zorba/store_manager.h>
 #include <zorba/util/path.h>
+#include <zorba/xquery_exception.h>
 #include "timer.h"
 
 using namespace zorba;
@@ -49,7 +50,7 @@ main(int argc, char* argv[])
     lQuery->setFileName(argv[1]);
     lQuery = zengine->compileQuery (lQueryFile);
 
-  } catch (QueryException& e) {
+  } catch (XQueryException& e) {
     cerr << "Couldn't compile query: " << e << endl;
     return 3;
   } catch (ZorbaException& e) {

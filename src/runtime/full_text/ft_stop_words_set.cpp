@@ -155,7 +155,7 @@ ft_stop_words_set::construct( ftstop_word_option const &option,
         apply_word( word_start, words_file.end(), *word_set, mode );
     }
 #else
-    ZORBA_ERROR( XQP0017_FILE_ACCESS_DISABLED );
+    throw ZORBA_EXCEPTION( XQP0017_FILE_ACCESS_DISABLED );
 #endif /* ZORBA_WITH_FILE_ACCESS */
 
     ftstop_words::list_t const &word_list = (*ftsw)->get_list();

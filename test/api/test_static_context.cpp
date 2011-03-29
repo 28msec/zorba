@@ -22,6 +22,8 @@
 
 #include <zorba/zorba.h>
 #include <zorba/store_manager.h>
+#include <zorba/xquery_exception.h>
+#include <zorba/error_list.h>
 
 
 using namespace zorba;
@@ -55,7 +57,7 @@ using namespace zorba;
     } \
     std::cout << "Correct!" << std::endl; \
     std::cout << "-----------------------------------------------------------------------" << std::endl; \
-  } catch (ZorbaException&) { \
+  } catch (ZorbaException const&) { \
     std::cout << "Exception!" << std::endl; \
     std::cout << "-----------------------------------------------------------------------" << std::endl; \
     lFailed = true; \
@@ -73,7 +75,7 @@ using namespace zorba;
     std::cout << "This should have thrown an exception!" << std::endl; \
     std::cout << "-----------------------------------------------------------------------" << std::endl; \
     return 1; \
-  } catch (ZorbaException& e) { \
+  } catch (ZorbaException const& e) { \
     std::cout << "Caught exception. " << e << std::endl << "Good!" << std::endl; \
     std::cout << "-----------------------------------------------------------------------" << std::endl; \
   } \
@@ -95,9 +97,9 @@ test_disabled_function(Zorba* lZorba)
   try {
     XQuery_t lQuery = lZorba->compileQuery("fn:current-dateTime()", lSctx1);
     return 1; // must raise a function not found exception
-  } catch (QueryException& e) {
+  } catch (ZorbaException const& e) {
     // fail if any other exception
-    if (e.getErrorCode() != XPST0017) {
+    if (e.error() != err::XPST0017) {
       std::cerr << e << std::endl;
       return 2;
     }
@@ -106,7 +108,7 @@ test_disabled_function(Zorba* lZorba)
   // test if function exists in static context 2
   try {
     XQuery_t lQuery = lZorba->compileQuery("fn:current-dateTime()", lSctx2);
-  } catch (ZorbaException& e) {
+  } catch (ZorbaException const& e) {
     std::cerr << e << std::endl;
     return 3;
   }

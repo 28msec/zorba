@@ -29,8 +29,6 @@
 
 #include "zorbaerrors/error_manager.h"
 
-#include <zorba/exception.h>
-
 
 namespace zorba { namespace simplestore {
 
@@ -633,9 +631,9 @@ void UpdPut::apply()
 
     store->addNode(theTargetUri->getStringValue(), theTarget);
   }
-  catch(error::ZorbaError& e)
+  catch(ZorbaException const& e)
   {
-    if (e.theErrorCode == API0020_DOCUMENT_ALREADY_EXISTS)
+    if (e.error() == err::API0020_DOCUMENT_ALREADY_EXISTS)
     {
       theOldDocument = store->getDocument(theTargetUri->getStringValue());
 
@@ -1041,15 +1039,14 @@ void UpdCreateIndex::apply()
   {
     theIndex = store->createIndex(theQName, theSpec, theSourceIter);
   }
-  catch(error::ZorbaError& e)
+  catch(ZorbaException const& e)
   {
-    if (e.theErrorCode == STR0045_DUPLICATE_NODE_ERROR)
+    if (e.error() == err::STR0045_DUPLICATE_NODE_ERROR)
     {
       ZORBA_ERROR_PARAM(XDDY0028_INDEX_DOMAIN_HAS_DUPLICATE_NODES, 
                         theQName->getStringValue().c_str(), "");
     }
-
-    throw e;
+    throw;
   }
 
   theIsApplied = true;

@@ -23,9 +23,13 @@
 #include <sstream>
 #include <stdio.h>
 
+#include <zorba/error_list.h>
+
+#include "zorbaerrors/error_manager.h"
 #include "zorbatypes/zstring.h"
-#include "zorbaserialization/class_serializer.h"
-#include "zorbaserialization/archiver.h"
+
+#include "archiver.h"
+#include "class_serializer.h"
 
 namespace zorba
 {
@@ -33,14 +37,13 @@ namespace serialization
 {
 /////////////////////////////templates
 
-#define ZORBA_SER_ERROR_DESC_OSS(code, desc)                            \
-  do                                                                    \
-  {                                                                     \
-    std::ostringstream lOStringStream;                                  \
-    lOStringStream << desc;                                             \
-    ::zorba::serialization::report_error(code, lOStringStream.str(),    \
-                 __FILE__, __LINE__);                                   \
-  }while(0);
+#define ZORBA_SER_ERROR_DESC_OSS(QNAME,MSG)                     \
+  do {                                                          \
+    std::ostringstream oss;                                     \
+    oss << MSG;                                                 \
+    throw XQUERY_EXCEPTION( QNAME, ERROR_PARAMS( oss.str() ) ); \
+  } while (0)
+
 
 template<class RepType>
 void operator&(Archiver &ar, zorba::rstring<RepType> &obj)
@@ -914,6 +917,8 @@ void read_optional_field(Archiver &ar, T &obj)
   ar.set_read_optional_field(false);
 }
 
-}}
-#endif
+} // namespace serialization
+} // namespace zorba
 
+#endif /* TEMPLATE_SERIALIZATION_OPERATORS */
+/* vim:set et sw=2 ts=2: */

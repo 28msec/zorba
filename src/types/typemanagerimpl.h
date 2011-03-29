@@ -104,13 +104,13 @@ public:
         store::Item* qname,
         TypeConstants::quantifier_t quant,
         const QueryLoc& loc = QueryLoc::null,
-        const XQUERY_ERROR& err = MAX_ZORBA_ERROR_CODE) const;
+        const Error& error = err::XQP0000_NO_ERROR) const;
 
   xqtref_t create_named_type(
         store::Item* qname,
         TypeConstants::quantifier_t quant = TypeConstants::QUANT_ONE,
         const QueryLoc& loc = QueryLoc::null,
-        const XQUERY_ERROR& err = MAX_ZORBA_ERROR_CODE) const;
+        const Error& error = err::XQP0000_NO_ERROR) const;
 
   xqtref_t create_any_item_type(TypeConstants::quantifier_t quant) const;
 

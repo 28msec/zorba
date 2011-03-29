@@ -18,6 +18,7 @@
 
 #include "zorbaerrors/error_manager.h"
 #include "zorbaerrors/Assert.h"
+#include "zorbaerrors/dict.h"
 
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/duration.h"
@@ -291,11 +292,14 @@ bool GenericArithIterator<Operation>::compute(
            computeAtomic(result, dctx, tm, aLoc, n0, type0, n1, type1);
   }
   
-  ZORBA_ERROR_LOC_DESC(XPTY0004, aLoc,
-                       "Arithmetic operation not defined between the given types ("
-                       + type0->toString() + " and " + type1->toString() + ").");
   
-  return 0;
+  throw XQUERY_EXCEPTION(
+    XPTY0004,
+    ERROR_PARAMS( ZED( BadMathTypes ), type0->toString(), type1->toString() ),
+    ERROR_LOC( aLoc )
+  );
+
+  return false; // suppresses wanring
 }
 
 
@@ -732,5 +736,5 @@ template class GenericArithIterator<DivideOperation>;
 template class GenericArithIterator<IntegerDivideOperation>;
 template class GenericArithIterator<ModOperation>;
 
-
-}
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

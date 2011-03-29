@@ -13,33 +13,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #ifndef ZORBA_NS_CONSTS_H
 #define ZORBA_NS_CONSTS_H
 
 // TODO make these static members of the context
-#define XML_NS "http://www.w3.org/XML/1998/namespace"
-#define XMLNS_NS "http://www.w3.org/2000/xmlns/"
-#define XML_SCHEMA_NS "http://www.w3.org/2001/XMLSchema"
-#define XSI_NS "http://www.w3.org/2001/XMLSchema-instance"
-#define XQUERY_ERR_NS  "http://www.w3.org/2005/xqt-errors"
 
-#define XQUERY_FN_NS  "http://www.w3.org/2005/xpath-functions"
-#define XQUERY_LOCAL_FN_NS "http://www.w3.org/2005/xquery-local-functions"
+///////////////////////////////////////////////////////////////////////////////
 #define XQUERY_MATH_FN_NS  "http://www.w3.org/2005/xpath-functions/math"
 
-//
-//
-//
-#define ZORBA_COLLATION_NS_BASE "http://www.zorba-xquery.com/zorba/collations/"
-#define ZORBA_DEF_COLLATION_NS ZORBA_COLLATION_NS_BASE "IDENTICAL/en/US"
-#define W3C_CODEPT_COLLATION_NS "http://www.w3.org/2005/xpath-functions/collation/codepoint"
+#define W3C_NS                  "http://www.w3.org/"
+#define W3C_CODEPT_COLLATION_NS \
+  W3C_NS "2005/xpath-functions/collation/codepoint"
 
-#define ZORBA_OPTIONS_NS "http://www.zorba-xquery.org/options"
+///////////////////////////////////////////////////////////////////////////////
+
+#define XMLNS_NS                W3C_NS "2000/xmlns/"
+#define XML_NS                  W3C_NS "XML/1998/namespace"
+#define XML_SCHEMA_NS           W3C_NS "2001/XMLSchema"
+#define XQUERY_ERR_NS           W3C_NS "2005/xqt-errors"
+#define XQUERY_FN_NS            W3C_NS "2005/xpath-functions"
+#define XQUERY_LOCAL_FN_NS      W3C_NS "2005/xquery-local-functions"
+#define XSI_NS                  W3C_NS "2001/XMLSchema-instance"
+
+///////////////////////////////////////////////////////////////////////////////
+
+#define ZORBA_NS                "http://www.zorba-xquery.com/"
+
+#define ZORBA_COLLATION_NS_BASE ZORBA_NS "zorba/collations/"
+#define ZORBA_DEF_COLLATION_NS  ZORBA_COLLATION_NS_BASE "IDENTICAL/en/US"
+#define ZORBA_ERR_NS            ZORBA_NS
+#define ZORBA_OPTIONS_NS        "http://www.zorba-xquery.org/options"
 #define ZORBA_OPTION_ENABLE_DTD "enable-dtd"
 
-#endif
+///////////////////////////////////////////////////////////////////////////////
+
+#endif /* ZORBA_NS_CONSTS_H */
 /*
  * Local variables:
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */

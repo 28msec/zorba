@@ -74,9 +74,10 @@ void external_function::serialize(::zorba::serialization::Archiver& ar)
     {
       theImpl = theModuleSctx->lookup_external_function(theNamespace, lLocalName);
     }
-    catch (error::ZorbaError& e)
+    catch (XQueryException& e)
     {
-      ZORBA_ERROR_LOC_DESC(e.theErrorCode, theLoc, e.theDescription);
+      set_source( e, theLoc );
+      throw;
     }
 
     if (theImpl == NULL)
@@ -111,4 +112,5 @@ PlanIter_t external_function::codegen(
 }
 
 
-}
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

@@ -16,6 +16,7 @@
 #include "api/zorbaimpl.h"
 
 #include <istream>
+#include <zorba/error_list.h>
 #include <zorba/stateless_function.h>
 #include <zorba/store_manager.h>
 #include <zorba/query_location.h>
@@ -28,9 +29,7 @@
 #include "api/vectoriterator.h"
 
 #include "zorbautils/fatal.h"
-#include "zorbaerrors/errors.h"
 #include "zorbaerrors/error_manager.h"
-#include "errors/user_error.h"
 
 #include "system/globalenv.h"
 
@@ -258,122 +257,17 @@ XmlDataManager* ZorbaImpl::getXmlDataManager()
 }
 
 
-/*******************************************************************************
-  Convert an internal zorba error obj to a c++ api exception obj, and then
-  notify the user about this error via the error handler.
-********************************************************************************/
-void ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, error::ZorbaError& aError)
-{
-  if (aError.isUserError())
-  {
-    zorba::error::ZorbaUserError* lUserError = static_cast<zorba::error::ZorbaUserError*>(&aError);
+void ZorbaImpl::notifyError( ErrorHandler *eh, ZorbaException const &ze ) {
+  eh->error( ze );
+}
 
-    Iterator_t lIter = new VectorIterator(lUserError->theErrorObject, aErrorHandler);
-
-    UserException lUserException(aError.theErrorCode,
-                                 Unmarshaller::newString(aError.theDescription),
-                                 Unmarshaller::newString(aError.theFileName),
-                                 aError.theLineNumber,
-                                 Unmarshaller::newString(aError.theQueryFileName),
-                                 aError.theQueryLine,
-                                 aError.theQueryColumn,
-                                 aError.getStackTrace(),
-                                 lIter);
-    aErrorHandler->userError(lUserException);
-  }
-  else if (aError.isStaticError())
-  {
-    StaticException lStaticException(aError.theErrorCode,
-                                     Unmarshaller::newString(aError.theDescription),
-                                     Unmarshaller::newString(aError.theFileName),
-                                     aError.theLineNumber,
-                                     Unmarshaller::newString(aError.theQueryFileName),
-                                     aError.theQueryLine,
-                                     aError.theQueryColumn,
-                                     aError.getStackTrace());
-    aErrorHandler->staticError(lStaticException);
-  }
-  else if (aError.isDynamicError())
-  {
-    DynamicException lDynamicException(aError.theErrorCode,
-                                       Unmarshaller::newString(aError.theDescription),
-                                       Unmarshaller::newString(aError.theFileName),
-                                       aError.theLineNumber,
-                                       Unmarshaller::newString(aError.theQueryFileName),
-                                       aError.theQueryLine,
-                                       aError.theQueryColumn,
-                                       aError.getStackTrace());
-    aErrorHandler->dynamicError(lDynamicException);
-  }
-  else if (aError.isTypeError())
-  {
-    TypeException lTypeException(aError.theErrorCode,
-                                 Unmarshaller::newString(aError.theDescription),
-                                 Unmarshaller::newString(aError.theFileName),
-                                 aError.theLineNumber,
-                                 Unmarshaller::newString(aError.theQueryFileName),
-                                 aError.theQueryLine,
-                                 aError.theQueryColumn,
-                                 aError.getStackTrace());
-    aErrorHandler->typeError(lTypeException);
-  }
-  else if (aError.isSerializationError())
-  {
-    SerializationException lSerException(
-                            aError.theErrorCode,
-                            Unmarshaller::newString(aError.theDescription),
-                            Unmarshaller::newString(aError.theFileName),
-                            aError.theLineNumber,
-                            aError.getStackTrace());
-    aErrorHandler->serializationError(lSerException);
-  }
-  else if (aError.isStoreError())
-  {
-    SystemException lSystemException(aError.theErrorCode,
-                                     Unmarshaller::newString(aError.theDescription),
-                                     Unmarshaller::newString(aError.theFileName),
-                                     aError.theLineNumber);
-    aErrorHandler->systemError(lSystemException);
-  }
-  else if (aError.isAPIError())
-  {
-    SystemException lSystemException(aError.theErrorCode,
-                                     Unmarshaller::newString(aError.theDescription),
-                                     Unmarshaller::newString(aError.theFileName),
-                                     aError.theLineNumber);
-    aErrorHandler->systemError(lSystemException);
-  }
-  else if (aError.isInternalError())
-  {
-    SystemException lSystemException(aError.theErrorCode,
-                                     Unmarshaller::newString(aError.theDescription),
-                                     Unmarshaller::newString(aError.theFileName),
-                                     aError.theLineNumber,
-                                     aError.getStackTrace());
-    aErrorHandler->systemError(lSystemException);
-  }
-  else
-  {
-    ZORBA_FATAL(0, "Unexpected type of error");
-  }
+void ZorbaImpl::notifyError( ErrorHandler *eh, std::string const &aDesc ) {
+  eh->error( ZORBA_EXCEPTION( XQP0019_INTERNAL_ERROR, ERROR_PARAMS(aDesc) ) );
 }
 
 
-void ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, const std::string& aDesc)
-{
-  SystemException lSystemException(XQP0019_INTERNAL_ERROR,
-                                   String(aDesc), "", 0,
-                                   ZorbaException::StackTrace_t());
-  aErrorHandler->systemError(lSystemException);
-}
-
-
-void ZorbaImpl::notifyError(ErrorHandler* aErrorHandler)
-{
-  SystemException lSystemException(XQP0019_INTERNAL_ERROR,
-                                   "An internal error occured.", "", 0,
-                                   ZorbaException::StackTrace_t());
-  aErrorHandler->systemError(lSystemException);
+void ZorbaImpl::notifyError( ErrorHandler *eh ) {
+  eh->error( ZORBA_EXCEPTION( XQP0019_INTERNAL_ERROR, ERROR_PARAMS() ) );
 }
 
 

@@ -32,9 +32,8 @@
 #include "runtime/debug/zorba_debug_iterator.h"
 #include "runtime/util/flowctl_exception.h"
 
-#include "zorba/exception.h"
 #include "zorba/printer_error_handler.h"
-#include "zorbaerrors/errors.h"
+#include "zorbaerrors/error_manager.h"
 
 #include "debugger/debugger_protocol.h"
 #include "debugger/synchronous_logger.h"
@@ -88,12 +87,12 @@ class EvalCommand : public Runnable
             theId,
             theEvalString,
             theCommons->eval(theEvalString, theSerOpts)));
-      } catch (error::ZorbaError& lError) {
+      } catch (ZorbaException const& lError) {
         lEvent.reset(
           new EvaluatedEvent(
             theId,
             theEvalString,
-            lError.toString()));
+            lError.what()));
       }
       theCommunicator->sendEvent(lEvent.get());
     }
@@ -237,7 +236,7 @@ DebuggerRuntime::runQuery()
     theOStream.flush();
   } catch (FlowCtlException&) {
     // Runtime correctly terminated by user interrupt
-  } catch (error::ZorbaError& e){
+  } catch (ZorbaException const& e){
     // this does not rethrow but only print the error message
     ZorbaImpl::notifyError(&lErrorHandler, e);
   }

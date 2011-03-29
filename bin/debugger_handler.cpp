@@ -334,7 +334,7 @@ DebuggerHandler::variables() const
   try {
      global = theClient->getGlobalVariables();
      locals = theClient->getLocalVariables();
-  } catch (std::exception& ex) {
+  } catch (std::exception const& ex) {
     std::cerr << ex.what() << std::endl;
     return false;
   }

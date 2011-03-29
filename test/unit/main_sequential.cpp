@@ -26,6 +26,8 @@
 #include <zorba/serialization_callback.h>
 #include <zorba/empty_sequence.h>
 #include <zorba/vector_item_sequence.h>
+#include <zorba/xquery_exception.h>
+#include <zorba/error_list.h>
 
 #include "system/properties.h"
 
@@ -103,9 +105,9 @@ main_sequential(int argc, char* argv[])
       assert(lOut.str() == "blubb");
     }
   }
-  catch (QueryException& qe) 
+  catch (XQueryException& qe) 
   {
-    if (qe.getErrorCode() != XPTY0004)
+    if (qe.error() != err::XPTY0004)
     {
       std::cerr << qe << std::endl;
       return 3;

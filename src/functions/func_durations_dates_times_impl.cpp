@@ -20,6 +20,7 @@
 #include "runtime/durations_dates_times/DurationsDatesTimesImpl.h"
 #include "runtime/numerics/NumericsImpl.h"
 #include "runtime/core/arithmetic_impl.h"
+#include "zorbamisc/ns_consts.h"
 
 namespace zorba
 {

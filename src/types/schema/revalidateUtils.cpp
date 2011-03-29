@@ -34,8 +34,7 @@
 #include "context/static_context.h"
 #include "context/namespace_context.h"
 
-#include "zorbaerrors/error_messages.h"
-#include "zorbaerrors/errors.h"
+#include "zorbaerrors/error_manager.h"
 #include "zorbaerrors/Assert.h"
 
 

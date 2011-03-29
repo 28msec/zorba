@@ -25,6 +25,7 @@
 
 #include "system/globalenv.h"
 #include "zorbatypes/URI.h"
+#include "zorbaerrors/dict.h"
 
 #include "context/static_context.h"
 #include "context/standard_uri_resolvers.h"
@@ -77,7 +78,7 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   lURI = lSctx->resolve_relative_uri(strval);
 
   if (!GENV_ITEMFACTORY->createAnyURI(lURIItem, lURI))
-      ZORBA_ERROR_LOC_DESC_OSS(XQST0046, loc, "URI is not valid " << lURI);
+    throw XQUERY_EXCEPTION( XQST0046, ERROR_PARAMS( lURI ), ERROR_LOC( loc ) );
 
   lModuleResolver = GENV.getModuleURIResolver();
 
@@ -98,16 +99,19 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
                       result,
                       planState.theLocalDynCtx->get_current_date_time());
     }
-    catch (error::ZorbaError& e)
+    catch (XQueryException& e)
     {
-      ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+      set_source( e, loc );
+      throw;
     }
 
     STACK_PUSH(true, state);
   }
   else
   {
-    ZORBA_ERROR_LOC_DESC_OSS(XQST0046, loc, "No module could be found at " << lURI);
+    throw XQUERY_EXCEPTION(
+      XQST0046, ERROR_PARAMS( lURI, ZED( ModuleNotFound ) ), ERROR_LOC( loc )
+    );
   }
 
   STACK_END(state);
@@ -148,14 +152,15 @@ XQDocContentIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
                     result,
                     planState.theLocalDynCtx->get_current_date_time());
   }
-  catch (error::ZorbaError& e) 
+  catch (XQueryException& e) 
   {
-    ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+    set_source( e, loc );
+    throw;
   }
 
   STACK_PUSH(true, state);
-
   STACK_END(state);
 }
 
-} /* namespace zorba */
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

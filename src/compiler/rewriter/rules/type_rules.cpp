@@ -152,7 +152,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
                             node->get_loc(),
                             arg,
                             target_type,
-                            XPTY0004,
+                            err::XPTY0004,
                             false);
     }
 

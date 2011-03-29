@@ -27,6 +27,7 @@
 #include "types/typeops.h"
 
 #include "system/globalenv.h"
+#include "zorbamisc/ns_consts.h"
 
 
 namespace zorba 

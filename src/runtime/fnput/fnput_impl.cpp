@@ -61,9 +61,10 @@ bool FnPutIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     lTargetUri = URI(resolvedUriString);
   }
-  catch (error::ZorbaError& e)
+  catch (XQueryException& e)
   {
-    ZORBA_ERROR_LOC_DESC(FOUP0002, loc, e.theDescription);
+    set_source( e, loc );
+    throw;
   }
 
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());

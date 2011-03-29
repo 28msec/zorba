@@ -17,7 +17,7 @@
 #include <cstring>
 #include <vector>
 
-#include "zorbatypes/zorbatypesError.h"
+#include "zorbaerrors/error_manager.h"
 
 #include "ascii_util.h"
 #include "regex.h"
@@ -45,7 +45,7 @@ static icu_flags_t convert_xquery_flags( char const *xq_flags ) {
         case 's': icu_flags |= UREGEX_DOTALL          ; break;
         case 'x': icu_flags |= UREGEX_COMMENTS        ; break;
         default:
-          throw zorbatypesException( xq_flags, ZorbatypesError::FORX0001 );
+          throw XQUERY_EXCEPTION( FORX0001, ERROR_PARAMS( xq_flags ) );
       }
     }
   }
@@ -53,7 +53,7 @@ static icu_flags_t convert_xquery_flags( char const *xq_flags ) {
 }
 
 #define INVALID_RE_EXCEPTION(MSG) \
-  zorbatypesException( MSG, ZorbatypesError::FORX0002 )
+  XQUERY_EXCEPTION( FORX0002, ERROR_PARAMS( MSG ) )
 
 void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
                         char const *xq_flags ) {

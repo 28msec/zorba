@@ -495,12 +495,11 @@ bool CompareIterator::valueComparison(
     }
     }
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
-    if (e.theErrorCode == STR0041_NAN_COMPARISON)
+    if (e.error() == err::STR0041_NAN_COMPARISON)
       return false;
-
-    throw e;
+    throw;
   }
 }
 
@@ -664,12 +663,11 @@ bool CompareIterator::generalComparison(
     }
     }
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
-    if (e.theErrorCode == STR0041_NAN_COMPARISON)
+    if (e.error() == err::STR0041_NAN_COMPARISON)
       return false;
-
-    throw e;
+    throw;
   }
 }
 
@@ -942,20 +940,17 @@ long CompareIterator::compare(
       }
     }
   }
-  catch(error::ZorbaError& e)
+  catch(ZorbaException const& e)
   {
     // For example, two QName items do not have an order relationship.
-    if (e.theErrorCode == STR0040_TYPE_ERROR)
+    if (e.error() == err::STR0040_TYPE_ERROR)
     {
       ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, loc,
                                "Cannot compare an item of type "
                                << type0->toString() << " with an item of type "
                                << type1->toString());
     }
-    else
-    {
-      throw e;
-    }
+    throw;
   }
 }
 
@@ -1170,12 +1165,12 @@ bool AtomicValuesEquivalenceIterator::nextImpl(
                                                      theTimezone,
                                                      theCollation);
       }
-      catch (error::ZorbaError& e)
+      catch (ZorbaException const& e)
       {
-        if (e.theErrorCode == XPTY0004)
+        if (e.error() == err::XPTY0004)
           are_equivalent = false;
         else
-          throw e;
+          throw;
       }
 
       STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, are_equivalent),
@@ -1188,3 +1183,4 @@ bool AtomicValuesEquivalenceIterator::nextImpl(
 
 
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

@@ -20,7 +20,7 @@
 
 #include <zorba/zorba.h>
 #include <zorba/store_manager.h>
-
+#include <zorba/zorba_exception.h>
 #include <zorba/uri_resolvers.h>
 
 using namespace zorba;
@@ -76,7 +76,7 @@ thesaurus_resolver_example_1(Zorba* aZorba)
     XQuery_t lQuery = aZorba->compileQuery(lStr.str(), lContext); 
     std::cout << lQuery << std::endl;
   } catch (ZorbaException& e) {
-    std::cerr << e.getDescription() << std::endl;
+    std::cerr << e.what() << std::endl;
     return false;
   }
   return true;

@@ -712,9 +712,9 @@ RenameIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
                 theSctx->get_typemanager(),
                 loc);
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
-    if (e.theErrorCode != XPTY0004)
+    if (e.error() != err::XPTY0004)
     {
       // the returned error codes are wrong for name casting => they must be changed
       ZORBA_ERROR_LOC_DESC(XQDY0074, loc, 
@@ -722,7 +722,7 @@ RenameIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
     }
     else
     {
-      throw e;
+      throw;
     }
   }
 

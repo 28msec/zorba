@@ -416,13 +416,12 @@ public:
         lState->theCurrItem = 0;
       }
     }
-    catch(error::ZorbaError& e)
+    catch(ZorbaException& e)
     {
       if(loc != NULL)
       {
-        e->theQueryLine = loc.getLineBegin();
-        e->theQueryColumn = loc.getColumnBegin();
-        throw(e);
+	set_source( e, loc );
+        throw;
       }
     }
 

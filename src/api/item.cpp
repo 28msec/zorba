@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include <zorba/item.h>
 #include <zorba/zorbastring.h>
-#include <zorba/exception.h>
+#include <zorba/zorba_exception.h>
 #include <zorba/default_error_handler.h>
 
 #include "zorbautils/lock.h"
 #include "zorbaerrors/error_manager.h"
-#include "zorbaerrors/errors.h"
 
 #include "system/globalenv.h"
 
@@ -38,13 +38,14 @@
 namespace zorba {
 
 #define ITEM_TRY try {
+
 #define ITEM_CATCH \
-  } catch ( ::zorba::error::ZorbaError & e ) { \
-  throw SystemException(e.theErrorCode, String( Unmarshaller::newString( e.theDescription ) ), "", 0, e.getStackTrace()); \
-  } catch (std::exception& e) { \
-    throw SystemException(XQP0019_INTERNAL_ERROR, e.what(), "", 0); \
+  } catch (ZorbaException const &e) { \
+    throw; \
+  } catch (std::exception const &e) { \
+    throw ZORBA_EXCEPTION(XQP0019_INTERNAL_ERROR, ERROR_PARAMS(e.what())); \
   } catch (...) { \
-    throw SystemException(XQP0019_INTERNAL_ERROR, "Internal error", "", 0); \
+    throw ZORBA_EXCEPTION(XQP0019_INTERNAL_ERROR, ERROR_PARAMS("Internal error")); \
   }
 
 

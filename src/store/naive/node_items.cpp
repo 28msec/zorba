@@ -27,6 +27,8 @@
 #include "zorbautils/tokenizer.h"
 #endif /* ZORBA_NO_FULL_TEXT */
 
+#include "zorbamisc/ns_consts.h"
+
 #include "store/api/copymode.h"
 #include "store/naive/atomic_items.h"
 #include "store/naive/node_items.h"
@@ -2642,7 +2644,7 @@ void ElementNode::uninheritBinding(
 ********************************************************************************/
 void ElementNode::checkNamespaceConflict(
     const store::Item*  qname,
-    XQUERY_ERROR        ecode) const
+    Error const& ecode) const
 {
   const QNameItem* qn = reinterpret_cast<const QNameItem*>(qname);
 
@@ -2658,7 +2660,7 @@ void ElementNode::checkNamespaceConflict(
 
   if (found && ns2 != ns)
   {
-    ZORBA_ERROR_DESC_OSS(ecode,
+    ZORBA_ERROR_VAR_DESC_OSS(ecode,
                          "The implied namespace binding of " << qname->show()
                          << " conflicts with namespace binding ["
                          << prefix << ", " << ns2 << "]");
@@ -2755,7 +2757,7 @@ void ElementNode::addBaseUriProperty(
       URI resolvedURI(absoluteURI, relUri);
       resolvedUriString = resolvedURI.toString();
     }
-    catch (error::ZorbaError&)
+    catch (ZorbaException const&)
     {
       resolvedUriString = relUri;
     }
@@ -2812,9 +2814,9 @@ void ElementNode::adjustBaseUriProperty(
       URI lResolvedUri(lAbsoluteUri, relUri);
       resolvedUriString = lResolvedUri.toString();
     }
-    catch (error::ZorbaError& e)
+    catch (ZorbaException const& e)
     {
-      ZORBA_FATAL(e.theErrorCode, e.theDescription);
+      ZORBA_FATAL( false, e.what() );
     }
 
     GET_FACTORY().createAnyURI(typedValue, resolvedUriString);

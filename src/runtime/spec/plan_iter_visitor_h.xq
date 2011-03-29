@@ -9,7 +9,10 @@ declare function local:create-include() as xs:string
   '#include <vector>',$gen:newline,
   '#include "common/common.h"',$gen:newline,
   '#include "zorbatypes/zorbatypes_decl.h"',$gen:newline,
-  '#include "types/typeconstants.h"',$gen:newline),'')
+  '#include "types/typeconstants.h"',$gen:newline,
+  '#include "zorbatypes/rchandle.h"',$gen:newline,
+  '#include "zorbatypes/zstring.h"',$gen:newline
+  ),'')
 };
 
 declare function local:create-class() as xs:string

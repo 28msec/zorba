@@ -24,6 +24,7 @@
 # include <zorba/error.h>
 # include "util/stl_util.h"
 # include "zorbaerrors/error_manager.h"
+# include "zorbaerrors/dict.h"
 
 # include "ft_wildcard.h"
 
@@ -52,7 +53,7 @@ namespace zorba {
 
 /**
  * Parses digits up to the given stop character.  If a non-digit other than the
- * stop character is encountered, a Zorba exception is thrown.
+ * stop character is encountered, an exception is thrown.
  *
  * @param ws_pat  The XQuery full-text "wildcard syntax" pattern string.
  * @param ws_c    The iterator over ws_pat.
@@ -66,7 +67,9 @@ static void parse_digits( zstring const &ws_pat, zstring::const_iterator &ws_c,
     if ( *ws_c == stop )
       break;
     if ( !isdigit( *ws_c ) )
-      ZORBA_ERROR( FTDY0020 );
+      throw XQUERY_EXCEPTION(
+        FTDY0020, ERROR_PARAMS( ZED( BadDecDigit ), *ws_c )
+      );
   }
 }
 
@@ -136,7 +139,9 @@ static void wildcard_to_icu_pattern( zstring const &ws_pat, zstring *icu_pat ) {
   }
 
   if ( got_backslash )
-    ZORBA_ERROR( FTDY0020 );
+    throw XQUERY_EXCEPTION(
+      FTDY0020, ERROR_PARAMS( ZED( TrailingBackslash ) )
+    );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

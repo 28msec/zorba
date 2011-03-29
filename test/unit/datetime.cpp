@@ -13,16 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include <cassert>
 #include <sstream>
 #include <iostream>
 
-#include <zorba/store_manager.h>
-#include <zorba/zorba.h>
 #ifdef WIN32
 # include <windows.h>
 # define sleep(s) Sleep(s*1000)
 #endif
+
+#include <zorba/store_manager.h>
+#include <zorba/zorba.h>
+#include <zorba/zorba_exception.h>
 
 
 // test if the current-dateTime value of the dynamic context

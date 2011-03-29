@@ -1964,7 +1964,7 @@ void ElementNode::addLocalBinding_DOM(zstring prefix, zstring ns)
 ********************************************************************************/
 void ElementNode::checkNamespaceConflict(
     const store::Item*  qname,
-    XQUERY_ERROR        ecode) const
+    Error cosnt&        ecode) const
 {
   const QNameItemImpl* qn = reinterpret_cast<const QNameItemImpl*>(qname);
 
@@ -2039,7 +2039,7 @@ void ElementNode::addBaseUriProperty(
       URI absoluteURI(&*absUri);
       URI resolvedURI(absoluteURI, &*relUri);
       resolvedUriString = resolvedURI.toString().getStore();
-    } catch (error::ZorbaError&) {
+    } catch (ZorbaException const&) {
       resolvedUriString.transfer(relUri);
     }
 
@@ -2078,8 +2078,8 @@ void ElementNode::adjustBaseUriProperty(
       URI lAbsoluteUri(&*absUri);
       URI lResolvedUri(lAbsoluteUri, &*relUri);
       resolvedUriString = lResolvedUri.toString().getStore();
-    } catch (error::ZorbaError& e) {
-      ZORBA_FATAL(e.theErrorCode, e.theDescription);
+    } catch (ZorbaException const& e) {
+      ZORBA_FATAL( false, e.what() );
     }
     typedValue = new AnyUriItemImpl(resolvedUriString);
   }
@@ -2643,7 +2643,7 @@ XmlNode* AttributeNode::copy2(
     {
       p->checkNamespaceConflict(theName, XQDY0025);
     }
-    catch(error::ZorbaError&)
+    catch(ZorbaException const&)
     {
       // Resolving the namespace conflict requires that the prefix of the
       // attribute name is changed. However, we cannot do that if the attr

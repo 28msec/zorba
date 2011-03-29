@@ -24,7 +24,6 @@
 #include "api/zorbaimpl.h"
 #include "api/unmarshaller.h"
 #include "api/collectionimpl.h"
-#include "zorbaerrors/errors.h"
 #include "zorbaerrors/error_manager.h"
 
 #include "store/api/collection.h"
@@ -47,11 +46,11 @@ namespace zorba {
   try
 
 #define ZORBA_DM_CATCH                                  \
-  catch (error::ZorbaError& e)                          \
+  catch (ZorbaException const& e)                       \
   {                                                     \
     ZorbaImpl::notifyError(errorHandler, e);            \
   }                                                     \
-  catch (std::exception& e)                             \
+  catch (std::exception const& e)                       \
   {                                                     \
     ZorbaImpl::notifyError(errorHandler, e.what());     \
   }                                                     \

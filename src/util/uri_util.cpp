@@ -186,7 +186,7 @@ void fetch( char const *uri, iostream &result ) {
   if ( curl_code )
     throw fetch_exception( curl_easy_strerror( curl_code ) );
 #else
-  ZORBA_ERROR_PARAM( XQP0004_SYSTEM_NOT_SUPPORTED, "HTTP GET" , "" );
+  ZORBA_ERROR_PARAM( XQP0005_SYSTEM_NOT_SUPPORTED, "HTTP GET" , "" );
 #endif /* ZORBA_WITH_REST */
 }
 

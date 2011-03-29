@@ -26,7 +26,8 @@
 #include <zorba/vector_item_sequence.h>
 #include <zorba/uri_resolvers.h>
 #include <zorba/store_manager.h>
-
+#include <zorba/xquery_exception.h>
+#include <zorba/error_list.h>
 
 using namespace zorba;
 
@@ -434,10 +435,8 @@ private:
         bool done = !arg0_iter->next(result);
         if (done && theIsEmpty)
         {
-          throw ExternalFunctionData::createZorbaException(
-                    XPTY0004,
-                    "Argument must not be the empty sequence.",
-                    __FILE__, __LINE__);
+          throw XQUERY_EXCEPTION( XPTY0004,
+		ERROR_PARAMS( "Argument must not be the empty sequence." ) );
         }
         theIsEmpty = false;
         return !done;
@@ -477,15 +476,10 @@ bool func_example_3_1(Zorba* aZorba)
   {
     std::cout << query << std::endl;
   }
-  catch (TypeException& te) 
-  {
-    std::cerr << te << std::endl;
-    return true;
-  }
   catch (ZorbaException& ex) 
   {
     std::cerr << ex << std::endl;
-    return false; // type exception expected
+    return ex.error().type() == err::XQUERY_TYPE;
   }
 
 	return false;
@@ -555,15 +549,10 @@ bool func_example_4_1(Zorba* aZorba)
   {
     std::cout << query << std::endl;
   }
-  catch (StaticException& te) 
-  {
-    std::cerr << te << std::endl;
-    return true;
-  }
   catch (ZorbaException& ex) 
   {
     std::cerr << ex << std::endl;
-    return false; // type exception expected
+    return ex.error().type() == err::XQUERY_STATIC;
   }
 
 	return true;
@@ -790,18 +779,13 @@ bool func_example_5(Zorba* aZorba)
 
     std::cout << query << std::endl;
   }
-  catch (StaticException& te) 
-  {
-    std::cerr << te << std::endl;
-    return false;
-  }
   catch (ZorbaException& ex) 
   {
     std::cerr << ex << std::endl;
     return false; // type exception expected
   }
 
-	return true;
+  return true;
 }
 
 

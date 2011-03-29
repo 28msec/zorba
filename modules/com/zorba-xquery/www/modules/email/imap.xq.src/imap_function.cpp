@@ -42,7 +42,7 @@ ImapFunction::getURI() const
 void
 ImapFunction::throwError(
     const std::string aErrorMessage,
-    const XQUERY_ERROR& aErrorType)
+    const Error& aErrorType)
 {
   throw zorba::ExternalFunctionData::createZorbaException(aErrorType,
       aErrorMessage.c_str(), __FILE__, __LINE__);

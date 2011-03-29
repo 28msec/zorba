@@ -19,6 +19,7 @@
 #include <map>
 
 #include <zorba/zorba.h>
+#include <zorba/error.h>
 #include <zorba/external_module.h>
 #include <zorba/external_function.h>
 
@@ -95,7 +96,7 @@ protected:
 
   String getOneStringArgument (const Arguments_t& aArgs, int index) const;
   static void throwError(const std::string errorMessage,
-    const XQUERY_ERROR& errorType);
+    const Error& errorType);
 };
 
 

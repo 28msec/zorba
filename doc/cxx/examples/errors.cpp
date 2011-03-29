@@ -18,7 +18,10 @@
 
 #include <zorba/zorba.h>
 #include <zorba/default_error_handler.h>
+#include <zorba/iterator.h>
 #include <zorba/store_manager.h>
+#include <zorba/zorba_exception.h>
+#include <zorba/user_exception.h>
 
 using namespace zorba;
 
@@ -43,16 +46,13 @@ error_example_2(Zorba* aZorba)
   try {
 	  XQuery_t lQuery = aZorba->compileQuery("1 div"); 
 
-  } catch ( StaticException& se ) {
-    std::cout << se << std::endl;
-    return true;
-  } catch ( DynamicException& de ) {
-    std::cout << de << std::endl;
-  } catch ( ZorbaException& e) {
+  } catch ( ZorbaException const& e ) {
     std::cout << e << std::endl;
+    if ( e.error().type() == err::XQUERY_STATIC )
+      return true;
   }
 
-	return false;
+  return false;
 }
 
 // for callback functions that are not overriden, an
@@ -61,12 +61,13 @@ error_example_2(Zorba* aZorba)
 class MyErrorHandler  : public DefaultErrorHandler 
 {
 public:
-  void
-  staticError(const StaticException& aStaticError ) 
+  void error( ZorbaException const &ze ) 
   { 
-    std::cerr << aStaticError << std::endl;
+    if ( ze.error().type() == err::XQUERY_STATIC )
+      std::cerr << ze << std::endl;
+    else
+      throw;
   }
-
 };
 
 bool
@@ -91,9 +92,10 @@ error_example_4(Zorba* aZorba)
 
     lQuery->registerErrorHandler(&lHandler);
     std::cout << lQuery << std::endl;
-  } catch (DynamicException& e) {
+  } catch (ZorbaException const& e) {
     std::cerr << e << std::endl; 
-    return true;
+    if ( e.error().type() == err::XQUERY_DYNAMIC )
+      return true;
   }
 
 	return false;
@@ -107,17 +109,17 @@ error_example_5(Zorba* aZorba)
     XQuery_t lQuery = aZorba->compileQuery("fn:error(fn:QName('http://www.w3.org/2005/xqt-errors', 'err:FOER0000'), 'a user error', 1 to 10)"); 
 
     std::cout << lQuery << std::endl;
-  } catch (UserException& e) {
+  } catch (UserException const& e) {
     // get the error object of an error that was raised
     // using the fn:error function
-    Iterator_t lIter = e.getErrorObject();
-    lIter->open();
-    Item lItem;
-    while (lIter->next(lItem)) {
-      std::cout << lItem.getStringValue() << std::endl;
+    UserException::error_object_type const &error = e.getErrorObject();
+
+    UserException::error_object_type::const_iterator it;
+    for ( it = error.begin(); it != error.end(); ++it ) {
+      std::cout << it->getStringValue() << std::endl;
     }
     return true;
-  } catch (ZorbaException& ze) {
+  } catch (ZorbaException const& ze) {
     std::cerr << ze << std::endl;
     return false;
   }
@@ -162,3 +164,5 @@ errors(int argc, char* argv[])
   zorba::StoreManager::shutdownStore(lStore);
   return 0;
 }
+
+/* vim:set et sw=2 ts=2: */

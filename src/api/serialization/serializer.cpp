@@ -17,7 +17,6 @@
 #include <sstream>
 
 #include <zorba/zorbastring.h>
-#include <zorba/error.h>
 
 #include "zorbatypes/numconversions.h"
 #include "zorbaerrors/error_manager.h"

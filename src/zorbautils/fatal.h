@@ -13,31 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #ifndef ZORBA_FATAL_H
 #define ZORBA_FATAL_H
 
 #include <iostream>
 #include <stdlib.h>
 
-namespace zorba
-{
-
 #ifdef WINCE
-#define   abort()     exit(1)
+#define abort() exit(1)
 #endif
 
-#define ZORBA_FATAL(cond, msg)                                       \
-do                                                                   \
-{                                                                    \
-  if (!(cond))                                                       \
-  {                                                                  \
-    std::cerr << "Zorba Internal Fatal Error in " << __FILE__ << ":" \
-              << __LINE__ << std::endl << msg << std::endl;          \
-    abort();                                                         \
-  }                                                                  \
-} while (0)
+namespace zorba {
 
+#define ZORBA_FATAL(COND, MSG)                                         \
+  do {                                                                 \
+    if ( !(COND) ) {                                                   \
+      std::cerr << "Zorba Internal Fatal Error in " << __FILE__ << ":" \
+                << __LINE__ << std::endl << MSG << std::endl;          \
+      abort();                                                         \
+    }                                                                  \
+  } while (0)
 
-}
+} // namespace zorba
 
 #endif
+/* vim:set et sw=2 ts=2: */

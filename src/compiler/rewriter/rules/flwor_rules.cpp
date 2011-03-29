@@ -832,7 +832,7 @@ static bool is_subseq_pred(
         xqtref_t valType = tm->create_named_type(val->getType(),
                                                  TypeConstants::QUANT_ONE,
                                                  posConstExpr->get_loc(),
-                                                 XPTY0004);
+                                                 err::XPTY0004);
 
         if (TypeOps::is_subtype(tm, *valType, *rtm.INTEGER_TYPE_ONE) &&
             val->getIntegerValue() >= xs_integer::parseInt(1))

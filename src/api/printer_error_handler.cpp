@@ -13,89 +13,62 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <zorba/printer_error_handler.h>
 
 #include <iostream>
-#include <zorba/exception.h>
+
+#include <zorba/printer_error_handler.h>
+#include <zorba/xquery_exception.h>
 
 namespace zorba {
 
-  PrinterErrorHandler::PrinterErrorHandler(std::ostream& os, bool aPrintAsXml, bool aIndent)
-    : theOStream(os),
-      thePrintAsXml(aPrintAsXml),
-      theIndent(aIndent)
-  {
-  }
+PrinterErrorHandler::PrinterErrorHandler(std::ostream& os, bool aPrintAsXml, bool aIndent)
+  : theOStream(os),
+    thePrintAsXml(aPrintAsXml),
+    theIndent(aIndent)
+{
+}
 
-  void
-  printerErrorHandlerHelper(const QueryException& aException,
-                            std::ostream&         aOut,
-                            bool                  aIndent)
-  {
-    aOut << "<errors>";
-    if( aIndent ) aOut << std::endl << "  ";
-    //code
-    aOut << "<error code='" << aException.getErrorCodeAsString(aException.getErrorCode()) << "'>";
-    if( aIndent ) aOut << std::endl << "    ";
+PrinterErrorHandler::~PrinterErrorHandler() {
+  // out-of-line since it's virtual
+}
+
+void
+printerErrorHandlerHelper(const ZorbaException& ex,
+                          std::ostream&         o,
+                          bool                  aIndent)
+{
+  o << "<errors>";
+  if ( aIndent ) o << std::endl << "  ";
+  //code
+  o << "<error code='" << ex.error().qname() << "'>";
+
+  XQueryException const *xex = dynamic_cast<XQueryException const*>( &ex );
+  if ( xex && xex->has_source() ) {
     //location
-    aOut << "<location module='" << aException.getQueryURI();
-    aOut << "' lineStart='" << aException.getLineBegin();
-    aOut << "' columnStart='" << aException.getColumnBegin();
-    aOut << "' lineEnd='" << aException.getLineBegin();
-    aOut << "' columnEnd='" << aException.getColumnBegin() << "' />";
-    if( aIndent ) aOut << std::endl << "    ";
-    //description
-    aOut << "<description>" << aException.getDescription().formatAsXML() << "</description>";
-    if( aIndent ) aOut << std::endl << "  ";
-    aOut << "</error>";
-    if( aIndent ) aOut << std::endl;
-    aOut << "</errors>";
+    if ( aIndent ) o << std::endl << "    ";
+    o << "<location"
+      << "' line='" << xex->source_line()
+      << "' column='" << xex->source_column()
+      << "' />";
   }
 
-  void
-  PrinterErrorHandler::staticError ( const StaticException& aStaticException )
-  {
-    if (thePrintAsXml)
-      printerErrorHandlerHelper(static_cast<QueryException>(aStaticException), theOStream, theIndent);
-    else
-      theOStream << aStaticException;
-  }
+  if ( aIndent ) o << std::endl << "    ";
+  //description
+  o << "<description>" << ex.what() << "</description>";
+  if ( aIndent ) o << std::endl << "  ";
+  o << "</error>";
+  if ( aIndent ) o << std::endl;
+  o << "</errors>";
+}
 
-  void
-  PrinterErrorHandler::dynamicError ( const DynamicException& aDynamicException )
-  {
-    if (thePrintAsXml)
-      printerErrorHandlerHelper(static_cast<QueryException>(aDynamicException), theOStream, theIndent);
-    else
-      theOStream << aDynamicException;
-  }
+void
+PrinterErrorHandler::error( const ZorbaException& ex )
+{
+  if (thePrintAsXml)
+    printerErrorHandlerHelper( ex, theOStream, theIndent );
+  else
+    theOStream << ex;
+}
 
-  void
-  PrinterErrorHandler::typeError ( const TypeException& aTypeException )
-  {
-    if (thePrintAsXml)
-      printerErrorHandlerHelper(static_cast<QueryException>(aTypeException), theOStream, theIndent);
-    else
-      theOStream << aTypeException;
-  }
-
-  void
-  PrinterErrorHandler::serializationError ( const SerializationException& aSerializationException )
-  {
-    theOStream << aSerializationException;
-  }
-
-  void
-  PrinterErrorHandler::userError ( const  UserException& aUserError )
-  {
-    theOStream << aUserError;
-  }
-
-  void
-  PrinterErrorHandler::systemError ( const SystemException& aSystemException )
-  {
-    theOStream << aSystemException;
-  }
-
-} /* namespace zorba */
-
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

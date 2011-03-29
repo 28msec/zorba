@@ -25,7 +25,7 @@
 
 #include "zorbatypes/representations.h"
 
-#include "zorbaerrors/errors.h"
+#include "zorbaerrors/error_manager.h"
 
 #include "functions/signature.h"
 
@@ -283,7 +283,7 @@ class treat_expr : public cast_base_expr
   friend class expr;
 
 protected:
-  XQUERY_ERROR theError;
+  Error const *theError;
   bool         theCheckPrime;
   store::Item_t theFnQName;    // Stores the QName of the function, if the promote expr
                                // is used to cast the function's body to its result type
@@ -300,11 +300,11 @@ public:
         const QueryLoc&,
         expr_t,
         xqtref_t,
-        XQUERY_ERROR,
+        Error const&,
         bool check_prime = true,
         store::Item_t fnQname = NULL);
 
-  XQUERY_ERROR get_err() const { return theError; }
+  Error const& get_err() const { return *theError; }
 
   bool get_check_prime() const { return theCheckPrime; }
 

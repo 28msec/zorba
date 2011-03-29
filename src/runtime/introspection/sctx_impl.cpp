@@ -16,7 +16,7 @@
 #include <fstream>
 
 #include "zorbaerrors/Assert.h"
-#include "zorbaerrors/error_messages.h"
+#include "zorbaerrors/error_manager.h"
 #include "zorbatypes/numconversions.h"
 
 #include "system/globalenv.h"
@@ -256,7 +256,7 @@ bool StaticNamespaceBindingIterator::nextImpl(
 
   consumeNext(lName, theChildren[0].getp(), aPlanState);
 
-  if (theSctx->lookup_ns(ns, lName->getStringValue(), loc, MAX_ZORBA_ERROR_CODE))
+  if (theSctx->lookup_ns(ns, lName->getStringValue(), loc, err::XQP0000_NO_ERROR))
   {
     STACK_PUSH(GENV_ITEMFACTORY->createString(aResult, ns), state);
   }

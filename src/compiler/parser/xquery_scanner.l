@@ -20,6 +20,7 @@
 #pragma warning(disable: 4786)
 #endif
 
+#include <zorba/error_list.h>
 
 #include "zorbatypes/representations.h"
 #include "common/common.h"
@@ -118,7 +119,7 @@ int checkXmlRefs(zorba::ZorbaParserError** err, char* yytext, int yyleng, zorba:
       zorba::unicode::code_point cp = zorba::utf8::next_char(temp);
       if (!zorba::xml::is_valid(cp))
       {
-        *err = scanner->getDriver()->parserErr(std::string("Invalid XML v1.0 codepoint in the string literal \"") + yytext + "\"", *yylloc, XQST0090);
+        *err = scanner->getDriver()->parserErr(std::string("Invalid XML v1.0 codepoint in the string literal \"") + yytext + "\"", *yylloc, zorba::err::XQST0090);
         return 1;
       }
     }

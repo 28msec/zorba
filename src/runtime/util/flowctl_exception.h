@@ -13,32 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #ifndef FLOWCTL_EXCEPTION
+#define FLOWCTL_EXCEPTION 
+
 #include "common/common.h"
-#include "zorbaerrors/errors.h"
+#include "store/api/iterator.h"
 
 namespace zorba {
 
-  class FlowCtlException : public error::ZorbaInternalException {
-  public:
-    enum action {
-      BREAK, CONTINUE, EXIT, INTERRUPT
-    };
-  public:
-    enum action act;
-
-    FlowCtlException (enum action act_)
-      : act (act_) 
-    {}
+  // TODO: should derive from std::exception
+class FlowCtlException {
+public:
+  enum action {
+    BREAK, CONTINUE, EXIT, INTERRUPT
   };
 
-  class ExitException : public FlowCtlException {
-  public:
-    virtual ~ExitException();
-    store::Iterator_t val;
-    ExitException (store::Iterator_t val_);
-  };
-}
+  action act;
 
-#define FLOWCTL_EXCEPTION 
-#endif // FLOWCTL_EXCEPTION
+  FlowCtlException( action act_ ) : act( act_ )
+  {
+  }
+};
+
+class ExitException : public FlowCtlException {
+public:
+  virtual ~ExitException();
+  store::Iterator_t val;
+  ExitException (store::Iterator_t val_);
+};
+
+} // namespace zorba
+
+#endif /* FLOWCTL_EXCEPTION */
+/* vim:set et sw=2 ts=2: */

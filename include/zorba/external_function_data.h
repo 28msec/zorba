@@ -18,7 +18,6 @@
 
 #include <zorba/config.h>
 #include <zorba/api_shared_types.h>
-#include <zorba/exception.h>
 
 namespace zorba {
 
@@ -27,12 +26,6 @@ namespace zorba {
   class ZORBA_DLL_PUBLIC ExternalFunctionData 
   {
     public:
-      /**
-       * @deprecated use error with no, one, two, or three arguments instead.
-       */
-      static ZorbaException
-      createZorbaException(const XQUERY_ERROR& aError, const String& aDescription,
-                           const String& aFileName, unsigned int aFileLineNumber);
 
       /** \brief Raise an error from an external function.
        *

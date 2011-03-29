@@ -58,8 +58,7 @@ namespace zorba {
        *             the path.
        * @return Returns a normalized and optionally a resolved path.
        */
-      static std::string normalize_path(std::string in, std::string base = "")
-        throw (ZorbaException);
+      static std::string normalize_path(std::string in, std::string base = "");
 
       // from current dir
       filesystem_path ();

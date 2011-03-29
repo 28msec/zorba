@@ -23,6 +23,7 @@
 #include <zorba/uri_resolvers.h>
 #include <zorba/declared_collection.h>
 #include <zorba/declared_index.h>
+#include <zorba/xquery_exception.h>
 
 
 using namespace zorba;
@@ -49,12 +50,12 @@ context_example_1(Zorba* aZorba)
 
     std::cout << lQuery << std::endl;
 
-  } catch (DynamicException &e) {
+  } catch (ZorbaException &e) {
     std::cerr << e << std::endl;
     return false;
   }
 
-	return true;
+  return true;
 }
 
 /**
@@ -72,7 +73,7 @@ context_example_2(Zorba* aZorba)
 
     std::cout << lQuery << std::endl;
 
-  } catch (DynamicException &e) {
+  } catch (ZorbaException &e) {
     std::cerr << e << std::endl;
     return true;
   }
@@ -103,7 +104,7 @@ context_example_3(Zorba* aZorba)
 
     std::cout << lQuery << std::endl;
 
-  } catch (DynamicException &e) {
+  } catch (ZorbaException &e) {
     std::cerr << e << std::endl;
     return false;
   }
@@ -190,7 +191,7 @@ context_example_5(Zorba* aZorba)
 
   try {
     std::cout << lQuery << std::endl;
-  } catch (DynamicException& e) {
+  } catch (ZorbaException& e) {
     std::cerr << e << std::endl;
     return false;
   }
@@ -221,7 +222,7 @@ context_example_6(Zorba* aZorba)
 
     std::cout << lQuery << std::endl;
 
-  } catch (DynamicException &e) {
+  } catch (ZorbaException &e) {
     std::cerr << e << std::endl;
     return false;
   }
@@ -245,7 +246,7 @@ context_example_7(Zorba* aZorba)
 
     std::cout << lQuery << std::endl;
 
-  } catch (QueryException &e) {
+  } catch (XQueryException &e) {
     std::cerr << e << std::endl;
     return true;
   }
@@ -330,7 +331,7 @@ context_example_10(Zorba* aZorba)
     {
       XQuery_t lQuery = aZorba->compileQuery("fn:doc('test.xml')", lContext);
     }
-    catch (StaticException &se)
+    catch (ZorbaException const &se)
     {
       std::cerr << se << std::endl;
       return true;
@@ -460,7 +461,7 @@ context_example_11(Zorba* aZorba)
       return false;
     }
 
-  } catch (QueryException &e) {
+  } catch (XQueryException &e) {
     std::cerr << e << std::endl;
     return false;
   }
@@ -496,7 +497,7 @@ context_example_12(Zorba* aZorba)
     std::cout << lTraceString << std::endl;
     return true;
 
-  } catch (QueryException &e) {
+  } catch (XQueryException &e) {
     std::cerr << e << std::endl;
     return false;
   }
@@ -553,7 +554,7 @@ context_example_13(Zorba* aZorba)
 
     return c.b && i.b;
 
-  } catch (QueryException &e) {
+  } catch (XQueryException &e) {
     std::cerr << e << std::endl;
     return false;
   }
@@ -637,3 +638,5 @@ context(int argc, char* argv[])
   zorba::StoreManager::shutdownStore(lStore);
   return 0;
 }
+
+/* vim:set et sw=2 ts=2: */

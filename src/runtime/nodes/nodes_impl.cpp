@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "runtime/nodes/nodes.h"
+#include "zorbamisc/ns_consts.h"
 
 #include "system/globalenv.h"
 

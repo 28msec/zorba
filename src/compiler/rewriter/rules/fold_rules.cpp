@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-#include "zorbaerrors/errors.h"
-#include "zorbaerrors/error_messages.h"
+#include "zorbaerrors/error_manager.h"
 
 #include "system/globalenv.h"
 
@@ -101,7 +100,7 @@ static expr_t execute (
 
     return NULL;
   }
-  catch (error::ZorbaError& /*e*/)
+  catch (ZorbaException const&)
   {
     node->setUnfoldable(ANNOTATION_TRUE_FIXED);
     node->setNonDiscardable(ANNOTATION_TRUE_FIXED);
@@ -110,7 +109,7 @@ static expr_t execute (
     // we had to disable folding of errors because the FnErrorIterator
     // was erroneously used. It always raises a ZorbaUserError (which is not correct).
 #if 0
-    XQUERY_ERROR lErrorCode = e.theErrorCode;
+    Error lErrorCode = e.theErrorCode;
     QueryLoc loc;
     loc.setLineBegin(e.theQueryLine);
     loc.setColumnBegin(e.theQueryColumn);
@@ -772,7 +771,7 @@ static expr_t partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
                           *tm->create_named_type(val->getType(),
                                                  TypeConstants::QUANT_ONE,
                                                  fo.get_loc(),
-                                                 XPTY0004),
+                                                 err::XPTY0004),
                           *GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
                           fo.get_loc()))
   {

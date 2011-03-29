@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "api/functionimpl.h"
 
+#include "api/functionimpl.h"
 #include "api/zorbaimpl.h"
 #include "functions/function.h"
-#include "zorbaerrors/errors.h"
+#include "zorbaerrors/error_manager.h"
 
 namespace zorba 
 {
@@ -41,7 +41,7 @@ Item FunctionImpl::getFunctionName() const
     Item lFunctionName(theFunction->getName());
     return lFunctionName;
   } 
-  catch (error::ZorbaError& e) 
+  catch (ZorbaException const& e) 
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }

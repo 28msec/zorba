@@ -18,6 +18,7 @@
 
 #include <zorba/zorba.h>
 #include <zorba/zorbastring.h>
+#include <zorba/zorba_exception.h>
 #include "util/ascii_util.h"
 #include "zorba/util/uri.h"
 #include <cassert>
@@ -74,7 +75,7 @@ TestDocumentURIResolver::resolve(const Item& aURI,
   }
   catch (ZorbaException &e) {
     lResult->setError(URIResolverResult::UR_FODC0002);
-    lResult->setErrorDescription(e.getDescription());
+    lResult->setErrorDescription(e.what());
   }
   return std::auto_ptr<DocumentURIResolverResult>(lResult.release());
 }

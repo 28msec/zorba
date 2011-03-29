@@ -19,8 +19,10 @@
 #include <string>
 
 #include <zorba/zorba.h>
+#include <zorba/iterator.h>
 #include <zorba/default_error_handler.h>
 #include <zorba/store_manager.h>
+#include <zorba/zorba_exception.h>
 
 using namespace zorba;
 
@@ -65,8 +67,7 @@ public:
   MyChainingErrorHandler(const std::string& aIdentifier) 
     : theIdentifier(aIdentifier) {}
 
-  void
-  typeError(const TypeException& aTypeError ) 
+  void error(const ZorbaException& aTypeError ) 
   { 
     std::cerr << "error handler: " << theIdentifier << " error " << aTypeError << std::endl;
   }

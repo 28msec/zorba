@@ -22,7 +22,7 @@
 
 #include <zorba/zorba.h>
 #include <zorba/store_manager.h>
-
+#include <zorba/zorba_exception.h>
 
 using namespace zorba;
 

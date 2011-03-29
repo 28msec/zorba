@@ -38,27 +38,27 @@ namespace zorba
 ********************************************************************************/
 static void handle_resolver_error(URIResolverResult* aResolverResult)
 {
-  XQUERY_ERROR lError = XQ_NO_ERROR;
+  Error const *lError = &err::XQP0000_NO_ERROR;
   switch (aResolverResult->getError()) 
   {
-  case URIResolverResult::UR_FODC0002: lError = FODC0002; break;
-  case URIResolverResult::UR_FODC0003: lError = FODC0003; break;
-  case URIResolverResult::UR_FODC0004: lError = FODC0004; break;
-  case URIResolverResult::UR_FODC0005: lError = FODC0005; break;
-  case URIResolverResult::UR_XQST0046: lError = XQST0046; break;
-  case URIResolverResult::UR_XQST0088: lError = XQST0088; break;
-  case URIResolverResult::UR_XQST0057: lError = XQST0057; break;
-  case URIResolverResult::UR_XQST0059: lError = XQST0059; break;
-  case URIResolverResult::UR_NOERROR: ZORBA_ASSERT(false); break; // avoid warnings => handled in the if-statement above
+    case URIResolverResult::UR_FODC0002: lError = &err::FODC0002; break;
+    case URIResolverResult::UR_FODC0003: lError = &err::FODC0003; break;
+    case URIResolverResult::UR_FODC0004: lError = &err::FODC0004; break;
+    case URIResolverResult::UR_FODC0005: lError = &err::FODC0005; break;
+    case URIResolverResult::UR_XQST0046: lError = &err::XQST0046; break;
+    case URIResolverResult::UR_XQST0088: lError = &err::XQST0088; break;
+    case URIResolverResult::UR_XQST0057: lError = &err::XQST0057; break;
+    case URIResolverResult::UR_XQST0059: lError = &err::XQST0059; break;
+    case URIResolverResult::UR_NOERROR: ZORBA_ASSERT(false); break; // avoid warnings => handled in the if-statement above
   }
   zorba::String lErrorDescription = aResolverResult->getErrorDescription();
   if (lErrorDescription.length() != 0) 
   {
-    ZORBA_ERROR_DESC(lError, Unmarshaller::getInternalString(lErrorDescription));
+    throw XQUERY_EXCEPTION_VAR( *lError, ERROR_PARAMS( Unmarshaller::getInternalString(lErrorDescription) ));
   }
   else
   {
-    ZORBA_ERROR(lError);
+    throw XQUERY_EXCEPTION_VAR( *lError );
   }
 }
 
@@ -256,4 +256,5 @@ std::istream* ModuleURIResolverWrapper::resolve(
   return 0;
 }
 
-} /* namespace zorba */
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

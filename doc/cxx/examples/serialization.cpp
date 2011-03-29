@@ -19,8 +19,8 @@
 #include <zorba/zorba.h>
 #include <zorba/serializer.h>
 #include <zorba/singleton_item_sequence.h>
-
 #include <zorba/store_manager.h>
+#include <zorba/zorba_exception.h>
 
 using namespace zorba;
 

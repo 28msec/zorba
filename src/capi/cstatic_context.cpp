@@ -640,7 +640,7 @@ namespace zorbac {
     try {
       CStaticContext* me = CStaticContext::get(context);
       delete me;
-    } catch (ZorbaException&) { 
+    } catch (ZorbaException const&) { 
       assert(false);
     } catch (...) { 
       assert(false);

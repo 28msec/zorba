@@ -662,7 +662,7 @@ public:
 
   void checkNamespaceConflict(
         const store::Item* qname,
-        XQUERY_ERROR       ecode) const;
+        Error const&       ecode) const;
 
   void checkUniqueAttr(const store::Item* attrName) const;
 

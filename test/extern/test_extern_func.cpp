@@ -7,6 +7,7 @@
 #include <string.h>
 
 #include <zorba/zorba.h>
+#include <zorba/zorba_exception.h>
 #include <zorba/external_module.h>
 #include <zorba/external_function.h>
 #include <zorba/empty_sequence.h>

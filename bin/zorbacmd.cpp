@@ -30,6 +30,8 @@
 
 #include <zorba/zorba.h>
 #include <zorba/file.h>
+#include <zorba/zorba_exception.h>
+#include <zorba/xquery_exception.h>
 
 #include <zorba/store_manager.h>
 
@@ -109,7 +111,7 @@ populateStaticContext(
     if (aProperties.baseUri().size() != 0 )
       aStaticContext->setBaseURI( aProperties.baseUri() );
   }
-  catch (zorba::ZorbaException& ze) {
+  catch (zorba::ZorbaException const& ze) {
     std::cerr << ze << std::endl;
     return false;
   }
@@ -118,7 +120,7 @@ populateStaticContext(
   {
     try {
       aStaticContext->addCollation( aProperties.defaultCollation() );
-    } catch (zorba::ZorbaException&) {
+    } catch (zorba::ZorbaException const&) {
       std::cerr << "the given collation {" << aProperties.defaultCollation() << "} is not a valid collation." << std::endl;
       return false;
     }
@@ -134,7 +136,7 @@ populateStaticContext(
         zorba::Zorba* lZorba = zorba::Zorba::getInstance(0);
         Item lQName = lZorba->getItemFactory()->createQName(lIter->clark_qname);
         aStaticContext->declareOption(lQName, lIter->value);
-      } catch (zorba::ZorbaException& e) {
+      } catch (zorba::ZorbaException const& e) {
         std::cerr << "unable to set static context option with qname "
                   << lIter->clark_qname << std::endl;
         return false;
@@ -555,12 +557,12 @@ compileAndExecute(
           timing.stopTimer(TimingInfo::COMP_TIMER, i);
         }
       }
-      catch (zorba::QueryException& qe) 
+      catch (zorba::XQueryException const& qe) 
       {
         ErrorPrinter::print(qe, std::cerr, properties.printErrorsAsXml(), lIndent);
         return 11;
       }
-      catch (zorba::ZorbaException& ze) 
+      catch (zorba::ZorbaException const& ze) 
       {
         std::cerr << ze << std::endl;
         return 12;
@@ -578,12 +580,12 @@ compileAndExecute(
           return 21;
         }
       }
-      catch (zorba::QueryException& qe)
+      catch (zorba::XQueryException const& qe)
       {
         ErrorPrinter::print(qe, std::cerr, properties.printErrorsAsXml(), lIndent);
         return 22;
       }
-      catch (zorba::ZorbaException& ze)
+      catch (zorba::ZorbaException const& ze)
       {
         std::cerr << ze << std::endl;
         return 23;
@@ -627,12 +629,12 @@ compileAndExecute(
           timing.elapsedLoadCputime += query->getDocLoadingUserTime();
         }
       }
-      catch (zorba::QueryException& qe)
+      catch (zorba::XQueryException const& qe)
       {
         ErrorPrinter::print(qe, std::cerr, properties.printErrorsAsXml(), lIndent);
         return 31;
       }
-      catch (zorba::ZorbaException& ze)
+      catch (zorba::ZorbaException const& ze)
       {
         std::cerr << ze << std::endl;
         return 32;
@@ -826,7 +828,7 @@ _tmain(int argc, _TCHAR* argv[])
 
         lQuery->parse (*qfile);
       }
-      catch (zorba::ZorbaException& ze) 
+      catch (zorba::ZorbaException const& ze) 
       {
         std::cerr << ze << std::endl;
         return 6;
@@ -847,7 +849,7 @@ _tmain(int argc, _TCHAR* argv[])
           aQuery->parse(*qfile);
           qfile->clear();
           qfile->seekg(0); // go back to the beginning
-        } catch (zorba::QueryException& qe) {
+        } catch (zorba::XQueryException const& qe) {
           ErrorPrinter::print(qe, std::cerr, lProperties.printErrorsAsXml(), lProperties.indent());
           return 6;
         }
@@ -955,7 +957,7 @@ _tmain(int argc, _TCHAR* argv[])
               lHandler.reset(new DebuggerHandler(lZorbaInstance, lClient.get(), lFileName));
               lClient->registerEventHandler( lHandler.get() );
               break;
-            } catch( std::exception &e ) {
+            } catch( std::exception const &e ) {
               if ( i < 2 ){ continue; }
               std::cerr << "Could not start the debugger: {" << e.what() << "}" << std::endl;
             }
@@ -974,12 +976,12 @@ _tmain(int argc, _TCHAR* argv[])
         }
 
       }
-      catch (zorba::QueryException& qe)
+      catch (zorba::XQueryException const& qe)
       {
         ErrorPrinter::print(qe, std::cerr, lProperties.printErrorsAsXml(), lProperties.indent());
         return 5;
       }
-      catch (zorba::ZorbaException& ze) 
+      catch (zorba::ZorbaException const& ze) 
       {
         std::cerr << ze << std::endl;
         return 6;

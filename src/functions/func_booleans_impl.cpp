@@ -28,6 +28,7 @@
 #include "store/api/item_factory.h"
 
 #include "types/typeops.h"
+#include "zorbamisc/ns_consts.h"
 
 
 namespace zorba

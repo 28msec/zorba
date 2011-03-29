@@ -22,7 +22,7 @@
 #include <zorba/external_module.h>
 #include <zorba/module_import_checker.h>
 #include <zorba/util/file.h>
-
+#include <zorba/zorbastring.h>
 
 #include "util/string_util.h"
 #include "util/uri_util.h"
@@ -196,12 +196,12 @@ StandardCollectionURIResolver::resolve(
       lURI = URI(lBaseURI, lUriString);
     }
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
     ZORBA_ERROR_DESC_OSS(FODC0004,
                          "URI " << lUriString
                          << " is not valid or could not be resolved. Reason: "
-                         << e.theDescription);
+                         << e.what());
   }
 
   // try to get it from the store again

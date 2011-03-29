@@ -20,7 +20,8 @@
 
 #include <zorba/zorba.h>
 #include <zorba/store_manager.h>
-
+#include <zorba/zorba_exception.h>
+#include <zorba/error_list.h>
 #include <zorba/uri_resolvers.h>
 
 using namespace zorba;
@@ -216,7 +217,7 @@ bool test_unresolved_module_uri(Zorba* aZorba)
     XQuery_t lQuery = aZorba->compileQuery("import module namespace lm='http://www.zorba-xquery.com/foobar'; lm:foo()", lContext); 
     std::cout << lQuery << std::endl;
   } catch (ZorbaException& e) {
-    std::cerr << e.getDescription() << std::endl;
+    std::cerr << e.what() << std::endl;
     return false;
   }
   return true;
@@ -236,10 +237,10 @@ bool test_unresolved_module_uri2(Zorba* aZorba)
     XQuery_t lQuery = aZorba->compileQuery("import module namespace lm='http://www.zorba-xquery.com/foobar3'; lm:foo()", lContext); 
     std::cout << lQuery << std::endl;
   } catch (ZorbaException& e) {
-    if(e.getErrorCode() == XQST0059) {
+    if(e.error() == err::XQST0059) {
       return true;
     }
-    std::cerr << e.getDescription() << std::endl;
+    std::cerr << e.what() << std::endl;
   }
   return false;
 };
@@ -258,7 +259,7 @@ bool test_unresolved_schema_uri(Zorba* aZorba)
     XQuery_t lQuery = aZorba->compileQuery("import schema namespace lm='http://www.zorba-xquery.com/schemas/helloworld'; validate{ <p>Hello World!</p> }", lContext); 
     std::cout << lQuery << std::endl;
   } catch (ZorbaException& e) {
-    std::cerr << e.getDescription() << std::endl;
+    std::cerr << e.what() << std::endl;
     return false;
   }
 
@@ -279,10 +280,10 @@ bool test_unresolved_schema_uri2(Zorba* aZorba)
     XQuery_t lQuery = aZorba->compileQuery("import schema namespace lm='http://www.zorba-xquery.com/schemas/helloworld3'; validate{ <p>Hello World!</p> }", lContext); 
     std::cout << lQuery << std::endl;
   } catch (ZorbaException& e) {
-    if(e.getErrorCode() == XQST0059) {
+    if(e.error() == err::XQST0059) {
       return true;
     }
-    std::cerr << e.getDescription() << std::endl;
+    std::cerr << e.what() << std::endl;
   }
 
   return false;

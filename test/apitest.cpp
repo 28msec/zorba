@@ -29,11 +29,10 @@
 #include "api/unmarshaller.h"
 #include "system/properties.h"
 
-#include <zorba/util/path.h>
-
-#include "zorba/exception.h"
-
 #include <zorba/store_manager.h>
+#include <zorba/iterator.h>
+#include <zorba/util/path.h>
+#include <zorba/xquery_exception.h>
 
 // Global variable g_abort_on_error is used to generate an abort() when an
 // error is encountered, to aid debugging
@@ -170,9 +169,6 @@ int _tmain(int argc, _TCHAR* argv[])
 
   try {
     query->compile(*qfile, chints);
-  } catch (QueryException& e) {
-    cerr << "Compilation error: " << e << endl;
-    return 1;
   } catch (ZorbaException& e) {
     // no need to close because the object is not valid
     cerr << "Compilation error: " << e << endl;
@@ -235,11 +231,6 @@ int _tmain(int argc, _TCHAR* argv[])
         }
         result->close();
       }
-    }
-    catch (QueryException& e)
-    {
-      cerr << "Execution error: " << e << endl;
-      return_code = 2;
     }
     catch (ZorbaException &e)
     {

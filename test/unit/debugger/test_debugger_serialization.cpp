@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include <iostream>
 #include <sstream>
 
@@ -21,6 +22,8 @@
 #include <zorba/external_function.h>
 #include <zorba/serialization_callback.h>
 #include <zorba/store_manager.h>
+#include <zorba/xquery_exception.h>
+#include <zorba/error_list.h>
 
 #ifdef WIN32
 #  include <direct.h>
@@ -107,9 +110,9 @@ debugger_serialization_example_2(Zorba* aZorba)
       std::cout << lQuery << std::endl;
     }
 
-  } catch (QueryException& qe) {
+  } catch (XQueryException& qe) {
     // error "Collection guestbook:entries does not exist." is OK
-    if (qe.getErrorCode() != XDDY0003_COLLECTION_DOES_NOT_EXIST) {
+    if (qe.error() != err::XDDY0003_COLLECTION_DOES_NOT_EXIST) {
       std::cerr << qe << std::endl;
       return false;
     }

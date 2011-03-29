@@ -36,7 +36,6 @@
 #include <iostream>
 #include <sstream>
 
-#include "zorbaerrors/errors.h"
 #include "zorbaerrors/Assert.h"
 #include "zorbaerrors/error_manager.h"
 #include "zorbatypes/xerces_xmlcharray.h"
@@ -1472,12 +1471,12 @@ XMLElementDecl *SchemaValidatorFilter::createElementDecl(
 
       if ( theStrictValidation && currentScope == Grammar::TOP_LEVEL_SCOPE )
       {
-        XQUERY_ERROR errorCode = XQDY0084;
+        Error const& errorCode = err::XQDY0084;
         std::ostringstream msg;
         msg << "Schema global element definition not found: " <<
           StrX(theLocalname.getRawBuffer()) << " @ " <<
           StrX(fURIStringPool->getValueForId(uriId)) << ".";
-        ZORBA_ERROR_LOC_DESC( errorCode, theLoc, msg.str());
+        ZORBA_ERROR_VAR_LOC_DESC( errorCode, theLoc, msg.str());
       }
       else
         fValidator->emitError(errorCode, elemDecl->getFullName());

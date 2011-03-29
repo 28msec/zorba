@@ -26,8 +26,6 @@
 #include <string.h>
 #include <time.h>
 
-#include <zorba/error.h>
-
 #include "zorbamisc/config/platform.h"
 
 
@@ -506,17 +504,14 @@ void serialize_array(Archiver &ar, unsigned char *obj, int len);//like char p[20
     throw;                                          \
   }
 */
-  void report_error(   XQUERY_ERROR        aErrorCode,
-                      const std::string&   aDesc,
-                      const std::string&   aFileName,
-                      int                 aLineNumber);
 
-}
-}//end namespace serialization
+} // namespace serialization
+} // namespace zorba
+
 #endif
-
 /*
  * Local variables:
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */

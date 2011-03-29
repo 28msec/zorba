@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #ifndef ZORBA_PRINTER_ERROR_HANDLER_API_H
 #define ZORBA_PRINTER_ERROR_HANDLER_API_H
 
@@ -21,39 +22,22 @@
 
 namespace zorba {
 
-  class PrinterErrorHandler : public ErrorHandler
-  {
-    public:
-      PrinterErrorHandler(std::ostream&, bool aPrintAsXml = false, bool aIndenXml = false);
+class PrinterErrorHandler : public ErrorHandler
+{
+public:
+  PrinterErrorHandler(std::ostream&, bool aPrintAsXml = false, bool aIndenXml = false);
 
-      virtual ~PrinterErrorHandler() {}
+  virtual ~PrinterErrorHandler();
 
-      virtual void
-      staticError ( const StaticException& aStaticError );
+  virtual void error( ZorbaException const &exception );
 
-      virtual void
-      dynamicError ( const DynamicException& aDynamicError );
+protected:
+  std::ostream& theOStream;
+  bool          thePrintAsXml;
+  bool          theIndent;
+};
 
-      virtual void
-      typeError ( const TypeException& aTypeError );
+} // namespace zorba
 
-      virtual void
-      serializationError ( const SerializationException& aSerializationError );
-
-      virtual void
-      userError ( const  UserException& aUserError );
-
-      virtual void
-      systemError ( const SystemException& aSystemError );
-
-    protected:
-      std::ostream& theOStream;
-      bool          thePrintAsXml;
-      bool          theIndent;
-
-  }; /* class DefaultErrorHandler */
-
-} /* namespace zorba */
-
-#endif
-
+#endif /* ZORBA_PRINTER_ERROR_HANDLER_API_H */
+/* vim:set et sw=2 ts=2: */

@@ -13,13 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include <sstream>
 #include <iostream>
 
 #include <zorba/zorba.h>
+#include <zorba/xquery_exception.h>
+#include <zorba/xquery_stack_trace.h>
 #include <zorba/store_manager.h>
 
 using namespace zorba;
+
+static bool equals( XQueryStackTrace::Entry const &entry, char const *fn_name,
+                    XQueryStackTrace::line_type line,
+                    XQueryStackTrace::column_type col ) {
+  return entry.getFnName() == fn_name
+      && entry.getLine() == line
+      && entry.getColumn() == col;
+}
+
+#define XQUERY_LOCAL_FUNCTIONS_NS \
+  "{http://www.w3.org/2005/xquery-local-functions}"
 
 
 /**
@@ -28,51 +42,35 @@ using namespace zorba;
   */
 bool test_call_stack1(Zorba* aZorba)
 {
-  bool lResult = true;
   std::stringstream lStream;
-  lStream << "declare function local:test($a)" << std::endl;
-  lStream << "{" << std::endl;
-  lStream << "  fn:error(xs:QName(\"local:blubb\"))" << std::endl;
-  lStream << "};" << std::endl;
-  lStream << "" << std::endl;
-  lStream << "declare function local:test1($a)" << std::endl;
-  lStream << "{" << std::endl;
-  lStream << "  local:test($a)" << std::endl;
-  lStream << "};" << std::endl;
-  lStream << "" << std::endl;
-  lStream << "local:test1(\"blubb\")" << std::endl;
+  lStream << "declare function local:test($a)" "\n";
+  lStream << "{" "\n";
+  lStream << "  fn:error(xs:QName(\"local:blubb\"))" "\n";
+  lStream << "};" "\n";
+  lStream << "" "\n";
+  lStream << "declare function local:test1($a)" "\n";
+  lStream << "{" "\n";
+  lStream << "  local:test($a)" "\n";
+  lStream << "};" "\n";
+  lStream << "" "\n";
+  lStream << "local:test1(\"blubb\")" "\n";
   XQuery_t lQuery = aZorba->compileQuery(lStream);
   try {
     std::stringstream lQueryResult;
     lQueryResult << lQuery;
-  } catch (ZorbaException& e) {
-    ZorbaException::StackTrace_t lTrace = e.getStackTrace();
+  } catch (XQueryException const& e) {
+    XQueryStackTrace const &lTrace = e.query_trace();
     if (lTrace.size() != 2)
       return false;
-    Item lQName = lTrace[0].getFunctionName();
-    if (lQName.getNamespace() != "http://www.w3.org/2005/xquery-local-functions")
-      lResult = false;
-    if (lQName.getLocalName() != "test")
-      lResult = false;
-    QueryLocation_t lLocation = lTrace[0].getLocation();
-    if (lLocation->getLineBegin() != 8)
-      lResult = false;
-    if (lLocation->getColumnBegin() != 3)
-      lResult = false;
-    lQName = lTrace[1].getFunctionName();
-    lLocation = lTrace[1].getLocation();
-    if (lQName.getNamespace() != "http://www.w3.org/2005/xquery-local-functions")
-      lResult = false;
-    if (lQName.getLocalName() != "test1")
-      lResult = false;
-    if (lLocation->getLineBegin() != 11)
-      lResult = false;
-    if (lLocation->getColumnBegin() != 1)
-      lResult = false;
+    XQueryStackTrace::const_iterator it = lTrace.begin();
+    if ( !equals( *it, XQUERY_LOCAL_FUNCTIONS_NS "test", 8, 3 ) )
+      return false;
+    if ( !equals( *++it, XQUERY_LOCAL_FUNCTIONS_NS "test1", 11, 1 ) )
+      return false;
   } catch (...) {
-    lResult = false;
+    return false;
   }
-  return lResult;
+  return true;
 }
 
 /**
@@ -81,51 +79,35 @@ bool test_call_stack1(Zorba* aZorba)
   */
 bool test_call_stack2(Zorba* aZorba)
 {
-  bool lResult = true;
   std::stringstream lStream;
-  lStream << "declare function local:test($a)" << std::endl;
-  lStream << "{" << std::endl;
-  lStream << "  blubb" << std::endl;
-  lStream << "};" << std::endl;
-  lStream << "" << std::endl;
-  lStream << "declare function local:test1($a)" << std::endl;
-  lStream << "{" << std::endl;
-  lStream << "  local:test($a)" << std::endl;
-  lStream << "};" << std::endl;
-  lStream << "" << std::endl;
-  lStream << "local:test1(\"blubb\")" << std::endl;
+  lStream << "declare function local:test($a)" "\n";
+  lStream << "{" "\n";
+  lStream << "  blubb" "\n";
+  lStream << "};" "\n";
+  lStream << "" "\n";
+  lStream << "declare function local:test1($a)" "\n";
+  lStream << "{" "\n";
+  lStream << "  local:test($a)" "\n";
+  lStream << "};" "\n";
+  lStream << "" "\n";
+  lStream << "local:test1(\"blubb\")" "\n";
   XQuery_t lQuery = aZorba->compileQuery(lStream);
   try {
     std::stringstream lQueryResult;
     lQueryResult << lQuery;
-  } catch (ZorbaException& e) {
-    ZorbaException::StackTrace_t lTrace = e.getStackTrace();
+  } catch (XQueryException const& e) {
+    XQueryStackTrace const &lTrace = e.query_trace();
     if (lTrace.size() != 2)
       return false;
-    Item lQName = lTrace[0].getFunctionName();
-    if (lQName.getNamespace() != "http://www.w3.org/2005/xquery-local-functions")
-      lResult = false;
-    if (lQName.getLocalName() != "test")
-      lResult = false;
-    QueryLocation_t lLocation = lTrace[0].getLocation();
-    if (lLocation->getLineBegin() != 8)
-      lResult = false;
-    if (lLocation->getColumnBegin() != 3)
-      lResult = false;
-    lQName = lTrace[1].getFunctionName();
-    lLocation = lTrace[1].getLocation();
-    if (lQName.getNamespace() != "http://www.w3.org/2005/xquery-local-functions")
-      lResult = false;
-    if (lQName.getLocalName() != "test1")
-      lResult = false;
-    if (lLocation->getLineBegin() != 11)
-      lResult = false;
-    if (lLocation->getColumnBegin() != 1)
-      lResult = false;
+    XQueryStackTrace::const_iterator it = lTrace.begin();
+    if ( !equals( *it, XQUERY_LOCAL_FUNCTIONS_NS "test", 8, 3 ) )
+      return false;
+    if ( !equals( *++it, XQUERY_LOCAL_FUNCTIONS_NS "test1", 11, 1 ) )
+      return false;
   } catch (...) {
-    lResult = false;
+    return false;
   }
-  return lResult;
+  return true;
 }
 
 /**
@@ -134,136 +116,115 @@ bool test_call_stack2(Zorba* aZorba)
   */
 bool test_call_stack3(Zorba* aZorba)
 {
-  bool lResult = true;
   std::stringstream lStream;
-  lStream << "declare function local:test() {" << std::endl;
-  lStream << "  fn:error(xs:QName(\"local:blubb\"))" << std::endl;
-  lStream << "};" << std::endl;
-  lStream << "" << std::endl;
-  lStream << "for $x in (1,2,3)" << std::endl;
-  lStream << "return" << std::endl;
-  lStream << "  $x * local:test()" << std::endl;
+  lStream << "declare function local:test() {" "\n";
+  lStream << "  fn:error(xs:QName(\"local:blubb\"))" "\n";
+  lStream << "};" "\n";
+  lStream << "" "\n";
+  lStream << "for $x in (1,2,3)" "\n";
+  lStream << "return" "\n";
+  lStream << "  $x * local:test()" "\n";
   XQuery_t lQuery = aZorba->compileQuery(lStream);
   try {
     std::stringstream lQueryResult;
     lQueryResult << lQuery;
-  } catch (ZorbaException& e) {
-    ZorbaException::StackTrace_t lTrace = e.getStackTrace();
+  } catch (XQueryException const& e) {
+    XQueryStackTrace const &lTrace = e.query_trace();
     if (lTrace.size() != 1)
       return false;
-    Item lQName = lTrace[0].getFunctionName();
-    if (lQName.getNamespace() != "http://www.w3.org/2005/xquery-local-functions")
-      lResult = false;
-    if (lQName.getLocalName() != "test")
-      lResult = false;
-    QueryLocation_t lLocation = lTrace[0].getLocation();
-    if (lLocation->getLineBegin() != 7)
-      lResult = false;
-    if (lLocation->getColumnBegin() != 8)
-      lResult = false;
+    if ( !equals( *lTrace.begin(), XQUERY_LOCAL_FUNCTIONS_NS "test", 7, 8 ) )
+      return false;
   } catch (...) {
-    lResult = false;
+    return false;
   }
-  return lResult;
+  return true;
 }
 
 bool test_call_stack4(Zorba* aZorba)
 {
-  bool lResult = true;
   std::stringstream lStream;
-  lStream << "declare variable $a := 3;" << std::endl;
-  lStream << "" << std::endl;
-  lStream << "declare function local:foo()" << std::endl;
-  lStream << "{" << std::endl;
-  lStream << "   $a + $a, blubb" << std::endl;
-  lStream << "};" << std::endl;
-  lStream << "" << std::endl;
-  lStream << "for $i in 1 to 10" << std::endl;
-  lStream << "return local:foo()" << std::endl;
+  lStream << "declare variable $a := 3;" "\n";
+  lStream << "" "\n";
+  lStream << "declare function local:foo()" "\n";
+  lStream << "{" "\n";
+  lStream << "   $a + $a, blubb" "\n";
+  lStream << "};" "\n";
+  lStream << "" "\n";
+  lStream << "for $i in 1 to 10" "\n";
+  lStream << "return local:foo()" "\n";
   XQuery_t lQuery = aZorba->compileQuery(lStream);
   try {
     std::stringstream lQueryResult;
     lQueryResult << lQuery;
-  } catch (ZorbaException& e) {
-    ZorbaException::StackTrace_t lTrace = e.getStackTrace();
+  } catch (XQueryException const& e) {
+    XQueryStackTrace const &lTrace = e.query_trace();
     if (lTrace.size() != 1)
       return false;
-    Item lQName = lTrace[0].getFunctionName();
-    if (lQName.getNamespace() != "http://www.w3.org/2005/xquery-local-functions")
-      lResult = false;
-    if (lQName.getLocalName() != "foo")
-      lResult = false;
-    QueryLocation_t lLocation = lTrace[0].getLocation();
-    if (lLocation->getLineBegin() != 9)
-      lResult = false;
-    if (lLocation->getColumnBegin() != 8)
-      lResult = false;
+    if ( !equals( *lTrace.begin(), XQUERY_LOCAL_FUNCTIONS_NS "foo", 9, 8 ) )
+      return false;
   } catch (...) {
-    lResult = false;
+    return false;
   }
-  return lResult;
+  return true;
 }
 
-// error must only be addd to the stack trace if throw 
+// error must only be added to the stack trace if throw 
 // in the scope of the function's body.
 bool test_call_stack5(Zorba* aZorba)
 {
-  bool lResult = true;
   std::stringstream lStream;
-  lStream << "declare function local:foo($x)" << std::endl;
-  lStream << "{" << std::endl;
-  lStream << "  $x" << std::endl;
-  lStream << "};" << std::endl;
-  lStream << "" << std::endl;
-  lStream << "let $x := fn:error(xs:QName('local:foo'))" << std::endl;
-  lStream << "return local:foo($x)" << std::endl;
+  lStream << "declare function local:foo($x)" "\n";
+  lStream << "{" "\n";
+  lStream << "  $x" "\n";
+  lStream << "};" "\n";
+  lStream << "" "\n";
+  lStream << "let $x := fn:error(xs:QName('local:foo'))" "\n";
+  lStream << "return local:foo($x)" "\n";
   XQuery_t lQuery = aZorba->compileQuery(lStream);
   try {
     std::stringstream lQueryResult;
     lQueryResult << lQuery;
-  } catch (ZorbaException& e) {
-    ZorbaException::StackTrace_t lTrace = e.getStackTrace();
-    if (lTrace.size() != 0)
-      lResult = false;
+  } catch (XQueryException const& e) {
+    XQueryStackTrace const &lTrace = e.query_trace();
+    if (!lTrace.empty())
+      return false;
   } catch (...) {
-    lResult = false;
+    return false;
   }
-  return lResult;
+  return true;
 }
 
 bool test_call_stack6(Zorba* aZorba)
 {
-  bool lResult = true;
   std::stringstream lStream;
-  lStream << "declare function local:foo($x)" << std::endl;
-  lStream << "{" << std::endl;
-  lStream << "  $x" << std::endl;
-  lStream << "};" << std::endl;
-  lStream << "" << std::endl;
-  lStream << "declare function local:bar($x)" << std::endl;
-  lStream << "{" << std::endl;
-  lStream << "  local:foo($x)" << std::endl;
-  lStream << "};" << std::endl;
-  lStream << "" << std::endl;
-  lStream << "let $x := fn:error(xs:QName('local:foo'))" << std::endl;
-  lStream << "return local:bar($x)" << std::endl;
+  lStream << "declare function local:foo($x)" "\n";
+  lStream << "{" "\n";
+  lStream << "  $x" "\n";
+  lStream << "};" "\n";
+  lStream << "" "\n";
+  lStream << "declare function local:bar($x)" "\n";
+  lStream << "{" "\n";
+  lStream << "  local:foo($x)" "\n";
+  lStream << "};" "\n";
+  lStream << "" "\n";
+  lStream << "let $x := fn:error(xs:QName('local:foo'))" "\n";
+  lStream << "return local:bar($x)" "\n";
   XQuery_t lQuery = aZorba->compileQuery(lStream);
   try {
     std::stringstream lQueryResult;
     lQueryResult << lQuery;
-  } catch (ZorbaException& e) {
-    ZorbaException::StackTrace_t lTrace = e.getStackTrace();
-    if (lTrace.size() != 0)
-      lResult = false;
+  } catch (XQueryException const& e) {
+    XQueryStackTrace const &lTrace = e.query_trace();
+    if (!lTrace.empty())
+      return false;
   } catch (...) {
-    lResult = false;
+    return false;
   }
-  return lResult;
+  return true;
 }
 
 bool test_call_stack7(Zorba* aZorba)
 {
-  bool lResult = true;
   std::stringstream lStream;
   lStream << "declare function local:foo($x)";
   lStream << "{";
@@ -281,14 +242,14 @@ bool test_call_stack7(Zorba* aZorba)
   try {
     std::stringstream lQueryResult;
     lQueryResult << lQuery;
-  } catch (ZorbaException& e) {
-    ZorbaException::StackTrace_t lTrace = e.getStackTrace();
-    if (lTrace.size() != 0)
-      lResult = false;
+  } catch (XQueryException const& e) {
+    XQueryStackTrace const &lTrace = e.query_trace();
+    if (!lTrace.empty())
+      return false;
   } catch (...) {
-    lResult = false;
+    return false;
   }
-  return lResult;
+  return true;
 }
 
 int call_stack (int argc, char* argv[])
@@ -318,3 +279,5 @@ int call_stack (int argc, char* argv[])
     return 1;
   return 0;
 }
+
+/* vim:set et sw=2 ts=2: */

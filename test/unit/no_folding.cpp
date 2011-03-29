@@ -26,6 +26,7 @@
 #include <zorba/external_function.h>
 #include <zorba/serialization_callback.h>
 #include <zorba/empty_sequence.h>
+#include <zorba/xquery_exception.h>
 
 #include "system/properties.h"
 
@@ -110,7 +111,7 @@ no_folding(int argc, char* argv[])
         }
       }
     }
-  } catch (QueryException& qe) {
+  } catch (XQueryException& qe) {
     std::cerr << qe << std::endl;
     return 3;
   } catch (ZorbaException& e) {

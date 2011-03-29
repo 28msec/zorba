@@ -13,28 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include <zorba/external_function_data.h>
+#include <zorba/item.h>
+#include <zorba/item_sequence.h>
+#include <zorba/iterator.h>
+
+#include "api/unmarshaller.h"
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
-#include "errors/user_error.h"
 #include "system/globalenv.h"
-#include "zorbatypes/zstring.h"
-#include "api/unmarshaller.h"
 #include "zorbaerrors/Assert.h"
+#include "zorbaerrors/user_exception.h"
+#include "zorbatypes/zstring.h"
 
 namespace zorba {
   
-ZorbaException
-ExternalFunctionData::createZorbaException(
-    const XQUERY_ERROR& aError,
-    const String& aDescription,
-    const String& aFileName,
-    unsigned int aFileLineNumber)
-{
-  return ZorbaException(aError, aDescription, aFileName, aFileLineNumber,
-                        ZorbaException::StackTrace_t());
-}
-
 store::Item_t
 getErrorQName(const Item& aQName)
 {
@@ -80,9 +74,7 @@ ExternalFunctionData::error(
     const String& aDescription,
     const ItemSequence_t& aErrorObject)
 {
-  store::Item_t lErrorQName = getErrorQName(aQName);
-
-  std::vector<store::Item_t> lErrorObject;
+  UserException::error_object_type lErrorObject;
 
   if (aErrorObject.get() != 0) {
     Item lTmpItem;
@@ -91,22 +83,18 @@ ExternalFunctionData::error(
     {
       err_iter->open();
       while (err_iter->next(lTmpItem)) {
-        lErrorObject.push_back(Unmarshaller::getInternalItem(lTmpItem));
+        lErrorObject.push_back( lTmpItem );
       }
       err_iter->close();
     }
   }
 
-  QueryLoc lDummyLoc;
-  error::ZorbaUserError lError(
-      lErrorQName,
-      Unmarshaller::getInternalString(aDescription),
-      lDummyLoc,
-      __FILE__,
-      __LINE__,
-      lErrorObject);
-
-  lError.raise();
+  throw USER_EXCEPTION(
+    getErrorQName( aQName ), 
+    Unmarshaller::getInternalString( aDescription ),
+    &lErrorObject
+  );
 }
 
-} /* namespace zorba */
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

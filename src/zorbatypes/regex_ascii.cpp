@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
+#include <ctype.h>
+
+#include "zorbaerrors/error_manager.h"
+
 #include "regex_ascii.h"
 #include "string.h"
-#include <ctype.h>
 #include "chartype.h"
-#include "zorbatypesError.h"
 
 namespace zorba {
   namespace regex_ascii{
@@ -900,8 +902,7 @@ bool CRegexAscii_chargroup::match(const char *source, int *matched_len)
         case 'p'://catEsc
         case 'P'://complEsc
           //ignore the prop for now
-          throw zorbatypesException("", ZorbatypesError::FORX0002);
-          break;
+          throw XQUERY_EXCEPTION( FORX0002 );
         case 's'://[#x20\t\n\r]
           switch(source[0])
           {
@@ -964,8 +965,7 @@ bool CRegexAscii_chargroup::match(const char *source, int *matched_len)
         case 'w':
         case 'W':
         default:
-          throw zorbatypesException("", ZorbatypesError::FORX0002);
-          break;
+          throw XQUERY_EXCEPTION( FORX0002 );
       }
       return false;
     }

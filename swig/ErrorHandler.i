@@ -20,45 +20,21 @@
 class ErrorHandler : public zorba::ErrorHandler 
 {
  private:
-  void dynamicError (const zorba::DynamicException &aError) 
+  void error (const zorba::ZorbaException &ze) 
   { 
-    const DynamicException de(&aError);
-    dynamicError(de); 
-  }
-  void serializationError (const zorba::SerializationException &aError) 
-  {
-    const SerializationException se(&aError);
-    serializationError(se); 
-  } 
-  void staticError (const zorba::StaticException &aStaticError) 
-  {
-    const StaticException se(&aStaticError);
-    staticError(se);     
-  }
-  void systemError (const zorba::SystemException &aSystemError) 
-  {
-    const SystemException se(&aSystemError);
-    systemError(se);     
-  }
-  void typeError (const zorba::TypeException &aTypeError) 
-  {
-    const TypeException te(&aTypeError);
-    typeError(te);     
-  }
-  void userError (const zorba::UserException &aUserError)
-  {
-    const UserException ue(&aUserError);
-    userError(ue);     
+    if ( zorba::XQueryException const *xe = dynamic_cast<zorba::XQueryException const*>( &ze ) ) {
+      const XQueryException xe2(xe);
+      error(xe2); 
+    }
+    if ( zorba::UserException const *ue = dynamic_cast<zorba::UserException const*>( &ze ) ) {
+      const UserException ue2(ue);
+      error(ue2); 
+    }
   }
 
  public:
   virtual ~ErrorHandler() {}
-  virtual void dynamicError(const DynamicException &de) {}
-  virtual void serializationError (const SerializationException &asError) {} 
-  virtual void staticError (const StaticException &aStaticError) {}
-  virtual void systemError (const SystemException &aSystemError) {}
-  virtual void typeError (const TypeException &aTypeError) {}
-  virtual void userError (const UserException &aUserError) {}
+  virtual void error(const ZorbaException &ze) {}
  }; // class ErrorHandler
 
 
@@ -70,10 +46,7 @@ class ErrorHandler
 {
  public:
   virtual ~ErrorHandler();
-  virtual void dynamicError(const DynamicException &de); 
-  virtual void serializationError(const SerializationException &e);
-  virtual void staticError(const StaticException &e);
-  virtual void systemError(const SystemException &e);
-  virtual void typeError(const TypeException &e);
-  virtual void userError(const UserException &e);
+  virtual void error(const ZorbaException &de); 
 }; // class ErrorHandler
+
+/* vim:set et sw=2 ts=2: */

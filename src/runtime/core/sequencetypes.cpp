@@ -199,9 +199,10 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         namespace_context tmp_ctx(theSctx);
         valid = GenericCast::castToAtomic(result, strval, theCastType, tm, &tmp_ctx);
       }
-      catch (error::ZorbaError &e)
+      catch (XQueryException &e)
       {
-        ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+	set_source( e, loc );
+	throw;
       }
     }
     else
@@ -210,9 +211,10 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       {
         valid = GenericCast::castToAtomic(result, lItem, theCastType, tm);
       }
-      catch (error::ZorbaError &e)
+      catch (XQueryException &e)
       {
-        ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+	set_source( e, loc );
+	throw;
       }
     }
 
@@ -386,9 +388,10 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
               + " -> " + thePromoteType->toSchemaString());
       }
     }
-    catch(error::ZorbaError &e)
+    catch(XQueryException &e)
     {
-      ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+      set_source( e, loc );
+      throw;
     }
 
     STACK_PUSH(true, state);
@@ -433,12 +436,12 @@ TreatIterator::TreatIterator(
     PlanIter_t& aChild,
     const xqtref_t& aTreatType,
     bool check_prime_,
-    XQUERY_ERROR aErrorCode,
+    Error const &aErrorCode,
     store::Item_t fnQName)
   :
   UnaryBaseIterator<TreatIterator, PlanIteratorState>(sctx, aLoc, aChild),
   check_prime(check_prime_),
-  theErrorCode(aErrorCode),
+  theErrorCode(&aErrorCode),
   theFnQName(fnQName)
 {
   theTreatType = TypeOps::prime_type(sctx->get_typemanager(), *aTreatType);
@@ -460,7 +463,7 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     if (theQuantifier == TypeConstants::QUANT_PLUS || theQuantifier == TypeConstants::QUANT_ONE)
     {
       zstring type = theTreatType->toSchemaString() + (theQuantifier == TypeConstants::QUANT_PLUS? "+" : "");
-      ZORBA_ERROR_LOC_DESC(theErrorCode, loc, 
+      ZORBA_ERROR_VAR_LOC_DESC(*theErrorCode, loc, 
         (theFnQName.getp() != NULL)?
                   "An empty sequence is not allowed as the result of the function " 
                   + theFnQName->getStringValue() + "() which returns " + type + "."
@@ -474,7 +477,7 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     if (consumeNext(temp, theChild.getp(), planState))
     {
       zstring type = theTreatType->toSchemaString() + (theQuantifier == TypeConstants::QUANT_PLUS? "?" : "");
-      ZORBA_ERROR_LOC_DESC(theErrorCode, loc, 
+      ZORBA_ERROR_VAR_LOC_DESC(*theErrorCode, loc, 
           (theFnQName.getp() != NULL)?
                 "A sequence with more than one item cannot be the result of the function " 
                 + theFnQName->getStringValue() + "() which returns " + type + "."
@@ -501,7 +504,7 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         msg += " Treating as xs:QName is permitted only if the xs:string is written as a string literal.";
       }
 
-      ZORBA_ERROR_LOC_DESC(theErrorCode, loc, msg);
+      ZORBA_ERROR_VAR_LOC_DESC(*theErrorCode, loc, msg);
     }
     else
     {
@@ -514,7 +517,7 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     {
       if (check_prime && !TypeOps::is_treatable(tm, result, *theTreatType))
       {
-        ZORBA_ERROR_LOC_DESC(theErrorCode, loc,
+        ZORBA_ERROR_VAR_LOC_DESC(*theErrorCode, loc,
           (theFnQName.getp() != NULL)?
               "Cannot treat " + tm->create_value_type(result)->toSchemaString() 
               + " as " + theTreatType->toSchemaString() + " when returning the result of the function "

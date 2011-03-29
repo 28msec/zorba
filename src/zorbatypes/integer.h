@@ -24,7 +24,9 @@
 #endif
 
 #include "zorbatypes/zorbatypes_decl.h"
+#include "zorbatypes/zstring.h"
 
+#include "zorbaserialization/archiver.h"
 #include "zorbaserialization/class_serializer.h"
 
 

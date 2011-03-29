@@ -20,6 +20,7 @@
 #include <zorba/stemmer.h>
 #include <zorba/store_manager.h>
 #include <zorba/zorba.h>
+#include <zorba/zorba_exception.h>
 
 #include "system/properties.h"
 

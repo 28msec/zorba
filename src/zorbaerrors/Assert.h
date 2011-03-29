@@ -22,8 +22,20 @@
 
 namespace zorba {
 
+/**
+ * Helper function for the ZORBA_ASSERT() macro.  This is called only if an
+ * assertion fails.
+ *
+ * @param condition The string representation of the condition that failed.
+ * @param file The C++ source-code file name where the assertion failed.
+ * @param line The C++ source-code line number where the assertion failed.
+ * @throws XQP0006_SYSTEM_ASSERT_FAILED
+ */
 void assertion_failed( char const *condition, char const *file, int line );
 
+/**
+ * Zorba version of the standard assert(3) macro.
+ */
 #define ZORBA_ASSERT(COND)                                  \
   do {                                                      \
     if ( !(COND) ) {                                        \

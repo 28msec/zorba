@@ -37,7 +37,7 @@
 namespace zorba {
 
 #define RESULT_ITER_CATCH                                      \
-catch (error::ZorbaError& e)                                   \
+catch (ZorbaException const &e)                                \
 {                                                              \
   SYNC_CODE(                                                   \
   if (theHaveLock)                                             \
@@ -48,7 +48,7 @@ catch (error::ZorbaError& e)                                   \
                                                                \
   ZorbaImpl::notifyError(theQuery->theErrorHandler, e);        \
 }                                                              \
-catch (std::exception& e)                                      \
+catch (std::exception const& e)                                \
 {                                                              \
   SYNC_CODE(                                                   \
   if (theHaveLock)                                             \

@@ -35,7 +35,7 @@
 
 #include "context/static_context.h"
 
-#include "zorbaerrors/errors.h"
+#include "zorbaerrors/error_manager.h"
 #include "util/string_util.h"
 
 #include <zorba/store_consts.h>
@@ -670,12 +670,12 @@ EndAtomicItem:;
     {
       ZORBA_SER_ERROR_DESC_OSS(SRL0010_ITEM_TYPE_NOT_SERIALIZABLE, "Pul");
     }
-    else if(is_error)
+    else /* EXCEPTION TODO: if(is_error)
     {
-      SERIALIZE_FIELD(error::ZorbaError*, value, getError());
+      SERIALIZE_FIELD(ZorbaException*, value, getError());
       FINALIZE_SERIALIZE(createError, (result, value));
     }
-    else if(is_function)
+    else */ if(is_function)
     {
       FunctionItem   *fitem = NULL;
       if(ar.is_serializing_out())

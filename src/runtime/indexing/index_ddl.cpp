@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "runtime/visitors/planiter_visitor.h"
 #include "runtime/indexing/index_ddl.h"
 #include "runtime/api/plan_wrapper.h"
@@ -36,8 +37,9 @@
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
 
-namespace zorba 
-{
+#include "zorbaerrors/xquery_exception.h"
+
+namespace zorba {
 
 
 static void checkKeyType(
@@ -187,10 +189,11 @@ bool CreateInternalIndexIterator::nextImpl(
   {
     storeIndex = GENV_STORE.createIndex(indexDecl->getName(), spec, planIteratorWrapper);
   }
-  catch(error::ZorbaError& e)
+  catch(XQueryException& e)
   {
     // Store raises error if index exists already
-    ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+    set_source( e, loc );
+    throw;
   }
 
   if (planState.theLocalDynCtx->getIndex(indexDecl->getName()))
@@ -663,15 +666,10 @@ bool ProbeIndexPointValueIterator::nextImpl(
     
     STACK_END(state);
   }
-  catch (error::ZorbaError& e)
+  catch (XQueryException& e)
   {
-    if (!e.hasQueryLocation())
-    {
-      e.setQueryLocation(loc.getLineBegin(),
-                         loc.getColumnBegin(),
-                         loc.getFilename());
-    }
-    throw e;
+    set_source( e,  loc, false );
+    throw;
   }
 }
 
@@ -817,15 +815,10 @@ bool ProbeIndexPointGeneralIterator::nextImpl(
 
     STACK_END(state);
   }
-  catch (error::ZorbaError& e)
+  catch (XQueryException& e)
   {
-    if (!e.hasQueryLocation())
-    {
-      e.setQueryLocation(loc.getLineBegin(),
-                         loc.getColumnBegin(),
-                         loc.getFilename());
-    }
-    throw e;
+    set_source( e, loc, false );
+    throw;
   }
 }
 
@@ -1095,5 +1088,5 @@ void ProbeIndexRangeGeneralIterator::accept(PlanIterVisitor& v) const
   v.endVisit(*this);
 }
 
-
-}
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

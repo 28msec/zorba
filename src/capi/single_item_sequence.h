@@ -17,6 +17,8 @@
 #define ZORBAC_SINGLE_ITEM_SEQUENCE_H
 
 #include <zorba/zorba.h>
+#include <zorba/iterator.h>
+#include <zorba/item_sequence.h>
 #include <zorba/zorbac.h>
 
 using namespace zorba;

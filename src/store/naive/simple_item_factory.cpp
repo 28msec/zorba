@@ -1865,7 +1865,7 @@ bool BasicItemFactory::createTuple(
 ********************************************************************************/
 bool BasicItemFactory::createError(
     store::Item_t& result,
-    error::ZorbaError* inError)
+    ZorbaException* inError)
 {
   result = new ErrorItem(inError);
   return true;

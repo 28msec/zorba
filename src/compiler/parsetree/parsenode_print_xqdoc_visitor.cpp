@@ -208,11 +208,11 @@ void printCommentFragment(store::Item_t& aParent, string aString, string aTag)
       }
     }
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
     ZORBA_ERROR_DESC_OSS(XQD0001_DOCUMENT_NOT_VALID,
                          "The xqdoc documentation contains an error that doesn't allow the document to be parsed as XML. "
-                         << e.theDescription << " '" << aString << "'");
+                         << e.what() << " '" << aString << "'");
   }
 }
 

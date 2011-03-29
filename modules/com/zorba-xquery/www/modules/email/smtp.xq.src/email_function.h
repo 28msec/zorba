@@ -32,7 +32,7 @@ namespace zorba
 
         static void
         throwError( const std::string aErrorMessage,
-                    const XQUERY_ERROR& aErrorType);
+                    const Error& aErrorType);
         
        
       public:

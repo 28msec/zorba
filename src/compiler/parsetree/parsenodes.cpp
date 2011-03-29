@@ -1054,10 +1054,10 @@ CollectionDecl::CollectionDecl(
   } // for
 }
 
-XQUERY_ERROR CollectionDecl::validatePropertyList(DeclPropertyList* props)
+Error const& CollectionDecl::validatePropertyList(DeclPropertyList* props)
 {
   if (props == NULL)
-    return XQ_NO_ERROR;
+    return err::XQP0000_NO_ERROR;
 
   bool setUpdateMode = false;
   bool setOrderMode = false;
@@ -1070,7 +1070,7 @@ XQUERY_ERROR CollectionDecl::validatePropertyList(DeclPropertyList* props)
     case StaticContextConsts::decl_unordered:
     {
       if (setOrderMode)
-        return XDST0004_COLLECTION_MULTIPLE_PROPERTY_VALUES;
+        return err::XDST0004_COLLECTION_MULTIPLE_PROPERTY_VALUES;
 
       setOrderMode = true;
       break;
@@ -1081,17 +1081,17 @@ XQUERY_ERROR CollectionDecl::validatePropertyList(DeclPropertyList* props)
     case StaticContextConsts::decl_const:
     {
       if (setUpdateMode)
-        return XDST0004_COLLECTION_MULTIPLE_PROPERTY_VALUES;
+        return err::XDST0004_COLLECTION_MULTIPLE_PROPERTY_VALUES;
 
       setUpdateMode = true;
       break;
     }
     default:
-      return XDST0006_COLLECTION_INVALID_PROPERTY_VALUE;
+      return err::XDST0006_COLLECTION_INVALID_PROPERTY_VALUE;
     } // switch
   }
 
-  return XQ_NO_ERROR;
+  return err::XQP0000_NO_ERROR;
 }
 
 void CollectionDecl::accept( parsenode_visitor &v ) const
@@ -1187,10 +1187,10 @@ AST_IndexDecl::AST_IndexDecl(
 }
 
 
-XQUERY_ERROR AST_IndexDecl::validatePropertyList(DeclPropertyList* props)
+Error const& AST_IndexDecl::validatePropertyList(DeclPropertyList* props)
 {
   if (props == NULL)
-    return XQ_NO_ERROR;
+    return err::XQP0000_NO_ERROR;
 
   bool setUnique = false;
   bool setUsage = false;
@@ -1200,41 +1200,41 @@ XQUERY_ERROR AST_IndexDecl::validatePropertyList(DeclPropertyList* props)
   {
     switch (props->getProperty(i)->getProperty())
     {
-    case StaticContextConsts::decl_unique:
-    case StaticContextConsts::decl_non_unique:
-    {
-      if (setUnique)
-        return XDST0024_INDEX_MULTIPLE_PROPERTY_VALUES;
+      case StaticContextConsts::decl_unique:
+      case StaticContextConsts::decl_non_unique:
+      {
+        if (setUnique)
+          return err::XDST0024_INDEX_MULTIPLE_PROPERTY_VALUES;
 
-      setUnique = true;
-      break;
-    }
-    case StaticContextConsts::decl_value_equality:
-    case StaticContextConsts::decl_value_range:
-    case StaticContextConsts::decl_general_equality:
-    case StaticContextConsts::decl_general_range:
-    {
-      if (setUsage)
-        return XDST0024_INDEX_MULTIPLE_PROPERTY_VALUES;
+        setUnique = true;
+        break;
+      }
+      case StaticContextConsts::decl_value_equality:
+      case StaticContextConsts::decl_value_range:
+      case StaticContextConsts::decl_general_equality:
+      case StaticContextConsts::decl_general_range:
+      {
+        if (setUsage)
+          return err::XDST0024_INDEX_MULTIPLE_PROPERTY_VALUES;
 
-      setUsage = true;
-      break;
-    }
-    case StaticContextConsts::decl_manual:
-    case StaticContextConsts::decl_automatic:
-    {
-      if (setMaintenance)
-        return XDST0024_INDEX_MULTIPLE_PROPERTY_VALUES;
+        setUsage = true;
+        break;
+      }
+      case StaticContextConsts::decl_manual:
+      case StaticContextConsts::decl_automatic:
+      {
+        if (setMaintenance)
+          return err::XDST0024_INDEX_MULTIPLE_PROPERTY_VALUES;
 
-      setMaintenance = true;
-      break;
-    }
-    default:
-      return XDST0026_INDEX_INVALID_PROPERTY_VALUE;
+        setMaintenance = true;
+        break;
+      }
+      default:
+        return err::XDST0026_INDEX_INVALID_PROPERTY_VALUE;
     }
   }
 
-  return XQ_NO_ERROR;
+  return err::XQP0000_NO_ERROR;
 }
 
 void AST_IndexDecl::accept( parsenode_visitor &v ) const
@@ -5739,7 +5739,6 @@ void DynamicFunctionInvocation::accept(parsenode_visitor& v) const
 }
 
 
-} /* namespace zorba */
-
+} // namespace zorba
 
 /* vim:set et sw=2 ts=2: */

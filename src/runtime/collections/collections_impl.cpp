@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 #include "zorbaerrors/Assert.h"
-#include "zorbaerrors/error_messages.h"
+#include "zorbaerrors/error_manager.h"
 
 #include "zorbatypes/URI.h"
 #include "zorbatypes/numconversions.h"
@@ -125,7 +125,7 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
       GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
     }
-    catch (error::ZorbaError&) 
+    catch (ZorbaException const&) 
     {
       ZORBA_ERROR_LOC_DESC(FODC0004, loc, "Passed argument is not a valid xs:anyURI.");
     }
@@ -327,9 +327,9 @@ bool ZorbaCreateCollectionIterator::nextImpl(
   {
     collection = getCollection(theSctx, collectionName, loc);
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
-    if (e.theErrorCode != XDDY0003_COLLECTION_DOES_NOT_EXIST)
+    if (e.error() != err::XDDY0003_COLLECTION_DOES_NOT_EXIST)
     {
       throw;
     }

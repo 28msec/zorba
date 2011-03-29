@@ -54,7 +54,7 @@ ResolveUriIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     {
       resolvedURI = URI(strRelative);
     } 
-    catch (error::ZorbaError&)
+    catch (ZorbaException const&)
     {
     }
 
@@ -87,10 +87,10 @@ ResolveUriIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         }
         baseURI = URI(strBase, true);
       } 
-      catch (error::ZorbaError& e) 
+      catch (ZorbaException const& e) 
       {
         ZORBA_ERROR_LOC_DESC(FORG0002, loc,
-                             "String {" + strBase.str() +  "} is not a valid URI: " + e.theDescription);
+                             "String {" + strBase.str() +  "} is not a valid URI: " + e.what());
       }
 
       try 
@@ -98,9 +98,9 @@ ResolveUriIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         resolvedURI = URI(baseURI, strRelative, true); // resolve with baseURI or return strRelative if it's a valid absolute URI
         strResult = resolvedURI.toString();
       }
-      catch (error::ZorbaError& e) 
+      catch (ZorbaException const& e) 
       {
-        ZORBA_ERROR_LOC_DESC(FORG0002, loc, e.theDescription);
+	ZORBA_ERROR_LOC_DESC(FORG0002, loc, e.what());
       }
     }
 

@@ -101,7 +101,7 @@ DebuggerEventListener::run()
         }
       }
     }
-  } catch(std::exception&) {
+  } catch(std::exception const&) {
     //do nothing...
   }
 }

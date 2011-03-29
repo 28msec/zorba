@@ -1,57 +1,52 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #ifndef XQP_ZORBA_IMPL_H
 #define XQP_ZORBA_IMPL_H
 
+#include <exception>
 #include <istream>
 
-#include <exception>
 #include <zorba/zorba.h>
-#include "common/shared_types.h"
+#include <zorba/zorba_exception.h>
 
+#include "common/shared_types.h"
 #include "zorbautils/mutex.h"
 
 
-namespace zorba 
-{
+namespace zorba {
 
 class FlowCtlException;
-
-namespace error {
-  class ZorbaError;
-}
 
 namespace store {
   class Store;
 }
 
-
 #define ZORBA_TRY try {
- 
+
 #define ZORBA_CATCH                                            \
-  } catch (error::ZorbaError& e) {                             \
+  } catch (ZorbaException const& e) {                          \
     ZorbaImpl::notifyError(theErrorHandler, e);                \
-  } catch (FlowCtlException&) {                                \
+  } catch (FlowCtlException const&) {                          \
     ZorbaImpl::notifyError(theErrorHandler, "User interrupt"); \
-  } catch (std::exception& e) {                                \
+  } catch (std::exception const& e) {                          \
     ZorbaImpl::notifyError(theErrorHandler, e.what());         \
   } catch (...) {                                              \
     ZorbaImpl::notifyError(theErrorHandler);                   \
   }                                                            \
-  
 
 /**
  *
@@ -69,11 +64,11 @@ public:
 #endif
  public:
 
-  static void notifyError(ErrorHandler*, error::ZorbaError&);
+  static void notifyError(ErrorHandler*, ZorbaException const&);
 
-  // notify zorba internal error 
+  // notify zorba internal error
   static void notifyError(ErrorHandler*, const std::string&);
-  
+
   static void notifyError(ErrorHandler*);
 
   static void checkItem(const store::Item_t& aItem);
@@ -96,7 +91,7 @@ public:
   XQuery_t compileQuery(
         const String& aQuery,
         const StaticContext_t& aContext,
-        ErrorHandler* aErrorHandler = 0); 
+        ErrorHandler* aErrorHandler = 0);
 
   XQuery_t compileQuery(
         const String& aQuery,
@@ -106,7 +101,7 @@ public:
   XQuery_t compileQuery(
         const String& aQuery,
         const StaticContext_t& aContext,
-        const Zorba_CompilerHints_t& aHints, 
+        const Zorba_CompilerHints_t& aHints,
         ErrorHandler* aErrorHandler = 0);
 
   XQuery_t compileQuery(
@@ -126,7 +121,7 @@ public:
   XQuery_t compileQuery(
         std::istream& aQuery,
         const StaticContext_t& aContext,
-        const Zorba_CompilerHints_t& aHints, 
+        const Zorba_CompilerHints_t& aHints,
         ErrorHandler* aErrorHandler = 0);
 
   StaticContext_t createStaticContext(ErrorHandler* aErrorHandler = 0);
@@ -141,15 +136,15 @@ protected:
   void init(store::Store* store);
 
   void shutdownInternal(bool soft = true);
-  
-}; /* class ZorbaImpl */
 
+}; // class ZorbaImpl
 
-} /* namespace zorba */
+} // namespace zorba
+
 #endif /* XQP_ZORBA_IMPL_H */
-
 /*
  * Local variables:
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */

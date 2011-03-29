@@ -39,19 +39,19 @@
 namespace zorba
 {
 
-ZorbaParserError::ZorbaParserError(std::string _msg, XQUERY_ERROR code)
+ZorbaParserError::ZorbaParserError(std::string _msg, Error const &code)
   :
   msg(_msg), err_code(code)
 {
 }
 
-ZorbaParserError::ZorbaParserError(std::string _msg, const location& aLoc, XQUERY_ERROR code)
+ZorbaParserError::ZorbaParserError(std::string _msg, const location& aLoc, Error const &code)
   :
   msg(_msg), loc(xquery_driver::createQueryLocStatic(aLoc)), err_code(code)
 {
 }
 
-ZorbaParserError::ZorbaParserError(std::string _msg, const QueryLoc& aLoc, XQUERY_ERROR code)
+ZorbaParserError::ZorbaParserError(std::string _msg, const QueryLoc& aLoc, Error const &code)
   :
   msg(_msg), loc(aLoc), err_code(code)
 {
@@ -146,13 +146,13 @@ ZorbaParserError* xquery_driver::invalidCharRef(const char* _message, const loca
 }
 
 
-ZorbaParserError* xquery_driver::parserErr(const std::string& _message, const location& loc, XQUERY_ERROR code)
+ZorbaParserError* xquery_driver::parserErr(const std::string& _message, const location& loc, Error const &code)
 {
   parserError = new ZorbaParserError(_message, loc, code);
   return parserError;
 }
 
-ZorbaParserError* xquery_driver::parserErr(const std::string& _message, const QueryLoc& loc, XQUERY_ERROR code)
+ZorbaParserError* xquery_driver::parserErr(const std::string& _message, const QueryLoc& loc, Error const &code)
 {
   parserError = new ZorbaParserError(_message, loc, code);
   return parserError;

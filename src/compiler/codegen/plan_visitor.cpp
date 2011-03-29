@@ -20,6 +20,7 @@
 #include <vector>
 
 #include <zorba/config.h>
+#include <zorba/error_list.h>
 #include "zorbaerrors/Assert.h"
 
 #include "util/tracer.h"

@@ -17,6 +17,7 @@
 #define ZORBA_PROCESSMODULE_CSV_H
 
 #include <zorba/zorba.h>
+#include <zorba/iterator.h>
 #include <zorba/external_module.h>
 #include <zorba/external_function.h>
 #include <zorba/smart_ptr.h>

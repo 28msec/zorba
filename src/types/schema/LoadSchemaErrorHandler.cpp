@@ -26,7 +26,6 @@
 
 #include "compiler/parser/query_loc.h"
 #include "zorbaerrors/error_manager.h"
-#include "zorbaerrors/errors.h"
 
 namespace zorba
 {

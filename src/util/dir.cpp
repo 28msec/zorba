@@ -76,7 +76,7 @@ dir_iterator::dir_iterator(
 	dir = opendir(path.c_str());
   if (dir==0) {
       std::string lMsg = "opendir failed on " + dirpath;
-      ZORBA_ERROR_DESC( XQP0011_SYSTEM_FILE_ERROR_IN_FUNCTION, lMsg);
+      ZORBA_ERROR_DESC( XQP0012_SYSTEM_FILE_ERROR_IN_FUNCTION, lMsg);
 	}
   if (!end_iterator) operator++();
 #else
@@ -95,7 +95,7 @@ dir_iterator::dir_iterator(
 		win32_dir = FindFirstFileW(wpath_str, &win32_direntry);
     if(win32_dir == INVALID_HANDLE_VALUE) {
       std::string lMsg = "opendir failed on " + dirpath;
-      ZORBA_ERROR_DESC( XQP0011_SYSTEM_FILE_ERROR_IN_FUNCTION, lMsg);
+      ZORBA_ERROR_DESC( XQP0012_SYSTEM_FILE_ERROR_IN_FUNCTION, lMsg);
     }
     if (wcscmp(win32_direntry.cFileName, L".") == 0 ||
       wcscmp(win32_direntry.cFileName, L"..") == 0) {

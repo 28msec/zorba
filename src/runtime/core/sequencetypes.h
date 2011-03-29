@@ -218,7 +218,7 @@ private:
   xqtref_t theTreatType;
   TypeConstants::quantifier_t theQuantifier;
   bool check_prime;
-  XQUERY_ERROR theErrorCode;
+  Error const *theErrorCode;
   store::Item_t								theFnQName;      // Stores the QName of the function, if the promote expr
                                                // is used to cast the function's body to its result type
 
@@ -238,7 +238,7 @@ public:
     ar & theTreatType;
     SERIALIZE_ENUM(TypeConstants::quantifier_t, theQuantifier);
     ar & check_prime;
-    SERIALIZE_ENUM(XQUERY_ERROR, theErrorCode);
+    // TODO: fix serialization: SERIALIZE_ENUM(Error, theErrorCode);
     ar & theFnQName;
   }
 
@@ -249,7 +249,7 @@ public:
         PlanIter_t& aChild,
         const xqtref_t& aTreatType,
         bool check_prime,
-        XQUERY_ERROR,
+        Error const&,
         store::Item_t fnQName = NULL);
 
   void accept(PlanIterVisitor& v) const;

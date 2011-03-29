@@ -31,7 +31,7 @@
 
 #include <zorba/zorba.h>
 #include <zorba/error_handler.h>
-#include <zorba/exception.h>
+#include <zorba/zorba_exception.h>
 #include <zorba/zorbastring.h>
 #include <zorba/util/file.h>
 #include <zorba/static_context_consts.h>
@@ -47,9 +47,13 @@ bool isErrorExpected(zorba::ZorbaException& e, State* aState)
 {
   if ( aState->hasErrors) 
   {
+    std::ostringstream oss;
+    oss << e.error().qname();
+    zorba::String lError = oss.str();
+
     std::vector<std::string>::const_iterator lIter = aState->theErrors.begin();
     std::vector<std::string>::const_iterator lEnd  = aState->theErrors.end();
-    zorba::String lError = zorba::ZorbaException::getErrorCodeAsString(e.getErrorCode());
+
     for(;lIter!=lEnd;++lIter)
     {
       zorba::String lSpecError = *lIter;

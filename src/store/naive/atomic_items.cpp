@@ -294,7 +294,7 @@ bool UntypedAtomicItem::castToUri(store::Item_t& result) const
     zstring tmp = uriVal.toString();
     return GET_FACTORY().createAnyURI(result, tmp);
   }
-  catch (error::ZorbaError&)
+  catch (ZorbaException const&)
   {
     result = NULL;
   }
@@ -2282,7 +2282,7 @@ ErrorItem::~ErrorItem()
 {
   if (theError)
   {
-    theError->free();
+    //theError->free();
     theError = NULL;
   }
 }
@@ -2290,7 +2290,7 @@ ErrorItem::~ErrorItem()
 
 zstring ErrorItem::show() const
 {
-  return theError->toString();
+  return theError->what();
 }
 
 

@@ -13,10 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include <zorba/zorba.h>
 #include <zorba/version.h>
-#include "api/zorbaimpl.h"
+
 #include "store/api/store.h"
+
+#include "zorbaimpl.h"
 
 namespace zorba 
 {

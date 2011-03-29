@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #ifndef ZORBA_STORE_API_SHARED_TYPES
 #define ZORBA_STORE_API_SHARED_TYPES
 
@@ -91,11 +92,9 @@ class ICChecker;
 
 
 } // namespace store
-
 } // namespace zorba
 
-#endif
-
+#endif /* ZORBA_STORE_API_SHARED_TYPES */
 /*
  * Local variables:
  * mode: c++

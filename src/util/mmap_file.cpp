@@ -36,7 +36,7 @@
 #define THROW_IOEXCEPTION(func) {                                           \
           ostringstream oss;                                                \
           oss << #func "(\"" << path_ << "\") failed: " << ERROR_STRING;    \
-          ZORBA_ERROR_DESC( XQP0013_SYSTEM_MMFILE_IOEXCEPTION, oss.str() ); \
+          ZORBA_ERROR_DESC( XQP0014_SYSTEM_MMFILE_IOEXCEPTION, oss.str() ); \
         }
 
 using namespace std;

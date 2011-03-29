@@ -13,12 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #ifndef TEST_RBKT_TESTDRIVER_COMMON
 #define TEST_RBKT_TESTDRIVER_COMMON
 
+#include <sstream>
+
 #include <zorba/zorba.h>
 #include <zorba/error_handler.h>
-#include <zorba/exception.h>
+#include <zorba/xquery_exception.h>
 
 
 class Specification;
@@ -30,34 +33,9 @@ class Specification;
 class TestErrorHandler : public zorba::ErrorHandler 
 {
 public:
-  void staticError(const zorba::StaticException& aStaticError)
+  void error(const zorba::ZorbaException& ze)
   {
-    registerError(aStaticError);
-  }
-
-  void dynamicError(const zorba::DynamicException& aDynamicError)
-  {
-    registerError(aDynamicError);
-  }
-
-  void typeError(const zorba::TypeException& aTypeError)
-  {
-    registerError(aTypeError);
-  }
-
-  void serializationError(const zorba::SerializationException& aSerializationError)
-  {
-    registerError(aSerializationError);
-  }
-
-  void systemError(const zorba::SystemException& aSystemError)
-  {
-    registerError(aSystemError);
-  }
-
-  void userError(const zorba::UserException& aUserError)
-  {
-    registerError(aUserError);
+    registerError(ze);
   }
 
   bool errors() const
@@ -98,20 +76,19 @@ private:
 
   void registerError(const zorba::ZorbaException& e)
   {
-    m_errors.push_back(zorba::ZorbaException::getErrorCodeAsString(e.getErrorCode()).c_str());
+    m_errors.push_back( e.error().qname().localname() );
     std::ostringstream strdescr;
 
-    if(dynamic_cast<const zorba::QueryException*>(&e))
+    if(zorba::XQueryException const *xe = dynamic_cast<zorba::XQueryException const*>(&e))
     {
-      const zorba::QueryException* qe = dynamic_cast<const zorba::QueryException*>(&e);
-      strdescr <<  e.getDescription().c_str()
-               << "[line " << qe->getLineBegin() << "]"
-               << "[column " <<  qe->getColumnBegin() << "]"
-               << "[file " <<  qe->getQueryURI().c_str() << "]";
+      strdescr << e.what()
+               << "[line " << xe->source_line() << "]"
+               << "[column " <<  xe->source_column() << "]"
+               << "[file " <<  xe->source_uri() << "]";
     }
     else
     {
-      strdescr << e.getDescription().c_str();
+      strdescr << e.what();
     }
 
     m_desc.push_back(strdescr.str());

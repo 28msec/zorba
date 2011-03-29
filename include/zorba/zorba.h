@@ -20,21 +20,18 @@
 
 #include <zorba/config.h>
 #include <zorba/api_shared_types.h>
-
-#include <zorba/version.h>
-#include <zorba/exception.h>
-#include <zorba/xquery.h>
-#include <zorba/static_context.h>
+#include <zorba/collection.h>
+#include <zorba/default_error_handler.h>
 #include <zorba/dynamic_context.h>
+#include <zorba/error_handler.h>
 #include <zorba/item.h>
 #include <zorba/item_factory.h>
-#include <zorba/zorbastring.h>
-#include <zorba/exception.h>
-#include <zorba/error_handler.h>
-#include <zorba/xmldatamanager.h>
-#include <zorba/default_error_handler.h>
-#include <zorba/collection.h>
 #include <zorba/options.h>
+#include <zorba/static_context.h>
+#include <zorba/version.h>
+#include <zorba/xmldatamanager.h>
+#include <zorba/xquery.h>
+#include <zorba/zorbastring.h>
 
 namespace zorba {
 
@@ -353,3 +350,4 @@ class ZORBA_DLL_PUBLIC Zorba
  * mode: c++
  * End:
  */
+ /* vim:set et sw=2 ts=2: */

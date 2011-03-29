@@ -75,9 +75,9 @@ bool Base64::parseString(
   {
     aBase64.insertData(aString, aLength);
   }
-  catch (error::ZorbaError& e) 
+  catch (ZorbaException const& e) 
   {
-    lErrorMessage = e.theDescription.str();
+    lErrorMessage = e.what();
     return false;
   }
   return true;

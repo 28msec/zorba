@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include <iostream>
 #include <sstream>
 #include <fstream>
@@ -25,7 +26,7 @@
 
 #include <zorba/zorba.h>
 #include <zorba/error_handler.h>
-#include <zorba/exception.h>
+#include <zorba/zorba_exception.h>
 
 #include <zorbatypes/URI.h>
 

@@ -24,7 +24,7 @@
 #include "util/uri_util.h"
 #include "util/utf8_util.h"
 #include "util/xml_util.h"
-#include "zorbatypes/zorbatypesError.h"
+#include "zorbaerrors/error_manager.h"
 #include "zorbatypes/zstring.h"
 
 using namespace std;
@@ -247,7 +247,7 @@ String String::tokenize( String const &pattern, String const &flags,
   char const *const c_pattern = STRING_OF( pattern )->c_str();
 
   if ( !re.compile( c_pattern, STRING_OF( flags )->c_str() ) )
-    throw zorbatypesException( c_pattern, ZorbatypesError::FORX0002 );
+    throw XQUERY_EXCEPTION( FORX0002, ERROR_PARAMS( c_pattern ) );
 
   unicode::string u_token;
   *got_token = re.next_token( *THIS_STRING, pos, &u_token );

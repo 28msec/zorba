@@ -29,7 +29,8 @@
 #include <zorba/store_consts.h>
 #include <zorba/xmldatamanager.h>
 #include <zorba/error.h>
-#include <zorba/exception.h>
+#include <zorba/error_list.h>
+#include <zorba/zorba_exception.h>
 #include <zorba/external_function_data.h>
 #include <zorba/zorba.h>
 
@@ -85,11 +86,7 @@ namespace zorba
     {
       if (ok != yes)
       {
-        ZorbaException e = ExternalFunctionData::createZorbaException(XQP0019_INTERNAL_ERROR,
-                                                                      "Could not set Tidy option",
-                                                                      __FILE__,
-                                                                      __LINE__);
-        throw e;
+        throw ZORBA_EXCEPTION( XQP0019_INTERNAL_ERROR, ERROR_PARAMS( "Could not set Tidy option" ) );
       }
     }
     
@@ -97,11 +94,7 @@ namespace zorba
     {
       if (rc > 1)
       {
-        ZorbaException e = ExternalFunctionData::createZorbaException(XQP0019_INTERNAL_ERROR,
-                                                                      errMsg,
-                                                                      __FILE__,
-                                                                      __LINE__);
-        throw e;
+        throw ZORBA_EXCEPTION(XQP0019_INTERNAL_ERROR, ERROR_PARAMS( errMsg ) );
       }
     }
     

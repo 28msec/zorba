@@ -1311,7 +1311,7 @@ public:
 
   // The function returns an XQuery error if the validation fails,
   // and XQ_NO_ERROR otherwise
-  static XQUERY_ERROR validatePropertyList(DeclPropertyList* props);
+  static Error const& validatePropertyList(DeclPropertyList* props);
 
   const QName* getName() const { return theName.getp(); }
 
@@ -1400,7 +1400,7 @@ public:
 
   // The function returns an XQuery error if the validation fails,
   // and XQ_NO_ERROR otherwise
-  static XQUERY_ERROR validatePropertyList(DeclPropertyList* props);
+  static Error const& validatePropertyList(DeclPropertyList* props);
 
   const QName* getName() const { return theName.getp(); }
 

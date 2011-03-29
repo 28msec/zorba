@@ -18,7 +18,7 @@
 #define ZORBA_PARSENODE_BASE_H
 
 #include <zorba/config.h>
-#include <zorba/error.h>
+#include <zorba/error_list.h>
 
 #include "compiler/parser/parse_constants.h"
 #include "compiler/parser/query_loc.h"
@@ -101,11 +101,11 @@ public:
 
 class ZORBA_DLL_PUBLIC ParseErrorNode : public parsenode {
 public:
-  XQUERY_ERROR const err;
+  Error const &err;
   zstring const msg;
   bool const useParam;   // if true, msg is a parameter for the ZORBA_ERROR_LOC_PARAM() macro
 
-  ParseErrorNode(const QueryLoc& loc_, XQUERY_ERROR err_ = XPST0003, zstring msg_ = "", bool useParam_ = false)
+  ParseErrorNode(const QueryLoc& loc_, Error const &err_ = err::XPST0003, zstring msg_ = "", bool useParam_ = false)
     :
     parsenode (loc_), err(err_), msg(msg_), useParam(useParam_)
   {}

@@ -271,7 +271,7 @@ CDynamicContext::get_variable(
     try {
       CDynamicContext* me = CDynamicContext::get(context);
       delete me;
-    } catch (ZorbaException&) { 
+    } catch (ZorbaException const&) { 
       assert(false);
     } catch (...) { 
       assert(false);

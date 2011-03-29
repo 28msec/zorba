@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #ifndef ZORBA_DEFAULT_ERROR_HANDLER_API_H
 #define ZORBA_DEFAULT_ERROR_HANDLER_API_H
 
@@ -21,31 +22,14 @@
 
 namespace zorba {
 
-  class ZORBA_DLL_PUBLIC DefaultErrorHandler : public ErrorHandler
-  {
-    public:
-      virtual ~DefaultErrorHandler() {}
+class ZORBA_DLL_PUBLIC DefaultErrorHandler : public ErrorHandler {
+public:
+  virtual ~DefaultErrorHandler();
 
-      virtual void
-      staticError ( const StaticException& aStaticError );
+  virtual void error( ZorbaException const &exception );
+};
 
-      virtual void
-      dynamicError ( const DynamicException& aDynamicError );
+} // namespace zorba
 
-      virtual void
-      typeError ( const TypeException& aTypeError );
-
-      virtual void
-      serializationError ( const SerializationException& aSerializationError );
-
-      virtual void
-      userError ( const  UserException& aUserError );
-
-      virtual void
-      systemError ( const SystemException& aSystemError );
-
-  }; /* class DefaultErrorHandler */
-
-} /* namespace zorba */
-
-#endif
+#endif /* ZORBA_DEFAULT_ERROR_HANDLER_API_H */
+/* vim:set et sw=2 ts=2: */

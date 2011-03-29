@@ -16,7 +16,7 @@
 #include <fstream>
 
 #include "zorbaerrors/Assert.h"
-#include "zorbaerrors/error_messages.h"
+#include "zorbaerrors/error_manager.h"
 
 #include "system/globalenv.h"
 
@@ -70,9 +70,9 @@ bool IsAvailableCollectionIterator::nextImpl(
 
     lCollection = getCollection(theSctx, lName, loc);
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
-    if (e.theErrorCode != XDDY0003_COLLECTION_DOES_NOT_EXIST)
+    if (e.error() != err::XDDY0003_COLLECTION_DOES_NOT_EXIST)
     {
       throw;
     }

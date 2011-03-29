@@ -22,7 +22,6 @@
 
 #include "store/api/store.h"
 
-using namespace zorba;
 using namespace zorbac;
 
 XQC_Error
@@ -37,8 +36,8 @@ zorba_implementation(XQC_Implementation** impl, void* store)
     // Don't call anything that might throw an exception after this point
     (*impl) = lImpl.release()->getXQC();
     return XQC_NO_ERROR;
-  } catch (ZorbaException &e) {
-    return Error::convert_xquery_error(e.getErrorCode());
+  } catch (ZorbaException const &e) {
+    return zorbac::Error::convert_xquery_error(e.error());
   } catch (...) {
     return XQC_INTERNAL_ERROR;
   }

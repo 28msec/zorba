@@ -22,13 +22,12 @@
 
 #include <zorba/default_error_handler.h>
 #include <zorba/error.h>
-#include <zorba/exception.h>
+#include <zorba/error_list.h>
 #include <zorba/sax2.h>
 
 #include <zorbatypes/URI.h>
 
 #include "zorbaerrors/error_manager.h"
-#include "zorbaerrors/errors.h"
 #include "zorbatypes/zstring.h"
 #include "zorbautils/lock.h"
 
@@ -72,7 +71,7 @@ namespace zorba
 
 
 #define QUERY_CATCH                                            \
-  catch (error::ZorbaError& e)                                 \
+  catch (ZorbaException const& e)                              \
   {                                                            \
     ZorbaImpl::notifyError(theErrorHandler, e);                \
   }                                                            \
@@ -80,7 +79,7 @@ namespace zorba
   {                                                            \
     ZorbaImpl::notifyError(theErrorHandler, "User interrupt"); \
   }                                                            \
-  catch (std::exception& e)                                    \
+  catch (std::exception const& e)                              \
   {                                                            \
     ZorbaImpl::notifyError(theErrorHandler, e.what());         \
   }                                                            \
@@ -745,15 +744,15 @@ bool XQueryImpl::saveExecutionPlan(
 
     return true;
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {                           
     ZorbaImpl::notifyError(theErrorHandler, e);
   }                           
-  catch (FlowCtlException&)   
+  catch (FlowCtlException const&)   
   {
     ZorbaImpl::notifyError(theErrorHandler, "User interrupt");
   }                           
-  catch (std::exception& e)   
+  catch (std::exception const& e)   
   {
     ZorbaImpl::notifyError(theErrorHandler, e.what());
   }                           
@@ -787,9 +786,9 @@ bool XQueryImpl::loadExecutionPlan(std::istream& is, SerializationCallback* aCal
       bin_ar.finalize_input_serialization();
       return true;
     }
-    catch(error::ZorbaError &er)
+    catch(ZorbaException const &ex)
     {
-      if(er.theErrorCode != SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE)
+      if ( ex.error() != err::SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE )
         throw;
       //else go try xml archive reader
     }

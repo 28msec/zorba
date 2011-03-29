@@ -74,7 +74,7 @@ namespace zorba { namespace security {
 		static void
 		throwError(
 				   const std::string aErrorMessage,
-				   const XQUERY_ERROR& aErrorType);
+				   const Error& aErrorType);
 		
     private:
 		

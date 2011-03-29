@@ -82,8 +82,9 @@ bool FnDateTimeConstructorIterator::nextImpl(store::Item_t& result, PlanState& p
   else {
     try {
       b = GENV_ITEMFACTORY->createDateTime(result, item0, item1);
-    } catch (error::ZorbaError& e) {
-      ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+    } catch (XQueryException& e) {
+      set_source( e, loc );
+      throw;
     }
     STACK_PUSH(b, state);
   }

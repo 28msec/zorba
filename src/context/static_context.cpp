@@ -23,6 +23,7 @@
 
 #include "zorbaserialization/serialization_engine.h"
 
+#include "zorbamisc/ns_consts.h"
 #include "util/string_util.h"
 
 #define ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
@@ -1188,7 +1189,7 @@ void static_context::compute_base_uri()
         return; // valid (absolute) uri
       }
     }
-    catch (error::ZorbaError&)
+    catch (ZorbaException const&)
     {
       // assume it's relative and go on
     }
@@ -1764,7 +1765,7 @@ void static_context::bind_ns(
     const zstring& prefix,
     const zstring& ns,
     const QueryLoc& loc,
-    const XQUERY_ERROR& err)
+    const Error& err)
 {
   if (theNamespaceBindings == NULL)
   {
@@ -1775,7 +1776,7 @@ void static_context::bind_ns(
 
   if (!theNamespaceBindings->insert(prefix, temp))
   {
-    ZORBA_ERROR_LOC(err, loc);
+    ZORBA_ERROR_VAR_LOC(err, loc);
   }
 }
 
@@ -1784,14 +1785,14 @@ void static_context::bind_ns(
   Search the static-context tree, starting from "this" and moving upwards,
   looking for the 1st namespace binding for the given prefix. If no such
   binding is found, either raise an error (if the given error code is not
-  MAX_ZORBA_ERROR_CODE) or return false. Otherwise, return true and the
+  XQP0000_NO_ERROR) or return false. Otherwise, return true and the
   associated namespace uri.
 ********************************************************************************/
 bool static_context::lookup_ns(
     zstring& ns,
     const zstring& prefix,
     const QueryLoc& loc,
-    const XQUERY_ERROR& err) const
+    const Error& err) const
 {
   if (theNamespaceBindings == NULL || !theNamespaceBindings->get(prefix, ns))
   {
@@ -1799,9 +1800,9 @@ bool static_context::lookup_ns(
     {
       return theParent->lookup_ns(ns, prefix, loc, err);
     }
-    else if (err != MAX_ZORBA_ERROR_CODE)
+    else if (err != err::XQP0000_NO_ERROR)
     {
-      ZORBA_ERROR_LOC_PARAM(err, loc, prefix, "");
+      ZORBA_ERROR_VAR_LOC_PARAM(err, loc, prefix, "");
     }
     else
     {
@@ -1810,9 +1811,9 @@ bool static_context::lookup_ns(
   }
   else if (!prefix.empty() && ns.empty())
   {
-    if (err != MAX_ZORBA_ERROR_CODE)
+    if (err != err::XQP0000_NO_ERROR)
     {
-      ZORBA_ERROR_LOC_PARAM(err, loc, prefix, "");
+      ZORBA_ERROR_VAR_LOC_PARAM(err, loc, prefix, "");
     }
     else
     {
@@ -1903,7 +1904,7 @@ void static_context::get_namespace_bindings(store::NsBindings& bindings) const
 void static_context::bind_var(
     var_expr_t& varExpr,
     const QueryLoc& loc,
-    const XQUERY_ERROR& err)
+    const Error& err)
 {
   if (theVariablesMap == NULL)
   {
@@ -1914,7 +1915,7 @@ void static_context::bind_var(
 
   if (!theVariablesMap->insert(qname, varExpr))
   {
-    ZORBA_ERROR_LOC_PARAM(err,loc, qname->getStringValue(), "");
+    ZORBA_ERROR_VAR_LOC_PARAM(err,loc, qname->getStringValue(), "");
   }
 }
 
@@ -1925,12 +1926,12 @@ void static_context::bind_var(
   is found.
 
   If var is not found, the method raises the given error, unless the given error
-  is MAX_ZORBA_ERROR_CODE, in which case it returns NULL.
+  is XQP0000_NO_ERROR, in which case it returns NULL.
 ********************************************************************************/
 var_expr* static_context::lookup_var(
     const store::Item* qname,
     const QueryLoc& loc,
-    const XQUERY_ERROR& err) const
+    const Error& err) const
 {
   store::Item* qname2 = const_cast<store::Item*>(qname);
 
@@ -1948,9 +1949,9 @@ var_expr* static_context::lookup_var(
     sctx = sctx->theParent;
   }
 
-  if (err != MAX_ZORBA_ERROR_CODE)
+  if (err != err::XQP0000_NO_ERROR)
   {
-    ZORBA_ERROR_LOC_PARAM(err, loc, qname->getStringValue().c_str(), "");
+    ZORBA_ERROR_VAR_LOC_PARAM(err, loc, qname->getStringValue().c_str(), "");
   }
 
   return NULL;
@@ -3570,7 +3571,7 @@ void static_context::add_decimal_format(
          !decimalFormat->isDefault() &&
          format->getName()->equals(decimalFormat->getName())))
     {
-      ZORBA_ERROR_LOC(XQST0096, loc);
+      ZORBA_ERROR_LOC(XQDY0096, loc);
     }
   }
 
@@ -3646,7 +3647,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
 #endif
 
       if (!ve->is_private())
-        bind_var(ve, loc, XQST0049);
+        bind_var(ve, loc, err::XQST0049);
     }
   }
 

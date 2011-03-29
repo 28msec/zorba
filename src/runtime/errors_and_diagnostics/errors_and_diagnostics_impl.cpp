@@ -17,7 +17,7 @@
 #include <iostream>
 
 #include "zorbaerrors/error_manager.h"
-#include "errors/user_error.h"
+#include "zorbaerrors/user_exception.h"
 
 #include "context/static_context.h"
 
@@ -46,7 +46,7 @@ ErrorIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   store::Item_t lTmpErrorObject;
   store::Item_t lTmpDescr;
   zstring description;
-  std::vector<store::Item_t> lErrorObject; 
+  UserException::error_object_type lErrorObject; 
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -67,15 +67,11 @@ ErrorIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     while (consumeNext(lTmpErrorObject, theChildren[2].getp(), planState)) 
     {
-      lErrorObject.push_back(lTmpErrorObject);
+      lErrorObject.push_back( Item( lTmpErrorObject.getp() ) );
     }
   }
 
-  {
-    error::ZorbaUserError lError(err_qname, description, loc, 
-                                 __FILE__, __LINE__, lErrorObject);
-    throw lError;
-  }
+  throw USER_EXCEPTION( err_qname, description, loc, &lErrorObject );
 
   STACK_END(state);
 }
@@ -111,4 +107,5 @@ TraceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END (state);
 }
 
-} /* namespace zorba */
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

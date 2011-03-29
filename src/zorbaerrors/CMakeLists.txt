@@ -13,11 +13,20 @@
 # limitations under the License.
 
 SET(ZORBAERRORS_SRCS
-   assert.cpp
-   errors.cpp
+   dict.cpp
+   dict_en.cpp
+   err.cpp
+   error.cpp
    error_manager.cpp
-   error_messages.cpp)
+   qname.cpp 
+   error_list.cpp
+   assert.cpp
+   zorba_exception.cpp
+   xquery_exception.cpp 
+   xquery_stack_trace.cpp
+   user_exception.cpp 
+   )
 
 IF (WIN32)
-	SET(ZORBAERRORS_SRCS ${ZORBAERRORS_SRCS} StackWalker.cpp)
+  SET(ZORBAERRORS_SRCS ${ZORBAERRORS_SRCS} StackWalker.cpp)
 ENDIF (WIN32)

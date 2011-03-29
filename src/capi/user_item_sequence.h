@@ -17,6 +17,7 @@
 #define ZORBAC_USER_ITEM_SEQUENCE_H
 
 #include <zorba/zorba.h>
+#include <zorba/iterator.h>
 #include <zorba/zorbac.h>
 
 using namespace zorba;

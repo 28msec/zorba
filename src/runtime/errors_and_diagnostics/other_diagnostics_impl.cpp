@@ -27,7 +27,7 @@
 #include "system/globalenv.h"
 
 #include "zorbaerrors/error_manager.h"
-#include "errors/user_error.h"
+#include "zorbaerrors/xquery_stack_trace.h"
 
 namespace zorba {
 
@@ -43,26 +43,14 @@ bool FunctionTraceIterator::nextImpl(store::Item_t &result, PlanState &aPlanStat
       STACK_PUSH(true, lState);
     }
     STACK_END(lState);
-  } catch (error::ZorbaUserError& uerr) {
-     // bugfix: for #3107911
-     // it's important to not loose the information about the fact
-     // that it's a user error here; otherwise, later catch clauses will
-     // not be able to handle user errors anymore (e.g. try-catch expressions)
-    error::ZorbaError::recordStackTrace(
+  } catch (ZorbaException& err) {
+    recordStackTrace(
         theFunctionLocation,
         theFunctionCallLocation,
         theFunctionName,
         theFunctionArity,
-        &uerr);
-    throw uerr;
-  } catch (error::ZorbaError& err) {
-    error::ZorbaError::recordStackTrace(
-        theFunctionLocation,
-        theFunctionCallLocation,
-        theFunctionName,
-        theFunctionArity,
-        &err);
-    throw err;
+        err);
+    throw;
   }
   // never reached because either STACK_PUSH or STACK_END return a bool
   // or record_stack_trace raises an error

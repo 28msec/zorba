@@ -243,13 +243,13 @@ void IndexDecl::analyze()
   // Get the var_expr representing the context item, if it is defined
   try
   {
-    dotVar = theSctx->lookup_var(dotQName, QueryLoc::null, XPST0008);
+    dotVar = theSctx->lookup_var(dotQName, QueryLoc::null, err::XPST0008);
   }
-  catch (error::ZorbaError& e)
+  catch (ZorbaException const& e)
   {
-    if (e.theErrorCode != XPST0008)
+    if (e.error() != err::XPST0008)
     {
-      throw e;
+      throw;
     }
   }
 
@@ -370,7 +370,7 @@ void IndexDecl::analyzeExprInternal(
       ZORBA_ASSERT(qnameExpr != NULL);
       store::Item* qname = qnameExpr->get_val();
 
-      var_expr* varExpr = theSctx->lookup_var(qname, e->get_loc(), XPST0008);
+      var_expr* varExpr = theSctx->lookup_var(qname, e->get_loc(), err::XPST0008);
       ZORBA_ASSERT(varExpr->get_kind() == var_expr::local_var);
 
       varExprs.push_back(varExpr);

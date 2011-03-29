@@ -20,8 +20,6 @@
 
 #include "zorbautils/fatal.h"
 #include "zorbaerrors/error_manager.h"
-#include "zorbatypes/zorbatypesError.h"
-#include "zorbaerrors/error_messages.h"
 #include "zorbatypes/URI.h"
 
 // For timing
@@ -227,17 +225,17 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END (state);
 
   }
-  catch(error::ZorbaError &e)
+  catch(ZorbaException &e)
   {
-    if(e.localName() == "XPTY0004")
+    if(e.error() == err::XPTY0004)
     {
       ZORBA_ERROR_LOC(FORG0006, loc);
     }
-    else if(e.theQueryLine == 0)
+    else
     {
-      ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+			set_source( e, loc );
+      throw;
     }
-    throw;
   }
 }
 

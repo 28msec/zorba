@@ -33,7 +33,6 @@
 #include "zorbatypes/datetime.h"
 #include "zorbautils/tokenizer.h"
 
-#include "zorbaerrors/errors.h"
 #include "zorbaerrors/error_manager.h"
 
 
@@ -1152,7 +1151,7 @@ public:
     {
       return theValue == other->getIntegerValue();
     }
-    catch (error::ZorbaError&)
+    catch (ZorbaException const&)
     {
       return getDecimalValue() == other->getDecimalValue();
     }
@@ -1167,7 +1166,7 @@ public:
     {
       return theValue.compare(other->getIntegerValue());
     }
-    catch (error::ZorbaError&)
+    catch (ZorbaException const&)
     {
       return getDecimalValue().compare(other->getDecimalValue());
     }
@@ -1318,7 +1317,7 @@ public:
     {
       return theValue == other->getLongValue();
     }
-    catch (error::ZorbaError&)
+    catch (ZorbaException const&)
     {
       return getDecimalValue() == other->getDecimalValue();
     }
@@ -1335,7 +1334,7 @@ public:
               -1 :
               (theValue == other->getLongValue() ? 0 : 1));
     }
-    catch (error::ZorbaError&)
+    catch (ZorbaException const&)
     {
       return getDecimalValue().compare(other->getDecimalValue());
     }
@@ -1400,7 +1399,7 @@ public:
     {
       return theValue == other->getLongValue();
     }
-    catch (error::ZorbaError&)
+    catch (ZorbaException const&)
     {
       return getDecimalValue() == other->getDecimalValue();
     }
@@ -1417,7 +1416,7 @@ public:
               -1 :
               (theValue == other->getLongValue() ? 0 : 1));
     }
-    catch (error::ZorbaError&)
+    catch (ZorbaException const&)
     {
       return getDecimalValue().compare(other->getDecimalValue());
     }
@@ -1480,7 +1479,7 @@ public:
     {
       return theValue == other->getLongValue();
     }
-    catch (error::ZorbaError&)
+    catch (ZorbaException const&)
     {
       return getDecimalValue() == other->getDecimalValue();
     }
@@ -1497,7 +1496,7 @@ public:
               -1 :
               (theValue == other->getLongValue() ? 0 : 1));
     }
-    catch (error::ZorbaError&)
+    catch (ZorbaException const&)
     {
       return getDecimalValue().compare(other->getDecimalValue());
     }
@@ -1564,7 +1563,7 @@ public:
     {
       return theValue == other->getLongValue();
     }
-    catch (error::ZorbaError&)
+    catch (ZorbaException const&)
     {
       return getDecimalValue() == other->getDecimalValue();
     }
@@ -1581,7 +1580,7 @@ public:
               -1 :
               (theValue == other->getLongValue() ? 0 : 1));
     }
-    catch (error::ZorbaError&)
+    catch (ZorbaException const&)
     {
       return getDecimalValue().compare(other->getDecimalValue());
     }
@@ -1646,7 +1645,7 @@ protected:
     {
       return theValue == other->getUnsignedLongValue();
     }
-    catch (error::ZorbaError&)
+    catch (ZorbaException const&)
     {
       return getDecimalValue() == other->getDecimalValue();
     }
@@ -1663,7 +1662,7 @@ protected:
               -1 :
               (theValue == other->getUnsignedLongValue() ? 0 : 1));
     }
-    catch (error::ZorbaError&)
+    catch (ZorbaException const&)
     {
       return getDecimalValue().compare(other->getDecimalValue());
     }
@@ -1730,13 +1729,13 @@ public:
     {
       return theValue == other->getUnsignedLongValue();
     }
-    catch (error::ZorbaError&)
+    catch (ZorbaException const&)
     {
       try
       {
         return getLongValue() == other->getLongValue();
       }
-      catch (error::ZorbaError&)
+      catch (ZorbaException const&)
       {
         return getDecimalValue() == other->getDecimalValue();
       }
@@ -1754,7 +1753,7 @@ public:
               -1 :
               (theValue == other->getUnsignedLongValue() ? 0 : 1));
     }
-    catch (error::ZorbaError&)
+    catch (ZorbaException const&)
     {
       return getDecimalValue().compare(other->getDecimalValue());
     }
@@ -1823,13 +1822,13 @@ public:
     {
       return theValue == other->getUnsignedLongValue();
     }
-    catch (error::ZorbaError&)
+    catch (ZorbaException const&)
     {
       try
       {
         return getLongValue() == other->getLongValue();
       }
-      catch (error::ZorbaError&)
+      catch (ZorbaException const&)
       {
         return getDecimalValue() == other->getDecimalValue();
       }
@@ -1847,7 +1846,7 @@ public:
               -1 :
               (theValue == other->getUnsignedLongValue() ? 0 : 1));
     }
-    catch (error::ZorbaError&)
+    catch (ZorbaException const&)
     {
       return getDecimalValue().compare(other->getDecimalValue());
     }
@@ -1918,13 +1917,13 @@ public:
     {
       return theValue == other->getUnsignedLongValue();
     }
-    catch (error::ZorbaError&)
+    catch (ZorbaException const&)
     {
       try
       {
         return getLongValue() == other->getLongValue();
       }
-      catch (error::ZorbaError&)
+      catch (ZorbaException const&)
       {
         return getDecimalValue() == other->getDecimalValue();
       }
@@ -1942,7 +1941,7 @@ public:
               -1 :
               (theValue == other->getUnsignedLongValue() ? 0 : 1));
     }
-    catch (error::ZorbaError&)
+    catch (ZorbaException const&)
     {
       return getDecimalValue().compare(other->getDecimalValue());
     }
@@ -2119,10 +2118,10 @@ class ErrorItem : public AtomicItem
   friend class BasicItemFactory;
 
 protected:
-  error::ZorbaError * theError;
+  ZorbaException * theError;
 
 protected:
-  ErrorItem(error::ZorbaError* error) : theError(error) 
+  ErrorItem(ZorbaException* error) : theError(error) 
   {
     theUnion.itemKind = ERROR_;
   }
@@ -2130,7 +2129,7 @@ protected:
 public:
   ~ErrorItem();
 
-  error::ZorbaError* getError() const { return theError; }
+  ZorbaException* getError() const { return theError; }
 
   SchemaTypeCode getTypeCode() const { return ZXSE_ERROR; }
 

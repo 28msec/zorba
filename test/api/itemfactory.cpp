@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include <cassert>
 #include <cstdlib>
 #include <iostream>
@@ -21,7 +22,9 @@
 
 #include <zorba/zorba.h>
 #include <zorba/store_manager.h>
-
+#include <zorba/zorba_exception.h>
+#include <zorba/iterator.h>
+#include <zorba/error_list.h>
 
 
 using namespace zorba;
@@ -53,8 +56,8 @@ checkType(const Item& aItem, const String& aLocalname)
   try { \
     object.member;\
     UNIT_ASSERT(false); \
-  } catch (SystemException &e) { \
-    UNIT_ASSERT (e.getErrorCode() == STR0040_TYPE_ERROR); \
+  } catch (ZorbaException &e) { \
+    UNIT_ASSERT (e.error() == err::STR0040_TYPE_ERROR); \
   }
 
 
@@ -156,8 +159,8 @@ itemfactory(int argc, char* argv[])
   try {
     lItem.getPrefix();
     UNIT_ASSERT(false);
-  } catch (SystemException &e) {
-    UNIT_ASSERT (e.getErrorCode() == STR0040_TYPE_ERROR);
+  } catch (ZorbaException &e) {
+    UNIT_ASSERT (e.error() == err::STR0040_TYPE_ERROR);
   }
 //    CHECK_NOT_IMPLEMENTED (lItem, getPrefix());
     CHECK_NOT_IMPLEMENTED (lItem, getLocalName());

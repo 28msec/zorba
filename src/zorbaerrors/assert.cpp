@@ -24,8 +24,8 @@
 #include <execinfo.h>
 #endif
 
-#include "errors.h"
-#include "error_manager.h"
+#include <zorba/error_list.h>
+#include <zorba/zorba_exception.h>
 
 #ifdef WIN32
 #include "StackWalker.h"
@@ -35,7 +35,9 @@ using namespace std;
 
 namespace zorba {
 
-void print_stack_trace( ostream &o ) {
+///////////////////////////////////////////////////////////////////////////////
+
+static void print_stack_trace( ostream &o ) {
 #ifdef ZORBA_HAVE_EXECINFO_H
   int const BUF_SIZE = 25;
   void *buf[ BUF_SIZE ];
@@ -47,12 +49,14 @@ void print_stack_trace( ostream &o ) {
   } else {
     o << "allocation of backtrace symbols failed" << endl;
   }
-#endif
+#endif /* ZORBA_HAVE_EXECINFO_H */
 #ifdef WIN32
   StackWalker sw;
   sw.ShowCallstack();
-#endif // WIN32
+#endif /* WIN32 */
 }
+
+///////////////////////////////////////////////////////////////////////////////
 
 void assertion_failed( char const *condition, char const *file, int line ) {
   print_stack_trace( cerr );
@@ -60,10 +64,13 @@ void assertion_failed( char const *condition, char const *file, int line ) {
   ostringstream oss;
   oss << file << ':' << line;
 
-  throw error::ErrorManager::createException(
-    XQP0005_SYSTEM_ASSERT_FAILED, condition, oss.str(), file, line
+  throw make_zorba_exception(
+    file, line, err::XQP0006_SYSTEM_ASSERT_FAILED,
+    ERROR_PARAMS( condition, oss.str() )
   );
 }
+
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

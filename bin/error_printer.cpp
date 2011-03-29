@@ -13,28 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "error_printer.h"
 
 #include <ostream>
-#include "zorba/exception.h"
+#include <sstream>
+
+#include <zorba/xquery_exception.h>
+#include <zorba/xquery_stack_trace.h>
+#include <zorba/zorbastring.h>
+
 #include "zorba/util/uri.h"
+#include "error_printer.h"
 
 namespace zorba {
 
-  std::ostream& print_stack_trace(const QueryException& aException,
+  std::ostream& print_stack_trace(const XQueryException& aException,
                                   std::ostream& aOut,
                                   bool aAsXml)
   {
-    ZorbaException::StackTrace_t lTrace = aException.getStackTrace();
+    XQueryStackTrace const& lTrace = aException.query_trace();
     if(!lTrace.empty()) {
-      QueryException::StackTrace_t::iterator it = lTrace.begin();
+      XQueryStackTrace::const_iterator it = lTrace.begin();
       if(aAsXml) { aOut << "<stack>"; } 
       for(; it != lTrace.end(); ++it) {
-        Item lName = it->getFunctionName();
-        unsigned int lArity = it->getFunctionArity();
-        QueryLocation_t lLocation = it->getLocation();
-        String lPrefix = lName.getPrefix();
-        String lFileName = lLocation->getFileName();
+        XQueryStackTrace::fn_name_type const& lName = it->getFnName();
+        XQueryStackTrace::fn_arity_type lArity = it->getFnArity();
+        char const *const lPrefix = lName.prefix();
+        String lFileName = it->getFileName();
         if (lFileName.startsWith("file:")) {
           lFileName = URIHelper::decodeFileURI(lFileName);
           while (lFileName.startsWith("//")) {
@@ -43,25 +47,25 @@ namespace zorba {
         }
         if(aAsXml) {
           aOut << "<call ";
-          if(lPrefix != "") {
+          if( lPrefix && *lPrefix ) {
             aOut << " prefix=\"" << lPrefix << "\" ";
           }
           aOut << " arity=\"" << lArity << "\" ";
-          aOut << " ns=\"" << lName.getNamespace() << "\" ";
-          aOut << " localName=\"" << lName.getLocalName() << "\">";
+          aOut << " ns=\"" << lName.ns() << "\" ";
+          aOut << " localName=\"" << lName.localname() << "\">";
           aOut << "  <location ";
           aOut << "fileName=\"" << lFileName << "\" ";
-          aOut << "lineBegin=\"" << lLocation->getLineBegin() << "\" ";  
-          aOut << "lineEnd=\"" << lLocation->getLineEnd() << "\" ";  
-          aOut << "columnBegin=\"" << lLocation->getColumnBegin() << "\" ";  
-          aOut << "columnEnd=\"" << lLocation->getColumnEnd() << "\" ";  
+          aOut << "line=\"" << it->getLine() << "\" ";  
+          aOut << "column=\"" << it->getColumn() << "\" ";  
           aOut << "  />";
           aOut << "</call>"; 
         } else {
-          String lFName = lPrefix == "" ? lName.getLocalName() : lPrefix + ":" + lName.getLocalName();
+	  std::ostringstream oss;
+	  oss << lName;
+          String lFName = oss.str();
           aOut << "=================================================" << std::endl;
-          aOut << lFName << "#" << lArity << " ( " << lName.getNamespace() << " ) " << std::endl;
-          aOut << lFileName << " at line " << lLocation->getLineBegin() << " column " << lLocation->getColumnBegin() << std::endl;
+          aOut << lFName << "#" << lArity << " ( " << lName.ns() << " ) " << std::endl;
+          aOut << lFileName << " at line " << it->getLine() << " column " << it->getColumn() << std::endl;
         }
       } 
       if(aAsXml) { aOut << "</stack>"; } 
@@ -70,7 +74,7 @@ namespace zorba {
   }
 
   std::ostream&
-  ErrorPrinter::print(const QueryException& aException,
+  ErrorPrinter::print(const XQueryException& aException,
                       std::ostream&         aOut,
                       bool                  aAsXml,
                       bool                  aIndent)
@@ -84,17 +88,15 @@ namespace zorba {
         aOut << "<errors>";
         if( aIndent ) aOut << std::endl << "  ";
         //code
-        aOut << "<error code='" << aException.getErrorCodeAsString(aException.getErrorCode()) << "'>";
+        aOut << "<error code='" << aException.error().qname() << "'>";
         if( aIndent ) aOut << std::endl << "    ";
         //location
-        aOut << "<location module='" << aException.getQueryURI();
-        aOut << "' lineStart='" << aException.getLineBegin();
-        aOut << "' columnStart='" << aException.getColumnBegin();
-        aOut << "' lineEnd='" << aException.getLineBegin();
-        aOut << "' columnEnd='" << aException.getColumnBegin() << "' />";
+        aOut << "<location module='" << aException.source_uri();
+        aOut << "' line='" << aException.source_line();
+        aOut << "' column='" << aException.source_column() << "'/>";
         if( aIndent ) aOut << std::endl << "    ";
         //description
-        aOut << "<description>" << aException.getDescription().formatAsXML() << "</description>";
+        aOut << "<description>" << aException.what() << "</description>";
         if( aIndent ) aOut << std::endl << "  ";
         print_stack_trace(aException, aOut, aAsXml);
         aOut << "</error>";
@@ -104,4 +106,5 @@ namespace zorba {
       return aOut;
   }
 
-} /* namespace zorba */
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "representations.h"
 
 #include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/dict.h"
 #include "zorbaerrors/Assert.h"
 
 #include <zorba/util/path.h>
@@ -596,8 +598,9 @@ void URI::initialize(const zstring& uri, bool have_base)
         (lColonIdx == 0 || (!have_base && lFragmentIdx != zstring::npos)) &&
         lTrimmedURILength > 0)
     {
-       ZORBA_ERROR_DESC_OSS(XQST0046,
-                            "URI \"" << lTrimmedURI << "\" doesn't have an URI scheme");
+      throw XQUERY_EXCEPTION(
+        XQST0046, ERROR_PARAMS( lTrimmedURI, ZED( NoURIScheme ) )
+      );
     }
   }
   else
@@ -616,8 +619,9 @@ void URI::initialize(const zstring& uri, bool have_base)
     lIndex += 2;
     if (lIndex >= lTrimmedURILength)
     {
-      ZORBA_ERROR_DESC_OSS(XQST0046,
-                           "Authority is misssing in URI \"" << lTrimmedURI << "\" .");
+      throw XQUERY_EXCEPTION(
+        XQST0046, ERROR_PARAMS( lTrimmedURI, ZED( NoURIAuthority ) )
+      );
     }
     else
     {
@@ -650,11 +654,9 @@ void URI::initialize(const zstring& uri, bool have_base)
         if (ZSTREQ(theScheme, "file") &&
             !ZSTREQ(lAuthUri, "localhost")) 
         {
-          ZORBA_ERROR_DESC_OSS(XQST0046,
-                               "Invalid authority value for the \"file\" scheme: \""
-                               << lAuthUri
-                               << "\". The only accepted values are empty string"
-                               << " (file:///) and \"localhost\" (file://localhost/).");
+          throw XQUERY_EXCEPTION(
+            XQST0046, ERROR_PARAMS( lTrimmedURI, ZED( BadFileURIAuthority ) )
+          );
         }
 
         initializeAuthority(lAuthUri);
@@ -699,7 +701,7 @@ void URI::initializeScheme(const zstring& uri)
   
   if ( valid && lSchemeSeparatorIdx == zstring::npos ) 
   {
-    ZORBA_ERROR_DESC_OSS(XQST0046, "URI \"" << uri << "\" doesn't have an URI scheme");
+    throw XQUERY_EXCEPTION( XQST0046, ERROR_PARAMS( uri, ZED( NoURIScheme ) ) );
   }
   else
   {
@@ -921,20 +923,22 @@ void URI::initializePath(const zstring& uri)
             ZORBA_ERROR_DESC_OSS(XQST0046,
                                  "Invalid hex sequence in URI \"" << uri << "\" .");
           }
-          uint32_t lHex1 = lCodepoints[++lIndex];
-          uint32_t lHex2 = lCodepoints[++lIndex];
-          if(!ascii::is_xdigit(lHex1) || !ascii::is_xdigit(lHex2))
-          {
-            ZORBA_ERROR_DESC_OSS(XQST0046,
-                                 "Invalid hex sequence in URI \"" << uri
-                                 << "\" : \"%" << char(lHex1) << char(lHex2) << "\".");
-          }
+          unicode::code_point lHex1 = lCodepoints[++lIndex];
+          if(!ascii::is_xdigit(lHex1))
+            throw XQUERY_EXCEPTION(
+              XQST0046, ERROR_PARAMS( uri, ZED( BadHexDigit ), char(lHex1) )
+            );
+          unicode::code_point lHex2 = lCodepoints[++lIndex];
+          if(!ascii::is_xdigit(lHex2))
+            throw XQUERY_EXCEPTION(
+              XQST0046, ERROR_PARAMS( uri, ZED( BadHexDigit ), char(lHex2) )
+            );
         }
         else if (!is_unreserved_char(lCp) && !is_path_character(lCp) && valid)
         {
-          ZORBA_ERROR_DESC_OSS(XQST0046,
-                               "Invalid char with codepoint '" << lCp
-                               << "' in URI path " << uri);
+          throw XQUERY_EXCEPTION(
+            XQST0046, ERROR_PARAMS( uri, ZED( BadUnicodeChar ), lCp )
+          );
         }
         ++lIndex;
       }
@@ -960,9 +964,9 @@ void URI::initializePath(const zstring& uri)
         }
         else if (!is_reservered_or_unreserved_char(lCp) && valid)
         {
-         ZORBA_ERROR_DESC_OSS(XQST0046,
-                              "Invalid char with codepoint '" << lCp
-                              << "' in URI path " << uri);
+          throw XQUERY_EXCEPTION(
+            XQST0046, ERROR_PARAMS( uri, ZED( BadUnicodeChar ), lCp )
+          );
         }
         ++lIndex;
       }
@@ -1695,3 +1699,4 @@ void URI::build_ascii_full_text() const
 }
 
 };
+/* vim:set et sw=2 ts=2: */

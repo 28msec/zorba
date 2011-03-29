@@ -20,6 +20,8 @@
 #include <zorba/zorba.h>
 #include <zorba/external_module.h>
 #include <zorba/external_function.h>
+#include <zorba/error_list.h>
+#include <zorba/xquery_exception.h>
 #include <zorba/item_factory.h>
 #include <zorba/singleton_item_sequence.h>
 #include <zorba/base64.h>
@@ -38,20 +40,14 @@ zorba::String getOneStringArgument(const StatelessExternalFunction::Arguments_t&
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as "
                   << aIndex << ". parameter.";
-    throw zorba::ExternalFunctionData::createZorbaException(XPTY0004,
-        lErrorMessage.str().c_str(),
-        __FILE__,
-        __LINE__);
+    throw XQUERY_EXCEPTION(XPTY0004, ERROR_PARAMS( lErrorMessage.str() ));
   }
   zorba::String lTmpString = lItem.getStringValue();
   if (args_iter->next(lItem)) {
     std::stringstream lErrorMessage;
     lErrorMessage << "A sequence of more then one item is not allowed as "
       << aIndex << ". parameter.";
-    throw zorba::ExternalFunctionData::createZorbaException(XPTY0004,
-        lErrorMessage.str().c_str(),
-        __FILE__,
-        __LINE__);
+    throw XQUERY_EXCEPTION(XPTY0004, ERROR_PARAMS( lErrorMessage.str() ));
   }
   args_iter->close();
   return lTmpString;
@@ -67,14 +63,14 @@ static zorba::String getNodeText(
   if (!(args_iter->next(lItem))) {
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as " << aArgumentIndex << ". parameter.";
-    throw zorba::ExternalFunctionData::createZorbaException(XPTY0004, lErrorMessage.str().c_str(), __FILE__, __LINE__);
+    throw XQUERY_EXCEPTION(XPTY0004, ERROR_PARAMS( lErrorMessage.str() ));
   }
   std::stringstream lTmpStream;
   zorba::String lText = lItem.getStringValue();
   if (args_iter->next(lItem)) {
     std::stringstream lErrorMessage;
     lErrorMessage << "A sequence of more then one item is not allowed as " << aArgumentIndex << ". parameter.";
-    throw zorba::ExternalFunctionData::createZorbaException(XPTY0004, lErrorMessage.str().c_str(), __FILE__, __LINE__);
+    throw XQUERY_EXCEPTION(XPTY0004, ERROR_PARAMS( lErrorMessage.str() ));
   }
   args_iter->close();
   return lText;
@@ -141,12 +137,9 @@ protected:
 
   static void throwError(
       const std::string aErrorMessage,
-      const XQUERY_ERROR& aErrorType)
+      const Error& aErrorType)
   {
-    throw zorba::ExternalFunctionData::createZorbaException(
-        aErrorType,
-        aErrorMessage.c_str(),
-        __FILE__, __LINE__);
+    throw XQUERY_EXCEPTION_VAR( aErrorType, ERROR_PARAMS( aErrorMessage ) );
   }
 
 public:

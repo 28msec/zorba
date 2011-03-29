@@ -277,9 +277,9 @@ void Schema::registerXSD(const char* xsdURL,
 			     "Error during parsing: " << xsdURL << " "
 			     << StrX(e.getMessage()));
   }
-  catch (const error::ZorbaError& e)
+  catch (const ZorbaException& e)
   {
-    throw e;
+    throw;
   }
   catch (...)
   {
@@ -1564,8 +1564,8 @@ bool Schema::parseUserAtomicTypes(
   {
     throw;
   }
-  catch (const error::ZorbaError& e) {
-    throw e;
+  catch (const ZorbaException&) {
+    throw;
   }
   catch (...)
   {
@@ -1692,9 +1692,9 @@ bool Schema::parseUserUnionTypes(
           return parseUserSimpleTypes(textValue, unionItemTypes[i], resultList);
         }
       }
-      catch(error::ZorbaError& e)
+      catch(ZorbaException const& e)
       {
-        msg += ", " + unionItemTypes[i]->toSchemaString() + " " + e.toString();
+        msg += ", " + unionItemTypes[i]->toSchemaString() + " " + e.what();
       }
     }
 

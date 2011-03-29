@@ -23,7 +23,6 @@
 
 #include <runtime/util/flowctl_exception.h>
 
-#include <zorbaerrors/errors.h>
 #include <zorbaerrors/error_manager.h>
 
 #ifdef WIN32

@@ -73,10 +73,10 @@ bool FnParseXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 
     try {
       lValidatedBaseUri = URI(result->getStringValue());
-    } catch (error::ZorbaError& e) {
+    } catch (ZorbaException const& e) {
       ZORBA_ERROR_LOC_DESC_OSS(FODC0007, loc,
           "Base URI passed as second argument to fn:parse is not a valid URI; "
-          << e.theDescription);
+          << e.what());
     }
 
     if (!lValidatedBaseUri.is_absolute()) {
@@ -93,8 +93,8 @@ bool FnParseXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) c
     store::LoadProperties loadProps;
     loadProps.setStoreDocument(false);
     result = lStore.loadDocument(baseUri, docUri, *is, loadProps);
-  } catch (error::ZorbaError& e) {
-    ZORBA_ERROR_LOC_DESC(FODC0006, loc, e.theDescription);
+  } catch (ZorbaException const& e) {
+    ZORBA_ERROR_LOC_DESC(FODC0006, loc, e.what());
   }
   STACK_PUSH(true, state);
   STACK_END (state);

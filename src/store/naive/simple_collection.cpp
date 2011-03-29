@@ -91,7 +91,7 @@ store::Item_t SimpleCollection::loadDocument(
 
   if (lErrorManager.hasErrors()) 
   {
-    throw lErrorManager.getErrors().front();
+    lErrorManager.getErrors().front()->polymorphic_throw();
   }
 
   if (root != NULL)
@@ -515,7 +515,7 @@ bool SimpleCollection::CollectionIter::next(store::Item_t& result)
 {
   if (!theHaveLock) 
   {
-    ZORBA_ERROR_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR,
+    ZORBA_ERROR_DESC(XQP0001_DYNAMIC_RUNTIME_ERROR,
                      "Collection iterator has not been opened");
   }
 

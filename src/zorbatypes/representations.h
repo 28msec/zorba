@@ -17,6 +17,8 @@
 #ifndef ZORBA_REPRESENTATIONS_H
 #define ZORBA_REPRESENTATIONS_H
 
+#include "rchandle.h"
+
 #include "zorbatypes/binary.h"
 #include "zorbatypes/decimal.h"
 #include "zorbatypes/floatimpl.h"

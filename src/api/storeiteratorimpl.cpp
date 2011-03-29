@@ -32,7 +32,7 @@
 namespace zorba {
 
 #define STORE_ITERATOR_CATCH                                   \
-catch (error::ZorbaError& e)                                   \
+catch (ZorbaException const& e)                                \
 {                                                              \
   SYNC_CODE(                                                   \
   if (theHaveLock)                                             \
@@ -43,7 +43,7 @@ catch (error::ZorbaError& e)                                   \
                                                                \
   ZorbaImpl::notifyError(theErrorHandler, e);                  \
 }                                                              \
-catch (std::exception& e)                                      \
+catch (std::exception const& e)                                \
 {                                                              \
   SYNC_CODE(                                                   \
   if (theHaveLock)                                             \
