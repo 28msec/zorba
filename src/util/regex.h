@@ -48,8 +48,14 @@ namespace unicode {
  */
 class ZORBA_DLL_PUBLIC regex {
 public:
+  /**
+   * Constructs a %regex.
+   */
   regex() : matcher_( 0 ) { }
 
+  /**
+   * Destroys a %regex.
+   */
   ~regex() {
     delete matcher_;
   }
