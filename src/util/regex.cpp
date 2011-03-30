@@ -18,6 +18,7 @@
 #include <vector>
 
 #include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/dict.h"
 
 #include "ascii_util.h"
 #include "regex.h"
@@ -45,15 +46,15 @@ static icu_flags_t convert_xquery_flags( char const *xq_flags ) {
         case 's': icu_flags |= UREGEX_DOTALL          ; break;
         case 'x': icu_flags |= UREGEX_COMMENTS        ; break;
         default:
-          throw XQUERY_EXCEPTION( FORX0001, ERROR_PARAMS( xq_flags ) );
+          throw XQUERY_EXCEPTION( FORX0001, ERROR_PARAMS( *f ) );
       }
     }
   }
   return icu_flags;
 }
 
-#define INVALID_RE_EXCEPTION(MSG) \
-  XQUERY_EXCEPTION( FORX0002, ERROR_PARAMS( MSG ) )
+#define INVALID_RE_EXCEPTION(ZED_KEY) \
+  XQUERY_EXCEPTION( FORX0002, ERROR_PARAMS( ZED( ZED_KEY ) ) )
 
 void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
                         char const *xq_flags ) {
@@ -100,15 +101,13 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           if ( ascii::is_digit( *xq_c ) ) {
             backref_no = *xq_c - '0';
             if ( !backref_no )          // \0 is illegal
-              throw INVALID_RE_EXCEPTION( "\"\\0\": illegal backreference" );
+              throw INVALID_RE_EXCEPTION( BackRef0Illegal );
             if ( in_char_class ) {
               //
               // XQuery F&O 7.6.1: Within a character class expression,
               // \ followed by a digit is invalid.
               //
-              throw INVALID_RE_EXCEPTION(
-                "backreference illegal in character class"
-              );
+              throw INVALID_RE_EXCEPTION( BackRefIllegalInCharClass );
             }
             in_backref = true;
           }
@@ -135,9 +134,9 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
         // closing right parenthesis occurs after the back-reference.
         //
         if ( backref_no > cap_sub.size() )
-          throw INVALID_RE_EXCEPTION( "non-existent backreference" );
+          throw INVALID_RE_EXCEPTION( NonexistantBackRef );
         if ( cap_sub[ backref_no - 1 ] )
-          throw INVALID_RE_EXCEPTION( "non-closed backreference" );
+          throw INVALID_RE_EXCEPTION( NonClosedBackRef );
       }
       switch ( *xq_c ) {
         case '\\':
@@ -148,9 +147,9 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           break;
         case ')':
           if ( cap_sub.empty() )
-            throw INVALID_RE_EXCEPTION( "unbalanced ')'" );
+            throw INVALID_RE_EXCEPTION( UnbalancedParen );
           if ( !cap_sub.back() )
-            throw INVALID_RE_EXCEPTION( "unbalanced ')'" );
+            throw INVALID_RE_EXCEPTION( UnbalancedParen );
           cap_sub.back() = false;
           break;
         case '[':

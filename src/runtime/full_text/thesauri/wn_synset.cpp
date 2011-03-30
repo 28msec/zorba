@@ -15,16 +15,11 @@
  */
 
 #include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/dict.h"
 
 #include "decode_base128.h"
 #include "wn_synset.h"
 #include "wn_types.h"
-
-#define THROW_DATA_EXCEPTION(CHAR,MSG) {                        \
-  ostringstream oss;                                            \
-  oss << '\'' << (CHAR) << "': " MSG;                           \
-  ZORBA_ERROR_DESC( XQP8402_THESAURUS_DATA_ERROR, oss.str() );  \
-}
 
 using namespace std;
 
@@ -44,7 +39,10 @@ void synset::ptr_decoder::operator()( mem_ptr_type *pptr,
 
   char const c = *(*pptr)++;
   if ( !(result->type_ = zorba::wordnet::pointer::find( c )) )
-    THROW_DATA_EXCEPTION( c, "invalid pointer type" );
+    throw ZORBA_EXCEPTION(
+      XQP8402_THESAURUS_DATA_ERROR,
+      ERROR_PARAMS( c, ZED( BadWordNetPtr ) )
+    );
 
   result->synset_id_ = decode_base128( pptr );
   result->source_    = decode_base128( pptr );
@@ -78,7 +76,10 @@ part_of_speech::type synset::get_pos( mem_ptr_type *pptr ) {
   char const c = *(*pptr)++;
   if ( part_of_speech::type const pos = part_of_speech::find( c ) )
     return pos;
-  THROW_DATA_EXCEPTION( c, "invalid part-of-speech" );
+  throw ZORBA_EXCEPTION(
+    XQP8402_THESAURUS_DATA_ERROR,
+    ERROR_PARAMS( c, ZED( BadWordNetPartOfSpeech ) )
+  );
 }
 
 synset::mem_ptr_type* synset::skip_lemmas( size_type n, mem_ptr_type *pptr ) {

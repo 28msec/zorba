@@ -348,7 +348,10 @@ ft_visit_result::type V::begin_visit( ftprimary_with_options &pwo ) {
     if ( ftweight *const w = pwo.get_weight() ) {
       weight = get_double( w->get_weight_iter() );
       if ( ::fabs( weight ) > 1000.0 )
-        ZORBA_ERROR_LOC( FTDY0016, w->get_weight_expr()->get_loc() );
+        throw XQUERY_EXCEPTION(
+          FTDY0016, ERROR_PARAMS( weight ),
+          ERROR_LOC( w->get_weight_expr()->get_loc() )
+        );
     } else {
       weight = 1.0;
     }

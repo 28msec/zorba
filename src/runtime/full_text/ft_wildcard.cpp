@@ -17,37 +17,19 @@
 #include <cctype>
 #include <cstring>
 
+#include <zorba/error.h>
+
+#include "util/stl_util.h"
+#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/dict.h"
+
+#include "ft_wildcard.h"
+
 #define DEBUG_MATCHER 0
-#define STANDALONE_TEST 0
-
-#if !STANDALONE_TEST
-# include <zorba/error.h>
-# include "util/stl_util.h"
-# include "zorbaerrors/error_manager.h"
-# include "zorbaerrors/dict.h"
-
-# include "ft_wildcard.h"
 
 using namespace std;
 
 namespace zorba {
-
-#else /* STANDALONE_TEST */
-# include <cstdlib>
-# include <iostream>
-
-#define FOR_EACH(TYPE,IT,SEQ) \
-  for ( TYPE::const_iterator IT = (SEQ).begin(); IT != (SEQ).end(); ++IT )
-
-  template<typename T> inline
-  void debug_error_helper( T code, int line ) {
-    cerr << "line " << line << ": error = " << code << endl;
-    ::exit(1);
-  }
-# define ZORBA_ERROR(CODE) debug_error_helper( CODE, __LINE__ )
-# define FTDY0020 20
-
-#endif /* STANDALONE_TEST */
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -146,8 +128,6 @@ static void wildcard_to_icu_pattern( zstring const &ws_pat, zstring *icu_pat ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#if !STANDALONE_TEST
-
 ft_wildcard::ft_wildcard( zstring const &ws_pat ) {
   zstring icu_pat;
   wildcard_to_icu_pattern( ws_pat, &icu_pat );
@@ -156,41 +136,9 @@ ft_wildcard::ft_wildcard( zstring const &ws_pat ) {
   cout << "icu: " << icu_pat << endl;
 #endif
   if ( !regex_.compile( icu_pat ) )
-    ZORBA_ERROR( FTDY0020 );
+    throw XQUERY_EXCEPTION( FTDY0020 );
 }
 
 } // namespace zorba
 
-#else /* STANDALONE_TEST */
-
-////////// Stand-alone testing ////////////////////////////////////////////////
-
-static char const *const ws_patterns[] = {
-  "hello",
-  "hello.",
-  "hello*",
-  "hello+",
-  "hello?",
-  "hello\\.",
-  "hello\\*",
-  "hello\\+",
-  "hello\\?",
-  "hello.world",
-  "hello.*world",
-  "hello.+world",
-  "hello.?world",
-  "hello.{2,15}world",
-  "he..o",
-  "\\h\\e\\l\\l\\o",
-  0
-};
-
-int main() {
-  for ( char const *const *ws_pat = ws_patterns; *ws_pat; ++ws_pat ) {
-    zstring icu_pat;
-    wildcard_to_icu_pattern( *ws_pat, icu_pat );
-    cout << *ws_pat << '\n' << icu_pat << "\n\n";
-  }
-}
-#endif /* STANDALONE_TEST */
 /* vim:set et sw=2 ts=2: */

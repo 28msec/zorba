@@ -31,6 +31,7 @@
 #include "util/uri_util.h"
 #include "util/utf8_util.h"
 #include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/dict.h"
 
 #include "xqftts_thesaurus.h"
 
@@ -213,8 +214,9 @@ thesaurus::lookup( zstring const &phrase, zstring const &relationship,
   );
 }
 
-#define THROW_BAD_XML_EXCEPTION(WHAT,MSG) \
-  ZORBA_ERROR_PARAM( XQP0024_XML_DOES_NOT_MATCH_SCHEMA, WHAT, MSG )
+#define BAD_XML_EXCEPTION(WHAT,MSG) \
+  ZORBA_EXCEPTION( XQP0024_XML_DOES_NOT_MATCH_SCHEMA, \
+                   ERROR_PARAMS( WHAT, ZED( MSG ) ) )
 
 void thesaurus::read_xqftts_file( zstring const &uri ) {
   ZORBA_ASSERT( !uri.empty() );
@@ -255,7 +257,7 @@ void thesaurus::read_xqftts_file( zstring const &uri ) {
         zstring const &element_name = get_local_name( item );
         if ( element_name == "term" ) {
           if ( !new_term.empty() )
-            THROW_BAD_XML_EXCEPTION( "term", "already specified" );
+            throw BAD_XML_EXCEPTION( "term", AlreadySpecified );
           item->getStringValue2( new_term );
           utf8::to_lower( new_term );
         } else if ( element_name == "synonym" ) {
@@ -272,21 +274,21 @@ void thesaurus::read_xqftts_file( zstring const &uri ) {
             zstring const &element_name = get_local_name( item );
             if ( element_name == "term" ) {
               if ( !syn_term.empty() )
-                THROW_BAD_XML_EXCEPTION( "term", "already specified" );
+                throw BAD_XML_EXCEPTION( "term", AlreadySpecified );
               item->getStringValue2( syn_term );
               utf8::to_lower( syn_term );
             } else if ( element_name == "relationship" ) {
               if ( !syn_relationship.empty() )
-                THROW_BAD_XML_EXCEPTION( "relationship", "already specified" );
+                throw BAD_XML_EXCEPTION( "relationship", AlreadySpecified );
               item->getStringValue2( syn_relationship );
               utf8::to_lower( syn_relationship );
             } else
-              THROW_BAD_XML_EXCEPTION( element_name, "unexpected element" );
+              throw BAD_XML_EXCEPTION( element_name, UnexpectedElement );
           }
           if ( syn_term.empty() )
-            THROW_BAD_XML_EXCEPTION( "term", "not specified" );
+            throw BAD_XML_EXCEPTION( "term", NotSpecified );
           if ( syn_relationship.empty() )
-            THROW_BAD_XML_EXCEPTION( "relationship", "not specified" );
+            throw BAD_XML_EXCEPTION( "relationship", NotSpecified );
           //
           // We now have a (possibly) new synonym for the new synonym set
           // being built.
@@ -301,11 +303,11 @@ void thesaurus::read_xqftts_file( zstring const &uri ) {
             new_set.insert( new_syn );
           }
         } else
-          THROW_BAD_XML_EXCEPTION( element_name, "unexpected element" );
+          throw BAD_XML_EXCEPTION( element_name, UnexpectedElement );
       }
 
       if ( new_term.empty() )
-        THROW_BAD_XML_EXCEPTION( "term", "not specified" );
+        throw BAD_XML_EXCEPTION( "term", NotSpecified );
       if ( !new_set.empty() ) {
         //
         // We now have a (possibly) new term and one or more synonyms for it:

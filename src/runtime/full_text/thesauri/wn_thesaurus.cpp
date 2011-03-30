@@ -29,6 +29,7 @@
 #endif
 #include "util/utf8_util.h"
 #include "zorbaerrors/assert.h"
+#include "zorbaerrors/dict.h"
 #include "zorbaerrors/error_manager.h"
 #include "zorbautils/locale.h"
 
@@ -51,29 +52,6 @@ namespace wordnet {
 uint32_t const Magic_Number = 42;       // same as TIFF -- why not?
 
 ////////// Helper functions ///////////////////////////////////////////////////
-
-#define THROW_ENDIANNESS_EXCEPTION() \
-  ZORBA_ERROR_DESC( XQP8402_THESAURUS_DATA_ERROR, "wrong endianness" )
-
-#define THROW_FILE_NOT_FOUND_EXCEPTION(FILE) {                          \
-  ostringstream oss;                                                    \
-  oss << '"' << FILE << "\": file not found";                           \
-  ZORBA_ERROR_DESC( API0033_FILE_OR_FOLDER_DOES_NOT_EXIST, oss.str() ); \
-}
-
-#define THROW_NOT_PLAIN_FILE_EXCEPTION(FILE) {            \
-  ostringstream oss;                                      \
-  oss << '"' << FILE << "\": not plain file";             \
-  ZORBA_ERROR_DESC( API0022_NOT_PLAIN_FILE, oss.str() );  \
-}
-
-#define THROW_VERSION_EXCEPTION(FILE_VERSION,OUR_VERSION) {           \
-  ostringstream oss;                                                  \
-  oss << '"' << FILE_VERSION                                          \
-      << "\": wrong WordNet file version; should be \""               \
-      << OUR_VERSION << '"';                                          \
-  ZORBA_ERROR_DESC( XQP8401_THESAURUS_VERSION_MISMATCH, oss.str() );  \
-}
 
 /**
  * "Fixes" the "at most" parameter.  The Full Text specification section 3.4.3
@@ -219,9 +197,11 @@ static zstring get_wordnet_path( zstring path ) {
         loop = false;
         break;
       case fs::non_existent:
-        THROW_FILE_NOT_FOUND_EXCEPTION( path );
+        throw ZORBA_EXCEPTION(
+          API0033_FILE_OR_FOLDER_DOES_NOT_EXIST, ERROR_PARAMS( path )
+        );
       default:
-        THROW_NOT_PLAIN_FILE_EXCEPTION( path );
+        throw ZORBA_EXCEPTION( API0022_NOT_PLAIN_FILE, ERROR_PARAMS( path ) );
     }
   }
   return path;
@@ -467,13 +447,19 @@ thesaurus::wordnet_file_checker::wordnet_file_checker( mmap_file const &file ) {
   ::strncpy( file_version, byte_ptr, sizeof( version_type ) );
   file_version[ sizeof( version_type ) ] = '\0';
   if ( ::strcmp( file_version, our_version ) != 0 )
-    THROW_VERSION_EXCEPTION( file_version, our_version );
+    throw ZORBA_EXCEPTION(
+      XQP8401_THESAURUS_VERSION_MISMATCH,
+      ERROR_PARAMS( file_version, our_version )
+    );
 
   // check endian-ness
   byte_ptr += sizeof( uint32_t );
   uint32_t const file_endian = *reinterpret_cast<uint32_t const*>( byte_ptr );
   if ( file_endian != Magic_Number )
-    THROW_ENDIANNESS_EXCEPTION();
+    throw ZORBA_EXCEPTION(
+      XQP8402_THESAURUS_DATA_ERROR,
+      ERROR_PARAMS( ZED( WrongWordNetEndianness ) )
+    );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
