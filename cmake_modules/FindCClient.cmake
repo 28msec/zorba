@@ -62,7 +62,9 @@ ENDIF(CCLIENT_LIBRARY)
 
 # Copy the results to the output variables.
 IF(CCLIENT_INCLUDE AND CCLIENT_LIBRARY)
-  SET(CCLIENT_FOUND 1)
+# temporarely disabled the modules that depend on C-Client library
+#   SET(CCLIENT_FOUND 1)
+  SET(CCLIENT_FOUND 0)
   SET(CCLIENT_LIBRARIES ${CCLIENT_LIBRARY})
   SET(CCLIENT_INCLUDE_DIRS ${CCLIENT_INCLUDE})
 
