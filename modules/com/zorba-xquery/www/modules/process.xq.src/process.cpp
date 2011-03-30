@@ -108,9 +108,9 @@ void throw_last_error(const zorba::String& aFilename, unsigned int aLineNumber){
 #ifdef UNICODE
   char error_str[1024];
   WideCharToMultiByte(CP_UTF8, 0, lErrorBuffer, -1, error_str, sizeof(error_str), NULL, NULL);
-  throw zorba::ExternalFunctionData::createZorbaException(XPTY0004,error_str, aFilename, aLineNumber);
+  throw XQUERY_EXCEPTION(XPTY0004, ERROR_PARAMS( error_str, aFilename, aLineNumber ) );
 #else
-  throw zorba::ExternalFunctionData::createZorbaException(XPTY0004,lErrorBuffer, aFilename, aLineNumber);
+  throw XQUERY_EXCEPTION(XPTY0004, ERROR_PARAMS( lErrorBuffer, aFilename, aLineNumber ) );
 #endif
 }
 
@@ -233,8 +233,9 @@ int run_process(const std::string& aCommand,std::ostringstream& aTargetOutStream
       !CreatePipe(&lOutRead,&lStdOut,&lSecurityAttributes,1024*1024) // std::cout >> lOutRead
       || !CreatePipe(&lErrRead,&lStdErr,&lSecurityAttributes,1024*1024) // std::cerr >> lErrRead
     ){
-    throw zorba::ExternalFunctionData::createZorbaException(
-        XPTY0004,"Couldn't create one of std::cout/std::cerr pipe for child process execution.", __FILE__, __LINE__);
+    throw XQUERY_EXCEPTION(
+        XPTY0004, ERROR_PARAMS("Couldn't create one of std::cout/std::cerr pipe for child process execution.")
+    );
   };
   
   //start child process
@@ -252,8 +253,9 @@ int run_process(const std::string& aCommand,std::ostringstream& aTargetOutStream
       std::stringstream lErrorMsg;
       lErrorMsg 
         << "Couldn't get exit code from child process. Executed command: '" << aCommand << "'.";
-      throw zorba::ExternalFunctionData::createZorbaException(
-          XPTY0004,lErrorMsg.str().c_str(), __FILE__, __LINE__);
+      throw XQUERY_EXCEPTION(
+        XPTY0004,ERROR_PARAMS( lErrorMsg.str().c_str() )
+      );
     }
   
     CloseHandle(lChildProcessInfo.hProcess);
@@ -527,3 +529,4 @@ extern "C" ZORBA_MODULES_DLL_EXPORT zorba::ExternalModule* createModule()
 extern "C" DLL_EXPORT zorba::ExternalModule* createModule() {
   return new zorba::processmodule::ProcessModule();
 }
+/* vim:set et sw=2 ts=2: */

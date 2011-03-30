@@ -55,6 +55,7 @@
 #include "util/uri_util.h"
 #include "util/utf8_util.h"
 #include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/xquery_exception.h"
 
 
 using namespace std;
@@ -127,8 +128,7 @@ _normalize_path
     if(!isValidDriveSegment(lDriveString)) {
       lErrorMessage << "Invalid drive specification: \""
           << lDriveString << "\".";
-      throw ExternalFunctionData::createZorbaException
-        (XPTY0004, lErrorMessage.str(), __FILE__, __LINE__);
+      throw XQUERY_EXCEPTION(XPTY0004, ERROR_PARAMS( lErrorMessage.str() ) );
     }
 #endif
 

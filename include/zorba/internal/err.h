@@ -117,7 +117,7 @@ public:
    * @return Returns \c true only if this %location has been set.
    */
   operator bool() const {
-    return line_;
+    return !!line_;
   }
 
   /**
