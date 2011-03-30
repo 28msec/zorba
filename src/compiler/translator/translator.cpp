@@ -12103,7 +12103,7 @@ void end_visit (const FTScope& v, void* /*visit_state*/) {
 
 void *begin_visit (const FTScoreVar& v) {
   TRACE_VISIT ();
-  ZORBA_ERROR_LOC_DESC( XQP0015_SYSTEM_NOT_YET_IMPLEMENTED, loc, "score" );
+  throw ZORBA_NOT_IMPLEMENTED( ERROR_PARAMS( "score" ), ERROR_LOC( loc ) );
   return no_state;
 }
 

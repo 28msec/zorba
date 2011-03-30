@@ -68,6 +68,22 @@ private:
 
 } // namespace error
 
+/**
+ * \internal
+ * Convenience macro for throwing "not implemented" exception.
+ * \hideinitializer
+ */
+#define ZORBA_NOT_IMPLEMENTED(...) \
+  XQUERY_EXCEPTION( XQP0015_SYSTEM_NOT_YET_IMPLEMENTED, __VA_ARGS__ )
+
+/**
+ * \internal
+ * Convenience macro for throwing "not supported" exception.
+ * \hideinitializer
+ */
+#define ZORBA_NOT_SUPPORTED(...) \
+  XQUERY_EXCEPTION( XQP0004_SYSTEM_NOT_SUPPORTED, __VA_ARGS__ )
+
 ////////// TEMPORARY TRANSITION MACROS: THESE WILL BE REMOVED /////////////////
 
 #define ZORBA_ERROR(...) \
@@ -155,12 +171,6 @@ private:
     xe->set_source( (LOC).getFilename().str().c_str(), (LOC).getLineBegin(), (LOC).  getColumnBegin() ); \
     (ERR_MGR)->addError( xe ); \
   } while ( 0 )
-
-#define ZORBA_NOT_IMPLEMENTED(MSG) \
-  throw XQUERY_EXCEPTION( XQP0004_SYSTEM_NOT_SUPPORTED, ERROR_PARAMS(MSG) )
-
-#define ZORBA_NOT_SUPPORTED(MSG) \
-  throw XQUERY_EXCEPTION( XQP0004_SYSTEM_NOT_SUPPORTED, ERROR_PARAMS(MSG) )
 
 } // namespace zorba
 

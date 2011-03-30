@@ -205,9 +205,9 @@ bool TypeOps::is_in_scope(const TypeManager* tm, const XQType& type)
   }
   else if (type.type_kind() == XQType::FUNCTION_TYPE_KIND)
   {
-    ZORBA_ERROR_DESC_OSS(XQP0015_SYSTEM_NOT_YET_IMPLEMENTED,
-                         "The method TypeOps::is_in_scope() is not yet "
-                         << "implemented for function-item types");
+    throw ZORBA_NOT_IMPLEMENTED(
+      ERROR_PARAMS( "TypeOps::is_in_scope() for function-item types" )
+    );
   }
   else
   {

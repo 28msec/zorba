@@ -23,6 +23,7 @@
 #include "util/string_util.h"
 #include "util/uri_util.h"
 #include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/dict.h"
 
 #include "ft_thesaurus.h"
 #ifdef ZORBA_WITH_FILE_ACCESS
@@ -110,9 +111,7 @@ ft_thesaurus::ptr ft_thesaurus::get( zstring const &mapping,
       th_path = fs::get_normalized_path( uri );
       break;
     default:
-      ZORBA_ERROR_DESC(
-        XQP0015_SYSTEM_NOT_YET_IMPLEMENTED, "non-file thesaurus URI"
-      );
+      throw ZORBA_NOT_IMPLEMENTED( ERROR_PARAMS( ZED( NonFileThesaurusURI ) ) );
   }
 
   ft_thesaurus *result;

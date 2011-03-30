@@ -30,6 +30,14 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+/**
+ * Converts a UserException's \c error_object containing API Items into a
+ * sequence containing store::Items.
+ *
+ * @tparam SequenceType The sequence type.
+ * @param in The \c error_object to convert.
+ * @param out A pointer to the sequence type to receive the items.
+ */
 template<class SequenceType> inline
 void convert_error_object( UserException::error_object_type const &in,
                            SequenceType *out ) {
@@ -39,17 +47,18 @@ void convert_error_object( UserException::error_object_type const &in,
 }
 
 /**
- * Makes a UserException TODO
+ * Makes a UserException.
  *
  * @param throw_file The C++ source-code file name whence the exception was
  * thrown.
  * @param throw_line The C++ source-code line number whence the exception was
  * thrown.
- * @param ns TODO
- * @param prefix TODO
- * @param localname TODO
- * @param msg TODO
- * @param err_obj TODO
+ * @param ns The error's namespace.
+ * @param prefix The error's prefix.
+ * @param localname The error's local-name.
+ * @param msg The error message.
+ * @param loc The XQuery source-code location.
+ * @param err_obj The error object, if any.
  * @return Returns a new UserException.
  */
 UserException
@@ -59,6 +68,20 @@ make_user_exception( char const *throw_file,
                      zstring const &msg, QueryLoc const &loc,
                      UserException::error_object_type *err_obj = 0 );
 
+/**
+ * Makes a UserException.
+ *
+ * @param throw_file The C++ source-code file name whence the exception was
+ * thrown.
+ * @param throw_line The C++ source-code line number whence the exception was
+ * thrown.
+ * @param ns The error's namespace.
+ * @param prefix The error's prefix.
+ * @param localname The error's local-name.
+ * @param msg The error message.
+ * @param err_obj The error object, if any.
+ * @return Returns a new UserException.
+ */
 inline UserException
 make_user_exception( char const *throw_file,
                      UserException::line_type throw_line,
@@ -70,6 +93,19 @@ make_user_exception( char const *throw_file,
   );
 }
 
+/**
+ * Makes a UserException.
+ *
+ * @param throw_file The C++ source-code file name whence the exception was
+ * thrown.
+ * @param throw_line The C++ source-code line number whence the exception was
+ * thrown.
+ * @param qname The error's QName.
+ * @param msg The error message.
+ * @param loc The XQuery source-code location.
+ * @param err_obj The error object, if any.
+ * @return Returns a new UserException.
+ */
 inline UserException
 make_user_exception( char const *throw_file,
                      UserException::line_type throw_line,
@@ -85,6 +121,18 @@ make_user_exception( char const *throw_file,
   );
 }
 
+/**
+ * Makes a UserException.
+ *
+ * @param throw_file The C++ source-code file name whence the exception was
+ * thrown.
+ * @param throw_line The C++ source-code line number whence the exception was
+ * thrown.
+ * @param qname The error's QName.
+ * @param msg The error message.
+ * @param err_obj The error object, if any.
+ * @return Returns a new UserException.
+ */
 inline UserException
 make_user_exception( char const *throw_file,
                      UserException::line_type throw_line,
@@ -99,6 +147,19 @@ make_user_exception( char const *throw_file,
   );
 }
 
+/**
+ * Makes a UserException.
+ *
+ * @param throw_file The C++ source-code file name whence the exception was
+ * thrown.
+ * @param throw_line The C++ source-code line number whence the exception was
+ * thrown.
+ * @param qname The error's QName.
+ * @param msg The error message.
+ * @param loc The XQuery source-code location.
+ * @param err_obj The error object, if any.
+ * @return Returns a new UserException.
+ */
 inline UserException
 make_user_exception( char const *throw_file,
                      UserException::line_type throw_line,
@@ -114,6 +175,18 @@ make_user_exception( char const *throw_file,
   );
 }
 
+/**
+ * Makes a UserException.
+ *
+ * @param throw_file The C++ source-code file name whence the exception was
+ * thrown.
+ * @param throw_line The C++ source-code line number whence the exception was
+ * thrown.
+ * @param qname The error's QName.
+ * @param msg The error message.
+ * @param err_obj The error object, if any.
+ * @return Returns a new UserException.
+ */
 inline UserException
 make_user_exception( char const *throw_file,
                      UserException::line_type throw_line,
