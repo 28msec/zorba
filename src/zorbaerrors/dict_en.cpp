@@ -42,10 +42,10 @@ extern entry const dict_en[] = {
   { "API0041", "iterator is open already" },
   { "API0042", "iterator query is closed" },
   { "API0010", "thread not initialized" },
-  { "API0011", "\"$1\": invalid variable qname" },
+  { "API0011", "\"$1\": invalid variable QName" },
   { "API0012", "invalid index" },
   { "API0013", "\"$1\": inappropriate variable value" },
-  { "API0014", "\"$1\": INVALID ARGUMENT" },
+  { "API0014", "\"$1\": invalid argument" },
   { "API0015", "\"$1\": cannot open file" },
   { "API0016", "cannot create collection" },
   { "API0017", "cannot load document" },
@@ -53,10 +53,10 @@ extern entry const dict_en[] = {
   { "API0019", "\"$1\": function already registered" },
   { "API0020", "document already exists" },
   { "API0021", "item to load is not node" },
-  { "API0022", "\"$1\": NOT PLAIN FILE" },
+  { "API0022", "\"$1\": not plain file" },
   { "API0025", "end of sequence" },
   { "API0027", "cannot update dctx with iterators" },
-  { "API0028", "invalid node uri" },
+  { "API0028", "invalid node URI" },
   { "API0030", "no node at given position" },
   { "API0033", "\"$1\": file or folder does not exist" },
   { "API0034", "\"$1\": file or folder cannot be opened" },
@@ -103,7 +103,7 @@ extern entry const dict_en[] = {
   { "FONS0004", "\"$1\": no namespace found for prefix" },
   { "FONS0005", "base-URI not defined in the static context" },
   { "FORG0001", "\"$1\": invalid value for cast/constructor" },
-  { "FORG0002", "\"$1\": invalud argument to fn:resolve-uri()" },
+  { "FORG0002", "\"$1\": invalid argument to fn:resolve-uri()" },
   { "FORG0003", "fn:zero-or-one() called with a sequnce containing more than one item" },
   { "FORG0004", "fn:one-or-more() called with a sequence containing no items" },
   { "FORG0005", "fn:exactly-one() called with a sequence containing zero or more than one item" },
@@ -127,8 +127,8 @@ extern entry const dict_en[] = {
 
 #ifndef ZORBA_NO_FULL_TEXT
   { "FTDY0016", "\"$1\": invalid weight value" },
-  { "FTDY0017", "mild-not contains string-exclude" },
-  { "FTDY0020", "invalid wildcard syntax: $1" },
+  { "FTDY0017", "mild-not contains StringExclude" },
+  { "FTDY0020", "invalid wildcard syntax${: 1}" },
   { "FTST0008", "\"$1\": unknown stop-word list" },
   { "FTST0009", "\"$1\": unsupported language" },
   { "FTST0018", "\"$1\": unknown thesaurus" },
@@ -174,6 +174,10 @@ extern entry const dict_en[] = {
   { "SRL0013", "unable to load query" },
   { "SRL0014", "infinite circular dependencies" },
   { "SRL0015", "INCOMPATIBLE_BETWEEN_32_AND_64_BITS_OR_LE_AND_BE" },
+
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // !!!!! THIS MUST BE SORTED BY KEY !!!!!
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   { "STR0001", "\"$1\": index already exists" },
   { "STR0002", "\"$1\": index does not exist" },
@@ -273,7 +277,7 @@ extern entry const dict_en[] = {
   { "XPDY0002", "\"$1\": undefined value" },
   { "XPDY0050", "invalid treat expression type" },
   { "XPST0001", "\"$1\": undefined value" },
-  { "XPST0003", "invalid expression: $1" },
+  { "XPST0003", "invalid expression${: 1}" },
   { "XPST0005", "static type must not be empty-sequence()" },
   { "XPST0008", "\"$1\": undefined name" },
   { "XPST0010", "\"$1\": unsupported axis" },
@@ -301,6 +305,7 @@ extern entry const dict_en[] = {
   { "XQDY0091", "\"xml:id\" encountered" },
   { "XQDY0092", "\"$1\": must be either \"preserve\" or \"default\"" },
   { "XQDY0096", "\"$1\": invalid node-name" },
+
   { "XQP0000", "dynamic runtime error" },
   { "XQP0001", "dynamic iterator overrun" },
   { "XQP0002", "illegal node child" },
@@ -330,7 +335,7 @@ extern entry const dict_en[] = {
   { "XQP0027", "error from MS DOM engine" },
   { "XQP0028", "\"$1\": external function not bound" },
   { "XQP0029", "module import not allowed" },
-  { "XQP0030", "Deadlock" },
+  { "XQP0030", "deadlock" },
   { "XQP0031", "malformed XQueryX input" },
   { "XQP0032", "error transforming XQueryX to XQuery" },
   { "XQP0034", "\"$1\": illegal UTF-8 byte" },
@@ -338,6 +343,7 @@ extern entry const dict_en[] = {
   { "XQP0036", "BreakIterator creation failed" },
   { "XQP8401", "thesaurus version mismatch" },
   { "XQP8402", "thesaurus data error" },
+
   { "XQST0009", "schema import not supported" },
   { "XQST0012", "invalid schema definitions" },
   { "XQST0013", "invalid pragma content" },
@@ -353,7 +359,7 @@ extern entry const dict_en[] = {
   { "XQST0039", "\"$1\": duplicate parameter name" },
   { "XQST0040", "\"$1\": non-distinct expanded attribute QName" },
   { "XQST0045", "\"$1\": invalid function namespace" },
-  { "XQST0046", "\"$1\": invalid URI literal: $2" },
+  { "XQST0046", "\"$1\": invalid URI literal${: 2}" },
   { "XQST0047", "\"$1\": duplicate target namespace" },
   { "XQST0048", "\"$1\": not in library namespace" },
   { "XQST0049", "\"$1\": duplicate variable declaration" },
@@ -429,6 +435,9 @@ extern entry const dict_en[] = {
   // !!!!! THIS MUST BE SORTED BY KEY !!!!!
   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+  // Note: parameter numbers for sub-messages start with $2.
+
+  { "~AllMatchesHasExcludes", "AllMatches contains StringExclude" },
   { "~BackRef0Illegal", "\"\\0\": illegal backreference" },
   { "~BackRefIllegalInCharClass", "backreference illegal in character class" },
   { "~BadDecDigit", "\"$2\": invalid decimal digit" },

@@ -196,8 +196,10 @@ location make_location( StringType const &file, location::line_type line,
  * A %parameters holds the parameters for an error message.
  */
 class ZORBA_DLL_PUBLIC parameters {
+  typedef std::vector<std::string> params_type;
 public:
-  typedef std::string value_type;
+  typedef params_type::value_type value_type;
+  typedef params_type::size_type size_type;
 
   /**
    * A empty instance for convenience.
@@ -219,7 +221,7 @@ public:
    * @param i The parameter to get.
    * @return Returns said parameter value.
    */
-  value_type& operator[]( unsigned i ) {
+  value_type& operator[]( size_type i ) {
     return params_[ i - 1 ];
   }
 
@@ -227,27 +229,36 @@ public:
    * Gets the i'th parameter value.
    * Parameter numbers start at 1.
    *
-   * @param i The arameter to get.
+   * @param i The parameter to get.
    * @return Returns said parameter value.
    */
-  value_type const& operator[]( unsigned i ) const {
+  value_type const& operator[]( size_type i ) const {
     return params_[ i - 1 ];
   }
 
   /**
-   * Substitutes substrings of the form <code>$</code><em>i</em> (where
-   * <em>i</em> is an integer in the range [1,9]) with the <em>ith</em>
-   * parameter value.
+   * Substitutes substrings of the given string.  There are two forms:
+   *
+   * - <code>$</code><em>i</em>
+   * - <code>${</code><em>chars i chars</em><code>}</code>
+   *
+   * where <em>i</em> is an integer in the range <code>[1,9]</code>
+   * and <em>chars</em> are any characters except <code>[1-9}]</code>.
+   *
+   * The second form elides the addition characacters if the value of the
+   * <em>ith</em> parameter is empty.  For example, <code>${"1"}</code> will
+   * substitute the value of the 1st parameter quoted if non-empty; if empty,
+   * the entire substitution set of characters (everything from the
+   * <code>$</code> to the <code>}</code>) will be elided.
    *
    * @param s The string to perform the substitutions on.
    */
   void substitute( value_type *s ) const;
 
 private:
-  typedef std::vector<value_type> params_type;
-  typedef params_type::size_type size_type;
-
   params_type params_;
+
+  value_type lookup_param( size_type i ) const;
 };
 
 /**

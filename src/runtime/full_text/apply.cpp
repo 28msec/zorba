@@ -25,9 +25,10 @@
 #include "system/globalenv.h"
 #include "util/indent.h"
 #include "util/stl_util.h"
+#include "zorbaerrors/dict.h"
 #include "zorbaerrors/error_manager.h"
-#include "zorbautils/tokenizer.h"
 #include "zorbamisc/ns_consts.h"
+#include "zorbautils/tokenizer.h"
 
 #ifndef NDEBUG
 #include "system/properties.h"
@@ -906,7 +907,9 @@ void apply_fttimes( ft_all_matches const &am, ft_range_mode::type mode,
   PUT_ALL_MATCHES( am );
 
   if ( !ALL_EMPTY_N( am, excludes ) )
-    throw XQUERY_EXCEPTION( XPST0003 );
+    throw XQUERY_EXCEPTION(
+      XPST0003, ERROR_PARAMS( ZED( AllMatchesHasExcludes ) )
+    );
 
   if ( mode == ft_range_mode::at_least )
     form_combinations_at_least( am, at_least, result );

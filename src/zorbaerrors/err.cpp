@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <cassert>
 #include <cstring>
 
 #include <zorba/err.h>
@@ -21,6 +22,7 @@
 #include "util/ascii_util.h"
 #include "util/string_util.h"
 
+#include "assert.h"
 #include "dict.h"
 
 using namespace std;
@@ -116,16 +118,80 @@ namespace err {
 location const location::empty;
 parameters const parameters::empty;
 
+parameters::value_type parameters::lookup_param( size_type i ) const {
+  // TODO: should be changed to assert() at some point
+  if ( i > params_.size() )
+    return value_type();
+  assert( i >= 1 );
+  value_type param( params_[ i - 1 ] );
+  if ( !param.empty() && param[0] == ZED_PREFIX[0] )
+    param = zorba::err::dict::lookup( param );
+  return param;
+}
+
 void parameters::substitute( value_type *s ) const {
-  char from[2];
-  from[0] = '$';
-  for ( params_type::size_type i = 1; i <= params_.size(); ++i ) {
-    from[1] = '0' + i;
-    value_type to( params_[ i - 1 ] );
-    if ( !to.empty() && to[0] == ZED_PREFIX[0] )
-      to = zorba::err::dict::lookup( to );
-    ascii::replace_all( *s, from, 2, to.data(), to.size() );
-  }
+  bool replaced;
+  do {
+    replaced = false;
+
+    size_type dollar_pos = value_type::npos;
+    bool got_lbrace = false;
+    value_type param, replacement;
+
+    for ( size_type i = 0; i < s->size(); ++i ) {
+      char const c = s->at( i );
+      if ( dollar_pos != value_type::npos ) {
+
+        //
+        // ${i} case
+        //
+        if ( got_lbrace ) {
+          switch ( c ) {
+            case '1': case '2': case '3': case '4': case '5':
+            case '6': case '7': case '8': case '9':
+              param = lookup_param( c - '0' );
+              replacement += param;
+              break;
+            case '}': {
+              size_type const len = i - dollar_pos + 1;
+              if ( param.empty() )
+                s->erase( dollar_pos, len );
+              else {
+                s->replace( dollar_pos, len, replacement );
+                replaced = true;
+                param.clear();
+              }
+              dollar_pos = value_type::npos;
+              got_lbrace = false;
+              replacement.clear();
+              break;
+            }
+            default:
+              replacement += c;
+          }
+          continue;
+        }
+
+        //
+        // $i case
+        //
+        switch ( c ) {
+          case '{':
+            got_lbrace = true;
+            break;
+          case '1': case '2': case '3': case '4': case '5':
+          case '6': case '7': case '8': case '9':
+            s->replace( dollar_pos, 2, lookup_param( c - '0' ) );
+            dollar_pos = value_type::npos;
+            break;
+        }
+        continue;
+      } // if ( dollar_pos ...
+
+      if ( c == '$' )
+        dollar_pos = i;
+    } // for
+  } while ( replaced );
 }
 
 } // namespace err
