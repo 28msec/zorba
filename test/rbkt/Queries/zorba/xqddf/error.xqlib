@@ -3,7 +3,3 @@ module namespace error = "http://www.example.com/error";
 declare collection error:collection as node()*;
 
 declare variable $error:coll := xs:QName("error:collection");
- 
-
-
-

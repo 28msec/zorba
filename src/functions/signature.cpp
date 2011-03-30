@@ -243,11 +243,6 @@ bool signature::equals(const TypeManager* tm, const signature& s) const
   if (!theQName->equals(s.theQName.getp()))
     return false;
 
-  if (!TypeOps::is_equal(tm, *returnType().getp(), *s.returnType().getp()))
-  {
-    return false;
-  }
-
   for (size_t i = 0; i < theTypes.size(); ++i)
   {
     if (!TypeOps::is_equal(tm, *theTypes[i].getp(), *s.theTypes[i].getp()))

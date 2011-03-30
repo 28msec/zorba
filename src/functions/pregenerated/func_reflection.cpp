@@ -42,11 +42,12 @@ PlanIter_t fn_zorba_reflection_invoke::codegen(
 
 void populate_context_reflection(static_context* sctx)
 {
-  DECL(sctx, fn_zorba_reflection_invoke,
+  DECL_WITH_KIND(sctx, fn_zorba_reflection_invoke,
       (createQName("http://www.zorba-xquery.com/modules/reflection","","invoke"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       true,
-      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR),
+      FunctionConsts::FN_ZORBA_REFLECTION_INVOKE_N);
 
 }
 

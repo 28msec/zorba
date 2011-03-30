@@ -42,11 +42,12 @@ PlanIter_t fn_put::codegen(
 
 void populate_context_fnput(static_context* sctx)
 {
-  DECL(sctx, fn_put,
+  DECL_WITH_KIND(sctx, fn_put,
       (createQName("http://www.w3.org/2005/xpath-functions","","put"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
-      GENV_TYPESYSTEM.EMPTY_TYPE));
+      GENV_TYPESYSTEM.EMPTY_TYPE),
+      FunctionConsts::FN_PUT_2);
 
 }
 

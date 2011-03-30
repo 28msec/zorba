@@ -5,12 +5,12 @@
 
 module namespace idx = "http://www.w3.org/TestModules/idx";
 
-import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
+import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
 
 
 declare collection idx:auctions as node()*;
 
 
 declare value range manually maintained index idx:foo 
-on nodes (xqddf:collection(xs:QName("idx:auctions"))/site/people/person, "1")
+on nodes (manip:collection(xs:QName("idx:auctions"))/site/people/person, "1")
 by fn:data(./@id) as xs:string;

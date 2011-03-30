@@ -42,11 +42,10 @@ void populate_context_accessors(static_context* sctx);
 class fn_node_name : public function
 {
 public:
-  fn_node_name(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_NODE_NAME_1)
-  {
-  }
+  fn_node_name(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -56,11 +55,10 @@ public:
 class fn_nilled : public function
 {
 public:
-  fn_nilled(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_NILLED_1)
-  {
-  }
+  fn_nilled(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -70,12 +68,10 @@ public:
 class fn_string : public function
 {
 public:
-  fn_string(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
-  {
-    theKind = (sig.paramCount() == 0 ?
-                FunctionConsts::FN_STRING_0 :
-                FunctionConsts::FN_STRING_1);
-  }
+  fn_string(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -85,11 +81,10 @@ public:
 class fn_data : public function
 {
 public:
-  fn_data(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_DATA_1)
-  {
-  }
+  fn_data(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   xqtref_t getReturnType(
         const TypeManager* tm,
@@ -109,12 +104,10 @@ public:
 class fn_base_uri : public function
 {
 public:
-  fn_base_uri(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
-  {
-    theKind = (sig.paramCount() == 0 ?
-                FunctionConsts::FN_BASE_URI_0 :
-                FunctionConsts::FN_BASE_URI_1);
-  }
+  fn_base_uri(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -124,11 +117,10 @@ public:
 class fn_document_uri : public function
 {
 public:
-  fn_document_uri(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_DOCUMENT_URI_1)
-  {
-  }
+  fn_document_uri(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -138,12 +130,10 @@ public:
 class fn_root : public function
 {
 public:
-  fn_root(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
-  {
-    theKind = (sig.paramCount() == 0 ?
-                FunctionConsts::FN_ROOT_0 :
-                FunctionConsts::FN_ROOT_1);
-  }
+  fn_root(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };

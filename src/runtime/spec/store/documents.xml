@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+-->
+<zorba:iterators
+  xmlns:zorba="http://www.zorba-xquery.com"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
+    
+<zorba:source>
+    <zorba:include  form="Quoted">store/api/iterator.h</zorba:include>
+</zorba:source>
+  
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="AddDocumentIterator" >
+
+    <zorba:description author="Matthias Brantner">
+      declare updating function
+      add($uri as xs:string, $doc as xs:document-node()) as empty-sequence()
+    </zorba:description>
+
+    <zorba:function> 
+
+      <zorba:signature localname="add" prefix="zorba-store-documents">
+        <zorba:param>xs:string</zorba:param>
+        <zorba:param>document-node()</zorba:param>
+        <zorba:output>empty-sequence()</zorba:output>
+      </zorba:signature>
+
+      <zorba:methods>
+        <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
+        <zorba:accessesDynCtx returnValue="true"/>
+      </zorba:methods>
+
+    </zorba:function>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="RemoveDocumentIterator" >
+
+    <zorba:description author="Matthias Brantner">
+      declare updating function
+      remove($uri as xs:string) as empty-sequence()
+    </zorba:description>
+
+    <zorba:function> 
+
+      <zorba:signature localname="remove" prefix="zorba-store-documents">
+        <zorba:param>xs:string</zorba:param>
+        <zorba:output>empty-sequence()</zorba:output>
+      </zorba:signature>
+
+      <zorba:methods>
+        <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
+        <zorba:accessesDynCtx returnValue="true"/>
+      </zorba:methods>
+
+    </zorba:function>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="RetrieveDocumentIterator" >
+
+    <zorba:description author="Matthias Brantner">
+      declare function
+      document($uri as xs:string) as document-node()
+    </zorba:description>
+
+    <zorba:function> 
+
+      <zorba:signature localname="document" prefix="zorba-store-documents">
+        <zorba:param>xs:string</zorba:param>
+        <zorba:output>document-node()</zorba:output>
+      </zorba:signature>
+
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+      </zorba:methods>
+
+    </zorba:function>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="AvailableDocumentsIterator" >
+
+    <zorba:description author="Matthias Brantner">
+      declare function
+      available-documents() as xs:string*
+    </zorba:description>
+
+    <zorba:function> 
+
+      <zorba:signature localname="available-documents" prefix="zorba-store-documents">
+        <zorba:output>xs:string*</zorba:output>
+      </zorba:signature>
+
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+      </zorba:methods>
+
+    </zorba:function>
+
+    <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
+      <zorba:member type="store::Iterator_t" name="theNameIterator"
+                    brief="the current iterator"/>
+    </zorba:state>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="IsAvailableDocumentIterator" >
+
+    <zorba:description author="Matthias Brantner">
+      declare function
+      is-available-document() as xs:boolean
+    </zorba:description>
+
+    <zorba:function> 
+
+      <zorba:signature localname="is-available-document" prefix="zorba-store-documents">
+        <zorba:param>xs:string</zorba:param>
+        <zorba:output>xs:boolean</zorba:output>
+      </zorba:signature>
+
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+      </zorba:methods>
+
+    </zorba:function>
+
+</zorba:iterator>
+
+</zorba:iterators>

@@ -402,11 +402,11 @@ public:
       std::auto_ptr<std::stringstream> lQuery(new std::stringstream());
 
       (*lQuery) << "module namespace mymodule = 'http://www.zorba-xquery.com/mymodule';" << std::endl
-                << "import module namespace xqddf = 'http://www.zorba-xquery.com/modules/xqddf';" << std::endl
+                << "import module namespace manip = 'http://www.zorba-xquery.com/modules/store/static-collections/manipulation';" << std::endl
                 << "declare variable $mymodule:var  := 'myvar';" << std::endl
                 << "declare collection mymodule:collection;" << std::endl
                 << "declare automatically maintained value equality index mymodule:index" << std::endl
-                << "  on nodes xqddf:collection(xs:QName('mymodule:collection'))" << std::endl
+                << "  on nodes manip:collection(xs:QName('mymodule:collection'))" << std::endl
                 << "  by ./foo as xs:string;" << std::endl;
       // we have only one module
       lResult->theModule = lQuery.release();
@@ -436,10 +436,10 @@ context_example_11(Zorba* aZorba)
     Zorba_CompilerHints_t hints;
     std::stringstream lProlog;
     lProlog << "import module namespace mymodule = 'http://www.zorba-xquery.com/mymodule';" << std::endl
-            << "import module namespace sctx = 'http://www.zorba-xquery.com/modules/introspection/sctx';"
+            << "import module namespace init = 'http://www.zorba-xquery.com/modules/store/static-collections/initialization';"
             << std::endl
             << "declare function local:collections() { " << std::endl
-            << "  sctx:declared-collections()" << std::endl
+            << "  init:declared-collections()" << std::endl
             << "};" << std::endl;
     lContext->loadProlog(lProlog.str(), hints);
 

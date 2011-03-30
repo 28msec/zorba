@@ -52,30 +52,34 @@ PlanIter_t fn_serialize::codegen(
 
 void populate_context_parsing_and_serializing(static_context* sctx)
 {
-  DECL(sctx, fn_parse_xml,
+  DECL_WITH_KIND(sctx, fn_parse_xml,
       (createQName("http://www.w3.org/2005/xpath-functions","","parse-xml"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
-      GENV_TYPESYSTEM.DOCUMENT_UNTYPED_TYPE_ONE));
+      GENV_TYPESYSTEM.DOCUMENT_TYPE_ONE),
+      FunctionConsts::FN_PARSE_XML_1);
 
 
-  DECL(sctx, fn_parse_xml,
+  DECL_WITH_KIND(sctx, fn_parse_xml,
       (createQName("http://www.w3.org/2005/xpath-functions","","parse-xml"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
-      GENV_TYPESYSTEM.DOCUMENT_UNTYPED_TYPE_ONE));
+      GENV_TYPESYSTEM.DOCUMENT_TYPE_ONE),
+      FunctionConsts::FN_PARSE_XML_2);
 
 
-  DECL(sctx, fn_serialize,
+  DECL_WITH_KIND(sctx, fn_serialize,
       (createQName("http://www.w3.org/2005/xpath-functions","","serialize"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-      GENV_TYPESYSTEM.STRING_TYPE_ONE));
+      GENV_TYPESYSTEM.STRING_TYPE_ONE),
+      FunctionConsts::FN_SERIALIZE_1);
 
 
-  DECL(sctx, fn_serialize,
+  DECL_WITH_KIND(sctx, fn_serialize,
       (createQName("http://www.w3.org/2005/xpath-functions","","serialize"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.ELEMENT_TYPE_STAR,
-      GENV_TYPESYSTEM.STRING_TYPE_ONE));
+      GENV_TYPESYSTEM.STRING_TYPE_ONE),
+      FunctionConsts::FN_SERIALIZE_2);
 
 }
 

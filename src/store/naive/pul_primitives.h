@@ -819,26 +819,31 @@ class UpdCollection : public UpdatePrimitive
 protected:
   store::Item_t               theName;
   std::vector<store::Item_t>  theNodes;
+  bool                        theDynamicCollection;
 
   UpdCollection(
         CollectionPul* pul,
-        store::Item_t& name)
+        store::Item_t& name,
+        bool dyn_collection = false)
     :
     UpdatePrimitive(pul),
-    theName(name)
+    theName(name),
+    theDynamicCollection(dyn_collection)
   {
   }
 
   UpdCollection(
         CollectionPul* pul,
         store::Item_t& name,
-        std::vector<store::Item_t>& nodes);
+        std::vector<store::Item_t>& nodes,
+        bool dyn_collection = false);
 
   UpdCollection(
         CollectionPul* pul,
         store::Item_t& target,
         store::Item_t& name,
-        std::vector<store::Item_t>& nodes);
+        std::vector<store::Item_t>& nodes,
+        bool dyn_collection = false);
 
 public:
   const store::Item* getName() const { return theName.getp(); }
@@ -846,6 +851,8 @@ public:
   ulong numNodes() const { return (ulong)theNodes.size(); }
 
   store::Item* getNode(ulong i) const { return theNodes[i].getp(); }
+
+  bool dynamicCollection() const { return theDynamicCollection; }
 };
 
 
@@ -859,9 +866,10 @@ class UpdCreateCollection : public UpdCollection
 protected:
   UpdCreateCollection(
         CollectionPul* pul,
-        store::Item_t& name)
+        store::Item_t& name,
+        bool dyn_collection)
     :
-    UpdCollection(pul, name)
+    UpdCollection(pul, name, dyn_collection)
   {
   }
 
@@ -888,9 +896,10 @@ protected:
 
   UpdDeleteCollection(
         CollectionPul* pul,
-        store::Item_t& name)
+        store::Item_t& name,
+        bool dyn_collection)
     :
-    UpdCollection(pul, name)
+    UpdCollection(pul, name, dyn_collection)
   {
   }
 
@@ -918,9 +927,10 @@ protected:
   UpdInsertIntoCollection(
         CollectionPul* pul,
         store::Item_t& name, 
-        std::vector<store::Item_t>& nodes)
+        std::vector<store::Item_t>& nodes,
+        bool dyn_collection)
       :
-    UpdCollection(pul, name, nodes),
+    UpdCollection(pul, name, nodes, dyn_collection),
     theNumApplied(0)
   {
   }
@@ -949,9 +959,10 @@ protected:
   UpdInsertFirstIntoCollection(
       CollectionPul* pul,
       store::Item_t& name,
-      std::vector<store::Item_t>& nodes)
+      std::vector<store::Item_t>& nodes,
+      bool dyn_collection)
     :
-    UpdCollection(pul, name, nodes),
+    UpdCollection(pul, name, nodes, dyn_collection),
     theNumApplied(0)
   {
   }
@@ -980,9 +991,10 @@ protected:
   UpdInsertLastIntoCollection(
         CollectionPul* pul,
         store::Item_t& name,
-        std::vector<store::Item_t>& nodes)
+        std::vector<store::Item_t>& nodes,
+        bool dyn_collection)
     :
-    UpdCollection(pul, name, nodes),
+    UpdCollection(pul, name, nodes, dyn_collection),
     theNumApplied(0)
   {
   }
@@ -1013,9 +1025,10 @@ protected:
         CollectionPul* pul,
         store::Item_t& name,
         store::Item_t& target,
-        std::vector<store::Item_t>& nodes)
+        std::vector<store::Item_t>& nodes,
+        bool dyn_collection)
     :
-    UpdCollection(pul, target, name, nodes)
+    UpdCollection(pul, target, name, nodes, dyn_collection)
   {
   }
 
@@ -1045,9 +1058,10 @@ protected:
         CollectionPul* pul,
         store::Item_t& name,
         store::Item_t& target,
-        std::vector<store::Item_t>& nodes)
+        std::vector<store::Item_t>& nodes,
+        bool dyn_collection)
     :
-    UpdCollection(pul, target, name, nodes)
+    UpdCollection(pul, target, name, nodes, dyn_collection)
   {
   }
 
@@ -1080,9 +1094,10 @@ protected:
         CollectionPul* pul,
         store::Item_t& name,
         std::vector<store::Item_t>& nodes,
-        bool isLast)
+        bool isLast,
+        bool dyn_collection)
     :
-    UpdCollection(pul, name, nodes),
+    UpdCollection(pul, name, nodes, dyn_collection),
     theIsLast(isLast),
     theNumApplied(0)
   {
@@ -1296,8 +1311,64 @@ public:
   void apply();
   void undo();
 };
-}
-}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class UpdCreateDocument : public UpdatePrimitive
+{
+  friend class PULPrimitiveFactory;
+
+protected:
+  const store::Item_t theUri;
+  store::Item_t       theDoc;
+
+  UpdCreateDocument(
+        PULImpl* pul,
+        const store::Item_t& uri,
+        store::Item_t& doc
+        );
+
+public:
+  store::UpdateConsts::UpdPrimKind getKind() const
+  {
+    return store::UpdateConsts::UP_CREATE_DOCUMENT;
+  }
+
+  void apply();
+  void undo();
+};
+
+/*******************************************************************************
+
+********************************************************************************/
+class UpdDeleteDocument : public UpdatePrimitive
+{
+  friend class PULPrimitiveFactory;
+
+protected:
+  const store::Item_t theUri;
+  store::Item_t       theDoc; //used for undo
+
+  UpdDeleteDocument(
+        PULImpl* pul,
+        const store::Item_t& uri
+        );
+
+
+public:
+  store::UpdateConsts::UpdPrimKind getKind() const
+  {
+    return store::UpdateConsts::UP_DELETE_DOCUMENT;
+  }
+
+  void apply();
+  void undo();
+};
+
+} /* namespace simplestore */
+} /* namespace zorba */
 #endif
 
 /*

@@ -31,7 +31,6 @@
 #include "functions/func_booleans_impl.h"
 #include "functions/func_collections.h"
 #include "functions/func_context.h"
-#include "functions/func_dctx.h"
 #include "functions/func_other_diagnostics.h"
 #include "functions/func_durations_dates_times.h"
 #include "functions/func_durations_dates_times_impl.h"
@@ -57,6 +56,7 @@
 #include "functions/func_strings.h"
 #include "functions/func_var_decl.h"
 #include "functions/func_xqdoc.h"
+#include "functions/func_documents.h"
 #include "functions/func_eval.h"
 
 #include "functions/func_function_item_iter.h"
@@ -92,7 +92,6 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populate_context_booleans_impl(sctx);
   populate_context_collections(sctx);
   populate_context_context(sctx);
-  populate_context_dctx(sctx);
   populate_context_durations_dates_times(sctx);
   populate_context_durations_dates_times_impl(sctx);
   populate_context_errors_and_diagnostics(sctx);
@@ -114,6 +113,7 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populate_context_sequences_impl(sctx);
   populate_context_xqdoc(sctx);
   populate_context_function_item_iter(sctx);
+  populate_context_documents(sctx);
 
   populateContext_Arithmetics(sctx);
   populateContext_Numerics(sctx);

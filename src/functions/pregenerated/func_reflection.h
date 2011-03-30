@@ -42,12 +42,11 @@ void populate_context_reflection(static_context* sctx);
 class fn_zorba_reflection_invoke : public function
 {
 public:
-  fn_zorba_reflection_invoke(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_REFLECTION_INVOKE_N)
-  {
-    setDeterministic(false);
-  }
+  fn_zorba_reflection_invoke(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+setDeterministic(false);
+
+}
 
   bool accessesDynCtx() const { return true; }
 

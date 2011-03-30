@@ -42,11 +42,10 @@ void populate_context_xqdoc(static_context* sctx);
 class fn_zorba_xqdoc_xqdoc : public function
 {
 public:
-  fn_zorba_xqdoc_xqdoc(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_XQDOC_XQDOC_1)
-  {
-  }
+  fn_zorba_xqdoc_xqdoc(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -56,11 +55,10 @@ public:
 class fn_zorba_xqdoc_xqdoc_content : public function
 {
 public:
-  fn_zorba_xqdoc_xqdoc_content(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_XQDOC_XQDOC_CONTENT_1)
-  {
-  }
+  fn_zorba_xqdoc_xqdoc_content(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };

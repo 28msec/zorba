@@ -341,7 +341,7 @@ void IndexDecl::analyzeExprInternal(
 
     if (func->isSource())
     {
-      if (func->getKind() == FunctionConsts::FN_ZORBA_XQDDF_COLLECTION_1)
+      if (func->getKind() == FunctionConsts::ZORBA_STORE_COLLECTIONS_STATIC_MANIP_COLLECTION_1)
       {
         const expr* argExpr = foExpr->get_arg(0);
 

@@ -42,11 +42,10 @@ void populate_context_nodes(static_context* sctx);
 class fn_zorba_ref_node_reference : public function
 {
 public:
-  fn_zorba_ref_node_reference(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_REF_NODE_REFERENCE_1)
-  {
-  }
+  fn_zorba_ref_node_reference(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -56,11 +55,10 @@ public:
 class fn_zorba_ref_node_by_reference : public function
 {
 public:
-  fn_zorba_ref_node_by_reference(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_REF_NODE_BY_REFERENCE_1)
-  {
-  }
+  fn_zorba_ref_node_by_reference(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -70,12 +68,10 @@ public:
 class fn_local_name : public function
 {
 public:
-  fn_local_name(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
-  {
-    theKind = (sig.paramCount() == 0 ?
-                FunctionConsts::FN_LOCAL_NAME_0 :
-                FunctionConsts::FN_LOCAL_NAME_1);
-  }
+  fn_local_name(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -85,12 +81,10 @@ public:
 class fn_namespace_uri : public function
 {
 public:
-  fn_namespace_uri(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
-  {
-    theKind = (sig.paramCount() == 0 ?
-                FunctionConsts::FN_NAMESPACE_URI_0 :
-                FunctionConsts::FN_NAMESPACE_URI_1);
-  }
+  fn_namespace_uri(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -100,12 +94,10 @@ public:
 class fn_lang : public function
 {
 public:
-  fn_lang(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
-  {
-    theKind = (sig.paramCount() == 1 ?
-                FunctionConsts::FN_LANG_1 :
-                FunctionConsts::FN_LANG_2);
-  }
+  fn_lang(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -115,12 +107,10 @@ public:
 class fn_number : public function
 {
 public:
-  fn_number(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
-  {
-    theKind = (sig.paramCount() == 0 ?
-                FunctionConsts::FN_NUMBER_0 :
-                FunctionConsts::FN_NUMBER_1);
-  }
+  fn_number(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };

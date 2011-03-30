@@ -1,5 +1,5 @@
-import module namespace dc = "http://www.zorba-xquery.com/modules/introspection/dctx";
-import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
+import module namespace init = "http://www.zorba-xquery.com/modules/store/static-collections/initialization";
+import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
 
 declare namespace ns = "http://www.unknown.com/";
 
@@ -8,7 +8,7 @@ declare variable $name as xs:QName := xs:QName("ns:name");
 declare sequential function local:testa() {
   try {
     block {
-      dc:is-available-collection($name);
+      manip:is-available-collection($name);
     }
   } catch * ($error) {
     ("a",$error)
@@ -18,7 +18,7 @@ declare sequential function local:testa() {
 declare sequential function local:testb() {
   try {
     block {
-      xqddf:collection($name);
+      manip:collection($name);
     }
   } catch * ($error) {
     ("b",$error)
@@ -28,7 +28,7 @@ declare sequential function local:testb() {
 declare sequential function local:testc() {
   try {
     block {
-      xqddf:index-of($name, <a/>);
+      manip:index-of($name, <a/>);
     }
   } catch * ($error) {
     ("c",$error)
@@ -38,7 +38,7 @@ declare sequential function local:testc() {
 declare sequential function local:testd() {
   try {
     block {
-      xqddf:create-collection($name);
+      init:create-collection($name);
     }
   } catch * ($error) {
     ("d",$error)
@@ -48,7 +48,7 @@ declare sequential function local:testd() {
 declare sequential function local:teste() {
   try {
     block {
-      xqddf:delete-collection($name);
+      init:delete-collection($name);
     }
   } catch * ($error) {
     ("e",$error)
@@ -58,7 +58,7 @@ declare sequential function local:teste() {
 declare sequential function local:testf() {
   try {
     block {
-      xqddf:insert-nodes-first($name, <a/>);
+      manip:insert-nodes-first($name, <a/>);
     }
   } catch * ($error) {
     ("f",$error)
@@ -68,7 +68,7 @@ declare sequential function local:testf() {
 declare sequential function local:testg() {
   try {
     block {
-      xqddf:insert-nodes-last($name, <a/>);
+      manip:insert-nodes-last($name, <a/>);
     }
   } catch * ($error) {
     ("g",$error)
@@ -78,7 +78,7 @@ declare sequential function local:testg() {
 declare sequential function local:testh() {
   try {
     block {
-      xqddf:insert-nodes-before($name, <a/>, <a/>);
+      manip:insert-nodes-before($name, <a/>, <a/>);
     }
   } catch * ($error) {
     ("h",$error)
@@ -88,7 +88,7 @@ declare sequential function local:testh() {
 declare sequential function local:testi() {
   try {
     block {
-      xqddf:insert-nodes-after($name, <a/>, <a/>);
+      manip:insert-nodes-after($name, <a/>, <a/>);
     }
   } catch * ($error) {
     ("i",$error)
@@ -98,7 +98,7 @@ declare sequential function local:testi() {
 declare sequential function local:testk() {
   try {
     block {
-      xqddf:delete-nodes($name, <a/>);
+      manip:delete-nodes($name, <a/>);
     }
   } catch * ($error) {
     ("k",$error)

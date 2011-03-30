@@ -1102,7 +1102,7 @@
 
     <zorba:signature localname="doc" prefix="fn">
       <zorba:param>xs:string?</zorba:param>
-      <zorba:output>document-node()?</zorba:output>
+      <zorba:output>document-untyped?</zorba:output>
     </zorba:signature>
 
     <zorba:methods>

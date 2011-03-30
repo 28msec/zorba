@@ -1,8 +1,8 @@
-import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
+import module namespace init = "http://www.zorba-xquery.com/modules/store/static-collections/initialization";
 import module namespace ns = "http://example.org/datamodule/" at "../collections.xqdata";
 
 declare sequential function local:foo() {
-  xqddf:delete-collection(xs:QName('ns:collection_333'));
+  init:delete-collection(xs:QName('ns:collection_333'));
   exit returning ();
 };
 

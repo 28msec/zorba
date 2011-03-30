@@ -65,6 +65,7 @@ protected:
   ulong                         theId;
   store::Item_t                 theName;
   checked_vector<store::Item_t> theXmlTrees;
+  bool                          theIsDynamic;
 
   ulong                         theTreeCounter;
 
@@ -75,7 +76,7 @@ protected:
   SimpleCollection();
 
 public:
-  SimpleCollection(store::Item_t& aName);
+  SimpleCollection(store::Item_t& aName, bool aDynamicCollection = false);
 
   virtual ~SimpleCollection();
 
@@ -85,6 +86,8 @@ public:
   const store::Item* getName() const { return theName.getp(); }
 
   ulong size() const { return (ulong)theXmlTrees.size(); }
+
+  bool isDynamic() const { return theIsDynamic; }
 
   // virtual to allow extension by subclasses
   virtual ulong createTreeId() { return theTreeCounter++; }

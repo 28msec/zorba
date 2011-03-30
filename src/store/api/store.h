@@ -227,6 +227,8 @@ public:
 
   virtual void addNode(const zstring& uri, const Item_t& node) = 0;
 
+  virtual Iterator_t getDocumentNames() const = 0;
+
   /* ------------------------ Collection Management ---------------------------*/
 
   /**
@@ -236,18 +238,21 @@ public:
    * @return rchandle to the newly created collection or NULL if a collection
    *         with the given uri exists already.
    */
-  virtual Collection_t createCollection(Item_t& name) = 0;
+  virtual Collection_t createCollection(Item_t& name, bool dyn_collection) = 0;
 
   virtual Collection_t createUriCollection(const zstring& uri) = 0;
 
   /** Returns an XDM instance which is saved in the store 
    * (corresponds to the opening of a connection to a database)
    *
-   * @param QName of the collection
+   * @param QName the name of the collection
+   * @param bool whether the collection searched is a dynamic or static collection
    * @return handle object of the collection. Returns NULL if the collection
    *         does not exist
    */
-  virtual Collection_t getCollection(const Item* name) = 0;
+  virtual Collection_t getCollection(
+      const Item* name,
+      bool aDynamicCollection = false) = 0;
 
   virtual Collection_t getUriCollection(const zstring& uri) = 0;
 		
@@ -255,14 +260,14 @@ public:
    *
    * @param QName to identify the collection to delete.
    */
-  virtual void deleteCollection(const Item* name) = 0;
+  virtual void deleteCollection(const Item* name, bool dyn_collection) = 0;
 
   virtual void deleteUriCollection(const zstring& uri) = 0;
 
   /** 
    * Returns an iterator that lists the names of all the available collections.
    */
-  virtual Iterator_t listCollectionNames() = 0;
+  virtual Iterator_t listCollectionNames(bool aDynamicCollections = false) = 0;
 
 
   /* ------------------------ Index Management ---------------------------*/

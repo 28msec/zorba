@@ -116,6 +116,21 @@ namespace zorba {
     void beginVisit( const ZorbaInsertNodesAfterIterator& );
     void endVisit  ( const ZorbaInsertNodesAfterIterator& );
 
+    void beginVisit( const ZorbaApplyInsertNodesIterator& );
+    void endVisit  ( const ZorbaApplyInsertNodesIterator& );
+
+    void beginVisit( const ZorbaApplyInsertNodesFirstIterator& );
+    void endVisit  ( const ZorbaApplyInsertNodesFirstIterator& );
+
+    void beginVisit( const ZorbaApplyInsertNodesLastIterator& );
+    void endVisit  ( const ZorbaApplyInsertNodesLastIterator& );
+
+    void beginVisit( const ZorbaApplyInsertNodesBeforeIterator& );
+    void endVisit  ( const ZorbaApplyInsertNodesBeforeIterator& );
+
+    void beginVisit( const ZorbaApplyInsertNodesAfterIterator& );
+    void endVisit  ( const ZorbaApplyInsertNodesAfterIterator& );
+
     void beginVisit( const ZorbaDeleteNodesIterator& );
     void endVisit  ( const ZorbaDeleteNodesIterator& );
 
@@ -124,6 +139,42 @@ namespace zorba {
 
     void beginVisit( const ZorbaDeleteNodesLastIterator& );
     void endVisit  ( const ZorbaDeleteNodesLastIterator& );
+
+    void beginVisit( const IsAvailableCollectionIterator& );
+    void endVisit  ( const IsAvailableCollectionIterator& );
+
+    void beginVisit( const AvailableCollectionsIterator& );
+    void endVisit  ( const AvailableCollectionsIterator& );
+
+    void beginVisit( const IsAvailableIndexIterator& );
+    void endVisit  ( const IsAvailableIndexIterator& );
+
+    void beginVisit( const AvailableIndexesIterator& );
+    void endVisit  ( const AvailableIndexesIterator& );
+
+    void beginVisit( const IsActivatedICIterator& );
+    void endVisit  ( const IsActivatedICIterator& );
+
+    void beginVisit( const ActivatedICsIterator& );
+    void endVisit  ( const ActivatedICsIterator& );
+
+    void beginVisit( const IsDeclaredCollectionIterator& );
+    void endVisit  ( const IsDeclaredCollectionIterator& );
+
+    void beginVisit( const DeclaredCollectionsIterator& );
+    void endVisit  ( const DeclaredCollectionsIterator& );
+
+    void beginVisit( const IsDeclaredIndexIterator& );
+    void endVisit  ( const IsDeclaredIndexIterator& );
+
+    void beginVisit( const DeclaredIndexesIterator& );
+    void endVisit  ( const DeclaredIndexesIterator& );
+
+    void beginVisit( const IsDeclaredICIterator& );
+    void endVisit  ( const IsDeclaredICIterator& );
+
+    void beginVisit( const DeclaredICsIterator& );
+    void endVisit  ( const DeclaredICsIterator& );
 
     void beginVisit( const CurrentDateTimeIterator& );
     void endVisit  ( const CurrentDateTimeIterator& );
@@ -245,36 +296,6 @@ namespace zorba {
     void beginVisit( const CheckICIterator& );
     void endVisit  ( const CheckICIterator& );
 
-    void beginVisit( const IsAvailableCollectionIterator& );
-    void endVisit  ( const IsAvailableCollectionIterator& );
-
-    void beginVisit( const AvailableCollectionsIterator& );
-    void endVisit  ( const AvailableCollectionsIterator& );
-
-    void beginVisit( const IsAvailableIndexIterator& );
-    void endVisit  ( const IsAvailableIndexIterator& );
-
-    void beginVisit( const AvailableIndexesIterator& );
-    void endVisit  ( const AvailableIndexesIterator& );
-
-    void beginVisit( const IsActivatedICIterator& );
-    void endVisit  ( const IsActivatedICIterator& );
-
-    void beginVisit( const ActivatedICsIterator& );
-    void endVisit  ( const ActivatedICsIterator& );
-
-    void beginVisit( const IsDeclaredCollectionIterator& );
-    void endVisit  ( const IsDeclaredCollectionIterator& );
-
-    void beginVisit( const DeclaredCollectionsIterator& );
-    void endVisit  ( const DeclaredCollectionsIterator& );
-
-    void beginVisit( const IsDeclaredIndexIterator& );
-    void endVisit  ( const IsDeclaredIndexIterator& );
-
-    void beginVisit( const DeclaredIndexesIterator& );
-    void endVisit  ( const DeclaredIndexesIterator& );
-
     void beginVisit( const StaticNamespacesIterator& );
     void endVisit  ( const StaticNamespacesIterator& );
 
@@ -334,12 +355,6 @@ namespace zorba {
 
     void beginVisit( const InScopeAttributeGroupsIterator& );
     void endVisit  ( const InScopeAttributeGroupsIterator& );
-
-    void beginVisit( const IsDeclaredICIterator& );
-    void endVisit  ( const IsDeclaredICIterator& );
-
-    void beginVisit( const DeclaredICsIterator& );
-    void endVisit  ( const DeclaredICsIterator& );
 
     void beginVisit( const OptionIterator& );
     void endVisit  ( const OptionIterator& );
@@ -612,6 +627,21 @@ namespace zorba {
 
     void beginVisit( const FnDocAvailableIterator& );
     void endVisit  ( const FnDocAvailableIterator& );
+
+    void beginVisit( const AddDocumentIterator& );
+    void endVisit  ( const AddDocumentIterator& );
+
+    void beginVisit( const RemoveDocumentIterator& );
+    void endVisit  ( const RemoveDocumentIterator& );
+
+    void beginVisit( const RetrieveDocumentIterator& );
+    void endVisit  ( const RetrieveDocumentIterator& );
+
+    void beginVisit( const AvailableDocumentsIterator& );
+    void endVisit  ( const AvailableDocumentsIterator& );
+
+    void beginVisit( const IsAvailableDocumentIterator& );
+    void endVisit  ( const IsAvailableDocumentIterator& );
 
     void beginVisit( const CodepointsToStringIterator& );
     void endVisit  ( const CodepointsToStringIterator& );

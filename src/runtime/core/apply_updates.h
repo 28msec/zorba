@@ -27,6 +27,15 @@ namespace zorba
 ********************************************************************************/
 UNARY_ITER(ApplyIterator);
 
+void
+apply_updates(
+      CompilerCB* ccb,
+      dynamic_context* gdctx,
+      static_context* sctx,
+      store::PUL* pul,
+      const QueryLoc& loc);
+
+
 
 }
 

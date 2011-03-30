@@ -1,9 +1,10 @@
-  import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
+import module namespace init = "http://www.zorba-xquery.com/modules/store/static-collections/initialization";
+import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
 
-  import schema namespace news-schemas = "http://www.news.org/schemas" at "news-schema.xsd";
+import schema namespace news-schemas = "http://www.news.org/schemas" at "news-schema.xsd";
 
-  import module namespace news-data = "http://www.news.org/data" at "index_does_not_exist.xqlib";
+import module namespace news-data = "http://www.news.org/data" at "index_does_not_exist.xqlib";
 
-  xqddf:create-collection($news-data:employees);
+init:create-collection($news-data:employees);
 
-  xqddf:probe-index-point-value($news-data:CityEmp, "Paris");
+manip:probe-index-point-value($news-data:CityEmp, "Paris");

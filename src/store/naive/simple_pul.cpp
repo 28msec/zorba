@@ -151,6 +151,9 @@ PULImpl::~PULImpl()
       delete (*ite).second;
   }
   cleanList(theICActivationList);
+  cleanList(theCreateDocumentList);
+  cleanList(theDeleteDocumentList);
+
 }
 
 
@@ -732,91 +735,99 @@ void PULImpl::addSetAttributeType(
  Collection primitives
 ********************************************************************************/
 void PULImpl::addCreateCollection(
-    store::Item_t& name)
+    store::Item_t& name,
+    bool dyn_collection)
 {
   CollectionPul* pul = getCollectionPul(name.getp());
 
   pul->theCreateCollectionList.push_back(
-  GET_STORE().getPULFactory().createUpdCreateCollection(pul, name));
+  GET_STORE().getPULFactory().createUpdCreateCollection(pul, name, dyn_collection));
 }
 
 
 void PULImpl::addDeleteCollection(
-    store::Item_t& name)
+    store::Item_t& name,
+    bool dyn_collection)
 {
   CollectionPul* pul = getCollectionPul(name.getp());
 
   pul->theDeleteCollectionList.push_back(
-  GET_STORE().getPULFactory().createUpdDeleteCollection(pul, name));
+  GET_STORE().getPULFactory().createUpdDeleteCollection(pul, name, dyn_collection));
 }
 
 
 void PULImpl::addInsertIntoCollection(
     store::Item_t& name,
-    std::vector<store::Item_t>& nodes)
+    std::vector<store::Item_t>& nodes,
+    bool dyn_collection)
 {
   CollectionPul* pul = getCollectionPul(name.getp());
 
   pul->theInsertIntoCollectionList.push_back(
-  GET_STORE().getPULFactory().createUpdInsertIntoCollection(pul, name, nodes));
+  GET_STORE().getPULFactory().createUpdInsertIntoCollection(pul, name, nodes, dyn_collection));
 } 
 
 
 void PULImpl::addInsertFirstIntoCollection(
     store::Item_t& name,
-    std::vector<store::Item_t>& nodes)
+    std::vector<store::Item_t>& nodes,
+    bool dyn_collection)
 {
   CollectionPul* pul = getCollectionPul(name.getp());
 
   pul->theInsertIntoCollectionList.push_back(
-  GET_STORE().getPULFactory().createUpdInsertFirstIntoCollection(pul, name, nodes));
+  GET_STORE().getPULFactory().createUpdInsertFirstIntoCollection(pul, name, nodes, dyn_collection));
 }
 
 
 void PULImpl::addInsertLastIntoCollection(
     store::Item_t& name,
-    std::vector<store::Item_t>& nodes)
+    std::vector<store::Item_t>& nodes,
+    bool dyn_collection)
 {
   CollectionPul* pul = getCollectionPul(name.getp());
 
   pul->theInsertIntoCollectionList.push_back(
-  GET_STORE().getPULFactory().createUpdInsertLastIntoCollection(pul, name, nodes));
+  GET_STORE().getPULFactory().createUpdInsertLastIntoCollection(pul, name, nodes, dyn_collection));
 }
 
 
 void PULImpl::addInsertBeforeIntoCollection(
     store::Item_t& name,
     store::Item_t& target,
-    std::vector<store::Item_t>& nodes)
+    std::vector<store::Item_t>& nodes,
+    bool dyn_collection)
 {
   CollectionPul* pul = getCollectionPul(name.getp());
 
   pul->theInsertIntoCollectionList.push_back(
-  GET_STORE().getPULFactory().createUpdInsertBeforeIntoCollection(pul, name, target, nodes));
+  GET_STORE().getPULFactory().createUpdInsertBeforeIntoCollection(pul, name, target, nodes, dyn_collection));
 }
 
 
 void PULImpl::addInsertAfterIntoCollection(
     store::Item_t& name,
     store::Item_t& target,
-    std::vector<store::Item_t>& nodes)
+    std::vector<store::Item_t>& nodes,
+    bool dyn_collection)
 {
   CollectionPul* pul = getCollectionPul(name.getp());
 
   pul->theInsertIntoCollectionList.push_back(
-  GET_STORE().getPULFactory().createUpdInsertAfterIntoCollection(pul, name, target, nodes));
+  GET_STORE().getPULFactory().createUpdInsertAfterIntoCollection(pul, name, target, nodes, dyn_collection));
 }
 
 
 void PULImpl::addDeleteFromCollection(
     store::Item_t& name,
     std::vector<store::Item_t>& nodes,
-    bool isLast)
+    bool isLast,
+    bool dyn_collection)
 {
   CollectionPul* pul = getCollectionPul(name.getp());
 
   pul->theDeleteFromCollectionList.push_back(
-  GET_STORE().getPULFactory().createUpdDeleteNodesFromCollection(pul, name, nodes, isLast));
+  GET_STORE().getPULFactory().createUpdDeleteNodesFromCollection(pul, name, nodes, isLast, dyn_collection));
 }
 
 
@@ -883,6 +894,27 @@ void PULImpl::addDeActivateIC(
 {
   UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdDeActivateIC(this, qname);
   theICActivationList.push_back(upd);
+}
+
+
+/*******************************************************************************
+  Document PULs
+********************************************************************************/
+void PULImpl::addCreateDocument(
+      const store::Item_t& uri,
+      store::Item_t& doc)
+{
+  UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdCreateDocument(
+      this, uri, doc);
+  theCreateDocumentList.push_back(upd);
+}
+
+void PULImpl::addDeleteDocument(
+      const store::Item_t& uri)
+{
+  UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdDeleteDocument(
+      this, uri);
+  theDeleteDocumentList.push_back(upd);
 }
 
 
@@ -1018,6 +1050,17 @@ void PULImpl::mergeUpdates(store::Item* other)
   mergeUpdateList(NULL,
                   theICActivationList,
                   otherp->theICActivationList,
+                  UP_LIST_NONE);
+
+  // merge document primitives
+  mergeUpdateList(NULL,
+                  theCreateDocumentList,
+                  otherp->theCreateDocumentList,
+                  UP_LIST_NONE);
+
+  mergeUpdateList(NULL,
+                  theDeleteDocumentList,
+                  otherp->theDeleteDocumentList,
                   UP_LIST_NONE);
 }
 
@@ -1401,6 +1444,10 @@ void PULImpl::applyUpdates(bool inheritNSBindings)
     applyList(theRefreshIndexList);
     applyList(theCreateIndexList);
     applyList(theDeleteIndexList);
+
+    // Apply document primitives
+    applyList(theCreateDocumentList);
+    applyList(theDeleteDocumentList);
 
     // check integrity constraints for involved collections
     for (collIte = theCollectionPuls.begin(); collIte != collEnd; ++collIte)
@@ -1841,7 +1888,8 @@ void CollectionPul::finalizeUpdates()
     // If necessary, adjust the position of trees inside this collection.
     if (theAdjustTreePositions)
     {
-      theCollection->adjustTreePositions();
+      if (theCollection) // ??? not set if the collection is dynamic
+        theCollection->adjustTreePositions();
     }
 
     // Detach nodes that were deleted from their trees due to replace-node,

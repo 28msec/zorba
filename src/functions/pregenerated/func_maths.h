@@ -42,11 +42,10 @@ void populate_context_maths(static_context* sctx);
 class math_sqrt : public function
 {
 public:
-  math_sqrt(const signature& sig)
-    :
-    function(sig, FunctionConsts::MATH_SQRT_1)
-  {
-  }
+  math_sqrt(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -56,11 +55,10 @@ public:
 class math_exp : public function
 {
 public:
-  math_exp(const signature& sig)
-    :
-    function(sig, FunctionConsts::MATH_EXP_1)
-  {
-  }
+  math_exp(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -70,11 +68,10 @@ public:
 class math_exp10 : public function
 {
 public:
-  math_exp10(const signature& sig)
-    :
-    function(sig, FunctionConsts::MATH_EXP10_1)
-  {
-  }
+  math_exp10(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -84,11 +81,10 @@ public:
 class math_log : public function
 {
 public:
-  math_log(const signature& sig)
-    :
-    function(sig, FunctionConsts::MATH_LOG_1)
-  {
-  }
+  math_log(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -98,11 +94,10 @@ public:
 class math_log10 : public function
 {
 public:
-  math_log10(const signature& sig)
-    :
-    function(sig, FunctionConsts::MATH_LOG10_1)
-  {
-  }
+  math_log10(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -112,11 +107,10 @@ public:
 class math_sin : public function
 {
 public:
-  math_sin(const signature& sig)
-    :
-    function(sig, FunctionConsts::MATH_SIN_1)
-  {
-  }
+  math_sin(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -126,11 +120,10 @@ public:
 class math_cos : public function
 {
 public:
-  math_cos(const signature& sig)
-    :
-    function(sig, FunctionConsts::MATH_COS_1)
-  {
-  }
+  math_cos(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -140,11 +133,10 @@ public:
 class math_tan : public function
 {
 public:
-  math_tan(const signature& sig)
-    :
-    function(sig, FunctionConsts::MATH_TAN_1)
-  {
-  }
+  math_tan(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -154,11 +146,10 @@ public:
 class math_asin : public function
 {
 public:
-  math_asin(const signature& sig)
-    :
-    function(sig, FunctionConsts::MATH_ASIN_1)
-  {
-  }
+  math_asin(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -168,11 +159,10 @@ public:
 class math_acos : public function
 {
 public:
-  math_acos(const signature& sig)
-    :
-    function(sig, FunctionConsts::MATH_ACOS_1)
-  {
-  }
+  math_acos(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -182,11 +172,10 @@ public:
 class math_atan : public function
 {
 public:
-  math_atan(const signature& sig)
-    :
-    function(sig, FunctionConsts::MATH_ATAN_1)
-  {
-  }
+  math_atan(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -196,11 +185,10 @@ public:
 class math_atan2 : public function
 {
 public:
-  math_atan2(const signature& sig)
-    :
-    function(sig, FunctionConsts::MATH_ATAN2_2)
-  {
-  }
+  math_atan2(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -210,11 +198,10 @@ public:
 class fn_zorba_math_cosh : public function
 {
 public:
-  fn_zorba_math_cosh(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_MATH_COSH_1)
-  {
-  }
+  fn_zorba_math_cosh(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -224,11 +211,10 @@ public:
 class fn_zorba_math_acosh : public function
 {
 public:
-  fn_zorba_math_acosh(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_MATH_ACOSH_1)
-  {
-  }
+  fn_zorba_math_acosh(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -238,11 +224,10 @@ public:
 class fn_zorba_math_fmod : public function
 {
 public:
-  fn_zorba_math_fmod(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_MATH_FMOD_2)
-  {
-  }
+  fn_zorba_math_fmod(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -252,11 +237,10 @@ public:
 class fn_zorba_math_ldexp : public function
 {
 public:
-  fn_zorba_math_ldexp(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_MATH_LDEXP_2)
-  {
-  }
+  fn_zorba_math_ldexp(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -266,11 +250,10 @@ public:
 class math_pow : public function
 {
 public:
-  math_pow(const signature& sig)
-    :
-    function(sig, FunctionConsts::MATH_POW_2)
-  {
-  }
+  math_pow(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -280,11 +263,10 @@ public:
 class fn_zorba_math_sinh : public function
 {
 public:
-  fn_zorba_math_sinh(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_MATH_SINH_1)
-  {
-  }
+  fn_zorba_math_sinh(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -294,11 +276,10 @@ public:
 class fn_zorba_math_asinh : public function
 {
 public:
-  fn_zorba_math_asinh(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_MATH_ASINH_1)
-  {
-  }
+  fn_zorba_math_asinh(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -308,11 +289,10 @@ public:
 class fn_zorba_math_tanh : public function
 {
 public:
-  fn_zorba_math_tanh(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_MATH_TANH_1)
-  {
-  }
+  fn_zorba_math_tanh(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -322,11 +302,10 @@ public:
 class fn_zorba_math_atanh : public function
 {
 public:
-  fn_zorba_math_atanh(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_MATH_ATANH_1)
-  {
-  }
+  fn_zorba_math_atanh(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -336,11 +315,10 @@ public:
 class math_pi : public function
 {
 public:
-  math_pi(const signature& sig)
-    :
-    function(sig, FunctionConsts::MATH_PI_0)
-  {
-  }
+  math_pi(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -350,11 +328,10 @@ public:
 class fn_zorba_math_is_inf : public function
 {
 public:
-  fn_zorba_math_is_inf(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_MATH_IS_INF_1)
-  {
-  }
+  fn_zorba_math_is_inf(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -364,11 +341,10 @@ public:
 class fn_zorba_math_is_nan : public function
 {
 public:
-  fn_zorba_math_is_nan(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_MATH_IS_NAN_1)
-  {
-  }
+  fn_zorba_math_is_nan(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -378,11 +354,10 @@ public:
 class fn_zorba_math_modf : public function
 {
 public:
-  fn_zorba_math_modf(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_MATH_MODF_1)
-  {
-  }
+  fn_zorba_math_modf(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -392,11 +367,10 @@ public:
 class fn_zorba_math_frexp : public function
 {
 public:
-  fn_zorba_math_frexp(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_MATH_FREXP_1)
-  {
-  }
+  fn_zorba_math_frexp(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };

@@ -1,9 +1,10 @@
-import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
+import module namespace init = "http://www.zorba-xquery.com/modules/store/static-collections/initialization";
+import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
 
 import module namespace ns = "http://www.example.com/example" at "../collection_001.xqdata";
 
-xqddf:create-collection(xs:QName("ns:collection_unordered"));
+init:create-collection(xs:QName("ns:collection_unordered"));
 
-xqddf:insert-nodes-first(xs:QName("ns:collection_unordered"), <a/>);
+manip:insert-nodes-first(xs:QName("ns:collection_unordered"), <a/>);
 
-xqddf:insert-nodes-after(xs:QName("ns:collection_unordered"), <a/>, xs:QName("ns:collection_unordered")[1]);
+manip:insert-nodes-after(xs:QName("ns:collection_unordered"), <a/>, xs:QName("ns:collection_unordered")[1]);

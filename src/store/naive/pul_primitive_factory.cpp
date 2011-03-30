@@ -231,9 +231,10 @@ PULPrimitiveFactory::createUpdPut(
     UpdCreateCollection*
     PULPrimitiveFactory::createUpdCreateCollection(
           CollectionPul* pul,
-          store::Item_t& name)
+          store::Item_t& name,
+          bool dyn_collection)
     {
-      return new UpdCreateCollection(pul, name);
+      return new UpdCreateCollection(pul, name, dyn_collection);
     }
 
     
@@ -242,9 +243,10 @@ PULPrimitiveFactory::createUpdPut(
     UpdDeleteCollection*
     PULPrimitiveFactory::createUpdDeleteCollection(
           CollectionPul* pul,
-          store::Item_t& name)
+          store::Item_t& name,
+          bool dyn_collection)
     {
-      return new UpdDeleteCollection(pul, name);
+      return new UpdDeleteCollection(pul, name, dyn_collection);
     }
 
     
@@ -254,9 +256,10 @@ PULPrimitiveFactory::createUpdPut(
     PULPrimitiveFactory::createUpdInsertIntoCollection(
           CollectionPul* pul,
           store::Item_t& name, 
-          std::vector<store::Item_t>& nodes)
+          std::vector<store::Item_t>& nodes,
+          bool dyn_collection)
     {
-      return new UpdInsertIntoCollection(pul, name, nodes);
+      return new UpdInsertIntoCollection(pul, name, nodes, dyn_collection);
     }
 
     
@@ -266,9 +269,10 @@ PULPrimitiveFactory::createUpdPut(
     PULPrimitiveFactory::createUpdInsertFirstIntoCollection(
         CollectionPul* pul,
         store::Item_t& name,
-        std::vector<store::Item_t>& nodes)
+        std::vector<store::Item_t>& nodes,
+        bool dyn_collection)
     {
-      return new UpdInsertFirstIntoCollection(pul, name, nodes);
+      return new UpdInsertFirstIntoCollection(pul, name, nodes, dyn_collection);
     }
 
     
@@ -278,9 +282,10 @@ PULPrimitiveFactory::createUpdPut(
     PULPrimitiveFactory::createUpdInsertLastIntoCollection(
           CollectionPul* pul,
           store::Item_t& name,
-          std::vector<store::Item_t>& nodes)
+          std::vector<store::Item_t>& nodes,
+          bool dyn_collection)
     {
-      return new UpdInsertLastIntoCollection(pul, name, nodes);
+      return new UpdInsertLastIntoCollection(pul, name, nodes, dyn_collection);
     }
 
     
@@ -291,9 +296,10 @@ PULPrimitiveFactory::createUpdPut(
           CollectionPul* pul,
           store::Item_t& name,
           store::Item_t& target,
-          std::vector<store::Item_t>& nodes)
+          std::vector<store::Item_t>& nodes,
+          bool dyn_collection)
     {
-      return new UpdInsertBeforeIntoCollection(pul, name, target, nodes);
+      return new UpdInsertBeforeIntoCollection(pul, name, target, nodes, dyn_collection);
     }
 
     
@@ -304,9 +310,10 @@ PULPrimitiveFactory::createUpdPut(
           CollectionPul* pul,
           store::Item_t& name,
           store::Item_t& target,
-          std::vector<store::Item_t>& nodes)
+          std::vector<store::Item_t>& nodes,
+          bool dyn_collection)
     {
-      return new UpdInsertAfterIntoCollection(pul, name, target, nodes);
+      return new UpdInsertAfterIntoCollection(pul, name, target, nodes, dyn_collection);
     }
 
     
@@ -317,9 +324,10 @@ PULPrimitiveFactory::createUpdPut(
           CollectionPul* pul,
           store::Item_t& name,
           std::vector<store::Item_t>& nodes,
-          bool isLast)
+          bool isLast,
+          bool dyn_collection)
     {
-      return new UpdDeleteNodesFromCollection(pul, name, nodes, isLast);
+      return new UpdDeleteNodesFromCollection(pul, name, nodes, isLast, dyn_collection);
     }
 
     
@@ -382,15 +390,36 @@ PULPrimitiveFactory::createUpdPut(
     }
     
 
-/***************************************************************************
+    /***************************************************************************
+    ***************************************************************************/
+    UpdDeActivateIC*
+    PULPrimitiveFactory::createUpdDeActivateIC(
+        PULImpl* pul,
+        const store::Item_t& qname)
+    {
+      return new UpdDeActivateIC(pul, qname);
+    }
 
-***************************************************************************/
-UpdDeActivateIC*
-PULPrimitiveFactory::createUpdDeActivateIC(
-    PULImpl* pul,
-    const store::Item_t& qname)
-{
-  return new UpdDeActivateIC(pul, qname);
-}
+
+    /***************************************************************************
+     ***************************************************************************/
+    UpdCreateDocument*
+    PULPrimitiveFactory::createUpdCreateDocument(
+          PULImpl* pul,
+          const store::Item_t& uri,
+          store::Item_t& doc)
+    {
+      return new UpdCreateDocument(pul, uri, doc);
+    }
+    
+    /***************************************************************************
+     ***************************************************************************/
+    UpdDeleteDocument*
+    PULPrimitiveFactory::createUpdDeleteDocument(
+          PULImpl* pul,
+          const store::Item_t& uri)
+   {
+     return new UpdDeleteDocument(pul, uri);
+   }
 
 } /* namespace simplestore */ } /* namespace zorba */

@@ -1,8 +1,8 @@
-import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
+import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
 import module namespace ns = "http://example.org/datamodule/" at "../collections.xqdata";
 
 declare sequential function local:foo() {
-  xqddf:insert-nodes-first(xs:QName("ns:http"), <book>One Thousand and One Nights</book>);
+  manip:insert-nodes-first(xs:QName("ns:http"), <book>One Thousand and One Nights</book>);
   exit returning ();
 };
 

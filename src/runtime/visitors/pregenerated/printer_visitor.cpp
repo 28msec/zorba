@@ -46,7 +46,6 @@
 #include "runtime/fnput/fnput.h"
 #include "runtime/function_item/function_item_iter.h"
 #include "runtime/indexing/ic_ddl.h"
-#include "runtime/introspection/dctx.h"
 #include "runtime/introspection/sctx.h"
 #include "runtime/maths/maths.h"
 #include "runtime/nodes/nodes.h"
@@ -58,6 +57,7 @@
 #include "runtime/schema/schema.h"
 #include "runtime/scripting/scripting.h"
 #include "runtime/sequences/sequences.h"
+#include "runtime/store/documents.h"
 #include "runtime/strings/strings.h"
 #include "runtime/xqdoc/xqdoc.h"
 
@@ -427,6 +427,76 @@ void PrinterVisitor::endVisit ( const ZorbaInsertNodesAfterIterator& ) {
 // </ZorbaInsertNodesAfterIterator>
 
 
+// <ZorbaApplyInsertNodesIterator>
+void PrinterVisitor::beginVisit ( const ZorbaApplyInsertNodesIterator& a) {
+  thePrinter.startBeginVisit("ZorbaApplyInsertNodesIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const ZorbaApplyInsertNodesIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </ZorbaApplyInsertNodesIterator>
+
+
+// <ZorbaApplyInsertNodesFirstIterator>
+void PrinterVisitor::beginVisit ( const ZorbaApplyInsertNodesFirstIterator& a) {
+  thePrinter.startBeginVisit("ZorbaApplyInsertNodesFirstIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const ZorbaApplyInsertNodesFirstIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </ZorbaApplyInsertNodesFirstIterator>
+
+
+// <ZorbaApplyInsertNodesLastIterator>
+void PrinterVisitor::beginVisit ( const ZorbaApplyInsertNodesLastIterator& a) {
+  thePrinter.startBeginVisit("ZorbaApplyInsertNodesLastIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const ZorbaApplyInsertNodesLastIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </ZorbaApplyInsertNodesLastIterator>
+
+
+// <ZorbaApplyInsertNodesBeforeIterator>
+void PrinterVisitor::beginVisit ( const ZorbaApplyInsertNodesBeforeIterator& a) {
+  thePrinter.startBeginVisit("ZorbaApplyInsertNodesBeforeIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const ZorbaApplyInsertNodesBeforeIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </ZorbaApplyInsertNodesBeforeIterator>
+
+
+// <ZorbaApplyInsertNodesAfterIterator>
+void PrinterVisitor::beginVisit ( const ZorbaApplyInsertNodesAfterIterator& a) {
+  thePrinter.startBeginVisit("ZorbaApplyInsertNodesAfterIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const ZorbaApplyInsertNodesAfterIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </ZorbaApplyInsertNodesAfterIterator>
+
+
 // <ZorbaDeleteNodesIterator>
 void PrinterVisitor::beginVisit ( const ZorbaDeleteNodesIterator& a) {
   thePrinter.startBeginVisit("ZorbaDeleteNodesIterator", ++theId);
@@ -467,6 +537,174 @@ void PrinterVisitor::endVisit ( const ZorbaDeleteNodesLastIterator& ) {
   thePrinter.endEndVisit();
 }
 // </ZorbaDeleteNodesLastIterator>
+
+
+// <IsAvailableCollectionIterator>
+void PrinterVisitor::beginVisit ( const IsAvailableCollectionIterator& a) {
+  thePrinter.startBeginVisit("IsAvailableCollectionIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const IsAvailableCollectionIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </IsAvailableCollectionIterator>
+
+
+// <AvailableCollectionsIterator>
+void PrinterVisitor::beginVisit ( const AvailableCollectionsIterator& a) {
+  thePrinter.startBeginVisit("AvailableCollectionsIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const AvailableCollectionsIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </AvailableCollectionsIterator>
+
+
+// <IsAvailableIndexIterator>
+void PrinterVisitor::beginVisit ( const IsAvailableIndexIterator& a) {
+  thePrinter.startBeginVisit("IsAvailableIndexIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const IsAvailableIndexIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </IsAvailableIndexIterator>
+
+
+// <AvailableIndexesIterator>
+void PrinterVisitor::beginVisit ( const AvailableIndexesIterator& a) {
+  thePrinter.startBeginVisit("AvailableIndexesIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const AvailableIndexesIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </AvailableIndexesIterator>
+
+
+// <IsActivatedICIterator>
+void PrinterVisitor::beginVisit ( const IsActivatedICIterator& a) {
+  thePrinter.startBeginVisit("IsActivatedICIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const IsActivatedICIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </IsActivatedICIterator>
+
+
+// <ActivatedICsIterator>
+void PrinterVisitor::beginVisit ( const ActivatedICsIterator& a) {
+  thePrinter.startBeginVisit("ActivatedICsIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const ActivatedICsIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </ActivatedICsIterator>
+
+
+// <IsDeclaredCollectionIterator>
+void PrinterVisitor::beginVisit ( const IsDeclaredCollectionIterator& a) {
+  thePrinter.startBeginVisit("IsDeclaredCollectionIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const IsDeclaredCollectionIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </IsDeclaredCollectionIterator>
+
+
+// <DeclaredCollectionsIterator>
+void PrinterVisitor::beginVisit ( const DeclaredCollectionsIterator& a) {
+  thePrinter.startBeginVisit("DeclaredCollectionsIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const DeclaredCollectionsIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </DeclaredCollectionsIterator>
+
+
+// <IsDeclaredIndexIterator>
+void PrinterVisitor::beginVisit ( const IsDeclaredIndexIterator& a) {
+  thePrinter.startBeginVisit("IsDeclaredIndexIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const IsDeclaredIndexIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </IsDeclaredIndexIterator>
+
+
+// <DeclaredIndexesIterator>
+void PrinterVisitor::beginVisit ( const DeclaredIndexesIterator& a) {
+  thePrinter.startBeginVisit("DeclaredIndexesIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const DeclaredIndexesIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </DeclaredIndexesIterator>
+
+
+// <IsDeclaredICIterator>
+void PrinterVisitor::beginVisit ( const IsDeclaredICIterator& a) {
+  thePrinter.startBeginVisit("IsDeclaredICIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const IsDeclaredICIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </IsDeclaredICIterator>
+
+
+// <DeclaredICsIterator>
+void PrinterVisitor::beginVisit ( const DeclaredICsIterator& a) {
+  thePrinter.startBeginVisit("DeclaredICsIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const DeclaredICsIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </DeclaredICsIterator>
 
 
 // <CurrentDateTimeIterator>
@@ -1029,146 +1267,6 @@ void PrinterVisitor::endVisit ( const CheckICIterator& ) {
 // </CheckICIterator>
 
 
-// <IsAvailableCollectionIterator>
-void PrinterVisitor::beginVisit ( const IsAvailableCollectionIterator& a) {
-  thePrinter.startBeginVisit("IsAvailableCollectionIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const IsAvailableCollectionIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </IsAvailableCollectionIterator>
-
-
-// <AvailableCollectionsIterator>
-void PrinterVisitor::beginVisit ( const AvailableCollectionsIterator& a) {
-  thePrinter.startBeginVisit("AvailableCollectionsIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const AvailableCollectionsIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </AvailableCollectionsIterator>
-
-
-// <IsAvailableIndexIterator>
-void PrinterVisitor::beginVisit ( const IsAvailableIndexIterator& a) {
-  thePrinter.startBeginVisit("IsAvailableIndexIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const IsAvailableIndexIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </IsAvailableIndexIterator>
-
-
-// <AvailableIndexesIterator>
-void PrinterVisitor::beginVisit ( const AvailableIndexesIterator& a) {
-  thePrinter.startBeginVisit("AvailableIndexesIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const AvailableIndexesIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </AvailableIndexesIterator>
-
-
-// <IsActivatedICIterator>
-void PrinterVisitor::beginVisit ( const IsActivatedICIterator& a) {
-  thePrinter.startBeginVisit("IsActivatedICIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const IsActivatedICIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </IsActivatedICIterator>
-
-
-// <ActivatedICsIterator>
-void PrinterVisitor::beginVisit ( const ActivatedICsIterator& a) {
-  thePrinter.startBeginVisit("ActivatedICsIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const ActivatedICsIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </ActivatedICsIterator>
-
-
-// <IsDeclaredCollectionIterator>
-void PrinterVisitor::beginVisit ( const IsDeclaredCollectionIterator& a) {
-  thePrinter.startBeginVisit("IsDeclaredCollectionIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const IsDeclaredCollectionIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </IsDeclaredCollectionIterator>
-
-
-// <DeclaredCollectionsIterator>
-void PrinterVisitor::beginVisit ( const DeclaredCollectionsIterator& a) {
-  thePrinter.startBeginVisit("DeclaredCollectionsIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const DeclaredCollectionsIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </DeclaredCollectionsIterator>
-
-
-// <IsDeclaredIndexIterator>
-void PrinterVisitor::beginVisit ( const IsDeclaredIndexIterator& a) {
-  thePrinter.startBeginVisit("IsDeclaredIndexIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const IsDeclaredIndexIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </IsDeclaredIndexIterator>
-
-
-// <DeclaredIndexesIterator>
-void PrinterVisitor::beginVisit ( const DeclaredIndexesIterator& a) {
-  thePrinter.startBeginVisit("DeclaredIndexesIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const DeclaredIndexesIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </DeclaredIndexesIterator>
-
-
 // <StaticNamespacesIterator>
 void PrinterVisitor::beginVisit ( const StaticNamespacesIterator& a) {
   thePrinter.startBeginVisit("StaticNamespacesIterator", ++theId);
@@ -1447,34 +1545,6 @@ void PrinterVisitor::endVisit ( const InScopeAttributeGroupsIterator& ) {
   thePrinter.endEndVisit();
 }
 // </InScopeAttributeGroupsIterator>
-
-
-// <IsDeclaredICIterator>
-void PrinterVisitor::beginVisit ( const IsDeclaredICIterator& a) {
-  thePrinter.startBeginVisit("IsDeclaredICIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const IsDeclaredICIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </IsDeclaredICIterator>
-
-
-// <DeclaredICsIterator>
-void PrinterVisitor::beginVisit ( const DeclaredICsIterator& a) {
-  thePrinter.startBeginVisit("DeclaredICsIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const DeclaredICsIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </DeclaredICsIterator>
 
 
 // <OptionIterator>
@@ -2736,6 +2806,76 @@ void PrinterVisitor::endVisit ( const FnDocAvailableIterator& ) {
   thePrinter.endEndVisit();
 }
 // </FnDocAvailableIterator>
+
+
+// <AddDocumentIterator>
+void PrinterVisitor::beginVisit ( const AddDocumentIterator& a) {
+  thePrinter.startBeginVisit("AddDocumentIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const AddDocumentIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </AddDocumentIterator>
+
+
+// <RemoveDocumentIterator>
+void PrinterVisitor::beginVisit ( const RemoveDocumentIterator& a) {
+  thePrinter.startBeginVisit("RemoveDocumentIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const RemoveDocumentIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </RemoveDocumentIterator>
+
+
+// <RetrieveDocumentIterator>
+void PrinterVisitor::beginVisit ( const RetrieveDocumentIterator& a) {
+  thePrinter.startBeginVisit("RetrieveDocumentIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const RetrieveDocumentIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </RetrieveDocumentIterator>
+
+
+// <AvailableDocumentsIterator>
+void PrinterVisitor::beginVisit ( const AvailableDocumentsIterator& a) {
+  thePrinter.startBeginVisit("AvailableDocumentsIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const AvailableDocumentsIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </AvailableDocumentsIterator>
+
+
+// <IsAvailableDocumentIterator>
+void PrinterVisitor::beginVisit ( const IsAvailableDocumentIterator& a) {
+  thePrinter.startBeginVisit("IsAvailableDocumentIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const IsAvailableDocumentIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </IsAvailableDocumentIterator>
 
 
 // <CodepointsToStringIterator>

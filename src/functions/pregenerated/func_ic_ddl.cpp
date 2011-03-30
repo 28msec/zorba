@@ -30,7 +30,7 @@ namespace zorba{
 
 
 
-PlanIter_t fn_zorba_xqddf_activate_integrity_constraint::codegen(
+PlanIter_t zorba_store_collections_static_init_activate_integrity_constraint::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -40,7 +40,7 @@ PlanIter_t fn_zorba_xqddf_activate_integrity_constraint::codegen(
   return new ActivateICIterator(sctx, loc, argv[0]);
 }
 
-PlanIter_t fn_zorba_xqddf_deactivate_integrity_constraint::codegen(
+PlanIter_t zorba_store_collections_static_init_deactivate_integrity_constraint::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -50,7 +50,7 @@ PlanIter_t fn_zorba_xqddf_deactivate_integrity_constraint::codegen(
   return new DeactivateICIterator(sctx, loc, argv[0]);
 }
 
-PlanIter_t fn_zorba_xqddf_check_integrity_constraint::codegen(
+PlanIter_t zorba_store_collections_static_manip_check_integrity_constraint::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -62,22 +62,25 @@ PlanIter_t fn_zorba_xqddf_check_integrity_constraint::codegen(
 
 void populate_context_ic_ddl(static_context* sctx)
 {
-  DECL(sctx, fn_zorba_xqddf_activate_integrity_constraint,
-      (createQName("http://www.zorba-xquery.com/modules/xqddf","","activate-integrity-constraint"),
+  DECL_WITH_KIND(sctx, zorba_store_collections_static_init_activate_integrity_constraint,
+      (createQName("http://www.zorba-xquery.com/modules/store/static-collections/initialization","","activate-integrity-constraint"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
-      GENV_TYPESYSTEM.EMPTY_TYPE));
+      GENV_TYPESYSTEM.EMPTY_TYPE),
+      FunctionConsts::ZORBA_STORE_COLLECTIONS_STATIC_INIT_ACTIVATE_INTEGRITY_CONSTRAINT_1);
 
 
-  DECL(sctx, fn_zorba_xqddf_deactivate_integrity_constraint,
-      (createQName("http://www.zorba-xquery.com/modules/xqddf","","deactivate-integrity-constraint"),
+  DECL_WITH_KIND(sctx, zorba_store_collections_static_init_deactivate_integrity_constraint,
+      (createQName("http://www.zorba-xquery.com/modules/store/static-collections/initialization","","deactivate-integrity-constraint"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
-      GENV_TYPESYSTEM.EMPTY_TYPE));
+      GENV_TYPESYSTEM.EMPTY_TYPE),
+      FunctionConsts::ZORBA_STORE_COLLECTIONS_STATIC_INIT_DEACTIVATE_INTEGRITY_CONSTRAINT_1);
 
 
-  DECL(sctx, fn_zorba_xqddf_check_integrity_constraint,
-      (createQName("http://www.zorba-xquery.com/modules/xqddf","","check-integrity-constraint"),
+  DECL_WITH_KIND(sctx, zorba_store_collections_static_manip_check_integrity_constraint,
+      (createQName("http://www.zorba-xquery.com/modules/store/static-collections/manipulation","","check-integrity-constraint"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
-      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
+      FunctionConsts::ZORBA_STORE_COLLECTIONS_STATIC_MANIP_CHECK_INTEGRITY_CONSTRAINT_1);
 
 }
 

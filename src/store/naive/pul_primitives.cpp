@@ -674,9 +674,11 @@ void UpdPut::undo()
 UpdCollection::UpdCollection(
     CollectionPul* pul,
     store::Item_t& name,
-    std::vector<store::Item_t>& nodes)
+    std::vector<store::Item_t>& nodes,
+    bool dyn_collection)
   :
-  UpdatePrimitive(pul)
+  UpdatePrimitive(pul),
+  theDynamicCollection(dyn_collection)
 {
   theName.transfer(name);
 
@@ -692,9 +694,11 @@ UpdCollection::UpdCollection(
     CollectionPul* pul,
     store::Item_t& target,
     store::Item_t& name,
-    std::vector<store::Item_t>& nodes)
+    std::vector<store::Item_t>& nodes,
+    bool dyn_collection)
   :
-  UpdatePrimitive(pul, target)
+  UpdatePrimitive(pul, target),
+  theDynamicCollection(dyn_collection)
 {
   theName.transfer(name);
 
@@ -712,7 +716,7 @@ UpdCollection::UpdCollection(
 void UpdCreateCollection::apply()
 {
   // Error is raised if collection exists already.
-  GET_STORE().createCollection(theName);
+  GET_STORE().createCollection(theName, theDynamicCollection);
   theIsApplied = true;
 }
 
@@ -737,7 +741,7 @@ void UpdCreateCollection::undo()
 ********************************************************************************/
 void UpdDeleteCollection::apply()
 {
-  theCollection = GET_STORE().getCollection(theName);
+  theCollection = GET_STORE().getCollection(theName, theDynamicCollection);
   assert(theCollection);
   SimpleCollection* collection = static_cast<SimpleCollection*>(theCollection.getp());
 
@@ -765,7 +769,7 @@ void UpdDeleteCollection::apply()
                         collection->getName()->getStringValue(), "");
   }
 
-  GET_STORE().deleteCollection(theName);
+  GET_STORE().deleteCollection(theName, theDynamicCollection);
   theIsApplied = true;
 }
 
@@ -782,7 +786,7 @@ void UpdDeleteCollection::undo()
 void UpdInsertIntoCollection::apply()
 {
   SimpleCollection* lColl = static_cast<SimpleCollection*>
-                            (GET_STORE().getCollection(theName).getp());
+                            (GET_STORE().getCollection(theName, theDynamicCollection).getp());
   assert(lColl);
 
   theIsApplied = true;
@@ -799,7 +803,7 @@ void UpdInsertIntoCollection::apply()
 void UpdInsertIntoCollection::undo()
 {
   SimpleCollection* lColl = static_cast<SimpleCollection*>
-                            (GET_STORE().getCollection(theName).getp());
+                            (GET_STORE().getCollection(theName, theDynamicCollection).getp());
   assert(lColl);
 
   ulong lastPos = lColl->size()-1;
@@ -820,7 +824,7 @@ void UpdInsertIntoCollection::undo()
 void UpdInsertFirstIntoCollection::apply()
 {
   SimpleCollection* lColl = static_cast<SimpleCollection*>
-                            (GET_STORE().getCollection(theName).getp());
+                            (GET_STORE().getCollection(theName, theDynamicCollection).getp());
   assert(lColl);
 
   theIsApplied = true;
@@ -839,7 +843,7 @@ void UpdInsertFirstIntoCollection::apply()
 void UpdInsertFirstIntoCollection::undo()
 {
   SimpleCollection* lColl = static_cast<SimpleCollection*>
-                            (GET_STORE().getCollection(theName).getp());
+                            (GET_STORE().getCollection(theName, theDynamicCollection).getp());
   assert(lColl);
 
   for (ulong i = 0; i < theNumApplied; ++i)
@@ -857,7 +861,7 @@ void UpdInsertFirstIntoCollection::undo()
 void UpdInsertLastIntoCollection::apply()
 {
   SimpleCollection* lColl = static_cast<SimpleCollection*>
-                            (GET_STORE().getCollection(theName).getp());
+                            (GET_STORE().getCollection(theName, theDynamicCollection).getp());
   assert(lColl);
 
   theIsApplied = true;
@@ -873,7 +877,7 @@ void UpdInsertLastIntoCollection::apply()
 void UpdInsertLastIntoCollection::undo()
 {
   SimpleCollection* lColl = static_cast<SimpleCollection*>
-                            (GET_STORE().getCollection(theName).getp());
+                            (GET_STORE().getCollection(theName, theDynamicCollection).getp());
   assert(lColl);
 
   ulong lastPos = lColl->size()-1;
@@ -893,7 +897,7 @@ void UpdInsertLastIntoCollection::undo()
 void UpdInsertBeforeIntoCollection::apply()
 {
   SimpleCollection* lColl = static_cast<SimpleCollection*>
-                            (GET_STORE().getCollection(theName).getp());
+                            (GET_STORE().getCollection(theName, theDynamicCollection).getp());
   assert(lColl);
 
   if (!theNodes.empty())
@@ -909,7 +913,7 @@ void UpdInsertBeforeIntoCollection::apply()
 void UpdInsertBeforeIntoCollection::undo()
 {
   SimpleCollection* lColl = static_cast<SimpleCollection*>
-                            (GET_STORE().getCollection(theName).getp());
+                            (GET_STORE().getCollection(theName, theDynamicCollection).getp());
   assert(lColl);
   ZORBA_ASSERT(theFirstNode == lColl->nodeAt(theFirstPos));
 
@@ -923,7 +927,7 @@ void UpdInsertBeforeIntoCollection::undo()
 void UpdInsertAfterIntoCollection::apply()
 {
   SimpleCollection* lColl = static_cast<SimpleCollection*>
-                            (GET_STORE().getCollection(theName).getp());
+                            (GET_STORE().getCollection(theName, theDynamicCollection).getp());
   assert(lColl);
 
   if (!theNodes.empty())
@@ -940,7 +944,7 @@ void UpdInsertAfterIntoCollection::apply()
 void UpdInsertAfterIntoCollection::undo()
 {
   SimpleCollection* lColl = static_cast<SimpleCollection*>
-                            (GET_STORE().getCollection(theName).getp());
+                            (GET_STORE().getCollection(theName, theDynamicCollection).getp());
   assert(lColl);
   ZORBA_ASSERT(theFirstNode == lColl->nodeAt(theFirstPos));
 
@@ -954,7 +958,7 @@ void UpdInsertAfterIntoCollection::undo()
 void UpdDeleteNodesFromCollection::apply()
 {
   SimpleCollection* lColl = static_cast<SimpleCollection*>
-                            (GET_STORE().getCollection(theName).getp());
+                            (GET_STORE().getCollection(theName, theDynamicCollection).getp());
   assert(lColl);
 
   theIsApplied = true;
@@ -993,7 +997,7 @@ void UpdDeleteNodesFromCollection::apply()
 void UpdDeleteNodesFromCollection::undo()
 {
   SimpleCollection* lColl = static_cast<SimpleCollection*>
-                            (GET_STORE().getCollection(theName).getp());
+                            (GET_STORE().getCollection(theName, theDynamicCollection).getp());
   assert(lColl);
 
   for (ulong i = 0; i < theNumApplied; ++i)
@@ -1263,7 +1267,7 @@ void UpdDeActivateIC::apply()
     default:
       ZORBA_ASSERT(false);
   }
-  theIsApplied = false;
+  theIsApplied = true;
 }
 
 
@@ -1286,6 +1290,83 @@ void UpdDeActivateIC::undo()
         ZORBA_ASSERT(false);
       // TODO
     }
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+UpdCreateDocument::UpdCreateDocument(
+    PULImpl* pul,
+    const store::Item_t& aUri,
+    store::Item_t& aDoc)
+  :
+  UpdatePrimitive(pul),
+  theUri(aUri),
+  theDoc(aDoc)
+{
+}
+
+
+void UpdCreateDocument::apply()
+{
+  SimpleStore* store = &GET_STORE();
+
+  store->addNode(theUri->getStringValue(), theDoc);
+
+  theIsApplied = true;
+}
+
+
+void UpdCreateDocument::undo()
+{
+  if (theIsApplied)
+  {
+    SimpleStore* store = &GET_STORE();
+
+    store->deleteDocument(theUri->getStringValue());
+    theIsApplied = false;
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+UpdDeleteDocument::UpdDeleteDocument(
+    PULImpl* pul,
+    const store::Item_t& aUri)
+  :
+  UpdatePrimitive(pul),
+  theUri(aUri)
+{
+}
+
+
+void UpdDeleteDocument::apply()
+{
+  SimpleStore* store = &GET_STORE();
+
+  zstring lUri = theUri->getStringValue();
+
+  theDoc = store->getDocument(lUri); // remember for undo
+
+  ZORBA_ASSERT(theDoc != NULL); // checked in the iterator
+
+  store->deleteDocument(lUri);
+
+  theIsApplied = true;
+}
+
+
+void UpdDeleteDocument::undo()
+{
+  if (theIsApplied)
+  {
+    SimpleStore* store = &GET_STORE();
+    store->addNode(theUri->getStringValue(), theDoc);
+    theIsApplied = false;
   }
 }
 

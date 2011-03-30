@@ -845,6 +845,11 @@ declare %private sequential function xqdoc2html:create-module-table(
       let $table3 := $root/li[fn:last()]/ul/li[fn:last()]/ul
       return block {
         xqdoc2html:create-module-helper($table3, $cat3, $moduleUri);
+        for $cat4 in $cat3/category
+        let $table4 := $root/li[fn:last()]/ul/li[fn:last()]/ul/li[fn:last()]/ul
+        return block {
+          xqdoc2html:create-module-helper($table4, $cat4, $moduleUri);
+        };
       };
     };
   };
@@ -1021,6 +1026,9 @@ declare sequential function xqdoc2html:main(
         <category name="image" uri="http://www.zorba-xquery.com/modules/image" />
         <category name="introspection" uri="http://www.zorba-xquery.com/modules/introspection" />
         <category name="security" uri="http://www.zorba-xquery.com/modules/security" />
+        <category name="store" uri="http://www.zorba-xquery.com/modules/store">
+          <category name="static-collections" uri="http://www.zorba-xquery.com/modules/store/static-collections"/>
+        </category>
         <category name="oauth" uri="http://www.zorba-xquery.com/modules/oauth" />
         <category name="webservices" uri="http://www.zorba-xquery.com/modules/webservices" >
           <category name="google" uri="http://www.zorba-xquery.com/modules/webservices/google" />

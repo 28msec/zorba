@@ -1,32 +1,33 @@
 import module namespace m = 'xqueryzorba.org/test/xqddf/ic' at 'ic.xqlib';
-import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
+import module namespace init = "http://www.zorba-xquery.com/modules/store/static-collections/initialization";
+import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
 
 
 
-xqddf:create-collection($m:empc);  
+init:create-collection($m:empc);  
 
-xqddf:activate-integrity-constraint(xs:QName("m:ic_forEachNode"));
+init:activate-integrity-constraint(xs:QName("m:ic_forEachNode"));
 
 
 (: employees - m:ic_forEachNode fails :)
-xqddf:insert-nodes($m:empc, 
+manip:insert-nodes($m:empc, 
    <emp>
      <id>1</id>
    </emp>
   )
 ,
-xqddf:insert-nodes($m:empc, 
+manip:insert-nodes($m:empc, 
    <emp>
      <id>2</id>
    </emp>
   )
 ,
-xqddf:insert-nodes($m:empc, 
+manip:insert-nodes($m:empc, 
    <emp>
      <id>0</id>
    </emp>
   );
 
-fn:data( xqddf:collection($m:empc)/id ),
-every $id in xqddf:collection($m:empc)/id 
+fn:data( manip:collection($m:empc)/id ),
+every $id in manip:collection($m:empc)/id 
 satisfies $id > 0;

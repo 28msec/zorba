@@ -3,12 +3,13 @@
 :)
 
 
-import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
+import module namespace init = "http://www.zorba-xquery.com/modules/store/static-collections/initialization";
+import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
 
 import module namespace idx = "http://www.w3.org/TestModules/idx" at
                               "error_module3.xqlib";
 
-xqddf:create-collection(xs:QName("idx:auctions"));
+init:create-collection(xs:QName("idx:auctions"));
 
-xqddf:create-index(xs:QName("idx:foo"));
-xqddf:delete-index(xs:QName("idx:foo"));
+init:create-index(xs:QName("idx:foo"));
+init:delete-index(xs:QName("idx:foo"));

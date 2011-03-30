@@ -42,11 +42,10 @@ void populate_context_context(static_context* sctx);
 class fn_current_dateTime : public function
 {
 public:
-  fn_current_dateTime(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_CURRENT_DATETIME_0)
-  {
-  }
+  fn_current_dateTime(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   bool accessesDynCtx() const { return true; }
 
@@ -58,11 +57,10 @@ public:
 class fn_current_date : public function
 {
 public:
-  fn_current_date(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_CURRENT_DATE_0)
-  {
-  }
+  fn_current_date(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   bool accessesDynCtx() const { return true; }
 
@@ -74,11 +72,10 @@ public:
 class fn_current_time : public function
 {
 public:
-  fn_current_time(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_CURRENT_TIME_0)
-  {
-  }
+  fn_current_time(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   bool accessesDynCtx() const { return true; }
 
@@ -90,11 +87,10 @@ public:
 class fn_implicit_timezone : public function
 {
 public:
-  fn_implicit_timezone(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_IMPLICIT_TIMEZONE_0)
-  {
-  }
+  fn_implicit_timezone(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   bool accessesDynCtx() const { return true; }
 
@@ -106,11 +102,10 @@ public:
 class fn_default_collation : public function
 {
 public:
-  fn_default_collation(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_DEFAULT_COLLATION_0)
-  {
-  }
+  fn_default_collation(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   bool accessesDynCtx() const { return true; }
 
@@ -122,11 +117,10 @@ public:
 class fn_position : public function
 {
 public:
-  fn_position(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_POSITION_0)
-  {
-  }
+  fn_position(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -136,11 +130,10 @@ public:
 class fn_last : public function
 {
 public:
-  fn_last(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_LAST_0)
-  {
-  }
+  fn_last(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -150,11 +143,10 @@ public:
 class fn_static_base_uri : public function
 {
 public:
-  fn_static_base_uri(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_STATIC_BASE_URI_0)
-  {
-  }
+  fn_static_base_uri(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };

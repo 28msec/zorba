@@ -1,4 +1,4 @@
-import module namespace dc = "http://www.zorba-xquery.com/modules/introspection/dctx";
+import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
 import module namespace ns = "http://example.org/datamodule/" at "../collections.xqdata";
 
-dc:is-available-collection(xs:QName("ns:collection_1"));
+manip:is-available-collection(xs:QName("ns:collection_1"));

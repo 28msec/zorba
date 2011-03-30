@@ -108,6 +108,11 @@ public:
    * @return True if the node is in the collection; false otherwise.
    */
   virtual bool findNode(const Item* aNode, ulong& position) const = 0;
+
+  /**
+   * Returns true if the collection is dynamic or static
+   */
+  virtual bool isDynamic() const = 0;
 };
 
 } // namespace store

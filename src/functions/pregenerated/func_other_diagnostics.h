@@ -42,11 +42,10 @@ void populate_context_other_diagnostics(static_context* sctx);
 class op_zorba_read_line : public function
 {
 public:
-  op_zorba_read_line(const signature& sig)
-    :
-    function(sig, FunctionConsts::OP_ZORBA_READ_LINE_0)
-  {
-  }
+  op_zorba_read_line(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   bool accessesDynCtx() const { return true; }
 
@@ -58,11 +57,10 @@ public:
 class fn_zorba_util_print : public function
 {
 public:
-  fn_zorba_util_print(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_UTIL_PRINT_1)
-  {
-  }
+  fn_zorba_util_print(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   bool accessesDynCtx() const { return true; }
 

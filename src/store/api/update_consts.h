@@ -89,7 +89,11 @@ public:
     // ic primitives
     UP_ACTIVATE_IC,
     UP_ACTIVATE_FOREIGN_KEY_IC,
-    UP_DEACTIVATE_IC
+    UP_DEACTIVATE_IC,
+
+    // doc primitives
+    UP_CREATE_DOCUMENT,
+    UP_DELETE_DOCUMENT
   };
 
   static bool isRename(UpdPrimKind k)
@@ -186,6 +190,10 @@ static std::string toString(UpdPrimKind k)
     return "activate foreign key integrity constraint";
   case UP_DEACTIVATE_IC:
     return "deactivate integrity constraint";
+  case UP_CREATE_DOCUMENT:
+    return "create document";
+  case UP_DELETE_DOCUMENT:
+    return "delete document";
   default:
     return "<unknown UpdPrimKind>";
   }

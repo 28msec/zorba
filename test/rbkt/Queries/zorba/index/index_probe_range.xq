@@ -1,12 +1,13 @@
-  import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
+import module namespace init = "http://www.zorba-xquery.com/modules/store/static-collections/initialization";
+import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
 
-  import schema namespace news-schemas = "http://www.news.org/schemas" at "news-schema.xsd";
+import schema namespace news-schemas = "http://www.news.org/schemas" at "news-schema.xsd";
 
-  import module namespace news-data = "http://www.news.org/data" at "index_does_not_exist.xqlib";
+import module namespace news-data = "http://www.news.org/data" at "index_does_not_exist.xqlib";
 
-  xqddf:create-collection($news-data:employees);
+init:create-collection($news-data:employees);
 
-  xqddf:create-index($news-data:CityEmp);
+init:create-index($news-data:CityEmp);
 
-  xqddf:probe-index-range-value($news-data:CityEmp,
-                                100, (), true(), false(), true(), false());
+manip:probe-index-range-value($news-data:CityEmp,
+                              100, (), true(), false(), true(), false());

@@ -42,12 +42,10 @@ void populate_context_collections(static_context* sctx);
 class fn_collection : public function
 {
 public:
-  fn_collection(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
-  {
-    theKind = (sig.paramCount() == 0 ?
-                FunctionConsts::FN_COLLECTION_0 :
-                FunctionConsts::FN_COLLECTION_1);
-  }
+  fn_collection(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   bool accessesDynCtx() const { return true; }
 
@@ -57,15 +55,14 @@ public:
 };
 
 
-//fn-zorba-xqddf:collection
-class fn_zorba_xqddf_collection : public function
+//zorba-store-collections-static-manip:collection
+class zorba_store_collections_static_manip_collection : public function
 {
 public:
-  fn_zorba_xqddf_collection(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_XQDDF_COLLECTION_1)
-  {
-  }
+  zorba_store_collections_static_manip_collection(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   bool accessesDynCtx() const { return true; }
 
@@ -85,15 +82,14 @@ public:
 };
 
 
-//fn-zorba-xqddf:index-of
-class fn_zorba_xqddf_index_of : public function
+//zorba-store-collections-static-manip:index-of
+class zorba_store_collections_static_manip_index_of : public function
 {
 public:
-  fn_zorba_xqddf_index_of(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_XQDDF_INDEX_OF_2)
-  {
-  }
+  zorba_store_collections_static_manip_index_of(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   bool accessesDynCtx() const { return true; }
 
@@ -101,16 +97,14 @@ public:
 };
 
 
-//fn-zorba-xqddf:create-collection
-class fn_zorba_xqddf_create_collection : public function
+//zorba-store-collections-static-init:create-collection
+class zorba_store_collections_static_init_create_collection : public function
 {
 public:
-  fn_zorba_xqddf_create_collection(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
-  {
-    theKind = (sig.paramCount() == 1 ?
-                FunctionConsts::FN_ZORBA_XQDDF_CREATE_COLLECTION_1 :
-                FunctionConsts::FN_ZORBA_XQDDF_CREATE_COLLECTION_2);
-  }
+  zorba_store_collections_static_init_create_collection(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
@@ -120,15 +114,14 @@ public:
 };
 
 
-//fn-zorba-xqddf:delete-collection
-class fn_zorba_xqddf_delete_collection : public function
+//zorba-store-collections-static-init:delete-collection
+class zorba_store_collections_static_init_delete_collection : public function
 {
 public:
-  fn_zorba_xqddf_delete_collection(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_XQDDF_DELETE_COLLECTION_1)
-  {
-  }
+  zorba_store_collections_static_init_delete_collection(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
@@ -138,15 +131,14 @@ public:
 };
 
 
-//fn-zorba-xqddf:insert-nodes
-class fn_zorba_xqddf_insert_nodes : public function
+//zorba-store-collections-static-manip:insert-nodes
+class zorba_store_collections_static_manip_insert_nodes : public function
 {
 public:
-  fn_zorba_xqddf_insert_nodes(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_XQDDF_INSERT_NODES_2)
-  {
-  }
+  zorba_store_collections_static_manip_insert_nodes(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
@@ -156,15 +148,14 @@ public:
 };
 
 
-//fn-zorba-xqddf:insert-nodes-first
-class fn_zorba_xqddf_insert_nodes_first : public function
+//zorba-store-collections-static-manip:insert-nodes-first
+class zorba_store_collections_static_manip_insert_nodes_first : public function
 {
 public:
-  fn_zorba_xqddf_insert_nodes_first(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_XQDDF_INSERT_NODES_FIRST_2)
-  {
-  }
+  zorba_store_collections_static_manip_insert_nodes_first(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
@@ -174,15 +165,14 @@ public:
 };
 
 
-//fn-zorba-xqddf:insert-nodes-last
-class fn_zorba_xqddf_insert_nodes_last : public function
+//zorba-store-collections-static-manip:insert-nodes-last
+class zorba_store_collections_static_manip_insert_nodes_last : public function
 {
 public:
-  fn_zorba_xqddf_insert_nodes_last(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_XQDDF_INSERT_NODES_LAST_2)
-  {
-  }
+  zorba_store_collections_static_manip_insert_nodes_last(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
@@ -192,15 +182,14 @@ public:
 };
 
 
-//fn-zorba-xqddf:insert-nodes-before
-class fn_zorba_xqddf_insert_nodes_before : public function
+//zorba-store-collections-static-manip:insert-nodes-before
+class zorba_store_collections_static_manip_insert_nodes_before : public function
 {
 public:
-  fn_zorba_xqddf_insert_nodes_before(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_XQDDF_INSERT_NODES_BEFORE_3)
-  {
-  }
+  zorba_store_collections_static_manip_insert_nodes_before(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
@@ -210,15 +199,14 @@ public:
 };
 
 
-//fn-zorba-xqddf:insert-nodes-after
-class fn_zorba_xqddf_insert_nodes_after : public function
+//zorba-store-collections-static-manip:insert-nodes-after
+class zorba_store_collections_static_manip_insert_nodes_after : public function
 {
 public:
-  fn_zorba_xqddf_insert_nodes_after(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_XQDDF_INSERT_NODES_AFTER_3)
-  {
-  }
+  zorba_store_collections_static_manip_insert_nodes_after(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
@@ -228,15 +216,99 @@ public:
 };
 
 
-//fn-zorba-xqddf:delete-nodes
-class fn_zorba_xqddf_delete_nodes : public function
+//zorba-store-collections-static-manip:apply-insert-nodes
+class zorba_store_collections_static_manip_apply_insert_nodes : public function
 {
 public:
-  fn_zorba_xqddf_delete_nodes(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_XQDDF_DELETE_NODES_2)
-  {
-  }
+  zorba_store_collections_static_manip_apply_insert_nodes(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
+
+  expr_script_kind_t getUpdateType() const { return SEQUENTIAL_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
+//zorba-store-collections-static-manip:apply-insert-nodes-first
+class zorba_store_collections_static_manip_apply_insert_nodes_first : public function
+{
+public:
+  zorba_store_collections_static_manip_apply_insert_nodes_first(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
+
+  expr_script_kind_t getUpdateType() const { return SEQUENTIAL_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
+//zorba-store-collections-static-manip:apply-insert-nodes-last
+class zorba_store_collections_static_manip_apply_insert_nodes_last : public function
+{
+public:
+  zorba_store_collections_static_manip_apply_insert_nodes_last(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
+
+  expr_script_kind_t getUpdateType() const { return SEQUENTIAL_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
+//zorba-store-collections-static-manip:apply-insert-nodes-before
+class zorba_store_collections_static_manip_apply_insert_nodes_before : public function
+{
+public:
+  zorba_store_collections_static_manip_apply_insert_nodes_before(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
+
+  expr_script_kind_t getUpdateType() const { return SEQUENTIAL_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
+//zorba-store-collections-static-manip:apply-insert-nodes-after
+class zorba_store_collections_static_manip_apply_insert_nodes_after : public function
+{
+public:
+  zorba_store_collections_static_manip_apply_insert_nodes_after(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
+
+  expr_script_kind_t getUpdateType() const { return SEQUENTIAL_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
+//zorba-store-collections-static-manip:delete-nodes
+class zorba_store_collections_static_manip_delete_nodes : public function
+{
+public:
+  zorba_store_collections_static_manip_delete_nodes(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
@@ -250,16 +322,14 @@ public:
 };
 
 
-//fn-zorba-xqddf:delete-node-first
-class fn_zorba_xqddf_delete_node_first : public function
+//zorba-store-collections-static-manip:delete-node-first
+class zorba_store_collections_static_manip_delete_node_first : public function
 {
 public:
-  fn_zorba_xqddf_delete_node_first(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
-  {
-    theKind = (sig.paramCount() == 1 ?
-                FunctionConsts::FN_ZORBA_XQDDF_DELETE_NODE_FIRST_1 :
-                FunctionConsts::FN_ZORBA_XQDDF_DELETE_NODES_FIRST_2);
-  }
+  zorba_store_collections_static_manip_delete_node_first(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
@@ -269,20 +339,186 @@ public:
 };
 
 
-//fn-zorba-xqddf:delete-node-last
-class fn_zorba_xqddf_delete_node_last : public function
+//zorba-store-collections-static-manip:delete-node-last
+class zorba_store_collections_static_manip_delete_node_last : public function
 {
 public:
-  fn_zorba_xqddf_delete_node_last(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
-  {
-    theKind = (sig.paramCount() == 1 ?
-                FunctionConsts::FN_ZORBA_XQDDF_DELETE_NODE_LAST_1 :
-                FunctionConsts::FN_ZORBA_XQDDF_DELETE_NODES_LAST_2);
-  }
+  zorba_store_collections_static_manip_delete_node_last(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
   bool accessesDynCtx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
+//zorba-store-collections-static-manip:is-available-collection
+class zorba_store_collections_static_manip_is_available_collection : public function
+{
+public:
+  zorba_store_collections_static_manip_is_available_collection(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
+
+  bool accessesDynCtx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
+//zorba-store-collections-static-manip:available-collections
+class zorba_store_collections_static_manip_available_collections : public function
+{
+public:
+  zorba_store_collections_static_manip_available_collections(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
+
+  bool accessesDynCtx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
+//zorba-store-collections-static-manip:is-available-index
+class zorba_store_collections_static_manip_is_available_index : public function
+{
+public:
+  zorba_store_collections_static_manip_is_available_index(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
+
+  bool accessesDynCtx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
+//zorba-store-collections-static-manip:available-indexes
+class zorba_store_collections_static_manip_available_indexes : public function
+{
+public:
+  zorba_store_collections_static_manip_available_indexes(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
+
+  bool accessesDynCtx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
+//zorba-store-collections-static-manip:is-activated-integrity-constraint
+class zorba_store_collections_static_manip_is_activated_integrity_constraint : public function
+{
+public:
+  zorba_store_collections_static_manip_is_activated_integrity_constraint(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
+
+  bool accessesDynCtx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
+//zorba-store-collections-static-manip:activated-integrity-constraints
+class zorba_store_collections_static_manip_activated_integrity_constraints : public function
+{
+public:
+  zorba_store_collections_static_manip_activated_integrity_constraints(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
+
+  bool accessesDynCtx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
+//zorba-store-collections-static-init:is-declared-collection
+class zorba_store_collections_static_init_is_declared_collection : public function
+{
+public:
+  zorba_store_collections_static_init_is_declared_collection(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
+
+  CODEGEN_DECL();
+};
+
+
+//zorba-store-collections-static-init:declared-collections
+class zorba_store_collections_static_init_declared_collections : public function
+{
+public:
+  zorba_store_collections_static_init_declared_collections(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
+
+  CODEGEN_DECL();
+};
+
+
+//zorba-store-collections-static-init:is-declared-index
+class zorba_store_collections_static_init_is_declared_index : public function
+{
+public:
+  zorba_store_collections_static_init_is_declared_index(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
+
+  CODEGEN_DECL();
+};
+
+
+//zorba-store-collections-static-init:declared-indexes
+class zorba_store_collections_static_init_declared_indexes : public function
+{
+public:
+  zorba_store_collections_static_init_declared_indexes(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
+
+  CODEGEN_DECL();
+};
+
+
+//zorba-store-collections-static-init:is-declared-integrity-constraint
+class zorba_store_collections_static_init_is_declared_integrity_constraint : public function
+{
+public:
+  zorba_store_collections_static_init_is_declared_integrity_constraint(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
+
+  CODEGEN_DECL();
+};
+
+
+//zorba-store-collections-static-init:declared-integrity-constraints
+class zorba_store_collections_static_init_declared_integrity_constraints : public function
+{
+public:
+  zorba_store_collections_static_init_declared_integrity_constraints(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };

@@ -139,6 +139,12 @@ declare function local:constructor($iter, $name as xs:string, $base as xs:string
     ')',
     $gen:newline, gen:indent(2), ': ',
     $gen:newline, gen:indent(2), $base, '(sctx, loc', local:children-args($iter),
+    if ($iter/@base)
+    then concat(', ',
+            string-join(
+              for $base-param in $iter/zorba:constructor/zorba:parameter[@base = "true"]
+              return $base-param/@name, ', '))
+    else "",
     local:add-constructor-param-2($iter),
     $gen:newline, gen:indent(1), '{}',
     $gen:newline, $gen:newline
@@ -148,9 +154,25 @@ declare function local:constructor($iter, $name as xs:string, $base as xs:string
 
 declare function local:iterator($iter, $name as xs:string, $state as xs:string) as xs:string
 {
-  let $base := concat(local:arity($iter), 'BaseIterator<', $name, ', ', $state, '>')
+  let $template := if ($iter/zorba:template)
+                then
+                  string-join(("template <",
+                    for $p at $y in $iter/zorba:template/zorba:param
+                    return concat("class ", $p/@name,
+                            if ($y ne count ($iter/zorba:template/zorba:param)) then "," else ""),
+                            ">
+"), "")
+                else
+                  ""
+  let $base := if ($iter/@base)
+               then
+                data($iter/@base)
+               else
+                concat(local:arity($iter), 'BaseIterator<',
+                  if ($iter/zorba:template/zorba:param[@name="Iter"]) then "Iter" else $name, ", ",
+                  if ($iter/zorba:template/zorba:param[@name="State"]) then "State" else $state, '>')
   return
-    concat ( 'class ', $name, ' : ', 'public ', $base,
+    concat ( $template, "class ", $name, ' : ', 'public ', $base,
              $gen:newline, '{ ',
              $gen:newline,
 
@@ -160,8 +182,8 @@ declare function local:iterator($iter, $name as xs:string, $state as xs:string) 
     'public:',
     $gen:newline, 
     gen:indent(), 'SERIALIZABLE_CLASS(',$name,');',
-    $gen:newline, $gen:newline,
-    gen:indent(), 'SERIALIZABLE_CLASS_CONSTRUCTOR2T(', $name,',',
+    $gen:newline, $gen:newline, gen:indent(),
+    'SERIALIZABLE_CLASS_CONSTRUCTOR2T(', $name,',',
     $gen:newline,
     gen:indent(2), $base, ');', $gen:newline, $gen:newline,
     gen:indent(), 'void serialize( ::zorba::serialization::Archiver&amp; ar)',
@@ -299,7 +321,7 @@ declare function local:add-constructor-param($iter) as xs:string?
   then
     string-join((for 
                    $param in
-                   $iter/zorba:constructor/zorba:parameter
+                   ($iter/zorba:constructor/zorba:parameter)
                  return
                    string-join((',', $gen:newline, gen:indent(2),
                                 $param/@type, ' ', $param/@name,

@@ -1,11 +1,12 @@
-import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
+import module namespace init = "http://www.zorba-xquery.com/modules/store/static-collections/initialization";
+import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
 import module namespace ns = "http://example.org/datamodule/" at "modifier_1.xqdata";
 
 declare sequential function local:init() {
   (
-    xqddf:create-collection($ns:coll_1, (<x/>,<y/>)),
-    xqddf:create-collection($ns:coll_2, (<x/>,<y/>)),
-    xqddf:create-collection($ns:coll_3, (<x/>,<y/>))
+    init:create-collection($ns:coll_1, (<x/>,<y/>)),
+    init:create-collection($ns:coll_2, (<x/>,<y/>)),
+    init:create-collection($ns:coll_3, (<x/>,<y/>))
   );
 };
 
@@ -13,7 +14,7 @@ declare sequential function local:init() {
 declare sequential function local:testa_1() {
   try {
     block {
-      xqddf:insert-nodes-first($ns:coll_1, <a/>);
+      manip:insert-nodes-first($ns:coll_1, <a/>);
     }
   } catch * ($error) {
     ("a",$error)
@@ -24,7 +25,7 @@ declare sequential function local:testa_1() {
 declare sequential function local:testa_2() {
   try {
     block {
-      xqddf:insert-nodes-first($ns:coll_2, <a/>);
+      manip:insert-nodes-first($ns:coll_2, <a/>);
     }
   } catch * ($error) {
     ("a",$error)
@@ -34,7 +35,7 @@ declare sequential function local:testa_2() {
 declare sequential function local:testa_3() {
   try {
     block {
-      xqddf:insert-nodes-first($ns:coll_3, <a/>);
+      manip:insert-nodes-first($ns:coll_3, <a/>);
     }
   } catch * ($error) {
     ("a",$error)
@@ -44,7 +45,7 @@ declare sequential function local:testa_3() {
 declare sequential function local:testb_1() {
   try {
     block {
-      xqddf:insert-nodes-last($ns:coll_1, <b/>);
+      manip:insert-nodes-last($ns:coll_1, <b/>);
     }
   } catch * ($error) {
     ("b",$error)
@@ -53,19 +54,19 @@ declare sequential function local:testb_1() {
 
 
 declare sequential function local:testb_2() {
-  xqddf:insert-nodes-last($ns:coll_2, <b/>);
+  manip:insert-nodes-last($ns:coll_2, <b/>);
 };
 
 
 declare sequential function local:testb_3() {
-  xqddf:insert-nodes-last($ns:coll_3, <b/>);
+  manip:insert-nodes-last($ns:coll_3, <b/>);
 };
 
 
 declare sequential function local:testc_1() {
   try {
     block {
-      xqddf:insert-nodes-before($ns:coll_1, xqddf:collection($ns:coll_1)[1], <c/>);
+      manip:insert-nodes-before($ns:coll_1, manip:collection($ns:coll_1)[1], <c/>);
     }
   } catch * ($error) {
     ("c",$error)
@@ -76,7 +77,7 @@ declare sequential function local:testc_1() {
 declare sequential function local:testc_2() {
   try {
     block {
-      xqddf:insert-nodes-before($ns:coll_2, xqddf:collection($ns:coll_2)[1], <c/>);
+      manip:insert-nodes-before($ns:coll_2, manip:collection($ns:coll_2)[1], <c/>);
     }
   } catch * ($error) {
     ("c",$error)
@@ -87,7 +88,7 @@ declare sequential function local:testc_2() {
 declare sequential function local:testc_3() {
   try {
     block {
-      xqddf:insert-nodes-before($ns:coll_3, xqddf:collection($ns:coll_3)[1], <c/>);
+      manip:insert-nodes-before($ns:coll_3, manip:collection($ns:coll_3)[1], <c/>);
     }
   } catch * ($error) {
     ("c",$error)
@@ -98,7 +99,7 @@ declare sequential function local:testc_3() {
 declare sequential function local:testd_1() {
   try {
     block {
-      xqddf:insert-nodes-after($ns:coll_1, xqddf:collection($ns:coll_1)[last()], <d/>);
+      manip:insert-nodes-after($ns:coll_1, manip:collection($ns:coll_1)[last()], <d/>);
     }
   } catch * ($error) {
     ("d",$error)
@@ -109,7 +110,7 @@ declare sequential function local:testd_1() {
 declare sequential function local:testd_2() {
   try {
     block {
-      xqddf:insert-nodes-after($ns:coll_2, xqddf:collection($ns:coll_2)[last()], <d/>);
+      manip:insert-nodes-after($ns:coll_2, manip:collection($ns:coll_2)[last()], <d/>);
     }
   } catch * ($error) {
     ("d",$error)
@@ -120,7 +121,7 @@ declare sequential function local:testd_2() {
 declare sequential function local:testd_3() {
   try {
     block {
-      xqddf:insert-nodes-after($ns:coll_3, xqddf:collection($ns:coll_3)[last()], <d/>);
+      manip:insert-nodes-after($ns:coll_3, manip:collection($ns:coll_3)[last()], <d/>);
     }
   } catch * ($error) {
     ("d",$error)
@@ -143,9 +144,9 @@ declare sequential function local:main() {
     local:testd_1(),
     local:testd_2(),
     local:testd_3(),
-    <coll_1>{xqddf:collection($ns:coll_1)}</coll_1>,
-    <coll_2>{xqddf:collection($ns:coll_2)}</coll_2>,
-    <coll_3>{xqddf:collection($ns:coll_3)}</coll_3>
+    <coll_1>{manip:collection($ns:coll_1)}</coll_1>,
+    <coll_2>{manip:collection($ns:coll_2)}</coll_2>,
+    <coll_3>{manip:collection($ns:coll_3)}</coll_3>
   );
 };
 

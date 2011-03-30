@@ -133,37 +133,45 @@ public:
   // functions to add primitives for updating collection functions
 
   virtual void addCreateCollection(
-        Item_t& name) = 0;
+        Item_t& name,
+        bool dyn_collection = false) = 0;
 
   virtual void addDeleteCollection(
-        Item_t& name) = 0;
+        Item_t& name,
+        bool dyn_collection = false) = 0;
 
   virtual void addInsertIntoCollection(
         Item_t& name,
-        std::vector<Item_t>& nodes) = 0;
+        std::vector<Item_t>& nodes,
+        bool dyn_collection = false) = 0;
 
   virtual void addInsertFirstIntoCollection(
         Item_t& name,
-        std::vector<Item_t>& nodes) = 0;
+        std::vector<Item_t>& nodes,
+        bool dyn_collection = false) = 0;
 
   virtual void addInsertLastIntoCollection(
         Item_t& name,
-        std::vector<Item_t>& nodes) = 0;
+        std::vector<Item_t>& nodes,
+        bool dyn_collection = false) = 0;
 
   virtual void addInsertBeforeIntoCollection(
         Item_t& name,
         Item_t& target,
-        std::vector<Item_t>& nodes) = 0;
+        std::vector<Item_t>& nodes,
+        bool dyn_collection = false) = 0;
 
   virtual void addInsertAfterIntoCollection(
         Item_t& name,
         Item_t& target,
-        std::vector<Item_t>& nodes) = 0;
+        std::vector<Item_t>& nodes,
+        bool dyn_collection = false) = 0;
 
   virtual void addDeleteFromCollection(
         Item_t& name,
         std::vector<store::Item_t>& nodes,
-        bool isLast) = 0;
+        bool isLast,
+        bool dyn_collection = false) = 0;
 
   virtual void addCreateIndex(
         const Item_t& qname,
@@ -188,6 +196,15 @@ public:
 
   virtual void addDeActivateIC(
         const Item_t& qname) = 0;
+
+  // functions to add primitives for updating document functions
+
+  virtual void addCreateDocument(
+        const Item_t& uri,
+        Item_t& doc) = 0;
+
+  virtual void addDeleteDocument(
+        const Item_t& uri) = 0;
 
   virtual void mergeUpdates(Item* other) = 0;
 

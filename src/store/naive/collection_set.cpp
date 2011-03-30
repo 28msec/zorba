@@ -22,10 +22,13 @@ namespace zorba { namespace simplestore {
 /*******************************************************************************
 
 ********************************************************************************/
-CollectionIterator::CollectionIterator(CollectionSet::Set* aCollections) 
+CollectionIterator::CollectionIterator(
+    CollectionSet::Set* aCollections,
+    bool aDynamicCollection) 
   : 
   theCollections(aCollections),
-  theOpened(false)
+  theOpened(false),
+  theDynamicCollections(aDynamicCollection)
 { 
 }
 
@@ -47,17 +50,19 @@ CollectionIterator::open()
 bool
 CollectionIterator::next(store::Collection_t& aResult) 
 {
-  if (theIterator == theCollections->end()) 
-  {
-    aResult = NULL;
-    return false;
-  }
-  else
+  while (theIterator != theCollections->end()) 
   {
     aResult = (*theIterator).second;
-    ++theIterator;
-    return true;
+    if (aResult->isDynamic() != theDynamicCollections) {
+      ++theIterator;
+      continue;
+    } else {
+      ++theIterator;
+      return true;
+    }
   }
+  aResult = NULL;
+  return false;
 }
 
 
@@ -105,27 +110,61 @@ bool CollectionSet::insert(const store::Item* aName, store::Collection_t& aColle
 }
 
 
-bool CollectionSet::get(const store::Item* aName, store::Collection_t& aCollection) 
+bool CollectionSet::get(
+    const store::Item* aName,
+    store::Collection_t& aCollection,
+    bool aDynamicCollection) 
 {
-  return theCollections.get(const_cast<store::Item*>(aName), aCollection);
+  if (theCollections.get(const_cast<store::Item*>(aName), aCollection)) {
+    return aCollection->isDynamic() == aDynamicCollection;
+  } else {
+    return false;
+  }
 }
 
 
-bool CollectionSet::remove(const store::Item* aName) 
+bool CollectionSet::remove(const store::Item* aName, bool aDynamicCollection) 
 {
-  return theCollections.remove(const_cast<store::Item*>(aName));
+  store::Collection_t lColl;
+  if (!get(aName, lColl, aDynamicCollection)) {
+    return false;
+  } else {
+    return theCollections.remove(const_cast<store::Item*>(aName));
+  }
 }
 
 
-store::Iterator_t CollectionSet::names() 
+store::Iterator_t CollectionSet::names(bool aDynamicCollections) 
 {
-  return new NameIterator<Set>(theCollections);
+  return new NameIterator<Set>(theCollections, aDynamicCollections);
 }
 
 
-CollectionIterator_t CollectionSet::collections() 
+CollectionIterator_t CollectionSet::collections(bool aDynamicCollections) 
 {
-  return new CollectionIterator(&theCollections);
+  return new CollectionIterator(&theCollections, aDynamicCollections);
+}
+
+// specialize the next function of the NameIterator for
+// the CollectionSet in order to be able to handle dynamic collections
+template<> bool
+NameIterator<CollectionSet::Set>::next(store::Item_t& aResult)
+{
+  while (theIterator != theItems.end())
+  {
+    if ((*theIterator).second->isDynamic() != theDynamicCollections)
+    {
+      ++theIterator;
+      continue;
+    } else
+    {
+      aResult = (*theIterator).first;
+      ++theIterator;
+      return true;
+    }
+  }
+  aResult = NULL;
+  return false;
 }
 
 

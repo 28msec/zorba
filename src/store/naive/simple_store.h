@@ -189,15 +189,21 @@ public:
 
   void deleteUriCollection(const zstring& uri);
 
-  store::Collection_t createCollection(store::Item_t& aName);
+  store::Collection_t createCollection(
+      store::Item_t& aName,
+      bool aDynamicCollection = false);
 
-  void deleteCollection(const store::Item* aName);
+  void deleteCollection(
+      const store::Item* aName,
+      bool aDynamicCollection = false);
 
-  store::Collection_t getCollection(const store::Item* aName);
+  store::Collection_t getCollection(
+      const store::Item* aName,
+      bool aDynamicCollection = false);
 
   void addCollection(store::Collection_t& collection);
 
-  store::Iterator_t listCollectionNames();
+  store::Iterator_t listCollectionNames(bool aDynamicCollections = false);
 
   store::Index_t createIndex(
         const store::Item_t& qname,
@@ -263,6 +269,8 @@ public:
         const store::LoadProperties& loadProperties);
 
   void addNode(const zstring& uri, const store::Item_t& node);
+
+  store::Iterator_t getDocumentNames() const;
 
   store::Item_t getDocument(const zstring& uri);
 

@@ -1,18 +1,19 @@
 import module namespace xqddf-test = "http://www.zorba-xquery.com/modules/xqddf/test" at "xqddf_prolog.xqlib";
-import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
+import module namespace init = "http://www.zorba-xquery.com/modules/store/static-collections/initialization";
+import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
 
 
-xqddf:create-collection($xqddf-test:white-collection);
+init:create-collection($xqddf-test:white-collection);
 
-xqddf:create-index($xqddf-test:index2);
+init:create-index($xqddf-test:index2);
 
 for $i in fn:doc("auction.xml")//item
 return 
-    xqddf:insert-nodes($xqddf-test:white-collection, (copy $copyi := $i modify () return $copyi));
+    manip:insert-nodes($xqddf-test:white-collection, (copy $copyi := $i modify () return $copyi));
 
 
-xqddf:refresh-index($xqddf-test:index2);
+manip:refresh-index($xqddf-test:index2);
 (:xqddf:collection($xqddf-test:white-collection);:)
 
-xqddf:probe-index-range-value($xqddf-test:index2,
+manip:probe-index-range-value($xqddf-test:index2,
                               1, 3, fn:true(), fn:true(), fn:true(), fn:false())[1]; 

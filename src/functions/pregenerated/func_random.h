@@ -42,13 +42,11 @@ void populate_context_random(static_context* sctx);
 class fn_zorba_util_random : public function
 {
 public:
-  fn_zorba_util_random(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
-  {
-    theKind = (sig.paramCount() == 0 ?
-                FunctionConsts::FN_ZORBA_UTIL_RANDOM_0 :
-                FunctionConsts::FN_ZORBA_UTIL_RANDOM_1);
-    setDeterministic(false);
-  }
+  fn_zorba_util_random(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+setDeterministic(false);
+
+}
 
   CODEGEN_DECL();
 };
@@ -58,13 +56,11 @@ public:
 class fn_zorba_random_random : public function
 {
 public:
-  fn_zorba_random_random(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
-  {
-    theKind = (sig.paramCount() == 0 ?
-                FunctionConsts::FN_ZORBA_RANDOM_RANDOM_0 :
-                FunctionConsts::FN_ZORBA_RANDOM_RANDOM_1);
-    setDeterministic(false);
-  }
+  fn_zorba_random_random(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+setDeterministic(false);
+
+}
 
   CODEGEN_DECL();
 };
@@ -74,13 +70,11 @@ public:
 class fn_zorba_util_uuid : public function
 {
 public:
-  fn_zorba_util_uuid(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
-  {
-    theKind = (sig.paramCount() == 0 ?
-                FunctionConsts::FN_ZORBA_UTIL_UUID_0 :
-                FunctionConsts::FN_ZORBA_RANDOM_UUID_0);
-    setDeterministic(false);
-  }
+  fn_zorba_util_uuid(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+setDeterministic(false);
+
+}
 
   CODEGEN_DECL();
 };

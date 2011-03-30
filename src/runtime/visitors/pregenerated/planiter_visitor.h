@@ -76,11 +76,45 @@ namespace zorba{
 
     class ZorbaInsertNodesAfterIterator;
 
+    class ZorbaApplyInsertNodesIterator;
+
+    class ZorbaApplyInsertNodesFirstIterator;
+
+    class ZorbaApplyInsertNodesLastIterator;
+
+    class ZorbaApplyInsertNodesBeforeIterator;
+
+    class ZorbaApplyInsertNodesAfterIterator;
+
     class ZorbaDeleteNodesIterator;
 
     class ZorbaDeleteNodesFirstIterator;
 
     class ZorbaDeleteNodesLastIterator;
+
+    class IsAvailableCollectionIterator;
+
+    class AvailableCollectionsIterator;
+
+    class IsAvailableIndexIterator;
+
+    class AvailableIndexesIterator;
+
+    class IsActivatedICIterator;
+
+    class ActivatedICsIterator;
+
+    class IsDeclaredCollectionIterator;
+
+    class DeclaredCollectionsIterator;
+
+    class IsDeclaredIndexIterator;
+
+    class DeclaredIndexesIterator;
+
+    class IsDeclaredICIterator;
+
+    class DeclaredICsIterator;
 
     class CurrentDateTimeIterator;
 
@@ -162,26 +196,6 @@ namespace zorba{
 
     class CheckICIterator;
 
-    class IsAvailableCollectionIterator;
-
-    class AvailableCollectionsIterator;
-
-    class IsAvailableIndexIterator;
-
-    class AvailableIndexesIterator;
-
-    class IsActivatedICIterator;
-
-    class ActivatedICsIterator;
-
-    class IsDeclaredCollectionIterator;
-
-    class DeclaredCollectionsIterator;
-
-    class IsDeclaredIndexIterator;
-
-    class DeclaredIndexesIterator;
-
     class StaticNamespacesIterator;
 
     class StaticNamespaceBindingIterator;
@@ -221,10 +235,6 @@ namespace zorba{
     class InScopeElementGroupsIterator;
 
     class InScopeAttributeGroupsIterator;
-
-    class IsDeclaredICIterator;
-
-    class DeclaredICsIterator;
 
     class OptionIterator;
 
@@ -407,6 +417,16 @@ namespace zorba{
 
     class FnDocAvailableIterator;
 
+    class AddDocumentIterator;
+
+    class RemoveDocumentIterator;
+
+    class RetrieveDocumentIterator;
+
+    class AvailableDocumentsIterator;
+
+    class IsAvailableDocumentIterator;
+
     class CodepointsToStringIterator;
 
     class StringToCodepointsIterator;
@@ -538,6 +558,21 @@ public:
     virtual void beginVisit ( const ZorbaInsertNodesAfterIterator& ) = 0;
     virtual void endVisit   ( const ZorbaInsertNodesAfterIterator& ) = 0;
 
+    virtual void beginVisit ( const ZorbaApplyInsertNodesIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaApplyInsertNodesIterator& ) = 0;
+
+    virtual void beginVisit ( const ZorbaApplyInsertNodesFirstIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaApplyInsertNodesFirstIterator& ) = 0;
+
+    virtual void beginVisit ( const ZorbaApplyInsertNodesLastIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaApplyInsertNodesLastIterator& ) = 0;
+
+    virtual void beginVisit ( const ZorbaApplyInsertNodesBeforeIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaApplyInsertNodesBeforeIterator& ) = 0;
+
+    virtual void beginVisit ( const ZorbaApplyInsertNodesAfterIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaApplyInsertNodesAfterIterator& ) = 0;
+
     virtual void beginVisit ( const ZorbaDeleteNodesIterator& ) = 0;
     virtual void endVisit   ( const ZorbaDeleteNodesIterator& ) = 0;
 
@@ -546,6 +581,42 @@ public:
 
     virtual void beginVisit ( const ZorbaDeleteNodesLastIterator& ) = 0;
     virtual void endVisit   ( const ZorbaDeleteNodesLastIterator& ) = 0;
+
+    virtual void beginVisit ( const IsAvailableCollectionIterator& ) = 0;
+    virtual void endVisit   ( const IsAvailableCollectionIterator& ) = 0;
+
+    virtual void beginVisit ( const AvailableCollectionsIterator& ) = 0;
+    virtual void endVisit   ( const AvailableCollectionsIterator& ) = 0;
+
+    virtual void beginVisit ( const IsAvailableIndexIterator& ) = 0;
+    virtual void endVisit   ( const IsAvailableIndexIterator& ) = 0;
+
+    virtual void beginVisit ( const AvailableIndexesIterator& ) = 0;
+    virtual void endVisit   ( const AvailableIndexesIterator& ) = 0;
+
+    virtual void beginVisit ( const IsActivatedICIterator& ) = 0;
+    virtual void endVisit   ( const IsActivatedICIterator& ) = 0;
+
+    virtual void beginVisit ( const ActivatedICsIterator& ) = 0;
+    virtual void endVisit   ( const ActivatedICsIterator& ) = 0;
+
+    virtual void beginVisit ( const IsDeclaredCollectionIterator& ) = 0;
+    virtual void endVisit   ( const IsDeclaredCollectionIterator& ) = 0;
+
+    virtual void beginVisit ( const DeclaredCollectionsIterator& ) = 0;
+    virtual void endVisit   ( const DeclaredCollectionsIterator& ) = 0;
+
+    virtual void beginVisit ( const IsDeclaredIndexIterator& ) = 0;
+    virtual void endVisit   ( const IsDeclaredIndexIterator& ) = 0;
+
+    virtual void beginVisit ( const DeclaredIndexesIterator& ) = 0;
+    virtual void endVisit   ( const DeclaredIndexesIterator& ) = 0;
+
+    virtual void beginVisit ( const IsDeclaredICIterator& ) = 0;
+    virtual void endVisit   ( const IsDeclaredICIterator& ) = 0;
+
+    virtual void beginVisit ( const DeclaredICsIterator& ) = 0;
+    virtual void endVisit   ( const DeclaredICsIterator& ) = 0;
 
     virtual void beginVisit ( const CurrentDateTimeIterator& ) = 0;
     virtual void endVisit   ( const CurrentDateTimeIterator& ) = 0;
@@ -667,36 +738,6 @@ public:
     virtual void beginVisit ( const CheckICIterator& ) = 0;
     virtual void endVisit   ( const CheckICIterator& ) = 0;
 
-    virtual void beginVisit ( const IsAvailableCollectionIterator& ) = 0;
-    virtual void endVisit   ( const IsAvailableCollectionIterator& ) = 0;
-
-    virtual void beginVisit ( const AvailableCollectionsIterator& ) = 0;
-    virtual void endVisit   ( const AvailableCollectionsIterator& ) = 0;
-
-    virtual void beginVisit ( const IsAvailableIndexIterator& ) = 0;
-    virtual void endVisit   ( const IsAvailableIndexIterator& ) = 0;
-
-    virtual void beginVisit ( const AvailableIndexesIterator& ) = 0;
-    virtual void endVisit   ( const AvailableIndexesIterator& ) = 0;
-
-    virtual void beginVisit ( const IsActivatedICIterator& ) = 0;
-    virtual void endVisit   ( const IsActivatedICIterator& ) = 0;
-
-    virtual void beginVisit ( const ActivatedICsIterator& ) = 0;
-    virtual void endVisit   ( const ActivatedICsIterator& ) = 0;
-
-    virtual void beginVisit ( const IsDeclaredCollectionIterator& ) = 0;
-    virtual void endVisit   ( const IsDeclaredCollectionIterator& ) = 0;
-
-    virtual void beginVisit ( const DeclaredCollectionsIterator& ) = 0;
-    virtual void endVisit   ( const DeclaredCollectionsIterator& ) = 0;
-
-    virtual void beginVisit ( const IsDeclaredIndexIterator& ) = 0;
-    virtual void endVisit   ( const IsDeclaredIndexIterator& ) = 0;
-
-    virtual void beginVisit ( const DeclaredIndexesIterator& ) = 0;
-    virtual void endVisit   ( const DeclaredIndexesIterator& ) = 0;
-
     virtual void beginVisit ( const StaticNamespacesIterator& ) = 0;
     virtual void endVisit   ( const StaticNamespacesIterator& ) = 0;
 
@@ -756,12 +797,6 @@ public:
 
     virtual void beginVisit ( const InScopeAttributeGroupsIterator& ) = 0;
     virtual void endVisit   ( const InScopeAttributeGroupsIterator& ) = 0;
-
-    virtual void beginVisit ( const IsDeclaredICIterator& ) = 0;
-    virtual void endVisit   ( const IsDeclaredICIterator& ) = 0;
-
-    virtual void beginVisit ( const DeclaredICsIterator& ) = 0;
-    virtual void endVisit   ( const DeclaredICsIterator& ) = 0;
 
     virtual void beginVisit ( const OptionIterator& ) = 0;
     virtual void endVisit   ( const OptionIterator& ) = 0;
@@ -1033,6 +1068,21 @@ public:
 
     virtual void beginVisit ( const FnDocAvailableIterator& ) = 0;
     virtual void endVisit   ( const FnDocAvailableIterator& ) = 0;
+
+    virtual void beginVisit ( const AddDocumentIterator& ) = 0;
+    virtual void endVisit   ( const AddDocumentIterator& ) = 0;
+
+    virtual void beginVisit ( const RemoveDocumentIterator& ) = 0;
+    virtual void endVisit   ( const RemoveDocumentIterator& ) = 0;
+
+    virtual void beginVisit ( const RetrieveDocumentIterator& ) = 0;
+    virtual void endVisit   ( const RetrieveDocumentIterator& ) = 0;
+
+    virtual void beginVisit ( const AvailableDocumentsIterator& ) = 0;
+    virtual void endVisit   ( const AvailableDocumentsIterator& ) = 0;
+
+    virtual void beginVisit ( const IsAvailableDocumentIterator& ) = 0;
+    virtual void endVisit   ( const IsAvailableDocumentIterator& ) = 0;
 
     virtual void beginVisit ( const CodepointsToStringIterator& ) = 0;
     virtual void endVisit   ( const CodepointsToStringIterator& ) = 0;

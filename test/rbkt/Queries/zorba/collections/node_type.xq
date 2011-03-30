@@ -1,5 +1,5 @@
-import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
-import module namespace dc = "http://www.zorba-xquery.com/modules/introspection/dctx";
+import module namespace init = "http://www.zorba-xquery.com/modules/store/static-collections/initialization";
+import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
 import schema namespace s = "http://www.zorba-xquery.org/schema" at "node_type.xsd";
 import module namespace ns = "http://example.org/datamodule/" at "node_type.xqdata";
 
@@ -12,7 +12,7 @@ declare function local:create-person($name as xs:string) as schema-element(s:per
 
 declare sequential function local:init() 
 {
-  xqddf:create-collection($ns:collection, local:create-person("default"));
+  init:create-collection($ns:collection, local:create-person("default"));
 };
 
 
@@ -20,7 +20,7 @@ declare sequential function local:testa_1()
 {
   try {
     block {
-      xqddf:insert-nodes-first($ns:collection, <a/>);
+      manip:insert-nodes-first($ns:collection, <a/>);
     }
   } catch * ($error) {
     ("a",$error)
@@ -30,7 +30,7 @@ declare sequential function local:testa_1()
 
 declare sequential function local:testa_2() 
 {
-  xqddf:insert-nodes-first($ns:collection, local:create-person("aaa"));
+  manip:insert-nodes-first($ns:collection, local:create-person("aaa"));
 };
 
 
@@ -38,7 +38,7 @@ declare sequential function local:testb_1()
 {
   try {
     block {
-      xqddf:insert-nodes-last($ns:collection, <b/>);
+      manip:insert-nodes-last($ns:collection, <b/>);
     }
   } catch * ($error) {
     ("b",$error)
@@ -48,7 +48,7 @@ declare sequential function local:testb_1()
 
 declare sequential function local:testb_2() 
 {
-  xqddf:insert-nodes-last($ns:collection, local:create-person("bbb"));
+  manip:insert-nodes-last($ns:collection, local:create-person("bbb"));
 };
 
 
@@ -56,9 +56,9 @@ declare sequential function local:testc_1()
 {
   try {
     block {
-      let $x as schema-element(s:person) := xqddf:collection($ns:collection)[1]
+      let $x as schema-element(s:person) := manip:collection($ns:collection)[1]
       return
-        xqddf:insert-nodes-before($ns:collection, $x, <c/>);
+        manip:insert-nodes-before($ns:collection, $x, <c/>);
     }
   } catch * ($error) {
     ("c",$error)
@@ -69,9 +69,9 @@ declare sequential function local:testc_1()
 declare sequential function local:testc_2() 
 {
 
-  let $x as schema-element(s:person) := xqddf:collection($ns:collection)[2]
+  let $x as schema-element(s:person) := manip:collection($ns:collection)[2]
   return
-    xqddf:insert-nodes-before($ns:collection, $x, local:create-person("ccc"));
+    manip:insert-nodes-before($ns:collection, $x, local:create-person("ccc"));
 };
 
 
@@ -79,9 +79,9 @@ declare sequential function local:testd_1()
 {
   try {
     block {
-      let $x as schema-element(s:person) := xqddf:collection($ns:collection)[1]
+      let $x as schema-element(s:person) := manip:collection($ns:collection)[1]
       return
-        xqddf:insert-nodes-after($ns:collection, $x, <d/>);
+        manip:insert-nodes-after($ns:collection, $x, <d/>);
     }
   } catch * ($error) {
     ("d",$error)
@@ -91,9 +91,9 @@ declare sequential function local:testd_1()
 
 declare sequential function local:testd_2() 
 {
-  let $x as schema-element(s:person) := xqddf:collection($ns:collection)[3]
+  let $x as schema-element(s:person) := manip:collection($ns:collection)[3]
   return
-    xqddf:insert-nodes-after($ns:collection, $x, local:create-person("ddd"));
+    manip:insert-nodes-after($ns:collection, $x, local:create-person("ddd"));
 };
 
 
@@ -101,7 +101,7 @@ declare sequential function local:testf_1()
 {
   try {
     block {
-      let $x as schema-element(s:person) := xqddf:collection($ns:collection)[1]
+      let $x as schema-element(s:person) := manip:collection($ns:collection)[1]
       return
         insert node <abc>4</abc> into $x;
     }
@@ -113,7 +113,7 @@ declare sequential function local:testf_1()
 
 declare sequential function local:testf_2() 
 {
-  let $x as schema-element(s:person) := xqddf:collection($ns:collection)[4]
+  let $x as schema-element(s:person) := manip:collection($ns:collection)[4]
   return
     insert node <s:age>4</s:age> into $x;
 };
@@ -133,7 +133,7 @@ declare sequential function local:main()
     local:testd_2(),
     local:testf_1(),
     local:testf_2(),
-    <collection>{xqddf:collection($ns:collection)}</collection>
+    <collection>{manip:collection($ns:collection)}</collection>
   );
 };
 

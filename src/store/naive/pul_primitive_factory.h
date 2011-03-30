@@ -55,6 +55,8 @@ namespace zorba { namespace simplestore {
   class UpdActivateIC;
   class UpdActivateForeignKeyIC;
   class UpdDeActivateIC;
+  class UpdCreateDocument;
+  class UpdDeleteDocument;
 
 class PULPrimitiveFactory 
 {
@@ -200,14 +202,16 @@ class PULPrimitiveFactory
   virtual UpdCreateCollection*
   createUpdCreateCollection(
         CollectionPul* pul,
-        store::Item_t& name);
+        store::Item_t& name,
+        bool dyn_collection = false);
     
   /***************************************************************************
    ***************************************************************************/
   virtual UpdDeleteCollection*
   createUpdDeleteCollection(
         CollectionPul* pul,
-        store::Item_t& name);
+        store::Item_t& name,
+        bool dyn_collection = false);
     
     
   /***************************************************************************
@@ -216,7 +220,8 @@ class PULPrimitiveFactory
   createUpdInsertIntoCollection(
         CollectionPul* pul,
         store::Item_t& name, 
-        std::vector<store::Item_t>& nodes);
+        std::vector<store::Item_t>& nodes,
+        bool dyn_collection = false);
   
     
   /***************************************************************************
@@ -225,7 +230,8 @@ class PULPrimitiveFactory
   createUpdInsertFirstIntoCollection(
       CollectionPul* pul,
       store::Item_t& name,
-      std::vector<store::Item_t>& nodes);
+      std::vector<store::Item_t>& nodes,
+      bool dyn_collection = false);
     
   /***************************************************************************
    ***************************************************************************/
@@ -233,7 +239,8 @@ class PULPrimitiveFactory
   createUpdInsertLastIntoCollection(
         CollectionPul* pul,
         store::Item_t& name,
-        std::vector<store::Item_t>& nodes);
+        std::vector<store::Item_t>& nodes,
+        bool dyn_collection = false);
     
   /***************************************************************************
    ***************************************************************************/
@@ -242,7 +249,8 @@ class PULPrimitiveFactory
         CollectionPul* pul,
         store::Item_t& name,
         store::Item_t& target,
-        std::vector<store::Item_t>& nodes);
+        std::vector<store::Item_t>& nodes,
+        bool dyn_collection = false);
     
   /***************************************************************************
    ***************************************************************************/
@@ -251,7 +259,8 @@ class PULPrimitiveFactory
         CollectionPul* pul,
         store::Item_t& name,
         store::Item_t& target,
-        std::vector<store::Item_t>& nodes);
+        std::vector<store::Item_t>& nodes,
+        bool dyn_collection = false);
   
   /***************************************************************************
    ***************************************************************************/
@@ -260,7 +269,8 @@ class PULPrimitiveFactory
         CollectionPul* pul,
         store::Item_t& name,
         std::vector<store::Item_t>& nodes,
-        bool isLast);
+        bool isLast,
+        bool dyn_collection = false);
     
   /***************************************************************************
    ***************************************************************************/
@@ -307,6 +317,22 @@ class PULPrimitiveFactory
   createUpdDeActivateIC(
         PULImpl* pul,
         const store::Item_t& qname);
+
+  /***************************************************************************
+   ***************************************************************************/
+  virtual UpdCreateDocument*
+  createUpdCreateDocument(
+        PULImpl* pul,
+        const store::Item_t& uri,
+        store::Item_t& aDocument);
+
+  /***************************************************************************
+   ***************************************************************************/
+  virtual UpdDeleteDocument*
+  createUpdDeleteDocument(
+        PULImpl* pul,
+        const store::Item_t& uri);
+
 }; /* class PULPrimitiveFactory */
     
 

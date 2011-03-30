@@ -1,4 +1,5 @@
-import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
+import module namespace init = "http://www.zorba-xquery.com/modules/store/static-collections/initialization";
+import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
 
 import module namespace test3 = "www.test3.com" at "test3.xqlib";
 
@@ -6,10 +7,10 @@ declare variable $foo := xs:QName("test3:foo");
 declare variable $idx := xs:QName("test3:idx");
 
 
-xqddf:create-collection($foo);
+init:create-collection($foo);
 
-xqddf:insert-nodes($foo, doc("test3.xml"));
+manip:insert-nodes($foo, doc("test3.xml"));
 
-xqddf:create-index($idx);
+init:create-index($idx);
 
-xqddf:probe-index-point-value($idx, xs:long(68000));
+manip:probe-index-point-value($idx, xs:long(68000));

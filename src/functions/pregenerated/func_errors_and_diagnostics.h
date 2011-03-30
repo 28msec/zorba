@@ -42,7 +42,10 @@ void populate_context_errors_and_diagnostics(static_context* sctx);
 class fn_error : public function
 {
 public:
-  fn_error(const signature& sig);
+  fn_error(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   expr_script_kind_t getUpdateType() const { return VACUOUS_EXPR; }
 
@@ -54,11 +57,10 @@ public:
 class fn_trace : public function
 {
 public:
-  fn_trace(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_TRACE_2)
-  {
-  }
+  fn_trace(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   bool isMap(ulong producer) const { return producer == 0; }
 

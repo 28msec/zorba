@@ -92,62 +92,72 @@ PlanIter_t fn_number::codegen(
 
 void populate_context_nodes(static_context* sctx)
 {
-  DECL(sctx, fn_zorba_ref_node_reference,
+  DECL_WITH_KIND(sctx, fn_zorba_ref_node_reference,
       (createQName("http://www.zorba-xquery.com/modules/node-reference","","node-reference"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
-      GENV_TYPESYSTEM.ANY_URI_TYPE_ONE));
+      GENV_TYPESYSTEM.ANY_URI_TYPE_ONE),
+      FunctionConsts::FN_ZORBA_REF_NODE_REFERENCE_1);
 
 
-  DECL(sctx, fn_zorba_ref_node_by_reference,
+  DECL_WITH_KIND(sctx, fn_zorba_ref_node_by_reference,
       (createQName("http://www.zorba-xquery.com/modules/node-reference","","node-by-reference"),
       GENV_TYPESYSTEM.ANY_URI_TYPE_ONE,
-      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE));
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE),
+      FunctionConsts::FN_ZORBA_REF_NODE_BY_REFERENCE_1);
 
 
-  DECL(sctx, fn_local_name,
+  DECL_WITH_KIND(sctx, fn_local_name,
       (createQName("http://www.w3.org/2005/xpath-functions","","local-name"),
-      GENV_TYPESYSTEM.STRING_TYPE_ONE));
+      GENV_TYPESYSTEM.STRING_TYPE_ONE),
+      FunctionConsts::FN_LOCAL_NAME_0);
 
 
-  DECL(sctx, fn_local_name,
+  DECL_WITH_KIND(sctx, fn_local_name,
       (createQName("http://www.w3.org/2005/xpath-functions","","local-name"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
-      GENV_TYPESYSTEM.STRING_TYPE_ONE));
+      GENV_TYPESYSTEM.STRING_TYPE_ONE),
+      FunctionConsts::FN_LOCAL_NAME_1);
 
 
-  DECL(sctx, fn_namespace_uri,
+  DECL_WITH_KIND(sctx, fn_namespace_uri,
       (createQName("http://www.w3.org/2005/xpath-functions","","namespace-uri"),
-      GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION));
+      GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION),
+      FunctionConsts::FN_NAMESPACE_URI_0);
 
 
-  DECL(sctx, fn_namespace_uri,
+  DECL_WITH_KIND(sctx, fn_namespace_uri,
       (createQName("http://www.w3.org/2005/xpath-functions","","namespace-uri"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
-      GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION));
+      GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION),
+      FunctionConsts::FN_NAMESPACE_URI_1);
 
 
-  DECL(sctx, fn_lang,
+  DECL_WITH_KIND(sctx, fn_lang,
       (createQName("http://www.w3.org/2005/xpath-functions","","lang"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
-      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
+      FunctionConsts::FN_LANG_1);
 
 
-  DECL(sctx, fn_lang,
+  DECL_WITH_KIND(sctx, fn_lang,
       (createQName("http://www.w3.org/2005/xpath-functions","","lang"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
-      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
+      FunctionConsts::FN_LANG_2);
 
 
-  DECL(sctx, fn_number,
+  DECL_WITH_KIND(sctx, fn_number,
       (createQName("http://www.w3.org/2005/xpath-functions","","number"),
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
+      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE),
+      FunctionConsts::FN_NUMBER_0);
 
 
-  DECL(sctx, fn_number,
+  DECL_WITH_KIND(sctx, fn_number,
       (createQName("http://www.w3.org/2005/xpath-functions","","number"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
+      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE),
+      FunctionConsts::FN_NUMBER_1);
 
 }
 

@@ -4,7 +4,6 @@ import module namespace util="http://www.zorba-xquery.com/zorba/util-functions";
 import module namespace gen = "http://www.zorba-xquery.com/internal/gen" at "utils.xq";
 import module namespace file = "http://www.zorba-xquery.com/modules/file";
 
-
 declare function local:includes($doc) as xs:string
 {
   string-join(
@@ -76,74 +75,19 @@ declare function local:create-function($iter, $function) as xs:string?
 
           'public:', $gen:newline, $gen:indent,
 
-          (:
-             Generate the class constructor
-          :)
-          let $signatures := $function/zorba:signature
-          let $argCounts := for $sig in $signatures
-                            return 
-                            if(exists($sig/zorba:param)) then count($sig/zorba:param)
-                            else xs:integer(0)
-          let $outCounts := for $sig in $signatures
-                            return count($sig/zorba:output)                            
-          let $numSignatures := count($outCounts)
           let $setNoneDeterministic := if ($function/@isDeterministic = 'false')
                                        then 
-                                         ($gen:newline, $gen:indent, $gen:indent,
-                                         "setDeterministic(false);")
+                                         "setDeterministic(false);&#xA;"
                                        else ""
+          let $funcVersion := local:create-func-version($function)
           return 
-            if ($numSignatures eq 1)
-            then
-              string-join(($name,
-                           '(const signature&amp; sig)',
-                           $gen:newline, $gen:indent, $gen:indent,
-                           ':',
-                           $gen:newline, $gen:indent, $gen:indent,
-                           local:base-class($function),
-                           '(sig, FunctionConsts::',
-                           gen:function-kind($signatures[1]),
-                           ')',
-                           $gen:newline, $gen:indent,
-                           '{',
-                           $setNoneDeterministic,
-                           local:create-func-version($function),
-                           $gen:newline, $gen:indent,
-                           '}'),
-                          '')
-            else if ($numSignatures eq 2)
-            then
-              string-join(($name,
-                           '(const signature&amp; sig) : ',
-                           local:base-class($function),
-                           '(sig, FunctionConsts::FN_UNKNOWN)',
-                           $gen:newline, $gen:indent,
-                           '{',
-                           $gen:newline, $gen:indent,  $gen:indent,
-                           'theKind = (sig.paramCount() == ',
-                           xs:string($argCounts[1]),
-                           ' ?',
-                           $gen:newline,
-                           '                FunctionConsts::',
-                           gen:function-kind($signatures[1]),
-                           ' :',
-                           $gen:newline,
-                           '                FunctionConsts::',
-                           gen:function-kind($signatures[2]),
-                           ');',
-                           $setNoneDeterministic,                           
-                           local:create-func-version($function),
-                           $gen:newline, $gen:indent,
-                           '}'),
-                          '')
-            else
-              (: User must provide implementation of constructor :)
-              string-join(($name,
-                           '(const signature&amp; sig);'),
-                          ''),
-          $gen:newline,
+            concat($name, '(const signature&amp; sig, FunctionConsts::FunctionKind kind)',
+                   $gen:newline, $gen:indent,
+                   $gen:indent, ': ',
+                   local:base-class($function), '(sig, kind) {&#xA;', $setNoneDeterministic, $funcVersion, '&#xA;}'),
 
-
+        $gen:newline,
+              
         local:add-specialization($function),
         local:add-methods($function),
         $gen:newline,

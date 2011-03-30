@@ -50,6 +50,7 @@
 #include "store/naive/item_iterator.h"
 #include "store/naive/node_factory.h"
 #include "store/naive/name_iterator.h"
+#include "store/naive/document_name_iterator.h"
 #include "store/naive/pul_primitive_factory.h"
 
 #ifdef ZORBA_STORE_MSDOM
@@ -945,12 +946,14 @@ void SimpleStore::deleteUriCollection(const zstring& uri)
   collection object. If a collection with the given QName exists already, raise
   an error.
 ********************************************************************************/
-store::Collection_t SimpleStore::createCollection(store::Item_t& aName)
+store::Collection_t SimpleStore::createCollection(
+    store::Item_t& aName,
+    bool aDynamicCollection)
 {
   if (aName == NULL)
     return NULL;
 
-  store::Collection_t collection(new SimpleCollection(aName));
+  store::Collection_t collection(new SimpleCollection(aName, aDynamicCollection));
 
   const store::Item* lName = collection->getName();
 
@@ -986,16 +989,19 @@ void SimpleStore::addCollection(store::Collection_t& collection)
   Return an rchandle to the Collection object corresponding to the given QName,
   or NULL if there is no collection with that QName.
 ********************************************************************************/
-store::Collection_t SimpleStore::getCollection(const store::Item* aName)
+store::Collection_t SimpleStore::getCollection(
+    const store::Item* aName,
+    bool aDynamicCollection)
 {
   if (aName == NULL)
     return NULL;
 
   store::Collection_t collection;
-  if (theCollections->get(aName, collection) )
-    return collection.getp();
-  else
+  if (theCollections->get(aName, collection, aDynamicCollection)) {
+    return collection;
+  } else {
     return NULL;
+  }
 }
 
 
@@ -1003,12 +1009,14 @@ store::Collection_t SimpleStore::getCollection(const store::Item* aName)
   Delete the collection with the given QName. If there is no collection with
   that QName, this method is a NOOP.
 ********************************************************************************/
-void SimpleStore::deleteCollection(const store::Item* aName)
+void SimpleStore::deleteCollection(
+    const store::Item* aName,
+    bool aDynamicCollection)
 {
   if (aName == NULL)
     return;
 
-  if (!theCollections->remove(aName))
+  if (!theCollections->remove(aName, aDynamicCollection))
   {
     ZORBA_ERROR_PARAM(STR0009_COLLECTION_NOT_FOUND, aName->getStringValue(), "");
   }
@@ -1018,9 +1026,9 @@ void SimpleStore::deleteCollection(const store::Item* aName)
 /*******************************************************************************
   Returns an iterator that lists the QName's of all the available collections.
 ********************************************************************************/
-store::Iterator_t SimpleStore::listCollectionNames()
+store::Iterator_t SimpleStore::listCollectionNames(bool aDynamicCollections)
 {
-  return theCollections->names();
+  return theCollections->names(aDynamicCollections);
 }
 
 
@@ -1124,6 +1132,14 @@ void SimpleStore::addNode(const zstring& uri, const store::Item_t& node)
   ZORBA_FATAL(node.getp() == root.getp(), "");
 }
 
+
+/*******************************************************************************
+  Return an rchandle to an iterator over the set of documents in the store
+********************************************************************************/
+store::Iterator_t SimpleStore::getDocumentNames() const
+{
+  return new DocumentNameIterator<DocumentSet>(theDocuments);
+}
 
 /*******************************************************************************
   Return an rchandle to the root node of the document corresponding to the given

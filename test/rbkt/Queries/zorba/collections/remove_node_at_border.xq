@@ -1,17 +1,17 @@
-import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
-import module namespace dc = "http://www.zorba-xquery.com/modules/introspection/dctx";
+import module namespace init = "http://www.zorba-xquery.com/modules/store/static-collections/initialization";
+import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
 import module namespace ns = "http://example.org/datamodule/" at "collections.xqdata";
 
 declare sequential function local:init() {
-  xqddf:create-collection($ns:collection_1);
-  xqddf:insert-nodes($ns:collection_1, (<x/>,<y/>));
+  init:create-collection($ns:collection_1);
+  manip:insert-nodes($ns:collection_1, (<x/>,<y/>));
 };
 
 declare sequential function local:testa() {
   try {
     block {
-      xqddf:delete-node-first($ns:collection_1);
-      xqddf:collection($ns:collection_1);
+      manip:delete-node-first($ns:collection_1);
+      manip:collection($ns:collection_1);
     }
   } catch * ($error, $desc) {
     ("a",$error, $desc)
@@ -21,8 +21,8 @@ declare sequential function local:testa() {
 declare sequential function local:testb() {
   try {
     block {
-      xqddf:delete-node-last($ns:collection_1);
-      xqddf:collection($ns:collection_1);
+      manip:delete-node-last($ns:collection_1);
+      manip:collection($ns:collection_1);
     }
   } catch * ($error, $desc) {
     ("b",$error, $desc)

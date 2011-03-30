@@ -40,6 +40,16 @@
 
 #endif
 
+#define DECL_WITH_KIND(sctx, type, sig, kind)                           \
+  do                                                                    \
+  {                                                                     \
+    function_t type##_ptr(new type(signature sig, kind));               \
+    const store::Item* fname = type##_ptr->getName();                   \
+    ulong cnt = type##_ptr->getSignature().paramCount();                \
+    DEBUG_FN_DECL(fname, cnt);                                          \
+    sctx->bind_fn(type##_ptr, cnt, QueryLoc::null);                     \
+    BuiltinFunctionLibrary::theFunctions[type##_ptr->getKind()] = type##_ptr.getp(); \
+  } while(0)
 
 #define DECL(sctx, type, sig)                                           \
   do                                                                    \

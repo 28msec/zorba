@@ -1,10 +1,11 @@
 import module namespace xqddf-test = "http://www.zorba-xquery.com/modules/xqddf/test" at "xqddf_prolog.xqlib";
-import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
+import module namespace init = "http://www.zorba-xquery.com/modules/store/static-collections/initialization";
+import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
 
-xqddf:create-collection($xqddf-test:white-collection);
+init:create-collection($xqddf-test:white-collection);
 
-xqddf:activate-integrity-constraint($xqddf-test:dic1);
-xqddf:activate-integrity-constraint($xqddf-test:dic2);
+init:activate-integrity-constraint($xqddf-test:dic1);
+init:activate-integrity-constraint($xqddf-test:dic2);
 
 block{
 <newline>
@@ -23,12 +24,12 @@ block{
 for $i in fn:doc("auction.xml")//item
 return 
     block{block{$i/name;},
-    block{xqddf:insert-nodes($xqddf-test:white-collection, (copy $copyi := $i modify () return $copyi));};};
+    block{manip:insert-nodes($xqddf-test:white-collection, (copy $copyi := $i modify () return $copyi));};};
 },
 block{
 <newline> a
 </newline>
 },
 block{
-xqddf:collection($xqddf-test:white-collection)/name;
+manip:collection($xqddf-test:white-collection)/name;
 };

@@ -25,62 +25,6 @@
 
 module namespace sctx = "http://www.zorba-xquery.com/modules/introspection/sctx";
 
-
-
-(:~
- : The function returns true if a collection with the given QName has been created.
- :
- : @param $name The QName of the collection that is being checked.
- : @return true if the collection has been created and false otherwise.
- :)
-declare function sctx:is-declared-collection($name as xs:QName) as xs:boolean external;
-
-(:~
- : The function returns a sequence of QNames representing the collections that have
- : been previously created. The sequence will be empty if there are no collections.
- :
- : @return A sequence of QNames, one for each created collection, or an emtpy sequence.
- :)
-declare function sctx:declared-collections() as xs:QName* external;
-
-(:~
- : The function returns true if an index with the given QName has been declared.
- :
- : @param $name The QName of the index that is being checked.
- : @return true if the index has been declared and false otherwise.
- :)
-declare function sctx:is-declared-index($name as xs:QName) as xs:boolean external;
-
-(:~
- : The function returns a sequence of QNames representing the indexes that have
- : been previously created. The sequence will be empty if there are no indexes.
- :
- : @return A sequence of QNames, one for each created index, or an empty
- : sequence if none exist.
- :)
-declare function sctx:declared-indexes() as xs:QName* external;
-
-(:~
- : The function returns a sequence of QNames representing the integrity
- : constraints that have been declared, as described by the Zorba Data
- : Definition Language extension. The sequence will be empty if there are no
- : integrity constraints.
- :
- : @return A sequence of QNames, one for each declared integrity constraint,
- : or an empty sequence if none are declared.
- :)
-declare function sctx:declared-integrity-constraints() as xs:QName* external;
-
-(:~
- : The function checks if an integrity constraint with the given QName has
- : been declared.
- :
- : @param $name The QName of the constraint that is being checked.
- : @return true if the integrity constraint has been declared and false
- : otherwise.
- :)
-declare function sctx:is-declared-integrity-constraint($name as xs:QName) as xs:boolean external;
-
 (:~
  : The function returns a list of known statically known namespaces as prefixes
  : (fn, xml, xs, xsi, etc).

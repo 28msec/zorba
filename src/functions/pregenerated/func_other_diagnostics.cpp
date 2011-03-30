@@ -52,15 +52,17 @@ PlanIter_t fn_zorba_util_print::codegen(
 
 void populate_context_other_diagnostics(static_context* sctx)
 {
-  DECL(sctx, op_zorba_read_line,
+  DECL_WITH_KIND(sctx, op_zorba_read_line,
       (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","read-line"),
-      GENV_TYPESYSTEM.STRING_TYPE_ONE));
+      GENV_TYPESYSTEM.STRING_TYPE_ONE),
+      FunctionConsts::OP_ZORBA_READ_LINE_0);
 
 
-  DECL(sctx, fn_zorba_util_print,
+  DECL_WITH_KIND(sctx, fn_zorba_util_print,
       (createQName("http://www.zorba-xquery.com/zorba/util-functions","","print"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-      GENV_TYPESYSTEM.EMPTY_TYPE));
+      GENV_TYPESYSTEM.EMPTY_TYPE),
+      FunctionConsts::FN_ZORBA_UTIL_PRINT_1);
 
 }
 

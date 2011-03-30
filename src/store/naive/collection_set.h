@@ -50,23 +50,28 @@ namespace zorba {
     
       // needs to be virtual to allow implementation of additional stores
       virtual bool
-      insert(const store::Item* aName, store::Collection_t& aCollection);
+      insert(
+          const store::Item* aName,
+          store::Collection_t& aCollection);
     
       // needs to be virtual to allow implementation of additional stores
       virtual bool
-      get(const store::Item* aName, store::Collection_t& aCollection);
+      get(
+          const store::Item* aName,
+          store::Collection_t& aCollection,
+          bool aDynamicCollection = false);
     
       // needs to be virtual to allow implementation of additional stores
       virtual bool
-      remove(const store::Item* aName);
+      remove(const store::Item* aName, bool aDynamicCollection = false);
     
       // needs to be virtual to allow implementation of additional stores
       virtual store::Iterator_t
-      names();
+      names(bool aDynamicCollection = false);
     
       // needs to be virtual to allow implementation of additional stores
       virtual CollectionIterator_t
-      collections();
+      collections(bool aDynamicCollection = false);
     
     }; /* class CollectionSet */
     
@@ -80,9 +85,12 @@ namespace zorba {
       CollectionSet::Set*          theCollections;
       CollectionSet::Set::iterator theIterator;
       bool                         theOpened;
+      bool                         theDynamicCollections;
     
     public:
-      CollectionIterator(CollectionSet::Set* aCollections);
+      CollectionIterator(
+          CollectionSet::Set* aCollections,
+          bool aDynamicCollections);
     
       virtual ~CollectionIterator();
     

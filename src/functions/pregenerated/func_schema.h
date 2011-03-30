@@ -42,11 +42,10 @@ void populate_context_schema(static_context* sctx);
 class fn_zorba_schema_validate_in_place : public function
 {
 public:
-  fn_zorba_schema_validate_in_place(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_SCHEMA_VALIDATE_IN_PLACE_1)
-  {
-  }
+  fn_zorba_schema_validate_in_place(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
@@ -60,11 +59,10 @@ public:
 class fn_zorba_util_schema_type : public function
 {
 public:
-  fn_zorba_util_schema_type(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_UTIL_SCHEMA_TYPE_1)
-  {
-  }
+  fn_zorba_util_schema_type(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -74,11 +72,10 @@ public:
 class fn_zorba_schema_schema_type : public function
 {
 public:
-  fn_zorba_schema_schema_type(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_SCHEMA_SCHEMA_TYPE_1)
-  {
-  }
+  fn_zorba_schema_schema_type(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -88,11 +85,10 @@ public:
 class fn_zorba_schema_is_validated : public function
 {
 public:
-  fn_zorba_schema_is_validated(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_SCHEMA_IS_VALIDATED_1)
-  {
-  }
+  fn_zorba_schema_is_validated(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };

@@ -38,15 +38,14 @@ void populate_context_ic_ddl(static_context* sctx);
 
 
 
-//fn-zorba-xqddf:activate-integrity-constraint
-class fn_zorba_xqddf_activate_integrity_constraint : public function
+//zorba-store-collections-static-init:activate-integrity-constraint
+class zorba_store_collections_static_init_activate_integrity_constraint : public function
 {
 public:
-  fn_zorba_xqddf_activate_integrity_constraint(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_XQDDF_ACTIVATE_INTEGRITY_CONSTRAINT_1)
-  {
-  }
+  zorba_store_collections_static_init_activate_integrity_constraint(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
@@ -56,15 +55,14 @@ public:
 };
 
 
-//fn-zorba-xqddf:deactivate-integrity-constraint
-class fn_zorba_xqddf_deactivate_integrity_constraint : public function
+//zorba-store-collections-static-init:deactivate-integrity-constraint
+class zorba_store_collections_static_init_deactivate_integrity_constraint : public function
 {
 public:
-  fn_zorba_xqddf_deactivate_integrity_constraint(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_XQDDF_DEACTIVATE_INTEGRITY_CONSTRAINT_1)
-  {
-  }
+  zorba_store_collections_static_init_deactivate_integrity_constraint(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
@@ -74,15 +72,14 @@ public:
 };
 
 
-//fn-zorba-xqddf:check-integrity-constraint
-class fn_zorba_xqddf_check_integrity_constraint : public function
+//zorba-store-collections-static-manip:check-integrity-constraint
+class zorba_store_collections_static_manip_check_integrity_constraint : public function
 {
 public:
-  fn_zorba_xqddf_check_integrity_constraint(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_XQDDF_CHECK_INTEGRITY_CONSTRAINT_1)
-  {
-  }
+  zorba_store_collections_static_manip_check_integrity_constraint(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   bool accessesDynCtx() const { return true; }
 

@@ -249,6 +249,10 @@ protected:
   std::vector<UpdatePrimitive*>      theICActivationList;
   store::ICChecker                 * theICChecker;
 
+  // Document primitives
+  std::vector<UpdatePrimitive*>      theCreateDocumentList;
+  std::vector<UpdatePrimitive*>      theDeleteDocumentList;
+
   // Revalidation
   store::SchemaValidator           * theValidator;
 
@@ -339,37 +343,45 @@ public:
 
   // Collection primitives
   void addCreateCollection(
-        store::Item_t& name);
+        store::Item_t& name,
+        bool dyn_collection = false);
 
   void addDeleteCollection(
-        store::Item_t& name);
+        store::Item_t& name,
+        bool dyn_collection = false);
 
   void addInsertIntoCollection(
         store::Item_t& name,
-        std::vector<store::Item_t>& nodes);
+        std::vector<store::Item_t>& nodes,
+        bool dyn_collection = false);
 
   void addInsertFirstIntoCollection(
         store::Item_t& name,
-        std::vector<store::Item_t>& nodes);
+        std::vector<store::Item_t>& nodes,
+        bool dyn_collection = false);
 
   void addInsertLastIntoCollection(
         store::Item_t& name,
-        std::vector<store::Item_t>& nodes);
+        std::vector<store::Item_t>& nodes,
+        bool dyn_collection = false);
 
   void addInsertBeforeIntoCollection(
         store::Item_t& name,
         store::Item_t& target,
-        std::vector<store::Item_t>& nodes);
+        std::vector<store::Item_t>& nodes,
+        bool dyn_collection = false);
 
   void addInsertAfterIntoCollection(
         store::Item_t& name,
         store::Item_t& target,
-        std::vector<store::Item_t>& nodes);
+        std::vector<store::Item_t>& nodes,
+        bool dyn_collection = false);
 
   void addDeleteFromCollection(
         store::Item_t& name,
         std::vector<store::Item_t>& nodes,
-        bool isLast);
+        bool isLast,
+        bool dyn_collection = false);
 
   // Index primitives
   void addCreateIndex(
@@ -395,6 +407,14 @@ public:
 
   virtual void addDeActivateIC(
         const store::Item_t& qname);
+
+  // document primitives
+  virtual void addCreateDocument(
+        const store::Item_t& uri,
+        store::Item_t& doc);
+
+  virtual void addDeleteDocument(
+        const store::Item_t& uri);
 
   // merge
   void mergeUpdates(store::Item* other);

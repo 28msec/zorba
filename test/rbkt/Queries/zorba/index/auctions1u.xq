@@ -1,4 +1,5 @@
-import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
+import module namespace init = "http://www.zorba-xquery.com/modules/store/static-collections/initialization";
+import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
 
 import module namespace auctions = "http://www.w3.org/TestModules/auctions" at
                                        "auctions_module1.xqlib";
@@ -19,9 +20,9 @@ block
   insert node
     <person id="person50"><name>Some Name</name><city>Amsterdam</city></person>
   as first into
-    xqddf:collection($auctions:auctions)/site/people
+    manip:collection($auctions:auctions)/site/people
   ,
-  xqddf:refresh-index($emp-id);
+  manip:refresh-index($emp-id);
   (: don't refresh the emp-city index manually because it's done automatically :)
 }
 ,
@@ -41,7 +42,7 @@ return <person id = "{$x/@id}">{$x/name}</person>
 ,
 block
 {
-  xqddf:insert-nodes($auctions:auctions, doc("auctions2.xml"));
+  manip:insert-nodes($auctions:auctions, doc("auctions2.xml"));
 }
 ,
 "
@@ -50,5 +51,3 @@ block
 ,
 for $x in auctions:probe-range-city($emp-city, "T")
 return <person id = "{$x/@id}">{$x/name}</person>
-
-

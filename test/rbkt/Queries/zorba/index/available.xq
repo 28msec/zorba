@@ -1,30 +1,30 @@
 import module namespace decl = "http://www.test.com/" at "declared.xqlib";
 
-import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
-import module namespace dc = "http://www.zorba-xquery.com/modules/introspection/dctx";
+import module namespace init = "http://www.zorba-xquery.com/modules/store/static-collections/initialization";
+import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
 
 declare sequential function local:test_create() {
-  xqddf:create-collection(xs:QName("decl:coll1"));
-  xqddf:create-index(xs:QName("decl:coll1_index"));
-  xqddf:create-collection(xs:QName("decl:coll3"));
-  xqddf:create-index(xs:QName("decl:coll3_index"));
+  init:create-collection(xs:QName("decl:coll1"));
+  init:create-index(xs:QName("decl:coll1_index"));
+  init:create-collection(xs:QName("decl:coll3"));
+  init:create-index(xs:QName("decl:coll3_index"));
   (
-    dc:is-available-index(xs:QName("decl:coll1_index")),
-    dc:is-available-index(xs:QName("decl:coll2_index")),
-    dc:is-available-index(xs:QName("decl:coll3_index")),
-    for $x in dc:available-indexes()
+    manip:is-available-index(xs:QName("decl:coll1_index")),
+    manip:is-available-index(xs:QName("decl:coll2_index")),
+    manip:is-available-index(xs:QName("decl:coll3_index")),
+    for $x in manip:available-indexes()
     order by xs:string($x)
     return $x
   );
 };
 
 declare sequential function local:test_delete() {
-  xqddf:delete-index(xs:QName("decl:coll1_index"));
+  init:delete-index(xs:QName("decl:coll1_index"));
   (
-    dc:is-available-index(xs:QName("decl:coll1_index")),
-    dc:is-available-index(xs:QName("decl:coll2_index")),
-    dc:is-available-index(xs:QName("decl:coll3_index")),
-    dc:available-indexes()
+    manip:is-available-index(xs:QName("decl:coll1_index")),
+    manip:is-available-index(xs:QName("decl:coll2_index")),
+    manip:is-available-index(xs:QName("decl:coll3_index")),
+    manip:available-indexes()
   );
 };
 

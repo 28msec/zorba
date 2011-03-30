@@ -1,15 +1,16 @@
-  module namespace news-data = "http://www.news.org/data";
+module namespace news-data = "http://www.news.org/data";
 
-  import schema namespace news-schemas = "http://www.news.org/schemas" at "news-schema.xsd";
+import schema namespace news-schemas = "http://www.news.org/schemas" at "news-schema.xsd";
 
-  import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
+import module namespace init = "http://www.zorba-xquery.com/modules/store/static-collections/initialization";
+import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
 
-  declare ordered collection news-data:employees as schema-element(news-schemas:employee)*;
+declare ordered collection news-data:employees as schema-element(news-schemas:employee)*;
 
-  declare automatically maintained value equality index news-data:CityEmp
-  on nodes xqddf:collection(xs:QName("news-data:employees"))/employee
-  by .//station/city as xs:string;
+declare automatically maintained value equality index news-data:CityEmp
+on nodes manip:collection(xs:QName("news-data:employees"))/employee
+by .//station/city as xs:string;
 
-  declare variable $news-data:employees := xs:QName("news-data:employees");
-  declare variable $news-data:CityEmp := xs:QName("news-data:CityEmp");
+declare variable $news-data:employees := xs:QName("news-data:employees");
+declare variable $news-data:CityEmp := xs:QName("news-data:CityEmp");
 

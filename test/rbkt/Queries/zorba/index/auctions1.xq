@@ -2,7 +2,8 @@
 import module namespace auctions = "http://www.w3.org/TestModules/auctions" at
                                    "auctions_module1.xqlib";
 
-import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
+import module namespace init = "http://www.zorba-xquery.com/modules/store/static-collections/initialization";
+import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
 
 auctions:create-db();
 
@@ -44,7 +45,7 @@ return <person id = "{$x/@id}">{$x//watches}</person>,
 
 ",
 
-for $x in xqddf:probe-index-point-general($auctions:PersonWatches2, 
+for $x in manip:probe-index-point-general($auctions:PersonWatches2, 
                                           ("open_auction6", "open_auction2"))
 return <person id = "{$x/@id}">{$x//watches}</person>,
 
@@ -54,7 +55,7 @@ return <person id = "{$x/@id}">{$x//watches}</person>,
 
 try
 {
-   xqddf:probe-index-point-value(xs:QName("auctions:PersonWatches2"), "open_auction7")
+   manip:probe-index-point-value(xs:QName("auctions:PersonWatches2"), "open_auction7")
 }
 catch * ($code, $desc)
 {
@@ -71,7 +72,7 @@ Probing the typed AuctionDates sorted general index
 
 try
 { 
-  xqddf:probe-index-point-value($auctions:AuctionDates, xs:date("2000-12-04"))
+  manip:probe-index-point-value($auctions:AuctionDates, xs:date("2000-12-04"))
 }
 catch * ($code, $desc)
 {
@@ -84,7 +85,7 @@ catch * ($code, $desc)
 
 try
 {
-  xqddf:probe-index-point-value($auctions:AuctionDates, 10)
+  manip:probe-index-point-value($auctions:AuctionDates, 10)
 }
 catch * ($code, $desc)
 {
@@ -95,7 +96,7 @@ catch * ($code, $desc)
 
 ",
 
-for $id in xqddf:probe-index-point-general($auctions:AuctionDates, 
+for $id in manip:probe-index-point-general($auctions:AuctionDates, 
                                            (xs:date("2000-12-04"),
                                             xs:date("2000-01-03"),
                                             xs:date("1998-08-18")))/@id
@@ -107,7 +108,7 @@ return <open_auction>{$id}</open_auction>,
 
 try
 {
-  xqddf:probe-index-point-general($auctions:AuctionDates, 
+  manip:probe-index-point-general($auctions:AuctionDates, 
                                   (xs:date("2000-12-04"), "2000-12-04"))
 }
 catch * ($code, $desc)
@@ -125,7 +126,7 @@ Probing the untyped AuctionDates2 sorted general index
 
 try
 {
-  xqddf:probe-index-point-value($auctions:AuctionDates2, xs:date("2000-12-04"))
+  manip:probe-index-point-value($auctions:AuctionDates2, xs:date("2000-12-04"))
 }
 catch * ($code, $desc)
 {
@@ -138,7 +139,7 @@ catch * ($code, $desc)
 
 try
 {
-  xqddf:probe-index-point-value($auctions:AuctionDates2, 10)
+  manip:probe-index-point-value($auctions:AuctionDates2, 10)
 }
 catch * ($code, $desc)
 {
@@ -151,7 +152,7 @@ catch * ($code, $desc)
 
 
 
-for $id in xqddf:probe-index-point-general($auctions:AuctionDates2, 
+for $id in manip:probe-index-point-general($auctions:AuctionDates2, 
                                            (xs:date("2000-12-04"),
                                             xs:date("2000-01-03"),
                                             xs:date("1998-08-18")))/@id
@@ -161,7 +162,7 @@ return <open_auction>{$id}</open_auction>,
 
 ",
 
-for $id in xqddf:probe-index-point-general($auctions:AuctionDates2, 
+for $id in manip:probe-index-point-general($auctions:AuctionDates2, 
                                            ("2000-12-04",
                                             "2000-01-03",
                                             10.23,

@@ -42,12 +42,10 @@ void populate_context_parsing_and_serializing(static_context* sctx);
 class fn_parse_xml : public function
 {
 public:
-  fn_parse_xml(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
-  {
-    theKind = (sig.paramCount() == 1 ?
-                FunctionConsts::FN_PARSE_XML_1 :
-                FunctionConsts::FN_PARSE_XML_2);
-  }
+  fn_parse_xml(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   bool accessesDynCtx() const { return true; }
 
@@ -61,12 +59,10 @@ public:
 class fn_serialize : public function
 {
 public:
-  fn_serialize(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
-  {
-    theKind = (sig.paramCount() == 1 ?
-                FunctionConsts::FN_SERIALIZE_1 :
-                FunctionConsts::FN_SERIALIZE_2);
-  }
+  fn_serialize(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   bool accessesDynCtx() const { return true; }
 

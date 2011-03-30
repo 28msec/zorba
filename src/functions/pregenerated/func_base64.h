@@ -42,11 +42,10 @@ void populate_context_base64(static_context* sctx);
 class fn_zorba_base64_decode : public function
 {
 public:
-  fn_zorba_base64_decode(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_BASE64_DECODE_1)
-  {
-  }
+  fn_zorba_base64_decode(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -56,11 +55,10 @@ public:
 class fn_zorba_base64_encode : public function
 {
 public:
-  fn_zorba_base64_encode(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_BASE64_ENCODE_1)
-  {
-  }
+  fn_zorba_base64_encode(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };

@@ -2,7 +2,8 @@ module namespace news-data = "http://www.news.org/data";
 
 import schema namespace news = "http://www.news.org/schemas" at "news-schema.xsd";
 
-import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
+import module namespace init = "http://www.zorba-xquery.com/modules/store/static-collections/initialization";
+import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
 
 
 declare collection news-data:employees
@@ -16,13 +17,13 @@ declare const ordered collection news-data:months
 
 
 declare automatically maintained value equality index news-data:CityEmp
-  on nodes xqddf:collection(xs:QName("news-data:employees"))
+  on nodes manip:collection(xs:QName("news-data:employees"))
   by .//news:station/news:city as xs:string;
 
 
 declare manually maintained value range index news-data:ArtCountEmp
-  on nodes xqddf:collection(xs:QName("news-data:employees"))[./news:position/@kind eq "journalist"]
-  by count(for $art in xqddf:collection(xs:QName("news-data:articles"))
+  on nodes manip:collection(xs:QName("news-data:employees"))[./news:position/@kind eq "journalist"]
+  by count(for $art in manip:collection(xs:QName("news-data:articles"))
            where $art/empid = ./@id
            return $art) as xs:integer;
 

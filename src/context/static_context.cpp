@@ -269,7 +269,19 @@ const zstring
 static_context::ZORBA_NODEREF_FN_NS = NS_PRE + "modules/node-reference";
 
 const zstring
-static_context::ZORBA_XQDDF_FN_NS = static_context::ZORBA_NS_PREFIX + "modules/xqddf";
+static_context::ZORBA_STORE_COLLECTIONS = NS_PRE + "modules/store/collections";
+
+const zstring
+static_context::ZORBA_STORE_STATIC_COLLECTIONS_INIT
+  = NS_PRE + "modules/store/static-collections/initialization";
+
+const zstring
+static_context::ZORBA_STORE_STATIC_COLLECTIONS_MANIP
+  = NS_PRE + "modules/store/static-collections/manipulation";
+
+const zstring
+static_context::ZORBA_STORE_DOCUMENTS
+  = static_context::ZORBA_NS_PREFIX + "modules/store/documents";
 
 const zstring
 static_context::ZORBA_SCHEMA_FN_NS = static_context::ZORBA_NS_PREFIX + "modules/schema";
@@ -323,7 +335,10 @@ bool static_context::is_builtin_module(const zstring& ns)
     return (ns == ZORBA_MATH_FN_NS ||
             ns == ZORBA_BASE64_FN_NS ||
             ns == ZORBA_NODEREF_FN_NS ||
-            ns == ZORBA_XQDDF_FN_NS ||
+            ns == ZORBA_STORE_DOCUMENTS ||
+            ns == ZORBA_STORE_COLLECTIONS ||
+            ns == ZORBA_STORE_STATIC_COLLECTIONS_INIT ||
+            ns == ZORBA_STORE_STATIC_COLLECTIONS_MANIP ||
             ns == ZORBA_SCHEMA_FN_NS ||
             ns == ZORBA_TIDY_FN_NS ||
             ns == ZORBA_JSON_FN_NS ||

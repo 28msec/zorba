@@ -124,6 +124,7 @@ LIST(APPEND RUNTIME_SRCS
     function_item/function_item.cpp
     function_item/dynamic_fncall_iterator.cpp
     eval/eval.cpp
+    collections/collections_base.cpp
 )
 
 IF (NOT ZORBA_NO_FULL_TEXT)
@@ -134,6 +135,7 @@ HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS debug)
 
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS accessors)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS collections)
+HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS store)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS context)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS core)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS numerics)

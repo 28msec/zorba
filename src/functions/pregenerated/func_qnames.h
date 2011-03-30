@@ -42,11 +42,10 @@ void populate_context_qnames(static_context* sctx);
 class fn_resolve_QName : public function
 {
 public:
-  fn_resolve_QName(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_RESOLVE_QNAME_2)
-  {
-  }
+  fn_resolve_QName(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -56,11 +55,10 @@ public:
 class fn_QName : public function
 {
 public:
-  fn_QName(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_QNAME_2)
-  {
-  }
+  fn_QName(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -70,11 +68,10 @@ public:
 class op_QName_equal : public function
 {
 public:
-  op_QName_equal(const signature& sig)
-    :
-    function(sig, FunctionConsts::OP_QNAME_EQUAL_2)
-  {
-  }
+  op_QName_equal(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -84,11 +81,10 @@ public:
 class fn_prefix_from_QName : public function
 {
 public:
-  fn_prefix_from_QName(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_PREFIX_FROM_QNAME_1)
-  {
-  }
+  fn_prefix_from_QName(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -98,11 +94,10 @@ public:
 class fn_local_name_from_QName : public function
 {
 public:
-  fn_local_name_from_QName(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_LOCAL_NAME_FROM_QNAME_1)
-  {
-  }
+  fn_local_name_from_QName(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -112,11 +107,10 @@ public:
 class fn_namespace_uri_from_QName : public function
 {
 public:
-  fn_namespace_uri_from_QName(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_NAMESPACE_URI_FROM_QNAME_1)
-  {
-  }
+  fn_namespace_uri_from_QName(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -126,11 +120,10 @@ public:
 class fn_namespace_uri_for_prefix : public function
 {
 public:
-  fn_namespace_uri_for_prefix(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_NAMESPACE_URI_FOR_PREFIX_2)
-  {
-  }
+  fn_namespace_uri_for_prefix(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -140,11 +133,10 @@ public:
 class fn_in_scope_prefixes : public function
 {
 public:
-  fn_in_scope_prefixes(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_IN_SCOPE_PREFIXES_1)
-  {
-  }
+  fn_in_scope_prefixes(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };

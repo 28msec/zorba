@@ -1,8 +1,8 @@
-import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
+import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
 import module namespace ns = "http://example.org/datamodule/" at "../collections.xqdata";
 
 declare sequential function local:foo() {
-  xqddf:insert-nodes-last(xs:QName('ns:http'), <a/>);
+  manip:insert-nodes-last(xs:QName('ns:http'), <a/>);
   exit returning ();
 };
 

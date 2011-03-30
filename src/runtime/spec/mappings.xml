@@ -32,6 +32,26 @@
                      define="ZORBA_SCHEMA_FN_NS"
                      prefix="fn-zorba-schema"/>
 
+    <zorba:namespace
+      uri="http://www.zorba-xquery.com/modules/store/static-collections/initialization"
+      define="ZORBA_STORE_STATIC_COLLECTIONS_INIT"
+      prefix="zorba-store-collections-static-init"/>
+
+    <zorba:namespace
+      uri="http://www.zorba-xquery.com/modules/store/static-collections/manipulation"
+      define="ZORBA_STORE_STATIC_COLLECTIONS_MANIP"
+      prefix="zorba-store-collections-static-manip"/>
+
+    <zorba:namespace
+      uri="http://www.zorba-xquery.com/modules/store/collections"
+      define="ZORBA_STORE_COLLECTIONS"
+      prefix="zorba-store-collections"/>
+    
+    <zorba:namespace
+      uri="http://www.zorba-xquery.com/modules/store/documents"
+      define="ZORBA_STORE_DOCUMENTS"
+      prefix="zorba-store-documents"/>
+
     <zorba:namespace uri="http://www.zorba-xquery.com/modules/json"
                      define="ZORBA_JSON_FN_NS"
                      prefix="fn-zorba-json"/>
@@ -83,7 +103,8 @@
 
     <!-- see http://www.w3.org/TR/xquery-operators/#datatypes -->
     <zorba:type zorbaType="ITEM">item()</zorba:type>
-    <zorba:type zorbaType="DOCUMENT_UNTYPED">document-node()</zorba:type>
+    <zorba:type zorbaType="DOCUMENT_UNTYPED">document-untyped</zorba:type>
+    <zorba:type zorbaType="DOCUMENT">document-node()</zorba:type>
     <zorba:type zorbaType="ANY_NODE">node()</zorba:type>
     <zorba:type zorbaType="ELEMENT">element()</zorba:type>
 

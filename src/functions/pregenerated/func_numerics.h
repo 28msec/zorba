@@ -42,11 +42,10 @@ void populate_context_numerics(static_context* sctx);
 class fn_abs : public function
 {
 public:
-  fn_abs(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ABS_1)
-  {
-  }
+  fn_abs(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -56,11 +55,10 @@ public:
 class fn_ceiling : public function
 {
 public:
-  fn_ceiling(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_CEILING_1)
-  {
-  }
+  fn_ceiling(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -70,11 +68,10 @@ public:
 class fn_floor : public function
 {
 public:
-  fn_floor(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_FLOOR_1)
-  {
-  }
+  fn_floor(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   xqtref_t getReturnType(
         const TypeManager* tm,
@@ -88,12 +85,10 @@ public:
 class fn_round : public function
 {
 public:
-  fn_round(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
-  {
-    theKind = (sig.paramCount() == 1 ?
-                FunctionConsts::FN_ROUND_1 :
-                FunctionConsts::FN_ROUND_2);
-  }
+  fn_round(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -103,12 +98,10 @@ public:
 class fn_round_half_to_even : public function
 {
 public:
-  fn_round_half_to_even(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
-  {
-    theKind = (sig.paramCount() == 1 ?
-                FunctionConsts::FN_ROUND_HALF_TO_EVEN_1 :
-                FunctionConsts::FN_ROUND_HALF_TO_EVEN_2);
-  }
+  fn_round_half_to_even(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -118,13 +111,11 @@ public:
 class fn_format_number : public function
 {
 public:
-  fn_format_number(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
-  {
-    theKind = (sig.paramCount() == 2 ?
-                FunctionConsts::FN_FORMAT_NUMBER_2 :
-                FunctionConsts::FN_FORMAT_NUMBER_3);
+  fn_format_number(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
     theXQueryVersion = StaticContextConsts::xquery_version_1_1;
-  }
+}
 
   CODEGEN_DECL();
 };

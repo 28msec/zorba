@@ -316,6 +316,156 @@ ZorbaInsertNodesAfterIterator::~ZorbaInsertNodesAfterIterator() {}
 // </ZorbaInsertNodesAfterIterator>
 
 
+// <ZorbaApplyInsertNodesIterator>
+const char* ZorbaApplyInsertNodesIterator::class_name_str = "ZorbaApplyInsertNodesIterator";
+ZorbaApplyInsertNodesIterator::class_factory<ZorbaApplyInsertNodesIterator>
+ZorbaApplyInsertNodesIterator::g_class_factory;
+
+const serialization::ClassVersion 
+ZorbaApplyInsertNodesIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int ZorbaApplyInsertNodesIterator::class_versions_count =
+sizeof(ZorbaApplyInsertNodesIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void ZorbaApplyInsertNodesIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+ZorbaApplyInsertNodesIterator::~ZorbaApplyInsertNodesIterator() {}
+
+ZorbaApplyInsertNodesIteratorState::ZorbaApplyInsertNodesIteratorState() {}
+
+// </ZorbaApplyInsertNodesIterator>
+
+
+// <ZorbaApplyInsertNodesFirstIterator>
+const char* ZorbaApplyInsertNodesFirstIterator::class_name_str = "ZorbaApplyInsertNodesFirstIterator";
+ZorbaApplyInsertNodesFirstIterator::class_factory<ZorbaApplyInsertNodesFirstIterator>
+ZorbaApplyInsertNodesFirstIterator::g_class_factory;
+
+const serialization::ClassVersion 
+ZorbaApplyInsertNodesFirstIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int ZorbaApplyInsertNodesFirstIterator::class_versions_count =
+sizeof(ZorbaApplyInsertNodesFirstIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void ZorbaApplyInsertNodesFirstIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+ZorbaApplyInsertNodesFirstIterator::~ZorbaApplyInsertNodesFirstIterator() {}
+
+ZorbaApplyInsertNodesFirstIteratorState::ZorbaApplyInsertNodesFirstIteratorState() {}
+
+// </ZorbaApplyInsertNodesFirstIterator>
+
+
+// <ZorbaApplyInsertNodesLastIterator>
+const char* ZorbaApplyInsertNodesLastIterator::class_name_str = "ZorbaApplyInsertNodesLastIterator";
+ZorbaApplyInsertNodesLastIterator::class_factory<ZorbaApplyInsertNodesLastIterator>
+ZorbaApplyInsertNodesLastIterator::g_class_factory;
+
+const serialization::ClassVersion 
+ZorbaApplyInsertNodesLastIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int ZorbaApplyInsertNodesLastIterator::class_versions_count =
+sizeof(ZorbaApplyInsertNodesLastIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void ZorbaApplyInsertNodesLastIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+ZorbaApplyInsertNodesLastIterator::~ZorbaApplyInsertNodesLastIterator() {}
+
+ZorbaApplyInsertNodesLastIteratorState::ZorbaApplyInsertNodesLastIteratorState() {}
+
+// </ZorbaApplyInsertNodesLastIterator>
+
+
+// <ZorbaApplyInsertNodesBeforeIterator>
+const char* ZorbaApplyInsertNodesBeforeIterator::class_name_str = "ZorbaApplyInsertNodesBeforeIterator";
+ZorbaApplyInsertNodesBeforeIterator::class_factory<ZorbaApplyInsertNodesBeforeIterator>
+ZorbaApplyInsertNodesBeforeIterator::g_class_factory;
+
+const serialization::ClassVersion 
+ZorbaApplyInsertNodesBeforeIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int ZorbaApplyInsertNodesBeforeIterator::class_versions_count =
+sizeof(ZorbaApplyInsertNodesBeforeIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void ZorbaApplyInsertNodesBeforeIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+ZorbaApplyInsertNodesBeforeIterator::~ZorbaApplyInsertNodesBeforeIterator() {}
+
+ZorbaApplyInsertNodesBeforeIteratorState::ZorbaApplyInsertNodesBeforeIteratorState() {}
+
+// </ZorbaApplyInsertNodesBeforeIterator>
+
+
+// <ZorbaApplyInsertNodesAfterIterator>
+const char* ZorbaApplyInsertNodesAfterIterator::class_name_str = "ZorbaApplyInsertNodesAfterIterator";
+ZorbaApplyInsertNodesAfterIterator::class_factory<ZorbaApplyInsertNodesAfterIterator>
+ZorbaApplyInsertNodesAfterIterator::g_class_factory;
+
+const serialization::ClassVersion 
+ZorbaApplyInsertNodesAfterIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int ZorbaApplyInsertNodesAfterIterator::class_versions_count =
+sizeof(ZorbaApplyInsertNodesAfterIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void ZorbaApplyInsertNodesAfterIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+ZorbaApplyInsertNodesAfterIterator::~ZorbaApplyInsertNodesAfterIterator() {}
+
+ZorbaApplyInsertNodesAfterIteratorState::ZorbaApplyInsertNodesAfterIteratorState() {}
+
+// </ZorbaApplyInsertNodesAfterIterator>
+
+
 // <ZorbaDeleteNodesIterator>
 const char* ZorbaDeleteNodesIterator::class_name_str = "ZorbaDeleteNodesIterator";
 ZorbaDeleteNodesIterator::class_factory<ZorbaDeleteNodesIterator>
@@ -398,6 +548,364 @@ void ZorbaDeleteNodesLastIterator::accept(PlanIterVisitor& v) const {
 ZorbaDeleteNodesLastIterator::~ZorbaDeleteNodesLastIterator() {}
 
 // </ZorbaDeleteNodesLastIterator>
+
+
+// <IsAvailableCollectionIterator>
+const char* IsAvailableCollectionIterator::class_name_str = "IsAvailableCollectionIterator";
+IsAvailableCollectionIterator::class_factory<IsAvailableCollectionIterator>
+IsAvailableCollectionIterator::g_class_factory;
+
+const serialization::ClassVersion 
+IsAvailableCollectionIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int IsAvailableCollectionIterator::class_versions_count =
+sizeof(IsAvailableCollectionIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void IsAvailableCollectionIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+IsAvailableCollectionIterator::~IsAvailableCollectionIterator() {}
+
+// </IsAvailableCollectionIterator>
+
+
+// <AvailableCollectionsIterator>
+const char* AvailableCollectionsIterator::class_name_str = "AvailableCollectionsIterator";
+AvailableCollectionsIterator::class_factory<AvailableCollectionsIterator>
+AvailableCollectionsIterator::g_class_factory;
+
+const serialization::ClassVersion 
+AvailableCollectionsIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int AvailableCollectionsIterator::class_versions_count =
+sizeof(AvailableCollectionsIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void AvailableCollectionsIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+AvailableCollectionsIterator::~AvailableCollectionsIterator() {}
+
+AvailableCollectionsIteratorState::AvailableCollectionsIteratorState() {}
+
+// </AvailableCollectionsIterator>
+
+
+// <IsAvailableIndexIterator>
+const char* IsAvailableIndexIterator::class_name_str = "IsAvailableIndexIterator";
+IsAvailableIndexIterator::class_factory<IsAvailableIndexIterator>
+IsAvailableIndexIterator::g_class_factory;
+
+const serialization::ClassVersion 
+IsAvailableIndexIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int IsAvailableIndexIterator::class_versions_count =
+sizeof(IsAvailableIndexIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void IsAvailableIndexIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+IsAvailableIndexIterator::~IsAvailableIndexIterator() {}
+
+// </IsAvailableIndexIterator>
+
+
+// <AvailableIndexesIterator>
+const char* AvailableIndexesIterator::class_name_str = "AvailableIndexesIterator";
+AvailableIndexesIterator::class_factory<AvailableIndexesIterator>
+AvailableIndexesIterator::g_class_factory;
+
+const serialization::ClassVersion 
+AvailableIndexesIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int AvailableIndexesIterator::class_versions_count =
+sizeof(AvailableIndexesIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void AvailableIndexesIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+AvailableIndexesIterator::~AvailableIndexesIterator() {}
+
+AvailableIndexesIteratorState::AvailableIndexesIteratorState() {}
+
+// </AvailableIndexesIterator>
+
+
+// <IsActivatedICIterator>
+const char* IsActivatedICIterator::class_name_str = "IsActivatedICIterator";
+IsActivatedICIterator::class_factory<IsActivatedICIterator>
+IsActivatedICIterator::g_class_factory;
+
+const serialization::ClassVersion 
+IsActivatedICIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int IsActivatedICIterator::class_versions_count =
+sizeof(IsActivatedICIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void IsActivatedICIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+IsActivatedICIterator::~IsActivatedICIterator() {}
+
+// </IsActivatedICIterator>
+
+
+// <ActivatedICsIterator>
+const char* ActivatedICsIterator::class_name_str = "ActivatedICsIterator";
+ActivatedICsIterator::class_factory<ActivatedICsIterator>
+ActivatedICsIterator::g_class_factory;
+
+const serialization::ClassVersion 
+ActivatedICsIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int ActivatedICsIterator::class_versions_count =
+sizeof(ActivatedICsIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void ActivatedICsIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+ActivatedICsIterator::~ActivatedICsIterator() {}
+
+ActivatedICsIteratorState::ActivatedICsIteratorState() {}
+
+// </ActivatedICsIterator>
+
+
+// <IsDeclaredCollectionIterator>
+const char* IsDeclaredCollectionIterator::class_name_str = "IsDeclaredCollectionIterator";
+IsDeclaredCollectionIterator::class_factory<IsDeclaredCollectionIterator>
+IsDeclaredCollectionIterator::g_class_factory;
+
+const serialization::ClassVersion 
+IsDeclaredCollectionIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int IsDeclaredCollectionIterator::class_versions_count =
+sizeof(IsDeclaredCollectionIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void IsDeclaredCollectionIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+IsDeclaredCollectionIterator::~IsDeclaredCollectionIterator() {}
+
+// </IsDeclaredCollectionIterator>
+
+
+// <DeclaredCollectionsIterator>
+const char* DeclaredCollectionsIterator::class_name_str = "DeclaredCollectionsIterator";
+DeclaredCollectionsIterator::class_factory<DeclaredCollectionsIterator>
+DeclaredCollectionsIterator::g_class_factory;
+
+const serialization::ClassVersion 
+DeclaredCollectionsIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int DeclaredCollectionsIterator::class_versions_count =
+sizeof(DeclaredCollectionsIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void DeclaredCollectionsIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+DeclaredCollectionsIterator::~DeclaredCollectionsIterator() {}
+
+DeclaredCollectionsIteratorState::DeclaredCollectionsIteratorState() {}
+
+// </DeclaredCollectionsIterator>
+
+
+// <IsDeclaredIndexIterator>
+const char* IsDeclaredIndexIterator::class_name_str = "IsDeclaredIndexIterator";
+IsDeclaredIndexIterator::class_factory<IsDeclaredIndexIterator>
+IsDeclaredIndexIterator::g_class_factory;
+
+const serialization::ClassVersion 
+IsDeclaredIndexIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int IsDeclaredIndexIterator::class_versions_count =
+sizeof(IsDeclaredIndexIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void IsDeclaredIndexIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+IsDeclaredIndexIterator::~IsDeclaredIndexIterator() {}
+
+// </IsDeclaredIndexIterator>
+
+
+// <DeclaredIndexesIterator>
+const char* DeclaredIndexesIterator::class_name_str = "DeclaredIndexesIterator";
+DeclaredIndexesIterator::class_factory<DeclaredIndexesIterator>
+DeclaredIndexesIterator::g_class_factory;
+
+const serialization::ClassVersion 
+DeclaredIndexesIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int DeclaredIndexesIterator::class_versions_count =
+sizeof(DeclaredIndexesIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void DeclaredIndexesIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+DeclaredIndexesIterator::~DeclaredIndexesIterator() {}
+
+DeclaredIndexesIteratorState::DeclaredIndexesIteratorState() {}
+
+
+void DeclaredIndexesIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+  nameItState = NULL;
+}
+// </DeclaredIndexesIterator>
+
+
+// <IsDeclaredICIterator>
+const char* IsDeclaredICIterator::class_name_str = "IsDeclaredICIterator";
+IsDeclaredICIterator::class_factory<IsDeclaredICIterator>
+IsDeclaredICIterator::g_class_factory;
+
+const serialization::ClassVersion 
+IsDeclaredICIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int IsDeclaredICIterator::class_versions_count =
+sizeof(IsDeclaredICIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void IsDeclaredICIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+IsDeclaredICIterator::~IsDeclaredICIterator() {}
+
+// </IsDeclaredICIterator>
+
+
+// <DeclaredICsIterator>
+const char* DeclaredICsIterator::class_name_str = "DeclaredICsIterator";
+DeclaredICsIterator::class_factory<DeclaredICsIterator>
+DeclaredICsIterator::g_class_factory;
+
+const serialization::ClassVersion 
+DeclaredICsIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int DeclaredICsIterator::class_versions_count =
+sizeof(DeclaredICsIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void DeclaredICsIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+DeclaredICsIterator::~DeclaredICsIterator() {}
+
+DeclaredICsIteratorState::DeclaredICsIteratorState() {}
+
+
+void DeclaredICsIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+  nameItState = NULL;
+}
+// </DeclaredICsIterator>
 
 
 

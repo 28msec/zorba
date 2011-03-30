@@ -1,6 +1,6 @@
 module namespace decl = "http://www.test.com/";
 
-import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
+import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
 
 declare collection decl:coll1;
 

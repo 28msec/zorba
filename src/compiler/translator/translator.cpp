@@ -4515,7 +4515,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                                       uriStrExpr, qnameStrExpr);
 
     // dc:collection(xs:QName("example:coll1"))
-    function* fn_collection = GET_BUILTIN_FUNCTION(FN_ZORBA_XQDDF_COLLECTION_1);
+    function* fn_collection = GET_BUILTIN_FUNCTION(ZORBA_STORE_COLLECTIONS_STATIC_MANIP_COLLECTION_1);
     ZORBA_ASSERT(fn_collection != NULL);
     std::vector<expr_t> argColl;
     argColl.push_back(qnameExpr.getp());
@@ -4588,7 +4588,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                                       uriStrExpr, qnameStrExpr);
 
     // dc:collection(xs:QName("org:employees"))
-    function* fn_collection = GET_BUILTIN_FUNCTION(FN_ZORBA_XQDDF_COLLECTION_1);
+    function* fn_collection = GET_BUILTIN_FUNCTION(ZORBA_STORE_COLLECTIONS_STATIC_MANIP_COLLECTION_1);
     ZORBA_ASSERT(fn_collection != NULL);
     std::vector<expr_t> argColl;
     argColl.push_back(qnameExpr.getp());
@@ -4678,7 +4678,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                                       uriStrExpr, qnameStrExpr);
 
     // dc:collection(xs:QName("org:transactions"))
-    function* fn_collection = GET_BUILTIN_FUNCTION(FN_ZORBA_XQDDF_COLLECTION_1);
+    function* fn_collection = GET_BUILTIN_FUNCTION(ZORBA_STORE_COLLECTIONS_STATIC_MANIP_COLLECTION_1);
     ZORBA_ASSERT(fn_collection != NULL);
     std::vector<expr_t> argColl;
     argColl.push_back(qnameExpr.getp());
@@ -4749,7 +4749,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                                         toUriStrExpr, toQnameStrExpr);
 
     // dc:collection(xs:QName("org:employees"))
-    function* toFnCollection = GET_BUILTIN_FUNCTION(FN_ZORBA_XQDDF_COLLECTION_1);
+    function* toFnCollection = GET_BUILTIN_FUNCTION(ZORBA_STORE_COLLECTIONS_STATIC_MANIP_COLLECTION_1);
     ZORBA_ASSERT(toFnCollection != NULL);
     std::vector<expr_t> toArgColl;
     toArgColl.push_back(toQnameExpr.getp());
@@ -4789,7 +4789,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                                           fromUriStrExpr, fromQnameStrExpr);
 
     // dc:collection(xs:QName("org:transactions"))
-    function* fromFnCollection = GET_BUILTIN_FUNCTION(FN_ZORBA_XQDDF_COLLECTION_1);
+    function* fromFnCollection = GET_BUILTIN_FUNCTION(ZORBA_STORE_COLLECTIONS_STATIC_MANIP_COLLECTION_1);
     ZORBA_ASSERT(fromFnCollection != NULL);
     std::vector<expr_t> fromArgColl;
     fromArgColl.push_back(fromQnameExpr.getp());

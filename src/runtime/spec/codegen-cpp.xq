@@ -224,7 +224,7 @@ declare function local:create-context($iter, $function, $mapping) as xs:string?
                                else 
                                  "",
                                $gen:indent,
-                               'DECL(sctx, ', local:function-name($function), ',',
+                               'DECL_WITH_KIND(sctx, ', local:function-name($function), ',',
                                $gen:newline, gen:indent(3),
                                '(createQName("',
                                local:get-zorba-ns($sig/@prefix, $mapping), 
@@ -232,7 +232,9 @@ declare function local:create-context($iter, $function, $mapping) as xs:string?
                                for $param in $sig/zorba:param
                                return local:create-zorba-type($param, $mapping),
                                local:create-zorba-type($sig/zorba:output, $mapping),
-                               '));', $gen:newline, $gen:newline),
+                               '),', $gen:newline, gen:indent(3), 
+                               'FunctionConsts::', gen:function-kind($sig) ,');',
+                               $gen:newline, $gen:newline),
                               ''),
                 '')
 };

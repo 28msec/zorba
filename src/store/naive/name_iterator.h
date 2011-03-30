@@ -32,11 +32,13 @@ namespace zorba {
       T&                   theItems;
       typename T::iterator theIterator;
       bool                 theOpened;
-    
+      bool                 theDynamicCollections;
+
     public:
-      NameIterator(T& aItems)
+      NameIterator(T& aItems, bool aDynamicCollections = false)
         : theItems(aItems),
-          theOpened(false)
+          theOpened(false),
+          theDynamicCollections(aDynamicCollections)
       {
       }
     
@@ -55,11 +57,9 @@ namespace zorba {
       {
         if (theIterator == theItems.end())
         {
-           aResult = NULL;
+          aResult = NULL;
           return false;
-        }
-        else
-        {
+        } else {
           aResult = (*theIterator).first;
           ++theIterator;
           return true;

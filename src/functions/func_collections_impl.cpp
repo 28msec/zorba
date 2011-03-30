@@ -15,6 +15,7 @@
  */
 
 #include "functions/func_collections.h"
+#include "runtime/collections/collections.h"
 
 #include "compiler/expression/expr_consts.h"
 
@@ -24,7 +25,291 @@ namespace zorba
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue fn_zorba_xqddf_delete_nodes::ignoresSortedNodes(
+PlanIter_t zorba_store_collections_static_manip_collection::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new ZorbaCollectionIterator(sctx, loc, argv,
+      getName()->getNamespace() == static_context::ZORBA_STORE_COLLECTIONS);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t zorba_store_collections_static_manip_index_of::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new ZorbaIndexOfIterator(sctx, loc, argv,
+      getName()->getNamespace() == static_context::ZORBA_STORE_COLLECTIONS);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t zorba_store_collections_static_init_create_collection::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new ZorbaCreateCollectionIterator(sctx, loc, argv,
+      getName()->getNamespace() == static_context::ZORBA_STORE_COLLECTIONS);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t zorba_store_collections_static_init_delete_collection::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new ZorbaDeleteCollectionIterator(sctx, loc, argv,
+      getName()->getNamespace() == static_context::ZORBA_STORE_COLLECTIONS);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t zorba_store_collections_static_manip_insert_nodes::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new ZorbaInsertNodesIterator(
+      sctx, loc, argv, getName()->getNamespace() == static_context::ZORBA_STORE_COLLECTIONS);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t zorba_store_collections_static_manip_insert_nodes_first::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new ZorbaInsertNodesFirstIterator(sctx, loc, argv,
+      getName()->getNamespace() == static_context::ZORBA_STORE_COLLECTIONS);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t zorba_store_collections_static_manip_insert_nodes_last::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new ZorbaInsertNodesLastIterator(sctx, loc, argv,
+      getName()->getNamespace() == static_context::ZORBA_STORE_COLLECTIONS);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t zorba_store_collections_static_manip_insert_nodes_before::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new ZorbaInsertNodesBeforeIterator(sctx, loc, argv,
+      getName()->getNamespace() == static_context::ZORBA_STORE_COLLECTIONS);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t zorba_store_collections_static_manip_insert_nodes_after::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new ZorbaInsertNodesAfterIterator(sctx, loc, argv,
+      getName()->getNamespace() == static_context::ZORBA_STORE_COLLECTIONS);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t zorba_store_collections_static_manip_apply_insert_nodes::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new ZorbaApplyInsertNodesIterator(sctx, loc, argv,
+      getName()->getNamespace() == static_context::ZORBA_STORE_COLLECTIONS);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t zorba_store_collections_static_manip_apply_insert_nodes_first::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new ZorbaApplyInsertNodesFirstIterator(sctx, loc, argv,
+      getName()->getNamespace() == static_context::ZORBA_STORE_COLLECTIONS);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t zorba_store_collections_static_manip_apply_insert_nodes_last::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new ZorbaApplyInsertNodesLastIterator(sctx, loc, argv,
+      getName()->getNamespace() == static_context::ZORBA_STORE_COLLECTIONS);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t zorba_store_collections_static_manip_apply_insert_nodes_before::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new ZorbaApplyInsertNodesBeforeIterator(sctx, loc, argv,
+      getName()->getNamespace() == static_context::ZORBA_STORE_COLLECTIONS);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t zorba_store_collections_static_manip_apply_insert_nodes_after::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new ZorbaApplyInsertNodesAfterIterator(sctx, loc, argv,
+      getName()->getNamespace() == static_context::ZORBA_STORE_COLLECTIONS);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t zorba_store_collections_static_manip_delete_nodes::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new ZorbaDeleteNodesIterator(sctx, loc, argv,
+      getName()->getNamespace() == static_context::ZORBA_STORE_COLLECTIONS);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t zorba_store_collections_static_manip_delete_node_first::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new ZorbaDeleteNodesFirstIterator(sctx, loc, argv,
+      getName()->getNamespace() == static_context::ZORBA_STORE_COLLECTIONS);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t zorba_store_collections_static_manip_delete_node_last::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new ZorbaDeleteNodesLastIterator(sctx, loc, argv,
+      getName()->getNamespace() == static_context::ZORBA_STORE_COLLECTIONS);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t zorba_store_collections_static_manip_is_available_collection::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new IsAvailableCollectionIterator(sctx, loc, argv,
+      getName()->getNamespace() == static_context::ZORBA_STORE_COLLECTIONS);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t zorba_store_collections_static_manip_available_collections::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new AvailableCollectionsIterator(sctx, loc, argv,
+      getName()->getNamespace() == static_context::ZORBA_STORE_COLLECTIONS);
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+BoolAnnotationValue zorba_store_collections_static_manip_delete_nodes::ignoresSortedNodes(
     expr* fo,
     ulong input) const 
 {
@@ -35,7 +320,7 @@ BoolAnnotationValue fn_zorba_xqddf_delete_nodes::ignoresSortedNodes(
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue fn_zorba_xqddf_delete_nodes::ignoresDuplicateNodes(
+BoolAnnotationValue zorba_store_collections_static_manip_delete_nodes::ignoresDuplicateNodes(
     expr* fo, 
     ulong input) const 
 {

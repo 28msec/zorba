@@ -52,14 +52,10 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   store::Item_t tmp;
   store::Item_t pulItem;
   store::PUL* pul;
-  SchemaValidatorImpl validator(loc, theSctx);
-  store::ItemHandle<store::PUL> indexPul;
-  std::vector<store::Index*> indexes;
 
   dynamic_context* gdctx = planState.theGlobalDynCtx;
   CompilerCB* ccb = planState.theCompilerCB;
 
-  ICCheckerImpl icChecker(theSctx, gdctx);
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -78,77 +74,92 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       ZORBA_ERROR_LOC_DESC(XQP0019_INTERNAL_ERROR, loc,
                            "Expression returns more than one pending update lists");
     }
+    apply_updates(ccb, gdctx, theSctx, pul, loc);
+  }
 
-    // Get all the indexes that are associated with any of the collections that
-    // are going to be updated by this pul. Check which of those indices can be
-    // maintained incrementally, and pass this info back to the pul.
-    pul->getIndicesToRefresh(indexes);
+  STACK_END(state);
+}
 
-    ulong numIndices = (ulong)indexes.size();
+void
+apply_updates(
+      CompilerCB* ccb,
+      dynamic_context* gdctx,
+      static_context* sctx,
+      store::PUL* pul,
+      const QueryLoc& loc)
+{
+  SchemaValidatorImpl validator(loc, sctx);
+  ICCheckerImpl icChecker(sctx, gdctx);
+  std::vector<store::Index*> indexes;
+  store::ItemHandle<store::PUL> indexPul;
 
-    std::vector<IndexDecl*> zorbaIndexes(numIndices); 
+  // Get all the indexes that are associated with any of the collections that
+  // are going to be updated by this pul. Check which of those indices can be
+  // maintained incrementally, and pass this info back to the pul.
+  pul->getIndicesToRefresh(indexes);
 
-    for (ulong i = 0; i < numIndices; ++i)
+  ulong numIndices = (ulong)indexes.size();
+
+  std::vector<IndexDecl*> zorbaIndexes(numIndices); 
+
+  for (ulong i = 0; i < numIndices; ++i)
+  {
+    IndexDecl* zorbaIndex = sctx->lookup_index(indexes[i]->getName());
+    
+    if (zorbaIndex == NULL)
     {
-      IndexDecl* zorbaIndex = theSctx->lookup_index(indexes[i]->getName());
-      
-      if (zorbaIndex == NULL)
-      {
-        ZORBA_ERROR_LOC_PARAM(XDDY0021_INDEX_IS_NOT_DECLARED, loc,
-                              indexes[i]->getName()->getStringValue().c_str(), "");
-      }
-
-      if (zorbaIndex->getMaintenanceMode() == IndexDecl::DOC_MAP)
-      {
-        DocIndexer* docIndexer = zorbaIndex->getDocIndexer(ccb, loc);
-        assert(docIndexer != NULL);
-
-        docIndexer->setup(ccb);
-
-        pul->addIndexEntryCreator(zorbaIndex->getSourceName(0), indexes[i], docIndexer);
-      }
-
-      zorbaIndexes[i] = zorbaIndex;
+      ZORBA_ERROR_LOC_PARAM(XDDY0021_INDEX_IS_NOT_DECLARED, loc,
+                            indexes[i]->getName()->getStringValue().c_str(), "");
     }
 
-    try 
+    if (zorbaIndex->getMaintenanceMode() == IndexDecl::DOC_MAP)
     {
-      // Apply updates
-      pul->setValidator(&validator);
-      pul->setICChecker(&icChecker);
-      bool inherit = (theSctx->inherit_mode() == StaticContextConsts::inherit_ns);
-      pul->applyUpdates(inherit);
+      DocIndexer* docIndexer = zorbaIndex->getDocIndexer(ccb, loc);
+      assert(docIndexer != NULL);
 
-      // Rebuild the indices that must be rebuilt from scratch
-      if (numIndices > 0)
+      docIndexer->setup(ccb);
+
+      pul->addIndexEntryCreator(zorbaIndex->getSourceName(0), indexes[i], docIndexer);
+    }
+
+    zorbaIndexes[i] = zorbaIndex;
+  }
+
+  try 
+  {
+    // Apply updates
+    pul->setValidator(&validator);
+    pul->setICChecker(&icChecker);
+    bool inherit = (sctx->inherit_mode() == StaticContextConsts::inherit_ns);
+    pul->applyUpdates(inherit);
+
+    // Rebuild the indices that must be rebuilt from scratch
+    if (numIndices > 0)
+    {
+      indexPul = GENV_ITEMFACTORY->createPendingUpdateList();
+
+      for (ulong i = 0; i < numIndices; ++i)
       {
-        indexPul = GENV_ITEMFACTORY->createPendingUpdateList();
+        IndexDecl* zorbaIndex = zorbaIndexes[i];
 
-        for (ulong i = 0; i < numIndices; ++i)
+        if (zorbaIndex->getMaintenanceMode() == IndexDecl::REBUILD)
         {
-          IndexDecl* zorbaIndex = zorbaIndexes[i];
+          PlanIter_t buildPlan = zorbaIndex->getBuildPlan(ccb, loc);
 
-          if (zorbaIndex->getMaintenanceMode() == IndexDecl::REBUILD)
-          {
-            PlanIter_t buildPlan = zorbaIndex->getBuildPlan(ccb, loc);
+          PlanWrapper_t planWrapper = new PlanWrapper(buildPlan, ccb, NULL, NULL);
 
-            PlanWrapper_t planWrapper = new PlanWrapper(buildPlan, ccb, NULL, NULL);
-
-            indexPul->addRefreshIndex(zorbaIndex->getName(), planWrapper);
-          }
+          indexPul->addRefreshIndex(zorbaIndex->getName(), planWrapper);
         }
-
-        indexPul->applyUpdates(inherit);
       }
+
+      indexPul->applyUpdates(inherit);
     }
+  }
     catch (XQueryException& e)
     {
       set_source( e, loc );
       throw;
     }
-  }
-
-  STACK_END(state);
 }
 
 

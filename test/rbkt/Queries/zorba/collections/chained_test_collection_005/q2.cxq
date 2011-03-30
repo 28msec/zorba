@@ -1,7 +1,7 @@
-import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
+import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
 import module namespace ns = "http://example.org/datamodule/" at "../collections.xqdata";
 
 declare variable $input-context1 external;
 
-let $cur := xqddf:collection(xs:QName('ns:http'))[4]
-return xqddf:index-of(xs:QName('ns:http'), $cur)
+let $cur := manip:collection(xs:QName('ns:http'))[4]
+return manip:index-of(xs:QName('ns:http'), $cur)

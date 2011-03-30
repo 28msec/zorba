@@ -1,7 +1,7 @@
 
 import module namespace error = "http://www.example.com/error" at "error.xqlib";
 
-declare namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
+declare namespace init = "http://www.zorba-xquery.com/modules/store/static-collections/initialization";
 
 
-xqddf:create-collection($error:coll);
+init:create-collection($error:coll);

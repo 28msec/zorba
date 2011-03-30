@@ -42,12 +42,10 @@ void populate_context_any_uri(static_context* sctx);
 class fn_resolve_uri : public function
 {
 public:
-  fn_resolve_uri(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
-  {
-    theKind = (sig.paramCount() == 1 ?
-                FunctionConsts::FN_RESOLVE_URI_1 :
-                FunctionConsts::FN_RESOLVE_URI_2);
-  }
+  fn_resolve_uri(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   bool accessesDynCtx() const { return true; }
 

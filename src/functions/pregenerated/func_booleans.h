@@ -42,11 +42,10 @@ void populate_context_booleans(static_context* sctx);
 class op_is_same_node : public function
 {
 public:
-  op_is_same_node(const signature& sig)
-    :
-    function(sig, FunctionConsts::OP_IS_SAME_NODE_2)
-  {
-  }
+  op_is_same_node(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -56,11 +55,10 @@ public:
 class op_node_before : public function
 {
 public:
-  op_node_before(const signature& sig)
-    :
-    function(sig, FunctionConsts::OP_NODE_BEFORE_2)
-  {
-  }
+  op_node_before(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
@@ -70,11 +68,10 @@ public:
 class op_node_after : public function
 {
 public:
-  op_node_after(const signature& sig)
-    :
-    function(sig, FunctionConsts::OP_NODE_AFTER_2)
-  {
-  }
+  op_node_after(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
 
   CODEGEN_DECL();
 };
