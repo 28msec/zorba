@@ -449,7 +449,7 @@ ulong SimpleStore::createTreeId()
 /*******************************************************************************
 
 ********************************************************************************/
-XmlLoader* SimpleStore::getXmlLoader(error::ErrorManager* aErrorManager,
+XmlLoader* SimpleStore::getXmlLoader(ErrorManager* aErrorManager,
     const store::LoadProperties& loadProperties)
 {
 #ifndef ZORBA_STORE_MSDOM
@@ -1046,7 +1046,7 @@ store::Item_t SimpleStore::loadDocument(
     return root.getp();
   }
 
-  error::ErrorManager lErrorManager;
+  ErrorManager lErrorManager;
   std::auto_ptr<XmlLoader> loader(getXmlLoader(&lErrorManager, loadProperties));
 
   root = loader->loadXml(baseUri, docUri, stream);

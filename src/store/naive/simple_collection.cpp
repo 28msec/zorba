@@ -79,7 +79,7 @@ store::Item_t SimpleCollection::loadDocument(
     std::istream& stream,
     long position)
 {
-  error::ErrorManager lErrorManager;
+  ErrorManager lErrorManager;
   store::LoadProperties lLoadProperties;
 
   std::auto_ptr<XmlLoader> loader(GET_STORE().getXmlLoader(&lErrorManager,

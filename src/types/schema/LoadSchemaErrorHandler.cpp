@@ -91,7 +91,7 @@ void LoadSchemaErrorHandler::warning(const XERCES_CPP_NAMESPACE::SAXParseExcepti
                             << ", char " << e.getColumnNumber()
                             << "\n  Message: " << StrX(e.getMessage())
                             << XERCES_STD_QUALIFIER endl;
-  //error::ErrorManager errorManager;
+  //ErrorManager errorManager;
   //ZORBA_WARNING(&errorManager, XQST0059, StrX(e.getMessage()), _loc);
 }
 

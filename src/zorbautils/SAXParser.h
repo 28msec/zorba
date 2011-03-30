@@ -35,7 +35,7 @@ class ZORBA_DLL_PUBLIC SAXParser
   SAXParser(store::ItemFactory &factory, 
             const zstring& baseUri, 
             const zstring& docUri, 
-            error::ErrorManager* errorManager);
+            ErrorManager* errorManager);
 
   virtual ~SAXParser();
 
@@ -96,7 +96,7 @@ class ZORBA_DLL_PUBLIC SAXParser
   const zstring& theDocUri;
   bool theSucceeded;
   std::vector<store::Item_t> theStack;
-  error::ErrorManager* theErrorManager;
+  ErrorManager* theErrorManager;
   std::ostringstream* m_stream;
 };
 

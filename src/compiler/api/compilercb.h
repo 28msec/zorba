@@ -132,7 +132,7 @@ public:
   typedef std::map<short, static_context_t> SctxMap;
 
 public:  
-  error::ErrorManager     * theErrorManager;
+  ErrorManager            * theErrorManager;
 
   SctxMap                   theSctxMap;
 
@@ -156,7 +156,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  CompilerCB(error::ErrorManager*, long timeout = -1);
+  CompilerCB(ErrorManager*, long timeout = -1);
 
   CompilerCB(const CompilerCB& ccb);
 

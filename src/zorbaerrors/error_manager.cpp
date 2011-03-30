@@ -15,17 +15,10 @@
  */
 
 #include "util/stl_util.h"
-#include "zorbaerrors/error_manager.h"
 
-#ifndef NDEBUG
-ZORBA_DLL_PUBLIC bool g_abort_on_error = false;
-#define ERROR_ABORT()   do { if (g_abort_on_error) abort(); } while(0)
-#else
-#define ERROR_ABORT()   ((void)0)
-#endif /* NDEBUG */
+#include "error_manager.h"
 
 namespace zorba {
-namespace error {
 
 ErrorManager::ErrorManager() {
 }
@@ -34,6 +27,5 @@ ErrorManager::~ErrorManager() {
   ztd::delete_ptr_seq( errors_ );
 }
 
-} // namespace error
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

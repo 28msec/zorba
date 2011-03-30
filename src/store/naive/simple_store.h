@@ -39,10 +39,7 @@ namespace zorba
 {
   class StoreManager;
 
-namespace error
-{
-  class ErrorManager;
-}
+class ErrorManager;
 
 namespace store
 {
@@ -180,7 +177,7 @@ public:
 
   long getTraceLevel() const { return theTraceLevel; }
 
-  XmlLoader* getXmlLoader(error::ErrorManager*, const store::LoadProperties& loadProperties);
+  XmlLoader* getXmlLoader(ErrorManager*, const store::LoadProperties& loadProperties);
 
   ulong createCollectionId();
 

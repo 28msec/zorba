@@ -32,8 +32,8 @@ namespace zorba {
   class SerializerImpl : public Serializer
   {
     private:
-      error::ErrorManager theErrorManager;
-      zorba::ErrorHandler* theErrorHandler;
+      ErrorManager theErrorManager;
+      ErrorHandler* theErrorHandler;
       bool                own_error_handler;
       mutable serializer theInternalSerializer;
 

@@ -73,7 +73,7 @@ namespace zorba { namespace simplestore {
 ********************************************************************************/
 DtdXmlLoader::DtdXmlLoader(
     BasicItemFactory* factory,
-    error::ErrorManager* errorManager,
+    ErrorManager* errorManager,
     bool dataguide)
   :
   XmlLoader(factory, errorManager, dataguide),

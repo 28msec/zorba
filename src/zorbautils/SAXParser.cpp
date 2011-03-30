@@ -23,7 +23,7 @@ zorba::SAXParser::SAXParser(
     store::ItemFactory &factory, 
     const zstring& baseUri, 
     const zstring& docUri, 
-    error::ErrorManager* errorManager)
+    ErrorManager* errorManager)
   :
   theFactory(factory),
   theBaseUri(baseUri),

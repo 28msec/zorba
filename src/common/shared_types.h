@@ -25,10 +25,7 @@
 namespace zorba 
 {
 
-namespace error 
-{
-  class ErrorManager;
-}
+class ErrorManager;
   
 namespace types 
 {

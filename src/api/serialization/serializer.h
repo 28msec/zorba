@@ -81,7 +81,7 @@ protected:
   static const char	END_OF_LINE;
 
 protected:
-  error::ErrorManager* theErrorManager;
+  ErrorManager* theErrorManager;
 
   // Serialization parameters
   short int byte_order_mark;       // "yes" or "no", implemented
@@ -112,7 +112,7 @@ protected:
   std::vector<zstring> cdata_section_elements_tokens;
 
 public:
-  serializer(error::ErrorManager*);
+  serializer(ErrorManager*);
 
   virtual ~serializer();
 

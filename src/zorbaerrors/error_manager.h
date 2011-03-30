@@ -30,10 +30,12 @@
 #include "xquery_exception.h"
 
 namespace zorba {
-namespace error {
+
+///////////////////////////////////////////////////////////////////////////////
 
 /**
- * TODO
+ * An %ErrorManager is used to collect errors (and warnings) that can not be
+ * issued immediately and must be deferred until some later time.
  */
 class ZORBA_DLL_PUBLIC ErrorManager {
 public:
@@ -42,22 +44,49 @@ public:
   ErrorManager();
   ~ErrorManager();
 
+  /**
+   * Adds an exception to the list of exceptions.
+   *
+   * @param exception The exception to add.  The %ErrorManager takes ownership
+   * of the exception.
+   */
   void addError( ZorbaException const *exception ) {
     errors_.push_back( exception );
   }
 
+  /**
+   * Adds an exception to the list of exceptions.
+   *
+   * @param exception The exception to add.  The %ErrorManager takes ownership
+   * of the exception.
+   */
   void addError( std::auto_ptr<ZorbaException> exception ) {
     addError( exception.release() );
   }
 
+  /**
+   * Adds an exception to the list of exceptions.
+   *
+   * @param exception The exception to add.  The exception is cloned.
+   */
   void addError( ZorbaException const &exception ) {
     addError( exception.clone() );
   }
 
-  bool hasErrors() {
+  /**
+   * Checks whether there are any errors.
+   *
+   * @return Returns \c true only if there is at least one error.
+   */
+  bool hasErrors() const {
     return !errors_.empty();
   }
 
+  /**
+   * Gets the list of exceptions.
+   *
+   * @return Returns said exceptions.
+   */
   errors_type const& getErrors() const {
     return errors_;
   }
@@ -66,7 +95,7 @@ private:
   errors_type errors_;
 };
 
-} // namespace error
+///////////////////////////////////////////////////////////////////////////////
 
 /**
  * \internal

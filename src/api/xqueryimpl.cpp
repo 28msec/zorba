@@ -141,7 +141,7 @@ XQueryImpl::XQueryImpl()
   //      those should also go away and errors should be fired from the error manager
   //      into the error handler
   theErrorHandler = new DefaultErrorHandler();
-  theErrorManager = new error::ErrorManager();
+  theErrorManager = new ErrorManager();
 
   theCompilerCB = new CompilerCB(theErrorManager);
 

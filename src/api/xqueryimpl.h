@@ -190,7 +190,7 @@ class XQueryImpl : public XQuery , public ::zorba::serialization::SerializeBaseC
   bool                               theIsClosed;
 
   // utility stuff
-  error::ErrorManager              * theErrorManager;
+  ErrorManager                     * theErrorManager;
   ErrorHandler                     * theErrorHandler;
   bool                               theUserErrorHandler;
 

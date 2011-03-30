@@ -30,10 +30,7 @@
 namespace zorba 
 { 
   
-namespace error
-{
-  class ErrorManager; 
-}
+class ErrorManager; 
 
 namespace store 
 {
@@ -83,7 +80,7 @@ protected:
 
   BasicItemFactory               * theFactory;
 
-  error::ErrorManager            * theErrorManager;
+  ErrorManager                   * theErrorManager;
 
   long                             theTraceLevel;
 
@@ -95,7 +92,7 @@ protected:
 public:
   XmlLoader(
         BasicItemFactory* factory,
-        error::ErrorManager* errorManager,
+        ErrorManager* errorManager,
         bool dataguide)
     :
     ctxt(NULL),
@@ -156,7 +153,7 @@ protected:
 public:
   FastXmlLoader(
         BasicItemFactory* factory,
-        error::ErrorManager* errorManager,
+        ErrorManager* errorManager,
         bool dataguide);
 
   ~FastXmlLoader();
@@ -277,7 +274,7 @@ protected:
 public:
   DtdXmlLoader(
         BasicItemFactory* factory,
-        error::ErrorManager* errorManager,
+        ErrorManager* errorManager,
         bool dataguide);
 
   ~DtdXmlLoader();

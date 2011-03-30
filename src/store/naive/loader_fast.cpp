@@ -72,7 +72,7 @@ namespace zorba { namespace simplestore {
 ********************************************************************************/
 FastXmlLoader::FastXmlLoader(
     BasicItemFactory* factory,
-    error::ErrorManager* errorManager,
+    ErrorManager* errorManager,
     bool dataguide)
   :
   XmlLoader(factory, errorManager, dataguide),

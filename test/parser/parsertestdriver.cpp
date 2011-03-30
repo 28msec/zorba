@@ -254,7 +254,7 @@ void printEndTimeInfo( Timer &lTimer, std::vector<ulong> &lTimes, unsigned lNumb
 
 int parseCode( int status, std::string &lQueryFileString )
 {
-  error::ErrorManager* errormgr = NULL;
+  ErrorManager* errormgr = NULL;
   CompilerCB aCompilerCB(errormgr);
   xquery_driver lDriver(&aCompilerCB);
 

@@ -1972,7 +1972,7 @@ const char serializer::END_OF_LINE = '\n';
 /*******************************************************************************
 
 ********************************************************************************/
-serializer::serializer(error::ErrorManager* aErrorManager)
+serializer::serializer(ErrorManager* aErrorManager)
   :
   theErrorManager(aErrorManager)
 {

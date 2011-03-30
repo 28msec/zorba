@@ -100,7 +100,7 @@ void CompilerCB::config::serialize(::zorba::serialization::Archiver& ar)
 /*******************************************************************************
 
 ********************************************************************************/
-CompilerCB::CompilerCB(error::ErrorManager* errmgr, long timeout)
+CompilerCB::CompilerCB(ErrorManager* errmgr, long timeout)
   :
   theErrorManager(errmgr),
   theRootSctx(0),
