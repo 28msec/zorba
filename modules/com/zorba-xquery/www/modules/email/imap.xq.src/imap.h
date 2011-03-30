@@ -16,6 +16,7 @@
 #ifndef ZORBA_EMAILMODULE_IMAP_H
 #define ZORBA_EMAILMODULE_IMAP_H
 
+#include <zorba/zorbastring.h>
 
 #include "imap_function.h"
 

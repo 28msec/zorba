@@ -17,8 +17,10 @@
 #ifndef ZORBA_EMAILMODULE_IMAPFUNCTION_H
 #define ZORBA_EMAILMODULE_IMAPFUNCTION_H
 
-#include <zorba/external_function.h>
+#include <string>
 
+#include <zorba/external_function.h>
+#include <zorba/error.h>
 
 
 namespace zorba { namespace emailmodule {

@@ -1,10 +1,10 @@
 
-import module namespace util = "http://www.zorba-xquery.com/modules/reflection";
+import module namespace refl = "http://www.zorba-xquery.com/modules/reflection";
 
 declare function local:eval($query as xs:string, $someparam as xs:integer) 
 {
   let $x := $someparam 
-  return util:eval-simple($query)
+  return refl:eval-simple($query)
 };
 
 

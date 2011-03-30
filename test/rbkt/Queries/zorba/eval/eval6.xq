@@ -1,3 +1,3 @@
-import module namespace util = "http://www.zorba-xquery.com/modules/reflection";
+import module namespace refl = "http://www.zorba-xquery.com/modules/reflection";
 
-(util:eval-simple("declare variable $x := 1; $x")) + $x
+(refl:eval-simple("declare variable $x := 1; $x")) + $x
