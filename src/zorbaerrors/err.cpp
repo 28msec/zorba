@@ -119,10 +119,10 @@ location const location::empty;
 parameters const parameters::empty;
 
 parameters::value_type parameters::lookup_param( size_type i ) const {
+  assert( i >= 1 );
   // TODO: should be changed to assert() at some point
   if ( i > params_.size() )
     return value_type();
-  assert( i >= 1 );
   value_type param( params_[ i - 1 ] );
   if ( !param.empty() && param[0] == ZED_PREFIX[0] )
     param = zorba::err::dict::lookup( param );
