@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,7 +22,7 @@
 #include "zorbatypes/zstring.h"
 #include "zorbaserialization/serialization_engine.h"
 
-namespace zorba 
+namespace zorba
 {
 
 class DecimalFormat : public SimpleRCObject
@@ -45,7 +45,14 @@ public:
     ar & theParams;
   }
 
-public:  
+protected:
+  // Returns true if the given property represents characters used in a
+  // picture string. These properties are decimal-separator-sign,
+  // grouping-separator, percent-sign, per-mille-sign, zero-digit,
+  // digit-sign, and pattern-separator-sign.
+  static bool isPictureStringProperty(zstring propertyName);
+
+public:
   DecimalFormat(
         bool isDefault,
         const store::Item_t& qname,
@@ -56,6 +63,8 @@ public:
   const store::Item* getName() const { return theName.getp(); }
 
   const param_vector_type* getParamVector() const { return &theParams; }
+
+  bool validate(const QueryLoc& loc) const;
 };
 
 

@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -385,7 +385,10 @@ extern entry const dict_en[] = {
   { "XQST0089", "\"$1\": duplicate variable name" },
   { "XQST0090", "\"$1\": invalid character reference" },
   { "XQST0093", "\"$1\": module must not depend on itself" },
+  { "XQST0097", "the decimal format declaration specifies a value that is not valid for a property" },
+  { "XQST0098", "the properties representing characters used in a picture string do not each have distinct values" },
   { "XQST0106", "\"$1\": multiple function annotations with this name" },
+  { "XQST0111", "the query contains two decimal formats with the same name, or two default decimal formats" },
   { "XQTY0024", "element constructor content sequence must not have an attribute node following a non-attribute node" },
   { "XQTY0030", "validate argument must be exactly one document or element node" },
   { "XQTY0086", "typed value of copied element or attribute node is namespace-sensitive when construction mode is preserve and copy-namespaces mode is no-preserve" },
@@ -429,7 +432,7 @@ extern entry const dict_en[] = {
   { "XUTY0013", "TODO" },
   { "XUTY0022", "TODO" },
 
-  ///////////////////////////////////////////////////////////////////////////// 
+  /////////////////////////////////////////////////////////////////////////////
 
   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   // !!!!! THIS MUST BE SORTED BY KEY !!!!!

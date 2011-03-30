@@ -357,7 +357,7 @@ bool static_context::is_builtin_module(const zstring& ns)
 
 /***************************************************************************//**
   Static method to check if a given target namespace identifies a zorba non
-  pure builtin module, i.e. a builtin module that, in addition to builtin 
+  pure builtin module, i.e. a builtin module that, in addition to builtin
   external functions, contains variable declarations and/or udfs.
 ********************************************************************************/
 bool static_context::is_non_pure_builtin_module(const zstring& ns)
@@ -1451,7 +1451,7 @@ void static_context::remove_stop_words_uri_resolver(
     InternalFullTextURIResolver* aResolver)
 {
   ztd::erase_1st_if(
-    theStopWordsResolvers, 
+    theStopWordsResolvers,
     std::bind2nd( std::equal_to<InternalFullTextURIResolver*>(), aResolver )
   );
 }
@@ -1592,7 +1592,7 @@ std::vector<ModuleImportChecker*> static_context::getAllModuleImportCheckers() c
 /////////////////////////////////////////////////////////////////////////////////
 
 bool static_context::validate(
-    store::Item* rootElement, 
+    store::Item* rootElement,
     store::Item* validatedResult,
     StaticContextConsts::validation_mode_t validationMode)
 {
@@ -1602,23 +1602,23 @@ bool static_context::validate(
 
 
 bool static_context::validate(
-    store::Item* rootElement, 
-    store::Item* validatedResult, 
-    const zstring& targetNamespace, 
+    store::Item* rootElement,
+    store::Item* validatedResult,
+    const zstring& targetNamespace,
     StaticContextConsts::validation_mode_t validationMode)
 {
   if ( !rootElement->isNode() ||
        (rootElement->getNodeKind() != store::StoreConsts::documentNode &&
        rootElement->getNodeKind() != store::StoreConsts::elementNode))
     return false;
-     
+
   if ( rootElement->isValidated() )
     return false;
-  
+
 #ifndef ZORBA_NO_XMLSCHEMA
 
   TypeManager* tm = this->get_typemanager();
-  zstring docUri; 
+  zstring docUri;
   rootElement->getDocumentURI(docUri);
 
   if (validationMode != StaticContextConsts::skip_validation)
@@ -1627,7 +1627,7 @@ bool static_context::validate(
     store::Item_t typeName;
     QueryLoc loc;
 
-    ParseConstants::validation_mode_t mode = 
+    ParseConstants::validation_mode_t mode =
         (validationMode == StaticContextConsts::strict_validation ?
             ParseConstants::val_strict :
             ParseConstants::val_lax );
@@ -1643,25 +1643,25 @@ bool static_context::validate(
 
   }
 #endif //ZORBA_NO_XMLSCHEMA
-  
+
   return false;
 }
 
 bool static_context::validateSimpleContent(
-    zstring& stringValue, 
-    store::Item* typeQName, 
+    zstring& stringValue,
+    store::Item* typeQName,
     std::vector<store::Item_t>& resultList)
 {
   store::NsBindings bindings;
   this->get_namespace_bindings(bindings);
   store::Item_t lTypeQName(typeQName);
-  
+
   Validator::processTextValue(
       this, this->get_typemanager(), bindings,
       lTypeQName, stringValue, resultList);
   return true;
 }
-  
+
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  Type Manager                                                               //
@@ -2089,7 +2089,7 @@ void static_context::getLocalVariables(std::vector<var_expr_t>& vars) const
         if (vars[i]->get_name()->equals((*ite).first))
           break;
       }
-      
+
       if (i == numVars)
         vars.push_back((*ite).second);
     }
@@ -2318,8 +2318,8 @@ function* static_context::lookup_fn(
 
 
 /***************************************************************************//**
-  Search "this" static context a function with the given qname and arity. If no 
-  such function binding is found return NULL. Otherwise, return the associated 
+  Search "this" static context a function with the given qname and arity. If no
+  such function binding is found return NULL. Otherwise, return the associated
   function object (which may be NULL if the function was disabled).
 ********************************************************************************/
 function* static_context::lookup_local_fn(
@@ -2332,7 +2332,7 @@ function* static_context::lookup_local_fn(
   if (theFunctionMap != NULL && theFunctionMap->get(qname2, fi))
   {
     function* f = fi.theFunction.getp();
-    
+
     if (f->getArity() == arity || f->isVariadic())
     {
       return (fi.theIsDisabled ? NULL : f);
@@ -2350,7 +2350,7 @@ function* static_context::lookup_local_fn(
       }
     }
   }
-  
+
   return NULL;
 }
 
@@ -3586,7 +3586,7 @@ void static_context::add_decimal_format(
          !decimalFormat->isDefault() &&
          format->getName()->equals(decimalFormat->getName())))
     {
-      ZORBA_ERROR_LOC(XQDY0096, loc);
+      ZORBA_ERROR_LOC(XQST0111, loc);
     }
   }
 

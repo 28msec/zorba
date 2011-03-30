@@ -1744,7 +1744,7 @@ void normalize_fo(fo_expr* foExpr)
     {
       if (TypeOps::is_subtype(tm,
                               *paramType,
-                              *theRTM.ANY_ATOMIC_TYPE_STAR, 
+                              *theRTM.ANY_ATOMIC_TYPE_STAR,
                               foExpr->get_loc()))
       {
         argExpr = wrap_in_atomization(argExpr);
@@ -2707,6 +2707,7 @@ void* begin_visit(const DecimalFormatNode& v)
   }
 
   DecimalFormat_t df = new DecimalFormat(v.is_default, qnameItem, v.param_list);
+  df->validate(loc);
   theSctx->add_decimal_format(df, loc);
 
   return no_state;
@@ -3239,7 +3240,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 
     // Merge the exported sctx of the imported module into the sctx of the
     // current module. Note: We catch duplicate functions / vars in
-    // theModulesInfo->globalSctx. We can safely ignore the return value. 
+    // theModulesInfo->globalSctx. We can safely ignore the return value.
     // We might even be able to assert() here (not sure though).
     theSctx->import_module(importedSctx.getp(), loc);
 
@@ -9011,11 +9012,11 @@ void* begin_visit(const FunctionCall& v)
 
   if (f != NULL && f->getXQueryVersion() > theSctx->xquery_version())
   {
-    zstring version = 
+    zstring version =
     (f->getXQueryVersion() == StaticContextConsts::xquery_version_1_0 ? "1.0" : "1.1");
 
     ZORBA_ERROR_LOC_DESC_OSS(XPST0017, loc,
-                             "The " << f->getName()->getStringValue() 
+                             "The " << f->getName()->getStringValue()
                              << "() function is only available in the XQuery "
                              << version << " processing mode.");
   }
@@ -9474,22 +9475,22 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       std::vector<var_expr_t> inscopeVars;
       theSctx->getVariables(inscopeVars);
       ulong numVars = inscopeVars.size();
-      
+
       for (ulong i = 0; i < numVars; ++i)
       {
         if (inscopeVars[i]->get_kind() == var_expr::prolog_var)
           continue;
-          
-        var_expr_t evalVar = create_var(loc, 
+
+        var_expr_t evalVar = create_var(loc,
                                         inscopeVars[i]->get_name(),
                                         var_expr::eval_var,
                                         inscopeVars[i]->get_return_type());
-        
+
         // At this point, the domain expr of an eval var is always another var.
         // However, that other var may be later inlined, so in general, the domain
         // expr of an eval var may be any expr.
         expr_t valueExpr = inscopeVars[i].getp();
-        
+
         static_cast<eval_expr*>(resultExpr.getp())->add_var(evalVar, valueExpr);
       }
     }
@@ -9590,7 +9591,7 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
     ZORBA_ERROR_LOC_PARAM(XPST0017, loc, qname->get_qname(), ztd::to_string(arity));
   }
 
-  // If it is a builtin function F with signature (R, T1, ..., TN) , wrap it 
+  // If it is a builtin function F with signature (R, T1, ..., TN) , wrap it
   // in a udf UF: function UF(x1 as T1, ..., xN as TN) as R { F(x1, ... xN) }
   if (!fn->isUdf())
   {
@@ -10167,7 +10168,7 @@ void begin_check_boundary_whitespace()
 
 /*******************************************************************************
   Whitespace checking. Checks if v might be a whitespace (check of the following
-  boundary can only be checked during the next invocation), and if the items 
+  boundary can only be checked during the next invocation), and if the items
   saved in thePossibleWSContentStack is really boundary whitespace.
 ********************************************************************************/
 void check_boundary_whitespace(const DirElemContent& v)
