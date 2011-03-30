@@ -18,6 +18,7 @@
 #include <cstring>
 
 #include <zorba/zorba.h>
+#include <zorba/iterator.h>
 #include <zorba/store_consts.h>
 
 #include <jansson.h>
