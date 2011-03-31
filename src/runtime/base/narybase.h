@@ -35,7 +35,7 @@ extern const int g_NaryBaseIterator_class_versions_count;
   Superclass for all iterators which have N child iterators and no additional
   data members. 
 ********************************************************************************/
-template <class IterType, class StateType = PlanIteratorState>
+template <class IterType, class StateType>
 class NaryBaseIterator : public Batcher<IterType>
 {
 protected:

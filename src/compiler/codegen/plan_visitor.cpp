@@ -84,7 +84,6 @@
 #include "runtime/indexing/index_ddl.h"
 #include "runtime/debug/zorba_debug_iterator.h"
 #include "runtime/eval/eval.h"
-#include "runtime/collections/collections.h"
 #include "runtime/function_item/function_item.h"
 #include "runtime/function_item/function_item_iter.h"
 #include "runtime/function_item/dynamic_fncall_iterator.h"

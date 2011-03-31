@@ -156,9 +156,11 @@ public:
   {
   }
 
+  virtual ~ZorbaCollectionIteratorHelper() {}
+
   void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, (NaryBaseIterator<ZorbaCollectionIteratorHelper, State>*)this);
+    serialize_baseclass(ar, (NaryBaseIterator<Iter, State>*)this);
     ar & theDynamicCollection;
   }
 };

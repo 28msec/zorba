@@ -19,7 +19,7 @@
     <zorba:fwd-decl ns="zorba">StaticallyKnownCollection</zorba:fwd-decl>
     <zorba:include form="Quoted">runtime/collections/collections_base.h</zorba:include>
 </zorba:header>
-  
+
 <!--
 /*******************************************************************************
 ********************************************************************************/
