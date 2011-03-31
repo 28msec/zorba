@@ -279,5 +279,5 @@ std::ostream& operator<<( std::ostream &o, type t );
 #include <zorba/internal/err.h>
 #include <zorba/internal/qname.h>
 
-#endif /* ZORBA_ERR_H */
+#endif /* ZORBA_ERR_API_H */
 /* vim:set et sw=2 ts=2: */
