@@ -50,7 +50,7 @@ MARK_AS_ADVANCED(CCLIENT_INCLUDE)
 # Look for the library.
 FIND_LIBRARY(
   CCLIENT_LIBRARY
-  NAMES c-client c-client4 cclient.lib c-client/cclient.lib c-client/Release/cclient.lib
+  NAMES libc-client.a c-client libc-client4.a c-client4 cclient.lib c-client/cclient.lib c-client/Release/cclient.lib
   PATHS ${CCLIENT_LIBRARY_DIR} /usr/local/lib /opt/local/lib /usr/lib
   DOC "Library to link against for the email support (c-client, libc-client or cclient.lib)")
 
