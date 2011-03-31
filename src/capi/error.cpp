@@ -28,6 +28,46 @@ XQC_Error Error::convert_xquery_error( zorba::Error const &error ) {
   if ( error == XQP0000_NO_ERROR )
     return XQC_NO_ERROR;
 
+  ////////// Special-cases ////////////////////////////////////////////////////
+
+  if ( error == FOCA0001 // Input value too large for decimal
+    || error == FOCA0002 // Invalid lexical value
+    || error == FOCA0003 // Input value too large for integer.
+    || error == FOCA0005 // NaN supplied as float/double value.
+    || error == FOCA0006 // ... too many digits of precision.
+    || error == FOCH0001 // Code-point not valid.
+    || error == FOCH0002 // Unsupported collation.
+    || error == FOCH0003 // Unsupported normalization form.
+    || error == FOCH0004 // Collation does not support collation units.
+    || error == FODC0004 // Invalid argument to fn:collection.
+    || error == FODC0005 // Invalid argument to fn:doc or fn:doc-available.
+    || error == FODT0003 // Invalid timezone value.
+    || error == FONS0004 // No namespace found for prefix.
+    || error == FONS0005 // Base-uri not defined in the static context.
+    || error == FORG0001 // Invalid value for cast/constructor.
+    || error == FORG0002 // Invalid argument to fn:resolve-uri().
+    || error == FORG0003 // fn:zero-or-one called ... > 1 item.
+    || error == FORG0004 // fn:one-or-more called ... 0 items.
+    || error == FORG0005 // fn:exactly-one called ... 0 or > 1 item.
+    || error == FORG0006 // Invalid argument type.
+    || error == FORG0008 // Both arguments to fn:dateTime have a timezone.
+    || error == FORG0009 // Error in resolving a relative URI ....
+    || error == FORX0001 // Invalid regular expression flags.
+    || error == FORX0002 // Invalid regular expression.
+    || error == FORX0003 // Regular expression matches zero-length string.
+    || error == FORX0004 // Invalid replacement string.
+    || error == FOTY0012 // Argument node does not have a typed value.
+  )
+    return XQC_INVALID_ARGUMENT;
+
+  if ( error == FODC0001 /* No context document. */ )
+    return XQC_NO_CURRENT_ITEM;
+
+  if ( error == FODC0003 /* Function stability not defined. */ )
+    return XQC_INTERNAL_ERROR;
+
+  /////////////////////////////////////////////////////////////////////////////
+
   switch ( error.type() ) {
     case XQUERY_DYNAMIC:
       return XQC_DYNAMIC_ERROR;
@@ -55,67 +95,6 @@ XQC_Error Error::convert_xquery_error( zorba::Error const &error ) {
     default:                            // suppresses warning
       break;
   }
-
-  if ( error == FOER0000 // Unidentified error.
-    || error == FOAR0001 // Division by zero.
-    || error == FOAR0002 // Numeric operation overflow/underflow.
-  ) {
-    //
-    // These are runtime, data-driven errors, so "dynamic error" seems like the
-    // best fit.
-    //
-    return XQC_DYNAMIC_ERROR;
-  }
-
-  if ( error == FOCA0001 // Input value too large for decimal
-    || error == FOCA0002 // Invalid lexical value
-    || error == FOCA0003 // Input value too large for integer.
-    || error == FOCA0005 // NaN supplied as float/double value.
-    || error == FOCA0006 // ... too many digits of precision.
-    || error == FOCH0001 // Code-point not valid.
-    || error == FOCH0002 // Unsupported collation.
-    || error == FOCH0003 // Unsupported normalization form.
-    || error == FOCH0004 // Collation does not support collation units.
-  )
-    return XQC_INVALID_ARGUMENT;
-
-  if ( error == FODC0001 /* No context document. */ )
-    return XQC_NO_CURRENT_ITEM;
-
-  if ( error == FODC0002 /* Error retrieving resource. */ )
-    return XQC_DYNAMIC_ERROR;
-
-  if ( error == FODC0003 /* Function stability not defined. */ )
-    return XQC_INTERNAL_ERROR;
-
-  if ( error == FODC0004 // Invalid argument to fn:collection.
-    || error == FODC0005 // Invalid argument to fn:doc or fn:doc-available.
-  )
-    return XQC_INVALID_ARGUMENT;
-
-  if ( error == FODT0001 // Overflow/underflow in date/time operation.
-    || error == FODT0002 // Overflow/underflow in duration operation.
-  )
-    return XQC_DYNAMIC_ERROR;
-
-  if ( error == FODT0003 // Invalid timezone value.
-    || error == FONS0004 // No namespace found for prefix.
-    || error == FONS0005 // Base-uri not defined in the static context.
-    || error == FORG0001 // Invalid value for cast/constructor.
-    || error == FORG0002 // Invalid argument to fn:resolve-uri().
-    || error == FORG0003 // fn:zero-or-one called ... > 1 item.
-    || error == FORG0004 // fn:one-or-more called ... 0 items.
-    || error == FORG0005 // fn:exactly-one called ... 0 or > 1 item.
-    || error == FORG0006 // Invalid argument type.
-    || error == FORG0008 // Both arguments to fn:dateTime have a timezone.
-    || error == FORG0009 // Error in resolving a relative URI ....
-    || error == FORX0001 // Invalid regular expression flags.
-    || error == FORX0002 // Invalid regular expression.
-    || error == FORX0003 // Regular expression matches zero-length string.
-    || error == FORX0004 // Invalid replacement string.
-    || error == FOTY0012 // Argument node does not have a typed value.
-  )
-    return XQC_INVALID_ARGUMENT;
 
   ////////// Zorba errors /////////////////////////////////////////////////////
 
@@ -172,14 +151,6 @@ XQC_Error Error::convert_xquery_error( zorba::Error const &error ) {
 XQC_Error Error::handle_and_convert_queryexception( XQC_ErrorHandler *handler,
                                                     XQueryException const &xe ) {
   if ( handler ) {
-// TODO This is how to call a Zorba_ErrorHandler
-//       handler->error(handler,
-//         Error::convert_xquery_error(xe.getErrorCode()),
-//         ZorbaException::getErrorCodeAsString(xe.getErrorCode()).c_str(),
-//         xe.getDescription().c_str(),
-//         xe.getQueryURI().c_str(),
-//         xe.getLineBegin(),
-//         xe.getColumnBegin());
     handler->error(handler,
       Error::convert_xquery_error( xe.error() ),
       NULL, // TODO: no error code uri??
