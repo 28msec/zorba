@@ -26,6 +26,7 @@ namespace ztd {
 ////////// c_str() /////////////////////////////////////////////////////////////
 
 /**
+ * \internal
  * Gets the \c char* to the given string.
  * 
  * @tparam StringType The string's type.
@@ -38,6 +39,7 @@ typename StringType::const_pointer c_str( StringType const &s ) {
 }
 
 /**
+ * \internal
  * Specialization of global c_str() for \c char* argument.
  *
  * @param s The C string to get the \c char* of.
