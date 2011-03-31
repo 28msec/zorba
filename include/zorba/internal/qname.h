@@ -151,5 +151,5 @@ public:
 
 } // namespace internal
 } // namespace zorba
-#endif /* ZORBA_ERR_H */
+#endif /* ZORBA_INTERNAL_QNAME_H */
 /* vim:set et sw=2 ts=2: */

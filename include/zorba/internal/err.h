@@ -326,5 +326,5 @@ inline parameters make_parameters( T1 const &p1, T2 const &p2, T3 const &p3 ) {
 } // namespace err
 } // namespace internal
 } // namespace zorba
-#endif /* ZORBA_ERR_H */
+#endif /* ZORBA_INTERNAL_ERR_H */
 /* vim:set et sw=2 ts=2: */
