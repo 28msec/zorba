@@ -6,16 +6,21 @@
  : The application/mashup creator does not need to know the
  : specifics of <a href="http://www.xmlrpc.com/spec" target="_blank">XML-RPC</a> to use this module.
  :
- : @author William Candillon william.candillon@28msec.com
- :
  : Usage:
- : xmlrpc:invoke("http://www.advogato.org/XMLRPC", 
- :               "test.sumprod", 
- :               (5, 7)
- :               )
+ : <pre>xmlrpc:invoke("http://www.advogato.org/XMLRPC", "test.sumprod", (5, 7))</pre>
+ : <pre>xmlrpc:invoke("http://www.advogato.org/XMLRPC", "test.capitalize", "HelloWorld")</pre>
+ : <pre>xmlrpc:invoice("http://www.example.com/XMLRPC", "test.foo", ("some-parameter", 
+ :                      &lt;struct&gt;
+ :                        &lt;member&gt;
+ :                          &lt;name&gt;Foo&lt;/name&gt;
+ :                          &lt;value&gt;&lt;string&gt;Bar&lt;/string&gt;&lt;/value&gt;
+ :                        &lt;/member&gt;
+ :                      &lt;/struct&gt;))</pre>
  :
- : @see <a href="http://www.xmlrpc.com/spec" target="_blank">Specification</a>
- : @see <a href="http://en.wikipedia.org/wiki/XML-RPC" target="_blank">Wikipedia article</a> 
+ : @author William Candillon {william.candillon@28msec.com}
+ :
+ : @see <a href="http://www.xmlrpc.com/spec" target="_blank">XML-RPC Specification</a>
+ : @see <a href="http://en.wikipedia.org/wiki/XML-RPC" target="_blank">XML-RPC Wikipedia article</a> 
  :
  :)
 module namespace xmlrpc = "http://www.zorba-xquery.com/modules/xmlrpc";
@@ -136,6 +141,7 @@ declare %private function xmlrpc:unserialize($value as element(value)) as item()
   return
     typeswitch($child)
     case $a as element(int) return xs:integer($literal)
+    case $a as element(i4) return xs:integer($literal)
     case $a as element(string) return xs:string($literal)
     case $a as element(boolean) return if($literal = "1") then true() else false()
     case $a as element(double) return xs:double($literal)
