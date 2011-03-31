@@ -13,18 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include <iostream>
 #include <sstream>
 #ifdef WIN32
 #include <windows.h>
 #endif
 
-#include "mime_parser.h"
 #include <zorba/empty_sequence.h>
+#include <zorba/error_list.h>
 #include <zorba/singleton_item_sequence.h>
-#include "imap_client.h"
-#include "smtp.h"
+
 #include "email_module.h"
+#include "imap_client.h"
+#include "mime_parser.h"
+#include "smtp.h"
 
 namespace zorba
 {
@@ -88,7 +91,7 @@ namespace zorba
           std::stringstream lErrorMessage;
           lErrorMessage << "Mail could not be sent. Here is the log:" << std::endl;
           lErrorMessage << lDiagnostics.str();
-          throwError(lErrorMessage.str(), XQP0019_INTERNAL_ERROR);
+          throwError(lErrorMessage.str(), err::XQP0019_INTERNAL_ERROR);
         }
         
         

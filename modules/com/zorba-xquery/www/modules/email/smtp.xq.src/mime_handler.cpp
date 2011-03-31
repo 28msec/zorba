@@ -13,15 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include <vector>
 #include <cstdio>
 #include <sstream>
-#include "mime_handler.h"
-#include "email_function.h"
+
 #include <zorba/zorbastring.h>
 #include <zorba/iterator.h>
 #include <zorba/item_factory.h>
 #include <zorba/store_consts.h>
+
+#include "mime_handler.h"
+#include "email_function.h"
 
 namespace zorba
 {

@@ -30,7 +30,7 @@ ENDIF(CCLIENT_INCLUDE_DIRS AND CCLIENT_LIBRARIES)
 FIND_PATH(
   CCLIENT_INCLUDE
   NAMES c-client.h c-client/c-client.h
-  PATHS ${CCLIENT_INCLUDE_DIR} /usr/include/imap /usr/include/c-client /opt/local/include/c-client
+  PATHS ${CCLIENT_INCLUDE_DIR} /usr/include/imap /usr/include/c-client /usr/local/include/c-client /opt/local/include/c-client
   DOC "Include directory for the CCLient library headers (the path to 'c-client.h' file)")
 
 IF(CCLIENT_INCLUDE)
@@ -51,7 +51,7 @@ MARK_AS_ADVANCED(CCLIENT_INCLUDE)
 FIND_LIBRARY(
   CCLIENT_LIBRARY
   NAMES c-client c-client4 cclient.lib c-client/cclient.lib c-client/Release/cclient.lib
-  PATHS ${CCLIENT_LIBRARY_DIR} /opt/local/lib /usr/lib
+  PATHS ${CCLIENT_LIBRARY_DIR} /usr/local/lib /opt/local/lib /usr/lib
   DOC "Library to link against for the email support (c-client, libc-client or cclient.lib)")
 
 IF(CCLIENT_LIBRARY)
@@ -62,9 +62,7 @@ ENDIF(CCLIENT_LIBRARY)
 
 # Copy the results to the output variables.
 IF(CCLIENT_INCLUDE AND CCLIENT_LIBRARY)
-# temporarely disabled the modules that depend on C-Client library
-#   SET(CCLIENT_FOUND 1)
-  SET(CCLIENT_FOUND 0)
+  SET(CCLIENT_FOUND 1)
   SET(CCLIENT_LIBRARIES ${CCLIENT_LIBRARY})
   SET(CCLIENT_INCLUDE_DIRS ${CCLIENT_INCLUDE})
 

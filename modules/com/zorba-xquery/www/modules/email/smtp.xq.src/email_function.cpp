@@ -15,6 +15,8 @@
  */
 
 #include <zorba/zorba.h>
+#include <zorba/iterator.h>
+#include <zorba/xquery_exception.h>
 
 #include "email_function.h"
 
@@ -96,8 +98,7 @@ namespace zorba
     SMTPFunction::throwError( const std::string aErrorMessage,
                               const Error& aErrorType)
     {
-      throw zorba::ExternalFunctionData::createZorbaException(aErrorType,
-          aErrorMessage.c_str(), __FILE__, __LINE__);
+      throw XQUERY_EXCEPTION_VAR( aErrorType, ERROR_PARAMS( aErrorMessage ) );
     }
 
   } // namespace email

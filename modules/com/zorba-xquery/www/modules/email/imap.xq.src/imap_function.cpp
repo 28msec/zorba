@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-#include "imap_function.h"
-#include <sstream>
-#include <zorba/zorba.h>
-#include "imap_module.h"
-#include <map>
-#include <iostream>
 #include <algorithm>
+#include <iostream>
+#include <map>
+#include <sstream>
+
+#include <zorba/zorba.h>
+#include <zorba/iterator.h>
+#include <zorba/xquery_exception.h>
+#include <zorba/error_list.h>
+
+#include "imap_function.h"
+#include "imap_module.h"
 
 namespace zorba { namespace emailmodule {
 
@@ -44,13 +49,14 @@ ImapFunction::throwError(
     const std::string aErrorMessage,
     const Error& aErrorType)
 {
-  throw zorba::ExternalFunctionData::createZorbaException(aErrorType,
-      aErrorMessage.c_str(), __FILE__, __LINE__);
+  throw XQUERY_EXCEPTION_VAR(
+    aErrorType, ERROR_PARAMS( aErrorMessage.c_str() )
+  );
 }
 
 void 
 ImapFunction::throwImapError(const std::string aErrorMessage) {
-  throwError(aErrorMessage, XPTY0004); 
+  throwError(aErrorMessage, err::XPTY0004); 
 }  
 
 
@@ -89,14 +95,14 @@ ImapFunction::getOneStringArg(
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as "
                   << aPos << ". parameter.";
-    throwError(lErrorMessage.str(), XPTY0004);
+    throwError(lErrorMessage.str(), err::XPTY0004);
   }
   zorba::String lTmpString = lItem.getStringValue();
   if (args_iter->next(lItem)) {
     std::stringstream lErrorMessage;
     lErrorMessage << "A sequence of more then one item is not allowed as "
                   << aPos << ". parameter.";
-    throwError(lErrorMessage.str(), XPTY0004);
+    throwError(lErrorMessage.str(), err::XPTY0004);
   }
   args_iter->close();
   return lTmpString;
@@ -147,14 +153,14 @@ ImapFunction::getOneBoolArg(
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as "
                   << aPos << ". parameter.";
-    throwError(lErrorMessage.str(), XPTY0004);
+    throwError(lErrorMessage.str(), err::XPTY0004);
   }
   bool lTmpBool = lItem.getBooleanValue();
   if (args_iter->next(lItem)) {
     std::stringstream lErrorMessage;
     lErrorMessage << "A sequence of more then one item is not allowed as "
                   << aPos << ". parameter.";
-    throwError(lErrorMessage.str(), XPTY0004);
+    throwError(lErrorMessage.str(), err::XPTY0004);
   }
   args_iter->close();
   return lTmpBool;
@@ -180,7 +186,7 @@ ImapFunction::getDateTime(const std::string& aCClientDateTime) {
   size_t lMonthNumber = lMonths.find(lTokens[2]);
   // if the month was not found, were really in trouble!
   if (lMonthNumber == std::string::npos) {
-        throwError("Error while processing month in date of message", XPTY0004);
+    throwError("Error while processing month in date of message", err::XPTY0004);
   }  
   lMonthNumber = lMonthNumber/3 + 1;
   // make sure its MM and not just <
@@ -478,4 +484,6 @@ ImapFunction::createContentTypeAttributes(const ImapModule* aModule,
 }
 
 
-} /* namespace emailmodule */ } /* namespace zorba */
+} // namespace emailmodule
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */
