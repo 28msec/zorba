@@ -27,90 +27,553 @@ namespace err {
 
 ////////// XQuery Errors //////////////////////////////////////////////////////
 
+/**
+ * It is a static error if analysis of an expression relies on some component
+ * of the static context that has not been assigned a value.
+ */
 XQUERY_DEC_ERROR( XPST0001 );
+
+/**
+ * It is a dynamic error if evaluation of an expression relies on some part of
+ * the dynamic context that has not been assigned a value.
+ */
 XQUERY_DEC_ERROR( XPDY0002 );
+
+/**
+ * It is a static error if an expression is not a valid instance of the
+ * grammar.
+ */
 XQUERY_DEC_ERROR( XPST0003 );
+
+/**
+ * It is a type error if, during the static analysis phase, an expression is
+ * found to have a static type that is not appropriate for the context in which
+ * the expression occurs, or during the dynamic evaluation phase, the dynamic
+ * type of a value does not match a required type as specified by the matching
+ * rules in 2.5.4 SequenceType Matching.
+ */
 XQUERY_DEC_ERROR( XPTY0004 );
+
+/**
+ * During the analysis phase, it is a static error if the static type assigned
+ * to an expression other than the expression \c () or \c data(()) is
+ * <code>empty-sequence()</code>.
+ */
 XQUERY_DEC_ERROR( XPST0005 );
+
+/**
+ * It is a static error if an expression refers to an element name, attribute
+ * name, schema type name, namespace prefix, or variable name that is not
+ * defined in the static context, except for an ElementName in an ElementTest
+ * or an AttributeName in an AttributeTest.
+ */
 XQUERY_DEC_ERROR( XPST0008 );
+
+/**
+ * An implementation that does not support the Schema Import Feature must raise
+ * a static error if a Prolog contains a schema import.
+ */
 XQUERY_DEC_ERROR( XQST0009 );
+
+/**
+ * An implementation must raise a static error if it encounters a reference to
+ * an axis that it does not support.
+ */
 XQUERY_DEC_ERROR( XPST0010 );
+
+/**
+ * It is a static error if the set of definitions contained in all schemas
+ * imported by a Prolog do not satisfy the conditions for schema validity
+ * specified in Sections 3 and 5 of [XML Schema] Part 1--i.e., each definition
+ * must be valid, complete, and unique.
+ */
 XQUERY_DEC_ERROR( XQST0012 );
+
+/**
+ * It is a static error if an implementation recognizes a pragma but determines
+ * that its content is invalid.
+ */
 XQUERY_DEC_ERROR( XQST0013 );
+
+/**
+ * An implementation that does not support the Module Feature raises a static
+ * error if it encounters a module declaration or a module import.
+ */
 XQUERY_DEC_ERROR( XQST0016 );
+
+/**
+ * It is a static error if the expanded QName and number of arguments in a
+ * function call do not match the name and arity of a function signature in the
+ * static context.
+ */
 XQUERY_DEC_ERROR( XPST0017 );
+
+/**
+ * It is a type error if the result of the last step in a path expression
+ * contains both nodes and non-nodes.
+ */
 XQUERY_DEC_ERROR( XPTY0018 );
+
+/**
+ * It is a type error if the result of a step (other than the last step) in a
+ * path expression contains an atomic value.
+ */
 XQUERY_DEC_ERROR( XPTY0019 );
+
+/**
+ * It is a type error if, in an axis step, the context item is not a node.
+ */
 XQUERY_DEC_ERROR( XPTY0020 );
+
+/**
+ * It is a static error if the value of a namespace declaration attribute is
+ * not a URILiteral.
+ */
 XQUERY_DEC_ERROR( XQST0022 );
+
+/**
+ * It is a type error if the content sequence in an element constructor
+ * contains an attribute node following a node that is not an attribute node.
+ */
 XQUERY_DEC_ERROR( XQTY0024 );
+
+/**
+ * It is a dynamic error if any attribute of a constructed element does not
+ * have a name that is distinct from the names of all other attributes of the
+ * constructed element.
+ */
 XQUERY_DEC_ERROR( XQDY0025 );
+
+/**
+ * It is a dynamic error if the result of the content expression of a computed
+ * processing instruction constructor contains the string "?>".
+ */
 XQUERY_DEC_ERROR( XQDY0026 );
+
+/**
+ * In a validate expression, it is a dynamic error if the root element
+ * information item in the PSVI resulting from validation does not have the
+ * expected validity property: \c valid if validation mode is \c strict, or
+ * either \c valid or \c notKnown if validation mode is \c lax.
+ */
 XQUERY_DEC_ERROR( XQDY0027 );
+
+/**
+ * It is a type error if the argument of a validate expression does not
+ * evaluate to exactly one document or element node.
+ */
 XQUERY_DEC_ERROR( XQTY0030 );
+
+/**
+ * It is a static error if the version number specified in a version
+ * declaration is not supported by the implementation.
+ */
 XQUERY_DEC_ERROR( XQST0031 );
+
+/**
+ * A static error is raised if a Prolog contains more than one base URI
+ * declaration.
+ */
 XQUERY_DEC_ERROR( XQST0032 );
+
+/**
+ * It is a static error if a module contains multiple bindings for the same
+ * namespace prefix.
+ */
 XQUERY_DEC_ERROR( XQST0033 );
+
+/**
+ * It is a static error if multiple functions declared or imported by a module
+ * have the same number of arguments and their expanded QNames are equal (as
+ * defined by the eq operator).
+ */
 XQUERY_DEC_ERROR( XQST0034 );
+
+/**
+ * It is a static error to import two schema components that both define the
+ * same name in the same symbol space and in the same scope.
+ */
 XQUERY_DEC_ERROR( XQST0035 );
+
+/**
+ * It is a static error to import a module if the in-scope schema definitions
+ * of the importing module do not include all of the following:
+ *
+ * -# An in-scope schema type for each type-name that appears:
+ *    - in the type of a variable that is declared in the imported module and
+ *      referenced in the importing module, OR
+ *    - in a parameter-type or result-type of a function that is declared in
+ *      the imported module and referenced in the importing module.
+ * -# An in-scope element declaration for each element-name \c EN such that:
+ *    - \c schema-element(EN) appears in the declared type of a variable in the
+ *      imported module, and that variable is referenced in the importing
+ *      module, OR
+ *    - \c schema-element(EN) appears in a parameter-type or result-type of a
+ *      function declared in the imported module, and that function is
+ *      referenced in the importing module.
+ * -# An in-scope attribute declaration for each attribute-name \c AN such that:
+ *    - \c schema-attribute(AN) appears in the declared type of a variable in
+ *      the imported module, and that variable is referenced in the importing
+ *      module, OR
+ *    - \c schema-attribute(AN) appears in a parameter-type or result-type of a
+ *      function declared in the imported module, and that function is
+ *      referenced in the importing module.
+ */
 XQUERY_DEC_ERROR( XQST0036 );
+
+/**
+ * It is a static error if a Prolog contains more than one default collation
+ * declaration, or the value specified by a default collation declaration is
+ * not present in statically known collations.
+ */
 XQUERY_DEC_ERROR( XQST0038 );
+
+/**
+ * It is a static error for a function declaration to have more than one
+ * parameter with the same name.
+ */
 XQUERY_DEC_ERROR( XQST0039 );
+
+/**
+ * It is a static error if the attributes specified by a direct element
+ * constructor do not have distinct expanded QNames.
+ */
 XQUERY_DEC_ERROR( XQST0040 );
+
+/**
+ * It is a dynamic error if the value of the name expression in a computed
+ * processing instruction constructor cannot be cast to the type \c xs:NCName.
+ */
 XQUERY_DEC_ERROR( XQDY0041 );
+
+/**
+ * It is a static error the node-name of a node constructed by a computed
+ * attribute constructor has any of the following properties:
+ * - Its namespace prefix is \c xmlns.
+ * - It has no namespace prefix and its local name is \c xmlns.
+ * - Its namespace URI is <code>http://www.w3.org/2000/xmlns/</code>.
+ * - Its namespace prefix is \c xml and its namespace URI is not
+ *   <code>http://www.w3.org/XML/1998/namespace</code>.
+ * - Its namespace prefix is other than \c xml and its namespace URI is
+ *   <code>http://www.w3.org/XML/1998/namespace</code>.
+ */
 XQUERY_DEC_ERROR( XQDY0044 );
+
+/**
+ * It is a static error if the function name in a function declaration is in
+ * one of the following namespaces:
+ * <code>http://www.w3.org/XML/1998/namespace</code>,
+ * <code>http://www.w3.org/2001/XMLSchema</code>,
+ * <code>http://www.w3.org/2001/XMLSchema-instance</code>,
+ * <code>http://www.w3.org/2005/xpath-functions</code>.
+ */
 XQUERY_DEC_ERROR( XQST0045 );
+
+/**
+ * An implementation MAY raise a static error if the value of a URILiteral is
+ * of nonzero length and is not in the lexical space of \c xs:anyURI.
+ */
 XQUERY_DEC_ERROR( XQST0046 );
+
+/**
+ * It is a static error if multiple module imports in the same Prolog specify
+ * the same target namespace.
+ */
 XQUERY_DEC_ERROR( XQST0047 );
+
+/**
+ * It is a static error if a function or variable declared in a library module
+ * is not in the target namespace of the library module.
+ */
 XQUERY_DEC_ERROR( XQST0048 );
+
+/**
+ * It is a static error if two or more variables declared or imported by a
+ * module have equal expanded QNames (as defined by the eq operator.)
+ */
 XQUERY_DEC_ERROR( XQST0049 );
+
+/**
+ * It is a dynamic error if the dynamic type of the operand of a treat
+ * expression does not match the sequence type specified by the treat
+ * expression. This error might also be raised by a path expression beginning
+ * with "<code>/</code>" or "<code>//</code>" if the context node is not in a
+ * tree that is rooted at a document node. This is because a leading
+ * "<code>/</code>" or "<code>//</code>" in a path expression is an
+ * abbreviation for an initial step that includes the clause \c treat as \c
+ * document-node().
+ */
 XQUERY_DEC_ERROR( XPDY0050 );
+
+/**
+ * It is a static error if a QName that is used as an AtomicType in a
+ * SequenceType is not defined in the in-scope schema types as an atomic type.
+ */
 XQUERY_DEC_ERROR( XPST0051 );
+
+/**
+ * It is a static error if a variable depends on itself.
+ */
 XQUERY_DEC_ERROR( XQST0054 );
+
+/**
+ * It is a static error if a Prolog contains more than one copy-namespaces
+ * declaration.
+ */
 XQUERY_DEC_ERROR( XQST0055 );
+
+/**
+ * It is a static error if a schema import binds a namespace prefix but does
+ * not specify a target namespace other than a zero-length string.
+ */
 XQUERY_DEC_ERROR( XQST0057 );
+
+/**
+ * It is a static error if multiple schema imports specify the same target
+ * namespace.
+ */
 XQUERY_DEC_ERROR( XQST0058 );
+
+/**
+ * It is a static error if an implementation is unable to process a schema or
+ * module import by finding a schema or module with the specified target
+ * namespace.
+ */
 XQUERY_DEC_ERROR( XQST0059 );
+
+/**
+ * It is a static error if the name of a function in a function declaration is
+ * not in a namespace (expanded QName has a null namespace URI).
+ */
 XQUERY_DEC_ERROR( XQST0060 );
+
+/**
+ * It is a dynamic error if the operand of a validate expression is a document
+ * node whose children do not consist of exactly one element node and zero or
+ * more comment and processing instruction nodes, in any order.
+ */
 XQUERY_DEC_ERROR( XQDY0061 );
+
+/**
+ * It is a dynamic error if the value of the name expression in a computed
+ * processing instruction constructor is equal to "XML" (in any combination of
+ * upper and lower case).
+ */
 XQUERY_DEC_ERROR( XQDY0064 );
+
+/**
+ * A static error is raised if a Prolog contains more than one ordering mode
+ * declaration.
+ */
 XQUERY_DEC_ERROR( XQST0065 );
+
+/**
+ * A static error is raised if a Prolog contains more than one default
+ * element/type namespace declaration, or more than one default function
+ * namespace declaration.
+ */
 XQUERY_DEC_ERROR( XQST0066 );
+
+/**
+ * A static error is raised if a Prolog contains more than one construction
+ * declaration.
+ */
 XQUERY_DEC_ERROR( XQST0067 );
+
+/**
+ * A static error is raised if a Prolog contains more than one boundary-space
+ * declaration.
+ */
 XQUERY_DEC_ERROR( XQST0068 );
+
+/**
+ * A static error is raised if a Prolog contains more than one empty order
+ * declaration.
+ */
 XQUERY_DEC_ERROR( XQST0069 );
+
+/**
+ * A static error is raised if one of the predefined prefixes \c xml or \c
+ * xmlns appears in a namespace declaration, or if any of the following
+ * conditions is statically detected in any expression or declaration:
+ * - The prefix \c xml is bound to some namespace URI other than
+ *   <code>http://www.w3.org/XML/1998/namespace</code>.
+ * - A prefix other than \c xml is bound to the namespace URI
+ *   <code>http://www.w3.org/XML/1998/namespace</code>.
+ * - The prefix \c xmlns is bound to any namespace URI.
+ * - A prefix other than \c xmlns is bound to the namespace URI
+ *   <code>http://www.w3.org/2000/xmlns/</code>.
+ */
 XQUERY_DEC_ERROR( XQST0070 );
+
+/**
+ * A static error is raised if the namespace declaration attributes of a direct
+ * element constructor do not have distinct names.
+ */
 XQUERY_DEC_ERROR( XQST0071 );
+
+/**
+ * It is a dynamic error if the result of the content expression of a computed
+ * comment constructor contains two adjacent hyphens or ends with a hyphen.
+ */
 XQUERY_DEC_ERROR( XQDY0072 );
+
+/**
+ * It is a dynamic error if the value of the name expression in a computed
+ * element or attribute constructor cannot be converted to an expanded QName
+ * (for example, because it contains a namespace prefix not found in statically
+ * known namespaces.)
+ */
 XQUERY_DEC_ERROR( XQDY0074 );
+
+/**
+ * An implementation that does not support the Validation Feature must raise a
+ * static error if it encounters a \c validate expression.
+ */
 XQUERY_DEC_ERROR( XQST0075 );
+
+/**
+ * It is a static error if a \c collation subclause in an order by clause of a
+ * FLWOR expression does not identify a collation that is present in statically
+ * known collations.
+ */
 XQUERY_DEC_ERROR( XQST0076 );
+
+/**
+ * It is a static error if an extension expression contains neither a pragma
+ * that is recognized by the implementation nor an expression enclosed in curly
+ * braces.
+ */
 XQUERY_DEC_ERROR( XQST0079 );
+
+/**
+ * It is a static error if the target type of a \c cast or \c castable
+ * expression is \c xs:NOTATION or \c xs:anyAtomicType.
+ */
 XQUERY_DEC_ERROR( XPST0080 );
+
+/**
+ * It is a static error if a QName used in a query contains a namespace prefix
+ * that cannot be expanded into a namespace URI by using the statically known
+ * namespaces.
+ */
 XQUERY_DEC_ERROR( XPST0081 );
+
+/**
+ * It is a static error if the target type of a \c cast expression or
+ * constructor function is \c xs:QName or a type derived from \c xs:QName or \c
+ * xs:NOTATION, and the argument of the cast expression or constructor function
+ * is not a string literal.
+ */
 XQUERY_DEC_ERROR( XPST0083 );
+
+/**
+ * It is a dynamic error if the element validated by a \c validate statement
+ * does not have a top-level element declaration in the in-scope element
+ * declarations, if validation mode is \c strict.
+ */
 XQUERY_DEC_ERROR( XQDY0084 );
+
+/**
+ * It is a static error if the namespace URI in a namespace declaration
+ * attribute is a zero-length string, and the implementation does not support
+ * [XML Names 1.1].
+ */
 XQUERY_DEC_ERROR( XQST0085 );
+
+/**
+ * It is a type error if the typed value of a copied element or attribute node
+ * is namespace-sensitive when construction mode is \c preserve and
+ * copy-namespaces mode is \c no-preserve.
+ */
 XQUERY_DEC_ERROR( XQTY0086 );
+
+/**
+ * It is a static error if the encoding specified in a Version Declaration does
+ * not conform to the definition of \c EncName specified in [XML 1.0]
+ */
 XQUERY_DEC_ERROR( XQST0087 );
+
+/**
+ * It is a static error if the literal that specifies the target namespace in a
+ * module import or a module declaration is of zero length.
+ */
 XQUERY_DEC_ERROR( XQST0088 );
+
+/**
+ * It is a static error if a variable bound in a \c for or \c window clause of
+ * a FLWOR expression, and its associated positional variable, do not have
+ * distinct names (expanded QNames).
+ */
 XQUERY_DEC_ERROR( XQST0089 );
+
+/**
+ * It is a static error if a character reference does not identify a valid
+ * character in the version of XML that is in use.
+ */
 XQUERY_DEC_ERROR( XQST0090 );
+
+/**
+ * An implementation MAY raise a dynamic error if an \c xml:id error, as
+ * defined in [XML ID], is encountered during construction of an attribute
+ * named \c xml:id.
+ */
 XQUERY_DEC_ERROR( XQDY0091 );
+
+/**
+ * An implementation MAY raise a dynamic error if a constructed attribute named
+ * \c xml:space has a value other than \c preserve or \c default.
+ */
 XQUERY_DEC_ERROR( XQDY0092 );
+
+/**
+ * It is a static error to import a module M1 if there exists a sequence of
+ * modules M1 ... Mi ... M1 such that each module directly depends on the next
+ * module in the sequence (informally, if M1 depends on itself through some
+ * chain of module dependencies.)
+ */
 XQUERY_DEC_ERROR( XQST0093 );
+
+/**
+ * It is a dynamic error the node-name of a node constructed by a computed
+ * element constructor has any of the following properties:
+ * - Its namespace prefix is \c xmlns.
+ * - Its namespace URI is <code>http://www.w3.org/2000/xmlns/</code>.
+ * - Its namespace prefix is \c xml and its namespace URI is not
+ *   <code>http://www.w3.org/XML/1998/namespace</code>.
+ * - Its namespace prefix is other than \c xml and its namespace URI is
+ *   <code>http://www.w3.org/XML/1998/namespace</code>.
+ */
 XQUERY_DEC_ERROR( XQDY0096 );
+
+/**
+ * It is a static error for a decimal-format to specify a value that is not
+ * legal for a given property, as described in statically known decimal
+ * formats.
+ */
 XQUERY_DEC_ERROR( XQST0097 );
+
+/**
+ * It is a static error if, for any named or unnamed decimal format, the
+ * properties representing characters used in a picture string do not each have
+ * distinct values. These properties are decimal-separator-sign,
+ * grouping-separator, percent-sign, per-mille-sign, zero-digit, digit-sign,
+ * and pattern-separator-sign.
+ */
 XQUERY_DEC_ERROR( XQST0098 );
 
 /**
  * It is a static error if a function's annotations contain more than one
- * annotation named \c %private or \c %public.  It is a static error if a
+ * annotation named \c private or \c public.  It is a static error if a
  * function's annotations contain more than one annotation named \c
- * %deterministic or \c %nondeterministic.
+ * deterministic or \c nondeterministic.
  */
 XQUERY_DEC_ERROR( XQST0106 );
 
+/**
+ * It is a static error for a query prolog to contain two decimal formats with
+ * the same name, or to contain two default decimal formats.
+ */
 XQUERY_DEC_ERROR( XQST0111 );
 
 ////////// XQuery Full-Text Errors ////////////////////////////////////////////
