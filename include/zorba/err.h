@@ -233,7 +233,7 @@ enum type {
   XQUERY_USER_DEFINED,                  // for fn:error()
 
   ZORBA_XQP,                            // Zorba XQuery Processor
-  ZORBA_API,                            // Zorba ZPI
+  ZORBA_API,                            // Zorba API
   ZORBA_DDF,                            // Data Definition Facility
   ZORBA_SERIALIZATION,
   ZORBA_STORE
