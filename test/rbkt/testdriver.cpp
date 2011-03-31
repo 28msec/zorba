@@ -110,7 +110,7 @@ main(int argc, char** argv)
   int i = 1;
   while (i < argc)
   {
-    std::cout << "i: " << i << ", argc: " << argc << std::endl;
+//     std::cout << "i: " << i << ", argc: " << argc << std::endl;
     if (strcmp (argv [i], "--rbkt-src") == 0) {
       rbkt_src_dir = argv [i + 1];
       i += 2;

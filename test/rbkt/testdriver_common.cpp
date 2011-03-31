@@ -461,10 +461,10 @@ void setModulePaths
 
   while (zorba::ztd::split(paths, lDelim, &lPath, &paths)) {
     lModulePaths.push_back(lPath);
-    std::cout << "Hello " << lPath << std::endl;
+//     std::cout << "Hello " << lPath << std::endl;
   }
   lModulePaths.push_back(paths);
-  std::cout << "Goodbyte " << paths << std::endl;
+//   std::cout << "Goodbyte " << paths << std::endl;
 
   sctx->setModulePaths(lModulePaths);
 }
