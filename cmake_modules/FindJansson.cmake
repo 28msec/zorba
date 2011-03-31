@@ -34,9 +34,7 @@ FIND_PATH(
   PATH_SUFFIXES jansson)
 
 IF (Jansson_LIBRARY AND Jansson_INCLUDE)
-# Disabled Jansson tests temporarely until we fix some of them that are failing
-#   SET(Jansson_FOUND TRUE)
-  SET(Jansson_FOUND FALSE)
+  SET(Jansson_FOUND TRUE)
   SET(Jansson_LIBRARIES ${Jansson_LIBRARY})
   SET(Jansson_INCLUDE_DIRS ${Jansson_INCLUDE})
 ELSE (Jansson_LIBRARY AND Jansson_INCLUDE)

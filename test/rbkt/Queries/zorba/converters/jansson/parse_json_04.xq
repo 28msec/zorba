@@ -1,4 +1,4 @@
-(: try parsing a Unicode UTF-8 value :)
+(: try parsing an empty value :)
 
 import module namespace json = "http://www.zorba-xquery.com/modules/convertors/json";
 import schema namespace html-options="http://www.zorba-xquery.com/modules/convertors/json-options";
