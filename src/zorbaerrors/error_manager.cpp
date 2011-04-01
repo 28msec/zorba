@@ -18,6 +18,14 @@
 
 #include "error_manager.h"
 
+// legacy
+#ifndef NDEBUG
+ZORBA_DLL_PUBLIC bool g_abort_on_error = false;
+#define ERROR_ABORT()   do { if (g_abort_on_error) abort(); } while(0)
+#else
+#define ERROR_ABORT()   ((void)0)
+#endif
+
 namespace zorba {
 
 ErrorManager::ErrorManager() {
