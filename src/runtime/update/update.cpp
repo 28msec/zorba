@@ -148,9 +148,7 @@ bool InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) cons
   lCopyMode.set(theDoCopy, typePreserve, nsPreserve, nsInherit);
   
   if (!consumeNext(target, theChild1, aPlanState))
-  {
-    ZORBA_ERROR_LOC(XUDY0027, loc);
-  }
+    throw XQUERY_EXCEPTION(XUDY0027, ERROR_LOC(loc));
 
   if (theType == store::UpdateConsts::BEFORE ||
       theType == store::UpdateConsts::AFTER)
@@ -158,13 +156,13 @@ bool InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) cons
     if (!target->isNode() ||
         target->getNodeKind() == store::StoreConsts::attributeNode ||
         target->getNodeKind() == store::StoreConsts::documentNode)
-      ZORBA_ERROR_LOC(XUTY0006, loc);
+      throw XQUERY_EXCEPTION(XUTY0006, ERROR_LOC(loc));
 
     if (consumeNext(temp, theChild1, aPlanState))
-      ZORBA_ERROR_LOC(XUTY0006, loc);
+      throw XQUERY_EXCEPTION(XUTY0006, ERROR_LOC(loc));
 
     if (target->getParent() == NULL)
-      ZORBA_ERROR_LOC(XUDY0029, loc);
+      throw XQUERY_EXCEPTION(XUDY0029, ERROR_LOC(loc));
 
     parent = target->getParent();
 
@@ -185,10 +183,10 @@ bool InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) cons
       if (source->getNodeKind() == store::StoreConsts::attributeNode)
       {
         if (numNodes > 0)
-          ZORBA_ERROR_LOC(XUTY0004, loc);
+          throw XQUERY_EXCEPTION(XUTY0004, ERROR_LOC(loc));
 
         if (!elemParent)
-          ZORBA_ERROR_LOC(XUDY0030, loc);
+          throw XQUERY_EXCEPTION(XUDY0030, ERROR_LOC(loc));
 
         attrs[numAttrs++].transfer(source);
         if (numAttrs == attrs.size())
@@ -235,16 +233,16 @@ bool InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) cons
   else
   {
     if (!target->isNode())
-      ZORBA_ERROR_LOC(XUTY0005, loc);
+      throw XQUERY_EXCEPTION(XUTY0005, ERROR_LOC(loc));
 
     targetKind = target->getNodeKind();
 
     if (targetKind != store::StoreConsts::documentNode &&
         targetKind != store::StoreConsts::elementNode)
-      ZORBA_ERROR_LOC(XUTY0005, loc);
+      throw XQUERY_EXCEPTION(XUTY0005, ERROR_LOC(loc));
 
     if (consumeNext(temp, theChild1, aPlanState))
-      ZORBA_ERROR_LOC(XUTY0005, loc);
+      throw XQUERY_EXCEPTION(XUTY0005, ERROR_LOC(loc));
 
     elemTarget = (targetKind == store::StoreConsts::elementNode);
 
@@ -260,10 +258,10 @@ bool InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) cons
       if (source->getNodeKind() == store::StoreConsts::attributeNode)
       {
         if (numNodes > 0)
-          ZORBA_ERROR_LOC(XUTY0004, loc);
+          throw XQUERY_EXCEPTION(XUTY0004, ERROR_LOC(loc));
 
         if (!elemTarget)
-          ZORBA_ERROR_LOC(XUTY0022, loc);
+          throw XQUERY_EXCEPTION(XUTY0022, ERROR_LOC(loc));
 
         attrs[numAttrs++].transfer(source);
         if (numAttrs == attrs.size())
@@ -334,7 +332,7 @@ DeleteIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
   while (consumeNext(target, theChild, aPlanState))
   {
     if (!target->isNode())
-      ZORBA_ERROR_LOC(XUTY0007, loc);
+      throw XQUERY_EXCEPTION(XUTY0007, ERROR_LOC(loc));
 
     areNodeModifiersViolated(theSctx, target, loc);
 
@@ -409,13 +407,13 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
   lCopyMode.set(theDoCopy, typePreserve, nsPreserve, nsInherit);
 
   if (!consumeNext(lTarget, theChild0, aPlanState))
-    ZORBA_ERROR_LOC(XUDY0027, loc);
+    throw XQUERY_EXCEPTION(XUDY0027, ERROR_LOC(loc));
 
   if (consumeNext(temp, theChild0, aPlanState))
-    ZORBA_ERROR_LOC(XUTY0008, loc);
+    throw XQUERY_EXCEPTION(XUTY0008, ERROR_LOC(loc));
 
   if (!lTarget->isNode())
-     ZORBA_ERROR_LOC(XUTY0008, loc);
+     throw XQUERY_EXCEPTION(XUTY0008, ERROR_LOC(loc));
 
   lTargetKind = lTarget->getNodeKind();
 
@@ -425,14 +423,14 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
          lTargetKind == store::StoreConsts::commentNode ||
          lTargetKind == store::StoreConsts::piNode))
   {
-    ZORBA_ERROR_LOC(XUTY0008, loc);
+    throw XQUERY_EXCEPTION(XUTY0008, ERROR_LOC(loc));
   }
 
   if (theType == store::UpdateConsts::NODE) // replace node ...
   {
     if (lTarget->getParent() == 0)
     {
-      ZORBA_ERROR_LOC(XUDY0009, loc);
+      throw XQUERY_EXCEPTION(XUDY0009, ERROR_LOC(loc));
     }
 
     lParent = lTarget->getParent();
@@ -454,7 +452,7 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
         if (!lWith->isNode() ||
             lWith->getNodeKind() != store::StoreConsts::attributeNode)
         {
-          ZORBA_ERROR_LOC(XUTY0011, loc);
+          throw XQUERY_EXCEPTION(XUTY0011, ERROR_LOC(loc));
         }
 
         lWith = lWith->copy(NULL, lCopyMode);
@@ -470,7 +468,7 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
       while (consumeNext(lWith, theChild1, aPlanState))
       {
         if (!lWith->isNode())
-          ZORBA_ERROR_LOC(XUTY0010, loc);
+          throw XQUERY_EXCEPTION(XUTY0010, ERROR_LOC(loc));
 
         lWithKind = lWith->getNodeKind();
 
@@ -479,7 +477,7 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
               || lWithKind == store::StoreConsts::commentNode
               || lWithKind == store::StoreConsts::piNode))
         {
-          ZORBA_ERROR_LOC(XUTY0010, loc);
+          throw XQUERY_EXCEPTION(XUTY0010, ERROR_LOC(loc));
         }
 
         lWith = lWith->copy(NULL, lCopyMode);
@@ -595,12 +593,12 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
       if (lTargetKind == store::StoreConsts::commentNode &&
           (content.find("--") != zstring::npos || ascii::ends_with(content, "-", 1)))
       {
-        ZORBA_ERROR_LOC(XQDY0072, loc);
+        throw XQUERY_EXCEPTION(XQDY0072, ERROR_LOC(loc));
       }
       else if (lTargetKind == store::StoreConsts::piNode &&
                content.find("?>") != zstring::npos)
       {
-        ZORBA_ERROR_LOC(XQDY0026, loc);
+        throw XQUERY_EXCEPTION(XQDY0026, ERROR_LOC(loc));
       }
 
       areNodeModifiersViolated(theSctx, lTarget, loc);
@@ -668,11 +666,11 @@ RenameIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 
   if (!consumeNext(lTarget, theChild0, aPlanState))
   {
-    ZORBA_ERROR_LOC(XUDY0027, loc);
+    throw XQUERY_EXCEPTION(XUDY0027, ERROR_LOC(loc));
   }
   
   if (!lTarget->isNode())
-    ZORBA_ERROR_LOC(XUTY0012, loc);
+    throw XQUERY_EXCEPTION(XUTY0012, ERROR_LOC(loc));
 
   lTargetKind = lTarget->getNodeKind();
 
@@ -680,12 +678,12 @@ RenameIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
         lTargetKind == store::StoreConsts::attributeNode ||
         lTargetKind == store::StoreConsts::piNode))
   {
-    ZORBA_ERROR_LOC(XUTY0012, loc);
+    throw XQUERY_EXCEPTION(XUTY0012, ERROR_LOC(loc));
   }
 
   if (consumeNext(temp, theChild0, aPlanState))
   {
-    ZORBA_ERROR_LOC(XUTY0012, loc);
+    throw XQUERY_EXCEPTION(XUTY0012, ERROR_LOC(loc));
   }
 
   areNodeModifiersViolated(theSctx, lTarget, loc);
@@ -838,12 +836,12 @@ TransformIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
       if (!consumeNext(lCopyNode, copyClause.theInput, aPlanState) ||
           !lCopyNode->isNode())
       {
-        ZORBA_ERROR_LOC(XUTY0013, loc);
+        throw XQUERY_EXCEPTION(XUTY0013, ERROR_LOC(loc));
       }
 
       if (consumeNext(temp, copyClause.theInput, aPlanState))
       {
-        ZORBA_ERROR_LOC(XUTY0013, loc);
+        throw XQUERY_EXCEPTION(XUTY0013, ERROR_LOC(loc));
       }
 
       copyNodes[i] = lCopyNode->copy(NULL, lCopyMode);

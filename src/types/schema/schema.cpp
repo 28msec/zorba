@@ -1871,7 +1871,7 @@ void Schema::serialize(::zorba::serialization::Archiver &ar)
      ar & le_be_value_first_char;
      if((size_of_size_t2 != size_of_size_t) || (le_be_value_first_char != le_be_value.cvalue[0]))
      {
-       ZORBA_ERROR(SRL0015_INCOMPATIBLE_BETWEEN_32_AND_64_BITS_OR_LE_AND_BE);
+       throw ZORBA_EXCEPTION(SRL0015_INCOMPATIBLE_BETWEEN_32_AND_64_BITS_OR_LE_AND_BE);
      }
      if(!is_grammar_NULL)
      {

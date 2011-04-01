@@ -67,7 +67,7 @@ bool Base64EncodeIterator::nextImpl(store::Item_t& result, PlanState& planState)
     }
     else
     {
-      ZORBA_ERROR_LOC(XQP0025_COULD_NOT_CREATE_ITEM, loc);
+      throw XQUERY_EXCEPTION(XQP0025_COULD_NOT_CREATE_ITEM, ERROR_LOC(loc));
     } 
   }
   STACK_END (state);

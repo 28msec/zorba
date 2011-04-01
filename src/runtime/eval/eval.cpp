@@ -341,7 +341,7 @@ PlanIter_t EvalIterator::compile(
 
   rchandle<MainModule> mm = ast.dyn_cast<MainModule>();
   if (mm == NULL)
-    ZORBA_ERROR_LOC(XPST0003, loc);
+    throw XQUERY_EXCEPTION(XPST0003, ERROR_LOC(loc));
 
   expr_t rootExpr;
   PlanIter_t rootIter = compiler.compile(ast, false, rootExpr, maxOuterVarId);
@@ -350,23 +350,17 @@ PlanIter_t EvalIterator::compile(
   if (theScriptingKind == SIMPLE_EXPR)
   {
     if (!rootExpr->is_simple())
-    {
-      ZORBA_ERROR_LOC(XUST0001, loc);
-    }
+      throw XQUERY_EXCEPTION(XUST0001, ERROR_LOC(loc));
   }
   else if (theScriptingKind == UPDATE_EXPR)
   {
     if (!rootExpr->is_updating())
-    {
-      ZORBA_ERROR_LOC(XUST0001, loc);
-    }
+      throw XQUERY_EXCEPTION(XUST0001, ERROR_LOC(loc));
   }
   else if (theScriptingKind == SEQUENTIAL_EXPR)
   {
     if (!rootExpr->is_sequential())
-    {
-      ZORBA_ERROR_LOC(XUST0001, loc);
-    }
+      throw XQUERY_EXCEPTION(XUST0001, ERROR_LOC(loc));
   }
 #endif
   return rootIter;

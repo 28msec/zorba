@@ -323,7 +323,7 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
         nodeName->getNamespace() == "http://www.w3.org/2000/xmlns/" ||
         (nodeName->getPrefix() == "xml" && nodeName->getNamespace() != "http://www.w3.org/XML/1998/namespace") ||
         (nodeName->getPrefix() != "xml" && nodeName->getNamespace() == "http://www.w3.org/XML/1998/namespace"))
-      ZORBA_ERROR_LOC(XQDY0096, loc);
+      throw XQUERY_EXCEPTION(XQDY0096, ERROR_LOC(loc));
 
   typeName = (theTypePreserve ?
               GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME :
@@ -344,7 +344,7 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     // replaced with the explicit one.
     state->baseUri = theSctx->get_base_uri();
     if (state->baseUri.empty())
-      ZORBA_ERROR_LOC(XPST0001, loc);
+      throw XQUERY_EXCEPTION(XPST0001, ERROR_LOC(loc));
 
     store::NsBindings bindings;
     theLocalBindings->getAllBindings(bindings);
@@ -423,7 +423,7 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
         assert(child->getNodeKind() != store::StoreConsts::documentNode);
 
         if (child->getNodeKind() == store::StoreConsts::attributeNode)
-          ZORBA_ERROR_LOC(XQTY0024, loc);
+          throw XQUERY_EXCEPTION(XQTY0024, ERROR_LOC(loc));
 
         // Skip text node with zero-length value
         if (child->getNodeKind() == store::StoreConsts::textNode &&
@@ -527,7 +527,7 @@ AttributeIterator::AttributeIterator(
         (theQName->getNamespace().empty() &&
          ZSTREQ(theQName->getLocalName(), "xmlns")))
     {
-      ZORBA_ERROR_LOC(XQDY0044, loc);
+      throw XQUERY_EXCEPTION(XQDY0044, ERROR_LOC(loc));
     }
 
     if ((ZSTREQ(theQName->getNamespace(), "http://www.w3.org/XML/1998/namespace") &&
@@ -536,7 +536,7 @@ AttributeIterator::AttributeIterator(
         (ZSTREQ(theQName->getPrefix(), "xml") &&
          !ZSTREQ(theQName->getNamespace(), "http://www.w3.org/XML/1998/namespace")))
     {
-      ZORBA_ERROR_LOC(XQDY0044, loc);
+      throw XQUERY_EXCEPTION(XQDY0044, ERROR_LOC(loc));
     }
 
     if ((ZSTREQ(theQName->getNamespace(), "http://www.w3.org/2000/xmlns/") &&
@@ -545,7 +545,7 @@ AttributeIterator::AttributeIterator(
         (ZSTREQ(theQName->getPrefix(), "xmlns") &&
          !ZSTREQ(theQName->getNamespace(), "http://www.w3.org/2000/xmlns/")))
     {
-      ZORBA_ERROR_LOC(XQDY0044, loc);
+      throw XQUERY_EXCEPTION(XQDY0044, ERROR_LOC(loc));
     }
 
     if (ZSTREQ(theQName->getPrefix(), "xml") &&
@@ -603,7 +603,7 @@ bool AttributeIterator::nextImpl(store::Item_t& result, PlanState& planState) co
         (qname->getNamespace().empty() &&
          ZSTREQ(qname->getLocalName(), "xmlns")))
     {
-      ZORBA_ERROR_LOC(XQDY0044, loc);
+      throw XQUERY_EXCEPTION(XQDY0044, ERROR_LOC(loc));
     }
   }
   else
@@ -802,25 +802,25 @@ bool PiIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   try
   {
     if (!consumeNext(lItem, theChild0, planState))
-      ZORBA_ERROR_LOC(XPTY0004, loc);
+      throw XQUERY_EXCEPTION(XPTY0004, ERROR_LOC(loc));
   }
   catch (ZorbaException const& e)
   {
     if (e.error() == err::FORG0001)
-      ZORBA_ERROR_LOC(XQDY0041, loc);
+      throw XQUERY_EXCEPTION(XQDY0041, ERROR_LOC(loc));
     else
       throw;
   }
 
   if (consumeNext(temp, theChild0, planState))
-    ZORBA_ERROR_LOC(XPTY0004, loc);
+    throw XQUERY_EXCEPTION(XPTY0004, ERROR_LOC(loc));
 
   // TODO: check if lItem is string, raise XPTY0004 if not
   lItem->getStringValue2(target);
 
   if (target.empty())
   {
-    ZORBA_ERROR_LOC(XQDY0041, loc);
+    throw XQUERY_EXCEPTION(XQDY0041, ERROR_LOC(loc));
   }
   else if (target.size() == 3)
   {
@@ -828,7 +828,7 @@ bool PiIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     utf8::to_upper(target, &upper);
 
     if (ZSTREQ(upper, "XML"))
-      ZORBA_ERROR_LOC(XQDY0064, loc);
+      throw XQUERY_EXCEPTION(XQDY0064, ERROR_LOC(loc));
   }
 
   // Compute the content of the pi node
@@ -843,7 +843,7 @@ bool PiIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     lItem->getStringValue2(strvalue);
 
     if (strvalue.find("?>", 0, 2) != zstring::npos)
-      ZORBA_ERROR_LOC(XQDY0026, loc);
+      throw XQUERY_EXCEPTION(XQDY0026, ERROR_LOC(loc));
 
     content += strvalue;
   }
@@ -907,7 +907,7 @@ bool CommentIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   if (!content.empty())
   {
     if (content[content.size()-1] == '-' || content.find("--") != zstring::npos)
-      ZORBA_ERROR_LOC(XQDY0072, loc);
+      throw XQUERY_EXCEPTION(XQDY0072, ERROR_LOC(loc));
   }
 
   ZORBA_FATAL(theIsRoot || !path.empty(), "");
@@ -1294,9 +1294,9 @@ bool NameCastIterator::nextImpl(store::Item_t& result, PlanState& planState) con
         // this needs to be checked and thrown here as the optimizer
         // might try to fold a const expression and would return a different error code
         if (theIsAttrName)
-          ZORBA_ERROR_LOC(XQDY0044, loc);
+          throw XQUERY_EXCEPTION(XQDY0044, ERROR_LOC(loc));
         else
-          ZORBA_ERROR_LOC(XQDY0096, loc);
+          throw XQUERY_EXCEPTION(XQDY0096, ERROR_LOC(loc));
       }
       else
         // the returned error codes are wrong for name casting => they must be changed

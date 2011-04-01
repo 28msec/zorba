@@ -125,14 +125,10 @@ void ResultIteratorImpl::open()
   try
   {
     if (!thePlan || !theQuery)
-    {
-      ZORBA_ERROR(API0042_ITERATOR_QUERY_IS_CLOSED);
-    }
+      throw ZORBA_EXCEPTION(API0042_ITERATOR_QUERY_IS_CLOSED);
 
     if (theIsOpen)  
-    {
-      ZORBA_ERROR(API0041_ITERATOR_IS_OPEN_ALREADY);
-    }
+      throw ZORBA_EXCEPTION(API0041_ITERATOR_IS_OPEN_ALREADY);
 
     SYNC_CODE(
     if (!theHaveLock)
@@ -159,14 +155,10 @@ bool ResultIteratorImpl::next(Item& aItem)
   try
   {
     if (!thePlan)
-    {
-      ZORBA_ERROR(API0042_ITERATOR_QUERY_IS_CLOSED);
-    }
+      throw ZORBA_EXCEPTION(API0042_ITERATOR_QUERY_IS_CLOSED);
 
     if (!theIsOpen)  
-    {
-      ZORBA_ERROR(API0040_ITERATOR_IS_NOT_OPEN);
-    }
+      throw ZORBA_EXCEPTION(API0040_ITERATOR_IS_NOT_OPEN);
 
     SYNC_CODE(
     if (!theHaveLock)
@@ -196,14 +188,10 @@ void ResultIteratorImpl::close()
   try
   {
     if (!thePlan || !theQuery)
-    {
-      ZORBA_ERROR(API0042_ITERATOR_QUERY_IS_CLOSED);
-    }
+      throw ZORBA_EXCEPTION(API0042_ITERATOR_QUERY_IS_CLOSED);
 
     if (!theIsOpen)  
-    {
-      ZORBA_ERROR(API0040_ITERATOR_IS_NOT_OPEN);
-    }
+      throw ZORBA_EXCEPTION(API0040_ITERATOR_IS_NOT_OPEN);
 
     thePlan->close();
 

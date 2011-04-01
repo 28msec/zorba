@@ -493,7 +493,7 @@ bool BasicItemFactory::createDateTime(
   else
   {
     if (! createDateTime(result, &date->getDateValue(), &time->getTimeValue()))
-      ZORBA_ERROR(FORG0008);
+      throw XQUERY_EXCEPTION(FORG0008);
 
     return true;
   }

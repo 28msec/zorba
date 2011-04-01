@@ -249,8 +249,7 @@ expr_t XQueryCompiler::normalize(parsenode_t aParsenode)
   if ( lExpr == NULL )
   {
     // TODO: can this happen?
-    ZORBA_ERROR(API0002_XQUERY_COMPILATION_FAILED);
-    return NULL;
+		throw ZORBA_EXCEPTION( API0002_XQUERY_COMPILATION_FAILED );
   }
 
   return lExpr;
@@ -305,13 +304,11 @@ parsenode_t XQueryCompiler::createMainModule(
 {
   //get the namespace from the LibraryModule
   LibraryModule* mod_ast = dynamic_cast<LibraryModule *>(&*aLibraryModule);
-  if (mod_ast == NULL)
-  {
-    ZORBA_ERROR_DESC_OSS(API0002_XQUERY_COMPILATION_FAILED,
-                        "given library module is not a valid module, e.g. "
-                         << "the module declaration is missing");
-
-  }
+  if (!mod_ast)
+		throw ZORBA_EXCEPTION(
+			API0002_XQUERY_COMPILATION_FAILED,
+			ERROR_PARAMS( ZED( BadLibraryModule ) )
+		);
 
   const zstring& lib_namespace = mod_ast->get_decl()->get_target_namespace();
 
@@ -331,9 +328,10 @@ parsenode_t XQueryCompiler::createMainModule(
   }
   catch (ZorbaException const& e)
   {
-    ZORBA_ERROR_LOC_DESC(XQST0046,
-                         mod_ast->get_decl()->get_location(),
-                         e.what());
+		throw XQUERY_EXCEPTION(
+			XQST0046, ERROR_PARAMS( e.what() ),
+			ERROR_LOC( mod_ast->get_decl()->get_location() )
+		);
   }
 
   // create a dummy main module

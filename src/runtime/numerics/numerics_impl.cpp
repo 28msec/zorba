@@ -505,7 +505,7 @@ static void errorIfTwoOrMore(zstring const& part, const char* sep, QueryLoc& loc
   if (pos != zstring::npos)
   {
     if (part.find(sep, strlen(sep), pos+1) != zstring::npos)
-      ZORBA_ERROR_LOC(XTDE1310, loc);
+      throw XQUERY_EXCEPTION(XTDE1310, ERROR_LOC(loc));
   }
 }
 
@@ -525,13 +525,13 @@ static void parsePart(
   if (str.find(info.percent.c_str()) != zstring::npos &&
       str.find(info.per_mille.c_str()) != zstring::npos)
   {
-    ZORBA_ERROR_LOC(XTDE1310, info.loc);
+    throw XQUERY_EXCEPTION(XTDE1310, ERROR_LOC(info.loc));
   }
 
   if (str.find(info.digit_sign.c_str()) == zstring::npos &&
       str.find(info.zero_digit.c_str()) == zstring::npos)
   {
-    ZORBA_ERROR_LOC(XTDE1310, info.loc);
+    throw XQUERY_EXCEPTION(XTDE1310, ERROR_LOC(info.loc));
   }
 
   // get grouping separators
@@ -566,10 +566,10 @@ static void parsePart(
       ((!fractional && first_digit_sign > last_zero_sign)
         ||
         (fractional && first_digit_sign < last_zero_sign)))
-    ZORBA_ERROR_LOC(XTDE1310, info.loc);
+    throw XQUERY_EXCEPTION(XTDE1310, ERROR_LOC(info.loc));
 
   if (part.grouping_pos.size() > 0 && part.grouping_pos[0] == 0)
-    ZORBA_ERROR_LOC(XTDE1310, info.loc);
+    throw XQUERY_EXCEPTION(XTDE1310, ERROR_LOC(info.loc));
 
   if (part.grouping_pos.size() > 0)
   {
@@ -878,7 +878,7 @@ FormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   {
     info.loc = loc;
     if (!isAllowedType(result->getType()))
-      ZORBA_ERROR_LOC(XPTY0004, info.loc);
+      throw XQUERY_EXCEPTION(XPTY0004, ERROR_LOC(info.loc));
 
     consumeNext(pictureItem, theChildren[1].getp(), planState);
 
@@ -910,7 +910,7 @@ FormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
         // The prefix is not in the known namespaces, the only posibility left is to be invoked from an EnclosedIterator
         if (planState.theNodeConstuctionPath.empty())
-          ZORBA_ERROR_LOC(FODF1280, loc);
+          throw XQUERY_EXCEPTION(FODF1280, ERROR_LOC(loc));
 
         store::NsBindings bindings;
         planState.theNodeConstuctionPath.top()->getNamespaceBindings(bindings);
@@ -926,7 +926,7 @@ FormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
       if (formatName.isNull()
           ||
           ((df_t = planState.theCompilerCB->theRootSctx->get_decimal_format(formatName)).getp() == NULL))
-        ZORBA_ERROR_LOC(FODF1280, loc);
+        throw XQUERY_EXCEPTION(FODF1280, ERROR_LOC(loc));
 
     } // if (theChildren.size() < 3)
   

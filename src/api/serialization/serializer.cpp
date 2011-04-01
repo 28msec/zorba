@@ -2322,10 +2322,10 @@ void serializer::serialize(
   {
     // only allow XML-based methods for SAX notifications
     if (method != PARAMETER_VALUE_XML &&
-      method != PARAMETER_VALUE_XHTML &&
-      method != PARAMETER_VALUE_JSONML)
+        method != PARAMETER_VALUE_XHTML &&
+        method != PARAMETER_VALUE_JSONML)
     {
-      ZORBA_ERROR(API0070_INVALID_SERIALIZATION_METHOD_FOR_SAX);
+      throw ZORBA_EXCEPTION(API0070_INVALID_SERIALIZATION_METHOD_FOR_SAX);
     }
     // it's OK now, build a SAX emmiter
     tr = new transcoder(temp_sstream, false);
@@ -2344,13 +2344,13 @@ void serializer::serialize(
         method == PARAMETER_VALUE_JSON ||
         method == PARAMETER_VALUE_JSONML))
     {
-      ZORBA_ERROR(API0066_JSON_SEQUENCE_CANNOT_BE_SERIALIZED);
+      throw ZORBA_EXCEPTION(API0066_JSON_SEQUENCE_CANNOT_BE_SERIALIZED);
     }
 
     // PUL's cannot be serialized
     if (lItem->isPul())
     {
-      ZORBA_ERROR(API0007_CANNOT_SERIALIZE_PUL);
+      throw ZORBA_EXCEPTION(API0007_CANNOT_SERIALIZE_PUL);
     }
 
     e->emit_item(&*lItem);
@@ -2421,14 +2421,14 @@ void serializer::serialize(
       if (method == PARAMETER_VALUE_JSON ||
           method == PARAMETER_VALUE_JSONML)
       {
-        ZORBA_ERROR(API0066_JSON_SEQUENCE_CANNOT_BE_SERIALIZED);
+        throw ZORBA_EXCEPTION(API0066_JSON_SEQUENCE_CANNOT_BE_SERIALIZED);
       }
     }
 
     // PUL's cannot be serialized
     if (lItem->isPul())
     {
-      ZORBA_ERROR(API0007_CANNOT_SERIALIZE_PUL);
+      throw ZORBA_EXCEPTION(API0007_CANNOT_SERIALIZE_PUL);
     }
 
     e->emit_item(&*lItem);

@@ -1344,7 +1344,7 @@ bool FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     if (!TypeOps::is_numeric(tm, *lResultType) &&
         (!TypeOps::is_subtype(tm, *lResultType, *rtm.DURATION_TYPE_ONE) ||
          TypeOps::is_equal(tm, *lResultType, *rtm.DURATION_TYPE_ONE)))
-      ZORBA_ERROR_LOC(FORG0006, loc);
+      throw XQUERY_EXCEPTION(FORG0006, ERROR_LOC(loc));
 
     while (consumeNext(lRunningItem, theChildren[0].getp(), planState))
     {

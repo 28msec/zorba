@@ -1906,7 +1906,7 @@ XmlNode* ElementNode::copyInternal(
             (typeName->equals(GET_STORE().theSchemaTypeNames[XS_QNAME]) ||
              typeName->equals(GET_STORE().theSchemaTypeNames[XS_NOTATION])))
         {
-          ZORBA_ERROR(XQTY0086);
+          throw XQUERY_EXCEPTION(XQTY0086);
         }
       }
 

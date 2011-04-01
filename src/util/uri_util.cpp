@@ -211,7 +211,7 @@ void fetch_to_path_impl( char const *uri, char *path, bool *is_temp ) {
   if ( is_temp )
     *is_temp = temp;
 #else
-  ZORBA_ERROR( XQP0017_FILE_ACCESS_DISABLED );
+  throw ZORBA_EXCEPTION( XQP0017_FILE_ACCESS_DISABLED );
 #endif /* ZORBA_WITH_FILE_ACCESS */
 }
 

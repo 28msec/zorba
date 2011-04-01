@@ -78,7 +78,7 @@ void relpath_expr::add_back(expr_t step)
   {
     if (theScriptingKind == SEQUENTIAL_EXPR)
     {
-      ZORBA_ERROR_LOC(XUST0001, get_loc());
+      throw XQUERY_EXCEPTION(XUST0001, ERROR_LOC(get_loc()));
     }
     else
     {
@@ -89,7 +89,7 @@ void relpath_expr::add_back(expr_t step)
   {
     if (theScriptingKind == UPDATE_EXPR)
     {
-      ZORBA_ERROR_LOC(XUST0001, get_loc());
+      throw XQUERY_EXCEPTION(XUST0001, ERROR_LOC(get_loc()));
     }
     else
     {
@@ -118,7 +118,7 @@ void relpath_expr::compute_scripting_kind()
     {
       if (theScriptingKind == SEQUENTIAL_EXPR)
       {
-        ZORBA_ERROR_LOC(XUST0001, get_loc());
+        throw XQUERY_EXCEPTION(XUST0001, ERROR_LOC(get_loc()));
       }
       else
       {
@@ -129,7 +129,7 @@ void relpath_expr::compute_scripting_kind()
     {
       if (theScriptingKind == UPDATE_EXPR)
       {
-        ZORBA_ERROR_LOC(XUST0001, get_loc());
+        throw XQUERY_EXCEPTION(XUST0001, ERROR_LOC(get_loc()));
       }
       else
       {

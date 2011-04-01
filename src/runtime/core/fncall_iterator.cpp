@@ -608,16 +608,12 @@ bool StatelessExtFunctionCallIterator::nextImpl(
     if (theIsUpdating)
     {
       if (!result->isPul())
-      {
-        ZORBA_ERROR_LOC(XUDY0019, loc);
-      }
+        throw XQUERY_EXCEPTION(XUDY0019, ERROR_LOC(loc));
     }
     else
     {
       if (result->isPul())
-      {
-        ZORBA_ERROR_LOC(XUDY0018, loc);
-      }
+        throw XQUERY_EXCEPTION(XUDY0018, ERROR_LOC(loc));
     }
     STACK_PUSH(true, state);
   }

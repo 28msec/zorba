@@ -326,8 +326,7 @@ void *begin_visit(const SchemaImport &n)
     INDENT_INC; NL;
     return no_state;
 #else
-  ZORBA_ERROR(XQST0009);
-  return no_state;
+  throw XQUERY_EXCEPTION(XQST0009);
 #endif
 }
 

@@ -558,7 +558,7 @@ bool EitherNodesOrAtomicsIterator::nextImpl(
     while (CONSUME (result, 0))
     {
       if (lState->atomics != result->isAtomic ())
-        ZORBA_ERROR_LOC (XPTY0018, loc);
+        throw XQUERY_EXCEPTION (XPTY0018, ERROR_LOC(loc));
       STACK_PUSH (true, lState);
     }
   }

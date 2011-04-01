@@ -512,9 +512,9 @@ bool SubtractOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DAT
     d.reset(i0->getDateTimeValue().subtractDateTime(&i1->getDateTimeValue(),
                                                     dctx->get_implicit_timezone()));
   }
-  catch (InvalidTimezoneException) 
+  catch (InvalidTimezoneException const&) 
   {
-    ZORBA_ERROR(FODT0003);
+    throw XQUERY_EXCEPTION(FODT0003);
   }
   return GENV_ITEMFACTORY->createDayTimeDuration(result, d.get());
 }
@@ -535,9 +535,9 @@ bool SubtractOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DATE>(
     d.reset(i0->getTimeValue().subtractDateTime(&i1->getTimeValue(),
                                                 dctx->get_implicit_timezone()));
   }
-  catch (InvalidTimezoneException) 
+  catch (InvalidTimezoneException const&)
   {
-    ZORBA_ERROR(FODT0003);
+    throw XQUERY_EXCEPTION(FODT0003);
   }
   return GENV_ITEMFACTORY->createDayTimeDuration(result, d.get());
 }
@@ -558,9 +558,9 @@ bool SubtractOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_TIME>(
     d.reset(i0->getTimeValue().subtractDateTime(&i1->getTimeValue(),
                                                 dctx->get_implicit_timezone()));
   }
-  catch (InvalidTimezoneException) 
+  catch (InvalidTimezoneException const&)
   {
-    ZORBA_ERROR(FODT0003);
+    throw XQUERY_EXCEPTION(FODT0003);
   }
   return GENV_ITEMFACTORY->createDayTimeDuration(result, d.get());
 }

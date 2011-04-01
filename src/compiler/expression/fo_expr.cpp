@@ -180,9 +180,7 @@ void fo_expr::compute_scripting_kind()
       expr_script_kind_t argKind = theArgs[i]->get_scripting_kind();
 
       if (argKind == UPDATE_EXPR)
-      {
-        ZORBA_ERROR_LOC(XUST0001, theArgs[i]->get_loc());
-      }
+        throw XQUERY_EXCEPTION(XUST0001, ERROR_LOC(theArgs[i]->get_loc()));
     }
 
     theScriptingKind = SEQUENTIAL_EXPR;
@@ -199,16 +197,12 @@ void fo_expr::compute_scripting_kind()
       expr_script_kind_t argKind = theArgs[i]->get_scripting_kind();
 
       if (argKind == UPDATE_EXPR)
-      {
-        ZORBA_ERROR_LOC(XUST0001, theArgs[i]->get_loc());
-      }
+        throw XQUERY_EXCEPTION(XUST0001, ERROR_LOC(theArgs[i]->get_loc()));
 
       if (argKind == SEQUENTIAL_EXPR)
       {
         if (theScriptingKind == UPDATE_EXPR)
-        {
-          ZORBA_ERROR_LOC(XUST0001, theArgs[i]->get_loc());
-        }
+          throw XQUERY_EXCEPTION(XUST0001, ERROR_LOC(theArgs[i]->get_loc()));
 
         theScriptingKind = SEQUENTIAL_EXPR;
       }

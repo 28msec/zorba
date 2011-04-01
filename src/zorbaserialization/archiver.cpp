@@ -480,7 +480,7 @@ void Archiver::check_simple_field(bool retval,
 {
   if(!retval)
   {
-    ZORBA_ERROR(SRL0001_INEXISTENT_INPUT_FIELD);
+    throw ZORBA_EXCEPTION(SRL0001_INEXISTENT_INPUT_FIELD);
   }
 #ifndef NDEBUG
   if(!is_simple)
@@ -513,7 +513,7 @@ void Archiver::check_nonclass_field(bool retval,
 {
   if(!retval)
   {
-    ZORBA_ERROR(SRL0001_INEXISTENT_INPUT_FIELD);
+    throw ZORBA_EXCEPTION(SRL0001_INEXISTENT_INPUT_FIELD);
   }
 #ifndef NDEBUG
   if(is_simple || is_class)
@@ -546,7 +546,7 @@ void Archiver::check_class_field(bool retval,
 {
   if(!retval)
   {
-    ZORBA_ERROR(SRL0001_INEXISTENT_INPUT_FIELD);
+    throw ZORBA_EXCEPTION(SRL0001_INEXISTENT_INPUT_FIELD);
   }
 #ifndef NDEBUG
   if(is_simple || !is_class)
@@ -1068,7 +1068,7 @@ bool Archiver::check_allowed_delays(archive_field *parent_field)
         //impossible to solve situation
         //need to change the serialization order somewhere
         assert(false);
-        ZORBA_ERROR(SRL0014_INFINITE_CIRCULAR_DEPENDENCIES);
+        throw ZORBA_EXCEPTION(SRL0014_INFINITE_CIRCULAR_DEPENDENCIES);
       }
       //exchange fields
       exchange_mature_fields(child, child->refered);

@@ -74,9 +74,7 @@ void VectorIterator::open()
   try
   {
     if (theIsOpen)  
-    {
-      ZORBA_ERROR(API0041_ITERATOR_IS_OPEN_ALREADY);
-    }
+      throw ZORBA_EXCEPTION(API0041_ITERATOR_IS_OPEN_ALREADY);
 
     theIter = theVector.begin();
 
@@ -94,9 +92,7 @@ bool VectorIterator::next(Item& aItem)
   try
   {
     if (!theIsOpen)  
-    {
-      ZORBA_ERROR(API0040_ITERATOR_IS_NOT_OPEN);
-    }
+      throw ZORBA_EXCEPTION(API0040_ITERATOR_IS_NOT_OPEN);
 
     if (theIter == theVector.end()) 
       return false;
@@ -119,9 +115,7 @@ void VectorIterator::close()
   try
   {
     if (!theIsOpen)  
-    {
-      ZORBA_ERROR(API0040_ITERATOR_IS_NOT_OPEN);
-    }
+      throw ZORBA_EXCEPTION(API0040_ITERATOR_IS_NOT_OPEN);
 
     theIsOpen = false;
   }

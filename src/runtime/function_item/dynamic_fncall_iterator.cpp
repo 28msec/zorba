@@ -159,7 +159,7 @@ bool DynamicFnCallIterator::nextImpl(
       !funcItem->isFunction() ||
       consumeNext(item, theChildren[0], planState)) 
   {
-    ZORBA_ERROR_LOC(XPTY0004, loc);
+    throw XQUERY_EXCEPTION(XPTY0004, ERROR_LOC(loc));
   }
 
   fnItem = static_cast<FunctionItem*>(funcItem.getp());

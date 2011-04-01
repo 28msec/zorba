@@ -37,7 +37,7 @@ read_tag:
     is->read(&c, 1);
     if(c == 0)
     {
-      ZORBA_ERROR(SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
+      throw ZORBA_EXCEPTION(SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
     }
   }
 
@@ -54,7 +54,7 @@ read_tag:
   }
   if(!read_root_tag(c))
   {
-    ZORBA_ERROR(SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
+    throw ZORBA_EXCEPTION(SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
   }
   read_tag_level++;
 }
@@ -74,7 +74,7 @@ void XmlArchiver::serialize_out()
 {
   if(!os)
   {
-    ZORBA_ERROR(SRL0007_INPUT_ARCHIVE_USED_FOR_OUT_SERIALIZATION);
+    throw ZORBA_EXCEPTION(SRL0007_INPUT_ARCHIVE_USED_FOR_OUT_SERIALIZATION);
   }
 
   prepare_serialize_out();
@@ -195,7 +195,7 @@ bool XmlArchiver::read_next_field_impl( char **type,
 {
   if(!is)
   {
-    ZORBA_ERROR(SRL0008_OUTPUT_ARCHIVE_USED_FOR_IN_SERIALIZATION);
+    throw ZORBA_EXCEPTION(SRL0008_OUTPUT_ARCHIVE_USED_FOR_IN_SERIALIZATION);
   }
 
   *type = NULL;
@@ -436,7 +436,7 @@ read_tag:
     is->read(&c, 1);
     if(c == 0)
     {
-      ZORBA_ERROR(SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
+      throw ZORBA_EXCEPTION(SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
     }
   }
 
@@ -455,14 +455,14 @@ read_tag:
   {
     if(!match_string(c, "/obj_field"))
     {
-      ZORBA_ERROR(SRL0002_INCOMPATIBLE_INPUT_FIELD);
+      throw ZORBA_EXCEPTION(SRL0002_INCOMPATIBLE_INPUT_FIELD);
     }
   }
   else
   {
     if(!match_string(c, "/zorba_archive"))
     {
-      ZORBA_ERROR(SRL0002_INCOMPATIBLE_INPUT_FIELD);
+      throw ZORBA_EXCEPTION(SRL0002_INCOMPATIBLE_INPUT_FIELD);
     }
   }
 
@@ -547,7 +547,7 @@ void XmlArchiver::read_attrib_value(char *attrib_value)
     is->read(&c, 1);
     if(c == 0)
     {
-      ZORBA_ERROR(SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
+      throw ZORBA_EXCEPTION(SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
     }
   }
   c = 0;
@@ -556,7 +556,7 @@ void XmlArchiver::read_attrib_value(char *attrib_value)
     is->read(&c, 1);
     if(c == 0)
     {
-      ZORBA_ERROR(SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
+      throw ZORBA_EXCEPTION(SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
     }
     if(c == '\"')
       break;
@@ -658,7 +658,7 @@ void XmlArchiver::read_attrib_value(std::string *attrib_value)
     is->read(&c, 1);
     if(c == 0)
     {
-      ZORBA_ERROR(SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
+      throw ZORBA_EXCEPTION(SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
     }
   }
   c = 0;
@@ -667,7 +667,7 @@ void XmlArchiver::read_attrib_value(std::string *attrib_value)
     is->read(&c, 1);
     if(c == 0)
     {
-      ZORBA_ERROR(SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
+      throw ZORBA_EXCEPTION(SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
     }
     if(c == '\"')
       break;
@@ -765,7 +765,7 @@ void XmlArchiver::skip_tag()
     is->read(&c, 1);
     if(c == 0)
     {
-      ZORBA_ERROR(SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
+      throw ZORBA_EXCEPTION(SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
     }
   }
   if(c == '>')
@@ -789,7 +789,7 @@ void XmlArchiver::skip_comment_tag()
       is->read(&c, 1);
       if(c == 0)
       {
-        ZORBA_ERROR(SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
+        throw ZORBA_EXCEPTION(SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
       }
       switch(c)
       {
@@ -814,7 +814,7 @@ void XmlArchiver::skip_comment_tag()
       is->read(&c, 1);
       if(c == 0)
       {
-        ZORBA_ERROR(SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
+        throw ZORBA_EXCEPTION(SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
       }
       switch(c)
       {
@@ -838,7 +838,7 @@ void XmlArchiver::skip_comment_tag()
       is->read(&c, 1);
       if(c == 0)
       {
-        ZORBA_ERROR(SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
+        throw ZORBA_EXCEPTION(SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
       }
     }
   }

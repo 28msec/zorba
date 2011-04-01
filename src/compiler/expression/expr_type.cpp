@@ -38,10 +38,10 @@ namespace zorba
 {
 
 
-#define RAISE_XPST0005()                            \
-  {                                                 \
-    ZORBA_ERROR_LOC(XPST0005, loc);                 \
-    return RTM.EMPTY_TYPE;                          \
+#define RAISE_XPST0005()                              \
+  {                                                   \
+    throw XQUERY_EXCEPTION(XPST0005, ERROR_LOC(loc)); \
+    return RTM.EMPTY_TYPE;                            \
   }
 
 
@@ -287,9 +287,7 @@ void expr::compute_return_type(bool deep, bool* modified)
       }
       else if (sourceType->type_kind() != XQType::NODE_TYPE_KIND)
       {
-        ZORBA_ERROR_LOC(XPTY0020, get_loc());
-        theType = rtm.NONE_TYPE;
-        return;
+        throw XQUERY_EXCEPTION(XPTY0020, ERROR_LOC(get_loc()));
       }
       else
       {

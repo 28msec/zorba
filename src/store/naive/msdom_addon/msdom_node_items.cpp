@@ -635,7 +635,7 @@ void XmlNode::add_attribute(AttributeNode *attr, ulong pos, bool shared)
     {
       hr = dom_element->setAttributeNode(dom_attr, &dom_removed_attr);
       if(FAILED(hr))
-        ZORBA_ERROR(XQP0027_MS_DOM_ERROR);
+        throw ZORBA_EXCEPTION(XQP0027_MS_DOM_ERROR);
     }
   }
 
@@ -665,7 +665,7 @@ void XmlNode::add_child(XmlNode *child, ulong pos, bool shared)
         hr = dom_parent_node->insertBefore(dom_node, beforeChild, &dom_new_node);
 
         if(FAILED(hr))
-          ZORBA_ERROR(XQP0027_MS_DOM_ERROR);
+          throw ZORBA_EXCEPTION(XQP0027_MS_DOM_ERROR);
       }
     }
     children().insert(child, pos, shared);
@@ -684,7 +684,7 @@ void XmlNode::add_child(XmlNode *child, ulong pos, bool shared)
         hr = dom_parent_node->appendChild(dom_node, &dom_new_child);
 
         if(FAILED(hr))
-          ZORBA_ERROR(XQP0027_MS_DOM_ERROR);
+          throw ZORBA_EXCEPTION(XQP0027_MS_DOM_ERROR);
       }
     }
     children().push_back(child, shared);
@@ -928,7 +928,7 @@ DocumentNode::DocumentNode(
          IID_IXMLDOMDocument, (void**)&theDOMdoc);
 
     if(FAILED(hr))
-      ZORBA_ERROR(XQP0027_MS_DOM_ERROR);
+      throw ZORBA_EXCEPTION(XQP0027_MS_DOM_ERROR);
   }
   else
     theDOMdoc = tree->getDOMcreator();
@@ -940,7 +940,7 @@ DocumentNode::DocumentNode(
   {
     hr = tree->getDOMcreator()->createDocumentFragment(&theDOMfragment);
     if(FAILED(hr))
-      ZORBA_ERROR(XQP0027_MS_DOM_ERROR);
+      throw ZORBA_EXCEPTION(XQP0027_MS_DOM_ERROR);
   }
   else
   {
@@ -1233,7 +1233,7 @@ ElementNode::ElementNode(
     IXMLDOMNode   *dom_node;
     hr = getTree()->getDOMcreator()->createNode(node_type, bstr_name, bstr_namespace, &dom_node);
     if(FAILED(hr))
-      ZORBA_ERROR(XQP0027_MS_DOM_ERROR);
+      throw ZORBA_EXCEPTION(XQP0027_MS_DOM_ERROR);
     dom_node->QueryInterface(IID_IXMLDOMElement, (void**)&theDOMElement);
     dom_node->Release();
   }
@@ -1398,7 +1398,7 @@ XmlNode* ElementNode::copy2(
           (theTypeName == GET_STORE().theSchemaTypeNames[XS_QNAME] ||
            theTypeName == GET_STORE().theSchemaTypeNames[XS_NOTATION]))
       {
-        ZORBA_ERROR(XQTY0086);
+        throw XQUERY_EXCEPTION(XQTY0086);
       }
 
       zstring prefix;
@@ -2468,7 +2468,7 @@ AttributeNode::AttributeNode(
       IXMLDOMNode   *dom_node;
       hr = getTree()->getDOMcreator()->createNode(node_type, bstr_name, bstr_namespace, &dom_node);
       if(FAILED(hr))
-        ZORBA_ERROR(XQP0027_MS_DOM_ERROR);
+        throw ZORBA_EXCEPTION(XQP0027_MS_DOM_ERROR);
       dom_node->QueryInterface(IID_IXMLDOMAttribute, (void**)&theDOMAttribute);
       dom_node->Release();
     }
@@ -2760,7 +2760,7 @@ TextNode::TextNode(
 
     hr = getTree()->getDOMcreator()->createTextNode(bstr_content, &theContent.theDOMText);
     if(FAILED(hr))
-      ZORBA_ERROR(XQP0027_MS_DOM_ERROR);
+      throw ZORBA_EXCEPTION(XQP0027_MS_DOM_ERROR);
   }
   else
   {
@@ -2815,7 +2815,7 @@ TextNode::TextNode(
 
     hr = getTree()->getDOMcreator()->createTextNode(bstr_content, &theContent.theDOMText);
     if(FAILED(hr))
-      ZORBA_ERROR(XQP0027_MS_DOM_ERROR);
+      throw ZORBA_EXCEPTION(XQP0027_MS_DOM_ERROR);
   }
   else
   {
@@ -3181,7 +3181,7 @@ PiNode::PiNode(
 
     hr = getTree()->getDOMcreator()->createProcessingInstruction(bstr_target, bstr_content, &theDOMpi);
     if(FAILED(hr))
-      ZORBA_ERROR(XQP0027_MS_DOM_ERROR);
+      throw ZORBA_EXCEPTION(XQP0027_MS_DOM_ERROR);
   }
   else
   {
@@ -3362,7 +3362,7 @@ CommentNode::CommentNode(
 
     hr = getTree()->getDOMcreator()->createComment(bstr_content, &theDOMComment);
     if(FAILED(hr))
-      ZORBA_ERROR(XQP0027_MS_DOM_ERROR);
+      throw ZORBA_EXCEPTION(XQP0027_MS_DOM_ERROR);
   }
   else
   {

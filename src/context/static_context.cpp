@@ -1115,9 +1115,7 @@ void static_context::set_base_uri(const zstring& uri, bool from_prolog)
   if (from_prolog)
   {
     if (theBaseUriInfo->theHavePrologBaseUri)
-    {
-      ZORBA_ERROR(XQST0032);
-    }
+      throw XQUERY_EXCEPTION(XQST0032);
 
     theBaseUriInfo->thePrologBaseUri = uri;
     theBaseUriInfo->theHavePrologBaseUri = true;
@@ -1732,7 +1730,7 @@ void static_context::set_default_elem_type_ns(
   }
   else
   {
-    ZORBA_ERROR_LOC(XQST0066, loc);
+    throw XQUERY_EXCEPTION(XQST0066, ERROR_LOC(loc));
   }
 }
 
@@ -1767,7 +1765,7 @@ void static_context::set_default_function_ns(
   }
   else
   {
-    ZORBA_ERROR_LOC(XQST0066, loc);
+    throw XQUERY_EXCEPTION(XQST0066, ERROR_LOC(loc));
   }
 }
 
@@ -1790,9 +1788,7 @@ void static_context::bind_ns(
   zstring temp(ns);
 
   if (!theNamespaceBindings->insert(prefix, temp))
-  {
-    ZORBA_ERROR_VAR_LOC(err, loc);
-  }
+    throw XQUERY_EXCEPTION_VAR(err, ERROR_LOC(loc));
 }
 
 
@@ -3147,9 +3143,7 @@ void static_context::set_default_collation(
     const QueryLoc& loc)
 {
   if (theDefaultCollation != NULL || !is_known_collation(uri))
-  {
-    ZORBA_ERROR_LOC(XQST0038, loc);
-  }
+    throw XQUERY_EXCEPTION(XQST0038, ERROR_LOC(loc));
 
   zstring resolvedUri = resolve_relative_uri(uri);
 
@@ -3586,7 +3580,7 @@ void static_context::add_decimal_format(
          !decimalFormat->isDefault() &&
          format->getName()->equals(decimalFormat->getName())))
     {
-      ZORBA_ERROR_LOC(XQST0111, loc);
+      throw XQUERY_EXCEPTION(XQST0111, ERROR_LOC(loc));
     }
   }
 

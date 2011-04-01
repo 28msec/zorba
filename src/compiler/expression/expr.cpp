@@ -210,14 +210,14 @@ DEF_EXPR_ACCEPT (while_expr)
 static inline void checkNonUpdating(const expr* e)
 {
   if (e != 0 && e->is_updating())
-    ZORBA_ERROR_LOC(XUST0001, e->get_loc());
+    throw XQUERY_EXCEPTION(XUST0001, ERROR_LOC(e->get_loc()));
 }
 
 
 static inline void checkSimpleExpr(const expr* e)
 {
   if (e != 0 && !e->is_simple() && !e->is_vacuous())
-    ZORBA_ERROR_LOC(XUST0001, e->get_loc());
+    throw XQUERY_EXCEPTION(XUST0001, ERROR_LOC(e->get_loc()));
 }
 
 
@@ -1254,12 +1254,12 @@ void trycatch_expr::compute_scripting_kind()
     if (theScriptingKind == UPDATE_EXPR)
     {
       if (catchKind == SEQUENTIAL_EXPR)
-        ZORBA_ERROR_LOC(XUST0001, catchExpr->get_loc());
+        throw XQUERY_EXCEPTION(XUST0001, ERROR_LOC(catchExpr->get_loc()));
     }
     else if (theScriptingKind == SEQUENTIAL_EXPR)
     {
       if (catchKind == UPDATE_EXPR)
-        ZORBA_ERROR_LOC(XUST0001, catchExpr->get_loc());
+        throw XQUERY_EXCEPTION(XUST0001, ERROR_LOC(catchExpr->get_loc()));
     }
     else if (theScriptingKind == VACUOUS_EXPR)
     {
@@ -1334,7 +1334,7 @@ void eval_expr::compute_scripting_kind()
   {
     if (theScriptingKind == UPDATE_EXPR)
     {
-      ZORBA_ERROR_LOC(XUST0001, get_loc());
+      throw XQUERY_EXCEPTION(XUST0001, ERROR_LOC(get_loc()));
     }
 
     theScriptingKind = SEQUENTIAL_EXPR;
@@ -1957,7 +1957,7 @@ void transform_expr::compute_scripting_kind()
 
     if (modKind != UPDATE_EXPR && modKind != VACUOUS_EXPR)
     {
-      ZORBA_ERROR_LOC(XUST0002, theModifyExpr->get_loc());
+      throw XQUERY_EXCEPTION(XUST0002, ERROR_LOC(theModifyExpr->get_loc()));
     }
   }
 

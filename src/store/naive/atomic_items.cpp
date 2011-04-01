@@ -1176,10 +1176,9 @@ bool DateTimeItem::equals(
   {
     return 0 == theValue.compare(&aItem->getDateTimeValue(), timezone);
   }
-  catch (InvalidTimezoneException)
+  catch (InvalidTimezoneException const&)
   {
-    ZORBA_ERROR(FODT0003);
-    return false;
+    throw XQUERY_EXCEPTION(FODT0003);
   }
 }
 
@@ -1193,10 +1192,9 @@ long DateTimeItem::compare(
   {
     return theValue.compare(&other->getDateTimeValue(), timezone);
   }
-  catch (InvalidTimezoneException)
+  catch (InvalidTimezoneException const&)
   {
-    ZORBA_ERROR(FODT0003);
-    return 0;
+    throw XQUERY_EXCEPTION(FODT0003);
   }
 }
 

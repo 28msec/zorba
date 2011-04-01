@@ -450,7 +450,7 @@ void PULImpl::addReplaceNode(
       if ((*updates)[i]->getKind() == kind)
       {
         delete upd;
-        ZORBA_ERROR(XUDY0016);
+        throw XQUERY_EXCEPTION(XUDY0016);
       }
     }
 
@@ -488,7 +488,7 @@ void PULImpl::addReplaceContent(
     for (ulong i = 0; i < numUpdates; i++)
     {
       if ((*updates)[i]->getKind() == store::UpdateConsts::UP_REPLACE_CONTENT)
-        ZORBA_ERROR(XUDY0017);
+        throw XQUERY_EXCEPTION(XUDY0017);
     }
 
     UpdatePrimitive* upd = GET_STORE().getPULFactory().createUpdReplaceElemContent(pul, target, newChild);
@@ -548,7 +548,7 @@ void PULImpl::addReplaceValue(store::Item_t& target, zstring& newValue)
       if (store::UpdateConsts::isReplaceValue((*updates)[i]->getKind()))
       {
         delete upd;
-        ZORBA_ERROR(XUDY0017);
+        throw XQUERY_EXCEPTION(XUDY0017);
       }
     }
 
@@ -619,7 +619,7 @@ void PULImpl::addRename(store::Item_t& target, store::Item_t& newName)
       if (store::UpdateConsts::isRename((*updates)[i]->getKind()))
       {
         delete upd;
-        ZORBA_ERROR(XUDY0015);
+        throw XQUERY_EXCEPTION(XUDY0015);
       }
     }
 
@@ -642,7 +642,7 @@ void PULImpl::addPut(store::Item_t& target, store::Item_t& uri)
 
     if (upd->theTargetUri == uri)
     {
-      ZORBA_ERROR(XUDY0031);
+      throw XQUERY_EXCEPTION(XUDY0031);
     }
   }
 
@@ -1023,7 +1023,7 @@ void PULImpl::mergeUpdates(store::Item* other)
       
       if (upd->theTargetUri->equals(otherUpd->theTargetUri))
       {
-        ZORBA_ERROR(XUDY0031);
+        throw XQUERY_EXCEPTION(XUDY0031);
       }
     }
 
@@ -1157,7 +1157,7 @@ void PULImpl::mergeUpdateList(
           for (ulong j = 0; j < numTargetUpdates; j++)
           {
             if (store::UpdateConsts::isRename((*targetUpdates)[j]->getKind()))
-              ZORBA_ERROR(XUDY0015);
+              throw XQUERY_EXCEPTION(XUDY0015);
           }
         }
         else if (store::UpdateConsts::isReplaceValue(updKind))
@@ -1166,7 +1166,7 @@ void PULImpl::mergeUpdateList(
           for (ulong j = 0; j < numTargetUpdates; j++)
           {
             if (store::UpdateConsts::isReplaceValue((*targetUpdates)[j]->getKind()))
-              ZORBA_ERROR(XUDY0017);
+              throw XQUERY_EXCEPTION(XUDY0017);
           }
         }
         break;
@@ -1179,7 +1179,7 @@ void PULImpl::mergeUpdateList(
           for (ulong j = 0; j < numTargetUpdates; ++j)
           {
             if (store::UpdateConsts::isReplaceNode((*targetUpdates)[j]->getKind()))
-              ZORBA_ERROR(XUDY0016);
+              throw XQUERY_EXCEPTION(XUDY0016);
           }
         }
         break;
@@ -1192,7 +1192,7 @@ void PULImpl::mergeUpdateList(
           for (ulong j = 0; j < numTargetUpdates; ++j)
           {
             if ((*targetUpdates)[j]->getKind() == store::UpdateConsts::UP_REPLACE_CONTENT)
-              ZORBA_ERROR(XUDY0017);
+              throw XQUERY_EXCEPTION(XUDY0017);
           }
         }
         break;
@@ -1269,7 +1269,7 @@ void PULImpl::checkTransformUpdates(const std::vector<store::Item*>& rootNodes) 
       }
 
       if (!found)
-        ZORBA_ERROR(XUDY0014);
+        throw XQUERY_EXCEPTION(XUDY0014);
     }
   }
 }

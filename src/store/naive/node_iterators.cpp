@@ -139,7 +139,7 @@ bool StoreNodeDistinctIterator::next(store::Item_t& result)
     }
     else if (theCheckOnly)
     {
-      ZORBA_ERROR(STR0045_DUPLICATE_NODE_ERROR);
+      throw ZORBA_EXCEPTION(STR0045_DUPLICATE_NODE_ERROR);
     }
   }
 }
@@ -181,7 +181,7 @@ bool StoreNodeDistinctOrAtomicIterator::next(store::Item_t& result)
       return false;
 
     if (!result->isAtomic())
-      ZORBA_ERROR (XPTY0018);
+      throw XQUERY_EXCEPTION(XPTY0018);
 
     return true;
   }
@@ -192,7 +192,7 @@ bool StoreNodeDistinctOrAtomicIterator::next(store::Item_t& result)
   if (result->isAtomic())
   {
     if (theNodeMode)
-      ZORBA_ERROR(XPTY0018);
+      throw XQUERY_EXCEPTION(XPTY0018);
 
     theAtomicMode = true;
     return true;
@@ -210,7 +210,7 @@ bool StoreNodeDistinctOrAtomicIterator::next(store::Item_t& result)
         return false;
 
       if (result->isAtomic())
-        ZORBA_ERROR (XPTY0018);
+        throw XQUERY_EXCEPTION(XPTY0018);
     }
   }
 }
@@ -328,7 +328,7 @@ bool StoreNodeSortOrAtomicIterator::next(store::Item_t& result)
       return false;
 
     if (!result->isAtomic())
-      ZORBA_ERROR (XPTY0018);
+      throw XQUERY_EXCEPTION(XPTY0018);
 
     return true;
   }
@@ -345,7 +345,7 @@ bool StoreNodeSortOrAtomicIterator::next(store::Item_t& result)
       if (result->isAtomic())
       {
         if (theNodeMode)
-          ZORBA_ERROR (XPTY0018);
+          throw XQUERY_EXCEPTION(XPTY0018);
 
         theAtomicMode = true;
         return true;

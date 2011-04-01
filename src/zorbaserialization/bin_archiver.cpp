@@ -40,7 +40,7 @@ BinArchiver::BinArchiver(std::istream *is) : Archiver(false)
 	  is->read(preface_string + preface_len, 1);
 	  if(is->gcount() < 1)
 	  {
-      ZORBA_ERROR(SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
+      throw ZORBA_EXCEPTION(SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
 	  }
     if(preface_string[preface_len] == 0)
       break;
@@ -48,7 +48,7 @@ BinArchiver::BinArchiver(std::istream *is) : Archiver(false)
   }
   if(strcmp(preface_string, ZORBA_BIN_SERIALIZED_PLAN_STRING))
   {
-    ZORBA_ERROR(SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
+    throw ZORBA_EXCEPTION(SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE);
   }
 
   in_buffer = (unsigned char*)malloc(BUFFER_SEGMENT_SIZE);
@@ -74,12 +74,12 @@ BinArchiver::BinArchiver(std::istream *is) : Archiver(false)
 #ifndef NDEBUG
   if(is_release)
   {
-    ZORBA_ERROR(SRL0012_INCOMPATIBLE_ARCHIVE_VERSION);
+    throw ZORBA_EXCEPTION(SRL0012_INCOMPATIBLE_ARCHIVE_VERSION);
   }
 #else
   if(!is_release)
   {
-    ZORBA_ERROR(SRL0012_INCOMPATIBLE_ARCHIVE_VERSION);
+    throw ZORBA_EXCEPTION(SRL0012_INCOMPATIBLE_ARCHIVE_VERSION);
   }
 #endif
 
@@ -169,7 +169,7 @@ void BinArchiver::serialize_out()
 {
   if(!os)
   {
-    ZORBA_ERROR(SRL0007_INPUT_ARCHIVE_USED_FOR_OUT_SERIALIZATION);
+    throw ZORBA_EXCEPTION(SRL0007_INPUT_ARCHIVE_USED_FOR_OUT_SERIALIZATION);
   }
 
   prepare_serialize_out();
@@ -516,7 +516,7 @@ void BinArchiver::read_string(std::string &str)
   //  is->read(&c, 1);
   //  if(is->gcount() < 1)
   //  {
-  //    ZORBA_ERROR(SRL0002_INCOMPATIBLE_INPUT_FIELD);
+  //    throw ZORBA_EXCEPTION(SRL0002_INCOMPATIBLE_INPUT_FIELD);
   //  }
   //  
   //  if(c)
@@ -537,7 +537,7 @@ void BinArchiver::read_string(char* str)
   //  is->read(&c, 1);
   //  if(is->gcount() < 1)
   //  {
-  //    ZORBA_ERROR(SRL0002_INCOMPATIBLE_INPUT_FIELD);
+  //    throw ZORBA_EXCEPTION(SRL0002_INCOMPATIBLE_INPUT_FIELD);
   //  }
   //  *str = c;
   //  if(!c)
@@ -686,7 +686,7 @@ bool BinArchiver::read_next_field_impl( char **type,
 {
   if(!is)
   {
-    ZORBA_ERROR(SRL0008_OUTPUT_ARCHIVE_USED_FOR_IN_SERIALIZATION);
+    throw ZORBA_EXCEPTION(SRL0008_OUTPUT_ARCHIVE_USED_FOR_IN_SERIALIZATION);
   }
 
   *type = NULL;
@@ -764,7 +764,7 @@ void BinArchiver::read_end_current_level_impl()
   tempbyte = read_bits(8);
   if(tempbyte != 0xFF)
   {
-    ZORBA_ERROR(SRL0002_INCOMPATIBLE_INPUT_FIELD);
+    throw ZORBA_EXCEPTION(SRL0002_INCOMPATIBLE_INPUT_FIELD);
   }
 #endif
 }

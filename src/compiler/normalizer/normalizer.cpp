@@ -78,7 +78,7 @@ static inline expr::expr_t wrap_in_typematch(
 static inline void checkNonUpdating(const expr* lExpr)
 {
   if (lExpr != 0 && lExpr->is_updating())
-    ZORBA_ERROR_LOC(XUST0001, lExpr->get_loc());
+    throw XQUERY_EXCEPTION(XUST0001, ERROR_LOC(lExpr->get_loc()));
 }
 
 

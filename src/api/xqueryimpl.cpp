@@ -1067,9 +1067,7 @@ Iterator_t XQueryImpl::iterator()
     checkNotExecuting();
 
     if (theResultIterator)
-    {
-      ZORBA_ERROR(API0010_XQUERY_HAS_ITERATOR_ALREADY);
-    }
+      throw ZORBA_EXCEPTION(API0010_XQUERY_HAS_ITERATOR_ALREADY);
 
     PlanWrapper_t lPlan = generateWrapper();
 

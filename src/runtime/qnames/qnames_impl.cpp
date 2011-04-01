@@ -65,14 +65,14 @@ ResolveQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
       // must check for FOCA0002 first
       if (!GENV_GCAST.castableToNCName(resPre) || ! GENV_GCAST.castableToNCName(resLocal))
-        ZORBA_ERROR_LOC (FOCA0002, loc);
+        throw XQUERY_EXCEPTION (FOCA0002, ERROR_LOC(loc));
     } 
     else
     {
       resLocal = qname;
 
       if (! GENV_GCAST.castableToNCName(resLocal))
-        ZORBA_ERROR_LOC (FOCA0002, loc);
+        throw XQUERY_EXCEPTION (FOCA0002, ERROR_LOC(loc));
     }
       
     if (consumeNext(itemElem, theChild1, planState )) 
@@ -94,7 +94,7 @@ ResolveQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
       }
 
       if (!found && !resPre.empty())
-        ZORBA_ERROR_LOC(FONS0004, loc);
+        throw XQUERY_EXCEPTION(FONS0004, ERROR_LOC(loc));
     }
     
     GENV_ITEMFACTORY->createQName(result, resNs, resPre, resLocal);
@@ -138,7 +138,7 @@ bool QNameIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   if (index != zstring::npos) 
   {
     if (resNs.empty())
-      ZORBA_ERROR_LOC(FOCA0002, loc);
+      throw XQUERY_EXCEPTION(FOCA0002, ERROR_LOC(loc));
 
     resPre = qname.substr(0, index);
     resLocal = qname.substr(index+1, qname.size() - index);
@@ -151,7 +151,7 @@ bool QNameIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   if ((index != zstring::npos && ! GENV_GCAST.castableToNCName(resPre)) ||
       ! GENV_GCAST.castableToNCName(resLocal))
   {
-    ZORBA_ERROR_LOC(FOCA0002, loc);
+    throw XQUERY_EXCEPTION(FOCA0002, ERROR_LOC(loc));
   }
 
   GENV_ITEMFACTORY->createQName(result, resNs, resPre, resLocal);

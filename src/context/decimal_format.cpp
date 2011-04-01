@@ -60,7 +60,7 @@ bool DecimalFormat::validate(const QueryLoc& loc) const
           isPictureStringProperty(theParams[j].first)
           &&
           theParams[i].second == theParams[j].second)
-        ZORBA_ERROR_LOC(XQST0098, loc);
+        throw XQUERY_EXCEPTION(XQST0098, ERROR_LOC(loc));
     }
 
   return true;

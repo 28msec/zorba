@@ -23,12 +23,11 @@
 #include <iostream>
 #endif
 
-#include <zorba/error.h>
-
 #include "util/stl_util.h"
 #include "util/unicode_util.h"
 #include "util/utf8_util.h"
-#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/dict.h"
+#include "zorbaerrors/xquery_exception.h"
 #include "zorbautils/icu_tokenizer.h"
 #include "zorbautils/locale.h"
 #include "zorbautils/mutex.h"
@@ -134,7 +133,7 @@ void ICU_Tokenizer::create_iterators( iso639_1::type lang,
     )
   );
   if ( U_FAILURE( status ) )
-    ZORBA_ERROR( XQP0036_BREAKITERATOR_CREATION_FAILED );
+    throw ZORBA_EXCEPTION( XQP0036_BREAKITERATOR_CREATION_FAILED );
 
   rbbi_ptr sent_it(
     dynamic_cast<RuleBasedBreakIterator*>(
@@ -142,7 +141,7 @@ void ICU_Tokenizer::create_iterators( iso639_1::type lang,
     )
   );
   if ( U_FAILURE( status ) )
-    ZORBA_ERROR( XQP0036_BREAKITERATOR_CREATION_FAILED );
+    throw ZORBA_EXCEPTION( XQP0036_BREAKITERATOR_CREATION_FAILED );
 
   result.word_ = word_it.release();
   result.sent_ = sent_it.release();
@@ -242,6 +241,9 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, size_t utf8_len,
     }
     ztd::auto_vec<utf8::storage_type> const auto_utf8_buf( utf8_buf );
 
+    zstring_b utf8_word;
+    utf8_word.wrap_memory( utf8_buf, utf8_len );
+
     int32_t const rule_status = iters.word_->getRuleStatus();
 
     //
@@ -251,7 +253,7 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, size_t utf8_len,
     bool is_junk = false;
 
 #   if DEBUG_TOKENIZER
-    cout << "GOT: \"" << string( utf8_buf, utf8_len ) << "\" ";
+    cout << "GOT: \"" << utf8_word << "\" ";
 #   endif
 
     if ( IS_WORD_BREAK( NONE, rule_status ) ) {
@@ -276,7 +278,9 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, size_t utf8_len,
           case '?':
           case '{':
             if ( in_brace )
-              ZORBA_ERROR( FTDY0020 );
+              throw XQUERY_EXCEPTION(
+                FTDY0020, ERROR_PARAMS( *utf8_buf, ZED( BadCharInBraces ) )
+              );
             HANDLE_BACKSLASH();
             if ( in_wild ) {
               in_brace = *utf8_buf == '{';
@@ -290,7 +294,9 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, size_t utf8_len,
               goto set_token;
             }
             if ( in_wild )
-              ZORBA_ERROR( FTDY0020 );
+              throw XQUERY_EXCEPTION(
+                FTDY0020, ERROR_PARAMS( ZED( ClosingBraceWithoutOpen ) )
+              );
             break;
           default:
             in_wild = false;
@@ -319,13 +325,19 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, size_t utf8_len,
           if ( i && *c == ',' )
             break;
           if ( !isdigit( *c ) )
-            ZORBA_ERROR( FTDY0020 );
+            throw XQUERY_EXCEPTION(
+              FTDY0020, ERROR_PARAMS( *c, ZED( BadDecDigit ) )
+            );
         }
         if ( i == utf8_len || *c != ',' )
-          ZORBA_ERROR( FTDY0020 );
+          throw XQUERY_EXCEPTION(
+            FTDY0020, ERROR_PARAMS( ZED( CommaExpected ) )
+          );
         for ( ++i, ++c; i < utf8_len; ++i, ++c ) {
           if ( !isdigit( *c ) )
-            ZORBA_ERROR( FTDY0020 );
+            throw XQUERY_EXCEPTION(
+              FTDY0020, ERROR_PARAMS( *c, ZED( BadDecDigit ) )
+            );
         }
       }
     }
@@ -339,7 +351,9 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, size_t utf8_len,
       cout << "(OTHER)" << endl;
 #     endif
       if ( in_brace )
-        ZORBA_ERROR( FTDY0020 );
+        throw XQUERY_EXCEPTION(
+          FTDY0020, ERROR_PARAMS( utf8_word, ZED( BadTokenInBraces ) )
+        );
       IF_GOT_BACKSLASH_APPEND_AND_GOTO( next );
     }
 
@@ -363,7 +377,7 @@ next:
   } // while
 
   if ( in_brace )
-    ZORBA_ERROR( FTDY0020 );
+    throw XQUERY_EXCEPTION( FTDY0020, ERROR_PARAMS( ZED( UnbalancedBrace ) ) );
   t.send( payload, callback );
 }
 

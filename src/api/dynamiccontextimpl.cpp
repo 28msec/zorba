@@ -674,7 +674,7 @@ void DynamicContextImpl::checkNoIterators() const
   if (theQuery->theResultIterator &&
       theQuery->theResultIterator->isOpen())
   {
-    ZORBA_ERROR(API0027_CANNOT_UPDATE_DCTX_WITH_ITERATORS);
+    throw ZORBA_EXCEPTION( API0027_CANNOT_UPDATE_DCTX_WITH_ITERATORS );
   }
 }
 

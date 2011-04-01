@@ -123,9 +123,9 @@ FnAdjustToTimeZoneIterator_1::nextImpl(store::Item_t& result, PlanState& planSta
       dt = std::auto_ptr<DateTime>(item0->getDateTimeValue().adjustToTimeZone(
         planState.theLocalDynCtx->get_implicit_timezone()));
     }
-    catch (InvalidTimezoneException)
+    catch (InvalidTimezoneException const&)
     {
-      ZORBA_ERROR(FODT0003);
+      throw XQUERY_EXCEPTION(FODT0003);
     }
     STACK_PUSH(GENV_ITEMFACTORY->createDateTime(result, dt.get()), state);
   }
@@ -154,9 +154,9 @@ FnAdjustToTimeZoneIterator_2::nextImpl(store::Item_t& result, PlanState& planSta
     {
       dt = std::auto_ptr<DateTime>(item0->getDateTimeValue().adjustToTimeZone(!s1 ? NULL : &item1->getDayTimeDurationValue()));
     }
-    catch (InvalidTimezoneException)
+    catch (InvalidTimezoneException const&)
     {
-      ZORBA_ERROR(FODT0003);
+      throw XQUERY_EXCEPTION(FODT0003);
     }
     STACK_PUSH(GENV_ITEMFACTORY->createDateTime(result, dt.get()), state);
   }
@@ -608,8 +608,7 @@ bool FnFormatDateTimeIterator::nextImpl(
           break;
 
         default:
-          ZORBA_ERROR_LOC(XTDE1340, loc);
-          break;
+          throw XQUERY_EXCEPTION(XTDE1340, ERROR_LOC(loc));
         }
 
         if (variable_marker == false)
@@ -626,11 +625,11 @@ bool FnFormatDateTimeIterator::nextImpl(
 
         // min_width_modifier is -3, there was an error in the picture
         if (modifier.min_width_modifier == -3)
-          ZORBA_ERROR_LOC(XTDE1340, loc);
+          throw XQUERY_EXCEPTION(XTDE1340, ERROR_LOC(loc));
 
         int data_type = get_data_type(component);
         if (data_type != -1 && (!DateTime::FACET_MEMBERS[facet_type][data_type]))
-          ZORBA_ERROR_LOC(XTDE1350, loc);
+          throw XQUERY_EXCEPTION(XTDE1350, ERROR_LOC(loc));
 
         switch (component)
         {

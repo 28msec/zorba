@@ -225,8 +225,7 @@ expr_script_kind_t expr::scripting_kind_anding(
       return SIMPLE_EXPR;
 
     case UPDATE_EXPR:
-      ZORBA_ERROR_LOC(XUST0001, loc);
-      break;
+      throw XQUERY_EXCEPTION(XUST0001, ERROR_LOC(loc));
 
     case SEQUENTIAL_EXPR:
       return SEQUENTIAL_EXPR;
@@ -245,15 +244,13 @@ expr_script_kind_t expr::scripting_kind_anding(
       return UPDATE_EXPR;
 
     case SIMPLE_EXPR:
-      ZORBA_ERROR_LOC(XUST0001, loc);
-      break;
+      throw XQUERY_EXCEPTION(XUST0001, ERROR_LOC(loc));
 
     case UPDATE_EXPR:
       return UPDATE_EXPR;
 
     case SEQUENTIAL_EXPR:
-      ZORBA_ERROR_LOC(XUST0001, loc);
-      break;
+      throw XQUERY_EXCEPTION(XUST0001, ERROR_LOC(loc));
 
     default:
       ZORBA_ASSERT(false);
@@ -272,8 +269,7 @@ expr_script_kind_t expr::scripting_kind_anding(
       return SEQUENTIAL_EXPR;
 
     case UPDATE_EXPR:
-      ZORBA_ERROR_LOC(XUST0001, loc);
-      break;
+      throw XQUERY_EXCEPTION(XUST0001, ERROR_LOC(loc));
 
     case SEQUENTIAL_EXPR:
       return SEQUENTIAL_EXPR;
@@ -306,8 +302,7 @@ expr_t expr::clone() const
 
 expr_t expr::clone(substitution_t& subst) const
 {
-  ZORBA_ERROR_LOC(XQP0019_INTERNAL_ERROR, get_loc());
-  return NULL;
+  throw XQUERY_EXCEPTION(XQP0019_INTERNAL_ERROR, ERROR_LOC(get_loc()));
 }
 
 
