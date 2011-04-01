@@ -17,13 +17,13 @@
 #include <sstream>
 
 #include <zorba/zorba_exception.h>
-#include <zorba/user_exception.h>
-#include <zorba/error_list.h>
-#include "assert.h"
 
-#include "user_exception.h"
-#include "xquery_exception.h"
 #include "dict.h"
+
+#ifndef NDEBUG
+#include <cstdlib>                      /* for abort() */
+ZORBA_DLL_PUBLIC bool g_abort_on_error;
+#endif /* NDEBUG */
 
 using namespace std;
 
@@ -38,6 +38,10 @@ ZorbaException::ZorbaException( Error const &error, char const *throw_file,
   throw_line_( throw_line ),
   message_( message )
 {
+#ifndef NDEBUG
+  if ( g_abort_on_error )
+    abort();
+#endif /* NDEBUG */
 }
 
 ZorbaException::ZorbaException( ZorbaException const &from ) :
