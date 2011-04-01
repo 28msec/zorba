@@ -39,14 +39,8 @@ namespace zorba {
 if (type.get_manager() != tm && type.get_manager() != &GENV_TYPESYSTEM) \
 {                                                                       \
   if (!TypeOps::is_in_scope(tm, type))                                  \
-  {                                                                     \
-    ZORBA_ERROR_LOC_DESC_OSS(XPTY0004,                                  \
-                         loc,                                           \
-                         "The type " << type.toString()                 \
-                         << " is not among the in-scope schema types"); \
-  }                                                                     \
+    throw XQUERY_EXCEPTION( XPTY0004, ERROR_PARAMS( type.toString(), ZED( NotAmongInScopeSchemaTypes ) ) ); \
 }
-
 
 
 /*******************************************************************************

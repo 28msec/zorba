@@ -105,6 +105,7 @@ _normalize_path
         throw XQUERY_EXCEPTION(XPTY0004, ERROR_PARAMS( lErrorMessage.str() ) );
       }
     } else if (lIndex < 0) { // if the file URI doesn't have a path: file://abc
+      // TODO: error message needs type
       throw XQUERY_EXCEPTION(XPTY0004, ERROR_PARAMS( "The file URI contains no path." ) );
     }
 

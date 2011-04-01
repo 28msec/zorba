@@ -2238,6 +2238,7 @@ bool begin_visit(name_cast_expr& v)
       TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.STRING_TYPE_ONE))
     return true;
 
+  // TODO: needs type name in error message
   throw XQUERY_EXCEPTION(XPTY0004, ERROR_LOC(qloc));
 }
 

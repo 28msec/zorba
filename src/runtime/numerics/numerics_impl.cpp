@@ -878,6 +878,7 @@ FormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   {
     info.loc = loc;
     if (!isAllowedType(result->getType()))
+      // TODO: needs type in error message
       throw XQUERY_EXCEPTION(XPTY0004, ERROR_LOC(info.loc));
 
     consumeNext(pictureItem, theChildren[1].getp(), planState);

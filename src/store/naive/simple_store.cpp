@@ -555,9 +555,10 @@ void SimpleStore::populateValueIndex(
       for (ulong i = 0; i < aNumColumns; ++i)
       {
         if (!aSourceIter->next((*key)[i]))
-        {
-          ZORBA_ERROR_DESC(XQP0019_INTERNAL_ERROR, "Incomplete key during index build");
-        }
+          throw ZORBA_EXCEPTION(
+            XQP0019_INTERNAL_ERROR,
+            ERROR_PARAMS( ZED( IncompleteKeyInIndexBuild ) )
+          );
       }
 
       index->insert(key, domainItem);
@@ -1621,7 +1622,7 @@ bool SimpleStore::getPathInfo(
   @param iterator   The source for the XMDInstance
   @param copyNodes  If true, all nodes are copied before they are saved in the
                     temp sequence.
-  @param lazy		    Hint for the store. If possible a XMDInstance should be
+  @param lazy       Hint for the store. If possible a XMDInstance should be
                     evaluated lazily. For XQueryP it might be necassary to set
                     this to false.
 ********************************************************************************/
@@ -1715,3 +1716,4 @@ store::Item_t  SimpleStore::importMSDOM(
 
 } // namespace store
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

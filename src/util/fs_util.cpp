@@ -73,19 +73,23 @@ static bool to_wchar( char const *path, LPWSTR wpath ) {
 
 zstring get_normalized_path( char const *path, char const *base ) {
   if ( !path[0] )
-    ZORBA_ERROR_DESC( XPTY0004, "empty path" );
+    throw XQUERY_EXCEPTION( XPTY0004, ERROR_PARAMS( "", ZED( EmptyPath ) ) );
   zstring result;
   if ( ascii::begins_with( path, "file://" ) ) {
     result = path + 7;
     if ( result.empty() )
-      ZORBA_ERROR_DESC( XPTY0004, "empty path" );
+      throw XQUERY_EXCEPTION(
+        XPTY0004, ERROR_PARAMS( path, ZED( EmptyPath ) )
+      );
     zstring::size_type slash = result.find( '/' );
     if ( slash == zstring::npos )
-      ZORBA_ERROR_DESC( XPTY0004, "invalid path" );
+      throw XQUERY_EXCEPTION( XPTY0004, ERROR_PARAMS( path, ZED( BadPath ) ) );
     if ( slash > 0 ) {
       zstring const authority( result.substr( 0, slash ) );
       if ( authority != "localhost" )
-        ZORBA_ERROR_DESC( XPTY0004, "non-localhost authority" );
+        throw XQUERY_EXCEPTION(
+          XPTY0004, ERROR_PARAMS( authority, ZED( NonLocalhostAuthority ) )
+        );
     }
 #ifdef WIN32
     ++slash;                            // skip leading '/' in "/C:/file.txt"
@@ -94,7 +98,9 @@ zstring get_normalized_path( char const *path, char const *base ) {
     uri::decode( result );
 #ifdef WIN32
     if ( !is_absolute( result ) )
-      ZORBA_ERROR_DESC( XPTY0004, "missing drive specification" );
+      throw XQUERY_EXCEPTION(
+        XPTY0004, ERROR_PARAMS( result, ZED( NoDriveSpecification ) )
+      );
     ascii::replace_all( result, '/', '\\' );
 #endif /* WIN32 */
   } else {

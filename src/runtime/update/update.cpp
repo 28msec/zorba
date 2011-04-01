@@ -715,8 +715,9 @@ RenameIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
     if (e.error() != err::XPTY0004)
     {
       // the returned error codes are wrong for name casting => they must be changed
-      ZORBA_ERROR_LOC_DESC(XQDY0074, loc, 
-                           "Item cannot be cast to QName.");
+      throw XQUERY_EXCEPTION(
+        XQDY0074, ERROR_PARAMS( "item" ), ERROR_LOC( loc )
+      );
     }
     else
     {
@@ -939,7 +940,5 @@ TransformIterator::closeImpl(PlanState& planState) const
   StateTraitsImpl<PlanIteratorState>::destroyState(planState, theStateOffset);
 }
 
-
-
-
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

@@ -630,7 +630,7 @@ StaticContextImpl::setBaseURI( const String& aBaseURI )
                                             &*GENV_TYPESYSTEM.ANY_URI_TYPE_ONE,
                                             &GENV_TYPESYSTEM))
     {
-      ZORBA_ERROR_DESC(XQP0020_INVALID_URI, baseURI);
+      throw XQUERY_EXCEPTION( XQP0020_INVALID_URI, ERROR_PARAMS( baseURI ) );
     }
 
     theCtx->set_base_uri(baseURI, false);

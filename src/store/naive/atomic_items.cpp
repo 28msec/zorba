@@ -527,8 +527,7 @@ store::Item* QNameItem::getType() const
 
 store::Item_t QNameItem::getEBV() const
 {
-  ZORBA_ERROR_DESC(FORG0006, "Effective Boolean Value is not defined for QName!");
-  return NULL;
+  throw XQUERY_EXCEPTION( FORG0006, ERROR_PARAMS( ZED( EBVNotDef ), "QName" ) );
 }
 
 bool QNameItem::equals(
@@ -1210,37 +1209,44 @@ store::Item_t DateTimeItem::getEBV() const
   switch (theValue.getFacet())
   {
     case DateTime::DATE_FACET:
-      ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for xs:Date!");
-      break;
+      throw XQUERY_EXCEPTION(
+        FORG0006, ERROR_PARAMS( ZED( EBVNotDef ), "xs:Date" )
+      );
 
     case DateTime::TIME_FACET:
-      ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for xs:Time!");
-      break;
+      throw XQUERY_EXCEPTION(
+        FORG0006, ERROR_PARAMS( ZED( EBVNotDef ), "xs:Time" )
+      );
 
     case DateTime::GYEARMONTH_FACET:
-      ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for xs:GYearMonth!");
-      break;
+      throw XQUERY_EXCEPTION(
+        FORG0006, ERROR_PARAMS( ZED( EBVNotDef ), "xs:GYearMonth" )
+      );
 
     case DateTime::GYEAR_FACET:
-      ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for xs:GYear!");
-      break;
+      throw XQUERY_EXCEPTION(
+        FORG0006, ERROR_PARAMS( ZED( EBVNotDef ), "xs:GYear" )
+      );
 
     case DateTime::GMONTH_FACET:
-      ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for xs:GMonth!");
-      break;
+      throw XQUERY_EXCEPTION(
+        FORG0006, ERROR_PARAMS( ZED( EBVNotDef ), "xs:GMonth" )
+      );
 
     case DateTime::GMONTHDAY_FACET:
-      ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for xs:GMonthDay!");
-      break;
+      throw XQUERY_EXCEPTION(
+        FORG0006, ERROR_PARAMS( ZED( EBVNotDef ), "xs:GMonthDay" )
+      );
 
     case DateTime::GDAY_FACET:
-      ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for xs:GDay!");
-      break;
+      throw XQUERY_EXCEPTION(
+        FORG0006, ERROR_PARAMS( ZED( EBVNotDef ), "xs:GDay" )
+      );
 
     default:
-    case DateTime::DATETIME_FACET:
-      ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for DateTime!");
-      break;
+      throw XQUERY_EXCEPTION(
+        FORG0006, ERROR_PARAMS( ZED( EBVNotDef ), "DateTime" )
+      );
   }
   return NULL;
 }
@@ -1316,8 +1322,9 @@ store::Item* DurationItem::getType() const
 
 store::Item_t DurationItem::getEBV() const
 {
-  ZORBA_ERROR_DESC(FORG0006, "Effective Boolean Value is not defined for Duration!");
-  return NULL;
+  throw XQUERY_EXCEPTION(
+    FORG0006, ERROR_PARAMS( ZED( EBVNotDef ), "Duration" )
+  );
 }
 
 
@@ -1534,9 +1541,9 @@ xs_long IntegerItem::getLongValue() const
   if (NumConversions::integerToLong(theValue, longValue))
     return longValue;
 
-  ZORBA_ERROR_DESC(FORG0001, "Failed to downcast an integer value to a long value");
-
-  return 0;
+  throw XQUERY_EXCEPTION(
+    FORG0001, ERROR_PARAMS( ZED( CastFailed ), "integer", "long" )
+  );
 }
 
 
@@ -2312,3 +2319,4 @@ void AtomicItemTokenizerCallback::operator()(
 
 } // namespace simplestore
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

@@ -295,7 +295,7 @@ bool GenericArithIterator<Operation>::compute(
   
   throw XQUERY_EXCEPTION(
     XPTY0004,
-    ERROR_PARAMS( ZED( BadMathTypes ), type0->toString(), type1->toString() ),
+    ERROR_PARAMS( type0->toString(), ZED( BadMathTypes ), type1->toString() ),
     ERROR_LOC( aLoc )
   );
 
@@ -582,9 +582,9 @@ bool MultiplyOperation::compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_
   std::auto_ptr<Duration> d;
   
   if ( i1->getDoubleValue().isPosInf() || i1->getDoubleValue().isNegInf() )
-    ZORBA_ERROR_DESC( FODT0002,  "Overflow/underflow in duration operation.");
+    throw XQUERY_EXCEPTION( FODT0002 );
   else if (i1->getDoubleValue().isNaN())
-    ZORBA_ERROR_DESC( FOCA0005,  "NaN supplied as float/double value");
+    throw XQUERY_EXCEPTION( FOCA0005 );
   else
     d.reset(i0->getYearMonthDurationValue() * (i1->getDoubleValue()));
   
@@ -604,9 +604,9 @@ bool MultiplyOperation::compute<TypeConstants::XS_DT_DURATION,TypeConstants::XS_
   std::auto_ptr<Duration> d;
   
   if ( i1->getDoubleValue().isPosInf() || i1->getDoubleValue().isNegInf() )
-    ZORBA_ERROR_DESC( FODT0002,  "Overflow/underflow in duration operation.");
+    throw XQUERY_EXCEPTION( FODT0002 );
   else if (i1->getDoubleValue().isNaN())
-    ZORBA_ERROR_DESC( FOCA0005,  "NaN supplied as float/double value");
+    throw XQUERY_EXCEPTION( FOCA0005 );
   else
     d.reset(i0->getDayTimeDurationValue() * (i1->getDoubleValue()));
   
@@ -660,9 +660,9 @@ bool DivideOperation::compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_DO
     d = std::auto_ptr<Duration>(new Duration(Duration::YEARMONTHDURATION_FACET));
   }
   else if ( i1->getDoubleValue().isZero() )
-    ZORBA_ERROR_DESC( FODT0002,  "Overflow/underflow in duration operation.");
+    throw XQUERY_EXCEPTION( FODT0002 );
   else if ( i1->getDoubleValue().isNaN() )
-    ZORBA_ERROR_DESC( FOCA0005,  "NaN supplied as float/double value");
+    throw XQUERY_EXCEPTION( FOCA0005 );
   else
     d = std::auto_ptr<Duration>(i0->getYearMonthDurationValue() / i1->getDoubleValue());
 
@@ -686,9 +686,9 @@ bool DivideOperation::compute<TypeConstants::XS_DT_DURATION,TypeConstants::XS_DO
     d.reset(new Duration());
   }
   else if ( i1->getDoubleValue().isZero() )
-    ZORBA_ERROR_DESC( FODT0002,  "Overflow/underflow in duration operation.");
+    throw XQUERY_EXCEPTION( FODT0002 );
   else if ( i1->getDoubleValue().isNaN() )
-    ZORBA_ERROR_DESC( FOCA0005,  "NaN supplied as float/double value");
+    throw XQUERY_EXCEPTION( FOCA0005 );
   else
     d.reset(i0->getDayTimeDurationValue() / i1->getDoubleValue());
 

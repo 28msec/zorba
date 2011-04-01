@@ -104,27 +104,27 @@
 <watch open_auction="open_auction4"/>
 </watches></person>
 
-<exception>err:XPTY0004 : invalid type: During a value probe on index auctions:PersonWatches2 a node was found that has more than one key values</exception>
+<exception>err:XPTY0004 : "During a value probe on index auctions:PersonWatches2 a node was found that has more than one key values": invalid type</exception>
 
 ---------------------------------------------------
 Probing the typed AuctionDates sorted general index
 ---------------------------------------------------
 
-<exception>err:XPTY0004 : invalid type: During a value probe on index auctions:AuctionDates a node was found that has more than one key values</exception>
+<exception>err:XPTY0004 : "During a value probe on index auctions:AuctionDates a node was found that has more than one key values": invalid type</exception>
 
-<exception>err:XPTY0004 : invalid type: The type of a search key does not mathch the type of the corresponding index key for index auctions:AuctionDates. The search key has type xs:integer and the expected key type is xs:date</exception>
+<exception>err:XPTY0004 : "The type of a search key does not mathch the type of the corresponding index key for index auctions:AuctionDates. The search key has type xs:integer and the expected key type is xs:date": invalid type</exception>
 
 <open_auction id="open_auction2"/><open_auction id="open_auction3"/>
 
-<exception>err:XPTY0004 : invalid type: The type of a search key does not mathch the type of the corresponding index key for index auctions:AuctionDates. The search key has type xs:string and the expected key type is xs:date</exception>
+<exception>err:XPTY0004 : "The type of a search key does not mathch the type of the corresponding index key for index auctions:AuctionDates. The search key has type xs:string and the expected key type is xs:date": invalid type</exception>
 
 -------------------------------------------------------
 Probing the untyped AuctionDates2 sorted general index
 -------------------------------------------------------
 
-<exception>err:XPTY0004 : invalid type: During a value probe on index auctions:AuctionDates2 a node was found that has more than one key values</exception>
+<exception>err:XPTY0004 : "During a value probe on index auctions:AuctionDates2 a node was found that has more than one key values": invalid type</exception>
 
-<exception>err:XPTY0004 : invalid type: During a value probe on index auctions:AuctionDates2 a node was found that has more than one key values</exception>
+<exception>err:XPTY0004 : "During a value probe on index auctions:AuctionDates2 a node was found that has more than one key values": invalid type</exception>
 
 <open_auction id="open_auction2"/><open_auction id="open_auction3"/>
 

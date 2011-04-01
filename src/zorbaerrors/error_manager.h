@@ -26,6 +26,7 @@
 // TODO: this #include is temporary
 #include <zorba/error_list.h>
 
+#include "dict.h"
 #include "err.h"
 #include "xquery_exception.h"
 

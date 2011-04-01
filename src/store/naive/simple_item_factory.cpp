@@ -1035,8 +1035,10 @@ bool BasicItemFactory::createElementNode(
   ElementNode* n = NULL;
 
   if ( typeName == NULL )
-    ZORBA_ERROR_DESC(API0014_INVALID_ARGUMENT,
-                     "NULL not allowed for typeName, use xsd:untyped instead.");
+    throw ZORBA_EXCEPTION(
+      API0014_INVALID_ARGUMENT,
+      ERROR_PARAMS( "NULL", ZED( NotAllowedForTypeName ) )
+    );
 
   assert(parent == NULL ||
          parent->getNodeKind() == store::StoreConsts::elementNode ||
@@ -1127,8 +1129,10 @@ bool BasicItemFactory::createElementNode(
   ElementNode* n = NULL;
 
   if ( typeName == NULL )
-    ZORBA_ERROR_DESC(API0014_INVALID_ARGUMENT,
-                     "NULL not allowed for typeName, use xsd:untyped instead.");
+    throw ZORBA_EXCEPTION(
+      API0014_INVALID_ARGUMENT,
+      ERROR_PARAMS( "NULL", ZED( NotAllowedForTypeName ) )
+    );
 
   assert(parent == NULL ||
          parent->getNodeKind() == store::StoreConsts::elementNode ||

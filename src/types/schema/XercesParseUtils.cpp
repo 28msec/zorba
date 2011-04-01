@@ -65,9 +65,9 @@ bool XercesParseUtils::parseXSBoolean(
   }
   else
   {
-    ZORBA_ERROR_DESC(FORG0001, 
-                     "String '" + textValue.str() + "' cannot be cast to boolean");
-    return false;
+    throw XQUERY_EXCEPTION(
+      FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "boolean" )
+    );
   }
 }
 
@@ -94,10 +94,9 @@ bool XercesParseUtils::parseXSInteger(
   }
   else
   {
-    ZORBA_ERROR_DESC( FORG0001, 
-                      "String '" + textValue.str() +
-                      "' cannot be cast to integer");
-    return false;
+    throw XQUERY_EXCEPTION(
+      FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "integer" )
+    );
   }
 }
 
@@ -124,10 +123,10 @@ bool XercesParseUtils::parseXSPositiveInteger(
   }
   else
   {
-    ZORBA_ERROR_DESC( FORG0001, 
-                      "String '" + textValue.str() +
-                      "' cannot be cast to positiveInteger");
-    return false;
+    throw XQUERY_EXCEPTION(
+      FORG0001, 
+      ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "positiveInteger" )
+    );
   }
 }
 
@@ -154,10 +153,10 @@ bool XercesParseUtils::parseXSNonPositiveInteger(
   }
   else
   {
-    ZORBA_ERROR_DESC( FORG0001, 
-                      "String '" + textValue.str() +
-                      "' cannot be cast to nonPositiveInteger");
-    return false;
+    throw XQUERY_EXCEPTION(
+      FORG0001, 
+      ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "nonPositiveInteger" )
+    );
   }
 }
 
@@ -184,10 +183,10 @@ bool XercesParseUtils::parseXSNegativeInteger(
   }
   else
   {
-    ZORBA_ERROR_DESC( FORG0001, 
-                      "String '" + textValue.str() +
-                      "' cannot be cast to negativeInteger");
-    return false;
+    throw XQUERY_EXCEPTION(
+      FORG0001, 
+      ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "negativeInteger" )
+    );
   }
 }
 
@@ -213,10 +212,10 @@ bool XercesParseUtils::parseXSNonNegativeInteger(
   }
   else
   {
-    ZORBA_ERROR_DESC( FORG0001, 
-                      "String '" + textValue.str() +
-                      "' cannot be cast to nonNegativeInteger");
-    return false;
+    throw XQUERY_EXCEPTION(
+      FORG0001, 
+      ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "nonNegativeInteger" )
+    );
   }
 }
 
@@ -242,10 +241,10 @@ bool XercesParseUtils::parseXSUnsignedByte(
   }
   else
   {
-    ZORBA_ERROR_DESC( FORG0001, 
-                      "String '" + textValue.str() +
-                      "' cannot be cast to unsignedByte");
-    return false;
+    throw XQUERY_EXCEPTION(
+      FORG0001, 
+      ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "unsignedByte" )
+    );
   }
 }
 
@@ -271,10 +270,10 @@ bool XercesParseUtils::parseXSUnsignedShort(
   }
   else
   {
-    ZORBA_ERROR_DESC( FORG0001, 
-                      "String '" + textValue.str() +
-                      "' cannot be cast to unignedShort");
-    return false;
+    throw XQUERY_EXCEPTION(
+      FORG0001, 
+      ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "unsignedShort" )
+    );
   }
 }
 
@@ -300,10 +299,10 @@ bool XercesParseUtils::parseXSUnsignedInt(
   }
   else
   {
-    ZORBA_ERROR_DESC( FORG0001, 
-                      "String '" + textValue.str() +
-                      "' cannot be cast to unsignedInt");
-    return false;
+    throw XQUERY_EXCEPTION(
+      FORG0001, 
+      ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "unsignedInt" )
+    );
   }
 }
 
@@ -328,10 +327,10 @@ bool XercesParseUtils::parseXSUnsignedLong(
   }
   else
   {
-    ZORBA_ERROR_DESC( FORG0001, 
-                      "String '" + textValue.str() +
-                      "' cannot be cast to unsignedLong");
-    return false;
+    throw XQUERY_EXCEPTION(
+      FORG0001, 
+      ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "unsignedLong" )
+    );
   }
 }
 
@@ -357,9 +356,9 @@ bool XercesParseUtils::parseXSByte(
   }
   else
   {
-    ZORBA_ERROR_DESC( FORG0001, 
-                      "String '" + textValue.str() + "' cannot be cast to byte");
-    return false;
+    throw XQUERY_EXCEPTION(
+      FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "byte" )
+    );
   }
 }
 
@@ -385,9 +384,9 @@ bool XercesParseUtils::parseXSShort(
   }
   else
   {
-    ZORBA_ERROR_DESC( FORG0001, 
-                      "String '" + textValue.str() + "' cannot be cast to short");
-    return false;
+    throw XQUERY_EXCEPTION(
+      FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "short" )
+    );
   }
 }
 
@@ -413,9 +412,9 @@ bool XercesParseUtils::parseXSInt(
   }
   else
   {
-    ZORBA_ERROR_DESC( FORG0001, 
-                      "String '" + textValue.str() + "' cannot be cast to int");
-    return false;
+    throw XQUERY_EXCEPTION(
+      FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "int" )
+    );
   }
 }
 
@@ -441,9 +440,9 @@ bool XercesParseUtils::parseXSLong(
   }
   else
   {
-    ZORBA_ERROR_DESC( FORG0001, 
-                      "String '" + textValue.str() + "' cannot be cast to long");
-    return false;
+    throw XQUERY_EXCEPTION(
+      FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "long" )
+    );
   }
 }
 
@@ -478,13 +477,10 @@ bool XercesParseUtils::parseXSFloat(
       return factory->createFloat(result, n);
     }
   }
-  else
-  {
-  }
 
-  ZORBA_ERROR_DESC( FORG0001, 
-                    "String '" + textValue.str() + "' cannot be cast to float");
-  return false;
+  throw XQUERY_EXCEPTION(
+    FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "float" )
+  );
 }
 
 bool XercesParseUtils::parseXSDouble(
@@ -517,13 +513,10 @@ bool XercesParseUtils::parseXSDouble(
       return factory->createDouble(result, n);
     }
   }
-  else
-  {
-  }
 
-  ZORBA_ERROR_DESC( FORG0001, 
-                    "String '" + textValue.str() + "' cannot be cast to double");
-  return false;
+  throw XQUERY_EXCEPTION(
+    FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "double" )
+  );
 }
 
 bool XercesParseUtils::parseXSDecimal(
@@ -549,10 +542,9 @@ bool XercesParseUtils::parseXSDecimal(
   }
   else
   {
-    ZORBA_ERROR_DESC( FORG0001, 
-                      "String '" + textValue.str() +
-                      "' cannot be cast to decimal");
-    return false;
+    throw XQUERY_EXCEPTION(
+      FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "decimal" )
+    );
   }
 }
 
@@ -608,10 +600,9 @@ return factory->createToken(result, textValue2);
   }
   else
   {
-    ZORBA_ERROR_DESC( FORG0001, 
-                      "String '" + textValue.str() +
-                      "' cannot be cast to NMToken");
-    return false;
+    throw XQUERY_EXCEPTION(
+      FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "NMToken" )
+    );
   }
 }
 
@@ -638,10 +629,9 @@ bool XercesParseUtils::parseXSNMToken(
   }
   else
   {
-    ZORBA_ERROR_DESC( FORG0001, 
-                      "String '" + textValue.str() +
-                      "' cannot be cast to NMToken");
-    return false;
+    throw XQUERY_EXCEPTION(
+      FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "NMToken" )
+    );
   }
 }
 
@@ -669,10 +659,9 @@ bool XercesParseUtils::parseXSName(
   }
   else
   {
-    ZORBA_ERROR_DESC( FORG0001, 
-                      "String '" + textValue.str() +
-                      "' cannot be cast to Name");
-    return false;
+    throw XQUERY_EXCEPTION(
+      FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "Name" )
+    );
   }
 }
 
@@ -699,10 +688,9 @@ bool XercesParseUtils::parseXSNCName(
   }
   else
   {
-    ZORBA_ERROR_DESC( FORG0001, 
-                      "String '" + textValue.str() +
-                      "' cannot be cast to NCName");
-    return false;
+    throw XQUERY_EXCEPTION(
+      FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "NCName" )
+    );
   }
 }
 
@@ -729,9 +717,9 @@ bool XercesParseUtils::parseXSID(
   }
   else
   {
-    ZORBA_ERROR_DESC( FORG0001, 
-      "String '" + textValue.str() + "' cannot be cast to ID");
-    return false;
+    throw XQUERY_EXCEPTION(
+      FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "ID" )
+    );
   }
 }
 
@@ -758,9 +746,9 @@ bool XercesParseUtils::parseXSIDRef(
   }
   else
   {
-    ZORBA_ERROR_DESC( FORG0001, 
-      "String '" + textValue.str() + "' cannot be cast to IDREF");
-    return false;
+    throw XQUERY_EXCEPTION(
+      FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "IDREF" )
+    );
   }
 }
 
@@ -787,9 +775,9 @@ bool XercesParseUtils::parseXSEntity(
   }
   else
   {
-    ZORBA_ERROR_DESC( FORG0001, 
-      "String '" + textValue.str() + "' cannot be cast to ENTITY");
-    return false;
+    throw XQUERY_EXCEPTION(
+      FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "ENTITY" )
+    );
   }
 }
 
@@ -816,9 +804,9 @@ bool XercesParseUtils::parseXSNotation(
   }
   else
   {
-    ZORBA_ERROR_DESC( FORG0001, 
-      "String '" + textValue.str() + "' cannot be cast to NOTATION");
-    return false;
+    throw XQUERY_EXCEPTION(
+      FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "NOTATION" )
+    );
   }
 }
 
@@ -866,13 +854,10 @@ bool XercesParseUtils::parseXSDateTime(
       return factory->createDateTime(result, &dt);
     }
   }
-  else
-  {
-  }
 
-  ZORBA_ERROR_DESC( FORG0001, 
-    "String '" + textValue.str() + "' cannot be cast to dateTime");
-  return false;
+  throw XQUERY_EXCEPTION(
+    FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "dateTime" )
+  );
 }
 
 
@@ -910,13 +895,10 @@ bool XercesParseUtils::parseXSDate(
       return factory->createDate(result, &d);
     }
   }
-  else
-  {
-  }
 
-  ZORBA_ERROR_DESC( FORG0001, 
-    "String '" + textValue.str() + "' cannot be cast to date");
-  return false;
+  throw XQUERY_EXCEPTION(
+    FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "date" )
+  );
 }
 
 
@@ -959,13 +941,10 @@ bool XercesParseUtils::parseXSTime(
       return factory->createTime(result, &t);
     }
   }
-  else
-  {
-  }
 
-  ZORBA_ERROR_DESC( FORG0001, 
-    "String '" + textValue.str() + "' cannot be cast to time");
-  return false;
+  throw XQUERY_EXCEPTION(
+    FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "time" )
+  );
 }
 
 
@@ -998,13 +977,10 @@ bool XercesParseUtils::parseXSGYearMonth(
       return factory->createGYearMonth(result, &tValue);
     }
   }
-  else
-  {
-  }
 
-  ZORBA_ERROR_DESC( FORG0001, 
-    "String '" + textValue.str() + "' cannot be cast to gYearMonth");
-  return false;
+  throw XQUERY_EXCEPTION(
+    FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "gYearMonth" )
+  );
 }
 
 
@@ -1036,13 +1012,10 @@ bool XercesParseUtils::parseXSGYear(
       return factory->createGYear(result, &tValue);
     }
   }
-  else
-  {
-  }
   
-  ZORBA_ERROR_DESC( FORG0001, 
-    "String '" + textValue.str() + "' cannot be cast to gYear");
-  return false;
+  throw XQUERY_EXCEPTION(
+    FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "gYear" )
+  );
 }
 
 
@@ -1074,13 +1047,10 @@ bool XercesParseUtils::parseXSGMonthDay(
       return factory->createGMonthDay(result, &tValue);
     }
   }
-  else
-  {
-  }
 
-  ZORBA_ERROR_DESC( FORG0001, 
-    "String '" + textValue.str() + "' cannot be cast to gMonthDay");
-  return false;
+  throw XQUERY_EXCEPTION(
+    FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "gMonthDay" )
+  );
 }
 
 
@@ -1111,13 +1081,10 @@ bool XercesParseUtils::parseXSGDay(
       return factory->createGDay(result, &tValue);
     }
   }
-  else
-  {
-  }
 
-  ZORBA_ERROR_DESC( FORG0001, 
-    "String '" + textValue.str() + "' cannot be cast to gDay");
-  return false;
+  throw XQUERY_EXCEPTION(
+    FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "gDay" )
+  );
 }
 
 
@@ -1148,13 +1115,10 @@ bool XercesParseUtils::parseXSGMonth(
       return factory->createGMonth(result, &tValue);
     }
   }
-  else
-  {
-  }
 
-  ZORBA_ERROR_DESC( FORG0001, 
-    "String '" + textValue.str() + "' cannot be cast to gDay");
-  return false;
+  throw XQUERY_EXCEPTION(
+    FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "gDay" )
+  );
 }
 
 
@@ -1190,9 +1154,9 @@ bool XercesParseUtils::parseXSDuration(
       return factory->createDuration(result, &tValue);
   }
 
-  ZORBA_ERROR_DESC( FORG0001, 
-    "String '" + textValue.str() + "' cannot be cast to duration");
-  return false;
+  throw XQUERY_EXCEPTION(
+    FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "duration" )
+  );
 }
 
 
@@ -1208,9 +1172,10 @@ bool XercesParseUtils::parseXSYearMonthDuration(
     return factory->createYearMonthDuration(result, &d);
   }
 
-  ZORBA_ERROR_DESC( FORG0001, 
-    "String '" + textValue.str() + "' cannot be cast to yearMonthDuration");
-  return false;
+  throw XQUERY_EXCEPTION(
+    FORG0001,
+    ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "yearMonthDuration" )
+  );
 }
 
 
@@ -1226,9 +1191,10 @@ bool XercesParseUtils::parseXSDayTimeDuration(
     return factory->createDayTimeDuration(result, &d);
   }
 
-  ZORBA_ERROR_DESC( FORG0001, 
-    "String '" + textValue.str() + "' cannot be cast to dayTimeDuration");
-  return false;
+  throw XQUERY_EXCEPTION(
+    FORG0001,
+    ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "dayTimeDuration" )
+  );
 }
 
 
@@ -1274,13 +1240,10 @@ bool XercesParseUtils::parseXSBase64Binary(
     //textValue = xmlWhitespaceCollapse(textValue);
     return factory->createBase64Binary(result, tValue);
   }
-  else
-  {
-  }
 
-  ZORBA_ERROR_DESC( FORG0001, 
-    "String '" + textValue.str() + "' cannot be cast to base64Binary");
-  return false;
+  throw XQUERY_EXCEPTION(
+    FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "base64Binary" )
+  );
 }
 
 
@@ -1304,13 +1267,10 @@ bool XercesParseUtils::parseXSHexBinary(
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     return factory->createHexBinary(result, tValue);
   }
-  else
-  {
-  }
 
-  ZORBA_ERROR_DESC( FORG0001, 
-    "String '" + textValue.str() + "' cannot be cast to hexBinary");
-  return false;
+  throw XQUERY_EXCEPTION(
+    FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "hexBinary" )
+  );
 }
 
 
@@ -1334,13 +1294,10 @@ bool XercesParseUtils::parseXSAnyUri(
 
     return factory->createAnyURI(result, textValue2);
   }
-  else
-  {
-  }
 
-  ZORBA_ERROR_DESC( FORG0001, 
-    "String '" + textValue.str() + "' cannot be cast to anyUri");
-  return false;
+  throw XQUERY_EXCEPTION(
+    FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "anyURI" )
+  );
 }
 
 
@@ -1371,8 +1328,9 @@ bool XercesParseUtils::parseXSQName(
     
     if (lIndex == 0) 
     {
-      ZORBA_ERROR_DESC( XQDY0074, 
-                        "String '" + textValue.str() + "' cannot be cast to QName");
+      throw XQUERY_EXCEPTION(
+        XQDY0074, ERROR_PARAMS( textValue.str() )
+      );
     }
     else if ( lIndex > 0 )
     {
@@ -1382,15 +1340,11 @@ bool XercesParseUtils::parseXSQName(
     
     return factory->createQName(result, lNamespace, lPrefix, lLocal);
   }
-  else
-  {
-  }
 
-  ZORBA_ERROR_DESC( XQDY0074, 
-    "String '" + textValue.str() + "' cannot be cast to QName");
-  return false;
+  throw XQUERY_EXCEPTION( XQDY0074, ERROR_PARAMS( textValue.str() ) );
 }
 
 } // namespace zorba
 
-#endif //#ifndef ZORBA_NO_XMLSCHEMA
+#endif /* ZORBA_NO_XMLSCHEMA */
+/* vim:set et sw=2 ts=2: */

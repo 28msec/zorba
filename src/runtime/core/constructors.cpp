@@ -802,6 +802,7 @@ bool PiIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   try
   {
     if (!consumeNext(lItem, theChild0, planState))
+      // TODO: needs type in error message
       throw XQUERY_EXCEPTION(XPTY0004, ERROR_LOC(loc));
   }
   catch (ZorbaException const& e)
@@ -813,6 +814,7 @@ bool PiIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   }
 
   if (consumeNext(temp, theChild0, planState))
+      // TODO: needs type in error message
     throw XQUERY_EXCEPTION(XPTY0004, ERROR_LOC(loc));
 
   // TODO: check if lItem is string, raise XPTY0004 if not
