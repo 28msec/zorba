@@ -98,8 +98,9 @@ namespace zorba { namespace filemodule {
 
     protected:
 
-      struct StreamableItemSequence : ItemSequence {
+      class StreamableItemSequence : public ItemSequence {
 
+      public:
         class InternalIterator : public Iterator
         {
           private:
@@ -131,9 +132,16 @@ namespace zorba { namespace filemodule {
         };
 
         Item          theItem;
-        std::ifstream theStream;
+        std::ifstream* theStream;
 
-        StreamableItemSequence() {}
+        StreamableItemSequence() 
+          : theStream(new std::ifstream()) {}
+
+        static void
+        streamDestroyer(std::istream& stream)
+        {
+          delete &stream;
+        }
 
         Iterator_t  getIterator()
         {

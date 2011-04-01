@@ -40,6 +40,12 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/collection2.xqlib ${CMAKE_CURRENT_BIN
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/main_sequential.xq ${CMAKE_CURRENT_BINARY_DIR}/main_sequential.xq)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/main_sequential.xqlib ${CMAKE_CURRENT_BINARY_DIR}/main_sequential.xqlib)
 
+#belongs to streamable_string
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/streamable_string_query_1.xq ${CMAKE_CURRENT_BINARY_DIR}/streamable_string_query_1.xq)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/streamable_string_query_2.xq ${CMAKE_CURRENT_BINARY_DIR}/streamable_string_query_2.xq)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/streamable_string.cpp ${CMAKE_CURRENT_BINARY_DIR}/streamable_string.cpp)
+
+
 IF(WIN32)
   CREATE_TEST_SOURCELIST(UnitTests
     UnitTests.cpp
@@ -60,6 +66,7 @@ IF(WIN32)
 #    string_test.cpp
     main_sequential.cpp
     stemmer_provider.cpp
+    streamable_string.cpp
   )
 ELSE(WIN32)
   CREATE_TEST_SOURCELIST(UnitTests
@@ -82,6 +89,7 @@ ELSE(WIN32)
     os_module.cpp
     datetime.cpp
     stemmer_provider.cpp
+    streamable_string.cpp
   # multithread_simple.cpp
   # multithread_stress_test.cpp
  )

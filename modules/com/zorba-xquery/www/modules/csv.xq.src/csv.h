@@ -200,7 +200,7 @@ class CSVSerializeFunction : public NonePureStatelessExternalFunction
     std::vector<String> line;
     Item node_item;
   public:
-    std::istream is;
+    std::istream* is;
     CSVOptions csv_options;
     Item streamable_item;
   public:
@@ -219,6 +219,10 @@ class CSVSerializeFunction : public NonePureStatelessExternalFunction
     //for StringIteratorStreamBuf
     virtual bool next(std::string &next_string);
     virtual bool reset();
+
+    static void
+    destroyStream(std::istream& stream) { delete &stream; }
+
   private:
     void csv_get_headers(  Item node, 
                            unsigned int level,

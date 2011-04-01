@@ -53,10 +53,14 @@ namespace zorba {
        *         see [http://www.w3.org/TR/xmlschema-2/#string]
        *
        * @param stream An istream whence to read the string's content.
+       * @param streamDestroyer A function pointer which is invoked once
+       *        the StreamableStringItem is destroyed. It is supposed to destroy
+       *        the std::istream object passed to the function.
        * @return The streamable String Item
        */
       virtual Item
-      createStreamableString( std::istream &stream ) = 0;
+      createStreamableString( std::istream &stream,
+                              void (*streamDestroyer)( std::istream & stream ) ) = 0;
 
       /** \brief Creates an AnyURI Item
        *         see [http://www.w3.org/TR/xmlschema-2/#anyURI]

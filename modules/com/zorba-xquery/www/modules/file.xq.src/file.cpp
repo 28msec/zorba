@@ -144,10 +144,11 @@ ReadTextFunction::evaluate(
     getEncodingArg(aArgs, 1);
   }
   
-  std::auto_ptr<StreamableItemSequence> lSeq(new StreamableItemSequence);
-  lFile->openInputStream(lSeq->theStream, false, true);
+  std::auto_ptr<StreamableItemSequence> lSeq(new StreamableItemSequence());
+  lFile->openInputStream(*lSeq->theStream, false, true);
 
-  lSeq->theItem = theModule->getItemFactory()->createStreamableString(lSeq->theStream);
+  lSeq->theItem = theModule->getItemFactory()->createStreamableString(
+      *lSeq->theStream, &StreamableItemSequence::streamDestroyer);
 
   return ItemSequence_t(lSeq.release());
 }

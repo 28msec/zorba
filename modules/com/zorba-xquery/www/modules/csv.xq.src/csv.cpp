@@ -857,9 +857,9 @@ CSVParseFunction::evaluate(const Arguments_t& args,
 
 //////////////////////////////////////////////////////////////////////////////////
 //////////////////serialize
-CSVSerializeFunction::StringStreamSequence::StringStreamSequence(ItemSequence* input) : 
-                                                                                        input_iter(input->getIterator()),
-                                                                                        is(this)
+CSVSerializeFunction::StringStreamSequence::StringStreamSequence(ItemSequence* input)
+  : input_iter(input->getIterator()),
+    is(new std::istream(this))
 {
 //  input_nodes = input;
   line_index = 0;
@@ -1125,8 +1125,8 @@ void CSVSerializeFunction::StringStreamSequence::open()
   line_index = 1;
   if(open_count)
   {
-    is.seekg(0);
-    if(is.fail())
+    is->seekg(0);
+    if(is->fail())
     {
       throw ZORBA_EXCEPTION(XQP0019_INTERNAL_ERROR, ERROR_PARAMS(
         "Cannot reset CSVSerialize streamable string item" ));  
@@ -1230,7 +1230,9 @@ CSVSerializeFunction::evaluate(const Arguments_t& args,
   
   StringStreamSequence  *stream_sequence = new StringStreamSequence((ItemSequence*)args[0]);
   stream_sequence->csv_options.parse(options_item, theModule->getItemFactory());
-  stream_sequence->streamable_item = theModule->getItemFactory()->createStreamableString(stream_sequence->is);
+  stream_sequence->streamable_item =
+    theModule->getItemFactory()->createStreamableString(
+        *(stream_sequence->is), StringStreamSequence::destroyStream);
 
   return ItemSequence_t(stream_sequence);
 }

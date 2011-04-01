@@ -585,6 +585,8 @@ protected:
 
   bool theIsMaterialized;
 
+  void (*theStreamDestroyer)( std::istream & stream );
+
 public:
   bool equals(
         store::Item const*,
@@ -614,10 +616,18 @@ public:
 
   std::istream& getStream();
 
+  ~StreamableStringItem()
+  {
+    (theStreamDestroyer(theIstream));
+  }
+
 protected:
-  StreamableStringItem(std::istream& aStream)
+  StreamableStringItem(
+      std::istream& aStream,
+      void (*streamDestroyer)( std::istream & stream ))
     : theIstream(aStream),
-      theIsMaterialized(false)
+      theIsMaterialized(false),
+      theStreamDestroyer(streamDestroyer)
   {
   }
 

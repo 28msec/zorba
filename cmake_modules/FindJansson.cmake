@@ -25,13 +25,14 @@ ENDIF (Jansson_INCLUDE AND Jansson_LIBRARY)
 
 FIND_LIBRARY(Jansson_LIBRARY
   NAME jansson
-  PATHS /usr/lib /usr/local/lib /opt/local/lib
+  PATHS /usr/lib /usr/local/lib /opt/local/lib ${Jansson_LIBRARIES}
 )
 
 FIND_PATH(
   Jansson_INCLUDE
   NAMES jansson.h
-  PATH_SUFFIXES jansson)
+  PATH_SUFFIXES jansson
+  PATHS ${Jansson_INCLUDE_DIRS})
 
 IF (Jansson_LIBRARY AND Jansson_INCLUDE)
   SET(Jansson_FOUND TRUE)

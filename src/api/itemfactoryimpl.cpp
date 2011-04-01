@@ -53,10 +53,12 @@ Item ItemFactoryImpl::createString(const String& aString)
 }
 
 
-Item ItemFactoryImpl::createStreamableString(std::istream &stream)
+Item ItemFactoryImpl::createStreamableString(
+    std::istream &stream,
+    void (*streamDestroyer)( std::istream & stream ))
 {
   store::Item_t lItem;
-  theItemFactory->createStreamableString(lItem, stream);
+  theItemFactory->createStreamableString(lItem, stream, streamDestroyer);
   return &*lItem;
 }
 
