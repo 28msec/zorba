@@ -17,7 +17,9 @@
 #include <cstring>
 #include <vector>
 
-#include "zorbaerrors/error_manager.h"
+#include <zorba/error_list.h>
+#include <zorba/xquery_exception.h>
+
 #include "zorbaerrors/dict.h"
 
 #include "ascii_util.h"
