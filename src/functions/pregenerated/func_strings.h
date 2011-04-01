@@ -354,6 +354,32 @@ public:
 };
 
 
+//fn-zorba-string:materialize
+class fn_zorba_string_materialize : public function
+{
+public:
+  fn_zorba_string_materialize(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-string:is-streamable
+class fn_zorba_string_is_streamable : public function
+{
+public:
+  fn_zorba_string_is_streamable(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
+
+  CODEGEN_DECL();
+};
+
+
 } //namespace zorba
 
 

@@ -1,5 +1,5 @@
 
-import module namespace fn-zorba-util = "http://www.zorba-xquery.com/zorba/util-functions"; 
+import module namespace fn-zorba-util = "http://www.zorba-xquery.com/modules/schema"; 
 import schema default element namespace "http://www.w3.org/XQueryTest" at "atomic.xsd";
 
 declare variable $doc as document-node(element(root)) external;

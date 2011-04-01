@@ -3043,8 +3043,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       return;
     }
 #else
-    if (targetNS == static_context::ZORBA_UTIL_FN_NS ||
-        targetNS == static_context::ZORBA_FOP_FN_NS)
+    if (targetNS == static_context::ZORBA_UTIL_FN_NS)
     {
       return;
     }

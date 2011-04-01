@@ -631,4 +631,49 @@
   </zorba:state>
 </zorba:iterator>
 
+<!--
+/*******************************************************************************
+ * http://www.zorba-xquery.com/modules/string
+********************************************************************************/
+-->
+<!--
+/*******************************************************************************
+ * string:materialize
+********************************************************************************/
+-->
+<zorba:iterator name="StringMaterializeIterator">
+
+  <zorba:description author="Zorba Team">
+    string:materialize
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="materialize" prefix="fn-zorba-string">
+      <zorba:param>xs:string</zorba:param>
+      <zorba:param>xs:string</zorba:param>
+    </zorba:signature>
+  </zorba:function>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+ * string:is-streamable
+********************************************************************************/
+-->
+<zorba:iterator name="StringIsStreamableIterator">
+
+  <zorba:description author="Zorba Team">
+    string:is-streamable
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="is-streamable" prefix="fn-zorba-string">
+      <zorba:param>xs:string</zorba:param>
+      <zorba:param>xs:boolean</zorba:param>
+    </zorba:signature>
+  </zorba:function>
+
+</zorba:iterator>
+
 </zorba:iterators>

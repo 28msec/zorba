@@ -1563,6 +1563,62 @@ bool FnTokenizeIterator::nextImpl(
   STACK_END(state);
 }
 
+/**
+ *______________________________________________________________________
+ *
+ * http://www.zorba-xquery.com/modules/string
+ * string:materialize
+ */
+
+bool StringMaterializeIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
+{
+  store::Item_t item;
+  zstring       lString;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+#ifndef NDEBUG
+  assert(consumeNext(item, theChildren[0].getp(), planState));
+#else
+  consumeNext(item, theChildren[0].getp(), planState);
+#endif
+  if (item->isStreamable()) {
+    lString = item->getString();
+    STACK_PUSH(GENV_ITEMFACTORY->createString(result, lString), state);
+  } else {
+    STACK_PUSH(result, state);
+  }
+
+  STACK_END(state);
+}
+
+/**
+ *______________________________________________________________________
+ *
+ * http://www.zorba-xquery.com/modules/string
+ * string:materialize
+ */
+bool StringIsStreamableIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
+{
+  store::Item_t item;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+#ifndef NDEBUG
+  assert(consumeNext(item, theChildren[0].getp(), planState));
+#else
+  consumeNext(item, theChildren[0].getp(), planState);
+#endif
+  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, item->isStreamable()), state);
+
+  STACK_END(state);
+}
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

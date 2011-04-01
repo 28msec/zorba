@@ -584,6 +584,7 @@ protected:
   std::istream & theIstream;
 
   bool theIsMaterialized;
+  bool theIsConsumed;
 
   void (*theStreamDestroyer)( std::istream & stream );
 
@@ -627,6 +628,7 @@ protected:
       void (*streamDestroyer)( std::istream & stream ))
     : theIstream(aStream),
       theIsMaterialized(false),
+      theIsConsumed(false),
       theStreamDestroyer(streamDestroyer)
   {
   }

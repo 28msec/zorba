@@ -1,4 +1,4 @@
-import module namespace r = "http://www.zorba-xquery.com/zorba/util-functions";
+import module namespace r = "http://www.zorba-xquery.com/modules/random";
 
 (: all uuids are distinct? :)
 let $seq := for $i in 1 to 10 return r:uuid()

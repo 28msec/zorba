@@ -270,6 +270,26 @@ PlanIter_t fn_tokenize::codegen(
   return new FnTokenizeIterator(sctx, loc, argv);
 }
 
+PlanIter_t fn_zorba_string_materialize::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new StringMaterializeIterator(sctx, loc, argv);
+}
+
+PlanIter_t fn_zorba_string_is_streamable::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new StringIsStreamableIterator(sctx, loc, argv);
+}
+
 void populate_context_strings(static_context* sctx)
 {
   DECL_WITH_KIND(sctx, fn_codepoints_to_string,
@@ -565,6 +585,20 @@ void populate_context_strings(static_context* sctx)
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_STAR),
       FunctionConsts::FN_TOKENIZE_3);
+
+
+  DECL_WITH_KIND(sctx, fn_zorba_string_materialize,
+      (createQName("http://www.zorba-xquery.com/modules/string","","materialize"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE),
+      FunctionConsts::FN_ZORBA_STRING_MATERIALIZE_2);
+
+
+  DECL_WITH_KIND(sctx, fn_zorba_string_is_streamable,
+      (createQName("http://www.zorba-xquery.com/modules/string","","is-streamable"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
+      FunctionConsts::FN_ZORBA_STRING_IS_STREAMABLE_2);
 
 }
 

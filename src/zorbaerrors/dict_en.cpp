@@ -202,6 +202,7 @@ extern entry const dict_en[] = {
   { "STR0041", "NaN comparison" },
   { "STR0045", "duplicate node found in sequence" },
   { "STR0050", "\"$1\": function not implemented for item type $2" },
+  { "STR0055", "the given streamable string has already been consumed" },
 
   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   // !!!!! THIS MUST BE SORTED BY KEY !!!!!

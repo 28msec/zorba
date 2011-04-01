@@ -1,5 +1,5 @@
 
-import module namespace util = "http://www.zorba-xquery.com/zorba/util-functions";
+import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
 
 import module namespace refl = "http://www.zorba-xquery.com/modules/reflection";
 
@@ -9,7 +9,7 @@ import schema namespace any = "http://ns.example.com/any-zorba" at
 refl:eval-simple
 (
 '
-import module namespace util = "http://www.zorba-xquery.com/zorba/util-functions";
+import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
 
 import schema namespace a ="http://www.w3.org/XQueryTest" at "../schemas/atomic.xsd";
 

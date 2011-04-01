@@ -477,6 +477,10 @@ namespace zorba{
 
     class FnTokenizeIterator;
 
+    class StringMaterializeIterator;
+
+    class StringIsStreamableIterator;
+
     class XQDocIterator;
 
     class XQDocContentIterator;
@@ -1160,6 +1164,12 @@ public:
 
     virtual void beginVisit ( const FnTokenizeIterator& ) = 0;
     virtual void endVisit   ( const FnTokenizeIterator& ) = 0;
+
+    virtual void beginVisit ( const StringMaterializeIterator& ) = 0;
+    virtual void endVisit   ( const StringMaterializeIterator& ) = 0;
+
+    virtual void beginVisit ( const StringIsStreamableIterator& ) = 0;
+    virtual void endVisit   ( const StringIsStreamableIterator& ) = 0;
 
     virtual void beginVisit ( const XQDocIterator& ) = 0;
     virtual void endVisit   ( const XQDocIterator& ) = 0;

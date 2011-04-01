@@ -458,12 +458,12 @@ public:
   static const zstring ZORBA_INTROSP_SCTX_FN_NS;
   static const zstring ZORBA_INTROSP_DCTX_FN_NS;
   static const zstring ZORBA_REFLECTION_FN_NS;
+  static const zstring ZORBA_STRING_FN_NS;
 
   //
   // Namespaces of virtual modules declaring zorba builtin functions
   //
   static const zstring ZORBA_UTIL_FN_NS;
-  static const zstring ZORBA_FOP_FN_NS;
 
   //
   // Namespaces of virtual modules declaring internal builtin functions of
@@ -471,6 +471,7 @@ public:
   //
   static const zstring XQUERY_OP_NS;
   static const zstring ZORBA_OP_NS;
+
 
 protected:
   static_context                        * theParent;

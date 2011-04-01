@@ -718,6 +718,12 @@ namespace zorba {
     void beginVisit( const FnTokenizeIterator& );
     void endVisit  ( const FnTokenizeIterator& );
 
+    void beginVisit( const StringMaterializeIterator& );
+    void endVisit  ( const StringMaterializeIterator& );
+
+    void beginVisit( const StringIsStreamableIterator& );
+    void endVisit  ( const StringIsStreamableIterator& );
+
     void beginVisit( const XQDocIterator& );
     void endVisit  ( const XQDocIterator& );
 

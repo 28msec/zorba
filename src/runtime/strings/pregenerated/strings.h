@@ -930,6 +930,78 @@ public:
 };
 
 
+/**
+ * 
+ *    string:materialize
+ *  
+ * Author: Zorba Team
+ */
+class StringMaterializeIterator : public NaryBaseIterator<StringMaterializeIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(StringMaterializeIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(StringMaterializeIterator,
+    NaryBaseIterator<StringMaterializeIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<StringMaterializeIterator, PlanIteratorState>*)this);
+  }
+
+  StringMaterializeIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<StringMaterializeIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~StringMaterializeIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *    string:is-streamable
+ *  
+ * Author: Zorba Team
+ */
+class StringIsStreamableIterator : public NaryBaseIterator<StringIsStreamableIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(StringIsStreamableIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(StringIsStreamableIterator,
+    NaryBaseIterator<StringIsStreamableIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<StringIsStreamableIterator, PlanIteratorState>*)this);
+  }
+
+  StringIsStreamableIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<StringIsStreamableIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~StringIsStreamableIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
 }
 #endif
 /*

@@ -904,44 +904,40 @@ zstring StreamableStringItem::show() const
 
 bool StreamableStringItem::isStreamable() const
 {
-  return !theIsMaterialized;
+  return true;
 }
 
 
 std::istream& StreamableStringItem::getStream()
 {
+  // a stream can only be consumed once
+  // we raise an error if getStream is called twice
+  // if a query requires a stream to be consumed more than once,
+  // the query needs to make sure that the stream is explicitly
+  // materialized before
+  if (theIsConsumed) {
+    throw ZORBA_EXCEPTION(STR0055_STREAMABLE_STRING_CONSUMED);
+  }
+  theIsConsumed = true;
   return theIstream;
 }
 
 
 void StreamableStringItem::materialize() const
 {
-  StreamableStringItem* const lSsi = const_cast<StreamableStringItem*>(this);
-  lSsi->theIsMaterialized = true;
-
-  ios::iostate const lOldExceptions = theIstream.exceptions();
-  theIstream.exceptions(std::ios::badbit | std::ios::failbit);
-
-  streampos const lPos = theIstream.tellg();
-  if (lPos) {
-    theIstream.seekg(0, ios::beg);
+  if (theIsConsumed) {
+    throw XQUERY_EXCEPTION(STR0055_STREAMABLE_STRING_CONSUMED);
   }
 
+  StreamableStringItem* const lSsi = const_cast<StreamableStringItem*>(this);
+  lSsi->theIsMaterialized = true;
+  lSsi->theIsConsumed = true;
+
   char lBuf[4096];
-  theIstream.exceptions(theIstream.exceptions() & ~ios::failbit);
   while (theIstream) {
     theIstream.read(lBuf, sizeof(lBuf));
     lSsi->theValue.append(lBuf, theIstream.gcount());
   }
-  // clear eofbit
-  theIstream.clear();
-
-  if (lPos) {
-    theIstream.exceptions(theIstream.exceptions() | ios::failbit);
-    theIstream.seekg(lPos, ios::beg);
-  }
-
-  theIstream.exceptions(lOldExceptions);
 }
 
 

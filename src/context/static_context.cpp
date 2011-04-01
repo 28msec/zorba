@@ -311,7 +311,7 @@ const zstring
 static_context::ZORBA_UTIL_FN_NS = NS_PRE + "zorba/util-functions";
 
 const zstring
-static_context::ZORBA_FOP_FN_NS = NS_PRE + "zorba/fop-functions";
+static_context::ZORBA_STRING_FN_NS = NS_PRE + "modules/string";
 
 
 /***************************************************************************//**
@@ -348,7 +348,7 @@ bool static_context::is_builtin_module(const zstring& ns)
             ns == ZORBA_INTROSP_DCTX_FN_NS ||
             ns == ZORBA_REFLECTION_FN_NS ||
             ns == ZORBA_UTIL_FN_NS ||
-            ns == ZORBA_FOP_FN_NS);
+            ns == ZORBA_STRING_FN_NS);
   }
 
   return false;

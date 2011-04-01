@@ -717,6 +717,62 @@ void FnTokenizeIteratorState::init(PlanState& planState) {
 // </FnTokenizeIterator>
 
 
+// <StringMaterializeIterator>
+const char* StringMaterializeIterator::class_name_str = "StringMaterializeIterator";
+StringMaterializeIterator::class_factory<StringMaterializeIterator>
+StringMaterializeIterator::g_class_factory;
+
+const serialization::ClassVersion 
+StringMaterializeIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int StringMaterializeIterator::class_versions_count =
+sizeof(StringMaterializeIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void StringMaterializeIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+StringMaterializeIterator::~StringMaterializeIterator() {}
+
+// </StringMaterializeIterator>
+
+
+// <StringIsStreamableIterator>
+const char* StringIsStreamableIterator::class_name_str = "StringIsStreamableIterator";
+StringIsStreamableIterator::class_factory<StringIsStreamableIterator>
+StringIsStreamableIterator::g_class_factory;
+
+const serialization::ClassVersion 
+StringIsStreamableIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int StringIsStreamableIterator::class_versions_count =
+sizeof(StringIsStreamableIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void StringIsStreamableIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+StringIsStreamableIterator::~StringIsStreamableIterator() {}
+
+// </StringIsStreamableIterator>
+
+
 
 }
 

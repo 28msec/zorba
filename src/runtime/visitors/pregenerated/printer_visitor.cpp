@@ -3228,6 +3228,34 @@ void PrinterVisitor::endVisit ( const FnTokenizeIterator& ) {
 // </FnTokenizeIterator>
 
 
+// <StringMaterializeIterator>
+void PrinterVisitor::beginVisit ( const StringMaterializeIterator& a) {
+  thePrinter.startBeginVisit("StringMaterializeIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const StringMaterializeIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </StringMaterializeIterator>
+
+
+// <StringIsStreamableIterator>
+void PrinterVisitor::beginVisit ( const StringIsStreamableIterator& a) {
+  thePrinter.startBeginVisit("StringIsStreamableIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const StringIsStreamableIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </StringIsStreamableIterator>
+
+
 // <XQDocIterator>
 void PrinterVisitor::beginVisit ( const XQDocIterator& a) {
   thePrinter.startBeginVisit("XQDocIterator", ++theId);
