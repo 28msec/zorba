@@ -186,13 +186,6 @@ private:
     (ERR_MGR)->addError( NEW_XQUERY_EXCEPTION( LOCALNAME, ERROR_PARAMS(oss1.str(),PARAM2) ) ); \
   } while (0)
 
-#define ZORBA_ERROR_LOC_PARAM_CONTINUE(ERR_MGR,LOCALNAME,LOC,PARAM1,PARAM2) \
-  do { \
-    XQueryException *const xe = NEW_XQUERY_EXCEPTION( LOCALNAME, ERROR_PARAMS(PARAM1,PARAM2) ); \
-    xe->set_source( (LOC).getFilename().str().c_str(), (LOC).getLineBegin(), (LOC).  getColumnBegin() ); \
-    (ERR_MGR)->addError( xe ); \
-  } while ( 0 )
-
 } // namespace zorba
 
 #endif /* ZORBA_ERROR_MANAGER_H */
