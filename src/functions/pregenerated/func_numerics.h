@@ -121,6 +121,20 @@ public:
 };
 
 
+//fn:format-integer
+class fn_format_integer : public function
+{
+public:
+  fn_format_integer(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+    theXQueryVersion = StaticContextConsts::xquery_version_1_1;
+}
+
+  CODEGEN_DECL();
+};
+
+
 } //namespace zorba
 
 

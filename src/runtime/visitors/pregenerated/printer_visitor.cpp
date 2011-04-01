@@ -2093,6 +2093,20 @@ void PrinterVisitor::endVisit ( const FormatNumberIterator& ) {
 // </FormatNumberIterator>
 
 
+// <FormatIntegerIterator>
+void PrinterVisitor::beginVisit ( const FormatIntegerIterator& a) {
+  thePrinter.startBeginVisit("FormatIntegerIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FormatIntegerIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FormatIntegerIterator>
+
+
 // <FnParseXmlIterator>
 void PrinterVisitor::beginVisit ( const FnParseXmlIterator& a) {
   thePrinter.startBeginVisit("FnParseXmlIterator", ++theId);

@@ -473,6 +473,9 @@ namespace zorba {
     void beginVisit( const FormatNumberIterator& );
     void endVisit  ( const FormatNumberIterator& );
 
+    void beginVisit( const FormatIntegerIterator& );
+    void endVisit  ( const FormatIntegerIterator& );
+
     void beginVisit( const FnParseXmlIterator& );
     void endVisit  ( const FnParseXmlIterator& );
 

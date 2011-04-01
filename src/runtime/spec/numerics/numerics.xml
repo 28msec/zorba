@@ -137,4 +137,30 @@
     </zorba:function>
   </zorba:iterator>
   
+<!--
+/*******************************************************************************
+ * 4.5.1 fn:format-integer in XQuery3.0
+********************************************************************************/
+-->
+<zorba:iterator name="FormatIntegerIterator">
+
+  <zorba:description author="Zorba Team">fn:format-integer</zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="format-integer" prefix="fn" version="1.1">
+      <zorba:param>xs:integer?</zorba:param>
+      <zorba:param>xs:string</zorba:param>
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
+    <zorba:signature localname="format-integer" prefix="fn" version="1.1">
+      <zorba:param>xs:integer?</zorba:param>
+      <zorba:param>xs:string</zorba:param>
+      <zorba:param>xs:string</zorba:param>
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+</zorba:iterator>
+
  </zorba:iterators>
+
+

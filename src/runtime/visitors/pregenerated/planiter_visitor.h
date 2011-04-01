@@ -314,6 +314,8 @@ namespace zorba{
 
     class FormatNumberIterator;
 
+    class FormatIntegerIterator;
+
     class FnParseXmlIterator;
 
     class FnSerializeIterator;
@@ -914,6 +916,9 @@ public:
 
     virtual void beginVisit ( const FormatNumberIterator& ) = 0;
     virtual void endVisit   ( const FormatNumberIterator& ) = 0;
+
+    virtual void beginVisit ( const FormatIntegerIterator& ) = 0;
+    virtual void endVisit   ( const FormatIntegerIterator& ) = 0;
 
     virtual void beginVisit ( const FnParseXmlIterator& ) = 0;
     virtual void endVisit   ( const FnParseXmlIterator& ) = 0;

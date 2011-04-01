@@ -237,6 +237,40 @@ public:
 };
 
 
+/**
+ * fn:format-integer
+ * Author: Zorba Team
+ */
+class FormatIntegerIterator : public NaryBaseIterator<FormatIntegerIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(FormatIntegerIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FormatIntegerIterator,
+    NaryBaseIterator<FormatIntegerIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FormatIntegerIterator, PlanIteratorState>*)this);
+  }
+
+  FormatIntegerIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<FormatIntegerIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~FormatIntegerIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
 }
 #endif
 /*

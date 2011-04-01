@@ -90,6 +90,16 @@ PlanIter_t fn_format_number::codegen(
   return new FormatNumberIterator(sctx, loc, argv);
 }
 
+PlanIter_t fn_format_integer::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new FormatIntegerIterator(sctx, loc, argv);
+}
+
 void populate_context_numerics(static_context* sctx)
 {
   DECL_WITH_KIND(sctx, fn_abs,
@@ -158,6 +168,23 @@ void populate_context_numerics(static_context* sctx)
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE),
       FunctionConsts::FN_FORMAT_NUMBER_3);
+
+
+  DECL_WITH_KIND(sctx, fn_format_integer,
+      (createQName("http://www.w3.org/2005/xpath-functions","","format-integer"),
+      GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE),
+      FunctionConsts::FN_FORMAT_INTEGER_2);
+
+
+  DECL_WITH_KIND(sctx, fn_format_integer,
+      (createQName("http://www.w3.org/2005/xpath-functions","","format-integer"),
+      GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE),
+      FunctionConsts::FN_FORMAT_INTEGER_3);
 
 }
 

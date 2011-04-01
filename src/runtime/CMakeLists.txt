@@ -115,6 +115,7 @@ LIST(APPEND RUNTIME_SRCS
     indexing/doc_indexer.cpp
     indexing/index_ddl.cpp
     numerics/NumericsImpl.cpp
+    numerics/format_integer_impl.cpp
     sequences/SequencesImpl.cpp
     visitors/iterprinter.cpp
     update/update.cpp

@@ -753,6 +753,16 @@ XQUERY_DEC_ERROR( FODT0002 );
 XQUERY_DEC_ERROR( FODT0003 );
 
 /**
+ * format-integer: Cannot cast $language to xs:language.
+ */
+XQUERY_DEC_ERROR( FOFI0001 );
+
+/**
+ * format-integer: Invalid parameter
+ */
+XQUERY_DEC_ERROR( FOFI0002 );
+
+/**
  * No namespace found for prefix.
  */
 XQUERY_DEC_ERROR( FONS0004 );

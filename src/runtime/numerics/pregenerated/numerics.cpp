@@ -199,6 +199,34 @@ FormatNumberIterator::~FormatNumberIterator() {}
 // </FormatNumberIterator>
 
 
+// <FormatIntegerIterator>
+const char* FormatIntegerIterator::class_name_str = "FormatIntegerIterator";
+FormatIntegerIterator::class_factory<FormatIntegerIterator>
+FormatIntegerIterator::g_class_factory;
+
+const serialization::ClassVersion 
+FormatIntegerIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int FormatIntegerIterator::class_versions_count =
+sizeof(FormatIntegerIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void FormatIntegerIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+FormatIntegerIterator::~FormatIntegerIterator() {}
+
+// </FormatIntegerIterator>
+
+
 
 }
 
