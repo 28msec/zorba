@@ -105,15 +105,13 @@ size_t rfind(
 
 bool match_part( char const *in, char const *pattern, char const *flags ) {
   unicode::regex re;
-  if ( !re.compile( pattern, flags ) )
-    throw XQUERY_EXCEPTION( FORX0002, ERROR_PARAMS( pattern ) );
+  re.compile( pattern, flags );
   return re.match_part( in );
 }
 
 bool match_whole( char const *in, char const *pattern, char const *flags ) {
   unicode::regex re;
-  if ( !re.compile( pattern, flags ) )
-    throw XQUERY_EXCEPTION( FORX0002, ERROR_PARAMS( pattern ) );
+  re.compile( pattern, flags );
   return re.match_whole( in );
 }
 

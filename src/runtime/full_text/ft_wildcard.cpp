@@ -135,8 +135,14 @@ ft_wildcard::ft_wildcard( zstring const &ws_pat ) {
   cout << "xq : " << ws_pat << endl;
   cout << "icu: " << icu_pat << endl;
 #endif
-  if ( !regex_.compile( icu_pat ) )
-    throw XQUERY_EXCEPTION( FTDY0020 );
+  try {
+    regex_.compile( icu_pat );
+  }
+  catch ( XQueryException const &xe ) {
+    if ( xe.error() == err::FORX0002 )
+      throw XQUERY_EXCEPTION( FTDY0020, ERROR_PARAMS( xe.what() ) );
+    throw;
+  }
 }
 
 } // namespace zorba

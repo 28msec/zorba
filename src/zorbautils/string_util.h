@@ -144,8 +144,7 @@ template<class OutputStringType>
 bool replace_all( char const *in, char const *pattern, char const *flags,
                   char const *replacement, OutputStringType *out ) {
   unicode::regex re;
-  if ( !re.compile( pattern, flags ) )
-    throw XQUERY_EXCEPTION( FORX0002, ERROR_PARAMS( pattern ) );
+  re.compile( pattern, flags );
   unicode::string u_out;
   return  re.replace_all( in, replacement, &u_out ) &&
           utf8::to_string( u_out.getBuffer(), u_out.length(), out );
@@ -175,8 +174,7 @@ bool replace_all( InputStringType const &in, char const *pattern,
                   char const *flags, ReplacementStringType const &replacement, 
                   OutputStringType *out ) {
   unicode::regex re;
-  if ( !re.compile( pattern, flags ) )
-    throw XQUERY_EXCEPTION( FORX0002, ERROR_PARAMS( pattern ) );
+  re.compile( pattern, flags );
   unicode::string u_out;
   return  re.replace_all( in, replacement, &u_out ) &&
           utf8::to_string( u_out.getBuffer(), u_out.length(), out );
@@ -208,8 +206,7 @@ bool replace_all( InputStringType const &in, PatternStringType const &pattern,
                   char const *flags, ReplacementStringType const &replacement,
                   OutputStringType *out ) {
   unicode::regex re;
-  if ( !re.compile( pattern, flags ) )
-    throw XQUERY_EXCEPTION( FORX0002, ERROR_PARAMS( pattern ) );
+  re.compile( pattern, flags );
   unicode::string u_out;
   return  re.replace_all( in, replacement, &u_out ) &&
           utf8::to_string( u_out.getBuffer(), u_out.length(), out );

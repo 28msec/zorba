@@ -1535,8 +1535,7 @@ bool FnTokenizeIterator::nextImpl(
       //
       // The RE needs to be compiled every time due to the weird stack macros.
       //
-      if ( !re.compile( state->thePattern, state->theFlags ) )
-        throw XQUERY_EXCEPTION( FORX0002, ERROR_PARAMS( state->thePattern ) );
+      re.compile( state->thePattern, state->theFlags );
       unicode::string u_token;
       bool const got_next = re.next_token(
         state->theString, &state->start_pos, &u_token, &state->hasmatched

@@ -243,11 +243,9 @@ String& String::decodeFromUri() {
 
 String String::tokenize( String const &pattern, String const &flags,
                          int32_t *pos, bool *got_token ) const {
-  unicode::regex re;
   char const *const c_pattern = STRING_OF( pattern )->c_str();
-
-  if ( !re.compile( c_pattern, STRING_OF( flags )->c_str() ) )
-    throw XQUERY_EXCEPTION( FORX0002, ERROR_PARAMS( c_pattern ) );
+  unicode::regex re;
+  re.compile( c_pattern, STRING_OF( flags )->c_str() );
 
   unicode::string u_token;
   *got_token = re.next_token( *THIS_STRING, pos, &u_token );

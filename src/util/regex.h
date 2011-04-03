@@ -68,21 +68,12 @@ public:
    *
    * @param pattern The regular expression pattern to compile.
    * @param flags The regular expression flags, if any.
-   * @return Returns \c true only if the pattern compiled successfully.
+   * @param throws err:FORX0002 if the regular expression is invalid.
    */
-  bool compile( string const &pattern, char const *flags = "" );
-
-  /**
-   * Compiles a regular expression.  One of the compile functions must be
-   * called prior to calling one of the match functions.
-   *
-   * @param pattern The regular expression pattern to compile.
-   * @param flags The regular expression flags, if any.
-   * @return Returns \c true only if the pattern compiled successfully.
-   */
-  bool compile( char const *pattern, char const *flags = "" ) {
+  void compile( char const *pattern, char const *flags = "" ) {
     string u_pattern;
-    return to_string( pattern, &u_pattern ) && compile( u_pattern, flags );
+    to_string( pattern, &u_pattern );
+    compile( u_pattern, flags, pattern );
   }
 
   /**
@@ -92,12 +83,13 @@ public:
    * @tparam StringType The pattern string type.
    * @param pattern The regular expression pattern to compile.
    * @param flags The regular expression flags, if any.
-   * @return Returns \c true only if the pattern compiled successfully.
+   * @param throws err:FORX0002 if the regular expression is invalid.
    */
   template<class StringType>
-  bool compile( StringType const &pattern, char const *flags = "" ) {
+  void compile( StringType const &pattern, char const *flags = "" ) {
     string u_pattern;
-    return to_string( pattern, &u_pattern ) && compile( u_pattern, flags );
+    to_string( pattern, &u_pattern );
+    compile( u_pattern, flags, pattern.c_str() );
   }
 
   /**
@@ -108,12 +100,12 @@ public:
    * @tparam FlagsStringType The flags string type.
    * @param pattern The regular expression pattern to compile.
    * @param flags The regular expression flags, if any.
-   * @return Returns \c true only if the pattern compiled successfully.
+   * @param throws err:FORX0002 if the regular expression is invalid.
    */
   template<class PatternStringType,class FlagsStringType>
-  bool compile( PatternStringType const &pattern,
+  void compile( PatternStringType const &pattern,
                 FlagsStringType const &flags ) {
-    return compile( pattern, flags.c_str() );
+    compile( pattern, flags.c_str() );
   }
 
   ////////// partial match ////////////////////////////////////////////////////
@@ -436,6 +428,9 @@ private:
     re_is_match,                        // RE specifies what to match
     re_is_separator                     // RE specifies what separates matches
   };
+
+  void compile( string const &pattern, char const *flags,
+                char const *utf8_pattern );
 
   bool next( re_type_t re_type, string const &s, size_type *pos,
              string *substring, bool *matched );

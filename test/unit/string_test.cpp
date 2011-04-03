@@ -81,6 +81,10 @@ static bool assert_true( char const *expr, int line, bool result ) {
   try { EXPR; assert_true( #EXPR, __LINE__, false ); } \
   catch ( EXCEPTION const& ) { }
 
+#define ASSERT_NO_EXCEPTION( EXPR ) \
+  try { EXPR; } \
+  catch ( ... ) { assert_true( #EXPR, __LINE__, false ); }
+
 inline char* new_c_string( char const *s ) 
 {
   char * p = static_cast<char*>(::operator new(::strlen( s ) + 1));
@@ -337,7 +341,7 @@ static void test_normalize_whitespace() {
 
 static void test_next_match() {
   unicode::regex re;
-  ASSERT_TRUE( re.compile( "[a-z]+", "" ) );
+  ASSERT_NO_EXCEPTION( re.compile( "[a-z]+" ) );
 
   string const s( "hello world" );
   unicode::string u;
@@ -360,7 +364,7 @@ static void test_next_match() {
 
 static void test_next_token() {
   unicode::regex re;
-  ASSERT_TRUE( re.compile( ",", "" ) );
+  ASSERT_NO_EXCEPTION( re.compile( "," ) );
 
   string const s( "a,b,c" );
   unicode::string u;

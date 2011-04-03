@@ -279,7 +279,7 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, size_t utf8_len,
           case '{':
             if ( in_brace )
               throw XQUERY_EXCEPTION(
-                FTDY0020, ERROR_PARAMS( *utf8_buf, ZED( BadCharInBraces ) )
+                FTDY0020, ERROR_PARAMS( ZED( BadCharInBraces ), *utf8_buf  )
               );
             HANDLE_BACKSLASH();
             if ( in_wild ) {
@@ -352,7 +352,7 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, size_t utf8_len,
 #     endif
       if ( in_brace )
         throw XQUERY_EXCEPTION(
-          FTDY0020, ERROR_PARAMS( utf8_word, ZED( BadTokenInBraces ) )
+          FTDY0020, ERROR_PARAMS( ZED( BadTokenInBraces ), utf8_word )
         );
       IF_GOT_BACKSLASH_APPEND_AND_GOTO( next );
     }

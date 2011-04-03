@@ -113,7 +113,7 @@ extern entry const dict_en[] = {
   { "FORG0008", "the two arguments to fn:dateTime() have inconsistent timezones" },
   { "FORG0009", "error in resolving a relative URI against a base URI in fn:resolve-uri()" },
   { "FORX0001", "'$1': invalid regular expression flag" },
-  { "FORX0002", "invalid regular expression" },
+  { "FORX0002", "\"$1\": invalid regular expression${: 2}" },
   { "FORX0003", "regular expression matches zero-length string" },
   { "FORX0004", "invalid replacement string${: 1}" },
   { "FOTY0012", "argument node does not have a typed value" },
