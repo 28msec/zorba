@@ -429,8 +429,8 @@ private:
     re_is_separator                     // RE specifies what separates matches
   };
 
-  void compile( string const &pattern, char const *flags,
-                char const *utf8_pattern );
+  void compile( string const &u_pattern, char const *flags,
+                char const *pattern );
 
   bool next( re_type_t re_type, string const &s, size_type *pos,
              string *substring, bool *matched );

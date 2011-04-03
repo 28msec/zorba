@@ -20,6 +20,7 @@
 #include <zorba/error_list.h>
 #include <zorba/xquery_exception.h>
 
+#include "zorbaerrors/assert.h"
 #include "zorbaerrors/dict.h"
 
 #include "ascii_util.h"
@@ -210,11 +211,12 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
 
 namespace unicode {
 
-void regex::compile( string const &pattern, char const *flags,
-                     char const *utf8_pattern ) {
-  UErrorCode status = U_ZERO_ERROR;
+void regex::compile( string const &u_pattern, char const *flags,
+                     char const *pattern ) {
+  icu_flags_t const icu_flags = convert_xquery_flags( flags );
   delete matcher_;
-  matcher_ = new RegexMatcher( pattern, convert_xquery_flags( flags ), status );
+  UErrorCode status = U_ZERO_ERROR;
+  matcher_ = new RegexMatcher( u_pattern, icu_flags, status );
   if ( U_FAILURE( status ) ) {
     delete matcher_;
     matcher_ = 0;
@@ -224,20 +226,18 @@ void regex::compile( string const &pattern, char const *flags,
       icu_error_msg = ZED_PREFIX;
       icu_error_msg += u_errorName( status );
     }
-    throw XQUERY_EXCEPTION(
-      FORX0002, ERROR_PARAMS( utf8_pattern, icu_error_msg )
-    );
+    throw XQUERY_EXCEPTION( FORX0002, ERROR_PARAMS( pattern, icu_error_msg ) );
   }
 }
 
 bool regex::match_part( string const &s ) {
-  assert( matcher_ );
+  ZORBA_ASSERT( matcher_ );
   matcher_->reset( s );
   return matcher_->find() != 0;
 }
 
 bool regex::match_whole( string const &s ) {
-  assert( matcher_ );
+  ZORBA_ASSERT( matcher_ );
   matcher_->reset( s );
   UErrorCode status = U_ZERO_ERROR;
   return matcher_->matches( status ) && U_SUCCESS( status );
@@ -245,8 +245,8 @@ bool regex::match_whole( string const &s ) {
 
 bool regex::next( re_type_t re_type, string const &s, size_type *pos,
                   string *substring, bool *matched ) {
-  assert( matcher_ );
-  assert( pos );
+  ZORBA_ASSERT( matcher_ );
+  ZORBA_ASSERT( pos );
   unicode::size_type const s_len = s.length();
   if ( *pos < s_len ) {
     matcher_->reset( s );
@@ -295,8 +295,8 @@ bool regex::next( re_type_t re_type, string const &s, size_type *pos,
 
 bool regex::replace_all( string const &in, string const &replacement,
                          string *out ) {
-  assert( matcher_ );
-  assert( out );
+  ZORBA_ASSERT( matcher_ );
+  ZORBA_ASSERT( out );
   matcher_->reset( in );
   UErrorCode status = U_ZERO_ERROR;
   *out = matcher_->replaceAll( replacement, status );
