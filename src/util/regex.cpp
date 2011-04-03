@@ -218,7 +218,15 @@ void regex::compile( string const &pattern, char const *flags,
   if ( U_FAILURE( status ) ) {
     delete matcher_;
     matcher_ = 0;
-    throw XQUERY_EXCEPTION( FORX0002, ERROR_PARAMS( utf8_pattern ) );
+
+    zstring icu_error_msg;
+    if ( status > U_REGEX_ERROR_START && status < U_REGEX_ERROR_LIMIT ) {
+      icu_error_msg = ZED_PREFIX;
+      icu_error_msg += u_errorName( status );
+    }
+    throw XQUERY_EXCEPTION(
+      FORX0002, ERROR_PARAMS( utf8_pattern, icu_error_msg )
+    );
   }
 }
 

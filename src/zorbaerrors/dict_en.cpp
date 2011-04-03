@@ -24,9 +24,9 @@ namespace dict {
 
 extern entry const dict_en[] = {
 
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // !!!!! THIS MUST BE SORTED BY KEY !!!!!
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   { "API0001", "empty query" },
   { "API0002", "XQuery compilation failed${: 1}" },
@@ -72,9 +72,9 @@ extern entry const dict_en[] = {
   { "API0066", "JSON sequence cannot be serialized" },
   { "API0070", "invalid serialization method for SAX" },
 
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // !!!!! THIS MUST BE SORTED BY KEY !!!!!
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   { "FOAR0001", "division by zero" },
   { "FOAR0002", "numeric operation overflow/underflow" },
@@ -123,9 +123,9 @@ extern entry const dict_en[] = {
   { "FOUP0001", "first operand of fn:put() is not a node of a supported kind" },
   { "FOUP0002", "second operand of fn:put() is not a valid lexical representation of the xs:anyURI type" },
 
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // !!!!! THIS MUST BE SORTED BY KEY !!!!!
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 #ifndef ZORBA_NO_FULL_TEXT
   { "FTDY0016", "\"$1\": invalid weight: absolute value must be in [0,1000]" },
@@ -137,9 +137,9 @@ extern entry const dict_en[] = {
   { "FTST0019", "\"$1\": match option specified more than once" },
 #endif /* ZORBA_NO_FULL_TEXT */
 
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // !!!!! THIS MUST BE SORTED BY KEY !!!!!
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   { "SENR0001", "an item in S6 in sequence normalization is an attribute node or a namespace node" },
   { "SEPM0004", "doctype-system parameter, or standalone parameter with a value other than \"omit\", specified" },
@@ -157,9 +157,9 @@ extern entry const dict_en[] = {
   { "SESU0011", "\"$1\": unsupported normalization form" },
   { "SESU0013", "\"$1\": unsupported XML or HTML version" },
 
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // !!!!! THIS MUST BE SORTED BY KEY !!!!!
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   { "SRL0001", "\"$1\": nonexistent input field" },
   { "SRL0002", "\"$1\": incompatible input field" },
@@ -177,22 +177,22 @@ extern entry const dict_en[] = {
   { "SRL0014", "infinite circular dependencies" },
   { "SRL0015", "incompatible between 32/64 bits or little/big-endian" },
 
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // !!!!! THIS MUST BE SORTED BY KEY !!!!!
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   { "STR0001", "\"$1\": index already exists" },
   { "STR0002", "\"$1\": index does not exist" },
-  { "STR0003", "\"$1\": partial key insertion into index $2" },
+  { "STR0003", "\"$1\": partial key insertion into index \"$2\"" },
   { "STR0004", "partial key deletion from index $1" },
   { "STR0005", "partial key probe into index $1" },
-  { "STR0006", "\"$1\": invalid box probe condition for index $2" },
+  { "STR0006", "\"$1\": invalid box probe condition for index \"$2\"" },
   { "STR0007", "index unsupported probe condition" },
   { "STR0008", "\"$1\": collection already exists" },
   { "STR0009", "\"$1\": collection not found" },
-  { "STR0010", "can not insert node into colletion $1 because it already belongs to collection $2" },
-  { "STR0011", "non-root node can not be inserted into collection $1" },
-  { "STR0012", "non-node item used with collection $1" },
+  { "STR0010", "can not insert node into colletion \"$1\" because it already belongs to collection \"$2\"" },
+  { "STR0011", "non-root node can not be inserted into collection \"$1\"" },
+  { "STR0012", "non-node item used with collection \"$1\"" },
   { "STR0015", "integrity constraint already exists" },
   { "STR0016", "integrity constraint does not exist" },
   { "STR0020", "loader I/O error${: 1}" },
@@ -204,9 +204,9 @@ extern entry const dict_en[] = {
   { "STR0050", "\"$1\": function not implemented for item type $2" },
   { "STR0055", "the given streamable string has already been consumed" },
 
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // !!!!! THIS MUST BE SORTED BY KEY !!!!!
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   { "XDDY0001", "\"$1\": collection not declared" },
   { "XDDY0002", "\"$1\": collection already exists" },
@@ -273,9 +273,9 @@ extern entry const dict_en[] = {
   { "XDTY0011", "result of some key expression of index $1 does not match its declared type" },
   { "XDTY0012", "\"$1\": general range index key item has a type for which no ordering relationship exists" },
 
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // !!!!! THIS MUST BE SORTED BY KEY !!!!!
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   { "XPDY0002", "\"$1\": undefined value" },
   { "XPDY0050", "invalid treat expression type" },
@@ -310,16 +310,17 @@ extern entry const dict_en[] = {
   { "XQDY0092", "\"$1\": must be either \"preserve\" or \"default\"" },
   { "XQDY0096", "\"$1\": invalid node-name" },
 
-  { "XQP0000", "dynamic runtime error" },
-  { "XQP0001", "dynamic iterator overrun" },
-  { "XQP0002", "illegal node child" },
-  { "XQP0003", "\"$1\": target namespace not found" },
-  { "XQP0004", "\"$1\": not supported" },
-  { "XQP0005", "\"$1\": assertion failed" },
-  { "XQP0006", "hash error: KeyLen exceeds MaxKeyLen" },
-  { "XQP0007", "vector out of range" },
-  { "XQP0008", "read lock failed" },
-  { "XQP0009", "write lock failed" },
+  { "XQP0000", "no error" },
+  { "XQP0001", "dynamic runtime error${: 1}" },
+  { "XQP0002", "dynamic iterator overrun" },
+  { "XQP0003", "illegal node child" },
+  { "XQP0004", "\"$1\": target namespace not found" },
+  { "XQP0005", "\"$1\": not supported" },
+  { "XQP0006", "\"$1\": assertion failed" },
+  { "XQP0007", "hash error: KeyLen exceeds MaxKeyLen" },
+  { "XQP0008", "vector out of range" },
+  { "XQP0009", "read lock failed" },
+  { "XQP0010", "write lock failed" },
   { "XQP0010", "pop from empty list" },
   { "XQP0011", "file error in function" },
   { "XQP0012", "FxCharHeap I/O error" },
@@ -328,20 +329,20 @@ extern entry const dict_en[] = {
   { "XQP0016", "\"$1\": reserved module target namespace" },
   { "XQP0017", "file access disabled" },
   { "XQP0019", "internal error${: 1 }" },
-  { "XQP0020", "\"$1\": invalid URI" },
+  { "XQP0020", "\"$1\": invalid URI${: 2}" },
   { "XQP0021", "user error" },
   { "XQP0022", "get results as DOM failed" },
   { "XQP0023", "get results as SAX failed" },
   { "XQP0024", "XML does not match schema${: \"1\"}${ 2}" },
   { "XQP0025", "could not create item" },
-  { "XQP0026", "can not init store" },
+  { "XQP0026", "can not initialize store" },
   { "XQP0026", "could not create thread" },
   { "XQP0027", "error from MS DOM engine" },
   { "XQP0028", "\"$1\": external function not bound" },
   { "XQP0029", "module import not allowed" },
   { "XQP0030", "deadlock" },
   { "XQP0031", "malformed XQueryX input" },
-  { "XQP0032", "error transforming XQueryX to XQuery" },
+  { "XQP0032", "error transforming XQueryX to XQuery${: 1}" },
   { "XQP0034", "\"$1\": illegal UTF-8 byte" },
   { "XQP0035", "\"$1\": illegal UTF-16 byte" },
   { "XQP0036", "BreakIterator creation failed" },
@@ -400,9 +401,9 @@ extern entry const dict_en[] = {
   { "XTDE1340", "\"$1\": invalid picture string" },
   { "XTDE1350", "\"$1\": component specifier not available" },
 
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // !!!!! THIS MUST BE SORTED BY KEY !!!!!
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   { "XUDY0009", "TODO" },
   { "XUDY0014", "TODO" },
@@ -438,9 +439,9 @@ extern entry const dict_en[] = {
 
   /////////////////////////////////////////////////////////////////////////////
 
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // !!!!! THIS MUST BE SORTED BY KEY !!!!!
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   // Note: parameter numbers for sub-messages start with at LEAST $2.
 
@@ -468,15 +469,6 @@ extern entry const dict_en[] = {
   { "~Eval11", "eval only available in XQuery 1.1 or later" },
   { "~ExternFnDeterministic", "only external functions may be declared deterministic" },
   { "~ExternFnNondeterministic", "only external functions may be declared nondeterministic" },
-  { "~format-integer: $language parameter is not castable to xs:language", "format-integer: $language parameter is not castable to xs:language" },
-  { "~format-integer: $picture parameter should not be empty", "format-integer: $picture parameter should not be empty" },
-  { "~format-integer: $value should be between 1 and 10 for this formatting picture", "format-integer: $value should be between 1 and 10 for this formatting picture" },
-  { "~format-integer: $value should be between 1 and 20 for this formatting picture", "format-integer: $value should be between 1 and 20 for this formatting picture" },
-  { "~format-integer: $value should be less than 3000 for Roman representation", "format-integer: $value should be less than 3000 for Roman representation" },
-  { "~format-integer: bad optional format modifier, cannot find closing ')' ", "format-integer: bad optional format modifier, cannot find closing ')' " },
-  { "~format-integer: bad $picture format: ", "format-integer: bad $picture format: $2" },
-  { "~format-integer: duplicated optional format modifier ", "format-integer: duplicated optional format modifier $2" },
-  { "~format-integer: unknown optional format modifier character", "format-integer: unknown optional format modifier character $2" },
   { "~FullTextNotEnabled", "full-text was not enabled in this build" },
   { "~IncompleteKeyInIndexBuild", "incomplete key during index build" },
   { "~ModuleDeclNotInMain", "module declaration must not be in main module" },
@@ -500,6 +492,26 @@ extern entry const dict_en[] = {
   { "~SwitchExpr11", "switch expressions only available in XQuery 1.1 or later" },
   { "~TrailingBackslash", "trailing backslash '\\'" },
   { "~TryCatchExpr11", "try/catch expressions only available in XQuery 1.1 or later" },
+  { "~U_REGEX_BAD_ESCAPE_SEQUENCE", "unrecognized backslash escape sequence" },
+  { "~U_REGEX_BAD_INTERVAL", "error in {min,max} interval" },
+  { "~U_REGEX_INTERNAL_ERROR", "an internal ICU error (bug) was detected" },
+  { "~U_REGEX_INVALID_BACK_REF", "backreference to a non-existent capture group" },
+  { "~U_REGEX_INVALID_FLAG", "invalid value for match mode flags" },
+  { "~U_REGEX_INVALID_RANGE", "in a character range [x-y], x is greater than y" },
+  { "~U_REGEX_INVALID_STATE", "RegexMatcher in invalid state for requested operation" },
+  { "~U_REGEX_LOOK_BEHIND_LIMIT", "look-behind pattern matches must have a bounded maximum length" },
+  { "~U_REGEX_MAX_LT_MIN", "in {min,max}, max is less than min" },
+  { "~U_REGEX_MISMATCHED_PAREN", "incorrectly nested parentheses" },
+  { "~U_REGEX_MISSING_CLOSE_BRACKET", "missing closing bracket on a bracket expression" },
+  { "~U_REGEX_NUMBER_TOO_BIG", "decimal number is too large" },
+  { "~U_REGEX_OCTAL_TOO_BIG", "octal character constants must be <= 0377" },
+  { "~U_REGEX_PROPERTY_SYNTAX", "incorrect Unicode property" },
+  { "~U_REGEX_RULE_SYNTAX", "syntax error" },
+  { "~U_REGEX_SET_CONTAINS_STRING", "cannot have UnicodeSets containing strings." },
+  { "~U_REGEX_STACK_OVERFLOW", "backtrack stack overflow" },
+  { "~U_REGEX_STOPPED_BY_CALLER", "matching operation aborted by user callback fn" },
+  { "~U_REGEX_TIME_OUT", "maximum allowed match time exceeded" },
+  { "~U_REGEX_UNIMPLEMENTED", "use of regular expression feature that is not yet implemented" },
   { "~UnbalancedBrace", "missing '}'" },
   { "~UnbalancedParen", "unbalanced ')'" },
   { "~UnexpectedElement", "unexpected element" },
@@ -512,6 +524,15 @@ extern entry const dict_en[] = {
   { "~Zorba store error", "Zorba store error" },
   { "~dynamic error", "dynamic error" },
   { "~error", "error" },
+  { "~format-integer: $language parameter is not castable to xs:language", "format-integer: $language parameter is not castable to xs:language" },
+  { "~format-integer: $picture parameter should not be empty", "format-integer: $picture parameter should not be empty" },
+  { "~format-integer: $value should be between 1 and 10 for this formatting picture", "format-integer: $value should be between 1 and 10 for this formatting picture" },
+  { "~format-integer: $value should be between 1 and 20 for this formatting picture", "format-integer: $value should be between 1 and 20 for this formatting picture" },
+  { "~format-integer: $value should be less than 3000 for Roman representation", "format-integer: $value should be less than 3000 for Roman representation" },
+  { "~format-integer: bad $picture format: ", "format-integer: bad $picture format: $2" },
+  { "~format-integer: bad optional format modifier, cannot find closing ')' ", "format-integer: bad optional format modifier, cannot find closing ')' " },
+  { "~format-integer: duplicated optional format modifier ", "format-integer: duplicated optional format modifier $2" },
+  { "~format-integer: unknown optional format modifier character", "format-integer: unknown optional format modifier character $2" },
   { "~serialization error", "serialization error" },
   { "~static error", "static error" },
   { "~type error", "type error" },
