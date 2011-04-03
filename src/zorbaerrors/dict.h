@@ -34,7 +34,7 @@ namespace dict {
  * (Z)orba (E)rror (D)ictionary entry.  This macro must be used in code to
  * refer to an error string that must be localized, e.g.:
  * \code
- * throw XQUERY_EXCEPTION( FTDY0020, ERROR_PARAMS( ZED(UnbalancedParen) ) );
+ * throw XQUERY_EXCEPTION( FTDY0020, ERROR_PARAMS( ZED( UnbalancedParen ) ) );
  * \endcode
  * \hideinitializer
  */
