@@ -507,7 +507,7 @@ extern entry const dict_en[] = {
   { "~U_REGEX_OCTAL_TOO_BIG", "octal character constants must be <= 0377" },
   { "~U_REGEX_PROPERTY_SYNTAX", "incorrect Unicode property" },
   { "~U_REGEX_RULE_SYNTAX", "syntax error" },
-  { "~U_REGEX_SET_CONTAINS_STRING", "cannot have UnicodeSets containing strings." },
+  { "~U_REGEX_SET_CONTAINS_STRING", "can not have UnicodeSets containing strings" },
   { "~U_REGEX_STACK_OVERFLOW", "backtrack stack overflow" },
   { "~U_REGEX_STOPPED_BY_CALLER", "matching operation aborted by user callback fn" },
   { "~U_REGEX_TIME_OUT", "maximum allowed match time exceeded" },
