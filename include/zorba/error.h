@@ -92,7 +92,7 @@ namespace zorba {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * A %XQueryError is an error for all XQuery-specific errors.
+ * An %XQueryError is an error for all XQuery-specific errors.
  */
 typedef internal::SystemError<internal::XQueryErrQName> XQueryError;
 
