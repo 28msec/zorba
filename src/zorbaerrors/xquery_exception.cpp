@@ -113,7 +113,7 @@ ostream& XQueryException::print( ostream &o ) const {
 namespace internal {
 
 XQueryException make_xquery_exception( char const *throw_file,
-                                       XQueryException::line_type throw_line,
+                                       ZorbaException::line_type throw_line,
                                        Error const &error,
                                        err::parameters const &params,
                                        err::location const &loc ) {
@@ -125,10 +125,8 @@ XQueryException make_xquery_exception( char const *throw_file,
   return xe;
 }
 
-} // namespace internal
-
 XQueryException* new_xquery_exception( char const *throw_file,
-                                       XQueryException::line_type throw_line,
+                                       ZorbaException::line_type throw_line,
                                        Error const &error,
                                        internal::err::parameters const &params,
                                        internal::err::location const &loc ) {
@@ -140,6 +138,8 @@ XQueryException* new_xquery_exception( char const *throw_file,
     xe->set_source( loc.file(), loc.line(), loc.column() );
   return xe;
 }
+
+} // namespace internal
 
 ///////////////////////////////////////////////////////////////////////////////
 
