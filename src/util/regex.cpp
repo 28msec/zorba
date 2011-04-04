@@ -221,12 +221,12 @@ void regex::compile( string const &u_pattern, char const *flags,
     delete matcher_;
     matcher_ = 0;
 
-    zstring icu_error_msg;
+    zstring icu_error_key;
     if ( status > U_REGEX_ERROR_START && status < U_REGEX_ERROR_LIMIT ) {
-      icu_error_msg = ZED_PREFIX;
-      icu_error_msg += u_errorName( status );
+      icu_error_key = ZED_PREFIX;
+      icu_error_key += u_errorName( status );
     }
-    throw XQUERY_EXCEPTION( FORX0002, ERROR_PARAMS( pattern, icu_error_msg ) );
+    throw XQUERY_EXCEPTION( FORX0002, ERROR_PARAMS( pattern, icu_error_key ) );
   }
 }
 
