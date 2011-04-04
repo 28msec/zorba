@@ -1,9 +1,0 @@
-name,address,address2
-N1,A1,A12
-N2,A2,A22
-N3,A3,A32
-N4,A4,A42
-N5,A5,A52
-N6,,A62
-N7,A7,A72
-N8,A8,A82

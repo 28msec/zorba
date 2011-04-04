@@ -33,19 +33,6 @@ ENDIF(ZORBA_TEST_XQUERYX)
 LIST(REMOVE_ITEM TESTFILES
   zorba/HigherOrder/hof-101.xq)
 
-IF(WIN32)
-  # Remove when bug #3192723 is fixed
-  LIST(REMOVE_ITEM TESTFILES
-    zorba/image/basic.xq
-    zorba/image/manipulation_4.xq
-    zorba/image/paint_1.xq
-    zorba/image/paint_2.xq
-    zorba/image/paint_3.xq
-    zorba/image/paint_4.xq
-    zorba/image/paint_5.xq
-    zorba/image/paint_6.xq
-  )
-ENDIF(WIN32)
 
 # collect all chained test queries (suffix .cxq) in all subdirectories
 # of this dir
@@ -111,14 +98,6 @@ SET(FOUND_XQTS 0)
 # have to re-check for ZORBA_SUPPRESS_XXX here). There should be some
 # way to do the lookup just once - ideally by moving those tests which
 # depend on module features into the modules themselves.
-
-
-# Check if ImageMagick is found with all the 3 needed components:
-# Magick++ MagickCore MagickWand in order to determine whether we have
-# to skip the image module tests
-IF(NOT ZORBA_SUPPRESS_IMAGEMAGICK)
-  FIND_PACKAGE(ImageMagick COMPONENTS Magick++ MagickCore MagickWand)
-ENDIF(NOT ZORBA_SUPPRESS_IMAGEMAGICK)
 
 
 # Check if WordNet thesaurus is installed in the location tests expect

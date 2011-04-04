@@ -495,11 +495,5 @@ IF(WIN32)
   INSTALL(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/external_dlls/" DESTINATION bin)
 ENDIF(WIN32)
 
-# inlcude FindImageMagick.cmake if cmake version is smaller than 2.8
-IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} LESS 2.8)
-  MESSAGE(STATUS "Including FindImageMagick.cmake for cmake version < 2.8")
-  INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/FindImageMagick.cmake)     
-ENDIF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} LESS 2.8)
-
 # Close expected failures listing
 close_expected_failures ()
