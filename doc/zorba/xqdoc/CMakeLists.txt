@@ -44,6 +44,10 @@ ELSE(NOT ZORBA_WITH_FILE_ACCESS)
       -e "zorbaVersion:=${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}"
       --module-path "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
+  IF(WIN32)
+    EXPECTED_FAILURE(doc/stress_tests/make_xqdoc 3276394)
+  ENDIF(WIN32)
+
   # Add the modules_svg command for which a working zorba cmd is required.
   ADD_CUSTOM_TARGET(modules_svg
     ${ZORBA_EXE_SCRIPT}
