@@ -87,6 +87,12 @@ LIST(REMOVE_ITEM TESTFILES
   zorba/webservices/yahoo/woeid-xml.xq
   zorba/webservices/yahoo/woeid.xq
   zorba/xmlrpc/advogato.xq
+
+# Remove when bug #3276383 and #3152386 are BOTH fixed
+  zorba/http_client/external_variable.xq
+
+# Remove when bug #3276383 and #3106635 are BOTH fixed
+  zorba/spec/xquery_1_1.xq
 )
 
 # collect all chained test queries (suffix .cxq) in all subdirectories
@@ -336,8 +342,6 @@ ENDIF (FOUND_XQTS)
 # todo: comment next lines after remote queue fixed
 IF(NOT WIN32)
   EXPECTED_FAILURE(test/rbkt/zorba/schemas/any 3137594)
-ELSE(NOT WIN32)
-
 ENDIF(NOT WIN32)
 
 EXPECTED_FAILURE(test/rbkt/zorba/modules/schema 3131554)
@@ -350,11 +354,7 @@ EXPECTED_FAILURE(test/rbkt/zorba/xqddf/ic-uniqueKey-err2 2935047)
 #  EXPECTED_FAILURE(test/rbkt/zorba/converters/json/json_parse7 3193250)
 #ENDIF(WIN32)
 
-IF(CURL_FOUND)
-  EXPECTED_FAILURE(test/rbkt/zorba/http_client/external_variable 3152386)
-ENDIF(CURL_FOUND)
 EXPECTED_FAILURE(test/rbkt/zorba/aleXis/q11 3103700)
 
-EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_1_1 3106635)
-
 EXPECTED_FAILURE(test/rbkt/zorba/eval/eval_schema2 00001)
+

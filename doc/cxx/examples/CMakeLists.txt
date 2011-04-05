@@ -52,6 +52,9 @@ ZORBA_GENERATE_STORE_SPECIFIC_EXES(examples "${examples}" "" "" "")
 SET (TestsToRun ${examples})
 REMOVE (TestsToRun examples.cpp)
 
+# Remove when bug #3276387 and #3235849 are BOTH fixed
+REMOVE (TestsToRun simple.cpp)
+
 STRING (LENGTH "${CMAKE_SOURCE_DIR}/" SOURCE_DIR_LENGTH)
 
 # add all the ADD_TEST for each testing
@@ -81,5 +84,3 @@ INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/Makefile.zorba
         DESTINATION
         share/doc/zorba-${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER}/cxx/examples RENAME Makefile)
 
-
-EXPECTED_FAILURE(doc/cxx/examples/simple.cpp 3235849)
