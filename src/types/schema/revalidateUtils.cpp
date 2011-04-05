@@ -587,7 +587,7 @@ bool SchemaValidatorImpl::isPossibleSimpleContentRevalImpl(
           schemaTypeCode==TypeConstants::XS_IDREF )
         return false;
       else
-        return true;
+        return false; //true;
     }
     
     if ( schemaType->type_kind()==XQType::USER_DEFINED_KIND )

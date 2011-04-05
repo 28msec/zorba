@@ -100,11 +100,11 @@ ResolveUriIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       }
       catch (ZorbaException const& e) 
       {
-	ZORBA_ERROR_LOC_DESC(FORG0002, loc, e.what());
+        ZORBA_ERROR_LOC_DESC(FORG0002, loc, e.what());
       }
     }
 
-    STACK_PUSH(GENV_ITEMFACTORY->createString(result, strResult), state);
+    STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(result, strResult), state);
   } // else return empty sequence if the first argument is the empty sequence
 
   STACK_END(state);
