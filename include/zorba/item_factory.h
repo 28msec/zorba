@@ -60,7 +60,8 @@ namespace zorba {
        */
       virtual Item
       createStreamableString( std::istream &stream,
-                              void (*streamDestroyer)( std::istream & stream ) ) = 0;
+                              void (*streamDestroyer)( std::istream & stream ),
+                              bool seekable = false ) = 0;
 
       /** \brief Creates an AnyURI Item
        *         see [http://www.w3.org/TR/xmlschema-2/#anyURI]

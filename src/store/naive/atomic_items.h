@@ -585,6 +585,7 @@ protected:
 
   bool theIsMaterialized;
   bool theIsConsumed;
+  bool theIsSeekable;
 
   void (*theStreamDestroyer)( std::istream & stream );
 
@@ -615,6 +616,8 @@ public:
 
   bool isStreamable() const;
 
+  bool isSeekable() const;
+
   std::istream& getStream();
 
   ~StreamableStringItem()
@@ -625,10 +628,12 @@ public:
 protected:
   StreamableStringItem(
       std::istream& aStream,
-      void (*streamDestroyer)( std::istream & stream ))
+      void (*streamDestroyer)( std::istream & stream ),
+      bool seekable = false)
     : theIstream(aStream),
       theIsMaterialized(false),
       theIsConsumed(false),
+      theIsSeekable(seekable),
       theStreamDestroyer(streamDestroyer)
   {
   }

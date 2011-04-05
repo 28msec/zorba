@@ -92,7 +92,8 @@ public:
   virtual bool createStreamableString(
       Item_t& result,
       std::istream&,
-      void (*streamDestroyer)(std::istream& stream)) = 0;
+      void (*streamDestroyer)(std::istream& stream),
+      bool seekable = false) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#normalizedString]

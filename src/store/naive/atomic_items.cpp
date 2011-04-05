@@ -908,15 +908,24 @@ bool StreamableStringItem::isStreamable() const
 }
 
 
+bool StreamableStringItem::isSeekable() const
+{
+  return theIsSeekable;
+}
+
+
 std::istream& StreamableStringItem::getStream()
 {
-  // a stream can only be consumed once
+  // a non-seekable stream can only be consumed once
   // we raise an error if getStream is called twice
   // if a query requires a stream to be consumed more than once,
   // the query needs to make sure that the stream is explicitly
   // materialized before
-  if (theIsConsumed) {
+  if (!theIsSeekable && theIsConsumed) {
     throw ZORBA_EXCEPTION(STR0055_STREAMABLE_STRING_CONSUMED);
+  } else {
+    // if the stream is seekable, we seek to the beginning
+    theIstream.seekg(0, std::ios::beg);
   }
   theIsConsumed = true;
   return theIstream;
@@ -925,18 +934,16 @@ std::istream& StreamableStringItem::getStream()
 
 void StreamableStringItem::materialize() const
 {
-  if (theIsConsumed) {
-    throw XQUERY_EXCEPTION(STR0055_STREAMABLE_STRING_CONSUMED);
-  }
-
   StreamableStringItem* const lSsi = const_cast<StreamableStringItem*>(this);
+  std::istream& lStream = lSsi->getStream();
+
   lSsi->theIsMaterialized = true;
   lSsi->theIsConsumed = true;
 
   char lBuf[4096];
   while (theIstream) {
-    theIstream.read(lBuf, sizeof(lBuf));
-    lSsi->theValue.append(lBuf, theIstream.gcount());
+    lStream.read(lBuf, sizeof(lBuf));
+    lSsi->theValue.append(lBuf, lStream.gcount());
   }
 }
 
