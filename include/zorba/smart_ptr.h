@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #ifndef ZORBA_SMARTPTR_API_H
 #define ZORBA_SMARTPTR_API_H
 
@@ -43,7 +44,7 @@ public:
       free();
   }
 
-	SmartObject& operator=(const SmartObject&) { return *this; }
+  SmartObject& operator=(const SmartObject&) { return *this; }
 }; /* class SmartObject */
 
 template<class T>
@@ -58,13 +59,13 @@ protected:
 
   template <class otherT> SmartPtr& 
   assign (const SmartPtr<otherT>& rhs) {
-		if (p != rhs.get())
+    if (p != rhs.get())
     {
-			if (p) p->removeReference();
-			p = static_cast<T*>(rhs.get());
-			init();
-		}
-		return *this;
+      if (p) p->removeReference();
+      p = static_cast<T*>(rhs.get());
+      init();
+    }
+    return *this;
   }
 
 public:
@@ -92,24 +93,22 @@ public:
   T* operator->() const       { return p; } 
   T& operator*() const        { return *p; } 
 
-	bool operator==(SmartPtr const& h) const  { return p == h.p; }
-	bool operator!=(SmartPtr const& h) const  { return p != h.p; }
-	bool operator==(T const* pp) const        { return p == pp; } 
-	bool operator!=(T const* pp) const        { return p != pp; }
+  bool operator==(SmartPtr const& h) const  { return p == h.p; }
+  bool operator!=(SmartPtr const& h) const  { return p != h.p; }
+  bool operator==(T const* pp) const        { return p == pp; } 
+  bool operator!=(T const* pp) const        { return p != pp; }
   bool operator<(const SmartPtr& h) const   { return p < h.p; }
-
-
 
   SmartPtr& operator=(SmartPtr const& rhs) {
     return assign (rhs);
   }
 
-	template <class otherT> SmartPtr& operator=(SmartPtr<otherT> const& rhs) {
+  template <class otherT> SmartPtr& operator=(SmartPtr<otherT> const& rhs) {
     return assign (rhs);
-	}
+  }
 
+}; // SmartPtr
 
-};  /* SmartPtr */
-
-} /* namespace zorba */
-#endif
+} // namespace zorba
+#endif /* ZORBA_SMARTPTR_API_H */
+/* vim:set et sw=2 ts=2: */
