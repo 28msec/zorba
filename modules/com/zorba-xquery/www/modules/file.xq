@@ -12,7 +12,7 @@
  : WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  : See the License for the specific language governing permissions and
  : limitations under the License.
-:)
+ :)
 
 (:~
  :    <p>
@@ -118,20 +118,18 @@ declare sequential function file:append-binary(
  : @error FOFL0004 If <pre>$file</pre> points to a directory.
  : @error FOFL0000 If any other error occurs.
  :)
-declare sequential function file:append-text(
+declare %private sequential function file:append-text(
   $file as xs:string,
   $content as xs:string*
 ) as empty-sequence() external;
 
 (:~
- : Copies a file given a source and a destination paths/URIs. The operation
- : fails if the source path/URI does not point to a file or the destination
- : path/URI is already used by a file.
+ : Copies a file or a directory given a source and a destination path/URI.
  :
  : The operation is equivalent to calling:
- : <pre>file:copy($sourceFile, $destination, fn:false())</pre>.
+ : <pre>file:copy($source, $destination, fn:true())</pre>.
  :
- : @param $sourceFile The path/URI of the file to copy.
+ : @param $source The path/URI of the file to copy.
  : @param $destination The detination path/URI.
  : @return The empty sequence.
  : @error FOFL0001 If the <pre>$source</pre> path does not exist.
@@ -140,7 +138,6 @@ declare sequential function file:append-text(
  :    to an existing file.
  : @error FOFL0003 If <pre>$destination</pre> does not exist and it's
  :    parent directory does not exist either.
- : @error FOFL0004 If <pre>$source</pre> denotes an existing directory.
  : @error FOFL0000 If any other error occurs.
  :)
 declare sequential function file:copy(
@@ -148,19 +145,16 @@ declare sequential function file:copy(
   $destination as xs:string
 ) as empty-sequence()
 {
-  file:copy($sourceFile, $destination, fn:false())
+  file:copy($sourceFile, $destination, fn:true())
 };
 
 (:~
- : Copies a file given a source and a destination paths/URIs. The operation
- : fails if the source path/URI does not point to a file or the destination
- : path/URI is already used by a file and the overwrite flag evaluates to
- : <pre>fn:false()</pre>.
- :
+ : Copies a file or a directory given a source and a destination path/URI.
+ : 
  : @param $sourceFile The path/URI of the file to copy.
  : @param $destination The destination path/URI.
  : @param $overwrite Flag to control if the operation should overwrite the
- :        destination file.
+ :    destination file.
  : @return The empty sequence.
  : @error FOFL0001 If the <pre>$source</pre> path does not exist.
  : @error FOFL0002 If the <pre>$overwrite</pre> parameter is missing or it
@@ -168,7 +162,6 @@ declare sequential function file:copy(
  :    to an existing file.
  : @error FOFL0003 If <pre>$destination</pre> does not exist and it's
  :    parent directory does not exist either.
- : @error FOFL0004 If <pre>$source</pre> denotes an existing directory.
  : @error FOFL0000 If any other error occurs.
  :)
 declare sequential function file:copy(
@@ -178,110 +171,18 @@ declare sequential function file:copy(
 ) as empty-sequence() external;
 
 (:~
- : Copies a file or directory given a source and a destination paths/URIs.
- : The operation fails if the source path/URI does not point to a file and the
- : recursive flag evaluates to <pre>fn:false()</pre>. The operation also fails
- : if in at any time one destination file already exists and the overwrite flag
- : evaluates to <pre>fn:false()</pre>.
- :
- : @param $source The path/URI of the file or directory to copy.
- : @param $destination The destination path/URI.
- : @param $overwrite Flag to control if the operation should overwrite any
- :        files that already exist at destination.
- : @param $recursive If the operation should recursively copy a directory.
- : @return The empty sequence.
- : @error FOFL0001 If the <pre>$source</pre> path does not exist.
- : @error FOFL0002 If the <pre>$overwrite</pre> parameter is missing or it
- :    evaluates to <pre>fn:false()</pre>, and <pre>$destination</pre> points
- :    to an existing file.
- : @error FOFL0003 If <pre>$destination</pre> does not exist and it's
- :    parent directory does not exist either.
- : @error FOFL0004 If the <pre>$recursive</pre> parameter evaluates to
- :    <pre>fn:false()</pre>, and <pre>$source</pre> denotes an existing
- :    directory.
- : @error FOFL0000 If any other error occurs.
- :)
-declare sequential function file:copy(
-  $source as xs:string,
-  $destination as xs:string,
-  $overwrite as xs:boolean,
-  $recursive as xs:boolean
-) as empty-sequence()
-{
-  (: for non-recursive and file copy use the external implementation :)
-  if (fn:not($recursive) or fn:not(file:is-directory($source))) then
-    file:copy($source, $destination, $overwrite)
-
-  (: we are sure we want to copy a directory :)
-  else
-    (: we copy it into an existing directory :)
-    if (file:exists($destination)) then
-      if (file:is-directory($destination)) then
-        file:copy-directory($source, $destination, $overwrite)
-      else
-        (: the destination is a file :)
-        fn:error()
-
-    (: the destination does not exist, that means the copied directory is renamed :)
-    else
-      (: but only if it's parent directory exists :)
-      let $dir := file:dir-name($destination)
-      return
-        if (file:is-directory($dir)) then
-          block {
-            file:create-directory($destination, fn:true());
-          
-            for $item in file:list($source)
-            let $fullSrcPath := fn:concat($source, file:directory-separator(), $item)
-            let $fullDestPath := fn:concat($destination, file:directory-separator(), $item)
-            return
-              if (file:is-directory($fullSrcPath)) then
-                file:copy-directory($fullSrcPath, $fullDestPath, $overwrite)
-              else
-                file:copy($fullSrcPath, $fullDestPath, $overwrite);
-          }
-        else
-          fn:error()
-};
-
-(:~
- : Creates a directory.
- :
- : The operation is equivalent to calling:
- : <pre>file:create-directory($dir, fn:false())</pre>.
+ : Creates a directory. The operation will create all the nexessary parent
+ : directories.
  :
  : @param $dir The path/URI denoting the directory to be created.
  : @return The empty sequence.
- : @error FOFL0001 If more than one directory of the path needs to be created.
- : @error FOFL0002 If a file already exists at the location pointed by
- :    <pre>$dir</pre>.
+ : @error FOFL0002 If the directory cannot be created because of an already
+ :    existing file.
  : @error FOFL0000 If any other error occurs.
  :)
 declare sequential function file:create-directory(
-  $dir as xs:string) as empty-sequence()
-{
-  file:create-directory($dir, fn:false())
-};
-
-(:~
- : Creates a directory. If the <pre>$recursive</pre> argument evaluates to
- : <pre>fn:true()</pre> all the missing parent directories from the path are
- : also created.
- :
- : @param $dir The path/URI denoting the directory to be created.
- : @param $recursive If the operation should create all the missing parrent
- :    directories.
- : @return The empty sequence.
- : @error FOFL0001 If <pre>$recursive</pre> evaluates to <pre>fn:false()</pre>,
- :    and if more than one directory of the path needs to be created.
- : @error FOFL0002 If a file already exists at the location pointed by
- :    <pre>$dir</pre> or at any parent location in case of a recursive
- :    operation.
- : @error FOFL0000 If any other error occurs.
- :)
-declare sequential function file:create-directory(
-  $dir as xs:string,
-  $recursive as xs:boolean) as empty-sequence() external;
+  $dir as xs:string
+) as empty-sequence() external;
 
 (:~
  : Deletes a file or an empty directory from the file system.
@@ -364,13 +265,14 @@ declare %nondeterministic function file:is-file(
  : Moves a file or directory given a source and a destination paths/URIs.
  :
  : The operation is equivalent to calling:
- : <pre>file:move($sourceFile, $destination, fn:false())</pre>.
+ : <pre>file:move($sourceFile, $destination, fn:true())</pre>.
  :
  : @param $sourceFile The path/URI of the file to move.
  : @param $destination The detination path/URI.
  : @return The empty sequence.
  : @error FOFL0001 If the <pre>$source</pre> path does not exist.
- : @error FOFL0002 If <pre>$destination</pre> points to an existing file.
+ : @error FOFL0002 If <pre>$source</pre> points to a directory and
+ :    <pre>$destination</pre> points to an existing file.
  : @error FOFL0003 If <pre>$destination</pre> does not exist and it's parent
  :    directory does not exist either.
  : @error FOFL0000 If any other error occurs.
@@ -380,7 +282,7 @@ declare sequential function file:move(
   $destination as xs:string
 ) as empty-sequence()
 {
-  file:move($sourceFile, $destination, fn:false())
+  file:move($sourceFile, $destination, fn:true())
 };
 
 (:~
@@ -408,7 +310,7 @@ declare sequential function file:move(
   $overwrite as xs:boolean
 ) as empty-sequence()
 {
-  file:copy($source, $destination, $overwrite, fn:true());
+  file:copy($source, $destination, $overwrite);
   file:delete($source, fn:true());
 };
 
@@ -647,21 +549,6 @@ declare sequential function file:write-binary(
 (:~
  : Writes a sequence of string items to a file.
  :
- : @param $file The path/URI of the file to write the content to.
- : @param $content The content to be serialized to the file.
- : @return The empty sequence.
- :)
-declare sequential function file:write-text(
-  $file as xs:string,
-  $content as xs:string*
-) as empty-sequence()
-{
-  file:write-text($file, $content, fn:true())
-};
-
-(:~
- : Writes a sequence of string items to a file.
- :
  : The operation is equivalent to calling:
  : <pre>file:write-text($file, $content, fn:true())</pre>.
  :
@@ -670,7 +557,7 @@ declare sequential function file:write-text(
  : @param $overwrite Flag to specify if an existing file should be overwritten.
  : @return The empty sequence.
  :)
-declare sequential function file:write-text(
+declare %private sequential function file:write-text(
   $file as xs:string,
   $content as xs:string*,
   $overwrite as xs:boolean

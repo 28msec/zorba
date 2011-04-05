@@ -50,12 +50,7 @@ CreateDirectoryFunction::evaluate(
   String lFileStr = FileFunction::getFilePathString(aArgs, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
 
-  bool lRecursive = false;
-  if (aArgs.size() > 1) {
-    lRecursive = FileFunction::getOneBooleanArg(aArgs, 1);
-  }
-
-  lFile->mkdir(lRecursive);
+  lFile->mkdir(true);
 
   return ItemSequence_t(new EmptySequence());
 }

@@ -37,7 +37,7 @@ return
     let $expected-text as xs:string := file:read-text($expected-file-normalized)
     return
       block {
-        file:create-directory(file:dir-name($result-file-normalized), fn:true());
+        file:create-directory(file:dir-name($result-file-normalized));
         file:write($result-file-normalized, $query-stdout, $params);
         (
           (: compare generated iterator tree with expected result :)
