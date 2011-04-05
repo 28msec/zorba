@@ -66,6 +66,10 @@ FOREACH (test ${TestsToRun})
 	ZORBA_ADD_TEST_ALLSTORES(${TName} examples ${NAME_WITHOUT_EXT})
 ENDFOREACH(test)
 
+IF(WIN32)
+  EXPECTED_FAILURE(doc/cxx/examples/simple.cpp 3276387)
+ENDIF(WIN32)
+
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/Makefile.cmake ${CMAKE_CURRENT_BINARY_DIR}/Makefile.zorba)
 MESSAGE(STATUS "configured ${CMAKE_CURRENT_SOURCE_DIR}/Makefile.cmake ${CMAKE_CURRENT_BINARY_DIR}/Makefile.zorba") 
 

@@ -335,8 +335,6 @@ ELSE(NOT WIN32)
   EXPECTED_FAILURE(test/rbkt/zorba/webservices/yahoo/woeid-xml 3276383)
   EXPECTED_FAILURE(test/rbkt/zorba/webservices/yahoo/woeid 3276383)
   EXPECTED_FAILURE(test/rbkt/zorba/xmlrpc/advogato 3276383)
-
-  EXPECTED_FAILURE(doc/cxx/examples/simple.cpp 3276387)
 ENDIF(NOT WIN32)
 
 EXPECTED_FAILURE(test/rbkt/zorba/modules/schema 3131554)
