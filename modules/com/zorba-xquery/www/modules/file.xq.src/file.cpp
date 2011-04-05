@@ -50,16 +50,12 @@ CreateDirectoryFunction::evaluate(
   String lFileStr = FileFunction::getFilePathString(aArgs, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
 
-  bool lRecursive = true;
-  bool lFailIfExists = false;
+  bool lRecursive = false;
   if (aArgs.size() > 1) {
     lRecursive = FileFunction::getOneBooleanArg(aArgs, 1);
-    if (aArgs.size() > 2) {
-      lFailIfExists = FileFunction::getOneBooleanArg(aArgs, 2);
-    }
   }
 
-  lFile->mkdir(lRecursive, lFailIfExists);
+  lFile->mkdir(lRecursive);
 
   return ItemSequence_t(new EmptySequence());
 }
@@ -277,23 +273,37 @@ CopyFunction::evaluate(
   String lDstStr = FileFunction::getFilePathString(aArgs, 1);
   File_t lDst = File::createFile(lDstStr.c_str());
 
-  // only continue if we have a file to copy
-  if (!(lSrcFile->isFile())) {
+  // do we have something to copy?
+  if (!(lSrcFile->exists())) {
     std::stringstream lSs;
-    lSs << "The source argument does not point to a file path: " << lDst->getFilePath();
-    throw XQUERY_EXCEPTION(XPTY0004, ERROR_PARAMS( lSs.str() ) );
+    lSs << "The source path does not exist: " << lSrcFile->getFilePath();
+    error(/*FOFL0001, lSs.str()*/);
   }
 
-  // do we have to overwrite existing files?
+  // is this a file (the recursive version is implemented in XQuery)
+  if (!(lSrcFile->isFile())) {
+    std::stringstream lSs;
+    lSs << "The source of a non-recursive copy cannot be a directory: " << lSrcFile->getFilePath();
+    error(/*FOFL0004, lSs.str()*/);
+  }
+
+  // do we have to overwrite an existing file?
   bool lOverwrite = false;
   if (aArgs.size() == 3) {
     lOverwrite = getOneBooleanArg(aArgs, 2);
   }
 
+  // stop if not overwriting and the destination file exists
+  if (!lOverwrite && lDst->isFile()) {
+    std::stringstream lSs;
+    lSs << "The destination path already exists: " << lDst->getFilePath();
+    error(/*FOFL0002, lSs.str()*/);
+  }
+
   if (lDst->isDirectory()) {
     lDstStr = lDst->getFilePath();
     String lSrcPath = lSrcFile->getFilePath();
-    int lLastSep = lSrcPath.lastIndexOf(File::getPathSeparator());
+    int lLastSep = lSrcPath.lastIndexOf(File::getDirectorySeparator());
     String lName = lSrcPath.substring(lLastSep);
     lDstStr = lDstStr.append(lName.c_str());
     lDst = File::createFile(lDstStr.c_str());
@@ -301,12 +311,12 @@ CopyFunction::evaluate(
 
   if (lDst->isDirectory()) {
     std::stringstream lSs;
-    lSs << "The destination file path denotes an existing directory: " << lDst->getFilePath();
-    throw XQUERY_EXCEPTION(XPTY0004, ERROR_PARAMS( lSs.str() ) );
+    lSs << "The destination path already exists: : " << lDst->getFilePath();
+    error(/*FOFL0002, lSs.str()*/);
   } else if (lDst->isFile() && !lOverwrite) {
     std::stringstream lSs;
-    lSs << "The destination file already exists: " << lDst->getFilePath();
-    throw XQUERY_EXCEPTION(XPTY0004, ERROR_PARAMS( lSs.str() ));
+    lSs << "The destination path already exists: " << lDst->getFilePath();
+    error(/*FOFL0002, lSs.str()*/);
   }
 
   // open the output stream in the desired write mode
@@ -332,18 +342,14 @@ CopyFunction::evaluate(
 }
 
 //*****************************************************************************
-//*****************************************************************************
-// the functions above have been updated to the new file API spec
-//*****************************************************************************
-//*****************************************************************************
 
-FilesFunction::FilesFunction(const FileModule* aModule)
+ListFunction::ListFunction(const FileModule* aModule)
   : FileFunction(aModule)
 {
 }
 
 ItemSequence_t
-FilesFunction::evaluate(
+ListFunction::evaluate(
   const StatelessExternalFunction::Arguments_t& aArgs,
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
@@ -352,14 +358,14 @@ FilesFunction::evaluate(
   File_t lFile = File::createFile(lFileStr.c_str());
 
   if (!lFile->isDirectory()) {
-      return ItemSequence_t(new EmptySequence());
+    return ItemSequence_t(new EmptySequence());
   }
 
   DirectoryIterator_t lIter = lFile->files();
   return ItemSequence_t(new IteratorBackedItemSequence(lIter, theModule->getItemFactory()));
 }
 
-FilesFunction::IteratorBackedItemSequence::IteratorBackedItemSequence(
+ListFunction::IteratorBackedItemSequence::IteratorBackedItemSequence(
     DirectoryIterator_t& aIter,
     ItemFactory* aFactory)
   : theIterator(aIter), theItemFactory(aFactory)
@@ -368,35 +374,36 @@ FilesFunction::IteratorBackedItemSequence::IteratorBackedItemSequence(
   open_count = 0;
 }
 
-FilesFunction::IteratorBackedItemSequence::~IteratorBackedItemSequence()
+ListFunction::IteratorBackedItemSequence::~IteratorBackedItemSequence()
 {
 }
 
-Iterator_t FilesFunction::IteratorBackedItemSequence::getIterator()
+Iterator_t ListFunction::IteratorBackedItemSequence::getIterator()
 {
   return this;
 }
 
-void FilesFunction::IteratorBackedItemSequence::open()
+void ListFunction::IteratorBackedItemSequence::open()
 {
-  if(open_count)
+  if (open_count) {
     theIterator->reset();
+  }
   open_count++;
   is_open = true;
 }
 
-void FilesFunction::IteratorBackedItemSequence::close()
+void ListFunction::IteratorBackedItemSequence::close()
 {
   is_open = false;
 }
 
-bool FilesFunction::IteratorBackedItemSequence::isOpen() const
+bool ListFunction::IteratorBackedItemSequence::isOpen() const
 {
   return is_open;
 }
 
 bool
-FilesFunction::IteratorBackedItemSequence::next(Item& lItem)
+ListFunction::IteratorBackedItemSequence::next(Item& lItem)
 {
   std::string lPath;
   if (!theIterator->next(lPath)) {
@@ -426,8 +433,8 @@ LastModifiedFunction::evaluate(
 
   if(!lFile->exists()) {
     std::stringstream lErrorMessage;
-    lErrorMessage << "The provided path/URI does not point to a file system item.";
-    throwError(lErrorMessage.str(), err::XPTY0004);
+    lErrorMessage << "The provided path/URI does not exist: " << lFile->getFilePath();
+    error(/*FOFL0001, lErrorMessage.str()*/);
   }
 
   time_t lTime = lFile->lastModified();
@@ -455,6 +462,38 @@ LastModifiedFunction::getGmtOffset()
 
 //*****************************************************************************
 
+SizeFunction::SizeFunction(const FileModule* aModule)
+  : FileFunction(aModule)
+{
+}
+
+ItemSequence_t
+SizeFunction::evaluate(
+  const StatelessExternalFunction::Arguments_t& aArgs,
+  const StaticContext*                          aSctxCtx,
+  const DynamicContext*                         aDynCtx) const
+{
+  String lFileStr = FileFunction::getFilePathString(aArgs, 0);
+  File_t lFile = File::createFile(lFileStr.c_str());
+
+  if(!lFile->exists()) {
+    std::stringstream lErrorMessage;
+    lErrorMessage << "The provided path/URI does not exist: " << lFile->getFilePath();
+    error(/*FOFL0001, lErrorMessage.str()*/);
+  }
+
+  if(lFile->isDirectory()) {
+    std::stringstream lErrorMessage;
+    lErrorMessage << "The provided path/URI must not point to a directory: " << lFile->getFilePath();
+    error(/*FOFL0004, lErrorMessage.str()*/);
+  }
+
+  return ItemSequence_t(new SingletonItemSequence(
+    theModule->getItemFactory()->createInteger(lFile->getSize())));
+}
+
+//*****************************************************************************
+
 PathSeparator::PathSeparator(const FileModule* aModule)
   : FileFunction(aModule)
 {
@@ -466,18 +505,34 @@ PathSeparator::evaluate(
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  return ItemSequence_t(new SingletonItemSequence(theModule->getItemFactory()->createString(FileFunction::pathSeparator())));
+  return ItemSequence_t(new SingletonItemSequence(theModule->getItemFactory()->createString(FileFunction::pathSeparator1())));
 }
 
 //*****************************************************************************
 
-PathToFullPathFunction::PathToFullPathFunction(const FileModule* aModule)
+DirectorySeparator::DirectorySeparator(const FileModule* aModule)
   : FileFunction(aModule)
 {
 }
 
 ItemSequence_t
-PathToFullPathFunction::evaluate(
+DirectorySeparator::evaluate(
+  const StatelessExternalFunction::Arguments_t& aArgs,
+  const StaticContext*                          aSctxCtx,
+  const DynamicContext*                         aDynCtx) const
+{
+  return ItemSequence_t(new SingletonItemSequence(theModule->getItemFactory()->createString(FileFunction::directorySeparator())));
+}
+
+//*****************************************************************************
+
+ResolvePathFunction::ResolvePathFunction(const FileModule* aModule)
+  : FileFunction(aModule)
+{
+}
+
+ItemSequence_t
+ResolvePathFunction::evaluate(
   const StatelessExternalFunction::Arguments_t& aArgs,
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
@@ -577,12 +632,20 @@ AppendBinaryFunction::isBinary() const {
 
 //*****************************************************************************
 
-NormalizePathFunction::NormalizePathFunction(const FileModule* aModule)
+
+//*****************************************************************************
+//*****************************************************************************
+// the functions above have been updated to the new file API spec
+//*****************************************************************************
+//*****************************************************************************
+
+PathToNativeFunction::PathToNativeFunction(const FileModule* aModule)
   : FileFunction(aModule)
 {
 }
 
-ItemSequence_t NormalizePathFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
+ItemSequence_t
+PathToNativeFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
                                 const StaticContext* aSctxCtx,
                                 const DynamicContext* aDynCtx) const
 {

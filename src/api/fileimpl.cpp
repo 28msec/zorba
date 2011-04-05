@@ -90,9 +90,15 @@ File::createFile(const std::string& path)
 }
 
 const char*
-File::getPathSeparator()
+File::getDirectorySeparator()
 {
-  return filesystem_path::get_path_separator();
+  return filesystem_path::get_directory_separator();
+}
+
+const char*
+File::getPathSeparator1()
+{
+  return filesystem_path::get_path_separator1();
 }
 
 const std::string
@@ -300,18 +306,18 @@ FileImpl::getSize() const
 }
 
 void
-FileImpl::mkdir(bool aRecursive, bool aFailIfExists)
+FileImpl::mkdir(bool aRecursive)
 {
   ZORBA_TRY
-    //TODO: Throw proper errors
-
     // precondition
+    std::string lPath(theInternalFile->get_path());
+
     if (theInternalFile->exists() && !theInternalFile->is_directory()) {
-      throw "A file already exists at this path.";
+      throw "FOFL0002"; // "A file already exist at this path: " << lPath
     }
 
-    if (aFailIfExists && theInternalFile->exists()) {
-      throw "A directory already exists at this path.";
+    if (!aRecursive && theInternalFile->exists()) {
+      throw "FOFL0004"; // "The directory already exists: " << lPath
     }
 
     if (aRecursive) {
@@ -322,7 +328,7 @@ FileImpl::mkdir(bool aRecursive, bool aFailIfExists)
 
     // postcondition
     if (!(theInternalFile->is_directory())) {
-      throw "The directory could not be created.";
+      throw "FOFL0000"; // "Can not create directory: " << lPath
     }
 
   ZORBA_CATCH
@@ -341,10 +347,10 @@ FileImpl::openInputStream(std::ifstream& aInStream, bool binary, bool trimByteOr
     std::string lPath(theInternalFile->get_path());
 
     if (!theInternalFile->exists()) {
-      ZORBA_ERROR_DESC_OSS(FODC0002, "File not found: " << lPath);
+      throw "FODC0002"; // "File not found: " << lPath
     }
     if (!theInternalFile->is_file()) {
-      ZORBA_ERROR_DESC_OSS(FODC0002, "\"" << lPath << "\" is not a file");
+      throw "FODC0002"; // "\"" << lPath << "\" is not a file"
     }
 
     std::ios_base::openmode lMode = std::ifstream::in;

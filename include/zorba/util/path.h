@@ -69,7 +69,7 @@ namespace zorba {
         if (rel.is_complete ())
           *this = rel;
         else {
-          *this = base.get_path () + get_path_separator () + rel.get_path ();
+          *this = base.get_path () + get_directory_separator () + rel.get_path ();
           canonicalize ();
         }
       }
@@ -87,7 +87,8 @@ namespace zorba {
 
       filesystem_path branch_path () const;
 
-      static const char *get_path_separator ();
+      static const char *get_directory_separator ();
+      static const char *get_path_separator1 ();
   //  #ifdef WIN32
   //    static bool isValidDriveSegment( String& aString);
   //  #endif

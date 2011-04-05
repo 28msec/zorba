@@ -4,9 +4,9 @@ import module namespace commons = "http://www.zorba-xquery.com/modules/file/test
 
 import schema namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
 
-declare variable $inFile as xs:string := fn:concat(file:dirname(fn:static-base-uri()), "/../image/images/bird.gif");
-declare variable $testDir as xs:string := fn:concat(file:dirname(fn:static-base-uri()),"/tmpBinaryReadWrite");
-declare variable $outFile as xs:string := fn:concat($testDir, file:path-separator(), "bird.gif");
+declare variable $inFile as xs:string := fn:concat(file:dir-name(fn:static-base-uri()), "/../image/images/bird.gif");
+declare variable $testDir as xs:string := fn:concat(file:dir-name(fn:static-base-uri()),"/tmpBinaryReadWrite");
+declare variable $outFile as xs:string := fn:concat($testDir, file:directory-separator(), "bird.gif");
 
 declare sequential function local:thisTest() as xs:string* {
   (: ==================================================================== :)

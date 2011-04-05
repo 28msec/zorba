@@ -83,7 +83,7 @@ ostream& XQueryException::print( ostream &o ) const {
         case uri::none:
         case uri::file:
           try {
-            o << fs::get_normalized_path( u );
+            o << '<' << fs::get_normalized_path( u ) << '>';
             break;
           }
           catch ( ... ) {

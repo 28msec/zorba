@@ -2,7 +2,7 @@ import module namespace os = "http://www.zorba-xquery.com/modules/os";
 import module namespace file = "http://www.zorba-xquery.com/modules/file";
 
 declare function local:do($path) {
-  fn:concat(file:dirname($path),"-",file:basename($path))
+  fn:concat(file:dir-name($path),"-",file:base-name($path))
 };
 
 if (os:operating-system() eq "Windows") then
@@ -22,7 +22,7 @@ if (os:operating-system() eq "Windows") then
  let $path13 := "file:///i:///"
  return
  (
-   file:basename($path0, "cd") eq "ab" and 
+   file:base-name($path0, "cd") eq "ab" and 
    local:do($path1) eq "c:\a\b-c" and 
    local:do($path2) eq "D:\a\b-c" and 
    local:do($path3) eq "d:\a\b-c" and 
@@ -51,7 +51,7 @@ else
  let $path10 := "file:///"
  return 
  (
-   file:basename($path0, "cd") eq "ab" and 
+   file:base-name($path0, "cd") eq "ab" and 
    local:do($path1) eq "/a/b-c" and 
    local:do($path2) eq "/a/b-c" and 
    local:do($path3) eq "/a/b-c" and 

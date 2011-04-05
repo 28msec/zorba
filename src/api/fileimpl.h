@@ -76,7 +76,7 @@ public: // public methods
 
   FileSize_t getSize() const;
 
-  void mkdir(bool recursive = true, bool failIfExists = false);
+  void mkdir(bool recursive = true);
 
   DirectoryIterator_t files() const;
 

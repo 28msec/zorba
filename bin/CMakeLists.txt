@@ -67,7 +67,7 @@ ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba5 PASS_REGULAR_EXPRESSION ".*Extra ar
 
 # test the compile-only option of the command line tool which is used for semantic checking in eclipse
 ZORBA_ADD_TEST_ALLSTORES(bin/zorba_compilechk1 zorbacmd -q "${CMAKE_CURRENT_SOURCE_DIR}/test/mymod.xq" -f -l)
-ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba_compilechk1 PASS_REGULAR_EXPRESSION ".*mymod.xq:6,8:.*:XPST0008.*")
+ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba_compilechk1 PASS_REGULAR_EXPRESSION ".*mymod.xq>:6,8:.*:XPST0008.*")
 
 ZORBA_ADD_TEST_ALLSTORES(bin/zorba_compilechk2 zorbacmd -q "${CMAKE_CURRENT_SOURCE_DIR}/test/mymod.xq" -f -l -x)
 ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba_compilechk2 PASS_REGULAR_EXPRESSION ".*XPST0008.*mymod.xq' line='6' column='8'.*")

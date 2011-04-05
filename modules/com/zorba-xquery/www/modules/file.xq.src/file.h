@@ -90,13 +90,13 @@ namespace zorba {
 
 //*****************************************************************************
 
-  class FilesFunction : public FileFunction
+  class ListFunction : public FileFunction
   {
     public:
-      FilesFunction(const FileModule* aModule);
+      ListFunction(const FileModule* aModule);
 
       virtual String
-      getLocalName() const { return "files"; }
+      getLocalName() const { return "list"; }
   
       virtual ItemSequence_t 
       evaluate(const StatelessExternalFunction::Arguments_t& args,
@@ -183,13 +183,34 @@ namespace zorba {
 
 //*****************************************************************************
 
+  class SizeFunction : public FileFunction
+  {
+    public:
+      SizeFunction(const FileModule* aModule);
+
+      virtual String
+      getLocalName() const { return "size"; }
+  
+      virtual ItemSequence_t 
+      evaluate(const StatelessExternalFunction::Arguments_t& args,
+               const StaticContext* aSctxCtx,
+               const DynamicContext* aDynCtx) const;
+
+  private:
+      static int
+      getGmtOffset();
+
+  };
+
+//*****************************************************************************
+
   class PathSeparator : public FileFunction
   {
     public:
       PathSeparator(const FileModule* aModule);
 
       virtual String
-      getLocalName() const { return "path-separator"; }
+      getLocalName() const { return "path-separator1"; }
   
       virtual ItemSequence_t 
       evaluate(const StatelessExternalFunction::Arguments_t& args,
@@ -199,13 +220,29 @@ namespace zorba {
 
 //*****************************************************************************
 
-  class PathToFullPathFunction : public FileFunction
+  class DirectorySeparator : public FileFunction
   {
     public:
-      PathToFullPathFunction(const FileModule* aModule);
+      DirectorySeparator(const FileModule* aModule);
 
       virtual String
-      getLocalName() const { return "path-to-full-path"; }
+      getLocalName() const { return "directory-separator"; }
+  
+      virtual ItemSequence_t 
+      evaluate(const StatelessExternalFunction::Arguments_t& args,
+               const StaticContext* aSctxCtx,
+               const DynamicContext* aDynCtx) const;
+  };
+
+//*****************************************************************************
+
+  class ResolvePathFunction : public FileFunction
+  {
+    public:
+      ResolvePathFunction(const FileModule* aModule);
+
+      virtual String
+      getLocalName() const { return "resolve-path"; }
   
       virtual ItemSequence_t 
       evaluate(const StatelessExternalFunction::Arguments_t& args,
@@ -227,6 +264,22 @@ namespace zorba {
       evaluate(const StatelessExternalFunction::Arguments_t& args,
                const StaticContext* aSctxCtx,
                const DynamicContext* aDynCtx) const;
+  };
+
+//*****************************************************************************
+
+  class PathToNativeFunction : public FileFunction
+  {
+    public:
+      PathToNativeFunction(const FileModule* aModule);
+
+      virtual String
+      getLocalName() const { return "path-to-native"; }
+
+      virtual ItemSequence_t
+      evaluate(const StatelessExternalFunction::Arguments_t& args,
+               const StaticContext* aStctxCtx,
+               const DynamicContext* aDznCtx) const;
   };
 
 //*****************************************************************************
@@ -347,22 +400,6 @@ namespace zorba {
 
       virtual bool
       isBinary() const;
-  };
-
-//*****************************************************************************
-
-  class NormalizePathFunction : public FileFunction
-  {
-    public:
-      NormalizePathFunction(const FileModule* aModule);
-
-      virtual String
-      getLocalName() const { return "normalize-path"; }
-
-      virtual ItemSequence_t
-      evaluate(const StatelessExternalFunction::Arguments_t& args,
-               const StaticContext* aStctxCtx,
-               const DynamicContext* aDznCtx) const;
   };
 
 //*****************************************************************************

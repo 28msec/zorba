@@ -3,7 +3,7 @@ import module namespace commons = "http://www.zorba-xquery.com/modules/file/test
 
 declare variable $xml := <elem>value</elem>;
 declare variable $testDir := "tmpCreateWriteReadDeleteSeries";
-declare variable $outFile := fn:concat($testDir, file:path-separator(), "file.xml");
+declare variable $outFile := fn:concat($testDir, file:directory-separator(), "file.xml");
 
 
 declare sequential function local:main() as xs:string* {

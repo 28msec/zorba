@@ -67,19 +67,22 @@ FileModule::getExternalFunction(const String& aLocalname)
       lFunc = new AppendTextFunction(this);
     } else if (aLocalname.equals("append-binary")) {
       lFunc = new AppendBinaryFunction(this);
-    // ****************************************************
-    } else if (aLocalname.equals("files")) {
-      lFunc = new FilesFunction(this);
+    } else if (aLocalname.equals("list")) {
+      lFunc = new ListFunction(this);
     } else if (aLocalname.equals("last-modified")) {
       lFunc = new LastModifiedFunction(this);
-    } else if (aLocalname.equals("path-separator")) {
+    } else if (aLocalname.equals("size")) {
+      lFunc = new SizeFunction(this);
+    } else if (aLocalname.equals("directory-separator")) {
+      lFunc = new DirectorySeparator(this);
+    } else if (aLocalname.equals("path-separator1")) {
       lFunc = new PathSeparator(this);
-    } else if (aLocalname.equals("path-to-full-path")) {
-      lFunc = new PathToFullPathFunction(this);
+    } else if (aLocalname.equals("resolve-path")) {
+      lFunc = new ResolvePathFunction(this);
     } else if (aLocalname.equals("path-to-uri")) {
       lFunc = new PathToUriFunction(this);
-    } else if (aLocalname.equals("normalize-path")) {
-      lFunc = new NormalizePathFunction(this);
+    } else if (aLocalname.equals("path-to-native")) {
+      lFunc = new PathToNativeFunction(this);
     }
   }
   return lFunc;

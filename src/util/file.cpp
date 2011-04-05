@@ -174,7 +174,7 @@ _normalize_path
       // resolve the relative path against the current working directory
       //lFileArg = aSctxCtx->resolve(aSctxCtx->getBaseURI(), lFileArg);
       // QQQ?!
-      lFileArg = aBase + File::getPathSeparator() + lFileArg;
+      lFileArg = aBase + filesystem_path::get_directory_separator() + lFileArg;
     }
 
     // no other encoding or decoding if already an absolute path
@@ -191,7 +191,7 @@ _normalize_path
     unicode::string lResult;
     unicode::regex re;
     re.compile(pattern, "");
-    const char *path_sep = filesystem_path::get_path_separator();
+    const char *path_sep = filesystem_path::get_directory_separator();
     if(!strcmp(path_sep, "\\"))
       path_sep = "\\\\";
     re.replace_all(lFileArg.c_str(), path_sep,
@@ -211,14 +211,21 @@ filesystem_path::normalize_path(std::string aIn, std::string aBase)
   return lResult.str();
 }
 
-
-
 const char *
-filesystem_path::get_path_separator () {
+filesystem_path::get_directory_separator () {
 #ifdef WIN32
   return "\\";
 #else
   return "/";
+#endif
+}
+
+const char *
+filesystem_path::get_path_separator1 () {
+#ifdef WIN32
+  return ";";
+#else
+  return ":";
 #endif
 }
 
@@ -246,7 +253,7 @@ filesystem_path::filesystem_path (const string &path_, int flags)
   : path (path_)
 {
   if ((flags & CONVERT_SLASHES) != 0)
-    ascii::replace_all (path, "/", get_path_separator ());
+    ascii::replace_all (path, "/", get_directory_separator ());
   canonicalize ();
   if ((flags & RESOLVE) != 0)
     resolve_relative ();
@@ -260,7 +267,7 @@ filesystem_path::is_complete () const
   if (path.size () >= 3 && isalpha (path [0]) && path [1] == ':' && path [2] == '\\')
     return true;
 #endif
-  const std::string &sep = get_path_separator ();
+  const std::string &sep = get_directory_separator ();
   if (path.compare (0, sep.size (), sep) == 0)
     return true;
   return false;
@@ -302,7 +309,7 @@ filesystem_path::resolve_relative ()
 bool
 filesystem_path::is_root () const
 {
-  const string &sep = get_path_separator ();
+  const string &sep = get_directory_separator ();
 #ifdef WIN32
   return path.size () == 3
     && isalpha (path [0]) && path [1] == ':'
@@ -314,7 +321,7 @@ filesystem_path::is_root () const
 
 void filesystem_path::canonicalize ()
 {
-  const string &sep = get_path_separator ();
+  const string &sep = get_directory_separator ();
   string::size_type pos, start;
   string pfx;
   bool last_seg;
@@ -385,7 +392,7 @@ filesystem_path::branch_path () const
   if (is_root () && is_complete ())
     return *this;
 
-  const string &sep = get_path_separator ();
+  const string &sep = get_directory_separator ();
   string::size_type pos = path.rfind (sep);
   if (pos == string::npos) {
     return filesystem_path (".");

@@ -290,7 +290,6 @@ example_13(Zorba* aZorba)
   XQuery_t lQuery = aZorba->createQuery();
   lQuery->setTimeout(1);
 
-#if 0
   try 
   {
     lQuery->compile("while (fn:true()) {()};");
@@ -301,7 +300,6 @@ example_13(Zorba* aZorba)
     std::cout << "query interrputed after 1 second" << std::endl;
     return true;
   }
-#endif
 
   return false;
 }

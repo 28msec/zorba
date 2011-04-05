@@ -1405,9 +1405,9 @@ void StaticContextImpl::setModulePaths(const std::vector<String>& aModulePaths)
       {
         lModulePaths.push_back(Unmarshaller::getInternalString(*lIter).c_str());
         std::string& lPath = lModulePaths.back();
-        if (lPath.rfind(filesystem_path::get_path_separator()) != std::string::npos)
+        if (lPath.rfind(filesystem_path::get_directory_separator()) != std::string::npos)
         {
-          lPath.append(filesystem_path::get_path_separator());
+          lPath.append(filesystem_path::get_directory_separator());
         }
       }
 

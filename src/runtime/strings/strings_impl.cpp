@@ -661,12 +661,12 @@ bool NormalizeUnicodeIterator::nextImpl(
     success = utf8::normalize(resStr, normType, &resStr);
     ZORBA_ASSERT(success);
 #endif//#ifndef ZORBA_NO_UNICODE
-    STACK_PUSH( GENV_ITEMFACTORY->createString(result, resStr), state );
+    STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state );
   }
   else
   {
     // must push empty string due to return type of function
-    STACK_PUSH( GENV_ITEMFACTORY->createString(result, resStr), state);
+    STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state);
   }
   
   STACK_END (state);
@@ -1588,7 +1588,7 @@ bool StringMaterializeIterator::nextImpl(
     lString = item->getString();
     STACK_PUSH(GENV_ITEMFACTORY->createString(result, lString), state);
   } else {
-    STACK_PUSH(result, state);
+    STACK_PUSH(result != 0 , state);
   }
 
   STACK_END(state);

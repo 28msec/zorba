@@ -65,7 +65,7 @@ const char *copyright_str =
   "Copyright 2006-2009 The FLWOR Foundation.\n"
   "License: Apache License 2.0: <http://www.apache.org/licenses/LICENSE-2.0>";
 
-#define PATH_SEP (zorba::filesystem_path::get_path_separator ())
+#define PATH_SEP (zorba::filesystem_path::get_directory_separator ())
 
 #ifndef ZORBA_NO_FULL_TEXT
 ZorbaCMDFullTextURIResolver theStopWordsResolver;

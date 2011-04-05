@@ -32,21 +32,18 @@ ELSE(NOT ZORBA_WITH_FILE_ACCESS)
   )
   SET_TARGET_PROPERTIES(xqdoc PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD 1)
 
-  ADD_TEST(doc/stress_tests/make_xqdoc
-      ${ZORBA_EXE_SCRIPT}
-      --omit-xml-declaration
-      -f
-      -q "${CMAKE_CURRENT_SOURCE_DIR}/src/xqdoc-main.xq"
-      -e "modulePaths:=${CMAKE_SOURCE_DIR}/modules"
-      -e "xhtmlRequisitesPath:=${CMAKE_CURRENT_SOURCE_DIR}"
-      -e "xqdocBuildPath:=${CMAKE_CURRENT_BINARY_DIR}"
-      -e "examplePath:=${CMAKE_SOURCE_DIR}/test"
-      -e "zorbaVersion:=${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}"
-      --module-path "${CMAKE_CURRENT_SOURCE_DIR}/src")
-
-  IF(WIN32)
-    EXPECTED_FAILURE(doc/stress_tests/make_xqdoc 3276394)
-  ENDIF(WIN32)
+  # Uncomment this when bug #3276394 is fixed
+  #ADD_TEST(doc/stress_tests/make_xqdoc
+  #    ${ZORBA_EXE_SCRIPT}
+  #    --omit-xml-declaration
+  #    -f
+  #    -q "${CMAKE_CURRENT_SOURCE_DIR}/src/xqdoc-main.xq"
+  #    -e "modulePaths:=${CMAKE_SOURCE_DIR}/modules"
+  #    -e "xhtmlRequisitesPath:=${CMAKE_CURRENT_SOURCE_DIR}"
+  #    -e "xqdocBuildPath:=${CMAKE_CURRENT_BINARY_DIR}"
+  #    -e "examplePath:=${CMAKE_SOURCE_DIR}/test"
+  #    -e "zorbaVersion:=${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}"
+  #    --module-path "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
   # Add the modules_svg command for which a working zorba cmd is required.
   ADD_CUSTOM_TARGET(modules_svg

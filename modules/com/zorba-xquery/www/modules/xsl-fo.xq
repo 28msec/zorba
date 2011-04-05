@@ -29,6 +29,8 @@
  :)
 module namespace xsl-fo = "http://www.zorba-xquery.com/modules/xsl-fo";
 
+import module namespace file = "http://www.zorba-xquery.com/modules/file";
+
 (:~
  : This is the name of the error which gets thrown, if zorba is unable
  : to start a JVM.
@@ -101,7 +103,7 @@ declare variable $xsl-fo:TIFF as xs:string := "image/tiff";
  : @error JAVA-EXCEPTION If Apache FOP throws an exception - i.e. if the input format is not correct/supported.
  :)
 declare function xsl-fo:generator($output-format as xs:string, $xsl-fo-document as node(), $classpath as xs:string+) as xs:base64Binary {
-  let $dir-separator as xs:string := xsl-fo:path-separator()
+  let $dir-separator as xs:string := file:path-separator1()
   return xsl-fo:generator-impl($output-format, $xsl-fo-document, fn:string-join($classpath, $dir-separator))
 };
 
@@ -132,13 +134,6 @@ declare function xsl-fo:generator($output-format as xs:string, $xsl-fo-document 
       fn:error(fn:QName('http://www.zorba-xquery.com', fn:substring-before($errdesc, '|')), fn:substring-after($errdesc, '|'))
     }
 };
-
-(:~
- : WARNING: This is an internally used function and will not be available for future versions of Sausalito. Do not use this
- : function!
- : @return The path separator of the OS - so ';' on Windows and ':' on Linux and Mac OS X
- :)
-declare %private function xsl-fo:path-separator() as xs:string external;
 
 (:~
  : WARNING: This is an internally used function and will not be available for future versions of Sausalito. Do not use this

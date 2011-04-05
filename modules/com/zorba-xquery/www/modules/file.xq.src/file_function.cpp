@@ -128,8 +128,13 @@ FileFunction::getFilePathString(
 }
 
 String
-FileFunction::pathSeparator() {
-  return File::getPathSeparator();
+FileFunction::directorySeparator() {
+  return File::getDirectorySeparator();
+}
+
+String
+FileFunction::pathSeparator1() {
+  return File::getPathSeparator1();
 }
 
 String
@@ -269,7 +274,7 @@ WriterFileFunction::evaluate(
   File_t lFile = File::createFile(lFileStr.c_str());
 
   if (lFile->isDirectory()) {
-    throw XQUERY_EXCEPTION(XPTY0004, ERROR_PARAMS( "The file path denotes an existing directory: " + lFile->getFilePath() ) );
+    error(/* FOFL0004, "The path denotes an existing directory: " + lFile->getFilePath() */);
   }
 
   bool lBinary = isBinary();
@@ -278,7 +283,7 @@ WriterFileFunction::evaluate(
   // throw an error if the file exists and we don't want to overwrite,
   // but if we append, we don't care because we always write
   if (!lAppend && lFile->exists() && aArgs.size() == 3 && !getOneBooleanArg(aArgs, 2)) {
-    throw XQUERY_EXCEPTION(XPTY0004, ERROR_PARAMS("The file already exists: " + lFile->getFilePath()) );
+    error(/* FOFL0002, "The file already exists: " + lFile->getFilePath() */);
   }
 
   // open the output stream in the desired write mode

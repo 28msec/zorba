@@ -15,10 +15,10 @@ let $expected-file := fn:concat($source-dir, '/test/rbkt/ExpCompilerResults/Iter
 let $result-file := fn:concat($binary-dir, '/test/rbkt/CompilerResults/IterPlan/', $cut-path, '.iter')
 (: query file :)
 let $query-file := fn:concat($source-dir, '/test/rbkt/Queries/', $cut-path, '.xq')
-let $apitest-path-normalized := file:normalize-path($apitest-path)
-let $expected-file-normalized := file:normalize-path($expected-file)
-let $result-file-normalized := file:normalize-path($result-file)
-let $query-file-normalized := file:normalize-path($query-file)
+let $apitest-path-normalized := file:path-to-native($apitest-path)
+let $expected-file-normalized := file:path-to-native($expected-file)
+let $result-file-normalized := file:path-to-native($result-file)
+let $query-file-normalized := file:path-to-native($query-file)
 let $params :=
   <output:serialization-parameters>
     <output:method value="text"/>
@@ -37,7 +37,7 @@ return
     let $expected-text as xs:string := file:read-text($expected-file-normalized)
     return
       block {
-        file:create-directory(file:dirname($result-file-normalized));
+        file:create-directory(file:dir-name($result-file-normalized), fn:true());
         file:write($result-file-normalized, $query-stdout, $params);
         (
           (: compare generated iterator tree with expected result :)

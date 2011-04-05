@@ -8,7 +8,7 @@ declare function commons:error($messages as xs:string*) as xs:string* {
   "
 ************************************************************************
 ERROR:
-  Location:", file:path-to-full-path("."), "
+  Location:", file:resolve-path("."), "
   Cause:",
   $messages,
   "

@@ -15,32 +15,30 @@ declare variable $modulesPath as xs:string external;
 
 (:~
  : This function generates the XQDoc XML for all the modules found in
- : $modulesPath : and write the resulting XML documents in $targetPath.
- : The hierarchy is preserved. 
+ : <pre>$modulesPath</pre> and tests it for validity.
  :
  : @param $modulePath where to search for modules recursively.
-:)
-declare sequential function local:testXQDoc($modulesPath as xs:string) {
-    for $file in file:files($modulesPath)
-    let $filePath := concat($modulesPath, "/", $file)
-    return
-        if (file:is-directory($filePath))
-        then
-            local:testXQDoc($filePath)
-        else if (matches($file, "\.xq$")) then (
-            let $xqdoc := xqd:xqdoc(file:path-to-uri($filePath))/self::xqdoc:xqdoc
-            return (
-                local:test-module($xqdoc),
-                local:test-functions($xqdoc),
-                local:test-variables($xqdoc)
-            )            
-        )
-        else ()
+ :)
+declare sequential function local:testXQDoc($modulesPath as xs:string)
+{
+  for $file in file:list($modulesPath, fn:true(), "*.xq")
+  let $filePath := fn:concat($modulesPath, "/", $file)
+  return
+    try {
+      let $xqdoc := xqd:xqdoc(file:path-to-uri($filePath))/self::xqdoc:xqdoc
+      return (
+        local:test-module($xqdoc),
+        local:test-functions($xqdoc),
+        local:test-variables($xqdoc)
+      )
+    } catch * ($ec, $em){
+      exit returning fn:concat("ERROR: ", $ec, " Message: ", $em, "
+processing file: ", $filePath)
+    }
 };
 
-declare function local:test-module(
-  $xqdoc as element(xqdoc:xqdoc)
-) as xs:string* {
+declare function local:test-module($xqdoc as element(xqdoc:xqdoc)) as xs:string*
+{
   let $module := $xqdoc/xqdoc:module/xqdoc:comment
   let $hasDescription := exists($module/xqdoc:description)
   let $hasAuthor := exists($module/xqdoc:author)
@@ -51,13 +49,15 @@ declare function local:test-module(
       concat("ERROR: Missing module description
   Module: ", $xqdoc/xqdoc:module/xqdoc:uri)
     else
-      () ,
+      ()
+    ,
     (: Test for module author :)
-    if (not($hasAuthor) and not($xqdoc/xqdoc:module/xqdoc:uri eq "http://www.functx.com/")) then
-      concat("ERROR: Missing module author name
+    if (fn:not($hasAuthor) and fn:not($xqdoc/xqdoc:module/xqdoc:uri eq "http://www.functx.com/")) then
+      fn:concat("ERROR: Missing module author name
   Module: ", $xqdoc/xqdoc:module/xqdoc:uri)
     else
-      () )
+      ()
+  )
 };
 
 declare function local:test-functions(

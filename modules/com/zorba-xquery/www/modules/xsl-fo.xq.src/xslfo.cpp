@@ -81,38 +81,18 @@ class FindApacheFopFunction : public PureStatelessExternalFunction {
     evaluate(const StatelessExternalFunction::Arguments_t& args) const;
 };
 
-class PathSeparatorFunction : public PureStatelessExternalFunction {
-  private:
-    const ExternalModule* theModule;
-    ItemFactory* theFactory;
-  public:
-    PathSeparatorFunction(const ExternalModule* aModule) :
-      theModule(aModule), theFactory(Zorba::getInstance(0)->getItemFactory()) {}
-
-  public:
-    virtual String getURI() const { return theModule->getURI(); }
-
-    virtual String getLocalName() const { return "path-separator"; }
-
-    virtual ItemSequence_t 
-    evaluate(const StatelessExternalFunction::Arguments_t& args) const;
-};
-
 class XSLFOModule : public ExternalModule {
   private:
     StatelessExternalFunction* generatePDF;
     StatelessExternalFunction* findFop;
-    StatelessExternalFunction* pathSeparator;
   public:
     XSLFOModule() :
       generatePDF(new GeneratePDFFunction(this)),
-      findFop(new FindApacheFopFunction(this)),
-      pathSeparator(new PathSeparatorFunction(this))
+      findFop(new FindApacheFopFunction(this))
   {}
     ~XSLFOModule() {
       delete generatePDF;
       delete findFop;
-      delete pathSeparator;
     }
 
     virtual String getURI() const { return XSL_MODULE_NAMESPACE; }
@@ -127,23 +107,10 @@ class XSLFOModule : public ExternalModule {
 StatelessExternalFunction* XSLFOModule::getExternalFunction(const String& localName) {
   if (localName == "generator-impl") {
     return generatePDF;
-  }
-  if (localName == "find-apache-fop") {
+  } else if (localName == "find-apache-fop") {
     return findFop;
   }
-  if (localName == "path-separator")
-    return pathSeparator;
   return 0;
-}
-
-ItemSequence_t PathSeparatorFunction::evaluate(const StatelessExternalFunction::Arguments_t& args) const
-{
-#ifdef WIN32
-  String lSeparator = ";";
-#else
-  String lSeparator = ":";
-#endif
-  return ItemSequence_t(new SingletonItemSequence(theFactory->createString(lSeparator)));
 }
 
 void FindApacheFopFunction::throwError(std::string aName) const {
@@ -152,7 +119,7 @@ void FindApacheFopFunction::throwError(std::string aName) const {
 
 ItemSequence_t FindApacheFopFunction::evaluate(const StatelessExternalFunction::Arguments_t& args) const
 {
-  std::string lPathSeparator(File::getPathSeparator());
+  std::string lDirectorySeparator(File::getDirectorySeparator());
   std::string lFopHome;
   {
     char* lFopHomeEnv = getenv("FOP_HOME");
@@ -214,11 +181,11 @@ ItemSequence_t FindApacheFopFunction::evaluate(const StatelessExternalFunction::
   {
     // Here we look for the fop.jar file, which should be either in $FOP_HOME/build or 
     // in the directory, where all jar files are.
-    lFopJarFile = lFopHome + lPathSeparator + "build" + lPathSeparator + "fop.jar";
+    lFopJarFile = lFopHome + lDirectorySeparator + "build" + lDirectorySeparator + "fop.jar";
     std::string lFopJarFile1 = lFopJarFile;
     File_t lJarFile = File::createFile(lFopJarFile);
     if (!lJarFile->exists()) {
-      lFopJarFile = lFopLibDir + lPathSeparator + "fop.jar";
+      lFopJarFile = lFopLibDir + lDirectorySeparator + "fop.jar";
       lJarFile = File::createFile(lFopJarFile);
       if (!lJarFile->exists()) {
         std::string errmsg = "Could not find fop.jar. If you are using Ubuntu or Mac OS X, please make sure, ";
@@ -237,7 +204,7 @@ ItemSequence_t FindApacheFopFunction::evaluate(const StatelessExternalFunction::
   {
     std::string lJarDir = lFopLibDir;
     if (lFopHome != "")
-      lJarDir = lFopHome + lPathSeparator + "lib";
+      lJarDir = lFopHome + lDirectorySeparator + "lib";
     // This is a list of all jar files, Apache Fop depends on.
     std::list<std::string> lDeps;
     lDeps.push_back("avalon-framework");
@@ -260,7 +227,7 @@ ItemSequence_t FindApacheFopFunction::evaluate(const StatelessExternalFunction::
       for (std::list<std::string>::iterator i = lDeps.begin(); i != lDeps.end(); ++i) {
         std::string lSub = lFile.substr(0, i->size());
         if (lSub == *i) {
-          std::string lFull = lJarDir + lPathSeparator + lFile;
+          std::string lFull = lJarDir + lDirectorySeparator + lFile;
           File_t f = File::createFile(lFull);
           if (f->exists() && !f->isDirectory()) {
             lClassPath.push_back(theFactory->createString(lFull));

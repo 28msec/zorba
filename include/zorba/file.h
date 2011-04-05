@@ -52,7 +52,9 @@ namespace zorba {
 
       static File_t createFile(const std::string& path);
 
-      static const char* getPathSeparator();
+      static const char* getDirectorySeparator();
+
+      static const char* getPathSeparator1();
 
     public: // type, enums
 
@@ -81,7 +83,7 @@ namespace zorba {
 
       virtual FileSize_t getSize() const = 0;
 
-      virtual void mkdir(bool recursive = true, bool failIfExists = false) = 0;
+      virtual void mkdir(bool recursive) = 0;
 
       virtual DirectoryIterator_t files() const = 0;
 

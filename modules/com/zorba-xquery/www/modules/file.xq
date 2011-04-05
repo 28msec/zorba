@@ -78,8 +78,10 @@ import schema namespace output = "http://www.w3.org/2010/xslt-xquery-serializati
  : @param $file The path/URI of the file to write the content to.
  : @param $content The content to be serialized to the file.
  : @param $serializer-params Parameter to control the serialization of the
- :        content.
+ :    content.
  : @return The empty sequence.
+ : @error FOFL0004 If <pre>$file</pre> points to a directory.
+ : @error FOFL0000 If any other error occurs.
  :)
 declare sequential function file:append(
   $file as xs:string,
@@ -99,6 +101,8 @@ declare sequential function file:append(
  : @param $file The path/URI of the file to write the content to.
  : @param $content The content to be serialized to the file.
  : @return The empty sequence.
+ : @error FOFL0004 If <pre>$file</pre> points to a directory.
+ : @error FOFL0000 If any other error occurs.
  :)
 declare sequential function file:append-binary(
   $file as xs:string,
@@ -108,12 +112,11 @@ declare sequential function file:append-binary(
 (:~
  : Appends a sequence of string items to a file.
  :
- : The operation is equivalent to calling:
- : <pre>file:append-text($file, $content, fn:true())</pre>.
- :
  : @param $file The path/URI of the file to write the content to.
  : @param $content The content to be serialized to the file.
  : @return The empty sequence.
+ : @error FOFL0004 If <pre>$file</pre> points to a directory.
+ : @error FOFL0000 If any other error occurs.
  :)
 declare sequential function file:append-text(
   $file as xs:string,
@@ -131,6 +134,14 @@ declare sequential function file:append-text(
  : @param $sourceFile The path/URI of the file to copy.
  : @param $destination The detination path/URI.
  : @return The empty sequence.
+ : @error FOFL0001 If the <pre>$source</pre> path does not exist.
+ : @error FOFL0002 If the <pre>$overwrite</pre> parameter is missing or it
+ :    evaluates to <pre>fn:false()</pre>, and <pre>$destination</pre> points
+ :    to an existing file.
+ : @error FOFL0003 If <pre>$destination</pre> does not exist and it's
+ :    parent directory does not exist either.
+ : @error FOFL0004 If <pre>$source</pre> denotes an existing directory.
+ : @error FOFL0000 If any other error occurs.
  :)
 declare sequential function file:copy(
   $sourceFile as xs:string,
@@ -151,6 +162,14 @@ declare sequential function file:copy(
  : @param $overwrite Flag to control if the operation should overwrite the
  :        destination file.
  : @return The empty sequence.
+ : @error FOFL0001 If the <pre>$source</pre> path does not exist.
+ : @error FOFL0002 If the <pre>$overwrite</pre> parameter is missing or it
+ :    evaluates to <pre>fn:false()</pre>, and <pre>$destination</pre> points
+ :    to an existing file.
+ : @error FOFL0003 If <pre>$destination</pre> does not exist and it's
+ :    parent directory does not exist either.
+ : @error FOFL0004 If <pre>$source</pre> denotes an existing directory.
+ : @error FOFL0000 If any other error occurs.
  :)
 declare sequential function file:copy(
   $sourceFile as xs:string,
@@ -171,6 +190,16 @@ declare sequential function file:copy(
  :        files that already exist at destination.
  : @param $recursive If the operation should recursively copy a directory.
  : @return The empty sequence.
+ : @error FOFL0001 If the <pre>$source</pre> path does not exist.
+ : @error FOFL0002 If the <pre>$overwrite</pre> parameter is missing or it
+ :    evaluates to <pre>fn:false()</pre>, and <pre>$destination</pre> points
+ :    to an existing file.
+ : @error FOFL0003 If <pre>$destination</pre> does not exist and it's
+ :    parent directory does not exist either.
+ : @error FOFL0004 If the <pre>$recursive</pre> parameter evaluates to
+ :    <pre>fn:false()</pre>, and <pre>$source</pre> denotes an existing
+ :    directory.
+ : @error FOFL0000 If any other error occurs.
  :)
 declare sequential function file:copy(
   $source as xs:string,
@@ -196,15 +225,15 @@ declare sequential function file:copy(
     (: the destination does not exist, that means the copied directory is renamed :)
     else
       (: but only if it's parent directory exists :)
-      let $dir := file:dirname($destination)
+      let $dir := file:dir-name($destination)
       return
         if (file:is-directory($dir)) then
           block {
             file:create-directory($destination, fn:true());
           
-            for $item in file:files($source)
-            let $fullSrcPath := fn:concat($source, file:path-separator(), $item)
-            let $fullDestPath := fn:concat($destination, file:path-separator(), $item)
+            for $item in file:list($source)
+            let $fullSrcPath := fn:concat($source, file:directory-separator(), $item)
+            let $fullDestPath := fn:concat($destination, file:directory-separator(), $item)
             return
               if (file:is-directory($fullSrcPath)) then
                 file:copy-directory($fullSrcPath, $fullDestPath, $overwrite)
@@ -219,82 +248,76 @@ declare sequential function file:copy(
  : Creates a directory.
  :
  : The operation is equivalent to calling:
- : <pre>file:create-directory($dir, fn:true(), fn:false())</pre>.
+ : <pre>file:create-directory($dir, fn:false())</pre>.
  :
  : @param $dir The path/URI denoting the directory to be created.
  : @return The empty sequence.
+ : @error FOFL0001 If more than one directory of the path needs to be created.
+ : @error FOFL0002 If a file already exists at the location pointed by
+ :    <pre>$dir</pre>.
+ : @error FOFL0000 If any other error occurs.
  :)
 declare sequential function file:create-directory(
   $dir as xs:string) as empty-sequence()
 {
-  file:create-directory($dir, fn:true(), fn:false())
+  file:create-directory($dir, fn:false())
 };
 
 (:~
- : Creates a directory. If the $recursive argument evaluates to
+ : Creates a directory. If the <pre>$recursive</pre> argument evaluates to
  : <pre>fn:true()</pre> all the missing parent directories from the path are
  : also created.
  :
- : The operation is equivalent to calling:
- : <pre>file:create-directory($dir, $recursive, fn:false())</pre>.
- :
  : @param $dir The path/URI denoting the directory to be created.
  : @param $recursive If the operation should create all the missing parrent
- :	      directories.
+ :    directories.
  : @return The empty sequence.
+ : @error FOFL0001 If <pre>$recursive</pre> evaluates to <pre>fn:false()</pre>,
+ :    and if more than one directory of the path needs to be created.
+ : @error FOFL0002 If a file already exists at the location pointed by
+ :    <pre>$dir</pre> or at any parent location in case of a recursive
+ :    operation.
+ : @error FOFL0000 If any other error occurs.
  :)
 declare sequential function file:create-directory(
   $dir as xs:string,
-  $recursive as xs:boolean) as empty-sequence()
-{
-  file:create-directory($dir, $recursive, fn:false())
-};
-
-(:~
- : Creates a directory. If the $failIfExists argument  evaluates to
- : <pre>fn:true()</pre> the operation will fail if the firectory already
- : exists.
- :
- : @param $dir The path/URI denoting the directory to be created.
- : @param $recursive If the operation should create all the missing parrent
- :        directories.
- : @param $failIfExists Flag indicating whether the directory must be created or not.
- : @return The empty sequence.
- :)
-declare sequential function file:create-directory(
-  $dir as xs:string,
-  $recursive as xs:boolean,
-  $failIfExists as xs:boolean
-) as empty-sequence() external;
+  $recursive as xs:boolean) as empty-sequence() external;
 
 (:~
  : Deletes a file or an empty directory from the file system.
  :
- : @param $fileOrDir The path/URI of the file or directory to delete.
+ : @param $path The path/URI of the file or directory to delete.
  : @return The empty sequence.
+ : @error FOFL0001 If the <pre>$path</pre> path does not exist.
+ : @error FOFL0005 If <pre>$path</pre> points an existing directory.
+ : @error FOFL0000 If any other error occurs.
  :)
 declare sequential function file:delete(
-  $fileOrDir as xs:string
+  $path as xs:string
 ) as empty-sequence() external;
 
 (:~
- : Deletes a file or a directory from the file system. If $fileOrDir denotes a
+ : Deletes a file or a directory from the file system. If $path denotes a
  : directory and $recursive evaluates to <pre>fn:true()</pre>, the directory
  : will be deleted recursively.
  :
- : @param $fileOrDir The path/URI of the file or directory to delete.
+ : @param $path The path/URI of the file or directory to delete.
  : @param $recursive If the operation should recursively delete the given
  :	      directory.
  : @return The empty sequence.
+ : @error FOFL0001 If the <pre>$path</pre> path does not exist.
+ : @error FOFL0005 If <pre>$recursive</pre> evaluates to <pre>fn:false()</pre>
+ :    and <pre>$path</pre> points an existing directory.
+ : @error FOFL0000 If any other error occurs.
  :)
 declare sequential function file:delete(
-  $fileOrDir as xs:string,
+  $path as xs:string,
   $recursive as xs:boolean
 ) as empty-sequence()
 {
   if ($recursive) then
-    for $item in file:files($fileOrDir)
-    let $fullPath := fn:concat($fileOrDir, file:path-separator(), $item)
+    for $item in file:list($path)
+    let $fullPath := fn:concat($path, file:directory-separator(), $item)
     return
       if (file:is-directory($fullPath)) then
         file:delete($fullPath, fn:true())
@@ -303,17 +326,17 @@ declare sequential function file:delete(
   else
     ();
     
-  file:delete($fileOrDir);
+  file:delete($path);
 };
 
 (:~
  : Tests if a path/URI is already used in the file system.
  :
- : @param $fileOrDir The path/URI to test for existance.
+ : @param $path The path/URI to test for existance.
  : @return true if the path/URI points to an existing file system item.
  :)
 declare %nondeterministic function file:exists(
-  $fileOrDir as xs:string
+  $path as xs:string
 ) as xs:boolean external;
 
 (:~
@@ -338,9 +361,7 @@ declare %nondeterministic function file:is-file(
 ) as xs:boolean external;
 
 (:~
- : Moves a file given a source and a destination paths/URIs. The operation
- : fails if the source path/URI does not point to a file or the destination
- : path/URI is already used by a file.
+ : Moves a file or directory given a source and a destination paths/URIs.
  :
  : The operation is equivalent to calling:
  : <pre>file:move($sourceFile, $destination, fn:false())</pre>.
@@ -348,6 +369,11 @@ declare %nondeterministic function file:is-file(
  : @param $sourceFile The path/URI of the file to move.
  : @param $destination The detination path/URI.
  : @return The empty sequence.
+ : @error FOFL0001 If the <pre>$source</pre> path does not exist.
+ : @error FOFL0002 If <pre>$destination</pre> points to an existing file.
+ : @error FOFL0003 If <pre>$destination</pre> does not exist and it's parent
+ :    directory does not exist either.
+ : @error FOFL0000 If any other error occurs.
  :)
 declare sequential function file:move(
   $sourceFile as xs:string,
@@ -358,49 +384,32 @@ declare sequential function file:move(
 };
 
 (:~
- : Moves a file given a source and a destination paths/URIs. The operation
- : fails if the source path/URI does not point to a file or the destination
- : path/URI is already used by a file and the overwrite flag evaluates to
- : <pre>fn:false()</pre>.
- :
- : @param $sourceFile The path/URI of the file to move.
- : @param $destination The destination path/URI.
- : @param $overwrite Flag to control if the operation should overwrite the
- :        destination file.
- : @return The empty sequence.
- :)
-declare sequential function file:move(
-  $sourceFile as xs:string,
-  $destination as xs:string,
-  $overwrite as xs:boolean
-) as empty-sequence()
-{
-  file:move($sourceFile, $destination, $overwrite, fn:false())
-};
-
-(:~
  : Moves a file or directory given a source and a destination paths/URIs.
- : The operation fails if the source path/URI does not point to a file and the
- : recursive flag evaluates to <pre>fn:false()</pre>. The operation also fails
- : if in at any time one destination file already exists and the overwrite flag
- : evaluates to <pre>fn:false()</pre>.
  :
  : @param $source The path/URI of the file or directory to move.
  : @param $destination The destination path/URI.
- : @param $overwrite Flag to control if the operation should overwrite any
- :        files that already exist at destination.
- : @param $recursive If the operation should recursively copy a directory.
+ : @param $overwrite Flag to control if the operation should overwrite the
+ :    destination file.
  : @return The empty sequence.
+ : @error FOFL0001 If the <pre>$source</pre> path does not exist.
+ : @error FOFL0002 If:
+ :    <ul>
+ :      <li><pre>$source</pre> points to a file, <pre>$destination</pre> points to an existing file, and
+ :        the <pre>$overwrite</pre> evaluates to <pre>fn:false()</pre></li>
+ :      <li><pre>$source</pre> points to a directory, <pre>$destination</pre> points to an existing file</li>
+ :    </ul>
+ : @error FOFL0003 If <pre>$destination</pre> does not exist and it's parent
+ :    directory does not exist either.
+ : @error FOFL0000 If any other error occurs.
  :)
 declare sequential function file:move(
   $source as xs:string,
   $destination as xs:string,
-  $overwrite as xs:boolean,
-  $recursive as xs:boolean
+  $overwrite as xs:boolean
 ) as empty-sequence()
 {
-  file:copy($source, $destination, $overwrite, $recursive);
-  file:delete($source, $recursive);
+  file:copy($source, $destination, $overwrite, fn:true());
+  file:delete($source, fn:true());
 };
 
 (:~
@@ -539,15 +548,15 @@ declare %private sequential function file:copy-directory(
   $overwrite as xs:boolean
 ) as empty-sequence()
 {
-  let $name := file:basename($sourceDir)
-  let $destDir := fn:concat($destinationDir, file:path-separator(), $name)
+  let $name := file:base-name($sourceDir)
+  let $destDir := fn:concat($destinationDir, file:directory-separator(), $name)
   return
     block {
       file:create-directory($destDir);
 
-      for $item in file:files($sourceDir)
-      let $fullSrcPath := fn:concat($sourceDir, file:path-separator(), $item)
-      let $fullDestPath := fn:concat($destDir, file:path-separator(), $item)
+      for $item in file:list($sourceDir)
+      let $fullSrcPath := fn:concat($sourceDir, file:directory-separator(), $item)
+      let $fullDestPath := fn:concat($destDir, file:directory-separator(), $item)
       return
         if (file:is-directory($fullSrcPath)) then
           file:copy-directory($fullSrcPath, $fullDestPath, $overwrite)
@@ -667,42 +676,47 @@ declare sequential function file:write-text(
   $overwrite as xs:boolean
 ) as empty-sequence() external;
 
-
-(: ********************************************************************** :)
-(: The functions above have been updated to the new file API spec         :)
-(: ********************************************************************** :)
+(:~
+ : Lists the file system items in a certain directory.
+ :
+ : The operation is equivalent to calling:
+ : <pre>file:list($dir, fn:false())</pre>.
+ :
+ : @param $dir The path/URI of the directory to retrieve the children from.
+ : @return The sequence of names of the direct children.
+ :)
+declare %nondeterministic function file:list(
+  $dir as xs:string
+) as xs:string* external;
 
 (:~
  : Lists the file system items in a certain directory. The order of the items
  : in the resulting sequence is not defined. The "." and ".." items are not
  : returned. The returned paths are relative to the provided <pre>$path</pre>.
  :
- : @param $path The path/URI to retrieve the children from.
- : @return The sequence of names of the direct children.
- : @error An error is thrown if IO or Security problems occur.
- :)
-declare %nondeterministic function file:files(
-  $path as xs:string
-) as xs:string* external;
-
-(:~
- : Lists all files matching the given pattern in a given directory. The order
- : of the items in the resulting sequence is not defined. The "." and ".."
- : items are not considered for the match. The returned paths are relative to
- : the provided <pre>$path</pre>.
- :
- : The operation is equivalent to calling:
- : <pre>file:append-text($file, $content, fn:true())</pre>.
+ : If <pre>$recursive</pre> evaluates to <pre>fn:true()</pre>, the operation
+ : will recurse in the subdirectories.
  : 
- : @param $path The path/URI to retrieve the children from.
- : @param $pattern The file name condition to be checked.
- : @return A sequence of file names matching the pattern.
+ : @param $dir The path/URI to retrieve the children from.
+ : @param $recursive A boolean flag indicating whether the operation should be
+ :    performed recursively.
+ : @return A sequence of relative paths.
  :)
-declare function file:files(
+declare function file:list(
   $path as xs:string,
-  $pattern as xs:string
-) as xs:string* {
-  file:files($path, $pattern, fn:false())
+  $recursive as xs:boolean
+) as xs:string*
+{
+  for $f in file:list($path)
+  let $full := fn:concat($path, file:directory-separator(), $f)
+  return (
+    $f,
+    if ($recursive and file:is-directory($full)) then
+      for $child in file:list($full, $recursive)
+      return fn:concat($f, file:directory-separator(), $child)
+    else
+      ()
+  )
 };
 
 (:~
@@ -712,116 +726,218 @@ declare function file:files(
  : The file paths are relative to the provided $path.
  : 
  : @param $path The path/URI to retrieve the children from.
+ : @param $recursive A boolean flag indicating whether the operation should be
+ :    performed recursively.
  : @param $pattern The file name condition to be checked.
- : @param $recursive A boolean flag indicating whether directories
- :        should be searched recursively.
  : @return A sequence of file names matching the pattern.
- : @example rbkt/Queries/zorba/file/files_pattern1.xq
- : @example rbkt/Queries/zorba/file/files_pattern2.xq
- : @example rbkt/Queries/zorba/file/files_pattern_rec1.xq
- : @example rbkt/Queries/zorba/file/files_pattern_rec2.xq
  :)
-declare function file:files(
+declare function file:list(
   $path as xs:string,
-  $pattern as xs:string,
-  $recursive as xs:boolean
+  $recursive as xs:boolean,
+  $pattern as xs:string
 ) as xs:string* {
-  for $f in file:files($path)
-  let $full := fn:concat($path, file:path-separator(), $f)
-  let $is_directory := file:is-directory($full)
-  let $result :=
+  for $file in file:list($path, $recursive)
+  let $name := fn:tokenize($file, fn:concat("\", file:directory-separator()))[fn:last()]
+  return
+    if (fn:matches($name, file:glob-to-regex($pattern))) then
+      $file
+    else
+      ()
+};
+
+(:~
+ : A helper function that performs a trivial (not complete) glob to regex
+ : pattern translation.
+ : 
+ : @param $pattern The glob pattern.
+ : @return A regex pattern coresponding to the glob pattern provided.
+ :)
+declare function file:glob-to-regex(
+  $pattern as xs:string
+) {
+  fn:codepoints-to-string(
     (
-      if (fn:matches($f, $pattern))
-      then $f
-      else ()
+      94                          (: prepend ^ :)
       ,
-      if ($recursive and $is_directory)
-      then
-        for $child in file:files($full, $pattern, $recursive)
-        return fn:concat($f, file:path-separator(), $child)
-      else ()
+      for $char in fn:string-to-codepoints($pattern)
+      return
+        switch ($char)
+        case 63 return 46         (: ? -> . :)
+        case 46 return (92, 46)   (: . -> \. :)
+        case 42 return (46, 42)   (: * -> .* :)
+        default return $char
+      ,
+      36)                         (: append $ :)
   )
-  return $result
 };
 
 (:~
  : Retrieves the timestamp of the last modification of the file system item
  : pointed by the path/URI.
  :
- : @param $fileOrDir The file system item to read the last modification
- :        timestamp from.
+ : @param $path The file system item to read the last modification
+ :    timestamp from.
  : @return The date and time of the last modification of the item.
- : @error An error is thrown if the provided path does not point to an existing
- :        item or if IO or Security problems occur.
+ : @error FOFL0001 If the <pre>$path</pre> does not exist.
+ : @error FOFL0000 If any other error occurs.
  :)
 declare %nondeterministic function file:last-modified(
-  $fileOrDir as xs:string
+  $path as xs:string
 ) as xs:dateTime external;
 
 (:~
- : This function returns the file path separator used by this operating system.
+ : Retrieves the size of a file.
  :
- : @return The operating system file path separator.
+ : @param $file The file get the size.
+ : @return An integer representing the size in bytes of the file.
+ : @error FOFL0001 If the <pre>$file</pre> does not exist.
+ : @error FOFL0001 If the <pre>$file</pre> points to a directory.
+ : @error FOFL0000 If any other error occurs.
  :)
-declare function file:path-separator() as xs:string external;
+declare %nondeterministic function file:size(
+  $file as xs:string
+) as xs:integer external;
 
 (:~
- : Transforms a path/URI into a full operating system path. The URI must have
- : the file:// scheme. The operation is performed redardless the existence
- : of the provided path.
+ : This function returns the value of the operating system specific directory
+ : separator. For example, <pre>/</pre> on UNIX-based systems and <pre>\</pre>
+ : on Windows systems.
+ :
+ : @return The operating system specific directory separator.
+ :)
+declare function file:directory-separator() as xs:string external;
+
+(:~
+ : This function returns the value of the operating system specific path
+ : separator. For example, <pre>:</pre> on UNIX-based systems and <pre>;</pre>
+ : on Windows systems.
+ :
+ : @return The operating system specific path separator.
+ :)
+declare function file:path-separator1() as xs:string external;
+
+(:~
+ : Transforms a relative path/URI into an absolute operating system path by
+ : resolving it against the current working directory.
+ :
+ : No path existence check is made.
  :
  : @param $path The path/URI to transform.
  : @return The operating system file path.
  :)
-declare function file:path-to-full-path(
+declare function file:resolve-path(
   $path as xs:string
 ) as xs:string external;
 
 (:~
- : Transforms a file system path into a URI with the file:// scheme. No checks
- : are performed redardless of the existence of the provided file system path.
+ : Transforms a file system path into a URI with the file:// scheme. If the
+ : path is relative, it is first resolved against the current working
+ : directory.
+ :
+ : No path existence check is made.
  :
  : @param $path The path to transform.
- : @return The file URI corresponding to the provided path.
+ : @return The file URI corresponding to <pre>path</pre>.
  :)
 declare function file:path-to-uri(
   $path as xs:string
 ) as xs:anyURI external;
 
 (:~
- : file:normalize-path takes a path as a uri, a absolute path or relative path
- : and normalizes it to the form used on the running platform.
+ : Transforms a URI, an absolute path, or relative path to a native path on the
+ : running platform.
+ :
+ : No path existence check is made.
  :
  : @param $path The uri or path to normalize.
- : @return The normalization of $path.
+ : @return The native path corresponding to <pre>$path</pre>.
  :)
-declare function file:normalize-path($path as xs:string) as xs:string external;
+declare function file:path-to-native($path as xs:string) as xs:string external;
 
 (:~
- : The dirname function is the converse of basename; it returns a string of
- : the parent directory of the pathname pointed to by path. Any
- : trailing '/' and '\' characters - depending on the operating system - are
- : not counted as part of the directory name. If path is the empty string or contains no `/'
- : characters, dirname returns the string ".", signifying the current directory.
+ : Returns the last component from the <pre>$path</pre>, deleting any
+ : trailing directory-separator characters. If <pre>$path</pre> consists
+ : entirely directory-separator characters, the empty string is returned. If
+ : <pre>$path</pre> is the empty string, the string <pre>"."</pre> is returned,
+ : signifying the current directory.
  :
- : @param $file The filename, of which the dirname should be get.
+ : No path existence check is made.
+ :
+ : @param $path A file path/URI.
+ : @return The base name of this file.
+ :)
+declare function file:base-name($path as xs:string) as xs:string
+{
+  let $delim := file:directory-separator()
+  let $delim-escaped := replace($delim, '(\.|\[|\]|\\|\||\-|\^|\$|\?|\*|\+|\{|\}|\(|\))','\\$1')
+  let $normalized-file := 
+    let $n := file:prepare-for-dirname-and-base-name($path)
+		return if ($delim eq "\" and matches($n, "^[a-zA-Z]:$")) then
+			concat($n, "\")
+		else $n
+  return
+    if (matches($path, concat("^", $delim-escaped, "+$"))) then
+      ""
+    else if (file:directory-separator() eq '\' and matches($path, "^[a-zA-Z]:\\?$")) then
+      ""
+    else if ($path eq "") then
+      "."
+    else
+      replace($normalized-file, concat("^.*", $delim-escaped), '')
+};
+
+(:~
+ : Returns the last component from the <pre>$path</pre>, deleting any
+ : trailing directory-separator characters and the <pre>$suffix</pre>. If path
+ : consists entirely directory-separator characters, the empty string is
+ : returned. If path is the empty string, the string <pre>"."</pre> is
+ : returned, signifying the current directory.
+ :
+ : No path existence check is made.
+ :
+ : The <pre>$suffix</pre> can be used for example to eliminate file extensions.
+ :
+ : @param $path A file path/URI.
+ : @param $suffix A suffix which should get deleted from the result.
+ : @return The base-name of $path with a deleted $suffix.
+ :)
+declare function file:base-name($path as xs:string, $suffix as xs:string) as xs:string
+{
+  let $res := file:base-name($path)
+  return
+    if (fn:ends-with($res, $suffix) and $res ne ".") then
+      fn:substring($res, 1, fn:string-length($suffix))
+    else
+      $res
+};
+
+(:~
+ : This function is the converse of <pre>file:base-name</pre>. It returns a
+ : string denoting the parent directory of the <pre>$path</pre>. Any trailing
+ : directory-separator characters are not counted as part of the directory
+ : name. If path is the empty string or contains no directory-separator string,
+ : <pre>"."</pre> is returned, signifying the current directory.
+ :
+ : No path existence check is made.
+ :
+ : @param $path The filename, of which the dirname should be get.
  : @return The name of the directory the file is in.
  :)
-declare function file:dirname($file as xs:string) as xs:string
+declare function file:dir-name($path as xs:string) as xs:string
 {
-  let $delim := file:path-separator()
+  let $delim := file:directory-separator()
   let $delim-escaped := replace($delim, '(\.|\[|\]|\\|\||\-|\^|\$|\?|\*|\+|\{|\}|\(|\))','\\$1')
-  let $normalized-file := file:prepare-for-dirname-and-basename($file)
+  let $normalized-file := file:prepare-for-dirname-and-base-name($path)
   return
-    if (matches($file, concat("^", $delim-escaped, "+$"))) then
+    if (matches($path, concat("^", $delim-escaped, "+$"))) then
       $delim
     else if ($normalized-file eq $delim) then
       $delim
-    else if (file:path-separator() eq '\' and matches($file, "^[a-zA-Z]:\\$")) then
-      $file
-    else if (file:path-separator() eq '\' and matches($normalized-file, "^[a-zA-Z]:$")) then
+    else if (file:directory-separator() eq '\' and matches($path, "^[a-zA-Z]:\\$")) then
+      $path
+    else if (file:directory-separator() eq '\' and matches($normalized-file, "^[a-zA-Z]:$")) then
       concat($normalized-file, '\')
-    else if ($file eq "") then
+    else if ($path eq "") then
       "."
     else if (matches($normalized-file, $delim-escaped)) then
       replace($normalized-file, concat('^(.*)', $delim-escaped,'.*'),
@@ -830,63 +946,15 @@ declare function file:dirname($file as xs:string) as xs:string
 };
 
 (:~
- : The basename function returns the last component from the pathname pointed to by path,
- : deleting any trailing '/' or '\' characters. If path consists entirely of '/' or '\' characters,
- : the empty string is returned. If path is the empty string, the
- : string "." is returned.
- : 
- :
- : @param $file A file URI/path.
- : @return The base name of this file.
- :)
-declare function file:basename($file as xs:string) as xs:string
-{
-  let $delim := file:path-separator()
-  let $delim-escaped := replace($delim, '(\.|\[|\]|\\|\||\-|\^|\$|\?|\*|\+|\{|\}|\(|\))','\\$1')
-  let $normalized-file := 
-    let $n := file:prepare-for-dirname-and-basename($file)
-		return if ($delim eq "\" and matches($n, "^[a-zA-Z]:$")) then
-			concat($n, "\")
-		else $n
-  return
-    if (matches($file, concat("^", $delim-escaped, "+$"))) then
-      ""
-    else if (file:path-separator() eq '\' and matches($file, "^[a-zA-Z]:\\?$")) then
-      ""
-    else if ($file eq "") then
-      "."
-    else
-      replace($normalized-file, concat("^.*", $delim-escaped), '')
-};
-
-(:~
- : The basename#2 function first gets the basename of the given path and then deletes the
- : suffix $suffix, if it is the suffix of the basename of the basename of $file.
- :
- : @param $file A file URI/path.
- : @param $suffix A suffix which should get deleted from the result.
- : @return The basename of $file with a deleted $suffix.
- :)
-declare function file:basename($file as xs:string, $suffix as xs:string) as xs:string
-{
-  let $res := file:basename($file)
-  return
-    if (fn:ends-with($res, $suffix)) then
-      fn:substring($res, 1, fn:string-length($suffix))
-    else
-      $res
-};
-
-(:~
- : This is a helper function used by dirname and basename. This function takes a path as
- : input and normalizes it according to the rules states in dirname/basename documentation
+ : This is a helper function used by dirname and base-name. This function takes a path as
+ : input and normalizes it according to the rules states in dirname/base-name documentation
  : and normalizes it to a system specific path.
  :)
-declare %private function file:prepare-for-dirname-and-basename($path as xs:string) as xs:string
+declare %private function file:prepare-for-dirname-and-base-name($path as xs:string) as xs:string
 {
-  let $delim := file:path-separator()
+  let $delim := file:directory-separator()
   let $delim-escaped := replace($delim, '(\.|\[|\]|\\|\||\-|\^|\$|\?|\*|\+|\{|\}|\(|\))','\\$1')
-  let $normalize-path := file:normalize-path($path)
+  let $normalize-path := file:path-to-native($path)
   let $normalized :=
     if ($normalize-path eq $delim) then
       $normalize-path

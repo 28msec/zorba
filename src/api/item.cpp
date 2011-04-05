@@ -40,7 +40,7 @@ namespace zorba {
 #define ITEM_TRY try {
 
 #define ITEM_CATCH \
-  } catch (ZorbaException const &e) { \
+  } catch (ZorbaException const & /* e */) { \
     throw; \
   } catch (std::exception const &e) { \
     throw ZORBA_EXCEPTION(XQP0019_INTERNAL_ERROR, ERROR_PARAMS(e.what())); \
