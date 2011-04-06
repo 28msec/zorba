@@ -17,8 +17,6 @@
 #include <zorba/item_sequence.h>
 #include <zorba/iterator.h>
 
-#include "store/api/item_factory.h"
-#include "system/globalenv.h"
 #include "user_exception.h"
 #include "zorbamisc/ns_consts.h"
 
@@ -108,11 +106,7 @@ UserException make_user_exception( char const *throw_file,
                                    QueryLoc const &loc,
                                    error_object_type *error_object ) {
   store::Item_t store_qname;
-  if ( qname.isNull() )
-    GENV_ITEMFACTORY->createQName(
-      store_qname, XQUERY_ERR_NS, "err", "FOER0000"
-    );
-  else
+  if ( !qname.isNull() )
     store_qname = Unmarshaller::getInternalItem( qname );
 
   return make_user_exception(
