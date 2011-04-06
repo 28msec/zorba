@@ -64,6 +64,28 @@ namespace internal {
  * @param error_object The error object, if any.
  * @return Returns a new UserException.
  */
+UserException
+make_user_exception( char const *throw_file,
+                     ZorbaException::line_type throw_line, 
+                     char const *ns, char const *prefix, char const *localname,
+                     char const *description, QueryLoc const &loc,
+                     error_object_type *error_object = 0 );
+
+/**
+ * Makes a UserException.
+ *
+ * @param throw_file The C++ source-code file name whence the exception was
+ * thrown.
+ * @param throw_line The C++ source-code line number whence the exception was
+ * thrown.
+ * @param ns The error code's namespace.
+ * @param prefix The error code's prefix.
+ * @param localname The error code's local-name.
+ * @param description The error description.
+ * @param loc The XQuery source-code location.
+ * @param error_object The error object, if any.
+ * @return Returns a new UserException.
+ */
 template<class StringType> inline UserException
 make_user_exception( char const *throw_file,
                      ZorbaException::line_type throw_line,

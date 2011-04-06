@@ -137,22 +137,50 @@ UserException make_user_exception( char const *throw_file,
   );
 }
 
+UserException make_usery_exception( char const *throw_file,
+                                    ZorbaException::line_type throw_line,
+                                    Error const &error,
+                                    err::parameters const &params,
+                                    err::location const &loc,
+                                    UserException::error_object_type
+                                     *error_object ) {
+  err::parameters::value_type message( error.message() );
+  params.substitute( &message );
+  zorba::err::QName const &qname = error.qname();
+  return make_user_exception(
+    throw_file, throw_line, qname.ns(), qname.prefix(), qname.localname(),
+    message.c_str(), loc, error_object
+  );
+}
+
+UserException make_user_exception( char const *throw_file,
+                                   ZorbaException::line_type throw_line,
+                                   char const *ns, char const *prefix,
+                                   char const *localname,
+                                   char const *description, QueryLoc const &loc,
+                                   error_object_type *error_object ) {
+  err::location const eloc(
+    loc.getFilename(), loc.getLineno(), loc.getColumnBegin() 
+  );
+  return make_user_exception(
+    throw_file, throw_line, ns, prefix, localname, description, eloc,
+    error_object
+  );
+}
+
 UserException make_user_exception( char const *throw_file,
                                    ZorbaException::line_type throw_line,
                                    char const *ns, char const *prefix,
                                    char const *localname,
                                    char const *description,
-                                   QueryLoc const &loc,
+                                   err::location const &loc,
                                    UserException::error_object_type
                                     *error_object ) {
   UserException ue(
     ns, prefix, localname, throw_file, throw_line, description, error_object
   );
-  if ( &loc != &QueryLoc::null ) {
-    ue.set_source(
-      loc.getFilename().str().c_str(), loc.getLineBegin(), loc.getColumnBegin()
-    );
-  }
+  if ( loc )
+    ue.set_source( loc.file(), loc.line(), loc.column() );
   return ue;
 }
 
