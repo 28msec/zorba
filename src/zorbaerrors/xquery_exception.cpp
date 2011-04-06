@@ -27,8 +27,7 @@ namespace zorba {
 ///////////////////////////////////////////////////////////////////////////////
 
 XQueryException::XQueryException( Error const &error, char const *throw_file,
-                                  line_type throw_line,
-                                  char const *message ) :
+                                  line_type throw_line, char const *message ) :
   ZorbaException( error, throw_file, throw_line, message )
 {
 }
