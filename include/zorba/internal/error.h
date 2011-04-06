@@ -17,12 +17,43 @@
 #ifndef ZORBA_INTERNAL_ERROR_H
 #define ZORBA_INTERNAL_ERROR_H
 
+#include <map>
+
 #include <zorba/error.h>
+
+#include "ztd.h"
 
 namespace zorba {
 namespace internal {
 
 ///////////////////////////////////////////////////////////////////////////////
+
+class ZORBA_DLL_PUBLIC SystemErrorBase : public Error {
+public:
+  /**
+   * Given an error's local-name, finds its corresponding %Error object.
+   *
+   * @param localname The local-name.
+   * @return Returns the corresponding %Error object or \c NULL if not found.
+   */
+  static Error const* find( char const *localname ) {
+    map_type const &m = get_map();
+    map_type::const_iterator const i = m.find( localname );
+    return i != m.end() ? i->second : 0;
+  }
+
+private:
+  typedef std::map<char const*,Error const*, ztd::less<char const*> > map_type;
+
+  static map_type& get_map();
+
+  SystemErrorBase( char const *localname ) {
+    get_map()[ localname ] = this;
+  }
+
+  // Only a SystemError can derive from SystemErrorBase.
+  template<class QNameType> friend class SystemError;
+};
 
 /**
  * A %SystemError is-an Error for built-in errors.
@@ -30,7 +61,7 @@ namespace internal {
  * @tparam QNameType The QName type.
  */
 template<class QNameType>
-class ZORBA_DLL_PUBLIC SystemError : public Error {
+class ZORBA_DLL_PUBLIC SystemError : public SystemErrorBase {
 public:
 
   /**
@@ -38,7 +69,9 @@ public:
    *
    * @param localname The local-name of the error.
    */
-  SystemError( char const *localname ) : qname_( localname ) {
+  SystemError( char const *localname ) :
+    SystemErrorBase( localname ), qname_( localname )
+  {
   }
 
   // inherited

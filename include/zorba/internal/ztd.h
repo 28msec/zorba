@@ -17,11 +17,39 @@
 #ifndef ZORBA_INTERNAL_ZTD_H
 #define ZORBA_INTERNAL_ZTD_H
 
+#include <cstring>
+#include <functional>
 #include <sstream>
 
 namespace zorba {
 namespace internal {
 namespace ztd {
+
+////////// less<char const*> ///////////////////////////////////////////////////
+
+template<typename T> struct less {
+};
+
+/**
+ * \internal
+ * Specialize the binary_function "less" so that C-style strings (char const*)
+ * will work properly with STL containers.
+ *
+ * See also: Bjarne Stroustrup. "The C++ Programming Language, 3rd ed."
+ * Addison-Wesley, Reading, MA, 1997.  p. 468.
+ */
+template<> struct less<char const*> :
+  std::binary_function<char const*, char const*, bool>
+{
+  less() { }
+  // This default constructor doesn't need to be defined, but g++ complains if
+  // it isn't and you try to define a "const less" object.
+
+  result_type
+  operator()( first_argument_type a, second_argument_type b ) const {
+    return std::strcmp( a, b ) < 0;
+  }
+};
 
 ////////// c_str() /////////////////////////////////////////////////////////////
 
