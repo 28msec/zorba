@@ -214,6 +214,13 @@ private:
 #define USER_EXCEPTION(...) \
   zorba::internal::make_user_exception( __FILE__, __LINE__, __VA_ARGS__ )
 
+/**
+ * Creates a default UserException.
+ * \hideinitializer
+ */
+#define DEFAULT_USER_EXCEPTION() \
+  zorba::internal::make_user_exception( __FILE__, __LINE__ )
+
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba

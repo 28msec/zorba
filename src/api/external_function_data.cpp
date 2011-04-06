@@ -25,24 +25,21 @@ namespace zorba {
 void
 ExternalFunctionData::error()
 {
-  Item lItem;
-  error(lItem);
+  throw DEFAULT_USER_EXCEPTION();
 }
 
 
 void
 ExternalFunctionData::error(const Item& aQName)
 {
-  String lString;
-  error(aQName, lString);
+  throw USER_EXCEPTION( aQName );
 }
 
 
 void
 ExternalFunctionData::error(const Item& aQName, const String& aDescription)
 {
-  ItemSequence_t lNullSeq;
-  error(aQName, aDescription, lNullSeq);
+  throw USER_EXCEPTION( aQName, aDescription );
 }
 
 
