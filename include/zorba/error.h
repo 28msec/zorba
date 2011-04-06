@@ -108,16 +108,6 @@ typedef internal::SystemError<internal::ZorbaErrQName> ZorbaError;
  */
 class ZORBA_DLL_PUBLIC UserError : public Error {
 public:
-
-  /**
-   * Constructs a %UserError.
-   *
-   * @param ns The error's namespace URI.
-   * @param prefix The error's prefix.
-   * @param localname The error's local-name.
-   */
-  UserError( char const *ns, char const *prefix, char const *localname );
-
   /**
    * Destroys a %UserError.
    */
@@ -134,6 +124,17 @@ protected:
 private:
   typedef internal::VariableQName<std::string> QName;
   QName qname_;
+
+  /**
+   * Constructs a %UserError.
+   *
+   * @param ns The error's namespace URI.
+   * @param prefix The error's prefix.
+   * @param localname The error's local-name.
+   */
+  UserError( char const *ns, char const *prefix, char const *localname );
+
+  friend class UserException;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
