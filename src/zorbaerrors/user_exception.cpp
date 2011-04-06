@@ -14,7 +14,13 @@
  * limitations under the License.
  */
 
+#include <zorba/item_sequence.h>
+#include <zorba/iterator.h>
+
+#include "store/api/item_factory.h"
+#include "system/globalenv.h"
 #include "user_exception.h"
+#include "zorbamisc/ns_consts.h"
 
 using namespace std;
 
@@ -47,15 +53,106 @@ void UserException::polymorphic_throw() const {
   throw *this;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+
+namespace internal {
+
+UserException make_user_exception( char const *throw_file,
+                                   ZorbaException::line_type throw_line ) {
+  Item empty;
+  return make_user_exception( throw_file, throw_line, empty );
+}
+
+UserException make_user_exception( char const *throw_file,
+                                   ZorbaException::line_type throw_line,
+                                   Item const &error ) {
+  String empty;
+  return make_user_exception( throw_file, throw_line, error, empty );
+}
+
+UserException make_user_exception( char const *throw_file,
+                                   ZorbaException::line_type throw_line,
+                                   Item const &error,
+                                   String const &description ) {
+  ItemSequence_t empty_seq;
+  return make_user_exception(
+    throw_file, throw_line, error, description, empty_seq
+  );
+}
+
+UserException make_user_exception( char const *throw_file,
+                                   ZorbaException::line_type throw_line,
+                                   Item const &error,
+                                   String const &description,
+                                   ItemSequence_t const &error_item_seq ) {
+  UserException::error_object_type error_object;
+  if ( error_item_seq.get() ) {
+    if ( Iterator_t i = error_item_seq->getIterator() ) {
+      i->open();
+      Item item;
+      while ( i->next( item ) )
+        error_object.push_back( item );
+      i->close();
+    }
+  }
+  return make_user_exception(
+    throw_file, throw_line, error, description.c_str(), QueryLoc::null,
+    &error_object
+  );
+}
+
+UserException make_user_exception( char const *throw_file,
+                                   ZorbaException::line_type throw_line,
+                                   Item const &qname,
+                                   char const *description,
+                                   QueryLoc const &loc,
+                                   error_object_type *error_object ) {
+  store::Item_t store_qname;
+  if ( qname.isNull() )
+    GENV_ITEMFACTORY->createQName(
+      store_qname, XQUERY_ERR_NS, "err", "FOER0000"
+    );
+  else
+    store_qname = Unmarshaller::getInternalItem( qname );
+
+  return make_user_exception(
+    throw_file, throw_line, store_qname, description, loc, error_object
+  );
+}
+
+UserException make_user_exception( char const *throw_file,
+                                   ZorbaException::line_type throw_line,
+                                   store::Item_t const &qname,
+                                   char const *description,
+                                   QueryLoc const &loc,
+                                   error_object_type *error_object ) {
+  char const *ns, *prefix, *localname;
+  if ( qname.isNull() ) {
+    ns = XQUERY_ERR_NS;
+    prefix = "err";
+    localname = "FOER0000";
+  } else {
+    ns = qname->getNamespace().c_str();
+    prefix = qname->getPrefix().c_str();
+    localname = qname->getLocalName().c_str();
+  }
+
+  return make_user_exception(
+    throw_file, throw_line, ns, prefix, localname, description, loc,
+    error_object
+  );
+}
+
 UserException make_user_exception( char const *throw_file,
                                    ZorbaException::line_type throw_line,
                                    char const *ns, char const *prefix,
                                    char const *localname,
                                    char const *description,
                                    QueryLoc const &loc,
-                                   UserException::error_object_type *err_obj ) {
+                                   UserException::error_object_type
+                                    *error_object ) {
   UserException ue(
-    ns, prefix, localname, throw_file, throw_line, description, err_obj
+    ns, prefix, localname, throw_file, throw_line, description, error_object
   );
   if ( &loc != &QueryLoc::null ) {
     ue.set_source(
@@ -64,6 +161,8 @@ UserException make_user_exception( char const *throw_file,
   }
   return ue;
 }
+
+} // namespace internal
 
 ///////////////////////////////////////////////////////////////////////////////
 

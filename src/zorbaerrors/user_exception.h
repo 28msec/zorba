@@ -45,6 +45,10 @@ void convert_error_object( UserException::error_object_type const &in,
   }
 }
 
+///////////////////////////////////////////////////////////////////////////////
+
+namespace internal {
+
 /**
  * Makes a UserException.
  *
@@ -60,19 +64,12 @@ void convert_error_object( UserException::error_object_type const &in,
  * @param error_object The error object, if any.
  * @return Returns a new UserException.
  */
-UserException
-make_user_exception( char const *throw_file,
-                     ZorbaException::line_type throw_line,
-                     char const *ns, char const *prefix, char const *localname,
-                     char const *description, QueryLoc const &loc,
-                     UserException::error_object_type *error_object = 0 );
-
 template<class StringType> inline UserException
 make_user_exception( char const *throw_file,
                      ZorbaException::line_type throw_line,
                      char const *ns, char const *prefix, char const *localname,
                      StringType const &description, QueryLoc const &loc,
-                     UserException::error_object_type *error_object = 0 ) {
+                     error_object_type *error_object = 0 ) {
   return make_user_exception(
     throw_file, throw_line, ns, prefix, localname, description.c_str(), loc,
     error_object
@@ -98,7 +95,7 @@ make_user_exception( char const *throw_file,
                      ZorbaException::line_type throw_line,
                      char const *ns, char const *prefix, char const *localname,
                      char const *description,
-                     UserException::error_object_type *error_object = 0 ) {
+                     error_object_type *error_object = 0 ) {
   return make_user_exception(
     throw_file, throw_line, ns, prefix, localname, description, QueryLoc::null,
     error_object
@@ -110,7 +107,7 @@ make_user_exception( char const *throw_file,
                      ZorbaException::line_type throw_line,
                      char const *ns, char const *prefix, char const *localname,
                      StringType const &description,
-                     UserException::error_object_type *error_object = 0 ) {
+                     error_object_type *error_object = 0 ) {
   return make_user_exception(
     throw_file, throw_line, ns, prefix, localname, description.c_str(),
     QueryLoc::null, error_object
@@ -130,33 +127,21 @@ make_user_exception( char const *throw_file,
  * @param error_object The error object, if any.
  * @return Returns a new UserException.
  */
-inline UserException
+UserException
 make_user_exception( char const *throw_file,
                      ZorbaException::line_type throw_line,
                      Item const &qname, char const *description,
                      QueryLoc const &loc,
-                     UserException::error_object_type *error_object = 0 ) {
-  return make_user_exception(
-    throw_file, throw_line,
-    qname.getNamespace().c_str(),
-    qname.getPrefix().c_str(),
-    qname.getLocalName().c_str(),
-    description, loc, error_object
-  );
-}
+                     error_object_type *error_object = 0 );
 
 template<class StringType>inline UserException
 make_user_exception( char const *throw_file,
                      ZorbaException::line_type throw_line,
                      Item const &qname, StringType const &description,
                      QueryLoc const &loc,
-                     UserException::error_object_type *error_object = 0 ) {
+                     error_object_type *error_object = 0 ) {
   return make_user_exception(
-    throw_file, throw_line,
-    qname.getNamespace().c_str(),
-    qname.getPrefix().c_str(),
-    qname.getLocalName().c_str(),
-    description.c_str(), loc, error_object
+    throw_file, throw_line, qname, description.c_str(), loc, error_object
   );
 }
 
@@ -176,27 +161,20 @@ inline UserException
 make_user_exception( char const *throw_file,
                      ZorbaException::line_type throw_line,
                      Item const &qname, char const *description,
-                     UserException::error_object_type *error_object = 0 ) {
+                     error_object_type *error_object = 0 ) {
   return make_user_exception(
-    throw_file, throw_line,
-    qname.getNamespace().c_str(),
-    qname.getPrefix().c_str(),
-    qname.getLocalName().c_str(),
-    description, QueryLoc::null, error_object
+    throw_file, throw_line, qname, description, QueryLoc::null, error_object
   );
 }
 
-template<class StringType>inline UserException
+template<class StringType> inline UserException
 make_user_exception( char const *throw_file,
                      ZorbaException::line_type throw_line,
                      Item const &qname, StringType const &description,
-                     UserException::error_object_type *error_object = 0 ) {
+                     error_object_type *error_object = 0 ) {
   return make_user_exception(
-    throw_file, throw_line,
-    qname.getNamespace().c_str(),
-    qname.getPrefix().c_str(),
-    qname.getLocalName().c_str(),
-    description.c_str(), QueryLoc::null, error_object
+    throw_file, throw_line, qname, description.c_str(), QueryLoc::null,
+    error_object
   );
 }
 
@@ -213,33 +191,21 @@ make_user_exception( char const *throw_file,
  * @param error_object The error object, if any.
  * @return Returns a new UserException.
  */
-inline UserException
+UserException
 make_user_exception( char const *throw_file,
                      ZorbaException::line_type throw_line,
                      store::Item_t const &qname, char const *description,
                      QueryLoc const &loc,
-                     UserException::error_object_type *error_object = 0 ) {
-  return make_user_exception(
-    throw_file, throw_line,
-    qname->getNamespace().c_str(),
-    qname->getPrefix().c_str(),
-    qname->getLocalName().c_str(),
-    description, loc, error_object
-  );
-}
+                     error_object_type *error_object = 0 );
 
 template<class StringType> inline UserException
 make_user_exception( char const *throw_file,
                      ZorbaException::line_type throw_line,
                      store::Item_t const &qname, StringType const &description,
                      QueryLoc const &loc,
-                     UserException::error_object_type *error_object = 0 ) {
+                     error_object_type *error_object = 0 ) {
   return make_user_exception(
-    throw_file, throw_line,
-    qname->getNamespace().c_str(),
-    qname->getPrefix().c_str(),
-    qname->getLocalName().c_str(),
-    description.c_str(), loc, error_object
+    throw_file, throw_line, qname, description.c_str(), loc, error_object
   );
 }
 
@@ -259,13 +225,9 @@ inline UserException
 make_user_exception( char const *throw_file,
                      ZorbaException::line_type throw_line,
                      store::Item_t const &qname, char const *description,
-                     UserException::error_object_type *error_object = 0 ) {
+                     error_object_type *error_object = 0 ) {
   return make_user_exception(
-    throw_file, throw_line,
-    qname->getNamespace().c_str(),
-    qname->getPrefix().c_str(),
-    qname->getLocalName().c_str(),
-    description, QueryLoc::null, error_object
+    throw_file, throw_line, qname, description, QueryLoc::null, error_object
   );
 }
 
@@ -273,21 +235,14 @@ template<class StringType> inline UserException
 make_user_exception( char const *throw_file,
                      ZorbaException::line_type throw_line,
                      store::Item_t const &qname, StringType const &description,
-                     UserException::error_object_type *error_object = 0 ) {
+                     error_object_type *error_object = 0 ) {
   return make_user_exception(
-    throw_file, throw_line,
-    qname->getNamespace().c_str(),
-    qname->getPrefix().c_str(),
-    qname->getLocalName().c_str(),
-    description.c_str(), QueryLoc::null, error_object
+    throw_file, throw_line, qname, description.c_str(), QueryLoc::null,
+    error_object
   );
 }
 
-/**
- * A handy macro for throwing a UserException.
- */
-#define USER_EXCEPTION(...) \
-  zorba::make_user_exception( __FILE__, __LINE__, __VA_ARGS__ )
+} // namespace internal
 
 ///////////////////////////////////////////////////////////////////////////////
 
