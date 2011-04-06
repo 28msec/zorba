@@ -371,15 +371,24 @@ ExecFunction::evaluate(
 
 #ifdef WIN32
   // execute process command in a new commandline
-  lTmp << "cmd /C ";
+  // with quotes at the beggining and at the end
+  lTmp << "cmd /C \"";
 #endif
  
-  lTmp << lCommand;
+  lTmp << "\"" << lCommand << "\""; //quoted for spaced paths/filenames
+  size_t pos=0;
   for (std::vector<std::string>::const_iterator lIter = lArgs.begin();
        lIter != lArgs.end(); ++lIter)
   {
-    lTmp << " " << *lIter;
+    pos = (*lIter).rfind('\\')+(*lIter).rfind('/');
+    if (int(pos)>=0)
+      lTmp << " \"" << *lIter << "\"";
+    else
+      lTmp << " " << *lIter;
   }
+#ifdef WIN32
+  lTmp << "\"";   // with quotes at the end for commandline
+#endif
   
   std::ostringstream lStdout;
   std::ostringstream lStderr;

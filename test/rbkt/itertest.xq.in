@@ -49,7 +49,7 @@ return
 ",
               "Command to generate iterator tree: ", $apitest-path, " ", fn:string-join($query-options," "), "
 ",
-              "Exected Result: ", $expected-file)
+              "Expected Result: ", $expected-file)
         );
       }
   else
