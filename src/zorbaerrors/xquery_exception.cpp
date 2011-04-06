@@ -28,7 +28,7 @@ namespace zorba {
 
 XQueryException::XQueryException( Error const &error, char const *throw_file,
                                   line_type throw_line,
-                                  string const &message ) :
+                                  char const *message ) :
   ZorbaException( error, throw_file, throw_line, message )
 {
 }
@@ -119,7 +119,7 @@ XQueryException make_xquery_exception( char const *throw_file,
                                        err::location const &loc ) {
   err::parameters::value_type message( error.message() );
   params.substitute( &message );
-  XQueryException xe( error, throw_file, throw_line, message );
+  XQueryException xe( error, throw_file, throw_line, message.c_str() );
   if ( loc )
     xe.set_source( loc.file(), loc.line(), loc.column() );
   return xe;
@@ -133,7 +133,7 @@ XQueryException* new_xquery_exception( char const *throw_file,
   internal::err::parameters::value_type message( error.message() );
   params.substitute( &message );
   XQueryException *const xe =
-    new XQueryException( error, throw_file, throw_line, message );
+    new XQueryException( error, throw_file, throw_line, message.c_str() );
   if ( loc )
     xe->set_source( loc.file(), loc.line(), loc.column() );
   return xe;

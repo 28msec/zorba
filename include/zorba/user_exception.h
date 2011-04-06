@@ -43,13 +43,12 @@ public:
    * thrown.
    * @param throw_line The source-code line number whence the exception was
    * thrown.
-   * @param message The error message.
+   * @param description The error description.
    * @param error_object TODO
    */
   UserException( char const *ns, char const *prefix, char const *localname,
                  char const *throw_file, line_type throw_line,
-                 std::string const &message,
-                 error_object_type *error_object = 0 );
+                 char const *description, error_object_type *error_object );
 
   /**
    * Destroys this %UserException.

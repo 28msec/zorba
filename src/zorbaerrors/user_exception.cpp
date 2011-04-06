@@ -24,10 +24,11 @@ namespace zorba {
 
 UserException::UserException( char const *ns, char const *prefix,
                               char const *localname, char const *throw_file,
-                              line_type throw_line, string const &message,
+                              line_type throw_line, char const *description,
                               error_object_type *error_object ) :
   XQueryException(
-    *(new UserError( ns, prefix, localname )), throw_file, throw_line, message
+    *(new UserError( ns, prefix, localname )), throw_file, throw_line,
+    description
   )
 {
   if ( error_object )
@@ -47,13 +48,14 @@ void UserException::polymorphic_throw() const {
 }
 
 UserException make_user_exception( char const *throw_file,
-                                   UserException::line_type throw_line,
+                                   ZorbaException::line_type throw_line,
                                    char const *ns, char const *prefix,
-                                   char const *localname, zstring const &msg,
+                                   char const *localname,
+                                   char const *description,
                                    QueryLoc const &loc,
                                    UserException::error_object_type *err_obj ) {
   UserException ue(
-    ns, prefix, localname, throw_file, throw_line, msg.c_str(), err_obj
+    ns, prefix, localname, throw_file, throw_line, description, err_obj
   );
   if ( &loc != &QueryLoc::null ) {
     ue.set_source(

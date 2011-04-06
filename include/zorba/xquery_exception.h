@@ -177,7 +177,7 @@ private:
    * @param message The error message.
    */
   XQueryException( Error const &error, char const *throw_file,
-                   line_type throw_line, std::string const &message );
+                   line_type throw_line, char const *message );
 
   internal::err::location source_loc_;
   XQueryStackTrace query_trace_;

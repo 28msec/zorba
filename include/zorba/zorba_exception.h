@@ -47,7 +47,7 @@ public:
    * @param message The error message.
    */
   ZorbaException( Error const &error, char const *throw_file,
-                  line_type throw_line, std::string const &message );
+                  line_type throw_line, char const *message );
 
   /**
    * Copy-constructs a %ZorbaException.

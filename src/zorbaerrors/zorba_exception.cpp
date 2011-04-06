@@ -32,7 +32,7 @@ namespace zorba {
 ///////////////////////////////////////////////////////////////////////////////
 
 ZorbaException::ZorbaException( Error const &error, char const *throw_file,
-                                line_type throw_line, string const &message ) :
+                                line_type throw_line, char const *message ) :
   error_( error.clone() ),
   throw_file_( throw_file ),
   throw_line_( throw_line ),
@@ -122,7 +122,7 @@ ZorbaException make_zorba_exception( char const *throw_file,
                                      err::parameters const &params ) {
   err::parameters::value_type message( error.message() );
   params.substitute( &message );
-  return ZorbaException( error, throw_file, throw_line, message );
+  return ZorbaException( error, throw_file, throw_line, message.c_str() );
 }
 
 } // namespace internal
