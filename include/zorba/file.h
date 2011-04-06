@@ -54,7 +54,7 @@ namespace zorba {
 
       static const char* getDirectorySeparator();
 
-      static const char* getPathSeparator1();
+      static const char* getPathSeparator();
 
     public: // type, enums
 

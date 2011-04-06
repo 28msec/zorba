@@ -292,8 +292,8 @@ let $name := substring($pieces[count($pieces)],
 return
   block 
   {
-    set $mappings_doc := file:read-xml($mappings);
-    set $file_doc := file:read-xml($file);
+    set $mappings_doc := fn:parse-xml(file:read-text($mappings));
+    set $file_doc := fn:parse-xml(file:read-text($file));
 
     string-join((gen:add-copyright(),
                  local:includes($file_doc),

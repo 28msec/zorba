@@ -96,9 +96,9 @@ File::getDirectorySeparator()
 }
 
 const char*
-File::getPathSeparator1()
+File::getPathSeparator()
 {
-  return filesystem_path::get_path_separator1();
+  return filesystem_path::get_path_separator();
 }
 
 const std::string

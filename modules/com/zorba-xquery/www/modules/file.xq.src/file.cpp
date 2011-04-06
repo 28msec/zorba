@@ -146,37 +146,6 @@ ReadTextFunction::evaluate(
 
 //*****************************************************************************
 
-ReadXmlFunction::ReadXmlFunction(const FileModule* aModule)
-  : FileFunction(aModule)
-{
-}
-
-ItemSequence_t
-ReadXmlFunction::evaluate(
-  const StatelessExternalFunction::Arguments_t& aArgs,
-  const StaticContext*                          aSctxCtx,
-  const DynamicContext*                         aDynCtx) const
-{
-  String lFileStr = FileFunction::getFilePathString(aArgs, 0);
-  File_t lFile = File::createFile(lFileStr.c_str());
-
-  if (aArgs.size() == 2) {
-    // since Zorba currently only supports UTF-8 we only call this function
-    // to reject any other encoding requested bu the user
-    getEncodingArg(aArgs, 1);
-  }
-
-  std::ifstream lInStream;
-  lFile->openInputStream(lInStream, false, true);
-
-  XmlDataManager* lDataManager = Zorba::getInstance(0)->getXmlDataManager();
-  Item lItem = lDataManager->parseDocument(lInStream);
-
-  return ItemSequence_t(new SingletonItemSequence(lItem));
-}
-
-//*****************************************************************************
-
 ExistsFunction::ExistsFunction(const FileModule* aModule)
   : FileFunction(aModule)
 {
@@ -500,7 +469,7 @@ PathSeparator::evaluate(
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  return ItemSequence_t(new SingletonItemSequence(theModule->getItemFactory()->createString(FileFunction::pathSeparator1())));
+  return ItemSequence_t(new SingletonItemSequence(theModule->getItemFactory()->createString(FileFunction::pathSeparator())));
 }
 
 //*****************************************************************************

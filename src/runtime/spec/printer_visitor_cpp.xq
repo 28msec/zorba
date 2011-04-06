@@ -12,7 +12,7 @@ declare sequential function local:get-files($files as xs:string) as xs:string
 
 declare sequential function local:process-file($file) as xs:string
 {
-  let $doc := file:read-xml($file)/zorba:iterators
+  let $doc := fn:parse-xml(file:read-text($file))/zorba:iterators
   
   return string-join(for $iter in $doc//zorba:iterator return 
   if(fn:not($iter/@generateVisitor) or $iter/@generateVisitor eq "true") then

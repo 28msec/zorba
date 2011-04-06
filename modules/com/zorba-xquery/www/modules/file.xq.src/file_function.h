@@ -71,7 +71,7 @@ namespace zorba { namespace filemodule {
       directorySeparator();
 
       static String
-      pathSeparator1();
+      pathSeparator();
 
       static String
       pathToFullOSPath(const String& path);

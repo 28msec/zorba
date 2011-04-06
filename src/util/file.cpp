@@ -221,7 +221,7 @@ filesystem_path::get_directory_separator () {
 }
 
 const char *
-filesystem_path::get_path_separator1 () {
+filesystem_path::get_path_separator () {
 #ifdef WIN32
   return ";";
 #else

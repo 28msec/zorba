@@ -133,46 +133,52 @@ declare %private sequential function file:append-text(
  : @param $destination The detination path/URI.
  : @return The empty sequence.
  : @error FOFL0001 If the <pre>$source</pre> path does not exist.
- : @error FOFL0002 If the <pre>$overwrite</pre> parameter is missing or it
- :    evaluates to <pre>fn:false()</pre>, and <pre>$destination</pre> points
- :    to an existing file.
+ : @error FOFL0002 If <pre>$source</pre> points to a directory and
+ :    <pre>$destination</pre> points to an existing file.
  : @error FOFL0003 If <pre>$destination</pre> does not exist and it's
  :    parent directory does not exist either.
  : @error FOFL0000 If any other error occurs.
  :)
 declare sequential function file:copy(
-  $sourceFile as xs:string,
+  $source as xs:string,
   $destination as xs:string
 ) as empty-sequence()
 {
-  file:copy($sourceFile, $destination, fn:true())
+  file:copy($source, $destination, fn:true())
 };
 
 (:~
  : Copies a file or a directory given a source and a destination path/URI.
  : 
- : @param $sourceFile The path/URI of the file to copy.
+ : @param $source The path/URI of the file to copy.
  : @param $destination The destination path/URI.
  : @param $overwrite Flag to control if the operation should overwrite the
  :    destination file.
  : @return The empty sequence.
  : @error FOFL0001 If the <pre>$source</pre> path does not exist.
- : @error FOFL0002 If the <pre>$overwrite</pre> parameter is missing or it
- :    evaluates to <pre>fn:false()</pre>, and <pre>$destination</pre> points
- :    to an existing file.
+ : @error FOFL0002 If:
+ :    <ul>
+ :      <li><pre>$source</pre> points to a directory and
+ :        <pre>$destination</pre> points to an existing file.</li>
+ :      <li>the <pre>$overwrite</pre> parameter evaluates to
+ :        <pre>fn:false()</pre>, and <pre>$destination</pre> points to an
+ :        existing file;</li>
+ :    </ul>
  : @error FOFL0003 If <pre>$destination</pre> does not exist and it's
  :    parent directory does not exist either.
  : @error FOFL0000 If any other error occurs.
  :)
 declare sequential function file:copy(
-  $sourceFile as xs:string,
+  $source as xs:string,
   $destination as xs:string,
   $overwrite as xs:boolean
 ) as empty-sequence() external;
 
 (:~
- : Creates a directory. The operation will create all the nexessary parent
- : directories.
+ : Creates a directory.
+ :
+ : The operation is will create all the missing parent directories from the
+ : given path.
  :
  : @param $dir The path/URI denoting the directory to be created.
  : @return The empty sequence.
@@ -185,12 +191,11 @@ declare sequential function file:create-directory(
 ) as empty-sequence() external;
 
 (:~
- : Deletes a file or an empty directory from the file system.
+ : Deletes a file or a directory from the file system.
  :
  : @param $path The path/URI of the file or directory to delete.
  : @return The empty sequence.
- : @error FOFL0001 If the <pre>$path</pre> path does not exist.
- : @error FOFL0005 If <pre>$path</pre> points an existing directory.
+ : @error FOFL0001 If the <pre>$path</pre> does not exist.
  : @error FOFL0000 If any other error occurs.
  :)
 declare sequential function file:delete(
@@ -296,9 +301,9 @@ declare sequential function file:move(
  : @error FOFL0001 If the <pre>$source</pre> path does not exist.
  : @error FOFL0002 If:
  :    <ul>
+ :      <li><pre>$source</pre> points to a directory, <pre>$destination</pre> points to an existing file</li>
  :      <li><pre>$source</pre> points to a file, <pre>$destination</pre> points to an existing file, and
  :        the <pre>$overwrite</pre> evaluates to <pre>fn:false()</pre></li>
- :      <li><pre>$source</pre> points to a directory, <pre>$destination</pre> points to an existing file</li>
  :    </ul>
  : @error FOFL0003 If <pre>$destination</pre> does not exist and it's parent
  :    directory does not exist either.
@@ -320,6 +325,9 @@ declare sequential function file:move(
  :
  : @param $file The file to read.
  : @return The content of the file as Base64.
+ : @error FOFL0001 If the <pre>$source</pre> path does not exist.
+ : @error FOFL0004 If <pre>$source</pre> points to a directory.
+ : @error FOFL0000 If any other error occurs.
  :)
 declare %nondeterministic function file:read-binary(
   $file as xs:string
@@ -334,6 +342,9 @@ declare %nondeterministic function file:read-binary(
  :
  : @param $file The file to read.
  : @return The content of the file as string.
+ : @error FOFL0001 If the <pre>$source</pre> path does not exist.
+ : @error FOFL0004 If <pre>$source</pre> points to a directory.
+ : @error FOFL0000 If any other error occurs.
  :)
 declare function file:read-text(
   $file as xs:string
@@ -352,6 +363,10 @@ declare function file:read-text(
  : @param $file The file to read.
  : @param $encoding The encoding used when reading the file.
  : @return The content of the file as string.
+ : @error FOFL0001 If the <pre>$source</pre> path does not exist.
+ : @error FOFL0004 If <pre>$source</pre> points to a directory.
+ : @error FOFL0006 If <pre>$encoding</pre> is not supported.
+ : @error FOFL0000 If any other error occurs.
  :)
 declare %nondeterministic function file:read-text(
   $file as xs:string,
@@ -367,6 +382,9 @@ declare %nondeterministic function file:read-text(
  :
  : @param $file The file to read.
  : @return The content of the file as a sequence of strings.
+ : @error FOFL0001 If the <pre>$source</pre> path does not exist.
+ : @error FOFL0004 If <pre>$source</pre> points to a directory.
+ : @error FOFL0000 If any other error occurs.
  :)
 declare function file:read-text-lines(
   $file as xs:string
@@ -390,6 +408,10 @@ declare function file:read-text-lines(
  : @param $file The file to read.
  : @param $encoding The encoding used when reading the file.
  : @return The content of the file as a sequence of strings.
+ : @error FOFL0001 If the <pre>$source</pre> path does not exist.
+ : @error FOFL0004 If <pre>$source</pre> points to a directory.
+ : @error FOFL0006 If <pre>$encoding</pre> is not supported.
+ : @error FOFL0000 If any other error occurs.
  :)
 declare function file:read-text-lines(
   $file as xs:string,
@@ -399,39 +421,6 @@ declare function file:read-text-lines(
   let $content := file:read-text($file, $encoding)
   return fn:tokenize($content, "\n")
 };
-
-(:~
- : Reads a file as an XML file and returns an XML document representing the
- : content of the file. The file must be a valid XML document.
- :
- : The operation is equivalent to calling:
- : <pre>file:read-xml($file, "UTF-8")</pre>.
- :
- : @param $file The file to read.
- : @return An XML document containing the content of the file.
- :)
-declare function file:read-xml(
-  $file as xs:string
-) as node()
-{
-  file:read-xml($file, "UTF-8")
-};
-
-(:~
- : Reads a file as an XML file and returns an XML document representing the
- : content of the file. The file must be a valid XML document.
- :
- : In Zorba only the following encodings are currently supported: "UTF-8",
- : "UTF8". The encoding parameter is case insensitive.
- :
- : @param $file The file to read.
- : @param $encoding The encoding used when reading the file.
- : @return An XML document containing the content of the file.
- :)
-declare %nondeterministic function file:read-xml(
-  $file as xs:string,
-  $encoding as xs:string
-) as node() external;
 
 (:~
  : This is an internal function that copies an entire source directory to an
@@ -478,6 +467,8 @@ declare %private sequential function file:copy-directory(
  : @param $serializer-params Parameter to control the serialization of the
  :        content.
  : @return The empty sequence.
+ : @error FOFL0004 If <pre>$file</pre> points to a directory.
+ : @error FOFL0000 If any other error occurs.
  :)
 declare sequential function file:write(
   $file as xs:string,
@@ -503,6 +494,10 @@ declare sequential function file:write(
  :        content.
  : @param $overwrite Flag to specify if an existing file should be overwritten.
  : @return The empty sequence.
+ : @error FOFL0002 If <pre>$overwrite</pre> evaluates to <pre>fn:false()</pre>
+ :    and <pre>$file</pre> already exists.
+ : @error FOFL0004 If <pre>$file</pre> points to a directory.
+ : @error FOFL0000 If any other error occurs.
  :)
 declare sequential function file:write(
   $file as xs:string,
@@ -523,6 +518,8 @@ declare sequential function file:write(
  : @param $file The path/URI of the file to write the content to.
  : @param $content The content to be serialized to the file.
  : @return The empty sequence.
+ : @error FOFL0004 If <pre>$file</pre> points to a directory.
+ : @error FOFL0000 If any other error occurs.
  :)
 declare sequential function file:write-binary(
   $file as xs:string,
@@ -539,6 +536,10 @@ declare sequential function file:write-binary(
  : @param $content The content to be serialized to the file.
  : @param $overwrite Flag to specify if an existing file should be overwritten.
  : @return The empty sequence.
+ : @error FOFL0002 If <pre>$overwrite</pre> evaluates to <pre>fn:false()</pre>
+ :    and <pre>$file</pre> already exists.
+ : @error FOFL0004 If <pre>$file</pre> points to a directory.
+ : @error FOFL0000 If any other error occurs.
  :)
 declare sequential function file:write-binary(
   $file as xs:string,
@@ -556,6 +557,10 @@ declare sequential function file:write-binary(
  : @param $content The content to be serialized to the file.
  : @param $overwrite Flag to specify if an existing file should be overwritten.
  : @return The empty sequence.
+ : @error FOFL0002 If <pre>$overwrite</pre> evaluates to <pre>fn:false()</pre>
+ :    and <pre>$file</pre> already exists.
+ : @error FOFL0004 If <pre>$file</pre> points to a directory.
+ : @error FOFL0000 If any other error occurs.
  :)
 declare %private sequential function file:write-text(
   $file as xs:string,
@@ -571,6 +576,8 @@ declare %private sequential function file:write-text(
  :
  : @param $dir The path/URI of the directory to retrieve the children from.
  : @return The sequence of names of the direct children.
+ : @error FOFL0003 If <pre>$dir</pre> does not point to an existing directory.
+ : @error FOFL0000 If any other error occurs.
  :)
 declare %nondeterministic function file:list(
   $dir as xs:string
@@ -588,6 +595,8 @@ declare %nondeterministic function file:list(
  : @param $recursive A boolean flag indicating whether the operation should be
  :    performed recursively.
  : @return A sequence of relative paths.
+ : @error FOFL0003 If <pre>$dir</pre> does not point to an existing directory.
+ : @error FOFL0000 If any other error occurs.
  :)
 declare function file:list(
   $path as xs:string,
@@ -611,12 +620,20 @@ declare function file:list(
  : The order of the items in the result is not defined.
  : The "." and ".." items are not considered for the match.
  : The file paths are relative to the provided $path.
+ :
+ : The pattern is a glob expression supporting:
+ : <ul>
+ :   <li><pre>*</pre> for matching any number of unknown characters</li>
+ :   <li><pre>?</pre> for matching one unknown character</li>
+ : </ul>
  : 
  : @param $path The path/URI to retrieve the children from.
  : @param $recursive A boolean flag indicating whether the operation should be
  :    performed recursively.
- : @param $pattern The file name condition to be checked.
+ : @param $pattern The file name pattern.
  : @return A sequence of file names matching the pattern.
+ : @error FOFL0003 If <pre>$dir</pre> does not point to an existing directory.
+ : @error FOFL0000 If any other error occurs.
  :)
 declare function file:list(
   $path as xs:string,
@@ -701,7 +718,7 @@ declare function file:directory-separator() as xs:string external;
  :
  : @return The operating system specific path separator.
  :)
-declare function file:path-separator1() as xs:string external;
+declare function file:path-separator() as xs:string external;
 
 (:~
  : Transforms a relative path/URI into an absolute operating system path by

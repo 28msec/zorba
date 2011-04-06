@@ -40,7 +40,7 @@ declare sequential function commons:testWriteXml($path as xs:string, $xml as ite
 };
 
 declare sequential function commons:testReadAndCompareXml($path as xs:string, $xml as item()) as xs:string* {
-  let $x := file:read-xml($path)
+  let $x := fn:parse-xml(file:read-text($path))
   return
     if($x eq $xml) then 
       "SUCCESS"

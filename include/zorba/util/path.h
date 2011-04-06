@@ -48,8 +48,8 @@ namespace zorba {
        *
        * This function takes a path (as system path, file uri) and normalizes it.
        * It converts file URIs to system paths and replaces '/' and '\' to the
-       * platform specific path separator ('\' on Windows, '/' on UNIX like operating
-       * systems like Linux and Mac OS X).
+       * platform specific directory separator ('\' on Windows, '/' on UNIX like
+       * operating systems like Linux and Mac OS X).
        * If the parameter base is set, it also resolves the path.
        *
        * @param in The path to normalize.
@@ -88,7 +88,7 @@ namespace zorba {
       filesystem_path branch_path () const;
 
       static const char *get_directory_separator ();
-      static const char *get_path_separator1 ();
+      static const char *get_path_separator ();
   //  #ifdef WIN32
   //    static bool isValidDriveSegment( String& aString);
   //  #endif

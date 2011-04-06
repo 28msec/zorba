@@ -133,8 +133,8 @@ FileFunction::directorySeparator() {
 }
 
 String
-FileFunction::pathSeparator1() {
-  return File::getPathSeparator1();
+FileFunction::pathSeparator() {
+  return File::getPathSeparator();
 }
 
 String

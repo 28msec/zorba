@@ -7,7 +7,7 @@ declare variable $files as xs:string external;
 
 declare variable $signatures := 
     for $doc in tokenize($files,',')
-    return file:read-xml($doc)//zorba:signature;
+    return fn:parse-xml(file:read-text($doc))//zorba:signature;
 
 let $funcs := 
     distinct-values(

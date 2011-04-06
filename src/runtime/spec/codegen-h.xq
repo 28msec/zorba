@@ -279,7 +279,7 @@ let $name := substring($pieces[count($pieces)],1,string-length($pieces[count($pi
 return
   block 
   {
-    set $doc := file:read-xml($file)/zorba:iterators;
+    set $doc := fn:parse-xml(file:read-text($file))/zorba:iterators;
     string-join((gen:add-copyright(),
                  $gen:newline,
                  gen:add-guard-open(string-join(('functions_',$name),'')),

@@ -39,8 +39,6 @@ FileModule::getExternalFunction(const String& aLocalname)
   if (!lFunc) {
     if (1 == 0) {
 
-    // Update done to new FileAPI spec for the following:
-    // TODO: errors
     } else if (aLocalname.equals("create-directory")) {
       lFunc = new CreateDirectoryFunction(this);
     } else if (aLocalname.equals("delete")) {
@@ -49,8 +47,6 @@ FileModule::getExternalFunction(const String& aLocalname)
       lFunc = new ReadBinaryFunction(this);
     } else if (aLocalname.equals("read-text")) {
       lFunc = new ReadTextFunction(this);
-    } else if (aLocalname.equals("read-xml")) {
-      lFunc = new ReadXmlFunction(this);
     } else if (aLocalname.equals("exists")) {
       lFunc = new ExistsFunction(this);
     } else if (aLocalname.equals("is-directory")) {
@@ -75,7 +71,7 @@ FileModule::getExternalFunction(const String& aLocalname)
       lFunc = new SizeFunction(this);
     } else if (aLocalname.equals("directory-separator")) {
       lFunc = new DirectorySeparator(this);
-    } else if (aLocalname.equals("path-separator1")) {
+    } else if (aLocalname.equals("path-separator")) {
       lFunc = new PathSeparator(this);
     } else if (aLocalname.equals("resolve-path")) {
       lFunc = new ResolvePathFunction(this);
