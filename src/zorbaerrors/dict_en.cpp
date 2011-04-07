@@ -488,6 +488,8 @@ extern entry const dict_en[] = {
   { "~NotAllowedForTypeName", "not allowed for typeName (use xsd:untyped instead)" },
   { "~NotAmongInScopeSchemaTypes", "not among in-scope schema types" },
   { "~NotSpecified", "not specified" },
+  { "~OSFailedError", "error $1: $2" },
+  { "~OSWhatFailedError", "$1 failed (error $2): $3" },
   { "~OuterForClause11", "outer-for clause only available in XQuery 1.1 or later" },
   { "~SeqFnBody", "only a function declared as sequential can have a body that is a sequential expression" },
   { "~StartEndTagMismatch", "start tag \"$2\" does not match end tag \"$3\"" },

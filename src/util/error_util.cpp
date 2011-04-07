@@ -22,6 +22,10 @@
 # include <strsafe.h>
 #endif /* WIN32 */
 
+#include <zorba/err.h>
+
+#include "zorbaerrors/dict.h"
+
 #include "error_util.h"
 #include "stl_util.h"
 
@@ -33,50 +37,36 @@ using namespace std;
 ///////////////////////////////////////////////////////////////////////////////
 
 zstring get_os_err_string( char const *what, os_code code ) {
+  internal::err::parameters params;
+  internal::err::parameters::value_type result;
 #ifndef WIN32
-  char err[ 512 ];
-  if ( what && *what ) {
-    snprintf(
-      err, sizeof( err ), "%s failed (error %d): %s",
-      what, code, ::strerror( code )
-    );
-  } else {
-    snprintf(
-      err, sizeof( err ), "error %d: %s",
-      code, ::strerror( code )
-    );
-  }
-  return zstring( err );
+  char const *const err_string = ::strerror( code );
 #else
-  LPWSTR wmsg;
+  LPWSTR werr_string;
   FormatMessage(
     FORMAT_MESSAGE_ALLOCATE_BUFFER
     | FORMAT_MESSAGE_FROM_SYSTEM
     | FORMAT_MESSAGE_IGNORE_INSERTS,
     NULL, code, MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ),
-    reinterpret_cast<LPWSTR>( &wmsg ), 0, NULL
+    reinterpret_cast<LPWSTR>( &werr_string ), 0, NULL
   );
-  int const werr_size = ::wcslen( wmsg ) + 40;
-  ztd::auto_vec<WCHAR> const werr( new WCHAR[ werr_size ] );
-  if ( what && *what ) {
-    StringCchPrintf(
-      werr.get(), werr_size, L"%hs failed (error %d): %ls",
-      what, code, wmsg
-    );
-  } else {
-    StringCchPrintf(
-      werr.get(), werr_size, L"error %d: %ls", code, wmsg
-    );
-  }
-  LocalFree( wmsg );
-
-  int const err_size = ::wcslen( werr.get() ) * 2;
-  ztd::auto_vec<char> const err( new char[ err_size ] );
+  int const err_size = ::wcslen( werr_string ) * 3;
+  ztd::auto_vec<char> const err_buf( new char[ err_size ] );
+  char *const err_string = err_buf.get();
   WideCharToMultiByte(
-    CP_UTF8, 0, werr.get(), -1, err.get(), err_size, NULL, NULL
+    CP_UTF8, 0, werr_string, -1, err_string, err_size, NULL, NULL
   );
-  return zstring( err.get() );
+  LocalFree( werr_string );
 #endif /* WIN32 */
+  if ( what && *what ) {
+    result = err::dict::lookup( ZED( OSWhatFailedError ) );
+    params = ERROR_PARAMS( what, code, err_string );
+  } else {
+    result = err::dict::lookup( ZED( OSFailedError ) );
+    params = ERROR_PARAMS( code, err_string );
+  }
+  params.substitute( &result );
+  return zstring( result );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
