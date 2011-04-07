@@ -74,7 +74,7 @@ declare sequential function local:main() as xs:string* {
   (: ==================================================================== :)
   (: initialize test - create test directory :)
   (: ========= :)
-  let $s := commons:testUnInitDir($testDir, $outFile)
+  let $s := commons:testUnInitDir($testDir)
   return
     if (fn:not(commons:isSuccess($s))) then
       exit returning commons:error(("DIRECTORY UNINIT - failed:

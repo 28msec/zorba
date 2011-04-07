@@ -85,35 +85,13 @@ declare sequential function local:main() as xs:string* {
     else ();
 
 (: ========================= :)
-(: ======== DELETE ========= :)
-(: ========================= :)
-
-  (: ==================================================================== :)
-  (: a non-recursive delete must not remove a non-empty directory :)
-  (: ========= :)
-  let $s := commons:testDelete($testDir, fn:false())
-  return
-    if (commons:isSuccess($s)) then
-      exit returning commons:error(($s, $testDir, "DELETE - must not delete a non-empty directory:", $outFile))
-    else ();
-
-  (: ==================================================================== :)
-  (: the test directory must still exist :)
-  (: ========= :)
-  let $s := commons:testExists($testDir)
-  return 
-    if (fn:not(commons:isSuccess($s))) then
-      exit returning commons:error(("DELETE - directory must exist:", $testDir))
-    else ();
-
-(: ========================= :)
 (: === DIRECTORY UNINIT ==== :)
 (: ========================= :)
 
   (: ==================================================================== :)
   (: initialize test - create test directory :)
   (: ========= :)
-  let $s := commons:testUnInitDir($testDir, $outFile)
+  let $s := commons:testUnInitDir($testDir)
   return
     if (fn:not(commons:isSuccess($s))) then
       exit returning commons:error(("DIRECTORY UNINIT - failed:

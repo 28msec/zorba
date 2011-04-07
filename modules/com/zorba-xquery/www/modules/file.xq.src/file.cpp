@@ -57,13 +57,13 @@ CreateDirectoryFunction::evaluate(
 
 //*****************************************************************************
 
-DeleteFunction::DeleteFunction(const FileModule* aModule)
+DeleteFileImplFunction::DeleteFileImplFunction(const FileModule* aModule)
   : FileFunction(aModule)
 {
 }
 
 ItemSequence_t
-DeleteFunction::evaluate(
+DeleteFileImplFunction::evaluate(
   const StatelessExternalFunction::Arguments_t& aArgs,
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const

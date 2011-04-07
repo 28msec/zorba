@@ -53,9 +53,9 @@ declare sequential function commons:testReadBinary($path as xs:string) as xs:bas
   file:read-binary($path)
 };
 
-declare sequential function commons:testDelete($path as xs:string, $recursive as xs:boolean) as xs:string* {
+declare sequential function commons:testDelete($path as xs:string) as xs:string* {
   try {
-    file:delete($path, $recursive);
+    file:delete($path);
     "SUCCESS";
   } catch * {
     exit returning ("testDelete failed for path:", $path)
@@ -109,14 +109,15 @@ declare sequential function commons:testInitDir($dir as xs:string) as xs:string*
   "SUCCESS";
 };
 
-declare sequential function commons:testUnInitDir($dir as xs:string, $file as xs:string) as xs:string* {
+declare sequential function commons:testUnInitDir($dir as xs:string) as xs:string* {
   (: ==================================================================== :)
   (: delete the directory :)
   (: ========= :)
-  let $s := commons:testDelete($dir, fn:true())
+  let $dirFullPath := file:resolve-path($dir)
+  let $s := commons:testDelete($dirFullPath)
   return
     if (fn:not(commons:isSuccess($s))) then
-      exit returning ("testUnInitDir failed - could not delete directory:", $dir)
+      exit returning ("testUnInitDir failed - could not delete directory:", $dirFullPath)
     else ();
   (: ==================================================================== :)
 

@@ -42,13 +42,13 @@ namespace zorba {
 
 //*****************************************************************************
 
-  class DeleteFunction : public FileFunction
+  class DeleteFileImplFunction : public FileFunction
   {
     public:
-      DeleteFunction(const FileModule* aModule);
+      DeleteFileImplFunction(const FileModule* aModule);
 
       virtual String
-      getLocalName() const { return "delete"; }
+      getLocalName() const { return "delete-file-impl"; }
   
       virtual ItemSequence_t 
       evaluate(const StatelessExternalFunction::Arguments_t& args,

@@ -392,7 +392,7 @@ declare %private sequential function xqdoc2html:generate-xqdoc-xhtml(
     return fn:substring-before($xhtmlFilePath, $lastSegm)
   return
     try {
-      let $xqdoc := file:read-xml($xmlFilePath)/xqdoc:xqdoc
+      let $xqdoc := fn:parse-xml(file:read-text($xmlFilePath))/xqdoc:xqdoc
       let $moduleDoc := $xqdoc/xqdoc:module
       let $moduleName := $moduleDoc/xqdoc:name
       let $moduleUri := $moduleDoc/xqdoc:uri
@@ -422,7 +422,7 @@ declare sequential function xqdoc2html:generate-function-index-xhtml(
   $templatePath as xs:string
 ) as document-node() {
 
-  let $indexHtmlDoc := file:read-xml($templatePath)
+  let $indexHtmlDoc := fn:parse-xml(file:read-text($templatePath))
   return block {
       insert node <title>Function index</title>
       as first into $indexHtmlDoc/*:html/*:head;
@@ -458,7 +458,7 @@ declare sequential function xqdoc2html:generate-search-xhtml(
   $zorbaVersion as xs:string
 ) as document-node() {
 
-  let $searchDoc := file:read-xml($templatePath)
+  let $searchDoc := fn:parse-xml(file:read-text($templatePath))
   return block {
       insert node <title>Search</title>
       as first into $searchDoc/*:html/*:head;
@@ -511,7 +511,7 @@ declare %private sequential function xqdoc2html:gather-schemas(
                                 file:directory-separator(), $file)
   return
     try {
-      let $xqdoc := file:read-xml($xsdFilePath)
+      let $xqdoc := fn:parse-xml(file:read-text($xsdFilePath))
       let $xsdUri := $xqdoc/xs:schema/@targetNamespace
       return
           xqdoc2html:collect-schema($xsdUri, $xqdRelFilePath, $xqdoc2html:schemasCollector);
@@ -973,7 +973,7 @@ declare %private sequential function xqdoc2html:generate-index-html(
   $modules,
   $zorbaVersion as xs:string) as document-node()
 {
-    let $indexHtmlDoc := file:read-xml($templatePath)
+    let $indexHtmlDoc := fn:parse-xml(file:read-text($templatePath))
     return block {
         insert node <title>XQuery Modules Documentation</title>
         as first into $indexHtmlDoc/*:html/*:head;
@@ -1354,7 +1354,7 @@ declare sequential function xqdoc2html:doc(
   $templatePath as xs:string,
   $xqdocXhtmlPath as xs:string,
   $examplePath as xs:string) {
-  let $doc := file:read-xml($templatePath)
+  let $doc := fn:parse-xml(file:read-text($templatePath))
   return block {
     insert node <title>Documentation for {xqdoc2html:module-uri($xqdoc)}</title>
     as first into $doc/*:html/*:head;

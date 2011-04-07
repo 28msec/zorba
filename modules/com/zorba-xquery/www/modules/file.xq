@@ -193,46 +193,61 @@ declare sequential function file:create-directory(
 (:~
  : Deletes a file or a directory from the file system.
  :
+ : If <pre>$path</pre> points to a directory the directory will be deleted
+ : recursively.
+ :
  : @param $path The path/URI of the file or directory to delete.
  : @return The empty sequence.
- : @error FOFL0001 If the <pre>$path</pre> does not exist.
+ : @error FOFL0001 If the <pre>$path</pre> path does not exist.
  : @error FOFL0000 If any other error occurs.
  :)
 declare sequential function file:delete(
   $path as xs:string
+) as empty-sequence()
+{
+  if (file:exists($path)) then
+    if (file:is-directory($path)) then
+      file:delete-directory-impl($path)
+    else
+      file:delete-file-impl($path)
+  else
+    fn:error(xs:QName("err:FOFL0001"), fn:concat("The path does not exists: ", $path))
+};
+
+(:~
+ : Deletes a file from the file system.
+ :
+ : @param $file The path/URI of the file to delete.
+ : @return The empty sequence.
+ : @error FOFL0001 If the <pre>$file</pre> path does not exist.
+ : @error FOFL0000 If any other error occurs.
+ :)
+declare %private sequential function file:delete-file-impl(
+  $file as xs:string
 ) as empty-sequence() external;
 
 (:~
- : Deletes a file or a directory from the file system. If $path denotes a
- : directory and $recursive evaluates to <pre>fn:true()</pre>, the directory
- : will be deleted recursively.
+ : Deletes a directory from the file system.
  :
- : @param $path The path/URI of the file or directory to delete.
- : @param $recursive If the operation should recursively delete the given
- :	      directory.
+ : @param $dir The path/URI of the directory to delete.
  : @return The empty sequence.
- : @error FOFL0001 If the <pre>$path</pre> path does not exist.
- : @error FOFL0005 If <pre>$recursive</pre> evaluates to <pre>fn:false()</pre>
- :    and <pre>$path</pre> points an existing directory.
+ : @error FOFL0001 If the <pre>$dir</pre> path does not exist.
+ : @error FOFL0003 If <pre>$dir</pre> does not point to a directory.
  : @error FOFL0000 If any other error occurs.
  :)
-declare sequential function file:delete(
-  $path as xs:string,
-  $recursive as xs:boolean
+declare %private sequential function file:delete-directory-impl(
+  $dir as xs:string
 ) as empty-sequence()
 {
-  if ($recursive) then
-    for $item in file:list($path)
-    let $fullPath := fn:concat($path, file:directory-separator(), $item)
-    return
-      if (file:is-directory($fullPath)) then
-        file:delete($fullPath, fn:true())
-      else
-        file:delete($fullPath)
-  else
-    ();
+  for $item in file:list($dir)
+  let $fullPath := fn:concat($dir, file:directory-separator(), $item)
+  return
+    if (file:is-directory($fullPath)) then
+      file:delete-directory-impl($fullPath)
+    else
+      file:delete-file-impl($fullPath);
     
-  file:delete($path);
+  file:delete-file-impl($dir);
 };
 
 (:~
@@ -316,7 +331,7 @@ declare sequential function file:move(
 ) as empty-sequence()
 {
   file:copy($source, $destination, $overwrite);
-  file:delete($source, fn:true());
+  file:delete($source);
 };
 
 (:~

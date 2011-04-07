@@ -342,6 +342,8 @@ ENDIF (FOUND_XQTS)
 # todo: comment next lines after remote queue fixed
 IF(NOT WIN32)
   EXPECTED_FAILURE(test/rbkt/zorba/schemas/any 3137594)
+ELSE(NOT WIN32)
+  EXPECTED_FAILURE(test/rbkt/zorba/file/createWriteReadDeleteSeries 3276394)
 ENDIF(NOT WIN32)
 
 EXPECTED_FAILURE(test/rbkt/zorba/modules/schema 3131554)

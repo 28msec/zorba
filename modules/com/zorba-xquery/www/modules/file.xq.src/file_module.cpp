@@ -41,8 +41,8 @@ FileModule::getExternalFunction(const String& aLocalname)
 
     } else if (aLocalname.equals("create-directory")) {
       lFunc = new CreateDirectoryFunction(this);
-    } else if (aLocalname.equals("delete")) {
-      lFunc = new DeleteFunction(this);
+    } else if (aLocalname.equals("delete-file-impl")) {
+      lFunc = new DeleteFileImplFunction(this);
     } else if (aLocalname.equals("read-binary")) {
       lFunc = new ReadBinaryFunction(this);
     } else if (aLocalname.equals("read-text")) {
