@@ -35,7 +35,7 @@ using namespace std;
 zstring get_os_err_string( char const *what, os_code code ) {
 #ifndef WIN32
   char err[ 512 ];
-  if ( what ) {
+  if ( what && *what ) {
     snprintf(
       err, sizeof( err ), "%s failed (error %d): %s",
       what, code, ::strerror( code )
@@ -58,7 +58,7 @@ zstring get_os_err_string( char const *what, os_code code ) {
   );
   int const werr_size = ::wcslen( wmsg ) + 40;
   ztd::auto_vec<WCHAR> const werr( new WCHAR[ werr_size ] );
-  if ( what ) {
+  if ( what && *what ) {
     StringCchPrintf(
       werr.get(), werr_size, L"%hs failed (error %d): %ls",
       what, code, wmsg
