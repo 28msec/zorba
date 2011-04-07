@@ -78,7 +78,7 @@ expr_t* expr::iter_done = &expr::iter_end_expr;
 /*******************************************************************************
 
 ********************************************************************************/
-  expr::expr(static_context* sctx, const QueryLoc& loc, expr_kind_t k)
+expr::expr(static_context* sctx, const QueryLoc& loc, expr_kind_t k)
   :
   theSctx(sctx),
   theLoc(loc),
@@ -350,8 +350,6 @@ void expr::clear_annotations()
   setNonDiscardable(ANNOTATION_FALSE);
   setUnfoldable(ANNOTATION_FALSE);
 
-  expr::setDirectAnnotations();
-
   ExprIterator iter(this);
   while (!iter.done())
   {
@@ -360,85 +358,6 @@ void expr::clear_annotations()
   }
 }
 
-
-/*******************************************************************************
-  Certain exprs are nondiscardable and/or unfoldable independently from their
-  children.
-********************************************************************************/
-void expr::setDirectAnnotations()
-{
-  // TODO: update exprs probably non-discardable as well
-  switch (get_expr_kind())
-  {
-  case fo_expr_kind:
-  {
-    fo_expr* fo = static_cast<fo_expr *>(this);
-    const function* f = fo->get_func();
-
-    bool isErrorFunc = (dynamic_cast<const fn_error*>(f) != NULL);
-
-    // The various fn:error functions are non-discardable. Variable assignment
-    // is also non-discardable.
-    if (f->getKind() == FunctionConsts::OP_VAR_ASSIGN_1 || isErrorFunc)
-    {
-      setNonDiscardable(ANNOTATION_TRUE_FIXED);
-    }
-
-    // Do not fold functions that always require access to the dynamic context,
-    // or are not deterministic.
-    if (isErrorFunc ||
-        (!f->isUdf() && f->accessesDynCtx()) ||
-        !f->isDeterministic())
-    {
-      setUnfoldable(ANNOTATION_TRUE_FIXED);
-    }
-
-    break;
-  }
-
-  case var_expr_kind:
-  {
-    var_expr::var_kind varKind = static_cast<var_expr *>(this)->get_kind();
-
-    if (varKind == var_expr::prolog_var || varKind == var_expr::local_var)
-      setUnfoldable(ANNOTATION_TRUE_FIXED);
-
-    break;
-  }
-
-  // Exit and flow-control exprs do more than just computing a result which is
-  // consumed by their parent expr. So, they cannot be folded.
-  case exit_expr_kind:
-  case flowctl_expr_kind:
-
-  // Node constructors are unfoldable because if a node constructor is inside
-  // a loop, then it will create a different xml tree every time it is invoked,
-  // even if the constructor itself is "constant" (i.e. does not reference any
-  // varialbes)
-  case elem_expr_kind:
-  case attr_expr_kind:
-  case text_expr_kind:
-  case pi_expr_kind:
-  case doc_expr_kind:
-  {
-    setUnfoldable(ANNOTATION_TRUE_FIXED);
-    break;
-  }
-
-  case cast_expr_kind:
-  case treat_expr_kind:
-  case promote_expr_kind:
-  {
-    setNonDiscardable(ANNOTATION_TRUE_FIXED);
-    break;
-  }
-
-  default:
-  {
-    break;
-  }
-  }
-}
 
 
 /*******************************************************************************
@@ -459,6 +378,7 @@ bool expr::is_nondeterministic() const
     const expr* ce = iter.get_expr();
     if (ce != NULL && ce->is_nondeterministic())
         return true;
+
     iter.next();
   }
 
@@ -1019,6 +939,11 @@ bool expr::is_map_internal(const expr* e, bool& found) const
     }
 
     return false;
+  }
+
+  case var_decl_expr_kind:
+  {
+    return !contains_expr(e);
   }
 
   case instanceof_expr_kind:

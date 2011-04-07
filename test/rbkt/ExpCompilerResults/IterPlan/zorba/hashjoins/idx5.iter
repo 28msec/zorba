@@ -14,14 +14,11 @@ Iterator tree for const-folded expr:
 
 Iterator tree for main query:
 <SequentialIterator>
-  <SequentialIterator>
-    <CtxVarDeclareIterator varid="2" varname="tests"/>
-    <CtxVarAssignIterator varid="2" varname="tests" varkind="global">
-      <ElementIterator>
-        <SingletonIterator value="xs:QName(,,tests)"/>
-      </ElementIterator>
-    </CtxVarAssignIterator>
-  </SequentialIterator>
+  <CtxVarDeclareIterator varid="2" varname="tests">
+    <ElementIterator>
+      <SingletonIterator value="xs:QName(,,tests)"/>
+    </ElementIterator>
+  </CtxVarDeclareIterator>
   <flwor::FLWORIterator>
     <LetVariable name="$$opt_temp_1" materialize="true">
       <HoistIterator>

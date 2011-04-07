@@ -119,8 +119,9 @@ protected:
   flwor_clause * theFlworClause;
   copy_clause  * theCopyClause;
 
-  bool           theIsPrivate; // prolog_vars can be private
+  bool           theIsPrivate; 
   bool           theIsExternal;
+  bool           theIsMutable;
 
 public:
   SERIALIZABLE_CLASS(var_expr)
@@ -154,6 +155,8 @@ public:
   bool is_external() const { return theIsExternal; }
 
   void set_external(bool v) { theIsExternal = v; }
+
+  bool is_mutable() const { return theIsMutable; }
 
   xqtref_t get_type() const;
 

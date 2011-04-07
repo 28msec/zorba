@@ -48,7 +48,7 @@ bool isErrorExpected(zorba::ZorbaException& e, State* aState)
   if ( aState->hasErrors) 
   {
     std::ostringstream oss;
-    oss << e.error().qname();
+    oss << e.error().qname().localname();
     zorba::String lError = oss.str();
 
     std::vector<std::string>::const_iterator lIter = aState->theErrors.begin();

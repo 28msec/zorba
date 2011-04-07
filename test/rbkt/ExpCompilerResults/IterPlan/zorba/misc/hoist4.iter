@@ -56,14 +56,11 @@ Iterator tree for main query:
   </ForVariable>
   <ReturnClause>
     <SequentialIterator>
-      <SequentialIterator>
-        <CtxVarDeclareIterator varid="2" varname="x"/>
-        <CtxVarAssignIterator varid="2" varname="x" varkind="local">
-          <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill allowed="0">
-            <ForVarIterator varname="b"/>
-          </AttributeAxisIterator>
-        </CtxVarAssignIterator>
-      </SequentialIterator>
+      <CtxVarDeclareIterator varid="2" varname="x">
+        <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill allowed="0">
+          <ForVarIterator varname="b"/>
+        </AttributeAxisIterator>
+      </CtxVarDeclareIterator>
       <flwor::FLWORIterator>
         <LetVariable name="$$opt_temp_0" materialize="true">
           <HoistIterator>

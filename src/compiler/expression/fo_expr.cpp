@@ -71,7 +71,7 @@ fo_expr::fo_expr(
 {
   assert(f != NULL);
   compute_scripting_kind();
-  setDirectAnnotations();
+  //setDirectAnnotations();
 }
 
 
@@ -89,7 +89,7 @@ fo_expr::fo_expr(
   theArgs[0] = arg;
 
   compute_scripting_kind();
-  setDirectAnnotations();
+  //setDirectAnnotations();
 }
 
 
@@ -109,7 +109,7 @@ fo_expr::fo_expr(
   theArgs[1] = arg2;
 
   compute_scripting_kind();
-  setDirectAnnotations();
+  //setDirectAnnotations();
 }
 
 
@@ -125,7 +125,7 @@ fo_expr::fo_expr(
 {
   assert(f != NULL);
   compute_scripting_kind();
-  setDirectAnnotations();
+  //setDirectAnnotations();
 }
 
 
@@ -213,7 +213,8 @@ void fo_expr::compute_scripting_kind()
 
 expr_t fo_expr::clone(substitution_t& subst) const
 {
-  if (get_func()->getKind() == FunctionConsts::ZORBA_STORE_COLLECTIONS_STATIC_MANIP_COLLECTION_1)
+  if (get_func()->getKind() == 
+      FunctionConsts::ZORBA_STORE_COLLECTIONS_STATIC_MANIP_COLLECTION_1)
   {
     expr::subst_iter_t i = subst.find(this);
 
@@ -223,7 +224,7 @@ expr_t fo_expr::clone(substitution_t& subst) const
 
   std::auto_ptr<fo_expr> fo(new fo_expr(theSctx, get_loc(), get_func()));
 
-  for (unsigned i = 0; i < theArgs.size(); ++i)
+  for (ulong i = 0; i < theArgs.size(); ++i)
     fo->theArgs.push_back(theArgs[i]->clone(subst));
 
   fo->theScriptingKind  = theScriptingKind;

@@ -2235,7 +2235,7 @@ expr_t wrap_in_globalvar_assign(expr_t e)
                                                    e->get_loc(),
                                                    theModulesInfo->init_exprs,
                                                    e,
-                                                   false);
+                                                   true);
 
     if (preloadedInitExpr)
       seqExpr->push_front(preloadedInitExpr);
@@ -2260,24 +2260,22 @@ expr_t wrap_in_globalvar_assign(expr_t e)
 
   The corresponding expr created here (and added to stmts) are:
 
-  1. sequential(ctxvar-declare(varExpr), ctxvar-assign(varExpr, initExpr))
+  1. var_dec_expr(varExpr, initExpr)
 
-  2. if (ctxvar-is-set(varExpr))
-     then fn:concatenate()
-     else sequential(ctxvar-declare(varExpr), ctxvar-assign(varExpr, initExpr))
+  2. var_dec_expr(varExpr, initExpr)
 
-     In this case, the ctxvar-is-set function checks if a value has been assigned
-     to the extranal value via the c++ api. If so, this value overrides the
+     In this case, the var_dec_expr will be a NOOP if a value has been assigned
+     to the external var via the c++ api. If so, this value overrides the
      initializing expr in the prolog.
 
-  3. ctxvar-declare(varExpr)
+  3. var_dec_expr(varExpr)
 
-  4. ctxvar-declare(varExpr)
+  4. var_dec_expr(varExpr)
 
      In this case, the variable must be initialized via the c++ api before the
      query is executed, and it is this external intialization that will declare
      the var, ie, add an entry for the var in the dynamic ctx. Nevertheless, we
-     need to generate the ctxvar-declare expr because it is when this expr is
+     need to generate the var_decl_expr because it is when this expr is
      encounered during codegen that an id will be assigned to the var (and
      stored in the var_expr). This id is needed in order to register the var
      in the dyn ctx.
@@ -2290,11 +2288,9 @@ expr_t wrap_in_globalvar_assign(expr_t e)
 ********************************************************************************/
 void declare_var(const global_binding& b, std::vector<expr_t>& stmts)
 {
-  function* varDeclare = GET_BUILTIN_FUNCTION(OP_VAR_DECLARE_1);
-  function* varAssign = GET_BUILTIN_FUNCTION(OP_VAR_ASSIGN_1);
-  function* varIsSet = GET_BUILTIN_FUNCTION(OP_VAR_IS_SET_1);
   function* varGet = GET_BUILTIN_FUNCTION(OP_VAR_GET_1);
 
+  expr_t initExpr = b.second;
   var_expr_t varExpr = b.first;
 
   const QueryLoc& loc = varExpr->get_loc();
@@ -2304,35 +2300,12 @@ void declare_var(const global_binding& b, std::vector<expr_t>& stmts)
   if (varType == NULL &&
       varExpr->get_name()->getLocalName() == static_context::DOT_VAR_NAME)
   {
-    varType = GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE;
+    varType = GENV_TYPESYSTEM.ITEM_TYPE_ONE;
   }
 
-  expr_t declExpr = new fo_expr(theRootSctx, loc, varDeclare, varExpr);
+  expr_t declExpr = new var_decl_expr(theRootSctx, loc, varExpr, initExpr);
 
-  expr_t initExpr = b.second;
-
-  if (initExpr != NULL)
-  {
-    if (initExpr->is_updating())
-      throw XQUERY_EXCEPTION(XUST0001, ERROR_LOC(initExpr->get_loc()));
-
-    initExpr = new fo_expr(theRootSctx, loc, varAssign, varExpr, initExpr);
-
-    initExpr = new sequential_expr(theRootSctx, loc, declExpr, initExpr, false);
-
-    if (b.is_extern())
-    {
-      expr_t isSetExpr = new fo_expr(theRootSctx, loc, varIsSet, varExpr);
-
-      initExpr = new if_expr(theRootSctx, loc, isSetExpr, create_seq(loc), initExpr);
-    }
-
-    stmts.push_back(initExpr);
-  }
-  else
-  {
-    stmts.push_back(declExpr);
-  }
+  stmts.push_back(declExpr);
 
   // check type for vars that are external or have an init expr
   if (varType != NULL && (b.is_extern() || b.second != NULL))

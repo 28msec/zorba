@@ -364,17 +364,14 @@ void IndexDecl::analyzeExprInternal(
                               theName->getStringValue().c_str(), "");
       }
     }
-    else if (func->getKind() == FunctionConsts::OP_VAR_DECLARE_1)
-    {
-      const const_expr* qnameExpr = dynamic_cast<const const_expr*>(foExpr->get_arg(0));
-      ZORBA_ASSERT(qnameExpr != NULL);
-      store::Item* qname = qnameExpr->get_val();
+  }
+  else if (e->get_expr_kind() == var_decl_expr_kind)
+  {
+    var_expr* varExpr = static_cast<var_decl_expr*>(e)->get_var_expr();
 
-      var_expr* varExpr = theSctx->lookup_var(qname, e->get_loc(), err::XPST0008);
-      ZORBA_ASSERT(varExpr->get_kind() == var_expr::local_var);
+    ZORBA_ASSERT(varExpr->get_kind() == var_expr::local_var);
 
-      varExprs.push_back(varExpr);
-    }
+    varExprs.push_back(varExpr);
   }
   else if (e->get_expr_kind() == flwor_expr_kind ||
            e->get_expr_kind() == gflwor_expr_kind)

@@ -157,6 +157,9 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
   BoolAnnotationValue curUnfoldable = ANNOTATION_FALSE;
   BoolAnnotationValue curContainsRecursiveCall = ANNOTATION_FALSE;
 
+  // Process the subexprs of the current expr. If any of the children is 
+  // nondiscardable, unfoldable, or contains recursive calls, then the current
+  // expr is also nondiscardable, unfoldable, or contains recursive calls.
   ExprConstIterator iter(node);
   while(!iter.done())
   {
@@ -164,27 +167,22 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
 
     apply(rCtx, childExpr, modified);
 
-    // If any of the children is nondiscardable, "this" is nondiscardable too.
     if (childExpr->isNonDiscardable())
       curNonDiscardable = ANNOTATION_TRUE;
 
-    // If any of the children is unfoldable, then "this" is unfoldable too.
     if (childExpr->isUnfoldable())
       curUnfoldable = ANNOTATION_TRUE;
 
-    // If any of the children contains recursive calls, then "this" does too.
     if (childExpr->containsRecursiveCall())
       curContainsRecursiveCall = ANNOTATION_TRUE;
 
     iter.next();
   }
 
-  // Certain exprs are nondiscardable and/or unfoldable independently from
-  // their children
-  switch (node->get_expr_kind())
-  {
-  // TODO: update exprs probably non-discardable as well
-  case fo_expr_kind:
+  // Process udfs: If the current expr is a udf invocation, optimize the udf
+  // body, if not optimized already, and determine whether the invocation is
+  // a recursive call or not.
+  if (node->get_expr_kind() == fo_expr_kind)
   {
     fo_expr* fo = static_cast<fo_expr *>(node);
     function* f = fo->get_func();
@@ -215,71 +213,109 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
         curContainsRecursiveCall = ANNOTATION_TRUE;
       }
     }
+  }
 
-    // The various fn:error functions are non-discardable. Variable assignment
-    // is also non-discardable.
-    if (f->getKind() == FunctionConsts::OP_VAR_ASSIGN_1 ||
-        f->getKind() == FunctionConsts::FN_TRACE_2 ||
-        dynamic_cast<const fn_error*>(f) != NULL)
+  // Certain exprs are nondiscardable independently from their children.
+  // TODO: update exprs probably non-discardable as well
+  if (saveNonDiscardable != ANNOTATION_TRUE_FIXED)
+  {
+    switch (node->get_expr_kind())
     {
-      curNonDiscardable = ANNOTATION_TRUE_FIXED;
+    case fo_expr_kind:
+      {
+        fo_expr* fo = static_cast<fo_expr *>(node);
+        function* f = fo->get_func();
+        
+        bool isErrorFunc = (dynamic_cast<const fn_error*>(f) != NULL);
+        
+        if (f->getKind() == FunctionConsts::OP_VAR_ASSIGN_1 ||
+            f->getKind() == FunctionConsts::FN_TRACE_2 ||
+            isErrorFunc)
+        {
+          curNonDiscardable = ANNOTATION_TRUE_FIXED;
+        }
+        
+        break;
+      }
+      
+    case cast_expr_kind:
+    case treat_expr_kind:
+    case promote_expr_kind:
+      {
+        curNonDiscardable = ANNOTATION_TRUE_FIXED;
+        break;
+      }
+      
+    default:
+      {
+        break;
+      }
+    }
+  }
+
+  // Certain exprs are unfoldable independently from their children
+  if (saveUnfoldable != ANNOTATION_TRUE_FIXED)
+  {
+    switch (node->get_expr_kind())
+    {
+    case fo_expr_kind:
+    {
+      fo_expr* fo = static_cast<fo_expr *>(node);
+      function* f = fo->get_func();
+
+      bool isErrorFunc = (dynamic_cast<const fn_error*>(f) != NULL);
+
+      // Do not fold functions that always require access to the dynamic context,
+      // or may need to access the implicit timezone (which is also in the dynamic
+      // constext).
+      if (isErrorFunc ||
+          f->accessesDynCtx() ||
+          maybe_needs_implicit_timezone(fo) ||
+          !f->isDeterministic())
+      {
+        curUnfoldable = ANNOTATION_TRUE_FIXED;
+      }
+      
+      break;
+    }
+      
+    case var_expr_kind:
+    {
+      var_expr::var_kind varKind = static_cast<var_expr *>(node)->get_kind();
+
+      if (varKind == var_expr::prolog_var || varKind == var_expr::local_var)
+        curUnfoldable = ANNOTATION_TRUE_FIXED;
+
+      break;
     }
 
-    // Do not fold functions that always require access to the dynamic context,
-    // or may need to access the implicit timezone (which is also in the dynamic
-    // constext).
-    if (f->accessesDynCtx() ||
-        dynamic_cast<const fn_error*>(f) != NULL ||
-        maybe_needs_implicit_timezone(fo) ||
-        !f->isDeterministic())
+    // var_decl_expr is unfoldable because it requires access to the dyn ctx.
+    case var_decl_expr_kind:
+
+    // Exit and flow-control exprs do more than just computing a result which is
+    // consumed by their parent expr. So, they cannot be folded.
+    case exit_expr_kind:
+    case flowctl_expr_kind:
+
+    // Node constructors are unfoldable because if a node constructor is inside
+    // a loop, then it will create a different xml tree every time it is invoked,
+    // even if the constructor itself is "constant" (i.e. does not reference any
+    // varialbes)
+    case elem_expr_kind:
+    case attr_expr_kind:
+    case text_expr_kind:
+    case pi_expr_kind:
+    case doc_expr_kind:
     {
       curUnfoldable = ANNOTATION_TRUE_FIXED;
+      break;
     }
-
-    break;
-  }
-
-  case var_expr_kind:
-  {
-    var_expr::var_kind varKind = static_cast<var_expr *>(node)->get_kind();
-
-    if (varKind == var_expr::prolog_var || varKind == var_expr::local_var)
-      curUnfoldable = ANNOTATION_TRUE_FIXED;
-
-    break;
-  }
-
-  // Exit and flow-control exprs do more than just computing a result which is
-  // consumed by their parent expr. So, they cannot be folded.
-  case exit_expr_kind:
-  case flowctl_expr_kind:
-
-  // Node constructors are unfoldable because if a node constructor is inside
-  // a loop, then it will create a different xml tree every time it is invoked,
-  // even if the constructor itself is "constant" (i.e. does not reference any
-  // varialbes)
-  case elem_expr_kind:
-  case attr_expr_kind:
-  case text_expr_kind:
-  case pi_expr_kind:
-  case doc_expr_kind:
-  {
-    curUnfoldable = ANNOTATION_TRUE_FIXED;
-    break;
-  }
-
-  case cast_expr_kind:
-  case treat_expr_kind:
-  case promote_expr_kind:
-  {
-    curNonDiscardable = ANNOTATION_TRUE_FIXED;
-    break;
-  }
-
-  default:
-  {
-    break;
-  }
+    
+    default:
+    {
+      break;
+    }
+    }
   }
 
   if (saveNonDiscardable != curNonDiscardable &&
@@ -356,7 +392,7 @@ RULE_REWRITE_POST(MarkFreeVars)
     ExprIterator iter(node);
     while (!iter.done())
     {
-      expr *e = *iter;
+      expr* e = *iter;
       const var_ptr_set& kfv = get_varset_annotation (e, Annotations::FREE_VARS);
       copy (kfv.begin(), kfv.end(), inserter(freevars->varset, freevars->varset.begin()));
 
@@ -508,19 +544,20 @@ RULE_REWRITE_POST(FoldConst)
 }
 
 
-static bool standalone_expr (expr_t e)
+static bool standalone_expr(expr_t e)
 {
   expr_kind_t k = e->get_expr_kind ();
   return k != match_expr_kind && k != axis_step_expr_kind;
 }
 
 
-static bool already_folded (expr_t e, RewriterContext& rCtx)
+static bool already_folded(expr_t e, RewriterContext& rCtx)
 {
   if (e->get_expr_kind () == const_expr_kind)
     return true;
   if (e->get_expr_kind () != fo_expr_kind)
     return false;
+
   const fo_expr *fo = e.dyn_cast<fo_expr>().getp ();
 
   return (fo->get_func()->getKind() == FunctionConsts::OP_CONCATENATE_N &&

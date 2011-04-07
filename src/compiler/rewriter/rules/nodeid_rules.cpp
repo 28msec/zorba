@@ -117,7 +117,12 @@ expr_t MarkConsumerNodeProps::apply(
                                true : false);
     break;
   }
-      
+
+  case var_decl_expr_kind :
+  {
+    break;
+  }
+
   case sequential_expr_kind :
   {
     sequential_expr* seqExpr = static_cast<sequential_expr *>(node);
@@ -133,6 +138,11 @@ expr_t MarkConsumerNodeProps::apply(
     expr_t& child = (*seqExpr)[numChildren-1];
     pushdown_ignores_sorted_nodes(node, child.getp());
     pushdown_ignores_duplicate_nodes(node, child.getp());
+
+    // TODO: go through the children again, and for each child that is a
+    // var_decl_expr, push down the annotation of the associated var_expr
+    // to the associated init_expr (if any) and then apply the rule to the
+    // init_expr.
     break;
   }
 

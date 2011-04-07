@@ -556,6 +556,47 @@ void end_visit(sequential_expr& v)
 }
 
 
+bool begin_visit(var_decl_expr& v)
+{
+  CODEGEN_TRACE_IN("");
+
+  var_expr* varExpr = v.get_var_expr();
+  if (varExpr->get_unique_id() == 0)
+    varExpr->set_unique_id(theNextDynamicVarId++);
+
+  return true;
+}
+
+void end_visit(var_decl_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+
+  var_expr* varExpr = v.get_var_expr();
+  expr* initExpr = v.get_init_expr();
+
+  checked_vector<PlanIter_t> args;
+  bool singleItem = false;
+
+  if (initExpr != NULL)
+  {
+    args.push_back(pop_itstack());
+
+    xqtref_t exprType = initExpr->get_return_type();
+
+    if (exprType->get_quantifier() == TypeConstants::QUANT_ONE)
+      singleItem = true;
+  }
+
+  push_itstack(new CtxVarDeclareIterator(sctx,
+                                         qloc,
+                                         args,
+                                         varExpr->get_unique_id(),
+                                         varExpr->get_name(),
+                                         varExpr->is_external(),
+                                         singleItem));
+}
+
+
 /*******************************************************************************
   VarRef expr
 ********************************************************************************/
@@ -2086,7 +2127,7 @@ void end_visit(while_expr& v)
   CODEGEN_TRACE_OUT("");
   checked_vector<PlanIter_t> argv;
   argv.push_back (pop_itstack ());
-  push_itstack (new LoopIterator (sctx, qloc, argv));
+  push_itstack(new LoopIterator (sctx, qloc, argv));
 }
 
 
@@ -2101,12 +2142,6 @@ bool begin_visit(fo_expr& v)
   {
     var_expr* varExpr = static_cast<var_expr*>(v.get_arg(0));
     varExpr->set_unique_id(theNextDynamicVarId++);
-  }
-  else if (func->getKind() == FunctionConsts::OP_VAR_DECLARE_1)
-  {
-    var_expr* varExpr = static_cast<var_expr*>(v.get_arg(0));
-    if (varExpr->get_unique_id() == 0)
-      varExpr->set_unique_id(theNextDynamicVarId++);
   }
   else
   {

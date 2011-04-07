@@ -82,6 +82,7 @@ public:
   EXPR_VISITOR_METHODS (trycatch_expr);
   EXPR_VISITOR_METHODS (validate_expr);
   EXPR_VISITOR_METHODS (var_expr);
+  EXPR_VISITOR_METHODS (var_decl_expr);
   EXPR_VISITOR_METHODS (while_expr);
   EXPR_VISITOR_METHODS (wrapper_expr);
 

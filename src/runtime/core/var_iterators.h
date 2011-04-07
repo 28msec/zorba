@@ -29,14 +29,14 @@ namespace zorba
 {
 
 /*******************************************************************************
-  This iterator implements the ctxvar-declare(varExpr) function. Its purpose is
-  to "declare" a block-local or prolog var (including the context item, if it
-  is declared in the prolog).
+  This iterator implements the var_decl expression. Its purpose is to "declare"
+  a block-local or prolog var (including the context item, if it is declared in
+  the prolog) and to initialize its value, if an init expr is provided.
 
   Specifically, for each prolog and block-local variable, the dynamic context 
   maps a numeric variable id (assigned to the varExpr during codegen) to an 
   entry that stores the current value of the variable, either as a single item
-  or as an iterator that produces an item sequencethe. Each such entry has a
+  or as an iterator that produces an item sequence. Each such entry has a
   state as well, which can be one of undeclared, declared, having a single-item
   value, or having an iterator value. 
 
@@ -44,21 +44,33 @@ namespace zorba
   initializes its state to "declared". It is possible that an entry for the
   variable exists already (and the entry may even have a value already), in
   which case, the iterator will set its state to "declared" only if it was
-  previously "undeclared".
+  previously "undeclared". Then, if an init expr is porvided, the init subplan
+  will be evaluated, the resulting value will be stored in the dctx entry,
+  and the state of the entry will be set to single-item or iterator value.
+
+  The iterator has 0 or 1 children. It has a single child if there is an
+  init expr, in which case, the child is the root of the subplan that computes
+  the init value.
+
+  Note: this iterator is a NOOP if the variable being declared is an external
+  one, which has been set already, either during a previous execution of the
+  same XQuery obj, or via the c++ API.
 ********************************************************************************/
-class CtxVarDeclareIterator : public NoaryBaseIterator<CtxVarDeclareIterator,
-                                                       PlanIteratorState>
+class CtxVarDeclareIterator : public NaryBaseIterator<CtxVarDeclareIterator,
+                                                      PlanIteratorState>
 {
 private:
   ulong         theVarId;
   store::Item_t theVarName;
+  bool          theIsExternal;
+  bool          theSingleItem;
 
 public:
   SERIALIZABLE_CLASS(CtxVarDeclareIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(
   CtxVarDeclareIterator,
-  NoaryBaseIterator<CtxVarDeclareIterator, PlanIteratorState>);
+  NaryBaseIterator<CtxVarDeclareIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar);
 
@@ -66,14 +78,11 @@ public:
   CtxVarDeclareIterator(
         static_context* sctx,
         const QueryLoc& loc,
+        std::vector<PlanIter_t>& args,
         ulong varid,
-        const store::Item_t& varName) 
-    :
-    NoaryBaseIterator<CtxVarDeclareIterator, PlanIteratorState>(sctx, loc),
-    theVarId(varid),
-    theVarName(varName)
-  {
-  }
+        const store::Item_t& varName,
+        bool isExtern,
+        bool singleItem);
 
   ulong getVarId() const { return theVarId; }
 

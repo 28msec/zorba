@@ -45,6 +45,7 @@ public:
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( debugger_expr );
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( wrapper_expr );
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( sequential_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( var_decl_expr );
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( var_expr );
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( flwor_expr );
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( promote_expr );

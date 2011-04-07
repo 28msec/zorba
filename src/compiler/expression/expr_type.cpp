@@ -693,6 +693,12 @@ void expr::compute_return_type(bool deep, bool* modified)
     return;
   }
 
+  case var_decl_expr_kind:
+  {
+    theType = rtm.EMPTY_TYPE;
+    return;
+  }
+
 #ifndef ZORBA_NO_FULL_TEXT
   case ft_expr_kind:
   {

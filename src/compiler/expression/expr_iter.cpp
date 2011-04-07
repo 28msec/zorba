@@ -654,6 +654,15 @@ void ExprIterator::next()
     break;
   }
 
+  case var_decl_expr_kind:
+  {
+    var_decl_expr* varDeclExpr = static_cast<var_decl_expr*>(theExpr);
+    EXPR_ITER_BEGIN();
+    EXPR_ITER_NEXT(varDeclExpr->theInitExpr);
+    EXPR_ITER_END();
+    break;
+  }
+
   default:
   {
     ZORBA_ASSERT(false);

@@ -1,11 +1,8 @@
 Iterator tree for main query:
 <SequentialIterator>
-  <SequentialIterator>
-    <CtxVarDeclareIterator varid="2" varname="x"/>
-    <CtxVarAssignIterator varid="2" varname="x" varkind="global">
-      <SingletonIterator value="xs:integer(1)"/>
-    </CtxVarAssignIterator>
-  </SequentialIterator>
+  <CtxVarDeclareIterator varid="2" varname="x">
+    <SingletonIterator value="xs:integer(1)"/>
+  </CtxVarDeclareIterator>
   <UDFunctionCallIterator>
     <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,price)" typename="*" nill allowed="0">
       <DescendantAxisIterator test kind="match_name_test" qname="xs:QName(,,book)" typename="*" nill allowed="0">

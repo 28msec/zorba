@@ -188,8 +188,9 @@ public:
 
   zstring show() const;
 
-protected:
+  bool isRemote() const {  return !isLocal(); }
 
+protected:
   bool isLocal() const {  return theBuffer.local[MAX_EMBEDDED_BYTE] & 0x1; }
 
   void markLocal() { theBuffer.local[MAX_EMBEDDED_BYTE] |= 0x1; }

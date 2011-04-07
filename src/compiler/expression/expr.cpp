@@ -108,6 +108,9 @@ END_SERIALIZABLE_CLASS_VERSIONS(cast_expr)
 SERIALIZABLE_CLASS_VERSIONS(name_cast_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(name_cast_expr)
 
+SERIALIZABLE_CLASS_VERSIONS(var_decl_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(var_decl_expr)
+
 SERIALIZABLE_CLASS_VERSIONS(if_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(if_expr)
 
@@ -183,6 +186,7 @@ DEF_EXPR_ACCEPT (promote_expr)
 DEF_EXPR_ACCEPT (trycatch_expr)
 DEF_EXPR_ACCEPT (eval_expr)
 DEF_EXPR_ACCEPT (function_trace_expr)
+DEF_EXPR_ACCEPT (var_decl_expr)
 DEF_EXPR_ACCEPT (if_expr)
 DEF_EXPR_ACCEPT (instanceof_expr)
 DEF_EXPR_ACCEPT (treat_expr)
@@ -224,6 +228,68 @@ static inline void checkSimpleExpr(const expr* e)
 #define CLONE( e, s ) ((e) == NULL ? NULL : (e)->clone(s))
 
 
+
+/*******************************************************************************
+
+  For Global Var:
+  ----------------
+
+  AnnotatedDecl ::= "declare" Annotation* (VarDecl | FunctionDecl)
+
+  Annotation ::= "%" EQName ("(" Literal ("," Literal)* ")")?
+
+  VarDecl ::= "variable" "$" VarName TypeDeclaration? 
+              ((":=" VarValue) | ("external" (":=" VarDefaultValue)?))
+
+  For Local Var:
+  --------------
+
+  VarDeclExpr ::= ("local" Annotation*)? "variable" "$" VarName TypeDeclaration?
+                  (":=" ExprSingle)?
+********************************************************************************/
+var_decl_expr::var_decl_expr(
+    static_context* sctx,
+    const QueryLoc& loc,
+    const var_expr_t& varExpr,
+    const expr_t& initExpr)
+  :
+  expr(sctx, loc, var_decl_expr_kind),
+  theVarExpr(varExpr),
+  theInitExpr(initExpr)
+{
+  compute_scripting_kind();
+}
+
+
+void var_decl_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (expr*)this);
+  ar & theVarExpr;
+  ar & theInitExpr;
+}
+
+
+void var_decl_expr::compute_scripting_kind()
+{
+  if (theVarExpr->get_kind() == var_expr::prolog_var)
+    checkSimpleExpr(theInitExpr);
+  else
+    checkNonUpdating(theInitExpr);
+
+  if (theInitExpr == NULL)
+    theScriptingKind = SEQUENTIAL_EXPR;
+  else
+    theScriptingKind = SEQUENTIAL_EXPR; // | theInitExpr->get_scripting_kind();
+}
+
+
+expr_t var_decl_expr::clone(substitution_t& s) const
+{
+  return new var_decl_expr(theSctx,
+                           get_loc(),
+                           theVarExpr->clone(s),
+                           theInitExpr->clone(s));
+}
 
 
 /*******************************************************************************

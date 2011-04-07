@@ -60,28 +60,75 @@ END_SERIALIZABLE_CLASS_VERSIONS(LetVarIterator)
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
+CtxVarDeclareIterator::CtxVarDeclareIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& args,
+    ulong varid,
+    const store::Item_t& varName,
+    bool isExtern,
+    bool singleItem) 
+  :
+  NaryBaseIterator<CtxVarDeclareIterator, PlanIteratorState>(sctx, loc, args),
+  theVarId(varid),
+  theVarName(varName),
+  theIsExternal(isExtern),
+  theSingleItem(singleItem)
+{
+}
+
+
 void CtxVarDeclareIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, 
-  (NoaryBaseIterator<CtxVarDeclareIterator, PlanIteratorState>*)this);
+  (NaryBaseIterator<CtxVarDeclareIterator, PlanIteratorState>*)this);
   
   ar & theVarId;
   ar & theVarName;
+  ar & theIsExternal;
+  ar & theSingleItem;
 }
 
 
 bool CtxVarDeclareIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
+  dynamic_context* dctx = planState.theLocalDynCtx;
+
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  planState.theLocalDynCtx->declare_variable(theVarId);
+  if (!theIsExternal || !dctx->exists_variable(theVarId))
+  {
+    dctx->declare_variable(theVarId);
+
+    if (!theChildren.empty())
+    {
+      if (theSingleItem)
+      {
+        store::Item_t item;
+
+        if (! consumeNext(item, theChildren[0], planState))
+          ZORBA_ERROR_LOC_DESC(XPTY0004, loc, "variable value must be a single item");
+        
+        dctx->set_variable(theVarId, theVarName, loc, item);
+        
+        if (consumeNext(item, theChildren[0], planState))
+          ZORBA_ERROR_LOC_DESC(XPTY0004, loc, "variable value must be a single item");
+      }
+      else
+      {
+        store::Iterator_t planIter = new PlanIteratorWrapper(theChildren[0], planState);
+        
+        dctx->set_variable(theVarId, theVarName, loc, planIter);
+      }
+    }
+  }
 
   STACK_END(state);
 }
 
 
-NOARY_ACCEPT(CtxVarDeclareIterator);
+NARY_ACCEPT(CtxVarDeclareIterator);
 
 
 /////////////////////////////////////////////////////////////////////////////////

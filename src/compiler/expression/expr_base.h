@@ -53,14 +53,9 @@ enum expr_kind_t
   castable_expr_kind,
   cast_expr_kind,
   const_expr_kind,
-  debugger_expr_kind,
-  delete_expr_kind,
   doc_expr_kind,
   elem_expr_kind,
-  eval_expr_kind,
-  exit_expr_kind,
   extension_expr_kind,
-  flowctl_expr_kind,
   flwor_expr_kind,
   fo_expr_kind,
 #ifndef ZORBA_NO_FULL_TEXT
@@ -68,7 +63,6 @@ enum expr_kind_t
 #endif /* ZORBA_NO_FULL_TEXT */
   gflwor_expr_kind,
   if_expr_kind,
-  insert_expr_kind,
   instanceof_expr_kind,
   match_expr_kind,
   name_cast_expr_kind,
@@ -76,20 +70,32 @@ enum expr_kind_t
   pi_expr_kind,
   promote_expr_kind,
   relpath_expr_kind,
-  rename_expr_kind,
-  replace_expr_kind,
-  sequential_expr_kind,
   text_expr_kind,
-  transform_expr_kind,
   treat_expr_kind,
-  trycatch_expr_kind,
   validate_expr_kind,
   var_expr_kind,
-  while_expr_kind,
-  wrapper_expr_kind,
+  var_decl_expr_kind,
+
   dynamic_function_invocation_expr_kind,
   function_item_expr_kind,
+  trycatch_expr_kind,
+
+  delete_expr_kind,
+  insert_expr_kind,
+  rename_expr_kind,
+  replace_expr_kind,
+  transform_expr_kind,
+
+  sequential_expr_kind,
+  exit_expr_kind,
+  flowctl_expr_kind,
+  while_expr_kind,
+
+  eval_expr_kind,
+  debugger_expr_kind,
+  wrapper_expr_kind,
   function_trace_expr_kind,
+
   unknown_expr_kind
 };
 
@@ -260,8 +266,6 @@ public:
   void setContainsRecursiveCall(BoolAnnotationValue v);
 
   bool containsRecursiveCall() const;
-
-  void setDirectAnnotations();
 
   bool is_constant() const;
 

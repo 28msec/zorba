@@ -51,6 +51,66 @@ class signature;
 
 
 
+/*******************************************************************************
+
+  For Global Var:
+  ----------------
+
+  AnnotatedDecl ::= "declare" Annotation* (VarDecl | FunctionDecl)
+
+  Annotation ::= "%" EQName ("(" Literal ("," Literal)* ")")?
+
+  VarDecl ::= "variable" "$" VarName TypeDeclaration? 
+              ((":=" VarValue) | ("external" (":=" VarDefaultValue)?))
+
+  For Local Var:
+  --------------
+
+  VarDeclExpr ::= ("local" Annotation*)? "variable" "$" VarName TypeDeclaration?
+                  (":=" ExprSingle)?
+
+  var_decl_expr is used to declare block-local and prolog variables (including 
+  the context item, if it is declared in the prolog). During runtime, the
+  associated iterator creates in the local dynamic context a binding between 
+  the variable id and the variable value. If the declaration includes an
+  initializing expr, the iterator computes the initExpr and stores the resulting
+  value inside this binding.
+
+********************************************************************************/
+class var_decl_expr : public expr 
+{
+  friend class ExprIterator;
+  friend class expr;
+
+protected:
+  var_expr_t theVarExpr;
+  expr_t     theInitExpr;
+
+public:
+  SERIALIZABLE_CLASS(var_decl_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(var_decl_expr, expr)
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  var_decl_expr(
+      static_context* sctx,
+      const QueryLoc& loc,
+      const var_expr_t& varExpr,
+      const expr_t& initExpr);
+
+  var_expr* get_var_expr() const { return theVarExpr.getp(); }
+
+  expr* get_init_expr() const { return theInitExpr.getp(); }
+
+  void compute_scripting_kind();
+
+  expr_t clone(substitution_t& s) const;
+
+  void accept(expr_visitor&);
+
+  std::ostream& put(std::ostream&) const;
+};
+
 
 /*******************************************************************************
   [68] IfExpr ::= "if" "(" Expr ")" "then" ExprSingle "else" ExprSingle

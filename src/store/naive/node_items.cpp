@@ -544,6 +544,14 @@ void XmlNode::setId(XmlTree* tree, const OrdPathStack* op)
     theOrdPath = *op;
   else
     theOrdPath.setAsRoot();
+
+  if (getNodeKind() == store::StoreConsts::textNode &&
+      theOrdPath.isRemote())
+  {
+    std::cout << "REMOTE ORDPATH : "
+              << theOrdPath.show()
+              << std::endl;
+  }
 }
 
 #else // TEXT_ORDPATH
@@ -3417,16 +3425,17 @@ TextNode::TextNode(
     parent->insertChild(this, pos);
   }
 
-#ifndef NDEBUG  
-  std::stringstream lSs;
-  lSs << "Constructed text node " << this << " parent = "
-      << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
-      << " tree = " << getTree()->getId() << ":" << getTree()
 #ifdef TEXT_ORDPATH
-      << " ordpath = " << theOrdPath.show()
-#endif
-      << " content = " << getText();
-  NODE_TRACE1(lSs.str());
+  NODE_TRACE1("Constructed text node " << this << " parent = "
+              << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
+              << " tree = " << getTree()->getId() << ":" << getTree()
+              << " ordpath = " << theOrdPath.show()
+              << " content = " << getText());
+#else
+  NODE_TRACE1("Constructed text node " << this << " parent = "
+              << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
+              << " tree = " << getTree()->getId() << ":" << getTree()
+              << " content = " << getText());
 #endif
 }
 
@@ -3460,15 +3469,15 @@ TextNode::TextNode(
 
   p->insertChild(this, 0);
 
-#ifndef NDEBUG  
-  std::stringstream lSs;
-  lSs << "Constructed text node " << this << " parent = "
-      << std::hex << (parent ? (ulong)parent : 0)
 #ifdef TEXT_ORDPATH
-      << " ordpath = " << theOrdPath.show() 
-#endif
-      << " content = " << getValue()->getStringValue();
-  NODE_TRACE1(lSs.str());
+  NODE_TRACE1("Constructed text node " << this << " parent = "
+              << std::hex << (parent ? (ulong)parent : 0)
+              << " ordpath = " << theOrdPath.show() 
+              << " content = " << getValue()->getStringValue());
+#else
+  NODE_TRACE1("Constructed text node " << this << " parent = "
+              << std::hex << (parent ? (ulong)parent : 0)
+              << " content = " << getValue()->getStringValue());
 #endif
 }
 

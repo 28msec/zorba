@@ -331,38 +331,29 @@ Iterator tree for const-folded expr:
 
 Iterator tree for main query:
 <SequentialIterator>
-  <SequentialIterator>
-    <CtxVarDeclareIterator varid="2" varname="width"/>
-    <CtxVarAssignIterator varid="2" varname="width" varkind="global">
-      <SingletonIterator value="xs:integer(10)"/>
-    </CtxVarAssignIterator>
-  </SequentialIterator>
+  <CtxVarDeclareIterator varid="2" varname="width">
+    <SingletonIterator value="xs:integer(10)"/>
+  </CtxVarDeclareIterator>
   <TreatIterator type="xs:integer" quant="">
     <CtxVarIterator varid="2" varname="width" varkind="global"/>
   </TreatIterator>
-  <SequentialIterator>
-    <CtxVarDeclareIterator varid="3" varname="height"/>
-    <CtxVarAssignIterator varid="3" varname="height" varkind="global">
-      <SingletonIterator value="xs:integer(10)"/>
-    </CtxVarAssignIterator>
-  </SequentialIterator>
+  <CtxVarDeclareIterator varid="3" varname="height">
+    <SingletonIterator value="xs:integer(10)"/>
+  </CtxVarDeclareIterator>
   <TreatIterator type="xs:integer" quant="">
     <CtxVarIterator varid="3" varname="height" varkind="global"/>
   </TreatIterator>
-  <SequentialIterator>
-    <CtxVarDeclareIterator varid="4" varname="scene"/>
-    <CtxVarAssignIterator varid="4" varname="scene" varkind="global">
-      <UDFunctionCallIterator>
-        <TreatIterator quant="">
-          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,scene)" typename="*" nill allowed="0">
-            <FnDocIterator>
-              <SingletonIterator value="xs:string(scene.xml)"/>
-            </FnDocIterator>
-          </ChildAxisIterator>
-        </TreatIterator>
-      </UDFunctionCallIterator>
-    </CtxVarAssignIterator>
-  </SequentialIterator>
+  <CtxVarDeclareIterator varid="4" varname="scene">
+    <UDFunctionCallIterator>
+      <TreatIterator quant="">
+        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,scene)" typename="*" nill allowed="0">
+          <FnDocIterator>
+            <SingletonIterator value="xs:string(scene.xml)"/>
+          </FnDocIterator>
+        </ChildAxisIterator>
+      </TreatIterator>
+    </UDFunctionCallIterator>
+  </CtxVarDeclareIterator>
   <flwor::FLWORIterator>
     <LetVariable name="$$opt_temp_0" materialize="true">
       <HoistIterator>

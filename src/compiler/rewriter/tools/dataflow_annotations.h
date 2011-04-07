@@ -31,6 +31,7 @@ public:
   void compute(expr* e);
 
 private:
+  void compute_var_decl_expr(var_decl_expr* e);
   void compute_sequential_expr(sequential_expr* e);
   void compute_wrapper_expr(wrapper_expr* e);
   void compute_var_expr(var_expr* e);

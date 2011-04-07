@@ -57,6 +57,10 @@ void DataflowAnnotationsComputer::compute(expr* e)
 {
   switch(e->get_expr_kind()) 
   {
+  case var_decl_expr_kind:
+    compute_var_decl_expr(static_cast<var_decl_expr *>(e));
+    break;
+
   case sequential_expr_kind:
     compute_sequential_expr(static_cast<sequential_expr *>(e));
     break;
@@ -230,6 +234,25 @@ bool DataflowAnnotationsComputer::generic_compute(expr* e)
   }
 
   return false;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void DataflowAnnotationsComputer::compute_var_decl_expr(var_decl_expr* e)
+{
+  generic_compute(e);
+  default_walk(e);
+  
+  var_expr* varExpr = e->get_var_expr();
+  expr* initExpr = e->get_init_expr();
+
+  if (initExpr != NULL && !varExpr->is_mutable())
+  {
+    PROPOGATE_SORTED_NODES(initExpr, varExpr);
+    PROPOGATE_DISTINCT_NODES(initExpr, varExpr);
+  }
 }
 
 

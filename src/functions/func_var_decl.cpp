@@ -29,48 +29,6 @@
 namespace zorba
 {
 
-/*******************************************************************************
-  ctxvar-declare(varExpr)
-
-  This internal function is used to declare block-local and prolog variables
-  (including the context item, if it is declared in the prolog). During runtime,
-  the function creates and initializes in the local dynamic context a binding
-  between the variable id and the variable value.
-********************************************************************************/
-class ctx_var_declare : public function
-{
-public:
-  ctx_var_declare(const signature& sig) 
-    :
-    function(sig, FunctionConsts::OP_VAR_DECLARE_1)
-  {
-  }
-
-  bool accessesDynCtx() const { return true; }
-
-  CODEGEN_DECL();
-};
-
-
-PlanIter_t ctx_var_declare::codegen(
-    CompilerCB* cb,
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& argv,
-    AnnotationHolder& ann) const
-{
-  const fo_expr& foExpr = static_cast<const fo_expr&>(ann);
-
-  assert(foExpr.get_arg(0)->get_expr_kind() == var_expr_kind);
-
-  const var_expr* varExpr = static_cast<const var_expr*>(foExpr.get_arg(0));
-
-  return new CtxVarDeclareIterator(sctx,
-                                   loc,
-                                   varExpr->get_unique_id(),
-                                   varExpr->get_name());  
-}
-
 
 /*******************************************************************************
   ctxvar-assign(varExpr, initExpr)
@@ -130,48 +88,6 @@ PlanIter_t ctx_var_assign::codegen(
 
 
 /*******************************************************************************
-  ctxvar-is-set(varExpr)
-
-  This internal function is used to check if an external prolog variable has
-  been declared and set. During runtime, it checks if a value exists for variable
-  in the global dynamic ctx.
-********************************************************************************/
-class ctx_var_is_set : public function
-{
-public:
-  ctx_var_is_set(const signature& sig)
-    :
-    function(sig, FunctionConsts::OP_VAR_IS_SET_1)
-  {
-  }
-
-  bool accessesDynCtx() const { return true; }
-
-  CODEGEN_DECL();
-};
-
-
-PlanIter_t ctx_var_is_set::codegen(
-    CompilerCB* cb,
-    static_context* sctx, 
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& argv,
-    AnnotationHolder& ann) const
-{
-  const fo_expr& foExpr = static_cast<const fo_expr&>(ann);
-
-  assert(foExpr.get_arg(0)->get_expr_kind() == var_expr_kind);
-
-  const var_expr* varExpr = static_cast<const var_expr*>(foExpr.get_arg(0));
-
-  return new CtxVarIsSetIterator(sctx,
-                                 loc,
-                                 varExpr->get_unique_id(), 
-                                 varExpr->get_name()); 
-}
-
-
-/*******************************************************************************
   ctxvar-get(varExpr)
 
   An "artificial" function that is needed by the optimizer only. During runtime,
@@ -225,21 +141,11 @@ void populateContext_VarDecl(static_context* sctx)
 {
   const char* zorba_op_ns = static_context::ZORBA_OP_NS.c_str();
 
-  DECL(sctx, ctx_var_declare,
-       (createQName(zorba_op_ns, "", "ctxvar-declare"),
-        GENV_TYPESYSTEM.ITEM_TYPE_ONE,
-        GENV_TYPESYSTEM.EMPTY_TYPE));
-
   DECL(sctx, ctx_var_assign,
        (createQName(zorba_op_ns, "", "ctxvar-assign"),
         GENV_TYPESYSTEM.ITEM_TYPE_ONE,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
         GENV_TYPESYSTEM.EMPTY_TYPE));
-
-  DECL(sctx, ctx_var_is_set,
-       (createQName(zorba_op_ns, "", "ctxvar-is-set"),
-        GENV_TYPESYSTEM.ITEM_TYPE_ONE,
-        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
   DECL(sctx, ctx_var_get,
        (createQName(zorba_op_ns, "", "ctxvar-get"),

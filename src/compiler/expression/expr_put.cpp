@@ -429,6 +429,17 @@ ostream& function_trace_expr::put( ostream& os) const
   END_PUT();
 }
 
+
+ostream& var_decl_expr::put( ostream& os) const
+{
+  BEGIN_PUT( var_decl_expr );
+  theVarExpr->put(os);
+  if (theInitExpr)
+    theInitExpr->put(os);
+  END_PUT();
+}
+
+
 ostream& if_expr::put( ostream& os) const
 {
   BEGIN_PUT( if_expr );
