@@ -23,8 +23,9 @@ DefaultErrorHandler::~DefaultErrorHandler() {
   // out-of-line since it's virtual
 }
 
-void DefaultErrorHandler::error( ZorbaException const& ) {
-  throw; // MUST NOT THROW 'e' OR THE OBJECT WILL BE SLICED!
+void DefaultErrorHandler::error( ZorbaException const& e) {
+  // must throw an error with the dynamic type here
+  e.polymorphic_throw();
 }
 
 } // namespace zorba
