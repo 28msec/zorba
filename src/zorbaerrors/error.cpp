@@ -20,6 +20,8 @@
 
 namespace zorba {
 
+///////////////////////////////////////////////////////////////////////////////
+
 namespace internal {
 
 SystemErrorBase::map_type& SystemErrorBase::get_map() {
