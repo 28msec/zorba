@@ -110,7 +110,9 @@ CollectionImpl::addNodes(const Iterator_t& aIterator)
 
     Iterator* lIter = aIterator.get();
     if (!lIter)
-      ZORBA_ERROR_DESC(API0014_INVALID_ARGUMENT, "Invalid Iterator given");
+      throw ZORBA_EXCEPTION(
+        API0014_INVALID_ARGUMENT, ERROR_PARAMS( "null", ZED( BadIterator ) )
+      );
 
     store::Iterator_t lRes = Unmarshaller::getInternalIterator(lIter);
 
@@ -152,4 +154,5 @@ CollectionImpl::deleteNode(Item& aNode)
 }
 
 
-} /* namespace zorba */
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

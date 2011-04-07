@@ -235,7 +235,9 @@ bool DynamicContextImpl::setVariable(
     checkNoIterators();
 
     if (!inValue.get())
-      ZORBA_ERROR_DESC(API0014_INVALID_ARGUMENT, "Invalid Iterator given");
+      throw ZORBA_EXCEPTION(
+        API0014_INVALID_ARGUMENT, ERROR_PARAMS( "null", ZED( BadIterator ) )
+      );
 
     const zstring& nameSpace = Unmarshaller::getInternalString(inNamespace);
     const zstring& localName = Unmarshaller::getInternalString(inLocalname);
@@ -329,7 +331,9 @@ bool DynamicContextImpl::setVariable(
     checkNoIterators();
 
     if (!inValue.get())
-      ZORBA_ERROR_DESC(API0014_INVALID_ARGUMENT, "Invalid Iterator given");
+      throw ZORBA_EXCEPTION(
+        API0014_INVALID_ARGUMENT, ERROR_PARAMS( "null", ZED( BadIterator ) )
+      );
 
     const zstring& varName = Unmarshaller::getInternalString(inVarName);
     store::Iterator_t value = Unmarshaller::getInternalIterator(inValue.get());
@@ -587,10 +591,14 @@ bool DynamicContextImpl::setCurrentDateTime(const Item& aDateTimeItem)
 
     if (!TypeOps::is_subtype(tm, *lItemType, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE))
     {
-      ZORBA_ERROR_DESC_OSS(API0014_INVALID_ARGUMENT,
-                           "Given item of type [" << lItemType->toString()
-                           << "] is not a subtype of ["
-                           << GENV_TYPESYSTEM.DATETIME_TYPE_ONE->toString() << "]");
+      throw ZORBA_EXCEPTION(
+        API0014_INVALID_ARGUMENT,
+        ERROR_PARAMS(
+          lItemType->toString(),
+          ZED( TypeIsNotSubtype ),
+          GENV_TYPESYSTEM.DATETIME_TYPE_ONE->toString()
+        )
+      );
     }
 
     theCtx->set_current_date_time(lItem);
@@ -837,4 +845,5 @@ void DynamicContextImpl::validateIfNecesary(
 #endif
 }
 
-} /* namespace zorba */
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

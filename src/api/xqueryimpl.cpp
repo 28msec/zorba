@@ -1015,10 +1015,7 @@ void XQueryImpl::execute()
     checkNotExecuting();
 
     if (!theCompilerCB->isUpdating())
-    {
-      ZORBA_ERROR_DESC(API0008_NOT_AN_UPDATE_XQUERY,
-                       "Cannot execute a non-updating query.");
-    }
+      throw ZORBA_EXCEPTION( API0008_NOT_AN_UPDATE_XQUERY );
 
     theExecuting = true;
 
@@ -1294,11 +1291,7 @@ void XQueryImpl::close()
 void XQueryImpl::checkIsDebugMode() const
 {
   if (!theIsDebugMode) 
-  {
-    ZORBA_ERROR_DESC_OSS(API0009_XQUERY_NOT_COMPILED_IN_DEBUG_MODE,
-                         "Can't perform the operation because the debug mode "
-                         << "is not set to true");
-  }
+    throw ZORBA_EXCEPTION( API0009_XQUERY_NOT_COMPILED_IN_DEBUG_MODE );
 }
 
 
@@ -1309,11 +1302,7 @@ void XQueryImpl::checkIsDebugMode() const
 void XQueryImpl::checkNotClosed() const
 {
   if (theIsClosed)
-  {
-    ZORBA_ERROR_DESC_OSS(API0006_XQUERY_ALREADY_CLOSED,
-                         "Can't perform the operation because the query is "
-                         << "already closed");
-  }
+    throw ZORBA_EXCEPTION( API0006_XQUERY_ALREADY_CLOSED );
 }
 
 
@@ -1324,11 +1313,7 @@ void XQueryImpl::checkNotClosed() const
 void XQueryImpl::checkCompiled() const
 {
   if ( ! thePlanProxy )
-  {
-    ZORBA_ERROR_DESC_OSS(API0003_XQUERY_NOT_COMPILED,
-                         "Can't perform the operation because the query is "
-                         << "not compiled");
-  }
+    throw ZORBA_EXCEPTION( API0003_XQUERY_NOT_COMPILED );
 }
 
 
@@ -1339,11 +1324,7 @@ void XQueryImpl::checkCompiled() const
 void XQueryImpl::checkNotCompiled() const
 {
   if ( thePlanProxy )
-  {
-    ZORBA_ERROR_DESC_OSS(API0004_XQUERY_ALREADY_COMPILED,
-                         "Can't perform the operation because the query has "
-                         << "already been compiled");
-  }
+    throw ZORBA_EXCEPTION( API0004_XQUERY_ALREADY_COMPILED );
 }
 
 
@@ -1353,11 +1334,7 @@ void XQueryImpl::checkNotCompiled() const
 void XQueryImpl::checkNotExecuting() const
 {
   if ( theExecuting )
-  {
-    ZORBA_ERROR_DESC_OSS(API0005_XQUERY_ALREADY_EXECUTING,
-                         "Can't perform the operation because the query is "
-                         << "executing already.");
-  }
+    throw ZORBA_EXCEPTION( API0005_XQUERY_ALREADY_EXECUTING );
 }
 
 
@@ -1407,4 +1384,5 @@ std::ostream& operator<<(std::ostream& os, XQuery* aQuery)
 }
 
 
-} /* namespace zorba */
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

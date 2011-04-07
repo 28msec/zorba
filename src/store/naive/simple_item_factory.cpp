@@ -1038,7 +1038,7 @@ bool BasicItemFactory::createElementNode(
   if ( typeName == NULL )
     throw ZORBA_EXCEPTION(
       API0014_INVALID_ARGUMENT,
-      ERROR_PARAMS( "NULL", ZED( NotAllowedForTypeName ) )
+      ERROR_PARAMS( "null", ZED( NotAllowedForTypeName ) )
     );
 
   assert(parent == NULL ||
@@ -1132,7 +1132,7 @@ bool BasicItemFactory::createElementNode(
   if ( typeName == NULL )
     throw ZORBA_EXCEPTION(
       API0014_INVALID_ARGUMENT,
-      ERROR_PARAMS( "NULL", ZED( NotAllowedForTypeName ) )
+      ERROR_PARAMS( "null", ZED( NotAllowedForTypeName ) )
     );
 
   assert(parent == NULL ||

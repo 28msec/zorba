@@ -273,8 +273,10 @@ void ZorbaImpl::notifyError( ErrorHandler *eh ) {
 
 void ZorbaImpl::checkItem(const store::Item_t& aItem)
 {
-  if (aItem == NULL)
-    ZORBA_ERROR_DESC(API0014_INVALID_ARGUMENT, "Invalid item given");
+  if (!aItem)
+    throw ZORBA_EXCEPTION(
+      API0014_INVALID_ARGUMENT, ERROR_PARAMS( "null", ZED( BadItem ) )
+    );
 }
 
 
