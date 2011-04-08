@@ -2548,9 +2548,10 @@ void static_context::bind_external_module(
 
   if (!theExternalModulesMap->insert(uri, modinfo))
   {
-    ZORBA_ERROR_DESC_OSS(API0019_FUNCTION_ALREADY_REGISTERED,
-                         "The external module with URI "
-                         << uri << " is already registered");
+    throw ZORBA_EXCEPTION(
+      API0019_MODULE_ALREADY_REGISTERED,
+      ERROR_PARAMS( uri )
+    );
   }
 }
 
@@ -3827,7 +3828,5 @@ void static_context::import_module(const static_context* module, const QueryLoc&
   }
 }
 
-
-
-} /* namespace zorba */
+} // namespace zorba
 /* vim:set et sw=2 ts=2: */

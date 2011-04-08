@@ -119,7 +119,7 @@ void StoreIteratorImpl::open()
   try
   {
     if (theIsOpen)  
-      throw ZORBA_EXCEPTION(API0041_ITERATOR_IS_OPEN_ALREADY);
+      throw ZORBA_EXCEPTION(API0041_ITERATOR_IS_ALREADY_OPEN);
 
     SYNC_CODE(
     if (!theHaveLock)

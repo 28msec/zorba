@@ -1819,9 +1819,9 @@ void serializer::json_emitter::emit_item(store::Item* item)
 
   if(!item->isNode() || item->getNodeKind () != store::StoreConsts::elementNode)
   {
-    ZORBA_ERROR_PARAM_OSS(API0062_CONV_JSON_PARAM,
-                          item->getStringValue(),
-                          "");
+    throw ZORBA_EXCEPTION(
+      API0062_CONV_JSON_PARAM, ERROR_PARAMS( item->getStringValue() )
+    );
   }
 
   if (JSON_serialize(item, result, error_log))
@@ -1830,9 +1830,10 @@ void serializer::json_emitter::emit_item(store::Item* item)
   }
   else
   {
-    ZORBA_ERROR_PARAM_OSS(API0061_CONV_JSON_SERIALIZE,
-                          item->getStringValue(),
-                          error_log);
+    throw ZORBA_EXCEPTION(
+      API0061_CONV_JSON_SERIALIZE,
+      ERROR_PARAMS( item->getStringValue(), error_log )
+    );
   }
 }
 
@@ -1874,9 +1875,10 @@ void serializer::jsonml_emitter::emit_item(store::Item* item)
 
   if(!item->isNode() || item->getNodeKind () != store::StoreConsts::elementNode)
   {
-    ZORBA_ERROR_PARAM_OSS(API0065_CONV_JSON_ML_PARAM,
-                          item->getStringValue(),
-                          "");
+    throw ZORBA_EXCEPTION(
+      API0065_CONV_JSON_ML_PARAM,
+      ERROR_PARAMS( item->getStringValue() )
+    );
   }
 
   if (JSON_ML_serialize(item, result, error_log))
@@ -1885,9 +1887,10 @@ void serializer::jsonml_emitter::emit_item(store::Item* item)
   }
   else
   {
-    ZORBA_ERROR_PARAM_OSS(API0064_CONV_JSON_ML_SERIALIZE,
-                          item->getStringValue(),
-                          error_log);
+    throw ZORBA_EXCEPTION(
+      API0064_CONV_JSON_ML_SERIALIZE,
+      ERROR_PARAMS( item->getStringValue(), error_log )
+    );
   }
 }
 
@@ -2309,7 +2312,9 @@ void serializer::serialize(
         method != PARAMETER_VALUE_XHTML &&
         method != PARAMETER_VALUE_JSONML)
     {
-      throw ZORBA_EXCEPTION(API0070_INVALID_SERIALIZATION_METHOD_FOR_SAX);
+      throw ZORBA_EXCEPTION(
+        API0070_INVALID_SERIALIZATION_METHOD_FOR_SAX, ERROR_PARAMS( method )
+      );
     }
     // it's OK now, build a SAX emmiter
     tr = new transcoder(temp_sstream, false);

@@ -63,9 +63,11 @@ bool AddDocumentIterator::nextImpl(
 
   // check if document already exists in the store
   if (GENV_STORE.getDocument(lResolvedUriString) != NULL) {
-    ZORBA_ERROR_LOC_DESC_OSS(API0020_DOCUMENT_ALREADY_EXISTS, loc,
-        "A document with URI " << lResolvedUriString << " already exists "
-        << "in the store.");
+    throw XQUERY_EXCEPTION(
+      API0020_DOCUMENT_ALREADY_EXISTS,
+      ERROR_PARAMS( lResolvedUriString ),
+      ERROR_LOC( loc )
+    );
   }
 
   // create the pul and add the primitive
@@ -254,4 +256,5 @@ bool IsAvailableDocumentIterator::nextImpl(
   STACK_END(state);
 }
 
-} /* namespace zorba */
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

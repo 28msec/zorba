@@ -23,7 +23,7 @@
 #endif
 
 #include "zorbaerrors/error_manager.h"
-
+#include "util/error_util.h"
 
 namespace zorba {
 
@@ -83,11 +83,10 @@ ExternalModule* DynamicLoader::getModule(const zstring& aFile) const
   HMODULE handle = LoadLibraryW(wpath_str);
   if (handle == NULL)
   {
-    std::string lErrorMessage;
-    displayError(lErrorMessage);
-    ZORBA_ERROR_DESC_OSS(API0015_CANNOT_OPEN_FILE,
-                         "Cannot load the dynamic library file " << aFile
-                         << ". " << lErrorMessage);
+    throw ZORBA_EXCEPTION(
+      API0015_CANNOT_OPEN_FILE,
+      error::get_os_err_string()
+    );
   }
   createModule = (ExternalModule* (*)())GetProcAddress(handle, "createModule");
   if (createModule == NULL)
@@ -102,9 +101,10 @@ ExternalModule* DynamicLoader::getModule(const zstring& aFile) const
   void* handle = dlopen(aFile.c_str(), RTLD_NOW);
   if (!handle)
   {
-    ZORBA_ERROR_DESC_OSS(API0015_CANNOT_OPEN_FILE,
-                         "Cannot load the dynamic library file " << aFile
-                         << ". " << dlerror());
+    throw ZORBA_EXCEPTION(
+      API0015_CANNOT_OPEN_FILE,
+      ERROR_PARAMS( aFile, dlerror() )
+    );
   }
 
   createModule = (ExternalModule* (*)()) dlsym(handle, "createModule");
@@ -112,8 +112,7 @@ ExternalModule* DynamicLoader::getModule(const zstring& aFile) const
   {
     dlclose(handle);
     ZORBA_ERROR_DESC_OSS(API0015_CANNOT_OPEN_FILE,
-                         "Function createModule not available in dynamic"
-                         << " library" << aFile << ". " << dlerror());
+                         "Function createModule not available in dynamic library" << aFile << ". " << dlerror());
   }
 #endif
   if (theLibraries.find(handle) == theLibraries.end())
@@ -139,4 +138,5 @@ DynamicLoader::~DynamicLoader()
 }
 
 
-} /* namespace zorba */
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

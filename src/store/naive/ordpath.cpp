@@ -239,7 +239,7 @@ OrdPath::OrdPath(const unsigned char* str, ulong strLen)
       else if (ch == '\0')
         break;
       else
-        ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str, "");
+        throw ZORBA_EXCEPTION( API0028_INVALID_NODE_URI, ERROR_PARAMS( str ) );
 
       buf[i] <<= 4;
       start++;
@@ -252,7 +252,7 @@ OrdPath::OrdPath(const unsigned char* str, ulong strLen)
       else if (ch == '\0')
         break;
       else
-        ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str, "");
+        throw ZORBA_EXCEPTION( API0028_INVALID_NODE_URI, ERROR_PARAMS( str ) );
 
       start++;
       i++;
@@ -4259,4 +4259,4 @@ std::string OrdPathStack::show() const
 
 } // namespace simplestore
 } // namespace zorba
-
+/* vim:set et sw=2 ts=2: */

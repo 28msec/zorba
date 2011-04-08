@@ -1111,7 +1111,9 @@ void SimpleStore::addNode(const zstring& uri, const store::Item_t& node)
 
   if (node == NULL || !node->isNode())
   {
-    ZORBA_ERROR_PARAM(API0021_ITEM_TO_LOAD_IS_NOT_NODE, uri.c_str(), "");
+    throw ZORBA_EXCEPTION(
+      API0021_ITEM_TO_LOAD_IS_NOT_NODE, ERROR_PARAMS( uri )
+    );
   }
 
   XmlNode_t root = reinterpret_cast<XmlNode*>(node.getp());
@@ -1123,7 +1125,9 @@ void SimpleStore::addNode(const zstring& uri, const store::Item_t& node)
 
   if (!inserted && node.getp() != root.getp())
   {
-    ZORBA_ERROR_PARAM(API0020_DOCUMENT_ALREADY_EXISTS, uri, "");
+    throw ZORBA_EXCEPTION(
+      API0020_DOCUMENT_ALREADY_EXISTS, ERROR_PARAMS( uri )
+    );
   }
   else if (inserted)
   {
@@ -1330,7 +1334,7 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
   ulong prefixlen = (ulong)strlen("zorba://node_reference/");
 
   if (strncmp(str.c_str(), "zorba://node_reference/", prefixlen))
-    ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str, "");
+    throw ZORBA_EXCEPTION( API0028_INVALID_NODE_URI, ERROR_PARAMS( str ) );
 
   const char* start;
   long tmp = 0;
@@ -1344,12 +1348,12 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
   tmp = strtol(start, &next, 10);
 
   if (tmp < 0 || tmp == LONG_MAX)
-    ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str, "");
+    throw ZORBA_EXCEPTION( API0028_INVALID_NODE_URI, ERROR_PARAMS( str ) );
 
   start = next;
 
   if (*start != '/')
-    ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str, "");
+    throw ZORBA_EXCEPTION( API0028_INVALID_NODE_URI, ERROR_PARAMS( str ) );
 
   ++start;
 
@@ -1361,12 +1365,12 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
   tmp = strtol(start, &next, 10);
 
   if (tmp <= 0 || tmp == LONG_MAX)
-    ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str, "");
+    throw ZORBA_EXCEPTION( API0028_INVALID_NODE_URI, ERROR_PARAMS( str ) );
 
   start = next;
 
   if (*start != '/')
-    ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str, "");
+    throw ZORBA_EXCEPTION( API0028_INVALID_NODE_URI, ERROR_PARAMS( str ) );
 
   ++start;
 
@@ -1378,12 +1382,12 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
   tmp = strtol(start, &next, 10);
 
   if (tmp <= 0 || tmp == LONG_MAX)
-    ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str, "");
+    throw ZORBA_EXCEPTION( API0028_INVALID_NODE_URI, ERROR_PARAMS( str ) );
 
   start = next;
 
   if (*start != '/')
-    ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str, "");
+    throw ZORBA_EXCEPTION( API0028_INVALID_NODE_URI, ERROR_PARAMS( str ) );
 
   ++start;
 
@@ -1399,11 +1403,11 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
   else if (*start == 'c')
     attributeNode = false;
   else
-    ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str, "");
+    throw ZORBA_EXCEPTION( API0028_INVALID_NODE_URI, ERROR_PARAMS( str ) );
 
   ++start;
   if (*start != '/')
-    ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str, "");
+    throw ZORBA_EXCEPTION( API0028_INVALID_NODE_URI, ERROR_PARAMS( str ) );
 
   ++start;
 

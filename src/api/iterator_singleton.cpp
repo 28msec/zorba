@@ -83,7 +83,7 @@ void API_SingletonIterator::open()
   try
   {
     if (theIsOpen)  
-      throw ZORBA_EXCEPTION(API0041_ITERATOR_IS_OPEN_ALREADY);
+      throw ZORBA_EXCEPTION(API0041_ITERATOR_IS_ALREADY_OPEN);
 
     theIsOpen = true;
     theIsDone = false;
