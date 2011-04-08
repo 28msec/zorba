@@ -36,6 +36,7 @@
 #include "context/static_context.h"
 
 #include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/assert.h"
 #include "util/string_util.h"
 
 #include <zorba/store_consts.h>
@@ -670,12 +671,14 @@ EndAtomicItem:;
     {
       ZORBA_SER_ERROR_DESC_OSS(SRL0010_ITEM_TYPE_NOT_SERIALIZABLE, "Pul");
     }
-    else /* EXCEPTION TODO: if(is_error)
+    else if(is_error)
     {
-      SERIALIZE_FIELD(ZorbaException*, value, getError());
+      ZORBA_ASSERT(false);
+    /*  SERIALIZE_FIELD(ZorbaException*, value, getError());
       FINALIZE_SERIALIZE(createError, (result, value));
+    */
     }
-    else */ if(is_function)
+    else  if(is_function)
     {
       FunctionItem   *fitem = NULL;
       if(ar.is_serializing_out())
@@ -921,8 +924,8 @@ void serialize_node_tree(Archiver &ar, store::Item *&obj, bool all_tree)
     }
     else
     {
-      SerializeBaseClass  *new_obj = NULL;
-      if((new_obj = (SerializeBaseClass*)ar.get_reference_value(referencing)))// ARCHIVE_FIELD_IS_REFERENCING
+      store::Item  *new_obj = NULL;
+      if((new_obj = (store::Item*)ar.get_reference_value(referencing)))// ARCHIVE_FIELD_IS_REFERENCING
       {
         obj = dynamic_cast<store::Item*>(new_obj);
         if(!obj)
@@ -943,5 +946,33 @@ void operator&(Archiver &ar, zorba::store::TempSeq *obj)
 {
   ZORBA_SER_ERROR_DESC_OSS(SRL0010_ITEM_TYPE_NOT_SERIALIZABLE, "TempSeq");
 }
+/*
+void operator&(Archiver &ar, Error *&obj)
+{
+  if(ar.is_serializing_out())
+  {
+    if(obj == NULL)
+    {
+      ar.add_compound_field("NULL", 
+                            1 ,//class_version
+                            FIELD_IS_CLASS, "NULL", 
+                            NULL,//(SerializeBaseClass*)obj, 
+                            ARCHIVE_FIELD_IS_NULL);
+      return;
+    }
+    bool is_ref;
+    assert(!ar.is_serialize_base_class());
+    zstring   err_qname = obj->
+    is_ref = ar.add_compound_field("Error*", 
+                                   1, 
+                                   !FIELD_IS_CLASS, "0",//strtemp, 
+                                   obj, 
+                                   ARCHIVE_FIELD_IS_PTR);
+    if(!is_ref)
+    {
+      ar.add_end_compound_field();
+    }
 
+}
+*/
 }}

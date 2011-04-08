@@ -527,10 +527,6 @@ void operator&(Archiver &ar, double &obj)
     else
       strcpy(strtemp, double_str.c_str());
 
-    if((obj < 2.1) && (obj > 2))
-    {
-      int i=0;
-    }
     ar.add_simple_field("double", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
   }
   else

@@ -176,7 +176,7 @@ protected:
 
   std::string archive_name;
   std::string archive_info;
-  int       archive_version;
+  unsigned long       archive_version;
 
   class archive_field  *out_fields;
   class archive_field  *current_compound_field;
