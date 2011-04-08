@@ -287,7 +287,7 @@ expr_t var_decl_expr::clone(substitution_t& s) const
 {
   return new var_decl_expr(theSctx,
                            get_loc(),
-                           theVarExpr->clone(s),
+                           dynamic_cast<var_expr*>(theVarExpr->clone(s).getp()),
                            theInitExpr->clone(s));
 }
 
