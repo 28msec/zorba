@@ -98,6 +98,7 @@ void EvalIterator::serialize(::zorba::serialization::Archiver& ar)
 
   ar & theVarNames;
   ar & theVarTypes;
+  SERIALIZE_ENUM(enum expr_script_kind_t, theScriptingKind);
   ar & theLocalBindings;
 }
 
