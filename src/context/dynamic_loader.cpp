@@ -85,7 +85,7 @@ ExternalModule* DynamicLoader::getModule(const zstring& aFile) const
   {
     throw ZORBA_EXCEPTION(
       API0015_CANNOT_OPEN_FILE,
-      error::get_os_err_string()
+      ERROR_PARAMS( error::get_os_err_string() )
     );
   }
   createModule = (ExternalModule* (*)())GetProcAddress(handle, "createModule");
