@@ -1,4 +1,3 @@
-
 import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
 
 import module namespace refl = "http://www.zorba-xquery.com/modules/reflection";
@@ -18,7 +17,7 @@ declare variable $doc as document-node(element(a:root)) := doc("../schemas/atomi
 (
 let $vdoc := validate { $doc }
 let $x := fn:data(($vdoc//a:decimal)[1])
-return ($x instance of xs:decimal, util:schema-type($x))
+return ($x instance of xs:decimal, schema:schema-type($x))
 ,
 try
 {

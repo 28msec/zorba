@@ -29,70 +29,14 @@ IF(ZORBA_TEST_XQUERYX)
   ENDIF (TESTFILES_XQX)
 ENDIF(ZORBA_TEST_XQUERYX)
 
+# Here we can remove some tests for which EXPECTED_FAILURE() is not
+# appropriate. IF YOU THINK YOU WANT TO DO THIS, YOU ARE PROBABLY
+# WRONG.  PLEASE DO NOT USE THIS MECHANISM IF AT ALL POSSIBLE.
 LIST(REMOVE_ITEM TESTFILES
-# Remove when bug #3071699 is fixed
-  zorba/HigherOrder/hof-101.xq
 
-# Remove when bug #3276383 is fixed
-  zorba/converters/html/tidy_1.xq
-  zorba/converters/html/tidy_2.xq
-  zorba/converters/html/tidy_3.xq
-  zorba/converters/html/tidy_4.xq
-  zorba/converters/html/tidy_5_wrong_options.xq
-  zorba/converters/html/tidy_6_wrong_options.xq
-  zorba/http_client/http-head.xq
-  zorba/http_client/http-options.xq
-  zorba/http_client/http-read-html-tidy2.xq
-  zorba/http_client/http1-read.xq
+# Test disabled because it hangs - bug 3281369
   zorba/http_client/http1-redirect.xq
-  zorba/http_client/http1.xq
-  zorba/http_client/http2-read-base64.xq
-  zorba/http_client/http2-read-html-tidy.xq
-  zorba/http_client/http2-read-html.xq
-  zorba/http_client/http2-read-override.xq
-  zorba/http_client/http2-read-status-only.xq
-  zorba/http_client/http2-read-svg.xq
-  zorba/http_client/http3-multipart.xq
-  zorba/http_client/http3-post.xq
-  zorba/http_client/http3-simple.xq
-  zorba/http_client/http4_tidy_applied.xq
-  zorba/http_client/http_error_hc001.xq
-  zorba/http_client/http_error_hc002.xq
-  zorba/http_client/http_error_hc004.xq
-  zorba/http_client/http_error_hc005.xq
-  zorba/http_client/http_tidy1.xq
-  zorba/http_client/http_tidy2.xq
-  zorba/spec/xquery_1_0.xq
-  zorba/webservices/google/book-search-xml.xq
-  zorba/webservices/google/directions-xml.xq
-  zorba/webservices/google/directions.xq
-  zorba/webservices/google/isbn.xq
-  zorba/webservices/google/youtube-category-search-xml.xq
-  zorba/webservices/google/youtube-category-search.xq
-  zorba/webservices/google/youtube-search-xml.xq
-  zorba/webservices/google/youtube-search.xq
-  zorba/webservices/mailchimp/login.xq
-  zorba/webservices/mailchimp/subscribe.xq
-  zorba/webservices/yahoo/geocode-xml.xq
-  zorba/webservices/yahoo/location-xml.xq
-  zorba/webservices/yahoo/longitude-latitude.xq
-  zorba/webservices/yahoo/map-xml.xq
-  zorba/webservices/yahoo/map.xq
-  zorba/webservices/yahoo/spelling-xml.xq
-  zorba/webservices/yahoo/spelling.xq
-  zorba/webservices/yahoo/traffic-report-xml.xq
-  zorba/webservices/yahoo/traffic-report.xq
-  zorba/webservices/yahoo/weather-xml.xq
-  zorba/webservices/yahoo/weather.xq
-  zorba/webservices/yahoo/woeid-xml.xq
-  zorba/webservices/yahoo/woeid.xq
-  zorba/xmlrpc/advogato.xq
 
-# Remove when bug #3276383 and #3152386 are BOTH fixed
-  zorba/http_client/external_variable.xq
-
-# Remove when bug #3276383 and #3106635 are BOTH fixed
-  zorba/spec/xquery_1_1.xq
 )
 
 # collect all chained test queries (suffix .cxq) in all subdirectories
@@ -337,19 +281,27 @@ ENDIF (FOUND_XQTS)
 # the list of tests that are failing but can be accepted by the commit queue
 # !!! do not abuse this list or you will be prosecuted !!!
 
-# This is not a bug, this is working per spec
-# The ##other means any other namespace but it MUST have a namespace
-# todo: comment next lines after remote queue fixed
-IF(NOT WIN32)
+# This test passes incorrectly with Xerces 2.8.0, so we have to mark
+# them as expected_failures() in that case.  For now we assume that
+# Xerces major version 2 doesn't work, and 3 does.  If we can
+# determine more precisely when this bug was fixed, we should change
+# this condition.
+IF(XVERMAJ EQUAL 2)
   EXPECTED_FAILURE(test/rbkt/zorba/schemas/any 3137594)
-ELSE(NOT WIN32)
+  EXPECTED_FAILURE(test/rbkt/zorba/eval/eval_schema2 3137594)
+ENDIF(XVERMAJ EQUAL 2)
+
+IF(WIN32)
   EXPECTED_FAILURE(test/rbkt/zorba/file/createWriteReadDeleteSeries 3276394)
-ENDIF(NOT WIN32)
+ENDIF(WIN32)
 
 EXPECTED_FAILURE(test/rbkt/zorba/modules/schema 3131554)
 
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/admin 2935047)
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/ic-uniqueKey-err2 2935047)
+EXPECTED_FAILURE(test/rbkt/zorba/HigherOrder/hof-101 3071699)
+EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_1_1 3281365)
+EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_1_0 3281365)
 
 # removed temporarely
 #IF(WIN32)
@@ -358,4 +310,3 @@ EXPECTED_FAILURE(test/rbkt/zorba/xqddf/ic-uniqueKey-err2 2935047)
 
 EXPECTED_FAILURE(test/rbkt/zorba/aleXis/q11 3103700)
 
-EXPECTED_FAILURE(test/rbkt/zorba/eval/eval_schema2 00001)
