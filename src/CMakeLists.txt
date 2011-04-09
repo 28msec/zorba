@@ -19,7 +19,6 @@ INCLUDE_DIRECTORIES(BEFORE ${CMAKE_CURRENT_SOURCE_DIR})
 # Otherwise, the parser doesn't work correclty. Files like xquery_driver.cpp must depend on the 
 # generated files if they exist!
 INCLUDE_DIRECTORIES(BEFORE ${CMAKE_CURRENT_BINARY_DIR})
-INCLUDE_DIRECTORIES(BEFORE ${CMAKE_SOURCE_DIR}/external) 
 
 INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaRuntimeGenerator.cmake)
 
@@ -226,7 +225,7 @@ INSTALL(TARGETS ${ZORBA_LIBRARY_INSTALL_LIST}
   ARCHIVE DESTINATION lib
 )
 
-#install external packages in Mac OS X package
+# install external packages in Mac OS X package
 IF ( APPLE )
   FOREACH(LIB ${Zorba_ICUUC} ${Zorba_ICUI18N} ${Zorba_ICU_DATA} ${Zorba_XERCESC} ${Zorba_XML2} )
     STRING(STRIP ${LIB} LIBNAME)

@@ -60,9 +60,9 @@ void slurp_file (
 
   qfile.read (str, len);
 
-  len = qfile.gcount();
+  len = static_cast<unsigned int> (qfile.gcount());
 
-  std::string sstr (str, len);
+  std::string sstr(str, len);
 
   if(sstr.find("$RBKT_SRC_DIR",0) != std::string::npos)
   {

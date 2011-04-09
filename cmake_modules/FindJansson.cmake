@@ -14,6 +14,8 @@
 #
 # - Find Jansson
 #
+# Once done this will define
+#
 #  Jansson_FOUND        - System has Jansson
 #  Jansson_INCLUDE_DIRS - The Jansson include directories
 #  Jansson_LIBRARIES    - The libraries needed to use Jansson
@@ -23,15 +25,15 @@ IF (Jansson_INCLUDE AND Jansson_LIBRARY)
    SET(Jansson_FIND_QUIETLY TRUE)
 ENDIF (Jansson_INCLUDE AND Jansson_LIBRARY)
 
-FIND_LIBRARY(Jansson_LIBRARY
-  NAME jansson
-  PATHS /usr/lib /usr/local/lib /opt/local/lib ${Jansson_LIBRARIES}
-)
+FIND_LIBRARY(
+  Jansson_LIBRARY
+  NAMES jansson jansson.lib Release/jansson.lib bin/jansson.lib bin/Release/jansson.lib
+  PATHS /usr/lib /usr/local/lib /opt/local/lib ${Jansson_LIBRARIES})
 
 FIND_PATH(
   Jansson_INCLUDE
   NAMES jansson.h
-  PATH_SUFFIXES jansson
+  PATH_SUFFIXES jansson src
   PATHS ${Jansson_INCLUDE_DIRS})
 
 IF (Jansson_LIBRARY AND Jansson_INCLUDE)

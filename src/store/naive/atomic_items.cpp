@@ -943,7 +943,7 @@ void StreamableStringItem::materialize() const
   char lBuf[4096];
   while (theIstream) {
     lStream.read(lBuf, sizeof(lBuf));
-    lSsi->theValue.append(lBuf, lStream.gcount());
+    lSsi->theValue.append(lBuf, static_cast<unsigned int>(lStream.gcount()));
   }
 }
 

@@ -21,8 +21,7 @@
 #include "util/utf8_util.h"
 #include "util/converters/json_converter.h"
 
-#include "json/parser.h"
-#include "json/value.h"
+#include "jansson.h"
 
 #include "context/namespace_context.h"
 #include "context/static_context.h"
@@ -33,7 +32,7 @@
 namespace zorba
 {
 
-json::value* getValue(
+json_t* getValue(
     const char* aJSON,
     const zstring::size_type aLen,
     zstring& error_log);
@@ -67,14 +66,14 @@ bool create_Pair_Helper(
 
 
 void parse_Json_value(
-    json::value** aValue,
+    json_t** aValue,
     store::Item_t aParent,
     const zstring& aBaseUri,
     store::Item_t* aResult);
 
 
 void parse_Json_ML_value(
-    json::value** aValue,
+    json_t** aValue,
     store::Item_t aParent,
     zstring& aBaseUri,
     store::Item_t* aResult);
@@ -118,24 +117,24 @@ bool JSON_parse(
     const zstring& aBaseUri,
     zstring& aErrorLog)
 {
-  std::auto_ptr<json::value> lValue(getValue(aJsonString, aLength, aErrorLog));
-  if( !aErrorLog.empty() )
-    return false;
+  //std::auto_ptr<json::value> lValue(getValue(aJsonString, aLength, aErrorLog));
+  //if( !aErrorLog.empty() )
+  //  return false;
 
-  json::vector_list_t::iterator lVectIter;
-  json::vector_list_t * lVect = lValue->getchildrenlist();
+  //json::vector_list_t::iterator lVectIter;
+  //json::vector_list_t * lVect = lValue->getchildrenlist();
 
-  create_Node_Helper(NULL, aBaseUri, "json", &aElement);
-  create_Attribute_Helper(aElement, "type", "object");
+  //create_Node_Helper(NULL, aBaseUri, "json", &aElement);
+  //create_Attribute_Helper(aElement, "type", "object");
 
-  if( lVect != 0 )
-  {
-    for ( lVectIter=lVect->begin(); lVectIter != lVect->end(); ++lVectIter )
-    {
-      store::Item_t lNewNode = NULL;
-      parse_Json_value(&*lVectIter, aElement, aBaseUri, &lNewNode);
-    }
-  }
+  //if( lVect != 0 )
+  //{
+  //  for ( lVectIter=lVect->begin(); lVectIter != lVect->end(); ++lVectIter )
+  //  {
+  //    store::Item_t lNewNode = NULL;
+  //    parse_Json_value(&*lVectIter, aElement, aBaseUri, &lNewNode);
+  //  }
+  //}
 
   return true;
 }
@@ -280,183 +279,184 @@ bool create_Pair_Helper(
 }
 
 
-json::value* getValue(const char* aJSON, const zstring::size_type aLen, zstring& aErrorLog)
+json_t* getValue(const char* aJSON, const zstring::size_type aLen, zstring& aErrorLog)
 {
-  //transforn from UTF-8 to UCS-4 using ICU
-  wchar_t *lUCS4;
-  unicode::size_type lUCS4Len;
-  utf8::to_wchar_t(
-    aJSON, static_cast<unicode::size_type>( aLen ), &lUCS4, &lUCS4Len
-  );
+  ////transforn from UTF-8 to UCS-4 using ICU
+  //wchar_t *lUCS4;
+  //unicode::size_type lUCS4Len;
+  //utf8::to_wchar_t(
+  //  aJSON, static_cast<unicode::size_type>( aLen ), &lUCS4, &lUCS4Len
+  //);
 
-  json::parser lParser;
-  json::value* lValue = lParser.parse(lUCS4, lUCS4Len);
-  std::wstring lErr = lParser.printerrors();
-  delete[] lUCS4;
+  //json::parser lParser;
+  //json::value* lValue = lParser.parse(lUCS4, lUCS4Len);
+  //std::wstring lErr = lParser.printerrors();
+  //delete[] lUCS4;
 
-  //transform from UCS-4 to UTF-8
-  utf8::to_string(lErr.c_str(), &aErrorLog);
-  return lValue;
+  ////transform from UCS-4 to UTF-8
+  //utf8::to_string(lErr.c_str(), &aErrorLog);
+  //return lValue;
+  return 0;
 }
 
 void parse_Json_value(
-    json::value** aValue,
+    json_t** aValue,
     store::Item_t aParent,
     const zstring& aBaseUri,
     store::Item_t* aResult)
 {
-  json::vector_list_t::iterator lVectIter;
-  json::vector_list_t * lVect;
+  //json::vector_list_t::iterator lVectIter;
+  //json::vector_list_t * lVect;
 
-  json::array_list_t::iterator lArrtIter;
-  json::array_list_t * lArr;
+  //json::array_list_t::iterator lArrtIter;
+  //json::array_list_t * lArr;
 
-  store::Item_t lItemObj, lItemArr;
+  //store::Item_t lItemObj, lItemArr;
 
-  if( aValue!=0 )
-  {
-    zstring lName;
-    utf8::to_string( (*aValue)->getname(), &lName );
+  //if( aValue!=0 )
+  //{
+  //  zstring lName;
+  //  utf8::to_string( (*aValue)->getname(), &lName );
 
-    zstring empty;
+  //  zstring empty;
 
-    switch((*aValue)->getdatatype())
-    {
-    case json::datatype::_array:
-    {
-      create_Pair_Helper(aParent, aBaseUri, aResult, lName,
-                         "array", empty);
+  //  switch((*aValue)->getdatatype())
+  //  {
+  //  case json::datatype::_array:
+  //  {
+  //    create_Pair_Helper(aParent, aBaseUri, aResult, lName,
+  //                       "array", empty);
 
-      lArr = (*aValue)->getarraylist();
-      if( lArr != 0 )
-      {
-        for ( lArrtIter = lArr->begin(); lArrtIter != lArr->end(); ++lArrtIter )
-          parse_Json_value(&*lArrtIter, *aResult, aBaseUri, &lItemArr);
-      }
-      break;
-    }
-    case json::datatype::_object:
-    {
-      create_Pair_Helper(aParent, aBaseUri, aResult, lName,
-                         "object", empty);
+  //    lArr = (*aValue)->getarraylist();
+  //    if( lArr != 0 )
+  //    {
+  //      for ( lArrtIter = lArr->begin(); lArrtIter != lArr->end(); ++lArrtIter )
+  //        parse_Json_value(&*lArrtIter, *aResult, aBaseUri, &lItemArr);
+  //    }
+  //    break;
+  //  }
+  //  case json::datatype::_object:
+  //  {
+  //    create_Pair_Helper(aParent, aBaseUri, aResult, lName,
+  //                       "object", empty);
 
-      lVect = (*aValue)->getchildrenlist();
-      if( lVect != 0 )
-      {
-        for ( lVectIter = lVect->begin(); lVectIter != lVect->end(); ++lVectIter )
-          parse_Json_value(&*lVectIter, *aResult, aBaseUri, &lItemObj);
-      }
-      break;
-    }
-    default:
-      std::wstring * lWtmp = (*aValue)->getstring();
+  //    lVect = (*aValue)->getchildrenlist();
+  //    if( lVect != 0 )
+  //    {
+  //      for ( lVectIter = lVect->begin(); lVectIter != lVect->end(); ++lVectIter )
+  //        parse_Json_value(&*lVectIter, *aResult, aBaseUri, &lItemObj);
+  //    }
+  //    break;
+  //  }
+  //  default:
+  //    std::wstring * lWtmp = (*aValue)->getstring();
 
-      zstring lVal;
-      utf8::to_string( *lWtmp, &lVal );
-      replace_special_chars(lVal);
+  //    zstring lVal;
+  //    utf8::to_string( *lWtmp, &lVal );
+  //    replace_special_chars(lVal);
 
-      bool haveVal = true;
+  //    bool haveVal = true;
 
-      delete lWtmp;
+  //    delete lWtmp;
 
-      zstring lType;
-      if ((*aValue)->getdatatype() == json::datatype::_string)
-      {
-        lType = "string";
-      }
-      else if ((*aValue)->getdatatype() == json::datatype::_literal)
-      {
-        if( ZSTREQ(lVal, "null") )
-        {
-          haveVal = false;
-          lType = "null";
-        }
-        else
-        {
-          lType = "boolean";
-        }
-      }
-      else if (((*aValue)->getdatatype() == json::datatype::_number) ||
-               ((*aValue)->getdatatype() == json::datatype::_fixed_number))
-      {
-        lType = "number";
-      }
+  //    zstring lType;
+  //    if ((*aValue)->getdatatype() == json::datatype::_string)
+  //    {
+  //      lType = "string";
+  //    }
+  //    else if ((*aValue)->getdatatype() == json::datatype::_literal)
+  //    {
+  //      if( ZSTREQ(lVal, "null") )
+  //      {
+  //        haveVal = false;
+  //        lType = "null";
+  //      }
+  //      else
+  //      {
+  //        lType = "boolean";
+  //      }
+  //    }
+  //    else if (((*aValue)->getdatatype() == json::datatype::_number) ||
+  //             ((*aValue)->getdatatype() == json::datatype::_fixed_number))
+  //    {
+  //      lType = "number";
+  //    }
 
-      create_Pair_Helper(aParent, aBaseUri, aResult, lName, lType, lVal, haveVal);
-      break;
-    }
-  }
+  //    create_Pair_Helper(aParent, aBaseUri, aResult, lName, lType, lVal, haveVal);
+  //    break;
+  //  }
+  //}
 }
 
 
 void parse_Json_ML_value(
-    json::value** aValue,
+    json_t** aValue,
     store::Item_t aParent,
     const zstring& aBaseUri,
     store::Item_t* aResult)
 {
-  json::vector_list_t::iterator lVectIter;
-  json::vector_list_t * lVect;
+  //json::vector_list_t::iterator lVectIter;
+  //json::vector_list_t * lVect;
 
-  json::array_list_t::iterator lArrIter;
-  json::array_list_t * lArr;
+  //json::array_list_t::iterator lArrIter;
+  //json::array_list_t * lArr;
 
-  store::Item_t lItemObj, lTextValue;
+  //store::Item_t lItemObj, lTextValue;
 
-  if( aValue != 0 )
-  {
-    switch((*aValue)->getdatatype())
-    {
-    case json::datatype::_array:
-      lArr = (*aValue)->getarraylist();
-      lArrIter = lArr->begin();
-      if((*lArrIter)->getdatatype() == json::datatype::_string)
-      {
-        std::wstring *lWtmp = (*lArrIter)->getstring();
-        zstring lName;
-        utf8::to_string( *lWtmp, &lName );
-        delete lWtmp;
+  //if( aValue != 0 )
+  //{
+  //  switch((*aValue)->getdatatype())
+  //  {
+  //  case json::datatype::_array:
+  //    lArr = (*aValue)->getarraylist();
+  //    lArrIter = lArr->begin();
+  //    if((*lArrIter)->getdatatype() == json::datatype::_string)
+  //    {
+  //      std::wstring *lWtmp = (*lArrIter)->getstring();
+  //      zstring lName;
+  //      utf8::to_string( *lWtmp, &lName );
+  //      delete lWtmp;
 
-        create_Node_Helper(aParent, aBaseUri, lName, aResult);
-        ++lArrIter;
+  //      create_Node_Helper(aParent, aBaseUri, lName, aResult);
+  //      ++lArrIter;
 
-        for ( ; lArrIter != lArr->end(); ++lArrIter )
-        {
-          parse_Json_ML_value(&*lArrIter, *aResult, aBaseUri, &lItemObj);
-        }
-      }
-      break;
+  //      for ( ; lArrIter != lArr->end(); ++lArrIter )
+  //      {
+  //        parse_Json_ML_value(&*lArrIter, *aResult, aBaseUri, &lItemObj);
+  //      }
+  //    }
+  //    break;
 
-    case json::datatype::_object:
-      lVect = (*aValue)->getchildrenlist();
-      if( lVect != 0 )
-      {
-        for ( lVectIter = lVect->begin(); lVectIter != lVect->end(); ++lVectIter )
-        {
-          zstring lName;
-          utf8::to_string( (*lVectIter)->getname(), &lName );
-          std::wstring * lWtmp = (*lVectIter)->getstring();
-          zstring lText;
-          utf8::to_string( *lWtmp, &lText );
-          delete lWtmp;
+  //  case json::datatype::_object:
+  //    lVect = (*aValue)->getchildrenlist();
+  //    if( lVect != 0 )
+  //    {
+  //      for ( lVectIter = lVect->begin(); lVectIter != lVect->end(); ++lVectIter )
+  //      {
+  //        zstring lName;
+  //        utf8::to_string( (*lVectIter)->getname(), &lName );
+  //        std::wstring * lWtmp = (*lVectIter)->getstring();
+  //        zstring lText;
+  //        utf8::to_string( *lWtmp, &lText );
+  //        delete lWtmp;
 
-          create_Attribute_Helper(aParent, lName, lText, NULL);
-        }
-      }
-      break;
+  //        create_Attribute_Helper(aParent, lName, lText, NULL);
+  //      }
+  //    }
+  //    break;
 
-    default:
-      std::wstring * lWtmp = (*aValue)->getstring();
-      zstring lText;
-      utf8::to_string( *lWtmp, &lText );
-      replace_special_chars(lText);
-      delete lWtmp;
+  //  default:
+  //    std::wstring * lWtmp = (*aValue)->getstring();
+  //    zstring lText;
+  //    utf8::to_string( *lWtmp, &lText );
+  //    replace_special_chars(lText);
+  //    delete lWtmp;
 
-      if( ! ZSTREQ(lText, "null") )
-        GENV_ITEMFACTORY->createTextNode(lTextValue, aParent, lText);
-      break;
-    }
-  }
+  //    if( ! ZSTREQ(lText, "null") )
+  //      GENV_ITEMFACTORY->createTextNode(lTextValue, aParent, lText);
+  //    break;
+  //  }
+  //}
 }
 
 
@@ -695,33 +695,33 @@ bool JSON_ML_parse(
     const zstring& aBaseUri,
     zstring& aErrorLog)
 {
-  std::auto_ptr<json::value> lValue(getValue(aJsonString, aLength, aErrorLog));
-  if( !aErrorLog.empty() )
-    return false;
+  //std::auto_ptr<json::value> lValue(getValue(aJsonString, aLength, aErrorLog));
+  //if( !aErrorLog.empty() )
+  //  return false;
 
-  json::array_list_t::iterator lArrIter;
-  json::array_list_t * lArr = lValue->getarraylist();
-  if( lArr != 0 )
-  {
-    lArrIter = lArr->begin();
-    if((*lArrIter)->getdatatype() == json::datatype::_string)
-    {
-      std::wstring * lWtmp = (*lArrIter)->getstring();
-      zstring lName;
-      utf8::to_string( *lWtmp, &lName );
-      delete lWtmp;
+  //json::array_list_t::iterator lArrIter;
+  //json::array_list_t * lArr = lValue->getarraylist();
+  //if( lArr != 0 )
+  //{
+  //  lArrIter = lArr->begin();
+  //  if((*lArrIter)->getdatatype() == json::datatype::_string)
+  //  {
+  //    std::wstring * lWtmp = (*lArrIter)->getstring();
+  //    zstring lName;
+  //    utf8::to_string( *lWtmp, &lName );
+  //    delete lWtmp;
 
-      create_Node_Helper(NULL, aBaseUri, lName, &aElement);
+  //    create_Node_Helper(NULL, aBaseUri, lName, &aElement);
 
-      ++lArrIter;
+  //    ++lArrIter;
 
-      for ( ; lArrIter != lArr->end(); ++lArrIter )
-      {
-        store::Item_t lNewNode = NULL;
-        parse_Json_ML_value(&*lArrIter, aElement, aBaseUri, &lNewNode);
-      }
-    }
-  }
+  //    for ( ; lArrIter != lArr->end(); ++lArrIter )
+  //    {
+  //      store::Item_t lNewNode = NULL;
+  //      parse_Json_ML_value(&*lArrIter, aElement, aBaseUri, &lNewNode);
+  //    }
+  //  }
+  //}
 
   return true;
 }

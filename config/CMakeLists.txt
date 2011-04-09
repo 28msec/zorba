@@ -24,9 +24,7 @@ SET(ZORBA_SHARE_DIR "share/zorba-${ZORBA_VERSION}/cmake")
 SET(Zorba_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/include"
                        "${CMAKE_BINARY_DIR}/include"
 )
-SET(Zorba_LIBRARY_DIRS "${CMAKE_BINARY_DIR}/src"
-                       "${CMAKE_BINARY_DIR}/external/json"
-)
+SET(Zorba_LIBRARY_DIRS "${CMAKE_BINARY_DIR}/src")
 SET(Zorba_CMAKE_MODULES_DIR "${CMAKE_SOURCE_DIR}/cmake_modules")
 SET(Zorba_USE_FILE     "${CMAKE_CURRENT_SOURCE_DIR}/ZorbaUse.cmake")
 GET_TARGET_PROPERTY(Zorba_TESTDRIVER testdriver LOCATION)

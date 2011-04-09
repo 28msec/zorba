@@ -367,7 +367,7 @@ void serializer::emitter::emit_streamable_item(store::Item* item)
   // Streamable item
   char buffer[1024];
   int rollover = 0;
-  int read_bytes;
+  std::streamsize read_bytes;
   std::istream& is = item->getStream();
 
   // read bytes and do string expansion
@@ -375,7 +375,7 @@ void serializer::emitter::emit_streamable_item(store::Item* item)
   {
     is.read(buffer + rollover, 1024 - rollover);
     read_bytes = is.gcount();
-    rollover = emit_expanded_string(buffer, read_bytes + rollover);
+    rollover = emit_expanded_string(buffer, static_cast<zstring::size_type>(read_bytes + rollover));
     memmove(buffer, buffer + 1024 - rollover, rollover);
   }
   while (read_bytes > 0);
@@ -1653,7 +1653,7 @@ void serializer::text_emitter::emit_streamable_item(store::Item* item)
 {
   // Streamable item
   char buffer[1024];
-  int read_bytes;
+  std::streamsize read_bytes;
   std::istream& is = item->getStream();
 
   // prepare the stream

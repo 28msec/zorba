@@ -348,13 +348,24 @@ LIST(APPEND requiredlibs ${requiredlibs-store})
 
 
 #
-# JSON
-#
-SET(requiredlibs ${requiredlibs} json)
-
-#
 # Debugger
 #
+
+#
+# Jansson
+#
+MESSAGE(STATUS "Looking for Jansson")
+FIND_PACKAGE(Jansson REQUIRED)
+
+IF (Jansson_FOUND)
+  MESSAGE(STATUS "Found Jansson library -- " ${Jansson_LIBRARY})
+  INCLUDE_DIRECTORIES(${Jansson_INCLUDE_DIRS})
+  SET(requiredlibs ${requiredlibs} ${Jansson_LIBRARY})
+ELSE(Jansson_FOUND)
+  MESSAGE(STATUS "The Jansson library was not found.")
+ENDIF(Jansson_FOUND)
+
+
 IF(WIN32)
   SET(requiredlibs ${requiredlibs} wsock32)
 ENDIF(WIN32)
@@ -430,9 +441,6 @@ ADD_SUBDIRECTORY(cmake_modules)
 # add this here because we need the file target
 # later for the generation of runtime and functions
 ADD_SUBDIRECTORY(modules)
-
-INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/external)
-ADD_SUBDIRECTORY(external)
 
 ADD_SUBDIRECTORY(include)
 

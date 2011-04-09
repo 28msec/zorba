@@ -277,7 +277,7 @@ void Schema::registerXSD(const char* xsdURL,
 			     "Error during parsing: " << xsdURL << " "
 			     << StrX(e.getMessage()));
   }
-  catch (const ZorbaException& e)
+  catch (const ZorbaException& /* e */)
   {
     throw;
   }

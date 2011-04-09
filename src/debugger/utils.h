@@ -19,19 +19,16 @@
 
 #include <functional>
 
+#include <jansson.h>
+
 #include "compiler/parser/query_loc.h"
 #include "zorbatypes/zstring.h"
-
-// Forward declaration
-namespace json {
-  class value;
-}
 
 namespace zorba
 {
   namespace debugger {
     zstring queryLocToJSON(const QueryLoc& aLoc);
-    QueryLoc fromJSONToQueryLoc(json::value *obj);
+    QueryLoc fromJSONToQueryLoc(json_t* obj);
   }
 
   template<class T> 

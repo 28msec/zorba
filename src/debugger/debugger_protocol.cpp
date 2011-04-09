@@ -22,20 +22,17 @@
 
 #include <zorba/zorba.h>
 
+#include <jansson.h>
+
 #include "api/unmarshaller.h"
-
 #include "zorbatypes/numconversions.h"
-
-#include "json/parser.h"
-#include "json/value.h"
-
 #include "zorbautils/lock.h"
 #include "debugger/utils.h"
 #include "util/ascii_util.h"
 
 using namespace std;
 
-namespace zorba{
+namespace zorba {
 
 bool is_little_endian()
 {
@@ -44,53 +41,45 @@ bool is_little_endian()
   return(byte[0] ? true : false);
 }
 
-uint16_t uint_swap( uint16_t i )
+uint16_t uint_swap(uint16_t i)
 {
-  if ( ! is_little_endian() )
-  {
+  if (!is_little_endian()) {
     return i;
   } else {
     unsigned char b1, b2;
     b1 = i & 255;
-    b2 = ( i >> 8 ) & 255;
-    return ( b1 << 8 ) + b2;
+    b2 = (i >> 8) & 255;
+    return (b1 << 8) + b2;
   }
 }
 
-uint32_t uint_swap( uint32_t i )
+uint32_t uint_swap(uint32_t i)
 {
-  if ( ! is_little_endian() )
-  {
+  if (!is_little_endian()) {
     return i;
   } else {
     unsigned char b1, b2, b3, b4;
     b1 = i & 255;
-    b2 = ( i >> 8 ) & 255;
-    b3 = ( i >> 16 ) & 255;
-    b4 = ( i >> 24 ) & 255;
-    return ( b1 << 24 ) + ( b2 << 16 ) + ( b3 << 8 ) + b4;
+    b2 = (i >> 8) & 255;
+    b3 = (i >> 16) & 255;
+    b4 = (i >> 24) & 255;
+    return (b1 << 24) + (b2 << 16) + (b3 << 8) + b4;
   }
 }
 
-std::ostream& operator << ( std::ostream &os, const AbstractMessage * message )
+std::ostream& operator << (std::ostream &os, const AbstractMessage* message)
 {
   Length length;
-  const char * lData = reinterpret_cast< const char * > ( message->serialize( length ) );
-  os.write( lData, length );
+  const char* lData = reinterpret_cast<const char*>(message->serialize(length));
+  os.write(lData, length);
   return os;
 }
 
-json::value* getValue(Byte* aMessage, const unsigned int aLength)
+json_t* getJsonValue(Byte* aMessage, const unsigned int aLength)
 {
-  char* lMessage = reinterpret_cast<char *>(aMessage+MESSAGE_HEADER_SIZE);
-  json::parser lParser;
-  json::value* lValue = lParser.parse(lMessage, aLength-MESSAGE_HEADER_SIZE);
-  return lValue;
-}
-
-json::value* getValue(json::value* aValue, std::string anIndex)
-{
-  return (*aValue)[anIndex.c_str()];
+  std::string lMessageStr(reinterpret_cast<char *>(aMessage + MESSAGE_HEADER_SIZE), aLength - MESSAGE_HEADER_SIZE);
+  json_error_t error;
+  return json_loads(lMessageStr.c_str(), 0, &error);
 }
 
 void replaceAllInString(std::string& aString,
@@ -129,12 +118,12 @@ void deserializeString(std::string& aString)
   aString = lRes;
 }
 
-bool AbstractMessage::operator == ( const AbstractMessage & message )
+bool AbstractMessage::operator == (const AbstractMessage & message)
 {
   Length length;
-  Byte * msg1 = serialize( length );
-  Byte * msg2 = message.serialize( length );
-  bool r = memcmp( msg1, msg2, length ) == 0;
+  Byte* msg1 = serialize(length);
+  Byte* msg2 = message.serialize(length);
+  bool r = memcmp(msg1, msg2, length) == 0;
   delete[] msg1;
   delete[] msg2;
   return r;
@@ -142,31 +131,31 @@ bool AbstractMessage::operator == ( const AbstractMessage & message )
 
 bool AbstractMessage::operator != (const AbstractMessage & message)
 {
-  return ! ( * this == message );
+  return ! (* this == message);
 }
 
-MessageException::MessageException( const std::string &aMessage) throw() : userMessage( aMessage ){}
+MessageException::MessageException(const std::string &aMessage) throw() : userMessage(aMessage) {}
 
-MessageException::~MessageException() throw(){}
+MessageException::~MessageException() throw() {}
 
 const char * MessageException::what() const throw()
 {
   return userMessage.c_str();
 }
 
-AbstractMessage::AbstractMessage( const Id aId, const Flags aFlags )
+AbstractMessage::AbstractMessage(const Id aId, const Flags aFlags)
 {
   theHeaderContent = new HeaderContent();
-  setId( aId );
-  setFlags( aFlags );
-  setLength( SIZE_OF_HEADER_CONTENT );
+  setId(aId);
+  setFlags(aFlags);
+  setLength(SIZE_OF_HEADER_CONTENT);
 }
 
-AbstractMessage::AbstractMessage( Byte * aMessage )
+AbstractMessage::AbstractMessage(Byte* aMessage)
 {
-  HeaderContent * lmsg =  reinterpret_cast< HeaderContent *>( aMessage );
+  HeaderContent * lmsg = reinterpret_cast<HeaderContent*>(aMessage);
   theHeaderContent = new HeaderContent();
-  memcpy( theHeaderContent, lmsg, SIZE_OF_HEADER_CONTENT );
+  memcpy(theHeaderContent, lmsg, SIZE_OF_HEADER_CONTENT);
 }
 
 AbstractMessage::~AbstractMessage()
@@ -174,37 +163,31 @@ AbstractMessage::~AbstractMessage()
   delete theHeaderContent;
 }
 
-//Byte * AbstractMessage::serialize( Length & aLength ) const
-//{
-//  return reinterpret_cast< Byte * >( theHeaderContent );
-//}
-
 void AbstractMessage::checkIntegrity()
 {
-  //if( ! isValidMessage() )
-  //{
-  //  throw MessageException( "Invalid Message" );
+  //if (!isValidMessage()) {
+  //  throw MessageException("Invalid Message");
   //}
 }
 
-ReplyMessage::ReplyMessage( const Id aId, const ErrorCode aErrorCode ):
-  AbstractMessage( aId, REPLY_FLAG )
+ReplyMessage::ReplyMessage(const Id aId, const ErrorCode aErrorCode)
+  : AbstractMessage(aId, REPLY_FLAG)
 {
   theReplyContent = new ReplyContent();
-  setErrorCode( aErrorCode );
-  setLength( MESSAGE_HEADER_SIZE );
+  setErrorCode(aErrorCode);
+  setLength(MESSAGE_HEADER_SIZE);
 }
 
-ReplyMessage::ReplyMessage( Byte * aMessage, const unsigned int aLength ):  AbstractMessage( aMessage )
+ReplyMessage::ReplyMessage(Byte* aMessage, const unsigned int aLength)
+  : AbstractMessage(aMessage)
 {
-  ErrorCode * lmsg =  reinterpret_cast< ErrorCode * >( aMessage + SIZE_OF_HEADER_CONTENT );
+  ErrorCode * lmsg =  reinterpret_cast<ErrorCode*>(aMessage + SIZE_OF_HEADER_CONTENT);
   theReplyContent = new ReplyContent();
-  memcpy( theReplyContent, lmsg, SIZE_OF_REPLY_CONTENT );
-  if ( aLength - MESSAGE_HEADER_SIZE > 0 )
-  {
+  memcpy(theReplyContent, lmsg, SIZE_OF_REPLY_CONTENT);
+  if (aLength - MESSAGE_HEADER_SIZE > 0) {
     ztd::auto_vec<char> lData(new char[ aLength - MESSAGE_HEADER_SIZE + 1 ]);
     memset(lData.get(), '\0', aLength - MESSAGE_HEADER_SIZE + 1);
-    memcpy(lData.get(), aMessage + MESSAGE_HEADER_SIZE, aLength - MESSAGE_HEADER_SIZE );
+    memcpy(lData.get(), aMessage + MESSAGE_HEADER_SIZE, aLength - MESSAGE_HEADER_SIZE);
     theData = lData.get();
   }
   checkIntegrity();
@@ -215,20 +198,19 @@ ReplyMessage::~ReplyMessage()
   delete theReplyContent;
 }
 
-Byte * ReplyMessage::serialize( Length & aLength ) const
+Byte* ReplyMessage::serialize(Length & aLength) const
 {
   std::stringstream lData;
   lData << theData;
   aLength = getLength();
-  Byte * lHeader = reinterpret_cast< Byte * > ( theHeaderContent );
-  Byte * lReply  = reinterpret_cast< Byte * > ( theReplyContent );
+  Byte* lHeader = reinterpret_cast< Byte* > (theHeaderContent);
+  Byte* lReply  = reinterpret_cast< Byte* > (theReplyContent);
   //Harcoded value to avoid padding on sizeof(HeaderContent)
-  Byte * lMsg = new Byte[ SIZE_OF_HEADER_CONTENT + SIZE_OF_REPLY_CONTENT + lData.str().length() ];
-  memcpy( lMsg, lHeader, SIZE_OF_HEADER_CONTENT );
-  memcpy( lMsg + SIZE_OF_HEADER_CONTENT, lReply, SIZE_OF_REPLY_CONTENT );
-  if ( lData.str().length() > 0 )
-  {
-    memcpy( lMsg + SIZE_OF_HEADER_CONTENT + SIZE_OF_REPLY_CONTENT, lData.str().c_str(), lData.str().length() );
+  Byte* lMsg = new Byte[SIZE_OF_HEADER_CONTENT + SIZE_OF_REPLY_CONTENT + lData.str().length()];
+  memcpy(lMsg, lHeader, SIZE_OF_HEADER_CONTENT);
+  memcpy(lMsg + SIZE_OF_HEADER_CONTENT, lReply, SIZE_OF_REPLY_CONTENT);
+  if (lData.str().length() > 0) {
+    memcpy(lMsg + SIZE_OF_HEADER_CONTENT + SIZE_OF_REPLY_CONTENT, lData.str().c_str(), lData.str().length());
   }
   return lMsg;
 }
@@ -264,30 +246,34 @@ AbstractCommandMessage::getNextId()
   return ++theLastId;
 }
 
-AbstractCommandMessage::AbstractCommandMessage( const CommandSet aCommandSet, const Command aCommand, const Flags flags )
-: AbstractMessage( getNextId(), flags ), theReply(0), theCommandContent(new CommandContent())
+AbstractCommandMessage::AbstractCommandMessage(const CommandSet aCommandSet, const Command aCommand, const Flags flags)
+  : AbstractMessage(getNextId(), flags),
+    theReply(0),
+    theCommandContent(new CommandContent())
 {
-  setCommandSet( aCommandSet );
-  setCommand( aCommand );
-  setLength( MESSAGE_HEADER_SIZE );
+  setCommandSet(aCommandSet);
+  setCommand(aCommand);
+  setLength(MESSAGE_HEADER_SIZE);
 }
 
-AbstractCommandMessage::AbstractCommandMessage( Byte * aMessage, const unsigned int aLength ):
-  AbstractMessage( aMessage ), theReply(0), theCommandContent(new CommandContent())
+AbstractCommandMessage::AbstractCommandMessage(Byte* aMessage, const unsigned int aLength)
+  : AbstractMessage(aMessage),
+    theReply(0),
+    theCommandContent(new CommandContent())
 {
-  CommandContent * lmsg =  reinterpret_cast< CommandContent *>( aMessage + SIZE_OF_HEADER_CONTENT );
-  memcpy( theCommandContent, lmsg, sizeof( CommandContent ) );
+  CommandContent * lmsg =  reinterpret_cast< CommandContent *>(aMessage + SIZE_OF_HEADER_CONTENT);
+  memcpy(theCommandContent, lmsg, sizeof(CommandContent));
   checkIntegrity();
 }
 
-Byte * AbstractCommandMessage::serialize( Length & aLength ) const
+Byte* AbstractCommandMessage::serialize(Length & aLength) const
 {
-  Byte * lHeader   = reinterpret_cast< Byte * > ( theHeaderContent );
-  Byte * lCommand  = reinterpret_cast< Byte * > ( theCommandContent );
+  Byte* lHeader   = reinterpret_cast< Byte* > (theHeaderContent);
+  Byte* lCommand  = reinterpret_cast< Byte* > (theCommandContent);
   //Harcoded value to avoid padding on sizeof(HeaderContent)
-  Byte * lMsg = new Byte[ SIZE_OF_HEADER_CONTENT + sizeof( CommandContent ) ];
-  memcpy( lMsg, lHeader, SIZE_OF_HEADER_CONTENT );
-  memcpy( lMsg + SIZE_OF_HEADER_CONTENT, lCommand, sizeof( CommandContent ) );
+  Byte* lMsg = new Byte[ SIZE_OF_HEADER_CONTENT + sizeof(CommandContent) ];
+  memcpy(lMsg, lHeader, SIZE_OF_HEADER_CONTENT);
+  memcpy(lMsg + SIZE_OF_HEADER_CONTENT, lCommand, sizeof(CommandContent));
   aLength = MESSAGE_HEADER_SIZE;
   return lMsg;
 }
@@ -307,94 +293,94 @@ bool AbstractCommandMessage::isValidMessage() const
 bool AbstractCommandMessage::isExecutionCommand() const
 {
   return getCommandSet() == EXECUTION &&
-          ( getCommand() == RUN || getCommand() == SUSPEND ||
+          (getCommand() == RUN || getCommand() == SUSPEND ||
             getCommand() == RESUME || getCommand() == STEP ||
-            getCommand() == TERMINATE );
+            getCommand() == TERMINATE);
 }
 
 bool AbstractCommandMessage::isBreakpointsCommand() const
 {
   return getCommandSet() == BREAKPOINTS &&
-          ( getCommand() == SET || getCommand() == CLEAR );
+          (getCommand() == SET || getCommand() == CLEAR);
 }
 
 bool AbstractCommandMessage::isEngineEventCommand() const
 {
   return getCommandSet() == ENGINE_EVENT &&
-          ( getCommand() == STARTED || getCommand() == TERMINATED ||
-            getCommand() == SUSPENDED || getCommand() == RESUMED  || getCommand() == EVALUATED );
+          (getCommand() == STARTED || getCommand() == TERMINATED ||
+            getCommand() == SUSPENDED || getCommand() == RESUMED  || getCommand() == EVALUATED);
 }
 
 bool AbstractCommandMessage::isStaticCommand() const
 {
   return getCommandSet() == STATIC
-          && ( getCommand() == OPTIONS || getCommand() == DEFAULTS ||
-                getCommand() == SETS );
+          && (getCommand() == OPTIONS || getCommand() == DEFAULTS ||
+                getCommand() == SETS);
 }
 
 bool AbstractCommandMessage::isDynamicCommand() const
 {
   return getCommandSet() == DYNAMIC &&
-    ( getCommand() == DATA || getCommand() == VARIABLES ||
+    (getCommand() == DATA || getCommand() == VARIABLES ||
       getCommand() == FOCUS || getCommand() == TIME || 
       getCommand() == DOCUMENTS || getCommand() == COLLECTION ||
-      getCommand() == COLLECTIONS || getCommand() == EVAL );
+      getCommand() == COLLECTIONS || getCommand() == EVAL);
 }
 
 /**
  * Run message
  */
-RunMessage::RunMessage():
-  AbstractCommandMessage( EXECUTION, RUN ){}
+RunMessage::RunMessage()
+  : AbstractCommandMessage(EXECUTION, RUN) {}
 
-RunMessage::RunMessage( Byte * aMessage, const unsigned int aLength ):
-  AbstractCommandMessage( aMessage, aLength ){}
+RunMessage::RunMessage(Byte* aMessage, const unsigned int aLength)
+  : AbstractCommandMessage(aMessage, aLength) {}
 
-RunMessage::~RunMessage(){}
+RunMessage::~RunMessage() {}
 
 /**
  * Suspend message
  */
 SuspendMessage::SuspendMessage():
-  AbstractCommandMessage( EXECUTION, SUSPEND ){}
+  AbstractCommandMessage(EXECUTION, SUSPEND) {}
 
-SuspendMessage::SuspendMessage( Byte * aMessage, const unsigned int aLength ):
-  AbstractCommandMessage( aMessage, aLength ){}
+SuspendMessage::SuspendMessage(Byte* aMessage, const unsigned int aLength) :
+  AbstractCommandMessage(aMessage, aLength) {}
 
-SuspendMessage::~SuspendMessage(){}
+SuspendMessage::~SuspendMessage() {}
 
 /**
  * Resume message
  */
 ResumeMessage::ResumeMessage():
-  AbstractCommandMessage( EXECUTION, RESUME ){}
+  AbstractCommandMessage(EXECUTION, RESUME) {}
 
-ResumeMessage::ResumeMessage( Byte * aMessage, const unsigned int aLength ):
-  AbstractCommandMessage( aMessage, aLength ){}
+ResumeMessage::ResumeMessage(Byte* aMessage, const unsigned int aLength) :
+  AbstractCommandMessage(aMessage, aLength) {}
 
-ResumeMessage::~ResumeMessage(){}
+ResumeMessage::~ResumeMessage() {}
 
 /**
  * Terminate message
  */
 TerminateMessage::TerminateMessage():
-  AbstractCommandMessage( EXECUTION, TERMINATE ){}
+  AbstractCommandMessage(EXECUTION, TERMINATE) {}
 
-TerminateMessage::TerminateMessage( Byte * aMessage, const unsigned int aLength ):
-  AbstractCommandMessage( aMessage, aLength ){}
+TerminateMessage::TerminateMessage(Byte* aMessage, const unsigned int aLength) :
+  AbstractCommandMessage(aMessage, aLength) {}
 
-TerminateMessage::~TerminateMessage(){}
+TerminateMessage::~TerminateMessage() {}
 
 /**
  * Detach message
  */
 DetachMessage::DetachMessage():
-  AbstractCommandMessage( EXECUTION, DETACH ){}
+  AbstractCommandMessage(EXECUTION, DETACH) {}
 
-DetachMessage::DetachMessage( Byte * aMessage, const unsigned int aLength ):
-  AbstractCommandMessage( aMessage, aLength ){}
+DetachMessage::DetachMessage(Byte* aMessage, const unsigned int aLength) :
+  AbstractCommandMessage(aMessage, aLength) {}
 
-DetachMessage::~DetachMessage(){}
+DetachMessage::~DetachMessage() {}
 
 /**
  * Step message
@@ -409,15 +395,15 @@ StepMessage::StepMessage(StepCommand aKind):
 StepMessage::StepMessage(Byte* aMessage, const unsigned int aLength):
   AbstractCommandMessage(aMessage, aLength)
 {
-  std::auto_ptr<json::value> lData(getValue(aMessage, aLength));
-  json::value* lStepType = getValue(lData.get(), "stepType");
+  json_t* lData = getJsonValue(aMessage, aLength);
+  json_t* lStepType = json_object_get(lData, "stepType");
   if (lStepType != 0) {
-    theKind = (StepCommand)lStepType->getinteger();
+    theKind = (StepCommand)json_integer_value(lStepType);
   }
   checkIntegrity();
 }
 
-StepMessage::~StepMessage(){}
+StepMessage::~StepMessage() {}
 
 Byte* StepMessage::serialize(Length& aLength) const
 {
@@ -456,60 +442,63 @@ StepCommand StepMessage::getStepKind() const
 /**
  * Set Breakpoints message
  */
-SetMessage::SetMessage(): AbstractCommandMessage( BREAKPOINTS, SET ){}
+SetMessage::SetMessage(): AbstractCommandMessage(BREAKPOINTS, SET) {}
 
-SetMessage::SetMessage( Byte * aMessage, const unsigned int aLength ):
-  AbstractCommandMessage( aMessage, aLength )
+SetMessage::SetMessage(Byte* aMessage, const unsigned int aLength):
+  AbstractCommandMessage(aMessage, aLength)
 {
-  std::auto_ptr<json::value> lValue(getValue(aMessage, aLength));
+  json_t* lValue = getJsonValue(aMessage, aLength);
   
-  json::value* breakpoints = getValue(lValue.get(), "breakpoints");
-  if( breakpoints != 0 )
-  {
-    json::array_list_t* list = breakpoints->getarraylist();
-    json::array_list_t::iterator it; 
+  json_t* lBreakpoints = json_object_get(lValue, "breakpoints");
+  if (lBreakpoints != 0) {
+    int lSize = json_array_size(lBreakpoints);
     
-    for ( it=list->begin(); it != list->end(); ++it )
-    {
-      if ( getValue(*it, "location") != 0 )
-      {
-        QueryLoc loc = debugger::fromJSONToQueryLoc(getValue(*it, "location"));
-        if ( getValue(*it, "id") == 0 )
-        {
-          throw MessageFormatException("Invalid JSON format for Set breakpoint message.");
-        }
-        theLocations.insert( std::make_pair((unsigned int)(getValue(*it, "id")->getinteger()), loc) );
-      } else if ( getValue( *it, "expr" ) != 0 ) {
-        std::wstring* lExpr = getValue(*it, "expr")->getstring(L"", true);
-        std::string expr( lExpr->begin()+1, lExpr->end()-1 );
-       	delete lExpr; 
-	      if ( getValue(*it, "id") == 0 )
-        {
-          throw MessageFormatException("Invalid JSON format for Set breakpoint message.");
-        }
-        theExprs.insert( std::make_pair((unsigned int)(getValue(*it, "id")->getinteger()),  zstring( expr ) ) );
-      } else {
-        throw MessageFormatException("Invalid JSON format for Set breakpoint message.");
+    for (int i = 0; i < lSize; i++) {
+      json_t* lCurr = json_array_get(lBreakpoints, i);
+      if (lCurr == 0) {
+        throw MessageFormatException("Invalid JSON format for Set breakpoint message: a problem occured while iterating the breakpoints.");
       }
+
+      json_t* lIdJ = json_object_get(lCurr, "id");
+      if (lIdJ == 0) {
+        throw MessageFormatException("Invalid JSON format for Set breakpoint message: no 'id' found");
+      }
+      int lId = (unsigned int)json_integer_value(lIdJ);
+
+      json_t* lExpLoc = json_object_get(lCurr, "location");
+      if (lExpLoc != 0) {
+        QueryLoc lLoc = debugger::fromJSONToQueryLoc(lExpLoc);
+        theLocations.insert(std::make_pair(lId, lLoc));
+        continue;
+      }
+
+      lExpLoc = json_object_get(lCurr, "expr");
+      if (lExpLoc != 0) {
+        std::string lExpr = json_string_value(lExpLoc);
+        theExprs.insert(std::make_pair(lId, zstring(lExpr)));
+        continue;
+      }
+
+      throw MessageFormatException("Invalid JSON format for Set breakpoint message: neither 'location' nor 'expr' were found");
     }
   } else {
-    throw MessageFormatException("Invalid JSON format for Set breakpoint message.");
+    throw MessageFormatException("Invalid JSON format for Set breakpoint message: no 'breakpoints' array found");
   }
   checkIntegrity();
 }
 
-SetMessage::~SetMessage(){}
+SetMessage::~SetMessage() {}
 
-Byte * SetMessage::serialize( Length & aLength ) const
+Byte* SetMessage::serialize(Length & aLength) const
 {
   ztd::auto_vec<Byte> lHeader(AbstractCommandMessage::serialize(aLength));
   std::string lJSONString = getData();
-  Byte * lMsg = new Byte[ getLength() + 1 ];
+  Byte* lMsg = new Byte[ getLength() + 1 ];
   memset(lMsg, '\0', getLength()+1);
-  memcpy( lMsg, lHeader.get(), MESSAGE_HEADER_SIZE );
+  memcpy(lMsg, lHeader.get(), MESSAGE_HEADER_SIZE);
   const char * s = lJSONString.c_str();
   size_t l = lJSONString.length();
-  memcpy( lMsg + MESSAGE_HEADER_SIZE, s, l );
+  memcpy(lMsg + MESSAGE_HEADER_SIZE, s, l);
   aLength = getLength();
   return lMsg; 
 }
@@ -519,9 +508,9 @@ std::string SetMessage::getData() const
   std::stringstream lJSONString;
   lJSONString << "{\"breakpoints\":[";
   std::map<unsigned int, QueryLoc>::const_iterator it;
-  for( it = theLocations.begin(); it != theLocations.end(); it++ )
+  for(it = theLocations.begin(); it != theLocations.end(); it++)
   { 
-    if ( it != theLocations.begin() )
+    if (it != theLocations.begin())
     {
       lJSONString << ',';
     }
@@ -530,7 +519,7 @@ std::string SetMessage::getData() const
   }
 
   std::map<unsigned int, zstring>::const_iterator it2;
-  for( it2 = theExprs.begin(); it2 != theExprs.end(); it2++ )
+  for(it2 = theExprs.begin(); it2 != theExprs.end(); it2++)
   {
     lJSONString << ",{\"id\":" << it2->first << ",\"expr\":\"" << it2->second << "\"}";
   }
@@ -541,20 +530,18 @@ std::string SetMessage::getData() const
 /**
  * Clear Breakpoints message
  */
-ClearMessage::ClearMessage(): AbstractCommandMessage( BREAKPOINTS, CLEAR ){}
+ClearMessage::ClearMessage() : AbstractCommandMessage(BREAKPOINTS, CLEAR) {}
 
-ClearMessage::ClearMessage( Byte * aMessage, const unsigned int aLength ):
-  AbstractCommandMessage( aMessage, aLength )
+ClearMessage::ClearMessage(Byte* aMessage, const unsigned int aLength) :
+  AbstractCommandMessage(aMessage, aLength)
 {
-  std::auto_ptr<json::value> lValue(getValue(aMessage, aLength));
-  json::value* ids = getValue(lValue.get(), "ids");
-  if ( ids != 0 )
-  {
-    json::array_list_t* list =  ids->getarraylist();
-    json::array_list_t::iterator it; 
-    for (it=list->begin(); it!=list->end(); ++it)
-    {
-      theIds.push_back( (unsigned int)((*it)->getinteger() ));
+  json_t* lValue = getJsonValue(aMessage, aLength);
+  json_t* lIds = json_object_get(lValue, "ids");
+  if (lIds != 0) {
+    int lSize = json_array_size(lIds);
+    for (int i = 0; i < lSize; ++i) {
+      json_t* lIdJ = json_array_get(lIds, i);
+      theIds.push_back((unsigned int)(json_integer_value(lIdJ)));
     }
   } else {
     throw MessageFormatException("Invalid JSON format for Clear breakpoint message.");
@@ -562,18 +549,18 @@ ClearMessage::ClearMessage( Byte * aMessage, const unsigned int aLength ):
   checkIntegrity();
 }
 
-ClearMessage::~ClearMessage(){}
+ClearMessage::~ClearMessage() {}
 
-Byte * ClearMessage::serialize( Length & aLength ) const
+Byte* ClearMessage::serialize(Length & aLength) const
 {
   ztd::auto_vec<Byte> lHeader(AbstractCommandMessage::serialize(aLength));
   std::string lJSONString = getData();
-  Byte * lMsg = new Byte[ getLength() + 1 ];
+  Byte* lMsg = new Byte[ getLength() + 1 ];
   memset(lMsg, '\0', getLength()+1);
-  memcpy( lMsg, lHeader.get(), MESSAGE_HEADER_SIZE );
+  memcpy(lMsg, lHeader.get(), MESSAGE_HEADER_SIZE);
   const char * s = lJSONString.c_str();
   size_t l = lJSONString.length();
-  memcpy( lMsg + MESSAGE_HEADER_SIZE, s, l );
+  memcpy(lMsg + MESSAGE_HEADER_SIZE, s, l);
   aLength = getLength();
   return lMsg; 
 }
@@ -583,9 +570,9 @@ std::string ClearMessage::getData() const
   std::stringstream lJSONString;
   lJSONString << "{\"ids\":[";
   std::vector<unsigned int>::const_iterator it;
-  for( it = theIds.begin(); it != theIds.end(); it++ )
+  for(it = theIds.begin(); it != theIds.end(); it++)
   {
-    if ( it != theIds.begin() )
+    if (it != theIds.begin())
     {
       lJSONString << ",";
     }
@@ -599,73 +586,69 @@ std::string ClearMessage::getData() const
  * Started Engine Event
  */
 StartedEvent::StartedEvent():
-  AbstractCommandMessage( ENGINE_EVENT, STARTED ){}
+  AbstractCommandMessage(ENGINE_EVENT, STARTED) {}
 
-StartedEvent::StartedEvent( Byte * aMessage, const unsigned int aLength ):
-  AbstractCommandMessage( aMessage, aLength )
+StartedEvent::StartedEvent(Byte* aMessage, const unsigned int aLength) :
+  AbstractCommandMessage(aMessage, aLength)
 {
     checkIntegrity();
 }
 
-StartedEvent::~StartedEvent(){}
+StartedEvent::~StartedEvent() {}
 
 /**
  * Terminated Engine Event
  */
 TerminatedEvent::TerminatedEvent():
-  AbstractCommandMessage( ENGINE_EVENT, TERMINATED ){}
+  AbstractCommandMessage(ENGINE_EVENT, TERMINATED) {}
 
-TerminatedEvent::TerminatedEvent( Byte * aMessage, const unsigned int aLength ):
-  AbstractCommandMessage( aMessage, aLength ){}
+TerminatedEvent::TerminatedEvent(Byte* aMessage, const unsigned int aLength) :
+  AbstractCommandMessage(aMessage, aLength) {}
 
-TerminatedEvent::~TerminatedEvent(){}
+TerminatedEvent::~TerminatedEvent() {}
 
 /**
  * Suspended Engine Event
  */
-SuspendedEvent::SuspendedEvent( const QueryLoc &aLocation, const SuspensionCause aCause ):
-  AbstractCommandMessage( ENGINE_EVENT, SUSPENDED ), theLocation( aLocation ), theCause( aCause ) 
+SuspendedEvent::SuspendedEvent(const QueryLoc &aLocation, const SuspensionCause aCause) :
+  AbstractCommandMessage(ENGINE_EVENT, SUSPENDED), theLocation(aLocation), theCause(aCause) 
 {
   Length l = (Length)(MESSAGE_HEADER_SIZE + getData().length());
-  setLength( l );
+  setLength(l);
   checkIntegrity();
 }
 
-SuspendedEvent::SuspendedEvent( Byte * aMessage, const unsigned int aLength ):
-  AbstractCommandMessage( aMessage, aLength )
+SuspendedEvent::SuspendedEvent(Byte* aMessage, const unsigned int aLength) :
+  AbstractCommandMessage(aMessage, aLength)
 {
-  std::auto_ptr<json::value> lValue(getValue(aMessage, aLength));
-  json::value* cause = getValue(lValue.get(), "cause");
-  json::value* location = getValue(lValue.get(), "location");
+  json_t* lValue = getJsonValue(aMessage, aLength);
+  json_t* lCause = json_object_get(lValue, "cause");
+  json_t* lLocation = json_object_get(lValue, "location");
 
-  if ( cause  != 0 )
-  {
-    theCause = (unsigned int)(cause->getinteger());
-  } else {
-    throw MessageFormatException("Invalid JSON format for SuspendedEvent message.");
+  if (lCause == 0) {
+    throw MessageFormatException("Invalid JSON format for SuspendedEvent message: 'cause' not found");
   }
+  theCause = (unsigned int)(json_integer_value(lCause));
   
-  if ( location  != 0 )
-  {
-    theLocation = debugger::fromJSONToQueryLoc( location );
-  } else {
+  if (lLocation == 0) {
     throw MessageFormatException("Invalid JSON format for SuspendedEvent message.");
   }
+  theLocation = debugger::fromJSONToQueryLoc(lLocation);
   checkIntegrity();
 }
 
-SuspendedEvent::~SuspendedEvent(){}
+SuspendedEvent::~SuspendedEvent() {}
 
-Byte * SuspendedEvent::serialize( Length & aLength ) const
+Byte* SuspendedEvent::serialize(Length & aLength) const
 {
   ztd::auto_vec<Byte> lHeader(AbstractCommandMessage::serialize(aLength));
   std::string lJSONString = getData();
-  Byte * lMsg = new Byte[ getLength() + 1 ];
+  Byte* lMsg = new Byte[ getLength() + 1 ];
   memset(lMsg, '\0', getLength()+1);
-  memcpy( lMsg, lHeader.get(), MESSAGE_HEADER_SIZE );
+  memcpy(lMsg, lHeader.get(), MESSAGE_HEADER_SIZE);
   const char * s = lJSONString.c_str();
   size_t l = lJSONString.length();
-  memcpy( lMsg + MESSAGE_HEADER_SIZE, s, l );
+  memcpy(lMsg + MESSAGE_HEADER_SIZE, s, l);
   aLength = getLength();
   return lMsg; 
 }
@@ -694,31 +677,31 @@ std::string SuspendedEvent::getData() const
  * Resumed Engine Event
  */
 ResumedEvent::ResumedEvent():
-  AbstractCommandMessage( ENGINE_EVENT, RESUMED ) 
+  AbstractCommandMessage(ENGINE_EVENT, RESUMED) 
 {
   checkIntegrity();
 }
 
-ResumedEvent::ResumedEvent( Byte * aMessage, const unsigned int aLength ):
-  AbstractCommandMessage( aMessage, aLength ){}
+ResumedEvent::ResumedEvent(Byte* aMessage, const unsigned int aLength) :
+  AbstractCommandMessage(aMessage, aLength) {}
 
-ResumedEvent::~ResumedEvent(){}
+ResumedEvent::~ResumedEvent() {}
 
 /**
  * Evaluated Engine Event
  */
-EvaluatedEvent::EvaluatedEvent( int aId, zstring const &anExpr, zstring const &anError ):
-  AbstractCommandMessage( ENGINE_EVENT, EVALUATED ), theExpr( anExpr ), theError( anError )
+EvaluatedEvent::EvaluatedEvent(int aId, zstring const &anExpr, zstring const &anError) :
+  AbstractCommandMessage(ENGINE_EVENT, EVALUATED), theExpr(anExpr), theError(anError)
 {
   setId(aId);
   
   Length l = (Length)(MESSAGE_HEADER_SIZE + getData().length());
-  setLength( l );
+  setLength(l);
   checkIntegrity();
 }
 
-EvaluatedEvent::EvaluatedEvent( int aId, zstring const &anExpr, list<pair<zstring, zstring> > valuesAndTypes ):
-  AbstractCommandMessage( ENGINE_EVENT, EVALUATED ), theExpr( anExpr ), theValuesAndTypes(valuesAndTypes)
+EvaluatedEvent::EvaluatedEvent(int aId, zstring const &anExpr, list<pair<zstring, zstring> > valuesAndTypes) :
+  AbstractCommandMessage(ENGINE_EVENT, EVALUATED), theExpr(anExpr), theValuesAndTypes(valuesAndTypes)
 {
   setId(aId);
 
@@ -729,85 +712,77 @@ EvaluatedEvent::EvaluatedEvent( int aId, zstring const &anExpr, list<pair<zstrin
     zstring lFirst(it->first);
     zstring lSecond(it->second);
 
-    ascii::replace_all( lFirst, "\"", "\\\"" );
-    ascii::replace_all( lFirst, "\\n", "\\\\n" );
-    ascii::replace_all( lFirst, "\\r", "\\\\r" );
-    ascii::replace_all( lFirst, "\\t", "\\\\t" );
+    ascii::replace_all(lFirst, "\"", "\\\"");
+    ascii::replace_all(lFirst, "\\n", "\\\\n");
+    ascii::replace_all(lFirst, "\\r", "\\\\r");
+    ascii::replace_all(lFirst, "\\t", "\\\\t");
 
-    ascii::replace_all( lSecond, "\"", "\\\"" );
-    ascii::replace_all( lSecond, "\\n", "\\\\n" );
-    ascii::replace_all( lSecond, "\\r", "\\\\r" );
-    ascii::replace_all( lSecond, "\\t", "\\\\t" );
+    ascii::replace_all(lSecond, "\"", "\\\"");
+    ascii::replace_all(lSecond, "\\n", "\\\\n");
+    ascii::replace_all(lSecond, "\\r", "\\\\r");
+    ascii::replace_all(lSecond, "\\t", "\\\\t");
 
     lValues.push_back(std::make_pair(lFirst, lSecond));
   }
   theValuesAndTypes = lValues;
   Length l = (Length)(MESSAGE_HEADER_SIZE + getData().length());
-  setLength( l );
+  setLength(l);
   checkIntegrity();
 }
 
-EvaluatedEvent::EvaluatedEvent( Byte* aMessage, const unsigned int aLength ):
-  AbstractCommandMessage( aMessage, aLength )
+EvaluatedEvent::EvaluatedEvent(Byte* aMessage, const unsigned int aLength) :
+  AbstractCommandMessage(aMessage, aLength)
 {
-  std::auto_ptr<json::value> lValue(getValue(aMessage, aLength));
-  json::value* expr = getValue(lValue.get(), "expr");
-  json::value* results = getValue(lValue.get(), "results");
-  json::value* error = getValue(lValue.get(), "error");
+  json_t* lValue = getJsonValue(aMessage, aLength);
+  json_t* lExpr = json_object_get(lValue, "expr");
+  json_t* lResults = json_object_get(lValue, "results");
+  json_t* lError = json_object_get(lValue, "error");
 
-  if (expr != 0)
-  {
-    std::wstring* lWString = expr->getstring(L"", true);
-    std::string lString( lWString->begin()+1, lWString->end()-1 );
-    delete lWString;
-    deserializeString(lString);
-    theExpr = lString;
-  } else {
-    throw MessageFormatException("Invalid JSON format for EvaluatedEvent message.");
+  if (lExpr == 0) {
+    throw MessageFormatException("Invalid JSON format for EvaluatedEvent message: 'expr' not found");
   }
+  std::string lString = json_string_value(lExpr);
+  deserializeString(lString);
+  theExpr = lString;
   
-  if (results != 0)
-  {
-    json::array_list_t* list = results->getarraylist();
-    json::array_list_t::iterator it;
-    for (it=list->begin(); it!=list->end(); it++)
-    {
-      if ( getValue(*it, "result") == 0 )
-      {
-        throw MessageFormatException("Invalid JSON format for variable message.");
-      }
-      std::wstring *lName = getValue(*it, "result")->getstring(L"", true);
-      std::string result = std::string( lName->begin()+1, lName->end()-1 );
-      delete lName;
-      if ( getValue(*it, "type") == 0 )
-      {
-        throw MessageFormatException("Invalid JSON format for variable message.");
-      }
-      std::wstring *lType = getValue(*it, "type")->getstring(L"", true);
-      std::string type = std::string( lType->begin()+1, lType->end()-1 );
-      delete lType;
-      deserializeString(result);
-      deserializeString(type);
-      theValuesAndTypes.push_back(std::make_pair(result, type));
-    }   
-  } else {
-    throw MessageFormatException("Invalid JSON format for EvaluatedEvent message.");
+  if (lResults == 0) {
+    throw MessageFormatException("Invalid JSON format for EvaluatedEvent message: 'results' not found");
   }
 
-  if ( error != 0 )
-  {
-    std::wstring* lWString = error->getstring(L"", true);
-    std::string lString( lWString->begin()+1, lWString->end()-1 );
-    delete lWString;
-    deserializeString(lString);
-    theError = lString;
-  } else {
-    throw MessageFormatException("Invalid JSON format for EvaluatedEvent message.");
+  int lSize = json_array_size(lResults);
+  for (int i = 0; i < lSize; ++i) {
+    json_t* lResult = json_array_get(lResults, i);
+    if (lResult == 0){
+      throw MessageFormatException("Invalid JSON format for variable message: cound not retrieve one result");
+    }
+
+    json_t* lValue = json_object_get(lResult, "result");
+    if (lValue == 0) {
+      throw MessageFormatException("Invalid JSON format for variable message: 'result' not found");
+    }
+    std::string lValueStr = json_string_value(lValue);
+
+    json_t* lType = json_object_get(lResult, "type");
+    if (lType == 0) {
+      throw MessageFormatException("Invalid JSON format for variable message: 'type' not found");
+    }
+    std::string lTypeStr = json_string_value(lType);
+
+    deserializeString(lValueStr);
+    deserializeString(lTypeStr);
+    theValuesAndTypes.push_back(std::make_pair(lValueStr, lTypeStr));
+
+    if (lError == 0) {
+      throw MessageFormatException("Invalid JSON format for EvaluatedEvent message.");
+    }
+    std::string lErrorStr = json_string_value(lError);
+    deserializeString(lErrorStr);
+    theError = lErrorStr;
   }
   checkIntegrity();
 }
 
-EvaluatedEvent::~EvaluatedEvent(){}
+EvaluatedEvent::~EvaluatedEvent() {}
 
 zstring const& EvaluatedEvent::getExpr() const
 {
@@ -824,16 +799,16 @@ zstring const& EvaluatedEvent::getError() const
   return theError;
 }
 
-Byte * EvaluatedEvent::serialize( Length &aLength ) const
+Byte* EvaluatedEvent::serialize(Length &aLength) const
 {
   ztd::auto_vec<Byte> lHeader(AbstractCommandMessage::serialize(aLength));
   zstring lJSONString = getData();
-  Byte * lMsg = new Byte[ getLength() + 1 ];
+  Byte* lMsg = new Byte[ getLength() + 1 ];
   memset(lMsg, '0', getLength()+1);
-  memcpy( lMsg, lHeader.get(), MESSAGE_HEADER_SIZE );
+  memcpy(lMsg, lHeader.get(), MESSAGE_HEADER_SIZE);
   const char * s = lJSONString.c_str();
   size_t l = lJSONString.length();
-  memcpy( lMsg + MESSAGE_HEADER_SIZE, s, l );
+  memcpy(lMsg + MESSAGE_HEADER_SIZE, s, l);
   aLength = getLength();
   return lMsg; 
 }
@@ -842,17 +817,17 @@ zstring EvaluatedEvent::getData() const
 {
   zstring lExpr = theExpr;
 
-  ascii::replace_all( lExpr, "\"", "\\\"" );
-  ascii::replace_all( lExpr, "\\n", "\\\\n" );
-  ascii::replace_all( lExpr, "\\r", "\\\\r" );
-  ascii::replace_all( lExpr, "\\t", "\\\\t" );
+  ascii::replace_all(lExpr, "\"", "\\\"");
+  ascii::replace_all(lExpr, "\\n", "\\\\n");
+  ascii::replace_all(lExpr, "\\r", "\\\\r");
+  ascii::replace_all(lExpr, "\\t", "\\\\t");
 
   zstring lErr = theError;
 
-  ascii::replace_all( lErr, "\"", "\\\"" );
-  ascii::replace_all( lErr, "\\n", "\\\\n" );
-  ascii::replace_all( lErr, "\\r", "\\\\r" );
-  ascii::replace_all( lErr, "\\t", "\\\\t" );
+  ascii::replace_all(lErr, "\"", "\\\"");
+  ascii::replace_all(lErr, "\\n", "\\\\n");
+  ascii::replace_all(lErr, "\\r", "\\\\r");
+  ascii::replace_all(lErr, "\\t", "\\\\t");
 
   std::stringstream lJSONString;
   lJSONString << "{";
@@ -860,9 +835,9 @@ zstring EvaluatedEvent::getData() const
   lJSONString << "\"expr\":\"" << lExpr << "\",";
   lJSONString << "\"results\":[";
   list<pair<zstring, zstring> >::const_iterator it = theValuesAndTypes.begin();
-  for(; it != theValuesAndTypes.end(); it++ )
+  for(; it != theValuesAndTypes.end(); it++)
   {
-    if ( it != theValuesAndTypes.begin() )
+    if (it != theValuesAndTypes.begin())
     {
       lJSONString << ',';
     }
@@ -871,7 +846,7 @@ zstring EvaluatedEvent::getData() const
   lJSONString << "],";
   lJSONString << "\"error\":\"" << lErr << "\"";
   lJSONString << "}";
-  zstring lData( lJSONString.str() );
+  zstring lData(lJSONString.str());
   return lData;
 }
 
@@ -883,56 +858,55 @@ void EvaluatedEvent::setId(Id aId)
 /**
  * Eval Message
  */
-EvalMessage::EvalMessage( zstring const &anExpr ):
-  AbstractCommandMessage( DYNAMIC, EVAL ), theExpr( anExpr )
+EvalMessage::EvalMessage(zstring const &anExpr) :
+  AbstractCommandMessage(DYNAMIC, EVAL),
+  theExpr(anExpr)
 {
     Length l = (Length)(MESSAGE_HEADER_SIZE + getData().length());
-    setLength( l );
+    setLength(l);
+
     checkIntegrity();
 }
 
-EvalMessage::EvalMessage( Byte * aMessage, const unsigned int aLength ):
-  AbstractCommandMessage( aMessage, aLength )
+EvalMessage::EvalMessage(Byte* aMessage, const unsigned int aLength) :
+  AbstractCommandMessage(aMessage, aLength)
 {
-  std::auto_ptr<json::value> lValue(getValue(aMessage, aLength));
-  json::value* expr = getValue(lValue.get(), "expr");
-  if (expr != 0)
-  {
-    std::wstring* lWString = expr->getstring(L"", true);
-    std::string lString( lWString->begin()+1, lWString->end()-1 );
-    delete lWString;
-    theExpr = lString;
-    ascii::replace_all( theExpr, "\\\"", "\"" );
-  } else {
-    throw MessageFormatException("Invalid JSON format for eval command message.");
+  json_t* lValue = getJsonValue(aMessage, aLength);
+  json_t* lExpr = json_object_get(lValue, "expr");
+  if (lExpr == 0) {
+    throw MessageFormatException("Invalid JSON format for eval command message: 'expr' not found");
   }
+  std::string lExprStr(json_string_value(lExpr));
+  theExpr = lExprStr;
+  ascii::replace_all(theExpr, "\\\"", "\"");
+
   checkIntegrity();
 }
 
-EvalMessage::~EvalMessage(){}
+EvalMessage::~EvalMessage() {}
 
 zstring EvalMessage::getData() const
 {
   zstring lExpr = theExpr;
-  ascii::replace_all( lExpr, "\"", "\\\"" );
+  ascii::replace_all(lExpr, "\"", "\\\"");
   std::stringstream lJSONString;
   lJSONString << "{";
   lJSONString << "\"expr\":\"" << lExpr << "\"";
   lJSONString << "}";
-  zstring lReturnString( lJSONString.str() );
+  zstring lReturnString(lJSONString.str());
   return lReturnString;
 }
 
-Byte * EvalMessage::serialize( Length & aLength ) const
+Byte* EvalMessage::serialize(Length & aLength) const
 {
   ztd::auto_vec<Byte> lHeader(AbstractCommandMessage::serialize(aLength));
   zstring lJSONString = getData();
-  Byte * lMsg = new Byte[ getLength() + 1 ];
+  Byte* lMsg = new Byte[ getLength() + 1 ];
   memset(lMsg, '0', getLength()+1);
-  memcpy( lMsg, lHeader.get(), MESSAGE_HEADER_SIZE );
+  memcpy(lMsg, lHeader.get(), MESSAGE_HEADER_SIZE);
   const char * s = lJSONString.c_str();
   size_t l = lJSONString.length();
-  memcpy( lMsg + MESSAGE_HEADER_SIZE, s, l );
+  memcpy(lMsg + MESSAGE_HEADER_SIZE, s, l);
   aLength = getLength();
   return lMsg; 
 }
@@ -942,29 +916,29 @@ zstring EvalMessage::getExpr() const
   return theExpr;
 }
 
-VariableMessage::VariableMessage(bool dataFlag):
-AbstractCommandMessage( DYNAMIC, VARIABLES, dataFlag ? VARIABLE_DATA_FLAG : NULL_FLAG ), theDataFlag(dataFlag)
+VariableMessage::VariableMessage(bool dataFlag)
+  : AbstractCommandMessage(DYNAMIC, VARIABLES, dataFlag ? VARIABLE_DATA_FLAG : NULL_FLAG), theDataFlag(dataFlag)
 {
   checkIntegrity();
 }
 
-VariableMessage::VariableMessage( Byte * aMessage, const unsigned int aLength ):
-  AbstractCommandMessage( aMessage, aLength )
-  {
-    theDataFlag = aMessage[MESSAGE_FLAGS_FIELD_INDEX] == VARIABLE_DATA_FLAG;
-  }
+VariableMessage::VariableMessage(Byte* aMessage, const unsigned int aLength):
+  AbstractCommandMessage(aMessage, aLength)
+{
+  theDataFlag = aMessage[MESSAGE_FLAGS_FIELD_INDEX] == VARIABLE_DATA_FLAG;
+}
 
-VariableMessage::~VariableMessage(){}
+VariableMessage::~VariableMessage() {}
 
 /**
  * Frame Message
  */
-FrameMessage::FrameMessage(): AbstractCommandMessage(DYNAMIC, FRAME){}
+FrameMessage::FrameMessage(): AbstractCommandMessage(DYNAMIC, FRAME) {}
 
-FrameMessage::FrameMessage(Byte* aMessage, const unsigned int aLength):
-  AbstractCommandMessage(aMessage, aLength){}
+FrameMessage::FrameMessage(Byte* aMessage, const unsigned int aLength)
+  : AbstractCommandMessage(aMessage, aLength) {}
 
-FrameMessage::~FrameMessage(){}
+FrameMessage::~FrameMessage() {}
 
 /**
  * Frame Reply
@@ -983,30 +957,27 @@ FrameReply::FrameReply(Byte* aMessage, const unsigned int aLength)
   : ReplyMessage(aMessage, aLength)
 {
   setFlags(REPLY_FRAME_FLAG);
-  std::auto_ptr<json::value> lValue(getValue(aMessage, aLength));
-  json::value* frame = getValue(lValue.get(), "frame");
-  if(frame != 0)
-  {
-    json::array_list_t* list = frame->getarraylist();
-    json::array_list_t::iterator it;
-    for(it=list->begin(); it!=list->end(); ++it)
-    {
-      if(getValue(*it, "location") != 0)
-      {
-        QueryLoc loc = debugger::fromJSONToQueryLoc(getValue(*it, "location"));
-        if(getValue(*it, "label") == 0)
-        {
-          throw MessageFormatException("Invalid JSON format for Stack");
-        }
-        std::wstring* lLabel = getValue(*it, "label")->getstring(L"", true);
-        std::string label(lLabel->begin()+1, lLabel->end()-1);
-        theStack.push(std::make_pair<std::string, const QueryLoc>(label, loc));
-      } else {
-        throw MessageFormatException("Invalid JSON format for Stack");
-      }
+  json_t* lValue = getJsonValue(aMessage, aLength);
+  json_t* lFrame = json_object_get(lValue, "frame");
+  if (lFrame == 0) {
+    throw MessageFormatException("Invalid JSON format for stack frame messsage: 'frame' not found");
+  }
+
+  int lSize = json_array_size(lFrame);
+  for (int i = 0; i < lSize; ++i) {
+    json_t* lCurr = json_array_get(lFrame, i);
+    json_t* lLocJ = json_object_get(lCurr, "location");
+    if (lLocJ == 0) {
+      throw MessageFormatException("Invalid JSON format for Stack: 'location' not found");
     }
-  } else {
-    throw MessageFormatException("Invalid JSON format for stack frame messsage.");
+    QueryLoc lLoc = debugger::fromJSONToQueryLoc(lLocJ);
+
+    json_t* lLabel = json_object_get(lCurr, "label");
+    if (lLabel == 0) {
+      throw MessageFormatException("Invalid JSON format for Stack: 'label' not found");
+    }
+    std::string lLabelStr = json_string_value(lLabel);
+    theStack.push(std::make_pair<std::string, const QueryLoc>(lLabelStr, lLoc));
   }
 }
 
@@ -1017,7 +988,7 @@ zstring FrameReply::getData() const
   std::stack< std::pair<std::string, QueryLoc> > lStack(theStack);
   while(!lStack.empty())
   {
-    if(lStack.size() != theStack.size())
+    if (lStack.size() != theStack.size())
     {
       lJSONString << ",";
     }
@@ -1057,45 +1028,42 @@ SetReply::SetReply(const Id anId, const ErrorCode aErrorCode):
   checkIntegrity();
 }
 
-SetReply::SetReply(Byte* aMessage, const unsigned int aLength): ReplyMessage(aMessage, aLength)
+SetReply::SetReply(Byte* aMessage, const unsigned int aLength)
+  : ReplyMessage(aMessage, aLength)
 {
   setFlags(REPLY_SET_FLAG);
-  std::auto_ptr<json::value> lValue(getValue(aMessage, aLength));
-  json::value* breakpoints = getValue(lValue.get(), "breakpoints");
-  if(breakpoints != 0)
-  {
-    json::array_list_t* list = breakpoints->getarraylist();
-    json::array_list_t::iterator it;
-    for(it=list->begin(); it!=list->end(); ++it)
-    {
-      if(getValue(*it, "location") != 0)
-      {
-        QueryLoc loc = debugger::fromJSONToQueryLoc(getValue(*it, "location"));
-        if(getValue(*it, "id") == 0)
-        {
-          throw MessageFormatException("Invalid JSON format for Set breakpoint reply message.");
-        }
-        theBreakpoints.insert( std::make_pair((unsigned int)(getValue(*it, "id")->getinteger()), loc));
-      } else {
-        throw MessageFormatException("Invalid JSON format for breakpoint reply message.");
-      }
+  json_t* lValue = getJsonValue(aMessage, aLength);
+  json_t* lBreakpoints = json_object_get(lValue, "breakpoints");
+  if (lBreakpoints == 0) {
+    throw MessageFormatException("Invalid JSON format for breakpoint reply message: 'breakpoints' not found");
+  }
+  int lSize = json_array_size(lBreakpoints);
+  for(int i = 0; i < lSize; ++i) {
+    json_t* lCurr = json_array_get(lBreakpoints, i);
+    json_t* lLocJ = json_object_get(lCurr, "location");
+    if (lLocJ == 0) {
+      throw MessageFormatException("Invalid JSON format for breakpoint reply message: 'location' not found");
     }
-  } else {
-    throw MessageFormatException("Invalid JSON format for breakpoint reply message.");
+    QueryLoc lLoc = debugger::fromJSONToQueryLoc(lLocJ);
+
+    json_t* lIdJ = json_object_get(lCurr, "id");
+    if (lIdJ == 0) {
+      throw MessageFormatException("Invalid JSON format for Set breakpoint reply message: 'id' not found");
+    }
+    unsigned int lId = (unsigned int)json_integer_value(lIdJ);
+    theBreakpoints.insert(std::make_pair(lId, lLoc));
   }
 }
 
-SetReply::~SetReply(){}
+SetReply::~SetReply() {}
 
 zstring SetReply::getData() const
 {
   std::stringstream lJSONString;
   lJSONString << "{\"breakpoints\":[";
   std::map<unsigned int, QueryLoc>::const_iterator it;
-  for( it = theBreakpoints.begin(); it != theBreakpoints.end(); ++it )
-  { 
-    if ( it != theBreakpoints.begin() )
-    {
+  for(it = theBreakpoints.begin(); it != theBreakpoints.end(); ++it) { 
+    if (it != theBreakpoints.begin()) {
       lJSONString << ',';
     }
     lJSONString << "{\"id\":" << it->first << ",\"location\":"
@@ -1107,14 +1075,14 @@ zstring SetReply::getData() const
 
 Byte* SetReply::serialize(Length& aLength) const
 {
-  ztd::auto_vec<Byte> lHeader(ReplyMessage::serialize( aLength ));
+  ztd::auto_vec<Byte> lHeader(ReplyMessage::serialize(aLength));
   zstring lJSONString = getData();
   const char * s = lJSONString.c_str();
   size_t l = lJSONString.length();
-  Byte * lMsg = new Byte[ MESSAGE_HEADER_SIZE + l + 1 ];
+  Byte* lMsg = new Byte[ MESSAGE_HEADER_SIZE + l + 1 ];
   memset(lMsg, '0', MESSAGE_HEADER_SIZE + l + 1);
-  memcpy( lMsg, lHeader.get(), MESSAGE_HEADER_SIZE );
-  memcpy( lMsg + MESSAGE_HEADER_SIZE, s, l );
+  memcpy(lMsg, lHeader.get(), MESSAGE_HEADER_SIZE);
+  memcpy(lMsg + MESSAGE_HEADER_SIZE, s, l);
   aLength = getLength();
   return lMsg; 
 }
@@ -1122,14 +1090,14 @@ Byte* SetReply::serialize(Length& aLength) const
 void SetReply::addBreakpoint(unsigned int anId, QueryLoc& aLocation)
 {
   theBreakpoints.insert(std::make_pair<unsigned int, QueryLoc>(anId, aLocation));
-  setLength((Length)(getData().length()));
+  setLength((Length)(MESSAGE_HEADER_SIZE + getData().length()));
 }
 
 /**
  * Variable Reply Message
  */
-VariableReply::VariableReply( const Id anId, const ErrorCode aErrorCode, bool containsData ):
-  ReplyMessage( anId, aErrorCode ), theContainsData(containsData)
+VariableReply::VariableReply(const Id anId, const ErrorCode aErrorCode, bool containsData) :
+  ReplyMessage(anId, aErrorCode), theContainsData(containsData)
 {
   setFlags(theContainsData ? REPLY_VARIABLE_FLAG | VARIABLE_DATA_FLAG : REPLY_VARIABLE_FLAG);
   Length l = (Length)(MESSAGE_HEADER_SIZE + getData().length());
@@ -1137,123 +1105,118 @@ VariableReply::VariableReply( const Id anId, const ErrorCode aErrorCode, bool co
   checkIntegrity();
 }
 
-VariableReply::VariableReply( Byte * aMessage, const unsigned int aLength ):
-  ReplyMessage( aMessage, aLength ), theContainsData(false)
+VariableReply::VariableReply(Byte* aMessage, const unsigned int aLength)
+  : ReplyMessage(aMessage, aLength),
+    theContainsData(false)
 {
   theContainsData = (aMessage[MESSAGE_FLAGS_FIELD_INDEX] & VARIABLE_DATA_FLAG) != 0;
-  setFlags( REPLY_VARIABLE_FLAG );
-  std::auto_ptr<json::value> lValue(getValue(aMessage, aLength));
-  json::value* globals = getValue(lValue.get(), "globals");
-  json::value* locals = getValue(lValue.get(), "locals");
+  setFlags(REPLY_VARIABLE_FLAG);
+  json_t* lJson = getJsonValue(aMessage, aLength);
+  json_t* lGlobals = json_object_get(lJson, "globals");
+  json_t* lLocals = json_object_get(lJson, "locals");
 
-  if ( globals != 0 )
-  {
-    json::array_list_t* list = globals->getarraylist();
-    json::array_list_t::iterator it;
-    for (it=list->begin(); it!=list->end(); it++)
-    {
-      json::value* Name = getValue(*it, "name");
-      json::value* Type = getValue(*it, "type");
-      json::value* Value = getValue(*it, "value");
-
-      if ( Name == 0 )
-      {
-        throw MessageFormatException("Invalid JSON format for variable message.");
-      }
-      std::wstring *lName = Name->getstring(L"", true);
-      std::string name = std::string( lName->begin()+1, lName->end()-1 );
-      delete lName;
-      if ( Type == 0 )
-      {
-        throw MessageFormatException("Invalid JSON format for variable message.");
-      }
-      std::wstring *lType = Type->getstring(L"", true);
-      std::string type = std::string( lType->begin()+1, lType->end()-1 );
-      delete lType; 
-      if (Value == 0 && theContainsData) {
-        throw MessageFormatException("Invalid JSON format for variable message.");
-      }
-      if (theContainsData){
-        std::list<std::pair<zstring, zstring> > data;
-        json::array_list_t* dList = Value->getarraylist();
-        for (json::array_list_t::iterator iter = dList->begin(); iter != dList->end(); iter++) {
-          json::value* v = getValue(*iter, "value");
-          json::value* t = getValue(*iter, "type");
-          if (v == NULL || t == NULL) {
-            throw MessageFormatException("Invalid JSON format for variable message.");
-          }
-          std::wstring* lV = v->getstring(L"", true);
-          std::wstring* lT = v->getstring(L"", true);
-          std::string sV(lV->begin() + 1, lV->end() - 1);
-          std::string sT(lT->begin() + 1, lT->end() - 1);
-          delete lV;
-          delete lT;
-          data.push_back(std::pair<zstring, zstring>(sV, sT));
-        }
-        addGlobal(name, type, data);
-      } else {
-        addGlobal(name, type);
-      }
-    }
-  } else {
-    throw MessageFormatException("Invalid JSON format for variable message.");
+  if (lGlobals == 0) {
+    throw MessageFormatException("Invalid JSON format for variable message: 'globals' not found");
   }
 
-  if ( locals != 0 )
-  {
-    json::array_list_t* list = locals->getarraylist();
-    json::array_list_t::iterator it;
-    for ( it =list->begin(); it!= list->end(); it++ )
-    {
-      json::value* Name = getValue(*it, "name");
-      json::value* Type = getValue(*it, "type");
-      json::value* Value = getValue(*it, "value");
+  int lSize = json_array_size(lGlobals);
+  for (int i = 0; i < lSize; ++i) {
+    json_t* lCurr = json_array_get(lGlobals, i);
 
-      if ( Name == 0 )
-      {
-        throw MessageFormatException("Invalid JSON format for variable message.");
-      }
-      std::wstring *lName = Name->getstring(L"", true);
-      std::string name = std::string( lName->begin()+1, lName->end()-1 );
-      delete lName;
-      if ( Type == 0 )
-      {
-        throw MessageFormatException("Invalid JSON format for variable message.");
-      }
-      std::wstring *lType = Type->getstring(L"", true);
-      std::string type = std::string( lType->begin()+1, lType->end()-1 );
-      delete lType;
-      if (Value == 0 && theContainsData) {
-        throw MessageFormatException("Invalid JSON format for variable message.");
-      }
-      if (theContainsData){
-        std::list<std::pair<zstring, zstring> > data;
-        json::array_list_t* dList = Value->getarraylist();
-        for (json::array_list_t::iterator iter = dList->begin(); iter != dList->end(); iter++) {
-          json::value* v = getValue(*iter, "value");
-          json::value* t = getValue(*iter, "type");
-          if (v == NULL || t == NULL) {
-            throw MessageFormatException("Invalid JSON format for variable message.");
-          }
-          std::wstring* lV = v->getstring(L"", true);
-          std::wstring* lT = v->getstring(L"", true);
-          std::string sV(lV->begin() + 1, lV->end() - 1);
-          std::string sT(lT->begin() + 1, lT->end() - 1);
-          delete lV;
-          delete lT;
-          data.push_back(std::pair<zstring, zstring>(sV, sT));
-        }
-        addLocal(name, type, data);
-      } else {
-        addLocal(name, type);
-      }
+    json_t* lNameJ = json_object_get(lCurr, "name");
+    if (lNameJ == 0) {
+      throw MessageFormatException("Invalid JSON format for variable message: 'name' not found");
     }
-  } else {
-    throw MessageFormatException("Invalid JSON format for variable message.");
+    std::string lNameStr = json_string_value(lNameJ);
+
+    json_t* lTypeJ = json_object_get(lCurr, "type");
+    if (lTypeJ == 0) {
+      throw MessageFormatException("Invalid JSON format for variable message: 'type' not found");
+    }
+    std::string lTypeStr = json_string_value(lTypeJ);
+
+    json_t* lValueJ = json_object_get(lCurr, "value");
+    if (lValueJ == 0 && theContainsData) {
+      throw MessageFormatException("Invalid JSON format for variable message: 'value' object not found");
+    }
+    if (theContainsData) {
+      std::list<std::pair<zstring, zstring> > lData;
+
+      int lValueSize = json_array_size(lValueJ);
+      for (int j = 0; i < lValueSize; ++j) {
+        json_t* lCurrValue = json_array_get(lValueJ, j);
+        json_t* lV = json_object_get(lCurrValue, "value");
+        if (lV == 0) {
+          throw MessageFormatException("Invalid JSON format for variable message: 'value' string not found");
+        }
+        std::string lVStr(json_string_value(lV));
+
+        json_t* lT = json_object_get(lCurrValue, "type");
+        if (lT == 0) {
+          throw MessageFormatException("Invalid JSON format for variable message: 'type' string not found");
+        }
+        std::string lTStr(json_string_value(lT));
+
+        lData.push_back(std::pair<zstring, zstring>(lVStr, lTStr));
+      }
+      addGlobal(lNameStr, lTypeStr, lData);
+    } else {
+      addGlobal(lNameStr, lTypeStr);
+    }
+  }
+
+  if (lLocals == 0) {
+    throw MessageFormatException("Invalid JSON format for variable message: 'locals' not found");
+  }
+
+  lSize = json_array_size(lLocals);
+  for (int i = 0; i < lSize; ++i) {
+    json_t* lCurr = json_array_get(lLocals, i);
+
+    json_t* lNameJ = json_object_get(lCurr, "name");
+    if (lNameJ == 0) {
+      throw MessageFormatException("Invalid JSON format for variable message: 'name' not found");
+    }
+    std::string lNameStr = json_string_value(lNameJ);
+
+    json_t* lTypeJ = json_object_get(lCurr, "type");
+    if (lTypeJ == 0) {
+      throw MessageFormatException("Invalid JSON format for variable message: 'type' not found");
+    }
+    std::string lTypeStr = json_string_value(lTypeJ);
+
+    json_t* lValueJ = json_object_get(lCurr, "value");
+    if (lValueJ == 0 && theContainsData) {
+      throw MessageFormatException("Invalid JSON format for variable message: 'value' object not found");
+    }
+    if (theContainsData) {
+      std::list<std::pair<zstring, zstring> > lData;
+
+      int lValueSize = json_array_size(lValueJ);
+      for (int j = 0; i < lValueSize; ++j) {
+        json_t* lCurrValue = json_array_get(lValueJ, j);
+        json_t* lV = json_object_get(lCurrValue, "value");
+        if (lV == 0) {
+          throw MessageFormatException("Invalid JSON format for variable message: 'value' string not found");
+        }
+        std::string lVStr(json_string_value(lV));
+
+        json_t* lT = json_object_get(lCurrValue, "type");
+        if (lT == 0) {
+          throw MessageFormatException("Invalid JSON format for variable message: 'type' string not found");
+        }
+        std::string lTStr(json_string_value(lT));
+
+        lData.push_back(std::pair<zstring, zstring>(lVStr, lTStr));
+      }
+      addLocal(lNameStr, lTypeStr, lData);
+    } else {
+      addLocal(lNameStr, lTypeStr);
+    }
   }
 } 
 
-VariableReply::~VariableReply(){}
+VariableReply::~VariableReply() {}
 
 zstring VariableReply::getData() const
 {
@@ -1262,9 +1225,9 @@ zstring VariableReply::getData() const
   lJSONString << "\"globals\":[";
   std::map<zstring, zstring>::const_iterator it = theGlobals.begin();
   long pos = 0;
-  for(; it != theGlobals.end(); it++ )
+  for(; it != theGlobals.end(); it++)
   {
-    if ( it != theGlobals.begin() )
+    if (it != theGlobals.begin())
     {
       lJSONString << ',';
     }
@@ -1287,9 +1250,9 @@ zstring VariableReply::getData() const
   lJSONString << "],\"locals\":[";
   std::map<zstring, zstring>::const_iterator lIter;
   pos = 0;
-  for( lIter = theLocals.begin(); lIter != theLocals.end(); ++lIter )
+  for(lIter = theLocals.begin(); lIter != theLocals.end(); ++lIter)
   {
-    if ( lIter != theLocals.begin() )
+    if (lIter != theLocals.begin())
     {
       lJSONString << ',';
     }
@@ -1310,20 +1273,20 @@ zstring VariableReply::getData() const
     ++pos;
   }
   lJSONString << "]}";
-  zstring lReturnString( lJSONString.str() );
+  zstring lReturnString(lJSONString.str());
   return lReturnString;
 }
 
-Byte * VariableReply::serialize( Length & aLength ) const
+Byte* VariableReply::serialize(Length & aLength) const
 {
-  ztd::auto_vec<Byte> lHeader(ReplyMessage::serialize( aLength ));
+  ztd::auto_vec<Byte> lHeader(ReplyMessage::serialize(aLength));
   zstring lJSONString = getData();
   const char * s = lJSONString.c_str();
   size_t l = lJSONString.length();
-  Byte * lMsg = new Byte[ MESSAGE_HEADER_SIZE + l + 1 ];
+  Byte* lMsg = new Byte[ MESSAGE_HEADER_SIZE + l + 1 ];
   memset(lMsg, '0', MESSAGE_HEADER_SIZE + l + 1);
-  memcpy( lMsg, lHeader.get(), MESSAGE_HEADER_SIZE );
-  memcpy( lMsg + MESSAGE_HEADER_SIZE, s, l );
+  memcpy(lMsg, lHeader.get(), MESSAGE_HEADER_SIZE);
+  memcpy(lMsg + MESSAGE_HEADER_SIZE, s, l);
   aLength = getLength();
   return lMsg; 
 }
@@ -1386,71 +1349,57 @@ std::map<std::pair<zstring, zstring>, std::list<std::pair<zstring, zstring> > > 
   return lVariables;
 }
 
-void VariableReply::addGlobal( zstring const &aVariable, zstring const &aType )
+void VariableReply::addGlobal(zstring const &aVariable, zstring const &aType)
 {
-  theGlobals.insert( std::make_pair( aVariable, aType ) );
-  setLength( (Length)(MESSAGE_HEADER_SIZE + getData().length()) );
+  theGlobals.insert(std::make_pair(aVariable, aType));
+  setLength((Length)(MESSAGE_HEADER_SIZE + getData().length()));
 }
 
-void VariableReply::addGlobal( zstring const &aVariable, zstring const &aType, std::list<std::pair<zstring, zstring> > val )
+void VariableReply::addGlobal(zstring const &aVariable, zstring const &aType, std::list<std::pair<zstring, zstring> > val)
 {
-  theGlobals.insert( std::make_pair( aVariable, aType ) );
+  theGlobals.insert(std::make_pair(aVariable, aType));
   theGlobalData.push_back(val);
-  setLength( (Length)(MESSAGE_HEADER_SIZE + getData().length()) );
+  setLength((Length)(MESSAGE_HEADER_SIZE + getData().length()));
 }
 
-void VariableReply::addLocal( zstring const &aVariable, zstring const &aType )
+void VariableReply::addLocal(zstring const &aVariable, zstring const &aType)
 {
-  theLocals.insert( std::make_pair( aVariable, aType ) );
-  setLength( (Length)(MESSAGE_HEADER_SIZE + getData().length()) );
+  theLocals.insert(std::make_pair(aVariable, aType));
+  setLength((Length)(MESSAGE_HEADER_SIZE + getData().length()));
 }
 
-void VariableReply::addLocal( zstring const &aVariable, zstring const &aType, std::list<std::pair<zstring, zstring> > val )
+void VariableReply::addLocal(zstring const &aVariable, zstring const &aType, std::list<std::pair<zstring, zstring> > val)
 {
-  theLocals.insert( std::make_pair( aVariable, aType ) );
+  theLocals.insert(std::make_pair(aVariable, aType));
   theLocalData.push_back(val);
-  setLength( (Length)(MESSAGE_HEADER_SIZE + getData().length()) );
+  setLength((Length)(MESSAGE_HEADER_SIZE + getData().length()));
 }
 
 /**
 * List command
 */
-ListCommand::ListCommand( Byte * aMessage, const unsigned int aLength ) :
+ListCommand::ListCommand(Byte* aMessage, const unsigned int aLength) :
 AbstractCommandMessage(aMessage, aLength)
 {
-  std::auto_ptr<json::value> lValue(getValue(aMessage, aLength));
-  json::value* lFilename = getValue(lValue.get(), "filename");
-  if (lFilename != 0)
-  {
-    std::wstring* lWString = lFilename->getstring(L"", true);
-    std::string lString( lWString->begin()+1, lWString->end()-1 );
-    delete lWString;
-    theFilename = lString;
-  } else {
-    throw MessageFormatException("Invalid JSON format for SuspendedEvent message.");
+  json_t* lJson = getJsonValue(aMessage, aLength);
+  json_t* lFilenameJ = json_object_get(lJson, "filename");
+  if (lFilenameJ != 0) {
+    throw MessageFormatException("Invalid JSON format for SuspendedEvent message: 'filename' not found");
   }
-  json::value* lFirstline = getValue(lValue.get(), "firstline");
-  if (lFirstline != 0)
-  {
-    std::wstring* lWString = lFirstline->getstring(L"", true);
-    std::string lString( lWString->begin()+1, lWString->end()-1 );
-    delete lWString;
-    std::istringstream lStream(lString);
-    lStream >> theFirstLine;
-  } else {
-    throw MessageFormatException("Invalid JSON format for SuspendedEvent message.");
+  std::string lFilenameStr(json_string_value(lFilenameJ));
+  theFilename = lFilenameStr;
+
+  json_t* lFirstlineJ = json_object_get(lJson, "firstline");
+  if (lFirstlineJ != 0) {
+    throw MessageFormatException("Invalid JSON format for SuspendedEvent message: 'firstline' not found");
   }
-  json::value* lLastline = getValue(lValue.get(), "lastline");
-  if (lLastline != 0)
-  {
-    std::wstring* lWString = lLastline->getstring(L"", true);
-    std::string lString( lWString->begin()+1, lWString->end()-1 );
-    delete lWString;
-    std::istringstream lStream(lString);
-    lStream >> theLastLine;
-  } else {
-    throw MessageFormatException("Invalid JSON format for SuspendedEvent message.");
+  theFirstLine = (unsigned long)json_integer_value(lFirstlineJ);
+
+  json_t* lLastlineJ = json_object_get(lJson, "lastline");
+  if (lLastlineJ != 0) {
+    throw MessageFormatException("Invalid JSON format for SuspendedEvent message: 'firstline' not found");
   }
+  theLastLine = (unsigned long)json_integer_value(lLastlineJ);
 }
 
 ListCommand::ListCommand(std::string aFilename,
@@ -1470,17 +1419,17 @@ ListCommand::~ListCommand()
 {
 }
 
-Byte* ListCommand::serialize( Length& aLength ) const
+Byte* ListCommand::serialize(Length& aLength) const
 {
   ztd::auto_vec<Byte> lHeader(
     AbstractCommandMessage::serialize(aLength));
   std::string lJSONString = getData();
   Byte* lMsg = new Byte[getLength() + 1];
   memset(lMsg, '0', getLength() + 1);
-  memcpy( lMsg, lHeader.get(), MESSAGE_HEADER_SIZE );
+  memcpy(lMsg, lHeader.get(), MESSAGE_HEADER_SIZE);
   const char * s = lJSONString.c_str();
   size_t l = lJSONString.length();
-  memcpy( lMsg + MESSAGE_HEADER_SIZE, s, l );
+  memcpy(lMsg + MESSAGE_HEADER_SIZE, s, l);
   aLength = getLength();
   return lMsg;
 }
@@ -1533,34 +1482,32 @@ ReplyMessage(aId, aErrorCode), theString(aCode)
   checkIntegrity();
 }
 
-ListReply::ListReply( Byte* aMessage, const unsigned int aLength ) :
+ListReply::ListReply(Byte* aMessage, const unsigned int aLength) :
 ReplyMessage(aMessage, aLength)
 {
   setFlags(REPLY_LIST_FLAG);
-  std::auto_ptr<json::value> lValue(getValue(aMessage, aLength));
-  json::value* lCode = getValue(lValue.get(), "code");
-  if (lCode == 0) {
-    throw MessageFormatException("Invalid JSON format for List reply message.");
+  json_t* lJson = getJsonValue(aMessage, aLength);
+  json_t* lCodeJ = json_object_get(lJson, "code");
+  if (lCodeJ == 0) {
+    throw MessageFormatException("Invalid JSON format for List reply message: 'code' not found");
   }
-  std::auto_ptr<std::wstring> lWString(lCode->getstring(L"", true));
-  std::string lString( lWString->begin()+1, lWString->end()-1 );
-
-  deserializeString(lString);
-  theString = lString;
+  std::string lCodeStr(json_string_value(lCodeJ));
+  deserializeString(lCodeStr);
+  theString = lCodeStr;
 }
 
 ListReply::~ListReply() {}
 
-Byte* ListReply::serialize( Length &aLength ) const
+Byte* ListReply::serialize(Length &aLength) const
 {
-  ztd::auto_vec<Byte> lHeader(ReplyMessage::serialize( aLength ));
+  ztd::auto_vec<Byte> lHeader(ReplyMessage::serialize(aLength));
   zstring lJSONString = getData();
   const char * s = lJSONString.c_str();
   size_t l = lJSONString.length();
-  Byte * lMsg = new Byte[ MESSAGE_HEADER_SIZE + l + 1 ];
+  Byte* lMsg = new Byte[ MESSAGE_HEADER_SIZE + l + 1 ];
   memset(lMsg, '0', MESSAGE_HEADER_SIZE + l + 1);
-  memcpy( lMsg, lHeader.get(), MESSAGE_HEADER_SIZE );
-  memcpy( lMsg + MESSAGE_HEADER_SIZE, s, l );
+  memcpy(lMsg, lHeader.get(), MESSAGE_HEADER_SIZE);
+  memcpy(lMsg + MESSAGE_HEADER_SIZE, s, l);
   aLength = getLength();
   return lMsg; 
 }
@@ -1584,8 +1531,8 @@ std::string ListReply::getData() const
 
 ReplyMessage * ListReply::getReplyMessage()
 {
-  ReplyMessage * lReply =  new ReplyMessage( getId(), DEBUGGER_NO_ERROR );
-  lReply->setData( getData() );
+  ReplyMessage * lReply =  new ReplyMessage(getId(), DEBUGGER_NO_ERROR);
+  lReply->setData(getData());
   return lReply;
 }
 
@@ -1594,7 +1541,7 @@ std::string ListReply::getString() const
   return theString;
 }
 
-void ListReply::setString( std::string const &aString )
+void ListReply::setString(std::string const &aString)
 {
   theString = aString;
 }

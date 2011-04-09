@@ -31,7 +31,7 @@ IF(NOT WIN32)
   MESSAGE(FATAL_ERROR "This module is intended only for Windows platforms.")
 ENDIF(NOT WIN32)
 
-PRINT_FIND_TITLE(FindDependencyWalker)
+PRINT_FIND_TITLE(DependencyWalker)
 
 SET(SEARCH_PATHS ${ZORBA_THIRD_PARTY_REQUIREMENTS})
 LIST(FIND SEARCH_PATHS "$ENV{ProgramFiles}" PRORAM_FILES_FOUND)
