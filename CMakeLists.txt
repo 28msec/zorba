@@ -362,7 +362,7 @@ IF (Jansson_FOUND)
   INCLUDE_DIRECTORIES(${Jansson_INCLUDE_DIRS})
   SET(requiredlibs ${requiredlibs} ${Jansson_LIBRARY})
 ELSE(Jansson_FOUND)
-  MESSAGE(STATUS "The Jansson library was not found.")
+  MESSAGE(FATAL_ERROR "The Jansson library was not found.")
 ENDIF(Jansson_FOUND)
 
 
