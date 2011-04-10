@@ -122,7 +122,11 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
     }
     catch (ZorbaException const&) 
     {
-      ZORBA_ERROR_LOC_DESC(FODC0004, loc, "Passed argument is not a valid xs:anyURI.");
+      throw XQUERY_EXCEPTION(
+        FODC0004,
+        ERROR_PARAMS( lURI->getStringValue(), ZED( BadAnyURI ) ),
+        ERROR_LOC( loc )
+      );
     }
   }
   else 
@@ -130,8 +134,11 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
     resolvedURIItem = planState.theGlobalDynCtx->get_default_collection();
 
     if( NULL == resolvedURIItem)
-      ZORBA_ERROR_LOC_DESC(FODC0002, loc,
-                           "Default collection is undefined in the dynamic context.");
+      throw XQUERY_EXCEPTION(
+        FODC0002,
+        ERROR_PARAMS( ZED( DefaultCollation ), ZED( NotDefInStaticCtx ) ),
+        ERROR_LOC( loc )
+      );
   }
 
   coll =  theSctx->get_collection_uri_resolver()->
@@ -139,8 +146,11 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
   if (coll == 0) 
   {
-    ZORBA_ERROR_LOC_PARAM(FODC0004, loc,
-                          resolvedURIItem->getStringValue().c_str(), "");
+    throw XQUERY_EXCEPTION(
+      FODC0004,
+      ERROR_PARAMS( resolvedURIItem->getStringValue() ),
+      ERROR_LOC( loc )
+    );
   }
 
   /** return the nodes of the collection */
@@ -1996,4 +2006,5 @@ bool DeclaredIndexesIterator::nextImpl(
   STACK_END(lState);
 }
 
-} /* namespace zorba */
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

@@ -582,9 +582,9 @@ bool MultiplyOperation::compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_
   std::auto_ptr<Duration> d;
   
   if ( i1->getDoubleValue().isPosInf() || i1->getDoubleValue().isNegInf() )
-    throw XQUERY_EXCEPTION( FODT0002 );
+    throw XQUERY_EXCEPTION( FODT0002, ERROR_LOC( loc ) );
   else if (i1->getDoubleValue().isNaN())
-    throw XQUERY_EXCEPTION( FOCA0005 );
+    throw XQUERY_EXCEPTION( FOCA0005, ERROR_LOC( loc ) );
   else
     d.reset(i0->getYearMonthDurationValue() * (i1->getDoubleValue()));
   
@@ -604,9 +604,9 @@ bool MultiplyOperation::compute<TypeConstants::XS_DT_DURATION,TypeConstants::XS_
   std::auto_ptr<Duration> d;
   
   if ( i1->getDoubleValue().isPosInf() || i1->getDoubleValue().isNegInf() )
-    throw XQUERY_EXCEPTION( FODT0002 );
+    throw XQUERY_EXCEPTION( FODT0002, ERROR_LOC( loc ) );
   else if (i1->getDoubleValue().isNaN())
-    throw XQUERY_EXCEPTION( FOCA0005 );
+    throw XQUERY_EXCEPTION( FOCA0005, ERROR_LOC( loc ) );
   else
     d.reset(i0->getDayTimeDurationValue() * (i1->getDoubleValue()));
   
@@ -660,9 +660,9 @@ bool DivideOperation::compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_DO
     d = std::auto_ptr<Duration>(new Duration(Duration::YEARMONTHDURATION_FACET));
   }
   else if ( i1->getDoubleValue().isZero() )
-    throw XQUERY_EXCEPTION( FODT0002 );
+    throw XQUERY_EXCEPTION( FODT0002, ERROR_LOC( loc ) );
   else if ( i1->getDoubleValue().isNaN() )
-    throw XQUERY_EXCEPTION( FOCA0005 );
+    throw XQUERY_EXCEPTION( FOCA0005, ERROR_LOC( loc ) );
   else
     d = std::auto_ptr<Duration>(i0->getYearMonthDurationValue() / i1->getDoubleValue());
 
@@ -686,9 +686,9 @@ bool DivideOperation::compute<TypeConstants::XS_DT_DURATION,TypeConstants::XS_DO
     d.reset(new Duration());
   }
   else if ( i1->getDoubleValue().isZero() )
-    throw XQUERY_EXCEPTION( FODT0002 );
+    throw XQUERY_EXCEPTION( FODT0002, ERROR_LOC( loc ) );
   else if ( i1->getDoubleValue().isNaN() )
-    throw XQUERY_EXCEPTION( FOCA0005 );
+    throw XQUERY_EXCEPTION( FOCA0005, ERROR_LOC( loc ) );
   else
     d.reset(i0->getDayTimeDurationValue() / i1->getDoubleValue());
 

@@ -76,7 +76,9 @@ CodepointsToStringIterator::nextImpl(store::Item_t& result, PlanState& planState
         if (NumConversions::strToUInt(lUtf8Code.c_str(), lCode)) 
         {
           if (!xml::is_valid(lCode))
-            ZORBA_ERROR_LOC_DESC(FOCH0001, loc, "Codepoint #" + lUtf8Code + " is not allowed in XML version 1.0.");
+            throw XQUERY_EXCEPTION(
+              FOCH0001, ERROR_PARAMS( lUtf8Code ), ERROR_LOC( loc )
+            );
 
           try 
           {
@@ -90,7 +92,9 @@ CodepointsToStringIterator::nextImpl(store::Item_t& result, PlanState& planState
         }
         else
         {
-          ZORBA_ERROR_LOC_DESC(FOCH0001, loc, "Codepoint #" + lUtf8Code + " is not allowed in XML version 1.0.");
+          throw XQUERY_EXCEPTION(
+            FOCH0001, ERROR_PARAMS( lUtf8Code ), ERROR_LOC( loc )
+          );
         }
       }
     }
@@ -652,8 +656,9 @@ bool NormalizeUnicodeIterator::nextImpl(
     }
     else
     {
-      ZORBA_ERROR_LOC_DESC_OSS(FOCH0003, loc,
-                               "Unsupported normalization form : " << normForm);
+      throw XQUERY_EXCEPTION(
+        FOCH0003, ERROR_PARAMS( normForm ), ERROR_LOC( loc )
+      );
     }
 
     item0->getStringValue2(resStr);

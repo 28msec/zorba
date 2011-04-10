@@ -924,10 +924,16 @@ FormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
       } while(0);
 
-      if (formatName.isNull()
-          ||
-          ((df_t = planState.theCompilerCB->theRootSctx->get_decimal_format(formatName)).getp() == NULL))
-        throw XQUERY_EXCEPTION(FODF1280, ERROR_LOC(loc));
+      if (formatName.isNull())
+        throw XQUERY_EXCEPTION(
+          FODF1280, ERROR_PARAMS( "<null>" ), ERROR_LOC( loc )
+        );
+
+      if ( (df_t = planState.theCompilerCB->theRootSctx->get_decimal_format(formatName)).getp() == NULL )
+        throw XQUERY_EXCEPTION(
+          FODF1280, ERROR_PARAMS( formatName->getStringValue() ),
+          ERROR_LOC( loc )
+        );
 
     } // if (theChildren.size() < 3)
   
@@ -944,3 +950,4 @@ FormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 }
 
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

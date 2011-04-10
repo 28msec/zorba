@@ -321,6 +321,30 @@ inline parameters make_parameters( T1 const &p1, T2 const &p2, T3 const &p3 ) {
   return p;
 }
 
+/**
+ * Makes a parameters object with 4 parameters.
+ *
+ * @tparam T1 The type of the first parameter.
+ * @tparam T2 The type of the second parameter.
+ * @tparam T3 The type of the third parameter.
+ * @tparam T4 The type of the fourth parameter.
+ * @param p1 The first parameter.
+ * @param p2 The second parameter.
+ * @param p3 The third parameter.
+ * @param p4 The fourth parameter.
+ * @return Returns said parameters object.
+ */
+template<typename T1,typename T2,typename T3,typename T4>
+inline parameters make_parameters( T1 const &p1, T2 const &p2, T3 const &p3,
+                                   T4 const &p4 ) {
+  parameters p( 4 );
+  ztd::to_string( p1, &p[1] );
+  ztd::to_string( p2, &p[2] );
+  ztd::to_string( p3, &p[3] );
+  ztd::to_string( p4, &p[4] );
+  return p;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace err

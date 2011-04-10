@@ -65,14 +65,14 @@ ResolveQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
       // must check for FOCA0002 first
       if (!GENV_GCAST.castableToNCName(resPre) || ! GENV_GCAST.castableToNCName(resLocal))
-        throw XQUERY_EXCEPTION (FOCA0002, ERROR_LOC(loc));
+        throw XQUERY_EXCEPTION(FOCA0002, ERROR_PARAMS( qname ), ERROR_LOC(loc));
     } 
     else
     {
       resLocal = qname;
 
       if (! GENV_GCAST.castableToNCName(resLocal))
-        throw XQUERY_EXCEPTION (FOCA0002, ERROR_LOC(loc));
+        throw XQUERY_EXCEPTION(FOCA0002, ERROR_PARAMS( qname ), ERROR_LOC(loc));
     }
       
     if (consumeNext(itemElem, theChild1, planState )) 
@@ -94,7 +94,9 @@ ResolveQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
       }
 
       if (!found && !resPre.empty())
-        throw XQUERY_EXCEPTION(FONS0004, ERROR_LOC(loc));
+        throw XQUERY_EXCEPTION(
+          FONS0004, ERROR_PARAMS( resPre ), ERROR_LOC( loc )
+        );
     }
     
     GENV_ITEMFACTORY->createQName(result, resNs, resPre, resLocal);
@@ -138,7 +140,7 @@ bool QNameIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   if (index != zstring::npos) 
   {
     if (resNs.empty())
-      throw XQUERY_EXCEPTION(FOCA0002, ERROR_LOC(loc));
+      throw XQUERY_EXCEPTION(FOCA0002, ERROR_PARAMS( resNs ), ERROR_LOC(loc));
 
     resPre = qname.substr(0, index);
     resLocal = qname.substr(index+1, qname.size() - index);
@@ -151,7 +153,7 @@ bool QNameIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   if ((index != zstring::npos && ! GENV_GCAST.castableToNCName(resPre)) ||
       ! GENV_GCAST.castableToNCName(resLocal))
   {
-    throw XQUERY_EXCEPTION(FOCA0002, ERROR_LOC(loc));
+    throw XQUERY_EXCEPTION(FOCA0002, ERROR_PARAMS( qname ), ERROR_LOC(loc));
   }
 
   GENV_ITEMFACTORY->createQName(result, resNs, resPre, resLocal);
@@ -362,4 +364,5 @@ InScopePrefixesIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   STACK_END (state);
 }
 
-} /* namespace zorba */
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

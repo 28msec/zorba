@@ -57,8 +57,11 @@ bool AddDocumentIterator::nextImpl(
     lUri->getStringValue2(lRetrievedUriString);
     lResolvedUriString = theSctx->resolve_relative_uri(lRetrievedUriString, true);
   } catch (ZorbaException const&) {
-    ZORBA_ERROR_LOC_DESC_OSS(FODC0004, loc,
-        "Couldn't resolve relative URI " << lResolvedUriString);
+    throw XQUERY_EXCEPTION(
+      FODC0004,
+      ERROR_PARAMS( lResolvedUriString, ZED( NoResolveRelativeURI ) ),
+      ERROR_LOC( loc )
+    );
   }
 
   // check if document already exists in the store
@@ -108,8 +111,11 @@ bool RemoveDocumentIterator::nextImpl(
     lUri->getStringValue2(lRetrievedUriString);
     lResolvedUriString = theSctx->resolve_relative_uri(lRetrievedUriString, true);
   } catch (ZorbaException const&) {
-    ZORBA_ERROR_LOC_DESC_OSS(FODC0004, loc,
-        "Couldn't resolve relative URI " << lResolvedUriString);
+    throw XQUERY_EXCEPTION(
+      FODC0004,
+      ERROR_PARAMS( lResolvedUriString, ZED( NoResolveRelativeURI ) ),
+      ERROR_LOC( loc )
+    );
   }
 
   // check if document exists in the store
@@ -155,8 +161,11 @@ bool RetrieveDocumentIterator::nextImpl(
     lUri->getStringValue2(lRetrievedUriString);
     lResolvedUriString = theSctx->resolve_relative_uri(lRetrievedUriString, true);
   } catch (ZorbaException const&) {
-    ZORBA_ERROR_LOC_DESC_OSS(FODC0004, loc,
-        "Couldn't resolve relative URI " << lResolvedUriString);
+    throw XQUERY_EXCEPTION(
+      FODC0004,
+      ERROR_PARAMS( lResolvedUriString, ZED( NoResolveRelativeURI ) ),
+      ERROR_LOC( loc )
+    );
   }
 
   // check if document exists in the store
@@ -243,8 +252,11 @@ bool IsAvailableDocumentIterator::nextImpl(
     lUri->getStringValue2(lRetrievedUriString);
     lResolvedUriString = theSctx->resolve_relative_uri(lRetrievedUriString, true);
   } catch (ZorbaException const&) {
-    ZORBA_ERROR_LOC_DESC_OSS(FODC0004, loc,
-        "Couldn't resolve relative URI " << lResolvedUriString);
+    throw XQUERY_EXCEPTION(
+      FODC0004,
+      ERROR_PARAMS( lResolvedUriString, ZED( NoResolveRelativeURI ) ),
+      ERROR_LOC( loc )
+    );
   }
 
   // check if document exists in the store

@@ -13,8 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #ifndef ZORBA_ZORBATYPES_URI_H
 #define ZORBA_ZORBATYPES_URI_H
+
+#include <iostream>
 
 #include <zorba/config.h>
 #include "representations.h"
@@ -239,13 +242,15 @@ inline const zstring& URI::get_encoded_fragment() const
   return theFragment;
 }
 
+inline std::ostream& operator<<( std::ostream &o, URI const &uri ) {
+  return o << uri.toString();
+}
 
-} /* namespace zorba */
-
+} // namespace zorba
+#endif /* ZORBA_ZORBATYPES_URI_H */
 /*
  * Local variables:
  * mode: c++
  * End:
  */
-
-#endif
+/* vim:set et sw=2 ts=2: */

@@ -74,14 +74,15 @@ bool FnParseXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) c
     try {
       lValidatedBaseUri = URI(result->getStringValue());
     } catch (ZorbaException const& e) {
-      ZORBA_ERROR_LOC_DESC_OSS(FODC0007, loc,
-          "Base URI passed as second argument to fn:parse is not a valid URI; "
-          << e.what());
+      throw XQUERY_EXCEPTION(
+        FODC0007, ERROR_PARAMS( result->getStringValue() ), ERROR_LOC( loc )
+      );
     }
 
     if (!lValidatedBaseUri.is_absolute()) {
-      ZORBA_ERROR_LOC_DESC(FODC0007, loc,
-          "Base URI passed as second argument to fn:parse is not an absolute URI.");
+      throw XQUERY_EXCEPTION(
+        FODC0007, ERROR_PARAMS( lValidatedBaseUri.toString() ), ERROR_LOC( loc )
+      );
     }
 
     result->getStringValue2(baseUri);
@@ -94,7 +95,9 @@ bool FnParseXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) c
     loadProps.setStoreDocument(false);
     result = lStore.loadDocument(baseUri, docUri, *is, loadProps);
   } catch (ZorbaException const& e) {
-    ZORBA_ERROR_LOC_DESC(FODC0006, loc, e.what());
+    throw XQUERY_EXCEPTION(
+      FODC0006, ERROR_PARAMS( e.what() ), ERROR_LOC( loc )
+    );
   }
   STACK_PUSH(true, state);
   STACK_END (state);
@@ -193,3 +196,5 @@ FnSerializeIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) con
 //  STACK_PUSH(true, state);
 //  STACK_END (state);
 //}
+
+/* vim:set et sw=2 ts=2: */

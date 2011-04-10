@@ -1505,10 +1505,10 @@ bool Schema::parseUserAtomicTypes(
 
       if (!xsiTypeDV)
       {
-        ZORBA_ERROR_DESC_OSS(FORG0001,
-                             "Type '" << TypeOps::toString(*aTargetType)
-                             << "' not found in current context.");
-        wasError = true;
+        throw XQUERY_EXCEPTION(
+          FORG0001,
+          ERROR_PARAMS( TypeOps::toString(*aTargetType), ZED( NoTypeInCtx ) )
+        );
       }
 
       // workaround for validating xs:NOTATION with Xerces
@@ -1552,13 +1552,13 @@ bool Schema::parseUserAtomicTypes(
   {
     zstring msg;
     transcode(idve.getMessage(), msg);
-    
-    ZORBA_ERROR_DESC_OSS(FORG0001,
-                         "String '" << textValue <<
-                         "' cannot be cast to '" <<
-                         TypeOps::toString( *aTargetType ) << "' : "
-                         << msg.c_str());
-    return false;
+
+    throw XQUERY_EXCEPTION(
+      FORG0001,
+      ERROR_PARAMS(
+        textValue, ZED( NoCastTo ), TypeOps::toString( *aTargetType ), msg
+      )
+    );
   }
   catch(const OutOfMemoryException&)
   {
@@ -1898,4 +1898,4 @@ void Schema::serialize(::zorba::serialization::Archiver &ar)
 #endif
 }
 } // namespace zorba
-
+/* vim:set et sw=2 ts=2: */

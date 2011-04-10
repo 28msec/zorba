@@ -3067,8 +3067,7 @@ void static_context::add_collation(const std::string& uri, const QueryLoc& loc)
 
   if (collator == NULL)
   {
-    ZORBA_ERROR_LOC_DESC_OSS(FOCH0002, loc,
-                             "Collation " << uri << " not supported.");
+    throw XQUERY_EXCEPTION( FOCH0002, ERROR_PARAMS( uri ), ERROR_LOC( loc ) );
   }
   else
   {
@@ -3130,9 +3129,9 @@ XQPCollator* static_context::get_collator(
     sctx = sctx->theParent;
   }
 
-  ZORBA_ERROR_LOC_DESC_OSS(FOCH0002, loc,
-                           "Collation " << resolvedURI << " not found in static context.");
-  return NULL;
+  throw XQUERY_EXCEPTION(
+    FOCH0002, ERROR_PARAMS( uri, ZED( NotInStaticCtx ) ), ERROR_LOC( loc )
+  );
 }
 
 

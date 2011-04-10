@@ -775,7 +775,9 @@ FormatIntegerIterator::nextImpl(store::Item_t& result, PlanState& planState) con
       languageString = language_item->getStringValue();
       if(!GenericCast::isCastable(languageString, &*rtm.LANGUAGE_TYPE_ONE, tm))
       {
-        throw XQUERY_EXCEPTION(FOFI0001, ERROR_LOC(loc));
+        throw XQUERY_EXCEPTION(
+          FOFI0001, ERROR_PARAMS( languageString ), ERROR_LOC( loc )
+        );
       }
     }
     try{
@@ -969,5 +971,5 @@ FormatIntegerIterator::nextImpl(store::Item_t& result, PlanState& planState) con
   STACK_END (state);
 }
 
-
-}//end namespace zorba
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

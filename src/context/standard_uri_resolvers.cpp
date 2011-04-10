@@ -107,7 +107,9 @@ store::Item_t StandardDocumentURIResolver::resolve(
 #endif
     if (lInStream.is_open() == false)
     {
-      ZORBA_ERROR_DESC_OSS(FODC0002, "File not found or accessible " << decodedURI);
+      throw XQUERY_EXCEPTION(
+        FODC0002, ERROR_PARAMS( decodedURI, ZED( FileNotFoundOrReadable ) )
+      );
     }
 
     // parse exception must be caught by the caller
@@ -116,7 +118,7 @@ store::Item_t StandardDocumentURIResolver::resolve(
     // result can't be null, because we already asked the store if he has it
     ZORBA_ASSERT(lResultDoc != NULL);
 #else
-    ZORBA_ERROR_DESC_OSS(FODC0002, "Unable to retrieve " << lURI.toString());
+    throw XQUERY_EXCEPTION( FODC0002, ERROR_PARAMS( lURI.toString() ) );
 #endif
   }
   else if (ZSTREQ(lURI.get_scheme(), "http") ||
@@ -129,7 +131,9 @@ store::Item_t StandardDocumentURIResolver::resolve(
       uri::fetch(lURI.toString(), iss);
     }
     catch ( uri::fetch_exception const &e ) {
-      ZORBA_ERROR_DESC_OSS( FODC0002, e.what() );
+      throw XQUERY_EXCEPTION(
+        FODC0002, ERROR_PARAMS( lURI.toString(), e.what() )
+      );
     }
 
     // parse exception must be caught by the caller
@@ -138,31 +142,19 @@ store::Item_t StandardDocumentURIResolver::resolve(
     // result can't be null, because we already asked the store if he has it
     ZORBA_ASSERT(lResultDoc != NULL);
 #else
-    ZORBA_ERROR_DESC_OSS(FODC0002,
-                         "Can't retrieve the http:// or https:// URI "
-                         << lURI.toString());
+    throw XQUERY_EXCEPTION( FODC0002, ERROR_PARAMS( lURI ) );
 #endif
   }
   else
   {
-    zstring q;
-#ifdef WIN32
-    if(lURI.get_scheme().size() == 1)
-    {
-      q = "Did you miss the \"file:///\" ahead of the absolute path?";
-    }
-#endif
-    ZORBA_ERROR_DESC_OSS(FODC0002,
-                         "Unknown URI scheme \"" << lURI.get_scheme() << "\" in URI "
-                         << lURI.toString()
-                         << " . " << q);
+    throw XQUERY_EXCEPTION(
+      FODC0002, ERROR_PARAMS( lURI, ZED( BadURIScheme ), lURI.get_scheme() )
+    );
   }
 
   if (lResultDoc == NULL)
   {
-    ZORBA_ERROR_DESC_OSS(FODC0002,
-                         "Couldn't retrieve document with URI "
-                         << lURI.toString());
+    throw XQUERY_EXCEPTION( FODC0002, ERROR_PARAMS( lURI.toString() ) );
   }
 
   return lResultDoc;
@@ -199,10 +191,7 @@ StandardCollectionURIResolver::resolve(
   }
   catch (ZorbaException const& e)
   {
-    ZORBA_ERROR_DESC_OSS(FODC0004,
-                         "URI " << lUriString
-                         << " is not valid or could not be resolved. Reason: "
-                         << e.what());
+    throw XQUERY_EXCEPTION( FODC0004, ERROR_PARAMS( lUriString, e.what() ) );
   }
 
   // try to get it from the store again
@@ -726,5 +715,5 @@ StandardLibraryModuleURIResolver::resolve(
   return modfile.release();
 }
 
-} /* namespace zorba */
+} // namespace zorba
 /* vim:set et sw=2 ts=2: */

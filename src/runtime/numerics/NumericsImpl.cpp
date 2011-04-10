@@ -300,7 +300,7 @@ bool DivideOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMA
   xs_decimal ld1 = i1->getDecimalValue();
   if ( ld1 == Integer::parseInt(0) )
   {
-    ZORBA_ERROR_LOC_DESC( FOAR0001, *loc, "Division by zero (decimals)");
+    throw XQUERY_EXCEPTION( FOAR0001, ERROR_LOC( loc ) );
   }
   return GENV_ITEMFACTORY->createDecimal (result,  ld0 / ld1 );
 }
@@ -319,7 +319,7 @@ bool DivideOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGE
   xs_decimal ll1 = Decimal::parseInteger(i1->getIntegerValue());
   if ( ll1 == Integer::parseInt(0) )
   {
-    ZORBA_ERROR_LOC_DESC( FOAR0001, *loc, "Division by zero (decimals)");
+    throw XQUERY_EXCEPTION( FOAR0001, ERROR_LOC( loc ) );
   }
   return GENV_ITEMFACTORY->createDecimal (result,  ll0 / ll1 );
 }
@@ -342,16 +342,18 @@ bool IntegerDivideOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_
 
   if ( d1 == Double::parseInt(0) )
   {
-    ZORBA_ERROR_LOC_DESC( FOAR0001, *loc, "Division by zero (decimals)");
+    throw XQUERY_EXCEPTION( FOAR0001, ERROR_LOC( loc ) );
   }
 
   if (i0->isNaN() || i1->isNaN()) {
-    ZORBA_ERROR_LOC_DESC( FOAR0002, *loc,
-                          "Division with doubles must not be done with NaNs");
+    throw XQUERY_EXCEPTION(
+      FOAR0002, ERROR_PARAMS( ZED( DivisionNoNaN ) ), ERROR_LOC( loc )
+    );
   }
   if (i0->isPosOrNegInf()) {
-    ZORBA_ERROR_LOC_DESC( FOAR0002, *loc,
-                          "Division must not be done with a +-INF dividend");
+    throw XQUERY_EXCEPTION(
+      FOAR0002, ERROR_PARAMS( ZED( DivisionNoINF ) ), ERROR_LOC( loc )
+    );
   }
 
   if (i0->isPosOrNegInf()) {
@@ -380,18 +382,20 @@ bool IntegerDivideOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_F
   xs_float f1 = i1->getFloatValue();
   if ( f1 == xs_float::parseInt(0) )
   {
-    ZORBA_ERROR_LOC_DESC( FOAR0001, *loc, "Division by zero (decimals)");
+    throw XQUERY_EXCEPTION( FOAR0001, ERROR_LOC( loc ) );
   }
 
   if (i0->isNaN() || i1->isNaN()) 
   {
-    ZORBA_ERROR_LOC_DESC(FOAR0002, *loc,
-                          "Integer Division with floats must not be done with NaNs");
+    throw XQUERY_EXCEPTION(
+      FOAR0002, ERROR_PARAMS( ZED( DivisionNoNaN ) ), ERROR_LOC( loc )
+    );
   }
   if (i0->isPosOrNegInf()) 
   {
-    ZORBA_ERROR_LOC_DESC(FOAR0002, *loc,
-                         "Integer division must not be done with a +-INF dividend");
+    throw XQUERY_EXCEPTION(
+      FOAR0002, ERROR_PARAMS( ZED( DivisionNoINF ) ), ERROR_LOC( loc )
+    );
   }
   if (i0->isPosOrNegInf()) 
   {
@@ -421,7 +425,7 @@ bool IntegerDivideOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS
 
   if ( ld1 == Decimal::parseInt(0) )
   {
-    ZORBA_ERROR_LOC_DESC( FOAR0001, *loc, "Division by zero (decimals)");
+    throw XQUERY_EXCEPTION( FOAR0001, ERROR_LOC( loc ) );
   }
   return GENV_ITEMFACTORY->createInteger(result, Integer::parseDecimal(ld0 / ld1));
 }
@@ -441,7 +445,7 @@ bool IntegerDivideOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS
 
   if ( ll1 == Integer::parseInt(0) )
   {
-    ZORBA_ERROR_LOC_DESC( FOAR0001, *loc, "Division by zero (decimals)");
+    throw XQUERY_EXCEPTION( FOAR0001, ERROR_LOC( loc ) );
   }
   return GENV_ITEMFACTORY->createInteger (result, ll0 / ll1);
 }
@@ -492,7 +496,7 @@ bool ModOperation::compute<TypeConstants::XS_DECIMAL, TypeConstants::XS_DECIMAL>
 
   if ( ld1 == Decimal::parseInt(0) )
   {
-    ZORBA_ERROR_LOC_DESC(FOAR0001, *loc, "Modulo by zero (decimals)");
+    throw XQUERY_EXCEPTION( FOAR0001, ERROR_LOC( loc ) );
   }
   return GENV_ITEMFACTORY->createDecimal(result,  ld0 % ld1);
 }
@@ -512,7 +516,7 @@ bool ModOperation::compute<TypeConstants::XS_INTEGER, TypeConstants::XS_INTEGER>
 
   if ( ll1 == Integer::parseInt(0) )
   {
-    ZORBA_ERROR_LOC_DESC(FOAR0001, *loc, "Modulo by zero (decimals)");
+    throw XQUERY_EXCEPTION( FOAR0001, ERROR_LOC( loc ) );
   }
   return GENV_ITEMFACTORY->createInteger(result, ll0 % ll1);
 }
@@ -923,4 +927,5 @@ bool OpDoubleUnaryIterator::nextImpl(store::Item_t& result, PlanState& planState
 UNARY_ACCEPT(OpDoubleUnaryIterator);
 
 
-} /* namespace zorba */
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

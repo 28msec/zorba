@@ -1545,7 +1545,8 @@ xs_long IntegerItem::getLongValue() const
     return longValue;
 
   throw XQUERY_EXCEPTION(
-    FORG0001, ERROR_PARAMS( ZED( CastFailed ), "integer", "long" )
+    FORG0001,
+    ERROR_PARAMS( theValue, ZED( CastFromToFailed ), "integer", "long" )
   );
 }
 

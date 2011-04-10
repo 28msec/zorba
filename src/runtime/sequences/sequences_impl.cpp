@@ -677,16 +677,12 @@ FnZeroOrOneIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       {
         if (!lNextItem->equals(result))
         {
-          ZORBA_ERROR_LOC_DESC_OSS(FORG0003, loc,
-                                   "fn:zero-or-one called with a sequence"
-                                   << " containing more than one item.");
+					throw XQUERY_EXCEPTION( FORG0003, ERROR_LOC( loc ) );
         }
       }
       else
       {
-        ZORBA_ERROR_LOC_DESC_OSS(FORG0003, loc,
-                                 "fn:zero-or-one called with a sequence"
-                                 << " containing more than one item.");
+				throw XQUERY_EXCEPTION( FORG0003, ERROR_LOC( loc ) );
       }
     }
 
@@ -707,8 +703,7 @@ FnOneOrMoreIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   if (!consumeNext(result, theChildren[0].getp(), planState))
   {
-    ZORBA_ERROR_LOC_DESC( FORG0004,
-        loc,  "fn:one-or-more called with a sequence containing no items.");
+		throw XQUERY_EXCEPTION( FORG0004, ERROR_LOC( loc ) );
   }
   do
   {
@@ -754,9 +749,7 @@ FnExactlyOneIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   else
   {
     if (theRaiseError)
-      ZORBA_ERROR_LOC_DESC_OSS(FORG0005, loc,
-                               "fn:exactly-one called with a sequence"
-                               << " containing zero or more than one item.");
+			throw XQUERY_EXCEPTION( FORG0005, ERROR_LOC( loc ) );
     else
       GENV_ITEMFACTORY->createBoolean(result, false);
   }

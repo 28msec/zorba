@@ -72,8 +72,7 @@ ResolveUriIterator::nextImpl(store::Item_t& result, PlanState& planState) const
           strBase = theSctx->get_base_uri();
           if (strBase.empty()) 
           {
-            ZORBA_ERROR_LOC_DESC(FONS0005, loc,
-                                 "base-uri is not initialized in the static context");
+            throw XQUERY_EXCEPTION( FONS0005, ERROR_LOC( loc ) );
           }
         }
         else if (consumeNext(item, theChildren[1], planState )) 
@@ -89,8 +88,9 @@ ResolveUriIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       } 
       catch (ZorbaException const& e) 
       {
-        ZORBA_ERROR_LOC_DESC(FORG0002, loc,
-                             "String {" + strBase.str() +  "} is not a valid URI: " + e.what());
+        throw XQUERY_EXCEPTION(
+          FORG0002, ERROR_PARAMS( strBase, e.what() ), ERROR_LOC( loc )
+        );
       }
 
       try 
@@ -100,7 +100,9 @@ ResolveUriIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       }
       catch (ZorbaException const& e) 
       {
-        ZORBA_ERROR_LOC_DESC(FORG0002, loc, e.what());
+        throw XQUERY_EXCEPTION(
+          FORG0002, ERROR_PARAMS( strRelative, e.what() ), ERROR_LOC( loc )
+        );
       }
     }
 
@@ -110,4 +112,5 @@ ResolveUriIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END(state);
 }
 
-} /* namespace zorba */
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

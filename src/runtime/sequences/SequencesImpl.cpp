@@ -290,8 +290,9 @@ bool FnIdIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     if(!consumeNext(state->theDocNode, theChildren[1], planState))
     {
-      ZORBA_ERROR_LOC_DESC(FODC0001, loc,
-                           "No target document for fn:id function");
+			throw XQUERY_EXCEPTION(
+				FODC0001, ERROR_PARAMS( "fn:id" ), ERROR_LOC( loc )
+			);
     }
 
     while (state->theDocNode->getParent() != NULL)
@@ -301,8 +302,9 @@ bool FnIdIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     if (state->theDocNode->getNodeKind() != store::StoreConsts::documentNode)
     {
-      ZORBA_ERROR_LOC_DESC(FODC0001, loc,
-                           "No target document for fn:id function");
+			throw XQUERY_EXCEPTION(
+				FODC0001, ERROR_PARAMS( "fn:id" ), ERROR_LOC( loc )
+			);
     }
 
     state->push(state->theDocNode);
@@ -422,8 +424,9 @@ bool FnElementWithIdIterator::nextImpl(store::Item_t& result, PlanState& planSta
 
     if(!consumeNext(state->theDocNode, theChildren[1], planState))
     {
-      ZORBA_ERROR_LOC_DESC(FODC0001, loc,
-                           "No target document for fn:id function");
+			throw XQUERY_EXCEPTION(
+				FODC0001, ERROR_PARAMS( "fn:id" ), ERROR_LOC( loc )
+			);
     }
 
     while (state->theDocNode->getParent() != NULL)
@@ -433,8 +436,9 @@ bool FnElementWithIdIterator::nextImpl(store::Item_t& result, PlanState& planSta
 
     if (state->theDocNode->getNodeKind() != store::StoreConsts::documentNode)
     {
-      ZORBA_ERROR_LOC_DESC(FODC0001, loc,
-                           "No target document for fn:id function");
+			throw XQUERY_EXCEPTION(
+				FODC0001, ERROR_PARAMS( "fn:id" ), ERROR_LOC( loc )
+			);
     }
 
     state->push(state->theDocNode);
@@ -563,8 +567,9 @@ bool FnIdRefIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
     if(!consumeNext(state->theDocNode, theChildren[1], planState))
     {
-      ZORBA_ERROR_LOC_DESC(FODC0001, loc,
-                           "No target document for fn:idref function");
+			throw XQUERY_EXCEPTION(
+				FODC0001, ERROR_PARAMS( "fn:idref" ), ERROR_LOC( loc )
+			);
     }
 
     while (state->theDocNode->getParent() != NULL)
@@ -574,8 +579,9 @@ bool FnIdRefIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
     if (state->theDocNode->getNodeKind() != store::StoreConsts::documentNode)
     {
-      ZORBA_ERROR_LOC_DESC(FODC0001, loc,
-                           "No target document for fn:idref function");
+			throw XQUERY_EXCEPTION(
+				FODC0001, ERROR_PARAMS( "fn:idref" ), ERROR_LOC( loc )
+			);
     }
 
     state->push(state->theDocNode);
@@ -706,5 +712,5 @@ bool FnIdRefIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 }
 
 
-} /* namespace zorba */
+} // namespace zorba
 /* vim:set ts=2 sw=2: */

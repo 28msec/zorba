@@ -196,7 +196,7 @@ int serializer::emitter::emit_expanded_string(
 
       // raise an error iff (1) the serialization format is XML 1.0 and (2) the given character is an invalid XML 1.0 character
       if (ser && ser->method == PARAMETER_VALUE_XML && ser->version == "1.0" && !xml::is_valid(cp))
-        ZORBA_ERROR_DESC(FOCH0001, "Serialization error: codepoint #" + NumConversions::uintToStr(cp) + " is not allowed in XML version 1.0.");
+        throw XQUERY_EXCEPTION( FOCH0001, ERROR_PARAMS( cp ) );
 
       if (cp >= 0x10000 && cp <= 0x10FFFF)
       {

@@ -27,10 +27,19 @@ namespace zorba {
 
 namespace err {
 
+/**
+ * Given a store::Item_t that represents a QName, creates an instance of
+ * QNameType having the same QName.
+ *
+ * @tparam QNameType The type of QName to create.
+ * @param qname The QName item.
+ * @return Returns said QNameType.
+ */
 template<class QNameType> inline
 QNameType to_QName( store::Item_t const &qname ) {
   return QNameType(
-    qname->getNamespace().c_str(), qname->getPrefix().c_str(),
+    qname->getNamespace().c_str(),
+    qname->getPrefix().c_str(),
     qname->getLocalName().c_str()
   );
 }
@@ -44,6 +53,10 @@ namespace err {
 
 inline location make_location( QueryLoc const &loc ) {
   return location( loc.getFilename(), loc.getLineno(), loc.getColumnBegin() );
+}
+
+inline location make_location( QueryLoc const *loc ) {
+  return loc ? make_location( *loc ) : location::empty;
 }
 
 } // namespace err
