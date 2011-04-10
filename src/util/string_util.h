@@ -324,8 +324,19 @@ std::string to_string( T const &t ) {
 }
 
 /**
+ * Specialization of \c to_string() for C strings.
+ *
+ * @param s The C string.
+ * @return Returns a string representation of the object.
+ */
+inline std::string to_string( char const *s ) {
+  return s;
+}
+
+/**
  * Converts an object to its string representation.
  *
+ * @tparam StringType The result string type.
  * @tparam T The object type.
  * @param t The object.
  * @Param out The string to receive the representation.
@@ -335,6 +346,18 @@ void to_string( T const &t, StringType *out ) {
   std::ostringstream o;
   o << t;
   *out = o.str();
+}
+
+/**
+ * Specialization of \c to_string() for C strings.
+ *
+ * @tparam StringType The result string type.
+ * @param s The C string.
+ * @Param out The string to receive the representation.
+ */
+template<class StringType> inline
+void to_string( char const *s, StringType *out ) {
+  *out = s;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

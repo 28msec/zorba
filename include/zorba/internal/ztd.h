@@ -84,21 +84,7 @@ inline char const* c_str( char const *s ) {
  * Converts an object to its string representation.
  *
  * @tparam T The object type.
- * @param t The object.
- * @return Returns a string representation of the object.
- */
-template<typename T> inline
-std::string to_string( T const &t ) {
-  std::ostringstream o;
-  o << t;
-  return o.str();
-}
-
-/**
- * \internal
- * Converts an object to its string representation.
- *
- * @tparam T The object type.
+ * @tparam StringType The result string type.
  * @param t The object.
  * @Param out The string to receive the representation.
  */
@@ -107,6 +93,19 @@ void to_string( T const &t, StringType *out ) {
   std::ostringstream o;
   o << t;
   *out = o.str();
+}
+
+/**
+ * \internal
+ * Specialization of \c to_string() for C strings.
+ *
+ * @tparam StringType The result string type.
+ * @param s The C string.
+ * @Param out The string to receive the representation.
+ */
+template<class StringType> inline
+void to_string( char const *s, StringType *out ) {
+  *out = s;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
