@@ -910,8 +910,10 @@ FormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
         }
 
         // The prefix is not in the known namespaces, the only posibility left is to be invoked from an EnclosedIterator
-        if (planState.theNodeConstuctionPath.empty())
+        if (planState.theNodeConstuctionPath.empty()) {
+          // SF bug #3284853: add ERROR_PARAMS() below with decimal format name
           throw XQUERY_EXCEPTION(FODF1280, ERROR_LOC(loc));
+        }
 
         store::NsBindings bindings;
         planState.theNodeConstuctionPath.top()->getNamespaceBindings(bindings);
