@@ -36,14 +36,6 @@ ENDIF(ZORBA_TEST_XQUERYX)
 # IF STILL NEEDED, GIVE THE CORRESPONDING BUG PRIORITY 9 BECAUSE
 # THIS HAS TO BE ADDRESSED ASAP.
 LIST(REMOVE_ITEM TESTFILES
-# Tests disabled because it crashes on Windows) - bug 3284659
-  zorba/converters/html/tidy_5_wrong_options.xq
-  zorba/converters/html/tidy_6_wrong_options.xq
-  zorba/converters/html/tidy_5_wrong_options.xq
-  zorba/converters/html/tidy_6_wrong_options.xq
-  zorba/http_client/http3-multipart.xq
-  zorba/http_client/http_error_hc002.xq
-  zorba/http_client/http_error_hc005.xq
 
 # Test disabled because it hangs - bug 3281369
   zorba/http_client/http1-redirect.xq

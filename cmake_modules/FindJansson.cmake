@@ -25,9 +25,10 @@ IF (Jansson_INCLUDE AND Jansson_LIBRARY)
    SET(Jansson_FIND_QUIETLY TRUE)
 ENDIF (Jansson_INCLUDE AND Jansson_LIBRARY)
 
+SET(LIBRARY_NAMES jansson jansson.lib Release/jansson.lib bin/jansson.lib bin/Release/jansson.lib)
 FIND_LIBRARY(
   Jansson_LIBRARY
-  NAMES jansson jansson.lib Release/jansson.lib bin/jansson.lib bin/Release/jansson.lib
+  NAMES ${LIBRARY_NAMES}
   PATHS /usr/lib /usr/local/lib /opt/local/lib ${Jansson_LIBRARIES})
 
 FIND_PATH(
@@ -36,11 +37,18 @@ FIND_PATH(
   PATH_SUFFIXES jansson src
   PATHS ${Jansson_INCLUDE_DIRS})
 
-IF (Jansson_LIBRARY AND Jansson_INCLUDE)
+IF(Jansson_LIBRARY AND Jansson_INCLUDE)
   SET(Jansson_FOUND TRUE)
   SET(Jansson_LIBRARIES ${Jansson_LIBRARY})
   SET(Jansson_INCLUDE_DIRS ${Jansson_INCLUDE})
-ELSE (Jansson_LIBRARY AND Jansson_INCLUDE)
+ELSE(Jansson_LIBRARY AND Jansson_INCLUDE)
+  IF(NOT Jansson_LIBRARY)
+    MESSAGE(STATUS "Jansson static library could not be found matching one of: ${LIBRARY_NAMES}")
+  ENDIF(NOT Jansson_LIBRARY)
+  IF(NOT Jansson_INCLUDE)
+    MESSAGE(STATUS "Jansson source directory could not be found.")
+  ENDIF(NOT Jansson_INCLUDE)
+
   SET(Jansson_FOUND FALSE)
   SET(Jansson_LIBRARIES)
   SET(Jansson_INCLUDE)
