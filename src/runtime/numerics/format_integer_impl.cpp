@@ -80,9 +80,7 @@ static void checkOptionalModifier(utf8_string<zstring> &utf8_picture,
     case 'c': 
       if(is_ordinal_set)
       {
-        std::ostringstream oss;
-        oss << (char)c;
-        throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS("~format-integer: duplicated optional format modifier ", oss.str()));
+        throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS(ZED(format_integer_duplicated_optional_format_modifier), (char)c));
       }
       is_ordinal_set = true;
       *is_ordinal = false;
@@ -90,9 +88,7 @@ static void checkOptionalModifier(utf8_string<zstring> &utf8_picture,
     case 'o': 
       if(is_ordinal_set)
       {
-        std::ostringstream oss;
-        oss << (char)c;
-        throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS("~format-integer: duplicated optional format modifier ", oss.str()));
+        throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS(ZED(format_integer_duplicated_optional_format_modifier), (char)c));
       }
       is_ordinal_set = true;
       *is_ordinal = true;
@@ -100,9 +96,7 @@ static void checkOptionalModifier(utf8_string<zstring> &utf8_picture,
     case 'a': 
       if(is_traditional_set)
       {
-        std::ostringstream oss;
-        oss << (char)c;
-        throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS("~format-integer: duplicated optional format modifier ", oss.str()));
+        throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS(ZED(format_integer_duplicated_optional_format_modifier), (char)c));
       }
       is_traditional_set = true;
       *is_traditional = false;
@@ -110,17 +104,13 @@ static void checkOptionalModifier(utf8_string<zstring> &utf8_picture,
     case 't': 
       if(is_traditional_set)
       {
-        std::ostringstream oss;
-        oss << (char)c;
-        throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS("~format-integer: duplicated optional format modifier ", oss.str()));
+        throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS(ZED(format_integer_duplicated_optional_format_modifier), (char)c));
       }
       is_traditional_set = true;
       *is_traditional = true;
       break;
     default:
-      std::ostringstream oss;
-      oss << (char)c;
-      throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS("~format-integer: unknown optional format modifier character", oss.str()));
+      throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS(ZED(format_integer_unknown_optional_format_modifier_character), (char)c));
     }
   }
   if(picture_size <= (off+i))
@@ -128,9 +118,7 @@ static void checkOptionalModifier(utf8_string<zstring> &utf8_picture,
   c = utf8_picture[off+i];
   if(c != '(')
   {
-    std::ostringstream oss;
-    oss << (char)c;
-    throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS("~format-integer: unknown optional format modifier character", oss.str()));
+    throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS(ZED(format_integer_unknown_optional_format_modifier_character), (char)c));
   }
   i++;
   bool has_dash = false;
@@ -143,9 +131,7 @@ static void checkOptionalModifier(utf8_string<zstring> &utf8_picture,
     {
       if(has_dash)
       {
-        std::ostringstream oss;
-        oss << (char)c;
-        throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS("~format-integer: unknown optional format modifier character", oss.str()));
+        throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS(ZED(format_integer_unknown_optional_format_modifier_character), (char)c));
       }
       has_dash = true;
     }
@@ -155,14 +141,12 @@ static void checkOptionalModifier(utf8_string<zstring> &utf8_picture,
   }
   if((off+i) >= picture_size)
   {
-    throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS("~format-integer: bad optional format modifier, cannot find closing ')' "));
+    throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS(ZED(format_integer_optional_format_modifier_not_closed)));
   }
   i++;
   if((off+i) < picture_size)
   {
-    std::ostringstream oss;
-    oss << (char)utf8_picture[off+i];
-    throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS("~format-integer: unknown optional format modifier character", oss.str()));
+    throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS(ZED(format_integer_unknown_optional_format_modifier_character), (char)utf8_picture[off+i]));
   }
 }
 
@@ -220,7 +204,7 @@ static void formatIntegerRoman(xs_integer valueInteger, zstring &resultString)
 
   if (valueInteger > xs_integer::parseInt(3000))
   {
-    throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS("format-integer: $value should be less than 3000 for Roman representation"));
+    throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS(ZED(format_integer_value_gt_3000)));
   }
   else if (valueInteger >= integer_1000)
   {
@@ -766,7 +750,7 @@ FormatIntegerIterator::nextImpl(store::Item_t& result, PlanState& planState) con
     pictureString = picture_item->getStringValue();
     if(utf8_picture.size() == 0)
     {
-      throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS("~format-integer: $picture parameter should not be empty"), ERROR_LOC(loc));
+      throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS(ZED(format_integer_picture_empty)), ERROR_LOC(loc));
     }
 
     if (theChildren.size() == 3) 
@@ -775,8 +759,7 @@ FormatIntegerIterator::nextImpl(store::Item_t& result, PlanState& planState) con
       languageString = language_item->getStringValue();
       if(!GenericCast::isCastable(languageString, &*rtm.LANGUAGE_TYPE_ONE, tm))
       {
-        throw XQUERY_EXCEPTION(
-          FOFI0001, ERROR_PARAMS( languageString ), ERROR_LOC( loc )
+        throw XQUERY_EXCEPTION(FOFI0001, ERROR_PARAMS( languageString ), ERROR_LOC( loc )
         );
       }
     }
@@ -877,7 +860,7 @@ FormatIntegerIterator::nextImpl(store::Item_t& result, PlanState& planState) con
         NumConversions::integerToInt(valueInteger, val_int);
         if((val_int < 1) || (val_int > 20))
         {
-          throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS("~format-integer: $value should be between 1 and 20 for this formatting picture"), ERROR_LOC(loc));
+          throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS(ZED(format_integer_value_1_20)), ERROR_LOC(loc));
         }
         utf8_result += (c0 + val_int - 1);
       }
@@ -898,7 +881,7 @@ FormatIntegerIterator::nextImpl(store::Item_t& result, PlanState& planState) con
         NumConversions::integerToInt(valueInteger, val_int);
         if((val_int < 1) || (val_int > 10))
         {
-          throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS("~format-integer: $value should be between 1 and 10 for this formatting picture"), ERROR_LOC(loc));
+          throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS(ZED(format_integer_value_1_10)), ERROR_LOC(loc));
         }
         utf8_result += (c0 + val_int - 1);
       }
@@ -953,7 +936,7 @@ FormatIntegerIterator::nextImpl(store::Item_t& result, PlanState& planState) con
       }
       else
       {
-        throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS("~format-integer: bad $picture format: ", pictureString), ERROR_LOC(loc));
+        throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS(ZED(format_integer_bad_picture_format), pictureString), ERROR_LOC(loc));
       }
     }
     catch (ZorbaException& e)
