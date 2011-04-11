@@ -229,9 +229,7 @@ int serializer::emitter::emit_expanded_string(
       in the instance of the data model.
     */
     if (ser && ser->method == PARAMETER_VALUE_HTML && *chars >= 0x7F && *chars <= 0x9f)
-      ZORBA_ERROR_DESC(SERE0014, "Serialization error: character #"
-          + NumConversions::uintToStr((unsigned int)*chars)
-          + " is not allowed if the HTML output method is used.");
+      throw XQUERY_EXCEPTION( SERE0014, ERROR_PARAMS( *chars ) );
 
     /*
       In addition, the non-whitespace control characters #x1 through #x1F and
@@ -402,9 +400,9 @@ void serializer::emitter::emit_item(store::Item* item)
   }
   else if (item->getNodeKind() == store::StoreConsts::attributeNode)
   {
-    ZORBA_ERROR_DESC_OSS(SENR0001,
-                           "Attribute <" << item->getStringValue()
-                           << "> can not be serialized.");
+    throw XQUERY_EXCEPTION(
+      SENR0001, ERROR_PARAMS( item->getStringValue(), ZED( AttributeNode ) )
+    );
   }
   else
   {
@@ -1701,9 +1699,9 @@ void serializer::text_emitter::emit_item(store::Item* item)
   }
   else if (item->getNodeKind() == store::StoreConsts::attributeNode)
   {
-    ZORBA_ERROR_DESC_OSS(SENR0001,
-      "Attribute <" << item->getStringValue()
-      << "> can not be serialized.");
+    throw XQUERY_EXCEPTION(
+      SENR0001, ERROR_PARAMS( item->getStringValue(), ZED( AttributeNode ) )
+    );
   }
   else
   {
@@ -2022,11 +2020,9 @@ void serializer::setParameter(const char* aName, const char* aValue)
     else if (!strcmp(aValue, "no"))
       indent = PARAMETER_VALUE_NO;
     else
-    {
-      ZORBA_ERROR_DESC_OSS(SEPM0016,"Parameter <" << aName
-        << "> can not be set with value <" << aValue
-        << ">. Accepted values are yes/no.");
-    }
+      throw XQUERY_EXCEPTION(
+        SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNo ) )
+      );
   }
   else if (!strcmp(aName, "standalone"))
   {
@@ -2037,11 +2033,9 @@ void serializer::setParameter(const char* aName, const char* aValue)
     else if (!strcmp(aValue, "omit"))
       standalone = PARAMETER_VALUE_OMIT;
     else
-    {
-      ZORBA_ERROR_DESC_OSS(SEPM0016,"Parameter <" << aName
-        << "> can not be set with value <" << aValue
-        << ">. Accepted values are yes/no/omit.");
-    }
+      throw XQUERY_EXCEPTION(
+        SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNoOmit ) )
+      );
   }
   else if (!strcmp(aName, "omit-xml-declaration"))
   {
@@ -2050,11 +2044,9 @@ void serializer::setParameter(const char* aName, const char* aValue)
     else if (!strcmp(aValue, "no"))
       omit_xml_declaration = PARAMETER_VALUE_NO;
     else
-    {
-      ZORBA_ERROR_DESC_OSS(SEPM0016,"Parameter <" << aName
-        << "> can not be set with value <" << aValue
-        <<">. Accepted values are yes/no.");
-    }
+      throw XQUERY_EXCEPTION(
+        SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNo ) )
+      );
   }
   else if (!strcmp(aName, "byte-order-mark"))
   {
@@ -2063,11 +2055,9 @@ void serializer::setParameter(const char* aName, const char* aValue)
     else if (!strcmp(aValue, "no"))
       byte_order_mark = PARAMETER_VALUE_NO;
     else
-    {
-      ZORBA_ERROR_DESC_OSS(SEPM0016,"Parameter <" << aName
-        << "> can not be set with value <" << aValue
-        <<">. Accepted values are yes/no.");
-    }
+      throw XQUERY_EXCEPTION(
+        SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNo ) )
+      );
   }
   else if (!strcmp(aName, "undeclare-prefixes"))
   {
@@ -2076,11 +2066,9 @@ void serializer::setParameter(const char* aName, const char* aValue)
     else if (!strcmp(aValue, "no"))
       undeclare_prefixes = PARAMETER_VALUE_NO;
     else
-    {
-      ZORBA_ERROR_DESC_OSS(SEPM0016,"Parameter <" << aName
-        << "> can not be set with value <" << aValue
-        <<">. Accepted values are yes/no.");
-    }
+      throw XQUERY_EXCEPTION(
+        SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNo ) )
+      );
   }
   else if (!strcmp(aName, "method"))
   {
@@ -2099,11 +2087,9 @@ void serializer::setParameter(const char* aName, const char* aValue)
     else if (!strcmp(aValue, "binary"))
       method = PARAMETER_VALUE_BINARY;
     else
-    {
-      ZORBA_ERROR_DESC_OSS(SEPM0016,"Parameter <" << aName
-        << "> can not be set with value <" << aValue
-        <<">. Accepted values are xml/html/xhtml/text/json/jsonml/binary.");
-    }
+      throw XQUERY_EXCEPTION(
+        SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreXMLEtc ) )
+      );
   }
   else if (!strcmp(aName, "include-content-type"))
   {
@@ -2112,11 +2098,9 @@ void serializer::setParameter(const char* aName, const char* aValue)
     else if (!strcmp(aValue, "no"))
       include_content_type = PARAMETER_VALUE_NO;
     else
-    {
-      ZORBA_ERROR_DESC_OSS(SEPM0016,"Parameter <" << aName
-        << "> can not be set with value <" << aValue
-        <<">. Accepted values are yes/no.");
-    }
+      throw XQUERY_EXCEPTION(
+        SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNo ) )
+      );
   }
   else if (!strcmp(aName, "encoding"))
   {
@@ -2127,12 +2111,9 @@ void serializer::setParameter(const char* aName, const char* aValue)
       encoding = PARAMETER_VALUE_UTF_16;
 #endif
     else
-    {
-      ZORBA_ERROR_DESC_OSS(SEPM0016,
-                           "Parameter <" << aName
-                           << "> can not be set with value <" << aValue
-                           <<">. Accepted values are UTF-8/UTF-16.");
-    }
+      throw XQUERY_EXCEPTION(
+        SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreUTF8 ) )
+      );
   }
   else if (!strcmp(aName, "media-type"))
   {
@@ -2157,9 +2138,7 @@ void serializer::setParameter(const char* aName, const char* aValue)
   }
   else
   {
-    ZORBA_ERROR_DESC_OSS(SEPM0016,
-                         "Parameter <" << aName
-                         << "> can not be set with value <" << aValue <<">.");
+    throw XQUERY_EXCEPTION( SEPM0016, ERROR_PARAMS( aValue, aName ) );
   }
 }
 
@@ -2183,7 +2162,9 @@ serializer::validate_parameters(void)
     // XML-only validation
     if (method == PARAMETER_VALUE_XML) {
       if (version != "1.0" && version != "1.1")
-          ZORBA_ERROR_DESC(SESU0013, "Unsupported XML version. Accepted values are \"1.0\" and \"1.1\".");
+        throw XQUERY_EXCEPTION(
+          SESU0013, ERROR_PARAMS( version, "XML", "\"1.0\", \"1.1\"" )
+        );
     }
 
     // XHTML-only validation
@@ -2193,17 +2174,18 @@ serializer::validate_parameters(void)
     // XML and XHTML validation
 
     if (omit_xml_declaration == PARAMETER_VALUE_YES) {
-      if (standalone != PARAMETER_VALUE_OMIT ||
-          (version != "1.0" && !doctype_system.empty())) {
-        ZORBA_ERROR_DESC(SEPM0009,
-          "It is an error if the omit-xml-declaration parameter has the value yes, and the standalone attribute has a value other than omit; or the version parameter has a value other than 1.0 and the doctype-system parameter is specified.");
-      }
+      if (standalone != PARAMETER_VALUE_OMIT)
+        throw XQUERY_EXCEPTION(
+          SEPM0009, ERROR_PARAMS( ZED( SEPM0009_NotOmit ) )
+        );
+      if (version != "1.0" && !doctype_system.empty())
+        throw XQUERY_EXCEPTION(
+          SEPM0009, ERROR_PARAMS( ZED( SEPM0009_Not10 ) )
+        );
     }
 
-    if (undeclare_prefixes == PARAMETER_VALUE_YES && version == "1.0") {
-      ZORBA_ERROR_DESC(SEPM0010,
-        "It is an error if the output method is xml or xhtml, the value of the undeclare-prefixes parameter is yes, and the value of the version parameter is 1.0.");
-    }
+    if (undeclare_prefixes == PARAMETER_VALUE_YES && version == "1.0")
+      throw XQUERY_EXCEPTION( SEPM0010 );
   }
 
   if (method == PARAMETER_VALUE_HTML) {
@@ -2211,9 +2193,9 @@ serializer::validate_parameters(void)
     if (version_has_default_value) {
       version = "4.0";
     } else if (!(ztd::equals(version, "4.0", 3) || ztd::equals(version, "4.01", 4))) {
-      // Only HTML versions 4.0 and 4.01 are supported
-      ZORBA_ERROR_DESC(SESU0013,
-        "Unsupported HTML serialization version. Accepted values are \"4.0\" and \"4.01\".");
+      throw XQUERY_EXCEPTION(
+        SESU0013, ERROR_PARAMS( version, "HTML", "\"4.0\", \"4.01\"" )
+      );
     }
   }
 }
@@ -2429,7 +2411,6 @@ void serializer::serialize(
   //object->close();
   e->emit_declaration_end();
 }
-
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

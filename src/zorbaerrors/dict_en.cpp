@@ -141,21 +141,21 @@ extern entry const dict_en[] = {
   // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-  { "SENR0001", "an item in S6 in sequence normalization is an attribute node or a namespace node" },
+  { "SENR0001", "\"$1\": can not serialize $2" },
   { "SEPM0004", "doctype-system parameter, or standalone parameter with a value other than \"omit\", specified" },
-  { "SEPM0009", "the omit-xml-declaration parameter has the value \"yes\" and the standalone attribute has a value other than \"omit\"; or the version parameter has a value other than \"1.0\" and the doctype-system parameter is specified" },
+  { "SEPM0009", "omit-xml-declaration parameter is \"yes\" and $1" },
   { "SEPM0010", "the output method is \"xml\", the value of the undeclare-prefixes parameter is \"yes\", and the value of the version parameter is \"1.0\"" },
-  { "SEPM0016", "\"$1\": parameter value invalid for defined domain" },
+  { "SEPM0016", "\"$1\": value for parameter \"$2\" invalid${; $3}" },
   { "SERE0003", "serializer can't satisfy the rules for either a well-formed XML document entity or a well-formed XML external general parsed entity" },
   { "SERE0005", "invalid NCName character" },
   { "SERE0006", "\"$1\": invalid character for XML version $2" },
   { "SERE0008", "\"$1\": can not encode character as character reference here" },
   { "SERE0012", "the value of the normalization-form parameter is fully-normalized and any relevant construct of the result begins with a combining character" },
-  { "SERE0014", "can not use HTML output method" },
+  { "SERE0014", "\"#$1\": character not allowed for HTML output method" },
   { "SERE0015", "can not use '>' within processing instruction for HTML output method" },
   { "SESU0007", "\"$1\": unsupported encoding" },
   { "SESU0011", "\"$1\": unsupported normalization form" },
-  { "SESU0013", "\"$1\": unsupported XML or HTML version" },
+  { "SESU0013", "\"$1\": unsupported $2 version; supported versions are: $3" },
 
   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
@@ -447,6 +447,7 @@ extern entry const dict_en[] = {
 
   { "~AllMatchesHasExcludes", "AllMatches contains StringExclude" },
   { "~AlreadySpecified", "already specified" },
+  { "~AttributeNode", "attribute node" },
   { "~BackRef0Illegal", "\"\\0\": illegal backreference" },
   { "~BackRefIllegalInCharClass", "backreference illegal in character class" },
   { "~BadAnyURI", "invalid xs:anyURI" },
@@ -478,6 +479,10 @@ extern entry const dict_en[] = {
   { "~ExternFnNondeterministic", "only external functions may be declared nondeterministic" },
   { "~FileNotFoundOrReadable", "file not found or readable" },
   { "~FullTextNotEnabled", "full-text was not enabled in this build" },
+  { "~GoodValuesAreUTF8", "valid values are: UTF-8, UTF-16" },
+  { "~GoodValuesAreXMLEtc", "valid values are: xml, html, xhtml, text, json, jsonml, binary" },
+  { "~GoodValuesAreYesNo", "valid values are: yes, no" },
+  { "~GoodValuesAreYesNoOmit", "valid values are: yes, no, omit" },
   { "~IncompleteKeyInIndexBuild", "incomplete key during index build" },
   { "~ModuleDeclNotInMain", "module declaration must not be in main module" },
   { "~ModuleNotFound", "module not found" },
@@ -501,6 +506,8 @@ extern entry const dict_en[] = {
   { "~OSFailedError", "error $1: $2" },
   { "~OSWhatFailedError", "$1 failed (error $2): $3" },
   { "~OuterForClause11", "outer-for clause only available in XQuery 1.1 or later" },
+  { "~SEPM0009_Not10", "the version parameter has a value other than \"1.0\" and the doctype-system parameter is specified" },
+  { "~SEPM0009_NotOmit", "the standalone attribute has a value other than \"omit\"" },
   { "~SeqFnBody", "only a function declared as sequential can have a body that is a sequential expression" },
   { "~StartEndTagMismatch", "start tag \"$2\" does not match end tag \"$3\"" },
   { "~SwitchExpr11", "switch expressions only available in XQuery 1.1 or later" },
