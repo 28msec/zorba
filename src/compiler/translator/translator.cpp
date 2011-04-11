@@ -9546,7 +9546,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
       if (numArgs > 1)
       {
-        flworExpr->set_return_expr(evalExpr);
+        flworExpr->set_return_expr(evalExpr.getp());
         resultExpr = flworExpr;
       }
       else
