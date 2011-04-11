@@ -1,1 +1,1 @@
-Result: $RBKT_SRC_DIR/ExpQueryResults/zorba/math/atan2_2.xml.res $RBKT_SRC_DIR/ExpQueryResults/zorba/math/atan2_2p.xml.res
+Result: "$RBKT_SRC_DIR/ExpQueryResults/zorba/math/atan2_2.xml.res" "$RBKT_SRC_DIR/ExpQueryResults/zorba/math/atan2_2p.xml.res"

@@ -1,1 +1,1 @@
-Args: -x input-context:=$RBKT_SRC_DIR/Queries/zorba/xmark/auction.xml
+Args: -x input-context:=xs:string($RBKT_SRC_DIR/Queries/zorba/xmark/auction.xml)

@@ -232,6 +232,20 @@ public:
     // Find first "non-delimiter".
     std::string::size_type pos     = str.find_first_of(delimiters, lastPos);
 
+    // Discriminate when items are between () and "", precedence for (
+    std::string::size_type posBracket = str.find_first_of("(", lastPos);
+    if (posBracket<pos)
+    {
+      posBracket = str.find_first_of(")", lastPos);
+      pos = str.find_first_of(delimiters, posBracket);  //New position after )
+    }
+    std::string::size_type posQuotes = str.find_first_of("\"", lastPos);
+    if (posQuotes<pos)
+    {
+      posQuotes = str.find_first_of("\"", posQuotes+1);
+      pos = str.find_first_of(delimiters, posQuotes);  //New position after second "
+    }
+
     while (std::string::npos != pos || std::string::npos != lastPos)
     {
       // Found a token, add it to the vector.
@@ -240,6 +254,20 @@ public:
       lastPos = str.find_first_not_of(delimiters, pos);
       // Find next "non-delimiter"
       pos = str.find_first_of(delimiters, lastPos);
+
+    // Discriminate when items are between () and "", precedence for (
+      if (posBracket<pos) {
+        posBracket = str.find_first_of(")", lastPos);
+        pos = str.find_first_of(delimiters, posBracket);  //New position after ")"
+        posBracket = str.find_first_of("(", posBracket);
+      }
+      if (posQuotes<pos)
+      {
+        posQuotes = str.find_first_of("\"", posQuotes+1);
+        pos = str.find_first_of(delimiters, posQuotes);  //New position after second "
+        posQuotes = str.find_first_of("\"", posQuotes+1);
+      }
+
     }
   }
 
@@ -248,6 +276,14 @@ public:
     str.erase(0,notwhite);
 
     notwhite = str.find_last_not_of(" \t\n\r"); 
+    str.erase(notwhite+1); 
+  }
+
+  void trim(std::string& str, const std::string& toTrim) {
+    std::string::size_type  notwhite = str.find_first_not_of(toTrim);
+    str.erase(0,notwhite);
+
+    notwhite = str.find_last_not_of(toTrim); 
     str.erase(notwhite+1); 
   }
 
@@ -371,7 +407,7 @@ public:
         {
           for (++lIter; lIter != tokens.end(); ++lIter)
           {
-            trim(*lIter);
+            trim(*lIter," \t\n\r\"");
             theResultFiles.push_back(*lIter);
           }
           break;
