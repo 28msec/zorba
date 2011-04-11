@@ -1727,7 +1727,9 @@ void normalize_fo(fo_expr* foExpr)
       else
         paramType = theRTM.BOOLEAN_TYPE_ONE;
     }
-    else if (func->getKind() == FunctionConsts::FN_ZORBA_REFLECTION_INVOKE_N)
+    else if (func->getKind() == FunctionConsts::FN_ZORBA_INVOKE_SIMPLE_N ||
+             func->getKind() == FunctionConsts::FN_ZORBA_INVOKE_UPDATING_N ||
+             func->getKind() == FunctionConsts::FN_ZORBA_INVOKE_SEQUENTIAL_N)
     {
       if (i==0)
         paramType = sign[i];
@@ -9430,13 +9432,14 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       else if (fkind == FunctionConsts::FN_ZORBA_EVAL_UPDATING_1)
         scriptingKind = UPDATE_EXPR;
       else
-        scriptingKind = UPDATE_EXPR;
+        scriptingKind = SEQUENTIAL_EXPR;
 
-      resultExpr = new eval_expr(theRootSctx,
-                                 loc,
-                                 foExpr->get_arg(0),
-                                 scriptingKind,
-                                 theNSCtx);
+      rchandle<eval_expr> evalExpr = new eval_expr(theRootSctx,
+                                                   loc,
+                                                   foExpr->get_arg(0),
+                                                   scriptingKind,
+                                                   theNSCtx);
+      resultExpr = evalExpr;
 
       std::vector<var_expr_t> inscopeVars;
       theSctx->getVariables(inscopeVars);
@@ -9457,7 +9460,128 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         // expr of an eval var may be any expr.
         expr_t valueExpr = inscopeVars[i].getp();
 
-        static_cast<eval_expr*>(resultExpr.getp())->add_var(evalVar, valueExpr);
+        evalExpr->add_var(evalVar, valueExpr);
+      }
+    }
+    else if (fkind == FunctionConsts::FN_ZORBA_INVOKE_SIMPLE_N ||
+             fkind == FunctionConsts::FN_ZORBA_INVOKE_UPDATING_N ||
+             fkind == FunctionConsts::FN_ZORBA_INVOKE_SEQUENTIAL_N)
+    {
+      /*
+         invoke(qnameExpr, arg1Expr, ...., argNExpr)
+
+         is rewritten internally as:
+
+         let $x1 := arg1Expr, ... $xN := argNExpr
+         let $query := concat(string(data(qnameExpr) treat as xs:QName), "($x1, ..., $xN)")
+         return using $x1, ..., $xN return eval { $query }
+      */
+
+      expr_script_kind_t scriptingKind;
+      zstring query_params;
+      std::vector<var_expr_t> temp_vars;
+
+      if (fkind == FunctionConsts::FN_ZORBA_INVOKE_SIMPLE_N)
+        scriptingKind = SIMPLE_EXPR;
+      else if (fkind == FunctionConsts::FN_ZORBA_INVOKE_UPDATING_N)
+        scriptingKind = UPDATE_EXPR;
+      else
+        scriptingKind = SEQUENTIAL_EXPR;
+
+      if (numArgs == 0)
+      {
+        ZORBA_ERROR_LOC_DESC(XPST0017, loc,
+                             "the first parameter to invoke must be a QName denoting an existing function.");
+      }
+
+      // create a flwor with LETs to hold the parameters
+      flwor_expr_t flworExpr = new flwor_expr(theRootSctx, loc, false);
+      for (unsigned int i = 1; i<numArgs ; i++)
+      {
+        // cannot use create_temp_var() as the variables created there are not accessible
+        store::Item_t qnameItem;
+
+        // check for name clashes
+        do
+        {
+          std::string localName = "temp_invoke_var" + ztd::to_string(theTempVarCounter++);
+          GENV_ITEMFACTORY->createQName(qnameItem, "", "", localName.c_str());
+        }
+        while (lookup_var(qnameItem.getp(), loc, err::XQP0000_NO_ERROR) != NULL);
+
+        var_expr_t var = create_var(loc, qnameItem, var_expr::let_var);
+        temp_vars.push_back(var);
+        let_clause_t lc = wrap_in_letclause(arguments[i], var);
+        flworExpr->add_clause(lc);
+        if (i>1)
+          query_params += ",";
+        query_params += "$" + var->get_name()->getStringValue();
+      }
+      query_params = "(" + query_params + ")";
+
+      // Build the query paramter for the eval_expr
+      expr_t queryParamExpr = new const_expr(theRootSctx, loc,
+                                             query_params);
+
+      // wrap qnameExpr
+      expr_t qnameExpr = wrap_in_atomization(arguments[0]);
+      qnameExpr        = wrap_in_type_promotion(arguments[0], theRTM.QNAME_TYPE_ONE);
+      qnameExpr        = new fo_expr(theRootSctx,
+                                     loc,
+                                     GET_BUILTIN_FUNCTION(FN_STRING_1),
+                                     qnameExpr);
+
+      // qnameExpr    := concat(qnameExpr, "$__invoke_temp_var1,$_invoke_temp_var2,...)")
+      qnameExpr        = new fo_expr(theRootSctx,
+                                     loc,
+                                     GET_BUILTIN_FUNCTION(FN_CONCAT_N),
+                                     qnameExpr,
+                                     queryParamExpr);
+
+      rchandle<eval_expr> evalExpr = new eval_expr(theRootSctx,
+                                                   loc,
+                                                   qnameExpr,
+                                                   scriptingKind,
+                                                   theNSCtx);
+
+      if (numArgs > 1)
+      {
+        flworExpr->set_return_expr(evalExpr);
+        resultExpr = flworExpr;
+      }
+      else
+        resultExpr = evalExpr;
+
+      std::vector<var_expr_t> inscopeVars;
+      theSctx->getVariables(inscopeVars);
+      ulong numVars = inscopeVars.size();
+
+      for (ulong i = 0; i < numVars; ++i)
+      {
+        if (inscopeVars[i]->get_kind() == var_expr::prolog_var)
+          continue;
+
+        var_expr_t evalVar = create_var(loc,
+                                        inscopeVars[i]->get_name(),
+                                        var_expr::eval_var,
+                                        inscopeVars[i]->get_return_type());
+
+        // At this point, the domain expr of an eval var is always another var.
+        // However, that other var may be later inlined, so in general, the domain
+        // expr of an eval var may be any expr.
+        expr_t valueExpr = inscopeVars[i].getp();
+        evalExpr->add_var(evalVar, valueExpr);
+      }
+
+      for (ulong i=0; i<temp_vars.size(); i++)
+      {
+        var_expr_t evalVar = create_var(loc,
+                                        temp_vars[i]->get_name(),
+                                        var_expr::eval_var,
+                                        temp_vars[i]->get_return_type());
+
+        expr_t valueExpr = temp_vars[i].getp();
+        evalExpr->add_var(evalVar, valueExpr);
       }
     }
     else if (f->isExternal())

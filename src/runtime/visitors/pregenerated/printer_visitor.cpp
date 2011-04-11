@@ -53,7 +53,6 @@
 #include "runtime/parsing_and_serializing/parsing_and_serializing.h"
 #include "runtime/qnames/qnames.h"
 #include "runtime/random/random.h"
-#include "runtime/reflection/reflection.h"
 #include "runtime/schema/schema.h"
 #include "runtime/scripting/scripting.h"
 #include "runtime/sequences/sequences.h"
@@ -2287,20 +2286,6 @@ void PrinterVisitor::endVisit ( const UuidIterator& ) {
   thePrinter.endEndVisit();
 }
 // </UuidIterator>
-
-
-// <InvokeIterator>
-void PrinterVisitor::beginVisit ( const InvokeIterator& a) {
-  thePrinter.startBeginVisit("InvokeIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const InvokeIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </InvokeIterator>
 
 #ifndef ZORBA_NO_XMLSCHEMA
 // <ValidateIterator>

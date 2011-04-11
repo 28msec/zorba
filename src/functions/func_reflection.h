@@ -13,53 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
-// ******************************************
-// *                                        *
-// * THIS IS A GENERATED FILE. DO NOT EDIT! *
-// * SEE .xml FILE WITH SAME NAME           *
-// *                                        *
-// ******************************************
-
-
-#ifndef ZORBA_FUNCTIONS_REFLECTION_H
-#define ZORBA_FUNCTIONS_REFLECTION_H
-
+#ifndef ZORBA_FUNCTIONS_REFLECTION
+#define ZORBA_FUNCTIONS_REFLECTION
 
 #include "common/shared_types.h"
-#include "functions/function_impl.h"
 
 
-namespace zorba {
-
+namespace zorba 
+{
 
 void populate_context_reflection(static_context* sctx);
 
-
-
-
-//fn-zorba-reflection:invoke
-class fn_zorba_reflection_invoke : public function
-{
-public:
-  fn_zorba_reflection_invoke(const signature& sig, FunctionConsts::FunctionKind kind)
-    : function(sig, kind) {
-setDeterministic(false);
-
 }
 
-  bool accessesDynCtx() const { return true; }
-
-  CODEGEN_DECL();
-};
-
-
-} //namespace zorba
-
-
 #endif
+/* vim:set ts=2 sw=2: */
+
 /*
  * Local variables:
  * mode: c++
  * End:
- */ 
+ */

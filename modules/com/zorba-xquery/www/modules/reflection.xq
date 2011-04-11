@@ -26,22 +26,45 @@ module namespace reflection = "http://www.zorba-xquery.com/modules/reflection";
 
 
 (:~
- : The invoke() function allows to dynamically call a function given its QName
+ : The invoke function allows to dynamically call a function given its QName
  : and parameters. It is possible to invoke a function who's name is not known
  : at compilation time -- it can be computed, passed through an external 
  : variable, taken from a file, etc. The first parameter must always be a 
  : QName identifying a known function. The rest of the parameters will be
  : passed to the function that is called.
  :
+ : invoke comes in three flavours:
+ : invoke-simple() - for the invocation of functions that are non-updating and
+ :                   non-side effecting 
+ : invoke-updating() - for the invocation of updating functions
+ : invoke-sequential() - for the invocation of sequential functions 
+ :
  : <br/>
- : Example usage : <pre> reflection:invoke ( xs:QName("fn:max"), (1,2,3) ) </pre>
+ : Example usage : <pre> reflection:invoke-simple ( xs:QName("fn:max"), 
+ :                                                  (1,2,3) ) </pre>
  : <br/>
  : Returns : <pre> 3 </pre>
  :
- : @param $name the QName of function that is to be called.
+ : @param $name the QName of the function that is to be called.
  : @return the result that is returned by the invoked function. 
  :)
-declare %variadic function reflection:invoke($name as xs:QName) as item()* external;
+declare %non-deterministic %variadic function reflection:invoke-simple($name as xs:QName) as item()* external;
+
+(:~
+ : invoke-updating()
+ :
+ : @param $name the QName of the function that is to be called.
+ : @return the result that is returned by the invoked function.
+ :)
+declare %variadic updating function reflection:invoke-updating($name as xs:QName) external;
+
+(:~
+ : invoke-sequential()
+ :
+ : @param $name the QName of the function that is to be called.
+ : @return the result that is returned by the invoked function.
+ :)
+declare %variadic sequential function reflection:invoke-sequential($name as xs:QName) as item()* external;
 
 
 (:~

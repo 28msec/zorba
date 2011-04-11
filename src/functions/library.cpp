@@ -48,7 +48,6 @@
 #include "functions/func_parsing_and_serializing.h"
 #include "functions/func_qnames.h"
 #include "functions/func_random.h"
-#include "functions/func_reflection.h"
 #include "functions/func_schema.h"
 #include "functions/func_sctx.h"
 #include "functions/func_sequences.h"
@@ -58,6 +57,7 @@
 #include "functions/func_xqdoc.h"
 #include "functions/func_documents.h"
 #include "functions/func_eval.h"
+#include "functions/func_reflection.h"
 
 #include "functions/func_function_item_iter.h"
 
@@ -105,7 +105,6 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populate_context_parsing_and_serializing(sctx);
   populate_context_qnames(sctx);
   populate_context_random(sctx);
-  populate_context_reflection(sctx);
   populate_context_schema(sctx);
   populate_context_sctx(sctx);
   populate_context_strings(sctx);
@@ -123,6 +122,7 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populateContext_VarDecl(sctx);
   populateContext_Hoisting(sctx);
   populate_context_eval(sctx);
+  populate_context_reflection(sctx);
 
   ar.set_loading_hardcoded_objects(false);
 }

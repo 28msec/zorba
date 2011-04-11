@@ -342,8 +342,6 @@ namespace zorba{
 
     class UuidIterator;
 
-    class InvokeIterator;
-
 #ifndef ZORBA_NO_XMLSCHEMA
     class ValidateIterator;
 #endif
@@ -964,9 +962,6 @@ public:
 
     virtual void beginVisit ( const UuidIterator& ) = 0;
     virtual void endVisit   ( const UuidIterator& ) = 0;
-
-    virtual void beginVisit ( const InvokeIterator& ) = 0;
-    virtual void endVisit   ( const InvokeIterator& ) = 0;
 
 #ifndef ZORBA_NO_XMLSCHEMA
     virtual void beginVisit ( const ValidateIterator& ) = 0;

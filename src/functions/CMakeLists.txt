@@ -82,4 +82,5 @@ LIST(APPEND FUNCTIONS_SRCS
     func_strings_impl.cpp
     func_var_decl.cpp
     func_eval.cpp
+    func_reflection.cpp
 )
