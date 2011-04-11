@@ -31,7 +31,10 @@ ENDIF(ZORBA_TEST_XQUERYX)
 
 # Here we can remove some tests for which EXPECTED_FAILURE() is not
 # appropriate. IF YOU THINK YOU WANT TO DO THIS, YOU ARE PROBABLY
-# WRONG.  PLEASE DO NOT USE THIS MECHANISM IF AT ALL POSSIBLE.
+# WRONG OR THERE IS A SERIOUS PROBLEM WITH THE BUILD SYSTEM.
+# PLEASE DO NOT USE THIS MECHANISM IF AT ALL POSSIBLE.
+# IF STILL NEEDED, GIVE THE CORRESPONDING BUG PRIORITY 9 BECAUSE
+# THIS HAS TO BE ADDRESSED ASAP.
 LIST(REMOVE_ITEM TESTFILES
 
 # Test disabled because it hangs - bug 3281369
@@ -293,6 +296,59 @@ ENDIF(XVERMAJ EQUAL 2)
 
 IF(WIN32)
   EXPECTED_FAILURE(test/rbkt/zorba/file/createWriteReadDeleteSeries 3276394)
+
+  # Tests disabled because the Windows remote queue is not working - bug 3276383
+  EXPECTED_FAILURE(test/rbkt/zorba/converters/html/tidy_1 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/converters/html/tidy_2 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/converters/html/tidy_3 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/converters/html/tidy_4 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/converters/html/tidy_5_wrong_options 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/converters/html/tidy_6_wrong_options 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/http_client/http-head 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/http_client/http-options 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/http_client/http-read-html-tidy2 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/http_client/http1-read 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/http_client/http1 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/http_client/http2-read-base64 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/http_client/http2-read-html-tidy 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/http_client/http2-read-html 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/http_client/http2-read-override 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/http_client/http2-read-status-only 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/http_client/http2-read-svg 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/http_client/http3-multipart 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/http_client/http3-post 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/http_client/http3-simple 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/http_client/http4_tidy_applied 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/http_client/http_error_hc001 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/http_client/http_error_hc002 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/http_client/http_error_hc004 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/http_client/http_error_hc005 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/http_client/http_tidy1 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/http_client/http_tidy2 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/webservices/google/book-search-xml 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/webservices/google/directions-xml 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/webservices/google/directions 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/webservices/google/isbn 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/webservices/google/youtube-category-search-xml 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/webservices/google/youtube-category-search 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/webservices/google/youtube-search-xml 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/webservices/google/youtube-search 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/webservices/mailchimp/login 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/webservices/mailchimp/subscribe 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/webservices/yahoo/geocode-xml 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/webservices/yahoo/location-xml 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/webservices/yahoo/longitude-latitude 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/webservices/yahoo/map-xml 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/webservices/yahoo/map 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/webservices/yahoo/spelling-xml 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/webservices/yahoo/spelling 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/webservices/yahoo/traffic-report-xml 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/webservices/yahoo/traffic-report 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/webservices/yahoo/weather-xml 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/webservices/yahoo/weather 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/webservices/yahoo/woeid-xml 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/webservices/yahoo/woeid 3276383)
+  EXPECTED_FAILURE(test/rbkt/zorba/xmlrpc/advogato 3276383)
 ENDIF(WIN32)
 
 EXPECTED_FAILURE(test/rbkt/zorba/modules/schema 3131554)
