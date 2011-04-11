@@ -21,9 +21,117 @@
 #include <functional>
 #include <sstream>
 
+////////// Determine tr1 include directory & namespace ////////////////////////
+
+#if defined( __GNUC__ ) && (__GNUC__ * 100 + __GNUC_MINOR__ < 430)
+# define ZORBA_GCC_OLDER_THAN_430 1
+#endif
+
+#if defined( _MSC_VER ) && (_MSC_VER < 1600 /* 2010 */)
+# define ZORBA_MSC_OLDER_THAN_2010 1
+#endif
+
+#if defined( ZORBA_GCC_OLDER_THAN_430 )
+# define ZORBA_TR1_IN_TR1_SUBDIRECTORY 1
+#endif
+
+#if defined( ZORBA_GCC_OLDER_THAN_430 ) || defined( ZORBA_MSC_OLDER_THAN_2010 )
+# define ZORBA_TR1_NS_IS_STD_TR1 1
+#endif
+
+#ifdef ZORBA_TR1_IN_TR1_SUBDIRECTORY
+# include <tr1/type_traits>
+#else
+# include <type_traits>
+#endif
+
+#ifdef ZORBA_TR1_NS_IS_STD_TR1
+# define ZORBA_TR1_NS std::tr1
+#else
+# define ZORBA_TR1_NS std
+#endif
+
+///////////////////////////////////////////////////////////////////////////////
+
 namespace zorba {
 namespace internal {
 namespace ztd {
+
+////////// tr1 ////////////////////////////////////////////////////////////////
+
+/**
+ * Define our own version of \c enable_if since g++ 4.2.1 (the version that
+ * comes with Xcode 3.x) doesn't have \c enable_if.
+ */
+template<bool, typename T = void>
+struct enable_if {
+};
+
+template<typename T>
+struct enable_if<true,T> {
+  typedef T type;
+};
+
+/**
+ * Declares a class that can be used to determine whether a given type \c T has
+ * a particular member function with a certain signature.
+ * For example:
+ * \code
+ * ZORBA_DECL_HAS_MEM_FN( c_str, char const* (T::*)() const);
+ *
+ * template<typename T> inline
+ * typename enable_if<has_c_str<T>::value,std::string>::type
+ * to_string( T const &t ) {
+ *   // case where T has c_str()
+ * }
+ *
+ * template<typename T> inline
+ * typename enable_if<!has_c_str<T>::value,std::string>::type
+ * to_string( T const &t ) {
+ *   // case where T does not have c_str()
+ * }
+ * \endcode
+ * Note: the identifier in the member function signature used to represent the
+ * class type must be called \c T.
+ * \hideinitializer
+ */
+#define ZORBA_DECL_HAS_MEM_FN(FN_NAME,...)                                    \
+  template<typename U>                                                        \
+  class has_##FN_NAME {                                                       \
+    typedef char yes[1];                                                      \
+    typedef char no[2];                                                       \
+    template<typename SignatureType,SignatureType> struct type_check;         \
+    template<class T> static yes& test(type_check<__VA_ARGS__,&T::FN_NAME>*); \
+    template<class T> static no& test(...);                                   \
+  public:                                                                     \
+    static bool const value = sizeof( test<U>(0) ) == sizeof( yes );          \
+  }
+
+////////// c_str() /////////////////////////////////////////////////////////////
+
+/**
+ * \internal
+ * Gets the \c char* to the given string.
+ * 
+ * @tparam OutputStringType The string's type.
+ * @param s The string to get the \c char* of.
+ * @return Returns said \c char*.
+ */
+template<class StringType> inline
+typename StringType::const_pointer c_str( StringType const &s ) {
+  return s.c_str();
+}
+
+/**
+ * \internal
+ * Specialization of global c_str() for \c char* argument.
+ *
+ * @param s The C string to get the \c char* of.
+ * @return Returns said \c char*.
+ */
+inline char const* c_str( char const *s ) {
+  return s;
+}
 
 ////////// less<char const*> ///////////////////////////////////////////////////
 
@@ -51,45 +159,23 @@ template<> struct less<char const*> :
   }
 };
 
-////////// c_str() /////////////////////////////////////////////////////////////
-
-/**
- * \internal
- * Gets the \c char* to the given string.
- * 
- * @tparam StringType The string's type.
- * @param s The string to get the \c char* of.
- * @return Returns said \c char*.
- */
-template<class StringType> inline
-typename StringType::const_pointer c_str( StringType const &s ) {
-  return s.c_str();
-}
-
-/**
- * \internal
- * Specialization of global c_str() for \c char* argument.
- *
- * @param s The C string to get the \c char* of.
- * @return Returns said \c char*.
- */
-inline char const* c_str( char const *s ) {
-  return s;
-}
-
 ////////// To-string conversion ////////////////////////////////////////////////
+
+ZORBA_DECL_HAS_MEM_FN( c_str, char const* (T::*)() const );
 
 /**
  * \internal
  * Converts an object to its string representation.
  *
+ * @tparam OutputStringType The output string type.
  * @tparam T The object type.
- * @tparam StringType The result string type.
  * @param t The object.
- * @Param out The string to receive the representation.
+ * @Param out The output string.
  */
-template<typename T,class StringType> inline
-void to_string( T const &t, StringType *out ) {
+template<typename T,class OutputStringType> inline
+typename enable_if<!ZORBA_TR1_NS::is_pointer<T>::value && !has_c_str<T>::value,
+                   void>::type
+to_string( T const &t, OutputStringType *out ) {
   std::ostringstream o;
   o << t;
   *out = o.str();
@@ -97,14 +183,48 @@ void to_string( T const &t, StringType *out ) {
 
 /**
  * \internal
+ * Specialization of \c to_string() for class types that have a \c c_str()
+ * member function.
+ *
+ * @tparam T The class type.
+ * @tparam OutputStringType The output string type.
+ * @param t The object.
+ * @Param out The output string.
+ */
+template<class T,class OutputStringType> inline
+typename enable_if<has_c_str<T>::value,void>::type
+to_string( T const &t, OutputStringType *out ) {
+  *out = t.c_str();
+}
+
+/**
+ * \internal
+ * Specialization of \c to_string() for pointer types.
+ *
+ * @tparam T The pointer type.
+ * @tparam OutputStringType The output string type.
+ * @param t The pointer.
+ * @Param out The output string.
+ */
+template<typename T,class OutputStringType> inline
+typename enable_if<ZORBA_TR1_NS::is_pointer<T>::value,void>::type
+to_string( T p, OutputStringType *out ) {
+  if ( p )
+    to_string( *p, out );
+  else
+    *out = "<null>";
+}
+
+/**
+ * \internal
  * Specialization of \c to_string() for C strings.
  *
- * @tparam StringType The result string type.
+ * @tparam OutputStringType The output string type.
  * @param s The C string.
- * @Param out The string to receive the representation.
+ * @Param out The output string.
  */
-template<class StringType> inline
-void to_string( char const *s, StringType *out ) {
+template<class OutputStringType> inline
+void to_string( char const *s, OutputStringType *out ) {
   *out = s;
 }
 

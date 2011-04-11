@@ -17,8 +17,6 @@
 #ifndef ZORBA_STL_UTIL_H
 #define ZORBA_STL_UTIL_H
 
-#include <zorba/config.h>
-
 #include <algorithm>
 #include <cassert>
 #include <cstring>
@@ -26,38 +24,14 @@
 #include <set>
 #include <stack>
 
-////////// Determine tr1 include directory & namespace ////////////////////////
-
-#if defined( __GNUC__ ) && (__GNUC__ * 100 + __GNUC_MINOR__ < 430)
-# define GCC_OLDER_THAN_430 1
-#endif
-
-#if defined( _MSC_VER ) && (_MSC_VER < 1600 /* 2010 */)
-# define MSC_OLDER_THAN_2010 1
-#endif
-
-#if defined( GCC_OLDER_THAN_430 )
-# define TR1_IN_TR1_SUBDIRECTORY 1
-#endif
-
-#if defined( GCC_OLDER_THAN_430 ) || defined( MSC_OLDER_THAN_2010 )
-# define TR1_NAMESPACE_IS_STD_TR1 1
-#endif
-
-#ifdef TR1_IN_TR1_SUBDIRECTORY
-# include <tr1/type_traits>
-#else
-# include <type_traits>
-#endif
-
-#ifdef TR1_NAMESPACE_IS_STD_TR1
-# define TR1_NS std::tr1
-#else
-# define TR1_NS std
-#endif
+#include <zorba/config.h>
+#include <zorba/internal/ztd.h>
 
 namespace zorba {
 namespace ztd {
+
+using internal::ztd::enable_if;
+using internal::ztd::less;
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -261,8 +235,11 @@ void move_front_to_back( FromSequenceType &from, ToSequenceType &to ) {
 }
 
 /**
- * Same as std::strdup(3) except it uses C++'s <code>new[]</code> rather than
- * malloc(3).
+ * Same as std::strdup(3) except it uses C++'s \c new[] rather than malloc(3).
+ *
+ * @param s The C string to duplicate.
+ * @return Returns a copy of \a s.  Deallocation via \c delete[] is the
+ * responsibility of the caller.
  */
 inline char* new_strdup( char const *s ) {
   return std::strcpy( new char[ std::strlen( s ) + 1 ], s );
@@ -288,25 +265,16 @@ typename StackType::value_type pop_stack( StackType &s ) {
   return value;
 }
 
-////////// tr1 ////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
-template<bool, typename T = void>
-struct enable_if {
-};
-
-template<typename T>
-struct enable_if<true,T> {
-  typedef T type;
-};
-
-template<typename IntType> inline
-typename enable_if<TR1_NS::is_signed<IntType>::value,bool>::type
-ge0( IntType n ) {
+template<typename NumericType> inline
+typename enable_if<ZORBA_TR1_NS::is_signed<NumericType>::value,bool>::type
+ge0( NumericType n ) {
   return n >= 0;
 }
 
 template<typename IntType> inline
-typename enable_if<TR1_NS::is_unsigned<IntType>::value,bool>::type
+typename enable_if<ZORBA_TR1_NS::is_unsigned<IntType>::value,bool>::type
 ge0( IntType ) {
   return true;
 }
@@ -329,6 +297,8 @@ template<typename T> inline
 stack_generator<T> stack_to_generator(std::stack<T> &stk) {
   return stack_generator<T>( stk );
 }
+
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace ztd
 } // namespace zorba

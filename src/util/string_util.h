@@ -21,32 +21,14 @@
 #include <sstream>
 #include <string>
 
+#include <zorba/internal/ztd.h>
+#include "stl_util.h"
+
 namespace zorba {
 namespace ztd {
 
-////////// c_str() /////////////////////////////////////////////////////////////
-
-/**
- * Gets the \c char* to the given string.
- * 
- * @tparam StringType The string's type.
- * @param s The string to get the \c char* of.
- * @return Returns said \c char*.
- */
-template<class StringType> inline
-typename StringType::const_pointer c_str( StringType const &s ) {
-  return s.c_str();
-}
-
-/**
- * Specialization of global c_str() for \c char* argument.
- *
- * @param s The C string to get the \c char* of.
- * @return Returns said \c char*.
- */
-inline char const* c_str( char const *s ) {
-  return s;
-}
+using internal::ztd::c_str;
+using internal::ztd::has_c_str;
 
 ////////// String equality /////////////////////////////////////////////////////
 
@@ -309,6 +291,8 @@ inline bool split( InputStringType const &in, DelimStringType const &delim,
 
 ////////// To-string conversion ////////////////////////////////////////////////
 
+using internal::ztd::to_string;
+
 /**
  * Converts an object to its string representation.
  *
@@ -317,10 +301,40 @@ inline bool split( InputStringType const &in, DelimStringType const &delim,
  * @return Returns a string representation of the object.
  */
 template<typename T> inline
-std::string to_string( T const &t ) {
+typename enable_if<!ZORBA_TR1_NS::is_pointer<T>::value && !has_c_str<T>::value,
+                   std::string>::type
+to_string( T const &t ) {
   std::ostringstream o;
   o << t;
   return o.str();
+}
+
+/**
+ * Specialization of \c to_string() for class types that have a \c c_str()
+ * member function, i.e., string types.
+ *
+ * @tparam T the class type.
+ * @param t The object.
+ * @return Returns a string representation of the object.
+ */
+template<class T> inline
+typename enable_if<has_c_str<T>::value,std::string>::type
+to_string( T const &t ) {
+  return t.c_str();
+}
+
+/**
+ * Specialization of \c to_string() for pointer types.
+ *
+ * @tparam T The pointer type.
+ * @param p The pointer.
+ * @return If \a p is not \c NULL, returns the result of \c to_string(*p);
+ * otherwise returns \c "<null>".
+ */
+template<typename T> inline
+typename enable_if<ZORBA_TR1_NS::is_pointer<T>::value,std::string>::type
+to_string( T p ) {
+  return p ? to_string( *p ) : "<null>";
 }
 
 /**
@@ -331,33 +345,6 @@ std::string to_string( T const &t ) {
  */
 inline std::string to_string( char const *s ) {
   return s;
-}
-
-/**
- * Converts an object to its string representation.
- *
- * @tparam StringType The result string type.
- * @tparam T The object type.
- * @param t The object.
- * @Param out The string to receive the representation.
- */
-template<typename T,class StringType> inline
-void to_string( T const &t, StringType *out ) {
-  std::ostringstream o;
-  o << t;
-  *out = o.str();
-}
-
-/**
- * Specialization of \c to_string() for C strings.
- *
- * @tparam StringType The result string type.
- * @param s The C string.
- * @Param out The string to receive the representation.
- */
-template<class StringType> inline
-void to_string( char const *s, StringType *out ) {
-  *out = s;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
