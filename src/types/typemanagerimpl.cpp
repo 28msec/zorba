@@ -219,7 +219,7 @@ xqtref_t TypeManagerImpl::create_named_atomic_type(
   // type (because, otherwise it would have been found above). So we return NULL.
   if (ZSTREQ(qname->getNamespace(), XML_SCHEMA_NS))
   {
-    if (error != err::XQP0000_NO_ERROR)
+    if (error != err::ZXQP0000_NO_ERROR)
     {
       ZORBA_ERROR_VAR_LOC_DESC_OSS(error, loc,
                                "A type with qname "
@@ -241,7 +241,7 @@ xqtref_t TypeManagerImpl::create_named_atomic_type(
 
     if (namedType == NULL)
     {
-      if (error != err::XQP0000_NO_ERROR)
+      if (error != err::ZXQP0000_NO_ERROR)
       {
         ZORBA_ERROR_VAR_LOC_DESC_OSS(error, loc,
                                  "A type with qname "
@@ -264,7 +264,7 @@ xqtref_t TypeManagerImpl::create_named_atomic_type(
   }
 #endif
 
-  if (error != err::XQP0000_NO_ERROR)
+  if (error != err::ZXQP0000_NO_ERROR)
   {
     ZORBA_ERROR_VAR_LOC_DESC_OSS(error, loc,
                              "A type with qname "
@@ -326,7 +326,7 @@ xqtref_t TypeManagerImpl::create_named_type(
 
       if (namedType == NULL)
       {
-        if (error != err::XQP0000_NO_ERROR)
+        if (error != err::ZXQP0000_NO_ERROR)
         {
           ZORBA_ERROR_VAR_LOC_DESC_OSS(error, loc,
                                    "A type with qname "
@@ -345,7 +345,7 @@ xqtref_t TypeManagerImpl::create_named_type(
     }
 #endif
 
-    if (error != err::XQP0000_NO_ERROR)
+    if (error != err::ZXQP0000_NO_ERROR)
     {
       ZORBA_ERROR_VAR_LOC_DESC_OSS(error, loc,
                                "A type with qname " 

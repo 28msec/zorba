@@ -55,25 +55,17 @@ zorba::err::type ZorbaErrQName::error_type() const {
   using namespace zorba::err;
 
   char const *const name = localname();
+  ZORBA_ASSERT( name );
 
-  switch ( name[0] ) {
-    case 'A':
-      return ZORBA_API;
-    case 'S':
-      switch ( name[1] ) {
-        case 'R': return ZORBA_SERIALIZATION;
-        case 'T': return ZORBA_STORE;
-      }
-      break;
-    case 'X':
-      switch ( name[1] ) {
-        case 'Q': return ZORBA_XQP;
-        case 'D': return ZORBA_DDF;
-      }
-      break;
+  switch ( name[1] ) {
+    case 'A': return ZORBA_API;
+    case 'C': return ZORBA_SERIALIZATION;
+    case 'D': return ZORBA_DDF;
+    case 'O': return ZORBA_OS;
+    case 'S': return ZORBA_STORE;
+    case 'X': return ZORBA_XQP;
+    default : ZORBA_ASSERT( false );
   }
-
-  ZORBA_ASSERT( false );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

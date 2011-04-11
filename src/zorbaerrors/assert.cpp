@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-#include <string>
 #include <iostream>
 
 #include <zorba/config.h>
@@ -60,13 +59,8 @@ static void print_stack_trace( ostream &o ) {
 
 void assertion_failed( char const *condition, char const *file, int line ) {
   print_stack_trace( cerr );
-
-  ostringstream oss;
-  oss << file << ':' << line;
-
   throw make_zorba_exception(
-    file, line, err::XQP0006_SYSTEM_ASSERT_FAILED,
-    ERROR_PARAMS( condition, oss.str() )
+    file, line, err::ZXQP0006_SYSTEM_ASSERT_FAILED, ERROR_PARAMS( condition )
   );
 }
 

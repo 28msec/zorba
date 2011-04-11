@@ -117,7 +117,7 @@ declare variable $json:errWrongParam as xs:QName := fn:QName($json:jsonNS, "json
  :        to configure the JSON mapping process that have to be validated against the 
  :        "http://www.zorba-xquery.com/modules/convertors/json-options" schema.
  : @return  a sequence of nodes according to either one of the mappings described above.
- : @error API0060 if any of the strings passed as parameter is not valid JSON.
+ : @error ZAPI0060 if any of the strings passed as parameter is not valid JSON.
  : @example rbkt/Queries/zorba/converters/jansson/parse_json_02.xq
  : @example rbkt/Queries/zorba/converters/jansson/parse_json_ml_01.xq
  :)
@@ -136,7 +136,7 @@ declare function json:parse(
  :        to configure the JSON mapping process that have to be validated against the 
  :        "http://www.zorba-xquery.com/modules/convertors/json-options" schema.
  : @return a JSON string.
- : @error API0061 if the passed elements do not have a valid JSON structure.
+ : @error ZAPI0061 if the passed elements do not have a valid JSON structure.
  : @example rbkt/Queries/zorba/converters/jansson/serialize_json_01.xq
  : @example rbkt/Queries/zorba/converters/jansson/serialize_json_ml_01.xq
  :)

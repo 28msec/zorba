@@ -214,9 +214,9 @@ thesaurus::lookup( zstring const &phrase, zstring const &relationship,
   );
 }
 
-#define BAD_XML_EXCEPTION(WHAT,MSG) \
-  ZORBA_EXCEPTION( XQP0024_XML_DOES_NOT_MATCH_SCHEMA, \
-                   ERROR_PARAMS( WHAT, ZED( MSG ) ) )
+#define BAD_XML_EXCEPTION(WHAT,ZED_KEY) \
+  ZORBA_EXCEPTION( ZXQP0024_XML_DOES_NOT_MATCH_SCHEMA, \
+                   ERROR_PARAMS( WHAT, ZED( ZED_KEY ) ) )
 
 void thesaurus::read_xqftts_file( zstring const &uri ) {
   ZORBA_ASSERT( !uri.empty() );

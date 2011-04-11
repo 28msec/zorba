@@ -70,7 +70,7 @@ char* XQueryXConvertor::XQueryX2XQuery( const char *xqueryx)
   doc = xmlParseDoc((xmlChar*)xqueryx);
 
   if(!doc)
-    throw ZORBA_EXCEPTION(XQP0031_MALFORMED_XQUERYX_INPUT);
+    throw ZORBA_EXCEPTION(ZXQP0031_MALFORMED_XQUERYX_INPUT);
 
   //xsltTransformContextPtr ctxt;
   //ctxt = xsltNewTransformContext((xsltStylesheetPtr)xqueryx_xslt, doc);
@@ -82,13 +82,13 @@ char* XQueryXConvertor::XQueryX2XQuery( const char *xqueryx)
   if(!res)
   {
     xmlFreeDoc(doc);
-    throw ZORBA_EXCEPTION(XQP0032_ERROR_TRANSFORMING_XQUERYX_TO_XQUERY);
+    throw ZORBA_EXCEPTION(ZXQP0032_ERROR_TRANSFORMING_XQUERYX_TO_XQUERY);
   }
 /*  if ((ctxt->state == XSLT_STATE_ERROR) || (ctxt->state == XSLT_STATE_STOPPED))
   {
     xsltFreeTransformContext(ctxt);
     xmlFreeDoc(doc);
-    throw ZORBA_EXCEPTION(XQP0032_ERROR_TRANSFORMING_XQUERYX_TO_XQUERY);
+    throw ZORBA_EXCEPTION(ZXQP0032_ERROR_TRANSFORMING_XQUERYX_TO_XQUERY);
   }
   xsltFreeTransformContext(ctxt);
 */ 

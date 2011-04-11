@@ -917,7 +917,7 @@ RULE_REWRITE_POST(InlineFunctions)
       catch (...)
       {
         // TODO: this is caught here, because clone is not implemented for all expressions
-        ZORBA_ERROR_LOC_DESC(XQP0019_INTERNAL_ERROR, udf->getLoc(),
+        ZORBA_ERROR_LOC_DESC(ZXQP0019_INTERNAL_ERROR, udf->getLoc(),
                              "clone not implemented for expression");
       }
     }
@@ -926,4 +926,5 @@ RULE_REWRITE_POST(InlineFunctions)
   return NULL;
 }
 
-}
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

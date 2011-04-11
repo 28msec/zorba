@@ -214,7 +214,7 @@ std::streamsize DtdXmlLoader::readPacket(std::istream& stream, char* buf, std::s
     if (stream.bad())
     {
       ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
-                                STR0020_LOADER_IO_ERROR,
+                                ZSTR0020_LOADER_IO_ERROR,
                                 "Input stream in bad state");
     }
 
@@ -223,12 +223,12 @@ std::streamsize DtdXmlLoader::readPacket(std::istream& stream, char* buf, std::s
   catch (std::iostream::failure e)
   {
     ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
-                              STR0020_LOADER_IO_ERROR, e.what());
+                              ZSTR0020_LOADER_IO_ERROR, e.what());
   }
   catch (...)
   {
     ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
-                              STR0020_LOADER_IO_ERROR,
+                              ZSTR0020_LOADER_IO_ERROR,
                               "Unknown exception");
   }
 
@@ -281,7 +281,7 @@ store::Item_t DtdXmlLoader::loadXml(
     if (numChars < 0)
     {
       ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
-                                STR0020_LOADER_IO_ERROR,
+                                ZSTR0020_LOADER_IO_ERROR,
                                 "Unknown I/O error");
       abortload();
       delete[] theBuffer;
@@ -290,7 +290,7 @@ store::Item_t DtdXmlLoader::loadXml(
     else if (numChars == 0)
     {
       ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
-                                STR0020_LOADER_IO_ERROR,
+                                ZSTR0020_LOADER_IO_ERROR,
                                 "No input data.");
       delete[] theBuffer;
       abortload();
@@ -305,7 +305,7 @@ store::Item_t DtdXmlLoader::loadXml(
 
     if (ctxt == NULL)
     {
-      ZORBA_ERROR_DESC_CONTINUE(theErrorManager, STR0021_LOADER_PARSING_ERROR,
+      ZORBA_ERROR_DESC_CONTINUE(theErrorManager, ZSTR0021_LOADER_PARSING_ERROR,
                                 "Failed to initialize parser");
       delete[] theBuffer;
       abortload();
@@ -327,7 +327,7 @@ store::Item_t DtdXmlLoader::loadXml(
     {
       std::cout << "  xmlParseDocument: Error: Unable to create tree: " <<
           ctxt->lastError.message << std::endl; std::cout.flush();
-      ZORBA_ERROR_DESC_CONTINUE(theErrorManager, STR0021_LOADER_PARSING_ERROR,
+      ZORBA_ERROR_DESC_CONTINUE(theErrorManager, ZSTR0021_LOADER_PARSING_ERROR,
                                 "Unable to create tree");
       delete[] theBuffer;
       abortload();
@@ -348,7 +348,7 @@ store::Item_t DtdXmlLoader::loadXml(
 
     if (numChars < 0)
     {
-      ZORBA_ERROR_DESC_CONTINUE(theErrorManager, STR0020_LOADER_IO_ERROR,
+      ZORBA_ERROR_DESC_CONTINUE(theErrorManager, ZSTR0020_LOADER_IO_ERROR,
                                 "Unknown I/O error");
       delete[] theBuffer;
       abortload();
@@ -380,14 +380,14 @@ store::Item_t DtdXmlLoader::loadXml(
     if (!theDocUri.empty())
     {
       ZORBA_ERROR_PARAM_CONTINUE_OSS(theErrorManager,
-                                     STR0021_LOADER_PARSING_ERROR,
+                                     ZSTR0021_LOADER_PARSING_ERROR,
                                      "The document with URI " << theDocUri
                                      <<" is not well formed", "");
     }
     else
     {
       ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
-                                STR0021_LOADER_PARSING_ERROR,
+                                ZSTR0021_LOADER_PARSING_ERROR,
                                 "Not well formed XML");
     }
 
@@ -403,7 +403,7 @@ store::Item_t DtdXmlLoader::loadXml(
         ctxt->lastError.code != XML_ERR_NO_DTD )
     {
       ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
-                                STR0021_LOADER_PARSING_ERROR,
+                                ZSTR0021_LOADER_PARSING_ERROR,
                                 "Not well formed XML");
 
       abortload();
@@ -416,7 +416,7 @@ store::Item_t DtdXmlLoader::loadXml(
   xmlDoc *doc = ctxt->myDoc;
   if (doc == NULL)
   {
-    ZORBA_ERROR_DESC_CONTINUE(theErrorManager, STR0021_LOADER_PARSING_ERROR,
+    ZORBA_ERROR_DESC_CONTINUE(theErrorManager, ZSTR0021_LOADER_PARSING_ERROR,
                               "Unable to create doc tree");
     abortload();
     return NULL;
@@ -564,7 +564,7 @@ void DtdXmlLoader::startDocument(void * ctx)
   catch (...)
   {
     ZORBA_ERROR_DESC_CONTINUE(loader.theErrorManager,
-                              XQP0019_INTERNAL_ERROR, "Unknown exception");
+                              ZXQP0019_INTERNAL_ERROR, "Unknown exception");
   }
 }
 
@@ -645,7 +645,7 @@ void DtdXmlLoader::endDocument(void * ctx)
   catch (...)
   {
     ZORBA_ERROR_DESC_CONTINUE(loader.theErrorManager,
-                              XQP0019_INTERNAL_ERROR, "Unknown exception");
+                              ZXQP0019_INTERNAL_ERROR, "Unknown exception");
   }
 }
 
@@ -936,7 +936,7 @@ void DtdXmlLoader::startElement(
   catch (...)
   {
     ZORBA_ERROR_DESC_CONTINUE(loader.theErrorManager,
-                              XQP0019_INTERNAL_ERROR, "Unknown exception");
+                              ZXQP0019_INTERNAL_ERROR, "Unknown exception");
   }
 }
 
@@ -1068,7 +1068,7 @@ void  DtdXmlLoader::endElement(
   catch (...)
   {
     ZORBA_ERROR_DESC_CONTINUE(loader.theErrorManager,
-                              XQP0019_INTERNAL_ERROR, "Unknown exception");
+                              ZXQP0019_INTERNAL_ERROR, "Unknown exception");
   }
 }
 
@@ -1118,7 +1118,7 @@ void DtdXmlLoader::characters(void * ctx, const xmlChar * ch, int len)
   catch (...)
   {
     ZORBA_ERROR_DESC_CONTINUE(loader.theErrorManager,
-                              XQP0019_INTERNAL_ERROR, "Unknown exception");
+                              ZXQP0019_INTERNAL_ERROR, "Unknown exception");
   }
 }
 
@@ -1170,7 +1170,7 @@ void DtdXmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
   catch (...)
   {
     ZORBA_ERROR_DESC_CONTINUE(loader.theErrorManager,
-                              XQP0019_INTERNAL_ERROR, "Unknown exception");
+                              ZXQP0019_INTERNAL_ERROR, "Unknown exception");
   }
 }
 
@@ -1219,7 +1219,7 @@ void DtdXmlLoader::processingInstruction(
   catch (...)
   {
     ZORBA_ERROR_DESC_CONTINUE(loader.theErrorManager,
-                              XQP0019_INTERNAL_ERROR, "Unknown exception");
+                              ZXQP0019_INTERNAL_ERROR, "Unknown exception");
   }
 }
 
@@ -1261,7 +1261,7 @@ void DtdXmlLoader::comment(void * ctx, const xmlChar * ch)
   catch (...)
   {
     ZORBA_ERROR_DESC_CONTINUE(loader.theErrorManager,
-                              XQP0019_INTERNAL_ERROR, "Unknown exception");
+                              ZXQP0019_INTERNAL_ERROR, "Unknown exception");
   }
 }
 
@@ -1282,7 +1282,7 @@ void DtdXmlLoader::error(void * ctx, const char * msg, ... )
   vsprintf(buf, msg, args);
   va_end(args);
   ZORBA_ERROR_DESC_CONTINUE(loader->theErrorManager,
-                            STR0021_LOADER_PARSING_ERROR, buf);
+                            ZSTR0021_LOADER_PARSING_ERROR, buf);
 }
 
 

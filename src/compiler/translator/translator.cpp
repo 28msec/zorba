@@ -2499,7 +2499,7 @@ void end_visit(const ModuleDecl& v, void* /*visit_state*/)
 
   if (static_context::is_reserved_module(theModuleNamespace))
   {
-    ZORBA_ERROR_LOC_PARAM(XQP0016_RESERVED_MODULE_TARGET_NAMESPACE, loc,
+    ZORBA_ERROR_LOC_PARAM(ZXQP0016_RESERVED_MODULE_TARGET_NAMESPACE, loc,
                           theModuleNamespace.c_str(), "");
   }
 
@@ -2972,7 +2972,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 
   if (static_context::is_reserved_module(targetNS))
   {
-    ZORBA_ERROR_LOC_PARAM(XQP0016_RESERVED_MODULE_TARGET_NAMESPACE, loc,
+    ZORBA_ERROR_LOC_PARAM(ZXQP0016_RESERVED_MODULE_TARGET_NAMESPACE, loc,
                           targetNS.c_str(), "");
   }
 
@@ -3352,7 +3352,7 @@ void* begin_visit(const VFO_DeclList& v)
         const signature& s = f->getSignature();
         if (!sig.equals(tm, s))
         {
-          ZORBA_ERROR_LOC_DESC_OSS(XQP0028_FUNCTION_IMPL_NOT_FOUND,
+          ZORBA_ERROR_LOC_DESC_OSS(ZXQP0028_FUNCTION_IMPL_NOT_FOUND,
               loc,
               "The signature of the (registered) function ("
               << qnameItem->getNamespace()
@@ -3389,7 +3389,7 @@ void* begin_visit(const VFO_DeclList& v)
       // via the StaticContextImpl::registerExternalModule() user api.
       if (ef == NULL)
       {
-        ZORBA_ERROR_LOC_PARAM(XQP0028_FUNCTION_IMPL_NOT_FOUND,
+        ZORBA_ERROR_LOC_PARAM(ZXQP0028_FUNCTION_IMPL_NOT_FOUND,
                               loc,
                               qnameItem->getNamespace().str(),
                               qnameItem->getLocalName().str());
@@ -3398,7 +3398,7 @@ void* begin_visit(const VFO_DeclList& v)
       {
         if (ef->getLocalName().compare(qnameItem->getLocalName().str()) != 0)
         {
-          ZORBA_ERROR_LOC_DESC_OSS(XQP0028_FUNCTION_IMPL_NOT_FOUND,
+          ZORBA_ERROR_LOC_DESC_OSS(ZXQP0028_FUNCTION_IMPL_NOT_FOUND,
               loc,
               "The external function referred to by the localname \"" << qnameItem->getLocalName()
               << "\" claims to have the localname " << ef->getLocalName()
@@ -7954,7 +7954,7 @@ void intermediate_visit(const RelativePathExpr& rpe, void* /*visit_state*/)
       if (stepExpr->get_expr_kind() == wrapper_expr_kind)
       {
         wrapper_expr* tmp = static_cast<wrapper_expr*>(stepExpr.getp());
-        var_expr* dotVar = lookup_var(DOT_VARNAME, loc, err::XQP0000_NO_ERROR);
+        var_expr* dotVar = lookup_var(DOT_VARNAME, loc, err::ZXQP0000_NO_ERROR);
         if (tmp->get_expr() == dotVar)
           errCode = &err::XPTY0020;
       }
@@ -9101,7 +9101,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
   if (static_context::is_reserved_module(fn_ns))
   {
-    ZORBA_ERROR_LOC_PARAM(XQP0016_RESERVED_MODULE_TARGET_NAMESPACE, loc,
+    ZORBA_ERROR_LOC_PARAM(ZXQP0016_RESERVED_MODULE_TARGET_NAMESPACE, loc,
                           fn_ns.c_str(), "");
   }
 
@@ -9507,7 +9507,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
           std::string localName = "temp_invoke_var" + ztd::to_string(theTempVarCounter++);
           GENV_ITEMFACTORY->createQName(qnameItem, "", "", localName.c_str());
         }
-        while (lookup_var(qnameItem.getp(), loc, err::XQP0000_NO_ERROR) != NULL);
+        while (lookup_var(qnameItem.getp(), loc, err::ZXQP0000_NO_ERROR) != NULL);
 
         var_expr_t var = create_var(loc, qnameItem, var_expr::let_var);
         temp_vars.push_back(var);
@@ -11089,7 +11089,7 @@ void* begin_visit(const SchemaElementTest& v)
     }
   }
 #else//ZORBA_NO_XMLSCHEMA
-  throw XQUERY_EXCEPTION(XQP0005_SYSTEM_NOT_SUPPORTED, ERROR_LOC(v.get_location()));
+  throw XQUERY_EXCEPTION(ZXQP0005_SYSTEM_NOT_SUPPORTED, ERROR_LOC(v.get_location()));
 #endif
   return no_state;
 }
@@ -11200,7 +11200,7 @@ void* begin_visit(const SchemaAttributeTest& v)
   }
 
 #else//ZORBA_NO_XMLSCHEMA
-  throw XQUERY_EXCEPTION(XQP0005_SYSTEM_NOT_SUPPORTED, ERROR_LOC(v.get_location()));
+  throw XQUERY_EXCEPTION(ZXQP0005_SYSTEM_NOT_SUPPORTED, ERROR_LOC(v.get_location()));
 #endif
   return no_state;
 }

@@ -39,7 +39,7 @@ namespace zorba
 ********************************************************************************/
 static void handle_resolver_error(URIResolverResult* aResolverResult)
 {
-  Error const *lError = &err::XQP0000_NO_ERROR;
+  Error const *lError = &err::ZXQP0000_NO_ERROR;
   switch (aResolverResult->getError()) 
   {
     case URIResolverResult::UR_FODC0002: lError = &err::FODC0002; break;

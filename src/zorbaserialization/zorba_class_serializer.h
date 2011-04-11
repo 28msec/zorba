@@ -429,14 +429,14 @@ void operator&(Archiver &ar, rchandle<T> *&obj)
     {
       if(field_treat != ARCHIVE_FIELD_IS_BASECLASS)
       {
-        ZORBA_SER_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
+        ZORBA_SER_ERROR_DESC_OSS(ZCSE0002_INCOMPATIBLE_INPUT_FIELD, id);
       }
     }
     else
     {
       if((field_treat != ARCHIVE_FIELD_IS_PTR) && (field_treat != ARCHIVE_FIELD_IS_REFERENCING))
       {
-        ZORBA_SER_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
+        ZORBA_SER_ERROR_DESC_OSS(ZCSE0002_INCOMPATIBLE_INPUT_FIELD, id);
       }
     }
 
@@ -444,7 +444,7 @@ void operator&(Archiver &ar, rchandle<T> *&obj)
     if((field_treat == ARCHIVE_FIELD_IS_PTR) ||
       (field_treat == ARCHIVE_FIELD_IS_BASECLASS))
     {
-      ZORBA_SER_ERROR_DESC_OSS(SRL0009_CLASS_NOT_SERIALIZABLE, " rchandle<T>*");
+      ZORBA_SER_ERROR_DESC_OSS(ZCSE0009_CLASS_NOT_SERIALIZABLE, " rchandle<T>*");
 
       bool is_temp = false;
       if(ar.get_is_temp_field_one_level())
@@ -480,11 +480,11 @@ void operator&(Archiver &ar, rchandle<T> *&obj)
         obj = dynamic_cast<rchandle<T>*>(new_obj);
       }catch(...)
       {
-        ZORBA_SER_ERROR_DESC_OSS(SRL0004_UNRESOLVED_FIELD_REFERENCE, id);
+        ZORBA_SER_ERROR_DESC_OSS(ZCSE0004_UNRESOLVED_FIELD_REFERENCE, id);
       }
       if(!obj)
       {
-        ZORBA_SER_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
+        ZORBA_SER_ERROR_DESC_OSS(ZCSE0002_INCOMPATIBLE_INPUT_FIELD, id);
       }
     }
     else

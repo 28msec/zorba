@@ -633,7 +633,7 @@ void UpdPut::apply()
   }
   catch(ZorbaException const& e)
   {
-    if (e.error() == err::API0020_DOCUMENT_ALREADY_EXISTS)
+    if (e.error() == err::ZAPI0020_DOCUMENT_ALREADY_EXISTS)
     {
       theOldDocument = store->getDocument(theTargetUri->getStringValue());
 
@@ -1045,7 +1045,7 @@ void UpdCreateIndex::apply()
   }
   catch(ZorbaException const& e)
   {
-    if (e.error() == err::STR0045_DUPLICATE_NODE_ERROR)
+    if (e.error() == err::ZSTR0045_DUPLICATE_NODE_ERROR)
     {
       ZORBA_ERROR_PARAM(XDDY0028_INDEX_DOMAIN_HAS_DUPLICATE_NODES, 
                         theQName->getStringValue().c_str(), "");
@@ -1085,7 +1085,7 @@ void UpdDeleteIndex::apply()
 
   if ((theIndex = store->getIndex(theQName)) == NULL)
   {
-    ZORBA_ERROR_PARAM(STR0002_INDEX_DOES_NOT_EXIST,
+    ZORBA_ERROR_PARAM(ZSTR0002_INDEX_DOES_NOT_EXIST,
                       theQName->getStringValue().c_str(), "");
   }
 
@@ -1132,7 +1132,7 @@ void UpdRefreshIndex::apply()
 
   if ((theIndex = store.getIndex(theQName)) == NULL)
   {
-    ZORBA_ERROR_PARAM(STR0002_INDEX_DOES_NOT_EXIST,
+    ZORBA_ERROR_PARAM(ZSTR0002_INDEX_DOES_NOT_EXIST,
                       theQName->getStringValue().c_str(), "");
   }
 

@@ -788,7 +788,7 @@ bool XQueryImpl::loadExecutionPlan(std::istream& is, SerializationCallback* aCal
     }
     catch(ZorbaException const &ex)
     {
-      if ( ex.error() != err::SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE )
+      if ( ex.error() != err::ZCSE0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE )
         throw;
       //else go try xml archive reader
     }
@@ -865,7 +865,7 @@ void XQueryImpl::executeSAX()
 
     if (theCompilerCB->isUpdating())
     {
-      ZORBA_ERROR_DESC(API0007_CANNOT_SERIALIZE_PUL,
+      ZORBA_ERROR_DESC(ZAPI0007_CANNOT_SERIALIZE_PUL,
                        "Can't perform SAX serialization with an updating query.");
     }
 
@@ -1015,7 +1015,7 @@ void XQueryImpl::execute()
     checkNotExecuting();
 
     if (!theCompilerCB->isUpdating())
-      throw ZORBA_EXCEPTION( API0008_NOT_AN_UPDATE_XQUERY );
+      throw ZORBA_EXCEPTION( ZAPI0008_NOT_AN_UPDATE_XQUERY );
 
     theExecuting = true;
 
@@ -1064,7 +1064,7 @@ Iterator_t XQueryImpl::iterator()
     checkNotExecuting();
 
     if (theResultIterator)
-      throw ZORBA_EXCEPTION(API0039_XQUERY_HAS_ITERATOR_ALREADY);
+      throw ZORBA_EXCEPTION(ZAPI0039_XQUERY_HAS_ITERATOR_ALREADY);
 
     PlanWrapper_t lPlan = generateWrapper();
 
@@ -1291,7 +1291,7 @@ void XQueryImpl::close()
 void XQueryImpl::checkIsDebugMode() const
 {
   if (!theIsDebugMode) 
-    throw ZORBA_EXCEPTION( API0009_XQUERY_NOT_COMPILED_IN_DEBUG_MODE );
+    throw ZORBA_EXCEPTION( ZAPI0009_XQUERY_NOT_COMPILED_IN_DEBUG_MODE );
 }
 
 
@@ -1302,7 +1302,7 @@ void XQueryImpl::checkIsDebugMode() const
 void XQueryImpl::checkNotClosed() const
 {
   if (theIsClosed)
-    throw ZORBA_EXCEPTION( API0006_XQUERY_ALREADY_CLOSED );
+    throw ZORBA_EXCEPTION( ZAPI0006_XQUERY_ALREADY_CLOSED );
 }
 
 
@@ -1313,7 +1313,7 @@ void XQueryImpl::checkNotClosed() const
 void XQueryImpl::checkCompiled() const
 {
   if ( ! thePlanProxy )
-    throw ZORBA_EXCEPTION( API0003_XQUERY_NOT_COMPILED );
+    throw ZORBA_EXCEPTION( ZAPI0003_XQUERY_NOT_COMPILED );
 }
 
 
@@ -1324,7 +1324,7 @@ void XQueryImpl::checkCompiled() const
 void XQueryImpl::checkNotCompiled() const
 {
   if ( thePlanProxy )
-    throw ZORBA_EXCEPTION( API0004_XQUERY_ALREADY_COMPILED );
+    throw ZORBA_EXCEPTION( ZAPI0004_XQUERY_ALREADY_COMPILED );
 }
 
 
@@ -1334,7 +1334,7 @@ void XQueryImpl::checkNotCompiled() const
 void XQueryImpl::checkNotExecuting() const
 {
   if ( theExecuting )
-    throw ZORBA_EXCEPTION( API0005_XQUERY_ALREADY_EXECUTING );
+    throw ZORBA_EXCEPTION( ZAPI0005_XQUERY_ALREADY_EXECUTING );
 }
 
 

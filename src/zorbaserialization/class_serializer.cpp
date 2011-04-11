@@ -584,7 +584,7 @@ void operator&(Archiver &ar, bool &obj)
     }
     else
     {
-      ZORBA_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
+      ZORBA_ERROR_DESC_OSS(ZCSE0002_INCOMPATIBLE_INPUT_FIELD, id);
     }
 
     ar.register_reference(id, field_treat, &obj);
@@ -679,7 +679,7 @@ void operator&(Archiver &ar, std::string* &obj)
     }
     if((field_treat != ARCHIVE_FIELD_IS_PTR) && (field_treat != ARCHIVE_FIELD_IS_REFERENCING))
     {
-      ZORBA_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
+      ZORBA_ERROR_DESC_OSS(ZCSE0002_INCOMPATIBLE_INPUT_FIELD, id);
     }
     if(field_treat == ARCHIVE_FIELD_IS_PTR)
     {
@@ -720,7 +720,7 @@ void operator&(Archiver &ar, char* &obj)//like char *p=strdup("io");
     }
     if((field_treat != ARCHIVE_FIELD_IS_PTR) && (field_treat != ARCHIVE_FIELD_IS_REFERENCING))
     {
-      ZORBA_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
+      ZORBA_ERROR_DESC_OSS(ZCSE0002_INCOMPATIBLE_INPUT_FIELD, id);
     }
     if(field_treat == ARCHIVE_FIELD_IS_PTR)
     {

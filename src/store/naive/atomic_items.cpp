@@ -142,7 +142,7 @@ bool AtomicItem::castToLong(store::Item_t& result) const
 
   default:
   {
-    ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ZORBA_ERROR_PARAM_OSS(ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                           __FUNCTION__, typeid (*this).name ());
   }
   }
@@ -271,7 +271,7 @@ void AtomicItem::coerceToDouble(store::Item_t& result, bool force, bool& lossy) 
 
   default:
   {
-    ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ZORBA_ERROR_PARAM_OSS(ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                           __FUNCTION__, typeid (*this).name ());
   }
   }
@@ -922,7 +922,7 @@ std::istream& StreamableStringItem::getStream()
   // the query needs to make sure that the stream is explicitly
   // materialized before
   if (!theIsSeekable && theIsConsumed) {
-    throw ZORBA_EXCEPTION(STR0055_STREAMABLE_STRING_CONSUMED);
+    throw ZORBA_EXCEPTION(ZSTR0055_STREAMABLE_STRING_CONSUMED);
   } else {
     // if the stream is seekable, we seek to the beginning
     theIstream.seekg(0, std::ios::beg);

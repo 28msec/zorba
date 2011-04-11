@@ -64,14 +64,14 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   if (consumeNext(pulItem, theChild, planState))
   {
     if (!pulItem->isPul())
-      ZORBA_ERROR_LOC_DESC(XQP0019_INTERNAL_ERROR, loc,
+      ZORBA_ERROR_LOC_DESC(ZXQP0019_INTERNAL_ERROR, loc,
                            "Expression does not return a pending update list");
 
     pul = static_cast<store::PUL*>(pulItem.getp());
 
     if (consumeNext(tmp, theChild, planState))
     {
-      ZORBA_ERROR_LOC_DESC(XQP0019_INTERNAL_ERROR, loc,
+      ZORBA_ERROR_LOC_DESC(ZXQP0019_INTERNAL_ERROR, loc,
                            "Expression returns more than one pending update lists");
     }
     apply_updates(ccb, gdctx, theSctx, pul, loc);

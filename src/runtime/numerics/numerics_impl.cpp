@@ -903,7 +903,7 @@ FormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
         zstring ns;
         zstring prefix = tmp.substr(0, tmp.find(':'));
-        if (theSctx->lookup_ns(ns, prefix, loc, err::XQP0000_NO_ERROR))
+        if (theSctx->lookup_ns(ns, prefix, loc, err::ZXQP0000_NO_ERROR))
         {
           GENV_ITEMFACTORY->createQName(formatName, ns, prefix, tmp.substr(tmp.find(':')+1));
           break;

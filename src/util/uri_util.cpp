@@ -186,7 +186,7 @@ void fetch( char const *uri, iostream &result ) {
   if ( curl_code )
     throw fetch_exception( curl_easy_strerror( curl_code ) );
 #else
-  ZORBA_ERROR_PARAM( XQP0005_SYSTEM_NOT_SUPPORTED, "HTTP GET" , "" );
+  ZORBA_ERROR_PARAM( ZXQP0005_SYSTEM_NOT_SUPPORTED, "HTTP GET" , "" );
 #endif /* ZORBA_WITH_REST */
 }
 
@@ -211,7 +211,7 @@ void fetch_to_path_impl( char const *uri, char *path, bool *is_temp ) {
   if ( is_temp )
     *is_temp = temp;
 #else
-  throw ZORBA_EXCEPTION( XQP0017_FILE_ACCESS_DISABLED );
+  throw ZORBA_EXCEPTION( ZXQP0017_FILE_ACCESS_DISABLED );
 #endif /* ZORBA_WITH_FILE_ACCESS */
 }
 

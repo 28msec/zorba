@@ -1057,7 +1057,7 @@ CollectionDecl::CollectionDecl(
 Error const& CollectionDecl::validatePropertyList(DeclPropertyList* props)
 {
   if (props == NULL)
-    return err::XQP0000_NO_ERROR;
+    return err::ZXQP0000_NO_ERROR;
 
   bool setUpdateMode = false;
   bool setOrderMode = false;
@@ -1091,7 +1091,7 @@ Error const& CollectionDecl::validatePropertyList(DeclPropertyList* props)
     } // switch
   }
 
-  return err::XQP0000_NO_ERROR;
+  return err::ZXQP0000_NO_ERROR;
 }
 
 void CollectionDecl::accept( parsenode_visitor &v ) const
@@ -1190,7 +1190,7 @@ AST_IndexDecl::AST_IndexDecl(
 Error const& AST_IndexDecl::validatePropertyList(DeclPropertyList* props)
 {
   if (props == NULL)
-    return err::XQP0000_NO_ERROR;
+    return err::ZXQP0000_NO_ERROR;
 
   bool setUnique = false;
   bool setUsage = false;
@@ -1234,7 +1234,7 @@ Error const& AST_IndexDecl::validatePropertyList(DeclPropertyList* props)
     }
   }
 
-  return err::XQP0000_NO_ERROR;
+  return err::ZXQP0000_NO_ERROR;
 }
 
 void AST_IndexDecl::accept( parsenode_visitor &v ) const

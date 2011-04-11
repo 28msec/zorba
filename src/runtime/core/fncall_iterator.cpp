@@ -176,7 +176,7 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
   }
 
   if (planState.theStackDepth + 1 > 256)
-    ZORBA_ERROR_LOC_PARAM(XQP0019_INTERNAL_ERROR, loc, "stack overflow", "");
+    ZORBA_ERROR_LOC_PARAM(ZXQP0019_INTERNAL_ERROR, loc, "stack overflow", "");
 
   // Create the plan for the udf body (if not done already) and allocate
   // the plan state (but not the state block) and dynamic context.
@@ -492,7 +492,7 @@ void StatelessExtFunctionCallIterator::serialize(serialization::Archiver& ar)
       theFunction = theSctx->lookup_external_function(theNamespace, lLocalname);
       if (!theFunction)
       {
-        ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
+        ZORBA_ERROR_DESC_OSS(ZCSE0013_UNABLE_TO_LOAD_QUERY,
                              "Couldn't load pre-compiled query because "
                              << " the external function with URI " << theNamespace
                              << " and local name " << lLocalname

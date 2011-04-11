@@ -302,7 +302,7 @@ expr_t expr::clone() const
 
 expr_t expr::clone(substitution_t& subst) const
 {
-  throw XQUERY_EXCEPTION(XQP0019_INTERNAL_ERROR, ERROR_LOC(get_loc()));
+  throw XQUERY_EXCEPTION(ZXQP0019_INTERNAL_ERROR, ERROR_LOC(get_loc()));
 }
 
 

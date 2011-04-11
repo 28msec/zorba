@@ -249,7 +249,7 @@ expr_t XQueryCompiler::normalize(parsenode_t aParsenode)
   if ( lExpr == NULL )
   {
     // TODO: can this happen?
-		throw ZORBA_EXCEPTION( API0002_XQUERY_COMPILATION_FAILED );
+		throw ZORBA_EXCEPTION( ZAPI0002_XQUERY_COMPILATION_FAILED );
   }
 
   return lExpr;
@@ -306,7 +306,7 @@ parsenode_t XQueryCompiler::createMainModule(
   LibraryModule* mod_ast = dynamic_cast<LibraryModule *>(&*aLibraryModule);
   if (!mod_ast)
 		throw ZORBA_EXCEPTION(
-			API0002_XQUERY_COMPILATION_FAILED,
+			ZAPI0002_XQUERY_COMPILATION_FAILED,
 			ERROR_PARAMS( ZED( BadLibraryModule ) )
 		);
 

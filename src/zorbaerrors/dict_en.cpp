@@ -28,54 +28,6 @@ extern entry const dict_en[] = {
   // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-  { "API0001", "empty query" },
-  { "API0002", "XQuery compilation failed${: 1}" },
-  { "API0003", "XQuery not compiled" },
-  { "API0004", "XQuery already compiled" },
-  { "API0005", "XQuery already executing" },
-  { "API0006", "XQuery already closed" },
-  { "API0007", "cannot serialize pul" },
-  { "API0008", "can not execute a non-updating XQuery" },
-  { "API0009", "XQuery not compiled in debug mode" },
-  { "API0010", "thread not initialized" },
-  { "API0011", "\"$1\": invalid variable QName" },
-  { "API0012", "invalid index" },
-  { "API0013", "\"$1\": inappropriate variable value" },
-  { "API0014", "\"$1\": invalid argument${: 2}" },
-  { "API0015", "\"$1\": cannot open file${: 2}" },
-  { "API0016", "cannot create collection" },
-  { "API0017", "cannot load document" },
-  { "API0018", "\"$1\": cannot access file" },
-  { "API0019", "\"$1\": external module already registered" },
-  { "API0020", "\"$1\": document already exists in store" },
-  { "API0021", "\"$1\": item to load is not a node" },
-  { "API0022", "\"$1\": not plain file" },
-  { "API0025", "end of sequence" },
-  { "API0027", "cannot update dynamic context with iterators" },
-  { "API0028", "\"$1\": invalid node URI" },
-  { "API0030", "no node at given position" },
-  { "API0033", "\"$1\": file or folder does not exist" },
-  { "API0034", "\"$1\": file or folder cannot be opened" },
-  { "API0035", "collection cannot be serialized" },
-  { "API0039", "XQuery has iterator already" },
-  { "API0040", "iterator is not open" },
-  { "API0041", "iterator is already open" },
-  { "API0042", "iterator query is closed" },
-  { "API0050", "REST error header" },
-  { "API0051", "REST error payload" },
-  { "API0060", "CONV JSON PARSE" },
-  { "API0061", "\"$1\": could not serialize element${: 2}" },
-  { "API0062", "\"$1\": can not serialize non-element" },
-  { "API0063", "CONV JSON ML PARSE" },
-  { "API0064", "\"$1\": CONV JSON ML SERIALIZE${: 2}" },
-  { "API0065", "\"$1\": CONV JSON ML PARAM" },
-  { "API0066", "JSON sequence cannot be serialized" },
-  { "API0070", "\"$1\": invalid serialization method for SAX" },
-
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
   { "FOAR0001", "division by zero" },
   { "FOAR0002", "numeric operation overflow/underflow${: 1}" },
   { "FOCA0001", "\"$1\": value too large for decimal" },
@@ -161,53 +113,6 @@ extern entry const dict_en[] = {
   // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-  { "SRL0001", "\"$1\": nonexistent input field" },
-  { "SRL0002", "\"$1\": incompatible input field" },
-  { "SRL0003", "\"$1\": unrecognized class field" },
-  { "SRL0004", "\"$1\": unresolved field reference" },
-  { "SRL0005", "\"$1\": class version is too new" },
-  { "SRL0006", "\"$1\": class version is too old" },
-  { "SRL0007", "input archive used for out serialization" },
-  { "SRL0008", "output archive used for in serialization" },
-  { "SRL0009", "class not serializable" },
-  { "SRL0010", "\"$1\": item type not serializable" },
-  { "SRL0011", "input archive not zorba archive" },
-  { "SRL0012", "\"$1\": incompatible archive version" },
-  { "SRL0013", "unable to load query" },
-  { "SRL0014", "infinite circular dependencies" },
-  { "SRL0015", "incompatible between 32/64 bits or little/big-endian" },
-
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-  { "STR0001", "\"$1\": index already exists" },
-  { "STR0002", "\"$1\": index does not exist" },
-  { "STR0003", "\"$1\": partial key insertion into index \"$2\"" },
-  { "STR0004", "partial key deletion from index $1" },
-  { "STR0005", "partial key probe into index $1" },
-  { "STR0006", "\"$1\": invalid box probe condition for index \"$2\"" },
-  { "STR0007", "index unsupported probe condition" },
-  { "STR0008", "\"$1\": collection already exists" },
-  { "STR0009", "\"$1\": collection not found" },
-  { "STR0010", "can not insert node into colletion \"$1\" because it already belongs to collection \"$2\"" },
-  { "STR0011", "non-root node can not be inserted into collection \"$1\"" },
-  { "STR0012", "non-node item used with collection \"$1\"" },
-  { "STR0015", "integrity constraint already exists" },
-  { "STR0016", "integrity constraint does not exist" },
-  { "STR0020", "loader I/O error${: 1}" },
-  { "STR0021", "loader parsing error${: 1}" },
-  { "STR0030", "NodeID error${: 1}" },
-  { "STR0040", "type error${: 1}" },
-  { "STR0041", "NaN comparison" },
-  { "STR0045", "duplicate node found in sequence" },
-  { "STR0050", "\"$1\": function not implemented for item type $2" },
-  { "STR0055", "the given streamable string has already been consumed" },
-
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
   { "XDDY0001", "\"$1\": collection not declared" },
   { "XDDY0002", "\"$1\": collection already exists" },
   { "XDDY0003", "\"$1\": collection does not exist" },
@@ -272,11 +177,6 @@ extern entry const dict_en[] = {
   { "XDTY0010", "\"$1\": index domain expression yields a non-node item" },
   { "XDTY0011", "result of some key expression of index $1 does not match its declared type" },
   { "XDTY0012", "\"$1\": general range index key item has a type for which no ordering relationship exists" },
-
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
   { "XPDY0002", "\"$1\": undefined value" },
   { "XPDY0050", "invalid treat expression type" },
   { "XPST0001", "\"$1\": undefined value" },
@@ -293,9 +193,6 @@ extern entry const dict_en[] = {
   { "XPTY0018", "path expression last step must not have nodes and atomic values" },
   { "XPTY0019", "path expression non-last step must not be an atomic value" },
   { "XPTY0020", "axis step context item is not a node" },
-
-  { "XQD0000", "\"$1\": prefix not declared" },
-  { "XQD0001", "document not valid" },
   { "XQDY0025", "\"$1\": duplicate attribute name" },
   { "XQDY0026", "computed processing instrucion must not contain \"?>\"" },
   { "XQDY0027", "\"$1\": unexpected validity property" },
@@ -309,46 +206,6 @@ extern entry const dict_en[] = {
   { "XQDY0091", "\"xml:id\" encountered" },
   { "XQDY0092", "\"$1\": must be either \"preserve\" or \"default\"" },
   { "XQDY0096", "\"$1\": invalid node-name" },
-
-  { "XQP0000", "no error" },
-  { "XQP0001", "dynamic runtime error${: 1}" },
-  { "XQP0002", "dynamic iterator overrun" },
-  { "XQP0003", "illegal node child" },
-  { "XQP0004", "\"$1\": target namespace not found" },
-  { "XQP0005", "\"$1\": not supported" },
-  { "XQP0006", "\"$1\": assertion failed" },
-  { "XQP0007", "hash error: KeyLen exceeds MaxKeyLen" },
-  { "XQP0008", "vector out of range" },
-  { "XQP0009", "read lock failed" },
-  { "XQP0010", "write lock failed" },
-  { "XQP0010", "pop from empty list" },
-  { "XQP0011", "file error in function" },
-  { "XQP0012", "FxCharHeap I/O error" },
-  { "XQP0013", "mmfile I/O error" },
-  { "XQP0015", "not yet implemented: $1" },
-  { "XQP0016", "\"$1\": reserved module target namespace" },
-  { "XQP0017", "file access disabled" },
-  { "XQP0019", "internal error${: 1 }" },
-  { "XQP0020", "\"$1\": invalid URI${: 2}" },
-  { "XQP0021", "user error" },
-  { "XQP0022", "get results as DOM failed" },
-  { "XQP0023", "get results as SAX failed" },
-  { "XQP0024", "XML does not match schema${: \"1\"}${ 2}" },
-  { "XQP0025", "could not create item" },
-  { "XQP0026", "can not initialize store" },
-  { "XQP0026", "could not create thread" },
-  { "XQP0027", "error from MS DOM engine" },
-  { "XQP0028", "\"$1\": external function not bound" },
-  { "XQP0029", "module import not allowed" },
-  { "XQP0030", "deadlock" },
-  { "XQP0031", "malformed XQueryX input" },
-  { "XQP0032", "error transforming XQueryX to XQuery${: 1}" },
-  { "XQP0034", "\"$1\": illegal UTF-8 byte" },
-  { "XQP0035", "\"$1\": illegal UTF-16 byte" },
-  { "XQP0036", "BreakIterator creation failed" },
-  { "XQP8401", "\"$1\": wrong WordNet file version; should be \"$2\"" },
-  { "XQP8402", "thesaurus data error${: 1}" },
-
   { "XQST0009", "schema import not supported" },
   { "XQST0012", "invalid schema definitions" },
   { "XQST0013", "invalid pragma content" },
@@ -436,6 +293,140 @@ extern entry const dict_en[] = {
   { "XUTY0012", "TODO" },
   { "XUTY0013", "TODO" },
   { "XUTY0022", "TODO" },
+
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  { "ZAPI0002", "XQuery compilation failed${: 1}" },
+  { "ZAPI0003", "XQuery not compiled" },
+  { "ZAPI0004", "XQuery already compiled" },
+  { "ZAPI0005", "XQuery already executing" },
+  { "ZAPI0006", "XQuery already closed" },
+  { "ZAPI0007", "cannot serialize pul" },
+  { "ZAPI0008", "can not execute a non-updating XQuery" },
+  { "ZAPI0009", "XQuery not compiled in debug mode" },
+  { "ZAPI0014", "\"$1\": invalid argument${: 2}" },
+  { "ZAPI0015", "\"$1\": createModule() function not found${: 2}" },
+  { "ZAPI0019", "\"$1\": external module already registered" },
+  { "ZAPI0020", "\"$1\": document already exists in store" },
+  { "ZAPI0021", "\"$1\": item to load is not a node" },
+  { "ZAPI0027", "cannot update dynamic context with iterators" },
+  { "ZAPI0028", "\"$1\": invalid node URI" },
+  { "ZAPI0039", "XQuery has iterator already" },
+  { "ZAPI0040", "iterator is not open" },
+  { "ZAPI0041", "iterator is already open" },
+  { "ZAPI0042", "iterator is closed" },
+  { "ZAPI0051", "REST error payload" },
+  { "ZAPI0061", "\"$1\": could not serialize element${: 2}" },
+  { "ZAPI0062", "\"$1\": can not serialize non-element" },
+  { "ZAPI0064", "\"$1\": CONV JSON ML SERIALIZE${: 2}" },
+  { "ZAPI0065", "\"$1\": CONV JSON ML PARAM" },
+  { "ZAPI0066", "JSON sequence cannot be serialized" },
+  { "ZAPI0070", "\"$1\": invalid serialization method for SAX" },
+
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  { "ZCSE0001", "\"$1\": nonexistent input field" },
+  { "ZCSE0002", "\"$1\": incompatible input field" },
+  { "ZCSE0003", "\"$1\": unrecognized class field" },
+  { "ZCSE0004", "\"$1\": unresolved field reference" },
+  { "ZCSE0005", "\"$1\": class version is too new" },
+  { "ZCSE0006", "\"$1\": class version is too old" },
+  { "ZCSE0007", "input archive used for out serialization" },
+  { "ZCSE0008", "output archive used for in serialization" },
+  { "ZCSE0009", "class not serializable" },
+  { "ZCSE0010", "\"$1\": item type not serializable" },
+  { "ZCSE0011", "input archive not zorba archive" },
+  { "ZCSE0012", "\"$1\": incompatible archive version" },
+  { "ZCSE0013", "unable to load query" },
+  { "ZCSE0014", "infinite circular dependencies" },
+  { "ZCSE0015", "incompatible between 32/64 bits or little/big-endian" },
+
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  { "ZOSE0001", "\"$1\": file not found${: 2}" },
+  { "ZOSE0002", "\"$1\": not plain file" },
+  { "ZOSE0003", "stream read failure" },
+  { "ZOSE0004", "I/O error${: 1}" },
+
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  { "ZSTR0001", "\"$1\": index already exists" },
+  { "ZSTR0002", "\"$1\": index does not exist" },
+  { "ZSTR0003", "\"$1\": partial key insertion into index \"$2\"" },
+  { "ZSTR0004", "partial key deletion from index $1" },
+  { "ZSTR0005", "partial key probe into index $1" },
+  { "ZSTR0006", "\"$1\": invalid box probe condition for index \"$2\"" },
+  { "ZSTR0007", "index unsupported probe condition" },
+  { "ZSTR0008", "\"$1\": collection already exists" },
+  { "ZSTR0009", "\"$1\": collection not found" },
+  { "ZSTR0010", "can not insert node into colletion \"$1\" because it already belongs to collection \"$2\"" },
+  { "ZSTR0011", "non-root node can not be inserted into collection \"$1\"" },
+  { "ZSTR0012", "non-node item used with collection \"$1\"" },
+  { "ZSTR0015", "integrity constraint already exists" },
+  { "ZSTR0016", "integrity constraint does not exist" },
+  { "ZSTR0020", "loader I/O error${: 1}" },
+  { "ZSTR0021", "loader parsing error${: 1}" },
+  { "ZSTR0030", "NodeID error${: 1}" },
+  { "ZSTR0040", "type error${: 1}" },
+  { "ZSTR0041", "NaN comparison" },
+  { "ZSTR0045", "duplicate node found in sequence" },
+  { "ZSTR0050", "\"$1\": function not implemented for item type $2" },
+  { "ZSTR0055", "the given streamable string has already been consumed" },
+
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  { "ZXQD0000", "\"$1\": prefix not declared" },
+  { "ZXQD0001", "document not valid" },
+  { "ZXQP0000", "no error" },
+  { "ZXQP0001", "dynamic runtime error${: 1}" },
+  { "ZXQP0002", "dynamic iterator overrun" },
+  { "ZXQP0003", "illegal node child" },
+  { "ZXQP0004", "\"$1\": target namespace not found" },
+  { "ZXQP0005", "\"$1\": not supported" },
+  { "ZXQP0006", "\"$1\": assertion failed" },
+  { "ZXQP0007", "hash error: KeyLen exceeds MaxKeyLen" },
+  { "ZXQP0008", "vector out of range" },
+  { "ZXQP0009", "read lock failed" },
+  { "ZXQP0010", "write lock failed" },
+  { "ZXQP0011", "pop from empty list" },
+  { "ZXQP0012", "file error in function" },
+  { "ZXQP0013", "FxCharHeap I/O error" },
+  { "ZXQP0015", "not yet implemented: $1" },
+  { "ZXQP0016", "\"$1\": reserved module target namespace" },
+  { "ZXQP0017", "file access disabled" },
+  { "ZXQP0019", "internal error${: 1}" },
+  { "ZXQP0020", "\"$1\": invalid URI${: 2}" },
+  { "ZXQP0021", "user error" },
+  { "ZXQP0022", "get results as DOM failed" },
+  { "ZXQP0023", "get results as SAX failed" },
+  { "ZXQP0024", "XML does not match schema${: \"1\"}${ 2}" },
+  { "ZXQP0025", "could not create item" },
+  { "ZXQP0026", "can not initialize store" },
+  { "ZXQP0026", "could not create thread" },
+  { "ZXQP0027", "error from MS DOM engine" },
+  { "ZXQP0028", "\"$1\": external function not bound" },
+  { "ZXQP0029", "module import not allowed" },
+  { "ZXQP0030", "deadlock" },
+  { "ZXQP0031", "malformed XQueryX input" },
+  { "ZXQP0032", "error transforming XQueryX to XQuery${: 1}" },
+  { "ZXQP0034", "\"$1\": illegal UTF-8 byte" },
+  { "ZXQP0035", "\"$1\": illegal UTF-16 byte" },
+  { "ZXQP0036", "BreakIterator creation failed" },
+
+#ifndef ZORBA_NO_FULL_TEXT
+  { "ZXQP8401", "\"$1\": wrong WordNet file version; should be \"$2\"" },
+  { "ZXQP8402", "thesaurus data error${: 1}" },
+#endif /* ZORBA_NO_FULL_TEXT */
 
   /////////////////////////////////////////////////////////////////////////////
 

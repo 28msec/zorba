@@ -262,12 +262,12 @@ void ZorbaImpl::notifyError( ErrorHandler *eh, ZorbaException const &ze ) {
 }
 
 void ZorbaImpl::notifyError( ErrorHandler *eh, std::string const &aDesc ) {
-  eh->error( ZORBA_EXCEPTION( XQP0019_INTERNAL_ERROR, ERROR_PARAMS(aDesc) ) );
+  eh->error( ZORBA_EXCEPTION( ZXQP0019_INTERNAL_ERROR, ERROR_PARAMS(aDesc) ) );
 }
 
 
 void ZorbaImpl::notifyError( ErrorHandler *eh ) {
-  eh->error( ZORBA_EXCEPTION( XQP0019_INTERNAL_ERROR, ERROR_PARAMS() ) );
+  eh->error( ZORBA_EXCEPTION( ZXQP0019_INTERNAL_ERROR ) );
 }
 
 
@@ -275,7 +275,7 @@ void ZorbaImpl::checkItem(const store::Item_t& aItem)
 {
   if (!aItem)
     throw ZORBA_EXCEPTION(
-      API0014_INVALID_ARGUMENT, ERROR_PARAMS( "null", ZED( BadItem ) )
+      ZAPI0014_INVALID_ARGUMENT, ERROR_PARAMS( "null", ZED( BadItem ) )
     );
 }
 

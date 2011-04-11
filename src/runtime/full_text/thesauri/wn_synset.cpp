@@ -40,7 +40,7 @@ void synset::ptr_decoder::operator()( mem_ptr_type *pptr,
   char const c = *(*pptr)++;
   if ( !(result->type_ = zorba::wordnet::pointer::find( c )) )
     throw ZORBA_EXCEPTION(
-      XQP8402_THESAURUS_DATA_ERROR,
+      ZXQP8402_THESAURUS_DATA_ERROR,
       ERROR_PARAMS( c, ZED( BadWordNetPtr ) )
     );
 
@@ -77,7 +77,7 @@ part_of_speech::type synset::get_pos( mem_ptr_type *pptr ) {
   if ( part_of_speech::type const pos = part_of_speech::find( c ) )
     return pos;
   throw ZORBA_EXCEPTION(
-    XQP8402_THESAURUS_DATA_ERROR,
+    ZXQP8402_THESAURUS_DATA_ERROR,
     ERROR_PARAMS( c, ZED( BadWordNetPartOfSpeech ) )
   );
 }

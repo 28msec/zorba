@@ -67,7 +67,7 @@ bool Base64EncodeIterator::nextImpl(store::Item_t& result, PlanState& planState)
     }
     else
     {
-      throw XQUERY_EXCEPTION(XQP0025_COULD_NOT_CREATE_ITEM, ERROR_LOC(loc));
+      throw XQUERY_EXCEPTION(ZXQP0025_COULD_NOT_CREATE_ITEM, ERROR_LOC(loc));
     } 
   }
   STACK_END (state);

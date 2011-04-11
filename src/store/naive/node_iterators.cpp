@@ -139,7 +139,7 @@ bool StoreNodeDistinctIterator::next(store::Item_t& result)
     }
     else if (theCheckOnly)
     {
-      throw ZORBA_EXCEPTION(STR0045_DUPLICATE_NODE_ERROR);
+      throw ZORBA_EXCEPTION(ZSTR0045_DUPLICATE_NODE_ERROR);
     }
   }
 }

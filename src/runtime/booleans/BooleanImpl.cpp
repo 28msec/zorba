@@ -497,7 +497,7 @@ bool CompareIterator::valueComparison(
   }
   catch (ZorbaException const& e)
   {
-    if (e.error() == err::STR0041_NAN_COMPARISON)
+    if (e.error() == err::ZSTR0041_NAN_COMPARISON)
       return false;
     throw;
   }
@@ -617,7 +617,7 @@ void CompareIterator::valueCasting(
           general comparison operator; false otherwise.
   @throw  appropriate exception if any necesary casting/promotion fails.
   @throw  XPTY0004 if the two items are not order comparable.
-  @throw  STR0041_NAN_COMPARISON if both the items are of type xs:double or
+  @throw  ZSTR0041_NAN_COMPARISON if both the items are of type xs:double or
           xs:float and at leat one of the items is NaN.
 ********************************************************************************/
 bool CompareIterator::generalComparison(
@@ -665,7 +665,7 @@ bool CompareIterator::generalComparison(
   }
   catch (ZorbaException const& e)
   {
-    if (e.error() == err::STR0041_NAN_COMPARISON)
+    if (e.error() == err::ZSTR0041_NAN_COMPARISON)
       return false;
     throw;
   }
@@ -714,7 +714,7 @@ bool CompareIterator::generalEqual(
           > 0 if item0 is greater than item1.
   @throw  appropriate exception if any necesary casting/promotion fails.
   @throw  XPTY0004 if the two items are not order comparable.
-  @throw  STR0041_NAN_COMPARISON if both the items are of type xs:double or
+  @throw  ZSTR0041_NAN_COMPARISON if both the items are of type xs:double or
           xs:float and at leat one of the items is NaN.
 ********************************************************************************/
 long CompareIterator::generalCompare(
@@ -881,7 +881,7 @@ bool CompareIterator::equal(
           > 0 if item0 is greater than item1.
   @throw  XPTY0004 if the two items are not order comparable according to
           the table in http://www.w3.org/TR/xquery/#mapping. 
-  @throw  STR0041_NAN_COMPARISON if both the items are of type xs:double or
+  @throw  ZSTR0041_NAN_COMPARISON if both the items are of type xs:double or
           xs:float and at leat one of the items is NaN.
 ********************************************************************************/
 long CompareIterator::compare(
@@ -943,7 +943,7 @@ long CompareIterator::compare(
   catch(ZorbaException const& e)
   {
     // For example, two QName items do not have an order relationship.
-    if (e.error() == err::STR0040_TYPE_ERROR)
+    if (e.error() == err::ZSTR0040_TYPE_ERROR)
     {
       ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, loc,
                                "Cannot compare an item of type "

@@ -161,7 +161,7 @@ public:
    *
    * @param  An optional XQPCollator that is used for comparing string items
    * @return true, if the two items are the "same"
-   * @throws STR0040_TYPE_ERROR if the items are not equality-comparable. For two
+   * @throws ZSTR0040_TYPE_ERROR if the items are not equality-comparable. For two
    *         items to be equality-comparable, one has to be a subtype of the other
    *         and they must also be comparable by the eq operator as specified in
    *         the table of http://www.w3.org/TR/xquery/#mapping.  
@@ -176,11 +176,11 @@ public:
    * @param  aCollation An optional XQPCollator that is used for comparing string items
    * @return < 0 if "this" is less than "other", 0 if "this" and "other" are
    *         equal, and > 0 if "this" is greater than "other".
-   * @throws STR0040_TYPE_ERROR if the items are not order-comparable. For two
+   * @throws ZSTR0040_TYPE_ERROR if the items are not order-comparable. For two
    *         items to be order-comparable, one has to be a subtype of the other
    *         and they must also be comparable by the gt operator as specified in
    *         the table of http://www.w3.org/TR/xquery/#mapping.  
-   * @throws STR0041_NAN_COMPARISON if both "this" and "other" are xs:double
+   * @throws ZSTR0041_NAN_COMPARISON if both "this" and "other" are xs:double
    *         or xs:float and at leat one of the items is NaN.
    */
   virtual long

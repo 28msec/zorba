@@ -161,9 +161,7 @@ Item XmlDataManagerImpl::loadDocument(
   ZORBA_DM_TRY
   {
     if ( ! stream.good() )
-    {
-      ZORBA_ERROR_DESC(API0015_CANNOT_OPEN_FILE, "cannot read from stream");
-    }
+			throw ZORBA_EXCEPTION( ZOSE0003_STREAM_READ_FAILURE );
 
     const zstring& docUri = Unmarshaller::getInternalString(uri);
 
@@ -342,4 +340,5 @@ bool XmlDataManagerImpl::deleteCollection(
   return false;
 }
 
-} /* namespace zorba */
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

@@ -11,7 +11,7 @@ declare sequential function local:add-twice()
 {
   try {
     doc:add("foo", document { <foo>bar</foo> });
-  } catch zerr:API0020 {
+  } catch zerr:ZAPI0020 {
     "caught duplicate attempt to add a document"
   }
 };
@@ -25,7 +25,7 @@ declare sequential function local:remove-twice()
 {
   try {
     doc:remove("foo");
-  } catch zerr:XQD0001 ($err) {
+  } catch zerr:ZXQD0001 ($err) {
     "caught attempt to remove a document that doesn't exist"
   }
 };
@@ -34,7 +34,7 @@ declare function local:document()
 {
   try {
     doc:document("foo")
-  } catch zerr:XQD0001 {
+  } catch zerr:ZXQD0001 {
     "caught attempt to retrieve a document that doesn't exist"
   }
 };

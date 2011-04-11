@@ -107,7 +107,7 @@ PartialApplyIterator::nextImpl(
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  ZORBA_ERROR_LOC_DESC(XQP0019_INTERNAL_ERROR, loc,
+  ZORBA_ERROR_LOC_DESC(ZXQP0019_INTERNAL_ERROR, loc,
                        "The fn:partial-apply function is not implemented, yet");
 
   STACK_END(state);

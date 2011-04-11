@@ -33,7 +33,7 @@ module namespace doc = "http://www.zorba-xquery.com/modules/store/documents";
  : @return Returns an empty XDM instance and a pending update list which, when
  :         applied, adds the given document to the store.
  :
- : @error API0020 if the store already contains a document for the given $uri.
+ : @error ZAPI0020 if the store already contains a document for the given $uri.
  : @error FODC0004 if the given URI is not valid or couldn't be absolutized.
  :)
 declare updating function doc:add(

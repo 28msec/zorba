@@ -6,6 +6,6 @@ declare function local:foo($ref as xs:anyURI) {
 
 try {
   local:foo(xs:anyURI("sausalito://www.google.com"))
-} catch zerr:API0028 {
+} catch zerr:ZAPI0028 {
   true()
 }

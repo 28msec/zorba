@@ -55,7 +55,7 @@ namespace zorbac {
     String lLocalName = aFunc->getLocalName();
     FunctionMap_t::iterator lIter = theFunctionMap.find(lLocalName.c_str());
     if (lIter != theFunctionMap.end()) {
-      return XQC_INVALID_ARGUMENT; // was: API0019_MODULE_ALREADY_REGISTERED;
+      return XQC_INVALID_ARGUMENT; // was: ZAPI0019_MODULE_ALREADY_REGISTERED;
     }
 
     theFunctionMap[lLocalName.c_str()] = aFunc;

@@ -27,43 +27,6 @@
 
 namespace zorba {
 
-#ifdef WIN32
-static void displayError(std::string& aErrorMsg)
-{
-  LPWSTR lpMsgBuf;
-  LPWSTR lpDisplayBuf;
-  DWORD dw = GetLastError();
-
-  FormatMessageW(
-                FORMAT_MESSAGE_ALLOCATE_BUFFER |
-                FORMAT_MESSAGE_FROM_SYSTEM |
-                FORMAT_MESSAGE_IGNORE_INSERTS,
-                NULL,
-                dw,
-                MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-                (LPWSTR)&lpMsgBuf,
-                0, NULL );
-  lpDisplayBuf = (LPWSTR)LocalAlloc(LMEM_ZEROINIT,
-                                    (wcslen(lpMsgBuf) + 40) * sizeof(WCHAR));
-  StringCchPrintfW(lpDisplayBuf,
-                  LocalSize(lpDisplayBuf) / sizeof(WCHAR),
-                  L"Failed with error %d: %s", dw, lpMsgBuf);
-
-  char *buf;
-  int buf_size = LocalSize(lpDisplayBuf) / sizeof(WCHAR) + 10;
-  buf = new char[buf_size];
-  //use ACP instead of UTF8 because it is for display on Windows
-  WideCharToMultiByte(CP_ACP, 0, lpDisplayBuf, -1, buf, buf_size, NULL, NULL);
-
-  aErrorMsg = buf;
-  delete[] buf;
-
-  LocalFree(lpMsgBuf);
-  LocalFree(lpDisplayBuf);
-}
-#endif // WIN32
-
-
 ExternalModule* DynamicLoader::getModule(const zstring& aFile) const
 {
   // function pointer to create a module
@@ -81,38 +44,33 @@ ExternalModule* DynamicLoader::getModule(const zstring& aFile) const
                       wpath_str, sizeof(wpath_str)/sizeof(WCHAR));
   }
   HMODULE handle = LoadLibraryW(wpath_str);
-  if (handle == NULL)
-  {
+  if (!handle)
     throw ZORBA_EXCEPTION(
-      API0015_CANNOT_OPEN_FILE,
-      ERROR_PARAMS( error::get_os_err_string() )
+      ZOSE0001_FILE_NOT_FOUND, ERROR_PARAMS( aFile, error::get_os_err_string() )
     );
-  }
+
   createModule = (ExternalModule* (*)())GetProcAddress(handle, "createModule");
   if (createModule == NULL)
-  {
-    std::string lErrorMessage;
-    displayError(lErrorMessage);
-    ZORBA_ERROR_DESC_OSS(API0015_CANNOT_OPEN_FILE,
-                         "Function createModule not available in dynamic"
-                         << " library" << aFile << ". " << lErrorMessage);
-  }
+    throw ZORBA_EXCEPTION(
+      ZAPI0015_CREATEMODULE_NOT_FOUND,
+      ERROR_PARAMS( aFile, error::get_os_err_string() )
+    );
+
 #else
   void* handle = dlopen(aFile.c_str(), RTLD_NOW);
   if (!handle)
-  {
     throw ZORBA_EXCEPTION(
-      API0015_CANNOT_OPEN_FILE,
-      ERROR_PARAMS( aFile, dlerror() )
+      ZOSE0001_FILE_NOT_FOUND, ERROR_PARAMS( aFile, dlerror() )
     );
-  }
 
   createModule = (ExternalModule* (*)()) dlsym(handle, "createModule");
   if (createModule == NULL)
   {
     dlclose(handle);
-    ZORBA_ERROR_DESC_OSS(API0015_CANNOT_OPEN_FILE,
-                         "Function createModule not available in dynamic library" << aFile << ". " << dlerror());
+    throw ZORBA_EXCEPTION(
+      ZAPI0015_CREATEMODULE_NOT_FOUND,
+      ERROR_PARAMS( aFile, dlerror() )
+    );
   }
 #endif
   if (theLibraries.find(handle) == theLibraries.end())

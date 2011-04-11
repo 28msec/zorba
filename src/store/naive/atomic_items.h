@@ -970,7 +970,7 @@ public:
         const XQPCollator* aCollation = 0) const
   {
     if (theValue.isNaN() || other->getDoubleValue().isNaN())
-      throw ZORBA_EXCEPTION(STR0041_NAN_COMPARISON);
+      throw ZORBA_EXCEPTION(ZSTR0041_NAN_COMPARISON);
 
     return theValue.compare(other->getDoubleValue());
   }
@@ -1031,7 +1031,7 @@ public:
         const XQPCollator* aCollation = 0) const
   {
     if (theValue.isNaN() || other->getFloatValue().isNaN())
-      throw ZORBA_EXCEPTION(STR0041_NAN_COMPARISON);
+      throw ZORBA_EXCEPTION(ZSTR0041_NAN_COMPARISON);
 
     return getDoubleValue().compare(other->getDoubleValue());
   }

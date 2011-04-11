@@ -440,7 +440,7 @@ std::istream* StandardModuleURIResolver::resolve(
     {
       std::string lErrorStr("It is forbidden to import the module");
       lErrorStr += uri;
-      ZORBA_ERROR_DESC(XQP0029_MODULE_IMPORT_NOT_ALLOWED,
+      ZORBA_ERROR_DESC(ZXQP0029_MODULE_IMPORT_NOT_ALLOWED,
                        lErrorStr);
     }
   }
@@ -593,7 +593,7 @@ ExternalModule* StandardModuleURIResolver::getExternalModule(
         {
           if (lModule->getURI().c_str() != fileURL)
           {
-            ZORBA_ERROR_DESC_OSS(XQP0028_FUNCTION_IMPL_NOT_FOUND,
+            ZORBA_ERROR_DESC_OSS(ZXQP0028_FUNCTION_IMPL_NOT_FOUND,
                                  "The module loaded from " << potentialModuleFile
                                  << "doesn't provide the required target namespace "
                                  << "(" << lURI.toString() << ").");

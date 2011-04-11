@@ -15,29 +15,19 @@
  */
 
 #ifndef WIN32
-# include <cerrno>                      /* for errno */
-# include <cstdio>                      /* for strerror */
 # include <fcntl.h>                     /* for open(2) */
 # include <sys/mman.h>                  /* for mmap(2) */
 # include <sys/stat.h>                  /* for stat(2) */
 # include <unistd.h>                    /* for close(2) */
 #endif /* WIN32 */
-#include <sstream>
 
+#include "util/error_util.h"
 #include "zorbaerrors/error_manager.h"
+
 #include "mmap_file.h"
 
-#ifndef WIN32
-# define ERROR_STRING ::strerror( errno )
-#else
-# define ERROR_STRING ::GetLastError()
-#endif /* WIN32 */
-
-#define THROW_IOEXCEPTION(func) {                                           \
-          ostringstream oss;                                                \
-          oss << #func "(\"" << path_ << "\") failed: " << ERROR_STRING;    \
-          ZORBA_ERROR_DESC( XQP0014_SYSTEM_MMFILE_IOEXCEPTION, oss.str() ); \
-        }
+#define IO_EXCEPTION(FUNC) \
+  ZORBA_EXCEPTION( ZOSE0004_IO_ERROR, ERROR_PARAMS( error::get_os_err_string( #FUNC ) ) )
 
 using namespace std;
 
@@ -46,12 +36,12 @@ namespace zorba {
 void mmap_file::close() {
 #ifndef WIN32
   if ( addr_ && ::munmap( static_cast<char*>( addr_ ), size_ ) == -1 )
-    THROW_IOEXCEPTION( munmap );
+    throw IO_EXCEPTION( munmap );
   if ( fd_ != -1 )
     ::close( fd_ );
 #else /* WIN32 */
   if ( addr_ && !::UnmapViewOfFile( addr_ ) )
-    THROW_IOEXCEPTION( UnmapViewOfFile );
+    throw IO_EXCEPTION( UnmapViewOfFile );
   if ( mapping_ )
     ::CloseHandle( mapping_ );
   if ( fd_ != INVALID_HANDLE_VALUE )
@@ -78,7 +68,7 @@ void mmap_file::open( char const *path, ios::openmode mode ) {
 
   struct stat stat_buf;
   if ( ::stat( path, &stat_buf ) == -1 )
-    THROW_IOEXCEPTION( stat );
+    throw IO_EXCEPTION( stat );
   size_ = stat_buf.st_size;
 
   int flags = 0;
@@ -94,11 +84,11 @@ void mmap_file::open( char const *path, ios::openmode mode ) {
   }
 
   if ( (fd_ = ::open( path, flags )) == -1 )
-    THROW_IOEXCEPTION( open );
+    throw IO_EXCEPTION( open );
 
   if ( (addr_ = ::mmap( 0, size_, prot, MAP_SHARED, fd_, 0 )) == MAP_FAILED ) {
     addr_ = 0;
-    THROW_IOEXCEPTION( mmap );
+    throw IO_EXCEPTION( mmap );
   }
 
 #else /* WIN32 */
@@ -135,16 +125,16 @@ void mmap_file::open( char const *path, ios::openmode mode ) {
     wPath, createAccess, shareMode, NULL, OPEN_EXISTING, 0, NULL
   );
   if ( fd_ == INVALID_HANDLE_VALUE )
-    THROW_IOEXCEPTION( CreateFile );
+    throw IO_EXCEPTION( CreateFile );
 
   if ( (size_ = ::GetFileSize( fd_, NULL )) == -1 )
-    THROW_IOEXCEPTION( GetFileSize );
+    throw IO_EXCEPTION( GetFileSize );
 
   if ( !(mapping_ = ::CreateFileMapping( fd_, NULL, protect, 0, 0, NULL )) )
-    THROW_IOEXCEPTION( CreateFileMapping );
+    throw IO_EXCEPTION( CreateFileMapping );
 
   if ( !(addr_ = ::MapViewOfFile( mapping_, mapAccess, 0, 0, 0 )) )
-    THROW_IOEXCEPTION( MapViewOfFile );
+    throw IO_EXCEPTION( MapViewOfFile );
 #endif /* WIN32 */
 }
 

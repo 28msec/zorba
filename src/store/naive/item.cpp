@@ -213,7 +213,7 @@ Item* Item::getBaseItem() const
 
 Item* Item::getType() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, typeid (*this).name ());
   return 0;
 }
@@ -221,7 +221,7 @@ Item* Item::getType() const
 
 uint32_t Item::hash(long timezone, const XQPCollator* coll) const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0040_TYPE_ERROR,
                         "Cannot hash items of type " << getType()->getStringValue(),
                         "");
   return 0;
@@ -233,7 +233,7 @@ bool Item::equals(
     long timezone,
     const XQPCollator* aCollation) const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0040_TYPE_ERROR,
                         "Cannot compare item of type " << getType()->getStringValue()
                         << " with item or type " << other->getType()->getStringValue(),
                         "");
@@ -246,7 +246,7 @@ long Item::compare(
     long timezone,
     const XQPCollator* aCollation) const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0040_TYPE_ERROR,
                         "Cannot compare item of type " << getType()->getStringValue()
                         << " with item or type " << other->getType()->getStringValue(),
                         "");
@@ -256,7 +256,7 @@ long Item::compare(
 
 Item_t Item::getEBV() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0040_TYPE_ERROR,
                         "Effective boolean value not defined for items of type "
                         << getType()->getStringValue(), "");
   return 0;
@@ -265,7 +265,7 @@ Item_t Item::getEBV() const
 
 zstring Item::getStringValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0040_TYPE_ERROR,
                         "String value not defined for items of type "
                         << getType()->getStringValue(), "");
 }
@@ -273,7 +273,7 @@ zstring Item::getStringValue() const
 
 void Item::getStringValue2(zstring& val) const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0040_TYPE_ERROR,
                         "String value not defined for items of type "
                         << getType()->getStringValue(), "");
 }
@@ -281,7 +281,7 @@ void Item::getStringValue2(zstring& val) const
 
 void Item::appendStringValue(zstring& buf) const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0040_TYPE_ERROR,
                         "String value not defined for items of type "
                         << getType()->getStringValue(), "");
 }
@@ -292,14 +292,14 @@ void Item::appendStringValue(zstring& buf) const
 
 FTTokenIterator_t Item::getDocumentTokens( locale::iso639_1::type lang ) const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return FTTokenIterator_t( NULL );
 }
 
 FTTokenIterator_t Item::getQueryTokens( locale::iso639_1::type, bool ) const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return FTTokenIterator_t( NULL );
 }
@@ -314,7 +314,7 @@ FTTokenIterator_t Item::getQueryTokens( locale::iso639_1::type, bool ) const
  */
 const zstring& Item::getNamespace() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0040_TYPE_ERROR,
                         "Item::getNamespace() not defined for items of type "
                         << getType()->getStringValue(), "");
 }
@@ -325,7 +325,7 @@ const zstring& Item::getNamespace() const
  */
 const zstring& Item::getPrefix() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0040_TYPE_ERROR,
                         "Item::getPrefix() not defined for items of type "
                         << getType()->getStringValue(), "");
 }
@@ -336,7 +336,7 @@ const zstring& Item::getPrefix() const
  */
 const zstring& Item::getLocalName() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0040_TYPE_ERROR,
                         "Item::getLocalName() not defined for items of type "
                         << getType()->getStringValue(), "");
 }
@@ -347,7 +347,7 @@ const zstring& Item::getLocalName() const
  */
 const zstring& Item::getString() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0040_TYPE_ERROR,
                         "Item::getString() not defined for items of type "
                         << getType()->getStringValue(), "");
 }
@@ -358,7 +358,7 @@ const zstring& Item::getString() const
  */
 xs_base64Binary Item::getBase64BinaryValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0040_TYPE_ERROR,
                         "Item::getBase64BinaryValue() not defined for items of type "
                         << getType()->getStringValue(), "");
 
@@ -370,7 +370,7 @@ xs_base64Binary Item::getBase64BinaryValue() const
  */
 bool Item::getBooleanValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0040_TYPE_ERROR,
                         "Item::getBooleanValue() not defined for items of type "
                         << getType()->getStringValue(), "");
 
@@ -384,7 +384,7 @@ bool Item::getBooleanValue() const
  */
 xs_decimal Item::getDecimalValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0040_TYPE_ERROR,
                         "Item::getDecimalValue() not defined for items of type "
                         << getType()->getStringValue(), "");
 
@@ -399,7 +399,7 @@ xs_decimal Item::getDecimalValue() const
  */
 xs_integer Item::getIntegerValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0040_TYPE_ERROR,
                         "Item::getIntegerValue() not defined for items of type "
                         << getType()->getStringValue(), "");
 
@@ -412,7 +412,7 @@ xs_integer Item::getIntegerValue() const
  */
 xs_long Item::getLongValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0040_TYPE_ERROR,
                         "Item::getLongValue() not defined for items of type "
                         << getType()->getStringValue(), "");
 
@@ -425,7 +425,7 @@ xs_long Item::getLongValue() const
  */
 xs_int Item::getIntValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0040_TYPE_ERROR,
                         "Item::getIntValue() not defined for items of type "
                         << getType()->getStringValue(), "");
 
@@ -438,7 +438,7 @@ xs_int Item::getIntValue() const
  */
 xs_short Item::getShortValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0040_TYPE_ERROR,
                         "Item::getShortValue() not defined for items of type "
                         << getType()->getStringValue(), "");
 
@@ -450,7 +450,7 @@ xs_short Item::getShortValue() const
  */
 xs_byte Item::getByteValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0040_TYPE_ERROR,
                         "Item::getByteValue() not defined for items of type "
                         << getType()->getStringValue(), "");
 
@@ -464,7 +464,7 @@ xs_byte Item::getByteValue() const
  */
 xs_uinteger Item::getUnsignedIntegerValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0040_TYPE_ERROR,
                         "Item::getUnsignedIntegerValue() not defined for items of type "
                         << getType()->getStringValue(), "");
 
@@ -477,7 +477,7 @@ xs_uinteger Item::getUnsignedIntegerValue() const
  */
 xs_ulong Item::getUnsignedLongValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0040_TYPE_ERROR,
                         "Item::getUnsignedLongValue() not defined for items of type "
                         << getType()->getStringValue(), "");
   return 0;
@@ -489,7 +489,7 @@ xs_ulong Item::getUnsignedLongValue() const
  */
 xs_uint Item::getUnsignedIntValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0040_TYPE_ERROR,
                         "Item::getUnsignedIntValue() not defined for items of type "
                         << getType()->getStringValue(), "");
   return 0;
@@ -501,7 +501,7 @@ xs_uint Item::getUnsignedIntValue() const
  */
 xs_ushort Item::getUnsignedShortValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0040_TYPE_ERROR,
                         "Item::getUnsignedShortValue() not defined for items of type "
                         << getType()->getStringValue(), "");
 
@@ -514,7 +514,7 @@ xs_ushort Item::getUnsignedShortValue() const
  */
 xs_ubyte Item::getUnsignedByteValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0040_TYPE_ERROR,
                         "Item::getUnsignedByteValue() not defined for items of type "
                         << getType()->getStringValue(), "");
   return 0;
@@ -526,7 +526,7 @@ xs_ubyte Item::getUnsignedByteValue() const
  */
 xs_float Item::getFloatValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0040_TYPE_ERROR,
                         "Item::getFloatValue() not defined for items of type "
                         << getType()->getStringValue(), "");
 
@@ -539,7 +539,7 @@ xs_float Item::getFloatValue() const
  */
 xs_double Item::getDoubleValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0040_TYPE_ERROR,
                         "Item::getDoubleValue() not defined for items of type "
                         << getType()->getStringValue(), "");
 
@@ -552,7 +552,7 @@ xs_double Item::getDoubleValue() const
  */
 const xs_date& Item::getDateValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0040_TYPE_ERROR,
                         "Item::getDateValue() not defined for items of type "
                         << getType()->getStringValue(), "");
 
@@ -564,7 +564,7 @@ const xs_date& Item::getDateValue() const
  */
 const xs_dateTime& Item::getDateTimeValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0040_TYPE_ERROR,
                         "Item::getDateTimeValue() not defined for items of type "
                         << getType()->getStringValue(), "");
   return *(new xs_dateTime);
@@ -576,7 +576,7 @@ const xs_dateTime& Item::getDateTimeValue() const
  */
 const xs_time& Item::getTimeValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0040_TYPE_ERROR,
                         "Item::getTimeValue() not defined for items of type "
                         << getType()->getStringValue(), "");
 
@@ -589,7 +589,7 @@ const xs_time& Item::getTimeValue() const
  */
 const xs_gDay& Item::getGDayValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0040_TYPE_ERROR,
                         "Item::getGDayValue() not defined for items of type "
                         << getType()->getStringValue(), "");
 
@@ -601,7 +601,7 @@ const xs_gDay& Item::getGDayValue() const
  */
 const xs_gMonth& Item::getGMonthValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0040_TYPE_ERROR,
                         "Item::getGMonthValue() not defined for items of type "
                         << getType()->getStringValue(), "");
 
@@ -613,7 +613,7 @@ const xs_gMonth& Item::getGMonthValue() const
  */
 const xs_gMonthDay& Item::getGMonthDayValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0040_TYPE_ERROR,
                         "Item::getGMonthDayValue() not defined for items of type "
                         << getType()->getStringValue(), "");
 
@@ -625,7 +625,7 @@ const xs_gMonthDay& Item::getGMonthDayValue() const
  */
 const xs_gYear& Item::getGYearValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return *(new xs_gYear);
 }
@@ -635,7 +635,7 @@ const xs_gYear& Item::getGYearValue() const
  */
 const xs_gYearMonth& Item::getGYearMonthValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0040_TYPE_ERROR,
                         "Item::getGYearMonthValue() not defined for items of type "
                         << getType()->getStringValue(), "");
   return *(new xs_gYearMonth);
@@ -646,7 +646,7 @@ const xs_gYearMonth& Item::getGYearMonthValue() const
  */
 const xs_duration& Item::getDurationValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0040_TYPE_ERROR,
                         "Item::getDurationValue() not defined for items of type "
                         << getType()->getStringValue(), "");
 
@@ -658,7 +658,7 @@ const xs_duration& Item::getDurationValue() const
  */
 const xs_dayTimeDuration& Item::getDayTimeDurationValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0040_TYPE_ERROR,
                         "Item::getDayTimeDurationValue() not defined for items of type "
                         << getType()->getStringValue(), "");
 
@@ -670,7 +670,7 @@ const xs_dayTimeDuration& Item::getDayTimeDurationValue() const
  */
 const xs_yearMonthDuration& Item::getYearMonthDurationValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0040_TYPE_ERROR,
                         "Item::getYearMonthDurationValue() not defined for items of type "
                         << getType()->getStringValue(), "");
 
@@ -683,7 +683,7 @@ const xs_yearMonthDuration& Item::getYearMonthDurationValue() const
  */
 xs_hexBinary Item::getHexBinaryValue() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0040_TYPE_ERROR,
                         "Item::getHexBinaryValue() not defined for items of type "
                         << getType()->getStringValue(), "");
 
@@ -706,7 +706,7 @@ bool Item::isNaN() const
  */
 bool Item::isPosOrNegInf() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0040_TYPE_ERROR,
                         "Item::isPosOrNegInf() not defined for items of type "
                         << getType()->getStringValue(), "");
   return false;
@@ -718,7 +718,7 @@ bool Item::isPosOrNegInf() const
 
 bool Item::isValidated() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return false;
 }
@@ -726,7 +726,7 @@ bool Item::isValidated() const
 
 void Item::markValidated()
 {
-  ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
 }
 
@@ -739,21 +739,21 @@ bool Item::isRecursive() const
 
 void Item::getDocumentURI(zstring& uri) const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
 }
 
 
 void Item::getBaseURI(zstring& uri) const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
 }
 
 
 store::Iterator_t Item::getAttributes() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return NULL;
 }
@@ -761,7 +761,7 @@ store::Iterator_t Item::getAttributes() const
 
 store::Iterator_t Item::getChildren() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return 0;
 }
@@ -769,7 +769,7 @@ store::Iterator_t Item::getChildren() const
 
 bool Item::isId() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return false;
 }
@@ -777,7 +777,7 @@ bool Item::isId() const
 
 bool Item::isIdRefs() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return false;
 }
@@ -787,14 +787,14 @@ void Item::getNamespaceBindings(
     NsBindings& bindings,
     StoreConsts::NsScoping ns_scoping) const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
 }
 
 
 store::Item_t Item::getNilled() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return 0;
 }
@@ -802,7 +802,7 @@ store::Item_t Item::getNilled() const
 
 NodeKind Item::getNodeKind() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return StoreConsts::elementNode;
 }
@@ -810,14 +810,14 @@ NodeKind Item::getNodeKind() const
 
 store::Item* Item::getNodeName() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return NULL;
 }
 
 const store::Collection* Item::getCollection() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return NULL;
 }
@@ -825,7 +825,7 @@ const store::Collection* Item::getCollection() const
 
 Item* Item::getParent() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return NULL;
 }
@@ -833,7 +833,7 @@ Item* Item::getParent() const
 
 void Item::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return;
 }
@@ -841,7 +841,7 @@ void Item::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 
 bool Item::isInSubstitutionGroup() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
   return false;
 }
@@ -849,21 +849,21 @@ bool Item::isInSubstitutionGroup() const
 
 void Item::getUnparsedEntityPublicId(zstring& val) const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
 }
 
 
 void Item::getUnparsedEntitySystemId(zstring& val) const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
 }
 
 
 const zstring& Item::getTarget() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
 }
 
@@ -876,7 +876,7 @@ zstring Item::show() const
 
 void Item::finalizeNode()
 {
-  ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
 }
 
@@ -887,7 +887,7 @@ Item* Item::copy(
     vsize_t pos,
     const CopyMode& copymode) const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
 }
 #endif
@@ -896,7 +896,7 @@ Item* Item::copy(
     store::Item* parent,
     const CopyMode& copymode) const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
 }
 
@@ -904,20 +904,20 @@ Item* Item::copy(
 #if 0
 const std::vector<zorba::store::TupleField>& Item::getTupleFields() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
 }
 
 
 int Item::getTupleFieldCount() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
 }
 
 const TupleField& Item::getTupleField(int index) const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
 }
 #endif
@@ -925,13 +925,13 @@ const TupleField& Item::getTupleField(int index) const
 
 ZorbaException* Item::getError() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, "ErrorItem");
 }
 
 const Item_t Item::getFunctionName() const
 {
-  ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
     __FUNCTION__, "FunctionItem");
 }
 
@@ -942,7 +942,7 @@ bool Item::isStreamable() const
 
 std::istream& Item::getStream()
 {
-  ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ZORBA_ERROR_PARAM_OSS(ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
 }
 

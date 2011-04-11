@@ -83,7 +83,7 @@ void API_SingletonIterator::open()
   try
   {
     if (theIsOpen)  
-      throw ZORBA_EXCEPTION(API0041_ITERATOR_IS_ALREADY_OPEN);
+      throw ZORBA_EXCEPTION(ZAPI0041_ITERATOR_IS_ALREADY_OPEN);
 
     theIsOpen = true;
     theIsDone = false;
@@ -100,7 +100,7 @@ bool API_SingletonIterator::next(Item& aItem)
   try
   {
     if (!theIsOpen)  
-      throw ZORBA_EXCEPTION(API0040_ITERATOR_IS_NOT_OPEN);
+      throw ZORBA_EXCEPTION(ZAPI0040_ITERATOR_IS_NOT_OPEN);
 
     if (theIsDone) 
       return false;
@@ -123,7 +123,7 @@ void API_SingletonIterator::close()
   try
   {
     if (!theIsOpen)  
-      throw ZORBA_EXCEPTION(API0040_ITERATOR_IS_NOT_OPEN);
+      throw ZORBA_EXCEPTION( ZAPI0040_ITERATOR_IS_NOT_OPEN );
 
     theIsOpen = false;
   }
@@ -131,4 +131,5 @@ void API_SingletonIterator::close()
 }
 
 
-} /* namespace zorba */
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

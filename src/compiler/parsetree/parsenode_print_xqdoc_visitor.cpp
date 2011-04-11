@@ -210,7 +210,7 @@ void printCommentFragment(store::Item_t& aParent, string aString, string aTag)
   }
   catch (ZorbaException const& e)
   {
-    ZORBA_ERROR_DESC_OSS(XQD0001_DOCUMENT_NOT_VALID,
+    ZORBA_ERROR_DESC_OSS(ZXQD0001_DOCUMENT_NOT_VALID,
                          "The xqdoc documentation contains an error that doesn't allow the document to be parsed as XML. "
                          << e.what() << " '" << aString << "'");
   }
@@ -557,7 +557,7 @@ void add_invoked_function (
   map<zstring, zstring>::iterator ite = theNamespaces.find(aPrefix);
   if (ite == theNamespaces.end()) 
   {
-    ZORBA_ERROR_DESC_OSS(XQD0000_PREFIX_NOT_DECLARED,
+    ZORBA_ERROR_DESC_OSS(ZXQD0000_PREFIX_NOT_DECLARED,
        "Could not generate the xqDoc documentation because the namespace for prefix '"
        << aPrefix << "' is not declared when calling function '" << aLocalName
        << "' from " << aLocation << "."

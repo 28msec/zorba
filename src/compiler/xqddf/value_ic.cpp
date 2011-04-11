@@ -40,7 +40,7 @@ END_SERIALIZABLE_CLASS_VERSIONS(ValueIC)
 *******************************************************************************/
 void ValueIC::serialize(::zorba::serialization::Archiver& ar)
 {
-  //ZORBA_SER_ERROR_DESC_OSS(SRL0009_CLASS_NOT_SERIALIZABLE, "ValueIC");
+  //ZORBA_SER_ERROR_DESC_OSS(ZCSE0009_CLASS_NOT_SERIALIZABLE, "ValueIC");
 
   ar & theSctx;
   ar & theName;

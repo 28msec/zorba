@@ -35,7 +35,7 @@ namespace store { class Item; }
  * The Item class is the union of all XQuery node and atomic types.
  * The class provides functions to access the information of an Item. Note that not
  * all functions are defined on every Item kind. If a function is called on an Item that
- * does not provide the called function, an XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE error
+ * does not provide the called function, an ZXQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE error
  * is raised.
  *
  * Instances of the Item class are always passed by copy. To check whether a given Item is valid

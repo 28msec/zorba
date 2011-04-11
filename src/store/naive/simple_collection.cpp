@@ -127,7 +127,7 @@ void SimpleCollection::addNode(
 {
   if (!nodeItem->isNode())
   {
-    ZORBA_ERROR_PARAM(STR0012_COLLECTION_ITEM_MUST_BE_A_NODE,
+    ZORBA_ERROR_PARAM(ZSTR0012_COLLECTION_ITEM_MUST_BE_A_NODE,
                       getName()->getStringValue(), "");
   }
 
@@ -135,14 +135,14 @@ void SimpleCollection::addNode(
 
   if (node->getCollection() != NULL)
   {
-    ZORBA_ERROR_PARAM(STR0010_COLLECTION_NODE_ALREADY_IN_COLLECTION,
+    ZORBA_ERROR_PARAM(ZSTR0010_COLLECTION_NODE_ALREADY_IN_COLLECTION,
                       node->getCollection()->getName()->getStringValue(),
                       getName()->getStringValue());
   }
 
   if (node->getParent() != NULL)
   {
-    ZORBA_ERROR_PARAM(STR0011_COLLECTION_NON_ROOT_NODE,
+    ZORBA_ERROR_PARAM(ZSTR0011_COLLECTION_NON_ROOT_NODE,
                       getName()->getStringValue(), "");
   }
 
@@ -192,7 +192,7 @@ ulong SimpleCollection::addNodes(
   {
     if (!nodes[i]->isNode())
     {
-      ZORBA_ERROR_PARAM(STR0012_COLLECTION_ITEM_MUST_BE_A_NODE,
+      ZORBA_ERROR_PARAM(ZSTR0012_COLLECTION_ITEM_MUST_BE_A_NODE,
                         getName()->getStringValue(), "");
     }
 
@@ -200,14 +200,14 @@ ulong SimpleCollection::addNodes(
 
     if (node->getCollection() != NULL)
     {
-      ZORBA_ERROR_PARAM(STR0010_COLLECTION_NODE_ALREADY_IN_COLLECTION, 
+      ZORBA_ERROR_PARAM(ZSTR0010_COLLECTION_NODE_ALREADY_IN_COLLECTION, 
                         node->getCollection()->getName()->getStringValue(),
                         getName()->getStringValue());
     }
 
     if (node->getParent() != NULL)
     {
-      ZORBA_ERROR_PARAM(STR0011_COLLECTION_NON_ROOT_NODE,
+      ZORBA_ERROR_PARAM(ZSTR0011_COLLECTION_NON_ROOT_NODE,
                         getName()->getStringValue(), "");
     }
     
@@ -248,7 +248,7 @@ bool SimpleCollection::removeNode(store::Item* nodeItem, ulong& position)
 {
   if (!nodeItem->isNode())
   {
-    ZORBA_ERROR_PARAM(STR0012_COLLECTION_ITEM_MUST_BE_A_NODE,
+    ZORBA_ERROR_PARAM(ZSTR0012_COLLECTION_ITEM_MUST_BE_A_NODE,
                       getName()->getStringValue(), "");
   }
 
@@ -356,7 +356,7 @@ bool SimpleCollection::findNode(const store::Item* node, ulong& position) const
 {
   if (!node->isNode())
   {
-    ZORBA_ERROR_PARAM(STR0012_COLLECTION_ITEM_MUST_BE_A_NODE,
+    ZORBA_ERROR_PARAM(ZSTR0012_COLLECTION_ITEM_MUST_BE_A_NODE,
                       getName()->getStringValue(), "");
   }
 
@@ -517,7 +517,7 @@ bool SimpleCollection::CollectionIter::next(store::Item_t& result)
 {
   if (!theHaveLock) 
   {
-    ZORBA_ERROR_DESC(XQP0001_DYNAMIC_RUNTIME_ERROR,
+    ZORBA_ERROR_DESC(ZXQP0001_DYNAMIC_RUNTIME_ERROR,
                      "Collection iterator has not been opened");
   }
 

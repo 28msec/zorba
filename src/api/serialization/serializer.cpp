@@ -1818,7 +1818,7 @@ void serializer::json_emitter::emit_item(store::Item* item)
   if(!item->isNode() || item->getNodeKind () != store::StoreConsts::elementNode)
   {
     throw ZORBA_EXCEPTION(
-      API0062_CONV_JSON_PARAM, ERROR_PARAMS( item->getStringValue() )
+      ZAPI0062_CONV_JSON_PARAM, ERROR_PARAMS( item->getStringValue() )
     );
   }
 
@@ -1829,7 +1829,7 @@ void serializer::json_emitter::emit_item(store::Item* item)
   else
   {
     throw ZORBA_EXCEPTION(
-      API0061_CONV_JSON_SERIALIZE,
+      ZAPI0061_CONV_JSON_SERIALIZE,
       ERROR_PARAMS( item->getStringValue(), error_log )
     );
   }
@@ -1874,7 +1874,7 @@ void serializer::jsonml_emitter::emit_item(store::Item* item)
   if(!item->isNode() || item->getNodeKind () != store::StoreConsts::elementNode)
   {
     throw ZORBA_EXCEPTION(
-      API0065_CONV_JSON_ML_PARAM,
+      ZAPI0065_CONV_JSON_ML_PARAM,
       ERROR_PARAMS( item->getStringValue() )
     );
   }
@@ -1886,7 +1886,7 @@ void serializer::jsonml_emitter::emit_item(store::Item* item)
   else
   {
     throw ZORBA_EXCEPTION(
-      API0064_CONV_JSON_ML_SERIALIZE,
+      ZAPI0064_CONV_JSON_ML_SERIALIZE,
       ERROR_PARAMS( item->getStringValue(), error_log )
     );
   }
@@ -2295,7 +2295,7 @@ void serializer::serialize(
         method != PARAMETER_VALUE_JSONML)
     {
       throw ZORBA_EXCEPTION(
-        API0070_INVALID_SERIALIZATION_METHOD_FOR_SAX, ERROR_PARAMS( method )
+        ZAPI0070_INVALID_SERIALIZATION_METHOD_FOR_SAX, ERROR_PARAMS( method )
       );
     }
     // it's OK now, build a SAX emmiter
@@ -2315,13 +2315,13 @@ void serializer::serialize(
         method == PARAMETER_VALUE_JSON ||
         method == PARAMETER_VALUE_JSONML))
     {
-      throw ZORBA_EXCEPTION(API0066_JSON_SEQUENCE_CANNOT_BE_SERIALIZED);
+      throw ZORBA_EXCEPTION(ZAPI0066_JSON_SEQUENCE_CANNOT_BE_SERIALIZED);
     }
 
     // PUL's cannot be serialized
     if (lItem->isPul())
     {
-      throw ZORBA_EXCEPTION(API0007_CANNOT_SERIALIZE_PUL);
+      throw ZORBA_EXCEPTION(ZAPI0007_CANNOT_SERIALIZE_PUL);
     }
 
     e->emit_item(&*lItem);
@@ -2392,14 +2392,14 @@ void serializer::serialize(
       if (method == PARAMETER_VALUE_JSON ||
           method == PARAMETER_VALUE_JSONML)
       {
-        throw ZORBA_EXCEPTION(API0066_JSON_SEQUENCE_CANNOT_BE_SERIALIZED);
+        throw ZORBA_EXCEPTION(ZAPI0066_JSON_SEQUENCE_CANNOT_BE_SERIALIZED);
       }
     }
 
     // PUL's cannot be serialized
     if (lItem->isPul())
     {
-      throw ZORBA_EXCEPTION(API0007_CANNOT_SERIALIZE_PUL);
+      throw ZORBA_EXCEPTION(ZAPI0007_CANNOT_SERIALIZE_PUL);
     }
 
     e->emit_item(&*lItem);

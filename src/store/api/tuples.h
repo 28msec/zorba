@@ -78,7 +78,7 @@ public:
       case UNINITIALIZED:
         if(m_data)
         {
-          ZORBA_SER_ERROR_DESC_OSS(SRL0010_ITEM_TYPE_NOT_SERIALIZABLE, "TupleField");
+          ZORBA_SER_ERROR_DESC_OSS(ZCSE0010_ITEM_TYPE_NOT_SERIALIZABLE, "TupleField");
         }
         if(!ar.is_serializing_out())
           m_data = NULL;

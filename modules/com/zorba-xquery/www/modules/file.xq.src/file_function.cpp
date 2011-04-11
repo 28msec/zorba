@@ -166,7 +166,7 @@ FileFunction::getEncodingArg(
     // the rest are not supported encodings
     std::stringstream lErrorMessage;
     lErrorMessage << "Unsupported encoding: " << lEncoding;
-    throwError(lErrorMessage.str(), err::XQP0019_INTERNAL_ERROR);
+    throwError(lErrorMessage.str(), err::ZXQP0019_INTERNAL_ERROR);
   }
 
   return lEncoding;
@@ -242,7 +242,7 @@ bool
 StreamableFileFunction::StreamableItemSequence::InternalIterator::next(Item& aResult)
 {
   if(!theIsOpen) {
-    throw XQUERY_EXCEPTION(XQP0019_INTERNAL_ERROR, ERROR_PARAMS(
+    throw XQUERY_EXCEPTION(ZXQP0019_INTERNAL_ERROR, ERROR_PARAMS(
       "StreamableItemSequence Iterator consumed without open" ) );  
   }
   if (theHasNext) {

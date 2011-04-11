@@ -133,7 +133,7 @@ void ICU_Tokenizer::create_iterators( iso639_1::type lang,
     )
   );
   if ( U_FAILURE( status ) )
-    throw ZORBA_EXCEPTION( XQP0036_BREAKITERATOR_CREATION_FAILED );
+    throw ZORBA_EXCEPTION( ZXQP0036_BREAKITERATOR_CREATION_FAILED );
 
   rbbi_ptr sent_it(
     dynamic_cast<RuleBasedBreakIterator*>(
@@ -141,7 +141,7 @@ void ICU_Tokenizer::create_iterators( iso639_1::type lang,
     )
   );
   if ( U_FAILURE( status ) )
-    throw ZORBA_EXCEPTION( XQP0036_BREAKITERATOR_CREATION_FAILED );
+    throw ZORBA_EXCEPTION( ZXQP0036_BREAKITERATOR_CREATION_FAILED );
 
   result.word_ = word_it.release();
   result.sent_ = sent_it.release();

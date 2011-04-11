@@ -43,9 +43,9 @@ namespace zorba {
   } catch (ZorbaException const & /* e */) { \
     throw; \
   } catch (std::exception const &e) { \
-    throw ZORBA_EXCEPTION(XQP0019_INTERNAL_ERROR, ERROR_PARAMS(e.what())); \
+    throw ZORBA_EXCEPTION(ZXQP0019_INTERNAL_ERROR, ERROR_PARAMS(e.what())); \
   } catch (...) { \
-    throw ZORBA_EXCEPTION(XQP0019_INTERNAL_ERROR, ERROR_PARAMS("Internal error")); \
+    throw ZORBA_EXCEPTION(ZXQP0019_INTERNAL_ERROR, ERROR_PARAMS("Internal error")); \
   }
 
 

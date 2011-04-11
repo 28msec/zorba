@@ -25,7 +25,7 @@ namespace zorbac {
 XQC_Error Error::convert_xquery_error( zorba::Error const &error ) {
   using namespace zorba::err;
 
-  if ( error == XQP0000_NO_ERROR )
+  if ( error == ZXQP0000_NO_ERROR )
     return XQC_NO_ERROR;
 
   ////////// Special-cases ////////////////////////////////////////////////////
@@ -79,10 +79,8 @@ XQC_Error Error::convert_xquery_error( zorba::Error const &error ) {
       return XQC_TYPE_ERROR;
 
     case ZORBA_API:
-      if ( error == API0002_XQUERY_COMPILATION_FAILED )
+      if ( error == ZAPI0002_XQUERY_COMPILATION_FAILED )
         return XQC_STATIC_ERROR;
-      if ( error == API0025_END_OF_SEQUENCE )
-        return XQC_END_OF_SEQUENCE;
       return XQC_INVALID_ARGUMENT;
 
     case ZORBA_SERIALIZATION:
@@ -98,49 +96,48 @@ XQC_Error Error::convert_xquery_error( zorba::Error const &error ) {
 
   ////////// Zorba errors /////////////////////////////////////////////////////
 
-  if ( error == XQP0001_DYNAMIC_RUNTIME_ERROR
-    || error == XQP0002_DYNAMIC_ITERATOR_OVERRUN
-    || error == XQP0003_DYNAMIC_ILLEGAL_NODE_CHILD
-    || error == XQP0004_DYNAMIC_TARGET_NAMESPACE_NOT_FOUND
-    || error == XQP0005_SYSTEM_NOT_SUPPORTED
-    || error == XQP0006_SYSTEM_ASSERT_FAILED
-    || error == XQP0007_SYSTEM_HASH_ERROR_KEYLEN_EXCEEDS_MAXKEYLEN
-    || error == XQP0008_SYSTEM_VECTOR_OUT_OF_RANGE
-    || error == XQP0009_SYSTEM_READ_LOCK_FAILED
-    || error == XQP0010_SYSTEM_WRITE_LOCK_FAILED
-    || error == XQP0011_SYSTEM_POP_FROM_EMPTY_LIST
-    || error == XQP0012_SYSTEM_FILE_ERROR_IN_FUNCTION
-    || error == XQP0013_SYSTEM_FXCHARHEAP_IOEXCEPTION
-    || error == XQP0014_SYSTEM_MMFILE_IOEXCEPTION
-    || error == XQP0015_SYSTEM_NOT_YET_IMPLEMENTED
-    || error == XQP0019_INTERNAL_ERROR
-    || error == XQP0020_INVALID_URI
-    || error == XQP0021_USER_ERROR
-    || error == XQP0022_GET_RESULTS_AS_DOM_FAILED
-    || error == XQP0023_GET_RESULTS_AS_SAX_FAILED
-    || error == XQP0025_COULD_NOT_CREATE_ITEM
-    || error == XQP0026_COULD_NOT_CREATE_THREAD
-    || error == XQP0026_CANNOT_INIT_STORE
-    || error == XQP0027_MS_DOM_ERROR
-    || error == XQP0028_FUNCTION_IMPL_NOT_FOUND
-    || error == XQP0029_MODULE_IMPORT_NOT_ALLOWED
-    || error == XQP0030_DEADLOCK
-    || error == XQP0036_BREAKITERATOR_CREATION_FAILED
+  if ( error == ZXQP0001_DYNAMIC_RUNTIME_ERROR
+    || error == ZXQP0002_DYNAMIC_ITERATOR_OVERRUN
+    || error == ZXQP0003_DYNAMIC_ILLEGAL_NODE_CHILD
+    || error == ZXQP0004_DYNAMIC_TARGET_NAMESPACE_NOT_FOUND
+    || error == ZXQP0005_SYSTEM_NOT_SUPPORTED
+    || error == ZXQP0006_SYSTEM_ASSERT_FAILED
+    || error == ZXQP0007_SYSTEM_HASH_ERROR_KEYLEN_EXCEEDS_MAXKEYLEN
+    || error == ZXQP0008_SYSTEM_VECTOR_OUT_OF_RANGE
+    || error == ZXQP0009_SYSTEM_READ_LOCK_FAILED
+    || error == ZXQP0010_SYSTEM_WRITE_LOCK_FAILED
+    || error == ZXQP0011_SYSTEM_POP_FROM_EMPTY_LIST
+    || error == ZXQP0012_SYSTEM_FILE_ERROR_IN_FUNCTION
+    || error == ZXQP0013_SYSTEM_FXCHARHEAP_IOEXCEPTION
+    || error == ZXQP0015_SYSTEM_NOT_YET_IMPLEMENTED
+    || error == ZXQP0019_INTERNAL_ERROR
+    || error == ZXQP0020_INVALID_URI
+    || error == ZXQP0021_USER_ERROR
+    || error == ZXQP0022_GET_RESULTS_AS_DOM_FAILED
+    || error == ZXQP0023_GET_RESULTS_AS_SAX_FAILED
+    || error == ZXQP0025_COULD_NOT_CREATE_ITEM
+    || error == ZXQP0026_COULD_NOT_CREATE_THREAD
+    || error == ZXQP0026_CANNOT_INIT_STORE
+    || error == ZXQP0027_MS_DOM_ERROR
+    || error == ZXQP0028_FUNCTION_IMPL_NOT_FOUND
+    || error == ZXQP0029_MODULE_IMPORT_NOT_ALLOWED
+    || error == ZXQP0030_DEADLOCK
+    || error == ZXQP0036_BREAKITERATOR_CREATION_FAILED
   )
     return XQC_INTERNAL_ERROR;
 
-  if ( error == XQP0017_FILE_ACCESS_DISABLED
-    || error == XQP0024_XML_DOES_NOT_MATCH_SCHEMA
+  if ( error == ZXQP0017_FILE_ACCESS_DISABLED
+    || error == ZXQP0024_XML_DOES_NOT_MATCH_SCHEMA
   )
     return XQC_DYNAMIC_ERROR;
 
-  if ( error == XQP0031_MALFORMED_XQUERYX_INPUT
-    || error == XQP0032_ERROR_TRANSFORMING_XQUERYX_TO_XQUERY
-    || error == XQP0034_ILLEGAL_UTF8_BYTE
-    || error == XQP0035_ILLEGAL_UTF16_BYTE
+  if ( error == ZXQP0031_MALFORMED_XQUERYX_INPUT
+    || error == ZXQP0032_ERROR_TRANSFORMING_XQUERYX_TO_XQUERY
+    || error == ZXQP0034_ILLEGAL_UTF8_BYTE
+    || error == ZXQP0035_ILLEGAL_UTF16_BYTE
 #ifndef ZORBA_NO_FULL_TEXT
-    || error == XQP8401_THESAURUS_VERSION_MISMATCH
-    || error == XQP8402_THESAURUS_DATA_ERROR
+    || error == ZXQP8401_THESAURUS_VERSION_MISMATCH
+    || error == ZXQP8402_THESAURUS_DATA_ERROR
 #endif /* ZORBA_NO_FULL_TEXT */
   )
     return XQC_INVALID_ARGUMENT;

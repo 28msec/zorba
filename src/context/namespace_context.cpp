@@ -94,7 +94,7 @@ bool namespace_context::findBinding(
   else
   {
     QueryLoc loc;
-    bool found = m_sctx->lookup_ns(aNamespace, aPrefix, loc, err::XQP0000_NO_ERROR);
+    bool found = m_sctx->lookup_ns(aNamespace, aPrefix, loc, err::ZXQP0000_NO_ERROR);
 
     if (!found && aPrefix.empty())
     {

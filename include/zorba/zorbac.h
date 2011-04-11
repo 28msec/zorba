@@ -58,7 +58,7 @@ extern "C" {
    * \param[out] impl The newly created XQC_Implementation object.
    *
    * \retval ::XQC_NO_ERROR
-   * \retval ::XQP0019_INTERNAL_ERROR
+   * \retval ::ZXQP0019_INTERNAL_ERROR
    */
   ZORBA_DLL_PUBLIC XQC_Error
   zorba_implementation(XQC_Implementation **impl, void* store);
@@ -155,7 +155,7 @@ extern "C" {
      * \param global_user_data User specific data that is passed to the init function as a parameter.
      *
      * \retval ::XQC_NO_ERROR
-     * \retval ::API0019_FUNCTION_ALREADY_REGISTERED,
+     * \retval ::ZAPI0019_FUNCTION_ALREADY_REGISTERED,
      * \retval ::XQC_INTERNAL_ERROR
      */
     XQC_Error

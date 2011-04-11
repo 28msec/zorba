@@ -700,7 +700,7 @@ void CSVParseFunction::CSVItemSequence::open()
   is_open = true;
   if(open_count && !input_stream->reset())
   {
-    throw ZORBA_EXCEPTION( XQP0019_INTERNAL_ERROR, ERROR_PARAMS(
+    throw ZORBA_EXCEPTION( ZXQP0019_INTERNAL_ERROR, ERROR_PARAMS(
       "Cannot reset input stream for CSVParseFunction for second iterator open" ) );
   }
   line_index = 1;
@@ -729,7 +729,7 @@ bool CSVParseFunction::CSVItemSequence::next(Item& result)
 {
   if(!is_open)
   {
-    throw ZORBA_EXCEPTION(XQP0019_INTERNAL_ERROR, ERROR_PARAMS(
+    throw ZORBA_EXCEPTION(ZXQP0019_INTERNAL_ERROR, ERROR_PARAMS(
       "CSVParseFunction::CSVItemSequence Iterator consumed without open" ) );  
   }
   if(csv_options.first_row_is_header)
@@ -1128,7 +1128,7 @@ void CSVSerializeFunction::StringStreamSequence::open()
     is->seekg(0);
     if(is->fail())
     {
-      throw ZORBA_EXCEPTION(XQP0019_INTERNAL_ERROR, ERROR_PARAMS(
+      throw ZORBA_EXCEPTION(ZXQP0019_INTERNAL_ERROR, ERROR_PARAMS(
         "Cannot reset CSVSerialize streamable string item" ));  
     }
   }
@@ -1150,7 +1150,7 @@ bool CSVSerializeFunction::StringStreamSequence::next( Item &result )
 {
   if(!is_open)
   {
-    throw ZORBA_EXCEPTION(XQP0019_INTERNAL_ERROR, ERROR_PARAMS(
+    throw ZORBA_EXCEPTION(ZXQP0019_INTERNAL_ERROR, ERROR_PARAMS(
       "Next called on CSVSerializeFunction::StringStreamSequence iterator that is not open"));  
   }
   if(!has_next)

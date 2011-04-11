@@ -99,7 +99,7 @@ bool ValueHashIndex::insert(
 {
   if (key->size() != getNumColumns())
   {
-    ZORBA_ERROR_PARAM(STR0003_INDEX_PARTIAL_KEY_INSERT,
+    ZORBA_ERROR_PARAM(ZSTR0003_INDEX_PARTIAL_KEY_INSERT,
                       theQname->getStringValue(), key->toString());
   }
 
@@ -144,7 +144,7 @@ bool ValueHashIndex::remove(const store::IndexKey* key, store::Item_t& value)
 {
   if (key->size() != getNumColumns())
   {
-    ZORBA_ERROR_PARAM(STR0004_INDEX_PARTIAL_KEY_REMOVE,
+    ZORBA_ERROR_PARAM(ZSTR0004_INDEX_PARTIAL_KEY_REMOVE,
                       theQname->getStringValue().c_str(), key->toString());
   }
 
@@ -191,7 +191,7 @@ void ProbeValueHashIndexIterator::init(const store::IndexCondition_t& cond)
 {
   if (cond->getKind() != store::IndexCondition::POINT_VALUE)
   {
-    ZORBA_ERROR_PARAM(STR0007_INDEX_UNSUPPORTED_PROBE_CONDITION,
+    ZORBA_ERROR_PARAM(ZSTR0007_INDEX_UNSUPPORTED_PROBE_CONDITION,
                       theIndex->getName()->getStringValue().c_str(), 
                       cond->getKindString());
   }
@@ -202,7 +202,7 @@ void ProbeValueHashIndexIterator::init(const store::IndexCondition_t& cond)
 
   if (key->size() != theIndex->getNumColumns())
   {
-    ZORBA_ERROR_PARAM(STR0005_INDEX_PARTIAL_KEY_PROBE,
+    ZORBA_ERROR_PARAM(ZSTR0005_INDEX_PARTIAL_KEY_PROBE,
                       theIndex->getName()->getStringValue().c_str(),
                       key->toString());
   }
@@ -319,7 +319,7 @@ bool ValueTreeIndex::insert(
 {
   if (key->size() != getNumColumns())
   {
-    ZORBA_ERROR_PARAM(STR0003_INDEX_PARTIAL_KEY_INSERT,
+    ZORBA_ERROR_PARAM(ZSTR0003_INDEX_PARTIAL_KEY_INSERT,
                       theQname->getStringValue().c_str(), key->toString());
   }
 
@@ -371,7 +371,7 @@ bool ValueTreeIndex::remove(const store::IndexKey* key, store::Item_t& value)
 {
   if (key->size() != getNumColumns())
   {
-    ZORBA_ERROR_PARAM(STR0004_INDEX_PARTIAL_KEY_REMOVE,
+    ZORBA_ERROR_PARAM(ZSTR0004_INDEX_PARTIAL_KEY_REMOVE,
                       theQname->getStringValue().c_str(), "");
   }
 
@@ -420,7 +420,7 @@ void ProbeValueTreeIndexIterator::init(const store::IndexCondition_t& cond)
   if (cond->getKind() != store::IndexCondition::BOX_VALUE &&
       cond->getKind() != store::IndexCondition::POINT_VALUE)
   {
-    ZORBA_ERROR_PARAM(STR0007_INDEX_UNSUPPORTED_PROBE_CONDITION,
+    ZORBA_ERROR_PARAM(ZSTR0007_INDEX_UNSUPPORTED_PROBE_CONDITION,
                       theIndex->getName()->getStringValue().c_str(), 
                       cond->getKindString());
   }
@@ -449,7 +449,7 @@ void ProbeValueTreeIndexIterator::initExact()
 
   if (key.size() != theIndex->getNumColumns())
   {
-    ZORBA_ERROR_PARAM(STR0005_INDEX_PARTIAL_KEY_PROBE,
+    ZORBA_ERROR_PARAM(ZSTR0005_INDEX_PARTIAL_KEY_PROBE,
                       theIndex->getName()->getStringValue().c_str(), 
                       key.toString());
   }
@@ -484,7 +484,7 @@ void ProbeValueTreeIndexIterator::initBox()
 
   if (numRanges > theIndex->getNumColumns())
   {
-    ZORBA_ERROR_PARAM(STR0006_INDEX_INVALID_BOX_PROBE, 
+    ZORBA_ERROR_PARAM(ZSTR0006_INDEX_INVALID_BOX_PROBE, 
                       theIndex->getName()->getStringValue().c_str(),
                       "The box condition has more columns than the index");
   }
@@ -567,7 +567,7 @@ void ProbeValueTreeIndexIterator::initBox()
       if (comp > 0 || 
           (comp == 0 && (!flags[i].theLowerBoundIncl || !flags[i].theUpperBoundIncl)))
       { 
-        ZORBA_ERROR_PARAM(STR0006_INDEX_INVALID_BOX_PROBE, 
+        ZORBA_ERROR_PARAM(ZSTR0006_INDEX_INVALID_BOX_PROBE, 
                           theIndex->getName()->getStringValue().c_str(),
                           theBoxCond->toString());
       }

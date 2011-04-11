@@ -69,7 +69,7 @@ PlanState::PlanState(
 void PlanState::checkDepth(const QueryLoc& loc)
 {
   if (theStackDepth > 256)
-    ZORBA_ERROR_LOC_PARAM(XQP0019_INTERNAL_ERROR, loc, "stack overflow", "");
+    ZORBA_ERROR_LOC_PARAM(ZXQP0019_INTERNAL_ERROR, loc, "stack overflow", "");
 }
 
 

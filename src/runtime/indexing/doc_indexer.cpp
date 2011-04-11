@@ -99,7 +99,7 @@ void DocIndexer::createIndexEntries(
       {
         if (!thePlanWrapper->next((*key)[i]))
         {
-          ZORBA_ERROR_DESC(XQP0019_INTERNAL_ERROR, "Incomplete key during index refresh");
+          ZORBA_ERROR_DESC(ZXQP0019_INTERNAL_ERROR, "Incomplete key during index refresh");
         }
       }
       

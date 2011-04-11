@@ -644,9 +644,9 @@ ZorbaInsertNodesFirstIterator::getCollection(
   - If the collection URI is empty and the default collection
     is not defined in the dynamic context, FODC0002 is raised
   - If the specified collection does not exist, an error is raised
-    (API0006_COLLECTION_NOT_FOUND - collection does not exist).
+    (ZAPI0006_COLLECTION_NOT_FOUND - collection does not exist).
   - If the node is already in the collection, an error is raised
-    (API0031_NODE_ALREADY_IN_COLLECTION) 
+    (ZAPI0031_NODE_ALREADY_IN_COLLECTION) 
 ********************************************************************************/
 bool ZorbaInsertNodesLastIterator::nextImpl(
     store::Item_t& result,

@@ -121,7 +121,7 @@ var_expr* DynamicContextImpl::get_var_expr(const zstring& inVarName)
   // Note: lookup_var will return NULL if the variable is not known.
   var_expr* var = theStaticContext->lookup_var(qnameItem,
                                                QueryLoc::null,
-                                               err::XQP0000_NO_ERROR);
+                                               err::ZXQP0000_NO_ERROR);
 
   if (var == NULL)
   {
@@ -159,7 +159,7 @@ var_expr* DynamicContextImpl::get_var_expr(
     std::map<short, static_context_t>::const_iterator ite;
     for (ite = lMap.begin(); ite != lMap.end(); ++ite) 
     {
-      var = ite->second->lookup_var(qname, QueryLoc::null, err::XQP0000_NO_ERROR);
+      var = ite->second->lookup_var(qname, QueryLoc::null, err::ZXQP0000_NO_ERROR);
 
       if (var)
         break;
@@ -167,7 +167,7 @@ var_expr* DynamicContextImpl::get_var_expr(
   }
   else
   {
-    var = theStaticContext->lookup_var(qname, QueryLoc::null, err::XQP0000_NO_ERROR);
+    var = theStaticContext->lookup_var(qname, QueryLoc::null, err::ZXQP0000_NO_ERROR);
   }
 
   if (var == NULL)
@@ -236,7 +236,7 @@ bool DynamicContextImpl::setVariable(
 
     if (!inValue.get())
       throw ZORBA_EXCEPTION(
-        API0014_INVALID_ARGUMENT, ERROR_PARAMS( "null", ZED( BadIterator ) )
+        ZAPI0014_INVALID_ARGUMENT, ERROR_PARAMS( "null", ZED( BadIterator ) )
       );
 
     const zstring& nameSpace = Unmarshaller::getInternalString(inNamespace);
@@ -332,7 +332,7 @@ bool DynamicContextImpl::setVariable(
 
     if (!inValue.get())
       throw ZORBA_EXCEPTION(
-        API0014_INVALID_ARGUMENT, ERROR_PARAMS( "null", ZED( BadIterator ) )
+        ZAPI0014_INVALID_ARGUMENT, ERROR_PARAMS( "null", ZED( BadIterator ) )
       );
 
     const zstring& varName = Unmarshaller::getInternalString(inVarName);
@@ -592,7 +592,7 @@ bool DynamicContextImpl::setCurrentDateTime(const Item& aDateTimeItem)
     if (!TypeOps::is_subtype(tm, *lItemType, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE))
     {
       throw ZORBA_EXCEPTION(
-        API0014_INVALID_ARGUMENT,
+        ZAPI0014_INVALID_ARGUMENT,
         ERROR_PARAMS(
           lItemType->toString(),
           ZED( TypeIsNotSubtype ),
@@ -682,7 +682,7 @@ void DynamicContextImpl::checkNoIterators() const
   if (theQuery->theResultIterator &&
       theQuery->theResultIterator->isOpen())
   {
-    throw ZORBA_EXCEPTION( API0027_CANNOT_UPDATE_DCTX_WITH_ITERATORS );
+    throw ZORBA_EXCEPTION( ZAPI0027_CANNOT_UPDATE_DCTX_WITH_ITERATORS );
   }
 }
 

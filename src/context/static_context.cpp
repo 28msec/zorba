@@ -210,7 +210,7 @@ void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
       // no way to get the module
       if (!module)
       {
-        ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
+        ZORBA_ERROR_DESC_OSS(ZCSE0013_UNABLE_TO_LOAD_QUERY,
                              "Couldn't load pre-compiled query because"
                              << " the external module " << lURI
                              << " is not available to be loaded from a"
@@ -223,7 +223,7 @@ void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
       SerializationCallback* lCallback = ar.getUserCallback();
       if (!lCallback)
       {
-        ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
+        ZORBA_ERROR_DESC_OSS(ZCSE0013_UNABLE_TO_LOAD_QUERY,
                              "Couldn't load pre-compiled query because"
                              << " the external module " << lURI
                              << " is required but no SerializationCallback is"
@@ -234,7 +234,7 @@ void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
       module = lCallback->getExternalModule(lURI.str());
       if (!module)
       {
-        ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
+        ZORBA_ERROR_DESC_OSS(ZCSE0013_UNABLE_TO_LOAD_QUERY,
                              "Couldn't load pre-compiled query because"
                              << " the external module " << lURI
                              << " is not available using the registered"
@@ -671,7 +671,7 @@ void static_context::serialize_resolvers(serialization::Archiver& ar)
     // callback required but not available
     if ((lUserDocResolver || lUserColResolver || lNumModuleResolvers) && !lCallback)
     {
-      ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
+      ZORBA_ERROR_DESC_OSS(ZCSE0013_UNABLE_TO_LOAD_QUERY,
                            "Couldn't load pre-compiled query because"
                            << " a document, collection, or module resolver"
                            << " is required but no SerializationCallback"
@@ -682,7 +682,7 @@ void static_context::serialize_resolvers(serialization::Archiver& ar)
       DocumentURIResolver* lDocResolver = lCallback->getDocumentURIResolver();
       if (!lDocResolver)
       {
-        ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
+        ZORBA_ERROR_DESC_OSS(ZCSE0013_UNABLE_TO_LOAD_QUERY,
                              "Couldn't load pre-compiled query because"
                              " no document URI resolver could be retrieved"
                              " using the given SerializationCallback");
@@ -693,7 +693,7 @@ void static_context::serialize_resolvers(serialization::Archiver& ar)
     if (lUserColResolver) {
       CollectionURIResolver* lColResolver = lCallback->getCollectionURIResolver();
       if (!lColResolver) {
-        ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
+        ZORBA_ERROR_DESC_OSS(ZCSE0013_UNABLE_TO_LOAD_QUERY,
                              "Couldn't load pre-compiled query because"
                              " no collection URI resolver could be retrieved"
                              " using the given SerializationCallback");
@@ -704,7 +704,7 @@ void static_context::serialize_resolvers(serialization::Archiver& ar)
       for (size_t i = 0; i < lNumModuleResolvers; ++i) {
         ModuleURIResolver* lModResolver = lCallback->getModuleURIResolver(i);
         if (!lModResolver) {
-          ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
+          ZORBA_ERROR_DESC_OSS(ZCSE0013_UNABLE_TO_LOAD_QUERY,
                                "Couldn't load pre-compiled query because"
                                " no module URI resolver could be retrieved"
                                " using the given SerializationCallback");
@@ -744,7 +744,7 @@ void static_context::serialize_tracestream(serialization::Archiver& ar)
     // callback required but not available
     if (lUserTraceStream && !lCallback)
     {
-      ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
+      ZORBA_ERROR_DESC_OSS(ZCSE0013_UNABLE_TO_LOAD_QUERY,
                            "Couldn't load pre-compiled query because "
                            << " a trace stream"
                            << " is required but no SerializationCallback"
@@ -754,7 +754,7 @@ void static_context::serialize_tracestream(serialization::Archiver& ar)
     if (lUserTraceStream) {
       bool lTraceStream =  lCallback->getTraceStream(theTraceStream);
       if (!lTraceStream) {
-        ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
+        ZORBA_ERROR_DESC_OSS(ZCSE0013_UNABLE_TO_LOAD_QUERY,
                              "Couldn't load pre-compiled query because"
                              " no trace stream could be retrieved"
                              " using the given SerializationCallback.");
@@ -1796,7 +1796,7 @@ void static_context::bind_ns(
   Search the static-context tree, starting from "this" and moving upwards,
   looking for the 1st namespace binding for the given prefix. If no such
   binding is found, either raise an error (if the given error code is not
-  XQP0000_NO_ERROR) or return false. Otherwise, return true and the
+  ZXQP0000_NO_ERROR) or return false. Otherwise, return true and the
   associated namespace uri.
 ********************************************************************************/
 bool static_context::lookup_ns(
@@ -1811,7 +1811,7 @@ bool static_context::lookup_ns(
     {
       return theParent->lookup_ns(ns, prefix, loc, err);
     }
-    else if (err != err::XQP0000_NO_ERROR)
+    else if (err != err::ZXQP0000_NO_ERROR)
     {
       ZORBA_ERROR_VAR_LOC_PARAM(err, loc, prefix, "");
     }
@@ -1822,7 +1822,7 @@ bool static_context::lookup_ns(
   }
   else if (!prefix.empty() && ns.empty())
   {
-    if (err != err::XQP0000_NO_ERROR)
+    if (err != err::ZXQP0000_NO_ERROR)
     {
       ZORBA_ERROR_VAR_LOC_PARAM(err, loc, prefix, "");
     }
@@ -1937,7 +1937,7 @@ void static_context::bind_var(
   is found.
 
   If var is not found, the method raises the given error, unless the given error
-  is XQP0000_NO_ERROR, in which case it returns NULL.
+  is ZXQP0000_NO_ERROR, in which case it returns NULL.
 ********************************************************************************/
 var_expr* static_context::lookup_var(
     const store::Item* qname,
@@ -1960,10 +1960,8 @@ var_expr* static_context::lookup_var(
     sctx = sctx->theParent;
   }
 
-  if (err != err::XQP0000_NO_ERROR)
-  {
+  if (err != err::ZXQP0000_NO_ERROR)
     ZORBA_ERROR_VAR_LOC_PARAM(err, loc, qname->getStringValue().c_str(), "");
-  }
 
   return NULL;
 }
@@ -2549,8 +2547,7 @@ void static_context::bind_external_module(
   if (!theExternalModulesMap->insert(uri, modinfo))
   {
     throw ZORBA_EXCEPTION(
-      API0019_MODULE_ALREADY_REGISTERED,
-      ERROR_PARAMS( uri )
+      ZAPI0019_MODULE_ALREADY_REGISTERED, ERROR_PARAMS( uri )
     );
   }
 }

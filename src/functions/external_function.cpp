@@ -82,7 +82,7 @@ void external_function::serialize(::zorba::serialization::Archiver& ar)
 
     if (theImpl == NULL)
     {
-      ZORBA_ERROR_LOC_PARAM(XQP0028_FUNCTION_IMPL_NOT_FOUND,
+      ZORBA_ERROR_LOC_PARAM(ZXQP0028_FUNCTION_IMPL_NOT_FOUND,
                             theLoc, theNamespace, lLocalName);
     }
   }

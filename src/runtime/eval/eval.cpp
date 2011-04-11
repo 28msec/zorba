@@ -252,7 +252,7 @@ void EvalIterator::copyOuterVariables(
   {
     var_expr* evalVar = outerSctx->lookup_var(theVarNames[i],
                                               loc,
-                                              err::XQP0000_NO_ERROR);
+                                              err::ZXQP0000_NO_ERROR);
     ZORBA_ASSERT(evalVar);
 
     evalVar->set_unique_id(maxOuterVarId);
@@ -296,7 +296,7 @@ void EvalIterator::setExternalVariables(
 
     var_expr* globalVar = outerSctx->lookup_var(innerVar->get_name(),
                                                 loc, 
-                                                err::XQP0000_NO_ERROR);
+                                                err::ZXQP0000_NO_ERROR);
     store::Item_t itemValue;
     store::TempSeq_t seqValue;
 

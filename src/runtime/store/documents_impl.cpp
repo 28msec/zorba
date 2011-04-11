@@ -67,7 +67,7 @@ bool AddDocumentIterator::nextImpl(
   // check if document already exists in the store
   if (GENV_STORE.getDocument(lResolvedUriString) != NULL) {
     throw XQUERY_EXCEPTION(
-      API0020_DOCUMENT_ALREADY_EXISTS,
+      ZAPI0020_DOCUMENT_ALREADY_EXISTS,
       ERROR_PARAMS( lResolvedUriString ),
       ERROR_LOC( loc )
     );
@@ -120,7 +120,7 @@ bool RemoveDocumentIterator::nextImpl(
 
   // check if document exists in the store
   if (GENV_STORE.getDocument(lResolvedUriString) == NULL) {
-    ZORBA_ERROR_LOC_DESC_OSS(XQD0001_DOCUMENT_NOT_VALID, loc,
+    ZORBA_ERROR_LOC_DESC_OSS(ZXQD0001_DOCUMENT_NOT_VALID, loc,
         "A document with URI " << lResolvedUriString << " does not exists "
         << "in the store.");
   }
@@ -170,7 +170,7 @@ bool RetrieveDocumentIterator::nextImpl(
 
   // check if document exists in the store
   if ((result = GENV_STORE.getDocument(lResolvedUriString)) == NULL) {
-    ZORBA_ERROR_LOC_DESC_OSS(XQD0001_DOCUMENT_NOT_VALID, loc,
+    ZORBA_ERROR_LOC_DESC_OSS(ZXQD0001_DOCUMENT_NOT_VALID, loc,
         "A document with URI " << lResolvedUriString << " does not exists "
         << "in the store.");
   }

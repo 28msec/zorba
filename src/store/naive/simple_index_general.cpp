@@ -519,7 +519,7 @@ void ProbeGeneralHashIndexIterator::init(const store::IndexCondition_t& cond)
   if (theProbeKind != store::IndexCondition::POINT_VALUE &&
       theProbeKind != store::IndexCondition::POINT_GENERAL)
   {
-    ZORBA_ERROR_PARAM(STR0007_INDEX_UNSUPPORTED_PROBE_CONDITION,
+    ZORBA_ERROR_PARAM(ZSTR0007_INDEX_UNSUPPORTED_PROBE_CONDITION,
                       theIndex->getName()->getStringValue().c_str(), 
                       cond->getKindString());
   }
@@ -530,7 +530,7 @@ void ProbeGeneralHashIndexIterator::init(const store::IndexCondition_t& cond)
 
   if (key->size() != theIndex->getNumColumns())
   {
-    ZORBA_ERROR_PARAM(STR0005_INDEX_PARTIAL_KEY_PROBE,
+    ZORBA_ERROR_PARAM(ZSTR0005_INDEX_PARTIAL_KEY_PROBE,
                       theIndex->getName()->getStringValue().c_str(),
                       key->toString());
   }
@@ -1418,7 +1418,7 @@ void ProbeGeneralTreeIndexIterator::initPoint(const store::IndexCondition_t& con
 
   if (key->size() != theIndex->getNumColumns())
   {
-    ZORBA_ERROR_PARAM(STR0005_INDEX_PARTIAL_KEY_PROBE,
+    ZORBA_ERROR_PARAM(ZSTR0005_INDEX_PARTIAL_KEY_PROBE,
                       theIndex->getName()->getStringValue().c_str(),
                       key->toString());
   }
@@ -1730,7 +1730,7 @@ void ProbeGeneralTreeIndexIterator::initBox(const store::IndexCondition_t& cond)
 
   if (numRanges > theIndex->getNumColumns())
   {
-    ZORBA_ERROR_PARAM(STR0006_INDEX_INVALID_BOX_PROBE, 
+    ZORBA_ERROR_PARAM(ZSTR0006_INDEX_INVALID_BOX_PROBE, 
                       theIndex->getName()->getStringValue().c_str(),
                       "The box condition has more columns than the index");
   }
