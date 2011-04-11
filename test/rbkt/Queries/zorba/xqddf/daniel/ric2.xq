@@ -32,7 +32,7 @@ block{
 </newline>
 },
 block{
-manip:delete-nodes($xqddf-test:blue-collection, manip:collection($xqddf-test:blue-collection)[1]);
+manip:delete-nodes(manip:collection($xqddf-test:blue-collection)[1]);
 },
 block{
 manip:collection($xqddf-test:white-collection)/name;

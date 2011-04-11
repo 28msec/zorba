@@ -25,7 +25,7 @@ return
    block{ manip:insert-nodes($xqddf-test:white-collection, (copy $copyi := $i modify () return $copyi));};};
 },
 block{
-manip:delete-nodes($xqddf-test:white-collection, manip:collection($xqddf-test:white-collection)[1]);
+manip:delete-nodes(manip:collection($xqddf-test:white-collection)[1]);
 },
 block{
 <newline> a

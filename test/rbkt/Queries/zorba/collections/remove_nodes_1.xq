@@ -8,7 +8,7 @@ declare sequential function local:test()
   manip:insert-nodes-last(xs:QName("ns:test1"), <a/>);
   manip:insert-nodes-last(xs:QName("ns:test1"), <b/>);
   manip:insert-nodes-last(xs:QName("ns:test1"), <c/>);
-  manip:delete-nodes(xs:QName("ns:test1"), manip:collection(xs:QName("ns:test1"))[position()<3]);
+  manip:delete-nodes(manip:collection(xs:QName("ns:test1"))[position()<3]);
   exit returning manip:collection(xs:QName("ns:test1"));
 };
 

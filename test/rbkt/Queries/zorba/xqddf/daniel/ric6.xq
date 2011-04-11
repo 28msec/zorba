@@ -30,7 +30,7 @@ return
 block{
 try{
     (manip:insert-nodes($xqddf-test:blue-collection, (fn:doc("auction.xml")//item)[1]),
-    manip:delete-nodes($xqddf-test:blue-collection, manip:collection($xqddf-test:blue-collection)[1]));
+    manip:delete-nodes(manip:collection($xqddf-test:blue-collection)[1]));
 }
 catch * { "
 cannot delete first item in blue collection"}

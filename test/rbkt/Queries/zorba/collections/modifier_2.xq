@@ -15,7 +15,7 @@ declare sequential function local:testa_1()
 {
   try {
     block {
-      manip:delete-nodes($ns:coll_1, subsequence(manip:collection($ns:coll_1), 1, 2));
+      manip:delete-nodes(subsequence(manip:collection($ns:coll_1), 1, 2));
     }
   } catch * ($error) {
     ("a",$error)
@@ -27,7 +27,7 @@ declare sequential function local:testa_2()
 {
   try {
     block {
-      manip:delete-nodes($ns:coll_2, subsequence(manip:collection($ns:coll_2), 1, 2));
+      manip:delete-nodes(subsequence(manip:collection($ns:coll_2), 1, 2));
     }
   } catch * ($error) {
     ("a",$error)
@@ -39,7 +39,7 @@ declare sequential function local:testa_3()
 {
   try {
     block {
-      manip:delete-nodes($ns:coll_3, subsequence(manip:collection($ns:coll_3), 2, 2));
+      manip:delete-nodes(subsequence(manip:collection($ns:coll_3), 2, 2));
     }
   } catch * ($error) {
     ("a",$error)

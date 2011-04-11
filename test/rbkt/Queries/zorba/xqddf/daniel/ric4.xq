@@ -32,7 +32,7 @@ block{
 </newline>
 },
 block{
-manip:delete-nodes($xqddf-test:white-collection, manip:collection($xqddf-test:white-collection)[1]);
+manip:delete-nodes(manip:collection($xqddf-test:white-collection)[1]);
 replace value of node manip:collection($xqddf-test:blue-collection)[1]/name 
         with "gaze wages proving english ";
 },

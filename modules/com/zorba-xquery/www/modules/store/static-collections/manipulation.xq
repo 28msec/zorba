@@ -338,25 +338,21 @@ declare sequential function dml:apply-insert-nodes-after(
  : The delete-nodes function is an updating function that deletes zero of more
  : nodes from a collection. 
  :
- : @param $name the name of the collection from which the first node should be deleted.
  : @param $target the nodes in the collection that should be deleted.
  :
  : @return The result of this function is an empty XDM instance and a pending update
  :         list that contains one update primitive upd:deleteNode($name, $tnode) for 
  :         node in the target sequence.
  :
- : @error XDDY0001 if the collection identified by $name is not declared.
- : @error XDDY0003 if the collection identified by $name is not available.
  : @error XDDY0006 if the modifier property of the collection $name is const, append-only,
           or queue.
  : @error XDTY0001 if $content does not match the expected type according to the
  :        rules for SequenceType Matching.
- : @error XDDY0011 if any nodes in the $target sequence is not a member of
+ : @error XDDY0011 if any nodes in the $target sequence is not a member of a collection
+ :        or not all nodes of the $target sequence belong to the same collection.
  :        the collection identified by the $name parameter.
  :)
-declare updating function dml:delete-nodes(
-  $name as xs:QName,
-  $target as node()*)  external;
+declare updating function dml:delete-nodes($target as node()*)  external;
 
 (:~
  : The delete-node-first function is an updating function that deletes the

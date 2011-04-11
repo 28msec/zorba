@@ -213,18 +213,15 @@ declare sequential function dyn:apply-insert-nodes-after(
  : The delete-nodes function is an updating function that deletes zero of more
  : nodes from a collection. 
  :
- : @param $name The name of the collection from which the nodes should be deleted.
  : @param $target The nodes in the collection that should be deleted.
  : @return The result of this function is an empty XDM instance and a pending update
  :         list that contains one update primitive upd:deleteNode($name, $tnode) for
  :         each node in the target sequence.
- : @error XDDY0003 if the collection identified by $name is not available.
- : @error XDDY0011 if any nodes in the $target sequence is not a member of
+ : @error XDDY0011 if any nodes in the $target sequence is not a member of a collection
+ :        or not all nodes of the $target sequence belong to the same collection.
  :        the collection identified by the $name parameter.
  :)
-declare updating function dyn:delete-nodes(
-  $name as xs:QName,
-  $target as node()*) external;
+declare updating function dyn:delete-nodes($target as node()*) external;
 
 (:~
  : The delete-node-first function is an updating function that deletes the
@@ -235,8 +232,6 @@ declare updating function dyn:delete-nodes(
  :         list that contains one update primitive upd:deleteNode($name, $tnode) where 
  :         $tnode is the first node in the collection.
  :
- : @error XDDY0009 If available collections does not provide a mapping
- :        for the expaned QName $name.
  : @error XDDY0011 if the collection doesn't contain any node.
  :)
 declare updating function dyn:delete-node-first($name as xs:QName) external;
@@ -252,8 +247,6 @@ declare updating function dyn:delete-node-first($name as xs:QName) external;
  :         list that contains one update primitive upd:deleteNode($name, $tnode) for 
  :         each of the n nodes (specified by the $number parameter) in the collection.
  :
- : @error XDDY0009 If available collections does not provide a mapping
- :        for the expaned QName $name.
  : @error XDDY0011 if the collection doesn't contain the given number of nodes.
  :)
 declare updating function dyn:delete-nodes-first(

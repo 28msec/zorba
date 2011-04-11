@@ -98,7 +98,7 @@ declare sequential function local:testi() {
 declare sequential function local:testk() {
   try {
     block {
-      manip:delete-nodes($name, <a/>);
+      manip:delete-nodes(<a/>);
     }
   } catch * ($error) {
     ("k",$error)

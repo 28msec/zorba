@@ -7,4 +7,4 @@ init:create-collection(xs:QName("ns:collection_const"));
 
 manip:insert-nodes(xs:QName("ns:collection_const"), <a/>);
 
-manip:delete-nodes(xs:QName("ns:collection_const"), xs:QName("ns:collection_const")[1]);
+manip:delete-nodes(xs:QName("ns:collection_const")[1]);

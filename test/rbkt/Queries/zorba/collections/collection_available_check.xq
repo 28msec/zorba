@@ -76,7 +76,7 @@ declare sequential function local:testg() {
 declare sequential function local:testi() {
   try {
     block {
-      manip:delete-nodes($ns:http, <a/>);
+      manip:delete-nodes(<a/>);
     }
   } catch * ($error) {
     ("i",$error)

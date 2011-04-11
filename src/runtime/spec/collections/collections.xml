@@ -751,13 +751,11 @@
     <zorba:function generateCodegen="false">
 
       <zorba:signature localname="delete-nodes" prefix="zorba-store-collections-static-manip">
-        <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()*</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
       <zorba:signature localname="delete-nodes" prefix="zorba-store-collections">
-        <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()*</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>

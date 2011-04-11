@@ -402,18 +402,16 @@ void populate_context_collections(static_context* sctx)
 
   DECL_WITH_KIND(sctx, zorba_store_collections_static_manip_delete_nodes,
       (createQName("http://www.zorba-xquery.com/modules/store/static-collections/manipulation","","delete-nodes"),
-      GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
       GENV_TYPESYSTEM.EMPTY_TYPE),
-      FunctionConsts::ZORBA_STORE_COLLECTIONS_STATIC_MANIP_DELETE_NODES_2);
+      FunctionConsts::ZORBA_STORE_COLLECTIONS_STATIC_MANIP_DELETE_NODES_1);
 
 
   DECL_WITH_KIND(sctx, zorba_store_collections_static_manip_delete_nodes,
       (createQName("http://www.zorba-xquery.com/modules/store/collections","","delete-nodes"),
-      GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
       GENV_TYPESYSTEM.EMPTY_TYPE),
-      FunctionConsts::ZORBA_STORE_COLLECTIONS_DELETE_NODES_2);
+      FunctionConsts::ZORBA_STORE_COLLECTIONS_DELETE_NODES_1);
 
 
   DECL_WITH_KIND(sctx, zorba_store_collections_static_manip_delete_node_first,

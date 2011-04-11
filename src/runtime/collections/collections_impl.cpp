@@ -1247,20 +1247,25 @@ bool ZorbaDeleteNodesIterator::nextImpl(
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  consumeNext(collectionName, theChildren[0].getp(), planState);
+  while (consumeNext(node, theChildren[theChildren.size()-1].getp(), planState)) 
+  {
+    if (! node->getCollection()) {
+      ZORBA_ERROR_LOC_PARAM(XDDY0011_COLLECTION_NODE_NOT_FOUND, loc,
+                            "the given node does not belong to any collection", "");
+    }
+    if (collection && collection != node->getCollection()) {
+      ZORBA_ERROR_LOC_PARAM(XDDY0011_COLLECTION_NODE_NOT_FOUND, loc,
+                            "all nodes passed as argument to the delete-nodes function must belong to the same collection", "");
+    }
+    collection = node->getCollection();
+
+    nodes.push_back(node);
+  }
+  collectionName = collection->getName();
 
   collectionDecl = getCollection(
       theSctx, collectionName, loc, theDynamicCollection, collection);
 
-  while (consumeNext(node, theChildren[theChildren.size()-1].getp(), planState)) 
-  {
-    ulong pos;
-    if (!collection->findNode(node.getp(), pos))
-      ZORBA_ERROR_LOC_PARAM(XDDY0011_COLLECTION_NODE_NOT_FOUND, loc, 
-                            collectionName->getStringValue(), "");
-
-    nodes.push_back(node);
-  }
 
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());

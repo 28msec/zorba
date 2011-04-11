@@ -5,4 +5,4 @@ import module namespace ns = "http://www.example.com/example" at "../collection_
 
 init:create-collection(xs:QName("ns:collection_append_only"));
 
-manip:delete-nodes(xs:QName("ns:collection_append_only"), xs:QName("ns:collection_append_only")[1]);
+manip:delete-nodes(xs:QName("ns:collection_append_only")[1]);
