@@ -356,6 +356,21 @@ public:
 };
 
 
+//zorba-store-collections-static-manip:collection-name
+class zorba_store_collections_static_manip_collection_name : public function
+{
+public:
+  zorba_store_collections_static_manip_collection_name(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+}
+
+  bool accessesDynCtx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
 //zorba-store-collections-static-manip:is-available-collection
 class zorba_store_collections_static_manip_is_available_collection : public function
 {

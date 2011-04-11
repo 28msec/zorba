@@ -550,6 +550,34 @@ ZorbaDeleteNodesLastIterator::~ZorbaDeleteNodesLastIterator() {}
 // </ZorbaDeleteNodesLastIterator>
 
 
+// <ZorbaCollectionNameIterator>
+const char* ZorbaCollectionNameIterator::class_name_str = "ZorbaCollectionNameIterator";
+ZorbaCollectionNameIterator::class_factory<ZorbaCollectionNameIterator>
+ZorbaCollectionNameIterator::g_class_factory;
+
+const serialization::ClassVersion 
+ZorbaCollectionNameIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int ZorbaCollectionNameIterator::class_versions_count =
+sizeof(ZorbaCollectionNameIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void ZorbaCollectionNameIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+ZorbaCollectionNameIterator::~ZorbaCollectionNameIterator() {}
+
+// </ZorbaCollectionNameIterator>
+
+
 // <IsAvailableCollectionIterator>
 const char* IsAvailableCollectionIterator::class_name_str = "IsAvailableCollectionIterator";
 IsAvailableCollectionIterator::class_factory<IsAvailableCollectionIterator>

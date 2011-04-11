@@ -319,6 +319,18 @@ declare function dyn:index-of(
 declare function dyn:collection($name as xs:QName) as node()* external;
 
 (:~
+ : This function returns the name of the collection the given node belongs
+ : to.
+ :
+ : @param $node The node for which to get the name of the collection
+ : @return The result of this function is a QName which identifies the collection
+ :         to which the given node belongs to.
+ :
+ : @error XDDY0011 if the given node does not belong to a collection.
+ :)
+declare function dyn:collection-name($node as node()) as xs:QName external;
+
+(:~
  : The create-collection function is an updating function that adds
  : a mapping from the expanded QName $name to an empty sequence
  : to the map of available collections.

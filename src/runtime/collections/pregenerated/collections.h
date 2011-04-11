@@ -863,6 +863,42 @@ public:
 
 /**
  * 
+ *      zorba:collection-name
+ *    
+ * Author: Zorba Team
+ */
+class ZorbaCollectionNameIterator : public NaryBaseIterator<ZorbaCollectionNameIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(ZorbaCollectionNameIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaCollectionNameIterator,
+    NaryBaseIterator<ZorbaCollectionNameIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<ZorbaCollectionNameIterator, PlanIteratorState>*)this);
+  }
+
+  ZorbaCollectionNameIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<ZorbaCollectionNameIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~ZorbaCollectionNameIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
  *      dc:is-available-collection
  *    
  * Author: Zorba Team

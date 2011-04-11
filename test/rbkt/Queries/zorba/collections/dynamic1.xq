@@ -6,6 +6,7 @@ declare variable $coll := xs:QName("dyn:coll1");
 declare variable $available-colls := ();
 declare variable $is-available := ();
 declare variable $content := ();
+declare variable $name := ();
 
 dyn:create-collection($coll);
 dyn:insert-nodes-first($coll, for $i  in 1 to 10 return <b>{$i}</b>);
@@ -18,4 +19,5 @@ dyn:delete-node-first($coll);
 set $available-colls := dyn:available-collections();
 set $is-available := dyn:is-available-collection($coll);
 set $content := for $i in dyn:collection($coll) return copy $j := $i modify () return $j;
-$available-colls, $is-available, $content;
+set $name := dyn:collection-name(dyn:collection($coll)[1]);
+$available-colls, $is-available, $name, $content;

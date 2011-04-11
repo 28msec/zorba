@@ -1488,6 +1488,39 @@ bool ZorbaDeleteNodesLastIterator::nextImpl(
   STACK_END (state);
 }
 
+/*******************************************************************************
+
+********************************************************************************/
+bool ZorbaCollectionNameIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
+{
+  store::Item_t                    item;
+  store::Collection_t              collection;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  consumeNext(item, theChildren[0].getp(), planState);
+
+  collection = item->getCollection();
+
+  if (!collection) {
+    ZORBA_ERROR_LOC_PARAM(XDDY0011_COLLECTION_NODE_NOT_FOUND, loc,
+                          "Given node is not contained in a collection.", "");
+  }
+
+  result = collection->getName();
+
+  STACK_PUSH( true, state);
+
+  STACK_END (state);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 const StaticallyKnownCollection*
 ZorbaDeleteNodesLastIterator::getCollection(
     const static_context* aSctx,

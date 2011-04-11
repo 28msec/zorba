@@ -903,6 +903,36 @@
 /*******************************************************************************
 ********************************************************************************/
 -->
+<zorba:iterator name="ZorbaCollectionNameIterator" >
+
+    <zorba:description author="Zorba Team">
+      zorba:collection-name
+    </zorba:description>
+
+    <zorba:function>
+
+      <zorba:signature localname="collection-name" prefix="zorba-store-collections-static-manip">
+        <zorba:param>node()</zorba:param>
+        <zorba:output>xs:QName</zorba:output>
+      </zorba:signature>
+
+      <zorba:signature localname="collection-name" prefix="zorba-store-collections">
+        <zorba:param>node()</zorba:param>
+        <zorba:output>xs:QName</zorba:output>
+      </zorba:signature>
+
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+      </zorba:methods>
+
+    </zorba:function>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
 <zorba:iterator name="IsAvailableCollectionIterator">
 
     <zorba:description author="Zorba Team">

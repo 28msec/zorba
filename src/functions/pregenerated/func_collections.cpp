@@ -57,6 +57,16 @@ PlanIter_t fn_collection::codegen(
 
 
 
+PlanIter_t zorba_store_collections_static_manip_collection_name::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new ZorbaCollectionNameIterator(sctx, loc, argv);
+}
+
 
 
 PlanIter_t zorba_store_collections_static_manip_is_available_index::codegen(
@@ -472,6 +482,20 @@ void populate_context_collections(static_context* sctx)
       GENV_TYPESYSTEM.UNSIGNED_LONG_TYPE_ONE,
       GENV_TYPESYSTEM.EMPTY_TYPE),
       FunctionConsts::ZORBA_STORE_COLLECTIONS_DELETE_NODES_LAST_2);
+
+
+  DECL_WITH_KIND(sctx, zorba_store_collections_static_manip_collection_name,
+      (createQName("http://www.zorba-xquery.com/modules/store/static-collections/manipulation","","collection-name"),
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+      GENV_TYPESYSTEM.QNAME_TYPE_ONE),
+      FunctionConsts::ZORBA_STORE_COLLECTIONS_STATIC_MANIP_COLLECTION_NAME_1);
+
+
+  DECL_WITH_KIND(sctx, zorba_store_collections_static_manip_collection_name,
+      (createQName("http://www.zorba-xquery.com/modules/store/collections","","collection-name"),
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+      GENV_TYPESYSTEM.QNAME_TYPE_ONE),
+      FunctionConsts::ZORBA_STORE_COLLECTIONS_COLLECTION_NAME_1);
 
 
   DECL_WITH_KIND(sctx, zorba_store_collections_static_manip_is_available_collection,
