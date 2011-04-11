@@ -40,6 +40,9 @@ LIST(REMOVE_ITEM TESTFILES
 # Test disabled because it hangs - bug 3281369
   zorba/http_client/http1-redirect.xq
 
+# Crashes on Windows: 3284881, 3071699 (fix 3284881 before 3071699)
+  zorba/HigherOrder/hof-101.xq
+
 )
 
 # collect all chained test queries (suffix .cxq) in all subdirectories
@@ -296,13 +299,13 @@ ENDIF(XVERMAJ EQUAL 2)
 
 IF(WIN32)
   EXPECTED_FAILURE(test/rbkt/zorba/file/createWriteReadDeleteSeries 3276394)
+  EXPECTED_FAILURE(test/rbkt/zorba/modules/process 3284888)
 ENDIF(WIN32)
 
 EXPECTED_FAILURE(test/rbkt/zorba/modules/schema 3131554)
 
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/admin 2935047)
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/ic-uniqueKey-err2 2935047)
-EXPECTED_FAILURE(test/rbkt/zorba/HigherOrder/hof-101 3071699)
 EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_1_1 3281365)
 EXPECTED_FAILURE(test/rbkt/zorba/spec/xquery_1_0 3281365)
 
