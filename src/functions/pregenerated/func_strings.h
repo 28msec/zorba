@@ -354,6 +354,20 @@ public:
 };
 
 
+//fn:analyze-string
+class fn_analyze_string : public function
+{
+public:
+  fn_analyze_string(const signature& sig, FunctionConsts::FunctionKind kind)
+    : function(sig, kind) {
+
+    theXQueryVersion = StaticContextConsts::xquery_version_1_1;
+}
+
+  CODEGEN_DECL();
+};
+
+
 //fn-zorba-string:materialize
 class fn_zorba_string_materialize : public function
 {

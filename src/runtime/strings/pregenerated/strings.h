@@ -932,6 +932,42 @@ public:
 
 /**
  * 
+ *    fn:analyze-string
+ *  
+ * Author: Zorba Team
+ */
+class FnAnalyzeStringIterator : public NaryBaseIterator<FnAnalyzeStringIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(FnAnalyzeStringIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnAnalyzeStringIterator,
+    NaryBaseIterator<FnAnalyzeStringIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnAnalyzeStringIterator, PlanIteratorState>*)this);
+  }
+
+  FnAnalyzeStringIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<FnAnalyzeStringIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~FnAnalyzeStringIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
  *    string:materialize
  *  
  * Author: Zorba Team

@@ -3228,6 +3228,20 @@ void PrinterVisitor::endVisit ( const FnTokenizeIterator& ) {
 // </FnTokenizeIterator>
 
 
+// <FnAnalyzeStringIterator>
+void PrinterVisitor::beginVisit ( const FnAnalyzeStringIterator& a) {
+  thePrinter.startBeginVisit("FnAnalyzeStringIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnAnalyzeStringIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnAnalyzeStringIterator>
+
+
 // <StringMaterializeIterator>
 void PrinterVisitor::beginVisit ( const StringMaterializeIterator& a) {
   thePrinter.startBeginVisit("StringMaterializeIterator", ++theId);

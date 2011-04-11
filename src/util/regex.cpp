@@ -27,6 +27,10 @@
 #include "regex.h"
 #include "stl_util.h"
 
+#ifndef ZORBA_NO_UNICODE
+#include <unicode/uversion.h>
+#endif
+
 using namespace std;
 U_NAMESPACE_USE
 
@@ -309,6 +313,52 @@ bool regex::replace_all( char const *in, char const *replacement,
   return  to_string( in, &u_in ) &&
           to_string( replacement, &u_replacement ) &&
           replace_all( u_in, u_replacement, out );
+}
+
+
+
+void regex::set_string(const char* in, size_type len, size_type *utf8len)
+{
+  ZORBA_ASSERT( matcher_ );
+  to_string( in, len, &s_in );
+  if(utf8len)
+    *utf8len = s_in.length();
+  matcher_->reset( s_in );
+}
+
+bool regex::find_next_match(bool *reachedEnd)
+{
+  ZORBA_ASSERT( matcher_ );
+  UBool retfind = matcher_->find();
+  if(reachedEnd)
+  {
+#if U_ICU_VERSION_MAJOR_NUM >= 4
+  *reachedEnd = matcher_->hitEnd() != 0;
+#else
+  *reachedEnd = true;
+#endif
+  }
+return retfind != 0;
+}
+
+int regex::get_pattern_group_count()
+{
+  ZORBA_ASSERT( matcher_ );
+  return matcher_->groupCount();
+}
+
+int regex::get_match_start(int groupId)
+{
+  UErrorCode  errcode = U_ZERO_ERROR;
+  ZORBA_ASSERT( matcher_ );
+  return matcher_->start(groupId, errcode);
+}
+
+int regex::get_match_end(int groupId)
+{
+  UErrorCode  errcode = U_ZERO_ERROR;
+  ZORBA_ASSERT( matcher_ );
+  return matcher_->end(groupId, errcode);
 }
 
 } // namespace unicode

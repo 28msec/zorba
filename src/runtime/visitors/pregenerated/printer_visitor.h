@@ -718,6 +718,9 @@ namespace zorba {
     void beginVisit( const FnTokenizeIterator& );
     void endVisit  ( const FnTokenizeIterator& );
 
+    void beginVisit( const FnAnalyzeStringIterator& );
+    void endVisit  ( const FnAnalyzeStringIterator& );
+
     void beginVisit( const StringMaterializeIterator& );
     void endVisit  ( const StringMaterializeIterator& );
 

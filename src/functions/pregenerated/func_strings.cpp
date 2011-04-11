@@ -270,6 +270,16 @@ PlanIter_t fn_tokenize::codegen(
   return new FnTokenizeIterator(sctx, loc, argv);
 }
 
+PlanIter_t fn_analyze_string::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new FnAnalyzeStringIterator(sctx, loc, argv);
+}
+
 PlanIter_t fn_zorba_string_materialize::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -585,6 +595,23 @@ void populate_context_strings(static_context* sctx)
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_STAR),
       FunctionConsts::FN_TOKENIZE_3);
+
+
+  DECL_WITH_KIND(sctx, fn_analyze_string,
+      (createQName("http://www.w3.org/2005/xpath-functions","","analyze-string"),
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.ELEMENT_TYPE_ONE),
+      FunctionConsts::FN_ANALYZE_STRING_2);
+
+
+  DECL_WITH_KIND(sctx, fn_analyze_string,
+      (createQName("http://www.w3.org/2005/xpath-functions","","analyze-string"),
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.ELEMENT_TYPE_ONE),
+      FunctionConsts::FN_ANALYZE_STRING_3);
 
 
   DECL_WITH_KIND(sctx, fn_zorba_string_materialize,

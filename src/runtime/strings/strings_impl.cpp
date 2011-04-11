@@ -18,6 +18,7 @@
 
 #include "common/common.h"
 
+#include "zorbamisc/ns_consts.h"
 #include "zorbaerrors/assert.h"
 #include "zorbaerrors/error_manager.h"
 
@@ -1568,6 +1569,393 @@ bool FnTokenizeIterator::nextImpl(
 }
 
 /**
+  *______________________________________________________________________
+  *
+  *  5.6.5 fn:analyze-string
+  *
+  *fn:analyze-string( $input   as xs:string?,
+  *                   $pattern as xs:string) as element(fn:analyze-string-result)
+  *fn:analyze-string( $input   as xs:string?,
+  *                   $pattern as xs:string,
+  *                   $flags   as xs:string) as element(fn:analyze-string-result)
+  *_______________________________________________________________________*/
+
+static void copyUtf8Chars(const char *&sin, 
+                          int &utf8start,
+                          unsigned int &bytestart,
+                          int utf8end,
+                          zstring &out)
+{
+  utf8::size_type clen;
+  while(utf8start < utf8end)
+  {
+    clen = utf8::char_length(*sin);
+    out.append(sin, clen);
+    utf8start++;
+    bytestart += clen;
+    sin += clen;
+  }
+}
+
+static void addNonMatchElement(store::Item_t &parent, 
+                               int &match_end1, 
+                               unsigned int &match_end1_bytes,
+                               int match_start2, 
+                               const char *&strin)
+{
+  store::Item_t non_match_elem;
+  store::Item_t non_match_element_name;
+  store::Item_t untyped_type_name;
+  store::NsBindings   ns_binding;
+  zstring baseURI;
+  GENV_ITEMFACTORY->createQName(untyped_type_name,
+                                "http://www.w3.org/2001/XMLSchema", "", "untyped");
+  GENV_ITEMFACTORY->createQName(non_match_element_name,
+                                XQUERY_FN_NS, "fn", "non-match");
+  GENV_ITEMFACTORY->createElementNode(non_match_elem, parent, non_match_element_name, untyped_type_name, false, false, ns_binding, baseURI);
+  //utf8_it += (match_start2 - match_end1);
+  zstring                non_match_str;
+  //utf8_string<zstring>   non_match_utf8(non_match_str);
+  //while(match_end1 < match_start2)
+  //{
+  //  non_match_utf8 += *utf8_it;
+  //  utf8_it++;
+  //  match_end1++;
+  //}
+  copyUtf8Chars(strin, match_end1, match_end1_bytes, match_start2, non_match_str);
+  store::Item_t non_match_text_item;
+  GENV_ITEMFACTORY->createTextNode(non_match_text_item, non_match_elem, non_match_str);
+}
+
+void addMatchElement(store::Item_t &parent, 
+                    int match_start2, 
+                    unsigned int &match_end1_bytes,
+                    int match_end2,
+                    //utf8_string<zstring_p>::const_iterator& utf8_it,
+                    const char *&sin,
+                    unicode::regex &rx,
+                    int nr_pattern_groups)
+{
+  store::Item_t match_element_name;
+  store::Item_t group_element_name;
+  store::Item_t nr_attrib_name;
+  store::Item_t untyped_type_name;
+  store::NsBindings   ns_binding;
+  zstring baseURI;
+  GENV_ITEMFACTORY->createQName(untyped_type_name,
+                                "http://www.w3.org/2001/XMLSchema", "", "untyped");
+  GENV_ITEMFACTORY->createQName(match_element_name,
+                                XQUERY_FN_NS, "fn", "match");
+  store::Item_t match_elem;
+  GENV_ITEMFACTORY->createElementNode(match_elem, parent, match_element_name, untyped_type_name, false, false, ns_binding, baseURI);
+  int    match_startg = match_start2;
+  int    match_endg = match_start2;
+  for(int i=0;i<nr_pattern_groups;i++)
+  {
+    match_startg = rx.get_match_start(i+1);
+    if(match_startg < 0)
+      continue;
+    if(match_endg < match_startg)
+    {
+      //add non-group match text
+      zstring                non_group_str;
+      //utf8_string<zstring>   non_group_utf8(non_group_str);
+      //while(match_endg < match_startg)
+      //{
+      //  non_group_utf8 += *utf8_it;
+      //  utf8_it++;
+      //  match_endg++;
+      //}
+      copyUtf8Chars(sin, match_endg, match_end1_bytes, match_startg, non_group_str);
+      store::Item_t non_group_text_item;
+      GENV_ITEMFACTORY->createTextNode(non_group_text_item, match_elem.getp(), non_group_str);
+    }
+    match_endg = rx.get_match_end(i+1);
+    //add group match text
+    GENV_ITEMFACTORY->createQName(group_element_name,
+                                  XQUERY_FN_NS, "fn", "group");
+    GENV_ITEMFACTORY->createQName(nr_attrib_name,
+                                  XQUERY_FN_NS, "fn", "nr");
+    store::Item_t group_elem;
+    GENV_ITEMFACTORY->createElementNode(group_elem, match_elem, group_element_name, untyped_type_name, false, false, ns_binding, baseURI);
+    char strid[40];
+    sprintf(strid, "%d", i+1);
+    zstring zstrid(strid);
+    store::Item_t strid_item;
+    GENV_ITEMFACTORY->createString(strid_item, zstrid);
+    store::Item_t id_attrib_item;
+    GENV_ITEMFACTORY->createAttributeNode(id_attrib_item, group_elem.getp(), nr_attrib_name, untyped_type_name, strid_item);
+    zstring                group_str;
+    //utf8_string<zstring>   group_utf8(group_str);
+    //while(match_startg < match_endg)
+    //{
+    //  group_utf8 += *utf8_it;
+    //  utf8_it++;
+    //  match_startg++;
+    //}
+    copyUtf8Chars(sin, match_startg, match_end1_bytes, match_endg, group_str);
+    store::Item_t group_text_item;
+    GENV_ITEMFACTORY->createTextNode(group_text_item, group_elem.getp(), group_str);
+  }
+  //add last non-group match
+  if(match_endg < match_end2)
+  {
+    zstring                non_group_str;
+    //utf8_string<zstring>   non_group_utf8(non_group_str);
+    //while(match_endg < match_end2)
+    //{
+    //  non_group_utf8 += *utf8_it;
+    //  utf8_it++;
+    //  match_endg++;
+    //}
+    copyUtf8Chars(sin, match_endg, match_end1_bytes, match_end2, non_group_str);
+    store::Item_t non_group_text_item;
+    GENV_ITEMFACTORY->createTextNode(non_group_text_item, match_elem, non_group_str);
+  }
+}
+
+
+bool FnAnalyzeStringIterator::nextImpl(
+    store::Item_t& result, 
+    PlanState& planState) const
+{
+  bool is_input_stream = false;
+  zstring input;
+  std::istream *instream = NULL;
+#define STREAMBUF_CHUNK_SIZE    4*1024
+  class SmartCharPtr
+  {
+  public:
+    char *ptr;
+    SmartCharPtr() : ptr(NULL) {}
+    ~SmartCharPtr() {if(ptr) ::free(ptr);}
+  };
+  SmartCharPtr    streambuf;
+  zstring::size_type   streambuf_allocated_size = 0;
+  zstring::size_type   streambuf_read = 0;
+  //zstring::size_type   streambuf_beg = 0;
+  zstring xquery_pattern;
+  zstring flags;
+  store::Item_t item;
+  
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  if (consumeNext(item, theChildren[0].getp(), planState))
+  {
+    if(!item->isStreamable())
+    {
+      item->getStringValue2(input);
+    }
+    else
+    {
+      instream = &item->getStream();
+      is_input_stream = true;
+    }
+  }
+
+  if (!consumeNext(item, theChildren[1].getp(), planState))
+    ZORBA_ASSERT (false);
+
+  item->getStringValue2(xquery_pattern);
+
+  if(theChildren.size() == 3) 
+  {
+    if (!consumeNext(item, theChildren[2].getp(), planState))
+      ZORBA_ASSERT (false);
+
+    item->getStringValue2(flags);
+  }
+
+  try 
+  {
+    zstring lib_pattern;
+    convert_xquery_re( xquery_pattern, &lib_pattern, flags.c_str() );
+
+    if(is_input_stream)
+    {
+      streambuf.ptr = (char*)malloc(STREAMBUF_CHUNK_SIZE);
+      streambuf_allocated_size = STREAMBUF_CHUNK_SIZE;
+      instream->read(streambuf.ptr, streambuf_allocated_size);
+      streambuf_read = (unsigned int)instream->gcount();
+      if(streambuf_read == STREAMBUF_CHUNK_SIZE)
+      {
+        zstring::const_reverse_iterator xqit = xquery_pattern.rbegin();
+        if((xqit != xquery_pattern.rend()) && (flags.find('m') == std::string::npos))
+        {
+          if(*xqit == '$')
+          {
+            xqit++;
+            int bslashes = 0;
+            while(xqit != xquery_pattern.rend())
+            {
+              if(*xqit == '\\')
+                bslashes++;
+              else
+                break;
+            }
+            if(bslashes%2 == 0)
+            {
+              //better read all instream
+              do{
+                streambuf.ptr = (char*)realloc(streambuf.ptr, streambuf_allocated_size+STREAMBUF_CHUNK_SIZE);
+                streambuf_allocated_size += STREAMBUF_CHUNK_SIZE;
+                instream->read(streambuf.ptr + streambuf_read, STREAMBUF_CHUNK_SIZE);
+                streambuf_read += (unsigned int)instream->gcount();
+              }while(instream->gcount() == STREAMBUF_CHUNK_SIZE);
+            }
+          }
+        }
+      }
+    }
+
+    unicode::regex    rx;
+    rx.compile(lib_pattern, flags.c_str());
+    int   nr_pattern_groups = rx.get_pattern_group_count();
+
+    store::Item_t null_parent;
+    store::Item_t result_element_name;
+    store::Item_t untyped_type_name;
+    store::NsBindings   ns_binding;
+    zstring baseURI;
+    GENV_ITEMFACTORY->createQName(untyped_type_name,
+                                  "http://www.w3.org/2001/XMLSchema", "", "untyped");
+    GENV_ITEMFACTORY->createQName(result_element_name,
+                                  XQUERY_FN_NS, "fn", "analyze-string-result");
+    GENV_ITEMFACTORY->createElementNode(result, NULL, result_element_name, untyped_type_name, false, false, ns_binding, baseURI);
+
+    int nr_retry = 0;
+    bool   reachedEnd = false;
+    do
+    {
+      const char *instr;
+      unicode::size_type   utf8len;
+      if(!is_input_stream)
+      {
+        rx.set_string(input.c_str(), input.size(), &utf8len);
+        instr = input.c_str();
+        streambuf_read = input.size();
+      }
+      else
+      {
+        unsigned int reducebytes = 0;
+        if(!instream->eof())
+        {
+          //check the last bytes, maybe it is a truncated utf8 char
+          unsigned int maxbytes = 6;
+          if(maxbytes > streambuf_read)
+            maxbytes = streambuf_read;
+          for(reducebytes=1;reducebytes<=maxbytes;reducebytes++)
+          {
+            utf8::size_type clen = utf8::char_length(streambuf.ptr[streambuf_read-reducebytes]);
+            if((clen > 1) && (clen > reducebytes))
+              break;
+          }
+          if(reducebytes == (maxbytes+1))
+            reducebytes = 0;
+        }
+        rx.set_string(streambuf.ptr, streambuf_read-reducebytes, &utf8len);
+        instr = streambuf.ptr;
+      }
+      //zstring_p zinstr(instr);
+      //utf8_string<zstring_p>  utf8_instr(zinstr);
+      //utf8_string<zstring_p>::const_iterator    utf8_it = utf8_instr.begin();
+
+      //int    match_start1 = 0;
+      int    match_end1 = 0;
+      unsigned int    match_end1_bytes = 0;
+      reachedEnd = false;
+      while(rx.find_next_match(&reachedEnd))
+      {
+        int    match_start2 = rx.get_match_start();
+        int    match_end2 = rx.get_match_end();
+        ZORBA_ASSERT(match_start2 >= 0);
+
+        if(is_input_stream && reachedEnd && !instream->eof())
+        {
+          //load some more data, maybe the match will be different
+          break;
+        }
+
+        //construct the fn:non-match
+        if(match_start2 > match_end1)
+        {
+          addNonMatchElement(result, match_end1, match_end1_bytes, match_start2, instr);
+        }
+
+        //construct the fn:match
+        addMatchElement(result, match_start2, match_end1_bytes, match_end2, instr, rx, nr_pattern_groups);
+        match_end1 = match_end2;
+      }
+
+      if(is_input_stream && reachedEnd && !instream->eof())
+      {
+        //load some more data, maybe the match will be different
+        if(match_end1_bytes)
+        {
+          memmove(streambuf.ptr, streambuf.ptr+match_end1_bytes, streambuf_read-match_end1_bytes);
+          streambuf_read -= match_end1_bytes;
+          nr_retry = 0;
+        }
+        else
+          nr_retry++;
+        if(!match_end1_bytes && (nr_retry == 2))
+        {
+          if(streambuf_allocated_size > streambuf_read)
+          {
+            instream->read(streambuf.ptr + streambuf_read, streambuf_allocated_size - streambuf_read);
+            streambuf_read += (unsigned int)instream->gcount();
+          }
+          //better read all instream
+          while(!instream->eof())
+          {
+            streambuf.ptr = (char*)realloc(streambuf.ptr, streambuf_allocated_size+STREAMBUF_CHUNK_SIZE);
+            instream->read(streambuf.ptr + streambuf_read, STREAMBUF_CHUNK_SIZE);
+            streambuf_read += (unsigned int)instream->gcount();
+            streambuf_allocated_size += STREAMBUF_CHUNK_SIZE;
+          }
+        }
+        else
+        {
+          //read some more data from instream
+          if(streambuf_allocated_size > streambuf_read)
+          {
+            instream->read(streambuf.ptr + streambuf_read, streambuf_allocated_size - streambuf_read);
+            streambuf_read += (unsigned int)instream->gcount();
+          }
+          else
+          {
+            streambuf.ptr = (char*)realloc(streambuf.ptr, streambuf_allocated_size+STREAMBUF_CHUNK_SIZE);
+            instream->read(streambuf.ptr + streambuf_read, STREAMBUF_CHUNK_SIZE);
+            streambuf_read += (unsigned int)instream->gcount();
+            streambuf_allocated_size += STREAMBUF_CHUNK_SIZE;
+          }
+        }
+        reachedEnd = false;
+      }
+      else
+      {
+        if(match_end1_bytes < streambuf_read)
+          addNonMatchElement(result, match_end1, match_end1_bytes, streambuf_read, instr);
+        if(is_input_stream && instream->eof())
+          reachedEnd = true;
+      }
+
+    }while(is_input_stream && !reachedEnd);
+  }
+  catch(XQueryException& ex) 
+  {
+    set_source( ex, loc );
+    throw;
+  }
+
+  STACK_PUSH(true, state); 
+  
+  STACK_END(state);
+}
+
+
+/**
  *______________________________________________________________________
  *
  * http://www.zorba-xquery.com/modules/string
@@ -1593,6 +1981,7 @@ bool StringMaterializeIterator::nextImpl(
     lString = item->getString();
     STACK_PUSH(GENV_ITEMFACTORY->createString(result, lString), state);
   } else {
+    result = item;
     STACK_PUSH(result != 0 , state);
   }
 

@@ -717,6 +717,34 @@ void FnTokenizeIteratorState::init(PlanState& planState) {
 // </FnTokenizeIterator>
 
 
+// <FnAnalyzeStringIterator>
+const char* FnAnalyzeStringIterator::class_name_str = "FnAnalyzeStringIterator";
+FnAnalyzeStringIterator::class_factory<FnAnalyzeStringIterator>
+FnAnalyzeStringIterator::g_class_factory;
+
+const serialization::ClassVersion 
+FnAnalyzeStringIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int FnAnalyzeStringIterator::class_versions_count =
+sizeof(FnAnalyzeStringIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void FnAnalyzeStringIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+FnAnalyzeStringIterator::~FnAnalyzeStringIterator() {}
+
+// </FnAnalyzeStringIterator>
+
+
 // <StringMaterializeIterator>
 const char* StringMaterializeIterator::class_name_str = "StringMaterializeIterator";
 StringMaterializeIterator::class_factory<StringMaterializeIterator>
