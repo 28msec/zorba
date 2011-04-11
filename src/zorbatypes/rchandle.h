@@ -85,7 +85,7 @@ public:
 
   virtual ~RCObject() { }
 
-	RCObject& operator=(const RCObject&) { return *this; }
+  RCObject& operator=(const RCObject&) { return *this; }
 
   virtual void free() { delete this; }
 
@@ -187,10 +187,12 @@ public:
 
   T& operator*() const        { return *p; } 
 
-	bool operator==(rchandle const& h) const  { return p == h.p; }
-	bool operator!=(rchandle const& h) const  { return p != h.p; }
-	bool operator==(T const* pp) const        { return p == pp; } 
-	bool operator!=(T const* pp) const        { return p != pp; }
+  bool operator!() const      { return !p; }
+
+  bool operator==(rchandle const& h) const  { return p == h.p; }
+  bool operator!=(rchandle const& h) const  { return p != h.p; }
+  bool operator==(T const* pp) const        { return p == pp; } 
+  bool operator!=(T const* pp) const        { return p != pp; }
   bool operator<(const rchandle& h) const   { return p < h.p; }
 
 
@@ -216,26 +218,26 @@ public:
 
   rchandle& operator=(const T* rhs) 
   {
-		if (p != rhs)
+    if (p != rhs)
     {
-			if (p) p->removeReference(p->getSharedRefCounter()
+      if (p) p->removeReference(p->getSharedRefCounter()
                                 SYNC_PARAM2(p->getRCLock()));
-			p = const_cast<T*>(rhs);
-			init();
-		}
-		return *this;
+      p = const_cast<T*>(rhs);
+      init();
+    }
+    return *this;
   }
 
-	template <class otherT> rchandle& operator=(const otherT* rhs)
+  template <class otherT> rchandle& operator=(const otherT* rhs)
   {
-		if (p != rhs)
+    if (p != rhs)
     {
-			if (p) p->removeReference(p->getSharedRefCounter()
+      if (p) p->removeReference(p->getSharedRefCounter()
                                 SYNC_PARAM2(p->getRCLock()));
-			p = static_cast<T*>(const_cast<otherT*>(rhs));
-			init();
-		}
-		return *this;
+      p = static_cast<T*>(const_cast<otherT*>(rhs));
+      init();
+    }
+    return *this;
   }
 
   rchandle& operator=(rchandle const& rhs) 
@@ -243,33 +245,33 @@ public:
     return assign (rhs);
   }
 
-	template <class otherT> rchandle& operator=(rchandle<otherT> const& rhs) 
+  template <class otherT> rchandle& operator=(rchandle<otherT> const& rhs) 
   {
     return assign (rhs);
-	}
+  }
 
   template <class otherT> rchandle& transfer(rchandle<otherT>& rhs)
   {
-		if (p != rhs.getp())
+    if (p != rhs.getp())
     {
-			if (p) p->removeReference(p->getSharedRefCounter()
+      if (p) p->removeReference(p->getSharedRefCounter()
                                 SYNC_PARAM2(p->getRCLock()));
-			p = static_cast<T*>(rhs.getp());
-			rhs.setNull();
-		}
-		return *this;
+      p = static_cast<T*>(rhs.getp());
+      rhs.setNull();
+    }
+    return *this;
   }
 
   rchandle& transfer(rchandle& rhs)
   {
-		if (p != rhs.p)
+    if (p != rhs.p)
     {
-			if (p) p->removeReference(p->getSharedRefCounter()
+      if (p) p->removeReference(p->getSharedRefCounter()
                                 SYNC_PARAM2(p->getRCLock()));
-			p = rhs.p;
-			rhs.p = NULL;
-		}
-		return *this;
+      p = rhs.p;
+      rhs.p = NULL;
+    }
+    return *this;
   }
 
   T* release()
@@ -280,7 +282,7 @@ public:
   }
 
 public:
-	std::string debug() const
+  std::string debug() const
   {
     std::ostringstream oss;
     oss << "rchandle[refcount=" << p->getRefCount() << ']';
@@ -297,18 +299,34 @@ protected:
 
   template <class otherT> rchandle& assign(const rchandle<otherT>& rhs)
   {
-		if (p != rhs.getp())
+    if (p != rhs.getp())
     {
-			if (p) p->removeReference(p->getSharedRefCounter()
+      if (p) p->removeReference(p->getSharedRefCounter()
                                 SYNC_PARAM2(p->getRCLock()));
-			p = static_cast<T*>(rhs.getp());
-			init();
-		}
-		return *this;
+      p = static_cast<T*>(rhs.getp());
+      init();
+    }
+    return *this;
   }
 
 };
 
+namespace ztd {
+
+template<typename T> inline
+std::string to_string( rchandle<T> const &r ) {
+  return !r ? "<null>" : to_string( *r );
+}
+
+template<typename T,class OutputStringType> inline
+void to_string( rchandle<T> const &r, OutputStringType *out ) {
+  if ( !r )
+    *out = "<null>";
+  else
+    to_string( *r, out );
+}
+
+} // namespace ztd
 
 /*******************************************************************************
 
@@ -340,10 +358,10 @@ public:
   const T* operator->() const { return getp(); } 
   const T& operator*() const  { return *getp(); }
 
-	bool operator== (const_rchandle h) const  { return rchandle<T>::operator== (h); }
-	bool operator!= (const_rchandle h) const  { return rchandle<T>::operator!= (h); }
-	bool operator== (const T * pp) const      { return rchandle<T>::operator== (pp); } 
-	bool operator!= (const T * pp) const      { return rchandle<T>::operator!= (pp); } 
+  bool operator== (const_rchandle h) const  { return rchandle<T>::operator== (h); }
+  bool operator!= (const_rchandle h) const  { return rchandle<T>::operator!= (h); }
+  bool operator== (const T * pp) const      { return rchandle<T>::operator== (pp); } 
+  bool operator!= (const T * pp) const      { return rchandle<T>::operator!= (pp); } 
   bool operator< (const_rchandle h) const   { return rchandle<T>::operator<  (h); }
 };
 
@@ -381,15 +399,12 @@ namespace RCHelper
   }
 };
 
-
-
-} /* namespace zorba */
+} // namespace zorba
 
 #endif
-
 /*
  * Local variables:
  * mode: c++
  * End:
  */
-
+/* vim:set et sw=2 ts=2: */

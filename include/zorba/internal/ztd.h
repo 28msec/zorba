@@ -105,6 +105,7 @@ struct enable_if<true,T> {
     template<class T> static no& test(...);                                   \
   public:                                                                     \
     static bool const value = sizeof( test<U>(0) ) == sizeof( yes );          \
+    static void suppress_all_member_functions_are_private_warning();          \
   }
 
 ////////// c_str() /////////////////////////////////////////////////////////////
