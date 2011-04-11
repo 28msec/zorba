@@ -53,9 +53,6 @@ ZORBA_GENERATE_STORE_SPECIFIC_EXES(examples "${examples}" "" "" "")
 SET (TestsToRun ${examples})
 REMOVE (TestsToRun examples.cpp)
 
-# Remove when bug #3276387 and #3235849 are BOTH fixed
-REMOVE (TestsToRun simple.cpp)
-
 STRING (LENGTH "${CMAKE_SOURCE_DIR}/" SOURCE_DIR_LENGTH)
 
 # add all the ADD_TEST for each testing
