@@ -495,8 +495,10 @@ bool BasicItemFactory::createDateTime(
   }
   else
   {
-    if (! createDateTime(result, &date->getDateValue(), &time->getTimeValue()))
-      throw XQUERY_EXCEPTION(FORG0008);
+    xs_date const &d = date->getDateValue();
+    xs_time const &t = time->getTimeValue();
+    if (! createDateTime(result, &d, &t))
+      throw XQUERY_EXCEPTION( FORG0008, ERROR_PARAMS( d, t ) );
 
     return true;
   }

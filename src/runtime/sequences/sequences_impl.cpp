@@ -1048,8 +1048,7 @@ bool FnDeepEqualIterator::nextImpl(
 
     if (arg1->isFunction() || arg2->isFunction()) 
     {
-      ZORBA_ERROR_LOC_DESC(FOTY0015, loc,
-                           "An argument to fn:deep-equal() contains a function item.");
+			throw XQUERY_EXCEPTION( FOTY0015, ERROR_LOC( loc ) );
     }
 
     equal = equal && DeepEqual(loc,

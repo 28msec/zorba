@@ -279,7 +279,7 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, size_t utf8_len,
           case '{':
             if ( in_brace )
               throw XQUERY_EXCEPTION(
-                FTDY0020, ERROR_PARAMS( ZED( BadCharInBraces ), *utf8_buf  )
+                FTDY0020, ERROR_PARAMS( "", ZED( BadCharInBraces ), *utf8_buf  )
               );
             HANDLE_BACKSLASH();
             if ( in_wild ) {
@@ -295,7 +295,7 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, size_t utf8_len,
             }
             if ( in_wild )
               throw XQUERY_EXCEPTION(
-                FTDY0020, ERROR_PARAMS( ZED( ClosingBraceWithoutOpen ) )
+                FTDY0020, ERROR_PARAMS( "", ZED( ClosingBraceWithoutOpen ) )
               );
             break;
           default:
@@ -326,17 +326,17 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, size_t utf8_len,
             break;
           if ( !isdigit( *c ) )
             throw XQUERY_EXCEPTION(
-              FTDY0020, ERROR_PARAMS( *c, ZED( BadDecDigit ) )
+              FTDY0020, ERROR_PARAMS( "", ZED( BadDecDigit ), *c )
             );
         }
         if ( i == utf8_len || *c != ',' )
           throw XQUERY_EXCEPTION(
-            FTDY0020, ERROR_PARAMS( ZED( CommaExpected ) )
+            FTDY0020, ERROR_PARAMS( "", ZED( CharExpected ), ',' )
           );
         for ( ++i, ++c; i < utf8_len; ++i, ++c ) {
           if ( !isdigit( *c ) )
             throw XQUERY_EXCEPTION(
-              FTDY0020, ERROR_PARAMS( *c, ZED( BadDecDigit ) )
+              FTDY0020, ERROR_PARAMS( "", ZED( BadDecDigit ), *c )
             );
         }
       }
@@ -352,7 +352,7 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, size_t utf8_len,
 #     endif
       if ( in_brace )
         throw XQUERY_EXCEPTION(
-          FTDY0020, ERROR_PARAMS( ZED( BadTokenInBraces ), utf8_word )
+          FTDY0020, ERROR_PARAMS( "", ZED( BadTokenInBraces ), utf8_word )
         );
       IF_GOT_BACKSLASH_APPEND_AND_GOTO( next );
     }
@@ -377,7 +377,9 @@ next:
   } // while
 
   if ( in_brace )
-    throw XQUERY_EXCEPTION( FTDY0020, ERROR_PARAMS( ZED( UnbalancedBrace ) ) );
+    throw XQUERY_EXCEPTION(
+      FTDY0020, ERROR_PARAMS( "", ZED( UnbalancedChar ), '}' )
+    );
   t.send( payload, callback );
 }
 

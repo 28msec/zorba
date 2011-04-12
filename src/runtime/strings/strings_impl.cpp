@@ -1382,8 +1382,9 @@ bool FnReplaceIterator::nextImpl(
   }
   
   if (tmp)
-    ZORBA_ERROR_LOC_DESC(FORX0003, loc,
-                         "Regular expression matches zero-length string.");
+    throw XQUERY_EXCEPTION(
+      FORX0003, ERROR_PARAMS( pattern ), ERROR_LOC( loc )
+    );
 
   { // local scope
     int num_capturing_groups = 0;
@@ -1406,15 +1407,19 @@ bool FnReplaceIterator::nextImpl(
             got_backslash = false;
             continue;
           default:
-            ZORBA_ERROR_LOC_DESC(
-              FORX0004, loc, "Illegal character following '\\'."
+            throw XQUERY_EXCEPTION(
+              FORX0004,
+              ERROR_PARAMS( replacement, ZED( BadCharAfter ), *c, '\\' ),
+              ERROR_LOC( loc )
             );
         }
       }
       if ( got_dollar ) {
         if ( !ascii::is_digit( *c ) )
-          ZORBA_ERROR_LOC_DESC(
-            FORX0004, loc, "Illegal character following '$'."
+          throw XQUERY_EXCEPTION(
+            FORX0004,
+            ERROR_PARAMS( replacement, ZED( BadCharAfter ), *c, '$' ),
+            ERROR_LOC( loc )
           );
         if ( *c - '0' <= num_capturing_groups ) {
           replacement2 += '$';
@@ -1436,9 +1441,17 @@ bool FnReplaceIterator::nextImpl(
       }
     } // FOR_EACH
     if ( got_backslash )
-      ZORBA_ERROR_LOC_DESC( FORX0004, loc, "Terminating '\\'." );
+      throw XQUERY_EXCEPTION(
+        FORX0004,
+        ERROR_PARAMS( replacement, ZED( TrailingChar ), '\\' ),
+        ERROR_LOC( loc )
+      );
     if ( got_dollar )
-      ZORBA_ERROR_LOC_DESC( FORX0004, loc, "Terminating '$'." );
+      throw XQUERY_EXCEPTION(
+        FORX0004,
+        ERROR_PARAMS( replacement, ZED( TrailingChar ), '$' ),
+        ERROR_LOC( loc )
+      );
   } // local scope
 
   try 
@@ -1529,8 +1542,9 @@ bool FnTokenizeIterator::nextImpl(
   }
 
   if(tmp)
-    ZORBA_ERROR_LOC_DESC(FORX0003, loc,
-                         "Regular expression matches zero-length string.");
+    throw XQUERY_EXCEPTION(
+      FORX0003, ERROR_PARAMS( state->thePattern ), ERROR_LOC( loc )
+    );
 
 
   while ((xs_uint)state->start_pos < state->theString.length ())

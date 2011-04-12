@@ -82,7 +82,11 @@ ResolveUriIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         } 
         else
         {
-          ZORBA_ERROR_LOC_DESC(FORG0009, loc, "Can't treat empty-sequence as base-uri");
+          throw XQUERY_EXCEPTION(
+            FORG0009,
+            ERROR_PARAMS( ZED( NoEmptySeqAsBaseURI ) ),
+            ERROR_LOC( loc )
+          );
         }
         baseURI = URI(strBase, true);
       } 

@@ -98,8 +98,7 @@ bool FnStringIterator::nextImpl(store::Item_t& result, PlanState& planState) con
   {
     if (inVal->isFunction()) 
     {
-      ZORBA_ERROR_LOC_DESC(FOTY0014, loc,
-        "Argument to fn:string is a function item");
+			throw XQUERY_EXCEPTION( FOTY0014, ERROR_LOC( loc ) );
     }
     state->hasOutput = true;
     inVal->getStringValue2(strval);
@@ -135,8 +134,7 @@ bool FnDataIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     if (result->isFunction())
     {
-      ZORBA_ERROR_LOC_DESC(FOTY0013, loc,
-        "Argument to fn:data is a function item");
+			throw XQUERY_EXCEPTION( FOTY0013, ERROR_LOC( loc ) );
     }
     if (result->isAtomic())
     {
@@ -256,5 +254,5 @@ bool RootIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 }
 
 
-} /* namespace zorba */
+} // namespace zorba
 /* vim:set ts=2 sw=2: */

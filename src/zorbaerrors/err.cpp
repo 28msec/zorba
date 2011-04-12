@@ -119,9 +119,13 @@ namespace err {
 location const location::empty;
 parameters const parameters::empty;
 
+parameters::parameters( unsigned n ) : params_( n ) {
+  assert( n <= 9 );
+}
+
 parameters::value_type parameters::lookup_param( size_type i ) const {
   assert( i >= 1 );
-  // TODO: should be changed to assert() at some point
+  assert( i <= 9 );
   if ( i > params_.size() )
     return value_type();
   value_type param( params_[ i - 1 ] );
@@ -131,16 +135,13 @@ parameters::value_type parameters::lookup_param( size_type i ) const {
 }
 
 void parameters::substitute( value_type *s ) const {
-  bool replaced;
-  do {
-    replaced = false;
-
+  for ( size_type i = 1; i <= 9; ++i ) {
     size_type dollar_pos = value_type::npos;
     bool got_lbrace = false;
     value_type param, replacement;
 
-    for ( size_type i = 0; i < s->size(); ++i ) {
-      char const c = s->at( i );
+    for ( size_type pos = 0; pos < s->size(); ++pos ) {
+      char const c = s->at( pos );
       if ( dollar_pos != value_type::npos ) {
 
         //
@@ -150,21 +151,22 @@ void parameters::substitute( value_type *s ) const {
           switch ( c ) {
             case '1': case '2': case '3': case '4': case '5':
             case '6': case '7': case '8': case '9':
-              param = lookup_param( c - '0' );
-              replacement += param;
+              if ( c - '0' == static_cast<int>( i ) ) {
+                param = lookup_param( i );
+                replacement += param;
+              } else
+                dollar_pos = value_type::npos;
               break;
             case '}': {
-              size_type const len = i - dollar_pos + 1;
+              size_type const len = pos - dollar_pos + 1;
               if ( param.empty() )
                 s->erase( dollar_pos, len );
               else {
                 s->replace( dollar_pos, len, replacement );
-                replaced = true;
-                param.clear();
+                pos = dollar_pos + replacement.length();
               }
               dollar_pos = value_type::npos;
               got_lbrace = false;
-              replacement.clear();
               break;
             }
             default:
@@ -182,17 +184,26 @@ void parameters::substitute( value_type *s ) const {
             break;
           case '1': case '2': case '3': case '4': case '5':
           case '6': case '7': case '8': case '9':
-            s->replace( dollar_pos, 2, lookup_param( c - '0' ) );
+            if ( c - '0' == static_cast<int>( i ) ) {
+              replacement = lookup_param( i );
+              s->replace( dollar_pos, 2, replacement );
+              pos = dollar_pos + replacement.length();
+            }
+            // no break;
+          default:
             dollar_pos = value_type::npos;
-            break;
         }
+
         continue;
       } // if ( dollar_pos ...
 
-      if ( c == '$' )
-        dollar_pos = i;
-    } // for
-  } while ( replaced );
+      if ( c == '$' ) {
+        dollar_pos = pos;
+        param.clear();
+        replacement.clear();
+      }
+    } // for ( ... pos ...
+  } // for ( ... i ...
 }
 
 } // namespace err

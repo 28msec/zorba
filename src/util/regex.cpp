@@ -60,8 +60,8 @@ static icu_flags_t convert_xquery_flags( char const *xq_flags ) {
   return icu_flags;
 }
 
-#define INVALID_RE_EXCEPTION(RE,ZED_KEY) \
-  XQUERY_EXCEPTION( FORX0002, ERROR_PARAMS( RE, ZED( ZED_KEY ) ) )
+#define INVALID_RE_EXCEPTION(...) \
+  XQUERY_EXCEPTION( FORX0002, ERROR_PARAMS( __VA_ARGS__ ) )
 
 void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
                         char const *xq_flags ) {
@@ -108,13 +108,15 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           if ( ascii::is_digit( *xq_c ) ) {
             backref_no = *xq_c - '0';
             if ( !backref_no )          // \0 is illegal
-              throw INVALID_RE_EXCEPTION( xq_re, BackRef0Illegal );
+              throw INVALID_RE_EXCEPTION( xq_re, ZED( BackRef0Illegal ) );
             if ( in_char_class ) {
               //
               // XQuery F&O 7.6.1: Within a character class expression,
               // \ followed by a digit is invalid.
               //
-              throw INVALID_RE_EXCEPTION( xq_re, BackRefIllegalInCharClass );
+              throw INVALID_RE_EXCEPTION(
+                xq_re, ZED( BackRefIllegalInCharClass )
+              );
             }
             in_backref = true;
           }
@@ -141,9 +143,13 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
         // closing right parenthesis occurs after the back-reference.
         //
         if ( backref_no > cap_sub.size() )
-          throw INVALID_RE_EXCEPTION( xq_re, NonexistantBackRef );
+          throw INVALID_RE_EXCEPTION(
+            xq_re, ZED( NonexistantBackRef ), backref_no
+          );
         if ( cap_sub[ backref_no - 1 ] )
-          throw INVALID_RE_EXCEPTION( xq_re, NonClosedBackRef );
+          throw INVALID_RE_EXCEPTION(
+            xq_re, ZED( NonClosedBackRef ), backref_no
+          );
       }
       switch ( *xq_c ) {
         case '\\':
@@ -154,9 +160,9 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           break;
         case ')':
           if ( cap_sub.empty() )
-            throw INVALID_RE_EXCEPTION( xq_re, UnbalancedParen );
+            throw INVALID_RE_EXCEPTION( xq_re, ZED( UnbalancedChar ), ')' );
           if ( !cap_sub.back() )
-            throw INVALID_RE_EXCEPTION( xq_re, UnbalancedParen );
+            throw INVALID_RE_EXCEPTION( xq_re, ZED( UnbalancedChar ), ')' );
           cap_sub.back() = false;
           break;
         case '[':

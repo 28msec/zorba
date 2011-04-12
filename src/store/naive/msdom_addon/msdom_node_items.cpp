@@ -1579,10 +1579,10 @@ void ElementNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) con
   }
   else
   {
-    ZORBA_ERROR_DESC_OSS(FOTY0012,
-                        "The element node " << *theName->getStringValue()
-                        << " with type " << *theTypeName->getStringValue()
-                        << " does not have a typed value");
+    throw XQUERY_EXCEPTION(
+      FOTY0012,
+      ERROR_PARAMS( *theName->getStringValue(), *theTypeName->getStringValue() )
+    );
   }
 }
 
@@ -3530,4 +3530,4 @@ xs_string CommentNode::show() const
 
 } // namespace store
 } // namespace zorba
-
+/* vim:set et sw=2 ts=2: */

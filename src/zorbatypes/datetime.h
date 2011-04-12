@@ -13,8 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #ifndef ZORBA_DATETIME_H
 #define ZORBA_DATETIME_H
+
+#include <iostream>
 
 #include <zorba/config.h>
 #include "zorbatypes/timezone.h"
@@ -357,12 +360,15 @@ protected:
   void setFacet(FACET_TYPE a_facet);
 };
 
-} /* namespace xqp */
+inline std::ostream& operator<<( std::ostream &o, DateTime const &dt ) {
+  return o << dt.toString();
+}
 
-#endif
-
+} // namespace zorba
+#endif /* ZORBA_DATETIME_H */
 /*
  * Local variables:
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */

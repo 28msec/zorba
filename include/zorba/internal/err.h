@@ -211,8 +211,7 @@ public:
    *
    * @param n The number of parameters in the range [0,9].
    */
-  explicit parameters( int n = 0 ) : params_( n ) {
-  }
+  explicit parameters( unsigned n = 0 );
 
   /**
    * Gets the i'th parameter value.
@@ -342,6 +341,33 @@ inline parameters make_parameters( T1 const &p1, T2 const &p2, T3 const &p3,
   ztd::to_string( p2, &p[2] );
   ztd::to_string( p3, &p[3] );
   ztd::to_string( p4, &p[4] );
+  return p;
+}
+
+/**
+ * Makes a parameters object with 5 parameters.
+ *
+ * @tparam T1 The type of the first parameter.
+ * @tparam T2 The type of the second parameter.
+ * @tparam T3 The type of the third parameter.
+ * @tparam T4 The type of the fourth parameter.
+ * @tparam T5 The type of the fifth parameter.
+ * @param p1 The first parameter.
+ * @param p2 The second parameter.
+ * @param p3 The third parameter.
+ * @param p4 The fourth parameter.
+ * @param p5 The fifth parameter.
+ * @return Returns said parameters object.
+ */
+template<typename T1,typename T2,typename T3,typename T4,typename T5>
+inline parameters make_parameters( T1 const &p1, T2 const &p2, T3 const &p3,
+                                   T4 const &p4, T5 const &p5 ) {
+  parameters p( 5 );
+  ztd::to_string( p1, &p[1] );
+  ztd::to_string( p2, &p[2] );
+  ztd::to_string( p3, &p[3] );
+  ztd::to_string( p4, &p[4] );
+  ztd::to_string( p4, &p[5] );
   return p;
 }
 
