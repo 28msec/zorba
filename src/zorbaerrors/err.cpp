@@ -98,11 +98,12 @@ ostream& operator<<( ostream &o, type t ) {
     case XQUERY_STATIC       : o << "static"                ; break;
     case XQUERY_TYPE         : o << "type"                  ; break;
     case XQUERY_USER_DEFINED : o << "user-defined"          ; break;
-    case ZORBA_XQP           : o << "Zorba"                 ; break;
     case ZORBA_API           : o << "Zorba API"             ; break;
     case ZORBA_DDF           : o << "Zorba data-definition" ; break;
+    case ZORBA_OS            : o << "operating system"      ; break;
     case ZORBA_SERIALIZATION : o << "Zorba serialization"   ; break;
     case ZORBA_STORE         : o << "Zorba store"           ; break;
+    case ZORBA_XQP           : o << "Zorba"                 ; break;
     default                  : /* suppresses warning */       break;
   }
   return o;

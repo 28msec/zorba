@@ -546,6 +546,7 @@ extern entry const dict_en[] = {
   { "~format_integer_value_1_10", "format-integer: $value should be between 1 and 10 for this formatting picture" },
   { "~format_integer_value_1_20", "format-integer: $value should be between 1 and 20 for this formatting picture" },
   { "~format_integer_value_gt_3000", "format-integer: $value should be less than 3000 for Roman representation" },
+  { "~operating system error", "operating system error" },
   { "~serialization error", "serialization error" },
   { "~static error", "static error" },
   { "~type error", "type error" },
