@@ -135,6 +135,7 @@ private:
   UserError( char const *ns, char const *prefix, char const *localname );
 
   friend class UserException;
+  friend UserError make_user_error( char const*, char const*, char const* );
 };
 
 ///////////////////////////////////////////////////////////////////////////////
