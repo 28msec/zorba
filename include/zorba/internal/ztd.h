@@ -22,34 +22,12 @@
 #include <sstream>
 #include <string>
 
-////////// Determine tr1 include directory & namespace ////////////////////////
-
-#if defined( __GNUC__ ) && (__GNUC__ * 100 + __GNUC_MINOR__ < 430)
-# define ZORBA_GCC_OLDER_THAN_430 1
-#endif
-
-#if defined( _MSC_VER ) && (_MSC_VER < 1600 /* 2010 */)
-# define ZORBA_MSC_OLDER_THAN_2010 1
-#endif
-
-#if defined( ZORBA_GCC_OLDER_THAN_430 )
-# define ZORBA_TR1_IN_TR1_SUBDIRECTORY 1
-#endif
-
-#if defined( ZORBA_GCC_OLDER_THAN_430 ) || defined( ZORBA_MSC_OLDER_THAN_2010 )
-# define ZORBA_TR1_NS_IS_STD_TR1 1
-#endif
+#include <zorba/config.h>
 
 #ifdef ZORBA_TR1_IN_TR1_SUBDIRECTORY
 # include <tr1/type_traits>
 #else
 # include <type_traits>
-#endif
-
-#ifdef ZORBA_TR1_NS_IS_STD_TR1
-# define ZORBA_TR1_NS std::tr1
-#else
-# define ZORBA_TR1_NS std
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -61,19 +39,25 @@ namespace ztd {
 ////////// tr1 ////////////////////////////////////////////////////////////////
 
 /**
+ * \internal
  * Define our own version of \c enable_if since g++ 4.2.1 (the version that
  * comes with Xcode 3.x) doesn't have \c enable_if.
  */
-template<bool, typename T = void>
+template<bool,typename T = void>
 struct enable_if {
 };
 
+/**
+ * \internal
+ * Specialization of \c enable_if for the \c true case.
+ */
 template<typename T>
 struct enable_if<true,T> {
   typedef T type;
 };
 
 /**
+ * \internal
  * Declares a class that can be used to determine whether a given type \c T has
  * a particular member function with a certain signature.
  * For example:
@@ -137,6 +121,7 @@ inline char const* c_str( char const *s ) {
 
 ////////// less<char const*> ///////////////////////////////////////////////////
 
+// This declaration exists only to declare that less is a template class.
 template<typename T> struct less {
 };
 
@@ -149,7 +134,7 @@ template<typename T> struct less {
  * Addison-Wesley, Reading, MA, 1997.  p. 468.
  */
 template<> struct less<char const*> :
-  std::binary_function<char const*, char const*, bool>
+  std::binary_function<char const*,char const*,bool>
 {
   less() { }
   // This default constructor doesn't need to be defined, but g++ complains if
