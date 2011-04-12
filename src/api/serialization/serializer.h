@@ -94,7 +94,7 @@ protected:
   short int include_content_type;  // yes/no, implemented
   zstring media_type;              // string, implemented
   short int method;                // an expanded QName: "xml", "html", "xhtml",
-                                   // "text", "json", "jsonml", and "binary"
+                                   // "text" and "binary"
                                    // are handled
   zstring normalization_form;      // TODO:   requires unicode normalization
   short int omit_xml_declaration;  // "yes" or "no", implemented
@@ -430,38 +430,6 @@ protected:
     bool emit_bindings(const store::Item* item);
 
     void emit_item(store::Item* item );
-  };
-
-
-  ///////////////////////////////////////////////////////////
-  //                                                       //
-  //  class json_emitter                                   //
-  //                                                       //
-  ///////////////////////////////////////////////////////////
-
-  class json_emitter : public emitter
-  {
-  public:
-    json_emitter(serializer* the_serializer, transcoder& the_transcoder);
-
-    virtual void emit_declaration();
-    virtual void emit_item(store::Item* item);
-  };
-
-
-  ///////////////////////////////////////////////////////////
-  //                                                       //
-  //  class jsonml_emitter                                 //
-  //                                                       //
-  ///////////////////////////////////////////////////////////
-
-  class jsonml_emitter : public emitter
-  {
-  public:
-    jsonml_emitter(serializer* the_serializer, transcoder& the_transcoder);
-
-    virtual void emit_declaration();
-    virtual void emit_item(store::Item* item);
   };
 
 

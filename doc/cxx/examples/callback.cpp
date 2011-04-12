@@ -66,9 +66,6 @@ public:
       lInst->theSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_XML;
       break;
     case 1:
-      lInst->theSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_JSON;
-      break;
-    case 2:
       lInst->theSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_BINARY;
       break;
     default:

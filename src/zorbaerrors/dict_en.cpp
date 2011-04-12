@@ -318,11 +318,6 @@ extern entry const dict_en[] = {
   { "ZAPI0041", "iterator is already open" },
   { "ZAPI0042", "iterator is closed" },
   { "ZAPI0051", "REST error payload" },
-  { "ZAPI0061", "\"$1\": could not serialize element${: 2}" },
-  { "ZAPI0062", "\"$1\": can not serialize non-element" },
-  { "ZAPI0064", "\"$1\": CONV JSON ML SERIALIZE${: 2}" },
-  { "ZAPI0065", "\"$1\": CONV JSON ML PARAM" },
-  { "ZAPI0066", "JSON sequence cannot be serialized" },
   { "ZAPI0070", "\"$1\": invalid serialization method for SAX" },
 
   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -472,7 +467,7 @@ extern entry const dict_en[] = {
   { "~FileNotFoundOrReadable", "file not found or readable" },
   { "~FullTextNotEnabled", "full-text was not enabled in this build" },
   { "~GoodValuesAreUTF8", "valid values are: UTF-8, UTF-16" },
-  { "~GoodValuesAreXMLEtc", "valid values are: xml, html, xhtml, text, json, jsonml, binary" },
+  { "~GoodValuesAreXMLEtc", "valid values are: xml, html, xhtml, text, binary" },
   { "~GoodValuesAreYesNo", "valid values are: yes, no" },
   { "~GoodValuesAreYesNoOmit", "valid values are: yes, no, omit" },
   { "~IncompleteKeyInIndexBuild", "incomplete key during index build" },

@@ -52,10 +52,6 @@
       define="ZORBA_STORE_DOCUMENTS"
       prefix="zorba-store-documents"/>
 
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/json"
-                     define="ZORBA_JSON_FN_NS"
-                     prefix="fn-zorba-json"/>
-
     <zorba:namespace uri="http://www.zorba-xquery.com/modules/csv2xml"
                      define="ZORBA_CSV_FN_NS"
                      prefix="fn-zorba-csv"/>

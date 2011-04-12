@@ -28,7 +28,6 @@
 #include "api/serializerimpl.h"
 #include "api/unmarshaller.h"
 
-#include "util/converters/json_converter.h"
 #include "util/ascii_util.h"
 #include "util/utf8_util.h"
 #include "util/string_util.h"
@@ -1782,119 +1781,6 @@ int serializer::text_emitter::emit_node_children(
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
-//  Json Emitter                                                              //
-//                                                                            //
-////////////////////////////////////////////////////////////////////////////////
-
-
-/*******************************************************************************
-
-********************************************************************************/
-serializer::json_emitter::json_emitter(
-    serializer* the_serializer,
-    transcoder& the_transcoder)
-  :
-  emitter(the_serializer, the_transcoder)
-{
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void serializer::json_emitter::emit_declaration()
-{
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void serializer::json_emitter::emit_item(store::Item* item)
-{
-  zstring result;
-  zstring error_log;
-
-  if(!item->isNode() || item->getNodeKind () != store::StoreConsts::elementNode)
-  {
-    throw ZORBA_EXCEPTION(
-      ZAPI0062_CONV_JSON_PARAM, ERROR_PARAMS( item->getStringValue() )
-    );
-  }
-
-  if (JSON_serialize(item, result, error_log))
-  {
-    tr << result;
-  }
-  else
-  {
-    throw ZORBA_EXCEPTION(
-      ZAPI0061_CONV_JSON_SERIALIZE,
-      ERROR_PARAMS( item->getStringValue(), error_log )
-    );
-  }
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-//                                                                            //
-//  JsonML Emitter                                                            //
-//                                                                            //
-////////////////////////////////////////////////////////////////////////////////
-
-
-/*******************************************************************************
-
-********************************************************************************/
-serializer::jsonml_emitter::jsonml_emitter(
-    serializer* the_serializer,
-    transcoder& the_transcoder)
-  :
-  emitter(the_serializer, the_transcoder)
-{
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void serializer::jsonml_emitter::emit_declaration()
-{
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void serializer::jsonml_emitter::emit_item(store::Item* item)
-{
-  zstring result;
-  zstring error_log;
-
-  if(!item->isNode() || item->getNodeKind () != store::StoreConsts::elementNode)
-  {
-    throw ZORBA_EXCEPTION(
-      ZAPI0065_CONV_JSON_ML_PARAM,
-      ERROR_PARAMS( item->getStringValue() )
-    );
-  }
-
-  if (JSON_ML_serialize(item, result, error_log))
-  {
-    tr << result;
-  }
-  else
-  {
-    throw ZORBA_EXCEPTION(
-      ZAPI0064_CONV_JSON_ML_SERIALIZE,
-      ERROR_PARAMS( item->getStringValue(), error_log )
-    );
-  }
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-//                                                                            //
 //  binary emitter                                                            //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
@@ -2080,10 +1966,6 @@ void serializer::setParameter(const char* aName, const char* aValue)
       method = PARAMETER_VALUE_XHTML;
     else if (!strcmp(aValue, "text"))
       method = PARAMETER_VALUE_TEXT;
-    else if (!strcmp(aValue, "json"))
-      method = PARAMETER_VALUE_JSON;
-    else if (!strcmp(aValue, "jsonml"))
-      method = PARAMETER_VALUE_JSONML;
     else if (!strcmp(aValue, "binary"))
       method = PARAMETER_VALUE_BINARY;
     else
@@ -2230,10 +2112,6 @@ bool serializer::setup(std::ostream& os)
     e = new xhtml_emitter(this, *tr);
   else if (method == PARAMETER_VALUE_TEXT)
     e = new text_emitter(this, *tr);
-  else if (method == PARAMETER_VALUE_JSON)
-    e = new json_emitter(this, *tr);
-  else if (method == PARAMETER_VALUE_JSONML)
-    e = new jsonml_emitter(this, *tr);
   else if (method == PARAMETER_VALUE_BINARY)
     e = new binary_emitter(this, *tr);
   else
@@ -2309,15 +2187,6 @@ void serializer::serialize(
 //+  aObject->open();
   while (aObject->next(lItem))
   {
-    // JSON serialization only alows one single item to be serialized
-    // so throw an error if we get to a second item
-    if (!firstItem && (
-        method == PARAMETER_VALUE_JSON ||
-        method == PARAMETER_VALUE_JSONML))
-    {
-      throw ZORBA_EXCEPTION(ZAPI0066_JSON_SEQUENCE_CANNOT_BE_SERIALIZED);
-    }
-
     // PUL's cannot be serialized
     if (lItem->isPul())
     {
@@ -2387,13 +2256,6 @@ void serializer::serialize(
         }
       }
 
-      // JSON serialization only alows one single item to be serialized
-      // so throw an error if we get to a second item
-      if (method == PARAMETER_VALUE_JSON ||
-          method == PARAMETER_VALUE_JSONML)
-      {
-        throw ZORBA_EXCEPTION(ZAPI0066_JSON_SEQUENCE_CANNOT_BE_SERIALIZED);
-      }
     }
 
     // PUL's cannot be serialized

@@ -93,10 +93,6 @@ SerializerImpl::getSerializationMethod() const
     return ZORBA_SERIALIZATION_METHOD_XHTML;
   case serializer::PARAMETER_VALUE_TEXT:
     return ZORBA_SERIALIZATION_METHOD_TEXT;
-  case serializer::PARAMETER_VALUE_JSON:
-    return ZORBA_SERIALIZATION_METHOD_JSON;
-  case serializer::PARAMETER_VALUE_JSONML:
-    return ZORBA_SERIALIZATION_METHOD_JSONML;
   case serializer::PARAMETER_VALUE_BINARY:
     return ZORBA_SERIALIZATION_METHOD_BINARY;
   default:
@@ -120,10 +116,6 @@ SerializerImpl::setSerializationParameters(
     aInternalSerializer.setParameter("method", "xhtml"); break;
   case ZORBA_SERIALIZATION_METHOD_TEXT:
     aInternalSerializer.setParameter("method", "text"); break;
-  case ZORBA_SERIALIZATION_METHOD_JSON:
-    aInternalSerializer.setParameter("method", "json"); break;
-  case ZORBA_SERIALIZATION_METHOD_JSONML:
-    aInternalSerializer.setParameter("method", "jsonml"); break;
   case ZORBA_SERIALIZATION_METHOD_BINARY:
     aInternalSerializer.setParameter("method", "binary"); break;
   }

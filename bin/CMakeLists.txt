@@ -49,19 +49,6 @@ ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba3 PASS_REGULAR_EXPRESSION "")
 ZORBA_ADD_TEST_ALLSTORES(bin/zorba4 zorbacmd --context-item=${CMAKE_CURRENT_SOURCE_DIR}/test.xml  -m 3 -q "./test/child[1]")
 ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba4 PASS_REGULAR_EXPRESSION "(.*<child>child1</child>)*")
 
-# test basic json and jsonml serialization features
-ZORBA_ADD_TEST_ALLSTORES(bin/zorba_jsonml1 zorbacmd -q "<ul>1</ul>" -z method=jsonml)
-ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba_jsonml1 PASS_REGULAR_EXPRESSION "ul.*1")
-
-ZORBA_ADD_TEST_ALLSTORES(bin/zorba_json1 zorbacmd -q "<ul>1</ul>" -z method=json)
-ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba_json1 PASS_REGULAR_EXPRESSION ".*ZAPI0061.*")
-
-ZORBA_ADD_TEST_ALLSTORES(bin/zorba_jsonml2 zorbacmd -q "(<!--comment-->)" -z method=jsonml)
-ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba_jsonml2 PASS_REGULAR_EXPRESSION ".*ZAPI0065.*")
-
-ZORBA_ADD_TEST_ALLSTORES(bin/zorba_jsonml3 zorbacmd -q "(<ul>1</ul>,<ul>2</ul>)" -z method=jsonml)
-ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba_jsonml3 PASS_REGULAR_EXPRESSION ".*ZAPI0066.*")
-
 ZORBA_ADD_TEST_ALLSTORES(bin/zorba5 zorbacmd -q -f blub.xq)
 ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba5 PASS_REGULAR_EXPRESSION ".*Extra arguments found on command line.*")
 

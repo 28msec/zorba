@@ -254,8 +254,6 @@
       <xs:enumeration value="fn-zorba-ref"/>
       <xs:enumeration value="op-zorba"/>
       <xs:enumeration value="fn-zorba-email"/>
-      <xs:enumeration value="zorba-json"/>
-      <xs:enumeration value="zorba-json-ml"/>
       <xs:enumeration value="fn-zorba-fop"/>
       <xs:enumeration value="xqdoc"/>
       <xs:enumeration value="fn-zorba-math"/>
