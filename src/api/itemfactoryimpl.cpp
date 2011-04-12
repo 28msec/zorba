@@ -116,10 +116,14 @@ Item ItemFactoryImpl::createQName(
   zstring const &lLocalname = Unmarshaller::getInternalString( aLocalname );
   
   if (!GenericCast::instance()->castableToNCName(lLocalname.c_str()))
-    ZORBA_ERROR_DESC_OSS(FORG0001, "Local name '" << lLocalname << "' must be an xs:NCName.");
-  
+    throw XQUERY_EXCEPTION(
+      FORG0001, ERROR_PARAMS( lLocalname, ZED( MustBeNCName ) )
+    );
+
   if (lPrefix.size() && !GenericCast::instance()->castableToNCName(lPrefix.c_str()))
-    ZORBA_ERROR_DESC_OSS(FORG0001, "Prefix '" << lPrefix << "' must be an xs:NCName.");
+    throw XQUERY_EXCEPTION(
+      FORG0001, ERROR_PARAMS( lPrefix, ZED( MustBeNCName ) )
+    );
   
   store::Item_t lItem;
   theItemFactory->createQName(lItem, lNamespace, lPrefix, lLocalname);
@@ -135,7 +139,9 @@ Item ItemFactoryImpl::createQName(
   zstring const &lLocalname = Unmarshaller::getInternalString( aLocalname );
 
   if (!GenericCast::instance()->castableToNCName(lLocalname.c_str()))
-    ZORBA_ERROR_DESC_OSS(FORG0001, "Local name '" << lLocalname << "' must be an xs:NCName.");
+    throw XQUERY_EXCEPTION(
+      FORG0001, ERROR_PARAMS( lLocalname, ZED( MustBeNCName ) )
+    );
   
   store::Item_t lItem;
   theItemFactory->createQName(lItem, lNamespace, zstring(), lLocalname);
@@ -156,7 +162,9 @@ ItemFactoryImpl::createQName(const String& aQNameString)
     zstring const &lLocalname = lQNameString.substr(lClose+1);
     theItemFactory->createQName(lItem, lNamespace, zstring(), lLocalname);
     if (!GenericCast::instance()->castableToNCName(lLocalname.c_str()))
-      ZORBA_ERROR_DESC_OSS(FORG0001, "Local name '" << lLocalname << "' must be an xs:NCName.");
+      throw XQUERY_EXCEPTION(
+        FORG0001, ERROR_PARAMS( lLocalname, ZED( MustBeNCName ) )
+      );
   }
   return &*lItem;
 }
@@ -166,7 +174,9 @@ Item ItemFactoryImpl::createNCName(const String& aValue)
   zstring lString = Unmarshaller::getInternalString(aValue);
 
   if (!GenericCast::instance()->castableToNCName(lString.c_str()))
-    ZORBA_ERROR_DESC_OSS(FORG0001, "Value '" << lString << "' is not an xs:NCName.");
+    throw XQUERY_EXCEPTION(
+      FORG0001, ERROR_PARAMS( lString, ZED( MustBeNCName ) )
+    );
   
   store::Item_t lItem;
   theItemFactory->createNCName(lItem, lString);
@@ -746,4 +756,5 @@ zorba::Item ItemFactoryImpl::createTextNode(Item parent, String content)
 }
 
 
-} //namespace zorba
+} // namespace zorba
+/* vim:set et sw=t ts=2: */

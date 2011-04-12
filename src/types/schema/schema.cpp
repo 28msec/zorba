@@ -1506,8 +1506,7 @@ bool Schema::parseUserAtomicTypes(
       if (!xsiTypeDV)
       {
         throw XQUERY_EXCEPTION(
-          FORG0001,
-          ERROR_PARAMS( TypeOps::toString(*aTargetType), ZED( NoTypeInCtx ) )
+          FORG0001, ERROR_PARAMS( aTargetType, ZED( NoTypeInCtx ) )
         );
       }
 

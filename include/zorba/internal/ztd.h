@@ -20,6 +20,7 @@
 #include <cstring>
 #include <functional>
 #include <sstream>
+#include <string>
 
 ////////// Determine tr1 include directory & namespace ////////////////////////
 
@@ -163,6 +164,7 @@ template<> struct less<char const*> :
 ////////// To-string conversion ////////////////////////////////////////////////
 
 ZORBA_DECL_HAS_MEM_FN( c_str, char const* (T::*)() const );
+ZORBA_DECL_HAS_MEM_FN( toString, std::string (T::*)() const );
 
 /**
  * \internal
@@ -174,7 +176,9 @@ ZORBA_DECL_HAS_MEM_FN( c_str, char const* (T::*)() const );
  * @Param out The output string.
  */
 template<typename T,class OutputStringType> inline
-typename enable_if<!ZORBA_TR1_NS::is_pointer<T>::value && !has_c_str<T>::value,
+typename enable_if<!ZORBA_TR1_NS::is_pointer<T>::value
+                && !has_c_str<T>::value
+                && !has_toString<T>::value,
                    void>::type
 to_string( T const &t, OutputStringType *out ) {
   std::ostringstream o;
@@ -196,6 +200,22 @@ template<class T,class OutputStringType> inline
 typename enable_if<has_c_str<T>::value,void>::type
 to_string( T const &t, OutputStringType *out ) {
   *out = t.c_str();
+}
+
+/**
+ * \internal
+ * Specialization of \c to_string() for class types that have a \c c_str()
+ * member function.
+ *
+ * @tparam T The class type.
+ * @tparam OutputStringType The output string type.
+ * @param t The object.
+ * @Param out The output string.
+ */
+template<class T,class OutputStringType> inline
+typename enable_if<has_toString<T>::value,void>::type
+to_string( T const &t, OutputStringType *out ) {
+  *out = t.toString();
 }
 
 /**

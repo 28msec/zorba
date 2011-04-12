@@ -66,7 +66,7 @@ bool XercesParseUtils::parseXSBoolean(
   else
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "boolean" )
+      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "boolean" )
     );
   }
 }
@@ -95,7 +95,7 @@ bool XercesParseUtils::parseXSInteger(
   else
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "integer" )
+      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "integer" )
     );
   }
 }
@@ -124,8 +124,7 @@ bool XercesParseUtils::parseXSPositiveInteger(
   else
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, 
-      ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "positiveInteger" )
+      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "positiveInteger" )
     );
   }
 }
@@ -154,8 +153,7 @@ bool XercesParseUtils::parseXSNonPositiveInteger(
   else
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, 
-      ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "nonPositiveInteger" )
+      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "nonPositiveInteger" )
     );
   }
 }
@@ -184,8 +182,7 @@ bool XercesParseUtils::parseXSNegativeInteger(
   else
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, 
-      ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "negativeInteger" )
+      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "negativeInteger" )
     );
   }
 }
@@ -213,8 +210,7 @@ bool XercesParseUtils::parseXSNonNegativeInteger(
   else
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, 
-      ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "nonNegativeInteger" )
+      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "nonNegativeInteger" )
     );
   }
 }
@@ -243,7 +239,7 @@ bool XercesParseUtils::parseXSUnsignedByte(
   {
     throw XQUERY_EXCEPTION(
       FORG0001, 
-      ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "unsignedByte" )
+      ERROR_PARAMS( textValue, ZED( NoCastTo ), "unsignedByte" )
     );
   }
 }
@@ -271,8 +267,7 @@ bool XercesParseUtils::parseXSUnsignedShort(
   else
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, 
-      ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "unsignedShort" )
+      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "unsignedShort" )
     );
   }
 }
@@ -300,8 +295,7 @@ bool XercesParseUtils::parseXSUnsignedInt(
   else
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, 
-      ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "unsignedInt" )
+      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "unsignedInt" )
     );
   }
 }
@@ -329,7 +323,7 @@ bool XercesParseUtils::parseXSUnsignedLong(
   {
     throw XQUERY_EXCEPTION(
       FORG0001, 
-      ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "unsignedLong" )
+      ERROR_PARAMS( textValue, ZED( NoCastTo ), "unsignedLong" )
     );
   }
 }
@@ -357,7 +351,7 @@ bool XercesParseUtils::parseXSByte(
   else
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "byte" )
+      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "byte" )
     );
   }
 }
@@ -385,7 +379,7 @@ bool XercesParseUtils::parseXSShort(
   else
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "short" )
+      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "short" )
     );
   }
 }
@@ -413,7 +407,7 @@ bool XercesParseUtils::parseXSInt(
   else
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "int" )
+      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "int" )
     );
   }
 }
@@ -441,7 +435,7 @@ bool XercesParseUtils::parseXSLong(
   else
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "long" )
+      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "long" )
     );
   }
 }
@@ -479,7 +473,7 @@ bool XercesParseUtils::parseXSFloat(
   }
 
   throw XQUERY_EXCEPTION(
-    FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "float" )
+    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "float" )
   );
 }
 
@@ -515,7 +509,7 @@ bool XercesParseUtils::parseXSDouble(
   }
 
   throw XQUERY_EXCEPTION(
-    FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "double" )
+    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "double" )
   );
 }
 
@@ -543,7 +537,7 @@ bool XercesParseUtils::parseXSDecimal(
   else
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "decimal" )
+      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "decimal" )
     );
   }
 }
@@ -601,7 +595,7 @@ return factory->createToken(result, textValue2);
   else
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "NMToken" )
+      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "NMToken" )
     );
   }
 }
@@ -630,7 +624,7 @@ bool XercesParseUtils::parseXSNMToken(
   else
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "NMToken" )
+      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "NMToken" )
     );
   }
 }
@@ -660,7 +654,7 @@ bool XercesParseUtils::parseXSName(
   else
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "Name" )
+      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "Name" )
     );
   }
 }
@@ -689,7 +683,7 @@ bool XercesParseUtils::parseXSNCName(
   else
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "NCName" )
+      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "NCName" )
     );
   }
 }
@@ -718,7 +712,7 @@ bool XercesParseUtils::parseXSID(
   else
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "ID" )
+      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "ID" )
     );
   }
 }
@@ -747,7 +741,7 @@ bool XercesParseUtils::parseXSIDRef(
   else
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "IDREF" )
+      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "IDREF" )
     );
   }
 }
@@ -776,7 +770,7 @@ bool XercesParseUtils::parseXSEntity(
   else
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "ENTITY" )
+      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "ENTITY" )
     );
   }
 }
@@ -805,7 +799,7 @@ bool XercesParseUtils::parseXSNotation(
   else
   {
     throw XQUERY_EXCEPTION(
-      FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "NOTATION" )
+      FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "NOTATION" )
     );
   }
 }
@@ -856,7 +850,7 @@ bool XercesParseUtils::parseXSDateTime(
   }
 
   throw XQUERY_EXCEPTION(
-    FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "dateTime" )
+    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "dateTime" )
   );
 }
 
@@ -897,7 +891,7 @@ bool XercesParseUtils::parseXSDate(
   }
 
   throw XQUERY_EXCEPTION(
-    FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "date" )
+    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "date" )
   );
 }
 
@@ -943,7 +937,7 @@ bool XercesParseUtils::parseXSTime(
   }
 
   throw XQUERY_EXCEPTION(
-    FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "time" )
+    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "time" )
   );
 }
 
@@ -979,7 +973,7 @@ bool XercesParseUtils::parseXSGYearMonth(
   }
 
   throw XQUERY_EXCEPTION(
-    FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "gYearMonth" )
+    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "gYearMonth" )
   );
 }
 
@@ -1014,7 +1008,7 @@ bool XercesParseUtils::parseXSGYear(
   }
   
   throw XQUERY_EXCEPTION(
-    FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "gYear" )
+    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "gYear" )
   );
 }
 
@@ -1049,7 +1043,7 @@ bool XercesParseUtils::parseXSGMonthDay(
   }
 
   throw XQUERY_EXCEPTION(
-    FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "gMonthDay" )
+    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "gMonthDay" )
   );
 }
 
@@ -1083,7 +1077,7 @@ bool XercesParseUtils::parseXSGDay(
   }
 
   throw XQUERY_EXCEPTION(
-    FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "gDay" )
+    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "gDay" )
   );
 }
 
@@ -1117,7 +1111,7 @@ bool XercesParseUtils::parseXSGMonth(
   }
 
   throw XQUERY_EXCEPTION(
-    FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "gDay" )
+    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "gDay" )
   );
 }
 
@@ -1155,7 +1149,7 @@ bool XercesParseUtils::parseXSDuration(
   }
 
   throw XQUERY_EXCEPTION(
-    FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "duration" )
+    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "duration" )
   );
 }
 
@@ -1173,8 +1167,7 @@ bool XercesParseUtils::parseXSYearMonthDuration(
   }
 
   throw XQUERY_EXCEPTION(
-    FORG0001,
-    ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "yearMonthDuration" )
+    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "yearMonthDuration" )
   );
 }
 
@@ -1192,8 +1185,7 @@ bool XercesParseUtils::parseXSDayTimeDuration(
   }
 
   throw XQUERY_EXCEPTION(
-    FORG0001,
-    ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "dayTimeDuration" )
+    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "dayTimeDuration" )
   );
 }
 
@@ -1242,7 +1234,7 @@ bool XercesParseUtils::parseXSBase64Binary(
   }
 
   throw XQUERY_EXCEPTION(
-    FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "base64Binary" )
+    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "base64Binary" )
   );
 }
 
@@ -1269,7 +1261,7 @@ bool XercesParseUtils::parseXSHexBinary(
   }
 
   throw XQUERY_EXCEPTION(
-    FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "hexBinary" )
+    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "hexBinary" )
   );
 }
 
@@ -1296,7 +1288,7 @@ bool XercesParseUtils::parseXSAnyUri(
   }
 
   throw XQUERY_EXCEPTION(
-    FORG0001, ERROR_PARAMS( textValue.str(), ZED( NoCastTo ), "anyURI" )
+    FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo ), "anyURI" )
   );
 }
 
