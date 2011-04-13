@@ -19,5 +19,9 @@ This is a list of issues that we are aware of but are not fixed in this version:
    - 2210801 (https://sourceforge.net/tracker/index.php?func=detail&aid=2210801&group_id=226244&atid=1067586)
 
 3) If you link against ICU <= ICU 3.8.1 you can get wrong results when using \s to match a white space character.
-    For details please see following bug:
-    - 3155900 (https://sourceforge.net/tracker/?func=detail&aid=3155900&group_id=226244&atid=1067586)
+   For details please see following bug:
+   - 3155900 (https://sourceforge.net/tracker/?func=detail&aid=3155900&group_id=226244&atid=1067586)
+
+4) A known bug in Xerces versions before 3.0, when .xsd contains an any wildcard with namespace #others and the instance contains an element without a namespace there should still be an error, see Definitive XMLSchema by Priscilla Wamsley page 279. This was fixed in Xerses version 3+.
+   For the details please see following bug:
+   - 3137594 (https://sourceforge.net/tracker/index.php?func=detail&aid=3137594&group_id=226244&atid=1067586)
