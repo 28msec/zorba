@@ -749,14 +749,14 @@ void UpdDeleteCollection::apply()
   collection->getIndexes(indexes);
 
   if (!indexes.empty())
-    ZORBA_ERROR_PARAM(XDDY0013_COLLECTION_BAD_DESTROY_INDEXES,
+    ZORBA_ERROR_PARAM(ZDDY0013_COLLECTION_BAD_DESTROY_INDEXES,
                       collection->getName()->getStringValue(), "");
 
   std::vector<store::IC*> activeICs;
   collection->getActiveICs(activeICs);
 
   if (!activeICs.empty())
-    ZORBA_ERROR_PARAM(XDDY0014_COLLECTION_BAD_DESTROY_ICS,
+    ZORBA_ERROR_PARAM(ZDDY0014_COLLECTION_BAD_DESTROY_ICS,
                       collection->getName()->getStringValue(), "");
 
   ulong size = collection->size();
@@ -765,7 +765,7 @@ void UpdDeleteCollection::apply()
     XmlNode* root = static_cast<XmlNode*>(collection->nodeAt(i).getp());
     XmlTree* tree = root->getTree();
     if (tree->getRefCount() > 1)
-      ZORBA_ERROR_PARAM(XDDY0015_COLLECTION_BAD_DESTROY_NODES,
+      ZORBA_ERROR_PARAM(ZDDY0015_COLLECTION_BAD_DESTROY_NODES,
                         collection->getName()->getStringValue(), "");
   }
 
@@ -1047,7 +1047,7 @@ void UpdCreateIndex::apply()
   {
     if (e.error() == err::ZSTR0045_DUPLICATE_NODE_ERROR)
     {
-      ZORBA_ERROR_PARAM(XDDY0028_INDEX_DOMAIN_HAS_DUPLICATE_NODES, 
+      ZORBA_ERROR_PARAM(ZDDY0028_INDEX_DOMAIN_HAS_DUPLICATE_NODES, 
                         theQName->getStringValue().c_str(), "");
     }
     throw;

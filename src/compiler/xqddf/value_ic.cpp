@@ -170,7 +170,7 @@ void ICCheckerImpl::actualCheck(const store::Item* collName,
     
     if ( !icConditionHolds )
     {
-      ZORBA_ERROR_PARAM(XDDY0033_IC_NOT_MET, 
+      ZORBA_ERROR_PARAM(ZDDY0033_IC_NOT_MET, 
                         icName->getStringValue(),
                         collName->getStringValue());
     }

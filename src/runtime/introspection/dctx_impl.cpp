@@ -73,13 +73,13 @@ bool IsAvailableCollectionIterator::nextImpl(
   }
   catch (ZorbaException const& e)
   {
-    if (e.error() != err::XDDY0003_COLLECTION_DOES_NOT_EXIST)
+    if (e.error() != err::ZDDY0003_COLLECTION_DOES_NOT_EXIST)
     {
       throw;
     }
 
     // collection is not available if the getCollection helper function throws
-    // error XDDY0003_COLLECTION_DOES_NOT_EXIST
+    // error ZDDY0003_COLLECTION_DOES_NOT_EXIST
     res = false;
   }
 

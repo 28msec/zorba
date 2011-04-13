@@ -254,7 +254,7 @@ ZorbaCollectionIterator::getCollection(
   const StaticallyKnownCollection* collectionDecl = aSctx->lookup_collection(aName);
   if (collectionDecl == 0  && !aDynamicCollection) 
   {
-    ZORBA_ERROR_LOC_PARAM(XDDY0001_COLLECTION_NOT_DECLARED, aLoc,
+    ZORBA_ERROR_LOC_PARAM(ZDDY0001_COLLECTION_NOT_DECLARED, aLoc,
                           aName->getStringValue(), "");
   }
 
@@ -262,7 +262,7 @@ ZorbaCollectionIterator::getCollection(
 
   if (coll == NULL) 
   {
-    ZORBA_ERROR_LOC_PARAM(XDDY0003_COLLECTION_DOES_NOT_EXIST, aLoc, 
+    ZORBA_ERROR_LOC_PARAM(ZDDY0003_COLLECTION_DOES_NOT_EXIST, aLoc, 
                           aName->getStringValue(), "");
   }
 
@@ -299,7 +299,7 @@ bool ZorbaIndexOfIterator::nextImpl(
     found = collection->findNode(node, pos);
 
     if (!found)
-      ZORBA_ERROR_LOC_DESC(XDDY0011_COLLECTION_NODE_NOT_FOUND,
+      ZORBA_ERROR_LOC_DESC(ZDDY0011_COLLECTION_NODE_NOT_FOUND,
                            loc,
                            "The node does not belong to collection.");
 
@@ -321,7 +321,7 @@ ZorbaIndexOfIterator::getCollection(
   const StaticallyKnownCollection* collectionDecl = aSctx->lookup_collection(aName);
   if (collectionDecl == 0  && !aDynamicCollection) 
   {
-    ZORBA_ERROR_LOC_PARAM(XDDY0001_COLLECTION_NOT_DECLARED, aLoc,
+    ZORBA_ERROR_LOC_PARAM(ZDDY0001_COLLECTION_NOT_DECLARED, aLoc,
                           aName->getStringValue(), "");
   }
 
@@ -329,7 +329,7 @@ ZorbaIndexOfIterator::getCollection(
 
   if (coll == NULL) 
   {
-    ZORBA_ERROR_LOC_PARAM(XDDY0003_COLLECTION_DOES_NOT_EXIST, aLoc, 
+    ZORBA_ERROR_LOC_PARAM(ZDDY0003_COLLECTION_DOES_NOT_EXIST, aLoc, 
                           aName->getStringValue(), "");
   }
 
@@ -367,7 +367,7 @@ bool ZorbaCreateCollectionIterator::nextImpl(
 
   if (collection != NULL)
   {
-    ZORBA_ERROR_LOC_PARAM(XDDY0002_COLLECTION_EXISTS_ALREADY, loc,
+    ZORBA_ERROR_LOC_PARAM(ZDDY0002_COLLECTION_EXISTS_ALREADY, loc,
                           collectionName->getStringValue(), "");
   }
 
@@ -414,7 +414,7 @@ ZorbaCreateCollectionIterator::getCollection(
   const StaticallyKnownCollection* collectionDecl = aSctx->lookup_collection(aName);
   if (collectionDecl == 0  && !aDynamicCollection) 
   {
-    ZORBA_ERROR_LOC_PARAM(XDDY0001_COLLECTION_NOT_DECLARED, aLoc,
+    ZORBA_ERROR_LOC_PARAM(ZDDY0001_COLLECTION_NOT_DECLARED, aLoc,
                           aName->getStringValue(), "");
   }
 
@@ -464,13 +464,13 @@ ZorbaDeleteCollectionIterator::getCollection(
   const StaticallyKnownCollection* collectionDecl = aSctx->lookup_collection(aName);
   if (collectionDecl == 0  && !aDynamicCollection) 
   {
-    ZORBA_ERROR_LOC_PARAM(XDDY0001_COLLECTION_NOT_DECLARED, aLoc,
+    ZORBA_ERROR_LOC_PARAM(ZDDY0001_COLLECTION_NOT_DECLARED, aLoc,
                           aName->getStringValue(), "");
   }
   coll = GENV_STORE.getCollection(aName, aDynamicCollection);
   if (coll == NULL) 
   {
-    ZORBA_ERROR_LOC_PARAM(XDDY0003_COLLECTION_DOES_NOT_EXIST, aLoc, 
+    ZORBA_ERROR_LOC_PARAM(ZDDY0003_COLLECTION_DOES_NOT_EXIST, aLoc, 
                           aName->getStringValue(), "");
   }
   return collectionDecl;
@@ -524,17 +524,17 @@ ZorbaInsertNodesIterator::getCollection(
     switch(collectionDecl->getUpdateProperty())
     {
       case StaticContextConsts::decl_const:
-        ZORBA_ERROR_LOC_PARAM(XDDY0004_COLLECTION_CONST_UPDATE, loc, 
+        ZORBA_ERROR_LOC_PARAM(ZDDY0004_COLLECTION_CONST_UPDATE, loc, 
             aName->getStringValue().c_str(), "");
         break;
 
       case StaticContextConsts::decl_append_only:
-        ZORBA_ERROR_LOC_PARAM(XDDY0005_COLLECTION_APPEND_BAD_INSERT, loc, 
+        ZORBA_ERROR_LOC_PARAM(ZDDY0005_COLLECTION_APPEND_BAD_INSERT, loc, 
             aName->getStringValue().c_str(), "");
         break;
 
       case StaticContextConsts::decl_queue:
-        ZORBA_ERROR_LOC_PARAM(XDDY0006_COLLECTION_QUEUE_BAD_INSERT, loc, 
+        ZORBA_ERROR_LOC_PARAM(ZDDY0006_COLLECTION_QUEUE_BAD_INSERT, loc, 
             aName->getStringValue().c_str(), "");
         break;
 
@@ -602,17 +602,17 @@ ZorbaInsertNodesFirstIterator::getCollection(
     switch(collectionDecl->getUpdateProperty())
     {
       case StaticContextConsts::decl_const:
-        ZORBA_ERROR_LOC_PARAM(XDDY0004_COLLECTION_CONST_UPDATE, loc, 
+        ZORBA_ERROR_LOC_PARAM(ZDDY0004_COLLECTION_CONST_UPDATE, loc, 
             aName->getStringValue(), "");
         break;
 
       case StaticContextConsts::decl_append_only:
-        ZORBA_ERROR_LOC_PARAM(XDDY0005_COLLECTION_APPEND_BAD_INSERT, loc, 
+        ZORBA_ERROR_LOC_PARAM(ZDDY0005_COLLECTION_APPEND_BAD_INSERT, loc, 
             aName->getStringValue(), "");
         break;
 
       case StaticContextConsts::decl_queue:
-        ZORBA_ERROR_LOC_PARAM(XDDY0006_COLLECTION_QUEUE_BAD_INSERT, loc, 
+        ZORBA_ERROR_LOC_PARAM(ZDDY0006_COLLECTION_QUEUE_BAD_INSERT, loc, 
             aName->getStringValue(), "");
         break;
 
@@ -625,7 +625,7 @@ ZorbaInsertNodesFirstIterator::getCollection(
     }
     if (collectionDecl->getOrderProperty() == StaticContextConsts::decl_unordered)
     {
-      ZORBA_ERROR_LOC_PARAM(XDDY0012_COLLECTION_UNORDERED_BAD_INSERT, loc,
+      ZORBA_ERROR_LOC_PARAM(ZDDY0012_COLLECTION_UNORDERED_BAD_INSERT, loc,
           aName->getStringValue(), "");
     }
   }
@@ -691,7 +691,7 @@ ZorbaInsertNodesLastIterator::getCollection(
     switch(collectionDecl->getUpdateProperty()) 
     {
       case StaticContextConsts::decl_const:
-        ZORBA_ERROR_LOC_PARAM(XDDY0004_COLLECTION_CONST_UPDATE, loc, 
+        ZORBA_ERROR_LOC_PARAM(ZDDY0004_COLLECTION_CONST_UPDATE, loc, 
             aName->getStringValue().c_str(), "");
         break;
 
@@ -707,7 +707,7 @@ ZorbaInsertNodesLastIterator::getCollection(
 
     if (collectionDecl->getOrderProperty() == StaticContextConsts::decl_unordered)
     {
-      ZORBA_ERROR_LOC_PARAM(XDDY0012_COLLECTION_UNORDERED_BAD_INSERT, loc,
+      ZORBA_ERROR_LOC_PARAM(ZDDY0012_COLLECTION_UNORDERED_BAD_INSERT, loc,
           aName->getStringValue(), "");
     }
   }
@@ -771,17 +771,17 @@ ZorbaInsertNodesBeforeIterator::getCollection(
     switch(collectionDecl->getUpdateProperty()) 
     {
       case StaticContextConsts::decl_const:
-        ZORBA_ERROR_LOC_PARAM(XDDY0004_COLLECTION_CONST_UPDATE, loc, 
+        ZORBA_ERROR_LOC_PARAM(ZDDY0004_COLLECTION_CONST_UPDATE, loc, 
             aName->getStringValue().c_str(), "");
         break;
 
       case StaticContextConsts::decl_append_only:
-        ZORBA_ERROR_LOC_PARAM(XDDY0005_COLLECTION_APPEND_BAD_INSERT, loc, 
+        ZORBA_ERROR_LOC_PARAM(ZDDY0005_COLLECTION_APPEND_BAD_INSERT, loc, 
             aName->getStringValue().c_str(), "");
         break;
 
       case StaticContextConsts::decl_queue:
-        ZORBA_ERROR_LOC_PARAM(XDDY0006_COLLECTION_QUEUE_BAD_INSERT, loc, 
+        ZORBA_ERROR_LOC_PARAM(ZDDY0006_COLLECTION_QUEUE_BAD_INSERT, loc, 
             aName->getStringValue().c_str(), "");
         break;
 
@@ -795,7 +795,7 @@ ZorbaInsertNodesBeforeIterator::getCollection(
 
     if (collectionDecl->getOrderProperty() == StaticContextConsts::decl_unordered)
     {
-      ZORBA_ERROR_LOC_PARAM(XDDY0012_COLLECTION_UNORDERED_BAD_INSERT, loc,
+      ZORBA_ERROR_LOC_PARAM(ZDDY0012_COLLECTION_UNORDERED_BAD_INSERT, loc,
           aName->getStringValue(), "");
     }
   }
@@ -862,17 +862,17 @@ ZorbaInsertNodesAfterIterator::getCollection(
     switch(collectionDecl->getUpdateProperty())
     {
       case StaticContextConsts::decl_const:
-        ZORBA_ERROR_LOC_PARAM(XDDY0004_COLLECTION_CONST_UPDATE, loc, 
+        ZORBA_ERROR_LOC_PARAM(ZDDY0004_COLLECTION_CONST_UPDATE, loc, 
             aName->getStringValue().c_str(), "");
         break;
 
       case StaticContextConsts::decl_append_only:
-        ZORBA_ERROR_LOC_PARAM(XDDY0005_COLLECTION_APPEND_BAD_INSERT, loc, 
+        ZORBA_ERROR_LOC_PARAM(ZDDY0005_COLLECTION_APPEND_BAD_INSERT, loc, 
             aName->getStringValue().c_str(), "");
         break;
 
       case StaticContextConsts::decl_queue:
-        ZORBA_ERROR_LOC_PARAM(XDDY0006_COLLECTION_QUEUE_BAD_INSERT, loc, 
+        ZORBA_ERROR_LOC_PARAM(ZDDY0006_COLLECTION_QUEUE_BAD_INSERT, loc, 
             aName->getStringValue().c_str(), "");
         break;
 
@@ -886,7 +886,7 @@ ZorbaInsertNodesAfterIterator::getCollection(
 
     if (collectionDecl->getOrderProperty() == StaticContextConsts::decl_unordered)
     {
-      ZORBA_ERROR_LOC_PARAM(XDDY0012_COLLECTION_UNORDERED_BAD_INSERT, loc,
+      ZORBA_ERROR_LOC_PARAM(ZDDY0012_COLLECTION_UNORDERED_BAD_INSERT, loc,
           aName->getStringValue(), "");
     }
   }
@@ -1250,11 +1250,11 @@ bool ZorbaDeleteNodesIterator::nextImpl(
   while (consumeNext(node, theChildren[theChildren.size()-1].getp(), planState)) 
   {
     if (! node->getCollection()) {
-      ZORBA_ERROR_LOC_PARAM(XDDY0011_COLLECTION_NODE_NOT_FOUND, loc,
+      ZORBA_ERROR_LOC_PARAM(ZDDY0011_COLLECTION_NODE_NOT_FOUND, loc,
                             "the given node does not belong to any collection", "");
     }
     if (collection && collection != node->getCollection()) {
-      ZORBA_ERROR_LOC_PARAM(XDDY0011_COLLECTION_NODE_NOT_FOUND, loc,
+      ZORBA_ERROR_LOC_PARAM(ZDDY0011_COLLECTION_NODE_NOT_FOUND, loc,
                             "all nodes passed as argument to the delete-nodes function must belong to the same collection", "");
     }
     collection = node->getCollection();
@@ -1292,7 +1292,7 @@ ZorbaDeleteNodesIterator::getCollection(
   const StaticallyKnownCollection* collectionDecl = aSctx->lookup_collection(aName);
   if (collectionDecl == 0 && !aDynamicCollection) 
   {
-    ZORBA_ERROR_LOC_PARAM(XDDY0001_COLLECTION_NOT_DECLARED, aLoc,
+    ZORBA_ERROR_LOC_PARAM(ZDDY0001_COLLECTION_NOT_DECLARED, aLoc,
                           aName->getStringValue(), "");
   }
 
@@ -1300,17 +1300,17 @@ ZorbaDeleteNodesIterator::getCollection(
     switch(collectionDecl->getUpdateProperty()) 
     {
       case StaticContextConsts::decl_const:
-        ZORBA_ERROR_LOC_PARAM(XDDY0004_COLLECTION_CONST_UPDATE, loc, 
+        ZORBA_ERROR_LOC_PARAM(ZDDY0004_COLLECTION_CONST_UPDATE, loc, 
             aName->getStringValue().c_str(), "");
         break;
 
       case StaticContextConsts::decl_append_only:
-        ZORBA_ERROR_LOC_PARAM(XDDY0007_COLLECTION_APPEND_BAD_DELETE, loc, 
+        ZORBA_ERROR_LOC_PARAM(ZDDY0007_COLLECTION_APPEND_BAD_DELETE, loc, 
             aName->getStringValue().c_str(), "");
         break;
 
       case StaticContextConsts::decl_queue:
-        ZORBA_ERROR_LOC_PARAM(XDDY0009_COLLECTION_QUEUE_BAD_DELETE, loc, 
+        ZORBA_ERROR_LOC_PARAM(ZDDY0009_COLLECTION_QUEUE_BAD_DELETE, loc, 
             aName->getStringValue().c_str(), "");
         break;
 
@@ -1325,7 +1325,7 @@ ZorbaDeleteNodesIterator::getCollection(
   coll = GENV_STORE.getCollection(aName, aDynamicCollection);
   if (coll == NULL) 
   {
-    ZORBA_ERROR_LOC_PARAM(XDDY0003_COLLECTION_DOES_NOT_EXIST, aLoc, 
+    ZORBA_ERROR_LOC_PARAM(ZDDY0003_COLLECTION_DOES_NOT_EXIST, aLoc, 
                           aName->getStringValue(), "");
   }
 
@@ -1369,7 +1369,7 @@ bool ZorbaDeleteNodesFirstIterator::nextImpl(
 
   if (collectionSize < numNodes)
   {
-    ZORBA_ERROR_LOC_PARAM(XDDY0011_COLLECTION_NODE_NOT_FOUND, loc,
+    ZORBA_ERROR_LOC_PARAM(ZDDY0011_COLLECTION_NODE_NOT_FOUND, loc,
                           collectionName->getStringValue().c_str(), "");
   }
 
@@ -1398,7 +1398,7 @@ ZorbaDeleteNodesFirstIterator::getCollection(
   const StaticallyKnownCollection* collectionDecl = aSctx->lookup_collection(aName);
   if (collectionDecl == 0 && !aDynamicCollection) 
   {
-    ZORBA_ERROR_LOC_PARAM(XDDY0001_COLLECTION_NOT_DECLARED, aLoc,
+    ZORBA_ERROR_LOC_PARAM(ZDDY0001_COLLECTION_NOT_DECLARED, aLoc,
                           aName->getStringValue(), "");
   }
 
@@ -1406,12 +1406,12 @@ ZorbaDeleteNodesFirstIterator::getCollection(
     switch(collectionDecl->getUpdateProperty()) 
     {
       case StaticContextConsts::decl_const:
-        ZORBA_ERROR_LOC_PARAM(XDDY0004_COLLECTION_CONST_UPDATE, loc, 
+        ZORBA_ERROR_LOC_PARAM(ZDDY0004_COLLECTION_CONST_UPDATE, loc, 
             aName->getStringValue().c_str(), "");
         break;
 
       case StaticContextConsts::decl_append_only:
-        ZORBA_ERROR_LOC_PARAM(XDDY0007_COLLECTION_APPEND_BAD_DELETE, loc, 
+        ZORBA_ERROR_LOC_PARAM(ZDDY0007_COLLECTION_APPEND_BAD_DELETE, loc, 
             aName->getStringValue().c_str(), "");
         break;
 
@@ -1427,7 +1427,7 @@ ZorbaDeleteNodesFirstIterator::getCollection(
   coll = GENV_STORE.getCollection(aName, aDynamicCollection);
   if (coll == NULL) 
   {
-    ZORBA_ERROR_LOC_PARAM(XDDY0003_COLLECTION_DOES_NOT_EXIST, aLoc, 
+    ZORBA_ERROR_LOC_PARAM(ZDDY0003_COLLECTION_DOES_NOT_EXIST, aLoc, 
                           aName->getStringValue(), "");
   }
 
@@ -1470,7 +1470,7 @@ bool ZorbaDeleteNodesLastIterator::nextImpl(
 
   if (collectionSize < numNodes) 
   {
-    ZORBA_ERROR_LOC_PARAM(XDDY0011_COLLECTION_NODE_NOT_FOUND, loc,
+    ZORBA_ERROR_LOC_PARAM(ZDDY0011_COLLECTION_NODE_NOT_FOUND, loc,
                           collectionName->getStringValue().c_str(), "");
   }
 
@@ -1506,7 +1506,7 @@ bool ZorbaCollectionNameIterator::nextImpl(
   collection = item->getCollection();
 
   if (!collection) {
-    ZORBA_ERROR_LOC_PARAM(XDDY0011_COLLECTION_NODE_NOT_FOUND, loc,
+    ZORBA_ERROR_LOC_PARAM(ZDDY0011_COLLECTION_NODE_NOT_FOUND, loc,
                           "Given node is not contained in a collection.", "");
   }
 
@@ -1532,7 +1532,7 @@ ZorbaDeleteNodesLastIterator::getCollection(
   const StaticallyKnownCollection* collectionDecl = aSctx->lookup_collection(aName);
   if (collectionDecl == 0 && !aDynamicCollection) 
   {
-    ZORBA_ERROR_LOC_PARAM(XDDY0001_COLLECTION_NOT_DECLARED, aLoc,
+    ZORBA_ERROR_LOC_PARAM(ZDDY0001_COLLECTION_NOT_DECLARED, aLoc,
                           aName->getStringValue(), "");
   }
 
@@ -1540,17 +1540,17 @@ ZorbaDeleteNodesLastIterator::getCollection(
     switch(collectionDecl->getUpdateProperty()) 
     {
       case StaticContextConsts::decl_const:
-        ZORBA_ERROR_LOC_PARAM(XDDY0004_COLLECTION_CONST_UPDATE, loc, 
+        ZORBA_ERROR_LOC_PARAM(ZDDY0004_COLLECTION_CONST_UPDATE, loc, 
             aName->getStringValue().c_str(), "");
         break;
 
       case StaticContextConsts::decl_append_only:
-        ZORBA_ERROR_LOC_PARAM(XDDY0007_COLLECTION_APPEND_BAD_DELETE, loc, 
+        ZORBA_ERROR_LOC_PARAM(ZDDY0007_COLLECTION_APPEND_BAD_DELETE, loc, 
             aName->getStringValue().c_str(), "");
         break;
 
       case StaticContextConsts::decl_queue:
-        ZORBA_ERROR_LOC_PARAM(XDDY0008_COLLECTION_QUEUE_BAD_DELETE, loc, 
+        ZORBA_ERROR_LOC_PARAM(ZDDY0008_COLLECTION_QUEUE_BAD_DELETE, loc, 
             aName->getStringValue().c_str(), "");
         break;
 
@@ -1565,7 +1565,7 @@ ZorbaDeleteNodesLastIterator::getCollection(
   coll = GENV_STORE.getCollection(aName, aDynamicCollection);
   if (coll == NULL) 
   {
-    ZORBA_ERROR_LOC_PARAM(XDDY0003_COLLECTION_DOES_NOT_EXIST, aLoc, 
+    ZORBA_ERROR_LOC_PARAM(ZDDY0003_COLLECTION_DOES_NOT_EXIST, aLoc, 
                           aName->getStringValue(), "");
   }
   return collectionDecl;
@@ -1594,13 +1594,13 @@ IsAvailableCollectionIterator::nextImpl(
   }
   catch (ZorbaException const& e)
   {
-    if (e.error() != err::XDDY0003_COLLECTION_DOES_NOT_EXIST)
+    if (e.error() != err::ZDDY0003_COLLECTION_DOES_NOT_EXIST)
     {
       throw;
     }
 
     // collection is not available if the getCollection helper function throws
-    // error XDDY0003_COLLECTION_DOES_NOT_EXIST
+    // error ZDDY0003_COLLECTION_DOES_NOT_EXIST
     res = false;
   }
 
@@ -1621,13 +1621,13 @@ IsAvailableCollectionIterator::getCollection(
   const StaticallyKnownCollection* collectionDecl = aSctx->lookup_collection(aName);
   if (collectionDecl == 0 && !aDynamicCollection) 
   {
-    ZORBA_ERROR_LOC_PARAM(XDDY0001_COLLECTION_NOT_DECLARED, aLoc,
+    ZORBA_ERROR_LOC_PARAM(ZDDY0001_COLLECTION_NOT_DECLARED, aLoc,
                           aName->getStringValue(), "");
   }
   coll = GENV_STORE.getCollection(aName, aDynamicCollection);
   if (coll == NULL) 
   {
-    ZORBA_ERROR_LOC_PARAM(XDDY0003_COLLECTION_DOES_NOT_EXIST, aLoc, 
+    ZORBA_ERROR_LOC_PARAM(ZDDY0003_COLLECTION_DOES_NOT_EXIST, aLoc, 
                           aName->getStringValue(), "");
   }
   return collectionDecl;

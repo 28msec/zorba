@@ -1070,7 +1070,7 @@ Error const& CollectionDecl::validatePropertyList(DeclPropertyList* props)
     case StaticContextConsts::decl_unordered:
     {
       if (setOrderMode)
-        return err::XDST0004_COLLECTION_MULTIPLE_PROPERTY_VALUES;
+        return err::ZDST0004_COLLECTION_MULTIPLE_PROPERTY_VALUES;
 
       setOrderMode = true;
       break;
@@ -1081,13 +1081,13 @@ Error const& CollectionDecl::validatePropertyList(DeclPropertyList* props)
     case StaticContextConsts::decl_const:
     {
       if (setUpdateMode)
-        return err::XDST0004_COLLECTION_MULTIPLE_PROPERTY_VALUES;
+        return err::ZDST0004_COLLECTION_MULTIPLE_PROPERTY_VALUES;
 
       setUpdateMode = true;
       break;
     }
     default:
-      return err::XDST0006_COLLECTION_INVALID_PROPERTY_VALUE;
+      return err::ZDST0006_COLLECTION_INVALID_PROPERTY_VALUE;
     } // switch
   }
 
@@ -1204,7 +1204,7 @@ Error const& AST_IndexDecl::validatePropertyList(DeclPropertyList* props)
       case StaticContextConsts::decl_non_unique:
       {
         if (setUnique)
-          return err::XDST0024_INDEX_MULTIPLE_PROPERTY_VALUES;
+          return err::ZDST0024_INDEX_MULTIPLE_PROPERTY_VALUES;
 
         setUnique = true;
         break;
@@ -1215,7 +1215,7 @@ Error const& AST_IndexDecl::validatePropertyList(DeclPropertyList* props)
       case StaticContextConsts::decl_general_range:
       {
         if (setUsage)
-          return err::XDST0024_INDEX_MULTIPLE_PROPERTY_VALUES;
+          return err::ZDST0024_INDEX_MULTIPLE_PROPERTY_VALUES;
 
         setUsage = true;
         break;
@@ -1224,13 +1224,13 @@ Error const& AST_IndexDecl::validatePropertyList(DeclPropertyList* props)
       case StaticContextConsts::decl_automatic:
       {
         if (setMaintenance)
-          return err::XDST0024_INDEX_MULTIPLE_PROPERTY_VALUES;
+          return err::ZDST0024_INDEX_MULTIPLE_PROPERTY_VALUES;
 
         setMaintenance = true;
         break;
       }
       default:
-        return err::XDST0026_INDEX_INVALID_PROPERTY_VALUE;
+        return err::ZDST0026_INDEX_INVALID_PROPERTY_VALUE;
     }
   }
 

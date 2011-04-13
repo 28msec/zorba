@@ -1577,7 +1577,7 @@ var_expr_t lookup_ctx_var(const QName* qname, const QueryLoc& loc)
     {
       if (e.error() == err::XPDY0002)
       {
-        ZORBA_ERROR_LOC_PARAM(XDST0032_INDEX_REFERENCES_CTX_ITEM, loc,
+        ZORBA_ERROR_LOC_PARAM(ZDST0032_INDEX_REFERENCES_CTX_ITEM, loc,
                               theIndexDecl->getName()->getStringValue(), "");
       }
 
@@ -1700,13 +1700,13 @@ void normalize_fo(fo_expr* foExpr)
 
     if (qname != NULL)
     {
-      ZORBA_ERROR_LOC_PARAM(XDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
+      ZORBA_ERROR_LOC_PARAM(ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
                             foExpr->get_loc(),
                             qname->getStringValue().c_str(), "");
     }
     else
     {
-      ZORBA_ERROR_LOC_DESC(XDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
+      ZORBA_ERROR_LOC_DESC(ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
                            foExpr->get_loc(),
                            "Invalid number of arguments in index value probe");
     }
@@ -4006,7 +4006,7 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
   // a collection declaration must allways be in a library module
   if (!inLibraryModule())
   {
-    throw XQUERY_EXCEPTION(XDST0003_COLLECTION_DECL_IN_MAIN_MODULE, ERROR_LOC(v.get_location()));
+    throw XQUERY_EXCEPTION(ZDST0003_COLLECTION_DECL_IN_MAIN_MODULE, ERROR_LOC(v.get_location()));
   }
 
   const QName* lName = v.getName();
@@ -4017,7 +4017,7 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
 
   if (lExpandedQName->getNamespace() != theModuleNamespace)
   {
-    ZORBA_ERROR_LOC_PARAM(XDST0007_COLLECTION_DECL_IN_FOREIGN_MODULE, loc,
+    ZORBA_ERROR_LOC_PARAM(ZDST0007_COLLECTION_DECL_IN_FOREIGN_MODULE, loc,
                           lName->get_qname(), "");
   }
 
@@ -4046,7 +4046,7 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
       (lUpdateMode == StaticContextConsts::decl_queue ||
        lUpdateMode == StaticContextConsts::decl_append_only))
   {
-    ZORBA_ERROR_LOC_PARAM(XDST0005_COLLECTION_PROPERTIES_CONFLICT, loc,
+    ZORBA_ERROR_LOC_PARAM(ZDST0005_COLLECTION_PROPERTIES_CONFLICT, loc,
                           lName->get_qname(), "");
   }
 
@@ -4128,7 +4128,7 @@ void* begin_visit(const AST_IndexDecl& v)
 
   if (!inLibraryModule())
   {
-    ZORBA_ERROR_LOC_PARAM(XDST0023_INDEX_DECL_IN_MAIN_MODULE, v.get_location(),
+    ZORBA_ERROR_LOC_PARAM(ZDST0023_INDEX_DECL_IN_MAIN_MODULE, v.get_location(),
                           qname->get_qname(), "");
   }
 
@@ -4138,7 +4138,7 @@ void* begin_visit(const AST_IndexDecl& v)
 
   if (qnameItem->getNamespace() != theModuleNamespace)
   {
-    ZORBA_ERROR_LOC_PARAM(XDST0036_INDEX_DECL_IN_FOREIGN_MODULE, loc,
+    ZORBA_ERROR_LOC_PARAM(ZDST0036_INDEX_DECL_IN_FOREIGN_MODULE, loc,
                           qname->get_qname(), "");
   }
 
@@ -4191,13 +4191,13 @@ void* begin_visit(const IndexKeyList& v)
 
   if (!domainExpr->is_simple())
   {
-    ZORBA_ERROR_LOC_PARAM(XDST0033_INDEX_NON_SIMPLE_EXPR, domainExpr->get_loc(),
+    ZORBA_ERROR_LOC_PARAM(ZDST0033_INDEX_NON_SIMPLE_EXPR, domainExpr->get_loc(),
                           index->getName()->getStringValue(), "");
   }
 
   domainExpr = wrap_in_type_match(domainExpr,
                                   theRTM.ANY_NODE_TYPE_STAR,
-                                  err::XDTY0010_INDEX_DOMAIN_TYPE_ERROR);
+                                  err::ZDTY0010_INDEX_DOMAIN_TYPE_ERROR);
 
   // For general indexes, the domain expression must not return duplicate nodes.
   // To see why, consider the following examples:
@@ -4290,7 +4290,7 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
 
     if (!keyExpr->is_simple())
     {
-      ZORBA_ERROR_LOC_PARAM(XDST0033_INDEX_NON_SIMPLE_EXPR, keyExpr->get_loc(),
+      ZORBA_ERROR_LOC_PARAM(ZDST0033_INDEX_NON_SIMPLE_EXPR, keyExpr->get_loc(),
                             index->getName()->getStringValue(), "");
     }
 
@@ -4303,7 +4303,7 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
     {
       if (!index->isGeneral())
       {
-        ZORBA_ERROR_LOC_PARAM(XDST0027_INDEX_BAD_KEY_TYPE, keySpec->get_location(),
+        ZORBA_ERROR_LOC_PARAM(ZDST0027_INDEX_BAD_KEY_TYPE, keySpec->get_location(),
                               index->getName()->getStringValue(), "");
       }
     }
@@ -4317,7 +4317,7 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
 
       if (!TypeOps::is_subtype(tm, *ptype, *theRTM.ANY_ATOMIC_TYPE_STAR, kloc))
       {
-        ZORBA_ERROR_LOC_PARAM(XDST0027_INDEX_BAD_KEY_TYPE, kloc,
+        ZORBA_ERROR_LOC_PARAM(ZDST0027_INDEX_BAD_KEY_TYPE, kloc,
                               index->getName()->getStringValue(), "");
       }
 
@@ -4325,7 +4325,7 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
           (TypeOps::is_equal(tm, *ptype, *theRTM.ANY_ATOMIC_TYPE_ONE) ||
            TypeOps::is_equal(tm, *ptype, *theRTM.UNTYPED_ATOMIC_TYPE_ONE)))
       {
-        ZORBA_ERROR_LOC_PARAM(XDST0027_INDEX_BAD_KEY_TYPE, kloc,
+        ZORBA_ERROR_LOC_PARAM(ZDST0027_INDEX_BAD_KEY_TYPE, kloc,
                               index->getName()->getStringValue(), "");
       }
 
@@ -4333,7 +4333,7 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
           quant != TypeConstants::QUANT_ONE &&
           quant != TypeConstants::QUANT_QUESTION)
       {
-        ZORBA_ERROR_LOC_PARAM(XDST0027_INDEX_BAD_KEY_TYPE, kloc,
+        ZORBA_ERROR_LOC_PARAM(ZDST0027_INDEX_BAD_KEY_TYPE, kloc,
                               index->getName()->getStringValue(), "");
       }
 
@@ -4349,11 +4349,11 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
            TypeOps::is_subtype(tm, *ptype, *theRTM.GMONTH_DAY_TYPE_ONE, kloc) ||
            TypeOps::is_subtype(tm, *ptype, *theRTM.GDAY_TYPE_ONE, kloc)))
       {
-        ZORBA_ERROR_LOC_PARAM(XDST0027_INDEX_BAD_KEY_TYPE, keySpec->get_location(),
+        ZORBA_ERROR_LOC_PARAM(ZDST0027_INDEX_BAD_KEY_TYPE, keySpec->get_location(),
                               index->getName()->getStringValue(), "");
       }
 
-      keyExpr = wrap_in_type_match(keyExpr, type, err::XDTY0011_INDEX_KEY_TYPE_ERROR);
+      keyExpr = wrap_in_type_match(keyExpr, type, err::ZDTY0011_INDEX_KEY_TYPE_ERROR);
 
       keyTypes[i] = ptype->getBaseBuiltinType();
     }
@@ -4460,7 +4460,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
 
   if (!inLibraryModule())
   {
-    ZORBA_ERROR_LOC_PARAM(XDST0044_IC_DECL_IN_MAIN_MODULE, v.get_location(),
+    ZORBA_ERROR_LOC_PARAM(ZDST0044_IC_DECL_IN_MAIN_MODULE, v.get_location(),
                           v.getName()->get_qname(), "");
   }
 
@@ -5059,7 +5059,7 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
 
   if (qnameItem->getNamespace() != theModuleNamespace)
   {
-    ZORBA_ERROR_LOC_PARAM(XDST0048_IC_DECL_IN_FOREIGN_MODULE, loc,
+    ZORBA_ERROR_LOC_PARAM(ZDST0048_IC_DECL_IN_FOREIGN_MODULE, loc,
                           qname->get_qname(), "");
   }
 

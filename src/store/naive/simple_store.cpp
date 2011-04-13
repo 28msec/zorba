@@ -545,7 +545,7 @@ void SimpleStore::populateValueIndex(
           domainItem->getCollection() == NULL &&
           !index->isTemporary())
       {
-        ZORBA_ERROR_PARAM(XDDY0020_INDEX_DOMAIN_NODE_NOT_IN_COLLECTION,
+        ZORBA_ERROR_PARAM(ZDDY0020_INDEX_DOMAIN_NODE_NOT_IN_COLLECTION,
                           index->getName()->getStringValue(), "");
       }
 
@@ -609,7 +609,7 @@ void SimpleStore::populateGeneralIndex(
       {
         if (domainNode->getCollection() == NULL && !index->isTemporary())
         {
-          ZORBA_ERROR_PARAM(XDDY0020_INDEX_DOMAIN_NODE_NOT_IN_COLLECTION,
+          ZORBA_ERROR_PARAM(ZDDY0020_INDEX_DOMAIN_NODE_NOT_IN_COLLECTION,
                             index->getName()->getStringValue(), "");
         }
 

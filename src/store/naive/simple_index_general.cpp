@@ -445,7 +445,7 @@ bool GeneralHashIndex::insertInMap(
   {
     if (isUnique())
     {
-      ZORBA_ERROR_PARAM(XDDY0024_INDEX_UNIQUE_VIOLATION,
+      ZORBA_ERROR_PARAM(ZDDY0024_INDEX_UNIQUE_VIOLATION,
                         theQname->getStringValue(), "");
     }
     
@@ -1278,7 +1278,7 @@ longmap:
 
   default:
   {
-    ZORBA_ERROR_PARAM(XDTY0012_INDEX_KEY_TYPE_ERROR, 
+    ZORBA_ERROR_PARAM(ZDTY0012_INDEX_KEY_TYPE_ERROR, 
                       getName()->getStringValue(), "");
     return false;
   }
@@ -1313,7 +1313,7 @@ bool GeneralTreeIndex::insertInMap(
   {
     if (isUnique())
     {
-      ZORBA_ERROR_PARAM(XDDY0024_INDEX_UNIQUE_VIOLATION,
+      ZORBA_ERROR_PARAM(ZDDY0024_INDEX_UNIQUE_VIOLATION,
                         theQname->getStringValue(), "");
     }
     

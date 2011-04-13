@@ -50,7 +50,7 @@ void checkNodeType(
 
   if (!TypeOps::is_treatable(tm, node, *(collectionDecl->getNodeType())))
   {
-    ZORBA_ERROR_LOC_PARAM(XDTY0001_COLLECTION_INVALID_NODE_TYPE, loc, 
+    ZORBA_ERROR_LOC_PARAM(ZDTY0001_COLLECTION_INVALID_NODE_TYPE, loc, 
                           collectionDecl->getName()->getStringValue(),
                           TypeOps::toString(*tm->create_value_type(node)));
   }

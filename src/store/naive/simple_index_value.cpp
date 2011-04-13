@@ -109,7 +109,7 @@ bool ValueHashIndex::insert(
   {
     if (isUnique())
     {
-      ZORBA_ERROR_PARAM(XDDY0024_INDEX_UNIQUE_VIOLATION,
+      ZORBA_ERROR_PARAM(ZDDY0024_INDEX_UNIQUE_VIOLATION,
                         theQname->getStringValue(), "");
     }
 
@@ -346,7 +346,7 @@ bool ValueTreeIndex::insert(
   {
     if (isUnique())
     {
-      ZORBA_ERROR_PARAM(XDDY0024_INDEX_UNIQUE_VIOLATION,
+      ZORBA_ERROR_PARAM(ZDDY0024_INDEX_UNIQUE_VIOLATION,
                         theQname->getStringValue().c_str(), "");
     }
 

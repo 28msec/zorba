@@ -352,7 +352,7 @@ void expr::compute_return_type(bool deep, bool* modified)
         }
         else
         {
-          ZORBA_ERROR_LOC_PARAM(XDDY0001_COLLECTION_NOT_DECLARED, get_loc(),
+          ZORBA_ERROR_LOC_PARAM(ZDDY0001_COLLECTION_NOT_DECLARED, get_loc(),
                                 qname->getStringValue(), "");
         }
       }

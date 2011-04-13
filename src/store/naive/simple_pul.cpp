@@ -1089,7 +1089,7 @@ void PULImpl::mergeUpdateList(
           UpdCreateCollection* upd = static_cast<UpdCreateCollection*>(myList[j]);
           if (upd->getName()->equals(otherUpd->getName())) 
           {
-            ZORBA_ERROR_PARAM(XDDY0016_COLLECTION_MULTIPLE_CREATES,
+            ZORBA_ERROR_PARAM(ZDDY0016_COLLECTION_MULTIPLE_CREATES,
                               upd->getName()->getStringValue(), "");
           }
         }
@@ -1105,7 +1105,7 @@ void PULImpl::mergeUpdateList(
           UpdCreateIndex* upd = static_cast<UpdCreateIndex*>(myList[j]);
           if (upd->getName()->equals(otherUpd->getName())) 
           {
-            ZORBA_ERROR_PARAM(XDDY0027_INDEX_MULTIPLE_CREATES,
+            ZORBA_ERROR_PARAM(ZDDY0027_INDEX_MULTIPLE_CREATES,
                               upd->getName()->getStringValue(), "");
           }
         }

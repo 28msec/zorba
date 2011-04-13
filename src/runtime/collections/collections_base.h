@@ -68,7 +68,7 @@ protected:
     const StaticallyKnownCollection* collectionDecl = aSctx->lookup_collection(aName);
     if (collectionDecl == 0  && !aDynamicCollection) 
     {
-      ZORBA_ERROR_LOC_PARAM(XDDY0001_COLLECTION_NOT_DECLARED, aLoc,
+      ZORBA_ERROR_LOC_PARAM(ZDDY0001_COLLECTION_NOT_DECLARED, aLoc,
                             aName->getStringValue(), "");
     }
   
@@ -76,7 +76,7 @@ protected:
   
     if (coll == NULL) 
     {
-      ZORBA_ERROR_LOC_PARAM(XDDY0003_COLLECTION_DOES_NOT_EXIST, aLoc, 
+      ZORBA_ERROR_LOC_PARAM(ZDDY0003_COLLECTION_DOES_NOT_EXIST, aLoc, 
                             aName->getStringValue(), "");
     }
   
@@ -112,7 +112,7 @@ protected:
 
       if (!collection->findNode(targetNode.getp(), targetPos)) 
       {
-        ZORBA_ERROR_LOC_PARAM(XDDY0011_COLLECTION_NODE_NOT_FOUND, this->loc, 
+        ZORBA_ERROR_LOC_PARAM(ZDDY0011_COLLECTION_NODE_NOT_FOUND, this->loc, 
             collName->getStringValue(), "");
       }
     }

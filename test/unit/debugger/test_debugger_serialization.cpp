@@ -112,7 +112,7 @@ debugger_serialization_example_2(Zorba* aZorba)
 
   } catch (XQueryException& qe) {
     // error "Collection guestbook:entries does not exist." is OK
-    if (qe.error() != err::XDDY0003_COLLECTION_DOES_NOT_EXIST) {
+    if (qe.error() != err::ZDDY0003_COLLECTION_DOES_NOT_EXIST) {
       std::cerr << qe << std::endl;
       return false;
     }

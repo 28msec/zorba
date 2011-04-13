@@ -2749,7 +2749,7 @@ void static_context::bind_collection(
 {
   if (lookup_collection(aCollection->getName()) != NULL)
   {
-    ZORBA_ERROR_LOC_PARAM(XDST0001_COLLECTION_ALREADY_DECLARED, aLoc,
+    ZORBA_ERROR_LOC_PARAM(ZDST0001_COLLECTION_ALREADY_DECLARED, aLoc,
                           aCollection->getName()->getStringValue(), "");
   }
 
@@ -2883,7 +2883,7 @@ void static_context::bind_index(IndexDecl_t& index, const QueryLoc& loc)
 
   if (lookup_index(qname) != NULL)
   {
-    ZORBA_ERROR_LOC_PARAM(XDST0021_INDEX_ALREADY_DECLARED, loc,
+    ZORBA_ERROR_LOC_PARAM(ZDST0021_INDEX_ALREADY_DECLARED, loc,
                           qname->getStringValue(),  "");
   }
 
@@ -3007,7 +3007,7 @@ void static_context::bind_ic(
 
   if (lookup_ic(qname) != NULL)
   {
-    ZORBA_ERROR_LOC_PARAM(XDST0041_IC_IS_ALREADY_DECLARED, loc,
+    ZORBA_ERROR_LOC_PARAM(ZDST0041_IC_IS_ALREADY_DECLARED, loc,
                           qname->getStringValue(),  "");
   }
 
@@ -3770,7 +3770,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
 
       if (!theCollectionMap->insert(pair.first, pair.second))
       {
-        ZORBA_ERROR_LOC_PARAM(XDST0002_COLLECTION_ALREADY_IMPORTED, loc,
+        ZORBA_ERROR_LOC_PARAM(ZDST0002_COLLECTION_ALREADY_IMPORTED, loc,
                               pair.second->getName()->getStringValue(),
                               module->get_module_namespace().c_str());
       }
@@ -3790,7 +3790,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
 
       if (lookup_index(pair.first) != NULL)
       {
-        ZORBA_ERROR_LOC_PARAM(XDST0022_INDEX_ALREADY_IMPORTED, loc,
+        ZORBA_ERROR_LOC_PARAM(ZDST0022_INDEX_ALREADY_IMPORTED, loc,
                               pair.first->getStringValue(),
                               module->get_module_namespace().c_str());
       }
@@ -3817,7 +3817,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
 
       if (!theICMap->insert(pair.first, pair.second))
       {
-        ZORBA_ERROR_LOC_PARAM(XDST0041_IC_IS_ALREADY_DECLARED, loc,
+        ZORBA_ERROR_LOC_PARAM(ZDST0041_IC_IS_ALREADY_DECLARED, loc,
                               pair.first->getStringValue().c_str(), "");
       }
     }

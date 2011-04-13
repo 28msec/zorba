@@ -178,7 +178,7 @@ ulong SimpleCollection::addNodes(
   bool found = findNode(targetNode, targetPos);
   if (!found)
   {
-    ZORBA_ERROR_PARAM(XDDY0011_COLLECTION_NODE_NOT_FOUND,
+    ZORBA_ERROR_PARAM(ZDDY0011_COLLECTION_NODE_NOT_FOUND,
                       theName->getStringValue(), "");
   }
 

@@ -242,13 +242,13 @@ bool CreateIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 
   if ((indexDecl = theSctx->lookup_index(qname)) == NULL)
   {
-    ZORBA_ERROR_LOC_PARAM(XDDY0021_INDEX_IS_NOT_DECLARED, loc,
+    ZORBA_ERROR_LOC_PARAM(ZDDY0021_INDEX_IS_NOT_DECLARED, loc,
                           qname->getStringValue().c_str(), "");
   }
 
   if (GENV_STORE.getIndex(qname) != NULL)
   {
-    ZORBA_ERROR_LOC_PARAM(XDDY0022_INDEX_EXISTS_ALREADY, loc,
+    ZORBA_ERROR_LOC_PARAM(ZDDY0022_INDEX_EXISTS_ALREADY, loc,
                           qname->getStringValue().c_str(), "");
   }
 
@@ -299,13 +299,13 @@ bool DeleteIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 
   if (theSctx->lookup_index(qname) == NULL)
   {
-    ZORBA_ERROR_LOC_PARAM(XDDY0021_INDEX_IS_NOT_DECLARED, loc,
+    ZORBA_ERROR_LOC_PARAM(ZDDY0021_INDEX_IS_NOT_DECLARED, loc,
                           qname->getStringValue().c_str(), "");
   }
 
   if (GENV_STORE.getIndex(qname) == NULL)
   {
-    ZORBA_ERROR_LOC_PARAM(XDDY0023_INDEX_DOES_NOT_EXIST, loc,
+    ZORBA_ERROR_LOC_PARAM(ZDDY0023_INDEX_DOES_NOT_EXIST, loc,
                           qname->getStringValue().c_str(), "");
   }
 
@@ -359,13 +359,13 @@ bool RefreshIndexIterator::nextImpl(
 
   if ((indexDecl = theSctx->lookup_index(qname)) == NULL)
   {
-    ZORBA_ERROR_LOC_PARAM(XDDY0021_INDEX_IS_NOT_DECLARED, loc,
+    ZORBA_ERROR_LOC_PARAM(ZDDY0021_INDEX_IS_NOT_DECLARED, loc,
                           qname->getStringValue().c_str(), "");
   }
 
   if (GENV_STORE.getIndex(qname) == NULL)
   {
-    ZORBA_ERROR_LOC_PARAM(XDDY0023_INDEX_DOES_NOT_EXIST, loc,
+    ZORBA_ERROR_LOC_PARAM(ZDDY0023_INDEX_DOES_NOT_EXIST, loc,
                           qname->getStringValue().c_str(), "");
   }
 
@@ -599,13 +599,13 @@ bool ProbeIndexPointValueIterator::nextImpl(
 
       if ((state->theIndexDecl = theSctx->lookup_index(qnameItem)) == NULL)
       {
-        ZORBA_ERROR_LOC_PARAM(XDDY0021_INDEX_IS_NOT_DECLARED, loc,
+        ZORBA_ERROR_LOC_PARAM(ZDDY0021_INDEX_IS_NOT_DECLARED, loc,
                               qnameItem->getStringValue().c_str(), "");
       }
 
       if (state->theIndexDecl->getKeyExpressions().size() != numChildren-1)
       {
-        ZORBA_ERROR_LOC_PARAM(XDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
+        ZORBA_ERROR_LOC_PARAM(ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
                               qnameItem->getStringValue().c_str(), "");
       }
 
@@ -615,7 +615,7 @@ bool ProbeIndexPointValueIterator::nextImpl(
       
       if (state->theIndex == NULL)
       {
-        ZORBA_ERROR_LOC_PARAM(XDDY0023_INDEX_DOES_NOT_EXIST, loc,
+        ZORBA_ERROR_LOC_PARAM(ZDDY0023_INDEX_DOES_NOT_EXIST, loc,
                               qnameItem->getStringValue().c_str(), "");
       }
       
@@ -751,20 +751,20 @@ bool ProbeIndexPointGeneralIterator::nextImpl(
       
       if ((state->theIndexDecl = theSctx->lookup_index(qnameItem)) == NULL)
       {
-        ZORBA_ERROR_LOC_PARAM(XDDY0021_INDEX_IS_NOT_DECLARED, loc,
+        ZORBA_ERROR_LOC_PARAM(ZDDY0021_INDEX_IS_NOT_DECLARED, loc,
                               qnameItem->getStringValue().c_str(), "");
       }
 
       if (!state->theIndexDecl->isGeneral())
       {
-        ZORBA_ERROR_LOC_PARAM(XDDY0029_INDEX_GENERAL_PROBE_NOT_ALLOWED, loc,
+        ZORBA_ERROR_LOC_PARAM(ZDDY0029_INDEX_GENERAL_PROBE_NOT_ALLOWED, loc,
                               qnameItem->getStringValue().c_str(), "");
       }
 
       if (state->theIndexDecl->getKeyExpressions().size() != numChildren-1 ||
           numChildren != 2)
       {
-        ZORBA_ERROR_LOC_PARAM(XDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
+        ZORBA_ERROR_LOC_PARAM(ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
                               qnameItem->getStringValue().c_str(), "");
       }
 
@@ -774,7 +774,7 @@ bool ProbeIndexPointGeneralIterator::nextImpl(
 
       if (state->theIndex == NULL)
       {
-        ZORBA_ERROR_LOC_PARAM(XDDY0023_INDEX_DOES_NOT_EXIST, loc,
+        ZORBA_ERROR_LOC_PARAM(ZDDY0023_INDEX_DOES_NOT_EXIST, loc,
                               qnameItem->getStringValue().c_str(), "");
       }
 
@@ -922,25 +922,25 @@ bool ProbeIndexRangeValueIterator::nextImpl(
 
     if ((indexDecl = theSctx->lookup_index(qname)) == NULL)
     {
-      ZORBA_ERROR_LOC_PARAM(XDDY0021_INDEX_IS_NOT_DECLARED, loc,
+      ZORBA_ERROR_LOC_PARAM(ZDDY0021_INDEX_IS_NOT_DECLARED, loc,
                             qname->getStringValue().c_str(), "");
     }
 
     if (indexDecl->getMethod() != IndexDecl::TREE)
     {
-      ZORBA_ERROR_LOC_PARAM(XDDY0026_INDEX_RANGE_PROBE_NOT_ALLOWED, loc,
+      ZORBA_ERROR_LOC_PARAM(ZDDY0026_INDEX_RANGE_PROBE_NOT_ALLOWED, loc,
                             qname->getStringValue().c_str(), "");
     }
 
     if ((numChildren-1) % 6 != 0)
     {
-      ZORBA_ERROR_LOC_PARAM(XDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
+      ZORBA_ERROR_LOC_PARAM(ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
                             qname->getStringValue().c_str(), "");
     }
 
     if (indexDecl->getKeyExpressions().size() * 6 > numChildren-1)
     {
-      ZORBA_ERROR_LOC_PARAM(XDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
+      ZORBA_ERROR_LOC_PARAM(ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
                             qname->getStringValue().c_str(), "");
     }
 
@@ -950,7 +950,7 @@ bool ProbeIndexRangeValueIterator::nextImpl(
 
     if (state->theIndex == NULL)
     {
-      ZORBA_ERROR_LOC_PARAM(XDDY0023_INDEX_DOES_NOT_EXIST, loc,
+      ZORBA_ERROR_LOC_PARAM(ZDDY0023_INDEX_DOES_NOT_EXIST, loc,
                             qname->getStringValue().c_str(), "");
     }
 

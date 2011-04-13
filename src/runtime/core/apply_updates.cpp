@@ -108,7 +108,7 @@ apply_updates(
     
     if (zorbaIndex == NULL)
     {
-      ZORBA_ERROR_LOC_PARAM(XDDY0021_INDEX_IS_NOT_DECLARED, loc,
+      ZORBA_ERROR_LOC_PARAM(ZDDY0021_INDEX_IS_NOT_DECLARED, loc,
                             indexes[i]->getName()->getStringValue().c_str(), "");
     }
 

@@ -79,14 +79,14 @@ void areNodeModifiersViolated(
 
     if (lDeclColl == NULL)
     {
-      ZORBA_ERROR_LOC_PARAM(XDDY0001_COLLECTION_NOT_DECLARED, aLoc, 
+      ZORBA_ERROR_LOC_PARAM(ZDDY0001_COLLECTION_NOT_DECLARED, aLoc, 
                             lColl->getName()->getStringValue(), "");
     }
 
     switch(lDeclColl->getNodeModifier()) 
     {
     case StaticContextConsts::read_only:
-      ZORBA_ERROR_LOC_PARAM(XDDY0010_COLLECTION_CONST_NODE_UPDATE, aLoc, 
+      ZORBA_ERROR_LOC_PARAM(ZDDY0010_COLLECTION_CONST_NODE_UPDATE, aLoc, 
                             lColl->getName()->getStringValue(), "");
       break;
 
