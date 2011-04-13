@@ -496,8 +496,10 @@ void end_visit(const FunctionDecl& n, void* /*visit_state*/)
                                   n.get_paramlist(),
                                   n.get_return_type(),
                                   0,
-                                  n.get_kind(),
-                                  n.get_annotations());
+                                  n.is_updating(),
+                                  n.is_external());
+
+  lFunctionDeclClone.set_annotations(n.get_annotations());
 
   FunctionIndex lIndex = print_parsetree_xquery(lSig, &lFunctionDeclClone);
 
@@ -635,7 +637,6 @@ void end_visit(const VarDecl& n, void*)
   theInvokedFunc.clear();
 }
 
-XQDOC_NO_BEGIN_END_TAG (VarNameAndType)
 
 XQDOC_NO_BEGIN_TAG (ModuleImport)
 
@@ -839,7 +840,6 @@ XQDOC_NO_BEGIN_END_TAG (ItemType)
 XQDOC_NO_BEGIN_END_TAG (LetClause)
 XQDOC_NO_BEGIN_END_TAG (LibraryModule)
 XQDOC_NO_BEGIN_END_TAG (Literal)
-XQDOC_NO_BEGIN_END_TAG (Module)
 XQDOC_NO_BEGIN_END_TAG (MultiplicativeExpr)
 XQDOC_NO_BEGIN_END_TAG (NamespaceDecl)
 XQDOC_NO_BEGIN_END_TAG (NameTest)

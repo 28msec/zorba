@@ -48,7 +48,10 @@ namespace zorba
   theArgVars       : The internally generated arg vars (the $xi_ vars described
                      above)
 
-  theScriptingKind : The update type of this udf.
+  theScriptingKind : The declared scripting kind of this udf. Notice that the
+                     getScriptingKind method will return the declared kind if 
+                     the body is NULL, but after the body has been translated,
+                     it will return the kind of the body expr.
 
   theIsLeaf        : True if this udf does not invoke any other udfs
 
@@ -71,8 +74,9 @@ private:
   expr_t                      theBodyExpr;
   std::vector<var_expr_t>     theArgVars;
 
-  expr_script_kind_t          theScriptingKind;
+  short                       theScriptingKind;
 
+  bool                        theIsExiting;
   bool                        theIsLeaf;
   std::vector<user_function*> theMutuallyRecursiveUDFs;
 
@@ -91,15 +95,21 @@ public:
         const QueryLoc& loc,
         const signature& sig,
         expr_t expr_body, 
-        expr_script_kind_t kind);
+        short kind,
+        bool deterministic,
+        bool isPrivate);
 
   virtual ~user_function();
 
-  expr_script_kind_t getUpdateType() const { return theScriptingKind; }
+  short getScriptingKind() const;
 
   //xqtref_t getUDFReturnType(static_context* sctx) const;
 
   const QueryLoc& getLoc() const { return theLoc; }
+
+  bool isExiting() const { return theIsExiting; }
+
+  void setExiting(bool v) { theIsExiting = v; }
 
   void setLeaf(bool v) { theIsLeaf = v; }
 
@@ -107,7 +117,7 @@ public:
 
   void setBody(const expr_t& body);
 
-  expr_t getBody() const;
+  expr* getBody() const;
 
   void setArgVars(std::vector<var_expr_t>& args);
 

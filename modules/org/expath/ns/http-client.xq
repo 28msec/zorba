@@ -130,7 +130,7 @@ import schema namespace https = "http://expath.org/ns/http-client";
  :  If there is one (or several, in case of multipart) response body, the response bodies
  :  are the next items in the sequence.
  :)
-declare sequential function http:send-request(
+declare %sequential function http:send-request(
   $request as element()?,
   $href as xs:string?,
   $bodies as item()*) as item()+ {
@@ -157,7 +157,7 @@ declare sequential function http:send-request(
  : @return see return value of the sequential 
  :  <a href="#send-request-3">send-request</a> function with three parameters.
  :)
-declare sequential function http:send-request (
+declare %sequential function http:send-request (
   $request as element()) as item()+ {
   try {
     http:send-request($request, (), ())
@@ -184,7 +184,7 @@ declare sequential function http:send-request (
  : @return see return of
  :  <a href="#send-request-3">send-request</a>
  :)
-declare sequential function http:send-request(
+declare %sequential function http:send-request(
   $request as element()?,
   $href as xs:string?) as item()+ {
   try {

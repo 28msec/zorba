@@ -79,28 +79,34 @@ LoopIterator::nextImpl (store::Item_t& result, PlanState& planState) const {
   STACK_END (state);
 }
 
-bool
-FlowCtlIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
-{
-  PlanIteratorState *state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-  switch (act) {
-  case FlowCtlException::EXIT:
-    throw ExitException (new PlanIteratorWrapper (theChildren [0], planState));
-  default:
-    throw FlowCtlException (act);
-  }
-    
-  STACK_END (state);
-}
 
-void
-FlowCtlIterator::serialize( ::zorba::serialization::Archiver &ar )
+/*******************************************************************************
+
+********************************************************************************/
+void FlowCtlIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
     (NaryBaseIterator<FlowCtlIterator, PlanIteratorState >*)this);
 
   SERIALIZE_ENUM(enum FlowCtlException::action, act);
 }
+
+
+bool FlowCtlIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
+{
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  switch (act) 
+  {
+  case FlowCtlException::EXIT:
+    throw ExitException (new PlanIteratorWrapper(theChildren [0], planState));
+  default:
+    throw FlowCtlException(act);
+  }
+    
+  STACK_END (state);
+}
+
 
 } /* namespace zorba */

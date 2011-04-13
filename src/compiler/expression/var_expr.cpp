@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-#include "types/typeops.h"
-
-#include "compiler/expression/expr.h"
 #include "compiler/expression/var_expr.h"
+#include "compiler/expression/update_exprs.h"
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/expr_visitor.h"
+
+#include "types/typeops.h"
 
 #include "zorbaserialization/serialization_engine.h"
 
@@ -31,6 +31,9 @@ namespace zorba
 
 SERIALIZABLE_CLASS_VERSIONS(var_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(var_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(GlobalBinding)
+END_SERIALIZABLE_CLASS_VERSIONS(GlobalBinding)
 
 
 /*******************************************************************************
@@ -79,9 +82,9 @@ var_expr::var_expr(
   theDeclaredType(NULL),
   theFlworClause(NULL),
   theCopyClause(NULL),
-  theIsPrivate(false),
   theIsExternal(false),
-  theIsMutable(true)
+  theIsPrivate(false),
+  theIsMutable(false)
 {
   compute_scripting_kind();
 
@@ -250,10 +253,10 @@ void var_expr::accept(expr_visitor& v)
 /*******************************************************************************
 
 ********************************************************************************/
-void global_binding::serialize(::zorba::serialization::Archiver& ar)
+void GlobalBinding::serialize(::zorba::serialization::Archiver& ar)
 {
-  serialize_baseclass(ar, (std::pair<varref_t, expr_t>*)this);
-  ar & ext;
+  serialize_baseclass(ar, (std::pair<var_expr_t, expr_t>*)this);
+  ar & theIsExternal;
 }
 
 

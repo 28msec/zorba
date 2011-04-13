@@ -1,0 +1,400 @@
+/*
+ * Copyright 2006-2008 The FLWOR Foundation.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#include "compiler/expression/script_exprs.h"
+#include "compiler/expression/var_expr.h"
+#include "compiler/expression/fo_expr.h"
+#include "compiler/expression/expr.h"
+#include "compiler/expression/expr_visitor.h"
+
+#include "functions/function.h"
+
+#include "zorbaerrors/assert.h"
+
+
+namespace zorba 
+{
+
+SERIALIZABLE_CLASS_VERSIONS(block_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(block_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(apply_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(apply_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(var_decl_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(var_decl_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(exit_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(exit_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(flowctl_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(flowctl_expr)
+
+SERIALIZABLE_CLASS_VERSIONS(while_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(while_expr)
+
+DEF_EXPR_ACCEPT (block_expr)
+DEF_EXPR_ACCEPT (apply_expr)
+DEF_EXPR_ACCEPT (var_decl_expr)
+DEF_EXPR_ACCEPT (exit_expr)
+DEF_EXPR_ACCEPT (flowctl_expr)
+DEF_EXPR_ACCEPT (while_expr)
+
+
+/*******************************************************************************
+
+********************************************************************************/
+block_expr::block_expr(
+    static_context* sctx,
+    const QueryLoc& loc,
+    bool allowLastUpdating,
+    std::vector<expr_t>& seq,
+    std::vector<var_expr*>* assignedVars)
+  :
+  expr(sctx, loc, block_expr_kind),
+  theArgs(seq)
+{
+  compute_scripting_kind2(assignedVars, allowLastUpdating);
+}
+
+
+void block_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (expr*)this);
+  ar & theArgs;
+}
+
+
+void block_expr::add_at(ulong pos, const expr_t& arg)
+{
+#ifndef NDEBUG
+  if (arg->get_expr_kind() == fo_expr_kind)
+  {
+    fo_expr* fo = static_cast<fo_expr*>(arg.getp());
+    assert(fo->get_func()->getKind() != FunctionConsts::OP_VAR_ASSIGN_1);
+  }
+#endif
+  theArgs.insert(theArgs.begin() + pos, arg);
+  compute_scripting_kind2(NULL, false);
+}
+
+
+void block_expr::compute_scripting_kind() 
+{
+  ZORBA_ASSERT(false);
+}
+
+
+void block_expr::compute_scripting_kind2(
+    std::vector<var_expr*>* assignedVars,
+    bool allowLastUpdating) 
+{
+  bool vacuous = true;
+
+  theScriptingKind = VACUOUS_EXPR;
+
+  ulong numChildren = (ulong)theArgs.size();
+
+  for (ulong i = 0; i < numChildren; ++i)
+  {
+    short kind = theArgs[i]->get_scripting_detail();
+
+    if (theArgs[i]->get_expr_kind() == var_decl_expr_kind &&
+        assignedVars)
+    {
+      var_decl_expr* varDeclExpr = static_cast<var_decl_expr*>(theArgs[i].getp());
+
+      var_expr* varExpr = varDeclExpr->get_var_expr();
+
+      while (true)
+      {
+        std::vector<var_expr*>::iterator ite = (*assignedVars).begin();
+        std::vector<var_expr*>::iterator end = (*assignedVars).end();
+
+        ite = std::find(ite, end, varExpr);
+
+        if (ite != end)
+          ite = (*assignedVars).erase(ite);
+        else
+          break;
+      }
+
+      continue;
+    }
+
+    if (kind != VACUOUS_EXPR)
+      vacuous = false;
+
+    theScriptingKind |= kind;
+  }
+
+  if (!vacuous)
+    theScriptingKind &= ~VACUOUS_EXPR;
+
+  if (assignedVars && !(*assignedVars).empty())
+    theScriptingKind |= (VAR_SETTING_EXPR | SEQUENTIAL_EXPR);
+  else
+    theScriptingKind &= ~VAR_SETTING_EXPR;
+
+  if (theScriptingKind & UPDATING_EXPR)
+    theScriptingKind &= ~SIMPLE_EXPR;
+
+  if (theScriptingKind & SEQUENTIAL_EXPR)
+    theScriptingKind &= ~SIMPLE_EXPR;
+
+  if (allowLastUpdating &&
+      numChildren > 0 &&
+      theArgs[numChildren - 1]->is_updating())
+  {
+    theScriptingKind = UPDATING_EXPR;
+  }
+
+  checkScriptingKind();
+}
+
+
+expr_t block_expr::clone(substitution_t& subst) const
+{
+  checked_vector<expr_t> seq2;
+  for (unsigned i = 0; i < theArgs.size(); ++i)
+    seq2.push_back(theArgs[i]->clone(subst));
+
+  return new block_expr(theSctx, get_loc(), true, seq2, NULL);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+apply_expr::apply_expr(
+    static_context* sctx,
+    const QueryLoc& loc,
+    const expr_t& inExpr,
+    bool discardXDM)
+  :
+  expr(sctx, loc, apply_expr_kind),
+  theExpr(inExpr),
+  theDiscardXDM(discardXDM)
+{
+  compute_scripting_kind();
+
+  setUnfoldable(ANNOTATION_TRUE_FIXED);
+}
+
+
+void apply_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (expr*)this);
+  ar & theExpr;
+  ar & theDiscardXDM;
+}
+
+
+void apply_expr::compute_scripting_kind()
+{
+  theScriptingKind = (APPLYING_EXPR | SEQUENTIAL_EXPR);
+}
+
+
+expr_t apply_expr::clone(substitution_t& subst) const
+{
+  return new apply_expr(theSctx, get_loc(), theExpr->clone(subst), theDiscardXDM);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+var_decl_expr::var_decl_expr(
+    static_context* sctx,
+    const QueryLoc& loc,
+    const var_expr_t& varExpr,
+    const expr_t& initExpr)
+  :
+  expr(sctx, loc, var_decl_expr_kind),
+  theVarExpr(varExpr),
+  theInitExpr(initExpr)
+{
+  compute_scripting_kind();
+
+  // var_decl_expr is unfoldable because it requires access to the dyn ctx.
+  setUnfoldable(ANNOTATION_TRUE_FIXED);
+}
+
+
+void var_decl_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (expr*)this);
+  ar & theVarExpr;
+  ar & theInitExpr;
+}
+
+
+void var_decl_expr::compute_scripting_kind()
+{
+  if (theVarExpr->get_kind() == var_expr::prolog_var)
+    checkSimpleExpr(theInitExpr);
+  else
+    checkNonUpdating(theInitExpr);
+
+  if (theInitExpr == NULL)
+  {
+    theScriptingKind = SEQUENTIAL_EXPR;
+  }
+  else
+  {
+    theScriptingKind = (SEQUENTIAL_EXPR | theInitExpr->get_scripting_detail());
+    theScriptingKind &= ~SIMPLE_EXPR;
+    theScriptingKind &= ~VACUOUS_EXPR;
+  }
+}
+
+
+expr_t var_decl_expr::clone(substitution_t& s) const
+{
+  assert(theVarExpr.getp() == theVarExpr->clone(s).getp());
+
+  return new var_decl_expr(theSctx,
+                           get_loc(),
+                           theVarExpr,
+                           (theInitExpr ? theInitExpr->clone(s) : NULL));
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+exit_expr::exit_expr(
+    static_context* sctx,
+    const QueryLoc& loc,
+    const expr_t& inExpr)
+  :
+  expr(sctx, loc, exit_expr_kind),
+  theExpr(inExpr)
+{
+  compute_scripting_kind();
+
+  // Exit exprs do more than just computing a result which is consumed by their
+  // parent expr. So, they cannot be folded.
+  setUnfoldable(ANNOTATION_TRUE_FIXED);
+}
+
+
+void exit_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (expr*)this);
+  ar & theExpr;
+}
+
+
+void exit_expr::compute_scripting_kind()
+{
+  theScriptingKind = (EXITING_EXPR | SEQUENTIAL_EXPR);
+}
+
+
+expr_t exit_expr::clone(substitution_t& subst) const
+{
+  return new exit_expr(theSctx, get_loc(), get_value()->clone(subst));
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+flowctl_expr::flowctl_expr(static_context* sctx, const QueryLoc& loc, enum action action)
+  :
+  expr(sctx, loc, flowctl_expr_kind),
+  theAction(action)
+{
+  compute_scripting_kind();
+
+  // Flow-control exprs do more than just computing a result which is consumed
+  // by their parent expr. So, they cannot be folded.
+  setUnfoldable(ANNOTATION_TRUE_FIXED);
+}
+
+
+void flowctl_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (expr*)this);
+  SERIALIZE_ENUM(enum action, theAction);
+}
+
+
+void flowctl_expr::compute_scripting_kind()
+{
+  theScriptingKind = (BREAKING_EXPR | SEQUENTIAL_EXPR);
+}
+
+
+expr_t flowctl_expr::clone(substitution_t& subst) const
+{
+  return new flowctl_expr(theSctx, get_loc(), get_action());
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+while_expr::while_expr(static_context* sctx, const QueryLoc& loc, expr_t body)
+  : 
+  expr(sctx, loc, while_expr_kind),
+  theBody(body)
+{
+  compute_scripting_kind();
+}
+
+
+void while_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (expr*)this);
+  ar & theBody;
+}
+
+
+void while_expr::compute_scripting_kind()
+{
+  block_expr* seqExpr = static_cast<block_expr*>(theBody.getp());
+
+  expr* condExpr = (*seqExpr)[0];
+
+  ZORBA_ASSERT(condExpr->get_expr_kind() == if_expr_kind);
+
+  if_expr* ifExpr = static_cast<if_expr*>(condExpr);
+  condExpr = ifExpr->get_cond_expr();
+
+  checkSimpleExpr(condExpr);
+
+  if (!seqExpr->is_sequential() && !seqExpr->is_vacuous())
+  {
+    throw XQUERY_EXCEPTION(XSST0008, ERROR_LOC(get_loc()));
+  }
+
+  theScriptingKind = theBody->get_scripting_detail();
+
+  theScriptingKind &= ~BREAKING_EXPR;
+}
+
+
+expr_t while_expr::clone(substitution_t& subst) const
+{
+  return new while_expr(theSctx, get_loc(), get_body()->clone(subst));
+}
+
+
+
+}

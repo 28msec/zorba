@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_COMPILER_EXPR_BASE_H
-#define ZORBA_COMPILER_EXPR_BASE_H
+#ifndef ZORBA_COMPILER_EXPR_BASE
+#define ZORBA_COMPILER_EXPR_BASE
 
 #include <zorba/config.h>
 
@@ -74,7 +74,6 @@ enum expr_kind_t
   treat_expr_kind,
   validate_expr_kind,
   var_expr_kind,
-  var_decl_expr_kind,
 
   dynamic_function_invocation_expr_kind,
   function_item_expr_kind,
@@ -86,7 +85,9 @@ enum expr_kind_t
   replace_expr_kind,
   transform_expr_kind,
 
-  sequential_expr_kind,
+  block_expr_kind,
+  var_decl_expr_kind,
+  apply_expr_kind,
   exit_expr_kind,
   flowctl_expr_kind,
   while_expr_kind,
@@ -160,15 +161,14 @@ protected:
   ulong              theFlags1;
 
 public:
+  static void checkSimpleExpr(const expr* e);
+
+  static void checkNonUpdating(const expr* e);
+
+public:
   SERIALIZABLE_ABSTRACT_CLASS(expr)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(expr, AnnotationHolder)
   void serialize(::zorba::serialization::Archiver& ar);
-
-public:
-  static expr_script_kind_t scripting_kind_anding(
-        expr_script_kind_t type1,
-        expr_script_kind_t type2,
-        const QueryLoc& loc);
 
 public:
   expr(static_context*, const QueryLoc&, expr_kind_t);
@@ -189,7 +189,7 @@ public:
 
   void setFlags(ulong flags) { theFlags1 = flags; }
 
-  expr_script_kind_t get_scripting_kind() const;
+  short get_scripting_detail() const { return theScriptingKind; }
 
   bool is_updating() const;
 
@@ -201,6 +201,12 @@ public:
 
   bool is_updating_or_vacuous() const;
 
+  void set_not_exiting();
+
+  void adjust_sequential();
+
+  void checkScriptingKind() const;
+
   void compute_return_type(bool deep, bool* modified);
 
   xqtref_t get_return_type();
@@ -209,9 +215,9 @@ public:
 
   virtual expr_t clone(substitution_t& substitution) const;
 
-  virtual void accept(expr_visitor& v);
+  virtual void accept(expr_visitor& v) = 0;
 
-  virtual void accept_children(expr_visitor& v);
+  void accept_children(expr_visitor& v);
 
   virtual std::ostream& put(std::ostream&) const = 0;
 

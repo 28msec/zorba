@@ -46,22 +46,14 @@
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 
-using namespace std;
-
 namespace zorba 
 {
-
-SERIALIZABLE_CLASS_VERSIONS(global_binding)
-END_SERIALIZABLE_CLASS_VERSIONS(global_binding)
 
 SERIALIZABLE_CLASS_VERSIONS(AnnotationHolder)
 END_SERIALIZABLE_CLASS_VERSIONS(AnnotationHolder)
 
 SERIALIZABLE_CLASS_VERSIONS(expr)
 END_SERIALIZABLE_CLASS_VERSIONS(expr)
-
-SERIALIZABLE_CLASS_VERSIONS(sequential_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(sequential_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(catch_clause)
 END_SERIALIZABLE_CLASS_VERSIONS(catch_clause)
@@ -110,9 +102,6 @@ END_SERIALIZABLE_CLASS_VERSIONS(cast_expr)
 SERIALIZABLE_CLASS_VERSIONS(name_cast_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(name_cast_expr)
 
-SERIALIZABLE_CLASS_VERSIONS(var_decl_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(var_decl_expr)
-
 SERIALIZABLE_CLASS_VERSIONS(if_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(if_expr)
 
@@ -146,33 +135,6 @@ END_SERIALIZABLE_CLASS_VERSIONS(text_expr)
 SERIALIZABLE_CLASS_VERSIONS(pi_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(pi_expr)
 
-SERIALIZABLE_CLASS_VERSIONS(insert_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(insert_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(delete_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(delete_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(replace_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(replace_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(rename_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(rename_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(copy_clause)
-END_SERIALIZABLE_CLASS_VERSIONS(copy_clause)
-
-SERIALIZABLE_CLASS_VERSIONS(transform_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(transform_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(exit_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(exit_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(flowctl_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(flowctl_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(while_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(while_expr)
-
 SERIALIZABLE_CLASS_VERSIONS(OrderModifier)
 END_SERIALIZABLE_CLASS_VERSIONS(OrderModifier)
 
@@ -185,12 +147,10 @@ END_SERIALIZABLE_CLASS_VERSIONS(OrderModifier)
 DEF_EXPR_ACCEPT (debugger_expr)
 #endif
 DEF_EXPR_ACCEPT (wrapper_expr)
-DEF_EXPR_ACCEPT (sequential_expr)
 DEF_EXPR_ACCEPT (promote_expr)
 DEF_EXPR_ACCEPT (trycatch_expr)
 DEF_EXPR_ACCEPT (eval_expr)
 DEF_EXPR_ACCEPT (function_trace_expr)
-DEF_EXPR_ACCEPT (var_decl_expr)
 DEF_EXPR_ACCEPT (if_expr)
 DEF_EXPR_ACCEPT (instanceof_expr)
 DEF_EXPR_ACCEPT (treat_expr)
@@ -205,95 +165,10 @@ DEF_EXPR_ACCEPT (elem_expr)
 DEF_EXPR_ACCEPT (doc_expr)
 DEF_EXPR_ACCEPT (text_expr)
 DEF_EXPR_ACCEPT (pi_expr)
-DEF_EXPR_ACCEPT (insert_expr)
-DEF_EXPR_ACCEPT (delete_expr)
-DEF_EXPR_ACCEPT (rename_expr)
-DEF_EXPR_ACCEPT (replace_expr)
-DEF_EXPR_ACCEPT (transform_expr)
-DEF_EXPR_ACCEPT (exit_expr)
-DEF_EXPR_ACCEPT (flowctl_expr)
-DEF_EXPR_ACCEPT (while_expr)
-
-
-static inline void checkNonUpdating(const expr* e)
-{
-  if (e != 0 && e->is_updating())
-    throw XQUERY_EXCEPTION(XUST0001, ERROR_LOC(e->get_loc()));
-}
-
-
-static inline void checkSimpleExpr(const expr* e)
-{
-  if (e != 0 && !e->is_simple() && !e->is_vacuous())
-    throw XQUERY_EXCEPTION(XUST0001, ERROR_LOC(e->get_loc()));
-}
 
 
 #define CLONE( e, s ) ((e) == NULL ? NULL : (e)->clone(s))
 
-
-
-/*******************************************************************************
-
-  For Global Var:
-  ----------------
-
-  AnnotatedDecl ::= "declare" Annotation* (VarDecl | FunctionDecl)
-
-  Annotation ::= "%" EQName ("(" Literal ("," Literal)* ")")?
-
-  VarDecl ::= "variable" "$" VarName TypeDeclaration? 
-              ((":=" VarValue) | ("external" (":=" VarDefaultValue)?))
-
-  For Local Var:
-  --------------
-
-  VarDeclExpr ::= ("local" Annotation*)? "variable" "$" VarName TypeDeclaration?
-                  (":=" ExprSingle)?
-********************************************************************************/
-var_decl_expr::var_decl_expr(
-    static_context* sctx,
-    const QueryLoc& loc,
-    const var_expr_t& varExpr,
-    const expr_t& initExpr)
-  :
-  expr(sctx, loc, var_decl_expr_kind),
-  theVarExpr(varExpr),
-  theInitExpr(initExpr)
-{
-  compute_scripting_kind();
-}
-
-
-void var_decl_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theVarExpr;
-  ar & theInitExpr;
-}
-
-
-void var_decl_expr::compute_scripting_kind()
-{
-  if (theVarExpr->get_kind() == var_expr::prolog_var)
-    checkSimpleExpr(theInitExpr);
-  else
-    checkNonUpdating(theInitExpr);
-
-  if (theInitExpr == NULL)
-    theScriptingKind = SEQUENTIAL_EXPR;
-  else
-    theScriptingKind = SEQUENTIAL_EXPR; // | theInitExpr->get_scripting_kind();
-}
-
-
-expr_t var_decl_expr::clone(substitution_t& s) const
-{
-  return new var_decl_expr(theSctx,
-                           get_loc(),
-                           dynamic_cast<var_expr*>(theVarExpr->clone(s).getp()),
-                           theInitExpr->clone(s));
-}
 
 
 /*******************************************************************************
@@ -339,12 +214,50 @@ void if_expr::serialize(::zorba::serialization::Archiver& ar)
 
 void if_expr::compute_scripting_kind()
 {
-  checkNonUpdating(theCondExpr);
+  checkSimpleExpr(theCondExpr);
 
-  expr_script_kind_t thenKind = theThenExpr->get_scripting_kind();
-  expr_script_kind_t elseKind = theElseExpr->get_scripting_kind();
+  theScriptingKind = UNKNOWN_SCRIPTING_KIND;
 
-  theScriptingKind = expr::scripting_kind_anding(thenKind, elseKind, theLoc);
+  short thenKind = theThenExpr->get_scripting_detail();
+  short elseKind = theElseExpr->get_scripting_detail();
+
+  if (theThenExpr->is_updating() || theElseExpr->is_updating())
+  {
+    if (theThenExpr->is_updating() && !theElseExpr->is_updating_or_vacuous())
+    {
+      throw XQUERY_EXCEPTION(XUST0001, 
+                             ERROR_PARAMS(ZED(XUST0001_IF)),
+                             ERROR_LOC(get_loc()));
+    }
+    else if (theElseExpr->is_updating() && !theThenExpr->is_updating_or_vacuous())
+    {
+      throw XQUERY_EXCEPTION(XUST0001, 
+                             ERROR_PARAMS(ZED(XUST0001_IF)),
+                             ERROR_LOC(get_loc()));
+    }
+    else
+    {
+      theScriptingKind = (thenKind | elseKind);
+      theScriptingKind &= ~VACUOUS_EXPR;
+    }
+  }
+  else if (theThenExpr->is_sequential() || theElseExpr->is_sequential())
+  {
+    theScriptingKind = (thenKind | elseKind);
+
+    theScriptingKind &= ~SIMPLE_EXPR;
+    theScriptingKind &= ~VACUOUS_EXPR;
+  }
+  else if (theThenExpr->is_vacuous() && theElseExpr->is_vacuous())
+  {
+    theScriptingKind = VACUOUS_EXPR;
+  }
+  else 
+  {
+    theScriptingKind = SIMPLE_EXPR;
+  }
+
+  checkScriptingKind();
 }
 
 
@@ -385,7 +298,10 @@ void order_expr::serialize(::zorba::serialization::Archiver& ar)
 
 void order_expr::compute_scripting_kind()
 {
-  theScriptingKind = theExpr->get_scripting_kind();
+  theScriptingKind = theExpr->get_scripting_detail();
+
+  if (is_vacuous())
+    theScriptingKind = SIMPLE_EXPR;
 }
 
 
@@ -402,7 +318,7 @@ validate_expr::validate_expr(
     static_context* sctx,
     const QueryLoc& loc,
     enum ParseConstants::validation_mode_t mode,
-    store::Item_t typeName,
+    const store::Item_t& typeName,
     expr_t inExpr,
     rchandle<TypeManager> typemgr)
   :
@@ -428,9 +344,12 @@ void validate_expr::serialize(::zorba::serialization::Archiver& ar)
 
 void validate_expr::compute_scripting_kind()
 {
-  theScriptingKind = SIMPLE_EXPR;
+  checkNonUpdating(theExpr);
 
-  checkSimpleExpr(theExpr);
+  theScriptingKind = theExpr->get_scripting_detail();
+
+  if (is_vacuous())
+    theScriptingKind = SIMPLE_EXPR;
 }
 
 
@@ -488,9 +407,12 @@ void cast_or_castable_base_expr::set_target_type(xqtref_t target)
 
 void cast_or_castable_base_expr::compute_scripting_kind()
 {
-  theScriptingKind = theInputExpr->get_scripting_kind();
-
   checkNonUpdating(theInputExpr);
+
+  theScriptingKind = theInputExpr->get_scripting_detail();
+
+  if (is_vacuous())
+    theScriptingKind = SIMPLE_EXPR;
 }
 
 
@@ -739,9 +661,12 @@ void name_cast_expr::serialize(::zorba::serialization::Archiver& ar)
 
 void name_cast_expr::compute_scripting_kind()
 {
-  theScriptingKind = SIMPLE_EXPR;
+  checkNonUpdating(theInputExpr);
 
-  checkSimpleExpr(theInputExpr);
+  theScriptingKind = theInputExpr->get_scripting_detail();
+
+  if (is_vacuous())
+    theScriptingKind = SIMPLE_EXPR;
 }
 
 
@@ -785,9 +710,12 @@ void doc_expr::serialize(::zorba::serialization::Archiver& ar)
 
 void doc_expr::compute_scripting_kind()
 {
-  theScriptingKind = SIMPLE_EXPR;
+  checkNonUpdating(theContent);
 
-  checkSimpleExpr(theContent);
+  theScriptingKind = theContent->get_scripting_detail();
+
+  if (is_vacuous())
+    theScriptingKind = SIMPLE_EXPR;
 }
 
 
@@ -857,11 +785,27 @@ const namespace_context* elem_expr::getNSCtx() const
 
 void elem_expr::compute_scripting_kind()
 {
-  theScriptingKind = SIMPLE_EXPR;
+  checkNonUpdating(theQNameExpr);
+  checkNonUpdating(theContent);
+  checkNonUpdating(theAttrs);
 
-  checkSimpleExpr(theQNameExpr);
-  checkSimpleExpr(theContent);
-  checkSimpleExpr(theAttrs);
+  short nameExprKind = theQNameExpr->get_scripting_detail();
+  short contentExprKind = (theContent ? theContent->get_scripting_detail() : 0);
+  short attrsExprKind = (theAttrs ? theAttrs->get_scripting_detail() : 0);
+
+  theScriptingKind |= (nameExprKind | contentExprKind | attrsExprKind);
+
+  if (is_vacuous())
+  {
+    theScriptingKind = SIMPLE_EXPR;
+  }
+  else
+  {
+    theScriptingKind &= ~VACUOUS_EXPR;
+
+    if (is_sequential())
+      theScriptingKind &= ~SIMPLE_EXPR;
+  }
 }
 
 
@@ -915,10 +859,25 @@ const store::Item* attr_expr::getQName() const
 
 void attr_expr::compute_scripting_kind()
 {
-  theScriptingKind = SIMPLE_EXPR;
+  checkNonUpdating(theQNameExpr);
+  checkNonUpdating(theValueExpr);
 
-  checkSimpleExpr(theQNameExpr);
-  checkSimpleExpr(theValueExpr);
+  short nameExprKind = theQNameExpr->get_scripting_detail();
+  short valueExprKind = (theValueExpr ? theValueExpr->get_scripting_detail() : 0);
+
+  theScriptingKind |= (nameExprKind | valueExprKind);
+
+  if (is_vacuous())
+  {
+    theScriptingKind = SIMPLE_EXPR;
+  }
+  else
+  {
+    theScriptingKind &= ~VACUOUS_EXPR;
+
+    if (is_sequential())
+      theScriptingKind &= ~SIMPLE_EXPR;
+  }
 }
 
 
@@ -963,9 +922,12 @@ void text_expr::serialize(::zorba::serialization::Archiver& ar)
 
 void text_expr::compute_scripting_kind()
 {
-  theScriptingKind = SIMPLE_EXPR;
+  checkNonUpdating(theContentExpr);
 
-  checkSimpleExpr(theContentExpr);
+  theScriptingKind = theContentExpr->get_scripting_detail();
+
+  if (is_vacuous())
+    theScriptingKind = SIMPLE_EXPR;
 }
 
 
@@ -1004,10 +966,25 @@ void pi_expr::serialize(::zorba::serialization::Archiver& ar)
 
 void pi_expr::compute_scripting_kind()
 {
-  theScriptingKind = SIMPLE_EXPR;
+  checkNonUpdating(theTargetExpr);
+  checkNonUpdating(theContentExpr);
 
-  checkSimpleExpr(theTargetExpr);
-  checkSimpleExpr(theContentExpr);
+  short targetExprKind = theTargetExpr->get_scripting_detail();
+  short contentExprKind = theContentExpr->get_scripting_detail();
+
+  theScriptingKind |= (targetExprKind | contentExprKind);
+
+  if (is_vacuous())
+  {
+    theScriptingKind = SIMPLE_EXPR;
+  }
+  else
+  {
+    theScriptingKind &= ~VACUOUS_EXPR;
+
+    if (is_sequential())
+      theScriptingKind &= ~SIMPLE_EXPR;
+  }
 }
 
 
@@ -1043,7 +1020,7 @@ void wrapper_expr::serialize(::zorba::serialization::Archiver& ar)
 
 void wrapper_expr::compute_scripting_kind()
 {
-  theScriptingKind = theWrappedExpr->get_scripting_kind();
+  theScriptingKind = theWrappedExpr->get_scripting_detail();
 }
 
 
@@ -1229,12 +1206,17 @@ void extension_expr::serialize(::zorba::serialization::Archiver& ar)
 
 void extension_expr::compute_scripting_kind()
 {
-  theScriptingKind = SIMPLE_EXPR;
+  checkNonUpdating(theExpr);
 
-  checkSimpleExpr(theExpr);
+  theScriptingKind = theExpr->get_scripting_detail();
+
+  if (is_vacuous())
+    theScriptingKind = SIMPLE_EXPR;
 }
 
-expr_t extension_expr::clone(substitution_t& subst) const {
+
+expr_t extension_expr::clone(substitution_t& subst) const 
+{
   rchandle<extension_expr> lClone(0);
   lClone = (
     theExpr == 0 ? new extension_expr(theSctx, get_loc())
@@ -1242,11 +1224,13 @@ expr_t extension_expr::clone(substitution_t& subst) const {
   // pragm doesn't contain expressions. Thus, it is not cloned.
   for ( std::vector<rchandle<pragma> >::const_iterator lIter = thePragmas.begin();
         lIter != thePragmas.end();
-        ++lIter ) {
+        ++lIter ) 
+  {
     lClone->add(*lIter);
   }
   return lClone.getp();
 }
+
 
 /////////////////////////////////////////////////////////////////////////
 //                                                                     //
@@ -1311,53 +1295,62 @@ void trycatch_expr::add_clause(catch_clause_t cc)
 
 void trycatch_expr::compute_scripting_kind()
 {
-  theScriptingKind = theTryExpr->get_scripting_kind();
+  theScriptingKind = SIMPLE_EXPR;
+
+  theScriptingKind |= theTryExpr->get_scripting_detail();
 
   ulong numCatchClauses = (ulong)theCatchClauses.size();
 
-  for(ulong i = 0; i < numCatchClauses; ++i) 
+  for (ulong i = 0; i < numCatchClauses; ++i) 
   {
     const expr* catchExpr = theCatchExprs[i].getp();
 
-    expr_script_kind_t catchKind = catchExpr->get_scripting_kind();
+    short catchKind = catchExpr->get_scripting_detail();
 
-    if (theScriptingKind == UPDATE_EXPR)
-    {
-      if (catchKind == SEQUENTIAL_EXPR)
-        throw XQUERY_EXCEPTION(XUST0001, ERROR_LOC(catchExpr->get_loc()));
-    }
-    else if (theScriptingKind == SEQUENTIAL_EXPR)
-    {
-      if (catchKind == UPDATE_EXPR)
-        throw XQUERY_EXCEPTION(XUST0001, ERROR_LOC(catchExpr->get_loc()));
-    }
-    else if (theScriptingKind == VACUOUS_EXPR)
-    {
-      theScriptingKind = catchKind;
-    }
+    theScriptingKind |= catchKind;
   }
+
+  theScriptingKind &= ~VACUOUS_EXPR;
+
+  if (theScriptingKind & UPDATING_EXPR)
+    theScriptingKind &= ~SIMPLE_EXPR;
+
+  if (theScriptingKind & SEQUENTIAL_EXPR)
+    theScriptingKind &= ~SIMPLE_EXPR;
+
+  checkScriptingKind();
 }
 
 
 catch_clause_t catch_clause::clone(expr::substitution_t& subst) const
 {
   catch_clause_t lClause(new catch_clause());
+
   for (nt_list_t::const_iterator lIter = theNameTests.begin();
-       lIter != theNameTests.end(); ++lIter) {
+       lIter != theNameTests.end();
+       ++lIter) 
+  {
     lClause->add_nametest_h(lIter->getp());
   }
-  if (theErrorCodeVar) {
+
+  if (theErrorCodeVar) 
+  {
     lClause->set_error_code_var(
         static_cast<var_expr*>(theErrorCodeVar->clone(subst).getp()));
   }
-  if (theErrorDescVar) {
+
+  if (theErrorDescVar) 
+  {
     lClause->set_error_desc_var(
         static_cast<var_expr*>(theErrorDescVar->clone(subst).getp()));
   }
-  if (theErrorItemVar) {
+
+  if (theErrorItemVar) 
+  {
     lClause->set_error_item_var(
         static_cast<var_expr*>(theErrorItemVar->clone(subst).getp()));
   }
+
   return lClause.getp();
 }
 
@@ -1366,13 +1359,19 @@ expr_t trycatch_expr::clone(substitution_t& subst) const
 {
   std::auto_ptr<trycatch_expr> lTryCatch(
       new trycatch_expr(theSctx, get_loc(), theTryExpr->clone(subst)));
+
   for (std::vector<expr_t>::const_iterator lIter = theCatchExprs.begin();
-       lIter != theCatchExprs.end(); ++lIter) {
+       lIter != theCatchExprs.end();
+       ++lIter) 
+  {
     lTryCatch->add_catch_expr((*lIter)->clone(subst));
   }
-  for (uint32_t i = 0; i < clause_count(); ++i) {
+
+  for (uint32_t i = 0; i < clause_count(); ++i) 
+  {
     lTryCatch->add_clause(theCatchClauses[i]->clone(subst));
   }
+
   return lTryCatch.release();
 }
 
@@ -1380,6 +1379,22 @@ expr_t trycatch_expr::clone(substitution_t& subst) const
 /*******************************************************************************
 
 ********************************************************************************/
+eval_expr::eval_expr(
+    static_context* sctx,
+    const QueryLoc& loc, 
+    expr_t e,
+    expr_script_kind_t scriptingKind,
+    namespace_context* nsCtx)
+  :
+  expr(sctx, loc, eval_expr_kind),
+  theExpr(e),
+  theNSCtx(nsCtx),
+  theInnerScriptingKind(scriptingKind)
+{
+  compute_scripting_kind();
+}
+
+
 void eval_expr::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (expr*)this);
@@ -1387,6 +1402,7 @@ void eval_expr::serialize(::zorba::serialization::Archiver& ar)
   ar & theVars;
   ar & theArgs;
   ar & theNSCtx;
+  SERIALIZE_ENUM(expr_script_kind_t, theInnerScriptingKind);
 }
 
 
@@ -1396,19 +1412,28 @@ const namespace_context* eval_expr::getNSCtx() const
 }
 
 
+expr_script_kind_t eval_expr::get_inner_scripting_kind() const 
+{
+  return theInnerScriptingKind; 
+}
+
+
 void eval_expr::compute_scripting_kind()
 {
   checkNonUpdating(theExpr);
 
+  theScriptingKind = theInnerScriptingKind;
+
+  if (theScriptingKind == SEQUENTIAL_EXPR)
+    theScriptingKind |= SEQUENTIAL_FUNC_EXPR;
+
   if (theExpr->is_sequential())
   {
-    if (theScriptingKind == UPDATE_EXPR)
-    {
-      throw XQUERY_EXCEPTION(XUST0001, ERROR_LOC(get_loc()));
-    }
-
-    theScriptingKind = SEQUENTIAL_EXPR;
+    theScriptingKind |= theExpr->get_scripting_detail();
+    theScriptingKind &= ~SIMPLE_EXPR;
   }
+
+  checkScriptingKind();
 }
 
 
@@ -1417,10 +1442,10 @@ expr_t eval_expr::clone(substitution_t& s) const
   rchandle<eval_expr> new_eval = new eval_expr(theSctx, 
                                                theLoc, 
                                                theExpr->clone(s),
-                                               get_scripting_kind(),
+                                               theInnerScriptingKind,
                                                theNSCtx.getp());
 
-  for (unsigned int i = 0; i < theVars.size(); ++i)
+  for (ulong i = 0; i < theVars.size(); ++i)
   {
     var_expr_t cloneVar = dynamic_cast<var_expr*>(theVars[i]->clone(s).getp());
     assert(cloneVar != NULL);
@@ -1435,25 +1460,26 @@ expr_t eval_expr::clone(substitution_t& s) const
 /*******************************************************************************
 
 ********************************************************************************/
-void debugger_expr::store_local_variables(checked_vector<varref_t>& aScopedVariables)
+void debugger_expr::store_local_variables(checked_vector<var_expr_t>& aScopedVariables)
 {
   std::set<const store::Item*> lQNames;
-  checked_vector<varref_t>::reverse_iterator it;
+  checked_vector<var_expr_t>::reverse_iterator it;
   for ( it = aScopedVariables.rbegin(); it != aScopedVariables.rend(); ++it )
   {
     if ( lQNames.find((*it)->get_name()) == lQNames.end() )
     {
       lQNames.insert( (*it)->get_name() );
-      varref_t lValue = (*it);
-      varref_t lVariable(new var_expr(theSctx,
-                                      theLoc,
-                                      var_expr::eval_var,
-                                      lValue->get_name() ) );
+      var_expr_t lValue = (*it);
+      var_expr_t lVariable(new var_expr(theSctx,
+                                        theLoc,
+                                        var_expr::eval_var,
+                                        lValue->get_name() ) );
       lVariable->set_type( lValue->get_type() );
       add_var(lVariable, lValue.getp());
     }
   }
 }
+
 
 void debugger_expr::serialize(::zorba::serialization::Archiver& ar)
 {
@@ -1512,7 +1538,7 @@ void function_trace_expr::serialize(::zorba::serialization::Archiver& ar)
 
 void function_trace_expr::compute_scripting_kind()
 {
-  theScriptingKind = theExpr->get_scripting_kind();
+  theScriptingKind = theExpr->get_scripting_detail();
 }
 
 
@@ -1522,533 +1548,6 @@ expr_t function_trace_expr::clone(substitution_t& s) const
 }
 
 
-/////////////////////////////////////////////////////////////////////////
-//                                                                     //
-//	Scripting expressions                                              //
-//  [http://www.w3.org/TR/xquery-sx-10/]                               //
-//                                                                     //
-/////////////////////////////////////////////////////////////////////////
-
-
-/*******************************************************************************
-
-********************************************************************************/
-sequential_expr::sequential_expr(
-    static_context* sctx,
-    const QueryLoc& loc,
-    bool applyLast)
-  :
-  expr(sctx, loc, sequential_expr_kind),
-  theApplyLast(applyLast)
-{
-  compute_scripting_kind();
-}
-
-
-sequential_expr::sequential_expr(
-    static_context* sctx,
-    const QueryLoc& loc,
-    expr_t first,
-    expr_t second,
-    bool applyLast)
-  :
-  expr(sctx, loc, sequential_expr_kind),
-  theApplyLast(applyLast)
-{
-  theArgs.push_back(first);
-  theArgs.push_back(second);
-  compute_scripting_kind();
-}
-
-
-sequential_expr::sequential_expr(
-    static_context* sctx,
-    const QueryLoc& loc,
-    checked_vector<expr_t>& seq,
-    expr_t result,
-    bool applyLast)
-  :
-  expr(sctx, loc, sequential_expr_kind),
-  theArgs(seq),
-  theApplyLast(applyLast)
-{
-  theArgs.push_back(result);
-  compute_scripting_kind();
-}
-
-
-sequential_expr::sequential_expr(
-    static_context* sctx,
-    const QueryLoc& loc,
-    checked_vector<expr_t>& seq,
-    bool applyLast)
-  :
-  expr(sctx, loc, sequential_expr_kind),
-  theArgs(seq),
-  theApplyLast(applyLast)
-{
-  compute_scripting_kind();
-}
-
-
-void sequential_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theArgs;
-  ar & theApplyLast;
-}
-
-
-void sequential_expr::compute_scripting_kind() 
-{
-  theScriptingKind = SIMPLE_EXPR;
-  bool vacuous = true;
-
-  ulong numChildren = (ulong)theArgs.size();
-
-  for (ulong i = 0; i < numChildren; ++i)
-  {
-    expr_script_kind_t kind = theArgs[i]->get_scripting_kind();
-
-    if (kind == SEQUENTIAL_EXPR)
-    {
-      theScriptingKind = SEQUENTIAL_EXPR;
-      vacuous = false;
-      break;
-    }
-    else if (kind == UPDATE_EXPR)
-    {
-      if (i < numChildren - 1 || theApplyLast)
-        theScriptingKind = SEQUENTIAL_EXPR;
-      else
-        theScriptingKind = UPDATE_EXPR;
-
-      vacuous = false;
-      break;
-    }
-    else if (kind == SIMPLE_EXPR)
-    {
-      vacuous = false;
-    }
-  }
-
-  if (vacuous)
-    theScriptingKind = VACUOUS_EXPR;
-}
-
-
-expr_t sequential_expr::clone(substitution_t& subst) const
-{
-  checked_vector<expr_t> seq2;
-  for (unsigned i = 0; i < theArgs.size(); ++i)
-    seq2.push_back(theArgs[i]->clone(subst));
-
-  return new sequential_expr(theSctx, get_loc(), seq2, theApplyLast);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-exit_expr::exit_expr(static_context* sctx, const QueryLoc& loc, expr_t inExpr)
-  :
-  expr(sctx, loc, exit_expr_kind),
-  theExpr(inExpr)
-{
-  compute_scripting_kind();
-
-  setUnfoldable(ANNOTATION_TRUE_FIXED);
-}
-
-
-void exit_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theExpr;
-}
-
-
-void exit_expr::compute_scripting_kind()
-{
-  if (theExpr->is_simple())
-  {
-    theScriptingKind = SIMPLE_EXPR;
-  }
-  if (theExpr->is_vacuous())
-  {
-    theScriptingKind = VACUOUS_EXPR;
-  }
-  else
-  {
-    theScriptingKind = SEQUENTIAL_EXPR;
-  }
-}
-
-
-expr_t exit_expr::clone(substitution_t& subst) const
-{
-  return new exit_expr(theSctx, get_loc(), get_value()->clone(subst));
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-flowctl_expr::flowctl_expr(static_context* sctx, const QueryLoc& loc, enum action action)
-  :
-  expr(sctx, loc, flowctl_expr_kind),
-  theAction(action)
-{
-  compute_scripting_kind();
-
-  setUnfoldable(ANNOTATION_TRUE_FIXED);
-}
-
-
-void flowctl_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  SERIALIZE_ENUM(enum action, theAction);
-}
-
-
-void flowctl_expr::compute_scripting_kind()
-{
-  theScriptingKind = SIMPLE_EXPR;
-}
-
-
-expr_t flowctl_expr::clone(substitution_t& subst) const
-{
-  return new flowctl_expr(theSctx, get_loc(), get_action());
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-while_expr::while_expr(static_context* sctx, const QueryLoc& loc, expr_t body)
-  : 
-  expr(sctx, loc, while_expr_kind),
-  theBody(body)
-{
-  compute_scripting_kind();
-}
-
-
-void while_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theBody;
-}
-
-
-void while_expr::compute_scripting_kind()
-{
-  sequential_expr* seq = static_cast<sequential_expr*>(theBody.getp());
-
-  checkNonUpdating((*seq)[0]);
-
-  theScriptingKind = theBody->get_scripting_kind();
-}
-
-
-expr_t while_expr::clone(substitution_t& subst) const
-{
-  return new while_expr(theSctx, get_loc(), get_body()->clone(subst));
-}
-
-
-/////////////////////////////////////////////////////////////////////////
-//                                                                     //
-//	Update expressions                                                 //
-//  [http://www.w3.org/TR/xqupdate/]                                   //
-//                                                                     //
-/////////////////////////////////////////////////////////////////////////
-
-/*******************************************************************************
-
-********************************************************************************/
-insert_expr::insert_expr(
-    static_context* sctx,
-    const QueryLoc& loc,
-    store::UpdateConsts::InsertType aType,
-    expr_t aSourceExpr,
-    expr_t aTargetExpr)
-  :
-	expr(sctx, loc, insert_expr_kind),
-  theType(aType),
-	theSourceExpr(aSourceExpr),
-	theTargetExpr(aTargetExpr)
-{
-  compute_scripting_kind();
-}
-
-
-void insert_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  SERIALIZE_ENUM(store::UpdateConsts::InsertType, theType);
-  ar & theSourceExpr;
-  ar & theTargetExpr;
-}
-
-
-void insert_expr::compute_scripting_kind()
-{
-  theScriptingKind = UPDATE_EXPR;
-
-  checkNonUpdating(theSourceExpr);
-  checkNonUpdating(theTargetExpr);
-}
-
-
-expr_t insert_expr::clone(substitution_t& subst) const
-{
-  return new insert_expr(theSctx,
-                         get_loc(),
-                         getType(),
-                         getSourceExpr()->clone(subst),
-                         getTargetExpr()->clone(subst));
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-delete_expr::delete_expr(
-    static_context* sctx,
-    const QueryLoc& loc,
-    expr_t aTargetExpr)
-  :
-	expr(sctx, loc, delete_expr_kind),
-	theTargetExpr(aTargetExpr)
-{
-  compute_scripting_kind();
-}
-
-
-void delete_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theTargetExpr;
-}
-
-void delete_expr::compute_scripting_kind()
-{
-  theScriptingKind = UPDATE_EXPR;
-
-  checkNonUpdating(theTargetExpr);
-}
-
-
-expr_t delete_expr::clone (substitution_t& subst) const
-{
-  return new delete_expr(theSctx, get_loc(), getTargetExpr()->clone(subst));
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-replace_expr::replace_expr(
-    static_context* sctx,
-    const QueryLoc& loc,
-    store::UpdateConsts::ReplaceType aType,
-    expr_t aTargetExpr,
-    expr_t aReplaceExpr)
-  :
-	expr(sctx, loc, replace_expr_kind),
-  theType(aType),
-	theTargetExpr(aTargetExpr),
-	theReplaceExpr(aReplaceExpr)
-{
-  compute_scripting_kind();
-}
-
-
-void replace_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  SERIALIZE_ENUM(store::UpdateConsts::ReplaceType, theType);
-  ar & theTargetExpr;
-  ar & theReplaceExpr;
-}
-
-
-void replace_expr::compute_scripting_kind()
-{
-  theScriptingKind = UPDATE_EXPR;
-
-  checkNonUpdating(theTargetExpr);
-  checkNonUpdating(theReplaceExpr);
-}
-
-
-expr_t replace_expr::clone(substitution_t& subst) const
-{
-  return new replace_expr(theSctx,
-                          get_loc(),
-                          getType(),
-                          getTargetExpr()->clone(subst),
-                          getReplaceExpr()->clone(subst));
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-rename_expr::rename_expr(
-    static_context* sctx,
-    const QueryLoc& loc,
-    expr_t aTargetExpr,
-    expr_t aNameExpr)
-  :
-	expr(sctx, loc, rename_expr_kind),
-	theTargetExpr(aTargetExpr),
-	theNameExpr(aNameExpr)
-{
-  compute_scripting_kind();
-}
-
-
-void rename_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theTargetExpr;
-  ar & theNameExpr;
-}
-
-
-void rename_expr::compute_scripting_kind()
-{
-  theScriptingKind = UPDATE_EXPR;
-
-  checkNonUpdating(theTargetExpr);
-  checkNonUpdating(theNameExpr);
-}
-
-
-expr_t rename_expr::clone(substitution_t& subst) const
-{
-  return new rename_expr(theSctx,
-                         get_loc(),
-                         getTargetExpr()->clone(subst),
-                         getNameExpr()->clone(subst));
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-copy_clause::copy_clause(var_expr_t aVar, expr_t aExpr)
-  :
-  theVar(aVar),
-  theExpr(aExpr)
-{
-  theVar->set_copy_clause(this);
-}
-
-copy_clause::~copy_clause()
-{
-  if(theVar)
-    theVar->set_copy_clause(NULL);
-}
-
-void copy_clause::serialize(::zorba::serialization::Archiver& ar)
-{
-  ar & theVar;
-  ar & theExpr;
-}
-
-copy_clause_t copy_clause::clone(expr::substitution_t& subst) const {
-  ZORBA_ASSERT(theVar && theExpr);
-  return new copy_clause(
-    static_cast<var_expr*>(theVar->clone(subst).getp()), 
-    theExpr->clone(subst));   
-}
-
-transform_expr::transform_expr(
-    static_context* sctx,
-	  const QueryLoc& loc,
-    expr_t aModifyExpr,
-    expr_t aReturnExpr)
-  :
-	expr(sctx, loc, transform_expr_kind),
-	theModifyExpr(aModifyExpr),
-	theReturnExpr(aReturnExpr)
-{
-  compute_scripting_kind();
-}
-
-
-void transform_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theCopyClauses;
-  ar & theModifyExpr;
-  ar & theReturnExpr;
-}
-
-
-void transform_expr::setModifyExpr(expr* e) 
-{
-  theModifyExpr = e;
-  compute_scripting_kind();
-}
-
-
-void transform_expr::setReturnExpr(expr* e)
-{
-  theReturnExpr = e;
-  compute_scripting_kind();
-}
-
-
-void transform_expr::add_back(copy_clause_t c)
-{
-  theCopyClauses.push_back(c);
-  compute_scripting_kind();
-}
-
-
-void transform_expr::compute_scripting_kind()
-{
-  theScriptingKind = SIMPLE_EXPR;
-
-  ulong numCopyVars = (ulong)theCopyClauses.size();
-
-  for (ulong i = 0; i < numCopyVars; ++i)
-  {
-    checkNonUpdating(theCopyClauses[i]->getExpr());
-  }
-
-  if (theModifyExpr != NULL)
-  {
-    expr_script_kind_t modKind = theModifyExpr->get_scripting_kind();
-
-    if (modKind != UPDATE_EXPR && modKind != VACUOUS_EXPR)
-    {
-      throw XQUERY_EXCEPTION(XUST0002, ERROR_LOC(theModifyExpr->get_loc()));
-    }
-  }
-
-  checkNonUpdating(theReturnExpr);
-}
-
-expr_t transform_expr::clone(substitution_t& subst) const {
-  ZORBA_ASSERT(theModifyExpr && theReturnExpr);
-  rchandle<transform_expr> lClone(new transform_expr(theSctx, 
-                                    get_loc(), 
-                                    theModifyExpr?theModifyExpr->clone(subst):0, 
-                                    theReturnExpr?theReturnExpr->clone(subst):0));  
-  for ( std::vector<copy_clause_t>::const_iterator lIter = theCopyClauses.begin();
-        lIter != theCopyClauses.end();
-        ++lIter) {
-    lClone->add_back((*lIter)->clone(subst));
-  }
-  return lClone.getp();
-}
 
 } /* namespace zorba */
 /* vim:set ts=2 sw=2: */

@@ -4,10 +4,10 @@ declare variable $repl := <c/>;
 
 while ($cnt <3)
 {
- set $cnt := $cnt + 1;
- for $rec in $map/*
- return
-   if ( $repl[name() eq name($rec)] )
-   then ()
-   else $rec;
+  set $cnt := $cnt + 1;
+  for $rec in $map/*
+  return
+    if ( $repl[name() eq name($rec)] )
+    then ()
+    else $rec;
 };

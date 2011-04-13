@@ -20,6 +20,8 @@
 #include "compiler/expression/expr.h"
 #include "compiler/expression/path_expr.h"
 #include "compiler/expression/fo_expr.h"
+#include "compiler/expression/script_exprs.h"
+#include "compiler/expression/update_exprs.h"
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/function_item_expr.h"
 #ifndef ZORBA_NO_FULL_TEXT
@@ -446,23 +448,6 @@ void ExprIterator::next()
     break;
   }
 
-  case sequential_expr_kind:
-  {
-    sequential_expr* seqExpr = static_cast<sequential_expr*>(theExpr);
-
-    EXPR_ITER_BEGIN();
-
-    theArgsIter = seqExpr->theArgs.begin();
-    theArgsEnd = seqExpr->theArgs.end();
-    for (; theArgsIter != theArgsEnd; ++theArgsIter)
-    {
-      EXPR_ITER_NEXT(*theArgsIter);
-    }
-
-    EXPR_ITER_END();
-    break;
-  }
-
   case function_item_expr_kind:
   {
     function_item_expr* fiExpr = static_cast<function_item_expr*>(theExpr);
@@ -495,57 +480,6 @@ void ExprIterator::next()
     {
       EXPR_ITER_NEXT(*theArgsIter);
     }
-
-    EXPR_ITER_END();
-    break;
-  }
-
-  case eval_expr_kind:
-  case debugger_expr_kind:
-  {
-    eval_expr* evalExpr = static_cast<eval_expr*>(theExpr);
-
-    EXPR_ITER_BEGIN();
-
-    EXPR_ITER_NEXT(evalExpr->theExpr);
-
-    theArgsIter = evalExpr->theArgs.begin();
-    theArgsEnd = evalExpr->theArgs.end();
-    for (; theArgsIter != theArgsEnd; ++theArgsIter)
-    {
-      EXPR_ITER_NEXT(*theArgsIter);
-    }
-
-    EXPR_ITER_END();
-    break;
-  }
-
-  case flowctl_expr_kind:
-  {
-    EXPR_ITER_BEGIN();
-    EXPR_ITER_END();
-    break;
-  }
-
-  case while_expr_kind:
-  {
-    while_expr* whileExpr = static_cast<while_expr*>(theExpr);
-
-    EXPR_ITER_BEGIN();
-
-    EXPR_ITER_NEXT(whileExpr->theBody);
-
-    EXPR_ITER_END();
-    break;
-  }
-
-  case exit_expr_kind:
-  {
-    exit_expr* exitExpr = static_cast<exit_expr*>(theExpr);
-
-    EXPR_ITER_BEGIN();
-
-    EXPR_ITER_NEXT(exitExpr->theExpr);
 
     EXPR_ITER_END();
     break;
@@ -622,6 +556,72 @@ void ExprIterator::next()
     break;
   }
 
+  case block_expr_kind:
+  {
+    block_expr* seqExpr = static_cast<block_expr*>(theExpr);
+
+    EXPR_ITER_BEGIN();
+
+    theArgsIter = seqExpr->theArgs.begin();
+    theArgsEnd = seqExpr->theArgs.end();
+    for (; theArgsIter != theArgsEnd; ++theArgsIter)
+    {
+      EXPR_ITER_NEXT(*theArgsIter);
+    }
+
+    EXPR_ITER_END();
+    break;
+  }
+
+  case apply_expr_kind:
+  {
+    apply_expr* applyExpr = static_cast<apply_expr*>(theExpr);
+    EXPR_ITER_BEGIN();
+    EXPR_ITER_NEXT(applyExpr->theExpr);
+    EXPR_ITER_END();
+    break;
+  }
+
+  case var_decl_expr_kind:
+  {
+    var_decl_expr* varDeclExpr = static_cast<var_decl_expr*>(theExpr);
+    EXPR_ITER_BEGIN();
+    EXPR_ITER_NEXT(varDeclExpr->theInitExpr);
+    EXPR_ITER_END();
+    break;
+  }
+
+  case flowctl_expr_kind:
+  {
+    EXPR_ITER_BEGIN();
+    EXPR_ITER_END();
+    break;
+  }
+
+  case while_expr_kind:
+  {
+    while_expr* whileExpr = static_cast<while_expr*>(theExpr);
+
+    EXPR_ITER_BEGIN();
+
+    EXPR_ITER_NEXT(whileExpr->theBody);
+
+    EXPR_ITER_END();
+    break;
+  }
+
+  case exit_expr_kind:
+  {
+    exit_expr* exitExpr = static_cast<exit_expr*>(theExpr);
+
+    EXPR_ITER_BEGIN();
+
+    EXPR_ITER_NEXT(exitExpr->theExpr);
+
+    EXPR_ITER_END();
+    break;
+  }
+
 #ifndef ZORBA_NO_FULL_TEXT
   case ft_expr_kind:
   {
@@ -645,20 +645,31 @@ void ExprIterator::next()
   }
 #endif /* ZORBA_NO_FULL_TEXT */
 
+  case eval_expr_kind:
+  case debugger_expr_kind:
+  {
+    eval_expr* evalExpr = static_cast<eval_expr*>(theExpr);
+
+    EXPR_ITER_BEGIN();
+
+    EXPR_ITER_NEXT(evalExpr->theExpr);
+
+    theArgsIter = evalExpr->theArgs.begin();
+    theArgsEnd = evalExpr->theArgs.end();
+    for (; theArgsIter != theArgsEnd; ++theArgsIter)
+    {
+      EXPR_ITER_NEXT(*theArgsIter);
+    }
+
+    EXPR_ITER_END();
+    break;
+  }
+
   case function_trace_expr_kind:
   {
     function_trace_expr* dummyExpr = static_cast<function_trace_expr*>(theExpr);
     EXPR_ITER_BEGIN();
     EXPR_ITER_NEXT(dummyExpr->theExpr);
-    EXPR_ITER_END();
-    break;
-  }
-
-  case var_decl_expr_kind:
-  {
-    var_decl_expr* varDeclExpr = static_cast<var_decl_expr*>(theExpr);
-    EXPR_ITER_BEGIN();
-    EXPR_ITER_NEXT(varDeclExpr->theInitExpr);
     EXPR_ITER_END();
     break;
   }

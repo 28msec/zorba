@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_COMPILER_VAR_EXPR_H
-#define ZORBA_COMPILER_VAR_EXPR_H
+#ifndef ZORBA_COMPILER_VAR_EXPR
+#define ZORBA_COMPILER_VAR_EXPR
 
 #include "compiler/expression/expr_base.h"
 
-#include "zorbaserialization/class_serializer.h"
-#include "zorbautils/mutex.h"
-
-namespace zorba {
+namespace zorba 
+{
 
 class flwor_clause;
 class forletwin_clause;
@@ -29,7 +27,6 @@ class for_clause;
 class copy_clause;
 class var_expr;
 
-typedef rchandle<var_expr> varref_t;
 typedef rchandle<var_expr> var_expr_t;
 
 
@@ -119,8 +116,9 @@ protected:
   flwor_clause * theFlworClause;
   copy_clause  * theCopyClause;
 
-  bool           theIsPrivate; 
   bool           theIsExternal;
+
+  bool           theIsPrivate; 
   bool           theIsMutable;
 
 public:
@@ -158,6 +156,8 @@ public:
 
   bool is_mutable() const { return theIsMutable; }
 
+  void set_mutable(bool v) { theIsMutable = v; }
+
   xqtref_t get_type() const;
 
   void set_type(xqtref_t t);
@@ -190,30 +190,31 @@ public:
 };
 
 
-struct global_binding : public std::pair<varref_t, expr_t>,
-                        public ::zorba::serialization::SerializeBaseClass
+struct GlobalBinding : public std::pair<var_expr_t, expr_t>,
+                       public ::zorba::serialization::SerializeBaseClass
 {
-  bool ext;
+  bool theIsExternal;
 
 public:
-  SERIALIZABLE_CLASS(global_binding)
-  SERIALIZABLE_CLASS_CONSTRUCTOR(global_binding)
+  SERIALIZABLE_CLASS(GlobalBinding)
+  SERIALIZABLE_CLASS_CONSTRUCTOR(GlobalBinding)
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  global_binding() : ext(false) {}
+  GlobalBinding() : theIsExternal(false) {}
 
-  global_binding(varref_t v, expr_t e, bool ext_)
+  GlobalBinding(const var_expr_t& v, const expr_t& e, bool external)
     :
-    std::pair<varref_t, expr_t> (v, e),
-    ext (ext_)
+    std::pair<var_expr_t, expr_t>(v, e),
+    theIsExternal(external)
   {
   }
 
-  virtual ~global_binding() {}
+  virtual ~GlobalBinding() {}
 
-  bool is_extern() const { return ext; }
+  bool is_extern() const { return theIsExternal; }
 };
+
 
 }
 

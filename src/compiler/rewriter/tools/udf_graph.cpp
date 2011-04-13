@@ -32,6 +32,8 @@
 
 #include "types/typeops.h"
 
+#include "context/static_context.h"
+
 #include "util/indent.h"
 
 

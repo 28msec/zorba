@@ -225,7 +225,7 @@ declare updating function dml:insert-nodes-after(
  :        rules for SequenceType Matching.
  : @see dml:insert-nodes
  :)
-declare sequential function dml:apply-insert-nodes(
+declare %sequential function dml:apply-insert-nodes(
   $name as xs:QName,
   $content as node()*) as node()*  external;
 
@@ -249,7 +249,7 @@ declare sequential function dml:apply-insert-nodes(
  :        rules for SequenceType Matching.
  : @see dml:insert-nodes-first
  :)
-declare sequential function dml:apply-insert-nodes-first(
+declare %sequential function dml:apply-insert-nodes-first(
   $name as xs:QName,
   $content as node()*) as node()*  external;
 
@@ -272,7 +272,7 @@ declare sequential function dml:apply-insert-nodes-first(
  :        rules for SequenceType Matching.
  : @see dml:insert-nodes-last
  :)
-declare sequential function dml:apply-insert-nodes-last(
+declare %sequential function dml:apply-insert-nodes-last(
   $name as xs:QName,
   $content as node()*) as node()*  external;
 
@@ -300,7 +300,7 @@ declare sequential function dml:apply-insert-nodes-last(
  :        contained in the collection $name.
  : @see dml:insert-nodes-before
  :)
-declare sequential function dml:apply-insert-nodes-before(
+declare %sequential function dml:apply-insert-nodes-before(
   $name as xs:QName,
   $target as node(),
   $content as node()*) as node()*  external;
@@ -329,7 +329,7 @@ declare sequential function dml:apply-insert-nodes-before(
  :        contained in the collection $name.
  : @see dml:insert-nodes-after
  :)
-declare sequential function dml:apply-insert-nodes-after(
+declare %sequential function dml:apply-insert-nodes-after(
   $name as xs:QName,
   $pos as node(),
   $content as node()*) as node()*  external;

@@ -197,7 +197,7 @@
       </zorba:signature>
 
       <zorba:methods>
-        <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
+        <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
         <zorba:accessesDynCtx returnValue="true"/>
       </zorba:methods>
 
@@ -245,7 +245,7 @@
 
 
       <zorba:methods>
-        <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
+        <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
         <zorba:accessesDynCtx returnValue="true"/>
       </zorba:methods>
 
@@ -297,7 +297,7 @@
       -->
 
       <zorba:methods>
-        <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
+        <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
         <zorba:accessesDynCtx returnValue="true"/>        
       </zorba:methods>
 
@@ -344,7 +344,7 @@
 
 
       <zorba:methods>
-        <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
+        <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
         <zorba:accessesDynCtx returnValue="true"/>
       </zorba:methods>
 
@@ -390,7 +390,7 @@
       </zorba:signature>
 
       <zorba:methods>
-        <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
+        <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
         <zorba:accessesDynCtx returnValue="true"/>
       </zorba:methods>
 
@@ -438,7 +438,7 @@
       </zorba:signature>
 
       <zorba:methods>
-        <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
+        <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
         <zorba:accessesDynCtx returnValue="true"/>
       </zorba:methods>
 
@@ -486,7 +486,7 @@
       </zorba:signature>
 
       <zorba:methods>
-        <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
+        <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
         <zorba:accessesDynCtx returnValue="true"/>
       </zorba:methods>
 
@@ -537,7 +537,7 @@
       -->
 
       <zorba:methods>
-        <zorba:getUpdateType returnValue="SEQUENTIAL_EXPR"/>
+        <zorba:getScriptingKind returnValue="(APPLYING_EXPR | SEQUENTIAL_EXPR)"/>
         <zorba:accessesDynCtx returnValue="true"/>
       </zorba:methods>
     </zorba:function>
@@ -581,7 +581,7 @@
       </zorba:signature>
 
       <zorba:methods>
-        <zorba:getUpdateType returnValue="SEQUENTIAL_EXPR"/>
+        <zorba:getScriptingKind returnValue="(APPLYING_EXPR | SEQUENTIAL_EXPR)"/>
         <zorba:accessesDynCtx returnValue="true"/>
       </zorba:methods>
 
@@ -626,7 +626,7 @@
       </zorba:signature>
 
       <zorba:methods>
-        <zorba:getUpdateType returnValue="SEQUENTIAL_EXPR"/>
+        <zorba:getScriptingKind returnValue="(APPLYING_EXPR | SEQUENTIAL_EXPR)"/>
         <zorba:accessesDynCtx returnValue="true"/>
       </zorba:methods>
 
@@ -673,7 +673,7 @@
       </zorba:signature>
 
       <zorba:methods>
-        <zorba:getUpdateType returnValue="SEQUENTIAL_EXPR"/>
+        <zorba:getScriptingKind returnValue="(APPLYING_EXPR | SEQUENTIAL_EXPR)"/>
         <zorba:accessesDynCtx returnValue="true"/>
       </zorba:methods>
 
@@ -719,7 +719,7 @@
       </zorba:signature>
 
       <zorba:methods>
-        <zorba:getUpdateType returnValue="SEQUENTIAL_EXPR"/>
+        <zorba:getScriptingKind returnValue="(APPLYING_EXPR | SEQUENTIAL_EXPR)"/>
         <zorba:accessesDynCtx returnValue="true"/>
       </zorba:methods>
 
@@ -737,6 +737,7 @@
     </zorba:state>
 
 </zorba:iterator>
+ 
 
 <!--
 /*******************************************************************************
@@ -761,7 +762,7 @@
       </zorba:signature>
 
       <zorba:methods>
-        <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
+        <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
         <zorba:accessesDynCtx returnValue="true"/>
         <zorba:ignoresSortedNodes/>
         <zorba:ignoresDuplicateNodes/>
@@ -820,7 +821,7 @@
       </zorba:signature>
 
       <zorba:methods>
-        <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
+        <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
         <zorba:accessesDynCtx returnValue="true"/>
       </zorba:methods>
 
@@ -877,7 +878,7 @@
       </zorba:signature>
 
       <zorba:methods>
-        <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
+        <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
         <zorba:accessesDynCtx returnValue="true"/>
       </zorba:methods>
 

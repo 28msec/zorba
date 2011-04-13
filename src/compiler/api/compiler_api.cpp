@@ -232,7 +232,6 @@ PlanIter_t XQueryCompiler::compile(
   PlanIter_t plan = codegen("main query",
                             rootExpr,
                             theCompilerCB,
-                            applyPUL,
                             nextDynamicVarId);
 
   return plan;

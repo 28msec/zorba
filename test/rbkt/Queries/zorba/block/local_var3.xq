@@ -2,7 +2,7 @@ declare variable $x := 5;
 
 declare variable $result := ();
 
-declare sequential function local:f($n) 
+declare %sequential function local:f($n) 
 {
   declare $x := 42, $y := $n;
 

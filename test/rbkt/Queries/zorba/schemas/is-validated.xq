@@ -32,7 +32,7 @@ declare function local:nested()
   return schema:is-validated($x/s:name)
 };
 
-declare sequential function local:update()
+declare %sequential function local:update()
 {
   set $var := validate strict { 
                  <s:person>

@@ -69,6 +69,10 @@ class static_context;
 
   - theDebuggerCommons :
 
+  - theIsEval :
+  True if this is the CCB for an eval query. This flag is needed to determine
+  if a PUL returned by the main program must be applied or not.
+
   - theIsLoadProlog :
   Whether this is a load-prolog query or not (load-prolog queries are created
   internally by the StaticContextImpl::loadProlog() method).
@@ -143,6 +147,8 @@ public:
 #ifdef ZORBA_WITH_DEBUGGER
   DebuggerCommons         * theDebuggerCommons;
 #endif
+
+  bool                      theIsEval;
 
   bool                      theIsLoadProlog;
 

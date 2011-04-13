@@ -1,7 +1,7 @@
 import module namespace xqd = "http://www.zorba-xquery.com/modules/xqdoc";
 import schema namespace xqds = "http://www.xqdoc.org/1.0" at "xqdoc-1.0.xsd";
 
-declare sequential function local:remove-date($xqdoc)
+declare %sequential function local:remove-date($xqdoc)
 {
   let $date := $xqdoc//xqds:date[1]
   return

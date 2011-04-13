@@ -8,7 +8,7 @@ declare variable $inFile as xs:string := fn:concat(file:dir-name(fn:static-base-
 declare variable $testDir as xs:string := fn:concat(file:dir-name(fn:static-base-uri()),"/tmpBinaryReadWrite");
 declare variable $outFile as xs:string := fn:concat($testDir, file:directory-separator(), "bird.gif");
 
-declare sequential function local:thisTest() as xs:string* {
+declare %sequential function local:thisTest() as xs:string* {
   (: ==================================================================== :)
   (: read the image file (binary) :)
   (: ========= :)
@@ -27,7 +27,7 @@ declare sequential function local:thisTest() as xs:string* {
   "SUCCESS";
 };
 
-declare sequential function local:main() as xs:string* {
+declare %sequential function local:main() as xs:string* {
 
 (: ========================= :)
 (: ==== DIRECTORY INIT ===== :)

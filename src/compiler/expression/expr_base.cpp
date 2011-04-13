@@ -78,6 +78,36 @@ expr_t* expr::iter_done = &expr::iter_end_expr;
 /*******************************************************************************
 
 ********************************************************************************/
+void expr::checkNonUpdating(const expr* e)
+{
+  if (e != 0 && e->is_updating())
+  {
+    throw XQUERY_EXCEPTION(XUST0001, 
+                           ERROR_PARAMS(ZED(XUST0001_Generic)),
+                           ERROR_LOC(e->get_loc()));
+  }
+}
+
+
+void expr::checkSimpleExpr(const expr* e)
+{
+  if (e != 0 && e->is_updating())
+  {
+    throw XQUERY_EXCEPTION(XUST0001, 
+                           ERROR_PARAMS(ZED(XUST0001_Generic)),
+                           ERROR_LOC(e->get_loc()));
+  }
+
+  if (e != 0 && e->is_sequential())
+  {
+    throw XQUERY_EXCEPTION(XSST0006, ERROR_LOC(e->get_loc()));
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 expr::expr(static_context* sctx, const QueryLoc& loc, expr_kind_t k)
   :
   theSctx(sctx),
@@ -112,7 +142,7 @@ void expr::serialize(::zorba::serialization::Archiver& ar)
   ar & theLoc;
   ar & theType;
   SERIALIZE_ENUM(expr_kind_t, theKind);
-  SERIALIZE_ENUM(expr_script_kind_t, theScriptingKind);
+  ar & theScriptingKind;
   ar & theFlags1;
 }
 
@@ -129,27 +159,11 @@ TypeManager* expr::get_type_manager() const
 /*******************************************************************************
 
 ********************************************************************************/
-expr_script_kind_t expr::get_scripting_kind() const
-{
-  if (is_vacuous())
-    return VACUOUS_EXPR;
-
-  else if (is_updating())
-    return UPDATE_EXPR;
-
-  else if (is_sequential())
-    return SEQUENTIAL_EXPR;
-
-  else
-    return SIMPLE_EXPR;
-}
-
-
 bool expr::is_updating() const
 {
   assert(theScriptingKind != UNKNOWN_SCRIPTING_KIND);
 
-  return theScriptingKind == UPDATE_EXPR;
+  return (theScriptingKind & UPDATING_EXPR) != 0;
 }
 
 
@@ -157,7 +171,7 @@ bool expr::is_sequential() const
 {
   assert(theScriptingKind != UNKNOWN_SCRIPTING_KIND);
 
-  return theScriptingKind == SEQUENTIAL_EXPR;
+  return (theScriptingKind & SEQUENTIAL_EXPR) != 0;
 }
 
 
@@ -179,114 +193,72 @@ bool expr::is_simple() const
 
 bool expr::is_updating_or_vacuous() const
 {
-  assert(theScriptingKind != UNKNOWN_SCRIPTING_KIND);
-
-  return (theScriptingKind == UPDATE_EXPR || theScriptingKind == VACUOUS_EXPR);
+  return (is_updating() || is_vacuous());
 }
 
 
-expr_script_kind_t expr::scripting_kind_anding(
-    expr_script_kind_t type1,
-    expr_script_kind_t type2,
-    const QueryLoc& loc)
+void expr::set_not_exiting()
 {
-  switch(type1)
+  theScriptingKind &= ~EXITING_EXPR;
+  adjust_sequential();
+}
+
+
+void expr::adjust_sequential()
+{
+  checkScriptingKind();
+
+  if (theScriptingKind & SEQUENTIAL_EXPR &&
+      ! (theScriptingKind & (EXITING_EXPR |
+                             APPLYING_EXPR |
+                             BREAKING_EXPR |
+                             SEQUENTIAL_FUNC_EXPR |
+                             VAR_SETTING_EXPR)))
   {
-  case VACUOUS_EXPR:
-  {
-    switch(type2)
-    {
-    case VACUOUS_EXPR:
-      return VACUOUS_EXPR;
+    theScriptingKind = SIMPLE_EXPR;
 
-    case SIMPLE_EXPR:
-      return SIMPLE_EXPR;
-
-    case UPDATE_EXPR:
-      return UPDATE_EXPR;
-
-    case SEQUENTIAL_EXPR:
-      return SEQUENTIAL_EXPR;
-
-    default:
-      ZORBA_ASSERT(false);
-    }
-
-    break;
+    checkScriptingKind();
   }
-  case SIMPLE_EXPR:
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void expr::checkScriptingKind() const
+{
+  if (is_updating() && is_sequential())
   {
-    switch(type2)
-    {
-    case VACUOUS_EXPR:
-      return SIMPLE_EXPR;
-
-    case SIMPLE_EXPR:
-      return SIMPLE_EXPR;
-
-    case UPDATE_EXPR:
-      throw XQUERY_EXCEPTION(XUST0001, ERROR_LOC(loc));
-
-    case SEQUENTIAL_EXPR:
-      return SEQUENTIAL_EXPR;
-
-    default:
-      ZORBA_ASSERT(false);
-    }
-
-    break;
-  }
-  case UPDATE_EXPR:
-  {
-    switch(type2)
-    {
-    case VACUOUS_EXPR:
-      return UPDATE_EXPR;
-
-    case SIMPLE_EXPR:
-      throw XQUERY_EXCEPTION(XUST0001, ERROR_LOC(loc));
-
-    case UPDATE_EXPR:
-      return UPDATE_EXPR;
-
-    case SEQUENTIAL_EXPR:
-      throw XQUERY_EXCEPTION(XUST0001, ERROR_LOC(loc));
-
-    default:
-      ZORBA_ASSERT(false);
-    }
-
-    break;
-  }
-  case SEQUENTIAL_EXPR:
-  {
-    switch(type2)
-    {
-    case VACUOUS_EXPR:
-      return SEQUENTIAL_EXPR;
-
-    case SIMPLE_EXPR:
-      return SEQUENTIAL_EXPR;
-
-    case UPDATE_EXPR:
-      throw XQUERY_EXCEPTION(XUST0001, ERROR_LOC(loc));
-
-    case SEQUENTIAL_EXPR:
-      return SEQUENTIAL_EXPR;
-
-    default:
-      ZORBA_ASSERT(false);
-    }
-
-    break;
-  }
-  default:
-  {
-    ZORBA_ASSERT(false);
-  }
+    throw XQUERY_EXCEPTION(XSST0005,  ERROR_LOC(get_loc()));
   }
 
-  return SIMPLE_EXPR;
+#ifndef NDEBUG
+  assert(theScriptingKind != UNKNOWN_SCRIPTING_KIND);
+
+  if (theScriptingKind & VACUOUS_EXPR)
+    assert(theScriptingKind == VACUOUS_EXPR);
+
+  if (theScriptingKind & SIMPLE_EXPR)
+    assert(theScriptingKind == SIMPLE_EXPR);
+
+  if (theScriptingKind & UPDATING_EXPR)
+    assert(theScriptingKind == UPDATING_EXPR);
+
+  if (theScriptingKind & VAR_SETTING_EXPR)
+    assert(theScriptingKind & SEQUENTIAL_EXPR);
+
+  if (theScriptingKind & APPLYING_EXPR)
+    assert(theScriptingKind & SEQUENTIAL_EXPR);
+
+  if (theScriptingKind & BREAKING_EXPR)
+    assert(theScriptingKind & SEQUENTIAL_EXPR);
+
+  if (theScriptingKind & EXITING_EXPR)
+    assert(theScriptingKind & SEQUENTIAL_EXPR);
+
+  if (theScriptingKind & SEQUENTIAL_FUNC_EXPR)
+    assert(theScriptingKind & SEQUENTIAL_EXPR);
+#endif
 }
 
 
@@ -304,12 +276,6 @@ expr_t expr::clone(substitution_t& subst) const
 {
   throw XQUERY_EXCEPTION(ZXQP0019_INTERNAL_ERROR, ERROR_LOC(get_loc()));
 }
-
-
-/*******************************************************************************
-
-********************************************************************************/
-DEF_EXPR_ACCEPT (expr)
 
 
 /*******************************************************************************
@@ -345,10 +311,28 @@ std::string expr::toString() const
 void expr::clear_annotations()
 {
   m_annotations.clear();
-  theFlags1 = 0;
 
-  setNonDiscardable(ANNOTATION_FALSE);
-  setUnfoldable(ANNOTATION_FALSE);
+  if (getProducesSortedNodes() != ANNOTATION_TRUE_FIXED)
+    setProducesSortedNodes(ANNOTATION_UNKNOWN);
+
+  if (getProducesDistinctNodes() != ANNOTATION_TRUE_FIXED)
+    setProducesDistinctNodes(ANNOTATION_UNKNOWN);
+
+  if (getIgnoresSortedNodes() != ANNOTATION_TRUE_FIXED)
+    setIgnoresSortedNodes(ANNOTATION_UNKNOWN);
+
+  if (getIgnoresDuplicateNodes() != ANNOTATION_TRUE_FIXED)
+    setIgnoresDuplicateNodes(ANNOTATION_UNKNOWN);
+
+  if (getNonDiscardable() != ANNOTATION_TRUE_FIXED)
+    setNonDiscardable(ANNOTATION_UNKNOWN);
+
+  if (getUnfoldable() != ANNOTATION_TRUE_FIXED)
+    setUnfoldable(ANNOTATION_UNKNOWN);
+
+  //theFlags1 = 0;
+  //setNonDiscardable(ANNOTATION_FALSE);
+  //setUnfoldable(ANNOTATION_FALSE);
 
   ExprIterator iter(this);
   while (!iter.done())
@@ -935,11 +919,6 @@ bool expr::is_map_internal(const expr* e, bool& found) const
     return false;
   }
 
-  case var_decl_expr_kind:
-  {
-    return !contains_expr(e);
-  }
-
   case instanceof_expr_kind:
   case castable_expr_kind:
   case name_cast_expr_kind:
@@ -977,7 +956,15 @@ bool expr::is_map_internal(const expr* e, bool& found) const
   case eval_expr_kind:
     return false; // TODO
 
-  case sequential_expr_kind:
+  case var_decl_expr_kind:
+  {
+    return !contains_expr(e);
+  }
+
+  case apply_expr_kind:
+    return false;
+
+  case block_expr_kind:
   case exit_expr_kind:
   case flowctl_expr_kind:
   case while_expr_kind:

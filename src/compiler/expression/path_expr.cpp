@@ -69,33 +69,22 @@ void relpath_expr::serialize(::zorba::serialization::Archiver& ar)
 
 void relpath_expr::add_back(expr_t step)
 {
-  if (step->is_simple() || step->is_vacuous())
+  if (step->is_updating())
   {
-    // leave theScriptingKind as it is.
-    ;
+    throw XQUERY_EXCEPTION(XUST0001, 
+                           ERROR_PARAMS(ZED(XUST0001_Generic)),
+                           ERROR_LOC(get_loc()));
   }
-  else if (step->is_updating())
-  {
-    if (theScriptingKind == SEQUENTIAL_EXPR)
-    {
-      throw XQUERY_EXCEPTION(XUST0001, ERROR_LOC(get_loc()));
-    }
-    else
-    {
-      theScriptingKind = UPDATE_EXPR;
-    }
-  }
-  else if (step->is_sequential())
-  {
-    if (theScriptingKind == UPDATE_EXPR)
-    {
-      throw XQUERY_EXCEPTION(XUST0001, ERROR_LOC(get_loc()));
-    }
-    else
-    {
-      theScriptingKind = SEQUENTIAL_EXPR;
-    }
-  }
+
+  theScriptingKind |= step->get_scripting_detail();
+
+  if (theScriptingKind & VACUOUS_EXPR)
+    theScriptingKind &= ~VACUOUS_EXPR;
+
+  if (theScriptingKind & SEQUENTIAL_EXPR)
+    theScriptingKind &= ~SIMPLE_EXPR;
+
+  checkScriptingKind();
 
   theSteps.push_back(step);
 }
@@ -103,40 +92,28 @@ void relpath_expr::add_back(expr_t step)
 
 void relpath_expr::compute_scripting_kind()
 {
-  theScriptingKind = SIMPLE_EXPR;
+  theScriptingKind = UNKNOWN_SCRIPTING_KIND;
 
   for (unsigned i = 0; i < size(); ++i)
   {
     expr* step = theSteps[i].getp();
 
-    if (step->is_simple() || step->is_vacuous())
+    if (step->is_updating())
     {
-      // leave theScriptingKind as it is.
-      ;
+      throw XQUERY_EXCEPTION(XUST0001, 
+                             ERROR_PARAMS(ZED(XUST0001_Generic)),
+                             ERROR_LOC(get_loc()));
     }
-    else if (step->is_updating())
-    {
-      if (theScriptingKind == SEQUENTIAL_EXPR)
-      {
-        throw XQUERY_EXCEPTION(XUST0001, ERROR_LOC(get_loc()));
-      }
-      else
-      {
-        theScriptingKind = UPDATE_EXPR;
-      }
-    }
-    else if (step->is_sequential())
-    {
-      if (theScriptingKind == UPDATE_EXPR)
-      {
-        throw XQUERY_EXCEPTION(XUST0001, ERROR_LOC(get_loc()));
-      }
-      else
-      {
-        theScriptingKind = SEQUENTIAL_EXPR;
-      }
-    }
+
+    theScriptingKind |= step->get_scripting_detail();
   }
+
+  theScriptingKind &= ~VACUOUS_EXPR;
+
+  if (theScriptingKind & SEQUENTIAL_EXPR)
+    theScriptingKind &= ~SIMPLE_EXPR;
+
+  checkScriptingKind();
 }
 
 

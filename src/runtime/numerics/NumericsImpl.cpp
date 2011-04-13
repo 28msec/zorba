@@ -345,12 +345,14 @@ bool IntegerDivideOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_
     throw XQUERY_EXCEPTION( FOAR0001, ERROR_LOC( loc ) );
   }
 
-  if (i0->isNaN() || i1->isNaN()) {
+  if (i0->isNaN() || i1->isNaN()) 
+  {
     throw XQUERY_EXCEPTION(
       FOAR0002, ERROR_PARAMS( ZED( DivisionNoNaN ) ), ERROR_LOC( loc )
     );
   }
-  if (i0->isPosOrNegInf()) {
+  if (i0->isPosOrNegInf()) 
+  {
     throw XQUERY_EXCEPTION(
       FOAR0002, ERROR_PARAMS( ZED( DivisionNoINF ) ), ERROR_LOC( loc )
     );

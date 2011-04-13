@@ -19,7 +19,6 @@
 
 #include "compiler/expression/expr_base.h"
 
-#include "zorbaserialization/class_serializer.h"
 #include "zorbatypes/zstring.h"
 
 

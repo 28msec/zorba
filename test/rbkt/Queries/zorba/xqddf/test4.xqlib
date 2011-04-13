@@ -11,7 +11,7 @@ declare automatically maintained non unique value equality index n:index
   on nodes manip:collection(xs:QName("n:foo"))
   by (if (fn:data(d:userrecord/d:company)) then d:userrecord/d:company else "none") as xs:string;
 
-declare sequential function n:foo()
+declare %sequential function n:foo()
 {
   init:create-collection(xs:QName("n:foo"));
   init:create-index(xs:QName("n:index"));

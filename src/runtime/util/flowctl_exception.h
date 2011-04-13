@@ -22,25 +22,37 @@
 
 namespace zorba {
 
-  // TODO: should derive from std::exception
-class FlowCtlException {
+// TODO: should derive from std::exception
+class FlowCtlException 
+{
 public:
-  enum action {
-    BREAK, CONTINUE, EXIT, INTERRUPT
+  enum action 
+  {
+    BREAK,
+    CONTINUE,
+    EXIT,
+    INTERRUPT
   };
 
+public:
   action act;
 
+public:
   FlowCtlException( action act_ ) : act( act_ )
   {
   }
 };
 
-class ExitException : public FlowCtlException {
+
+class ExitException : public FlowCtlException 
+{
 public:
-  virtual ~ExitException();
   store::Iterator_t val;
-  ExitException (store::Iterator_t val_);
+
+public:
+  ExitException(store::Iterator_t val_);
+
+  virtual ~ExitException();
 };
 
 } // namespace zorba

@@ -148,6 +148,7 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     // Create the ccb for the eval query
     CompilerCB* evalCCB = new CompilerCB(*planState.theCompilerCB);
+    evalCCB->theIsEval = true;
     evalCCB->theRootSctx = evalSctx;
     (evalCCB->theSctxMap)[1] = evalSctx;
 
@@ -297,6 +298,10 @@ void EvalIterator::setExternalVariables(
     var_expr* globalVar = outerSctx->lookup_var(innerVar->get_name(),
                                                 loc, 
                                                 err::ZXQP0000_NO_ERROR);
+
+    if (globalVar == NULL)
+      continue;
+
     store::Item_t itemValue;
     store::TempSeq_t seqValue;
 

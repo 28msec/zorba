@@ -39,7 +39,7 @@ declare variable $mailchimp:endpoint := concat("http://", $mailchimp:gateway, ".
  :
  : @return True on success
  :)
-declare sequential function mailchimp:campaign-unschedule($apikey as xs:string, $cid as xs:string){
+declare %sequential function mailchimp:campaign-unschedule($apikey as xs:string, $cid as xs:string){
   mailchimp:campaign-unschedule($mailchimp:endpoint, $apikey, $cid)
 };
 
@@ -54,7 +54,7 @@ declare sequential function mailchimp:campaign-unschedule($apikey as xs:string, 
  :
  : @return True on success
  :)
-declare sequential function mailchimp:campaign-unschedule($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string){
+declare %sequential function mailchimp:campaign-unschedule($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string){
   xmlrpc:invoke($endpoint-url, "campaignUnschedule", ($apikey, $cid))
 };
 
@@ -71,7 +71,7 @@ declare sequential function mailchimp:campaign-unschedule($endpoint-url as xs:st
  :
  : @return boolean True on success
  :)
-declare sequential function mailchimp:campaign-schedule($apikey as xs:string, $cid as xs:string, $schedule_time as xs:string, $schedule_time_b as xs:string){
+declare %sequential function mailchimp:campaign-schedule($apikey as xs:string, $cid as xs:string, $schedule_time as xs:string, $schedule_time_b as xs:string){
   mailchimp:campaign-schedule($mailchimp:endpoint, $apikey, $cid, $schedule_time, $schedule_time_b)
 };
 
@@ -88,7 +88,7 @@ declare sequential function mailchimp:campaign-schedule($apikey as xs:string, $c
  :
  : @return boolean True on success
  :)
-declare sequential function mailchimp:campaign-schedule($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string, $schedule_time as xs:string, $schedule_time_b as xs:string){
+declare %sequential function mailchimp:campaign-schedule($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string, $schedule_time as xs:string, $schedule_time_b as xs:string){
   xmlrpc:invoke($endpoint-url, "campaignSchedule", ($apikey, $cid, $schedule_time, $schedule_time_b))
 };
 
@@ -103,7 +103,7 @@ declare sequential function mailchimp:campaign-schedule($endpoint-url as xs:stri
  :
  : @return True on success
  :)
-declare sequential function mailchimp:campaign-resume($apikey as xs:string, $cid as xs:string){
+declare %sequential function mailchimp:campaign-resume($apikey as xs:string, $cid as xs:string){
   mailchimp:campaign-resume($mailchimp:endpoint, $apikey, $cid)
 };
 
@@ -118,7 +118,7 @@ declare sequential function mailchimp:campaign-resume($apikey as xs:string, $cid
  :
  : @return True on success
  :)
-declare sequential function mailchimp:campaign-resume($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string){
+declare %sequential function mailchimp:campaign-resume($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string){
   xmlrpc:invoke($endpoint-url, "campaignResume", ($apikey, $cid))
 };
 
@@ -133,7 +133,7 @@ declare sequential function mailchimp:campaign-resume($endpoint-url as xs:string
  :
  : @return True on success
  :)
-declare sequential function mailchimp:campaign-pause($apikey as xs:string, $cid as xs:string){
+declare %sequential function mailchimp:campaign-pause($apikey as xs:string, $cid as xs:string){
   mailchimp:campaign-pause($mailchimp:endpoint, $apikey, $cid)
 };
 
@@ -148,7 +148,7 @@ declare sequential function mailchimp:campaign-pause($apikey as xs:string, $cid 
  :
  : @return True on success
  :)
-declare sequential function mailchimp:campaign-pause($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string){
+declare %sequential function mailchimp:campaign-pause($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string){
   xmlrpc:invoke($endpoint-url, "campaignPause", ($apikey, $cid))
 };
 
@@ -163,7 +163,7 @@ declare sequential function mailchimp:campaign-pause($endpoint-url as xs:string,
  :
  : @return True on success
  :)
-declare sequential function mailchimp:campaign-send-now($apikey as xs:string, $cid as xs:string){
+declare %sequential function mailchimp:campaign-send-now($apikey as xs:string, $cid as xs:string){
   mailchimp:campaign-send-now($mailchimp:endpoint, $apikey, $cid)
 };
 
@@ -178,7 +178,7 @@ declare sequential function mailchimp:campaign-send-now($apikey as xs:string, $c
  :
  : @return True on success
  :)
-declare sequential function mailchimp:campaign-send-now($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string){
+declare %sequential function mailchimp:campaign-send-now($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string){
   xmlrpc:invoke($endpoint-url, "campaignSendNow", ($apikey, $cid))
 };
 
@@ -195,7 +195,7 @@ declare sequential function mailchimp:campaign-send-now($endpoint-url as xs:stri
  :
  : @return True on success
  :)
-declare sequential function mailchimp:campaign-send-test($apikey as xs:string, $cid as xs:string, $test_emails as element(array), $send_type as xs:string){
+declare %sequential function mailchimp:campaign-send-test($apikey as xs:string, $cid as xs:string, $test_emails as element(array), $send_type as xs:string){
   mailchimp:campaign-send-test($mailchimp:endpoint, $apikey, $cid, $test_emails, $send_type)
 };
 
@@ -212,7 +212,7 @@ declare sequential function mailchimp:campaign-send-test($apikey as xs:string, $
  :
  : @return True on success
  :)
-declare sequential function mailchimp:campaign-send-test($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string, $test_emails as element(array), $send_type as xs:string){
+declare %sequential function mailchimp:campaign-send-test($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string, $test_emails as element(array), $send_type as xs:string){
   xmlrpc:invoke($endpoint-url, "campaignSendTest", ($apikey, $cid, $test_emails, $send_type))
 };
 
@@ -228,7 +228,7 @@ declare sequential function mailchimp:campaign-send-test($endpoint-url as xs:str
  :
  : @return The total number of subscribers matching your segmentation options
  :)
-declare sequential function mailchimp:campaign-segment-test($apikey as xs:string, $list_id as xs:string, $options as element(array)){
+declare %sequential function mailchimp:campaign-segment-test($apikey as xs:string, $list_id as xs:string, $options as element(array)){
   mailchimp:campaign-segment-test($mailchimp:endpoint, $apikey, $list_id, $options)
 };
 
@@ -245,7 +245,7 @@ declare sequential function mailchimp:campaign-segment-test($apikey as xs:string
  :
  : @return The total number of subscribers matching your segmentation options
  :)
-declare sequential function mailchimp:campaign-segment-test($endpoint-url as xs:string, $apikey as xs:string, $list_id as xs:string, $options as element(array)){
+declare %sequential function mailchimp:campaign-segment-test($endpoint-url as xs:string, $apikey as xs:string, $list_id as xs:string, $options as element(array)){
   xmlrpc:invoke($endpoint-url, "campaignSegmentTest", ($apikey, $list_id, $options))
 };
 
@@ -264,7 +264,7 @@ declare sequential function mailchimp:campaign-segment-test($endpoint-url as xs:
  :
  : @return The ID for the created campaign
  :)
-declare sequential function mailchimp:campaign-create($apikey as xs:string, $type as xs:string, $options as element(array), $content as element(array), $segment_opts as element(array), $type_opts as element(array)){
+declare %sequential function mailchimp:campaign-create($apikey as xs:string, $type as xs:string, $options as element(array), $content as element(array), $segment_opts as element(array), $type_opts as element(array)){
   mailchimp:campaign-create($mailchimp:endpoint, $apikey, $type, $options, $content, $segment_opts, $type_opts)
 };
 
@@ -284,7 +284,7 @@ declare sequential function mailchimp:campaign-create($apikey as xs:string, $typ
  :
  : @return The ID for the created campaign
  :)
-declare sequential function mailchimp:campaign-create($endpoint-url as xs:string, $apikey as xs:string, $type as xs:string, $options as element(array), $content as element(array), $segment_opts as element(array), $type_opts as element(array)){
+declare %sequential function mailchimp:campaign-create($endpoint-url as xs:string, $apikey as xs:string, $type as xs:string, $options as element(array), $content as element(array), $segment_opts as element(array), $type_opts as element(array)){
   xmlrpc:invoke($endpoint-url, "campaignCreate", ($apikey, $type, $options, $content, $segment_opts, $type_opts))
 };
 
@@ -301,7 +301,7 @@ declare sequential function mailchimp:campaign-create($endpoint-url as xs:string
  :
  : @return boolean true if the update succeeds, otherwise an error will be thrown
  :)
-declare sequential function mailchimp:campaign-update($apikey as xs:string, $cid as xs:string, $name as xs:string, $value as item()){
+declare %sequential function mailchimp:campaign-update($apikey as xs:string, $cid as xs:string, $name as xs:string, $value as item()){
   mailchimp:campaign-update($mailchimp:endpoint, $apikey, $cid, $name, $value)
 };
 
@@ -324,7 +324,7 @@ declare sequential function mailchimp:campaign-update($apikey as xs:string, $cid
  :
  : @return True if the update succeeds, otherwise an error will be thrown
  :)
-declare sequential function mailchimp:campaign-update($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string, $name as xs:string, $value as item()){
+declare %sequential function mailchimp:campaign-update($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string, $name as xs:string, $value as item()){
   xmlrpc:invoke($endpoint-url, "campaignUpdate", ($apikey, $cid, $name, $value))
 };
 
@@ -339,7 +339,7 @@ declare sequential function mailchimp:campaign-update($endpoint-url as xs:string
  :
  : @return The id of the replicated Campaign created, otherwise an error will be thrown
  :)
-declare sequential function mailchimp:campaign-replicate($apikey as xs:string, $cid as xs:string){
+declare %sequential function mailchimp:campaign-replicate($apikey as xs:string, $cid as xs:string){
   mailchimp:campaign-replicate($mailchimp:endpoint, $apikey, $cid)
 };
 
@@ -354,7 +354,7 @@ declare sequential function mailchimp:campaign-replicate($apikey as xs:string, $
  :
  : @return The id of the replicated Campaign created, otherwise an error will be thrown
  :)
-declare sequential function mailchimp:campaign-replicate($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string){
+declare %sequential function mailchimp:campaign-replicate($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string){
   xmlrpc:invoke($endpoint-url, "campaignReplicate", ($apikey, $cid))
 };
 
@@ -369,7 +369,7 @@ declare sequential function mailchimp:campaign-replicate($endpoint-url as xs:str
  :
  : @return True if the delete succeeds, otherwise an error will be thrown
  :)
-declare sequential function mailchimp:campaign-delete($apikey as xs:string, $cid as xs:string){
+declare %sequential function mailchimp:campaign-delete($apikey as xs:string, $cid as xs:string){
   mailchimp:campaign-delete($mailchimp:endpoint, $apikey, $cid)
 };
 
@@ -384,7 +384,7 @@ declare sequential function mailchimp:campaign-delete($apikey as xs:string, $cid
  :
  : @return True if the delete succeeds, otherwise an error will be thrown
  :)
-declare sequential function mailchimp:campaign-delete($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string){
+declare %sequential function mailchimp:campaign-delete($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string){
   xmlrpc:invoke($endpoint-url, "campaignDelete", ($apikey, $cid))
 };
 
@@ -401,7 +401,7 @@ declare sequential function mailchimp:campaign-delete($endpoint-url as xs:string
  :
  : @return An array containing a count of all matching campaigns and the specific ones for the current page (see <a href='http://apidocs.mailchimp.com/rtfm/campaigns.func.php'>Mailchimp API documentation</a> for more information about the return type)
  :)
-declare sequential function mailchimp:campaigns($apikey as xs:string, $filters as element(array), $start as xs:integer, $limit as xs:integer){
+declare %sequential function mailchimp:campaigns($apikey as xs:string, $filters as element(array), $start as xs:integer, $limit as xs:integer){
   mailchimp:campaigns($mailchimp:endpoint, $apikey, $filters, $start, $limit)
 };
 
@@ -419,7 +419,7 @@ declare sequential function mailchimp:campaigns($apikey as xs:string, $filters a
  :
  : @return An array containing a count of all matching campaigns and the specific ones for the current page (see <a href='http://apidocs.mailchimp.com/rtfm/campaigns.func.php'>Mailchimp API documentation</a> for more information about the return type)
  :)
-declare sequential function mailchimp:campaigns($endpoint-url as xs:string, $apikey as xs:string, $filters as element(array), $start as xs:integer, $limit as xs:integer){
+declare %sequential function mailchimp:campaigns($endpoint-url as xs:string, $apikey as xs:string, $filters as element(array), $start as xs:integer, $limit as xs:integer){
   xmlrpc:invoke($endpoint-url, "campaigns", ($apikey, $filters, $start, $limit))
 };
 
@@ -434,7 +434,7 @@ declare sequential function mailchimp:campaigns($endpoint-url as xs:string, $api
  :
  : @return array struct of the statistics for this campaign
  :)
-declare sequential function mailchimp:campaign-stats($apikey as xs:string, $cid as xs:string){
+declare %sequential function mailchimp:campaign-stats($apikey as xs:string, $cid as xs:string){
   mailchimp:campaign-stats($mailchimp:endpoint, $apikey, $cid)
 };
 
@@ -450,7 +450,7 @@ declare sequential function mailchimp:campaign-stats($apikey as xs:string, $cid 
  :
  : @return array struct of the statistics for this campaign
  :)
-declare sequential function mailchimp:campaign-stats($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string){
+declare %sequential function mailchimp:campaign-stats($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string){
   xmlrpc:invoke($endpoint-url, "campaignStats", ($apikey, $cid))
 };
 
@@ -465,7 +465,7 @@ declare sequential function mailchimp:campaign-stats($endpoint-url as xs:string,
  :
  : @return URLs will be keys and contain their associated statistics: clicks (number of times a specific link was clicked) and unique (number of unique people who clicked on the specific link).
  :)
-declare sequential function mailchimp:campaign-click-stats($apikey as xs:string, $cid as xs:string){
+declare %sequential function mailchimp:campaign-click-stats($apikey as xs:string, $cid as xs:string){
   mailchimp:campaign-click-stats($mailchimp:endpoint, $apikey, $cid)
 };
 
@@ -480,7 +480,7 @@ declare sequential function mailchimp:campaign-click-stats($apikey as xs:string,
  :
  : @return URLs will be keys and contain their associated statistics: clicks (number of times a specific link was clicked) and unique (number of unique people who clicked on the specific link).
  :)
-declare sequential function mailchimp:campaign-click-stats($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string){
+declare %sequential function mailchimp:campaign-click-stats($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string){
   xmlrpc:invoke($endpoint-url, "campaignClickStats", ($apikey, $cid))
 };
 
@@ -495,7 +495,7 @@ declare sequential function mailchimp:campaign-click-stats($endpoint-url as xs:s
  :
  : @return Domains email domains and their associated stats
  :)
-declare sequential function mailchimp:campaign-email-domain-performance($apikey as xs:string, $cid as xs:string){
+declare %sequential function mailchimp:campaign-email-domain-performance($apikey as xs:string, $cid as xs:string){
   mailchimp:campaign-email-domain-performance($mailchimp:endpoint, $apikey, $cid)
 };
 
@@ -510,7 +510,7 @@ declare sequential function mailchimp:campaign-email-domain-performance($apikey 
  :
  : @return Domains email domains and their associated stats
  :)
-declare sequential function mailchimp:campaign-email-domain-performance($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string){
+declare %sequential function mailchimp:campaign-email-domain-performance($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string){
   xmlrpc:invoke($endpoint-url, "campaignEmailDomainPerformance", ($apikey, $cid))
 };
 
@@ -528,7 +528,7 @@ declare sequential function mailchimp:campaign-email-domain-performance($endpoin
  :
  : @return A total of all matching emails and the specific emails for this page
  :)
-declare sequential function mailchimp:campaign-members($apikey as xs:string, $cid as xs:string, $status as xs:string, $start as xs:integer, $limit as xs:integer){
+declare %sequential function mailchimp:campaign-members($apikey as xs:string, $cid as xs:string, $status as xs:string, $start as xs:integer, $limit as xs:integer){
   mailchimp:campaign-members($mailchimp:endpoint, $apikey, $cid, $status, $start, $limit)
 };
 
@@ -546,7 +546,7 @@ declare sequential function mailchimp:campaign-members($apikey as xs:string, $ci
  :
  : @return A total of all matching emails and the specific emails for this page
  :)
-declare sequential function mailchimp:campaign-members($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string, $status as xs:string, $start as xs:integer, $limit as xs:integer){
+declare %sequential function mailchimp:campaign-members($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string, $status as xs:string, $start as xs:integer, $limit as xs:integer){
   xmlrpc:invoke($endpoint-url, "campaignMembers", ($apikey, $cid, $status, $start, $limit))
 };
 
@@ -563,7 +563,7 @@ declare sequential function mailchimp:campaign-members($endpoint-url as xs:strin
  :
  : @return array a total of all hard bounced emails and the specific emails for this page
  :)
-declare sequential function mailchimp:campaign-hard-bounces($apikey as xs:string, $cid as xs:string, $start as xs:integer, $limit as xs:integer){
+declare %sequential function mailchimp:campaign-hard-bounces($apikey as xs:string, $cid as xs:string, $start as xs:integer, $limit as xs:integer){
   mailchimp:campaign-hard-bounces($mailchimp:endpoint, $apikey, $cid, $start, $limit)
 };
 
@@ -580,7 +580,7 @@ declare sequential function mailchimp:campaign-hard-bounces($apikey as xs:string
  :
  : @return array a total of all hard bounced emails and the specific emails for this page
  :)
-declare sequential function mailchimp:campaign-hard-bounces($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string, $start as xs:integer, $limit as xs:integer){
+declare %sequential function mailchimp:campaign-hard-bounces($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string, $start as xs:integer, $limit as xs:integer){
   xmlrpc:invoke($endpoint-url, "campaignHardBounces", ($apikey, $cid, $start, $limit))
 };
 
@@ -597,7 +597,7 @@ declare sequential function mailchimp:campaign-hard-bounces($endpoint-url as xs:
  :
  : @return A total of all soft bounced emails and the specific emails for this page
  :)
-declare sequential function mailchimp:campaign-soft-bounces($apikey as xs:string, $cid as xs:string, $start as xs:integer, $limit as xs:integer){
+declare %sequential function mailchimp:campaign-soft-bounces($apikey as xs:string, $cid as xs:string, $start as xs:integer, $limit as xs:integer){
   mailchimp:campaign-soft-bounces($mailchimp:endpoint, $apikey, $cid, $start, $limit)
 };
 
@@ -614,7 +614,7 @@ declare sequential function mailchimp:campaign-soft-bounces($apikey as xs:string
  :
  : @return A total of all soft bounced emails and the specific emails for this page
  :)
-declare sequential function mailchimp:campaign-soft-bounces($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string, $start as xs:integer, $limit as xs:integer){
+declare %sequential function mailchimp:campaign-soft-bounces($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string, $start as xs:integer, $limit as xs:integer){
   xmlrpc:invoke($endpoint-url, "campaignSoftBounces", ($apikey, $cid, $start, $limit))
 };
 
@@ -631,7 +631,7 @@ declare sequential function mailchimp:campaign-soft-bounces($endpoint-url as xs:
  :
  : @return array email addresses that unsubscribed from this campaign along with reasons, if given array a total of all unsubscribed emails and the specific emails for this page
  :)
-declare sequential function mailchimp:campaign-unsubscribes($apikey as xs:string, $cid as xs:string, $start as xs:integer, $limit as xs:integer){
+declare %sequential function mailchimp:campaign-unsubscribes($apikey as xs:string, $cid as xs:string, $start as xs:integer, $limit as xs:integer){
   mailchimp:campaign-unsubscribes($mailchimp:endpoint, $apikey, $cid, $start, $limit)
 };
 
@@ -648,7 +648,7 @@ declare sequential function mailchimp:campaign-unsubscribes($apikey as xs:string
  :
  : @return array email addresses that unsubscribed from this campaign along with reasons, if given array a total of all unsubscribed emails and the specific emails for this page
  :)
-declare sequential function mailchimp:campaign-unsubscribes($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string, $start as xs:integer, $limit as xs:integer){
+declare %sequential function mailchimp:campaign-unsubscribes($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string, $start as xs:integer, $limit as xs:integer){
   xmlrpc:invoke($endpoint-url, "campaignUnsubscribes", ($apikey, $cid, $start, $limit))
 };
 
@@ -666,7 +666,7 @@ declare sequential function mailchimp:campaign-unsubscribes($endpoint-url as xs:
  :
  : @return Reports the abuse reports for this campaign
  :)
-declare sequential function mailchimp:campaign-abuse-reports($apikey as xs:string, $cid as xs:string, $since as xs:integer, $start as xs:integer, $limit as xs:string){
+declare %sequential function mailchimp:campaign-abuse-reports($apikey as xs:string, $cid as xs:string, $since as xs:integer, $start as xs:integer, $limit as xs:string){
   mailchimp:campaign-abuse-reports($mailchimp:endpoint, $apikey, $cid, $since, $start, $limit)
 };
 
@@ -684,7 +684,7 @@ declare sequential function mailchimp:campaign-abuse-reports($apikey as xs:strin
  :
  : @return Reports the abuse reports for this campaign
  :)
-declare sequential function mailchimp:campaign-abuse-reports($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string, $since as xs:integer, $start as xs:integer, $limit as xs:string){
+declare %sequential function mailchimp:campaign-abuse-reports($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string, $since as xs:integer, $start as xs:integer, $limit as xs:string){
   xmlrpc:invoke($endpoint-url, "campaignAbuseReports", ($apikey, $cid, $since, $start, $limit))
 };
 
@@ -699,7 +699,7 @@ declare sequential function mailchimp:campaign-abuse-reports($endpoint-url as xs
  :
  : @return Advice on the campaign's performance
  :)
-declare sequential function mailchimp:campaign-advice($apikey as xs:string, $cid as xs:string){
+declare %sequential function mailchimp:campaign-advice($apikey as xs:string, $cid as xs:string){
   mailchimp:campaign-advice($mailchimp:endpoint, $apikey, $cid)
 };
 
@@ -715,7 +715,7 @@ declare sequential function mailchimp:campaign-advice($apikey as xs:string, $cid
  :
  : @return Advice on the campaign's performance
  :)
-declare sequential function mailchimp:campaign-advice($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string){
+declare %sequential function mailchimp:campaign-advice($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string){
   xmlrpc:invoke($endpoint-url, "campaignAdvice", ($apikey, $cid))
 };
 
@@ -730,7 +730,7 @@ declare sequential function mailchimp:campaign-advice($endpoint-url as xs:string
  :
  : @return Analytics we've collected for the passed campaign.
  :)
-declare sequential function mailchimp:campaign-analytics($apikey as xs:string, $cid as xs:string){
+declare %sequential function mailchimp:campaign-analytics($apikey as xs:string, $cid as xs:string){
   mailchimp:campaign-analytics($mailchimp:endpoint, $apikey, $cid)
 };
 
@@ -745,7 +745,7 @@ declare sequential function mailchimp:campaign-analytics($apikey as xs:string, $
  :
  : @return Analytics we've collected for the passed campaign.
  :)
-declare sequential function mailchimp:campaign-analytics($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string){
+declare %sequential function mailchimp:campaign-analytics($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string){
   xmlrpc:invoke($endpoint-url, "campaignAnalytics", ($apikey, $cid))
 };
 
@@ -760,7 +760,7 @@ declare sequential function mailchimp:campaign-analytics($endpoint-url as xs:str
  :
  : @return Countries an array of countries where opens occurred
  :)
-declare sequential function mailchimp:campaign-geo-opens($apikey as xs:string, $cid as xs:string){
+declare %sequential function mailchimp:campaign-geo-opens($apikey as xs:string, $cid as xs:string){
   mailchimp:campaign-geo-opens($mailchimp:endpoint, $apikey, $cid)
 };
 
@@ -775,7 +775,7 @@ declare sequential function mailchimp:campaign-geo-opens($apikey as xs:string, $
  :
  : @return Countries an array of countries where opens occurred
  :)
-declare sequential function mailchimp:campaign-geo-opens($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string){
+declare %sequential function mailchimp:campaign-geo-opens($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string){
   xmlrpc:invoke($endpoint-url, "campaignGeoOpens", ($apikey, $cid))
 };
 
@@ -791,7 +791,7 @@ declare sequential function mailchimp:campaign-geo-opens($endpoint-url as xs:str
  :
  : @return Regions an array of regions within the provided country where opens occurred.
  :)
-declare sequential function mailchimp:campaign-geo-opens-for-country($apikey as xs:string, $cid as xs:string, $code as xs:string){
+declare %sequential function mailchimp:campaign-geo-opens-for-country($apikey as xs:string, $cid as xs:string, $code as xs:string){
   mailchimp:campaign-geo-opens-for-country($mailchimp:endpoint, $apikey, $cid, $code)
 };
 
@@ -807,7 +807,7 @@ declare sequential function mailchimp:campaign-geo-opens-for-country($apikey as 
  :
  : @return Regions an array of regions within the provided country where opens occurred.
  :)
-declare sequential function mailchimp:campaign-geo-opens-for-country($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string, $code as xs:string){
+declare %sequential function mailchimp:campaign-geo-opens-for-country($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string, $code as xs:string){
   xmlrpc:invoke($endpoint-url, "campaignGeoOpensForCountry", ($apikey, $cid, $code))
 };
 
@@ -822,7 +822,7 @@ declare sequential function mailchimp:campaign-geo-opens-for-country($endpoint-u
  :
  : @return Stats an array containing tweets, retweets, clicks, and referrer related to using the campaign's eepurl
  :)
-declare sequential function mailchimp:campaign-eep-url-stats($apikey as xs:string, $cid as xs:string){
+declare %sequential function mailchimp:campaign-eep-url-stats($apikey as xs:string, $cid as xs:string){
   mailchimp:campaign-eep-url-stats($mailchimp:endpoint, $apikey, $cid)
 };
 
@@ -837,7 +837,7 @@ declare sequential function mailchimp:campaign-eep-url-stats($apikey as xs:strin
  :
  : @return Stats an array containing tweets, retweets, clicks, and referrer related to using the campaign's eepurl
  :)
-declare sequential function mailchimp:campaign-eep-url-stats($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string){
+declare %sequential function mailchimp:campaign-eep-url-stats($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string){
   xmlrpc:invoke($endpoint-url, "campaignEepUrlStats", ($apikey, $cid))
 };
 
@@ -853,7 +853,7 @@ declare sequential function mailchimp:campaign-eep-url-stats($endpoint-url as xs
  :
  : @return The full bounce message for this email+campaign along with some extra data.
  :)
-declare sequential function mailchimp:campaign-bounce-message($apikey as xs:string, $cid as xs:string, $email as xs:string){
+declare %sequential function mailchimp:campaign-bounce-message($apikey as xs:string, $cid as xs:string, $email as xs:string){
   mailchimp:campaign-bounce-message($mailchimp:endpoint, $apikey, $cid, $email)
 };
 
@@ -869,7 +869,7 @@ declare sequential function mailchimp:campaign-bounce-message($apikey as xs:stri
  :
  : @return The full bounce message for this email+campaign along with some extra data.
  :)
-declare sequential function mailchimp:campaign-bounce-message($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string, $email as xs:string){
+declare %sequential function mailchimp:campaign-bounce-message($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string, $email as xs:string){
   xmlrpc:invoke($endpoint-url, "campaignBounceMessage", ($apikey, $cid, $email))
 };
 
@@ -887,7 +887,7 @@ declare sequential function mailchimp:campaign-bounce-message($endpoint-url as x
  :
  : @return Bounces the full bounce messages for this campaign
  :)
-declare sequential function mailchimp:campaign-bounce-messages($apikey as xs:string, $cid as xs:string, $start as xs:integer, $limit as xs:integer, $since as xs:string){
+declare %sequential function mailchimp:campaign-bounce-messages($apikey as xs:string, $cid as xs:string, $start as xs:integer, $limit as xs:integer, $since as xs:string){
   mailchimp:campaign-bounce-messages($mailchimp:endpoint, $apikey, $cid, $start, $limit, $since)
 };
 
@@ -905,7 +905,7 @@ declare sequential function mailchimp:campaign-bounce-messages($apikey as xs:str
  :
  : @return Bounces the full bounce messages for this campaign
  :)
-declare sequential function mailchimp:campaign-bounce-messages($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string, $start as xs:integer, $limit as xs:integer, $since as xs:string){
+declare %sequential function mailchimp:campaign-bounce-messages($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string, $start as xs:integer, $limit as xs:integer, $since as xs:string){
   xmlrpc:invoke($endpoint-url, "campaignBounceMessages", ($apikey, $cid, $start, $limit, $since))
 };
 
@@ -923,7 +923,7 @@ declare sequential function mailchimp:campaign-bounce-messages($endpoint-url as 
  :
  : @return The total matching orders and the specific orders for the requested page
  :)
-declare sequential function mailchimp:campaign-ecomm-orders($apikey as xs:string, $cid as xs:string, $start as xs:integer, $limit as xs:integer, $since as xs:string){
+declare %sequential function mailchimp:campaign-ecomm-orders($apikey as xs:string, $cid as xs:string, $start as xs:integer, $limit as xs:integer, $since as xs:string){
   mailchimp:campaign-ecomm-orders($mailchimp:endpoint, $apikey, $cid, $start, $limit, $since)
 };
 
@@ -941,7 +941,7 @@ declare sequential function mailchimp:campaign-ecomm-orders($apikey as xs:string
  :
  : @return The total matching orders and the specific orders for the requested page
  :)
-declare sequential function mailchimp:campaign-ecomm-orders($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string, $start as xs:integer, $limit as xs:integer, $since as xs:string){
+declare %sequential function mailchimp:campaign-ecomm-orders($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string, $start as xs:integer, $limit as xs:integer, $since as xs:string){
   xmlrpc:invoke($endpoint-url, "campaignEcommOrders", ($apikey, $cid, $start, $limit, $since))
 };
 
@@ -957,7 +957,7 @@ declare sequential function mailchimp:campaign-ecomm-orders($endpoint-url as xs:
  :
  : @return Struct containing details for the shared report
  :)
-declare sequential function mailchimp:campaign-share-report($apikey as xs:string, $cid as xs:string, $opts as element(array)){
+declare %sequential function mailchimp:campaign-share-report($apikey as xs:string, $cid as xs:string, $opts as element(array)){
   mailchimp:campaign-share-report($mailchimp:endpoint, $apikey, $cid, $opts)
 };
 
@@ -974,7 +974,7 @@ declare sequential function mailchimp:campaign-share-report($apikey as xs:string
  :
  : @return Struct containing details for the shared report
  :)
-declare sequential function mailchimp:campaign-share-report($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string, $opts as element(array)){
+declare %sequential function mailchimp:campaign-share-report($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string, $opts as element(array)){
   xmlrpc:invoke($endpoint-url, "campaignShareReport", ($apikey, $cid, $opts))
 };
 
@@ -990,7 +990,7 @@ declare sequential function mailchimp:campaign-share-report($endpoint-url as xs:
  :
  : @return Struct containing all content for the campaign
  :)
-declare sequential function mailchimp:campaign-content($apikey as xs:string, $cid as xs:string, $for_archive as xs:boolean){
+declare %sequential function mailchimp:campaign-content($apikey as xs:string, $cid as xs:string, $for_archive as xs:boolean){
   mailchimp:campaign-content($mailchimp:endpoint, $apikey, $cid, $for_archive)
 };
 
@@ -1006,7 +1006,7 @@ declare sequential function mailchimp:campaign-content($apikey as xs:string, $ci
  :
  : @return Struct containing all content for the campaign
  :)
-declare sequential function mailchimp:campaign-content($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string, $for_archive as xs:boolean){
+declare %sequential function mailchimp:campaign-content($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string, $for_archive as xs:boolean){
   xmlrpc:invoke($endpoint-url, "campaignContent", ($apikey, $cid, $for_archive))
 };
 
@@ -1021,7 +1021,7 @@ declare sequential function mailchimp:campaign-content($endpoint-url as xs:strin
  :
  : @return Array containing all content section for the campaign -
  :)
-declare sequential function mailchimp:campaign-template-content($apikey as xs:string, $cid as xs:string){
+declare %sequential function mailchimp:campaign-template-content($apikey as xs:string, $cid as xs:string){
   mailchimp:campaign-template-content($mailchimp:endpoint, $apikey, $cid)
 };
 
@@ -1036,7 +1036,7 @@ declare sequential function mailchimp:campaign-template-content($apikey as xs:st
  :
  : @return Array containing all content section for the campaign -
  :)
-declare sequential function mailchimp:campaign-template-content($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string){
+declare %sequential function mailchimp:campaign-template-content($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string){
   xmlrpc:invoke($endpoint-url, "campaignTemplateContent", ($apikey, $cid))
 };
 
@@ -1053,7 +1053,7 @@ declare sequential function mailchimp:campaign-template-content($endpoint-url as
  :
  : @return Array containing the total records matched and the specific records for this page
  :)
-declare sequential function mailchimp:campaign-opened-AIM($apikey as xs:string, $cid as xs:string, $start as xs:integer, $limit as xs:integer){
+declare %sequential function mailchimp:campaign-opened-AIM($apikey as xs:string, $cid as xs:string, $start as xs:integer, $limit as xs:integer){
   mailchimp:campaign-opened-AIM($mailchimp:endpoint, $apikey, $cid, $start, $limit)
 };
 
@@ -1070,7 +1070,7 @@ declare sequential function mailchimp:campaign-opened-AIM($apikey as xs:string, 
  :
  : @return Array containing the total records matched and the specific records for this page
  :)
-declare sequential function mailchimp:campaign-opened-AIM($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string, $start as xs:integer, $limit as xs:integer){
+declare %sequential function mailchimp:campaign-opened-AIM($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string, $start as xs:integer, $limit as xs:integer){
   xmlrpc:invoke($endpoint-url, "campaignOpenedAIM", ($apikey, $cid, $start, $limit))
 };
 
@@ -1087,7 +1087,7 @@ declare sequential function mailchimp:campaign-opened-AIM($endpoint-url as xs:st
  :
  : @return Array containing the total records matched and the specific records for this page
  :)
-declare sequential function mailchimp:campaign-not-opened-AIM($apikey as xs:string, $cid as xs:string, $start as xs:integer, $limit as xs:integer){
+declare %sequential function mailchimp:campaign-not-opened-AIM($apikey as xs:string, $cid as xs:string, $start as xs:integer, $limit as xs:integer){
   mailchimp:campaign-not-opened-AIM($mailchimp:endpoint, $apikey, $cid, $start, $limit)
 };
 
@@ -1104,7 +1104,7 @@ declare sequential function mailchimp:campaign-not-opened-AIM($apikey as xs:stri
  :
  : @return array array containing the total records matched and the specific records for this page
  :)
-declare sequential function mailchimp:campaign-not-opened-AIM($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string, $start as xs:integer, $limit as xs:integer){
+declare %sequential function mailchimp:campaign-not-opened-AIM($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string, $start as xs:integer, $limit as xs:integer){
   xmlrpc:invoke($endpoint-url, "campaignNotOpenedAIM", ($apikey, $cid, $start, $limit))
 };
 
@@ -1122,7 +1122,7 @@ declare sequential function mailchimp:campaign-not-opened-AIM($endpoint-url as x
  :
  : @return Array containing the total records matched and the specific records for this page
  :)
-declare sequential function mailchimp:campaign-click-detail-AIM($apikey as xs:string, $cid as xs:string, $url as xs:string, $start as xs:integer, $limit as xs:integer){
+declare %sequential function mailchimp:campaign-click-detail-AIM($apikey as xs:string, $cid as xs:string, $url as xs:string, $start as xs:integer, $limit as xs:integer){
   mailchimp:campaign-click-detail-AIM($mailchimp:endpoint, $apikey, $cid, $url, $start, $limit)
 };
 
@@ -1140,7 +1140,7 @@ declare sequential function mailchimp:campaign-click-detail-AIM($apikey as xs:st
  :
  : @return Array containing the total records matched and the specific records for this page
  :)
-declare sequential function mailchimp:campaign-click-detail-AIM($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string, $url as xs:string, $start as xs:integer, $limit as xs:integer){
+declare %sequential function mailchimp:campaign-click-detail-AIM($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string, $url as xs:string, $start as xs:integer, $limit as xs:integer){
   xmlrpc:invoke($endpoint-url, "campaignClickDetailAIM", ($apikey, $cid, $url, $start, $limit))
 };
 
@@ -1156,7 +1156,7 @@ declare sequential function mailchimp:campaign-click-detail-AIM($endpoint-url as
  :
  : @return Array an array with the keys listed in Returned Fields below
  :)
-declare sequential function mailchimp:campaign-email-stats-AIM($apikey as xs:string, $cid as xs:string, $email_address as element(array)){
+declare %sequential function mailchimp:campaign-email-stats-AIM($apikey as xs:string, $cid as xs:string, $email_address as element(array)){
   mailchimp:campaign-email-stats-AIM($mailchimp:endpoint, $apikey, $cid, $email_address)
 };
 
@@ -1172,7 +1172,7 @@ declare sequential function mailchimp:campaign-email-stats-AIM($apikey as xs:str
  :
  : @return Array an array with the keys listed in Returned Fields below
  :)
-declare sequential function mailchimp:campaign-email-stats-AIM($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string, $email_address as element(array)){
+declare %sequential function mailchimp:campaign-email-stats-AIM($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string, $email_address as element(array)){
   xmlrpc:invoke($endpoint-url, "campaignEmailStatsAIM", ($apikey, $cid, $email_address))
 };
 
@@ -1189,7 +1189,7 @@ declare sequential function mailchimp:campaign-email-stats-AIM($endpoint-url as 
  :
  : @return Array containing a total record count and data including the actions (opens and clicks) for each email, with timestamps
  :)
-declare sequential function mailchimp:campaign-email-stats-AIM-all($apikey as xs:string, $cid as xs:string, $start as xs:integer, $limit as xs:integer){
+declare %sequential function mailchimp:campaign-email-stats-AIM-all($apikey as xs:string, $cid as xs:string, $start as xs:integer, $limit as xs:integer){
   mailchimp:campaign-email-stats-AIM-all($mailchimp:endpoint, $apikey, $cid, $start, $limit)
 };
 
@@ -1206,7 +1206,7 @@ declare sequential function mailchimp:campaign-email-stats-AIM-all($apikey as xs
  :
  : @return Array containing a total record count and data including the actions (opens and clicks) for each email, with timestamps
  :)
-declare sequential function mailchimp:campaign-email-stats-AIM-all($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string, $start as xs:integer, $limit as xs:integer){
+declare %sequential function mailchimp:campaign-email-stats-AIM-all($endpoint-url as xs:string, $apikey as xs:string, $cid as xs:string, $start as xs:integer, $limit as xs:integer){
   xmlrpc:invoke($endpoint-url, "campaignEmailStatsAIMAll", ($apikey, $cid, $start, $limit))
 };
 
@@ -1221,7 +1221,7 @@ declare sequential function mailchimp:campaign-email-stats-AIM-all($endpoint-url
  :
  : @return True if the data is saved, otherwise an error is thrown.
  :)
-declare sequential function mailchimp:campaign-ecomm-order-add($apikey as xs:string, $order as element(array)){
+declare %sequential function mailchimp:campaign-ecomm-order-add($apikey as xs:string, $order as element(array)){
   mailchimp:campaign-ecomm-order-add($mailchimp:endpoint, $apikey, $order)
 };
 
@@ -1236,7 +1236,7 @@ declare sequential function mailchimp:campaign-ecomm-order-add($apikey as xs:str
  :
  : @return True if the data is saved, otherwise an error is thrown.
  :)
-declare sequential function mailchimp:campaign-ecomm-order-add($endpoint-url as xs:string, $apikey as xs:string, $order as element(array)){
+declare %sequential function mailchimp:campaign-ecomm-order-add($endpoint-url as xs:string, $apikey as xs:string, $order as element(array)){
   xmlrpc:invoke($endpoint-url, "campaignEcommOrderAdd", ($apikey, $order))
 };
 
@@ -1253,7 +1253,7 @@ declare sequential function mailchimp:campaign-ecomm-order-add($endpoint-url as 
  :
  : @return Array with keys listed in Returned Fields below
  :)
-declare sequential function mailchimp:lists($apikey as xs:string, $filters as element(array), $start as xs:integer, $limit as xs:integer){
+declare %sequential function mailchimp:lists($apikey as xs:string, $filters as element(array), $start as xs:integer, $limit as xs:integer){
   mailchimp:lists($mailchimp:endpoint, $apikey, $filters, $start, $limit)
 };
 
@@ -1270,7 +1270,7 @@ declare sequential function mailchimp:lists($apikey as xs:string, $filters as el
  :
  : @return Array with keys listed in Returned Fields below
  :)
-declare sequential function mailchimp:lists($endpoint-url as xs:string, $apikey as xs:string, $filters as element(array), $start as xs:integer, $limit as xs:integer){
+declare %sequential function mailchimp:lists($endpoint-url as xs:string, $apikey as xs:string, $filters as element(array), $start as xs:integer, $limit as xs:integer){
   xmlrpc:invoke($endpoint-url, "lists", ($apikey, $filters, $start, $limit))
 };
 
@@ -1285,7 +1285,7 @@ declare sequential function mailchimp:lists($endpoint-url as xs:string, $apikey 
  :
  : @return List of merge tags for the list
  :)
-declare sequential function mailchimp:list-merge-vars($apikey as xs:string, $id as xs:string){
+declare %sequential function mailchimp:list-merge-vars($apikey as xs:string, $id as xs:string){
   mailchimp:list-merge-vars($mailchimp:endpoint, $apikey, $id)
 };
 
@@ -1300,7 +1300,7 @@ declare sequential function mailchimp:list-merge-vars($apikey as xs:string, $id 
  :
  : @return List of merge tags for the list
  :)
-declare sequential function mailchimp:list-merge-vars($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string){
+declare %sequential function mailchimp:list-merge-vars($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string){
   xmlrpc:invoke($endpoint-url, "listMergeVars", ($apikey, $id))
 };
 
@@ -1318,7 +1318,7 @@ declare sequential function mailchimp:list-merge-vars($endpoint-url as xs:string
  :
  : @return True if the request succeeds, otherwise an error will be thrown
  :)
-declare sequential function mailchimp:list-merge-var-add($apikey as xs:string, $id as xs:string, $tag as xs:string, $name as xs:string, $options as element(array)){
+declare %sequential function mailchimp:list-merge-var-add($apikey as xs:string, $id as xs:string, $tag as xs:string, $name as xs:string, $options as element(array)){
   mailchimp:list-merge-var-add($mailchimp:endpoint, $apikey, $id, $tag, $name, $options)
 };
 
@@ -1336,7 +1336,7 @@ declare sequential function mailchimp:list-merge-var-add($apikey as xs:string, $
  :
  : @return True if the request succeeds, otherwise an error will be thrown
  :)
-declare sequential function mailchimp:list-merge-var-add($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $tag as xs:string, $name as xs:string, $options as element(array)){
+declare %sequential function mailchimp:list-merge-var-add($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $tag as xs:string, $name as xs:string, $options as element(array)){
   xmlrpc:invoke($endpoint-url, "listMergeVarAdd", ($apikey, $id, $tag, $name, $options))
 };
 
@@ -1353,7 +1353,7 @@ declare sequential function mailchimp:list-merge-var-add($endpoint-url as xs:str
  :
  : @return True if the request succeeds, otherwise an error will be thrown
  :)
-declare sequential function mailchimp:list-merge-var-update($apikey as xs:string, $id as xs:string, $tag as xs:string, $options as element(array)){
+declare %sequential function mailchimp:list-merge-var-update($apikey as xs:string, $id as xs:string, $tag as xs:string, $options as element(array)){
   mailchimp:list-merge-var-update($mailchimp:endpoint, $apikey, $id, $tag, $options)
 };
 
@@ -1370,7 +1370,7 @@ declare sequential function mailchimp:list-merge-var-update($apikey as xs:string
  :
  : @return True if the request succeeds, otherwise an error will be thrown
  :)
-declare sequential function mailchimp:list-merge-var-update($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $tag as xs:string, $options as element(array)){
+declare %sequential function mailchimp:list-merge-var-update($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $tag as xs:string, $options as element(array)){
   xmlrpc:invoke($endpoint-url, "listMergeVarUpdate", ($apikey, $id, $tag, $options))
 };
 
@@ -1386,7 +1386,7 @@ declare sequential function mailchimp:list-merge-var-update($endpoint-url as xs:
  :
  : @return bool true if the request succeeds, otherwise an error will be thrown
  :)
-declare sequential function mailchimp:list-merge-var-del($apikey as xs:string, $id as xs:string, $tag as xs:string){
+declare %sequential function mailchimp:list-merge-var-del($apikey as xs:string, $id as xs:string, $tag as xs:string){
   mailchimp:list-merge-var-del($mailchimp:endpoint, $apikey, $id, $tag)
 };
 
@@ -1402,7 +1402,7 @@ declare sequential function mailchimp:list-merge-var-del($apikey as xs:string, $
  :
  : @return True if the request succeeds, otherwise an error will be thrown
  :)
-declare sequential function mailchimp:list-merge-var-del($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $tag as xs:string){
+declare %sequential function mailchimp:list-merge-var-del($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $tag as xs:string){
   xmlrpc:invoke($endpoint-url, "listMergeVarDel", ($apikey, $id, $tag))
 };
 
@@ -1417,7 +1417,7 @@ declare sequential function mailchimp:list-merge-var-del($endpoint-url as xs:str
  :
  : @return List of interest groups for the list
  :)
-declare sequential function mailchimp:list-interest-groupings($apikey as xs:string, $id as xs:string){
+declare %sequential function mailchimp:list-interest-groupings($apikey as xs:string, $id as xs:string){
   mailchimp:list-interest-groupings($mailchimp:endpoint, $apikey, $id)
 };
 
@@ -1432,7 +1432,7 @@ declare sequential function mailchimp:list-interest-groupings($apikey as xs:stri
  :
  : @return List of interest groups for the list
  :)
-declare sequential function mailchimp:list-interest-groupings($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string){
+declare %sequential function mailchimp:list-interest-groupings($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string){
   xmlrpc:invoke($endpoint-url, "listInterestGroupings", ($apikey, $id))
 };
 
@@ -1449,7 +1449,7 @@ declare sequential function mailchimp:list-interest-groupings($endpoint-url as x
  :
  : @return True if the request succeeds, otherwise an error will be thrown
  :)
-declare sequential function mailchimp:list-interest-group-add($apikey as xs:string, $id as xs:string, $group_name as xs:string, $grouping_id as xs:integer){
+declare %sequential function mailchimp:list-interest-group-add($apikey as xs:string, $id as xs:string, $group_name as xs:string, $grouping_id as xs:integer){
   mailchimp:list-interest-group-add($mailchimp:endpoint, $apikey, $id, $group_name, $grouping_id)
 };
 
@@ -1466,7 +1466,7 @@ declare sequential function mailchimp:list-interest-group-add($apikey as xs:stri
  :
  : @return bool true if the request succeeds, otherwise an error will be thrown
  :)
-declare sequential function mailchimp:list-interest-group-add($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $group_name as xs:string, $grouping_id as xs:integer){
+declare %sequential function mailchimp:list-interest-group-add($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $group_name as xs:string, $grouping_id as xs:integer){
   xmlrpc:invoke($endpoint-url, "listInterestGroupAdd", ($apikey, $id, $group_name, $grouping_id))
 };
 
@@ -1483,7 +1483,7 @@ declare sequential function mailchimp:list-interest-group-add($endpoint-url as x
  :
  : @return True if the request succeeds, otherwise an error will be thrown
  :)
-declare sequential function mailchimp:list-interest-group-del($apikey as xs:string, $id as xs:string, $group_name as xs:string, $grouping_id as xs:integer){
+declare %sequential function mailchimp:list-interest-group-del($apikey as xs:string, $id as xs:string, $group_name as xs:string, $grouping_id as xs:integer){
   mailchimp:list-interest-group-del($mailchimp:endpoint, $apikey, $id, $group_name, $grouping_id)
 };
 
@@ -1500,7 +1500,7 @@ declare sequential function mailchimp:list-interest-group-del($apikey as xs:stri
  :
  : @return True if the request succeeds, otherwise an error will be thrown
  :)
-declare sequential function mailchimp:list-interest-group-del($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $group_name as xs:string, $grouping_id as xs:integer){
+declare %sequential function mailchimp:list-interest-group-del($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $group_name as xs:string, $grouping_id as xs:integer){
   xmlrpc:invoke($endpoint-url, "listInterestGroupDel", ($apikey, $id, $group_name, $grouping_id))
 };
 
@@ -1518,7 +1518,7 @@ declare sequential function mailchimp:list-interest-group-del($endpoint-url as x
  :
  : @return True if the request succeeds, otherwise an error will be thrown
  :)
-declare sequential function mailchimp:list-interest-group-update($apikey as xs:string, $id as xs:string, $old_name as xs:string, $new_name as xs:string, $grouping_id as xs:integer){
+declare %sequential function mailchimp:list-interest-group-update($apikey as xs:string, $id as xs:string, $old_name as xs:string, $new_name as xs:string, $grouping_id as xs:integer){
   mailchimp:list-interest-group-update($mailchimp:endpoint, $apikey, $id, $old_name, $new_name, $grouping_id)
 };
 
@@ -1536,7 +1536,7 @@ declare sequential function mailchimp:list-interest-group-update($apikey as xs:s
  :
  : @return True if the request succeeds, otherwise an error will be thrown
  :)
-declare sequential function mailchimp:list-interest-group-update($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $old_name as xs:string, $new_name as xs:string, $grouping_id as xs:integer){
+declare %sequential function mailchimp:list-interest-group-update($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $old_name as xs:string, $new_name as xs:string, $grouping_id as xs:integer){
   xmlrpc:invoke($endpoint-url, "listInterestGroupUpdate", ($apikey, $id, $old_name, $new_name, $grouping_id))
 };
 
@@ -1554,7 +1554,7 @@ declare sequential function mailchimp:list-interest-group-update($endpoint-url a
  :
  : @return The new grouping id if the request succeeds, otherwise an error will be thrown
  :)
-declare sequential function mailchimp:list-interest-grouping-add($apikey as xs:string, $id as xs:string, $name as xs:string, $type as xs:string, $groups as element(array)){
+declare %sequential function mailchimp:list-interest-grouping-add($apikey as xs:string, $id as xs:string, $name as xs:string, $type as xs:string, $groups as element(array)){
   mailchimp:list-interest-grouping-add($mailchimp:endpoint, $apikey, $id, $name, $type, $groups)
 };
 
@@ -1572,7 +1572,7 @@ declare sequential function mailchimp:list-interest-grouping-add($apikey as xs:s
  :
  : @return The new grouping id if the request succeeds, otherwise an error will be thrown
  :)
-declare sequential function mailchimp:list-interest-grouping-add($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $name as xs:string, $type as xs:string, $groups as element(array)){
+declare %sequential function mailchimp:list-interest-grouping-add($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $name as xs:string, $type as xs:string, $groups as element(array)){
   xmlrpc:invoke($endpoint-url, "listInterestGroupingAdd", ($apikey, $id, $name, $type, $groups))
 };
 
@@ -1589,7 +1589,7 @@ declare sequential function mailchimp:list-interest-grouping-add($endpoint-url a
  :
  : @return True if the request succeeds, otherwise an error will be thrown
  :)
-declare sequential function mailchimp:list-interest-grouping-update($apikey as xs:string, $grouping_id as xs:integer, $name as xs:string, $value as xs:string){
+declare %sequential function mailchimp:list-interest-grouping-update($apikey as xs:string, $grouping_id as xs:integer, $name as xs:string, $value as xs:string){
   mailchimp:list-interest-grouping-update($mailchimp:endpoint, $apikey, $grouping_id, $name, $value)
 };
 
@@ -1606,7 +1606,7 @@ declare sequential function mailchimp:list-interest-grouping-update($apikey as x
  :
  : @return True if the request succeeds, otherwise an error will be thrown
  :)
-declare sequential function mailchimp:list-interest-grouping-update($endpoint-url as xs:string, $apikey as xs:string, $grouping_id as xs:integer, $name as xs:string, $value as xs:string){
+declare %sequential function mailchimp:list-interest-grouping-update($endpoint-url as xs:string, $apikey as xs:string, $grouping_id as xs:integer, $name as xs:string, $value as xs:string){
   xmlrpc:invoke($endpoint-url, "listInterestGroupingUpdate", ($apikey, $grouping_id, $name, $value))
 };
 
@@ -1621,7 +1621,7 @@ declare sequential function mailchimp:list-interest-grouping-update($endpoint-ur
  :
  : @return True if the request succeeds, otherwise an error will be thrown
  :)
-declare sequential function mailchimp:list-interest-grouping-del($apikey as xs:string, $grouping_id as xs:integer){
+declare %sequential function mailchimp:list-interest-grouping-del($apikey as xs:string, $grouping_id as xs:integer){
   mailchimp:list-interest-grouping-del($mailchimp:endpoint, $apikey, $grouping_id)
 };
 
@@ -1636,7 +1636,7 @@ declare sequential function mailchimp:list-interest-grouping-del($apikey as xs:s
  :
  : @return True if the request succeeds, otherwise an error will be thrown
  :)
-declare sequential function mailchimp:list-interest-grouping-del($endpoint-url as xs:string, $apikey as xs:string, $grouping_id as xs:integer){
+declare %sequential function mailchimp:list-interest-grouping-del($endpoint-url as xs:string, $apikey as xs:string, $grouping_id as xs:integer){
   xmlrpc:invoke($endpoint-url, "listInterestGroupingDel", ($apikey, $grouping_id))
 };
 
@@ -1651,7 +1651,7 @@ declare sequential function mailchimp:list-interest-grouping-del($endpoint-url a
  :
  : @return List of webhooks
  :)
-declare sequential function mailchimp:list-webhooks($apikey as xs:string, $id as xs:string){
+declare %sequential function mailchimp:list-webhooks($apikey as xs:string, $id as xs:string){
   mailchimp:list-webhooks($mailchimp:endpoint, $apikey, $id)
 };
 
@@ -1666,7 +1666,7 @@ declare sequential function mailchimp:list-webhooks($apikey as xs:string, $id as
  :
  : @return List of webhooks
  :)
-declare sequential function mailchimp:list-webhooks($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string){
+declare %sequential function mailchimp:list-webhooks($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string){
   xmlrpc:invoke($endpoint-url, "listWebhooks", ($apikey, $id))
 };
 
@@ -1684,7 +1684,7 @@ declare sequential function mailchimp:list-webhooks($endpoint-url as xs:string, 
  :
  : @return True if the call succeeds, otherwise an exception will be thrown
  :)
-declare sequential function mailchimp:list-webhook-add($apikey as xs:string, $id as xs:string, $url as xs:string, $actions as element(array), $sources as element(array)){
+declare %sequential function mailchimp:list-webhook-add($apikey as xs:string, $id as xs:string, $url as xs:string, $actions as element(array), $sources as element(array)){
   mailchimp:list-webhook-add($mailchimp:endpoint, $apikey, $id, $url, $actions, $sources)
 };
 
@@ -1702,7 +1702,7 @@ declare sequential function mailchimp:list-webhook-add($apikey as xs:string, $id
  :
  : @return True if the call succeeds, otherwise an exception will be thrown
  :)
-declare sequential function mailchimp:list-webhook-add($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $url as xs:string, $actions as element(array), $sources as element(array)){
+declare %sequential function mailchimp:list-webhook-add($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $url as xs:string, $actions as element(array), $sources as element(array)){
   xmlrpc:invoke($endpoint-url, "listWebhookAdd", ($apikey, $id, $url, $actions, $sources))
 };
 
@@ -1718,7 +1718,7 @@ declare sequential function mailchimp:list-webhook-add($endpoint-url as xs:strin
  :
  : @return True if the call succeeds, otherwise an exception will be thrown
  :)
-declare sequential function mailchimp:list-webhook-del($apikey as xs:string, $id as xs:string, $url as xs:string){
+declare %sequential function mailchimp:list-webhook-del($apikey as xs:string, $id as xs:string, $url as xs:string){
   mailchimp:list-webhook-del($mailchimp:endpoint, $apikey, $id, $url)
 };
 
@@ -1734,7 +1734,7 @@ declare sequential function mailchimp:list-webhook-del($apikey as xs:string, $id
  :
  : @return True if the call succeeds, otherwise an exception will be thrown
  :)
-declare sequential function mailchimp:list-webhook-del($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $url as xs:string){
+declare %sequential function mailchimp:list-webhook-del($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $url as xs:string){
   xmlrpc:invoke($endpoint-url, "listWebhookDel", ($apikey, $id, $url))
 };
 
@@ -1749,7 +1749,7 @@ declare sequential function mailchimp:list-webhook-del($endpoint-url as xs:strin
  :
  : @return An array of parameters for each static segment
  :)
-declare sequential function mailchimp:list-static-segments($apikey as xs:string, $id as xs:string){
+declare %sequential function mailchimp:list-static-segments($apikey as xs:string, $id as xs:string){
   mailchimp:list-static-segments($mailchimp:endpoint, $apikey, $id)
 };
 
@@ -1764,7 +1764,7 @@ declare sequential function mailchimp:list-static-segments($apikey as xs:string,
  :
  : @return An array of parameters for each static segment
  :)
-declare sequential function mailchimp:list-static-segments($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string){
+declare %sequential function mailchimp:list-static-segments($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string){
   xmlrpc:invoke($endpoint-url, "listStaticSegments", ($apikey, $id))
 };
 
@@ -1780,7 +1780,7 @@ declare sequential function mailchimp:list-static-segments($endpoint-url as xs:s
  :
  : @return The id of the new segment, otherwise an error will be thrown.
  :)
-declare sequential function mailchimp:list-static-segment-add($apikey as xs:string, $id as xs:string, $name as xs:string){
+declare %sequential function mailchimp:list-static-segment-add($apikey as xs:string, $id as xs:string, $name as xs:string){
   mailchimp:list-static-segment-add($mailchimp:endpoint, $apikey, $id, $name)
 };
 
@@ -1796,7 +1796,7 @@ declare sequential function mailchimp:list-static-segment-add($apikey as xs:stri
  :
  : @return The id of the new segment, otherwise an error will be thrown.
  :)
-declare sequential function mailchimp:list-static-segment-add($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $name as xs:string){
+declare %sequential function mailchimp:list-static-segment-add($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $name as xs:string){
   xmlrpc:invoke($endpoint-url, "listStaticSegmentAdd", ($apikey, $id, $name))
 };
 
@@ -1812,7 +1812,7 @@ declare sequential function mailchimp:list-static-segment-add($endpoint-url as x
  :
  : @return True if it worked, otherwise an error is thrown.
  :)
-declare sequential function mailchimp:list-static-segment-reset($apikey as xs:string, $id as xs:string, $seg_id as xs:integer){
+declare %sequential function mailchimp:list-static-segment-reset($apikey as xs:string, $id as xs:string, $seg_id as xs:integer){
   mailchimp:list-static-segment-reset($mailchimp:endpoint, $apikey, $id, $seg_id)
 };
 
@@ -1828,7 +1828,7 @@ declare sequential function mailchimp:list-static-segment-reset($apikey as xs:st
  :
  : @return True if it worked, otherwise an error is thrown.
  :)
-declare sequential function mailchimp:list-static-segment-reset($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $seg_id as xs:integer){
+declare %sequential function mailchimp:list-static-segment-reset($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $seg_id as xs:integer){
   xmlrpc:invoke($endpoint-url, "listStaticSegmentReset", ($apikey, $id, $seg_id))
 };
 
@@ -1844,7 +1844,7 @@ declare sequential function mailchimp:list-static-segment-reset($endpoint-url as
  :
  : @return True if it worked, otherwise an error is thrown.
  :)
-declare sequential function mailchimp:list-static-segment-del($apikey as xs:string, $id as xs:string, $seg_id as xs:integer){
+declare %sequential function mailchimp:list-static-segment-del($apikey as xs:string, $id as xs:string, $seg_id as xs:integer){
   mailchimp:list-static-segment-del($mailchimp:endpoint, $apikey, $id, $seg_id)
 };
 
@@ -1860,7 +1860,7 @@ declare sequential function mailchimp:list-static-segment-del($apikey as xs:stri
  :
  : @return True if it worked, otherwise an error is thrown.
  :)
-declare sequential function mailchimp:list-static-segment-del($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $seg_id as xs:integer){
+declare %sequential function mailchimp:list-static-segment-del($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $seg_id as xs:integer){
   xmlrpc:invoke($endpoint-url, "listStaticSegmentDel", ($apikey, $id, $seg_id))
 };
 
@@ -1877,7 +1877,7 @@ declare sequential function mailchimp:list-static-segment-del($endpoint-url as x
  :
  : @return An array with the results of the operation
  :)
-declare sequential function mailchimp:list-static-segment-members-add($apikey as xs:string, $id as xs:string, $seg_id as xs:integer, $batch as element(array)){
+declare %sequential function mailchimp:list-static-segment-members-add($apikey as xs:string, $id as xs:string, $seg_id as xs:integer, $batch as element(array)){
   mailchimp:list-static-segment-members-add($mailchimp:endpoint, $apikey, $id, $seg_id, $batch)
 };
 
@@ -1894,7 +1894,7 @@ declare sequential function mailchimp:list-static-segment-members-add($apikey as
  :
  : @return array an array with the results of the operation
  :)
-declare sequential function mailchimp:list-static-segment-members-add($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $seg_id as xs:integer, $batch as element(array)){
+declare %sequential function mailchimp:list-static-segment-members-add($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $seg_id as xs:integer, $batch as element(array)){
   xmlrpc:invoke($endpoint-url, "listStaticSegmentMembersAdd", ($apikey, $id, $seg_id, $batch))
 };
 
@@ -1911,7 +1911,7 @@ declare sequential function mailchimp:list-static-segment-members-add($endpoint-
  :
  : @return An array with the results of the operation
  :)
-declare sequential function mailchimp:list-static-segment-members-del($apikey as xs:string, $id as xs:string, $seg_id as xs:integer, $batch as element(array)){
+declare %sequential function mailchimp:list-static-segment-members-del($apikey as xs:string, $id as xs:string, $seg_id as xs:integer, $batch as element(array)){
   mailchimp:list-static-segment-members-del($mailchimp:endpoint, $apikey, $id, $seg_id, $batch)
 };
 
@@ -1928,7 +1928,7 @@ declare sequential function mailchimp:list-static-segment-members-del($apikey as
  :
  : @return An array with the results of the operation
  :)
-declare sequential function mailchimp:list-static-segment-members-del($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $seg_id as xs:integer, $batch as element(array)){
+declare %sequential function mailchimp:list-static-segment-members-del($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $seg_id as xs:integer, $batch as element(array)){
   xmlrpc:invoke($endpoint-url, "listStaticSegmentMembersDel", ($apikey, $id, $seg_id, $batch))
 };
 
@@ -1950,7 +1950,7 @@ declare sequential function mailchimp:list-static-segment-members-del($endpoint-
  :
  : @return True on success, false on failure.
  :)
-declare sequential function mailchimp:list-subscribe($apikey as xs:string, $id as xs:string, $email_address as xs:string, $merge_vars as element(array), $email_type as xs:string, $double_optin as xs:boolean, $update_existing as xs:boolean, $replace_interests as xs:boolean, $send_welcome as xs:boolean){
+declare %sequential function mailchimp:list-subscribe($apikey as xs:string, $id as xs:string, $email_address as xs:string, $merge_vars as element(array), $email_type as xs:string, $double_optin as xs:boolean, $update_existing as xs:boolean, $replace_interests as xs:boolean, $send_welcome as xs:boolean){
   mailchimp:list-subscribe($mailchimp:endpoint, $apikey, $id, $email_address, $merge_vars, $email_type, $double_optin, $update_existing, $replace_interests, $send_welcome)
 };
 
@@ -1972,7 +1972,7 @@ declare sequential function mailchimp:list-subscribe($apikey as xs:string, $id a
  :
  : @return True on success, false on failure.
  :)
-declare sequential function mailchimp:list-subscribe($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $email_address as xs:string, $merge_vars as element(array), $email_type as xs:string, $double_optin as xs:boolean, $update_existing as xs:boolean, $replace_interests as xs:boolean, $send_welcome as xs:boolean){
+declare %sequential function mailchimp:list-subscribe($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $email_address as xs:string, $merge_vars as element(array), $email_type as xs:string, $double_optin as xs:boolean, $update_existing as xs:boolean, $replace_interests as xs:boolean, $send_welcome as xs:boolean){
   xmlrpc:invoke($endpoint-url, "listSubscribe", ($apikey, $id, $email_address, $merge_vars, $email_type, $double_optin, $update_existing, $replace_interests, $send_welcome))
 };
 
@@ -1991,7 +1991,7 @@ declare sequential function mailchimp:list-subscribe($endpoint-url as xs:string,
  :
  : @return True on success, false on failure.
  :)
-declare sequential function mailchimp:list-unsubscribe($apikey as xs:string, $id as xs:string, $email_address as xs:string, $delete_member as xs:boolean, $send_goodbye as xs:boolean, $send_notify as xs:boolean){
+declare %sequential function mailchimp:list-unsubscribe($apikey as xs:string, $id as xs:string, $email_address as xs:string, $delete_member as xs:boolean, $send_goodbye as xs:boolean, $send_notify as xs:boolean){
   mailchimp:list-unsubscribe($mailchimp:endpoint, $apikey, $id, $email_address, $delete_member, $send_goodbye, $send_notify)
 };
 
@@ -2010,7 +2010,7 @@ declare sequential function mailchimp:list-unsubscribe($apikey as xs:string, $id
  :
  : @return True on success, false on failure.
  :)
-declare sequential function mailchimp:list-unsubscribe($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $email_address as xs:string, $delete_member as xs:boolean, $send_goodbye as xs:boolean, $send_notify as xs:boolean){
+declare %sequential function mailchimp:list-unsubscribe($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $email_address as xs:string, $delete_member as xs:boolean, $send_goodbye as xs:boolean, $send_notify as xs:boolean){
   xmlrpc:invoke($endpoint-url, "listUnsubscribe", ($apikey, $id, $email_address, $delete_member, $send_goodbye, $send_notify))
 };
 
@@ -2029,7 +2029,7 @@ declare sequential function mailchimp:list-unsubscribe($endpoint-url as xs:strin
  :
  : @return True on success, false on failure.
  :)
-declare sequential function mailchimp:list-update-member($apikey as xs:string, $id as xs:string, $email_address as xs:string, $merge_vars as element(array), $email_type as xs:string, $replace_interests as xs:boolean){
+declare %sequential function mailchimp:list-update-member($apikey as xs:string, $id as xs:string, $email_address as xs:string, $merge_vars as element(array), $email_type as xs:string, $replace_interests as xs:boolean){
   mailchimp:list-update-member($mailchimp:endpoint, $apikey, $id, $email_address, $merge_vars, $email_type, $replace_interests)
 };
 
@@ -2048,7 +2048,7 @@ declare sequential function mailchimp:list-update-member($apikey as xs:string, $
  :
  : @return True on success, false on failure.
  :)
-declare sequential function mailchimp:list-update-member($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $email_address as xs:string, $merge_vars as element(array), $email_type as xs:string, $replace_interests as xs:boolean){
+declare %sequential function mailchimp:list-update-member($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $email_address as xs:string, $merge_vars as element(array), $email_type as xs:string, $replace_interests as xs:boolean){
   xmlrpc:invoke($endpoint-url, "listUpdateMember", ($apikey, $id, $email_address, $merge_vars, $email_type, $replace_interests))
 };
 
@@ -2067,7 +2067,7 @@ declare sequential function mailchimp:list-update-member($endpoint-url as xs:str
  :
  : @return Array of result counts and any errors that occurred
  :)
-declare sequential function mailchimp:list-batch-subscribe($apikey as xs:string, $id as xs:string, $batch as element(array), $double_optin as xs:boolean, $update_existing as xs:boolean, $replace_interests as xs:boolean){
+declare %sequential function mailchimp:list-batch-subscribe($apikey as xs:string, $id as xs:string, $batch as element(array), $double_optin as xs:boolean, $update_existing as xs:boolean, $replace_interests as xs:boolean){
   mailchimp:list-batch-subscribe($mailchimp:endpoint, $apikey, $id, $batch, $double_optin, $update_existing, $replace_interests)
 };
 
@@ -2086,7 +2086,7 @@ declare sequential function mailchimp:list-batch-subscribe($apikey as xs:string,
  :
  : @return Array of result counts and any errors that occurred
  :)
-declare sequential function mailchimp:list-batch-subscribe($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $batch as element(array), $double_optin as xs:boolean, $update_existing as xs:boolean, $replace_interests as xs:boolean){
+declare %sequential function mailchimp:list-batch-subscribe($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $batch as element(array), $double_optin as xs:boolean, $update_existing as xs:boolean, $replace_interests as xs:boolean){
   xmlrpc:invoke($endpoint-url, "listBatchSubscribe", ($apikey, $id, $batch, $double_optin, $update_existing, $replace_interests))
 };
 
@@ -2105,7 +2105,7 @@ declare sequential function mailchimp:list-batch-subscribe($endpoint-url as xs:s
  :
  : @return Array of result counts and any errors that occurred
  :)
-declare sequential function mailchimp:list-batch-unsubscribe($apikey as xs:string, $id as xs:string, $emails as element(array), $delete_member as xs:boolean, $send_goodbye as xs:boolean, $send_notify as xs:boolean){
+declare %sequential function mailchimp:list-batch-unsubscribe($apikey as xs:string, $id as xs:string, $emails as element(array), $delete_member as xs:boolean, $send_goodbye as xs:boolean, $send_notify as xs:boolean){
   mailchimp:list-batch-unsubscribe($mailchimp:endpoint, $apikey, $id, $emails, $delete_member, $send_goodbye, $send_notify)
 };
 
@@ -2124,7 +2124,7 @@ declare sequential function mailchimp:list-batch-unsubscribe($apikey as xs:strin
  :
  : @return Array of result counts and any errors that occurred
  :)
-declare sequential function mailchimp:list-batch-unsubscribe($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $emails as element(array), $delete_member as xs:boolean, $send_goodbye as xs:boolean, $send_notify as xs:boolean){
+declare %sequential function mailchimp:list-batch-unsubscribe($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $emails as element(array), $delete_member as xs:boolean, $send_goodbye as xs:boolean, $send_notify as xs:boolean){
   xmlrpc:invoke($endpoint-url, "listBatchUnsubscribe", ($apikey, $id, $emails, $delete_member, $send_goodbye, $send_notify))
 };
 
@@ -2143,7 +2143,7 @@ declare sequential function mailchimp:list-batch-unsubscribe($endpoint-url as xs
  :
  : @return Array of a the total records match and matching list member data for this page (see Returned Fields for details)
  :)
-declare sequential function mailchimp:list-members($apikey as xs:string, $id as xs:string, $status as xs:string, $since as xs:string, $start as xs:integer, $limit as xs:integer){
+declare %sequential function mailchimp:list-members($apikey as xs:string, $id as xs:string, $status as xs:string, $since as xs:string, $start as xs:integer, $limit as xs:integer){
   mailchimp:list-members($mailchimp:endpoint, $apikey, $id, $status, $since, $start, $limit)
 };
 
@@ -2162,7 +2162,7 @@ declare sequential function mailchimp:list-members($apikey as xs:string, $id as 
  :
  : @return Array of a the total records match and matching list member data for this page (see Returned Fields for details)
  :)
-declare sequential function mailchimp:list-members($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $status as xs:string, $since as xs:string, $start as xs:integer, $limit as xs:integer){
+declare %sequential function mailchimp:list-members($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $status as xs:string, $since as xs:string, $start as xs:integer, $limit as xs:integer){
   xmlrpc:invoke($endpoint-url, "listMembers", ($apikey, $id, $status, $since, $start, $limit))
 };
 
@@ -2178,7 +2178,7 @@ declare sequential function mailchimp:list-members($endpoint-url as xs:string, $
  :
  : @return Array of list members with their info in an array (see Returned Fields for details)
  :)
-declare sequential function mailchimp:list-member-info($apikey as xs:string, $id as xs:string, $email_address as element(array)){
+declare %sequential function mailchimp:list-member-info($apikey as xs:string, $id as xs:string, $email_address as element(array)){
   mailchimp:list-member-info($mailchimp:endpoint, $apikey, $id, $email_address)
 };
 
@@ -2194,7 +2194,7 @@ declare sequential function mailchimp:list-member-info($apikey as xs:string, $id
  :
  : @return Array of list members with their info in an array (see Returned Fields for details)
  :)
-declare sequential function mailchimp:list-member-info($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $email_address as element(array)){
+declare %sequential function mailchimp:list-member-info($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $email_address as element(array)){
   xmlrpc:invoke($endpoint-url, "listMemberInfo", ($apikey, $id, $email_address))
 };
 
@@ -2210,7 +2210,7 @@ declare sequential function mailchimp:list-member-info($endpoint-url as xs:strin
  :
  : @return Array of data and success/error counts
  :)
-declare sequential function mailchimp:list-member-activity($apikey as xs:string, $id as xs:string, $email_address as element(array)){
+declare %sequential function mailchimp:list-member-activity($apikey as xs:string, $id as xs:string, $email_address as element(array)){
   mailchimp:list-member-activity($mailchimp:endpoint, $apikey, $id, $email_address)
 };
 
@@ -2226,7 +2226,7 @@ declare sequential function mailchimp:list-member-activity($apikey as xs:string,
  :
  : @return Array of data and success/error counts
  :)
-declare sequential function mailchimp:list-member-activity($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $email_address as element(array)){
+declare %sequential function mailchimp:list-member-activity($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $email_address as element(array)){
   xmlrpc:invoke($endpoint-url, "listMemberActivity", ($apikey, $id, $email_address))
 };
 
@@ -2244,7 +2244,7 @@ declare sequential function mailchimp:list-member-activity($endpoint-url as xs:s
  :
  : @return The total of all reports and the specific reports reports this page
  :)
-declare sequential function mailchimp:list-abuse-reports($apikey as xs:string, $id as xs:string, $start as xs:integer, $limit as xs:integer, $since as xs:string){
+declare %sequential function mailchimp:list-abuse-reports($apikey as xs:string, $id as xs:string, $start as xs:integer, $limit as xs:integer, $since as xs:string){
   mailchimp:list-abuse-reports($mailchimp:endpoint, $apikey, $id, $start, $limit, $since)
 };
 
@@ -2262,7 +2262,7 @@ declare sequential function mailchimp:list-abuse-reports($apikey as xs:string, $
  :
  : @return The total of all reports and the specific reports reports this page
  :)
-declare sequential function mailchimp:list-abuse-reports($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $start as xs:integer, $limit as xs:integer, $since as xs:string){
+declare %sequential function mailchimp:list-abuse-reports($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string, $start as xs:integer, $limit as xs:integer, $since as xs:string){
   xmlrpc:invoke($endpoint-url, "listAbuseReports", ($apikey, $id, $start, $limit, $since))
 };
 
@@ -2277,7 +2277,7 @@ declare sequential function mailchimp:list-abuse-reports($endpoint-url as xs:str
  :
  : @return Array of months and growth
  :)
-declare sequential function mailchimp:list-growth-history($apikey as xs:string, $id as xs:string){
+declare %sequential function mailchimp:list-growth-history($apikey as xs:string, $id as xs:string){
   mailchimp:list-growth-history($mailchimp:endpoint, $apikey, $id)
 };
 
@@ -2292,7 +2292,7 @@ declare sequential function mailchimp:list-growth-history($apikey as xs:string, 
  :
  : @return Array of months and growth
  :)
-declare sequential function mailchimp:list-growth-history($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string){
+declare %sequential function mailchimp:list-growth-history($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string){
   xmlrpc:invoke($endpoint-url, "listGrowthHistory", ($apikey, $id))
 };
 
@@ -2307,7 +2307,7 @@ declare sequential function mailchimp:list-growth-history($endpoint-url as xs:st
  :
  : @return Array of array of daily values.
  :)
-declare sequential function mailchimp:list-activity($apikey as xs:string, $id as xs:string){
+declare %sequential function mailchimp:list-activity($apikey as xs:string, $id as xs:string){
   mailchimp:list-activity($mailchimp:endpoint, $apikey, $id)
 };
 
@@ -2322,7 +2322,7 @@ declare sequential function mailchimp:list-activity($apikey as xs:string, $id as
  :
  : @return array array of array of daily values.
  :)
-declare sequential function mailchimp:list-activity($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string){
+declare %sequential function mailchimp:list-activity($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string){
   xmlrpc:invoke($endpoint-url, "listActivity", ($apikey, $id))
 };
 
@@ -2337,7 +2337,7 @@ declare sequential function mailchimp:list-activity($endpoint-url as xs:string, 
  :
  : @return Array of locations
  :)
-declare sequential function mailchimp:list-locations($apikey as xs:string, $id as xs:string){
+declare %sequential function mailchimp:list-locations($apikey as xs:string, $id as xs:string){
   mailchimp:list-locations($mailchimp:endpoint, $apikey, $id)
 };
 
@@ -2352,7 +2352,7 @@ declare sequential function mailchimp:list-locations($apikey as xs:string, $id a
  :
  : @return Array of locations
  :)
-declare sequential function mailchimp:list-locations($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string){
+declare %sequential function mailchimp:list-locations($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string){
   xmlrpc:invoke($endpoint-url, "listLocations", ($apikey, $id))
 };
 
@@ -2367,7 +2367,7 @@ declare sequential function mailchimp:list-locations($endpoint-url as xs:string,
  :
  : @return array the desktop and mobile user agents in use on the list
  :)
-declare sequential function mailchimp:list-clients($apikey as xs:string, $id as xs:string){
+declare %sequential function mailchimp:list-clients($apikey as xs:string, $id as xs:string){
   mailchimp:list-clients($mailchimp:endpoint, $apikey, $id)
 };
 
@@ -2382,7 +2382,7 @@ declare sequential function mailchimp:list-clients($apikey as xs:string, $id as 
  :
  : @return Array the desktop and mobile user agents in use on the list
  :)
-declare sequential function mailchimp:list-clients($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string){
+declare %sequential function mailchimp:list-clients($endpoint-url as xs:string, $apikey as xs:string, $id as xs:string){
   xmlrpc:invoke($endpoint-url, "listClients", ($apikey, $id))
 };
 
@@ -2399,7 +2399,7 @@ declare sequential function mailchimp:list-clients($endpoint-url as xs:string, $
  :
  : @return An array of structs, one for each template (see Returned Fields for details)
  :)
-declare sequential function mailchimp:templates($apikey as xs:string, $types as element(array), $category as xs:string, $inactives as element(array)){
+declare %sequential function mailchimp:templates($apikey as xs:string, $types as element(array), $category as xs:string, $inactives as element(array)){
   mailchimp:templates($mailchimp:endpoint, $apikey, $types, $category, $inactives)
 };
 
@@ -2416,7 +2416,7 @@ declare sequential function mailchimp:templates($apikey as xs:string, $types as 
  :
  : @return An array of structs, one for each template (see Returned Fields for details)
  :)
-declare sequential function mailchimp:templates($endpoint-url as xs:string, $apikey as xs:string, $types as element(array), $category as xs:string, $inactives as element(array)){
+declare %sequential function mailchimp:templates($endpoint-url as xs:string, $apikey as xs:string, $types as element(array), $category as xs:string, $inactives as element(array)){
   xmlrpc:invoke($endpoint-url, "templates", ($apikey, $types, $category, $inactives))
 };
 
@@ -2432,7 +2432,7 @@ declare sequential function mailchimp:templates($endpoint-url as xs:string, $api
  :
  : @return An array of info to be used when editing
  :)
-declare sequential function mailchimp:template-info($apikey as xs:string, $tid as xs:integer, $type as xs:string){
+declare %sequential function mailchimp:template-info($apikey as xs:string, $tid as xs:integer, $type as xs:string){
   mailchimp:template-info($mailchimp:endpoint, $apikey, $tid, $type)
 };
 
@@ -2448,7 +2448,7 @@ declare sequential function mailchimp:template-info($apikey as xs:string, $tid a
  :
  : @return An array of info to be used when editing
  :)
-declare sequential function mailchimp:template-info($endpoint-url as xs:string, $apikey as xs:string, $tid as xs:integer, $type as xs:string){
+declare %sequential function mailchimp:template-info($endpoint-url as xs:string, $apikey as xs:string, $tid as xs:integer, $type as xs:string){
   xmlrpc:invoke($endpoint-url, "templateInfo", ($apikey, $tid, $type))
 };
 
@@ -2464,7 +2464,7 @@ declare sequential function mailchimp:template-info($endpoint-url as xs:string, 
  :
  : @return The new template id, otherwise an error is thrown.
  :)
-declare sequential function mailchimp:template-add($apikey as xs:string, $name as xs:string, $html as xs:string){
+declare %sequential function mailchimp:template-add($apikey as xs:string, $name as xs:string, $html as xs:string){
   mailchimp:template-add($mailchimp:endpoint, $apikey, $name, $html)
 };
 
@@ -2480,7 +2480,7 @@ declare sequential function mailchimp:template-add($apikey as xs:string, $name a
  :
  : @return The new template id, otherwise an error is thrown.
  :)
-declare sequential function mailchimp:template-add($endpoint-url as xs:string, $apikey as xs:string, $name as xs:string, $html as xs:string){
+declare %sequential function mailchimp:template-add($endpoint-url as xs:string, $apikey as xs:string, $name as xs:string, $html as xs:string){
   xmlrpc:invoke($endpoint-url, "templateAdd", ($apikey, $name, $html))
 };
 
@@ -2496,7 +2496,7 @@ declare sequential function mailchimp:template-add($endpoint-url as xs:string, $
  :
  : @return True if the template was updated, otherwise an error will be thrown
  :)
-declare sequential function mailchimp:template-update($apikey as xs:string, $id as xs:integer, $values as element(array)){
+declare %sequential function mailchimp:template-update($apikey as xs:string, $id as xs:integer, $values as element(array)){
   mailchimp:template-update($mailchimp:endpoint, $apikey, $id, $values)
 };
 
@@ -2512,7 +2512,7 @@ declare sequential function mailchimp:template-update($apikey as xs:string, $id 
  :
  : @return True if the template was updated, otherwise an error will be thrown
  :)
-declare sequential function mailchimp:template-update($endpoint-url as xs:string, $apikey as xs:string, $id as xs:integer, $values as element(array)){
+declare %sequential function mailchimp:template-update($endpoint-url as xs:string, $apikey as xs:string, $id as xs:integer, $values as element(array)){
   xmlrpc:invoke($endpoint-url, "templateUpdate", ($apikey, $id, $values))
 };
 
@@ -2527,7 +2527,7 @@ declare sequential function mailchimp:template-update($endpoint-url as xs:string
  :
  : @return True if the template was deleted, otherwise an error will be thrown
  :)
-declare sequential function mailchimp:template-del($apikey as xs:string, $id as xs:integer){
+declare %sequential function mailchimp:template-del($apikey as xs:string, $id as xs:integer){
   mailchimp:template-del($mailchimp:endpoint, $apikey, $id)
 };
 
@@ -2542,7 +2542,7 @@ declare sequential function mailchimp:template-del($apikey as xs:string, $id as 
  :
  : @return True if the template was deleted, otherwise an error will be thrown
  :)
-declare sequential function mailchimp:template-del($endpoint-url as xs:string, $apikey as xs:string, $id as xs:integer){
+declare %sequential function mailchimp:template-del($endpoint-url as xs:string, $apikey as xs:string, $id as xs:integer){
   xmlrpc:invoke($endpoint-url, "templateDel", ($apikey, $id))
 };
 
@@ -2557,7 +2557,7 @@ declare sequential function mailchimp:template-del($endpoint-url as xs:string, $
  :
  : @return boolean true if the template was deleted, otherwise an error will be thrown
  :)
-declare sequential function mailchimp:template-undel($apikey as xs:string, $id as xs:integer){
+declare %sequential function mailchimp:template-undel($apikey as xs:string, $id as xs:integer){
   mailchimp:template-undel($mailchimp:endpoint, $apikey, $id)
 };
 
@@ -2572,7 +2572,7 @@ declare sequential function mailchimp:template-undel($apikey as xs:string, $id a
  :
  : @return boolean true if the template was deleted, otherwise an error will be thrown
  :)
-declare sequential function mailchimp:template-undel($endpoint-url as xs:string, $apikey as xs:string, $id as xs:integer){
+declare %sequential function mailchimp:template-undel($endpoint-url as xs:string, $apikey as xs:string, $id as xs:integer){
   xmlrpc:invoke($endpoint-url, "templateUndel", ($apikey, $id))
 };
 
@@ -2587,7 +2587,7 @@ declare sequential function mailchimp:template-undel($endpoint-url as xs:string,
  :
  : @return array containing the details for the account tied to this API Key
  :)
-declare sequential function mailchimp:get-account-details($apikey as xs:string){
+declare %sequential function mailchimp:get-account-details($apikey as xs:string){
   mailchimp:get-account-details($mailchimp:endpoint, $apikey)
 };
 
@@ -2601,7 +2601,7 @@ declare sequential function mailchimp:get-account-details($apikey as xs:string){
  :
  : @return Array containing the details for the account tied to this API Key
  :)
-declare sequential function mailchimp:get-account-details($endpoint-url as xs:string, $apikey as xs:string){
+declare %sequential function mailchimp:get-account-details($endpoint-url as xs:string, $apikey as xs:string){
   xmlrpc:invoke($endpoint-url, "getAccountDetails", ($apikey))
 };
 
@@ -2617,7 +2617,7 @@ declare sequential function mailchimp:get-account-details($endpoint-url as xs:st
  :
  : @return The content pass in converted to text.
  :)
-declare sequential function mailchimp:generate-text($apikey as xs:string, $type as xs:string, $content as item()){
+declare %sequential function mailchimp:generate-text($apikey as xs:string, $type as xs:string, $content as item()){
   mailchimp:generate-text($mailchimp:endpoint, $apikey, $type, $content)
 };
 
@@ -2633,7 +2633,7 @@ declare sequential function mailchimp:generate-text($apikey as xs:string, $type 
  :
  : @return The content pass in converted to text.
  :)
-declare sequential function mailchimp:generate-text($endpoint-url as xs:string, $apikey as xs:string, $type as xs:string, $content as item()){
+declare %sequential function mailchimp:generate-text($endpoint-url as xs:string, $apikey as xs:string, $type as xs:string, $content as item()){
   xmlrpc:invoke($endpoint-url, "generateText", ($apikey, $type, $content))
 };
 
@@ -2649,7 +2649,7 @@ declare sequential function mailchimp:generate-text($endpoint-url as xs:string, 
  :
  : @return Your HTML content with all CSS inlined, just like if we sent it.
  :)
-declare sequential function mailchimp:inline-css($apikey as xs:string, $html as xs:string, $strip_css as xs:boolean){
+declare %sequential function mailchimp:inline-css($apikey as xs:string, $html as xs:string, $strip_css as xs:boolean){
   mailchimp:inline-css($mailchimp:endpoint, $apikey, $html, $strip_css)
 };
 
@@ -2665,7 +2665,7 @@ declare sequential function mailchimp:inline-css($apikey as xs:string, $html as 
  :
  : @return Your HTML content with all CSS inlined, just like if we sent it.
  :)
-declare sequential function mailchimp:inline-css($endpoint-url as xs:string, $apikey as xs:string, $html as xs:string, $strip_css as xs:boolean){
+declare %sequential function mailchimp:inline-css($endpoint-url as xs:string, $apikey as xs:string, $html as xs:string, $strip_css as xs:boolean){
   xmlrpc:invoke($endpoint-url, "inlineCss", ($apikey, $html, $strip_css))
 };
 
@@ -2680,7 +2680,7 @@ declare sequential function mailchimp:inline-css($endpoint-url as xs:string, $ap
  :
  : @return Array of folder structs (see Returned Fields for details)
  :)
-declare sequential function mailchimp:folders($apikey as xs:string, $type as xs:string){
+declare %sequential function mailchimp:folders($apikey as xs:string, $type as xs:string){
   mailchimp:folders($mailchimp:endpoint, $apikey, $type)
 };
 
@@ -2695,7 +2695,7 @@ declare sequential function mailchimp:folders($apikey as xs:string, $type as xs:
  :
  : @return Array of folder structs (see Returned Fields for details)
  :)
-declare sequential function mailchimp:folders($endpoint-url as xs:string, $apikey as xs:string, $type as xs:string){
+declare %sequential function mailchimp:folders($endpoint-url as xs:string, $apikey as xs:string, $type as xs:string){
   xmlrpc:invoke($endpoint-url, "folders", ($apikey, $type))
 };
 
@@ -2711,7 +2711,7 @@ declare sequential function mailchimp:folders($endpoint-url as xs:string, $apike
  :
  : @return The folder_id of the newly created folder.
  :)
-declare sequential function mailchimp:folder-add($apikey as xs:string, $name as xs:string, $type as xs:string){
+declare %sequential function mailchimp:folder-add($apikey as xs:string, $name as xs:string, $type as xs:string){
   mailchimp:folder-add($mailchimp:endpoint, $apikey, $name, $type)
 };
 
@@ -2727,7 +2727,7 @@ declare sequential function mailchimp:folder-add($apikey as xs:string, $name as 
  :
  : @return The folder_id of the newly created folder.
  :)
-declare sequential function mailchimp:folder-add($endpoint-url as xs:string, $apikey as xs:string, $name as xs:string, $type as xs:string){
+declare %sequential function mailchimp:folder-add($endpoint-url as xs:string, $apikey as xs:string, $name as xs:string, $type as xs:string){
   xmlrpc:invoke($endpoint-url, "folderAdd", ($apikey, $name, $type))
 };
 
@@ -2744,7 +2744,7 @@ declare sequential function mailchimp:folder-add($endpoint-url as xs:string, $ap
  :
  : @return True if the update worked, otherwise an exception is thrown
  :)
-declare sequential function mailchimp:folder-update($apikey as xs:string, $fid as xs:integer, $name as xs:string, $type as xs:string){
+declare %sequential function mailchimp:folder-update($apikey as xs:string, $fid as xs:integer, $name as xs:string, $type as xs:string){
   mailchimp:folder-update($mailchimp:endpoint, $apikey, $fid, $name, $type)
 };
 
@@ -2761,7 +2761,7 @@ declare sequential function mailchimp:folder-update($apikey as xs:string, $fid a
  :
  : @return True if the update worked, otherwise an exception is thrown
  :)
-declare sequential function mailchimp:folder-update($endpoint-url as xs:string, $apikey as xs:string, $fid as xs:integer, $name as xs:string, $type as xs:string){
+declare %sequential function mailchimp:folder-update($endpoint-url as xs:string, $apikey as xs:string, $fid as xs:integer, $name as xs:string, $type as xs:string){
   xmlrpc:invoke($endpoint-url, "folderUpdate", ($apikey, $fid, $name, $type))
 };
 
@@ -2777,7 +2777,7 @@ declare sequential function mailchimp:folder-update($endpoint-url as xs:string, 
  :
  : @return True if the delete worked, otherwise an exception is thrown
  :)
-declare sequential function mailchimp:folder-del($apikey as xs:string, $fid as xs:integer, $type as xs:string){
+declare %sequential function mailchimp:folder-del($apikey as xs:string, $fid as xs:integer, $type as xs:string){
   mailchimp:folder-del($mailchimp:endpoint, $apikey, $fid, $type)
 };
 
@@ -2793,7 +2793,7 @@ declare sequential function mailchimp:folder-del($apikey as xs:string, $fid as x
  :
  : @return True if the delete worked, otherwise an exception is thrown
  :)
-declare sequential function mailchimp:folder-del($endpoint-url as xs:string, $apikey as xs:string, $fid as xs:integer, $type as xs:string){
+declare %sequential function mailchimp:folder-del($endpoint-url as xs:string, $apikey as xs:string, $fid as xs:integer, $type as xs:string){
   xmlrpc:invoke($endpoint-url, "folderDel", ($apikey, $fid, $type))
 };
 
@@ -2810,7 +2810,7 @@ declare sequential function mailchimp:folder-del($endpoint-url as xs:string, $ap
  :
  : @return Array the total matching orders and the specific orders for the requested page
  :)
-declare sequential function mailchimp:ecomm-orders($apikey as xs:string, $start as xs:integer, $limit as xs:integer, $since as xs:string){
+declare %sequential function mailchimp:ecomm-orders($apikey as xs:string, $start as xs:integer, $limit as xs:integer, $since as xs:string){
   mailchimp:ecomm-orders($mailchimp:endpoint, $apikey, $start, $limit, $since)
 };
 
@@ -2827,7 +2827,7 @@ declare sequential function mailchimp:ecomm-orders($apikey as xs:string, $start 
  :
  : @return Array the total matching orders and the specific orders for the requested page
  :)
-declare sequential function mailchimp:ecomm-orders($endpoint-url as xs:string, $apikey as xs:string, $start as xs:integer, $limit as xs:integer, $since as xs:string){
+declare %sequential function mailchimp:ecomm-orders($endpoint-url as xs:string, $apikey as xs:string, $start as xs:integer, $limit as xs:integer, $since as xs:string){
   xmlrpc:invoke($endpoint-url, "ecommOrders", ($apikey, $start, $limit, $since))
 };
 
@@ -2842,7 +2842,7 @@ declare sequential function mailchimp:ecomm-orders($endpoint-url as xs:string, $
  :
  : @return True if the data is saved, otherwise an error is thrown.
  :)
-declare sequential function mailchimp:ecomm-order-add($apikey as xs:string, $order as element(array)){
+declare %sequential function mailchimp:ecomm-order-add($apikey as xs:string, $order as element(array)){
   mailchimp:ecomm-order-add($mailchimp:endpoint, $apikey, $order)
 };
 
@@ -2857,7 +2857,7 @@ declare sequential function mailchimp:ecomm-order-add($apikey as xs:string, $ord
  :
  : @return True if the data is saved, otherwise an error is thrown.
  :)
-declare sequential function mailchimp:ecomm-order-add($endpoint-url as xs:string, $apikey as xs:string, $order as element(array)){
+declare %sequential function mailchimp:ecomm-order-add($endpoint-url as xs:string, $apikey as xs:string, $order as element(array)){
   xmlrpc:invoke($endpoint-url, "ecommOrderAdd", ($apikey, $order))
 };
 
@@ -2873,7 +2873,7 @@ declare sequential function mailchimp:ecomm-order-add($endpoint-url as xs:string
  :
  : @return True if an order is deleted, otherwise an error is thrown.
  :)
-declare sequential function mailchimp:ecomm-order-del($apikey as xs:string, $store_id as xs:string, $order_id as xs:string){
+declare %sequential function mailchimp:ecomm-order-del($apikey as xs:string, $store_id as xs:string, $order_id as xs:string){
   mailchimp:ecomm-order-del($mailchimp:endpoint, $apikey, $store_id, $order_id)
 };
 
@@ -2889,7 +2889,7 @@ declare sequential function mailchimp:ecomm-order-del($apikey as xs:string, $sto
  :
  : @return True if an order is deleted, otherwise an error is thrown.
  :)
-declare sequential function mailchimp:ecomm-order-del($endpoint-url as xs:string, $apikey as xs:string, $store_id as xs:string, $order_id as xs:string){
+declare %sequential function mailchimp:ecomm-order-del($endpoint-url as xs:string, $apikey as xs:string, $store_id as xs:string, $order_id as xs:string){
   xmlrpc:invoke($endpoint-url, "ecommOrderDel", ($apikey, $store_id, $order_id))
 };
 
@@ -2904,7 +2904,7 @@ declare sequential function mailchimp:ecomm-order-del($endpoint-url as xs:string
  :
  : @return An array of list_ids the member is subscribed to.
  :)
-declare sequential function mailchimp:lists-for-email($apikey as xs:string, $email_address as xs:string){
+declare %sequential function mailchimp:lists-for-email($apikey as xs:string, $email_address as xs:string){
   mailchimp:lists-for-email($mailchimp:endpoint, $apikey, $email_address)
 };
 
@@ -2919,7 +2919,7 @@ declare sequential function mailchimp:lists-for-email($apikey as xs:string, $ema
  :
  : @return An array of list_ids the member is subscribed to.
  :)
-declare sequential function mailchimp:lists-for-email($endpoint-url as xs:string, $apikey as xs:string, $email_address as xs:string){
+declare %sequential function mailchimp:lists-for-email($endpoint-url as xs:string, $apikey as xs:string, $email_address as xs:string){
   xmlrpc:invoke($endpoint-url, "listsForEmail", ($apikey, $email_address))
 };
 
@@ -2934,7 +2934,7 @@ declare sequential function mailchimp:lists-for-email($endpoint-url as xs:string
  :
  : @return An array of campaign_ids the member received
  :)
-declare sequential function mailchimp:campaigns-for-email($apikey as xs:string, $email_address as xs:string){
+declare %sequential function mailchimp:campaigns-for-email($apikey as xs:string, $email_address as xs:string){
   mailchimp:campaigns-for-email($mailchimp:endpoint, $apikey, $email_address)
 };
 
@@ -2949,7 +2949,7 @@ declare sequential function mailchimp:campaigns-for-email($apikey as xs:string, 
  :
  : @return An array of campaign_ids the member received
  :)
-declare sequential function mailchimp:campaigns-for-email($endpoint-url as xs:string, $apikey as xs:string, $email_address as xs:string){
+declare %sequential function mailchimp:campaigns-for-email($endpoint-url as xs:string, $apikey as xs:string, $email_address as xs:string){
   xmlrpc:invoke($endpoint-url, "campaignsForEmail", ($apikey, $email_address))
 };
 
@@ -2964,7 +2964,7 @@ declare sequential function mailchimp:campaigns-for-email($endpoint-url as xs:st
  :
  : @return An array of chatter messages and properties
  :)
-declare sequential function mailchimp:chimp-chatter($apikey as xs:string){
+declare %sequential function mailchimp:chimp-chatter($apikey as xs:string){
   mailchimp:chimp-chatter($mailchimp:endpoint, $apikey)
 };
 
@@ -2978,7 +2978,7 @@ declare sequential function mailchimp:chimp-chatter($apikey as xs:string){
  :
  : @return An array of chatter messages and properties
  :)
-declare sequential function mailchimp:chimp-chatter($endpoint-url as xs:string, $apikey as xs:string){
+declare %sequential function mailchimp:chimp-chatter($endpoint-url as xs:string, $apikey as xs:string){
   xmlrpc:invoke($endpoint-url, "chimpChatter", ($apikey))
 };
 
@@ -2995,7 +2995,7 @@ declare sequential function mailchimp:chimp-chatter($endpoint-url as xs:string, 
  :
  : @return An array of API keys.
  :)
-declare sequential function mailchimp:apikeys($username as xs:string, $password as xs:string, $apikey as xs:string, $expired as xs:boolean){
+declare %sequential function mailchimp:apikeys($username as xs:string, $password as xs:string, $apikey as xs:string, $expired as xs:boolean){
   mailchimp:apikeys($mailchimp:endpoint, $username, $password, $apikey, $expired)
 };
 
@@ -3012,7 +3012,7 @@ declare sequential function mailchimp:apikeys($username as xs:string, $password 
  :
  : @return An array of API keys.
  :)
-declare sequential function mailchimp:apikeys($endpoint-url as xs:string, $username as xs:string, $password as xs:string, $apikey as xs:string, $expired as xs:boolean){
+declare %sequential function mailchimp:apikeys($endpoint-url as xs:string, $username as xs:string, $password as xs:string, $apikey as xs:string, $expired as xs:boolean){
   xmlrpc:invoke($endpoint-url, "apikeys", ($username, $password, $apikey, $expired))
 };
 
@@ -3028,7 +3028,7 @@ declare sequential function mailchimp:apikeys($endpoint-url as xs:string, $usern
  :
  : @return A new API Key that can be immediately used.
  :)
-declare sequential function mailchimp:apikey-add($username as xs:string, $password as xs:string, $apikey as xs:string){
+declare %sequential function mailchimp:apikey-add($username as xs:string, $password as xs:string, $apikey as xs:string){
   mailchimp:apikey-add($mailchimp:endpoint, $username, $password, $apikey)
 };
 
@@ -3044,7 +3044,7 @@ declare sequential function mailchimp:apikey-add($username as xs:string, $passwo
  :
  : @return A new API Key that can be immediately used.
  :)
-declare sequential function mailchimp:apikey-add($endpoint-url as xs:string, $username as xs:string, $password as xs:string, $apikey as xs:string){
+declare %sequential function mailchimp:apikey-add($endpoint-url as xs:string, $username as xs:string, $password as xs:string, $apikey as xs:string){
   xmlrpc:invoke($endpoint-url, "apikeyAdd", ($username, $password, $apikey))
 };
 
@@ -3060,7 +3060,7 @@ declare sequential function mailchimp:apikey-add($endpoint-url as xs:string, $us
  :
  : @return True if it worked, otherwise an error is thrown.
  :)
-declare sequential function mailchimp:apikey-expire($username as xs:string, $password as xs:string, $apikey as xs:string){
+declare %sequential function mailchimp:apikey-expire($username as xs:string, $password as xs:string, $apikey as xs:string){
   mailchimp:apikey-expire($mailchimp:endpoint, $username, $password, $apikey)
 };
 
@@ -3076,7 +3076,7 @@ declare sequential function mailchimp:apikey-expire($username as xs:string, $pas
  :
  : @return True if it worked, otherwise an error is thrown.
  :)
-declare sequential function mailchimp:apikey-expire($endpoint-url as xs:string, $username as xs:string, $password as xs:string, $apikey as xs:string){
+declare %sequential function mailchimp:apikey-expire($endpoint-url as xs:string, $username as xs:string, $password as xs:string, $apikey as xs:string){
   xmlrpc:invoke($endpoint-url, "apikeyExpire", ($username, $password, $apikey))
 };
 
@@ -3091,7 +3091,7 @@ declare sequential function mailchimp:apikey-expire($endpoint-url as xs:string, 
  :
  : @return API Key.
  :)
-declare sequential function mailchimp:login($username as xs:string, $password as xs:string){
+declare %sequential function mailchimp:login($username as xs:string, $password as xs:string){
   mailchimp:login($mailchimp:endpoint, $username, $password)
 };
 
@@ -3106,7 +3106,7 @@ declare sequential function mailchimp:login($username as xs:string, $password as
  :
  : @return API Key.
  :)
-declare sequential function mailchimp:login($endpoint-url as xs:string, $username as xs:string, $password as xs:string){
+declare %sequential function mailchimp:login($endpoint-url as xs:string, $username as xs:string, $password as xs:string){
   xmlrpc:invoke($endpoint-url, "login", ($username, $password))
 };
 
@@ -3121,7 +3121,7 @@ declare sequential function mailchimp:login($endpoint-url as xs:string, $usernam
  :
  : @return Returns "Everything's Chimpy!" if everything is chimpy, otherwise returns an error message
  :)
-declare sequential function mailchimp:ping($apikey as xs:string){
+declare %sequential function mailchimp:ping($apikey as xs:string){
   mailchimp:ping($mailchimp:endpoint, $apikey)
 };
 
@@ -3135,6 +3135,6 @@ declare sequential function mailchimp:ping($apikey as xs:string){
  :
  : @return Returns "Everything's Chimpy!" if everything is chimpy, otherwise returns an error message
  :)
-declare sequential function mailchimp:ping($endpoint-url as xs:string, $apikey as xs:string){
+declare %sequential function mailchimp:ping($endpoint-url as xs:string, $apikey as xs:string){
   xmlrpc:invoke($endpoint-url, "ping", ($apikey))
 };

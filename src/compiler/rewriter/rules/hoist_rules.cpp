@@ -200,7 +200,7 @@ static bool hoist_expressions(
       status = hoist_expressions(rCtx, re, varmap, freevarMap, &curr_holder) || status;
     }
   }
-  else if (e->get_expr_kind() == sequential_expr_kind)
+  else if (e->get_expr_kind() == block_expr_kind)
   {
     // Note : local vars must also be indexed if they are allowed to be set
     // inside the for/let clauses of a flwor expr.
@@ -439,7 +439,7 @@ static bool non_hoistable(const expr* e)
        non_hoistable(static_cast<const wrapper_expr*>(e)->get_expr())) ||
       is_already_hoisted(e) ||
       e->is_nondeterministic() ||
-      e->get_scripting_kind() == SEQUENTIAL_EXPR)
+      e->is_sequential())
   {
     return true;
   }

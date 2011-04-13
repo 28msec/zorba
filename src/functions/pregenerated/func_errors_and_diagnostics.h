@@ -47,7 +47,7 @@ public:
 
 }
 
-  expr_script_kind_t getUpdateType() const { return VACUOUS_EXPR; }
+  short getScriptingKind() const { return VACUOUS_EXPR; }
 
   CODEGEN_DECL();
 };

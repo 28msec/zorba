@@ -27,6 +27,8 @@
 
 #include "compiler/expression/expr.h"
 #include "compiler/expression/fo_expr.h"
+#include "compiler/expression/script_exprs.h"
+#include "compiler/expression/update_exprs.h"
 #ifndef ZORBA_NO_FULL_TEXT
 #include "compiler/expression/ft_expr.h"
 #include "compiler/expression/ftnode.h"
@@ -164,9 +166,9 @@ wrapper_expr::put(std::ostream& os) const
 #endif
 }
 
-ostream& sequential_expr::put( ostream& os) const
+ostream& block_expr::put( ostream& os) const
 {
-  BEGIN_PUT( sequential_expr );
+  BEGIN_PUT( block_expr );
   for (checked_vector<expr_t>::const_iterator i = this->theArgs.begin ();
        i != theArgs.end (); i++)
     (*i)->put (os);
@@ -430,6 +432,14 @@ ostream& function_trace_expr::put( ostream& os) const
 {
   BEGIN_PUT( function_trace_expr );
   theExpr->put (os);
+  END_PUT();
+}
+
+
+ostream& apply_expr::put( ostream& os) const
+{
+  BEGIN_PUT(apply_expr);
+  theExpr->put(os);
   END_PUT();
 }
 

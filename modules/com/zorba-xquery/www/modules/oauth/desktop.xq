@@ -19,7 +19,7 @@ module namespace oauth-desktop = 'http://www.zorba-xquery.com/modules/oauth/desk
  : @param $oauth-token see <a href="http://tools.ietf.org/html/draft-hammer-http-token-auth-01" target="_blank">OAuth token</a>
  : @return authorization string.
  :)
-declare sequential function oauth-desktop:authorize-twitter($oauth-token as xs:string) as xs:string
+declare %sequential function oauth-desktop:authorize-twitter($oauth-token as xs:string) as xs:string
 {
   (:
   declare $authorization-uri:= concat("http://api.twitter.com/oauth/authorize?oauth_token=", $oauth-token);

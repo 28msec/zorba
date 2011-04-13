@@ -46,7 +46,16 @@ public:
   {
   }
 
-  bool accessesDynCtx() const { return true; }
+  short getScriptingKind() const 
+  { 
+    return SIMPLE_EXPR;
+    //return (EXITING_EXPR | SEQUENTIAL_EXPR); 
+  }
+
+  bool accessesDynCtx() const 
+  {
+    return true;
+  }
 
   BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const 
   {
@@ -69,7 +78,7 @@ public:
   {
   }
 
-  expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
+  short getScriptingKind() const { return UPDATING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 
@@ -89,7 +98,7 @@ public:
   {
   }
 
-  expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
+  short getScriptingKind() const { return UPDATING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 
@@ -109,7 +118,7 @@ public:
   {
   }
 
-  expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
+  short getScriptingKind() const { return UPDATING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 

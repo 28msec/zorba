@@ -51,7 +51,7 @@ public:
 
   bool accessesDynCtx() const { return true; }
 
-  expr_script_kind_t getUpdateType() const { return SEQUENTIAL_EXPR; }
+  short getScriptingKind() const { return (VAR_SETTING_EXPR | SEQUENTIAL_EXPR); }
 
   CODEGEN_DECL();
 };

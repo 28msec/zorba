@@ -1,5 +1,7 @@
 declare variable $x := 1;
-declare sequential function local:f () {
+
+declare %sequential function local:f () 
+{
   set $x := $x + 2
 };
 

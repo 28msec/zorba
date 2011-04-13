@@ -160,6 +160,19 @@ XQUERY_DEF_ERROR( FTST0019 );
 XQUERY_DEF_ERROR( FTDY0020 );
 #endif /* ZORBA_NO_FULL_TEXT */
 
+
+////////// XQuery Scripting /////////////////////////////////////////////
+
+XQUERY_DEF_ERROR( XSST0001 );
+XQUERY_DEF_ERROR( XSST0002 );
+XQUERY_DEF_ERROR( XSST0003 );
+XQUERY_DEF_ERROR( XSST0004 );
+XQUERY_DEF_ERROR( XSST0005 );
+XQUERY_DEF_ERROR( XSST0006 );
+XQUERY_DEF_ERROR( XSST0007 );
+XQUERY_DEF_ERROR( XSST0008 );
+
+
 ////////// XQuery Update Facility /////////////////////////////////////////////
 
 XQUERY_DEF_ERROR( XUST0001 );
@@ -195,6 +208,7 @@ XQUERY_DEF_ERROR( XUDY0030 );
 XQUERY_DEF_ERROR( XUDY0031 );
 XQUERY_DEF_ERROR( FOUP0001 );
 XQUERY_DEF_ERROR( FOUP0002 );
+
 
 ////////// Serialization //////////////////////////////////////////////////////
 

@@ -23,6 +23,7 @@
 
 #include "functions/library.h"
 #include "functions/function.h"
+#include "functions/udf.h"
 
 #include "zorbaerrors/assert.h"
 
@@ -69,9 +70,9 @@ fo_expr::fo_expr(
   expr(sctx, loc, fo_expr_kind),
   theFunction(const_cast<function*>(f))
 {
+  // This method is private and it is to be used only by the clone method
   assert(f != NULL);
-  compute_scripting_kind();
-  //setDirectAnnotations();
+  theScriptingKind = VACUOUS_EXPR;
 }
 
 
@@ -89,7 +90,6 @@ fo_expr::fo_expr(
   theArgs[0] = arg;
 
   compute_scripting_kind();
-  //setDirectAnnotations();
 }
 
 
@@ -109,7 +109,6 @@ fo_expr::fo_expr(
   theArgs[1] = arg2;
 
   compute_scripting_kind();
-  //setDirectAnnotations();
 }
 
 
@@ -125,7 +124,6 @@ fo_expr::fo_expr(
 {
   assert(f != NULL);
   compute_scripting_kind();
-  //setDirectAnnotations();
 }
 
 
@@ -156,57 +154,100 @@ void fo_expr::compute_scripting_kind()
 
   if (func->getKind() == FunctionConsts::OP_CONCATENATE_N)
   {
-    expr_script_kind_t kind = VACUOUS_EXPR;
+    bool vacuous = true;
+
+    theScriptingKind = VACUOUS_EXPR;
 
     for (ulong i = 0; i < numArgs; ++i)
     {
       if (theArgs[i] == NULL)
         continue;
 
-      expr_script_kind_t argKind = theArgs[i]->get_scripting_kind();
+      short argKind = theArgs[i]->get_scripting_detail();
 
-      kind = scripting_kind_anding(kind, argKind, theArgs[i]->get_loc());
+      if (argKind == VACUOUS_EXPR)
+        continue;
+
+      vacuous = false;
+
+      if (is_updating() && !(argKind & UPDATING_EXPR))
+      {
+        throw XQUERY_EXCEPTION(XUST0001,
+                               ERROR_PARAMS(ZED(XUST0001_CONCAT)),
+                               ERROR_LOC(theArgs[i]->get_loc()));
+      }
+
+      if (i > 0 && !is_updating() && (argKind & UPDATING_EXPR))
+      {
+        throw XQUERY_EXCEPTION(XUST0001,
+                               ERROR_PARAMS(ZED(XUST0001_CONCAT)),
+                               ERROR_LOC(theArgs[i]->get_loc()));
+      }
+
+      theScriptingKind |= argKind;
     }
 
-    theScriptingKind = kind;
+    if (!vacuous)
+      theScriptingKind &= ~VACUOUS_EXPR;
+
+    if (theScriptingKind & SEQUENTIAL_EXPR)
+      theScriptingKind &= ~SIMPLE_EXPR;
+
+    checkScriptingKind();
   }
   else if (func->getKind() == FunctionConsts::OP_VAR_ASSIGN_1)
   {
-    for (ulong i = 0; i < numArgs; ++i)
-    {
-      if (theArgs[i] == NULL)
-        continue;
+    assert(numArgs == 2);
 
-      expr_script_kind_t argKind = theArgs[i]->get_scripting_kind();
+    expr* valueExpr = theArgs[1];
 
-      if (argKind == UPDATE_EXPR)
-        throw XQUERY_EXCEPTION(XUST0001, ERROR_LOC(theArgs[i]->get_loc()));
-    }
+    theScriptingKind = (VAR_SETTING_EXPR | SEQUENTIAL_EXPR);
+    theScriptingKind |= valueExpr->get_scripting_detail();
+    theScriptingKind &= ~VACUOUS_EXPR;
+    theScriptingKind &= ~SIMPLE_EXPR;
 
-    theScriptingKind = SEQUENTIAL_EXPR;
+    checkScriptingKind();
   }
   else
   {
-    theScriptingKind = func->getUpdateType();
+    theScriptingKind = func->getScriptingKind();
+
+    bool vacuous = (theScriptingKind == VACUOUS_EXPR);
 
     for (ulong i = 0; i < numArgs; ++i)
     {
       if (theArgs[i] == NULL)
         continue;
 
-      expr_script_kind_t argKind = theArgs[i]->get_scripting_kind();
+      expr* arg = theArgs[i].getp();
 
-      if (argKind == UPDATE_EXPR)
-        throw XQUERY_EXCEPTION(XUST0001, ERROR_LOC(theArgs[i]->get_loc()));
-
-      if (argKind == SEQUENTIAL_EXPR)
+      if (arg->is_updating())
       {
-        if (theScriptingKind == UPDATE_EXPR)
-          throw XQUERY_EXCEPTION(XUST0001, ERROR_LOC(theArgs[i]->get_loc()));
+        throw XQUERY_EXCEPTION(XUST0001,
+                               ERROR_PARAMS(ZED(XUST0001_Generic)),
+                               ERROR_LOC(theArgs[i]->get_loc()));
+      }
 
-        theScriptingKind = SEQUENTIAL_EXPR;
+      short argKind = arg->get_scripting_detail();
+
+      if (arg->is_sequential())
+      {
+        vacuous = false;
+
+        theScriptingKind |= argKind;
       }
     }
+
+    if (!vacuous)
+      theScriptingKind &= ~VACUOUS_EXPR;
+
+    if (theScriptingKind & UPDATING_EXPR)
+      theScriptingKind &= ~SIMPLE_EXPR;
+
+    if (theScriptingKind & SEQUENTIAL_EXPR)
+      theScriptingKind &= ~SIMPLE_EXPR;
+
+    checkScriptingKind();
   }
 }
 
@@ -218,8 +259,8 @@ expr_t fo_expr::clone(substitution_t& subst) const
   {
     expr::subst_iter_t i = subst.find(this);
 
-     if (i != subst.end())
-       return i->second;
+    if (i != subst.end())
+      return i->second;
   }
 
   std::auto_ptr<fo_expr> fo(new fo_expr(theSctx, get_loc(), get_func()));

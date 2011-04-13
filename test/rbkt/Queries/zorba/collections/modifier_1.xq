@@ -2,7 +2,7 @@ import module namespace init = "http://www.zorba-xquery.com/modules/store/static
 import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
 import module namespace ns = "http://example.org/datamodule/" at "modifier_1.xqdata";
 
-declare sequential function local:init() {
+declare %sequential function local:init() {
   (
     init:create-collection($ns:coll_1, (<x/>,<y/>)),
     init:create-collection($ns:coll_2, (<x/>,<y/>)),
@@ -11,7 +11,7 @@ declare sequential function local:init() {
 };
 
 
-declare sequential function local:testa_1() {
+declare %sequential function local:testa_1() {
   try {
     block {
       manip:insert-nodes-first($ns:coll_1, <a/>);
@@ -22,7 +22,7 @@ declare sequential function local:testa_1() {
 };
 
 
-declare sequential function local:testa_2() {
+declare %sequential function local:testa_2() {
   try {
     block {
       manip:insert-nodes-first($ns:coll_2, <a/>);
@@ -32,7 +32,7 @@ declare sequential function local:testa_2() {
   }
 };
 
-declare sequential function local:testa_3() {
+declare %sequential function local:testa_3() {
   try {
     block {
       manip:insert-nodes-first($ns:coll_3, <a/>);
@@ -42,7 +42,7 @@ declare sequential function local:testa_3() {
   }
 };
 
-declare sequential function local:testb_1() {
+declare %sequential function local:testb_1() {
   try {
     block {
       manip:insert-nodes-last($ns:coll_1, <b/>);
@@ -53,17 +53,17 @@ declare sequential function local:testb_1() {
 };
 
 
-declare sequential function local:testb_2() {
+declare %sequential function local:testb_2() {
   manip:insert-nodes-last($ns:coll_2, <b/>);
 };
 
 
-declare sequential function local:testb_3() {
+declare %sequential function local:testb_3() {
   manip:insert-nodes-last($ns:coll_3, <b/>);
 };
 
 
-declare sequential function local:testc_1() {
+declare %sequential function local:testc_1() {
   try {
     block {
       manip:insert-nodes-before($ns:coll_1, manip:collection($ns:coll_1)[1], <c/>);
@@ -74,7 +74,7 @@ declare sequential function local:testc_1() {
 };
 
 
-declare sequential function local:testc_2() {
+declare %sequential function local:testc_2() {
   try {
     block {
       manip:insert-nodes-before($ns:coll_2, manip:collection($ns:coll_2)[1], <c/>);
@@ -85,7 +85,7 @@ declare sequential function local:testc_2() {
 };
 
 
-declare sequential function local:testc_3() {
+declare %sequential function local:testc_3() {
   try {
     block {
       manip:insert-nodes-before($ns:coll_3, manip:collection($ns:coll_3)[1], <c/>);
@@ -96,7 +96,7 @@ declare sequential function local:testc_3() {
 };
 
 
-declare sequential function local:testd_1() {
+declare %sequential function local:testd_1() {
   try {
     block {
       manip:insert-nodes-after($ns:coll_1, manip:collection($ns:coll_1)[last()], <d/>);
@@ -107,7 +107,7 @@ declare sequential function local:testd_1() {
 };
 
 
-declare sequential function local:testd_2() {
+declare %sequential function local:testd_2() {
   try {
     block {
       manip:insert-nodes-after($ns:coll_2, manip:collection($ns:coll_2)[last()], <d/>);
@@ -118,7 +118,7 @@ declare sequential function local:testd_2() {
 };
 
 
-declare sequential function local:testd_3() {
+declare %sequential function local:testd_3() {
   try {
     block {
       manip:insert-nodes-after($ns:coll_3, manip:collection($ns:coll_3)[last()], <d/>);
@@ -129,7 +129,7 @@ declare sequential function local:testd_3() {
 };
 
 
-declare sequential function local:main() {
+declare %sequential function local:main() {
   local:init();
   (
     local:testa_1(),

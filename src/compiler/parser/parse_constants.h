@@ -31,8 +31,8 @@ class ParseConstants
 
     enum function_type_t 
     {
-      fn_extern,
-      fn_read,
+      fn_simple,
+      fn_extern_simple,
       fn_update,
       fn_extern_update,
       fn_sequential,

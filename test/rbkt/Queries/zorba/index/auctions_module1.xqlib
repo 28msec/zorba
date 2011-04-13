@@ -76,7 +76,7 @@ by (for $x in ./bidder/date return $x);
   Create and populate the collection, and then create the indexes
 :)
 
-declare sequential function auctions:create-db()
+declare %sequential function auctions:create-db()
 {
   init:create-collection($auctions:auctions);
 

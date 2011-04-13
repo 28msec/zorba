@@ -75,7 +75,7 @@ static expr_t execute (
     vector<store::Item_t>& result)
 {
   ulong nextVarId = 1;
-  PlanIter_t plan = codegen ("const-folded expr", node, compilercb, false, nextVarId);
+  PlanIter_t plan = codegen ("const-folded expr", node, compilercb, nextVarId);
   QueryLoc loc = LOC (node);
   store::Item_t item;
 
@@ -142,8 +142,11 @@ static expr_t execute (
   E is a subtype of target_type. However, E may have "side-effects", which
   prevent such a replacement. For example, it may be a treat expr, whose
   semantics is to return an error during runtime if the arg of the treat expr
-  does not have the corect type. We call such exprs "impure", and flag them as
-  non-discardable so that no (partial) evaluation of parent exprs is done.
+  does not have the corect type. We flag such exprs as non-discardable so that
+  no (partial) evaluation of parent exprs is done.
+
+  The NON_DISCARDABLE property is used during the application of the PartialEval
+  rule below.
 ********************************************************************************/
 expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
 {
@@ -222,34 +225,34 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
     switch (node->get_expr_kind())
     {
     case fo_expr_kind:
+    {
+      fo_expr* fo = static_cast<fo_expr *>(node);
+      function* f = fo->get_func();
+        
+      bool isErrorFunc = (dynamic_cast<const fn_error*>(f) != NULL);
+      
+      if (f->getKind() == FunctionConsts::OP_VAR_ASSIGN_1 ||
+          f->getKind() == FunctionConsts::FN_TRACE_2 ||
+          isErrorFunc)
       {
-        fo_expr* fo = static_cast<fo_expr *>(node);
-        function* f = fo->get_func();
-        
-        bool isErrorFunc = (dynamic_cast<const fn_error*>(f) != NULL);
-        
-        if (f->getKind() == FunctionConsts::OP_VAR_ASSIGN_1 ||
-            f->getKind() == FunctionConsts::FN_TRACE_2 ||
-            isErrorFunc)
-        {
-          curNonDiscardable = ANNOTATION_TRUE_FIXED;
-        }
-        
-        break;
+        curNonDiscardable = ANNOTATION_TRUE_FIXED;
       }
+      
+      break;
+    }
       
     case cast_expr_kind:
     case treat_expr_kind:
     case promote_expr_kind:
-      {
-        curNonDiscardable = ANNOTATION_TRUE_FIXED;
-        break;
-      }
-      
+    {
+      curNonDiscardable = ANNOTATION_TRUE_FIXED;
+      break;
+    }
+    
     default:
-      {
-        break;
-      }
+    {
+      break;
+    }
     }
   }
 
@@ -288,14 +291,6 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
 
       break;
     }
-
-    // var_decl_expr is unfoldable because it requires access to the dyn ctx.
-    case var_decl_expr_kind:
-
-    // Exit and flow-control exprs do more than just computing a result which is
-    // consumed by their parent expr. So, they cannot be folded.
-    case exit_expr_kind:
-    case flowctl_expr_kind:
 
     // Node constructors are unfoldable because if a node constructor is inside
     // a loop, then it will create a different xml tree every time it is invoked,
@@ -384,7 +379,7 @@ RULE_REWRITE_POST(MarkFreeVars)
 
   if (node->get_expr_kind () == var_expr_kind)
   {
-    varref_t v = dynamic_cast<var_expr *> (node);
+    var_expr_t v = dynamic_cast<var_expr *> (node);
     freevars->add (v);
   }
   else
@@ -569,11 +564,14 @@ static bool already_folded(expr_t e, RewriterContext& rCtx)
 
   The PartialEval rule performs the following kinds of rewrites:
 
-  Replace "castable(E, targetType)" with true if the return type of E is a
-  subtype of targetType and E is not NONDISCARDABLE_EXPR.
+  Replace "castable(E, targetType)" or "instance-of(E, targetType)" with true, if
+  the return type of E is a subtype of targetType and E is not NONDISCARDABLE_EXPR.
 
   Replace "instance-of(E, targetType)" with false if the intersection of return
   type of E and the targetType is empty and E is not NONDISCARDABLE_EXPR.
+
+  Replace count(E) with 1 if the return type of E has QUANT_ONE and E is not
+  NONDISCARDABLE_EXPR.
 
   Replace "if (cond) then E1 else E2" with E1 or E2 if cond is a const expr whose
   EBV is true or false respectively.
@@ -590,15 +588,13 @@ static bool already_folded(expr_t e, RewriterContext& rCtx)
   count(E) = 1  --> fn:exectly-one-noraise(E)
   count(E) = 10 --> fn:exectly-one-noraise(fn:subsequence(E, 10, 2))
 
-  Replace count(E) with 1 if the return type of E has QUANT_ONE and E is not
-  NONDISCARDABLE_EXPR.
-
 ********************************************************************************/
 
 RULE_REWRITE_PRE(PartialEval)
 {
   TypeManager* tm = node->get_type_manager();
 
+  // if node is a castable or instance-of expr
   const castable_base_expr* cbe;
   if ((cbe = dynamic_cast<const castable_base_expr *>(node)) != NULL)
   {
@@ -882,7 +878,10 @@ RULE_REWRITE_POST(InlineFunctions)
     const user_function* udf = dynamic_cast<const user_function *>(fo->get_func());
     expr_t body;
 
-    if (NULL != udf && ! udf->isSequential() && udf->isLeaf() &&
+    if (NULL != udf && 
+        !udf->isSequential() && 
+        !udf->isExiting() &&
+        udf->isLeaf() &&
         (NULL != (body = udf->getBody())))
     {
       const std::vector<var_expr_t>& udfArgs = udf->getArgVars();

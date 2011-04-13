@@ -22,6 +22,8 @@ SET(EXPRESSION_SRCS
     path_expr.cpp
     flwor_expr.cpp
     fo_expr.cpp
+    script_exprs.cpp
+    update_exprs.cpp
     function_item_expr.cpp)
 
 IF (NOT ZORBA_NO_FULL_TEXT)

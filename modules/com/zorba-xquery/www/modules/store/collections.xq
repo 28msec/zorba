@@ -145,7 +145,7 @@ declare updating function dyn:insert-nodes-after($name as xs:QName,
  : @error XDDY0003 if the collection identified by $name is not available.
  : @see dyn:insert-nodes-first
  :)
-declare sequential function dyn:apply-insert-nodes-first(
+declare %sequential function dyn:apply-insert-nodes-first(
   $name as xs:QName,
   $content as node()*) as node()* external;
 
@@ -163,7 +163,7 @@ declare sequential function dyn:apply-insert-nodes-first(
  : @error XDDY0003 if the collection identified by $name is not available.
  : @see dyn:insert-nodes-last
  :)
-declare sequential function dyn:apply-insert-nodes-last(
+declare %sequential function dyn:apply-insert-nodes-last(
   $name as xs:QName,
   $content as node()*) as node()* external;
 
@@ -183,7 +183,7 @@ declare sequential function dyn:apply-insert-nodes-last(
  : @error XDDY0003 if the collection identified by $name is not available.
  : @see dyn:insert-nodes-before
  :)
-declare sequential function dyn:apply-insert-nodes-before(
+declare %sequential function dyn:apply-insert-nodes-before(
   $name as xs:QName,
   $target as node(),
   $content as node()*) as node()* external;
@@ -204,7 +204,7 @@ declare sequential function dyn:apply-insert-nodes-before(
  : @error XDDY0003 if the collection identified by $name is not available.
  : @see dyn:insert-nodes-after
  :)
-declare sequential function dyn:apply-insert-nodes-after(
+declare %sequential function dyn:apply-insert-nodes-after(
   $name as xs:QName,
   $pos as node(),
   $content as node()*) as node()* external;

@@ -83,7 +83,7 @@ import schema namespace output = "http://www.w3.org/2010/xslt-xquery-serializati
  : @error FOFL0004 If <pre>$file</pre> points to a directory.
  : @error FOFL0000 If any other error occurs.
  :)
-declare sequential function file:append(
+declare %sequential function file:append(
   $file as xs:string,
   $content as item()*,
   $serializer-params as element(output:serialization-parameters)?
@@ -104,7 +104,7 @@ declare sequential function file:append(
  : @error FOFL0004 If <pre>$file</pre> points to a directory.
  : @error FOFL0000 If any other error occurs.
  :)
-declare sequential function file:append-binary(
+declare %sequential function file:append-binary(
   $file as xs:string,
   $content as xs:base64Binary*
 ) as empty-sequence() external;
@@ -118,7 +118,7 @@ declare sequential function file:append-binary(
  : @error FOFL0004 If <pre>$file</pre> points to a directory.
  : @error FOFL0000 If any other error occurs.
  :)
-declare %private sequential function file:append-text(
+declare %private %sequential function file:append-text(
   $file as xs:string,
   $content as xs:string*
 ) as empty-sequence() external;
@@ -139,7 +139,7 @@ declare %private sequential function file:append-text(
  :    parent directory does not exist either.
  : @error FOFL0000 If any other error occurs.
  :)
-declare sequential function file:copy(
+declare %sequential function file:copy(
   $source as xs:string,
   $destination as xs:string
 ) as empty-sequence()
@@ -168,7 +168,7 @@ declare sequential function file:copy(
  :    parent directory does not exist either.
  : @error FOFL0000 If any other error occurs.
  :)
-declare sequential function file:copy(
+declare %sequential function file:copy(
   $source as xs:string,
   $destination as xs:string,
   $overwrite as xs:boolean
@@ -186,7 +186,7 @@ declare sequential function file:copy(
  :    existing file.
  : @error FOFL0000 If any other error occurs.
  :)
-declare sequential function file:create-directory(
+declare %sequential function file:create-directory(
   $dir as xs:string
 ) as empty-sequence() external;
 
@@ -201,7 +201,7 @@ declare sequential function file:create-directory(
  : @error FOFL0001 If the <pre>$path</pre> path does not exist.
  : @error FOFL0000 If any other error occurs.
  :)
-declare sequential function file:delete(
+declare %sequential function file:delete(
   $path as xs:string
 ) as empty-sequence()
 {
@@ -222,7 +222,7 @@ declare sequential function file:delete(
  : @error FOFL0001 If the <pre>$file</pre> path does not exist.
  : @error FOFL0000 If any other error occurs.
  :)
-declare %private sequential function file:delete-file-impl(
+declare %private %sequential function file:delete-file-impl(
   $file as xs:string
 ) as empty-sequence() external;
 
@@ -235,7 +235,7 @@ declare %private sequential function file:delete-file-impl(
  : @error FOFL0003 If <pre>$dir</pre> does not point to a directory.
  : @error FOFL0000 If any other error occurs.
  :)
-declare %private sequential function file:delete-directory-impl(
+declare %private %sequential function file:delete-directory-impl(
   $dir as xs:string
 ) as empty-sequence()
 {
@@ -297,7 +297,7 @@ declare %nondeterministic function file:is-file(
  :    directory does not exist either.
  : @error FOFL0000 If any other error occurs.
  :)
-declare sequential function file:move(
+declare %sequential function file:move(
   $sourceFile as xs:string,
   $destination as xs:string
 ) as empty-sequence()
@@ -324,7 +324,7 @@ declare sequential function file:move(
  :    directory does not exist either.
  : @error FOFL0000 If any other error occurs.
  :)
-declare sequential function file:move(
+declare %sequential function file:move(
   $source as xs:string,
   $destination as xs:string,
   $overwrite as xs:boolean
@@ -448,7 +448,7 @@ declare function file:read-text-lines(
  :        files that already exist at destination.
  : @return The empty sequence.
  :)
-declare %private sequential function file:copy-directory(
+declare %private %sequential function file:copy-directory(
   $sourceDir as xs:string,
   $destinationDir as xs:string,
   $overwrite as xs:boolean
@@ -485,7 +485,7 @@ declare %private sequential function file:copy-directory(
  : @error FOFL0004 If <pre>$file</pre> points to a directory.
  : @error FOFL0000 If any other error occurs.
  :)
-declare sequential function file:write(
+declare %sequential function file:write(
   $file as xs:string,
   $content as item()*,
   $serializer-params as element(output:serialization-parameters)?
@@ -514,7 +514,7 @@ declare sequential function file:write(
  : @error FOFL0004 If <pre>$file</pre> points to a directory.
  : @error FOFL0000 If any other error occurs.
  :)
-declare sequential function file:write(
+declare %sequential function file:write(
   $file as xs:string,
   $content as item()*,
   $serializer-params as element(output:serialization-parameters)?,
@@ -536,7 +536,7 @@ declare sequential function file:write(
  : @error FOFL0004 If <pre>$file</pre> points to a directory.
  : @error FOFL0000 If any other error occurs.
  :)
-declare sequential function file:write-binary(
+declare %sequential function file:write-binary(
   $file as xs:string,
   $content as xs:base64Binary*
 ) as empty-sequence()
@@ -556,7 +556,7 @@ declare sequential function file:write-binary(
  : @error FOFL0004 If <pre>$file</pre> points to a directory.
  : @error FOFL0000 If any other error occurs.
  :)
-declare sequential function file:write-binary(
+declare %sequential function file:write-binary(
   $file as xs:string,
   $content as xs:base64Binary*,
   $overwrite as xs:boolean
@@ -577,7 +577,7 @@ declare sequential function file:write-binary(
  : @error FOFL0004 If <pre>$file</pre> points to a directory.
  : @error FOFL0000 If any other error occurs.
  :)
-declare %private sequential function file:write-text(
+declare %private %sequential function file:write-text(
   $file as xs:string,
   $content as xs:string*,
   $overwrite as xs:boolean

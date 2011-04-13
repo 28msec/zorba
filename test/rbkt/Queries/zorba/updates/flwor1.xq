@@ -1,5 +1,5 @@
 
-declare sequential function local:test() 
+declare %sequential function local:test() 
 {
   let $indexHtmlDoc := <doc/>
   return block 

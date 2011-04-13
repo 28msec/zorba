@@ -51,8 +51,6 @@ public:
   static fo_expr* create_seq(static_context* sctx, const QueryLoc &);
 
 public:
-  fo_expr(static_context* sctx, const QueryLoc& loc, const function* f);
-
   fo_expr(
     static_context* sctx,
     const QueryLoc& loc,
@@ -93,6 +91,9 @@ public:
   void accept(expr_visitor&);
 
   std::ostream& put(std::ostream&) const;
+
+private:
+  fo_expr(static_context* sctx, const QueryLoc& loc, const function* f);
 };
 
 ////////// The following expressions in the AST "decay" into an fo_expr ///////

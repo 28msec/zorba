@@ -69,10 +69,6 @@ ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba_compilechk2 PASS_REGULAR_EXPRESSION 
 ZORBA_ADD_TEST_ALLSTORES(bin/zorba_compilechk3 zorbacmd -q "${CMAKE_CURRENT_SOURCE_DIR}/test/mymod2.xq" -f -l -x)
 ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba_compilechk3 PASS_REGULAR_EXPRESSION ".*XQST0046.*mymod2.xq' line='1' column='1'.*")
 
-# check error message for sequential expressions used in a wrong location
-ZORBA_ADD_TEST_ALLSTORES(bin/zorba_sequential_err_msg zorbacmd -q "${CMAKE_CURRENT_SOURCE_DIR}/test/sequential_expr_err.xq" -f -l -x)
-ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba_sequential_err_msg PASS_REGULAR_EXPRESSION ".*XUST0001.*line='6' column='7'.*>.*")
-
 # test the --option option to set an option in the static context
 ZORBA_ADD_TEST_ALLSTORES(bin/zorba_option zorbacmd -q "${CMAKE_CURRENT_SOURCE_DIR}/test/option.xq" -f --option "{http://www.zorba-xquery.com}option=value")
 ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba_option PASS_REGULAR_EXPRESSION "value")

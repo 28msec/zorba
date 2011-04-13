@@ -21,6 +21,7 @@
 
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/path_expr.h"
+#include "compiler/expression/script_exprs.h"
 #include "compiler/expression/expr_iter.h"
 
 #include "types/typeops.h"
@@ -118,14 +119,9 @@ expr_t MarkConsumerNodeProps::apply(
     break;
   }
 
-  case var_decl_expr_kind :
+  case block_expr_kind :
   {
-    break;
-  }
-
-  case sequential_expr_kind :
-  {
-    sequential_expr* seqExpr = static_cast<sequential_expr *>(node);
+    block_expr* seqExpr = static_cast<block_expr *>(node);
     ulong numChildren = seqExpr->size();
 
     for (ulong i = 0; i < numChildren-1; ++i)
@@ -143,6 +139,27 @@ expr_t MarkConsumerNodeProps::apply(
     // var_decl_expr, push down the annotation of the associated var_expr
     // to the associated init_expr (if any) and then apply the rule to the
     // init_expr.
+    break;
+  }
+
+  case apply_expr_kind :
+  {
+    apply_expr* exp = static_cast<apply_expr *>(node);
+
+    if (exp->discardsXDM())
+    {
+      pushdown_ignores_sorted_nodes(node, exp->get_expr());
+      pushdown_ignores_duplicate_nodes(node, exp->get_expr());
+    }
+    else
+    {
+    }
+
+    break;
+  }
+
+  case var_decl_expr_kind :
+  {
     break;
   }
 

@@ -106,7 +106,7 @@ public:
 
 }
 
-  expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
+  short getScriptingKind() const { return UPDATING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 
@@ -123,7 +123,7 @@ public:
 
 }
 
-  expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
+  short getScriptingKind() const { return UPDATING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 
@@ -140,7 +140,7 @@ public:
 
 }
 
-  expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
+  short getScriptingKind() const { return UPDATING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 
@@ -157,7 +157,7 @@ public:
 
 }
 
-  expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
+  short getScriptingKind() const { return UPDATING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 
@@ -174,7 +174,7 @@ public:
 
 }
 
-  expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
+  short getScriptingKind() const { return UPDATING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 
@@ -191,7 +191,7 @@ public:
 
 }
 
-  expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
+  short getScriptingKind() const { return UPDATING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 
@@ -208,7 +208,7 @@ public:
 
 }
 
-  expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
+  short getScriptingKind() const { return UPDATING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 
@@ -225,7 +225,7 @@ public:
 
 }
 
-  expr_script_kind_t getUpdateType() const { return SEQUENTIAL_EXPR; }
+  short getScriptingKind() const { return (APPLYING_EXPR | SEQUENTIAL_EXPR); }
 
   bool accessesDynCtx() const { return true; }
 
@@ -242,7 +242,7 @@ public:
 
 }
 
-  expr_script_kind_t getUpdateType() const { return SEQUENTIAL_EXPR; }
+  short getScriptingKind() const { return (APPLYING_EXPR | SEQUENTIAL_EXPR); }
 
   bool accessesDynCtx() const { return true; }
 
@@ -259,7 +259,7 @@ public:
 
 }
 
-  expr_script_kind_t getUpdateType() const { return SEQUENTIAL_EXPR; }
+  short getScriptingKind() const { return (APPLYING_EXPR | SEQUENTIAL_EXPR); }
 
   bool accessesDynCtx() const { return true; }
 
@@ -276,7 +276,7 @@ public:
 
 }
 
-  expr_script_kind_t getUpdateType() const { return SEQUENTIAL_EXPR; }
+  short getScriptingKind() const { return (APPLYING_EXPR | SEQUENTIAL_EXPR); }
 
   bool accessesDynCtx() const { return true; }
 
@@ -293,7 +293,7 @@ public:
 
 }
 
-  expr_script_kind_t getUpdateType() const { return SEQUENTIAL_EXPR; }
+  short getScriptingKind() const { return (APPLYING_EXPR | SEQUENTIAL_EXPR); }
 
   bool accessesDynCtx() const { return true; }
 
@@ -310,7 +310,7 @@ public:
 
 }
 
-  expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
+  short getScriptingKind() const { return UPDATING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 
@@ -331,7 +331,7 @@ public:
 
 }
 
-  expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
+  short getScriptingKind() const { return UPDATING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 
@@ -348,7 +348,7 @@ public:
 
 }
 
-  expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
+  short getScriptingKind() const { return UPDATING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 

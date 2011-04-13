@@ -395,29 +395,29 @@ void* begin_visit(const FunctionDecl& n)
 {
   Parameters lParameters;
   os << "declare ";
-  switch(n.get_kind()) 
-  {
-  case ParseConstants::fn_update:
-  case ParseConstants::fn_extern_update:
+
+  if (n.is_updating())
     os << "updating ";
-    break;
-  case ParseConstants::fn_sequential:
-  case ParseConstants::fn_extern_sequential:
-    os << "sequential ";
-    break;
-  default:
-    break;
-  }
-  if (!n.is_deterministic()) {
-    os << "nondeterministic ";
-  }
+
+  if (n.is_sequential())
+    os << "%sequential ";
+
+  if (!n.is_deterministic()) 
+    os << "%nondeterministic ";
+
+  if (n.is_private())
+    os << "%private ";
+
   os << "function ";
+
   n.get_name()->accept(*this);
+
   os << '(';
   if(n.get_paramlist()) {
     n.get_paramlist()->accept(*this);
   }
   os << ')';
+
   if(n.get_return_type()) {
     os << " as ";
     stringstream lReturnType;
@@ -426,13 +426,15 @@ void* begin_visit(const FunctionDecl& n)
     os << lReturnType.str();
     lParameters.push(lReturnType.str());
   }
-  if(n.get_body()) {
+
+  if(n.get_body()) 
+  {
     os << '{';
     n.get_body()->accept(*this);
     os << '}';
-  } else if(n.get_kind() == ParseConstants::fn_extern ||
-            n.get_kind() == ParseConstants::fn_extern_update ||
-            n.get_kind() == ParseConstants::fn_extern_sequential) {
+  } 
+  else if(n.is_external())
+  {
     os << " external";
   }
 
@@ -513,8 +515,6 @@ DEFAULT_VISIT (LibraryModule) //@checked
 DEFAULT_VISIT (Literal)
 
 DEFAULT_VISIT (MainModule) //@checked
-
-DEFAULT_VISIT (Module) //@checked
 
 void* begin_visit(const ModuleDecl& n)
 {
@@ -1005,8 +1005,6 @@ DEFAULT_END_VISIT (ReverseAxis);
       return 0;
     }
     DEFAULT_END_VISIT (VarDecl)
-
-    DEFAULT_VISIT (VarNameAndType)
 
     void* begin_visit(const VarGetsDecl& n)
     {

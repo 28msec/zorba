@@ -4,7 +4,7 @@ import module namespace manip = "http://www.zorba-xquery.com/modules/store/stati
 declare ordered collection guestbook:entries as node()*;
 declare variable $guestbook:entries as xs:QName := xs:QName('guestbook:entries');
 
-declare sequential function guestbook:add()
+declare %sequential function guestbook:add()
 {
   manip:insert-nodes-last(
       $guestbook:entries,
@@ -15,7 +15,7 @@ declare sequential function guestbook:add()
   exit returning guestbook:list();
 };
 
-declare sequential function guestbook:list() {
+declare %sequential function guestbook:list() {
   
   let $entries := manip:collection($guestbook:entries)
   let $num_entries := fn:count($entries)

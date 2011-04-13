@@ -2,12 +2,12 @@ import module namespace doc = "http://www.zorba-xquery.com/modules/store/documen
 
 declare base-uri "http://www.zorba-xquery.com/";
 
-declare sequential function local:add()
+declare %sequential function local:add()
 {
   doc:add("foo", document { <foo>bar</foo> });
 };
 
-declare sequential function local:add-twice()
+declare %sequential function local:add-twice()
 {
   try {
     doc:add("foo", document { <foo>bar</foo> });
@@ -16,12 +16,12 @@ declare sequential function local:add-twice()
   }
 };
 
-declare sequential function local:remove()
+declare %sequential function local:remove()
 {
   doc:remove("foo");
 };
 
-declare sequential function local:remove-twice()
+declare %sequential function local:remove-twice()
 {
   try {
     doc:remove("foo");

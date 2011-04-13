@@ -143,7 +143,7 @@ import schema namespace https = "http://expath.org/ns/http-client";
  :  If there is one (or several, in case of multipart) response body, the response bodies
  :  are the next items in the sequence.
  :)
-declare sequential function http:send-request(
+declare %sequential function http:send-request(
   $request as element(https:request)?,
   $href as xs:string?,
   $bodies as item()*) as item()+ {
@@ -225,7 +225,7 @@ declare function http:options($href as xs:string) as xs:string* {
  : @return The first element of the result is the metadata (like
  :         headers, status etc), the next elements are the response
  :)
-declare sequential function http:put($href as xs:string, $body as item()) as item()+
+declare %sequential function http:put($href as xs:string, $body as item()) as item()+
 {
   let $media-type as xs:string+ :=
     typeswitch($body)
@@ -247,7 +247,7 @@ declare sequential function http:put($href as xs:string, $body as item()) as ite
  : @return The first element of the result is the metadata (like
  :         headers, status etc), the next elements are the response
  :)
-declare sequential function http:delete($href as xs:string) as item()+
+declare %sequential function http:delete($href as xs:string) as item()+
 {
   http:http-nondeterministic-impl(
     validate {
@@ -276,7 +276,7 @@ declare sequential function http:delete($href as xs:string) as item()+
  : @return The first element of the result is the metadata (like
  :         headers, status etc), the next elements are the response
  :)
-declare sequential function http:post($href as xs:string, $body as item()) as item()+
+declare %sequential function http:post($href as xs:string, $body as item()) as item()+
 {
   let $media-type as xs:string+ :=
     typeswitch($body)
@@ -291,7 +291,7 @@ declare sequential function http:post($href as xs:string, $body as item()) as it
   return http:tidy-result($result, ())
 };
 
-declare %private sequential function http:http-sequential-impl(
+declare %private %sequential function http:http-sequential-impl(
   $request as schema-element(https:request)?,
   $href as xs:string?,
   $bodies as item()*) as item()+ external;

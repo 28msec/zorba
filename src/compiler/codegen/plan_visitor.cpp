@@ -36,6 +36,8 @@
 #include "compiler/expression/expr_visitor.h"
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/fo_expr.h"
+#include "compiler/expression/script_exprs.h"
+#include "compiler/expression/update_exprs.h"
 #ifndef ZORBA_NO_FULL_TEXT
 #include "compiler/expression/ft_expr.h"
 #include "compiler/expression/ftnode.h"
@@ -531,13 +533,13 @@ void end_visit(wrapper_expr& v)
 }
 
 
-bool begin_visit(sequential_expr& v)
+bool begin_visit(block_expr& v)
 {
   CODEGEN_TRACE_IN("");
   return true;
 }
 
-void end_visit(sequential_expr& v)
+void end_visit(block_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 
@@ -547,18 +549,26 @@ void end_visit(sequential_expr& v)
   for (ulong i = numArgs; i > 0; --i)
   {
     PlanIter_t arg = pop_itstack();
-
-    if (v[i-1]->is_updating() && (i < numArgs || v.get_apply_last()))
-    {
-      args[i-1] = new ApplyIterator(sctx, arg->loc, arg);
-    }
-    else
-    {
-      args[i-1] = arg;
-    }
+    args[i-1] = arg;
   }
 
   push_itstack(new SequentialIterator(sctx, qloc, args));
+}
+
+
+bool begin_visit(apply_expr& v)
+{
+  CODEGEN_TRACE_IN("");
+  return true;
+}
+
+void end_visit(apply_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+
+  PlanIter_t arg = pop_itstack();
+
+  push_itstack(new ApplyIterator(sctx, qloc, arg));
 }
 
 
@@ -1319,7 +1329,7 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
   //
   else if (c.get_kind() == flwor_clause::count_clause)
   {
-    varref_t var = static_cast<const count_clause *>(&c)->get_var();
+    var_expr_t var = static_cast<const count_clause *>(&c)->get_var();
 
     ZORBA_ASSERT(clauseVarMap->theVarRebinds.size() == 1);
 
@@ -1742,7 +1752,7 @@ void end_visit(eval_expr& v)
                                 args,
                                 varnames,
                                 vartypes, 
-                                v.get_scripting_kind(),
+                                v.get_inner_scripting_kind(),
                                 localBindings));
 }
 
@@ -1799,7 +1809,7 @@ void end_visit(debugger_expr& v)
                                   argvEvalIter, 
                                   varnames, 
                                   vartypes,
-                                  v.get_scripting_kind(),
+                                  v.get_inner_scripting_kind(),
                                   localBindings));
 
   aDebugIterator->setChildren(&argv);
@@ -3044,18 +3054,12 @@ PlanIter_t codegen(
     const char* descr,
     expr* root,
     CompilerCB* ccb,
-    bool applyPUL,
     ulong& nextDynamicVarId,
     hash64map<std::vector<LetVarIter_t> *>* arg_var_map)
 {
   plan_visitor c(ccb, nextDynamicVarId, arg_var_map);
   root->accept(c);
   PlanIter_t result = c.result();
-
-  if (root->is_updating() && applyPUL)
-  {
-    result = new ApplyIterator(result->theSctx, result->loc, result);
-  }
 
   if (result != NULL &&
       descr != NULL &&

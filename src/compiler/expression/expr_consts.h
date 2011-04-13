@@ -65,11 +65,35 @@ enum match_wild_t
 
 enum expr_script_kind_t
 {
-  UNKNOWN_SCRIPTING_KIND,
-  UPDATE_EXPR,
-  VACUOUS_EXPR,
-  SIMPLE_EXPR,
-  SEQUENTIAL_EXPR
+  UNKNOWN_SCRIPTING_KIND =   0,
+
+  VACUOUS_EXPR           =   1,  // An expr that will always return the empty
+                                 // sequence and will never have any side-effects.
+
+  SIMPLE_EXPR            =   2,  // An expr that is none of the other kinds.
+
+  UPDATING_EXPR          =   4,  // An expr that may return a non-empty PUL. The
+                                 // expr may return non-empty XDM as well.
+
+  VAR_SETTING_EXPR       =   8,  // An expr E during the evaluation of which a
+                                 // var may be set and that var is declared 
+                                 // outside the innermost block that contains E.
+
+  APPLYING_EXPR          =  16,  // An expr during the evaluation of which a 
+                                 // PUL may get applied.
+
+  EXITING_EXPR           =  32,  // An expr during the evaluation of which an
+                                 // exit expression may be executed.
+
+  BREAKING_EXPR          =  64,  // An expr E during the evaluation of which 
+                                 // a break or continue expr may be executed
+                                 // and the the while or flwor expr being
+                                 // broken or continued contains E.
+
+  SEQUENTIAL_FUNC_EXPR   = 128,  // An expr during the evaluation of which a
+                                 // sequential function may be called.
+
+  SEQUENTIAL_EXPR        = 256   // The logical OR of the previous 5 categories.
 };
 
 

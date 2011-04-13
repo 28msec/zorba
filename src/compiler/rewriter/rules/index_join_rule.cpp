@@ -17,6 +17,7 @@
 #include "compiler/api/compilercb.h"
 #include "compiler/rewriter/rules/ruleset.h"
 #include "compiler/expression/flwor_expr.h"
+#include "compiler/expression/script_exprs.h"
 #include "compiler/rewriter/tools/expr_tools.h"
 #include "compiler/xqddf/value_index.h"
 #include "compiler/expression/expr_iter.h"
@@ -94,7 +95,7 @@ expr_t IndexJoinRule::apply(RewriterContext& rCtx, expr* node, bool& modified)
           
           expr_t e = rCtx.theFlworStack.back();
 
-          ZORBA_ASSERT(e.getp() == node || e->get_expr_kind() == sequential_expr_kind);
+          ZORBA_ASSERT(e.getp() == node || e->get_expr_kind() == block_expr_kind);
 
           rCtx.theFlworStack.pop_back();
           return e;
@@ -123,8 +124,7 @@ expr_t IndexJoinRule::apply(RewriterContext& rCtx, expr* node, bool& modified)
               
               expr_t e = rCtx.theFlworStack.back();
 
-              ZORBA_ASSERT(e.getp() == node ||
-                           e->get_expr_kind() == sequential_expr_kind);
+              ZORBA_ASSERT(e.getp() == node || e->get_expr_kind() == block_expr_kind);
 
               rCtx.theFlworStack.pop_back();
               return e;
@@ -160,7 +160,7 @@ expr_t IndexJoinRule::apply(RewriterContext& rCtx, expr* node, bool& modified)
   {
     expr_t e = rCtx.theFlworStack.back();
 
-    ZORBA_ASSERT(e.getp() == node || e->get_expr_kind() == sequential_expr_kind);
+    ZORBA_ASSERT(e.getp() == node || e->get_expr_kind() == block_expr_kind);
 
     rCtx.theFlworStack.pop_back();
     return e;
@@ -511,10 +511,11 @@ static void rewriteJoin(
 
       nestedFlwor->set_return_expr(innerFlwor->get_return_expr());
 
-      sequential_expr* seqExpr = new sequential_expr(sctx, loc, false);
+      std::vector<expr_t> args(2);
+      args[0] = createExpr.getp();
+      args[1] = nestedFlwor.getp();
 
-      seqExpr->push_back(createExpr.getp());
-      seqExpr->push_back(nestedFlwor.getp());
+      block_expr* seqExpr = new block_expr(sctx, loc, false, args, NULL);
 
       innerFlwor->set_return_expr(seqExpr);
 
@@ -528,9 +529,9 @@ static void rewriteJoin(
     {
       expr* returnExpr = innerFlwor->get_return_expr();
 
-      if (returnExpr->get_expr_kind() == sequential_expr_kind)
+      if (returnExpr->get_expr_kind() == block_expr_kind)
       {
-        sequential_expr* seqExpr = static_cast<sequential_expr*>(returnExpr);
+        block_expr* seqExpr = static_cast<block_expr*>(returnExpr);
 
         ulong numArgs = seqExpr->size();
         ulong arg;
@@ -547,9 +548,11 @@ static void rewriteJoin(
       }
       else
       {
-        sequential_expr* seqExpr = new sequential_expr(sctx, loc, false);
-        seqExpr->push_back(createExpr.getp());
-        seqExpr->push_back(returnExpr);
+        std::vector<expr_t> args(2);
+        args[0] = createExpr.getp();
+        args[1] = returnExpr;
+
+        block_expr* seqExpr = new block_expr(sctx, loc, false, args, NULL);
 
         innerFlwor->set_return_expr(seqExpr);
       }
@@ -570,10 +573,11 @@ static void rewriteJoin(
                     outerPosInStack);
 
     //  Build outer sequential expr
-    sequential_expr* seqExpr = new sequential_expr(sctx, loc, false);
+    std::vector<expr_t> args(2);
+    args[0] = createExpr.getp();
+    args[1] = outerFlworExpr;
 
-    seqExpr->push_back(createExpr.getp());
-    seqExpr->push_back(outerFlworExpr);
+    block_expr* seqExpr = new block_expr(sctx, loc, false, args, NULL);
 
     rCtx.theFlworStack[outerPosInStack] = seqExpr;
   }

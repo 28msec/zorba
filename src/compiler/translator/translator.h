@@ -13,19 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_NORMALIZE_VISITOR_H
-#define ZORBA_NORMALIZE_VISITOR_H
+#ifndef ZORBA_COMPILER_TRANSLATOR
+#define ZORBA_COMPILER_TRANSLATOR
 
-#include <set>
 
 #include "common/shared_types.h"
 
-namespace zorba {
+namespace zorba 
+{
 
-  expr_t translate (const parsenode &, CompilerCB* aCompilerCB);
+expr_t translate (const parsenode &, CompilerCB* aCompilerCB);
 
-} /* namespace zorba */
-#endif /* ZORBA_NORMALIZE_VISITOR_H */
+}
+#endif
 
 /*
  * Local variables:

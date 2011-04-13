@@ -1,7 +1,7 @@
 import module namespace init = "http://www.zorba-xquery.com/modules/store/static-collections/initialization";
 import module namespace ns = "http://example.org/datamodule/" at "../collections.xqdata";
 
-declare sequential function local:foo() {
+declare %sequential function local:foo() {
   init:create-collection(xs:QName("ns:collection_1"));
   exit returning ();
 };

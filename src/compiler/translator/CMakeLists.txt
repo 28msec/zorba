@@ -12,4 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 SET(TRANSLATOR_SRCS
+    prolog_graph.cpp
     translator.cpp)

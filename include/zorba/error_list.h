@@ -892,6 +892,18 @@ XQUERY_DEC_ERROR( XUDY0031 );
 XQUERY_DEC_ERROR( FOUP0001 );
 XQUERY_DEC_ERROR( FOUP0002 );
 
+////////// XQuery Scripting /////////////////////////////////////////////
+
+XQUERY_DEC_ERROR( XSST0001 );
+XQUERY_DEC_ERROR( XSST0002 );
+XQUERY_DEC_ERROR( XSST0003 );
+XQUERY_DEC_ERROR( XSST0004 );
+XQUERY_DEC_ERROR( XSST0005 );
+XQUERY_DEC_ERROR( XSST0006 );
+XQUERY_DEC_ERROR( XSST0007 );
+XQUERY_DEC_ERROR( XSST0008 );
+
+
 ////////// Serialization //////////////////////////////////////////////////////
 
 /**

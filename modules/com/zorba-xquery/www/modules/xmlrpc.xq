@@ -49,7 +49,7 @@ declare variable $xmlrpc:ERR_001 as xs:QName := xs:QName('xmlrpc:ERR_001');
  : 
  : @return Result of the method invocation.
  :)
-declare sequential function xmlrpc:invoke(
+declare %sequential function xmlrpc:invoke(
   $endpoint-url as xs:string,
   $method as xs:string,
   $parameters as item()*)
@@ -81,7 +81,7 @@ as item()*
  :
  : @return Result of the method invocation.
  :)
-declare sequential function xmlrpc:invoke($endpoint-url as xs:string, $method as xs:string)
+declare %sequential function xmlrpc:invoke($endpoint-url as xs:string, $method as xs:string)
 {
   xmlrpc:invoke($endpoint-url, $method, ())
 };
@@ -96,7 +96,7 @@ declare %private updating function xmlrpc:set-method($request as element(http:re
    insert node attribute method { "POST" } into $request
 };
 
-declare %private sequential function xmlrpc:set-content-type($request as element(http:request))
+declare %private %sequential function xmlrpc:set-content-type($request as element(http:request))
 {
     if (exists($request/http:body)) then
       delete nodes $request/http:body

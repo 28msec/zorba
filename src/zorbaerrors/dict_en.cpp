@@ -190,6 +190,33 @@ extern entry const dict_en[] = {
   { "XQTY0024", "element constructor content sequence must not have an attribute node following a non-attribute node" },
   { "XQTY0030", "validate argument must be exactly one document or element node" },
   { "XQTY0086", "typed value of copied element or attribute node is namespace-sensitive when construction mode is preserve and copy-namespaces mode is no-preserve" },
+
+
+  ////////////////////////////////////////////////
+  //                                            //
+  // XQuery Scripting Errors                    //
+  //                                            //
+  ////////////////////////////////////////////////
+
+  { "XSST0001", "\"$1\": function cannot be declared as both updating and sequential" },
+
+  { "XSST0002", "\"$1\": function is declared as sequential, but it has an updating body" },
+
+  { "XSST0003", "\"$1\": function is declared as updating, but it has a sequential body," },
+
+  { "XSST0004", "\"$1\": function is declared as simple, but it has a sequential body," },
+
+  { "XSST0005", "An expression cannot be both updating and sequential" },
+
+  { "XSST0006", "Sequential expression is not allowed here" },
+
+  { "XSST0007", "\"$1\": variable is not assignable" },
+
+  { "XSST0008", "While expression with a non-sequential body" },
+
+
+  // ????????????
+
   { "XTDE1310", "\"$1\": picture string does not satisfy format-number function rules" },
   { "XTDE1340", "\"$1\": invalid picture string" },
   { "XTDE1350", "\"$1\": component specifier not available" },
@@ -197,6 +224,13 @@ extern entry const dict_en[] = {
   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   // !!!!! THIS MUST BE ASCII SORTED BY KEY !!!!!
   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+  ////////////////////////////////////////////////
+  //                                            //
+  // XQuery Update Errors                       //
+  //                                            //
+  ////////////////////////////////////////////////
 
   { "XUDY0009", "TODO" },
   { "XUDY0014", "TODO" },
@@ -214,8 +248,8 @@ extern entry const dict_en[] = {
   { "XUDY0029", "TODO" },
   { "XUDY0030", "TODO" },
   { "XUDY0031", "TODO" },
-  { "XUST0001", "updating expression illegal here" },
-  { "XUST0002", "simple expression illegal here" },
+  { "XUST0001", "$1" },
+  { "XUST0002", "$1" },
   { "XUST0003", "multiple revalidation declarations" },
   { "XUST0026", "TODO" },
   { "XUST0028", "TODO" },
@@ -439,6 +473,7 @@ extern entry const dict_en[] = {
   { "~AllMatchesHasExcludes", "AllMatches contains StringExclude" },
   { "~AlreadySpecified", "already specified" },
   { "~AttributeNode", "attribute node" },
+
   { "~BackRef0Illegal", "\"\\0\": illegal backreference" },
   { "~BackRefIllegalInCharClass", "backreference illegal in character class" },
   { "~BadAnyURI", "invalid xs:anyURI" },
@@ -461,30 +496,40 @@ extern entry const dict_en[] = {
   { "~Base64Equals", "in Base64, '=' must be at the end and followed by one of [AEIMQUYcgkosw048]" },
   { "~Base64EqualsEquals", "in Base64, \"==\" must be at the end and followed by one of [AQgw]" },
   { "~Base64Multiple4", "Base64 data must be a multiple of 4 characters" },
+
   { "~CastFromToFailed", "$3 to $4 cast failed" },
   { "~CharExpected", "'$3' expected" },
   { "~ClosingBraceWithoutOpen", "'}' encountered without '{' first" },
   { "~CountClause11", "count clause only available in XQuery 1.1 or later" },
+
   { "~DefaultCollation", "default collation" },
   { "~DivisionNoINF", "division can not have +-INF dividend" },
   { "~DivisionNoNaN", "division can not involve NaN" },
+
   { "~EBVNotDef", "effective boolean value not defined for \"$2\"" },
   { "~EmptyPath", "empty path" },
   { "~Eval11", "eval only available in XQuery 1.1 or later" },
   { "~ExternFnDeterministic", "only external functions may be declared deterministic" },
   { "~ExternFnNondeterministic", "only external functions may be declared nondeterministic" },
+
   { "~FileNotFoundOrReadable", "file not found or readable" },
   { "~FullTextNotEnabled", "full-text was not enabled in this build" },
+
   { "~GoodValuesAreUTF8", "valid values are: UTF-8, UTF-16" },
   { "~GoodValuesAreXMLEtc", "valid values are: xml, html, xhtml, text, binary" },
   { "~GoodValuesAreYesNo", "valid values are: yes, no" },
   { "~GoodValuesAreYesNoOmit", "valid values are: yes, no, omit" },
+
   { "~HexBinaryMustBeEven", "HexBinary value must contain an even number of characters" },
+
   { "~IncompleteKeyInIndexBuild", "incomplete key during index build" },
+
+  { "~MaxValueExceeded", "maximum supported value of $5 exceeded" },
   { "~ModuleDeclNotInMain", "module declaration must not be in main module" },
   { "~ModuleNotFound", "module not found" },
   { "~MustBeAbsoluteURI", "must be absolute" },
   { "~MustBeNCName", "must be an xs:NCName" },
+
   { "~NoCastTo", "can not cast to $3${: 4}" },
   { "~NoDriveSpecification", "missing drive specification" },
   { "~NoEmptySeqAsBaseURI", "can't treat empty sequence as base URI" },
@@ -502,17 +547,21 @@ extern entry const dict_en[] = {
   { "~NotDefInStaticCtx", "not defined in dynamic context" },
   { "~NotInStaticCtx", "not found in static context" },
   { "~NotSpecified", "not specified" },
+
   { "~OSFailedError", "error $1: $2" },
   { "~OSWhatFailedError", "$1 failed (error $2): $3" },
   { "~OuterForClause11", "outer-for clause only available in XQuery 1.1 or later" },
+
   { "~SEPM0009_Not10", "the version parameter has a value other than \"1.0\" and the doctype-system parameter is specified" },
   { "~SEPM0009_NotOmit", "the standalone attribute has a value other than \"omit\"" },
   { "~SeqFnBody", "only a function declared as sequential can have a body that is a sequential expression" },
   { "~StartEndTagMismatch", "start tag \"$2\" does not match end tag \"$3\"" },
   { "~SwitchExpr11", "switch expressions only available in XQuery 1.1 or later" },
+
   { "~TrailingChar", "trailing '$3'" },
   { "~TryCatchExpr11", "try/catch expressions only available in XQuery 1.1 or later" },
   { "~TypeIsNotSubtype", "item type is not a subtype of \"$3\"" },
+
   { "~U_REGEX_BAD_ESCAPE_SEQUENCE", "unrecognized backslash escape sequence" },
   { "~U_REGEX_BAD_INTERVAL", "error in {min,max} interval" },
   { "~U_REGEX_INTERNAL_ERROR", "an internal ICU error (bug) was detected" },
@@ -535,13 +584,34 @@ extern entry const dict_en[] = {
   { "~U_REGEX_UNIMPLEMENTED", "use of regular expression feature that is not yet implemented" },
   { "~UnbalancedChar", "missing '$3'" },
   { "~UnexpectedElement", "unexpected element" },
+
   { "~WindowClause11", "window clause only available in XQuery 1.1 or later" },
   { "~WrongWordNetEndianness", "wrong endianness" },
+
+  { "~XUST0001_CONCAT", 
+    "Comma expression with updating and non-updating branches" },
+
+  { "~XUST0001_Generic",
+    "Updating expression illegal here" },
+
+  { "~XUST0001_IF", 
+    "Conditional expression with updating and non-updating branch" },
+
+  { "~XUST0001_UDF", 
+    "\"$2\": Function is declared as simple, but its body is updating" },
+
+  { "~XUST0002_Transform",
+    "Transform expression witn a non-updating or vacuous modify clause" },
+
+  { "~XUST0002_UDF", 
+    "\"$2\": Function is declared as updating, but its body is not updating or vacuous" },
+
   { "~Zorba API error", "Zorba API error" },
   { "~Zorba data-definition error", "Zorba data-definition error" },
   { "~Zorba error", "Zorba error" },
   { "~Zorba serialization error", "Zorba serialization error" },
   { "~Zorba store error", "Zorba store error" },
+
   { "~dynamic error", "dynamic error" },
   { "~error", "error" },
   { "~format_integer_bad_picture_format", "format-integer: bad $picture format: $2" },

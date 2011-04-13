@@ -18,15 +18,13 @@
 #include "compiler/expression/fo_expr.h"
 #include "compiler/expression/path_expr.h"
 #include "compiler/expression/flwor_expr.h"
+#include "compiler/expression/script_exprs.h"
+#include "compiler/expression/update_exprs.h"
 #include "compiler/expression/expr_iter.h"
 
 #include "compiler/rewriter/tools/dataflow_annotations.h"
-//#include "compiler/semantic_annotations/annotation_keys.h"
-//#include "compiler/semantic_annotations/tsv_annotation.h"
 
 #include "types/typeops.h"
-
-//#include "context/namespace_context.h"
 
 #include "functions/function.h"
 #include "functions/library.h"
@@ -51,19 +49,37 @@ tgt->setProducesDistinctNodes(src->getProducesDistinctNodes())
 
 
 /*******************************************************************************
-
+  Determine whether an expr produces sorted and/or distinct nodes or not.
 ********************************************************************************/
 void DataflowAnnotationsComputer::compute(expr* e)
 {
   switch(e->get_expr_kind()) 
   {
   case var_decl_expr_kind:
-    compute_var_decl_expr(static_cast<var_decl_expr *>(e));
+    compute_var_decl_expr(static_cast<var_decl_expr*>(e));
     break;
 
-  case sequential_expr_kind:
-    compute_sequential_expr(static_cast<sequential_expr *>(e));
+  case block_expr_kind:
+    compute_block_expr(static_cast<block_expr *>(e));
     break;
+
+  case apply_expr_kind:
+  {
+    apply_expr* exp = static_cast<apply_expr *>(e);
+
+    if (exp->discardsXDM())
+    {
+      SORTED_NODES(exp);
+      DISTINCT_NODES(exp);
+    }
+    else
+    {
+      PROPOGATE_SORTED_NODES(exp->get_expr(), exp);
+      PROPOGATE_DISTINCT_NODES(exp->get_expr(), exp);
+    }
+
+    break;
+  }
 
   case wrapper_expr_kind:
     compute_wrapper_expr(static_cast<wrapper_expr *>(e));
@@ -259,7 +275,7 @@ void DataflowAnnotationsComputer::compute_var_decl_expr(var_decl_expr* e)
 /*******************************************************************************
 
 ********************************************************************************/
-void DataflowAnnotationsComputer::compute_sequential_expr(sequential_expr* e)
+void DataflowAnnotationsComputer::compute_block_expr(block_expr* e)
 {
   default_walk(e);
   if (!generic_compute(e) && e->size() > 0)

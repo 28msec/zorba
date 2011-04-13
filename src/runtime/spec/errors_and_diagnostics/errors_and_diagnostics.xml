@@ -47,7 +47,7 @@
       </zorba:signature>
 
       <zorba:methods>
-        <zorba:getUpdateType returnValue="VACUOUS_EXPR"/>
+        <zorba:getScriptingKind returnValue="VACUOUS_EXPR"/>
       </zorba:methods>
 
     </zorba:function>

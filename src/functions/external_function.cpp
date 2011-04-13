@@ -30,8 +30,9 @@ external_function::external_function(
     static_context* modSctx,
     const zstring& ns,
     const signature& sig,
-    expr_script_kind_t scriptingType,
+    short scriptingType,
     bool deterministic,
+    bool isPrivate,
     StatelessExternalFunction* impl) 
   :
   function(sig, FunctionConsts::FN_UNKNOWN),
@@ -43,6 +44,7 @@ external_function::external_function(
 {
   resetFlag(FunctionConsts::isBuiltin);
   setDeterministic(deterministic);
+  setPrivate(isPrivate);
 }
 
 
@@ -53,7 +55,7 @@ void external_function::serialize(::zorba::serialization::Archiver& ar)
   ar & theLoc;
   ar & theModuleSctx;
   ar & theNamespace;
-  SERIALIZE_ENUM(expr_script_kind_t, theScriptingKind);
+  ar & theScriptingKind;
 
   // also serialize the localname of the function
   zstring lLocalName;

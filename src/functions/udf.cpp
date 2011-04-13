@@ -44,17 +44,22 @@ user_function::user_function(
     const QueryLoc& loc,
     const signature& sig,
     expr_t expr_body,
-    expr_script_kind_t scriptingKind)
+    short scriptingKind,
+    bool deterministic,
+    bool isPrivate)
   :
   function(sig, FunctionConsts::FN_UNKNOWN),
   theLoc(loc),
   theBodyExpr(expr_body),
   theScriptingKind(scriptingKind),
+  theIsExiting(false),
   theIsLeaf(true),
   theIsOptimized(false)
 {
   setFlag(FunctionConsts::isUDF);
   resetFlag(FunctionConsts::isBuiltin);
+  setDeterministic(deterministic);
+  setPrivate(isPrivate);
 }
 
 
@@ -131,7 +136,8 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
   ar & theLoc;
   ar & theBodyExpr;
   ar & theArgVars;
-  SERIALIZE_ENUM(expr_script_kind_t, theScriptingKind);
+  ar & theScriptingKind;
+  ar & theIsExiting;
   ar & theIsLeaf;
   ar & theIsOptimized;
   //ar.set_is_temp_field(true);
@@ -164,6 +170,23 @@ xqtref_t user_function::getUDFReturnType(static_context* sctx) const
 /*******************************************************************************
 
 ********************************************************************************/
+short user_function::getScriptingKind() const 
+{
+  if (theBodyExpr == NULL)
+  {
+    if (theScriptingKind == SEQUENTIAL_EXPR)
+      return (SEQUENTIAL_FUNC_EXPR | SEQUENTIAL_EXPR);
+
+    return theScriptingKind;
+  }
+
+  return theBodyExpr->get_scripting_detail();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void user_function::setBody(const expr_t& body)
 {
   theBodyExpr = body;
@@ -173,9 +196,9 @@ void user_function::setBody(const expr_t& body)
 /*******************************************************************************
 
 ********************************************************************************/
-expr_t user_function::getBody() const
+expr* user_function::getBody() const
 {
-  return theBodyExpr;
+  return theBodyExpr.getp();
 }
 
 
@@ -330,7 +353,6 @@ PlanIter_t user_function::getPlan(CompilerCB* ccb)
                               lName->getStringValue().c_str()),
                              &*theBodyExpr,
                              ccb,
-                             false,
                              nextVarId,
                              &argVarToRefsMap);
   }

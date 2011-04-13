@@ -51,7 +51,8 @@ protected:
   FunctionConsts::FunctionKind theKind;
   uint32_t                     theFlags;
   AnnotationList_t             theAnnotationList;
-  StaticContextConsts::xquery_version_t   theXQueryVersion;
+
+  StaticContextConsts::xquery_version_t theXQueryVersion;
 
 
 public:
@@ -146,15 +147,37 @@ public:
       resetFlag(FunctionConsts::isDeterministic);
   }
 
-  bool isUpdating() const { return getUpdateType() == UPDATE_EXPR; }
+  bool isUpdating() const { return getScriptingKind() & UPDATING_EXPR; }
 
-  bool isSequential() const { return getUpdateType() == SEQUENTIAL_EXPR; }
+  bool isSequential() const { return getScriptingKind() & SEQUENTIAL_EXPR; }
 
   void setAnnotations(AnnotationList* annotations) { theAnnotationList = annotations; }
 
   const AnnotationList* getAnnotationList() const { return theAnnotationList.getp(); }
 
 	bool validate_args(std::vector<PlanIter_t>& argv) const;
+
+  virtual short getScriptingKind() const { return SIMPLE_EXPR; }
+
+  virtual xqtref_t getReturnType(
+      const TypeManager* tm,
+      const std::vector<xqtref_t>& argTypes) const;
+
+  virtual bool accessesDynCtx() const { return false; }
+
+  virtual bool isMap(ulong input) const;
+
+  virtual FunctionConsts::AnnotationValue producesDistinctNodes() const;
+
+  virtual FunctionConsts::AnnotationValue producesSortedNodes() const;
+
+  virtual bool propagatesSortedNodes(ulong input) const { return false; }
+
+  virtual bool propagatesDistinctNodes(ulong input) const { return false; }
+
+  virtual BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const;
+
+  virtual BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const;
 
   virtual bool isArithmeticFunction() const { return false; }
 
@@ -186,28 +209,6 @@ public:
   {
     return NULL;
   }
-
-  virtual bool accessesDynCtx() const { return false; }
-
-  virtual bool isMap(ulong input) const;
-
-  virtual FunctionConsts::AnnotationValue producesDistinctNodes() const;
-
-  virtual FunctionConsts::AnnotationValue producesSortedNodes() const;
-
-  virtual bool propagatesSortedNodes(ulong input) const { return false; }
-
-  virtual bool propagatesDistinctNodes(ulong input) const { return false; }
-
-  virtual BoolAnnotationValue ignoresSortedNodes(expr* fo, ulong input) const;
-
-  virtual BoolAnnotationValue ignoresDuplicateNodes(expr* fo, ulong input) const;
-
-  virtual expr_script_kind_t getUpdateType() const { return SIMPLE_EXPR; }
-
-  virtual xqtref_t getReturnType(
-        const TypeManager* tm,
-        const std::vector<xqtref_t>& argTypes) const;
 
   virtual PlanIter_t codegen(
         CompilerCB* cb,

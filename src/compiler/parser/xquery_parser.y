@@ -586,7 +586,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> FunctionDecl2
 %type <node> FunctionDeclSimple
 %type <node> FunctionDeclUpdating
-%type <node> FunctionDeclSequential
 %type <node> Import
 %type <node> ItemType
 %type <node> KindTest
@@ -868,7 +867,7 @@ template<typename T> inline void release_hack( T *ref ) {
 %}
 
 // parsenodes
-%destructor { release_hack( $$ ); } AbbrevForwardStep AnyKindTest Annotation AnnotationList AnnotationLiteralList AposAttrContentList opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl FunctionDecl2 FunctionDeclSimple FunctionDeclUpdating FunctionDeclSequential Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma Pragma_list PredicateList QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp CollectionDecl DeclProperty DeclPropertyList NodeModifier IndexDecl IndexKeySpec IndexKeyList IntegrityConstraintDecl CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond VersionDecl VFO_Decl VFO_DeclList BlockDecls BlockVarDeclList BlockVarDecl WhereClause CountClause Wildcard DecimalFormatDecl TypedFunctionTest AnyFunctionTest TypeList SwitchCaseClause SwitchCaseClauseList SwitchCaseOperandList
+%destructor { release_hack( $$ ); } AbbrevForwardStep AnyKindTest Annotation AnnotationList AnnotationLiteralList AposAttrContentList opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl FunctionDecl2 FunctionDeclSimple FunctionDeclUpdating Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma Pragma_list PredicateList QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp CollectionDecl DeclProperty DeclPropertyList NodeModifier IndexDecl IndexKeySpec IndexKeyList IntegrityConstraintDecl CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond VersionDecl VFO_Decl VFO_DeclList BlockDecls BlockVarDeclList BlockVarDecl WhereClause CountClause Wildcard DecimalFormatDecl TypedFunctionTest AnyFunctionTest TypeList SwitchCaseClause SwitchCaseClauseList SwitchCaseOperandList
 
 // parsenodes: Full-Text
 %destructor { release_hack( $$ ); } FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTExtensionOption FTExtensionSelection FTIgnoreOption opt_FTIgnoreOption FTLanguageOption FTMatchOption FTMatchOptions opt_FTMatchOptions FTMildNot FTOptionDecl FTOr FTOrder FTPosFilter FTPrimary FTPrimaryWithOptions FTRange FTScope FTScoreVar FTSelection FTStemOption FTStopWords FTStopWordOption FTStopWordsInclExcl FTThesaurusID FTThesaurusOption FTTimes opt_FTTimes FTUnaryNot FTUnit FTWeight FTWildCardOption FTWindow FTWords FTWordsValue
@@ -1084,7 +1083,7 @@ ModuleWithoutBOM
         }
     ;
 
-// [2]
+
 VersionDecl
     :   XQUERY VERSION STRING_LITERAL SEMI
         {
@@ -1096,7 +1095,6 @@ VersionDecl
         }
     ;
 
-// [3]
 MainModule
     :   SIND_DeclList SEMI QueryBody
         {
@@ -1148,145 +1146,437 @@ MainModule
         }
     ;
 
-// [4]
+
 LibraryModule
-    :   ModuleDecl
-        {
-          $$ = new LibraryModule(LOC(@$), static_cast<ModuleDecl*>($1), NULL);
-        }
-    |   ModuleDecl SIND_DeclList SEMI
-        {
-          Prolog* prolog = new Prolog(LOC(@$), static_cast<SIND_DeclList*>($2), NULL);
-          $$ = new LibraryModule(LOC(@$), static_cast<ModuleDecl*>($1), prolog);
-        }
-    |   ModuleDecl VFO_DeclList SEMI
-        {
-          Prolog* prolog = new Prolog(LOC(@$), NULL, static_cast<VFO_DeclList*>($2));
-          $$ = new LibraryModule(LOC(@$), static_cast<ModuleDecl*>($1), prolog);
-        }
-    |   ModuleDecl SIND_DeclList SEMI VFO_DeclList SEMI
-        {
-          Prolog* prolog = new Prolog(LOC(@$), static_cast<SIND_DeclList*>($2), static_cast<VFO_DeclList*>($4));
-          $$ = new LibraryModule(LOC(@$), static_cast<ModuleDecl*>($1), prolog);
-        }
-    ;
+  :
+    ModuleDecl
+    {
+      $$ = new LibraryModule(LOC(@$), static_cast<ModuleDecl*>($1), NULL);
+    }
+  |
+    ModuleDecl SIND_DeclList SEMI
+    {
+      Prolog* prolog = new Prolog(LOC(@$), static_cast<SIND_DeclList*>($2), NULL);
 
-// [5]
+      $$ = new LibraryModule(LOC(@$), static_cast<ModuleDecl*>($1), prolog);
+    }
+  |
+    ModuleDecl VFO_DeclList SEMI
+    {
+      Prolog* prolog = new Prolog(LOC(@$), NULL, static_cast<VFO_DeclList*>($2));
+
+      $$ = new LibraryModule(LOC(@$), static_cast<ModuleDecl*>($1), prolog);
+    }
+  |
+    ModuleDecl SIND_DeclList SEMI VFO_DeclList SEMI
+    {
+      Prolog* prolog = new Prolog(LOC(@$),
+                                  static_cast<SIND_DeclList*>($2),
+                                  static_cast<VFO_DeclList*>($4));
+
+      $$ = new LibraryModule(LOC(@$), static_cast<ModuleDecl*>($1), prolog);
+    }
+;
+
+
 ModuleDecl
-    :   MODULE NAMESPACE NCNAME EQUALS URI_LITERAL SEMI
-        {
-            $$ = new ModuleDecl( LOC(@$), SYMTAB($3), SYMTAB($5) );
-            dynamic_cast<ModuleDecl*>($$)->setComment( SYMTAB($1) );
-        }
-    ;
+  :
+    MODULE NAMESPACE NCNAME EQUALS URI_LITERAL SEMI
+    {
+      $$ = new ModuleDecl( LOC(@$), SYMTAB($3), SYMTAB($5) );
 
-// [6a]
+      dynamic_cast<ModuleDecl*>($$)->setComment( SYMTAB($1) );
+    }
+;
+
+
 SIND_DeclList
-    :   SIND_Decl
-        {
-            SIND_DeclList *sdl = new SIND_DeclList( LOC(@$) );
-            sdl->push_back( $1 );
-            $$ = sdl;
-        }
-    |   SIND_DeclList SEMI SIND_Decl
-        {
-            ((SIND_DeclList*)$1)->push_back( $3 );
-            $$ = $1;
-        }
-    //  ============================ Improved error messages ============================
-    |   SIND_DeclList ERROR SIND_Decl
-        {
-            // error
-            $$ = $1; $$ = $3; // to prevent the Bison warning
-            @1.step();
-            error(@1, "syntax error, missing semicolon \";\" after declaration."); 
-            YYERROR;
-        }
-    ;
+  :
+    SIND_Decl
+    {
+      SIND_DeclList *sdl = new SIND_DeclList( LOC(@$) );
+      sdl->push_back( $1 );
+      $$ = sdl;
+    }
+  |
+    SIND_DeclList SEMI SIND_Decl
+    {
+      ((SIND_DeclList*)$1)->push_back( $3 );
+      $$ = $1;
+    }
+//  ============================ Improved error messages ============================
+  |
+    SIND_DeclList ERROR SIND_Decl
+    {
+      // error
+      $$ = $1; $$ = $3; // to prevent the Bison warning
+      @1.step();
+      error(@1, "syntax error, missing semicolon \";\" after declaration."); 
+      YYERROR;
+    }
+;
 
-// [6b]
-VFO_DeclList
-    :   VFO_Decl
-        {
-            VFO_DeclList *vdl = new VFO_DeclList( LOC(@$));
-            vdl->push_back( $1 );
-            $$ = vdl;
-        }
-    |   VFO_DeclList SEMI VFO_Decl
-        {
-            ((VFO_DeclList*)$1)->push_back( $3 );
-            $$ = $1;
-        }
-    //  ============================ Improved error messages ============================
-    |   VFO_DeclList ERROR VFO_Decl    //error catching
-        {
-            $$ = $1; $$ = $3; // to prevent the Bison warning
-            @1.step();
-            error(@1, "syntax error, missing semicolon \";\" after declaration.");
-            YYERROR;
-        }
-    ;
 
-// [6c]
 SIND_Decl
-    :   Setter
-    |   Import
-    |   NamespaceDecl
-    |   DefaultNamespaceDecl
-    |   FTOptionDecl
-    ;
+  :
+    Setter
+  | Import
+  | NamespaceDecl
+  | DefaultNamespaceDecl
+  | FTOptionDecl
+;
 
-// [6d]
+
+Setter
+  :
+    BoundarySpaceDecl
+  | DefaultCollationDecl
+  | BaseURIDecl
+  | ConstructionDecl
+  | OrderingModeDecl
+  | EmptyOrderDecl
+  | CopyNamespacesDecl
+
+  /* update extension */
+  | RevalidationDecl
+;
+
+
+BoundarySpaceDecl
+  :
+    DECLARE BOUNDARY_SPACE PRESERVE
+    {
+      $$ = new BoundarySpaceDecl(LOC(@$), StaticContextConsts::preserve_space);
+    }
+  |
+    DECLARE BOUNDARY_SPACE STRIP
+    {
+      $$ = new BoundarySpaceDecl(LOC(@$), StaticContextConsts::strip_space);
+    }
+;
+
+
+DefaultCollationDecl
+  :
+    DECLARE DEFAULT COLLATION URI_LITERAL
+    {
+      $$ = new DefaultCollationDecl( LOC(@$), SYMTAB($4) );
+    }
+;
+
+
+BaseURIDecl
+  :
+    DECLARE BASE_URI URI_LITERAL
+    {
+      $$ = new BaseURIDecl( LOC(@$), SYMTAB($3) );
+    }
+;
+
+
+ConstructionDecl
+  :
+    DECLARE CONSTRUCTION PRESERVE
+    {
+      $$ = new ConstructionDecl(LOC(@$), StaticContextConsts::cons_preserve);
+    }
+  |
+     DECLARE CONSTRUCTION STRIP
+     {
+       $$ = new ConstructionDecl(LOC(@$), StaticContextConsts::cons_strip);
+     }
+;
+
+
+OrderingModeDecl
+  : 
+    DECLARE ORDERING ORDERED
+    {
+      $$ = new OrderingModeDecl(LOC(@$), StaticContextConsts::ordered);
+    }
+  |
+    DECLARE ORDERING UNORDERED
+    {
+      $$ = new OrderingModeDecl(LOC(@$), StaticContextConsts::unordered);
+    }
+;
+
+
+EmptyOrderDecl
+  :
+    DECLARE DEFAULT ORDER _EMPTY GREATEST
+    {
+      $$ = new EmptyOrderDecl(LOC(@$), StaticContextConsts::empty_greatest);
+    }
+  |
+    DECLARE DEFAULT ORDER _EMPTY LEAST
+    {
+      $$ = new EmptyOrderDecl(LOC(@$), StaticContextConsts::empty_least);
+    }
+;
+
+
+CopyNamespacesDecl 
+  :
+    DECLARE COPY_NAMESPACES  PRESERVE  COMMA  INHERIT
+    {
+      $$ = new CopyNamespacesDecl(LOC(@$),
+                                  StaticContextConsts::preserve_ns,
+                                  StaticContextConsts::inherit_ns);
+    }
+  | 
+    DECLARE COPY_NAMESPACES  PRESERVE  COMMA  NO_INHERIT
+    {
+      $$ = new CopyNamespacesDecl(LOC(@$),
+                                  StaticContextConsts::preserve_ns,
+                                  StaticContextConsts::no_inherit_ns);
+    }
+  | 
+    DECLARE COPY_NAMESPACES  NO_PRESERVE  COMMA  INHERIT
+    {
+      $$ = new CopyNamespacesDecl(LOC(@$),
+                                  StaticContextConsts::no_preserve_ns,
+                                  StaticContextConsts::inherit_ns);
+    }
+  |
+    DECLARE COPY_NAMESPACES  NO_PRESERVE  COMMA  NO_INHERIT
+    {
+      $$ = new CopyNamespacesDecl(LOC(@$),
+                                  StaticContextConsts::no_preserve_ns,
+                                  StaticContextConsts::no_inherit_ns);
+    }
+;
+
+
+Import
+  :
+    SchemaImport
+  |
+    ModuleImport
+    //  ============================ Improved error messages ============================
+  |
+    IMPORT QNAME_SVAL error
+    {
+      $$ = $$; // to prevent the Bison warning
+      error(@2, "syntax error, \"import\" should be followed by either \"schema\" or \"module\".");
+      YYERROR;
+    }
+;
+
+
+SchemaImport
+  :
+    IMPORT SCHEMA URI_LITERAL
+    {
+      $$ = new SchemaImport( LOC(@$), NULL, SYMTAB($3), NULL );
+    }
+  |
+    IMPORT SCHEMA SchemaPrefix URI_LITERAL
+    {
+      $$ = new SchemaImport(LOC(@$),
+                            dynamic_cast<SchemaPrefix*>($3),
+                            SYMTAB($4),
+                            NULL);
+    }
+  |
+    IMPORT SCHEMA URI_LITERAL AT URILiteralList
+    {
+      $$ = new SchemaImport(LOC(@$),
+                            NULL,
+                            SYMTAB($3),
+                            dynamic_cast<URILiteralList*>($5));
+    }
+  |
+    IMPORT SCHEMA SchemaPrefix URI_LITERAL AT URILiteralList
+    {
+      $$ = new SchemaImport(LOC(@$),
+                            dynamic_cast<SchemaPrefix*>($3),
+                            SYMTAB($4),
+                            dynamic_cast<URILiteralList*>($6));
+    }
+;
+
+
+URILiteralList
+  :
+    URI_LITERAL
+    {
+      URILiteralList *ull = new URILiteralList( LOC(@$));
+      ull->push_back( SYMTAB($1) );
+      $$ = ull;
+    }
+  |
+    URILiteralList COMMA URI_LITERAL
+    {
+      if ( URILiteralList *ull = dynamic_cast<URILiteralList*>($1) )
+        ull->push_back( SYMTAB($3) );
+
+      $$ = $1;
+    }
+;
+
+
+SchemaPrefix
+  :
+    NAMESPACE NCNAME EQUALS
+    {
+      $$ = new SchemaPrefix( LOC(@$), SYMTAB($2) );
+    }
+  |
+    DEFAULT ELEMENT NAMESPACE
+    {
+      $$ = new SchemaPrefix( LOC(@$), true );
+    }
+;
+
+
+ModuleImport 
+  :
+    IMPORT MODULE URI_LITERAL
+    {
+      $$ = new ModuleImport(LOC(@$), SYMTAB($3), NULL);
+
+      dynamic_cast<ModuleImport *>($$)->setComment(SYMTAB($2));
+    }
+  | 
+    IMPORT MODULE NAMESPACE  NCNAME  EQUALS  URI_LITERAL
+    {
+      $$ = new ModuleImport(LOC(@$), SYMTAB($4), SYMTAB($6), NULL);
+
+      dynamic_cast<ModuleImport *>($$)->setComment(SYMTAB($2));
+    }
+  | 
+    IMPORT MODULE URI_LITERAL AT URILiteralList
+    {
+      $$ = new ModuleImport(LOC(@$),
+                            SYMTAB($3),
+                            dynamic_cast<URILiteralList*>($5));
+
+      dynamic_cast<ModuleImport *>($$)->setComment(SYMTAB($2));
+    }
+  | 
+    IMPORT MODULE NAMESPACE  NCNAME  EQUALS  URI_LITERAL  AT  URILiteralList
+    {
+      $$ = new ModuleImport(LOC(@$),
+                            SYMTAB($4),
+                            SYMTAB($6),
+                            dynamic_cast<URILiteralList*>($8));
+
+      dynamic_cast<ModuleImport *>($$)->setComment(SYMTAB($2));
+    }
+;
+
+
+NamespaceDecl
+  :
+    DECLARE NAMESPACE NCNAME EQUALS URI_LITERAL
+    {
+      $$ = new NamespaceDecl( LOC(@$), SYMTAB($3), SYMTAB($5) );
+    }
+;
+
+
+DefaultNamespaceDecl
+  :
+    DECLARE DEFAULT ELEMENT NAMESPACE URI_LITERAL
+    {
+      $$ = new DefaultNamespaceDecl(LOC(@$),
+                                    ParseConstants::ns_element_default,
+                                    SYMTAB($5));
+    }
+  |
+    DECLARE DEFAULT FUNCTION NAMESPACE URI_LITERAL
+    {
+      $$ = new DefaultNamespaceDecl(LOC(@$), 
+                                    ParseConstants::ns_function_default,
+                                    SYMTAB($5));
+    }
+;
+
+
+VFO_DeclList
+  :
+    VFO_Decl
+    {
+      VFO_DeclList *vdl = new VFO_DeclList( LOC(@$));
+      vdl->push_back( $1 );
+      $$ = vdl;
+    }
+  |
+    VFO_DeclList SEMI VFO_Decl
+    {
+      ((VFO_DeclList*)$1)->push_back( $3 );
+      $$ = $1;
+    }
+//  ============================ Improved error messages ============================
+  |
+    VFO_DeclList ERROR VFO_Decl    //error catching
+    {
+      $$ = $1; $$ = $3; // to prevent the Bison warning
+      @1.step();
+      error(@1, "syntax error, missing semicolon \";\" after declaration.");
+      YYERROR;
+    }
+;
+
+
 VFO_Decl
-    :   VarDecl
-    |   CollectionDecl
-    |   CtxItemDecl
-    |   DecimalFormatDecl
-    |   FunctionDecl
-    |   IndexDecl
-    |   IntegrityConstraintDecl
-    |   OptionDecl
-    ;
+  :
+    DecimalFormatDecl
+  | OptionDecl
+  | CtxItemDecl
+  | VarDecl
+  | FunctionDecl
+  | CollectionDecl
+  | IndexDecl
+  | IntegrityConstraintDecl
+;
 
 
-// [6e]
 DecimalFormatDecl
-    :   DECLARE  DEFAULT  DECIMAL_FORMAT  DecimalFormatParamList
-        {
-          $$ = new DecimalFormatNode(LOC(@$), $4);
-          delete $4;
-        }
-    |   DECLARE  DECIMAL_FORMAT  QNAME  DecimalFormatParamList
-        {
-          $$ = new DecimalFormatNode(LOC(@$), static_cast<QName*>($3), $4);
-          delete $4;
-        }
-    ;
+  :
+    DECLARE  DEFAULT  DECIMAL_FORMAT  DecimalFormatParamList
+    {
+      $$ = new DecimalFormatNode(LOC(@$), $4);
+      delete $4;
+    }
+  |
+    DECLARE  DECIMAL_FORMAT  QNAME  DecimalFormatParamList
+    {
+      $$ = new DecimalFormatNode(LOC(@$), static_cast<QName*>($3), $4);
+      delete $4;
+    }
+;
 
 
 DecimalFormatParamList
-    :   DecimalFormatParam
-        {
-          $$ = new vector<string_pair_t>();
-          $$->push_back( *$1 );
-          delete $1;
-        }
-    |   DecimalFormatParamList DecimalFormatParam
-        {
-          $1->push_back( *$2 );
-          delete $2;
-          $$ = $1;
-        }
-    ;
+  :
+    DecimalFormatParam
+    {
+      $$ = new vector<string_pair_t>();
+      $$->push_back( *$1 );
+      delete $1;
+    }
+  |
+    DecimalFormatParamList DecimalFormatParam
+    {
+      $1->push_back( *$2 );
+      delete $2;
+      $$ = $1;
+    }
+;
+
 
 DecimalFormatParam
-    :   DecimalFormatParamName EQUALS StringLiteral
-        {
-            StringLiteral *sl = static_cast<StringLiteral*>($3);
-            $$ = new string_pair_t( $1, sl->get_strval().str() );
-            delete sl;
-        }
-    ;
+  :
+    DecimalFormatParamName EQUALS StringLiteral
+    {
+      StringLiteral *sl = static_cast<StringLiteral*>($3);
+      $$ = new string_pair_t( $1, sl->get_strval().str() );
+      delete sl;
+    }
+;
+
 
 DecimalFormatParamName
     :   DECIMAL_SEPARATOR   { $$ = "decimal-separator"; }
@@ -1301,376 +1591,378 @@ DecimalFormatParamName
     |   ZERO_DIGIT          { $$ = "zero-digit"; }
     ;
 
-// [7]
-Setter
-    :   BoundarySpaceDecl
-    |   DefaultCollationDecl
-    |   BaseURIDecl
-    |   ConstructionDecl
-    |   OrderingModeDecl
-    |   EmptyOrderDecl
-    |   CopyNamespacesDecl
 
-    /* update extension */
-    |   RevalidationDecl
-    ;
-
-// [8]
-Import
-    :   SchemaImport
-    |   ModuleImport
-        //  ============================ Improved error messages ============================
-    |   IMPORT QNAME_SVAL error
-        {
-          $$ = $$; // to prevent the Bison warning
-          error(@2, "syntax error, \"import\" should be followed by either \"schema\" or \"module\".");
-          YYERROR;
-        }
-    ;
-
-// [10]
-NamespaceDecl
-    :   DECLARE NAMESPACE NCNAME EQUALS URI_LITERAL
-        {
-            $$ = new NamespaceDecl( LOC(@$), SYMTAB($3), SYMTAB($5) );
-        }
-    ;
-
-// [11]
-BoundarySpaceDecl
-    :   DECLARE BOUNDARY_SPACE PRESERVE
-        {
-          $$ = new BoundarySpaceDecl(
-                LOC(@$), StaticContextConsts::preserve_space
-            );
-        }
-    |   DECLARE BOUNDARY_SPACE STRIP
-        {
-          $$ = new BoundarySpaceDecl(
-                LOC(@$), StaticContextConsts::strip_space
-            );
-        }
-    ;
-
-// [12]
-DefaultNamespaceDecl
-    :   DECLARE DEFAULT ELEMENT NAMESPACE URI_LITERAL
-        {
-          $$ = new DefaultNamespaceDecl(
-                LOC(@$), ParseConstants::ns_element_default, SYMTAB($5)
-            );
-        }
-    |   DECLARE DEFAULT FUNCTION NAMESPACE URI_LITERAL
-        {
-          $$ = new DefaultNamespaceDecl(
-                LOC(@$), ParseConstants::ns_function_default, SYMTAB($5)
-            );
-        }
-    ;
-
-// [13]
 OptionDecl
-    :   DECLARE OPTION QNAME STRING_LITERAL
-        {
-          $$ = new OptionDecl(
-                LOC(@$), static_cast<QName*>($3), SYMTAB($4)
-            );
-        }
-    ;
-
-// [14]
-FTOptionDecl
-    :   DECLARE FT_OPTION FTMatchOptions
-        {
-          $$ = new FTOptionDecl( LOC(@$), dynamic_cast<FTMatchOptions*>($3) );
-        }
-    ;
-
-// [14]
-OrderingModeDecl
-    :   DECLARE ORDERING ORDERED
-        {
-          $$ = new OrderingModeDecl(
-                LOC(@$), StaticContextConsts::ordered
-            );
-        }
-    |   DECLARE ORDERING UNORDERED
-        {
-          $$ = new OrderingModeDecl(
-                LOC(@$), StaticContextConsts::unordered
-            );
-        }
-    ;
-
-
-// [15]
-EmptyOrderDecl
-    :   DECLARE DEFAULT ORDER _EMPTY GREATEST
-        {
-          $$ = new EmptyOrderDecl( LOC(@$),
-                                StaticContextConsts::empty_greatest);
-        }
-    |   DECLARE DEFAULT ORDER _EMPTY LEAST
-        {
-          $$ = new EmptyOrderDecl( LOC(@$),
-                                StaticContextConsts::empty_least);
-        }
-    ;
-
-// [16] CopyNamespacesDecl
-// -----------------------
-CopyNamespacesDecl :
-        DECLARE COPY_NAMESPACES  PRESERVE  COMMA  INHERIT
-        {
-          $$ = new CopyNamespacesDecl( LOC(@$),
-                                StaticContextConsts::preserve_ns,
-                                StaticContextConsts::inherit_ns);
-        }
-    | DECLARE COPY_NAMESPACES  PRESERVE  COMMA  NO_INHERIT
-        {
-          $$ = new CopyNamespacesDecl( LOC(@$),
-                                StaticContextConsts::preserve_ns,
-                                StaticContextConsts::no_inherit_ns);
-        }
-    | DECLARE COPY_NAMESPACES  NO_PRESERVE  COMMA  INHERIT
-        {
-          $$ = new CopyNamespacesDecl( LOC(@$),
-                                StaticContextConsts::no_preserve_ns,
-                                StaticContextConsts::inherit_ns);
-        }
-    | DECLARE COPY_NAMESPACES  NO_PRESERVE  COMMA  NO_INHERIT
-        {
-          $$ = new CopyNamespacesDecl( LOC(@$),
-                                StaticContextConsts::no_preserve_ns,
-                                StaticContextConsts::no_inherit_ns);
-        }
-    ;
-
-
-// [17]
-// PreserveMode
-
-// [18]
-// InheritMode
-
-// [19]
-DefaultCollationDecl
-    :   DECLARE DEFAULT COLLATION URI_LITERAL
-        {
-          $$ = new DefaultCollationDecl( LOC(@$), SYMTAB($4) );
-        }
-    ;
-
-// [20]
-BaseURIDecl
-    :   DECLARE BASE_URI URI_LITERAL
-        {
-          $$ = new BaseURIDecl( LOC(@$), SYMTAB($3) );
-        }
-    ;
-
-// [21]
-SchemaImport
-    :   IMPORT SCHEMA URI_LITERAL
-        {
-          $$ = new SchemaImport( LOC(@$), NULL, SYMTAB($3), NULL );
-        }
-    |   IMPORT SCHEMA SchemaPrefix URI_LITERAL
-        {
-          $$ = new SchemaImport(
-                LOC(@$),
-                dynamic_cast<SchemaPrefix*>($3),
-                SYMTAB($4),
-                NULL
-            );
-        }
-    |   IMPORT SCHEMA URI_LITERAL AT URILiteralList
-        {
-          $$ = new SchemaImport(
-                LOC(@$),
-                NULL,
-                SYMTAB($3),
-                dynamic_cast<URILiteralList*>($5)
-            );
-        }
-    |   IMPORT SCHEMA SchemaPrefix URI_LITERAL AT URILiteralList
-        {
-          $$ = new SchemaImport(
-                LOC(@$),
-                dynamic_cast<SchemaPrefix*>($3),
-                SYMTAB($4),
-                dynamic_cast<URILiteralList*>($6)
-            );
-        }
-    ;
-
-// [21a]
-URILiteralList
-    :   URI_LITERAL
-        {
-            URILiteralList *ull = new URILiteralList( LOC(@$));
-            ull->push_back( SYMTAB($1) );
-            $$ = ull;
-        }
-    |   URILiteralList COMMA URI_LITERAL
-        {
-            if ( URILiteralList *ull = dynamic_cast<URILiteralList*>($1) )
-                ull->push_back( SYMTAB($3) );
-            $$ = $1;
-        }
-    ;
-
-
-// [22]
-SchemaPrefix
-    :   NAMESPACE NCNAME EQUALS
-        {
-            $$ = new SchemaPrefix( LOC(@$), SYMTAB($2) );
-        }
-    |   DEFAULT ELEMENT NAMESPACE
-        {
-            $$ = new SchemaPrefix( LOC(@$), true );
-        }
-    ;
-
-// [23]
-ModuleImport :
-    IMPORT MODULE URI_LITERAL
+  :
+    DECLARE OPTION QNAME STRING_LITERAL
     {
-      $$ = new ModuleImport(LOC(@$), SYMTAB($3), NULL);
-      dynamic_cast<ModuleImport *>($$)->setComment(SYMTAB($2));
-    }
-  | IMPORT MODULE NAMESPACE  NCNAME  EQUALS  URI_LITERAL
-    {
-      $$ = new ModuleImport(LOC(@$), SYMTAB($4), SYMTAB($6), NULL);
-      dynamic_cast<ModuleImport *>($$)->setComment(SYMTAB($2));
-    }
-  | IMPORT MODULE URI_LITERAL AT URILiteralList
-    {
-      $$ = new ModuleImport(LOC(@$),
-                            SYMTAB($3),
-                            dynamic_cast<URILiteralList*>($5));
-      dynamic_cast<ModuleImport *>($$)->setComment(SYMTAB($2));
-    }
-  | IMPORT MODULE NAMESPACE  NCNAME  EQUALS  URI_LITERAL  AT  URILiteralList
-    {
-      $$ = new ModuleImport(LOC(@$),
-                            SYMTAB($4),
-                            SYMTAB($6),
-                            dynamic_cast<URILiteralList*>($8));
-      dynamic_cast<ModuleImport *>($$)->setComment(SYMTAB($2));
+      $$ = new OptionDecl(LOC(@$), static_cast<QName*>($3), SYMTAB($4));
     }
 ;
 
-// ContextItemDecl
 
-CtxItemDecl
-    :   DECLARE CONTEXT ITEM CtxItemDecl2
-        {
-            $$ = $4;
-        }
-    ;
+FTOptionDecl
+  :
+    DECLARE FT_OPTION FTMatchOptions
+    {
+      $$ = new FTOptionDecl( LOC(@$), dynamic_cast<FTMatchOptions*>($3) );
+    }
+;
 
-CtxItemDecl2
-    :   AS ItemType CtxItemDecl3
-        {
-            CtxItemDecl *d = dynamic_cast<CtxItemDecl*>($3);
-            d->type = $2;
-            $$ = d;
-        }
-    |   CtxItemDecl3
-        {
-            $$ = $1;
-        }
-    ;
 
-CtxItemDecl3
-    :   CtxItemDecl4
-        {
-            CtxItemDecl *d = dynamic_cast<CtxItemDecl*>($1);
-            d->ext = false;
-            $$ = d;
-        }
-    |   EXTERNAL
-        {
-            $$ = new CtxItemDecl( LOC(@$), NULL );
-        }
-    |   EXTERNAL CtxItemDecl4
-        {
-            $$ = $2;
-        }
-    ;
+CtxItemDecl 
+  :
+    DECLARE CONTEXT ITEM CtxItemDecl2
+    {
+      $$ = $4;
+    }
+;
+
+
+CtxItemDecl2 
+  :
+    AS ItemType CtxItemDecl3
+    {
+      CtxItemDecl* d = dynamic_cast<CtxItemDecl*>($3);
+      d->theType = $2;
+      $$ = d;
+    }
+  | 
+    CtxItemDecl3
+    {
+      $$ = $1;
+    }
+;
+
+
+CtxItemDecl3 
+  :   
+    CtxItemDecl4
+    {
+      CtxItemDecl* d = dynamic_cast<CtxItemDecl*>($1);
+      d->theIsExternal = false;
+      $$ = d;
+    }
+  |
+    EXTERNAL
+    {
+      $$ = new CtxItemDecl(LOC(@$), NULL);
+    }
+  |
+    EXTERNAL CtxItemDecl4
+    {
+      $$ = $2;
+    }
+;
+
 
 CtxItemDecl4
-    :   GETS ExprSingle
-        {
-            $$ = new CtxItemDecl( LOC(@$), $2 );
-        }
-    ;
-
-
-// [24] VarDecl
-// ------------
-
-VarNameAndType :
-    DECLARE VARIABLE DOLLAR QNAME
+  :
+    GETS ExprSingle
     {
-      $$ = new VarNameAndType(LOC(@$), static_cast<QName*>($4), NULL, NULL);
-      dynamic_cast<VarNameAndType*>($$)->setComment(SYMTAB($1));
+      $$ = new CtxItemDecl(LOC(@$), $2);
     }
-  | DECLARE VARIABLE DOLLAR QNAME TypeDeclaration
-    {
-      $$ = new VarNameAndType(LOC(@$), static_cast<QName*>($4), dynamic_cast<SequenceType *>($5), NULL);
-      dynamic_cast<VarNameAndType*>($$)->setComment(SYMTAB($1));
-    }
-  | DECLARE AnnotationList VARIABLE DOLLAR QNAME
-    {
-      $$ = new VarNameAndType(LOC(@$), static_cast<QName*>($5), NULL, static_cast<AnnotationListParsenode*>($2));
-      dynamic_cast<VarNameAndType*>($$)->setComment(SYMTAB($1));
-    }
-  | DECLARE AnnotationList VARIABLE DOLLAR QNAME TypeDeclaration
-    {
-      $$ = new VarNameAndType(LOC(@$), static_cast<QName*>($5), dynamic_cast<SequenceType *>($6), static_cast<AnnotationListParsenode*>($2));
-      dynamic_cast<VarNameAndType*>($$)->setComment(SYMTAB($1));
-    }
-  ;
+;
 
 
-VarDecl :
+VarDecl 
+  :
     VarNameAndType GETS ExprSingle
     {
       std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>($1));
-      $$ = new VarDecl(LOC(@$), nt->theName, nt->theType, $3, nt->get_annotations());
+
+      $$ = new VarDecl(LOC(@$),
+                       nt->theName,
+                       nt->theType,
+                       $3,
+                       nt->get_annotations(),
+                       true,    // global
+                       false);  // not external
+
       dynamic_cast<VarDecl*>($$)->setComment(nt->getCommentString());
     }
-  | VarNameAndType EXTERNAL
+  | 
+    VarNameAndType EXTERNAL
     {
       std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>($1));
-      $$ = new VarDecl(LOC(@$), nt->theName, nt->theType, NULL, nt->get_annotations(), true);
+
+      $$ = new VarDecl(LOC(@$), 
+                       nt->theName, 
+                       nt->theType, 
+                       NULL,   // no init expr
+                       nt->get_annotations(), 
+                       true,   // global
+                       true);  // external
+
       dynamic_cast<VarDecl*>($$)->setComment(nt->getCommentString());
     }
-  | VarNameAndType EXTERNAL GETS ExprSingle
+  |
+    VarNameAndType EXTERNAL GETS ExprSingle
     {
       std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>($1));
-      $$ = new VarDecl(LOC(@$), nt->theName, nt->theType, $4, nt->get_annotations(), true);
+
+      $$ = new VarDecl(LOC(@$), 
+                       nt->theName, 
+                       nt->theType, 
+                       $4,     // init expr
+                       nt->get_annotations(), 
+                       true,   // global
+                       true);  // external
+
       dynamic_cast<VarDecl*>($$)->setComment(nt->getCommentString());
     }
   ;
 
-DeclPropertyList
-    :   DeclProperty
-        {
-            DeclPropertyList *dpl = new DeclPropertyList( LOC(@$) );
-            dpl->addProperty(dynamic_cast<DeclProperty*>($1));
-            $$ = dpl;
-        }
-    |   DeclPropertyList DeclProperty
+VarNameAndType 
+  :
+    DECLARE VARIABLE DOLLAR QNAME
     {
-        DeclPropertyList *dpl = dynamic_cast<DeclPropertyList*>($1);
-        dpl->addProperty( static_cast<DeclProperty*>($2) );
-        $$ = $1;
+      $$ = new VarNameAndType(LOC(@$), static_cast<QName*>($4), NULL, NULL);
+
+      dynamic_cast<VarNameAndType*>($$)->setComment(SYMTAB($1));
+    }
+  | 
+    DECLARE VARIABLE DOLLAR QNAME TypeDeclaration
+    {
+      $$ = new VarNameAndType(LOC(@$), 
+                              static_cast<QName*>($4), 
+                              dynamic_cast<SequenceType *>($5), 
+                              NULL);
+
+      dynamic_cast<VarNameAndType*>($$)->setComment(SYMTAB($1));
+    }
+  | 
+    DECLARE AnnotationList VARIABLE DOLLAR QNAME
+    {
+      $$ = new VarNameAndType(LOC(@$), 
+                              static_cast<QName*>($5), 
+                              NULL, 
+                              static_cast<AnnotationListParsenode*>($2));
+
+      dynamic_cast<VarNameAndType*>($$)->setComment(SYMTAB($1));
+    }
+  | 
+    DECLARE AnnotationList VARIABLE DOLLAR QNAME TypeDeclaration
+    {
+      $$ = new VarNameAndType(LOC(@$), 
+                              static_cast<QName*>($5), 
+                              dynamic_cast<SequenceType *>($6), 
+                              static_cast<AnnotationListParsenode*>($2));
+
+      dynamic_cast<VarNameAndType*>($$)->setComment(SYMTAB($1));
     }
   ;
+
+
+AnnotationList
+  :
+    Annotation
+    {
+      $$ = new AnnotationListParsenode(LOC(@$), static_cast<AnnotationParsenode*>($1));
+    }
+  |
+    AnnotationList Annotation
+    {
+      static_cast<AnnotationListParsenode*>($1)->push_back(static_cast<AnnotationParsenode*>($2));
+      $$ = $1;
+    }
+;
+
+
+Annotation
+  :
+    ANNOTATION_QNAME_SVAL
+    {
+      $$ = new AnnotationParsenode(LOC(@$), new QName(LOC(@$), SYMTAB($1)), NULL);
+    }
+  |
+    ANNOTATION_QNAME_SVAL LPAR AnnotationLiteralList RPAR
+    {
+      $$ = new AnnotationParsenode(LOC(@$),
+                                   new QName(LOC(@$), SYMTAB($1)),
+                                   static_cast<AnnotationLiteralListParsenode*>($3));
+    }
+;
+
+
+AnnotationLiteralList
+  :
+    Literal
+    {
+      $$ = new AnnotationLiteralListParsenode(LOC(@$), $1);
+    }
+  |
+    AnnotationLiteralList COMMA Literal
+    {
+      static_cast<AnnotationLiteralListParsenode*>($1)->push_back($3);
+      $$ = $1;
+    }
+;
+
+
+FunctionDecl
+  :
+    DECLARE FunctionDecl2
+    {
+      static_cast<FunctionDecl*>($2)->setComment( SYMTAB($1) );
+      $$ = $2;
+    }
+  |
+    DECLARE AnnotationList FunctionDecl2
+    {
+      FunctionDecl* fdecl = static_cast<FunctionDecl*>($3);
+
+      fdecl->setComment( SYMTAB($1) );
+
+      fdecl->set_annotations(static_cast<AnnotationListParsenode*>($2));
+      $$ = $3;
+    }
+;
+
+
+FunctionDecl2
+  :
+    FunctionDeclSimple
+    {
+      $$ = $1;
+    }
+  |
+    FunctionDeclUpdating
+    {
+      $$ = $1;
+    }
+;
+
+
+FunctionDeclSimple 
+  :
+    FUNCTION FUNCTION_NAME FunctionSig Block
+    {
+      $$ = new FunctionDecl(LOC(@$),
+                            static_cast<QName*>($2),
+                            &* $3->theParams,
+                            &* $3->theReturnType,
+                            $4,      // body
+                            false,   // not explicitly updating
+                            false);  // not external
+      delete $3;
+    }
+  | FUNCTION FUNCTION_NAME FunctionSig EXTERNAL
+    {
+      $$ = new FunctionDecl(LOC (@$),
+                            static_cast<QName*>($2),
+                            $3->theParams.getp(),
+                            $3->theReturnType.getp(),
+                            NULL,   // no body
+                            false,   // not explicitly updating
+                            true);  // external
+      delete $3;
+    }
+  ;
+
+
+FunctionDeclUpdating 
+  :
+    UPDATING FUNCTION FUNCTION_NAME FunctionSig LBRACE ConcatExpr RBRACE
+    {
+      $$ = new FunctionDecl(LOC (@$),
+                            static_cast<QName*>($3),
+                            $4->theParams.getp(),
+                            $4->theReturnType.getp(),
+                            $6,    // body
+                            true,  // updating
+                            false);// not external
+      delete $4;
+    }
+  |
+    UPDATING FUNCTION FUNCTION_NAME FunctionSig EXTERNAL
+    {
+      $$ = new FunctionDecl(LOC(@$),
+                            static_cast<QName*>($3),
+                            $4->theParams.getp(),
+                            $4->theReturnType.getp(),
+                            NULL,  // no body
+                            true,  // updating
+                            true); // external
+      delete $4;
+    }
+;
+
+
+FunctionSig
+  :
+    LPAR RPAR
+    {
+      $$ = new FunctionSig(NULL);
+    }
+  |
+    LPAR ParamList RPAR
+    {
+      $$ = new FunctionSig(dynamic_cast<ParamList*>($2));
+    }
+  |
+    LPAR RPAR AS SequenceType
+    {
+      $$ = new FunctionSig(NULL, dynamic_cast<SequenceType*>($4));
+    }
+  |
+    LPAR ParamList RPAR AS SequenceType
+    {
+      $$ = new FunctionSig(dynamic_cast<ParamList*>($2), dynamic_cast<SequenceType*>($5));
+    }
+;
+
+
+ParamList
+  :   
+    Param
+    {
+      ParamList *pl = new ParamList( LOC(@$) );
+      pl->push_back( dynamic_cast<Param*>($1) );
+      $$ = pl;
+    }
+  |
+    ParamList COMMA Param
+    {
+      if ( ParamList *pl = dynamic_cast<ParamList*>($1) )
+        pl->push_back( dynamic_cast<Param*>($3) );
+
+      $$ = $1;
+    }
+;
+
+
+Param 
+  :
+    DOLLAR  QNAME
+    {
+      $$ = new Param(LOC(@$), static_cast<QName*>($2), NULL);
+    }
+  |
+    DOLLAR  QNAME  TypeDeclaration
+    {
+      $$ = new Param(LOC(@$),
+                     static_cast<QName*>($2),
+                     dynamic_cast<SequenceType *>($3));
+    }
+;
+
+
+DeclPropertyList :
+    DeclProperty
+    {
+      DeclPropertyList *dpl = new DeclPropertyList( LOC(@$) );
+      dpl->addProperty(dynamic_cast<DeclProperty*>($1));
+      $$ = dpl;
+    }
+  | DeclPropertyList DeclProperty
+    {
+      DeclPropertyList *dpl = dynamic_cast<DeclPropertyList*>($1);
+      dpl->addProperty( static_cast<DeclProperty*>($2) );
+      $$ = $1;
+    }
+  ;
+
 
 DeclProperty
     :   CONSTOPT
@@ -1975,124 +2267,118 @@ IntegrityConstraintDecl :
     }
   ;
 
-// [25]
-ConstructionDecl
-    :   DECLARE CONSTRUCTION PRESERVE
-        {
-            $$ = new ConstructionDecl(
-                LOC(@$), StaticContextConsts::cons_preserve
-            );
-        }
-    |   DECLARE CONSTRUCTION STRIP
-        {
-            $$ = new ConstructionDecl(
-                LOC(@$), StaticContextConsts::cons_strip
-            );
-        }
-    ;
 
-
-// [26]
-FunctionSig
-    :   LPAR RPAR
-        {
-            $$ = new FunctionSig( NULL );
-        }
-    |   LPAR ParamList RPAR
-        {
-            $$ = new FunctionSig( dynamic_cast<ParamList*>($2) );
-        }
-    |   LPAR RPAR AS SequenceType
-        {
-            $$ = new FunctionSig( NULL, dynamic_cast<SequenceType*>($4) );
-        }
-    |   LPAR ParamList RPAR AS SequenceType
-        {
-            $$ = new FunctionSig(dynamic_cast<ParamList*>($2), dynamic_cast<SequenceType*>($5));
-        }
-  ;
 
 BlockExpr
     : BLOCK Block
-        {
-            $$ = $2;
-        }
+      {
+        $$ = $2;
+      }
     ;
 
 Block
-    :   LBRACE BlockDecls Expr RBRACE
+    : LBRACE BlockDecls Expr RBRACE
+      {
+        if ( !$2 ) 
         {
-            if ( !$2 ) {
-                $$ = $3;
-            } else {
-                BlockBody *bb = dynamic_cast<BlockBody*>($3);
-                VFO_DeclList *vfo = dynamic_cast<VFO_DeclList*>($2);
-                if ( !bb ) {
-                    bb = new BlockBody( $3->get_location(), vfo );
-                    bb->add( $3 );
-                } else {
-                    bb->set_decls( vfo );
-                }
-                $$ = bb;
-            }
+          $$ = $3;
         }
+        else 
+        {
+          BlockBody *bb = dynamic_cast<BlockBody*>($3);
+          VFO_DeclList *vfo = dynamic_cast<VFO_DeclList*>($2);
+          if ( !bb ) {
+            bb = new BlockBody( $3->get_location(), vfo );
+            bb->add( $3 );
+          } else {
+            bb->set_decls( vfo );
+          }
+          $$ = bb;
+        }
+      }
     ;
 
-BlockDecls
-    :   BlockDecls BlockVarDeclList SEMI
-        {
-            VFO_DeclList *vfo = dynamic_cast<VFO_DeclList*>($1);
-            auto_ptr<VFO_DeclList> vfo2( dynamic_cast<VFO_DeclList*>($2) );
-            if ( !$1 )
-                vfo = new VFO_DeclList( LOC(@$) );
-            vfo->push_back( *vfo2.get() );
-            $$ = vfo;
-        }
-    |
-        {
-            $$ = NULL;
-        }
-    ;
+BlockDecls :
+    BlockDecls BlockVarDeclList SEMI
+    {
+      VFO_DeclList* vfo = dynamic_cast<VFO_DeclList*>($1);
+      auto_ptr<VFO_DeclList> vfo2( dynamic_cast<VFO_DeclList*>($2) );
 
-BlockVarDeclList
-    :   BlockVarDeclList COMMA BlockVarDecl
-        {
-            VFO_DeclList *vfo = dynamic_cast<VFO_DeclList*>($1);
-            vfo->push_back( $3 );
-            $$ = vfo;
-        }
-    |   DECLARE BlockVarDecl
-        {
-            VFO_DeclList *vfo = new VFO_DeclList( LOC(@$) );
-            vfo->push_back($2);
-            $$ = vfo;
-        }
-    ;
+      if ( !$1 )
+        vfo = new VFO_DeclList( LOC(@$) );
+
+      vfo->push_back( *vfo2.get() );
+      $$ = vfo;
+    }
+  |
+    {
+      $$ = NULL;
+    }
+  ;
+
+BlockVarDeclList :
+    BlockVarDeclList COMMA BlockVarDecl
+    {
+      VFO_DeclList* vfo = dynamic_cast<VFO_DeclList*>($1);
+      vfo->push_back( $3 );
+      $$ = vfo;
+    }
+  | DECLARE BlockVarDecl
+    {
+      VFO_DeclList* vfo = new VFO_DeclList( LOC(@$) );
+      vfo->push_back($2);
+      $$ = vfo;
+    }
+  ;
 
 
-BlockVarDecl:
+BlockVarDecl :
     DOLLAR QNAME
     {
-      VarDecl* vd = new VarDecl(LOC(@$), static_cast<QName*>($2), NULL, NULL, NULL);
+      VarDecl* vd = new VarDecl(LOC(@$), 
+                                static_cast<QName*>($2),
+                                NULL,  // no type
+                                NULL,  // no init expr
+                                NULL,  // no annotations
+                                false, // not global
+                                false);// not external
       vd->set_global(false);
       $$ = vd;
     }
   | DOLLAR QNAME TypeDeclaration
     {
-      VarDecl* vd = new VarDecl(LOC(@$), static_cast<QName*>($2), dynamic_cast<SequenceType*>($3), NULL, NULL);
+      VarDecl* vd = new VarDecl(LOC(@$),
+                                static_cast<QName*>($2),
+                                dynamic_cast<SequenceType*>($3), // type
+                                NULL,  // no init expr
+                                NULL,  // no annotations
+                                false, // not global
+                                false);// not external
 
       vd->set_global(false);
       $$ = vd;
     }
   | DOLLAR QNAME GETS ExprSingle
     {
-      VarDecl* vd = new VarDecl(LOC(@$), static_cast<QName*>($2), NULL, $4, NULL);
+      VarDecl* vd = new VarDecl(LOC(@$),
+                                static_cast<QName*>($2),
+                                NULL,  // no type
+                                $4,    // init expr
+                                NULL,  // no annotations
+                                false, // not global
+                                false);// not external
       vd->set_global(false);
       $$ = vd;
     }
   | DOLLAR QNAME TypeDeclaration GETS ExprSingle
     {
-      VarDecl* vd = new VarDecl(LOC(@$), static_cast<QName*>($2), dynamic_cast<SequenceType*>($3), $5, NULL);
+      VarDecl* vd = new VarDecl(LOC(@$),
+                                static_cast<QName*>($2),
+                                dynamic_cast<SequenceType*>($3), // type
+                                $5,    // init expr
+                                NULL,  // no annotations
+                                false, // not global
+                                false);// not external
       vd->set_global(false);
       $$ = vd;
     }
@@ -2137,184 +2423,6 @@ FlowCtlStatement
     ;
 
 
-AnnotationList
-    :   Annotation
-        {
-            $$ = new AnnotationListParsenode( LOC(@$), static_cast<AnnotationParsenode*>($1));
-        }
-    |   AnnotationList Annotation
-        {
-            static_cast<AnnotationListParsenode*>($1)->push_back(static_cast<AnnotationParsenode*>($2));
-            $$ = $1;
-        }
-    ;
-
-Annotation
-    :   ANNOTATION_QNAME_SVAL
-        {
-            $$ = new AnnotationParsenode( LOC(@$), new QName(LOC(@$), SYMTAB($1)), NULL);
-        }
-    |   ANNOTATION_QNAME_SVAL LPAR AnnotationLiteralList RPAR
-        {
-            $$ = new AnnotationParsenode( LOC(@$), new QName(LOC(@$), SYMTAB($1)), static_cast<AnnotationLiteralListParsenode*>($3));
-        }
-    ;
-
-AnnotationLiteralList
-    :   Literal
-        {
-            $$ = new AnnotationLiteralListParsenode( LOC(@$), $1);
-        }
-    |   AnnotationLiteralList COMMA Literal
-        {
-            static_cast<AnnotationLiteralListParsenode*>($1)->push_back($3);
-            $$ = $1;
-        }
-    ;
-
-FunctionDecl
-    :   DECLARE FunctionDecl2
-        {
-            static_cast<FunctionDecl*>($2)->setComment( SYMTAB($1) );
-            $$ = $2;
-        }
-    |   DECLARE AnnotationList FunctionDecl2
-        {
-            static_cast<FunctionDecl*>($3)->setComment( SYMTAB($1) );
-            static_cast<FunctionDecl*>($3)->set_annotations(static_cast<AnnotationListParsenode*>($2));
-            $$ = $3;
-        }
-  ;
-
-FunctionDecl2 :
-    FunctionDeclSimple
-    {
-      $$ = $1;
-    }
-  | SIMPLE FunctionDeclSimple
-    {
-      $$ = $2;
-    }
-  | FunctionDeclUpdating
-    {
-      $$ = $1;
-    }
-  | FunctionDeclSequential
-    {
-      $$ = $1;
-    }
-  ;
-
-
-FunctionDeclSimple :
-    FUNCTION FUNCTION_NAME FunctionSig BracedExpr
-    {
-      $$ = new FunctionDecl(LOC (@$),
-                            static_cast<QName*>($2),
-                            &* $3->param,
-                            &* $3->ret,
-                            $4,
-                            ParseConstants::fn_read,
-                            NULL);
-      delete $3;
-    }
-  | FUNCTION FUNCTION_NAME FunctionSig EXTERNAL
-    {
-      $$ = new FunctionDecl(LOC (@$),
-                            static_cast<QName*>($2),
-                            &* $3->param,
-                            &* $3->ret,
-                            NULL,
-                            ParseConstants::fn_extern,
-                            NULL);
-      delete $3;
-    }
-  ;
-
-
-FunctionDeclSequential :
-    SEQUENTIAL FUNCTION FUNCTION_NAME FunctionSig Block
-    {
-      $$ = new FunctionDecl(LOC (@$),
-                            static_cast<QName*>($3),
-                            &* $4->param,
-                            &* $4->ret,
-                            $5,
-                            ParseConstants::fn_sequential,
-                            NULL);
-      delete $4;
-    }
-  | SEQUENTIAL FUNCTION FUNCTION_NAME FunctionSig EXTERNAL
-    {
-      $$ = new FunctionDecl(LOC (@$),
-                            static_cast<QName*>($3),
-                            &* $4->param,
-                            &* $4->ret,
-                            NULL,
-                            ParseConstants::fn_extern_sequential,
-                            NULL);
-      delete $4;
-    }
-  ;
-
-
-FunctionDeclUpdating :
-    UPDATING FUNCTION FUNCTION_NAME FunctionSig LBRACE ConcatExpr RBRACE
-    {
-      $$ = new FunctionDecl(LOC (@$),
-                            static_cast<QName*>($3),
-                            &* $4->param,
-                            &* $4->ret,
-                            $6,
-                            ParseConstants::fn_update,
-                            NULL);
-      delete $4;
-    }
-  | UPDATING FUNCTION FUNCTION_NAME FunctionSig EXTERNAL
-    {
-      $$ = new FunctionDecl(LOC (@$),
-                            static_cast<QName*>($3),
-                            &* $4->param,
-                            &* $4->ret,
-                            NULL,
-                            ParseConstants::fn_extern_update,
-                            NULL);
-      delete $4;
-    }
-  ;
-
-
-// [27]
-ParamList
-    :   Param
-        {
-            ParamList *pl = new ParamList( LOC(@$) );
-            pl->push_back( dynamic_cast<Param*>($1) );
-            $$ = pl;
-        }
-    |   ParamList COMMA Param
-        {
-            if ( ParamList *pl = dynamic_cast<ParamList*>($1) )
-                pl->push_back( dynamic_cast<Param*>($3) );
-            $$ = $1;
-        }
-    ;
-
-
-// [28] Param
-// ----------
-Param :
-    DOLLAR  QNAME
-    {
-      $$ = new Param(LOC(@$), static_cast<QName*>($2), NULL);
-    }
-  | DOLLAR  QNAME  TypeDeclaration
-    {
-      $$ = new Param(LOC(@$),
-                     static_cast<QName*>($2),
-                     dynamic_cast<SequenceType *>($3));
-    }
-;
 
 
 // [29]
@@ -5077,59 +5185,57 @@ StringLiteral
 // [161] FunctionItemExpr
 // ------------
 FunctionItemExpr :
-        LiteralFunctionItem
-        {
-            $$ = $1;
-        }
-    |   InlineFunction
-        {
-            $$ = $1;
-        }
-    ;
+    LiteralFunctionItem
+    {
+      $$ = $1;
+    }
+  | InlineFunction
+    {
+      $$ = $1;
+    }
+;
 
-// [162] FunctionItemExpr
-// ------------
+
 LiteralFunctionItem :
-        QNAME HASH INTEGER_LITERAL
-        {
-          $$ = new LiteralFunctionItem(LOC (@$), dynamic_cast<QName*>($1), $3);
-        }
-    ;
+    QNAME HASH INTEGER_LITERAL
+    {
+      $$ = new LiteralFunctionItem(LOC (@$), dynamic_cast<QName*>($1), $3);
+    }
+;
 
-// [163] InlineFunction
-// ------------
+
 InlineFunction :
-        FUNCTION FunctionSig EnclosedExpr
-        {
-          $$ = new InlineFunction(LOC (@$), &*$2->param, &*$2->ret, dynamic_cast<EnclosedExpr *>($3));
-          delete $2;
-        }
-    ;
+    FUNCTION FunctionSig EnclosedExpr
+    {
+      $$ = new InlineFunction(LOC(@$),
+                              &*$2->theParams,
+                              &*$2->theReturnType, 
+                              dynamic_cast<EnclosedExpr *>($3));
+      delete $2;
+    }
+;
 
-// [189] FunctionTest
-// ------------
+
 FunctionTest :
-        AnyFunctionTest
-        {
-            $$ = $1;
-        }
-    |   TypedFunctionTest
-        {
-           $$ = $1;
-        }
-    ;
+    AnyFunctionTest
+    {
+      $$ = $1;
+    }
+  | TypedFunctionTest
+    {
+      $$ = $1;
+    }
+;
 
-// [190] FunctionTest
-// ------------
+
 AnyFunctionTest :
-        FUNCTION LPAR STAR RPAR
-        {
-            $$ = new AnyFunctionTest(LOC(@$));
-        }
-    ;
+    FUNCTION LPAR STAR RPAR
+    {
+      $$ = new AnyFunctionTest(LOC(@$));
+    }
+;
 
-// [191] FunctionTest
-// ------------
+
 TypedFunctionTest :
         FUNCTION LPAR  RPAR AS SequenceType
         {

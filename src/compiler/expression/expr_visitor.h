@@ -41,18 +41,10 @@ public:
   virtual void end_visit( C& ) = 0
 
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( function_trace_expr );
-#ifdef ZORBA_WITH_DEBUGGER
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( debugger_expr );
-#endif
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( wrapper_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( sequential_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( var_decl_expr );
+
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( var_expr );
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( flwor_expr );
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( promote_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( trycatch_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( eval_expr );
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( if_expr );
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( fo_expr );
 #ifndef ZORBA_NO_FULL_TEXT
@@ -75,17 +67,31 @@ public:
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( attr_expr );
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( text_expr );
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( pi_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( insert_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( delete_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( rename_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( replace_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( transform_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( exit_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( while_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( flowctl_expr );
 
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( trycatch_expr );
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( function_item_expr );
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( dynamic_function_invocation_expr );
+
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS(insert_expr);
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS(delete_expr);
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS(rename_expr);
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS(replace_expr);
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS(transform_expr);
+
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS(block_expr);
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS(var_decl_expr);
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS(apply_expr);
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS(exit_expr);
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS(while_expr);
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS(flowctl_expr);
+
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS(eval_expr);
+#ifdef ZORBA_WITH_DEBUGGER
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS(debugger_expr);
+#endif
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS(function_trace_expr);
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS(wrapper_expr);
+
 
 #undef DECL_EXPR_VISITOR_VISIT_MEM_FNS
 #define DECL_EXPR_VISITOR_VISIT_MEM_FNS(C)  \

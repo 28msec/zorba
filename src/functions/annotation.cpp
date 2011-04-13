@@ -158,15 +158,18 @@ AnnotationInternal::AnnotationInternal(const AnnotationParsenode* annotation)
   }
 }
 
+
 const store::Item* AnnotationInternal::getQName() const
 {
   return theQName.getp();
 }
 
+
 unsigned int AnnotationInternal::getLiteralsCount() const
 {
   return (unsigned int)theLiteralList.size();
 }
+
 
 const AnnotationLiteral* AnnotationInternal::getLiteral(unsigned int index) const
 {

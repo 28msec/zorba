@@ -21,7 +21,7 @@
 #include "common/shared_types.h"
 
 #include "compiler/expression/flwor_expr.h"
-#include "compiler/expression/expr.h"
+#include "compiler/expression/update_exprs.h"
 
 namespace zorba
 {

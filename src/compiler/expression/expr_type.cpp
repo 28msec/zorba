@@ -24,6 +24,8 @@
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/path_expr.h"
 #include "compiler/expression/fo_expr.h"
+#include "compiler/expression/script_exprs.h"
+#include "compiler/expression/update_exprs.h"
 #include "compiler/expression/var_expr.h"
 #include "compiler/expression/expr.h"
 #include "compiler/expression/expr_iter.h"
@@ -97,42 +99,6 @@ void expr::compute_return_type(bool deep, bool* modified)
 
   switch (kind)
   {
-  case sequential_expr_kind:
-  {
-    sequential_expr* e = static_cast<sequential_expr*>(this);
-
-    // return type of a sequential expression is the union
-    // of the types of all exit expressions and the
-    // last expression of this sequential expression.
-    // This could be improved but would require much more control
-    // flow analysis.
-    // bugfix for bug #3042043
-    for (size_t i = 0; i < e->theArgs.size(); ++i)
-    {
-      if (dynamic_cast<exit_expr*>(e->theArgs[i].getp()) // exit expression
-          || i == e->theArgs.size() - 1) { // last expression
-        if (!newType.getp()) // first exit expression or last expression
-        {
-          newType = e->theArgs[i]->get_return_type();
-        }
-        else
-        {
-          newType = TypeOps::union_type(
-              *newType.getp(),
-              *e->theArgs[i]->get_return_type(),
-              tm);
-        }
-      }
-    }
-    break;
-  }
-
-  case trycatch_expr_kind:
-  {
-    theType = rtm.ITEM_TYPE_STAR; // TODO
-    return;
-  }
-
   case if_expr_kind:
   {
     if_expr* e = static_cast<if_expr*>(this);
@@ -250,6 +216,9 @@ void expr::compute_return_type(bool deep, bool* modified)
         derivedType = domainType;
       }
     }
+
+    // NOTE: no derived type should be computed for mutable global/local vars.
+    // TODO: compute derived type for const global/local vars.
 
     if (derivedType == NULL)
     {
@@ -603,20 +572,24 @@ void expr::compute_return_type(bool deep, bool* modified)
     break;
   }
 
-  case wrapper_expr_kind:
-  {
-    wrapper_expr* e = static_cast<wrapper_expr*>(this);
-
-    newType = e->theWrappedExpr->get_return_type();
-    break;
-  }
-
   case const_expr_kind:
   {
     const_expr* e = static_cast<const_expr*>(this);
 
     newType = tm->create_value_type(e->theValue.getp());
     break;
+  }
+
+  case extension_expr_kind:
+  {
+    theType = rtm.ITEM_TYPE_STAR; // TODO
+    return;
+  }
+
+  case trycatch_expr_kind:
+  {
+    theType = rtm.ITEM_TYPE_STAR; // TODO
+    return;
   }
 
   case dynamic_function_invocation_expr_kind:
@@ -628,31 +601,6 @@ void expr::compute_return_type(bool deep, bool* modified)
   case function_item_expr_kind:
   {
     theType = rtm.ANY_FUNCTION_TYPE_ONE;
-    return;
-  }
-
-  case extension_expr_kind:
-  {
-    theType = rtm.ITEM_TYPE_STAR; // TODO
-    return;
-  }
-
-  case eval_expr_kind:
-  {
-    theType = rtm.ITEM_TYPE_STAR; // TODO
-    return;
-  }
-
-  case function_trace_expr_kind:
-  {
-    function_trace_expr* e = static_cast<function_trace_expr*>(this);
-    theType = e->theExpr->get_return_type();
-    return;
-  }
-
-  case debugger_expr_kind:
-  {
-    theType = rtm.ITEM_TYPE_STAR; // TODO
     return;
   }
 
@@ -673,10 +621,59 @@ void expr::compute_return_type(bool deep, bool* modified)
     break;
   }
 
+  case block_expr_kind:
+  {
+    block_expr* e = static_cast<block_expr*>(this);
+
+    // return type of a sequential expression is the union
+    // of the types of all exit expressions and the
+    // last expression of this sequential expression.
+    // This could be improved but would require much more control
+    // flow analysis.
+    // bugfix for bug #3042043
+    for (size_t i = 0; i < e->theArgs.size(); ++i)
+    {
+      if (dynamic_cast<exit_expr*>(e->theArgs[i].getp()) // exit expression
+          || i == e->theArgs.size() - 1) 
+      { // last expression
+        if (!newType.getp()) // first exit expression or last expression
+        {
+          newType = e->theArgs[i]->get_return_type();
+        }
+        else
+        {
+          newType = TypeOps::union_type(*newType.getp(),
+                                        *e->theArgs[i]->get_return_type(),
+                                        tm);
+        }
+      }
+    }
+    break;
+  }
+
+  case apply_expr_kind:
+  {
+    apply_expr* e = static_cast<apply_expr*>(this);
+    if (e->theDiscardXDM)
+      newType = rtm.EMPTY_TYPE;
+    else
+      newType = e->theExpr->get_return_type();
+
+    break;
+  }
+
+  case var_decl_expr_kind:
+  {
+    theType = rtm.EMPTY_TYPE;
+    return;
+  }
+
   case exit_expr_kind:
   {
+    // TODO: should this be the empty-sequence type ???? Or should we check
+    // for an exit operand when computing the type of any other expr and
+    // just skip the exit ????
     exit_expr* e = static_cast<exit_expr*>(this);
-
     newType = e->theExpr->get_return_type();
     break;
   }
@@ -689,12 +686,11 @@ void expr::compute_return_type(bool deep, bool* modified)
 
   case while_expr_kind:
   {
-    theType = rtm.EMPTY_TYPE;
-    return;
-  }
-
-  case var_decl_expr_kind:
-  {
+#ifndef DEBUG
+    //while_expr* e = static_cast<while_expr*>(this);
+    //xqtref_t bodyType = e->get_body()->get_return_type();
+    //assert(TypeOps::is_equal(tm, *bodyType, *rtm.EMPTY_TYPE));
+#endif
     theType = rtm.EMPTY_TYPE;
     return;
   }
@@ -707,6 +703,32 @@ void expr::compute_return_type(bool deep, bool* modified)
   }
 #endif /* ZORBA_NO_FULL_TEXT */
 
+  case eval_expr_kind:
+  {
+    theType = rtm.ITEM_TYPE_STAR; // TODO
+    return;
+  }
+
+  case debugger_expr_kind:
+  {
+    theType = rtm.ITEM_TYPE_STAR; // TODO
+    return;
+  }
+
+  case function_trace_expr_kind:
+  {
+    function_trace_expr* e = static_cast<function_trace_expr*>(this);
+    newType = e->theExpr->get_return_type();
+    break;
+  }
+
+  case wrapper_expr_kind:
+  {
+    wrapper_expr* e = static_cast<wrapper_expr*>(this);
+    newType = e->theWrappedExpr->get_return_type();
+    break;
+  }
+
   default:
   {
     ZORBA_ASSERT(false);
@@ -715,7 +737,7 @@ void expr::compute_return_type(bool deep, bool* modified)
 
   assert(newType != NULL);
 
-  if (modified && 
+  if (modified != NULL && 
       (theType == NULL || !TypeOps::is_equal(tm, *newType, *theType)))
   {
     *modified = true;

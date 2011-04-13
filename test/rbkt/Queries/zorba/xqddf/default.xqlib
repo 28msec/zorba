@@ -14,7 +14,7 @@ declare automatically maintained unique value equality index def:user-by-uid
 declare variable $def:user-by-uid := xs:QName("def:user-by-uid");
 
 
-declare sequential function def:init()
+declare %sequential function def:init()
 {
   init:create-collection($def:user);
 

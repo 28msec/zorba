@@ -165,10 +165,10 @@ declare function local:add-methods($function) as xs:string*
                      'const std::vector&lt;xqtref_t&gt;&amp; arg_types) const;',
                      $gen:newline), '')
 
-      else if (name($meth) eq 'zorba:getUpdateType')
+      else if (name($meth) eq 'zorba:getScriptingKind')
       then
         string-join(($gen:newline, $gen:indent,
-                     'expr_script_kind_t getUpdateType() const ',
+                     'short getScriptingKind() const ',
                      '{ return ', $meth/@returnValue, '; }',
                       $gen:newline),'')
 

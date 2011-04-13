@@ -58,6 +58,8 @@ void ftcontains_expr::accept( expr_visitor &v ) {
 }
 
 void ftcontains_expr::compute_scripting_kind() {
+  checkSimpleExpr(range_);
+
   theScriptingKind = SIMPLE_EXPR;
   // TODO: checkIsSimple for all sub-expr
 }

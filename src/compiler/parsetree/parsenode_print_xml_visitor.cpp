@@ -376,7 +376,6 @@ void *begin_visit(const VarDecl &n)
     return no_state;
 }
 
-BEGIN_END_TAG (VarNameAndType)
 
 void *begin_visit(const VarGetsDecl &n)
 {
@@ -728,7 +727,6 @@ BEGIN_END_TAG (LetClause)
 BEGIN_END_TAG (LibraryModule)
 BEGIN_END_TAG (Literal)
 END_TAG (MainModule )
-BEGIN_END_TAG (Module)
 END_TAG (ModuleDecl)
 END_TAG (ModuleImport)
 BEGIN_END_TAG (MultiplicativeExpr)

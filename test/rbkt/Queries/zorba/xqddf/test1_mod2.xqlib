@@ -10,13 +10,13 @@ declare collection module2:coll as node()*;
 declare variable $module2:coll as xs:QName := xs:QName("module2:coll");
 
 
-declare sequential function module2:init()
+declare %sequential function module2:init()
 {
   init:create-collection(xs:QName("module2:coll"), (<a><test/></a>, <b><test/></b>));
 };
 
 
-declare sequential function module2:do()
+declare %sequential function module2:do()
 {
   let $a := manip:collection($module2:coll)[1]
   return module1:update($a, <b/>);

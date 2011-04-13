@@ -34,7 +34,7 @@ module namespace process = "http://www.zorba-xquery.com/modules/process";
  : @return       the result of the execution
  : @error        An error is thrown if process canot be executed.
  :)
-declare sequential function process:exec (
+declare %sequential function process:exec (
     $cmd as xs:string
     ) as node() external;
 
@@ -45,7 +45,7 @@ declare sequential function process:exec (
  :  @return       the result of the execution
  : @error        An error is thrown if process canot be executed.
  :)
-declare sequential function process:exec (
+declare %sequential function process:exec (
     $cmd as xs:string,
     $args as xs:string*
     ) as node() external;

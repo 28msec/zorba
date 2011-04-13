@@ -23,7 +23,7 @@ declare function local:testb() {
   }
 };
 
-declare sequential function local:testc() {
+declare %sequential function local:testc() {
   try {
     block {
       init:delete-collection($ns:http);
@@ -33,7 +33,7 @@ declare sequential function local:testc() {
   }
 };
 
-declare sequential function local:testd() {
+declare %sequential function local:testd() {
   try {
     block {
       manip:insert-nodes-first($ns:http, <a/>);
@@ -43,7 +43,7 @@ declare sequential function local:testd() {
   }
 };
 
-declare sequential function local:teste() {
+declare %sequential function local:teste() {
   try {
     block {
       manip:insert-nodes-last($ns:http, <a/>);
@@ -53,7 +53,7 @@ declare sequential function local:teste() {
   }
 };
 
-declare sequential function local:testf() {
+declare %sequential function local:testf() {
   try {
     block {
       manip:insert-nodes-before($ns:http, <a/>, <a/>);
@@ -63,7 +63,7 @@ declare sequential function local:testf() {
   }
 };
 
-declare sequential function local:testg() {
+declare %sequential function local:testg() {
   try {
     block {
       manip:insert-nodes-after($ns:http, <a/>, <a/>);
@@ -73,7 +73,7 @@ declare sequential function local:testg() {
   }
 };
 
-declare sequential function local:testi() {
+declare %sequential function local:testi() {
   try {
     block {
       manip:delete-nodes(<a/>);
@@ -83,7 +83,7 @@ declare sequential function local:testi() {
   }
 };
 
-declare sequential function local:main() {
+declare %sequential function local:main() {
   (
     local:testa(),
     local:testb(),

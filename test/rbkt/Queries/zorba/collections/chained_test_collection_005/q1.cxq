@@ -3,7 +3,7 @@ import module namespace ns = "http://example.org/datamodule/" at "../collections
 
 declare variable $input-context1 external;
 
-declare sequential function local:foo() {
+declare %sequential function local:foo() {
   init:create-collection(xs:QName('ns:http'), fn:doc($input-context1)//*);
   exit returning ();
 };

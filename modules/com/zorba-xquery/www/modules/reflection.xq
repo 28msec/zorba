@@ -64,7 +64,7 @@ declare %variadic updating function reflection:invoke-updating($name as xs:QName
  : @param $name the QName of the function that is to be called.
  : @return the result that is returned by the invoked function.
  :)
-declare %variadic sequential function reflection:invoke-sequential($name as xs:QName) as item()* external;
+declare %variadic %sequential function reflection:invoke-sequential($name as xs:QName) as item()* external;
 
 
 (:~
@@ -97,7 +97,7 @@ declare updating function reflection:eval-updating(
  : @return the result of evaluating the query (the result is not supposed to
  :         contain any PUL).
  :)
-declare sequential function reflection:eval-sequential(
+declare %sequential function reflection:eval-sequential(
     $query as xs:string
 ) as item()* external;
 

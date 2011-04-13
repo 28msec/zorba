@@ -5,7 +5,7 @@ declare namespace ns = "http://www.unknown.com/";
 
 declare variable $name as xs:QName := xs:QName("ns:name");
 
-declare sequential function local:testa() {
+declare %sequential function local:testa() {
   try {
     block {
       manip:is-available-collection($name);
@@ -15,7 +15,7 @@ declare sequential function local:testa() {
   }
 };
 
-declare sequential function local:testb() {
+declare %sequential function local:testb() {
   try {
     block {
       manip:collection($name);
@@ -25,7 +25,7 @@ declare sequential function local:testb() {
   }
 };
 
-declare sequential function local:testc() {
+declare %sequential function local:testc() {
   try {
     block {
       manip:index-of($name, <a/>);
@@ -35,7 +35,7 @@ declare sequential function local:testc() {
   }
 };
 
-declare sequential function local:testd() {
+declare %sequential function local:testd() {
   try {
     block {
       init:create-collection($name);
@@ -45,7 +45,7 @@ declare sequential function local:testd() {
   }
 };
 
-declare sequential function local:teste() {
+declare %sequential function local:teste() {
   try {
     block {
       init:delete-collection($name);
@@ -55,7 +55,7 @@ declare sequential function local:teste() {
   }
 };
 
-declare sequential function local:testf() {
+declare %sequential function local:testf() {
   try {
     block {
       manip:insert-nodes-first($name, <a/>);
@@ -65,7 +65,7 @@ declare sequential function local:testf() {
   }
 };
 
-declare sequential function local:testg() {
+declare %sequential function local:testg() {
   try {
     block {
       manip:insert-nodes-last($name, <a/>);
@@ -75,7 +75,7 @@ declare sequential function local:testg() {
   }
 };
 
-declare sequential function local:testh() {
+declare %sequential function local:testh() {
   try {
     block {
       manip:insert-nodes-before($name, <a/>, <a/>);
@@ -85,7 +85,7 @@ declare sequential function local:testh() {
   }
 };
 
-declare sequential function local:testi() {
+declare %sequential function local:testi() {
   try {
     block {
       manip:insert-nodes-after($name, <a/>, <a/>);
@@ -95,7 +95,7 @@ declare sequential function local:testi() {
   }
 };
 
-declare sequential function local:testk() {
+declare %sequential function local:testk() {
   try {
     block {
       manip:delete-nodes(<a/>);
@@ -105,7 +105,7 @@ declare sequential function local:testk() {
   }
 };
 
-declare sequential function local:main() {
+declare %sequential function local:main() {
   (
     local:testa(),
     local:testb(),

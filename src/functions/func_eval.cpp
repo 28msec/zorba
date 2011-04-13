@@ -49,7 +49,7 @@ public:
 
   bool accessesDynCtx() const { return true; }
 
-  expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
+  short getScriptingKind() const { return UPDATING_EXPR; }
 
   CODEGEN_DECL();
 };
@@ -66,7 +66,10 @@ public:
 
   bool accessesDynCtx() const { return true; }
 
-  expr_script_kind_t getUpdateType() const { return SEQUENTIAL_EXPR; }
+  short getScriptingKind() const 
+  { 
+    return (SEQUENTIAL_FUNC_EXPR | SEQUENTIAL_EXPR); 
+  }
 
   CODEGEN_DECL();
 };

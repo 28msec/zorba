@@ -198,7 +198,7 @@ declare function oauth:parameters($params as element()+,$string as xs:string) as
  : @param $url Target URL
  : @return -
  :)
-declare sequential function oauth:http-request(
+declare %sequential function oauth:http-request(
     $consumer-secret as xs:string,
     $method as xs:string,
     $oauth-token-secret as xs:string?,
@@ -237,7 +237,7 @@ declare sequential function oauth:http-request(
  : @error XQP0021(err:OC003) if we receive http 401 error from the server.
  : @error XQP0021(err:OC004) if we receive http 500 error from the server.
  :)
-declare sequential function oauth:format-request(
+declare %sequential function oauth:format-request(
     $consumer-key as xs:string,
     $consumer-secret as xs:string,
     $method as xs:string,
@@ -302,7 +302,7 @@ declare function oauth:additional-parameters($request as element()+) as element(
  : @param $request request element containing the client's request
  : @return temporary credentials correctly parsed as parameter elements, or an error if http response status is not 200 OK
  :)
-declare sequential function oauth:request-token($request as element(request)+) as element()+
+declare %sequential function oauth:request-token($request as element(request)+) as element()+
 {
   let $consumer-key := oauth:parameters($request,"oauth_consumer_key")
   let $consumer-secret := oauth:parameters($request,"oauth_consumer_secret")
@@ -336,7 +336,7 @@ declare sequential function oauth:request-token($request as element(request)+) a
  : @param $request request element containing the client's request
  : @return token credentials correctly parsed as parameter elements, or an error if http response status is not 200 OK
  :)
-declare sequential function oauth:access-token($request as element(request)+) as element()+
+declare %sequential function oauth:access-token($request as element(request)+) as element()+
 {
   let $consumer-key := oauth:parameters($request,"oauth_consumer_key")
   let $consumer-secret := oauth:parameters($request,"oauth_consumer_secret")
@@ -377,7 +377,7 @@ declare sequential function oauth:access-token($request as element(request)+) as
  : @param $request request element containing the client's request
  : @return protected resources parsed as parameter elements, or an error if http response status is not 200 OK
  :)
-declare sequential function oauth:protected-resource($protected-resource as element(http:request),$request as element(request)+) as element()+
+declare %sequential function oauth:protected-resource($protected-resource as element(http:request),$request as element(request)+) as element()+
 {
   let $consumer-key := oauth:parameters($request,"oauth_consumer_key")
   let $consumer-secret := oauth:parameters($request,"oauth_consumer_secret")
@@ -419,7 +419,7 @@ declare sequential function oauth:protected-resource($protected-resource as elem
  : @param $additional-parameters Parameters specific to a certain step (request-token) of the OAuth authorization
  : @return temporary credentials correctly parsed as parameter elements, or an error if http response status is not 200 OK
  :)
-declare sequential function oauth:request-token(
+declare %sequential function oauth:request-token(
     $consumer-key as xs:string,
     $consumer-secret as xs:string,
     $signature-method as xs:string,
@@ -449,7 +449,7 @@ declare sequential function oauth:request-token(
  : @param $additional-parameters Parameters specific to a certain step (access-token) of the OAuth authorization
  : @return token credentials correctly parsed as parameter elements, or an error if http response status is not 200 OK
  :)
-declare sequential function oauth:access-token(
+declare %sequential function oauth:access-token(
     $consumer-key as xs:string,
     $consumer-secret as xs:string,
     $signature-method as xs:string,
@@ -480,7 +480,7 @@ declare sequential function oauth:access-token(
  : @param $additional-parameters Parameters specific to a certain step (protected-resource) of the OAuth authorization
  : @return protected resources parsed as parameter elements, or an error if http response status is not 200 OK
  :)
-declare sequential function oauth:protected-resource(
+declare %sequential function oauth:protected-resource(
     $consumer-key as xs:string,
     $consumer-secret as xs:string,
     $signature-method as xs:string,

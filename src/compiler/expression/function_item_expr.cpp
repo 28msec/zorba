@@ -22,7 +22,6 @@
 #include "functions/udf.h"
 #include "functions/signature.h"
 
-using namespace std;
 
 namespace zorba {
 
@@ -50,18 +49,26 @@ dynamic_function_invocation_expr::dynamic_function_invocation_expr(
 
 void dynamic_function_invocation_expr::compute_scripting_kind()
 {
-  theScriptingKind = SIMPLE_EXPR;
+  theScriptingKind = (APPLYING_EXPR |
+                      SEQUENTIAL_FUNC_EXPR |
+                      SEQUENTIAL_EXPR);
 }
+
 
 expr_t dynamic_function_invocation_expr::clone(substitution_t& s) const
 {
   checked_vector<expr_t> lNewArgs;
   for (checked_vector<expr_t>::const_iterator lIter = theArgs.begin();
-       lIter != theArgs.end(); ++lIter) {
+       lIter != theArgs.end();
+       ++lIter) 
+  {
     lNewArgs.push_back((*lIter)->clone(s));
   }
-  return new dynamic_function_invocation_expr(
-                theSctx, get_loc(), theExpr->clone(s), lNewArgs);
+
+  return new dynamic_function_invocation_expr(theSctx, 
+                                              get_loc(),
+                                              theExpr->clone(s),
+                                              lNewArgs);
 }
 
 
@@ -100,7 +107,7 @@ function_item_expr::function_item_expr(
   theFunction(NULL),
   theArity(0)
 {
-  compute_scripting_kind();
+  theScriptingKind = SIMPLE_EXPR;
 }
 
 
@@ -136,12 +143,16 @@ void function_item_expr::set_function(user_function_t& udf)
 {
   theFunction = udf;
   theArity = udf->getArity();
+  compute_scripting_kind();
 }
 
 
 void function_item_expr::compute_scripting_kind()
 {
-  theScriptingKind = SIMPLE_EXPR;
+  if (theFunction != NULL)
+  {
+    theScriptingKind = theFunction->getScriptingKind();
+  }
 }
 
 

@@ -1,4 +1,4 @@
-declare sequential function local:foo()
+declare %sequential function local:foo()
 {
   1
 };

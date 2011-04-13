@@ -40,7 +40,7 @@
       </zorba:signature>
     
       <zorba:methods>
-        <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
+        <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
         <zorba:accessesDynCtx returnValue="true"/>
       </zorba:methods>
 
@@ -73,7 +73,7 @@
       </zorba:signature>
 
       <zorba:methods>
-        <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
+        <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
         <zorba:accessesDynCtx returnValue="true"/>
       </zorba:methods>
 

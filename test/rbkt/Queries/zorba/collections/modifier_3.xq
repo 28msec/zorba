@@ -2,11 +2,11 @@ import module namespace init = "http://www.zorba-xquery.com/modules/store/static
 import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
 import module namespace ns = "http://example.org/datamodule/" at "modifier_3.xqdata";
 
-declare sequential function local:init() {
+declare %sequential function local:init() {
     init:create-collection(xs:QName("ns:coll_1"), (<a><x/></a>,<b/>,<c/>,<d/>,<e/>,<f/>,<g/>,<h/>,<i/>,<j/>,<k/>));
 };
 
-declare sequential function local:test1() {
+declare %sequential function local:test1() {
   try {
     block {
       let $x as element() := manip:collection($ns:coll_1)[1]
@@ -18,7 +18,7 @@ declare sequential function local:test1() {
   }
 };
 
-declare sequential function local:test2() {
+declare %sequential function local:test2() {
   try {
     block {
       let $x as element() := manip:collection($ns:coll_1)[1]
@@ -30,7 +30,7 @@ declare sequential function local:test2() {
   }
 };
 
-declare sequential function local:test3() {
+declare %sequential function local:test3() {
   try {
     block {
       let $x as element() := manip:collection($ns:coll_1)[1]
@@ -42,7 +42,7 @@ declare sequential function local:test3() {
   }
 };
 
-declare sequential function local:test4() {
+declare %sequential function local:test4() {
   try {
     block {
       let $x as element() := manip:collection($ns:coll_1)[1]
@@ -54,7 +54,7 @@ declare sequential function local:test4() {
   }
 };
 
-declare sequential function local:main() {
+declare %sequential function local:main() {
   local:init();
   (
     local:test1(),

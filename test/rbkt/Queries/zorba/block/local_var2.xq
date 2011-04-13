@@ -1,6 +1,6 @@
 declare variable $x := 42;
 
-declare sequential function local:f($n) 
+declare %sequential function local:f($n) 
 {
   declare $x := $n - 1;
 

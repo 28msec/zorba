@@ -24,6 +24,7 @@
 #include "compiler/api/compilercb.h"
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/fo_expr.h"
+#include "compiler/expression/script_exprs.h"
 #include "compiler/expression/expr.h"
 #include "compiler/expression/expr_iter.h"
 #include "compiler/codegen/plan_visitor.h"
@@ -516,7 +517,7 @@ PlanIterator* IndexDecl::getBuildPlan(CompilerCB* ccb, const QueryLoc& loc)
   expr* buildExpr = getBuildExpr(ccb, loc);
 
   ulong nextVarId = 1;
-  theBuildPlan = codegen("index", buildExpr, ccb, false, nextVarId);
+  theBuildPlan = codegen("index", buildExpr, ccb, nextVarId);
 
   return theBuildPlan.getp();
 }
@@ -640,7 +641,7 @@ DocIndexer* IndexDecl::getDocIndexer(
   //
   // Generate the runtime plan for theDocIndexerExpr
   //
-  theDocIndexerPlan = codegen("doc indexer", flworExpr, ccb, false, nextVarId);
+  theDocIndexerPlan = codegen("doc indexer", flworExpr, ccb, nextVarId);
 
   //
   // Create theDocIndexer obj

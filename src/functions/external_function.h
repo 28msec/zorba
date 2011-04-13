@@ -41,7 +41,7 @@ protected:
   QueryLoc                    theLoc;
   static_context            * theModuleSctx;
   zstring                     theNamespace;
-  expr_script_kind_t          theScriptingKind;
+  short                       theScriptingKind;
   StatelessExternalFunction * theImpl;
 
 public:
@@ -55,13 +55,14 @@ public:
         static_context* modSctx,
         const zstring& ns,
         const signature& sig,
-        expr_script_kind_t scriptingType,
+        short scriptingType,
         bool deterministic,
+        bool isPrivate,
         StatelessExternalFunction* impl);
 
   ~external_function() { }
 
-  expr_script_kind_t getUpdateType() const { return theScriptingKind; }
+  short getScriptingKind() const { return theScriptingKind; }
 
   bool accessesDynCtx() const;
 

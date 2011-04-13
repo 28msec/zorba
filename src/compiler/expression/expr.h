@@ -18,14 +18,12 @@
 
 #include <string>
 #include <vector>
-#include <set>
-#include <map>
+
+#include <zorba/store_consts.h>
 
 #include "zorbautils/checked_vector.h"
 
 #include "zorbatypes/representations.h"
-
-#include "zorbaerrors/error_manager.h"
 
 #include "functions/signature.h"
 
@@ -35,11 +33,7 @@
 #include "context/namespace_context.h"
 
 #include "types/node_test.h"
-#include "types/typeimpl.h"
 
-#include <zorba/store_consts.h>
-
-#include "store/api/update_consts.h"
 #include "store/api/item.h"
 
 namespace zorba 
@@ -49,67 +43,6 @@ class expr_visitor;
 class NodeNameTest;
 class signature;
 
-
-
-/*******************************************************************************
-
-  For Global Var:
-  ----------------
-
-  AnnotatedDecl ::= "declare" Annotation* (VarDecl | FunctionDecl)
-
-  Annotation ::= "%" EQName ("(" Literal ("," Literal)* ")")?
-
-  VarDecl ::= "variable" "$" VarName TypeDeclaration? 
-              ((":=" VarValue) | ("external" (":=" VarDefaultValue)?))
-
-  For Local Var:
-  --------------
-
-  VarDeclExpr ::= ("local" Annotation*)? "variable" "$" VarName TypeDeclaration?
-                  (":=" ExprSingle)?
-
-  var_decl_expr is used to declare block-local and prolog variables (including 
-  the context item, if it is declared in the prolog). During runtime, the
-  associated iterator creates in the local dynamic context a binding between 
-  the variable id and the variable value. If the declaration includes an
-  initializing expr, the iterator computes the initExpr and stores the resulting
-  value inside this binding.
-
-********************************************************************************/
-class var_decl_expr : public expr 
-{
-  friend class ExprIterator;
-  friend class expr;
-
-protected:
-  var_expr_t theVarExpr;
-  expr_t     theInitExpr;
-
-public:
-  SERIALIZABLE_CLASS(var_decl_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(var_decl_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
-  var_decl_expr(
-      static_context* sctx,
-      const QueryLoc& loc,
-      const var_expr_t& varExpr,
-      const expr_t& initExpr);
-
-  var_expr* get_var_expr() const { return theVarExpr.getp(); }
-
-  expr* get_init_expr() const { return theInitExpr.getp(); }
-
-  void compute_scripting_kind();
-
-  expr_t clone(substitution_t& s) const;
-
-  void accept(expr_visitor&);
-
-  std::ostream& put(std::ostream&) const;
-};
 
 
 /*******************************************************************************
@@ -219,7 +152,7 @@ public:
         static_context* sctx,
         const QueryLoc&,
         ParseConstants::validation_mode_t,
-        store::Item_t aTypeName,
+        const store::Item_t& aTypeName,
         expr_t,
         rchandle<TypeManager>);
 
@@ -336,6 +269,9 @@ public:
                   by the optimizer, if it discovers that the prime type of the
                   static type of theInputExpr is a subtype of the prime type of
                   theTargetType.
+
+  theFnQName    : Stores the QName of the function, if the treat expr is used 
+                  to cast the function's body to its result type
 ********************************************************************************/
 class treat_expr : public cast_base_expr 
 {
@@ -343,11 +279,9 @@ class treat_expr : public cast_base_expr
   friend class expr;
 
 protected:
-  Error const *theError;
-  bool         theCheckPrime;
-  store::Item_t theFnQName;    // Stores the QName of the function, if the promote expr
-                               // is used to cast the function's body to its result type
-
+  Error const * theError;
+  bool          theCheckPrime;
+  store::Item_t theFnQName;
 
 public:
   SERIALIZABLE_CLASS(treat_expr)
@@ -415,6 +349,8 @@ class promote_expr : public cast_base_expr
 {
   friend class ExprIterator;
   friend class expr;
+
+protected:
   store::Item_t theFnQName;    // Stores the QName of the function, if the promote expr
                                // is used to cast the function's body to its result type
   
@@ -428,7 +364,12 @@ public:
   }
 
 public:
-  promote_expr(static_context* sctx, const QueryLoc& loc, expr_t input, xqtref_t type, store::Item_t fnQname = NULL);
+  promote_expr(
+      static_context* sctx, 
+      const QueryLoc& loc, 
+      expr_t input, 
+      xqtref_t type, 
+      store::Item_t fnQname = NULL);
 
   expr_t clone(substitution_t& s) const;
 
@@ -812,41 +753,6 @@ public:
 };
 
 
-
-/*******************************************************************************
-  Normally, it is used to wrap a var_expr in order to represent a var reference
-  (see var_expr.h). But it may wrap any other kind of expr as well.
-********************************************************************************/
-class wrapper_expr : public expr 
-{
-  friend class ExprIterator;
-  friend class expr;
-
-protected:
-  expr_t theWrappedExpr;
-
-public:
-  SERIALIZABLE_CLASS(wrapper_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(wrapper_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
-  wrapper_expr(static_context* sctx, const QueryLoc& loc, expr_t wrapped);
-
-  expr* get_expr() const { return theWrappedExpr.getp(); }
-
-  void set_expr(const expr* e) { theWrappedExpr = e; }
-
-  void compute_scripting_kind();
-
-  void accept(expr_visitor&);
-
-  expr_t clone(substitution_t& s) const;
-
-  std::ostream& put(std::ostream&) const;
-};
-
-
 /***************************************************************************//**
 
 ********************************************************************************/
@@ -1012,15 +918,15 @@ public:
   
   void add_nametest_h(nt_t n) { theNameTests.push_back(n); }
   
-  void set_error_code_var(varref_t a) { theErrorCodeVar = a; }
+  void set_error_code_var(var_expr_t a) { theErrorCodeVar = a; }
 
   const var_expr* get_error_code_var() const { return theErrorCodeVar.getp(); }
   
-  void set_error_desc_var(varref_t a) { theErrorDescVar = a; }
+  void set_error_desc_var(var_expr_t a) { theErrorDescVar = a; }
 
   const var_expr* get_error_desc_var() const { return theErrorDescVar.getp(); }
   
-  void set_error_item_var(varref_t a) { theErrorItemVar = a; }
+  void set_error_item_var(var_expr_t a) { theErrorItemVar = a; }
 
   const var_expr* get_error_item_var() const { return theErrorItemVar.getp(); }
 
@@ -1068,63 +974,36 @@ public:
 };
 
 
-/***************************************************************************//**
-  There is no syntax corresponding to the eval_expr. Instead, an eval_expr is
-  created by the translator whenever a call to the eval() function is reached.
+/////////////////////////////////////////////////////////////////////////
+//                                                                     //
+//	Zorba expressions                                                  //
+//                                                                     //
+/////////////////////////////////////////////////////////////////////////
 
-  theExpr  : The expr that computes the query string to be evaluated by eval.
-  theVars  : There is one eval var for each non-global var that is in scope
-             where the call to the eval function appears at.
-  theArgs  : The domain expr of each eval var.
-  theNSCtx : Expression-level namespace bindings.
+
+/*******************************************************************************
+  Normally, it is used to wrap a var_expr in order to represent a var reference
+  (see var_expr.h). But it may wrap any other kind of expr as well.
 ********************************************************************************/
-class eval_expr : public expr 
+class wrapper_expr : public expr 
 {
   friend class ExprIterator;
   friend class expr;
 
 protected:
-  expr_t                      theExpr;
-  checked_vector<var_expr_t>  theVars;
-  std::vector<expr_t>         theArgs;
-  rchandle<namespace_context> theNSCtx;
+  expr_t theWrappedExpr;
 
 public:
-  SERIALIZABLE_CLASS(eval_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(eval_expr, expr)
+  SERIALIZABLE_CLASS(wrapper_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(wrapper_expr, expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  eval_expr(
-      static_context* sctx,
-      const QueryLoc& loc, 
-      expr_t e,
-      expr_script_kind_t scriptingKind,
-      namespace_context* nsCtx)
-    :
-    expr(sctx, loc, eval_expr_kind),
-    theExpr(e),
-    theNSCtx(nsCtx)
-  {
-    theScriptingKind = scriptingKind;
-    compute_scripting_kind();
-  }
+  wrapper_expr(static_context* sctx, const QueryLoc& loc, expr_t wrapped);
 
-  expr* get_expr() const { return theExpr.getp(); }
+  expr* get_expr() const { return theWrappedExpr.getp(); }
 
-  expr* get_arg_expr(ulong i) { return theArgs[i].getp(); }
-
-  ulong var_count() const { return (ulong)theVars.size(); }
-
-  const var_expr* get_var(ulong i) const { return theVars[i]; }
-
-  void add_var(const var_expr_t& var, const expr_t& arg) 
-  {
-    theVars.push_back(var);
-    theArgs.push_back(arg);
-  }
-
-  const namespace_context* getNSCtx() const;
+  void set_expr(const expr* e) { theWrappedExpr = e; }
 
   void compute_scripting_kind();
 
@@ -1134,64 +1013,6 @@ public:
 
   std::ostream& put(std::ostream&) const;
 };
-
-#ifdef ZORBA_WITH_DEBUGGER
-/***************************************************************************//**
-  debugger expression
-********************************************************************************/
-class debugger_expr: public eval_expr
-{
-  friend class ExprIterator;
-  friend class expr;
-
-private:
-  std::list<global_binding> theGlobals;
-  bool                      theForExpr;
-
-public:
-  SERIALIZABLE_CLASS(debugger_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(debugger_expr, eval_expr)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
-  debugger_expr(
-        static_context* sctx,
-        const QueryLoc& loc,
-        expr_t aChild,
-        std::list<global_binding> aGlobals)
-    :
-    eval_expr(sctx, loc, aChild, SIMPLE_EXPR, NULL),
-    theGlobals(aGlobals)
-  {
-  }
-
-  debugger_expr(
-        static_context* sctx,
-        const QueryLoc& loc,
-        expr_t aChild,
-        checked_vector<varref_t> aScopedVariables,
-        std::list<global_binding> aGlobals,
-        bool aForExpr = false)
-    :
-    eval_expr(sctx, loc, aChild, SIMPLE_EXPR, NULL),
-    theGlobals( aGlobals ),
-    theForExpr(aForExpr)
-  {
-    store_local_variables(aScopedVariables);
-  }
-
-  std::list<global_binding> getGlobals() const { return theGlobals; }
-
-  bool isForExpr() const { return theForExpr; }
-
-  void accept(expr_visitor&);
-
-  std::ostream& put(std::ostream&) const;
-
-private:
-  void store_local_variables(checked_vector<varref_t>& aScopedVariables);
-};
-#endif
 
 
 /***************************************************************************//**
@@ -1274,440 +1095,127 @@ public:
 };
 
 
-/////////////////////////////////////////////////////////////////////////
-//                                                                     //
-//	Scripting expressions                                              //
-//  [http://www.w3.org/TR/xquery-sx-10/]                               //
-//                                                                     //
-/////////////////////////////////////////////////////////////////////////
-
-
 /***************************************************************************//**
-  imperative construct: do this, then that
+  There is no syntax corresponding to the eval_expr. Instead, an eval_expr is
+  created by the translator whenever a call to the eval() function is reached.
+
+  theExpr  : The expr that computes the query string to be evaluated by eval.
+  theVars  : There is one eval var for each non-global var that is in scope
+             where the call to the eval function appears at.
+  theArgs  : The domain expr of each eval var.
+  theNSCtx : Expression-level namespace bindings.
 ********************************************************************************/
-class sequential_expr : public expr
+class eval_expr : public expr 
 {
   friend class ExprIterator;
   friend class expr;
 
 protected:
-  checked_vector<expr_t> theArgs;
-  bool                   theApplyLast;
+  expr_t                      theExpr;
+  checked_vector<var_expr_t>  theVars;
+  std::vector<expr_t>         theArgs;
+  rchandle<namespace_context> theNSCtx;
+  expr_script_kind_t          theInnerScriptingKind;
 
 public:
-  SERIALIZABLE_CLASS(sequential_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(sequential_expr, expr)
+  SERIALIZABLE_CLASS(eval_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(eval_expr, expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  sequential_expr(
-      static_context*,
-      const QueryLoc&,
-      bool applyLast);
+  eval_expr(
+      static_context* sctx,
+      const QueryLoc& loc, 
+      expr_t e,
+      expr_script_kind_t scriptingKind,
+      namespace_context* nsCtx);
 
-  sequential_expr(
-      static_context*,
-      const QueryLoc&,
-      expr_t first,
-      expr_t second,
-      bool applyLast);
+  expr* get_expr() const { return theExpr.getp(); }
 
-  sequential_expr(
-        static_context*,
-        const QueryLoc&,
-        checked_vector<expr_t>& seq,
-        expr_t result,
-        bool applyLast);
+  expr* get_arg_expr(ulong i) { return theArgs[i].getp(); }
 
-  sequential_expr(
-        static_context*,
-        const QueryLoc&,
-        checked_vector<expr_t>& seq,
-        bool applyLast);
+  ulong var_count() const { return (ulong)theVars.size(); }
 
-  bool get_apply_last() const { return theApplyLast; }
+  const var_expr* get_var(ulong i) const { return theVars[i]; }
 
-  ulong size() const { return (ulong)theArgs.size(); }
-
-  const expr_t& operator[](ulong i) const { return theArgs[i]; }
-
-  expr_t& operator[](ulong i) { return theArgs[i]; }
-
-  void push_back(expr_t e) 
+  void add_var(const var_expr_t& var, const expr_t& arg) 
   {
-    theArgs.push_back(e);
-    compute_scripting_kind();
+    theVars.push_back(var);
+    theArgs.push_back(arg);
   }
 
-  void push_front(expr_t e) 
-  {
-    theArgs.insert(theArgs.begin(), e);
-    compute_scripting_kind();
-  }
+  const namespace_context* getNSCtx() const;
 
-  void add_at(ulong pos, expr_t e)
-  {
-    theArgs.insert(theArgs.begin() + pos, e);
-    compute_scripting_kind();
-  }
+  expr_script_kind_t get_inner_scripting_kind() const;
 
   void compute_scripting_kind();
 
-  expr_t clone(substitution_t& s) const;
-
   void accept(expr_visitor&);
+
+  expr_t clone(substitution_t& s) const;
 
   std::ostream& put(std::ostream&) const;
 };
 
 
-/*******************************************************************************
-  ExitExpr ::= "exit" "with" ExprSingle
+#ifdef ZORBA_WITH_DEBUGGER
+/***************************************************************************//**
+  debugger expression
 ********************************************************************************/
-class exit_expr : public expr 
+class debugger_expr: public eval_expr
 {
   friend class ExprIterator;
   friend class expr;
 
 private:
-  expr_t theExpr;
+  std::list<GlobalBinding> theGlobals;
+  bool                     theForExpr;
 
 public:
-  SERIALIZABLE_CLASS(exit_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(exit_expr, expr)
+  SERIALIZABLE_CLASS(debugger_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(debugger_expr, eval_expr)
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  exit_expr(static_context* sctx, const QueryLoc& loc, expr_t inExpr);
-
-  expr* get_value() const { return theExpr.getp(); }
-
-  void compute_scripting_kind();
-
-  expr_t clone(substitution_t& s) const;
-
-  void accept(expr_visitor&);
-
-	std::ostream& put(std::ostream&) const;
-};
-
-
-/*******************************************************************************
-
-********************************************************************************/
-class flowctl_expr : public expr 
-{
-  friend class ExprIterator;
-  friend class expr;
-
-public:
-  enum action { BREAK, CONTINUE };
-
-protected:
-  enum action theAction;
-
-public:
-  SERIALIZABLE_CLASS(flowctl_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(flowctl_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
-  flowctl_expr(static_context* sctx, const QueryLoc& loc, enum action action);
-
-  enum action get_action() const { return theAction; }
-
-  expr_t clone(substitution_t& s) const;
-
-  void compute_scripting_kind();
-
-  void accept(expr_visitor&);
-
-	std::ostream& put(std::ostream&) const;
-};
-
-
-/*******************************************************************************
-	WhileExpr ::= "while" "(" ExprSingle ")" WhileBody
-
-  WhileBody ::= Block
-********************************************************************************/
-class while_expr : public expr 
-{
-  friend class ExprIterator;
-  friend class expr;
-
-protected:
-  expr_t theBody;
-
-public:
-  SERIALIZABLE_CLASS(while_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(while_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
-  while_expr(static_context* sctx, const QueryLoc& loc, expr_t body);
-
-  expr* get_body() const { return theBody.getp(); }
-
-  void compute_scripting_kind();
-
-  expr_t clone(substitution_t& s) const;
-
-  void accept(expr_visitor&);
-
-	std::ostream& put(std::ostream&) const;
-};
-
-
-
-/////////////////////////////////////////////////////////////////////////
-//                                                                     //
-//	Update expressions                                                 //
-//  [http://www.w3.org/TR/xqupdate/]                                   //
-//                                                                     //
-/////////////////////////////////////////////////////////////////////////
-
-
-/*******************************************************************************
-
-********************************************************************************/
-class insert_expr : public expr
-{
-  friend class ExprIterator;
-  friend class expr;
-
-protected:
-  store::UpdateConsts::InsertType theType;
-	expr_t                          theSourceExpr;
-	expr_t                          theTargetExpr;
-
-public:
-  SERIALIZABLE_CLASS(insert_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(insert_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
-	insert_expr(
-    static_context* sctx,
-		const QueryLoc&,
-    store::UpdateConsts::InsertType,
-		expr_t aSourceExpr,
-		expr_t aTargetExpr);
-
-  store::UpdateConsts::InsertType getType() const { return theType; }
-
-	expr* getSourceExpr() const { return theSourceExpr.getp(); }
-
-	expr* getTargetExpr() const { return theTargetExpr.getp(); }
-  
-  void compute_scripting_kind();
-
-  expr_t clone(substitution_t& s) const;
-
-  void accept(expr_visitor&);
-
-	std::ostream& put(std::ostream&) const;
-};
-
-
-/*******************************************************************************
-
-********************************************************************************/
-class delete_expr : public expr
-{
-  friend class ExprIterator;
-  friend class expr;
-
-protected:
-	expr_t theTargetExpr;
-
-public:
-  SERIALIZABLE_CLASS(delete_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(delete_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
-	delete_expr(static_context* sctx, const QueryLoc&, expr_t);
-
-	expr* getTargetExpr() const { return theTargetExpr.getp(); }
-
-  void compute_scripting_kind();
-
-  expr_t clone(substitution_t& s) const;
-
-  void accept(expr_visitor&);
-
-	std::ostream& put(std::ostream&) const;
-};
-
-
-/*******************************************************************************
-
-********************************************************************************/
-class replace_expr : public expr
-{
-  friend class ExprIterator;
-  friend class expr;
-
-protected:
-  store::UpdateConsts::ReplaceType theType;
-	expr_t                           theTargetExpr;
-	expr_t                           theReplaceExpr;
-
-public:
-  SERIALIZABLE_CLASS(replace_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(replace_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
-	replace_expr(
-    static_context* sctx,
-		const QueryLoc&,
-    store::UpdateConsts::ReplaceType aType,
-		expr_t,
-		expr_t);
-
-  store::UpdateConsts::ReplaceType getType() const { return theType; }
-
-	expr* getTargetExpr() const { return theTargetExpr.getp(); }
-
-	expr* getReplaceExpr() const { return theReplaceExpr.getp(); }
-
-  void compute_scripting_kind();
-
-  expr_t clone(substitution_t& s) const;
-
-  void accept(expr_visitor&);
-
-	std::ostream& put(std::ostream&) const;
-};
-
-
-/*******************************************************************************
-
-********************************************************************************/
-class rename_expr : public expr
-{
-  friend class ExprIterator;
-  friend class expr;
-
-protected:
-	expr_t             theTargetExpr;
-	expr_t             theNameExpr;
-
-public:
-  SERIALIZABLE_CLASS(rename_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(rename_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
-	rename_expr(
+  debugger_expr(
         static_context* sctx,
-        const QueryLoc&,
-        expr_t,
-        expr_t);
+        const QueryLoc& loc,
+        expr_t aChild,
+        std::list<GlobalBinding> aGlobals)
+    :
+    eval_expr(sctx, loc, aChild, SIMPLE_EXPR, NULL),
+    theGlobals(aGlobals)
+  {
+  }
 
-	expr* getTargetExpr() const { return theTargetExpr.getp(); }
+  debugger_expr(
+        static_context* sctx,
+        const QueryLoc& loc,
+        expr_t aChild,
+        checked_vector<var_expr_t> aScopedVariables,
+        std::list<GlobalBinding> aGlobals,
+        bool aForExpr = false)
+    :
+    eval_expr(sctx, loc, aChild, SIMPLE_EXPR, NULL),
+    theGlobals( aGlobals ),
+    theForExpr(aForExpr)
+  {
+    store_local_variables(aScopedVariables);
+  }
 
-	expr* getNameExpr() const { return theNameExpr.getp(); }
+  std::list<GlobalBinding> getGlobals() const { return theGlobals; }
 
-  void compute_scripting_kind();
-
-  expr_t clone(substitution_t& s) const;
+  bool isForExpr() const { return theForExpr; }
 
   void accept(expr_visitor&);
-
-	std::ostream& put(std::ostream&) const;
-};
-
-
-/*******************************************************************************
-  TransformExpr ::= "copy" "$" VarName ":=" ExprSingle
-                    ("," "$" VarName ":=" ExprSingle)*
-                    "modify"  ExprSingle "return" ExprSingle
-********************************************************************************/
-class copy_clause;
-typedef rchandle<copy_clause> copy_clause_t;
-
-class copy_clause : public SimpleRCObject
-{
-  friend class expr;
-  friend class transform_expr;
-  friend class ExprIterator;
-
-private:
-  var_expr_t theVar;
-  expr_t     theExpr;
-
-public:
-  SERIALIZABLE_CLASS(copy_clause)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(copy_clause, SimpleRCObject)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
-  copy_clause(var_expr_t aVar, expr_t aExpr);
-  ~copy_clause();
-
-  var_expr* getVar()  const { return theVar.getp(); }
-
-  expr* getExpr() const { return theExpr.getp(); }
-
-  copy_clause_t clone(expr::substitution_t& s) const;
 
   std::ostream& put(std::ostream&) const;
+
+private:
+  void store_local_variables(checked_vector<var_expr_t>& aScopedVariables);
 };
+#endif
 
-
-class transform_expr : public expr
-{
-  friend class ExprIterator;
-  friend class expr;
-
-protected:
-	std::vector<copy_clause_t> theCopyClauses;
-	expr_t                     theModifyExpr;
-	expr_t                     theReturnExpr;
-
-public:
-  SERIALIZABLE_CLASS(transform_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(transform_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
-	transform_expr(
-    static_context* sctx,
-		const QueryLoc&,
-		expr_t aModifyExpr,
-		expr_t aReturnExpr);
-
-	expr_t getModifyExpr() const { return theModifyExpr; }
-
-	expr_t getReturnExpr() const { return theReturnExpr; }
-
-  void setModifyExpr(expr* e);
-
-  void setReturnExpr(expr* e);
-
-	void add_back(copy_clause_t c);
-
-	copy_clause_t const& operator[](int i) const { return theCopyClauses[i]; }
-
-	std::vector<copy_clause_t>::const_iterator begin() const
-  { return theCopyClauses.begin(); }
-
-	std::vector<copy_clause_t>::const_iterator end() const
-  { return theCopyClauses.end(); }
-
-	size_t size() const { return theCopyClauses.size(); }
-
-  void compute_scripting_kind();
-
-  expr_t clone(substitution_t& s) const;
-
-  void accept(expr_visitor&);
-
-	std::ostream& put(std::ostream&) const;
-};
 
 
 }

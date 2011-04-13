@@ -19,23 +19,53 @@
 
 namespace zorba 
 {
-  class debugger_expr;
-  class function_trace_expr;
-  class wrapper_expr;
-  class sequential_expr; class exit_expr; class while_expr; class flowctl_expr;
-  class order_modifier; class flwor_expr; class case_clause; class promote_expr;
-  class gflwor_expr; class trycatch_expr; class eval_expr; 
-  class if_expr; class fo_expr;
+  class order_modifier; 
+  class flwor_expr; 
+  class case_clause; 
+  class if_expr; 
+  class fo_expr;
 #ifndef ZORBA_NO_FULL_TEXT
   class ftcontains_expr;
 #endif /* ZORBA_NO_FULL_TEXT */
-  class instanceof_expr; class treat_expr; class castable_expr; class cast_expr; class name_cast_expr;
-  class validate_expr; class extension_expr; class relpath_expr;
-  class axis_step_expr; class match_expr; class primary_expr; class const_expr;
-  class order_expr; class funcall_expr; class elem_expr; class doc_expr;
-  class attr_expr; class text_expr; class pi_expr; class function_def_expr;
-  class insert_expr; class delete_expr; class replace_expr; class rename_expr;
+  class promote_expr;
+  class instanceof_expr; 
+  class treat_expr; 
+  class castable_expr; 
+  class cast_expr; 
+  class name_cast_expr;
+  class validate_expr; 
+  class extension_expr; 
+  class relpath_expr;
+  class axis_step_expr; 
+  class match_expr; 
+  class const_expr;
+  class order_expr; 
+
+  class elem_expr; 
+  class doc_expr;
+  class attr_expr;
+  class text_expr;
+  class pi_expr;
+
+  class trycatch_expr;
+  class function_item_expr; 
+  class dynamic_function_invocation_expr;
+
+  class insert_expr;
+  class delete_expr;
+  class replace_expr;
+  class rename_expr;
   class transform_expr;
-  class function_item_expr; class dynamic_function_invocation_expr;
+
+  class block_expr; 
+  class apply_expr;
   class var_decl_expr;
+  class exit_expr; 
+  class while_expr; 
+  class flowctl_expr;
+
+  class eval_expr; 
+  class debugger_expr;
+  class function_trace_expr;
+  class wrapper_expr;
 }

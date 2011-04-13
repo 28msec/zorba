@@ -511,14 +511,7 @@ public:
         const QueryLoc& loc,
         bool stable,
         const std::vector<OrderModifier>& modifiers,
-        const std::vector<expr_t>& orderingExprs)
-    :
-    flwor_clause(sctx, loc, flwor_clause::order_clause),
-    theStableOrder(stable),
-    theModifiers(modifiers),
-    theOrderingExprs(orderingExprs)
-  {
-  }
+        const std::vector<expr_t>& orderingExprs);
 
   bool is_stable() const { return theStableOrder; }
 
@@ -555,12 +548,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  count_clause(static_context* sctx, const QueryLoc& loc, var_expr_t var)
-    :
-    flwor_clause(sctx, loc, flwor_clause::count_clause),
-    theVarExpr(var)
-  {
-  }
+  count_clause(static_context* sctx, const QueryLoc& loc, var_expr_t var);
 
   ~count_clause();
 
@@ -586,12 +574,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  where_clause(static_context* sctx, const QueryLoc& loc, expr_t where)
-    :
-    flwor_clause(sctx, loc, flwor_clause::where_clause),
-    theWhereExpr(where)
-  {
-  }
+  where_clause(static_context* sctx, const QueryLoc& loc, expr_t where);
 
   expr* get_expr() const { return theWhereExpr.getp(); }
 

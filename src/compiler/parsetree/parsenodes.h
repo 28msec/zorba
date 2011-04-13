@@ -246,44 +246,6 @@ class Wildcard;
 class DecimalFormatNode;
 
 
-// [] Moved here the definitions for FunctionSig and VarNameAndType from the
-// Bison parser file
-// ---------------
-class FunctionSig
-{
-public:
-  rchandle<ParamList> param;
-  rchandle<SequenceType> ret;
-
-  FunctionSig(ParamList* param_, SequenceType* ret_ = NULL)
-    :
-    param (param_), ret (ret_)
-  {
-  }
-};
-
-
-class VarNameAndType : public XQDocumentable
-{
-public:
-  rchandle<QName>        theName;
-  rchandle<SequenceType> theType;
-  rchandle<AnnotationListParsenode> annotations_h;
-
-  VarNameAndType(const QueryLoc& loc_, rchandle<QName> name, rchandle<SequenceType> type, rchandle<AnnotationListParsenode> annotations)
-    :
-    XQDocumentable(loc_),
-    theName(name),
-    theType(type),
-    annotations_h(annotations)
-  {
-  }
-
-  rchandle<AnnotationListParsenode> get_annotations() const { return annotations_h; }
-
-  void accept(parsenode_visitor&) const;
-};
-
 
 /*******************************************************************************
   [1] Module ::=   VersionDecl? (LibraryModule | MainModule)
@@ -304,8 +266,6 @@ public:
   rchandle<VersionDecl> get_version_decl() const { return version_decl_h; }
 
   void set_version_decl(rchandle<VersionDecl> vd) { version_decl_h = vd; }
-
-  void accept(parsenode_visitor&) const;
 };
 
 
@@ -944,67 +904,84 @@ public:
 };
 
 
+/*******************************************************************************
+  ContextItemDecl ::= "declare" "context" "item" ("as" ItemType)?
+                      ((":=" VarValue) | ("external" (":=" VarDefaultValue)?))
+********************************************************************************/
+class CtxItemDecl : public parsenode
+{
+public:
+  rchandle<exprnode>  theInitExpr;
+  bool                theIsExternal;
+  rchandle<parsenode> theType;
+
+  CtxItemDecl(const QueryLoc& loc, rchandle<exprnode> expr)
+    :
+    parsenode(loc),
+    theInitExpr(expr),
+    theIsExternal(false)
+  {
+  }
+
+  rchandle<exprnode> get_expr() const { return theInitExpr; }
+
+  bool is_external() const { return theIsExternal; }
+
+  rchandle<ItemType> get_type() const { return theType; }
+
+  void accept(parsenode_visitor&) const;
+};
+
 
 /*******************************************************************************
-  [26] VarDecl ::= "declare" "variable" "$" QName TypeDeclaration?
-                   ((":=" VarValue) |
-                    ("external" (":=" VarDefaultValue)?))
+  Global declarations:
+  --------------------
+
+  AnnotatedDecl ::= "declare" Annotation* (VarDecl | FunctionDecl)
+
+  Annotation ::= "%" EQName ("(" Literal ("," Literal)* ")")?
+
+  VarDecl ::= variable" "$" VarName TypeDeclaration?
+              ((":=" VarValue) | ("external" (":=" VarDefaultValue)?))
+
+  VarValue ::= ExprSingle
+
+  VarDefaultValue ::= ExprSingle
 
 
-  [27] VarValue ::= ExprSingle
+  Local declarations:
+  -------------------
 
-  [28] VarDefaultValue ::= ExprSingle
-
-  Note: VarDecl is also used to represent block-local var declarations. The
-  syntax for block-local var declarations is:
-
-  BlockDecls ::= (BlockVarDecl ";")*
-
-  BlockVarDecl ::= "declare" "$" VarName TypeDeclaration? (":=" ExprSingle)?
-                    ("," "$" VarName TypeDeclaration? (":=" ExprSingle)?)*
+  VarDeclStatement ::= ("local" Annotation*)? "variable" 
+                       "$" VarName TypeDeclaration? (":=" ExprSingle)?
+                       ("," "$" VarName TypeDeclaration? (":=" ExprSingle)?)* ";"
 ********************************************************************************/
-class VarDeclBase : public XQDocumentable
+class VarDeclWithInit : public XQDocumentable
 {
 protected:
   rchandle<QName>        theName;
   rchandle<SequenceType> theType;
+  rchandle<exprnode>     theInitExpr;
 
 public:
-  VarDeclBase(const QueryLoc& loc,  rchandle<QName> name, rchandle<SequenceType> type)
+  VarDeclWithInit(
+      const QueryLoc& loc,
+      rchandle<QName> name,
+      rchandle<SequenceType> type,
+      rchandle<exprnode> initexpr)
     :
     XQDocumentable(loc),
     theName(name),
-    theType(type)
+    theType(type),
+    theInitExpr(initexpr)
   {
   }
 
   const QName* get_name() const { return theName; }
 
   rchandle<SequenceType> get_typedecl() const { return theType; }
-};
 
-
-/*******************************************************************************
-
-********************************************************************************/
-class VarDeclWithInit : public VarDeclBase
-{
-protected:
-  rchandle<exprnode> initexpr_h;
-
-public:
-  VarDeclWithInit(
-    const QueryLoc& loc,
-    rchandle<QName> varname,
-    rchandle<SequenceType> type_decl,
-    rchandle<exprnode> init_expr)
-    :
-    VarDeclBase(loc, varname, type_decl),
-    initexpr_h(init_expr)
-  {
-  }
-
-  rchandle<exprnode> get_initexpr() const { return initexpr_h; }
+  rchandle<exprnode> get_initexpr() const { return theInitExpr; }
 };
 
 
@@ -1014,37 +991,261 @@ public:
 class VarDecl : public VarDeclWithInit
 {
 protected:
-  rchandle<AnnotationListParsenode> annotations_h;
-  bool ext;
-  bool global;
-  bool isPrivate;
+  bool theIsExternal;
+  bool theIsGlobal;
+  bool theIsPrivate;
+  bool theIsMutable;
+
+  rchandle<AnnotationListParsenode> theAnnotations;
 
 public:
   VarDecl(
     const QueryLoc& loc,
-    rchandle<QName> varname,
-    rchandle<SequenceType> type_decl,
-    rchandle<exprnode> init_expr,
-    rchandle<AnnotationListParsenode> annotations,
-    bool external = false);
+    QName* varname,
+    SequenceType* type_decl,
+    exprnode* init_expr,
+    AnnotationListParsenode* annotations,
+    bool global,
+    bool external);
 
-  bool is_extern () const { return ext; }
+  bool is_extern() const { return theIsExternal; }
 
-  bool is_global () const { return global; }
+  bool is_global() const { return theIsGlobal; }
 
-  void set_global (bool global_) { global = global_; }
+  void set_global(bool global) { theIsGlobal = global; }
 
-  bool is_private() const { return isPrivate; }
+  bool is_private() const { return theIsPrivate; }
 
-  rchandle<AnnotationListParsenode> get_annotations() const { return annotations_h; }
+  bool is_mutable() const { return theIsMutable; }
+
+  AnnotationListParsenode* get_annotations() const { return theAnnotations.getp(); }
 
   void accept(parsenode_visitor&) const;
 };
 
 
 /*******************************************************************************
-  [27] Annotation ::= "%" EQName  ("(" Literal  ("," Literal)* ")")?
+  This is a helper node that is never actually placed in the AST.
+********************************************************************************/
+class VarNameAndType : public XQDocumentable
+{
+public:
+  rchandle<QName>        theName;
+  rchandle<SequenceType> theType;
+  rchandle<AnnotationListParsenode> theAnnotations;
 
+  VarNameAndType(
+      const QueryLoc& loc_, 
+      rchandle<QName> name,
+      rchandle<SequenceType> type,
+      rchandle<AnnotationListParsenode> annotations)
+    :
+    XQDocumentable(loc_),
+    theName(name),
+    theType(type),
+    theAnnotations(annotations)
+  {
+  }
+
+  AnnotationListParsenode* get_annotations() const { return theAnnotations.getp(); }
+
+  void accept(parsenode_visitor&) const { }
+};
+
+
+/*******************************************************************************
+
+  AnnotatedDecl ::= "declare" Annotation* (VarDecl | FunctionDecl)
+
+  Annotation ::= "%" EQName ("(" Literal ("," Literal)* ")")?
+
+  FunctionDecl ::= ("updating")? "function" EQName "(" ParamList? ")"
+                   ("as" SequenceType)?
+                   (BlockExpr | "external")
+
+  BlockExpr ::= "{" Statements Expr "}"
+
+  Note: the applicable annotations are private vs public, sequential vs
+  non-sequential, and deterministic vs nondeterministic.
+
+********************************************************************************/
+class FunctionDecl : public XQDocumentable
+{
+protected:
+  rchandle<QName>        theName;
+  rchandle<ParamList>    theParams;
+  rchandle<SequenceType> theReturnType;
+  rchandle<exprnode>     theBody;
+
+  bool                   theIsExternal;
+
+  bool                   theUpdating;
+  bool                   theSequential;
+  bool                   theDeterministic;
+  bool                   thePrivate;
+
+  rchandle<AnnotationListParsenode> theAnnotations;
+
+  void parse_annotations();
+
+  bool has_annotation(const char* annotation) const;
+
+public:
+  FunctionDecl(
+        const QueryLoc& loc,
+        QName* name,
+        ParamList* params,
+        SequenceType* retType,
+        exprnode* body,
+        bool updating,
+        bool external);
+
+  rchandle<QName> get_name() const { return theName; }
+
+  rchandle<ParamList> get_paramlist() const { return theParams; }
+
+  ulong get_param_count() const;
+
+  bool is_variadic() const;
+
+  rchandle<SequenceType> get_return_type() const { return theReturnType; }
+
+  rchandle<exprnode> get_body() const { return theBody; }
+
+  bool is_external() const { return theIsExternal; }
+
+  bool is_updating() const { return theUpdating; }
+
+  bool is_sequential() const { return theSequential; }
+
+  bool is_deterministic() const { return theDeterministic; }
+
+  bool is_private() const { return thePrivate; }
+
+  AnnotationListParsenode* get_annotations() const { return theAnnotations.getp(); }
+
+  void set_annotations(AnnotationListParsenode* annotations);
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  This is a helper node that is never actually placed in the AST.
+********************************************************************************/
+class FunctionSig
+{
+public:
+  rchandle<ParamList>    theParams;
+  rchandle<SequenceType> theReturnType;
+
+  FunctionSig(ParamList* param, SequenceType* ret = NULL)
+    :
+    theParams(param),
+    theReturnType(ret)
+  {
+  }
+};
+
+
+/*******************************************************************************
+  ParamList ::= Param ("," Param)*
+********************************************************************************/
+class ParamList : public parsenode
+{
+protected:
+  std::vector<rchandle<Param> > param_hv;
+
+public:
+  ParamList(const QueryLoc&);
+
+  void push_back(rchandle<Param> param_h) { param_hv.push_back(param_h); }
+
+  rchandle<Param> operator[](int i) const { return param_hv[i]; }
+
+  std::vector<rchandle<Param> >::const_iterator begin() const { return param_hv.begin(); }
+
+  std::vector<rchandle<Param> >::const_iterator end() const { return param_hv.end(); }
+
+  std::vector<rchandle<Param> >::size_type size() const { return param_hv.size(); }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  Param ::= "$" QName TypeDeclaration?
+********************************************************************************/
+class Param : public parsenode
+{
+protected:
+  rchandle<QName>        theName;
+  rchandle<SequenceType> theType;
+
+public:
+  Param(
+    const QueryLoc& loc,
+    rchandle<QName> name,
+    rchandle<SequenceType> type);
+
+  const QName* get_name() const { return theName.getp(); }
+
+  rchandle<SequenceType> get_typedecl() const { return theType; }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  AnnotationList ::= Annotation*
+********************************************************************************/
+class AnnotationListParsenode : public parsenode
+{
+protected:
+  std::vector<rchandle<AnnotationParsenode> > theAnnotations;
+
+public:
+  AnnotationListParsenode(const QueryLoc& loc, AnnotationParsenode* annotation);
+
+  void push_back(rchandle<AnnotationParsenode> annotation_h)
+  {
+    theAnnotations.push_back(annotation_h);
+  }
+
+  rchandle<AnnotationParsenode> operator[](int i) const
+  {
+    return theAnnotations[i];
+  }
+
+  std::vector<rchandle<AnnotationParsenode> >::const_iterator begin() const
+  {
+    return theAnnotations.begin();
+  }
+
+  std::vector<rchandle<AnnotationParsenode> >::const_iterator end() const
+  {
+    return theAnnotations.end();
+  }
+
+  std::vector<rchandle<AnnotationParsenode> >::size_type size() const
+  {
+    return theAnnotations.size();
+  }
+
+  //bool has_deterministic() const;
+
+  //bool has_nondeterministic() const;
+
+  bool has_annotation(const char* annotation) const;
+
+  void validate() const;
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  Annotation ::= "%" EQName  ("(" Literal  ("," Literal)* ")")?
 ********************************************************************************/
 class AnnotationParsenode : public parsenode
 {
@@ -1064,49 +1265,6 @@ public:
   {
     return literal_list_h;
   };
-
-  void accept(parsenode_visitor&) const;
-};
-
-
-class AnnotationListParsenode : public parsenode
-{
-protected:
-  std::vector<rchandle<AnnotationParsenode> > annotations_hv;
-
-public:
-  AnnotationListParsenode(const QueryLoc& loc, AnnotationParsenode* annotation);
-
-  void push_back(rchandle<AnnotationParsenode> annotation_h)
-  {
-    annotations_hv.push_back(annotation_h);
-  }
-
-  rchandle<AnnotationParsenode> operator[](int i) const
-  {
-    return annotations_hv[i];
-  }
-
-  std::vector<rchandle<AnnotationParsenode> >::const_iterator begin() const
-  {
-    return annotations_hv.begin();
-  }
-
-  std::vector<rchandle<AnnotationParsenode> >::const_iterator end() const
-  {
-    return annotations_hv.end();
-  }
-
-  std::vector<rchandle<AnnotationParsenode> >::size_type size() const
-  {
-    return annotations_hv.size();
-  }
-
-  bool has_deterministic() const;
-
-  bool has_nondeterministic() const;
-
-  bool has_annotation(const char* annotation) const;
 
   void accept(parsenode_visitor&) const;
 };
@@ -1132,152 +1290,6 @@ public:
 
   void accept(parsenode_visitor&) const;
 };
-
-
-/*******************************************************************************
-  [29] ContextItemDecl ::= "declare" "context" "item" ("as" ItemType)?
-                           ((":=" VarValue) |
-                            ("external" (":=" VarDefaultValue)?))
-********************************************************************************/
-class CtxItemDecl : public parsenode
-{
-  rchandle<exprnode> expr;
-
-public:
-  bool ext;
-  rchandle<parsenode> type;
-
-  CtxItemDecl(const QueryLoc& loc, rchandle<exprnode> expr_)
-    :
-    parsenode(loc),
-    expr(expr_),
-    ext(false)
-  {
-  }
-
-  rchandle<exprnode> get_expr() const { return expr; }
-
-  bool is_external() const { return ext; }
-
-  rchandle<ItemType> get_type() const { return type; }
-
-  void accept(parsenode_visitor&) const;
-};
-
-
-/*******************************************************************************
-  [32] FunctionDecl ::= "declare"
-                        ("deterministic" | "nondeterministic")?
-                        ("simple" | "updating | "sequential")?
-                        "function" QName "(" ParamList? ")" ("as" SequenceType)?
-                        (FunctionBody | "external")
-
-  [33] FunctionBody ::= EnclosedExpr | Block
-
-  Note: If a function is a sequential one, then its FunctionBody must be a Block,
-  otherwise its FunctionBody must be an EnclosedExpr.
-********************************************************************************/
-class FunctionDecl : public XQDocumentable
-{
-protected:
-  rchandle<QName> name_h;
-  rchandle<ParamList> paramlist_h;
-  rchandle<exprnode> body_h;
-  rchandle<SequenceType> return_type_h;
-  ParseConstants::function_type_t theKind;
-  rchandle<AnnotationListParsenode> annotations_h;
-  bool theDeterministic;
-  bool thePrivate;
-
-  void parse_annotations();
-
-  bool has_annotation(const char* annotation) const;
-
-public:
-  FunctionDecl(
-        const QueryLoc&,
-        rchandle<QName>,
-        rchandle<ParamList>,
-        rchandle<SequenceType>,
-        rchandle<exprnode>,
-        ParseConstants::function_type_t type,
-        rchandle<AnnotationListParsenode> annotations);
-
-  rchandle<QName> get_name() const { return name_h; }
-
-  rchandle<ParamList> get_paramlist() const { return paramlist_h; }
-
-  int get_param_count() const;
-
-  rchandle<exprnode> get_body() const { return body_h; }
-
-  rchandle<SequenceType> get_return_type() const { return return_type_h; }
-
-  ParseConstants::function_type_t get_kind() const { return theKind; }
-
-  rchandle<AnnotationListParsenode> get_annotations() const { return annotations_h; }
-
-  void set_annotations(rchandle<AnnotationListParsenode> annotations);
-
-  void set_kind(ParseConstants::function_type_t t) { theKind = t; }
-
-  bool is_deterministic() const { return theDeterministic; }
-
-  bool is_private() const { return thePrivate; }
-
-  bool is_variadic() const;
-
-  void accept(parsenode_visitor&) const;
-};
-
-
-/*******************************************************************************
-  [34] ParamList ::= Param ("," Param)*
-********************************************************************************/
-class ParamList : public parsenode
-{
-protected:
-  std::vector<rchandle<Param> > param_hv;
-
-public:
-  ParamList(const QueryLoc&);
-
-  void push_back(rchandle<Param> param_h) { param_hv.push_back(param_h); }
-
-  rchandle<Param> operator[](int i) const { return param_hv[i]; }
-
-  std::vector<rchandle<Param> >::const_iterator begin() const { return param_hv.begin(); }
-
-  std::vector<rchandle<Param> >::const_iterator end() const { return param_hv.end(); }
-
-  std::vector<rchandle<Param> >::size_type size() const { return param_hv.size(); }
-
-  void accept(parsenode_visitor&) const;
-};
-
-
-/*******************************************************************************
-  [35] Param ::= "$" QName TypeDeclaration?
-********************************************************************************/
-class Param : public parsenode
-{
-protected:
-  rchandle<QName>        theName;
-  rchandle<SequenceType> theType;
-
-public:
-  Param(
-    const QueryLoc& loc,
-    rchandle<QName> name,
-    rchandle<SequenceType> type);
-
-  const QName* get_name() const { return theName.getp(); }
-
-  rchandle<SequenceType> get_typedecl() const { return theType; }
-
-  void accept(parsenode_visitor&) const;
-};
-
 
 
 /*******************************************************************************

@@ -2,7 +2,7 @@ import module namespace init = "http://www.zorba-xquery.com/modules/store/static
 import module namespace manip = "http://www.zorba-xquery.com/modules/store/static-collections/manipulation";
 import module namespace ns = "http://example.org/datamodule/" at "collections.xqdata";
 
-declare sequential function local:create() {
+declare %sequential function local:create() {
   init:create-collection($ns:collection_1);
   init:create-collection($ns:collection_2);
   init:create-collection($ns:http);
@@ -17,7 +17,7 @@ declare sequential function local:create() {
   );
 };
 
-declare sequential function local:delete() {
+declare %sequential function local:delete() {
   init:delete-collection($ns:collection_1);
   ( 
     "delete",
@@ -28,7 +28,7 @@ declare sequential function local:delete() {
   );
 };
 
-declare sequential function local:main() {
+declare %sequential function local:main() {
   (
     local:create(),
     local:delete()

@@ -2,7 +2,7 @@ module namespace foo = "foo:bar";
 
 declare variable $foo:foo external;
 
-declare sequential function foo:bar()
+declare %sequential function foo:bar()
 {
   declare $blub as xs:string := fn:concat("a", "b");
   $blub;
