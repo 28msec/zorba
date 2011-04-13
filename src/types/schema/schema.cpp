@@ -1668,38 +1668,35 @@ bool Schema::parseUserUnionTypes(
     const xqtref_t& aTargetType,
     std::vector<store::Item_t> &resultList)
 {
-//    cout << "parseUserUnionTypes: '" << textValue << "'" <<  " to " <<
-//      aTargetType->toString() << endl; cout.flush();
+//  cout << "parseUserUnionTypes: '" << textValue << "'" <<  " to " <<
+//    aTargetType->toString() << endl; cout.flush();
 
-    ZORBA_ASSERT( aTargetType->type_kind() == XQType::USER_DEFINED_KIND );
+  ZORBA_ASSERT( aTargetType->type_kind() == XQType::USER_DEFINED_KIND );
 
-    const UserDefinedXQType* udXQType =
-    static_cast<const UserDefinedXQType*>(aTargetType.getp());
-    ZORBA_ASSERT( udXQType->isUnion() );
+  const UserDefinedXQType* udXQType =
+  static_cast<const UserDefinedXQType*>(aTargetType.getp());
+  ZORBA_ASSERT( udXQType->isUnion() );
 
+  std::vector<xqtref_t> unionItemTypes = udXQType->getUnionItemTypes();
 
-    std::vector<xqtref_t> unionItemTypes = udXQType->getUnionItemTypes();
-
-    zstring msg = "No suitable match in union '" + udXQType->toSchemaString() + "' tryed: " ;
-
-    for ( unsigned int i = 0; i < unionItemTypes.size(); i++)
+  for ( unsigned int i = 0; i < unionItemTypes.size(); i++)
+  {
+    try
     {
-      try
+      if (isCastableUserSimpleTypes(textValue, unionItemTypes[i]))
       {
-        if (isCastableUserSimpleTypes(textValue, unionItemTypes[i]))
-        {
-          return parseUserSimpleTypes(textValue, unionItemTypes[i], resultList);
-        }
-      }
-      catch(ZorbaException const& e)
-      {
-        msg += ", " + unionItemTypes[i]->toSchemaString() + " " + e.what();
+        return parseUserSimpleTypes(textValue, unionItemTypes[i], resultList);
       }
     }
+    catch(ZorbaException const&)
+    {
+    }
+  }
 
-    //cout << "parseUserUnionTypes 2 : " << msg << endl; cout.flush();
-    ZORBA_ERROR_DESC_OSS(FORG0001, msg);
-    return false; 
+  throw XQUERY_EXCEPTION(
+    FORG0001,
+    ERROR_PARAMS( textValue, ZED( NoCastTo ), udXQType->toSchemaString() )
+  );
 }
 
 
@@ -1896,5 +1893,6 @@ void Schema::serialize(::zorba::serialization::Archiver &ar)
    ar.set_is_temp_field_one_level(false);
 #endif
 }
+
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

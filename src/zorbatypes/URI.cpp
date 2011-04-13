@@ -926,12 +926,12 @@ void URI::initializePath(const zstring& uri)
           unicode::code_point lHex1 = lCodepoints[++lIndex];
           if(!ascii::is_xdigit(lHex1))
             throw XQUERY_EXCEPTION(
-              XQST0046, ERROR_PARAMS( uri, ZED( BadHexDigit ), char(lHex1) )
+              XQST0046, ERROR_PARAMS( uri, ZED( BadHexDigit ), lHex1 )
             );
           unicode::code_point lHex2 = lCodepoints[++lIndex];
           if(!ascii::is_xdigit(lHex2))
             throw XQUERY_EXCEPTION(
-              XQST0046, ERROR_PARAMS( uri, ZED( BadHexDigit ), char(lHex2) )
+              XQST0046, ERROR_PARAMS( uri, ZED( BadHexDigit ), lHex2 )
             );
         }
         else if (!is_unreserved_char(lCp) && !is_path_character(lCp) && valid)

@@ -346,7 +346,9 @@ void Base64::insertData(const char* str, size_t len)
       }
       else
       {
-        ZORBA_ERROR_DESC(FORG0001,"In Base 64, '==' must be at the end and must be succeed by [AQgw]");
+        throw XQUERY_EXCEPTION(
+          FORG0001, ERROR_PARAMS( "==", ZED( Base64EqualsEquals ) )
+        );
       }
     }
     else if (lChar == '=' && i > 0 && i == (len-1))
@@ -359,7 +361,9 @@ void Base64::insertData(const char* str, size_t len)
         theData.push_back('=');
         break;
       default:
-        ZORBA_ERROR_DESC(FORG0001,"In Base 64, '=' must be at the end and must be succeed by [AEIMQUYcgkosw048]");
+        throw XQUERY_EXCEPTION(
+          FORG0001, ERROR_PARAMS( '=', ZED( Base64Equals ) )
+        );
       }
     }
     else if ( ascii::is_space(lChar) ) 
@@ -368,15 +372,17 @@ void Base64::insertData(const char* str, size_t len)
     }
     else
     {
-      stringstream lStream;
-      lStream << "invalid character '" << str[i] << "' in Base64 value";
-      ZORBA_ERROR_DESC(FORG0001, lStream.str());
+      throw XQUERY_EXCEPTION(
+        FORG0001, ERROR_PARAMS( str[i], ZED( Base64BadChar ) )
+      );
     }
   }
 
   if (theData.size() % 4 != 0) 
   {
-    ZORBA_ERROR_DESC(FORG0001, "Base64 input must be a multiple of four characters");
+    throw XQUERY_EXCEPTION(
+      FORG0001, ERROR_PARAMS( "", ZED( Base64Multiple4 ) )
+    );
   }
 }
 
@@ -529,8 +535,9 @@ void Base16::insertData(const char* str, size_t len)
 
   if (len % 2 != 0) 
   {
-    ZORBA_ERROR_DESC(FORG0001,
-                     "A hexBinary value must contain an even number of characters");
+    throw XQUERY_EXCEPTION(
+      FORG0001, ERROR_PARAMS( "", ZED( HexBinaryMustBeEven ) )
+    );
   }
 
   for (size_t i = 0; i < len; ++i)
@@ -547,9 +554,9 @@ void Base16::insertData(const char* str, size_t len)
     }
     else
     {
-      stringstream lStream;
-      lStream << "Invalid hexadecimal digit";
-      ZORBA_ERROR_DESC(FORG0001, lStream.str());
+      throw XQUERY_EXCEPTION(
+        FORG0001, ERROR_PARAMS( lChar, ZED( BadHexDigit ) )
+      );
     }
   }
 }
