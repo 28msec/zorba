@@ -2201,29 +2201,16 @@ void serializer::serialize(
     itemHandler aHandler,
     void* aHandlerData)
 {
-  store::Item_t lItem;
-//  object->open();
-  if (object->next(lItem)) {
-    // first, we notify the caller, that everything that we wanted to
-    // (e.g. computed by side-effecting scripting functions is now available).
-    //  He can, for example, decide on the serialization method
-    Zorba_SerializerOptions_t* lSerParams = aHandler(aHandlerData);
-    if (lSerParams) {
-      SerializerImpl::setSerializationParameters(*this, *lSerParams);
-    }
-  } else {
-    return;
-  }
-
   validate_parameters();
-
   if (!setup(stream)) {
     return;
   }
 
   e->emit_declaration();
 
-  do {
+  store::Item_t lItem;
+  //object->open();
+  while (object->next(lItem)) {
     Zorba_SerializerOptions_t* lSerParams = aHandler(aHandlerData);
     if (lSerParams) {
       SerializerImpl::setSerializationParameters(*this, *lSerParams);
@@ -2238,8 +2225,7 @@ void serializer::serialize(
     }
 
     e->emit_item(&*lItem);
-
-  } while (object->next(lItem));
+  } 
   //object->close();
   e->emit_declaration_end();
 }

@@ -58,7 +58,7 @@ bool item_handler_example(Zorba* aZorba)
   XQuery_t lQuery = aZorba->compileQuery("(<br/>, <br/>, <br/>, <br/>)");
   lQuery->execute(lStream, &myhandler, &lData, &lOptions);
   std::string lResult = lStream.str();
-  if (lResult == "<br><br/><br><br/>")
+  if (lResult == "<br/><br><br/><br>")
     return true;
   return false;
 }
