@@ -325,7 +325,7 @@ public:
 
 protected:
   String
-  createInvokeQuery(const Function_t&) const;
+  createInvokeQuery(const Function_t&, size_t aArity) const;
 
   Function_t
   checkInvokable(const Item& aQName, size_t aNumArgs) const;

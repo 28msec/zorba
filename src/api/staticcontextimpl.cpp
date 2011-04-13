@@ -1651,7 +1651,7 @@ StaticContextImpl::validateSimpleContent(
  * which needs to be bound before execution.
  */
 String
-StaticContextImpl::createInvokeQuery(const Function_t& aFunc) const
+StaticContextImpl::createInvokeQuery(const Function_t& aFunc, size_t aArity) const
 {
   std::ostringstream lOut;
 
@@ -1660,7 +1660,7 @@ StaticContextImpl::createInvokeQuery(const Function_t& aFunc) const
     << "import module namespace ref = 'http://www.zorba-xquery.com/modules/reflection';"
     << std::endl
     << "declare variable $name as xs:QName" << " external;" << std::endl;
-  for (size_t i = 0; i < aFunc->getArity(); ++i)
+  for (size_t i = 0; i < aArity; ++i)
   {
     lOut << "declare variable $arg" << i << " external;" << std::endl;
   }
@@ -1679,7 +1679,7 @@ StaticContextImpl::createInvokeQuery(const Function_t& aFunc) const
 
   // args
   lOut << "($name";
-  for (size_t i = 0; i < aFunc->getArity(); ++i)
+  for (size_t i = 0; i < aArity; ++i)
   {
     lOut << ", $arg" << i;
   }
@@ -1708,7 +1708,7 @@ StaticContextImpl::checkInvokable(const Item& aQName, size_t aNumArgs) const
   for (std::vector<Function_t>::const_iterator lIter = lFunctions.begin();
        lIter != lFunctions.end(); ++lIter)
   {
-    if ((*lIter)->getArity() == aNumArgs)
+    if ((*lIter)->isVariadic() || (*lIter)->getArity() == aNumArgs)
     {
       lFunc = (*lIter);
       break;
@@ -1732,7 +1732,7 @@ StaticContextImpl::invoke(
   {
     Function_t lFunc = checkInvokable(aQName, aArgs.size());
 
-    String lStr = createInvokeQuery(lFunc);
+    String lStr = createInvokeQuery(lFunc, aArgs.size());
 
     std::auto_ptr<XQueryImpl> impl(new XQueryImpl());
 
@@ -1745,7 +1745,7 @@ StaticContextImpl::invoke(
     // bind qname and params
     DynamicContext* lDCtx = impl->getDynamicContext();
     lDCtx->setVariable("name", aQName);
-    for (size_t i = 0; i < lFunc->getArity(); ++i)
+    for (size_t i = 0; i < aArgs.size(); ++i)
     {
       std::ostringstream lArgName;
       lArgName << "arg" << i;
@@ -1763,6 +1763,5 @@ StaticContextImpl::invoke(
     return 0;
   }
 }
-
 } /* namespace zorba */
 /* vim:set et sw=2 ts=2: */

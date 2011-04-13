@@ -69,4 +69,10 @@ FunctionImpl::getArity() const
   return theFunction->getArity();
 }
 
+bool
+FunctionImpl::isVariadic() const
+{
+  return theFunction->isVariadic();
+}
+
 } /* namespace zorba */

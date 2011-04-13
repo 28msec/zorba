@@ -144,7 +144,6 @@ invoke5(zorba::Zorba* z)
 {
   try
   {
-    // test function with one param
     StaticContext_t lSctx = z->createStaticContext();
     Zorba_CompilerHints_t lHints;
 
@@ -160,6 +159,49 @@ invoke5(zorba::Zorba* z)
         "random"); // round needs at least one param
 
     std::vector<ItemSequence_t> lArgs;
+
+    ItemSequence_t lRes = lSctx->invoke(lQName, lArgs);
+
+    Zorba_SerializerOptions_t lOpt;
+    Serializer_t lSer = Serializer::createSerializer(lOpt);;
+    lSer->serialize(lRes, std::cout);
+    std::cout << std::endl;
+
+  }
+  catch (zorba::XQueryException &e)
+  {
+    std::cerr << "Error: " << e << std::endl;
+    return false;
+  }
+  catch (zorba::ZorbaException &e)
+  {
+    std::cerr << "Error: " << e << std::endl;
+    return false;
+  }
+  return true;
+}
+
+bool
+invoke6(zorba::Zorba* z)
+{
+  try
+  {
+    // test variadic function
+    StaticContext_t lSctx = z->createStaticContext();
+    Zorba_CompilerHints_t lHints;
+
+    ItemFactory* lFac = z->getItemFactory();
+    Item lQName = lFac->createQName(
+        "http://www.w3.org/2005/xpath-functions",
+        "concat"); // round needs at least one param
+
+    std::vector<ItemSequence_t> lArgs;
+    ItemSequence_t lSeq1 = new SingletonItemSequence(
+        lFac->createDecimal("1"));
+    ItemSequence_t lSeq2 = new SingletonItemSequence(
+        lFac->createDecimal("2"));
+    lArgs.push_back(lSeq1);
+    lArgs.push_back(lSeq2);
 
     ItemSequence_t lRes = lSctx->invoke(lQName, lArgs);
 
@@ -211,6 +253,11 @@ invoke(int argc, char* argv[])
   std::cout << "executing example 5" << std::endl;
   if (!invoke5(z))
     return 5;
+  std::cout << std::endl;
+
+  std::cout << "executing example 6" << std::endl;
+  if (!invoke6(z))
+    return 6;
   std::cout << std::endl;
   return 0;
 }

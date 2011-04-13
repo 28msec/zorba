@@ -49,6 +49,9 @@ class ZORBA_DLL_PUBLIC Function : public SmartObject
 
   virtual size_t
   getArity() const = 0;
+
+  virtual bool
+  isVariadic() const = 0;
 };
 
 } /* namespace zorba */

@@ -53,6 +53,8 @@ protected:
   virtual Item getFunctionName() const;
 
   virtual size_t getArity() const;
+
+  bool isVariadic() const;
 };
 
 } /* namespace zorba */
