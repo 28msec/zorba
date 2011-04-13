@@ -346,12 +346,14 @@ FileImpl::openInputStream(std::ifstream& aInStream, bool binary, bool trimByteOr
   ZORBA_TRY
     std::string lPath(theInternalFile->get_path());
 
-    if (!theInternalFile->exists()) {
-      throw "FODC0002"; // "File not found: " << lPath
-    }
-    if (!theInternalFile->is_file()) {
-      throw "FODC0002"; // "\"" << lPath << "\" is not a file"
-    }
+    if (!theInternalFile->exists())
+      throw XQUERY_EXCEPTION(
+        FODC0002, ERROR_PARAMS( lPath, ZED( FileNotFoundOrReadable ) )
+      );
+    if (!theInternalFile->is_file())
+      throw XQUERY_EXCEPTION(
+        FODC0002, ERROR_PARAMS( lPath, ZED( NotPlainFile ) )
+      );
 
     std::ios_base::openmode lMode = std::ifstream::in;
     if (binary) {
@@ -373,9 +375,10 @@ FileImpl::openInputStream(std::ifstream& aInStream, bool binary, bool trimByteOr
     aInStream.open(wpath_str, lMode);
 #endif
 
-    if (aInStream.is_open() == false) {
-      ZORBA_ERROR_DESC_OSS(FODC0002, "File not accessible: " << lPath);
-    }
+    if (aInStream.is_open() == false)
+      throw XQUERY_EXCEPTION(
+        FODC0002, ERROR_PARAMS( lPath, ZED( FileNotFoundOrReadable ) )
+      );
 
     if (trimByteOrderMark) {
       char lBuf[3];
@@ -393,9 +396,10 @@ FileImpl::openOutputStream(std::ofstream& aOutStream, bool binary, bool append) 
   ZORBA_TRY
     std::string lPath(theInternalFile->get_path());
 
-    if (theInternalFile->exists() && !theInternalFile->is_file()) {
-      ZORBA_ERROR_DESC_OSS(FODC0002, "\"" << lPath << "\" is not a file");
-    }
+    if (theInternalFile->exists() && !theInternalFile->is_file())
+      throw XQUERY_EXCEPTION(
+        FODC0002, ERROR_PARAMS( lPath, ZED( NotPlainFile ) )
+      );
 
     std::ios_base::openmode lMode = std::ifstream::out;
     lMode |= append ? std::ios_base::app : std::ios_base::trunc;
@@ -418,9 +422,10 @@ FileImpl::openOutputStream(std::ofstream& aOutStream, bool binary, bool append) 
     aOutStream.open(wpath_str, lMode);
 #endif
 
-    if (aOutStream.is_open() == false) {
-      ZORBA_ERROR_DESC_OSS(FODC0002, "File not accessible: " << lPath);
-    }
+    if (aOutStream.is_open() == false)
+      throw XQUERY_EXCEPTION(
+        FODC0002, ERROR_PARAMS( lPath, ZED( FileNotFoundOrReadable ) )
+      );
   ZORBA_CATCH
 }
 
@@ -430,4 +435,5 @@ FileImpl::lastModified() const
   return theInternalFile->lastModified();
 }
 
-} /* namespace zorba */
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */
