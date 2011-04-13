@@ -16,21 +16,13 @@
 #include "synchronous_logger.h"
 
 
-zorba::synchronous_logger::SynchronousLogger::SynchronousLogger( std::ostream &stream )
-:
-m_stream(stream)
+zorba::SynchronousLogger::SynchronousLogger(std::ostream &stream)
+  : m_stream(stream)
 {
 }
 
-zorba::synchronous_logger::SynchronousLogger& zorba::synchronous_logger::SynchronousLogger::operator<<( const long input )
-{
-	SYNC_CODE(AutoLock lock(m_lock, Lock::WRITE);)
-  m_stream << input;
-	m_stream.flush();
-	return *this;
-}
-
-zorba::synchronous_logger::SynchronousLogger& zorba::synchronous_logger::SynchronousLogger::operator<<( const zorba::String input )
+zorba::SynchronousLogger&
+zorba::SynchronousLogger::operator<<(const long input)
 {
 	SYNC_CODE(AutoLock lock(m_lock, Lock::WRITE);)
   m_stream << input;
@@ -38,3 +30,11 @@ zorba::synchronous_logger::SynchronousLogger& zorba::synchronous_logger::Synchro
 	return *this;
 }
 
+zorba::SynchronousLogger&
+zorba::SynchronousLogger::operator<<(const zorba::String input)
+{
+	SYNC_CODE(AutoLock lock(m_lock, Lock::WRITE);)
+  m_stream << input;
+	m_stream.flush();
+	return *this;
+}

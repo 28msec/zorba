@@ -275,18 +275,19 @@ isEqual(zorba::file aRefFile, zorba::file aResFile, int& aLine, int& aCol, int& 
 
 void 
 slurp_file (const char *fname, std::string &result) {
-  std::ifstream qfile(fname, std::ios::binary | std::ios_base::in); assert (qfile);
+  std::ifstream qfile(fname, std::ios::binary | std::ios_base::in);
+  assert(qfile);
 
-  qfile.seekg (0, std::ios::end);
-  size_t len = qfile.tellg ();
-  qfile.seekg (0, std::ios::beg);
-  char *str = new char [len];
-  qfile.read (str, (std::streamsize)len);
-  len = qfile.gcount();
+  qfile.seekg(0, std::ios::end);
+  std::streamsize lLen = qfile.tellg();
+  qfile.seekg(0, std::ios::beg);
+  char *lStr = new char[static_cast<unsigned int>(lLen)];
+  qfile.read(lStr, lLen);
+  lLen = qfile.gcount();
   
-  std::string sstr (str, len);
-  result.swap (sstr);
-  delete [] str;
+  std::string lSstr(lStr, static_cast<unsigned int>(lLen));
+  result.swap(lSstr);
+  delete[] lStr;
 }
 
 int

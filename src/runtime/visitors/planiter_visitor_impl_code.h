@@ -314,7 +314,9 @@ PLAN_ITER_VISITOR (AndIterator);
 
   PLAN_ITER_VISITOR(FTContainsIterator);
 
+#ifdef ZORBA_WITH_DEBUGGER
   PLAN_ITER_VISITOR ( DebuggerSingletonIterator );
+#endif
 
   PLAN_ITER_VISITOR(HoistIterator);
   PLAN_ITER_VISITOR(UnhoistIterator);

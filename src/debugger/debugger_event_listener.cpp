@@ -24,9 +24,9 @@
 #include "debugger/debugger_clientimpl.h"
 #include "debugger/message_factory.h"
 #include "debugger/query_locationimpl.h"
-#include "debugger/synchronous_logger.h"
 
 #include "zorbautils/mutex.h"
+#include "zorbautils/synchronous_logger.h"
 
 #include "util/ascii_util.h"
 

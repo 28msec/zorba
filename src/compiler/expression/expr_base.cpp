@@ -715,22 +715,23 @@ bool expr::is_map(expr* e, static_context* sctx) const
 
 bool expr::is_map_internal(const expr* e, bool& found) const
 {
-  if (found)
+  if (found) {
     return true;
+  }
 
-  if (this == e)
-  {
+  if (this == e) {
     found = true;
     return true;
   }
 
-  switch(get_expr_kind())
-  {
+  switch(get_expr_kind()) {
+#ifdef ZORBA_WITH_DEBUGGER
   case debugger_expr_kind:
   {
     const debugger_expr* debugExpr = static_cast<const debugger_expr *>(this);
     return debugExpr->get_expr()->is_map_internal(e, found);
   }
+#endif
 
   case order_expr_kind:
   {
@@ -754,23 +755,16 @@ bool expr::is_map_internal(const expr* e, bool& found) const
     const function* func = foExpr->get_func();
     ulong numArgs = foExpr->num_args();
 
-    for (ulong i = 0; i < numArgs; ++i)
-    {
+    for (ulong i = 0; i < numArgs; ++i) {
       const expr* argExpr = foExpr->get_arg(i);
 
-      if (func->isMap(i))
-      {
-        if (argExpr->is_map_internal(e, found) && found)
-        {
+      if (func->isMap(i)) {
+        if (argExpr->is_map_internal(e, found) && found) {
           return true;
-        }
-        else if (found)
-        {
+        } else if (found) {
           return false;
         }
-      }
-      else if (argExpr->contains_expr(e))
-      {
+      } else if (argExpr->contains_expr(e)) {
         return false;
       }
     }

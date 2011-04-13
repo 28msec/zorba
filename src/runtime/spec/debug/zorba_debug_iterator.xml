@@ -14,7 +14,8 @@
     <zorba:include form="Quoted">types/typeimpl.h</zorba:include>
   </zorba:header>
 
-  <zorba:iterator name="ZorbaDebugIterator">
+  <zorba:iterator name="ZorbaDebugIterator"
+                  preprocessorGuard="#ifdef ZORBA_WITH_DEBUGGER">
 
     <zorba:description author="Zorba Team">
       This iterator wrapps iterators in which represents breakable expression

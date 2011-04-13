@@ -11,30 +11,31 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 SET(UTIL_SRCS
-    string/empty_rep_base.cpp
-    ascii_util.cpp
-    dynamic_bitset.cpp
-    error_util.cpp
-    fx/fxcharheap.cpp
-    file.cpp
-    dir.cpp
-    fs_util.cpp
-    indent.cpp
-    regex.cpp
-    unicode_util.cpp
-    unicode_categories.cpp
-    uri_util.cpp
-    utf8_util.cpp
-    xml_util.cpp
-    uuid/sysdep.cpp
-    uuid/uuid.cpp)
+  ascii_util.cpp
+  dynamic_bitset.cpp
+  error_util.cpp
+  file.cpp
+  dir.cpp
+  fs_util.cpp
+  indent.cpp
+  regex.cpp
+  unicode_util.cpp
+  unicode_categories.cpp
+  uri_util.cpp
+  utf8_util.cpp
+  xml_util.cpp
+  fx/fxcharheap.cpp
+  string/empty_rep_base.cpp
+  uuid/sysdep.cpp
+  uuid/uuid.cpp)
 
-IF (ZORBA_WITH_FILE_ACCESS)
-LIST(APPEND UTIL_SRCS
-    mmap_file.cpp)
-ENDIF (ZORBA_WITH_FILE_ACCESS)
-
+IF(ZORBA_WITH_FILE_ACCESS)
+  LIST(APPEND UTIL_SRCS
+    mmap_file.cpp
+  )
+ENDIF(ZORBA_WITH_FILE_ACCESS)
 
 HEADER_GROUP_SUBFOLDER(UTIL_SRCS fx)
 HEADER_GROUP_SUBFOLDER(UTIL_SRCS utf8)

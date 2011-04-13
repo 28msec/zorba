@@ -80,59 +80,61 @@ ZORBA_RUNTIME_GENERATOR(
   
 
 LIST(APPEND RUNTIME_SRCS
-    visitors/printer_visitor.cpp
-    visitors/printer_visitor_impl.cpp
-    visitors/printer_visitor_api.cpp
-    api/plan_iterator_wrapper.cpp
-    api/plan_wrapper.cpp
-    base/plan_iterator.cpp
-    booleans/BooleanImpl.cpp
-    core/apply_updates.cpp
-    core/arithmetic_impl.cpp
-    core/constructors.cpp
-    core/flwor_iterator.cpp
-    core/fncall_iterator.cpp
-    core/item_iterator.cpp
-    core/nodeid_iterators.cpp
-    core/path_iterators.cpp
-    core/sequencetypes.cpp
-    core/trycatch.cpp
-    core/var_iterators.cpp
-    core/gflwor/common.cpp
-    core/gflwor/tuplestream_iterator.cpp
-    core/gflwor/for_iterator.cpp
-    core/gflwor/let_iterator.cpp
-    core/gflwor/where_iterator.cpp
-    core/gflwor/comp_function.cpp
-    core/gflwor/count_iterator.cpp
-    core/gflwor/groupby_iterator.cpp
-    core/gflwor/tuplesource_iterator.cpp
-    core/gflwor/window_iterator.cpp
-    core/gflwor/orderby_iterator.cpp
-    core/gflwor/outerfor_iterator.cpp
-    core/internal_operators.cpp
-    durations_dates_times/DurationsDatesTimesImpl.cpp
-    indexing/doc_indexer.cpp
-    indexing/index_ddl.cpp
-    numerics/NumericsImpl.cpp
-    numerics/format_integer_impl.cpp
-    sequences/SequencesImpl.cpp
-    visitors/iterprinter.cpp
-    update/update.cpp
-    util/item_iterator.cpp
-    util/timeout.cpp
-    util/flowctl_exception.cpp
-    function_item/function_item.cpp
-    function_item/dynamic_fncall_iterator.cpp
-    eval/eval.cpp
-    collections/collections_base.cpp
+  visitors/printer_visitor.cpp
+  visitors/printer_visitor_impl.cpp
+  visitors/printer_visitor_api.cpp
+  api/plan_iterator_wrapper.cpp
+  api/plan_wrapper.cpp
+  base/plan_iterator.cpp
+  booleans/BooleanImpl.cpp
+  core/apply_updates.cpp
+  core/arithmetic_impl.cpp
+  core/constructors.cpp
+  core/flwor_iterator.cpp
+  core/fncall_iterator.cpp
+  core/item_iterator.cpp
+  core/nodeid_iterators.cpp
+  core/path_iterators.cpp
+  core/sequencetypes.cpp
+  core/trycatch.cpp
+  core/var_iterators.cpp
+  core/gflwor/common.cpp
+  core/gflwor/tuplestream_iterator.cpp
+  core/gflwor/for_iterator.cpp
+  core/gflwor/let_iterator.cpp
+  core/gflwor/where_iterator.cpp
+  core/gflwor/comp_function.cpp
+  core/gflwor/count_iterator.cpp
+  core/gflwor/groupby_iterator.cpp
+  core/gflwor/tuplesource_iterator.cpp
+  core/gflwor/window_iterator.cpp
+  core/gflwor/orderby_iterator.cpp
+  core/gflwor/outerfor_iterator.cpp
+  core/internal_operators.cpp
+  durations_dates_times/DurationsDatesTimesImpl.cpp
+  indexing/doc_indexer.cpp
+  indexing/index_ddl.cpp
+  numerics/NumericsImpl.cpp
+  numerics/format_integer_impl.cpp
+  sequences/SequencesImpl.cpp
+  visitors/iterprinter.cpp
+  update/update.cpp
+  util/item_iterator.cpp
+  util/timeout.cpp
+  util/flowctl_exception.cpp
+  function_item/function_item.cpp
+  function_item/dynamic_fncall_iterator.cpp
+  eval/eval.cpp
+  collections/collections_base.cpp
 )
 
-IF (NOT ZORBA_NO_FULL_TEXT)
+IF(NOT ZORBA_NO_FULL_TEXT)
   ADD_SRC_SUBFOLDER(RUNTIME_SRCS full_text FULLTEXT_SRCS)
-ENDIF (NOT ZORBA_NO_FULL_TEXT)
+ENDIF(NOT ZORBA_NO_FULL_TEXT)
 
-HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS debug)
+IF(ZORBA_WITH_DEBUGGER)
+  HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS debug)
+ENDIF(ZORBA_WITH_DEBUGGER)
 
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS accessors)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS collections)
@@ -149,5 +151,3 @@ HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS visitors)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS fncontext)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS misc)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS nodes)
-
-# vim:set et sw=2 ts=2:

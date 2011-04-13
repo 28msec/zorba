@@ -45,14 +45,18 @@
 #include "runtime/core/arithmetic_impl.h"
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/durations_dates_times/DurationsDatesTimesImpl.h"
+#ifdef ZORBA_WITH_DEBUGGER
 #include "runtime/debug/zorba_debug_iterator.h"
+#endif
 #include "runtime/indexing/index_ddl.h"
 #include "runtime/function_item/dynamic_fncall_iterator.h"
 #include "runtime/visitors/iterprinter.h"
 #include "runtime/update/update.h"
 #include "runtime/eval/eval.h"
 
+#ifdef ZORBA_WITH_DEBUGGER
 #include "debugger/debugger_commons.h"
+#endif
 
 #include "context/static_context.h"
 #include "context/namespace_context.h"
@@ -1248,7 +1252,9 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
   PRINTER_VISITOR_DEFINITION(RenameIterator);
   PRINTER_VISITOR_DEFINITION(TransformIterator);
   PRINTER_VISITOR_DEFINITION(ApplyIterator);
+#ifdef ZORBA_WITH_DEBUGGER
   PRINTER_VISITOR_DEFINITION(DebuggerSingletonIterator);
+#endif
   PRINTER_VISITOR_DEFINITION(HoistIterator);
   PRINTER_VISITOR_DEFINITION(UnhoistIterator);
 

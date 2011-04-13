@@ -45,55 +45,43 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/streamable_string_query_1.xq ${CMAKE_
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/streamable_string_query_2.xq ${CMAKE_CURRENT_BINARY_DIR}/streamable_string_query_2.xq)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/streamable_string.cpp ${CMAKE_CURRENT_BINARY_DIR}/streamable_string.cpp)
 
+SET(UNIT_TESTS_SRCS
+  path_resolver.cpp
+  userdefined_uri_resolver.cpp
+  multiple_runs.cpp
+  plan_serializer.cpp
+  call_stack.cpp
+  external_function.cpp
+  no_folding.cpp
+  ordpath_big.cpp
+  uri_file_decoding_test.cpp
+  ext_in_opt.cpp
+  collection.cpp
+  string_instantiate.cpp
+  stemmer_provider.cpp
+  streamable_string.cpp
+  string_test.cpp
+  main_sequential.cpp
+  os_module.cpp
+  datetime.cpp
+)
+
+# multithread_simple.cpp
+# multithread_stress_test.cpp
+
+IF(ZORBA_WITH_DEBUGGER)
+  LIST(APPEND SPEC_FILES "debug_iter_serialization.cpp")
+ENDIF(ZORBA_WITH_DEBUGGER)
 
 IF(WIN32)
-  CREATE_TEST_SOURCELIST(UnitTests
-    UnitTests.cpp
-    path_resolver.cpp
-    userdefined_uri_resolver.cpp
-    multiple_runs.cpp
-    plan_serializer.cpp
-    call_stack.cpp
-    external_function.cpp
-    no_folding.cpp
-    debug_iter_serialization.cpp
-    ordpath_big.cpp
-    uri_file_decoding_test.cpp
-    ext_in_opt.cpp
-    collection.cpp
-    string_instantiate.cpp
-# SF#3191791
-#    string_test.cpp
-    main_sequential.cpp
-    stemmer_provider.cpp
-    streamable_string.cpp
-  )
-ELSE(WIN32)
-  CREATE_TEST_SOURCELIST(UnitTests
-    UnitTests.cpp
-    path_resolver.cpp
-    userdefined_uri_resolver.cpp
-    multiple_runs.cpp
-    plan_serializer.cpp
-    call_stack.cpp
-    external_function.cpp
-    no_folding.cpp
-    debug_iter_serialization.cpp
-    ordpath_big.cpp
-    uri_file_decoding_test.cpp
-    ext_in_opt.cpp
-    collection.cpp
-    string_instantiate.cpp
-    string_test.cpp
-    main_sequential.cpp
-    os_module.cpp
-    datetime.cpp
-    stemmer_provider.cpp
-    streamable_string.cpp
-  # multithread_simple.cpp
-  # multithread_stress_test.cpp
- )
+  # SF#3191791
+  LIST(REMOVE_ITEM UNIT_TESTS_SRCS "string_test.cpp")
 ENDIF(WIN32)
+
+CREATE_TEST_SOURCELIST(UnitTests
+  UnitTests.cpp
+  ${UNIT_TESTS_SRCS}
+)
 
 # add the executable
 ZORBA_GENERATE_STORE_SPECIFIC_EXES(UnitTests "${UnitTests}" "" "" "")
@@ -116,9 +104,13 @@ ZORBA_GENERATE_STORE_SPECIFIC_EXES(LibUnitTest lib_unit_test.cpp "" "" "")
 
 # ADD NEW UNIT TESTS HERE
 ZORBA_ADD_TEST_ALLSTORES("test/libunit/uri" LibUnitTest uri)
-ZORBA_ADD_TEST_ALLSTORES("test/libunit/debugger_protocol" LibUnitTest debugger_protocol)
+IF(ZORBA_WITH_DEBUGGER)
+  ZORBA_ADD_TEST_ALLSTORES("test/libunit/debugger_protocol" LibUnitTest debugger_protocol)
+ENDIF(ZORBA_WITH_DEBUGGER)
 
 
 EXPECTED_FAILURE(test/libunit/uri 3118348)
 
-ADD_SUBDIRECTORY(debugger)
+IF(ZORBA_WITH_DEBUGGER)
+  ADD_SUBDIRECTORY(debugger)
+ENDIF(ZORBA_WITH_DEBUGGER)

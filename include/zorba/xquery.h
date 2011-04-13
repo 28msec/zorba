@@ -422,6 +422,7 @@ class ZORBA_DLL_PUBLIC XQuery : public SmartObject
   virtual XQuery_t
   clone() const = 0;
 
+#ifdef ZORBA_WITH_DEBUGGER
   /**
    * \brief Enable/disable debug mode on the query
    */
@@ -435,6 +436,7 @@ class ZORBA_DLL_PUBLIC XQuery : public SmartObject
    */
   virtual bool
   isDebugMode() const = 0;
+#endif
   
   /** 
    * \brief Set the filename of the profile
@@ -452,6 +454,7 @@ class ZORBA_DLL_PUBLIC XQuery : public SmartObject
   virtual std::string
   getProfileName() const = 0;
   
+#ifdef ZORBA_WITH_DEBUGGER
   /**
    * \brief Run the query with the debugger server.
    *
@@ -505,6 +508,7 @@ class ZORBA_DLL_PUBLIC XQuery : public SmartObject
         const std::string& aHost,
         unsigned short aCommandPort = 8000,
         unsigned short anEventPort = 9000) = 0;
+#endif
 
   /**
    *

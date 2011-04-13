@@ -59,10 +59,12 @@ static bool to_char( LPCWSTR wpath, char *path ) {
   return result != 0;
 }
 
-static bool to_wchar( char const *path, LPWSTR wpath ) {
-  if ( ::MultiByteToWideChar( CP_UTF8, 0, path, -1, wpath, MAX_PATH ) )
+static bool to_wchar(char const *path, LPWSTR wpath) {
+  if (::MultiByteToWideChar(CP_UTF8, 0, path, -1, wpath, MAX_PATH)) {
     return true;
-  return ::MultiByteToWideChar( CP_ACP, 0, path, -1, wpath, MAX_PATH );
+  }
+  int result = ::MultiByteToWideChar(CP_ACP, 0, path, -1, wpath, MAX_PATH);
+  return (result != 0);
 }
 
 } // namespace win32

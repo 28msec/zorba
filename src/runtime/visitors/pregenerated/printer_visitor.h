@@ -194,8 +194,10 @@ namespace zorba {
     void beginVisit( const DefaultCollationIterator& );
     void endVisit  ( const DefaultCollationIterator& );
 
+#ifdef ZORBA_WITH_DEBUGGER
     void beginVisit( const ZorbaDebugIterator& );
     void endVisit  ( const ZorbaDebugIterator& );
+#endif
 
     void beginVisit( const YearsFromDurationIterator& );
     void endVisit  ( const YearsFromDurationIterator& );

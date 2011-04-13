@@ -2147,31 +2147,25 @@ void serializer::serialize(
 /*******************************************************************************
 
 ********************************************************************************/
-void serializer::serialize(
-    store::Iterator_t           aObject,
-    std::ostream&         aOStream,
-    SAX2_ContentHandler* aHandler)
+void
+serializer::serialize(
+  store::Iterator_t     aObject,
+  std::ostream&         aOStream,
+  SAX2_ContentHandler*  aHandler)
 {
   std::stringstream temp_sstream; // used to temporarily hold expanded strings for the SAX serializer
 
-  // used for JSON serialization only
-  bool firstItem = true;
-
   validate_parameters();
 
-  if (!setup(aOStream))
-  {
+  if (!setup(aOStream)) {
     return;
   }
 
   // in case we use SAX event notifications
-  if (aHandler)
-  {
+  if (aHandler) {
     // only allow XML-based methods for SAX notifications
     if (method != PARAMETER_VALUE_XML &&
-        method != PARAMETER_VALUE_XHTML &&
-        method != PARAMETER_VALUE_JSONML)
-    {
+        method != PARAMETER_VALUE_XHTML) {
       throw ZORBA_EXCEPTION(
         ZAPI0070_INVALID_SERIALIZATION_METHOD_FOR_SAX, ERROR_PARAMS( method )
       );
@@ -2185,18 +2179,13 @@ void serializer::serialize(
 
   store::Item_t lItem;
 //+  aObject->open();
-  while (aObject->next(lItem))
-  {
+  while (aObject->next(lItem)) {
     // PUL's cannot be serialized
-    if (lItem->isPul())
-    {
+    if (lItem->isPul()) {
       throw ZORBA_EXCEPTION(ZAPI0007_CANNOT_SERIALIZE_PUL);
     }
 
     e->emit_item(&*lItem);
-
-    // used for JSON serialization only
-    firstItem = false;
   }
 //+  aObject->close();
   e->emit_declaration_end();
@@ -2214,62 +2203,43 @@ void serializer::serialize(
 {
   store::Item_t lItem;
 //  object->open();
-  if (object->next(lItem))
-  {
+  if (object->next(lItem)) {
     // first, we notify the caller, that everything that we wanted to
     // (e.g. computed by side-effecting scripting functions is now available).
     //  He can, for example, decide on the serialization method
     Zorba_SerializerOptions_t* lSerParams = aHandler(aHandlerData);
-    if (lSerParams)
-    {
+    if (lSerParams) {
       SerializerImpl::setSerializationParameters(*this, *lSerParams);
     }
-  }
-  else
-  {
+  } else {
     return;
   }
 
   validate_parameters();
 
-  if (!setup(stream))
-  {
+  if (!setup(stream)) {
     return;
   }
 
   e->emit_declaration();
 
-  // used for Json and JsonML serialization only
-  bool firstItem = true;
-
-  do
-  {
-    if (!firstItem)
-    {
-      Zorba_SerializerOptions_t* lSerParams = aHandler(aHandlerData);
-      if (lSerParams)
-      {
-        SerializerImpl::setSerializationParameters(*this, *lSerParams);
-        if (!setup(stream))
-        {
-          return;
-        }
+  do {
+    Zorba_SerializerOptions_t* lSerParams = aHandler(aHandlerData);
+    if (lSerParams) {
+      SerializerImpl::setSerializationParameters(*this, *lSerParams);
+      if (!setup(stream)) {
+        return;
       }
-
     }
 
     // PUL's cannot be serialized
-    if (lItem->isPul())
-    {
+    if (lItem->isPul()) {
       throw ZORBA_EXCEPTION(ZAPI0007_CANNOT_SERIALIZE_PUL);
     }
 
     e->emit_item(&*lItem);
 
-    // used for Json and JsonML serialization only
-    firstItem = false;
-  }
-  while (object->next(lItem));
+  } while (object->next(lItem));
   //object->close();
   e->emit_declaration_end();
 }

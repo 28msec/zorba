@@ -15,7 +15,7 @@
 
 INCLUDE_DIRECTORIES(AFTER ${CMAKE_SOURCE_DIR}/src/)
 
-SET (API_EXAMPLES
+SET(API_EXAMPLES
   simple.cpp
   sax2.cpp
   errors.cpp
@@ -31,10 +31,11 @@ SET (API_EXAMPLES
   binary.cpp
   string.cpp
   module_import_check.cpp
-  )
+)
 
-SET(API_EXAMPLES ${API_EXAMPLES} debugger.cpp)
-
+IF(ZORBA_WITH_DEBUGGER)
+  LIST(APPEND API_EXAMPLES debugger.cpp)
+ENDIF(ZORBA_WITH_DEBUGGER)
 
 IF(WIN32 AND ZORBA_MSDOM_STORE)
   LIST(APPEND API_EXAMPLES msdom.cpp)

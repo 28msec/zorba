@@ -128,8 +128,9 @@ namespace zorba{
 
     class DefaultCollationIterator;
 
+#ifdef ZORBA_WITH_DEBUGGER
     class ZorbaDebugIterator;
-
+#endif
     class YearsFromDurationIterator;
 
     class MonthsFromDurationIterator;
@@ -644,9 +645,10 @@ public:
     virtual void beginVisit ( const DefaultCollationIterator& ) = 0;
     virtual void endVisit   ( const DefaultCollationIterator& ) = 0;
 
+#ifdef ZORBA_WITH_DEBUGGER
     virtual void beginVisit ( const ZorbaDebugIterator& ) = 0;
     virtual void endVisit   ( const ZorbaDebugIterator& ) = 0;
-
+#endif
     virtual void beginVisit ( const YearsFromDurationIterator& ) = 0;
     virtual void endVisit   ( const YearsFromDurationIterator& ) = 0;
 

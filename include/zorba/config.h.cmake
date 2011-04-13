@@ -138,6 +138,8 @@ typedef __int64 int64_t;
 #cmakedefine ZORBA_WITH_LIBXML2_SAX
 #cmakedefine ZORBA_WITH_REST
 #cmakedefine ZORBA_WITH_SSL
+#cmakedefine ZORBA_WITH_JSON
+#cmakedefine ZORBA_WITH_DEBUGGER
 
 // Zorba parser configuration
 #cmakedefine ZORBA_DEBUG_PARSER 

@@ -34,9 +34,9 @@
 
 #include "zorba/printer_error_handler.h"
 #include "zorbaerrors/error_manager.h"
+#include "zorbautils/synchronous_logger.h"
 
 #include "debugger/debugger_protocol.h"
-#include "debugger/synchronous_logger.h"
 #include "debugger/debugger_communication.h"
 #include "debugger/debugger_commons.h"
 

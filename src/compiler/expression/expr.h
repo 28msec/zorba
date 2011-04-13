@@ -1135,7 +1135,7 @@ public:
   std::ostream& put(std::ostream&) const;
 };
 
-
+#ifdef ZORBA_WITH_DEBUGGER
 /***************************************************************************//**
   debugger expression
 ********************************************************************************/
@@ -1191,6 +1191,7 @@ public:
 private:
   void store_local_variables(checked_vector<varref_t>& aScopedVariables);
 };
+#endif
 
 
 /***************************************************************************//**

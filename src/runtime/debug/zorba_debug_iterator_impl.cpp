@@ -39,6 +39,7 @@
 namespace zorba {
 
 
+#ifdef ZORBA_WITH_DEBUGGER
 // the debug iterator needs to know all variables, their keys
 // and types. this is required for the eval command
 // this function is called by the plan_visitor
@@ -200,6 +201,7 @@ void ZorbaDebugIterator::checkBreak(PlanState* planState) const
     }
   }
 }
+#endif // ZORBA_WITH_DEBUGGER
 
 
 }/* namespace zorba */

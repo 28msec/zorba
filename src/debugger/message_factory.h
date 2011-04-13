@@ -25,7 +25,7 @@
 #include "debugger/utils.h"
 #include "debugger/debugger_protocol.h"
 
-#include "synchronous_logger.h"
+#include "zorbautils/synchronous_logger.h"
 
 namespace zorba
 {

@@ -62,7 +62,9 @@ PlanWrapper::PlanWrapper(
   // set the compiler cb in the state
   thePlanState->theCompilerCB = aCompilerCB;
   thePlanState->theQuery = query;
+#ifdef ZORBA_WITH_DEBUGGER
   thePlanState->theDebuggerCommons = aCompilerCB->theDebuggerCommons;
+#endif
 
   if (aTimeout != -1) 
   {

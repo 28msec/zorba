@@ -16,7 +16,10 @@
 
 #include "compiler/api/compilercb.h"
 #include "compiler/expression/expr_base.h"
+
+#ifdef ZORBA_WITH_DEBUGGER
 #include "debugger/debugger_commons.h"
+#endif
 
 #include "context/static_context.h"
 
@@ -104,7 +107,9 @@ CompilerCB::CompilerCB(ErrorManager* errmgr, long timeout)
   :
   theErrorManager(errmgr),
   theRootSctx(0),
+#ifdef ZORBA_WITH_DEBUGGER
   theDebuggerCommons(0),
+#endif
   theIsLoadProlog(false),
   theIsUpdating(false),
   theTimeout(timeout),
@@ -122,7 +127,9 @@ CompilerCB::CompilerCB(const CompilerCB& cb)
   zorba::serialization::SerializeBaseClass(cb),
   theErrorManager(cb.theErrorManager),
   theRootSctx(NULL),
+#ifdef ZORBA_WITH_DEBUGGER
   theDebuggerCommons(cb.theDebuggerCommons),
+#endif
   theIsLoadProlog(false),
   theIsUpdating(false),
   theTimeout(cb.theTimeout),
@@ -139,8 +146,10 @@ CompilerCB::CompilerCB(::zorba::serialization::Archiver& ar)
   :
   ::zorba::serialization::SerializeBaseClass(),
   theErrorManager(NULL),
-  theRootSctx(NULL),
-  theDebuggerCommons(NULL)
+  theRootSctx(NULL)
+#ifdef ZORBA_WITH_DEBUGGER
+  , theDebuggerCommons(NULL)
+#endif
 {
 }
 
@@ -162,11 +171,12 @@ void CompilerCB::serialize(::zorba::serialization::Archiver& ar)
   ar & theIsUpdating;
   ar & theSctxMap;
   ar & theRootSctx;
+#ifdef ZORBA_WITH_DEBUGGER
   ar & theDebuggerCommons;
-  if(!ar.is_serializing_out())
-  {
-    theErrorManager = NULL;//don't serialize this
-    //theDebuggerCommons = NULL;
+#endif
+  if (!ar.is_serializing_out()) {
+    //don't serialize this
+    theErrorManager = NULL;
   }
   ar & theConfig;
   ar & theTimeout;

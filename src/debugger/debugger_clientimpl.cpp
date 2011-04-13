@@ -19,7 +19,8 @@
 #include <iostream>
 #include <memory>
 
-#include <zorbaerrors/assert.h>
+#include "zorbaerrors/assert.h"
+#include "zorbautils/synchronous_logger.h"
 
 #include "api/unmarshaller.h"
 
@@ -31,7 +32,6 @@
 #include "debugger/socket.h"
 #include "debugger/message_factory.h"
 #include "debugger/stackimpl.h"
-#include "debugger/synchronous_logger.h"
 
 
 #ifdef WIN32
@@ -162,7 +162,7 @@ DebuggerClientImpl::send(AbstractCommandMessage* aMessage) const
     } 
   } catch(DebuggerSocketException& e) {
     std::stringstream lSs; lSs << "Request client:" << e.what() << "\n";
-    synchronous_logger::cerr << lSs.str();
+    zorba::cerr << lSs.str();
   }
   return 0;
 }
@@ -301,7 +301,7 @@ DebuggerClientImpl::addBreakpoint(QueryLoc& aLocation)
     }
   } else {
     std::stringstream lSs; lSs << "An error occured\n";
-    synchronous_logger::cerr << lSs.str();
+    zorba::cerr << lSs.str();
   }
   return 0;  
 }

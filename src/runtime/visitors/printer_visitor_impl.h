@@ -238,7 +238,9 @@
   DECLARE_VISITOR (RenameIterator);
   DECLARE_VISITOR (TransformIterator);
   DECLARE_VISITOR (ApplyIterator);
+#ifdef ZORBA_WITH_DEBUGGER
   DECLARE_VISITOR (DebuggerSingletonIterator);
+#endif
   DECLARE_VISITOR (HoistIterator);
   DECLARE_VISITOR (UnhoistIterator);
 

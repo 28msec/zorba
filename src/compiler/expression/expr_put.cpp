@@ -129,14 +129,18 @@ static inline string expr_loc(const expr* e)
 }
 
 
-std::ostream& debugger_expr::put(std::ostream& os) const
+#ifdef ZORBA_WITH_DEBUGGER
+std::ostream&
+debugger_expr::put(std::ostream& os) const
 {
   BEGIN_PUT( debugger_expr );
   theExpr->put(os);
   END_PUT();
 }
+#endif
 
-std::ostream& wrapper_expr::put(std::ostream& os) const
+std::ostream&
+wrapper_expr::put(std::ostream& os) const
 {
 #ifdef VERBOSE
   get_expr()->put(os);

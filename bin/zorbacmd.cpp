@@ -35,10 +35,13 @@
 
 #include <zorba/store_manager.h>
 
+#ifdef ZORBA_WITH_DEBUGGER
 #include <zorba/debugger_client.h>
 #include "debugger_server_runnable.h"
 #include "debugger_handler.h"
+#endif
 
+#include "common/common.h"
 #include "error_printer.h"
 #include "util.h"
 #include "module_path.h"
@@ -136,7 +139,7 @@ populateStaticContext(
         zorba::Zorba* lZorba = zorba::Zorba::getInstance(0);
         Item lQName = lZorba->getItemFactory()->createQName(lIter->clark_qname);
         aStaticContext->declareOption(lQName, lIter->value);
-      } catch (zorba::ZorbaException const& e) {
+      } catch (zorba::ZorbaException const& /* e */) {
         std::cerr << "unable to set static context option with qname "
                   << lIter->clark_qname << std::endl;
         return false;
@@ -689,7 +692,10 @@ _tmain(int argc, _TCHAR* argv[])
   TimingInfo timing(lProperties.multiple());
 
   bool doTiming = lProperties.timing();
-  bool debug = (lProperties.debugServer() || lProperties.debug());
+  bool debug = false;
+#ifdef ZORBA_WITH_DEBUGGER
+  debug = (lProperties.debugServer() || lProperties.debug());
+#endif
 
   // libModule assumes compileOnly even if compileOnly is false
   bool compileOnly = (lProperties.compileOnly() || lProperties.libModule() );
@@ -814,13 +820,9 @@ _tmain(int argc, _TCHAR* argv[])
       lStaticContext->setBaseURI(lTmp.str());
     }
 
-    //
     // Parse the query
-    //
-    if (lProperties.parseOnly()) 
-    {
-      try 
-      {
+    if (lProperties.parseOnly()) {
+      try {
         zorba::XQuery_t lQuery = lZorbaInstance->createQuery();
         if (asFile) {
           lQuery->setFileName(path.get_path());
@@ -828,17 +830,14 @@ _tmain(int argc, _TCHAR* argv[])
 
         lQuery->parse (*qfile);
       }
-      catch (zorba::ZorbaException const& ze) 
-      {
+      catch (zorba::ZorbaException const& ze) {
         std::cerr << ze << std::endl;
         return 6;
       }
     }
 
-    //
     // Compile and run it if necessary.
     // Print timing information if requested.
-    //
     else if (!debug) {
       if (compileOnly) {
         try {
@@ -875,9 +874,8 @@ _tmain(int argc, _TCHAR* argv[])
       }
     }
 
-    //
+#ifdef ZORBA_WITH_DEBUGGER
     // Debug the query. Do not allow "compileOnly" flags and inline queries
-    //
     else if (debug) {
       if (compileOnly) {
         std::cerr << "cannot debug a query if the compileOnly option is specified"
@@ -987,6 +985,7 @@ _tmain(int argc, _TCHAR* argv[])
         return 6;
       }
     } // else if (debug) 
+#endif
 
   } // for each query
 

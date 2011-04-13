@@ -63,8 +63,10 @@
 #include "zorbaserialization/bin_archiver.h"
 #include "zorbaserialization/class_serializer.h"
 
+#ifdef ZORBA_WITH_DEBUGGER
 #include "debugger/debugger_server.h"
 #include "debugger/debugger_commons.h"
+#endif
 
 namespace zorba
 {
@@ -131,7 +133,9 @@ XQueryImpl::XQueryImpl()
   theSAX2Handler(0),
   theDocLoadingUserTime(0.0),
   theDocLoadingTime(0.0),
+#ifdef ZORBA_WITH_DEBUGGER
   theIsDebugMode(false),
+#endif
   theProfileName("xquery_profile.out")
 {
   // TODO ideally, we will have to move the error handler into the error manager
@@ -191,7 +195,9 @@ void XQueryImpl::serialize(::zorba::serialization::Archiver& ar)
     theCompilerCB->theErrorManager = theErrorManager;
   }
   
+#ifdef ZORBA_WITH_DEBUGGER
   ar & theIsDebugMode;
+#endif
 }
 
 
@@ -247,6 +253,7 @@ double XQueryImpl::getDocLoadingTime() const
 }
 
 
+#ifdef ZORBA_WITH_DEBUGGER
 /*******************************************************************************
 
 ********************************************************************************/
@@ -266,6 +273,7 @@ bool XQueryImpl::isDebugMode() const
 
   return theIsDebugMode;
 }
+#endif
 
 
 /*******************************************************************************
@@ -275,7 +283,9 @@ void XQueryImpl::setProfileName(std::string aProfileName)
 {
   SYNC_CODE(AutoMutex lock(&theMutex);)
 
+#ifdef ZORBA_WITH_DEBUGGER
   checkIsDebugMode();
+#endif
   theProfileName = aProfileName;
 }
 
@@ -536,15 +546,15 @@ void XQueryImpl::doCompile(
 
   XQueryCompiler lCompiler(theCompilerCB);
 
-  //theCompilerCB->m_debugger = theDebugger;
-  //if the debug mode is set, we force the gflwor, we set the query input stream
-  if ( theIsDebugMode)
-  {
+#ifdef ZORBA_WITH_DEBUGGER
+  // if the debug mode is set, we force the gflwor, we set the query input stream
+  if (theIsDebugMode) {
     theCompilerCB->theConfig.force_gflwor = true;
     theCompilerCB->theDebuggerCommons =
       new DebuggerCommons(theCompilerCB->theRootSctx);
     theCompilerCB->theConfig.opt_level = CompilerCB::config::O0;
   }
+#endif
 
   // 0 is reserved as an invalid var id, and 1 is taken by the context item
   // in the main module.
@@ -1156,6 +1166,7 @@ PlanWrapper_t XQueryImpl::generateWrapper()
 }
 
 
+#ifdef ZORBA_WITH_DEBUGGER
 /*******************************************************************************
 
 ********************************************************************************/
@@ -1232,6 +1243,7 @@ void XQueryImpl::debug(
   }
   QUERY_CATCH
 }
+#endif
 
 
 /*******************************************************************************
@@ -1241,28 +1253,28 @@ void XQueryImpl::close()
 {
   SYNC_CODE(AutoMutex lock(&theMutex);)
 
-  try
-  {
-    if (theIsClosed)
+  try {
+    if (theIsClosed) {
       return;
+    }
  
-    if (theResultIterator != NULL)
-    {
+    if (theResultIterator != NULL) {
       theResultIterator->closeInternal();
       theResultIterator = NULL;
     }
 
     theExecuting = false;
 
-    if (thePlanProxy)
-    {
+    if (thePlanProxy) {
       thePlanProxy = NULL;
     }
 
     delete theErrorManager;
 
-    if (!theUserErrorHandler) // see registerErrorHandler
+    // see registerErrorHandler
+    if (!theUserErrorHandler) {
       delete theErrorHandler;
+    }
 
     delete theDynamicContext;
 
@@ -1273,9 +1285,10 @@ void XQueryImpl::close()
     theStaticContext = NULL;
 
     // theCompilerCB may be NULL if an error occured while serializing "this" in.
-    if (theCompilerCB)
-    {
+    if (theCompilerCB) {
+#ifdef ZORBA_WITH_DEBUGGER
       delete theCompilerCB->theDebuggerCommons;
+#endif
       delete theCompilerCB;
     }
 
@@ -1285,14 +1298,17 @@ void XQueryImpl::close()
 }
 
 
+#ifdef ZORBA_WITH_DEBUGGER
 /*******************************************************************************
   Always called while holding theMutex
 ********************************************************************************/
 void XQueryImpl::checkIsDebugMode() const
 {
-  if (!theIsDebugMode) 
+  if (!theIsDebugMode) {
     throw ZORBA_EXCEPTION( ZAPI0009_XQUERY_NOT_COMPILED_IN_DEBUG_MODE );
+  }
 }
+#endif
 
 
 /*******************************************************************************

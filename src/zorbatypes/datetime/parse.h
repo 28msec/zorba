@@ -62,22 +62,23 @@ int parse_long(
   @param result
   @return Returns 0 on success and a positive value on an error
 ********************************************************************************/
-ZORBA_DLL_PUBLIC inline double parse_frac(
+ZORBA_DLL_PUBLIC inline int parse_frac(
     const char* str,
     ascii::size_type strlen,
     ascii::size_type& position,
     double& result)
 {
-  if (position >= strlen)
+  if (position >= strlen) {
     return 1;
+  }
 
-  if (str[position] < '0' || str[position] > '9')
+  if (str[position] < '0' || str[position] > '9') {
     return 1;
+  }
 
   double temp = 0.1;
   result = 0;
-  while (position < strlen && str[position] >= '0' && str[position] <= '9')
-  {
+  while (position < strlen && str[position] >= '0' && str[position] <= '9') {
     result += temp * (str[position] - '0');
     temp /= 10;
     position++;

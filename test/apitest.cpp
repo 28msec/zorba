@@ -157,15 +157,17 @@ int _tmain(int argc, _TCHAR* argv[])
   // start parsing the query
   XQuery_t query = zengine->createQuery ();
 
-  if (lProp->debug())
-  {
+#ifdef ZORBA_WITH_DEBUGGER
+  if (lProp->debug()) {
     query->setDebugMode(lProp->debug());
     Zorba_CompilerHints lHints;
     lHints.opt_level = ZORBA_OPT_LEVEL_O0;
   }
+#endif
 
-  if (! lProp->inlineQuery())
-    query->setFileName (path.get_path ());
+  if (! lProp->inlineQuery()) {
+    query->setFileName(path.get_path());
+  }
 
   try {
     query->compile(*qfile, chints);

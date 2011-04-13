@@ -144,8 +144,10 @@ namespace flwor
   class WindowIterator;
 }
 
+#ifdef ZORBA_WITH_DEBUGGER
 class ZorbaDebugIterator;
 class DebuggerSingletonIterator;
+#endif
 
 class HoistIterator;
 class UnhoistIterator;

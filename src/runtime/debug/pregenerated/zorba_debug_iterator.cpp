@@ -31,6 +31,7 @@
 
 namespace zorba {
 
+#ifdef ZORBA_WITH_DEBUGGER
 // <ZorbaDebugIterator>
 const char* ZorbaDebugIterator::class_name_str = "ZorbaDebugIterator";
 ZorbaDebugIterator::class_factory<ZorbaDebugIterator>
@@ -72,7 +73,7 @@ void ZorbaDebugIteratorState::reset(PlanState& planState) {
 }
 // </ZorbaDebugIterator>
 
-
+#endif
 
 }
 

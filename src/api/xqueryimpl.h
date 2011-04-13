@@ -33,9 +33,11 @@ namespace zorba
 {
 
 class RCObject;
+#ifdef ZORBA_WITH_DEBUGGER
 class ZorbaDebugger;
 class DebuggerRuntime;
 class DebuggerCommons;
+#endif
 class DynamicContextImpl;
 class StaticContextImpl;
 class ResultIteratorImpl;
@@ -136,8 +138,10 @@ class XQueryImpl : public XQuery , public ::zorba::serialization::SerializeBaseC
   friend class StaticContextImpl;  // StaticContextImpl::loadProlog() needs this
   friend class DynamicContextImpl;
   friend class CompilerCB;
+#ifdef ZORBA_WITH_DEBUGGER
   friend class ZorbaDebugger;
   friend class DebuggerRuntime;
+#endif
 
  protected:
 
@@ -200,7 +204,9 @@ class XQueryImpl : public XQuery , public ::zorba::serialization::SerializeBaseC
   double                             theDocLoadingTime;
 
 private:
+#ifdef ZORBA_WITH_DEBUGGER
   bool                               theIsDebugMode;
+#endif
   std::string                        theProfileName;
 
 public:
@@ -223,9 +229,11 @@ public:
 
   double getDocLoadingTime() const;
 
+#ifdef ZORBA_WITH_DEBUGGER
   void setDebugMode(bool aDebugMode);
 
   bool isDebugMode() const;
+#endif
 
   void setProfileName(std::string aProfileName);
 
@@ -299,6 +307,7 @@ public:
 
   void executeSAX();
 
+#ifdef ZORBA_WITH_DEBUGGER
   void debug(
         unsigned short aCommandPort,
         unsigned short anEventPort );
@@ -324,6 +333,7 @@ public:
         const std::string& aHost,
         unsigned short aCommandPort = 8000,
         unsigned short anEventPort = 9000);
+#endif
 
   void close();
 
@@ -372,7 +382,9 @@ protected:
 
   void checkNotExecuting() const;
 
+#ifdef ZORBA_WITH_DEBUGGER
   void checkIsDebugMode() const;
+#endif
 };
 
 

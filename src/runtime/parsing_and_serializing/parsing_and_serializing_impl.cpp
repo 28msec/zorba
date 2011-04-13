@@ -73,7 +73,7 @@ bool FnParseXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 
     try {
       lValidatedBaseUri = URI(result->getStringValue());
-    } catch (ZorbaException const& e) {
+    } catch (ZorbaException const& /* e */) {
       throw XQUERY_EXCEPTION(
         FODC0007, ERROR_PARAMS( result->getStringValue() ), ERROR_LOC( loc )
       );

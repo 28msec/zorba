@@ -82,13 +82,17 @@
 #include "runtime/util/flowctl_exception.h"
 #include "runtime/update/update.h"
 #include "runtime/indexing/index_ddl.h"
+#ifdef ZORBA_WITH_DEBUGGER
 #include "runtime/debug/zorba_debug_iterator.h"
+#endif
 #include "runtime/eval/eval.h"
 #include "runtime/function_item/function_item.h"
 #include "runtime/function_item/function_item_iter.h"
 #include "runtime/function_item/dynamic_fncall_iterator.h"
 
+#ifdef ZORBA_WITH_DEBUGGER
 #include "debugger/debugger_commons.h"
+#endif
 
 #include "functions/function.h"
 #include "functions/library.h"
@@ -325,7 +329,9 @@ protected:
 
   CompilerCB                               * theCCB;
 
+#ifdef ZORBA_WITH_DEBUGGER
   std::stack<ZorbaDebugIterator*>            theDebuggerStack;
+#endif
 
 #ifndef ZORBA_NO_FULL_TEXT
   plan_ftnode_visitor                      * plan_ftnode_visitor_;
@@ -418,19 +424,19 @@ bool is_enclosed_expr(expr* e)
 }
 
 
-bool begin_visit (expr& v)
+bool begin_visit(expr& v)
 {
   CODEGEN_TRACE_IN("");
   return true;
 }
 
-void end_visit (expr& v)
+void end_visit(expr& v)
 {
   CODEGEN_TRACE_OUT("");
 }
 
 
-bool begin_visit (function_item_expr& v)
+bool begin_visit(function_item_expr& v)
 {
   CODEGEN_TRACE_IN("");
   return true;
@@ -1623,7 +1629,7 @@ bool begin_visit(promote_expr& v)
   return true;
 }
 
-void end_visit (promote_expr& v)
+void end_visit(promote_expr& v)
 {
   CODEGEN_TRACE_OUT("");
   PlanIter_t lChild = pop_itstack();
@@ -1702,7 +1708,7 @@ void end_visit(trycatch_expr& v)
 }
 
 
-bool begin_visit (eval_expr& v)
+bool begin_visit(eval_expr& v)
 {
   CODEGEN_TRACE_IN("");
   return true;
@@ -1740,7 +1746,7 @@ void end_visit(eval_expr& v)
                                 localBindings));
 }
 
-
+#ifdef ZORBA_WITH_DEBUGGER
 bool begin_visit(debugger_expr& v)
 {
   CODEGEN_TRACE_IN("");
@@ -1808,16 +1814,17 @@ void end_visit(debugger_expr& v)
   }
   push_itstack(aDebugIterator.release());
 }
+#endif
 
 
-bool begin_visit (if_expr& v)
+bool begin_visit(if_expr& v)
 {
   CODEGEN_TRACE_IN("");
   return true;
 }
 
 
-void end_visit (if_expr& v)
+void end_visit(if_expr& v)
 {
   CODEGEN_TRACE_OUT("");
   PlanIter_t iterElse = pop_itstack();
@@ -1907,7 +1914,7 @@ bool begin_visit(insert_expr& v)
   return true;
 }
 
-void end_visit (insert_expr& v)
+void end_visit(insert_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 
@@ -2032,7 +2039,7 @@ bool begin_visit(transform_expr& v)
   return true;
 }
 
-void end_visit (transform_expr& v)
+void end_visit(transform_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 
@@ -2092,7 +2099,7 @@ void end_visit(exit_expr& v)
   push_itstack (new FlowCtlIterator (sctx, qloc, argv, FlowCtlException::EXIT));
 }
 
-bool begin_visit (flowctl_expr& v) {
+bool begin_visit(flowctl_expr& v) {
   CODEGEN_TRACE_IN("");
   return true;
 }
@@ -2227,26 +2234,26 @@ void end_visit(treat_expr& v)
   push_itstack(new TreatIterator(sctx, qloc, arg, v.get_target_type(), v.get_check_prime(), v.get_err(), v.get_fn_qname()));
 }
 
-bool begin_visit (castable_expr& v)
+bool begin_visit(castable_expr& v)
 {
   CODEGEN_TRACE_IN("");
   return true;
 }
 
-void end_visit (castable_expr& v)
+void end_visit(castable_expr& v)
 {
   CODEGEN_TRACE_OUT("");
   PlanIter_t lChild = pop_itstack();
   push_itstack(new CastableIterator(sctx, qloc, lChild, v.get_target_type()));
 }
 
-bool begin_visit (cast_expr& v)
+bool begin_visit(cast_expr& v)
 {
   CODEGEN_TRACE_IN("");
   return true;
 }
 
-void end_visit (cast_expr& v)
+void end_visit(cast_expr& v)
 {
   CODEGEN_TRACE_OUT("");
   PlanIter_t lChild = pop_itstack();
@@ -2289,13 +2296,13 @@ void end_visit(name_cast_expr& v)
 }
 
 
-bool begin_visit (validate_expr& v)
+bool begin_visit(validate_expr& v)
 {
   CODEGEN_TRACE_IN("");
   return true;
 }
 
-void end_visit (validate_expr& v)
+void end_visit(validate_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 
@@ -2316,12 +2323,12 @@ void end_visit (validate_expr& v)
 }
 
 
-bool begin_visit (extension_expr& v) {
+bool begin_visit(extension_expr& v) {
   CODEGEN_TRACE_IN("");
   return true;
 }
 
-void end_visit (extension_expr& v)
+void end_visit(extension_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 }
@@ -2332,7 +2339,7 @@ void end_visit (extension_expr& v)
 /*******************************************************************************
 
 ********************************************************************************/
-bool begin_visit (relpath_expr& v)
+bool begin_visit(relpath_expr& v)
 {
   CODEGEN_TRACE_IN("");
 
@@ -2345,7 +2352,7 @@ bool begin_visit (relpath_expr& v)
 }
 
 
-void end_visit (relpath_expr& v)
+void end_visit(relpath_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 }
@@ -2354,7 +2361,7 @@ void end_visit (relpath_expr& v)
 /*******************************************************************************
 
 ********************************************************************************/
-bool begin_visit (axis_step_expr& v)
+bool begin_visit(axis_step_expr& v)
 {
   CODEGEN_TRACE_IN("");
 
@@ -2425,13 +2432,13 @@ bool begin_visit (axis_step_expr& v)
 }
 
 
-void end_visit (axis_step_expr& v)
+void end_visit(axis_step_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 }
 
 
-bool begin_visit (match_expr& v)
+bool begin_visit(match_expr& v)
 {
   CODEGEN_TRACE_IN("");
 
@@ -2439,7 +2446,7 @@ bool begin_visit (match_expr& v)
 }
 
 
-void end_visit (match_expr& v)
+void end_visit(match_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 }
@@ -2450,7 +2457,7 @@ void end_visit (match_expr& v)
 /*******************************************************************************
 
 ********************************************************************************/
-bool begin_visit (relpath_expr& v)
+bool begin_visit(relpath_expr& v)
 {
   CODEGEN_TRACE_IN("");
   // Done in axis itself
@@ -2467,7 +2474,7 @@ void end_visit(relpath_expr& v)
 /*******************************************************************************
 
 ********************************************************************************/
-bool begin_visit (axis_step_expr& v)
+bool begin_visit(axis_step_expr& v)
 {
   CODEGEN_TRACE_IN("");
 
@@ -2575,7 +2582,7 @@ bool begin_visit (axis_step_expr& v)
 }
 
 
-void end_visit (axis_step_expr& v) {
+void end_visit(axis_step_expr& v) {
   CODEGEN_TRACE_OUT("");
 }
 
@@ -2583,7 +2590,7 @@ void end_visit (axis_step_expr& v) {
 /*******************************************************************************
 
 ********************************************************************************/
-bool begin_visit (match_expr& v)
+bool begin_visit(match_expr& v)
 {
   CODEGEN_TRACE_IN ("");
 
@@ -2640,7 +2647,7 @@ bool begin_visit (match_expr& v)
 }
 
 
-void end_visit (match_expr& v)
+void end_visit(match_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 }
@@ -2654,7 +2661,7 @@ void end_visit (match_expr& v)
 
 ********************************************************************************/
 
-bool begin_visit (doc_expr& v)
+bool begin_visit(doc_expr& v)
 {
   CODEGEN_TRACE_IN("");
 
@@ -2665,7 +2672,7 @@ bool begin_visit (doc_expr& v)
 }
 
 
-void end_visit (doc_expr& v)
+void end_visit(doc_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 
@@ -2887,13 +2894,13 @@ void end_visit(const_expr& v)
 }
 
 
-bool begin_visit (order_expr& v)
+bool begin_visit(order_expr& v)
 {
   CODEGEN_TRACE_IN("");
   return true;
 }
 
-void end_visit (order_expr& v)
+void end_visit(order_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 }

@@ -79,7 +79,12 @@ json_t* getJsonValue(Byte* aMessage, const unsigned int aLength)
 {
   std::string lMessageStr(reinterpret_cast<char *>(aMessage + MESSAGE_HEADER_SIZE), aLength - MESSAGE_HEADER_SIZE);
   json_error_t error;
-  return json_loads(lMessageStr.c_str(), 0, &error);
+  return json_loads(
+    lMessageStr.c_str(),
+#if JANSSON_MAJOR_VERSION >= 2
+    0,
+#endif
+    &error);
 }
 
 void replaceAllInString(std::string& aString,

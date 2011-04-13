@@ -34,8 +34,6 @@
 #include <limits.h>
 #endif
 
-#include <debugger/synchronous_logger.h>
-
 namespace zorba {
 
 class ClientServerWrapper {

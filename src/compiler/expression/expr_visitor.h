@@ -42,7 +42,9 @@ public:
 
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( expr );
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( function_trace_expr );
+#ifdef ZORBA_WITH_DEBUGGER
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( debugger_expr );
+#endif
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( wrapper_expr );
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( sequential_expr );
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( var_decl_expr );

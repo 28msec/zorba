@@ -16,6 +16,7 @@
 
 #include "message_factory.h"
 #include "util/stl_util.h"
+#include "zorbautils/synchronous_logger.h"
 
 namespace zorba {
 
@@ -170,7 +171,7 @@ AbstractMessage* MessageFactory::buildMessage(TCPSocket * aSocket)
     lMessage =  MessageFactory::buildMessage(lPacket.get(), length);
 
   } catch (DebuggerSocketException &e) {
-    synchronous_logger::cerr << e.what() << "\n";
+    zorba::cerr << e.what() << "\n";
     return new ReplyMessage(0, DEBUGGER_ERROR_INVALID_MESSAGE_FORMAT);
   }
   return lMessage;
@@ -280,8 +281,8 @@ AbstractMessage* MessageFactory::buildMessage(TCPSocket * aSocket)
         }
       } 
     } catch(MessageFormatException &e) {
-      synchronous_logger::cerr << "The following error happened:\n";
-      synchronous_logger::cerr << e.what() << "\n";
+      zorba::cerr << "The following error happened:\n";
+      zorba::cerr << e.what() << "\n";
       return new ReplyMessage(0, DEBUGGER_ERROR_INVALID_MESSAGE_FORMAT);
     }
   }

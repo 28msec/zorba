@@ -86,7 +86,9 @@
 
 #include "runtime/api/plan_wrapper.h"
 
+#ifdef ZORBA_WITH_DEBUGGER
 #include "debugger/debugger_commons.h"
+#endif
 
 #include "zorbautils/string_util.h"
 
@@ -97,7 +99,7 @@ namespace zorba
 {
 
 class ModulesInfo;
-
+class TranslatorImpl;
 
 static expr_t translate_aux(
     TranslatorImpl* rootTranslator,
@@ -1323,24 +1325,25 @@ void push_scope()
   // create a new static context for the new scope
   theSctx = theSctx->create_child_context();
 
-  if (theCCB->theDebuggerCommons != NULL)
-  {
+#ifdef ZORBA_WITH_DEBUGGER
+  if (theCCB->theDebuggerCommons != NULL) {
     // in debug mode, we remember all static contexts
     // this allows the debugger to introspect (during runtime)
     // all variables in scope
     theSctxIdStack.push(sctxid());
     theCurrSctxId = (short)theCCB->theSctxMap.size() + 1;
     (theCCB->theSctxMap)[sctxid()] = theSctx;
-  }
-  else
-  {
+  } else {
+#endif
     // in non-debug mode, we need to make sure that the scoped
     // contexts are kept around for the compilation of this module.
     // The static context available at runtime will be the root context
     // in which the module is compiled. Keeping all contexts around during
     // runtime seems to be overhead.
     theSctxList.push_back(theSctx);
+#ifdef ZORBA_WITH_DEBUGGER
   }
+#endif
   ++theScopeDepth;
 }
 
@@ -1350,6 +1353,7 @@ void push_scope()
 ********************************************************************************/
 void pop_scope()
 {
+#ifdef ZORBA_WITH_DEBUGGER
   if (theCCB->theDebuggerCommons != NULL)
   {
     theCurrSctxId = theSctxIdStack.top();
@@ -1358,10 +1362,13 @@ void pop_scope()
   }
   else
   {
+#endif
     // pop one scope, howerver the static context is kept around in the theSctxList
     static_context* parent = (static_context *) theSctx->get_parent();
     theSctx = parent;
+#ifdef ZORBA_WITH_DEBUGGER
   }
+#endif
   --theScopeDepth;
 }
 
@@ -2049,7 +2056,6 @@ rchandle<flwor_expr> wrap_expr_in_flwor(
   return flworExpr;
 }
 
-
 /*******************************************************************************
   In this expression branch, we create the debugger expressions.
   Furthermore, we create an entry for all expressions in the map
@@ -2059,6 +2065,7 @@ rchandle<flwor_expr> wrap_expr_in_flwor(
 ********************************************************************************/
 void wrap_in_debugger_expr(expr_t& aExpr)
 {
+#ifdef ZORBA_WITH_DEBUGGER
   if (theCCB->theDebuggerCommons != NULL)
   {
     DebugLocation_t lLocation;
@@ -2105,8 +2112,8 @@ void wrap_in_debugger_expr(expr_t& aExpr)
 
     aExpr = lExpr.release();
   }
+#endif
 }
-
 
 /*******************************************************************************
   Collect the var_exprs for all variables that (a) are defined by some clause
@@ -3202,14 +3209,16 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       // target namespace.
       theModulesInfo->mod_ns_map.put(compURI, importedNS);
 
-      // If we compile in debug mode, we add the namespace uri into a map, that
-      // allows the debugger to set breakpoints at a namespace uri and line
-      // number
+#ifdef ZORBA_WITH_DEBUGGER
+      // If we compile in with the debugger turned on, we add the namespace
+      // uri into a map, that allows the debugger to set breakpoints at a
+      // namespace uri and line number
       if (theCCB->theDebuggerCommons)
       {
         theCCB->theDebuggerCommons->addModuleUriMapping(importedNS,
                                                         compURL.c_str());
       }
+#endif
     }
 
     // Merge the exported sctx of the imported module into the sctx of the

@@ -16,7 +16,6 @@
 #include "DebuggerTestHandler.h"
 
 #include <zorbaerrors/assert.h>
-#include <debugger/synchronous_logger.h>
 
 #include <iostream>
 

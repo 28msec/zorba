@@ -17,7 +17,7 @@
 #include <memory>
 
 #include "zorbautils/hashfun.h"
-#include <zorbatypes/duration.h>
+#include "zorbatypes/duration.h"
 #include "zorbatypes/datetime/parse.h"
 #include "zorbatypes/numconversions.h"
 #include "zorbatypes/datetime.h"
@@ -53,33 +53,35 @@ static int parse_s_string(
   ascii::skip_whitespace(str, strlen, &pos);
   int err;
 
-  if (pos != savepos)
+  if (pos != savepos) {
     return (pos != strlen ? 1 : 0);
+  }
 
   long result;
 
-  if ((err = parse_long(str, strlen, pos, result)) != 0)
+  if ((err = parse_long(str, strlen, pos, result)) != 0) {
     return err;
+  }
 
-  if (pos == strlen)
+  if (pos == strlen) {
     return 1;
+  }
 
-  if (str[pos] == 'S')
-  {
+  if (str[pos] == 'S') {
     pos++;
     seconds = result;
-  }
-  else if (str[pos] == '.')
-  {
+  } else if (str[pos] == '.') {
     pos++;
     seconds = result;
 
     double temp_frac_seconds = 0;
-    if ((err = parse_frac(str, strlen, pos, temp_frac_seconds)) != 0)
+    if ((err = parse_frac(str, strlen, pos, temp_frac_seconds)) != 0) {
       return err;
+    }
 
-    if (pos == strlen || str[pos] != 'S')
+    if (pos == strlen || str[pos] != 'S') {
       return 1;
+    }
 
     pos++;
     frac_seconds = round(temp_frac_seconds * Duration::FRAC_SECONDS_UPPER_LIMIT);

@@ -40,6 +40,7 @@
 
 namespace zorba {
 
+#ifdef ZORBA_WITH_DEBUGGER
 /**
  * 
  *      This iterator wrapps iterators in which represents breakable expression
@@ -115,6 +116,7 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
 
+#endif
 
 }
 #endif

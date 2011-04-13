@@ -28,6 +28,12 @@ INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaRuntimeGenerator.cmake)
 SET(SPEC_DIR "${CMAKE_SOURCE_DIR}/src/runtime/spec")
 FILE(GLOB_RECURSE SPEC_FILES RELATIVE "${SPEC_DIR}" "${SPEC_DIR}/*.xml")
 
+## remove the debug iterator if the debugger is not built
+## this also happens if JSON is not avaiable
+#IF(NOT ZORBA_WITH_DEBUGGER)
+#  LIST(REMOVE_ITEM SPEC_FILES "debug/zorba_debug_iterator.xml")
+#ENDIF(NOT ZORBA_WITH_DEBUGGER)
+
 # mappings.xml is only a helper xml file => don't generate any code for it
 LIST(REMOVE_ITEM SPEC_FILES "mappings.xml")
 
@@ -84,7 +90,9 @@ ADD_SRC_SUBFOLDER(ZORBA_SRCS zorbatypes ZORBATYPES_SRCS)
 ADD_SRC_SUBFOLDER(ZORBA_SRCS zorbaerrors ZORBAERRORS_SRCS)
 ADD_SRC_SUBFOLDER(ZORBA_SRCS zorbautils ZORBAUTILS_SRCS)
 ADD_SRC_SUBFOLDER(ZORBA_SRCS store STORE_SRCS)
-ADD_SRC_SUBFOLDER(ZORBA_SRCS debugger DEBUGGER_SRCS)
+IF(ZORBA_WITH_DEBUGGER)
+  ADD_SRC_SUBFOLDER(ZORBA_SRCS debugger DEBUGGER_SRCS)
+ENDIF(ZORBA_WITH_DEBUGGER)
 ADD_SRC_SUBFOLDER(ZORBA_SRCS unit_tests UNIT_TEST_SRCS)
 
 SET(ZORBA_LIBRARY_INSTALL_LIST)

@@ -66,8 +66,8 @@ static icu_flags_t convert_xquery_flags( char const *xq_flags ) {
 void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
                         char const *xq_flags ) {
   icu_flags_t const icu_flags = convert_xquery_flags( xq_flags );
-  bool const i_flag = icu_flags & UREGEX_CASE_INSENSITIVE;
-  bool const x_flag = icu_flags & UREGEX_COMMENTS;
+  bool const i_flag = (icu_flags & UREGEX_CASE_INSENSITIVE) != 0;
+  bool const x_flag = (icu_flags & UREGEX_COMMENTS) != 0;
 
   icu_re->clear();
   icu_re->reserve( xq_re.length() );    // approximate

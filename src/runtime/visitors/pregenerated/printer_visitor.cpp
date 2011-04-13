@@ -789,7 +789,7 @@ void PrinterVisitor::endVisit ( const DefaultCollationIterator& ) {
 }
 // </DefaultCollationIterator>
 
-
+#ifdef ZORBA_WITH_DEBUGGER
 // <ZorbaDebugIterator>
 void PrinterVisitor::beginVisit ( const ZorbaDebugIterator& a) {
   thePrinter.startBeginVisit("ZorbaDebugIterator", ++theId);
@@ -803,6 +803,7 @@ void PrinterVisitor::endVisit ( const ZorbaDebugIterator& ) {
 }
 // </ZorbaDebugIterator>
 
+#endif
 
 // <YearsFromDurationIterator>
 void PrinterVisitor::beginVisit ( const YearsFromDurationIterator& a) {

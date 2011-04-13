@@ -75,8 +75,10 @@ END_SERIALIZABLE_CLASS_VERSIONS(function_trace_expr)
 SERIALIZABLE_CLASS_VERSIONS(eval_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(eval_expr)
 
+#ifdef ZORBA_WITH_DEBUGGER
 SERIALIZABLE_CLASS_VERSIONS(debugger_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(debugger_expr)
+#endif
 
 SERIALIZABLE_CLASS_VERSIONS(wrapper_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(wrapper_expr)
@@ -179,7 +181,9 @@ END_SERIALIZABLE_CLASS_VERSIONS(OrderModifier)
 
 ********************************************************************************/
 
+#ifdef ZORBA_WITH_DEBUGGER
 DEF_EXPR_ACCEPT (debugger_expr)
+#endif
 DEF_EXPR_ACCEPT (wrapper_expr)
 DEF_EXPR_ACCEPT (sequential_expr)
 DEF_EXPR_ACCEPT (promote_expr)
@@ -1427,6 +1431,7 @@ expr_t eval_expr::clone(substitution_t& s) const
 }
 
 
+#ifdef ZORBA_WITH_DEBUGGER
 /*******************************************************************************
 
 ********************************************************************************/
@@ -1456,6 +1461,7 @@ void debugger_expr::serialize(::zorba::serialization::Archiver& ar)
   ar & theGlobals;
   ar & theForExpr;
 }
+#endif
 
 
 /*******************************************************************************

@@ -33,7 +33,9 @@
 
 namespace zorba {
 
+#ifdef ZORBA_WITH_DEBUGGER
 class DebuggerCommons;
+#endif
 class static_context;
 
 
@@ -138,7 +140,9 @@ public:
 
   static_context          * theRootSctx;
 
+#ifdef ZORBA_WITH_DEBUGGER
   DebuggerCommons         * theDebuggerCommons;
+#endif
 
   bool                      theIsLoadProlog;
 

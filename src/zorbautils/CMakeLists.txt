@@ -21,6 +21,7 @@ SET(ZORBAUTILS_SRCS
     locale.cpp
     lock.cpp
     runnable.cpp
+    synchronous_logger.cpp
     string_util.cpp)
 
 IF (ZORBA_WITH_LIBXML2_SAX)
@@ -34,6 +35,3 @@ IF (NOT ZORBA_NO_FULL_TEXT)
     stemmer.cpp)
   ADD_SRC_SUBFOLDER(ZORBAUTILS_SRCS stemmer LIBSTEMMER_SRCS)
 ENDIF (NOT ZORBA_NO_FULL_TEXT)
-
-
-# vim:set et sw=2 ts=2:

@@ -23,14 +23,12 @@
 
 #ifdef ZORBA_HAVE_PTHREAD_H
 #include <unistd.h>
-#    include <pthread.h>
-#    define ZORBA_THREAD_RETURN void *
+#include <pthread.h>
+#define ZORBA_THREAD_RETURN void *
 #else
-#    include <Windows.h>
-#    define ZORBA_THREAD_RETURN DWORD WINAPI
+#include <Windows.h>
+#define ZORBA_THREAD_RETURN DWORD WINAPI
 #endif
-
-#include "debugger/synchronous_logger.h"
 
 #ifdef WIN32
 #define THREAD_ID " theThreadID: " << theThreadId
