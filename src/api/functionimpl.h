@@ -42,11 +42,17 @@ protected:
 
   virtual bool isUpdating() const;
 
+  virtual bool isPrivate() const;
+
+  virtual bool isDeterministic() const;
+
+  virtual bool isSequential() const;
+
   virtual bool requiresDynamicContext() const;
 
   virtual Item getFunctionName() const;
 
-  virtual int getArity() const;
+  virtual size_t getArity() const;
 };
 
 } /* namespace zorba */

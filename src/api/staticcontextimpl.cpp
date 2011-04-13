@@ -22,6 +22,7 @@
 #include <zorba/static_context_consts.h>
 #include <zorba/typeident.h>
 #include <zorba/util/path.h>
+#include <zorba/empty_sequence.h>
 
 #include "store/api/item_factory.h"
 
@@ -29,6 +30,7 @@
 #include "api/zorbaimpl.h"
 #include "api/functionimpl.h"
 #include "api/xqueryimpl.h"
+#include "api/invoke_item_sequence.h"
 
 #include "context/static_context.h"
 #include "context/static_context_consts.h"
@@ -1639,6 +1641,126 @@ StaticContextImpl::validateSimpleContent(
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
     return false;
+  }
+}
+
+/**
+ * construct the query to call invoke
+ * for the QName of the function and for each argument,
+ * the query declares an external variable ($qname, $arg_1, ..., $arg_n)
+ * which needs to be bound before execution.
+ */
+String
+StaticContextImpl::createInvokeQuery(const Function_t& aFunc) const
+{
+  std::ostringstream lOut;
+
+  // prolog
+  lOut
+    << "import module namespace ref = 'http://www.zorba-xquery.com/modules/reflection';"
+    << std::endl
+    << "declare variable $name as xs:QName" << " external;" << std::endl;
+  for (size_t i = 0; i < aFunc->getArity(); ++i)
+  {
+    lOut << "declare variable $arg" << i << " external;" << std::endl;
+  }
+ 
+  // body
+
+  // call updating, sequential, or simple invoke function
+  lOut << "ref:invoke-";
+    
+  if (aFunc->isUpdating())
+    lOut << "updating";
+  else if (aFunc->isSequential())
+    lOut << "sequential";
+  else 
+    lOut << "simple";
+
+  // args
+  lOut << "($name";
+  for (size_t i = 0; i < aFunc->getArity(); ++i)
+  {
+    lOut << ", $arg" << i;
+  }
+  lOut << ")";
+  return lOut.str();
+}
+
+Function_t
+StaticContextImpl::checkInvokable(const Item& aQName, size_t aNumArgs) const
+{
+  Item lType = aQName.getType();
+  if (lType.getStringValue() != "QName")
+  {
+    throw XQUERY_EXCEPTION( XPTY0004 );
+  }
+
+  // test if function with given #args exists
+  Function_t lFunc;
+  std::vector<Function_t> lFunctions;
+  findFunctions(aQName, lFunctions);
+  if (lFunctions.size() == 0)
+  {
+    throw XQUERY_EXCEPTION( XPST0017, ERROR_PARAMS( aQName.getStringValue() ) );
+  }
+
+  for (std::vector<Function_t>::const_iterator lIter = lFunctions.begin();
+       lIter != lFunctions.end(); ++lIter)
+  {
+    if ((*lIter)->getArity() == aNumArgs)
+    {
+      lFunc = (*lIter);
+      break;
+    }
+  }
+
+  if (!lFunc)
+  {
+    throw XQUERY_EXCEPTION( XPST0017, ERROR_PARAMS( aQName.getStringValue() ) );
+  }
+
+  return lFunc;
+}
+
+ItemSequence_t
+StaticContextImpl::invoke(
+    const Item& aQName,
+    const std::vector<ItemSequence_t>& aArgs) const
+{
+  try
+  {
+    Function_t lFunc = checkInvokable(aQName, aArgs.size());
+
+    String lStr = createInvokeQuery(lFunc);
+
+    std::auto_ptr<XQueryImpl> impl(new XQueryImpl());
+
+    // compile without any hints
+    Zorba_CompilerHints_t lHints;
+    StaticContext_t lSctx = new StaticContextImpl(*this);
+
+    impl->compile(lStr, lSctx, lHints);
+
+    // bind qname and params
+    DynamicContext* lDCtx = impl->getDynamicContext();
+    lDCtx->setVariable("name", aQName);
+    for (size_t i = 0; i < lFunc->getArity(); ++i)
+    {
+      std::ostringstream lArgName;
+      lArgName << "arg" << i;
+      lDCtx->setVariable(lArgName.str(), aArgs[i]->getIterator());
+    }
+
+    // the XQueryImpl object needs to live as long as its iterator
+    // because the iterator returned as a result of the query
+    // contains a reference to the query in order to do cleanup work
+    Iterator_t lIter = impl->iterator();
+    return new InvokeItemSequence(impl.release(), lIter);
+  } catch (ZorbaException const& e)
+  {
+    ZorbaImpl::notifyError(theErrorHandler, e);
+    return 0;
   }
 }
 

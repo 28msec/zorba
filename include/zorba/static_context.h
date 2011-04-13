@@ -568,6 +568,10 @@ namespace zorba {
           const Item& typeQName, 
           std::vector<Item>& resultList) = 0;
 
+      virtual ItemSequence_t
+      invoke(const Item& aQName,
+             const std::vector<ItemSequence_t>& aArgs) const = 0;
+
 };
 } /* namespace zorba */
 #endif

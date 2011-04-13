@@ -211,7 +211,7 @@ private:
 
 public:
   SERIALIZABLE_CLASS(XQueryImpl)
-  SERIALIZABLE_CLASS_CONSTRUCTOR(XQueryImpl)
+  XQueryImpl(::zorba::serialization::Archiver &ar);
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:

@@ -33,12 +33,21 @@ class ZORBA_DLL_PUBLIC Function : public SmartObject
   isUpdating() const = 0;
 
   virtual bool
+  isPrivate() const = 0;
+
+  virtual bool
+  isDeterministic() const = 0;
+
+  virtual bool
+  isSequential() const = 0;
+
+  virtual bool
   requiresDynamicContext() const = 0;
 
   virtual Item
   getFunctionName() const = 0;
 
-  virtual int
+  virtual size_t
   getArity() const = 0;
 };
 

@@ -27,6 +27,20 @@ bool FunctionImpl::isUpdating() const
   return theFunction->isUpdating();
 }
 
+bool FunctionImpl::isPrivate() const
+{
+  return theFunction->isPrivate();
+}
+
+bool FunctionImpl::isDeterministic() const
+{
+  return theFunction->isDeterministic();
+}
+
+bool FunctionImpl::isSequential() const
+{
+  return theFunction->isSequential();
+}
 
 bool FunctionImpl::requiresDynamicContext() const
 {
@@ -49,7 +63,8 @@ Item FunctionImpl::getFunctionName() const
 }
 
 
-int FunctionImpl::getArity() const
+size_t
+FunctionImpl::getArity() const
 {
   return theFunction->getArity();
 }

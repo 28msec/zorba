@@ -97,6 +97,10 @@ END_SERIALIZABLE_CLASS_VERSIONS(XQueryImpl::PlanProxy)
 SERIALIZABLE_CLASS_VERSIONS(XQueryImpl)
 END_SERIALIZABLE_CLASS_VERSIONS(XQueryImpl)
 
+XQueryImpl::XQueryImpl(::zorba::serialization::Archiver &ar)
+  : ::zorba::serialization::SerializeBaseClass()
+{
+}
 
 /*******************************************************************************
 

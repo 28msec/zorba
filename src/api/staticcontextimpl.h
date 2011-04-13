@@ -318,6 +318,17 @@ public:
   validateSimpleContent(const String& stringValue,
           const Item& typeQName, 
           std::vector<Item>& resultList);
+
+  ItemSequence_t
+  invoke(const Item& aQName,
+         const std::vector<ItemSequence_t>& aArgs) const;
+
+protected:
+  String
+  createInvokeQuery(const Function_t&) const;
+
+  Function_t
+  checkInvokable(const Item& aQName, size_t aNumArgs) const;
 };
 
 } // namespace zorba

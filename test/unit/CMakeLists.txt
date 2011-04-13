@@ -64,6 +64,7 @@ SET(UNIT_TESTS_SRCS
   main_sequential.cpp
   os_module.cpp
   datetime.cpp
+  invoke.cpp
 )
 
 # multithread_simple.cpp
