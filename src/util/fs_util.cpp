@@ -53,18 +53,15 @@ static type get_type( LPCWSTR wpath, size_type *size = 0 ) {
 }
 
 static bool to_char( LPCWSTR wpath, char *path ) {
-  int const result = ::WideCharToMultiByte(
+  return !!::WideCharToMultiByte(
     CP_UTF8, 0, wpath, -1, path, MAX_PATH, NULL, NULL
   );
-  return result != 0;
 }
 
-static bool to_wchar(char const *path, LPWSTR wpath) {
-  if (::MultiByteToWideChar(CP_UTF8, 0, path, -1, wpath, MAX_PATH)) {
+static bool to_wchar( char const *path, LPWSTR wpath ) {
+  if ( ::MultiByteToWideChar( CP_UTF8, 0, path, -1, wpath, MAX_PATH ) )
     return true;
-  }
-  int result = ::MultiByteToWideChar(CP_ACP, 0, path, -1, wpath, MAX_PATH);
-  return (result != 0);
+  return !!::MultiByteToWideChar( CP_ACP, 0, path, -1, wpath, MAX_PATH );
 }
 
 } // namespace win32
