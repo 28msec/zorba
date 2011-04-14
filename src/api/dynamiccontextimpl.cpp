@@ -49,6 +49,7 @@
 
 #include "util/xml_util.h"
 
+#include "util/string_util.h"
 #include "zorbaerrors/assert.h"
 
 
@@ -125,11 +126,14 @@ var_expr* DynamicContextImpl::get_var_expr(const zstring& inVarName)
 
   if (var == NULL)
   {
-    std::ostringstream varName;
-    varName << '{' << qnameItem->getNamespace() << '}'
-            << qnameItem->getLocalName();
-
-    throw XQUERY_EXCEPTION( XPST0008, ERROR_PARAMS( varName.str() ) );
+    throw XQUERY_EXCEPTION(
+      XPST0008,
+      ERROR_PARAMS(
+        BUILD_STRING(
+          '{', qnameItem->getNamespace(), '}', qnameItem->getLocalName()
+        )
+      )
+    );
   }
 
   return var;

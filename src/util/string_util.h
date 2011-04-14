@@ -30,6 +30,97 @@ namespace ztd {
 using internal::ztd::c_str;
 using internal::ztd::has_c_str;
 
+////////// String building /////////////////////////////////////////////////////
+
+/**
+ * A %string_builder is used to build (concatenate) strings on-the-fly and pass
+ * the resultant string to some function.  See the BUILD_STRING macro for usage.
+ */
+class string_builder {
+public:
+
+  /**
+   * Clears then sets the string being built to the string representation of
+   * the given object.
+   *
+   * @tparam T The object type.
+   * @param t The object.
+   * @return returns \c *this.
+   */
+  template<typename T>
+  string_builder& operator=( T const &t ) {
+    oss_.str( "" );
+    return append( t );
+  }
+
+  /**
+   * Appends the string representation of the given object to the string being
+   * built.
+   *
+   * @tparam T The object type.
+   * @param t The object.
+   * @return returns \c *this.
+   */
+  template<typename T>
+  string_builder& operator,( T const &t ) {
+    return append( t );
+  }
+
+  /**
+   * Explicit conversion to std::string.
+   *
+   * @return Returns a string comprising all the objects' string
+   * representations concatenated together.
+   */
+  std::string str() const {
+    return oss_.str();
+  }
+
+  /**
+   * Implicit conversion to std::string.
+   *
+   * @return Returns a string comprising all the objects' string
+   * representations concatenated together.
+   */
+  operator std::string() const {
+    return str();
+  }
+
+private:
+  template<typename T>
+  string_builder& append( T const &t ) {
+    oss_ << t;
+    return *this;
+  }
+
+  std::ostringstream oss_;
+};
+
+/**
+ * Emits a string_builder's string to the given ostream.
+ *
+ * @param o The ostream to emit to.
+ * @param sb The string_builder to emit the string of.
+ * @return Returns \a o.
+ */
+inline std::ostream& operator<<( std::ostream &o, string_builder const &sb ) {
+  return o << sb.str();
+}
+
+/**
+ * A convenience macro for using string_builder to de-uglify using it.
+ * Using this macro, you can go from:
+ * \code
+ * f( string_builder() = "The answer is: ", answer )
+ * \endcode
+ * to the more function-like syntax of:
+ * \code
+ * f( BUILD_STRING( "The answer is: ", answer ) )
+ * \endcode
+ * \hideinitializer
+ */
+#define BUILD_STRING(...) (zorba::ztd::string_builder() = __VA_ARGS__)
+
 ////////// String equality /////////////////////////////////////////////////////
 
 /**
