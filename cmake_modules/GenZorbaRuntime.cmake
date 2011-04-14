@@ -64,7 +64,9 @@ SET(pregen_file "${source_dir}/${gen_relfiledir}/pregenerated/${gen_relfilename}
 
 # If we are testing the generation, overwrite gen_file with a dummy location.
 IF(test_only)
-  SET(gen_file "${binary_dir}/gen_test.tmp")
+  STRING(REGEX REPLACE "[/\\]" "_" gen_file "${gen_relfilename}")
+  SET(gen_file "${binary_dir}/gen_test.tmp.${gen_file}")
+  MESSAGE("  dobbbling: ${gen_file}")
 ENDIF(test_only)
 
 
