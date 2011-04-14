@@ -40,13 +40,6 @@ namespace zorba
 {
 
 
-#define RAISE_XPST0005()                              \
-  {                                                   \
-    throw XQUERY_EXCEPTION(XPST0005, ERROR_LOC(loc)); \
-    return RTM.EMPTY_TYPE;                            \
-  }
-
-
 static xqtref_t create_axis_step_type(
     TypeManager* tm,
     store::StoreConsts::NodeKind nodekind,
@@ -805,15 +798,13 @@ static xqtref_t axis_step_type(
         testSchemaType != NULL &&
         ! testSchemaType->equals(RTM.XS_UNTYPED_ATOMIC_QNAME))
     {
-      RAISE_XPST0005(); 
-      //return RTM.EMPTY_TYPE;
+      throw XQUERY_EXCEPTION(XPST0005, ERROR_LOC(loc));
     }
     else if ((testKind == match_elem_test || testKind == match_doc_test) &&
              testSchemaType != NULL &&
              ! testSchemaType->equals(RTM.XS_UNTYPED_QNAME))
     {
-      RAISE_XPST0005(); 
-      //return RTM.EMPTY_TYPE;
+      throw XQUERY_EXCEPTION(XPST0005, ERROR_LOC(loc));
     }
   }
 
@@ -824,8 +815,7 @@ static xqtref_t axis_step_type(
     // Doc nodes do not have parent
     if (inNodeKind == store::StoreConsts::documentNode)
     {
-      RAISE_XPST0005();
-      //return RTM.EMPTY_TYPE;
+      throw XQUERY_EXCEPTION(XPST0005, ERROR_LOC(loc));
     }
 
     // Only element or doc nodes are reachable via the parent axis.
@@ -833,16 +823,14 @@ static xqtref_t axis_step_type(
         testNodeKind != store::StoreConsts::elementNode && 
         testNodeKind != store::StoreConsts::anyNode)
     {
-      RAISE_XPST0005();
-      //return RTM.EMPTY_TYPE;
+      throw XQUERY_EXCEPTION(XPST0005, ERROR_LOC(loc));
     }
 
     // Doc nodes cannot be parents of attribute nodes
     if (inNodeKind == store::StoreConsts::attributeNode &&
         testNodeKind == store::StoreConsts::documentNode)
     {
-      RAISE_XPST0005();
-      //return RTM.EMPTY_TYPE;
+      throw XQUERY_EXCEPTION(XPST0005, ERROR_LOC(loc));
     }
 
     return create_axis_step_type(tm, testNodeKind, testNodeName, inQuant, false);
@@ -855,8 +843,7 @@ static xqtref_t axis_step_type(
     // Doc nodes do not have ancestors
     if (inNodeKind == store::StoreConsts::documentNode)
     {
-      RAISE_XPST0005();
-      //return RTM.EMPTY_TYPE;
+      throw XQUERY_EXCEPTION(XPST0005, ERROR_LOC(loc));
     }
 
     // Only element or doc nodes are reachable via the ancestor axis.
@@ -864,8 +851,7 @@ static xqtref_t axis_step_type(
         testNodeKind != store::StoreConsts::elementNode && 
         testNodeKind != store::StoreConsts::anyNode)
     {
-      RAISE_XPST0005();
-      //return RTM.EMPTY_TYPE;
+      throw XQUERY_EXCEPTION(XPST0005, ERROR_LOC(loc));
     }
 
     if (testNodeKind == store::StoreConsts::elementNode)
@@ -917,16 +903,14 @@ self:
         inNodeKind != store::StoreConsts::anyNode &&
         inNodeKind != testNodeKind)
     {
-      RAISE_XPST0005();
-      //return RTM.EMPTY_TYPE;
+      throw XQUERY_EXCEPTION(XPST0005, ERROR_LOC(loc));
     }
 
     if (testNodeName != NULL &&
         inNodeName != NULL &&
         !inNodeName->equals(testNodeName))
     {
-      RAISE_XPST0005();
-      //return RTM.EMPTY_TYPE;
+      throw XQUERY_EXCEPTION(XPST0005, ERROR_LOC(loc));
     }
 
     switch (inNodeKind)
@@ -1023,15 +1007,13 @@ self:
         inNodeKind == store::StoreConsts::piNode ||
         inNodeKind == store::StoreConsts::commentNode)
     {
-      RAISE_XPST0005();
-      //return RTM.EMPTY_TYPE;
+      throw XQUERY_EXCEPTION(XPST0005, ERROR_LOC(loc));
     }
 
     if (testNodeKind == store::StoreConsts::documentNode ||
         testNodeKind == store::StoreConsts::attributeNode)
     {
-      RAISE_XPST0005();
-      //return RTM.EMPTY_TYPE;
+      throw XQUERY_EXCEPTION(XPST0005, ERROR_LOC(loc));
     }
 
     switch (testNodeKind)
@@ -1064,8 +1046,7 @@ self:
     if (inNodeKind != store::StoreConsts::elementNode &&
         inNodeKind != store::StoreConsts::anyNode)
     {
-      RAISE_XPST0005();
-      //return RTM.EMPTY_TYPE;
+      throw XQUERY_EXCEPTION(XPST0005, ERROR_LOC(loc));
     }
 
     // only attribute nodes are reachable via the attribute axis.
@@ -1074,8 +1055,7 @@ self:
         testKind != match_attr_test &&
         testKind != match_xs_attr_test)
     {
-      RAISE_XPST0005();
-      //return RTM.EMPTY_TYPE;
+      throw XQUERY_EXCEPTION(XPST0005, ERROR_LOC(loc));
     }
 
     if ((testKind == match_name_test && wildKind == match_no_wild) ||
@@ -1107,8 +1087,7 @@ self:
     if (inNodeKind == store::StoreConsts::documentNode ||
         testNodeKind == store::StoreConsts::documentNode)
     {
-      RAISE_XPST0005();
-      //return RTM.EMPTY_TYPE;
+      throw XQUERY_EXCEPTION(XPST0005, ERROR_LOC(loc));
     }
 
     if ((axisKind == axis_kind_following_sibling ||
@@ -1116,7 +1095,7 @@ self:
         (inNodeKind == store::StoreConsts::attributeNode ||
          testNodeKind == store::StoreConsts::attributeNode))
     {
-      //RAISE_XPST0005();
+      //throw XQUERY_EXCEPTION(XPST0005, ERROR_LOC(loc));
       return RTM.EMPTY_TYPE;
     }
 
@@ -1228,5 +1207,5 @@ static xqtref_t create_axis_step_type(
 }
 
 
-}
-
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

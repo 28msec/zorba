@@ -1700,9 +1700,11 @@ StaticContextImpl::checkInvokable(const Item& aQName, size_t aNumArgs) const
   Function_t lFunc;
   std::vector<Function_t> lFunctions;
   findFunctions(aQName, lFunctions);
-  if (lFunctions.size() == 0)
+  if (lFunctions.empty())
   {
-    throw XQUERY_EXCEPTION( XPST0017, ERROR_PARAMS( aQName.getStringValue() ) );
+    throw XQUERY_EXCEPTION(
+      XPST0017, ERROR_PARAMS( aQName.getStringValue(), aNumArgs )
+    );
   }
 
   for (std::vector<Function_t>::const_iterator lIter = lFunctions.begin();

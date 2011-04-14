@@ -724,8 +724,11 @@ xqtref_t TypeManagerImpl::create_schema_element_type(
 {
   if (m_schema == NULL)
   {
-    ZORBA_ERROR_LOC_PARAM(XPST0008, loc, "schema-element", 
-                          elemName->getStringValue().c_str());
+    throw XQUERY_EXCEPTION(
+      XPST0008,
+      ERROR_PARAMS( elemName->getStringValue(), ZED( SchemaElementName ) ),
+      ERROR_LOC( loc )
+    );
   }
 
   xqtref_t contentType = 
@@ -750,8 +753,11 @@ void TypeManagerImpl::get_schema_element_typename(
 {
   if (m_schema == NULL)
   {
-    ZORBA_ERROR_LOC_PARAM(XPST0008, loc, "schema-element", 
-                          elemName->getStringValue().c_str());
+    throw XQUERY_EXCEPTION(
+      XPST0008,
+      ERROR_PARAMS( elemName->getStringValue(), ZED( SchemaElementName ) ),
+      ERROR_LOC( loc )
+    );
   }
 
   m_schema->getTypeNameFromElementName(elemName, typeName, loc);
@@ -771,8 +777,11 @@ xqtref_t TypeManagerImpl::create_schema_attribute_type(
 {
   if (m_schema == NULL)
   {
-    ZORBA_ERROR_LOC_PARAM(XPST0008, loc, "schema-attribute", 
-                          attrName->getStringValue().c_str());
+    throw XQUERY_EXCEPTION(
+      XPST0008,
+      ERROR_PARAMS( attrName->getStringValue(), ZED( SchemaAttributeName ) ),
+      ERROR_LOC( loc )
+    );
   }
 
   xqtref_t contentType = 
@@ -798,8 +807,11 @@ void TypeManagerImpl::get_schema_attribute_typename(
 {
   if (m_schema == NULL)
   {
-    ZORBA_ERROR_LOC_PARAM(XPST0008, loc, "schema-attribute", 
-                          attrName->getStringValue().c_str());
+    throw XQUERY_EXCEPTION(
+      XPST0008,
+      ERROR_PARAMS( attrName->getStringValue(), ZED( SchemaAttributeName ) ),
+      ERROR_LOC( loc )
+    );
   }
 
   m_schema->getTypeNameFromAttributeName(attrName, typeName, loc);

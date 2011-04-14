@@ -2209,9 +2209,11 @@ void end_visit(fo_expr& v)
   }
   else
   {
-    ZORBA_ERROR_LOC_PARAM(XPST0017, loc,
-                          func->getName()->getStringValue(),
-                          argv.size());
+    throw XQUERY_EXCEPTION(
+      XPST0017,
+      ERROR_PARAMS( func->getName()->getStringValue(), argv.size() ),
+      ERROR_LOC( loc )
+    );
   }
 }
 

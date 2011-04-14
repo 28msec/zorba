@@ -125,11 +125,11 @@ var_expr* DynamicContextImpl::get_var_expr(const zstring& inVarName)
 
   if (var == NULL)
   {
-    ZORBA_ERROR_DESC_OSS(XPST0008,
-                         "Failed to set the value of variable {" 
-                         << qnameItem->getNamespace() << "}"
-                         << qnameItem->getLocalName()
-                         << " because no such variable was found");
+    std::ostringstream varName;
+    varName << '{' << qnameItem->getNamespace() << '}'
+            << qnameItem->getLocalName();
+
+    throw XQUERY_EXCEPTION( XPST0008, ERROR_PARAMS( varName.str() ) );
   }
 
   return var;

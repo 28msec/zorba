@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #ifndef ZORBA_STATIC_CONTEXT_CONSTS_H
 #define ZORBA_STATIC_CONTEXT_CONSTS_H
 
 #include <string>
+#include <iostream>
 
 namespace zorba 
 {
 
-class StaticContextConsts 
+namespace StaticContextConsts 
 {
- public:
 
   enum xquery_version_t
   {
@@ -31,6 +32,8 @@ class StaticContextConsts
     xquery_version_1_0 = 100,
     xquery_version_1_1 = 110
   };
+
+  std::ostream& operator<<( std::ostream &o, xquery_version_t v );
 
 
   enum xpath_compatibility_t 
@@ -124,17 +127,15 @@ class StaticContextConsts
   };
   
 
-  static std::string toString(declaration_property_t prop);
+  std::string toString(declaration_property_t prop);
 
-}; /* namespace StaticContextConsts */
+} // namespace StaticContextConsts
+} // namespace zorba
 
-} /* namespace zorba */
-
-#endif
-
+#endif /* ZORBA_STATIC_CONTEXT_CONSTS_H */
 /*
  * Local variables:
  * mode: c++
  * End:
  */
-
+/* vim:set et sw=2 ts=2: */

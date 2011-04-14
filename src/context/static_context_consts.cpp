@@ -17,10 +17,21 @@
 #include "context/static_context_consts.h"
 
 
-namespace zorba 
-{
+namespace zorba {
+namespace StaticContextConsts {
 
-std::string StaticContextConsts::toString(declaration_property_t prop)
+std::ostream& operator<<( std::ostream &o, xquery_version_t v ) {
+  switch ( v ) {
+    case xquery_version_1_0:
+      return o << "1.0";
+    case xquery_version_1_1:
+      return o << "1.1";
+    default:
+      return o << "unknown";
+  }
+}
+
+std::string toString(declaration_property_t prop)
 {
   switch (prop)
   {
@@ -65,6 +76,6 @@ std::string StaticContextConsts::toString(declaration_property_t prop)
   }
 }
 
-
-}
-
+} // namespace StaticContextConsts
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

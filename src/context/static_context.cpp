@@ -1942,7 +1942,7 @@ void static_context::bind_var(
 var_expr* static_context::lookup_var(
     const store::Item* qname,
     const QueryLoc& loc,
-    const Error& err) const
+    const Error& error) const
 {
   store::Item* qname2 = const_cast<store::Item*>(qname);
 
@@ -1960,8 +1960,10 @@ var_expr* static_context::lookup_var(
     sctx = sctx->theParent;
   }
 
-  if (err != err::ZXQP0000_NO_ERROR)
-    ZORBA_ERROR_VAR_LOC_PARAM(err, loc, qname->getStringValue().c_str(), "");
+  if (error != err::ZXQP0000_NO_ERROR)
+    throw XQUERY_EXCEPTION_VAR(
+      error, ERROR_PARAMS( qname->getStringValue() ), ERROR_LOC( loc )
+    );
 
   return NULL;
 }

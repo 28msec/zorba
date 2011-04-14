@@ -3456,7 +3456,11 @@ void* begin_visit(const AnnotationParsenode& v)
   TRACE_VISIT();
 
   if (theSctx->xquery_version() <= StaticContextConsts::xquery_version_1_0)
-    throw XQUERY_EXCEPTION(XPST0003, ERROR_LOC(loc));
+    throw XQUERY_EXCEPTION(
+      XPST0003,
+      ERROR_PARAMS( theSctx->xquery_version(), ZED( BadXQueryVersion ) ),
+      ERROR_LOC( loc )
+    );
 
   return no_state;
 }
@@ -3490,7 +3494,11 @@ void* begin_visit(const CtxItemDecl& v)
   TRACE_VISIT();
 
   if (theSctx->xquery_version() <= StaticContextConsts::xquery_version_1_0)
-    throw XQUERY_EXCEPTION(XPST0003, ERROR_LOC(loc));
+    throw XQUERY_EXCEPTION(
+      XPST0003,
+      ERROR_PARAMS( theSctx->xquery_version(), ZED( BadXQueryVersion ) ),
+      ERROR_LOC( loc )
+    );
 
   return no_state;
 }
@@ -4873,7 +4881,11 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
   if (theSctx->xquery_version() <= StaticContextConsts::xquery_version_1_0 &&
       v.is_non_10())
   {
-    throw XQUERY_EXCEPTION(XPST0003, ERROR_LOC(loc));
+    throw XQUERY_EXCEPTION(
+      XPST0003,
+      ERROR_PARAMS( theSctx->xquery_version(), ZED( BadXQueryVersion ) ),
+      ERROR_LOC( loc )
+    );
   }
 
   rchandle<flwor_expr> flwor = new flwor_expr(theRootSctx, loc, v.is_general());
@@ -8617,9 +8629,9 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
   {
     if (f == NULL)
     {
-      ZORBA_ERROR_LOC_PARAM(XPST0017, loc,
-                            qname->get_qname(),
-                            ztd::to_string(numArgs));
+      throw XQUERY_EXCEPTION(
+        XPST0017, ERROR_PARAMS( qname->get_qname(), numArgs ), ERROR_LOC( loc )
+      );
     }
 
     if (localName == "head")
@@ -8693,7 +8705,9 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       case 1:
         break;
       default:
-        ZORBA_ERROR_LOC_PARAM(XPST0017, loc, "fn:number", numArgs);
+        throw XQUERY_EXCEPTION(
+          XPST0017, ERROR_PARAMS( "fn:number", numArgs ), ERROR_LOC( loc )
+        );
       }
 
       var_expr_t tv = create_temp_var(loc, var_expr::let_var);
@@ -8726,7 +8740,10 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     else if (localName == "static-base-uri")
     {
       if (numArgs != 0)
-        ZORBA_ERROR_LOC_PARAM(XPST0017, loc, "fn:static-base-uri", numArgs);
+        throw XQUERY_EXCEPTION(
+          XPST0017, ERROR_PARAMS( "fn:static-base-uri", numArgs ),
+          ERROR_LOC( loc )
+        );
 
       zstring baseuri = theSctx->get_base_uri();
       if (baseuri.empty())
@@ -8796,7 +8813,9 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     else if (localName == "concat")
     {
       if (numArgs < 2)
-        ZORBA_ERROR_LOC_PARAM(XPST0017, loc, "concat", ztd::to_string(numArgs));
+        throw XQUERY_EXCEPTION(
+          XPST0017, ERROR_PARAMS( "concat", numArgs ), ERROR_LOC( loc )
+        );
     }
     else if (localName == "doc")
     {
@@ -8840,7 +8859,10 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.NOTATION_TYPE_QUESTION) ||
         TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION))
     {
-      ZORBA_ERROR_LOC_PARAM(XPST0017, loc, qname->get_qname(), numArgs);
+      throw XQUERY_EXCEPTION(
+        XPST0017, ERROR_PARAMS( qname->get_qname(), numArgs ),
+        ERROR_LOC( loc )
+      );
     }
 
     push_nodestack(create_cast_expr(loc, arguments[0], type, true));
@@ -8866,7 +8888,10 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         }
       }
 
-      ZORBA_ERROR_LOC_PARAM(XPST0017, loc, qname->get_qname(), numArgs);
+      throw XQUERY_EXCEPTION(
+        XPST0017, ERROR_PARAMS( qname->get_qname(), numArgs ),
+        ERROR_LOC( loc )
+      );
     }
 
     // If this is a udf that is invoked from another udf, mark that other udf
@@ -8892,7 +8917,10 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     {
       if (! theSctx->is_imported_builtin_module(fn_ns))
       {
-        ZORBA_ERROR_LOC_PARAM(XPST0017, loc, qname->get_qname(), ztd::to_string(numArgs));
+        throw XQUERY_EXCEPTION(
+          XPST0017, ERROR_PARAMS( qname->get_qname(), numArgs ),
+          ERROR_LOC( loc )
+        );
       }
     }
 
@@ -9010,8 +9038,9 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
       if (numArgs == 0)
       {
-        ZORBA_ERROR_LOC_DESC(XPST0017, loc,
-                             "the first parameter to invoke must be a QName denoting an existing function.");
+        throw XQUERY_EXCEPTION(
+          XPST0017, ERROR_PARAMS( "invoke" ), ERROR_LOC( loc )
+        );
       }
 
       // create a flwor with LETs to hold the parameters
@@ -9199,7 +9228,10 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
   // raise XPST0017 if function could not be found
   if (fn == 0)
   {
-    ZORBA_ERROR_LOC_PARAM(XPST0017, loc, qname->get_qname(), ztd::to_string(arity));
+    throw XQUERY_EXCEPTION(
+      XPST0017, ERROR_PARAMS( qname->get_qname(), arity ),
+      ERROR_LOC( loc )
+    );
   }
 
   // If it is a builtin function F with signature (R, T1, ..., TN) , wrap it
@@ -10573,8 +10605,11 @@ void end_visit (const ElementTest& v, void* /*visit_state*/)
 
     if (contentType == NULL)
     {
-      ZORBA_ERROR_LOC_PARAM(XPST0008, loc, "element type",
-                            typeNameItem->getStringValue().c_str());
+      throw XQUERY_EXCEPTION(
+        XPST0008,
+        ERROR_PARAMS( typeNameItem->getStringValue(), ZED( ElementName ) ),
+        ERROR_LOC( loc )
+      );
     }
   }
 
@@ -10693,8 +10728,11 @@ void end_visit(const AttributeTest& v, void* /*visit_state*/)
 
     if (contentType == NULL)
     {
-      ZORBA_ERROR_LOC_PARAM(XPST0008, loc, "attribute type",
-                            typeNameItem->getStringValue().c_str());
+      throw XQUERY_EXCEPTION(
+        XPST0008,
+        ERROR_PARAMS( typeNameItem->getStringValue(), ZED( AttributeName ) ),
+        ERROR_LOC( loc )
+      );
     }
   }
 

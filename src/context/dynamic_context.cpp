@@ -282,9 +282,11 @@ void dynamic_context::set_variable(
   if (varid >= theVarValues.size() ||
       theVarValues[varid].theState == VarValue::undeclared)
   {
-    ZORBA_ERROR_LOC_DESC_OSS(XPDY0002, loc,
-                             "Variable " << varname->getStringValue()
-                             << " has not been declared");
+    throw XQUERY_EXCEPTION(
+      XPDY0002,
+      ERROR_PARAMS( varname->getStringValue(), ZED( VariabledUndeclared ) ),
+      ERROR_LOC( loc )
+    );
   }
 
   VarValue& var = theVarValues[varid];
@@ -339,9 +341,11 @@ void dynamic_context::set_variable(
   if (varid >= theVarValues.size() ||
       theVarValues[varid].theState == VarValue::undeclared)
   {
-    ZORBA_ERROR_LOC_DESC_OSS(XPDY0002, loc,
-                             "Variable " << varname->getStringValue()
-                             << " has not been declared");
+    throw XQUERY_EXCEPTION(
+      XPDY0002,
+      ERROR_PARAMS( varname->getStringValue(), ZED( VariabledUndeclared ) ),
+      ERROR_LOC( loc )
+    );
   }
 
   VarValue& var = theVarValues[varid];
@@ -388,16 +392,20 @@ void dynamic_context::get_variable(
   if (varid >= theVarValues.size() ||
       theVarValues[varid].theState == VarValue::undeclared)
   {
-    ZORBA_ERROR_LOC_DESC_OSS(XPDY0002, loc,
-                             "Variable " << varname->getStringValue()
-                             << " has not been declared");
+    throw XQUERY_EXCEPTION(
+      XPDY0002,
+      ERROR_PARAMS( varname->getStringValue(), ZED( VariabledUndeclared ) ),
+      ERROR_LOC( loc )
+    );
   }
 
   if (theVarValues[varid].theState == VarValue::declared)
   {
-    ZORBA_ERROR_LOC_DESC_OSS(XPDY0002, loc,
-                             "Variable " << varname->getStringValue()
-                             << " does not have a value");
+    throw XQUERY_EXCEPTION(
+      XPDY0002,
+      ERROR_PARAMS( varname->getStringValue(), ZED( VariabledHasNoValue ) ),
+      ERROR_LOC( loc )
+    );
   }
 
   const VarValue& var = theVarValues[varid];
@@ -574,4 +582,5 @@ std::vector<zstring>* dynamic_context::get_all_keymap_keys() const
 */
 
 
-} /* namespace zorba */
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

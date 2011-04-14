@@ -424,7 +424,13 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
     else
     {
-			ZORBA_ERROR_LOC_PARAM(XPDY0002, loc, theVarName->getStringValue().c_str(), "");
+      throw XQUERY_EXCEPTION(
+        XPDY0002,
+        ERROR_PARAMS(
+          theVarName->getStringValue(), ZED( VariabledUndeclared )
+        ),
+        ERROR_LOC( loc )
+      );
     }
   } // if (theTargetPosIter != NULL && theTargetLenIter == NULL)
 
@@ -479,7 +485,13 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
     else
     {
-			ZORBA_ERROR_LOC_PARAM(XPDY0002, loc, theVarName->getStringValue().c_str(), "");
+      throw XQUERY_EXCEPTION(
+        XPDY0002,
+        ERROR_PARAMS(
+          theVarName->getStringValue(), ZED( VariabledUndeclared )
+        ),
+        ERROR_LOC( loc )
+      );
     }
   } // if (theTargetPosIter != NULL && theTargetLenIter != NULL)
 
@@ -511,7 +523,13 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
     else
     {
-			ZORBA_ERROR_LOC_PARAM(XPDY0002, loc, theVarName->getStringValue().c_str(), "");
+      throw XQUERY_EXCEPTION(
+        XPDY0002,
+        ERROR_PARAMS(
+          theVarName->getStringValue(), ZED( VariabledUndeclared )
+        ),
+        ERROR_LOC( loc )
+      );
     }
   } // if (theTargetPosIter != NULL && theTargetLenIter == NULL)
 
@@ -538,7 +556,13 @@ bool CtxVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
     else
     {
-			ZORBA_ERROR_LOC_PARAM(XPDY0002, loc, theVarName->getStringValue().c_str(), "");
+      throw XQUERY_EXCEPTION(
+        XPDY0002,
+        ERROR_PARAMS(
+          theVarName->getStringValue(), ZED( VariabledUndeclared )
+        ),
+        ERROR_LOC( loc )
+      );
     }
 	}
 

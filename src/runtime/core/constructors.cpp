@@ -344,7 +344,9 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     // replaced with the explicit one.
     state->baseUri = theSctx->get_base_uri();
     if (state->baseUri.empty())
-      throw XQUERY_EXCEPTION(XPST0001, ERROR_LOC(loc));
+      throw XQUERY_EXCEPTION(
+        XPST0001, ERROR_PARAMS( "", ZED( BaseURI ) ), ERROR_LOC( loc )
+      );
 
     store::NsBindings bindings;
     theLocalBindings->getAllBindings(bindings);
@@ -1318,4 +1320,5 @@ bool NameCastIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 UNARY_ACCEPT(NameCastIterator);
 
 
-}
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */
