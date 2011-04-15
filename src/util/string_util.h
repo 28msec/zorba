@@ -29,12 +29,16 @@ namespace ztd {
 
 using internal::ztd::c_str;
 using internal::ztd::has_c_str;
+using internal::ztd::has_str;
 
 ////////// String building /////////////////////////////////////////////////////
 
 /**
  * A %string_builder is used to build (concatenate) strings on-the-fly and pass
  * the resultant string to some function.  See the BUILD_STRING macro for usage.
+ *
+ * See http://stackoverflow.com/questions/5666678/ as to why a class like this
+ * is needed rather than just using an ostringstream directly.
  */
 class string_builder {
 public:
@@ -392,7 +396,9 @@ using internal::ztd::to_string;
  * @return Returns a string representation of the object.
  */
 template<typename T> inline
-typename enable_if<!ZORBA_TR1_NS::is_pointer<T>::value && !has_c_str<T>::value,
+typename enable_if<!ZORBA_TR1_NS::is_pointer<T>::value
+                && !has_c_str<T>::value
+                && !has_str<T>::value,
                    std::string>::type
 to_string( T const &t ) {
   std::ostringstream o;
@@ -412,6 +418,20 @@ template<class T> inline
 typename enable_if<has_c_str<T>::value,std::string>::type
 to_string( T const &t ) {
   return t.c_str();
+}
+
+/**
+ * Specialization of \c to_string() for class types that have a \c str()
+ * member function.
+ *
+ * @tparam T the class type.
+ * @param t The object.
+ * @return Returns a string representation of the object.
+ */
+template<class T> inline
+typename enable_if<has_str<T>::value && !has_c_str<T>::value,std::string>::type
+to_string( T const &t ) {
+  return t.str();
 }
 
 /**

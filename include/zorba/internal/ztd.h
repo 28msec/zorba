@@ -200,7 +200,7 @@ to_string( T const &t, OutputStringType *out ) {
  * @Param out The output string.
  */
 template<class T,class OutputStringType> inline
-typename enable_if<!has_c_str<T>::value && has_str<T>::value,void>::type
+typename enable_if<has_str<T>::value && !has_c_str<T>::value,void>::type
 to_string( T const &t, OutputStringType *out ) {
   *out = t.str();
 }
