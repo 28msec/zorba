@@ -559,6 +559,7 @@ static bool safe_to_fold_single_use(
   }
 
   if (referencingExpr == NULL &&
+      !flwor.get_return_expr()->is_sequential() &&
       count_variable_uses(flwor.get_return_expr(), v, NULL, 1) == 1)
   {
     if (for_quant != TypeConstants::QUANT_ONE)

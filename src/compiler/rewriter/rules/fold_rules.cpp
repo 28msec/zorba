@@ -83,6 +83,10 @@ static expr_t execute (
   expr_ccb.theRootSctx = node->get_sctx();
   try
   {
+    //std::cout << "Const folding expr : " << std::endl;
+    //node->put(std::cout);
+    //std::cout << std::endl;
+    
     PlanWrapperHolder pw(new PlanWrapper(plan,
                                          &expr_ccb,
                                          0,      // dynamic ctx

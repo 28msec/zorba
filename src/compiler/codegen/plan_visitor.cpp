@@ -91,6 +91,7 @@
 #include "runtime/function_item/function_item.h"
 #include "runtime/function_item/function_item_iter.h"
 #include "runtime/function_item/dynamic_fncall_iterator.h"
+#include "runtime/misc/materialize.h"
 
 #ifdef ZORBA_WITH_DEBUGGER
 #include "debugger/debugger_commons.h"
@@ -1527,6 +1528,13 @@ void flwor_codegen(const flwor_expr& flworExpr)
       var_expr* var = fc->get_var();
 
       PlanIter_t domainIter = pop_itstack();
+
+      if (flworExpr.is_sequential())
+      {
+        domainIter = new MaterializeIterator(flworExpr.get_sctx(),
+                                             fc->get_expr()->get_loc(),
+                                             domainIter);
+      }
 
       std::vector<PlanIter_t>& varRefs = 
       clauseVarMap->theVarRebinds[0]->theOutputVarRefs;

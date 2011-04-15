@@ -167,6 +167,8 @@ class DynamicFnCallIterator;
 
 class EvalIterator;
 
+class MaterializeIterator;
+
 
 #define PLAN_ITER_VISITOR(class)                \
 virtual void beginVisit ( const class& ) = 0;  \

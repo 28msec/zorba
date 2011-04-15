@@ -335,3 +335,5 @@ PLAN_ITER_VISITOR (AndIterator);
   PLAN_ITER_VISITOR(DynamicFnCallIterator);
 
   PLAN_ITER_VISITOR(EvalIterator);
+
+  PLAN_ITER_VISITOR(MaterializeIterator);

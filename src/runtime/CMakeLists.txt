@@ -126,6 +126,7 @@ LIST(APPEND RUNTIME_SRCS
   function_item/dynamic_fncall_iterator.cpp
   eval/eval.cpp
   collections/collections_base.cpp
+  misc/materialize.cpp
 )
 
 IF(NOT ZORBA_NO_FULL_TEXT)
