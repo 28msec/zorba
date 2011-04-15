@@ -352,29 +352,29 @@ public:
   -------------
 
   In case this is a library module translator, export_sctx is populated with
-  the variable, function, and xqddf declarations that are exported by the 
-  module, i.e., the var, udf, and xqddf declarations that appear in the prolog 
+  the variable, function, and xqddf declarations that are exported by the
+  module, i.e., the var, udf, and xqddf declarations that appear in the prolog
   of this module. The export_sctx is created by the importing module, populated
   by the imported module, and then merged by the importing module into its own
   sctx. export_sctx is "shared" between importing and imported modules via the
-  theModulesInfo->mod_sctx_map. export_sctx is needed because module import is 
+  theModulesInfo->mod_sctx_map. export_sctx is needed because module import is
   not transitive: If M1 imports M2 and M2 imports M3, then M3's declarations
-  must be seen by M2, but not by M1. This means, that the regular root sctx 
-  S2 of M2 will contain the decls from both M2 and M3. So, M1 should not import 
+  must be seen by M2, but not by M1. This means, that the regular root sctx
+  S2 of M2 will contain the decls from both M2 and M3. So, M1 should not import
   S2 into its own sctx S1. Instead, we create ES2 for M2 and register in there
   the decls of M2 only; then, we import ES2 to S1.
 
-  theNSCtx : 
+  theNSCtx :
   ----------
 
   The "current" namespace bindings node. It is initialized with a newly allocated
-  theNSCtx node, which points to the initial sctx node. The initial sctx node 
+  theNSCtx node, which points to the initial sctx node. The initial sctx node
   stores all ns bindings that are declared in the prolog. theNSCtx nodes are
   created to store ns bindings declared in element constructors. In general, the
   theNSCtx hierarchy (of which the initial sctx node and its ancestors are
-  considered to be part of) defines the namepsace bindings that are in scope 
-  for each expr. theNSCtx nodes are kept separate from sctx nodes because sctx 
-  nodes may disappear after translation is done, whereas certain exprs need to 
+  considered to be part of) defines the namepsace bindings that are in scope
+  for each expr. theNSCtx nodes are kept separate from sctx nodes because sctx
+  nodes may disappear after translation is done, whereas certain exprs need to
   know their theNSCtx in later compilation phases as well.
 
   thePrintDepth :
@@ -432,8 +432,8 @@ public:
   Local or global variables which are currently in-scope and for which (a)
   an assignment statement has been encountered, and (b) the block expr that
   declares the var has not been exited yet. This is used to determine the
-  category of expressions. 
- 
+  category of expressions.
+
   theTempVarCounter :
   -------------------
 
@@ -975,7 +975,7 @@ void expand_elem_qname(
     const QueryLoc& loc) const
 {
   theSctx->expand_qname(qnameItem,
-                        (qname->is_eqname() ? 
+                        (qname->is_eqname() ?
                          qname->get_namespace() :
                          theSctx->default_elem_type_ns()),
                         qname->get_prefix(),
@@ -1822,8 +1822,8 @@ void declare_var(const GlobalBinding& b, std::vector<expr_t>& stmts)
 
 /*******************************************************************************
   Create declaration/initialization exprs for each prolog variable of this
-  module and put these exprs in theModulesInfo->theInitExprs. Then create a 
-  sequential expr with its children being all the init exprs in 
+  module and put these exprs in theModulesInfo->theInitExprs. Then create a
+  sequential expr with its children being all the init exprs in
   theModulesInfo->theInitExprs plus the given expr "e" as its last child.
 
   The method is called at the end of the translation of each module. The returned
@@ -1853,7 +1853,7 @@ expr_t wrap_in_globalvar_assign(const expr_t& program)
     if (preloadedInitExpr)
       args.push_back(preloadedInitExpr);
 
-    args.insert(args.end(), 
+    args.insert(args.end(),
                 theModulesInfo->theInitExprs.begin(),
                 theModulesInfo->theInitExprs.end());
 
@@ -1962,7 +1962,7 @@ void* begin_visit(const MainModule & v)
 
   // Make sure that the context item is always in-scope inside the main module.
   // However, do not create a ver_decl expr for it, because this will create a
-  // treat_as expr as well, so the ctx item will always appear as being used, 
+  // treat_as expr as well, so the ctx item will always appear as being used,
   // and as a result it will always have to be set.
   var_expr_t var = bind_var(loc,
                             DOT_VARNAME,
@@ -2841,7 +2841,7 @@ void* begin_visit(const VFO_DeclList& v)
     // Expand the function qname (error is raised if qname resolution fails)
     // and check it for errors. The following conditions are checked:
     // - Function must be declared in a non-NULL namespace.
-    // - Function must not be in any of the reserved namespaces. 
+    // - Function must not be in any of the reserved namespaces.
     // - In a module, all exports must be inside the target ns.
     const QName* fname = func_decl->get_name().getp();
     store::Item_t qnameItem;
@@ -2897,7 +2897,7 @@ void* begin_visit(const VFO_DeclList& v)
     }
     else if (func_decl->is_updating())
     {
-      
+
       // TODO: should we have a different default?
       // TODO: if returnType is set to something other than ITEM_TYPE_STAR
       // the body of the udf will be wrapped in a treat expr. So, we will
@@ -3142,7 +3142,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
 
       if (!body->is_updating_or_vacuous())
       {
-        throw XQUERY_EXCEPTION(XUST0002, 
+        throw XQUERY_EXCEPTION(XUST0002,
                                ERROR_PARAMS(ZED(XUST0002_UDF), fname),
                                ERROR_LOC(loc));
       }
@@ -3294,7 +3294,7 @@ void end_visit(const Param& v, void* /*visit_state*/)
 
 /*******************************************************************************
 
-  VarDecl is used to represent both global and block-local var declarations. 
+  VarDecl is used to represent both global and block-local var declarations.
 
   Global declarations:
   --------------------
@@ -3319,7 +3319,7 @@ void end_visit(const Param& v, void* /*visit_state*/)
   Local declarations:
   -------------------
 
-  VarDeclStatement ::= ("local" Annotation*)? "variable" 
+  VarDeclStatement ::= ("local" Annotation*)? "variable"
                        "$" VarName TypeDeclaration? (":=" ExprSingle)?
                        ("," "$" VarName TypeDeclaration? (":=" ExprSingle)?)* ";"
 
@@ -8195,7 +8195,7 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
   expr_t elseExpr = new if_expr(theRootSctx,
                                 loc,
                                 predvar,
-                                DOT_REF, 
+                                DOT_REF,
                                 create_empty_seq(loc));
 
   // The outer if
@@ -9045,12 +9045,18 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
       // create a flwor with LETs to hold the parameters
       flwor_expr_t flworExpr = new flwor_expr(theRootSctx, loc, false);
-      for (unsigned int i = 1; i<numArgs ; i++)
+
+      // wrap function's QName
+      expr_t qnameExpr = wrap_in_atomization(arguments[0]);
+      qnameExpr        = wrap_in_type_promotion(arguments[0], theRTM.QNAME_TYPE_ONE);
+
+      for (unsigned int i = 0; i<numArgs ; i++)
       {
-        // cannot use create_temp_var() as the variables created there are not accessible
+        let_clause_t lc;
         store::Item_t qnameItem;
 
-        // check for name clashes
+        // cannot use create_temp_var() as the variables created there are not accessible
+        // use a special name but check for name clashes
         do
         {
           std::string localName = "temp_invoke_var" + ztd::to_string(theTempVarCounter++);
@@ -9060,32 +9066,42 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
         var_expr_t var = create_var(loc, qnameItem, var_expr::let_var);
         temp_vars.push_back(var);
-        let_clause_t lc = wrap_in_letclause(arguments[i], var);
+
+        if (i==0)
+          lc = wrap_in_letclause(qnameExpr, var);
+        else
+          lc = wrap_in_letclause(arguments[i], var);
+
         flworExpr->add_clause(lc);
+
+        // add the parameters to the eval's query string
         if (i>1)
           query_params += ",";
-        query_params += "$" + var->get_name()->getStringValue();
+        if (i>0)
+          query_params += "$" + var->get_name()->getStringValue();
       }
       query_params = "(" + query_params + ")";
 
-      // Build the query paramter for the eval_expr
-      expr_t queryParamExpr = new const_expr(theRootSctx, loc,
-                                             query_params);
+      // Expanded QName's namespace URI
+      expr_t namespaceExpr  = new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(FN_NAMESPACE_URI_FROM_QNAME_1), temp_vars[0]);
+      namespaceExpr         = new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(FN_STRING_1), namespaceExpr);
 
-      // wrap qnameExpr
-      expr_t qnameExpr = wrap_in_atomization(arguments[0]);
-      qnameExpr        = wrap_in_type_promotion(arguments[0], theRTM.QNAME_TYPE_ONE);
-      qnameExpr        = new fo_expr(theRootSctx,
-                                     loc,
-                                     GET_BUILTIN_FUNCTION(FN_STRING_1),
-                                     qnameExpr);
+      // Expanded QName's local name
+      expr_t localExpr      = new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(FN_LOCAL_NAME_FROM_QNAME_1), temp_vars[0]);
+      localExpr             = new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(FN_STRING_1), localExpr);
 
-      // qnameExpr    := concat(qnameExpr, "$__invoke_temp_var1,$_invoke_temp_var2,...)")
-      qnameExpr        = new fo_expr(theRootSctx,
-                                     loc,
-                                     GET_BUILTIN_FUNCTION(FN_CONCAT_N),
-                                     qnameExpr,
-                                     queryParamExpr);
+      // qnameExpr    := concat("\"", namespaceExpr, "\":", localExpr, "$temp_invoke_var1,$temp_invoke_var2,...)")
+      std::vector<expr_t> concat_args;
+      concat_args.push_back(new const_expr(theRootSctx, loc, "\""));
+      concat_args.push_back(namespaceExpr);
+      concat_args.push_back(new const_expr(theRootSctx, loc, "\":"));
+      concat_args.push_back(localExpr);
+      concat_args.push_back(new const_expr(theRootSctx, loc, query_params));
+
+      qnameExpr             = new fo_expr(theRootSctx,
+                                          loc,
+                                          GET_BUILTIN_FUNCTION(FN_CONCAT_N),
+                                          concat_args);
 
       rchandle<eval_expr> evalExpr = new eval_expr(theRootSctx,
                                                    loc,
@@ -9093,13 +9109,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
                                                    scriptingKind,
                                                    theNSCtx);
 
-      if (numArgs > 1)
-      {
-        flworExpr->set_return_expr(evalExpr.getp());
-        resultExpr = flworExpr;
-      }
-      else
-        resultExpr = evalExpr;
+      flworExpr->set_return_expr(evalExpr.getp());
+      resultExpr = flworExpr;
 
       std::vector<var_expr_t> inscopeVars;
       theSctx->getVariables(inscopeVars);
@@ -9255,7 +9266,7 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
                                            fn->getSignature(),
                                            body,
                                            fn->getScriptingKind(),
-                                           fn->isDeterministic(), 
+                                           fn->isDeterministic(),
                                            false); // not private
     udf->setArgVars(udfArgs);
 
@@ -9662,7 +9673,7 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
         else
         {
           fo_expr* foExpr2 = dynamic_cast<fo_expr*>(foExpr->get_arg(i));
-          if (foExpr2 != NULL && 
+          if (foExpr2 != NULL &&
               foExpr2->get_func()->getKind() == FunctionConsts::OP_ENCLOSED_1 &&
               (qname->get_qname() == "xmlns" || qname->get_prefix() == "xmlns"))
           {
@@ -9783,23 +9794,23 @@ void* begin_visit(const DirElemContent& v)
   return no_state;
 }
 
-void end_visit(const DirElemContent& v, void* /*visit_state*/) 
+void end_visit(const DirElemContent& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  if (v.get_direct_cons() != NULL) 
+  if (v.get_direct_cons() != NULL)
   {
     // nothing to be done, the content expression is already on the stack
   }
-  else if (v.get_cdata() != NULL) 
+  else if (v.get_cdata() != NULL)
   {
   }
-  else if (v.get_common_content() != NULL) 
+  else if (v.get_common_content() != NULL)
   {
-  } 
-  else 
+  }
+  else
   {
-    if (!v.isStripped()) 
+    if (!v.isStripped())
     {
       expr_t content = new const_expr(theRootSctx, loc, v.get_elem_content().str());
 
@@ -9833,14 +9844,14 @@ void begin_check_boundary_whitespace()
 void check_boundary_whitespace(const DirElemContent& v)
 {
   v.setIsStripped(false);
-  if (theSctx->boundary_space_mode() == StaticContextConsts::strip_space) 
+  if (theSctx->boundary_space_mode() == StaticContextConsts::strip_space)
   {
     bool lPrevIsBoundary = translator_ns::pop_stack (theIsWSBoundaryStack);
     const DirElemContent* lPrev = translator_ns::peek_stack(thePossibleWSContentStack);
     thePossibleWSContentStack.pop();
 
     if (v.get_direct_cons() != 0 ||
-        (v.get_common_content() != 0 && v.get_common_content()->get_expr() != 0)) 
+        (v.get_common_content() != 0 && v.get_common_content()->get_expr() != 0))
     {
       thePossibleWSContentStack.push(0);
       theIsWSBoundaryStack.push(true);
@@ -9848,12 +9859,12 @@ void check_boundary_whitespace(const DirElemContent& v)
         lPrev->setIsStripped(true);
       }
     }
-    else if (v.get_common_content() != 0 || v.get_cdata() != 0) 
+    else if (v.get_common_content() != 0 || v.get_cdata() != 0)
     {
       thePossibleWSContentStack.push(0);
       theIsWSBoundaryStack.push(false);
     }
-    else 
+    else
     {
       bool lCouldBe = false;
       if (lPrevIsBoundary) {
@@ -9879,12 +9890,12 @@ void check_boundary_whitespace(const DirElemContent& v)
  * Deletes the entries in theIsWSBoundaryStack and thePossibleWSContentStack. If thePossibleWSContentStack
  * contains an item, this item is boundary whitespace because end of content is a boundary.
  */
-void end_check_boundary_whitespace() 
+void end_check_boundary_whitespace()
 {
-  if (theSctx->boundary_space_mode() == StaticContextConsts::strip_space) 
+  if (theSctx->boundary_space_mode() == StaticContextConsts::strip_space)
   {
     const DirElemContent* lPrev = translator_ns::pop_stack (thePossibleWSContentStack);
-    if (lPrev != 0) 
+    if (lPrev != 0)
     {
       lPrev->setIsStripped(true);
     }
@@ -9894,13 +9905,13 @@ void end_check_boundary_whitespace()
 
 
 
-void* begin_visit(const CDataSection& v) 
+void* begin_visit(const CDataSection& v)
 {
   TRACE_VISIT();
   return no_state;
 }
 
-void end_visit(const CDataSection& v, void* /*visit_state*/) 
+void end_visit(const CDataSection& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
   std::string lCDATA_content = v.get_cdata_content().str();
@@ -10371,11 +10382,11 @@ void end_visit(const TypeName& v, void* /*visit_state*/)
 
 ********************************************************************************/
 
-void* begin_visit(const SequenceType& v) 
+void* begin_visit(const SequenceType& v)
 {
   TRACE_VISIT();
 
-  if (v.get_itemtype() == NULL && v.get_occur() == NULL) 
+  if (v.get_itemtype() == NULL && v.get_occur() == NULL)
   {
     theTypeStack.push(GENV_TYPESYSTEM.EMPTY_TYPE);
     return NULL;
@@ -10384,18 +10395,18 @@ void* begin_visit(const SequenceType& v)
   return no_state;
 }
 
-void end_visit (const SequenceType& v, void* /*visit_state*/) 
+void end_visit (const SequenceType& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 }
 
 
-void* begin_visit(const OccurrenceIndicator& v) 
+void* begin_visit(const OccurrenceIndicator& v)
 {
   TRACE_VISIT();
 
   TypeConstants::quantifier_t q = TypeConstants::QUANT_STAR;
-  switch(v.get_type()) 
+  switch(v.get_type())
   {
   case ParseConstants::occurs_exactly_one:
     q = TypeConstants::QUANT_ONE; break;
@@ -10466,7 +10477,7 @@ void end_visit(const ItemType& v, void* /*visit_state*/)
 ********************************************************************************/
 
 
-void* begin_visit(const QName& v) 
+void* begin_visit(const QName& v)
 {
   TRACE_VISIT();
   return no_state;
@@ -10479,7 +10490,7 @@ void end_visit(const QName& v, void* /*visit_state*/)
 }
 
 
-void* begin_visit(const AnyKindTest& v) 
+void* begin_visit(const AnyKindTest& v)
 {
   TRACE_VISIT();
   // no action needed here
@@ -10487,7 +10498,7 @@ void* begin_visit(const AnyKindTest& v)
 }
 
 
-void end_visit(const AnyKindTest& v, void* /*visit_state*/) 
+void end_visit(const AnyKindTest& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
@@ -10966,7 +10977,7 @@ void end_visit(const TypedFunctionTest& v, void* /*visit_state*/)
   std::vector<xqtref_t> lParamXQTypes;
   xqtref_t              lRetXQType;
 
-  if (lParamTypes) 
+  if (lParamTypes)
   {
     for (int i = 0; i < (int)lParamTypes->size(); ++i)
     {
@@ -10980,7 +10991,7 @@ void end_visit(const TypedFunctionTest& v, void* /*visit_state*/)
     }
   }
 
-  if (lRetType != 0) 
+  if (lRetType != 0)
   {
     lRetType->accept(*this);
     lRetXQType = pop_tstack();
@@ -11422,10 +11433,10 @@ void* begin_visit(const BlockBody& v)
     v[i]->accept(*this);
 
     expr_t childExpr = pop_nodestack();
-    
+
     if (childExpr->is_updating())
     {
-      // Wrap every updating childExpr, except from the last one, with a 
+      // Wrap every updating childExpr, except from the last one, with a
       // XDM-discarding apply_expr.
       if (i < numExprs - 1)
       {
@@ -11443,7 +11454,7 @@ void* begin_visit(const BlockBody& v)
           childExpr = new apply_expr(theRootSctx, loc, childExpr, false);
         }
       }
-      else 
+      else
       {
         childExpr = new apply_expr(theRootSctx, loc, childExpr, false);
       }
@@ -11556,7 +11567,7 @@ void end_visit(const ExitExpr& v, void* visit_state)
     assert(f->isUdf());
     user_function* udf = static_cast<user_function*>(f);
 
-    udf->setExiting(true);    
+    udf->setExiting(true);
   }
 
   push_nodestack(new exit_expr(theRootSctx, loc, childExpr));
