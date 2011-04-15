@@ -719,8 +719,9 @@ EndAtomicItem:;
     }
     else
     {
-      ZORBA_SER_ERROR_DESC_OSS(ZCSE0010_ITEM_TYPE_NOT_SERIALIZABLE,
-                               "Not atomic, node, pul or error");
+      throw ZORBA_EXCEPTION(
+        ZCSE0010_ITEM_TYPE_NOT_SERIALIZABLE, ERROR_PARAMS( "[Unknown item type]" )
+        );
     }
 
     ar.set_is_temp_field(false);

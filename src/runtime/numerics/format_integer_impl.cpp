@@ -141,7 +141,7 @@ static void checkOptionalModifier(utf8_string<zstring> &utf8_picture,
   }
   if((off+i) >= picture_size)
   {
-    throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS(ZED(format_integer_optional_format_modifier_not_closed)));
+    throw XQUERY_EXCEPTION(FOFI0002, ERROR_PARAMS(ZED(format_integer_optional_format_modifier_not_closed), utf8_picture));
   }
   i++;
   if((off+i) < picture_size)
